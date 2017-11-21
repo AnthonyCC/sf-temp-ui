@@ -8,14 +8,23 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.content.nutrition.EnumClaimValue;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.customerrating.CustomerRatingsContext;
 import com.freshdirect.fdstore.content.customerrating.CustomerRatingsDTO;
 import com.freshdirect.fdstore.pricing.ProductModelPricingAdapter;
+import com.freshdirect.storeapi.content.BrandModel;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.EnumSearchFilteringValue;
+import com.freshdirect.storeapi.content.FilteringMenuItem;
+import com.freshdirect.storeapi.content.FilteringSortingItem;
+import com.freshdirect.storeapi.content.FilteringValue;
+import com.freshdirect.storeapi.content.PriceCalculator;
+import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.fdstore.FDContentTypes;
 
 public class ProductFilterMenuDecorator extends GenericFilterDecorator<FilteringSortingItem<ProductModel>> {
 	private static final Logger LOGGER = Logger.getLogger(ProductFilterMenuDecorator.class);
@@ -220,7 +229,7 @@ public class ProductFilterMenuDecorator extends GenericFilterDecorator<Filtering
 
 		List<ProductModel> parentNodes = new ArrayList<ProductModel>();
 
-		Collection<ContentKey> parents = node.getParentKeys();
+		Collection<ContentKey> parents = ContentFactory.getInstance().getParentKeys(node.getContentKey());
 		if (parents != null) {
 			for (ContentKey parentKey : parents) {
 				ProductModel nodeByKey = ContentFactory.getInstance().getProductByName(

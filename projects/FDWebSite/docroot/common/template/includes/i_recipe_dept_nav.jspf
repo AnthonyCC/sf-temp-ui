@@ -11,7 +11,7 @@ int idxValue= 0;
 			<td bgcolor="#999966" width="1"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
 			<td><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1"></td>
 			    <td valign="top" class="text9_lh12">
-			    <logic:iterate id="recipeCategory" indexId="idx" collection="<%= rcpDept.getDepartmentNav() %>" type="com.freshdirect.fdstore.content.RecipeCategory">
+			    <logic:iterate id="recipeCategory" indexId="idx" collection="<%= rcpDept.getDepartmentNav() %>" type="com.freshdirect.storeapi.content.RecipeCategory">
 		<%            Domain catClassification = recipeCategory.getClassification(); 
 				boolean hasSubcategories = recipeCategory.getSubcategories().size()>0;
 				if (!hasSubcategories) continue;

@@ -1,16 +1,16 @@
 package com.freshdirect.fdstore.coremetrics.builder;
 
-import com.freshdirect.cms.ContentType;
-import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.DepartmentModel;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.WineFilterValue;
 import com.freshdirect.fdstore.coremetrics.CmContext;
 import com.freshdirect.fdstore.coremetrics.extradata.CoremetricsExtraData;
 import com.freshdirect.fdstore.coremetrics.tagmodel.PageViewTagModel;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.DepartmentModel;
+import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.content.WineFilterValue;
+import com.freshdirect.storeapi.fdstore.FDContentTypes;
 
 public class PageViewTagModelBuilder {
 

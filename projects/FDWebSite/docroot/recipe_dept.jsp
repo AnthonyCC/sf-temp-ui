@@ -1,11 +1,11 @@
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.*'%>
-<%@ page import='com.freshdirect.fdstore.content.*'%>
+<%@ page import='com.freshdirect.storeapi.content.*'%>
 <%@ page import='com.freshdirect.content.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
-<%@ page import='com.freshdirect.cms.*'%>
-<%@ page import='com.freshdirect.cms.application.*'%>
-<%@ page import='com.freshdirect.cms.node.*'%>
+<%@ page import='com.freshdirect.storeapi.*'%>
+<%@ page import='com.freshdirect.storeapi.application.*'%>
+<%@ page import='com.freshdirect.storeapi.node.*'%>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='java.util.*'%>

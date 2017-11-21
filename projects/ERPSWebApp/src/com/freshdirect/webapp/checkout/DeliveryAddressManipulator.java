@@ -346,6 +346,9 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		if (erpAddressModel == null) {
 			return;
 		}
+		if(StandingOrderHelper.isEligibleForSo3_0(user)){
+			StandingOrderHelper.evaluteEditSoAddressID(session, user, updatedDeliveryAddressId);
+		}
 		
 		/*boolean foundFraud = AddressUtil.updateShipToAddress(session, actionResult, user, updatedDeliveryAddressId, erpAddress);
 		

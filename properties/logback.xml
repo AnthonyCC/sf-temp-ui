@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE xml>
+<configuration>
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <layout class="ch.qos.logback.classic.PatternLayout">
+        <pattern>[%d{dd.MM.yyyy}, %d{HH:mm:ss.SSS}] %-5level [%thread][%logger]: %m%n</pattern>
+    </layout>
+  </appender>
+
+  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <File>cms-core.log</File>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <FileNamePattern>cms-core.%d{yyyy-MM-dd}.log</FileNamePattern>
+    </rollingPolicy>
+
+    <layout class="ch.qos.logback.classic.PatternLayout">
+        <pattern>[%d{dd.MM.yyyy}, %d{HH:mm:ss.SSS}] %-5level [%thread][%logger]: %m%n</pattern>
+    </layout>
+  </appender>
+
+  <logger name="com.freshdirect.cms" level="INFO" />
+  <logger name="org.springframework.cache" level="trace" />
+  <logger name="org.hibernate.SQL" level="INFO" />
+  <logger name="org.hibernate.type" level="INFO" />
+  <logger name="org.hibernate" level="INFO" />
+  <logger name="com.zaxxer" level="INFO" />
+
+  <root>
+    <level value="error" />
+    <appender-ref ref="STDOUT" />
+    <appender-ref ref="FILE" />
+  </root>
+</configuration>

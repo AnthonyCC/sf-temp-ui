@@ -30,22 +30,22 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ZonePriceInfoModel;
-import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.ConfiguredProduct;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.DepartmentModel;
-import com.freshdirect.fdstore.content.DomainValue;
-import com.freshdirect.fdstore.content.Image;
-import com.freshdirect.fdstore.content.MediaI;
-import com.freshdirect.fdstore.content.PriceCalculator;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.HowToCookItUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.storeapi.content.ConfiguredProduct;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.DepartmentModel;
+import com.freshdirect.storeapi.content.DomainValue;
+import com.freshdirect.storeapi.content.Image;
+import com.freshdirect.storeapi.content.MediaI;
+import com.freshdirect.storeapi.content.PriceCalculator;
+import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.content.SkuModel;
 
 /**
  * 

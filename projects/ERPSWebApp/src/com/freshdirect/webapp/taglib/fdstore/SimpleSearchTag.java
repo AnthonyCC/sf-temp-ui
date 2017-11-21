@@ -8,9 +8,9 @@ import javax.servlet.jsp.tagext.VariableInfo;
 
 import org.apache.http.HttpHeaders;
 
-import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.FilteringNavigator;
+import com.freshdirect.storeapi.content.SearchResults;
 import com.freshdirect.webapp.search.SearchService;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 import com.freshdirect.webapp.util.RequestUtil;

@@ -9,21 +9,21 @@
 <%@page import="java.util.GregorianCalendar"%>
 <%@page import="java.util.Calendar"%>
 <%@page import="java.util.Date"%>
-<%@page import="com.freshdirect.fdstore.content.EnumProductLayout"%>
-<%@page import="com.freshdirect.fdstore.content.Image"%>
-<%@page import="com.freshdirect.fdstore.content.Html"%>
-<%@page import="com.freshdirect.fdstore.content.BrandModel"%>
-<%@page import="com.freshdirect.fdstore.content.MediaI"%>
-<%@page import="com.freshdirect.fdstore.content.TitledMedia"%>
-<%@page import="com.freshdirect.fdstore.content.EnumPopupType"%>
-<%@page import="com.freshdirect.fdstore.content.SkuModel"%>
-<%@page import="com.freshdirect.fdstore.content.DomainValue"%>
+<%@page import="com.freshdirect.storeapi.content.EnumProductLayout"%>
+<%@page import="com.freshdirect.storeapi.content.Image"%>
+<%@page import="com.freshdirect.storeapi.content.Html"%>
+<%@page import="com.freshdirect.storeapi.content.BrandModel"%>
+<%@page import="com.freshdirect.storeapi.content.MediaI"%>
+<%@page import="com.freshdirect.storeapi.content.TitledMedia"%>
+<%@page import="com.freshdirect.storeapi.content.EnumPopupType"%>
+<%@page import="com.freshdirect.storeapi.content.SkuModel"%>
+<%@page import="com.freshdirect.storeapi.content.DomainValue"%>
 <%@page import="com.freshdirect.ErpServicesProperties"%>
 <%@page import="com.freshdirect.framework.util.DateUtil"%>
 <%@page import="com.freshdirect.framework.util.QuickDateFormat"%>
 <%@page import="com.freshdirect.fdstore.FDVariation"%>
-<%@ page import="com.freshdirect.fdstore.content.ContentFactory" %>
-<%@ page import='com.freshdirect.cms.util.ProductInfoUtil'%>
+<%@ page import="com.freshdirect.storeapi.content.ContentFactory" %>
+<%@ page import='com.freshdirect.storeapi.util.ProductInfoUtil'%>
 <%--
 	Required variables:
 

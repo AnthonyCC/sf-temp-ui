@@ -10,10 +10,10 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
-import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.Image;
-import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.Image;
+import com.freshdirect.storeapi.content.ProductModel;
 
 
 public class VerticalPatternTag extends com.freshdirect.framework.webapp.BodyTagSupport {
@@ -319,7 +319,7 @@ public class VerticalPatternTag extends com.freshdirect.framework.webapp.BodyTag
 	            		VariableInfo.AT_BEGIN ),
    	            new VariableInfo(
 	            		theOnlyProductVariableName,
-	            		"com.freshdirect.fdstore.content.ProductModel",
+	            		"com.freshdirect.storeapi.content.ProductModel",
 	            		true, 
 	            		VariableInfo.AT_BEGIN )
 	        };

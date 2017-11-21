@@ -8,12 +8,6 @@ import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDException;
-import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.DomainValue;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.content.util.SortStrategyElement;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.framework.webapp.ActionError;
@@ -26,6 +20,12 @@ import com.freshdirect.mobileapi.model.tagwrapper.ItemGrabberTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.ItemSorterTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.LayoutManagerWrapper;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
+import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.DomainValue;
+import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.content.SkuModel;
 import com.freshdirect.webapp.taglib.fdstore.layout.LayoutManager.Settings;
 
 /**

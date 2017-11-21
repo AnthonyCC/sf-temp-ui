@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.promotion.management.FDPromoDollarDiscount;
 

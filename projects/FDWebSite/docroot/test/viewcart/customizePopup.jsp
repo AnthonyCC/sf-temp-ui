@@ -50,12 +50,12 @@
             <div class="itemlist-item-controls-subtotal">
               <input type="hidden" value="G02" data-productdata-name="salesUnit" data-component="productData">
               <div class="qtyinput" data-component="quantitybox" data-min="1" data-max="99" data-step="1" data-mayempty="true">
-                <div style:"display:none;">Decrease quantity</div>
+                <div class="offscreen">Decrease quantity</div>
                 <span class="quantity_minus" data-component="quantitybox.dec">-</span>
                 <span class="qtywrapper">
                 <input class="qty" aria-label="quantity" type="text" value="1" maxlength="4" data-component="quantitybox.value" data-productdata-name="quantity" data-mayempty="true">
                 </span>
-                <div style:"display:none;">Increase quantity</div>
+                <div class="offscreen">Increase quantity</div>
                 <span class="quantity_plus" data-component="quantitybox.inc">+</span>
               </div>
             </div>
@@ -123,12 +123,12 @@
           <div class="itemlist-item-controls-subtotal">
             <input type="hidden" value="G02" data-productdata-name="salesUnit" data-component="productData">
             <div class="qtyinput" data-component="quantitybox" data-min="1" data-max="99" data-step="1" data-mayempty="true">
-              <div style:"display:none;">Decrease quantity</div>
+              <div class="offscreen">Decrease quantity</div>
               <span class="quantity_minus" data-component="quantitybox.dec">-</span>
               <span class="qtywrapper">
               <input class="qty" aria-label="quantity" type="text" value="1" maxlength="4" data-component="quantitybox.value" data-productdata-name="quantity" data-mayempty="true">
               </span>
-              <div style:"display:none;">Increase quantity</div>
+              <div class="offscreen">Increase quantity</div>
               <span class="quantity_plus" data-component="quantitybox.inc">+</span>
             </div>
             <!--  div class="subtotal hasPrice" data-component="subtotal">subtotal: <b>$8.00</b></div -->
@@ -183,12 +183,12 @@
             <div class="itemlist-item-controls-subtotal">
               <input type="hidden" value="G02" data-productdata-name="salesUnit" data-component="productData">
               <div class="qtyinput" data-component="quantitybox" data-min="1" data-max="99" data-step="1" data-mayempty="true">
-              <div style:"display:none;">Decrease quantity</div>	
+              <div class="offscreen">Decrease quantity</div>	
                 <span class="quantity_minus" data-component="quantitybox.dec">-</span>
                 <span class="qtywrapper">
                 <input class="qty" aria-label="quantity" type="text" value="1" maxlength="4" data-component="quantitybox.value" data-productdata-name="quantity" data-mayempty="true">
                 </span>
-                <div style:"display:none;">Increase quantity</div>
+                <div class="offscreen">Increase quantity</div>
                 <span class="quantity_plus" data-component="quantitybox.inc">+</span>
               </div>
             </div>
@@ -256,12 +256,12 @@
           <div class="itemlist-item-controls-subtotal">
             <input type="hidden" value="G02" data-productdata-name="salesUnit" data-component="productData">
             <div class="qtyinput" data-component="quantitybox" data-min="1" data-max="99" data-step="1" data-mayempty="true">
-            <div style:"display:none;">Decrease quantity</div>
+            <div class="offscreen">Decrease quantity</div>
               <span class="quantity_minus" data-component="quantitybox.dec">-</span>
               <span class="qtywrapper">
               <input class="qty" aria-label="quantity" type="text" value="1" maxlength="4" data-component="quantitybox.value" data-productdata-name="quantity" data-mayempty="true">
               </span>
-              <div style:"display:none;">Increase quantity</div>
+              <div class="offscreen">Increase quantity</div>
               <span class="quantity_plus" data-component="quantitybox.inc">+</span>
             </div>
             <!--  div class="subtotal hasPrice" data-component="subtotal">subtotal: <b>$8.00</b></div -->

@@ -14,18 +14,19 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.cms.CmsServiceLocator;
+import com.freshdirect.cms.cache.CmsCaches;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.attributes.cms.HtmlBuilder;
-import com.freshdirect.fdstore.attributes.cms.ImageBuilder;
-import com.freshdirect.fdstore.cache.EhCacheUtil;
-import com.freshdirect.fdstore.content.Html;
-import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.content.TemplateRenderer;
 import com.freshdirect.framework.template.ITemplateRenderer;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.attributes.cms.HtmlBuilder;
+import com.freshdirect.storeapi.attributes.cms.ImageBuilder;
+import com.freshdirect.storeapi.content.Html;
+import com.freshdirect.storeapi.content.Image;
 import com.freshdirect.webapp.taglib.IncludeMediaTag;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.template.TemplateContext;
@@ -84,7 +85,7 @@ public class MediaUtils {
 
     /**
      * Helper method to support {@link IncludeMediaTag#doStartTag()}
-     * 
+     *
      * @param name
      * @param out
      *            Writer
@@ -154,7 +155,7 @@ public class MediaUtils {
 
     /**
      * Convenience method to check if a media exists at the given path
-     * 
+     *
      * @param mediaPath
      * @return
      */
@@ -163,7 +164,7 @@ public class MediaUtils {
     		return false;
     	
     	if(!FDStoreProperties.getPreviewMode()){//Fetch from cache only in non-preview mode
-	    	Boolean cachedResult = EhCacheUtil.getObjectFromCache(EhCacheUtil.MEDIA_CHECK_CACHE_NAME, mediaPath);
+	    	Boolean cachedResult = CmsServiceLocator.ehCacheUtil().getObjectFromCache(CmsCaches.MEDIA_CHECK_CACHE_NAME.cacheName, mediaPath);
 	    	if (cachedResult != null) {
 	    		return cachedResult;
 	    	}
@@ -180,7 +181,7 @@ public class MediaUtils {
                 conn.setRequestMethod("HEAD");
                 conn.connect();
                 int resp = conn.getResponseCode();
-                
+
                 result = (resp == HttpURLConnection.HTTP_OK);
             } else {
                 LOGGER.warn("Unknown protocol " + url.getProtocol());
@@ -198,7 +199,7 @@ public class MediaUtils {
         	}
         }
         if(!FDStoreProperties.getPreviewMode()){ //Cache it only in non-preview mode
-        	EhCacheUtil.putObjectToCache(EhCacheUtil.MEDIA_CHECK_CACHE_NAME, mediaPath, new Boolean(result));
+        	CmsServiceLocator.ehCacheUtil().putObjectToCache(CmsCaches.MEDIA_CHECK_CACHE_NAME.cacheName, mediaPath, new Boolean(result));
         }
         return result;
     }

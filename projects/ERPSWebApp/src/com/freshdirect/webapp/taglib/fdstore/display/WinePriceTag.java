@@ -6,9 +6,9 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
 import com.freshdirect.fdstore.content.EnumWinePrice;
-import com.freshdirect.fdstore.content.PriceCalculator;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.framework.webapp.BodyTagSupport;
+import com.freshdirect.storeapi.content.PriceCalculator;
+import com.freshdirect.storeapi.content.ProductModel;
 
 /**
  * Product Rating Tag

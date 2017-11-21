@@ -32,11 +32,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.application.CmsManager;
-import com.freshdirect.cms.application.DraftContext;
-import com.freshdirect.cms.fdstore.FDContentTypes;
-import com.freshdirect.cms.fdstore.PreviewLinkProvider;
+import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.common.pricing.CharacteristicValuePrice;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.PricingContext;
@@ -66,10 +62,6 @@ import com.freshdirect.fdstore.FDVariationOption;
 import com.freshdirect.fdstore.GroupScalePricing;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.ZonePriceModel;
-import com.freshdirect.fdstore.content.BrandModel;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.productfeed.Attributes.ProdAttribute;
 import com.freshdirect.fdstore.content.productfeed.Brands.Brand;
 import com.freshdirect.fdstore.content.productfeed.Claims.Claim;
@@ -90,6 +82,13 @@ import com.freshdirect.fdstore.content.productfeed.taxonomy.TaxonomyFeedPopulato
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
+import com.freshdirect.storeapi.StoreServiceLocator;
+import com.freshdirect.storeapi.application.CmsManager;
+import com.freshdirect.storeapi.content.BrandModel;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.fdstore.FDContentTypes;
 
 public class FDProductFeedSessionBean extends SessionBeanSupport {
 
@@ -149,7 +148,7 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 
     private Products populateProducts() throws FDResourceException {
         Products xmlProducts = new Products();
-        Set<ContentKey> skuContentKeys = CmsManager.getInstance().getContentKeysByType(FDContentTypes.SKU, DraftContext.MAIN);
+        Set<ContentKey> skuContentKeys = CmsManager.getInstance().getContentKeysByType(FDContentTypes.SKU);
         if (skuContentKeys != null) {
             LOGGER.info("Skus in CMS: " + skuContentKeys.size());
             for (Iterator<ContentKey> i = skuContentKeys.iterator(); i.hasNext();) {
@@ -233,9 +232,9 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 				LOGGER.info(new StringBuilder("uploadBySubscriber failed with Exception...").append(_msg).toString());
 				LOGGER.error(_msg);
 				if(_msg!=null && _msg.indexOf("timed out while waiting to get an instance from the free pool")==-1) {
-					email(Calendar.getInstance().getTime(), _msg, subscriber);		
+					email(Calendar.getInstance().getTime(), _msg, subscriber);
 				}
-			} 			
+			}
         }
     }
 
@@ -285,7 +284,7 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
         try {
             marshaller = JAXBContext.newInstance(source.getClass()).createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-            
+
             rawFile = new File(fileName + ".xml");
             StreamResult result = new StreamResult(rawFile);
             marshaller.marshal(source, result);
@@ -294,19 +293,19 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
         }
         return rawFile;
     }
-    
+
     private File createZipFile(List<File> filesToZip, String zipFileName) throws FDResourceException {
         FileInputStream fileInputStream = null;
         ZipOutputStream zipOutputStream = null;
         File resultingZipFile = null;
         try {
             byte[] buffer = new byte[1024];
-            
+
             FileOutputStream fileOutputStream = new FileOutputStream(zipFileName);
             zipOutputStream = new ZipOutputStream(fileOutputStream);
-            
+
             for (File file : filesToZip) {
-                ZipEntry zipEntry = new ZipEntry(file.getName());    
+                ZipEntry zipEntry = new ZipEntry(file.getName());
                 zipOutputStream.putNextEntry(zipEntry);
                 int length;
                 fileInputStream = new FileInputStream(file);
@@ -332,7 +331,7 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
         }
         return resultingZipFile;
     }
-    
+
     private String createFeedFileName(final EnumEStoreId actualStoreId, final String prefix) {
         SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd_HHmmss");
         StringBuilder fileNameBuilder = new StringBuilder();
@@ -356,8 +355,7 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
         product.setMaterialNum(fdProduct.getMaterial().getMaterialNumber());
         product.setProdId(productModel.getContentName());
         product.setProdName(StringEscapeUtils.unescapeHtml(productModel.getFullName()));
-        product.setProdUrl(URL_DOMAIN
-                + PreviewLinkProvider.getLink(productModel.getContentKey(), ContentFactory.getInstance().getStoreKey(), CmsManager.getInstance(), DraftContext.MAIN, true));
+        product.setProdUrl(URL_DOMAIN + StoreServiceLocator.previewLinkProvider().getLink(productModel.getContentKey(), ContentFactory.getInstance().getStoreKey(), true));
         populateParentInfo(productModel, product);
         product.setDeptId(productModel.getDepartment().getContentName());
         product.setProdStatus(fdProductInfo.getAvailabilityStatus(zone.getSalesOrg(), zone.getDistributionChanel()) != null ? fdProductInfo.getAvailabilityStatus(
@@ -721,13 +719,13 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
             }
         }
     }
-    
+
     private static void email(Date processDate, String exceptionMsg, ProductFeedSubscriber subscriber) {
 		try {
 			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
 			String subject="FDProductFeed upload for subscriber: "+(null !=subscriber?subscriber.getDescription():"")+": "+ (processDate != null ? dateFormatter.format(processDate) : " ");
 			StringBuffer buff = new StringBuffer();
-			buff.append("<html>").append("<body>");			
+			buff.append("<html>").append("<body>");
 			if(exceptionMsg != null) {
 				buff.append("<b>").append(exceptionMsg).append("</b>");
 			}
@@ -737,10 +735,10 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 			mailer.sendMail(ErpServicesProperties.getCronFailureMailFrom(),
 					ErpServicesProperties.getCronFailureMailTo(),ErpServicesProperties.getCronFailureMailCC(),
 					subject, buff.toString(), true, "");
-			
+
 		}catch (MessagingException e) {
 			LOGGER.warn("Error notification(email) failed for FDProductFeed upload to subscriber: "+(null !=subscriber?subscriber.getDescription():""), e);
 		}
-		
+
 	}
 }

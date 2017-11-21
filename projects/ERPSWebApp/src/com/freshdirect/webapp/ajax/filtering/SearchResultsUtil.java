@@ -11,30 +11,29 @@ import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
-import com.freshdirect.cms.util.ProductPromotionUtil;
+import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.ProductModelPromotionAdapter;
 import com.freshdirect.fdstore.brandads.FDBrandProductsAdManager;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdInfo;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
-import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ContentKeyFactory;
-import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.ContentUtil;
-import com.freshdirect.fdstore.content.EnumSortingValue;
-import com.freshdirect.fdstore.content.FilteringSortingItem;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.ProductModelBrandAdsAdapter;
-import com.freshdirect.fdstore.content.Recipe;
-import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.pricing.ProductModelPricingAdapter;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.ProductModelPromotionAdapter;
+import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.ContentUtil;
+import com.freshdirect.storeapi.content.EnumSortingValue;
+import com.freshdirect.storeapi.content.FilteringSortingItem;
+import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.content.ProductModelBrandAdsAdapter;
+import com.freshdirect.storeapi.content.Recipe;
+import com.freshdirect.storeapi.content.SearchResults;
+import com.freshdirect.storeapi.util.ProductPromotionUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.util.ConfigurationContext;
@@ -149,7 +148,7 @@ public static SearchResults getHLBrandProductAdProducts(SearchResults searchResu
 			if(null !=hlBrandAdProductsMeta){
 				searchResults.setHlProductsCount(hlBrandAdProductsMeta.size());
 				for (Iterator<HLBrandProductAdInfo> iterator = hlBrandAdProductsMeta.iterator(); iterator.hasNext();) {
-					HLBrandProductAdInfo hlBrandProductAdMetaInfo = (HLBrandProductAdInfo) iterator.next();
+					HLBrandProductAdInfo hlBrandProductAdMetaInfo = iterator.next();
 					hlBrandProductAdMetaInfo.setPageBeacon(hlBrandProductAdResponse.getPageBeacon());
 					searchResults.setPageBeacon(hlBrandProductAdResponse.getPageBeacon());
 					
@@ -213,7 +212,7 @@ public static SearchResults getHLBrandProductAdProducts(SearchResults searchResu
 		
 		Date now = new Date();
 		List<FilteringSortingItem<ProductModel>> items = new ArrayList<FilteringSortingItem<ProductModel>>();
-		Map<ProductModel, Map<String,Date>> newProducts = ContentFactory.getInstance().getNewProducts();
+        Map<ContentKey, Map<String, Date>> newProducts = ContentFactory.getInstance().getNewProducts();
 		ZoneInfo zone=user.getUserContext().getPricingContext().getZoneInfo();
 		
 		String productNewnessKey="";
@@ -221,25 +220,26 @@ public static SearchResults getHLBrandProductAdProducts(SearchResults searchResu
 			
 			productNewnessKey=new StringBuilder(5).append(zone.getSalesOrg()).append(zone.getDistributionChanel()).toString();
 		}
-		for (Entry<ProductModel, Map<String,Date>> entry : newProducts.entrySet()) {
+        for (Entry<ContentKey, Map<String, Date>> entry : newProducts.entrySet()) {
 			Map<String,Date> newProductsBySalesArea=entry.getValue();
 			if(newProductsBySalesArea.containsKey(productNewnessKey))
-				items.add(new FilteringSortingItem<ProductModel>(entry.getKey()).putSortingValue(EnumSortingValue.NEWNESS, DateUtil.diffInDays(now, entry.getValue().get(productNewnessKey))));
+                items.add(new FilteringSortingItem<ProductModel>((ProductModel) ContentFactory.getInstance().getContentNodeByKey(entry.getKey()))
+                        .putSortingValue(EnumSortingValue.NEWNESS,
+                        DateUtil.diffInDays(now, entry.getValue().get(productNewnessKey))));
 		}
 		
 		newProducts = ContentFactory.getInstance().getBackInStockProducts();
 		
-		for (Entry<ProductModel, Map<String,Date>> entry : newProducts.entrySet()) {
+        for (Entry<ContentKey, Map<String, Date>> entry : newProducts.entrySet()) {
 			Map<String,Date> newProductsBySalesArea=entry.getValue();
 			if(newProductsBySalesArea.containsKey(productNewnessKey))
-			items.add(new FilteringSortingItem<ProductModel>(entry.getKey()).putSortingValue(EnumSortingValue.NEWNESS, DateUtil.diffInDays(now, entry.getValue().get(productNewnessKey))));
+                items.add(new FilteringSortingItem<ProductModel>((ProductModel) ContentFactory.getInstance().getContentNodeByKey(entry.getKey()))
+                        .putSortingValue(EnumSortingValue.NEWNESS, DateUtil.diffInDays(now, entry.getValue().get(productNewnessKey))));
 		}
 		
 		CategoryModel featuredCategory = null;
-		try {
 			// lookup category for featured new products and brands
-			featuredCategory = (CategoryModel) ContentFactory.getInstance().getContentNodeByKey( ContentKeyFactory.getIntance().getNewProductsCategoryKey() );
-		} catch (InvalidContentKeyException exc) {}
+            featuredCategory = (CategoryModel) ContentFactory.getInstance().getContentNodeByKey(com.freshdirect.storeapi.content.ContentKeyFactory.getNewProductsCategoryKey());
 		List<String> categoryFilters = nav.getRequestFilterParams().get("categoryFilterGroup");
 		if (categoryFilters != null && !categoryFilters.contains("clearall")) {
 			if (categoryFilters.size() > 0) { //coming from original...

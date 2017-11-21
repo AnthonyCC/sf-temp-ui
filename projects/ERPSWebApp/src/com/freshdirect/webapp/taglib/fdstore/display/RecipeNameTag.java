@@ -4,8 +4,8 @@ import java.io.IOException;
 
 import javax.servlet.jsp.JspException;
 
-import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.framework.webapp.BodyTagSupportEx;
+import com.freshdirect.storeapi.content.Recipe;
 
 public class RecipeNameTag extends BodyTagSupportEx {
 

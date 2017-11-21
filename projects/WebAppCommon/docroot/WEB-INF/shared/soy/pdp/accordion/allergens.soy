@@ -5,7 +5,7 @@
  */
 {template .allergens}
 {if $allergens and length($allergens) > 0}
-<li class="pdp-accordion-allergens pdp-accordion-item"><input type="checkbox" id="pdp-allergens" checked="checked"><label for="pdp-allergens"><span class="pdp-accordion-item-carrot"></span>Allergens</label><div>
+<li class="pdp-accordion-allergens pdp-accordion-item"><a href="#" onclick="return false;" class="pdp-item-description-toggle" id="pdp-allergens" checked="checked"><span class="pdp-accordion-item-carrot"></span>Allergens</a><div>
 /*
  * table element is added to ensure that broken media don't break the site
  * TODO remove if all broken media is fixed

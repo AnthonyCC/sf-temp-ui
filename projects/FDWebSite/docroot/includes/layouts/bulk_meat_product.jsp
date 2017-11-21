@@ -1,7 +1,7 @@
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import='java.util.*'  %>
-<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
-<%@ page import='com.freshdirect.fdstore.attributes.*' %>
+<%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.storeapi.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='java.net.URLEncoder'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
@@ -284,7 +284,7 @@ Learn more about <a href="javascript:popup('/departments/meat/info_buying_bulk_m
 <input type="hidden" value="<%=request.getParameter("salesUnit")%>" name="salesUnit">
 <%--<input type="hidden" value="<%=request.getParameter("quantity")%>" name="quantity"> --%>
 <input type="hidden" value="<%=request.getParameter("skuCode")%>" name="skuCode">
-<logic:iterate id='contentNode' collection="<%=sortedColl%>" type="com.freshdirect.fdstore.content.ContentNodeModel">
+<logic:iterate id='contentNode' collection="<%=sortedColl%>" type="com.freshdirect.storeapi.content.ContentNodeModel">
 <%
 Image bulkImage = null;
 Image optionImage = null;

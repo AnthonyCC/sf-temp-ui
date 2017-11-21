@@ -6,10 +6,10 @@ import javax.servlet.jsp.tagext.VariableInfo;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
-import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.Image;
-import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.Image;
+import com.freshdirect.storeapi.content.ProductModel;
 
 public class CarouselTag extends ContentNodeIteratorTag {
 

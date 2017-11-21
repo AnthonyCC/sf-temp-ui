@@ -1,8 +1,8 @@
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import='java.util.*'  %>
 <%@ page import='java.net.URLEncoder'%>
-<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
-<%@ page import='com.freshdirect.fdstore.attributes.*' %>
+<%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.storeapi.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.content.attributes.*' %>
@@ -151,7 +151,7 @@ public String displayMSProducts(LinkedList productLinks, LinkedList productPrice
     boolean gotAvailProdImg = false;
 %>
 <%-- //start prod display --%>
-    <logic:iterate id='contentNode' collection="<%=sortedColl%>" type="com.freshdirect.fdstore.content.ContentNodeModel">
+    <logic:iterate id='contentNode' collection="<%=sortedColl%>" type="com.freshdirect.storeapi.content.ContentNodeModel">
 <%         if (displayCategory==null) {
             if (contentNode instanceof ProductModel) {
             displayCategory=(CategoryModel)currentFolder;

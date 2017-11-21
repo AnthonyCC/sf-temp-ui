@@ -13,12 +13,12 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
-import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.application.CmsManager;
-import com.freshdirect.cms.fdstore.FDContentTypes;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.EnumProductLayout;
-import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.storeapi.application.CmsManager;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.EnumProductLayout;
+import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.fdstore.FDContentTypes;
 
 public class ProductLayoutCollectorTag extends SimpleTagSupport {
 

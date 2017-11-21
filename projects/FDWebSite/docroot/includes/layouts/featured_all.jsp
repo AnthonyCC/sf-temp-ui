@@ -2,8 +2,8 @@
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import='java.util.*'  %>
 <%@ page import='java.net.URLEncoder'%>
-<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
-<%@ page import='com.freshdirect.fdstore.attributes.*' %>
+<%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.storeapi.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.content.attributes.*' %>
@@ -130,7 +130,7 @@ final int W_FEATURED_PADDING = 14;
 			</tr>
 			
 			<tr valign="top" align="CENTER">
-				<logic:iterate id='contentNode' collection="<%= products %>" type="com.freshdirect.fdstore.content.ProductModel" indexId="index"><%
+				<logic:iterate id='contentNode' collection="<%= products %>" type="com.freshdirect.storeapi.content.ProductModel" indexId="index"><%
 				
 					ProductModel productNode = contentNode;
 					ProductImpression pi = new ProductImpression( productNode );
@@ -173,7 +173,7 @@ final int W_FEATURED_PADDING = 14;
     StringBuffer appendColumnPrices = new StringBuffer(200);
 %>
 
-<logic:iterate id='contentNode' collection="<%=sortedCollection%>" type="com.freshdirect.fdstore.content.ContentNodeModel">
+<logic:iterate id='contentNode' collection="<%=sortedCollection%>" type="com.freshdirect.storeapi.content.ContentNodeModel">
 
 	<%      
 		if ( displayCategory == null ) {

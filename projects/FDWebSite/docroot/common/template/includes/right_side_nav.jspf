@@ -7,16 +7,16 @@
 <%@ page import='java.util.Locale' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ page import="com.freshdirect.fdstore.customer.FDCustomerManager" %>
-<%@ page import="com.freshdirect.fdstore.content.ContentFactory" %>
-<%@ page import="com.freshdirect.fdstore.content.CategoryModel" %>
-<%@ page import="com.freshdirect.fdstore.content.DepartmentModel" %>
-<%@ page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
+<%@ page import="com.freshdirect.storeapi.content.ContentFactory" %>
+<%@ page import="com.freshdirect.storeapi.content.CategoryModel" %>
+<%@ page import="com.freshdirect.storeapi.content.DepartmentModel" %>
+<%@ page import="com.freshdirect.storeapi.content.ContentNodeModel"%>
 <%@ page import="com.freshdirect.framework.util.*" %>
 <%@ page import='java.net.URLEncoder' %>
-<%@ page import="com.freshdirect.fdstore.content.ProductModel"%>
-<%@ page import="com.freshdirect.fdstore.content.SkuModel"%>
-<%@ page import="com.freshdirect.fdstore.content.RecipeCategory"%>
-<%@ page import="com.freshdirect.fdstore.content.Image"%>
+<%@ page import="com.freshdirect.storeapi.content.ProductModel"%>
+<%@ page import="com.freshdirect.storeapi.content.SkuModel"%>
+<%@ page import="com.freshdirect.storeapi.content.RecipeCategory"%>
+<%@ page import="com.freshdirect.storeapi.content.Image"%>
 <%@ page import="com.freshdirect.common.pricing.PricingContext"%>
 <%@ page import="com.freshdirect.webapp.util.ProductImpression"%>
 <% try{ %>

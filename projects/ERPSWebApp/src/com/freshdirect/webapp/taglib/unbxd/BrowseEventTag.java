@@ -9,12 +9,12 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 import org.apache.http.HttpHeaders;
 import org.apache.log4j.Logger;
 
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.ProductContainer;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.ProductContainer;
 import com.freshdirect.webapp.cos.util.CosFeatureUtil;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;

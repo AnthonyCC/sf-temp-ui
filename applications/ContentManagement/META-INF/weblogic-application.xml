@@ -4,6 +4,7 @@
   <prefer-application-packages>
     <package-name>com.sun.jmx.*</package-name>
     <package-name>org.hibernate.*</package-name>
+    <package-name>javax.persistence.*</package-name>
     <package-name>antlr.*</package-name>
   </prefer-application-packages>
 </weblogic-application>

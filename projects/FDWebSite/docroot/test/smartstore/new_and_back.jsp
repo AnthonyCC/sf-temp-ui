@@ -8,6 +8,8 @@
 <%@page import="java.util.HashMap"%>
 <%@page import="java.util.Date"%>
 <%@page import="java.text.DateFormat"%>
+<%@page import="com.freshdirect.cms.core.domain.ContentKey"%>
+<%@page import="com.freshdirect.cms.core.domain.ContentKeyFactory"%>
 <%!
 class SkuEntry {
 	String sku = null;
@@ -64,7 +66,7 @@ List<SkuEntry> calcSkuEntries(Map<String, Date> skus, Map<String, Date> overridd
 		} catch (Exception e1) {
 		}
 		e.unavailable = true;
-		SkuModel sku = (SkuModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.getContentKey(FDContentTypes.SKU, entry.getKey()));
+		SkuModel sku = (SkuModel) ContentFactory.getInstance().getContentNodeByKey(ContentKeyFactory.get(FDContentTypes.SKU, entry.getKey()));
 		if (sku != null) {
 			e.unavailable = sku.isUnavailable();
 			e.product = sku.getProductModel() != null ? sku.getProductModel().getContentKey().getId() : null;
@@ -178,11 +180,11 @@ List<ProductEntry> calcProductEntries(Map<ProductModel, Date> products, Date now
 <%@page import="java.util.List"%>
 <%@page import="com.freshdirect.erp.SkuAvailabilityHistory"%>
 <%@page import="java.text.SimpleDateFormat"%>
-<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
-<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
-<%@page import="com.freshdirect.fdstore.content.SkuModel"%>
-<%@page import="com.freshdirect.cms.ContentKey"%>
-<%@page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
+<%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
+<%@page import="com.freshdirect.storeapi.content.ProductModel"%>
+<%@page import="com.freshdirect.storeapi.content.SkuModel"%>
+<%@page import="com.freshdirect.cms.core.domain.ContentKey"%>
+<%@page import="com.freshdirect.storeapi.fdstore.FDContentTypes"%>
 <%@page import="java.util.Collections"%>
 <%@page import="com.freshdirect.erp.model.ErpMaterialModel"%>
 <%@page import="java.util.ArrayList"%>

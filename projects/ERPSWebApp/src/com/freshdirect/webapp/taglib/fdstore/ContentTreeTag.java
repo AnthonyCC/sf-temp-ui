@@ -5,14 +5,14 @@ import java.util.Set;
 
 import javax.servlet.jsp.JspException;
 
-import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.CategoryNodeTree;
-import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.ContentNodeTree;
-import com.freshdirect.fdstore.content.DepartmentModel;
-import com.freshdirect.fdstore.content.ContentNodeTree.NodeIterator;
-import com.freshdirect.fdstore.content.ContentNodeTree.TreeElement;
 import com.freshdirect.framework.webapp.BodyTagSupport;
+import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.storeapi.content.CategoryNodeTree;
+import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.ContentNodeTree;
+import com.freshdirect.storeapi.content.DepartmentModel;
+import com.freshdirect.storeapi.content.ContentNodeTree.NodeIterator;
+import com.freshdirect.storeapi.content.ContentNodeTree.TreeElement;
 
 public class ContentTreeTag extends BodyTagSupport {
 	private static final long serialVersionUID = 3129393723729467345L;

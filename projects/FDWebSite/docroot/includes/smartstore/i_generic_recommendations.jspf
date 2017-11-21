@@ -7,7 +7,7 @@
 <%@page import="com.freshdirect.framework.webapp.ActionError"%>
 <%@page import="com.freshdirect.fdstore.util.ProductLabeling"%>
 <%@page import="com.freshdirect.fdstore.promotion.PromoVariantModel"%>
-<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="com.freshdirect.storeapi.content.ProductModel"%>
 <%@page import="com.freshdirect.webapp.util.ConfigurationStrategy"%>
 <%@page import="com.freshdirect.webapp.util.ProductImpression"%>
 <%@page import="com.freshdirect.webapp.util.ConfigurationContext"%>

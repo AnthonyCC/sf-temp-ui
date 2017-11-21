@@ -13,7 +13,6 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.content.EnumBurstType;
-import com.freshdirect.fdstore.content.RecommenderStrategy;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -47,6 +46,7 @@ import com.freshdirect.smartstore.sampling.ConsiderationLimit;
 import com.freshdirect.smartstore.sampling.ImpressionSampler;
 import com.freshdirect.smartstore.sampling.ListSampler;
 import com.freshdirect.smartstore.sampling.SimpleLimit;
+import com.freshdirect.storeapi.content.RecommenderStrategy;
 
 public class RecommendationServiceFactory {
 	

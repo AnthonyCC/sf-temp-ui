@@ -22,9 +22,6 @@ import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.DepartmentModel;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
@@ -46,6 +43,9 @@ import com.freshdirect.mobileapi.model.tagwrapper.ModifyOrderControllerTagWrappe
 import com.freshdirect.mobileapi.model.tagwrapper.QuickShopControllerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.RequestParamName;
 import com.freshdirect.payment.EnumPaymentMethodType;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.DepartmentModel;
+import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.taglib.fdstore.OrderUtil;
 
 public class Order {

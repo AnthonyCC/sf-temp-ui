@@ -1,9 +1,12 @@
 <%@ page import="java.text.NumberFormat" %>
-<%@ page import="com.freshdirect.cms.*" %>
-<%@ page import="com.freshdirect.cms.application.*" %>
-<%@ page import="com.freshdirect.fdstore.content.*" %>
+<%@ page import="com.freshdirect.storeapi.*" %>
+<%@ page import="com.freshdirect.cms.core.domain.ContentKey" %>
+<%@ page import="com.freshdirect.cms.core.domain.ContentKeyFactory" %>
+<%@ page import="com.freshdirect.cms.core.domain.ContentType" %>
+<%@ page import="com.freshdirect.storeapi.application.*" %>
+<%@ page import="com.freshdirect.storeapi.content.*" %>
 <%@ page import="com.freshdirect.fdstore.*" %>
-<%@ page import="com.freshdirect.fdstore.attributes.*" %>
+<%@ page import="com.freshdirect.storeapi.attributes.*" %>
 <%@ page import='java.text.*, java.util.*' %>
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -146,7 +149,7 @@
     }
 %>
 <%
-	ContentType recipeType    = ContentType.get("Recipe");
+	ContentType recipeType    = ContentType.Recipe;
 	Set         allRecipeKeys = CmsManager.getInstance().getContentKeysByType(recipeType);
 
 %>
@@ -179,7 +182,7 @@
 		<logic:iterate id         = "contentKey"
                        indexId    = "i"
                        collection = "<%= allRecipeKeys %>"
-                       type       = "com.freshdirect.cms.ContentKey"
+                       type       = "com.freshdirect.cms.core.domain.ContentKey"
         >
             <%
                 Recipe recipe = (Recipe) ContentFactory.getInstance().getContentNode(contentKey.getId());
@@ -187,17 +190,17 @@
             <logic:iterate id         = "variant"
                            indexId    = "j"
                            collection = "<%= recipe.getVariants() %>"
-                           type       = "com.freshdirect.fdstore.content.RecipeVariant"
+                           type       = "com.freshdirect.storeapi.content.RecipeVariant"
             >
                 <logic:iterate id         = "section"
                                indexId    = "k"
                                collection = "<%= variant.getSections() %>"
-                               type       = "com.freshdirect.fdstore.content.RecipeSection"
+                               type       = "com.freshdirect.storeapi.content.RecipeSection"
                 >
                     <logic:iterate id         = "product"
                                    indexId    = "l"
                                    collection = "<%= section.getIngredients() %>"
-                                   type       = "com.freshdirect.fdstore.content.ConfiguredProduct"
+                                   type       = "com.freshdirect.storeapi.content.ConfiguredProduct"
                     >
                     <%
                         distinctProducts.add(new RecipeProductContainer(recipe,

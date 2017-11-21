@@ -3,11 +3,7 @@ package com.freshdirect.fdstore.ecomm.converter;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.affiliate.ExternalAgency;
-import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
-import com.freshdirect.cms.ContentType;
 import com.freshdirect.common.context.StoreContext;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.crm.CrmCaseQueue;
@@ -17,7 +13,6 @@ import com.freshdirect.ecommerce.data.ecoupon.ErpOrderLineModelData;
 import com.freshdirect.ecommerce.data.ecoupon.FDConfigurationData;
 import com.freshdirect.ecommerce.data.fdstore.FDGroupData;
 import com.freshdirect.ecommerce.data.fdstore.FDSkuData;
-import com.freshdirect.ecommerce.data.list.ContentKeyData;
 import com.freshdirect.ecommerce.data.list.CustomerCreatedListData;
 import com.freshdirect.ecommerce.data.list.CustomerListRequest;
 import com.freshdirect.ecommerce.data.list.CustomerProductListLineItemData;
@@ -27,9 +22,6 @@ import com.freshdirect.ecommerce.data.list.FDCustomerListData;
 import com.freshdirect.ecommerce.data.list.FDCustomerListInfoData;
 import com.freshdirect.ecommerce.data.list.FDCustomerListItemData;
 import com.freshdirect.ecommerce.data.list.FDProductSelectionData;
-import com.freshdirect.ecommerce.data.list.ProductData;
-import com.freshdirect.ecommerce.data.list.ProductModelData;
-import com.freshdirect.ecommerce.data.list.ProductReferenceData;
 import com.freshdirect.ecommerce.data.list.RenameCustomerListData;
 import com.freshdirect.ecommerce.data.list.RenameListData;
 import com.freshdirect.ecommerce.data.list.SaleStatisticsData;
@@ -39,14 +31,6 @@ import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.ContentNodeModelImpl;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.ProductModelImpl;
-import com.freshdirect.fdstore.content.ProductReference;
-import com.freshdirect.fdstore.content.ProductReferenceImpl;
-import com.freshdirect.fdstore.content.SkuReference;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDProductSelection;
@@ -65,7 +49,8 @@ import com.freshdirect.fdstore.lists.FDCustomerShoppingList;
 import com.freshdirect.fdstore.lists.FDQsProductListLineItem;
 import com.freshdirect.fdstore.lists.FDStandingOrderList;
 import com.freshdirect.framework.core.PrimaryKey;
-import com.jcraft.jsch.Logger;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.ProductModel;
 
 
 public class ListConverter {
@@ -148,7 +133,7 @@ public class ListConverter {
 		renameListData.setListId(listId);
 		renameListData.setNewName(newName);
 		return renameListData;
-		
+
 	}
 
 	public static RenameListData buildRenameCustomerCreatedListData(FDIdentity identity, String oldName, String newName) {
@@ -205,7 +190,7 @@ public class ListConverter {
 		}
 		return null;
 	}
-	
+
 	private static FDCustomerList createListByType(EnumCustomerListType type) {
 	    if (EnumCustomerListType.SHOPPING_LIST.equals(type)) {
 	    	return new FDCustomerShoppingList();
@@ -248,7 +233,7 @@ public class ListConverter {
 				customerRecipeListLineItem.setId(fdCustomerListItem.getCustomerListItemId());
 				customerListItemList.add(customerRecipeListLineItem);
 			}
-			
+
 		}
 		return customerListItemList;
 	}
@@ -264,7 +249,7 @@ public class ListConverter {
 			fdCustomerCreatedlist.add((FDCustomerCreatedList) buildFDCustomerList(fdCustomerListData));
 		}
 		return fdCustomerCreatedlist;
-		 
+
 	}
 
 	public static List<FDCustomerListInfo> buildFDCustomerListInfo(List<FDCustomerListInfoData> data) {
@@ -276,7 +261,7 @@ public class ListConverter {
 		}
 		return fdCustomerListInfoList;
 	}
-	
+
 	public static FDCustomerListData buildCustomerListData(FDCustomerList fdCustomerList) {
 		FDCustomerListData customerListData = new FDCustomerListData();
 		customerListData.setCreateDate(fdCustomerList.getCreateDate());
@@ -330,7 +315,7 @@ public class ListConverter {
 				productlistLineItem.setSojustAddedItemToCart(customerProduct.isSojustAddedItemToCart());
 				fdCustomerListItemData.setProductListLineItem(productlistLineItem);
 				fdCustomerListItemData.setReturnType(FDCustomerProductListLineItem.class.getSimpleName());
-				
+
 			}
 			else if (fdCustomerListItem instanceof FDCustomerRecipeListLineItem){
 				CustomerRecipeListLineItemData customerRecipeListLineItemData = new CustomerRecipeListLineItemData();
@@ -371,9 +356,9 @@ public class ListConverter {
 	}
 
 	private static FDProductSelectionI buildFDProductSelectionI(FDProductSelectionData fdProductSelectionData) {
-			
+
 			ErpOrderLineModelData orderLineData = fdProductSelectionData.getOrderLine();
-			FDProductSelection productselection = new FDProductSelection(buildFDSKU(orderLineData.getSku()),buildProductModel(orderLineData.getSku().getSkuCode()), 
+			FDProductSelection productselection = new FDProductSelection(buildFDSKU(orderLineData.getSku()),buildProductModel(orderLineData.getSku().getSkuCode()),
 					buildFDConfiguration(orderLineData.getConfiguration()),null, buildUserContext(orderLineData.getUserCtx()),
 					fdProductSelectionData.getOrderLine().getPlantID());
 			productselection.setConfigurationDesc(orderLineData.getConfigurationDesc());
@@ -405,7 +390,7 @@ public class ListConverter {
 		if (skuCode == null) {
 //			/throw new FDSkuNotFoundException("SKU code not set");
 		}
-		
+
 		ProductModel cachedProduct = null;
 		try {
 			cachedProduct = ContentFactory.getInstance().getProduct(skuCode);
@@ -416,20 +401,6 @@ public class ListConverter {
 
 		return cachedProduct;
 	}
-	private static ContentKey buildContentKey(ContentKeyData contentKey) {
-		ContentKey content = null;
-			content = ContentKey.getContentKey(ContentType.get(contentKey.getType()), contentKey.getId());
-		return content;
-	}
-
-	private static ContentNodeModel buildContentNodelModel(
-			ContentKeyData parentNode) {
-		ContentNodeModel contentNodeModel = new ContentNodeModelImpl(ContentKey.getContentKey(ContentType.get(parentNode.getType()), parentNode.getId())) {
-		};
-		return contentNodeModel;
-	}
-
-
 
 	private static UserContext buildUserContext(UserContextData userCtx) {
 		UserContext usercontext = new  UserContext();
@@ -452,7 +423,7 @@ public class ListConverter {
 	}
 
 	private static SaleStatisticsI buildSaleStatisticsI(SaleStatisticsData statistics) {
-		FDQsProductListLineItem salestatistics = new FDQsProductListLineItem(statistics.getCustomerListItemData().getProductListline().getSkuCode(), buildFDConfiguration(statistics.getCustomerListItemData().getProductListline().getConfigurationData()), 
+		FDQsProductListLineItem salestatistics = new FDQsProductListLineItem(statistics.getCustomerListItemData().getProductListline().getSkuCode(), buildFDConfiguration(statistics.getCustomerListItemData().getProductListline().getConfigurationData()),
 				statistics.getCustomerListItemData().getProductListline().getRecipeSourceId());
 		salestatistics.setDeliveryStartDate(statistics.getCustomerListItemData().getDeliveryStartDate());
 		salestatistics.setOrderId(statistics.getCustomerListItemData().getOrderId());
@@ -462,8 +433,8 @@ public class ListConverter {
 		salestatistics.setSaleStatus(EnumSaleStatus.getSaleStatus(statistics.getCustomerListItemData().getSaleStatus()));
 		return salestatistics;
 	}
-	
-	
+
+
 
 
 }

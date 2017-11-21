@@ -8,10 +8,10 @@ import org.mockejb.interceptor.AspectSystem;
 
 import com.freshdirect.TestUtils;
 import com.freshdirect.fdstore.aspects.FDFactoryProductInfoAspect;
-import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.storeapi.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.RecommendationServiceConfig;

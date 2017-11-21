@@ -16,9 +16,9 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.form.AdapterField;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.MultiField;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
-import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.freshdirect.cms.ui.client.CmsGwt;
@@ -62,7 +62,8 @@ public class ProductConfigEditor extends MultiField<Serializable> {
 		skuField.setValue( attribute.getValue() );
 		
 		skuField.addListener( Events.Change, new Listener<BaseEvent>() {
-			public void handleEvent(BaseEvent be) {
+			@Override
+            public void handleEvent(BaseEvent be) {
 				rebuildFields(null);
 			}
 		});
@@ -246,13 +247,12 @@ public class ProductConfigEditor extends MultiField<Serializable> {
 			fireEvent(Events.Change, new FieldEvent(ProductConfigEditor.this));
 	}
 	
-	protected void updateAttributeValues() {		
+    protected void updateAttributeValues() {
 		attribute.setValue( skuField.getValue() );
 		attribute.setQuantity( quantityField.getValue().doubleValue() );
-		attribute.setSalesUnit( salesUnitField != null ? salesUnitField.getValue().getKey().toString() : null );
+        attribute.setSalesUnit(((salesUnitField != null && salesUnitField.getValue() != null) ? (salesUnitField.getValue().getKey().toString()) : (null)));
 
 		Map<String,String> confOpts = new HashMap<String, String>( optionFields.size() );
-		
 		for ( Map.Entry<String,ComboBox<EnumModel>> optField : optionFields.entrySet() ) {
 			confOpts.put( optField.getKey(), optField.getValue().getValue().getKey().toString() );
 		}		

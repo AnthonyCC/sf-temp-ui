@@ -15,7 +15,7 @@
 	<form id="producerDropdown" action="category.jsp" method="get">
 		<select id="producerDropdown_catId" name="catId" onchange="producerChanged()">
 			<option value="">CHOOSE A FARM/BRAND:</option>
-			<logic:iterate collection="<%=producers %>" id="producer" type="com.freshdirect.fdstore.content.ProducerModel">
+			<logic:iterate collection="<%=producers %>" id="producer" type="com.freshdirect.storeapi.content.ProducerModel">
 				<option value="<%= producer.getBrandCategory().getContentName() %>"><%= producer.getFullName() %></option> 
 			</logic:iterate>
 		</select>

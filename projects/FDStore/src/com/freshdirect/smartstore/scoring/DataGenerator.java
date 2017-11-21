@@ -4,8 +4,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.smartstore.SessionInput;
+import com.freshdirect.storeapi.content.ContentNodeModel;
 
 public class DataGenerator {
 

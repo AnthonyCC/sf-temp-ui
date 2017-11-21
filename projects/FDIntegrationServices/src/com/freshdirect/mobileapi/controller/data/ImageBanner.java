@@ -2,7 +2,7 @@ package com.freshdirect.mobileapi.controller.data;
 
 public class ImageBanner {
 
-    public static ImageBanner wrap(com.freshdirect.fdstore.content.ImageBanner source) {
+    public static ImageBanner wrap(com.freshdirect.storeapi.content.ImageBanner source) {
         
         final ImageBanner imgBanner = new ImageBanner();
         

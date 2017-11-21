@@ -10,21 +10,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.freshdirect.cms.ContentType;
+import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.common.pricing.PricingContext;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.DepartmentModel;
-import com.freshdirect.fdstore.content.EnumQuickShopFilteringValue;
 import com.freshdirect.fdstore.content.FilteringFlow;
-import com.freshdirect.fdstore.content.FilteringMenuItem;
-import com.freshdirect.fdstore.content.FilteringSortingItem;
-import com.freshdirect.fdstore.content.FilteringValue;
 import com.freshdirect.fdstore.content.GenericFilterDecorator;
 import com.freshdirect.fdstore.content.GenericFilteringMenuBuilder;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.util.FilteringNavigator;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.DepartmentModel;
+import com.freshdirect.storeapi.content.EnumQuickShopFilteringValue;
+import com.freshdirect.storeapi.content.FilteringMenuItem;
+import com.freshdirect.storeapi.content.FilteringSortingItem;
+import com.freshdirect.storeapi.content.FilteringValue;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
 
@@ -198,7 +198,7 @@ public class QuickShopFilterImpl extends FilteringFlow<QuickShopLineItemWrapper>
 					String deptId = (String)fs.get( 0 );
 					if ( deptId != null ) {
 						if ( !deptMenu.containsKey( deptId ) ) {
-							DepartmentModel dept = (DepartmentModel)ContentFactory.getInstance().getContentNode( ContentType.get("Department"), deptId );
+							DepartmentModel dept = (DepartmentModel)ContentFactory.getInstance().getContentNode( ContentType.Department, deptId );
 							if ( dept != null ) {
 								FilteringMenuItem fmi = new FilteringMenuItem( dept.getFullName(), deptId, 0, EnumQuickShopFilteringValue.DEPT );
 								fmi.setSelected( true );

@@ -3,7 +3,7 @@ package com.freshdirect.webapp.ajax.browse.data;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.freshdirect.fdstore.content.FilteringProductItem;
+import com.freshdirect.storeapi.content.FilteringProductItem;
 import com.freshdirect.webapp.ajax.filtering.ProductItemFilterUtil;
 
 public class BrowseDataContextService {

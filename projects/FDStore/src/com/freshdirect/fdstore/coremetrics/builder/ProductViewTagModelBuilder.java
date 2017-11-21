@@ -1,9 +1,9 @@
 package com.freshdirect.fdstore.coremetrics.builder;
 
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.coremetrics.CmContext;
 import com.freshdirect.fdstore.coremetrics.extradata.CoremetricsExtraData;
 import com.freshdirect.fdstore.coremetrics.tagmodel.ProductViewTagModel;
+import com.freshdirect.storeapi.content.ProductModel;
 
 public class ProductViewTagModelBuilder {
 

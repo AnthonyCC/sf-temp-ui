@@ -2,9 +2,9 @@ package com.freshdirect.webapp.taglib.fdstore.display;
 
 import java.util.LinkedList;
 
-import com.freshdirect.fdstore.content.FilteringMenuItem;
-import com.freshdirect.fdstore.content.Recipe;
-import com.freshdirect.fdstore.content.RecipeSource;
+import com.freshdirect.storeapi.content.FilteringMenuItem;
+import com.freshdirect.storeapi.content.Recipe;
+import com.freshdirect.storeapi.content.RecipeSource;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
 public class RecipeByTag extends AbstractGetterTag<String> {

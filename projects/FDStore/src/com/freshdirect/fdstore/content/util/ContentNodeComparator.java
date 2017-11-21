@@ -8,25 +8,24 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.util.ProductInfoUtil;
+import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.content.nutrition.EnumKosherSymbolValue;
 import com.freshdirect.content.nutrition.ErpNutritionType;
 import com.freshdirect.fdstore.FDKosherInfo;
 import com.freshdirect.fdstore.FDNutrition;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.DepartmentModel;
-import com.freshdirect.fdstore.content.DomainValue;
-import com.freshdirect.fdstore.content.PrioritizedI;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.content.sort.PopularityComparator;
 import com.freshdirect.fdstore.content.sort.SaleComparator;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.DepartmentModel;
+import com.freshdirect.storeapi.content.DomainValue;
+import com.freshdirect.storeapi.content.PrioritizedI;
+import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.content.SkuModel;
+import com.freshdirect.storeapi.util.ProductInfoUtil;
 
 /**@author ekracoff on Feb 13, 2004*/
 public class ContentNodeComparator implements Comparator<ContentNodeModel> {

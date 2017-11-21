@@ -9,8 +9,8 @@
 <%@ page import='java.net.URLEncoder'%>
 <%@ page import='java.text.DateFormat' %>
 <%@ page import='java.text.SimpleDateFormat' %>
-<%@ page import='com.freshdirect.fdstore.content.CategoryModel' %>
-<%@ page import='com.freshdirect.fdstore.content.ContentFactory' %>
+<%@ page import='com.freshdirect.storeapi.content.CategoryModel' %>
+<%@ page import='com.freshdirect.storeapi.content.ContentFactory' %>
 <%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
 <%@ page import='com.freshdirect.fdstore.survey.*' %>

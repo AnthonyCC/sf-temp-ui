@@ -7,8 +7,6 @@ import java.util.Map;
 
 import com.freshdirect.affiliate.ExternalAgency;
 import com.freshdirect.customer.EnumATCContext;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.coremetrics.CmContext;
 import com.freshdirect.fdstore.coremetrics.extradata.CoremetricsExtraData;
 import com.freshdirect.fdstore.coremetrics.tagmodel.ShopTagModel;
@@ -18,6 +16,8 @@ import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.smartstore.service.VariantRegistry;
+import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.content.ProductReference;
 
 public abstract class AbstractShopTagModelBuilder {
 

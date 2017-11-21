@@ -19,9 +19,10 @@
 
 <%@page import="com.freshdirect.smartstore.Variant"%>
 
-<%@page import="com.freshdirect.cms.ContentKey"%>
+<%@page import="com.freshdirect.cms.core.domain.ContentKey"%>
+<%@page import="com.freshdirect.cms.core.domain.ContentKeyFactory"%>
 
-<%@page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
+<%@page import="com.freshdirect.storeapi.fdstore.FDContentTypes"%>
 
 
 
@@ -132,7 +133,7 @@ Threads started:
 							String skuCode = samplerRef.getRandomItem(R).toString();
 							FDEventUtil.logRecommendationImpression(
 								variants[R.nextInt(variants.length)],
-								ContentKey.getContentKey(FDContentTypes.SKU,skuCode)
+								ContentKeyFactory.get(FDContentTypes.SKU,skuCode)
 							);
 						}
 					}

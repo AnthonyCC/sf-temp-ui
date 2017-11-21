@@ -10,12 +10,8 @@ import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.application.CmsManager;
-import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.RecommenderStrategy;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.CartTabStrategyPriority;
@@ -25,6 +21,10 @@ import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.external.scarab.ScarabInfrastructure;
 import com.freshdirect.smartstore.fdstore.FactorRequirer;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
+import com.freshdirect.storeapi.application.CmsManager;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.RecommenderStrategy;
+import com.freshdirect.storeapi.fdstore.FDContentTypes;
 
 public class CmsRecommenderRegistry {
 	
@@ -62,7 +62,7 @@ public class CmsRecommenderRegistry {
 		}
 		
 		if (!forceReload) {
-			LOGGER.debug("reload not forced");
+			//LOGGER.debug("reload not forced");
 			return;
 		}
 
@@ -85,9 +85,9 @@ public class CmsRecommenderRegistry {
 			tmpSmartCatVariants.put(strat.getContentName(), rs);
 		}
 
-		LOGGER.info("needed factors :" + factors);
+		//LOGGER.info("needed factors :" + factors);
 		ScoreProvider.getInstance().acquireFactors(factors);
-		LOGGER.info("configured CMS recommenders:" + tmpSmartCatVariants.keySet());
+		//LOGGER.info("configured CMS recommenders:" + tmpSmartCatVariants.keySet());
 
 		smartCatVariants = tmpSmartCatVariants;
 		lastReload = System.currentTimeMillis();

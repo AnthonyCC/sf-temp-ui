@@ -4,13 +4,13 @@
 <%@ page import='com.freshdirect.erp.EnumProductPromotionType' %>
 <%@ page import='com.freshdirect.erp.EnumFeaturedHeaderType' %>
 <%@ page import='com.freshdirect.erp.ejb.FDProductPromotionManager' %>
-<%@ page import='com.freshdirect.cms.ContentKey' %>
-<%@ page import='com.freshdirect.fdstore.content.*' %>
+<%@ page import='com.freshdirect.cms.core.domain.ContentKey' %>
+<%@ page import='com.freshdirect.storeapi.content.*' %>
 <%@ page import='com.freshdirect.fdstore.FDProductInfo' %>
 <%@ page import='com.freshdirect.fdstore.FDProductPromotionInfo' %>
-<%@ page import='com.freshdirect.cms.ContentType' %>
-<%@ page import='com.freshdirect.cms.fdstore.FDContentTypes' %>
-<%@ page import='com.freshdirect.fdstore.content.ContentFactory' %>
+<%@ page import='com.freshdirect.cms.core.domain.ContentType' %>
+<%@ page import='com.freshdirect.storeapi.fdstore.FDContentTypes' %>
+<%@ page import='com.freshdirect.storeapi.content.ContentFactory' %>
 <%@ page import='java.util.*' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='logic' prefix='logic' %>

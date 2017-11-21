@@ -1,8 +1,8 @@
-<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*' %>
 <%@ page import="com.freshdirect.framework.webapp.*"%>
 <%@ page import='com.freshdirect.fdstore.content.util.*'  %>
 <%@ page import='com.freshdirect.fdstore.*, com.freshdirect.webapp.taglib.fdstore.*'%>
-<%@ page import='com.freshdirect.fdstore.attributes.*' %>
+<%@ page import='com.freshdirect.storeapi.attributes.*' %>
 <%@page import="com.freshdirect.fdstore.util.HowToCookItUtil"%>
 <%@page import="com.freshdirect.fdstore.util.RatingUtil"%>
 <%@page import="com.freshdirect.fdstore.customer.FDUserI"%>

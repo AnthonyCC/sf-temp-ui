@@ -5,9 +5,9 @@ import java.io.IOException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
-import com.freshdirect.fdstore.content.PriceCalculator;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.framework.webapp.BodyTagSupportEx;
+import com.freshdirect.storeapi.content.PriceCalculator;
+import com.freshdirect.storeapi.content.ProductModel;
 
 public class ProductDefaultPriceTag extends BodyTagSupportEx {
 	private static final long serialVersionUID = 5575296457559031765L;

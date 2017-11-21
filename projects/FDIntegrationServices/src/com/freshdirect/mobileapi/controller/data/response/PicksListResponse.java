@@ -2,9 +2,9 @@ package com.freshdirect.mobileapi.controller.data.response;
 
 import java.util.List;
 
-import com.freshdirect.fdstore.content.CMSImageBannerModel;
 import com.freshdirect.mobileapi.controller.data.Image;
 import com.freshdirect.mobileapi.controller.data.Message;
+import com.freshdirect.storeapi.content.CMSImageBannerModel;
 
 public class PicksListResponse extends Message {
 	private Image bannerImage;

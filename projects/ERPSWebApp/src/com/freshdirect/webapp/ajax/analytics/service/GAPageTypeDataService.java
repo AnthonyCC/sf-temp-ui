@@ -3,11 +3,11 @@ package com.freshdirect.webapp.ajax.analytics.service;
 import java.util.Arrays;
 import java.util.List;
 
-import com.freshdirect.cms.ContentType;
-import com.freshdirect.cms.fdstore.FDContentTypes;
-import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.cms.core.domain.ContentType;
+import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.storeapi.fdstore.FDContentTypes;
 import com.freshdirect.webapp.ajax.analytics.data.GAPageTypeData;
 import com.freshdirect.webapp.ajax.analytics.domain.GAPageTypeDistinguisher;
 import com.freshdirect.webapp.ajax.analytics.domain.PageType;

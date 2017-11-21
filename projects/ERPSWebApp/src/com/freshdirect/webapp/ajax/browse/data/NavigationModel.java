@@ -7,19 +7,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.freshdirect.fdstore.content.BrandModel;
-import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.CategorySectionModel;
-import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.DepartmentModel;
-import com.freshdirect.fdstore.content.EnumBrandFilterLocation;
-import com.freshdirect.fdstore.content.FilteringSortingItem;
-import com.freshdirect.fdstore.content.ProductFilterGroupI;
-import com.freshdirect.fdstore.content.ProductItemFilterI;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.Recipe;
-import com.freshdirect.fdstore.content.SuperDepartmentModel;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.storeapi.content.BrandModel;
+import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.storeapi.content.CategorySectionModel;
+import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.DepartmentModel;
+import com.freshdirect.storeapi.content.EnumBrandFilterLocation;
+import com.freshdirect.storeapi.content.FilteringSortingItem;
+import com.freshdirect.storeapi.content.ProductFilterGroupI;
+import com.freshdirect.storeapi.content.ProductItemFilterI;
+import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.content.Recipe;
+import com.freshdirect.storeapi.content.SuperDepartmentModel;
 
 public class NavigationModel {
 	

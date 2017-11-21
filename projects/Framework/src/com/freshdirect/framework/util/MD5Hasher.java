@@ -35,5 +35,9 @@ public class MD5Hasher {
 	   }
 	   return sb.toString();
 	 }
+	
+	public static void main(String a[]) {
+		System.out.println(MD5Hasher.hash("test"));
+	}
 
 }

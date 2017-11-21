@@ -8,16 +8,12 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
@@ -26,6 +22,10 @@ import com.freshdirect.fdstore.lists.FDCustomerProductList;
 import com.freshdirect.fdstore.lists.FDCustomerProductListLineItem;
 import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.content.SkuModel;
+import com.freshdirect.storeapi.fdstore.FDContentTypes;
 import com.freshdirect.webapp.util.ConfigurationContext;
 import com.freshdirect.webapp.util.ConfigurationStrategy;
 import com.freshdirect.webapp.util.ProductImpression;

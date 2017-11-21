@@ -3,7 +3,7 @@ package com.freshdirect.fdstore.rules;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.rules.ConditionI;
 import com.freshdirect.rules.RuleRuntimeI;
-import com.freshdirect.rules.RulesRuntimeException;
+import com.freshdirect.storeapi.rules.RulesRuntimeException;
 
 
 public class ServiceTypeCondition implements ConditionI {

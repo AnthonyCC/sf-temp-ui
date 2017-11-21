@@ -748,7 +748,7 @@
               {param customTemplate:'common.subtotalTransactionalInner' /}
               {param soldBySalesUnit:$soldBySalesUnit /}
             {/call}
-            <button type="button" class="addtocart cssbutton cssbutton-flat orange small" {if $hasTerms or ($mobWeb and $soldBySalesUnit) or ($mobWeb and $availabilityMessage)}data-component="customizeButton" data-bypasscustomizepopup="true"{else}data-component="ATCButton"{/if}><span class="{if $mobWeb}offscreen{else}message{/if}" alt="">Add to Cart</span><ins class="iehelper">Added</ins></button>
+            <button type="button" class="addtocart cssbutton cssbutton-flat orange small" {if $hasTerms or ($mobWeb and $soldBySalesUnit) or ($mobWeb and $availabilityMessage)}data-component="customizeButton" data-bypasscustomizepopup="true"{else}data-component="ATCButton"{/if}><span class="{if $mobWeb}offscreen{else}message{/if}">Add to Cart</span><ins class="iehelper">Added</ins></button>
           {/if}
         {/if}
       </div>

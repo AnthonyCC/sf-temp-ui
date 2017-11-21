@@ -218,7 +218,7 @@
       {/foreach}
       </select>
       {if $popupUrl}
-       <button type="button" class="cssbutton green css-help-button" onclick="pop('{$popupUrl}',335,375)">?</button>
+       <button type="button" class="cssbutton green css-help-button" onclick="pop('{$popupUrl}',335,375)">?<span class="offscreen">help</span></button>
       {/if}
     </div>
 {/if}
@@ -248,7 +248,7 @@
   {if $align=='left'}{$label}{/if}
   </label>
   {if $popupUrl}
-   <button type="button" class="cssbutton green css-help-button" onclick="pop('{$popupUrl}',335,375)">?</button>
+   <button type="button" class="cssbutton green css-help-button" onclick="pop('{$popupUrl}',335,375)">?<span class="offscreen">help</span></button>
   {/if}
 </div>
 {/deltemplate}

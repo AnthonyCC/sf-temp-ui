@@ -19,27 +19,27 @@ import javax.servlet.jsp.tagext.VariableInfo;
 import org.apache.http.HttpHeaders;
 
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.ComparatorChain;
-import com.freshdirect.fdstore.content.ContentSearch;
-import com.freshdirect.fdstore.content.ContentSearchUtil;
-import com.freshdirect.fdstore.content.Domain;
-import com.freshdirect.fdstore.content.DomainValue;
-import com.freshdirect.fdstore.content.EnumSortingValue;
 import com.freshdirect.fdstore.content.FilteringComparatorUtil;
-import com.freshdirect.fdstore.content.FilteringSortingItem;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.Recipe;
-import com.freshdirect.fdstore.content.RecipeSearchPage;
-import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.content.SearchSortType;
-import com.freshdirect.fdstore.content.SortIntValueComparator;
-import com.freshdirect.fdstore.content.SortLongValueComparator;
-import com.freshdirect.fdstore.content.SortValueComparator;
 import com.freshdirect.fdstore.content.util.SmartSearchUtils;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.util.ProductPagerNavigator;
 import com.freshdirect.smartstore.sorting.ScriptedContentNodeComparator;
+import com.freshdirect.storeapi.StoreServiceLocator;
+import com.freshdirect.storeapi.content.ComparatorChain;
+import com.freshdirect.storeapi.content.ContentSearchUtil;
+import com.freshdirect.storeapi.content.Domain;
+import com.freshdirect.storeapi.content.DomainValue;
+import com.freshdirect.storeapi.content.EnumSortingValue;
+import com.freshdirect.storeapi.content.FilteringSortingItem;
+import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.content.Recipe;
+import com.freshdirect.storeapi.content.RecipeSearchPage;
+import com.freshdirect.storeapi.content.SearchResults;
+import com.freshdirect.storeapi.content.SortIntValueComparator;
+import com.freshdirect.storeapi.content.SortLongValueComparator;
+import com.freshdirect.storeapi.content.SortValueComparator;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.search.SearchService;
 import com.freshdirect.webapp.util.RequestUtil;
@@ -86,7 +86,7 @@ public class SmartSearchTag extends AbstractProductPagerTag {
 
 		if (nav.getUpc() != null) {
 			searchTerm = nav.getUpc();
-			return ContentSearch.getInstance().searchUpc(userId, nav.getUpc());
+            return StoreServiceLocator.contentSearch().searchUpc(userId, nav.getUpc());
 		} else {
 			searchTerm = nav.getSearchTerm();
             HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();

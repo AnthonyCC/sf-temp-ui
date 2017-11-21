@@ -12,12 +12,12 @@ import com.freshdirect.WineUtil;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ContentNodeModelUtil;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupportEx;
+import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.ContentNodeModelUtil;
+import com.freshdirect.storeapi.content.ProductModel;
 
 /**
  * This tag is used to decide whether the current product id defines an alcoholic product

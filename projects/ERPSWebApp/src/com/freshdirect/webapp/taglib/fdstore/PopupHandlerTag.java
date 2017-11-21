@@ -12,12 +12,12 @@ import org.apache.log4j.Logger;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupportEx;
+import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.ProductModel;
 
 /**
  * This tag is used to intercept an add-to-cart form post on either product page

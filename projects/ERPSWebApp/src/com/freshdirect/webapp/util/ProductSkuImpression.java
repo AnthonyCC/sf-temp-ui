@@ -1,9 +1,9 @@
 package com.freshdirect.webapp.util;
 
 import com.freshdirect.fdstore.FDRuntimeException;
-import com.freshdirect.fdstore.content.PriceCalculator;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.SkuModel;
+import com.freshdirect.storeapi.content.PriceCalculator;
+import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.content.SkuModel;
 
 /**
  * This product impression encapsulates a sku too.

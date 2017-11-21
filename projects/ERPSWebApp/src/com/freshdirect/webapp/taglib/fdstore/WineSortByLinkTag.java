@@ -10,15 +10,15 @@ import javax.servlet.jsp.tagext.VariableInfo;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
-import com.freshdirect.cms.fdstore.FDContentTypes;
-import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.util.QueryParameter;
 import com.freshdirect.fdstore.content.util.QueryParameterCollection;
 import com.freshdirect.fdstore.content.util.WineSorter;
 import com.freshdirect.fdstore.content.util.WineSorter.Type;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.webapp.BodyTagSupportEx;
+import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.storeapi.fdstore.FDContentTypes;
 import com.freshdirect.webapp.taglib.ParametersTag;
 import com.freshdirect.webapp.taglib.QueryParserTag;
 

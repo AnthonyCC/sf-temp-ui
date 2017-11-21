@@ -10,9 +10,9 @@ import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.fdstore.content.PriceCalculator;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.framework.webapp.BodyTagSupportEx;
+import com.freshdirect.storeapi.content.PriceCalculator;
+import com.freshdirect.storeapi.content.ProductModel;
 
 public class WineProductPriceTag extends BodyTagSupportEx {
 	private static final long serialVersionUID = 3647071760397727769L;

@@ -13,7 +13,6 @@ import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpComplaintModel;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.mail.TellAFriend;
@@ -27,6 +26,7 @@ import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
 import com.freshdirect.mail.EnumTEmailProviderType;
 import com.freshdirect.mail.EnumTEmailStatus;
 import com.freshdirect.mail.EnumTranEmailType;
+import com.freshdirect.storeapi.content.Recipe;
 
 public final class TEmailsUtil {
 	

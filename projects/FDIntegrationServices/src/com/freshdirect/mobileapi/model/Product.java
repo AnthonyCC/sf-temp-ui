@@ -27,8 +27,8 @@ import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
 import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.util.ProductInfoUtil;
+import com.freshdirect.cms.core.domain.ContentKeyFactory;
+import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.common.pricing.ConfiguredPrice;
 import com.freshdirect.common.pricing.Pricing;
 import com.freshdirect.common.pricing.PricingContext;
@@ -38,19 +38,12 @@ import com.freshdirect.common.pricing.SalesUnitRatio;
 import com.freshdirect.content.nutrition.EnumAllergenValue;
 import com.freshdirect.content.nutrition.EnumClaimValue;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
-import com.freshdirect.content.nutrition.ErpNutritionModel;
-import com.freshdirect.content.nutrition.panel.NutritionPanel;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.delivery.restriction.RestrictionI;
-import com.freshdirect.erp.ErpFactory;
-import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDException;
-import com.freshdirect.fdstore.FDNutrition;
-import com.freshdirect.fdstore.FDNutritionCache;
-import com.freshdirect.fdstore.FDNutritionPanelCache;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -60,21 +53,6 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.ZonePriceInfoModel;
-import com.freshdirect.fdstore.content.BrandModel;
-import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.ComponentGroupModel;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.DomainValue;
-import com.freshdirect.fdstore.content.EnumProductLayout;
-import com.freshdirect.fdstore.content.Html;
-import com.freshdirect.fdstore.content.Image;
-import com.freshdirect.fdstore.content.MediaI;
-import com.freshdirect.fdstore.content.PopulatorUtil;
-import com.freshdirect.fdstore.content.PriceCalculator;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.SkuModel;
-import com.freshdirect.fdstore.content.TagModel;
-import com.freshdirect.fdstore.content.TitledMedia;
 import com.freshdirect.fdstore.content.view.ProductRating;
 import com.freshdirect.fdstore.content.view.WebProductRating;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -98,6 +76,21 @@ import com.freshdirect.mobileapi.model.tagwrapper.GetDlvRestrictionsTagWrapper;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.ProductUtil;
 import com.freshdirect.smartstore.Variant;
+import com.freshdirect.storeapi.content.BrandModel;
+import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.storeapi.content.ComponentGroupModel;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.DomainValue;
+import com.freshdirect.storeapi.content.EnumProductLayout;
+import com.freshdirect.storeapi.content.Html;
+import com.freshdirect.storeapi.content.Image;
+import com.freshdirect.storeapi.content.MediaI;
+import com.freshdirect.storeapi.content.PriceCalculator;
+import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.content.SkuModel;
+import com.freshdirect.storeapi.content.TagModel;
+import com.freshdirect.storeapi.content.TitledMedia;
+import com.freshdirect.storeapi.util.ProductInfoUtil;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.ProductExtraDataPopulator;
@@ -185,7 +178,7 @@ public class Product {
     protected boolean isSoldByLB;
 
     protected boolean displaySalesUnitsOnly;
-    
+
     //APPDEV - 4361 : EstimatedQuantity not Returned for Some Products
     protected boolean isSoldByLBforDisplayEstimate;
 
@@ -240,12 +233,12 @@ public class Product {
 	private String sashType;
 
 	private Map<String, SortedSet<String>> filters = new LinkedHashMap<String, SortedSet<String>>();
-	
+
 	private Map<String, String> nutritionFacts;
     //private List<String> warningMessages = new ArrayList<String>();
-	
+
 	protected ProductExtraData productExtraData;
-	
+
 	protected ProductData productData;
 
     public Product(ProductModel productModel, FDUserI user, Variant variant, FDCartLineI cartLine, EnumCouponContext ctx) throws ModelException {
@@ -370,7 +363,7 @@ public class Product {
                 // it will never happens, because only FDProduct construction can throw exception
             }
             this.isSoldByLB = this.isPricedByLB && ("LB".equalsIgnoreCase((this.defaultProduct.getSalesUnits()[0]).getName()));
-            
+
             //APPDEV - 4361 : EstimatedQuantity not Returned for Some Products
             this.isSoldByLBforDisplayEstimate = !this.hasSingleSalesUnit && ("LB".equalsIgnoreCase((this.defaultProduct.getSalesUnits()[0]).getName()));
 
@@ -539,7 +532,7 @@ public class Product {
         // VARIATIONS [Meal Bundle and Other Config Values]
         if (isAvailable()) {
 
-            List<FDVariation> variations = Arrays.asList(defaultProduct.getVariations());                        
+            List<FDVariation> variations = Arrays.asList(defaultProduct.getVariations());
             Collections.sort(variations, new VariationComparator());
 
             for (FDVariation variation : variations) {
@@ -560,7 +553,7 @@ public class Product {
         				throw new ModelException("Unable to get ComponentGroup", e);
         			}
         		}
-            
+
         		if (isAvailable()) {
 
         			for (Variation variation : this.variations) {
@@ -573,7 +566,7 @@ public class Product {
         {
         	throw new ModelException("Error to get ComponentGroup Data", e);
         }
-        
+
 
         this.hideForMobile = productModel.isHideIphone();
 
@@ -596,7 +589,7 @@ public class Product {
         // Sashes
         for (TagModel tag : productModel.getAllTags()) {
         	if (tag.getName() != null && tag.getName().toLowerCase().startsWith("tablet")) {
-        		
+
         		//DOOR3 FD-iPad FDIP-644
         		String sash = tag.getName();//.substring(6);
         		this.setSashType(sash/*.toLowerCase()*/);
@@ -627,39 +620,39 @@ public class Product {
 			if (pricing.getDealPercentage() > 0 || pricing.getTieredDealPercentage() > 0 || pricing.getGroupPrice() != 0.0) {
 				types.add("Sale");
 			}
-			
+
 			if (productModel.isFullyAvailable()) {
 				if (productModel.isBackInStock() || productModel.isNew()) {
 					types.add("New/Back in stock");
 				}
 			}
-			
+
 			FDProduct fdProduct = pricing.getProduct();
-			if (fdProduct != null) 
+			if (fdProduct != null)
 			{
 				boolean organicClaim = fdProduct.hasOANClaim();
 				if(organicClaim) {
 					types.add("Organic");
-				}	
+				}
 /*				boolean organic = fdProduct.hasOrganicClaim();
 				if(organic) {
 					types.add("Organic");
 				}	*/
 			}
-			
+
 			String fullName = productModel.getFullName();
 			if(fullName != null && fullName.toLowerCase().contains("organic")){
-				types.add("Organic");			
+				types.add("Organic");
 			}
-			
-			/* Commenting this out for now (AA) 
+
+			/* Commenting this out for now (AA)
 			for (TagModel tag : productModel.getTags()) {
 				if (tag.getName() != null) {
 					types.add(tag.getName());
 				}
 			}
 			*/
-						
+
 			if (this.getSashType() != null) {
 				types.add(this.getSashType());
 			}
@@ -669,7 +662,7 @@ public class Product {
         this.filters.put("type", types);
 
         addFiltersToTags();
-        
+
         /* Commenting out for performance issues (AA)
         try {
 			final ProductMoreInfo moreInfo = new ProductMoreInfo(this);
@@ -685,7 +678,7 @@ public class Product {
 			e.printStackTrace();
 		}
 		*/
-        
+
         // Getting any notice message that neeed to be displayed on screen:
         //rsung
         //        if (getFilteredEarliestAvailabilityDate() != null && !hasSingleSku()) {
@@ -795,7 +788,7 @@ public class Product {
     public String getCategoryId() {
         return product.getProductModel().getParentNode().getContentName();
     }
-    
+
     /**
      * Product DepartmentId
      * @return
@@ -1560,7 +1553,7 @@ public class Product {
         String organicClaimText="";
         String lineSeperator= "\n \n";
         StringBuilder availabilityNoteBuilder= new StringBuilder();
-        boolean msgFlag=false;       
+        boolean msgFlag=false;
 
         Html desc = product.getProductModel().getProductDescription();
         if (desc != null) {
@@ -1572,7 +1565,7 @@ public class Product {
         	if(!StringUtils.isBlank(claimText)){
 	        	result=result + "\n \n " + "Claims : " + "\n \n " + claimText;
 	        }
-        } 
+        }
         if(getProductExtraData()!=null && getProductExtraData().getOrganicClaims()!=null)
         {
 	        organicClaimText=concatList(getProductExtraData().getOrganicClaims());
@@ -1580,7 +1573,7 @@ public class Product {
 	        	result=result + "\n \n " + "Organic Claims : " + "\n \n " + organicClaimText;
 	        }
         }
-        
+
         if(getProductData()!=null && getProductData().getMsgCutoffHeader()!=null && (StringUtils.isNotBlank(getProductData().getMsgCutoffHeader()))){
         	availabilityNoteBuilder.append(lineSeperator).append(getProductData().getMsgCutoffHeader());
         }
@@ -1593,7 +1586,7 @@ public class Product {
         }
         if(getProductData()!=null && getProductData().getMsgEarliestAvailability()!=null && (StringUtils.isNotBlank(getProductData().getMsgEarliestAvailability()))){
         	availabilityNoteBuilder.append(lineSeperator).append(getProductData().getMsgEarliestAvailability());
-        }    
+        }
         if(getProductData()!=null && getProductData().getMsgDeliveryNote()!=null && (StringUtils.isNotBlank(getProductData().getMsgDeliveryNote())) && !msgFlag){
         	availabilityNoteBuilder.append(lineSeperator).append(getProductData().getMsgDeliveryNote());
         }
@@ -1714,13 +1707,13 @@ public class Product {
 	                ProductDetailPopulator.populateAvailabilityMessagesForMobile(productData, productModel, null, productModel.getDefaultSku());
 	                result.setProductData(productData);
 				} catch (FDResourceException e) {
-				
+
 					e.printStackTrace();
 				} catch (FDSkuNotFoundException e) {
-				
+
 					e.printStackTrace();
 				} /*catch (HttpErrorResponse e) {
-				
+
 					e.printStackTrace();
 				}*/ catch (HttpErrorResponse e) {
 					// TODO Auto-generated catch block
@@ -1745,7 +1738,7 @@ public class Product {
     public boolean isAutoConfigurable() {
         return product.getProductModel().isAutoconfigurable();
     }
-    
+
   /*  public String getFreshness() {
         return this.product.getProductInfo().getFreshness();
     }*/
@@ -1765,8 +1758,8 @@ public class Product {
         }
         return autoConfiguredSalesUnit;
     }
-    
-    
+
+
 
     public double getPrice(Sku sku, SalesUnit salesUnit, double quantity, Map<String, String> options) throws PricingException {
         double price = 0.0;
@@ -1867,7 +1860,7 @@ public class Product {
         }
         return result;
     }
-    
+
     public double getDefaultPrice() {
     	ZonePriceInfoModel zpi;
     	if(defaultPriceCalculator != null) {
@@ -1903,17 +1896,17 @@ public class Product {
  //       productModel = ProductExtraDataPopulator.createExtraData(user, product, ctx, grpId, grpVersion);
         if (productModel == null) {
             LOG.info("Unable to get product, trying with content node key");
-            productModel = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.getContentKey("Product:" + id));
+            productModel = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(ContentKeyFactory.get(ContentType.Product, id));
         }
-        try {            
-            result = Product.wrap(productModel, user.getFDSessionUser().getUser(), cartLine, EnumCouponContext.PRODUCT);       
+        try {
+            result = Product.wrap(productModel, user.getFDSessionUser().getUser(), cartLine, EnumCouponContext.PRODUCT);
         } catch (ModelException e) {
             throw new ServiceException(e.getMessage(), e);
         }
 
         return result;
     }
-    
+
     public static Product getProductWithAnalyticsEventSend(String id, String categoryId, FDCartLineI cartLine, SessionUser user, HttpServletRequest request) throws ServiceException{
         Product product = getProduct(id, categoryId, cartLine, user);
         if(FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, request.getCookies(), user.getFDSessionUser())){
@@ -2083,10 +2076,10 @@ public class Product {
 	public void setProductExtraData(ProductExtraData productExtraData) {
 		this.productExtraData = productExtraData;
 	}
-	
+
 	/*private static ProductExtraData populateClaimsData(ProductExtraData data, FDUserI user,
 			ProductModel productNode, ServletContext ctx, String grpId, String grpVersion) throws FDResourceException, FDSkuNotFoundException {
-		
+
 		{
 			@SuppressWarnings("unchecked")
 			Set<EnumOrganicValue> commonOrgs = productNode.getCommonNutritionInfo(ErpNutritionInfoType.ORGANIC);
@@ -2140,7 +2133,7 @@ public class Product {
 		}
 		return data;
 	}
-*/	
+*/
     private static String populateProductDescription(FDUserI user, MediaI media) {
         String productDescription = null;
         if (media != null) {
@@ -2160,21 +2153,21 @@ public class Product {
 			return null;
 
 		Map<String,Object> parameters = new HashMap<String,Object>();
-		
+
 		/* pass user/sessionUser by default, so it doesn't need to be added every place this tag is used. */
 		parameters.put("user", user);
 		parameters.put("sessionUser", user);
-		
+
 		StringWriter out = new StringWriter();
-				
-		MediaUtils.render(mediaPath, out, parameters, false, 
+
+		MediaUtils.render(mediaPath, out, parameters, false,
 				user != null && user.getUserContext().getPricingContext() != null ? user.getUserContext().getPricingContext() : PricingContext.DEFAULT);
 
 		String outString = out.toString();
-		
+
 		//fix media if needed
 		outString = MediaUtils.fixMedia(outString);
-		
+
 		return quoted ? JSONObject.quote( outString ) : outString;
 	}
 	public ProductData getProductData() {
@@ -2183,7 +2176,9 @@ public class Product {
 	public void setProductData(ProductData productData) {
 		this.productData = productData;
 	}
-	
+
+
+
 	public SkuModel getDefaultsku(){
 		return this.product.getProductModel().getDefaultSku();
 	}

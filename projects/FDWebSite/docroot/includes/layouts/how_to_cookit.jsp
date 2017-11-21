@@ -1,8 +1,8 @@
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import='java.util.*'  %>
 <%@ page import='java.net.URLEncoder'%>
-<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
-<%@ page import='com.freshdirect.fdstore.attributes.*' %>
+<%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.storeapi.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.content.attributes.*' %>
@@ -93,7 +93,7 @@ if (sortedColl==null) sortedColl = Collections.<CategoryModel>emptyList();
 
     Comparator<SkuModel> priceComp = new ProductModel.PriceComparator();
 %>
-    <logic:iterate id='contentRef' collection="<%=favorites%>" type="com.freshdirect.fdstore.content.ProductModel">
+    <logic:iterate id='contentRef' collection="<%=favorites%>" type="com.freshdirect.storeapi.content.ProductModel">
 <% 
         ProductModel product = ProductPricingFactory.getInstance().getPricingAdapter(contentRef, user.getPricingContext()); //(ProductModel)contentFactory.getProduct(contentRef.getCategoryId(),contentRef.getProductId());
         if (product.isDiscontinued() || product.isUnavailable()) continue;
@@ -188,7 +188,7 @@ if (sortedColl==null) sortedColl = Collections.<CategoryModel>emptyList();
     favoriteProducts=null;
     boolean gotAvailProdImg = false;
 %>
-    <logic:iterate id='displayCategory' collection="<%= sortedColl %>" type="com.freshdirect.fdstore.content.CategoryModel">
+    <logic:iterate id='displayCategory' collection="<%= sortedColl %>" type="com.freshdirect.storeapi.content.CategoryModel">
 <%
 		//CategoryModel displayCategory = null;
 		//displayCategory=(CategoryModel)contentNode;
@@ -220,7 +220,7 @@ if (sortedColl==null) sortedColl = Collections.<CategoryModel>emptyList();
                 productPrices.clear();
                 gotAvailProdImg = false;
 %>                
-    <logic:iterate id='product' collection="<%=htciProdList%>" type="com.freshdirect.fdstore.content.ProductModel">
+    <logic:iterate id='product' collection="<%=htciProdList%>" type="com.freshdirect.storeapi.content.ProductModel">
 <% 
 
         if (!(product.isDiscontinued() || product.isUnavailable())) {

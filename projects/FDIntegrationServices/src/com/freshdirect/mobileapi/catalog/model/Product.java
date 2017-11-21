@@ -11,11 +11,11 @@ import com.freshdirect.content.nutrition.EnumClaimValue;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.fdstore.content.BrandModel;
-import com.freshdirect.fdstore.content.DomainValue;
-import com.freshdirect.fdstore.content.PriceCalculator;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.TagModel;
+import com.freshdirect.storeapi.content.BrandModel;
+import com.freshdirect.storeapi.content.DomainValue;
+import com.freshdirect.storeapi.content.PriceCalculator;
+import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.content.TagModel;
 
 public class Product {
 	
@@ -37,6 +37,7 @@ public class Product {
 	private final List<String> keywords;
 	private final int productLayout;
 	private  double availableQty;
+	private  final String availabilityMsg;
 
 	private Product(ProductBuilder builder) {
 		id=builder.id;
@@ -55,6 +56,7 @@ public class Product {
 		keywords = builder.keywords;
 		productLayout=builder.productLayout;
 		this.availableQty=builder.availableQty;
+		this.availabilityMsg= builder.availabilityMessage;
 	}
 	
 	public String getId() {
@@ -102,7 +104,7 @@ public class Product {
 	}
 	
 	public double getAvailableQty() {
-		return availableQty;
+		return Math.floor(availableQty);
 	}
 
 	
@@ -121,6 +123,10 @@ public class Product {
 	}
 	public int getProductLayout() {
 		return productLayout;
+	}
+	
+	public String getAvailabilityMessage() {
+		return this.availabilityMsg;
 	}
 
 	public static final class WineAttributes {
@@ -230,7 +236,13 @@ public class Product {
 		private WineAttributes wineAttributes;
 		private int productLayout;
 		private double availableQty;
+		private String availabilityMessage;
 		
+		public ProductBuilder setAvailabilityMessage(String availabilityMessage) {
+			this.availabilityMessage = availabilityMessage;
+			return this;
+		}
+
 		private static final List<String> EMPTY=Collections.<String>emptyList();
 		
 		private static final List<com.freshdirect.mobileapi.catalog.model.Image> EMPTY_IMAGE=Collections.<com.freshdirect.mobileapi.catalog.model.Image>emptyList();
@@ -259,12 +271,12 @@ public class Product {
             return this;
         }
         
-        public ProductBuilder images(List<com.freshdirect.fdstore.content.Image> images) {
+        public ProductBuilder images(List<com.freshdirect.storeapi.content.Image> images) {
         	if(isEmpty(images))
         		this.images=EMPTY_IMAGE;
         	this.images=new ArrayList<com.freshdirect.mobileapi.catalog.model.Image>(images.size());
         	
-        	for(com.freshdirect.fdstore.content.Image image:images) {
+        	for(com.freshdirect.storeapi.content.Image image:images) {
         		this.images.add(new com.freshdirect.mobileapi.catalog.model.Image(image));
         		
         	}

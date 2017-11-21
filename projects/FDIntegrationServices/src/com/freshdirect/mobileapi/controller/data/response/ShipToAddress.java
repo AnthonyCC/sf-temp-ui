@@ -2,9 +2,9 @@ package com.freshdirect.mobileapi.controller.data.response;
 
 import java.util.Set;
 
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.StoreModel;
 import com.freshdirect.mobileapi.controller.data.PhoneNumber;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.StoreModel;
 
 public class ShipToAddress extends DeliveryAddress {
 

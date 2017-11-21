@@ -6,18 +6,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.freshdirect.fdstore.content.EnumSearchFilteringValue;
 import com.freshdirect.fdstore.content.FilteringComparatorUtil;
 import com.freshdirect.fdstore.content.FilteringFlow;
-import com.freshdirect.fdstore.content.FilteringSortingItem;
-import com.freshdirect.fdstore.content.FilteringValue;
 import com.freshdirect.fdstore.content.GenericFilterDecorator;
 import com.freshdirect.fdstore.content.GenericFilteringMenuBuilder;
-import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeFilterMenuDecorator;
 import com.freshdirect.fdstore.content.RecipeFilterValueDecorator;
-import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.util.FilteringNavigator;
+import com.freshdirect.storeapi.content.EnumSearchFilteringValue;
+import com.freshdirect.storeapi.content.FilteringSortingItem;
+import com.freshdirect.storeapi.content.FilteringValue;
+import com.freshdirect.storeapi.content.Recipe;
+import com.freshdirect.storeapi.content.SearchResults;
 
 public class RecipeFilterImpl extends FilteringFlow<Recipe>{
 	

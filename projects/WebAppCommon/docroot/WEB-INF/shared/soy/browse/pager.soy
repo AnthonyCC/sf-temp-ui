@@ -101,7 +101,7 @@
 <div class="pagination-pager" data-component="pager" data-activepage="{$activePage}" data-itemcount="{$itemCount}" data-pagesize="{$pageSize}" data-pagecount="{$pageCount}" data-firstitemindex="{$firstItemIndex}" data-lastItemIndex="{$lastItemIndex}">
 
   {if $pageCount > 1}
-    <button class="cssbutton {if $hasBackButton}green{else}disabled{/if}" data-component="pager-prev" class="pagination-pager-prev" {if not $hasBackButton}disabled{/if}><div style="display:none;"> Previous Page </div>&lt;</button>
+    <button class="cssbutton {if $hasBackButton}green{else}disabled{/if}" data-component="pager-prev" class="pagination-pager-prev" {if not $hasBackButton}disabled{/if}><div class="offscreen"> Previous Page </div>&lt;</button>
   {/if}
 
   {call .pagerNumbers}
@@ -111,7 +111,7 @@
   {/call}
 
   {if $pageCount > 1 }
-    <button class="cssbutton {if $hasNextButton}green{else}disabled{/if}" data-component="pager-next" class="pagination-pager-next" {if not $hasNextButton}disabled{/if}><div style="display:none;"> Next Page </div>&gt;</button>
+    <button class="cssbutton {if $hasNextButton}green{else}disabled{/if}" data-component="pager-next" class="pagination-pager-next" {if not $hasNextButton}disabled{/if}><div class="offscreen"> Next Page </div>&gt;</button>
   {/if}
 
   {call .pagerText}

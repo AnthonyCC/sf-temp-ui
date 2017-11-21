@@ -8,7 +8,7 @@
 <%@ page import='com.freshdirect.customer.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import='com.freshdirect.fdstore.content.*' %>
+<%@ page import='com.freshdirect.storeapi.content.*' %>
 <%@ page import="com.freshdirect.fdstore.promotion.PromotionI" %>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ page import="com.freshdirect.common.pricing.Discount" %>

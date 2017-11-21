@@ -2,8 +2,8 @@ package com.freshdirect.mobileapi.model.comparator;
 
 import java.util.Comparator;
 
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.mobileapi.model.Sku;
+import com.freshdirect.storeapi.content.ProductModel;
 
 public class PriceComparator implements Comparator<Sku> {
     ProductModel.PriceComparator priceComparator = new ProductModel.PriceComparator();

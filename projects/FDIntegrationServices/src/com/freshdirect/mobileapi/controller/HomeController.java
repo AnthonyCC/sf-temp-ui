@@ -14,21 +14,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.ContentType;
-import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDNotFoundException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.BannerModel;
-import com.freshdirect.fdstore.content.CMSPageRequest;
-import com.freshdirect.fdstore.content.CMSPickListModel;
-import com.freshdirect.fdstore.content.CMSSectionModel;
-import com.freshdirect.fdstore.content.CMSWebPageModel;
-import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.StoreModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.controller.data.BrowseResult;
 import com.freshdirect.mobileapi.controller.data.Message;
@@ -47,6 +38,15 @@ import com.freshdirect.mobileapi.model.FeaturedCategory;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.util.BrowseUtil;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
+import com.freshdirect.storeapi.application.CmsManager;
+import com.freshdirect.storeapi.content.BannerModel;
+import com.freshdirect.storeapi.content.CMSPageRequest;
+import com.freshdirect.storeapi.content.CMSPickListModel;
+import com.freshdirect.storeapi.content.CMSSectionModel;
+import com.freshdirect.storeapi.content.CMSWebPageModel;
+import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.StoreModel;
 import com.freshdirect.wcms.CMSContentFactory;
 import com.freshdirect.webapp.ajax.filtering.InvalidFilteringArgumentException;
 import com.freshdirect.webapp.ajax.modulehandling.data.ModuleConfig;
@@ -116,7 +116,7 @@ public class HomeController extends BaseController {
 
     private HomeGetAllResponse all(SessionUser user) throws JsonException {
         HomeGetAllResponse response = new HomeGetAllResponse();
-        Set<ContentKey> contentKeysByType = CmsManager.getInstance().getContentKeysByType(ContentType.get("Banner"));
+        Set<ContentKey> contentKeysByType = CmsManager.getInstance().getContentKeysByType(ContentType.Banner);
         List<Idea> carrouselItems = new ArrayList<Idea>();
         for (ContentKey key : contentKeysByType) {
             BannerModel banner = (BannerModel) ContentFactory.getInstance().getContentNodeByKey(key);
@@ -164,7 +164,7 @@ public class HomeController extends BaseController {
 		
 		// get the carousel Items and Banner for Mobile home page.
 		//----------------------------------------CarouselItems---------------------------------------------------------
-		Set<ContentKey> contentKeysByType = CmsManager.getInstance().getContentKeysByType(ContentType.get("Banner"));
+		Set<ContentKey> contentKeysByType = CmsManager.getInstance().getContentKeysByType(ContentType.Banner);
         List<Idea> carrouselItems = new ArrayList<Idea>();
         for (ContentKey key : contentKeysByType) {
             BannerModel banner = (BannerModel) ContentFactory.getInstance().getContentNodeByKey(key);

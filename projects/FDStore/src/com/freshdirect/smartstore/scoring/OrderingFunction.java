@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 
-import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.smartstore.sampling.RankedContent;
+import com.freshdirect.storeapi.content.ContentNodeModel;
 
 public class OrderingFunction {
     // if multiple number is the returning statement, we can't interpret as a probability.
