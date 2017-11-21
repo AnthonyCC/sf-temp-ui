@@ -48,7 +48,8 @@
 
 	<!-- TODO fine tune cache size, max: 35 calls/minute on category.jsp -->
 	<cache name="userRefinementCache" maxEntriesLocalHeap="50"
-		timeToIdleSeconds="180" memoryStoreEvictionPolicy="LFU" />
+		timeToIdleSeconds="180" memoryStoreEvictionPolicy="LFU" 
+		timeToLiveSeconds="300" />
 
 
 
