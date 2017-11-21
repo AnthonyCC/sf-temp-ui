@@ -2425,6 +2425,7 @@ public class FDUser extends ModelSupport implements FDUserI {
                 }
 
                 userContext = setFulfillmentAndPricingContext(userContext, address, true);
+                ContentFactory.getInstance().setCurrentUserContext(userContext);
             }
         } catch (FDResourceException e) {
             throw new FDRuntimeException(e, e.getMessage());
