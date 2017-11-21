@@ -12,7 +12,9 @@ import com.freshdirect.storeapi.attributes.FDAttributeFactory;
 
 public class DepartmentModel extends ProductContainer {
 
-	private static final int MAX_ITEMS_PER_COLUMN_DEFAULT = 15;
+    private static final long serialVersionUID = -5341255930768744401L;
+
+    private static final int MAX_ITEMS_PER_COLUMN_DEFAULT = 15;
 
 	private final List<ProductModel> featuredProductModels = new ArrayList<ProductModel>();
 
@@ -31,10 +33,9 @@ public class DepartmentModel extends ProductContainer {
     private final List<BannerModel> tabletNoPurchaseSuggestions = new ArrayList<BannerModel>();
     private final List<ImageBanner> heroCarousel = new ArrayList<ImageBanner>();
 
-    public DepartmentModel(ContentKey cKey) {
-        super(cKey);
+	public DepartmentModel(ContentKey cKey) {
+		super(cKey);
 	}
-
 
 	public Image getTitleImage() {
         return FDAttributeFactory.constructImage(this, "DEPT_TITLE");
@@ -269,15 +270,9 @@ public class DepartmentModel extends ProductContainer {
 		return FDAttributeFactory.lookup(this, "tabletHeaderBanner", null);
 	}
 
-
-
 	public List<ImageBanner> getHeroCarousel() {
 		ContentNodeModelUtil.refreshModels(this, "heroCarousel", heroCarousel, false);
 		return new ArrayList<ImageBanner>(heroCarousel);
 	}
-
-
-
-
 
 }

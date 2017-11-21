@@ -19,6 +19,7 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.GroupScalePricing;
 import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.ZonePriceModel;
+import com.freshdirect.storeapi.util.ProductInfoUtil;
 
 /**
  * This class is encapsulates a product with a sku and a pricing context, which is essential most of the price calculations happening on the site.
@@ -86,7 +87,8 @@ public class PriceCalculator {
 
     public FDGroup getFDGroup() {
         try {
-            return skuModel != null ? getProductInfo().getGroup(this.getPricingContext().getZoneInfo()) : null;
+//            return skuModel != null ? getProductInfo().getGroup(this.getPricingContext().getZoneInfo().getSalesOrg(),this.getPricingContext().getZoneInfo().getDistributionChanel()) : null;
+        	return skuModel != null ? getProductInfo().getGroup(this.getPricingContext().getZoneInfo()) : null;
         } catch (FDResourceException e) {
             return null;
         } catch (FDSkuNotFoundException e) {
@@ -545,7 +547,8 @@ public class PriceCalculator {
                 return "";
 
             FDProduct pr = getProduct();
-        	String plantID=getPlantID();
+        	//String plantID=getPlantID();
+            String plantID=ProductInfoUtil.getPickingPlantId(getProductInfo());
             FDKosherInfo ki = pr.getKosherInfo(plantID);
             if (ki.hasKosherSymbol() && ki.getKosherSymbol().display()) {
                 return ki.getKosherSymbol().getCode();
@@ -567,8 +570,8 @@ public class PriceCalculator {
                 return "";
 
             FDProduct pr = getProduct();
-        	String plantID=getPlantID();
-            FDKosherInfo ki = pr.getKosherInfo(plantID);
+        	//String plantID=getPlantID();
+            FDKosherInfo ki = pr.getKosherInfo(ProductInfoUtil.getPickingPlantId(getProductInfo()));
             if (ki.hasKosherType() && ki.getKosherType().display()) {
                 return ki.getKosherType().getName();
             } else {
@@ -585,7 +588,7 @@ public class PriceCalculator {
                 return false;
 
             FDProduct pr = getProduct();
-            String plantID=getPlantID();
+            String plantID=ProductInfoUtil.getPickingPlantId(getProductInfo());
             return pr.isKosherProduction(plantID);
         } catch (FDSkuNotFoundException fdsnfe) {
         }
@@ -597,7 +600,7 @@ public class PriceCalculator {
             if (skuModel == null)
                 return 999;
             FDProduct pr = getProduct();
-        	String plantID=getPlantID();
+        	String plantID=ProductInfoUtil.getPickingPlantId(getProductInfo());
             FDKosherInfo ki = pr.getKosherInfo(plantID);
             return ki.getPriority();
         } catch (FDSkuNotFoundException fdsnfe) {
