@@ -68,8 +68,8 @@ public class NodeCollectionContentProviderService extends ContextualContentProvi
             if (isGoodToAdd) {
                 if (ContentType.Product == candidateKey.type) {
                     Map<Attribute, Object> clone = cloneNode(candidateKey, candidate.getValue(), storeKey);
-                    Map<Attribute, Object> filteredPrimaryHomeNode = selectPrimaryHomeByStore(candidateKey, clone, storeKey);
-                    filteredNodes.put(candidateKey, filteredPrimaryHomeNode);
+                    filterPrimaryHomeForStore(candidateKey, clone, storeKey);
+                    filteredNodes.put(candidateKey, clone);
                 } else {
                     filteredNodes.put(candidateKey, candidate.getValue());
                 }
@@ -179,7 +179,7 @@ public class NodeCollectionContentProviderService extends ContextualContentProvi
     }
 
     @SuppressWarnings("unchecked")
-    private Map<Attribute, Object> selectPrimaryHomeByStore(ContentKey contentKey, Map<Attribute, Object> nodeData, ContentKey storeKey) {
+    private void filterPrimaryHomeForStore(ContentKey contentKey, Map<Attribute, Object> nodeData, ContentKey storeKey) {
         if (nodeData.containsKey(ContentTypes.Product.PRIMARY_HOME)) {
             Set<ContentKey> parentsByStore = filterParentsByStore(contentKey, storeKey);
             List<ContentKey> primaryHomes = (List<ContentKey>) nodeData.get(ContentTypes.Product.PRIMARY_HOME);
@@ -191,7 +191,6 @@ public class NodeCollectionContentProviderService extends ContextualContentProvi
             }
             nodeData.put(ContentTypes.Product.PRIMARY_HOME, primaryHomeByStore);
         }
-        return nodeData;
     }
 
     private Set<ContentKey> filterParentsByStore(ContentKey contentKey, ContentKey storeKey) {
