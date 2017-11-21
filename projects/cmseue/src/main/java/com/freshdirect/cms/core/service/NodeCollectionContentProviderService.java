@@ -1,5 +1,6 @@
 package com.freshdirect.cms.core.service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,6 +16,7 @@ import com.freshdirect.cms.changecontrol.entity.ContentChangeSetEntity;
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentType;
+import com.freshdirect.cms.core.domain.ContentTypes;
 import com.freshdirect.cms.core.domain.RootContentKey;
 import com.google.common.base.Optional;
 
@@ -66,7 +68,8 @@ public class NodeCollectionContentProviderService extends ContextualContentProvi
             if (isGoodToAdd) {
                 if (ContentType.Product == candidateKey.type) {
                     Map<Attribute, Object> clone = cloneNode(candidateKey, candidate.getValue(), storeKey);
-                    filteredNodes.put(candidateKey, clone);
+                    Map<Attribute, Object> filteredPrimaryHomeNode = selectPrimaryHomeByStore(candidateKey, clone, storeKey);
+                    filteredNodes.put(candidateKey, filteredPrimaryHomeNode);
                 } else {
                     filteredNodes.put(candidateKey, candidate.getValue());
                 }
@@ -120,7 +123,7 @@ public class NodeCollectionContentProviderService extends ContextualContentProvi
 
     @Override
     public Set<ContentKey> getParentKeys(ContentKey key) {
-        return parentKeys.get(key) == null ? Collections.<ContentKey>emptySet() : parentKeys.get(key);
+        return parentKeys.get(key) == null ? Collections.<ContentKey> emptySet() : parentKeys.get(key);
     }
 
     @Override
@@ -156,7 +159,7 @@ public class NodeCollectionContentProviderService extends ContextualContentProvi
     @Override
     public Optional<ContentChangeSetEntity> updateContent(LinkedHashMap<ContentKey, Map<Attribute, Object>> payload, ContentUpdateContext context) {
         for (ContentKey key : payload.keySet()) {
-            if(!contentNodes.containsKey(key) || contentNodes.get(key) == null){
+            if (!contentNodes.containsKey(key) || contentNodes.get(key) == null) {
                 contentNodes.put(key, new HashMap<Attribute, Object>());
             }
             for (Attribute attribute : payload.get(key).keySet()) {
@@ -173,6 +176,22 @@ public class NodeCollectionContentProviderService extends ContextualContentProvi
 
     private Map<Attribute, Object> cloneNode(ContentKey contentKey, Map<Attribute, Object> originalNode, ContentKey storeKey) {
         return new HashMap<Attribute, Object>(originalNode);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<Attribute, Object> selectPrimaryHomeByStore(ContentKey contentKey, Map<Attribute, Object> nodeData, ContentKey storeKey) {
+        if (nodeData.containsKey(ContentTypes.Product.PRIMARY_HOME)) {
+            Set<ContentKey> parentsByStore = filterParentsByStore(contentKey, storeKey);
+            List<ContentKey> primaryHomes = (List<ContentKey>) nodeData.get(ContentTypes.Product.PRIMARY_HOME);
+            List<ContentKey> primaryHomeByStore = new ArrayList<ContentKey>();
+            for (ContentKey primaryHome : primaryHomes) {
+                if (parentsByStore.contains(primaryHome)) {
+                    primaryHomeByStore.add(primaryHome);
+                }
+            }
+            nodeData.put(ContentTypes.Product.PRIMARY_HOME, primaryHomeByStore);
+        }
+        return nodeData;
     }
 
     private Set<ContentKey> filterParentsByStore(ContentKey contentKey, ContentKey storeKey) {
