@@ -168,6 +168,7 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
             if (null == pickingPlantId || "".equals(pickingPlantId.trim())) {
                 pickingPlantId = ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
             }
+            //System.out.println(this.getClass().getName() + String.format("  salesOrg %s, distChannel %s, pickingPlantId %s" , salesOrg, distChannel, pickingPlantId));
             FDAvailabilityI av = AvailabilityFactory.createAvailability(this, fdpi, pickingPlantId);
             AvailabilityAdapter answer = new AvailabilityAdapter(fdpi, av, salesOrg, distChannel, pickingPlantId);
             return answer;
@@ -213,7 +214,8 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 
         @Override
         public double getAvailabileQtyForDate(java.util.Date targetDate) {
-            return 0;
+        	//this should never happen!
+            return -5;
         }
 
     };
@@ -267,6 +269,7 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 
         @Override
         public double getAvailabileQtyForDate(Date targetDate) {
+        	//this should nerver happen here
             return 0;
         }
     };
