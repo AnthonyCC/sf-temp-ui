@@ -1344,6 +1344,7 @@ private static String convert(Date time) {
 			}
 		}
 	
+	//to preserve existing SO template timeslot when shifts address within session and didnot choose new timeslot
 	public static boolean userCanBeSaved(FDUserI user, boolean canBeSaved, String deliveryAddressId) throws FDResourceException {
 		FDStandingOrder currentStandingOrder = user.getCurrentStandingOrder();
                  	
@@ -1379,5 +1380,29 @@ private static String convert(Date time) {
 			}
 		}
 		return canBeSaved;
+	}
+	
+	//if SO user edits address, to delete the timeslots in templates if any, to avoid mismatch of timslot with updated address
+	public static void evaluteEditSoAddressID(HttpSession session, FDSessionUser user, String deliveryAddressId) {
+		Collection<FDStandingOrder> soValidList = user.getValidSO3();
+		try {
+			for (FDStandingOrder soValidtemplate : soValidList) {
+				if (deliveryAddressId != null && deliveryAddressId.equals(soValidtemplate.getAddressId())) {
+					LOGGER.debug("indside evaluteEditSoAddressID(), action by user: "
+							+ user.getIdentity().getErpCustomerPK() + ", " + "deleting timeslots for  SO3 template: "
+							+ soValidtemplate.getId() + " ,addressId: " + soValidtemplate.getAddressId());
+					soValidtemplate.setStartTime(null);
+					soValidtemplate.setEndTime(null);
+					soValidtemplate.setNextDeliveryDate(null);
+					if (session != null) {
+						FDActionInfo info = AccountActivityUtil.getActionInfo(session);
+						FDStandingOrdersManager.getInstance().save(info, soValidtemplate);
+						user.setRefreshSO3(true);
+					}
+				}
+			}
+		}catch (FDResourceException e1) {
+			LOGGER.error("for user: "+user.getUserId()+" Exception occurred in evaluteEditSoAddressID() : "+e1);
+		}
 	}
 }
