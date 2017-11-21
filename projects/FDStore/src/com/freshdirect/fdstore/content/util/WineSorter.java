@@ -11,12 +11,12 @@ import java.util.Map;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
-import com.freshdirect.fdstore.content.ComparatorChain;
 import com.freshdirect.fdstore.content.EnumWineRating;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductRatingGroup;
 import com.freshdirect.fdstore.content.WineFilter;
 import com.freshdirect.smartstore.sorting.ScriptedContentNodeComparator;
+import com.freshdirect.storeapi.content.ComparatorChain;
+import com.freshdirect.storeapi.content.ProductModel;
 
 public class WineSorter implements Serializable {
 	private static final long serialVersionUID = 2075923425552479422L;

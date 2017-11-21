@@ -1,5 +1,5 @@
-<%@ tag import="com.freshdirect.fdstore.content.ContentNodeModel"
-				import="com.freshdirect.fdstore.content.ProductModel" 
+<%@ tag import="com.freshdirect.storeapi.content.ContentNodeModel"
+				import="com.freshdirect.storeapi.content.ProductModel" 
 				import="com.freshdirect.fdstore.customer.FDUserI"
 				import="com.freshdirect.webapp.taglib.fdstore.SessionName"
 %>
@@ -10,7 +10,7 @@
 <%@ attribute name="siteFeature" required="true" rtexprvalue="true" %>
 <%@ attribute name="facility" required="false" rtexprvalue="true" %>
 <%@ attribute name="excludeAlcoholicContent" required="false" rtexprvalue="true" type="java.lang.Boolean" %>
-<%@ attribute name="currentNode" required="false" rtexprvalue="true" type="com.freshdirect.fdstore.content.ContentNodeModel" %>
+<%@ attribute name="currentNode" required="false" rtexprvalue="true" type="com.freshdirect.storeapi.content.ContentNodeModel" %>
 
 <%	// Default values
 	// if ( facility == null ) facility = "recommenderbox";

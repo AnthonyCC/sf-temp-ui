@@ -8,13 +8,13 @@ import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.rules.Rule;
-import com.freshdirect.rules.RulesEngineI;
-import com.freshdirect.rules.RulesRegistry;
+import com.freshdirect.storeapi.StoreServiceLocator;
+import com.freshdirect.storeapi.rules.RulesEngineI;
 
 /**
  * Generic rule based eligiblity calculator.
- * 
- * TODO refactor common code with FeeCalculator * 
+ *
+ * TODO refactor common code with FeeCalculator *
  */
 public class TierDeliveryFeeCalculator implements Serializable {
 
@@ -46,7 +46,7 @@ public class TierDeliveryFeeCalculator implements Serializable {
 	}
 
 	private RulesEngineI getRulesEngine() {
-		return RulesRegistry.getRulesEngine(this.subsystem);
+		return StoreServiceLocator.rulesRegistry().getRulesEngine(this.subsystem);
 	}
 
 	public TieredPrice getTieredDeliveryFee(FDRuleContextI ctx) {
@@ -61,13 +61,13 @@ public class TierDeliveryFeeCalculator implements Serializable {
 			for (Iterator i = rules.iterator(); i.hasNext();) {
 				Rule r = (Rule) i.next();
 				Object outcome = r.getOutcome();
-				
+
 				if(outcome instanceof TieredPrice)
 					return ((TieredPrice) r.getOutcome());
-				
+
 			}
 		}
 		return null;
 	}
-	
+
 }

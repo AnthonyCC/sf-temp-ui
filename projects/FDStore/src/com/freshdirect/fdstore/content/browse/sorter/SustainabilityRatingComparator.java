@@ -6,8 +6,8 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.content.FilteringProductItem;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.content.FilteringProductItem;
 
 //TODO remove this class
 public class SustainabilityRatingComparator implements Comparator<FilteringProductItem> {

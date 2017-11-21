@@ -8,14 +8,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.EnumQuickShopFilteringValue;
-import com.freshdirect.fdstore.content.FilteringMenuItem;
-import com.freshdirect.fdstore.content.FilteringSortingItem;
-import com.freshdirect.fdstore.content.FilteringValue;
 import com.freshdirect.fdstore.coremetrics.CmContext;
 import com.freshdirect.fdstore.coremetrics.tagmodel.ElementTagModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.FilteringNavigator;
+import com.freshdirect.storeapi.content.EnumQuickShopFilteringValue;
+import com.freshdirect.storeapi.content.FilteringMenuItem;
+import com.freshdirect.storeapi.content.FilteringSortingItem;
+import com.freshdirect.storeapi.content.FilteringValue;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
 import com.freshdirect.webapp.ajax.quickshop.QuickShopSortType;

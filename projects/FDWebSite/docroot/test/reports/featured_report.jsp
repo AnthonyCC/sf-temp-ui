@@ -1,6 +1,6 @@
 <%@ page contentType="application/vnd.ms-excel" %>
-<%@ page import='com.freshdirect.fdstore.content.*' %>
-<%@ page import='com.freshdirect.fdstore.attributes.*' %>
+<%@ page import='com.freshdirect.storeapi.content.*' %>
+<%@ page import='com.freshdirect.storeapi.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>

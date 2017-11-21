@@ -12,8 +12,8 @@ public class OneToManyModel extends ContentNodeModel {
 
     public final static OneToManyModel NULL_MODEL = new OneToManyModel(GwtContentNode.NULL_TYPE, GwtContentNode.NULL_ID, "Empty list", 0); 
 
-    GwtNodeData newNodeData;
-    
+    private GwtNodeData newNodeData;
+
     public OneToManyModel() {
         super();
     }
@@ -23,7 +23,6 @@ public class OneToManyModel extends ContentNodeModel {
         setIndex(index);
     }
     
-    
     public boolean isNewlyCreated() {
         return newNodeData != null;
     }
@@ -31,7 +30,7 @@ public class OneToManyModel extends ContentNodeModel {
     public void setNewNodeData(GwtNodeData newNodeData) {
         this.newNodeData = newNodeData;
     }
-    
+
     public GwtNodeData getNewNodeData() {
         return newNodeData;
     }

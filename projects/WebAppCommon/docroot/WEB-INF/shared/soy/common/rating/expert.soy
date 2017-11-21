@@ -6,7 +6,8 @@
 {template .expert}
 {if $ratingValue>0}
   <b class="expertrating smallrating rating-{$ratingValue*1}">
-   Rating {$ratingValue}/10
+  {let $ratingFormatted: ( strContains(''+round($ratingValue/2, 1), '.0') ) ? round($ratingValue/2) : round($ratingValue/2, 1) /}
+   Rating {$ratingFormatted} out of 5
   </b>
 {/if}
 {/template}

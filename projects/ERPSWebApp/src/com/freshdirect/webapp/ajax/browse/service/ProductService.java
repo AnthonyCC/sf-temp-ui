@@ -5,9 +5,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import com.freshdirect.cms.ContentKey;
-import com.freshdirect.fdstore.content.FilteringProductItem;
-import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.storeapi.content.FilteringProductItem;
+import com.freshdirect.storeapi.content.ProductModel;
 
 public class ProductService {
 

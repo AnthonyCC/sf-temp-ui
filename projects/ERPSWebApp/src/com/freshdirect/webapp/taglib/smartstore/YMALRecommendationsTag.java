@@ -5,13 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.Recipe;
-import com.freshdirect.fdstore.content.YmalSet;
-import com.freshdirect.fdstore.content.YmalSource;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -19,21 +13,26 @@ import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.smartstore.ymal.YmalUtil;
+import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.content.Recipe;
+import com.freshdirect.storeapi.content.YmalSet;
+import com.freshdirect.storeapi.content.YmalSource;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 /**
  * SmartStore YMAL Recommendations Tag
- * 
+ *
  * @author csongor
- * 
+ *
  */
 public class YMALRecommendationsTag extends RecommendationsTag implements SessionName {
-	
+
 	private static final long serialVersionUID = 5976696010559642821L;
-	
+
 	private YmalSource source = null;
-	
+
 	public YMALRecommendationsTag() {
 		super();
 		itemCount = 6;
@@ -43,7 +42,8 @@ public class YMALRecommendationsTag extends RecommendationsTag implements Sessio
 		this.source = source;
 	}
 
-    protected Recommendations getRecommendations() throws FDResourceException, InvalidContentKeyException {
+    @Override
+    protected Recommendations getRecommendations() throws FDResourceException {
         Recommendations recommendations = null;
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 
@@ -62,7 +62,7 @@ public class YMALRecommendationsTag extends RecommendationsTag implements Sessio
         }
 
         setupRequest(request, recommendations);
-        
+
         return recommendations;
     }
 
@@ -77,7 +77,7 @@ public class YMALRecommendationsTag extends RecommendationsTag implements Sessio
         List<CategoryModel> relatedCategories = source.getYmalCategories();
         YmalSet ymal_aset = source.getActiveYmalSet();
         String ymalHeader = source.getYmalHeader();
-        FDUserI ymal_user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);        
+        FDUserI ymal_user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
         ProductModel ymal_product = source instanceof ProductModel ? (ProductModel) source : YmalUtil.getSelectedCartLine(ymal_user).lookupProduct();
 
         // -- AVAILABILITY CHECK --
@@ -103,10 +103,10 @@ public class YMALRecommendationsTag extends RecommendationsTag implements Sessio
         request.setAttribute("ymal_recipes", relatedRecipes);
         request.setAttribute("ymal_aset", ymal_aset);
         request.setAttribute("ymal_product", ymal_product);
-        
+
         ActionResult ymal_result = (ActionResult) request.getAttribute("actionResult");
         request.setAttribute("ymal_result", ymal_result);
-        
+
         if (recommendations.getVariant() != null && recommendations.getVariant().getServiceConfig().getPresentationDescription() != null) {
             request.setAttribute("ymal_header", recommendations.getVariant().getServiceConfig().getPresentationDescription());
         } else {
@@ -152,6 +152,7 @@ public class YMALRecommendationsTag extends RecommendationsTag implements Sessio
     }
 
 	public static class TagEI extends AbstractGetterTag.TagEI {
+        @Override
         protected String getResultType() {
             return "com.freshdirect.smartstore.fdstore.Recommendations";
         }

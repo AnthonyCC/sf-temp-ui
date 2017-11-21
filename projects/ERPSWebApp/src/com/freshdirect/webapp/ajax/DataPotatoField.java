@@ -9,20 +9,20 @@ import javax.servlet.ServletContext;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.ContentType;
+import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.EnumTemplateType;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.EnumTemplateType;
+import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.browse.BrowsePopulator;
 import com.freshdirect.webapp.ajax.browse.data.BrowseData;
@@ -177,7 +177,7 @@ public class DataPotatoField {
 		
 		if ( keys != null ) {
 			for ( ContentKey key : keys ) {
-				if ( key.getType().equals( ContentType.get( "Product" ) ) ) {
+				if ( key.getType().equals( ContentType.Product ) ) {
 					String catId = null;
 					Map<String, ?> productData = digProduct( user, catId, key.getId() );
 					if ( productData != null ) {

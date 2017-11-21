@@ -15,11 +15,37 @@ var FreshDirect = FreshDirect || {};
     return timeslot.dayOfWeek +', ' + monthOfYearAsString(timeslot.month-1) + ' ' + timeslot.dayOfMonth;
   }
 
+
+  // times: {
+  //   dayId1: {
+  //     order: ['5PM', '11PM']  //told the cutoffTime position in the times array
+  //     times: [
+  //       [
+  //         '5PM',
+  //         {timeslot},
+  //         {timeslot},
+  //         ...
+  //         {timeslot}
+  //       ],
+  //       [
+  //         '11PM',
+  //         {timeslot},
+  //         {timeslot}
+  //       ]
+  //     ]
+  //   },
+  //   dayId2: {
+  //     ...
+  //   }
+  // }
+
   function timeslotsFormating(data, _selectedDay) {
     timeslotSelector.timeSlots = data;
     var times = {},
         zonePromoAmount = false,
         selectedDay = _selectedDay,
+        orderArrayLevel = 0,
+        previousDayId = null,
         days;
 
     data.timeSlots.forEach(function(e) {
@@ -29,7 +55,7 @@ var FreshDirect = FreshDirect || {};
           dayId = e.year * 10000 + e.month * 100 + e.dayOfMonth;
 
       if (!times[dayId]) {
-        times[dayId] = {'times':[[],[],[]]};
+        times[dayId] = {'times':[], 'order': []};
         times[dayId].title = daySelectorTittle(timeslot);
       }
 
@@ -47,17 +73,33 @@ var FreshDirect = FreshDirect || {};
         zonePromoAmount = true;
       }
 
-      if (times[dayId] && Number(dayId) === Number(selectedDay)) {
+      if (times[dayId] && +dayId === +selectedDay) {
         times[dayId].selected = true;
       }
 
       if (times[dayId]) {
-        if(date.getHours() < 17) {
-          times[dayId].times[0].push(timeslot);
-        } else if (date.getHours() < 23) {
-          times[dayId].times[1].push(timeslot);
+        if (previousDayId !== dayId) {
+          previousDayId = dayId;
+          var cutoffTimeIndex = times[dayId].order.indexOf(timeslot.cutoffTime)
+          if ( cutoffTimeIndex < 0) {  //check the cutoffTime is existing or not
+            if (times[dayId].order.length < 1) { //check how many existing cutoffTime has got
+              orderArrayLevel = 0;
+            } else {
+              orderArrayLevel = times[dayId].order.length;
+            }
+          } else {
+            orderArrayLevel = cutoffTimeIndex+1;
+          }
+        }
+
+        if (times[dayId].order && times[dayId].order.indexOf(timeslot.cutoffTime) < 0) {
+          times[dayId].order.push(timeslot.cutoffTime);
+          times[dayId].times.push([]);
+          times[dayId].times[orderArrayLevel].push(timeslot.cutoffTime);
+          times[dayId].times[orderArrayLevel].push(timeslot);
+          orderArrayLevel++;
         } else {
-          times[dayId].times[2].push(timeslot);
+          times[dayId].times[orderArrayLevel-1].push(timeslot);
         }
       }
     });

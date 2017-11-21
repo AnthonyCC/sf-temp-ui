@@ -7,7 +7,7 @@
 <%@page import="com.freshdirect.fdstore.customer.FDUserI"%>
 <%@page import="com.freshdirect.fdstore.FDSkuNotFoundException"%>
 <%@page import="com.freshdirect.fdstore.*"%>
-<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="com.freshdirect.storeapi.content.ProductModel"%>
 <%@page import="com.freshdirect.fdstore.FDProduct"%>
 <%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
 <%@ page import="com.freshdirect.framework.util.NVL"%>

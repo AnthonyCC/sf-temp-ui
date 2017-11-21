@@ -2,16 +2,12 @@ package com.freshdirect.smartstore.scoring;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.framework.util.BalkingExpiringReference;
 import com.freshdirect.framework.util.LruCache;
 import com.freshdirect.smartstore.SessionInput;
+import com.freshdirect.storeapi.content.ContentNodeModel;
 
 public class CachingDataGenerator extends DataGenerator {
 
@@ -19,8 +15,6 @@ public class CachingDataGenerator extends DataGenerator {
 
     protected static LruCache<String, BalkingExpiringReference<List<? extends ContentNodeModel>>> cache          = new LruCache<String, BalkingExpiringReference<List<? extends ContentNodeModel>>>(FDStoreProperties.getSmartStoreDataSourceCacheSize());
 
-    private static Executor        threadPool     = new ThreadPoolExecutor(1, 1, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(),
-                                                          new ThreadPoolExecutor.DiscardPolicy());
 
     boolean cacheEnabled;
 
@@ -34,6 +28,7 @@ public class CachingDataGenerator extends DataGenerator {
         return null;
     }
 
+    @Override
     public final List<? extends ContentNodeModel> generate(SessionInput sessionInput, final DataAccess input) {
         if (cacheEnabled) {
             String key = getKey(sessionInput);
@@ -41,14 +36,15 @@ public class CachingDataGenerator extends DataGenerator {
             inp.setCurrentNode(sessionInput.getCurrentNode());
             inp.setExplicitList(sessionInput.getExplicitList());
             if (cache.get(key) == null) {
-                cache.put(key, new BalkingExpiringReference<List<? extends ContentNodeModel>>(HOUR_IN_MILLIS, threadPool, generateImpl(inp, input)) {
+                cache.put(key, new BalkingExpiringReference<List<? extends ContentNodeModel>>(HOUR_IN_MILLIS, generateImpl(inp, input)) {
+                    @Override
                     protected List<? extends ContentNodeModel> load() {
                         List<? extends ContentNodeModel> result = generateImpl(inp, input);
                         return result;
                     }
                 });
             }
-            List<? extends ContentNodeModel> cached = (List<? extends ContentNodeModel>) cache.get(key).get();
+            List<? extends ContentNodeModel> cached = cache.get(key).get();
             if (cached != null) {
                 return cached;
             }
@@ -67,7 +63,7 @@ public class CachingDataGenerator extends DataGenerator {
             return Collections.<ContentNodeModel>emptyList();
         }
 
-        List<? extends ContentNodeModel> cached = (List<? extends ContentNodeModel>) cache.get(key).get();
+        List<? extends ContentNodeModel> cached = cache.get(key).get();
         if (cached != null) {
             return cached;
         }

@@ -7,8 +7,8 @@ package com.freshdirect.fdstore.attributes.cms;
 import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.RelationshipDefI;
-import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.ContentNodeModelUtil;
+import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.ContentNodeModelUtil;
 
 public class GenericNodeBuilder extends AbstractAttributeBuilder {
 

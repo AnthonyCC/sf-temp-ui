@@ -1,7 +1,10 @@
-<%@ page import='com.freshdirect.fdstore.content.*' %>
-<%@ page import='com.freshdirect.fdstore.attributes.*' %>
-<%@ page import='com.freshdirect.cms.*'%>
-<%@ page import='com.freshdirect.cms.application.*'%>
+<%@ page import='com.freshdirect.storeapi.content.*' %>
+<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.storeapi.*'%>
+<%@ page import="com.freshdirect.cms.core.domain.ContentKey" %>
+<%@ page import="com.freshdirect.cms.core.domain.ContentKeyFactory" %>
+<%@ page import="com.freshdirect.cms.core.domain.ContentType" %>
+<%@ page import='com.freshdirect.storeapi.application.*'%>
 <%@ page import='java.util.*'%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -38,7 +41,7 @@ final int W_RECIPE_DR_NAVS_RIGHT = 191;
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <%
 	// go find the recipeDepartment...(should be a method on contentFactory
-	ContentType cType = ContentType.get("RecipeDepartment");
+	ContentType cType = ContentType.RecipeDepartment;
 	Set s = CmsManager.getInstance().getContentKeysByType(cType);
 	// there can only be one (hmmmm, the Highlander effect)
 	RecipeDepartment rcpDept = null;

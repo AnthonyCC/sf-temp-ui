@@ -1,7 +1,7 @@
 <%@ page import='java.util.*' %>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
-<%@ page import='com.freshdirect.fdstore.content.*' %>
+<%@ page import='com.freshdirect.storeapi.content.*' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
@@ -61,7 +61,7 @@ title = "FreshDirect - " + title;
 					<br>
 					<div>
 					<b>Other Recipe<%= (featuredRecipes.size() > 1) ?"s":""%> from this Book</b><br>
-					  <logic:iterate id="aFeatRecipe" collection="<%=featuredRecipes%>" type="com.freshdirect.fdstore.content.Recipe">
+					  <logic:iterate id="aFeatRecipe" collection="<%=featuredRecipes%>" type="com.freshdirect.storeapi.content.Recipe">
 					  <% if (!aFeatRecipe.isAvailable()) { %>
 					  	<%=aFeatRecipe.getName()%><br>
 					  <% continue; } else { %>

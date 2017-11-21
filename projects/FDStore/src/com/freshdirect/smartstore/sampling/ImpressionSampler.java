@@ -3,7 +3,7 @@ package com.freshdirect.smartstore.sampling;
 import java.util.List;
 import java.util.Set;
 
-import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.core.domain.ContentKey;
 
 /**
  * Sampler that produces the Content Keys for impressions.

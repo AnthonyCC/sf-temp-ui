@@ -14,18 +14,19 @@
 <%@page import="java.util.StringTokenizer"%>
 <%@page import="java.util.TreeSet"%>
 <%@page import="java.util.TreeMap"%>
-<%@page import="com.freshdirect.cms.AttributeI"%>
-<%@page import="com.freshdirect.cms.ContentKey"%>
-<%@page import="com.freshdirect.cms.ContentType"%>
-<%@page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
-<%@page import="com.freshdirect.cms.application.CmsManager"%>
+<%@page import="com.freshdirect.storeapi.AttributeI"%>
+<%@page import="com.freshdirect.storeapi.ContentNodeI"%>
+<%@page import="com.freshdirect.cms.core.domain.ContentKey"%>
+<%@page import="com.freshdirect.cms.core.domain.ContentType"%>
+<%@page import="com.freshdirect.storeapi.fdstore.FDContentTypes"%>
+<%@page import="com.freshdirect.storeapi.application.CmsManager"%>
 <%@page import="com.freshdirect.fdstore.FDException"%>
-<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
-<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
-<%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
-<%@page import="com.freshdirect.fdstore.content.DepartmentModel"%>
-<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
-<%@page import="com.freshdirect.fdstore.content.YmalSet"%>
+<%@page import="com.freshdirect.storeapi.content.CategoryModel"%>
+<%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
+<%@page import="com.freshdirect.storeapi.content.ContentNodeModel"%>
+<%@page import="com.freshdirect.storeapi.content.DepartmentModel"%>
+<%@page import="com.freshdirect.storeapi.content.ProductModel"%>
+<%@page import="com.freshdirect.storeapi.content.YmalSet"%>
 <%@page import="com.freshdirect.fdstore.customer.FDCustomerManager"%>
 <%@page import="com.freshdirect.fdstore.customer.FDIdentity"%>
 <%@page import="com.freshdirect.fdstore.customer.FDUserI"%>
@@ -195,7 +196,7 @@ table.rec-inner td {padding: 0px 2px !important; vertical-align: top !important;
     		}
     	});
 
-    	Set keys = CmsManager.getInstance().getContentKeysByType(ContentType.get("YmalSet"));
+    	Set<ContentKey> keys = CmsManager.getInstance().getContentKeysByType(ContentType.YmalSet);
 		LOG.info("found " + keys.size() + " YMAL sets");
     	Iterator it = keys.iterator();
     	while (it.hasNext()) {
@@ -222,25 +223,22 @@ table.rec-inner td {padding: 0px 2px !important; vertical-align: top !important;
 		pageContext.getOut().flush();
 
     	if (departments) {
-	    	keys = CmsManager.getInstance().getContentKeysByType(ContentType.get("Department"));
+	    	keys = CmsManager.getInstance().getContentKeysByType(ContentType.Department);
 			LOG.info("found " + keys.size() + " departments");
 	    	it = keys.iterator();
 	    	while (it.hasNext()) {
 	    		ContentKey key = (ContentKey) it.next();
-	    		DepartmentModel node = (DepartmentModel) ContentFactory.getInstance().getContentNode(key.getId());
-	    		Object obj = node.getNotInheritedAttributeValue("ymalSets");
-	    		if (obj != null) {
-	    			if (obj instanceof List) {
-	    				List ymals = (List) obj;
-	    				Iterator it2 = ymals.iterator();
-	    				while (it2.hasNext()) {
-	    					ContentKey key1 = (ContentKey) it2.next();
-	    					YmalSet set = (YmalSet) ContentFactory.getInstance().getContentNode(key1.getId());
-	    					if (set != null
-	    		    				&& set.getRecommenders() != null && set.getRecommenders().size() != 0)
-	    						((TreeSet) sets.get(set)).add(node);
-	    				}
-	    			}
+	    		ContentNodeI node = CmsManager.getInstance().getContentNode(key);
+	    		List<ContentKey> ymals = (List<ContentKey>) node.getAttributeValue("ymalSets");
+	    		if (ymals != null) {
+    				Iterator<ContentKey> it2 = ymals.iterator();
+    				while (it2.hasNext()) {
+    					ContentKey key1 = (ContentKey) it2.next();
+    					YmalSet set = (YmalSet) ContentFactory.getInstance().getContentNode(key1.getId());
+    					if (set != null
+    		    				&& set.getRecommenders() != null && set.getRecommenders().size() != 0)
+    						((TreeSet) sets.get(set)).add(node);
+    				}
 	    		}
 	    	}
     	}
@@ -252,25 +250,22 @@ table.rec-inner td {padding: 0px 2px !important; vertical-align: top !important;
 		pageContext.getOut().flush();
 
     	if (categories) {
-	    	keys = CmsManager.getInstance().getContentKeysByType(ContentType.get("Category"));
+	    	keys = CmsManager.getInstance().getContentKeysByType(ContentType.Category);
 			LOG.info("found " + keys.size() + " categories");
 	    	it = keys.iterator();
 	    	while (it.hasNext()) {
-	    		ContentKey key = (ContentKey) it.next();
-	    		CategoryModel node = (CategoryModel) ContentFactory.getInstance().getContentNode(key.getId());
-	    		Object obj = node.getNotInheritedAttributeValue("ymalSets");
-	    		if (obj != null) {
-	    			if (obj instanceof List) {
-	    				List ymals = (List) obj;
-	    				Iterator it2 = ymals.iterator();
-	    				while (it2.hasNext()) {
-	    					ContentKey key1 = (ContentKey) it2.next();
-	    					YmalSet set = (YmalSet) ContentFactory.getInstance().getContentNode(key1.getId());
-	    					if (set != null
-	    		    				&& set.getRecommenders() != null && set.getRecommenders().size() != 0)	    							
-	    						((TreeSet) sets.get(set)).add(node);
-	    				}
-	    			}
+                ContentKey key = (ContentKey) it.next();
+                ContentNodeI node = CmsManager.getInstance().getContentNode(key);
+                List<ContentKey> ymals = (List<ContentKey>) node.getAttributeValue("ymalSets");
+                if (ymals != null) {
+    				Iterator<ContentKey> it2 = ymals.iterator();
+    				while (it2.hasNext()) {
+    					ContentKey key1 = (ContentKey) it2.next();
+    					YmalSet set = (YmalSet) ContentFactory.getInstance().getContentNode(key1.getId());
+    					if (set != null
+    		    				&& set.getRecommenders() != null && set.getRecommenders().size() != 0)	    							
+    						((TreeSet) sets.get(set)).add(node);
+    				}
 	    		}
 	    	}
     	}
@@ -282,26 +277,23 @@ table.rec-inner td {padding: 0px 2px !important; vertical-align: top !important;
 		pageContext.getOut().flush();
 
 		if (products) {
-	    	keys = new HashSet(CmsManager.getInstance().getContentKeysByType(ContentType.get("Product")));
-	    	keys.addAll(CmsManager.getInstance().getContentKeysByType(ContentType.get("ConfiguredProduct")));
+	    	keys = new HashSet(CmsManager.getInstance().getContentKeysByType(ContentType.Product));
+	    	keys.addAll(CmsManager.getInstance().getContentKeysByType(ContentType.ConfiguredProduct));
 			LOG.info("found " + keys.size() + " products");
 	    	it = keys.iterator();
 	    	while (it.hasNext()) {
-	    		ContentKey key = (ContentKey) it.next();
-	    		ProductModel node = (ProductModel) ContentFactory.getInstance().getContentNode(key.getId());
-	    		Object obj = node.getNotInheritedAttributeValue("ymalSets");
-	    		if (obj != null) {
-	    			if (obj instanceof List) {
-	    				List ymals = (List) obj;
-	    				Iterator it2 = ymals.iterator();
-	    				while (it2.hasNext()) {
-	    					ContentKey key1 = (ContentKey) it2.next();
-	    					YmalSet set = (YmalSet) ContentFactory.getInstance().getContentNode(key1.getId());
-	    					if (set != null
-	    		    				&& set.getRecommenders() != null && set.getRecommenders().size() != 0)
-	    						((TreeSet) sets.get(set)).add(node);
-	    				}
-	    			}
+                ContentKey key = (ContentKey) it.next();
+                ContentNodeI node = CmsManager.getInstance().getContentNode(key);
+                List<ContentKey> ymals = (List<ContentKey>) node.getAttributeValue("ymalSets");
+                if (ymals != null) {
+                    Iterator<ContentKey> it2 = ymals.iterator();
+    				while (it2.hasNext()) {
+    					ContentKey key1 = (ContentKey) it2.next();
+    					YmalSet set = (YmalSet) ContentFactory.getInstance().getContentNode(key1.getId());
+    					if (set != null
+    		    				&& set.getRecommenders() != null && set.getRecommenders().size() != 0)
+    						((TreeSet) sets.get(set)).add(node);
+    				}
 	    		}
 	    	}
     	}

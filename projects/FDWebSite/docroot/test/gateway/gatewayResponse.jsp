@@ -1,6 +1,6 @@
 <%@ page import='com.freshdirect.framework.util.NVL'%>
-<%@ page import='com.freshdirect.fdstore.content.*'%>
-<%@ page import='com.freshdirect.cms.ContentKey'%>
+<%@ page import='com.freshdirect.storeapi.content.*'%>
+<%@ page import='com.freshdirect.cms.core.domain.ContentKey'%>
 <%@ page import='com.freshdirect.payment.gateway.*'%>
 <%@ page import='com.freshdirect.payment.gateway.impl.*'%>
 <%@ page import='com.freshdirect.payment.gateway.test.*'%>

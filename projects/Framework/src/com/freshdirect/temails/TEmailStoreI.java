@@ -2,8 +2,6 @@ package com.freshdirect.temails;
 
 import java.util.Map;
 
-import com.freshdirect.rules.Rule;
-
 /**
  * Service interface for rules engine.
  */

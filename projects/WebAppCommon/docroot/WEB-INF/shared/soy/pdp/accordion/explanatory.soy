@@ -9,10 +9,10 @@
   {if $expertRating or (isNonnull($heatRating) and $heatRating > -1)}
     <li class="pdp-accordion-explanatory pdp-accordion-item">
       <a name="explanatory"></a>
-      <input type="checkbox" id="pdp-explanatory">
-      <label for="pdp-explanatory">
+      
+      <a href="#" onclick="return false;" class="pdp-item-description-toggle" id="pdp-explanatory">
         <span class="pdp-accordion-item-carrot"></span>Explanatory Information
-      </label>
+      </a>
       <a id="explanatory"></a>
       <div>
       /*

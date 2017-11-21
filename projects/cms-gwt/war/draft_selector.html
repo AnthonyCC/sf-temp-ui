@@ -4,6 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
 <title>Content Editor - FreshDirect CMS</title>
 <link rel="stylesheet" type="text/css" href="css/main.css"/>
+<link rel="icon" type="image/x-icon" href="./favicon.png" />
 <script type="text/javascript" src="jquery/jquery-1.11.2.min.js" />
 <script>
 window.onload = function () {
@@ -42,7 +43,7 @@ window.onload = function () {
             <br/>
         </div>
 
-        <form name="draftSelector" method="POST" action="draft">
+        <form name="draftSelector" method="POST" action="cms/draft">
         
             <table class="form">
                 <tr>
@@ -71,7 +72,7 @@ window.onload = function () {
 
         $(document).ready(function() {
             $.ajax({
-                url : 'draft',
+                url : 'cms/draft',
                 method : 'GET',
                 success : function(data) {
                     var draftSelector = $('#draft');

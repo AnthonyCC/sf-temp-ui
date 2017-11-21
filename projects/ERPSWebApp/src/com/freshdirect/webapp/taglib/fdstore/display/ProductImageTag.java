@@ -17,20 +17,20 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.WineUtil;
-import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.ContentNodeModelUtil;
 import com.freshdirect.fdstore.content.EnumBurstType;
-import com.freshdirect.fdstore.content.Image;
-import com.freshdirect.fdstore.content.PriceCalculator;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
 import com.freshdirect.fdstore.util.ProductLabeling;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;
+import com.freshdirect.storeapi.ContentNodeI;
+import com.freshdirect.storeapi.content.ContentNodeModelUtil;
+import com.freshdirect.storeapi.content.Image;
+import com.freshdirect.storeapi.content.PriceCalculator;
+import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.taglib.fdstore.BrowserInfo;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 

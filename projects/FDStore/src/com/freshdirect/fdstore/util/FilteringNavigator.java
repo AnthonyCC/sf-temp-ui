@@ -15,12 +15,12 @@ import javax.servlet.ServletRequest;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.fdstore.content.EnumSearchFilteringValue;
-import com.freshdirect.fdstore.content.FilteringValue;
 import com.freshdirect.fdstore.content.SearchSortType;
-import com.freshdirect.fdstore.content.SortTypeI;
 import com.freshdirect.fdstore.content.UrlFilterValueDecoder;
 import com.freshdirect.fdstore.content.util.QueryParameter;
+import com.freshdirect.storeapi.content.EnumSearchFilteringValue;
+import com.freshdirect.storeapi.content.FilteringValue;
+import com.freshdirect.storeapi.content.SortTypeI;
 
 public class FilteringNavigator {
 	public static final Logger LOGGER = Logger.getLogger(FilteringNavigator.class);

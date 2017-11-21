@@ -1,14 +1,12 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
-
-import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.ConfiguredProduct;
-import com.freshdirect.fdstore.content.ConfiguredProductGroup;
-import com.freshdirect.fdstore.content.SkuModel;
-
 import com.freshdirect.fdstore.content.RecommendedAlternative;
+import com.freshdirect.storeapi.content.ConfiguredProduct;
+import com.freshdirect.storeapi.content.ConfiguredProductGroup;
+import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.content.SkuModel;
 
 import java.util.Iterator;
 import java.util.Map;

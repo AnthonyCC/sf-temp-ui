@@ -455,7 +455,13 @@ public class FDStandingOrderDAO {
 		so.setCustomerEmail(rs.getString("USER_ID"));
 		so.setStartTime( rs.getTime("START_TIME") );
 		so.setEndTime( rs.getTime("END_TIME") );
-		so.setNextDeliveryDate( rs.getDate("NEXT_DATE") );
+		if(null != so.getStartTime() && !"00:00:00".equalsIgnoreCase(so.getStartTime().toString())){	//COS17-33
+			so.setNextDeliveryDate( rs.getDate("NEXT_DATE") );
+		}else{
+			so.setStartTime(null);
+			so.setEndTime(null);
+			so.setNextDeliveryDate(null);
+		}
 		so.setPreviousDeliveryDate(so.getNextDeliveryDate());
 		
 		so.setFrequency( rs.getInt("FREQUENCY") );

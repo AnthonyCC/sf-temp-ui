@@ -3,8 +3,8 @@
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import='java.util.*'  %>
 <%@ page import='java.net.URLEncoder'%>
-<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
-<%@ page import='com.freshdirect.fdstore.attributes.*' %>
+<%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.storeapi.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.content.attributes.*' %>
@@ -177,7 +177,7 @@ boolean hideFi = false;
 		<font class="space4pix"><br /></font>
 		<table cellspacing="0" cellpadding="1" border="0" width="<%= W_GROCERY_CATEGORY_LAYOUT_TOTAL %>">
 			<tr valign="TOP" align="CENTER">
-				<logic:iterate id='contentNode' collection="<%= products %>" type="com.freshdirect.fdstore.content.ProductModel"><%
+				<logic:iterate id='contentNode' collection="<%= products %>" type="com.freshdirect.storeapi.content.ProductModel"><%
 						
 						ProductModel productNode = contentNode;
 						ProductImpression pi = new ProductImpression(productNode);

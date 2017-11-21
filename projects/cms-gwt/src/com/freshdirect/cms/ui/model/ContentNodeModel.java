@@ -8,35 +8,28 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * This model object represents a content node, it contains an key, a label, and a type.
  * It is used for example by the tree widgets.
- * 
- * @author zsombor
- *
  */
 
 public class ContentNodeModel extends BaseModel implements Comparable<ContentNodeModel>, IsSerializable {
-
+    
     private static final long serialVersionUID = 1L;
 
-    private String previewUrl = null;
-    private int width = 0;    
+    private String previewUrl;
+    private int width = 0;
     private int height = 0;
     private String iconOverride = "";
-    
-	protected ContentNodeModel() {		
+
+	protected ContentNodeModel() {
 	}
 
-    
     public ContentNodeModel( String type, String label, String key ) {
 		setLabel( label );
 		setKey( key );
 		setType( type );
     }
-    
+
     public ContentNodeModel( ContentNodeModel node ) {
-		setLabel( node.getLabel() );
-		setKey( node.getKey() );
-		setType( node.getType() );
-		
+		this(node.getType(), node.getLabel(), node.getKey());
 		setWidth( node.getWidth() );
 		setHeight( node.getHeight() );
 		setPreviewUrl( node.getPreviewUrl() );
@@ -135,7 +128,7 @@ public class ContentNodeModel extends BaseModel implements Comparable<ContentNod
 	        ContentNodeModel c = (ContentNodeModel) obj;
 	        return c.getKey().equals(getKey());
 	    }
-	    return false;	   	    
+	    return false;
 	}
 	
     public Widget renderLinkComponent() {

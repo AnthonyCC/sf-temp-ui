@@ -1,4 +1,4 @@
-<%@ page import='com.freshdirect.fdstore.content.*'%>
+<%@ page import='com.freshdirect.storeapi.content.*'%>
 <%@ page import='java.util.*' %>
 <%
 	boolean inMobWebTemplateOptimized = (request.getAttribute("inMobWebTemplateOptimized") != null && ("true").equalsIgnoreCase(request.getAttribute("inMobWebTemplateOptimized").toString())) ? true : false;
@@ -102,7 +102,7 @@
 			<div id="search" style="display: none;">
 				<form class="searchform" name="search" action="/search.jsp" method="get" accept-charset="iso-8859-1">
 					<span class="icon-search"></span>
-					<input type="text" id="topSearchField" placeholder="Search" data-component="autocomplete" class="search ui-autocomplete-input fnt-18" name='searchParams' autocomplete="off" />
+					<input type="text" id="topSearchField" aria-label="search" placeholder="Search" data-component="autocomplete" class="search ui-autocomplete-input fnt-18" name='searchParams' autocomplete="off" />
 				</form>
 			</div>
 		</div>

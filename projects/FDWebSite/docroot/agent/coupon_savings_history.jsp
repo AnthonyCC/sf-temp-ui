@@ -2,10 +2,13 @@
 <%@ page import="com.freshdirect.framework.util.*" %>
 <%@ page import='com.freshdirect.fdstore.ecoupon.*' %>
 <%@ page import='com.freshdirect.fdstore.ecoupon.model.*' %>
-<%@ page import='com.freshdirect.fdstore.content.*' %>
-<%@ page import='com.freshdirect.cms.*' %>
-<%@ page import='com.freshdirect.cms.application.*' %>
-<%@ page import='com.freshdirect.cms.fdstore.*' %>
+<%@ page import='com.freshdirect.storeapi.content.*' %>
+<%@ page import='com.freshdirect.storeapi.*' %>
+<%@ page import='com.freshdirect.cms.core.domain.ContentKey' %>
+<%@ page import='com.freshdirect.cms.core.domain.ContentKeyFactory' %>
+<%@ page import='com.freshdirect.cms.core.domain.ContentType' %>
+<%@ page import='com.freshdirect.storeapi.application.*' %>
+<%@ page import='com.freshdirect.storeapi.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ page import='java.text.NumberFormat' %>
@@ -94,7 +97,7 @@
 	private List getProductsForAllDepartments(List<ProductModel> searchproducts,Map<String, String> departments,String searchTerm){
 		//***Iterate thru departments
 		for (String key : departments.keySet()) {
-			ContentKey deptKey = ContentKey.getContentKey("Department:"+key);
+			ContentKey deptKey = ContentKeyFactory.get(ContentType.Department, key);
 			ContentNodeI depContentNode = manager.getContentNode(deptKey);					
 			if(null !=depContentNode) {
 				Set subNodes = depContentNode.getChildKeys();
@@ -324,7 +327,7 @@ color: #000000;
 				searchTerm = request.getParameter("search_term");
 				//search products,
 				if(null != searchTerm && !"".equals(searchTerm.trim())){
-					SearchResults results = ContentSearch.getInstance().searchProducts(searchTerm);
+					SearchResults results = StoreServiceLocator.contentSearch().searchProducts(searchTerm);
 	                for ( FilteringSortingItem  node : results.getProducts() ) {
 	                    ContentNodeModel n1 = node.getNode();
 	                    if ( n1 instanceof ProductModel) {
@@ -366,7 +369,7 @@ color: #000000;
 				}
 				else {
 					//get all products for selected brand
-					ContentKey departmentKey = ContentKey.getContentKey("Department:"+selectedDepartment);
+					ContentKey departmentKey = ContentKeyFactory.get("Department:"+selectedDepartment);
 					ContentNodeI deptContentNode = manager.getContentNode(departmentKey);
 					cList = new ArrayList<FDCouponInfo>();
 					if(null !=deptContentNode) {
@@ -378,7 +381,7 @@ color: #000000;
 							ContentNodeI subContentNode =null;
 							boolean proceed = false;
 							if(breakloop){
-								ContentKey categoryKey = ContentKey.getContentKey("Category:"+selectedCategory);
+								ContentKey categoryKey = ContentKeyFactory.get("Category:"+selectedCategory);
 								subContentNode = manager.getContentNode(categoryKey);
 								proceed = true;
 								
@@ -454,7 +457,7 @@ color: #000000;
 			StringBuilder sb = new StringBuilder();
 			// String key = (String) enumer.nextElement();
 			String value = (String) departments.get(key);
-			ContentKey deptKey = ContentKey.getContentKey("Department:"+key);
+			ContentKey deptKey = ContentKeyFactory.get("Department:"+key);
 			ContentNodeI depContentNode = manager.getContentNode(deptKey);
 			if(null !=depContentNode) {
 				sb.append("{");
@@ -827,7 +830,7 @@ color: #000000;
 				p.name = coupon.getShortDescription();
 				
 				if("FILTER".equals(request.getParameter("so_filter_submit")) && (request.getParameter("brand") != null && !"-1".equals(request.getParameter("brand")))) {
-					ContentKey brandKey = ContentKey.getContentKey("Brand:"+request.getParameter("brand"));
+					ContentKey brandKey = ContentKeyFactory.get(ContentType.Brand, request.getParameter("brand"));
 					ContentNodeI brandContentNode = manager.getContentNode(brandKey);
 					BrandModel _bmodel = (BrandModel) ContentFactory.getInstance().getContentNodeByKey(brandKey);
 				

@@ -10,8 +10,8 @@
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import='java.util.*'  %>
 <%@ page import='java.net.URLEncoder'%>
-<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
-<%@ page import='com.freshdirect.fdstore.attributes.*' %>
+<%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.storeapi.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.content.attributes.*' %>
@@ -450,7 +450,7 @@ if (isAvailable ) {
 		   String salesUnitName = "NA";
 		   
 		   FDSalesUnit[] salesUnits;    %>
-		  <logic:iterate id='optProd' collection="<%=optionalProducts%>" type="com.freshdirect.fdstore.content.ProductModel" indexId='optIdx'>
+		  <logic:iterate id='optProd' collection="<%=optionalProducts%>" type="com.freshdirect.storeapi.content.ProductModel" indexId='optIdx'>
 	<%	
 		   SkuModel dfltSku = optProd.getDefaultSku();
 		   if (dfltSku==null) continue;
@@ -594,7 +594,7 @@ if (isAvailable ) {
                   <TD align="center">
             <BR>
             <IMG src="/media_stat/images/layout/cccccc.gif" ALT="" WIDTH="<%=W_COMPONENT_GROUP_MEAL_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
-              <logic:iterate id='mediaRef' indexId='indexNo' collection="<%=catMidMedias%>" type="com.freshdirect.fdstore.content.MediaModel">
+              <logic:iterate id='mediaRef' indexId='indexNo' collection="<%=catMidMedias%>" type="com.freshdirect.storeapi.content.MediaModel">
     <%          if (((Html)mediaRef).getPath()!=null  && ((Html)mediaRef).getPath().toLowerCase().indexOf("blank.")==-1) { 
                                if(indexNo.intValue()!=0){ %>
                                      <img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>
@@ -843,7 +843,7 @@ if (isAvailable ) {
 			<FONT CLASS="space4pix"><br><br></FONT>
        </TD>
        <TR><TD align="center">
-              <logic:iterate id='mediaRef' indexId='indexNo' collection="<%=catBottomMedias%>" type="com.freshdirect.fdstore.content.MediaModel">
+              <logic:iterate id='mediaRef' indexId='indexNo' collection="<%=catBottomMedias%>" type="com.freshdirect.storeapi.content.MediaModel">
     <%          if (((Html)mediaRef).getPath()!=null) { %>
                                <% if(indexNo.intValue()!=0){ %>
                                      <img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>

@@ -34,14 +34,14 @@ public class FDMaterialGroupCache {
 		@Override
 		protected Map<String, List<String>> load() {
 			try {
-				LOGGER.info("REFRESHING GROUP MAP FOR ANY CHANGES FROM LAST EXECUTED TIME: "+lastExecuted);
+				//LOGGER.info("REFRESHING GROUP MAP FOR ANY CHANGES FROM LAST EXECUTED TIME: "+lastExecuted);
 				Map<String, List<String>> latestGroups = new HashMap<String, List<String>>();
 				Date currDate = new Date();					
 				latestGroups = FDFactory.getModifiedOnlyGroups(lastExecuted);
 				populateMaterialGroupsCache(grpMaterialsLastModified, latestGroups);
 				lastExecuted = currDate;				
 				grpMaterialsLastModified.putAll(latestGroups);
-				LOGGER.info("REFRESHED GROUP MAP FOR ANY CHANGES: "+(null !=latestGroups?latestGroups.size():"0")+" groups changed");
+				//LOGGER.info("REFRESHED GROUP MAP FOR ANY CHANGES: "+(null !=latestGroups?latestGroups.size():"0")+" groups changed");
 				return latestGroups;
 			} catch (FDResourceException ex) {
 				throw new FDRuntimeException(ex);
@@ -67,9 +67,9 @@ public class FDMaterialGroupCache {
 			for (Iterator<String> iterator = materials.iterator(); iterator.hasNext();) {
 				String material = (String) iterator.next();
 				try {
-					LOGGER.info("Fetching groups for material: "+material);
+					//LOGGER.info("Fetching groups for material: "+material);
 					Map<String,FDGroup> groupsForMaterial = FDFactory.getGroupIdentityForMaterial(material);
-					LOGGER.info("Fetched groups for material: "+material);
+					//LOGGER.info("Fetched groups for material: "+material);
 					materialGroupsCache.remove(material);
 					if(null !=groupsForMaterial && !groupsForMaterial.isEmpty()){
 						materialGroupsCache.put(material,groupsForMaterial);

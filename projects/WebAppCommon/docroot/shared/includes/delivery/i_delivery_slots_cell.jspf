@@ -176,7 +176,7 @@
                                                                                                             ?" "+soFirstNextTextCell+""+slot.getFormattedSoFirstDeliveryDate()+""
                                                                                                                     :"")));
                 if (!isStaticSlot && !"".trim().equals(labelText)&& !(labelText).contains("null"))  { 
-                    stringBuffer.append("<label for=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\"><span class=\"offscreen\">"+labelText+"</span></label>");
+                    stringBuffer.append("<label for=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\"><span class=\"offscreen\">"+TimeslotPageUtil.formatDayNameExp(day)+" "+((user.getCurrentStandingOrder())!=null?"": TimeslotPageUtil.formatDeliveryDateNew(day) )+", "+labelText+"</span></label>");
                 }
                 stringBuffer.append("</div>"); /* closing tag for id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rbCont\" */
                 

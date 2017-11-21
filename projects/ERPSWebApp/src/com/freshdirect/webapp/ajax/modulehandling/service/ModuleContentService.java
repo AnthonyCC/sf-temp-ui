@@ -8,26 +8,26 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.ContentNodeI;
-import com.freshdirect.cms.node.ContentNodeUtil;
-import com.freshdirect.cms.util.ProductPromotionUtil;
+import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.fdstore.FDNotFoundException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.DepartmentModel;
-import com.freshdirect.fdstore.content.Image;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.SortStrategyType;
-import com.freshdirect.fdstore.content.StoreModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.ValueHolder;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.Recommendations;
+import com.freshdirect.storeapi.ContentNodeI;
+import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.DepartmentModel;
+import com.freshdirect.storeapi.content.Image;
+import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.content.SortStrategyType;
+import com.freshdirect.storeapi.content.StoreModel;
+import com.freshdirect.storeapi.node.ContentNodeUtil;
+import com.freshdirect.storeapi.util.ProductPromotionUtil;
 import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
 import com.freshdirect.webapp.ajax.browse.data.BrowseData.SectionDataCointainer;
 import com.freshdirect.webapp.ajax.browse.data.CmsFilteringFlowResult;
@@ -63,7 +63,7 @@ public class ModuleContentService {
 
         SectionDataCointainer sectionDataContainer = result.getBrowseDataPrototype().getSections();
         List<SectionData> sections = sectionDataContainer.getSections();
-        
+
         loadProductsFromSections(sectionDataContainer,sections,0,products);
 
         return products;

@@ -71,10 +71,7 @@ import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.OncePerRequestDateCache;
 import com.freshdirect.fdstore.ZonePriceListing;
-import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.EnumWinePrice;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.customer.adapter.PromotionContextAdapter;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
@@ -122,6 +119,9 @@ import com.freshdirect.logistics.delivery.model.FulfillmentInfo;
 import com.freshdirect.logistics.delivery.model.SalesArea;
 import com.freshdirect.smartstore.fdstore.CohortSelector;
 import com.freshdirect.smartstore.fdstore.DatabaseScoreFactorProvider;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.content.ProductReference;
 
 public class FDUser extends ModelSupport implements FDUserI {
 
@@ -2425,6 +2425,7 @@ public class FDUser extends ModelSupport implements FDUserI {
                 }
 
                 userContext = setFulfillmentAndPricingContext(userContext, address, true);
+                ContentFactory.getInstance().setCurrentUserContext(userContext);
             }
         } catch (FDResourceException e) {
             throw new FDRuntimeException(e, e.getMessage());

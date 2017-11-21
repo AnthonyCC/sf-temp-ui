@@ -13,9 +13,9 @@ import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
-import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.storeapi.content.DepartmentModel;
 import com.freshdirect.fdstore.content.EnumProductLayout;
-import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.content.SkuModel;
 

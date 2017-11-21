@@ -6,12 +6,12 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.FDNotFoundException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.fdstore.FDContentTypes;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.filtering.InvalidFilteringArgumentException;
 import com.freshdirect.webapp.ajax.modulehandling.data.ModuleContainerData;
@@ -40,7 +40,7 @@ public class ModuleImageProductsServlet extends BaseJsonServlet {
             String moduleVirtualCategory = request.getParameter("moduleVirtualCategory");
 
             if (iconId != null) {
-                imageBannerContentKey = FDContentTypes.IMAGE_BANNER.getName() + ":" + iconId;
+                imageBannerContentKey = FDContentTypes.IMAGE_BANNER.name() + ":" + iconId;
             }
 
             // Checklogin status is not applicable for AJAX calls so we need this.

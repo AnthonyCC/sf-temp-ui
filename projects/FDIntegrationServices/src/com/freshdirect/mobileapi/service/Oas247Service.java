@@ -14,13 +14,13 @@ import org.apache.log4j.Category;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.ProfileModel;
 import com.freshdirect.framework.util.QueryStringBuilder;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.util.GeneralCacheAdministratorFactory;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
+import com.freshdirect.storeapi.content.ContentFactory;
 import com.opensymphony.oscache.base.NeedsRefreshException;
 import com.opensymphony.oscache.general.GeneralCacheAdministrator;
 

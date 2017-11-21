@@ -2,7 +2,7 @@ package com.freshdirect.webapp.taglib.fdstore;
 
 import java.util.List;
 
-import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.ContentNodeModel;
 
 /**@author ekracoff*/
 public class ComponentPopupView {

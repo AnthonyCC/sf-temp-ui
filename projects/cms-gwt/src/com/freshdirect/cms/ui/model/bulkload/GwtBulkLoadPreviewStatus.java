@@ -10,6 +10,7 @@ public class GwtBulkLoadPreviewStatus implements Serializable {
 	private BulkLoadPreviewState state;
 	private String message;
 	private Integer index;
+	transient private Object contentKey;
 	transient private Object node;
 	transient private String attribute;
 
@@ -26,6 +27,7 @@ public class GwtBulkLoadPreviewStatus implements Serializable {
 	public GwtBulkLoadPreviewStatus(GwtBulkLoadPreviewStatus status) {
 		this.state = status.state;
 		this.message = status.message;
+		this.contentKey = status.contentKey;
 		this.node = status.node;
 		this.index = status.index;
 	}
@@ -45,6 +47,14 @@ public class GwtBulkLoadPreviewStatus implements Serializable {
 	public void setMessage(String message) {
 		this.message = message;
 	}
+
+    public Object getContentKey() {
+        return contentKey;
+    }
+
+    public void setContentKey(Object contentKey) {
+        this.contentKey = contentKey;
+    }
 
 	public Object getNode() {
 		return node;
@@ -69,7 +79,7 @@ public class GwtBulkLoadPreviewStatus implements Serializable {
 	public void setIndex(Integer index) {
 		this.index = index;
 	}
-	
+
 	public void removeIndex() {
 		this.index = null;
 	}

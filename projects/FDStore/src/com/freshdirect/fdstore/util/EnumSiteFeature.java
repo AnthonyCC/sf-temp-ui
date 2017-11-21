@@ -13,13 +13,13 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.Latch;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.ejb.DynamicSiteFeature;
 import com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration;
+import com.freshdirect.storeapi.application.CmsManager;
 
 
 public class EnumSiteFeature implements Serializable, Comparable<EnumSiteFeature> {

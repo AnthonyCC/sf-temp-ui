@@ -16,14 +16,14 @@ import javax.servlet.jsp.tagext.VariableInfo;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.Domain;
-import com.freshdirect.fdstore.content.DomainValue;
-import com.freshdirect.fdstore.content.EnumShowChildrenType;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.Domain;
+import com.freshdirect.storeapi.content.DomainValue;
+import com.freshdirect.storeapi.content.EnumShowChildrenType;
+import com.freshdirect.storeapi.content.ProductModel;
 
 /**
  * @author zsombor
@@ -225,7 +225,7 @@ public class WineSideNav extends BaseSideNav {
 					new VariableInfo(data.getAttributeString("navList"),
 							"java.util.List<com.freshdirect.webapp.taglib.fdstore.NavigationElement>", true, VariableInfo.NESTED),
 					new VariableInfo(data.getAttributeString("childCatMap"),
-							"java.util.Map<String, List<com.freshdirect.fdstore.content.CategoryModel>>", true, VariableInfo.NESTED),
+							"java.util.Map<String, List<com.freshdirect.storeapi.content.CategoryModel>>", true, VariableInfo.NESTED),
 					new VariableInfo(
 							data.getAttributeString("showMoreOptions"),
 							"java.lang.Boolean", true, VariableInfo.NESTED),
@@ -233,7 +233,7 @@ public class WineSideNav extends BaseSideNav {
 							data.getAttributeString("unavailableList"),
 							"java.util.List<com.freshdirect.webapp.taglib.fdstore.NavigationElement>", true, VariableInfo.NESTED),
 					new VariableInfo(data.getAttributeString("topCategory"),
-							"com.freshdirect.fdstore.content.CategoryModel",
+							"com.freshdirect.storeapi.content.CategoryModel",
 							true, VariableInfo.NESTED)
 			};
 

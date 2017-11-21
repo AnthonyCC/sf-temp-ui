@@ -9,8 +9,8 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.storeapi.content.ContentNodeModel;
 
 public class FolderNavigationElement extends NavigationElement {
 

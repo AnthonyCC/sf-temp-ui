@@ -3,12 +3,8 @@ package com.freshdirect.webapp.ajax;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.Locale;
 
 import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,13 +14,12 @@ import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.InvalidUserException;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -151,39 +146,21 @@ public abstract class BaseJsonServlet extends HttpServlet {
 		return reqData;
 	}
 	
-	protected final static <T> void writeResponseData( HttpServletResponse response, T responseData ) throws HttpErrorResponse {
-		
-		// Set response parameters
-		configureJsonResponse( response );
-		
-		// Serialize data to JSON and write out the result 
-		try {
-			
-			Writer writer = new StringWriter();
-			new ObjectMapper().writeValue( writer, responseData );
-			
-			ServletOutputStream out = response.getOutputStream();
-			String responseStr = writer.toString();
-			
-//			LOG.debug( "Generated response data: " + responseStr );
-			
-			out.print( responseStr );
-			
-			out.flush();
-			
-		} catch ( JsonGenerationException e ) {
-        	returnHttpError( 500, "Error writing JSON response", e );	// 500 Internal Server Error
-		} catch ( JsonMappingException e ) {
-        	returnHttpError( 500, "Error writing JSON response", e );	// 500 Internal Server Error
-		} catch ( IOException e ) {
-        	returnHttpError( 500, "Error writing JSON response", e );	// 500 Internal Server Error
-		} catch ( Exception e ) {
-        	returnHttpError( 500, "Error writing JSON response", e );	// 500 Internal Server Error
-		}
-	}
+    protected final static <T> void writeResponseData(HttpServletResponse response, T responseData) throws HttpErrorResponse {
+        try {
+            JsonHelper.writeResponseData(response, responseData);
+        } catch (JsonGenerationException e) {
+            returnHttpError(500, "Error writing JSON response", e); // 500 Internal Server Error
+        } catch (JsonMappingException e) {
+            returnHttpError(500, "Error writing JSON response", e); // 500 Internal Server Error
+        } catch (IOException e) {
+            returnHttpError(500, "Error writing JSON response", e); // 500 Internal Server Error
+        } catch (Exception e) {
+            returnHttpError(500, "Error writing JSON response", e); // 500 Internal Server Error
+        }
+    }
 	
 	private static void fixPutRequestParams( HttpServletRequest request ) throws HttpErrorResponse {
-
 		BufferedReader br;
 		String line = null;
 		try {
@@ -196,16 +173,6 @@ public abstract class BaseJsonServlet extends HttpServlet {
 			returnHttpError( 400, "Cannot read request data" ); // 400 Bad Request
 		}
 	}	
-	
-	
-	public final static void configureJsonResponse(HttpServletResponse response) {
-		// Set common response properties for JSON response
-		response.setHeader( "Cache-Control", "no-cache" );
-		response.setHeader( "Pragma", "no-cache" );
-		response.setContentType( "application/json" );
-		response.setLocale( Locale.US );
-		response.setCharacterEncoding( "ISO-8859-1" );
-	}
 
 	/**
      * Does the authentication, checks user auth level, returns the user object.

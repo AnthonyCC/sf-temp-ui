@@ -1,13 +1,12 @@
 package com.freshdirect.webapp.taglib.fdstore.display;
 
 import com.freshdirect.fdstore.content.EnumBurstType;
-import com.freshdirect.fdstore.content.PriceCalculator;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.ProductLabeling;
 
 import com.freshdirect.framework.webapp.BodyTagSupport;
-
+import com.freshdirect.storeapi.content.PriceCalculator;
+import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 import java.io.IOException;

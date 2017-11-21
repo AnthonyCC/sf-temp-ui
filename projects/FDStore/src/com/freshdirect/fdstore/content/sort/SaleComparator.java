@@ -5,10 +5,10 @@ import java.util.Comparator;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDProductInfo;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.SkuModel;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.content.SkuModel;
 
 
 /**

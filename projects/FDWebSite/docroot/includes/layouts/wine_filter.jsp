@@ -3,7 +3,7 @@
 <%@page import="java.util.List"%>
 <%@page import="com.freshdirect.fdstore.content.util.EnumWineViewType"%>
 <%@page import="com.freshdirect.webapp.util.ProductImpression"%>
-<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="com.freshdirect.storeapi.content.ProductModel"%>
 <%@page import="com.freshdirect.fdstore.content.util.EnumWinePageSize"%>
 <%@page import="com.freshdirect.fdstore.content.util.QueryParameter"%>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>

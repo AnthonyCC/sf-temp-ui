@@ -1,5 +1,5 @@
 <%@ page import='com.freshdirect.fdstore.*'%>
-<%@ page import='com.freshdirect.fdstore.content.*'%>
+<%@ page import='com.freshdirect.storeapi.content.*'%>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.fdstore.util.RatingUtil'%>
 <%@ page import='com.freshdirect.webapp.util.*' %>

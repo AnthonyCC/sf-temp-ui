@@ -28,7 +28,6 @@ import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -49,6 +48,7 @@ import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.fdstore.util.FDTimeslotUtil;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.ajax.expresscheckout.location.data.FormLocationData;
 import com.freshdirect.webapp.ajax.expresscheckout.payment.data.FormPaymentData;
 import com.freshdirect.webapp.ajax.expresscheckout.service.SinglePageCheckoutFacade;
@@ -761,8 +761,9 @@ public class StandingOrderHelper {
 		}if(null!=paymentData && null!=paymentData.getSelected()){
 			so.setPaymentMethodId(paymentData.getSelected());
 		}if(null!=timeSlotData){
-			so.setStartTime(timeSlotData.getStartDate());
-			so.setEndTime(timeSlotData.getEndDate());
+			so.setStartTime(null);
+			so.setEndTime(null);
+			so.setNextDeliveryDate(null);
 		}
 		
 	return so;
@@ -1230,7 +1231,8 @@ private static String convert(Date time) {
 	public static String getDeliveryBeginsInfo(FDUserI user) {
 		FDStandingOrder fdStandingOrder = user.getCurrentStandingOrder();
 		try {
-			if (fdStandingOrder != null	&& "Y".equalsIgnoreCase(fdStandingOrder.getActivate())&& fdStandingOrder.getDeliveryMonthDate() != null) {
+			if ( fdStandingOrder != null	&& "Y".equalsIgnoreCase(fdStandingOrder.getActivate()) &&
+					fdStandingOrder.getNextDeliveryDate()!=null && fdStandingOrder.getDeliveryMonthDate() != null) {
 				return fdStandingOrder.getDayOfWeek(fdStandingOrder, false)+ ", "+ fdStandingOrder.getDeliveryMonthDate()+ ", "
 						+ DateUtil.formatHourAMPMRange(fdStandingOrder.getStartTime(), user.getCurrentStandingOrder().getEndTime());
 			}
@@ -1342,6 +1344,7 @@ private static String convert(Date time) {
 			}
 		}
 	
+	//to preserve existing SO template timeslot when shifts address within session and didnot choose new timeslot
 	public static boolean userCanBeSaved(FDUserI user, boolean canBeSaved, String deliveryAddressId) throws FDResourceException {
 		FDStandingOrder currentStandingOrder = user.getCurrentStandingOrder();
                  	
@@ -1377,5 +1380,29 @@ private static String convert(Date time) {
 			}
 		}
 		return canBeSaved;
+	}
+	
+	//if SO user edits address, to delete the timeslots in templates if any, to avoid mismatch of timslot with updated address
+	public static void evaluteEditSoAddressID(HttpSession session, FDSessionUser user, String deliveryAddressId) {
+		Collection<FDStandingOrder> soValidList = user.getValidSO3();
+		try {
+			for (FDStandingOrder soValidtemplate : soValidList) {
+				if (deliveryAddressId != null && deliveryAddressId.equals(soValidtemplate.getAddressId())) {
+					LOGGER.debug("indside evaluteEditSoAddressID(), action by user: "
+							+ user.getIdentity().getErpCustomerPK() + ", " + "deleting timeslots for  SO3 template: "
+							+ soValidtemplate.getId() + " ,addressId: " + soValidtemplate.getAddressId());
+					soValidtemplate.setStartTime(null);
+					soValidtemplate.setEndTime(null);
+					soValidtemplate.setNextDeliveryDate(null);
+					if (session != null) {
+						FDActionInfo info = AccountActivityUtil.getActionInfo(session);
+						FDStandingOrdersManager.getInstance().save(info, soValidtemplate);
+						user.setRefreshSO3(true);
+					}
+				}
+			}
+		}catch (FDResourceException e1) {
+			LOGGER.error("for user: "+user.getUserId()+" Exception occurred in evaluteEditSoAddressID() : "+e1);
+		}
 	}
 }

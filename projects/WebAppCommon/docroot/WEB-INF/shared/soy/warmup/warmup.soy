@@ -1,0 +1,99 @@
+{namespace warmup}
+
+/**
+* @param notTriggered
+* @param inProgress
+* @param repeatedWarmupCanHappen
+* @param manualWarmupAllowed
+*/
+{template .main}
+<html>
+  <head>
+  <title>
+    Warmup
+  </title>
+  </head>
+  <body>
+  {if $inProgress}
+    {call .inprogress}{/call}
+  {elseif not $manualWarmupAllowed}
+    {call .unavailable data="all"}{/call}
+  {elseif $notTriggered}
+    {call .nottriggered}{/call}
+  {else}
+    {call .finished data="all"}{/call}
+  {/if}
+  </body>
+</html>
+{/template}
+
+/**
+*
+*/
+{template .nottriggered}
+  <div>
+    <p>Warmup is not triggered yet. Triggering warmup here will only warmup this webnode, not the whole cluster!</p>
+  </div>
+  <div>
+    <p>You can start warmup</p>
+    <form action="/api/warmup" method="POST">
+      <button>Here</button>
+    </form>
+  </div>
+{/template}
+
+/**
+*
+*/
+{template .inprogress}
+  <div>
+    <p>Warmup is in progress. Please be patient.</p>
+  </div>
+{/template}
+
+/**
+* @param repeatedWarmupCanHappen
+*/
+{template .finished}
+  <div>
+    <p>Warmup done</p>
+  </div>
+  {if $repeatedWarmupCanHappen}
+  <div>
+    <form action="/api/warmup" method="POST">
+      <p>Triggering warmup here will only warmup this webnode, not the whole cluster!</p>
+      <button>Reload store from XML and repeat warmup.</button>
+    </form>
+  </div>
+  {/if}
+  <div>
+    <p><a href="/index.jsp">Go to home page</a></p>
+    <p><a href="/test/smartstore/index.jsp">Go to SmartStore test pages index</a></p>
+    <p><a href="/test/search/index.jsp">Go to Search test pages index</a></p>
+  </div>
+{/template}
+
+/**
+* @param notTriggered
+* @param inProgress
+*/
+{template .unavailable}
+  {if not $inProgress and not $notTriggered}
+  <div>
+    <p>Warmup done</p>
+  </div>
+  {/if}
+  {if $notTriggered}
+  <div>
+    <p>Warmup has not been triggered!</p>
+  </div>
+  {/if}
+  <div>
+    <p>Manual warmup is not allowed</p>
+  </div>
+  <div>
+    <p><a href="/index.jsp">Go to home page</a></p>
+    <p><a href="/test/smartstore/index.jsp">Go to SmartStore test pages index</a></p>
+    <p><a href="/test/search/index.jsp">Go to Search test pages index</a></p>
+  </div>
+{/template}

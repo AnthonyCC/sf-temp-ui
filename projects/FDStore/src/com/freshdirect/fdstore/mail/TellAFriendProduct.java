@@ -15,14 +15,14 @@ import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.ZonePriceListing;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.Html;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.content.view.WebProductRating;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.util.HowToCookItUtil;
 import com.freshdirect.fdstore.util.RatingUtil;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.Html;
+import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.content.SkuModel;
 
 public class TellAFriendProduct extends TellAFriend {
 

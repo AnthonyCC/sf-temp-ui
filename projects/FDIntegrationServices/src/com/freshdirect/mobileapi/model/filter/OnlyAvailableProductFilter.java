@@ -1,7 +1,7 @@
 package com.freshdirect.mobileapi.model.filter;
 
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.mobileapi.util.Filter;
+import com.freshdirect.storeapi.content.ProductModel;
 
 /**
  * Filter products by availability 

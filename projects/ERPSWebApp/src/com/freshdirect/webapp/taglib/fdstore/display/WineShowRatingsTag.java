@@ -6,8 +6,8 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.framework.webapp.BodyTagSupportEx;
+import com.freshdirect.storeapi.content.ProductModel;
 
 public class WineShowRatingsTag extends BodyTagSupportEx {
 	private static final long serialVersionUID = 6069948866473640124L;

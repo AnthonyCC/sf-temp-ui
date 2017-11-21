@@ -12,13 +12,13 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDException;
-import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDOrderInfoI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.request.ContactUsData;
 import com.freshdirect.mobileapi.model.tagwrapper.ContactFdControllerWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.OrderHistoryInfoTagWrapper;
+import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.webapp.taglib.fdstore.ContactFdControllerTag.Selection;
 
 public class ContactUs {

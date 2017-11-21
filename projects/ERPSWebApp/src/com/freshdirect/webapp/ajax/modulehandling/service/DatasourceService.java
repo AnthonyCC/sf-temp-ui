@@ -7,20 +7,18 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.ContentNodeI;
-import com.freshdirect.cms.application.CmsManager;
-import com.freshdirect.cms.application.DraftContext;
-import com.freshdirect.cms.fdstore.FDContentTypes;
-import com.freshdirect.cms.node.ContentNodeUtil;
+import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.fdstore.FDNotFoundException;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.ContentNodeI;
+import com.freshdirect.storeapi.application.CmsManager;
+import com.freshdirect.storeapi.content.Image;
+import com.freshdirect.storeapi.fdstore.FDContentTypes;
+import com.freshdirect.storeapi.node.ContentNodeUtil;
 import com.freshdirect.webapp.ajax.browse.data.BrowseData.SectionDataCointainer;
 import com.freshdirect.webapp.ajax.filtering.InvalidFilteringArgumentException;
 import com.freshdirect.webapp.ajax.modulehandling.DatasourceType;
@@ -51,15 +49,13 @@ public class DatasourceService {
     }
 
     private List<ProductData> generateBrandFeaturedProducts(ContentNodeI module, FDUserI user) {
-        DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
-        ContentNodeI brand = CmsManager.getInstance().getContentNode((ContentKey) module.getAttributeValue("sourceNode"), currentDraftContext);
+        ContentNodeI brand = CmsManager.getInstance().getContentNode((ContentKey) module.getAttributeValue("sourceNode"));
         return ModuleContentService.getDefaultService().loadBrandFeaturedProducts(brand, user);
     }
 
     private SectionDataCointainer generateBrowseProductsForViewAll(ContentNodeI module, FDUserI user)
             throws FDResourceException, InvalidFilteringArgumentException, FDNotFoundException {
-        DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
-        ContentNodeI category = CmsManager.getInstance().getContentNode((ContentKey) module.getAttributeValue("sourceNode"), currentDraftContext);
+        ContentNodeI category = CmsManager.getInstance().getContentNode((ContentKey) module.getAttributeValue("sourceNode"));
         String categoryId=null;
         if(category!=null && category.getKey()!=null)
         	categoryId = category.getKey().getId();
@@ -67,8 +63,7 @@ public class DatasourceService {
     }
 
     private List<ProductData> generateBrowseProducts(ContentNodeI module, FDUserI user) throws FDResourceException, InvalidFilteringArgumentException, FDNotFoundException {
-        DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
-        ContentNodeI category = CmsManager.getInstance().getContentNode((ContentKey) module.getAttributeValue("sourceNode"), currentDraftContext);
+        ContentNodeI category = CmsManager.getInstance().getContentNode((ContentKey) module.getAttributeValue("sourceNode"));
         String categoryId=null;
         if(category!=null && category.getKey()!=null)
         	categoryId = category.getKey().getId();
@@ -76,10 +71,9 @@ public class DatasourceService {
     }
 
     private List<ProductData> generateFeaturedRecommenderProducts(ContentNodeI module, FDUserI user) {
-        DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
         List<ProductData> products = new ArrayList<ProductData>();
         try {
-            ContentNodeI department = CmsManager.getInstance().getContentNode((ContentKey) module.getAttributeValue("sourceNode"), currentDraftContext);
+            ContentNodeI department = CmsManager.getInstance().getContentNode((ContentKey) module.getAttributeValue("sourceNode"));
             String departmentId = department.getKey().getId();
             products = ModuleContentService.getDefaultService().loadFeaturedItems(user, departmentId);
         } catch (NullPointerException e) {
@@ -156,7 +150,7 @@ public class DatasourceService {
                     viewAllUrl = "/browse.jsp?id=" + viewAllSourceContentKey.getId();
                 }
                 if (FDContentTypes.BRAND.equals(viewAllSourceContentKey.getType())) {
-                    ContentNodeI brand = CmsManager.getInstance().getContentNode(viewAllSourceContentKey, ContentFactory.getInstance().getCurrentDraftContext());
+                    ContentNodeI brand = CmsManager.getInstance().getContentNode(viewAllSourceContentKey);
                     viewAllUrl = "/srch.jsp?searchParams=" + ContentNodeUtil.getStringAttribute(brand, "FULL_NAME");
                 }
             }
@@ -311,9 +305,8 @@ public class DatasourceService {
     }
 
     private List<IconData> processImageBannerList(List<ContentKey> contentKeys, List<IconData> moduleImages) {
-        DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
         for (ContentKey contentKey : contentKeys) {
-            ContentNodeI imageBanner = CmsManager.getInstance().getContentNode(contentKey, currentDraftContext);
+            ContentNodeI imageBanner = CmsManager.getInstance().getContentNode(contentKey);
             IconData imageBannerData = ModuleContentService.getDefaultService().populateIconData(imageBanner);
             moduleImages.add(imageBannerData);
         }

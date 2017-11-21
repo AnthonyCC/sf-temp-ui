@@ -7,7 +7,7 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
-import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.ContentNodeModel;
 
 public class ContentTreeTagEI extends TagExtraInfo {
 	/**

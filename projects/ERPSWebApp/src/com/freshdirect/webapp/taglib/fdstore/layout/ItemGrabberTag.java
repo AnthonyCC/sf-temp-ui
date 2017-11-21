@@ -13,10 +13,10 @@ import org.apache.log4j.Category;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.util.ItemGrabber;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.content.ContentNodeModel;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 
 
