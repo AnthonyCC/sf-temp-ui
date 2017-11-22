@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -87,8 +88,7 @@ public class MediaEventHandlerService {
         List<Media> mediasByPrefix = mediaService.getMediasByUriStartsWith(source);
         for (Media media : mediasByPrefix) {
             String originalMediaUri = media.getUri();
-            source = source.replaceAll("\\s", "").replaceAll("\\(", "").replaceAll("\\)", "");
-            media.setUri(originalMediaUri.replaceAll("\\s", "").replaceAll("\\(", "").replaceAll("\\)", "").replaceFirst(source, destionation));
+            media.setUri(StringUtils.replace(originalMediaUri, source, destionation, 1));
             mediaService.saveMedia(media);
             logChange(media.getContentKey(), ContentChangeType.MOD, "Moved media to " + destionation, userId);
         }
