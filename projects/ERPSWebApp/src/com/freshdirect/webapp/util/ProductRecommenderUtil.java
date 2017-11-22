@@ -429,10 +429,6 @@ public class ProductRecommenderUtil {
 		    }
 		}
 	}
-	public static List<ProductModel> getCMSRecommendedAlternatives (ProductModel originalProduct, Set<ContentKey> excludedProductKeys){
-		List<ProductModel> replacementProducts = new ArrayList<ProductModel>();
-		if (originalProduct!=null && !originalProduct.isDisableAtpFailureRecommendation()) {
-
 
 	public static List<ProductModel> getUnavailableReplacementProducts (ProductModel originalProduct, Set<ContentKey> excludedProductKeys){
 		List<ProductModel> replacementProducts = new ArrayList<ProductModel>();

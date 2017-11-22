@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/commons-fileupload-1.1.1.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/commons-fileupload-1.1.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="com.bea.workshop.wls.syslib"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/struts.jar" sourcepath="/STRUTS_SRC"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/xpp3-1.1.3.4d_b4_min.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/xstream-1.1.1.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/bsh-2.0b4.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/StandingOrdersService"/>
+	<classpathentry kind="var" path="FD_LIBS/struts.jar" sourcepath="/STRUTS_SRC"/>
+	<classpathentry kind="var" path="FD_LIBS/xpp3-1.1.3.4d_b4_min.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/xstream-1.1.1.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/bsh-2.0b4.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
