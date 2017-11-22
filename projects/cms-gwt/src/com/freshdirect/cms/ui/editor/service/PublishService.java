@@ -9,6 +9,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,16 +65,20 @@ public class PublishService {
 
         String publishId = "";
         if (PublishType.PUBLISH_X.equals(type)) {
-            Set<ContentKey> storeKeys = contentProviderService.getContentKeysByType(ContentType.Store);
-            FeedPublish publish = new FeedPublish();
-            publish.setUserId(userId);
-            publish.setComment(comment);
-            publish = feedPublishMessagingService.modifyFeedPublishStatus(publish, PublishStatus.PROGRESS);
+            try {
+                Set<ContentKey> storeKeys = contentProviderService.getContentKeysByType(ContentType.Store);
+                FeedPublish publish = new FeedPublish();
+                publish.setUserId(userId);
+                publish.setComment(comment);
+                publish = feedPublishMessagingService.modifyFeedPublishStatus(publish, PublishStatus.PROGRESS);
 
-            draftContextHolder.setDraftContext(DraftContext.MAIN);
-            feedPublishService.publishFeed(publish, new ArrayList<ContentKey>(storeKeys), userId, comment);
+                draftContextHolder.setDraftContext(DraftContext.MAIN);
+                feedPublishService.publishFeed(publish, new ArrayList<ContentKey>(storeKeys), userId, comment);
 
-            publishId = publish.getPublishId();
+                publishId = publish.getPublishId();
+            } catch (DataIntegrityViolationException exc) {
+                LOGGER.error("Probably a feed publish is already running, discard current request", exc);
+            }
         }
         return publishId;
 
