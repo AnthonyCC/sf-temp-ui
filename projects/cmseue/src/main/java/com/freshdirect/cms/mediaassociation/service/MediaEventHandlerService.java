@@ -84,13 +84,13 @@ public class MediaEventHandlerService {
         }
     }
 
-    public void moveMedia(String source, String destionation, String userId) {
+    public void moveMedia(String source, String destination, String userId) {
         List<Media> mediasByPrefix = mediaService.getMediasByUriStartsWith(source);
         for (Media media : mediasByPrefix) {
             String originalMediaUri = media.getUri();
-            media.setUri(StringUtils.replace(originalMediaUri, source, destionation, 1));
+            media.setUri(StringUtils.replace(originalMediaUri, source, destination, 1));
             mediaService.saveMedia(media);
-            logChange(media.getContentKey(), ContentChangeType.MOD, "Moved media to " + destionation, userId);
+            logChange(media.getContentKey(), ContentChangeType.MOD, "Moved media to " + destination, userId);
         }
     }
 
