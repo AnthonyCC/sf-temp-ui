@@ -87,7 +87,8 @@ public class MediaEventHandlerService {
         List<Media> mediasByPrefix = mediaService.getMediasByUriStartsWith(source);
         for (Media media : mediasByPrefix) {
             String originalMediaUri = media.getUri();
-            media.setUri(originalMediaUri.replaceFirst(source, destionation));
+            source = source.replaceAll("\\s", "").replaceAll("\\(", "").replaceAll("\\)", "");
+            media.setUri(originalMediaUri.replaceAll("\\s", "").replaceAll("\\(", "").replaceAll("\\)", "").replaceFirst(source, destionation));
             mediaService.saveMedia(media);
             logChange(media.getContentKey(), ContentChangeType.MOD, "Moved media to " + destionation, userId);
         }
