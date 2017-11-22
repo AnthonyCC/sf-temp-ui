@@ -39,6 +39,6 @@ public class NullAvailability implements FDAvailabilityI {
 	public double getAvailabileQtyForDate(Date targetDate) {
 		// TODO Auto-generated method stub
 		//return -7;
-		return 0;
+		return 999;
 	}
 }
