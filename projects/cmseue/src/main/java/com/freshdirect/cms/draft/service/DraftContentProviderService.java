@@ -237,7 +237,9 @@ public class DraftContentProviderService extends ContextualContentProvider {
         }
 
         try {
+            LOGGER.debug("Sending ContentChangedEvent notification to listeners");
             eventPublisher.publishEvent(new ContentChangedEvent(this, draftContextHolder.getDraftContext(), payload.keySet()));
+            LOGGER.debug("ContentChangedEvent notification sent");
         } catch (Exception e) {
             LOGGER.error("Failed to notify preview about draft change", e);
         }
