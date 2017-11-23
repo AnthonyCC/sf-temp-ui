@@ -12,6 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,6 +67,7 @@ import com.freshdirect.cms.validation.service.ValidatorService;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 @Profile("database")
 @Service
@@ -261,8 +263,10 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
     @Override
     public Set<ContentKey> getContentKeys() {
         List<ContentNodeEntity> contentNodeEntities = contentNodeEntityRepository.findAll();
-        final List<ContentKey> keysList = contentNodeEntityToContentKeyConverter.convert(contentNodeEntities);
-        return new HashSet<ContentKey>(keysList);
+        final List<ContentKey> keysFromDatabase = contentNodeEntityToContentKeyConverter.convert(contentNodeEntities);
+        Set<ContentKey> allKeysResult = Collections.newSetFromMap(new ConcurrentHashMap<ContentKey, Boolean>(keysFromDatabase.size()));
+        allKeysResult.addAll(keysFromDatabase);
+        return allKeysResult;
     }
 
     @Override
