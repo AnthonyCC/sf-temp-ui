@@ -27,9 +27,9 @@ public class ScalarValueToSerializedValueConverter {
      */
     public String convert(Scalar attribute, Object value) {
         String returnValue = null;
-        if (attribute.getType().isAssignableFrom(Date.class)) {
+        if (value != null && attribute.getType().isAssignableFrom(Date.class)) {
             returnValue = DATE_FORMAT.print(new DateTime(value));
-        } else if (attribute.getType().isAssignableFrom(Time.class)) {
+        } else if (value != null && attribute.getType().isAssignableFrom(Time.class)) {
             returnValue = TIME_FORMAT.print(new DateTime(value));
         } else if (value != null) {
             returnValue = String.valueOf(value);
