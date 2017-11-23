@@ -1756,6 +1756,16 @@
 		<echo message="}${line.separator}" file="${basedir}/${projects.dir}/FDStore/src/com/freshdirect/fdstore/util/BuildverCompileTime.java" append="true"/>
 	</target>
 
+	<target name="buildver-compile-time-gwt">
+		<delete file="${basedir}/${projects.dir}/cms-gwt/src/com/freshdirect/cms/ui/public/buildver.html" verbose="true" />
+		<echo message="Generating buildver html '${basedir}/${projects.dir}/cms-gwt/src/com/freshdirect/cms/ui/public/buildver.html'"/>
+		<echo message="&lt;!DOCTYPE html&gt;${line.separator}" file="${basedir}/${projects.dir}/cms-gwt/src/com/freshdirect/cms/ui/public/buildver.html" append="true" />
+		<echo message="&lt;html&gt;${line.separator}" file="${basedir}/${projects.dir}/cms-gwt/src/com/freshdirect/cms/ui/public/buildver.html" append="true" />
+		<echo message="&lt;head&gt; &lt;title&gt;build-version&lt;/title&gt; &lt;/head&gt;${line.separator}" file="${basedir}/${projects.dir}/cms-gwt/src/com/freshdirect/cms/ui/public/buildver.html" append="true" />
+		<echo message="&lt;body&gt;${build.label}&lt;/body&gt;${line.separator}" file="${basedir}/${projects.dir}/cms-gwt/src/com/freshdirect/cms/ui/public/buildver.html" append="true" />
+		<echo message="&lt;/html&gt;${line.separator}" file="${basedir}/${projects.dir}/cms-gwt/src/com/freshdirect/cms/ui/public/buildver.html" append="true" />
+	</target>
+
 	<target name="mrktAdmin" description="Build MarketingAdmin">
 		<!-- directory for compiled stuff -->
 		<mkdir dir="${work.dir}/MarketingAdmin/WEB-INF/classes" />
@@ -1992,7 +2002,7 @@
 	</macrodef>
 
 
-	<target name="cms-gwt" description="Build cms-gwt" depends="cmseue">
+	<target name="cms-gwt" description="Build cms-gwt" depends="cmseue,buildver-compile-time-gwt">
 		<path id="cms-gwt.classpath">
 			<pathelement location="${work.dir}/cmseue" />
 
