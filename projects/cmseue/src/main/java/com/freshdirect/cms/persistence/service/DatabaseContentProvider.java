@@ -67,7 +67,6 @@ import com.freshdirect.cms.validation.service.ValidatorService;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 @Profile("database")
 @Service
@@ -269,13 +268,33 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
         return allKeysResult;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Set<ContentKey> getContentKeysByType(ContentType type) {
         Assert.notNull(type, "ContentType parameter can't be null!");
 
-        List<ContentNodeEntity> contentNodesByType = contentNodeEntityRepository.findByContentType(type.toString());
-        final List<ContentKey> keysList = contentNodeEntityToContentKeyConverter.convert(contentNodesByType);
-        return new HashSet<ContentKey>(keysList);
+        Set<ContentKey> result = new HashSet<ContentKey>();
+
+        Cache keysCache = cacheManager.getCache(CONTENT_KEYS_CACHE_NAME);
+        ValueWrapper cachedKeys = keysCache.get("getContentKeys");
+        if (cachedKeys != null) {
+            Set<ContentKey> allKeys = (Set<ContentKey>) cachedKeys.get();
+
+            final long t0 = System.currentTimeMillis();
+
+            if (allKeys != null && !allKeys.isEmpty()) {
+                for (ContentKey key : allKeys) {
+                    if (type == key.type) {
+                        result.add(key);
+                    }
+                }
+            }
+
+            final long t1 = System.currentTimeMillis();
+            LOGGER.debug("Collected " + result.size() + " keys of type " + type + " in " + (t1-t0) + " ms");
+        }
+
+        return result;
     }
 
     @Cacheable(value = PARENT_KEYS_CACHE_NAME, key = "#contentKey")
@@ -414,7 +433,7 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
         } else {
             AttributeEntity attributeEntity = attributeEntityRepository.findByContentKeyAndName(contentKey.toString(), scalar.getName());
             attributeEntity = scalarToAttributeEntityConverter.convert(contentKey, scalar, attributeValue);
-            
+
             batchSavingRepository.saveScalarAttribute(attributeEntity);
         }
     }
