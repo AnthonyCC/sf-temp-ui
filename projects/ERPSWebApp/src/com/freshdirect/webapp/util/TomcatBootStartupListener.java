@@ -5,7 +5,6 @@ import javax.servlet.ServletContextListener;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.fdstore.warmup.Warmup;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class TomcatBootStartupListener implements ServletContextListener {
@@ -14,11 +13,7 @@ public class TomcatBootStartupListener implements ServletContextListener {
 	
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-    	LOGGER.info("FDTomcat Server Startup Begin.........");
-    	Warmup wup = new Warmup();
-		wup.warmup();
-
-		LOGGER.info("FDTomcat Server Startup Begin.........");
+    	LOGGER.info("FDTomcat Server Startup Begin.........");    	
     }
 
     @Override

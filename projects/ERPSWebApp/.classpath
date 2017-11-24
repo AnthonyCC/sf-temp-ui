@@ -12,7 +12,13 @@
 	<classpathentry kind="var" path="FD_LIBS/httpclient-4.5.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/httpcore-4.4.1.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/httpmime-4.5.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/servlet-api.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/slf4j-api-1.7.13.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/spring-web-4.0.1.RELEASE.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/spring-webmvc-4.0.1.RELEASE.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/spring-aop-4.0.1.RELEASE.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/spring-beans-4.0.1.RELEASE.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/spring-context-4.0.1.RELEASE.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/spring-context-support-4.0.1.RELEASE.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/spring-core-4.0.1.RELEASE.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
