@@ -5,9 +5,7 @@
     <display-name>FDWebSite Application</display-name>
     
 	<listener>  
-	    <listener-class>
-	        com.freshdirect.webapp.util.TomcatBootStartupListener
-	    </listener-class>
+	    <listener-class>com.freshdirect.webapp.util.TomcatBootStartupListener</listener-class>
 	</listener>  
 	<filter>
 		<description>Monitors the execution time FDWebSite Requests</description>
@@ -89,7 +87,7 @@
 	</filter-mapping>
     <servlet>
         <servlet-name>cms-dispatcher</servlet-name>
-        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <servlet-class>com.freshdirect.webapp.util.CMSDispatcherServlet</servlet-class>
         <init-param>
             <param-name>contextConfigLocation</param-name>
             <param-value>com.freshdirect.cms.configuration com.freshdirect.storeapi.configuration</param-value>
