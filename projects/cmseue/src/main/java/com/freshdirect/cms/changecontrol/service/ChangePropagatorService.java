@@ -61,23 +61,24 @@ public class ChangePropagatorService {
      */
     @Async
     public void notifyPreviewAboutChangedContent(DraftContext draftContext, Set<ContentKey> contentKeys) {
-        draftContextHolder.setDraftContext(draftContext);
-        List<String> previewHosts = loadPreviewHosts();
+        try {
+            draftContextHolder.setDraftContext(draftContext);
+            List<String> previewHosts = loadPreviewHosts();
+            RestTemplate notificationRestTemplate = new RestTemplate();
 
-        RestTemplate notificationRestTemplate = new RestTemplate();
-
-        for (String previewHost : previewHosts) {
-            URI previewUri;
-            try {
-                previewUri = new URI(PROTOCOL + "://" + previewHost + eventPropagationUri);
-                ChangePropagationData changeData = new ChangePropagationData(contentKeys, draftContext);
-                LOGGER.info("Notifying preview node at [" + previewUri + "] about CMS changes " + changeData);
-                notificationRestTemplate.postForLocation(previewUri, changeData);
-            } catch (URISyntaxException e) {
-                LOGGER.error("Couldn't create URI for previewHost: " + previewHost);
-            } catch (Exception ex) {
-                LOGGER.error("Failed to notify preview about cms changes", ex);
+            for (String previewHost : previewHosts) {
+                URI previewUri;
+                try {
+                    previewUri = new URI(PROTOCOL + "://" + previewHost + eventPropagationUri);
+                    ChangePropagationData changeData = new ChangePropagationData(contentKeys, draftContext);
+                    LOGGER.info("Notifying preview node at [" + previewUri + "] about CMS changes " + changeData);
+                    notificationRestTemplate.postForLocation(previewUri, changeData);
+                } catch (URISyntaxException e) {
+                    LOGGER.error("Couldn't create URI for previewHost: " + previewHost);
+                }
             }
+        } catch (Exception ex) {
+            LOGGER.error("Failed to notify preview about cms changes", ex);
         }
     }
 

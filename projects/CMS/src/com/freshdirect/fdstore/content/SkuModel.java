@@ -243,7 +243,7 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 	    	return new Date();
 	    }	
 		public double getAvailabileQtyForDate(java.util.Date targetDate) {
-			return 1;
+			return -5;
 		}
 
 	};

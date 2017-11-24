@@ -538,14 +538,14 @@ public class CategoryModel extends ProductContainer {
 	        	recommenderKey = recommender.getContentKey();
 
 	        	if ( recommenderChanged ) {
-	        		LOGGER.warn( this.getContentKey().toString() + ": recommender changed!" );
+	        		LOGGER.debug( this.getContentKey().toString() + ": recommender changed!" );
 	        	}
 
 	            //LOGGER.info("Category[id=\"" + this.getContentKey().getId() + "\"].getSmartProducts(\"" + zoneId + "\")");
                 if (!FDStoreProperties.isLocalDeployment()) { // refreshes this.productGrabbers
                     synchronized (CategoryModel.class) {
                         if (globalSmartCategoryVersion > smartCategoryVersion) {
-                            LOGGER.info("forced smart category recalculation : " + smartCategoryVersion + " -> " + globalSmartCategoryVersion + " for category : "
+                            LOGGER.debug("forced smart category recalculation : " + smartCategoryVersion + " -> " + globalSmartCategoryVersion + " for category : "
                                     + this.getContentKey().id);
                             smartCategoryVersion = globalSmartCategoryVersion;
                             recommendedProductsRefMap.clear();

@@ -185,10 +185,10 @@ if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDU
 			</div>
 			<div style="float:left; width:1px; height:40px; margin: 0px 12px" class="dotted_separator_v"></div>
 			<div style="float:left">
-				<a href="index.jsp?serviceType=CORPORATE&trk=bnav" nofocus tabindex="-1">
+				<a href="/index.jsp?serviceType=CORPORATE&trk=bnav" nofocus tabindex="-1">
           <div class="spritediv sprite-nav-at_the_office" style="float: left;">At The Office</div>
         </a>
-				<a href="index.jsp?serviceType=CORPORATE&trk=bnav" style="padding: 10px 5px 0px 5px; float: left">At The Office</a>
+				<a href="/index.jsp?serviceType=CORPORATE&trk=bnav" style="padding: 10px 5px 0px 5px; float: left">At The Office</a>
 			</div>
 			<div style="float:left; width:1px; height:40px; margin: 0px 10px" class="dotted_separator_v"></div>
 			<div style="float:right; padding: 10px 5px 0px 5px">
