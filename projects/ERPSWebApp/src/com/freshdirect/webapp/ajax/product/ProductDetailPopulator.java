@@ -668,7 +668,7 @@ public class ProductDetailPopulator {
         
         item.setAvailableQty( productModel.getAvailabileQtyForDate(null));
         if ( item.getAvailableQty() ==0 && item.isAvailable() ){
-        	LOG.warn( " INCONSISTENCY BETWEEN AVAILABILITY AND INVENTORY: productid:" + item.getProductId());
+        	//LOG.warn( " INCONSISTENCY BETWEEN AVAILABILITY AND INVENTORY: productid:" + item.getProductId() );
         }
     }
 
