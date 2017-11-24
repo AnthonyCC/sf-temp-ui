@@ -6,6 +6,7 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
 
 <%
 String emailAddress = request.getParameter("emailAddress");

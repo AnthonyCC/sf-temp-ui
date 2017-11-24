@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page import="com.freshdirect.webapp.ajax.filtering.CmsFilteringFlow"%>
 <%@ page import='com.freshdirect.fdstore.*,com.freshdirect.webapp.util.*' %>
 <%@ page import='java.io.*'%>

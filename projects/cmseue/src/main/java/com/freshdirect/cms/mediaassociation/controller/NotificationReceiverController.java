@@ -45,7 +45,6 @@ public class NotificationReceiverController {
     public void receiveNotification(@RequestParam("cmd") String commandValue, @RequestParam("user") String user, @RequestParam("src") String source,
             @RequestParam(value = "mime", required = false) String mimeType, @RequestParam(value = "dim", required = false) String dimensions,
             @RequestParam(value = "dst", required = false) String destination) {
-
         NotificationCommand command = NotificationCommand.getEnumFromString(commandValue);
         switch (command) {
             case CREATE:

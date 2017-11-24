@@ -1888,7 +1888,7 @@ static {
         
         defaults.put(PROP_ENABLE_WEBSITE_MOBILE_SAME_NUTRITION_SOY,"false");
 
-        defaults.put(PROP_ENABLE_FDX_DISTINCT_AVAILABILITY,"false");
+        defaults.put(PROP_ENABLE_FDX_DISTINCT_AVAILABILITY,"true");
         
 
         defaults.put("feature.rollout.cosRedesign2017", "GLOBAL:ENABLED,false;");

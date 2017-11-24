@@ -117,7 +117,6 @@
 			<url-pattern>/cmsgwt.html</url-pattern>
 			<url-pattern>/contentService</url-pattern>
 			<url-pattern>/adminService</url-pattern>
-			<url-pattern>/RecipeUpload</url-pattern>
 			<http-method>GET</http-method>
 			<http-method>POST</http-method>
 		</web-resource-collection>

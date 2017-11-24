@@ -1,3 +1,4 @@
+<%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
 <%@ include file="includes/fk_presenter_vars.jspf" %>
 <%@ include file="includes/password_flow_vars.jspf" %>
 <tmpl:insert template='includes/fklayout_tmpl.jsp'>

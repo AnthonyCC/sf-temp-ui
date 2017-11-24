@@ -32,7 +32,7 @@ public class ProductReferenceImpl implements ProductReference, Serializable {
     public ProductReferenceImpl(ProductModel model) {
         this.model = model;
         if (model != null) {
-            LOGGER.info("Generating ProductReferenceImpl from Product model: [" + model.getContentKey().toString() + "] with parent: " + model.getParentNode());
+            //LOGGER.info("Generating ProductReferenceImpl from Product model: [" + model.getContentKey().toString() + "] with parent: " + model.getParentNode());
             this.key = model.getContentKey();
             this.productId = model.getContentKey().id;
             this.categoryId = model.getParentNode() != null ?  model.getParentNode().getContentName() : null;

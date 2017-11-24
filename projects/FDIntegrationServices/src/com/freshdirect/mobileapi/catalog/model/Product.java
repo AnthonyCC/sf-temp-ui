@@ -37,7 +37,12 @@ public class Product {
 	private final List<String> keywords;
 	private final int productLayout;
 	private  double availableQty;
-	private  final String availabilityMsg;
+	private  final String msgEarliestAvailability;
+	/*
+	 *     public String getMsgEarliestAvailability() {
+        return msgEarliestAvailability;
+    }
+	 */
 
 	private Product(ProductBuilder builder) {
 		id=builder.id;
@@ -56,7 +61,7 @@ public class Product {
 		keywords = builder.keywords;
 		productLayout=builder.productLayout;
 		this.availableQty=builder.availableQty;
-		this.availabilityMsg= builder.availabilityMessage;
+		this.msgEarliestAvailability= builder.availabilityMessage;
 	}
 	
 	public String getId() {
@@ -125,9 +130,10 @@ public class Product {
 		return productLayout;
 	}
 	
-	public String getAvailabilityMessage() {
-		return this.availabilityMsg;
-	}
+	//getMsgEarliestAvailability()
+    public String getMsgEarliestAvailability() {
+        return msgEarliestAvailability;
+    }
 
 	public static final class WineAttributes {
 		
@@ -236,6 +242,7 @@ public class Product {
 		private WineAttributes wineAttributes;
 		private int productLayout;
 		private double availableQty;
+		//MsgEarliestAvailability
 		private String availabilityMessage;
 		
 		public ProductBuilder setAvailabilityMessage(String availabilityMessage) {

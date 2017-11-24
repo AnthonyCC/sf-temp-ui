@@ -12,6 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -261,17 +262,39 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
     @Override
     public Set<ContentKey> getContentKeys() {
         List<ContentNodeEntity> contentNodeEntities = contentNodeEntityRepository.findAll();
-        final List<ContentKey> keysList = contentNodeEntityToContentKeyConverter.convert(contentNodeEntities);
-        return new HashSet<ContentKey>(keysList);
+        final List<ContentKey> keysFromDatabase = contentNodeEntityToContentKeyConverter.convert(contentNodeEntities);
+        Set<ContentKey> allKeysResult = Collections.newSetFromMap(new ConcurrentHashMap<ContentKey, Boolean>(keysFromDatabase.size()));
+        allKeysResult.addAll(keysFromDatabase);
+        return allKeysResult;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Set<ContentKey> getContentKeysByType(ContentType type) {
         Assert.notNull(type, "ContentType parameter can't be null!");
 
-        List<ContentNodeEntity> contentNodesByType = contentNodeEntityRepository.findByContentType(type.toString());
-        final List<ContentKey> keysList = contentNodeEntityToContentKeyConverter.convert(contentNodesByType);
-        return new HashSet<ContentKey>(keysList);
+        Set<ContentKey> result = new HashSet<ContentKey>();
+
+        Cache keysCache = cacheManager.getCache(CONTENT_KEYS_CACHE_NAME);
+        ValueWrapper cachedKeys = keysCache.get("getContentKeys");
+        if (cachedKeys != null) {
+            Set<ContentKey> allKeys = (Set<ContentKey>) cachedKeys.get();
+
+            final long t0 = System.currentTimeMillis();
+
+            if (allKeys != null && !allKeys.isEmpty()) {
+                for (ContentKey key : allKeys) {
+                    if (type == key.type) {
+                        result.add(key);
+                    }
+                }
+            }
+
+            final long t1 = System.currentTimeMillis();
+            LOGGER.debug("Collected " + result.size() + " keys of type " + type + " in " + (t1-t0) + " ms");
+        }
+
+        return result;
     }
 
     @Cacheable(value = PARENT_KEYS_CACHE_NAME, key = "#contentKey")
@@ -410,7 +433,7 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
         } else {
             AttributeEntity attributeEntity = attributeEntityRepository.findByContentKeyAndName(contentKey.toString(), scalar.getName());
             attributeEntity = scalarToAttributeEntityConverter.convert(contentKey, scalar, attributeValue);
-            
+
             batchSavingRepository.saveScalarAttribute(attributeEntity);
         }
     }

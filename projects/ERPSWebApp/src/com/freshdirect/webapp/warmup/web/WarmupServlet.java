@@ -1,7 +1,5 @@
 package com.freshdirect.webapp.warmup.web;
 
-import java.io.IOException;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -34,7 +32,7 @@ public class WarmupServlet extends BaseJsonServlet {
         WarmupService.defaultService().repeatWarmup();
         try {
             response.sendRedirect(WarmupMonitorFilter.WARMUP_PAGE_PATH);
-        } catch (IOException e) {
+        } catch (Exception e) { //Tomcat throws IllegalStateException and not IOException
             LOGGER.error("Redirect failed to warmup page.", e);
         }
     }
