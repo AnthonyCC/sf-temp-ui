@@ -6,7 +6,7 @@
 	import="com.freshdirect.fdstore.util.URLGenerator"%><%@ page
 	import="com.freshdirect.fdstore.util.NewProductsNavigator"%><%@ page
 	import="com.freshdirect.fdstore.*"%><%@ page
-	import="com.freshdirect.storeapi.*%><%@ page
+	import="com.freshdirect.storeapi.*"%><%@ page
 	import="com.freshdirect.storeapi.fdstore.FDContentTypes"%><%@ page
 	import="com.freshdirect.storeapi.content.*"%><%@ page
 	import='com.freshdirect.storeapi.attributes.*'%><%@ page
