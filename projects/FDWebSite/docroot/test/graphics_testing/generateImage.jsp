@@ -5,7 +5,9 @@
 <%@ page import='com.freshdirect.storeapi.content.ContentFactory' %>
 <%@ page 
 		contentType="image/jpg" 
-		import='java.net.URL, java.awt.*, java.awt.event.*, java.awt.image.*, java.io.*, javax.imageio.*, com.sun.image.codec.jpeg.*, com.freshdirect.storeapi.content.ProductModel, com.freshdirect.storeapi.content.*, com.freshdirect.webapp.util.*, com.freshdirect.framework.util.log.LoggerFactory, org.apache.log4j.Category, com.freshdirect.storeapi.content.ContentFactory, com.freshdirect.framework.util.NVL, com.freshdirect.fdstore.FDStoreProperties, com.freshdirect.webapp.util.JspMethods';
+		import='java.net.URL, java.awt.*, java.awt.event.*, java.awt.image.*, java.io.*, javax.imageio.*, com.sun.image.codec.jpeg.*, com.freshdirect.storeapi.content.ProductModel
+		, com.freshdirect.storeapi.content.*, com.freshdirect.webapp.util.*, com.freshdirect.framework.util.log.LoggerFactory, org.apache.log4j.Category, com.freshdirect.storeapi.content.ContentFactory
+		, com.freshdirect.framework.util.NVL, com.freshdirect.fdstore.FDStoreProperties, com.freshdirect.webapp.util.JspMethods' 
 %><% 
 
 /* Make sure there's no wayward returns or spaces outside of code brackets, or the image could be corrupted. */
