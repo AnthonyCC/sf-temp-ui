@@ -5,7 +5,7 @@
 <%@ page import='com.freshdirect.storeapi.content.ContentFactory' %>
 <%@ page 
 		contentType="image/jpg" 
-		import='java.net.URL, java.awt.*, java.awt.event.*, java.awt.image.*, java.io.*, javax.imageio.*, com.sun.image.codec.jpeg.*, com.freshdirect.storeapi.content.ProductModel
+		import='java.net.URL, java.awt.*, java.awt.event.*, java.awt.image.*, java.io.*, javax.imageio.*, com.freshdirect.storeapi.content.ProductModel
 		, com.freshdirect.storeapi.content.*, com.freshdirect.webapp.util.*, com.freshdirect.framework.util.log.LoggerFactory, org.apache.log4j.Category, com.freshdirect.storeapi.content.ContentFactory
 		, com.freshdirect.framework.util.NVL, com.freshdirect.fdstore.FDStoreProperties, com.freshdirect.webapp.util.JspMethods' 
 %><% 
