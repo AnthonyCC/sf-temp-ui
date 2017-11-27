@@ -102,6 +102,8 @@ public class FeedPublishOverview extends DetailPanel implements PublishListener 
                 }
                 commentField.clearInvalid();
 
+                startPublish.disable();
+
                 CmsGwt.getContentService().startPublishX(commentField.getValue().trim(), new BaseCallback<String>() {
 
                     @Override
@@ -109,6 +111,7 @@ public class FeedPublishOverview extends DetailPanel implements PublishListener 
                         for (PublishListener listener : publishListeners) {
                             listener.onPublishStarted(result);
                         }
+                        startPublish.enable();
                     }
                 });
             }
