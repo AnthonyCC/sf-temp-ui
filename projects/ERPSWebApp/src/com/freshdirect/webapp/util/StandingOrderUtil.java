@@ -225,8 +225,8 @@ public class StandingOrderUtil {
 				}
 			} else {
 				// skipping because it is erroneous
-				LOGGER.info( "Skipping SO because it has a permanent error." );
-				return SOResult.createSkipped( so, "Skipping because SO is in error state" );
+				LOGGER.info( "SO has a permanent error." );
+				return SOResult.createUserError(so, so.getCustomerIdentity(), so.getUserInfo(), ErrorCode.PERSISTING_ERROR);//createSkipped( so, "Skipping because SO is in error state" );
 			}
 		}else {
 			// delete date which was choose by user.
