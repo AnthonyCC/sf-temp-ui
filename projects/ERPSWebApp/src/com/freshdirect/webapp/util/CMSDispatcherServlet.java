@@ -6,7 +6,6 @@ import javax.servlet.ServletException;
 import org.apache.log4j.Logger;
 import org.springframework.web.servlet.DispatcherServlet;
 
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.warmup.WarmupService;
 
@@ -19,9 +18,7 @@ public class CMSDispatcherServlet extends DispatcherServlet {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         LOGGER.info("CMSDispatcherServlet after init.........");
-        if(FDStoreProperties.performStorePreLoad()) {
-        	WarmupService.defaultService().repeatWarmup();
-        }
+        WarmupService.defaultService().repeatWarmup();
     }
 
     @Override
