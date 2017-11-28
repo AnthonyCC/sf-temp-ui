@@ -1868,7 +1868,7 @@ static {
         defaults.put(IBM_CLIENT_ID, "42c3eede-b1b2-43d2-b503-55682f190c2d");
         defaults.put(IBM_CLIENT_SECRET, "5f154ee0-bae6-4833-9ce2-e013b1b3c7d5");
         defaults.put(IBM_REFRESH_TOKEN, "r_3872jS_Gh7VmanX2TcazBB_MJ1C_RBqbJWY6gvh3koS1");
-        defaults.put(PAYMENT_TLSSHA_ENABLED,"false");
+        defaults.put(PAYMENT_TLSSHA_ENABLED,"true");
         defaults.put(PROP_PAYMENT_VERIFICATION_ENABLED, "false");
         defaults.put(GLOBAL_SF2_0_ENABLED, "false");
 
