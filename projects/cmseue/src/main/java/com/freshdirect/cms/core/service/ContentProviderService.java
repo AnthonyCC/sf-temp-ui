@@ -108,9 +108,6 @@ public class ContentProviderService extends ContextualContentProvider {
 
     @Override
     public Set<ContentKey> getContentKeysByType(ContentType type) {
-        // ugly workaround to trigger cache update
-        // as getContentKeysByType relies on content keys cache
-        contentProvider.getContentKeys();
         return Collections.unmodifiableSet(contentProvider.getContentKeysByType(type));
     }
 
