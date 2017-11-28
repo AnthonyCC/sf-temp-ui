@@ -1,6 +1,7 @@
 package com.freshdirect.cms.ui.editor.service;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -56,10 +57,7 @@ public class IndexingService {
             typesToIndex.add(indexRule.getContentType());
         }
 
-        Set<ContentKey> contentToIndex = new HashSet<ContentKey>();
-        for (ContentType type : typesToIndex) {
-            contentToIndex.addAll(contentProvider.getContentKeysByType(type));
-        }
+        Set<ContentKey> contentToIndex = collectIndexableKeys(typesToIndex);
         try {
             Future<String> indexingResult = backgroundReindexer.indexContent(contentToIndex, IndexingStrategy.FULL_INDEXING, MassLoadingStrategy.LOAD_ALL_AND_SELECT_NEEDED);
             String result = indexingResult.get(); // this will wait the future to be completed
@@ -92,7 +90,7 @@ public class IndexingService {
                 return;
             }
         }
-        
+
         LOGGER.info("Doing partial indexing, number of nodes to reindex: " + keysToReindex.size());
         backgroundReindexer.indexContent(keysToReindex, IndexingStrategy.PARTIAL_INDEXING, MassLoadingStrategy.LOAD_NEEDED);
     }
@@ -100,4 +98,17 @@ public class IndexingService {
     public IndexingInfo getIndexingStatus() {
         return lastIndexingInfo;
     }
+
+    private Set<ContentKey> collectIndexableKeys(Collection<ContentType> types) {
+        Set<ContentKey> contentToIndex = new HashSet<ContentKey>();
+
+        for (ContentKey contentKey : contentProvider.getContentKeys()) {
+            if (types.contains(contentKey.type)) {
+                contentToIndex.add(contentKey);
+            }
+        }
+
+        return contentToIndex;
+    }
+
 }

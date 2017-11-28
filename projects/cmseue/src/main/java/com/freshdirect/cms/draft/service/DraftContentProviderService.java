@@ -104,12 +104,20 @@ public class DraftContentProviderService extends ContextualContentProvider {
 
     @Override
     public Optional<Object> getAttributeValue(ContentKey contentKey, Attribute attribute) {
+        if (draftContextHolder.getDraftContext().isMainDraft()) {
+            return contentProviderService.getAttributeValue(contentKey, attribute);
+        }
+
         Map<Attribute, Object> attributeWithValue = getAttributeValues(contentKey, Arrays.asList(attribute));
         return Optional.fromNullable(attributeWithValue.get(attribute));
     }
 
     @Override
     public Map<Attribute, Object> getAttributeValues(ContentKey contentKey, List<? extends Attribute> attributes) {
+        if (draftContextHolder.getDraftContext().isMainDraft()) {
+            return contentProviderService.getAttributeValues(contentKey, attributes);
+        }
+
         Map<Attribute, Object> nodeWithAllAttributes = getAllAttributesForContentKey(contentKey);
         Map<Attribute, Object> resultAttributes = new HashMap<Attribute, Object>();
         for (Attribute attributeInQuestion : attributes) {
