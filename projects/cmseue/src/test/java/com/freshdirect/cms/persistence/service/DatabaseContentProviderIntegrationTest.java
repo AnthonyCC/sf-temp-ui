@@ -184,6 +184,8 @@ public class DatabaseContentProviderIntegrationTest {
         String updatedValue = "Category full name updated";
         databaseContentProvider.saveAttribute(contentKey, fullName, updatedValue);
 
+        databaseContentProvider.getContentKeys();
+
         Set<ContentKey> categories = databaseContentProvider.getContentKeysByType(ContentType.Category);
         Optional<Object> fullNameValue = databaseContentProvider.getAttributeValue(contentKey, fullName);
 
