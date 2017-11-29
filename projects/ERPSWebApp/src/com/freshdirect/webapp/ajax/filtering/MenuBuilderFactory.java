@@ -923,6 +923,16 @@ public class MenuBuilderFactory {
 	 * walk through on menu items and check which one is available
 	 */
 	public void checkMenuStatus(BrowseDataContext browseData, NavigationModel navModel, FDSessionUser user){
+		checkMenuStatus(browseData, navModel, user, false);
+	}
+	/**
+	 * @param filters
+	 * @param menu
+	 * @param browseData
+	 * @param setHitCount when true, hitCount is added to the menu filter (SINGLE SELECT FILTER GROUP)
+	 * walk through on menu items and check which one is available
+	 */
+	public void checkMenuStatus(BrowseDataContext browseData, NavigationModel navModel, FDSessionUser user, boolean setHitCount){
 
 		List<MenuBoxData> menu = navModel.getLeftNav();
 		
@@ -999,25 +1009,16 @@ public class MenuBuilderFactory {
 						if(item.getId()==null || "all".equals(item.getId())){ // marker items
 							continue;
 						}
+						boolean shouldRemoved = shouldSingleFilterMenuGroupBeRemoved(item, preFilteredItems, box, allFilters, isProductListing, setHitCount);
 						
-						String filterCompositeId = ProductItemFilterUtil.createCompositeId(boxId, item.getId());
-						// add filters one by one ...
-						final ProductItemFilterI filter = allFilters.get(filterCompositeId);
-						if (filter != null) {
-							Set<ProductItemFilterI> currentFilters = new HashSet<ProductItemFilterI>();
-							currentFilters.add(filter);
-							itemCount = ProductItemFilterUtil.getFilteredProducts(preFilteredItems, currentFilters, true, isProductListing).size();
+						if (!shouldRemoved) {
+							emptyBox = false;
 						} else {
-							itemCount = pfSize;
- 						}
-						 
-						 if (!item.isSelected() && (itemCount == 0 || (box.isBrandFilter() && !box.isMultiGroupBox() && itemCount == pfSize ))) {
-								it.remove();
-						}else{
-							emptyBox=false;
+							it.remove();
 						}
 
 						final long t1 = System.currentTimeMillis();
+						
 						LOGGER.debug("Filtered " + pfSize + " products for each " + box.getItems().size() + " menu itmes in " + ((t1-t0)/1000) + " secs");
 					}
 
@@ -1101,6 +1102,66 @@ public class MenuBuilderFactory {
 		}
 	}
 	
+	private boolean shouldSingleFilterMenuGroupBeRemoved(MenuItemData item, List<FilteringProductItem> preFilteredItems,
+			MenuBoxData box, Map<String, ProductItemFilterI> allFilters, boolean isProductListing,
+			boolean setHitCount) {
+		boolean shouldBeRemoved = false;
+		String boxId = box.getId();
+		int itemCount = 0;
+		if (setHitCount) {
+			int pfSize = preFilteredItems.size();
+			String filterCompositeId = ProductItemFilterUtil.createCompositeId(boxId, item.getId());
+			// add filters one by one ...
+			final ProductItemFilterI filter = allFilters.get(filterCompositeId);
+			if (filter != null) {
+				Set<ProductItemFilterI> currentFilters = new HashSet<ProductItemFilterI>();
+				currentFilters.add(filter);
+				itemCount = ProductItemFilterUtil
+						.getFilteredProducts(preFilteredItems, currentFilters, true, isProductListing).size();
+				item.setHitCount(itemCount);
+			} else {
+				itemCount = pfSize;
+			}
+
+			if (!item.isSelected()
+					&& (itemCount == 0 || (box.isBrandFilter() && !box.isMultiGroupBox() && itemCount == pfSize))) {
+				shouldBeRemoved = true;
+			}
+		} else {
+
+			if (!item.isSelected()) {
+				
+				String filterCompositeId = ProductItemFilterUtil.createCompositeId(boxId, item.getId());
+				// add filters one by one ...
+				final ProductItemFilterI filter = allFilters.get(filterCompositeId);
+				if (filter != null) {
+					Set<ProductItemFilterI> currentFilters = new HashSet<ProductItemFilterI>();
+					currentFilters.add(filter);
+					boolean hasFilteredProducts = ProductItemFilterUtil.hasFilteredProducts(preFilteredItems, filter,
+							true, isProductListing);
+					if (!hasFilteredProducts) {
+						shouldBeRemoved = true;
+					} else {
+						if (box.isBrandFilter() && !box.isMultiGroupBox()) {
+							itemCount = ProductItemFilterUtil
+									.getFilteredProducts(preFilteredItems, currentFilters, true, isProductListing)
+									.size();
+							if (itemCount == preFilteredItems.size()) {
+								shouldBeRemoved = true;
+							}
+
+						}
+					}
+				} else {
+					if (box.isBrandFilter() && !box.isMultiGroupBox()) {
+						shouldBeRemoved = true;
+					}
+				}
+
+			}
+		}
+		return shouldBeRemoved;
+	}
 	private void removeEmptyMenuBox(List<MenuBoxData> menu) {
 		Iterator<MenuBoxData> menuBoxIterator = menu.iterator();
 		while (menuBoxIterator.hasNext()) {

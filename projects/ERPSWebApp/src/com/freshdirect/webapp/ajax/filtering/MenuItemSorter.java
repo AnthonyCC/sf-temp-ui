@@ -16,10 +16,12 @@ public class MenuItemSorter {
 
 		private HitCountComparator(List<FilteringProductItem> items, Map<String, ProductItemFilterI> allFilters, List<MenuItemData> menuItems, String menuBoxId) {
 			for (MenuItemData menuItem : menuItems) {
-				String menuItemId = menuItem.getId();
-				ProductItemFilterI filter = allFilters.get(ProductItemFilterUtil.createCompositeId(menuBoxId, menuItemId));
-				final int hitCount = ProductItemFilterUtil.countItemsForFilter(items, filter);
-				menuItem.setHitCount(hitCount);
+				if (menuItem.getHitCount() == null) {
+					String menuItemId = menuItem.getId();
+					ProductItemFilterI filter = allFilters.get(ProductItemFilterUtil.createCompositeId(menuBoxId, menuItemId));
+					final int hitCount = ProductItemFilterUtil.countItemsForFilter(items, filter);
+					menuItem.setHitCount(hitCount);
+				}
 			}
 		}
 

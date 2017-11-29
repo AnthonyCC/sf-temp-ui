@@ -557,4 +557,24 @@ public class ContentNodeModelUtil {
         }
         return null;
     }
+    
+    public static boolean isDescendant(ContentKey parentKey, ContentKey key) {
+        if (key == null || parentKey == null) {
+            return false;
+        }
+        if (key.equals(parentKey)) {
+            return true;
+        }
+        Set<ContentKey> parentKeys = ContentFactory.getInstance().getParentKeys(parentKey);
+        boolean isDescendant = false;
+        if (parentKeys != null && !parentKeys.isEmpty()) {
+            for (ContentKey pKey : parentKeys) {
+                if (pKey.equals(key) || isDescendant) {
+                    return true;
+                }
+                isDescendant = isDescendant || isDescendant(pKey, key);
+            }
+        }
+        return isDescendant;
+    }
 }

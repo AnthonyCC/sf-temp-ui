@@ -129,8 +129,8 @@ public class CmsFilteringFlow {
 		}
 
 		// pagination
-		BrowseDataPagerHelper.createPagerContext(browseData, nav);
-
+		BrowseDataPagerHelper.createPagerContext(browseData, nav, user);
+        
 		if (!nav.isPdp()) {
 			browseData.getSortOptions().setCurrentOrderAsc(nav.isOrderAscending());
 		}
@@ -148,176 +148,131 @@ public class CmsFilteringFlow {
 		return browseData;
 	}
 
-    public CmsFilteringFlowResult doFlow(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException, FDResourceException, FDNotFoundException {
+	public CmsFilteringFlowResult doFlow(CmsFilteringNavigator nav, FDSessionUser user)
+			throws InvalidFilteringArgumentException, FDResourceException, FDNotFoundException {
+
+		if (null == nav || null == nav.getPageType()) {
+			return new CmsFilteringFlowResult(null, null);
+		} else if (nav.getPageType().isBrowseType()) {
+			return doFlowForBrowseType(nav, user);
+
+		} else {
+			return doFlowForSearchType(nav, user);
+		}
+	}
+
+    private CmsFilteringFlowResult doFlowForBrowseType(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException, FDResourceException, FDNotFoundException {
         BrowseData browseData = null;
         String cacheKey = user.getUser().getPrimaryKey() + "," + nav.getId();
         BrowseDataContext browseDataContext = getBrowseDataContextFromCacheForPaging(nav, user, cacheKey);
-        if (nav.getPageType() == FilteringFlowType.BROWSE) {
+    	if (browseDataContext == null) {
+            browseDataContext = doBrowseFlow(nav, user);
+        }
 
-            if (browseDataContext == null) {
-                browseDataContext = doBrowseFlow(nav, user);
-            }
+        if (!nav.isPdp() && !nav.isSpecialPage()) { //TODO quick fix for TKG meals (special layouts)
+            EhCacheUtilWrapper.putObjectToCache(CmsCaches.BR_USER_REFINEMENT_CACHE.cacheName, cacheKey, browseDataContext);
+        }
 
-            if (!nav.isPdp() && !nav.isSpecialPage()) { //TODO quick fix for TKG meals (special layouts)
-                EhCacheUtilWrapper.putObjectToCache(CmsCaches.BR_USER_REFINEMENT_CACHE.cacheName, cacheKey, browseDataContext);
-            }
+        // -- SORTING -- (not on pdp or super department page)
+        if (!nav.isPdp() && !(browseDataContext.getCurrentContainer() instanceof SuperDepartmentModel)) {
+            // process sort options
+            BrowseDataBuilderFactory.getInstance().processSorting(browseDataContext, nav, user);
+        }
 
-            // -- SORTING -- (not on pdp or super department page)
-            if (!nav.isPdp() && !(browseDataContext.getCurrentContainer() instanceof SuperDepartmentModel)) {
-                // process sort options
-                BrowseDataBuilderFactory.getInstance().processSorting(browseDataContext, nav, user);
-            }
+        // -- REMOVE EMPTY SECTIONS --
 
-            // -- REMOVE EMPTY SECTIONS --
+        browseData = browseDataContext.extractBrowseDataPrototype(user, nav);
+        if (!browseDataContext.getNavigationModel().isSuperDepartment() && !FDStoreProperties.getPreviewMode()) {
+            BrowseDataBuilderFactory.getInstance().removeEmptySections(browseData.getSections().getSections(), browseDataContext.getMenuBoxes().getMenuBoxes());
+        }
 
-            browseData = browseDataContext.extractBrowseDataPrototype(user, nav);
-            if (!browseDataContext.getNavigationModel().isSuperDepartment() && !FDStoreProperties.getPreviewMode()) {
-                BrowseDataBuilderFactory.getInstance().removeEmptySections(browseData.getSections().getSections(), browseDataContext.getMenuBoxes().getMenuBoxes());
-            }
+        // -- REMOVE MENU BOXES WITH NULL SELECTION --
+        MenuBuilderFactory.getInstance().checkNullSelection(browseDataContext.getMenuBoxes().getMenuBoxes());
 
-            // -- REMOVE MENU BOXES WITH NULL SELECTION --
-            MenuBuilderFactory.getInstance().checkNullSelection(browseDataContext.getMenuBoxes().getMenuBoxes());
+        if (!nav.isPdp()) {
+            /* loop through sectionContexts, and insert from HL list */
+            List <SectionData> tempList = (null !=browseData.getSections() && null !=browseData.getSections().getSections() && !browseData.getSections().getSections().isEmpty())?browseData.getSections().getSections().get(0).getSections():null;
+            if (tempList == null || tempList.size() == 0) { /* single cat */
+                SectionData section = (null !=browseData.getSections() && null !=browseData.getSections().getSections() && !browseData.getSections().getSections().isEmpty()) ? browseData.getSections().getSections().get(0): null;
+                if(null !=section){
+                    insertHookLogicProductsIntoBrowseData(
+                            section.getProducts(),
+                            browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId()),
+                            user,
+                            FDStoreProperties.getHookLogicAllowOwnRows()
+                    );
+                }
+            } else { /* multiple sub cats */
+                //skip out if not on show all or first page
+                if (nav.getActivePage() <= 1) {
+                    int runningTotal = 0;
+                    if(null !=browseData.getSections().getSections() && !browseData.getSections().getSections().isEmpty()){
+                        SectionData lSection = browseData.getSections().getSections().get(0);
+                        if(null !=lSection && null !=lSection.getSections() && !lSection.getSections().isEmpty()){
+                            Iterator<SectionData> iterator = lSection.getSections().iterator();
+                            while (iterator.hasNext()) {
+                                SectionData section = iterator.next();
 
-            if (!nav.isPdp()) {
-                /* loop through sectionContexts, and insert from HL list */
-                List <SectionData> tempList = (null !=browseData.getSections() && null !=browseData.getSections().getSections() && !browseData.getSections().getSections().isEmpty())?browseData.getSections().getSections().get(0).getSections():null;
-                if (tempList == null || tempList.size() == 0) { /* single cat */
-                    SectionData section = (null !=browseData.getSections() && null !=browseData.getSections().getSections() && !browseData.getSections().getSections().isEmpty()) ? browseData.getSections().getSections().get(0): null;
-                    if(null !=section){
-                        insertHookLogicProductsIntoBrowseData(
-                                section.getProducts(),
-                                browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId()),
-                                user,
-                                FDStoreProperties.getHookLogicAllowOwnRows()
-                        );
-                    }
-                } else { /* multiple sub cats */
-                    //skip out if not on show all or first page
-                    if (nav.getActivePage() <= 1) {
-                        int runningTotal = 0;
-                        if(null !=browseData.getSections().getSections() && !browseData.getSections().getSections().isEmpty()){
-                            SectionData lSection = browseData.getSections().getSections().get(0);
-                            if(null !=lSection && null !=lSection.getSections() && !lSection.getSections().isEmpty()){
-                                Iterator<SectionData> iterator = lSection.getSections().iterator();
-                                while (iterator.hasNext()) {
-                                    SectionData section = iterator.next();
+                                int curSectionSize = null !=section.getProducts()?section.getProducts().size():0;
 
-                                    int curSectionSize = null !=section.getProducts()?section.getProducts().size():0;
+                                int itemsPerRow = (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn5_0, user)) ? 5 :
+                                    (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn4_0, user)) ? 4 : 5;
 
-                                    int itemsPerRow = (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn5_0, user)) ? 5 :
-                                        (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn4_0, user)) ? 4 : 5;
+                                //calc how many HL will be inserted...
+                                double calcd = Math.min(
+                                        Math.ceil( ((double)curSectionSize / itemsPerRow)),
+                                        null !=browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId())?browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId()).size():0
+                                );
+                                //...and cover lower-end
+                                if (calcd > 0 && curSectionSize < itemsPerRow) {
+                                    calcd = 1;
+                                }
 
-                                    //calc how many HL will be inserted...
-                                    double calcd = Math.min(
-                                            Math.ceil( ((double)curSectionSize / itemsPerRow)),
-                                            null !=browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId())?browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId()).size():0
+                                //check if we have room, it's the first cat, or it's show all
+                                //nav.isAll() doesn't work here, it's always true for cats that display subcats
+                                //pageNum is 0, using that for 'all'
+                                if ((nav.getActivePage() == 1 || nav.getActivePage() == 0) && (nav.getActivePage() == 0 || runningTotal == 0 || (runningTotal + (curSectionSize+calcd)) <= nav.getPageSize())) {
+                                    insertHookLogicProductsIntoBrowseData(
+                                            section.getProducts(),
+                                            null !=browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId())?browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId()).subList(0, (int) calcd):null,
+                                            user,
+                                            FDStoreProperties.getHookLogicAllowOwnRows()
                                     );
-                                    //...and cover lower-end
-                                    if (calcd > 0 && curSectionSize < itemsPerRow) {
-                                        calcd = 1;
-                                    }
-
-                                    //check if we have room, it's the first cat, or it's show all
-                                    //nav.isAll() doesn't work here, it's always true for cats that display subcats
-                                    //pageNum is 0, using that for 'all'
-                                    if ((nav.getActivePage() == 1 || nav.getActivePage() == 0) && (nav.getActivePage() == 0 || runningTotal == 0 || (runningTotal + (curSectionSize+calcd)) <= nav.getPageSize())) {
-                                        insertHookLogicProductsIntoBrowseData(
-                                                section.getProducts(),
-                                                null !=browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId())?browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId()).subList(0, (int) calcd):null,
-                                                user,
-                                                FDStoreProperties.getHookLogicAllowOwnRows()
-                                        );
-                                    }
-                                    runningTotal += curSectionSize+calcd; //incr total
-                                    //break if we're done inserting
-                                    if (runningTotal > nav.getPageSize() && nav.getActivePage() != 0) {
-                                        break;
-                                    }
+                                }
+                                runningTotal += curSectionSize+calcd; //incr total
+                                //break if we're done inserting
+                                if (runningTotal > nav.getPageSize() && nav.getActivePage() != 0) {
+                                    break;
                                 }
                             }
                         }
                     }
                 }
-
-                // -- PAGING --
-                BrowseDataPagerHelper.createPagerContext(browseData, nav);
-                Set<ContentKey> shownProductKeysForRecommender = new HashSet<ContentKey>();
-                BrowseDataBuilderFactory.getInstance().collectAllProductKeysForRecommender(browseData.getSections().getSections(), shownProductKeysForRecommender);
-                // -- SET NO PRODUCTS MESSAGE --
-                if (shownProductKeysForRecommender.size() == 0 && browseDataContext.getNavigationModel().isProductListing()) {
-                    browseData.getSections().setAllSectionsEmpty(true);
-                }
-
-                // only display recommenders if on last page
-                PagerData pagerData = browseData.getPager();
-                if (pagerData.isAll() || isCaroulelsTopAndOnFirstPage(browseData, pagerData) || isCarouselsBottomAndOnLastPage(browseData, pagerData)) {
-                    boolean disableCategoryYmalRecommender = browseDataContext.getCurrentContainer() instanceof ProductContainer
-                            && ((ProductContainer) browseDataContext.getCurrentContainer()).isDisableCategoryYmalRecommender();
-                    BrowseDataBuilderFactory.getInstance().appendCarousels(browseData, browseDataContext, user, shownProductKeysForRecommender, disableCategoryYmalRecommender,
-                            nav.isPdp());
-                } else { // remove if already added
-                    CarouselDataCointainer carousels = browseData.getCarousels();
-                    carousels.setCarousel1(null);
-                    carousels.setCarousel2(null);
-                }
-
-                try {
-                    browseData.getDescriptiveContent().setUrl(URLEncoder.encode(nav.assembleQueryString(), CharEncoding.UTF_8));
-                } catch (UnsupportedEncodingException e) {
-                    LOG.error(e);
-                    throw new FDResourceException(e);
-                }
-                browseData.getDescriptiveContent().setNavDepth(browseDataContext.getNavigationModel().getNavDepth().name());
-                browseData.getDescriptiveContent().setContentId(nav.getId());
-                browseData.getSortOptions().setCurrentOrderAsc(nav.isOrderAscending());
-
-                // -- CALCULATE SECTION MAX LEVEL --
-                BrowseDataBuilderFactory.getInstance().calculateMaxSectionLevel(browseData.getSections(), browseData.getSections().getSections(), 0);
             }
-        } else if (null != nav && null != nav.getPageType() && nav.getPageType().isSearchLike()) {
 
-            if (browseDataContext == null) {
-                browseDataContext = doSearchLikeFlow(nav, user);
+            // -- PAGING --
+            BrowseDataPagerHelper.createPagerContext(browseData, nav, user);
+           
+            Set<ContentKey> shownProductKeysForRecommender = new HashSet<ContentKey>();
+            BrowseDataBuilderFactory.getInstance().collectAllProductKeysForRecommender(browseData.getSections().getSections(), shownProductKeysForRecommender);
+            // -- SET NO PRODUCTS MESSAGE --
+            if (shownProductKeysForRecommender.size() == 0 && browseDataContext.getNavigationModel().isProductListing()) {
+                browseData.getSections().setAllSectionsEmpty(true);
             }
             EhCacheUtilWrapper.putObjectToCache(CmsCaches.BR_USER_REFINEMENT_CACHE.cacheName, user.getUser().getPrimaryKey(), browseDataContext);
 
-            BrowseDataBuilderFactory.getInstance().processSorting(browseDataContext, nav, user);
-
-            /* Added this condition as part of APPDEV-5920 staff picks sort bar implementation
-             * At this point we now have the the sorted section data object which preserves the sort strategy and order of the products
-             * Here we are iterating through this sorted section data and adding them to the assort products map based upon the product id
-             * Thus the assort product map and section data sorted products are always in sync
-             * */
-            if(!browseDataContext.getSectionContexts().isEmpty() && null !=browseDataContext.getSectionContexts().get(0).getProductItems()){
-
-            	for(FilteringProductItem filteredProduct: browseDataContext.getSectionContexts().get(0).getProductItems()){
-            		if(null !=browseDataContext.getAssortProducts() & null !=browseDataContext.getAssortProducts().getUnfilteredAssortedProducts()){
-	            		for(ProductData productData:browseDataContext.getAssortProducts().getUnfilteredAssortedProducts()){
-	            			if(productData.getProductId().equalsIgnoreCase(filteredProduct.getProductModel().getContentKey().getId())){
-	                			browseDataContext.getAssortProducts().addProdDataToCat(productData.getErpCategory(), productData);
-	                		}
-	            		}
-            		}
-
-            	}
+            // only display recommenders if on last page
+            PagerData pagerData = browseData.getPager();
+            if (pagerData.isAll() || isCaroulelsTopAndOnFirstPage(browseData, pagerData) || isCarouselsBottomAndOnLastPage(browseData, pagerData)) {
+                boolean disableCategoryYmalRecommender = browseDataContext.getCurrentContainer() instanceof ProductContainer
+                        && ((ProductContainer) browseDataContext.getCurrentContainer()).isDisableCategoryYmalRecommender();
+                BrowseDataBuilderFactory.getInstance().appendCarousels(browseData, browseDataContext, user, shownProductKeysForRecommender, disableCategoryYmalRecommender,
+                        nav.isPdp());
+            } else { // remove if already added
+                CarouselDataCointainer carousels = browseData.getCarousels();
+                carousels.setCarousel1(null);
+                carousels.setCarousel2(null);
             }
-            browseData = browseDataContext.extractBrowseDataPrototype(user, nav);
-
-            /* insert HL products into the correct spot(s) in the results */
-            insertHookLogicProductsIntoBrowseData(
-                    (null !=browseData.getSections() && null !=browseData.getSections().getSections() && !browseData.getSections().getSections().isEmpty()) ? (null !=browseData.getSections().getSections().get(0) ? browseData.getSections().getSections().get(0).getProducts():null): null,/*browseData.getSections().getSections().get(0).getProducts(),*/
-                    browseData.getAdProducts().getProducts(),
-                    user,
-                    FDStoreProperties.getHookLogicAllowOwnRows()
-            );
-
-            // -- PAGING --
-            if (!FilteringFlowType.PRES_PICKS.equals(nav.getPageType())
-                    || (FilteringFlowType.PRES_PICKS.equals(nav.getPageType()) && FDStoreProperties.isPresidentPicksPagingEnabled())) {
-                BrowseDataPagerHelper.createPagerContext(browseData, nav);
-            }
-
-            BrowseDataBuilderFactory.getInstance().appendSearchLikeCarousel(browseData, user, nav.getPageType(), nav.getActiveTab());
 
             try {
                 browseData.getDescriptiveContent().setUrl(URLEncoder.encode(nav.assembleQueryString(), CharEncoding.UTF_8));
@@ -325,14 +280,77 @@ public class CmsFilteringFlow {
                 LOG.error(e);
                 throw new FDResourceException(e);
             }
+            browseData.getDescriptiveContent().setNavDepth(browseDataContext.getNavigationModel().getNavDepth().name());
+            browseData.getDescriptiveContent().setContentId(nav.getId());
             browseData.getSortOptions().setCurrentOrderAsc(nav.isOrderAscending());
 
-            populateSearchCarouselProductLimit(nav.getActivePage(), browseDataContext);
+            // -- CALCULATE SECTION MAX LEVEL --
+            BrowseDataBuilderFactory.getInstance().calculateMaxSectionLevel(browseData.getSections(), browseData.getSections().getSections(), 0);
         }
         return new CmsFilteringFlowResult(browseData, null !=browseDataContext ? browseDataContext.getNavigationModel() :null);
     }
+    
+    private CmsFilteringFlowResult doFlowForSearchType(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException, FDResourceException, FDNotFoundException {
+    	BrowseData browseData = null;
+    	String cacheKey = user.getUser().getPrimaryKey() + "," + nav.getPageType() + ",sch_" + nav.getActiveTab();
+    	BrowseDataContext browseDataContext = getBrowseDataContextFromCacheForPaging(nav, user, cacheKey);
+    	if (browseDataContext == null) {
+            browseDataContext = doSearchLikeFlow(nav, user);
+        }
+        EhCacheUtilWrapper.putObjectToCache(CmsCaches.BR_USER_REFINEMENT_CACHE.cacheName, cacheKey, browseDataContext);
 
+        BrowseDataBuilderFactory.getInstance().processSorting(browseDataContext, nav, user);
 
+        /* Added this condition as part of APPDEV-5920 staff picks sort bar implementation
+         * At this point we now have the the sorted section data object which preserves the sort strategy and order of the products
+         * Here we are iterating through this sorted section data and adding them to the assort products map based upon the product id
+         * Thus the assort product map and section data sorted products are always in sync
+         * */
+        if(!browseDataContext.getSectionContexts().isEmpty() && null !=browseDataContext.getSectionContexts().get(0).getProductItems()){
+
+        	for(FilteringProductItem filteredProduct: browseDataContext.getSectionContexts().get(0).getProductItems()){
+        		if(null !=browseDataContext.getAssortProducts() & null !=browseDataContext.getAssortProducts().getUnfilteredAssortedProducts()){
+            		for(ProductData productData:browseDataContext.getAssortProducts().getUnfilteredAssortedProducts()){
+            			if(productData.getProductId().equalsIgnoreCase(filteredProduct.getProductModel().getContentKey().getId())){
+                			browseDataContext.getAssortProducts().addProdDataToCat(productData.getErpCategory(), productData);
+                		}
+            		}
+        		}
+
+        	}
+        }
+        browseData = browseDataContext.extractBrowseDataPrototype(user, nav);
+
+        /* insert HL products into the correct spot(s) in the results */
+        insertHookLogicProductsIntoBrowseData(
+                (null !=browseData.getSections() && null !=browseData.getSections().getSections() && !browseData.getSections().getSections().isEmpty()) ? (null !=browseData.getSections().getSections().get(0) ? browseData.getSections().getSections().get(0).getProducts():null): null,/*browseData.getSections().getSections().get(0).getProducts(),*/
+                browseData.getAdProducts().getProducts(),
+                user,
+                FDStoreProperties.getHookLogicAllowOwnRows()
+        );
+
+        // -- PAGING --
+        if (!FilteringFlowType.PRES_PICKS.equals(nav.getPageType())
+                || (FilteringFlowType.PRES_PICKS.equals(nav.getPageType()) && FDStoreProperties.isPresidentPicksPagingEnabled())) {
+            BrowseDataPagerHelper.createPagerContext(browseData, nav, user);
+        } else {
+         	// Populate product data 
+            populateProductData(browseData, nav, user);
+        }
+
+        BrowseDataBuilderFactory.getInstance().appendSearchLikeCarousel(browseData, user, nav.getPageType(), nav.getActiveTab());
+
+        try {
+            browseData.getDescriptiveContent().setUrl(URLEncoder.encode(nav.assembleQueryString(), CharEncoding.UTF_8));
+        } catch (UnsupportedEncodingException e) {
+            LOG.error(e);
+            throw new FDResourceException(e);
+        }
+        browseData.getSortOptions().setCurrentOrderAsc(nav.isOrderAscending());
+
+        populateSearchCarouselProductLimit(nav.getActivePage(), browseDataContext);
+        return new CmsFilteringFlowResult(browseData, null !=browseDataContext ? browseDataContext.getNavigationModel() :null);
+    }
     /* call this BEFORE BrowseDataPagerHelper.createPagerContext(browseData, nav); */
     /* allowOnlyHLRows will toggle filling in empty rows to display the entire HL list */
     public void insertHookLogicProductsIntoBrowseData(List<ProductData> prodList, List<ProductData> hlProdList, FDSessionUser user, boolean allowOnlyHLRows) {
@@ -365,6 +383,37 @@ public class CmsFilteringFlow {
         }
     }
 
+    private void populateProductData(BrowseData browseData, CmsFilteringNavigator nav, FDSessionUser user) {
+    	List<SectionData> sections = browseData.getSections().getSections();
+    	if (sections != null && !sections.isEmpty()) {
+    		for (SectionData section : sections) {
+    			populateProductData(section, nav, user);
+    		}
+    	}
+    }
+    private void populateProductData(SectionData sectionData, CmsFilteringNavigator nav, FDSessionUser user) {
+    	// if this section has products, populate them
+    	List<ProductData> products = sectionData.getProducts();
+    	if (products != null && !products.isEmpty()) {
+    		Iterator<ProductData> it = products.iterator();
+    		while (it.hasNext()) {
+    			ProductData product = it.next();
+    			try {
+    				ProductDetailPopulator.populateBrowseProductData(product, user, nav, (nav.isPdp() || FDStoreProperties.getPreviewMode()));
+    			} catch(Exception e) {
+    				it.remove();
+    				LOG.error("Failed to populate product data for " + product==null || product.getProductModel() == null ? "null": product.getProductModel().getContentName()+ " (" + e.getMessage() + ")");
+    			}
+    		}
+    	}
+    	// if this section has sub sections, check them also
+    	List<SectionData> sections = sectionData.getSections();
+    	if (sections != null && !sections.isEmpty()) {
+    		for (SectionData section : sections) {
+    			populateProductData(section, nav, user);
+    		}
+    	}
+    }
     private boolean isCarouselsBottomAndOnLastPage(BrowseData browseData, PagerData pagerData) {
         return "BOTTOM".equals(browseData.getCarousels().getCarouselPosition()) && pagerData.getActivePage() == pagerData.getPageCount();
     }
@@ -394,7 +443,8 @@ public class CmsFilteringFlow {
         if (browseDataContext == null) {
         	return null;
         }
-        if (!isRequestForTheSamePageType(nav, browseDataContext)) {
+        if (!isRequestForTheSamePageType(nav, browseDataContext) || 
+        		(!nav.getPageType().equals(FilteringFlowType.BROWSE) && !nav.getPageType().equals(FilteringFlowType.SEARCH))) {
             EhCacheUtilWrapper.removeFromCache(CmsCaches.BR_USER_REFINEMENT_CACHE.cacheName, cacheKey); // if cached has other page type
             browseDataContext = null;
         } else {
@@ -430,11 +480,17 @@ public class CmsFilteringFlow {
     	Map<String, List<String>> navFilter = navigator.getRequestFilterParams();
     	Map<String, List<String>> contextFilter = browseDataContext.getRequestFilterParams();
 
+    	// If navFilter is null && contextFilter is empty or vice versa
+    	if ( (navFilter == null && contextFilter != null && contextFilter.size() == 0) ||
+    			(navFilter != null && contextFilter == null && navFilter.size() == 0)){
+    		return true;
+    	}
+    	// If navFilter is null && contextFilter is not empty or vice versa
     	if ( (navFilter == null && contextFilter != null) ||
     			(navFilter != null && contextFilter == null)){
     		return false;
     	}
-
+    	// If navFilter and contextFilter are null or empty
     	if ( (navFilter == null && contextFilter == null) ||
     			(navFilter.size() == 0 && contextFilter.size() == 0)){
     		return true;
@@ -461,7 +517,7 @@ public class CmsFilteringFlow {
         browseDataContext.getSections().setLimit(searchCarouselProductLimit);
     }
 
-    public BrowseDataContext doSearchLikeFlow(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException {
+    private BrowseDataContext doSearchLikeFlow(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException {
         NavigationModel navigationModel = new NavigationModel();
         SearchResults searchResults = null;
 
@@ -545,7 +601,7 @@ public class CmsFilteringFlow {
         navigationModel.setLeftNav(menuBuilder.buildMenu(navigationModel.getAllFilters(), navigationModel, nav));
         if (!navigationModel.isSuperDepartment()) { // don't do these in case of super department page
             // menu availability check
-            MenuBuilderFactory.getInstance().checkMenuStatus(browseDataContext, navigationModel, user);
+            MenuBuilderFactory.getInstance().checkMenuStatus(browseDataContext, navigationModel, user, true);
             reOrderAllMenuItemsByHitCount(navigationModel, browseDataContext);
             reOrderAllMenuItemsByName(navigationModel);
         }
@@ -942,7 +998,7 @@ public class CmsFilteringFlow {
         }
     }
 
-    public BrowseDataContext doBrowseFlow(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException, FDResourceException, FDNotFoundException {
+    private BrowseDataContext doBrowseFlow(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException, FDResourceException, FDNotFoundException {
 
         BrowseDataContext browseDataContext = null;
 

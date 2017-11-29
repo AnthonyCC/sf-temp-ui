@@ -3,9 +3,11 @@ package com.freshdirect.webapp.ajax.product.data;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.freshdirect.common.pricing.CharacteristicValuePrice;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.SalesUnitRatio;
+import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.ajax.cart.data.CartData.Quantity;
 import com.freshdirect.webapp.ajax.cart.data.CartData.SalesUnit;
 import com.freshdirect.webapp.ajax.holidaymealbundle.data.HolidayMealBundleContainer;
@@ -44,8 +46,6 @@ public class ProductData extends BasicProductData implements SkuData {
      * Available qty in inventory, adjusted for FK/FD
      */
     protected double availableQty;
-
-
 
 	/**
      * Is product discontinued for sale?
@@ -165,7 +165,11 @@ public class ProductData extends BasicProductData implements SkuData {
     protected boolean variationDisplay;
 
     protected ProductData browseRecommandation;
-
+    
+    @JsonIgnore
+    private ProductModel productModel;
+    @JsonIgnore
+    private boolean requirePopulation;
     /**
      * Messaging - various messages
      */
@@ -223,6 +227,14 @@ public class ProductData extends BasicProductData implements SkuData {
      * Note, only positive values are valid, 0 means no-value
      */
     private int timeToComplete = 0;
+    
+    public ProductData() {
+    	
+    }
+    public ProductData(ProductModel p) {
+    	productModel = p;
+    	requirePopulation = true;
+    }
     
     public String getProductQualityNote() {
         return productQualityNote;
@@ -674,7 +686,7 @@ public class ProductData extends BasicProductData implements SkuData {
     public void setBrowseRecommandation(ProductData browseRecommandation) {
         this.browseRecommandation = browseRecommandation;
     }
-
+    
     public String getMsgCancellation() {
         return msgCancellation;
     }
@@ -928,5 +940,18 @@ public class ProductData extends BasicProductData implements SkuData {
 
     public void setNewProduct(boolean newProduct) {
         this.newProduct = newProduct;
+    }
+    
+    public boolean isRequirePopulation(){
+    	return requirePopulation;
+    }
+    public void setRequirePopulation(boolean b){
+    	requirePopulation = b;
+    	if (!b) {
+    		productModel = null;
+    	}
+    }
+    public ProductModel getProductModel() {
+    	return productModel;
     }
 }

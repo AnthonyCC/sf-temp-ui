@@ -234,20 +234,29 @@ public class ContentSearch {
         return faqKeys;
     }
 
-    public List<ContentKey> searchRecipes(String searchTerm) {
+    public SearchResults searchRecipes(String searchTerm) {
         searchTerm = searchTerm.trim();
         if (searchTerm.length() == 0) {
-            return Collections.emptyList();
+            return new SearchResults();
         }
-        boolean exact = ContentSearchUtil.isQuoted(searchTerm);
-        if (exact)
-            searchTerm = ContentSearchUtil.removeQuotes(searchTerm);
+        boolean isQuoted = ContentSearchUtil.isQuoted(searchTerm);
+        List<Recipe> recipes = searchRecipesInternal(searchTerm);
+            
+        Set<FilteringSortingItem<Recipe>> recipeResults = new HashSet<FilteringSortingItem<Recipe>>();
+        recipeResults.addAll(FilteringSortingItem.fill(recipes, EnumSortingValue.PHRASE, 1));
+        
+        SearchResults searchResult =  new SearchResults(new ArrayList<FilteringSortingItem<ProductModel>>(),
+                new ArrayList<FilteringSortingItem<Recipe>>(recipeResults), 
+                new ArrayList<FilteringSortingItem<CategoryModel>>(), searchTerm, isQuoted);
+        // if no result is found with the search terms, try suggested result.
+        if (searchResult.isEmpty()) {
+            suggestSpellingInternal(searchTerm, isQuoted, searchResult);
+        }
+        return searchResult;
+    }
+    public List<ContentKey> searchRecipesContentKey(String searchTerm) {
 
-        Collection<SearchHit> hits = luceneSearchService.searchRecipes(searchTerm, exact, getSearchMaxHits());
-
-        List<SearchHit> recipeHits = ContentSearchUtil.filterRecipeHits(hits);
-
-        List<Recipe> recipes = ContentSearchUtil.filterRecipes(recipeHits);
+        List<Recipe> recipes = searchRecipesInternal(searchTerm);
 
         List<ContentKey> recipeKeys = new ArrayList<ContentKey>();
         for (Recipe recipe : recipes)
@@ -255,7 +264,23 @@ public class ContentSearch {
 
         return recipeKeys;
     }
+    private List<Recipe> searchRecipesInternal(String searchTerm) {
+        searchTerm = searchTerm.trim();
+        if (searchTerm.length() == 0) {
+            return Collections.emptyList();
+        }
+        boolean isQuoted = ContentSearchUtil.isQuoted(searchTerm);
+        if (isQuoted)
+            searchTerm = ContentSearchUtil.removeQuotes(searchTerm);
 
+        Collection<SearchHit> hits = luceneSearchService.searchRecipes(searchTerm, isQuoted, getSearchMaxHits());
+
+        List<SearchHit> recipeHits = ContentSearchUtil.filterRecipeHits(hits);
+
+        List<Recipe> recipes = ContentSearchUtil.filterRecipes(recipeHits);
+
+        return recipes;
+    }
     /**
      * Set a custom autocomplete service
      * 

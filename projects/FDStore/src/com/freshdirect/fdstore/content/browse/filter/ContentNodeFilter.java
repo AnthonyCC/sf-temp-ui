@@ -44,8 +44,7 @@ public class ContentNodeFilter extends AbstractProductItemFilter {
 		
 		boolean fits = false;
 		if ("D".equals(contentType) || "C".equals(contentType)) {
-			Set<ContentKey> parentKeys = ContentNodeModelUtil.getAllParentKeys(ctx.getProductModel().getContentKey());
-			fits = parentKeys.contains(contentKey);
+			fits = ContentNodeModelUtil.isDescendant(ctx.getProductModel().getContentKey(), contentKey) ;
 		} else if (DOMAIN_VALUE_CONTENT_TYPE.equals(contentType)) {
 			for (DomainValue domainValue : ctx.getRecipe().getClassifications()) {
 				if (contentNodeId.equals(domainValue.getContentKey().getId())) {

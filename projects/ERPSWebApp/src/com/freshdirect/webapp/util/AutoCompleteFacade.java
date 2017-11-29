@@ -34,18 +34,7 @@ public class AutoCompleteFacade implements Serializable {
     private static final long serialVersionUID = 1L;
     private final static Category LOGGER = LoggerFactory.getInstance(AutoCompleteFacade.class);
 
-    private List<String> terms;
-
     public AutoCompleteFacade() {
-        terms = new ArrayList<String>();
-        terms.add("milk");
-        terms.add("banana");
-        terms.add("apple");
-        terms.add("pie");
-        terms.add("foo");
-        terms.add("bar");
-
-        Collections.sort(terms);
     }
 
     public List<String> getTerms(String prefix, HttpServletRequest request) {

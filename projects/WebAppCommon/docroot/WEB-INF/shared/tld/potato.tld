@@ -299,6 +299,10 @@
         <tagclass>com.freshdirect.webapp.ajax.reorder.QuickShopRecommenderPotatoTag</tagclass>
     </tag>
     <tag>
+        <name>searchRecommender</name>
+        <tagclass>com.freshdirect.webapp.search.SearchRecommenderPotatoTag</tagclass>
+    </tag>
+    <tag>
         <name>singlePageCheckout</name>
         <tag-class>com.freshdirect.webapp.ajax.expresscheckout.tag.SinglePageCheckoutPotatoTag</tag-class>
         <attribute>

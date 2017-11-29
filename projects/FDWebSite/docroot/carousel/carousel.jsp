@@ -33,5 +33,13 @@
 		<soy:render template="common.ymalCarousel" data="${ymal}" />
 		
 	<%
+	} else if ("search".equals(type)) {
+		String productId = request.getParameter("productId");
+	%>
+        <potato:searchRecommender productid="<%=productId%>" />
+        <soy:render template="srch.carousel" data="${searchRecommenderPotato}" />
+        
+
+	<%
 	}
 %>
