@@ -37,6 +37,11 @@ public class CartData implements Serializable {
 	private String subTotal;
 	
 	/**
+	 * Order saveAmount - formatted string
+	 */
+	private String saveAmount;
+	
+	/**
 	 * Is a Modify Order Cart ?
 	 */
 	private boolean isModifyOrder = false;
@@ -93,7 +98,15 @@ public class CartData implements Serializable {
 	public void setSubTotal( String subTotal ) {
 		this.subTotal = subTotal;
 	}
-
+	
+	public void setSaveAmount( String saveAmount ) {
+		this.saveAmount = saveAmount;
+	}
+	
+	public String getSaveAmount() {
+		return saveAmount;
+	}
+	
 	public boolean isModifyOrder() {
 		return isModifyOrder;
 	}	

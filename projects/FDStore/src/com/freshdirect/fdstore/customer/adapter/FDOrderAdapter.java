@@ -80,6 +80,7 @@ import com.freshdirect.fdstore.customer.FDRecipientList;
 import com.freshdirect.fdstore.customer.FDUserUtil;
 import com.freshdirect.fdstore.customer.WebOrderViewFactory;
 import com.freshdirect.fdstore.customer.WebOrderViewI;
+import com.freshdirect.fdstore.customer.util.FDCartUtil;
 import com.freshdirect.fdstore.promotion.EnumOfferType;
 import com.freshdirect.fdstore.promotion.EnumPromotionType;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
@@ -926,6 +927,14 @@ public class FDOrderAdapter implements FDOrderI {
 		return MathUtil.roundDecimal(subTotal);
 	}
 
+	/**
+	 * @return the amount you have saved by item promotion value and coupon
+	 */
+	@Override
+	public double getSaveAmount(boolean includeDiscountSavings) {
+		return FDCartUtil.getSaveAmount(orderLines) + (includeDiscountSavings? getTotalDiscountValue() : 0);
+	}
+	
 	@Override
     public double getTaxValue() {
 		return erpOrder.getTax();

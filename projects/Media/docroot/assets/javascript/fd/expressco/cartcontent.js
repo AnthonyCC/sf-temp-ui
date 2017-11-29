@@ -283,9 +283,11 @@ etids.div_tooltipPopup = "#tooltipPopup";
 				if( page == "view_cart.jsp" ){
 					data.eTippingEnabled = false;
 					
-					/*find out if the subtotal member of the data object will have an order total array member*/
+					/* add sub total and save amount */
 					if( typeof(data.subTotalBox.estimatedTotalBox) == "object" ){
-						data.subTotalBox.subTotalBox.push( data.subTotalBox.estimatedTotalBox[0] );
+						data.subTotalBox.estimatedTotalBox.forEach(function (obj){
+							data.subTotalBox.subTotalBox.push(obj);
+						});
 					}
 					
 					/*APPBUG-4365*/

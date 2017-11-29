@@ -319,6 +319,8 @@ public class CartDataServlet extends BaseJsonServlet {
 				
 				cartData.setItemCount( itemCount );
 				cartData.setSubTotal( JspMethods.formatPrice(cart.getSubTotal()) );
+				double saveAmount = cart.getSaveAmount(false);
+				cartData.setSaveAmount( saveAmount> 0? JspMethods.formatPrice(saveAmount) : null );
 				cartData.setModifyOrder( cart instanceof FDModifyCartModel );
 				
 				cartData.setErrorMessage( null );

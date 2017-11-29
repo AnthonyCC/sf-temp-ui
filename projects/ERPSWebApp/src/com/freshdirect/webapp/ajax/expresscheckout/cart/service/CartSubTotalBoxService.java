@@ -395,22 +395,17 @@ public class CartSubTotalBoxService {
         subTotalBox.add(data);
     }
 
-    public void populateSavingToBox(List<CartSubTotalFieldData> subTotalBox, FDCartI cart) {
-        double saving = cart.getTotalDiscountValue() + cart.getCustomerCreditsValue();
-
-        for (FDCartLineI orderLine : cart.getOrderLines()) {
-            if (hasCartLineGroupDiscount(orderLine)) {
-                saving += orderLine.getGroupScaleSavings();
-            }
-        }
+    public CartSubTotalFieldData createSavingToBox(FDCartI cart) {
+        double saving = cart.getSaveAmount(true);
 
         if (0 < saving) {
             CartSubTotalFieldData data = new CartSubTotalFieldData();
             data.setId(YOU_SAVED);
             data.setText(YOU_SAVED_TEXT);
             data.setValue(JspMethods.formatPrice(saving));
-            subTotalBox.add(data);
+            return data;
         }
+        return null;
     }
 
     public void populateTipToBox(List<CartSubTotalFieldData> subTotalBox, FDCartI cart) {
@@ -421,10 +416,6 @@ public class CartSubTotalBoxService {
                 data.setValue(JspMethods.formatPrice(cart.getTip()));
                 subTotalBox.add(data);
         }
-    }
-
-    private boolean hasCartLineGroupDiscount(FDCartLineI cartLine) {
-        return cartLine.getDiscount() == null && cartLine.getGroupQuantity() > 0 && cartLine.getGroupScaleSavings() > 0;
     }
 
 	public void populateAvalaraTaxToBox(

@@ -150,7 +150,7 @@ public class PricingEngine {
 		if (DEBUG) LOGGER.debug("getConfiguredPrice surcharges: "+surcharge);
 
 		Price pr = new Price(MathUtil.roundDecimal(basePrice.getPrice().getBasePrice()), MathUtil.roundDecimal(surcharge));
-		return new ConfiguredPrice(pr, basePrice.getPricingCondition(),basePrice.getZoneInfo());
+		return new ConfiguredPrice(pr, basePrice.getPricingCondition(),basePrice.getZoneInfo(), basePrice.getUnscaledPrice());
 	}
 
 	/*
@@ -291,7 +291,8 @@ public class PricingEngine {
 		// find pricing condition for quantity (in scaleUnit)
 		ZonePriceModel zpm=pricing.getZonePrice(pricingZone);
 		MaterialPrice materialPrice = zpm.findMaterialPrice(scaledQuantity);
-	
+		// get the base price for quantity = 1
+		MaterialPrice materialPriceQuantity1 = zpm.findMaterialPrice(1);
 		double pricingQuantity;
 		if ( !salesUnit.equals(materialPrice.getPricingUnit()) ) {
 			// we need a ratio
@@ -307,7 +308,7 @@ public class PricingEngine {
 		if (DEBUG) LOGGER.debug("Scale pricing [" + pricingQuantity + " * " + materialPrice.getPrice() + "]");
 
 		double price = pricingQuantity * materialPrice.getPrice();
-		return new ConfiguredPrice(new Price(price), materialPrice,zpm.getPricingZone());
+		return new ConfiguredPrice(new Price(price), materialPrice,zpm.getPricingZone(), materialPriceQuantity1 != null? materialPriceQuantity1.getOriginalPrice() * pricingQuantity : 0);
 	}
 
 	/**

@@ -8,6 +8,7 @@ public class ReceiptData {
 
 	private String total;
 	private String totalLabel;
+	private String saveAmount;
 	private List<CartSubTotalFieldData> receiptLines;
 
 	public String getTotal() {
@@ -17,7 +18,13 @@ public class ReceiptData {
 	public void setTotal(String total) {
 		this.total = total;
 	}
+	public String getSaveAmount() {
+		return saveAmount;
+	}
 
+	public void setSaveAmount(String saveAmount) {
+		this.saveAmount = saveAmount;
+	}
 	public String getTotalLabel() {
 		return totalLabel;
 	}

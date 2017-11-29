@@ -41,6 +41,12 @@ public interface FDCartLineI extends FDProductSelectionI {
 	public double getPrice();
 
 	/**
+	 * Get the amount you have saved
+	 *
+	 * @return price in USD
+	 */
+	public double getSaveAmount();
+	/**
 	 * Get the value of the promotion applied to this orderline.
 	 *
 	 * @return promotion value in USD
