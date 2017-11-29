@@ -4,10 +4,10 @@ import static com.freshdirect.cms.core.domain.ContentKeyFactory.get;
 import static com.freshdirect.cms.core.domain.ContentType.Category;
 import static com.freshdirect.cms.core.domain.ContentType.Department;
 import static com.freshdirect.cms.core.domain.ContentType.Product;
-import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static com.freshdirect.cms.core.domain.RootContentKey.STORE_FRESHDIRECT;
+import static com.freshdirect.cms.core.domain.RootContentKey.STORE_FOODKICK;
+
+import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -35,7 +35,6 @@ import com.freshdirect.cms.category.UnitTest;
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentTypes;
-import com.freshdirect.cms.core.domain.RootContentKey;
 import com.freshdirect.cms.util.TestContentBuilder;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -46,13 +45,12 @@ import com.google.common.collect.ImmutableSet;
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = { com.freshdirect.cms.core.service.NodeCollectionContentProviderServiceTest.Config.class })
 public class NodeCollectionContentProviderServiceTest {
 
-    private final Set<ContentKey> NO_PARENTS = Collections.<ContentKey>emptySet();
+    private final Set<ContentKey> NO_PARENTS = Collections.emptySet();
 
     @Configuration
     @ComponentScan(basePackageClasses = { ContentKeyParentsCollectorService.class, ContentTypeInfoService.class, ContextService.class })
     @EnableCaching
     static class Config {
-
         @Bean
         public CacheManager cacheManager() {
             SimpleCacheManager cacheManager = new SimpleCacheManager();
@@ -70,86 +68,214 @@ public class NodeCollectionContentProviderServiceTest {
     @Autowired
     private ContentKeyParentsCollectorService contentKeyParentsCollectorService;
 
-    @Test
-    public void testParentKeys() {
+    
+    private static final ContentKey PRODUCT_KEY = get(Product, "product_node");
+    
+    private static final ContentKey DEPT_FD_KEY = get(Department, "department_fd");
+    private static final ContentKey CAT_TOP_FD_KEY = get(Category, "category_top_fd");
+    private static final ContentKey CAT_SUB_FD_KEY = get(Category, "category_sub_fd");
+    
+    private static final ContentKey DEPT_FDX_KEY = get(Department, "department_fdx");
+    private static final ContentKey CAT_FDX_KEY = get(Category, "category_fdx");
+    
+    private static final ContentKey CAT_TOP_ORPHAN_KEY = get(Category, "category_top_orphan");
+    private static final ContentKey CAT_SUB_ORPHAN_KEY = get(Category, "category_sub_orphan");
+    
+    private static final ContentKey SINGLE_NODE_KEY = get(Department, "singleNode");
+    
+    private static final ContentKey NON_EXISTING_NODE = get(Product, "does_not_exist");
 
+    private static final Map<ContentKey, Map<Attribute, Object>> simpleStore() {
         Map<ContentKey, Map<Attribute, Object>> testNodes = new HashMap<ContentKey, Map<Attribute, Object>>();
 
         // build FreshDirect content tree
         // FD > Department:mkt > Category:mkt_high_holidays_2014 > Category:picks_high_holidays_new_yea > Product:fru_pid_2210270
-        testNodes.put(RootContentKey.STORE_FRESHDIRECT.contentKey,
-                ImmutableMap.<Attribute, Object> of(ContentTypes.Store.departments, asList(new ContentKey[] { get(Department, "mkt") }), ContentTypes.Product.NOT_SEARCHABLE, true));
-        testNodes.put(get(Department, "mkt"),
-                ImmutableMap.<Attribute, Object> of(ContentTypes.Department.categories, asList(new ContentKey[] { get(Category, "mkt_high_holidays_2014") })));
-        testNodes.put(get(Category, "mkt_high_holidays_2014"),
-                ImmutableMap.<Attribute, Object> of(ContentTypes.Category.subcategories, asList(new ContentKey[] { get(Category, "picks_high_holidays_new_yea") })));
-        testNodes.put(get(Category, "picks_high_holidays_new_yea"),
-                ImmutableMap.<Attribute, Object> of(ContentTypes.Category.products, asList(new ContentKey[] { get(Product, "fru_pid_2210270") })));
+        testNodes.put(STORE_FRESHDIRECT.contentKey,
+                ImmutableMap.<Attribute, Object> of(ContentTypes.Store.departments, ImmutableList.of(DEPT_FD_KEY), ContentTypes.Product.NOT_SEARCHABLE, true));
+        testNodes.put(DEPT_FD_KEY,
+                ImmutableMap.<Attribute, Object> of(ContentTypes.Department.categories, ImmutableList.of(CAT_TOP_FD_KEY)));
+        testNodes.put(CAT_TOP_FD_KEY,
+                ImmutableMap.<Attribute, Object> of(ContentTypes.Category.subcategories, ImmutableList.of(CAT_SUB_FD_KEY)));
+        testNodes.put(CAT_SUB_FD_KEY,
+                ImmutableMap.<Attribute, Object> of(ContentTypes.Category.products, ImmutableList.of(PRODUCT_KEY)));
 
         // build orphan category
         // Category:apl > Category:apl_apl > Product:fru_pid_2210270
-        testNodes.put(get(Category, "apl"),
-                ImmutableMap.<Attribute, Object> of(ContentTypes.Category.subcategories, asList(new ContentKey[] { get(Category, "apl_apl") })));
-        testNodes.put(get(Category, "apl_apl"),
-                ImmutableMap.<Attribute, Object> of(ContentTypes.Category.products, asList(new ContentKey[] { get(Product, "fru_pid_2210270") })));
-
-        testNodes.put(get(Product, "fru_pid_2210270"),
-                ImmutableMap.<Attribute, Object> of(ContentTypes.Product.FULL_NAME, "Test Product", ContentTypes.Product.PRIMARY_HOME, asList(new ContentKey[] { get(Category, "fvg_fruit_apples"), get(Category, "apl_apl") })));
+        testNodes.put(CAT_TOP_ORPHAN_KEY,
+                ImmutableMap.<Attribute, Object> of(ContentTypes.Category.subcategories, ImmutableList.of(CAT_SUB_ORPHAN_KEY)));
+        testNodes.put(CAT_SUB_ORPHAN_KEY,
+                ImmutableMap.<Attribute, Object> of(ContentTypes.Category.products, ImmutableList.of(PRODUCT_KEY)));
 
         // build FDX tree
         // FDX > Department:mkt_fdx > Category:fvg_fruit_apples > Product:fru_pid_2210270
-        testNodes.put(RootContentKey.STORE_FOODKICK.contentKey,
-                ImmutableMap.<Attribute, Object> of(ContentTypes.Store.departments, asList(new ContentKey[] { get(Department, "mkt_fdx") }), ContentTypes.Product.NOT_SEARCHABLE, true));
-        testNodes.put(get(Department, "mkt_fdx"),
-                ImmutableMap.<Attribute, Object> of(ContentTypes.Department.categories, asList(new ContentKey[] { get(Category, "fvg_fruit_apples") })));
-        testNodes.put(get(Category, "fvg_fruit_apples"),
-                ImmutableMap.<Attribute, Object> of(ContentTypes.Category.products, asList(new ContentKey[] { get(Product, "fru_pid_2210270") })));
+        testNodes.put(STORE_FOODKICK.contentKey,
+                ImmutableMap.<Attribute, Object> of(ContentTypes.Store.departments, ImmutableList.of(DEPT_FDX_KEY), ContentTypes.Product.NOT_SEARCHABLE, true));
+        testNodes.put(DEPT_FDX_KEY,
+                ImmutableMap.<Attribute, Object> of(ContentTypes.Department.categories, ImmutableList.of(CAT_FDX_KEY)));
+        testNodes.put(CAT_FDX_KEY,
+                ImmutableMap.<Attribute, Object> of(ContentTypes.Category.products, ImmutableList.of(PRODUCT_KEY)));
+        
+        // product node, only has valid primary home in FDX
+        testNodes.put(PRODUCT_KEY, ImmutableMap.<Attribute, Object> of(
+                ContentTypes.Product.FULL_NAME, "Test Product",
+                ContentTypes.Product.PRIMARY_HOME, ImmutableList.of(CAT_FDX_KEY, CAT_SUB_ORPHAN_KEY)));
 
+        return testNodes;
+    }
+    
+    private Map<ContentKey, Map<Attribute, Object>> singleNodeStore() {
+        return new TestContentBuilder().newDepartment(SINGLE_NODE_KEY.id).build();
+    }
 
-        NodeCollectionContentProviderService underTest = new NodeCollectionContentProviderService(contentTypeInfoService, contentKeyParentsCollectorService, contextService, testNodes);
+    private static final Map<ContentKey, Map<Attribute, Object>> emptyStore() {
+        return Collections.<ContentKey, Map<Attribute, Object>>emptyMap();
+    }
 
-        final Set<ContentKey> parentKeys = underTest.getParentKeys(get(Product, "fru_pid_2210270"));
-        assertNotNull(parentKeys);
-        assertTrue(parentKeys.size()==3);
-        assertTrue(parentKeys.contains(get(Category, "picks_high_holidays_new_yea")));
-        assertTrue(parentKeys.contains(get(Category, "apl_apl")));
-        assertTrue(parentKeys.contains(get(Category, "fvg_fruit_apples")));
+    private NodeCollectionContentProviderService buildProvider(Map<ContentKey, Map<Attribute, Object>> testNodes) {
+        return new NodeCollectionContentProviderService(contentTypeInfoService, contentKeyParentsCollectorService, contextService, testNodes);
+    }
+    
+    
+    @Test
+    public void testContainsKey() {
+        NodeCollectionContentProviderService underTest = buildProvider(simpleStore());
 
-        Map<ContentKey, ContentKey> result = underTest.findPrimaryHomes(get(Product, "fru_pid_2210270"));
-
-        System.out.println("findPrimaryHomes: " + result);
-
-        // TBD
-        // Map<ContentKey, Map<Attribute, Object>> filtered = underTest.filterNodesToStore(RootContentKey.STORE_FRESHDIRECT.contentKey);
+        assertTrue(underTest.containsContentKey(PRODUCT_KEY));
+        assertTrue(underTest.containsContentKey(DEPT_FD_KEY));
+        assertTrue(underTest.containsContentKey(CAT_TOP_FD_KEY));
+        assertTrue(underTest.containsContentKey(CAT_SUB_FD_KEY));
+        assertTrue(underTest.containsContentKey(DEPT_FDX_KEY));
+        assertTrue(underTest.containsContentKey(CAT_FDX_KEY));
+        assertTrue(underTest.containsContentKey(CAT_TOP_ORPHAN_KEY));
+        assertTrue(underTest.containsContentKey(CAT_SUB_ORPHAN_KEY));
+        
+        assertTrue(!underTest.containsContentKey(NON_EXISTING_NODE));
     }
 
     @Test
-    public void testParentIndexBuilderWithEmptyContent()         {
-        TestContainer emptyContainer = new TestContainer(contentTypeInfoService, contentKeyParentsCollectorService, contextService, Collections.<ContentKey, Map<Attribute, Object>>emptyMap());
+    public void testParentKeys() {
+        NodeCollectionContentProviderService underTest = buildProvider(simpleStore());
+        
+        final Set<ContentKey> parentKeys = underTest.getParentKeys(PRODUCT_KEY);
+        assertNotNull(parentKeys);
+        assertEquals(3, parentKeys.size());
+        assertTrue(parentKeys.contains(CAT_SUB_FD_KEY));
+        assertTrue(parentKeys.contains(CAT_SUB_ORPHAN_KEY));
+        assertTrue(parentKeys.contains(CAT_FDX_KEY));
+        
+        final Set<ContentKey> parentsOfNonExisting = underTest.getParentKeys(NON_EXISTING_NODE);
+        assertNotNull(parentsOfNonExisting);
+        assertTrue(parentsOfNonExisting.isEmpty());
+    }
 
-        final ContentKey testKey = get(Category, "testCat");
+    @Test
+    public void testPrimaryHomes() {
+        NodeCollectionContentProviderService underTest = buildProvider(simpleStore());
+
+        final Map<ContentKey, ContentKey> primaryHomes = underTest.findPrimaryHomes(PRODUCT_KEY);
+        assertNotNull(primaryHomes);
+        assertEquals(1, primaryHomes.size());
+        assertTrue(primaryHomes.containsKey(STORE_FOODKICK.contentKey));
+        assertEquals(CAT_FDX_KEY, primaryHomes.get(STORE_FOODKICK.contentKey));
+        
+        // FIXME : throws NPE
+//        final Map<ContentKey, ContentKey> primaryHomesOfNonExisting = underTest.findPrimaryHomes(NON_EXISTING_NODE);
+//        assertNotNull(primaryHomesOfNonExisting);
+//        assertTrue(primaryHomesOfNonExisting.isEmpty());
+    }
+
+    @Test
+    public void testIsOrphan() {
+        NodeCollectionContentProviderService underTest = buildProvider(simpleStore());
+
+        assertTrue(!underTest.isOrphan(PRODUCT_KEY, STORE_FRESHDIRECT.contentKey));
+        assertTrue(!underTest.isOrphan(DEPT_FD_KEY, STORE_FRESHDIRECT.contentKey));
+        assertTrue(!underTest.isOrphan(CAT_TOP_FD_KEY, STORE_FRESHDIRECT.contentKey));
+        assertTrue(!underTest.isOrphan(CAT_SUB_FD_KEY, STORE_FRESHDIRECT.contentKey));
+        assertTrue(underTest.isOrphan(DEPT_FDX_KEY, STORE_FRESHDIRECT.contentKey));
+        assertTrue(underTest.isOrphan(CAT_FDX_KEY, STORE_FRESHDIRECT.contentKey));
+        assertTrue(underTest.isOrphan(CAT_TOP_ORPHAN_KEY, STORE_FRESHDIRECT.contentKey));
+        assertTrue(underTest.isOrphan(CAT_SUB_ORPHAN_KEY, STORE_FRESHDIRECT.contentKey));
+        
+        assertTrue(!underTest.isOrphan(PRODUCT_KEY, STORE_FOODKICK.contentKey));
+        assertTrue(underTest.isOrphan(DEPT_FD_KEY, STORE_FOODKICK.contentKey));
+        assertTrue(underTest.isOrphan(CAT_TOP_FD_KEY, STORE_FOODKICK.contentKey));
+        assertTrue(underTest.isOrphan(CAT_SUB_FD_KEY, STORE_FOODKICK.contentKey));
+        assertTrue(!underTest.isOrphan(DEPT_FDX_KEY, STORE_FOODKICK.contentKey));
+        assertTrue(!underTest.isOrphan(CAT_FDX_KEY, STORE_FOODKICK.contentKey));
+        assertTrue(underTest.isOrphan(CAT_TOP_ORPHAN_KEY, STORE_FOODKICK.contentKey));
+        assertTrue(underTest.isOrphan(CAT_SUB_ORPHAN_KEY, STORE_FOODKICK.contentKey));
+        
+        assertTrue(underTest.isOrphan(NON_EXISTING_NODE, STORE_FRESHDIRECT.contentKey));
+        assertTrue(underTest.isOrphan(NON_EXISTING_NODE, STORE_FOODKICK.contentKey));
+    }
+    
+    @Test
+    public void testFilterByStore() {
+        NodeCollectionContentProviderService underTest = buildProvider(simpleStore());
+
+        final Map<ContentKey, Map<Attribute, Object>> filterFD = underTest.filterNodesToStore(STORE_FRESHDIRECT.contentKey);
+        assertNotNull(filterFD);
+        assertEquals(5, filterFD.size());
+        assertTrue(filterFD.containsKey(STORE_FRESHDIRECT.contentKey));
+        assertTrue(filterFD.containsKey(DEPT_FD_KEY));
+        assertTrue(filterFD.containsKey(CAT_TOP_FD_KEY));
+        assertTrue(filterFD.containsKey(CAT_SUB_FD_KEY));
+        assertTrue(filterFD.containsKey(PRODUCT_KEY));
+
+        final Map<ContentKey, Map<Attribute, Object>> filterFDX = underTest.filterNodesToStore(STORE_FOODKICK.contentKey);
+        assertNotNull(filterFDX);
+        assertEquals(4, filterFDX.size());
+        assertTrue(filterFDX.containsKey(STORE_FOODKICK.contentKey));
+        assertTrue(filterFDX.containsKey(DEPT_FDX_KEY));
+        assertTrue(filterFDX.containsKey(CAT_FDX_KEY));
+        assertTrue(filterFDX.containsKey(PRODUCT_KEY));
+    }
+
+    @Test
+    public void testCollectByStore() {
+        NodeCollectionContentProviderService underTest = buildProvider(simpleStore());
+
+        final Map<ContentKey, Set<ContentKey>> parentsByStore = underTest.collectParentsPerStore(PRODUCT_KEY);
+        assertNotNull(parentsByStore);
+        assertEquals(2, parentsByStore.size());
+        
+        assertTrue(parentsByStore.containsKey(STORE_FRESHDIRECT.contentKey));
+        final Set<ContentKey> parentsFD = parentsByStore.get(STORE_FRESHDIRECT.contentKey);
+        assertEquals(1, parentsFD.size());
+        assertTrue(parentsFD.contains(CAT_SUB_FD_KEY));
+        
+        assertTrue(parentsByStore.containsKey(STORE_FOODKICK.contentKey));
+        final Set<ContentKey> parentsFDX = parentsByStore.get(STORE_FOODKICK.contentKey);
+        assertEquals(1, parentsFDX.size());
+        assertTrue(parentsFDX.contains(CAT_FDX_KEY));
+    }
+    
+    @Test
+    public void testParentIndexBuilderWithEmptyContent() {
+        NodeCollectionContentProviderService emptyContainer = buildProvider(emptyStore());
+
+        final ContentKey testKey = get(Category, "nonExistingCategory");
         final Map<ContentKey, Set<ContentKey>> parentIndex = emptyContainer.buildParentIndexFor(testKey);
         assertNotNull(parentIndex);
         assertTrue(parentIndex.size() == 1);
         assertTrue(parentIndex.keySet().contains(testKey));
+        assertTrue(parentIndex.get(testKey).isEmpty());
         assertTrue(emptyContainer.findContextsOf(testKey).isEmpty());
     }
 
     @Test
     public void testParentIndexBuilderWithSingleNodeContent() {
-        final ContentKey singleKey = get(Department, "singleNode");
-        Map<ContentKey, Map<Attribute, Object>> testNodes = new TestContentBuilder()
-            .newDepartment(singleKey.id)
-            .build();
+        NodeCollectionContentProviderService singleNodeContainer = buildProvider(singleNodeStore());
 
-        TestContainer singleNodeContainer = new TestContainer(contentTypeInfoService, contentKeyParentsCollectorService, contextService, testNodes);
+        final Map<ContentKey, Set<ContentKey>> parentIndex = singleNodeContainer.buildParentIndexFor(SINGLE_NODE_KEY);
+        assertParentMapsEqual(ImmutableMap.of(SINGLE_NODE_KEY, NO_PARENTS), parentIndex);
 
-        final Map<ContentKey, Set<ContentKey>> parentIndex = singleNodeContainer.buildParentIndexFor(singleKey);
-        assertParentMapsEqual(ImmutableMap.of(singleKey, NO_PARENTS), parentIndex);
-
-        assertTrue(singleNodeContainer.findContextsOf(singleKey).isEmpty());
+        assertTrue(singleNodeContainer.findContextsOf(SINGLE_NODE_KEY).isEmpty());
     }
 
+    
+    
     @Test
     public void testParentIndexBuilderWithNodeHavingParentAndGrandParent() {
         final ContentKey fooKey = get(Department, "fooNode");
@@ -164,7 +290,7 @@ public class NodeCollectionContentProviderServiceTest {
                 .asChild()
             .build();
 
-        TestContainer testContainer = new TestContainer(contentTypeInfoService, contentKeyParentsCollectorService, contextService, testNodes);
+        NodeCollectionContentProviderService testContainer = new NodeCollectionContentProviderService(contentTypeInfoService, contentKeyParentsCollectorService, contextService, testNodes);
 
         // expected: [ fooChildKey => [fooKey], fooKey => [] ]
         Map<ContentKey, Set<ContentKey>> parentIndex = testContainer.buildParentIndexFor(fooChildKey);
@@ -217,7 +343,7 @@ public class NodeCollectionContentProviderServiceTest {
                 .asChild()
             .build();
 
-        TestContainer testContainer = new TestContainer(contentTypeInfoService, contentKeyParentsCollectorService, contextService, testNodes);
+        NodeCollectionContentProviderService testContainer = new NodeCollectionContentProviderService(contentTypeInfoService, contentKeyParentsCollectorService, contextService, testNodes);
 
         // expected: [ fooChildKey => [fooKey], fooKey => [] ]
         Map<ContentKey, Set<ContentKey>> parentIndex = testContainer.buildParentIndexFor(fooChildKey);
@@ -268,7 +394,7 @@ public class NodeCollectionContentProviderServiceTest {
                 .connectedTo(homeKey)
             .build();
 
-        final TestContainer testContainer = new TestContainer(contentTypeInfoService, contentKeyParentsCollectorService, contextService, testNodes);
+        final NodeCollectionContentProviderService testContainer = new NodeCollectionContentProviderService(contentTypeInfoService, contentKeyParentsCollectorService, contextService, testNodes);
 
         // expected: [ prod1key => [homeKey], homeKey => [deptKey], deptKey => [] ]
         Map<ContentKey, Set<ContentKey>> parentIndex = testContainer.buildParentIndexFor(prod1key);
@@ -318,7 +444,7 @@ public class NodeCollectionContentProviderServiceTest {
                 .connectedTo(home2key)
             .build();
 
-        final TestContainer testContainer = new TestContainer(contentTypeInfoService, contentKeyParentsCollectorService, contextService, testNodes);
+        final NodeCollectionContentProviderService testContainer = new NodeCollectionContentProviderService(contentTypeInfoService, contentKeyParentsCollectorService, contextService, testNodes);
 
         // expected: [ prod1key => [home1key, home2key], home1key => [dept1key], home2key => [dept2key], dept1key => [], dept2key => [] ]
         Map<ContentKey, Set<ContentKey>> parentIndex = testContainer.buildParentIndexFor(prod1key);
@@ -356,7 +482,7 @@ public class NodeCollectionContentProviderServiceTest {
                 .connectedTo(home2key)
             .build();
 
-        final TestContainer testContainer = new TestContainer(contentTypeInfoService, contentKeyParentsCollectorService, contextService, testNodes);
+        final NodeCollectionContentProviderService testContainer = new NodeCollectionContentProviderService(contentTypeInfoService, contentKeyParentsCollectorService, contextService, testNodes);
 
         // expected: [ prod1key => [home1key, home2key], home1key => [dept1key], home2key => [dept1key], dept1key => []]
         Map<ContentKey, Set<ContentKey>> parentIndex = testContainer.buildParentIndexFor(prod1key);
@@ -382,17 +508,5 @@ public class NodeCollectionContentProviderServiceTest {
     private void assertParentMapsEqual(Map<ContentKey, Set<ContentKey>> expectedMap, Map<ContentKey, Set<ContentKey>> parentIndex) {
         assertNotNull(parentIndex);
         assertTrue(expectedMap.equals(parentIndex));
-    }
-
-    private static class TestContainer extends NodeCollectionContentProviderService {
-        public TestContainer(ContentTypeInfoService contentTypeInfoService, ContentKeyParentsCollectorService contentKeyParentsCollectorService,
-                ContextService contextService, Map<ContentKey, Map<Attribute, Object>> contentNodes) {
-            super(contentTypeInfoService, contentKeyParentsCollectorService, contextService, contentNodes);
-        }
-
-        @Override
-        public Map<ContentKey, Set<ContentKey>> buildParentIndexFor(final ContentKey contentKey) {
-            return super.buildParentIndexFor(contentKey);
-        }
     }
 }
