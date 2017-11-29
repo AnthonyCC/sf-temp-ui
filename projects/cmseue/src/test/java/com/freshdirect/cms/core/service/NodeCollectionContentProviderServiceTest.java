@@ -173,6 +173,11 @@ public class NodeCollectionContentProviderServiceTest {
     public void testIsOrphan() {
         NodeCollectionContentProviderService underTest = buildProvider(simpleStore());
 
+        assertTrue(!underTest.isOrphan(STORE_FRESHDIRECT.contentKey, STORE_FRESHDIRECT.contentKey));
+        assertTrue(!underTest.isOrphan(STORE_FOODKICK.contentKey, STORE_FOODKICK.contentKey));
+        assertTrue(underTest.isOrphan(STORE_FRESHDIRECT.contentKey, STORE_FOODKICK.contentKey));
+        assertTrue(underTest.isOrphan(STORE_FOODKICK.contentKey, STORE_FRESHDIRECT.contentKey));
+        
         assertTrue(!underTest.isOrphan(PRODUCT_KEY, STORE_FRESHDIRECT.contentKey));
         assertTrue(!underTest.isOrphan(DEPT_FD_KEY, STORE_FRESHDIRECT.contentKey));
         assertTrue(!underTest.isOrphan(CAT_TOP_FD_KEY, STORE_FRESHDIRECT.contentKey));
