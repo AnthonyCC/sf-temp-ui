@@ -25,17 +25,14 @@ import com.freshdirect.customer.ErpChargeLineModel;
 import com.freshdirect.customer.ErpReturnLineModel;
 import com.freshdirect.customer.ErpReturnOrderModel;
 import com.freshdirect.customer.ErpTransactionException;
-import com.freshdirect.customer.ErpInvoiceLineI;
 import com.freshdirect.deliverypass.DlvPassConstants;
-import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.CallCenterServices;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDInvoiceLineI;
 import com.freshdirect.fdstore.customer.FDOrderI;
-import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.framework.webapp.WebFormI;
@@ -231,7 +228,7 @@ public class ReturnControllerTag extends AbstractControllerTag implements Sessio
 				for(Iterator j = order.getOrderLines().iterator(); j.hasNext(); ){
 					FDCartLineI line = (FDCartLineI) j.next();
 					 
-					ErpInvoiceLineI invoiceLine = line.getInvoiceLine();
+					FDInvoiceLineI invoiceLine = line.getInvoiceLine();
 					if(!returnLine.getLineNumber().equals(invoiceLine.getOrderLineNumber())){
 						continue;
 					}

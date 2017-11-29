@@ -20,6 +20,8 @@ public class ErpInvoiceLineModel extends ModelSupport implements ErpInvoiceLineI
     private double actualCost;
     private double actualDiscountAmount;
     private double couponDiscountAmount;
+    private String subSkuStatus; // relates to SHIP_STAT column
+    private String substitutedSkuCode; // relates to SUB_WEBSKU column
 	
 	public ErpInvoiceLineModel(){
 		super();
@@ -38,6 +40,8 @@ public class ErpInvoiceLineModel extends ModelSupport implements ErpInvoiceLineI
 		this.actualCost = invoiceLine.getActualCost();
 		this.actualDiscountAmount=invoiceLine.getActualDiscountAmount();
 		this.couponDiscountAmount=invoiceLine.getCouponDiscountAmount();
+		this.subSkuStatus=invoiceLine.getSubSkuStatus();
+		this.substitutedSkuCode=invoiceLine.getSubstitutedSkuCode();
 	}
 	
     public double getPrice(){ 
@@ -127,4 +131,22 @@ public class ErpInvoiceLineModel extends ModelSupport implements ErpInvoiceLineI
 	public void setCouponDiscountAmount(double couponDiscountAmount) {
 		this.couponDiscountAmount = couponDiscountAmount;
 	}
+
+
+	public String getSubstitutedSkuCode() {
+		return substitutedSkuCode;
+	}
+
+	public void setSubstitutedSkuCode(String substitutedSkuCode) {
+		this.substitutedSkuCode = substitutedSkuCode;
+	}
+
+	public String getSubSkuStatus() {
+		return subSkuStatus;
+	}
+
+	public void setSubSkuStatus(String subSkuStatus) {
+		this.subSkuStatus = subSkuStatus;
+	}
+
 }

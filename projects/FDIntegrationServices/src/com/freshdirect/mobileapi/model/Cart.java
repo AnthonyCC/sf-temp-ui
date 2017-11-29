@@ -767,7 +767,15 @@ public class Cart {
             	
             	productLineItem.setProductConfiguration(productConfiguration);
                 productLineItem.setHasKosherRestriction(cartLine.getApplicableRestrictions().contains(EnumDlvRestrictionReason.KOSHER));
-
+                     
+               //Changes for FDC Substitution 
+                productLineItem.setSubSkuStatus(cartLine.getInvoiceLine().getSubSkuStatus());
+                productLineItem.setSubstitutedSkuCode(cartLine.getInvoiceLine().getSubstitutedSkuCode());
+                productLineItem.setSubstituteProductName(cartLine.getInvoiceLine().getSubstituteProductName());
+                productLineItem.setSusbtituteProductDefaultPrice(cartLine.getInvoiceLine().getSubstituteProductDefaultPrice());
+                productLineItem.setSubstituteProduct(cartLine.getInvoiceLine().getSubstituteProduct());
+                 
+                
                 String earliestAvailability = productNode.getSku(cartLine.getSkuCode()).getEarliestAvailabilityMessage();
                 //String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
                 String plantID=ProductInfoUtil.getPickingPlantId(productNode.getSku(cartLine.getSkuCode()).getProductInfo());

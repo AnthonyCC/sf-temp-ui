@@ -7,7 +7,6 @@ import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumTaxationType;
 import com.freshdirect.customer.EnumATCContext;
 import com.freshdirect.customer.ErpCouponDiscountLineModel;
-import com.freshdirect.customer.ErpInvoiceLineI;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpReturnLineI;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
@@ -74,7 +73,7 @@ public interface FDCartLineI extends FDProductSelectionI {
 	public void setDepositValue(double depositRate);
 	
 	public boolean hasInvoiceLine();
-	public ErpInvoiceLineI getInvoiceLine();
+	public FDInvoiceLineI getInvoiceLine();
 
 	public boolean hasReturnLine();
 	public ErpReturnLineI getReturnLine();

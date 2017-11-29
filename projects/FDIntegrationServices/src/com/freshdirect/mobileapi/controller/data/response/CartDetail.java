@@ -8,6 +8,7 @@ import java.util.List;
 import com.freshdirect.mobileapi.controller.data.DateFormat;
 import com.freshdirect.mobileapi.controller.data.ProductConfiguration;
 import com.freshdirect.mobileapi.model.data.Unavailability;
+import com.freshdirect.storeapi.content.ProductModel;
 
 public class CartDetail {
 
@@ -712,6 +713,16 @@ public class CartDetail {
         
         private String discountMsg;
         private double discountSavings;
+        
+        private String subSkuStatus;
+    	
+    	private String substitutedSkuCode;
+    	
+    	private String substituteProductName;
+    	
+    	private String susbtituteProductDefaultPrice;
+    	
+    	private ProductModel substituteProduct;
     	
         public String getDiscountMsg() {
 			return discountMsg;
@@ -776,7 +787,47 @@ public class CartDetail {
 		public void setGroupScaleSavings(double groupScaleSavings) {
 			this.groupScaleSavings = groupScaleSavings;
 		}
+		
+		public String getSubSkuStatus() {
+			return subSkuStatus;
+		}
 
+		public void setSubSkuStatus(String subSkuStatus) {
+			this.subSkuStatus = subSkuStatus;
+		}
+
+		public String getSubstitutedSkuCode() {
+			return substitutedSkuCode;
+		}
+
+		public void setSubstitutedSkuCode(String substitutedSkuCode) {
+			this.substitutedSkuCode = substitutedSkuCode;
+		}
+
+		public ProductModel getSubstituteProduct() {
+			return substituteProduct;
+		}
+
+		public void setSubstituteProduct(ProductModel substituteProduct) {
+			this.substituteProduct = substituteProduct;
+		}
+
+		public String getSubstituteProductName() {
+			return substituteProductName;
+		}
+
+		public void setSubstituteProductName(String substituteProductName) {
+			this.substituteProductName = substituteProductName;
+		}
+
+		public String getSusbtituteProductDefaultPrice() {
+			return susbtituteProductDefaultPrice;
+		}
+
+		public void setSusbtituteProductDefaultPrice(
+				String susbtituteProductDefaultPrice) {
+			this.susbtituteProductDefaultPrice = susbtituteProductDefaultPrice;
+		}
     }
 
     public List<SummaryLineCharge> getSummaryLineCharges() {
