@@ -150,6 +150,7 @@
 
 .timeslot-selector .select-time li.steering-discount.alcohol-restricted span.eco-friendly,
 .timeslot-selector .select-time li.early:not(.steering-discount) .icons span,
+.timeslot-selector .select-time li.early.steering-discount span.early,
 .timeslot-selector .select-time li.early.chefs-table span.chefs-table,
 .timeslot-selector .select-time li.chefs-table:not(.early) span.steering-discount,
 .timeslot-selector .select-time li.chefs-table:not(.early) span.eco-friendly,
