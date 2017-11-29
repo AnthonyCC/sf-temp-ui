@@ -291,6 +291,8 @@ public class SapGatewayConverter {
 			invoiceLineData.setQuantity(erpInvoiceLineModel.getQuantity());
 			invoiceLineData.setTaxValue(erpInvoiceLineModel.getTaxValue());
 			invoiceLineData.setWeight(erpInvoiceLineModel.getWeight());
+			invoiceLineData.setSubSkuStatus(erpInvoiceLineModel.getSubSkuStatus());
+			invoiceLineData.setSubstitutedSkuCode(erpInvoiceLineModel.getSubstitutedSkuCode());
 			invoiceLineDataList.add(invoiceLineData);
 		}
 		}
