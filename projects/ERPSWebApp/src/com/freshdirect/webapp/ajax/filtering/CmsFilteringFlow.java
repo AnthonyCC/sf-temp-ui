@@ -279,7 +279,7 @@ public class CmsFilteringFlow {
             if (browseDataContext == null) {
                 browseDataContext = doSearchLikeFlow(nav, user);
             }
-            EhCacheUtilWrapper.putObjectToCache(CmsCaches.BR_USER_REFINEMENT_CACHE.cacheName, cacheKey, browseDataContext);
+            EhCacheUtilWrapper.putObjectToCache(CmsCaches.BR_USER_REFINEMENT_CACHE.cacheName, user.getUser().getPrimaryKey(), browseDataContext);
 
             BrowseDataBuilderFactory.getInstance().processSorting(browseDataContext, nav, user);
 
