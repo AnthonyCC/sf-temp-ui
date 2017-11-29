@@ -409,7 +409,11 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel, Cloneabl
 
     @Override
     public boolean isOrphan() {
-        return CmsManager.getInstance().isNodeOrphan(this.key);
+        ContentNodeModel start = this;
+        while ((start != null) && !(start instanceof StoreModel || RootContentKey.RECIPES.contentKey.equals(start.getContentKey()))) {
+            start = start.getParentNode();
+        }
+        return start == null;
     }
 
     @Override
