@@ -46,19 +46,23 @@ import com.google.common.collect.ImmutableSet;
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = { com.freshdirect.cms.core.service.NodeCollectionContentProviderServiceTest.Config.class })
 public class NodeCollectionContentProviderServiceTest {
 
-    private final Set<ContentKey> NO_PARENTS = Collections.emptySet();
+    private static final Set<ContentKey> NO_PARENTS = Collections.emptySet();
 
-    @Configuration
-    @ComponentScan(basePackageClasses = { ContentKeyParentsCollectorService.class, ContentTypeInfoService.class, ContextService.class })
-    @EnableCaching
-    static class Config {
-        @Bean
-        public CacheManager cacheManager() {
-            SimpleCacheManager cacheManager = new SimpleCacheManager();
-            cacheManager.setCaches(Arrays.asList(new ConcurrentMapCache("parentKeysCache"), new ConcurrentMapCache("allParentKeysCache")));
-            return cacheManager;
-        }
-    }
+    private static final ContentKey PRODUCT_KEY = get(Product, "product_node");
+
+    private static final ContentKey DEPT_FD_KEY = get(Department, "department_fd");
+    private static final ContentKey CAT_TOP_FD_KEY = get(Category, "category_top_fd");
+    private static final ContentKey CAT_SUB_FD_KEY = get(Category, "category_sub_fd");
+
+    private static final ContentKey DEPT_FDX_KEY = get(Department, "department_fdx");
+    private static final ContentKey CAT_FDX_KEY = get(Category, "category_fdx");
+
+    private static final ContentKey CAT_TOP_ORPHAN_KEY = get(Category, "category_top_orphan");
+    private static final ContentKey CAT_SUB_ORPHAN_KEY = get(Category, "category_sub_orphan");
+
+    private static final ContentKey SINGLE_NODE_KEY = get(Department, "singleNode");
+
+    private static final ContentKey NON_EXISTING_NODE = get(Product, "does_not_exist");
 
     @Autowired
     private ContentTypeInfoService contentTypeInfoService;
@@ -69,71 +73,54 @@ public class NodeCollectionContentProviderServiceTest {
     @Autowired
     private ContentKeyParentsCollectorService contentKeyParentsCollectorService;
 
-    
-    private static final ContentKey PRODUCT_KEY = get(Product, "product_node");
-    
-    private static final ContentKey DEPT_FD_KEY = get(Department, "department_fd");
-    private static final ContentKey CAT_TOP_FD_KEY = get(Category, "category_top_fd");
-    private static final ContentKey CAT_SUB_FD_KEY = get(Category, "category_sub_fd");
-    
-    private static final ContentKey DEPT_FDX_KEY = get(Department, "department_fdx");
-    private static final ContentKey CAT_FDX_KEY = get(Category, "category_fdx");
-    
-    private static final ContentKey CAT_TOP_ORPHAN_KEY = get(Category, "category_top_orphan");
-    private static final ContentKey CAT_SUB_ORPHAN_KEY = get(Category, "category_sub_orphan");
-    
-    private static final ContentKey SINGLE_NODE_KEY = get(Department, "singleNode");
-    
-    private static final ContentKey NON_EXISTING_NODE = get(Product, "does_not_exist");
-
-    private static final Map<ContentKey, Map<Attribute, Object>> simpleStore() {
+    private static Map<ContentKey, Map<Attribute, Object>> simpleStore() {
         Map<ContentKey, Map<Attribute, Object>> testNodes = new HashMap<ContentKey, Map<Attribute, Object>>();
 
         // build FreshDirect content tree: FD > Department > Category > Category > Product
         testNodes.put(STORE_FRESHDIRECT.contentKey,
-                ImmutableMap.<Attribute, Object> of(ContentTypes.Store.departments, ImmutableList.of(DEPT_FD_KEY), ContentTypes.Product.NOT_SEARCHABLE, true));
+                ImmutableMap.<Attribute, Object>of(ContentTypes.Store.departments, ImmutableList.of(DEPT_FD_KEY), ContentTypes.Product.NOT_SEARCHABLE, true));
         testNodes.put(DEPT_FD_KEY,
-                ImmutableMap.<Attribute, Object> of(ContentTypes.Department.categories, ImmutableList.of(CAT_TOP_FD_KEY)));
+                ImmutableMap.<Attribute, Object>of(ContentTypes.Department.categories, ImmutableList.of(CAT_TOP_FD_KEY)));
         testNodes.put(CAT_TOP_FD_KEY,
-                ImmutableMap.<Attribute, Object> of(ContentTypes.Category.subcategories, ImmutableList.of(CAT_SUB_FD_KEY)));
+                ImmutableMap.<Attribute, Object>of(ContentTypes.Category.subcategories, ImmutableList.of(CAT_SUB_FD_KEY)));
         testNodes.put(CAT_SUB_FD_KEY,
-                ImmutableMap.<Attribute, Object> of(ContentTypes.Category.products, ImmutableList.of(PRODUCT_KEY)));
+                ImmutableMap.<Attribute, Object>of(ContentTypes.Category.products, ImmutableList.of(PRODUCT_KEY)));
 
         // build orphan category: Category > Category > Product
         testNodes.put(CAT_TOP_ORPHAN_KEY,
-                ImmutableMap.<Attribute, Object> of(ContentTypes.Category.subcategories, ImmutableList.of(CAT_SUB_ORPHAN_KEY)));
+                ImmutableMap.<Attribute, Object>of(ContentTypes.Category.subcategories, ImmutableList.of(CAT_SUB_ORPHAN_KEY)));
         testNodes.put(CAT_SUB_ORPHAN_KEY,
-                ImmutableMap.<Attribute, Object> of(ContentTypes.Category.products, ImmutableList.of(PRODUCT_KEY)));
+                ImmutableMap.<Attribute, Object>of(ContentTypes.Category.products, ImmutableList.of(PRODUCT_KEY)));
 
         // build FDX tree: FDX > Department > Category > Product
         testNodes.put(STORE_FOODKICK.contentKey,
-                ImmutableMap.<Attribute, Object> of(ContentTypes.Store.departments, ImmutableList.of(DEPT_FDX_KEY), ContentTypes.Product.NOT_SEARCHABLE, true));
+                ImmutableMap.<Attribute, Object>of(ContentTypes.Store.departments, ImmutableList.of(DEPT_FDX_KEY), ContentTypes.Product.NOT_SEARCHABLE, true));
         testNodes.put(DEPT_FDX_KEY,
-                ImmutableMap.<Attribute, Object> of(ContentTypes.Department.categories, ImmutableList.of(CAT_FDX_KEY)));
+                ImmutableMap.<Attribute, Object>of(ContentTypes.Department.categories, ImmutableList.of(CAT_FDX_KEY)));
         testNodes.put(CAT_FDX_KEY,
-                ImmutableMap.<Attribute, Object> of(ContentTypes.Category.products, ImmutableList.of(PRODUCT_KEY)));
-        
+                ImmutableMap.<Attribute, Object>of(ContentTypes.Category.products, ImmutableList.of(PRODUCT_KEY)));
+
         // product node, only has valid primary home in FDX
-        testNodes.put(PRODUCT_KEY, ImmutableMap.<Attribute, Object> of(
+        testNodes.put(PRODUCT_KEY, ImmutableMap.<Attribute, Object>of(
                 ContentTypes.Product.FULL_NAME, "Test Product",
                 ContentTypes.Product.PRIMARY_HOME, ImmutableList.of(CAT_FDX_KEY, CAT_SUB_ORPHAN_KEY)));
 
         return testNodes;
     }
-    
+
     private Map<ContentKey, Map<Attribute, Object>> singleNodeStore() {
         return new TestContentBuilder().newDepartment(SINGLE_NODE_KEY.id).build();
     }
 
-    private static final Map<ContentKey, Map<Attribute, Object>> emptyStore() {
+    private static Map<ContentKey, Map<Attribute, Object>> emptyStore() {
         return Collections.<ContentKey, Map<Attribute, Object>>emptyMap();
     }
 
     private NodeCollectionContentProviderService buildProvider(Map<ContentKey, Map<Attribute, Object>> testNodes) {
         return new NodeCollectionContentProviderService(contentTypeInfoService, contentKeyParentsCollectorService, contextService, testNodes);
     }
-    
-    
+
+
     @Test
     public void testContainsKey() {
         NodeCollectionContentProviderService underTest = buildProvider(simpleStore());
@@ -146,21 +133,21 @@ public class NodeCollectionContentProviderServiceTest {
         assertTrue(underTest.containsContentKey(CAT_FDX_KEY));
         assertTrue(underTest.containsContentKey(CAT_TOP_ORPHAN_KEY));
         assertTrue(underTest.containsContentKey(CAT_SUB_ORPHAN_KEY));
-        
+
         assertTrue(!underTest.containsContentKey(NON_EXISTING_NODE));
     }
 
     @Test
     public void testParentKeys() {
         NodeCollectionContentProviderService underTest = buildProvider(simpleStore());
-        
+
         final Set<ContentKey> parentKeys = underTest.getParentKeys(PRODUCT_KEY);
         assertNotNull(parentKeys);
         assertEquals(3, parentKeys.size());
         assertTrue(parentKeys.contains(CAT_SUB_FD_KEY));
         assertTrue(parentKeys.contains(CAT_SUB_ORPHAN_KEY));
         assertTrue(parentKeys.contains(CAT_FDX_KEY));
-        
+
         final Set<ContentKey> parentsOfNonExisting = underTest.getParentKeys(NON_EXISTING_NODE);
         assertNotNull(parentsOfNonExisting);
         assertTrue(parentsOfNonExisting.isEmpty());
@@ -175,7 +162,7 @@ public class NodeCollectionContentProviderServiceTest {
         assertEquals(1, primaryHomes.size());
         assertTrue(primaryHomes.containsKey(STORE_FOODKICK.contentKey));
         assertEquals(CAT_FDX_KEY, primaryHomes.get(STORE_FOODKICK.contentKey));
-        
+
         // FIXME : throws NPE
 //        final Map<ContentKey, ContentKey> primaryHomesOfNonExisting = underTest.findPrimaryHomes(NON_EXISTING_NODE);
 //        assertNotNull(primaryHomesOfNonExisting);
@@ -194,7 +181,7 @@ public class NodeCollectionContentProviderServiceTest {
         assertTrue(underTest.isOrphan(CAT_FDX_KEY, STORE_FRESHDIRECT.contentKey));
         assertTrue(underTest.isOrphan(CAT_TOP_ORPHAN_KEY, STORE_FRESHDIRECT.contentKey));
         assertTrue(underTest.isOrphan(CAT_SUB_ORPHAN_KEY, STORE_FRESHDIRECT.contentKey));
-        
+
         assertTrue(!underTest.isOrphan(PRODUCT_KEY, STORE_FOODKICK.contentKey));
         assertTrue(underTest.isOrphan(DEPT_FD_KEY, STORE_FOODKICK.contentKey));
         assertTrue(underTest.isOrphan(CAT_TOP_FD_KEY, STORE_FOODKICK.contentKey));
@@ -203,11 +190,11 @@ public class NodeCollectionContentProviderServiceTest {
         assertTrue(!underTest.isOrphan(CAT_FDX_KEY, STORE_FOODKICK.contentKey));
         assertTrue(underTest.isOrphan(CAT_TOP_ORPHAN_KEY, STORE_FOODKICK.contentKey));
         assertTrue(underTest.isOrphan(CAT_SUB_ORPHAN_KEY, STORE_FOODKICK.contentKey));
-        
+
         assertTrue(underTest.isOrphan(NON_EXISTING_NODE, STORE_FRESHDIRECT.contentKey));
         assertTrue(underTest.isOrphan(NON_EXISTING_NODE, STORE_FOODKICK.contentKey));
     }
-    
+
     @Test
     public void testFilterByStore() {
         NodeCollectionContentProviderService underTest = buildProvider(simpleStore());
@@ -237,12 +224,12 @@ public class NodeCollectionContentProviderServiceTest {
         final Map<ContentKey, Set<ContentKey>> parentsByStore = underTest.collectParentsPerStore(PRODUCT_KEY);
         assertNotNull(parentsByStore);
         assertEquals(2, parentsByStore.size());
-        
+
         assertTrue(parentsByStore.containsKey(STORE_FRESHDIRECT.contentKey));
         final Set<ContentKey> parentsFD = parentsByStore.get(STORE_FRESHDIRECT.contentKey);
         assertEquals(1, parentsFD.size());
         assertTrue(parentsFD.contains(CAT_SUB_FD_KEY));
-        
+
         assertTrue(parentsByStore.containsKey(STORE_FOODKICK.contentKey));
         final Set<ContentKey> parentsFDX = parentsByStore.get(STORE_FOODKICK.contentKey);
         assertEquals(1, parentsFDX.size());
@@ -258,7 +245,7 @@ public class NodeCollectionContentProviderServiceTest {
         assertEquals(2, departmentNodes.size());
         assertTrue(departmentNodes.contains(DEPT_FD_KEY));
         assertTrue(departmentNodes.contains(DEPT_FDX_KEY));
-        
+
         final Set<ContentKey> categoryNodes = underTest.getContentKeysByType(Category);
         assertNotNull(categoryNodes);
         assertEquals(5, categoryNodes.size());
@@ -267,17 +254,17 @@ public class NodeCollectionContentProviderServiceTest {
         assertTrue(categoryNodes.contains(CAT_FDX_KEY));
         assertTrue(categoryNodes.contains(CAT_TOP_ORPHAN_KEY));
         assertTrue(categoryNodes.contains(CAT_SUB_ORPHAN_KEY));
-        
+
         final Set<ContentKey> productNodes = underTest.getContentKeysByType(Product);
         assertNotNull(productNodes);
         assertEquals(1, productNodes.size());
         assertTrue(productNodes.contains(PRODUCT_KEY));
-        
+
         final Set<ContentKey> skuNodes = underTest.getContentKeysByType(ContentType.Sku);
         assertNotNull(skuNodes);
         assertTrue(skuNodes.isEmpty());
     }
-    
+
     @Test
     public void testParentIndexBuilderWithEmptyContent() {
         NodeCollectionContentProviderService emptyContainer = buildProvider(emptyStore());
@@ -301,8 +288,8 @@ public class NodeCollectionContentProviderServiceTest {
         assertTrue(singleNodeContainer.findContextsOf(SINGLE_NODE_KEY).isEmpty());
     }
 
-    
-    
+
+
     @Test
     public void testParentIndexBuilderWithNodeHavingParentAndGrandParent() {
         final ContentKey fooKey = get(Department, "fooNode");
@@ -317,7 +304,8 @@ public class NodeCollectionContentProviderServiceTest {
                 .asChild()
             .build();
 
-        NodeCollectionContentProviderService testContainer = new NodeCollectionContentProviderService(contentTypeInfoService, contentKeyParentsCollectorService, contextService, testNodes);
+        NodeCollectionContentProviderService testContainer =
+                new NodeCollectionContentProviderService(contentTypeInfoService, contentKeyParentsCollectorService, contextService, testNodes);
 
         // expected: [ fooChildKey => [fooKey], fooKey => [] ]
         Map<ContentKey, Set<ContentKey>> parentIndex = testContainer.buildParentIndexFor(fooChildKey);
@@ -329,7 +317,7 @@ public class NodeCollectionContentProviderServiceTest {
 
         // expected: [[ fooChildKey, fooKey ]]
         List<List<ContentKey>> fooContexts = testContainer.findContextsOf(fooChildKey);
-        assertTrue(fooContexts.size()==1);
+        assertTrue(fooContexts.size() == 1);
         assertEquals(Arrays.asList(fooChildKey, fooKey), fooContexts.get(0));
         assertTrue(testContainer.findContextsOf(fooKey).isEmpty()); // []
 
@@ -344,12 +332,12 @@ public class NodeCollectionContentProviderServiceTest {
 
         // expected: [[ fooGrandChildKey, fooChildKey, fooKey ]]
         fooContexts = testContainer.findContextsOf(fooGrandChildKey);
-        assertTrue(fooContexts.size()==1);
+        assertTrue(fooContexts.size() == 1);
         assertEquals(Arrays.asList(fooGrandChildKey, fooChildKey, fooKey), fooContexts.get(0));
 
         // expected: [[ fooChildKey, fooKey ]]
         fooContexts = testContainer.findContextsOf(fooChildKey);
-        assertTrue(fooContexts.size()==1);
+        assertTrue(fooContexts.size() == 1);
         assertEquals(Arrays.asList(fooChildKey, fooKey), fooContexts.get(0));
 
         assertTrue(testContainer.findContextsOf(fooKey).isEmpty()); // []
@@ -370,7 +358,8 @@ public class NodeCollectionContentProviderServiceTest {
                 .asChild()
             .build();
 
-        NodeCollectionContentProviderService testContainer = new NodeCollectionContentProviderService(contentTypeInfoService, contentKeyParentsCollectorService, contextService, testNodes);
+        NodeCollectionContentProviderService testContainer =
+                new NodeCollectionContentProviderService(contentTypeInfoService, contentKeyParentsCollectorService, contextService, testNodes);
 
         // expected: [ fooChildKey => [fooKey], fooKey => [] ]
         Map<ContentKey, Set<ContentKey>> parentIndex = testContainer.buildParentIndexFor(fooChildKey);
@@ -382,7 +371,7 @@ public class NodeCollectionContentProviderServiceTest {
 
         // expected: [[ fooChildKey, fooKey ]]
         final List<List<ContentKey>> fooContexts = testContainer.findContextsOf(fooChildKey);
-        assertTrue(fooContexts.size()==1);
+        assertTrue(fooContexts.size() == 1);
         assertEquals(Arrays.asList(fooChildKey, fooKey), fooContexts.get(0));
 
         // expected: []
@@ -398,7 +387,7 @@ public class NodeCollectionContentProviderServiceTest {
 
         // expected: [[ barChildKey, barKey ]]
         final List<List<ContentKey>> barContexts = testContainer.findContextsOf(barChildKey);
-        assertTrue(barContexts.size()==1);
+        assertTrue(barContexts.size() == 1);
         assertEquals(Arrays.asList(barChildKey, barKey), barContexts.get(0));
         assertTrue(testContainer.findContextsOf(barKey).isEmpty());
     }
@@ -421,7 +410,8 @@ public class NodeCollectionContentProviderServiceTest {
                 .connectedTo(homeKey)
             .build();
 
-        final NodeCollectionContentProviderService testContainer = new NodeCollectionContentProviderService(contentTypeInfoService, contentKeyParentsCollectorService, contextService, testNodes);
+        final NodeCollectionContentProviderService testContainer =
+                new NodeCollectionContentProviderService(contentTypeInfoService, contentKeyParentsCollectorService, contextService, testNodes);
 
         // expected: [ prod1key => [homeKey], homeKey => [deptKey], deptKey => [] ]
         Map<ContentKey, Set<ContentKey>> parentIndex = testContainer.buildParentIndexFor(prod1key);
@@ -442,11 +432,11 @@ public class NodeCollectionContentProviderServiceTest {
             parentIndex);
 
         List<List<ContentKey>> contexts = testContainer.findContextsOf(prod1key);
-        assertTrue(contexts.size()==1);
+        assertTrue(contexts.size() == 1);
         assertEquals(ImmutableList.of(prod1key, homeKey, deptKey), contexts.get(0));
 
         contexts = testContainer.findContextsOf(prod2key);
-        assertTrue(contexts.size()==1);
+        assertTrue(contexts.size() == 1);
         assertEquals(ImmutableList.of(prod2key, homeKey, deptKey), contexts.get(0));
     }
 
@@ -471,7 +461,8 @@ public class NodeCollectionContentProviderServiceTest {
                 .connectedTo(home2key)
             .build();
 
-        final NodeCollectionContentProviderService testContainer = new NodeCollectionContentProviderService(contentTypeInfoService, contentKeyParentsCollectorService, contextService, testNodes);
+        final NodeCollectionContentProviderService testContainer =
+                new NodeCollectionContentProviderService(contentTypeInfoService, contentKeyParentsCollectorService, contextService, testNodes);
 
         // expected: [ prod1key => [home1key, home2key], home1key => [dept1key], home2key => [dept2key], dept1key => [], dept2key => [] ]
         Map<ContentKey, Set<ContentKey>> parentIndex = testContainer.buildParentIndexFor(prod1key);
@@ -485,7 +476,7 @@ public class NodeCollectionContentProviderServiceTest {
             parentIndex);
 
         List<List<ContentKey>> contexts = testContainer.findContextsOf(prod1key);
-        assertTrue(contexts.size()==2);
+        assertTrue(contexts.size() == 2);
         assertTrue(contexts.contains(ImmutableList.of(prod1key, home1key, dept1key)));
         assertTrue(contexts.contains(ImmutableList.of(prod1key, home2key, dept2key)));
     }
@@ -509,7 +500,8 @@ public class NodeCollectionContentProviderServiceTest {
                 .connectedTo(home2key)
             .build();
 
-        final NodeCollectionContentProviderService testContainer = new NodeCollectionContentProviderService(contentTypeInfoService, contentKeyParentsCollectorService, contextService, testNodes);
+        final NodeCollectionContentProviderService testContainer =
+                new NodeCollectionContentProviderService(contentTypeInfoService, contentKeyParentsCollectorService, contextService, testNodes);
 
         // expected: [ prod1key => [home1key, home2key], home1key => [dept1key], home2key => [dept1key], dept1key => []]
         Map<ContentKey, Set<ContentKey>> parentIndex = testContainer.buildParentIndexFor(prod1key);
@@ -522,7 +514,7 @@ public class NodeCollectionContentProviderServiceTest {
             parentIndex);
 
         List<List<ContentKey>> contexts = testContainer.findContextsOf(prod1key);
-        assertTrue(contexts.size()==2);
+        assertTrue(contexts.size() == 2);
         assertTrue(contexts.contains(ImmutableList.of(prod1key, home1key, dept1key)));
         assertTrue(contexts.contains(ImmutableList.of(prod1key, home2key, dept1key)));
     }
@@ -535,5 +527,17 @@ public class NodeCollectionContentProviderServiceTest {
     private void assertParentMapsEqual(Map<ContentKey, Set<ContentKey>> expectedMap, Map<ContentKey, Set<ContentKey>> parentIndex) {
         assertNotNull(parentIndex);
         assertTrue(expectedMap.equals(parentIndex));
+    }
+
+    @Configuration
+    @ComponentScan(basePackageClasses = { ContentKeyParentsCollectorService.class, ContentTypeInfoService.class, ContextService.class })
+    @EnableCaching
+    static class Config {
+        @Bean
+        public CacheManager cacheManager() {
+            SimpleCacheManager cacheManager = new SimpleCacheManager();
+            cacheManager.setCaches(Arrays.asList(new ConcurrentMapCache("parentKeysCache"), new ConcurrentMapCache("allParentKeysCache")));
+            return cacheManager;
+        }
     }
 }
