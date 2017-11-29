@@ -1068,7 +1068,7 @@ public class Cart {
     	cartDetail.setUnavailability(unavailability);
     	
     	if(cart instanceof FDCartModel){
-        	cartDetail.setTotalSavedAmount(((FDCartModel)cart).getTotalDiscountValue());
+        	cartDetail.setTotalSavedAmount(((FDCartModel)cart).getSaveAmount(true));
         }
 //        if(cart instanceof FDCartModel){
 //        	cartDetail.setTip(((FDCartModel)cart).getTip());
