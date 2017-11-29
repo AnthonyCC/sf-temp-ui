@@ -34,6 +34,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import com.freshdirect.cms.category.UnitTest;
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.cms.core.domain.ContentTypes;
 import com.freshdirect.cms.util.TestContentBuilder;
 import com.google.common.collect.ImmutableList;
@@ -88,8 +89,7 @@ public class NodeCollectionContentProviderServiceTest {
     private static final Map<ContentKey, Map<Attribute, Object>> simpleStore() {
         Map<ContentKey, Map<Attribute, Object>> testNodes = new HashMap<ContentKey, Map<Attribute, Object>>();
 
-        // build FreshDirect content tree
-        // FD > Department:mkt > Category:mkt_high_holidays_2014 > Category:picks_high_holidays_new_yea > Product:fru_pid_2210270
+        // build FreshDirect content tree: FD > Department > Category > Category > Product
         testNodes.put(STORE_FRESHDIRECT.contentKey,
                 ImmutableMap.<Attribute, Object> of(ContentTypes.Store.departments, ImmutableList.of(DEPT_FD_KEY), ContentTypes.Product.NOT_SEARCHABLE, true));
         testNodes.put(DEPT_FD_KEY,
@@ -99,15 +99,13 @@ public class NodeCollectionContentProviderServiceTest {
         testNodes.put(CAT_SUB_FD_KEY,
                 ImmutableMap.<Attribute, Object> of(ContentTypes.Category.products, ImmutableList.of(PRODUCT_KEY)));
 
-        // build orphan category
-        // Category:apl > Category:apl_apl > Product:fru_pid_2210270
+        // build orphan category: Category > Category > Product
         testNodes.put(CAT_TOP_ORPHAN_KEY,
                 ImmutableMap.<Attribute, Object> of(ContentTypes.Category.subcategories, ImmutableList.of(CAT_SUB_ORPHAN_KEY)));
         testNodes.put(CAT_SUB_ORPHAN_KEY,
                 ImmutableMap.<Attribute, Object> of(ContentTypes.Category.products, ImmutableList.of(PRODUCT_KEY)));
 
-        // build FDX tree
-        // FDX > Department:mkt_fdx > Category:fvg_fruit_apples > Product:fru_pid_2210270
+        // build FDX tree: FDX > Department > Category > Product
         testNodes.put(STORE_FOODKICK.contentKey,
                 ImmutableMap.<Attribute, Object> of(ContentTypes.Store.departments, ImmutableList.of(DEPT_FDX_KEY), ContentTypes.Product.NOT_SEARCHABLE, true));
         testNodes.put(DEPT_FDX_KEY,
@@ -249,6 +247,35 @@ public class NodeCollectionContentProviderServiceTest {
         final Set<ContentKey> parentsFDX = parentsByStore.get(STORE_FOODKICK.contentKey);
         assertEquals(1, parentsFDX.size());
         assertTrue(parentsFDX.contains(CAT_FDX_KEY));
+    }
+
+    @Test
+    public void testGetKeysByType() {
+        NodeCollectionContentProviderService underTest = buildProvider(simpleStore());
+
+        final Set<ContentKey> departmentNodes = underTest.getContentKeysByType(Department);
+        assertNotNull(departmentNodes);
+        assertEquals(2, departmentNodes.size());
+        assertTrue(departmentNodes.contains(DEPT_FD_KEY));
+        assertTrue(departmentNodes.contains(DEPT_FDX_KEY));
+        
+        final Set<ContentKey> categoryNodes = underTest.getContentKeysByType(Category);
+        assertNotNull(categoryNodes);
+        assertEquals(5, categoryNodes.size());
+        assertTrue(categoryNodes.contains(CAT_TOP_FD_KEY));
+        assertTrue(categoryNodes.contains(CAT_SUB_FD_KEY));
+        assertTrue(categoryNodes.contains(CAT_FDX_KEY));
+        assertTrue(categoryNodes.contains(CAT_TOP_ORPHAN_KEY));
+        assertTrue(categoryNodes.contains(CAT_SUB_ORPHAN_KEY));
+        
+        final Set<ContentKey> productNodes = underTest.getContentKeysByType(Product);
+        assertNotNull(productNodes);
+        assertEquals(1, productNodes.size());
+        assertTrue(productNodes.contains(PRODUCT_KEY));
+        
+        final Set<ContentKey> skuNodes = underTest.getContentKeysByType(ContentType.Sku);
+        assertNotNull(skuNodes);
+        assertTrue(skuNodes.isEmpty());
     }
     
     @Test
