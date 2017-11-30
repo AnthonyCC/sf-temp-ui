@@ -132,7 +132,7 @@ if(user != null) {
                 <a href="<%=dlvInfoLink%>.jsp" onMouseover="swapImage('DELIVERY_IMG','/media_stat/images/navigation/global_nav/delivery_r.gif')" onMouseout="swapImage('DELIVERY_IMG','/media_stat/images/navigation/global_nav/delivery.gif')"><img src="/media_stat/images/navigation/global_nav/delivery.gif" id="DELIVERY_IMG" height="26" alt="DELIVERY INFO" /></a>
             </div>
             <div>
-                <form class="searchform" name="search" action="/search.jsp" method="get" accept-charset="iso-8859-1">
+                <form class="searchform" name="search" action="/search.jsp" method="get" accept-charset="UTF-8">
                     <label for="topSearchField"><a href="/search.jsp"><img src="/media_stat/images/navigation/global_nav/nav_button_search.gif" width="46" height="11" alt="SEARCH" id="globalnav_searchButton" /></a></label>
                     <% {
                         String searchParams = request.getParameter("searchParams")!=null ? request.getParameter("searchParams") : "";
