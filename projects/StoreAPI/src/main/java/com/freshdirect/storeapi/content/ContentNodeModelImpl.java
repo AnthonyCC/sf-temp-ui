@@ -178,25 +178,23 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel, Cloneabl
     }
 
     /**
-     * Select parent key from contexts list By default a contexts lists consists of only one key chain starting from parent key up to top (store) key The only exception are
-     * products
-     *
-     * @return selected parent key otherwise null if none found
+     * Find the default parent key for content node model
      */
-    private ContentKey findDefaultParentKey(ContentKey overrideKey) {
-        if (RootContentKey.isRootKey(overrideKey)) {
+    private ContentKey findDefaultParentKey() {
+        if (RootContentKey.isRootKey(this.key)) {
             return null;
         }
 
         ContentKey selectedParentKey = null;
 
-        // use overridden parent, if set
-        if (ContentType.Product == overrideKey.type) {
-            selectedParentKey = ContentFactory.getInstance().getPrimaryHomeKey(overrideKey);
+        // primary home is the default parent for a product
+        if (ContentType.Product == this.key.type) {
+            selectedParentKey = ContentFactory.getInstance().getPrimaryHomeKey(this.key);
         }
 
+        // otherwise pick the first parent from the parent keys set
         if (selectedParentKey == null) {
-            Set<ContentKey> keys = ContentFactory.getInstance().getParentKeys(overrideKey);
+            Set<ContentKey> keys = ContentFactory.getInstance().getParentKeys(this.key);
 
             selectedParentKey = !keys.isEmpty() ? keys.iterator().next() : null;
         }
@@ -207,7 +205,7 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel, Cloneabl
     @Override
     public ContentNodeModel getParentNode() {
         if (parentNode == null) {
-            ContentKey selectedKey = findDefaultParentKey(key);
+            ContentKey selectedKey = findDefaultParentKey();
             if (selectedKey != null) {
                 parentNode = ContentFactory.getInstance().getContentNodeByKey(selectedKey);
             }
