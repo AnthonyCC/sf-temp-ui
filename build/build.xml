@@ -1877,6 +1877,15 @@
 			<pathelement location="${thirdparty.home}/jsch-0.1.44.jar"/>
 			<pathelement location="${thirdparty.home}/commons-vfs2-2.0.jar"/>
 			<pathelement location="${thirdparty.home}/zip4j_1.3.2.jar"/>
+			<pathelement location="${thirdparty.home}/spring-aop-4.0.1.RELEASE.jar"/>
+			<pathelement location="${thirdparty.home}/spring-beans-4.0.1.RELEASE.jar"/>
+			<pathelement location="${thirdparty.home}/spring-context-4.0.1.RELEASE.jar"/>
+			<pathelement location="${thirdparty.home}/spring-core-4.0.1.RELEASE.jar"/>
+			<pathelement location="${thirdparty.home}/spring-expression-4.0.1.RELEASE.jar"/>
+			<pathelement location="${thirdparty.home}/spring-jdbc-4.0.1.RELEASE.jar"/>
+			<pathelement location="${thirdparty.home}/spring-tx-4.0.1.RELEASE.jar"/>
+			<pathelement location="${thirdparty.home}/spring-web-4.0.1.RELEASE.jar"/>
+			<pathelement location="${thirdparty.home}/spring-webmvc-4.0.1.RELEASE.jar"/>
 		</path>
 
 		<makeEjbProject
