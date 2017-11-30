@@ -2864,6 +2864,18 @@
 			<zipfileset src="${thirdparty.home}/commons-codec-1.9.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/sitemapgen4j-1.0.6.jar" excludes="META-INF/*"/>
 
+			<zipfileset src="${thirdparty.home}/spring-aop-4.0.1.RELEASE.jar"  excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/spring-beans-4.0.1.RELEASE.jar"  excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/spring-context-4.0.1.RELEASE.jar"  excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/spring-core-4.0.1.RELEASE.jar"  excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/spring-expression-4.0.1.RELEASE.jar"  excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/spring-jdbc-4.0.1.RELEASE.jar"  excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/spring-tx-4.0.1.RELEASE.jar"  excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/spring-web-4.0.1.RELEASE.jar"  excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/spring-webmvc-4.0.1.RELEASE.jar"  excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/spring-context-support-4.0.1.RELEASE.jar"  excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/gson-1.7.1.jar"  excludes="META-INF/*"/>
+
 			<!-- FD classes -->
 			<zipfileset src="${work.dir}/Framework.jar"/>
 			<zipfileset src="${work.dir}/ERPServicesEJB-WL.jar" excludes="META-INF/*"/>
