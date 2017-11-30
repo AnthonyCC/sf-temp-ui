@@ -291,7 +291,7 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
             }
 
             final long t1 = System.currentTimeMillis();
-            LOGGER.debug("Collected " + result.size() + " keys of type " + type + " in " + (t1-t0) + " ms");
+            LOGGER.debug("Collected " + result.size() + " keys of type " + type + " in " + (t1 - t0) + " ms");
         }
 
         return result;
@@ -346,7 +346,6 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
         for (Map.Entry<Attribute, Object> entry : attributesWithValues.entrySet()) {
             saveAttributeInternal(contentKey, entry.getKey(), entry.getValue());
         }
-        cacheEvictors.evictAttributeCacheWithContentKey(contentKey);
     }
 
     private void updateContentKeys(Collection<ContentKey> contentKeys) {
@@ -444,7 +443,7 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
         Set<ContentKey> keysToUpdate = new HashSet<ContentKey>();
         keysToUpdate.add(contentKey);
         updateContentKeysCache(keysToUpdate);
-        evictParentKeysCache(keysToUpdate, Collections.<ContentKey>emptySet());
+        evictParentKeysCache(keysToUpdate, Collections.<ContentKey> emptySet());
         cacheEvictors.evictContentFactoryCaches(contentKey);
         LOGGER.debug("Evicting attributeCache, parentKeysCache, nodesByIdCache and nodesByKeyCache caches for contentKey: " + contentKey);
     }
@@ -619,7 +618,6 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
         // collect keys of new content nodes
         Set<ContentKey> newKeys = collectKeysCreatedInPayload(payload);
 
-
         // fetch original values for creating change records
         final Map<ContentKey, Map<Attribute, Object>> originalValues = loadOriginalValues(payload);
 
@@ -646,12 +644,15 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
 
         // -- post update phase --
 
+        // track changes
+        Optional<ContentChangeSetEntity> changes = recordChanges(newKeys, originalValues, payload, context);
+
         // post-save operations
         updateContentKeysCache(newKeys);
         evictParentKeysCache(payload.keySet(), originalChildKeys);
+        evicAttributeCache(payload.keySet());
 
-        // track changes
-        return recordChanges(newKeys, originalValues, payload, context);
+        return changes;
     }
 
     /**
@@ -789,8 +790,8 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
     private ContentChangeDetailEntity createManyRelationshipValueChangeDetail(Relationship relationship, Object originalValue, Object changedValue) {
         ContentChangeDetailEntity detail = null;
 
-        List<ContentKey> oldKeysList = originalValue != null ? (List<ContentKey>) originalValue : Collections.<ContentKey>emptyList();
-        List<ContentKey> changedKeysList = changedValue != null ? (List<ContentKey>) changedValue : Collections.<ContentKey>emptyList();
+        List<ContentKey> oldKeysList = originalValue != null ? (List<ContentKey>) originalValue : Collections.<ContentKey> emptyList();
+        List<ContentKey> changedKeysList = changedValue != null ? (List<ContentKey>) changedValue : Collections.<ContentKey> emptyList();
 
         if (!oldKeysList.equals(changedKeysList)) {
             detail = new ContentChangeDetailEntity();
@@ -943,6 +944,12 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
         invalidateParentKeysCacheEntry(keysToUpdate);
     }
 
+    private void evicAttributeCache(Set<ContentKey> contentKeys) {
+        for (ContentKey contentKey : contentKeys) {
+            cacheEvictors.evictAttributeCacheWithContentKey(contentKey);
+        }
+    }
+
     private void processFetchedAttributes(Map<ContentKey, Map<Attribute, Object>> allNodes, List<AttributeEntity> attributeEntities) {
         for (AttributeEntity attribute : attributeEntities) {
             // [LP-226] special case ... NOTE: attributes never use Null keys!
@@ -990,8 +997,7 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
     }
 
     /**
-     * Utility function to load not-modified values for a potentially changed payload
-     * Primarily used by {@link #updateContent(LinkedHashMap, ContentUpdateContext)} method
+     * Utility function to load not-modified values for a potentially changed payload Primarily used by {@link #updateContent(LinkedHashMap, ContentUpdateContext)} method
      *
      * @param payload
      * @return
