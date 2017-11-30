@@ -52,7 +52,7 @@ var FreshDirect = FreshDirect || {};
       var timeslot = e,
           a = timeslot.startDate.split(/[^0-9]/),
           date = new Date(a[0],a[1]-1,a[2],a[3],a[4],a[5]),
-          dayId = e.year * 10000 + e.month * 100 + e.dayOfMonth;
+          dayId = e.year * 10000 + e.month * 100 + +e.dayOfMonth;
 
       if (!times[dayId]) {
         times[dayId] = {'times':[], 'order': []};
