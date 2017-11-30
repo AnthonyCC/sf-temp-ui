@@ -22,8 +22,10 @@ import javax.naming.NamingException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.cms.configuration.RootConfiguration;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.crm.CrmCaseSubject;
@@ -82,6 +84,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.logistics.delivery.model.EnumZipCheckResponses;
 import com.freshdirect.mail.ErpMailSender;
+import com.freshdirect.storeapi.configuration.StoreAPIConfig;
 import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.smartstore.fdstore.CohortSelector;
@@ -102,6 +105,7 @@ public class DeliveryPassRenewalCron {
 		List arSKUs=new ArrayList(10);
 		Context ctx=null;
 		try {
+			initializeSpringContext();
 			ctx = getInitialContext();
 			
 			autoRenewInfo=getAutoRenewalInfo();
@@ -631,5 +635,12 @@ public class DeliveryPassRenewalCron {
     	                          .append("</")
     	                          .append(tagName)
     	                          .append(">").toString();
+    }
+    
+    private static void initializeSpringContext() {
+        AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
+        rootContext.register(RootConfiguration.class);
+        rootContext.register(StoreAPIConfig.class);
+        rootContext.refresh();
     }
 }
