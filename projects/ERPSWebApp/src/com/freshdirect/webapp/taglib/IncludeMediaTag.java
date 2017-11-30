@@ -79,7 +79,7 @@ public class IncludeMediaTag extends BodyTagSupport {
 		    	this.name = media.getPath();
 		    }
 
-		    if (mediaContentCacheSize != 0 && CmsServiceLocator.ehCacheUtil().isObjectInCache(CmsCaches.MEDIA_CONTENT_CACHE_NAME.cacheName, this.name)) {
+		    if(isMediaCacheEnabled(this.name)) {
 		    	String cachedMediaContent = CmsServiceLocator.ehCacheUtil().getObjectFromCache(CmsCaches.MEDIA_CONTENT_CACHE_NAME.cacheName, this.name);
 		    	if (cachedMediaContent != null) {
 					this.pageContext.getOut().write(cachedMediaContent);
@@ -139,6 +139,14 @@ public class IncludeMediaTag extends BodyTagSupport {
 		    CmsServiceLocator.ehCacheUtil().putObjectToCache(CmsCaches.MEDIA_CONTENT_CACHE_NAME.cacheName, key, content);
 		}
 
+	}
+	
+	private boolean isMediaCacheEnabled(String mediaName){
+		if (mediaContentCacheSize != 0 && CmsServiceLocator.ehCacheUtil().isObjectInCache(CmsCaches.MEDIA_CONTENT_CACHE_NAME.cacheName, this.name) && !FDStoreProperties.getPreviewMode()){//Fetch from cache only in non-preview mode) {
+			if(null !=mediaName && mediaName.indexOf(".ftl") <=-1) //Donot cache FTL files
+				return true;
+		}
+		return false;
 	}
 
 }
