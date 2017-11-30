@@ -2885,6 +2885,8 @@
 			<zipfileset src="${thirdparty.home}/spring-context-support-4.0.1.RELEASE.jar"  excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/gson-1.7.1.jar"  excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/ognl-2.6.7.jar"  excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/xstream.jar"  excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/xpp3_min.jar"  excludes="META-INF/*"/>
 
 			<!-- FD classes -->
 			<zipfileset src="${work.dir}/Framework.jar"/>
