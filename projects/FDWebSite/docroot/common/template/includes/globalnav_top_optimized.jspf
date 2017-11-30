@@ -136,7 +136,7 @@ if(user != null) {
       <a href="<%=dlvInfoLink%>.jsp" onMouseover="swapImage('DELIVERY_IMG','/media_stat/images/navigation/global_nav/delivery_r.gif')" onMouseout="swapImage('DELIVERY_IMG','/media_stat/images/navigation/global_nav/delivery.gif')"><img src="/media_stat/images/navigation/global_nav/delivery.gif" name="DELIVERY_IMG" height="26" alt="DELIVERY INFO" border="0"></a>
     </div>
     <div>
-    <form class="searchform" name="search" action="/search.jsp" method="get" accept-charset="iso-8859-1">
+    <form class="searchform" name="search" action="/search.jsp" method="get" accept-charset="UTF-8">
                 <label for="topSearchField">
           <a href="/search.jsp">
             <div class="spritediv sprite-nav-nav_button_search" style="margin: 1px 4px">Search</div>

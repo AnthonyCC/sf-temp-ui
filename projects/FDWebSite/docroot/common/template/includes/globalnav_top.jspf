@@ -149,7 +149,7 @@ if(user != null) {
         <a href="/your_account/manage_account.jsp">Your Account</a>
     </div>
     <div>
-    <form class="searchform" name="search" action="/search.jsp" method="get" accept-charset="iso-8859-1">
+    <form class="searchform" name="search" action="/search.jsp" method="get" accept-charset="UTF-8">
                 <label for="topSearchField"><a href="/search.jsp"><img src="/media_stat/images/navigation/global_nav/nav_button_search.gif" alt="SEARCH" align="bottom" border="0"></a></label>
 <%
     {
