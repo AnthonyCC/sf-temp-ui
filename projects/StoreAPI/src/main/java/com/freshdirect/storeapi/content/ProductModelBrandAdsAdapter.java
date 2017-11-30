@@ -39,11 +39,6 @@ public class ProductModelBrandAdsAdapter implements ProductModel, Serializable, 
 	}
 
 	@Override
-	public void setParentKey(ContentKey parentKey) {
-	    productModel.setParentKey(parentKey);
-	}
-
-	@Override
     public boolean enforceQuantityMax() {
 		 return productModel.enforceQuantityMax();
 	}

@@ -1,8 +1,7 @@
 package com.freshdirect.storeapi.content;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -18,6 +17,7 @@ import com.freshdirect.storeapi.attributes.FDAttributeFactory;
 
 public abstract class ContentNodeModelImpl implements ContentNodeModel, Cloneable {
 
+    @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getInstance(ContentNodeModelImpl.class);
 
     private static final long serialVersionUID = -1228043164570842323L;
@@ -30,14 +30,12 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel, Cloneabl
     /**
      * If set, overrides default parent key
      */
-    private ContentKey parentKey;
+    private ContentNodeModel parentNode;
 
     @Deprecated
     private int priority = 1;
 
     protected final ContentNodeI cmsNode;
-
-    protected final List<List<ContentKey>> contexts;
 
     protected Map<Attribute, Object> inheritedValues;
 
@@ -56,13 +54,6 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel, Cloneabl
         // pre-load payload
         this.cmsNode = CmsManager.getInstance().getContentNode(contentKey);
 
-        if (RootContentKey.isRootKey(contentKey)) {
-            this.contexts = Collections.emptyList();
-        } else {
-            this.contexts = CmsManager.getInstance().findContextsOf(contentKey);
-        }
-
-        updateParentKeyWith(parentKey);
     }
 
     //
@@ -176,35 +167,14 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel, Cloneabl
         this.priority = priority;
     }
 
-    @Deprecated
     public void setParentNode(ContentNodeModel parentNode) {
-        setParentKey(parentNode != null ? parentNode.getContentKey() : null);
+        this.parentNode = parentNode;
     }
 
     public ContentKey getParentKey() {
-        if (parentKey == null) {
-            updateParentKeyWith(null);
-        }
+        ContentNodeModel parent = getParentNode();
 
-        return parentKey;
-    }
-
-    /**
-     * Override default parent key
-     *
-     * @param parentKey
-     */
-    public void setParentKey(ContentKey parentKey) {
-        updateParentKeyWith(parentKey);
-    }
-
-    private void updateParentKeyWith(ContentKey candidateKey) {
-        this.parentKey = findParentKey(candidateKey);
-        this.inheritedValues = null;
-    }
-
-    private boolean isParent(ContentKey parentCandidate) {
-        return CmsManager.getInstance().getParentKeys(key).contains(parentCandidate);
+        return parent != null ? parent.getContentKey() : null;
     }
 
     /**
@@ -213,27 +183,22 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel, Cloneabl
      *
      * @return selected parent key otherwise null if none found
      */
-    protected ContentKey findParentKey(ContentKey overrideKey) {
-        if (RootContentKey.isRootKey(key) || contexts.isEmpty()) {
+    private ContentKey findDefaultParentKey(ContentKey overrideKey) {
+        if (RootContentKey.isRootKey(overrideKey)) {
             return null;
         }
 
-        // use overridden parent, if set
-        ContentKey selectedParentKey = overrideKey;
+        ContentKey selectedParentKey = null;
 
-        // not set & node is product => pick primary home
-        if (selectedParentKey == null && this.key.type == ContentType.Product) {
-            selectedParentKey = CmsManager.getInstance().getPrimaryHomeKey(key);
+        // use overridden parent, if set
+        if (ContentType.Product == overrideKey.type) {
+            selectedParentKey = ContentFactory.getInstance().getPrimaryHomeKey(overrideKey);
         }
 
-        // still no parent => pick the first parent from available context if possible
         if (selectedParentKey == null) {
-            if (!contexts.isEmpty()) {
-                final List<ContentKey> selectedPath = contexts.get(0);
-                if (selectedPath.size() > 1) {
-                    selectedParentKey = selectedPath.get(1);
-                }
-            }
+            Set<ContentKey> keys = ContentFactory.getInstance().getParentKeys(overrideKey);
+
+            selectedParentKey = !keys.isEmpty() ? keys.iterator().next() : null;
         }
 
         return selectedParentKey;
@@ -241,11 +206,11 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel, Cloneabl
 
     @Override
     public ContentNodeModel getParentNode() {
-        ContentNodeModel parentNode = null;
-
-        ContentKey selectedKey = findParentKey(this.parentKey);
-        if (selectedKey != null) {
-            parentNode = ContentFactory.getInstance().getContentNodeByKey(selectedKey);
+        if (parentNode == null) {
+            ContentKey selectedKey = findDefaultParentKey(key);
+            if (selectedKey != null) {
+                parentNode = ContentFactory.getInstance().getContentNodeByKey(selectedKey);
+            }
         }
 
         return parentNode;
