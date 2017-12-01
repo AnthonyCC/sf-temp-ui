@@ -23,7 +23,7 @@ import com.freshdirect.framework.core.EntityBeanRemoteI;
  * @author     $Author$
  */
 public interface FDCustomerEB extends EntityBeanRemoteI, FDCustomerI {
-	
+
 	public void setProfileAttribute(String name, String value) throws RemoteException;
 	public void removeProfileAttribute(String name) throws RemoteException;
 	public String generatePasswordRequest(java.util.Date expiration) throws RemoteException;
@@ -36,8 +36,10 @@ public interface FDCustomerEB extends EntityBeanRemoteI, FDCustomerI {
 	public void setPymtVerifyAttempts(int pymtVerifyAttempts)  throws RemoteException;
 	public int getPymtVerifyAttempts()  throws RemoteException;
 	public void resetPymtVerifyAttempts() throws RemoteException;
-    public int incrementPymtVerifyAttempts() throws RemoteException;
+	public int incrementPymtVerifyAttempts() throws RemoteException;
     public EnumPaymentMethodDefaultType getDefaultPaymentMethodType() throws RemoteException;
-	public void setDefaultPaymentMethodType(EnumPaymentMethodDefaultType defaultPaymentType) throws RemoteException;	
+	public void setDefaultPaymentMethodType(EnumPaymentMethodDefaultType defaultPaymentType) throws RemoteException;
     public void setFDCustomerEStore(FDCustomerEStoreModel fdCustomerEStoreModel) throws RemoteException;
+	public void updateDpFreeTrialOptin(boolean dpFreeTrialOptin) throws RemoteException;
+    public boolean isDpOptinOrNot() throws RemoteException;
 }

@@ -24,11 +24,11 @@ import com.freshdirect.storeapi.content.PriceCalculator;
 import com.freshdirect.storeapi.content.ProductModel;
 
 public class AllDealsCache {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getInstance(AllDealsCache.class);
 
 	private static final Logger LOGGER_LOADER = LoggerFactory.getInstance(Loader.class);
-	
+
 	private static final int HOUR_IN_MILLIS = 60 * 60 * 1000;
 
 	private static Executor cacheThreadPool = new ThreadPoolExecutor(1, 1, 60, TimeUnit.SECONDS,
@@ -122,7 +122,7 @@ public class AllDealsCache {
 		for(int i=0;i<data.length;i++) {
 			for(int j=0;j<data[i].length;j++) {
 				if(j==0)LOGGER_LOADER.debug("[");
-				
+
 				LOGGER_LOADER.debug(data[i][j]+", ");
 			};
 			LOGGER_LOADER.debug("] ");
@@ -160,9 +160,9 @@ public class AllDealsCache {
 
 			if (dealIndex < 0)
 				return Math.max(value[0][zoneIndex], value[1][zoneIndex]);
-			
+
 			return value[dealIndex][zoneIndex];
-		}		
+		}
 		return 0.;
 	}
 
@@ -173,14 +173,14 @@ public class AllDealsCache {
 
 		if (now > (lastRefresh + HOUR_IN_MILLIS)) {
 			if(! FDStoreProperties.isLocalDeployment()) {
-				forceReload();
+				//forceReload();
 			}
 			lastRefresh = now;
 		}
 	}
 
     /**
-     * 
+     *
      */
     public void forceReload() {
         if (initialized) {

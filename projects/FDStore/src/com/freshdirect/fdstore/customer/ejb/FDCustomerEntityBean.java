@@ -9,6 +9,7 @@
 
 package com.freshdirect.fdstore.customer.ejb;
 
+import java.rmi.RemoteException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.sql.Connection;
@@ -752,6 +753,19 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 	public void setDefaultPaymentMethodType(EnumPaymentMethodDefaultType defaultPaymentMethodType) {
 		this.defaultPaymentMethodType = defaultPaymentMethodType;
 		this.setModified();
+	}
+
+	@Override
+	public void updateDpFreeTrialOptin(boolean dpFreeTrialOptin) throws RemoteException{
+		FDCustomerModel model = (FDCustomerModel)this.getModel();
+		model.getCustomerEStoreModel().setDpFreeTrailOptin(dpFreeTrialOptin);
+		this.setModified();
+	}
+
+	@Override
+	public boolean isDpOptinOrNot() throws RemoteException{
+		FDCustomerModel model = (FDCustomerModel)this.getModel();
+		return model.getCustomerEStoreModel().getDpFreeTrailOptin().booleanValue();
 	}
 
 }
