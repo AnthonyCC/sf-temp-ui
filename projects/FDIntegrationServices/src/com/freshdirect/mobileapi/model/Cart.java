@@ -768,15 +768,14 @@ public class Cart {
             	productLineItem.setProductConfiguration(productConfiguration);
                 productLineItem.setHasKosherRestriction(cartLine.getApplicableRestrictions().contains(EnumDlvRestrictionReason.KOSHER));
                      
-               //Changes for FDC Substitution 
-                if(cartLine!=null && cartLine.getInvoiceLine()!=null){
-	                productLineItem.setSubSkuStatus(cartLine.getInvoiceLine().getSubSkuStatus());
-	                productLineItem.setSubstitutedSkuCode(cartLine.getInvoiceLine().getSubstitutedSkuCode());
-	                productLineItem.setSubstituteProductName(cartLine.getInvoiceLine().getSubstituteProductName());
-	                productLineItem.setSusbtituteProductDefaultPrice(cartLine.getInvoiceLine().getSubstituteProductDefaultPrice());
-	                productLineItem.setSubstituteProduct(cartLine.getInvoiceLine().getSubstituteProduct());
-                }
-                 
+				// Changes for FDC Substitution
+				if (cartLine != null && cartLine.getInvoiceLine() != null) {
+					productLineItem.setSubSkuStatus(null != cartLine.getInvoiceLine().getSubSkuStatus() ? cartLine.getInvoiceLine().getSubSkuStatus() : "");
+					productLineItem.setSubstitutedSkuCode(null != cartLine.getInvoiceLine().getSubstitutedSkuCode() ? cartLine.getInvoiceLine().getSubstitutedSkuCode(): "");
+					productLineItem.setSubstituteProductName(null != cartLine.getInvoiceLine().getSubstituteProductName() ? cartLine.getInvoiceLine().getSubstituteProductName() : "");
+					productLineItem.setSusbtituteProductDefaultPrice(null != cartLine.getInvoiceLine().getSubstituteProductDefaultPrice() ? cartLine.getInvoiceLine().getSubstituteProductDefaultPrice() : "");
+					productLineItem.setSubstituteProduct(null != cartLine.getInvoiceLine().getSubstituteProduct() ? cartLine.getInvoiceLine().getSubstituteProduct().getContentName() : "");
+				}
                 
                 String earliestAvailability = productNode.getSku(cartLine.getSkuCode()).getEarliestAvailabilityMessage();
                 //String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();

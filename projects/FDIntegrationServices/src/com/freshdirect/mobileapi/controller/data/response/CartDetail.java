@@ -722,7 +722,7 @@ public class CartDetail {
     	
     	private String susbtituteProductDefaultPrice;
     	
-    	private ProductModel substituteProduct;
+    	private String substituteProduct;
     	
         public String getDiscountMsg() {
 			return discountMsg;
@@ -804,11 +804,11 @@ public class CartDetail {
 			this.substitutedSkuCode = substitutedSkuCode;
 		}
 
-		public ProductModel getSubstituteProduct() {
+		public String getSubstituteProduct() {
 			return substituteProduct;
 		}
 
-		public void setSubstituteProduct(ProductModel substituteProduct) {
+		public void setSubstituteProduct(String substituteProduct) {
 			this.substituteProduct = substituteProduct;
 		}
 
