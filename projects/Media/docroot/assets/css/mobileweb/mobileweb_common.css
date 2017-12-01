@@ -600,8 +600,8 @@ li.cleanli .gen-arrow {
 }
 
 .NOMOBWEB { /* generic hidden class */
-	display: none;
-	visibility: hidden;
+	display: none !important;
+	visibility: hidden !important;
 }
 
 /* global nav overrides */
@@ -1973,7 +1973,13 @@ li.cleanli .gen-arrow {
 			    text-align: center;
 			}
 			.mm-page #addressId {
-			    width: 95% !important;
+			    width: calc(100% - 20px);
+			}
+			.mm-page .timeslot-selector.reserve-timeslot .select-day {
+				padding: 0 10px;
+			}
+			.mm-page .reserve-timeslot-legal {
+				padding: 10px 0;
 			}
 			.mm-page #tsContainer {
 				width: 100%;
