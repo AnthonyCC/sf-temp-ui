@@ -346,6 +346,8 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
         for (Map.Entry<Attribute, Object> entry : attributesWithValues.entrySet()) {
             saveAttributeInternal(contentKey, entry.getKey(), entry.getValue());
         }
+
+        cacheEvictors.evictAttributeCacheWithContentKey(contentKey);
     }
 
     private void updateContentKeys(Collection<ContentKey> contentKeys) {
