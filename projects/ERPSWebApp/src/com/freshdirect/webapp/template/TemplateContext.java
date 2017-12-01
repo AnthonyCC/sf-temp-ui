@@ -11,11 +11,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.common.pricing.MaterialPrice;
@@ -35,6 +37,7 @@ import com.freshdirect.framework.content.BaseTemplateContext;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.storeapi.ContentNodeI;
 import com.freshdirect.storeapi.StoreServiceLocator;
+import com.freshdirect.storeapi.application.CmsManager;
 import com.freshdirect.storeapi.content.CategoryModel;
 import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.storeapi.content.ContentNodeModel;
@@ -507,6 +510,10 @@ public class TemplateContext extends BaseTemplateContext{
 
 	}
 
+    public Set<ContentKey> getNodeParentKeys(String id) {
+        return CmsManager.getInstance().getParentKeys(ContentKeyFactory.get(id));
+    }
+    
 	public ContentNodeModel getNode(String id,PricingContext pricingContext) {
 		ContentNodeModel node = null;
 		if (id.startsWith("Product:")) {
