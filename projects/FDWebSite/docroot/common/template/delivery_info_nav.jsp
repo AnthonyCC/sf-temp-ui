@@ -37,7 +37,6 @@ final int W_DELIVERY_INFO_NAV_TOTAL = 970;
 		folderMap.put("","");
 		
 	//second column onward (fills based on maxRows)
-		folderMap.put("Pickup at FreshDirect","/help/delivery_lic_pickup.jsp");
 		if (user.getLevel() >= FDUserI.RECOGNIZED) {
 			if (user.getLevel() >= FDUserI.RECOGNIZED) {
 				folderMap.put("Available Delivery Slots","/your_account/delivery_info_avail_slots.jsp");
