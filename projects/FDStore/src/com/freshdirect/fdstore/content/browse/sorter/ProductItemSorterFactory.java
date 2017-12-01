@@ -107,7 +107,7 @@ public class ProductItemSorterFactory {
                     Comparator<FilteringProductItem> popularityInner = adapterForProductModel(ScriptedContentNodeComparator.createGlobalComparator(null, null));
                     comparator = reverseOrder ? wrapReverseAvailAndName(popularityInner) : wrapAvailAndName(popularityInner);
                     break;
-                case FAVS_FIRST:
+                case CUSTOMER_POPULARITY:
                     Comparator<FilteringProductItem> favoritesComparatorAdapter = adapterForProductModel(getFavoritesComparator(user));
                     comparator = reverseOrder ? wrapReverseAvailAndName(favoritesComparatorAdapter) : wrapAvailAndName(favoritesComparatorAdapter);
                     break;
