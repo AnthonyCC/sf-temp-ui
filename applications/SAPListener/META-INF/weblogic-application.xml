@@ -6,6 +6,10 @@
     <listener-uri>DataLoaderEJB-WL.jar</listener-uri>
   </listener>
   <listener>
+    <listener-class>com.freshdirect.dataloader.invoice.WLSInvoiceBatchServer2</listener-class>
+    <listener-uri>DataLoaderEJB-WL.jar</listener-uri>
+  </listener>
+  <listener>
     <listener-class>com.freshdirect.dataloader.material.WLSSapGlobalMaterialServer</listener-class>
     <listener-uri>DataLoaderEJB-WL.jar</listener-uri>
   </listener>
