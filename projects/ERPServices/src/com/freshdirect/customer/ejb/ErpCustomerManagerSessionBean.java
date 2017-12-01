@@ -88,6 +88,7 @@ import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpSettlementModel;
 import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.customer.ErpTransactionModel;
 import com.freshdirect.customer.ErpTruckInfo;
 import com.freshdirect.customer.ErpWebOrderHistory;
 import com.freshdirect.customer.OrderHistoryI;
@@ -118,6 +119,7 @@ import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.GatewayAdapter;
 import com.freshdirect.payment.Money;
 import com.freshdirect.payment.PaymentManager;
+import com.freshdirect.payment.ejb.PaymentManagerSB;
 import com.freshdirect.payment.fraud.EnumRestrictedPaymentMethodStatus;
 import com.freshdirect.payment.fraud.EnumRestrictionReason;
 import com.freshdirect.payment.fraud.PaymentFraudManager;
@@ -144,9 +146,9 @@ import com.freshdirect.sap.ejb.SapGatewaySB;
 public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 
 	private static final long	serialVersionUID	= -8402554411597357822L;
-
+	
 	private final static Category LOGGER = LoggerFactory.getInstance(ErpCustomerManagerSessionBean.class);
-
+	
 	private final static ServiceLocator LOCATOR = new ServiceLocator();
 
 
@@ -155,16 +157,15 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 	 *
 	 * @return the bean's home interface name
 	 */
-	@Override
 	protected String getResourceCacheKey() {
 		return "com.freshdirect.customer.ejb.ErpCustomerManagerHome";
 	}
 
-
+	
 	public PrimaryKey createCustomer(ErpCustomerModel erpCustomer) throws ErpDuplicateUserIdException {
 		return createCustomer(erpCustomer, false);
 	}
-
+	
 	/**
 	 * Create an ErpCustomer and enqueue request in SAP.
 	 *
@@ -180,7 +181,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			ErpCustomerEB customerEB = this.getErpCustomerHome().create(erpCustomer);
 			PrimaryKey customerPK = customerEB.getPK();
 			this.enqueueCustomer(erpCustomer, customerPK, isGiftCardBuyer);
-
+			
 			//this.doEmail( ErpEmailFactory.createSignupConfirmEmail(erpCustomer) );
 
 			LOGGER.info("Creating customer - success. userId=" + erpCustomer.getUserId() + " customerPK=" + customerPK);
@@ -208,24 +209,24 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		try {
 			// transform ErpCustomerModel into CustomerI
 			// send the ship-to addr as the bill-to
-
+			
 			// APPDEV-5314 pass unattended delivery flg to SAP
-
+			
 			SapCustomerI customer = null;
 			if(isGiftCardBuyer) {
-				customer = new CustomerAdapter(false, erpCustomer, null, erpCustomer.getSapBillToAddress());
-
+				customer = new CustomerAdapter(false, erpCustomer, null, erpCustomer.getSapBillToAddress());	
+							
 			} else {
 				if(erpCustomer.getShipToAddresses() != null && erpCustomer.getShipToAddresses().size() > 0) {
-					customer = new CustomerAdapter(false, erpCustomer, null, erpCustomer.getShipToAddresses().get(0));
+					customer = new CustomerAdapter(false, erpCustomer, null, (ErpAddressModel) erpCustomer.getShipToAddresses().get(0));
 				} else {
 					if(null !=erpCustomer.getPaymentMethods() && !erpCustomer.getPaymentMethods().isEmpty()){
-						customer = new CustomerAdapter(false, erpCustomer, null, erpCustomer.getPaymentMethods().get(0).getAddress());
+						customer = new CustomerAdapter(false, erpCustomer, null, ((ErpPaymentMethodI)erpCustomer.getPaymentMethods().get(0)).getAddress());
 					} else {
-						//In case of IPhone both delivery and billing addresses are empty.
-						/*APPDEV-1888
+						//In case of IPhone both delivery and billing addresses are empty. 
+						/*APPDEV-1888 
 						 * If customers are registered via referral light signup, then the address will not be filled in for them.
-						 * Add default address so that the registration on sap side can be completed.
+						 * Add default address so that the registration on sap side can be completed. 
 						 * */
 						Connection conn = null;
 						PreparedStatement pstmt = null;
@@ -246,7 +247,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 								erpAddress.setState("NY");
 								erpAddress.setCountry("US");
 								erpAddress.setZipCode("11101");
-
+								
 								//erpAddress.setServiceType(serviceType);
 								erpCustomer.setSapBillToAddress(erpAddress);
 								customer = new CustomerAdapter(false, erpCustomer, null, erpAddress);
@@ -261,17 +262,17 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 									erpAddress.setState("NY");
 									erpAddress.setCountry("US");
 									erpAddress.setZipCode("11101");
-
+									
 									//erpAddress.setServiceType(serviceType);
 									erpCustomer.setSapBillToAddress(erpAddress);
 									customer = new CustomerAdapter(false, erpCustomer, null, erpAddress);
-
+								
 							}
 						} catch (SQLException e) {
 							e.printStackTrace();
 						} finally {
 							try {
-								if (conn != null)
+								if (conn != null) 
 									conn.close();
 								if(pstmt != null)
 									pstmt.close();
@@ -279,7 +280,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 									rset.close();
 							} catch (SQLException ex) {
 								LOGGER.warn("Unable to close connection", ex);
-							}
+							}							
 						}
 					}
 				}
@@ -294,7 +295,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		} catch (RemoteException ex) {
 			throw new EJBException(ex);
 		}
-	}
+	} 
 
 	/**
 	 * Creates sale object and enqueues order in SAP.
@@ -313,7 +314,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		String dlvPassId,
 		EnumSaleType saleType) throws ErpFraudException {
 
-
+		
 		LOGGER.info("Placing order - start. CustomerPK=" + erpCustomerPk);
 
 		try {
@@ -322,7 +323,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			//
 /*			ErpCustomerEB customerEB = this.getErpCustomerHome().findByPrimaryKey(erpCustomerPk);
 			if (!customerEB.isActive()) {*/
-			//[OPT-81] -Optimize whether a customer is active or not check.
+			//[OPT-81] -Optimize whether a customer is active or not check. 
 			if(!isCustomerActive(erpCustomerPk.getId())) {
 				SessionContext ctx = this.getSessionContext();
 				ctx.setRollbackOnly();
@@ -330,18 +331,18 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			}
 			// comment out this unnecessary call
 			//ErpOrderHistory orderHistory = getOrderHistoryInfo(erpCustomerPk);
-
+						
 			//
 			// Do fraud check
 			//
-
+			
 			if(saleType==EnumSaleType.GIFTCARD){
 				preCheckGiftCardOrderFraud(erpCustomerPk, order, agentRole);
 			}else if(saleType==EnumSaleType.DONATION){
 				preCheckDonationFraud(erpCustomerPk, order, agentRole);
 			}else
 			   preCheckOrderFraud(erpCustomerPk, order, agentRole);
-
+			
 			//
 			// store order in ERPS and send message to SAP (via JMS)
 			//
@@ -349,23 +350,23 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			LOGGER.info("Placing order - store in ERPS. CustomerPK=" + erpCustomerPk);
 			ErpSaleEB saleEB = this.getErpSaleHome().create(erpCustomerPk, order, usedPromotionCodes, dlvPassId,saleType);
 			PrimaryKey salePK = saleEB.getPK();
-
+		
 			ErpAbstractOrderModel orderModel = saleEB.getCurrentOrder();
 			if(saleType==EnumSaleType.GIFTCARD){
-				postCheckGiftCardFraud(salePK,erpCustomerPk, orderModel, agentRole);
+				postCheckGiftCardFraud(salePK,erpCustomerPk, orderModel, agentRole);	
 			}else if(saleType==EnumSaleType.DONATION){
 				postCheckDonationFraud(salePK,erpCustomerPk, orderModel, agentRole);
 			}
 			else {
-				postCheckOrderFraud(salePK,erpCustomerPk, orderModel, agentRole);// perform
+				postCheckOrderFraud(salePK,erpCustomerPk, orderModel, agentRole);// perform				
 			}
-
+			
 			if(EnumSaleType.REGULAR.equals(saleType)) {
 				SapOrderAdapter sapOrder = this.adaptOrder(erpCustomerPk, orderModel, rating);
 				SapGatewaySB sapSB = this.getSapGatewayHome().create();
 				sapOrder.setWebOrderNumber(salePK.getId());
 				sapSB.sendCreateSalesOrder(sapOrder,saleType);
-
+				
 			}
 			this.reconcileCustomerCredits(erpCustomerPk, order);
 			LOGGER.info("Placing order - successful. CustomerPK=" + erpCustomerPk);
@@ -379,7 +380,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			throw new EJBException(re);
 		}
 	}
-
+	
 	public void createCase(CrmSystemCaseInfo caseInfo, boolean requiresNewTx) {
 		ErpCreateCaseCommand cmd = new ErpCreateCaseCommand(LOCATOR, caseInfo);
 		cmd.setRequiresNewTx(requiresNewTx);
@@ -395,7 +396,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 	 */
 	public void resubmitOrder(String saleId,CustomerRatingI cra,EnumSaleType saleType, String regionId) throws ErpTransactionException {
         try {
-
+        		
         	  boolean isPlantChanged = false;
               ErpSaleEB saleEB = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
 
@@ -421,16 +422,16 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 
               ErpAbstractOrderModel order = saleEB.getCurrentOrder();
               order.getDeliveryInfo().setDeliveryRegionId(regionId);
-
-
+              
+              
               PrimaryKey customerPk = saleEB.getCustomerPk();
               SapOrderAdapter sapOrder = this.adaptOrder(customerPk, order, cra);
               sapOrder.setWebOrderNumber(saleId);
-
+              
               ErpCustomerManagerSessionBean erp = new ErpCustomerManagerSessionBean();
-              ErpSaleModel erpSaleModel = erp.getOrder(new PrimaryKey(saleId));
+              ErpSaleModel erpSaleModel = erp.getOrder(new PrimaryKey(saleId));            
               ErpAbstractOrderModel  previousOrder =  erpSaleModel.getPreviousOrderTransaction();
-
+            
       		if (previousOrder != null
 					&& previousOrder.getDeliveryInfo() != null
 					&& previousOrder.getDeliveryInfo().getDeliveryPlantInfo() != null
@@ -487,7 +488,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			HashMap<String,List<Double>> creditsMap = new HashMap<String,List<Double>>();
 
 			ErpAbstractOrderModel order = saleEB.getCurrentOrder();
-
+			
 			List<Double> creditAmts=null;
 			for ( ErpAppliedCreditModel ac : order.getAppliedCredits() ) {
 //				creditsMap.put(ac.getCustomerCreditPk().getId(), new Double(ac.getAmount()));
@@ -498,7 +499,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				creditAmts.add(new Double(ac.getAmount()));
 				creditsMap.put(ac.getCustomerCreditPk().getId(), creditAmts);
 			}
-
+            			
 			ErpSaleModel sale=(ErpSaleModel)saleEB.getModel();
 			ErpCancelOrderModel cancelOrder = new ErpCancelOrderModel();
 			cancelOrder.setTransactionSource(source);
@@ -544,13 +545,13 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			boolean sendToSap) throws ErpFraudException, ErpTransactionException {
 
 		try {
-
+			
 			boolean isPlantChanged = false;
 
 			LOGGER.info("Modify order - start. saleId=" + saleId);
 
 			ErpSaleEB saleEB = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
-
+			
 			ErpSaleModel sale = (ErpSaleModel) saleEB.getModel();
 			PrimaryKey erpCustomerPk = sale.getCustomerPk();
 
@@ -591,9 +592,9 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			saleEB.modifyOrder(order, usedPromotionCodes);
 
 			ErpAbstractOrderModel orderModel = saleEB.getCurrentOrder();
-			postCheckOrderFraud(saleEB.getPK(),erpCustomerPk, orderModel, agentRole);
+			postCheckOrderFraud(saleEB.getPK(),erpCustomerPk, orderModel, agentRole); 
 
-			if (sendToSap) {
+			if (sendToSap) { 
 				SapOrderAdapter sapOrder = this.adaptOrder(erpCustomerPk, orderModel, cra);
 				sapOrder.setWebOrderNumber(saleId);
 				// !!! log activity
@@ -602,11 +603,11 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 
 				sapSB.sendChangeSalesOrder(saleId, sale.getSapOrderNumber(), sapOrder, isPlantChanged);
 			}
-
+			
 			reconcileCustomerCredits(erpCustomerPk, order);
-
+			
 			ErpPaymentMethodI origPM = originalOrder.getPaymentMethod();
-			if (EnumSaleStatus.AUTHORIZED.equals(sale.getStatus()) &&
+			if (EnumSaleStatus.AUTHORIZED.equals(sale.getStatus()) && 
 					EnumPaymentMethodType.PAYPAL.equals(origPM.getPaymentMethodType()) && EnumCardType.PAYPAL.equals(origPM.getCardType())) {
 				ErpPaymentMethodI currPM = order.getPaymentMethod();
 				if (!(EnumPaymentMethodType.PAYPAL.equals(currPM.getPaymentMethodType()) &&
@@ -619,12 +620,12 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			    		request.getBillingInfo().getPaymentMethod().setCustomerID(originalOrder.getCustomerId());
 			    		try {
 				    		Gateway gateway = GatewayFactory.getGateway(GatewayType.PAYPAL);
-				    		Response response = gateway.reverseAuthorize(request);
-				    		if (!response.isApproved()) {
+				    		Response response = gateway.reverseAuthorize(request);				    		
+				    		if (!response.isApproved()) {	
 				    			updatePaymentAuthResponse(auth, EnumPaymentResponse.DECLINED.getCode());
 				    			LOGGER.warn("Reverse auth failed for PayPal transaction during order modification of Order " + sale.getId() + ". Ewallet Tx Id " + auth.getEwalletTxId());
-				    		} else {
-				    			updatePaymentAuthResponse(auth, EnumPaymentResponse.REVERSED.getCode());
+				    		} else {				    			
+				    			updatePaymentAuthResponse(auth, EnumPaymentResponse.REVERSED.getCode());				    			
 				    			LOGGER.info("Auth voided for PayPal transaction during order modification of Order " + sale.getId() + ". Ewallet Tx Id " + auth.getEwalletTxId());
 				    		}
 			    		} catch (ErpTransactionException e) {
@@ -643,7 +644,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 
 	}
-
+	
 
 	private void updatePaymentAuthResponse(ErpAuthorizationModel auth, String responseCode) {
 		Connection conn = null;
@@ -654,7 +655,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			ps.setString(1, responseCode);
 			ps.setString(2, auth.getId());
 			ps.setString(3,  auth.getSequenceNumber());
-
+			
 			try {
 				if (ps.executeUpdate() != 1) {
 					throw new SQLException("Payment not updated");
@@ -677,44 +678,44 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				LOGGER.warn("SQLException while cleaning up", se);
 			}
 		}
-
+		
 	}
 
-
+	
 	private void preCheckGiftCardOrderFraud(
 			PrimaryKey erpCustomerPk,
 			ErpAbstractOrderModel order,
 			CrmAgentRole agentRole) throws CreateException, RemoteException, ErpFraudException {
-
+			
 			ErpFraudPreventionSB fraudSB = getErpFraudHome().create();
 			EnumFraudReason fraud = fraudSB.preCheckGiftCardFraud(erpCustomerPk, order, agentRole);
 			if (fraud != null) {
 				SessionContext ctx = this.getSessionContext();
 				ctx.setRollbackOnly();
 				throw new ErpFraudException(fraud);
-			}
+			}			
 		}
 
-
+	
 	private void preCheckDonationFraud(
 			PrimaryKey erpCustomerPk,
 			ErpAbstractOrderModel order,
 			CrmAgentRole agentRole) throws CreateException, RemoteException, ErpFraudException {
-
+			
 			ErpFraudPreventionSB fraudSB = getErpFraudHome().create();
 			EnumFraudReason fraud = fraudSB.preCheckDonationFraud(erpCustomerPk, order, agentRole);
 			if (fraud != null) {
 				SessionContext ctx = this.getSessionContext();
 				ctx.setRollbackOnly();
 				throw new ErpFraudException(fraud);
-			}
+			}			
 		}
-
+	
 		private void preCheckOrderFraud(
 		PrimaryKey erpCustomerPk,
 		ErpAbstractOrderModel order,
 		CrmAgentRole agentRole) throws CreateException, RemoteException, ErpFraudException {
-
+		
 		ErpFraudPreventionSB fraudSB = getErpFraudHome().create();
 		EnumFraudReason fraud = fraudSB.preCheckOrderFraud(erpCustomerPk, order, agentRole);
 		if (fraud != null) {
@@ -722,7 +723,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			ctx.setRollbackOnly();
 			throw new ErpFraudException(fraud);
 		}
-
+		
 	}
 
 	/**
@@ -735,7 +736,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		PrimaryKey erpCustomerPk,
 		ErpAbstractOrderModel order,
 		CrmAgentRole agentRole) throws CreateException, RemoteException {
-
+		
 		ErpFraudPreventionSB fraudSB = getErpFraudHome().create();
 		fraudSB.postCheckOrderFraud(salePk, erpCustomerPk, order, agentRole);
 	}
@@ -745,21 +746,21 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			PrimaryKey erpCustomerPk,
 			ErpAbstractOrderModel order,
 			CrmAgentRole agentRole) throws CreateException, RemoteException {
-
+			
 			ErpFraudPreventionSB fraudSB = getErpFraudHome().create();
 			fraudSB.postCheckGiftCardFraud(salePk, erpCustomerPk, order, agentRole);
 	}
-
+	
 	private void postCheckDonationFraud(
 			PrimaryKey salePk,
 			PrimaryKey erpCustomerPk,
 			ErpAbstractOrderModel order,
 			CrmAgentRole agentRole) throws CreateException, RemoteException {
-
+			
 			ErpFraudPreventionSB fraudSB = getErpFraudHome().create();
 			fraudSB.postCheckDonationFraud(salePk, erpCustomerPk, order, agentRole);
 	}
-
+	
 	public EnumPaymentResponse resubmitPayment(String saleId, ErpPaymentMethodI paymentMethod, Collection<ErpChargeLineModel> charges)
 		throws ErpTransactionException {
 		try {
@@ -795,7 +796,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				String thisCreditId = credit.getPK().getId();
 				if (creditsMap.containsKey(thisCreditId)) {
 					List<Double> listAmts = creditsMap.get(thisCreditId);
-					for (Iterator iterator = listAmts.iterator(); iterator.hasNext();) {
+					for (Iterator iterator = listAmts.iterator(); iterator.hasNext();) {						
 						Double delta = (Double) iterator.next();
 						LOGGER.debug(
 							"Reversing credit (#"
@@ -830,7 +831,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				for ( ErpCustomerCreditModel customerCredit : customerCredits ) {
 					if (appliedCredit.getCustomerCreditPk().getId().equals(customerCredit.getPK().getId())) {
 						//customerCredit.setRemainingAmount( customerCredit.getRemainingAmount() - appliedCredit.getAmount() );
-
+						
 						LOGGER.debug("customerCredit.getRemainingAmount() is"+customerCredit.getRemainingAmount()+
 								"appliedCredit.getAmount() is "+appliedCredit.getAmount()+
 							" Setting remaining credit on CUSTCREDIT "
@@ -897,18 +898,18 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			throw new EJBException(ex);
 		}
 	}
-
+	
 	/**
 	 * Get multiple sales
 	 */
 	public List<ErpSaleModel> getOrders(List<PrimaryKey> erpSalePks) {
 		try {
-
+			
 			if(erpSalePks.isEmpty()){
 				return new ArrayList<ErpSaleModel>();
 			}
 			Collection<ErpSaleEB> saleEBs = getErpSaleHome().findMultipleByPrimaryKeys(erpSalePks);
-
+			
 			List<ErpSaleModel> models = new ArrayList<ErpSaleModel>();
 			for(ErpSaleEB eb: saleEBs){
 				models.add((ErpSaleModel)eb.getModel());
@@ -933,7 +934,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 	 */
 	public ErpOrderHistory getOrderHistoryInfo(PrimaryKey erpCustomerPk) {
 		Connection conn = null;
-
+		
 		try {
 			conn = this.getConnection();
 			Collection<ErpSaleInfo> history = ErpSaleInfoDAO.getOrderHistoryInfo(conn, erpCustomerPk.getId());
@@ -952,7 +953,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
-
+	
 	 public ErpPromotionHistory getPromoHistoryInfo(PrimaryKey erpCustomerPk) {
 			Connection conn = null;
 			try {
@@ -1009,7 +1010,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 					invoice.setAppliedGiftCards(strategy.getAppGiftCardInfo());
 				}
 			}
-
+			
 			if(EnumSaleType.REGULAR.equals(sale.getType()) && (invoice.getSubTotal() <= 0 || isMakeGoodOrder) && sale.hasCouponDiscounts()){
 				ErpCouponTransactionModel transModel = new ErpCouponTransactionModel();
 				transModel.setTranStatus(EnumCouponTransactionStatus.PENDING);
@@ -1032,17 +1033,17 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			throw new EJBException(re);
 		}
 	}
-
+	
 	public void addAndReconcileInvoice(String saleId, ErpInvoiceModel invoice, ErpShippingInfo shippingInfo)
 	        throws ErpTransactionException {
-
+	        
 	        try {
 	                ErpSaleEB eb = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
-
+	                
 	                ErpSaleModel saleModel = (ErpSaleModel)eb.getModel();
-
+	                
 	                EnumSaleStatus status = saleModel.getStatus();
-
+	        
 	        if (status.equals(EnumSaleStatus.ENROUTE) || status.equals(EnumSaleStatus.PAYMENT_PENDING) || status.equals(EnumSaleStatus.REFUSED_ORDER)
 	            || status.equals(EnumSaleStatus.PENDING) || status.equals(EnumSaleStatus.RETURNED) || status.equals(EnumSaleStatus.REDELIVERY)
 	            || status.equals(EnumSaleStatus.CAPTURE_PENDING))
@@ -1055,18 +1056,18 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 	                                throw new EJBException("Got another different invoice for sale#: " + saleId);
 	                        }
 
-	                }
-
+	                } 
+	                
 	                if (!status.equals(EnumSaleStatus.INPROCESS)) {
 	                        throw new EJBException("Sale#: " + saleId + " is not in correct status to add invoice");
 	                }
-
+	                
 	                // FIXME fix Discount promotionCode, since parser cannot provide it
-
+	                
 	                List invDiscountLines = invoice.getDiscounts();
 	                List oldDiscountLines = saleModel.getRecentOrderTransaction().getDiscounts();
 	                if (invDiscountLines != null && !invDiscountLines.isEmpty() && oldDiscountLines != null && !oldDiscountLines.isEmpty()) {
-
+	                        
 	                        if (oldDiscountLines.size() != invDiscountLines.size()) {
 	                                throw new EJBException("Discount line count mismatch, expected "
 	                                        + oldDiscountLines.size()
@@ -1077,13 +1078,13 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 	                        // FIXME furhter validation should be performed to ensure discount lines match up (no can do, w/o promo codes)
 
 	                        List pList = new ArrayList();
-	                        for (Iterator invPromosIter = invDiscountLines.iterator(), oldPromosIter = oldDiscountLines.iterator();
+	                        for (Iterator invPromosIter = invDiscountLines.iterator(), oldPromosIter = oldDiscountLines.iterator(); 
 	                                invPromosIter.hasNext() && oldPromosIter.hasNext(); ) {
 	                                ErpDiscountLineModel  invDiscountLine = (ErpDiscountLineModel) invPromosIter.next();
 	                                ErpDiscountLineModel  oldDiscountLine = (ErpDiscountLineModel) oldPromosIter.next();
 	                                Discount invDisc = invDiscountLine.getDiscount();
 	                                Discount oldDisc = oldDiscountLine.getDiscount();
-	                                pList.add(new ErpDiscountLineModel(new Discount(oldDisc.getPromotionCode(), oldDisc.getDiscountType(), invDisc.getAmount())));
+	                                pList.add(new ErpDiscountLineModel(new Discount(oldDisc.getPromotionCode(), oldDisc.getDiscountType(), invDisc.getAmount())));                                                                                                                                  
 	                        }
 	                        invoice.setDiscounts(pList);
 	                }
@@ -1095,16 +1096,16 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 	                        for(Iterator i = invoice.getCharges().iterator(); i.hasNext(); ) {
 	                                ErpChargeLineModel invCharge = (ErpChargeLineModel) i.next();
 	                                ErpChargeLineModel orderCharge = order.getCharge(invCharge.getType());
-
+	                                
 	                                if(orderCharge != null) {
 	                                        invCharge.setTaxRate(orderCharge.getTaxRate());
 	                                }
 	                        }
 	                }
-
+	                
 	                addInvoice(invoice, saleId, shippingInfo);
 	                reconcileSale(saleId, false);
-
+	                
 	        } catch (ErpTransactionException e) {
 	                throw e;
 	        } catch (Exception e) {
@@ -1113,7 +1114,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 	        }
 	}
 
-
+	
 
 	private void reconcileInvoicedCredits(PrimaryKey customerPK, List<ErpInvoicedCreditModel> invoicedCredits, List<ErpAppliedCreditModel> appliedCredits)
 		throws RemoteException, FinderException {
@@ -1123,7 +1124,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 
 		for ( ErpInvoicedCreditModel invoicedCredit : invoicedCredits ) {
 			for ( ErpAppliedCreditModel appliedCredit : appliedCredits ) {
-
+				
 				if (appliedCredit.getPK().getId().equals(invoicedCredit.getOriginalCreditId())) {
 					invoicedCredit.setCustomerCreditPk(appliedCredit.getCustomerCreditPk());
 					invoicedCredit.setDepartment(appliedCredit.getDepartment());
@@ -1197,12 +1198,12 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			ErpSaleEB eb = getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
 			ErpInvoiceModel invoice = eb.getInvoice();
 			String invoiceNumber = invoice.getInvoiceNumber();
-			/*
+			/* 
 			//just a sanity check that this settlement is for an authorization we actually did
 			//for this sale
 			List authorizations = eb.getApprovedAuthorizations();
 			boolean valid = true;
-
+			 
 			 for(Iterator i = authorizations.iterator(); i.hasNext(); ){
 				ErpAuthorizationModel auth = (ErpAuthorizationModel) i.next();
 				if(auth.getApprovalCode().equals(authId)){
@@ -1279,7 +1280,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				details = "Nobody over 21 yrs was home to take delivery of alcoholic items";
 			}
 			this.createCaseForSale(saleId, "refused_order", details);
-
+			
 			// If the order is an EBT order, add an 'EBT' alert to the customer account .
 			ErpSaleModel sale = (ErpSaleModel)eb.getModel();
 			ErpAbstractOrderModel order =sale.getCurrentOrder();
@@ -1345,7 +1346,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 
 	public ErpDeliveryInfoModel getDeliveryInfo(String saleId) throws ErpSaleNotFoundException {
 		try {
-			ErpSaleEB eb = getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
+			ErpSaleEB eb = (ErpSaleEB) getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
 			ErpAbstractOrderModel order = eb.getCurrentOrder();
 
 			return order.getDeliveryInfo();
@@ -1377,7 +1378,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 
 	private void createCaseForSale(String saleId, String reason, String details) throws ErpSaleNotFoundException {
 		try {
-			ErpSaleEB eb = getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
+			ErpSaleEB eb = (ErpSaleEB) getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
 			PrimaryKey custPK = eb.getCustomerPk();
 
 			CrmCaseSubject subject;
@@ -1493,9 +1494,9 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			// Approve or reject the credit
 			//
 			if (isApproved) {
-
+				
 				validateComplaintPayment(eb.getCurrentOrder().getPaymentMethod().getPaymentType(), pendingComplaint);
-
+				
 				pendingComplaint.setStatus(EnumComplaintStatus.APPROVED);
 				pendingComplaint.setApprovedBy(csrId);
 				pendingComplaint.setApprovedDate(new Date());
@@ -1526,29 +1527,29 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 					double appliedInvGCamount = ErpGiftCardUtil.getTotalAppliedAmount(invoicedGiftCards);
 					invoiceAmount -= appliedInvGCamount;
 				}
-
+				
 				double cashBackAmount = ((int) Math.round(pendingComplaint.getCashBackAmount() * 100)) / 100.0;
-
+				
 				if (cashBackAmount > invoiceAmount) {
 					this.getSessionContext().setRollbackOnly();
 					throw new ErpComplaintException("Cashback amount cannot be more than the invoice amount.");
 				}
-
+			
 				if(!"AUTO_APPROVED".equalsIgnoreCase(csrId) && (null ==limit || cashBackAmount > limit)){
 					this.getSessionContext().setRollbackOnly();
 					throw new ErpComplaintException("Sorry, you are unable to approve credits over $"+limit);
 				}
-
+				
 				if (cashBackAmount == 0.0 && pendingComplaint.getComplaintLines().isEmpty()) {
 					this.getSessionContext().setRollbackOnly();
 					throw new ErpComplaintException("Can't issue cashback for zero amount.");
-				}
-
+				}				
+				
 				// due to the way this whole complaint thing is split up we need
 				// this updateComplaint call here and in the else block it will be called
 				// once anyway. (for the genius who thinks that it can be made once at the
 				// end of conditional block)
-
+				
 				eb.updateComplaint(pendingComplaint);
 				processComplaint(pendingComplaint, eb.getPK().getId());
 			} else {
@@ -1581,7 +1582,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			throw new ErpComplaintException("Cannot issue credit for make-good orders.");
 		}
 		if (EnumPaymentType.ON_FD_ACCOUNT.equals(paymentType)) {
-
+			
 			int complaintType = pendingComplaint.getComplaintMethod();
 			if (ErpComplaintModel.CASH_BACK == complaintType || ErpComplaintModel.MIXED == complaintType) {
 				this.getSessionContext().setRollbackOnly();
@@ -1612,7 +1613,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				complaint.setApprovedDate(new Date());
 				complaint.setApprovedBy("AUTO_APPROVED");
 			}
-
+		
 			validateComplaintPayment(eb.getCurrentOrder().getPaymentMethod().getPaymentType(), complaint);
 
 			//
@@ -1629,7 +1630,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			} catch (ErpTransactionException e) {
 				throw new ErpComplaintException(e,e.getMessage());
 			}
-
+			
 			//
 			// and get back the new sale model with the complaint
 			//
@@ -1639,7 +1640,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			LOGGER.info("No.of Complaints:"+ (null != complaints? complaints.size():complaints));
 			ErpComplaintModel lastComplaint = this.getLastComplaint(complaints);
 			PrimaryKey complaintPk = lastComplaint.getPK();
-
+			
 			//
 			// auto-approve the complaint if appropriate if its non-zero
 			//
@@ -1648,7 +1649,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			}
 			LOGGER.info("Complaint Id:"+complaintPk);
 			return complaintPk;
-
+			
 		} catch (SQLException sqle) {
 			throw new EJBException(sqle);
 		} catch (RemoteException re) {
@@ -1664,7 +1665,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				}
 			}
 		}
-
+			
 	} // method addComplaint
 
 	public void processAllComplaints(String saleId) throws ErpComplaintException {
@@ -1704,7 +1705,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		//
 		if (complaint.getComplaintMethod() == ErpComplaintModel.CASH_BACK
 			|| complaint.getComplaintMethod() == ErpComplaintModel.MIXED) {
-
+				
 			this.addCashback(complaint.getCashBackComplaintLines(), saleId);
 		}
 		if (complaint.getComplaintMethod() == ErpComplaintModel.STORE_CREDIT
@@ -1773,13 +1774,13 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 					departmentLevel=true;
 				}
 			}
-
+			
 
 			PrimaryKey erpCustomerPk=saleEB.getCustomerPk();
 			ErpCustomerEB customerEB = this.getErpCustomerHome().findByPrimaryKey(erpCustomerPk);
 			List<ErpPaymentMethodI> paymentList=customerEB.getPaymentMethods();
 			  if(paymentList!=null && paymentList.size()>0){
-
+				
 				a:for(int j=0;j<paymentList.size();j++){
 					ErpPaymentMethodI custPayment=paymentList.get(j);
 					if(!StringUtil.isEmpty(paymentMethod.getProfileID())&& paymentMethod.getProfileID().equals(custPayment.getProfileID())){
@@ -1787,13 +1788,13 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 						break a;
 					}
 				}
-			  }
-
+			  }		
+			
 			PaymentManager paymentManager = new PaymentManager();
 			List<ErpCaptureModel> auths = saleEB.getCaptures();
 
 			// START Pass the authorized amount for cash back with it's affiliates
-
+			
 			if (departmentLevel && EnumPaymentMethodType.PAYPAL.equals(paymentMethod.getPaymentMethodType()) &&
 					EnumCardType.PAYPAL.equals(paymentMethod.getCardType())) {
 
@@ -1807,7 +1808,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 
 			}
 			// END Pass the authorized amount for cash back with it's affiliates
-
+			
 			if(fdAmount > 0) {
 				if (EnumPaymentMethodType.PAYPAL.equals(paymentMethod.getPaymentMethodType()) &&
 						EnumCardType.PAYPAL.equals(paymentMethod.getCardType())) {
@@ -1817,7 +1818,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 					saleEB.addCashback(cashback);
 				}
 			}
-
+			
 			if(bcAmount > 0) {
 				if (EnumPaymentMethodType.PAYPAL.equals(paymentMethod.getPaymentMethodType()) &&
 						paymentMethod.getCardType().equals(EnumCardType.PAYPAL)) {
@@ -1852,7 +1853,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				ErpCashbackModel cashback = paymentManager.returnCashback(saleId, paymentMethod, fdxAmount, 0.0, FDX);
 				saleEB.addCashback(cashback);
 			}
-
+			
 		} catch (FinderException e) {
 			throw new EJBException("No Sale found for saleId: " + saleId);
 		} catch (RemoteException e) {
@@ -1860,13 +1861,13 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 	} // method addCashback
 
-
-
+	
+	
 	private Map<ErpAffiliate, Double> getAuthorizedAffiliateAmount(Double fdAmount, List<ErpCaptureModel> auths) {
-
+		
 		Map<ErpAffiliate, Double> affiliateMap=new HashMap<ErpAffiliate, Double>();
 		Map<ErpAffiliate, Double> capturedAmount=new HashMap<ErpAffiliate, Double>();
-
+		
 		for(ErpCaptureModel model:auths){
 			Double authAmt=capturedAmount.get(model.getAffiliate());
 			if(authAmt==null){
@@ -1875,7 +1876,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			authAmt=authAmt+model.getAmount();
 			capturedAmount.put(model.getAffiliate(), authAmt);
 		}
-
+		
 		fdAmount=populateAuthorizedAmount(affiliateMap,capturedAmount,fdAmount,ErpAffiliate.getPrimaryAffiliate());
 		fdAmount=populateAuthorizedAmount(affiliateMap,capturedAmount,fdAmount,ErpAffiliate.getEnum(ErpAffiliate.CODE_FDW));
 		fdAmount=populateAuthorizedAmount(affiliateMap,capturedAmount,fdAmount,ErpAffiliate.getEnum(ErpAffiliate.CODE_FDX));
@@ -1889,7 +1890,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 	private Double populateAuthorizedAmount(Map<ErpAffiliate, Double> affiliateMap,
 			Map<ErpAffiliate, Double> capturedAmount, Double fdAmount,ErpAffiliate affiliate) {
         Double authAmount=capturedAmount.get(affiliate);
-
+		
         if(authAmount!=null){
 			if(fdAmount>0 && fdAmount<=authAmount){
 				affiliateMap.put(affiliate, fdAmount);
@@ -1942,7 +1943,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 						dc.getAffiliate());
 				//Bug fix MNT-172. BEGIN
 				custCreditModel.setCreateDate(now);
-
+						
 				customerEB.addCustomerCredit(custCreditModel);
 			}
 		} catch (RemoteException ex) {
@@ -1999,12 +2000,10 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			return this.department;
 		}
 
-		@Override
 		public int hashCode() {
 			return this.department.hashCode() ^ this.affiliate.hashCode();
 		}
 
-		@Override
 		public boolean equals(Object o) {
 			if (o instanceof DeptAffiliateKey) {
 				DeptAffiliateKey da = (DeptAffiliateKey) o;
@@ -2039,7 +2038,6 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			return this.key.getDepartment();
 		}
 
-		@Override
 		public String toString() {
 			return "[DeptCredit Affiliate: "
 				+ this.getAffiliate()
@@ -2141,7 +2139,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			throw new EJBException(ex);
 		}
 	}
-
+	
 	public List<ErpCustomerAlertModel> getAlerts(PrimaryKey pk) {
 		try {
 			ErpCustomerEB customerEB = this.getErpCustomerHome().findByPrimaryKey(pk);
@@ -2158,16 +2156,16 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 	public boolean isOnAlert(PrimaryKey pk) {
 		return isOnAlert(pk, null);
 	}
-
+	
 	public boolean isOnAlert(PrimaryKey pk, String alertType) {
 		/*try {
 			// find relevant customer
 			ErpCustomerEB customerEB = this.getErpCustomerHome().findByPrimaryKey(pk);
-			List<ErpCustomerAlertModel> alerts = customerEB.getCustomerAlerts();
+			List<ErpCustomerAlertModel> alerts = customerEB.getCustomerAlerts();			
 			if (alertType == null) {  // if there are any alerts
 				return null != alerts &&  alerts.size() > 0;
 			}
-
+			
 			for ( ErpCustomerAlertModel alert : alerts ) {
 				if (alertType.equalsIgnoreCase(alert.getAlertType())) {
 					return true;
@@ -2181,12 +2179,12 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			LOGGER.warn(ex);
 			throw new EJBException(ex);
 		}*/
-
+		
 		List<ErpCustomerAlertModel> alerts = getCustomerAlertsByErpCustId(pk.getId());
 		if (alertType == null) {  // if there are any alerts
 			return null != alerts &&  alerts.size() > 0;
 		}
-
+		
 		for ( ErpCustomerAlertModel alert : alerts ) {
 			if (alertType.equalsIgnoreCase(alert.getAlertType())) {
 				return true;
@@ -2194,15 +2192,15 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 		return false;
 	}
-
-
-
-
+	
+	
+	
+	
 	public boolean isCustomerActive(PrimaryKey pk) {
 		/*try {
 			// find relevant customer
 			ErpCustomerEB customerEB = this.getErpCustomerHome().findByPrimaryKey(pk);
-			return customerEB.isActive();
+			return customerEB.isActive();						
 		} catch (RemoteException ex) {
 			LOGGER.warn(ex);
 			throw new EJBException(ex);
@@ -2212,7 +2210,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		}*/
 		return null !=pk ? isCustomerActive(pk.getId()) : false;
 	}
-
+	
 	/**
 	 * Adapt the order to an SAP order.
 	 */
@@ -2224,7 +2222,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 
 			SapOrderAdapter adapter = new SapOrderAdapter(order, erpCustomer, rating);
 			return adapter;
-
+			
 		} catch (RemoteException ex) {
 			LOGGER.warn(ex);
 			throw new EJBException(ex);
@@ -2252,18 +2250,18 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 					//ignore;
 				}
 				count ++;
-
+				
 				sapCustomerId = getSapCustomerId(erpCustomerPk.getId());
-
+				
 			}while((sapCustomerId == null || sapCustomerId.length() == 0) && count < 10);
-
+			
 			/*if(sapCustomerId == null || sapCustomerId.length() == 0){
 				throw new ErpTransactionException("Unable to process order due to sap customer id is null");
 			}*/
 			erpCustomer.setSapId(sapCustomerId);
 			SapOrderAdapter adapter = new SapOrderAdapter(order, erpCustomer, rating);
 			return adapter;
-
+			
 		} catch (RemoteException ex) {
 			LOGGER.warn(ex);
 			throw new EJBException(ex);
@@ -2275,7 +2273,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			throw new EJBException(ex);
 		}
 	}
-
+	
 	public String getSapCustomerId(String erpCustomerPk) {
 		Connection conn = null;
 		try {
@@ -2296,7 +2294,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
-
+	
 	public void reverseCustomerCredit(String saleId, String complaintId) throws ErpTransactionException {
 		try {
 			ErpSaleEB saleEB = null;
@@ -2349,7 +2347,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			returnOrder.setTransactionDate(new java.util.Date());
 			ErpGenerateInvoiceCommand command = new ErpGenerateInvoiceCommand();
 			ErpInvoiceModel newInvoice = command.generateNewInvoice(order, invoice, returnOrder);
-
+			
 			returnOrder.setSubTotal(invoice.getActualSubTotal() - newInvoice.getActualSubTotal());
 			returnOrder.setTax(invoice.getTax() - newInvoice.getTax());
 			returnOrder.setAmount(invoice.getAmount() - newInvoice.getAmount());
@@ -2372,7 +2370,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			ErpSaleModel sale =(ErpSaleModel)saleEB.getModel();
 			ErpInvoiceModel invoice = saleEB.getInvoice();
 			ErpGenerateInvoiceCommand invoiceCommand = new ErpGenerateInvoiceCommand();
-			ErpInvoiceModel newInvoice = invoiceCommand.generateNewInvoice(order, invoice, returnOrder);
+			ErpInvoiceModel newInvoice = invoiceCommand.generateNewInvoice(order, invoice, returnOrder);			
 			reconcileInvoicedCredits(saleEB.getCustomerPk(), (List)newInvoice.getAppliedCredits(), invoice.getAppliedCredits());
 			List appliedGiftCards = order.getAppliedGiftcards();
 			if(appliedGiftCards != null && appliedGiftCards.size() > 0) {
@@ -2387,7 +2385,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			}
 			//System.out.println("newInvoice.getSubTotal():"+newInvoice.getSubTotal());
 			//System.out.println("newInvoice.getActualSubTotal():"+newInvoice.getActualSubTotal());
-
+			
 			//Cancel the coupons if any, if the order is fully returned.
 			boolean cancelCoupons = false;
 			if(EnumSaleType.REGULAR.equals(sale.getType()) && sale.hasCouponDiscounts()){
@@ -2410,7 +2408,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 					newInvoice.setCouponTransModel(transModel);
 				}
 			}
-
+			
 			saleEB.addInvoice(newInvoice);
 			SapPostReturnCommand sapCommand = createSapReturnCommand(order, newInvoice, cancelCoupons);
 			postReturnToSap(sapCommand);
@@ -2435,7 +2433,6 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			deposit += invoiceLine.getDepositValue();
 		}
 
-		@Override
 		public String toString() {
 			return "[ReturnAccumulator subtotal: " + subtotal + " tax: " + tax + " deposit: " + deposit + "]";
 		}
@@ -2449,9 +2446,9 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			ErpAffiliate affiliate = i.next();
 			accs.put(affiliate, new ReturnAccumulator());
 		}
-
+		
 		accs.remove(ErpAffiliate.getEnum(ErpAffiliate.CODE_FDX));
-
+		
 
 		for ( ErpOrderLineModel orderLine : order.getOrderLines() ) {
 			ErpInvoiceLineModel invoiceLine = invoice.getInvoiceLine(orderLine.getOrderLineNumber());
@@ -2472,10 +2469,10 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				+ invoice.getDeliveryPremium()
 				+ invoice.getPhoneCharge()
 				- invoice.getDiscountAmount();
-
+			
 			for ( Map.Entry<Object,ReturnAccumulator> e : accs.entrySet() ) {
 				ErpAffiliate affiliate = (ErpAffiliate) e.getKey();
-				ReturnAccumulator acc = e.getValue();
+				ReturnAccumulator acc = (ReturnAccumulator) e.getValue();
 				command.addCharges(
 					affiliate,
 					acc.subtotal,
@@ -2484,11 +2481,11 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 					0,
 					affiliate.isPrimary() ? totalCredit : 0);
 			}
-
+			
 		} else {
 			for ( Map.Entry<Object,ReturnAccumulator> e : accs.entrySet() ) {
 				ErpAffiliate affiliate = (ErpAffiliate) e.getKey();
-				ReturnAccumulator acc = e.getValue();
+				ReturnAccumulator acc = (ReturnAccumulator) e.getValue();
 				command.addCharges(
 					affiliate,
 					acc.subtotal,
@@ -2510,24 +2507,24 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			deliveryAmount += dlvpremium.getTotalAmount();
 			deliveryAmount += dlvpremium.getTotalAmount() * dlvpremium.getTaxRate();
 		}
-
+		
 		ErpChargeLineModel misc = invoice.getCharge(EnumChargeType.MISCELLANEOUS);
 		if (misc != null) {
 			deliveryAmount += misc.getTotalAmount();
 			deliveryAmount += misc.getTotalAmount() * misc.getTaxRate();
 		}
-
+		
 		ErpChargeLineModel tip = invoice.getCharge(EnumChargeType.TIP);
 		double tipAmount=0;
 		if (tip != null) {
 			tipAmount = tip.getTotalAmount();
 		}
 		command.setDeliveryCharge(deliveryAmount);
-
+		
 		command.setPhoneCharge(invoice.getPhoneCharge());
 		command.setPromotionAmount(invoice.getDiscountAmount());
 		command.setTipAmount(tipAmount);
-
+		
 		if(cancelCoupons){
 			for ( ErpOrderLineModel orderLine : order.getOrderLines() ) {
 				ErpInvoiceLineModel invoiceLine = invoice.getInvoiceLine(orderLine.getOrderLineNumber());
@@ -2648,9 +2645,9 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				}
 			}
 		}
-
+				
 	}
-
+	
 	/**
 	 * Update ShippingInfo to ErpSale
 	 *
@@ -2708,7 +2705,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			throw new EJBException(te);
 		}
     }
-
+    
     public void addChargeInvoice(String saleId, double charge) {
 		try {
 			ErpGenerateInvoiceCommand invoiceCommand =  new ErpGenerateInvoiceCommand();
@@ -2728,29 +2725,29 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 	}
 
 	public void updateBadCustomerPaymentMethod(String saleId, EnumPaymentMethodType paymentMethodType, EnumPaymentResponse paymentResponse, String accountNumber) {
-
+		
 		LOGGER.info("Marking payment method as BAD for sale : "+saleId+" for payment method type  of "+paymentMethodType);
 		EnumRestrictionReason restrictionReason = PaymentFraudManager.translateRestrictionReason(paymentResponse);
-		String note = paymentResponse.getName()+ "-" + paymentResponse.getDescription()+" for order "+saleId;
+		String note = paymentResponse.getName()+ "-" + paymentResponse.getDescription()+" for order "+saleId;		
 		ErpPaymentMethodI paymentMethod = getPaymentMethod(saleId, paymentMethodType, accountNumber);
-		if (paymentMethod != null) {
+		if (paymentMethod != null) { 
 			LOGGER.info("Found matching payment method to be marked as BAD for sale : "+saleId+" . The payment method id is "+paymentMethod.getPK()!=null?paymentMethod.getPK().getId():"" );
 			PaymentFraudManager.addRestrictedPaymentMethod(paymentMethod, restrictionReason, note);
 			updateECheckAlertForSale(saleId);
-
+			
 		}
 	}
-
+	
 	public void removeBadCustomerPaymentMethod(String saleId, EnumPaymentMethodType paymentMethodType,String maskedAccountNumber) {
 		ErpPaymentMethodI paymentMethod = getPaymentMethod(saleId, paymentMethodType,maskedAccountNumber);
-		if (paymentMethod != null) {
+		if (paymentMethod != null) { 
 			PaymentFraudManager.removeRestrictedPaymentMethod(paymentMethod, true);
 		}
 		updateECheckAlertForSale(saleId);
 	}
-
+	
 	private ErpPaymentMethodI getPaymentMethod(String saleId, EnumPaymentMethodType paymentMethodType,String maskedAccountNumber) {
-
+		
 		try{
 			ErpSaleEB erpSaleEB = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
 			PrimaryKey pk = erpSaleEB.getCustomerPk();
@@ -2759,7 +2756,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			if (paymentMethodList != null && paymentMethodList.size() > 0) {
 				for (Iterator<ErpPaymentMethodI> iter = paymentMethodList.iterator(); iter.hasNext();) {
 					ErpPaymentMethodI pm = iter.next();
-					if (paymentMethodType != null && paymentMethodType.equals(pm.getPaymentMethodType()) &&
+					if (paymentMethodType != null && paymentMethodType.equals(pm.getPaymentMethodType()) && 
 							maskedAccountNumber != null && pm.getMaskedAccountNumber().endsWith(maskedAccountNumber) ) {
 						return pm;
 					}
@@ -2772,15 +2769,15 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		}catch(RemoteException e){
 			LOGGER.warn("RemoteException: ", e);
 			throw new EJBException(e);
-		}
+		}	
 	}
 
-	private void updateECheckAlertForSale(String saleId) {
+	private void updateECheckAlertForSale(String saleId) {		
 		try{
 			LOGGER.debug("adding customer alert for sale# "+saleId);
 			ErpSaleEB erpSaleEB = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
 			PrimaryKey pk = erpSaleEB.getCustomerPk();
-
+			
 			if (pk != null && pk.getId() != null) {
 				List<RestrictedPaymentMethodModel> restrictedPaymentMethods = PaymentFraudManager.getRestrictedPaymentMethodsByCustomerId(pk.getId(), EnumRestrictedPaymentMethodStatus.BAD);
 				// place customer on alert if there are any outstanding restricted payment methods
@@ -2793,18 +2790,18 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 					ErpCustomerAlertModel customerAlert = new ErpCustomerAlertModel();
 					if (setOnAlert) {
 						activityType = EnumAccountActivityType.PLACE_ALERT;
-						note = "System placed an ECheck alert due to a restricted payment method possibly caused by a settlement failure on order "+saleId;
+						note = "System placed an ECheck alert due to a restricted payment method possibly caused by a settlement failure on order "+saleId;							
 						customerAlert.setCustomerId(pk.getId());
 						customerAlert.setAlertType(EnumAlertType.ECHECK.getName());
 						customerAlert.setCreateDate(new Date());
-						customerAlert.setCreateUserId(EnumTransactionSource.SYSTEM.getCode());
-						customerAlert.setNote(note);
+						customerAlert.setCreateUserId(EnumTransactionSource.SYSTEM.getCode());						
+						customerAlert.setNote(note);						
 					} else if ((!setOnAlert && (customerAlert = getECheckAlertSetBySystem(pk)) != null)) {
 						activityType = EnumAccountActivityType.REMOVE_ALERT;
-						note = "System removed the ECheck alert due to no outstanding restricted payment method." ;
+						note = "System removed the ECheck alert due to no outstanding restricted payment method." ;							
 					}
 					if (customerAlert != null) {
-						setAlert(pk, customerAlert, setOnAlert);
+						setAlert(pk, customerAlert, setOnAlert);					
 						logAlertActivity(pk, activityType, note, EnumTransactionSource.SYSTEM);
 					}
 				}
@@ -2818,12 +2815,12 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		}catch(RemoteException e){
 			LOGGER.warn("RemoteException: ", e);
 			throw new EJBException(e);
-		}
+		}	
 	}
 
 	private ErpCustomerAlertModel getECheckAlertSetBySystem(PrimaryKey pk) {
 		try {
-
+			
 			// find relevant customer
 			ErpCustomerEB customerEB = this.getErpCustomerHome().findByPrimaryKey(pk);
 			List<ErpCustomerAlertModel> alerts = customerEB.getCustomerAlerts();
@@ -2839,9 +2836,9 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		}catch(RemoteException e){
 			LOGGER.warn("RemoteException: ", e);
 			throw new EJBException(e);
-		}
+		}	
 	}
-
+	
 	private void logAlertActivity(PrimaryKey pk, EnumAccountActivityType activityType, String note, EnumTransactionSource source) {
 		ErpActivityRecord erpActivityRecord = new ErpActivityRecord();
 		erpActivityRecord.setCustomerId(pk.getId());
@@ -2853,7 +2850,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		erpActivityRecord.setNote(note);
 		new ErpLogActivityCommand(LOCATOR, erpActivityRecord, true).execute();
 	}
-
+	
 	/**
 	 * Get a list of orders that used the specific delivery pass on a customer account.
 	 */
@@ -2901,7 +2898,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 		return recentOrders;
 	}
-
+	
 	/**
 	 * Get a list of orders that used delivery passes on a customer account.
 	 */
@@ -2948,9 +2945,9 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		}catch(RemoteException e){
 			LOGGER.warn("RemoteException: ", e);
 			throw new EJBException(e);
-		}
+		}		
 	}
-
+	
 	public int getValidOrderCount(PrimaryKey erpCustomerPk) {
 		Connection conn = null;
 		try {
@@ -3024,7 +3021,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 						LOGGER.warn("Unable to close connection", ex);
 					}
 				}
-			}
+			}		 
 	 }
 		/**
 		 * Get a specific sale.
@@ -3043,7 +3040,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				throw new EJBException(re);
 			}
 		}
-
+		
 		/**
 		 * Get a specific sale.
 		 */
@@ -3061,7 +3058,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				throw new EJBException(re);
 			}
 		}
-
+		
 		public void cutOffSale(String saleId) throws ErpSaleNotFoundException {
 			try {
 				ErpSaleEB saleEB = getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
@@ -3079,7 +3076,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				throw new EJBException(e);
 			}
 		}
-
+		
 		public void sendCreateOrderToSAP(String erpCustomerID, String saleID, EnumSaleType saleType, CustomerRatingI rating) throws ErpSaleNotFoundException {
 		    sendCreateOrderToSAPImpl(erpCustomerID, saleID, saleType, rating);
 		}
@@ -3095,7 +3092,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
              * @param saleID
              * @param saleType
              * @param rating
-             * @throws ErpSaleNotFoundException
+             * @throws ErpSaleNotFoundException 
              */
             private void sendCreateOrderToSAPImpl(String erpCustomerID, String saleID, EnumSaleType saleType, CustomerRatingI rating) throws ErpSaleNotFoundException {
                 try {
@@ -3117,9 +3114,9 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
                     LOGGER.warn(ce);
                     throw new EJBException(ce);
                 }
-
+        
             }
-
+		
 	public void assignAutoCaseToComplaint(PrimaryKey complaintPk, PrimaryKey autoCasePK) {
 		Connection conn = null;
 		try {
@@ -3129,7 +3126,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			ps.setString(1, autoCasePK.getId());
 			LOGGER.info("Complaint Id:"+complaintPk);
 			ps.setString(2, complaintPk.getId());
-
+			
 			try {
 				if (ps.executeUpdate() != 1) {
 					throw new SQLException("Row not updated (missing complaint)");
@@ -3157,17 +3154,17 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		public double getOutStandingBalance(ErpAbstractOrderModel order){
 			//Generate Applied gift cards info.
 			GiftCardApplicationStrategy strategy = new GiftCardApplicationStrategy(order, null);
-			strategy.generateAppliedGiftCardsInfo();
+			strategy.generateAppliedGiftCardsInfo();	
 			return strategy.getRemainingBalance();
 		}
-
+		
 		public double getPerishableBufferAmount(ErpAbstractOrderModel order){
 			//Generate Applied gift cards info.
 			GiftCardApplicationStrategy strategy = new GiftCardApplicationStrategy(order, null);
-			strategy.generateAppliedGiftCardsInfo();
+			strategy.generateAppliedGiftCardsInfo();	
 			return strategy.getPerishableBufferAmount();
 		}
-
+		
 		public List<DlvSaleInfo> getLastOrderForAddress(AddressModel address)  {
 			Connection conn = null;
 			try {
@@ -3186,9 +3183,9 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				}
 			}
 		}
-
-
-
+		
+		
+		
 		public List<ErpSaleInfo> getNSMOrdersForGC()  {
 			Connection conn = null;
 			try {
@@ -3225,7 +3222,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				}
 			}
 		}
-
+		
 		private void issuePayPalCashback(List<ErpCaptureModel> auths, double affAmount, ErpPaymentMethodI paymentMethod,
 				PaymentManager paymentManager, ErpSaleEB saleEB, ErpAffiliate aff) throws RemoteException, ErpTransactionException {
 			for (ErpCaptureModel auth : auths) {
@@ -3255,7 +3252,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				}
 			}
 		}
-
+		
 	public boolean updateSalesShippingInfo(Map<String, ErpShippingInfo> erpShippingMap)
 			throws ErpTransactionException {
 		Connection conn = null;
@@ -3275,7 +3272,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
-
+	
 	private boolean isCustomerActive(String erpCustomerId) {
 		Connection conn = null;
 		try {
@@ -3288,7 +3285,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 		return false;
 	}
-
+	
 	private List<ErpCustomerAlertModel> getCustomerAlertsByErpCustId(String erpCustomerId) {
 		Connection conn = null;
 		try {
@@ -3301,7 +3298,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 		return null;
 	}
-
+	
 	public List<ErpCustomerCreditModel> getCustomerCreditsByErpCustId(String erpCustomerId) {
 		Connection conn = null;
 		try {
