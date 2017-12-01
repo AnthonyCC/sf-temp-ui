@@ -4063,61 +4063,106 @@ div#mobilehomeMainDiv a {
 		<%-- LOAD JS --%>
 		<jwr:script src="/mobileweb_index_optimized_jquerylibs.js" useRandomParam="false" />
 		<script type="text/javascript">
-			(function () {
-				window.FreshDirect = window.FreshDirect || {};
-				
-				var FD = FreshDirect || {};
-				FD.USQLegalWarning = FreshDirect.USQLegalWarning || {};
-				FD.USQLegalWarning.sessionStore = '<%=session.getId()%>';
-				FD.USQLegalWarning.getJSessionId = FD.USQLegalWarning.getJSessionId ||
-				function () { return FD.USQLegalWarning.sessionStore; };
-				
-				var fd = window.FreshDirect;
-				fd.libs = fd.libs || {};
-				fd.libs.$ = jQuery;
+			window.FreshDirect = window.FreshDirect || {};
+			
+			var FD = FreshDirect || {};
+			FD.USQLegalWarning = FreshDirect.USQLegalWarning || {};
+			FD.USQLegalWarning.sessionStore = '<%=session.getId()%>';
+			FD.USQLegalWarning.getJSessionId = FD.USQLegalWarning.getJSessionId ||
+			function () { return FD.USQLegalWarning.sessionStore; };
+			
+			var fd = window.FreshDirect;
+			fd.libs = fd.libs || {};
+			fd.libs.$ = jQuery;
 	
-			    <%-- THIS SETUP NEEDS TO BE BEFORE THE LOCABAR JS --%>
-				FreshDirect.locabar = FreshDirect.locabar || {};
-				FreshDirect.locabar.isFdx = <%= useFdxGlobalNav %>;
-				$jq.fn.messages = function( method ) {};
-				
-				fd.features = fd.features || {};
-				
-				fd.features.active = <fd:ToJSON object="${featuresPotato.active}" noHeaders="true"/>
-				
-				fd.properties = fd.properties || {};
-				fd.properties.isLightSignupEnabled = <%= FDStoreProperties.isLightSignupEnabled() ? "true" : "false" %>;
-				fd.properties.isSocialLoginEnabled = <%= FDStoreProperties.isSocialLoginEnabled() ? "true" : "false" %>;
-				fd.properties.isDebitSwitchNoticeEnabled = <%= FDStoreProperties.isDebitSwitchNoticeEnabled() ? "true" : "false" %>;
+		    <%-- THIS SETUP NEEDS TO BE BEFORE THE LOCABAR JS --%>
+			FreshDirect.locabar = FreshDirect.locabar || {};
+			FreshDirect.locabar.isFdx = <%= useFdxGlobalNav %>;
+			$jq.fn.messages = function( method ) {};
+			
+			fd.features = fd.features || {};
+			
+			fd.features.active = <fd:ToJSON object="${featuresPotato.active}" noHeaders="true"/>
+			
+			fd.properties = fd.properties || {};
+			fd.properties.isLightSignupEnabled = <%= FDStoreProperties.isLightSignupEnabled() ? "true" : "false" %>;
+			fd.properties.isSocialLoginEnabled = <%= FDStoreProperties.isSocialLoginEnabled() ? "true" : "false" %>;
+			fd.properties.isDebitSwitchNoticeEnabled = <%= FDStoreProperties.isDebitSwitchNoticeEnabled() ? "true" : "false" %>;
 	
-				<%
-					FDSessionUser jsUser = (FDSessionUser)session.getAttribute(SessionName.USER);
-					if (jsUser != null) {
-						int sessionUserLevel = jsUser.getLevel();
-						FDSessionUser sessionUser = (FDSessionUser) jsUser;
-						boolean hideZipCheckPopup = (!FDStoreProperties.isZipCheckOverLayEnabled() || (jsUser.getLevel() != FDSessionUser.GUEST || jsUser.isZipCheckPopupUsed() || sessionUser.isZipPopupSeenInSession()));
+			
+			<%-- copied from utils.js for dfp.js --%>
+			fd.utils = fd.utils || {};
+			fd.utils.getParameters = function (source) {
+			  source = source || window.location.search.slice(1);
+			
+			  if (!source) {
+			    return null;
+			  }
+			
+			  var vars = {}, hash,
+			      hashes = source.split('&');
+			
+			  hashes.forEach(function (h) {
+			    hash = h.split('=');
+			    vars[hash[0]] = window.decodeURIComponent(hash[1]);
+			  });
+			
+			  return vars;
+			};
+			<%-- for debugging --%>
+			fd.utils.readCookie = function(name) {
+				var nameEQ = name + "=",
+					ca = document.cookie.split(';'),
+					i, c;
 	
-						if (!hideZipCheckPopup){
-						    sessionUser.setZipPopupSeenInSession(true);
-						}
-				
-						String zipCode = jsUser.getZipCode();
-						String cohortName = jsUser.getCohortName();
-						MasqueradeContext jsMasqueradeContext = jsUser.getMasqueradeContext();
-			    	%>
-						fd.user = {};
-						fd.user.recognized = <%= sessionUserLevel == FDUserI.RECOGNIZED %>;
-						fd.user.guest = <%= sessionUserLevel == FDUserI.GUEST %>;
-						fd.mobWeb = <%= FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, jsUser) && JspMethods.isMobile(request.getHeader("User-Agent")) %>;
-						fd.user.isZipPopupUsed = <%= hideZipCheckPopup %>;
-						fd.user.zipCode = '<%= zipCode %>';
-						fd.user.cohortName = '<%= cohortName %>';
-						fd.user.sessionId = '<%=session.getId()%>';
-						fd.user.isCorporateUser = <%= sessionUser.isCorporateUser() %>;
-						<% if (jsMasqueradeContext != null) {%>
-							fd.user.masquerade = true;
-						<% } %>
+				for (i=0; i < ca.length; i++) {
+					c = ca[i];
+					while (c.charAt(0) === ' ') {
+						c = c.substring(1, c.length);
+					}
+					if (c.indexOf(nameEQ) === 0) {
+						return c.substring(nameEQ.length, c.length);
+					}
+				}
+					return null;
+			};
+			fd.utils.isDeveloper = function () {
+				return fd.utils.readCookie('developer');
+			};
+			
+			if (fd.utils.isDeveloper()) {
+				console.log('===== [ mobWeb optimized ] =====');
+			}
+			
+			<%
+				FDSessionUser jsUser = (FDSessionUser)session.getAttribute(SessionName.USER);
+				if (jsUser != null) {
+					int sessionUserLevel = jsUser.getLevel();
+					FDSessionUser sessionUser = (FDSessionUser) jsUser;
+					boolean hideZipCheckPopup = (!FDStoreProperties.isZipCheckOverLayEnabled() || (jsUser.getLevel() != FDSessionUser.GUEST || jsUser.isZipCheckPopupUsed() || sessionUser.isZipPopupSeenInSession()));
+	
+					if (!hideZipCheckPopup){
+					    sessionUser.setZipPopupSeenInSession(true);
+					}
+			
+					String zipCode = jsUser.getZipCode();
+					String cohortName = jsUser.getCohortName();
+					MasqueradeContext jsMasqueradeContext = jsUser.getMasqueradeContext();
+		    	%>
+					fd.user = {};
+					fd.user.recognized = <%= sessionUserLevel == FDUserI.RECOGNIZED %>;
+					fd.user.guest = <%= sessionUserLevel == FDUserI.GUEST %>;
+					fd.mobWeb = <%= FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, jsUser) && JspMethods.isMobile(request.getHeader("User-Agent")) %>;
+					fd.user.isZipPopupUsed = <%= hideZipCheckPopup %>;
+					fd.user.zipCode = '<%= zipCode %>';
+					fd.user.cohortName = '<%= cohortName %>';
+					fd.user.sessionId = '<%=session.getId()%>';
+					fd.user.isCorporateUser = <%= sessionUser.isCorporateUser() %>;
+					<% if (jsMasqueradeContext != null) {%>
+						fd.user.masquerade = true;
 					<% } %>
+				<% } %>
+			(function () {
 					
 				<%-- updateOAS code --%>
 					function OAS_SCRIPT_URL(OAS_url, OAS_sitepage, OAS_rns, OAS_listpos, OAS_query) {
@@ -4131,6 +4176,9 @@ div#mobilehomeMainDiv a {
 						listPos.forEach(function (pos) {
 							var selector = "#oas_"+pos+",#oas_b_"+pos;
 							$(selector).each(function(i,e){
+								if (FreshDirect.utils.isDeveloper()) {
+									console.log('updateOAS: done', 'clearing elem html', pos, $(e));
+								}
 								$(e).html('');
 								postscribe($(e), '<sc'+'ript>OAS_RICH("'+pos+'");</scr'+'ipt>', {
 									error: function () {},
@@ -4139,11 +4187,14 @@ div#mobilehomeMainDiv a {
 											$(ee).attr("tabindex", "-1");
 											$(ee).attr("role", "presentation");
 											$(ee).attr("aria-hidden", "true");
-	
 											if (fd.utils.isDeveloper()) {
-												console.log('updateOAS: done', pos, $(ee));
+												console.log('updateOAS: done', 'hiding "empty" oas pos', $(ee));
 											}
 										});
+										
+										if (fd.utils.isDeveloper()) {
+											console.log('updateOAS: done', 'updated', $(e));
+										}
 									}
 								});
 							});
@@ -4161,27 +4212,6 @@ div#mobilehomeMainDiv a {
 					}
 					FreshDirect.updateOAS = {};
 					FreshDirect.updateOAS.done = done;
-					
-					<%-- copied from utils.js for dfp.js --%>
-					fd.utils = fd.utils || {};
-					fd.utils.getParameters = function (source) {
-					  source = source || window.location.search.slice(1);
-					
-					  if (!source) {
-					    return null;
-					  }
-					
-					  var vars = {}, hash,
-					      hashes = source.split('&');
-					
-					  hashes.forEach(function (h) {
-					    hash = h.split('=');
-					    vars[hash[0]] = window.decodeURIComponent(hash[1]);
-					  });
-					
-					  return vars;
-					};
-					
 			}());
 		</script>
 		<jwr:script src="/mobileweb_index_optimized_everythingelse.js" useRandomParam="false" />
