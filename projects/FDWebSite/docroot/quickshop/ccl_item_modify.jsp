@@ -61,12 +61,12 @@ final int W_QUICKSHOP_CCL_ITEM_MODIFY_TOTAL = 601;
 %>
 <fd:FDShoppingCart id='cart' result='result' source='CCL' action='<%= tagAction %>' successPage='<%= successPage %>'>
  <tmpl:insert template='/common/template/quick_shop.jsp'> 
-<%--     <tmpl:put name='title' direct='true'> --%>
-<%--        FreshDirect - <%= CartName.ACCEPT_ALTERNATIVE.equals(cartMode) ? "Recommended Alternative" : "Modify Shopping List Item" %> - <%= productNode.getFullName() %> --%>
-<%--     </tmpl:put> --%>
-  <tmpl:put name="seoMetaTag" direct="true">
-    <fd:SEOMetaTag title=" FreshDirect - <%= CartName.ACCEPT_ALTERNATIVE.equals(cartMode) ? 'Recommended Alternative' : 'Modify Shopping List Item' %> - <%= productNode.getFullName() %>"></fd:SEOMetaTag>
-  </tmpl:put>
+    <tmpl:put name='title' direct='true'>
+       FreshDirect - <%= CartName.ACCEPT_ALTERNATIVE.equals(cartMode) ? "Recommended Alternative" : "Modify Shopping List Item" %> - <%= productNode.getFullName() %>
+    </tmpl:put>
+<%--   <tmpl:put name="seoMetaTag" direct="true"> --%>
+<%--     <fd:SEOMetaTag title=" FreshDirect - <%= CartName.ACCEPT_ALTERNATIVE.equals(cartMode) ? 'Recommended Alternative' : 'Modify Shopping List Item' %> - <%= productNode.getFullName() %>"></fd:SEOMetaTag> --%>
+<%--   </tmpl:put> --%>
 
 <%
    String productLink = (String)request.getAttribute("productLink");
