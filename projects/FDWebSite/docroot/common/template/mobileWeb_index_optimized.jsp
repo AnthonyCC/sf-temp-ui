@@ -41,7 +41,7 @@
 %>
 <html lang="en-US" xml:lang="en-US">
   <head>
-  	<title><tmpl:get name="title"/></title>
+<%--   	<title><tmpl:get name="title"/></title> --%>
   	
 	<style>
 @charset "UTF-8"; 

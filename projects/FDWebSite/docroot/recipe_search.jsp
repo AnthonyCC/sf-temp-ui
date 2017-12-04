@@ -25,7 +25,10 @@ RecipeSearchPage searchPage = RecipeSearchPage.getDefault();
 request.setAttribute("listPos", "SystemMessage,SideCartBottom");
 %>
 <tmpl:insert template='/common/template/recipe_DLRnavs.jsp'>
-    <tmpl:put name='title' direct='true'>FreshDirect - Recipe Search</tmpl:put>
+<%--     <tmpl:put name='title' direct='true'>FreshDirect - Recipe Search</tmpl:put> --%>
+    <tmpl:put name="seoMetaTag" direct="true">
+    <fd:SEOMetaTag title="FreshDirect - Recipe Search"></fd:SEOMetaTag>
+    </tmpl:put>
 	<tmpl:put name='leftnav' direct='true'>
 		<a href="/recipe_search.jsp?trk=snav"><img src="/media_stat/recipe/recipes_advsearch_catnav.gif" alt="Advanced recipe search" width="118" height="64" vspace="17" border="0"></a>
 	</tmpl:put>

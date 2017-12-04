@@ -57,7 +57,7 @@ TD.textureLabels{padding-left:25px; padding-top:4px; padding-right:4px}
     <tmpl:put name="seoMetaTag" direct='true'>
         <fd:SEOMetaTag title="FreshDirect - Fish Finder"/>
     </tmpl:put>
-	<tmpl:put name='title' direct='true'>FreshDirect - Fish Finder</tmpl:put>
+<%-- 	<tmpl:put name='title' direct='true'>FreshDirect - Fish Finder</tmpl:put> --%>
             <tmpl:put name='content' direct='true'>
                 <fd:ItemGrabber category='<%= currentFolder %>' id='seafoodCollection'  
                     depth='10' ignoreShowChildren='true'  returnHiddenFolders='false'>

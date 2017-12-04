@@ -6,7 +6,7 @@
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - About Us: Press"/>
   </tmpl:put>
-  <tmpl:put name='title'>FreshDirect - About Us: Press</tmpl:put>
+<%--   <tmpl:put name='title'>FreshDirect - About Us: Press</tmpl:put> --%>
   <tmpl:put name='content' direct='true'>
 
 	<fd:IncludeMedia name="/media/editorial/about/press/recent.html" />

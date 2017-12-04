@@ -50,7 +50,7 @@ if (mobWeb) {
   <tmpl:put name="ecpage">view_cart</tmpl:put>
   
   <tmpl:put name="seoMetaTag" direct="true">
-    <fd:SEOMetaTag pageId="ec_view_cart"></fd:SEOMetaTag>
+    <fd:SEOMetaTag title="YOUR CART" pageId="ec_view_cart"></fd:SEOMetaTag>
   </tmpl:put>
 
   <tmpl:put name='content' direct='true'>

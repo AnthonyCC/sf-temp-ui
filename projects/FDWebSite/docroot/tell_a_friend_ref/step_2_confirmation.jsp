@@ -11,7 +11,7 @@
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Tell a Friend"/>
   </tmpl:put>
-  <tmpl:put name='title' direct='true'>FreshDirect - Tell a Friend</tmpl:put>
+<%--   <tmpl:put name='title' direct='true'>FreshDirect - Tell a Friend</tmpl:put> --%>
 		<tmpl:put name='content' direct='true'>
 	<table width="520" cellpadding="0" cellspacing="0" border="0">
 	<tr>

@@ -79,7 +79,7 @@ response.setDateHeader ("Expires", 0);
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Hamptons Delivery Survey part 2 of 2"/>
   </tmpl:put>
-  <tmpl:put name='title' direct='true'>FreshDirect - Hamptons Delivery Survey part 2 of 2</tmpl:put>
+<%--   <tmpl:put name='title' direct='true'>FreshDirect - Hamptons Delivery Survey part 2 of 2</tmpl:put> --%>
     <tmpl:put name='content' direct='true'>
 <table width="<%=W_SURVEY_HAMPTONS_2_TOTAL%>" cellpadding="0" cellspacing="0" border="0" class="text12">
 <% if (submitted) {%>

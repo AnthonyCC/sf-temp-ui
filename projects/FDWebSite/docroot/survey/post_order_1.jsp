@@ -25,7 +25,7 @@ response.setDateHeader ("Expires", 0);
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Order Feedback Survey"/>
   </tmpl:put>
-  <tmpl:put name='title' direct='true'>FreshDirect - Order Feedback Survey</tmpl:put>
+<%--   <tmpl:put name='title' direct='true'>FreshDirect - Order Feedback Survey</tmpl:put> --%>
     <tmpl:put name='content' direct='true'>
 
 <%

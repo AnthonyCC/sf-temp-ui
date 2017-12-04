@@ -61,9 +61,9 @@ private String getTimeslotString(Calendar startTimeCal, Calendar endTimeCal){
 	}
 %>
 <tmpl:insert template='<%= pageTemplate %>'>
-    <tmpl:put name='title' direct='true'>FreshDirect - Your Account</tmpl:put>
+<%--     <tmpl:put name='title' direct='true'>FreshDirect - Your Account</tmpl:put> --%>
     <tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag pageId="manage_account"></fd:SEOMetaTag>
+		<fd:SEOMetaTag title="FreshDirect - Your Account" pageId="manage_account"></fd:SEOMetaTag>
 	</tmpl:put>
     <tmpl:put name='content' direct='true'>
 		<jwr:style src="/your_account.css" media="all"/>

@@ -42,7 +42,7 @@
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Alcohol Information"/>
   </tmpl:put>
-  <tmpl:put name='title' direct='true'>FreshDirect - Alcohol Information</tmpl:put>
+<%--   <tmpl:put name='title' direct='true'>FreshDirect - Alcohol Information</tmpl:put> --%>
 <tmpl:put name='content' direct='true'>
 	<soy:import packageName="common"/>
 	<% 

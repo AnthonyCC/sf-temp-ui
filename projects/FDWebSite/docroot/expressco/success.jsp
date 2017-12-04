@@ -52,7 +52,7 @@
   <tmpl:put name="ecpage">success</tmpl:put>
 
   <tmpl:put name="seoMetaTag" direct="true">
-    <fd:SEOMetaTag pageId="ec_success"></fd:SEOMetaTag>
+    <fd:SEOMetaTag title="Success" pageId="ec_success"></fd:SEOMetaTag>
   </tmpl:put>
 
   <tmpl:put name='content' direct='true'>

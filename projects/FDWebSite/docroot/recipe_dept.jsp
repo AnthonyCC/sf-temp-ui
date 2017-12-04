@@ -48,7 +48,7 @@ if (redirectURL!=null) {
 	<tmpl:put name="seoMetaTag" direct="true">
 		<fd:SEOMetaTag title="<%= title %>"></fd:SEOMetaTag>
 	</tmpl:put>
-    <tmpl:put name='title' direct='true'><%= title %></tmpl:put>
+<%--     <tmpl:put name='title' direct='true'><%= title %></tmpl:put> --%>
     <tmpl:put name='content' direct='true'>
     <fd:CmPageView wrapIntoScriptTag="true" currentFolder="<%=recipeDepartment%>"/>
 <oscache:cache key='<%= "deptLayout_"+request.getQueryString() %>' time='14400'>

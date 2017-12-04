@@ -65,9 +65,9 @@ if (user.isEligibleForClientCodes()) {
 %>
 <tmpl:insert template='<%= template %>'>
 
-    <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Your Orders</tmpl:put>
+<%--     <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Your Orders</tmpl:put> --%>
     <tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag pageId="order_history"></fd:SEOMetaTag>
+		<fd:SEOMetaTag title="FreshDirect - Your Account - Your Orders" pageId="order_history"></fd:SEOMetaTag>
 	</tmpl:put>
 
     <tmpl:put name='content' direct='true'>

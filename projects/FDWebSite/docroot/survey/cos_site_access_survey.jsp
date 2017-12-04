@@ -28,7 +28,8 @@
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en-US" xml:lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>FreshDirect</title>
+		<%-- <title>FreshDirect</title> --%>
+		  <fd:SEOMetaTag title="FreshDirect"/>
 		<% if("slite".equals(request.getParameter("referrer_page"))) { %>
 			<%@ include file="/common/template/includes/metatags.jspf" %>
 			<%@ include file="/common/template/includes/i_javascripts.jspf" %>

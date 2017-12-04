@@ -6,7 +6,8 @@
 <html lang="en-US" xml:lang="en-US">
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" lang="en-US"/>
-		<title><tmpl:get name='title'/></title>
+<%-- 		<title><tmpl:get name='title'/></title> --%>
+        <tmpl:get name="seoMetaTag"/>
 		<%@ include file="/common/template/includes/metatags.jspf" %>
 		<%@ include file="/common/template/includes/i_javascripts_optimized.jspf" %>
 		<%@ include file="/common/template/includes/ga_custom_vars.jspf" %>

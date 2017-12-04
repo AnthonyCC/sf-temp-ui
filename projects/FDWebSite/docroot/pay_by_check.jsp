@@ -8,7 +8,7 @@
     <tmpl:put name="seoMetaTag" direct='true'>
         <fd:SEOMetaTag title="FreshDirect - Pay using your banking account"/>
     </tmpl:put>
-	<tmpl:put name='title' direct='true'>FreshDirect - Pay using your banking account</tmpl:put>
+<%-- 	<tmpl:put name='title' direct='true'>FreshDirect - Pay using your banking account</tmpl:put> --%>
 	<tmpl:put name='content' direct='true'>
 	<%
 	String addCheckPage = "/your_account/add_checkacct.jsp";

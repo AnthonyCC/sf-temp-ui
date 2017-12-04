@@ -41,9 +41,9 @@
 %>
 
 <tmpl:insert template='/common/template/brownie_nav.jsp'>
-	<tmpl:put name='title' direct='true'>FreshDirect - Your Profile</tmpl:put>
+<%-- 	<tmpl:put name='title' direct='true'>FreshDirect - Your Profile</tmpl:put> --%>
 	<tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag pageId="brownie_point"></fd:SEOMetaTag>
+		<fd:SEOMetaTag title="FreshDirect - Your Profile" pageId="brownie_point"></fd:SEOMetaTag>
 	</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 		<%

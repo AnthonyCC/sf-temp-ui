@@ -1,8 +1,13 @@
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ include file="includes/fk_presenter_vars.jspf" %>
 <%@ include file="includes/password_flow_vars.jspf" %>
+
 <tmpl:insert template='includes/fklayout_tmpl.jsp'>
-	<tmpl:put name='title'>Same-Day Food Delivery NYC | FoodKick: Create New Password</tmpl:put>
+<%-- 	<tmpl:put name='title'>Same-Day Food Delivery NYC | FoodKick: Create New Password</tmpl:put> --%>
+   <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="Same-Day Food Delivery NYC | FoodKick: Create New Password"/>
+   </tmpl:put>
 	<tmpl:put name='content'>
 		<fd:CheckLoginStatus id="user" />
 		<script type="text/javascript">

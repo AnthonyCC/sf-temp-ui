@@ -69,7 +69,7 @@ function linkTo(url){
     <tmpl:put name="seoMetaTag" direct='true'>
         <fd:SEOMetaTag title="FreshDirect - Request a Wine"/>
     </tmpl:put>
-	<tmpl:put name='title' direct='true'>FreshDirect - Request a Wine</tmpl:put>
+<%-- 	<tmpl:put name='title' direct='true'>FreshDirect - Request a Wine</tmpl:put> --%>
 		<tmpl:put name='content' direct='true'>
 
 <fd:RequestAWineTag actionName="wineRequest" result="result" successPage="request_product_conf.jsp?department=Wine" survey="<%=Usability%>">

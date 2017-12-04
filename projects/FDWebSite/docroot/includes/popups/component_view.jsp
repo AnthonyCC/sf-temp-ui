@@ -41,7 +41,10 @@
 %>
 
 <tmpl:insert template='/common/template/large_pop.jsp'>
-	<tmpl:put name='title' direct='true'>FreshDirect - <%=title%> Options</tmpl:put>
+<%-- 	<tmpl:put name='title' direct='true'>FreshDirect - <%=title%> Options</tmpl:put> --%>
+  <tmpl:put name="seoMetaTag" direct="true">
+    <fd:SEOMetaTag title="FreshDirect - <%=title%> Options"></fd:SEOMetaTag>
+  </tmpl:put>
         
         <tmpl:put name='content' direct='true'>
 

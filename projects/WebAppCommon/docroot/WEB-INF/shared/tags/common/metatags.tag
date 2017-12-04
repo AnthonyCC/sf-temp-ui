@@ -22,24 +22,30 @@
 <%-- SEO meta content --%>
 <meta http-equiv="Content-type" content="text/html;charset=UTF-8" lang="${language}"/>
 <c:if test="${empty metaDescription}">
-	<c:set var="metaDescription" value="FreshDirect is the leading online grocery shopping service. We provide fast grocery delivery to your home and office. Order today for delivery tomorrow!"/>
-	<c:if test="${not empty pageId}">
-	<%
-		ContentKey key = ContentKeyFactory.get(FDContentTypes.WEBPAGE, pageId); 
-		ContentNodeI webPage = CmsManager.getInstance().getContentNode(key);
-		if(webPage != null){ 
-			String metaDescription = (String) webPage.getAttributeValue("SEO_META_DESC");
-			String title = (String) webPage.getAttributeValue("PAGE_TITLE");		
-		%>
-			<c:set var="metaDescription" value="<%=metaDescription%>"/>
-			<c:set var="title" value="<%=title%>"/>
-	<% 	} 
-	%>
-	</c:if>
+    <c:set var="metaDescription" value="FreshDirect is the leading online grocery shopping service. We provide fast grocery delivery to your home and office. Order today for delivery tomorrow!"/>
+    <c:if test="${not empty pageId}">
+    <%
+        ContentKey key = ContentKeyFactory.get(FDContentTypes.WEBPAGE, pageId); 
+        ContentNodeI webPage = CmsManager.getInstance().getContentNode(key);
+        if(webPage != null){
+            String metaDescriptionFromCms = (String) webPage.getAttributeValue("SEO_META_DESC");
+            String titleFromCms = (String) webPage.getAttributeValue("PAGE_TITLE");        
+        %>
+            <% if (metaDescriptionFromCms!= null && !"".equals(metaDescriptionFromCms)) { %>
+                <c:set var="metaDescription" value="<%=metaDescriptionFromCms%>"/>
+            <% } %>
+            
+            <% if (titleFromCms!= null && !"".equals(titleFromCms)) { %>
+                <c:set var="title" value="<%=titleFromCms%>"/>
+            <% } %>
+    <%     } 
+    %>
+    </c:if>
 </c:if>
+
 <%--Set the page title --%>
 <c:if test="${empty title}">
-	<c:set var="title" value="FreshDirect"/>
+    <c:set var="title" value="FreshDirect"/>
 </c:if>
 <title>${title}</title>
 <meta name="description" content="${metaDescription}" />

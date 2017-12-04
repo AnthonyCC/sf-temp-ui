@@ -40,7 +40,7 @@ String[] checkSurveyForm = new String[questions.size()];
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - At The Office Feedback Survey"/>
   </tmpl:put>
-  <tmpl:put name='title'>FreshDirect - At The Office Feedback Survey</tmpl:put>
+<%--   <tmpl:put name='title'>FreshDirect - At The Office Feedback Survey</tmpl:put> --%>
     <tmpl:put name='content' direct='true'>
 
 <fd:IntermediateSurvey actionName="submitSurvey" result="result" successPage="<%=successPage%>" survey="<%=cosFeedback%>">

@@ -1,7 +1,9 @@
-<!DOCTYPE html>
+ <%@ taglib uri='freshdirect' prefix='fd' %>
+ <!DOCTYPE html>
 <html lang="en-US" xml:lang="en-US">
   <head>
-    <title>Reviews</title>
+<%--     <title>Reviews</title> --%>
+    <fd:SEOMetaTag title="Reviews"/>
     <%@ include file="/common/template/includes/metatags.jspf" %>
     <%@ include file="/common/template/includes/i_javascripts.jspf" %>
     <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>

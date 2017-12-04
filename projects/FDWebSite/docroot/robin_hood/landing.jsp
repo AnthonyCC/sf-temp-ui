@@ -19,7 +19,11 @@ final int W_ROBINHOOD_LANDING_TOTAL = 970;
 
 <%@page import="com.freshdirect.framework.util.DateUtil"%><fd:CheckLoginStatus />
 <tmpl:insert template='/common/template/robinhood.jsp'>
-	<tmpl:put name='title' direct='true'>FreshDirect - Donation</tmpl:put>
+<%-- 	<tmpl:put name='title' direct='true'>FreshDirect - Donation</tmpl:put> --%>
+ <tmpl:put name="seoMetaTag" direct="true">
+    <fd:SEOMetaTag title="FreshDirect - Donation"></fd:SEOMetaTag>
+  </tmpl:put>
+	
 	<tmpl:put name='content' direct='true'>
 
 		<%

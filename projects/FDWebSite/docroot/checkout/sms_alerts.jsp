@@ -17,7 +17,7 @@
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - SMS Settings"/>
   </tmpl:put>
-  <tmpl:put name='title'>FreshDirect - SMS Settings</tmpl:put>
+<%--   <tmpl:put name='title'>FreshDirect - SMS Settings</tmpl:put> --%>
 <tmpl:put name="extraHead">
 	<style>
 		.trpad {

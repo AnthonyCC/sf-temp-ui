@@ -25,7 +25,7 @@ final int W_CHECKOUT_STEP_2_UNAVAIL_TOTAL = 970;
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Checkout - Unavailability"/>
   </tmpl:put>
-  <tmpl:put name='title'>FreshDirect - Checkout - Unavailability</tmpl:put>
+<%--   <tmpl:put name='title'>FreshDirect - Checkout - Unavailability</tmpl:put> --%>
 <tmpl:put name='content' direct='true'>
 <%
 java.text.DateFormat dateFormatter = new java.text.SimpleDateFormat("EEEEE, MMM d");

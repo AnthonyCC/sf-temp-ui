@@ -4,7 +4,7 @@
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Window Steering Policy"/>
   </tmpl:put>
-  <tmpl:put name='title'>FreshDirect - Window Steering Policy</tmpl:put>
+<%--   <tmpl:put name='title'>FreshDirect - Window Steering Policy</tmpl:put> --%>
 		<tmpl:put name='content' direct='true'>
 	        <fd:IncludeMedia name="/media/editorial/site_pages/timeslots/timeslot_adv_help.html" />
 	</tmpl:put>

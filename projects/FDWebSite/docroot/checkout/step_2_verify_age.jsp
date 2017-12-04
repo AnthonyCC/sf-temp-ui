@@ -18,7 +18,7 @@ final int W_CHECKOUT_STEP_2_VERIFY_AGE_TOTAL = 970;
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Checkout - Age Verification for orders containing alcohol"/>
   </tmpl:put>
-  <tmpl:put name='title'>FreshDirect - Checkout - Age Verification for orders containing alcohol</tmpl:put>
+<%--   <tmpl:put name='title'>FreshDirect - Checkout - Age Verification for orders containing alcohol</tmpl:put> --%>
 <tmpl:put name='content' direct='true'>
 <% FDUserI user = (FDUserI)session.getAttribute(SessionName.USER); %>
 <fd:AgeVerificationController result="result" successPage="/checkout/step_2_select.jsp" blockedAddressPage="/checkout/no_alcohol_address.jsp">

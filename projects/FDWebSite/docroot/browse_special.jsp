@@ -43,7 +43,7 @@
 	  </tmpl:put>
 	
 	
-	  <tmpl:put name='title'>${browsePotato.descriptiveContent.pageTitle}</tmpl:put>
+<%-- 	  <tmpl:put name='title'>${browsePotato.descriptiveContent.pageTitle}</tmpl:put> --%>
 	    
 	  <tmpl:put name='deptnav' direct='true'>
 	    <div class="browse-titlebar">

@@ -62,9 +62,9 @@ if (mobWeb) {
 %>
 
 <tmpl:insert template='<%= pageTemplate %>'>
-    <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Reserve Timeslot</tmpl:put>
+<%--     <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Reserve Timeslot</tmpl:put> --%>
     <tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag pageId="reserve_timeslot"></fd:SEOMetaTag>
+		<fd:SEOMetaTag title="FreshDirect - Your Account - Reserve Timeslot" pageId="reserve_timeslot"></fd:SEOMetaTag>
 	</tmpl:put>
 
 	<tmpl:put name="extraCss">

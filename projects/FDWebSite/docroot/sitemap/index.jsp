@@ -5,7 +5,8 @@
 <html lang="en-US" xml:lang="en-US">
 <head>
 <meta charset="UTF-8">
-<title>FreshDirect Sitemap</title>
+ <%-- <title>FreshDirect Sitemap</title> --%>
+      <fd:SEOMetaTag title="FreshDirect Sitemap"/>
     <%@ include file="/common/template/includes/metatags.jspf" %>
     <%@ include file="/common/template/includes/i_javascripts.jspf" %>
     <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>

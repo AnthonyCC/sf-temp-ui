@@ -20,7 +20,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <html lang="en-US" xml:lang="en-US">
 	<head>
-		<title><tmpl:get name='title'/></title>
+		<tmpl:get name="seoMetaTag"/>
 
 		<%@ include file="/common/template/includes/metatags.jspf" %>
 		<%@ include file="/common/template/includes/i_javascripts.jspf" %>

@@ -64,7 +64,7 @@ if(productNode!=null){
     	<jwr:style src="/pdp.css"/>
   	</tmpl:put>
 
-    <tmpl:put name='title' direct='true'>FreshDirect - Confirmation</tmpl:put>
+<%--     <tmpl:put name='title' direct='true'>FreshDirect - Confirmation</tmpl:put> --%>
       
     <tmpl:put name='deptnav' direct='true'>
     	<div class="browse-titlebar">

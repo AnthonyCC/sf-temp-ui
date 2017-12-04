@@ -57,7 +57,7 @@ String title = "FreshDirect - " + recipeSubCat.getName();
     <tmpl:put name="seoMetaTag" direct='true'>
         <fd:SEOMetaTag title="<%= title %>"/>
     </tmpl:put>
-   <tmpl:put name='title' direct='true'><%= title %></tmpl:put>
+<%--    <tmpl:put name='title' direct='true'><%= title %></tmpl:put> --%>
    <tmpl:put name='content' direct='true'>
    <fd:CmPageView wrapIntoScriptTag="true" currentFolder="<%=recipeSubCat%>"/>
 <oscache:cache key='<%= "recipe_cat_"+request.getQueryString() %>' time="300">

@@ -47,7 +47,7 @@
     <tmpl:put name="seoMetaTag" direct='true'>
         <fd:SEOMetaTag title="FreshDirect - Help - FAQs"/>
     </tmpl:put>
-    <tmpl:put name='title' direct='true'>FreshDirect - Help - FAQs</tmpl:put>
+<%--     <tmpl:put name='title' direct='true'>FreshDirect - Help - FAQs</tmpl:put> --%>
 	<tmpl:put name='leftnav' direct='true'>	</tmpl:put>
 	<tmpl:put name='extraCss' direct='true'>
 		<%-- don't use jawr here, it'll change the order that search.css is used --%>

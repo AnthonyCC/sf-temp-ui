@@ -42,9 +42,9 @@ boolean showMinError = true;
 %>
 <tmpl:insert template='/common/template/no_nav.jsp'>
   <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - View Cart"/>
+    <fd:SEOMetaTag title="YOUR CART-Please review the items in your cart before going to Checkout"/>
   </tmpl:put>
-  <tmpl:put name='title'>FreshDirect - View Cart</tmpl:put>
+<%--   <tmpl:put name='title'>FreshDirect - View Cart</tmpl:put> --%>
 <tmpl:put name='extraCss' direct='true'>
   <jwr:style src="/viewcart.css"/>
   <jwr:style src="/quickshop.css"/>
@@ -205,7 +205,7 @@ StringBuffer buffer = new StringBuffer(
 	<tmpl:put name="ordnumb"><%= modifiedOrderNumber %></tmpl:put>
 	<tmpl:put name="note"><%= modifyNote %></tmpl:put>
 <% } %>
-	<tmpl:put name="title">YOUR CART<small>Please review the items in your cart before going to Checkout.</small></tmpl:put>
+<%-- 	<tmpl:put name="title">YOUR CART<small>Please review the items in your cart before going to Checkout.</small></tmpl:put> --%>
 	<tmpl:put name="delivery-fee"><%@ include file="/includes/i_cart_delivery_fee.jspf" %></tmpl:put>
 	<tmpl:put name="next-button"><%@ include file="/includes/i_cart_next_step_button.jspf" %></tmpl:put>
 </tmpl:insert>

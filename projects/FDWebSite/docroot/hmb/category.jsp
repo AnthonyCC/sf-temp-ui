@@ -43,7 +43,7 @@ if (mobWeb) {
   
   <tmpl:put name='containerExtraClass' direct='true'>hmb</tmpl:put>
 
-  <tmpl:put name='title'>${browsePotato.descriptiveContent.pageTitle}</tmpl:put>
+<%--   <tmpl:put name='title'>${browsePotato.descriptiveContent.pageTitle}</tmpl:put> --%>
   
   <tmpl:put name="seoMetaTag" direct="true">
     <fd:SEOMetaTag title="${browsePotato.descriptiveContent.pageTitle}" metaDescription="${browsePotato.descriptiveContent.metaDescription}"/>

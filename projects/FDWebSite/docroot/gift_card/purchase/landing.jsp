@@ -16,9 +16,9 @@ final int W_GIFTCARD_DONATION_TOTAL = 300;
 <fd:CheckLoginStatus />
 
 <tmpl:insert template='/common/template/giftcard.jsp'>
-  <tmpl:put name='title' direct='true'>FreshDirect - Purchase Gift Card</tmpl:put>
+<%--   <tmpl:put name='title' direct='true'>FreshDirect - Purchase Gift Card</tmpl:put> --%>
   <tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag pageId="landing"></fd:SEOMetaTag>
+		<fd:SEOMetaTag title="FreshDirect - Purchase Gift Card" pageId="landing"></fd:SEOMetaTag>
 	</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 

@@ -23,9 +23,9 @@
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 
 <tmpl:insert template='/common/template/dnav.jsp'>
-    <tmpl:put name='title' direct='true'>FreshDirect - Your Account - FreshDirect DeliveryPass</tmpl:put>
+<%--     <tmpl:put name='title' direct='true'>FreshDirect - Your Account - FreshDirect DeliveryPass</tmpl:put> --%>
     <tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag pageId="delivery_pass"></fd:SEOMetaTag>
+		<fd:SEOMetaTag title="FreshDirect - Your Account - FreshDirect DeliveryPass" pageId="delivery_pass"></fd:SEOMetaTag>
 	</tmpl:put>
     <tmpl:put name='content' direct='true'>
 		<script type="text/javascript">

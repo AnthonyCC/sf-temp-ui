@@ -7,7 +7,7 @@ final int W_BAKERY_KITCHEN_TOTAL = 970;
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - About FreshDirect"/>
   </tmpl:put>
-  <tmpl:put name='title'>FreshDirect - About FreshDirect</tmpl:put>
+<%--   <tmpl:put name='title'>FreshDirect - About FreshDirect</tmpl:put> --%>
     <tmpl:put name='content' direct='true'>
 
 <TABLE  width="<%= W_BAKERY_KITCHEN_TOTAL %>" CELLPADDING="0" CELLSPACING="0" BORDER="0">

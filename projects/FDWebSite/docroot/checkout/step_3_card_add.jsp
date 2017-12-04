@@ -30,7 +30,7 @@ final int W_CHECKOUT_STEP_3_CARD_ADD_TOTAL = 970;
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Checkout - Add Credit Card"/>
   </tmpl:put>
-  <tmpl:put name='title'>FreshDirect - Checkout - Add Credit Card</tmpl:put>
+<%--   <tmpl:put name='title'>FreshDirect - Checkout - Add Credit Card</tmpl:put> --%>
 <tmpl:put name='content' direct='true'>
 <%	
 FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);

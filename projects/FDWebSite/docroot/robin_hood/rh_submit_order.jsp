@@ -39,7 +39,10 @@ function displayStatus(){
 </script>
 
 <tmpl:insert template='/common/template/robinhood.jsp'>
-	<tmpl:put name='title' direct='true'>FreshDirect - Donation Order</tmpl:put>
+<%-- 	<tmpl:put name='title' direct='true'>FreshDirect - Donation Order</tmpl:put> --%>
+	<tmpl:put name="seoMetaTag" direct="true">
+    <fd:SEOMetaTag title="FreshDirect - Donation Order"></fd:SEOMetaTag>
+    </tmpl:put>
 	<tmpl:put name='content' direct='true'>
 
 <%

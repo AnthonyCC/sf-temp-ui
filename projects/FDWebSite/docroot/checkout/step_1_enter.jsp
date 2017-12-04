@@ -37,7 +37,7 @@ if (requestQryString !=null && requestQryString.trim().length() > 0 ) {
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Checkout - Add Delivery Address"/>
   </tmpl:put>
-  <tmpl:put name='title'>FreshDirect - Checkout - Add Delivery Address</tmpl:put>
+<%--   <tmpl:put name='title'>FreshDirect - Checkout - Add Delivery Address</tmpl:put> --%>
 <tmpl:put name='content' direct='true'>
 <fd:CheckLoginStatus guestAllowed="false" redirectPage='/checkout/signup_ckt.jsp' />
 <fd:RegistrationController actionName="addDeliveryAddress" result="result" successPage='/checkout/step_1_choose.jsp?addressStatus=new'>

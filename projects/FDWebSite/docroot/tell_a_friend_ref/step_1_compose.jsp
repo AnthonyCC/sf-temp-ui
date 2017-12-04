@@ -56,7 +56,7 @@ function linkTo(url){
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Tell a Friend"/>
   </tmpl:put>
-  <tmpl:put name='title' direct='true'>FreshDirect - Tell a Friend</tmpl:put>
+<%--   <tmpl:put name='title' direct='true'>FreshDirect - Tell a Friend</tmpl:put> --%>
 		<tmpl:put name='content' direct='true'>
 
 <fd:SiteEmailController actionName="sendEmailNoPreview" result="result" successPage="/tell_a_friend_ref/step_2_confirmation.jsp">

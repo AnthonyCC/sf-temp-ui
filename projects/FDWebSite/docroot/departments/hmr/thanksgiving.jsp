@@ -24,7 +24,7 @@ String catId = request.getParameter("catId");
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Thanksgiving Feast"/>
   </tmpl:put>
-  <tmpl:put name='title'>FreshDirect - Thanksgiving Feast</tmpl:put>
+<%--   <tmpl:put name='title'>FreshDirect - Thanksgiving Feast</tmpl:put> --%>
     <tmpl:put name='content' direct='true'><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="4"><BR>
 <TABLE border=0 cellPadding=0 cellSpacing=0 width="<%=W_THANKSGIVING%>">
 <TR><TD>

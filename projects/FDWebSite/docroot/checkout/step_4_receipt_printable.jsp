@@ -28,7 +28,7 @@ final int W_CHECKOUT_STEP_4_RECEIPT_TOTAL = 970;
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Checkout - Order Placed"/>
   </tmpl:put>
-  <tmpl:put name='title'>FreshDirect - Checkout - Order Placed</tmpl:put>
+<%--   <tmpl:put name='title'>FreshDirect - Checkout - Order Placed</tmpl:put> --%>
 <tmpl:put name='content' direct='true'>
 <%
 //--------OAS Page Variables-----------------------

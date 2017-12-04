@@ -8,7 +8,8 @@
     <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
     <fd:javascript src="/assets/javascript/common_javascript.js"/>
     <%@ include file="/shared/template/includes/i_head_end.jspf" %>
-    <title><tmpl:get name='title'/></title>
+<%--     <title><tmpl:get name='title'/></title> --%>
+        <tmpl:get name="seoMetaTag"/>
     <%@ include file="/common/template/includes/metatags.jspf" %>
 </head>
 <body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#FF9900" text="#333333" onLoad="window.focus();" topmargin="10" marginheight="10">
