@@ -149,7 +149,13 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 			fdInfo.setGoGreen(erpInfo.isGoGreen());
 
 			MailerGatewaySB mailBean = this.getMailerGatewayHome().create();
-			mailBean.enqueueEmail(FDEmailFactory.getInstance().createFinalAmountEmail(fdInfo, fdOrder));
+			try {
+				
+				mailBean.enqueueEmail(FDEmailFactory.getInstance().createFinalAmountEmail(fdInfo, fdOrder));
+			} catch (Exception e1) {
+				LOGGER.warn("Unexpected Exception while sending invoice email, for order#: "+saleId, e1);
+				e1.printStackTrace();
+			}
 
             try {
                 if (saleModel.geteStoreId() == EnumEStoreId.FD) {
