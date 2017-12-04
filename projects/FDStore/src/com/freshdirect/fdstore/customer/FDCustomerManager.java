@@ -294,7 +294,7 @@ public class FDCustomerManager {
 			FDCustomerManagerSB sb = managerHome.create();
 			FDUser user = sb.recognize(cookie,eStoreId);
 			
-			populateShoppingCart(user, true, false);
+			populateShoppingCart(user, true, true);
 			
 			return user;
 
@@ -371,7 +371,7 @@ public class FDCustomerManager {
 			if(user.isVoucherHolder() && EnumEStoreId.FDX.equals( user.getUserContext().getStoreContext().getEStoreId() )){
 				throw new FDAuthenticationException("voucherredemption");
 			}
-			populateShoppingCart(user, updateUserState, false);
+			populateShoppingCart(user, updateUserState, true);
 
 			return user;
 
