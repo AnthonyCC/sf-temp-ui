@@ -47,7 +47,7 @@ final int W_QUICKSHOP_ITEM_MODIFY_TOTAL = 765;
 <tmpl:insert template='/common/template/quick_shop.jsp'>
 <%--     <tmpl:put name='title' direct='true'>FreshDirect - <%= CartName.ACCEPT_ALTERNATIVE.equals(cartMode) ? "Recommended Alternative" : "Modify Item" %> - <%= productNode.getFullName() %></tmpl:put> --%>
      <tmpl:put name="seoMetaTag" direct="true">
-    <fd:SEOMetaTag title="FreshDirect - <%= CartName.ACCEPT_ALTERNATIVE.equals(cartMode) ? "Recommended Alternative" : "Modify Item" %> - <%= productNode.getFullName() %>" ></fd:SEOMetaTag>
+    <fd:SEOMetaTag title="FreshDirect - <%= CartName.ACCEPT_ALTERNATIVE.equals(cartMode) ? 'Recommended Alternative' : 'Modify Item' %> - <%= productNode.getFullName() %>" ></fd:SEOMetaTag>
       </tmpl:put>
     <%--tmpl:put name='banner' direct='true'><a href="/newproducts.jsp"><img src="/media_stat/images/template/quickshop/qs_banner_newproduct.gif" width="140" height="108" border="0"></a><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10"><br></tmpl:put--%>
 
