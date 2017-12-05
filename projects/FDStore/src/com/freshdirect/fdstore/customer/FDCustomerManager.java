@@ -398,7 +398,7 @@ public class FDCustomerManager {
 			FDUser user = sb.recognize(identity, eStoreId, true);
 			user.setApplication(source);
 			user.setCrmMode(true);
-			populateShoppingCart(user, true, false);
+			populateShoppingCart(user, true, true);
 
 			return user;
 
