@@ -268,7 +268,7 @@ public class ContentTypeInfoService {
         // expand lookup tables with inherited attributes
         for (Map.Entry<ContentType, Set<Attribute>> entry : inheritedAttributes.entrySet()) {
             // append type->attribute lookup table
-            appendInheritablesToTypeAttributes(entry.getKey(), inheritedAttributes.get(entry.getValue()));
+            appendInheritablesToTypeAttributes(entry.getKey(), entry.getValue());
 
             // expand attribute-by-name lookup table
             int typeHashCode = entry.getKey().hashCode();
