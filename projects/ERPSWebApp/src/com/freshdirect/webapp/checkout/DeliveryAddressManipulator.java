@@ -1003,7 +1003,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		FDDeliveryZoneInfo _zoneInfo=cart.getZoneInfo();
 		boolean isAddressNotMatched = (address!=null && !address.equals(cart.getDeliveryAddress()));
 		boolean isZoneInfoNotMatched = ((_zoneInfo!=null && zoneInfo!=null && !_zoneInfo.getZoneCode().equals(zoneInfo.getZoneCode()))||(_zoneInfo==null && zoneInfo!=null));
-		if((isAddressNotMatched && isZoneInfoNotMatched) || (null == cart.getDeliveryAddress() && address!=null)){
+		if((isAddressNotMatched || isZoneInfoNotMatched) || (null == cart.getDeliveryAddress() && address!=null)){
 //		if(address!=null && !address.equals(cart.getDeliveryAddress()) &&
 //				((_zoneInfo!=null && zoneInfo!=null && !_zoneInfo.getZoneCode().equals(zoneInfo.getZoneCode()))||(_zoneInfo==null && zoneInfo!=null)) ) {
 			cart.setZoneInfo( zoneInfo );
