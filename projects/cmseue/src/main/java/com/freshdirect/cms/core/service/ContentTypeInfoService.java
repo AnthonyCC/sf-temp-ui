@@ -42,10 +42,17 @@ public class ContentTypeInfoService {
 
     private Map<ContentType, Set<ContentType>> inheritedTypes;
 
+    private Map<ContentType, List<Relationship>> relationshipLookup = new HashMap<ContentType, List<Relationship>>();
+
+    private Map<ContentType, List<Relationship>> navigableRelationshipLookup = new HashMap<ContentType, List<Relationship>>();
+
     public ContentTypeInfoService() {
         initializeAttributeLookup();
         initializeInheritedAttributes();
+        buildRelationshipLookups();
         typeAttributesLookup = Collections.unmodifiableMap(typeAttributesLookup);
+        relationshipLookup = Collections.unmodifiableMap(relationshipLookup);
+        navigableRelationshipLookup = Collections.unmodifiableMap(navigableRelationshipLookup);
     }
 
     /**
@@ -129,25 +136,9 @@ public class ContentTypeInfoService {
     public List<Relationship> selectRelationships(ContentType type, boolean navigableOnly) {
         notNull(type, "Content type required!");
 
-        List<Relationship> result = new ArrayList<Relationship>();
-        if (typeAttributesLookup.get(type) != null) {
-            if (navigableOnly) {
-                for (Attribute attr : typeAttributesLookup.get(type)) {
-                    if (attr instanceof Relationship && ((Relationship) attr).isNavigable()) {
-                        result.add((Relationship) attr);
-                    }
-                }
-            } else {
-                for (Attribute attr : typeAttributesLookup.get(type)) {
-                    if (attr instanceof Relationship) {
-                        result.add((Relationship) attr);
-                    }
-                }
-            }
-        }
+        final List<Relationship> selectedRelationships = navigableOnly ? navigableRelationshipLookup.get(type) : relationshipLookup.get(type);
 
-        return result;
-
+        return selectedRelationships != null ? selectedRelationships : Collections.<Relationship>emptyList();
     }
 
     /**
@@ -284,6 +275,27 @@ public class ContentTypeInfoService {
         final Set<Attribute> rawAttributes = typeAttributesLookup.get(type);
         rawAttributes.addAll(inheriteds);
         typeAttributesLookup.put(type, Collections.unmodifiableSet(rawAttributes));
+    }
+
+    private void buildRelationshipLookups() {
+        for (Map.Entry<ContentType, Set<Attribute>> entry : typeAttributesLookup.entrySet()) {
+            List<Relationship> allRelationships = new ArrayList<Relationship>();
+            List<Relationship> navigableRelationships = new ArrayList<Relationship>();
+
+            for (Attribute attr : entry.getValue()) {
+                if (attr instanceof Relationship) {
+                    Relationship relationship = (Relationship) attr;
+                    allRelationships.add(relationship);
+                    if (relationship.isNavigable()) {
+                        navigableRelationships.add(relationship);
+                    }
+                }
+            }
+
+            final ContentType contentType = entry.getKey();
+            relationshipLookup.put(contentType, Collections.unmodifiableList(allRelationships));
+            navigableRelationshipLookup.put(contentType, Collections.unmodifiableList(navigableRelationships));
+        }
     }
 
     private DirectedGraph<ContentType> buildInheritanceGraph(Map<ContentType, Set<Attribute>> typeAttributes) {
