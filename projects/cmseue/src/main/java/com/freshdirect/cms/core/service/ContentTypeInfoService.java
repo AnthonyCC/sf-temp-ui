@@ -34,6 +34,12 @@ public class ContentTypeInfoService {
      */
     private Map<ContentType, Set<Attribute>> typeAttributesLookup = new HashMap<ContentType, Set<Attribute>>();
 
+    /**
+     * Lookup table for finding attributes by name for the given type
+     * Note, map keys are composed of content type and attribute name hash codes
+     */
+    private Map<Integer, Attribute> attributeByNameLookup = new HashMap<Integer, Attribute>();
+
     private Map<ContentType, Set<ContentType>> inheritedTypes;
 
     public ContentTypeInfoService() {
@@ -77,27 +83,6 @@ public class ContentTypeInfoService {
     }
 
     /**
-     * Returns attribute names of the given content type
-     *
-     * @param type
-     * @return
-     */
-    public Set<String> selectAttributeNames(ContentType type) {
-        notNull(type);
-
-        Set<Attribute> attrList = typeAttributesLookup.get(type);
-        if (attrList == null) {
-            attrList = Collections.emptySet();
-        }
-
-        Set<String> attrNames = new HashSet<String>();
-        for (Attribute attr : attrList) {
-            attrNames.add(attr.getName());
-        }
-        return attrNames;
-    }
-
-    /**
      * Look up attribute by name for the given type
      *
      * @param type
@@ -110,16 +95,7 @@ public class ContentTypeInfoService {
         notNull(type, "Content type required!");
         notNull(name, "Attribute name required!");
 
-        Set<Attribute> attrList = selectAttributes(type);
-
-        Optional<Attribute> result = Optional.absent();
-        for (Attribute attr : attrList) {
-            if (name.equals(attr.getName())) {
-                result = Optional.of(attr);
-                break;
-            }
-        }
-        return result;
+        return Optional.fromNullable(attributeByNameLookup.get(combinedHashCode(type.hashCode(), name.hashCode())));
     }
 
     /**
@@ -264,7 +240,14 @@ public class ContentTypeInfoService {
                 // extract attributes of the particular content type
                 Set<Attribute> typeAttributes = collectContentTypeAttributes(contentType, attributeHolderClass);
                 if (!typeAttributes.isEmpty()) {
+                    // populate type->attribute lookup table
                     typeAttributesLookup.put(contentType, typeAttributes);
+
+                    // populate attribute-by-name lookup table
+                    final int typeHashCode = contentType.hashCode();
+                    for (Attribute attribute : typeAttributes) {
+                        attributeByNameLookup.put(combinedHashCode(typeHashCode, attribute.getName().hashCode()), attribute);
+                    }
                 }
 
             } catch (IllegalArgumentException exc) {
@@ -282,9 +265,17 @@ public class ContentTypeInfoService {
         // compute attributes inheritable by types
         Map<ContentType, Set<Attribute>> inheritedAttributes = buildInheritedAttributesMap(typeAttributesLookup, inheritedTypes);
 
-        // append inherited attributes to type attribute lookup
-        for (ContentType type : inheritedAttributes.keySet()) {
-            appendInheritablesToTypeAttributes(type, inheritedAttributes.get(type));
+        // expand lookup tables with inherited attributes
+        for (Map.Entry<ContentType, Set<Attribute>> entry : inheritedAttributes.entrySet()) {
+            // append type->attribute lookup table
+            appendInheritablesToTypeAttributes(entry.getKey(), inheritedAttributes.get(entry.getValue()));
+
+            // expand attribute-by-name lookup table
+            int typeHashCode = entry.getKey().hashCode();
+            for (Attribute attribute : entry.getValue()) {
+                final int lookupKey = combinedHashCode(typeHashCode, attribute.getName().hashCode());
+                attributeByNameLookup.put(lookupKey, attribute);
+            }
         }
     }
 
@@ -369,5 +360,9 @@ public class ContentTypeInfoService {
             }
         }
         return inheritedTypes;
+    }
+
+    private int combinedHashCode(int hash1, int hash2) {
+        return hash1 + (31 * hash2);
     }
 }
