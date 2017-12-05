@@ -9,12 +9,14 @@ public interface FDInvoiceLineI extends ErpInvoiceLineI{
 	public UserContext getUserContext();
 
 	//return the ProductModel of the substituted sku
-	public ProductModel getSubstituteProduct();
+//	public ProductModel getSubstituteProduct();
 	
 	//return only the Product Name of the substituted sku
 	public String getSubstituteProductName();
 	
 	//return the default price of the substituted sku
 	public String getSubstituteProductDefaultPrice();
+	
+	public String getSubstituteProductId();
 
 	}

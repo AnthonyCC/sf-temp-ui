@@ -724,6 +724,8 @@ public class CartDetail {
     	
     	private String substituteProduct;
     	
+    	private Double substituteSkuQuantity;
+    	
         public String getDiscountMsg() {
 			return discountMsg;
 		}
@@ -828,6 +830,16 @@ public class CartDetail {
 				String susbtituteProductDefaultPrice) {
 			this.susbtituteProductDefaultPrice = susbtituteProductDefaultPrice;
 		}
+
+		public Double getSubstituteSkuQuantity() {
+			return substituteSkuQuantity;
+		}
+
+		public void setSubstituteSkuQuantity(Double substituteSkuQuantity) {
+			this.substituteSkuQuantity = substituteSkuQuantity;
+		}
+
+		
     }
 
     public List<SummaryLineCharge> getSummaryLineCharges() {

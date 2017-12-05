@@ -21,6 +21,8 @@ public class FDInvoiceLineModel extends ModelSupport implements FDInvoiceLineI {
 	private String substituteProductName;
 	
 	private String substituteProductDefaultPrice;
+	
+	private String substituteProductId;
 
 	public FDInvoiceLineModel(ErpInvoiceLineI invoiceLine) {
 		this.invoiceLine = invoiceLine;
@@ -30,9 +32,10 @@ public class FDInvoiceLineModel extends ModelSupport implements FDInvoiceLineI {
 			UserContext userContext) {
 		this.invoiceLine = invoiceLine;
 		this.userContext = userContext;
-//		this.substituteProduct = lookUpSubstitueProduct();
-		this.substituteProductName = (null!=this.lookUpSubstitueProduct()?this.lookUpSubstitueProduct().getFullName():getSubstitutedSkuCode());
-		this.substituteProductDefaultPrice =(null!=this.lookUpSubstitueProduct()?this.lookUpSubstitueProduct().getDefaultPrice():"");
+		ProductModel substituteProduct = lookUpSubstitueProduct();
+		this.substituteProductName = (null!=substituteProduct?substituteProduct.getFullName():getSubstitutedSkuCode());
+		this.substituteProductDefaultPrice =(null!=substituteProduct?substituteProduct.getDefaultPrice():"");
+		this.substituteProductId = (null !=substituteProduct ? substituteProduct.getContentName():"");
 	}
 
 	public UserContext getUserContext() {
@@ -43,9 +46,9 @@ public class FDInvoiceLineModel extends ModelSupport implements FDInvoiceLineI {
 	 * The method returns the product model based upon
 	 * the substituted skucode we receive from SAP 
 	 */
-	public ProductModel getSubstituteProduct() {
+	/*public ProductModel getSubstituteProduct() {
 		return this.lookUpSubstitueProduct();
-	}
+	}*/
 
 	
 	/**
@@ -70,6 +73,10 @@ public class FDInvoiceLineModel extends ModelSupport implements FDInvoiceLineI {
 									: PricingContext.DEFAULT);
 		}
 		return null;
+	}
+
+	public String getSubstituteProductId() {
+		return substituteProductId;
 	}
 
 	public double getPrice() {

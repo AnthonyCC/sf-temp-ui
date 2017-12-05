@@ -774,7 +774,10 @@ public class Cart {
 					productLineItem.setSubstitutedSkuCode(null != cartLine.getInvoiceLine().getSubstitutedSkuCode() ? cartLine.getInvoiceLine().getSubstitutedSkuCode(): "");
 					productLineItem.setSubstituteProductName(null != cartLine.getInvoiceLine().getSubstituteProductName() ? cartLine.getInvoiceLine().getSubstituteProductName() : "");
 					productLineItem.setSusbtituteProductDefaultPrice(null != cartLine.getInvoiceLine().getSubstituteProductDefaultPrice() ? cartLine.getInvoiceLine().getSubstituteProductDefaultPrice() : "");
-					productLineItem.setSubstituteProduct(null != cartLine.getInvoiceLine().getSubstituteProduct() ? cartLine.getInvoiceLine().getSubstituteProduct().getContentName() : "");
+					productLineItem.setSubstituteProduct(null != cartLine.getInvoiceLine().getSubstituteProductId() ? cartLine.getInvoiceLine().getSubstituteProductId() : "");	
+					if(cartLine != null && cartLine.getInvoiceLine() != null && cartLine.getInvoiceLine().getSubstitutedSkuCode()!=null){
+					productLineItem.setSubstituteSkuQuantity(cartLine.getInvoiceLine().getWeight());
+					}
 				}
                 
                 String earliestAvailability = productNode.getSku(cartLine.getSkuCode()).getEarliestAvailabilityMessage();
