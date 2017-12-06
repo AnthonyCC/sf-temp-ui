@@ -51,6 +51,17 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 		
 		this.variantId = variantId;
 	}
+	
+	//Introduced for Storefront 2.0 implementation only.
+	protected AbstractCartLine(FDSku sku, ProductModel productRef, FDConfigurableI configuration, String variantId, UserContext userCtx, String plantId) {
+		super(sku, productRef, configuration, variantId, userCtx,plantId);
+		
+		this.firstInvoiceLine = null;
+		this.lastInvoiceLine = null;
+		this.returnLine = null;
+		
+		this.variantId = variantId;
+	}
 
 	public AbstractCartLine(
 			ErpOrderLineModel orderLine,

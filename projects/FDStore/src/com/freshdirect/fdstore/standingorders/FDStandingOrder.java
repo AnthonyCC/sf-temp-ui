@@ -106,6 +106,11 @@ public class FDStandingOrder extends ModelSupport {
 		this.tipAmount = tipAmount;
 	}
 
+	//Introduced For Storefront 2.0 Implementation
+	public void setCustomerIdentity(FDIdentity customerIdentity) {
+		this.customerIdentity = customerIdentity;
+	}
+
 	public String getCustomerId() {
 		return customerId;
 	}
