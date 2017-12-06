@@ -29,9 +29,9 @@ if (mobWeb) {
 }
 %>
 <tmpl:insert template='<%=template %>'>
-	<tmpl:put name='title' direct='true'>Summer Delivery - FreshDirect</tmpl:put>
+<%-- 	<tmpl:put name='title' direct='true'>Summer Delivery - FreshDirect</tmpl:put> --%>
 	<tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag pageId="delivery_summer_service"></fd:SEOMetaTag>
+		<fd:SEOMetaTag title="Summer Delivery - FreshDirect" pageId="delivery_summer_service"></fd:SEOMetaTag>
 	</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 		<div class="delivery_info_mobweb_nav" <%= mobWeb ? "" : "style='display: none;'" %>>

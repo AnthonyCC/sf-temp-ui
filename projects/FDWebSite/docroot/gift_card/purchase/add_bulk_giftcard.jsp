@@ -23,7 +23,7 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Gift Card : Buy in Bulk"/>
   </tmpl:put>
-  <tmpl:put name='title' direct='true'>FreshDirect - Gift Card : Buy in Bulk</tmpl:put>
+<%--   <tmpl:put name='title' direct='true'>FreshDirect - Gift Card : Buy in Bulk</tmpl:put> --%>
 	<tmpl:put name='content' direct='true'>
 		<%
 			//used?

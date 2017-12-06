@@ -5,8 +5,8 @@
 <fd:CheckLoginStatus id="user" /> 
 <html lang="en-US" xml:lang="en-US">
 <head>
-    <title>FreshDirect - Account problem</title>
-
+<%--     <title>FreshDirect - Account problem</title> --%>
+    <fd:SEOMetaTag title="FreshDirect - Account problem"/>
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>

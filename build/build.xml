@@ -1900,6 +1900,15 @@
 			<pathelement location="${thirdparty.home}/jsch-0.1.44.jar"/>
 			<pathelement location="${thirdparty.home}/commons-vfs2-2.0.jar"/>
 			<pathelement location="${thirdparty.home}/zip4j_1.3.2.jar"/>
+			<pathelement location="${thirdparty.home}/spring-aop-4.0.1.RELEASE.jar"/>
+			<pathelement location="${thirdparty.home}/spring-beans-4.0.1.RELEASE.jar"/>
+			<pathelement location="${thirdparty.home}/spring-context-4.0.1.RELEASE.jar"/>
+			<pathelement location="${thirdparty.home}/spring-core-4.0.1.RELEASE.jar"/>
+			<pathelement location="${thirdparty.home}/spring-expression-4.0.1.RELEASE.jar"/>
+			<pathelement location="${thirdparty.home}/spring-jdbc-4.0.1.RELEASE.jar"/>
+			<pathelement location="${thirdparty.home}/spring-tx-4.0.1.RELEASE.jar"/>
+			<pathelement location="${thirdparty.home}/spring-web-4.0.1.RELEASE.jar"/>
+			<pathelement location="${thirdparty.home}/spring-webmvc-4.0.1.RELEASE.jar"/>
 		</path>
 
 		<makeEjbProject
@@ -2886,6 +2895,21 @@
 			<zipfileset src="${thirdparty.home}/jackson-annotations-2.2.0.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/commons-codec-1.9.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/sitemapgen4j-1.0.6.jar" excludes="META-INF/*"/>
+
+			<zipfileset src="${thirdparty.home}/spring-aop-4.0.1.RELEASE.jar"  excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/spring-beans-4.0.1.RELEASE.jar"  excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/spring-context-4.0.1.RELEASE.jar"  excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/spring-core-4.0.1.RELEASE.jar"  excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/spring-expression-4.0.1.RELEASE.jar"  excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/spring-jdbc-4.0.1.RELEASE.jar"  excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/spring-tx-4.0.1.RELEASE.jar"  excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/spring-web-4.0.1.RELEASE.jar"  excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/spring-webmvc-4.0.1.RELEASE.jar"  excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/spring-context-support-4.0.1.RELEASE.jar"  excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/gson-1.7.1.jar"  excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/ognl-2.6.7.jar"  excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/xstream.jar"  excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/xpp3_min.jar"  excludes="META-INF/*"/>
 
 			<!-- FD classes -->
 			<zipfileset src="${work.dir}/Framework.jar"/>

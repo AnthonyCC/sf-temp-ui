@@ -252,17 +252,7 @@ public class ContentServiceImpl extends GwtServiceBase implements ContentService
             throw new GwtSecurityException("User " + author.getName() + " is not allowed to do feed publish!");
         }
 
-        // check whether publish is already running
-        Optional<FeedPublish> optionalPublish = feedPublishService.findFeedPublish("latest");
-        FeedPublish publish = optionalPublish.orNull();
-        if (publish != null && PublishStatus.PROGRESS == publish.getStatus()) {
-            LOGGER.info("Feed Publish in progress ...: " + publish.getPublishId());
-            return publish.getPublishId();
-        }
-
-        LOGGER.info("feed publish kicked off by " + author.getName() + " : '" + comment + "'");
-
-        return publishService.startPublish(PublishType.PUBLISH_X, comment, getUser().getName());
+        return startFeedPublish(author, comment);
     }
 
     @Override
@@ -443,4 +433,22 @@ public class ContentServiceImpl extends GwtServiceBase implements ContentService
 
         return null;
     }
+
+    private synchronized String startFeedPublish(GwtUser author, String comment) throws ServerException {
+        // check whether publish is already running
+        FeedPublish publish = null;
+
+        Optional<FeedPublish> optionalPublish = feedPublishService.findFeedPublish("latest");
+        publish = optionalPublish.orNull();
+
+        if (publish != null && PublishStatus.PROGRESS == publish.getStatus()) {
+            LOGGER.info("Feed Publish in progress ...: " + publish.getPublishId());
+            return publish.getPublishId();
+        }
+
+        LOGGER.info("feed publish kicked off by " + author.getName() + " : '" + comment + "'");
+
+        return publishService.startPublish(PublishType.PUBLISH_X, comment, author.getName());
+    }
+
 }

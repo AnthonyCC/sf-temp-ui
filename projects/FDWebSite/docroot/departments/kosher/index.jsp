@@ -14,7 +14,7 @@ final int W_KOSHER_INDEX_TOTAL = 765;
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Kosher - Coming Soon!"/>
   </tmpl:put>
-  <tmpl:put name='title'>FreshDirect - Kosher - Coming Soon!</tmpl:put>
+<%--   <tmpl:put name='title'>FreshDirect - Kosher - Coming Soon!</tmpl:put> --%>
 	<tmpl:put name='content' direct='true'>
 	
 	<table width="<%=W_KOSHER_INDEX_TOTAL%>" cellpadding="0" cellspacing="6" border="0">

@@ -18,7 +18,7 @@
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - About Us: Tips & Tricks"/>
   </tmpl:put>
-  <tmpl:put name='title'>FreshDirect - About Us: Tips & Tricks</tmpl:put>
+<%--   <tmpl:put name='title'>FreshDirect - About Us: Tips & Tricks</tmpl:put> --%>
 <tmpl:put name='content' direct='true'>
 	<fd:IncludeMedia name="/media/editorial/site_access/tips.ftl" withErrorReport="true"/>	
 </tmpl:put>

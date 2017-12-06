@@ -1107,6 +1107,12 @@ td.noTopBorder {
     margin-right: 10px;
     vertical-align: 2px;
 }
+#tsContainer .tcSelectionBGC input[type="button"] + label::before {
+    /*background-color: #4fa157;*/
+}
+#tsContainer .tsContentResE input[type="button"] + label::before {
+    /*background-color: #4fa157;*/
+}
 .tsWrapper{
 	padding: 10px;
     margin-top: 20px;

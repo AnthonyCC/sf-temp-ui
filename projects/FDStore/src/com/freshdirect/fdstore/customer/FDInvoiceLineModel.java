@@ -1,12 +1,10 @@
 package com.freshdirect.fdstore.customer;
 
-import org.apache.log4j.Category;
-
 import com.freshdirect.common.context.UserContext;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.customer.ErpInvoiceLineI;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.framework.core.ModelSupport;
-import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.storeapi.content.ProductReference;
 import com.freshdirect.storeapi.content.ProductReferenceImpl;
@@ -15,8 +13,7 @@ import com.freshdirect.storeapi.content.SkuReference;
 public class FDInvoiceLineModel extends ModelSupport implements FDInvoiceLineI {
 
 	private static final long serialVersionUID = -4864691971873241984L;
-    private static final Category LOGGER = LoggerFactory.getInstance(FDInvoiceLineModel.class);
-	
+
 	private ErpInvoiceLineI invoiceLine;
 
 	private UserContext userContext;
@@ -37,17 +34,11 @@ public class FDInvoiceLineModel extends ModelSupport implements FDInvoiceLineI {
 		this.userContext = userContext;
 		ProductModel substituteProduct = lookUpSubstitueProduct();
 		this.substituteProductName = (null!=substituteProduct?substituteProduct.getFullName():getSubstitutedSkuCode());
-		try {
-			this.substituteProductDefaultPrice =(null!=substituteProduct?(""+substituteProduct.getPriceCalculator().getDefaultPriceValue()):"");
-		} catch (Exception e) {
-			// Ignore
-			LOGGER.warn("Exception while fetching price for substituteProduct: ",e);
-		}
+		this.substituteProductDefaultPrice =(null!=substituteProduct?substituteProduct.getDefaultPrice():"");
 		this.substituteProductId = (null !=substituteProduct ? substituteProduct.getContentName():"");
 	}
 
-	@Override
-    public UserContext getUserContext() {
+	public UserContext getUserContext() {
 		return userContext;
 	}
 
@@ -65,96 +56,82 @@ public class FDInvoiceLineModel extends ModelSupport implements FDInvoiceLineI {
 	 */
 	private ProductModel lookUpSubstitueProduct() {
 
-		try {
-			if (this.getSubstitutedSkuCode() != null && !this.getSubstitutedSkuCode().trim().isEmpty()) {
-				ProductReference productRef = new SkuReference(
-						this.getSubstitutedSkuCode());
-				if (productRef == null
-						|| ProductReferenceImpl.NULL_REF.equals(productRef)) {
-					return null;
-				}
-
-                return ProductPricingFactory.getInstance().getPricingAdapter(productRef.lookupProductModel());
+		if (this.getSubstitutedSkuCode() != null) {
+			ProductReference productRef = new SkuReference(
+					this.getSubstitutedSkuCode());
+			if (productRef == null
+					|| ProductReferenceImpl.NULL_REF.equals(productRef)) {
+				return null;
 			}
-		} catch (Exception e) {
-			//Ignore
-			LOGGER.warn("Exception while fetching substituteProduct: ",e);
+
+			return ProductPricingFactory
+					.getInstance()
+					.getPricingAdapter(
+							productRef.lookupProductModel(),
+							getUserContext().getPricingContext() != null ? getUserContext()
+									.getPricingContext()
+									: PricingContext.DEFAULT);
 		}
 		return null;
 	}
 
-	@Override
-    public String getSubstituteProductId() {
+	public String getSubstituteProductId() {
 		return substituteProductId;
 	}
 
-	@Override
-    public double getPrice() {
+	public double getPrice() {
 		return invoiceLine.getPrice();
 	}
 
-	@Override
-    public double getActualPrice() {
+	public double getActualPrice() {
 		return invoiceLine.getActualPrice();
 	}
 
-	@Override
-    public double getCustomizationPrice() {
+	public double getCustomizationPrice() {
 		return invoiceLine.getCustomizationPrice();
 	}
 
-	@Override
-    public double getQuantity() {
+	public double getQuantity() {
 		return invoiceLine.getQuantity();
 	}
 
-	@Override
-    public double getWeight() {
+	public double getWeight() {
 		return invoiceLine.getWeight();
 	}
 
-	@Override
-    public double getTaxValue() {
+	public double getTaxValue() {
 		return invoiceLine.getTaxValue();
 	}
 
-	@Override
-    public double getDepositValue() {
+	public double getDepositValue() {
 		return invoiceLine.getDepositValue();
 	}
 
-	@Override
-    public String getOrderLineNumber() {
+	public String getOrderLineNumber() {
 		return invoiceLine.getOrderLineNumber();
 	}
 
-	@Override
-    public String getMaterialNumber() {
+	public String getMaterialNumber() {
 		return invoiceLine.getMaterialNumber();
 	}
 
-	@Override
-    public double getActualCost() {
+	public double getActualCost() {
 		return invoiceLine.getActualCost();
 	}
 
-	@Override
-    public double getActualDiscountAmount() {
+	public double getActualDiscountAmount() {
 		return invoiceLine.getActualDiscountAmount();
 	}
 
-	@Override
-    public double getCouponDiscountAmount() {
+	public double getCouponDiscountAmount() {
 		return invoiceLine.getCouponDiscountAmount();
 	}
 
-	@Override
-    public String getSubstitutedSkuCode() {
+	public String getSubstitutedSkuCode() {
 		return invoiceLine.getSubstitutedSkuCode();
 	}
 
-	@Override
-    public String getSubSkuStatus() {
+	public String getSubSkuStatus() {
 		return invoiceLine.getSubSkuStatus();
 	}
 
@@ -163,8 +140,7 @@ public class FDInvoiceLineModel extends ModelSupport implements FDInvoiceLineI {
 		return substituteProductName;
 	}
 
-	@Override
-    public String getSubstituteProductDefaultPrice() {
+	public String getSubstituteProductDefaultPrice() {
 		return substituteProductDefaultPrice;
 	}
 

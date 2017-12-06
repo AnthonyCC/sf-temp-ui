@@ -11,7 +11,8 @@ final int W_NEW_PRODUCTS_NAV_TOTAL = 970;
 
 <html lang="en-US" xml:lang="en-US">  
 <head>
-    <title><tmpl:get name='title'/></title>
+<%--     <title><tmpl:get name='title'/></title> --%>
+    <tmpl:get name="seoMetaTag"/>
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1' lang="en-US">
 

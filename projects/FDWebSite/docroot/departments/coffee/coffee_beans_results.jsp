@@ -31,7 +31,7 @@ FDUserI sessionuser = (FDUserI) request.getSession().getAttribute(SessionName.US
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Don't Know Beans"/>
   </tmpl:put>
-  <tmpl:put name='title'>FreshDirect - Don't Know Beans</tmpl:put>
+<%--   <tmpl:put name='title'>FreshDirect - Don't Know Beans</tmpl:put> --%>
 
 		<tmpl:put name='content' direct='true'>
 <fd:Department id='coffeeDepartment' departmentId='<%= request.getParameter("deptId") %>'/>

@@ -32,7 +32,7 @@ params.put("baseUrl", "");
     <tmpl:put name="seoMetaTag" direct='true'>
         <fd:SEOMetaTag title="FreshDirect - Seasonal Picks"/>
     </tmpl:put>
-	<tmpl:put name='title' direct='true'>FreshDirect - Seasonal Picks</tmpl:put>
+<%-- 	<tmpl:put name='title' direct='true'>FreshDirect - Seasonal Picks</tmpl:put> --%>
 	<tmpl:put name='content' direct='true'>
 	
 	<fd:IncludeMedia name="/media/editorial/picks/seasonal/seas_picks.ftl" parameters="<%=params%>"/>

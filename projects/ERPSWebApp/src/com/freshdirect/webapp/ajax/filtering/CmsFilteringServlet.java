@@ -145,7 +145,7 @@ public class CmsFilteringServlet extends BaseJsonServlet {
             // UNBXD analytics reporting
             if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, request.getCookies(), user)) {
 
-                if (!navigator.getPageType().isSearchLike() && !navigator.isPdp()) {
+                if (navigator.getPageType().isBrowseType() && !navigator.isPdp()) {
                     BrowseEventTag.doSendEvent(navigator.getId(), user, request);
                 }
             }

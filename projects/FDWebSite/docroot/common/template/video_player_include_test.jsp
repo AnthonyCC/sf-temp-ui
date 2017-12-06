@@ -2,8 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" lang="en-US"/>
-
-	<title>Youtube Google Analytics Test Page</title>
+    <fd:SEOMetaTag title="Youtube Google Analytics Test Page"/>
+<%-- 	<title>Youtube Google Analytics Test Page</title> --%>
     <%@ include file="/common/template/includes/metatags.jspf" %>
     <%@ include file="/common/template/includes/i_javascripts.jspf" %>
     <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>

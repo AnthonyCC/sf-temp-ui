@@ -1,6 +1,11 @@
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ include file="includes/fk_presenter_vars.jspf" %>
+
 <tmpl:insert template='includes/fklayout_tmpl.jsp'>
-	<tmpl:put name='title'>Same-Day Food Delivery NYC | FoodKick: Link Expired</tmpl:put>
+<%-- 	<tmpl:put name='title'>Same-Day Food Delivery NYC | FoodKick: Link Expired</tmpl:put> --%>
+   <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="Same-Day Food Delivery NYC | FoodKick: Link Expired"/>
+   </tmpl:put>
 	<tmpl:put name='content'>
 		<script type="text/javascript">
 			cmCreatePageviewTag("FORGETPASSLINKEXP: link_expired.jsp","FDX_FORGETPASSLINKEXP",null,null,"-_--_-FORGETPASSLINKEXP: link_expired.jsp-_--_--_--_-FORGETPASSLINKEXP: link_expired.jsp");

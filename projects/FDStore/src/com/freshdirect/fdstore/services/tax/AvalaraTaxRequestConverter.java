@@ -17,13 +17,13 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpChargeLineModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDiscountLineModel;
-import com.freshdirect.customer.ErpInvoiceLineI;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDInvoiceLineI;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
@@ -187,7 +187,7 @@ public class AvalaraTaxRequestConverter {
 		if (BeanUtil.isNotEmpty(cart.getOrderLines())) {
 			for (FDCartLineI line : cart.getOrderLines()) {
 
-				ErpInvoiceLineI invoice = line.getInvoiceLine();
+				FDInvoiceLineI invoice = line.getInvoiceLine();
 				// invoice.
 				double price = line.getPrice();
 				double quantity = line.getQuantity();

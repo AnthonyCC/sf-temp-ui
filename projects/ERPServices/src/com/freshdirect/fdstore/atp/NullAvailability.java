@@ -2,6 +2,7 @@ package com.freshdirect.fdstore.atp;
 
 import java.util.Date;
 
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.DateRange;
 
 /**
@@ -39,6 +40,10 @@ public class NullAvailability implements FDAvailabilityI {
 	public double getAvailabileQtyForDate(Date targetDate) {
 		// TODO Auto-generated method stub
 		//return -7;
+		
+		if (!FDStoreProperties.getEnableFDXDistinctAvailability()) {
+			return -999;
+		}
 		if(AVAILABLE.equals(this)) {
 			return 999;
 		} else {

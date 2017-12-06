@@ -225,8 +225,8 @@ public class StandingOrderUtil {
 				}
 			} else {
 				// skipping because it is erroneous
-				LOGGER.info( "Skipping SO because it has a permanent error." );
-				return SOResult.createSkipped( so, "Skipping because SO is in error state" );
+				LOGGER.info( "SO has a permanent error." );
+				return SOResult.createUserError(so, so.getCustomerIdentity(), so.getUserInfo(), ErrorCode.PERSISTING_ERROR);
 			}
 		}else {
 			// delete date which was choose by user.
@@ -248,13 +248,6 @@ public class StandingOrderUtil {
 			LOGGER.info( "Skipping delivery date, because it is in the past." );
 			so.skipDeliveryDate();
 		}
-		
-		// =====================
-		//  2days notification 
-		// =====================
-		/*if(isSendReminderNotificationEmail) {
-			sendNotification( so, mailerHome );
-		}*/
 		
 		// ============================
 		//    Validate delivery date
@@ -614,6 +607,9 @@ public class StandingOrderUtil {
 		if ( cartPrice < hardLimit ) {
 			//Display soft limit info for user. He doesn't know about hard limit. 
 			String msg = "The order subtotal ($"+cartPrice+") was below our $"+softLimit+" minimum.";
+			if( !vr.getUnavailableItems().isEmpty() && vr.getUnavailableItems().size()!= 0){
+				msg="The order subtotal ($"+cartPrice+") was below our $"+softLimit+" minimum. Some of the items in your cart are unavailable temporarily.";
+			}
 			LOGGER.info( msg );
 			return SOResult.createUserError( so, customer, customerInfo, ErrorCode.MINORDER, msg );
 		} else if(cartPrice >= hardLimit && cartPrice < softLimit) {
@@ -1004,9 +1000,9 @@ public class StandingOrderUtil {
 					}
 				} else {
 					vr.addUnavailableItem(cartLine, UnavailabilityReason.ATP, "Zero quantity", cartLine.getQuantity(),altSkuCode);
-					if(!FDStoreProperties.isIgnoreATPFailureForSO()) { // If the available qty is less than the minimum required qty for the item, we ignore this.
-						cart.removeOrderLineById(randomId);
-					}
+					cart.removeOrderLineById(randomId);
+					LOGGER.debug("item has been removed from SO cart[only for this order instance] due to unavailablity "+cartLine.getSkuCode()+", of quantity:"+cartLine.getQuantity()+
+								", cart price drop is: "+cartLine.getPrice()+"$");
 				}
 			} else if (info instanceof FDCompositeAvailabilityInfo) {
 				/**

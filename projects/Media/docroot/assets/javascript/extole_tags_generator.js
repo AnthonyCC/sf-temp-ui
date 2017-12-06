@@ -4,36 +4,29 @@ Places finalized Extole tag content in HTML hierarchy.
 REQUIRES: jQuery as '$jq'
 */
 function appendExtoleTag(obj, tag_type, id_placeafter, section){
-	// load extole library before placing the tag
-	$jq.ajax({
-		url: "//tags.extole.com/553175139/core.js", /*core 3rd party library url*/
-		dataType: "script",
-		success: function(){
-			var extoleTag = document.createElement('script');
-			extoleTag.type = tag_type;
-			extoleTag.text = JSON.stringify(obj);
-			
-			console.log("extoleTag.text = " + extoleTag.text);
-			
-			/*if there is an html id given in parameter 3, then place the extol tag after said element.
-			Otherwise, it goes to the end of the body tag.
-			(but it might be superceded by other elements placed by other active javascript).
-			*/
-			if (typeof id_placeafter !== undefined && ($jq("#"+id_placeafter).length > 0) ) {
-				$jq("#"+id_placeafter).after(extoleTag);
-				
-			} else {
-				
-				//document.getElementsByTagName('body')[0].appendChild(extoleTag);
-				
-				$jq(document).ready(function(){				
-					$jq("body").append(extoleTag);
-				});
-			}
-			
-			console.log("Extole tag_type: " + tag_type + " placed, section = " + section);
-		}
-	});
+	var extoleTag = document.createElement('script');
+	extoleTag.type = tag_type;
+	extoleTag.text = JSON.stringify(obj);
+	
+	console.log("extoleTag.text = " + extoleTag.text);
+	
+	/*if there is an html id given in parameter 3, then place the extol tag after said element.
+	Otherwise, it goes to the end of the body tag.
+	(but it might be superceded by other elements placed by other active javascript).
+	*/
+	if(typeof id_placeafter !== undefined && ($jq("#"+id_placeafter).length > 0) ){
+		$jq("#"+id_placeafter).after(extoleTag);
+		
+	}else{
+		
+		//document.getElementsByTagName('body')[0].appendChild(extoleTag);
+		
+		$jq(document).ready(function(){				
+			$jq("body").append(extoleTag);
+		});
+	}
+	
+	console.log("Extole tag_type: " + tag_type + " placed, section = " + section);
 }
 
 /*
@@ -170,14 +163,33 @@ Placed inside '(function() {' block and a setInterval checker for jQuery existen
 				$jq( "html" ).append( "<style>#cta1, #cta2, div[class^='extole_id'] {display:none;}</style>" );
 			}
 			
-			if( ( typeof(globalExtoleVars) == "object" ) && (globalExtoleVars.isSignedCustomer != false)){
-				if( (globalExtoleVars.justSignedUp != false) ){
-					console.log("lets register you, new customer");
+			$jq.ajax({
+				url: "//tags.extole.com/553175139/core.js", /*core 3rd party library url*/
+				dataType: "script",
+				success: function(){
+					if( ( typeof(globalExtoleVars) == "object" ) && (globalExtoleVars.isSignedCustomer != false)){
+						if( (globalExtoleVars.justSignedUp != false) ){
+							console.log("lets register you, new customer");
 							
-					setAndAppendExtoleObject("REGISTER");
-				}
-			}//done just seeing if the Extole object was set up with a signed customer
+							setAndAppendExtoleObject("REGISTER");
+						}
+						//else{
+						//setAndAppendExtoleObject("PURCHASE",null);
+						//}
+					}//done just seeing if the Extole object was set up with a signed customer
 					
+					//for duplicating that orange button in the popout, APPBUG-4079
+					if( $jq("#cta2").length > -1 ){
+						$jq('a[href$="brownie_points.jsp"]').each(function(){
+							$jq(this).click(function(e){
+								e.preventDefault();
+								
+								$jq( "#cta2" ).trigger( "click" );
+							})
+						})
+					}
+				}//end success function for the 3rd party call
+			});//end initial call for 3rd party Extole library
 		}
 	}, 100);
 })();

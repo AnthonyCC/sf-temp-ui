@@ -12,7 +12,7 @@ final int W_YA_ADD_CREDITCARD = 970;
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Your Account - Add EBT Card"/>
   </tmpl:put>
-  <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Add EBT Card</tmpl:put>
+<%--   <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Add EBT Card</tmpl:put> --%>
 
     <tmpl:put name='content' direct='true'>
 

@@ -32,6 +32,8 @@ public class InvoiceEntryParameter implements Serializable
 	private String invoiceLineNo;
 	private String weightUnitCode;
 	private double grossWeight;
+	private String subSkuStatus;
+	private String substitutedSkuCode;
 	
 	/**
 	 * @return the salesOrderNo
@@ -298,6 +300,19 @@ public class InvoiceEntryParameter implements Serializable
 	public void setGrossWeight(double grossWeight)
 	{
 		this.grossWeight = grossWeight;
+	}
+
+	public String getSubstitutedSkuCode() {
+		return substitutedSkuCode;
+	}
+	public void setSubstitutedSkuCode(String substitutedSkuCode) {
+		this.substitutedSkuCode = substitutedSkuCode;
+	}
+	public String getSubSkuStatus() {
+		return subSkuStatus;
+	}
+	public void setSubSkuStatus(String subSkuStatus) {
+		this.subSkuStatus = subSkuStatus;
 	}
 	
 }

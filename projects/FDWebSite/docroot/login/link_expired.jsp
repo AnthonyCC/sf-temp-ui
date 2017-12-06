@@ -8,7 +8,7 @@
     <tmpl:put name="seoMetaTag" direct='true'>
         <fd:SEOMetaTag title="FreshDirect - Expired Link"/>
     </tmpl:put>
-    <tmpl:put name='title' direct='true'>FreshDirect - Expired Link</tmpl:put>
+<%--     <tmpl:put name='title' direct='true'>FreshDirect - Expired Link</tmpl:put> --%>
 		<tmpl:put name='content' direct='true'>
 		
 		

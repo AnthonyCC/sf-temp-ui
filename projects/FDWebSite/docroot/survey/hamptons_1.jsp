@@ -51,7 +51,7 @@ response.setDateHeader ("Expires", 0);
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Hamptons Delivery Survey"/>
   </tmpl:put>
-  <tmpl:put name='title' direct='true'>FreshDirect - Hamptons Delivery Survey</tmpl:put>
+<%--   <tmpl:put name='title' direct='true'>FreshDirect - Hamptons Delivery Survey</tmpl:put> --%>
     <tmpl:put name='content' direct='true'>
 <fd:ReceiptSurvey actionName="validateSurvey" result="result" successPage="/survey/hamptons_2.jsp" survey="<%=Hamptons05%>">
 <table width="<%=W_SURVEY_HAMPTONS_1_TOTAL%>" cellpadding="0" cellspacing="0" border="0" class="text12">

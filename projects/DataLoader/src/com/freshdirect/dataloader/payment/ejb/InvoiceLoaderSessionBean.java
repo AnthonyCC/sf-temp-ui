@@ -128,6 +128,7 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 			ErpCustomerManagerSB managerSB = this.getErpCustomerManagerHome().create();
 			managerSB.addInvoice(invoice, saleId, shippingInfo);
 			managerSB.reconcileSale(saleId, isShorted);
+			LOGGER.debug("Completed reconcile Sale method for sale id " + saleId);
 
 			// get salemodel w/ invoice
 			saleModel = (ErpSaleModel)eb.getModel();
@@ -147,10 +148,16 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 			fdInfo.setHtmlEmail(!erpInfo.isEmailPlaintext());
 			fdInfo.setEmailAddress(erpInfo.getEmail());
 			fdInfo.setGoGreen(erpInfo.isGoGreen());
-
+			LOGGER.debug("Start - Sending Invoice email");
 			MailerGatewaySB mailBean = this.getMailerGatewayHome().create();
-			mailBean.enqueueEmail(FDEmailFactory.getInstance().createFinalAmountEmail(fdInfo, fdOrder));
-
+			try {
+				
+				mailBean.enqueueEmail(FDEmailFactory.getInstance().createFinalAmountEmail(fdInfo, fdOrder));
+			} catch (Exception e1) {
+				LOGGER.warn("Unexpected Exception while sending invoice email, for order#: "+saleId, e1);
+				e1.printStackTrace();
+			}
+			LOGGER.debug("End - Sending Invoice email");
             try {
                 if (saleModel.geteStoreId() == EnumEStoreId.FD) {
                     GoogleAnalyticsReportingService.defaultService().postGAReporting(fdOrder);

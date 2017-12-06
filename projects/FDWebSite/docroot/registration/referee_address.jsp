@@ -29,7 +29,8 @@
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en-US" xml:lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<title>FreshDirect Address Check</title><% /* if this title changes, you need to change the media JS as well */ %>
+	<%-- <title>FreshDirect Address Check</title> --%><% /* if this title changes, you need to change the media JS as well */ %>
+	 <fd:SEOMetaTag title="FreshDirect Address Check"/>
 	<% if("slite".equals(request.getParameter("referrer_page"))) { %>
 		<%@ include file="/common/template/includes/metatags.jspf" %>
 		<%@ include file="/common/template/includes/i_javascripts.jspf" %>

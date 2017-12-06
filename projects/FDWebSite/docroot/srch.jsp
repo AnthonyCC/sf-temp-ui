@@ -208,7 +208,6 @@
 		        </div>
 				<% if (!mobWeb) { %>
 		        <div class="srch-carousel">
-		          <soy:render template="srch.carouselWrapper" data="${browsePotato.carousels}" />
 		        </div>
 
 		        <div class="browse-sections-bottom transactional">

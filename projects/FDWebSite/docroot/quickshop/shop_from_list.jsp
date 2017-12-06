@@ -56,7 +56,10 @@
 		%>
 
 		<tmpl:insert template='/common/template/quick_shop_nav.jsp'>
-			<tmpl:put name='title' direct='true'>FreshDirect - Reorder - Shop from This Order</tmpl:put>
+<%-- 			<tmpl:put name='title' direct='true'>FreshDirect - Reorder - Shop from This Order</tmpl:put> --%>
+			  <tmpl:put name="seoMetaTag" direct="true">
+              <fd:SEOMetaTag title="FreshDirect - Reorder - Shop from This Order"></fd:SEOMetaTag>
+              </tmpl:put>
 			<tmpl:put name='side_nav' direct='true'>
 				<font class="space4pix"><br />
 				</font>

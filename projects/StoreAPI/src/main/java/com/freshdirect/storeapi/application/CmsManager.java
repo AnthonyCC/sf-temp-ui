@@ -39,6 +39,8 @@ public class CmsManager {
 
     private final static CmsManager INSTANCE = new CmsManager();
 
+    private static Map<ContentKey, ContentKey> primaryHomeMap;
+
     private ContextualContentProvider contentProviderService = CmsServiceLocator.contentProviderService();
 
     private ContentTypeInfoService contentTypeInfoService = CmsServiceLocator.contentTypeInfoService();
@@ -62,6 +64,8 @@ public class CmsManager {
         } else {
             LOGGER.warn("No E-STORE ID is guessed in multi-store mode!");
         }
+
+        initPrimaryHomeMap();
     }
 
     public static CmsManager getInstance() {
@@ -129,9 +133,12 @@ public class CmsManager {
     }
 
     public ContentKey getPrimaryHomeKey(ContentKey productKey, ContentKey storeKey) {
-        Map<ContentKey, ContentKey> primaryHomes = contentProviderService.findPrimaryHomes(productKey);
-
-        return primaryHomes.get(storeKey);
+        if (isReadOnlyContent() && primaryHomeMap != null && productKey != null) {
+            return primaryHomeMap.get(productKey);
+        } else {
+            Map<ContentKey, ContentKey> primaryHomes = contentProviderService.findPrimaryHomes(productKey);
+            return primaryHomes.get(storeKey);
+        }
     }
 
     public Map<ContentKey, ContentNodeI> queryContentNodes(ContentType type, Predicate searchPredicate) {
@@ -212,6 +219,19 @@ public class CmsManager {
         ContentNodeI node = buildContentNode(contentKey, payload, navigableChildKeys);
 
         return node;
+    }
+    
+    public void initPrimaryHomeMap() {
+        if (isReadOnlyContent() && singleStoreKey != null) {
+            primaryHomeMap = new HashMap<ContentKey, ContentKey>();
+            Set<ContentKey> keys = getContentKeysByType(ContentType.Product);
+            for (ContentKey key : keys) {
+                Map<ContentKey, ContentKey> primaryHomes = contentProviderService.findPrimaryHomes(key);
+                if (primaryHomes != null && primaryHomes.containsKey(singleStoreKey)) {
+                    primaryHomeMap.put(key, primaryHomes.get(singleStoreKey));
+                }
+            }
+        }
     }
 
     private ContentNodeI buildContentNode(ContentKey contentKey, Map<Attribute, Object> payload, Set<ContentKey> navigableChildKeys) {

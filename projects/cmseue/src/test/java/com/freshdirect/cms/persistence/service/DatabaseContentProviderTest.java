@@ -20,6 +20,7 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.concurrent.ConcurrentMapCache;
 
 import com.freshdirect.cms.cache.CacheEvictors;
 import com.freshdirect.cms.category.UnitTest;
@@ -128,15 +129,19 @@ public class DatabaseContentProviderTest {
 
     @Test
     public void testGetContentKeysByType() {
-        List<ContentNodeEntity> contentNodeEntities = Arrays.asList(EntityFactory.createContentNode());
-        Mockito.when(contentNodeEntityRepository.findByContentType(EntityFactory.CONTENT_TYPE)).thenReturn(contentNodeEntities);
-        Mockito.when(contentNodeEntityToContentKeyConverter.convert(contentNodeEntities)).thenReturn(Arrays.asList(EntityFactory.createContentKey()));
+        final Cache keyCache = new ConcurrentMapCache("contentKeyCache");
+        final Set<ContentKey> allKeys = new HashSet<ContentKey>();
+        allKeys.add(ContentKeyFactory.get(ContentType.Product, "prd1"));
+        allKeys.add(ContentKeyFactory.get(ContentType.Product, "prd2"));
+        keyCache.put("getContentKeys", allKeys);
+
+        Mockito.when(cacheManager.getCache("contentKeyCache")).thenReturn(keyCache);
 
         Set<ContentKey> loadedContentKeys = underTest.getContentKeysByType(EntityFactory.CONTENT_TYPE_ENUM);
 
         Assert.assertNotNull(loadedContentKeys);
-        Assert.assertEquals(contentNodeEntities.size(), loadedContentKeys.size());
-        Assert.assertEquals(contentNodeEntities.get(0).getContentKey(), loadedContentKeys.iterator().next().toString());
+        Assert.assertEquals(2, loadedContentKeys.size());
+        Assert.assertEquals(allKeys, loadedContentKeys);
     }
 
     @Test

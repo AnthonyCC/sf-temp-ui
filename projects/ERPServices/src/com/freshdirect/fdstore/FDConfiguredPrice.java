@@ -9,6 +9,7 @@ public class FDConfiguredPrice implements Serializable {
 
 	private final double configuredPrice;
 	private final double promotionValue;
+	private double unscaledPrice;
 	private final MaterialPrice pricingCondition;
 	private double couponDiscountValue;
 	private final ZoneInfo zoneInfo;
@@ -56,6 +57,10 @@ public class FDConfiguredPrice implements Serializable {
 	public String getBasePriceUnit() {
 		return pricingCondition.getPricingUnit();
 	}
+	
+	public double getOriginalPrice() {
+		return pricingCondition.getOriginalPrice();
+	}
 
 	public double getCouponDiscountValue() {
 		return couponDiscountValue;
@@ -67,6 +72,12 @@ public class FDConfiguredPrice implements Serializable {
 	
 	public ZoneInfo getZoneInfo() {
 		return zoneInfo;
+	}
+	public double getUnscaledPrice() {
+		return unscaledPrice;
+	}
+	public void setUnscaledPrice(double p){
+		unscaledPrice = p;
 	}
 
 }

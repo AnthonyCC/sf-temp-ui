@@ -9,7 +9,7 @@ final int W_BC_ABOUT_TOTAL = 601;
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - About Best Cellars"/>
   </tmpl:put>
-  <tmpl:put name='title'>FreshDirect - About Best Cellars</tmpl:put>
+<%--   <tmpl:put name='title'>FreshDirect - About Best Cellars</tmpl:put> --%>
 	<tmpl:put name='content' direct='true'>
 	<table width="<%=W_BC_ABOUT_TOTAL%>" cellpadding="0" cellspacing="0">
 	<tr><td><br>

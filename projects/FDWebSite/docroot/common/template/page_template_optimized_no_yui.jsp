@@ -11,8 +11,8 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en-US" xml:lang="en-US"> <!--<![endif]-->
 
 <head>
-  <title><tmpl:get name='title'/></title>
-    
+<%--   <title><tmpl:get name='title'/></title> --%>
+    <tmpl:get name="seoMetaTag"/>
   <%@ include file="/common/template/includes/metatags.jspf" %>
   <%-- skip i_javascripts_optimized.jspf and load all code in here --%>
   <%-- @ include file="/common/template/includes/i_javascripts_optimized.jspf" --%>

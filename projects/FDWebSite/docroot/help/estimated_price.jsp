@@ -4,7 +4,7 @@
     <tmpl:put name="seoMetaTag" direct='true'>
         <fd:SEOMetaTag title="FreshDirect - Our Honest Pricing Policy"/>
     </tmpl:put>
-	<tmpl:put name='title' direct='true'>FreshDirect - Our Honest Pricing Policy</tmpl:put>
+<%-- 	<tmpl:put name='title' direct='true'>FreshDirect - Our Honest Pricing Policy</tmpl:put> --%>
 		<tmpl:put name='content' direct='true'>
 			<fd:IncludeMedia name="/media/microcopy/pdp_estimated_weight_overlay.txt">
 				<table width="100%"><tr><td><FONT CLASS="title12">Estimated Weight &amp; Our Honest Pricing Policy</FONT><br><br>

@@ -44,7 +44,7 @@ final int W_CHECKOUT_SURVEY_TOTAL = 970;
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Survey"/>
   </tmpl:put>
-  <tmpl:put name='title'>FreshDirect - Survey</tmpl:put>
+<%--   <tmpl:put name='title'>FreshDirect - Survey</tmpl:put> --%>
     <tmpl:put name='content' direct='true'>
     
 <fd:SurveyController successPage="/checkout/step_1_choose.jsp" resultName="result" formName="surveyForm">	

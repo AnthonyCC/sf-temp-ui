@@ -36,7 +36,7 @@
 %>
 <html lang="en-US" xml:lang="en-US">
   <head>
-  	<title><tmpl:get name="title"/></title>
+<%--   	<title><tmpl:get name="title"/></title> --%>
   	<tmpl:get name="seoMetaTag"/><%-- if title is used, overrides previous tag --%>
 
     <meta name="HandheldFriendly" content="True">

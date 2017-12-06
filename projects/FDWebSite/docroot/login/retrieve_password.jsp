@@ -19,7 +19,7 @@ String emailAddress = request.getParameter("emailAddress");
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Forgot Your Password? - Enter Security Word"/>
   </tmpl:put>
-  <tmpl:put name='title' direct='true'>FreshDirect - Forgot Your Password? - Enter Security Word</tmpl:put>
+<%--   <tmpl:put name='title' direct='true'>FreshDirect - Forgot Your Password? - Enter Security Word</tmpl:put> --%>
 		<tmpl:put name='content' direct='true'>
 			<%@ include file="/login/includes/retrieve_password.jspf" %>
 		</tmpl:put>

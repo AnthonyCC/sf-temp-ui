@@ -110,6 +110,7 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDCustomerOrderInfo;
 import com.freshdirect.fdstore.customer.FDCutoffTimeInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDInvoiceLineI;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.LateDlvReportLine;
 import com.freshdirect.fdstore.customer.MakeGoodOrderInfo;
@@ -1874,7 +1875,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		boolean containsDeliveryPass = false;
 		for (Iterator iter = orderLines.iterator(); iter.hasNext();) {
 			FDCartLineI line = (FDCartLineI) iter.next();
-			ErpInvoiceLineI invoiceLine = line.getInvoiceLine();
+			FDInvoiceLineI invoiceLine = line.getInvoiceLine();
 			ErpReturnLineModel returnLine = new ErpReturnLineModel();
 			returnLine.setLineNumber(invoiceLine.getOrderLineNumber());
 			returnLine.setQuantity(invoiceLine.getQuantity());

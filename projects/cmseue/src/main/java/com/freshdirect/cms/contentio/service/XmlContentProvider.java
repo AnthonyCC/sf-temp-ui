@@ -83,7 +83,7 @@ public class XmlContentProvider implements ContentProvider {
     public Map<Attribute, Object> getAllAttributesForContentKey(ContentKey contentKey) {
         Assert.notNull(contentKey, "ContentKey parameter can't be null!");
 
-        return contentNodes.containsKey(contentKey) ? contentNodes.get(contentKey) : Collections.<Attribute, Object>emptyMap();
+        return contentNodes.containsKey(contentKey) ? contentNodes.get(contentKey) : Collections.<Attribute, Object> emptyMap();
     }
 
     @Override
@@ -115,18 +115,15 @@ public class XmlContentProvider implements ContentProvider {
         Assert.notNull(contentKey, "ContentKey parameter can't be null!");
         Assert.notNull(attributes, "Attributes parameter can't be null!");
 
-
         Map<Attribute, Object> payload = contentNodes.get(contentKey);
         if (payload == null) {
             return Collections.emptyMap();
         }
 
         Map<Attribute, Object> results = new HashMap<Attribute, Object>();
-        for (Map.Entry<Attribute, Object> entry : payload.entrySet()) {
-            Attribute attribute = entry.getKey();
-            Object value = entry.getValue();
-            if (attributes.contains(attribute)) {
-                results.put(attribute, value);
+        for (Attribute attribute : attributes) {
+            if (payload.containsKey(attribute)) {
+                results.put(attribute, payload.get(attribute));
             }
         }
         return results;
@@ -141,13 +138,13 @@ public class XmlContentProvider implements ContentProvider {
     public Set<ContentKey> getContentKeysByType(ContentType type) {
         Assert.notNull(type, "ContentType parameter can't be null!");
 
-        return keysOfType.containsKey(type) ? keysOfType.get(type) : Collections.<ContentKey>emptySet();
+        return keysOfType.containsKey(type) ? keysOfType.get(type) : Collections.<ContentKey> emptySet();
     }
 
     @Override
     public Set<ContentKey> getParentKeys(ContentKey contentKey) {
         Assert.notNull(contentKey, "contentKey parameter can't be null!");
-        return parentKeys.containsKey(contentKey) ? parentKeys.get(contentKey) : Collections.<ContentKey>emptySet();
+        return parentKeys.containsKey(contentKey) ? parentKeys.get(contentKey) : Collections.<ContentKey> emptySet();
     }
 
     @Override

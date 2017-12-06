@@ -54,7 +54,7 @@ HEAD items
     <tmpl:put name="seoMetaTag" direct='true'>
         <fd:SEOMetaTag title="FreshDirect"/>
     </tmpl:put>
-	<tmpl:put name="head_pageTitle"><title>FreshDirect</title></tmpl:put>
+<%-- 	<tmpl:put name="head_pageTitle"><title>FreshDirect</title></tmpl:put> --%>
 	
 	<%--
 	meta tags
@@ -79,7 +79,7 @@ HEAD items
 HEAD
 
 --%><tmpl:put name="head">
-		<tmpl:get name="head_pageTitle" />
+<%-- 		<tmpl:get name="head_pageTitle" /> --%>
 		<tmpl:get name="head_metatags" />
 		<tmpl:get name="head_css" />
 		<tmpl:get name="head_javascript" />

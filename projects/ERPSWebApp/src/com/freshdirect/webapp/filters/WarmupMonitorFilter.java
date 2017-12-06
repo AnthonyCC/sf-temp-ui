@@ -29,22 +29,26 @@ public class WarmupMonitorFilter extends AbstractFilter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = ((HttpServletRequest) request);
-        if (!WarmupService.defaultService().isWarmupFinished()) {
-            String requestURI = ((HttpServletRequest) request).getRequestURI();
-            if (!WARMUP_PAGE_PATH.equals(requestURI)) {
-                String requestHeader = httpServletRequest.getHeader(AJAX_INDICATOR_REQUEST_HEADER_NAME);
-                if (AJAX_INDICATOR_REQUEST_HEADER_VALUE.equals(requestHeader)) {
-                    if (!requestURI.endsWith(WARMUP_STATE_MOBILE_API_ENDPOINT)) {
-                        RedirectData redirectData = new RedirectData();
-                        redirectData.setRedirectUrl(WARMUP_PAGE_PATH);
-                        redirectData.setMessage(WARMUP_AJAX_WARNING_MESSAGE);
-                        JsonHelper.writeResponseData((HttpServletResponse) response, redirectData);
-                    }
-                } else {
-                    ((HttpServletResponse) response).sendRedirect(WARMUP_PAGE_PATH);
-                    return; //If we dont return it will continue to execute FilterChain which might cause exception
-                }
-            }
+        try {
+	        if (!WarmupService.defaultService().isWarmupFinished()) {
+	            String requestURI = ((HttpServletRequest) request).getRequestURI();
+	            if (!WARMUP_PAGE_PATH.equals(requestURI)) {
+	                String requestHeader = httpServletRequest.getHeader(AJAX_INDICATOR_REQUEST_HEADER_NAME);
+	                if (AJAX_INDICATOR_REQUEST_HEADER_VALUE.equals(requestHeader)) {
+	                    if (!requestURI.endsWith(WARMUP_STATE_MOBILE_API_ENDPOINT)) {
+	                        RedirectData redirectData = new RedirectData();
+	                        redirectData.setRedirectUrl(WARMUP_PAGE_PATH);
+	                        redirectData.setMessage(WARMUP_AJAX_WARNING_MESSAGE);
+	                        JsonHelper.writeResponseData((HttpServletResponse) response, redirectData);
+	                    }
+	                } else {
+	                    ((HttpServletResponse) response).sendRedirect(WARMUP_PAGE_PATH);
+	                    //return; //If we dont return it will continue to execute FilterChain which might cause exception
+	                }
+	            }
+	        }
+        }catch(Exception e) {
+        	e.printStackTrace();
         }
         filterChain.doFilter(request, response);
     }

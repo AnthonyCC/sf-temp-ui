@@ -39,19 +39,19 @@ if (type != null && !"".equals(type) && type.equalsIgnoreCase("popup")) {
 				<% if ( request.getParameter("lang") != null) { %>
 					<% if ("espanol".equalsIgnoreCase(request.getParameter("lang"))) { %>
 					<tmpl:put name='seoMetaTag' direct='true'>
-       					<fd:SEOMetaTag pageId="privacy_policy" language='es-ES'/>
+       					<fd:SEOMetaTag  title="PRIVACY POLICY" pageId="privacy_policy" language='es-ES'/>
  					 </tmpl:put>
 					
 						<fd:IncludeMedia name="/media/editorial/site_pages/privacy_policy/privacy_policy_espanol.html" />
 					<% } else { %>
 						<tmpl:put name='seoMetaTag' direct='true'>
-      						<fd:SEOMetaTag pageId="privacy_policy" language='en-US'/>
+      						<fd:SEOMetaTag title="PRIVACY POLICY" pageId="privacy_policy" language='en-US'/>
   						</tmpl:put>
 						<fd:IncludeMedia name="/media/editorial/site_pages/privacy_policy/privacy_policy.html" />
 					<% } %>
 				<% } else { %>
 					<tmpl:put name='seoMetaTag' direct='true'>
-      					<fd:SEOMetaTag pageId="privacy_policy" language='en-US'/>
+      					<fd:SEOMetaTag  title="PRIVACY POLICY" pageId="privacy_policy" language='en-US'/>
   					</tmpl:put>
 					<fd:IncludeMedia name="/media/editorial/site_pages/privacy_policy/privacy_policy.html" />
 				<% } %>

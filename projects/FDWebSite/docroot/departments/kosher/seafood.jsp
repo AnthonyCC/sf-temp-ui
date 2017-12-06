@@ -13,7 +13,7 @@ final int W_KOSHER_SEAFOOD_TOTAL = 765;
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Kosher Seafood - Coming Soon!"/>
   </tmpl:put>
-  <tmpl:put name='title'>FreshDirect - Kosher Seafood - Coming Soon!</tmpl:put>
+<%--   <tmpl:put name='title'>FreshDirect - Kosher Seafood - Coming Soon!</tmpl:put> --%>
 
 	<tmpl:put name='content' direct='true'>
 	

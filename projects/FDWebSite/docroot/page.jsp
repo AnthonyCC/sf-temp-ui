@@ -31,7 +31,7 @@
     <tmpl:put name="seoMetaTag" direct='true'>
         <fd:SEOMetaTag title="<%= title %>"/>
     </tmpl:put>
-	<tmpl:put name='title' direct='true'><%= title %></tmpl:put>
+<%-- 	<tmpl:put name='title' direct='true'><%= title %></tmpl:put> --%>
 
   <tmpl:put name='extraHead' direct='true'>
     <fd:css href="/assets/css/common/page.css" />

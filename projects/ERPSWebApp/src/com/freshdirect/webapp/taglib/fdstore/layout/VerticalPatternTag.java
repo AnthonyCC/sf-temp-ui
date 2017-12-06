@@ -186,7 +186,8 @@ public class VerticalPatternTag extends com.freshdirect.framework.webapp.BodyTag
 				continue;
 			
 			// skip hidden folders
-			if ( !isLabeled() && currentNode instanceof CategoryModel && ! ((CategoryModel)currentNode).getShowSelf() )
+			//if ( !isLabeled() && currentNode instanceof CategoryModel && ! ((CategoryModel)currentNode).getShowSelf() )
+			if ( !isLabeled() && currentNode instanceof CategoryModel && ! ((CategoryModel)currentNode).isShowSelf() )
 				continue;
 			
 			// skip categories if ...

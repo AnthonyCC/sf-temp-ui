@@ -168,7 +168,7 @@ if (productNode != null) {
     <tmpl:put name="seoMetaTag" direct='true'>
         <fd:SEOMetaTag title="<%=title%>"/>
     </tmpl:put>
-    <tmpl:put name='title' direct='true'><%=title%></tmpl:put>
+<%--     <tmpl:put name='title' direct='true'><%=title%></tmpl:put> --%>
 	<tmpl:put name='content' direct='true'>
 <table border="0" cellpadding="0" cellspacing="0" width="520">
 <tr valign="top">

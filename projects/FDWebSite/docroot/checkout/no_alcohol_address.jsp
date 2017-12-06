@@ -15,7 +15,7 @@
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Checkout - Age Verification for orders containing alcohol"/>
   </tmpl:put>
-  <tmpl:put name='title'>FreshDirect - Checkout - Age Verification for orders containing alcohol</tmpl:put>
+<%--   <tmpl:put name='title'>FreshDirect - Checkout - Age Verification for orders containing alcohol</tmpl:put> --%>
 <tmpl:put name='content' direct='true'>
 
 <%

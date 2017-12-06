@@ -5,15 +5,20 @@ Collections.sort(cartLines, FDCartModel.PRODUCT_SAMPLE_COMPARATOR);
 %>
 <logic:iterate id="cartLine" collection="<%= cartLines %>" type="com.freshdirect.fdstore.customer.FDCartLineI"><%@ page import="com.freshdirect.fdstore.ecoupon.EnumCouponContext"%><%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%
-ErpInvoiceLineI invoiceLine = null;
+FDInvoiceLineI invoiceLine = null;
 StringBuffer quantity = new StringBuffer();
 StringBuffer quantityDlv = new StringBuffer();
+boolean hasSubstitute = false; //used for substitue display rules
 
 quantity.append(cartLine.getOrderedQuantity());
 
 if(cartLine.hasInvoiceLine()){
 	quantityDlv.append(cartLine.getDeliveredQuantity());
 	invoiceLine = cartLine.getInvoiceLine();
+}
+
+if (invoiceLine != null && invoiceLine.getSubstituteProductName() != null) {
+	hasSubstitute = true;
 }
 
 if (lastDept==null || !lastDept.equalsIgnoreCase(cartLine.getDepartmentDesc())) {;
@@ -45,7 +50,7 @@ if (lastDept==null || !lastDept.equalsIgnoreCase(cartLine.getDepartmentDesc())) 
 			<%
 		}
 	}
-} 
+}
 %>
 <%-- discount msg --%>
 <%
@@ -63,14 +68,22 @@ if (lastDept==null || !lastDept.equalsIgnoreCase(cartLine.getDepartmentDesc())) 
 		}
 	}
 %>
-<tr valign="top" align="center">
+<tr valign="top" align="center" class="<%= (hasSubstitute) ? "hasSubstitute" : "" %>">
 	<td><%=quantity.toString()%></td>
-	<td><%=quantityDlv.toString()%><%=" "+cartLine.getUnitsOfMeasure()%><%=cartLine.getLabel()%></td>
-	<td><%=(cart.hasSettledReturn() && cartLine.hasReturnLine())? "<span class=\"red\">"+cartLine.getReturnedQuantity()+"</span>":""%><%=cartLine.hasRestockingFee()?"**":""%></td>
+	<td><%= (hasSubstitute) ? "0" : quantityDlv.toString() %><%=" "+cartLine.getUnitsOfMeasure()%><%=cartLine.getLabel()%></td>
+	<td><%=
+		(cart.hasSettledReturn() && cartLine.hasReturnLine())
+		? (hasSubstitute) ? "0" : "<span class=\"red\">"+cartLine.getReturnedQuantity()+"</span>"
+		: ""
+	%><%=cartLine.hasRestockingFee()?"**":""%></td>
 	
-	<td align="left"><div style="margin-left:8px; text-indent:-7px;"><font class="text10"><%= cartLine.getDescription() %></font>
-		<% if (cartLine.getConfigurationDesc()!=null && !"".equals(cartLine.getConfigurationDesc().trim())) { %>(<%= cartLine.getConfigurationDesc() %>)<% } %>
-		<% if ( discountMsg!=null && !"".equals(discountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10"><%= discountMsg %></span><% } %><% if ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10"><%= groupDiscountMsg %></span><% } %></div><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br>
+	<td align="left">
+		<div style="margin-left:8px; text-indent:-7px;">
+			<span class="text10"><%= cartLine.getDescription() %></span>
+			<% if (cartLine.getConfigurationDesc()!=null && !"".equals(cartLine.getConfigurationDesc().trim())) { %>(<%= cartLine.getConfigurationDesc() %>)<% } %>
+			<% if ( discountMsg!=null && !"".equals(discountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10"><%= discountMsg %></span><% } %>
+			<% if ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10"><%= groupDiscountMsg %></span><% } %>
+		</div><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br>
 		<display:FDCoupon coupon="<%= user.getCustomerCoupon(cartLine, EnumCouponContext.VIEWORDER) %>" contClass="fdCoupon_cartlineViewOrder" pastTense="true"></display:FDCoupon>
 	</td>
 	<td><%if(cartLine.hasInvoiceLine() && cartLine.isPricedByLb()){%><%=invoiceLine.getWeight()%>&nbsp;lb <%}%></td>
@@ -78,14 +91,20 @@ if (lastDept==null || !lastDept.equalsIgnoreCase(cartLine.getDepartmentDesc())) 
 		<td class="red"></td>
         <td>&nbsp;</td>
         <td align="right" class="text10bold red">FREE</td>
-    <% } else if(cartLine.getDiscount() != null || cartLine.getCouponDiscount()!=null) { %>
-        <td class="red"><%=cartLine.getUnitPrice()%></td>
+    <% } else if( (cartLine.getDiscount() != null || cartLine.getCouponDiscount()!=null) && !hasSubstitute ) { %>
+        <td class="red"><%= cartLine.getUnitPrice() %></td>
         <td><%= ((cartLine.hasInvoiceLine() && invoiceLine.getCustomizationPrice()>0) ? currencyFormatter.format(invoiceLine.getCustomizationPrice()) : "&nbsp;") %></td>
         <td align="right" class="text10bold red"><%= (cartLine.hasInvoiceLine()) ? currencyFormatter.format(invoiceLine.getPrice()) : currencyFormatter.format(cartLine.getPrice()) %></td>
      <% } else { %>
-        <td><%=cartLine.getUnitPrice()%></td>
+        <td><%= cartLine.getUnitPrice() %></td>
         <td><%= ((cartLine.hasInvoiceLine() && invoiceLine.getCustomizationPrice()>0) ? currencyFormatter.format(invoiceLine.getCustomizationPrice()) : "&nbsp;") %></td>
-        <td align="right" class="text10"><%= (cartLine.hasInvoiceLine()) ? currencyFormatter.format(invoiceLine.getPrice()) : currencyFormatter.format(cartLine.getPrice()) %></td>
+        <td align="right" class="text10"><%=
+        	(hasSubstitute)
+        		? "$0.00"  
+        		: (cartLine.hasInvoiceLine()) 
+        			? currencyFormatter.format(invoiceLine.getPrice()) 
+        			: currencyFormatter.format(cartLine.getPrice()) 
+        %></td>
     <% } %>     
 	<td class="text10"><%
 		if (cartLine.isEstimatedPrice()) {
@@ -96,6 +115,41 @@ if (lastDept==null || !lastDept.equalsIgnoreCase(cartLine.getDepartmentDesc())) 
 	<td class="text10"><%= cartLine.hasScaledPricing() || ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) ? "S" : "" %></td>
 	<td class="text10"><%= cartLine.hasDepositValue() ? "D" : "" %></td>
 </tr>
+<% if (hasSubstitute) { %>
+	<tr valign="top" align="center">
+		<td>&nbsp;</td><%-- Ordered Qty --%>
+		<td><%= invoiceLine.getQuantity() %></td><%-- Delivered Qty --%>
+		<td><%-- Returned Qty --%>
+			<%= (cart.hasSettledReturn() && cartLine.hasReturnLine()) ? "<span class=\"red\">"+invoiceLine.getQuantity()+"</span>" : "&nbsp;" %>
+		</td>
+		<td align="left"><%-- Description --%>
+			<div class="substitution">
+				<img src="/media_stat/images/common/sublevel_arrow_green.svg" alt="" class="sublevel_arrow" />&nbsp;<span class="text10bold">Substitution:</span>&nbsp;<%= invoiceLine.getSubstituteProductName() %>
+			</div>
+		</td>
+		<td>&nbsp;</td><%-- priced by lb --%>
+		<%-- next three columns are pricing --%>
+		<td><%-- unit price --%>
+			<% if ( cartLine.getUnitPrice() != invoiceLine.getSubstituteProductDefaultPrice() ) { %><div class="lineThrough lowercase"><%= invoiceLine.getSubstituteProductDefaultPrice()  %></div><% } %><%= cartLine.getUnitPrice() %>
+		</td>
+		<td><%-- customization price --%>
+			&nbsp;
+		</td>
+		<td align="right"><%-- final price --%>
+			<% if ( cartLine.getUnitPrice() != invoiceLine.getSubstituteProductDefaultPrice() ) { %>
+				<div>&nbsp;</div><%-- for alignment with unit price column --%>
+			<% } %>
+			<%=
+				(cartLine.hasInvoiceLine()) 
+        			? currencyFormatter.format(invoiceLine.getPrice()) 
+        			: currencyFormatter.format(cartLine.getPrice()) 
+        	%>
+		</td>
+		<td>&nbsp;</td><%-- * --%>
+		<td>&nbsp;</td><%-- S --%>
+		<td>&nbsp;</td><%-- D --%>
+	</tr>
+<% } %>
 <%
 if (user.isEligibleForClientCodes() && cartLine.getClientCodes().size() > 0) {
 	int noCode = (int) cartLine.getQuantity();

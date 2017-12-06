@@ -55,11 +55,6 @@ public class ProductModelFeaturedAdapter implements ProductModel, Serializable,
 		this.productModel = productModel;
 	}
 
-	@Override
-	public void setParentKey(ContentKey parentKey) {
-	    productModel.setParentKey(parentKey);
-	}
-
 	public boolean isFeatured() {
 		return isFeatured;
 	}
@@ -1390,13 +1385,13 @@ public class ProductModelFeaturedAdapter implements ProductModel, Serializable,
 	@Override
 	public double getAvailabileQtyForDate(Date targetDate) {
 		 return  productModel.getAvailabileQtyForDate(targetDate);
-		
+
 	}
-	
+
 	//appdev 6709, fkw-1344
 	@Override
     public String getEarliestAvailabilityMessage() {
 		return productModel.getEarliestAvailabilityMessage();
-       
+
     }
 }

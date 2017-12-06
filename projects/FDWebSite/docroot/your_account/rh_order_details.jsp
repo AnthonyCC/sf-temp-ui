@@ -37,7 +37,7 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Your Account - Order Details"/>
   </tmpl:put>
-    <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Order Details</tmpl:put>
+<%--     <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Order Details</tmpl:put> --%>
     <tmpl:put name='content' direct='true'>
 
 

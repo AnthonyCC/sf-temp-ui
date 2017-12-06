@@ -5,7 +5,7 @@
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Terms And Conditions"/>
   </tmpl:put>
-  <tmpl:put name='title' direct='true'>FreshDirect - Terms And Conditions</tmpl:put>
+<%--   <tmpl:put name='title' direct='true'>FreshDirect - Terms And Conditions</tmpl:put> --%>
 <tmpl:put name='content' direct='true'>
 	<fd:IncludeMedia name="/media/editorial/site_pages/sms/terms_long.html" />
 </tmpl:put>

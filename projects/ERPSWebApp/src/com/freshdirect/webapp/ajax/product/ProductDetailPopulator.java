@@ -86,9 +86,11 @@ import com.freshdirect.storeapi.content.SkuModel;
 import com.freshdirect.storeapi.util.ProductInfoUtil;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
+import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
 import com.freshdirect.webapp.ajax.cart.CartOperations;
 import com.freshdirect.webapp.ajax.cart.data.CartData.Quantity;
 import com.freshdirect.webapp.ajax.cart.data.CartData.SalesUnit;
+import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
 import com.freshdirect.webapp.ajax.holidaymealbundle.service.HolidayMealBundleService;
 import com.freshdirect.webapp.ajax.mealkit.service.MealkitService;
 import com.freshdirect.webapp.ajax.product.data.BasicProductData;
@@ -218,7 +220,18 @@ public class ProductDetailPopulator {
 			// wrap it into a pricing adapter if naked
 			product = ProductPricingFactory.getInstance().getPricingAdapter( product, user.getUserContext().getPricingContext() );
 		}
+				
+		// Create response data object
+		ProductData data = new ProductData();
 		
+		populateDetailProductData(user, product, sku, lineData, showCouponStatus, data);
+
+		return data;
+	}
+
+	private static void populateDetailProductData(FDUserI user, ProductModel product, SkuModel sku,
+			FDProductSelectionI lineData, boolean showCouponStatus, ProductData data)
+			throws FDResourceException, FDSkuNotFoundException, HttpErrorResponse {
 		FDProductInfo productInfo = sku.getProductInfo();
 		if ( productInfo == null ) {
 			BaseJsonServlet.returnHttpError( 500, "productInfo does not exist for this product" );
@@ -242,11 +255,6 @@ public class ProductDetailPopulator {
 				LOG.warn( "Invalid configuration" + e.getMessage() );
 			}
 		}
-
-				
-		// Create response data object
-		ProductData data = new ProductData();
-		
 		// Populate product basic-level data
 		populateBasicProductData( data, user, product );
 		
@@ -261,11 +269,9 @@ public class ProductDetailPopulator {
 
 		// Populate MealKit specific properties
 		MealkitService.defaultService().populateData(data, product);
-
+		
 		// Populate transient-data
 		postProcessPopulate( user, data, sku.getSkuCode(), showCouponStatus, lineData );
-
-		return data;
 	}
 	
 	
@@ -405,7 +411,46 @@ public class ProductDetailPopulator {
 		return createProductDataForCarousel( user, product, sku, null, false );
 	}
 
+	public static void populateBrowseProductData( ProductData productData, FDUserI user, CmsFilteringNavigator nav, boolean enableProductIncomplete) throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException{
+		
+		if (productData == null || !productData.isRequirePopulation()) {
+			return;
+		}
+		ProductModel product = productData.getProductModel();
+		if (product == null) {
+			BaseJsonServlet.returnHttpError( 500, "product not found");
+		}
+		
+		if (!(product instanceof ProductModelPricingAdapter)) {
+			// wrap it into a pricing adapter if naked
+			product = ProductPricingFactory.getInstance().getPricingAdapter( product, user.getUserContext().getPricingContext());
+		}
+		
+	    if (enableProductIncomplete && PopulatorUtil.isProductIncomplete(product) && !PopulatorUtil.isNodeArchived(product)) {
+	    	populateProductDataLight(user, product, productData);
+	    	productData.setRequirePopulation(false);
+	    	return;
+		}
+		
+		SkuModel sku = PopulatorUtil.getDefSku(product);
+		if (sku == null) {
+			BaseJsonServlet.returnHttpError(500, "default sku does not exist for this product: " + product.getContentName());
+		}
+		
+		populateDetailProductData(user, product, sku, null, false, productData);
+		if (!nav.populateSectionsOnly()) {
+			productData = ProductDetailPopulator.populateBrowseRecommendation(user, productData, product);
+			if (!productData.isIncomplete()) {
+				productData = ProductDetailPopulator.populateSelectedNutritionFields(user, productData, sku.getProduct(), nav.getErpNutritionTypeType());
+			}
+		}
+		FilteringFlowType pageType = nav.getPageType();
+		if (pageType != null) {
+			productData.setPageType(pageType.toString());
+		}
 
+		productData.setRequirePopulation(false);
+	}
 
 	public static ProductData populateBrowseRecommendation(FDUserI user, ProductData data, ProductModel product) throws FDResourceException, FDSkuNotFoundException, HttpErrorResponse {
 		if ( data == null ) {
@@ -1671,6 +1716,15 @@ public class ProductDetailPopulator {
 	 * @throws FDSkuNotFoundException
 	 */
 	public static ProductData createProductDataLight(FDUserI user, ProductModel product) throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
+		// Create response data object
+		ProductData data = new ProductData();
+		populateProductDataLight(user, product, data);
+		
+		return data;
+	}
+
+	public static void populateProductDataLight(FDUserI user, ProductModel product, ProductData data)
+			throws FDResourceException, HttpErrorResponse {
 		// Episode I - DO THE MAGIC / PREPARATIONS
 		
 		if ( !(product instanceof ProductModelPricingAdapter) ) {
@@ -1693,23 +1747,15 @@ public class ProductDetailPopulator {
 		// Episode II - POPULATE DATA
 		LOG.debug("Product["+product.getContentKey().getId() + "] with SKU[" + (sku != null ? sku.getContentKey().getId() : "null") + "] is considered incomplete");
 		
-		// Create response data object
-		ProductData data = new ProductData();
 		data.setIncomplete(true);
 
 		// Populate product basic-level data
 		populateBasicProductData( data, user, product );
 
-		// FIXME Block below is possibly ignored
 		if (sku != null) {
-			// Populate sku-level data for the default sku only
-			// populateSkuData( data, user, product, sku, null );
-
 			// Populate transient-data
 			postProcessPopulate( user, data, sku.getSkuCode() );
 		}
-		
-		return data;
 	}
 
 	private static String fetchMedia(String mediaPath, FDUserI user, boolean quoted) throws IOException, TemplateException {

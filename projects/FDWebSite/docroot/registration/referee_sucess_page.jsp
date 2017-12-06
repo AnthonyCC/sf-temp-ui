@@ -58,7 +58,7 @@ request.setAttribute("listPos", "HPLeftTop");
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="Welcome to FreshDirect"/>
   </tmpl:put>
-  <tmpl:put name='title' direct='true'>Welcome to FreshDirect</tmpl:put>
+<%--   <tmpl:put name='title' direct='true'>Welcome to FreshDirect</tmpl:put> --%>
 <tmpl:put name='content' direct='true'>
 	<div id="thankyoutext">THANK YOU FOR SIGNING UP!</div>
 	<div id="cbutton"><a href="/index.jsp">CONTINUE SHOPPING</a>

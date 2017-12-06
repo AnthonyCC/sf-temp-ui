@@ -87,9 +87,9 @@ List<ErpAddressModel> dlvAddresses = FDCustomerFactory.getErpCustomer(user.getId
 <%! java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US); %>
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
   <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Checkout - Choose Delivery Address"/>
+    <fd:SEOMetaTag title="DELIVERY ADDRESS"/>
   </tmpl:put>
-  <tmpl:put name='title'>FreshDirect - Checkout - Choose Delivery Address</tmpl:put>
+<%--   <tmpl:put name='title'>FreshDirect - Checkout - Choose Delivery Address</tmpl:put> --%>
 <tmpl:put name="extraCSSjs" direct="true">
 <%@ include file="/includes/i_check_unattended_delivery.jspf" %>
 
@@ -202,7 +202,7 @@ while (e.hasMoreElements()) {
 	<tmpl:put name="ordnumb"><%= modifiedOrderNumber %></tmpl:put>
 	<tmpl:put name="note"><%= modifyNote %></tmpl:put>
 <% } %>
-	<tmpl:put name="title">DELIVERY ADDRESS</tmpl:put>
+<%-- 	<tmpl:put name="title">DELIVERY ADDRESS</tmpl:put> --%>
 	<tmpl:put name="delivery-fee">
 		<span class="checkout-delivery-fee"><% if (FDStoreProperties.isNewFDTimeslotGridEnabled()) { %><fd:IncludeMedia name="/media/editorial/timeslots/msg_timeslots_learnmore.html"/><% } %></span>
 		<%@ include file="/includes/i_cart_delivery_fee.jspf" %>

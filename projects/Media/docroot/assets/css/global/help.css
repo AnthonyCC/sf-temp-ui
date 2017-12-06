@@ -16,7 +16,7 @@
 
 #timeslotloyalityHeader {
 	width: 100%;
-	height: 25px;
+	min-height: 25px;
 	background: #999966;
 	color: #fff;
 	border-radius: 10px;

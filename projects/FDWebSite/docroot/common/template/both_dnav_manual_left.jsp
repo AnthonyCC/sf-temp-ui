@@ -21,7 +21,8 @@ final int W_BDNML_RIGHT = 191;
 %>
 <html lang="en-US" xml:lang="en-US">
 <head>
-	<title><tmpl:get name='title'/></title>
+     <tmpl:get name="seoMetaTag"/>
+<%-- 	<title><tmpl:get name='title'/></title> --%>
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
   <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>

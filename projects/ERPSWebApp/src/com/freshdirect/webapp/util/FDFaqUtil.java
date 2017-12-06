@@ -22,20 +22,22 @@ public class FDFaqUtil {
 		ContentNodeI 		contentNode = manager.getContentNode(key);
 
 		List<ContentNodeI> faqSubFolders = new LinkedList<ContentNodeI>();
-		if ( null != contentNode ) {
-			List<ContentKey> subNodes = (List<ContentKey>) contentNode.getAttributeValue("children");
-			for ( Object object : subNodes ) {
-				ContentKey subContentKey = (ContentKey)object;
-				if ( null != subContentKey ) {
-					ContentType contentType = subContentKey.getType();
-					ContentNodeI subContentNode = manager.getContentNode( subContentKey );
-					if ( FDContentTypes.FAQ.equals( contentType ) ) {
-						faqSubFolders.add( subContentNode );
-					}
-				}
-			}
+        if ( null != contentNode ) {
+            List<ContentKey> subNodes = (List<ContentKey>) contentNode.getAttributeValue("children");
+            if (subNodes != null) {
+                for ( Object object : subNodes ) {
+                    ContentKey subContentKey = (ContentKey)object;
+                    if ( null != subContentKey ) {
+                        ContentType contentType = subContentKey.getType();
+                        ContentNodeI subContentNode = manager.getContentNode( subContentKey );
+                        if ( FDContentTypes.FAQ.equals( contentType ) ) {
+                            faqSubFolders.add( subContentNode );
+                        }
+                    }
+                }
+            }
 
-		}
+        }
 		return faqSubFolders;
 	}
 

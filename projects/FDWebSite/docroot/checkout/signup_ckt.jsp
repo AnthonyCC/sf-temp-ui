@@ -55,7 +55,7 @@ for (Iterator erItr = aerrs.iterator();erItr.hasNext();) {
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Sign Up"/>
   </tmpl:put>
-  <tmpl:put name='title'>FreshDirect - Sign Up</tmpl:put>
+<%--   <tmpl:put name='title'>FreshDirect - Sign Up</tmpl:put> --%>
 <tmpl:put name='content' direct='true'>
 
 <fd:ErrorHandler result='<%=result%>' name='fraud' id='errorMsg'>

@@ -27,7 +27,7 @@
 <tmpl:insert template='/quickshop/includes/standing_order.jsp'>
 
   <tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag pageId="standing_orders"></fd:SEOMetaTag>
+		<fd:SEOMetaTag title="Freshdirect-StandingOrder" pageId="standing_orders"></fd:SEOMetaTag>
   </tmpl:put>
 
   <tmpl:put name="soytemplates"><soy:import packageName="standingorder"/><soy:import packageName="expressco"/></tmpl:put>

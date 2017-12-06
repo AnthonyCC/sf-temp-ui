@@ -6,10 +6,10 @@ final int W_AOL_NOTE_TOTAL = 970;
 %>
 
 <tmpl:insert template='/common/template/no_space_border.jsp'>
-	<tmpl:put name='title' direct='true'>FreshDirect - Note to AOL Users</tmpl:put>
+<%-- 	<tmpl:put name='title' direct='true'>FreshDirect - Note to AOL Users</tmpl:put> --%>
 	
 	<tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag pageId="aol_note"></fd:SEOMetaTag>
+		<fd:SEOMetaTag title="FreshDirect - Note to AOL Users" pageId="aol_note"></fd:SEOMetaTag>
 	</tmpl:put>
 
 	<tmpl:put name='content' direct='true'>

@@ -50,7 +50,8 @@ if(windowSize.equalsIgnoreCase("custom")){
 
 <html lang="en-US" xml:lang="en-US">
 <head>
-        <title> <%=name%></title>
+      <%--   <title> <%=name%></title> --%>
+         <fd:SEOMetaTag title="<%=name%>"/>
         <%@ include file="/common/template/includes/metatags.jspf" %>
 		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 		<fd:javascript src="/assets/javascript/common_javascript.js"/>

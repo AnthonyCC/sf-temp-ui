@@ -34,8 +34,8 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 	/** Random ID, not persisted */
 	private final int randomId = RND.nextInt();
 
-	private final ErpInvoiceLineI firstInvoiceLine;
-	private final ErpInvoiceLineI lastInvoiceLine;
+	private final FDInvoiceLineModel firstInvoiceLine;
+	private final FDInvoiceLineModel lastInvoiceLine;
 	private final ErpReturnLineModel returnLine;
 
 	private final String variantId;
@@ -45,6 +45,17 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 	protected AbstractCartLine(FDSku sku, ProductModel productRef, FDConfigurableI configuration, String variantId, UserContext userCtx) {
 		super(sku, productRef, configuration, variantId, userCtx);
 
+		this.firstInvoiceLine = null;
+		this.lastInvoiceLine = null;
+		this.returnLine = null;
+		
+		this.variantId = variantId;
+	}
+	
+	//Introduced for Storefront 2.0 implementation only.
+	protected AbstractCartLine(FDSku sku, ProductModel productRef, FDConfigurableI configuration, String variantId, UserContext userCtx, String plantId) {
+		super(sku, productRef, configuration, variantId, userCtx,plantId);
+		
 		this.firstInvoiceLine = null;
 		this.lastInvoiceLine = null;
 		this.returnLine = null;
@@ -61,19 +72,27 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 	}
 
 	public AbstractCartLine(
-		ErpOrderLineModel orderLine,
-		ErpInvoiceLineI firstInvoiceLine,
-		ErpInvoiceLineI lastInvoiceLine,
-		ErpReturnLineModel returnLine,
-		boolean lazy) {
-		super(orderLine, lazy);
+	        ErpOrderLineModel orderLine,
+	        ErpInvoiceLineI firstInvoiceLine,
+	        ErpInvoiceLineI lastInvoiceLine,
+	        ErpReturnLineModel returnLine,
+	        boolean lazy) {
+	        super(orderLine, lazy);
 
-		this.firstInvoiceLine = firstInvoiceLine;
-		this.lastInvoiceLine = lastInvoiceLine;
-		this.returnLine = returnLine;
+	        if (firstInvoiceLine==null) {
+	    		this.firstInvoiceLine = null;
+			} else {
+				this.firstInvoiceLine = new FDInvoiceLineModel(firstInvoiceLine,getUserContext());
+			}
+	        if (lastInvoiceLine==null){
+	        	this.lastInvoiceLine = null;
+	        } else {
+	        this.lastInvoiceLine = new FDInvoiceLineModel(lastInvoiceLine,getUserContext());
+	        }
+	        this.returnLine = returnLine;
 
-		this.variantId = orderLine.getVariantId();
-	}
+	        this.variantId = orderLine.getVariantId();
+	    }
 
 	public int getRandomId() {
 		return this.randomId;
@@ -119,15 +138,15 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 		return this.getInvoiceLine() != null;
 	}
 
-	public ErpInvoiceLineI getInvoiceLine() {
+	public FDInvoiceLineModel getInvoiceLine() {
 		return this.lastInvoiceLine;
 	}
 
-	public ErpInvoiceLineI getFirstInvoiceLine() {
+	public FDInvoiceLineModel getFirstInvoiceLine() {
 		return this.firstInvoiceLine;
 	}
 
-	public ErpInvoiceLineI getLastInvoiceLine() {
+	public FDInvoiceLineModel getLastInvoiceLine() {
 		return this.lastInvoiceLine;
 	}
 
@@ -205,6 +224,36 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 		}
 	}
 
+	public String getSubstitutedQuantity() {
+		if (!this.hasInvoiceLine()) {
+			return "";
+		}
+		return QUANTITY_FORMATTER.format(this.getFirstInvoiceLine().getWeight());
+	}
+	
+	public String getSubstituteProductName() {
+		if (!this.hasInvoiceLine()) {
+			return "";
+		}
+		return this.getFirstInvoiceLine().getSubstituteProductName(); 
+	
+	}
+	
+	public String getSubstituteProductDefaultPrice() {
+		if (!this.hasInvoiceLine()) {
+			return "";
+		}
+		return this.getFirstInvoiceLine().getSubstituteProductDefaultPrice();
+	}
+	
+	public String getSubSkuStatus(){
+		if (!this.hasInvoiceLine()) {
+			return "";
+		}
+		return this.getFirstInvoiceLine().getSubSkuStatus();
+	}
+	
+	
 	public String getReturnedQuantity() {
 		if (!this.hasReturnLine()) {
 			return "";

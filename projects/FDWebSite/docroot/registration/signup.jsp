@@ -41,7 +41,7 @@ final int W_SIGNUP_TOTAL = 970;
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Sign Up"/>
   </tmpl:put>
-  <tmpl:put name='title' direct='true'>FreshDirect - Sign Up</tmpl:put>
+<%--   <tmpl:put name='title' direct='true'>FreshDirect - Sign Up</tmpl:put> --%>
 <tmpl:put name='content' direct='true'>
 
 

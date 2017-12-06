@@ -41,9 +41,9 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 %>
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
   <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Checkout - Review & Submit Order"/>
+    <fd:SEOMetaTag title="Review Your Order"/>
   </tmpl:put>
-  <tmpl:put name='title'>FreshDirect - Checkout - Review & Submit Order</tmpl:put>
+<%--   <tmpl:put name='title'>FreshDirect - Checkout - Review & Submit Order</tmpl:put> --%>
 <tmpl:put name='content' direct='true'>
 <%
 		FDSessionUser fdSessionUser = (FDSessionUser) user;
@@ -192,7 +192,7 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 	<tmpl:put name="ordnumb"><%= modifiedOrderNumber %></tmpl:put>
 	<tmpl:put name="note"><%= modifyNote %></tmpl:put>
 <% } %>
-	<tmpl:put name="title">Review Your Order</tmpl:put>
+<%-- 	<tmpl:put name="title">Review Your Order</tmpl:put> --%>
 	<tmpl:put name="delivery-fee">
 		<span class="checkout-delivery-fee"><% if (FDStoreProperties.isNewFDTimeslotGridEnabled()) { %><fd:IncludeMedia name="/media/editorial/timeslots/msg_timeslots_learnmore.html"/><% } %></span>
 		<%@ include file="/includes/i_cart_delivery_fee.jspf" %>

@@ -58,7 +58,10 @@
 	params.put("showZips", true);
 %>
 <tmpl:insert template='/shared/template/large_pop_no_ads.jsp'>
-	<tmpl:put name='title' direct='true'>FreshDirect - Our Delivery Zones</tmpl:put>
+<%-- 	<tmpl:put name='title' direct='true'>FreshDirect - Our Delivery Zones</tmpl:put> --%>
+	<tmpl:put name="seoMetaTag" direct="true">
+    <fd:SEOMetaTag title="FreshDirect - Our Delivery Zones" ></fd:SEOMetaTag>
+  </tmpl:put>
 	<tmpl:put name='content' direct='true'>
 		<fd:IncludeMedia name="/media/editorial/site_pages/delivery_info/pickup/main.ftl" parameters="<%=params%>" withErrorReport="true" />
 	</tmpl:put>

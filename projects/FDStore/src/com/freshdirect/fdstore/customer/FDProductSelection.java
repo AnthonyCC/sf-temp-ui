@@ -322,6 +322,22 @@ public class FDProductSelection implements FDProductSelectionI {
 		return this.orderLine.getPrice();
 	}
 
+	public double getSaveAmount() {
+		// return 0 for free and sample items.
+		if (this.orderLine.getDiscount() != null && (
+				this.orderLine.getDiscount().getDiscountType() == EnumDiscountType.FREE ||
+				this.orderLine.getDiscount().getDiscountType() == EnumDiscountType.SAMPLE)) {
+			return 0;
+		}
+		
+		double currentPrice = getPrice();
+		double originalPrice = (this.orderLine.getUnscaledPrice() == 0? this.price.getOriginalPrice() * getQuantity() : this.orderLine.getUnscaledPrice());
+		if (originalPrice > currentPrice) {
+			return (originalPrice - currentPrice);
+		}
+		return 0;
+	}
+	
 	public double getActualPrice() {
 		return this.orderLine.getActualPrice();
 	}
@@ -580,6 +596,7 @@ public class FDProductSelection implements FDProductSelectionI {
 				this.orderLine.setPricingZoneId(price.getZoneInfo().getPricingZoneId());
 				this.orderLine.setSalesOrg(price.getZoneInfo().getSalesOrg());
 				this.orderLine.setDistChannel(price.getZoneInfo().getDistributionChanel());
+				this.orderLine.setUnscaledPrice(price.getUnscaledPrice());
 			}	
 			
 			//System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$Price is set here?" + this.getDescription() + " -price:" + this.orderLine.getPrice() + " -discount:" + this.orderLine.getDiscountAmount());

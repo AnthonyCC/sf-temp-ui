@@ -60,7 +60,7 @@ if (mobWeb) {
   <tmpl:put name='containerExtraClass' direct='true'>browse</tmpl:put>
   
   <c:if test="${not empty browsePotato.descriptiveContent.pageTitle}">
-  <tmpl:put name='title'>${browsePotato.descriptiveContent.pageTitle}</tmpl:put>
+<%--   <tmpl:put name='title'>${browsePotato.descriptiveContent.pageTitle}</tmpl:put> --%>
   </c:if>
   
   <tmpl:put name="seoMetaTag" direct="true">

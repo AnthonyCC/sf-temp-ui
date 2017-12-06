@@ -83,7 +83,7 @@ public class DlvProperties {
 		defaults.put(PROP_REPORT_HOME, "freshdirect.delivery.Report");
 		defaults.put(PROP_FREE_SPATIAL_ONLY, "true");
 		defaults.put(PROP_SMS_ALERTS_HOME, "freshdirect.SmsAlerts");
-		defaults.put(PROP_SMS_EXPIRE_IN_MINS, "60");
+		defaults.put(PROP_SMS_EXPIRE_IN_MINS, "300");
 		defaults.put(PROP_NEXTSTOP_SMS_NO_SEND_LIMIT, "30");
 		defaults.put(PROP_SMSETA_NO_OF_THREADS, "5");
 				

@@ -268,7 +268,7 @@ public class ProductRecommenderUtil {
 			MAX_CAT_SCARAB_RECOMMENDER_COUNT, null, null);
 	}
 
-	public static Recommendations getSearchPageRecommendations(FDUserI user, ProductData product) throws FDResourceException {
+	public static Recommendations getSearchPageRecommendations(FDUserI user, String productId) throws FDResourceException {
 
 		Recommendations recommendations = null;
 		if (user.getIdentity() != null){ //try personal if user is identified
@@ -276,7 +276,7 @@ public class ProductRecommenderUtil {
 			recommendations = doRecommend(user, null, EnumSiteFeature.getEnum("SRCH"), 16, null, null);
 		}
 
-		if ((recommendations == null || recommendations.getAllProducts().size() == 0) && product != null) {
+		if ((recommendations == null || recommendations.getAllProducts().size() == 0) && productId != null && !productId.isEmpty()) {
 			// Round #2 - Get YMAL recommendations triggered by the first product from the selection
 			//   (Scarab 'Also Viewed' recommender backfilled with local SmartYMAL)
 
@@ -284,7 +284,7 @@ public class ProductRecommenderUtil {
 					.setUser(user)
 					.setExcludeAlcoholicContent(false)
 					.setMaxRecommendations(16)
-					.setCurrentNode(ContentFactory.getInstance().getContentNode(product.getProductId()))
+					.setCurrentNode(ContentFactory.getInstance().getContentNode(productId))
 					.build();
 
 			recommendations = doRecommend(user, EnumSiteFeature.getEnum("SRCH_RLTD"), si);

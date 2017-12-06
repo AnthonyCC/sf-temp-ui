@@ -2,8 +2,8 @@
 
 <HTML>
 <HEAD>
-<TITLE>FreshDirect - Unattended Deliveries</TITLE>
-
+<%--  <TITLE>FreshDirect - Unattended Deliveries</TITLE> --%>
+    <fd:SEOMetaTag title="FreshDirect - Unattended Deliveries"/>
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>

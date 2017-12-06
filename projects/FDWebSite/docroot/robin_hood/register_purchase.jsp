@@ -50,7 +50,10 @@ function displayStatus(){
 	java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
 %>
 <tmpl:insert template='/common/template/robinhood.jsp'>
-<tmpl:put name='title' direct='true'>FreshDirect - Donation Sign Up</tmpl:put>
+<%-- <tmpl:put name='title' direct='true'>FreshDirect - Donation Sign Up</tmpl:put> --%>
+  <tmpl:put name="seoMetaTag" direct="true">
+    <fd:SEOMetaTag title="FreshDirect - Donation Sign Up"></fd:SEOMetaTag>
+  </tmpl:put>
 <tmpl:put name='content' direct='true'>
 <fd:DonationBuyerController actionName='registerRobinHoodBuyer' result="result" registrationType='30'>
 <fd:ErrorHandler result='<%=result%>' name='Opt_in_required' id='errorMsg'>	

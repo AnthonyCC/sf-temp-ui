@@ -220,11 +220,20 @@ public class DraftContentProviderServiceTest {
         ContentKey department = ContentKeyFactory.get(ContentType.Department, "dept1");
         ContentKey store = RootContentKey.STORE_FRESHDIRECT.contentKey;
 
-        Mockito.doReturn(
-                Arrays.asList(Arrays.asList(productKey, parentNotPrimaryHome, department, store),
-                Arrays.asList(productKey, parentPrimaryHome, department, store)))
+        Mockito
+            .doReturn(
+                Arrays.asList(
+                    Arrays.asList(productKey, parentNotPrimaryHome, department, store),
+                    Arrays.asList(productKey, parentPrimaryHome, department, store)
+                )
+            )
             .when(underTest).findContextsOf(productKey);
-        Mockito.when(draftContextHolder.getDraftContext()).thenReturn(new DraftContext());
+        Mockito
+            .when(draftContextHolder.getDraftContext()).thenReturn(new DraftContext());
+        Mockito
+            .when(contentProviderService.getAttributeValue(productKey, ContentTypes.Product.PRIMARY_HOME))
+            .thenReturn(Optional.<Object>of(Arrays.asList(parentPrimaryHome, parentNotPrimaryHome)));
+
 
         Map<ContentKey, ContentKey> productPrimaryHomes = underTest.findPrimaryHomes(productKey);
 
@@ -248,8 +257,8 @@ public class DraftContentProviderServiceTest {
 
         final List<ContentKey> primaryHomeAttributeValue = Arrays.asList(parentPrimaryHome, parentPrimaryHomeInFDX);
 
-        Mockito.when(contentProviderService.getAllAttributesForContentKey(productKey))
-            .thenReturn(ImmutableMap.<Attribute, Object>of(ContentTypes.Product.PRIMARY_HOME, primaryHomeAttributeValue));
+        Mockito.when(contentProviderService.getAttributeValue(productKey, ContentTypes.Product.PRIMARY_HOME))
+            .thenReturn(Optional.<Object>of(primaryHomeAttributeValue));
 
         Mockito.doReturn(
                 Arrays.asList(Arrays.asList(productKey, parentNotPrimaryHome, department, freshdirectStore),

@@ -21,18 +21,17 @@ import com.freshdirect.payment.service.FDECommerceService;
 public class FDInventoryCache extends FDAbstractCache<String, ErpInventoryModel> {
 	private static Category LOGGER = LoggerFactory.getInstance(FDInventoryCache.class);
 
-	private static FDInventoryCache instance;
+    private static class InstanceHolder {
+        private static final FDInventoryCache INSTANCE = new FDInventoryCache();
+    }
 
 	private FDInventoryCache(){
 		super(DateUtil.MINUTE * FDStoreProperties.getInventoryRefreshPeriod());
 	}
 
-	public synchronized static FDInventoryCache getInstance(){
-		if(instance == null){
-			instance = new FDInventoryCache();
-		}
-		return instance;
-	}
+    public static FDInventoryCache getInstance() {
+        return InstanceHolder.INSTANCE;
+    }
 
 	@Override
 	protected Map<String, ErpInventoryModel> loadData(Date since) {

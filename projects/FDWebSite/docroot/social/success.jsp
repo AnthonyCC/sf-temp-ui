@@ -1,8 +1,10 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName" %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <!DOCTYPE html>
 <html lang="en-US" xml:lang="en-US">
 <head>
-  <title>FreshDirect</title>
+  <%-- <title>FreshDirect</title> --%>
+    <fd:SEOMetaTag title="FreshDirect"/>
   <%@ include file="/common/template/includes/i_javascripts_browse.jspf" %>
   <%
     request.getSession(false).removeAttribute(SessionName.LOGIN_SUCCESS);

@@ -18,7 +18,7 @@ final int W_COFFEE_DONT_KNOW_BEANS_TOTAL = 765;
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Don't Know Beans"/>
   </tmpl:put>
-  <tmpl:put name='title'>FreshDirect - Don't Know Beans</tmpl:put>
+<%--   <tmpl:put name='title'>FreshDirect - Don't Know Beans</tmpl:put> --%>
 
 		<tmpl:put name='content' direct='true'>
 			 <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="<%=W_COFFEE_DONT_KNOW_BEANS_TOTAL%>">

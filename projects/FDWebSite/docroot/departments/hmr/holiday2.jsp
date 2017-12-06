@@ -14,7 +14,7 @@ final int W_HOLIDAY2 = 970;
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Our Valentine's Day Menu"/>
   </tmpl:put>
-  <tmpl:put name='title'>FreshDirect - Our Valentine's Day Menu</tmpl:put>
+<%--   <tmpl:put name='title'>FreshDirect - Our Valentine's Day Menu</tmpl:put> --%>
     <tmpl:put name='content' direct='true'>
 	<table cellpadding="0" cellspacing="0" border="0" width="<%=W_HOLIDAY2%>">
 	<tr><td colspan="3" align="center" class="title17"><img src="/media_stat/images/template/kitchen/valentine_title.gif" width="601" height="61" alt="Our Valentine's Day Menu"><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"><br><font face="Arial, Helvetica, sans-serif">Let the former Executive Chef of One If by Land, Two If by Sea<br>prepare you a romantic and sexy Valentine's Day Dinner</font><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="18"></td></tr>

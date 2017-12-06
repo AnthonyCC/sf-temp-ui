@@ -464,7 +464,7 @@ if (categoryModel != null) {
     <tmpl:put name="seoMetaTag" direct='true'>
         <fd:SEOMetaTag title="<%= title %>"/>
     </tmpl:put>
-	<tmpl:put name='title' direct='true'><%= title %></tmpl:put>
+<%-- 	<tmpl:put name='title' direct='true'><%= title %></tmpl:put> --%>
 	<tmpl:put name="activeView">grid<% //= nav.isListView() && !nav.isRecipes() ? "list" : "grid" %></tmpl:put>
 	<tmpl:put name="noResult"><%= search.getProducts().isEmpty() && search.getRecipes().isEmpty() ? "noresult" : "hasresults" %></tmpl:put>
 	<tmpl:put name="startPage">resultpage</tmpl:put>

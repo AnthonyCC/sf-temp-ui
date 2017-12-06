@@ -39,9 +39,9 @@
 %>
 <% String actionName =  request.getParameter("actionName"); %>
 <tmpl:insert template='<%=template %>'>
-   <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Payment Options</tmpl:put>
+<%--    <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Payment Options</tmpl:put> --%>
    <tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag pageId="payment_info"></fd:SEOMetaTag>
+		<fd:SEOMetaTag title="FreshDirect - Your Account - Payment Options" pageId="payment_info"></fd:SEOMetaTag>
 	</tmpl:put>
     <tmpl:put name='content' direct='true'>
     <div class="content<%= (mobWeb) ? " mm-page" : "" %>">

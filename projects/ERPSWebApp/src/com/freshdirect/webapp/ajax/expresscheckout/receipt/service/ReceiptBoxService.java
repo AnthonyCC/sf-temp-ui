@@ -203,7 +203,14 @@ public class ReceiptBoxService {
         }
         receiptBox.add(data);
     }
-
+    
+    public void populateSaveAmountBox(ReceiptData receiptData, FDOrderI order) {
+    	double saving = order.getSaveAmount(true);
+    	if (saving > 0) {
+	         receiptData.setSaveAmount(JspMethods.formatPrice(saving));
+    	}
+    	
+    }
     public void populateDiscountsToBox(List<CartSubTotalFieldData> receiptBox, FDOrderI order) {
         if (order.getTotalDiscountValue() >= 0) {
             final List<ErpDiscountLineModel> discountLineModels = order.getDiscounts();

@@ -44,9 +44,9 @@ request.setAttribute("listPos", "HPLeftTop");
 
 
 <tmpl:insert template='/common/template/dnav.jsp'>
-<tmpl:put name='title' direct='true'>FreshDirect - Your Profile</tmpl:put>
+<%-- <tmpl:put name='title' direct='true'>FreshDirect - Your Profile</tmpl:put> --%>
 <tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag pageId="credit"></fd:SEOMetaTag>
+		<fd:SEOMetaTag title="FreshDirect - Your Profile" pageId="credit"></fd:SEOMetaTag>
 	</tmpl:put>
 <tmpl:put name='content' direct='true'>
 

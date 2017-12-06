@@ -101,6 +101,15 @@ public class ScoreProvider implements DataAccess {
     // LOGGER
 	private static Category LOGGER = LoggerFactory.getInstance(ScoreProvider.class);
 
+
+    private static class InstanceHolder {
+        private static final ScoreProvider INSTANCE = new ScoreProvider();
+    }
+
+    public static ScoreProvider getInstance() {
+        return InstanceHolder.INSTANCE;
+    }
+
 	/**
 	 * Database factors.
 	 */
@@ -311,8 +320,6 @@ public class ScoreProvider implements DataAccess {
 	private FactorInfo factorInfo = null;
 	protected ScoreRangeProvider personalizedScoreRangeProvider;
 
-	private static ScoreProvider instance = null;
-
        // Map<Factor:String,IndexInDoubleArray:Integer> score index
         // Score indexes tell what position the score is stored in globalScores or personalizesScores
         // in the double array
@@ -326,27 +333,6 @@ public class ScoreProvider implements DataAccess {
     // SessionCache<UserId:String, SessionCache.TimedEntry<Map<ContentKey,double[]>>>
     private SessionCache<String, SessionCache.TimedEntry<Map<ContentKey,double[]>>> personalizedScores
         = new SessionCache<String, SessionCache.TimedEntry<Map<ContentKey,double[]>>>(FDStoreProperties.getSmartstorePersonalizedScoresCacheEntries(),0.75f);
-
-
-	/**
-	 * Get instance.
-	 *
-	 * @return the only thread local instance
-	 */
-	public static synchronized ScoreProvider getInstance() {
-		if (instance == null) {
-			instance = new ScoreProvider();
-		}
-		return instance;
-	}
-
-	/**
-	 * Just for testing purposes, do not use!
-	 * @param ins
-	 */
-	public static synchronized void setInstance(ScoreProvider ins) {
-	    instance = ins;
-	}
 
 
 	/**
@@ -994,22 +980,14 @@ public class ScoreProvider implements DataAccess {
 		return personalizedScores.keySet();
 	}
 
-	protected ScoreProvider(boolean init) {
-    	if (init) {
-			LOGGER.info("Personalized cache entries: " + FDStoreProperties.getSmartstorePersonalizedScoresCacheEntries());
-			LOGGER.info("Personalized cache timeout (seconds): " + FDStoreProperties.getSmartstorePersonalizedScoresCacheTimeout());
+    private ScoreProvider() {
+        LOGGER.info("Personalized cache entries: " + FDStoreProperties.getSmartstorePersonalizedScoresCacheEntries());
+        LOGGER.info("Personalized cache timeout (seconds): " + FDStoreProperties.getSmartstorePersonalizedScoresCacheTimeout());
 
-			factorInfo = new FactorInfo();
+        factorInfo = new FactorInfo();
 
-			reloadFactorHandlers();
-	    }
-	}
-
-	protected ScoreProvider() {
-	    this(true);
-	}
-
-
+        reloadFactorHandlers();
+    }
 
 	private void reloadFactorHandlers() {
 

@@ -284,7 +284,7 @@
 			<div class="standing-orders-3-so-settings-item-details-left">Date & Time:</div><div class="standing-orders-3-so-settings-item-details-right">{if $item.currentDeliveryDate and $item.currentDeliveryTime}{$item.currentDayOfWeek}, {$item.currentDeliveryDate}, {$item.currentDeliveryTime}{else}None{/if}</div>{if $item.upComingOrderId}<button class="standing-orders-3-so-settings-item-details-modify-next-delivery cssbutton cssbutton-flat orange" onclick="window.location.href='/your_account/modify_order.jsp?orderId={$item.upComingOrderId}&action=modify'">Modify Next Delivery</button>{/if}
 		</div>		
 		<div class="standing-orders-3-so-settings-item-details-container">
-			<div class="standing-orders-3-so-settings-item-details-left">Estimated Total:</div><div class="standing-orders-3-so-settings-item-details-right">{call common.formatDecimalPrice}{param price:$item.amount /}{/call}</div>
+			<div class="standing-orders-3-so-settings-item-details-left">Estimated Total:</div><div class="standing-orders-3-so-settings-item-details-right standing-orders-3-so-settings-item-details-etotal">{call common.formatDecimalPrice}{param price:$item.amount /}{/call}</div>
 		</div>		
 		<div class="standing-orders-3-so-settings-item-details-header">Deliveries Will Change:</div>
 		<div class="standing-orders-3-so-settings-item-details-container standing-orders-3-so-settings-item-details-container-red">
@@ -308,7 +308,7 @@
 			<div class="standing-orders-3-so-settings-item-details-left">Frequency:</div><div class="standing-orders-3-so-settings-item-details-right">{if $item.frequencyDesc and $item.dayOfWeek}{$item.frequencyDesc}{$item.dayOfWeek}{else}None{/if}</div>
 		</div>
 		<div class="standing-orders-3-so-settings-item-details-container">
-			<div class="standing-orders-3-so-settings-item-details-left">Estimated Total:</div><div class="standing-orders-3-so-settings-item-details-right">{call common.formatDecimalPrice}{param price:$item.amount /}{/call}</div>
+			<div class="standing-orders-3-so-settings-item-details-left">Estimated Total:</div><div class="standing-orders-3-so-settings-item-details-right standing-orders-3-so-settings-item-details-etotal">{call common.formatDecimalPrice}{param price:$item.amount /}{/call}</div>
 		</div>
 	{/if}
 {/template}

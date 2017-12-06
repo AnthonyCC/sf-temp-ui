@@ -8,7 +8,7 @@ request.setAttribute("listPos", "SystemMessage,WDelivery,WAffiliate");
     <tmpl:put name="seoMetaTag" direct='true'>
         <fd:SEOMetaTag title="FreshDirect"/>
     </tmpl:put>
-	<tmpl:put name="title">FreshDirect</tmpl:put>
+<%-- 	<tmpl:put name="title">FreshDirect</tmpl:put> --%>
 	<tmpl:put name='content' direct='true'>
 	    <div class="content span-24">
 		<% if ( request.getParameter("lang") != null) { %>

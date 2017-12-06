@@ -95,7 +95,7 @@ String defaultFtl="/media/editorial/faq/intro.ftl";
     <tmpl:put name="seoMetaTag" direct='true'>
         <fd:SEOMetaTag title="FreshDirect - Help - FAQs"/>
     </tmpl:put>
-    <tmpl:put name='title' direct='true'>FreshDirect - Help - FAQs</tmpl:put>
+<%--     <tmpl:put name='title' direct='true'>FreshDirect - Help - FAQs</tmpl:put> --%>
 	<tmpl:put name='leftnav' direct='true'>
 	</tmpl:put>
     

@@ -9,7 +9,7 @@ final int W_YA_EDIT_CHECKACCT = 970;
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Your Account - Edit Checking Account"/>
   </tmpl:put>
-  <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Edit Checking Account</tmpl:put>
+<%--   <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Edit Checking Account</tmpl:put> --%>
 <tmpl:put name='content' direct='true'>
 <fd:PaymentMethodController actionName='editPaymentMethod' result='result' successPage='/your_account/payment_information.jsp'>
 

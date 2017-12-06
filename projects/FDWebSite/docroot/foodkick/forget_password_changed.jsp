@@ -1,3 +1,4 @@
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ include file="includes/fk_presenter_vars.jspf" %>
 <%
 String userAgent = request.getHeader("user-agent");
@@ -9,7 +10,10 @@ if(userAgent.matches(".*iPhone.*") || userAgent.matches(".*iPad.*")){
 }
 %>
 <tmpl:insert template='includes/fklayout_tmpl.jsp'>
-	<tmpl:put name='title'>Same-Day Food Delivery NYC | FoodKick: Changed your password</tmpl:put>
+<%-- 	<tmpl:put name='title'>Same-Day Food Delivery NYC | FoodKick: Changed your password</tmpl:put> --%>
+   <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="Same-Day Food Delivery NYC | FoodKick: Changed your password"/>
+   </tmpl:put>
 	<tmpl:put name='content'>
 		<script type="text/javascript">
 			cmCreatePageviewTag("FORGETPASSCHANGED: forget_password_changed.jsp","FDX_FORGETPASSCHANGED",null,null,"-_--_-FORGETPASSCHANGED: forget_password_changed.jsp-_--_--_--_-FORGETPASSCHANGED: forget_password_changed.jsp");

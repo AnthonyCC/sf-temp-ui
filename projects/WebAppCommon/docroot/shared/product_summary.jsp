@@ -96,7 +96,7 @@ String title = "FreshDirect - " + currentFolder.getFullName() + " Guide: " + pro
     <tmpl:put name="seoMetaTag" direct='true'>
         <fd:SEOMetaTag title="<%= title %>"/>
     </tmpl:put>
-    <tmpl:put name='title' direct='true'><%= title %></tmpl:put>
+<%--     <tmpl:put name='title' direct='true'><%= title %></tmpl:put> --%>
 <tmpl:put name='pageTitle' direct='true'><%= currentFolder.getFullName().toUpperCase()  %> GUIDE</tmpl:put>
 
 <tmpl:put name='content' direct='true'>

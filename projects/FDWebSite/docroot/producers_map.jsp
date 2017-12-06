@@ -42,7 +42,7 @@ CategoryModel cat = (CategoryModel) PopulatorUtil.getContentNode(catId);
     <tmpl:put name="seoMetaTag" direct='true'>
         <fd:SEOMetaTag title="FreshDirect - What's Local"/>
     </tmpl:put>
-	<tmpl:put name='title' direct='true'>FreshDirect - What's Local</tmpl:put>
+<%-- 	<tmpl:put name='title' direct='true'>FreshDirect - What's Local</tmpl:put> --%>
 	<%-- SCRIPTS IN HEADER --%>
 	<tmpl:put name='head_content'>
 

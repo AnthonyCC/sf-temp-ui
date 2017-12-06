@@ -302,6 +302,7 @@
 
 .c-popup-header {
 	position: relative;
+	margin-bottom: 0.75em;
 }
 
 .popupcontentoverlay.centerpopupoverlay {

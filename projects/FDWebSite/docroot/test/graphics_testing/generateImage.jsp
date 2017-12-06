@@ -481,10 +481,10 @@ try {
 //null check background image
 if (background != null) {
 //and the actual output
-	//JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(response.getOutputStream());
-	//JPEGEncodeParam jep = encoder.getDefaultJPEGEncodeParam(background);
-	//jep.setQuality(iQ, (boolean)true); //change here to allow baseline as optional
-	//encoder.encode(background, jep);
+	/*JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(response.getOutputStream());
+	JPEGEncodeParam jep = encoder.getDefaultJPEGEncodeParam(background);
+	jep.setQuality(iQ, (boolean)true); //change here to allow baseline as optional
+	encoder.encode(background, jep);*/ //Commented this entire block since using classes in sun package is not allowed and will not work during JDK upgrade.
 }
 	response.getOutputStream().close();
 
