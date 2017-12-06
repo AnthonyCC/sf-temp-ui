@@ -102,6 +102,7 @@ public class Warmup {
         long time = System.currentTimeMillis();
 
         ContentFactory.getInstance().getStore();
+        CmsManager.getInstance().initPrimaryHomeMap();
 
         LOGGER.info("[WARMUP]Store warmup in " + (System.currentTimeMillis() - time) + " ms");
         Set<ContentKey> skuContentKeys = CmsManager.getInstance().getContentKeysByType(FDContentTypes.SKU);
