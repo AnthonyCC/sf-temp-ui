@@ -106,11 +106,11 @@
 		maxEntriesLocalHeap="40000" overflowToDisk="false" diskPersistent="false"
 		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
 
-	<cache name="nodesByIdCache" eternal="true" maxEntriesLocalHeap="100000"
+	<cache name="nodesByIdCache" eternal="true" maxEntriesLocalHeap="200000"
 		overflowToDisk="false" diskPersistent="false"
 		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
 
-	<cache name="nodesByKeyCache" eternal="true" maxEntriesLocalHeap="100000"
+	<cache name="nodesByKeyCache" eternal="true" maxEntriesLocalHeap="200000"
 		overflowToDisk="false" diskPersistent="false"
 		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
 
