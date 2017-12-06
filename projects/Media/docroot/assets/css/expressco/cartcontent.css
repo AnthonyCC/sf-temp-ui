@@ -1384,8 +1384,12 @@ label[for="dontupdatecartlines"] {
 
 .eTippingEnabled .rowcell-colon-right:after{
   content: " ";
-  white-space: pre;
 }
+
+.eTippingEnabled .rowcell-colon-right.st_label_youSaved:after{
+	white-space: pre;
+}
+
 .eTippingEnabled .strl_text:after, .cartsection__total .strl_text:after, .cartsection__tax .strl_text:after{
   content:":";
 }
