@@ -55,7 +55,7 @@ response.sendRedirect("/index.jsp?serviceType=" + serviceType);
     <tmpl:put name="seoMetaTag" direct='true'>
         <fd:SEOMetaTag title="FreshDirect - Logged Out"/>
     </tmpl:put>
-<%-- 	<tmpl:put name='title' direct='true'>FreshDirect - Logged Out</tmpl:put> --%>
+ 	<tmpl:put name='title' direct='true'>FreshDirect - Logged Out</tmpl:put> 
 		<tmpl:put name='content' direct='true'>
 
 			<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="400">
