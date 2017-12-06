@@ -58,7 +58,7 @@ request.setAttribute("noyui", true);
 
   boolean isCorpotateUser = user.isCorporateUser();
   boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
-  boolean mobWebOptimizedIndex = ( FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobwebindexopt, user) || "true".equalsIgnoreCase(request.getParameter("mobwebindexopt")) ) ? true : false;
+  boolean mobWebOptimizedIndex = ( ( FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobwebindexopt, user) || "true".equalsIgnoreCase(request.getParameter("mobwebindexopt")) ) && !"false".equalsIgnoreCase(request.getParameter("mobwebindexopt")) ) ? true : false;
 
 	request.setAttribute("sitePage", "www.freshdirect.com/index.jsp");
 

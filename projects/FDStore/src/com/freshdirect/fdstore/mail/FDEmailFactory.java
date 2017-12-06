@@ -116,14 +116,7 @@ public class FDEmailFactory {
 			email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
 			 
 			if(order.getShortedItems().size() > 0 || order.getBundleShortItems().size() > 0 || order.getBundleCompleteShort().size() > 0) {
-				if(order.getShortedItems().size() == 1)
-					email.setSubject("Your receipt from FreshDirect | Order is missing item(s)");	
-				else
-					if(order.getBundleShortItems().size() > 0 || order.getBundleCompleteShort().size() > 0){
-						email.setSubject("Your receipt from FreshDirect | Order is missing bundle item(s)");
-					}
-					else
-						email.setSubject("Your receipt from FreshDirect | Order is missing" + order.getShortedItems().size() + " item(s)");
+				email.setSubject("Heads up! Your order's missing item(s) | FreshDirect receipt inside");
 			} else if (EnumDeliveryType.PICKUP.equals(order.getDeliveryType())) {
 				email.setSubject("Your order for " + df.format(order.getRequestedDate()) + " is being prepared for pick-up.");
 			} else if(order.getDeliveryReservation() != null && order.getDeliveryReservation().getDeliveryETA() != null

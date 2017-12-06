@@ -28,7 +28,7 @@
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - 4-Minute Meals"/>
   </tmpl:put>
-  <tmpl:put name='title' direct='true'>FreshDirect - 4-Minute Meals</tmpl:put>
+<%--   <tmpl:put name='title' direct='true'>FreshDirect - 4-Minute Meals</tmpl:put> --%>
 	<%-- SCRIPTS IN HEADER --%>
 	<tmpl:put name='head_content'>
 	</tmpl:put>

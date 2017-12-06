@@ -65,7 +65,11 @@
 %>
 <fd:CheckLoginStatus />
 <tmpl:insert template='<%= templatePath %>'>
-<tmpl:put name='title' direct='true'>Dynamic Rows Test Page</tmpl:put>
+<%-- <tmpl:put name='title' direct='true'>Dynamic Rows Test Page</tmpl:put> --%>
+
+ <tmpl:put name="seoMetaTag" direct="true">
+    <fd:SEOMetaTag title="Dynamic Rows Test Page" ></fd:SEOMetaTag>
+  </tmpl:put>
 <tmpl:put name='content' direct='true'>
 
 	<script type="text/javascript">

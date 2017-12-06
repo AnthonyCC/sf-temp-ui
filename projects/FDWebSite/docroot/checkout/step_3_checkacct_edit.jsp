@@ -18,7 +18,7 @@ final int W_CHECKOUT_STEP_3_CHECKACCT_EDIT_TOTAL = 970;
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Checkout - Edit Checking Account"/>
   </tmpl:put>
-  <tmpl:put name='title'>FreshDirect - Checkout - Edit Checking Account</tmpl:put>
+<%--   <tmpl:put name='title'>FreshDirect - Checkout - Edit Checking Account</tmpl:put> --%>
 <tmpl:put name='content' direct='true'>
 
 <fd:PaymentMethodController actionName='editPaymentMethod' result='result' successPage='<%= "/checkout/step_3_choose.jsp?paymentId="+ request.getParameter("paymentId")%>'>

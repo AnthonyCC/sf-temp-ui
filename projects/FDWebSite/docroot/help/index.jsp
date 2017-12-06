@@ -109,14 +109,14 @@
 	}
 %>
 <tmpl:insert template='<%= pageTemplate %>'>
-	<tmpl:put name='title' direct='true'>FreshDirect - Help</tmpl:put>
+<%-- 	<tmpl:put name='title' direct='true'>FreshDirect - Help</tmpl:put> --%>
 	<tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag pageId="index_help" includeSiteSearchLink="true"/>
+		<fd:SEOMetaTag title="FreshDirect - Help" pageId="index_help" includeSiteSearchLink="true"/>
 	</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 		<% if (mobWeb) { %>
 			<%-- TITLE --%>
-			<div class="welcome-msg-title-small bold">Help</div>
+			<h2 class="welcome-msg-title-small bold">Help</h2>
 			
 			<%-- SEARCH --%>
 			<div class="search-cont">

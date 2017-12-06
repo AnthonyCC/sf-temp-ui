@@ -1,12 +1,14 @@
 <%@ include file="fk_presenter_vars.jspf" %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%@ include file="password_flow_vars.jspf" %>
 <!DOCTYPE html>
 <html lang="en-US" xml:lang="en-US">
 	<head>
-		<title> <tmpl:get name='title'/> </title>
+<%-- 		<title> <tmpl:get name='title'/> </title> --%>
+        <tmpl:get name="seoMetaTag"/>
         <%@ include file="/common/template/includes/metatags.jspf" %>
 		<meta charset="UTF-8" />
 		<link rel="icon" type="image/x-icon" href="<%=IMAGES_DIR %>/favicon2.ico" />

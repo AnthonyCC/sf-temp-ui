@@ -612,7 +612,8 @@ public class FourMinuteMealsHelper {
 							catCounter++;
 							currentCategory = (CategoryModel)node;
 
-							isCatHidden = !currentCategory.getShowSelf();
+							//isCatHidden = !currentCategory.getShowSelf();
+							isCatHidden = !currentCategory.isShowSelf();
 							// fetch sides in a snap subcategories
 							if ( isSidesInASnap ) {
 								if ( catCounter == 1 ) {

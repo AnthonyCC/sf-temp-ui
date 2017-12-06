@@ -3401,3 +3401,17 @@ button.space {
 .clickable,.fake-radio{
 	cursor: pointer;
 }
+
+.hasSubstitute {
+	color: #999;
+}
+.substitution {
+	color: #333;
+}
+.sublevel_arrow { /* /media_stat/images/common/sublevel_arrow_green.svg */
+	height: 1em;
+	width: 1em;
+}
+.lowercase {
+	text-transform: lowercase;
+}

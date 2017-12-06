@@ -16,9 +16,9 @@ final int W_YA_DELIVERY_INFORMATION = 970;
 <%@ include file="/includes/i_check_unattended_delivery.jspf" %>
 
 <tmpl:insert template='/common/template/dnav.jsp'>
-    <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Delivery Addresses</tmpl:put>
+<%--     <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Delivery Addresses</tmpl:put> --%>
     <tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag pageId="delivery_info"></fd:SEOMetaTag>
+		<fd:SEOMetaTag title="FreshDirect - Your Account - Delivery Addresses" pageId="delivery_info"></fd:SEOMetaTag>
 	</tmpl:put>
     <tmpl:put name='content' direct='true'>
 <fd:RegistrationController actionName='<%=request.getParameter("dlvActionName")%>' result="result">

@@ -26,9 +26,9 @@
 	
 %>
 <tmpl:insert template='<%= pageTemplate %>'>
-	<tmpl:put name='title' direct='true'>FreshDirect - Our Freshness Guarantee</tmpl:put>
+<%-- 	<tmpl:put name='title' direct='true'>FreshDirect - Our Freshness Guarantee</tmpl:put> --%>
 	<tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag pageId="freshness_guarantee" includeSiteSearchLink="true"/>
+		<fd:SEOMetaTag title="FreshDirect - Our Freshness Guarantee" pageId="freshness_guarantee" includeSiteSearchLink="true"/>
 	</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 		<%--

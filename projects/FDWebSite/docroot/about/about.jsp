@@ -13,7 +13,7 @@
     <tmpl:put name="seoMetaTag" direct='true'>
         <fd:SEOMetaTag title="FreshDirect - About FreshDirect"/>
     </tmpl:put>
-    <tmpl:put name='title'>FreshDirect - About FreshDirect</tmpl:put>
+<%--     <tmpl:put name='title'>FreshDirect - About FreshDirect</tmpl:put> --%>
     <tmpl:put name='content' direct='true'>
 <img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="12"><br>
 <div align="right">

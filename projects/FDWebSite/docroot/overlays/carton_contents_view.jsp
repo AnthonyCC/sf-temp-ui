@@ -27,7 +27,7 @@
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Carton Contents View"/>
   </tmpl:put>
-  <tmpl:put name='title' direct='true'>FreshDirect - Carton Contents View</tmpl:put>
+<%--   <tmpl:put name='title' direct='true'>FreshDirect - Carton Contents View</tmpl:put> --%>
 		<tmpl:put name='content' direct='true'>
 
 <fd:GetOrder id='order' saleId='<%= orderId %>'>

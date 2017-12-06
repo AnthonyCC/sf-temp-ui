@@ -32,7 +32,8 @@ request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE);
 <!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en-US" xml:lang="en-US"> <!--<![endif]-->
 <head>
-    <title><tmpl:get name='title'/></title>
+<%--     <title><tmpl:get name='title'/></title> --%>
+     <tmpl:get name="seoMetaTag"/>
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
   <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>

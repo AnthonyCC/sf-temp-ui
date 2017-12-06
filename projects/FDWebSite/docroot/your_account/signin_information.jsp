@@ -30,9 +30,9 @@
 %>
 
 <tmpl:insert template='<%= pageTemplate %>'>
-    <tmpl:put name='title' direct='true'>FreshDirect - Your Account - User Name, Password, & Contact Info</tmpl:put>
+<%--     <tmpl:put name='title' direct='true'>FreshDirect - Your Account - User Name, Password, & Contact Info</tmpl:put> --%>
     <tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag pageId="signin_info"></fd:SEOMetaTag>
+		<fd:SEOMetaTag title="FreshDirect - Your Account - User Name, Password, & Contact Info" pageId="signin_info"></fd:SEOMetaTag>
 	</tmpl:put>
   <tmpl:put name='customhead' direct='true'>
     <jwr:style src="/your_account.css" media="all"/>

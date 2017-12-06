@@ -65,7 +65,11 @@ if (!QuickCart.PRODUCT_TYPE_CCL.equals(cartType) && !QuickCart.PRODUCT_TYPE_STAR
 <%
 	if(QuickCart.PRODUCT_TYPE_CCL.equals(cartType) || QuickCart.PRODUCT_TYPE_STARTER_LIST.equals(cartType)) {
 %> 
-	<tmpl:put name='title' direct='true'>FreshDirect - Quickshop - Shop from This Order</tmpl:put>
+<%-- 	<tmpl:put name='title' direct='true'>FreshDirect - Quickshop - Shop from This Order</tmpl:put> --%>
+	<tmpl:put name="seoMetaTag" direct="true">
+    <fd:SEOMetaTag title="FreshDirect - Quickshop - Shop from This Order"></fd:SEOMetaTag>
+    </tmpl:put>
+	
 	<tmpl:put name='side_nav' direct='true'>
 	<font class="space4pix"><br/></font>
 	<a href="/quickshop/all_lists.jsp">
@@ -78,7 +82,10 @@ if (!QuickCart.PRODUCT_TYPE_CCL.equals(cartType) && !QuickCart.PRODUCT_TYPE_STAR
 	<% } %>
 	</tmpl:put>
 <%  } else {  %>
-	<tmpl:put name='title' direct='true'>FreshDirect - Quick Shop Confirm</tmpl:put>
+<%-- 	<tmpl:put name='title' direct='true'>FreshDirect - Quick Shop Confirm</tmpl:put> --%>
+    <tmpl:put name="seoMetaTag" direct="true">
+    <fd:SEOMetaTag title="FreshDirect - Quick Shop Confirm"></fd:SEOMetaTag>
+    </tmpl:put>
 	<tmpl:put name='side_nav' direct='true'><font class="space4pix"><br></font><font class="text10"><b><%= pageNavTitle %></b></font><br><font class="space4pix"><br></font><%= pageNav %><br><br></tmpl:put>
 <%  } %>
 <%

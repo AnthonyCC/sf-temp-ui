@@ -63,6 +63,7 @@ import com.freshdirect.fdstore.atp.FDAvailabilityI;
 import com.freshdirect.fdstore.atp.FDAvailabilityInfo;
 import com.freshdirect.fdstore.atp.FDCompositeAvailabilityInfo;
 import com.freshdirect.fdstore.atp.NullAvailability;
+import com.freshdirect.fdstore.customer.util.FDCartUtil;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.rules.EligibilityCalculator;
@@ -746,14 +747,18 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	 */
 	@Override
     public double getSubTotal() {
-		double subTotal = 0.0;
-		for ( FDCartLineI cartLineModel : orderLines ) {
-			subTotal += MathUtil.roundDecimal( cartLineModel.getPrice() );
-		}
-		return MathUtil.roundDecimal(subTotal);
+		return FDCartUtil.getSubTotal(orderLines);
+
 	}
-
-
+	
+	/**
+	 * @return the amount you have saved by item promotion value and coupon
+	 */
+	@Override
+	public double getSaveAmount(boolean includeDiscountSavings) {
+		return FDCartUtil.getSaveAmount(orderLines) + (includeDiscountSavings? getTotalDiscountValue() : 0);
+	}
+	
 	/**
 	 * @return total price of orderlines in USD, with no taxes and charges, but with discounts applied
 	 */

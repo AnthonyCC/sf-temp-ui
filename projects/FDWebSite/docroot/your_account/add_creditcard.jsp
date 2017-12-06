@@ -27,7 +27,7 @@ if (mobWeb) {
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Your Account - Add Credit / Debit Card"/>
   </tmpl:put>
-  <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Add Credit / Debit Card</tmpl:put>
+<%--   <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Add Credit / Debit Card</tmpl:put> --%>
 
     <tmpl:put name='content' direct='true'>
 <fd:PaymentMethodController actionName='addPaymentMethod' result='result' successPage='/your_account/payment_information.jsp'>

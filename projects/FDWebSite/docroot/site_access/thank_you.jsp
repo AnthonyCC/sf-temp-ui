@@ -1,9 +1,10 @@
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <HTML>
 <HEAD>
-<TITLE>FreshDirect</TITLE>
-
+<%-- <TITLE>FreshDirect</TITLE> --%>
+    <fd:SEOMetaTag title="FreshDirect"/>
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>

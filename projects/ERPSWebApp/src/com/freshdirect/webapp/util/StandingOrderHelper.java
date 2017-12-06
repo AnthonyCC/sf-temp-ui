@@ -1148,7 +1148,7 @@ private static String convert(Date time) {
 			FDOrderInfoI fdOrderInfoI=so.getUpcomingDelivery();
 	        FDReservation fDReservation=FDCustomerManager.getOrder(fdOrderInfoI.getErpSalesId()).getDeliveryReservation();
 	        soDeliveryAddress =so.getDeliveryAddress()!=null?(so.getDeliveryAddress().getScrubbedStreet() +", "+so.getDeliveryAddress().getCity()+" "+so.getDeliveryAddress().getState() +" "+so.getDeliveryAddress().getZipCode()):null;
-	        if(!so.getAddressId().equalsIgnoreCase(fDReservation!=null?fDReservation.getAddressId():""))
+	        if(null != so.getAddressId() && !so.getAddressId().equalsIgnoreCase(fDReservation!=null?fDReservation.getAddressId():""))
 	        	{ isEligileToShowModifyInfo=true;
 	        	   return soDeliveryAddress;	
 	        	}

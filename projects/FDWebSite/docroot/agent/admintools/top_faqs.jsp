@@ -42,7 +42,7 @@ ContentNodeI contentNode = manager.getContentNode(key);
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Top FAQs"/>
   </tmpl:put>
-  <tmpl:put name='title'>FreshDirect - Top FAQs</tmpl:put>
+<%--   <tmpl:put name='title'>FreshDirect - Top FAQs</tmpl:put> --%>
 
 <tmpl:put name='content' direct='true'>
 

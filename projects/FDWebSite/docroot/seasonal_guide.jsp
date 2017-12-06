@@ -221,7 +221,7 @@ String[] tropical = {
     <tmpl:put name="seoMetaTag" direct='true'>
         <fd:SEOMetaTag title="FreshDirect - Fruit - Seasonal Guide"/>
     </tmpl:put>
-    <tmpl:put name='title' direct='true'>FreshDirect - Fruit - Seasonal Guide</tmpl:put>
+<%--     <tmpl:put name='title' direct='true'>FreshDirect - Fruit - Seasonal Guide</tmpl:put> --%>
 	
     	<tmpl:put name='content' direct='true'>
 		<style type="text/css">

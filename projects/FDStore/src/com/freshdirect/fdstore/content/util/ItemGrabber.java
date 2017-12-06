@@ -201,11 +201,16 @@ public class ItemGrabber {
 			if (!returnSecondaryFolders && subFolder.isSecondaryCategory()) {
 				continue;
 			}
-			if (subFolder.getShowSelf() || returnHiddenFolders) {
+/*			if (subFolder.getShowSelf() || returnHiddenFolders) {
+				this.workSet.add(subFolder);
+				rtnValue = true;
+			}*/
+
+			if (subFolder.isShowSelf() || returnHiddenFolders) {
 				this.workSet.add(subFolder);
 				rtnValue = true;
 			}
-
+			
 			if ( (!subFolder.getTreatAsProduct() && depth>0) && 
 			     ( (EnumShowChildrenType.ALWAYS.equals(subFolder.getShowChildren()) ||
 			        (ignoreShowChildren && !EnumShowChildrenType.NEVER.equals(subFolder.getShowChildren()))		//get prods if show_children, regardless of show folder setting
@@ -218,7 +223,7 @@ public class ItemGrabber {
 				// recurse and process this folder
 				if (desiredDepth >= (currentDepth+1)) {
 					boolean keepLastCategory = this.getProdsAndFolders( subFolder, desiredDepth, currentDepth+1,pricingCtx );
-					if (!keepLastCategory && this.workSet.size()==wrkSetSize1 && wrkSetSize1 !=0 && (subFolder.getShowSelf() || returnHiddenFolders)) {
+					if (!keepLastCategory && this.workSet.size()==wrkSetSize1 && wrkSetSize1 !=0 && (subFolder.isShowSelf() || returnHiddenFolders)) {
 						this.workSet.remove(wrkSetSize1-1);
 				   }
 				}

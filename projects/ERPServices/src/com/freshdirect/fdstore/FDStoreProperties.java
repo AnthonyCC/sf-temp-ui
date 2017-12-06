@@ -784,6 +784,8 @@ public class FDStoreProperties {
     private static final String PROP_PRODUCT_SAMPLES_MAX_BUY_PRODUCTS_LIMIT = "fdstore.product.samples.max.buy.products.limit";
     private static final String PROP_PRODUCT_SAMPLES_MAX_BUY_QUANTITY_LIMIT = "fdstore.product.samples.max.buy.quantity.limit";
     private static final String PROP_FEED_PUBLISH_URL = "fdstore.feed.publish.url";
+    private static final String PROP_FEED_PUBLISH_FROM_BKOFFICE = "fdstore.feed.publish.bkoffice";
+    private static final String PROP_FEED_PUBLISH_BKOFFICE_URL = "fdstore.feed.publish.bkoffice.url";
     private static final String CTCAPACITY_ELIGIBLE_PROFILES = "fdstore.ctcapacity.eligibleprofiles";
     private static final String PROP_CORE_NON_CORE_GLOBAL_NAV_SWITCH_ENABLED = "fdstore.corenoncore.globalnav.switch.enabled";
     private static final String PROP_MIDDLETIER_PROVIDER_URL = "fdstore.middletier.providerURL";
@@ -1395,7 +1397,8 @@ static {
         // APPDEV-1215 Sustainable Seafood
         defaults.put(PROP_SEAFOODSUSTAIN_ENABLED, "false");
         defaults.put(PROP_FEED_PUBLISH_URL, "http://localhost:7001/crm/feed_publish");
-
+        defaults.put(PROP_FEED_PUBLISH_FROM_BKOFFICE, "true");
+        defaults.put(PROP_FEED_PUBLISH_BKOFFICE_URL, "http://bsl.stdev14.nj01/FDService/service/v0/createfeed");
         // SEM Project (APPDEV-1598)
         defaults.put(PROP_SEM_PIXELS, "");
         defaults.put(PROP_SEM_CONFIGS, "");
@@ -1865,7 +1868,7 @@ static {
         defaults.put(IBM_CLIENT_ID, "42c3eede-b1b2-43d2-b503-55682f190c2d");
         defaults.put(IBM_CLIENT_SECRET, "5f154ee0-bae6-4833-9ce2-e013b1b3c7d5");
         defaults.put(IBM_REFRESH_TOKEN, "r_3872jS_Gh7VmanX2TcazBB_MJ1C_RBqbJWY6gvh3koS1");
-        defaults.put(PAYMENT_TLSSHA_ENABLED,"false");
+        defaults.put(PAYMENT_TLSSHA_ENABLED,"true");
         defaults.put(PROP_PAYMENT_VERIFICATION_ENABLED, "false");
         defaults.put(GLOBAL_SF2_0_ENABLED, "false");
 
@@ -4244,6 +4247,14 @@ static {
 
     public static String getFeedPublishURL() {
         return get(PROP_FEED_PUBLISH_URL);
+    }
+    
+    public static String getFeedPublishCheck() {
+        return get(PROP_FEED_PUBLISH_FROM_BKOFFICE);
+    }
+    
+    public static String getFeedPublishBackofficeURL() {
+        return get(PROP_FEED_PUBLISH_BKOFFICE_URL);
     }
 
     public static String getCtCapacityEligibleProfiles() {

@@ -39,9 +39,9 @@ final int W_CHECKOUT_STEP_3_CHOOSE_TOTAL = 970;
 
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
   <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Checkout - Choose Payment Information"/>
+    <fd:SEOMetaTag title="PAYMENT INFO"/>
   </tmpl:put>
-  <tmpl:put name='title'>FreshDirect - Checkout - Choose Payment Information</tmpl:put>
+<%--   <tmpl:put name='title'>FreshDirect - Checkout - Choose Payment Information</tmpl:put> --%>
 <tmpl:put name='content' direct='true'>
 <style type="text/css">
 	td.chooser_radio {
@@ -191,7 +191,7 @@ final int W_CHECKOUT_STEP_3_CHOOSE_TOTAL = 970;
 	<tmpl:put name="ordnumb"><%= modifiedOrderNumber %></tmpl:put>
 	<tmpl:put name="note"><%= modifyNote %></tmpl:put>
 <% } %>
-	<tmpl:put name="title">PAYMENT INFO</tmpl:put>
+<%-- 	<tmpl:put name="title">PAYMENT INFO</tmpl:put> --%>
 	<tmpl:put name="delivery-fee"><%@ include file="/includes/i_cart_delivery_fee.jspf" %></tmpl:put>
 	<%
 		//next button needs to know if it's GC covered

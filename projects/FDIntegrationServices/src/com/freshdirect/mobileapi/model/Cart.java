@@ -767,7 +767,19 @@ public class Cart {
             	
             	productLineItem.setProductConfiguration(productConfiguration);
                 productLineItem.setHasKosherRestriction(cartLine.getApplicableRestrictions().contains(EnumDlvRestrictionReason.KOSHER));
-
+                     
+				// Changes for FDC Substitution
+				if (cartLine != null && cartLine.getInvoiceLine() != null) {
+					productLineItem.setSubSkuStatus(null != cartLine.getInvoiceLine().getSubSkuStatus() ? cartLine.getInvoiceLine().getSubSkuStatus() : "");
+					productLineItem.setSubstitutedSkuCode(null != cartLine.getInvoiceLine().getSubstitutedSkuCode() ? cartLine.getInvoiceLine().getSubstitutedSkuCode(): "");
+					productLineItem.setSubstituteProductName(null != cartLine.getInvoiceLine().getSubstituteProductName() ? cartLine.getInvoiceLine().getSubstituteProductName() : "");
+					productLineItem.setSusbtituteProductDefaultPrice(null != cartLine.getInvoiceLine().getSubstituteProductDefaultPrice() ? cartLine.getInvoiceLine().getSubstituteProductDefaultPrice() : "");
+					productLineItem.setSubstituteProduct(null != cartLine.getInvoiceLine().getSubstituteProductId() ? cartLine.getInvoiceLine().getSubstituteProductId() : "");	
+					if(cartLine != null && cartLine.getInvoiceLine() != null && cartLine.getInvoiceLine().getSubstitutedSkuCode()!=null){
+					productLineItem.setSubstituteSkuQuantity(cartLine.getInvoiceLine().getWeight());
+					}
+				}
+                
                 String earliestAvailability = productNode.getSku(cartLine.getSkuCode()).getEarliestAvailabilityMessage();
                 //String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
                 String plantID=ProductInfoUtil.getPickingPlantId(productNode.getSku(cartLine.getSkuCode()).getProductInfo());
@@ -1060,7 +1072,7 @@ public class Cart {
     	cartDetail.setUnavailability(unavailability);
     	
     	if(cart instanceof FDCartModel){
-        	cartDetail.setTotalSavedAmount(((FDCartModel)cart).getTotalDiscountValue());
+        	cartDetail.setTotalSavedAmount(((FDCartModel)cart).getSaveAmount(true));
         }
 //        if(cart instanceof FDCartModel){
 //        	cartDetail.setTip(((FDCartModel)cart).getTip());

@@ -12,8 +12,8 @@ response.setDateHeader ("Expires", 0);
 %>
 <HTML>
 <HEAD>
-<TITLE>FreshDirect - Checkout - Checking Inventory</TITLE>
-
+<%-- <TITLE>FreshDirect - Checkout - Checking Inventory</TITLE> --%>
+    <fd:SEOMetaTag title="FreshDirect - Checkout - Checking Inventory"/>
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>

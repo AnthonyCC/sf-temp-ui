@@ -64,6 +64,9 @@ final int W_QUICKSHOP_CCL_ITEM_MODIFY_TOTAL = 601;
     <tmpl:put name='title' direct='true'>
        FreshDirect - <%= CartName.ACCEPT_ALTERNATIVE.equals(cartMode) ? "Recommended Alternative" : "Modify Shopping List Item" %> - <%= productNode.getFullName() %>
     </tmpl:put>
+<%--   <tmpl:put name="seoMetaTag" direct="true"> --%>
+<%--     <fd:SEOMetaTag title=" FreshDirect - <%= CartName.ACCEPT_ALTERNATIVE.equals(cartMode) ? 'Recommended Alternative' : 'Modify Shopping List Item' %> - <%= productNode.getFullName() %>"></fd:SEOMetaTag> --%>
+<%--   </tmpl:put> --%>
 
 <%
    String productLink = (String)request.getAttribute("productLink");

@@ -62,9 +62,9 @@ if (mobWeb) {
 %>
 
 <tmpl:insert template='<%= pageTemplate %>'>
-    <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Reserve Timeslot</tmpl:put>
+<%--     <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Reserve Timeslot</tmpl:put> --%>
     <tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag pageId="reserve_timeslot"></fd:SEOMetaTag>
+		<fd:SEOMetaTag title="FreshDirect - Your Account - Reserve Timeslot" pageId="reserve_timeslot"></fd:SEOMetaTag>
 	</tmpl:put>
 
 	<tmpl:put name="extraCss">
@@ -83,111 +83,94 @@ if (mobWeb) {
 			<%@ include file="/help/delivery_info_nav.jspf" %>
 		</div>
 
+		<fd:ReserveTimeslotController actionName="<%=actionName%>" result="result">
 
-	<fd:ReserveTimeslotController actionName="<%=actionName%>" result="result">
+			<%
+				FDReservation rsv = user.getReservation();
+				boolean hasReservation = rsv != null && addressId.equals(rsv.getAddressId());
+		
+				// [APPDEV-2149] Display abstract timeslot table (Just days of week, no restrictions, etc.)
+				final boolean abstractTimeslots = false;
+			%>
 
-	<%
-		FDReservation rsv = user.getReservation();
-		boolean hasReservation = rsv != null && addressId.equals(rsv.getAddressId());
+			<%//Finds the address & render the timeslots %>
+			<%@ include file="/shared/includes/delivery/i_address_finder.jspf"%>
 
-		// [APPDEV-2149] Display abstract timeslot table (Just days of week, no restrictions, etc.)
-		final boolean abstractTimeslots = false;
-	%>
+			<form fdform method="POST" action="/your_account/reserve_timeslot.jsp" id="reserveTimeslot" name="reserveTimeslot">
+				<input type="hidden" name="chefstable" value="<%= user.isChefsTable() %>"/>
+				<input type="hidden" name="addressId" value="<%=address.getPK()!=null ? address.getPK().getId(): null %>">
+				<input type="hidden" name="actionName" value="">
 
-		<%//Finds the address & render the timeslots %>
-		<%@ include file="/shared/includes/delivery/i_address_finder.jspf"%>
+				<%//Render the timeslots %>
+    			<% if (!mobWeb) { %>
+  					<div class="tsWrapper">
+  						<%@ include file="/shared/includes/delivery/i_delivery_timeslots.jspf"%>
+  					</div>
+    			<%} else {%>
+      				<div class="timeslot-selector reserve-timeslot"></div>
+      			<% }%>
 
-<form name="reserveTimeslot" method="POST" action="/your_account/reserve_timeslot.jsp" id="reserveTimeslot" name="reserveTimeslot">
-		<input type="hidden" name="chefstable" value="<%= user.isChefsTable() %>"/>
-		<input type="hidden" name="addressId" value="<%=address.getPK()!=null ? address.getPK().getId(): null %>">
-		<input type="hidden" name="actionName" value="">
+				<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10" />
+				<%//Reservation stuff%>
+				<fieldset><legend class="offscreen">please choose a reservation type:</legend>
+					<table style="width: <%= (mobWeb) ? "100%": W_RESERVE_TIMESLOTS_TOTAL+"px" %>;" cellpadding="0" cellspacing="0" border="0">
+						<tr>
+							<td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"></td>
+						</tr>
+						<tr>
+							<td align="center">
+								<input type="checkbox" id="reservationType_field2" name="reservationType" <%=(rsv == null || EnumReservationType.ONETIME_RESERVATION.equals(rsv.getReservationType())) ? "" : "checked" %> value="<%=EnumReservationType.ONETIME_RESERVATION.getName()%>" class="checkbox customcheckbox" onclick="javascript:changeMe(this)">&nbsp;
+								<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3" />
+								<span class="text12"><b><label for="reservationType_field2"> Make this a Weekly Reservation* </label></b></span><br>
+							</td>
+						</tr>
+					</table>
+				</fieldset>
+				<table style="width: <%= (mobWeb) ? "100%": W_RESERVE_TIMESLOTS_TOTAL+"px" %>;" cellpadding="0" cellspacing="0" border="0">
+					<tr>
+						<td align="center">
+							<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="14" /><br />
 
-		<%//Render the timeslots %>
-    <% if (!mobWeb) { %>
-  		<div class="tsWrapper">
-  			<%@ include file="/shared/includes/delivery/i_delivery_timeslots.jspf"%>
-  		</div>
-    <%} else {%>
-      <div class="timeslot-selector reserve-timeslot"></div>
-      <% }%>
-
-		<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10">
-		<%//Reservation stuff%>
-		<table style="width: <%= (mobWeb) ? "100%": W_RESERVE_TIMESLOTS_TOTAL+"px" %>;" cellpadding="0" cellspacing="0" border="0">
-			<%-- <tr>
-				<td colspan="7"><img src="/media_stat/images/layout/dotted_line_w.gif" alt="" style="width: <%= (mobWeb) ? "100%": W_RESERVE_TIMESLOTS_TOTAL+"px" %>;" height="1"></td>
-			</tr> --%>
-			<tr>
-				<td colspan="7"><!-- <img src="/media_stat/images/template/youraccount/choose_reservation_type.gif" width="256" height="10" vspace="10" alt="Please Choose a Reservation Type"></td> -->
-				<!-- <span class="Container_Top_YourAccountTimeslot">Please Choose a Reservation Type</span> -->
-			</tr>
-			</table>
-			<fieldset><legend class="offscreen">please choose a reservation type:</legend><table>
-						<%-- <tr valign="top">
-				<td>
-					<input type="radio" id="reservationType_field1" name="reservationType" <%=(rsv == null || EnumReservationType.ONETIME_RESERVATION.equals(rsv.getReservationType())) ? "checked" : "" %> value="<%=EnumReservationType.ONETIME_RESERVATION.getName()%>" class="radio">&nbsp;
-				</td>
-				<td colspan="6"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br>
-					<span class="text12"><b><label for="reservationType_field1"> Reserve for this week only.</label></b>
-					</span>
-				</td>
-			</tr> --%>
-			<tr>
-				<td colspan="7"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"></td>
-			</tr>
-			<tr>
-				<td>
-					<input type="checkbox" id="reservationType_field2" name="reservationType" <%=(rsv == null || EnumReservationType.ONETIME_RESERVATION.equals(rsv.getReservationType())) ? "" : "checked" %> value="<%=EnumReservationType.ONETIME_RESERVATION.getName()%>" class="checkbox" onclick="javascript:changeMe(this)">&nbsp;
-					<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3">
-					<span class="text12"><b><label for="reservationType_field2"> Make this a Weekly Reservation* </label></b></span><br>
-				</td>
-				<td colspan="6">
-<!-- 					<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br>
- 					<span class="text12"><b><label for="reservationType_field2"> Reserve this day and time for me every week</label></b></span><br>
-					Select this option to make this a standing weekly reservation. Please note that reservations not used will be released for good. You will have to return to this page to reset your reservation settings.
-				</td> -->
-			</tr>
-			</table></fieldset>
-			<table>
-			<tr>
-				<td colspan="7" align="center">
-					<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="14"><br>
-
-					<%if((rsv == null || rsv.isAnonymous()) && !hasReservation){%>
-						<input type="image" src="/media_stat/images/buttons/reserve_delivery.gif" alt="Reserve Delivery" onclick="reserveTimeslot.actionName.value='reserveTimeslot'"><br>
-						*A weekly reservation must be used or you'll lose it. <br>
-						 Timeslot discounts may vary from week to week.
-					<%} else {%>
-						<button class="cssbutton red nontransparent small" onclick="reserveTimeslot.actionName.value='cancelReservation'">CANCEL RESERVATION</button>
-						<button class="cssbutton green small" onclick="reserveTimeslot.actionName.value='changeReservation'">SAVE CHANGES</button>
-					<%}%>
-				</td>
-			</tr>
-		</table>
-</form>
+							<%if((rsv == null || rsv.isAnonymous()) && !hasReservation){%>
+								<button class="cssbutton orange" style="<%= (mobWeb) ? "width: 75%;" :"" %>"  onclick="reserveTimeslot.actionName.value='reserveTimeslot'">RESERVE DELIVERY</button><br>
+								<div class="reserve-timeslot-legal">
+									*A weekly reservation must be used or you'll lose it. <br>
+						 			Timeslot discounts may vary from week to week.
+						 		</div>
+							<%} else {%>
+								<button class="cssbutton red nontransparent small" onclick="reserveTimeslot.actionName.value='cancelReservation'">CANCEL RESERVATION</button>
+								<button class="cssbutton green small" onclick="reserveTimeslot.actionName.value='changeReservation'">SAVE CHANGES</button>
+								<br /><br />
+							<%}%>
+						</td>
+					</tr>
+				</table>
+			</form>
 		</fd:ReserveTimeslotController>
 
-<script type="text/javascript">
-var FreshDirect = FreshDirect || {};
-FreshDirect._page_options = {rsvType: { RECURRING: 'WRR', ONETIME: 'OTR' }};
-changeMe($('reservationType_field2'));
-</script>
-<% if (mobWeb) { %>
-  <script type="text/javascript">
-  var getTimeslots = function () {
-    if (FreshDirect && FreshDirect.common && FreshDirect.common.dispatcher) {
-      var DISPATCHER = FreshDirect.common.dispatcher;
-
-      DISPATCHER.signal('server', {
-        url: '/api/expresscheckout/timeslot',
-        method: 'GET'
-      });
-    } else {
-      setTimeout(getTimeslots, 100);
-    }
-  };
-  getTimeslots();
-  </script>
-<% }%>
+		<script type="text/javascript">
+			var FreshDirect = FreshDirect || {};
+			FreshDirect._page_options = {rsvType: { RECURRING: 'WRR', ONETIME: 'OTR' }};
+			changeMe($('reservationType_field2'));
+			$jq(document).on('click', '.fake-checkbox-wrapper', function(e) { $jq(this).find('input[type="checkbox"]').trigger('click'); });
+		</script>
+		<% if (mobWeb) { %>
+			<script type="text/javascript">
+				var getTimeslots = function () {
+					$jq('#timeslot_selector_select').hide();
+					if (FreshDirect && FreshDirect.common && FreshDirect.common.dispatcher) {
+			      		var DISPATCHER = FreshDirect.common.dispatcher;
+			
+					    DISPATCHER.signal('server', {
+					    	url: '/api/expresscheckout/timeslot',
+							method: 'GET'
+			      		});
+			    	} else {
+			      		setTimeout(getTimeslots, 100);
+			    	}
+		  		};
+				getTimeslots();
+			</script>
+		<% }%>
 	</tmpl:put>
 </tmpl:insert>

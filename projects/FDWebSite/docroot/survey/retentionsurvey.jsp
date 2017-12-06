@@ -22,7 +22,7 @@ final int W_SURVEY_RETENTION_SURVEY_TOTAL = 970;
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Feedback Survey"/>
   </tmpl:put>
-  <tmpl:put name='title' direct='true'>FreshDirect - Feedback Survey</tmpl:put>
+<%--   <tmpl:put name='title' direct='true'>FreshDirect - Feedback Survey</tmpl:put> --%>
 	    <tmpl:put name='content' direct='true'>
 	        
 	        	<% if(((ActionResult)result).isSuccess() && surveyResult != null) { %>

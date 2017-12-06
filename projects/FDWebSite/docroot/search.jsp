@@ -103,7 +103,7 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
     <tmpl:put name="seoMetaTag" direct='true'>
         <fd:SEOMetaTag title="<%= title %>"/>
     </tmpl:put>
-	<tmpl:put name="title" direct="true"><%= title %></tmpl:put>
+<%-- 	<tmpl:put name="title" direct="true"><%= title %></tmpl:put> --%>
 	<tmpl:put name="activeView">grid<% //= nav.isListView() && !nav.isRecipes() ? "list" : "grid" %></tmpl:put>
 	<tmpl:put name="noResult"><%= search.getProducts().isEmpty() && search.getRecipes().isEmpty() ? "noresult" : "hasresults" %></tmpl:put>
 	<tmpl:put name="startPage"><%= nav.getSearchTerm()==null || nav.getSearchTerm().length()==0 ? "startpage" : "resultpage" %></tmpl:put>

@@ -15,7 +15,7 @@ final int W_FORGET_PASSWORD_TOTAL = 700;
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Forgot Your Password? - Enter E-mail Address"/>
   </tmpl:put>
-  <tmpl:put name='title' direct='true'>FreshDirect - Forgot Your Password? - Enter E-mail Address</tmpl:put>
+<%--   <tmpl:put name='title' direct='true'>FreshDirect - Forgot Your Password? - Enter E-mail Address</tmpl:put> --%>
 		<tmpl:put name='content' direct='true'>
 			<%@ include file="/social/i_forgot_password_fields.jspf" %>
 		</tmpl:put>

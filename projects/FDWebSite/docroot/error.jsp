@@ -1,3 +1,4 @@
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page isErrorPage="true" %>
 <%@ page import='com.freshdirect.webapp.util.JspLogger' %>
 <%@ page import='com.freshdirect.webapp.util.AjaxErrorHandlingService' %>
@@ -32,7 +33,8 @@ try {
 <html lang="en-US" xml:lang="en-US">
 <head>
   <meta charset="UTF-8">
-  <title>FreshDirect - Something went wrong...</title>
+  <%-- <title>FreshDirect - Something went wrong...</title> --%>
+   <fd:SEOMetaTag title="FreshDirect - Something went wrong..."/>
   <style>
     body {
       font-family: Verdana, Arial, sans-serif;

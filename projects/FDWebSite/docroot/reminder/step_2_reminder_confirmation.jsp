@@ -2,7 +2,7 @@
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*"%>
 <%@ page import="com.freshdirect.customer.*"%>
-
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='template' prefix='tmpl' %>
@@ -14,7 +14,7 @@ ErpCustomerInfoModel custInfo = FDCustomerFactory.getErpCustomerInfo(identity);%
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - E-mail Reminder"/>
   </tmpl:put>
-  <tmpl:put name='title' direct='true'>FreshDirect - E-mail Reminder</tmpl:put>
+<%--   <tmpl:put name='title' direct='true'>FreshDirect - E-mail Reminder</tmpl:put> --%>
 		<tmpl:put name='content' direct='true'>
 		<script language="JavaScript">
 		<!--

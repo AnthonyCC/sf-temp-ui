@@ -39,7 +39,7 @@ if ("true".equalsIgnoreCase(overlay)) {
     <tmpl:put name="seoMetaTag" direct='true'>
         <fd:SEOMetaTag title="FreshDirect - Help"/>
     </tmpl:put>
-    <tmpl:put name='title' direct='true'>FreshDirect - Help</tmpl:put>
+<%--     <tmpl:put name='title' direct='true'>FreshDirect - Help</tmpl:put> --%>
 
     <tmpl:put name='extraCss' direct='true'>
     	<% if (mobWeb) { %>

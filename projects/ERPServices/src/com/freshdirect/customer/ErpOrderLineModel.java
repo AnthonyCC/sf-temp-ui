@@ -44,6 +44,7 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 	private String configurationDesc;
 	private String departmentDesc;
     private double price;
+    private double unscaledPrice;
 	private boolean perishable;
     private double taxRate;
     private String taxCode;
@@ -251,6 +252,12 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
     public double getPrice(){ return price; }
     public void setPrice(double price){ 
     	this.price = price; 
+    }
+    public void setUnscaledPrice(double price) {
+    	unscaledPrice = price;
+    }
+    public double getUnscaledPrice(){
+    	return unscaledPrice;
     }
 
 	public boolean isPerishable(){ return this.perishable; }

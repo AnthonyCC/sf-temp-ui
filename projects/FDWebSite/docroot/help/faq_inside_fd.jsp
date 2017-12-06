@@ -1,3 +1,4 @@
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <%
 String qNumber ="";
 if(request.getParameter("qNumber") != null){
@@ -6,8 +7,8 @@ if(request.getParameter("qNumber") != null){
 %>
 <html lang="en-US" xml:lang="en-US">
 <head>
-	<title>FreshDirect - Help - Corporate Info</title>
-
+<%--  	<title>FreshDirect - Help - Corporate Info</title> --%>
+    <fd:SEOMetaTag title="FreshDirect - Help - Corporate Info"/>
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>

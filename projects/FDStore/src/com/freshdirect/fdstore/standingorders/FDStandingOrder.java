@@ -106,6 +106,11 @@ public class FDStandingOrder extends ModelSupport {
 		this.tipAmount = tipAmount;
 	}
 
+	//Introduced For Storefront 2.0 Implementation
+	public void setCustomerIdentity(FDIdentity customerIdentity) {
+		this.customerIdentity = customerIdentity;
+	}
+
 	public String getCustomerId() {
 		return customerId;
 	}
@@ -370,8 +375,9 @@ public class FDStandingOrder extends ModelSupport {
 		NO_ADDRESS( "The address you set up for this standing order no longer exists in the system.", "Use the link below to modify this standing order and choose a different address.",true ), 
 		CLOSED_DAY( "We do not deliver on closed days.", "We do not deliver on closed days.", false ),
 		RELEASE_TIMESLOT( "Your delivery timeslot has expired.", "Please click the link below to select a new delivery timeslot", true ),
-		UNACTIVATED_SO("The standing order template is not activated.","Your selected order was deactivated.",true);
-
+		UNACTIVATED_SO("The standing order template is not activated.","Your selected order was deactivated.",true),
+		PERSISTING_ERROR("Skipping template due to persiting error.","Email sent to customer reg persisting error.", true);
+		
 		private String errorHeader;
 		private String errorDetail;
 		private boolean sendEmail;

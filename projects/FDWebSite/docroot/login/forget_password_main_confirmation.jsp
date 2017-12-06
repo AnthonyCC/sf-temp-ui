@@ -4,7 +4,10 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <fd:CheckLoginStatus id="user" /> 
 <tmpl:insert template='/common/template/no_site_nav.jsp'>
-	<tmpl:put name='title' direct='true'>FreshDirect - ID Confirmed - Security Word Confirmed</tmpl:put>
+<%-- 	<tmpl:put name='title' direct='true'>FreshDirect - ID Confirmed - Security Word Confirmed</tmpl:put> --%>
+  <tmpl:put name="seoMetaTag" direct="true">
+    <fd:SEOMetaTag title="FreshDirect - ID Confirmed - Security Word Confirmed"></fd:SEOMetaTag>
+  </tmpl:put>
 		<tmpl:put name='content' direct='true'>
 		
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="400">

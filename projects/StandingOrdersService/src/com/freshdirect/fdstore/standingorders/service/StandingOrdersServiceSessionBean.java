@@ -187,9 +187,11 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 							result.getSoName() ) ) {
 						result.setErrorEmailSentToAdmins();
 					}
-				} else {
-					// other error -> set so to error state, and send email to customer
-					so.setLastError( result.getErrorCode(), result.getErrorHeader(), result.getErrorDetail() );
+				}else  {
+					// other error, except persisting -> set so to error state, and send email to customer
+					if (result.getErrorCode() != ErrorCode.PERSISTING_ERROR) {
+						so.setLastError( result.getErrorCode(), result.getErrorHeader(), result.getErrorDetail() );
+					}
 					if ( sendErrorMail( so, result.getCustomerInfo() ) ) {
 						result.setErrorEmailSentToCustomer();						
 					}
@@ -201,15 +203,16 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			
 			// if there was any change (not skipped), then save the SO and log the activity
 			if ( result.getStatus() != Status.SKIPPED ) {
-				try {
-					FDActionInfo info = new FDActionInfo(EnumTransactionSource.STANDING_ORDER, so.getCustomerIdentity(), INITIATOR_NAME, "Updating Standing Order Status", null, null);
-					LOGGER.info( "Saving SO " + so.getId() );
-					soManager.save( info, so);
-				} catch (FDResourceException re) {
-					invalidateMailerHome();
-					LOGGER.error( "Saving standing order failed! (FDResourceException)", re );
+				if (result.getErrorCode() != ErrorCode.PERSISTING_ERROR) {
+					try {
+						FDActionInfo info = new FDActionInfo(EnumTransactionSource.STANDING_ORDER, so.getCustomerIdentity(), INITIATOR_NAME, "Updating Standing Order Status", null, null);
+						LOGGER.info("Saving SO: " + so.getId());
+						soManager.save(info, so);
+					} catch (FDResourceException re) {
+						invalidateMailerHome();
+						LOGGER.error("Saving standing order failed! (FDResourceException)", re);
+					}
 				}
-								
 				logActivity( so, result );				
 			}			
 		}
@@ -300,6 +303,9 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 					note = result.getErrorDetail();
 				else
 					note = null;
+			}
+			if(result.getErrorCode().equals(ErrorCode.PERSISTING_ERROR)){
+				note = "SO: "+so.getId() +" "+ result.getErrorHeader() + " : " +so.getLastErrorCode()+", "+result.getErrorDetail();
 			}
 			activityRecord.setNote( note );
 		}

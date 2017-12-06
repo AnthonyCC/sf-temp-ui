@@ -1,5 +1,6 @@
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName" %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -8,8 +9,8 @@ FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 %>
 <html lang="en-US" xml:lang="en-US">
 	<head>
-		<title>FreshDirect</title>
-
+		<%--  <title>FreshDirect</title> --%>
+     <fd:SEOMetaTag title="FreshDirect"/>
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>

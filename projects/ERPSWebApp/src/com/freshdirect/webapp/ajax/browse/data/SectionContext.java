@@ -7,15 +7,16 @@ import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.freshdirect.fdstore.EnumEStoreId;
-import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.storeapi.content.FilteringProductItem;
+import com.freshdirect.storeapi.content.PopulatorUtil;
 import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.storeapi.content.Recipe;
-import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
+import com.freshdirect.storeapi.content.SkuModel;
+import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.pricing.ProductModelPricingAdapter;
+import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
-import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.ajax.product.data.RecipeData;
 
@@ -59,6 +60,9 @@ public class SectionContext extends SectionData {
 			List<ProductData> productDatas = new ArrayList<ProductData>();
 			for (FilteringProductItem productItem : productItems) {
 				ProductModel product = productItem.getProductModel();
+				if (product == null) {
+					continue;
+				}
 				if (product !=null && 
 						(product.isDiscontinued() || product.isOutOfSeason()) && 
 						user!=null && 
@@ -67,24 +71,17 @@ public class SectionContext extends SectionData {
 						user.getUserContext().getStoreContext().getEStoreId() == EnumEStoreId.FDX){
 					continue;
 				}
-				try{
-					ProductData productData = ProductDetailPopulator.createProductData(user, product, (nav.isPdp() || FDStoreProperties.getPreviewMode()));
-					if (!nav.populateSectionsOnly()) {
-						productData = ProductDetailPopulator.populateBrowseRecommendation(user, productData, product);
-						if (!productData.isIncomplete()) {
-							productData = ProductDetailPopulator.populateSelectedNutritionFields(user, productData, productItem.getFdProduct(), nav.getErpNutritionTypeType());
-						}
-					}
-					FilteringFlowType pageType = nav.getPageType();
-					if (pageType!=null){
-						productData.setPageType(pageType.toString());
-					}
-
-					productDatas.add(productData);
-					
-				} catch (Exception e){
-					LOGGER.error("Failed to create product data for " + product==null ? "null": product.getContentName()+ " (" + e.getMessage() + ")");
+				if (!(product instanceof ProductModelPricingAdapter)) {
+					// wrap it into a pricing adapter if naked
+					product = ProductPricingFactory.getInstance().getPricingAdapter( product, user.getUserContext().getPricingContext());
 				}
+				SkuModel sku = PopulatorUtil.getDefSku(product);
+				if (sku == null) {
+					continue;
+				}
+					
+				productDatas.add(new ProductData(product));
+				
 			}		
 			this.setProducts(productDatas);			
 		}

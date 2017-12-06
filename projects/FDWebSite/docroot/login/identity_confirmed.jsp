@@ -4,7 +4,7 @@
     <tmpl:put name="seoMetaTag" direct='true'>
         <fd:SEOMetaTag title="FreshDirect - Login"/>
     </tmpl:put>
-	<tmpl:put name='title' direct='true'>FreshDirect - Login</tmpl:put>
+<%-- 	<tmpl:put name='title' direct='true'>FreshDirect - Login</tmpl:put> --%>
 		<tmpl:put name='content' direct='true'>
 				
 			

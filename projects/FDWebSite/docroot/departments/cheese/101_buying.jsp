@@ -1,8 +1,9 @@
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <HTML>
 <HEAD>
-<TITLE>FreshDirect - Cheese 101</TITLE>
+<%-- <TITLE>FreshDirect - Cheese 101</TITLE> --%>
 
-
+    <fd:SEOMetaTag title="FreshDirect - Cheese 101"/>
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>

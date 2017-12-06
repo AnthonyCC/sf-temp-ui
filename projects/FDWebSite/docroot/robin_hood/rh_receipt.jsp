@@ -32,7 +32,11 @@ java.text.SimpleDateFormat cutoffDateFormat = new java.text.SimpleDateFormat("h:
 %>
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 <tmpl:insert template='/common/template/robinhood.jsp'>
-    <tmpl:put name='title' direct='true'>FreshDirect - Your Donation - Details</tmpl:put>
+<%--     <tmpl:put name='title' direct='true'>FreshDirect - Your Donation - Details</tmpl:put> --%>
+    <tmpl:put name="seoMetaTag" direct="true">
+    <fd:SEOMetaTag title="FreshDirect - Your Donation - Details"></fd:SEOMetaTag>
+    </tmpl:put>
+    
     <tmpl:put name='content' direct='true'>
 
 

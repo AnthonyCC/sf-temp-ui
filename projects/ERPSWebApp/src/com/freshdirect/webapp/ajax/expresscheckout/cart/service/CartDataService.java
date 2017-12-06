@@ -775,14 +775,16 @@ public class CartDataService {
         if (FDStoreProperties.getAvalaraTaxEnabled()) {
             CartSubTotalBoxService.defaultService().populateAvalaraTaxToBox(subTotalBox, cart, uri);
         }
+        CartSubTotalFieldData saveAmountBox = CartSubTotalBoxService.defaultService().createSavingToBox(cart);
         if (FDStoreProperties.isETippingEnabled()) {
             List<CartSubTotalFieldData> estimatedTotalBox = new ArrayList<CartSubTotalFieldData>();
             CartSubTotalBoxService.defaultService().populateOrderTotalToBox(estimatedTotalBox, cart);
-            CartSubTotalBoxService.defaultService().populateSavingToBox(estimatedTotalBox, cart);
+            if (saveAmountBox != null) {
+            	estimatedTotalBox.add(saveAmountBox);
+            }
             cartData.getSubTotalBox().put(ESTIMATED_TOTAL_BOX_JSON_KEY, estimatedTotalBox);
         } else {
             CartSubTotalBoxService.defaultService().populateOrderTotalToBox(subTotalBox, cart);
-            CartSubTotalBoxService.defaultService().populateSavingToBox(subTotalBox, cart);
         }
         cartData.getSubTotalBox().put(USER_CORPORATE_JSON_KEY, user.isCorporateUser());
         cartData.getSubTotalBox().put(USER_RECOGNIZED_JSON_KEY, FDUserI.GUEST < user.getLevel());

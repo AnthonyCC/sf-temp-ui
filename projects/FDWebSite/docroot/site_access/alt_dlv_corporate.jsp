@@ -1,7 +1,7 @@
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName" %>
 <%@ page import="com.freshdirect.common.address.AddressModel" %>
-
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <%
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 AddressModel address = null;
@@ -14,8 +14,8 @@ String loginlink = "/login/login_main.jsp";
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en-US" xml:lang="en-US">
 	<head>
-		<title>FreshDirect</title>
-
+		<%-- <title>FreshDirect</title> --%>
+         <fd:SEOMetaTag title="FreshDirect"/>
 		<%@ include file="/common/template/includes/metatags.jspf" %>
 		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>

@@ -12,7 +12,7 @@ final int W_CHEFS_TABLE_TOTAL = 970;
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Chef's Table"/>
   </tmpl:put>
-  <tmpl:put name='title'>FreshDirect - Chef's Table</tmpl:put>
+<%--   <tmpl:put name='title'>FreshDirect - Chef's Table</tmpl:put> --%>
 <tmpl:put name='content' direct='true'>
 <% if (user.isChefsTable()) { %>
 <table cellpadding="0" cellspacing="0" border="0" width="<%=W_CHEFS_TABLE_TOTAL%>">

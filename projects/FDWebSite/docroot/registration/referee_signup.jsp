@@ -71,8 +71,8 @@
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en-US" xml:lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-		<title>FreshDirect</title>
-
+		<%-- <title>FreshDirect</title>  --%>
+         <fd:SEOMetaTag title="FreshDirect"/>
 		<%@ include file="/common/template/includes/metatags.jspf" %>
 		<meta name="msvalidate.01" content="2E163086C8383686A98EE1B694357FE7" />
 

@@ -62,9 +62,9 @@ final int W_YA_DELIVERY_INFO_CHKSLOTS = 970;
 %>
 <tmpl:insert template='<%= pageTemplate %>'>
 	<tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag pageId="delivery_info_check"></fd:SEOMetaTag>
+		<fd:SEOMetaTag title="Delivery Information" pageId="delivery_info_check"></fd:SEOMetaTag>
 	</tmpl:put>
-	<tmpl:put name='title' direct='true'>Delivery Information</tmpl:put>
+<%-- 	<tmpl:put name='title' direct='true'>Delivery Information</tmpl:put> --%>
 		<tmpl:put name='content' direct='true'>
 		
 		<div class="delivery_info_mobweb_nav" <%= mobWeb ? "" : "style='display: none;'" %>>

@@ -1113,10 +1113,7 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 
 	public String getPairItText();
 
-	@Deprecated
 	public void setParentNode(ContentNodeModel parentNode);
-
-	public void setParentKey(ContentKey parentKey);
 
 	/* Time to Complete value for MealKit items */
 	public int getTimeToComplete();

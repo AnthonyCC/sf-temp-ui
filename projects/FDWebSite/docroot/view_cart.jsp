@@ -50,7 +50,7 @@ if (user.isEligibleForClientCodes()) {
 %>
 <tmpl:insert template='/common/template/no_nav.jsp'>
 <tmpl:put name="seoMetaTag" direct="true">
-	<fd:SEOMetaTag title="FreshDirect - View Cart"></fd:SEOMetaTag>
+	<fd:SEOMetaTag title="YOUR CART-Please review the items in your cart before going to Checkout"></fd:SEOMetaTag>
 </tmpl:put>
 <tmpl:put name='extraCss' direct='true'>
   <jwr:style src="/viewcart.css"/>
@@ -79,7 +79,7 @@ if (user.isEligibleForClientCodes()) {
 	    
 	String cartSource = request.getParameter("fdsc.source"); // can be null
 %>
-<tmpl:put name='title' direct='true'>FreshDirect - View Cart</tmpl:put>
+<%-- <tmpl:put name='title' direct='true'>FreshDirect - View Cart</tmpl:put> --%>
 <tmpl:put name='content' direct='true'>
 <fd:FDShoppingCart id='cart' result='result' action='<%= actionName %>' successPage='<%= successPage %>' cleanupCart='true' source='<%= cartSource %>'>
 <fd:RedemptionCodeController actionName="<%=actionName%>" result="redemptionResult">
@@ -189,7 +189,7 @@ StringBuffer buffer = new StringBuffer(
 	<tmpl:put name="ordnumb"><%= modifiedOrderNumber %></tmpl:put>
 	<tmpl:put name="note"><%= modifyNote %></tmpl:put>
 <% } %>
-	<tmpl:put name="title">YOUR CART<small>Please review the items in your cart before going to Checkout.</small></tmpl:put>
+<%-- 	<tmpl:put name="title">YOUR CART<small>Please review the items in your cart before going to Checkout.</small></tmpl:put> --%>
 	<tmpl:put name="delivery-fee"><%@ include file="/includes/i_cart_delivery_fee.jspf" %></tmpl:put>
 	<tmpl:put name="next-button"><%@ include file="/includes/i_cart_next_step_button.jspf" %></tmpl:put>
 </tmpl:insert>

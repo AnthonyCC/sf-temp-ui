@@ -5,7 +5,7 @@
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Best Cellars Wine System"/>
   </tmpl:put>
-  <tmpl:put name='title'>FreshDirect - Best Cellars Wine System</tmpl:put>
+<%--   <tmpl:put name='title'>FreshDirect - Best Cellars Wine System</tmpl:put> --%>
 	<tmpl:put name='content' direct='true'>
 	<script language="JavaScript">
 		function linkTo(url){

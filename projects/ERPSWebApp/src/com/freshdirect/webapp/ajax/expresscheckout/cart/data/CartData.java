@@ -40,6 +40,7 @@ public class CartData extends AbstractCoremetricsResponse {
      */
     private String subTotal;
 
+    private String saveAmount;
     /**
      * Is a Modify Order Cart ?
      */
@@ -162,6 +163,14 @@ public class CartData extends AbstractCoremetricsResponse {
 
     public void setSubTotal(String subTotal) {
         this.subTotal = subTotal;
+    }
+    
+    public String getSaveAmount() {
+        return saveAmount;
+    }
+    
+    public void setSaveAmount(String saveAmount) {
+        this.saveAmount = saveAmount;
     }
 
     public boolean isModifyOrder() {

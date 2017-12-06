@@ -64,11 +64,6 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 		this.productModel = productModel;
 	}
 
-	@Override
-	public void setParentKey(ContentKey parentKey) {
-	    productModel.setParentKey(parentKey);
-	}
-
 	public boolean isFeatured() {
 		return isFeatured;
 	}

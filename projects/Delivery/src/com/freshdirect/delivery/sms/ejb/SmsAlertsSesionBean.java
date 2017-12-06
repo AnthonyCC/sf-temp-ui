@@ -342,11 +342,11 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 		try {
 			con = getConnection();
 			String getExpiredOptin = "SELECT fdcustomer_id, mobile_number, ORDER_NOTIFICATION, ORDEREXCEPTION_NOTIFICATION, SMS_OFFERS_ALERT, PARTNERMESSAGE_NOTIFICATION "
-					+ " from cust.fdcustomer_estore where (ORDER_NOTIFICATION='P' or ORDEREXCEPTION_NOTIFICATION='P' or SMS_OFFERS_ALERT='P' or PARTNERMESSAGE_NOTIFICATION='P') and  1440*(SYSDATE-SMS_OPTIN_DATE) >?";
+					+ " from cust.fdcustomer_estore where (ORDER_NOTIFICATION='P' or ORDEREXCEPTION_NOTIFICATION='P' or SMS_OFFERS_ALERT='P' or PARTNERMESSAGE_NOTIFICATION='P') and  E_STORE='FreshDirect' and 1440*(SYSDATE-SMS_OPTIN_DATE) >?";
 			ps = con.prepareStatement(getExpiredOptin);
 			ps.setInt(1, getExpiryTime());
 			rs = ps.executeQuery();
-			String updateCustomerInfo = "UPDATE cust.fdcustomer_estore set MOBILE_NUMBER=null, SMS_OPTIN_DATE=null, SMS_PREFERENCE_FLAG=null, ORDER_NOTIFICATION=?, ORDEREXCEPTION_NOTIFICATION=?, SMS_OFFERS_ALERT=?, PARTNERMESSAGE_NOTIFICATION=? where fdcustomer_id=?";
+			String updateCustomerInfo = "UPDATE cust.fdcustomer_estore set SMS_OPTIN_DATE=null, SMS_PREFERENCE_FLAG=null, ORDER_NOTIFICATION=?, ORDEREXCEPTION_NOTIFICATION=?, SMS_OFFERS_ALERT=?, PARTNERMESSAGE_NOTIFICATION=? where E_STORE='FreshDirect' and fdcustomer_id=? ";
 			ps1 = con.prepareStatement(updateCustomerInfo);
 			int batchCount = 0;
 			while (rs.next()) {

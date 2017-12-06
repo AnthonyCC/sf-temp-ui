@@ -46,7 +46,7 @@ user.setSoTemplateCart(new FDCartModel());
 <tmpl:insert template='/expressco/includes/ec_template.jsp'>
 
 	<tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag pageId="standing_orders_new"></fd:SEOMetaTag>
+		<fd:SEOMetaTag title="New Standing Order" pageId="standing_orders_new"></fd:SEOMetaTag>
 	</tmpl:put>
 
 	<tmpl:put name="globalnav">

@@ -47,7 +47,8 @@
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en-US" xml:lang="en-US">
 <head>
-	<title>FreshDirect</title>
+	<%--  <title>FreshDirect</title>  --%>
+	 <fd:SEOMetaTag title="FreshDirect"/>
 	<style>
 		.star {
 			color: #F99E40;

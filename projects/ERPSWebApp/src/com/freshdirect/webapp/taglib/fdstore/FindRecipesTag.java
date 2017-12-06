@@ -223,7 +223,7 @@ public class FindRecipesTag extends AbstractGetterTag<List<Recipe>> {
 	 * @return Set<ContentKey>
 	 */
 	private Set<ContentKey> searchRecipes(String keyword) {
-        return new HashSet<ContentKey>(StoreServiceLocator.contentSearch().searchRecipes(keyword));
+		return new HashSet<ContentKey>(StoreServiceLocator.contentSearch().searchRecipesContentKey(keyword));
 	}
 
 

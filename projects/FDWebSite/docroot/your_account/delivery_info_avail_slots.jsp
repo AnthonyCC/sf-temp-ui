@@ -74,9 +74,9 @@ if (mobWeb) {
 }
 %>
 <tmpl:insert template='<%= pageTemplate %>'>
-	<tmpl:put name='title' direct='true'>Available Delivery Slots</tmpl:put>
+<%-- 	<tmpl:put name='title' direct='true'>Available Delivery Slots</tmpl:put> --%>
 	<tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag pageId="delivery_info_avail"></fd:SEOMetaTag>
+		<fd:SEOMetaTag title="Available Delivery Slots" pageId="delivery_info_avail"></fd:SEOMetaTag>
 	</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 

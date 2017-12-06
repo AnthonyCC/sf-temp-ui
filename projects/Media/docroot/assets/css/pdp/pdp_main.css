@@ -1029,6 +1029,10 @@ button#pdp-atc-addtolist,
 .pdp-accordion-item > div > table > tr > td {
   max-width: 300px;
 }
+.pdp-accordion-item > div > table > tbody > tr > td {
+padding-top:7px;	
+}
+
 
 .ie8 .pdp-ecoupon{
   margin-bottom:-25px;
@@ -1112,4 +1116,9 @@ border-bottom-left-radius: 6px;
 /*links in the pdp-accordion in pdp page */
 .pdp-accordion>li>div[aria-hidden="true"] {
     visibility: hidden;
+}
+/* accessibility change */
+a.pdp-accordion-recipes-item {
+    padding-top: 7px;
+    outline: none;
 }

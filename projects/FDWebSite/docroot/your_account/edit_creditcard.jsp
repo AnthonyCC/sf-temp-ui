@@ -31,7 +31,7 @@ String rhPage = (request.getParameter("rh")!=null)?request.getParameter("rh").to
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Your Account - Edit Credit / Debit Card"/>
   </tmpl:put>
-  <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Edit Credit / Debit Card</tmpl:put>
+<%--   <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Edit Credit / Debit Card</tmpl:put> --%>
 <tmpl:put name='content' direct='true'>
 
 <%

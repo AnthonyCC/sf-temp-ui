@@ -28,8 +28,8 @@ final int W_RECIPE_DR_NAVS_RIGHT = 191;
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en-US" xml:lang="en-US">
 <head>
-    <title><tmpl:get name='title'/></title>
-
+<%--     <title><tmpl:get name='title'/></title> --%>
+     <tmpl:get name="seoMetaTag"/>
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
   <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>

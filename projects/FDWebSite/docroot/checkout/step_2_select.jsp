@@ -153,9 +153,9 @@ int page_type = TimeslotLogic.PAGE_NORMAL;
 
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
   <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Checkout - Choose Delivery Time"/>
+    <fd:SEOMetaTag title="CHOOSE TIME"/>
   </tmpl:put>
-  <tmpl:put name='title'>FreshDirect - Checkout - Choose Delivery Time</tmpl:put>
+<%--   <tmpl:put name='title'>FreshDirect - Checkout - Choose Delivery Time</tmpl:put> --%>
 <tmpl:put name='content' direct='true'><%
 
 final String actionName = abstractTimeslots ? "changeSONextDeliveryDate" : "reserveDeliveryTimeSlot";
@@ -218,7 +218,7 @@ zonePromoEnabled=true;
 	<tmpl:put name="ordnumb"><%= modifiedOrderNumber %></tmpl:put>
 	<tmpl:put name="note"><%= modifyNote %></tmpl:put>
 <% } %>
-	<tmpl:put name="title">CHOOSE TIME</tmpl:put>
+<%-- 	<tmpl:put name="title">CHOOSE TIME</tmpl:put> --%>
 	<tmpl:put name="delivery-fee">
 		<span class="checkout-delivery-fee"><% if (FDStoreProperties.isNewFDTimeslotGridEnabled()) { %><fd:IncludeMedia name="/media/editorial/timeslots/msg_timeslots_learnmore.html"/><% } %></span>
 		<%@ include file="/includes/i_cart_delivery_fee.jspf" %>

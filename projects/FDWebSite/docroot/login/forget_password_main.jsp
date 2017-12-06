@@ -8,7 +8,10 @@
 
 <fd:ForgotPasswordController results="result" successPage='/login/forget_password_main_confirmation.jsp' password="password">	
 <tmpl:insert template='/common/template/no_site_nav.jsp'>
-	<tmpl:put name='title' direct='true'>FreshDirect - Forgot Your Password? - Enter E-mail Address</tmpl:put>
+<%-- 	<tmpl:put name='title' direct='true'>FreshDirect - Forgot Your Password? - Enter E-mail Address</tmpl:put> --%>
+	  <tmpl:put name="seoMetaTag" direct="true">
+    <fd:SEOMetaTag title="FreshDirect - Forgot Your Password? - Enter E-mail Address"></fd:SEOMetaTag>
+      </tmpl:put>
 		<tmpl:put name='content' direct='true'>
 		
 <% String[] checkReminderForm = {"email_not_expired", "invalid_email", "email"}; %>

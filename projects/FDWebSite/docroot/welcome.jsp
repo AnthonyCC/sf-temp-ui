@@ -13,18 +13,18 @@ response.sendRedirect("/"); //302 redirect
 		<% if ( request.getParameter("lang") != null) { %>
 			<% if ("espanol".equalsIgnoreCase(request.getParameter("lang"))) { %> 
 			<tmpl:put name='seoMetaTag' direct='true'>
-       			<fd:SEOMetaTag pageId="welcome" language='es-ES'/>
+       			<fd:SEOMetaTag title="welcome to freshdirect" pageId="welcome" language='es-ES'/>
  			</tmpl:put>
 			<fd:IncludeMedia name="/media/editorial/welcome/welcome-sp.html" />
 			<% } else { %>
 			<tmpl:put name='seoMetaTag' direct='true'>
-      			<fd:SEOMetaTag pageId="welcome" language='en-US'/>
+      			<fd:SEOMetaTag title="welcome to freshdirect" pageId="welcome" language='en-US'/>
   			</tmpl:put>
 			<fd:IncludeMedia name="/media/editorial/welcome/welcome-en.html" />
 			<% } %>
 		<% } else { %>
 		<tmpl:put name='seoMetaTag' direct='true'>
-      		<fd:SEOMetaTag pageId="welcome" language='en-US'/>
+      		<fd:SEOMetaTag title="welcome to freshdirect" pageId="welcome" language='en-US'/>
   		</tmpl:put>
 		<fd:IncludeMedia name="/media/editorial/welcome/welcome-en.html" />
 		<% } %>

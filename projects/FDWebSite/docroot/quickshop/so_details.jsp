@@ -77,7 +77,10 @@
 %>
 	
 	<tmpl:insert template='/common/template/quick_shop_nav.jsp'>
-		<tmpl:put name='title' direct='true'>FreshDirect - Reorder - Standing Order</tmpl:put>
+<%-- 		<tmpl:put name='title' direct='true'>FreshDirect - Reorder - Standing Order</tmpl:put> --%>
+		<tmpl:put name="seoMetaTag" direct="true">
+        <fd:SEOMetaTag title="FreshDirect - Reorder - Standing Order"></fd:SEOMetaTag>
+        </tmpl:put>
 	    <tmpl:put name='extrahead' direct='true'>
 			<fd:css href="/assets/css/standingorder.css"/>
 			<fd:javascript src="/assets/javascript/standingorder.js"/>
@@ -297,7 +300,10 @@
 	} else {
 %>
 	<tmpl:insert template='/common/template/quick_shop_nav.jsp'>
-		<tmpl:put name='title' direct='true'>FreshDirect - Quickshop - Standing Order</tmpl:put>
+<%-- 		<tmpl:put name='title' direct='true'>FreshDirect - Quickshop - Standing Order</tmpl:put> --%>
+		<tmpl:put name="seoMetaTag" direct="true">
+        <fd:SEOMetaTag title="FreshDirect - Quickshop - Standing Order"></fd:SEOMetaTag>
+        </tmpl:put>
 	    <tmpl:put name='extrahead' direct='true'>
 			<fd:css href="/assets/css/fix.css"/>
 	    </tmpl:put>

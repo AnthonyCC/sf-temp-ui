@@ -22,7 +22,7 @@
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Important Note"/>
   </tmpl:put>
-  <tmpl:put name='title' direct='true'>FreshDirect - Important Note</tmpl:put>
+<%--   <tmpl:put name='title' direct='true'>FreshDirect - Important Note</tmpl:put> --%>
 		<tmpl:put name='content' direct='true'>
 <%
 String promoChange = "false";

@@ -96,6 +96,7 @@
       {param receiptLines: $receipt.receiptLines /}
       {param totalLabel: $receipt.totalLabel /}
       {param total: $receipt.total /}
+      {param saveAmount: $receipt.saveAmount /}
       {param soName: $soName /}
       {param soOrderDate: $soOrderDate /}
       {param orderModifiable: $orderModifiable /}
@@ -176,6 +177,7 @@
 /**
 * @param orderId Number
 * @param receiptLines List of receipt data
+* @param saveAmount Value of amount you've saved
 * @param totalLabel Label of Subtotal
 * @param total Value of Subtotal
 * @param? soName
@@ -211,6 +213,9 @@
     </ul>
   {/if}
   <p class="estimated">{$totalLabel}: {$total}</p>
+    {if $saveAmount}
+  	<div class="save-amount">You've Saved: {$saveAmount}</div>
+  {/if}
   {if $orderModifiable}
   <div class="successmodifyorderbutton-cont">
   <button class="cssbutton orange" onclick="location.href='/your_account/modify_order.jsp?orderId={$orderId}&amp;action=modify'">Modify Order</button>

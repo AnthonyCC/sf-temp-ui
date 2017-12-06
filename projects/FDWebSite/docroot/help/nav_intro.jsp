@@ -2,13 +2,13 @@
 <%@ page import='com.freshdirect.storeapi.attributes.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
-
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <%FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);%>
 
 <html lang="en-US" xml:lang="en-US">
 <head>
-	<title>FreshDirect - Help</title>
-
+	<%--<title>FreshDirect - Help</title> --%>
+     <fd:SEOMetaTag title="FreshDirect - Help - About FreshDirect"/>
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>

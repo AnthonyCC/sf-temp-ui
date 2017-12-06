@@ -78,7 +78,11 @@ public interface FDCartI extends java.io.Serializable {
 	 * @return total price of orderlines in USD, with no taxes and promotions applied
 	 */
 	public double getSubTotal();
-	
+
+	/**
+	 * @return the amount you have saved by item promotion value and coupon
+	 */
+	public double getSaveAmount(boolean includeDiscountSavings);
 	/**
 	 * @return amount of tax USD
 	 */

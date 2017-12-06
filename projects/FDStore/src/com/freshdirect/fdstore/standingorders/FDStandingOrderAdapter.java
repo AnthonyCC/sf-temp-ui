@@ -68,6 +68,7 @@ import com.freshdirect.fdstore.customer.WebOrderViewI;
 import com.freshdirect.fdstore.customer.adapter.DiscountLineModelAdaptor;
 import com.freshdirect.fdstore.customer.adapter.FDInvoiceAdapter;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
+import com.freshdirect.fdstore.customer.util.FDCartUtil;
 import com.freshdirect.fdstore.promotion.EnumPromotionType;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
@@ -539,13 +540,17 @@ public class FDStandingOrderAdapter  implements FDOrderI{
 
 	@Override
     public double getSubTotal() {
-		double subTotal = 0.0;
-		for ( FDCartLineI cartline : orderLines ) {
-			subTotal += MathUtil.roundDecimal( cartline.getPrice() );
-		}
-		return MathUtil.roundDecimal(subTotal);
+		return FDCartUtil.getSubTotal(orderLines);
 	}
 
+	/**
+	 * @return the amount you have saved by item promotion value and coupon
+	 */
+	@Override
+	public double getSaveAmount(boolean includeDiscountSavings) {
+		return FDCartUtil.getSaveAmount(orderLines) + (includeDiscountSavings? getTotalDiscountValue() : 0);
+	}
+	
 	@Override
     public double getTaxValue() {
 		return erpOrder.getTax();

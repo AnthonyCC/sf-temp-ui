@@ -73,7 +73,7 @@ public class FDCartLineModel extends AbstractCartLine {
 		boolean lazy) {
 		super(orderLine, firstInvoiceLine, lastInvoiceLine, returnLine, lazy);
 	}
-
+ 
 	public FDCartLineModel(FDSku sku, ProductModel productRef, FDConfigurableI configuration, String variantId,UserContext userCtx) {
 		super(sku, productRef, configuration, variantId, userCtx);
 		this.orderLine.setCartlineId(ID_GENERATOR.getNextId());
@@ -89,10 +89,23 @@ public class FDCartLineModel extends AbstractCartLine {
 		this.orderLine.getClientCodes().addAll(clientCodes);
 	}
 	
+	
 	public FDCartLineModel( FDProductSelectionI ps ) {
 		this( ps.getSku(), ps.getProductRef().lookupProductModel(), ps.getConfiguration(), null, ps.getUserContext());
 	}
 
+	//these Two constructors are used only For Storefront 2.0 Implementation.
+	
+	public FDCartLineModel( FDProductSelectionI ps, String plantId ) {
+		this( ps.getSku(), ps.getProductRef().lookupProductModel(), ps.getConfiguration(), null, ps.getUserContext(),plantId);
+	}
+	
+
+	public FDCartLineModel(FDSku sku, ProductModel productRef, FDConfigurableI configuration, String variantId,UserContext userCtx, String plantId) {
+		super(sku, productRef, configuration, variantId, userCtx,plantId);
+		this.orderLine.setCartlineId(ID_GENERATOR.getNextId());
+	}
+	
 	public ErpOrderLineModel buildErpOrderLines(int baseLineNumber) throws FDResourceException, FDInvalidConfigurationException {
 		this.refreshConfiguration();
 		ErpOrderLineModel ol = (ErpOrderLineModel) this.orderLine.deepCopy();

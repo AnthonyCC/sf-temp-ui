@@ -1,3 +1,4 @@
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ include file="/includes/i_dynamicRows_required.jspf" %>
 <%
 
@@ -45,7 +46,7 @@
     <tmpl:put name="seoMetaTag" direct='true'>
         <fd:SEOMetaTag title="FreshDirect - What's Good"/>
     </tmpl:put>
-	<tmpl:put name='title' direct='true'>FreshDirect - What's Good</tmpl:put>
+<%-- 	<tmpl:put name='title' direct='true'>FreshDirect - What's Good</tmpl:put> --%>
 	<tmpl:put name='content' direct='true'>
 	<fd:CmPageView wrapIntoScriptTag="true" currentFolder="<%=node%>"/>
 	

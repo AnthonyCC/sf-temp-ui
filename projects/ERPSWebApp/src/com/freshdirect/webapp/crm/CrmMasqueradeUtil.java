@@ -7,7 +7,9 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -85,8 +87,9 @@ public class CrmMasqueradeUtil {
         if (params.makeGoodFromOrderId != null) {
             final FDOrderI order = FDCustomerManager.getOrder(identity, params.makeGoodFromOrderId);
             ctx.setMakeGoodFromOrderId(params.makeGoodFromOrderId);
+            Map<String, Double> maximumQuantitiesBySkuCode = calculateMaximumQuantityBySkuCode(order);
             for (FDCartLineI mgOrderLine : order.getOrderLines()) {
-                ctx.addMakeGoodOrderLineIdQuantity(mgOrderLine.getOrderLineId(), mgOrderLine.getQuantity());
+                ctx.addMakeGoodOrderLineIdQuantity(mgOrderLine.getOrderLineId(), maximumQuantitiesBySkuCode.get(mgOrderLine.getSkuCode()));
             }
 
             // extract carton numbers for order lines
@@ -97,8 +100,20 @@ public class CrmMasqueradeUtil {
 
         return ctx;
     }
-	
-	
+
+    private static Map<String, Double> calculateMaximumQuantityBySkuCode(FDOrderI order) {
+        Map<String, Double> maxQuantitiesBySkuCode = new HashMap<String, Double>();
+        for (FDCartLineI orderLine : order.getOrderLines()) {
+            String skuCode = orderLine.getSkuCode();
+            double quantity = orderLine.getQuantity();
+            if (maxQuantitiesBySkuCode.containsKey(skuCode)) {
+                quantity += maxQuantitiesBySkuCode.get(skuCode);
+            }
+            maxQuantitiesBySkuCode.put(skuCode, quantity);
+        }
+        return maxQuantitiesBySkuCode;
+    }
+
 	public static String generateLaunchURL(CrmAgentModel agent, HttpServletRequest request, FDUserI user, String eStoreId) throws FDResourceException, IllegalArgumentException {
 		EnumEStoreId storeId = eStoreId != null ? EnumEStoreId.valueOf(eStoreId) : EnumEStoreId.FD;
 		if (storeId == null) {
@@ -243,7 +258,7 @@ public class CrmMasqueradeUtil {
 		List<Object> orderIdList = new ArrayList<Object>( Arrays.asList(new String[]{ makeGoodFromOrderId }) );
 
 		QuickShopListRequestObject potato = new QuickShopListRequestObject();
-		potato.setOrderIdList( (List<Object>)orderIdList );
+		potato.setOrderIdList( orderIdList );
 		potato.setTab( EnumQuickShopTab.PAST_ORDERS );
 		potato.setActivePage( 0 );
 		potato.setPageSize(CmsFilteringNavigator.increasePageSizeToFillLayoutFully(request, user, QuickShopServlet.DEFAULT_PAGE_SIZE));

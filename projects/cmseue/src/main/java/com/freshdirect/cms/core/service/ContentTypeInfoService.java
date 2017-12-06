@@ -34,12 +34,25 @@ public class ContentTypeInfoService {
      */
     private Map<ContentType, Set<Attribute>> typeAttributesLookup = new HashMap<ContentType, Set<Attribute>>();
 
+    /**
+     * Lookup table for finding attributes by name for the given type
+     * Note, map keys are composed of content type and attribute name hash codes
+     */
+    private Map<Integer, Attribute> attributeByNameLookup = new HashMap<Integer, Attribute>();
+
     private Map<ContentType, Set<ContentType>> inheritedTypes;
+
+    private Map<ContentType, List<Relationship>> relationshipLookup = new HashMap<ContentType, List<Relationship>>();
+
+    private Map<ContentType, List<Relationship>> navigableRelationshipLookup = new HashMap<ContentType, List<Relationship>>();
 
     public ContentTypeInfoService() {
         initializeAttributeLookup();
         initializeInheritedAttributes();
+        buildRelationshipLookups();
         typeAttributesLookup = Collections.unmodifiableMap(typeAttributesLookup);
+        relationshipLookup = Collections.unmodifiableMap(relationshipLookup);
+        navigableRelationshipLookup = Collections.unmodifiableMap(navigableRelationshipLookup);
     }
 
     /**
@@ -77,27 +90,6 @@ public class ContentTypeInfoService {
     }
 
     /**
-     * Returns attribute names of the given content type
-     *
-     * @param type
-     * @return
-     */
-    public Set<String> selectAttributeNames(ContentType type) {
-        notNull(type);
-
-        Set<Attribute> attrList = typeAttributesLookup.get(type);
-        if (attrList == null) {
-            attrList = Collections.emptySet();
-        }
-
-        Set<String> attrNames = new HashSet<String>();
-        for (Attribute attr : attrList) {
-            attrNames.add(attr.getName());
-        }
-        return attrNames;
-    }
-
-    /**
      * Look up attribute by name for the given type
      *
      * @param type
@@ -110,16 +102,7 @@ public class ContentTypeInfoService {
         notNull(type, "Content type required!");
         notNull(name, "Attribute name required!");
 
-        Set<Attribute> attrList = selectAttributes(type);
-
-        Optional<Attribute> result = Optional.absent();
-        for (Attribute attr : attrList) {
-            if (name.equals(attr.getName())) {
-                result = Optional.of(attr);
-                break;
-            }
-        }
-        return result;
+        return Optional.fromNullable(attributeByNameLookup.get(combinedHashCode(type.hashCode(), name.hashCode())));
     }
 
     /**
@@ -153,25 +136,9 @@ public class ContentTypeInfoService {
     public List<Relationship> selectRelationships(ContentType type, boolean navigableOnly) {
         notNull(type, "Content type required!");
 
-        List<Relationship> result = new ArrayList<Relationship>();
-        if (typeAttributesLookup.get(type) != null) {
-            if (navigableOnly) {
-                for (Attribute attr : typeAttributesLookup.get(type)) {
-                    if (attr instanceof Relationship && ((Relationship) attr).isNavigable()) {
-                        result.add((Relationship) attr);
-                    }
-                }
-            } else {
-                for (Attribute attr : typeAttributesLookup.get(type)) {
-                    if (attr instanceof Relationship) {
-                        result.add((Relationship) attr);
-                    }
-                }
-            }
-        }
+        final List<Relationship> selectedRelationships = navigableOnly ? navigableRelationshipLookup.get(type) : relationshipLookup.get(type);
 
-        return result;
-
+        return selectedRelationships != null ? selectedRelationships : Collections.<Relationship>emptyList();
     }
 
     /**
@@ -264,7 +231,14 @@ public class ContentTypeInfoService {
                 // extract attributes of the particular content type
                 Set<Attribute> typeAttributes = collectContentTypeAttributes(contentType, attributeHolderClass);
                 if (!typeAttributes.isEmpty()) {
+                    // populate type->attribute lookup table
                     typeAttributesLookup.put(contentType, typeAttributes);
+
+                    // populate attribute-by-name lookup table
+                    final int typeHashCode = contentType.hashCode();
+                    for (Attribute attribute : typeAttributes) {
+                        attributeByNameLookup.put(combinedHashCode(typeHashCode, attribute.getName().hashCode()), attribute);
+                    }
                 }
 
             } catch (IllegalArgumentException exc) {
@@ -282,9 +256,17 @@ public class ContentTypeInfoService {
         // compute attributes inheritable by types
         Map<ContentType, Set<Attribute>> inheritedAttributes = buildInheritedAttributesMap(typeAttributesLookup, inheritedTypes);
 
-        // append inherited attributes to type attribute lookup
-        for (ContentType type : inheritedAttributes.keySet()) {
-            appendInheritablesToTypeAttributes(type, inheritedAttributes.get(type));
+        // expand lookup tables with inherited attributes
+        for (Map.Entry<ContentType, Set<Attribute>> entry : inheritedAttributes.entrySet()) {
+            // append type->attribute lookup table
+            appendInheritablesToTypeAttributes(entry.getKey(), entry.getValue());
+
+            // expand attribute-by-name lookup table
+            int typeHashCode = entry.getKey().hashCode();
+            for (Attribute attribute : entry.getValue()) {
+                final int lookupKey = combinedHashCode(typeHashCode, attribute.getName().hashCode());
+                attributeByNameLookup.put(lookupKey, attribute);
+            }
         }
     }
 
@@ -293,6 +275,27 @@ public class ContentTypeInfoService {
         final Set<Attribute> rawAttributes = typeAttributesLookup.get(type);
         rawAttributes.addAll(inheriteds);
         typeAttributesLookup.put(type, Collections.unmodifiableSet(rawAttributes));
+    }
+
+    private void buildRelationshipLookups() {
+        for (Map.Entry<ContentType, Set<Attribute>> entry : typeAttributesLookup.entrySet()) {
+            List<Relationship> allRelationships = new ArrayList<Relationship>();
+            List<Relationship> navigableRelationships = new ArrayList<Relationship>();
+
+            for (Attribute attr : entry.getValue()) {
+                if (attr instanceof Relationship) {
+                    Relationship relationship = (Relationship) attr;
+                    allRelationships.add(relationship);
+                    if (relationship.isNavigable()) {
+                        navigableRelationships.add(relationship);
+                    }
+                }
+            }
+
+            final ContentType contentType = entry.getKey();
+            relationshipLookup.put(contentType, Collections.unmodifiableList(allRelationships));
+            navigableRelationshipLookup.put(contentType, Collections.unmodifiableList(navigableRelationships));
+        }
     }
 
     private DirectedGraph<ContentType> buildInheritanceGraph(Map<ContentType, Set<Attribute>> typeAttributes) {
@@ -369,5 +372,9 @@ public class ContentTypeInfoService {
             }
         }
         return inheritedTypes;
+    }
+
+    private int combinedHashCode(int hash1, int hash2) {
+        return hash1 + (31 * hash2);
     }
 }

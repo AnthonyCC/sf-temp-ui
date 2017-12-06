@@ -43,7 +43,10 @@ RequestUtil.appendToAttribute(request,"windowOnBeforeUnload","FormChangeUtil.war
 <%@ include file="/quickshop/includes/order_nav.jspf" %>
 			
 <tmpl:insert template='/common/template/quick_shop_nav.jsp'>
-    <tmpl:put name='title' direct='true'>FreshDirect - Reorder - Shop from This Order</tmpl:put>
+<%--     <tmpl:put name='title' direct='true'>FreshDirect - Reorder - Shop from This Order</tmpl:put> --%>
+      <tmpl:put name="seoMetaTag" direct="true">
+      <fd:SEOMetaTag title="FreshDirect - Reorder - Shop from This Order"></fd:SEOMetaTag>
+      </tmpl:put>
    	<tmpl:put name='side_nav' direct='true'><font class="space4pix"><br></font><a href="/quickshop/previous_orders.jsp"><img src="/media_stat/images/template/quickshop/qs_prev_orders_catnav.gif" width="80" height="38" border="0"></a><br><font class="space4pix"><br></font><%= orderNav.toString() %><br><br></tmpl:put>	
 	<tmpl:put name='content' direct='true'>
 

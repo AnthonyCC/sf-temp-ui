@@ -77,7 +77,7 @@ public class FDInfoEmail extends EmailSupport implements XMLEmailI {
 		this.decorateMap(map);
 		String xmlString = s.serialize("fdemail", map);
 		LOGGER.debug("email data:" + xmlString);
-		return s.serialize("fdemail", map);
+		return xmlString;
 	}
 
 	protected void decorateMap(Map map) {

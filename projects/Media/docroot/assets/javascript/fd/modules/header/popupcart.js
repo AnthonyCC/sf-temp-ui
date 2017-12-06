@@ -11,6 +11,7 @@ var FreshDirect = FreshDirect || {};
 	var	CARTDATA_HEADER = 'header',
 			CARTDATA_ERRORMSG = 'errorMessage',
 			CARTDATA_TOTAL = 'subTotal',
+			CARTDATA_SAVE_AMOUNT = 'saveAmount',
 			CARTDATA_MODIFY = 'modifyOrder',
 			CARTDATA_COREMETRICS = 'coremetricsScript',
 			CARTDATA_SECTIONS = 'cartSections',
@@ -29,6 +30,7 @@ var FreshDirect = FreshDirect || {};
       $checkoutButton = $("#popupcart .checkout"),
       orderLines = $("#sidecartbuttons .summary .nritems"),
       summary = $("#sidecartbuttons .totalprice, #popupcart .totalprice, .locabar-popupcart-total");
+  	  saveAmountElement = $('#popupcart .save-amount');
   
   var $locabar_popupcart_count = $('.locabar-popupcart-count');
 
@@ -59,7 +61,15 @@ var FreshDirect = FreshDirect || {};
   function updateTotal(total) {
     summary.html(total);
   };
-
+  
+  function updateSaveAmount(saveAmount) {
+	  saveAmountElement.html("You've Saved " + saveAmount);
+	  if (saveAmount){
+		  saveAmountElement.show();
+	  } else {
+		  saveAmountElement.hide();
+	  }
+  }
   function updateSections(cartData) {
 	  var cartHtml='';
 	  if (FreshDirect.locabar.isFdx === true) {
@@ -165,7 +175,11 @@ var FreshDirect = FreshDirect || {};
     if( CARTDATA_TOTAL in cartData ) {
       updateTotal(cartData[CARTDATA_TOTAL]);
     }
-
+    
+    if (CARTDATA_SAVE_AMOUNT in cartData) {
+      updateSaveAmount(cartData[CARTDATA_SAVE_AMOUNT]);
+    }
+    
     if( CARTDATA_SECTIONS in cartData ) {
       updateSections(cartData);
     }

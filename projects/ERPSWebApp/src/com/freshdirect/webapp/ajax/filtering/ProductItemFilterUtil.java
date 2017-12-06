@@ -25,7 +25,30 @@ public class ProductItemFilterUtil {
 	private static final String COMPOSITE_FILTER_ID_SEPARATOR = "_";
 	private static final Logger LOG = LoggerFactory.getInstance( ProductItemFilterUtil.class );
 	
-	
+	public static boolean hasFilteredProducts(List<FilteringProductItem> items, ProductItemFilterI filter, boolean showUnavProducts, boolean isProductListing) {
+		if (items == null) {
+			return false;
+		}
+		
+		for (FilteringProductItem productItem : items){
+			
+			// don't count unavailable items
+			if(isProductListing && !showUnavProducts && (productItem.getProductModel() == null || !productItem.getProductModel().isFullyAvailable() || productItem.getProductModel().isOutOfSeason())){
+				continue;
+			}
+			
+			try {
+				// An item has survived the filtering, return true and break the loop.
+				if (filter.apply(productItem)) {
+					return true;
+				}
+			} catch (FDResourceException e) {
+				LOG.error("Could not apply filter on product: " + productItem.getProductModel());
+			}
+		}
+		
+		return false;
+	}
 	public static List<FilteringProductItem> getFilteredProducts(List<FilteringProductItem> items, Set<ProductItemFilterI> activeFilters, boolean showUnavProducts, boolean isProductListing) {
 		
 		if(items==null){

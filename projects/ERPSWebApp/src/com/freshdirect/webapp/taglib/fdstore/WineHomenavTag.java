@@ -100,7 +100,8 @@ public class WineHomenavTag extends BodyTagSupportEx {
 				Iterator<CategoryModel> it = subcategories.iterator();
 				while (it.hasNext()) {
 					CategoryModel subcategory = it.next();
-					if (subcategory.isHidden() || !subcategory.getShowSelf())
+	//				if (subcategory.isHidden() || !subcategory.getShowSelf())
+					if (subcategory.isHidden() || !subcategory.isShowSelf())
 						it.remove();
 				}
 				Collections.sort(subcategories, new Comparator<CategoryModel>() {

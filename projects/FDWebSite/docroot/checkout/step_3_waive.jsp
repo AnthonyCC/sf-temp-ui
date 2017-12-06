@@ -18,7 +18,7 @@ final int W_CHECKOUT_STEP_3_WAIVE_TOTAL = 970;
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Checkout - Pass on the offer & Continue checkout"/>
   </tmpl:put>
-  <tmpl:put name='title'>FreshDirect - Checkout - Pass on the offer & Continue checkout</tmpl:put>
+<%--   <tmpl:put name='title'>FreshDirect - Checkout - Pass on the offer & Continue checkout</tmpl:put> --%>
 <tmpl:put name='content' direct='true'>
 <% FDUserI user = (FDUserI)session.getAttribute(SessionName.USER); %>
 <table width="<%=W_CHECKOUT_STEP_3_WAIVE_TOTAL%>" cellpadding="0" cellspacing="0" border="0">

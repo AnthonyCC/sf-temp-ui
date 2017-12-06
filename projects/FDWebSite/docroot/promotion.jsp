@@ -62,7 +62,7 @@ final int W_PROMOTION_RIGHT = 100;
     <tmpl:put name="seoMetaTag" direct='true'>
         <fd:SEOMetaTag title="FreshDirect - Promotion"/>
     </tmpl:put>
-    <tmpl:put name='title' direct='true'>FreshDirect - Promotion</tmpl:put>
+<%--     <tmpl:put name='title' direct='true'>FreshDirect - Promotion</tmpl:put> --%>
     <tmpl:put name='content' direct='true'>
     <table width="100%" cellpadding="0" cellspacing="0">
     <tr>

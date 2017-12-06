@@ -31,7 +31,7 @@
     <tmpl:put name="seoMetaTag" direct='true'>
         <fd:SEOMetaTag title="FreshDirect - Grocery Deals"/>
     </tmpl:put>
-	<tmpl:put name='title' direct='true'>FreshDirect - Grocery Deals</tmpl:put>
+<%-- 	<tmpl:put name='title' direct='true'>FreshDirect - Grocery Deals</tmpl:put> --%>
 	<tmpl:put name='content' direct='true'>
 		<%@ include file="/includes/layouts/i_deals_all.jspf" %>
 	</tmpl:put>

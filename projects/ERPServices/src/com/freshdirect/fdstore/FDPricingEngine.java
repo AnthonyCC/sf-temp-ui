@@ -42,6 +42,7 @@ public class FDPricingEngine {
 			}
 		}
 		fdConfiguredPrice =new FDConfiguredPrice(price, discountValue, configuredPrice.getPricingCondition(),configuredPrice.getZoneInfo());
+		fdConfiguredPrice.setUnscaledPrice(configuredPrice.getUnscaledPrice());
 		discountedPrice =null!=discountedPrice?discountedPrice:configuredPrice.getPrice();
 		//Apply coupon discount if any, after applying line-item discounts.
 		if(null != couponDiscount){

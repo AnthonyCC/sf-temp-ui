@@ -37,7 +37,7 @@
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Your Account - Cancel Order"/>
   </tmpl:put>
-  <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Cancel Order</tmpl:put>
+<%--   <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Cancel Order</tmpl:put> --%>
     <tmpl:put name='content' direct='true'>
 	    
 		<table style="width: <%= (mobWeb) ? "100%" : W_YA_CANCEL_ORDER+"px" %>;" border="0" cellpadding="0" cellspacing="0">

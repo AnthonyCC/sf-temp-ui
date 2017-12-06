@@ -1104,6 +1104,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 	                }
 	                
 	                addInvoice(invoice, saleId, shippingInfo);
+	                LOGGER.debug("ADD INVOICE method is completed for sale id " + saleId);
 	                reconcileSale(saleId, false);
 	                
 	        } catch (ErpTransactionException e) {
@@ -1158,6 +1159,8 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 	public void reconcileSale(String saleId, Boolean isShorted) throws ErpTransactionException {
 		try {
 			ErpSaleEB eb = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
+			
+			LOGGER.debug("Started reconcileSale for sale id " + saleId);
 			List<CrmSystemCaseInfo> cases = eb.reconcileSale(isShorted);
 			new ErpCreateCaseCommand(LOCATOR, cases).execute();
 
@@ -1166,6 +1169,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		} catch (RemoteException e) {
 			throw new EJBException(e);
 		}
+		LOGGER.debug("Finished method reconcileSale for sale id " + saleId);
 	}
 
 	public void cutoff(String saleId) {

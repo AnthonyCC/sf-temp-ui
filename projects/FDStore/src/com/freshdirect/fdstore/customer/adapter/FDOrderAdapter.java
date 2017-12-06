@@ -75,11 +75,13 @@ import com.freshdirect.fdstore.customer.FDCartonInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
+import com.freshdirect.fdstore.customer.FDInvoiceLineI;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDRecipientList;
 import com.freshdirect.fdstore.customer.FDUserUtil;
 import com.freshdirect.fdstore.customer.WebOrderViewFactory;
 import com.freshdirect.fdstore.customer.WebOrderViewI;
+import com.freshdirect.fdstore.customer.util.FDCartUtil;
 import com.freshdirect.fdstore.promotion.EnumOfferType;
 import com.freshdirect.fdstore.promotion.EnumPromotionType;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
@@ -122,6 +124,7 @@ public class FDOrderAdapter implements FDOrderI {
 
 	private EnumNotificationType taxationtype;
 	
+	private FDInvoiceAdapter shipStatus;
 	public FDOrderAdapter() {
 		orderLines = new ArrayList<FDCartLineI>();
 	}
@@ -926,6 +929,14 @@ public class FDOrderAdapter implements FDOrderI {
 		return MathUtil.roundDecimal(subTotal);
 	}
 
+	/**
+	 * @return the amount you have saved by item promotion value and coupon
+	 */
+	@Override
+	public double getSaveAmount(boolean includeDiscountSavings) {
+		return FDCartUtil.getSaveAmount(orderLines) + (includeDiscountSavings? getTotalDiscountValue() : 0);
+	}
+	
 	@Override
     public double getTaxValue() {
 		return erpOrder.getTax();
@@ -1254,6 +1265,27 @@ public class FDOrderAdapter implements FDOrderI {
 			}
 		}
 		return shortedItems;
+	}
+	
+	public boolean getHasSubstitutes() {
+		List<FDCartLineI> shortedItems =  new ArrayList<FDCartLineI>();
+		shortedItems.addAll(this.getShortedItems());
+		shortedItems.addAll(this.getBundleShortItems());
+		shortedItems.addAll(this.getBundleCompleteShort());
+		
+		boolean hasSubstitutes = false;
+		
+		for ( FDCartLineI item : shortedItems ) {
+			if (item.hasInvoiceLine()) {
+				FDInvoiceLineI invLine = item.getInvoiceLine();
+				if (invLine.getSubstituteProductName() != null && !"".equals(invLine.getSubstituteProductName()) && invLine.getWeight() > 0) {
+					hasSubstitutes = true;
+					break;
+				}
+			}
+		}
+		
+		return hasSubstitutes;
 	}
 	
 	public List<FDCartLineI> getBundleShortItems(){
@@ -1868,6 +1900,14 @@ public class FDOrderAdapter implements FDOrderI {
 	@Override
     public void setTaxationType(EnumNotificationType taxationType){
 		this.taxationtype = taxationType;
+	}
+
+	public FDInvoiceAdapter getShipStatus() {
+		return shipStatus;
+	}
+
+	public void setShipStatus(FDInvoiceAdapter shipStatus) {
+		this.shipStatus = shipStatus;
 	}
 
 }

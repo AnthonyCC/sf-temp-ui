@@ -31,9 +31,9 @@
 <tmpl:insert template="<%= pageTemplate %>">
     <tmpl:put name="soytemplates"><soy:import packageName="quickshop"/></tmpl:put>
     <tmpl:put name="jsmodules"><%@ include file="/common/template/includes/i_jsmodules.jspf" %><jwr:script src="/qstopitems.js" useRandomParam="false" /></tmpl:put>
-    <tmpl:put name='title' direct='true'>FreshDirect - Top Items</tmpl:put>
+<%--     <tmpl:put name='title' direct='true'>FreshDirect - Top Items</tmpl:put> --%>
     <tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag pageId="qs_top_items"></fd:SEOMetaTag>
+		<fd:SEOMetaTag title="FreshDirect - Top Items" pageId="qs_top_items"></fd:SEOMetaTag>
 	</tmpl:put>
 
     <tmpl:put name='tiSelected'>selected</tmpl:put>

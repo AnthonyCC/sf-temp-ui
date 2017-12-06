@@ -79,11 +79,6 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	}
 
 	@Override
-	public void setParentKey(ContentKey parentKey) {
-	    prodModel.setParentKey(parentKey);
-	}
-
-	@Override
     public int getPriority() {
 		return ((PrioritizedI) prodModel).getPriority();
 	}
@@ -1564,13 +1559,13 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	public double getAvailabileQtyForDate(Date targetDate) {
 		//return this.getDefaultSku().getAvailabileQtyForDate(targetDate);
 		return prodModel.getAvailabileQtyForDate(targetDate);
-		
+
 	}
-	
+
 	//appdev 6709, fkw-1344
 	@Override
     public String getEarliestAvailabilityMessage() {
 		return prodModel.getEarliestAvailabilityMessage();
-       
+
     }
 }

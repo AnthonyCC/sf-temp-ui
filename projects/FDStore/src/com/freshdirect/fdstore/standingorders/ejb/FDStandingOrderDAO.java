@@ -105,7 +105,7 @@ public class FDStandingOrderDAO {
 			"from CUST.STANDING_ORDER SO " +
 			"left join CUST.CUSTOMERLIST CCL on(CCL.id = SO.CUSTOMERLIST_ID) " +
 			"left join CUST.CUSTOMER c on (C.ID = SO.CUSTOMER_ID) " +
-			"where SO.DELETED<>1  and SO.IS_ACTIVATED='Y' and  NEXT_DATE between trunc(SYSDATE) and trunc(SYSDATE+6) " +
+			"where SO.DELETED<>1  and SO.IS_ACTIVATED='Y' and  NEXT_DATE between trunc(SYSDATE+1) and trunc(SYSDATE+7) " +
 			"order by CCL.NAME";
 	
 	private static final String LOAD_ACTIVE_STANDING_ORDERS_FOR_WEEK =
@@ -113,7 +113,7 @@ public class FDStandingOrderDAO {
 			"from CUST.STANDING_ORDER SO " +
 			"left join CUST.CUSTOMERLIST CCL on(CCL.id = SO.CUSTOMERLIST_ID) " +
 			"left join CUST.CUSTOMER c on (C.ID = SO.CUSTOMER_ID) " +
-			"where SO.DELETED<>1  and SO.IS_ACTIVATED IS NULL and  NEXT_DATE between trunc(SYSDATE) and trunc(SYSDATE+6)" +
+			"where SO.DELETED<>1  and SO.IS_ACTIVATED IS NULL and  NEXT_DATE between trunc(SYSDATE+1) and trunc(SYSDATE+7)" +
 			"order by CCL.NAME";
 	
 	private static final String CREATE_EMPTY_STANDING_ORDER = "INSERT INTO CUST.STANDING_ORDER(ID, CUSTOMER_ID, CUSTOMERLIST_ID) VALUES(?,?,?)";

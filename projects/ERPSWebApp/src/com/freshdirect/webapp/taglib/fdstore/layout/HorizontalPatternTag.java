@@ -237,7 +237,8 @@ public class HorizontalPatternTag extends com.freshdirect.framework.webapp.BodyT
 				continue;
 			
 			// skip hidden folders
-			if ( obj instanceof CategoryModel && ! ( (CategoryModel)obj ).getShowSelf() )
+		//	if ( obj instanceof CategoryModel && ! ( (CategoryModel)obj ).getShowSelf() )
+			if ( obj instanceof CategoryModel && ! ( (CategoryModel)obj ).isShowSelf() )
 				continue;
 		
 			// otherwise add it to the list
