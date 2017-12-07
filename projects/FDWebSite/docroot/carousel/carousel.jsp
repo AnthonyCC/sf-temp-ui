@@ -36,7 +36,7 @@
 	} else if ("search".equals(type)) {
 		String productId = request.getParameter("productId");
 	%>
-        <potato:searchRecommender productid="<%=productId%>" />
+        <potato:searchRecommender productId="<%=productId%>" />
         <soy:render template="srch.carousel" data="${searchRecommenderPotato}" />
         
 
