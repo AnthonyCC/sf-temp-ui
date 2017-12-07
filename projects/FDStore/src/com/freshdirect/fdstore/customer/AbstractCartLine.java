@@ -225,10 +225,12 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 	}
 
 	public String getSubstitutedQuantity() {
-		if (!this.hasInvoiceLine()) {
+		FDInvoiceLineI invLine = this.getInvoiceLine();
+		if (null!=invLine && null!= invLine.getSubstitutedSkuCode() && !"".equalsIgnoreCase(invLine.getSubstitutedSkuCode().trim())) {
+			return QUANTITY_FORMATTER.format(this.getFirstInvoiceLine().getQuantity());
+		} else {
 			return "";
 		}
-		return QUANTITY_FORMATTER.format(this.getFirstInvoiceLine().getWeight());
 	}
 	
 	public String getSubstituteProductName() {

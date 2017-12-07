@@ -1261,7 +1261,9 @@ public class FDOrderAdapter implements FDOrderI {
 					}				
 				} else if (!FDStoreProperties.getMealKitMaterialGroup().contains(line.getMaterialGroup()) && new Double(line.getDeliveredQuantity()).doubleValue() < line.getQuantity()) {					
 					shortedItems.add(line);					
-				}				
+				} else if (line.getSubstitutedQuantity() != null && !"".equals(line.getSubstitutedQuantity())) {
+					shortedItems.add(line);
+				}
 			}
 		}
 		return shortedItems;
