@@ -1,7 +1,6 @@
 package com.freshdirect.fdstore.dcpd;
 
 import java.io.IOException;
-import java.util.AbstractCollection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -12,18 +11,18 @@ import org.apache.commons.lang.StringUtils;
 
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.common.context.UserContext;
-import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.EnumSustainabilityRating;
+import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.customer.adapter.OrderPromotionHelper;
 import com.freshdirect.storeapi.ContentNodeI;
 import com.freshdirect.storeapi.application.CmsManager;
 import com.freshdirect.storeapi.content.CategoryModel;
 import com.freshdirect.storeapi.content.ConfiguredProduct;
-import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.storeapi.content.ContentNodeModel;
 import com.freshdirect.storeapi.content.DepartmentModel;
 import com.freshdirect.storeapi.content.ProductModel;
@@ -97,7 +96,7 @@ public class DCPDReportGenerator {
             } else if (rootNode instanceof CategoryModel) {
                 renderCategoryNode((CategoryModel) rootNode, 1);
             } else if (rootNode instanceof Recipe) {
-                renderRecipeNode(UserContext.createDefault(EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()))), (Recipe) rootNode, 1);
+                renderRecipeNode(UserContext.createUserContext(CmsManager.getInstance().getEStoreEnum()), (Recipe) rootNode, 1);
             } else {
                 System.out.println("Nothing to do with " + rootNode.getClass() + "/" + rootNode);
             }
@@ -189,7 +188,7 @@ public class DCPDReportGenerator {
 
         // I/a. RENDER PRODUCTS
         for (ProductModel prodNode : catNode.getPrivateProducts()) {
-            renderSKUs(UserContext.createUserContext(CmsManager.getInstance().getEStoreEnum()), prodNode.getSkus(), prodNode.getContentName(), level, null);
+            renderSKUs(UserContext.createUserContext(CmsManager.getInstance().getEStoreEnum()), prodNode, level, null);
         }
 
         // RENDER VIRTUAL GROUP ITEMS
@@ -229,8 +228,11 @@ public class DCPDReportGenerator {
         }
     }
 
-    public void renderSKUs(UserContext userCtx, List<SkuModel> skuNodes, String parentCName, int level, String recipeSourceId)
-            throws IOException, FDResourceException, FDSkuNotFoundException {
+    public void renderSKUs(UserContext userCtx, ProductModel productModel, int level, String recipeSourceId) throws IOException, FDResourceException, FDSkuNotFoundException {
+
+        String parentCName = productModel.getContentName();
+        List<SkuModel> skuNodes = productModel.getSkus();
+
         Iterator<SkuModel> sit = skuNodes.iterator();
         while (sit.hasNext()) {
             SkuModel skuNode = sit.next();
@@ -270,15 +272,19 @@ public class DCPDReportGenerator {
             EnumSustainabilityRating sustainabilityRating = null;
             try {
 
-                if (skuNode.getProductInfo() != null) {
+                final FDProductInfo productInfo = skuNode.getProductInfo();
+                if (productInfo != null) {
                     // rating = skuNode.getProductInfo().getRating(userCtx.getFulfillmentContext().getPlantId());
                     // sustainabilityRating=skuNode.getProductInfo().getSustainabilityRating(userCtx.getFulfillmentContext().getPlantId());
-                    rating = skuNode.getProductInfo().getRating(ProductInfoUtil.getPickingPlantId(skuNode.getProductInfo()));
-                    sustainabilityRating = skuNode.getProductInfo().getSustainabilityRating(ProductInfoUtil.getPickingPlantId(skuNode.getProductInfo()));
-                    price = "$" + String.valueOf(skuNode.getProductInfo().getZonePriceInfo(ZonePriceListing.DEFAULT_ZONE_INFO).getDefaultPrice());
-                    if (skuNode.getProductInfo().getZonePriceInfo(ZonePriceListing.DEFAULT_ZONE_INFO).getSellingPrice() != 0) {
-                        basePrice = "$" + String.valueOf(skuNode.getProductInfo().getZonePriceInfo(ZonePriceListing.DEFAULT_ZONE_INFO).getSellingPrice());
-                        isDeal = String.valueOf(skuNode.getProductInfo().getZonePriceInfo(ZonePriceListing.DEFAULT_ZONE_INFO).isItemOnSale());
+                    final String pickingPlantId = ProductInfoUtil.getPickingPlantId(productInfo);
+                    final ZonePriceInfoModel zonePriceInfo = productInfo.getZonePriceInfo(ZonePriceListing.DEFAULT_ZONE_INFO);
+
+                    rating = productInfo.getRating(pickingPlantId);
+                    sustainabilityRating = productInfo.getSustainabilityRating(pickingPlantId);
+                    price = "$" + String.valueOf(zonePriceInfo.getDefaultPrice());
+                    if (zonePriceInfo.getSellingPrice() != 0) {
+                        basePrice = "$" + String.valueOf(zonePriceInfo.getSellingPrice());
+                        isDeal = String.valueOf(zonePriceInfo.isItemOnSale());
                     }
                 } else {
                     rating = null;
@@ -436,7 +442,7 @@ public class DCPDReportGenerator {
                     renderUnavailableProduct(cpNode.getContentName(), level);
                 }
             } else {
-                renderSKUs(userCtx, cpNode.getSkus(), cpNode.getContentName(), level, recipeSourceId);
+                renderSKUs(userCtx, cpNode, level, recipeSourceId);
             }
         }
     }
