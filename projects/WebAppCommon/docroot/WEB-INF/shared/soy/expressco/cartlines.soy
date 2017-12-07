@@ -1143,7 +1143,7 @@
 								{let $deliveryUsed: 1 /}
 							{else}
 								{if $box.id == 'ssOrderTotal' and not ($avalaraEnabledRevised and $cartlineTypeRevised == 'YOUR_CART')}
-									<span class="strl_text ssOrderTotal">Order Total{if not $displayCheckout}:{/if}</span>
+									<span class="strl_text ssOrderTotal">Order Total</span>
 								{else}
 									{if $box.id == 'ssOrderTotal' and ($avalaraEnabledRevised and $cartlineTypeRevised == 'YOUR_CART')}
 										<span class="strl_text ssOrderTotal"><!--{$box.text}--> Order Subtotal</span>
