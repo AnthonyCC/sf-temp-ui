@@ -296,13 +296,13 @@ public class DCPDReportGenerator {
 
             if (ctx.isRenderCSV()) {
                 if (ctx.isProductsOnlyView()) {
-                    printToCSV(new String[] { (isUna ? "N" : ""), quoted(parentCName), quoted(skuNode.getFullName()), quoted(skuNode.getContentName()),
+                    printToCSV(new String[] { (isUna ? "N" : ""), quoted(parentCName), quoted(productModel.getFullName()), quoted(skuNode.getContentName()),
                             (rating != null ? rating.getStatusCode() : ""), (sustainabilityRating != null ? sustainabilityRating.getStatusCode() : ""),
                             quoted(sku_val != null ? sku_val : "N/A"), eligible, price, basePrice, isDeal });
                     /// out.println((isUna ? "N" : "") + ";\"" + parentCName + "\";\"" + skuNode.getFullName() + "\";\"" + skuNode.getContentName() + "\";\"" + (sku_val!=null ?
                     /// sku_val : "N/A") + "\"");
                 } else {
-                    printToCSV(new String[] { Integer.toString(level), "P", "", (isUna ? "N" : ""), quoted(parentCName), quoted(skuNode.getFullName()),
+                    printToCSV(new String[] { Integer.toString(level), "P", "", (isUna ? "N" : ""), quoted(parentCName), quoted(productModel.getFullName()),
                             quoted(skuNode.getContentName()), (rating != null ? rating.getStatusCode() : ""),
                             (sustainabilityRating != null ? sustainabilityRating.getStatusCode() : ""), quoted(sku_val != null ? sku_val : "N/A"), eligible, price, basePrice,
                             isDeal });
@@ -314,7 +314,7 @@ public class DCPDReportGenerator {
                 if (!ctx.isProductsOnlyView()) {
                     out.println("<td style='padding-left: " + (level * 15) + "px; " + cs + "'>" + parentCName + "</td>");
                 }
-                out.println("<td style='" + cs + "'>" + skuNode.getFullName() + "</td>");
+                out.println("<td style='" + cs + "'>" + productModel.getFullName() + "</td>");
                 out.println("<td style='" + cs + "'>" + skuNode.getContentName() + "</td>");
 
                 out.println("<td style='" + cs + "'>" + (rating != null ? rating.getStatusCode() : "&nbsp;") + "</td>");
