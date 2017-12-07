@@ -13,6 +13,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.webapp.ajax.reorder.service.QuickShopCarouselService;
 import com.freshdirect.webapp.ajax.viewcart.data.ViewCartCarouselData;
+import com.freshdirect.webapp.ajax.viewcart.service.CheckoutCarouselService;
 import com.freshdirect.webapp.ajax.viewcart.service.ViewCartCarouselService;
 import com.freshdirect.webapp.soy.SoyTemplateEngine;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -40,11 +41,13 @@ public class ViewCartPotatoTag extends SimpleTagSupport {
         	SessionInput input;
         	if( VIEW_CART_POTATO_NAME.equals(getName()) ) {
         		input = ViewCartCarouselService.getDefaultService().createSessionInput(user, request);
+        		carousels = ViewCartCarouselService.getDefaultService().populateTabsRecommendationsAndCarousel(request, user, input);
         	} else {
         		input = QuickShopCarouselService.defaultService().createSessionInput(user, request);
+        		carousels = CheckoutCarouselService.getDefaultService().populateTabsRecommendationsAndCarousel(request, user, input);
         	}
             input.setError(request.getParameter("warning_message") != null);
-            carousels = ViewCartCarouselService.getDefaultService().populateTabsRecommendationsAndCarousel(request, user, input);
+
         } catch (Exception e) {
             LOGGER.error("recommendation failed", e);
         }
