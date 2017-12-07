@@ -124,6 +124,7 @@ public class DCPDReportGenerator {
                 out.println("<td>&nbsp;</td>");
                 out.println("<td>&nbsp;</td>");
                 out.println("<td>&nbsp;</td>");
+                out.println("<td>&nbsp;</td>");
                 out.println("</tr>");
             }
         }
@@ -157,6 +158,7 @@ public class DCPDReportGenerator {
                 out.println("<td>&nbsp;</td>");
                 out.println("<td>&nbsp;</td>");
                 out.println("<td>&nbsp;</td>");
+                out.println("<td>&nbsp;</td>");
                 out.println("</tr>");
             }
         }
@@ -174,6 +176,7 @@ public class DCPDReportGenerator {
                     out.println("<tr>");
                     out.println("<td style='padding-left: " + (level * 15) + "px'>C: " + alias.getId() + " (A)</td>");
                     out.println("<td>" + ct.getLabel() + "</td>");
+                    out.println("<td>&nbsp;</td>");
                     out.println("<td>&nbsp;</td>");
                     out.println("<td>&nbsp;</td>");
                     out.println("<td>&nbsp;</td>");
@@ -207,6 +210,7 @@ public class DCPDReportGenerator {
                         out.println("<tr>");
                         out.println("<td style='padding-left: " + (level * 15) + "px'>C: " + vcatNode.getContentName() + " (V)</td>");
                         out.println("<td>" + vcatNode.getFullName() + "</td>");
+                        out.println("<td>&nbsp;</td>");
                         out.println("<td>&nbsp;</td>");
                         out.println("<td>&nbsp;</td>");
                         out.println("<td>&nbsp;</td>");
@@ -368,6 +372,7 @@ public class DCPDReportGenerator {
                 out.println("<td>&nbsp;</td>");
                 out.println("<td>&nbsp;</td>");
                 out.println("<td>&nbsp;</td>");
+                out.println("<td>&nbsp;</td>");
                 out.println("</tr>");
             }
         }
@@ -398,6 +403,7 @@ public class DCPDReportGenerator {
                 out.println("<td>&nbsp;</td>");
                 out.println("<td>&nbsp;</td>");
                 out.println("<td>&nbsp;</td>");
+                out.println("<td>&nbsp;</td>");
                 out.println("</tr>");
             }
         }
@@ -420,6 +426,7 @@ public class DCPDReportGenerator {
             } else {
                 out.println("<tr>");
                 out.println("<td style='padding-left: " + (level * 15) + "px'>S: " + rNode.getContentName() + "</td>");
+                out.println("<td>&nbsp;</td>");
                 out.println("<td>&nbsp;</td>");
                 out.println("<td>&nbsp;</td>");
                 out.println("<td>&nbsp;</td>");
