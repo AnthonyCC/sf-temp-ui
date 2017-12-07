@@ -109,7 +109,8 @@ public class CmsFilteringFlow {
 
 	public BrowseData doBrowseSectionsFlow(CmsFilteringNavigator nav, FDSessionUser user)
 			throws InvalidFilteringArgumentException, FDResourceException, FDNotFoundException {
-		String cacheKey = user.getUser().getPrimaryKey() + "," + nav.getId() + ",sec" + nav.getActivePage() + "_" + nav.getPageSize();
+		String plantId = user.getUserContext().getFulfillmentContext().getPlantId();
+		String cacheKey = user.getUser().getPrimaryKey() + "," +plantId + "," + nav.getId() + ",sec" + nav.getActivePage() + "_" + nav.getPageSize();
 		BrowseData browseData = EhCacheUtilWrapper.getObjectFromCache(CmsCaches.BR_USER_REFINEMENT_CACHE.cacheName, cacheKey);
 		if (browseData != null) {
 			return browseData;
@@ -163,8 +164,10 @@ public class CmsFilteringFlow {
 
     private CmsFilteringFlowResult doFlowForBrowseType(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException, FDResourceException, FDNotFoundException {
         BrowseData browseData = null;
-        String cacheKey = user.getUser().getPrimaryKey() + "," + nav.getId();
+        String plantId = user.getUserContext().getFulfillmentContext().getPlantId();
+        String cacheKey = user.getUser().getPrimaryKey()+ "," +plantId + "," + nav.getId();
         BrowseDataContext browseDataContext = getBrowseDataContextFromCacheForPaging(nav, user, cacheKey);
+        
     	if (browseDataContext == null) {
             browseDataContext = doBrowseFlow(nav, user);
         }
@@ -259,7 +262,7 @@ public class CmsFilteringFlow {
             if (shownProductKeysForRecommender.size() == 0 && browseDataContext.getNavigationModel().isProductListing()) {
                 browseData.getSections().setAllSectionsEmpty(true);
             }
-            EhCacheUtilWrapper.putObjectToCache(CmsCaches.BR_USER_REFINEMENT_CACHE.cacheName, user.getUser().getPrimaryKey(), browseDataContext);
+            EhCacheUtilWrapper.putObjectToCache(CmsCaches.BR_USER_REFINEMENT_CACHE.cacheName, user.getUser().getPrimaryKey()+ "," +plantId, browseDataContext);
 
             // only display recommenders if on last page
             PagerData pagerData = browseData.getPager();
@@ -292,7 +295,8 @@ public class CmsFilteringFlow {
     
     private CmsFilteringFlowResult doFlowForSearchType(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException, FDResourceException, FDNotFoundException {
     	BrowseData browseData = null;
-    	String cacheKey = user.getUser().getPrimaryKey() + "," + nav.getPageType() + ",sch_" + nav.getActiveTab();
+    	String plantId = user.getUserContext().getFulfillmentContext().getPlantId();
+    	String cacheKey = user.getUser().getPrimaryKey()+ "," +plantId + "," + nav.getPageType() + ",sch_" + nav.getActiveTab();
     	BrowseDataContext browseDataContext = getBrowseDataContextFromCacheForPaging(nav, user, cacheKey);
     	if (browseDataContext == null) {
             browseDataContext = doSearchLikeFlow(nav, user);
