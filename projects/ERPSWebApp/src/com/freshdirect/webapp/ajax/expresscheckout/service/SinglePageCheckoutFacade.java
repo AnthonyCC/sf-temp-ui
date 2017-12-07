@@ -321,12 +321,16 @@ public class SinglePageCheckoutFacade {
         formLocation.setSelected(getSelectedAddressId(deliveryAddresses));
 
         if (StandingOrderHelper.isSO3StandingOrder(user)) {
-            if (null != user.getCurrentStandingOrder().getAddressId()) {
-                formLocation.setSelected(user.getCurrentStandingOrder().getAddressId());
-            } else {
-//                user.getCurrentStandingOrder().setAddressId(formLocation.getSelected());
-            	formLocation.setSelected(null);
-            }
+        		formLocation.setSelected(null);	
+        		//checks valid corporate address
+            	List<LocationData> validCoAddress = formLocation.getAddresses();
+            	for( LocationData address: validCoAddress){
+            		if(address.getId().equals(user.getCurrentStandingOrder().getAddressId())){
+            			formLocation.setSelected(user.getCurrentStandingOrder().getAddressId());
+            			break;
+            		}
+            	}
+                
         }
         formLocation.setOnOpenCoremetrics(CoremetricsService.defaultService().getCoremetricsData("address"));
         return formLocation;

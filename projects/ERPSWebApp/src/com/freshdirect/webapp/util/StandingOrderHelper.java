@@ -1321,9 +1321,9 @@ private static String convert(Date time) {
 	
 	//SO user if deletes address which is default in another template, we are here deleting that specific SO template SO AddressID
 	public static void evaluteSoAddressId(HttpSession session, FDUserI user, String deliveryAddressId) {
-		Collection<FDStandingOrder> soValidList = user.getValidSO3();
+		Collection<FDStandingOrder> allSOlist = user.getAllSO3();
 		try {
-			for (FDStandingOrder soValidtemplate : soValidList) {
+			for (FDStandingOrder soValidtemplate : allSOlist) {
 				if (deliveryAddressId != null && deliveryAddressId.equals(soValidtemplate.getAddressId())) {
 					LOGGER.debug("indside evaluteSoAddressId(), action by user: "+user.getIdentity().getErpCustomerPK()+", "
 							+ "deleting addressId: "+soValidtemplate.getAddressId()+", for SO3 template: "+soValidtemplate.getId());
@@ -1384,9 +1384,9 @@ private static String convert(Date time) {
 	
 	//if SO user edits address, to delete the timeslots in templates if any, to avoid mismatch of timslot with updated address
 	public static void evaluteEditSoAddressID(HttpSession session, FDSessionUser user, String deliveryAddressId) {
-		Collection<FDStandingOrder> soValidList = user.getValidSO3();
+		Collection<FDStandingOrder> SOList = user.getAllSO3();
 		try {
-			for (FDStandingOrder soValidtemplate : soValidList) {
+			for (FDStandingOrder soValidtemplate : SOList) {
 				if (deliveryAddressId != null && deliveryAddressId.equals(soValidtemplate.getAddressId())) {
 					LOGGER.debug("indside evaluteEditSoAddressID(), action by user: "
 							+ user.getIdentity().getErpCustomerPK() + ", " + "deleting timeslots for  SO3 template: "
