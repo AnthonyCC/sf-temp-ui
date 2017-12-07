@@ -693,11 +693,15 @@ public class StandingOrderHelper {
 	
 	public static double getTotalAmountForSoSettings(FDStandingOrder so) throws FDResourceException, FDInvalidConfigurationException {
 		double amount = 0.0;
+		double tip=0.0;
+		DecimalFormat df = new DecimalFormat("##.##");
+
 		List<FDCartLineI> cartLineIs = so.getStandingOrderCart().getOrderLines();
 		if (null != cartLineIs) {
 		 so.getStandingOrderCart().refreshAll(true);
 		 amount = so.getStandingOrderCart().getTotal();
-		 amount = amount+so.getTipAmount();
+		 tip=so.getTipAmount();
+		 amount = Double.valueOf(df.format(amount+tip));
 		}
 		return amount;
 	}
