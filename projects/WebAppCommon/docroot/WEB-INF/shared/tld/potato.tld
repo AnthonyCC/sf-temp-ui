@@ -313,6 +313,12 @@
     <tag>
         <name>searchRecommender</name>
         <tagclass>com.freshdirect.webapp.search.SearchRecommenderPotatoTag</tagclass>
+		<body-content>empty</body-content>
+		<attribute>
+            <name>productId</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>
     <tag>
         <name>singlePageCheckout</name>
