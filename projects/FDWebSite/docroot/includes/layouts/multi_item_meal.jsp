@@ -38,7 +38,8 @@ if ("POST".equals(request.getMethod()) && result == null) {
 <tmpl:insert template='/common/template/both_dnav.jsp'>
 <%--     <tmpl:put name='title' direct='true'>FreshDirect - <%= null !=productNode?productNode.getFullName():"" %></tmpl:put> --%>
     <tmpl:put name="seoMetaTag" direct='true'>
-        <fd:SEOMetaTag title="FreshDirect - <%= null !=productNode?productNode.getFullName():"" %>"/>
+       <% String var = "FreshDirect - " + (null !=productNode?productNode.getFullName():""); %>
+        <fd:SEOMetaTag title="<%= var %>"/>
     </tmpl:put>
     <tmpl:put name='leftnav' direct='true'>
     </tmpl:put>

@@ -19,8 +19,9 @@ boolean emailSent = request.getParameter("email") != null && "sent".equalsIgnore
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en-US" xml:lang="en-US">
 <head>
-<title><%= isBestCellars ? "Best Cellars" : "FreshDirect"%></title>
-<%--  <fd:SEOMetaTag title="<%= isBestCellars ? 'Best Cellars' : 'FreshDirect'%>"/> --%>
+<%-- <title><%= isBestCellars ? "Best Cellars" : "FreshDirect"%></title> --%>
+ <% String var = isBestCellars ? "Best Cellars" : "FreshDirect"; %>
+ <fd:SEOMetaTag title="<%=var %>"/>
 
 <fd:javascript src="/assets/javascript/common_javascript.js"/>
 
