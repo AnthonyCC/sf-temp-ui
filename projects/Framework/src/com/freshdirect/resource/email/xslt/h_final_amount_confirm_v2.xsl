@@ -204,7 +204,7 @@
 					<b>Thanks for your shopping. Come back again soon!</b>
 				</p>
 				<p style="margin: 10px 0 0 0;">
-					The FreshDirect <xsl:choose><xsl:when test="order/deliveryType != 'C'">Customer Service Team</xsl:when><xsl:otherwise>Corporate Services Group</xsl:otherwise></xsl:choose>
+					FreshDirect <xsl:choose><xsl:when test="order/deliveryType != 'C'">Customer Service Group</xsl:when><xsl:otherwise>Corporate Services Group</xsl:otherwise></xsl:choose>
 				</p>
 				
 				<xsl:if test="order/deliveryType = 'H'">
