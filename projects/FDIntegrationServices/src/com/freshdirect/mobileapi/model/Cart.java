@@ -776,7 +776,7 @@ public class Cart {
 					productLineItem.setSusbtituteProductDefaultPrice(null != cartLine.getInvoiceLine().getSubstituteProductDefaultPrice() ? cartLine.getInvoiceLine().getSubstituteProductDefaultPrice() : "");
 					productLineItem.setSubstituteProduct(null != cartLine.getInvoiceLine().getSubstituteProductId() ? cartLine.getInvoiceLine().getSubstituteProductId() : "");	
 					if(cartLine != null && cartLine.getInvoiceLine() != null && cartLine.getInvoiceLine().getSubstitutedSkuCode()!=null){
-					productLineItem.setSubstituteSkuQuantity(cartLine.getInvoiceLine().getWeight());
+					productLineItem.setSubstituteSkuQuantity(cartLine.getInvoiceLine().getQuantity());
 					}
 				}
                 
