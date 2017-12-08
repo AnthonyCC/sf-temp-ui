@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Category;
 
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.ErpPaymentMethodI;
@@ -56,6 +57,8 @@ import com.freshdirect.webapp.util.StandingOrderHelper;
 
 public class PaymentService {
 
+	private static Category		LOGGER	= LoggerFactory.getInstance( PaymentService.class );
+	
     private static final PaymentService INSTANCE = new PaymentService();
 	private static final String EWALLET_SESSION_ATTRIBUTE_NAME="EWALLET_CARD_TYPE";
 	private static final String MP_EWALLET_CARD="MP_CARD";
@@ -115,7 +118,6 @@ public class PaymentService {
         String billingRef = null; // TODO: needed? CORPORATE with zero payment
         // method.
         HttpSession session = request.getSession();
-        String test = "111";
         PaymentMethodManipulator.setPaymentMethod(paymentId, billingRef, request, session, result, actionName, ((paymentSaveAsDefault)?"Y":"N"));
         for (ActionError error : result.getErrors()) {
             validationErrors.add(new ValidationError(error.getType(), error.getDescription()));
@@ -256,10 +258,20 @@ public class PaymentService {
         	}
         	else if (user.getShoppingCart().getPaymentMethod() == null || (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user)
         					&& null ==request.getAttribute("pageAction")) && null== request.getSession().getAttribute("selectedPaymentId")) {
-//                selectedPaymentId = FDCustomerManager.getDefaultPaymentMethodPK(user.getIdentity());
         		 user.refreshFdCustomer();
-        		selectedPaymentId = user.getFDCustomer().getDefaultPaymentMethodPK();
-                selectionError = selectPaymentMethod(selectedPaymentId, PageAction.SELECT_PAYMENT_METHOD.actionName, request);
+        		 // FIN-78
+        		 if(user.getMasqueradeContext()!=null && user.getMasqueradeContext().getParentOrderId()!=null){
+        			 FDOrderI orderInfo = FDCustomerManager.getOrder(user.getMasqueradeContext().getParentOrderId());
+        			 if(orderInfo!=null){
+        				 selectedPaymentId= orderInfo.getPaymentMethod()!=null?(orderInfo.getPaymentMethod().getPK()!=null?orderInfo.getPaymentMethod().getPK().getId():null):null;
+        				 LOGGER.debug("ADD-ON order masquerade by "+user.getMasqueradeContext().getAgentId()+
+        						 ", payment ID: " +selectedPaymentId+" is setted from parentOrder: "+orderInfo.getErpSalesId());
+        			 }
+        		 }else{
+        			 selectedPaymentId = user.getFDCustomer().getDefaultPaymentMethodPK();
+        			 LOGGER.debug("default payment method setted, paymentID: "+selectedPaymentId);
+        		 }
+        		 selectionError = selectPaymentMethod(selectedPaymentId, PageAction.SELECT_PAYMENT_METHOD.actionName, request);
             } else {
                 PrimaryKey paymentMethodPrimaryKey = user.getShoppingCart().getPaymentMethod().getPK();
                 if (paymentMethodPrimaryKey != null) {

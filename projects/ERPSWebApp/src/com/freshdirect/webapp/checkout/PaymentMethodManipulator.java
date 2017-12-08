@@ -134,7 +134,7 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 			result.addError( new ActionError( "paymentMethodList", "You must select a payment method." ) );
 			return;
 		}
-		boolean paymentSetAsDefault = false;
+		/*boolean paymentSetAsDefault = false;
 		try {
 			paymentSetAsDefault = Boolean.parseBoolean(FormDataService.defaultService().get(BaseJsonServlet.parseRequestData(request, FormDataRequest.class), "paymentSetAsDefault"));
 		} catch (HttpErrorResponse e) {
@@ -144,14 +144,9 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		}
         if (paymentSetAsDefault) {
         	//set as default call
-        }
+        }*/
 
-		FDIdentity identity = user.getIdentity();
-
-		//
-		// search for the payment method with the matching ID
-		//
-		Collection<ErpPaymentMethodI> paymentMethods = FDCustomerManager.getPaymentMethods( identity );
+		Collection<ErpPaymentMethodI> paymentMethods = user.getPaymentMethods();
 
 		ErpPaymentMethodI paymentMethod = null;
 
