@@ -47,7 +47,6 @@ import com.freshdirect.cms.ui.editor.domain.VirtualAttributes;
 import com.freshdirect.cms.ui.editor.reports.service.ReportingService;
 import com.freshdirect.cms.ui.model.ContentNodeModel;
 import com.freshdirect.cms.ui.model.CustomFieldDefinition;
-import com.freshdirect.cms.ui.model.CustomFieldDefinition.Type;
 import com.freshdirect.cms.ui.model.EnumModel;
 import com.freshdirect.cms.ui.model.GwtContentNode;
 import com.freshdirect.cms.ui.model.GwtNodeContext;

@@ -139,4 +139,73 @@ public class DraftChangeToContentNodeApplicatorTest {
         Assert.assertTrue(resultNode.get(resultNodeKey).containsKey(ContentTypes.Product.FULL_NAME));
         Assert.assertEquals("Draft_node", resultNode.get(resultNodeKey).get(ContentTypes.Product.FULL_NAME));
     }
+
+    @Test
+    public void testApplyDraftChangeToNodeWhenDraftChangeValueIsNullAndAttributeIsNotRelationship() {
+        ContentKey productKey = ContentKeyFactory.get(ContentType.Product, "test_product");
+
+        Map<Attribute, Object> mainNode = new HashMap<Attribute, Object>();
+        mainNode.put(ContentTypes.Product.FULL_NAME, "main_full_name");
+
+        DraftChange draftChange = new DraftChange();
+        draftChange.setAttributeName(ContentTypes.Product.FULL_NAME.getName());
+        draftChange.setContentKey(productKey.toString());
+        draftChange.setCreatedAt(System.currentTimeMillis());
+        draftChange.setUserName("testUser");
+        draftChange.setValue(null);
+
+        Mockito.when(contentTypeInfoService.findAttributeByName(productKey.type, ContentTypes.Product.FULL_NAME.getName()))
+                .thenReturn(Optional.fromNullable(ContentTypes.Product.FULL_NAME));
+
+        Map<Attribute, Object> draftAppliedAttributes = underTest.applyDraftChangeToNode(draftChange, mainNode);
+
+        Assert.assertTrue(draftAppliedAttributes.containsKey(ContentTypes.Product.FULL_NAME));
+        Assert.assertEquals(null, draftAppliedAttributes.get(ContentTypes.Product.FULL_NAME));
+    }
+
+    @Test
+    public void testApplyDraftChangeToNodeWhenDraftChangeValueIsNullAndAttributeIsRelationshipOne() {
+        ContentKey productKey = ContentKeyFactory.get(ContentType.Product, "test_product");
+
+        Map<Attribute, Object> mainNode = new HashMap<Attribute, Object>();
+        mainNode.put(ContentTypes.Product.PREFERRED_SKU, ContentKeyFactory.get("Sku:testPreferred"));
+
+        DraftChange draftChange = new DraftChange();
+        draftChange.setAttributeName(ContentTypes.Product.PREFERRED_SKU.getName());
+        draftChange.setContentKey(productKey.toString());
+        draftChange.setCreatedAt(System.currentTimeMillis());
+        draftChange.setUserName("testUser");
+        draftChange.setValue(null);
+
+        Mockito.when(contentTypeInfoService.findAttributeByName(productKey.type, ContentTypes.Product.PREFERRED_SKU.getName()))
+                .thenReturn(Optional.fromNullable(ContentTypes.Product.PREFERRED_SKU));
+
+        Map<Attribute, Object> draftAppliedAttributes = underTest.applyDraftChangeToNode(draftChange, mainNode);
+
+        Assert.assertTrue(draftAppliedAttributes.containsKey(ContentTypes.Product.PREFERRED_SKU));
+        Assert.assertEquals(null, draftAppliedAttributes.get(ContentTypes.Product.PREFERRED_SKU));
+    }
+
+    @Test
+    public void testApplyDraftChangeToNodeWhenDraftChangeValueIsNullAndAttributeIsRelationshipMany() {
+        ContentKey productKey = ContentKeyFactory.get(ContentType.Product, "test_product");
+
+        Map<Attribute, Object> mainNode = new HashMap<Attribute, Object>();
+
+        DraftChange draftChange = new DraftChange();
+        draftChange.setAttributeName(ContentTypes.Product.PRIMARY_HOME.getName());
+        draftChange.setContentKey(productKey.toString());
+        draftChange.setCreatedAt(System.currentTimeMillis());
+        draftChange.setUserName("testUser");
+        draftChange.setValue(null);
+
+        Mockito.when(contentTypeInfoService.findAttributeByName(productKey.type, ContentTypes.Product.PRIMARY_HOME.getName()))
+                .thenReturn(Optional.fromNullable(ContentTypes.Product.PRIMARY_HOME));
+
+        Map<Attribute, Object> draftAppliedAttributes = underTest.applyDraftChangeToNode(draftChange, mainNode);
+
+        Assert.assertTrue(draftAppliedAttributes.containsKey(ContentTypes.Product.PRIMARY_HOME));
+        Assert.assertTrue(draftAppliedAttributes.get(ContentTypes.Product.PRIMARY_HOME) instanceof List<?>);
+        Assert.assertEquals(0, ((List<ContentKey>) draftAppliedAttributes.get(ContentTypes.Product.PRIMARY_HOME)).size());
+    }
 }

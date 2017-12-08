@@ -1,6 +1,7 @@
 package com.freshdirect.cms.draft.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,23 +40,20 @@ public class DraftChangeToContentNodeApplicator {
         if (optionalAttribute.isPresent()) {
             Attribute attributeDefinition = optionalAttribute.get();
 
-            if (draftChange.getValue() == null) {
-                nodeAttributesWithValues.put(attributeDefinition, null);
-            } else {
-
-                if (attributeDefinition instanceof Relationship) {
-                    List<ContentKey> keys = getContentKeysFromRelationshipValue((Relationship) attributeDefinition, draftChange.getValue());
-                    if (((Relationship) attributeDefinition).getCardinality() == RelationshipCardinality.ONE) {
-                        nodeAttributesWithValues.put(attributeDefinition, keys.isEmpty() ? null : keys.get(0));
-                    } else {
-                        // This sets the value of OneToManyRelation fields, based on the draftchange attribute.
-                        nodeAttributesWithValues.put(attributeDefinition, keys);
-                    }
-                } else if (attributeDefinition instanceof Scalar) {
-                    Scalar scalarAttribute = (Scalar) attributeDefinition;
-                    Object value = serializedValueConverter.convert(scalarAttribute, draftChange.getValue());
-                    nodeAttributesWithValues.put(attributeDefinition, value);
+            if (attributeDefinition instanceof Relationship) {
+                List<ContentKey> keys = getContentKeysFromRelationshipValue((Relationship) attributeDefinition, draftChange.getValue());
+                if (((Relationship) attributeDefinition).getCardinality() == RelationshipCardinality.ONE) {
+                    nodeAttributesWithValues.put(attributeDefinition, keys.isEmpty() ? null : keys.get(0));
+                } else {
+                    nodeAttributesWithValues.put(attributeDefinition, keys);
                 }
+            } else if (attributeDefinition instanceof Scalar) {
+                Scalar scalarAttribute = (Scalar) attributeDefinition;
+                Object value = null;
+                if (draftChange.getValue() != null) {
+                    value = serializedValueConverter.convert(scalarAttribute, draftChange.getValue());
+                }
+                nodeAttributesWithValues.put(attributeDefinition, value);
             }
         } else {
             throw new IllegalArgumentException("There is no attribute " + attributeName + " for type " + draftContentKey.type);
@@ -65,7 +63,7 @@ public class DraftChangeToContentNodeApplicator {
 
     public List<ContentKey> getContentKeysFromRelationshipValue(Relationship relationship, String value) {
         List<ContentKey> result = new ArrayList<ContentKey>();
-        if (relationship.getCardinality() == RelationshipCardinality.ONE) {
+        if (relationship.getCardinality() == RelationshipCardinality.ONE && null != value) {
             result.add(ContentKeyFactory.get(value));
         } else {
             String[] changedKeys = StringUtils.split(value, SEPARATOR);
