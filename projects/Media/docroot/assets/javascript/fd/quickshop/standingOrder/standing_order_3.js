@@ -249,11 +249,7 @@ function submitFormManageSO(id,action,name,freq, deleteDate){
       			$jq("#ec-drawer").on( "timeselector-update", function(){ soItemTriggerUpdate(id, data, false, false); });
       			$jq("#ec-drawer").on( "paymentmethod-update", function(){ soItemTriggerUpdate(id, data, false, false); });
       			
-      			setTimeout(function(){
-      				if($jq(soID + " .standing-orders-3-so-settings-item .standing-orders-3-so-settings-item-details-etotal").text().trim() != $jq("#cartcontent #subtotalbox1 .st_val_subtotal").text().trim()){
-      					soItemTriggerUpdate(id, data, true, false);
-      				}
-      			}, 5000);
+      			soItemTriggerUpdate(id, data, true, false);
             }
             if('selectFreq'==action || 'selectFreq2'==action){
             	if('selectFreq'==action){
