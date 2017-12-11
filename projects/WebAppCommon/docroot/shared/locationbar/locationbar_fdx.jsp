@@ -208,7 +208,9 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 		AddressModel userReservervationAddressModel = null; //matched by id, may still end up null
 		
 	
-		if (user_locationbar_fdx!=null && user_locationbar_fdx.getLevel() != FDUserI.GUEST) {
+		if (user_locationbar_fdx != null && user_locationbar_fdx.getLevel() != FDUserI.GUEST 
+			&& (allHomeAddresses.size()>0 || allCorporateAddresses.size() > 0 || allPickupDepots.size() > 0)
+		) {
 			zipAddDisplayString = "Delivery Times";
 			isEligibleForPreReservation = user_locationbar_fdx.isEligibleForPreReservation();
 			
@@ -385,8 +387,14 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 						<button type="button" class="cssbutton green locabar_addresses-anon-deliverable-add-address-btn">Add Delivery Address</button>
 					</div>
 				</tmpl:put><%
-			} else { //non-recognized and not in deliverable zip
+			} else { //non-recognized and not in deliverable zip or LOGGED IN USER, NO ADDRESSES AT ALL
 				%><tmpl:put name="address"><div class="locabar_addresses-anon-nondeliverable">
+
+					<% /* LOGGED IN USER, NO ADDRESSES AT ALL */
+					if (allHomeAddresses.size()<=0 && allCorporateAddresses.size()<=0 && allPickupDepots.size()<=0) { %>
+						<div class="locabar_addresses-none"><a class="cssbutton green" href="/your_account/add_delivery_address.jsp">ADD ADDRESS</a></div>
+					<% } %>
+					
 					<div style="display: inline-block;" class="section-warning">
 						<div style="margin: 0 0 1em 10px;">
 							<div>FreshDirect does not<br />deliver to zip code:</div>

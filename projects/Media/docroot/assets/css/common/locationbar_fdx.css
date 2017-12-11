@@ -282,7 +282,7 @@
 	}
 
 	#topSearchField:focus {
-		border: 1px solid #6AAA6D;
+		border: 1px solid #4fa157;
 	}
 	::-webkit-input-placeholder {
 	    color:#333;
@@ -419,7 +419,7 @@
 	padding: 5px 15px;
 	margin-top: 9px;
 	background-color: #E1F0DE;
-	color: #6AAA6D;
+	color: #4fa157;
 	font-size: 24px;
 	font-weight: bold;
 	line-height: 23px;
@@ -432,7 +432,7 @@
 
 .locabar-circle-cont {
 	border-radius: 14px;
-	color: #6AAA6D;
+	color: #4fa157;
 	background-color: #fff;
 	font-size: 11px;
 	font-weight: bold;
@@ -443,7 +443,7 @@
 	display: inline-block;
 	position: absolute;
 	top: 3px;
-	border: 2px solid #6AAA6D;
+	border: 2px solid #4fa157;
 }
 
 .locabar-cart-count-cont .locabar-circle-cont{
@@ -722,7 +722,7 @@
 }
 #locabar_addresses .section-header {
 	display: block;
-	background-color: #6AAA6D;
+	background-color: #4fa157;
 	color: #fff;
 	text-transform: uppercase;
 	font-weight: bold;
@@ -863,7 +863,7 @@
 
 #locabar_modify_order_trigger #locabar-modify-order-count{
 	border-radius: 14px;
-	color: #6AAA6D;
+	color: #4fa157;
 	background-color: #fff;
 	font-size: 11px;
 	font-weight: bold;
@@ -874,7 +874,7 @@
 	display: inline-block;
 	position: absolute;
 	top: 6px;
-	border: 2px solid #6AAA6D;
+	border: 2px solid #4fa157;
 }
 
 #locabar_modify_order_trigger .locabar-modify-order-container{
@@ -1060,7 +1060,7 @@
 	.disableCart .locabar-user-section[data-signedin="true"],
 	.disableCart .locabar-popupcart-section {
 		background-color: #458d4e;
-		border-left: 1px solid #6AAA6D;
+		border-left: 1px solid #4fa157;
 	}
 	.disableCart .locabar-popupcart-section {
 		min-width: 160px
@@ -1158,7 +1158,7 @@
 }
 .cssbutton.fdxgreen{
 	color: white;
-	background-color: #6AAA6D;
+	background-color: #4fa157;
 }
 .cssbutton.fdxgreen:hover, .cssbutton.fdxgreen:focus {
 	background-color: #458d4e;
@@ -1166,6 +1166,10 @@
 .locabar_addresses-reservation-none {
 	text-align: center;
 	margin-top: 10px!important;
+	vertical-align: top;
+}
+.locabar_addresses-none {
+	text-align: center;
 	vertical-align: top;
 }
 .locabar_addresses-reservation-make-disabled {
@@ -1289,22 +1293,22 @@ option.address-icon {
 }
 
 .hasFDX .top-nav {
-	background-color: #6AAA6D;
+	background-color: #4fa157;
 }
 .hasFDX .top-item-link a:visited, .hasFDX .top-item-link a:active {
-	background-color: #6AAA6D;
+	background-color: #4fa157;
 }
 .hasFDX .top-item-link a:hover, .hasFDX .top-item-link a:focus {
 	background-color: #4fa157;
 }
 .hasFDX .gnav-footer {
-	background-color: #6AAA6D;
+	background-color: #4fa157;
 }
 .hasFDX .gnav-footer .link:hover, .hasFDX .gnav-footer .link:focus {
 	background-color: #4fa157;
 }
 .hasFDX .gnav-footer a:visited, .hasFDX .gnav-footer a:active {
-	background-color: #6AAA6D;
+	background-color: #4fa157;
 }
 .hasFDX [data-component="globalnav"] a[data-highlight="on"] {
 	background-color: #4fa157;
@@ -1463,14 +1467,14 @@ option.address-icon {
 }
 
 .locabar-section:hover, .locabar-section:focus {
-	border-left: 1px solid #6AAA6D;
+	border-left: 1px solid #4fa157;
 	background-color:#458d4e;
 }
 
 .locabar-section.alertOpen {
 	/*background-color: #4fa157;*/
 	background-color: #458d4e;
-	border-left: 1px solid #6AAA6D;
+	border-left: 1px solid #4fa157;
 }
 
 .alertOpen .cursor-pointer {
@@ -1572,7 +1576,7 @@ option.address-icon {
 }
 #locabar_addresses.posAbs .locabar_addresses-anon-nondeliverable .section-warning{
 	margin-left:26px;
-	min-height:65px;
+	min-height: 30px;
 	padding-top: 15px;
 	background-position: left 1em;
 }
@@ -1985,7 +1989,7 @@ option.address-icon {
 	}
 	.locabar-circle-cont {
     	color: #fff;
-    	background-color: #6AAA6D;
+    	background-color: #4fa157;
     	border: 2px solid #fff;
 	}
 	.disableCart .locabar-addresses-section,
