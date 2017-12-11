@@ -1,16 +1,11 @@
 package com.freshdirect.storeapi;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
-import com.freshdirect.cms.core.domain.ContentType;
-import com.freshdirect.cms.core.service.ContentTypeInfoService;
-import com.google.common.base.Optional;
 
 @CmsLegacy
 public class ContentNode implements ContentNodeI {
@@ -21,15 +16,16 @@ public class ContentNode implements ContentNodeI {
 
     private final Map<Attribute, Object> payload;
 
+    private final Map<String, AttributeI> legacyPayload = new HashMap<String, AttributeI>();
+
     private final Set<ContentKey> childKeys;
 
-    private final ContentTypeInfoService typeInfoService;
-
-    public ContentNode(ContentKey contentKey, Map<Attribute, Object> values, Set<ContentKey> childKeys, ContentTypeInfoService typeInfoService) {
+    public ContentNode(ContentKey contentKey, Map<Attribute, Object> values, Set<ContentKey> childKeys) {
         this.contentKey = contentKey;
         this.payload = values;
         this.childKeys = childKeys;
-        this.typeInfoService = typeInfoService;
+
+        buildLegacyPayload();
     }
 
     @Override
@@ -43,21 +39,14 @@ public class ContentNode implements ContentNodeI {
 
     @Override
     public AttributeI getAttribute(String name) {
-        AttributeI result = null;
-        final Attribute selectedAttribute = findAttributeByName(name);
-
-        if (selectedAttribute != null) {
-            final Object value = payload.get(selectedAttribute);
-            result = buildLegacyAttribute(selectedAttribute, value);
-        }
-
-        return result;
+        return legacyPayload.get(name);
     }
 
     @Override
     public Object getAttributeValue(String name) {
-        Attribute selectedAttribute = findAttributeByName(name);
-        return selectedAttribute != null ? payload.get(selectedAttribute) : null;
+        AttributeI legacyAttribute = legacyPayload.get(name);
+
+        return legacyAttribute != null ? legacyAttribute.getValue() : null;
     }
 
     @Override
@@ -99,23 +88,6 @@ public class ContentNode implements ContentNodeI {
         return "ContentNode [contentKey=" + contentKey + ", payload=" + payload + ", childKeys=" + childKeys + "]";
     }
 
-    private Attribute findAttributeByName(String attributeName) {
-        Optional<Attribute> selectedAttribute = Optional.absent();
-        if (attributeName != null) {
-            List<ContentType> typesToLookup = new ArrayList<ContentType>();
-            typesToLookup.add(contentKey.type);
-            typesToLookup.addAll(typeInfoService.getReachableContentTypes(contentKey.type));
-
-            for (ContentType type : typesToLookup) {
-                selectedAttribute = typeInfoService.findAttributeByName(type, attributeName);
-                if (selectedAttribute.isPresent()) {
-                    return selectedAttribute.get();
-                }
-            }
-        }
-        return null;
-    }
-
     @SuppressWarnings("serial")
     private AttributeI buildLegacyAttribute(final Attribute attribute, final Object value) {
         return new AttributeI() {
@@ -138,5 +110,12 @@ public class ContentNode implements ContentNodeI {
                 return attribute;
             }
         };
+    }
+
+    private void buildLegacyPayload() {
+        for (Map.Entry<Attribute, Object> payloadEntry : payload.entrySet()) {
+            AttributeI legacyAttribute = buildLegacyAttribute(payloadEntry.getKey(), payloadEntry.getValue());
+            legacyPayload.put(legacyAttribute.getName(), legacyAttribute);
+        }
     }
 }

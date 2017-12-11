@@ -30,7 +30,6 @@ import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.cms.core.domain.Scalar;
-import com.freshdirect.cms.core.service.ContentTypeInfoService;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -62,8 +61,6 @@ public class CMSContentFactory {
 	private static CMSContentFactory instance = null;
 
 	private Map<ContentKey,ContentNodeI> contentNodesMap = new HashMap<ContentKey,ContentNodeI>();
-
-	private ContentTypeInfoService contentTypeInfoService = CmsServiceLocator.contentTypeInfoService();
 
 	public static CMSContentFactory getInstance(){
 		if(instance == null){
@@ -691,7 +688,7 @@ public class CMSContentFactory {
                         payload.put(attribute, value);
                     }
                 }
-                result.put(entry.getKey(), new ContentNode(entry.getKey(), payload, null, contentTypeInfoService));
+                result.put(entry.getKey(), new ContentNode(entry.getKey(), payload, null));
 			}
 
             return result;
