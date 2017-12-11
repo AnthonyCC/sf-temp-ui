@@ -6,7 +6,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
-import weblogic.auddi.util.Logger;
+//import weblogic.auddi.util.Logger;
 
 import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.fdstore.FDException;
@@ -190,7 +190,7 @@ public class ExternalAccountControllerTagWrapper extends NonStandardControllerTa
 			try{
 				userIdentity = FDCustomerManager.login(requestMessage.getEmail(),requestMessage.getPassword());
 			} catch(Exception ex){
-				Logger.error(ex.getMessage());
+				LOGGER.error(ex.getMessage());
 			}		
 			
 			if(userIdentity == null){

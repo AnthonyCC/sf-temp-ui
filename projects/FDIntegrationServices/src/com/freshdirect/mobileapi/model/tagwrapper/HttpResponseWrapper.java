@@ -2,6 +2,7 @@ package com.freshdirect.mobileapi.model.tagwrapper;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Collection;
 import java.util.Locale;
 
 import javax.servlet.ServletOutputStream;
@@ -195,5 +196,30 @@ public class HttpResponseWrapper implements HttpServletResponse {
     public void setLocale(Locale arg0) {
         throw new IllegalAccessError("this method has not been implemented in this wrapper");
     }
+
+	@Override
+	public void setContentLengthLong(long arg0) {
+        throw new IllegalAccessError("this method has not been implemented in this wrapper");		
+	}
+
+	@Override
+	public String getHeader(String arg0) {
+        throw new IllegalAccessError("this method has not been implemented in this wrapper");
+	}
+
+	@Override
+	public Collection<String> getHeaderNames() {
+        throw new IllegalAccessError("this method has not been implemented in this wrapper");
+	}
+
+	@Override
+	public Collection<String> getHeaders(String arg0) {
+        throw new IllegalAccessError("this method has not been implemented in this wrapper");
+	}
+
+	@Override
+	public int getStatus() {
+        throw new IllegalAccessError("this method has not been implemented in this wrapper");
+	}
 
 }

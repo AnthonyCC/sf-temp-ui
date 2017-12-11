@@ -5,16 +5,24 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ERPSWebApp"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/oscache-2.4.1.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/freemarker-2.3.15.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/javawebparts-filter-1.2.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-beans-4.0.1.RELEASE.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-context-4.0.1.RELEASE.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-core-4.0.1.RELEASE.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-web-4.0.1.RELEASE.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-webmvc-4.0.1.RELEASE.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/logistics-data-0.0.1-SNAPSHOT.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-context-support-4.0.1.RELEASE.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/log4j.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/oscache-2.4.1.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/freemarker-2.3.15.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/javawebparts-filter-1.2.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/spring-beans-4.0.1.RELEASE.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/spring-context-4.0.1.RELEASE.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/spring-core-4.0.1.RELEASE.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/spring-web-4.0.1.RELEASE.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/spring-webmvc-4.0.1.RELEASE.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/logistics-data-0.0.1-SNAPSHOT.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/spring-context-support-4.0.1.RELEASE.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/log4j.jar"/>
+	<classpathentry kind="var" path="TOMCAT_HOME/lib/servlet-api.jar"/>
+	<classpathentry kind="var" path="TOMCAT_HOME/lib/jsp-api.jar"/>
+	<classpathentry kind="var" path="TOMCAT_HOME/lib/jasper-el.jar"/>
+	<classpathentry kind="var" path="TOMCAT_HOME/lib/jasper.jar"/>
+	<classpathentry kind="var" path="TOMCAT_HOME/lib/el-api.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/FDClient.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/httpcore-4.4.1.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/commons-beanutils-1.6.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
