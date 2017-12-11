@@ -76,7 +76,7 @@ final int W_DELIVERY_INFO_NAV_TOTAL = 970;
 			<td width="<%=W_DELIVERY_INFO_NAV_TOTAL%>" colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"></td>
 		</tr>
 		<tr valign="top">
-			<td width="219" style="padding: 5px 5px 10px 5px;" class="text9_lh12"><a href="/help/delivery_info.jsp"><img src="/media_stat/images/template/help/delivery/delivery_pickup_deptnav.gif" width="219" height="26" border="0" alt="DELIVERY & PICK UP INFO"></a></td>
+			<td width="219" style="padding: 5px 5px 10px 5px;" class="text9_lh12"><a href="/help/delivery_info.jsp"><img src="/media_stat/images/template/help/delivery_info_deptnav.gif" width="219" height="26" border="0" alt="DELIVERY INFO"></a></td>
 			<td width="<%=W_DELIVERY_INFO_NAV_TOTAL-219%>">
 				<table border="0" cellpadding="0" cellspacing="0">
 					<tr>
