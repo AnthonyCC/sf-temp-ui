@@ -1274,3 +1274,63 @@ a.portrait-item-header-name:link {
 .qs-content .lineitems22 .itemlist-item-header-buttons{
   margin-left:0px;
 }
+
+.cssBurst,
+.cssBurst span {
+	width: 2.15em;
+	height: 2.15em;
+	display: block;
+	background-color: #E77630; /* orange */
+	line-height: 0.75em;
+}
+.cssBurst {
+	position: relative;
+	top: 0.5em;
+	left: 0.5em;
+	text-align: center;
+	text-decoration: none;
+	color: #fff;
+	/*font-weight: bold;*/
+	font-family: TradeGothic, Trebuchet MS;
+	text-transform: uppercase;
+}
+.cssBurst { /* 6-point, -(span rotation * # points) */
+	-webkit-transform: rotate(-135deg);
+	-moz-transform: rotate(-135deg);
+	transform: rotate(-135deg);
+}
+.cssBurst span {
+	-webkit-transform: rotate(22.5deg);
+	-moz-transform: rotate(22.5deg);
+	transform: rotate(22.5deg);
+}
+.cssBurst span p {
+	margin: 0;
+	padding: 4px 0;
+	font-size: 12px;
+	line-height: 0.9em;
+	-webkit-transform: rotate(-19deg);
+	-moz-transform: rotate(-19deg);
+	transform: rotate(-19deg);
+}
+.cssBurst.back span p {
+	padding: 3px 0;
+}
+.cssBurst.new span p,
+.cssBurst.free span p {
+	padding: 8px 0;
+}
+
+.cssBurst.free, .cssBurst.free span {
+	background-color: #C94747;  /* red */
+}
+.cssBurst.deal, .cssBurst.deal span {
+	background-color: #C94747;  /* red */
+}
+.cssBurst.fav, .cssBurst.fav span {
+	background-color: #969;  /* purple */
+}
+.cssBurst.new, .cssBurst.new span,
+.cssBurst.back, .cssBurst.back span {
+	background-color: #060;  /* green */
+}

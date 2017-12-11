@@ -1,11 +1,59 @@
 {namespace common}
 
-/**
+/** PASS-THROUGH METHOD
  * @param? badge
  * @param? deal
  * @param? usq
  */
 {template .bursts autoescape="false"}
+	{call common.cssbursts data="all" /}
+{/template}
+
+/**
+ * @param? badge
+ * @param? deal
+ * @param? usq
+ */
+{template .cssbursts autoescape="false"}
+	{let $burstType}
+		{if $deal > 0}
+			deal
+		{elseif isNonnull($badge)}
+			{$badge}
+		{/if}
+	{/let}
+	
+	{if $burstType != ''}
+		<div class="cssBurst {$burstType}">
+			<span><span><span><span><span><span>/* points */
+				<p>
+					{switch $burstType}
+						{case 'deal'}
+							SAVE<br />1%
+						{case 'fav'}
+							your fave
+						{case 'new'}
+							new
+						{case 'back'}
+							it's back
+						{case 'free'}
+							free
+					{/switch}
+				</p>
+			</span></span></span></span></span></span>
+		</div>
+	{/if}
+	
+	{if $usq}<span id="burst-wine-" name="burst-wine" class="cssburst-wine burst-wine"><p class="offscreen">wine&spirits</p></span>{/if}
+{/template}
+
+
+/**
+ * @param? badge
+ * @param? deal
+ * @param? usq
+ */
+{template .imagebursts autoescape="false"}
 	{let $burst}
 		/* APPDEV-5076 deals should be top priority */
 		{if $deal > 0}
@@ -21,6 +69,8 @@
 				{case 'free'}
 					/media_stat/images/bursts/brst_sm_free.png
 			{/switch}
+		{else}
+					/media_stat/images/bursts/brst_sm_free.png
 		{/if}
 	{/let}
 	{if $burst}
