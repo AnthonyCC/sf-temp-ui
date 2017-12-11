@@ -322,6 +322,7 @@
 			<td align="center">
 				<xsl:choose>
 					<xsl:when test="invoiceLine/substituteProductName != '' and invoiceLine/substitutedQuantity > 0"><xsl:value-of select="orderedQuantity"/>/0</xsl:when>
+					<xsl:when test="substituteProductName != '' and substitutedQuantity > 0"><xsl:value-of select="orderedQuantity"/>/0</xsl:when>
 					<xsl:otherwise><xsl:value-of select="displayQuantity"/> <xsl:if test="salesUnit = 'LB' and pricedByLb = 'true'">&nbsp;lb&nbsp;</xsl:if></xsl:otherwise>
 				</xsl:choose>
 				
