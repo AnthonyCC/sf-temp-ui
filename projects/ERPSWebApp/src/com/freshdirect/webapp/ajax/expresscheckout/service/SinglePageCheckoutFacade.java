@@ -321,16 +321,19 @@ public class SinglePageCheckoutFacade {
         formLocation.setSelected(getSelectedAddressId(deliveryAddresses));
 
         if (StandingOrderHelper.isSO3StandingOrder(user)) {
-        		formLocation.setSelected(null);	
-        		//checks valid corporate address
-            	List<LocationData> validCoAddress = formLocation.getAddresses();
-            	for( LocationData address: validCoAddress){
-            		if(address.getId().equals(user.getCurrentStandingOrder().getAddressId())){
-            			formLocation.setSelected(user.getCurrentStandingOrder().getAddressId());
-            			break;
-            		}
-            	}
-                
+        	FDStandingOrder currentSO = user.getCurrentStandingOrder();
+    		formLocation.setSelected(null);	
+    		//checks valid corporate address
+        	List<LocationData> validCoAddress = formLocation.getAddresses();
+        	for( LocationData address: validCoAddress){
+        		if(address.getId().equals(currentSO.getAddressId())){
+        			formLocation.setSelected(currentSO.getAddressId());
+        			break;
+        		}
+        	}if(null == formLocation.getSelected() && null != currentSO.getAddressId()){												//APPBUG-5367
+        		LOGGER.debug("addressID: "+currentSO.getAddressId()+" is no more in system, updating now at template level");
+        		StandingOrderHelper.evaluteSoAddressId(session, user, currentSO.getAddressId());
+        	}
         }
         formLocation.setOnOpenCoremetrics(CoremetricsService.defaultService().getCoremetricsData("address"));
         return formLocation;
