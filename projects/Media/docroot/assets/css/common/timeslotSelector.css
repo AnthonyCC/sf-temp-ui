@@ -55,7 +55,8 @@
   font-weight: normal;
 }
 
-.timeslot-selector .selected-timeslot label {
+.timeslot-selector .selected-timeslot label,
+.timeslot-selector.reserve-timeslot .select-time .reserved input:checked+label {
   font-weight: bold;
 }
 
