@@ -83,6 +83,8 @@ public class GoogleAnalyticsReportingService {
             productIndex++;
         }
 
+        params.add(new BasicNameValuePair("ni", "1"));
+        
         entity = new UrlEncodedFormEntity(params);
         return entity;
     }
