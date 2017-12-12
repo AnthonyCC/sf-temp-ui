@@ -1,16 +1,21 @@
 package com.freshdirect.storeapi;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import com.freshdirect.cms.CmsServiceLocator;
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.core.service.ContentTypeInfoService;
 
 @CmsLegacy
 public class ContentNode implements ContentNodeI {
 
     private static final long serialVersionUID = 4432339440407611251L;
+
+    private ContentTypeInfoService contentTypeInfoService = CmsServiceLocator.contentTypeInfoService();
 
     private final ContentKey contentKey;
 
@@ -113,8 +118,13 @@ public class ContentNode implements ContentNodeI {
     }
 
     private void buildLegacyPayload() {
-        for (Map.Entry<Attribute, Object> payloadEntry : payload.entrySet()) {
-            AttributeI legacyAttribute = buildLegacyAttribute(payloadEntry.getKey(), payloadEntry.getValue());
+        // pick all attribute definitions available for this type
+        // including inherited ones
+        Collection<Attribute> definitions = contentTypeInfoService.selectAttributes(contentKey.type);
+
+        // then build legacy compatible payload
+        for (Attribute attributeDefinition : definitions) {
+            AttributeI legacyAttribute = buildLegacyAttribute(attributeDefinition, payload.get(attributeDefinition));
             legacyPayload.put(legacyAttribute.getName(), legacyAttribute);
         }
     }
