@@ -3748,7 +3748,6 @@
 
 	<!-- compile spring components -->
 	<path id="fdintegrationservicesUI.classpath">
-		<path refid="j2ee.classpath"/>
 		<fileset dir="${uilib}">
 			<include name="*.jar"/>
 		</fileset>
