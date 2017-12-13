@@ -88,7 +88,7 @@ if (mobWeb) {
 			<%
 				FDReservation rsv = user.getReservation();
 				boolean hasReservation = rsv != null && addressId.equals(rsv.getAddressId());
-		
+
 				// [APPDEV-2149] Display abstract timeslot table (Just days of week, no restrictions, etc.)
 				final boolean abstractTimeslots = false;
 			%>
@@ -152,7 +152,6 @@ if (mobWeb) {
 			var FreshDirect = FreshDirect || {};
 			FreshDirect._page_options = {rsvType: { RECURRING: 'WRR', ONETIME: 'OTR' }};
 			changeMe($('reservationType_field2'));
-			$jq(document).on('click', '.fake-checkbox-wrapper', function(e) { $jq(this).find('input[type="checkbox"]').trigger('click'); });
 		</script>
 		<% if (mobWeb) { %>
 			<script type="text/javascript">
@@ -160,7 +159,7 @@ if (mobWeb) {
 					$jq('#timeslot_selector_select').hide();
 					if (FreshDirect && FreshDirect.common && FreshDirect.common.dispatcher) {
 			      		var DISPATCHER = FreshDirect.common.dispatcher;
-			
+
 					    DISPATCHER.signal('server', {
 					    	url: '/api/expresscheckout/timeslot',
 							method: 'GET'

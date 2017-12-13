@@ -12,7 +12,7 @@ var FreshDirect = FreshDirect || {};
   Elements.prototype.getWidget = function () {
     var widgetNode,
     	orig = this.el;
-  
+
     if(this.el.hasClass('customradio')) {
       if (this.el.parent().hasClass('fake-radio-wrapper')) {
         return this.el;
@@ -31,11 +31,11 @@ var FreshDirect = FreshDirect || {};
   	    return this.el;
   	   } else {
   	     $(orig).wrap( "<span class='fake-checkbox-wrapper'></span>");
-  	     $(orig).parent().append('<span class="fake-checkbox"></span>');
+  	     $(orig).parent().append('<label class="fake-checkbox" for="'+orig[0].id+'"></label>');
   	   }
      };
   };
- 
+
   Elements.DEFAULT_CONFIG = {
     display: 'none'
   };
@@ -44,12 +44,12 @@ var FreshDirect = FreshDirect || {};
     var root = root || $(document.body),
     	els  = root.find('input.customradio, select.customsimpleselect, input.customcheckbox'),
         element;
-    
+
     if (els.length === 0) {
     	root = $(document.body);
     	els = root.find('input.customradio, select.customsimpleselect, input.customcheckbox');
     }
-    
+
     els.each(function (i, el) {
         element = new Elements(el);
     });
