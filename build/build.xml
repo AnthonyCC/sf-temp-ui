@@ -3802,6 +3802,9 @@
 			<include name="FDClient.jar"/>
 		</fileset>
 	</copy>
+	
+	<copy file="${work.dir}/ERPSWebApp.jar" todir="${work.dir}/FDIntegrationServices/WEB-INF/lib"/>
+
 
 	<!-- create .war file -->
 	<jar destfile="${release.dir}/applications/mobileapi.war">
