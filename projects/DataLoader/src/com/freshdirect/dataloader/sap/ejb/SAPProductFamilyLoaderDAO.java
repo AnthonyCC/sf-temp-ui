@@ -147,9 +147,9 @@ public class SAPProductFamilyLoaderDAO {
     	 ps.setString(1, id);
   	     ps.setString(2, erpProductFamilyModel.getGrpId());
     	 ps.setString(3, String.valueOf(batchNumber));
-  	     ps.setString(4,erpProductFamilyModel.getAction());
+  	     ps.setString(4, (null !=erpProductFamilyModel.getAction()?erpProductFamilyModel.getAction():""));
   	     ps.setString(5, erpProductFamilyModel.getMaterialNumber());
-  	     ps.setString(6, erpProductFamilyModel.getDeletegroup());
+  	     ps.setString(6, (null !=erpProductFamilyModel.getDeletegroup()?erpProductFamilyModel.getDeletegroup():""));
   	     int rowsaffected = ps.executeUpdate();
   	     if (rowsaffected != 1) {
 	        throw new SQLException("Unable to create new batch.  Couldn't create grp info master table.");
@@ -219,7 +219,7 @@ private static final String PRODUCT_FAMLY_MAT_SQL=" INSERT INTO  ERPS.MATERIAL_P
     
 }
 
-	public static final String PRODUCT_FAMILY_SELECT_SQL= "select product_id from ERPS.PRODUCT_FAMILY_MASTER a where a.active <>'D' and a.GROUP_STAT <>'X' and a.version= (select MAX(version) from ERPS.PRODUCT_FAMILY_MASTER where FAMILY_ID=?) and a.FAMILY_ID=?";
+	public static final String PRODUCT_FAMILY_SELECT_SQL= "select product_id from ERPS.PRODUCT_FAMILY_MASTER a where (a.active is null OR a.active <>'D') and (a.GROUP_STAT is null OR a.GROUP_STAT <>'X') and a.version= (select MAX(version) from ERPS.PRODUCT_FAMILY_MASTER where FAMILY_ID=?) and a.FAMILY_ID=?";
 
 	public static List<String> fetchProductFamilyMasterInfo(Connection conn,
 			String familyId) throws SQLException {
