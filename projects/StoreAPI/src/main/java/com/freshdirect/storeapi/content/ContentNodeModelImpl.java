@@ -10,7 +10,6 @@ import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.cms.core.domain.RootContentKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.AttributeI;
 import com.freshdirect.storeapi.ContentNodeI;
 import com.freshdirect.storeapi.application.CmsManager;
 import com.freshdirect.storeapi.attributes.FDAttributeFactory;
@@ -97,19 +96,18 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel, Cloneabl
      */
     @Override
     public Object getCmsAttributeValue(String name) {
-        final AttributeI attribute = cmsNode.getAttribute(name);
-        if (attribute == null)
+        final Attribute def = cmsNode.getAttribute(name);
+        if (def == null)
             return null;
 
         // pick model value
-        Object value = attribute.getValue();
+        Object value = cmsNode.getAttributeValue(def);
         if (value != null) {
             return value;
         }
 
         // check if value is inheritable
-        Attribute def = attribute.getDefinition();
-        if (def == null || !def.getFlags().isInheritable()) {
+        if (!def.getFlags().isInheritable()) {
             return null;
         }
 
