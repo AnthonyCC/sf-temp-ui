@@ -220,7 +220,7 @@ public class CmsManager {
 
         return node;
     }
-
+    
     public void initPrimaryHomeMap() {
         if (isReadOnlyContent() && singleStoreKey != null) {
             primaryHomeMap = new HashMap<ContentKey, ContentKey>();
@@ -238,7 +238,7 @@ public class CmsManager {
         ContentNodeI node = null;
 
         if (payload != null) {
-            node = new ContentNode(contentKey, payload, navigableChildKeys);
+            node = new ContentNode(contentKey, payload, navigableChildKeys, contentTypeInfoService);
         }
         return node;
     }
