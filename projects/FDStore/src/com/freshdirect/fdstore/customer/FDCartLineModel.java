@@ -96,14 +96,14 @@ public class FDCartLineModel extends AbstractCartLine {
 
 	//these Two constructors are used only For Storefront 2.0 Implementation.
 	
-	public FDCartLineModel( FDProductSelectionI ps, String plantId ) {
-		this( ps.getSku(), ps.getProductRef().lookupProductModel(), ps.getConfiguration(), null, ps.getUserContext(),plantId);
+	public FDCartLineModel( FDProductSelectionI ps, String plantId ,String cartLineId ) {
+		this( ps.getSku(), ps.getProductRef().lookupProductModel(), ps.getConfiguration(), null, ps.getUserContext(),plantId,cartLineId);
 	}
 	
 
-	public FDCartLineModel(FDSku sku, ProductModel productRef, FDConfigurableI configuration, String variantId,UserContext userCtx, String plantId) {
+	public FDCartLineModel(FDSku sku, ProductModel productRef, FDConfigurableI configuration, String variantId,UserContext userCtx, String plantId,String cartLineId) {
 		super(sku, productRef, configuration, variantId, userCtx,plantId);
-		this.orderLine.setCartlineId(ID_GENERATOR.getNextId());
+		this.orderLine.setCartlineId(cartLineId);
 	}
 	
 	public ErpOrderLineModel buildErpOrderLines(int baseLineNumber) throws FDResourceException, FDInvalidConfigurationException {
