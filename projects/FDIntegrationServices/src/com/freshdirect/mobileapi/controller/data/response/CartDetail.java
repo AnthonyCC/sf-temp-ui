@@ -726,6 +726,8 @@ public class CartDetail {
     	
     	private Double substituteSkuQuantity;
     	
+    	private String substituteProductImageURL;
+    	
         public String getDiscountMsg() {
 			return discountMsg;
 		}
@@ -837,6 +839,15 @@ public class CartDetail {
 
 		public void setSubstituteSkuQuantity(Double substituteSkuQuantity) {
 			this.substituteSkuQuantity = substituteSkuQuantity;
+		}
+
+		public String getSubstituteProductImageURL() {
+			return substituteProductImageURL;
+		}
+
+		public void setSubstituteProductImageURL(
+				String substituteProductImageURL) {
+			this.substituteProductImageURL = substituteProductImageURL;
 		}
 
 		
