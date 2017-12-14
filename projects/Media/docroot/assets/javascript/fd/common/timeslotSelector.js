@@ -62,12 +62,18 @@ var FreshDirect = FreshDirect || {};
 
       if (data.selectedTimeslotId === e.id) {
         timeslot.selected = true;
-        times[dayId].selected = !selectedDay ? true : false;
-        selectedDay = selectedDay || dayId;
+        if (!timeslotSelector.isReserved) {
+          times[dayId].selected = !selectedDay ? true : false;
+          selectedDay = selectedDay || dayId;
+        }
       }
 
       if (data.reservedTimeslotId === e.id) {
         timeslot.reserved = true;
+        if (timeslotSelector.isReserved) {
+          times[dayId].selected = !selectedDay ? true : false;
+          selectedDay = selectedDay || dayId;
+        }
       }
 
       if (data.zonePromoAmount) {
@@ -79,10 +85,12 @@ var FreshDirect = FreshDirect || {};
         selectedTimeslot= e.id;
       }
 
-      if (timeslotSelector.isReserved && e.reserved ) {
+      if (timeslotSelector.isReserved && times[dayId] && +dayId === +selectedDay) {
         times[dayId].selected = true;
-        times[dayId].showReserved = true;
         selectedTimeslot= e.id;
+        if (e.reserved) {
+          times[dayId].showReserved = true;
+        }
       }
 
       if (times[dayId]) {
