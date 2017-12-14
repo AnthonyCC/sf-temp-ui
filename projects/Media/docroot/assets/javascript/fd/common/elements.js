@@ -30,8 +30,16 @@ var FreshDirect = FreshDirect || {};
       if (this.el.parent().hasClass('fake-checkbox-wrapper')) {
   	    return this.el;
   	   } else {
+         var id = orig.attr('id');
+
+         if (!id) {
+          var rnd = Math.random() + '';
+          rnd = rnd.substring(2, rnd.length);
+          id = 'customcheckbox_' + Date.now() +'_' + rnd;
+          orig.attr('id', id);
+         }
   	     $(orig).wrap( "<span class='fake-checkbox-wrapper'></span>");
-  	     $(orig).parent().append('<label class="fake-checkbox" for="'+orig[0].id+'"></label>');
+  	     $(orig).parent().append('<label class="fake-checkbox" for="' + id + '"></label>');
   	   }
      };
   };
