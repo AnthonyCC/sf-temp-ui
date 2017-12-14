@@ -381,3 +381,15 @@ span[fdform-error] {
 [fdform][fdform-hidden] label {
 	display: none;
 }
+
+/* make checkboxes LOOK like checkboxes by default */
+[fdform] input[type="checkbox"]:checked {
+	background: #4fa157 url('/media_stat/images/common/check-radio-selected.svg') center center no-repeat;
+	box-shadow: 0 0 0 1px #4fa157;
+	background-size: 200%;
+}
+[fdform] input[type="checkbox"]:disabled {
+	background: #eee url('/media_stat/images/common/check-radio-disabled-with-checkmark.svg') center center no-repeat;
+	box-shadow: 0 0 0 1px #ccc;
+	background-size: 200%;
+}
