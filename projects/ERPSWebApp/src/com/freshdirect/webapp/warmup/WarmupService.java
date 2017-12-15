@@ -82,6 +82,6 @@ public class WarmupService {
     }
 
     private static final boolean isManualWarmupAllowed() {
-        return FDStoreProperties.isLocalDeployment() || FDStoreProperties.getPreviewMode() || !FDStoreProperties.performStorePreLoad();
+        return FDStoreProperties.isRepeatWarmupEnabled() || FDStoreProperties.isLocalDeployment() || FDStoreProperties.getPreviewMode() || !FDStoreProperties.performStorePreLoad();
     }
 }

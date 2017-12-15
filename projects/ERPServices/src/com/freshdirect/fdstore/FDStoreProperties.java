@@ -989,11 +989,13 @@ public class FDStoreProperties {
  	public final static String PROP_ENABLE_WEBSITE_MOBILE_SAME_NUTRITION_SOY = "enable.website.mobile.same.nutrition.soy";
  	
  	//appdev-6184
- 	 	public final static String PROP_ENABLE_FDX_DISTINCT_AVAILABILITY = "enable.fdx.distinct.availability";
+ 	public final static String PROP_ENABLE_FDX_DISTINCT_AVAILABILITY = "enable.fdx.distinct.availability";
+ 	 
+ 	public final static String PROP_ENABLE_REPEAT_WARMUP = "enable.repeat.warmup";
 
 
 
-static {
+ 	static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_INIT_CTX_FACTORY, "weblogic.jndi.WLInitialContextFactory");
         defaults.put(PROP_CRM_GEOCODELINK,
@@ -1895,7 +1897,8 @@ static {
         
 
         defaults.put("feature.rollout.cosRedesign2017", "GLOBAL:ENABLED,false;");
-
+        defaults.put(PROP_ENABLE_REPEAT_WARMUP, "true"); // controls manual warmup: LIVE PUBLISH
+        
 
         refresh();
     }
@@ -4826,21 +4829,23 @@ static {
 		public static boolean getEnableFreeProduct(){
 			return (Boolean.valueOf(get(PROP_ENABLE_FREE_PRODUCT))).booleanValue();
 		}
+		
 		/**
 		 * Website toggle to determine if we have turned on the feature for both website and mobile api <BR>
 		 * to pull nutrition information from the same soy template.
 		 * @return defaults to off, overide by an entry enable.website.mobile.same.nutrition.soy in fdstore.properties
 		 */
-		public static boolean getEnableWebsiteMobileSameNutritionSoy(){
-			
+		public static boolean getEnableWebsiteMobileSameNutritionSoy() {			
 			return (Boolean.valueOf(get(PROP_ENABLE_WEBSITE_MOBILE_SAME_NUTRITION_SOY))).booleanValue();
 		}
 		
 
-		public static boolean getEnableFDXDistinctAvailability(){
-			
+		public static boolean getEnableFDXDistinctAvailability() {			
 			return (Boolean.valueOf(get(PROP_ENABLE_FDX_DISTINCT_AVAILABILITY))).booleanValue();
 		}
 		
+		public static boolean isRepeatWarmupEnabled() {			
+			return (Boolean.valueOf(get(PROP_ENABLE_REPEAT_WARMUP))).booleanValue();
+		}		
 
 }
