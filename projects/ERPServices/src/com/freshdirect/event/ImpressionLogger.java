@@ -129,7 +129,7 @@ public class ImpressionLogger {
 
     public void logEvent(Object message) {
         if (enabled) {
-            log.info(message);
+            log.debug(message);
         }
     }
     
