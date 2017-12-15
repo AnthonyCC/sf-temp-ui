@@ -57,7 +57,7 @@ public class PropertyDao {
 		DaoUtil.close(ps);
 	}
 	
-	private static final String LOAD_PROPERTIES_QRY01 = "select pm.name, pm.default_value from transp.property_master pm where pm.type = ? and pm.property_enabled = 'X' ";
+	private static final String LOAD_PROPERTIES_QRY01 = "select pm.name, pm.default_value from mis.property_master pm where pm.type = ? and pm.property_enabled = 'X' ";
 
 	private static final String LOAD_PROPERTIES_QRY02 = " select property_name,overriden_value from TRANSP.PROPERTY_OVERRIDE where CLUSTER_NAME = ?  ";
 
