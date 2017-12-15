@@ -834,10 +834,12 @@ public class FDCustomerManager {
 	
 		
 	public static ErpPaymentMethodI getPaymentMethod(FDIdentity identity, String paymentId) throws FDResourceException {
-		Collection<ErpPaymentMethodI> paymentMethods = FDCustomerManager.getPaymentMethods(identity);
-		for ( ErpPaymentMethodI model : paymentMethods ) {
-			if (paymentId.equals(model.getPK().getId())) {
-				return model;
+		if (null != paymentId && !"".equalsIgnoreCase(paymentId)) {		//COS17-45
+			Collection<ErpPaymentMethodI> paymentMethods = FDCustomerManager.getPaymentMethods(identity);
+			for (ErpPaymentMethodI model : paymentMethods) {
+				if (paymentId.equals(model.getPK().getId())) {
+					return model;
+				}
 			}
 		}
 		return null;

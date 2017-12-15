@@ -1409,4 +1409,32 @@ private static String convert(Date time) {
 			LOGGER.error("for user: "+user.getUserId()+" Exception occurred in evaluteEditSoAddressID() : "+e1);
 		}
 	}
+	
+	//SO user if deletes payment which is default in another template, we are here deleting that specific SO template's  paymentID		//COS17-45
+		public static void evaluteSOPaymentId(HttpSession session, FDUserI user, String paymentId) {
+			boolean currentSO= false;
+			try {
+				refreshSO3(user);
+				Collection<FDStandingOrder> allSOlist = user.getAllSO3();
+				for (FDStandingOrder soValidtemplate : allSOlist) {
+					if (paymentId != null && paymentId.equals(soValidtemplate.getPaymentMethodId()) || currentSO) {
+						currentSO = false;
+						LOGGER.debug("indside evaluteSOPaymentId(), action by user: "+user.getIdentity().getErpCustomerPK()+", "
+								+ "deleting paymentID: "+soValidtemplate.getPaymentMethodId()+", for SO3 template: "+soValidtemplate.getId());
+						soValidtemplate.setPaymentMethodId(null);
+						soValidtemplate.setLastError(ErrorCode.PAYMENT_DEL.name(), ErrorCode.PAYMENT_DEL.getErrorHeader(), ErrorCode.PAYMENT_DEL.getErrorDetail(null));
+						if (session != null) {
+							FDActionInfo info = AccountActivityUtil.getActionInfo(session);
+							FDStandingOrdersManager.getInstance().save(info, soValidtemplate);
+							user.setRefreshSO3(true);
+						}
+					}
+				} 
+			}catch (FDResourceException e1) {
+					LOGGER.error("for user: "+user.getUserId()+" Exception occurred in evaluteSOPaymentId() : "+e1);
+				} catch (FDInvalidConfigurationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			}
 }

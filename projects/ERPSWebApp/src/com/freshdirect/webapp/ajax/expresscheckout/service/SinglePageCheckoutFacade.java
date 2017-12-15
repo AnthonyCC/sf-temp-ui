@@ -31,6 +31,7 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.fdstore.payments.util.PaymentMethodUtil;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
@@ -626,9 +627,20 @@ public class SinglePageCheckoutFacade {
 
         if (formPaymentData.isCoveredByGiftCard() && !StandingOrderHelper.isSO3StandingOrder(user)) {
             paymentService.setNoPaymentMethod(user, request);
-        } else {        	            
-            List<PaymentData> userPaymentMethods = paymentService.loadUserPaymentMethods(user, request, paymentMethods);
-            formPaymentData.setPayments(userPaymentMethods);
+        } else {
+        	 List<PaymentData> userPaymentMethods = paymentService.loadUserPaymentMethods(user, request, paymentMethods);
+        	 if(StandingOrderHelper.isEligibleForSo3_0(user) && !userPaymentMethods.isEmpty() 
+        			 && null != user.getShoppingCart().getDeliveryReservation() && null != user.getShoppingCart().getDeliveryReservation().getOrderId() && null == user.getCurrentStandingOrder()){
+        		 FDOrderI orderInfo = FDCustomerManager.getOrder(user.getShoppingCart().getDeliveryReservation().getOrderId());					//APPDEV-6765
+        		 for(PaymentData PM : userPaymentMethods){
+        			if(PM.getId().equalsIgnoreCase(orderInfo.getPaymentMethod().getPK().getId()) ){
+        				PM.setSelected(true);
+        			}else{
+        				PM.setSelected(false);
+        			}
+        		}
+        		formPaymentData.setSelected(orderInfo.getPaymentMethod().getPK().getId());
+        	}else{
             boolean readyToBreak = false;
             for (PaymentData data : userPaymentMethods) {
                 if (data.isSelected()) {
@@ -648,10 +660,29 @@ public class SinglePageCheckoutFacade {
                     }
                 }
             }
+        	}
+        	 formPaymentData.setPayments(userPaymentMethods);
             if (StandingOrderHelper.isSO3StandingOrder(user)) {
                 userPaymentMethods = removeEWalletPaymentMethod(userPaymentMethods);
+                
+                FDStandingOrder currentSO = user.getCurrentStandingOrder();
+                formPaymentData.setSelected(null);	
+        		//checks valid payments												//COS17-45
+                List<PaymentData> userPayments = formPaymentData.getPayments();
+            	for( PaymentData payment: userPayments){
+            		if(payment.getId().equals(currentSO.getPaymentMethodId())){
+            			formPaymentData.setSelected(currentSO.getPaymentMethodId());
+            			payment.setSelected(true);
+            		}else{
+            			payment.setSelected(false);
+            		}
+            	}if(null == formPaymentData.getSelected() && null != currentSO.getPaymentMethodId()){
+            		LOGGER.debug("paymentID: "+currentSO.getPaymentMethodId()+" is no more in system, updating now at template level");
+            		StandingOrderHelper.evaluteSOPaymentId(request.getSession(), user, currentSO.getPaymentMethodId());
+            	}
+            	
                 formPaymentData.setPayments(userPaymentMethods);
-                user.getCurrentStandingOrder().setPaymentMethodId(formPaymentData.getSelected());
+               // user.getCurrentStandingOrder().setPaymentMethodId(formPaymentData.getSelected());
                 formPaymentData.setMpEwalletStatus(false); // Masterpass wallet will be disable for Standing Orders
                 formPaymentData.setPpEwalletStatus(false); // PayPal wallet will be disable for Standing Orders
 

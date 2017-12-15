@@ -53,6 +53,7 @@ import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.PaymentManager;
 import com.freshdirect.payment.fraud.PaymentFraudManager;
 import com.freshdirect.webapp.util.RequestUtil;
+import com.freshdirect.webapp.util.StandingOrderHelper;
 
 /**
  * One of the ugliest things in ERPSWebApp.
@@ -122,7 +123,9 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
             throw new FDResourceException("payment method not found");
         }
         FDSessionUser fdUser = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
-                 
+        if(StandingOrderHelper.isEligibleForSo3_0(fdUser)){
+        	StandingOrderHelper.evaluteSOPaymentId(request.getSession(), fdUser, paymentId);
+        }
         FDCustomerManager.removePaymentMethod(info, paymentMethod, 
         		FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, fdUser));
         fdUser.refreshFdCustomer();

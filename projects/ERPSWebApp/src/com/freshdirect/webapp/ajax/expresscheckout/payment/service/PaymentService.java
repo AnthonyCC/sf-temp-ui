@@ -269,8 +269,10 @@ public class PaymentService {
         						 ", payment ID: " +selectedPaymentId+" is setted from parentOrder: "+orderInfo.getErpSalesId());
         			 }
         		 }else{
-        			 selectedPaymentId = user.getFDCustomer().getDefaultPaymentMethodPK();
-        			 LOGGER.debug("default payment method setted, paymentID: "+selectedPaymentId);
+					if (!StandingOrderHelper.isSO3StandingOrder(user)) {
+						selectedPaymentId = user.getFDCustomer().getDefaultPaymentMethodPK();
+						LOGGER.debug("default payment method setted, paymentID: " + selectedPaymentId);
+					}
         		 }
         		 selectionError = selectPaymentMethod(selectedPaymentId, PageAction.SELECT_PAYMENT_METHOD.actionName, request);
             } else {
