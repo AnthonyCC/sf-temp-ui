@@ -2,6 +2,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <% //expanded page dimensions
 final int W_GIFTCARD_TOTAL = 970;
 %>
@@ -31,11 +32,11 @@ final int W_GIFTCARD_TOTAL = 970;
 	<tmpl:get name="seoMetaTag"/>
 
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-	<fd:javascript src="/assets/javascript/FD_GiftCards.js"/>
+	<jwr:script src="/giftcards.js" useRandomParam="false" />
     <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
-	<fd:css href="/assets/css/giftcards.css"/>
+	<jwr:style src="/giftcards.css" media="all" />
 
 	<%-- NOT THIS INCLUDE @ include file="/shared/template/includes/ccl.jspf" --%>
 

@@ -4,6 +4,7 @@
 %><%@ page import="com.freshdirect.fdstore.util.EnumSiteFeature"
 %><%@ page import="com.freshdirect.fdstore.util.URLGenerator"
 %><%@ page import="org.apache.commons.lang.StringEscapeUtils"%>
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <% //expanded page dimensions
 final int W_SEARCH_NAV_TOTAL = 970;
 final int W_SEARCH_NAV_LEFT = 150;
@@ -20,7 +21,7 @@ final int W_SEARCH_NAV_RIGHT = 820;
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-	<fd:css href="/assets/css/ccl.css"/>
+	<jwr:style src="/ccl.css" media="all" />
 	<style type="text/css">
 	#OAS_CategoryNote {
 	text-align: center;
@@ -30,7 +31,7 @@ final int W_SEARCH_NAV_RIGHT = 820;
 final String trk = "srch"; // tracking code
 String criteria = request.getParameter("searchParams");
 %>
-<fd:javascript src="/assets/javascript/rounded_corners.inc.js"/>
+<jwr:script src="/roundedcorners.js" useRandomParam="false" />
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333">

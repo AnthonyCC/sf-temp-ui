@@ -63,7 +63,7 @@
 		}	
 		</script>
 		
-		<script type="text/javascript" src="/assets/javascript/rounded_corners.inc.js"></script>
+		<jwr:script src="/roundedcorners.js" useRandomParam="false" />
 					<script language="javascript">
 						function curvyCornersHelper(elemId, settingsObj) {
 							if (document.getElementById(elemId)) {

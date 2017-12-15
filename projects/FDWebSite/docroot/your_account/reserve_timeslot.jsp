@@ -25,6 +25,7 @@
 <%@ taglib uri="template" prefix="tmpl" %>
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 
 <% //expanded page dimensions
 final int W_RESERVE_TIMESLOTS_TOTAL = 970;
@@ -68,10 +69,10 @@ if (mobWeb) {
 	</tmpl:put>
 
 	<tmpl:put name="extraCss">
-	  <fd:css href="/assets/css/timeslots.css" media="all" />
+	  <jwr:style src="/timeslots.css" media="all" />
 	</tmpl:put>
 	<tmpl:put name="extraJs">
-	  <fd:javascript src="/assets/javascript/timeslots.js" />
+	  <jwr:script src="/assets/javascript/timeslots.js" useRandomParam="false" />
 	</tmpl:put>
   	<tmpl:put name="jsmodules">
     	<%@ include file="/common/template/includes/i_jsmodules.jspf" %>

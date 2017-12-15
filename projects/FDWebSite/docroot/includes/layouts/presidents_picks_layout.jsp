@@ -25,6 +25,7 @@
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='logic' prefix='logic' %>
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%
 
 	// Query string
@@ -47,7 +48,7 @@
 	if (FDStoreProperties.isCclAjaxDebugClient()) {
 		// debug JS libs
 		%>
-		<script type="text/javascript" src="/assets/javascript/rounded_corners.inc.js"></script>
+		<jwr:script src="/roundedcorners.js" useRandomParam="false" />
 		<%
 		} else {
 			// production JS libs

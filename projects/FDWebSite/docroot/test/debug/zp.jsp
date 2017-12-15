@@ -7,9 +7,7 @@
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ page import='java.net.URLEncoder' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
-
-
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en-US" xml:lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
@@ -19,13 +17,11 @@
 		<title>Gift Card Examples</title>
 		
 
-	<fd:javascript src="/assets/javascript/prototype.js"/>
-	<script type="text/javascript" src="/assets/javascript/scriptaculous/1.9.0/scriptaculous.js?load=effects,builder"></script>
-	<fd:javascript src="/assets/javascript/modalbox.js"/>
-	<fd:javascript src="/assets/javascript/FD_GiftCards.js"/>
+	<jwr:script src="/protoscriptbox.js" useRandomParam="false" />
+	<jwr:script src="/giftcards.js" useRandomParam="false" />
 
 	<fd:css href="/assets/css/pc_ie.css"/>
-	<fd:css href="/assets/css/giftcards.css"/>
+	<jwr:style src="/giftcards.css" media="all" />
 	<fd:css href="/assets/css/modalbox.css"/>
 
 

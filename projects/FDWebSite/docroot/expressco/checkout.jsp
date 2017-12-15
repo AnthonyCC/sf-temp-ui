@@ -185,11 +185,11 @@ if (mobWeb) {
 			}
 	  	</style>
   	<% } %>
-    <fd:css href="/assets/css/timeslots.css" media="all" />
+    <jwr:style src="/timeslots.css" media="all" />
   </tmpl:put>
 
   <tmpl:put name="extraJs">
-    <fd:javascript src="/assets/javascript/timeslots.js" />
+    <jwr:script src="/assets/javascript/timeslots.js" useRandomParam="false" />
 
 	<script>
 	var checkout;
