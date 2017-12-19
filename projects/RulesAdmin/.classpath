@@ -5,7 +5,7 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/commons-digester-1.5.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/commons-fileupload-1.1.1.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/bsf-2.3.0.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/commons-codec-1.3.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/commons-codec-1.9.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/tacos-core-4.0.2-20070420.095420-14.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
@@ -15,6 +15,6 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/tapestry-contrib-4.0.2.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/hivemind-1.1.1.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/hivemind-lib-1.1.1.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/StoreAPI"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/storeapi"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

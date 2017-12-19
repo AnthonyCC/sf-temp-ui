@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="tests"/>
+	<classpathentry kind="src" path="resources"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/commons-fileupload-1.1.1.jar"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/poi-3.5-FINAL-20090928.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/json-20171018.jar"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/jsonrpc-1.0.jar"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/oscache-2.4.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
@@ -10,6 +13,7 @@
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/jawr-core-3.8.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/soy-latest.jar" sourcepath="/SOY_SRC"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-beans-4.0.1.RELEASE.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/org.apache.oltu.oauth2.authzserver-1.0.2.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-context-4.0.1.RELEASE.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-core-4.0.1.RELEASE.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/logistics-data-0.0.1-SNAPSHOT.jar"/>
@@ -18,5 +22,7 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/StoreAPI"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/servlet-api.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/slf4j-api-1.7.13.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/junit-4.10.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/storeapi"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

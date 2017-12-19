@@ -112,6 +112,8 @@
 		<pathelement location="${thirdparty.home}/fdcommerce-data.jar"/>
 		<pathelement location="${thirdparty.home}/fdcommerce-domain.jar"/>
 		<pathelement location="${thirdparty.home}/sitemapgen4j-1.0.6.jar"/>
+		<pathelement location="${thirdparty.home}/json-20171018.jar"/>
+		<pathelement location="${thirdparty.home}/org.apache.oltu.oauth2.authzserver-1.0.2.jar"/>
 	</path>
 
 	<path id="spring.classpath">
@@ -292,7 +294,7 @@
 		<!-- Standing Orders background service -->
 		<checkoutLabeled dir="projects/CoremetricsService"/>
 		<!-- Coremetrics background service -->
-		
+
 		<checkoutLabeled dir="applications"/>
 		<!--	<checkoutLabeled dir="release"/> -->
 	</target>
@@ -347,7 +349,7 @@
 		<!-- Added: Schematic rsung -->
 		<checkoutLatest dir="projects/StandingOrdersService"/>
 		<checkoutLatest dir="projects/CoremetricsService"/>
-		
+
 		<checkoutLatest dir="applications"/>
 		<!--	<checkoutLatest dir="release"/> -->
 
@@ -432,7 +434,7 @@
 		<mkdir dir="${work.dir}/cms-gwt"/>
 		<mkdir dir="${work.dir}/StandingOrdersService"/>
 		<mkdir dir="${work.dir}/CoremetricsService"/>
-		
+
 	</target>
 
 	<target name= "copy_shared_dirs"
@@ -1736,6 +1738,8 @@
 			<pathelement location="${thirdparty.home}/jackson-core-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/jackson-databind-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/jackson-annotations-2.2.0.jar"/>
+			<pathelement location="${thirdparty.home}/json-20171018.jar"/>
+			<pathelement location="${thirdparty.home}/org.apache.oltu.oauth2.authzserver-1.0.2.jar"/>
 			<path refid="spring.classpath"/>
 		</path>
 
@@ -1909,7 +1913,8 @@
 			<pathelement location="${thirdparty.home}/jackson-annotations-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/masterpassExpressSdk.jar"/>
 			<pathelement location="${thirdparty.home}/braintree-java-2.53.0.jar"/>
-
+			<pathelement location="${thirdparty.home}/json-20171018.jar"/>
+			<pathelement location="${thirdparty.home}/org.apache.oltu.oauth2.authzserver-1.0.2.jar"/>
 		</path>
 
 		<makeProject
@@ -2236,7 +2241,7 @@
 			project="CoremetricsService"
 			classpathref="CoremetricsService.classpath"/>
 	</target>
-	
+
 	<target name="tools" description="Build Tools" depends="framework,cmseue,fdstore,erpservices">
 		<path id="tools.classpath">
 			<pathelement location="${work.dir}/Framework.jar"/>
@@ -2486,7 +2491,8 @@
 				<include name="spring-web-4.0.1.RELEASE.jar"/>
 				<include name="spring-webmvc-4.0.1.RELEASE.jar"/>
 				<include name="gson-1.7.1.jar"/>
-
+				<include name="json-20171018.jar"/>
+				<include name="org.apache.oltu.oauth2.authzserver-1.0.2.jar"/>
 			</lib>
 		</makeEar>
 	</target>

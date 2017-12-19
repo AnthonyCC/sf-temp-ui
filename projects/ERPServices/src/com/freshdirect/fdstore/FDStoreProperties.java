@@ -993,7 +993,15 @@ public class FDStoreProperties {
  	 
  	public final static String PROP_ENABLE_REPEAT_WARMUP = "enable.repeat.warmup";
 
-
+	// OAuth2 Expirations
+	public final static String DEFAULT_CODE_EXPIRATION = "fdstore.oauth2.defaultCodeExpirationInSec";
+	public final static String DEFAULT_TOKEN_EXPIRATION = "fdstore.oauth2.defaultTokenExpirationInSec";
+	public final static String DEFAULT_REFRESH_TOKEN_EXPIRATION = "fdstore.oauth2.defaultRefreshTokenExpirationInSec";
+	// OAuth2 client data
+	public final static String OAUTH2_CLIENT_IDS = "fdstore.oauth2.clientIds";
+	public final static String OAUTH2_CLIENT_SECRETS = "fdstore.oauth2.clientSecrets";
+	public final static String OAUTH2_CLIENT_REDIRECT_URIS = "fdstore.oauth2.clientRedirectUris";
+	
 
  	static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -1900,6 +1908,13 @@ public class FDStoreProperties {
         defaults.put(PROP_ENABLE_REPEAT_WARMUP, "true"); // controls manual warmup: LIVE PUBLISH
         
 
+        // Auth Code : 2 minutes
+		defaults.put("DEFAULT_CODE_EXPIRATION", "120");
+		// Access Token : 30 days
+		defaults.put("DEFAULT_TOKEN_EXPIRATION", "2592000");
+		// Refresh Token : 180 days
+		defaults.put("DEFAULT_REFRESH_TOKEN_EXPIRATION", "15552000");
+
         refresh();
     }
 
@@ -1933,6 +1948,11 @@ public class FDStoreProperties {
     public static String get(String key) {
         refresh();
         return config.getProperty(key);        
+    }
+    
+    public static String get(String key, String defaultValue) {
+        refresh();
+        return config.getProperty(key, defaultValue);        
     }
 
     /**
@@ -4847,5 +4867,27 @@ public class FDStoreProperties {
 		public static boolean isRepeatWarmupEnabled() {			
 			return (Boolean.valueOf(get(PROP_ENABLE_REPEAT_WARMUP))).booleanValue();
 		}		
+	public static long getDefaultAuthCodeExpiration() {
+		return Long.parseLong(get(DEFAULT_CODE_EXPIRATION));
+	}
 
+	public static long getDefaultAccessTokenExpiration() {
+		return Long.parseLong(get(DEFAULT_TOKEN_EXPIRATION));
+	}
+
+	public static long getDefaultRefreshTokenExpiration() {
+		return Long.parseLong(get(DEFAULT_REFRESH_TOKEN_EXPIRATION));
+	}
+
+	public static String getOAuth2ClientIds() {
+		return get(OAUTH2_CLIENT_IDS);
+	}
+
+	public static String getOAuth2ClientSecrets() {
+		return get(OAUTH2_CLIENT_SECRETS);
+	}
+
+	public static String getOAuth2ClientRedirectUris() {
+		return get(OAUTH2_CLIENT_REDIRECT_URIS);
+	}
 }

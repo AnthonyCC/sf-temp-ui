@@ -330,6 +330,33 @@
 	</servlet-mapping>
 
 	<servlet>
+		<servlet-name>OAuth2AuthorizationServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.ajax.oauth2.OAuth2AuthorizationServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>OAuth2AuthorizationServlet</servlet-name>
+		<url-pattern>/api/oauth2/authorize</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>OAuth2TokenServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.ajax.oauth2.OAuth2TokenServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>OAuth2TokenServlet</servlet-name>
+		<url-pattern>/api/oauth2/token</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>OAuth2TokenInfoServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.ajax.oauth2.OAuth2TokenInfoServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>OAuth2TokenInfoServlet</servlet-name>
+		<url-pattern>/api/oauth2/tokeninfo</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
 		<servlet-name>ViewCartPotatoServlet</servlet-name>
 		<servlet-class>com.freshdirect.webapp.ajax.viewcart.ViewCartPotatoServlet</servlet-class>
 	</servlet>

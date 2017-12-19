@@ -1712,7 +1712,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
                                 } catch (RuntimeException e) {
                                     LOGGER.warn("error when processing multi-value client codes for cart line #" + idx, e);
                                     LOGGER.warn("client code values for cart line #" + idx + " are not changed due to previous error");
-                                } catch (ParseException e) {
+                                } catch (Exception e) {
                                     LOGGER.warn("error when parsing multi-value client codes for cart line #" + idx, e);
                                     LOGGER.warn("client code values for cart line #" + idx + " are not changed due to previous error");
                                 }
