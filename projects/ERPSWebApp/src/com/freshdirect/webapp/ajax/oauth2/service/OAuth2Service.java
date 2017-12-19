@@ -202,7 +202,6 @@ public class OAuth2Service {
 						user.getIdentity().getFDCustomerPK(), clientId, authCodeData);
 				return oaResp;
 			} else if (GrantType.REFRESH_TOKEN.toString().equals(grantType)) {
-				String refreshToken = oauthRequest.getRefreshToken();
 				OAuthResponse oaResp = refreshTokenResponse(refreshToken, user.getIdentity().getErpCustomerPK(),
 						clientId);
 				return oaResp;
