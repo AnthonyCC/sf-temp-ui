@@ -54,11 +54,8 @@ if (mobWeb) {
       }());
     </script>
  <!-- <script type="text/javascript" src="https://js.braintreegateway.com/v2/braintree.js"></script> -->
- 	<script type="text/javascript" src="https://js.braintreegateway.com/js/braintree-2.21.0.min.js"></script>
-	<script src="<%= FDStoreProperties.getMasterpassLightBoxURL() %>" type="text/javascript"></script>
-
-
-<script src="<%= FDStoreProperties.getMasterpassLightBoxURL() %>" type="text/javascript"></script>
+ 	<script async type="text/javascript" src="https://js.braintreegateway.com/js/braintree-2.21.0.min.js"></script>
+	<script async src="<%= FDStoreProperties.getMasterpassLightBoxURL() %>" type="text/javascript"></script>
 
  	 <%if(fdTcAgree!=null&&!fdTcAgree.booleanValue()){%>
 		<script type="text/javascript">
