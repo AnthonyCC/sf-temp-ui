@@ -11,7 +11,10 @@ import javax.servlet.jsp.JspException;
 import com.freshdirect.customer.ErpComplaintLineModel;
 import com.freshdirect.customer.ErpComplaintModel;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData;
@@ -78,6 +81,16 @@ public class CartDataServlet extends BaseJsonServlet {
 				responseData = SoyTemplateEngine.convertToMap(result);
 			} else {
 				String orderId = request.getParameter(ORDER_ID);
+				boolean shouldFetch = request.getParameter("fetch") != null && request.getParameter("fetch").equals("true");
+				if (shouldFetch && user!= null && user.getIdentity() != null) {
+					try {
+						FDUser recognizedUser = FDCustomerManager.recognize(user.getIdentity(), false);
+						user.setShoppingCart(recognizedUser.getShoppingCart());
+					} catch (FDAuthenticationException e) {
+						// if exception happens, use the existing user shopping cart.
+						LOG.error("fail to recognize user ");
+					}
+				}
 				if (orderId == null || orderId.isEmpty()) {
 					CartData cartData = CartDataService.defaultService().loadCartData(request, user);
 					responseData = SoyTemplateEngine.convertToMap(cartData);

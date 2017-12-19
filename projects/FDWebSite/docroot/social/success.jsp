@@ -22,9 +22,13 @@
         successPage;
 
     if (fd) {
-
       try {
-        successPage = window.decodeURIComponent(fd.utils.getParameters().successPage);
+      	var decodedSuccessPage = window.decodeURIComponent(fd.utils.getParameters().successPage);
+      	if (decodedSuccessPage && decodedSuccessPage.indexOf('requireDecode=false') !== -1) {
+      		successPage = fd.utils.getParameters().successPage;
+      	} else {
+      		successPage = decodedSuccessPage;
+      	}
       } catch (e) {}
 
       successPage = '/' + (successPage || '') + window.top.location.hash;

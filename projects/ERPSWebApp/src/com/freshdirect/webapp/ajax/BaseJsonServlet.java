@@ -16,10 +16,13 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.webapp.ajax.oauth2.data.OAuth2InvalidCodeTokenException;
+import com.freshdirect.webapp.ajax.oauth2.service.OAuth2Service;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.InvalidUserException;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -185,6 +188,11 @@ public abstract class BaseJsonServlet extends HttpServlet {
      * @throws HttpErrorResponse
      */
     protected final FDUserI authenticate(HttpServletRequest request, HttpServletResponse response) throws HttpErrorResponse {
+    	// if the request is using o-auth, do validation.
+    	if (isOAuthEnabled() && isOAuthTokenInHeader(request)) {
+    		return oAuthAuthenticate(request, response);
+    		
+    	}
         HttpSession session = request.getSession();
         FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 
@@ -212,7 +220,35 @@ public abstract class BaseJsonServlet extends HttpServlet {
 
         return user;
     }
-	
+    protected boolean isOAuthTokenInHeader(HttpServletRequest request){
+    	String authorization = request.getHeader("Authorization");
+    	return authorization != null && !authorization.isEmpty();
+    }
+    protected final FDUserI oAuthAuthenticate(HttpServletRequest request, HttpServletResponse response) throws HttpErrorResponse {
+    	// call oauth service to get token info, which return the fd user id.
+		String authorization = request.getHeader("Authorization");
+		if (authorization == null || authorization.isEmpty()) {
+			returnHttpError(401, "Unknown authentication scheme"); // 401 Unauthorized
+		}
+		String[] authArray = authorization.split(" ");
+		// make sure token type is Bearer
+		if (authArray == null || authArray.length < 2 || !authArray[0].equals("Bearer")) {
+			returnHttpError(401, "Unknown authorization header"); // 401 Unauthorized
+		}
+		String token = authArray[1];
+		FDIdentity userIdentity;
+		FDUser user = new FDUser();
+		try {
+			userIdentity = OAuth2Service.defaultService().getUserIdentityByAccessToken(token);
+			if (userIdentity == null) {
+				returnHttpError(401, "Invalid token"); // 401 Unauthorized
+			}
+			user.setIdentity(userIdentity);
+		} catch (OAuth2InvalidCodeTokenException e) {
+			returnHttpError(401, "Invalid token"); // 401 Unauthorized
+		}
+		return user;
+    }
 	/**
 	 * Override to set a required user auth level.
 	 * 
@@ -222,6 +258,9 @@ public abstract class BaseJsonServlet extends HttpServlet {
 		return FDUserI.RECOGNIZED;
 	}
 	
+	protected boolean isOAuthEnabled() {
+		return false;
+	}
 	/**
 	 * Subclasses can return return false and do their own synchronization manually OR<br>
 	 * return true to turn on automatic synchronization on the user object.<br>

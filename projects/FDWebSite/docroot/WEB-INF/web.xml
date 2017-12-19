@@ -156,6 +156,16 @@
 		<servlet-class>com.freshdirect.webapp.ajax.backoffice.servlet.BackOfficeServicesServlet</servlet-class>
 	</servlet>
 	
+	<servlet>
+		<servlet-name>OrderServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.ajax.order.OrderServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>OrderServlet</servlet-name>
+		<url-pattern>/api/order/*</url-pattern>
+	</servlet-mapping>
+	
+
 	<servlet-mapping>
 		<servlet-name>CartDataServlet</servlet-name>
 		<url-pattern>/api/cartdata/*</url-pattern>
@@ -329,6 +339,15 @@
 		<url-pattern>/api/login/*</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+	   <servlet-name>OAuth2Authorization</servlet-name>
+	   <jsp-file>/oauth/auth.jsp</jsp-file>
+	</servlet>
+	<servlet-mapping>
+	  <servlet-name>OAuth2Authorization</servlet-name>
+	  <url-pattern>/oauth/v2/authorize</url-pattern>
+	</servlet-mapping>
+	
 	<servlet>
 		<servlet-name>OAuth2AuthorizationServlet</servlet-name>
 		<servlet-class>com.freshdirect.webapp.ajax.oauth2.OAuth2AuthorizationServlet</servlet-class>

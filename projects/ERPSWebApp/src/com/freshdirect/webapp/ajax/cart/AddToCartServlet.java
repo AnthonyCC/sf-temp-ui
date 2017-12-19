@@ -27,18 +27,21 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.coremetrics.CmContextUtility;
 import com.freshdirect.fdstore.coremetrics.builder.ConversionEventTagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.tagmodel.ConversionEventTagModel;
+import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDOrderInfoI;
 import com.freshdirect.fdstore.customer.FDProductSelection;
+import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.storeapi.application.CmsManager;
 import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
@@ -53,6 +56,8 @@ import com.freshdirect.webapp.ajax.quickshop.QuickShopHelper;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
+import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 import com.freshdirect.webapp.util.RequestUtil;
 
 public class AddToCartServlet extends BaseJsonServlet {
@@ -133,6 +138,17 @@ public class AddToCartServlet extends BaseJsonServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
 
+    	if (isOAuthEnabled() && isOAuthTokenInHeader(request)){
+    		try {
+				user = FDCustomerManager.recognize(user.getIdentity(), false);
+			} catch (FDAuthenticationException e) {
+				returnHttpError(500);
+	            return;
+			} catch (FDResourceException e) {
+				returnHttpError(500);
+	            return;
+			}
+    	}
         FDCartModel cart = user.getShoppingCart();
         if (cart == null) {
             // user doesn't have a cart, this is a bug, as login or site_access should put it there
@@ -565,4 +581,8 @@ public class AddToCartServlet extends BaseJsonServlet {
         return responseItem; // validation is OK
     }
     
+    @Override
+	protected boolean isOAuthEnabled() {
+		return true;
+	}
 }
