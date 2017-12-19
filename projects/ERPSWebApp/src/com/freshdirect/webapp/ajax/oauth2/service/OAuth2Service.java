@@ -212,10 +212,6 @@ public class OAuth2Service {
 						.buildJSONMessage();
 			}
 
-		} catch (OAuthProblemException ex) {
-			ex.printStackTrace();
-			OAuthResponse oaResp = OAuthResponse.errorResponse(401).error(ex).buildJSONMessage();
-			return oaResp;
 		} catch (OAuth2InvalidCodeTokenException ex) {
 			OAuthResponse oaResp = OAuthResponse.errorResponse(HttpServletResponse.SC_NOT_FOUND)
 					.setError(OAuthError.TokenResponse.INVALID_GRANT).setErrorDescription(ex.getMessage())
