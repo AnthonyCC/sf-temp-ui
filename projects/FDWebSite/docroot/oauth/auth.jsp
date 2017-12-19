@@ -37,17 +37,14 @@
 <%-- Passed Validation--%>
 <%
 	} else {
-		String encodedUrlQuery = request.getQueryString() != null? (URLEncoder.encode("?" + request.getQueryString(), "UTF-8")): ""; 
+		String encodedUrlQuery = request.getQueryString() != null? (URLEncoder.encode("&" + request.getQueryString(), "UTF-8")): ""; 
 		pageContext.setAttribute("encodedUrlQuery", encodedUrlQuery);
 	
 %>
-	<fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" redirectPage="/login/login.jsp?successPage=/oauth/auth.jsp${encodedUrlQuery}" />
+	<fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" redirectPage="/login/login.jsp?successPage=/oauth/auth.jsp?requireDecode=false${encodedUrlQuery}" />
 	<%
 		OAuth2Service authService = OAuth2Service.defaultService();
-		boolean isAlreadyConsent = authService.isUserAuthenticatedForApp(user.getIdentity().getErpCustomerPK(), request.getParameter("client_id"));
-		if (isAlreadyConsent) {
-			response.sendRedirect("/api/oauth2/authorize?" + request.getQueryString());
-		}
+		
 	%>
 	<tmpl:insert template="/common/template/oAuth.jsp">
 		<tmpl:put name="content">
@@ -58,10 +55,13 @@
 					<input id="state" type="hidden" value="${param.state }" />
 				</div>
 				<div class="description">
-					<h2 class="header"><strong class="app-name">StorePower</strong> will use the info below under its privacy policy:</h2>
-					<ul>
-						<li>Read order history data</li>
-					</ul>
+					<fd:IncludeMedia name="/media/ouath/vendor_premission_details.ftl">
+						<h2 class="header"><strong class="app-name">StorePower</strong> will use the info below under its privacy policy:</h2>
+						<ul>
+							<li>Read User Info</li>
+							<li>Update Shopping Cart</li>
+						</ul>
+					</fd:IncludeMedia>
 				</div>
 				<div class="action">
 					<button id="accept-permission" class="green cssbutton">Allow</button>
