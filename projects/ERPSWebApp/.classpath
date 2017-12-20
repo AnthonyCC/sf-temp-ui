@@ -23,6 +23,5 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/servlet-api.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/slf4j-api-1.7.13.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/junit-4.10.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/storeapi"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

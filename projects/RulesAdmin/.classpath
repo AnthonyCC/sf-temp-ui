@@ -15,6 +15,6 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/tapestry-contrib-4.0.2.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/hivemind-1.1.1.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/hivemind-lib-1.1.1.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/storeapi"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/StoreAPI"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
