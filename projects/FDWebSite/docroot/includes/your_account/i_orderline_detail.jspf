@@ -130,13 +130,15 @@ if (lastDept==null || !lastDept.equalsIgnoreCase(cartLine.getDepartmentDesc())) 
 		<td>&nbsp;</td><%-- priced by lb --%>
 		<%-- next three columns are pricing --%>
 		<td><%-- unit price --%>
-			<% if ( cartLine.getUnitPrice() != invoiceLine.getSubstituteProductDefaultPrice() ) { %><div class="lineThrough lowercase"><%= invoiceLine.getSubstituteProductDefaultPrice()  %></div><% } %><%= cartLine.getUnitPrice() %>
+			<% if ( !(cartLine.getUnitPrice()).startsWith("$"+invoiceLine.getSubstituteProductDefaultPrice()) ) { 
+				%><div class="lineThrough lowercase"><%= "$"+invoiceLine.getSubstituteProductDefaultPrice()  %></div><%
+			} %><%= cartLine.getUnitPrice() %>
 		</td>
 		<td><%-- customization price --%>
 			&nbsp;
 		</td>
 		<td align="right"><%-- final price --%>
-			<% if ( cartLine.getUnitPrice() != invoiceLine.getSubstituteProductDefaultPrice() ) { %>
+			<% if ( !(cartLine.getUnitPrice()).startsWith("$"+invoiceLine.getSubstituteProductDefaultPrice()) ) { %>
 				<div>&nbsp;</div><%-- for alignment with unit price column --%>
 			<% } %>
 			<%=
