@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
@@ -31,6 +32,9 @@ import com.freshdirect.logistics.delivery.model.EnumCompanyCode;
 
 public class FDStoreProperties {
 
+	// OAUTHDEMO
+	public static HashMap<String, String> VENDOR_MAP = new HashMap<String, String>();
+	
     private static final Category LOGGER = LoggerFactory.getInstance(FDStoreProperties.class);
     private static List<ConfigLoadedListener> listeners = new ArrayList<ConfigLoadedListener>();
     private static final SimpleDateFormat SF = new SimpleDateFormat("yyyy-MM-dd");
@@ -1909,11 +1913,11 @@ public class FDStoreProperties {
         
 
         // Auth Code : 2 minutes
-		defaults.put("DEFAULT_CODE_EXPIRATION", "120");
+		defaults.put(DEFAULT_CODE_EXPIRATION, "120");
 		// Access Token : 30 days
-		defaults.put("DEFAULT_TOKEN_EXPIRATION", "2592000");
+		defaults.put(DEFAULT_TOKEN_EXPIRATION, "2592000");
 		// Refresh Token : 180 days
-		defaults.put("DEFAULT_REFRESH_TOKEN_EXPIRATION", "15552000");
+		defaults.put(DEFAULT_REFRESH_TOKEN_EXPIRATION, "15552000");
 
         refresh();
     }
