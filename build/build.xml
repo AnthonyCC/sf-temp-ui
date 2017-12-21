@@ -2404,6 +2404,7 @@
 				<include name="cmseue.jar" />
 				<include name="StoreAPI.jar"/>
 				<include name="FDLogisticsIntegration.jar"/>
+				<include name="ERPSWebApp.jar" />
 			</libraries>
 			<lib>
 				<!-- <include name="oscache-2.4.jar"/> -->
