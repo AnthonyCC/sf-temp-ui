@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  * Status model POJO
  * 
  */
-public class Status {
+public class OAuth2Status {
 
 	/**
 	 * The response status code
@@ -48,15 +48,15 @@ public class Status {
 	private List<Error> errors;
 
 
-	public Status() {
+	public OAuth2Status() {
 	}
 	
-	public Status(Code code, String message) {
+	public OAuth2Status(Code code, String message) {
 		this.code = code;
 		this.message = message;
 	}
 
-	public Status(Code code) {
+	public OAuth2Status(Code code) {
 		this.code = code;
 	}
 

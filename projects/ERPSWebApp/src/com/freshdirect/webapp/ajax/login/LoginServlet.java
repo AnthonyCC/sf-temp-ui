@@ -90,9 +90,9 @@ public class LoginServlet extends HttpServlet {
         writeResponse(response, loginResponse);
 	}
 	
-	private void writeResponse(HttpServletResponse response,LoginResponse loginResponse) {
+	private void writeResponse(HttpServletResponse response, LoginResponse loginResponse) {
 		try {
-			Writer w =response.getWriter();
+			Writer w = response.getWriter();
 			getMapper().writeValue(w, loginResponse);
 		} catch (JsonGenerationException e) {
 			LOGGER.warn("JsonGenerationException ", e);

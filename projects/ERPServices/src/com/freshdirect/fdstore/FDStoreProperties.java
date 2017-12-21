@@ -4891,7 +4891,7 @@ public class FDStoreProperties {
 		return get(OAUTH2_CLIENT_SECRETS);
 	}
 
-	public static String getOAuth2ClientRedirectUris() {
-		return get(OAUTH2_CLIENT_REDIRECT_URIS);
+	public static String getOAuth2ClientRedirectUris(String clientId) {
+		return get(OAUTH2_CLIENT_REDIRECT_URIS + "." + clientId);
 	}
 }

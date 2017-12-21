@@ -100,9 +100,9 @@ public class OAuth2DataTest extends TestCase {
 		HttpServletRequest req = OAuth2TestHttpServletRequest.buildRequest(OAuth2Type.TOKEN);
 		req.getParameterMap().put("code", new String[] { code });
 
-		OAuthResponse resp2 = service.getAccessToken(req, user);
+		OAuthResponse resp2 = service.getAccessToken(req);
 		assertEquals(resp2.getResponseStatus(), 200);
-		assertTrue(resp2.getHeaders().size() > 0);
+		assertTrue(resp2.getBody().length() > 0);
 	}
 
 	@Test
@@ -115,9 +115,9 @@ public class OAuth2DataTest extends TestCase {
 		user.setIdentity(new FDIdentity("1234567", "12345679"));
 
 		// token - expired
-		OAuthResponse resp = service.getAccessToken(mockTokenHttpRequst, user);
+		OAuthResponse resp = service.getAccessToken(mockTokenHttpRequst);
 		assertEquals(resp.getResponseStatus(), 404);
-		assertTrue(resp.getBody().contains("This is an expired auth code"));
+		assertTrue(resp.getBody().contains("This+is+an+expired+auth+code"));
 	}
 }
 

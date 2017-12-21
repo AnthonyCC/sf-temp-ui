@@ -5,7 +5,6 @@
 	<classpathentry kind="src" path="resources"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/commons-fileupload-1.1.1.jar"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/poi-3.5-FINAL-20090928.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/json-20171018.jar"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/jsonrpc-1.0.jar"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/oscache-2.4.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>

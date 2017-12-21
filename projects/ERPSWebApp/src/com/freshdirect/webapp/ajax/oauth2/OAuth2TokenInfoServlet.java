@@ -9,7 +9,7 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.oauth2.data.OAuth2CodeAndTokenData;
-import com.freshdirect.webapp.ajax.oauth2.data.Status;
+import com.freshdirect.webapp.ajax.oauth2.data.OAuth2Status;
 import com.freshdirect.webapp.ajax.oauth2.data.TokenInfoResponse;
 import com.freshdirect.webapp.ajax.oauth2.service.OAuth2Service;
 
@@ -33,13 +33,13 @@ public class OAuth2TokenInfoServlet extends BaseJsonServlet {
 				LOGGER.debug("tokenId = [" + tokenId + "]");
 				OAuth2CodeAndTokenData codeOrTokenData = authService.getCodeOrTokenData(tokenId);
 				codeOrTokenData.setSalt(null);
-				writeResponseData(response, new TokenInfoResponse(Status.Code.SUCCESS, codeOrTokenData));
+				writeResponseData(response, new TokenInfoResponse(OAuth2Status.Code.SUCCESS, codeOrTokenData));
 			}
 			else {
-				writeResponseData(response, new TokenInfoResponse(Status.Code.FAIL, "Bad Request: missing 'access_token'"));
+				writeResponseData(response, new TokenInfoResponse(OAuth2Status.Code.FAIL, "Bad Request: missing 'access_token'"));
 			}
 		} catch (Exception e) {
-			TokenInfoResponse tokenResp = new TokenInfoResponse(Status.Code.ERROR, e.getMessage());
+			TokenInfoResponse tokenResp = new TokenInfoResponse(OAuth2Status.Code.ERROR, e.getMessage());
 			writeResponseData(response, tokenResp);
 		}
 	}
@@ -48,5 +48,9 @@ public class OAuth2TokenInfoServlet extends BaseJsonServlet {
 	protected boolean synchronizeOnUser() {
 		return false;
 	}
-
+	
+	@Override
+	protected int getRequiredUserLevel() {
+		return FDUserI.GUEST;
+	}
 }

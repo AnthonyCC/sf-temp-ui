@@ -33,7 +33,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.oauth2.data.OAuth2CodeAndTokenData;
 import com.freshdirect.webapp.ajax.oauth2.data.OAuth2InvalidCodeTokenException;
 import com.freshdirect.webapp.ajax.oauth2.data.OAuth2Type;
-import com.freshdirect.webapp.ajax.oauth2.data.Status;
+import com.freshdirect.webapp.ajax.oauth2.data.OAuth2Status;
 import com.freshdirect.webapp.ajax.oauth2.util.ClientDataValidator;
 import com.freshdirect.webapp.ajax.oauth2.util.FDUserTokenGenerator;
 import com.google.common.base.Joiner;
@@ -81,13 +81,13 @@ public class OAuth2Service {
 			if (!ClientDataValidator.validateClientId(clientId)) {
 				return OAuthASResponse.errorResponse(HttpServletResponse.SC_BAD_REQUEST)
 						.setError(OAuthError.TokenResponse.INVALID_CLIENT)
-						.setErrorDescription(ERROR_INVALID_CLIENT_DESCRIPTION).buildJSONMessage();
+						.setErrorDescription(ERROR_INVALID_CLIENT_DESCRIPTION).buildBodyMessage();
 			}
 
 			if (!ClientDataValidator.validateClientRedirectUri(clientId, redirectUri)) {
 				return OAuthASResponse.errorResponse(HttpServletResponse.SC_BAD_REQUEST)
 						.setError(OAuthError.TokenResponse.INVALID_CLIENT)
-						.setErrorDescription(ERROR_INVALID_REDIRECT_URI).buildJSONMessage();
+						.setErrorDescription(ERROR_INVALID_REDIRECT_URI).buildBodyMessage();
 			}
 
 			OAuthASResponse.OAuthAuthorizationResponseBuilder builder = OAuthASResponse.authorizationResponse(request,
@@ -148,7 +148,7 @@ public class OAuth2Service {
 	 * @return
 	 * @throws OAuthSystemException
 	 */
-	public OAuthResponse getAccessToken(HttpServletRequest request, FDUserI user) throws OAuthSystemException {
+	public OAuthResponse getAccessToken(HttpServletRequest request) throws OAuthSystemException {
 		try {
 			OAuthTokenRequest oauthRequest = new OAuthTokenRequest(request);
 
@@ -159,35 +159,35 @@ public class OAuth2Service {
 			String authCode = oauthRequest.getParam(OAuth.OAUTH_CODE);
 			String refreshToken = oauthRequest.getRefreshToken();
 
-			return getAccessToken(clientId, clientSecret, grantType, redirectUri, authCode, refreshToken, user);
+			return getAccessToken(clientId, clientSecret, grantType, redirectUri, authCode, refreshToken);
 
 		} catch (OAuthProblemException ex) {
 			ex.printStackTrace();
 			OAuthResponse oaResp = OAuthResponse.errorResponse(HttpServletResponse.SC_BAD_REQUEST)
-					.setError(OAuthError.TokenResponse.INVALID_REQUEST).error(ex).buildJSONMessage();
+					.setError(OAuthError.TokenResponse.INVALID_REQUEST).error(ex).buildBodyMessage();
 			return oaResp;
 		}
 	}
 
 	public OAuthResponse getAccessToken(String clientId, String clientSecret, String grantType, String redirectUri,
-			String authCode, String refreshToken, FDUserI user) throws OAuthSystemException {
+			String authCode, String refreshToken) throws OAuthSystemException {
 		try {
 			if (!ClientDataValidator.validateClientId(clientId)) {
 				return OAuthASResponse.errorResponse(HttpServletResponse.SC_BAD_REQUEST)
 						.setError(OAuthError.TokenResponse.INVALID_CLIENT)
-						.setErrorDescription(ERROR_INVALID_CLIENT_DESCRIPTION).buildJSONMessage();
+						.setErrorDescription(ERROR_INVALID_CLIENT_DESCRIPTION).buildBodyMessage();
 			}
 
 			if (!ClientDataValidator.validateClientSecret(clientId, clientSecret)) {
 				return OAuthASResponse.errorResponse(HttpServletResponse.SC_UNAUTHORIZED)
 						.setError(OAuthError.TokenResponse.UNAUTHORIZED_CLIENT)
-						.setErrorDescription(ERROR_INVALID_CLIENT_DESCRIPTION).buildJSONMessage();
+						.setErrorDescription(ERROR_INVALID_CLIENT_DESCRIPTION).buildBodyMessage();
 			}
 
 			if (!ClientDataValidator.validateClientRedirectUri(clientId, redirectUri)) {
 				return OAuthASResponse.errorResponse(HttpServletResponse.SC_BAD_REQUEST)
 						.setError(OAuthError.TokenResponse.INVALID_CLIENT)
-						.setErrorDescription(ERROR_INVALID_REDIRECT_URI).buildJSONMessage();
+						.setErrorDescription(ERROR_INVALID_REDIRECT_URI).buildBodyMessage();
 			}
 
 			if (GrantType.AUTHORIZATION_CODE.toString().equals(grantType)) {
@@ -195,32 +195,31 @@ public class OAuth2Service {
 				if (authCodeData == null || (authCodeData.getType() != OAuth2Type.CODE)) {
 					return OAuthASResponse.errorResponse(HttpServletResponse.SC_BAD_REQUEST)
 							.setError(OAuthError.TokenResponse.INVALID_GRANT)
-							.setErrorDescription(ERROR_INVALID_AUTH_CODE).buildHeaderMessage();
+							.setErrorDescription(ERROR_INVALID_AUTH_CODE).buildBodyMessage();
 				}
 
-				OAuthResponse oaResp = buildTokenResponse(user.getUserId(), user.getIdentity().getErpCustomerPK(),
-						user.getIdentity().getFDCustomerPK(), clientId, authCodeData);
+				OAuthResponse oaResp = buildTokenResponse(authCodeData.getUserLoginId(), authCodeData.getErpCustomerPK(),
+						authCodeData.getFdCustomerPK(), clientId, authCodeData);
 				return oaResp;
 			} else if (GrantType.REFRESH_TOKEN.toString().equals(grantType)) {
-				OAuthResponse oaResp = refreshTokenResponse(refreshToken, user.getIdentity().getErpCustomerPK(),
-						clientId);
+				OAuthResponse oaResp = refreshTokenResponse(refreshToken, clientId);
 				return oaResp;
 			} else {
 				return OAuthResponse.errorResponse(HttpServletResponse.SC_NOT_FOUND)
 						.setError(OAuthError.TokenResponse.UNSUPPORTED_GRANT_TYPE)
 						.setErrorDescription("Supported grant_type = [authorization_code | refresh_token]")
-						.buildJSONMessage();
+						.buildBodyMessage();
 			}
 
 		} catch (OAuth2InvalidCodeTokenException ex) {
 			OAuthResponse oaResp = OAuthResponse.errorResponse(HttpServletResponse.SC_NOT_FOUND)
 					.setError(OAuthError.TokenResponse.INVALID_GRANT).setErrorDescription(ex.getMessage())
-					.buildJSONMessage();
+					.buildBodyMessage();
 			return oaResp;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			OAuthResponse oaResp = OAuthResponse.errorResponse(HttpServletResponse.SC_NOT_FOUND)
-					.setError(ex.getMessage()).buildJSONMessage();
+					.setError(ex.getMessage()).buildBodyMessage();
 			return oaResp;
 		}
 	}
@@ -237,24 +236,24 @@ public class OAuth2Service {
 	 * @throws OAuthSystemException
 	 * @throws OAuth2InvalidCodeTokenException
 	 */
-	private OAuthResponse refreshTokenResponse(String refreshToken, String erpCustomerPK, String clientId)
+	private OAuthResponse refreshTokenResponse(String refreshToken, String clientId)
 			throws JsonProcessingException, OAuthSystemException, OAuth2InvalidCodeTokenException {
 
 		OAuth2CodeAndTokenData oldRefreshTokenData = getCodeOrTokenData(refreshToken);
-		Status status = oldRefreshTokenData.isRefreshTokenValid();
+		OAuth2Status status = oldRefreshTokenData.isRefreshTokenValid();
 
 		// validate if refreshToken was issued for given app and user
-		if (oldRefreshTokenData == null || Status.Code.SUCCESS != status.getCode()) {
+		if (oldRefreshTokenData == null || OAuth2Status.Code.SUCCESS != status.getCode()) {
 			return OAuthResponse.errorResponse(HttpServletResponse.SC_NOT_FOUND)
 					.setError(OAuthError.TokenResponse.INVALID_GRANT).setErrorDescription("Not a valid refresh token.")
-					.buildJSONMessage();
+					.buildBodyMessage();
 		}
 
-		if (!StringUtils.equals(oldRefreshTokenData.getAppId(), clientId)
-				|| !StringUtils.equals(oldRefreshTokenData.getErpCustomerPK(), erpCustomerPK)) {
+		if (!StringUtils.equals(oldRefreshTokenData.getClientId(), clientId)
+				|| !StringUtils.equals(oldRefreshTokenData.getErpCustomerPK(), oldRefreshTokenData.getErpCustomerPK())) {
 			return OAuthResponse.errorResponse(HttpServletResponse.SC_NOT_FOUND)
 					.setError(OAuthError.TokenResponse.INVALID_GRANT)
-					.setErrorDescription("Mismatch: the user erpCustomerPK or appId doesn't match").buildJSONMessage();
+					.setErrorDescription("Mismatch: the user erpCustomerPK or appId doesn't match").buildBodyMessage();
 		}
 
 		OAuth2CodeAndTokenData newTokenData = new OAuth2CodeAndTokenData(oldRefreshTokenData);
@@ -279,7 +278,7 @@ public class OAuth2Service {
 		OAuthResponseBuilder builder = OAuthASResponse.tokenResponse(HttpServletResponse.SC_OK)
 				.setAccessToken(newAccessToken).setRefreshToken(newRefreshToken).setExpiresIn("3600")
 				.setScope(sameScopeStr);
-		OAuthResponse oaResp = builder.buildHeaderMessage();
+		OAuthResponse oaResp = builder.buildBodyMessage();
 		return oaResp;
 	}
 
@@ -316,8 +315,8 @@ public class OAuth2Service {
 		String scopesStr = Joiner.on(" ").join(scopes);
 
 		OAuthResponseBuilder builder = OAuthASResponse.tokenResponse(HttpServletResponse.SC_OK)
-				.setAccessToken(accessToken).setRefreshToken(refreshToken).setExpiresIn("3600").setScope(scopesStr);
-		OAuthResponse oaResp = builder.buildHeaderMessage();
+				.setAccessToken(accessToken).setRefreshToken(refreshToken).setExpiresIn(String.valueOf(FDStoreProperties.getDefaultAccessTokenExpiration())).setScope(scopesStr);
+		OAuthResponse oaResp = builder.buildBodyMessage();
 		return oaResp;
 	}
 
@@ -382,7 +381,7 @@ public class OAuth2Service {
 			String json = gen.decrypt(codeOrToken);
 			OAuth2CodeAndTokenData data = OAuth2CodeAndTokenData.fromJson(json);
 
-			Status status = null;
+			OAuth2Status status = null;
 			if (data.getType() == OAuth2Type.CODE) {
 				status = data.isCodeValid();
 			} else if (data.getType() == OAuth2Type.REFRESHTOKEN) {
@@ -391,7 +390,7 @@ public class OAuth2Service {
 				status = data.isTokenValid();
 			}
 
-			if (Status.Code.SUCCESS == status.getCode()) {
+			if (OAuth2Status.Code.SUCCESS == status.getCode()) {
 				return data;
 			} else {
 				throw new OAuth2InvalidCodeTokenException(status.getMessage());

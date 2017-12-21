@@ -43,15 +43,17 @@ public class ClientDataValidator {
 		try {
 			String uriPath = StringUtils.split(uri, "?")[0];
 			String[] validCliendIds = StringUtils.split(FDStoreProperties.getOAuth2ClientIds(), ",");
-			String[] validClientRedirectUri = StringUtils.split(FDStoreProperties.getOAuth2ClientRedirectUris(), ",");
+			if (!ArrayUtils.contains(validCliendIds, clientId)) {
+				return false;
+			}
+			
+			String[] validClientRedirectUri = StringUtils.split(FDStoreProperties.getOAuth2ClientRedirectUris(clientId), ",");
 
 			for (int i = 0; i < validClientRedirectUri.length; i++) {
 				validClientRedirectUri[i] = StringUtils.split(validClientRedirectUri[i], "?")[0];
 			}
 
-			if (ArrayUtils.contains(validCliendIds, clientId) && ArrayUtils.contains(validClientRedirectUri, uriPath)
-					&& (ArrayUtils.indexOf(validCliendIds, clientId) == ArrayUtils.indexOf(validClientRedirectUri,
-							uriPath))) {
+			if (ArrayUtils.contains(validClientRedirectUri, uriPath)) {
 				return true;
 			}
 		} catch (Exception e) {

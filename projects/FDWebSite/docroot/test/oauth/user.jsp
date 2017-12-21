@@ -21,11 +21,11 @@ String token = request.getParameter("token");
 String phone = request.getParameter("phone");
 String item = request.getParameter("item");
 if (code != null ){
-	OAuthResponse respone = authService.getAccessToken("internalTestClient", "internalTestClientSecret", "authorization_code", "/test/oauth/user.jsp?phone=" + phone, URLDecoder.decode(code.replace("+", "%2B"), "UTF-8"), null, user);
-	String tokenHeader = respone.getHeader("WWW-Authenticate");
-	if( tokenHeader != null) {
-		Pattern pattern = Pattern.compile("access_token=\"(.*)\"");
-		Matcher matcher = pattern.matcher(tokenHeader);
+	OAuthResponse respone = authService.getAccessToken("internalTestClient", "internalTestClientSecret", "authorization_code", "/test/oauth/user.jsp?phone=" + phone, URLDecoder.decode(code.replace("+", "%2B"), "UTF-8"), null);
+	String tokenBody = respone.getBody();
+	if( tokenBody != null) {
+		Pattern pattern = Pattern.compile("access_token=(.*)");
+		Matcher matcher = pattern.matcher(tokenBody);
 		if(matcher.find())
 			token = matcher.group(1);
 	}

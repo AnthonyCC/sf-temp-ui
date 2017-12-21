@@ -1,5 +1,8 @@
 package com.freshdirect.webapp.ajax.oauth2;
 
+import java.io.IOException;
+
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
@@ -9,6 +12,7 @@ import org.apache.oltu.oauth2.common.message.OAuthResponse;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
+import com.freshdirect.webapp.ajax.JsonHelper;
 import com.freshdirect.webapp.ajax.oauth2.service.OAuth2Service;
 
 public class OAuth2TokenServlet extends BaseJsonServlet {
@@ -29,12 +33,17 @@ public class OAuth2TokenServlet extends BaseJsonServlet {
 			throws HttpErrorResponse {
 		OAuthResponse oauthResp;
 		try {
-			LOGGER.debug("OAuth for user " + user.getUserId());
-			oauthResp = authService.getAccessToken(request, user);
-			writeResponseData(response, oauthResp);
+			oauthResp = authService.getAccessToken(request);
+			response.setStatus(oauthResp.getResponseStatus());
+	        ServletOutputStream out = response.getOutputStream();
+	        out.print(oauthResp.getBody());
+	        out.flush();
+			
 		} catch (OAuthSystemException e) {
-			e.printStackTrace();
-		}
+			returnHttpError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error", e); // 500 Internal Server Error
+		} catch (IOException e) {
+            returnHttpError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error writing response", e); // 500 Internal Server Error
+        }
 	}
 
 	@Override

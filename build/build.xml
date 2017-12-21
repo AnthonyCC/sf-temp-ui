@@ -112,7 +112,7 @@
 		<pathelement location="${thirdparty.home}/fdcommerce-data.jar"/>
 		<pathelement location="${thirdparty.home}/fdcommerce-domain.jar"/>
 		<pathelement location="${thirdparty.home}/sitemapgen4j-1.0.6.jar"/>
-		<pathelement location="${thirdparty.home}/json-20171018.jar"/>
+
 		<pathelement location="${thirdparty.home}/org.apache.oltu.oauth2.authzserver-1.0.2.jar"/>
 	</path>
 
@@ -1738,7 +1738,6 @@
 			<pathelement location="${thirdparty.home}/jackson-core-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/jackson-databind-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/jackson-annotations-2.2.0.jar"/>
-			<pathelement location="${thirdparty.home}/json-20171018.jar"/>
 			<pathelement location="${thirdparty.home}/org.apache.oltu.oauth2.authzserver-1.0.2.jar"/>
 			<path refid="spring.classpath"/>
 		</path>
@@ -1913,7 +1912,6 @@
 			<pathelement location="${thirdparty.home}/jackson-annotations-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/masterpassExpressSdk.jar"/>
 			<pathelement location="${thirdparty.home}/braintree-java-2.53.0.jar"/>
-			<pathelement location="${thirdparty.home}/json-20171018.jar"/>
 			<pathelement location="${thirdparty.home}/org.apache.oltu.oauth2.authzserver-1.0.2.jar"/>
 		</path>
 
@@ -2491,7 +2489,6 @@
 				<include name="spring-web-4.0.1.RELEASE.jar"/>
 				<include name="spring-webmvc-4.0.1.RELEASE.jar"/>
 				<include name="gson-1.7.1.jar"/>
-				<include name="json-20171018.jar"/>
 				<include name="org.apache.oltu.oauth2.authzserver-1.0.2.jar"/>
 			</lib>
 		</makeEar>

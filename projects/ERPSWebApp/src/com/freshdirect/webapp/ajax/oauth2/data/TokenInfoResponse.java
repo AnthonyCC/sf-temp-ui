@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonInclude(Include.NON_NULL)
-public class TokenInfoResponse extends Status implements Serializable {
+public class TokenInfoResponse extends OAuth2Status implements Serializable {
 	private static final long serialVersionUID = 3547435605034064313L;
 
 	@JsonInclude(Include.NON_NULL)

@@ -30,14 +30,12 @@ public class OAuth2CodeAndTokenData implements Serializable {
 	@JsonProperty("userLoginId")
 	private String userLoginId;
 
-	@JsonProperty("erpCustomerPK")
 	private String erpCustomerPK;
 
-	@JsonProperty("fdCustomerPK")
 	private String fdCustomerPK;
 
-	@JsonProperty("appId")
-	private String appId;
+	@JsonProperty("clientId")
+	private String clientId;
 
 	@JsonProperty("scope")
 	private Set<String> scope;
@@ -47,12 +45,12 @@ public class OAuth2CodeAndTokenData implements Serializable {
 	}
 
 	public OAuth2CodeAndTokenData(String userLoginId, String erpCustomerPK, String fdCustomerPK, Set<String> scope,
-			String appId, long expInSec, OAuth2Type type) {
+			String clientId, long expInSec, OAuth2Type type) {
 
 		this.userLoginId = userLoginId;
 		this.erpCustomerPK = erpCustomerPK;
 		this.fdCustomerPK = fdCustomerPK;
-		this.appId = appId;
+		this.clientId = clientId;
 		this.type = type;
 		this.scope = scope;
 
@@ -65,7 +63,7 @@ public class OAuth2CodeAndTokenData implements Serializable {
 		this.userLoginId = other.userLoginId;
 		this.erpCustomerPK = other.erpCustomerPK;
 		this.fdCustomerPK = other.fdCustomerPK;
-		this.appId = other.appId;
+		this.clientId = other.clientId;
 		this.expiresOn = other.expiresOn;
 		this.type = other.type;
 		this.scope = other.scope;
@@ -110,34 +108,33 @@ public class OAuth2CodeAndTokenData implements Serializable {
 		this.userLoginId = userLoginId;
 	}
 
-	@JsonProperty("erpCustomerPK")
+	@JsonIgnore
 	public String getErpCustomerPK() {
 		return erpCustomerPK;
 	}
 
-	@JsonProperty("erpCustomerPK")
+	
 	public void setErpCustomerPK(String erpCustomerPK) {
 		this.erpCustomerPK = erpCustomerPK;
 	}
 
-	@JsonProperty("fdCustomerPK")
+	@JsonIgnore
 	public String getFdCustomerPK() {
 		return fdCustomerPK;
 	}
 
-	@JsonProperty("fdCustomerPK")
 	public void setFdCustomerPK(String fdCustomerPK) {
 		this.fdCustomerPK = fdCustomerPK;
 	}
 
-	@JsonProperty("appId")
-	public String getAppId() {
-		return appId;
+	@JsonProperty("clientId")
+	public String getClientId() {
+		return clientId;
 	}
 
-	@JsonProperty("appId")
-	public void setAppId(String appId) {
-		this.appId = appId;
+	@JsonProperty("clientId")
+	public void setClientId(String clientId) {
+		this.clientId = clientId;
 	}
 
 	@JsonProperty("type")
@@ -185,54 +182,54 @@ public class OAuth2CodeAndTokenData implements Serializable {
 	 * Validate access token
 	 */
 	@JsonIgnore
-	public Status isTokenValid() {
+	public OAuth2Status isTokenValid() {
 		if (this.type != OAuth2Type.TOKEN) {
-			return new Status(Status.Code.ERROR, "This is not an access token");
+			return new OAuth2Status(OAuth2Status.Code.ERROR, "This is not an access token");
 		}
-		if (!ClientDataValidator.validateClientId(this.appId)) {
-			return new Status(Status.Code.ERROR, "Invalid client Id in the token");
+		if (!ClientDataValidator.validateClientId(this.clientId)) {
+			return new OAuth2Status(OAuth2Status.Code.ERROR, "Invalid client Id in the token");
 		}
 		if ((this.expiresOn != 0) && (System.currentTimeMillis() / 1000) > this.expiresOn) {
-			return new Status(Status.Code.EXPIRED, "This is an expired access token");
+			return new OAuth2Status(OAuth2Status.Code.EXPIRED, "This is an expired access token");
 		}
 
-		return new Status(Status.Code.SUCCESS);
+		return new OAuth2Status(OAuth2Status.Code.SUCCESS);
 	}
 
 	/**
 	 * Validate refresh token
 	 */
 	@JsonIgnore
-	public Status isRefreshTokenValid() {
+	public OAuth2Status isRefreshTokenValid() {
 		if (this.type != OAuth2Type.REFRESHTOKEN) {
-			return new Status(Status.Code.ERROR, "This is not an refresh-token");
+			return new OAuth2Status(OAuth2Status.Code.ERROR, "This is not an refresh-token");
 		}
-		if (!ClientDataValidator.validateClientId(this.appId)) {
-			return new Status(Status.Code.ERROR, "Invalid client Id in the refresh-token");
+		if (!ClientDataValidator.validateClientId(this.clientId)) {
+			return new OAuth2Status(OAuth2Status.Code.ERROR, "Invalid client Id in the refresh-token");
 		}
 		if ((this.expiresOn != 0) && (System.currentTimeMillis() / 1000) > this.expiresOn) {
-			return new Status(Status.Code.EXPIRED, "This is an expired refresh-token");
+			return new OAuth2Status(OAuth2Status.Code.EXPIRED, "This is an expired refresh-token");
 		}
 
-		return new Status(Status.Code.SUCCESS);
+		return new OAuth2Status(OAuth2Status.Code.SUCCESS);
 	}
 
 	/**
 	 * Validate auth code
 	 */
 	@JsonIgnore
-	public Status isCodeValid() {
+	public OAuth2Status isCodeValid() {
 		if (this.type != OAuth2Type.CODE) {
-			return new Status(Status.Code.ERROR, "This is not an auth code");
+			return new OAuth2Status(OAuth2Status.Code.ERROR, "This is not an auth code");
 		}
-		if (!ClientDataValidator.validateClientId(this.appId)) {
-			return new Status(Status.Code.ERROR, "Invalid client Id in the code");
+		if (!ClientDataValidator.validateClientId(this.clientId)) {
+			return new OAuth2Status(OAuth2Status.Code.ERROR, "Invalid client Id in the code");
 		}
 		if ((this.expiresOn != 0) && (System.currentTimeMillis() / 1000) > this.expiresOn) {
-			return new Status(Status.Code.EXPIRED, "This is an expired auth code");
+			return new OAuth2Status(OAuth2Status.Code.EXPIRED, "This is an expired auth code");
 		}
 
-		return new Status(Status.Code.SUCCESS);
+		return new OAuth2Status(OAuth2Status.Code.SUCCESS);
 	}
 
 }
