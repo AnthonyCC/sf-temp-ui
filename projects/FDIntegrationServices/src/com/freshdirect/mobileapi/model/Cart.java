@@ -793,7 +793,11 @@ public class Cart {
                         .setEarliestAvailability((displayShortTermUnavailability && earliestAvailability != null && !(cartLine instanceof FDModifyCartLineI)) ? earliestAvailability
                                 : null);
                 productLineItem.setUnitPrice(cartLine.getUnitPrice());
+                if (cartLine != null && cartLine.getInvoiceLine() != null) {
+                productLineItem.setPrice(cartLine.getInvoiceLine().getPrice());
+                } else {
                 productLineItem.setPrice(cartLine.getPrice());
+                }
                 productLineItem.setHasDepositValue(cartLine.hasDepositValue());
                 productLineItem.setHasScaledPricing(cartLine.hasScaledPricing());
                 productLineItem.setEstimatedPrice(cartLine.isEstimatedPrice());
