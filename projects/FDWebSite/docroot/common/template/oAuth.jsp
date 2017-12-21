@@ -22,5 +22,20 @@
    		</div>
 		<tmpl:get name='content'/>
   	</center>
+  	<center class="footer">
+  		<tr>
+		  	<td align="center" class="text11" style="padding-top: 10px">
+				<%@ include file="/shared/template/includes/copyright.jspf" %><br />
+				<fd:IncludeMedia name="/media/layout/nav/globalnav/footer/after_copyright_footer.ftl">
+					<img src="/media_stat/images/layout/clear.gif" width="1" height="6" alt="" /><br />
+					<a href="/help/privacy_policy.jsp">Privacy Policy</a>
+					&nbsp;<font color="#999999">|</font>
+					&nbsp;<a href="/help/terms_of_service.jsp">Customer Agreement</a>
+					&nbsp;<font color="#999999">|</font>
+					&nbsp;<a href="/help/platform_agreement.jsp">Platform Terms of Use</a>
+				</fd:IncludeMedia>
+			</td>
+		</tr>	
+	</center>
 </body>
 </html>
