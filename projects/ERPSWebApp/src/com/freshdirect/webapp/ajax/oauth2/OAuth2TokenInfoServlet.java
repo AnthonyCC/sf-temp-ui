@@ -33,6 +33,8 @@ public class OAuth2TokenInfoServlet extends BaseJsonServlet {
 				LOGGER.debug("tokenId = [" + tokenId + "]");
 				OAuth2CodeAndTokenData codeOrTokenData = authService.getCodeOrTokenData(tokenId);
 				codeOrTokenData.setSalt(null);
+				codeOrTokenData.setErpCustomerPK(null);
+				codeOrTokenData.setFdCustomerPK(null);
 				writeResponseData(response, new TokenInfoResponse(OAuth2Status.Code.SUCCESS, codeOrTokenData));
 			}
 			else {

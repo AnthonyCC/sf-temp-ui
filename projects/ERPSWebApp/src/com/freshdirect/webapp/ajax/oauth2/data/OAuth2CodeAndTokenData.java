@@ -30,8 +30,12 @@ public class OAuth2CodeAndTokenData implements Serializable {
 	@JsonProperty("userLoginId")
 	private String userLoginId;
 
+	@JsonInclude(Include.NON_NULL)
+	@JsonProperty("erpCustomerPK")
 	private String erpCustomerPK;
 
+	@JsonInclude(Include.NON_NULL)
+	@JsonProperty("fdCustomerPK")
 	private String fdCustomerPK;
 
 	@JsonProperty("clientId")
@@ -108,21 +112,22 @@ public class OAuth2CodeAndTokenData implements Serializable {
 		this.userLoginId = userLoginId;
 	}
 
-	@JsonIgnore
+	@JsonProperty("erpCustomerPK")
 	public String getErpCustomerPK() {
 		return erpCustomerPK;
 	}
 
-	
+	@JsonProperty("erpCustomerPK")
 	public void setErpCustomerPK(String erpCustomerPK) {
 		this.erpCustomerPK = erpCustomerPK;
 	}
 
-	@JsonIgnore
+	@JsonProperty("fdCustomerPK")
 	public String getFdCustomerPK() {
 		return fdCustomerPK;
 	}
 
+	@JsonProperty("fdCustomerPK")
 	public void setFdCustomerPK(String fdCustomerPK) {
 		this.fdCustomerPK = fdCustomerPK;
 	}
