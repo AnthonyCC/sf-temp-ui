@@ -1227,6 +1227,9 @@ public class FDOrderAdapter implements FDOrderI {
 
 	@Override
     public List<WebOrderViewI> getOrderViews() {
+		if(hasInvoice()){
+			return getInvoicedOrderViews();
+		}
 		return WebOrderViewFactory.getOrderViews(orderLines, false);
 	}
 	
