@@ -71,7 +71,11 @@ public class FDOrderFeedGeneratorCron {
 					}
 				} else {
 					try {
-						orderFeedDateFrom = sb.getLastSentFeedOrderTime();
+						if(FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.brandads.FDBrandProductsAdManagerSB")){
+							orderFeedDateFrom =FDECommerceService.getInstance().getLastSentFeedOrderTime();
+						} else {
+							orderFeedDateFrom = sb.getLastSentFeedOrderTime();
+						}
 					} catch (Exception e) {
 						LOGGER.warn("Exception while getting lastSentFeedOrderTime: "
 								+ e);
