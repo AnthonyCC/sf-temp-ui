@@ -25,7 +25,7 @@ public class WarmupJmxRegistratorService {
     }
 
     public void registerWarmupMBeans() {
-        LOGGER.debug("Registering WarmupJmxPublisher");
+        LOGGER.info("Registering WarmupJmxPublisher");
         try {
 
             MBeanServer connection = RuntimeMBeanConnector.connectToRuntimeMBeanServer();
@@ -33,11 +33,13 @@ public class WarmupJmxRegistratorService {
                 ObjectName warmupJmxPublisherMbeanName = new ObjectName(WARMUP_JMX_PUBLISHER_OBJECTNAME);
 
                 connection.registerMBean(warmupJmx, warmupJmxPublisherMbeanName);
+                
+                LOGGER.info("Registered WarmupJmxPublisher:"+warmupJmxPublisherMbeanName);
             } else {
-                LOGGER.error("Couldn't establish connection to Runtime MBean Server");
+                LOGGER.error("WarmupJmxPublisher Couldn't establish connection to Runtime MBean Server");
             }
         } catch (Exception e) {
-            LOGGER.error("Error while registering JMX Warmup MBeans", e);
+            LOGGER.error("WarmupJmxPublisher Error while registering JMXWarmupMBeans", e);
         }
     }
 
