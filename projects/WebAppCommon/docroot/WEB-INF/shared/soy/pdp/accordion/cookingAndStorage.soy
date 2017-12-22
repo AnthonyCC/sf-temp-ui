@@ -8,6 +8,8 @@
  * @param webRating
  * @param categoryStorageGuide
  * @param usageList
+ *
+ * THIS NOW DISPLAYS ON PDP AS "More Information" - 20171222
  */
 {template .cookingAndStorage}
 {if ($donenessGuideList and length($donenessGuideList)>0) or
@@ -18,7 +20,7 @@
 	($categoryStorageGuide) or
 	($usageList and length($usageList) > 0)
 }
-<li class="pdp-accordion-cookingandstorage pdp-accordion-item"><a href="#" class="pdp-item-description-toggle" onclick="return false;" id="pdp-cookingandstorage"><span class="pdp-accordion-item-carrot"></span>Cooking & Storage</a><div>
+<li class="pdp-accordion-cookingandstorage pdp-accordion-item"><a href="#" class="pdp-item-description-toggle" onclick="return false;" id="pdp-cookingandstorage"><span class="pdp-accordion-item-carrot"></span>More Information</a><div>
 /*
  * table element is added to ensure that broken media don't break the site
  * TODO remove if all broken media is fixed
