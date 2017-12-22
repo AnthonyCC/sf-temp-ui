@@ -2775,6 +2775,7 @@
 				<include name="jackson-core-2.6.3.jar" />
 				<!-- include name="h2-1.4.190.jar" / -->
 				<!-- include name="javax.servlet-api-3.0.1.jar" / -->
+				<include name="org.apache.oltu.oauth2.authzserver-1.0.2.jar"/>
 			</lib>
 		</makeEar>
 	</target>
