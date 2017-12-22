@@ -31,7 +31,6 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.fdstore.payments.util.PaymentMethodUtil;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
@@ -629,38 +628,46 @@ public class SinglePageCheckoutFacade {
             paymentService.setNoPaymentMethod(user, request);
         } else {
         	 List<PaymentData> userPaymentMethods = paymentService.loadUserPaymentMethods(user, request, paymentMethods);
-        	 if(StandingOrderHelper.isEligibleForSo3_0(user) && !userPaymentMethods.isEmpty() 
-        			 && null != user.getShoppingCart().getDeliveryReservation() && null != user.getShoppingCart().getDeliveryReservation().getOrderId() && null == user.getCurrentStandingOrder()){
-        		 FDOrderI orderInfo = FDCustomerManager.getOrder(user.getShoppingCart().getDeliveryReservation().getOrderId());					//APPDEV-6765
-        		 for(PaymentData PM : userPaymentMethods){
-        			if(PM.getId().equalsIgnoreCase(orderInfo.getPaymentMethod().getPK().getId()) ){
-        				PM.setSelected(true);
-        			}else{
-        				PM.setSelected(false);
-        			}
-        		}
-        		formPaymentData.setSelected(orderInfo.getPaymentMethod().getPK().getId());
-        	}else{
-            boolean readyToBreak = false;
-            for (PaymentData data : userPaymentMethods) {
-                if (data.isSelected()) {
-                    formPaymentData.setSelected(data.getId());
-                    if (readyToBreak) {
-                    	break;
-                    } else {
-                    	readyToBreak = true;
-                    }
-                }
-                if (data.isDefault()) {
-                    formPaymentData.setDefault(data.isDefault());
-                    if (readyToBreak) {
-                    	break;
-                    } else {
-                    	readyToBreak = true;
-                    }
-                }
-            }
-        	}
+        	 
+        	//APPDEV-6765
+        	 FDCartModel mCart = user.getShoppingCart();
+             if (mCart instanceof FDModifyCartModel && !StandingOrderHelper.isSO3StandingOrder(user)) {
+                 FDModifyCartModel modifyCart = (FDModifyCartModel) mCart;
+                 String orderId = modifyCart.getOriginalOrder().getErpSalesId();
+                 try {
+                     FDOrderI order = FDCustomerManager.getOrder(orderId);
+                     for(PaymentData PM : userPaymentMethods){
+             			if(PM.getId().equalsIgnoreCase(order.getPaymentMethod().getPK().getId()) ){
+             				PM.setSelected(true);
+             			}else{
+             				PM.setSelected(false);
+             			}
+             		}
+             		formPaymentData.setSelected(order.getPaymentMethod().getPK().getId());
+                 } catch (FDResourceException e) {
+                     LOGGER.error("Error while retreiving order details order id" + orderId);
+                 }
+			} else {
+				boolean readyToBreak = false;
+				for (PaymentData data : userPaymentMethods) {
+					if (data.isSelected()) {
+						formPaymentData.setSelected(data.getId());
+						if (readyToBreak) {
+							break;
+						} else {
+							readyToBreak = true;
+						}
+					}
+					if (data.isDefault()) {
+						formPaymentData.setDefault(data.isDefault());
+						if (readyToBreak) {
+							break;
+						} else {
+							readyToBreak = true;
+						}
+					}
+				}
+			}
         	 formPaymentData.setPayments(userPaymentMethods);
             if (StandingOrderHelper.isSO3StandingOrder(user)) {
                 userPaymentMethods = removeEWalletPaymentMethod(userPaymentMethods);
