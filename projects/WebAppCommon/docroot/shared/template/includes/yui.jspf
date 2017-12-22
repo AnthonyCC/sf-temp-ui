@@ -4,7 +4,7 @@
 if (request.getAttribute("__yui_included__") == null) {
 %>
 <%-- when upgrading yui please create a new directory for the version --%>
-	<jwr:style src="/assets/yui-2.9.0/container/assets/container.css" media="all" />
+	<jwr:style src="/yuipartial.css" media="all" />
 <%
 	if (request.getAttribute("__yui_load_calendar__") != null) {
 %>
