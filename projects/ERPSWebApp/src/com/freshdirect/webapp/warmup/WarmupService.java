@@ -40,17 +40,18 @@ public class WarmupService {
     }
 
     public void repeatWarmup() {
+    	
         if (!isManualWarmupAllowed()) {
             return;
         }
-        if (Warmup.WARMUP_STATE.compareAndSet(WarmupState.NOT_TRIGGERED, WarmupState.IN_PROGRESS)) {
+        if (Warmup.WARMUP_STATE.compareAndSet(WarmupState.NOT_TRIGGERED, WarmupState.IN_PROGRESS) || Warmup.WARMUP_STATE.compareAndSet(WarmupState.FAILED, WarmupState.IN_PROGRESS)) {
             new Thread("warmup-thread") {
 
                 @Override
                 public void run() {
                     Warmup warmup = new Warmup();
                     warmup.warmup();
-                    Warmup.WARMUP_STATE.set(WarmupState.FINISHED);
+                    //Warmup.WARMUP_STATE.set(WarmupState.FINISHED);
                 };
             }.start();
         } else if (CmsServiceLocator.contentProviderService().isReadOnlyContent() && Warmup.WARMUP_STATE.compareAndSet(WarmupState.FINISHED, WarmupState.IN_PROGRESS)) {
@@ -67,7 +68,7 @@ public class WarmupService {
                     }
                     Warmup warmup = new Warmup();
                     warmup.repeatWarmup();
-                    Warmup.WARMUP_STATE.set(WarmupState.FINISHED);
+                    //Warmup.WARMUP_STATE.set(WarmupState.FINISHED);
                 };
             }.start();
         }

@@ -87,8 +87,10 @@ public class Warmup {
                     CacheWarmupUtil.warmupSmartStore();
                     CacheWarmupUtil.warmupSmartCategories();
                     LOGGER.info("[WARMUP]Warmup done");
-                } catch (FDResourceException e) {
+                    Warmup.WARMUP_STATE.set(WarmupState.FINISHED);
+                } catch (Exception e) {
                     LOGGER.error("[WARMUP]Warmup failed", e);
+                    Warmup.WARMUP_STATE.set(WarmupState.FAILED);
                 }
             }
         }.start();
@@ -113,11 +115,17 @@ public class Warmup {
         new Thread("warmup-repeat-step-2") {
             @Override
             public void run() {
-                CacheWarmupUtil.warmupAutocomplete();
-                CacheWarmupUtil.warmupWineIndex();
-                CacheWarmupUtil.warmupSmartStore();
-                CacheWarmupUtil.warmupSmartCategories();
-                LOGGER.info("[WARMUP]Warmup done");
+            	try {
+	                CacheWarmupUtil.warmupAutocomplete();
+	                CacheWarmupUtil.warmupWineIndex();
+	                CacheWarmupUtil.warmupSmartStore();
+	                CacheWarmupUtil.warmupSmartCategories();
+	                LOGGER.info("[WARMUP]Warmup done");
+	                Warmup.WARMUP_STATE.set(WarmupState.FINISHED);
+            	} catch (Exception e) {
+                    LOGGER.error("[WARMUP]Warmup failed", e);
+                    Warmup.WARMUP_STATE.set(WarmupState.FAILED);
+                }
             }
         }.start();
     }
