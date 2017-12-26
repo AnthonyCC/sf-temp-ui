@@ -17,7 +17,6 @@ if (request.getAttribute("__yui_included__") == null) {
 <%
 	//}
 %>
-<jwr:style src="/assets/yui-2.9.0/carousel/assets/carousel-core.css" media="all" />
 
 <jwr:script src="/yuipartial.js" useRandomParam="false" />
 
