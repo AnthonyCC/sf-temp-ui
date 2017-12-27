@@ -49,7 +49,7 @@ if(productNode!=null){
 <tmpl:insert template='/common/template/pdp_template.jsp'>
 
   <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Confirmation"/>
+    <fd:SEOMetaTag title="FreshDirect - NOW IN CART"/>
   </tmpl:put>
 
   <tmpl:put name='cmeventsource' direct='true'>cart_confirm_pdp</tmpl:put>

@@ -112,9 +112,18 @@
 %>
 <tmpl:insert template='<%= pageTemplate %>'>
 <%--     <tmpl:put name='title' direct='true'>FreshDirect - Help - FAQs</tmpl:put> --%>
-    <tmpl:put name="seoMetaTag" direct="true">
-    	<fd:SEOMetaTag title="FreshDirect - Help - FAQs" pageId="FAQHome"></fd:SEOMetaTag>
-    </tmpl:put>
+<%--     <tmpl:put name="seoMetaTag" direct="true"> --%>
+<%--     	<fd:SEOMetaTag title="FreshDirect - Help - FAQs" pageId="FAQHome"></fd:SEOMetaTag> --%>
+<%--     </tmpl:put> --%>
+    <% String pageId = "FAQHome";
+
+            if (request.getParameter("page") != null) {
+                pageId = "FAQ"+faqPage;
+            }
+       %>
+       <tmpl:put name="seoMetaTag" direct="true">
+       <fd:SEOMetaTag title="FreshDirect - Help - FAQs" pageId="<%= pageId %>"></fd:SEOMetaTag>
+       </tmpl:put>
 	<tmpl:put name='leftnav' direct='true'>
 	</tmpl:put>
     <tmpl:put name='content' direct='true'>

@@ -2586,3 +2586,6 @@ form.dispblock-fields td { /* force the tds to block so the label and field are 
 	 clip: rect(0, 0, 0, 0); 
 	 border: 0;
 }
+.contact_fd-cont label{
+	width:auto;
+}

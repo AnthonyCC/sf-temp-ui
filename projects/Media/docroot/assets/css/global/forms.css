@@ -393,3 +393,12 @@ span[fdform-error] {
 	box-shadow: 0 0 0 1px #ccc;
 	background-size: 200%;
 }
+.contact_fd-cont{
+	text-align:left;
+}
+.contact_fd-cont label{
+	width: 150px;
+    padding-right: 10px;
+    vertical-align: middle;
+    text-align: right;
+}

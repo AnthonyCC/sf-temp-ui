@@ -947,10 +947,10 @@
 				<form fdform="promotion" action="#" fdform-endpoint-submit="/api/expresscheckout/promotion" fdform-success="FreshDirect.modules.common.forms.successFns.hideOnSuccess">
 					<label for="promotional-code"><p class='promotion-text'><span class="NOMOBWEB">Have a </span><span class="capital">p</span>romotional code<span class="NOMOBWEB">?</span></p></label>
 					<div>  
-						<input type="text" class="promotion-input" id="promotional-code" name="promotionCode" placeholder="Enter here" />
+						<input type="text" class="promotion-input" id="promotional-code" aria-describedby="promo_error" name="promotionCode" placeholder="Enter here" />
 						<input type="hidden" name="action" value="applyPromotion" />
 						<button id="promotional-code-applybtn" disabled="disabled" class="disabled cssbutton green small">apply<span class="offscreen">promotion code</span></button>
-						<span fdform-error-for="promotionCode"></span>
+						<span id="promo_error" fdform-error-for="promotionCode"></span>
 					</div>
 				</form>
 			</div>
@@ -959,10 +959,10 @@
 					<form fdform="giftcard" action="#" fdform-endpoint-submit="/api/expresscheckout/giftcard" fdform-success="FreshDirect.modules.common.forms.successFns.reset">
 						<label for="apply-gift-card"><p class='promotion-text'><span class="NOMOBWEB">Have a new </span>Gift Card<span class="NOMOBWEB">?</span></p></label> 
 						<div> 
-							<input type="text" class="promotion-input" id="apply-gift-card" name="givexNum" placeholder="Enter here" />
+							<input type="text" class="promotion-input" id="apply-gift-card" aria-describedby="giftcard_error" name="givexNum" placeholder="Enter here" />
 							<input type="hidden" name="action" value="applyGiftCard" />
 							<button id="apply-gift-card-applybtn" disabled="disabled" class="disabled cssbutton green small">apply<span class="offscreen">new gift card</span></button>
-							<span fdform-error-for="givexNum"></span>
+							<span id="giftcard_error" fdform-error-for="givexNum"></span>
 						</div>
 					</form>
 				</div>

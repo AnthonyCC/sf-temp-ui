@@ -70,10 +70,11 @@
 	margin: 16px 0;
 }
 
-#search-faq,
-.form-group input, 
-.form-group select, 
-.form-group textarea {
+#search-faq
+/* .form-group input,  */
+/* .form-group select,  */
+/* .form-group textarea */
+{
 	width: 250px;
 }
 
@@ -101,11 +102,11 @@
     margin-bottom: 10px; 
 }
 
-#home-phone-ext-field,
-#work-phone-ext-field,
-#other-phone-ext-field {
-	width: 40px;
-}
+/* #home-phone-ext-field, */
+/* #work-phone-ext-field, */
+/* #other-phone-ext-field { */
+/* 	width: 40px; */
+/* } */
 
 .bordered-box {
 	width: 100%;

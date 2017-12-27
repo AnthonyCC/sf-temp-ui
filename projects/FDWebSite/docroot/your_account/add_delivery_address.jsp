@@ -33,7 +33,7 @@ final int W_YA_ADD_DELIVERY_ADDR = 970;
 	</fd:ErrorHandler>
 	
 	
-	<form name="address" method="post" onSubmit="doubleSubmitAddrAdd=true;">
+	<form fdform name="address" method="post" onSubmit="doubleSubmitAddrAdd=true;" fdform-displayerrorafter>
 		<table width="<%= W_YA_ADD_DELIVERY_ADDR %>" border="0" cellpadding="0" cellspacing="0">
 			<tr>
 				<td width="<%= W_YA_ADD_DELIVERY_ADDR %>" class="title18">Add New Delivery Address</td>
