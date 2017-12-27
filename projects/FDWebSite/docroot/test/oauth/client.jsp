@@ -91,10 +91,20 @@ if(action!= null && action.equals("clear")){
 					'"eventSource": "FinalizingExternal"'+
 				'}'),
 		        success: function (dt, status, request) {
-			        $('.status').html('Successfully added item. Redirecting to shopping cart' ).animate({
-						         backgroundColor: "#fff8c4"
-						       }, 1000 ).animate({backgroundColor: "transparent"});
-		            window.location='/expressco/view_cart.jsp?fetch=true';
+		        	if(!dt.atcResult || !dt.atcResult[0]) {
+		        		 $('.status').html('Error occurs when adding item.' ).animate({
+					         backgroundColor: "#fff8c4"
+					       }, 1000 ).animate({backgroundColor: "transparent"});
+		        	} else if(dt.atcResult[0].status=='SUCCESS'){
+				        $('.status').html('Successfully added item.' ).animate({
+				         backgroundColor: "#fff8c4"
+				       }, 1000 ).animate({backgroundColor: "transparent"});
+			      	} else {
+			      		$('.status').html('Error: '  + dt.atcResult[0].message).animate({
+				         backgroundColor: "#fff8c4"
+				       }, 1000 ).animate({backgroundColor: "transparent"});
+			      	}
+		            
 		
 		        },
 		        error: function (jqXHR, status) {
@@ -106,6 +116,33 @@ if(action!= null && action.equals("clear")){
 					iFrameDoc.close();
 		        }
 		    });
+		});
+		$(document).on('click', '.get-cart', function(e) {
+			$('.status').html('Getting cart data').animate({
+					         backgroundColor: "#fff8c4"
+					       }, 1000 ).animate({backgroundColor: "transparent"});
+			$.ajax({
+		        type: "GET",
+		        url: "/api/expresscheckout/cartdata",
+		        headers: {'Authorization': 'Bearer ' + $('.token').val()},
+		        success: function (dt, status, request) {
+		            $(e.target).siblings('.result').html(JSON.stringify(dt));
+					$('.status').html('Received cart data. # of cartlines in the first cart section: ' + (dt.cartSections && dt.cartSections.length && dt.cartSections[0] && dt.cartSections[0].cartLines && dt.cartSections[0].cartLines.length) || 0).animate({
+					         backgroundColor: "#fff8c4"
+					       }, 1000 ).animate({backgroundColor: "transparent"});
+		        },
+		        error: function (jqXHR, status) {
+			        var iFrame = $('<iframe id="error" width="600"></iframe>');
+					$(e.target).siblings('.result').html(iFrame);
+					
+					var iFrameDoc = iFrame[0].contentDocument || iFrame[0].contentWindow.document;
+					iFrameDoc.write(jqXHR.responseText);
+					iFrameDoc.close();
+		        }
+		    });    
+		});
+		$(document).on('click', '.go-cart', function(e) {
+			window.location='/expressco/view_cart.jsp?fetch=true';
 		});
 		$(document).on('click', '.get-order-history', function(e){
 			$(e.target).siblings('.user-order-history').html("Loading");
@@ -139,6 +176,8 @@ if(action!= null && action.equals("clear")){
 				<p class="match-item"></p>
 				<p><select class="product-list"></select></p>
 				<button class="add-item-to-cart">Add item to user's shopping cart</button>
+				<button class="get-cart">Get user's shopping cart</button>
+				<button class="go-cart">Go to shopping cart</button>
 				<input type="hidden" class="token" value="<%=token %>"/>
 				<input type="hidden" class="item-id" value="<%=item %>"/>
 				<div class="result"></div>

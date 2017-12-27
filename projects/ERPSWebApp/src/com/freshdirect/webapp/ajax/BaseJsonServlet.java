@@ -3,6 +3,7 @@ package com.freshdirect.webapp.ajax;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
+import org.apache.oltu.oauth2.common.utils.OAuthUtils;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -226,16 +228,14 @@ public abstract class BaseJsonServlet extends HttpServlet {
     }
     protected final FDUserI oAuthAuthenticate(HttpServletRequest request, HttpServletResponse response) throws HttpErrorResponse {
     	// call oauth service to get token info, which return the fd user id.
-		String authorization = request.getHeader("Authorization");
-		if (authorization == null || authorization.isEmpty()) {
+		String authorizationHeader = request.getHeader("Authorization");
+		if (authorizationHeader == null || authorizationHeader.isEmpty()) {
 			returnHttpError(401, "Unknown authentication scheme"); // 401 Unauthorized
 		}
-		String[] authArray = authorization.split(" ");
-		// make sure token type is Bearer
-		if (authArray == null || authArray.length < 2 || !authArray[0].equals("Bearer")) {
-			returnHttpError(401, "Unknown authorization header"); // 401 Unauthorized
+		String token = OAuthUtils.getAuthHeaderField(authorizationHeader);
+		if (token == null || token.isEmpty()) {
+			returnHttpError(401, "Unknown authentication scheme"); // 401 Unauthorized
 		}
-		String token = authArray[1];
 		FDIdentity userIdentity;
 		FDUser user = new FDUser();
 		try {

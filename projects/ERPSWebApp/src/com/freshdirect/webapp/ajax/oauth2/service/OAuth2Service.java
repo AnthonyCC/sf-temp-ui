@@ -359,7 +359,7 @@ public class OAuth2Service {
 	 */
 	public FDIdentity getUserIdentityByAccessToken(String tokenId) throws OAuth2InvalidCodeTokenException {
 		OAuth2CodeAndTokenData accessTokenData = this.getCodeOrTokenData(tokenId);
-		if (accessTokenData == null) {
+		if (accessTokenData == null || accessTokenData.getType() != OAuth2Type.TOKEN) {
 			return null;
 		}
 		return new FDIdentity(accessTokenData.getErpCustomerPK(), accessTokenData.getFdCustomerPK());

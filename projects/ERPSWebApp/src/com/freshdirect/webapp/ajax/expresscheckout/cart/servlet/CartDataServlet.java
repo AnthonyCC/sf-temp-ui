@@ -36,7 +36,7 @@ public class CartDataServlet extends BaseJsonServlet {
 
 	private static final long serialVersionUID = -3650318272577031376L;
 	private static final Logger LOG = LoggerFactory.getInstance(CartDataServlet.class);
-
+	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
 		try {
@@ -85,18 +85,20 @@ public class CartDataServlet extends BaseJsonServlet {
 				responseData = SoyTemplateEngine.convertToMap(result);
 			} else {
 				String orderId = request.getParameter(ORDER_ID);
+				boolean isOAuth = isOAuthTokenInHeader(request);
 				boolean shouldFetch = request.getParameter("fetch") != null && request.getParameter("fetch").equals("true");
-				if (shouldFetch && user!= null && user.getIdentity() != null) {
+				if ((isOAuth ||shouldFetch) && user!= null && user.getIdentity() != null) {
 					try {
 						FDUser recognizedUser = FDCustomerManager.recognize(user.getIdentity(), false);
 						user.setShoppingCart(recognizedUser.getShoppingCart());
 					} catch (FDAuthenticationException e) {
-						// if exception happens, use the existing user shopping cart.
-						LOG.error("fail to recognize user ");
+						LOG.error("Failed to recognize user", e);
+						BaseJsonServlet.returnHttpError(500, "Failed to get shopping cart for user.");
 					}
 				}
 				if (orderId == null || orderId.isEmpty()) {
-					CartData cartData = CartDataService.defaultService().loadCartData(request, user);
+					// if isOAuth is true, do not get/set session related data
+					CartData cartData = CartDataService.defaultService().loadCartData(request, user, !isOAuth);
 					responseData = SoyTemplateEngine.convertToMap(cartData);
 				} else {
 					CartData cartData = CartDataService.defaultService().loadCartSuccessData(request, user, orderId);
@@ -105,8 +107,10 @@ public class CartDataServlet extends BaseJsonServlet {
 			}
 			writeResponseData(response, responseData);
 		} catch (FDResourceException e) {
+			LOG.error("Failed to load cart for user", e);
 			BaseJsonServlet.returnHttpError(500, "Failed to load cart for user.");
 		} catch (JspException e) {
+			LOG.error("Failed to load cart for user", e);
 			BaseJsonServlet.returnHttpError(500, "Failed to load cart for user.");
         }
 	}
@@ -131,6 +135,11 @@ public class CartDataServlet extends BaseJsonServlet {
 	@Override
 	protected boolean synchronizeOnUser() {
 		return false;
+	}
+	
+	@Override
+	protected boolean isOAuthEnabled() {
+		return true;
 	}
 
 }

@@ -116,7 +116,7 @@ public class CartOperations {
     private static final double EPSILON = 5E-3; // 0.005
 
     public static boolean addToCart(FDUserI user, FDCartModel cart, List<AddToCartItem> items, String serverName, AddToCartRequestData reqData, AddToCartResponseData responseData,
-            HttpSession session, EnumEventSource evtSrc) {
+            HttpSession session, EnumEventSource evtSrc, boolean isExternalRequest) {
 
         // parameter validation
         if (user == null) {
@@ -193,18 +193,19 @@ public class CartOperations {
                 } else if (FilteringFlowType.NEWPRODUCTS.toString().equalsIgnoreCase(pageType)) {
                     cartLine.setAddedFrom(EnumATCContext.NEWPRODUCTS);
                 }
-
-                cartLine.setCoremetricsPageContentHierarchy(reqData.getCoremetricsPageContentHierarchy());
-                cartLine.setCoremetricsPageId(reqData.getCoremetricsPageId());
-                cartLine.setCoremetricsVirtualCategory(reqData.getCoremetricsVirtualCategory());
-
+                
+            	if (!isExternalRequest) {
+	                cartLine.setCoremetricsPageContentHierarchy(reqData.getCoremetricsPageContentHierarchy());
+	                cartLine.setCoremetricsPageId(reqData.getCoremetricsPageId());
+	                cartLine.setCoremetricsVirtualCategory(reqData.getCoremetricsVirtualCategory());
+            	}
                 cartLine.setEStoreId(user.getUserContext().getStoreContext().getEStoreId());
                 // cartLine.setPlantId(user.getUserContext().getFulfillmentContext().getPlantId());
 
                 cartLinesToAdd.add(cartLine);
 
                 // [APPDEV-4558]
-                if (CmContextUtility.isCoremetricsAvailable(user)) {
+                if (!isExternalRequest && CmContextUtility.isCoremetricsAvailable(user)) {
                     CoremetricsExtraData cmExtraData = new CoremetricsExtraData();
                     cmExtraData.setCustomerType(CoremetricsUtil.defaultService().getCustomerTypeByOrderCount(user));
                     populateCoremetricsShopTag(responseData, cartLine, cmExtraData);
@@ -220,8 +221,9 @@ public class CartOperations {
                 	cartLine.setOrderId(mOrder.getOriginalOrder().getSale().getId());
                 	saveNewCartline(user, cartLine, cartLine.getQuantity(), mOrder.getOriginalOrder().getSale().getId());
                 }
-
-                responseItem.setGoogleAnalyticsData(GoogleAnalyticsDataService.defaultService().populateAddToCartGAData(cartLine, item.getQuantity()));
+                if (!isExternalRequest) {
+                	responseItem.setGoogleAnalyticsData(GoogleAnalyticsDataService.defaultService().populateAddToCartGAData(cartLine, item.getQuantity()));
+                }
 			}
 								
 			// add collected cartlines to cart
@@ -896,10 +898,17 @@ public class CartOperations {
         // +++ DESCRIBE +++
         try {
             OrderLineUtil.describe(theCartLine);
-        } catch (FDInvalidConfigurationException e) {
+            OrderLineUtil.cleanup(theCartLine);
+        } catch (FDInvalidConfigurationException.Unavailable e) {
             responseItem.setStatus(Status.ERROR);
+            responseItem.setMessage("Product not available: " + e.getMessage());
+        } catch (FDInvalidConfigurationException e) {
+        	responseItem.setStatus(Status.ERROR);
             responseItem.setMessage("Warning - Invalid configuration: " + e.getMessage());
-        }
+		} catch (FDResourceException e) {
+        	responseItem.setStatus(Status.ERROR);
+            responseItem.setMessage("Product not found: " + e.getMessage());
+		} 
 
         responseItem.setInCartAmount(calculateInCartAmount(prodNode, cartLinesToAdd, cart, quantity));
         responseItem.setCartlineId(theCartLine.getRandomId());

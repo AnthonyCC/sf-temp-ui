@@ -138,7 +138,8 @@ public class AddToCartServlet extends BaseJsonServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
 
-    	if (isOAuthEnabled() && isOAuthTokenInHeader(request)){
+    	boolean isOAuthRequest = isOAuthEnabled() && isOAuthTokenInHeader(request);
+    	if (isOAuthRequest){
     		try {
 				user = FDCustomerManager.recognize(user.getIdentity(), false);
 			} catch (FDAuthenticationException e) {
@@ -212,9 +213,10 @@ public class AddToCartServlet extends BaseJsonServlet {
         }
 
         try {
-            if (user.getShowPendingOrderOverlay() && user.hasPendingOrder() && reqData.getOrderId() == null && !reqData.isNewOrder()
-                    && !EnumEventSource.ExternalPage.equals(evtSrc)) {
-                // user has pending orders, show the popup first
+			if (!EnumEventSource.ExternalPage.equals(evtSrc) && !EnumEventSource.FinalizingExternal.equals(evtSrc)
+					&& user.getShowPendingOrderOverlay() && user.hasPendingOrder() && reqData.getOrderId() == null
+					&& !reqData.isNewOrder()) {
+				// user has pending orders, show the popup first
 
                 returnWithModifyPopup(response, user, cart, items, reqData.getEventSource());
                 return;
@@ -241,7 +243,7 @@ public class AddToCartServlet extends BaseJsonServlet {
             boolean result = false;
 
             synchronized (cart) {
-                result = CartOperations.addToCart(user, cart, items, request.getServerName(), reqData, responseData, request.getSession(), evtSrc);
+                result = CartOperations.addToCart(user, cart, items, request.getServerName(), reqData, responseData, request.getSession(), evtSrc, isOAuthRequest);
             }
 
             if (!result) {

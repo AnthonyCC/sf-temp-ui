@@ -775,8 +775,15 @@ public class StandingOrderHelper {
 	}
 	
 	public static boolean isSO3StandingOrder(FDUserI user) {
-		return  user.isNewSO3Enabled() && user.getCurrentStandingOrder() != null && user.getCurrentStandingOrder().getId() != null 
-				&& user.getCurrentStandingOrder().isNewSo()? true : false;
+		try {
+			
+			return user.isNewSO3Enabled() && user.getCurrentStandingOrder() != null
+					&& user.getCurrentStandingOrder().getId() != null && user.getCurrentStandingOrder().isNewSo() ? true
+							: false;
+						
+		} catch (IllegalArgumentException e) {
+			return false;
+		}
 	}
 	
     public static void clearSO3Context(FDUserI user, Object isSo, String standingOrder) {
