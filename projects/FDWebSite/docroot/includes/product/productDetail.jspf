@@ -227,27 +227,28 @@
 						</form>
 
 						<!-- <soy:render template="common.soPdp" data="${productPotato}" /> -->
-
-						<soy:render template="pdp.groupProducts" data="${productExtraPotato}" />
-							<%-- don't show evenBetter if we're in group scale context --%>
-						<c:if test="${empty param.grpId}">
-							<soy:render template="pdp.familyProducts" data="${productExtraPotato}" />
-							<c:if test="${empty productExtraPotato.familyProducts}">
-								<c:choose>
-									<c:when test="${not empty evenBetter.productList}"><%-- show even better --%>
-										<soy:render template="pdp.evenBetter" data="${evenBetter}" />
-									</c:when>
-									<c:otherwise><%-- show criteo --%>
-										<soy:render template="pdp.criteo" data="${browsePotato}" />
-									</c:otherwise>
-								</c:choose>
-							</c:if>
-						</c:if>
-						<soy:render template="pdp.likethat" data="${xsell}" />
 					</c:if>
 					<c:if test="${not productPotato.available }">
 						<soy:render template="pdp.unavailability" data="${productExtraPotato}"/>
 					</c:if>
+					
+					<soy:render template="pdp.groupProducts" data="${productExtraPotato}" />
+					<%-- don't show evenBetter if we're in group scale context --%>
+					<c:if test="${empty param.grpId}">
+						<soy:render template="pdp.familyProducts" data="${productExtraPotato}" />
+						<c:if test="${empty productExtraPotato.familyProducts}">
+							<c:choose>
+								<c:when test="${not empty evenBetter.productList}"><%-- show even better --%>
+									<soy:render template="pdp.evenBetter" data="${evenBetter}" />
+								</c:when>
+								<c:otherwise><%-- show criteo --%>
+									<soy:render template="pdp.criteo" data="${browsePotato}" />
+								</c:otherwise>
+							</c:choose>
+						</c:if>
+					</c:if>
+					<soy:render template="pdp.likethat" data="${xsell}" />
+						
 					<% if (user.getLevel() == FDUserI.SIGNED_IN) { %>
 						<%-- show only if user is logged in (not RECOG) --%>
 						<soy:render template="pdp.productRequest"/>
