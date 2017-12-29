@@ -40,10 +40,10 @@ public class WarmupService {
     }
 
     public void repeatWarmup() {
-    	LOGGER.debug("isManualWarmupAllowed=========================="+isManualWarmupAllowed());
+/*    	LOGGER.debug("isManualWarmupAllowed=========================="+isManualWarmupAllowed());
         if (!isManualWarmupAllowed()) {
             return;
-        }
+        }*/
     	LOGGER.debug("Warmup.WARMUP_STATE=========================="+Warmup.WARMUP_STATE);
     	LOGGER.debug("CmsServiceLocator.contentProviderService().isReadOnlyContent()=========================="+CmsServiceLocator.contentProviderService().isReadOnlyContent());
 
