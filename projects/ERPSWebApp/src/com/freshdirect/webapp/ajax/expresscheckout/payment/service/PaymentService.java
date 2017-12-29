@@ -114,7 +114,7 @@ public class PaymentService {
 			paymentSaveAsDefault = Boolean.parseBoolean(FormDataService.defaultService().get(paymentRequestData, "paymentSetAsDefault"));
 		} catch (HttpErrorResponse e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.debug("Exception occured in selectPaymentMethod()");
 		}
         String billingRef = null; // TODO: needed? CORPORATE with zero payment
         // method.

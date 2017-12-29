@@ -128,6 +128,9 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
         }
         FDCustomerManager.removePaymentMethod(info, paymentMethod, 
         		FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, fdUser));
+        if(paymentId.equalsIgnoreCase(fdUser.getFDCustomer().getDefaultPaymentMethodPK())){
+        	fdUser.getShoppingCart().setPaymentMethod(null);
+        }
         fdUser.refreshFdCustomer();
     }
     
