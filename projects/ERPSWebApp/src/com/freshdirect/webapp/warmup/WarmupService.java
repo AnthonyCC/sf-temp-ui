@@ -40,9 +40,13 @@ public class WarmupService {
     }
 
     public void repeatWarmup() {
+    	LOGGER.debug("isManualWarmupAllowed=========================="+isManualWarmupAllowed());
         if (!isManualWarmupAllowed()) {
             return;
         }
+    	LOGGER.debug("Warmup.WARMUP_STATE=========================="+Warmup.WARMUP_STATE);
+    	LOGGER.debug("CmsServiceLocator.contentProviderService().isReadOnlyContent()=========================="+CmsServiceLocator.contentProviderService().isReadOnlyContent());
+
         if (Warmup.WARMUP_STATE.compareAndSet(WarmupState.NOT_TRIGGERED, WarmupState.IN_PROGRESS)) {
             new Thread("warmup-thread") {
 
