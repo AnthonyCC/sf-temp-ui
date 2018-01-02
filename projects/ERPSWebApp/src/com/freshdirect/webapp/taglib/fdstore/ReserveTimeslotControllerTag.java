@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 
+import org.apache.log4j.Logger;
+
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.fdlogistics.model.FDReservation;
@@ -14,9 +16,9 @@ import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.NVL;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.logistics.delivery.model.EnumCompanyCode;
@@ -24,6 +26,8 @@ import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
 
 public class ReserveTimeslotControllerTag extends AbstractControllerTag {
+	
+    private static Logger LOGGER = LoggerFactory.getInstance(ReserveTimeslotControllerTag.class);
 
 	private String timeslotId;
 	private EnumReservationType rsvType;
@@ -103,6 +107,7 @@ public class ReserveTimeslotControllerTag extends AbstractControllerTag {
 			}
 		} catch (FDResourceException e) {
 			actionResult.addError(true, "technical_difficulty", "We are experiencing technical difficulties, please try later.");
+			LOGGER.debug("Exception during reserve timeslot >>> ", e);
 		} catch (ReservationException e) {
 			actionResult.addError(true, "reservation", e.getMessage());
 		}
