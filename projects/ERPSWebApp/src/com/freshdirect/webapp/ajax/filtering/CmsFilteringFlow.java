@@ -444,7 +444,7 @@ public class CmsFilteringFlow {
         // use userRefinementCache
 
         browseDataContext = EhCacheUtilWrapper.getObjectFromCache(CmsCaches.BR_USER_REFINEMENT_CACHE.cacheName, cacheKey);
-        if (browseDataContext == null) {
+        if (browseDataContext == null || nav.isPdp()) {
         	return null;
         }
         if (!isRequestForTheSamePageType(nav, browseDataContext) || 
