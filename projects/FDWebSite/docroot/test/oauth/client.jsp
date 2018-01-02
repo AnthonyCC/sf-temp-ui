@@ -84,7 +84,7 @@ if(action!= null && action.equals("clear")){
 						'"externalGroup": "Chat-to-Cart",'+
 						'"externalSource": "Storepower",'+
 						'"externalAgency": "STOREPOWER",'+
-						'"skuCode": "' + product.id + '",'+
+						'"skuCode": "' + product.skuCode + '",'+
 						'"quantity": "1",'+
 						'"salesUnit": "' + product.saleUnit[0].id + '"'+
 					'}],'+
@@ -257,7 +257,7 @@ if(action!= null && action.equals("clear")){
 										} else {
 											$('.product-list').append('<option value="' + p.id + '">' + p.title + '</option>');
 										}
-										productlist.push(p.productId);
+										productlist.push(p.id);
 										window.products.push(p);
 									}
 								});

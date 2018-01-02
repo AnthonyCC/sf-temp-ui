@@ -41,7 +41,7 @@ public class OrderServlet extends BaseJsonServlet {
 								}
 						OrderData addedOrderData = result.get(pastOrderItem.getOrderId());
 						
-						ProductData productData = new ProductData(pastOrderItem.getItem().getSkuCode(), pastOrderItem.getItem().getProductName(), pastOrderItem.getItem().getSalesUnit());
+						ProductData productData = new ProductData(pastOrderItem.getItem());
 						if (addedOrderData == null) {
 							addedOrderData = new OrderData(pastOrderItem.getOrderId(), pastOrderItem.getDeliveryDate(), productData);
 							result.put(pastOrderItem.getOrderId(), addedOrderData);
