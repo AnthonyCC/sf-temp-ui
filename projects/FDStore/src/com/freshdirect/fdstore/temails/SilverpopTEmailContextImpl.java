@@ -1,4 +1,4 @@
-package com.freshdirect.fdstore.temails.cheetah;
+package com.freshdirect.fdstore.temails;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -16,12 +16,17 @@ import com.freshdirect.fdstore.temails.TEmailContextI;
 import com.freshdirect.fdstore.temails.TEmailRecipe;
 import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
 import com.freshdirect.giftcard.ErpGiftCardUtil;
+import com.freshdirect.mail.EnumTEmailProviderType;
 import com.freshdirect.mail.GiftCardOrderInfo;
 import com.freshdirect.storeapi.content.Recipe;
+/**
+ * This is a copy of CheetahTEmailContextImpl with one change to the provider_name
+ * @author dheller
+ *
+ */
+public class SilverpopTEmailContextImpl implements TEmailContextI {
 
-public class CheetahTEmailContextImpl implements TEmailContextI {
-
-	public static final String PROVIDER_NAME="CHEETAH";
+	public static final String PROVIDER_NAME=EnumTEmailProviderType.SILVERPOP.getName();
 	
 	
 	private String templateId; 
@@ -143,7 +148,7 @@ public class CheetahTEmailContextImpl implements TEmailContextI {
 	}
 
 
-	public CheetahTEmailContextImpl(){
+	public SilverpopTEmailContextImpl(){
 		
 	}
 	
@@ -178,12 +183,12 @@ public class CheetahTEmailContextImpl implements TEmailContextI {
 		this.templateId = templateId;
 	}
 
-@Override
+
 	public void setCustomer(FDCustomerInfo customer) {
 		this.customer = customer;
 	}
 
-@Override
+
 	public void setOrder(FDOrderI order) {
 		this.order = order;
 	}
