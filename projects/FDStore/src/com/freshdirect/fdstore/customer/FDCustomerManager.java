@@ -3323,7 +3323,7 @@ public class FDCustomerManager {
     public static void updateOrderLineInRecipentModels(ErpCreateOrderModel model,List<ErpRecipentModel> recipentList,String custId){
     	List<ErpOrderLineModel> orderLines=model.getOrderLines();
     	if(orderLines!=null && orderLines.size()>0){
-    		System.out.println("orderline size :"+orderLines.size());
+    		//System.out.println("orderline size :"+orderLines.size());
     		for(int i=0;i<orderLines.size();i++){
     			ErpOrderLineModel lineModel=orderLines.get(i);
     			if(FDStoreProperties.getGiftcardSkucode().equalsIgnoreCase(lineModel.getSku().getSkuCode())){

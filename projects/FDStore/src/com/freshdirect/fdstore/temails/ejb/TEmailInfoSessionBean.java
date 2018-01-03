@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.ejb.FDSessionBeanSupport;
 import com.freshdirect.fdstore.temails.TEmailConstants;
@@ -38,24 +39,28 @@ public class TEmailInfoSessionBean extends FDSessionBeanSupport{
 		try
 		{
 			con=getConnection();
-						
+			EnumEStoreId estoreId = EnumEStoreId.FD;
+			/* TODO */
+			/*
+			 * The following is questionable and I'd like to eliminate it, its a risky way to get the estore id.
+			 */
+		if ( input.containsKey(TEmailConstants.ESTORE_ID)){
+			estoreId =  ((EnumEStoreId)input.get(TEmailConstants.ESTORE_ID));
+		 }
+
+			TEmailTemplateInfo tEmailTemplateInfo=TEmailInfoDAO.getTEmailTemplateInfo(con,tranType,
+					input.get(TEmailConstants.EMAIL_TYPE)!=null?EnumEmailType.getEnum((String)input.get(TEmailConstants.EMAIL_TYPE)):EnumEmailType.TEXT,estoreId );	
 			
-			//XMLEmailI xml=FDEmailFactory.getInstance().createConfirmOrderEmail((FDCustomerInfo)input.get(TEmailConstants.CUSTOMER_INP_KEY), (FDOrderI)input.get(TEmailConstants.ORDER_INP_KEY));
-			//System.out.println(xml.getXML());
-			
-			
-			TEmailTemplateInfo info=TEmailInfoDAO.getTEmailTemplateInfo(con,tranType,input.get(TEmailConstants.EMAIL_TYPE)!=null?EnumEmailType.getEnum((String)input.get(TEmailConstants.EMAIL_TYPE)):EnumEmailType.TEXT);			
-			if(info==null){
+			if(tEmailTemplateInfo==null){
 				isTemplateExist=false;	
 				throw new TEmailRuntimeException("No active templateId exist for tranType :"+tranType.getName());
 			} else {
-				LOGGER.debug("------------------------------------info:" + info.toString());
-				System.out.println("---------------------------info" + info.toString());
+				LOGGER.debug("------------------------------------info:" + tEmailTemplateInfo.toString());
+			//	System.out.println(this.getClass().getSimpleName() + " TEmailInfoSessionBean.sendmail(62) ---------------------------info" + tEmailTemplateInfo.toString());
 			}
 								
-			TEmailI mail=TEmailContentFactory.getInstance().createTransactionEmailModel(info, input);
+			TEmailI mail=TEmailContentFactory.getInstance().createTransactionEmailModel(tEmailTemplateInfo, input);
 									
-			System.out.println("TEmailI :"+mail.getEmailContent());
 			
 			TEmailInfoDAO.storeTransactionEmailInfo(con, (TransEmailInfoModel)mail);			
 			

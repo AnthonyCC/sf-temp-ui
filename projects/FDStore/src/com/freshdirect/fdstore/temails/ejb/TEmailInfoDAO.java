@@ -15,6 +15,7 @@ import java.util.Map;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.temails.TEmailTemplateInfo;
 import com.freshdirect.fdstore.temails.TransEmailInfoModel;
 import com.freshdirect.framework.core.SequenceGenerator;
@@ -65,19 +66,26 @@ public class TEmailInfoDAO {
 	
 	//insert into cust.TRANS_EMAIL_TYPES (ID,  PROVIDER, TEMPLATE_ID,  TRANS_TYPE,  EMAIL_TYPE ,  DESCRIPTION ,  ACTIVE , FROM_ADDR,  SUBJECT)  values(?,?,?,?,?,?,?,?,?)
 	
-	private static final String TEMPLATE_SELECT_SQL="SELECT ID, TARGET_PROG_ID, PROVIDER, TEMPLATE_ID,  TRANS_TYPE,  EMAIL_TYPE ,  DESCRIPTION ,  ACTIVE , IS_PROD_READY,  FROM_ADDR,  SUBJECT FROM CUST.TRANS_EMAIL_TYPES WHERE TRANS_TYPE=? AND (EMAIL_TYPE=? OR EMAIL_TYPE='ALL') and ACTIVE = 'X'";
+	//private static final String TEMPLATE_SELECT_SQL="SELECT ID, TARGET_PROG_ID, PROVIDER, TEMPLATE_ID,  TRANS_TYPE,  EMAIL_TYPE ,  DESCRIPTION ,  ACTIVE , IS_PROD_READY,  FROM_ADDR,  SUBJECT FROM CUST.TRANS_EMAIL_TYPES WHERE TRANS_TYPE=? AND (EMAIL_TYPE=? OR EMAIL_TYPE='ALL') and ACTIVE = 'X'";
 	
-	public static TEmailTemplateInfo getTEmailTemplateInfo(Connection con,EnumTranEmailType tranType,EnumEmailType emailType) throws SQLException{
+	
+	private static final String TEMPLATE_SELECT_SQL="SELECT ID, TARGET_PROG_ID, PROVIDER, TEMPLATE_ID,  TRANS_TYPE,  EMAIL_TYPE ,  DESCRIPTION ,  ACTIVE , IS_PROD_READY,  FROM_ADDR,  SUBJECT FROM CUST.TRANS_EMAIL_TYPES WHERE TRANS_TYPE=? AND (EMAIL_TYPE=? OR EMAIL_TYPE='ALL') and ACTIVE = 'X' and ESTORE_ID = ?";
+	
+	public static TEmailTemplateInfo getTEmailTemplateInfo(Connection con,
+				EnumTranEmailType tranType,
+				EnumEmailType emailType, 
+				EnumEStoreId estoreId) throws SQLException{
 		
 		  Connection conn = con;
 		   TEmailTemplateInfo info=null;	
 			PreparedStatement ps = null;
 			ResultSet rs = null;
-			
+			//System.out.println(String.format("TEmailTemplateInfo::: bind parameters  tranType: %s  , emailType: %s , estoreId: %s", tranType.getName(),emailType.getName(), estoreId.name() ));
 	       try {
 	    	   ps = conn.prepareStatement(TEMPLATE_SELECT_SQL);
 	    	   ps.setString(1,tranType.getName());
 	    	   ps.setString(2,emailType.getName());
+	    	   ps.setString(3,estoreId.name());
 	    	   rs = ps.executeQuery();
 	           if (rs.next()) {
 	           	 	info=new TEmailTemplateInfo();

@@ -29,5 +29,13 @@ public final class TEmailConstants {
 	public static final String SMART_EMAIL_INFO ="smart_email_info";
 	public static final String PASSWD_EXP_DATE = "PasswdExpDateTime";
 	public static final String PASSWD_LINK = "passwdlink";
+	/*this isnt really a TEmails constant per se, however its being passed around and its
+	better that its defined here.
+	*/
+	public static final String OAS_QUERY = "oasQuery";
+	
+	public static final String ESTORE_ID= "EstoreID";
+	public static final String COHORT_ID= "CohortID";
+	
 	
 }

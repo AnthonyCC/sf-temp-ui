@@ -965,9 +965,14 @@ public class FDStoreProperties {
      * IBM SilverPopup urls, tokens*/
     private final static String IBM_ACCESSTOKEN_URL = "fdstore.ibm.accesstoken.url";
     private final static String IBM_PUSHNOTIFICATION_URL = "fdstore.ibm.pushnotification.url";
+    private final static String IBM_WATSON_EMAIL_CAMPAIGN_URL = "fdstore.ibm.watsonemailcampaign.url";
+    //https://api3.ibmmarketingcould.com/XMLAPI
     private final static String IBM_CLIENT_ID = "fdstore.ibm.client.id";
+    private final static String IBM_CAMPAIGN_CLIENT_ID = "fdstore.ibm.campaign.client.id";
     private final static String IBM_CLIENT_SECRET = "fdstore.ibm.client.secret";
+    private final static String IBM_CAMPAIGN_CLIENT_SECRET = "fdstore.ibm.campaign.client.secret";
     private final static String IBM_REFRESH_TOKEN = "fdstore.ibm.refresh.token";
+    private final static String IBM_CAMPAIGN_REFRESH_TOKEN = "fdstore.ibm.campaign.refresh.token";
 	private static final String PAYMENT_TLSSHA_ENABLED = "fdstore.payment.tls.sha.enabled";
     private static final String PROP_REFRESHZONE_ENABLED = "fdstore.refresh.zone.enabled";
 
@@ -1877,11 +1882,24 @@ public class FDStoreProperties {
         // for Dev DB
         defaults.put(IBM_PUSHNOTIFICATION_URL, "https://api3.silverpop.com:443/rest/databases/5979940/establishidentity/");
         									 // https://api3.silverpop.com:443/rest/databases/{databaseid}/establishidentity/
+     //   defaults.put(IBM_WATSON_EMAIL_CAMPAIGN_URL, "https://api3.ibmmarketingcloud.com/XMLAPI");
+        defaults.put(IBM_WATSON_EMAIL_CAMPAIGN_URL, "http://transact3.silverpop.com/XTMail");
+        										
+        
+        //private final static String IBM_WATSON_EMAIL_CAMPAIGN_URL = "fdstore.ibm.watsonemailcampaign.url";
+        //https://api3.ibmmarketingcould.com/XMLAPI
         // for Prod DB
         //defaults.put(IBM_PUSHNOTIFICATION_URL, "https://api3.silverpop.com:443/rest/databases/3745165/establishidentity/");
         defaults.put(IBM_CLIENT_ID, "42c3eede-b1b2-43d2-b503-55682f190c2d");
+        
+        defaults.put(IBM_CAMPAIGN_CLIENT_ID, "899e322b-977e-4a50-8320-7bba87b54085");
+        
         defaults.put(IBM_CLIENT_SECRET, "5f154ee0-bae6-4833-9ce2-e013b1b3c7d5");
+        defaults.put(IBM_CAMPAIGN_CLIENT_SECRET, "e1a1982c-9d7b-480d-b871-f76354ce8cce");
+        
         defaults.put(IBM_REFRESH_TOKEN, "r_3872jS_Gh7VmanX2TcazBB_MJ1C_RBqbJWY6gvh3koS1");
+        defaults.put(IBM_CAMPAIGN_REFRESH_TOKEN, "rqeZfstHf754FkCIR2K5NC6O0IVE6ZxqQbBM_X1gTDcsS1");
+     
         defaults.put(PAYMENT_TLSSHA_ENABLED,"true");
         defaults.put(PROP_PAYMENT_VERIFICATION_ENABLED, "true");
         defaults.put(GLOBAL_SF2_0_ENABLED, "false");
@@ -4510,17 +4528,32 @@ public class FDStoreProperties {
     public static String getIBMPushNotificationURL() {
         return get(IBM_PUSHNOTIFICATION_URL);
     }
-
+    public static String getIBMWatsonEmailCampaignUrl() {
+        return get(IBM_WATSON_EMAIL_CAMPAIGN_URL);
+    }
+    
     public static String getIBMClientID() {
 		return get(IBM_CLIENT_ID);
+	}
+    
+    public static String getIBMCampaignClientID() {
+		return get(IBM_CAMPAIGN_CLIENT_ID);
 	}
 
     public static String getIBMClientSecret() {
 		return get(IBM_CLIENT_SECRET);
 	}
+    
+    public static String getIBMCampaignClientSecret() {
+		return get(IBM_CAMPAIGN_CLIENT_SECRET);
+	}
 
     public static String getIBMRefreshToken() {
 		return get(IBM_REFRESH_TOKEN);
+	}
+    
+    public static String getIBMCampaignRefreshToken() {
+		return get(IBM_CAMPAIGN_REFRESH_TOKEN);
 	}
     //end IBM silverpopup end
 
