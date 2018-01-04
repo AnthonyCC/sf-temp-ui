@@ -193,6 +193,23 @@ var dataLayer = window.dataLayer || [];
         }
       });
     },
+    timeslotOpened: function () {
+      var unavts = fd.gtm.isUnavailableTimeslotPresent() ? 'yes' : 'no';
+
+      dataLayer.push({
+        page_name: 'Available Delivery Timeslots - Modal',
+        unavailable_timeslot_present: unavts
+      });
+
+      if (unavts === 'yes') {
+        dataLayer.push({
+          event: 'timeslot-unavailable',
+          eventCategory: 'timeslot',
+          eventAction: 'timeslot-checkout-modal',
+          eventLabel: 'unavailable_timeslot_present'
+        });
+      }
+    },
     topNavClick: function (data) {
       dataLayer.push({
         eventCategory: 'header-nav',
@@ -864,8 +881,26 @@ var dataLayer = window.dataLayer || [];
     }
   };
 
-  // Checkout - user interaction - drawer reset
+  // Checkout - user interaction - drawer open - report unavailable_timeslot_present
   var coDrawerClick = Object.create(fd.common.signalTarget, {
+    signal: {
+      value: 'ec-drawer-click'
+    },
+    callback: {
+      value: function (data) {
+        if (data.target && data.target === 'timeslot') {
+          fd.gtm.updateDataLayer({
+            timeslotOpened: true
+          });
+        }
+      }
+    }
+  });
+
+  coDrawerClick.listen();
+
+  // Checkout - user interaction - drawer reset
+  var coDrawerReset = Object.create(fd.common.signalTarget, {
     signal: {
       value: 'ec-drawer-reset'
     },
@@ -878,7 +913,7 @@ var dataLayer = window.dataLayer || [];
     }
   });
 
-  coDrawerClick.listen();
+  coDrawerReset.listen();
 
   // Checkout - user interaction - drawer cancel
   var coDrawerCancel = Object.create(fd.common.signalTarget, {
