@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -119,28 +120,41 @@ public class NavigationTreeRepository {
     }
 
     public Set<ContentKey> queryChildrenOfContentKey(Set<ContentKey> contentKeys) {
-        Set<String> contentKeyParams = new HashSet<String>();
-        for (ContentKey key : contentKeys) {
-            contentKeyParams.add(key.toString());
-        }
-        Map<String, Set<String>> keys = Collections.singletonMap("keys", contentKeyParams);
-        NamedParameterJdbcTemplate namedJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate.getDataSource());
-        return namedJdbcTemplate.query(CHILDREN_OF_KEYS, keys, new ResultSetExtractor<Set<ContentKey>>() {
+        Iterator<ContentKey> keyIterator = contentKeys.iterator();
+        Set<ContentKey> childKeys = new HashSet<ContentKey>();
 
-            @Override
-            public Set<ContentKey> extractData(ResultSet resultSet) throws SQLException, DataAccessException {
-                Set<ContentKey> results = new HashSet<ContentKey>();
+        // fetch child keys in batches to avoid ORA-01795 error
+        // which occurs when parameter limit is exceeded
+        while (keyIterator.hasNext()) {
+            int batchCounter = 900;
 
-                while (resultSet.next()) {
-                    String childKey = resultSet.getString(1);
-                    if (childKey != null) {
-                        results.add(ContentKeyFactory.get(childKey));
-                    }
-                }
-
-                return results;
+            Set<String> contentKeyParams = new HashSet<String>();
+            while (keyIterator.hasNext() && batchCounter >= 0) {
+                contentKeyParams.add(keyIterator.next().toString());
+                batchCounter--;
             }
 
-        });
+            Map<String, Set<String>> keys = Collections.singletonMap("keys", contentKeyParams);
+            NamedParameterJdbcTemplate namedJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate.getDataSource());
+            childKeys.addAll(namedJdbcTemplate.query(CHILDREN_OF_KEYS, keys, new ResultSetExtractor<Set<ContentKey>>() {
+
+                @Override
+                public Set<ContentKey> extractData(ResultSet resultSet) throws SQLException, DataAccessException {
+                    Set<ContentKey> results = new HashSet<ContentKey>();
+
+                    while (resultSet.next()) {
+                        String childKey = resultSet.getString(1);
+                        if (childKey != null) {
+                            results.add(ContentKeyFactory.get(childKey));
+                        }
+                    }
+
+                    return results;
+                }
+
+            }));
+        }
+
+        return childKeys;
     }
 }
