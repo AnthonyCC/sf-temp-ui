@@ -2022,6 +2022,7 @@ public final class ContentTypes {
             .build();
         public static final Attribute displayType = stringEnum("displayType")
             .withValues("Greeting", "HorizontalPickList", "VerticalPickList", "ShortBanner")
+            .required()
             .build();
         public static final Attribute drawer = booleanAttribute("drawer")
             .build();
