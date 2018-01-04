@@ -941,8 +941,8 @@ public class FDURLUtil {
 		// pass tracking parameters too
 		FDURLUtil.appendCommonParameters(redirBuilder, req.getParameterMap());
 
-		// unescape query param separators before appending params to redirect URL
-		return redirectUrl + redirBuilder.toString().replaceAll(ProductDisplayUtil.URL_PARAM_SEP, "&");
+		// unescape query param separators before appending params to redirect URL, change first to question mark before replacing the rest
+		return redirectUrl + redirBuilder.toString().replaceFirst(ProductDisplayUtil.URL_PARAM_SEP, "?").replaceAll(ProductDisplayUtil.URL_PARAM_SEP, "&");
 	}
 
 }

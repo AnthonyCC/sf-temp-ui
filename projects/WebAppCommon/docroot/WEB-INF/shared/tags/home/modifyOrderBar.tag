@@ -15,6 +15,8 @@
 	import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"
 	import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"
 	import="com.freshdirect.webapp.util.JspMethods"
+	import="com.freshdirect.fdstore.customer.FDCartModel"
+	import="com.freshdirect.fdstore.customer.FDModifyCartModel"
 %><%@ attribute name="user" required="true" rtexprvalue="true" type="com.freshdirect.fdstore.customer.FDUserI" %><%@ 
 attribute name="htmlId" required="true" rtexprvalue="true" type="java.lang.String" %><%@
 attribute name="modifyOrderAlert" required="true" rtexprvalue="true" type="java.lang.Boolean"
@@ -84,41 +86,46 @@ attribute name="modifyOrderAlert" required="true" rtexprvalue="true" type="java.
 											</div>
 										<% } %>
 									<% } else { %>
-										<table width="100%" class="modify-order-alert-table">
-											<tr>
-												<td width="21%" class="modify-order-alert-table-header-status">Order Status</td>
-												<td width="22%" class="modify-order-alert-table-header-time">Delivery Time</td>
-												<td width="31%" class="modify-order-alert-table-header-name">Name</td>
-												<td width="26%" colspan="2"></td>
-											</tr>
-											<%
-												String orderName;
-												for(FDOrderInfoI item : validPendingOrders){
-											%>		
-											<tr>
-												<td colspan="5">
-													<hr class="so-alert-line-separator">
-												</td>
-											</tr>						
-											<tr>
-												<td class="modify-order-alert-table-status"><div class="modify-order-alert-table-status-img"></div><div class="modify-order-alert-table-status-text"><%=item.getOrderStatus().getDisplayName()%></div></td>
-												<td class="modify-order-alert-table-date-and-time"><span class="modify-order-alert-table-date"><%= new SimpleDateFormat("EEEEE, MMM d").format(item.getRequestedDate()) %></span><%=  DateUtil.formatHourAMPMRange(item.getDeliveryStartTime(),item.getDeliveryEndTime()) %></td>
-												<td class="modify-order-alert-table-name">
-													<div class="modify-order-alert-table-name-text">
-													<%	
-														orderName = item.getErpSalesId();
-														if(soUpcomingDelivery.containsKey(item.getErpSalesId())){
-															orderName = soUpcomingDelivery.get(item.getErpSalesId());
-														} 
-													%>
-												    <%= orderName %>
-												    </div>
-												</td>
-												<td width="10%" class="modify-order-alert-table-delails"><a href="/your_account/order_details.jsp?orderId=<%= item.getErpSalesId() %>">See Details<span class="offscreen">of order number <%= orderName %></span></a></td>
-												<td width="16%" class="modify-order-alert-table-modify"><button class="modify-order-alert-button cssbutton cssbutton-flat orange" onclick="$jq('#modifyorderalert').find('.alert-closeHandler').click(); window.location.href='/your_account/modify_order.jsp?orderId=<%= item.getErpSalesId() %>&action=modify'"">Modify Order</button></td>
-											</tr>
-											<% } %>
-										</table>
+										<%
+											FDCartModel modifyOrderBarTagCart = user.getShoppingCart();
+										%>
+										<% if (!(modifyOrderBarTagCart instanceof FDModifyCartModel)) { %>
+											<table width="100%" class="modify-order-alert-table">
+												<tr>
+													<td width="21%" class="modify-order-alert-table-header-status">Order Status</td>
+													<td width="22%" class="modify-order-alert-table-header-time">Delivery Time</td>
+													<td width="31%" class="modify-order-alert-table-header-name">Name</td>
+													<td width="26%" colspan="2"></td>
+												</tr>
+												<%
+													String orderName;
+													for(FDOrderInfoI item : validPendingOrders){
+												%>		
+												<tr>
+													<td colspan="5">
+														<hr class="so-alert-line-separator">
+													</td>
+												</tr>						
+												<tr>
+													<td class="modify-order-alert-table-status"><div class="modify-order-alert-table-status-img"></div><div class="modify-order-alert-table-status-text"><%=item.getOrderStatus().getDisplayName()%></div></td>
+													<td class="modify-order-alert-table-date-and-time"><span class="modify-order-alert-table-date"><%= new SimpleDateFormat("EEEEE, MMM d").format(item.getRequestedDate()) %></span><%=  DateUtil.formatHourAMPMRange(item.getDeliveryStartTime(),item.getDeliveryEndTime()) %></td>
+													<td class="modify-order-alert-table-name">
+														<div class="modify-order-alert-table-name-text">
+														<%	
+															orderName = item.getErpSalesId();
+															if(soUpcomingDelivery.containsKey(item.getErpSalesId())){
+																orderName = soUpcomingDelivery.get(item.getErpSalesId());
+															} 
+														%>
+													    <%= orderName %>
+													    </div>
+													</td>
+													<td width="10%" class="modify-order-alert-table-delails"><a href="/your_account/order_details.jsp?orderId=<%= item.getErpSalesId() %>">See Details<span class="offscreen">of order number <%= orderName %></span></a></td>
+													<td width="16%" class="modify-order-alert-table-modify"><button class="modify-order-alert-button cssbutton cssbutton-flat orange" onclick="$jq('#modifyorderalert').find('.alert-closeHandler').click(); window.location.href='/your_account/modify_order.jsp?orderId=<%= item.getErpSalesId() %>&action=modify'"">Modify Order</button></td>
+												</tr>
+												<% } %>
+											</table>
+										<% } %>
 									<% } %>
 								<% } else {%>
 									<div class="locabar-modify-order-dropdown">
