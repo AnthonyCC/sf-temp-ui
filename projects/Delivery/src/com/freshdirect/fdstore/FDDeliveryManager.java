@@ -99,6 +99,7 @@ import com.freshdirect.logistics.controller.data.response.DeliveryZones;
 import com.freshdirect.logistics.controller.data.response.ListOfDates;
 import com.freshdirect.logistics.controller.data.response.ListOfFulfillmentInfoResponse;
 import com.freshdirect.logistics.controller.data.response.ListOfObjects;
+import com.freshdirect.logistics.controller.data.response.RoutesData;
 import com.freshdirect.logistics.controller.data.response.Timeslot;
 import com.freshdirect.logistics.delivery.dto.Address;
 import com.freshdirect.logistics.delivery.dto.Customer;
@@ -1915,5 +1916,17 @@ public class FDDeliveryManager {
 			throw new FDResourceException(ex);
 		}
 	}
+		
+	public RoutesData getRouteDetails(String routeNo)
+				throws FDResourceException {
+			try {
+				ILogisticsService logisticsService = LogisticsServiceLocator
+						.getInstance().getLogisticsService();
+				RoutesData routeDataResponse=logisticsService.getRouteDetails(routeNo);
+				return routeDataResponse;
+			} catch (FDLogisticsServiceException ex) {
+				throw new FDResourceException(ex);
+			}
+		}
 
 }
