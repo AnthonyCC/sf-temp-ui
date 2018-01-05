@@ -178,4 +178,6 @@ public interface ILogisticsService {
 			throws FDLogisticsServiceException;
 	
 	RoutesData getRouteDetails(String routeNo) throws FDLogisticsServiceException;
+	
+	RoutesData getRoutesDetailsByCurrentDate() throws FDLogisticsServiceException;
 }

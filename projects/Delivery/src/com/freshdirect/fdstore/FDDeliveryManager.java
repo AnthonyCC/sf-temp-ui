@@ -1928,5 +1928,18 @@ public class FDDeliveryManager {
 				throw new FDResourceException(ex);
 			}
 		}
+	
+	//get the Routesdetails by current date
+	public RoutesData getRoutesDetailsByCurrentDate()
+			throws FDResourceException {
+		try {
+			ILogisticsService logisticsService = LogisticsServiceLocator
+					.getInstance().getLogisticsService();
+			RoutesData routeDataResponse=logisticsService.getRoutesDetailsByCurrentDate();
+			return routeDataResponse;
+		} catch (FDLogisticsServiceException ex) {
+			throw new FDResourceException(ex);
+		}
+	}
 
 }

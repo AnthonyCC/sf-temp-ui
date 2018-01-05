@@ -170,8 +170,8 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 	private static final String GET_TRUCK_DETAILS_API ="/delivery/trucks/";
 	private static final String RESERVATION_RECONFIRM_API ="/reservation/reconfirm";
 	private static final String ROUTE_STOP_INFO ="/order/routestopInfo/";
-	private static final String ROUTE_DETAILS ="/delivery/routedetails/";
-
+	private static final String ROUTE_DETAILS_BY_ROUTE_NO_API ="/delivery/routedetails/";
+	private static final String ROUTES_DETAILS_BY_CURRENT_DATE_API ="/delivery/routesdetails/";
 
 	@Override
 	public AddressVerificationResponse verifyAddress(Address address) throws FDLogisticsServiceException {
@@ -726,9 +726,16 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 	
 	@Override
 	public RoutesData getRouteDetails(String routeNo) throws FDLogisticsServiceException {
-		RoutesData response =  getData(null, getEndPoint(ROUTE_DETAILS+routeNo), RoutesData.class);
+		RoutesData response =  getData(null, getEndPoint(ROUTE_DETAILS_BY_ROUTE_NO_API+routeNo), RoutesData.class);
 		return response;
 	}
+
+	@Override
+	public RoutesData getRoutesDetailsByCurrentDate() throws FDLogisticsServiceException {
+		RoutesData response =  getData(null, getEndPoint(ROUTES_DETAILS_BY_CURRENT_DATE_API), RoutesData.class);
+		return response;
+	}
+	
 	
 	
 }
