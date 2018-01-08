@@ -49,6 +49,20 @@ List<ErpAddressModel> allHomeAddresses = user_locationbar_fdx.getAllHomeAddresse
 List<ErpAddressModel> allCorporateAddresses = user_locationbar_fdx.getAllCorporateAddresses();
 List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocationModel>) pageContext.getAttribute(LocationHandlerTag.ALL_PICKUP_DEPOTS_ATTR);
 
+int addressesBesidesPickupCount = 0;
+int addressesIncludingPickupCount = 0;
+
+if (allHomeAddresses != null) {
+	addressesBesidesPickupCount += allHomeAddresses.size();
+	addressesIncludingPickupCount += allHomeAddresses.size();
+}
+if (allCorporateAddresses != null) {
+	addressesBesidesPickupCount += allCorporateAddresses.size();
+	addressesIncludingPickupCount += allCorporateAddresses.size();
+}
+if (allPickupDepots != null) {
+	addressesIncludingPickupCount += allPickupDepots.size();
+}
 %>
 
 <!-- Adding Skip to Navigation : Start-->
@@ -209,7 +223,11 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 		
 	
 		if (user_locationbar_fdx != null && user_locationbar_fdx.getLevel() != FDUserI.GUEST 
-			&& (allHomeAddresses.size()>0 || allCorporateAddresses.size() > 0 || allPickupDepots.size() > 0)
+			&& (
+				(allHomeAddresses != null && allHomeAddresses.size()>0) || 
+				(allCorporateAddresses != null && allCorporateAddresses.size() > 0) || 
+				(allPickupDepots!= null && allPickupDepots.size() > 0)
+			)
 		) {
 			zipAddDisplayString = "Delivery Times";
 			isEligibleForPreReservation = user_locationbar_fdx.isEligibleForPreReservation();
@@ -233,7 +251,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 				%><tmpl:put name="address">
 					<div id="locabar_addresses_choices">
 						<select id="selectAddressList" aria-label="choose address" name="selectAddressList" style="width: 300px;"><%
-							if(allHomeAddresses.size()>0){%>
+							if(allHomeAddresses != null && allHomeAddresses.size()>0){%>
 								<optgroup label="Home Delivery">
 									<logic:iterate id="homeAddress" collection="<%=allHomeAddresses%>" type="com.freshdirect.common.address.AddressModel">
 										<%
@@ -264,7 +282,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 									</logic:iterate>
 								</optgroup>
 							<%}
-							if(allCorporateAddresses.size()>0){%>
+							if(allCorporateAddresses != null && allCorporateAddresses.size()>0){%>
 								<optgroup label="Office Delivery">
 									<logic:iterate id="corporateAddress" collection="<%=allCorporateAddresses%>" type="com.freshdirect.common.address.AddressModel">
 										<%
@@ -295,7 +313,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 									</logic:iterate>
 								</optgroup>
 							<%}
-							if(allPickupDepots.size()>0){%>
+							if(allPickupDepots != null && allPickupDepots.size()>0){%>
 							<optgroup label="Pickup">
 								<logic:iterate id="pickupDepot" collection="<%=allPickupDepots%>" type="com.freshdirect.fdlogistics.model.FDDeliveryDepotLocationModel">
 									<%
@@ -391,7 +409,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 				%><tmpl:put name="address"><div class="locabar_addresses-anon-nondeliverable">
 
 					<% /* LOGGED IN USER, NO ADDRESSES AT ALL */
-					if (allHomeAddresses.size()<=0 && allCorporateAddresses.size()<=0 && allPickupDepots.size()<=0) { %>
+					if (addressesIncludingPickupCount <= 0) { %>
 						<div class="locabar_addresses-none"><a class="cssbutton green" href="/your_account/add_delivery_address.jsp">ADD ADDRESS</a></div>
 					<% } %>
 					
@@ -507,7 +525,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 								temp_delivery_link = "/your_account/delivery_info_check_slots.jsp";
 							}
 							//check if user has addresses besides pickup
-							if (allHomeAddresses.size() + allCorporateAddresses.size() == 0) {
+							if (addressesBesidesPickupCount <= 0) {
 								//nope, change url
 								temp_delivery_link = "/help/delivery_info_check_slots.jsp";
 							}
@@ -640,7 +658,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 									temp_delivery_link = "/your_account/delivery_info_check_slots.jsp";
 								}
 								//check if user has addresses besides pickup
-								if (allHomeAddresses.size() + allCorporateAddresses.size() == 0) {
+								if (addressesBesidesPickupCount <= 0) {
 									//nope, change url
 									temp_delivery_link = "/help/delivery_info_check_slots.jsp";
 								}
