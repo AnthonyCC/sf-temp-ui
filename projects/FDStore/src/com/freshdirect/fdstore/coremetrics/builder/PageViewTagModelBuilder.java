@@ -283,11 +283,13 @@ public class PageViewTagModelBuilder {
     }
 
     public static void decoratePageIdWithCatId(PageViewTagModel tagModel) {
-        tagModel.setPageId(tagModel.getCategoryId().replace("_", " ").toUpperCase() + TagModelUtil.PAGE_ID_DELIMITER + tagModel.getPageId());
+    	if(tagModel != null && tagModel.getCategoryId() != null) {
+    		tagModel.setPageId(tagModel.getCategoryId().replace("_", " ").toUpperCase() + TagModelUtil.PAGE_ID_DELIMITER + tagModel.getPageId());
+    	}
     }
 
     private void processHelpDir() throws SkipTagException {
-        if ("help".equals(tagModel.getCategoryId())) {
+        if (input != null && tagModel != null && "help".equals(tagModel.getCategoryId())) {
             String pageParam = input.page;
             if (pageParam != null) {
                 tagModel.setPageId(pageParam);
