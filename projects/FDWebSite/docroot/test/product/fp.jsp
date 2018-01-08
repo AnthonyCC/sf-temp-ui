@@ -33,7 +33,11 @@
 <fd:CheckLoginStatus id="user" guestAllowed='true' recognizedAllowed='true' />
 
 <%
-	int ratingBaseLine = 4
+	double ratingBaseLine = 4;
+	double popularityBaseLine = 10000;
+	double dealsBaseLine = 30;
+	
+	
 	final CmsFilteringNavigator nav = CmsFilteringNavigator.createInstance(request, user);
 	nav.setPageTypeType(FilteringFlowType.BROWSE);
 	
@@ -44,11 +48,24 @@
 		if(fdCustomerModel != null) {
 			customerId = fdCustomerModel.getErpCustomerPK();
 		}
+		
+		if(request.getParameter("rbl") != null) {
+			ratingBaseLine = Double.parseDouble(request.getParameter("rbl"));
+		}
+		
+		if(request.getParameter("pbl") != null) {
+			popularityBaseLine = Double.parseDouble(request.getParameter("pbl"));
+		}
+		
+		if(request.getParameter("dbl") != null) {
+			dealsBaseLine = Double.parseDouble(request.getParameter("dbl"));
+		}
 	} catch (Exception e) {
 		//User no found
 	}
+	
 	if(customerId != null) {
-		interestingProductGroups = getYouLoveWeLoveProducts(customerId);
+		interestingProductGroups = getYouLoveWeLoveProducts(customerId,ratingBaseLine, dealsBaseLine, popularityBaseLine);
 	}
 	
 	BrowseData browseData = new BrowseData();
@@ -98,7 +115,7 @@
 %>
 
 <%!
-	public static List<List<ProductModel>> getYouLoveWeLoveProducts(String customerId) {
+	public static List<List<ProductModel>> getYouLoveWeLoveProducts(String customerId, double ratingBaseLine, double dealsBaseLine, double popularityBaseLine) {
 		
 		List<List<ProductModel>> result = new ArrayList<List<ProductModel>>();
 		ProductModel productModel = null;
@@ -107,7 +124,7 @@
 		Map<ContentKey,Float> customerPersonalizedProductScores = ScoreProvider.getInstance().getUserProductScores(customerId);	//2149848491
 		for (Map.Entry<ContentKey,Float> entry : customerPersonalizedProductScores.entrySet()) {
 			productModel = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(entry.getKey());
-			if(isYouLoveWeLoveProduct(productModel)) {
+			if(isYouLoveWeLoveProduct(productModel, ratingBaseLine, dealsBaseLine)) {
 				youLove.add(productModel);
 			}
 		}
@@ -119,9 +136,9 @@
 		for (Map.Entry<ContentKey, double[]> entry : globalProductScores.entrySet()) {			
 			double[] value = entry.getValue();
 			
-		    if(value[4] >= 10000) {
+		    if(value[4] >= popularityBaseLine) {
 		    	productModel = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(entry.getKey());
-		    	if(isYouLoveWeLoveProduct(productModel)) {
+		    	if(isYouLoveWeLoveProduct(productModel, ratingBaseLine, dealsBaseLine)) {
 					weLove.add(productModel);
 				}
 		    }
@@ -132,10 +149,11 @@
 		return result;
 	}
 	
-	public static boolean isYouLoveWeLoveProduct(ProductModel productModel) {
+	public static boolean isYouLoveWeLoveProduct(ProductModel productModel, double ratingBaseLine, double dealsBaseLine) {
 		try {
 			return (!productModel.isUnavailable() && 
-						(productModel.isNew() || productModel.getPriceCalculator().getHighestDealPercentage() > 30 || productModel.isBackInStock() || productModel.getExpertWeight() >= 4));
+						(productModel.isNew() || productModel.getPriceCalculator().getHighestDealPercentage() > dealsBaseLine 
+									|| productModel.isBackInStock() || productModel.getExpertWeight() >= ratingBaseLine));
 		} catch (Exception e) {
 			//System.out.println("isYouLoveWeLoveProduct..failed...."+productModel.getContentKey().getId());
 			return false;
