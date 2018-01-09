@@ -240,7 +240,7 @@ public class DraftContentProviderService extends ContextualContentProvider {
                 draftChanges = draftChangeExtractorService.extractChangesFromRequest(payload, originalNodes, draftContextHolder.getDraftContext(), context.getAuthor());
                 invalidateDraftNodesCacheEntry(draftContextHolder.getDraftContext());
                 draftService.saveDraftChange(draftChanges);
-                updateDraftParentCacheForKeys(payload.keySet());
+                updateDraftParentCacheForKeys(payload.keySet(), collectChildKeysOf(originalNodes));
             }
         }
 
@@ -253,8 +253,8 @@ public class DraftContentProviderService extends ContextualContentProvider {
         return updateResult;
     }
 
-    public void updateDraftParentCacheForKeys(Set<ContentKey> contentKeys) {
-        Set<ContentKey> effectedKeys = collectKeysForCacheInvalidation(contentKeys, Collections.<ContentKey>emptySet());
+    public void updateDraftParentCacheForKeys(Set<ContentKey> contentKeys, Set<ContentKey> additionalKeys) {
+        Set<ContentKey> effectedKeys = collectKeysForCacheInvalidation(contentKeys, additionalKeys);
         invalidateDraftParentCacheForKeysOnDraft(effectedKeys);
         for (ContentKey contentKey : effectedKeys) {
             buildParentIndexFor(contentKey);

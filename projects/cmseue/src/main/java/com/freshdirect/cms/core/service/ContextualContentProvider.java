@@ -408,6 +408,18 @@ public abstract class ContextualContentProvider {
         return childKeys;
     }
 
+    protected Set<ContentKey> collectChildKeysOf(Map<ContentKey, Map<Attribute, Object>> content) {
+        Set<ContentKey> childKeys = new HashSet<ContentKey>();
+
+        for (Map.Entry<ContentKey, Map<Attribute, Object>> entry : content.entrySet()) {
+            final ContentKey contentKey = entry.getKey();
+            final Map<Attribute, Object> originals = entry.getValue();
+
+            childKeys.addAll(getChildKeys(contentKey, originals, false));
+        }
+        return childKeys;
+    }
+    
     protected Map<ContentKey, Set<ContentKey>> buildParentIndexFor(final ContentKey contentKey) {
         Set<ContentKey> actualParents = getParentKeys(contentKey);
         Map<ContentKey, Set<ContentKey>> parentIndex = new HashMap<ContentKey, Set<ContentKey>>();
