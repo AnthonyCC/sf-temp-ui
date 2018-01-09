@@ -459,6 +459,8 @@ public class BrowseData implements Serializable {
 		
 		private Map<String, String> hlSelectionsEmptyProductsPageBeacons = new HashMap<String, String>();
 		
+		public String updatePdpPageBeacon;
+		
 		public Map<String, List<ProductData>> getHlSelectionOfProductList() {
 			return hlSelectionOfProductList;
 		}
@@ -525,7 +527,14 @@ public class BrowseData implements Serializable {
 				Map<String, String> hlSelectionsEmptyProductsPageBeacons) {
 			this.hlSelectionsEmptyProductsPageBeacons = hlSelectionsEmptyProductsPageBeacons;
 		}
+		
+		public String getUpdatePdpPageBeacon() {
+			return updatePdpPageBeacon;
+		}
 
+		public void setUpdatePdpPageBeacon(String updatePdpPageBeacon) {
+			this.updatePdpPageBeacon = updatePdpPageBeacon;
+		}
 	}
 		
 	public static class SearchParams implements Serializable {

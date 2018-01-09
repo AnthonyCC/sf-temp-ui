@@ -87,8 +87,13 @@ public class CriteoProductsUtil
 			List<HLBrandProductAdInfo> hlBrandAdProductsMeta, boolean pdpPage) throws FDSkuNotFoundException {
 		for (Iterator<HLBrandProductAdInfo> iterator = hlBrandAdProductsMeta.iterator(); iterator.hasNext();) {
 			HLBrandProductAdInfo hlBrandProductAdMetaInfo = iterator.next();
-			ProductModel productModel = ContentFactory.getInstance()
+			ProductModel productModel = null;
+			try{
+				productModel = ContentFactory.getInstance()
 					.getProduct(hlBrandProductAdMetaInfo.getProductSKU());
+			}catch(Exception e){
+				LOG.debug("SKu not found for Hooklogic product: "+hlBrandProductAdMetaInfo.getProductSKU());
+			}
 
 			if (null != productModel && !productModel.isUnavailable()) {
 				ProductData productData = null;
@@ -133,6 +138,7 @@ public class CriteoProductsUtil
 						addHlBrandProducts(user, adPrducts, updatedPageBeacon, hlBrandAdProductsMeta,pdpPage);
 					}
 					browseData.getAdProducts().setProducts(adPrducts);
+					browseData.getAdProducts().setUpdatePdpPageBeacon(response.getUpdatePdpPageBeacon());
 					if (productsCount!=0 && productsCount == adPrducts.size()) {
 						browseData.getAdProducts().setPageBeacon(response.getPageBeacon() + A_SHOWN_ALL);
 					} else if (productsCount > 0 && adPrducts.size() == 0) {
