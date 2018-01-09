@@ -33,11 +33,13 @@
 <fd:CheckLoginStatus id="user" guestAllowed='true' recognizedAllowed='true' />
 
 <%
+	//Sample URL : http://localhost:7001/test/product/fp.jsp?pageType=browse&id=fp&rbl=3&dbl=10&pbl=10000&cn=false&cbis=false
 	double ratingBaseLine = 4;
 	double popularityBaseLine = 10000;
 	double dealsBaseLine = 30;
-	
-	
+	boolean considerNew = true;
+	boolean considerBackInStock = true;
+		
 	final CmsFilteringNavigator nav = CmsFilteringNavigator.createInstance(request, user);
 	nav.setPageTypeType(FilteringFlowType.BROWSE);
 	
@@ -60,12 +62,20 @@
 		if(request.getParameter("dbl") != null) {
 			dealsBaseLine = Double.parseDouble(request.getParameter("dbl"));
 		}
+		
+		if(request.getParameter("cn") != null) {
+			considerNew = Boolean.parseBoolean(request.getParameter("cn"));
+		}
+		
+		if(request.getParameter("cbis") != null) {
+			considerBackInStock = Boolean.parseBoolean(request.getParameter("cbis"));
+		}
 	} catch (Exception e) {
-		//User no found
+		//User no found or invalid parameters
 	}
 	
 	if(customerId != null) {
-		interestingProductGroups = getYouLoveWeLoveProducts(customerId,ratingBaseLine, dealsBaseLine, popularityBaseLine);
+		interestingProductGroups = getYouLoveWeLoveProducts(customerId, ratingBaseLine, dealsBaseLine, popularityBaseLine, considerNew, considerBackInStock);
 	}
 	
 	BrowseData browseData = new BrowseData();
@@ -86,8 +96,10 @@
 			sectionData = new SectionData();
 			if(sectionCount == 0) {			
 				sectionData.setHeaderText(".......................Your Fav that might INTEREST U!............................");
+				//sectionData.setMiddleMedia("https://lorempixel.com/800/100/food/2/");
 			} else {
 				sectionData.setHeaderText(".......................Our Fav that might INTEREST U!..............................");
+				//sectionData.setMiddleMedia("https://lorempixel.com/800/100/fun/2/");
 			}
 			sections.add(sectionData);
 			sectionCount++;
@@ -115,7 +127,9 @@
 %>
 
 <%!
-	public static List<List<ProductModel>> getYouLoveWeLoveProducts(String customerId, double ratingBaseLine, double dealsBaseLine, double popularityBaseLine) {
+	public static List<List<ProductModel>> getYouLoveWeLoveProducts(String customerId, double ratingBaseLine
+																		, double dealsBaseLine, double popularityBaseLine
+																		, boolean considerNew , boolean considerBackInStock) {
 		
 		List<List<ProductModel>> result = new ArrayList<List<ProductModel>>();
 		ProductModel productModel = null;
@@ -124,7 +138,7 @@
 		Map<ContentKey,Float> customerPersonalizedProductScores = ScoreProvider.getInstance().getUserProductScores(customerId);	//2149848491
 		for (Map.Entry<ContentKey,Float> entry : customerPersonalizedProductScores.entrySet()) {
 			productModel = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(entry.getKey());
-			if(isYouLoveWeLoveProduct(productModel, ratingBaseLine, dealsBaseLine)) {
+			if(isYouLoveWeLoveProduct(productModel, ratingBaseLine, dealsBaseLine, considerNew, considerBackInStock)) {
 				youLove.add(productModel);
 			}
 		}
@@ -138,7 +152,7 @@
 			
 		    if(value[4] >= popularityBaseLine) {
 		    	productModel = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(entry.getKey());
-		    	if(isYouLoveWeLoveProduct(productModel, ratingBaseLine, dealsBaseLine)) {
+		    	if(isYouLoveWeLoveProduct(productModel, ratingBaseLine, dealsBaseLine, considerNew, considerBackInStock)) {
 					weLove.add(productModel);
 				}
 		    }
@@ -149,11 +163,12 @@
 		return result;
 	}
 	
-	public static boolean isYouLoveWeLoveProduct(ProductModel productModel, double ratingBaseLine, double dealsBaseLine) {
+	public static boolean isYouLoveWeLoveProduct(ProductModel productModel, double ratingBaseLine, double dealsBaseLine
+														, boolean considerNew , boolean considerBackInStock) {
 		try {
 			return (!productModel.isUnavailable() && 
-						(productModel.isNew() || productModel.getPriceCalculator().getHighestDealPercentage() > dealsBaseLine 
-									|| productModel.isBackInStock() || productModel.getExpertWeight() >= ratingBaseLine));
+						((considerNew && productModel.isNew()) || productModel.getPriceCalculator().getHighestDealPercentage() > dealsBaseLine 
+									|| (considerBackInStock && productModel.isBackInStock()) || productModel.getExpertWeight() >= ratingBaseLine));
 		} catch (Exception e) {
 			//System.out.println("isYouLoveWeLoveProduct..failed...."+productModel.getContentKey().getId());
 			return false;
