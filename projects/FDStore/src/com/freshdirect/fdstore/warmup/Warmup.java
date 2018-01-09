@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.apache.log4j.Category;
 
 import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.fdstore.FDAttributeCache;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -65,7 +66,8 @@ public class Warmup {
         LOGGER.info(skuCodes.size() + " SKUs found");
         
         if(FDStoreProperties.isLocalDeployment()) {
-        	LOGGER.info("Skipping Nutrition, Attribute, Inventory, NutirtionPanel cache for local deployment");
+        	LOGGER.info("Skipping Nutrition, Inventory, NutirtionPanel cache for local deployment");
+        	 FDAttributeCache.getInstance(); //Attribute cache is required even for local deployment.
         } else {
         	CacheWarmupUtil.warmupFDCaches();
         }
