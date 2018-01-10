@@ -472,7 +472,7 @@ public class ContentFactory {
                             ProductModel p = filterProduct(sku.getContentName());
                             // Origin : [APPDEV-2857] Blocking Alcohol for customers outside of Alcohol Delivery Area
                             if (p != null && ContentUtil.isAvailableByContext(p)) {
-                                Map<String, Date> productNewness = newCache.get(p);
+                                Map<String, Date> productNewness = newCache.get(p.getContentKey());
                                 for (Map.Entry<String, Date> valueEntry : entry.getValue().entrySet()) {
 
                                     Date prev = null;
@@ -603,7 +603,7 @@ public class ContentFactory {
                             ProductModel p = filterProduct(sku.getContentName());
                             // Origin : [APPDEV-2857] Blocking Alcohol for customers outside of Alcohol Delivery Area
                             if (p != null && ContentUtil.isAvailableByContext(p)) {
-                                Map<String, Date> productNewness = newCache.get(p);
+                                Map<String, Date> productNewness = newCache.get(p.getContentKey());
                                 for (Map.Entry<String, Date> valueEntry : entry.getValue().entrySet()) {
 
                                     Date prev = null;
