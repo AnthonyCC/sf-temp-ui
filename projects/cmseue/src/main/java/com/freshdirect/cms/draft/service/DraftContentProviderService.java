@@ -133,22 +133,15 @@ public class DraftContentProviderService extends ContextualContentProvider {
     public Set<ContentKey> getContentKeys() {
         Set<ContentKey> allKeys = new HashSet<ContentKey>(contentProviderService.getContentKeys());
         if (!draftContextHolder.getDraftContext().equals(DraftContext.MAIN)) {
-            Set<ContentKey> changedKeysOnDraft = collectKeysCreatedOnDraft(draftContextHolder.getDraftContext().getDraftId());
-
-            for (ContentKey key : changedKeysOnDraft) {
-                if (!allKeys.contains(key)) {
-                    allKeys.add(key);
-                }
-            }
+            allKeys.addAll(collectKeysCreatedOnDraft(draftContextHolder.getDraftContext().getDraftId()));
         }
         return Collections.unmodifiableSet(allKeys);
     }
 
     @Override
     public Set<ContentKey> getContentKeysByType(ContentType type) {
-        Set<ContentKey> allKeys = new HashSet<ContentKey>(getContentKeys());
         Set<ContentKey> contentKeysByType = new HashSet<ContentKey>();
-        for (ContentKey key : allKeys) {
+        for (ContentKey key : getContentKeys()) {
             if (key.type == type) {
                 contentKeysByType.add(key);
             }
@@ -406,7 +399,6 @@ public class DraftContentProviderService extends ContextualContentProvider {
      * @return
      */
     private Set<ContentKey> collectKeysCreatedOnDraft(final long draftId) {
-        
         List<DraftChange> draftChanges = draftService.getDraftChanges(draftId);
         final Set<ContentKey> keySet = new HashSet<ContentKey>();
         
