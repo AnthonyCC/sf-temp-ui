@@ -1,11 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- * 
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.fdstore;
 
 import java.util.ArrayList;
@@ -20,25 +12,18 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.SkuAvailabilityHistory;
+import com.freshdirect.erp.model.ErpMaterialSalesAreaModel;
 import com.freshdirect.framework.util.LazyTimedCache;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
  * Caching proxy for FDFactory.
- *
- * @version $Revision$
- * @author $Author$
  */
 public class FDCachedFactory {
 
-	private static Category LOGGER = LoggerFactory.getInstance( FDCachedFactory.class );
-
-	/**@link dependency
-	 * @label uses*/
-	/*#FDFactory lnkFDFactory;*/
+    private static final Category LOGGER = LoggerFactory.getInstance(FDCachedFactory.class);
 
 	private final static Object SKU_NOT_FOUND = new Object();
-	
 	private final static Object GROUP_NOT_FOUND = new Object();
 
 	/** 
@@ -565,6 +550,10 @@ public class FDCachedFactory {
 		return FDFactory.getOutOfStockSkuCodes();
 	}
 	
+    public static Collection<ErpMaterialSalesAreaModel> getGoingOutOfStockSalesAreas() throws FDResourceException {
+        return FDFactory.getGoingOutOfStockSalesAreas();
+    }
+
 	public static Collection findSKUsByDeal(double lowerLimit, double upperLimit,List skuPrefixes) throws FDResourceException {
 		return FDFactory.findSKUsByDeal(lowerLimit, upperLimit, skuPrefixes);
 	}

@@ -19,6 +19,7 @@ import javax.ejb.EJBObject;
 import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.SkuAvailabilityHistory;
+import com.freshdirect.erp.model.ErpMaterialSalesAreaModel;
 import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDGroupNotFoundException;
@@ -96,6 +97,8 @@ public interface FDFactorySB extends EJBObject {
 	/** @return list of sku codes */
 	public Collection getOutOfStockSkuCodes() throws RemoteException, FDResourceException;
 	
+    public Collection<ErpMaterialSalesAreaModel> getGoingOutOfStockSalesAreas() throws RemoteException, FDResourceException;
+
 	public Collection findSKUsByDeal(double lowerLimit, double upperLimit,List skuPrefixes)throws FDResourceException, RemoteException;
 
 	public List findPeakProduceSKUsByDepartment(List skuPrefixes) throws FDResourceException, RemoteException;

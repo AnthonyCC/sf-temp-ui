@@ -123,7 +123,8 @@
 .lineitems22 .itemlist-item-addtocart > form.atc > .atc-info .incart-info,
 .portrait-item > form.atc > .atc-info .incart-info,
 .lineitems22 .itemlist-item-addtocart > .atc-info .incart-info,
-.portrait-item > .atc-info .incart-info {
+.portrait-item > .atc-info .incart-info,
+.portrait-item .atc .going-out {
   display: block;
   text-align: center;
   clear: both;
@@ -138,6 +139,14 @@
   margin-top: 2px;
   position: relative;
   z-index: 1;
+}
+
+.portrait-item .atc .going-out {
+  margin-top: 20px;
+}
+
+#transactionalPopup .transactional-popup-body .portrait-item .cssBurst.going {
+  display: none;
 }
 
 .lineitems22 .itemlist-item-controls.smaller .itemlist-item-addtocart > form.atc > .atc-info .incart-info,
@@ -869,13 +878,13 @@ a.portrait-item-header-name:link {
 
 .qs-content .addtocart .iehelper,
 .portrait-item-controls .addtocart .iehelper {
- position: absolute; 
- width: 1px; 
- height: 1px; 
- padding: 0; 
- margin: -1px; 
- overflow: hidden; 
- clip: rect(0, 0, 0, 0); 
+ position: absolute;
+ width: 1px;
+ height: 1px;
+ padding: 0;
+ margin: -1px;
+ overflow: hidden;
+ clip: rect(0, 0, 0, 0);
  border: 0;
 }
 
@@ -1139,18 +1148,18 @@ a.portrait-item-header-name:link {
 /*  border-radius: 50px 0 0 50px; */
   left:0;
 }
-.qs-content .lineitems22 .itemlist-item-controls .qtyinput > span.qtywrapper, 
+.qs-content .lineitems22 .itemlist-item-controls .qtyinput > span.qtywrapper,
 #transactionalPopup .portrait-item-controls .qtyinput > span.qtywrapper{
 	top: -1px;
 	bottom: -1px;
 }
-.qs-content .lineitems22 .itemlist-item-controls .qtyinput .quantity_minus, 
-.qs-content .lineitems22 .itemlist-item-controls .qtyinput .quantity_plus, 
+.qs-content .lineitems22 .itemlist-item-controls .qtyinput .quantity_minus,
+.qs-content .lineitems22 .itemlist-item-controls .qtyinput .quantity_plus,
 #transactionalPopup .portrait-item-controls .quantity_minus,
 #transactionalPopup .portrait-item-controls .quantity_plus{
 	width: 36px;
 }
-.qs-content .lineitems22 .itemlist-item-controls .qtyinput .quantity_minus, 
+.qs-content .lineitems22 .itemlist-item-controls .qtyinput .quantity_minus,
 .qs-content .lineitems22 .itemlist-item-controls .qtyinput .quantity_plus,
 #transactionalPopup .portrait-item-controls .quantity_minus,
 #transactionalPopup .portrait-item-controls .quantity_plus{
@@ -1314,6 +1323,9 @@ a.portrait-item-header-name:link {
 	-moz-transform: rotate(-19deg);
 	transform: rotate(-19deg);
 }
+.cssBurst.going span p {
+	font-size: 10px;
+}
 .cssBurst.back span p {
 	padding: 3px 0;
 }
@@ -1332,6 +1344,7 @@ a.portrait-item-header-name:link {
 	background-color: #969;  /* purple */
 }
 .cssBurst.new, .cssBurst.new span,
-.cssBurst.back, .cssBurst.back span {
+.cssBurst.back, .cssBurst.back span,
+.cssBurst.going, .cssBurst.going span  {
 	background-color: #060;  /* green */
 }

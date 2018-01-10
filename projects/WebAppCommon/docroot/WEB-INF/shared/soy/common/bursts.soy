@@ -22,7 +22,7 @@
 			{$badge}
 		{/if}
 	{/let}
-	
+
 	{if $burstType != ''}
 		<div class="cssBurst {$burstType}">
 			<span><span><span><span><span><span>/* points */
@@ -38,12 +38,14 @@
 							it's back
 						{case 'free'}
 							free
+						{case 'going'}
+							LAST<br/>CHANCE
 					{/switch}
 				</p>
 			</span></span></span></span></span></span>
 		</div>
 	{/if}
-	
+
 	{if $usq}<span id="burst-wine-" name="burst-wine" class="cssburst-wine burst-wine"><p class="offscreen">wine&spirits</p></span>{/if}
 {/template}
 

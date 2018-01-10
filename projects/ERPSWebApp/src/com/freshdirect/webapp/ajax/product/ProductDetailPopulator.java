@@ -1048,6 +1048,7 @@ public class ProductDetailPopulator {
 		boolean isNew = product.isNew();
 		boolean isYourFave = DYFUtil.isFavorite( product, user );
 		boolean isBackInStock = product.isBackInStock();
+        boolean isGoingOutOfStock = product.isGoingOutOfStock();
 		ProductReference prodRef = new ProductReferenceImpl(product);
 		boolean isFree = user.isProductSample(prodRef);
 	
@@ -1066,6 +1067,8 @@ public class ProductDetailPopulator {
 			item.setBadge( "new" );
 		} else if ( isBackInStock ) {
 			item.setBadge( "back" );
+        } else if (isGoingOutOfStock) {
+            item.setBadge("going");
 		}
 	}
 

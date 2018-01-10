@@ -1879,7 +1879,7 @@ public final class ContentTypes {
         public static final Attribute erpsyFlagCode = stringAttribute("erpsyFlagCode")
             .build();
         public static final Attribute type = stringEnum("type")
-            .withValues("AND", "OR", "ALLERGEN", "BACK_IN_STOCK", "BRAND", "CLAIM", "CUSTOMER_RATING", "DOMAIN_VALUE", "EXPERT_RATING",
+                .withValues("AND", "OR", "ALLERGEN", "BACK_IN_STOCK", "GOING_OUT_OF_STOCK", "BRAND", "CLAIM", "CUSTOMER_RATING", "DOMAIN_VALUE", "EXPERT_RATING",
                         "FRESHNESS", "KOSHER", "NEW", "NUTRITION", "ON_SALE", "ORGANIC", "PRICE", "SUSTAINABILITY_RATING", "TAG")
             .required()
             .build();

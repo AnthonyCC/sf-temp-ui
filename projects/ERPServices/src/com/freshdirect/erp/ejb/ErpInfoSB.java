@@ -19,6 +19,7 @@ import javax.ejb.ObjectNotFoundException;
 
 import com.freshdirect.erp.SkuAvailabilityHistory;
 import com.freshdirect.erp.model.ErpInventoryModel;
+import com.freshdirect.erp.model.ErpMaterialSalesAreaModel;
 import com.freshdirect.erp.model.ErpProductInfoModel;
 
 /**
@@ -82,6 +83,8 @@ public interface ErpInfoSB extends EJBObject {
 	/** @return collection of sku codes */
 	public Collection findOutOfStockSkuCodes() throws RemoteException;
 	
+    public Collection<ErpMaterialSalesAreaModel> findGoingOutOfStockSalesAreas() throws RemoteException;
+
 	public Collection findSKUsByDeal(double lowerLimit, double upperLimit,List skuPrefixes)throws RemoteException;
 
 	public List findPeakProduceSKUsByDepartment(List skuPrefixes) throws RemoteException;

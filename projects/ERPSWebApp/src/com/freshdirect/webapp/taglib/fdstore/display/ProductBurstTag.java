@@ -96,7 +96,12 @@ public class ProductBurstTag extends BodyTagSupportEx {
 			buf.append(lgsm);
 			buf.append("_new");
 			render = true;
-		}
+        } else if (product.isGoingOutOfStock()) {
+            buf.append("/media_stat/images/bursts/brst_");
+            buf.append(lgsm);
+            buf.append("_goos");
+            render = true;
+        }
 
 		if (render) {
 			buf.append('.');

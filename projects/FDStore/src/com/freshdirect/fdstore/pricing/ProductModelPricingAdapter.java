@@ -1076,6 +1076,11 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 		return this.prodModel.isBackInStock();
 	}
 
+    @Override
+    public boolean isGoingOutOfStock() {
+        return prodModel.isGoingOutOfStock();
+    }
+
 	@Override
 	public double getBackInStockAge() {
 		return this.prodModel.getBackInStockAge();

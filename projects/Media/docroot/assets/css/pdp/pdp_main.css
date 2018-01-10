@@ -416,7 +416,7 @@ span.cssbutton.annotation:hover {
   cursor: pointer;
 }
 .pdp-atc #pdp-atc-addtolist{
-	margin: auto;	
+	margin: auto;
 }
 
 .pdp .pdp-evenbetter hr {
@@ -435,7 +435,7 @@ span.cssbutton.annotation:hover {
 	font-weight:normal;
 	/* Better Font Rendering =========== */
 	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;		
+	-moz-osx-font-smoothing: grayscale;
 }
 
 .pdp .pdp-evenbetter h2.familyproducts,
@@ -613,7 +613,7 @@ span.cssbutton.annotation:hover {
 	right:8px;
 	width:28px;
 	height:24px;
-	background-position:-122px -202px; 
+	background-position:-122px -202px;
 }
 
 
@@ -674,7 +674,7 @@ span.cssbutton.annotation:hover {
 	font-size:14px;
 }
 
-.pdp-evenbetter-price, 
+.pdp-evenbetter-price,
 .pdp-evenbetter-savestring {
 	display:inline;
 	margin-left:0.5em;
@@ -724,8 +724,8 @@ span.cssbutton.annotation:hover {
 #evenBetterPopup .skucontrol-variations {
 }
 /* Quantity Picker Overrides */
-.pdp-atc .pdp-atc-buttons .qtyinput, 
-#evenBetterPopup .pdp-evenbetter-quantity .qtyinput, 
+.pdp-atc .pdp-atc-buttons .qtyinput,
+#evenBetterPopup .pdp-evenbetter-quantity .qtyinput,
 #evenBetterPopup .pdp-evenbetter-quantity {
     width: auto;
 }
@@ -865,14 +865,14 @@ span.cssbutton.annotation:hover {
 	text-align:center;
     font-size:18px;
     color:#FFF;
-    line-height:27px;	
+    line-height:27px;
     float:left;
     position:relative;
     margin-left:-37px;
 	/* Better Font Rendering =========== */
 	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;		
-    
+	-moz-osx-font-smoothing: grayscale;
+
 }
 
 .pdp-freshness p{
@@ -882,7 +882,7 @@ span.cssbutton.annotation:hover {
 }
 
 .pdp-freshness img{
-	margin-left:-37px;	
+	margin-left:-37px;
 }
 
 .pdp-freshness .guarfresh{
@@ -893,7 +893,7 @@ span.cssbutton.annotation:hover {
 	line-height:27px; /* same as .pdp-freshness .days */
 	/* Better Font Rendering =========== */
 	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;		
+	-moz-osx-font-smoothing: grayscale;
 	text-decoration: none;
 }
 
@@ -902,7 +902,7 @@ span.cssbutton.annotation:hover {
 	text-decoration: none;
 }
 
-.pdp-freshness a:hover .atleast, 
+.pdp-freshness a:hover .atleast,
 .pdp-freshness a:active .atleast {
 	text-decoration: underline;
 }
@@ -921,7 +921,7 @@ span.cssbutton.annotation:hover {
 }
 
 .thumbnails img, .vertic-rule{
-  display:inline-block;  
+  display:inline-block;
   vertical-align:middle;
 }
 
@@ -951,12 +951,30 @@ span.cssbutton.annotation:hover {
   vertical-align:middle;
 }
 
+.pdp .span-7.first .going-out {
+  color: #458b4c;
+  text-align: center;
+  margin: 15px 0;
+}
+
+.pdp .span-8 .going-out {
+  box-sizing: border-box;
+  background-color: #ffffff;
+  border: 1px solid #f68139;
+  border-radius: 3px;
+  color: #e77630;
+  margin: 15px 0;
+  padding: 10px 0;
+  text-align: center;
+  width: 100%;
+}
+
 /* override empty value cursor */
 .main-image img[data-large-url=""]{
 	cursor:auto;
 }
 
-.main-image .hd{ 
+.main-image .hd{
   left:362px;
   top:0px;
 
@@ -971,7 +989,7 @@ span.cssbutton.annotation:hover {
   background-repeat:no-repeat;
    */
 
-  overflow:hidden; 
+  overflow:hidden;
 
   box-shadow: 4px 4px 8px rgba(0,0,0,.5);
   border-radius:15px;
@@ -1030,7 +1048,7 @@ button#pdp-atc-addtolist,
   max-width: 300px;
 }
 .pdp-accordion-item > div > table > tbody > tr > td {
-padding-top:7px;	
+padding-top:7px;
 }
 
 
@@ -1049,7 +1067,7 @@ padding-top:7px;
   margin:0 auto;
   width:450px;
   min-height:25px; /* max icon height is 22px */
-  
+
   border:1px solid #CC3300;
   /* rounded borders */
   -moz-border-radius: 10px;
@@ -1066,9 +1084,9 @@ padding-top:7px;
   bottom:0;
   left:0;
   width:18px;
-  
+
   background: #CC3300 url('/media_stat/images/template/system_msgs/exclaim_CC3300.gif') no-repeat center center;
-  
+
 /* rounder borders */
 -webkit-border-top-left-radius: 6px;
 -webkit-border-bottom-left-radius: 6px;

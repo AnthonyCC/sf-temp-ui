@@ -102,6 +102,7 @@
 		hideBursts.add(EnumBurstType.YOUR_FAVE);
 		hideBursts.add(EnumBurstType.NEW);
 		hideBursts.add(EnumBurstType.BACK_IN_STOCK);
+		hideBursts.add(EnumBurstType.GOING_OUT_OF_STOCK);
 
 	String checkHtml = "<img src=\"/media/images/buttons/checkmark_green_15x10.png\" alt=\"\" />"; //escape single quotes in here
 	List<ProductModel> globalUniqueProducts = new ArrayList<ProductModel>();

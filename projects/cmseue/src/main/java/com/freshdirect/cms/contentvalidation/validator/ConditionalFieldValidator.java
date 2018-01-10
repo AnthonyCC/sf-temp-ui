@@ -42,6 +42,8 @@ public class ConditionalFieldValidator implements Validator {
 
                     case BACK_IN_STOCK:
                         //$FALL-THROUGH$
+                    case GOING_OUT_OF_STOCK:
+                        //$FALL-THROUGH$
                     case NEW:
                         //$FALL-THROUGH$
                     case KOSHER:

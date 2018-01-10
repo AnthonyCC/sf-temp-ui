@@ -296,6 +296,11 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 		}
 	}
 
+    @Override
+    public boolean isGoingOutOfStock() {
+        return ContentFactory.getInstance().isGoingOutOfStockProduct(getContentKey());
+    }
+
 	@Override
 	public double getAge() {
 		if(this.isNew()){
