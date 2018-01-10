@@ -27,6 +27,7 @@ import com.freshdirect.cms.changecontrol.domain.ContentUpdateContext;
 import com.freshdirect.cms.changecontrol.entity.ContentChangeSetEntity;
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.cms.core.domain.Relationship;
 import com.freshdirect.cms.core.domain.RootContentKey;
@@ -196,7 +197,6 @@ public class DraftContentProviderService extends ContextualContentProvider {
         if (rootKeySet.contains(contentKey)) {
             orphan = false;
         } else {
-            Map<ContentKey, Set<ContentKey>> parents = buildParentIndexFor(contentKey);
             List<List<ContentKey>> allContextsOf = findContextsOf(contentKey);
             Set<ContentKey> topKeys = contextService.selectTopKeysOf(contentKey, allContextsOf);
 
@@ -406,15 +406,24 @@ public class DraftContentProviderService extends ContextualContentProvider {
      * @return
      */
     private Set<ContentKey> collectKeysCreatedOnDraft(final long draftId) {
-        Set<ContentKey> changedKeysOnDraft = draftService.getAllChangedContentKeys(draftId);
+        
+        List<DraftChange> draftChanges = draftService.getDraftChanges(draftId);
+        final Set<ContentKey> keySet = new HashSet<ContentKey>();
+        
+        for (final DraftChange change : draftChanges) {
+            ContentKey draftContentKey = ContentKeyFactory.get(change.getContentKey());
+            keySet.add(draftContentKey);
 
-        Set<ContentKey> childKeys = draftService.collectChildKeys(draftId);
-        for (ContentKey childKey : childKeys) {
-            if (!contentProviderService.containsContentKey(childKey)) {
-                changedKeysOnDraft.add(childKey);
+            Attribute attr = contentTypeInfoService.findAttributeByName(draftContentKey.type, change.getAttributeName()).orNull();
+            if (attr instanceof Relationship) {
+                List<ContentKey> childKeys = DraftChangeToContentNodeApplicator.getContentKeysFromRelationshipValue((Relationship) attr, change.getValue());
+                for (ContentKey childKey : childKeys) {
+                    if (!contentProviderService.containsContentKey(childKey)) {
+                        keySet.add(childKey);
+                    }
+                }
             }
         }
-        return changedKeysOnDraft;
+        return keySet;
     }
-
 }

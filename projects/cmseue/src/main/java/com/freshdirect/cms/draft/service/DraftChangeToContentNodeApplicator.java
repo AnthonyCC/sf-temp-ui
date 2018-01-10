@@ -1,7 +1,6 @@
 package com.freshdirect.cms.draft.service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,7 +60,7 @@ public class DraftChangeToContentNodeApplicator {
         return nodeAttributesWithValues;
     }
 
-    public List<ContentKey> getContentKeysFromRelationshipValue(Relationship relationship, String value) {
+    public static List<ContentKey> getContentKeysFromRelationshipValue(Relationship relationship, String value) {
         List<ContentKey> result = new ArrayList<ContentKey>();
         if (relationship.getCardinality() == RelationshipCardinality.ONE && null != value) {
             result.add(ContentKeyFactory.get(value));
@@ -73,7 +72,6 @@ public class DraftChangeToContentNodeApplicator {
                     result.add(ContentKeyFactory.get(changedKeys[i]));
                 }
             }
-
         }
         return result;
     }
