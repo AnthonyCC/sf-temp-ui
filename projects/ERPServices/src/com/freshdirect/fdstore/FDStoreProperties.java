@@ -770,6 +770,8 @@ public class FDStoreProperties {
     private static final String PROP_FDCOMMERCE_API_URL = "fdstore.fdcommerceapi.url";
 
     private static final String PROP_PAYPAL_API_URL = "fdstore.paypalapi.url";
+    private static final String PROP_MASTERPASSS_API_URL = "fdstore.masterpassapi.url";
+    
     private static final String PROP_ORBITAL_API_URL = "fdstore.orbitalapi.url";
     private static final String PROP_OMS_API_URL = "fdstore.omsapi.url";
     private static final String PROP_LOGISTICS_COMPANY_CODE = "fdstore.logistics.companycode";
@@ -1715,6 +1717,8 @@ public class FDStoreProperties {
         defaults.put(PROP_LOGISTICS_API_URL, "http://logisticsdev1.nj01/");
         defaults.put(PROP_FDCOMMERCE_API_URL, "http://localhost:8080");
         defaults.put(PROP_PAYPAL_API_URL, "http://logisticsdev1.nj01/paypal");
+        defaults.put(PROP_MASTERPASSS_API_URL, "http://logisticsdev1.nj01/paypal");
+        
         defaults.put(PROP_ORBITAL_API_URL, "http://logisticsdev1.nj01/paypal");
         defaults.put(PROP_OMS_API_URL, "http://crmdev1.nj01/");
 
@@ -4156,6 +4160,9 @@ public class FDStoreProperties {
     public static String getPayPalAPIUrl() {
         return get(PROP_PAYPAL_API_URL);
     }
+    public static String getMasterPassAPIUrl() {
+        return get(PROP_MASTERPASSS_API_URL);
+    }
     public static String getOrbitalAPIUrl() {
         return get(PROP_ORBITAL_API_URL);
     }
@@ -4927,4 +4934,6 @@ public class FDStoreProperties {
 	public static String getOAuth2ClientRedirectUris(String clientId) {
 		return get(OAUTH2_CLIENT_REDIRECT_URIS + "." + clientId);
 	}
+
+
 }
