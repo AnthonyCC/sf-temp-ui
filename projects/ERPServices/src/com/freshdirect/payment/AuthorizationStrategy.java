@@ -223,65 +223,6 @@ public class AuthorizationStrategy extends PaymentStrategy {
 
 	}
 	
-	//introduced For Storefront 2.0 Implementation.
-	public List<AuthorizationInfo> getOutstandingAuthorizations(ErpAffiliate bc ,ErpAffiliate usq,ErpAffiliate fdw) {
-		ErpAbstractOrderModel order = this.sale.getCurrentOrder();
-		ErpInvoiceModel inv = this.sale.getLastInvoice();
-		for ( ErpOrderLineModel line : order.getOrderLines() ) {
-			if (usq.equals(line.getAffiliate())) {
-				if (inv != null) {
-					usqAuthInfo.addInvoiceLine(inv.getInvoiceLine(line.getOrderLineNumber()));
-				} else {
-					usqAuthInfo.addOrderline(line);
-				}
-			} else if (fdw.equals(line.getAffiliate())) {
-				if (inv != null) {
-					fdwAuthInfo.addInvoiceLine(inv.getInvoiceLine(line.getOrderLineNumber()));
-				} else {
-					fdwAuthInfo.addOrderline(line);
-				}
-			} else if (bc.equals(line.getAffiliate())) {
-				if (inv != null) {
-					bcAuthInfo.addInvoiceLine(inv.getInvoiceLine(line.getOrderLineNumber()));
-				} else {
-					bcAuthInfo.addOrderline(line);
-				}
-			} else {
-				if (inv != null) {
-					fdAuthInfo.addInvoiceLine(inv.getInvoiceLine(line.getOrderLineNumber()));
-				} else {
-					fdAuthInfo.addOrderline(line);
-				}
-			}
-		}
-		
-		for ( ErpChargeLineModel cl : order.getCharges() ) {
-			fdAuthInfo.addCharge(cl);
-		}
-					
-		
-		List<ErpDiscountLineModel> discounts = order.getDiscounts();
-		if (discounts != null && !discounts.isEmpty()) {
-			for ( ErpDiscountLineModel d  : discounts ) {
-				this.addDeduction(d.getDiscount().getAmount());
-			}
-		}
-		
-		for ( ErpAppliedCreditModel c : order.getAppliedCredits() ) {
-			this.addDeduction(c.getAmount());
-		}
-		
-		//Apply GC Payments
-		for ( ErpAppliedGiftCardModel agc : order.getAppliedGiftcards() ) {
-			if(usq.equals(agc.getAffiliate())) {
-				usqAuthInfo.addGCPayment(agc.getAmount());
-			} else if(fdw.equals(agc.getAffiliate())) {
-				fdwAuthInfo.addGCPayment(agc.getAmount());
-			} else {
-				fdAuthInfo.addGCPayment(agc.getAmount());
-			}
-		}
-		return this.getOutstandingAuthorizations(order.getPaymentMethod());
-	}
+	
 
 }
