@@ -282,6 +282,12 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 			        accountNumberVerify == null || "".equals(accountNumberVerify),
 					PaymentMethodName.ACCOUNT_NUMBER_VERIFY, SystemMessageList.MSG_REQUIRED
 					);
+			        
+			        // Check to see that account number DOESNT contain a letter (a=z or A-Z) appdev 6789
+			        result.addError(
+			        		accountNumber.matches(".*[a-zA-Z]+.*"),
+					PaymentMethodName.ACCOUNT_NUMBER, SystemMessageList.MSG_ACCOUNT_NUMBER_ILLEGAL_ALPHA
+					);
 	
 			        // Check account number has at least 5 digits
 			        String scrubbedAccountNumber = scrubAccountNumber(accountNumber);

@@ -86,6 +86,7 @@ public interface SystemMessageList {
 	public final static String MSG_INVALID_CARD_TYPE 			= "Invalid Card Brand.";
 	public final static String MSG_INVALID_ACCOUNT_NUMBER_VERIFY= "Account numbers don''t match.";
 	public final static String MSG_ACCOUNT_NUMBER_LENGTH 		= "Account number must have at least 5 digits.";
+	public final static String MSG_ACCOUNT_NUMBER_ILLEGAL_ALPHA 		= "Account number cannot contains alphabetical characters.";
 	
 	public final static String MSG_NOT_UNIQUE_INFO				= "Some of the information you provided matches an existing account, so we are unable to extend our current promotions to you (one per household). If you believe you should be eligible for promotions, please contact our Customer Service Team at {0} before completing Checkout.";
 
@@ -225,6 +226,7 @@ public interface SystemMessageList {
     public static final String MSG_SOCIAL_PROFILE_NOT_FOUND="Social profile not found";
     public static final String MSG_SOCIAL_PROFILE_EMAIL_NOT_FOUND="Social account needs to have an email address for Signup/Login";
     
+
     public static final String MSG_VOUCHER_REDEMPTION_FDX_NOT_ALLOWED = "This email is not valid for FoodKick orders.  Please register a new account to place a FoodKick order.";
     // SmartStreets 
     public final static String MSG_ADDRESS_NOT_UNIQUE = "We are not able to find your address, Please choose one of the suggested address below or modify your address.";
