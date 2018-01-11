@@ -3395,7 +3395,7 @@ button.space {
 
 .aptfields{
 	display:inline-block;
-	vertical-align:top;
+	vertical-align:inherit;
 }
 
 .clickable,.fake-radio{
