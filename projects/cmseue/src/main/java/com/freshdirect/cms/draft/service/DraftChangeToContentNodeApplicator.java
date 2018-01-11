@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,12 +18,14 @@ import com.freshdirect.cms.core.domain.Scalar;
 import com.freshdirect.cms.core.service.ContentTypeInfoService;
 import com.freshdirect.cms.draft.domain.DraftChange;
 import com.google.common.base.Optional;
+import com.google.common.base.Splitter;
 
 @Service
 public class DraftChangeToContentNodeApplicator {
 
     public static final char SEPARATOR = '|';
-
+    private static final Splitter SPLITTER = Splitter.on(SEPARATOR);
+    
     @Autowired
     private ContentTypeInfoService contentTypeInfoService;
 
@@ -62,14 +63,12 @@ public class DraftChangeToContentNodeApplicator {
 
     public static List<ContentKey> getContentKeysFromRelationshipValue(Relationship relationship, String value) {
         List<ContentKey> result = new ArrayList<ContentKey>();
-        if (relationship.getCardinality() == RelationshipCardinality.ONE && null != value) {
-            result.add(ContentKeyFactory.get(value));
-        } else {
-            String[] changedKeys = StringUtils.split(value, SEPARATOR);
-
-            if (changedKeys != null) {
-                for (int i = 0; i < changedKeys.length; i++) {
-                    result.add(ContentKeyFactory.get(changedKeys[i]));
+        if (value != null) {
+            if (relationship.getCardinality() == RelationshipCardinality.ONE) {
+                result.add(ContentKeyFactory.get(value));
+            } else {
+                for (String key : SPLITTER.split(value)) {
+                    result.add(ContentKeyFactory.get(key));
                 }
             }
         }

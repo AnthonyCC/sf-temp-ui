@@ -1,12 +1,10 @@
 package com.freshdirect.cms.draft.service;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +20,15 @@ import com.freshdirect.cms.draft.converter.AttributeValueToStringConverter;
 import com.freshdirect.cms.draft.domain.Draft;
 import com.freshdirect.cms.draft.domain.DraftChange;
 import com.freshdirect.cms.draft.domain.DraftContext;
+import com.google.common.base.Joiner;
 
 @Service
 public class DraftChangeExtractorService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DraftChangeExtractorService.class);
 
+    private static final Joiner JOINER = Joiner.on(DraftChangeToContentNodeApplicator.SEPARATOR).skipNulls();
+    
     @Autowired
     private AttributeValueToStringConverter attributeValueToStringConverter;
 
@@ -147,17 +148,12 @@ public class DraftChangeExtractorService {
 
         // serialize value
         if (value == null) {
-
             serializedValue = null;
-
         } else if (definition instanceof Relationship) {
             // serialize relationship value
-
             serializedValue = serializeRelationshipValue(value, (Relationship) definition);
-
         } else {
             // serialize scalar value
-
             serializedValue = attributeValueToStringConverter.convert(definition, value);
         }
         return serializedValue;
@@ -177,25 +173,15 @@ public class DraftChangeExtractorService {
         final String serializedValue;
 
         if (definition.getCardinality() == RelationshipCardinality.ONE) {
-
             serializedValue = ((ContentKey) value).toString();
-
         } else {
             List<ContentKey> keys = (List<ContentKey>) value;
             if (keys == null || keys.isEmpty()) {
-
                 serializedValue = null;
-
             } else {
-                Collection<String> serializedKeys = new ArrayList<String>(keys.size());
-                for (ContentKey key : keys) {
-                    serializedKeys.add(key.toString());
-                }
-
-                serializedValue = StringUtils.join(serializedKeys, DraftChangeToContentNodeApplicator.SEPARATOR);
+                serializedValue = JOINER.join(keys);
             }
         }
-
         return serializedValue;
     }
 }
