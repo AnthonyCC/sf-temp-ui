@@ -410,6 +410,14 @@
 		<servlet-name>YourCartData</servlet-name>
 		<url-pattern>/api/expresscheckout/cartdata</url-pattern>
 	</servlet-mapping>
+   <servlet>
+        <servlet-name>OrderInfoServlet</servlet-name>
+        <servlet-class>com.freshdirect.webapp.ajax.order.OrderInfoServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>OrderInfoServlet</servlet-name>
+        <url-pattern>/api/orderinfo</url-pattern>
+    </servlet-mapping>
 	<servlet>
 		<servlet-name>DeliveryAddressValidationDataServlet</servlet-name>
 		<servlet-class>com.freshdirect.webapp.ajax.expresscheckout.validation.servlet.DeliveryAddressValidationDataServlet</servlet-class>

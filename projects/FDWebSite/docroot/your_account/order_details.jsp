@@ -13,7 +13,7 @@
 <%@ page import="java.text.*" %>
 <%@ page import='java.util.List.*' %>
 
-<%@ taglib uri='template' prefix='tmpl' %> 
+<%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -40,7 +40,7 @@ if(orderId==null){
     NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance( Locale.US );
     SimpleDateFormat dateOnlyFormatter = new SimpleDateFormat("MM/dd/yy");
     //String orderId = request.getParameter("orderId");
-    
+
     FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
     FDIdentity identity  = user.getIdentity();
     ErpCustomerInfoModel customerModel = FDCustomerFactory.getErpCustomerInfo(identity);
@@ -50,7 +50,7 @@ if(orderId==null){
 <%
     if (cart != null) {
         // !!! REFACTOR: duplicates code from checkout pages
-    
+
         StringBuffer custName = new StringBuffer(50);
         custName.append(customerModel.getFirstName());
         if (customerModel.getMiddleName()!=null && customerModel.getMiddleName().trim().length()>0) {
@@ -59,7 +59,7 @@ if(orderId==null){
         }
         custName.append(" ");
         custName.append(customerModel.getLastName());
-        
+
         //
         // get delivery info
         //
@@ -72,8 +72,8 @@ if(orderId==null){
         Calendar dlvEnd =   Calendar.getInstance();
         dlvEnd.setTime(reservation.getEndTime());
         //int startHour =  dlvStart.get(Calendar.HOUR_OF_DAY);
-        //int endHour = dlvEnd.get(Calendar.HOUR_OF_DAY); 
-        
+        //int endHour = dlvEnd.get(Calendar.HOUR_OF_DAY);
+
         //String sStartHour = startHour==12? "noon" : (startHour>12 ? ""+(startHour-12) : ""+startHour);
         //String sEndHour = endHour==0 ? "12 am" : (endHour==12 ? "noon" : (endHour>12 ? (endHour-12)+" pm" : endHour+" am"));
         String deliveryTime = getTimeslotString(dlvStart, dlvEnd);
@@ -85,16 +85,16 @@ if(orderId==null){
         // get order line info
         //
         boolean isSubmitted = cart.getOrderStatus().equals(EnumSaleStatus.SUBMITTED) || cart.getOrderStatus().equals(EnumSaleStatus.AUTHORIZED) ||cart.getOrderStatus().equals(EnumSaleStatus.AUTHORIZATION_FAILED);
-    	
+
         boolean isFdxOrder = false;
     	EnumEStoreId EStoreIdEnum = null;
     	EStoreIdEnum = cart.getEStoreId();
-    	if (EStoreIdEnum != null && (EStoreIdEnum).equals(EnumEStoreId.FDX)) { isFdxOrder = true; } 
-        
+    	if (EStoreIdEnum != null && (EStoreIdEnum).equals(EnumEStoreId.FDX)) { isFdxOrder = true; }
+
 	%>
 	<!-- error message handling here -->
 
-	<% 
+	<%
 	    String errorMsg="";
 	     if (cart.getOrderStatus() == EnumSaleStatus.REFUSED_ORDER) {
 	        errorMsg= "Pending Order: Please contact us at "+user.getCustomerServiceContact()+" as soon as possible to reschedule delivery.";
@@ -157,7 +157,7 @@ if(orderId==null){
 			ErpComplaintModel c = null;
 	        for (Iterator i=comp.iterator(); i.hasNext(); ) {
 	        	c = (ErpComplaintModel)i.next();
-	
+
 				if (c != null && EnumComplaintStatus.APPROVED.equals(c.getStatus())){
 	            	hasCredit = true;
 				}
@@ -170,17 +170,18 @@ if(orderId==null){
 	<table width="<%= W_YA_ORDER_DETAILS_TOTAL %>" align="center" border="0" cellpadding="0" cellspacing="0">
 		<tr>
 		    <td class="text11">
-		       <font class="title18" >Order # <%= orderId %> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Status: 
+		       <font class="title18" >Order # <%= orderId %> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Status:
 		       <% if( EnumSaleStatus.AUTHORIZATION_FAILED.equals(cart.getOrderStatus())) {%>
 		       <font color="#FF0000"><%=cart.getOrderStatus().getDisplayName()%></font>
 		       <%} else {%><%=cart.getOrderStatus().getDisplayName()%>
 		       <%}%>
-		       
+
 		       </font> &nbsp;&nbsp;&nbsp;<br>
 		        <%-- Having trouble, send an e-mail to <A HREF="mailto:accounthelp@freshdirect.com">accounthelp@freshdirect.com</A> or call 1-866-2UFRESH.--%>
 		    </td>
 		    <td width="<%= W_YA_ORDER_DETAILS_TOTAL/2 %>" border="0" cellpadding="0" cellspacing="0" style="text-align: right;">
 		    	<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.printinvoice, user)) { %><a href="javascript:window.print()" class="cssbutton small khaki noprint" style="margin-right: 10px;" title="Click here to print invoice for this order">print</a><% } %>
+		    	<% if (user.getMasqueradeContext() != null && !cart.isPending()) { %><button type="button" name="Reorder" onclick="FreshDirect.components.reorderPopup.openPopup(<%= orderId %>)" class="cssbutton small purple nontransparent">re-order</button><% } %>
 		    	<% if (hasCredit || hasClientCodes || hasModify || hasCancel) { %>
 		    		<% if (hasModify || hasCancel || hasClientCodes || hasCredit) { %>
 			    		<table class="fright">
@@ -236,7 +237,7 @@ if(orderId==null){
     double totalCredit = 0.0;
     int orderLine = 0;
     StringBuffer creditRow = new StringBuffer(2000);
-    
+
     Collection comp = cart.getComplaints();
     if (comp != null) {
         for (Iterator i=comp.iterator(); i.hasNext(); ) {
@@ -341,7 +342,7 @@ if(orderId==null){
             sb.append(" am");
         }
         sb.append(" - ");
-        int endHour = endTimeCal.get(Calendar.HOUR_OF_DAY); 
+        int endHour = endTimeCal.get(Calendar.HOUR_OF_DAY);
         sb.append(endHour == 0 ? "12" : (endHour == 12 ? "noon" : (endHour > 12 ? endHour - 12+"" : endHour+"")));
         int endMin = endTimeCal.get(Calendar.MINUTE);
         if(endMin != 0){
