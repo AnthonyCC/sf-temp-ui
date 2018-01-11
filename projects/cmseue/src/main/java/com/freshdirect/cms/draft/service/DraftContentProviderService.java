@@ -72,17 +72,43 @@ public class DraftContentProviderService extends ContextualContentProvider {
     @Autowired
     private CacheManager cacheManager;
 
+    /**
+     *  Performance optimized 'contains' check, same semantics as:
+     *  {@code contentProviderService.containsContentKey(key) || collectKeysCreatedOnDraft(draftId).contains(key) }
+     *  but returns early with the result if found, to avoid having to build up the whole expensive set every time
+     */
     @Override
     public boolean containsContentKey(ContentKey key) {
         Assert.notNull(key, "Content Key is mandatory parameter");
-        boolean existsOnMain = contentProviderService.containsContentKey(key);
-        boolean existsOnDraft = false;
+
+        if (contentProviderService.containsContentKey(key)) {
+            // exists on MAIN branch, return early with the result
+            return true;
+        }
+
         DraftContext currentDraftContext = draftContextHolder.getDraftContext();
         if (!currentDraftContext.isMainDraft()) {
-            Set<ContentKey> changedKeysOnDraft = collectKeysCreatedOnDraft(draftContextHolder.getDraftContext().getDraftId());
-            existsOnDraft = changedKeysOnDraft.contains(key);
+            List<DraftChange> draftChanges = draftService.getDraftChanges(currentDraftContext.getDraftId());
+            for (final DraftChange change : draftChanges) {
+                if (key.equals(ContentKeyFactory.get(change.getContentKey()))) {
+                    // exists on current DRAFT branch, return early with the result
+                    return true;
+                }
+            }
+
+            for (final DraftChange change : draftChanges) {
+                Attribute attr = contentTypeInfoService.findAttributeByName(ContentKeyFactory.get(change.getContentKey()).type, change.getAttributeName()).orNull();
+                if (attr instanceof Relationship) {
+                    List<ContentKey> childKeys = DraftChangeToContentNodeApplicator.getContentKeysFromRelationshipValue((Relationship) attr, change.getValue());
+                    if (childKeys.contains(key)) {
+                        // indirect child of a node that exists on current DRAFT branch, return with the result
+                        return true;
+                    }
+                }
+            }
         }
-        return existsOnMain || existsOnDraft;
+        // did not find it
+        return false;
     }
 
     @Override
