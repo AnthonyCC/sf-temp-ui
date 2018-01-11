@@ -23,7 +23,7 @@ import com.google.common.base.Optional;
 @Service
 public class DraftChangeToContentNodeApplicator {
 
-    public static final String SEPARATOR = "|";
+    public static final char SEPARATOR = '|';
 
     @Autowired
     private ContentTypeInfoService contentTypeInfoService;
