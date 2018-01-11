@@ -76,12 +76,11 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
     private static final int CHANGEDETAIL_NEWVALUE_MAX_LENGTH = 3999;
     private static final int SQL_IN_CLAUSE_MAX_ELEMENTS = 1000;
 
-    private static final String CONTENT_KEYS_CACHE_NAME = "contentKeyCache";
-    private static final String ALL_CONTENT_KEYS_NAME = "getContentKeys";
-
     private static final String PARENT_KEYS_CACHE_NAME = "parentKeysCache";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseContentProvider.class);
+
+    private final Set<ContentKey> allKeys = Collections.newSetFromMap(new ConcurrentHashMap<ContentKey, Boolean>());
 
     @Autowired
     protected ContentTypeInfoService contentTypeInfoService;
@@ -140,9 +139,10 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
     @Override
     public Map<ContentKey, Map<Attribute, Object>> loadAll() {
         long methodStart = System.currentTimeMillis();
-        Set<ContentKey> contentKeys = getContentKeys(); // load all contentKeys to fill the contentKey cache
-        Cache cache = cacheManager.getCache(CONTENT_KEYS_CACHE_NAME);
-        cache.put(ALL_CONTENT_KEYS_NAME, contentKeys);
+        
+        // load all contentKeys to fill the allKeys map
+        allKeys.clear();
+        allKeys.addAll(contentNodeEntityToContentKeyConverter.convert(contentNodeEntityRepository.findAll()));
 
         List<AttributeEntity> attributeEntities = attributeEntityRepository.findAll();
         List<RelationshipEntity> relationshipEntities = relationshipEntityRepository.findAll();
@@ -152,13 +152,14 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
         processFetchedRelationships(allNodes, relationshipEntities);
 
         // fill up result map with empty content bodies where no attributes sets
-        Set<ContentKey> keysHavingEmptyBody = new HashSet<ContentKey>(contentKeys);
+        Set<ContentKey> keysHavingEmptyBody = new HashSet<ContentKey>(allKeys);
         keysHavingEmptyBody.removeAll(allNodes.keySet());
         for (ContentKey key : keysHavingEmptyBody) {
             allNodes.put(key, new HashMap<Attribute, Object>());
         }
 
         buildAttributesCache(allNodes); // putting the loaded data in the "attributeCache"
+        
         LOGGER.info("Database warmup executed in " + (System.currentTimeMillis() - methodStart) + " ms");
         return allNodes;
     }
@@ -258,41 +259,25 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
         return Optional.fromNullable(resultMap.get(attribute));
     }
 
-    @Cacheable(value = CONTENT_KEYS_CACHE_NAME, key = "#root.methodName")
     @Override
     public Set<ContentKey> getContentKeys() {
-        List<ContentNodeEntity> contentNodeEntities = contentNodeEntityRepository.findAll();
-        final List<ContentKey> keysFromDatabase = contentNodeEntityToContentKeyConverter.convert(contentNodeEntities);
-        Set<ContentKey> allKeysResult = Collections.newSetFromMap(new ConcurrentHashMap<ContentKey, Boolean>(keysFromDatabase.size()));
-        allKeysResult.addAll(keysFromDatabase);
-        return allKeysResult;
+        return Collections.unmodifiableSet(allKeys);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Set<ContentKey> getContentKeysByType(ContentType type) {
         Assert.notNull(type, "ContentType parameter can't be null!");
+        final long t0 = System.currentTimeMillis();
 
-        Set<ContentKey> result = new HashSet<ContentKey>();
-
-        Cache keysCache = cacheManager.getCache(CONTENT_KEYS_CACHE_NAME);
-        ValueWrapper cachedKeys = keysCache.get("getContentKeys");
-        if (cachedKeys != null) {
-            Set<ContentKey> allKeys = (Set<ContentKey>) cachedKeys.get();
-
-            final long t0 = System.currentTimeMillis();
-
-            if (allKeys != null && !allKeys.isEmpty()) {
-                for (ContentKey key : allKeys) {
-                    if (type == key.type) {
-                        result.add(key);
-                    }
-                }
+        Set<ContentKey> result = new HashSet<ContentKey>();        
+        for (ContentKey key : allKeys) {
+            if (type == key.type) {
+                result.add(key);
             }
-
-            final long t1 = System.currentTimeMillis();
-            LOGGER.debug("Collected " + result.size() + " keys of type " + type + " in " + (t1 - t0) + " ms");
         }
+
+        final long t1 = System.currentTimeMillis();
+        LOGGER.debug("Collected " + result.size() + " keys of type " + type + " in " + (t1 - t0) + " ms");
 
         return result;
     }
@@ -367,17 +352,8 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
         }
     }
 
-    @SuppressWarnings("unchecked")
     private void updateContentKeysCache(Collection<ContentKey> contentKeys) {
-        Cache contentKeyCache = cacheManager.getCache(CONTENT_KEYS_CACHE_NAME);
-        ValueWrapper potentiallyCachedKeys = contentKeyCache.get(ALL_CONTENT_KEYS_NAME);
-        if (potentiallyCachedKeys != null) {
-            Set<ContentKey> cachedKeys = (Set<ContentKey>) potentiallyCachedKeys.get();
-            if (cachedKeys != null) {
-                cachedKeys.addAll(contentKeys);
-                contentKeyCache.put(ALL_CONTENT_KEYS_NAME, cachedKeys);
-            }
-        }
+        allKeys.addAll(contentKeys);
     }
 
     private Set<ContentKey> collectKeysNotPersisted(Collection<ContentKey> contentKeys) {
@@ -988,6 +964,7 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
                     }
                     List<Object> targetKeys = (List<Object>) allNodes.get(key).get(relationship);
                     // this is important, the relationship targets has to be sorted by the ordinal!
+                    // FIXME: this only works if the input is already (almost) sorted by the ordinals
                     int index = targetKeys.size() < relationshipEntity.getOrdinal() ? targetKeys.size() : relationshipEntity.getOrdinal();
                     Object value = attributeEntityToValueConverter.convert(relationship, relationshipEntity);
                     if (value != null) {

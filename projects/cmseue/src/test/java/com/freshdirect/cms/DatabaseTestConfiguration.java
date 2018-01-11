@@ -143,7 +143,6 @@ public class DatabaseTestConfiguration {
         SimpleCacheManager cacheManager = new SimpleCacheManager();
         cacheManager.setCaches(Arrays.asList(
                 new ConcurrentMapCache(CmsCaches.PARENT_KEYS_CACHE.cacheName),
-                new ConcurrentMapCache(CmsCaches.CONTENT_KEY_CACHE.cacheName),
                 new ConcurrentMapCache(CmsCaches.ATTRIBUTE_CACHE.cacheName)));
         return cacheManager;
     }
