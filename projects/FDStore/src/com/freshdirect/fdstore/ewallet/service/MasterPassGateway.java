@@ -66,13 +66,13 @@ public class MasterPassGateway extends AbstractService implements IMasterPassSer
 			ResponseEntity<T> response = restTemplate.postForEntity(new URI(url), entity, clazz);
 			return response.getBody();
 		} catch (RestClientException e) {
-			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:" + url);
-			LOGGER.info("input json:" + inputJson);
+			LOGGER.error(e.getMessage());
+			LOGGER.error("api url:" + url);
+			LOGGER.error("input json:" + inputJson);
 			throw new FDResourceException("MasterPass API connection failure");
 		} catch (URISyntaxException e) {
-			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:" + url);
+			LOGGER.error(e.getMessage());
+			LOGGER.error("api url:" + url);
 			throw new FDResourceException("API syntax error");
 		}
 	}
@@ -89,25 +89,27 @@ public class MasterPassGateway extends AbstractService implements IMasterPassSer
 		try {
 			response = restTemplate.postForEntity(new URI(url), entity, String.class);
 			responseOfTypestring = getMapper().readValue(response.getBody(), type);
+			// This is only temp to verify in Dev environment 
+			LOGGER.info("MAsterPassGateWay : responseOfTypestring "+responseOfTypestring);
 		} catch (JsonParseException e) {
-			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:" + url);
+			LOGGER.error(e.getMessage());
+			LOGGER.error("api url:" + url);
 			throw new FDResourceException(e, "Json Parsing failure");
 		} catch (JsonMappingException e) {
-			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:" + url);
+			LOGGER.error(e.getMessage());
+			LOGGER.error("api url:" + url);
 			throw new FDResourceException(e, "Json Mapping failure");
 		} catch (IOException e) {
-			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:" + url);
+			LOGGER.error(e.getMessage());
+			LOGGER.error("api url:" + url);
 			throw new FDResourceException(e, "API connection failure");
 		} catch (RestClientException e) {
-			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:" + url);
+			LOGGER.error(e.getMessage());
+			LOGGER.error("api url:" + url);
 			throw new FDResourceException(e, "API connection failure");
 		} catch (URISyntaxException e) {
-			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:" + url);
+			LOGGER.error(e.getMessage());
+			LOGGER.error("api url:" + url);
 			throw new FDResourceException(e, "API Syntax failure");
 		}
 		
@@ -124,9 +126,12 @@ public class MasterPassGateway extends AbstractService implements IMasterPassSer
 		String inputJson = buildRequest(masterPassGatewayRequest);
 		MasterPassGatewayResponse  response = null;
 		try{
+		LOGGER.info("getExpressCheckoutData : Payload : "+inputJson);
 		  response = postDataTypeMap(inputJson,getMasterPassEndPoint(PRE_CHECKOUT_DATA_API),new TypeReference<MasterPassGatewayResponse>() {});
-
+		  if(response.getStatus().equals(com.freshdirect.payment.Result.STATUS_FAILED))
+			  throw new Exception(response.getStatusMessage());
 		}catch(Exception exception){
+			LOGGER.error(exception.getMessage());
 			exception.printStackTrace();
 			throw exception;
 		}
@@ -144,10 +149,13 @@ public class MasterPassGateway extends AbstractService implements IMasterPassSer
 		String inputJson = buildRequest(masterPassGatewayRequest);
 		MasterPassGatewayResponse  response = null;
 		try{
+		LOGGER.info("getExpressCheckoutData : Payload : "+inputJson);
 //		  response =  postData(inputJson, getEndPoint(EXPRESS_CHECKOUT_DATA_API), MasterPassGatewayResponse.class);
 		  response = postDataTypeMap(inputJson,getMasterPassEndPoint(EXPRESS_CHECKOUT_DATA_API),new TypeReference<MasterPassGatewayResponse>() {});
-
+		  if(response.getStatus().equals(com.freshdirect.payment.Result.STATUS_FAILED))
+			  throw new Exception(response.getStatusMessage());
 		}catch(Exception exception){
+			LOGGER.error(exception.getMessage());
 			exception.printStackTrace();
 			throw exception;
 		}
@@ -164,10 +172,13 @@ public class MasterPassGateway extends AbstractService implements IMasterPassSer
 		String inputJson = buildRequest(masterPassGatewayRequest);
 		MasterPassGatewayResponse  response = null;
 		try{
+		LOGGER.info("getPairingToken : Payload : "+inputJson);
 //		  response =  postData(inputJson, getEndPoint(PAIRIING_TOKEN_API), MasterPassGatewayResponse.class);
 		  response = postDataTypeMap(inputJson,getMasterPassEndPoint(PAIRIING_TOKEN_API),new TypeReference<MasterPassGatewayResponse>() {});
-
+		  if(response.getStatus().equals(com.freshdirect.payment.Result.STATUS_FAILED))
+			  throw new Exception(response.getStatusMessage());
 		}catch(Exception exception){
+			LOGGER.error(exception.getMessage());
 			exception.printStackTrace();
 			throw exception;
 		}
@@ -184,10 +195,13 @@ public class MasterPassGateway extends AbstractService implements IMasterPassSer
 		String inputJson = buildRequest(masterPassGatewayRequest);
 		MasterPassGatewayResponse  response = null;
 		try{
+			LOGGER.info("getAccessToken : Payload : "+inputJson);
 //		  response =  postData(inputJson, getEndPoint(ACCESS_TOKEN_API), MasterPassGatewayResponse.class);
 		  response = postDataTypeMap(inputJson,getMasterPassEndPoint(ACCESS_TOKEN_API),new TypeReference<MasterPassGatewayResponse>() {});
-
+		  if(response.getStatus().equals(com.freshdirect.payment.Result.STATUS_FAILED))
+			  throw new Exception(response.getStatusMessage());
 		}catch(Exception exception){
+			LOGGER.error(exception.getMessage());
 			exception.printStackTrace();
 			throw exception;
 		}
@@ -205,9 +219,13 @@ public class MasterPassGateway extends AbstractService implements IMasterPassSer
 		String inputJson = buildRequest(masterPassGatewayRequest);
 		MasterPassGatewayResponse  response = null;
 		try{
+			LOGGER.info("getLongAccessToken : Payload : "+inputJson);
 //		  response =  postData(inputJson, getEndPoint(LONG_ACCESS_TOKEN_API), MasterPassGatewayResponse.class);
 		  response = postDataTypeMap(inputJson,getMasterPassEndPoint(LONG_ACCESS_TOKEN_API),new TypeReference<MasterPassGatewayResponse>() {});
+		  if(response.getStatus().equals(com.freshdirect.payment.Result.STATUS_FAILED))
+			  throw new Exception(response.getStatusMessage());
 		}catch(Exception exception){
+			LOGGER.error(exception.getMessage());
 			exception.printStackTrace();
 			throw exception;
 		}
@@ -225,9 +243,13 @@ public class MasterPassGateway extends AbstractService implements IMasterPassSer
 		String inputJson = buildRequest(masterPassGatewayRequest);
 		MasterPassGatewayResponse  response = null;
 		try{
+			LOGGER.info("getCheckoutData : Payload : "+inputJson);
 //		  response =  postData(inputJson, getEndPoint(CHECKOUT_DATA_API), MasterPassGatewayResponse.class);
 		  response = postDataTypeMap(inputJson,getMasterPassEndPoint(CHECKOUT_DATA_API),new TypeReference<MasterPassGatewayResponse>() {});
+		  if(response.getStatus().equals(com.freshdirect.payment.Result.STATUS_FAILED))
+			  throw new Exception(response.getStatusMessage());
 		}catch(Exception exception){
+			LOGGER.error(exception.getMessage());
 			exception.printStackTrace();
 			throw exception;
 		}
@@ -246,9 +268,13 @@ public class MasterPassGateway extends AbstractService implements IMasterPassSer
 		MasterPassGatewayResponse  response = null;
 		
 		try{
+			LOGGER.info("getRequestTokenAndRedirectUrl : Payload : "+inputJson);
 		//  response =  postData(inputJson, getMasterPassEndPoint(REQUEST_TOK_REDURL_API), MasterPassGatewayResponse.class);
 		  response = postDataTypeMap(inputJson,getMasterPassEndPoint(REQUEST_TOK_REDURL_API),new TypeReference<MasterPassGatewayResponse>() {});
+		  if(response.getStatus().equals(com.freshdirect.payment.Result.STATUS_FAILED))
+			  throw new Exception(response.getStatusMessage());
 		}catch(Exception exception){
+			LOGGER.error(exception.getMessage());
 			exception.printStackTrace();
 			throw exception;
 		}
@@ -267,9 +293,13 @@ public class MasterPassGateway extends AbstractService implements IMasterPassSer
 		String inputJson = buildRequest(masterPassGatewayRequest);
 		MasterPassGatewayResponse  response = null;
 		try{
+			LOGGER.info("postShoppingCart : Payload : "+inputJson);
 //		  response =  postData(inputJson, getEndPoint(POST_SHOPPING_API), MasterPassGatewayResponse.class);
 		  response = postDataTypeMap(inputJson,getMasterPassEndPoint(POST_SHOPPING_API),new TypeReference<MasterPassGatewayResponse>() {});
+		  if(response.getStatus().equals(com.freshdirect.payment.Result.STATUS_FAILED))
+			  throw new Exception(response.getStatusMessage());
 		}catch(Exception exception){
+			LOGGER.error(exception.getMessage());
 			exception.printStackTrace();
 			throw exception;
 		}
@@ -287,10 +317,14 @@ public class MasterPassGateway extends AbstractService implements IMasterPassSer
 		String inputJson = buildRequest(masterPassGatewayRequest);
 		MasterPassGatewayResponse  response = null;
 		try{
+			LOGGER.info("postMerchantInit : Payload : "+inputJson);
 //		  response =  postData(inputJson, getEndPoint(POST_MERCHENT_INIT_API), MasterPassGatewayResponse.class);
 		  response = postDataTypeMap(inputJson,getMasterPassEndPoint(POST_MERCHENT_INIT_API),new TypeReference<MasterPassGatewayResponse>() {});
+		  if(response.getStatus().equals(com.freshdirect.payment.Result.STATUS_FAILED))
+			  throw new Exception(response.getStatusMessage());
 
 		}catch(Exception exception){
+			LOGGER.error(exception.getMessage());
 			exception.printStackTrace();
 			throw exception;
 		}
@@ -310,14 +344,17 @@ public class MasterPassGateway extends AbstractService implements IMasterPassSer
 		MasterPassGatewayResponse  response = null;
 		try{
 		inputJson = buildRequest(masterPassGatewayRequest);
-		
+		LOGGER.info("postCheckoutTransaction : Payload : "+inputJson);
 //		  response =  postData(inputJson, getEndPoint(POST_MERCHENT_INIT_API), MasterPassGatewayResponse.class);
 		  response = postDataTypeMap(inputJson,getMasterPassEndPoint(POST_MERCHENT_INIT_API),new TypeReference<MasterPassGatewayResponse>() {});
+		  if(response.getStatus().equals(com.freshdirect.payment.Result.STATUS_FAILED))
+			  throw new Exception(response.getStatusMessage());
 
 		}catch (FDPayPalServiceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}catch(Exception exception){
+			LOGGER.error(exception.getMessage());
 			exception.printStackTrace();
 			throw new MasterPassServiceRuntimeException(exception.getMessage());
 		}
