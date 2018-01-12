@@ -2,7 +2,6 @@ package com.freshdirect.webapp.util;
 
 
 import java.rmi.RemoteException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,6 +16,7 @@ import javax.ejb.CreateException;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
@@ -27,10 +27,8 @@ import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumNotificationType;
-import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumTransactionSource;
-import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpAddressVerificationException;
 import com.freshdirect.customer.ErpAuthorizationException;
@@ -84,15 +82,12 @@ import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
 import com.freshdirect.fdstore.lists.FDCustomerList;
 import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
-import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
-import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.fdstore.rules.FDRuleContextI;
 import com.freshdirect.fdstore.services.tax.AvalaraContext;
 import com.freshdirect.fdstore.standingorders.DeliveryInterval;
 import com.freshdirect.fdstore.standingorders.EnumStandingOrderAlternateDeliveryType;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode;
-import com.freshdirect.fdstore.standingorders.ejb.FDStandingOrderDAO;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderAltDeliveryDate;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.fdstore.standingorders.ProcessActionResult;
@@ -118,6 +113,7 @@ import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.storeapi.content.ProductReference;
 import com.freshdirect.webapp.ajax.expresscheckout.availability.service.AvailabilityService;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
+import com.freshdirect.webapp.taglib.fdstore.AddressUtil;
 import com.freshdirect.webapp.taglib.fdstore.DeliveryAddressValidator;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.PaymentMethodUtil;
@@ -534,7 +530,21 @@ public class StandingOrderUtil {
 		
 		FDDeliveryZoneInfo zoneInfo = null;
 		try {
-			zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(deliveryAddressModel, selectedTimeslot.getStartDateTime(), customerUser.getHistoricOrderSize(), selectedTimeslot.getRegionSvcType(), so.getCustomerId());
+			FDTimeslot timeSlot = FDDeliveryManager.getInstance()
+					.getTimeslotsById(selectedTimeslot.getId(),
+							deliveryAddressModel.getBuildingId(), true);
+			zoneInfo = timeSlot.getZoneInfo();
+
+			if (zoneInfo == null || StringUtils.isEmpty(zoneInfo.getZoneId())
+					|| FDStoreProperties.isRefreshZoneInfoEnabled()) {
+				zoneInfo = FDDeliveryManager.getInstance()
+						.getZoneInfo(deliveryAddressModel,
+								selectedTimeslot.getStartDateTime(),
+								customerUser.getHistoricOrderSize(),
+								selectedTimeslot.getRegionSvcType(),
+								so.getCustomerId());
+			}
+
 		} catch (FDInvalidAddressException e) {
 			LOGGER.info( "Invalid zone info. - FDInvalidAddressException", e );
 			return SOResult.createUserError( so, customer, customerInfo, ErrorCode.ADDRESS );
