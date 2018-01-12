@@ -28,6 +28,7 @@ import com.freshdirect.cms.changecontrol.entity.ContentChangeSetEntity;
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
+import com.freshdirect.cms.core.domain.ContentNodeComparatorUtil;
 import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.cms.core.domain.Relationship;
 import com.freshdirect.cms.core.domain.RootContentKey;
@@ -243,35 +244,41 @@ public class DraftContentProviderService extends ContextualContentProvider {
     @Override
     public Optional<ContentChangeSetEntity> updateContent(LinkedHashMap<ContentKey, Map<Attribute, Object>> payload, ContentUpdateContext context) {
         Optional<ContentChangeSetEntity> updateResult = Optional.absent();
-
-        if (draftContextHolder.getDraftContext().isMainDraft()) {
+        DraftContext draftContext = draftContextHolder.getDraftContext();
+        
+        if (draftContext.isMainDraft()) {
             updateResult = contentProviderService.updateContent(payload, context);
+            
             cacheManager.getCache(DRAFT_NODES_CACHE).clear();
             cacheManager.getCache(DRAFT_PARENT_CACHE).clear();
+
+            sendContentChangedNotification(draftContext, payload.keySet());
         } else {
-            Map<ContentKey, Map<Attribute, Object>> originalNodes = collectOriginalNodes(payload);
-            List<DraftChange> draftChanges = draftChangeExtractorService.extractChangesFromRequest(payload, originalNodes, draftContextHolder.getDraftContext(),
-                    context.getAuthor());
-            if (!draftChanges.isEmpty()) {
+            if (ContentNodeComparatorUtil.isChanged(payload, collectOriginalNodes(payload))) {
+                // Note: validate changes the payload, so we have to recalculate anything dependent on it!
                 validateContent(payload);
 
-                originalNodes = collectOriginalNodes(payload);
-                draftChanges = draftChangeExtractorService.extractChangesFromRequest(payload, originalNodes, draftContextHolder.getDraftContext(), context.getAuthor());
-                invalidateDraftNodesCacheEntry(draftContextHolder.getDraftContext());
-                draftService.saveDraftChange(draftChanges);
-                updateDraftParentCacheForKeys(payload.keySet(), collectChildKeysOf(originalNodes));
+                Map<ContentKey, Map<Attribute, Object>> originalNodes = collectOriginalNodes(payload);
+                Set<ContentKey> keysToInvalidate = collectKeysForCacheInvalidation(payload.keySet(), collectChildKeysOf(originalNodes));
+                
+                invalidateDraftNodesCacheEntry(draftContext);
+                draftService.saveDraftChange(draftChangeExtractorService.extractChangesFromRequest(payload, originalNodes, draftContext, context.getAuthor()));
+                invalidateDraftParentCacheForKeysOnDraft(keysToInvalidate);
+                
+                sendContentChangedNotification(draftContext, keysToInvalidate);
             }
         }
-
-        try {
-            eventPublisher.publishEvent(new ContentChangedEvent(this, draftContextHolder.getDraftContext(), payload.keySet()));
-        } catch (Exception e) {
-            LOGGER.error("Failed to notify preview about cms change", e);
-        }
-
         return updateResult;
     }
 
+    private void sendContentChangedNotification(DraftContext draftContext, Set<ContentKey> contentKeys) {
+        try {
+            eventPublisher.publishEvent(new ContentChangedEvent(this, draftContext, contentKeys));
+        } catch (Exception e) {
+            LOGGER.error("Failed to notify preview about cms change", e);
+        }
+    }
+    
     public void updateDraftParentCacheForKeys(Set<ContentKey> contentKeys, Set<ContentKey> additionalKeys) {
         Set<ContentKey> effectedKeys = collectKeysForCacheInvalidation(contentKeys, additionalKeys);
         invalidateDraftParentCacheForKeysOnDraft(effectedKeys);

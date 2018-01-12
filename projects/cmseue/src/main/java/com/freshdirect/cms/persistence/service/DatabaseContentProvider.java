@@ -705,7 +705,7 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
             final Object changedValue = entry.getValue();
             final Object originalValue = originalValues.get(attr);
 
-            if (ContentNodeComparatorUtil.isValueChanged(attr, originalValue, changedValue)) {
+            if (ContentNodeComparatorUtil.isValueChanged(originalValue, changedValue)) {
                 ContentChangeDetailEntity detail = null;
 
                 if (attr instanceof Scalar) {

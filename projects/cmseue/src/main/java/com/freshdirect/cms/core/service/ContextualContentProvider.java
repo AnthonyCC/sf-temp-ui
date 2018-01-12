@@ -342,7 +342,7 @@ public abstract class ContextualContentProvider {
             Map<Attribute, Object> originalAttrMap = getAllAttributesForContentKey(key);
             if (ContentNodeComparatorUtil.isNodeChanged(originalAttrMap, modifiedAttrMap)) {
                 for (Attribute attribute : modifiedAttrMap.keySet()) {
-                    if (ContentNodeComparatorUtil.isValueChanged(attribute, originalAttrMap.get(attribute), modifiedAttrMap.get(attribute))) {
+                    if (ContentNodeComparatorUtil.isValueChanged(originalAttrMap.get(attribute), modifiedAttrMap.get(attribute))) {
                         Map<Attribute, Object> attrs = payload.get(key);
                         if (attrs == null) {
                             attrs = new HashMap<Attribute, Object>();

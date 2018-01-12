@@ -41,25 +41,21 @@ public class DraftChangeExtractorService {
      * @param nodes
      * @return
      */
-    public List<DraftChange> extractChanges(Map<ContentKey, Map<Attribute, Object>> nodes, Map<ContentKey, Map<Attribute, Object>> originalNodes, final String userName,
-            final Draft draft) {
+    public List<DraftChange> extractChanges(Map<ContentKey, Map<Attribute, Object>> nodes, Map<ContentKey, Map<Attribute, Object>> originalNodes,
+            final String userName, final Draft draft) {
         if (nodes == null || nodes.isEmpty()) {
             return Collections.emptyList();
         }
 
         List<DraftChange> changes = new ArrayList<DraftChange>();
-
         for (ContentKey nodeKey : nodes.keySet()) {
-
             if (ContentNodeComparatorUtil.isNodeChanged(nodes.get(nodeKey), originalNodes.get(nodeKey))) {
-
                 List<DraftChange> list = processNodeChanges(nodeKey, nodes.get(nodeKey), originalNodes.get(nodeKey), userName, draft);
                 if (list != null && !list.isEmpty()) {
                     changes.addAll(list);
                 }
             }
         }
-
         return changes;
     }
 
@@ -111,7 +107,7 @@ public class DraftChangeExtractorService {
                 continue;
             }
 
-            if (ContentNodeComparatorUtil.isValueChanged(attributeDefinition, originalNode.get(attributeDefinition), changedNode.get(attributeDefinition))) {
+            if (ContentNodeComparatorUtil.isValueChanged(originalNode.get(attributeDefinition), changedNode.get(attributeDefinition))) {
                 // prepare draft change
                 final DraftChange dc = new DraftChange();
 
