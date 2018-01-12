@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
+//import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
@@ -94,8 +94,8 @@ public class AgeVerificationControllerTag extends com.freshdirect.framework.weba
 				HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
 				try {
 					response.sendRedirect(response.encodeRedirectURL(this.successPage));
-					JspWriter writer = pageContext.getOut();
-					writer.close();
+					//JspWriter writer = pageContext.getOut();
+					//writer.close();
 				} catch (IOException ioe) {
 					throw new JspException(ioe.getMessage());
 				}
