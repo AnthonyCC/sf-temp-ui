@@ -30,7 +30,7 @@
 	}
 	
 	//PASS 1 of 3.  Basic customer vars only defined here.	
-	if( FDStoreProperties.isExtoleRafEnabled() && (((user_e1 != null) && (isValidPage == true)) || isSignupPage == true) ){
+	if( FDStoreProperties.isExtoleRafEnabled() && (((user_e1 != null) && (isValidPage == true)) || isSignupPage == true) && (user_e1 != null && !user_e1.isCorporateUser()) ){
 		
 		int user_getLevel = user_e1.getLevel();
 	
