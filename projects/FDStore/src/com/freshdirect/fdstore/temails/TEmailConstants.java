@@ -19,6 +19,7 @@ public final class TEmailConstants {
 	public static final String ORDER_IS_DELIVERY_PASS="order_is_delivery_pass";
 	public static final String ORDER_TYPE="order_type";
 	public static final String GC_DLV_INFO="giftcard_delivery_info";
+	public static final String SERVICE_TYPE="SERVICE_TYPE";
 	
 	public static final String CUSTOMER_COMPLAINTS="cust_complaints";
 	public static final String RECIPE="recipe";
@@ -36,6 +37,7 @@ public final class TEmailConstants {
 	
 	public static final String ESTORE_ID= "EstoreID";
 	public static final String COHORT_ID= "CohortID";
+	public static final String CUSTOMER_ID= "CustomerID";
 	
 	
 }

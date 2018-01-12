@@ -74,55 +74,59 @@ public class SilverpopTranMailServiceImpl implements TranMailServiceI {
 
 	public String sendTranEmail(TEmailI emailInfo) throws TranEmailServiceException {
 
-		// Example of a custom, non-cheetahmail.com URI.
-		// System.setProperty("CheetahClient.forceURIBase",
-		// "https://example.com/emb/");
-
 		LOGGER.debug("generating temail for : " + emailInfo.getRecipient());
-		System.out.println(this.getClass().getName() + "  generating Temail for : " + emailInfo.getRecipient());
+		// System.out.println(this.getClass().getName() + " generating Temail
+		// for : " + emailInfo.getRecipient());
 		// String response="OK";
-		//try {
+		// try {
 
-			String xmlAsString = emailInfo.getEmailContent();
+		String xmlAsString = emailInfo.getEmailContent();
 
-			SilverpopEmailCampaignXmlHttpsPoster silverPopPoster = new SilverpopEmailCampaignXmlHttpsPoster();
-			System.out.println("**********************this is the xml as string: |||||||");
-			System.out.println(xmlAsString);
-			System.out.println("|||||||*****************this is the xml as string: |||||||");
-			System.out.println(">>>> this is what is in the email content field: >>>>>>>>");
-			System.out.println(emailInfo.getEmailContent());
-			System.out.println("<<<<< this is what is in the email content field: <<<<<<<");
-			SilverpopPostReturnValue retvalue = null;
-			try {
-				// String accessToken = auth.getIBMCampaignAccessToken();
-				String accessToken = getIBMAccessTokenThruCache();
-				retvalue = silverPopPoster.httpsPostWatsonEmailCampaignWithToken(xmlAsString, accessToken);
-			} catch (OAuthenticationException e) {
+		SilverpopEmailCampaignXmlHttpsPoster silverPopPoster = new SilverpopEmailCampaignXmlHttpsPoster();
+		// System.out.println("**********************this is the xml as string:
+		// |||||||");
+		// System.out.println(xmlAsString);
+		// System.out.println("|||||||*****************this is the xml as
+		// string: |||||||");
+		// System.out.println(">>>> this is what is in the email content field:
+		// >>>>>>>>");
+		// System.out.println(emailInfo.getEmailContent());
+		// System.out.println("<<<<< this is what is in the email content field:
+		// <<<<<<<");
+		SilverpopPostReturnValue retvalue = null;
+		try {
+			// String accessToken = auth.getIBMCampaignAccessToken();
+			String accessToken = getIBMAccessTokenThruCache();
+			retvalue = silverPopPoster.httpsPostWatsonEmailCampaignWithToken(xmlAsString, accessToken);
+		} catch (OAuthenticationException e) {
 
-				e.printStackTrace();
-				throw new TranEmailServiceException("authorization Failure ", e);
-			}
+			e.printStackTrace();
+			throw new TranEmailServiceException(this.getClass().getSimpleName() + " Silverpop authorization Failure ",
+					e);
+		}
 
-			// the above do something with
-			//Map<String, String> errMap = null;// new HashMap<String, String>();
-			SilverpopXmlResponseParser responseParser = new SilverpopXmlResponseParser();
-			System.out.println("im about to parse the response body I got from silverpop\n\r");
-			System.out.println(retvalue.getPostReturnBody()+ " \n\r");
-			
-			//String silverpopResponseStr = responseParser.processXmlErrors(retvalue.getPostReturnBody() );
-			String methodRetStr="";
-			
-			
-			
-			if (retvalue.getRetcode() != 200) {
-				methodRetStr="FAIL : "+ retvalue.getPostReturnBody();
-			}else{
-				methodRetStr="OK : "+ retvalue.getPostReturnBody();
-			}
+		// the above do something with
+		// Map<String, String> errMap = null;// new HashMap<String, String>();
+		SilverpopXmlResponseParser responseParser = new SilverpopXmlResponseParser();
+		// System.out.println("im about to parse the response body I got from
+		// silverpop\n\r");
+		// System.out.println(retvalue.getPostReturnBody()+ " \n\r");
 
-		 return methodRetStr;	
-		//} 
-			
+		// String silverpopResponseStr =
+		// responseParser.processXmlErrors(retvalue.getPostReturnBody() );
+		String methodRetStr = "";
+
+		if (retvalue.getRetcode() != 200) {
+			methodRetStr = "FAIL : " + retvalue.getPostReturnBody();
+			LOGGER.error(String.format(" ERROR in silverpop post, ret was %s, message for  %s ", emailInfo,
+					retvalue.getRetcode(), emailInfo.getId()));
+		} else {
+			methodRetStr = "OK : " + retvalue.getPostReturnBody();
+		}
+
+		return methodRetStr;
+		// }
+
 	}
 
 	private String unpackMapIntoString(Map<String, String> inmap) {
@@ -136,13 +140,12 @@ public class SilverpopTranMailServiceImpl implements TranMailServiceI {
 
 	}
 
-	
-	public Map <String, String >parseWarningResponse(String xmlInput) {
+	public Map<String, String> parseWarningResponse(String xmlInput) {
 
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 
-		String[] errorsToLookFor = {"SUCCESS","FaultCode","FaultString","errorid"};
-		Map <String, String > errMap = new HashMap <String, String >();
+		String[] errorsToLookFor = { "SUCCESS", "FaultCode", "FaultString", "errorid" };
+		Map<String, String> errMap = new HashMap<String, String>();
 		try {
 			InputStream inputStream = new ByteArrayInputStream(xmlInput.getBytes("UTF-8"));
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -156,42 +159,44 @@ public class SilverpopTranMailServiceImpl implements TranMailServiceI {
 			NodeList nodes = element.getChildNodes();
 
 			// print the text content of each child
-			for (int i = 0; i < nodes.getLength(); i++) {
-				System.out.println(i+ " node: "+ nodes.item(i).getNodeName()+ ":" + nodes.item(i).getTextContent());
-			}
-			
-			for (String errorToLookFor: Arrays.asList(    errorsToLookFor) ){
-			String err=	processDocForErrors(errorToLookFor,doc);
-			if (! err.isEmpty()){
-				errMap.put(errorToLookFor, err);
-			}
-			}
-			processDocForErrors("SUCCESS",doc);
-			processDocForErrors("FaultCode",doc);
-			processDocForErrors("FaultString",doc);
-			processDocForErrors("errorid",doc);
+			// for (int i = 0; i < nodes.getLength(); i++) {
+			// System.out.println(i+ " node: "+ nodes.item(i).getNodeName()+ ":"
+			// + nodes.item(i).getTextContent());
+			// }
 
-			processDocForErrors("UNKNOWN",doc);
-//			  NodeList nList = doc.getElementsByTagName("SUCCESS");
-//			  process (nList);
-//			  
-//			  nList = doc.getElementsByTagName("FaultCode");
-//			  process (nList);
-//			  
-//			  nList = doc.getElementsByTagName("FaultString");
-//			  process (nList);
-//			  
-//			  nList = doc.getElementsByTagName("errorid");
-//			  process (nList);
-			  
-			  
-//			  if ( nList!=null ){
-//				  System.out.println("---------------------------- nlist.length: "+nList.getLength());
-//				  System.out.println("  the value of success is :"+ nList.item(0).getTextContent() +"|");
-//				  Node nNode = nList.item(0) ;
-//		            System.out.println("\nCurrent Element :" + nNode.getNodeName());
-//				  
-//			  }
+			for (String errorToLookFor : Arrays.asList(errorsToLookFor)) {
+				String err = processDocForErrors(errorToLookFor, doc);
+				if (!err.isEmpty()) {
+					errMap.put(errorToLookFor, err);
+				}
+			}
+			processDocForErrors("SUCCESS", doc);
+			processDocForErrors("FaultCode", doc);
+			processDocForErrors("FaultString", doc);
+			processDocForErrors("errorid", doc);
+
+			processDocForErrors("UNKNOWN", doc);
+			// NodeList nList = doc.getElementsByTagName("SUCCESS");
+			// process (nList);
+			//
+			// nList = doc.getElementsByTagName("FaultCode");
+			// process (nList);
+			//
+			// nList = doc.getElementsByTagName("FaultString");
+			// process (nList);
+			//
+			// nList = doc.getElementsByTagName("errorid");
+			// process (nList);
+
+			// if ( nList!=null ){
+			// System.out.println("---------------------------- nlist.length:
+			// "+nList.getLength());
+			// System.out.println(" the value of success is :"+
+			// nList.item(0).getTextContent() +"|");
+			// Node nNode = nList.item(0) ;
+			// System.out.println("\nCurrent Element :" + nNode.getNodeName());
+			//
+			// }
 		} catch (SAXException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -202,13 +207,15 @@ public class SilverpopTranMailServiceImpl implements TranMailServiceI {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		return  errMap;
+
+		return errMap;
 
 	}
-	/* this is the early response parser before I broke it out into its own class
-	 * Im leaving it here during testing as a fallback when I get unusual behaviour
-	 * Newer doesnt mean better. This thing works.
+
+	/*
+	 * this is the early response parser before I broke it out into its own
+	 * class Im leaving it here during testing as a fallback when I get unusual
+	 * behaviour Newer doesnt mean better. This thing works.
 	 */
 	@Deprecated
 	public Map<String, String> parseErrorResponse(String xmlInput) {
@@ -230,9 +237,10 @@ public class SilverpopTranMailServiceImpl implements TranMailServiceI {
 			NodeList nodes = element.getChildNodes();
 
 			// print the text content of each child
-			for (int i = 0; i < nodes.getLength(); i++) {
-				System.out.println(i + " node: " + nodes.item(i).getNodeName() + ":" + nodes.item(i).getTextContent());
-			}
+			// for (int i = 0; i < nodes.getLength(); i++) {
+			// System.out.println(i + " node: " + nodes.item(i).getNodeName() +
+			// ":" + nodes.item(i).getTextContent());
+			// }
 
 			for (String errorToLookFor : Arrays.asList(errorsToLookFor)) {
 				String err = processDocForErrors(errorToLookFor, doc);
@@ -292,8 +300,9 @@ public class SilverpopTranMailServiceImpl implements TranMailServiceI {
 		if (nList != null && nList.item(0) != null) {
 			// System.out.println("---------------------------- nlist.length:
 			// "+nList.getLength());
-			System.out.println("  the value of the node named: " + nList.item(0).getNodeName() + " is :"
-					+ nList.item(0).getTextContent() + "|");
+			// System.out.println(" the value of the node named: " +
+			// nList.item(0).getNodeName() + " is :"
+			// + nList.item(0).getTextContent() + "|");
 			retString = nList.item(0).getTextContent();
 			// System.out.println("\nCurrent Element :" + nNode.getNodeName());
 		}
@@ -321,51 +330,51 @@ public class SilverpopTranMailServiceImpl implements TranMailServiceI {
 		}
 	}
 
-	public Map fillContentParams(Map params, String contents) {
-
-		String lines[] = contents.split("&&");
-		if (lines != null && lines.length > 0) {
-
-			for (int i = 0; i < lines.length; i++) {
-
-				String line = lines[i];
-				if (line == null || line.trim().length() == 0)
-					continue;
-				String value = line.substring(line.indexOf("=") + 1);
-				String key = line.substring(0, line.indexOf("="));
-				if (key.startsWith("ENCRYPT[")) {
-					key = key.substring(key.indexOf("[") + 1, key.length() - 1);
-					value = ErpGiftCardUtil.decryptGivexNum(value);
-					System.out.println("encrypted key :" + key);
-					System.out.println("encrypted value :" + value);
-				}
-				params.put(key, value);
-			}
-		}
-
-		/*
-		 * StringTokenizer tokens=new StringTokenizer(contents,"&&");
-		 * while(tokens.hasMoreElements()){ String line=tokens.nextToken();
-		 * if(line==null || line.trim().length()==0) continue; String
-		 * value=line.substring(line.indexOf("=")+1); String
-		 * key=line.substring(0, line.indexOf("="));
-		 * 
-		 * if(key.startsWith("ENCRYPT[")){
-		 * key=key.substring(key.indexOf("[")+1,key.length()-1);
-		 * value=ErpGiftCardUtil.decryptGivexNum(value);
-		 * 
-		 * System.out.println("encrypted key :"+key); System.out.println(
-		 * "encrypted value :"+value);
-		 * 
-		 * }
-		 * 
-		 * params.put(key, value); }
-		 */
-		return params;
-	}
+	// public Map fillContentParams(Map params, String contents) {
+	//
+	// String lines[] = contents.split("&&");
+	// if (lines != null && lines.length > 0) {
+	//
+	// for (int i = 0; i < lines.length; i++) {
+	//
+	// String line = lines[i];
+	// if (line == null || line.trim().length() == 0)
+	// continue;
+	// String value = line.substring(line.indexOf("=") + 1);
+	// String key = line.substring(0, line.indexOf("="));
+	// if (key.startsWith("ENCRYPT[")) {
+	// key = key.substring(key.indexOf("[") + 1, key.length() - 1);
+	// value = ErpGiftCardUtil.decryptGivexNum(value);
+	//// System.out.println("encrypted key :" + key);
+	//// System.out.println("encrypted value :" + value);
+	// }
+	// params.put(key, value);
+	// }
+	// }
+	//
+	// /*
+	// * StringTokenizer tokens=new StringTokenizer(contents,"&&");
+	// * while(tokens.hasMoreElements()){ String line=tokens.nextToken();
+	// * if(line==null || line.trim().length()==0) continue; String
+	// * value=line.substring(line.indexOf("=")+1); String
+	// * key=line.substring(0, line.indexOf("="));
+	// *
+	// * if(key.startsWith("ENCRYPT[")){
+	// * key=key.substring(key.indexOf("[")+1,key.length()-1);
+	// * value=ErpGiftCardUtil.decryptGivexNum(value);
+	// *
+	// * System.out.println("encrypted key :"+key); System.out.println(
+	// * "encrypted value :"+value);
+	// *
+	// * }
+	// *
+	// * params.put(key, value); }
+	// */
+	// return params;
+	// }
 
 	// generally a bad idea to have parameters string string string together
-	// like this
+	// like this. if anybody ups parameters from 4 to 5, RETHINK THIS!
 	public String generateEmailXml(String campaignCode, String emailAddress, String firstName, String customerId) {
 		try {
 
@@ -412,22 +421,23 @@ public class SilverpopTranMailServiceImpl implements TranMailServiceI {
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();
 
-			DOMSource source = new DOMSource(doc);
-			StreamResult result = new StreamResult(new File("C:/FreshDirectTrunk/writedocument.xml"));
+			// DOMSource source = new DOMSource(doc);
+			// StreamResult result = new StreamResult(new
+			// File("C:/FreshDirectTrunk/writedocument.xml"));
 
 			// Output to console for testing
 			// StreamResult result = new StreamResult(System.out);
 
-			transformer.transform(source, result);
+			// transformer.transform(source, result);
 
 			StringWriter writer = new StringWriter();
 			transformer.transform(new DOMSource(doc), new StreamResult(writer));
 			String xmlOutputAsStr = writer.getBuffer().toString();
 			// String xmlOutputAsStr =
 			// writer.getBuffer().toString().replaceAll("\n|\r", "");
-			System.out.println("document: " + xmlOutputAsStr);
+			// System.out.println("document: " + xmlOutputAsStr);
 
-			System.out.println("File saved!");
+			// System.out.println("File saved!");
 			return xmlOutputAsStr;
 
 		} catch (ParserConfigurationException pce) {
@@ -530,14 +540,16 @@ public class SilverpopTranMailServiceImpl implements TranMailServiceI {
 
 					IBM_ACCESS_TOKEN = auth.getIBMCampaignAccessToken();
 					lastRefresh = t;
-					System.out.println(this.getClass().getName() + " getting token creating it! " + IBM_ACCESS_TOKEN);
+					// System.out.println(this.getClass().getName() + " getting
+					// token creating it! " + IBM_ACCESS_TOKEN);
 					LOGGER.info("regenerated token ");
 
 				}
 			}
 		} else {
-			System.out
-					.println(this.getClass().getName() + " %%%%%%%%%%% getting token thru cache! " + IBM_ACCESS_TOKEN);
+			// System.out
+			// .println(this.getClass().getName() + " %%%%%%%%%%% getting token
+			// thru cache! " + IBM_ACCESS_TOKEN);
 		}
 		return IBM_ACCESS_TOKEN;
 	}

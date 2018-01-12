@@ -1902,7 +1902,7 @@ public class FDStoreProperties {
         defaults.put(IBM_CAMPAIGN_CLIENT_SECRET, "e1a1982c-9d7b-480d-b871-f76354ce8cce");
         
         defaults.put(IBM_REFRESH_TOKEN, "r_3872jS_Gh7VmanX2TcazBB_MJ1C_RBqbJWY6gvh3koS1");
-        defaults.put(IBM_CAMPAIGN_REFRESH_TOKEN, "rqeZfstHf754FkCIR2K5NC6O0IVE6ZxqQbBM_X1gTDcsS1");
+        defaults.put(IBM_CAMPAIGN_REFRESH_TOKEN, "rqeZfstHf754FkCIR2K5NC6O0IVE6ZxqQbBM_X1gTDcsS1");//"rqeZfstHf754FkCIR2K5NC6O0IVE6ZxqQbBM_X1gTDcsS1"
      
         defaults.put(PAYMENT_TLSSHA_ENABLED,"true");
         defaults.put(PROP_PAYMENT_VERIFICATION_ENABLED, "true");

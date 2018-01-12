@@ -2,9 +2,13 @@ package com.freshdirect.mail.service;
 
 import java.io.File;
 import org.apache.commons.lang.CharEncoding;
+import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.FDStoreProperties;
 //import com.freshdirect.fdstore.silverpopup.util.OAuthAuthenticationRestServiceImpl;
+
+import com.freshdirect.framework.util.log.LoggerFactory;
+
 
 
 import java.io.IOException;
@@ -14,6 +18,8 @@ import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.PostMethod;
 
 public class SilverpopEmailCampaignXmlHttpsPoster {
+	
+	private static Category LOGGER = LoggerFactory.getInstance( SilverpopEmailCampaignXmlHttpsPoster.class );
 	public static final String CHARENCODING_ISO_8859_1 = CharEncoding.ISO_8859_1;
 	public static final String CHARENCODING_UTF8 = CharEncoding.UTF_8;
 
@@ -44,7 +50,7 @@ public class SilverpopEmailCampaignXmlHttpsPoster {
     	SilverpopPostReturnValue retvalue=null;
       //  String strURLTest = "http://httpbin.org/post";
         String strURL=    FDStoreProperties.getIBMWatsonEmailCampaignUrl();
-        System.out.println("+++++++++++++++++ ibmsilverpop url is:"+strURL );
+       // System.out.println("+++++++++++++++++ ibmsilverpop url is:"+strURL );
 
 
         // Prepare HTTP post
@@ -75,18 +81,20 @@ public class SilverpopEmailCampaignXmlHttpsPoster {
         	responseCode = httpclient.executeMethod(post);
 
             // Display status code
-            System.out.println("::Response status code: " + responseCode);
+          //  System.out.println("::Response status code: " + responseCode);
             
 
             // Display response
-            System.out.println("::silverpop xml post Response body:::::::: ");
-            System.out.println(post.getResponseBodyAsString());
+//            System.out.println("::silverpop xml post Response body:::::::: ");
+//            System.out.println(post.getResponseBodyAsString());
             SilverpopXmlResponseParser responseParser = new SilverpopXmlResponseParser();
             String formattedResponse= responseParser.processXmlErrors( post.getResponseBodyAsString());
+//            System.err.println(this.getClass().getName()+ " formatted response from silverpop is: "+ formattedResponse);
+            LOGGER.warn( "formatted response from silverpop is: "+ formattedResponse);
             SilverpopPostReturnValue silverpopReturnValue=    new  SilverpopPostReturnValue(responseCode,formattedResponse);
             retvalue= silverpopReturnValue;
            
-            System.out.println("::::END Response body: ");
+           // System.out.println("::::END Response body: ");
 
         } catch (HttpException e) {
 			// TODO Auto-generated catch block

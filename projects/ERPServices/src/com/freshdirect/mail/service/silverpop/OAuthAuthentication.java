@@ -31,11 +31,11 @@ public class OAuthAuthentication {
 	private HttpClient httpClient;
 	private String responseText;
 
+	public OAuthAuthentication() {
 
-	public OAuthAuthentication(){
-		
-	this( FDStoreProperties.getIBMAccessTokenURL() );
+		this(FDStoreProperties.getIBMAccessTokenURL());
 	}
+
 	public OAuthAuthentication(String url) {
 		this(url, new HttpClient());
 	}
@@ -46,28 +46,31 @@ public class OAuthAuthentication {
 	}
 
 	/**
-	 * @param clientId The client id as supplied from ibm silverpop
-	 * @param clientSecret  The clientSecret id as supplied from ibm silverpop
-	 * @param refereshToken The refereshToken id as supplied from ibm silverpop
+	 * @param clientId
+	 *            The client id as supplied from ibm silverpop
+	 * @param clientSecret
+	 *            The clientSecret id as supplied from ibm silverpop
+	 * @param refereshToken
+	 *            The refereshToken id as supplied from ibm silverpop
 	 * 
 	 * @return the value of the token to be used; blank if something goes amiss.
-	 * @throws OAuthenticationException 
+	 * @throws OAuthenticationException
 	 */
-	public String retrieveToken(String clientId, String clientSecret, String refereshToken) throws OAuthenticationException {
+	public String retrieveToken(String clientId, String clientSecret, String refereshToken)
+			throws OAuthenticationException {
 		PostMethod post = createPost(clientId, clientSecret, refereshToken);
 		String token = "";
 		try {
 			int responseCode = httpClient.executeMethod(post);
 			if (responseCode == 200) {
 				responseText = getResponseJson(post);
-				System.out.println(" ********response token "+ responseText);
+				// System.out.println(" ********response token "+ responseText);
 				token = getJsonElementFromJsonString(responseText, RESPONSE_TOKEN_KEY);
 
-			}
-			else{
+			} else {
 				responseText = getResponseJson(post);
-				System.out.println ("error response: "+ 	responseText );
-				throw new OAuthenticationException("ibm silverpop authentication exception; recieved: "+ responseCode);
+				// System.out.println ("error response: "+ responseText );
+				throw new OAuthenticationException("ibm silverpop authentication exception; recieved: " + responseCode);
 			}
 
 			// return getTokenFromResponse();
@@ -118,17 +121,19 @@ public class OAuthAuthentication {
 		return token;
 	}
 
-	public String  getIBMCampaignAccessToken() throws OAuthenticationException {
-		;
-		
-		System.out.println(this.getClass().getName() +" getIBMCampaignAccessToken()" + "accessUrl: "+ url);
-		String clientId = FDStoreProperties.getIBMCampaignClientID(); 				
-		String clientSecret = FDStoreProperties.getIBMCampaignClientSecret(); 		
-		String refreshToken = FDStoreProperties.getIBMCampaignRefreshToken();	
-		//String request = "PUSH-"+URLEncoder.encode(details.getQualifier(), "UTF-8") + "/" + URLEncoder.encode(details.getDestination(), "UTF-8");
-		//OAuthAuthentication service = new OAuthAuthentication(accessUrl);
+	public String getIBMCampaignAccessToken() throws OAuthenticationException {
+
+		// System.out.println(this.getClass().getName() +"
+		// getIBMCampaignAccessToken()" + "accessUrl: "+ url);
+		String clientId = FDStoreProperties.getIBMCampaignClientID();
+		String clientSecret = FDStoreProperties.getIBMCampaignClientSecret();
+		String refreshToken = FDStoreProperties.getIBMCampaignRefreshToken();
+		// String request = "PUSH-"+URLEncoder.encode(details.getQualifier(),
+		// "UTF-8") + "/" + URLEncoder.encode(details.getDestination(),
+		// "UTF-8");
+		// OAuthAuthentication service = new OAuthAuthentication(accessUrl);
 		String accessToken = this.retrieveToken(clientId, clientSecret, refreshToken);
-		
+
 		return accessToken;
 	}
 }

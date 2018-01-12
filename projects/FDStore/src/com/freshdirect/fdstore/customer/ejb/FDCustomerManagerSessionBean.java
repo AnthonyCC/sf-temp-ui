@@ -352,9 +352,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			// input.put(TEmailConstants.ORDER_INP_KEY, order);
 			EnumEStoreId estoreId = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
 			inputHashmap.put(TEmailConstants.CUSTOMER_ID_INP_KEY, emailInfo);
+			inputHashmap.put(TEmailConstants.SERVICE_TYPE,serviceType);
 			inputHashmap.put(TEmailConstants.EMAIL_TYPE,
 					emailInfo.isHtmlEmail() ? EnumEmailType.HTML.getName() : EnumEmailType.TEXT.getName());
 			inputHashmap.put(TEmailConstants.ESTORE_ID, estoreId);
+			
+			inputHashmap.put(TEmailConstants.CUSTOMER_ID,fdCustomer.getErpCustomerPK());
 
 			// APPDEV-2451 - fill in OAS parameters here
 			if (FDStoreProperties.isAdServerEnabled()) {

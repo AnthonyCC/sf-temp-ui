@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.StringWriter;
 import java.util.Map;
+import java.util.Random;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -35,6 +36,7 @@ import com.freshdirect.mail.EnumTranEmailType;
  * 
  */
 public class SilverpopTemplateXmlFactory {
+	Random rn = new Random();
 	
 	
 	
@@ -67,6 +69,7 @@ public class SilverpopTemplateXmlFactory {
 		String lName="";
 		String customerId="";
 		String templateID= templateInfo.getTemplateId();
+		//String customerId =  (String) parameterHashMap.get(TEmailConstants.CUSTOMER_ID);
 		FDCustomerInfo  customerInfo = 	 ( com.freshdirect.fdstore.customer.FDCustomerInfo) parameterHashMap.get(TEmailConstants.CUSTOMER_ID_INP_KEY);
 			 if (null!= customerInfo){
 				 emailAddress = customerInfo.getEmailAddress(); 
@@ -80,7 +83,10 @@ public class SilverpopTemplateXmlFactory {
 			 
 			FDOrderI fdOrder = context.getOrder();
 			if(  fdOrder!=null){
-				customerId=	fdOrder.getCustomerId();
+			 	customerId=	fdOrder.getCustomerId();
+			}
+			else{
+				customerId =  (String) parameterHashMap.get(TEmailConstants.CUSTOMER_ID);
 			}
 
 			xmlTemplateStr=	 generateRegistrationEmailXml( templateID, emailAddress,  fName,customerId, cohortId);
@@ -178,7 +184,7 @@ public class SilverpopTemplateXmlFactory {
 
 		private  void transaction(Document doc, Element rootElement) {
 			Element transaction = doc.createElement("TRANSACTION_ID");
-			transaction.appendChild(doc.createTextNode("test1234"));
+			transaction.appendChild(doc.createTextNode(randomStringNum()));
 			rootElement.appendChild(transaction);
 		}
 
@@ -255,6 +261,9 @@ private  void saveColumns(Document doc, Element rootElement) {
 	rootElement.appendChild(save);
 }
 		
-		
+	
+public  String randomStringNum(){
+	return( new Integer(  rn.nextInt(32760)).toString()   +   new Integer(  rn.nextInt(32760)).toString()) ;
+}
 
 }

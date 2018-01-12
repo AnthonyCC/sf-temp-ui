@@ -42,7 +42,7 @@ public class SilverpopXmlResponseParser {
 
 			SilverpopXmlResponseParser errorParser = new SilverpopXmlResponseParser();
 			String response = errorParser.processXmlErrors(stringBuffer.toString().trim());
-			System.out.println(" the error response was " + response);
+			//System.out.println(" the error response was " + response);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -50,7 +50,7 @@ public class SilverpopXmlResponseParser {
 	}
 
 	public String processXmlErrors(String xmlAsString) {
-		System.out.println(" processXmlErrors: xml as string \n\r" + xmlAsString);
+	//	System.out.println(" processXmlErrors: xml as string \n\r" + xmlAsString);
 		StringBuffer responseBuffer = new StringBuffer();
 		try {
 			// File inputFile = new
@@ -118,7 +118,7 @@ public class SilverpopXmlResponseParser {
 	 */
 	private String checkForError(String questionableString, String targetStr, String label) {
 		String errorString = "";
-		System.out.println(String.format("questionable string: %s, target :%s ", questionableString, targetStr));
+		//System.out.println(String.format("questionable string: %s, target :%s ", questionableString, targetStr));
 		if (!questionableString.trim().equalsIgnoreCase(targetStr)) {
 			errorString = (label + " =" + questionableString + ", ");
 		}

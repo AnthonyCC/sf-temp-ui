@@ -37,14 +37,14 @@ public class TMailMessageListener extends MessageDrivenBeanSupport implements Ma
 	private final static Category LOGGER = LoggerFactory.getInstance(TMailMessageListener.class);
 
 	public void onMessage(javax.jms.Message msg) {
-		// System.out.println(this.getClass().getSimpleName() + "recieved a
-		// message ");
+
 		LOGGER.debug(this.getClass().getSimpleName() + "recieved a message ");
 		if (!(msg instanceof TextMessage || msg instanceof ObjectMessage)) {
 			LOGGER.error("Not a TextMessage/ObjectMessage, consuming message");
 			// silently consume it, no point in throwing it back to the queue
 			return;
 		}
+
 
 		// get the object
 		// update the database status
@@ -82,31 +82,32 @@ public class TMailMessageListener extends MessageDrivenBeanSupport implements Ma
 
 	public String processAndSendTEmail(TEmailI tEmail) {
 		Connection conn = null;
+		SilverPopSendStatus silverPopSendStatus =null;
 		try {
 			/* TODO */
 			// turn this off before checkin
 			if (LOGGER.isDebugEnabled()) {
 				printMailI(tEmail);
 			}
-			{
-				conn = getConnection();
-				TMailerGatewayDAO.updateTransactionEmailInfoStatus(conn, tEmail.getId(),
-						EnumTEmailStatus.PROCESSING.getName(), null, null);
 
-				String statusStr = TMailerGatewayDAO.getTransactionEmailStatus(conn, tEmail.getId());
-				if (EnumTEmailStatus.SUCESS.getName().equalsIgnoreCase(statusStr)
-						|| EnumTEmailStatus.INFO.getName().equalsIgnoreCase(statusStr))
-					return "allready done";
+			conn = getConnection();
 
+			String statusStr = TMailerGatewayDAO.getTransactionEmailStatus(conn, tEmail.getId());
+			if (EnumTEmailStatus.SUCESS.getName().equalsIgnoreCase(statusStr)
+					|| EnumTEmailStatus.INFO.getName().equalsIgnoreCase(statusStr)) {
+				return "OK: Email was allready processed";
 			}
+
+			TMailerGatewayDAO.updateTransactionEmailInfoStatus(conn, tEmail.getId(),
+					EnumTEmailStatus.PROCESSING.getName(), null, null);
+
 			TranMailServiceI tranMailService = TranMailServiceFactory.getTranMailService(tEmail.getProvider());
 			String response = tranMailService.sendTranEmail(tEmail);
 
-			// System.out.println(this.getClass().getSimpleName() + " send
-			// XTEmail or whatever response :" + response);
-
-			SilverPopSendStatus enmStat = checkStatusOfTEmailResponse(response);
-			switch (enmStat) {
+			 silverPopSendStatus = checkStatusOfTEmailResponse(response);
+			 
+			 
+			switch (silverPopSendStatus) {
 			case OK: {
 				TMailerGatewayDAO.updateTransactionEmailInfoStatus(conn, tEmail.getId(),
 						EnumTEmailStatus.SUCESS.getName(), null, null);
@@ -118,10 +119,8 @@ public class TMailMessageListener extends MessageDrivenBeanSupport implements Ma
 
 			}
 				break;
-			case ERROR:
-
-			{
-
+			case ERROR:{
+				
 				insertTransactionEmailFailureInfo(tEmail, TranMailServiceI.ERROR_EXTERNAL, response);
 			}
 				break;
@@ -138,6 +137,12 @@ public class TMailMessageListener extends MessageDrivenBeanSupport implements Ma
 			insertTransactionEmailFailureInfo(tEmail, TranMailServiceI.ERROR_EXTERNAL, e.getMessage());
 		}
 
+		catch (TranEmailServiceException ex) {
+			
+
+			insertTransactionEmailFailureInfo(tEmail, TranMailServiceI.ERROR_EXTERNAL, ex.getMessage());
+		}
+		
 		catch (Exception e) {
 			e.printStackTrace();
 
@@ -150,7 +155,7 @@ public class TMailMessageListener extends MessageDrivenBeanSupport implements Ma
 				LOGGER.error("unknown exception closing connection", e);
 			}
 		} // finally
-		return "OK";
+		return silverPopSendStatus !=null? silverPopSendStatus.status: "OK";
 	}
 
 	/**
@@ -164,7 +169,7 @@ public class TMailMessageListener extends MessageDrivenBeanSupport implements Ma
 	public SilverPopSendStatus checkStatusOfTEmailResponse(String response) {
 		SilverPopSendStatus retstat;
 		if (response.contains("OK")) {
-			if (response.length() > 4) {
+			if (response.trim().length() > 4) {
 
 				retstat = SilverPopSendStatus.INFO;
 			} else {
@@ -178,6 +183,12 @@ public class TMailMessageListener extends MessageDrivenBeanSupport implements Ma
 
 	}
 
+	/**
+	 * Both UPDATES	 the Tanns_Email_master with a failure status as well as inserting an error into the  CUST.TRANS_EMAIL_ERROR_DETAILS table
+	 * @param tEmail
+	 * @param errorType
+	 * @param errorDesc
+	 */
 	public void insertTransactionEmailFailureInfo(TEmailI tEmail, String errorType, String errorDesc) {
 		Connection conn = null;
 
@@ -197,33 +208,33 @@ public class TMailMessageListener extends MessageDrivenBeanSupport implements Ma
 	}
 
 	private void printMailI(TEmailI mail) {
-		System.out.println(this.getClass().getSimpleName()
+		LOGGER.debug(this.getClass().getSimpleName()
 				+ " XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     printing out email info off of the queue: ");
-		System.out.println("getCustomerId  " + mail.getCustomerId());
-		System.out.println("getEmailContent  " + mail.getEmailContent());
-		System.out.println("getEmailStatus  " + mail.getEmailStatus());
-		System.out.println("getEmailTransactionType  " + mail.getEmailTransactionType());
-		System.out.println("getEmailType  " + mail.getEmailType());
+		LOGGER.debug("getCustomerId  " + mail.getCustomerId());
+		LOGGER.debug("getEmailContent  " + mail.getEmailContent());
+		LOGGER.debug("getEmailStatus  " + mail.getEmailStatus());
+		LOGGER.debug("getEmailTransactionType  " + mail.getEmailTransactionType());
+		LOGGER.debug("getEmailType  " + mail.getEmailType());
 
-		System.out.println("getId  " + mail.getId());
+		LOGGER.debug("getId  " + mail.getId());
 
-		System.out.println("getOasQueryString  " + mail.getOasQueryString());
+		LOGGER.debug("getOasQueryString  " + mail.getOasQueryString());
 
-		System.out.println("getOrderId  " + mail.getOrderId());
+		LOGGER.debug("getOrderId  " + mail.getOrderId());
 
-		System.out.println("getProvider  " + mail.getProvider());
+		LOGGER.debug("getProvider  " + mail.getProvider());
 
-		System.out.println("getRecipient  " + mail.getRecipient());
+		LOGGER.debug("getRecipient  " + mail.getRecipient());
 
-		System.out.println("getSubject  " + mail.getSubject());
+		LOGGER.debug("getSubject  " + mail.getSubject());
 
-		System.out.println("getTargetProgId  " + mail.getTargetProgId());
+		LOGGER.debug("getTargetProgId  " + mail.getTargetProgId());
 
-		System.out.println("getTemplateId  " + mail.getTemplateId());
+		LOGGER.debug("getTemplateId  " + mail.getTemplateId());
 
-		System.out.println("getBCCList  " + mail.getBCCList());
+		LOGGER.debug("getBCCList  " + mail.getBCCList());
 
-		System.out.println("getFromAddress  " + mail.getFromAddress());
+		LOGGER.debug("getFromAddress  " + mail.getFromAddress());
 
 	}
 
