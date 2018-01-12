@@ -630,24 +630,31 @@ public class SinglePageCheckoutFacade {
         	 List<PaymentData> userPaymentMethods = paymentService.loadUserPaymentMethods(user, request, paymentMethods);
         	 
         	//APPDEV-6765
-        	 FDCartModel mCart = user.getShoppingCart();
+             FDCartModel mCart = user.getShoppingCart();
              if (mCart instanceof FDModifyCartModel && !StandingOrderHelper.isSO3StandingOrder(user)) {
                  FDModifyCartModel modifyCart = (FDModifyCartModel) mCart;
                  String orderId = modifyCart.getOriginalOrder().getErpSalesId();
                  try {
-                     FDOrderI order = FDCustomerManager.getOrder(orderId);
-                     for(PaymentData PM : userPaymentMethods){
-             			if(PM.getId().equalsIgnoreCase(order.getPaymentMethod().getPK().getId()) ){
-             				PM.setSelected(true);
-             			}else{
-             				PM.setSelected(false);
-             			}
-             		}
-             		formPaymentData.setSelected(order.getPaymentMethod().getPK().getId());
+//                      FDOrderI order = FDCustomerManager.getOrder(orderId);
+                     if(null !=modifyCart.getPaymentMethod() && null !=modifyCart.getPaymentMethod().getPK()){
+                    	 String cartPaymentMethodPK= modifyCart.getPaymentMethod().getPK().getId();
+                          for(PaymentData PM : userPaymentMethods){
+                              if(PM.getId().equalsIgnoreCase(cartPaymentMethodPK) ){
+                            	  formPaymentData.setSelected(cartPaymentMethodPK);
+                                  PM.setSelected(true);
+                              }else{
+                                  PM.setSelected(false);
+                              }
+                           }
+                          
+                     }else{
+                         FDOrderI order = FDCustomerManager.getOrder(orderId);
+                         formPaymentData.setSelected(modifyCart.getOriginalOrder().getPaymentMethod().getPK().getId());
+                     }
                  } catch (FDResourceException e) {
                      LOGGER.error("Error while retreiving order details order id" + orderId);
                  }
-			} else {
+             } else {
 				boolean readyToBreak = false;
 				for (PaymentData data : userPaymentMethods) {
 					if (data.isSelected()) {
