@@ -34,6 +34,8 @@
 
 <%
 	//Sample URL : http://localhost:7001/test/product/fp.jsp?pageType=browse&id=fp&rbl=3&dbl=10&pbl=10000&cn=false&cbis=false
+	// https://dev1.nj01/test/product/fp.jsp?pageType=browse&id=fp&rbl=4&dbl=40&pbl=10000&cn=false&cbis=false
+	// http://localhost:7001/test/product/fp.jsp?pageType=browse&id=fp&rbl=4&dbl=40&pbl=10000&cn=false&cbis=false
 	double ratingBaseLine = 4;
 	double popularityBaseLine = 10000;
 	double dealsBaseLine = 30;
@@ -95,10 +97,12 @@
 			
 			sectionData = new SectionData();
 			if(sectionCount == 0) {			
-				sectionData.setHeaderText(".......................Your Fav that might INTEREST U!............................");
+				sectionData.setHeaderText("Your favorites with atleast "+ (int)ratingBaseLine + " star rating or " + (int)dealsBaseLine + "% discount " + (considerBackInStock ? "is back in stock" : "")); 
+				//.......................Your Fav that might INTEREST U!............................");
 				//sectionData.setMiddleMedia("https://lorempixel.com/800/100/food/2/");
 			} else {
-				sectionData.setHeaderText(".......................Our Fav that might INTEREST U!..............................");
+				sectionData.setHeaderText("Our favorites with atleast "+ (int)ratingBaseLine + " star rating or " + (int)dealsBaseLine + "% discount " + (considerBackInStock ? "is back in stock" : ""));
+				//sectionData.setHeaderText(".......................Our Fav that might INTEREST U!..............................");
 				//sectionData.setMiddleMedia("https://lorempixel.com/800/100/fun/2/");
 			}
 			sections.add(sectionData);
@@ -165,14 +169,28 @@
 	
 	public static boolean isYouLoveWeLoveProduct(ProductModel productModel, double ratingBaseLine, double dealsBaseLine
 														, boolean considerNew , boolean considerBackInStock) {
+		boolean result = false;
 		try {
-			return (!productModel.isUnavailable() && 
+			result = (!productModel.isUnavailable() && 
 						((considerNew && productModel.isNew()) || productModel.getPriceCalculator().getHighestDealPercentage() > dealsBaseLine 
-									|| (considerBackInStock && productModel.isBackInStock()) || productModel.getExpertWeight() >= ratingBaseLine));
+									|| (considerBackInStock && productModel.isBackInStock()) 
+										|| (productModel.getProductRatingEnum() != null && (productModel.getProductRatingEnum().getValue())/2  >= ratingBaseLine)));
+			
+			/*if(result) {
+				System.out.println("Product.."+ productModel.getFullName() + "[Availability]" + productModel.isUnavailable() 
+										+ " [New]" + productModel.isNew() 
+										+ " [Deals]" + productModel.getPriceCalculator().getHighestDealPercentage() 
+										+ " [BINSTOCK]" + productModel.isBackInStock() 
+										+ " [EXPERTWT]" + productModel.getExpertWeight()
+										+ " [Rating]" + (productModel.getProductRatingEnum() != null ? (productModel.getProductRatingEnum().getValue())/2  : "NaN"));
+			}*/			
 		} catch (Exception e) {
-			//System.out.println("isYouLoveWeLoveProduct..failed...."+productModel.getContentKey().getId());
-			return false;
+			//System.out.println("isYouLoveWeLoveProduct..failed...."+productModel.getContentKey().getId());			
 		}
+		
+		
+		
+		return result;
 	}
 %>
 
