@@ -48,8 +48,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.ErpCustEWalletModel;
@@ -57,7 +55,6 @@ import com.freshdirect.customer.ErpPaymentMethodException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.ewallet.EnumUserInfoName;
@@ -85,7 +82,6 @@ import com.freshdirect.payment.gateway.ewallet.impl.EWalletLogActivity;
 import com.mastercard.api.common.openapiexception.MCOpenApiRuntimeException;
 import com.mastercard.mcwallet.sdk.MasterPassService;
 import com.mastercard.mcwallet.sdk.MasterPassServiceRuntimeException;
-import com.mastercard.mcwallet.sdk.RequestTokenResponse;
 import com.mastercard.mcwallet.sdk.xml.allservices.Address;
 import com.mastercard.mcwallet.sdk.xml.allservices.Card;
 import com.mastercard.mcwallet.sdk.xml.allservices.Checkout;
@@ -97,13 +93,8 @@ import com.mastercard.mcwallet.sdk.xml.allservices.PairingDataType;
 import com.mastercard.mcwallet.sdk.xml.allservices.PairingDataTypes;
 import com.mastercard.mcwallet.sdk.xml.allservices.PrecheckoutCard;
 import com.mastercard.mcwallet.sdk.xml.allservices.PrecheckoutDataRequest;
-import com.mastercard.mcwallet.sdk.xml.allservices.PrecheckoutDataResponse;
-import com.mastercard.mcwallet.sdk.xml.allservices.PrecheckoutShippingAddress;
 import com.mastercard.mcwallet.sdk.xml.allservices.ShoppingCartItem;
 import com.mastercard.mcwallet.sdk.xml.allservices.ShoppingCartRequest;
-import com.mastercard.mcwallet.sdk.xml.allservices.ShoppingCartResponse;
-import com.mastercard.mcwallet.sdk.xml.switchapiservices.MerchantInitializationRequest;
-import com.mastercard.mcwallet.sdk.xml.switchapiservices.MerchantInitializationResponse;
 
 /**
  * @author Aniwesh Vatsal
