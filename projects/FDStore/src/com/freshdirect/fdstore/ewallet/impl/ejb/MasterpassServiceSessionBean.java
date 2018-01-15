@@ -1299,7 +1299,7 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 			
 			return command;
 		} catch (Exception e) {
-			saveConnectionHeader(command);
+//			saveConnectionHeader(command);
 			throw new MasterPassServiceRuntimeException(e);
 		}
 		

@@ -89,8 +89,6 @@ public class MasterPassGateway extends AbstractService implements IMasterPassSer
 		try {
 			response = restTemplate.postForEntity(new URI(url), entity, String.class);
 			responseOfTypestring = getMapper().readValue(response.getBody(), type);
-			// This is only temp to verify in Dev environment 
-			LOGGER.info("MasterPassGateWay : responseOfTypestring "+response);
 		} catch (JsonParseException e) {
 			LOGGER.error(e.getMessage());
 			LOGGER.error("api url:" + url);
@@ -150,7 +148,6 @@ public class MasterPassGateway extends AbstractService implements IMasterPassSer
 		MasterPassGatewayResponse  response = null;
 		try{
 		LOGGER.info("getExpressCheckoutData : Payload : "+inputJson);
-//		  response =  postData(inputJson, getEndPoint(EXPRESS_CHECKOUT_DATA_API), MasterPassGatewayResponse.class);
 		  response = postDataTypeMap(inputJson,getMasterPassEndPoint(EXPRESS_CHECKOUT_DATA_API),new TypeReference<MasterPassGatewayResponse>() {});
 		    if(response.getStatus()!=null&&response.getStatus().equals(com.freshdirect.payment.Result.STATUS_FAILED))
 			  throw new Exception(response.getStatusMessage());
@@ -173,7 +170,6 @@ public class MasterPassGateway extends AbstractService implements IMasterPassSer
 		MasterPassGatewayResponse  response = null;
 		try{
 		LOGGER.info("getPairingToken : Payload : "+inputJson);
-//		  response =  postData(inputJson, getEndPoint(PAIRIING_TOKEN_API), MasterPassGatewayResponse.class);
 		  response = postDataTypeMap(inputJson,getMasterPassEndPoint(PAIRIING_TOKEN_API),new TypeReference<MasterPassGatewayResponse>() {});
 		    if(response.getStatus()!=null&&response.getStatus().equals(com.freshdirect.payment.Result.STATUS_FAILED))
 			  throw new Exception(response.getStatusMessage());
@@ -196,7 +192,6 @@ public class MasterPassGateway extends AbstractService implements IMasterPassSer
 		MasterPassGatewayResponse  response = null;
 		try{
 			LOGGER.info("getAccessToken : Payload : "+inputJson);
-//		  response =  postData(inputJson, getEndPoint(ACCESS_TOKEN_API), MasterPassGatewayResponse.class);
 		  response = postDataTypeMap(inputJson,getMasterPassEndPoint(ACCESS_TOKEN_API),new TypeReference<MasterPassGatewayResponse>() {});
 		    if(response.getStatus()!=null&&response.getStatus().equals(com.freshdirect.payment.Result.STATUS_FAILED))
 			  throw new Exception(response.getStatusMessage());
@@ -220,7 +215,6 @@ public class MasterPassGateway extends AbstractService implements IMasterPassSer
 		MasterPassGatewayResponse  response = null;
 		try{
 			LOGGER.info("getLongAccessToken : Payload : "+inputJson);
-//		  response =  postData(inputJson, getEndPoint(LONG_ACCESS_TOKEN_API), MasterPassGatewayResponse.class);
 		  response = postDataTypeMap(inputJson,getMasterPassEndPoint(LONG_ACCESS_TOKEN_API),new TypeReference<MasterPassGatewayResponse>() {});
 		    if(response.getStatus()!=null&&response.getStatus().equals(com.freshdirect.payment.Result.STATUS_FAILED))
 			  throw new Exception(response.getStatusMessage());
@@ -244,7 +238,6 @@ public class MasterPassGateway extends AbstractService implements IMasterPassSer
 		MasterPassGatewayResponse  response = null;
 		try{
 			LOGGER.info("getCheckoutData : Payload : "+inputJson);
-//		  response =  postData(inputJson, getEndPoint(CHECKOUT_DATA_API), MasterPassGatewayResponse.class);
 		  response = postDataTypeMap(inputJson,getMasterPassEndPoint(CHECKOUT_DATA_API),new TypeReference<MasterPassGatewayResponse>() {});
 		    if(response.getStatus()!=null&&response.getStatus().equals(com.freshdirect.payment.Result.STATUS_FAILED))
 			  throw new Exception(response.getStatusMessage());
@@ -269,7 +262,6 @@ public class MasterPassGateway extends AbstractService implements IMasterPassSer
 		
 		try{
 			LOGGER.info("getRequestTokenAndRedirectUrl : Payload : "+inputJson);
-		//  response =  postData(inputJson, getMasterPassEndPoint(REQUEST_TOK_REDURL_API), MasterPassGatewayResponse.class);
 		  response = postDataTypeMap(inputJson,getMasterPassEndPoint(REQUEST_TOK_REDURL_API),new TypeReference<MasterPassGatewayResponse>() {});
 		  if(response.getStatus()!=null&&response.getStatus().equals(com.freshdirect.payment.Result.STATUS_FAILED))
 			  throw new Exception(response.getStatusMessage());
@@ -294,7 +286,6 @@ public class MasterPassGateway extends AbstractService implements IMasterPassSer
 		MasterPassGatewayResponse  response = null;
 		try{
 			LOGGER.info("postShoppingCart : Payload : "+inputJson);
-//		  response =  postData(inputJson, getEndPoint(POST_SHOPPING_API), MasterPassGatewayResponse.class);
 		  response = postDataTypeMap(inputJson,getMasterPassEndPoint(POST_SHOPPING_API),new TypeReference<MasterPassGatewayResponse>() {});
 		    if(response.getStatus()!=null&&response.getStatus().equals(com.freshdirect.payment.Result.STATUS_FAILED))
 			  throw new Exception(response.getStatusMessage());
@@ -318,7 +309,6 @@ public class MasterPassGateway extends AbstractService implements IMasterPassSer
 		MasterPassGatewayResponse  response = null;
 		try{
 			LOGGER.info("postMerchantInit : Payload : "+inputJson);
-//		  response =  postData(inputJson, getEndPoint(POST_MERCHENT_INIT_API), MasterPassGatewayResponse.class);
 		  response = postDataTypeMap(inputJson,getMasterPassEndPoint(POST_MERCHENT_INIT_API),new TypeReference<MasterPassGatewayResponse>() {});
 		    if(response.getStatus()!=null&&response.getStatus().equals(com.freshdirect.payment.Result.STATUS_FAILED))
 			  throw new Exception(response.getStatusMessage());
@@ -345,7 +335,6 @@ public class MasterPassGateway extends AbstractService implements IMasterPassSer
 		try{
 		inputJson = buildRequest(masterPassGatewayRequest);
 		LOGGER.info("postCheckoutTransaction : Payload : "+inputJson);
-//		  response =  postData(inputJson, getEndPoint(POST_MERCHENT_INIT_API), MasterPassGatewayResponse.class);
 		  response = postDataTypeMap(inputJson,getMasterPassEndPoint(POST_MERCHENT_INIT_API),new TypeReference<MasterPassGatewayResponse>() {});
 		    if(response.getStatus()!=null&&response.getStatus().equals(com.freshdirect.payment.Result.STATUS_FAILED))
 			  throw new Exception(response.getStatusMessage());
