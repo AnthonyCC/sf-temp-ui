@@ -38,6 +38,7 @@ import com.freshdirect.cms.core.service.ContextualContentProvider;
 import com.freshdirect.cms.draft.domain.DraftChange;
 import com.freshdirect.cms.draft.domain.DraftContext;
 import com.google.common.base.Optional;
+import com.google.common.collect.Sets;
 
 @Profile("database")
 @Primary
@@ -259,13 +260,13 @@ public class DraftContentProviderService extends ContextualContentProvider {
                 validateContent(payload);
 
                 Map<ContentKey, Map<Attribute, Object>> originalNodes = collectOriginalNodes(payload);
-                Set<ContentKey> keysToInvalidate = collectKeysForCacheInvalidation(payload.keySet(), collectChildKeysOf(originalNodes));
+                Set<ContentKey> originalChildKeys = collectChildKeysOf(originalNodes);
                 
                 invalidateDraftNodesCacheEntry(draftContext);
                 draftService.saveDraftChange(draftChangeExtractorService.extractChangesFromRequest(payload, originalNodes, draftContext, context.getAuthor()));
-                invalidateDraftParentCacheForKeysOnDraft(keysToInvalidate);
+                invalidateDraftParentCacheForKeysOnDraft(collectKeysForCacheInvalidation(payload.keySet(), originalChildKeys));
                 
-                sendContentChangedNotification(draftContext, keysToInvalidate);
+                sendContentChangedNotification(draftContext, Sets.union(payload.keySet(), originalChildKeys));
             }
         }
         return updateResult;
