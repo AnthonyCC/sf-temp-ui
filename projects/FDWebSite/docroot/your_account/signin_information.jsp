@@ -467,7 +467,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 <div class="youraccount_user_email">
 	<h2>Change Your E-mail/User Name <i>* Required Information</i></h2>
 
-	<form name="update_user_name" method="post">
+	<form fdform name="update_user_name" method="post"  fdform-displayerrorafter>
 		<div class="youraccount_email">
 			<input type="hidden" name="actionName" value="changeUserID">
 			<div class="youraccount_left_1"><label for="<%=EnumUserInfoName.EMAIL.getCode()%>_field">* E-mail Address</label></div>
@@ -526,7 +526,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
       <h2>Change Your Password <i>* Required Information</i></h2>
 		<%	} %>
 
-<form name="update_change_password" method="post">
+<form fdform name="update_change_password" method="post"  fdform-displayerrorafter>
 <input type="hidden" name="actionName" value="changePassword">
 	<div class="youraccount_password">
 		<!--  Changed for Password Strength Display -->
@@ -605,7 +605,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 <div class="youraccount_user_name">
 	<h2>Change Your Display Name</h2>
 	
-	<form method="post" name="updateDisplayName">
+	<form fdform method="post" name="updateDisplayName"  fdform-displayerrorafter>
 		<input type="hidden" name="actionName" value="changeDisplayName">
 		<div class="youraccount_name">
 	
@@ -624,7 +624,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 </div>
 
 <div class="youraccount_user_contact">
-	<form method="post" name="updateContactInformation">
+	<form fdform method="post" name="updateContactInformation"  fdform-displayerrorafter>
 	<input type="hidden" name="actionName" value="changeContactInfo">
 	<div class="youraccount_contact">
 		<h2>Change Your Contact Information <i>* Required Information</i></h2>
@@ -632,7 +632,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 		<div class="youraccount_left_1"><label for="title_field">Title</label></div>
 	
 		<div class="youraccount_left_2">
-			<select class="text9" id="title_field" name="title"	value="">
+			<select class="text9 customsimpleselect" id="title_field" name="title"	value="">
 		       <option <%="".equalsIgnoreCase(title)?"selected":""%> ></option>		
 		       <option <%="MR.".equalsIgnoreCase(title)?"selected":""%> >Mr.</option>
 		       <option <%="MRS.".equalsIgnoreCase(title)?"selected":""%>>Mrs.</option>
@@ -689,7 +689,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 
 <% if (FDStoreProperties.isEmailOptdownEnabled()) { %>
 <div class="youraccount_user_email_pref">
-	<form id="update_email_preference_level" name="update_email_preference_level" method="post">
+	<form fdform id="update_email_preference_level" name="update_email_preference_level" method="post"  fdform-displayerrorafter>
 		<input type="hidden" name="actionName" value="changeEmailPreferenceLevel">
 		<div class="youraccount_email_pref">
 	        <h2>Email Preferences</h2>
@@ -714,15 +714,15 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 </div>
 
 <div class="youraccount_user_phone">
-	<form id="update_mail_phone_preference" name="update_mail_phone_preference" method="post">
+	<form fdform id="update_mail_phone_preference" name="update_mail_phone_preference" method="post"  fdform-displayerrorafter>
 		<input type="hidden" name="actionName" value="changeMailPhonePreference">
 		<div class="youraccount_phone">
 			<h2>Mail And Phone Preferences</h2>
 			<fieldset><legend class="offscreen">mail and phone preferences:</legend>
 			<div class="youraccount_left_1 ext56"><input class="radio" type="checkbox" id="noContactMail" name="noContactMail" value="yes" <%=noContactMail%>></div>
-			<div class="youraccount_left_2"><strong><label for="noContactMail">Please do not send me offers, and marketing messages in the mail.</label></strong></div>
+			<div class="youraccount_left_2 emailphne"><strong><label for="noContactMail">Please do not send me offers, and marketing messages in the mail.</label></strong></div>
 			<div class="youraccount_left_1 ext56"><input class="radio" type="checkbox" id="noContactPhone" name="noContactPhone" value="yes" <%=noContactPhone%>></div>
-			<div class="youraccount_left_2" style="text-align:left;">
+			<div class="youraccount_left_2 emailphne" style="text-align:left;">
 				<strong><label for="noContactPhone">Please do not contact me by phone about offers and other updates.</label></strong>
 				</br>We may still attempt to call you about issues or problems with a specific order you have scheduled for delivery.
 			</div>
@@ -737,7 +737,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 </div>
 <% }else{ %>
 <div class="youraccount_user_email_pref">
-	<form name="update_email_preference" method="post">
+	<form fdform name="update_email_preference" method="post"  fdform-displayerrorafter>
 		<input type="hidden" name="actionName" value="changeEmailPreference">
 		<div class="youraccount_email_pref">
 			<h2>Email Preferences</h2>
@@ -771,7 +771,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 
 <!-- mobile preferences-->
 <div class="youraccount_user_mobile_pref">
-<form name="update_email_preference" method="post">
+<form fdform name="update_email_preference" method="post"  fdform-displayerrorafter>
 	<input type="hidden" name="actionName" value="mobilepreferences">
 	<input type="hidden" name="mobile_existing" value="<%=mobile_number%>">
 	<input type="hidden" name="order_notice_existing" value="<%=order_notices%>">
