@@ -479,7 +479,7 @@ td.ymal_separator {
 }
 
 td.ymal_addtocart {
-	padding			: 0px;
+	padding			: 5px;
 }
 
 table.ymal caption {
@@ -3395,7 +3395,7 @@ button.space {
 
 .aptfields{
 	display:inline-block;
-	vertical-align:inherit;
+	vertical-align:top;
 }
 
 .clickable,.fake-radio{
@@ -3414,4 +3414,8 @@ button.space {
 }
 .lowercase {
 	text-transform: lowercase;
+}
+.zipcodefld{
+	display:inline-block;
+	vertical-align:inherit;
 }

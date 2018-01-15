@@ -337,7 +337,7 @@ String[] checkErrorType = {"technical_difficulty", EnumUserInfoName.DLV_NOT_IN_Z
 				<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>
 				<label for="<%= EnumUserInfoName.DLV_ZIPCODE.getCode() %>_field1">&nbsp;&nbsp;*&nbsp;Zip Code</label>
 				<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>"></span></fd:ErrorHandler>&nbsp;&nbsp;
-				<div class="aptfields"><input type="text" class="text11" aria-describedby="zipcode_error" id="<%= EnumUserInfoName.DLV_ZIPCODE.getCode() %>_field1" name="<%= EnumUserInfoName.DLV_ZIPCODE.getCode() %>" required="true" size="6" value="<%= fldZipCode %>">&nbsp;&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_ZIPCODE.getCode() %>' id='errorMsg'><span id="zipcode_error" class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></div>
+				<div class="zipcodefld"><input type="text" class="text11" aria-describedby="zipcode_error" id="<%= EnumUserInfoName.DLV_ZIPCODE.getCode() %>_field1" name="<%= EnumUserInfoName.DLV_ZIPCODE.getCode() %>" required="true" size="6" value="<%= fldZipCode %>">&nbsp;&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_ZIPCODE.getCode() %>' id='errorMsg'><span id="zipcode_error" class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></div>
 			</td>
 		</tr>
 		<tr>
