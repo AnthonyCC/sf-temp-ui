@@ -9,9 +9,8 @@ var FreshDirect = FreshDirect || {};
     this.widget = this.getWidget();
     this.popup = Select.getPopup();
     this.update();
-
     this.widget.on('mouseover', '.selectButton', this.open.bind(this));
-    this.widget.on('keydown', '.selectButton', function () { this.open(); this.popup.clicked = true; }.bind(this));
+    this.widget.on('keydown', '.selectButton', function (e) { if(e.keyCode == '13'){ this.open(); this.popup.clicked = true; } }.bind(this));
     this.widget.on('mouseout', '.selectButton', function () { this.popup.clearDelay(); }.bind(this));
     this.bindClick();
 
