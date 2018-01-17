@@ -201,7 +201,7 @@ var dataLayer = window.dataLayer || [];
           event: 'timeslot-unavailable',
           eventCategory: 'timeslot',
           eventAction: 'timeslot-checkout-modal',
-          eventLabel: 'unavailable_timeslot_present'
+          eventLabel: 'yes'
         });
       }
     },
