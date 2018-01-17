@@ -150,28 +150,6 @@ public class DraftService {
         return Collections.unmodifiableList(draftChanges);
     }
 
-    public boolean isContentKeyChanged(Long draftId, String nodeId) {
-        boolean isKeyChangedOnDraft = false;
-        for (final DraftChange change : getDraftChanges(draftId)) {
-            if (nodeId.equals(ContentKeyFactory.get(change.getContentKey()).id)) {
-                isKeyChangedOnDraft = true;
-                break;
-            }
-        }
-        return isKeyChangedOnDraft;
-    }
-
-    public boolean isContentKeyChanged(Long draftId, ContentKey contentKey) {
-        boolean isKeyChangedOnDraft = false;
-        for (final DraftChange change : getDraftChanges(draftId)) {
-            if (contentKey.equals(ContentKeyFactory.get(change.getContentKey()))) {
-                isKeyChangedOnDraft = true;
-                break;
-            }
-        }
-        return isKeyChangedOnDraft;
-    }
-
     public void saveDraftChange(final Collection<DraftChange> draftChanges) {
         final String uri = cmsAdminAppUri + CMS_DRAFT_CHANGE_PATH;
 

@@ -1024,7 +1024,7 @@ public class ContentFactory {
 
     public ContentNodeModel getContentNodeFromCache(ContentKey key) {
         ContentNodeModel model = null;
-        if (isAllowToUseContentCache(key.id)) {
+        if (isAllowToUseContentCache()) {
             ValueWrapper valueWrapper = nodesByKeyCache.get(key);
             if (valueWrapper != null) {
                 model = (ContentNodeModel) valueWrapper.get();
@@ -1035,7 +1035,7 @@ public class ContentFactory {
 
     public ContentNodeModel getContentNodeFromCache(String nodeId) {
         ContentNodeModel model = null;
-        if (isAllowToUseContentCache(nodeId)) {
+        if (isAllowToUseContentCache()) {
             ValueWrapper valueWrapper = nodesByIdCache.get(nodeId);
             if (valueWrapper != null) {
                 model = (ContentNodeModel) valueWrapper.get();
@@ -1074,14 +1074,6 @@ public class ContentFactory {
 
     public boolean isAllowToUseContentCache() {
         return CmsServiceLocator.draftContextHolder().getDraftContext().isMainDraft();
-    }
-
-    public boolean isAllowToUseContentCache(String nodeId) {
-        boolean isAllowToUseContentCache = isAllowToUseContentCache();
-        if (!isAllowToUseContentCache){
-            isAllowToUseContentCache = !CmsServiceLocator.draftService().isContentKeyChanged(CmsServiceLocator.draftContextHolder().getDraftContext().getDraftId(), nodeId);
-        }
-        return isAllowToUseContentCache;
     }
 
     public void evictNodesByCaches() {
