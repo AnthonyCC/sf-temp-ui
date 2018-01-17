@@ -240,7 +240,7 @@ public class CrmMasqueradeUtil {
 			}
 		} else {
 			if (params.shopFromOrderId != null) {
-				redirectUri = "/quickshop/shop_from_order.jsp?orderId="+params.shopFromOrderId;
+                redirectUri = "/your_account/order_details.jsp?orderId=" + params.shopFromOrderId;
 			}
 			if (params.modifyOrderId != null) {
 				redirectUri = "/your_account/modify_order.jsp?orderId="+params.modifyOrderId+"&action=modify";
