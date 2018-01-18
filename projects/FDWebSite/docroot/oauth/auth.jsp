@@ -37,11 +37,11 @@
 <%-- Passed Validation--%>
 <%
 	} else {
-		String encodedUrlQuery = request.getQueryString() != null? (URLEncoder.encode("&" + request.getQueryString(), "UTF-8")): ""; 
+		String encodedUrlQuery = request.getQueryString() != null? (URLEncoder.encode("?requireDecode=false&" + request.getQueryString(), "UTF-8")): ""; 
 		pageContext.setAttribute("encodedUrlQuery", encodedUrlQuery);
 	
 %>
-	<fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" redirectPage="/login/login.jsp?successPage=/oauth/auth.jsp?requireDecode=false${encodedUrlQuery}" />
+	<fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" redirectPage="/login/login.jsp?successPage=/oauth/auth.jsp${encodedUrlQuery}" />
 	<%
 		OAuth2Service authService = OAuth2Service.defaultService();
 		

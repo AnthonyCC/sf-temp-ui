@@ -21,7 +21,8 @@ String token = request.getParameter("token");
 String phone = request.getParameter("phone");
 String item = request.getParameter("item");
 if (code != null ){
-	OAuthResponse respone = authService.getAccessToken("internalTestClient", "internalTestClientSecret", "authorization_code", "/test/oauth/user.jsp?phone=" + phone, URLDecoder.decode(code.replace("+", "%2B"), "UTF-8"), null);
+	String[] secrets = FDStoreProperties.getOAuth2ClientSecrets().split(",");
+	OAuthResponse respone = authService.getAccessToken("internalTestClient", secrets[secrets.length-1], "authorization_code", "/test/oauth/user.jsp?phone=" + phone, URLDecoder.decode(code.replace("+", "%2B"), "UTF-8"), null);
 	String tokenBody = respone.getBody();
 	if( tokenBody != null) {
 		Pattern pattern = Pattern.compile("access_token=(.*)");

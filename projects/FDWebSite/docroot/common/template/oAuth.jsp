@@ -6,6 +6,7 @@
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 
 <head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
 	<jwr:script src="/oauth.js" useRandomParam="false" />
 	<jwr:style src="/oauth.css"></jwr:style>
 	<script>

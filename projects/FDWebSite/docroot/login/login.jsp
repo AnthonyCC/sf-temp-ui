@@ -26,13 +26,13 @@ boolean isPopup = false;
 Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
 String nextSuccesspage = ((String)session.getAttribute("nextSuccesspage")!=null)?(String)session.getAttribute("nextSuccesspage"):"/login/index.jsp";
 
-String sPage = (request.getParameter("successPage")!=null)?request.getParameter("successPage").toLowerCase():null;
+String sPage = (request.getParameter("successPage")!=null)?request.getParameter("successPage"):null;
 String templateId = request.getParameter("template");
 	if (sPage != null) {
 		
 	    // determine the preSuccessPage from previous workflow
 	    session.setAttribute(SessionName.PREV_SUCCESS_PAGE, sPage); 		
-		
+		sPage = sPage.toLowerCase();
 		if (sPage.indexOf("type=popup") != -1){
 			template = "/common/template/large_pop.jsp";
 			isPopup = true;

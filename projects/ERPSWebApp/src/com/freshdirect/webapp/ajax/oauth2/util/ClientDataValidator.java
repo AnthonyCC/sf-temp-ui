@@ -11,7 +11,7 @@ public class ClientDataValidator {
 	private static final Logger LOGGER = LoggerFactory.getInstance(ClientDataValidator.class);
 
 	public static boolean validateClientId(String clientId) {
-		LOGGER.debug("Client id: " + clientId);
+		// LOGGER.debug("Client id: " + clientId);
 		try {
 			String[] validCliendIds = StringUtils.split(FDStoreProperties.getOAuth2ClientIds(), ",");
 			return ArrayUtils.contains(validCliendIds, clientId);
@@ -22,7 +22,7 @@ public class ClientDataValidator {
 	}
 
 	public static boolean validateClientSecret(String clientId, String secret) {
-		LOGGER.debug("Client id/secret: " + clientId + "/" + secret);
+		// LOGGER.debug("Client id/secret: " + clientId + "/" + secret);
 		try {
 			String[] validCliendIds = StringUtils.split(FDStoreProperties.getOAuth2ClientIds(), ",");
 			String[] validCliendSecrets = StringUtils.split(FDStoreProperties.getOAuth2ClientSecrets(), ",");
@@ -38,7 +38,7 @@ public class ClientDataValidator {
 	}
 
 	public static boolean validateClientRedirectUri(String clientId, String uri) {
-		LOGGER.debug("Client id/redirect_uri: " + clientId + "/" + uri);
+		// LOGGER.debug("Client id/redirect_uri: " + clientId + "/" + uri);
 
 		try {
 			String uriPath = StringUtils.split(uri, "?")[0];

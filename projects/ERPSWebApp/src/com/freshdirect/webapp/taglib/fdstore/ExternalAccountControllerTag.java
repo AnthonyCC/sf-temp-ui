@@ -57,7 +57,7 @@ public class ExternalAccountControllerTag extends com.freshdirect.framework.weba
     private int doRedirect(String url) throws JspException {
         HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
         try {
-            response.sendRedirect(response.encodeRedirectURL(url));
+            response.sendRedirect(url);
             JspWriter writer = pageContext.getOut();
             writer.close();
             return SKIP_BODY;
