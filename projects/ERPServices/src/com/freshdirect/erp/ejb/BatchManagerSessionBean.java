@@ -25,6 +25,12 @@ import org.apache.log4j.*;
  * @version $Revision$
  * @author $Author$
  */
+/**
+ *@deprecated Please use the ErpBatchManagerController and ErpBatchManagerServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public class BatchManagerSessionBean extends SessionBeanSupport {
     
     /** logger for messages

@@ -15,6 +15,12 @@ import org.apache.log4j.Logger;
 import com.freshdirect.common.ERPSessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
+/**
+ *@deprecated Please use the TicketController and TicketServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public class TicketServiceSessionBean extends ERPSessionBeanSupport {
 	
 	private static final long serialVersionUID = 5281303678829934188L;
