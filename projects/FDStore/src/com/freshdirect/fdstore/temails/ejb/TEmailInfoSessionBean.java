@@ -70,7 +70,8 @@ public class TEmailInfoSessionBean extends FDSessionBeanSupport{
 			
 			if(tEmailTemplateInfo==null){
 				isTemplateExist=false;	
-				throw new TEmailRuntimeException("No active templateId exist for tranType :"+tranType.getName());
+				LOGGER.error(String.format("CAnnot send email: No active templateId exist for TranType : %s, EstoreId:  %s, ServiceType:  %s ",  tranType.getName() ,estoreId.name(),serviceType.getName() ) );
+				throw new TEmailRuntimeException(String.format("No active templateId exist for TranType : %s, EstoreId:  %s, ServiceType:  %s ",  tranType.getName() ,estoreId.name(),serviceType.getName()  ));
 			} else {
 				LOGGER.debug("------------------------------------info:" + tEmailTemplateInfo.toString());
 			//	System.out.println(this.getClass().getSimpleName() + " TEmailInfoSessionBean.sendmail(62) ---------------------------info" + tEmailTemplateInfo.toString());

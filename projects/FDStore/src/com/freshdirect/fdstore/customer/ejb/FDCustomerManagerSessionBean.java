@@ -497,7 +497,13 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				Map transactEmailInputMap = getParameterHashmapforTransactEmail(conn, customerInfo, fdCustomer,
 						fdCustomerEB.getPK().getId(), serviceType);
 
+				try{
 				this.doEmail(EnumTranEmailType.CUST_SIGNUP, transactEmailInputMap);
+				}
+				catch( TEmailRuntimeException ex){
+					LOGGER.warn("Received a runtime exception with silverpop customer signup, re-trying with fallback method: "+ ex.getMessage());
+					this.doEmail(FDEmailFactory.getInstance().createConfirmSignupEmail(customerInfo, estoreId));
+				}
 
 			} // if transact or cheetah mail is on for registration/confirmation
 			else {
@@ -7355,7 +7361,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			close(conn);
 		}
 	}
-
+//TEmailRuntimeException
 	public void doEmail(EnumTranEmailType tranEmailType, Map input) throws FDResourceException {
 		// System.out.println("---------------------------calling doEmail");
 		try {
