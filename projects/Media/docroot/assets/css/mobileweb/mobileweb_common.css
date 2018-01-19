@@ -2440,7 +2440,8 @@ li.cleanli .gen-arrow {
 	}
 	.mm-page .youraccount .youraccount_left_2 select{
 		font-size: 14px;
-		margin: 5px 10px;
+/* 		margin: 5px 10px; */
+        width:100%;
 	}
 	.mm-page .youraccount .youraccount_left_3{
 	
@@ -2457,7 +2458,7 @@ li.cleanli .gen-arrow {
 	.mm-page .youraccount .youraccount_user_email_pref .youraccount_left_1,
 	.mm-page .youraccount .youraccount_user_mobile_pref .youraccount_left_1{
 		float: left;
-		width: auto;
+		width: 68px;
 	}
 	.mm-page .youraccount .youraccount_user_email_pref .youraccount_left_1 input,
 	.mm-page .youraccount .youraccount_user_mobile_pref .youraccount_left_1 input{
@@ -2469,7 +2470,7 @@ li.cleanli .gen-arrow {
 	.mm-page .youraccount .youraccount_user_email_pref .youraccount_left_2,
 	.mm-page .youraccount .youraccount_user_mobile_pref .youraccount_left_2{
 		float: left;
-		width: 80%;
+		width: calc(100% - 68px);
 		padding: 22px 5px 0;
 	}
 	.mm-page .youraccount .youraccount_user_mobile_pref .youraccount_full_width{
@@ -2588,4 +2589,19 @@ form.dispblock-fields td { /* force the tds to block so the label and field are 
 }
 .contact_fd-cont label{
 	width:auto;
+}
+.youraccount_left_1.ext56.mailnphne1{
+	width: 70px;
+    /* box-sizing: border-box; */
+    line-height: 45px;
+    padding: 0px 20px;
+}
+.youraccount_left_2.emailphne.mailnphne2{
+	min-height: 20px;
+    width: calc(100% - 70px);
+    /* display: inline-block; */
+    /* box-sizing: border-box; */
+    text-align: left;
+    padding: 0px;
+	
 }
