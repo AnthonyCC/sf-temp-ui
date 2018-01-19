@@ -13,7 +13,10 @@
 	String pageTemplate = "/common/template/no_space_border.jsp"; //default
 	if (mobWeb) {
 		pageTemplate = "/common/template/mobileWeb.jsp"; //default
-		request.setAttribute("sitePage", "www.freshdirect.com/mobileweb/index.jsp"); //change for OAS
+		String oasSitePage = (request.getAttribute("sitePage") != null) ? request.getAttribute("sitePage").toString() : "www.freshdirect.com"+request.getRequestURI();
+		if (oasSitePage.startsWith("www.freshdirect.com/") && !oasSitePage.startsWith("www.freshdirect.com/mobileweb/")) {
+			request.setAttribute("sitePage", oasSitePage.replace("www.freshdirect.com/", "www.freshdirect.com/mobileweb/")); //change for OAS
+		}
 	}
 	String previousPage;
 %>
