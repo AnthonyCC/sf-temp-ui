@@ -316,7 +316,7 @@
 		<!-- Standing Orders background service -->
 		<checkoutLabeled dir="projects/CoremetricsService"/>
 		<!-- Coremetrics background service -->
-		
+
 		<checkoutLabeled dir="applications"/>
 		<!--	<checkoutLabeled dir="release"/> -->
 	</target>
@@ -371,7 +371,7 @@
 		<!-- Added: Schematic rsung -->
 		<checkoutLatest dir="projects/StandingOrdersService"/>
 		<checkoutLatest dir="projects/CoremetricsService"/>
-		
+
 		<checkoutLatest dir="applications"/>
 		<!--	<checkoutLatest dir="release"/> -->
 
@@ -456,7 +456,7 @@
 		<mkdir dir="${work.dir}/cms-gwt"/>
 		<mkdir dir="${work.dir}/StandingOrdersService"/>
 		<mkdir dir="${work.dir}/CoremetricsService"/>
-		
+
 	</target>	
 	<target name= "copy_shared_dirs"
             description = "copy directories that are shared among projects">
@@ -1759,6 +1759,7 @@
 			<pathelement location="${thirdparty.home}/jackson-core-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/jackson-databind-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/jackson-annotations-2.2.0.jar"/>
+			<pathelement location="${thirdparty.home}/org.apache.oltu.oauth2.authzserver-1.0.2.jar"/>
 			<path refid="spring.classpath"/>
 		</path>
 
@@ -1932,7 +1933,7 @@
 			<pathelement location="${thirdparty.home}/jackson-annotations-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/masterpassExpressSdk.jar"/>
 			<pathelement location="${thirdparty.home}/braintree-java-2.53.0.jar"/>
-
+			<pathelement location="${thirdparty.home}/org.apache.oltu.oauth2.authzserver-1.0.2.jar"/>
 		</path>
 
 		<makeProject
@@ -2259,7 +2260,7 @@
 			project="CoremetricsService"
 			classpathref="CoremetricsService.classpath"/>
 	</target>
-	
+
 	<target name="tools" description="Build Tools" depends="framework,cmseue,fdstore,erpservices">
 		<path id="tools.classpath">
 			<pathelement location="${work.dir}/Framework.jar"/>
@@ -2424,6 +2425,7 @@
 				<include name="cmseue.jar" />
 				<include name="StoreAPI.jar"/>
 				<include name="FDLogisticsIntegration.jar"/>
+				<include name="ERPSWebApp.jar" />
 			</libraries>
 			<lib>
 				<!-- <include name="oscache-2.4.jar"/> -->
@@ -2509,7 +2511,7 @@
 				<include name="spring-web-4.0.1.RELEASE.jar"/>
 				<include name="spring-webmvc-4.0.1.RELEASE.jar"/>
 				<include name="gson-1.7.1.jar"/>
-
+				<include name="org.apache.oltu.oauth2.authzserver-1.0.2.jar"/>
 			</lib>
 		</makeEar>
 	</target>
@@ -2794,6 +2796,7 @@
 				<include name="jackson-core-2.6.3.jar" />
 				<!-- include name="h2-1.4.190.jar" / -->
 				<!-- include name="javax.servlet-api-3.0.1.jar" / -->
+				<include name="org.apache.oltu.oauth2.authzserver-1.0.2.jar"/>
 			</lib>
 		</makeEar>
 	</target>
