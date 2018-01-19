@@ -1293,7 +1293,7 @@ public class FDUserDAO {
 
     }
 
-    private static final String UPDATE_ORDER_INPROCESS = "update cust.sale set status = decode(status, 'SUB', 'PNA', 'PRC') where status in ('AUT', 'AVE', 'SUB') and id = ?";
+    private static final String UPDATE_ORDER_INPROCESS = "update cust.sale set status = decode(status, 'SUB', 'PNA', 'PRC') where status in ('AUT', 'AVE', 'SUB', 'PRC') and id = ?";
 
     public static void updateOrderInProcess(Connection conn, String orderNum) throws SQLException {
 

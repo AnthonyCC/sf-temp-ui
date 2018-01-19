@@ -189,7 +189,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 
 		} catch (DuplicateKeyException de) {
 			this.getSessionContext().setRollbackOnly();
-			throw new ErpDuplicateUserIdException("User id already exists");
+			throw new ErpDuplicateUserIdException("User id already exists: "+erpCustomer.getUserId());
 
 		} catch (CreateException ex) {
 			throw new EJBException(ex.getMessage());

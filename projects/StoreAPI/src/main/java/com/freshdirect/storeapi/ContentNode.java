@@ -1,14 +1,10 @@
 package com.freshdirect.storeapi;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
-import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.cms.core.service.ContentTypeInfoService;
 import com.google.common.base.Optional;
 
@@ -42,41 +38,27 @@ public class ContentNode implements ContentNodeI {
     }
 
     @Override
-    public AttributeI getAttribute(String name) {
-        AttributeI result = null;
-        final Attribute selectedAttribute = findAttributeByName(name);
+    public Attribute getAttribute(String name) {
+        return typeInfoService.findAttributeByName(this.contentKey.type, name).orNull();
+    }
 
-        if (selectedAttribute != null) {
-            final Object value = payload.get(selectedAttribute);
-            result = buildLegacyAttribute(selectedAttribute, value);
-        }
-
-        return result;
+    @Override
+    public Object getAttributeValue(Attribute definition) {
+        return payload.get(definition);
     }
 
     @Override
     public Object getAttributeValue(String name) {
-        Attribute selectedAttribute = findAttributeByName(name);
-        return selectedAttribute != null ? payload.get(selectedAttribute) : null;
+        Optional<Attribute> selectedAttribute = typeInfoService.findAttributeByName(this.contentKey.type, name);
+        if (selectedAttribute.isPresent()) {
+            return payload.get(selectedAttribute.get());
+        }
+        return null;
     }
 
     @Override
     public boolean setAttributeValue(String name, Object value) {
         return false;
-    }
-
-    @Override
-    public Map<String, AttributeI> getAttributes() {
-        Map<String, AttributeI> result = new HashMap<String, AttributeI>();
-
-        for (Map.Entry<Attribute, Object> entry : payload.entrySet()) {
-            final Attribute attribute = entry.getKey();
-            final Object value = entry.getValue();
-            AttributeI legacyAttribute = buildLegacyAttribute(attribute, value);
-            result.put(attribute.getName(), legacyAttribute);
-        }
-
-        return result;
     }
 
     @Override
@@ -97,46 +79,5 @@ public class ContentNode implements ContentNodeI {
     @Override
     public String toString() {
         return "ContentNode [contentKey=" + contentKey + ", payload=" + payload + ", childKeys=" + childKeys + "]";
-    }
-
-    private Attribute findAttributeByName(String attributeName) {
-        Optional<Attribute> selectedAttribute = Optional.absent();
-        if (attributeName != null) {
-            List<ContentType> typesToLookup = new ArrayList<ContentType>();
-            typesToLookup.add(contentKey.type);
-            typesToLookup.addAll(typeInfoService.getReachableContentTypes(contentKey.type));
-
-            for (ContentType type : typesToLookup) {
-                selectedAttribute = typeInfoService.findAttributeByName(type, attributeName);
-                if (selectedAttribute.isPresent()) {
-                    return selectedAttribute.get();
-                }
-            }
-        }
-        return null;
-    }
-
-    @SuppressWarnings("serial")
-    private AttributeI buildLegacyAttribute(final Attribute attribute, final Object value) {
-        return new AttributeI() {
-            @Override
-            public String getName() {
-                return attribute.getName();
-            }
-
-            @Override
-            public Object getValue() {
-                return value;
-            }
-
-            @Override
-            public void setValue(Object o) {
-            }
-
-            @Override
-            public Attribute getDefinition() {
-                return attribute;
-            }
-        };
     }
 }

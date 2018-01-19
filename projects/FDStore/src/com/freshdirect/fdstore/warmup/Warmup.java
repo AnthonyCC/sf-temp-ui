@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.apache.log4j.Category;
 
 import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.fdstore.FDAttributeCache;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -65,7 +66,8 @@ public class Warmup {
         LOGGER.info(skuCodes.size() + " SKUs found");
         
         if(FDStoreProperties.isLocalDeployment()) {
-        	LOGGER.info("Skipping Nutrition, Attribute, Inventory, NutirtionPanel cache for local deployment");
+        	LOGGER.info("Skipping Nutrition, Inventory, NutirtionPanel cache for local deployment");
+        	 FDAttributeCache.getInstance(); //Attribute cache is required even for local deployment.
         } else {
         	CacheWarmupUtil.warmupFDCaches();
         }
@@ -87,8 +89,10 @@ public class Warmup {
                     CacheWarmupUtil.warmupSmartStore();
                     CacheWarmupUtil.warmupSmartCategories();
                     LOGGER.info("[WARMUP]Warmup done");
-                } catch (FDResourceException e) {
+                    Warmup.WARMUP_STATE.set(WarmupState.FINISHED);
+                } catch (Exception e) {
                     LOGGER.error("[WARMUP]Warmup failed", e);
+                    Warmup.WARMUP_STATE.set(WarmupState.FAILED);
                 }
             }
         }.start();
@@ -113,11 +117,17 @@ public class Warmup {
         new Thread("warmup-repeat-step-2") {
             @Override
             public void run() {
-                CacheWarmupUtil.warmupAutocomplete();
-                CacheWarmupUtil.warmupWineIndex();
-                CacheWarmupUtil.warmupSmartStore();
-                CacheWarmupUtil.warmupSmartCategories();
-                LOGGER.info("[WARMUP]Warmup done");
+            	try {
+	                CacheWarmupUtil.warmupAutocomplete();
+	                CacheWarmupUtil.warmupWineIndex();
+	                CacheWarmupUtil.warmupSmartStore();
+	                CacheWarmupUtil.warmupSmartCategories();
+	                LOGGER.info("[WARMUP]Warmup done");
+	                Warmup.WARMUP_STATE.set(WarmupState.FINISHED);
+            	} catch (Exception e) {
+                    LOGGER.error("[WARMUP]Warmup failed", e);
+                    Warmup.WARMUP_STATE.set(WarmupState.FAILED);
+                }
             }
         }.start();
     }

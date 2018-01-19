@@ -66,7 +66,7 @@
   </script>
 
 	<jwr:script src="/fdlibs.js" useRandomParam="false" />
-	<fd:javascript src="/assets/javascript/coremetrics.js"/>
+	<jwr:script src="/coremetrics.js" useRandomParam="false" />
 
 <%@ include file="/common/template/includes/extol_tags.jspf" %>
 
@@ -114,7 +114,7 @@
 	<jwr:script src="/fdmisc.js" useRandomParam="false" />
 
   <%-- it would be very nice to be able to remove this, but the login box uses "changeType", this may be refactored later --%>
-  <fd:javascript src="/assets/javascript/common_javascript.js"/>
+  <jwr:script src="/commonjavascript.js" useRandomParam="false" />
 
   <%-- GTM initialization --%>
   <%@include file="/common/template/includes/i_gtm_datalayer.jsp" %>

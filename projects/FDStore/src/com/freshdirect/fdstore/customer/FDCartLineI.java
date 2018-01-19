@@ -197,5 +197,7 @@ public interface FDCartLineI extends FDProductSelectionI {
 	public String getPlantId();
 	public void setErpOrderLineSource(EnumEventSource source);		
 	public EnumEventSource getErpOrderLineSource();	
+	
+	public String getSubstitutedQuantity();
 
 }

@@ -479,7 +479,7 @@ td.ymal_separator {
 }
 
 td.ymal_addtocart {
-	padding			: 0px;
+	padding			: 5px;
 }
 
 table.ymal caption {
@@ -2186,7 +2186,7 @@ div.control, div.slotRow, div.time {
 		height: 37px;
 		position: absolute;
 		bottom: 10px;
-		right: -5px;
+		right: 0;
 		display: block;
 	}
 	.burst-usq .without-background {
@@ -3414,4 +3414,8 @@ button.space {
 }
 .lowercase {
 	text-transform: lowercase;
+}
+.zipcodefld{
+	display:inline-block;
+	vertical-align:inherit;
 }

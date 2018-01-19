@@ -1,5 +1,6 @@
 package com.freshdirect.webapp.ajax.product;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -87,8 +88,13 @@ public class CriteoProductsUtil
 			List<HLBrandProductAdInfo> hlBrandAdProductsMeta, boolean pdpPage) throws FDSkuNotFoundException {
 		for (Iterator<HLBrandProductAdInfo> iterator = hlBrandAdProductsMeta.iterator(); iterator.hasNext();) {
 			HLBrandProductAdInfo hlBrandProductAdMetaInfo = iterator.next();
-			ProductModel productModel = ContentFactory.getInstance()
+			ProductModel productModel = null;
+			try{
+				productModel = ContentFactory.getInstance()
 					.getProduct(hlBrandProductAdMetaInfo.getProductSKU());
+			}catch(Exception e){
+				LOG.debug("SKu not found for Hooklogic product: "+hlBrandProductAdMetaInfo.getProductSKU());
+			}
 
 			if (null != productModel && !productModel.isUnavailable()) {
 				ProductData productData = null;
@@ -133,6 +139,7 @@ public class CriteoProductsUtil
 						addHlBrandProducts(user, adPrducts, updatedPageBeacon, hlBrandAdProductsMeta,pdpPage);
 					}
 					browseData.getAdProducts().setProducts(adPrducts);
+					browseData.getAdProducts().setUpdatePdpPageBeacon(response.getUpdatePdpPageBeacon());
 					if (productsCount!=0 && productsCount == adPrducts.size()) {
 						browseData.getAdProducts().setPageBeacon(response.getPageBeacon() + A_SHOWN_ALL);
 					} else if (productsCount > 0 && adPrducts.size() == 0) {
@@ -152,6 +159,16 @@ public class CriteoProductsUtil
 			ContentNodeModel product = ContentFactory.getInstance()	.getContentNode(browseData.getProductId());
 			if (product instanceof ProductModel) {
 				String skuCode = ((ProductModel) product).getDefaultSkuCode();
+				
+				try {
+					//if product is disc, then getDefaultSkuCode returns null, but on PDP we need the criteo prods anyway, so get first sku
+					if (skuCode == null && ((ProductModel)product).getSkuCodes().size() > 0 ) {
+						skuCode = ((ProductModel)product).getSku(0).getSkuCode();
+					}
+				} catch (Exception e) {
+					LOG.warn("Exception while populating Criteo PDP product's sku code: ", e);
+				}
+				
 				hLBrandProductAdRequest.setProductId(skuCode);
 			}
 		} catch (Exception e) {

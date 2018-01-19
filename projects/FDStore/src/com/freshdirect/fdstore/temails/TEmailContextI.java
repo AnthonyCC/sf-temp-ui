@@ -62,6 +62,12 @@ public interface TEmailContextI extends Serializable {
 	
 	public RHOrderInfo getRhOrderInfo();
 
-	public List getSmartEmailInfoList();	
+	public List getSmartEmailInfoList();
+	
+	
+	public void setCustomer(FDCustomerInfo customer);
+
+
+	public void setOrder(FDOrderI order);
 	
 }

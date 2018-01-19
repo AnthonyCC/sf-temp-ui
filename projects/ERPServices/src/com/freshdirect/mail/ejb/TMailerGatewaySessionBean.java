@@ -81,6 +81,7 @@ public class TMailerGatewaySessionBean extends GatewaySessionBeanSupport impleme
 					objMsg.setStringProperty(FROM_ADDRESS_NAME, tEmail.getFromAddress().getName());				
 					objMsg.setStringProperty(TITLE, tEmail.getSubject());
 					//objMsg.setSProperty(IS_HTML, tEmail);//FTL is always of HTML only.
+
 					this.qsender.send(objMsg);
 					
 					//conn=getConnection();

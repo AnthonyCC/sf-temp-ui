@@ -178,12 +178,12 @@ public class CheetahTEmailContextImpl implements TEmailContextI {
 		this.templateId = templateId;
 	}
 
-
+@Override
 	public void setCustomer(FDCustomerInfo customer) {
 		this.customer = customer;
 	}
 
-
+@Override
 	public void setOrder(FDOrderI order) {
 		this.order = order;
 	}

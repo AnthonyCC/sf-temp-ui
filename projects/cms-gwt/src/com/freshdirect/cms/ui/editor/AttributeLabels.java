@@ -1057,6 +1057,7 @@ public final class AttributeLabels {
             put("OR", "OR (Filter Combination)");
             put("ALLERGEN", "Allergen (ERPSy Flag)");
             put("BACK_IN_STOCK", "Back In Stock");
+            put("GOING_OUT_OF_STOCK", "Going Out Of Stock");
             put("BRAND", "Brand");
             put("CLAIM", "Claim (ERPSy Flag)");
             put("CUSTOMER_RATING", "Customer Rating (Range)");

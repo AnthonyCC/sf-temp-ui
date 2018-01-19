@@ -51,8 +51,8 @@ public class GoogleAnalyticsReportingService {
         String version = "1";
         String trackingId = FDStoreProperties.getGoogleAnalyticsKey();
         String customerId = order.getCustomerId();
-        String hitType = "transaction";
-        String documentHostname = "freshdirect.com";
+        String hitType = "event";
+        String documentLocation = "freshdirect.com/shipped";
         String transactionId = order.getErpSalesId() + "-Shipped";
         String transactionAffiliation = "freshdirect.com";
 
@@ -62,14 +62,14 @@ public class GoogleAnalyticsReportingService {
         params.add(new BasicNameValuePair("ua", USER_AGENT));
 
         params.add(new BasicNameValuePair("t", hitType));
-        params.add(new BasicNameValuePair("dh", documentHostname));
+        params.add(new BasicNameValuePair("dl", documentLocation));
         params.add(new BasicNameValuePair("ti", transactionId));
         params.add(new BasicNameValuePair("ta", transactionAffiliation));
 
         params.add(new BasicNameValuePair("tr", Double.toString(order.getTotal())));
         params.add(new BasicNameValuePair("ts", getDeliveryCost(order)));
         params.add(new BasicNameValuePair("tt", Double.toString(order.getTaxValue())));
-        params.add(new BasicNameValuePair("tcc", populateRedeemedPromotionCodes(order)));
+        populateRedeemedPromotionCodes(params, order);
 
         params.add(new BasicNameValuePair("cd1", customerId));
         params.add(new BasicNameValuePair("cd12", order.getDeliveryAddress().getServiceType().name()));
@@ -83,6 +83,11 @@ public class GoogleAnalyticsReportingService {
             productIndex++;
         }
 
+        params.add(new BasicNameValuePair("ni", "1"));
+        params.add(new BasicNameValuePair("ec", "Ecommerce Action"));
+        params.add(new BasicNameValuePair("ea", "Purchase"));
+
+        
         entity = new UrlEncodedFormEntity(params);
         return entity;
     }
@@ -119,21 +124,19 @@ public class GoogleAnalyticsReportingService {
         return deliveryCost;
     }
 
-    public String populateRedeemedPromotionCodes(FDOrderI order) {
-        String result = null;
+    public void populateRedeemedPromotionCodes(List<NameValuePair> params, FDOrderI order) {
         if (order instanceof FDOrderAdapter) {
             Set<String> usedPromotionCodes = ((FDOrderAdapter) order).getUsedPromotionCodes();
             if (usedPromotionCodes != null) {
                 for (String usedPromotionCode : usedPromotionCodes) {
                     PromotionI promotion = PromotionFactory.getInstance().getPromotion(usedPromotionCode);
                     if (promotion.isRedemption()) {
-                        result = promotion.getRedemptionCode();
+                        params.add(new BasicNameValuePair("tcc", promotion.getRedemptionCode()));
                         break;
                     }
                 }
             }
         }
-        return result;
     }
 
     private String roundQuantity(double quantity) {

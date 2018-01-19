@@ -16,9 +16,9 @@ insert into ATTRIBUTE(contentnode_id, id, value, ordinal, def_name, def_contentt
 
 insert into RELATIONSHIP(parent_contentnode_id, ordinal, id, def_name, def_contenttype, child_contentnode_id) values('Product:test', 0, cms_system_seq.nextVal, 'PREFERRED_SKU', 'Sku', 'Sku:testdest');
 insert into RELATIONSHIP(parent_contentnode_id, ordinal, id, def_name, def_contenttype, child_contentnode_id) values('Product:test', 0, cms_system_seq.nextVal, 'VARIATION_MATRIX', 'Domain', 'Domain:product1');
-insert into RELATIONSHIP(parent_contentnode_id, ordinal, id, def_name, def_contenttype, child_contentnode_id) values('Product:test', 3, cms_system_seq.nextVal, 'VARIATION_MATRIX', 'Domain', 'Domain:product2');
-insert into RELATIONSHIP(parent_contentnode_id, ordinal, id, def_name, def_contenttype, child_contentnode_id) values('Product:test', 2, cms_system_seq.nextVal, 'VARIATION_MATRIX', 'Domain', 'Domain:product3');
 insert into RELATIONSHIP(parent_contentnode_id, ordinal, id, def_name, def_contenttype, child_contentnode_id) values('Product:test', 1, cms_system_seq.nextVal, 'VARIATION_MATRIX', 'Domain', 'Domain:product4');
+insert into RELATIONSHIP(parent_contentnode_id, ordinal, id, def_name, def_contenttype, child_contentnode_id) values('Product:test', 2, cms_system_seq.nextVal, 'VARIATION_MATRIX', 'Domain', 'Domain:product3');
+insert into RELATIONSHIP(parent_contentnode_id, ordinal, id, def_name, def_contenttype, child_contentnode_id) values('Product:test', 3, cms_system_seq.nextVal, 'VARIATION_MATRIX', 'Domain', 'Domain:product2');
 
 insert into MEDIA(id, uri, width, height, type, mime_type, last_modified) values('media1', '/media/test/media1.jpg', 125, 125, 'Image', 'image/jpeg', now());
 insert into MEDIA(id, uri, width, height, type, mime_type, last_modified) values('media2', '/media/test/media2.jpg', 120, 140, 'Image', 'image/jpeg', now());

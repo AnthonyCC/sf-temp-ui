@@ -67,37 +67,35 @@ public class AttributeEntityToValueConverter {
         return retVal;
     }
 
-    public Object convert(Attribute attribute, RelationshipEntity entity) {
-        Object retVal = null;
+    public ContentKey convert(Attribute attribute, RelationshipEntity entity) {
+        ContentKey relationshipTarget = null;
         if (attribute instanceof Relationship) {
             String typeStr = entity.getRelationshipDestinationType();
             if (!"Null".equals(typeStr)) {
-                retVal = ContentKeyFactory.get(ContentType.valueOf(typeStr), entity.getRelationshipDestination().split(":")[1]);
+                relationshipTarget = ContentKeyFactory.get(ContentType.valueOf(typeStr), entity.getRelationshipDestination().split(":")[1]);
             }
         }
-        return retVal;
+        return relationshipTarget;
     }
 
-    public Object convert(Attribute attribute, List<RelationshipEntity> entities) {
-        Object retVal = null;
+    public List<ContentKey> convert(Attribute attribute, List<RelationshipEntity> entities) {
+        List<ContentKey> relationshipTargets = null;
         if (attribute instanceof Relationship) {
-            List<ContentKey> relationshipTargets = new ArrayList<ContentKey>();
+            relationshipTargets = new ArrayList<ContentKey>();
             Collections.sort(entities, ORDINAL_COMPARATOR);
             for (RelationshipEntity entity : entities) {
                 final String destinationType = entity.getRelationshipDestinationType();
-
-                ContentType type = null;
-                try {
-                    type = ContentType.valueOf(destinationType);
-
-                    relationshipTargets.add(ContentKeyFactory.get(type, entity.getRelationshipDestination().split(":")[1]));
-
-                } catch (IllegalArgumentException exc) {
-                    LOGGER.error("Skipping undefined Content Type " + destinationType);
+                if (!"Null".equals(destinationType)) {
+                    ContentType type = null;
+                    try {
+                        type = ContentType.valueOf(destinationType);
+                        relationshipTargets.add(ContentKeyFactory.get(type, entity.getRelationshipDestination().split(":")[1]));    
+                    } catch (IllegalArgumentException exc) {
+                        LOGGER.error("Skipping undefined Content Type " + destinationType);
+                    }
                 }
             }
-            retVal = relationshipTargets;
         }
-        return retVal;
+        return relationshipTargets;
     }
 }

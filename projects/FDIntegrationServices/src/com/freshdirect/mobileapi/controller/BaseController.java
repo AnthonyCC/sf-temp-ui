@@ -350,6 +350,9 @@ public abstract class BaseController extends AbstractController implements Messa
 					String printedTrace = traceFor(uncaughtException);
 					Message responseMessage = getErrorMessage(ERR_SYSTEM, printedTrace);
 	                setResponseMessage(model, responseMessage, user);
+	                if(MobileApiProperties.isBaseControllerLoggingEnabled()){
+	                	LOGGER.error("FDCRITICALERROR01 - " + printedTrace);
+	                }
 				}
 			}
         }

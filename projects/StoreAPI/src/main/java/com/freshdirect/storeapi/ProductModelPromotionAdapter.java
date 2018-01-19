@@ -1018,6 +1018,11 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 		return productModel.isBackInStock();
 	}
 
+    @Override
+    public boolean isGoingOutOfStock() {
+        return productModel.isGoingOutOfStock();
+    }
+
 	@Override
 	public boolean isCharacteristicsComponentsAvailable(FDConfigurableI config) {
 		return productModel.isCharacteristicsComponentsAvailable(config);

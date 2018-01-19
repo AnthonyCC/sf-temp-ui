@@ -64,7 +64,7 @@
     </tmpl:put>
 
   <tmpl:put name="extraCss">
-    <fd:css href="/assets/css/timeslots.css" media="all" />
+    <jwr:style src="/timeslots.css" media="all" />
     <jwr:style src="/expressco.css" media="all" />
   </tmpl:put>
   

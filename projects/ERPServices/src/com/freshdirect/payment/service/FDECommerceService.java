@@ -5,6 +5,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.rmi.RemoteException;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -22,7 +23,6 @@ import java.util.TreeMap;
 import javax.ejb.ObjectNotFoundException;
 
 import org.apache.log4j.Category;
-import org.apache.openjpa.lib.log.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
@@ -204,10 +204,10 @@ import com.freshdirect.rules.Rule;
 import com.freshdirect.sap.SapOrderPickEligibleInfo;
 import com.freshdirect.security.ticket.Ticket;
 import com.freshdirect.sms.model.st.STSmsResponse;
-//import com.freshdirect.content.attributes.FlatAttributeCollection;
-//import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+//import com.freshdirect.content.attributes.FlatAttributeCollection;
+//import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
 
 
 public class FDECommerceService extends AbstractEcommService implements IECommerceService {
@@ -397,7 +397,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String ERP_OVERRIDDEN_BACK_IN_STOCK = "erpinfo/overriddenbackinstock";
 	
 
-	private static final String SEND_GIFTCARD = "giftcard/send/";
+	private static final String SEND_GIFTCARD = "giftcardGateway/send/";
 	
 	private static final String GET_DLV_RESTRICTIONS = "restriction/delivery";
 	private static final String GET_ALCOHOL_RESTRICTIONS = "restriction/alcohol";
@@ -1463,11 +1463,11 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		try {
 			Request<HLBrandProductAdRequest> request = new Request<HLBrandProductAdRequest>();
 			@SuppressWarnings("unchecked")
-			Response<Date> response = this.httpGetData(getFdCommerceEndPoint(BRAND_LAST_SENT_FEED), Response.class);
+			Response<Long> response = this.httpGetData(getFdCommerceEndPoint(BRAND_LAST_SENT_FEED), Response.class);
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
-			return response.getData();
+			return new Timestamp(response.getData());
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());

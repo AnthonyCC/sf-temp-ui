@@ -15,6 +15,7 @@ import java.util.Locale;
 
 import com.freshdirect.common.pricing.util.DealsHelper;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.framework.util.FormatterUtil;
 
 /**
  * Material pricing condition.
@@ -130,14 +131,13 @@ public class MaterialPrice implements Serializable {
 	public String getScaleDisplay(double savingsPercentage) {
 		StringBuilder buf = new StringBuilder();
 		if ( this.getPricingUnit().equals("EA") ) {
-
 			buf.append( FORMAT_QUANTITY.format( this.getScaleLowerBound() ) );
 			buf.append( " for " );
-			buf.append( FORMAT_CURRENCY.format( (this.getPrice() * (1-savingsPercentage)) * this.getScaleLowerBound() ) );
+			buf.append( FormatterUtil.formatCurrency( (this.getPrice() * (1-savingsPercentage)) * this.getScaleLowerBound() ) );
 
 		} else {
 
-			buf.append( FORMAT_CURRENCY.format( this.getPrice() * (1-savingsPercentage)) );
+			buf.append( FormatterUtil.formatCurrency( this.getPrice() * (1-savingsPercentage)) );
 			buf.append( '/' );
 			buf.append( this.getPricingUnit().toLowerCase() );
 
@@ -165,7 +165,7 @@ public class MaterialPrice implements Serializable {
 		StringBuilder buf = new StringBuilder();
 		if ( this.getPricingUnit().equals("EA") ) {
 			buf.append(" Just " );
-			buf.append( FORMAT_CURRENCY.format( this.getPrice()));
+			buf.append( FormatterUtil.formatCurrency( this.getPrice()));
 			buf.append( " each " );
 			if(isBreakRequired){
 			    buf.append("<BR>" );

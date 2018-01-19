@@ -15,7 +15,6 @@ import com.freshdirect.customer.EnumATCContext;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.ErpClientCode;
 import com.freshdirect.customer.ErpCouponDiscountLineModel;
-import com.freshdirect.customer.ErpInvoiceLineI;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpReturnLineI;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
@@ -29,18 +28,19 @@ import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSku;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
+import com.freshdirect.fdstore.customer.FDInvoiceLineI;
 import com.freshdirect.fdstore.customer.SaleStatisticsI;
 import com.freshdirect.fdstore.ecoupon.EnumCouponStatus;
 import com.freshdirect.framework.event.EnumEventSource;
+import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.content.ProductReference;
 
 public class SimpleCartLine implements FDCartLineI {
 	private static final long serialVersionUID = 1L;
 
-	private static Random RND = new Random();
+    private static final Random RND = new Random();
 
 	
 	private int randomId = RND.nextInt(1000);
@@ -124,7 +124,7 @@ public class SimpleCartLine implements FDCartLineI {
 	}
 
 	@Override
-	public ErpInvoiceLineI getInvoiceLine() {
+    public FDInvoiceLineI getInvoiceLine() {
 		return null;
 	}
 
@@ -460,7 +460,8 @@ public class SimpleCartLine implements FDCartLineI {
 		this.alcohol = alcohol;
 	}
 		
-	public boolean isWine() {
+	@Override
+    public boolean isWine() {
 		return wine;
 	}
 
@@ -468,7 +469,8 @@ public class SimpleCartLine implements FDCartLineI {
 		this.wine = wine;
 	}
 
-	public boolean isBeer() {
+	@Override
+    public boolean isBeer() {
 		return beer;
 	}
 
@@ -626,43 +628,53 @@ public class SimpleCartLine implements FDCartLineI {
 		return configuration.getSalesUnit();
 	}
 	
-	public double getGroupScaleSavings(){
+	@Override
+    public double getGroupScaleSavings(){
 		return 0.0;
 	}
 	
-	public void setGroupQuantity(double quantity){
+	@Override
+    public void setGroupQuantity(double quantity){
 		
 	}
 	
-	public double getGroupQuantity(){
+	@Override
+    public double getGroupQuantity(){
 		return 0.0;
 	}
-	public void setFDGroup(FDGroup group){
+	@Override
+    public void setFDGroup(FDGroup group){
 		
 	}
 
-	public FDGroup getFDGroup(){
+	@Override
+    public FDGroup getFDGroup(){
 		return null;
 	}
 
 	
-	public EnumSustainabilityRating getSustainabilityRating() {
+	@Override
+    public EnumSustainabilityRating getSustainabilityRating() {
 		
 		return null;
 	}
-	public FDGroup getOriginalGroup() {
+	@Override
+    public FDGroup getOriginalGroup() {
 		return null;
 	}
 	
-	public double getBasePrice() {
+	@Override
+    public double getBasePrice() {
 		return 0.0;
 	}
 	
-	public boolean isAddedFromSearch() {
+	@Override
+    public boolean isAddedFromSearch() {
 		return false;
 	}
 
-	public void setAddedFromSearch(boolean addedFromSearch) {
+	@Override
+    public void setAddedFromSearch(boolean addedFromSearch) {
 	}
 
 	@Override
@@ -836,44 +848,39 @@ public class SimpleCartLine implements FDCartLineI {
 
 	@Override
 	public Double getScaleQuantity() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void setScaleQuantity(Double scaleQuantity) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void setErpOrderLineSource(EnumEventSource source) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public EnumEventSource getErpOrderLineSource() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
     @Override
     public void setTaxCode(String taxCode) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
     public String getTaxCode() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public String getMaterialGroup() {
-        // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public double getSaveAmount() {
+        return 0;
     }
 
 }

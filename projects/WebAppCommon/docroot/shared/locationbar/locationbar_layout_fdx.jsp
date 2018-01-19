@@ -8,6 +8,7 @@
 <%@ page import="com.freshdirect.webapp.util.JspMethods" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib prefix="fd" uri="freshdirect" %>
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%
 	FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
 	String uri = request.getRequestURI().toLowerCase();
@@ -69,8 +70,7 @@
 		</div>
 	
 	--%>
-	<fd:css href="/assets/css/common/locationbar_fdx.css" />
-	<fd:javascript src="/assets/javascript/locationbar.js" />
-	<fd:javascript src="/assets/javascript/locationbar_fdx.js" />
+    <jwr:style src="/locabarfdx.css" media="all" />
+    <jwr:script src="/locabarcomp.js" useRandomParam="false" />
 
 <% } %>

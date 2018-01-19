@@ -51,6 +51,7 @@ import com.freshdirect.logistics.controller.data.response.FulfillmentInfoRespons
 import com.freshdirect.logistics.controller.data.response.ListOfDates;
 import com.freshdirect.logistics.controller.data.response.ListOfFulfillmentInfoResponse;
 import com.freshdirect.logistics.controller.data.response.ListOfObjects;
+import com.freshdirect.logistics.controller.data.response.RoutesData;
 import com.freshdirect.logistics.controller.data.response.Timeslot;
 import com.freshdirect.logistics.delivery.dto.Address;
 import com.freshdirect.logistics.delivery.model.GeoLocation;
@@ -175,4 +176,8 @@ public interface ILogisticsService {
 
 	ListOfFulfillmentInfoResponse getAllFulfillmentInfo()
 			throws FDLogisticsServiceException;
+	
+	RoutesData getRouteDetails(String routeNo) throws FDLogisticsServiceException;
+	
+	RoutesData getRoutesDetailsByCurrentDate() throws FDLogisticsServiceException;
 }

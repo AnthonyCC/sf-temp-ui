@@ -1,6 +1,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 
 <% //expanded page dimensions
 final int W_ROBINHOOD_TOTAL = 970;
@@ -36,10 +37,10 @@ final int W_ROBINHOOD_TOTAL = 970;
 		Does robinhood need the GC js lib?
 			-batchley 20100827
 	--%>
-	<fd:javascript src="/assets/javascript/FD_GiftCards.js"/>
+	<jwr:script src="/giftcards.js" useRandomParam="false" />
 
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-	<fd:css href="/assets/css/giftcards.css"/>
+	<jwr:style src="/giftcards.css" media="all" />
 
 	<%@ include file="/shared/template/includes/ccl.jspf" %>
 

@@ -20,5 +20,6 @@
 	<classpathentry kind="var" path="FD_LIBS/spring-context-4.0.1.RELEASE.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/spring-context-support-4.0.1.RELEASE.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/spring-core-4.0.1.RELEASE.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/junit-4.10.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

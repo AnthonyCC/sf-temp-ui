@@ -96,7 +96,7 @@ public class CartSubTotalBoxService {
         subTotalBox.add(data);
     }
 
-    public void populateTaxToBox(List<CartSubTotalFieldData> subTotalBox, FDCartI cart, String uri, boolean hasMultipleStores) {
+    public void populateTaxToBox(List<CartSubTotalFieldData> subTotalBox, FDCartI cart, boolean hasMultipleStores) {
         CartSubTotalFieldData data = new CartSubTotalFieldData();
         data.setId(TOTALTAX_ID);
         if (FDCartModelService.defaultService().isEbtPaymentForCart(cart)) {
@@ -418,7 +418,7 @@ public class CartSubTotalBoxService {
     }
 
 	public void populateAvalaraTaxToBox(
-			List<CartSubTotalFieldData> subTotalBox, FDCartI cart, String uri) {
+			List<CartSubTotalFieldData> subTotalBox, FDCartI cart) {
 		 CartSubTotalFieldData data = new CartSubTotalFieldData();
 	        data.setId(AVAL_TOTALTAX_ID);
 	        if (FDCartModelService.defaultService().isEbtPaymentForCart(cart)) {

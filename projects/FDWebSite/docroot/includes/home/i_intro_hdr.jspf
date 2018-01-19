@@ -10,7 +10,7 @@
 		               <font class="title16">Welcome to FreshDirect!</font>
 		     <%}%>
 			<td><img src="/media_stat/images/layout/clear.gif" width="1" height="6" alt=""></td>
-			<td align="right">Learn more <a href="/about/index.jsp">About Us</a>, or get <a href="/help/<% if(user.isDepotUser()){ %>delivery_info_depot.jsp<% } else { %>delivery_info.jsp<% } %>">Grocery Delivery & Pickup Info</a>.</td>
+			<td align="right">Learn more <a href="/about/index.jsp">About Us</a>, or get <a href="/help/<% if(user.isDepotUser()){ %>delivery_info_depot.jsp<% } else { %>delivery_info.jsp<% } %>">Grocery Delivery</a> info.</td>
 		<% } else if (validOrderCount == 0) { %>
 			<td><font class="title14">Welcome <%=custFirstName%>. Thank you for signing up!</font><br><font class="text9">(If you're not <font color="#336600"><%=custFirstName%>, <a href="/logout.jsp?logoutPage=site_access">click here</a>!</font>)</font></td>
 		<% } else { //orders > 0 

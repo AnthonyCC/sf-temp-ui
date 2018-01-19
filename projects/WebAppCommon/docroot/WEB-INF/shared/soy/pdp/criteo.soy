@@ -7,6 +7,7 @@
 {template .criteo}
 	{if $adProducts.pageBeacon and $adProducts.pageBeacon != ''}
 		<img src="{$adProducts.pageBeacon}" style="display: none;" />
+		<img src="{$adProducts.updatePdpPageBeacon}" style="display: none;" />
 	{/if}
     {if $adProducts.products and length($adProducts.products) > 0}
 		<div class="pdp-evenbetter">

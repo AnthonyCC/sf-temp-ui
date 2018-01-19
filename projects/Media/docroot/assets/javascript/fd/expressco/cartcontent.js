@@ -526,7 +526,8 @@ etids.div_tooltipPopup = "#tooltipPopup";
 							change: (userData || {}),
 							warningMessage: fd.utils.getParameterByName('warning_message'),
 							page: currentpagefile
-						})
+						}),
+						fetch: fd.utils.getParameterByName('fetch')  ===  'true'
 					},
 					url: this.getRequestURI(),
 					type: reqType,

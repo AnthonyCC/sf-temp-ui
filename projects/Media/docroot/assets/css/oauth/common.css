@@ -1,0 +1,43 @@
+.oauth-body center > table > tbody > tr{
+	text-align: center;
+}
+.oauth-body .new_cust, 
+.oauth-body .social-login-pass-forgot{
+	display: none;
+}
+.oauth-body  #sulCont.login-page #fd_login {
+	margin-top: 0;
+}
+body.oauth-body br+br {
+	display:none;
+}
+.oauth-body .permisson-container{
+	max-width: 360px;
+	font-size: 15px;
+	box-shadow: 0 0 0 1px rgba(0,0,0,0.1), 0 2px 3px rgba(0,0,0,0.2);
+	border-radius: 2px;
+	padding: 30px 16px 30px 16px;
+    margin-top: 10px;
+}
+.oauth-body  .description{
+	text-align: left;
+	padding-bottom: 20px;
+}
+.oauth-body h2 {
+	font-weight: normal;
+	font-size: 15px;
+}
+.oauth-body .footer{
+	margin-top: 30px;
+	margin-bottom: 30px;
+}
+.oauth-body .error-container{
+	background: #ee1620;
+    width: 450px;
+    margin: 0 auto;
+    height: 50px;
+    border-radius: 3px;
+    margin-top: 20px;
+    font-size: 15px;
+    line-height: 50px;
+    color: rgba(255,255,255,0.85);

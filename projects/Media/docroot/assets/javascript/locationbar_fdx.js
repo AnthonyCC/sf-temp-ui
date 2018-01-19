@@ -99,77 +99,82 @@ $jq('.locabar-logout').on('click', function() {
 
 /* customized rendering */
 if ($jq.ui) { /* requires jquery ui */
-	$jq.widget( "custom.iconselectmenu", $jq.ui.selectmenu, {
-		_renderItem: function( ul, item ) {
-			var li = $jq( "<li>", { text: item.label } );
 
-			if ( item.disabled ) {
-				li.addClass( "ui-state-disabled" );
-			}
+	if ($jq('#selectAddressList option').length) { /* make sure there's options */
+		$jq.widget( "custom.iconselectmenu", $jq.ui.selectmenu, {
+			_renderItem: function( ul, item ) {
+				var li = $jq( "<li>", { text: item.label } );
 
-			$jq( "<span>", {
-				style: item.element.attr( "data-style" ),
-				"class": "ui-icon " + item.element.attr( "data-class" )
-			}).appendTo( li );
-		
-			return li.appendTo( ul );
-		}
-	});
-
-	$jq('#selectAddressList').iconselectmenu({
-		appendTo: '#locabar_addresses_choices',
-		position: {
-			my: 'left top',
-			at: 'left top',
-			of: '#locabar_addresses_choices'
-		},
-		create: function(event, ui) {
-			$jq('#selectAddressList').iconselectmenu('open');
-			iconselectmenuSetEvents();
-		},
-		open: function(event, ui) {
-			//remove document mousedown close listener (ONLY)
-			var namespace = ($jq('#selectAddressList').iconselectmenu('instance').eventNamespace);
-			$jq(document).off('mousedown'+namespace);
-		},
-		close: function(event, ui) {
-			$jq('#selectAddressList').iconselectmenu('open');
-		},
-		select: function(event, ui) {
-			var key = ui.item.value;
-			
-			$jq.ajax({
-				type: 'POST',
-				dataType: 'json',
-				url: '/api/locationhandler',
-				data: {
-			      data: JSON.stringify({
-			        fdform: 'selectAddress',
-			        formdata: {
-			        	action: 'selectAddress',
-						selectAddressList: key
-					}
-			      })
-			    },
-				success: function(data){
-					var $refIcon = $jq(event.currentTarget).find('.address-icon:first');
-					
-					if (window.location.pathname === '/your_account/reserve_timeslot.jsp' && !$refIcon.hasClass('address-type-home')) {
-						window.location = '/your_account/delivery_info_avail_slots.jsp';
-					} else if (data.submitForm.result.redirectUrl){
-						window.location = data.submitForm.result.redirectUrl;
-					} else { //just reload the page
-						window.location.reload();
-					}
-					
-				},
-				error: function(data){
-					/* this needs fixing */
-					console.log('address error', data.responseText);
+				if ( item.disabled ) {
+					li.addClass( "ui-state-disabled" );
 				}
-			});
-		} 
-	}).iconselectmenu( "menuWidget" ).addClass( "ui-menu-icons customicons" );
+
+				$jq( "<span>", {
+					style: item.element.attr( "data-style" ),
+					"class": "ui-icon " + item.element.attr( "data-class" )
+				}).appendTo( li );
+			
+				return li.appendTo( ul );
+			}
+		});
+		
+		$jq('#selectAddressList').iconselectmenu({
+			appendTo: '#locabar_addresses_choices',
+			position: {
+				my: 'left top',
+				at: 'left top',
+				of: '#locabar_addresses_choices'
+			},
+			create: function(event, ui) {
+				$jq('#selectAddressList').iconselectmenu('open');
+				iconselectmenuSetEvents();
+			},
+			open: function(event, ui) {
+				//remove document mousedown close listener (ONLY)
+				var namespace = ($jq('#selectAddressList').iconselectmenu('instance').eventNamespace);
+				$jq(document).off('mousedown'+namespace);
+			},
+			close: function(event, ui) {
+				$jq('#selectAddressList').iconselectmenu('open');
+			},
+			select: function(event, ui) {
+				var key = ui.item.value;
+				
+				$jq.ajax({
+					type: 'POST',
+					dataType: 'json',
+					url: '/api/locationhandler',
+					data: {
+				      data: JSON.stringify({
+				        fdform: 'selectAddress',
+				        formdata: {
+				        	action: 'selectAddress',
+							selectAddressList: key
+						}
+				      })
+				    },
+					success: function(data){
+						var $refIcon = $jq(event.currentTarget).find('.address-icon:first');
+						
+						if (window.location.pathname === '/your_account/reserve_timeslot.jsp' && !$refIcon.hasClass('address-type-home')) {
+							window.location = '/your_account/delivery_info_avail_slots.jsp';
+						} else if (data.submitForm.result.redirectUrl){
+							window.location = data.submitForm.result.redirectUrl;
+						} else { //just reload the page
+							window.location.reload();
+						}
+						
+					},
+					error: function(data){
+						/* this needs fixing */
+						console.log('address error', data.responseText);
+					}
+				});
+			} 
+		}).iconselectmenu( "menuWidget" ).addClass( "ui-menu-icons customicons" );
+	} else { /* no options, don't use */
+		$jq('#selectAddressList').hide();
+	}
 }
 /* add events here, otherwise they'll be lost on refresh */
 function iconselectmenuSetEvents() {
@@ -225,11 +230,12 @@ function iconselectmenuSetEvents() {
 	});
 }
 
-
-$jq('#locabar_addresses_choices').on('mouseleave', function(e){
-	$jq('#selectAddressList').iconselectmenu('refresh');
-	iconselectmenuSetEvents();
-});
+if ($jq('#selectAddressList option').length) { /* make sure there's options */
+	$jq('#locabar_addresses_choices').on('mouseleave', function(e){
+		$jq('#selectAddressList').iconselectmenu('refresh');
+		iconselectmenuSetEvents();
+	});
+}
 
 $jq('.locabar_addresses-reservation-make.disabled').on('click', function(e) {
 	e.preventDefault();

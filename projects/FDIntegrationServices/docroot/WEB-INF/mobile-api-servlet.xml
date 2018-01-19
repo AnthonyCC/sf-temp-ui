@@ -46,6 +46,10 @@
 	<bean id="emailCaptureController"
 		class="com.freshdirect.mobileapi.controller.EmailCaptureController"
 		parent="baseController" />
+		
+	<bean id="RouteInfoController"
+		class="com.freshdirect.mobileapi.controller.RouteInfoController"
+		parent="baseController" />
 	
 	<bean id="externalInterfaceController" class="com.freshdirect.mobileapi.controller.ExternalInterfaceController" parent="baseController" />
 	
@@ -126,6 +130,7 @@
 				<prop key="**/account.do">accountController</prop>
 				<prop key="**/contactus.do">contactUsController</prop>
 				<prop key="**/emailcapture.do">emailCaptureController</prop>
+				<prop key="**/routeinfo.do">RouteInfoController</prop>
 				<prop key="**/configvalue.do">configurationController</prop>
 				<prop key="**/lookup.do">lookupController</prop>
 				<prop key="**/test.do">testController</prop>

@@ -27,6 +27,8 @@ import com.freshdirect.cms.changecontrol.domain.ContentUpdateContext;
 import com.freshdirect.cms.changecontrol.entity.ContentChangeSetEntity;
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.core.domain.ContentKeyFactory;
+import com.freshdirect.cms.core.domain.ContentNodeComparatorUtil;
 import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.cms.core.domain.Relationship;
 import com.freshdirect.cms.core.domain.RootContentKey;
@@ -36,6 +38,7 @@ import com.freshdirect.cms.core.service.ContextualContentProvider;
 import com.freshdirect.cms.draft.domain.DraftChange;
 import com.freshdirect.cms.draft.domain.DraftContext;
 import com.google.common.base.Optional;
+import com.google.common.collect.Sets;
 
 @Profile("database")
 @Primary
@@ -71,17 +74,43 @@ public class DraftContentProviderService extends ContextualContentProvider {
     @Autowired
     private CacheManager cacheManager;
 
+    /**
+     *  Performance optimized 'contains' check, same semantics as:
+     *  {@code contentProviderService.containsContentKey(key) || collectKeysCreatedOnDraft(draftId).contains(key) }
+     *  but returns early with the result if found, to avoid having to build up the whole expensive set every time
+     */
     @Override
     public boolean containsContentKey(ContentKey key) {
         Assert.notNull(key, "Content Key is mandatory parameter");
-        boolean existsOnMain = contentProviderService.containsContentKey(key);
-        boolean existsOnDraft = false;
+
+        if (contentProviderService.containsContentKey(key)) {
+            // exists on MAIN branch, return early with the result
+            return true;
+        }
+
         DraftContext currentDraftContext = draftContextHolder.getDraftContext();
         if (!currentDraftContext.isMainDraft()) {
-            Set<ContentKey> changedKeysOnDraft = collectKeysCreatedOnDraft(draftContextHolder.getDraftContext().getDraftId());
-            existsOnDraft = changedKeysOnDraft.contains(key);
+            List<DraftChange> draftChanges = draftService.getDraftChanges(currentDraftContext.getDraftId());
+            for (final DraftChange change : draftChanges) {
+                if (key.equals(ContentKeyFactory.get(change.getContentKey()))) {
+                    // exists on current DRAFT branch, return early with the result
+                    return true;
+                }
+            }
+
+            for (final DraftChange change : draftChanges) {
+                Attribute attr = contentTypeInfoService.findAttributeByName(ContentKeyFactory.get(change.getContentKey()).type, change.getAttributeName()).orNull();
+                if (attr instanceof Relationship) {
+                    List<ContentKey> childKeys = DraftChangeToContentNodeApplicator.getContentKeysFromRelationshipValue((Relationship) attr, change.getValue());
+                    if (childKeys.contains(key)) {
+                        // indirect child of a node that exists on current DRAFT branch, return with the result
+                        return true;
+                    }
+                }
+            }
         }
-        return existsOnMain || existsOnDraft;
+        // did not find it
+        return false;
     }
 
     @Override
@@ -132,22 +161,15 @@ public class DraftContentProviderService extends ContextualContentProvider {
     public Set<ContentKey> getContentKeys() {
         Set<ContentKey> allKeys = new HashSet<ContentKey>(contentProviderService.getContentKeys());
         if (!draftContextHolder.getDraftContext().equals(DraftContext.MAIN)) {
-            Set<ContentKey> changedKeysOnDraft = collectKeysCreatedOnDraft(draftContextHolder.getDraftContext().getDraftId());
-
-            for (ContentKey key : changedKeysOnDraft) {
-                if (!allKeys.contains(key)) {
-                    allKeys.add(key);
-                }
-            }
+            allKeys.addAll(collectKeysCreatedOnDraft(draftContextHolder.getDraftContext().getDraftId()));
         }
         return Collections.unmodifiableSet(allKeys);
     }
 
     @Override
     public Set<ContentKey> getContentKeysByType(ContentType type) {
-        Set<ContentKey> allKeys = new HashSet<ContentKey>(getContentKeys());
         Set<ContentKey> contentKeysByType = new HashSet<ContentKey>();
-        for (ContentKey key : allKeys) {
+        for (ContentKey key : getContentKeys()) {
             if (key.type == type) {
                 contentKeysByType.add(key);
             }
@@ -196,7 +218,6 @@ public class DraftContentProviderService extends ContextualContentProvider {
         if (rootKeySet.contains(contentKey)) {
             orphan = false;
         } else {
-            Map<ContentKey, Set<ContentKey>> parents = buildParentIndexFor(contentKey);
             List<List<ContentKey>> allContextsOf = findContextsOf(contentKey);
             Set<ContentKey> topKeys = contextService.selectTopKeysOf(contentKey, allContextsOf);
 
@@ -224,37 +245,43 @@ public class DraftContentProviderService extends ContextualContentProvider {
     @Override
     public Optional<ContentChangeSetEntity> updateContent(LinkedHashMap<ContentKey, Map<Attribute, Object>> payload, ContentUpdateContext context) {
         Optional<ContentChangeSetEntity> updateResult = Optional.absent();
-
-        if (draftContextHolder.getDraftContext().isMainDraft()) {
+        DraftContext draftContext = draftContextHolder.getDraftContext();
+        
+        if (draftContext.isMainDraft()) {
             updateResult = contentProviderService.updateContent(payload, context);
+            
             cacheManager.getCache(DRAFT_NODES_CACHE).clear();
             cacheManager.getCache(DRAFT_PARENT_CACHE).clear();
+
+            sendContentChangedNotification(draftContext, payload.keySet());
         } else {
-            Map<ContentKey, Map<Attribute, Object>> originalNodes = collectOriginalNodes(payload);
-            List<DraftChange> draftChanges = draftChangeExtractorService.extractChangesFromRequest(payload, originalNodes, draftContextHolder.getDraftContext(),
-                    context.getAuthor());
-            if (!draftChanges.isEmpty()) {
+            if (ContentNodeComparatorUtil.isChanged(payload, collectOriginalNodes(payload))) {
+                // Note: validate changes the payload, so we have to recalculate anything dependent on it!
                 validateContent(payload);
 
-                originalNodes = collectOriginalNodes(payload);
-                draftChanges = draftChangeExtractorService.extractChangesFromRequest(payload, originalNodes, draftContextHolder.getDraftContext(), context.getAuthor());
-                invalidateDraftNodesCacheEntry(draftContextHolder.getDraftContext());
-                draftService.saveDraftChange(draftChanges);
-                updateDraftParentCacheForKeys(payload.keySet());
+                Map<ContentKey, Map<Attribute, Object>> originalNodes = collectOriginalNodes(payload);
+                Set<ContentKey> originalChildKeys = collectChildKeysOf(originalNodes);
+                
+                invalidateDraftNodesCacheEntry(draftContext);
+                draftService.saveDraftChange(draftChangeExtractorService.extractChangesFromRequest(payload, originalNodes, draftContext, context.getAuthor()));
+                invalidateDraftParentCacheForKeysOnDraft(collectKeysForCacheInvalidation(payload.keySet(), originalChildKeys));
+                
+                sendContentChangedNotification(draftContext, Sets.union(payload.keySet(), originalChildKeys));
             }
         }
-
-        try {
-            eventPublisher.publishEvent(new ContentChangedEvent(this, draftContextHolder.getDraftContext(), payload.keySet()));
-        } catch (Exception e) {
-            LOGGER.error("Failed to notify preview about cms change", e);
-        }
-
         return updateResult;
     }
 
-    public void updateDraftParentCacheForKeys(Set<ContentKey> contentKeys) {
-        Set<ContentKey> effectedKeys = collectKeysForCacheInvalidation(contentKeys, Collections.<ContentKey>emptySet());
+    private void sendContentChangedNotification(DraftContext draftContext, Set<ContentKey> contentKeys) {
+        try {
+            eventPublisher.publishEvent(new ContentChangedEvent(this, draftContext, contentKeys));
+        } catch (Exception e) {
+            LOGGER.error("Failed to notify preview about cms change", e);
+        }
+    }
+    
+    public void updateDraftParentCacheForKeys(Set<ContentKey> contentKeys, Set<ContentKey> additionalKeys) {
+        Set<ContentKey> effectedKeys = collectKeysForCacheInvalidation(contentKeys, additionalKeys);
         invalidateDraftParentCacheForKeysOnDraft(effectedKeys);
         for (ContentKey contentKey : effectedKeys) {
             buildParentIndexFor(contentKey);
@@ -406,15 +433,23 @@ public class DraftContentProviderService extends ContextualContentProvider {
      * @return
      */
     private Set<ContentKey> collectKeysCreatedOnDraft(final long draftId) {
-        Set<ContentKey> changedKeysOnDraft = draftService.getAllChangedContentKeys(draftId);
+        List<DraftChange> draftChanges = draftService.getDraftChanges(draftId);
+        final Set<ContentKey> keySet = new HashSet<ContentKey>();
+        
+        for (final DraftChange change : draftChanges) {
+            ContentKey draftContentKey = ContentKeyFactory.get(change.getContentKey());
+            keySet.add(draftContentKey);
 
-        Set<ContentKey> childKeys = draftService.collectChildKeys(draftId);
-        for (ContentKey childKey : childKeys) {
-            if (!contentProviderService.containsContentKey(childKey)) {
-                changedKeysOnDraft.add(childKey);
+            Attribute attr = contentTypeInfoService.findAttributeByName(draftContentKey.type, change.getAttributeName()).orNull();
+            if (attr instanceof Relationship) {
+                List<ContentKey> childKeys = DraftChangeToContentNodeApplicator.getContentKeysFromRelationshipValue((Relationship) attr, change.getValue());
+                for (ContentKey childKey : childKeys) {
+                    if (!contentProviderService.containsContentKey(childKey)) {
+                        keySet.add(childKey);
+                    }
+                }
             }
         }
-        return changedKeysOnDraft;
+        return keySet;
     }
-
 }

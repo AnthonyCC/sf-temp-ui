@@ -1151,7 +1151,7 @@ public class RegistrationAction extends WebActionSupport {
 		EnumServiceType serviceType) throws ErpDuplicateUserIdException,ErpDuplicatePaymentMethodException,
 		ErpPaymentMethodException,FDResourceException {
 		
-		System.out.println("RegistrationAction: In doRegistration");
+		LOGGER.debug("RegistrationAction: In doRegistration");
 
 		HttpSession session = this.getWebActionContext().getSession();
 		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
@@ -1164,7 +1164,7 @@ public class RegistrationAction extends WebActionSupport {
 			this.setSuccessPage(this.fraudPage);
 			LOGGER.debug("successPage re-set to " + this.fraudPage);
 		}
-		System.out.println("RegistrationAction: doRegistration() " + identity);
+		LOGGER.debug("RegistrationAction: doRegistration() " + identity);
 		return identity;
 
 	}

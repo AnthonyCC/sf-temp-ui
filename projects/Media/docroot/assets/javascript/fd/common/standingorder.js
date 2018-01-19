@@ -177,11 +177,11 @@ $jq('.pdp-evenbetter-soPreShow .cssbutton[data-component="showSOButton"]').on('c
 });
 
 
-$jq('.cssbutton[data-component="createSOButton"]').on('click', function(e) {
-	e.stopPropagation();
-	window.location = "/quickshop/standing_orders.jsp";
-	return false;
-});
+//$jq('.cssbutton[data-component="createSOButton"]').on('click', function(e) {
+//	e.stopPropagation();
+//	window.location = "/quickshop/standing_orders.jsp";
+//	return false;
+//});
 
 function disableAlertMinMetSO(){
 	$jq('#customizePopup.so-review-min-met-alert #so-min-do-not-show-checkbox:checked').prop( "disabled", true );

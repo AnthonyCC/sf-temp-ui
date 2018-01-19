@@ -1,10 +1,13 @@
 package com.freshdirect.fdstore.customer;
 
+import org.apache.log4j.Category;
+
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.customer.ErpInvoiceLineI;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.framework.core.ModelSupport;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.storeapi.content.ProductReference;
 import com.freshdirect.storeapi.content.ProductReferenceImpl;
@@ -13,7 +16,8 @@ import com.freshdirect.storeapi.content.SkuReference;
 public class FDInvoiceLineModel extends ModelSupport implements FDInvoiceLineI {
 
 	private static final long serialVersionUID = -4864691971873241984L;
-
+	private static Category LOGGER = LoggerFactory.getInstance( FDInvoiceLineModel.class );
+	
 	private ErpInvoiceLineI invoiceLine;
 
 	private UserContext userContext;
@@ -34,7 +38,12 @@ public class FDInvoiceLineModel extends ModelSupport implements FDInvoiceLineI {
 		this.userContext = userContext;
 		ProductModel substituteProduct = lookUpSubstitueProduct();
 		this.substituteProductName = (null!=substituteProduct?substituteProduct.getFullName():getSubstitutedSkuCode());
-		this.substituteProductDefaultPrice =(null!=substituteProduct?substituteProduct.getDefaultPrice():"");
+		try {
+			this.substituteProductDefaultPrice =(null!=substituteProduct?(""+substituteProduct.getPriceCalculator().getDefaultPriceValue()):"");
+		} catch (Exception e) {
+			// Ignore
+			LOGGER.warn("Exception while fetching price for substituteProduct: ",e);
+		}
 		this.substituteProductId = (null !=substituteProduct ? substituteProduct.getContentName():"");
 	}
 
@@ -56,21 +65,26 @@ public class FDInvoiceLineModel extends ModelSupport implements FDInvoiceLineI {
 	 */
 	private ProductModel lookUpSubstitueProduct() {
 
-		if (this.getSubstitutedSkuCode() != null) {
-			ProductReference productRef = new SkuReference(
-					this.getSubstitutedSkuCode());
-			if (productRef == null
-					|| ProductReferenceImpl.NULL_REF.equals(productRef)) {
-				return null;
-			}
+		try {
+			if (this.getSubstitutedSkuCode() != null) {
+				ProductReference productRef = new SkuReference(
+						this.getSubstitutedSkuCode());
+				if (productRef == null
+						|| ProductReferenceImpl.NULL_REF.equals(productRef)) {
+					return null;
+				}
 
-			return ProductPricingFactory
-					.getInstance()
-					.getPricingAdapter(
-							productRef.lookupProductModel(),
-							getUserContext().getPricingContext() != null ? getUserContext()
-									.getPricingContext()
-									: PricingContext.DEFAULT);
+				return ProductPricingFactory
+						.getInstance()
+						.getPricingAdapter(
+								productRef.lookupProductModel(),
+								getUserContext().getPricingContext() != null ? getUserContext()
+										.getPricingContext()
+										: PricingContext.DEFAULT);
+			}
+		} catch (Exception e) {
+			//Ignore
+			LOGGER.warn("Exception while fetching substituteProduct: ",e);
 		}
 		return null;
 	}

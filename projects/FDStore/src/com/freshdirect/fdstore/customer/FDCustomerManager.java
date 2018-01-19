@@ -834,10 +834,12 @@ public class FDCustomerManager {
 	
 		
 	public static ErpPaymentMethodI getPaymentMethod(FDIdentity identity, String paymentId) throws FDResourceException {
-		Collection<ErpPaymentMethodI> paymentMethods = FDCustomerManager.getPaymentMethods(identity);
-		for ( ErpPaymentMethodI model : paymentMethods ) {
-			if (paymentId.equals(model.getPK().getId())) {
-				return model;
+		if (null != paymentId && !"".equalsIgnoreCase(paymentId)) {		//COS17-45
+			Collection<ErpPaymentMethodI> paymentMethods = FDCustomerManager.getPaymentMethods(identity);
+			for (ErpPaymentMethodI model : paymentMethods) {
+				if (paymentId.equals(model.getPK().getId())) {
+					return model;
+				}
 			}
 		}
 		return null;
@@ -3321,7 +3323,7 @@ public class FDCustomerManager {
     public static void updateOrderLineInRecipentModels(ErpCreateOrderModel model,List<ErpRecipentModel> recipentList,String custId){
     	List<ErpOrderLineModel> orderLines=model.getOrderLines();
     	if(orderLines!=null && orderLines.size()>0){
-    		System.out.println("orderline size :"+orderLines.size());
+    		//System.out.println("orderline size :"+orderLines.size());
     		for(int i=0;i<orderLines.size();i++){
     			ErpOrderLineModel lineModel=orderLines.get(i);
     			if(FDStoreProperties.getGiftcardSkucode().equalsIgnoreCase(lineModel.getSku().getSkuCode())){

@@ -169,6 +169,10 @@
 				<soy:render template="pdp.prdImage" data="${imagePotato}" />
 				<soy:render template="pdp.thumbnails" data="${imagePotato}" />
 
+				<c:if test = "${productPotato.badge == 'going'}">
+          <h3 class="going-out">Last Chance!</h3>
+				</c:if>
+
 				<c:if test="${productPotato.available}">
 					<soy:render template="pdp.freshnessGuarantee" data="${productExtraPotato}"/>
 					<%@ include file="/includes/product/i_product_soc_buttons.jspf" %>
@@ -190,6 +194,9 @@
 			</div>
 			<div class="span-8 prepend-1">
 					<soy:render template="pdp.productName" data="${productPotato}" />
+          <c:if test = "${productPotato.badge == 'going'}">
+            <h3 class="going-out">Last Chance!</h3>
+  				</c:if>
 
 					<c:if test="${productPotato.available}">
 						<div class="pdp-availability"><soy:render template="pdp.availability" data="${productPotato}" /></div>
@@ -221,33 +228,34 @@
 								<div>
 									<div class="pdp-atc-button-wrapper"><button class="cssbutton cssbutton-flat orange medium" type="button" data-component="ATCButton">Add to Cart</button><soy:render template="pdp.atcInCart" data="${productPotato}"/></div>
 									<soy:render template="common.soShowBtnPdp" data="${productPotato}" />
-									<button id="pdp-atc-addtolist" class="addtolist cssbutton cssbutton-flat purpleborder medium" type="button" data-component="addToListButton">Add to List</button>									
+									<button id="pdp-atc-addtolist" class="addtolist cssbutton cssbutton-flat purpleborder medium" type="button" data-component="addToListButton">Add to List</button>
 								</div>
 							</div>
 						</form>
 
 						<!-- <soy:render template="common.soPdp" data="${productPotato}" /> -->
-
-						<soy:render template="pdp.groupProducts" data="${productExtraPotato}" />
-							<%-- don't show evenBetter if we're in group scale context --%>
-						<c:if test="${empty param.grpId}">
-							<soy:render template="pdp.familyProducts" data="${productExtraPotato}" />
-							<c:if test="${empty productExtraPotato.familyProducts}">
-								<c:choose>
-									<c:when test="${not empty evenBetter.productList}"><%-- show even better --%>
-										<soy:render template="pdp.evenBetter" data="${evenBetter}" />
-									</c:when>
-									<c:otherwise><%-- show criteo --%>
-										<soy:render template="pdp.criteo" data="${browsePotato}" />
-									</c:otherwise>
-								</c:choose>
-							</c:if>
-						</c:if>
-						<soy:render template="pdp.likethat" data="${xsell}" />
 					</c:if>
 					<c:if test="${not productPotato.available }">
 						<soy:render template="pdp.unavailability" data="${productExtraPotato}"/>
 					</c:if>
+					
+					<soy:render template="pdp.groupProducts" data="${productExtraPotato}" />
+					<%-- don't show evenBetter if we're in group scale context --%>
+					<c:if test="${empty param.grpId}">
+						<soy:render template="pdp.familyProducts" data="${productExtraPotato}" />
+						<c:if test="${empty productExtraPotato.familyProducts}">
+							<c:choose>
+								<c:when test="${not empty evenBetter.productList}"><%-- show even better --%>
+									<soy:render template="pdp.evenBetter" data="${evenBetter}" />
+								</c:when>
+								<c:otherwise><%-- show criteo --%>
+									<soy:render template="pdp.criteo" data="${browsePotato}" />
+								</c:otherwise>
+							</c:choose>
+						</c:if>
+					</c:if>
+					<soy:render template="pdp.likethat" data="${xsell}" />
+						
 					<% if (user.getLevel() == FDUserI.SIGNED_IN) { %>
 						<%-- show only if user is logged in (not RECOG) --%>
 						<soy:render template="pdp.productRequest"/>

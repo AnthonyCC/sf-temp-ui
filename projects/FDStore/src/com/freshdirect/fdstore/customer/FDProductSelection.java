@@ -877,7 +877,7 @@ public class FDProductSelection implements FDProductSelectionI {
 		return pickingPlantId;
 	}
 
-	//Introduced for Storefront 2.0
+	//Introduced for Storefront 2.0 Only 
 	/**
 	 * @return the orderLine
 	 */
@@ -887,6 +887,15 @@ public class FDProductSelection implements FDProductSelectionI {
 	public boolean getDirty() {
 		return this.dirty;
 	}
+
+	public void setDirty(boolean dirty) {
+		this.dirty = dirty;
+	}
+
+	public void setPrice(FDConfiguredPrice price) {
+		this.price = price;
+	}
+	
 	
 	
 }

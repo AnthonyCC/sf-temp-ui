@@ -4,6 +4,7 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 
 <% //expanded page dimensions
 final int W_DNAV_TOTAL = 970;
@@ -17,13 +18,14 @@ final int W_DNAV_TOTAL = 970;
 	<tmpl:get name='customhead'/>
 
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-	<fd:javascript src="/assets/javascript/timeslots.js" />
-	<fd:javascript src="/assets/javascript/FD_GiftCards.js" />
-  <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
-  <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-  <%@ include file="/includes/sms_alerts/examples_layout.jspf" %>
-	<fd:css href="/assets/css/giftcards.css"/>
-    <fd:css href="/assets/css/timeslots.css"/>
+	<jwr:script src="/assets/javascript/timeslots.js" useRandomParam="false" />
+	<jwr:script src="/giftcards.js" useRandomParam="false" />
+	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
+	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+	<%@ include file="/includes/sms_alerts/examples_layout.jspf" %>
+	
+	<jwr:style src="/giftcards.css" media="all" />
+    <jwr:style src="/timeslots.css" media="all" />
 
 	 <%
 		if ( (request.getRequestURI().indexOf("/your_account/giftcards.jsp")>-1) || (request.getRequestURI().indexOf("/your_account/gc_order_details.jsp")>-1) ) {

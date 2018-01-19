@@ -99,6 +99,7 @@ import com.freshdirect.logistics.controller.data.response.DeliveryZones;
 import com.freshdirect.logistics.controller.data.response.ListOfDates;
 import com.freshdirect.logistics.controller.data.response.ListOfFulfillmentInfoResponse;
 import com.freshdirect.logistics.controller.data.response.ListOfObjects;
+import com.freshdirect.logistics.controller.data.response.RoutesData;
 import com.freshdirect.logistics.controller.data.response.Timeslot;
 import com.freshdirect.logistics.delivery.dto.Address;
 import com.freshdirect.logistics.delivery.dto.Customer;
@@ -1911,6 +1912,31 @@ public class FDDeliveryManager {
 					.getInstance().getLogisticsService();
 			RouteStopInfo response = logisticsService.getRouteStopInfo(orderId);
 			return response;
+		} catch (FDLogisticsServiceException ex) {
+			throw new FDResourceException(ex);
+		}
+	}
+		
+	public RoutesData getRouteDetails(String routeNo)
+				throws FDResourceException {
+			try {
+				ILogisticsService logisticsService = LogisticsServiceLocator
+						.getInstance().getLogisticsService();
+				RoutesData routeDataResponse=logisticsService.getRouteDetails(routeNo);
+				return routeDataResponse;
+			} catch (FDLogisticsServiceException ex) {
+				throw new FDResourceException(ex);
+			}
+		}
+	
+	//get the Routesdetails by current date
+	public RoutesData getRoutesDetailsByCurrentDate()
+			throws FDResourceException {
+		try {
+			ILogisticsService logisticsService = LogisticsServiceLocator
+					.getInstance().getLogisticsService();
+			RoutesData routeDataResponse=logisticsService.getRoutesDetailsByCurrentDate();
+			return routeDataResponse;
 		} catch (FDLogisticsServiceException ex) {
 			throw new FDResourceException(ex);
 		}

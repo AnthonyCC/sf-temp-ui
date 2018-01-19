@@ -1,0 +1,49 @@
+#reorderPopup .cartline-title.cartline-box {
+  max-width: 150px;
+}
+
+#reorderPopup .cartline-quantity.cartline-box.changed+.cartline-price.cartline-box.original {
+  opacity: .5;
+}
+#reorderPopup .cartline-quantity.cartline-box .itemlist-item-salesunit {
+  height: 70px;
+  padding-top: 20px;
+}
+
+#reorderPopup .cartline-quantity.cartline-box .subtotal {
+  display: none;
+}
+
+#reorderPopup .atc,
+#reorderPopup .cartsection__label {
+  text-align: right;
+  width: 100%;
+}
+
+#reorderPopup .cartsection__label {
+  box-sizing: border-box;
+  padding-right: 25px;
+}
+
+#reorderPopup .atc {
+  margin-bottom: 15px;
+}
+
+#reorderPopup .cartsection__label div {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+  text-align: center;
+  width: 90px;
+  word-wrap:break-word;
+}
+
+#reorderPopup .estimated_subtoal {
+  border-top: 3px double #e0e3d0;
+  font-size: 15px;
+  font-weight: bold;
+  text-align: right;
+  padding-top: 15px;
+}

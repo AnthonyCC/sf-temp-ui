@@ -14,6 +14,7 @@ import com.freshdirect.storeapi.content.ComparatorChain;
 import com.freshdirect.webapp.ajax.AbstractCoremetricsResponse;
 import com.freshdirect.webapp.ajax.analytics.data.GoogleAnalyticsData;
 import com.freshdirect.webapp.ajax.expresscheckout.csr.data.CustomerServiceRepresentativeData;
+import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.ajax.viewcart.data.ViewCartCarouselData;
 
 /**
@@ -390,6 +391,8 @@ public class CartData extends AbstractCoremetricsResponse {
          */
         private List<Item> cartLines;
 
+        private Map<String, ProductData> products;
+
         private SectionInfo info;
 
         public String getTitle() {
@@ -414,6 +417,14 @@ public class CartData extends AbstractCoremetricsResponse {
 
         public void setCartLines(List<Item> cartLines) {
             this.cartLines = cartLines;
+        }
+
+        public Map<String, ProductData> getProducts() {
+            return products;
+        }
+
+        public void setProducts(Map<String, ProductData> products) {
+            this.products = products;
         }
 
         public SectionInfo getInfo() {
@@ -580,6 +591,8 @@ public class CartData extends AbstractCoremetricsResponse {
          */
         private String confDescr;
 
+        private Map<String, String> confOptions;
+
         /**
          * Is recently changed or added?
          */
@@ -641,6 +654,14 @@ public class CartData extends AbstractCoremetricsResponse {
 
         public void setConfDescr(String confDescr) {
             this.confDescr = confDescr;
+        }
+
+        public Map<String, String> getConfOptions() {
+            return confOptions;
+        }
+
+        public void setConfOptions(Map<String, String> confOptions) {
+            this.confOptions = confOptions;
         }
 
         public String getPrice() {

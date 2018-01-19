@@ -948,7 +948,8 @@ public class FDURLUtil {
 			return (redirectUrl + toBeAppended).replaceFirst("&", "?");
 		}
 
-		return redirectUrl + toBeAppended;
+		// unescape query param separators before appending params to redirect URL
+				return redirectUrl + redirBuilder.toString().replaceAll(ProductDisplayUtil.URL_PARAM_SEP, "&");
 	}
 
 }

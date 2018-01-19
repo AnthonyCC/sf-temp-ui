@@ -94,7 +94,7 @@ var FreshDirect = FreshDirect || {};
   function setURL(params, title, doPush) {
     title = title || document.title;
 
-    if (lastParams === params) {
+    if (lastParams === params || params === null) {
       return;
     }
 

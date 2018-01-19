@@ -11,7 +11,7 @@
  */
 {template .topContent autoescape="false"}
 {let $l: $limit or $limit == 0 ? $limit : 25 /}
-{let $l: $mobWeb ? 30 : $l /}
+{let $l: $l == 25 ? ($mobWeb ? 30 : $l) : $l /}
 	{call browse.content}
 		{param sections:$sections /}
 		{param sectionMaxLevel:$sectionMaxLevel /}

@@ -20,11 +20,11 @@ final int W_CHECKOUT_NAV_TOTAL = 970;
 	<head>
     	<tmpl:get name="seoMetaTag"/>
 		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-		<fd:javascript src="/assets/javascript/timeslots.js"/>
+		<jwr:script src="/assets/javascript/timeslots.js" useRandomParam="false" />
 		
   	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-		<fd:css href="/assets/css/timeslots.css"/>
+		<jwr:style src="/timeslots.css" media="all" />
 		<%@ include file="/shared/template/includes/ccl.jspf" %>
 	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 	

@@ -444,7 +444,8 @@
 					</td>
 				</tr>
 				<tr>
-					<td colspan="4"><img src="/media_stat/images/layout/clear.gif" width="20" height="20" alt="" /></td>
+					<td colspan="4"><img src="/media_stat/images/layout/clear.gif" width="20" height="20" alt="" />
+					 <span id="prodReqError" class="text12 error" style="height: 40px; margin-top: 20px;"></span></td>
 				</tr>
 				<tr>
 					<td width="60"></td>
@@ -495,7 +496,7 @@
 						<button class="cssbutton small green transparent" id="prodReq_clear">CLEAR</button>
 						<button class="cssbutton small orange" id="prodReq_send">SEND</button>
 					</div>
-					<div id="prodReqError" class="text12 error" style="height: 40px; margin-top: 20px;"></div>
+					
 				</td></tr>
 			</table>
 		</form>

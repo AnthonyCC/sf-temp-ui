@@ -17,10 +17,10 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.concurrent.ConcurrentMapCache;
 
 import com.freshdirect.cms.cache.CacheEvictors;
 import com.freshdirect.cms.category.UnitTest;
@@ -46,6 +46,8 @@ import com.freshdirect.cms.persistence.repository.RelationshipEntityRepository;
 import com.freshdirect.cms.util.EntityFactory;
 import com.freshdirect.cms.validation.service.ValidatorService;
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
 @RunWith(MockitoJUnitRunner.class)
 @Category(UnitTest.class)
@@ -66,8 +68,8 @@ public class DatabaseContentProviderTest {
     @Mock
     private ContentNodeEntityRepository contentNodeEntityRepository;
 
-    @Mock
-    private ContentNodeEntityToContentKeyConverter contentNodeEntityToContentKeyConverter;
+    @Spy
+    private ContentNodeEntityToContentKeyConverter contentNodeEntityToContentKeyConverter = new ContentNodeEntityToContentKeyConverter();
 
     @Mock
     private RelationshipToRelationshipEntityConverter relationshipToRelationshipEntityConverter;
@@ -111,9 +113,9 @@ public class DatabaseContentProviderTest {
 
     @Test
     public void testGetContentKeys() {
-        List<ContentNodeEntity> contentNodeEntities = Arrays.asList(EntityFactory.createContentNode());
+        List<ContentNodeEntity> contentNodeEntities = ImmutableList.of(EntityFactory.createContentNode());
         Mockito.when(contentNodeEntityRepository.findAll()).thenReturn(contentNodeEntities);
-        Mockito.when(contentNodeEntityToContentKeyConverter.convert(contentNodeEntities)).thenReturn(Arrays.asList(EntityFactory.createContentKey()));
+        underTest.loadAll();
 
         Set<ContentKey> loadedContentKeys = underTest.getContentKeys();
 
@@ -123,25 +125,21 @@ public class DatabaseContentProviderTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testGetContenKeysByTypeWithNullType() {
+    public void testGetContentKeysByTypeWithNullType() {
         underTest.getContentKeysByType(null);
     }
 
     @Test
     public void testGetContentKeysByType() {
-        final Cache keyCache = new ConcurrentMapCache("contentKeyCache");
-        final Set<ContentKey> allKeys = new HashSet<ContentKey>();
-        allKeys.add(ContentKeyFactory.get(ContentType.Product, "prd1"));
-        allKeys.add(ContentKeyFactory.get(ContentType.Product, "prd2"));
-        keyCache.put("getContentKeys", allKeys);
-
-        Mockito.when(cacheManager.getCache("contentKeyCache")).thenReturn(keyCache);
+        Mockito.when(contentNodeEntityRepository.findAll()).thenReturn(
+                ImmutableList.of(new ContentNodeEntity("Product:prd1", "Product"), new ContentNodeEntity("Product:prd2", "Product")));
+        underTest.loadAll();
 
         Set<ContentKey> loadedContentKeys = underTest.getContentKeysByType(EntityFactory.CONTENT_TYPE_ENUM);
 
         Assert.assertNotNull(loadedContentKeys);
         Assert.assertEquals(2, loadedContentKeys.size());
-        Assert.assertEquals(allKeys, loadedContentKeys);
+        Assert.assertEquals(ImmutableSet.of(ContentKeyFactory.get(ContentType.Product, "prd1"), ContentKeyFactory.get(ContentType.Product, "prd2")), loadedContentKeys);
     }
 
     @Test
@@ -164,9 +162,7 @@ public class DatabaseContentProviderTest {
     @Test
     public void testGetAttributeValueWithNotExistingAttribute() {
         Mockito.when(attributeEntityRepository.findByContentKeyAndName(EntityFactory.CONTENT_KEY, EntityFactory.NAME)).thenReturn(null);
-
         Optional<Object> loadedValue = underTest.getAttributeValue(EntityFactory.createContentKey(), EntityFactory.createScalarAttribute());
-
         Assert.assertFalse(loadedValue.isPresent());
     }
 
@@ -276,7 +272,7 @@ public class DatabaseContentProviderTest {
 
     @Test
     public void testCacheEvict() {
-        Mockito.when(navigationTreeRepository.queryChildrenOfContentKey(Mockito.anySet())).thenReturn(new HashSet<ContentKey>());
+        Mockito.when(navigationTreeRepository.queryChildrenOfContentKey(Mockito.anySetOf(ContentKey.class))).thenReturn(new HashSet<ContentKey>());
         underTest.cacheEvict(ContentKeyFactory.get(ContentType.Category, "Testing_Category"));
     }
 

@@ -11,6 +11,8 @@ public class HLBrandProductAdResponse implements Serializable {
 	
 	public String PageBeacon;
 	
+	public String updatePdpPageBeacon;
+	
 	public List<HLBrandProductAdInfo> SearchProductAd;
 	
 	public List<HLBrandProductAdInfo> ProductAd;
@@ -40,6 +42,12 @@ public class HLBrandProductAdResponse implements Serializable {
 		ProductAd = productAd;
 	}
 
+	public String getUpdatePdpPageBeacon() {
+		return updatePdpPageBeacon;
+	}
 
+	public void setUpdatePdpPageBeacon(String updatePdpPageBeacon) {
+		this.updatePdpPageBeacon = updatePdpPageBeacon;
+	}
 	
 }

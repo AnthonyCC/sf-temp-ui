@@ -42,7 +42,7 @@ final int W_YA_EDIT_DELIVERY_ADDR = 970;
 	<img src="/media_stat/images/layout/ff9933.gif" alt="" width="<%= W_YA_EDIT_DELIVERY_ADDR %>" height="1" border="0"><br />
 	<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0"><br /><br />
 
-	<form name="address" method="post" onSubmit="doubleSubmitAddrAdd=true;">
+	<form fdform name="address" method="post" onSubmit="doubleSubmitAddrAdd=true;" fdform-displayerrorafter>
 		<input type="hidden" name="updateShipToAddressId" value="<%=request.getParameter("addressId")%>">
 
 		<table border="0" cellspacing="0" cellpadding="2" width="<%= W_YA_EDIT_DELIVERY_ADDR %>">

@@ -233,15 +233,7 @@
 	
 <xsl:template name="substituteHeader">
 	<xsl:if test="order/hasSubstitutes = 'true'">&nbsp;<em>(Substituted items in italics)</em>:</xsl:if>
-</xsl:template>
-<xsl:template name="shortedLine">
-	<tr>
-		<td width="20">&nbsp;</td>
-		<td width="50"><xsl:value-of select="orderedQuantity" />/<xsl:value-of select="deliveredQuantity" /></td>
-		<td><b><xsl:value-of select="description" /></b><xsl:if test="configurationDesc != '' "><xsl:text> - </xsl:text>(<xsl:value-of select="configurationDesc"/>)</xsl:if></td>
-	</tr>
-</xsl:template>
-	
+</xsl:template>	
 <xsl:template name="shortedItems">
 	<xsl:param name="hasSubstitutes"/>
 	<table width = "100%" cellspacing="0" cellpadding="0" align="center">
@@ -249,7 +241,16 @@
 			<td colspan="3" style="margin: 0 0 10px 0;"><b>ITEMS NOT IN YOUR ORDER</b><xsl:call-template name="substituteHeader" /></td>
 		</tr>
 		<xsl:for-each select="order/shortedItems/shortedItems">
-			<xsl:call-template name="shortedLine" />
+			<tr>
+				<td width="20">&nbsp;</td>
+				<td width="50">
+					<xsl:value-of select="orderedQuantity" />/<xsl:choose>
+						<xsl:when test="substituteProductName != '' and substitutedQuantity > 0">0</xsl:when>
+						<xsl:otherwise><xsl:value-of select="deliveredQuantity" /></xsl:otherwise>
+					</xsl:choose>
+				</td>
+				<td><b><xsl:value-of select="description" /></b><xsl:if test="configurationDesc != '' "><xsl:text> - </xsl:text>(<xsl:value-of select="configurationDesc"/>)</xsl:if></td>
+			</tr>
 			<xsl:if test="substituteProductName != '' and substitutedQuantity > 0">
 				<tr>
 					<td width="20">&nbsp;</td>
@@ -267,7 +268,16 @@
 			<td colspan="3" style="margin: 0 0 10px 0;"><b>SOME ITEMS IN YOUR BUNDLE(S) ARE NOT AVAILABLE</b><xsl:call-template name="substituteHeader" /></td>
 		</tr>
 		<xsl:for-each select="order/bundleShortItems/bundleShortItems">
-			<xsl:call-template name="shortedLine" />
+			<tr>
+				<td width="20">&nbsp;</td>
+				<td width="50">
+					<xsl:value-of select="orderedQuantity" />/<xsl:choose>
+						<xsl:when test="substituteProductName != '' and substitutedQuantity > 0">0</xsl:when>
+						<xsl:otherwise><xsl:value-of select="deliveredQuantity" /></xsl:otherwise>
+					</xsl:choose>
+				</td>
+				<td><b><xsl:value-of select="description" /></b><xsl:if test="configurationDesc != '' "><xsl:text> - </xsl:text>(<xsl:value-of select="configurationDesc"/>)</xsl:if></td>
+			</tr>
 			<xsl:if test="substituteProductName != '' and substitutedQuantity > 0">
 				<tr>
 					<td width="20">&nbsp;</td>
@@ -285,7 +295,16 @@
 			<td colspan="3" style="margin: 0 0 10px 0;"><b>YOUR BUNDLE(S) ARE NOT AVAILABLE</b><xsl:call-template name="substituteHeader" /></td>
 		</tr>
 		<xsl:for-each select="order/bundleCompleteShort/bundleCompleteShort">
-			<xsl:call-template name="shortedLine" />
+			<tr>
+				<td width="20">&nbsp;</td>
+				<td width="50">
+					<xsl:value-of select="orderedQuantity" />/<xsl:choose>
+						<xsl:when test="substituteProductName != '' and substitutedQuantity > 0">0</xsl:when>
+						<xsl:otherwise><xsl:value-of select="deliveredQuantity" /></xsl:otherwise>
+					</xsl:choose>
+				</td>
+				<td><b><xsl:value-of select="description" /></b><xsl:if test="configurationDesc != '' "><xsl:text> - </xsl:text>(<xsl:value-of select="configurationDesc"/>)</xsl:if></td>
+			</tr>
 			<xsl:if test="substituteProductName != '' and substitutedQuantity > 0">
 				<tr>
 					<td width="20">&nbsp;</td>

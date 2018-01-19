@@ -13,7 +13,7 @@ import com.freshdirect.webapp.warmup.data.WarmupPageData;
 
 public class WarmupService {
 
-    private static Logger LOGGER = LoggerFactory.getInstance(Warmup.class);
+    private static Logger LOGGER = LoggerFactory.getInstance(WarmupService.class);
 
     private static final WarmupService INSTANCE = new WarmupService();
 
@@ -40,21 +40,21 @@ public class WarmupService {
     }
 
     public void repeatWarmup() {
-/*    	LOGGER.debug("isManualWarmupAllowed=========================="+isManualWarmupAllowed());
+    	
         if (!isManualWarmupAllowed()) {
             return;
         }*/
     	LOGGER.debug("Warmup.WARMUP_STATE=========================="+Warmup.WARMUP_STATE);
     	LOGGER.debug("CmsServiceLocator.contentProviderService().isReadOnlyContent()=========================="+CmsServiceLocator.contentProviderService().isReadOnlyContent());
 
-        if (Warmup.WARMUP_STATE.compareAndSet(WarmupState.NOT_TRIGGERED, WarmupState.IN_PROGRESS)) {
+        if (Warmup.WARMUP_STATE.compareAndSet(WarmupState.NOT_TRIGGERED, WarmupState.IN_PROGRESS) || Warmup.WARMUP_STATE.compareAndSet(WarmupState.FAILED, WarmupState.IN_PROGRESS)) {
             new Thread("warmup-thread") {
 
                 @Override
                 public void run() {
                     Warmup warmup = new Warmup();
                     warmup.warmup();
-                    Warmup.WARMUP_STATE.set(WarmupState.FINISHED);
+                    //Warmup.WARMUP_STATE.set(WarmupState.FINISHED);
                 };
             }.start();
         } else if (CmsServiceLocator.contentProviderService().isReadOnlyContent() && Warmup.WARMUP_STATE.compareAndSet(WarmupState.FINISHED, WarmupState.IN_PROGRESS)) {
@@ -71,7 +71,7 @@ public class WarmupService {
                     }
                     Warmup warmup = new Warmup();
                     warmup.repeatWarmup();
-                    Warmup.WARMUP_STATE.set(WarmupState.FINISHED);
+                    //Warmup.WARMUP_STATE.set(WarmupState.FINISHED);
                 };
             }.start();
         }
@@ -86,6 +86,6 @@ public class WarmupService {
     }
 
     private static final boolean isManualWarmupAllowed() {
-        return FDStoreProperties.isLocalDeployment() || FDStoreProperties.getPreviewMode() || !FDStoreProperties.performStorePreLoad();
+        return FDStoreProperties.isRepeatWarmupEnabled() || FDStoreProperties.isLocalDeployment() || FDStoreProperties.getPreviewMode() || !FDStoreProperties.performStorePreLoad();
     }
 }

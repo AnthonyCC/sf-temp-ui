@@ -14,6 +14,7 @@ import com.freshdirect.cms.contentvalidation.validator.RatingGroupValidator;
 import com.freshdirect.cms.contentvalidation.validator.RecipeChildNodeValidator;
 import com.freshdirect.cms.contentvalidation.validator.StructureValidator;
 import com.freshdirect.cms.contentvalidation.validator.UniqueContentKeyValidator;
+import com.freshdirect.cms.validation.validator.TypeValidator;
 import com.freshdirect.cms.validation.validator.Validator;
 
 @Service
@@ -43,12 +44,15 @@ public class ContentValidatorConfigurationService {
     @Autowired
     private RatingGroupValidator ratingGroupValidator;
 
+    @Autowired
+    private TypeValidator typeValidator;
+
     public List<Validator> getValidators() {
         if (configuredProductValidator != null) {
-            return Arrays.asList(conditionalFieldValidator, configuredProductValidator, dateIntervalValidator, primaryHomeValidator, recipeChildNodeValidator, structureValidator,
+            return Arrays.asList(typeValidator, conditionalFieldValidator, configuredProductValidator, dateIntervalValidator, primaryHomeValidator, recipeChildNodeValidator, structureValidator,
                     uniqueContentKeyValidator, ratingGroupValidator);
         } else {
-            return Arrays.asList(conditionalFieldValidator, dateIntervalValidator, primaryHomeValidator, recipeChildNodeValidator, structureValidator,
+            return Arrays.asList(typeValidator, conditionalFieldValidator, dateIntervalValidator, primaryHomeValidator, recipeChildNodeValidator, structureValidator,
                 uniqueContentKeyValidator, ratingGroupValidator);
         }
     }

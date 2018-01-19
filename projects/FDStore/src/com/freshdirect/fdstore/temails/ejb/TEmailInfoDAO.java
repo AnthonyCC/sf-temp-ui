@@ -15,10 +15,13 @@ import java.util.Map;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.temails.TEmailTemplateInfo;
 import com.freshdirect.fdstore.temails.TransEmailInfoModel;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.mail.EmailAddress;
+import com.freshdirect.framework.mail.TEmailI;
 import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.EnumEmailType;
@@ -65,19 +68,30 @@ public class TEmailInfoDAO {
 	
 	//insert into cust.TRANS_EMAIL_TYPES (ID,  PROVIDER, TEMPLATE_ID,  TRANS_TYPE,  EMAIL_TYPE ,  DESCRIPTION ,  ACTIVE , FROM_ADDR,  SUBJECT)  values(?,?,?,?,?,?,?,?,?)
 	
-	private static final String TEMPLATE_SELECT_SQL="SELECT ID, TARGET_PROG_ID, PROVIDER, TEMPLATE_ID,  TRANS_TYPE,  EMAIL_TYPE ,  DESCRIPTION ,  ACTIVE , IS_PROD_READY,  FROM_ADDR,  SUBJECT FROM CUST.TRANS_EMAIL_TYPES WHERE TRANS_TYPE=? AND (EMAIL_TYPE=? OR EMAIL_TYPE='ALL') and ACTIVE = 'X'";
+	//private static final String TEMPLATE_SELECT_SQL="SELECT ID, TARGET_PROG_ID, PROVIDER, TEMPLATE_ID,  TRANS_TYPE,  EMAIL_TYPE ,  DESCRIPTION ,  ACTIVE , IS_PROD_READY,  FROM_ADDR,  SUBJECT FROM CUST.TRANS_EMAIL_TYPES WHERE TRANS_TYPE=? AND (EMAIL_TYPE=? OR EMAIL_TYPE='ALL') and ACTIVE = 'X'";
 	
-	public static TEmailTemplateInfo getTEmailTemplateInfo(Connection con,EnumTranEmailType tranType,EnumEmailType emailType) throws SQLException{
+	
+
+	
+	private static final String TEMPLATE_SELECT_SQL="SELECT ID, TARGET_PROG_ID, PROVIDER, TEMPLATE_ID,  TRANS_TYPE,  EMAIL_TYPE ,  DESCRIPTION ,  ACTIVE , IS_PROD_READY,  FROM_ADDR,  SUBJECT FROM CUST.TRANS_EMAIL_TYPES WHERE TRANS_TYPE=? AND (EMAIL_TYPE=? OR EMAIL_TYPE='ALL') and ACTIVE = 'X' and ESTORE_ID = ? AND SERVICE_TYPE = NVL(TRIM(?), 'NONE')  ";
+	
+	public static TEmailTemplateInfo getTEmailTemplateInfo(Connection con,
+				EnumTranEmailType tranType,
+				EnumEmailType emailType, 
+				EnumEStoreId estoreId, EnumServiceType serviceType) throws SQLException{
 		
 		  Connection conn = con;
 		   TEmailTemplateInfo info=null;	
 			PreparedStatement ps = null;
 			ResultSet rs = null;
-			
+			String serviceTypeStr = serviceType!=null? serviceType.getName():EnumServiceType.NONE.getName();
+			//System.out.println(String.format("TEmailTemplateInfo::: bind parameters  tranType: %s  , emailType: %s , estoreId: %s", tranType.getName(),emailType.getName(), estoreId.name() ));
 	       try {
 	    	   ps = conn.prepareStatement(TEMPLATE_SELECT_SQL);
 	    	   ps.setString(1,tranType.getName());
 	    	   ps.setString(2,emailType.getName());
+	    	   ps.setString(3,estoreId.name());
+	    	   ps.setString(4, serviceTypeStr);
 	    	   rs = ps.executeQuery();
 	           if (rs.next()) {
 	           	 	info=new TEmailTemplateInfo();
@@ -244,8 +258,8 @@ public class TEmailInfoDAO {
   
   
   
-  public static List getFailedTransactions(Connection conn) throws SQLException{
-	 return getFailedTransactions(conn,999,true);  
+  public static List<TEmailI>  getFailedTransactions(Connection conn) throws SQLException{
+	 return getFailedTransactions(conn,100,true);  
   }
   
 
@@ -253,15 +267,21 @@ public class TEmailInfoDAO {
 															" D.TRANS_EMAIL_ID ,  D.FROM_ADDR , D.TO_ADDR , D.CC_ADDR,  D.BCC_ADDR,  D.SUBJECT, D.TEMPLATE_CONTENT "+ 
 															" from cust.TRANS_EMAIL_MASTER M,CUST.TRANS_EMAIL_DETAILS D where "+  
 															" M.ID=D.TRANS_EMAIL_ID and "+ 
-															" M.status='FLD' and rownum<? order by M.CROMOD_DATE DESC ";
+															" M.status='FLD' and provider = 'SILVERPOP'  and rownum<? order by M.CROMOD_DATE DESC ";
 	
 	
+	private  static String getContentFromClob(ResultSet rs) throws SQLException{
+		  Clob  myClob = rs.getClob("TEMPLATE_CONTENT");
+		  String templateContent = myClob.getSubString(1,  (int) myClob.length() ).trim();
+		  return templateContent;
+		
+	}
 	
-	 public static List getFailedTransactions(Connection conn, int max_count,boolean isEmailContentReqd) throws SQLException{
+	 public static List<TEmailI>  getFailedTransactions(Connection conn, int max_count,boolean isEmailContentReqd) throws SQLException{
 			PreparedStatement ps = null;
 			ResultSet rs = null;
 		
-		   List failedTransList=new ArrayList();	
+		   List <TEmailI>  failedTransList=new ArrayList<TEmailI> ();	
 		   if(max_count==0) max_count=999;
 	       try {
 	    	   ps = conn.prepareStatement(GET_ALL_FAILED_TRANS_MAIL_SQL);
@@ -284,8 +304,9 @@ public class TEmailInfoDAO {
 	           	    model.setRecipient(rs.getString("TO_ADDR"));
 	           	    model.setSubject(rs.getString("SUBJECT"));
 	    			java.util.Date startDate = new java.util.Date(rs.getTimestamp("CROMOD_DATE").getTime());
-	           	    model.setCroModDate(startDate);	           	   	           	    
-	           	    model.setEmailContent(rs.getString("TEMPLATE_CONTENT"));
+	           	    model.setCroModDate(startDate);	  
+	           	    model.setEmailContent(getContentFromClob(rs));
+	           	   // model.setEmailContent(rs.getString("TEMPLATE_CONTENT"));
 	           	    model.setCCListInStr(rs.getString("CC_ADDR"));
 	           	    model.setBCCListInStr(rs.getString("BCC_ADDR"));
 	           	    

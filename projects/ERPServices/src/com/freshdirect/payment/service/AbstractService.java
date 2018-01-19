@@ -39,6 +39,7 @@ public abstract class AbstractService {
 	
 	private static final String ORBITAL_API_CONTEXT = "/payment/v/1";
 	private static final String PAYPAL_API_CONTEXT = "/payPal/v/1";
+	private static final String MASTERPASS_API_CONTEXT = "/masterpass/v/1";
 	private static final String OMS_API_CONTEXT = "/fdlogistics/v/1/";
 	private static final String FDCOMMERCE_API_CONTEXT = "/fdcommerceapi/fd/v1/";
 
@@ -165,6 +166,10 @@ public abstract class AbstractService {
 	}
 	public String getOrbitalEndPoint(String path){
 		return FDStoreProperties.getOrbitalAPIUrl()	+ ORBITAL_API_CONTEXT 
+														+ path;
+	}
+	public String getMasterPassEndPoint(String path){
+		return FDStoreProperties.getMasterPassAPIUrl()+ MASTERPASS_API_CONTEXT 
 														+ path;
 	}
 	

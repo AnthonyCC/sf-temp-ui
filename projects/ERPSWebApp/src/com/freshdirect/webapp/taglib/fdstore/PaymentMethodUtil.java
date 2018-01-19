@@ -53,6 +53,7 @@ import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.PaymentManager;
 import com.freshdirect.payment.fraud.PaymentFraudManager;
 import com.freshdirect.webapp.util.RequestUtil;
+import com.freshdirect.webapp.util.StandingOrderHelper;
 
 /**
  * One of the ugliest things in ERPSWebApp.
@@ -122,9 +123,14 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
             throw new FDResourceException("payment method not found");
         }
         FDSessionUser fdUser = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
-                 
+        if(StandingOrderHelper.isEligibleForSo3_0(fdUser)){
+        	StandingOrderHelper.evaluteSOPaymentId(request.getSession(), fdUser, paymentId);
+        }
         FDCustomerManager.removePaymentMethod(info, paymentMethod, 
         		FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, fdUser));
+        if(paymentId.equalsIgnoreCase(fdUser.getFDCustomer().getDefaultPaymentMethodPK())){
+        	fdUser.getShoppingCart().setPaymentMethod(null);
+        }
         fdUser.refreshFdCustomer();
     }
     
@@ -275,6 +281,12 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 			        result.addError(
 			        accountNumberVerify == null || "".equals(accountNumberVerify),
 					PaymentMethodName.ACCOUNT_NUMBER_VERIFY, SystemMessageList.MSG_REQUIRED
+					);
+			        
+			        // Check to see that account number DOESNT contain a letter (a=z or A-Z) appdev 6789
+			        result.addError(
+			        		accountNumber.matches(".*[a-zA-Z]+.*"),
+					PaymentMethodName.ACCOUNT_NUMBER, SystemMessageList.MSG_ACCOUNT_NUMBER_ILLEGAL_ALPHA
 					);
 	
 			        // Check account number has at least 5 digits

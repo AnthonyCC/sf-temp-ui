@@ -29,7 +29,7 @@ var dataLayer = window.dataLayer || [];
     return products;
   };
 
-  var productTransform = function (product, idx, list) {
+  var productTransform = function (product, idx, listData) {
     var productData = {
       name: product.productName,
       id: product.productId,
@@ -37,7 +37,7 @@ var dataLayer = window.dataLayer || [];
       brand: product.brandName,
       category: product.catId,
       variant: product.variantId || 'default variant',
-      list: list || fd.gtm.getList(),
+      list: fd.gtm.getListForProduct(null, listData),
       new_product: product.newProduct,
       sku: product.skuCode,
       in_stock: product.available
@@ -110,33 +110,28 @@ var dataLayer = window.dataLayer || [];
       });
     },
     ddpp: function (ddppproducts) {
-      var list = fd.gtm.getList(),
-          products = ddppproducts.map(function (product, idx) {
-            return productTransform(product, idx+1, list+'_ddpp');
+      var products = ddppproducts.map(function (product, idx) {
+            return productTransform(product, idx+1, {channel: 'rec_ddpp'});
           });
 
       fd.gtm.reportImpressions(products);
     },
     sections: function (sectionData) {
-      var list = fd.gtm.getList(),
-          products = sectionProducts(sectionData).map(function (product, idx) {
-            return productTransform(product, idx+1, list);
+      var products = sectionProducts(sectionData).map(function (product, idx) {
+            return productTransform(product, idx+1);
           });
 
       fd.gtm.reportImpressions(products);
     },
     items: function (reorderItems) {
-      var list = fd.gtm.getList(),
-          products = reorderItems.map(function (product, idx) {
-            return productTransform(product, idx+1, list);
+      var products = reorderItems.map(function (product, idx) {
+            return productTransform(product, idx+1);
           });
 
       fd.gtm.reportImpressions(products);
     },
     product: function (productData) {
       var product = productTransform(productData);
-
-      delete product.list;
 
       dataLayer.push({
         ecommerce: {
@@ -192,6 +187,23 @@ var dataLayer = window.dataLayer || [];
           }
         }
       });
+    },
+    timeslotOpened: function () {
+      var unavts = fd.gtm.isUnavailableTimeslotPresent() ? 'yes' : 'no';
+
+      dataLayer.push({
+        page_name: 'Available Delivery Timeslots - Modal',
+        unavailable_timeslot_present: unavts
+      });
+
+      if (unavts === 'yes') {
+        dataLayer.push({
+          event: 'timeslot-unavailable',
+          eventCategory: 'timeslot',
+          eventAction: 'timeslot-checkout-modal',
+          eventLabel: 'yes'
+        });
+      }
     },
     topNavClick: function (data) {
       dataLayer.push({
@@ -478,28 +490,25 @@ var dataLayer = window.dataLayer || [];
   };
 
   // product tile serialization
-  fd.gtm.getProductData = function (productEl) {
+  fd.gtm.getProductData = function (productEl, listData) {
     var productE = $(productEl).closest('[data-component="product"]'),
         productId = productE.attr('data-product-id'),
-        productData, vcat,
-        moduleE;
+        productData;
 
     if (productId) {
       productE = $('[data-product-id="'+productId+'"]').first();
     }
 
     productData = fd.modules.common.productSerialize(productE)[0];
-    moduleE = $(productE).closest('.content-module')[0];
 
-    productData.brand = productE.find('.portrait-item-header-name b').text();
-    productData.name = productE.find('.product-name-no-brand').text() || productE.find('.portrait-item-header-name').text();
+    productData.brand = productE.find('.portrait-item-header-name b').first().text();
+    productData.name = productE.find('.product-name-no-brand').first().text() || productE.find('.portrait-item-header-name').first().text();
     productData.price = productE.attr('data-price');
     productData.in_stock = productE.attr('data-in-stock');
     productData.new_product = productE.attr('data-new-product');
     productData.variant = productE.attr('data-variant');
     productData.position = parseInt(productE.attr('data-position'), 10) || 0;
-    productData.list = productE.attr('data-list');
-    vcat = productE.attr('data-virtual-category');
+    productData.list = fd.gtm.getListForProduct(productE, listData);
 
     if (!productData.position) {
       $('[data-component="product"]').each(function (i, el) {
@@ -509,43 +518,22 @@ var dataLayer = window.dataLayer || [];
       });
     }
 
-    if (!productData.list && moduleE) {
-      productData.list = moduleE.id;
-    }
-
     if (productE.hasClass('transactional-related-body')) {
-      productData.list = 'cross-sell';
       productData.position = 1;
     }
-
-    if (productE.hasClass('carouselTransactionalItem') && !productData.list) {
-      var carouselE = productE.closest('[data-component="tabbedRecommender"]');
-
-      if (carouselE.length) {
-        productData.list = safeName(carouselE.find('.tabs li.selected').text());
-      } else {
-        productData.list = safeName(productE.closest('.carousel, .carousels').find('.carousel-header, .header').text());
-      }
-    }
-
-    if (vcat) {
-      productData.list = vcat.replace(/:POSITION\s(\d+).*/, '_$1_') + safeName($(moduleE).find('.content-header .content-title').text() || moduleE.id);
-    }
-
-    productData.list = fd.gtm.getList() + (productData.list ? '_'+productData.list : '');
 
     return productData;
   };
 
   // report product impressions for a DOM element
-  fd.gtm.reportImpressionsEl = function (el, type) {
+  fd.gtm.reportImpressionsEl = function (el, type, listData) {
     var $el = $(el),
         products = [];
 
     type = type || 'impressionsPushed';
 
     var reportProduct = function (elm) {
-      var productData = fd.gtm.getProductData(elm);
+      var productData = fd.gtm.getProductData(elm, listData);
 
       return {
         id: productData.productId,
@@ -616,30 +604,106 @@ var dataLayer = window.dataLayer || [];
     return window.google_tag_manager && window.google_tag_manager[GTMID];
   };
 
-  // get list parameter for products
-  fd.gtm.getList = function () {
-    var listName = fd.utils.getParameterByName('id'),
+  // get list for product or product container
+  fd.gtm.getListChannel = function (el) {
+    var channel,
         urlPageType = fd.utils.getParameterByName('pageType'),
         pageType = fd.gtm.data && fd.gtm.data.googleAnalyticsData && fd.gtm.data.googleAnalyticsData.pageType && fd.gtm.data.googleAnalyticsData.pageType.pageType,
-        searchParams = fd.utils.getParameterByName('searchParams');
+        productData = fd.modules.common.productSerialize(el)[0];
 
-    // pageName for PLP pages => last breadcrumb
-    if ($('ul.breadcrumbs li').length) {
-      listName = safeName($('ul.breadcrumbs li').last().text());
-    } else if (searchParams) {
-      listName = searchParams.replace(/\s+/g, '+');
-    } else if ($('ul.qs-tabs li .selected').length) {
-      pageType = 'reorder';
-      listName = safeName($('ul.qs-tabs li .selected').text());
+    if (productData && productData.variantId) {
+      channel = 'rec_' + productData.variantId;
+    } else if (productData && productData.moduleVirtualCategory) {
+      var mvc = productData.moduleVirtualCategory.split(':');
+
+      channel = 'rec_' + mvc[mvc.length - 1];
+    } else if ($(el).closest('.transactional-related-item').length) {
+      channel = 'rec_flyout';
+    } else {
+      channel = urlPageType.toLowerCase() || pageType.toLowerCase();
+      channel = channel === 'category_list' ? 'browse' : channel;
     }
 
-    // change pageType to 'browse' for product and category list pages
-    if ('product_list|category_list'.indexOf(pageType.toLowerCase()) > -1) {
-      pageType = 'browse';
-    }
-
-    return ((urlPageType || pageType || 'browse')+(listName ? '_'+listName : '')).toLowerCase();
+    return channel ? 'channel_' + channel : '';
   };
+
+  fd.gtm.getListLocation = function (el) {
+    var urlPageType = fd.utils.getParameterByName('pageType'),
+        productId = fd.utils.getParameterByName('productId'),
+        searchParams = fd.utils.getParameterByName('searchParams'),
+        pageType = fd.gtm.data && fd.gtm.data.googleAnalyticsData && fd.gtm.data.googleAnalyticsData.pageType && fd.gtm.data.googleAnalyticsData.pageType.pageType,
+        location = urlPageType || pageType || '';
+
+    if (window.location.pathname.indexOf('/pdp.jsp') > -1 && productId) {
+      location = 'pdp_' + productId;
+    } else if ($('ul.breadcrumbs li').length) {
+      location = 'cat_' + safeName($('ul.breadcrumbs li').last().text());
+    } else if (searchParams) {
+      location = 'search_' + searchParams.replace(/\s+/g, '+');
+    } else if ($('ul.qs-tabs li .selected').length) {
+      location = 'reorder_' + safeName($('ul.qs-tabs li .selected').text());
+    } else {
+      location = pageType.toLowerCase();
+    }
+
+    // product
+    if (el) {
+      el = $(el).closest('[data-component="product"]');
+    }
+
+    // module position
+    if (el && el.attr('data-virtual-category')) {
+      var moduleData = $(el).attr('data-virtual-category').split(':');
+
+      if (moduleData[1]) {
+        var pos = +moduleData[1].split(' ')[1];
+
+        location = location + "_pos" + (pos < 10 ? '0' + pos : pos);
+      }
+    }
+
+    return location ? 'loc_'+location : '';
+  };
+
+  fd.gtm.getListCarousel = function (el) {
+    var productData = fd.modules.common.productSerialize(el)[0],
+        productId = productData && productData.productId,
+        productE,
+        moduleE,
+        title;
+
+    if (productId) {
+      productE = $('[data-product-id="'+productId+'"]').first();
+    }
+
+    moduleE = $(productE).closest('.content-module').first();
+    if (moduleE.length) {
+      title = safeName(moduleE.find('.content-title').text());
+    }
+
+    if (!title && productE && productE.length && productE.hasClass('carouselTransactionalItem')) {
+      var carouselE = productE.closest('[data-component="tabbedRecommender"]');
+
+      if (carouselE.length) {
+        title = safeName(carouselE.find('.tabs li.selected').text());
+      } else {
+        title = safeName(productE.closest('.carousel, .carousels').find('.carousel-header, .header').text());
+      }
+    }
+
+    return title ? 'title_' + title : '';
+  };
+
+  fd.gtm.getListForProduct = function (el, config) {
+    config = config || {};
+
+    var channel = config.channel ? 'channel_' + config.channel : fd.gtm.getListChannel(el),
+        location = config.location ? 'loc_' + config.location : fd.gtm.getListLocation(el),
+        title = config.title ? 'title_' + config.title : fd.gtm.getListCarousel(el);
+
+    return [channel, location, title].filter(function (e) { return e; }).join('-');
+  };
+
 }(FreshDirect));
 
 // process data layer related attributes available at page load
@@ -719,7 +783,7 @@ var dataLayer = window.dataLayer || [];
       value: function (data) {
         setTimeout(function () {
           if (data.el) {
-            fd.gtm.reportImpressionsEl(data.el, data.type);
+            fd.gtm.reportImpressionsEl(data.el, data.type, data.listData);
           } else if (data.products) {
             fd.gtm.reportImpressions(data.products, data.type);
           }
@@ -864,8 +928,26 @@ var dataLayer = window.dataLayer || [];
     }
   };
 
-  // Checkout - user interaction - drawer reset
+  // Checkout - user interaction - drawer open - report unavailable_timeslot_present
   var coDrawerClick = Object.create(fd.common.signalTarget, {
+    signal: {
+      value: 'ec-drawer-click'
+    },
+    callback: {
+      value: function (data) {
+        if (data.target && data.target === 'timeslot') {
+          fd.gtm.updateDataLayer({
+            timeslotOpened: true
+          });
+        }
+      }
+    }
+  });
+
+  coDrawerClick.listen();
+
+  // Checkout - user interaction - drawer reset
+  var coDrawerReset = Object.create(fd.common.signalTarget, {
     signal: {
       value: 'ec-drawer-reset'
     },
@@ -878,7 +960,7 @@ var dataLayer = window.dataLayer || [];
     }
   });
 
-  coDrawerClick.listen();
+  coDrawerReset.listen();
 
   // Checkout - user interaction - drawer cancel
   var coDrawerCancel = Object.create(fd.common.signalTarget, {
@@ -1003,7 +1085,7 @@ var dataLayer = window.dataLayer || [];
       ecommerce: {
         click: {
           actionField: {
-            list: productData.list || fd.gtm.getList()
+            list: productData.list || fd.gtm.getListForProduct(e.target)
           },
           products: [{
             id: productData.productId,

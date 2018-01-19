@@ -123,7 +123,8 @@
 .lineitems22 .itemlist-item-addtocart > form.atc > .atc-info .incart-info,
 .portrait-item > form.atc > .atc-info .incart-info,
 .lineitems22 .itemlist-item-addtocart > .atc-info .incart-info,
-.portrait-item > .atc-info .incart-info {
+.portrait-item > .atc-info .incart-info,
+.portrait-item .atc .going-out {
   display: block;
   text-align: center;
   clear: both;
@@ -138,6 +139,14 @@
   margin-top: 2px;
   position: relative;
   z-index: 1;
+}
+
+.portrait-item .atc .going-out {
+  margin-top: 20px;
+}
+
+#transactionalPopup .transactional-popup-body .portrait-item .cssBurst.going {
+  display: none;
 }
 
 .lineitems22 .itemlist-item-controls.smaller .itemlist-item-addtocart > form.atc > .atc-info .incart-info,
@@ -375,6 +384,7 @@
   padding-bottom: 4px;
   vertical-align: bottom;
   margin-top: 0px;
+  overflow: hidden; /* IE fix */
 }
 
 .portrait-item:hover .portrait-item-controls {
@@ -868,13 +878,13 @@ a.portrait-item-header-name:link {
 
 .qs-content .addtocart .iehelper,
 .portrait-item-controls .addtocart .iehelper {
- position: absolute; 
- width: 1px; 
- height: 1px; 
- padding: 0; 
- margin: -1px; 
- overflow: hidden; 
- clip: rect(0, 0, 0, 0); 
+ position: absolute;
+ width: 1px;
+ height: 1px;
+ padding: 0;
+ margin: -1px;
+ overflow: hidden;
+ clip: rect(0, 0, 0, 0);
  border: 0;
 }
 
@@ -1138,18 +1148,18 @@ a.portrait-item-header-name:link {
 /*  border-radius: 50px 0 0 50px; */
   left:0;
 }
-.qs-content .lineitems22 .itemlist-item-controls .qtyinput > span.qtywrapper, 
+.qs-content .lineitems22 .itemlist-item-controls .qtyinput > span.qtywrapper,
 #transactionalPopup .portrait-item-controls .qtyinput > span.qtywrapper{
 	top: -1px;
 	bottom: -1px;
 }
-.qs-content .lineitems22 .itemlist-item-controls .qtyinput .quantity_minus, 
-.qs-content .lineitems22 .itemlist-item-controls .qtyinput .quantity_plus, 
+.qs-content .lineitems22 .itemlist-item-controls .qtyinput .quantity_minus,
+.qs-content .lineitems22 .itemlist-item-controls .qtyinput .quantity_plus,
 #transactionalPopup .portrait-item-controls .quantity_minus,
 #transactionalPopup .portrait-item-controls .quantity_plus{
 	width: 36px;
 }
-.qs-content .lineitems22 .itemlist-item-controls .qtyinput .quantity_minus, 
+.qs-content .lineitems22 .itemlist-item-controls .qtyinput .quantity_minus,
 .qs-content .lineitems22 .itemlist-item-controls .qtyinput .quantity_plus,
 #transactionalPopup .portrait-item-controls .quantity_minus,
 #transactionalPopup .portrait-item-controls .quantity_plus{
@@ -1273,4 +1283,68 @@ a.portrait-item-header-name:link {
 .qs-content .lineitems22 .itemlist-item-price,
 .qs-content .lineitems22 .itemlist-item-header-buttons{
   margin-left:0px;
+}
+
+.cssBurst,
+.cssBurst span {
+	width: 2.15em;
+	height: 2.15em;
+	display: block;
+	background-color: #E77630; /* orange */
+	line-height: 0.75em;
+}
+.cssBurst {
+	position: relative;
+	top: 0.5em;
+	left: 0.5em;
+	text-align: center;
+	text-decoration: none;
+	color: #fff;
+	font-family: TradeGothic, Trebuchet MS;
+	text-transform: uppercase;
+	font-size: 12px;
+}
+.cssBurst { /* 6-point, -(span rotation * # points) */
+	-webkit-transform: rotate(-135deg);
+	-moz-transform: rotate(-135deg);
+	transform: rotate(-135deg);
+}
+.cssBurst span {
+	-webkit-transform: rotate(22.5deg);
+	-moz-transform: rotate(22.5deg);
+	transform: rotate(22.5deg);
+}
+.cssBurst span p {
+	margin: 0;
+	padding: 4px 0;
+	font-size: 12px;
+	line-height: 0.9em;
+	-webkit-transform: rotate(-19deg);
+	-moz-transform: rotate(-19deg);
+	transform: rotate(-19deg);
+}
+.cssBurst.going span p {
+	font-size: 10px;
+}
+.cssBurst.back span p {
+	padding: 3px 0;
+}
+.cssBurst.new span p,
+.cssBurst.free span p {
+	padding: 8px 0;
+}
+
+.cssBurst.free, .cssBurst.free span {
+	background-color: #C94747;  /* red */
+}
+.cssBurst.deal, .cssBurst.deal span {
+	background-color: #C94747;  /* red */
+}
+.cssBurst.fav, .cssBurst.fav span {
+	background-color: #969;  /* purple */
+}
+.cssBurst.new, .cssBurst.new span,
+.cssBurst.back, .cssBurst.back span,
+.cssBurst.going, .cssBurst.going span  {
+	background-color: #060;  /* green */
 }

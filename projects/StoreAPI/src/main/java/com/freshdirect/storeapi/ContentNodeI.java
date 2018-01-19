@@ -1,9 +1,9 @@
 package com.freshdirect.storeapi;
 
 import java.io.Serializable;
-import java.util.Map;
 import java.util.Set;
 
+import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
 
 /**
@@ -46,24 +46,15 @@ public interface ContentNodeI extends Serializable {
 	/**
 	 * Get a named attribute.
 	 *
-	 * @return {@link AttributeI} or null only if no such attribute is defined
+	 * @return {@link Attribute} or null only if no such attribute is defined
 	 */
-	// @Deprecated
-	public AttributeI getAttribute(String name);
+	public Attribute getAttribute(String name);
 
+    public Object getAttributeValue(Attribute definition);
 
-	public Object getAttributeValue(String name);
+    public Object getAttributeValue(String name);
 
 	public boolean setAttributeValue(String name, Object value);
-
-
-	/**
-	 * Get all attributes.
-	 * Map must entries for all attributes defined in the TypeService providing the node.
-	 *
-	 * @return Map of String (attr name) -> {@link AttributeI}
-	 */
-	public Map<String, AttributeI> getAttributes();
 
 	//
 	// convenience

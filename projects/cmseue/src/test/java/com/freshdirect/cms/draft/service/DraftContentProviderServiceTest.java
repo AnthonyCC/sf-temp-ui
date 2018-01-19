@@ -49,6 +49,7 @@ import com.freshdirect.cms.core.service.ContextService;
 import com.freshdirect.cms.draft.domain.DraftChange;
 import com.freshdirect.cms.draft.domain.DraftContext;
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
@@ -101,7 +102,9 @@ public class DraftContentProviderServiceTest {
                 .thenReturn(asList(new Relationship[] {(Relationship) ContentTypes.Department.categories}));
         Mockito.when(contentTypeInfoService.selectRelationships(Category, false))
                 .thenReturn(asList(new Relationship[] {(Relationship) ContentTypes.Category.products, (Relationship) ContentTypes.Category.subcategories}));
-
+        Mockito.when(contentTypeInfoService.findAttributeByName(Mockito.any(ContentType.class), Mockito.any(String.class)))
+                .thenReturn(Optional.<Attribute>absent());
+        
         // mock content keys
         Mockito.when(contentProviderService.getContentKeysByType(Store))
                 .thenReturn(ImmutableSet.<ContentKey>of(RootContentKey.STORE_FRESHDIRECT.contentKey, RootContentKey.STORE_FOODKICK.contentKey));
@@ -406,7 +409,7 @@ public class DraftContentProviderServiceTest {
         ContentKey productOfTest = ContentKeyFactory.get(ContentType.Product, "prd_2");
 
         Mockito.when(draftContextHolder.getDraftContext()).thenReturn(draftContext);
-        Mockito.when(draftService.getAllChangedContentKeys(Mockito.anyLong())).thenReturn(new HashSet<ContentKey>());
+        Mockito.when(draftService.getDraftChanges(Mockito.anyLong())).thenReturn(Collections.<DraftChange>emptyList());
 
         Set<ContentKey> parentsOnMain = contentProviderService.getParentKeys(productOfTest);
 
@@ -428,8 +431,8 @@ public class DraftContentProviderServiceTest {
 
         Mockito.when(draftContextHolder.getDraftContext())
                 .thenReturn(draftContext);
-        Mockito.when(draftService.getAllChangedContentKeys(Mockito.anyLong()))
-                .thenReturn(ImmutableSet.<ContentKey>of(parentCatOnDraft));
+        Mockito.when(draftService.getDraftChanges(Mockito.anyLong()))
+                .thenReturn(ImmutableList.of(mockDraftChange(parentCatOnDraft)));
         Mockito.doReturn(ImmutableSet.<ContentKey>of(productOfTest))
                 .when(underTest).getChildKeys(parentCatOnDraft, true);
 
@@ -452,8 +455,8 @@ public class DraftContentProviderServiceTest {
 
         Mockito.when(draftContextHolder.getDraftContext())
                 .thenReturn(draftContext);
-        Mockito.when(draftService.getAllChangedContentKeys(Mockito.anyLong()))
-                .thenReturn(ImmutableSet.<ContentKey>of(parentCatOnMain));
+        Mockito.when(draftService.getDraftChanges(Mockito.anyLong()))
+                .thenReturn((ImmutableList.of(mockDraftChange(parentCatOnMain))));
         Mockito.doReturn(new HashSet<ContentKey>())
                 .when(underTest).getChildKeys(parentCatOnMain, true);
 
@@ -476,8 +479,8 @@ public class DraftContentProviderServiceTest {
 
         Mockito.when(draftContextHolder.getDraftContext())
                 .thenReturn(draftContext);
-        Mockito.when(draftService.getAllChangedContentKeys(Mockito.anyLong()))
-                .thenReturn(ImmutableSet.<ContentKey>of(parentCatOnDraft, parentCatOnMain));
+        Mockito.when(draftService.getDraftChanges(Mockito.anyLong()))
+                .thenReturn((ImmutableList.of(mockDraftChange(parentCatOnDraft), mockDraftChange(parentCatOnMain))));
         Mockito.doReturn(ImmutableSet.<ContentKey>of(productOfTest))
                 .when(underTest).getChildKeys(parentCatOnDraft, true);
         Mockito.doReturn(new HashSet<ContentKey>())
@@ -499,11 +502,18 @@ public class DraftContentProviderServiceTest {
         ContentKey notOrphanProduct = get(Product, "prd_1");
 
         Mockito.when(draftContextHolder.getDraftContext()).thenReturn(draftContext);
-        Mockito.when(draftService.getAllChangedContentKeys(Mockito.anyLong())).thenReturn(new HashSet<ContentKey>());
+        Mockito.when(draftService.getDraftChanges(Mockito.anyLong())).thenReturn(Collections.<DraftChange>emptyList());
 
         List<List<ContentKey>> contexts = underTest.findContextsOf(notOrphanProduct);
 
         Assert.assertNotNull(contexts);
         Assert.assertEquals(2, contexts.size());
+    }
+    
+    private static DraftChange mockDraftChange(ContentKey key) {
+        DraftChange dc = new DraftChange();
+        dc.setContentKey(key.toString());
+        dc.setAttributeName("fake_attribute");
+        return dc;
     }
 }

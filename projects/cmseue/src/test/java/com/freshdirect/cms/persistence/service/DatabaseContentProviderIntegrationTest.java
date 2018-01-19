@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -37,6 +38,11 @@ public class DatabaseContentProviderIntegrationTest {
     @Autowired
     private DatabaseContentProvider databaseContentProvider;
 
+    @Before
+    public void setUp() {
+        databaseContentProvider.loadAll();
+    }
+    
     @Test
     public void testGetAttributeValue() {
         Optional<Object> attributeValue = databaseContentProvider.getAttributeValue(EntityFactory.createContentKey(), EntityFactory.createScalarAttribute());

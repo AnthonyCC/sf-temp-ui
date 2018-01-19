@@ -3,6 +3,7 @@
 %><%@ taglib uri='freshdirect' prefix='fd'
 %><%@ page import="com.freshdirect.fdstore.util.EnumSiteFeature"
 %><%@ page import="com.freshdirect.fdstore.util.URLGenerator"%>
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 
 <% //expanded page dimensions
 final int W_NEW_PRODUCTS_NAV_TOTAL = 970;
@@ -17,16 +18,16 @@ final int W_NEW_PRODUCTS_NAV_TOTAL = 970;
 	<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1' lang="en-US">
 
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-  <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
+	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-	<fd:css href="/assets/css/ccl.css"/>
+	<jwr:style src="/ccl.css" media="all" />
 
 <%
 final String trk = "srch"; // tracking code
 String criteria = request.getParameter("searchParams");
 
 %>
-<fd:javascript src="/assets/javascript/rounded_corners.inc.js"/>
+<jwr:script src="/roundedcorners.js" useRandomParam="false" />
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body bgcolor="#ffffff" link="#336600" vlink="#336600" alink="#ff9900" text="#333333">

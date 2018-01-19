@@ -266,7 +266,7 @@ var FreshDirect = FreshDirect || {};
 
                 if (!related.attr('data-impression-reported')) {
                   related.attr('data-impression-reported', true);
-                  fd.common.dispatcher.signal('productImpressions', { el: related, type: 'impressionsPushed'});
+                  fd.common.dispatcher.signal('productImpressions', { el: related, type: 'impressionsPushed', listData: {channel: 'rec_flyout'}});
                 }
               }, this), 500);
             }

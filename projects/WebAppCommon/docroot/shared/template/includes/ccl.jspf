@@ -11,6 +11,7 @@
 <%@ page import="java.util.Date"%>
 <%@ page import="java.util.Calendar"%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <jsp:useBean id="JSONRPCBridge" scope="session" class="com.freshdirect.webapp.util.json.FDJSONRPCBridge">
 </jsp:useBean>
 <%@ include file="/shared/template/includes/yui.jspf" %>
@@ -166,7 +167,7 @@ YAHOO.util.Event.onDOMReady(function() {
 }
 if (request.getAttribute("__fd_load_clicode_edit__") != null && fdUser.isEligibleForClientCodes()) {
 	%>
-	<fd:javascript src="/assets/javascript/clicode_edit.js"/>
+	<jwr:script src="/assets/javascript/clicode_edit.js" useRandomParam="false" />
 	<%
 } else {
 	%>
@@ -202,13 +203,9 @@ if (request.getAttribute("__fd_load_clicode_edit__") != null && fdUser.isEligibl
 	<%
 }		
 %>
-<fd:javascript src="/assets/javascript/rounded_corners.inc.js"/>
-<fd:javascript src="/assets/javascript/jsonrpc.js"/>
-<fd:javascript src="/assets/javascript/ccl.js"/>
-<fd:javascript src="/assets/javascript/fcu.js"/>
-<fd:javascript src="/assets/javascript/quickbuy.js"/>
-<fd:javascript src="/assets/javascript/pricing.js"/>
-<fd:css href="/assets/css/ccl.css" media="all" />
+
+<jwr:script src="/cclpartial.js" useRandomParam="false" />
+<jwr:style src="/ccl.css" media="all" />
 
 <!--[if IE]>
 <style>

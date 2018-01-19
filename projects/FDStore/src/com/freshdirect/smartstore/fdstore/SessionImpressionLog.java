@@ -129,6 +129,7 @@ public class SessionImpressionLog {
 			data = new SessionImpressionLogEntryData(entry.getId(), entry.getUserPrimaryKey(), entry.getSessionId(),
 					entry.getStartTime(), entry.getEndTime(), entry.getVariantId(), entry.getProductImpressions(),
 					entry.getFeatureImpressions());
+			data.setZoneId(entry.getZoneId());
 		}
 		return data;
 	}

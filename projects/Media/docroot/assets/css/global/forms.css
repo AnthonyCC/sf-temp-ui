@@ -336,7 +336,15 @@ label.tabs {
 
 
 .tabs input[type="radio"] {
-	display: none;
+/* 	display: none; */
+  position: absolute; 
+  overflow: hidden; 
+  clip: rect(0 0 0 0); 
+  height: 1px;
+  width: 1px; 
+  margin: -1px; 
+  padding: 0; 
+  border: 0; 
 }
 
 [fdform] label {
@@ -380,4 +388,25 @@ span[fdform-error] {
 
 [fdform][fdform-hidden] label {
 	display: none;
+}
+
+/* make checkboxes LOOK like checkboxes by default */
+[fdform] input[type="checkbox"]:checked {
+	background: #4fa157 url('/media_stat/images/common/check-radio-selected.svg') center center no-repeat;
+	box-shadow: 0 0 0 1px #4fa157;
+	background-size: 200%;
+}
+[fdform] input[type="checkbox"]:disabled {
+	background: #eee url('/media_stat/images/common/check-radio-disabled-with-checkmark.svg') center center no-repeat;
+	box-shadow: 0 0 0 1px #ccc;
+	background-size: 200%;
+}
+.contact_fd-cont{
+	text-align:left;
+}
+.contact_fd-cont label{
+	width: 150px;
+    padding-right: 10px;
+    vertical-align: middle;
+    text-align: right;
 }
