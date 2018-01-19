@@ -43,7 +43,7 @@ public class WarmupService {
     	
         if (!isManualWarmupAllowed()) {
             return;
-        }*/
+        }
     	LOGGER.debug("Warmup.WARMUP_STATE=========================="+Warmup.WARMUP_STATE);
     	LOGGER.debug("CmsServiceLocator.contentProviderService().isReadOnlyContent()=========================="+CmsServiceLocator.contentProviderService().isReadOnlyContent());
 

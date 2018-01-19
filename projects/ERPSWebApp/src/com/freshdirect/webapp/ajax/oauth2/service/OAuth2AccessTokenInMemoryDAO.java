@@ -9,7 +9,7 @@ import java.util.TreeSet;
 import com.freshdirect.webapp.ajax.oauth2.data.OAuth2CodeAndTokenData;
 import com.freshdirect.webapp.ajax.oauth2.util.FDUserTokenGenerator;
 
-import weblogic.auddi.util.Logger;
+//import weblogic.auddi.util.Logger;
 
 /**
  * This InMemoryDAO is a temporary solution to store all Tokens in memory. This
@@ -76,7 +76,7 @@ public class OAuth2AccessTokenInMemoryDAO implements OAuth2AccessTokenDAO {
 				OAuth2CodeAndTokenData data = OAuth2CodeAndTokenData.fromJson(json);
 				set.add(data);
 			} catch (Exception e) {
-				Logger.error(e.getMessage() + " : [ " + tokenId + " ]");
+				//Logger.error(e.getMessage() + " : [ " + tokenId + " ]");
 				continue;
 			}
 		}
