@@ -992,17 +992,6 @@ function loadStuff() {
     $("#header").val('');
     $("#payload").val("");
 
-  } else if (loaddata == "RouteInfo") {
-    $("#url").val("/route/deliveryinfo/");
-    $("#header").val('');
-    var postdata = '{"routeNo" : "11111"}';
-  	$("#payload").val(postdata);
-
-  } else if (loaddata == "RouteInfoAll") {
-    $("#url").val("/route/deliveryinfoallroutes/");
-    $("#header").val('');
-    $("#payload").val("");
-    
   } else if (loaddata == "Help") {
   	$("#url").val("/help/");
   	$("#header").val('');
