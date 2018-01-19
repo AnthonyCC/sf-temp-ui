@@ -169,10 +169,6 @@
 				<soy:render template="pdp.prdImage" data="${imagePotato}" />
 				<soy:render template="pdp.thumbnails" data="${imagePotato}" />
 
-				<c:if test = "${productPotato.badge == 'going'}">
-          <h3 class="going-out">Last Chance!</h3>
-				</c:if>
-
 				<c:if test="${productPotato.available}">
 					<soy:render template="pdp.freshnessGuarantee" data="${productExtraPotato}"/>
 					<%@ include file="/includes/product/i_product_soc_buttons.jspf" %>
@@ -194,9 +190,6 @@
 			</div>
 			<div class="span-8 prepend-1">
 					<soy:render template="pdp.productName" data="${productPotato}" />
-          <c:if test = "${productPotato.badge == 'going'}">
-            <h3 class="going-out">Last Chance!</h3>
-  				</c:if>
 
 					<c:if test="${productPotato.available}">
 						<div class="pdp-availability"><soy:render template="pdp.availability" data="${productPotato}" /></div>
