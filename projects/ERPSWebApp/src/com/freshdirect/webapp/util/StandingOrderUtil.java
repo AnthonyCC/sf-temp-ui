@@ -233,6 +233,7 @@ public class StandingOrderUtil {
 							INITIATOR_NAME, "so template deleted as per the delete date: "+so.getDeleteDate()+", choosen by user", null, null);
 					so.setDeleteDate(null);
 					deleteActivateSo(so, soinfo);
+					return SOResult.createNull();
 				} catch (Exception e) {
 					LOGGER.error(" Got the exception while deleting the So template:"+so.getId(), e);
 				}
