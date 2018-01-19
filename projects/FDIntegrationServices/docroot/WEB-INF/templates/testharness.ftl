@@ -1815,7 +1815,6 @@ function doStuff() {
   <option value="Configuration">Configuration</option>
   <option value="DoWarmup">Do Warmup</option>
   <option value="WarmupState">Warmup State</option>
-  <option value="RouteInfo">Route Delivery Info</option>
 
   <option value=""> ========== HELP ========== </option>
   <option value="Help">Help</option>
