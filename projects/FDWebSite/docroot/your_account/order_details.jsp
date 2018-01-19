@@ -181,7 +181,7 @@ if(orderId==null){
 		    </td>
 		    <td width="<%= W_YA_ORDER_DETAILS_TOTAL/2 %>" border="0" cellpadding="0" cellspacing="0" style="text-align: right;">
 		    	<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.printinvoice, user)) { %><a href="javascript:window.print()" class="cssbutton small khaki noprint" style="margin-right: 10px;" title="Click here to print invoice for this order">print</a><% } %>
-		    	<% if (user.getMasqueradeContext() != null && !cart.isPending()) { %><button type="button" name="Reorder" onclick="FreshDirect.components.reorderPopup.openPopup(<%= orderId %>)" class="cssbutton small purple nontransparent">re-order</button><% } %>
+		    	<% if (user.getMasqueradeContext() != null && EnumSaleType.REGULAR.equals(cart.getOrderType())) { %><button type="button" name="Reorder" onclick="FreshDirect.components.reorderPopup.openPopup(<%= orderId %>)" class="cssbutton small purple nontransparent">re-order</button><% } %>
 		    	<% if (hasCredit || hasClientCodes || hasModify || hasCancel) { %>
 		    		<% if (hasModify || hasCancel || hasClientCodes || hasCredit) { %>
 			    		<table class="fright">
