@@ -147,6 +147,7 @@ public class CmsPermissionManager {
                 }
             }
             if (Permit.isAnyRejected(oldNodeStoreResult.values())) {
+                LOGGER.error("[REJECT] User " + user.getName() + " (old nodes)");
                 return Permit.REJECT;
             }
             // handle prototype node, which is not part of CMSManager content service yet.
@@ -175,6 +176,7 @@ public class CmsPermissionManager {
                 }
             }
             if (Permit.isAnyRejected(newNodeStoreResult.values())) {
+                LOGGER.error("[REJECT] User " + user.getName() + " (new nodes)");
                 return Permit.REJECT;
             }
 
