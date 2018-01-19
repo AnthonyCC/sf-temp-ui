@@ -17,8 +17,8 @@ public class RecencyComparator extends OptionalObjectComparator<FilteringProduct
         String key = getProductNewnessKey(prod);
         Date addedDate = null;
         Map<ContentKey, Map<String, Date>> newProducts = ContentFactory.getInstance().getNewProducts();
-        if (newProducts.containsKey(prod)) {
-            addedDate = newProducts.get(prod).get(key);
+        if (newProducts.containsKey(prod.getContentKey())) {
+            addedDate = newProducts.get(prod.getContentKey()).get(key);
         }
 
         if (addedDate == null) {

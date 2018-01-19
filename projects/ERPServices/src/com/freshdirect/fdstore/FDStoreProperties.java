@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
@@ -31,6 +32,9 @@ import com.freshdirect.logistics.delivery.model.EnumCompanyCode;
 
 public class FDStoreProperties {
 
+	// OAUTHDEMO
+	public static HashMap<String, String> VENDOR_MAP = new HashMap<String, String>();
+	
     private static final Category LOGGER = LoggerFactory.getInstance(FDStoreProperties.class);
     private static List<ConfigLoadedListener> listeners = new ArrayList<ConfigLoadedListener>();
     private static final SimpleDateFormat SF = new SimpleDateFormat("yyyy-MM-dd");
@@ -766,6 +770,8 @@ public class FDStoreProperties {
     private static final String PROP_FDCOMMERCE_API_URL = "fdstore.fdcommerceapi.url";
 
     private static final String PROP_PAYPAL_API_URL = "fdstore.paypalapi.url";
+    private static final String PROP_MASTERPASSS_API_URL = "fdstore.masterpassapi.url";
+    
     private static final String PROP_ORBITAL_API_URL = "fdstore.orbitalapi.url";
     private static final String PROP_OMS_API_URL = "fdstore.omsapi.url";
     private static final String PROP_LOGISTICS_COMPANY_CODE = "fdstore.logistics.companycode";
@@ -961,9 +967,14 @@ public class FDStoreProperties {
      * IBM SilverPopup urls, tokens*/
     private final static String IBM_ACCESSTOKEN_URL = "fdstore.ibm.accesstoken.url";
     private final static String IBM_PUSHNOTIFICATION_URL = "fdstore.ibm.pushnotification.url";
+    private final static String IBM_WATSON_EMAIL_CAMPAIGN_URL = "fdstore.ibm.watsonemailcampaign.url";
+    //https://api3.ibmmarketingcould.com/XMLAPI
     private final static String IBM_CLIENT_ID = "fdstore.ibm.client.id";
+    private final static String IBM_CAMPAIGN_CLIENT_ID = "fdstore.ibm.campaign.client.id";
     private final static String IBM_CLIENT_SECRET = "fdstore.ibm.client.secret";
+    private final static String IBM_CAMPAIGN_CLIENT_SECRET = "fdstore.ibm.campaign.client.secret";
     private final static String IBM_REFRESH_TOKEN = "fdstore.ibm.refresh.token";
+    private final static String IBM_CAMPAIGN_REFRESH_TOKEN = "fdstore.ibm.campaign.refresh.token";
 	private static final String PAYMENT_TLSSHA_ENABLED = "fdstore.payment.tls.sha.enabled";
     private static final String PROP_REFRESHZONE_ENABLED = "fdstore.refresh.zone.enabled";
 
@@ -989,11 +1000,21 @@ public class FDStoreProperties {
  	public final static String PROP_ENABLE_WEBSITE_MOBILE_SAME_NUTRITION_SOY = "enable.website.mobile.same.nutrition.soy";
  	
  	//appdev-6184
- 	 	public final static String PROP_ENABLE_FDX_DISTINCT_AVAILABILITY = "enable.fdx.distinct.availability";
+ 	public final static String PROP_ENABLE_FDX_DISTINCT_AVAILABILITY = "enable.fdx.distinct.availability";
+ 	 
+ 	public final static String PROP_ENABLE_REPEAT_WARMUP = "enable.repeat.warmup";
 
+	// OAuth2 Expirations
+	public final static String DEFAULT_CODE_EXPIRATION = "fdstore.oauth2.defaultCodeExpirationInSec";
+	public final static String DEFAULT_TOKEN_EXPIRATION = "fdstore.oauth2.defaultTokenExpirationInSec";
+	public final static String DEFAULT_REFRESH_TOKEN_EXPIRATION = "fdstore.oauth2.defaultRefreshTokenExpirationInSec";
+	// OAuth2 client data
+	public final static String OAUTH2_CLIENT_IDS = "fdstore.oauth2.clientIds";
+	public final static String OAUTH2_CLIENT_SECRETS = "fdstore.oauth2.clientSecrets";
+	public final static String OAUTH2_CLIENT_REDIRECT_URIS = "fdstore.oauth2.clientRedirectUris";
+	
 
-
-static {
+ 	static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_INIT_CTX_FACTORY, "weblogic.jndi.WLInitialContextFactory");
         defaults.put(PROP_CRM_GEOCODELINK,
@@ -1501,7 +1522,7 @@ static {
         defaults.put(CLOUD_SPONGE_DOMAIN_KEY, "K3D6375BGJRXBSJR8456");
         defaults.put(CLOUD_SPONGE_ADDRESS_IMPORTS, "true");
         defaults.put(PROP_DDPP_ENABLED, "true");
-        defaults.put(PROP_TRANS_EMAIL_ENABLED, "true");
+        defaults.put(PROP_TRANS_EMAIL_ENABLED, "false");
         defaults.put(PROP_TRANS_EMAIL_TYPES, "ORDER_SUBMIT,ORDER_MODIFY,FINAL_INCOICE,ORDER_CANCEL,CHARGE_ORDER,CREDIT_CONFIRM,FORGOT_PASSWD,"
                 + "AUTH_FAILURE,CUST_REMINDER,RECIPE_MAIL,TELL_A_FRIEND,TELLAFRIEND_RECIPE,TELLAFRIEND_PRODUCT,GC_ORDER_SUBMIT, "
                 + " GC_BULK_ORDER_SUBMIT,GC_AUTH_FAILURE,GC_CANCEL_PURCHASER,GC_CANCEL_RECIPENT,GC_BALANCE_TRANSFER,"
@@ -1696,6 +1717,8 @@ static {
         defaults.put(PROP_LOGISTICS_API_URL, "http://logisticsdev1.nj01/");
         defaults.put(PROP_FDCOMMERCE_API_URL, "http://localhost:8080");
         defaults.put(PROP_PAYPAL_API_URL, "http://logisticsdev1.nj01/paypal");
+        defaults.put(PROP_MASTERPASSS_API_URL, "http://logisticsdev1.nj01/paypal");
+        
         defaults.put(PROP_ORBITAL_API_URL, "http://logisticsdev1.nj01/paypal");
         defaults.put(PROP_OMS_API_URL, "http://crmdev1.nj01/");
 
@@ -1863,13 +1886,26 @@ static {
         // for Dev DB
         defaults.put(IBM_PUSHNOTIFICATION_URL, "https://api3.silverpop.com:443/rest/databases/5979940/establishidentity/");
         									 // https://api3.silverpop.com:443/rest/databases/{databaseid}/establishidentity/
+     //   defaults.put(IBM_WATSON_EMAIL_CAMPAIGN_URL, "https://api3.ibmmarketingcloud.com/XMLAPI");
+        defaults.put(IBM_WATSON_EMAIL_CAMPAIGN_URL, "http://transact3.silverpop.com/XTMail");
+        										
+        
+        //private final static String IBM_WATSON_EMAIL_CAMPAIGN_URL = "fdstore.ibm.watsonemailcampaign.url";
+        //https://api3.ibmmarketingcould.com/XMLAPI
         // for Prod DB
         //defaults.put(IBM_PUSHNOTIFICATION_URL, "https://api3.silverpop.com:443/rest/databases/3745165/establishidentity/");
         defaults.put(IBM_CLIENT_ID, "42c3eede-b1b2-43d2-b503-55682f190c2d");
+        
+        defaults.put(IBM_CAMPAIGN_CLIENT_ID, "899e322b-977e-4a50-8320-7bba87b54085");
+        
         defaults.put(IBM_CLIENT_SECRET, "5f154ee0-bae6-4833-9ce2-e013b1b3c7d5");
+        defaults.put(IBM_CAMPAIGN_CLIENT_SECRET, "e1a1982c-9d7b-480d-b871-f76354ce8cce");
+        
         defaults.put(IBM_REFRESH_TOKEN, "r_3872jS_Gh7VmanX2TcazBB_MJ1C_RBqbJWY6gvh3koS1");
+        defaults.put(IBM_CAMPAIGN_REFRESH_TOKEN, "rqeZfstHf754FkCIR2K5NC6O0IVE6ZxqQbBM_X1gTDcsS1");//"rqeZfstHf754FkCIR2K5NC6O0IVE6ZxqQbBM_X1gTDcsS1"
+     
         defaults.put(PAYMENT_TLSSHA_ENABLED,"true");
-        defaults.put(PROP_PAYMENT_VERIFICATION_ENABLED, "false");
+        defaults.put(PROP_PAYMENT_VERIFICATION_ENABLED, "true");
         defaults.put(GLOBAL_SF2_0_ENABLED, "false");
 
         //DCS-23
@@ -1895,7 +1931,15 @@ static {
         
 
         defaults.put("feature.rollout.cosRedesign2017", "GLOBAL:ENABLED,false;");
+        defaults.put(PROP_ENABLE_REPEAT_WARMUP, "true"); // controls manual warmup: LIVE PUBLISH
+        
 
+        // Auth Code : 2 minutes
+		defaults.put(DEFAULT_CODE_EXPIRATION, "120");
+		// Access Token : 30 days
+		defaults.put(DEFAULT_TOKEN_EXPIRATION, "2592000");
+		// Refresh Token : 180 days
+		defaults.put(DEFAULT_REFRESH_TOKEN_EXPIRATION, "15552000");
 
         refresh();
     }
@@ -1930,6 +1974,11 @@ static {
     public static String get(String key) {
         refresh();
         return config.getProperty(key);        
+    }
+    
+    public static String get(String key, String defaultValue) {
+        refresh();
+        return config.getProperty(key, defaultValue);        
     }
 
     /**
@@ -4111,6 +4160,9 @@ static {
     public static String getPayPalAPIUrl() {
         return get(PROP_PAYPAL_API_URL);
     }
+    public static String getMasterPassAPIUrl() {
+        return get(PROP_MASTERPASSS_API_URL);
+    }
     public static String getOrbitalAPIUrl() {
         return get(PROP_ORBITAL_API_URL);
     }
@@ -4483,17 +4535,32 @@ static {
     public static String getIBMPushNotificationURL() {
         return get(IBM_PUSHNOTIFICATION_URL);
     }
-
+    public static String getIBMWatsonEmailCampaignUrl() {
+        return get(IBM_WATSON_EMAIL_CAMPAIGN_URL);
+    }
+    
     public static String getIBMClientID() {
 		return get(IBM_CLIENT_ID);
+	}
+    
+    public static String getIBMCampaignClientID() {
+		return get(IBM_CAMPAIGN_CLIENT_ID);
 	}
 
     public static String getIBMClientSecret() {
 		return get(IBM_CLIENT_SECRET);
 	}
+    
+    public static String getIBMCampaignClientSecret() {
+		return get(IBM_CAMPAIGN_CLIENT_SECRET);
+	}
 
     public static String getIBMRefreshToken() {
 		return get(IBM_REFRESH_TOKEN);
+	}
+    
+    public static String getIBMCampaignRefreshToken() {
+		return get(IBM_CAMPAIGN_REFRESH_TOKEN);
 	}
     //end IBM silverpopup end
 
@@ -4826,21 +4893,47 @@ static {
 		public static boolean getEnableFreeProduct(){
 			return (Boolean.valueOf(get(PROP_ENABLE_FREE_PRODUCT))).booleanValue();
 		}
+		
 		/**
 		 * Website toggle to determine if we have turned on the feature for both website and mobile api <BR>
 		 * to pull nutrition information from the same soy template.
 		 * @return defaults to off, overide by an entry enable.website.mobile.same.nutrition.soy in fdstore.properties
 		 */
-		public static boolean getEnableWebsiteMobileSameNutritionSoy(){
-			
+		public static boolean getEnableWebsiteMobileSameNutritionSoy() {			
 			return (Boolean.valueOf(get(PROP_ENABLE_WEBSITE_MOBILE_SAME_NUTRITION_SOY))).booleanValue();
 		}
 		
 
-		public static boolean getEnableFDXDistinctAvailability(){
-			
+		public static boolean getEnableFDXDistinctAvailability() {			
 			return (Boolean.valueOf(get(PROP_ENABLE_FDX_DISTINCT_AVAILABILITY))).booleanValue();
 		}
 		
+		public static boolean isRepeatWarmupEnabled() {			
+			return (Boolean.valueOf(get(PROP_ENABLE_REPEAT_WARMUP))).booleanValue();
+		}		
+	public static long getDefaultAuthCodeExpiration() {
+		return Long.parseLong(get(DEFAULT_CODE_EXPIRATION));
+	}
+
+	public static long getDefaultAccessTokenExpiration() {
+		return Long.parseLong(get(DEFAULT_TOKEN_EXPIRATION));
+	}
+
+	public static long getDefaultRefreshTokenExpiration() {
+		return Long.parseLong(get(DEFAULT_REFRESH_TOKEN_EXPIRATION));
+	}
+
+	public static String getOAuth2ClientIds() {
+		return get(OAUTH2_CLIENT_IDS);
+	}
+
+	public static String getOAuth2ClientSecrets() {
+		return get(OAUTH2_CLIENT_SECRETS);
+	}
+
+	public static String getOAuth2ClientRedirectUris(String clientId) {
+		return get(OAUTH2_CLIENT_REDIRECT_URIS + "." + clientId);
+	}
+
 
 }

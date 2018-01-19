@@ -5,7 +5,6 @@ import java.util.List;
 
 public enum CmsCaches {
     ATTRIBUTE_CACHE("attributeCache", CacheDataSource.CMS, CacheWarmupAction.RELOADABLE),
-    CONTENT_KEY_CACHE("contentKeyCache", CacheDataSource.CMS, CacheWarmupAction.RELOADABLE),
     PARENT_KEYS_CACHE("parentKeysCache", CacheDataSource.CMS, CacheWarmupAction.RELOADABLE),
     DRAFT_CHANGE_CACHE("cmsDraftChangesCache", CacheDataSource.CMS, CacheWarmupAction.RELOADABLE),
     DRAFT_PARENT_CACHE("draftParentCache", CacheDataSource.CMS, CacheWarmupAction.RELOADABLE),

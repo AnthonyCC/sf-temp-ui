@@ -37,7 +37,7 @@ if ("true".equalsIgnoreCase(overlay)) {
 
 <tmpl:insert template='<%= pageTemplate %>'>
     <tmpl:put name="seoMetaTag" direct='true'>
-        <fd:SEOMetaTag title="FreshDirect - Help"/>
+        <fd:SEOMetaTag title="FreshDirect - THANK YOU"/>
     </tmpl:put>
 <%--     <tmpl:put name='title' direct='true'>FreshDirect - Help</tmpl:put> --%>
 

@@ -262,14 +262,18 @@ public class Product {
 
                     Sku sku = Sku.wrap(new PriceCalculator(pricingContext, productModel, skuModel)
                     															, skuModel
-                    															, findCoupon(skuModel, user, cartLine, ctx, isQuickBuy),user.getUserContext().getFulfillmentContext().getPlantId());
+                    															, findCoupon(skuModel, user, cartLine, ctx, isQuickBuy),
+                    															  user!=null&&user.getUserContext()!=null&&user.getUserContext().getFulfillmentContext()!=null?
+                    																	user.getUserContext().getFulfillmentContext().getPlantId():null);
                     this.skus.add(sku);
                 }
             }
 
             this.hasSingleSku = this.skus.size() == 1;
 
-            this.defaultPriceCalculator = new PriceCalculator(user.getUserContext().getPricingContext(), productModel);
+            this.defaultPriceCalculator = new PriceCalculator(user != null && user.getUserContext()!=null && 
+            													user.getUserContext().getPricingContext() != null ? 
+            															user.getUserContext().getPricingContext() : PricingContext.DEFAULT, productModel);
 
             if (this.hasSingleSku) {
                 this.defaultSku = this.skus.get(0);
@@ -278,7 +282,8 @@ public class Product {
                     this.defaultSku = Sku.wrap(defaultPriceCalculator
                     								, defaultPriceCalculator.getSkuModel()
                     								, findCoupon(defaultPriceCalculator.getSkuModel(), user, cartLine, ctx, isQuickBuy)
-                    								,user.getUserContext().getFulfillmentContext().getPlantId());
+                    								, user!=null&&user.getUserContext()!=null&&user.getUserContext().getFulfillmentContext()!=null?
+															user.getUserContext().getFulfillmentContext().getPlantId():null);
                 }
             }
 

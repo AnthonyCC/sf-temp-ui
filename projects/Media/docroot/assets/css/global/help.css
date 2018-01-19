@@ -17,10 +17,10 @@
 #timeslotloyalityHeader {
 	width: 100%;
 	min-height: 25px;
-	background: #999966;
+	background: #333433;
 	color: #fff;
 	border-radius: 10px;
-	padding: 0 2px 0 10px;
+	padding: 5px 10px 5px 10px;
 	line-height: 2.4em;
 	box-sizing: border-box;
 }
@@ -70,10 +70,11 @@
 	margin: 16px 0;
 }
 
-#search-faq,
-.form-group input, 
-.form-group select, 
-.form-group textarea {
+#search-faq
+/* .form-group input,  */
+/* .form-group select,  */
+/* .form-group textarea */
+{
 	width: 250px;
 }
 
@@ -101,11 +102,11 @@
     margin-bottom: 10px; 
 }
 
-#home-phone-ext-field,
-#work-phone-ext-field,
-#other-phone-ext-field {
-	width: 40px;
-}
+/* #home-phone-ext-field, */
+/* #work-phone-ext-field, */
+/* #other-phone-ext-field { */
+/* 	width: 40px; */
+/* } */
 
 .bordered-box {
 	width: 100%;

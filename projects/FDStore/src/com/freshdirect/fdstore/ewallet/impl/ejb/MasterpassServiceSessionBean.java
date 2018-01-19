@@ -48,8 +48,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.ErpCustEWalletModel;
@@ -57,7 +55,6 @@ import com.freshdirect.customer.ErpPaymentMethodException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.ewallet.EnumUserInfoName;
@@ -70,6 +67,8 @@ import com.freshdirect.fdstore.ewallet.ValidationError;
 import com.freshdirect.fdstore.ewallet.ValidationResult;
 import com.freshdirect.fdstore.ewallet.impl.MasterPassApplicationHelper;
 import com.freshdirect.fdstore.ewallet.impl.MasterpassData;
+import com.freshdirect.fdstore.ewallet.service.IMasterPassService;
+import com.freshdirect.fdstore.ewallet.service.MasterPassGateway;
 import com.freshdirect.fdstore.ewallet.util.EWalletCryptoUtil;
 import com.freshdirect.fdstore.payments.util.PaymentMethodUtil;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -83,7 +82,6 @@ import com.freshdirect.payment.gateway.ewallet.impl.EWalletLogActivity;
 import com.mastercard.api.common.openapiexception.MCOpenApiRuntimeException;
 import com.mastercard.mcwallet.sdk.MasterPassService;
 import com.mastercard.mcwallet.sdk.MasterPassServiceRuntimeException;
-import com.mastercard.mcwallet.sdk.RequestTokenResponse;
 import com.mastercard.mcwallet.sdk.xml.allservices.Address;
 import com.mastercard.mcwallet.sdk.xml.allservices.Card;
 import com.mastercard.mcwallet.sdk.xml.allservices.Checkout;
@@ -95,13 +93,8 @@ import com.mastercard.mcwallet.sdk.xml.allservices.PairingDataType;
 import com.mastercard.mcwallet.sdk.xml.allservices.PairingDataTypes;
 import com.mastercard.mcwallet.sdk.xml.allservices.PrecheckoutCard;
 import com.mastercard.mcwallet.sdk.xml.allservices.PrecheckoutDataRequest;
-import com.mastercard.mcwallet.sdk.xml.allservices.PrecheckoutDataResponse;
-import com.mastercard.mcwallet.sdk.xml.allservices.PrecheckoutShippingAddress;
 import com.mastercard.mcwallet.sdk.xml.allservices.ShoppingCartItem;
 import com.mastercard.mcwallet.sdk.xml.allservices.ShoppingCartRequest;
-import com.mastercard.mcwallet.sdk.xml.allservices.ShoppingCartResponse;
-import com.mastercard.mcwallet.sdk.xml.switchapiservices.MerchantInitializationRequest;
-import com.mastercard.mcwallet.sdk.xml.switchapiservices.MerchantInitializationResponse;
 
 /**
  * @author Aniwesh Vatsal
@@ -1037,7 +1030,11 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 		MasterPassService service =null;
 		
 		try {
-			PrecheckoutDataRequest preCheckoutDataRequest;
+			//(SF17-140) Migrate the MasterPass service to Tomcat to support MasterPass TLS 1.2 upgrade
+			IMasterPassService masterpassGateway = MasterPassGateway.getInstance();
+			data = masterpassGateway.getPreCheckoutData(data, paymentData);
+			
+			/*PrecheckoutDataRequest preCheckoutDataRequest;
 			PrecheckoutDataResponse response;
 			preCheckoutDataRequest = generatePreCheckoutDataRequest(data.getPairingDataTypes());
 			String preCheckoutXml= MasterPassApplicationHelper.printXML(preCheckoutDataRequest);
@@ -1086,10 +1083,10 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 			}
 			
 			data.setPrecheckoutTransactionId(response.getPrecheckoutData().getPrecheckoutTransactionId());
-			saveConnectionHeader(data);
+			saveConnectionHeader(data);*/
 			return data;
 		} catch (Exception e) {
-			saveConnectionHeader(data);
+//			saveConnectionHeader(data);
 			throw new MasterPassServiceRuntimeException(e);
 		}
 		
@@ -1103,6 +1100,12 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 	private MasterpassData getExpressCheckoutData(MasterpassData data) throws Exception{
 		MasterPassService service =null;
 		try {
+			//(SF17-140) Migrate the MasterPass service to Tomcat to support MasterPass TLS 1.2 upgrade
+			
+			IMasterPassService masterpassGateway = MasterPassGateway.getInstance();
+			data = masterpassGateway.getExpressCheckoutData(data);
+			
+			/*
 			ExpressCheckoutRequest expressCheckoutRequest;
 			ExpressCheckoutResponse response;
 			expressCheckoutRequest = parseExpressCheckoutFile(data);
@@ -1129,10 +1132,10 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 				data.setExpressSecurityRequired(false);
 			}
 			
-			saveConnectionHeader(data);
+			saveConnectionHeader(data);*/
 			return data;
 		} catch (Exception e) {
-			saveConnectionHeader(data);
+//			saveConnectionHeader(data);
 			throw new MasterPassServiceRuntimeException(e);
 		}
 		
@@ -1189,20 +1192,19 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 		MasterPassService service =null;
 		
 		try {
-			
+			IMasterPassService masterpassGateway = MasterPassGateway.getInstance();
+			data = masterpassGateway.getPairingToken(data);
 			
 			// Initialize the service of Masterpass SDK
-			    service=initiateMasterpassService(data);
-			    
+/*			service=initiateMasterpassService(data);
 			RequestTokenResponse pairingTokenResponse = service.getPairingToken(data.getRequestURL(),
-					data.getCallbackUrl());			
+			data.getCallbackUrl());			
 			data.setPairingToken(pairingTokenResponse.getOauthToken());
-			
-			saveConnectionHeader(data);
+			saveConnectionHeader(data);*/
 			
 			return data;
 		} catch (Exception e) {
-			saveConnectionHeader(data);
+//			saveConnectionHeader(data);
 			throw new MasterPassServiceRuntimeException(e);
 		}
 	}
@@ -1221,14 +1223,16 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 		
 		try {
 			
-			// Initialize the service of Masterpass SDK
-			  service=initiateMasterpassService(data);
-			  
-			data.setAccessTokenResponse(service.getAccessToken(data.getAccessURL(),data.getRequestToken(),data.getVerifier()));
+			IMasterPassService masterpassGateway = MasterPassGateway.getInstance();
+			data = masterpassGateway.getAccessToken(data);
 			
-			saveConnectionHeader(data);
+			// Initialize the service of Masterpass SDK
+			//(SF17-140) Migrate the MasterPass service to Tomcat to support MasterPass TLS 1.2 upgrade
+/*			service=initiateMasterpassService(data);
+			data.setAccessTokenResponse(service.getAccessToken(data.getAccessURL(),data.getRequestToken(),data.getVerifier()));
+			saveConnectionHeader(data);*/
 		} catch (Exception e) {
-			saveConnectionHeader(data);
+//			saveConnectionHeader(data);
 			throw new MasterPassServiceRuntimeException(e);
 		}
 		return data;
@@ -1239,14 +1243,18 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 		
 		try {
 			
+			//(SF17-140) Migrate the MasterPass service to Tomcat to support MasterPass TLS 1.2 upgrade
+			IMasterPassService masterpassGateway = MasterPassGateway.getInstance();
+			data = masterpassGateway.getLongAccessToken(data);
+			
 			// Initialize the service of Masterpass SDK
-			  service=initiateMasterpassService(data);
+/*			  service=initiateMasterpassService(data);
 			  
 			data.setLongAccessTokenResponse(service.getLongAccessToken(data.getAccessURL(),data.getPairingToken(),data.getPairingVerifier()));
 			data.setLongAccessToken(data.getLongAccessTokenResponse().getOauthToken());
-			saveConnectionHeader(data);
+			saveConnectionHeader(data);*/
 		} catch (Exception e) {
-			saveConnectionHeader(data);
+//			saveConnectionHeader(data);
 			throw new MasterPassServiceRuntimeException(e);
 		}
 		return data;
@@ -1266,19 +1274,23 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 		
 		try {
 			
+			//(SF17-140) Migrate the MasterPass service to Tomcat to support MasterPass TLS 1.2 upgrade
+			IMasterPassService masterpassGateway = MasterPassGateway.getInstance();
+			command = masterpassGateway.getCheckoutData(command);
+			//(SF17-140) Migrate the MasterPass service to Tomcat to support MasterPass TLS 1.2 upgrade
 			// Initialize the service of Masterpass SDK
-			  service=initiateMasterpassService(command);
+			/*service=initiateMasterpassService(command);
 			  						
 			Checkout checkout = service.getPaymentShippingResource(command.getCheckoutResourceURL(),command.getAccessTokenResponse().getOauthToken());
 			command.setCheckout(checkout);
 			
 			command.setCheckoutXML(MasterPassApplicationHelper.xmlEscapeText(MasterPassApplicationHelper.prettyFormat(MasterPassApplicationHelper.printXML(checkout))));
 			
-			saveConnectionHeader(command);
+			saveConnectionHeader(command);*/
 			
 			return command;
 		} catch (Exception e) {
-			saveConnectionHeader(command);
+//			saveConnectionHeader(command);
 			throw new MasterPassServiceRuntimeException(e);
 		}
 		
@@ -1298,9 +1310,13 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 		MasterPassService service = null;
 		
 		try {
+			//(SF17-140) Migrate the MasterPass service to Tomcat to support MasterPass TLS 1.2 upgrade
+			IMasterPassService masterpassGateway = MasterPassGateway.getInstance();
+			data = masterpassGateway.getRequestTokenAndRedirectUrl(data);
+			
 			
 			// Initialize the service of Masterpass SDK
-			  service=initiateMasterpassService(data);
+/*			  service=initiateMasterpassService(data);
 			  
 			data.setRequestTokenResponse(service.getRequestTokenAndRedirectUrl(
 						data.getRequestURL(),
@@ -1314,11 +1330,11 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 						data.getRedirectShippingProfiles()));
 			data.setRequestToken(data.getRequestTokenResponse().getOauthToken());
 			
-			saveConnectionHeader(data);
+			saveConnectionHeader(data);*/
 			
 			return data;
 		} catch (Exception e) {
-			saveConnectionHeader(data);
+//			saveConnectionHeader(data);
 			throw new MasterPassServiceRuntimeException(e);
 		}
 	}
@@ -1454,10 +1470,15 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 		
 		try {
 				
-			ShoppingCartRequest shoppingCartRequest;
+			//ShoppingCartRequest shoppingCartRequest;
+			
+			//(SF17-140) Migrate the MasterPass service to Tomcat to support MasterPass TLS 1.2 upgrade
+			IMasterPassService masterpassGateway = MasterPassGateway.getInstance();
+			data = masterpassGateway.postShoppingCart(data, shoppingCartRequestasXML);
+			
 			
 			// Initialize the service of Masterpass SDK
-			  service=initiateMasterpassService(data);
+			/*  service=initiateMasterpassService(data);
 			
 			shoppingCartRequest = parseShoppingCartString(data.getRequestTokenResponse().getOauthToken(), data.getCallbackDomain(), shoppingCartRequestasXML);
 			String shoppingCartXml= MasterPassApplicationHelper.printXML(shoppingCartRequest);
@@ -1466,11 +1487,11 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 			ShoppingCartResponse response = service.postShoppingCartData(data.getShoppingCartUrl(), shoppingCartRequest);
 			data.setShoppingCartResponse(MasterPassApplicationHelper.xmlEscapeText(MasterPassApplicationHelper.prettyFormat(MasterPassApplicationHelper.printXML(response))));
 			
-			saveConnectionHeader(data);
+			saveConnectionHeader(data);*/
 			return data;
 		} 
 		catch (Exception e) {
-			saveConnectionHeader(data);
+//			saveConnectionHeader(data);
 			throw new MasterPassServiceRuntimeException(e);
 		}
 	}
@@ -2216,7 +2237,11 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 		MasterPassService service =null;
 		try {
 			// Initialize the service of Masterpass SDK
-			  service=initiateMasterpassService(data);
+			
+			IMasterPassService masterpassGateway = MasterPassGateway.getInstance();
+			data = masterpassGateway.postMerchantInit(data);
+			
+			/*service=initiateMasterpassService(data);
 			  
 			MerchantInitializationRequest merchantInitRequest;
 			merchantInitRequest = new MerchantInitializationRequest();
@@ -2237,10 +2262,10 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 							.prettyFormat(MasterPassApplicationHelper
 									.printXML(response))));
 
-			saveConnectionHeader(data);
+			saveConnectionHeader(data);*/
 			return data;
 		} catch (Exception e) {
-			saveConnectionHeader(data);
+//			saveConnectionHeader(data);
 			throw new MasterPassServiceRuntimeException(e);
 		}
 	}
@@ -2300,7 +2325,7 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 		Map<String, Boolean> isGALMap = new HashMap<String, Boolean>();
 		Map<String, EwalletPostBackModel> trxnKeyMap =  new HashMap<String, EwalletPostBackModel>();
 		
-		MasterPassService svc = initiateMasterpassService(mpData);
+//		MasterPassService svc = initiateMasterpassService(mpData);
 		
 		LOGGER.debug("Time taken for the method postBack - init MP service (millis) " + (System.currentTimeMillis() - curr));
 		curr = System.currentTimeMillis();
@@ -2312,7 +2337,11 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 		
 		MerchantTransactions returnedTrxns = null;
 		try {
-			returnedTrxns = svc.postCheckoutTransaction(mpData.getPostbackurl(), reqTrxns);
+			//(SF17-140) Migrate the MasterPass service to Tomcat to support MasterPass TLS 1.2 upgrade
+//			returnedTrxns = svc.postCheckoutTransaction(mpData.getPostbackurl(), reqTrxns);
+			IMasterPassService masterpassGateway = MasterPassGateway.getInstance();
+			returnedTrxns = masterpassGateway.postCheckoutTransaction(mpData, reqTrxns);
+			
 			LOGGER.debug("Time taken for the method postBack - external postback (millis) " + (System.currentTimeMillis() - curr));
 			curr = System.currentTimeMillis();
 			logMPPostbackEwalletRequestResponse(mpData, xmlToString(reqTrxns), xmlToString(returnedTrxns), MASTERPASS_POSTBACK_TXN,MASTERPASS_TXN_SUCCESS, postTrxns);

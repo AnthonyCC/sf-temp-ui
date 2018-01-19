@@ -24,6 +24,9 @@ public class ScarabPersonalRecommender extends AbstractScarabExternalRecommender
 			throws ExternalRecommenderCommunicationException {
 		try {
 			BasicContext context = new BasicContext(ScarabProperties.getMerchantId(), null, null, null, null);
+			if(request.getCustomerId() == null || request.getCustomerId().trim().length() == 0) {
+				return Collections.emptyList(); // Scarab doesnt like personal recommender calls without customer id so it will throw com.scarabresearch.recserver.recommendation.RecommenderException: Customer id has to be specified!
+			}
 			context.setCustomerId(request.getCustomerId());
 			Query query = new Query(Feature.PERSONAL, 0, ScarabProperties.getScarabQueryItemCount());
 			service.invoke(context, query);

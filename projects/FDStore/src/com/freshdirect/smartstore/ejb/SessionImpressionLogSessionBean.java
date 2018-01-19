@@ -16,6 +16,12 @@ import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionImpressionLogEntry;
 
+/**
+ *@deprecated Please use the SessionImpressionLogController and SessionImpressionLogServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public class SessionImpressionLogSessionBean extends SessionBeanSupport {
 	private static final long serialVersionUID = 5459916728525393678L;
 
@@ -72,7 +78,7 @@ public class SessionImpressionLogSessionBean extends SessionBeanSupport {
         ps.setString(10, entry.getZoneId());
     }
 
-	public void saveLogEntries(Collection entries) throws RemoteException {
+	public void saveLogEntries(Collection<SessionImpressionLogEntry> entries) throws RemoteException {
 		Connection conn = null;
 
 		try {

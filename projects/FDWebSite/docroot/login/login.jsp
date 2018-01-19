@@ -12,6 +12,7 @@ int W_LOGIN_TOTAL = 970;
 <% 
 FDUserI login_user = (FDUserI)session.getAttribute(SessionName.USER);
 boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, login_user) && JspMethods.isMobile(request.getHeader("User-Agent"));
+boolean isOAuthPage = false;
 String template = "/common/template/no_nav.jsp"; //default
 if (mobWeb) {
 	W_LOGIN_TOTAL = 320;
@@ -25,13 +26,13 @@ boolean isPopup = false;
 Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
 String nextSuccesspage = ((String)session.getAttribute("nextSuccesspage")!=null)?(String)session.getAttribute("nextSuccesspage"):"/login/index.jsp";
 
-String sPage = (request.getParameter("successPage")!=null)?request.getParameter("successPage").toLowerCase():null;
-
+String sPage = (request.getParameter("successPage")!=null)?request.getParameter("successPage"):null;
+String templateId = request.getParameter("template");
 	if (sPage != null) {
 		
 	    // determine the preSuccessPage from previous workflow
 	    session.setAttribute(SessionName.PREV_SUCCESS_PAGE, sPage); 		
-		
+		sPage = sPage.toLowerCase();
 		if (sPage.indexOf("type=popup") != -1){
 			template = "/common/template/large_pop.jsp";
 			isPopup = true;
@@ -39,6 +40,9 @@ String sPage = (request.getParameter("successPage")!=null)?request.getParameter(
 			template = "/common/template/giftcard.jsp";
 		}else if ( sPage.indexOf("robin_hood") > 0 && FDStoreProperties.isRobinHoodEnabled() ) {
 			template = "/common/template/robinhood.jsp";
+		}else if (sPage.startsWith("/oauth/") || (templateId != null && templateId.equals("oauth"))) {
+			template = "/common/template/oAuth.jsp";
+			isOAuthPage = true;
 		}
 	}
 %>
@@ -56,7 +60,7 @@ String sPage = (request.getParameter("successPage")!=null)?request.getParameter(
 		</script>
 	<%}%>
 	
-	<table border="0" cellspacing="0" cellpadding="0" width="<%=(mobWeb)?"100%":W_LOGIN_TOTAL%>" align="center">
+	<table border="0" cellspacing="0" cellpadding="0" width="<%=(mobWeb || isOAuthPage)?"100%":W_LOGIN_TOTAL%>" align="center">
 		<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="20" alt=""></td></tr>
 		
 		<tr>

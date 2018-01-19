@@ -18,5 +18,13 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/FDLogisticsIntegration"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/StoreAPI"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/cmseue"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-web-4.0.1.RELEASE.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-tx-4.0.1.RELEASE.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-aop-4.0.1.RELEASE.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-beans-4.0.1.RELEASE.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-context-4.0.1.RELEASE.jar" sourcepath="M2_REPO/org/springframework/spring-context/4.0.1.RELEASE/spring-context-4.0.1.RELEASE-sources.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-context-support-4.0.1.RELEASE.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-core-4.0.1.RELEASE.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-webmvc-4.0.1.RELEASE.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

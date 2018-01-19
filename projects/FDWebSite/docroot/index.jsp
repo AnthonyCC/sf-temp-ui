@@ -28,6 +28,7 @@
 <%@ page import="org.apache.commons.lang.StringEscapeUtils"%>
 <%@ page import="com.freshdirect.webapp.util.RequestUtil"%>
 <%@ taglib uri='logic' prefix='logic' %>
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
@@ -78,7 +79,7 @@ request.setAttribute("noyui", true);
 		<fd:SEOMetaTag pageId="index" includeSiteSearchLink="true" title="Welcome to FreshDirect"></fd:SEOMetaTag>
 	</tmpl:put>
 	<tmpl:put name="customCss">
-		<fd:css href="/assets/css/homepage/homepage.css" media="all" />
+		<jwr:style src="/homepage.css" media="all" />
 	</tmpl:put>
 	<tmpl:put name="extraCss"><%-- MOBILE --%>
 	</tmpl:put>

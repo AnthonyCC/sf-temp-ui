@@ -24,22 +24,22 @@
 
 	<%
 	if (request.getHeader("User-Agent").indexOf("Mac") > -1) {
-		%><fd:css href="/assets/css/mac_ie.css" media="all" /><%
+		%><jwr:style src="/assets/css/mac_ie.css" media="all" /><%
 	}
 	%>
 	<!--[if lte IE 6]>
-	<fd:css href="/assets/css/pngfix_ie6.css" media="all" />
+	<jwr:style src="/opt_IE_LT7_02.css" media="all" />
 	<![endif]--> 
-	<fd:css href="/assets/css/wine.css" media="all" />
+	<jwr:style src="/opt_04.css" media="all" />
 	<!--[if lte IE 7]>
-	<fd:css href="/assets/css/wine-ie.css" media="all" />
+	<jwr:style src="/opt_IE_LT8_02.css" media="all" />
 	<![endif]-->
 	
 	<% if (layoutTypeCSS == EnumLayoutType.PRESIDENTS_PICKS.getId() || layoutTypeCSS == EnumLayoutType.PRODUCTS_ASSORTMENTS.getId()) { %>
     <%-- TODO: create a jawr bundle, don't use if --%>
-		<fd:css href="/assets/css/common/grid_supplement.css" media="all" />
- 		<fd:css href="/assets/css/common/product_grid.css" media="all" />
-		<fd:css href="/assets/css/search.css" media="all" />
+    	<jwr:style src="/assets/css/common/grid_supplement.css" media="all" />
+    	<jwr:style src="/assets/css/common/product_grid.css" media="all" />
+    	<jwr:style src="/assets/css/search.css" media="all" />
  	<% } %>
 	<jwr:style src="/accessibility.css" media="all" />
 	<%-- Keep the media include last, so it can always override any css auto-loaded --%>

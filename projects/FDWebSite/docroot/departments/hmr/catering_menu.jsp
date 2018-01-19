@@ -52,7 +52,8 @@ if (request.getParameter("show") != null && !"".equals(request.getParameter("sho
 <tmpl:insert template='/common/template/large_long_pop.jsp'>
 <%--   <tmpl:put name='title'>FreshDirect - Catering - <%=title%></tmpl:put> --%>
    <tmpl:put name="seoMetaTag" direct='true'>
-    <fd:SEOMetaTag title="FreshDirect - Catering - <%=title%>"/>
+   <% title = "FreshDirect - Catering - "+title;  %>
+    <fd:SEOMetaTag title="<%=title%>"/> 
   </tmpl:put>
 		<tmpl:put name='content' direct='true'>
 		<table width="520" cellpadding="0" cellspacing="0" border="0">

@@ -627,12 +627,6 @@ public class MasterpassData {
 	public void setShippingSuppression(Boolean shippingSuppression) {
 		this.shippingSuppression = shippingSuppression;
 	}
-	public boolean getAuthLevelBasic() {
-		return authLevelBasic;
-	}
-	public void setAuthLevelBasic(boolean authLevelBasic) {
-		this.authLevelBasic = authLevelBasic;
-	}
 	public Boolean getRewards() {
 		return rewards;
 	}
@@ -1236,6 +1230,9 @@ public class MasterpassData {
 	 */
 	public void setAuthLevelBasic(Boolean authLevelBasic) {
 		this.authLevelBasic = authLevelBasic;
+	}
+	public Boolean getAuthLevelBasic() {
+		return authLevelBasic;
 	}
 	
 }

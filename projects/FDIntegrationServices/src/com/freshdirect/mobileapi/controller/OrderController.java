@@ -525,9 +525,14 @@ public class OrderController extends BaseController {
 	        	QuickShopLineItem line = wrapper.getNode().getItem();
 	        	final ProductModel productModel = ContentFactory.getInstance().getProductByName(line.getCatId(), line.getProductId());
 	        	if(productModel != null) {
-	                ProductConfiguration configuration = new ProductConfiguration();
-	                configuration.populateProductWithModel(Product.wrap(productModel, fdUser), line.getSkuCode());
-	                productsWithSkus.add(configuration);
+	                try {
+						ProductConfiguration configuration = new ProductConfiguration();
+						configuration.populateProductWithModel(Product.wrap(productModel, fdUser), line.getSkuCode());
+						productsWithSkus.add(configuration);
+					} catch (Exception e) {
+						//Ignore
+						LOGGER.warn("Error while populating the product: "+productModel.getContentName());
+					}
 	        	}
 	        }
         }

@@ -2,7 +2,6 @@ package com.freshdirect.mail.service;
 
 import java.io.File;
 import org.apache.commons.lang.CharEncoding;
-import org.apache.http.params.CoreConnectionPNames;
 import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -17,7 +16,6 @@ import java.io.IOException;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.params.HttpClientParams;
 
 public class SilverpopEmailCampaignXmlHttpsPoster {
 	
@@ -66,9 +64,6 @@ public class SilverpopEmailCampaignXmlHttpsPoster {
        // If content encoding is not explicitly specified
        // ISO-8859-1 is assumed
         PostMethod post = new PostMethod(strURL);
-        
-       
-      
     
         post.addRequestHeader("Authorization","Bearer " +accessToken );//+accessToken+ ""accessToken+
 
@@ -82,10 +77,6 @@ public class SilverpopEmailCampaignXmlHttpsPoster {
         
         // Execute request
         try {
-        
-        	httpclient.setConnectionTimeout(5 * 1000);
-       
-        	
 
         	responseCode = httpclient.executeMethod(post);
 

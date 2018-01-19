@@ -71,7 +71,7 @@
 
              <!--  Standing orders Ad - AAPDEV-4294-->
 
-             <div style="display:none"  class="oas-cnt" id="oas_QSTop" ><script type="text/javascript">OAS_AD('QSTop');</script></div>
+             <div class="oas-cnt" id="oas_QSTop" ><script type="text/javascript">OAS_AD('QSTop');</script></div>
 
             <ul class="tabs qs-tabs clearfix">
                 <c:if test="${!isQS20}">

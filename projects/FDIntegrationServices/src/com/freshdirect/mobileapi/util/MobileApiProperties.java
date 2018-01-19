@@ -48,6 +48,8 @@ public class MobileApiProperties {
     
     private final static String PROP_BROWSE_ENABLED = "mobileapi.browse.enabled";
     
+    private final static String PROP_BASECONTROLLER_LOGGING_ENABLED = "mobileapi.basecontroller.logging.enabled";
+    
     private final static String PROP_EXTERNAL_INTERFACE_ENABLED = "mobileapi.extint.enabled";
     
     private final static String PROP_SUSTAINABILITY_RATING_ENABLED = "mobileapi.sustainabilityrating.enabled";
@@ -81,6 +83,7 @@ public class MobileApiProperties {
         defaults.put(PROP_OAS_PROTOCOL, "http");
         defaults.put(PROP_OAS_CACHE_TIMEOUT, "60");
         defaults.put(PROP_BROWSE_ENABLED, "true");
+        defaults.put(PROP_BASECONTROLLER_LOGGING_ENABLED, "true");
         defaults.put(PROP_EXTERNAL_INTERFACE_ENABLED, "true");
         defaults.put(PROP_SUSTAINABILITY_RATING_ENABLED, "true");
         defaults.put(PROP_SAMEDAY_DP_COMPATIBLE, "true");
@@ -182,6 +185,10 @@ public class MobileApiProperties {
     
     public static boolean isBrowseEnabled() {
         return (Boolean.valueOf(get(PROP_BROWSE_ENABLED)).booleanValue());
+    }
+    
+    public static boolean isBaseControllerLoggingEnabled() {
+        return (Boolean.valueOf(get(PROP_BASECONTROLLER_LOGGING_ENABLED)).booleanValue());
     }
     
     public static boolean isExternalInterfaceEnabled() {

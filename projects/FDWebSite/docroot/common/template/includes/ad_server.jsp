@@ -359,6 +359,10 @@
 						queryString.addParam("dpu", dpused);
 					}
 				}
+				if( user.getDlvPassInfo() != null && 
+					user.getDlvPassInfo().getTypePurchased() != null ) {	 
+					queryString.addParam("dp", user.getDlvPassInfo().getTypePurchased().getCode());	 
+				}
 			}
 
 			if(user.getDefaultState()!=null){

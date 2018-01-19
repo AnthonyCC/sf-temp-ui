@@ -57,7 +57,7 @@ var FreshDirect = FreshDirect || {};
     },
     close: {
       value: function (e) {
-        var $overlay = $(e.currentTarget).closest('.overlay');
+        var $overlay = e ? $(e.currentTarget).closest('.overlay') : $(document).find('.overlay');
 
         if (e && e.stopPropagation) {
           e.stopPropagation();

@@ -85,7 +85,6 @@ import com.freshdirect.webapp.ajax.mealkit.service.MealkitService;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.ajax.reorder.service.QuickShopCarouselService;
-import com.freshdirect.webapp.ajax.viewcart.service.CheckoutCarouselService;
 import com.freshdirect.webapp.ajax.viewcart.service.ViewCartCarouselService;
 import com.freshdirect.webapp.taglib.callcenter.ComplaintUtil;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
@@ -132,21 +131,23 @@ public class CartDataService {
     public CartData loadCartData(HttpServletRequest request, FDUserI user) throws HttpErrorResponse, FDResourceException, JspException {
     	return loadCartData(request, user, true);
     }
-    public CartData loadCartData(HttpServletRequest request, FDUserI user, boolean loadCarousel) throws HttpErrorResponse, FDResourceException, JspException {
+    public CartData loadCartData(HttpServletRequest request, FDUserI user, boolean hasSession) throws HttpErrorResponse, FDResourceException, JspException {
         String userId = loadUser(user);
+        if (hasSession) {
         updateUserAndCart(request, user);
+        }
         FDCartModel cart = loadUserShoppingCart(user, userId);
         if (user.getIdentity() != null) {
             FDCustomerCreditUtil.applyCustomerCredit(cart, user.getIdentity());
         }
 
-        if (StandingOrderHelper.isSO3StandingOrder(user)) {
+        if (hasSession && StandingOrderHelper.isSO3StandingOrder(user)) {
             FDStandingOrder so = user.getCurrentStandingOrder();
             cart.setTip(so.getTipAmount());
         }
         CartData cartData = new CartData();
         synchronized (cart) {
-            populateCartData(user, request, userId, cart, cartData, loadCarousel);
+            populateCartData(user, request, userId, cart, cartData, hasSession);
         }
         return cartData;
     }
@@ -160,7 +161,7 @@ public class CartDataService {
         }
         CartData cartData = new CartData();
         synchronized (cart) {
-            populateSubTotalBox(cartData, cart, user, request.getRequestURI());
+            populateSubTotalBox(cartData, cart, user);
         }
         return cartData.getSubTotalBox();
     }
@@ -244,7 +245,7 @@ public class CartDataService {
         item.setSu(salesUnits);
     }
 
-    private void checkCartCleanUpAction(HttpServletRequest request, CartData cartData) {
+    public void checkCartCleanUpAction(HttpServletRequest request, CartData cartData) {
         Boolean cartChangedByCleanUp = (Boolean) request.getSession().getAttribute(FDShoppingCartService.CART_CHANGED_BY_CLEAN_UP_SESSION_ATTRIBUTE_ID);
         if (cartChangedByCleanUp != null) {
             cartData.setCartChangedByCleanUp(cartChangedByCleanUp);
@@ -296,7 +297,7 @@ public class CartDataService {
         return cartLines;
     }
 
-    private List<CartData.Item> loadDepartmentSectionList(Map<SectionInfo, List<CartData.Item>> sectionMap, SectionInfo info) {
+    public List<CartData.Item> loadDepartmentSectionList(Map<SectionInfo, List<CartData.Item>> sectionMap, SectionInfo info) {
         List<CartData.Item> sectionList = sectionMap.get(info);
         if (sectionList == null) {
             sectionList = new ArrayList<CartData.Item>();
@@ -305,7 +306,7 @@ public class CartDataService {
         return sectionList;
     }
 
-    private void loadSectionHeaderImage(Map<String, String> sectionHeaderImgMap, ProductModel productNode, String deptDesc) {
+    public void loadSectionHeaderImage(Map<String, String> sectionHeaderImgMap, ProductModel productNode, String deptDesc) {
         if (!sectionHeaderImgMap.containsKey(deptDesc)) {
             String deptId = productNode.getDepartment().getContentName();
             if (null != deptDesc && deptDesc.startsWith("Recipe: ")) {
@@ -334,28 +335,11 @@ public class CartDataService {
         return cart;
     }
 
-    private void populateCartData(FDUserI user, HttpServletRequest request, String userId, FDCartModel cart, CartData cartData, boolean loadCarousel) throws HttpErrorResponse {
-        populateCartOrderData(user, request, userId, cart, cartData, populateRecentIds(cart));
-        if (loadCarousel) {
-        	populateCarousel(user, request, userId, cartData);
+    private void populateCartData(FDUserI user, HttpServletRequest request, String userId, FDCartModel cart, CartData cartData, boolean hasSession) throws HttpErrorResponse {
+        populateCartOrderData(user, request, userId, cart, cartData, populateRecentIds(cart), hasSession);
+        
         }
-    }
-    private void populateCarousel(FDUserI user, HttpServletRequest request, String userId, CartData cartData) throws HttpErrorResponse{
-    	try {
-	        CartRequestData reqData = BaseJsonServlet.parseRequestData(request, CartRequestData.class, true);
-	        SessionInput input = QuickShopCarouselService.defaultService().createSessionInput(user, request);
-	        input.setOnlyTabHeader(true);
-	        if (reqData != null && reqData.getPage() != null && reqData.getPage().contains("checkout")) {
-	            cartData.setCarouselData(CheckoutCarouselService.getDefaultService().populateTabsRecommendationsAndCarousel(request, (FDSessionUser) user, input));
-	        } else {
-	            cartData.setCarouselData(ViewCartCarouselService.getDefaultService().populateTabsRecommendationsAndCarousel(request, (FDSessionUser) user, input));
-	        }
-    	}
-        catch (Exception e) {
-            LOG.error("Error while processing cart for user " + userId, e);
-            BaseJsonServlet.returnHttpError(500, "Error while processing cart for user " + userId, e);
-        }
-    }
+
     public CartData.Item populateCartDataItem(FDCartLineI cartLine, FDProduct fdProduct, ItemCount itemCount, FDCartI cart, Set<Integer> recentIds, ProductModel productNode,
             FDUserI user) {
 
@@ -391,6 +375,7 @@ public class CartDataService {
         item.setPrice(JspMethods.formatPrice(cartLine.getPrice()));
         item.setDescr(cartLine.getDescription());
         item.setConfDescr(cartLine.getConfigurationDesc());
+        item.setConfOptions(cartLine.getConfiguration().getOptions());
         Discount tempDisc = cartLine.getDiscount();
         if (tempDisc != null && EnumDiscountType.FREE.equals(tempDisc.getDiscountType())) {
             item.setFreeSamplePromoProduct(true);
@@ -446,7 +431,7 @@ public class CartDataService {
      * @param cartLine
      * @param complaintModel
      */
-    private void populateCartDataItemWithMakeGoodAttributes(final CartData.Item item, final FDCartLineI cartLine, final ErpComplaintModel complaintModel) {
+    public void populateCartDataItemWithMakeGoodAttributes(final CartData.Item item, final FDCartLineI cartLine, final ErpComplaintModel complaintModel) {
         if (complaintModel != null) {
             // match complaint line with orderline id of cart item
             ErpComplaintLineModel line = complaintModel.getComplaintLine(cartLine.getOrderLineId());
@@ -458,7 +443,7 @@ public class CartDataService {
         }
     }
 
-    private List<CartData.Section> populateCartDataSections(Map<SectionInfo, List<CartData.Item>> sectionMap, Map<String, String> sectionHeaderImgMap) {
+    public List<CartData.Section> populateCartDataSections(Map<SectionInfo, List<CartData.Item>> sectionMap, Map<String, String> sectionHeaderImgMap) {
         List<CartData.Section> sections = new ArrayList<CartData.Section>();
         for (SectionInfo info : sectionMap.keySet()) {
             String sectionTitle = info.getSectionTitle();
@@ -472,7 +457,7 @@ public class CartDataService {
         return sections;
     }
 
-    private void populateCartOrderData(FDUserI user, HttpServletRequest request, String userId, FDCartI cart, CartData cartData, Set<Integer> recentIds) throws HttpErrorResponse {
+    private void populateCartOrderData(FDUserI user, HttpServletRequest request, String userId, FDCartI cart, CartData cartData, Set<Integer> recentIds, boolean hasSession) throws HttpErrorResponse {
         try {
             Map<Integer, String> dcpdCartlineMessage = new HashMap<Integer, String>();
             Map<String, FDMinDCPDTotalPromoData> dcpdMinPromo = user.getPromotionEligibility().getMinDCPDTotalPromos();
@@ -559,7 +544,7 @@ public class CartDataService {
             if (user != null) {
                 sessionUserLevel = user.getLevel();
             }
-            if (FDStoreProperties.isSocialLoginEnabled()) {
+            if (FDStoreProperties.isSocialLoginEnabled() && hasSession) {
                 if (sessionUserLevel == FDUserI.GUEST) {
                     // session.setAttribute(SessionName.PREV_SUCCESS_PAGE,request.getRequestURI());
                     session.setAttribute(SessionName.PREV_SUCCESS_PAGE, "/expressco/checkout.jsp");
@@ -571,7 +556,7 @@ public class CartDataService {
                 }
             }
 
-            populateSubTotalBox(cartData, cart, user, request.getRequestURI());
+            populateSubTotalBox(cartData, cart, user);
             populateSubTotalBoxForNonAlcoholSections(cart, sections, hasEstimatedPriceItemInCart, getSubTotalTextForNonAlcoholicSections(isWineInCart, hasEstimatedPriceItemInCart));
 
             if (FDUserI.GUEST < user.getLevel()) {
@@ -583,11 +568,13 @@ public class CartDataService {
                 }
                 cartData.setGoGreen(("Y".equalsIgnoreCase(GoGreenService.defaultService().loadGoGreenOption(user))) ? true : false);
             }
+            if (hasSession) {
             cartData.setBillingReferenceInfo(populateBillingReferenceInfo(session, user));
             checkCartCleanUpAction(request, cartData);
             cartData.setModifyCartData(isModifyOrderMode(session));
             cartData.setModifyOrder(cartData.getModifyCartData().isModifyOrderEnabled());
             cartData.setErrorMessage(null);
+            }
             // if(user.getCurrentStandingOrder()!=null)
             if (!StandingOrderHelper.isSO3StandingOrder(user)) {
                 cartData.setWarningMessage(AvailabilityService.defaultService().translateWarningMessage(request.getParameter("warning_message"), user));
@@ -619,8 +606,9 @@ public class CartDataService {
             if (StandingOrderHelper.isSO3StandingOrder(user)) {
                 cartData.setUserCorporate(true);
             }
-
+            if (hasSession){
             cartData.setGoogleAnalyticsData(GoogleAnalyticsDataService.defaultService().populateCheckoutGAData(cart, cartData));
+            }
 
         } catch (Exception e) {
             LOG.error("Error while processing cart for user " + userId, e);
@@ -635,7 +623,7 @@ public class CartDataService {
         return billingReferenceInfo;
     }
 
-    private String populateDCPDPromoDiscount(FDUserI user, HttpServletRequest request, FDCartLineI cartLine, Map<String, FDMinDCPDTotalPromoData> dcpdMinPromo,
+    public String populateDCPDPromoDiscount(FDUserI user, HttpServletRequest request, FDCartLineI cartLine, Map<String, FDMinDCPDTotalPromoData> dcpdMinPromo,
             List<String> usedDcpdDiscounts) {
         String dcpdMinMessage = "";
         String promoKey = "";
@@ -677,7 +665,7 @@ public class CartDataService {
         return productData;
     }
 
-    private String populateCouponMessage(FDUserI user, List<FDCartLineI> cartLines) throws FDResourceException {
+    public String populateCouponMessage(FDUserI user, List<FDCartLineI> cartLines) throws FDResourceException {
         String couponMessage = null;
         boolean needsCouponMessaging = false;
 
@@ -731,7 +719,7 @@ public class CartDataService {
     }
 
     private void populateOrderData(FDUserI user, HttpServletRequest request, String userId, FDCartI cart, CartData cartData) throws HttpErrorResponse {
-        populateCartOrderData(user, request, userId, cart, cartData, Collections.<Integer> emptySet());
+        populateCartOrderData(user, request, userId, cart, cartData, Collections.<Integer> emptySet(), true);
     }
 
     private SortedSet<Integer> populateRecentIds(FDCartModel cart) {
@@ -760,11 +748,11 @@ public class CartDataService {
         return (hasWine & hasFdStore);
     }
 
-    private void populateSubTotalBox(CartData cartData, FDCartI cart, FDUserI user, String uri) {
+    public void populateSubTotalBox(CartData cartData, FDCartI cart, FDUserI user) {
         cartData.setAvalaraEnabled(FDStoreProperties.getAvalaraTaxEnabled());
         List<CartSubTotalFieldData> subTotalBox = new ArrayList<CartSubTotalFieldData>();
         CartSubTotalBoxService.defaultService().populateSubTotalToBox(subTotalBox, cart);
-        CartSubTotalBoxService.defaultService().populateTaxToBox(subTotalBox, cart, uri, hasMultiplestores(cart, user.getUserId()));
+        CartSubTotalBoxService.defaultService().populateTaxToBox(subTotalBox, cart, hasMultiplestores(cart, user.getUserId()));
         // CartSubTotalBoxService.defaultService().populateTipToBox(subTotalBox, cart);
         CartSubTotalBoxService.defaultService().populateDepositValueToBox(subTotalBox, cart.getDepositValue());
         CartSubTotalBoxService.defaultService().populateFuelSurchargeToBox(subTotalBox, cart);
@@ -773,7 +761,7 @@ public class CartDataService {
         CartSubTotalBoxService.defaultService().populateGiftBalanceToBox(subTotalBox, user);
         CartSubTotalBoxService.defaultService().populateDeliveryFeeToBox(subTotalBox, cart, user, cartData);
         if (FDStoreProperties.getAvalaraTaxEnabled()) {
-            CartSubTotalBoxService.defaultService().populateAvalaraTaxToBox(subTotalBox, cart, uri);
+            CartSubTotalBoxService.defaultService().populateAvalaraTaxToBox(subTotalBox, cart);
         }
         CartSubTotalFieldData saveAmountBox = CartSubTotalBoxService.defaultService().createSavingToBox(cart);
         if (FDStoreProperties.isETippingEnabled()) {
@@ -791,7 +779,7 @@ public class CartDataService {
         cartData.getSubTotalBox().put(SUB_TOTAL_BOX_JSON_KEY, subTotalBox);
     }
 
-    private String getSubTotalTextForNonAlcoholicSections(boolean isWineInCart, boolean hasEstimatedPriceItemInCart) {
+    public String getSubTotalTextForNonAlcoholicSections(boolean isWineInCart, boolean hasEstimatedPriceItemInCart) {
         StringBuilder subTotalText = new StringBuilder(32);
         if (isWineInCart) {
             subTotalText.append("FreshDirect ");
@@ -803,7 +791,7 @@ public class CartDataService {
         return subTotalText.toString();
     }
 
-    private void populateSubTotalBoxForNonAlcoholSections(FDCartI cart, List<CartData.Section> sections, boolean hasEstimatedPriceItemInCart, String subTotalText) {
+    public void populateSubTotalBoxForNonAlcoholSections(FDCartI cart, List<CartData.Section> sections, boolean hasEstimatedPriceItemInCart, String subTotalText) {
         int sectionSize = sections.size();
         if (sectionSize > 0) {
             Section lastSection = sections.get(sectionSize - 1);
@@ -832,7 +820,7 @@ public class CartDataService {
         return new SimpleDateFormat("'<b>'h:mm a'</b> on <b>'EEEEE, MM/dd/yyyy'</b>'").format(date);
     }
 
-    private void removeRecipePrefixFromSectionTitles(List<CartData.Section> cartSections) {
+    public void removeRecipePrefixFromSectionTitles(List<CartData.Section> cartSections) {
         if (cartSections != null) {
             for (Section section : cartSections) {
                 if (section.getInfo() != null && section.getInfo().isRecipe()) {

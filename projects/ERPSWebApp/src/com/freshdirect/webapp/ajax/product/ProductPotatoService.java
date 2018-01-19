@@ -9,7 +9,6 @@ import org.apache.log4j.Logger;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.storeapi.content.PopulatorUtil;
@@ -75,7 +74,7 @@ public class ProductPotatoService {
     public ProductData getProductPotato(FDUserI user, ProductModel product) {
         ProductData productData = null;
         try {
-            productData = ProductDetailPopulator.createProductData(user, product, FDStoreProperties.getPreviewMode());
+            productData = ProductDetailPopulator.createProductData(user, product, true);
         } catch (FDRuntimeException e) {
             LOGGER.error("Failed to load product (runtime exc) " + product.getContentName());
         } catch (FDResourceException e) {
@@ -96,7 +95,7 @@ public class ProductPotatoService {
     public ProductExtraData getProductExtraPotato(FDUserI user, ProductModel product, String groupId, String groupVersion) {
         try {
             ProductExtraData extraData = null;
-            if (FDStoreProperties.getPreviewMode() && PopulatorUtil.isProductIncomplete(product) && !PopulatorUtil.isNodeArchived(product)) {
+            if (PopulatorUtil.isProductIncomplete(product) && !PopulatorUtil.isNodeArchived(product)) {
                 extraData = ProductExtraDataPopulator.createLightExtraData(user, product);
             } else {
                 extraData = ProductExtraDataPopulator.createExtraData(user, product, groupId, groupVersion, true);

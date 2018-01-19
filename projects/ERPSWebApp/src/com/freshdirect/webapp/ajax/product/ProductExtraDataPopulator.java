@@ -931,6 +931,15 @@ public class ProductExtraDataPopulator {
 			*/
 			
 			String selectedProdSku = productNode.getDefaultSkuCode();
+			try {
+				//if product is disc, then getDefaultSkuCode returns null, but on PDP we need the prods anyway, so get first sku
+				if (selectedProdSku == null && ((ProductModel)productNode).getSkuCodes().size() > 0 ) {
+					selectedProdSku = ((ProductModel)productNode).getSku(0).getSkuCode();
+				}
+			} catch (Exception e) {
+				LOG.warn("Exception while populating family product's sku code: ", e);
+			}
+			
 			String familyID = productInfo.getFamilyID();
 			ErpProductFamilyModel products = null;
 			List<String> skuCodes = null;
@@ -963,16 +972,16 @@ public class ProductExtraDataPopulator {
 			}
 			
 				
-				if(skuCodes!=null && selectedProdSku!=null){
+			if(skuCodes!=null && selectedProdSku!=null){
 				duplicateSku : for (String skuCode : skuCodes) {
-	
-				if(selectedProdSku.equalsIgnoreCase(skuCode))
-				{continue duplicateSku;}
-					
-				ProductModel productModel = PopulatorUtil.getProduct(skuCode);
-				FilteringProductItem fpt = new FilteringProductItem(productModel);
-				modelList.add(fpt);
+
+					if(selectedProdSku.equalsIgnoreCase(skuCode))
+					{continue duplicateSku;}
 				
+					ProductModel productModel = PopulatorUtil.getProduct(skuCode);
+					FilteringProductItem fpt = new FilteringProductItem(productModel);
+					modelList.add(fpt);
+			
 				}
 				//APPDEV-4256 Family Products Popularity Sort
 				Comparator<FilteringProductItem> comparator = ProductItemSorterFactory.createComparator(SortStrategyType.toEnum("POPULARITY"), user, true);

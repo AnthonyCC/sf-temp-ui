@@ -76,6 +76,9 @@ public class ProductItemFilterFactory {
 		case BACK_IN_STOCK:
 			return new BackInStockFilter(filterModel, parentId);
 			
+            case GOING_OUT_OF_STOCK:
+                return new GoingOutOfStockFilter(filterModel, parentId);
+
 		case BRAND:
 			return new BrandFilter(filterModel, parentId);
 			

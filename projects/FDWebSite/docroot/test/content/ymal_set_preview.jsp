@@ -64,7 +64,8 @@ if (request.getParameter("ymalSetId") == null) {
 <tmpl:insert template='/common/template/blank.jsp'>
 <%--     <tmpl:put name='title' direct='true'>YMAL set preview for <%= activeYmalSetId %></tmpl:put> --%>
     <tmpl:put name="seoMetaTag" direct="true">
-    <fd:SEOMetaTag title="YMAL set preview for <%= activeYmalSetId %>" ></fd:SEOMetaTag>
+    <%  activeYmalSetId = "YMAL set preview for" + activeYmalSetId; %>
+    <fd:SEOMetaTag title="<%= activeYmalSetId %>" ></fd:SEOMetaTag>
     </tmpl:put>
     <tmpl:put name='content' direct='true'>
    		<form method="get" class="text13" style="text-align: center; font-weight: bold;">

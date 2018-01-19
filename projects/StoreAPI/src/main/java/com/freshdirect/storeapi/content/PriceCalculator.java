@@ -281,10 +281,10 @@ public class PriceCalculator {
     							//return priceModel.getDealPercentage();
     							double sellingPrice = priceModel.getSellingPrice();
     							int val = (int) ((sellingPrice - gsPrice.getPrice()) * 100.0 / sellingPrice + 0.2);
-    							if( ((val%5)==0)||((val%2)==0)) {
+    							//if( ((val%5)==0)||((val%2)==0)) {
     								return val;
-    							}
-    							return val-1;
+    							//}
+    							//return val-1;
     						}
     					}
     				}
@@ -310,10 +310,10 @@ public class PriceCalculator {
    						if(gsPrice != null) {
    							double sellingPrice = priceModel.getSellingPrice();
    							int val = (int) ((sellingPrice - gsPrice.getPrice()) * 100.0 / sellingPrice + 0.2);
-   							if( ((val%5)==0)||((val%2)==0)) {
+   							//if( ((val%5)==0)||((val%2)==0)) {
    								return val;
-   							}
-   							return val-1;
+   							//}
+   							//return val-1;
    						}
    					}
    				}

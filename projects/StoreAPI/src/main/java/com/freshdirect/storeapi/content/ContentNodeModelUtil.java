@@ -20,8 +20,6 @@ import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.AttributeI;
-import com.freshdirect.storeapi.ContentNode;
 import com.freshdirect.storeapi.ContentNodeI;
 import com.freshdirect.storeapi.application.CmsManager;
 
@@ -223,13 +221,12 @@ public class ContentNodeModelUtil {
     @SuppressWarnings({ "unchecked", "deprecation" })
     private static List<ContentKey> grabFreshChildKeys(ContentKey contentKey, String attributeName, ContentKey parentKey) {
         ContentNodeI cmsNode = CmsManager.getInstance().getContentNode(contentKey);
-        AttributeI cmsAttribute = ((ContentNode) cmsNode).getAttribute(attributeName);
+        Attribute attributeDefinition = cmsNode.getAttribute(attributeName);
 
         List<ContentKey> recentKeys = null;
-        if (cmsAttribute != null) {
-            final Attribute attributeDefinition = cmsAttribute.getDefinition();
+        if (attributeDefinition != null) {
             recentKeys = attributeDefinition.getFlags().isInheritable() ? getInheritedChildKeys(contentKey, attributeDefinition, parentKey)
-                    : (List<ContentKey>) cmsAttribute.getValue();
+                    : (List<ContentKey>) cmsNode.getAttributeValue(attributeDefinition);
         }
         return recentKeys != null ? recentKeys : Collections.<ContentKey> emptyList();
     }
@@ -557,7 +554,7 @@ public class ContentNodeModelUtil {
         }
         return null;
     }
-    
+
     public static boolean isDescendant(ContentKey parentKey, ContentKey key) {
         if (key == null || parentKey == null) {
             return false;

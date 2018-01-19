@@ -24,7 +24,7 @@
 	</fd:ErrorHandler>
 	
 	
-	<form method="post" name="contact_fd" id="contact_fd_contact">
+	<form fdform method="post" name="contact_fd" id="contact_fd_contact" fdform-displayerrorafter>
 		<a href='index.jsp'><h2 class="help-heading bold uppercase">contact freshdirect</h2></a>
 		<p class="small-text">FreshDirect Customer Service is standing by to answer your questions, seven days a week.
 			<span class="bold">The best way to get help is through email. Our dedicated service team generally responds within 1 to 3 hours during our business day.</span>
@@ -61,12 +61,14 @@
 				$jq('#contact_subject').change(function() {
 					var selectedOpt = $jq('#contact_subject option').filter(':selected');
 					if ( selectedOpt.text() == 'Product Request' ) {
-						$jq('#prodReqContent').show();
-						$jq('#prodReqNonContent').hide();
-					} else {
-						$jq('#prodReqContent').hide();
-						$jq('#prodReqNonContent').show();
-					}
+                        $jq('#prodReqContent').show();
+                        $jq('#prodReqNonContent').hide();
+                        $jq('#test1').attr('disabled', 'disabled').addClass('disabled');
+                    } else {
+                        $jq('#prodReqContent').hide();
+                        $jq('#prodReqNonContent').show();
+                        $jq('#test1').attr('disabled', null).removeClass('disabled');
+                    }
 					if (coremetricsGetHelpEmailFunctionMap[selectedOpt.val()]) {
 						coremetricsGetHelpEmailStart(selectedOpt.val());
 					}
@@ -78,7 +80,7 @@
 		<div class="from-elements-wrapper">
 			<div class="form-group">
 				<label for="contact_subject" class="bold inline text-right">* Subject:</label>
-				<select name="subject" id="contact_subject" onchange="">
+				<select class="customsimpleselect" aria-describedby="subject_error" name="subject" id="contact_subject" onchange="">
 					<option value="">Select Subject:</option>
 					<logic:iterate id="subject" indexId="idx" collection="<%= ContactFdControllerTag.selections %>" type="com.freshdirect.webapp.taglib.fdstore.ContactFdControllerTag.Selection">
 						<option value="<%= idx %>" <%= idx.intValue() == subjectIndex ? "selected" : "" %>><%= subject.getDescription() %></option>
@@ -90,7 +92,7 @@
 						var subjectSelect = document.getElementById('contact_subject');	
 						coremetricsGetHelpEmailStart(subjectSelect.options[subjectSelect.selectedIndex].value)
 					</script>
-					<div class="bold error">
+					<div id="subject_error" class="bold error">
 						<%=errorMsg%>
 					</div>
 				</fd:ErrorHandler>
@@ -130,7 +132,7 @@
 						<fd:OrderHistoryInfo id='orderHistoryInfo'>
 							<%if (orderHistoryInfo.size() > 0) {%>
 									<label for="order-field" class="bold inline text-right">Order #:</label>
-									<select name="salePK" id="order-field">
+									<select class="customsimpleselect" name="salePK" id="order-field">
 										<option value="">Select Order:</option>
 										<logic:iterate id="orderInfo" indexId="idx" collection="<%= orderHistoryInfo %>" type="com.freshdirect.fdstore.customer.FDOrderInfoI">
 											<% if (idx.intValue() == 5) break; %>
@@ -144,9 +146,9 @@
 				</div>
 				<div class="form-group">
 					<label for="msg-textarea" id="msg-textarea-label" class="bold inline">* Please enter your message here:</label>
-					<textarea id="msg-textarea" cols="40" rows="5" name="message" onKeyPress="limitText(this, 2048)" onChange="limitText(this, 2048)"><%= body%></textarea>
+					<textarea id="msg-textarea" cols="40" aria-describedby="message_error" rows="5" name="message" onKeyPress="limitText(this, 2048)" onChange="limitText(this, 2048)"><%= body%></textarea>
 					<fd:ErrorHandler result='<%=result%>' name='message' id='errorMsg'>
-						<div class="bold error">
+						<div id="message_error" class="bold error">
 							<%=errorMsg%>
 						</div>
 					</fd:ErrorHandler>
@@ -161,19 +163,19 @@
 			</div>
 			<div class="from-elements-wrapper">
 			<div class="form-group">	
-				<label for="email-field" class="bold inline">* E-mail Address/User Name:</label>
-				<input type="text" name="email" id="email-field" size="34" value="<%=email%>" />
-				<fd:ErrorHandler result='<%=result%>' name='email' id='errorMsg'><span class="bold error"><%=errorMsg%></span></fd:ErrorHandler>
+				<label for="email-field" class="bold inline">* E-mail Address/    User Name:</label>
+				<input type="text" name="email" id="email-field" aria-describedby="emailid_error" size="34" value="<%=email%>" />
+				<fd:ErrorHandler result='<%=result%>' name='email' id='errorMsg'><span id="emailid_error" class="bold error"><%=errorMsg%></span></fd:ErrorHandler>
 			</div>
 			<div class="form-group">
 				<label for="first-name-field" class="bold inline">* First Name:</label>
-				<input type="text" name="first_name" id="first-name-field" size="21" value="<%=firstName%>" />
-				<fd:ErrorHandler result='<%=result%>' name='first_name' id='errorMsg'><span class="bold error"><%=errorMsg%></span></fd:ErrorHandler>
+				<input type="text" name="first_name" id="first-name-field" aria-describedby="firstname_error" size="21" value="<%=firstName%>" />
+				<fd:ErrorHandler result='<%=result%>' name='first_name' id='errorMsg'><span id="firstname_error" class="bold error"><%=errorMsg%></span></fd:ErrorHandler>
 			</div>
 			<div class="form-group">
 				<label for="last-name-field" class="bold inline">* Last Name:</label>
-				<input type="text" name="last_name" id="last-name-field" size="21" value="<%=lastName%>" />
-				<fd:ErrorHandler result='<%=result%>' name='last_name' id='errorMsg'><span class="bold error"><%=errorMsg%></span></fd:ErrorHandler>
+				<input type="text" name="last_name" id="last-name-field" aria-describedby="lastname_error" size="21" value="<%=lastName%>" />
+				<fd:ErrorHandler result='<%=result%>' name='last_name' id='errorMsg'><span id="lastname_error" class="bold error"><%=errorMsg%></span></fd:ErrorHandler>
 			</div>
 			<div class="form-group">
 				<label for="home-phone-field" class="bold inline">Home Phone #:</label>
@@ -211,7 +213,7 @@
 
 			<div class="text-center separator">
 				<button type="reset" class="cssbutton green transparent">Clear</button>
-				<button type="submit" name="sendMessage" class="cssbutton green">Send Message</button>
+				<button type="submit" id="test1" name="sendMessage" class="cssbutton green ">Send Message</button>
 			</div>
 		<div class="small-text separator">
 			<%--MEDIA INCLUDE--%><fd:IncludeMedia name="/media/editorial/site_pages/help_home_hours.html" /><%--END MEDIA INCLUDE --%>

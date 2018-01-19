@@ -57,7 +57,7 @@ public class JsonHelper {
      * 
      * @param response
      */
-    private static void configureJsonResponse(HttpServletResponse response) {
+    public static void configureJsonResponse(HttpServletResponse response) {
         response.setHeader("Cache-Control", "no-cache");
         response.setHeader("Pragma", "no-cache");
         response.setContentType("application/json");

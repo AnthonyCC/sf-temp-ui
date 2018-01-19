@@ -120,14 +120,14 @@
 	{let $inCart: ($item.inCartAmount > 0) ? 'incart' :'' /}
 	<li class="itemlist-item {not $item.available ? 'unavailable' : ''}{if $changed}changed{/if}" data-component="product" {if $item.itemId}data-productid="{$item.itemId}"{/if}>
 		<div class="itemlist-item-productimage_wrapper">
-			<div class="itemlist-item-burst_wrapper">
+				<div class="itemlist-item-burst_wrapper">
 				{if $item.discontinued}
 					<img src="{$item.productImage}" alt="{$item.productName}" class="itemlist-item-productimage">
 				{else}
 					<a href="{$item.productPageUrl}"><img src="{$item.productImage}" alt="{$item.productName}" class="itemlist-item-productimage"></a>
 				{/if}
-				{call common.bursts}{param badge:$item.badge /}{param deal:$item.deal /}{param usq:$item.usq /}{/call}
-			</div>
+					{call common.bursts}{param badge:$item.badge /}{param deal:$item.deal /}{param usq:$item.usq /}{/call}
+				</div>
 		</div>
 		<div class="itemlist-item-header-buttons">
 			{if $type == 'shopfromlists' and not $replaced}
@@ -272,15 +272,13 @@
 				{param productPageUrl:$item.productPageUrl /}
 			{/call}
 		</form>
-		<div class="itemlist-item-productimage_wrapper">
-			<div class="itemlist-item-burst_wrapper">
-				{if $item.discontinued}
-					<img src="{$item.productImage}" alt="{$item.productName}" class="itemlist-item-productimage">
-				{else}
-					<a href="{$item.productPageUrl}"><img src="{$item.productImage}" alt="{$item.productName}" class="itemlist-item-productimage"></a>
-				{/if}
-				{call common.bursts}{param badge:$item.badge /}{param deal:$item.deal /}{param usq:$item.usq /}{/call}
-			</div>
+		<div class="portrait-item-productimage_wrapper itemlist-item-productimage_wrapper">
+			{if not $item.discontinued}<a href="{$item.productPageUrl}">{/if}
+				<div class="portrait-item-burst_wrapper itemlist-item-burst_wrapper">
+					<img src="{$item.productImage}" alt="{$item.productName}" class="portrait-item-productimage itemlist-item-productimage">
+					{call common.bursts}{param badge:$item.badge /}{param deal:$item.deal /}{param usq:$item.usq /}{/call}
+				</div>
+			{if not $item.discontinued}</a>{/if}
 			{call common.rating.expert}{param ratingValue:$item.expertRating /}{/call}
 		</div>
 		<div class="itemlist-center-content">

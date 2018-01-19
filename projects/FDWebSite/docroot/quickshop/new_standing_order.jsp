@@ -152,13 +152,13 @@ user.setSoTemplateCart(new FDCartModel());
 	</tmpl:put>
 
 	<tmpl:put name="extraCss">
-		<fd:css href="/assets/css/timeslots.css" media="all" />
+		<jwr:style src="/timeslots.css" media="all" />
 		<jwr:style src="/expressco.css" media="all" />
 		<jwr:style src="/quickshop.css" media="all" />
 	</tmpl:put>
 
 	<tmpl:put name="extraJs">
-		<fd:javascript src="/assets/javascript/timeslots.js" />
+		<jwr:script src="/assets/javascript/timeslots.js" useRandomParam="false" />
 		<jwr:script src="/qsstandingorder.js" />
 	</tmpl:put>
 </tmpl:insert>

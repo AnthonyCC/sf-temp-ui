@@ -48,6 +48,16 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
         return this.getContentKey().id;
     }
 
+    /**
+     * FULL_NAME is no longer supported on Sku models
+     */
+    @Override
+    @Deprecated
+    public String getFullName() {
+        ProductModel productModel = getProductModel();
+        return productModel != null ? productModel.getFullName() : "";
+    }
+
     public List<DomainValue> getVariationMatrix() {
         ContentNodeModelUtil.refreshModels(this, "VARIATION_MATRIX", variationMatrix, false);
         return Collections.unmodifiableList(variationMatrix);

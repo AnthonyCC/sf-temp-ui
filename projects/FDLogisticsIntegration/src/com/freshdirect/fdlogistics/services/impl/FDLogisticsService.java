@@ -64,6 +64,7 @@ import com.freshdirect.logistics.controller.data.response.ListOfFulfillmentInfoR
 import com.freshdirect.logistics.controller.data.response.ListOfObjects;
 import com.freshdirect.logistics.controller.data.response.ListOfStateCounty;
 import com.freshdirect.logistics.controller.data.response.Timeslot;
+import com.freshdirect.logistics.controller.data.response.RoutesData;
 import com.freshdirect.logistics.delivery.dto.Address;
 import com.freshdirect.logistics.delivery.model.GeoLocation;
 import com.freshdirect.logistics.delivery.model.RouteStopInfo;
@@ -169,7 +170,8 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 	private static final String GET_TRUCK_DETAILS_API ="/delivery/trucks/";
 	private static final String RESERVATION_RECONFIRM_API ="/reservation/reconfirm";
 	private static final String ROUTE_STOP_INFO ="/order/routestopInfo/";
-
+	private static final String ROUTE_DETAILS_BY_ROUTE_NO_API ="/delivery/routedetails/";
+	private static final String ROUTES_DETAILS_BY_CURRENT_DATE_API ="/delivery/routesdetails/";
 
 	@Override
 	public AddressVerificationResponse verifyAddress(Address address) throws FDLogisticsServiceException {
@@ -721,6 +723,19 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 		RouteStopInfo response =  getData(null, getEndPoint(ROUTE_STOP_INFO+orderId), RouteStopInfo.class);
 		return response;
 	}
+	
+	@Override
+	public RoutesData getRouteDetails(String routeNo) throws FDLogisticsServiceException {
+		RoutesData response =  getData(null, getEndPoint(ROUTE_DETAILS_BY_ROUTE_NO_API+routeNo), RoutesData.class);
+		return response;
+	}
+
+	@Override
+	public RoutesData getRoutesDetailsByCurrentDate() throws FDLogisticsServiceException {
+		RoutesData response =  getData(null, getEndPoint(ROUTES_DETAILS_BY_CURRENT_DATE_API), RoutesData.class);
+		return response;
+	}
+	
 	
 	
 }

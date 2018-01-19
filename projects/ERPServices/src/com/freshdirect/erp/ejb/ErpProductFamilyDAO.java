@@ -56,7 +56,7 @@ public class ErpProductFamilyDAO {
     }
 	
 	
-	private static final String PRODUCT_FAMILY_INFO_SELECT_SQL="select product_id from ERPS.PRODUCT_FAMILY_MASTER a where a.active <>'D' and a.GROUP_STAT <>'X' and a.version= (select MAX(version) from ERPS.PRODUCT_FAMILY_MASTER where FAMILY_ID=?) and a.FAMILY_ID=?";
+	private static final String PRODUCT_FAMILY_INFO_SELECT_SQL="select product_id from ERPS.PRODUCT_FAMILY_MASTER a where (a.active is null OR a.active <>'D') and (a.GROUP_STAT is null OR a.GROUP_STAT <>'X') and a.version= (select MAX(version) from ERPS.PRODUCT_FAMILY_MASTER where FAMILY_ID=?) and a.FAMILY_ID=?";
 	
 	public static ErpProductFamilyModel getFamilyInfo(Connection conn,String familyId) throws SQLException {
 		ErpProductFamilyModel familyInfo = new ErpProductFamilyModel();
@@ -84,7 +84,7 @@ public class ErpProductFamilyDAO {
 			LOGGER.debug("getfamilyInfo ProductFamilyModel :"+familyInfo);
 			return familyInfo; 	
 			}
-private static final String PRODUCT_FAMILY_INFO_WITH_MATID_SQL="select Family_id, product_id from ERPS.PRODUCT_FAMILY_MASTER a where a.active <>'D' and a.GROUP_STAT <>'X' and a.version= (select MAX(version) from ERPS.PRODUCT_FAMILY_MASTER where PRODUCT_ID=?)";
+private static final String PRODUCT_FAMILY_INFO_WITH_MATID_SQL="select Family_id, product_id from ERPS.PRODUCT_FAMILY_MASTER a where (a.active is null OR a.active <>'D') and (a.GROUP_STAT is null OR a.GROUP_STAT <>'X') and a.version= (select MAX(version) from ERPS.PRODUCT_FAMILY_MASTER where PRODUCT_ID=?)";
 	
 	public static ErpProductFamilyModel getSkuFamilyInfo(Connection conn,String materialId) throws SQLException {
 		ErpProductFamilyModel familyInfo = new ErpProductFamilyModel();

@@ -3,6 +3,7 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import="com.freshdirect.customer.EnumSaleStatus" %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties'%>
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%
 //start local block
 {
@@ -29,7 +30,7 @@
 	}
 	
 	//PASS 1 of 3.  Basic customer vars only defined here.	
-	if( FDStoreProperties.isExtoleRafEnabled() && (((user_e1 != null) && (isValidPage == true)) || isSignupPage == true) ){
+	if( FDStoreProperties.isExtoleRafEnabled() && (((user_e1 != null) && (isValidPage == true)) || isSignupPage == true) && (user_e1 != null && !user_e1.isEligibleForStandingOrders()) ){
 		
 		int user_getLevel = user_e1.getLevel();
 	
@@ -89,7 +90,7 @@
 			</script>
 			<!-- <script src="//tags.extole.com/553175139/core.js"></script>
 			EXTOLE LIBRARY IS NOW CALLED FROM BELOW FILE.  This is done because javascript, unlike java/jsp, recognizes when it is being called in an iframe -->
-			<script src="/assets/javascript/extole_tags_generator.js"></script>
+			<jwr:script src="/assets/javascript/extole_tags_generator.js" useRandomParam="false" />
 			<%
 			} //end if(exValidOrderCount == true)
 		} // end if( user_e1.getLevel() != 0 )

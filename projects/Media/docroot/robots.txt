@@ -17,3 +17,6 @@ Sitemap: https://www.freshdirect.com/sitemap/sitemap.xml.gz
 Sitemap: https://www.freshdirect.com/sitemap/sitemap_category_index.xml
 Sitemap: https://www.freshdirect.com/sitemap/sitemap_product_index.xml
 Noindex: /pdp.jsp?productId=fro_pid_3502938&catId=fro_icecr_ice_candy
+Noindex: /pdp.jsp?productId=gro_pid_4013525&catId=gro_salad_ranch
+Noindex: /pdp.jsp?catId=gro_pita_wraps&productId=gro_bstpt_white
+Noindex: /pdp.jsp?catId=gro_pita_wraps&productId=gro_bstpt_wwheat

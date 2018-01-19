@@ -394,6 +394,14 @@
 							To fix this issue: <button onclick="openSOSettings({$item.id})" class="standing-orders-3-so-settings-error-steps-link">Select a new timeslot.</button>
 						</div>
 					</div>
+				{case 'PAYMENT_DEL'}
+					<div class="standing-orders-3-so-settings-error-header">We're sorry. There's a problem with your Standing Order:</div>
+					<div class="standing-orders-3-so-settings-error-header-bold">The payment method is no longer available in system.</div>
+					<div class="standing-orders-3-so-settings-error-steps">
+						<div class="standing-orders-3-so-settings-error-steps-header">
+							To fix this issue: <button onclick="openSOSettings({$item.id})" class="standing-orders-3-so-settings-error-steps-link">Pick a payment method.</button>
+						</div>
+					</div>
 				{case 'TECHNICAL'}
 			    	<div class="standing-orders-3-so-settings-error-header-bold">Technical Failure. Please try and refresh the page.</div>
 			    	<div class="standing-orders-3-so-settings-error-header-bold">If problem persists, contact Customer Service at (212)796-8002 for assistance.</div>

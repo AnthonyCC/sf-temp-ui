@@ -9,8 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.fdstore.cms.CMSPublishManager;
-
 
 /**
  * Promo Publish Replica Service Point.
@@ -27,6 +25,8 @@ public class FeedPublishServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+        // UTF-8 needs to be enforced here, because the spring template does not enforce it.
+        request.setCharacterEncoding("UTF-8");
 		String feedData = request.getParameter("feedData");
 		String feedId = request.getParameter("feedId");
 		String storeId = request.getParameter("storeId");
@@ -42,6 +42,8 @@ public class FeedPublishServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+        // UTF-8 needs to be enforced here, because the spring template does not enforce it.
+        request.setCharacterEncoding("UTF-8");
 		String feedData = request.getParameter("feedData");
 		String feedId = request.getParameter("feedId");
 		String storeId = request.getParameter("storeId");

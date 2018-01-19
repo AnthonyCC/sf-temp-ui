@@ -116,6 +116,7 @@
 	text-indent: -9999px;
 	overflow: hidden;
 	cursor: pointer;
+	z-index:1;
 }
 .qs-popup-close-icon {
   display: none;

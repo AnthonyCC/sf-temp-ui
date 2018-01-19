@@ -249,7 +249,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
         HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
 
         try {
-            response.sendRedirect(response.encodeRedirectURL(this.getRedirectURL(firstRequest)));
+            response.sendRedirect(this.getRedirectURL(firstRequest));
 
             //JspWriter writer = pageContext.getOut();
            // writer.close();

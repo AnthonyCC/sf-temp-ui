@@ -657,9 +657,6 @@ public class DeliveryAddressService {
 					}
 				}
 			}
-			if (!isSelectedMatch) {
-				addresses.get(0).setSelected(true);
-			}
 		}
 	}
 	

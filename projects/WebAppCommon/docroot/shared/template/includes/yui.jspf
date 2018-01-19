@@ -1,65 +1,54 @@
 <%@ taglib uri='freshdirect' prefix='fd'%>
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%
 if (request.getAttribute("__yui_included__") == null) {
 %>
 <%-- when upgrading yui please create a new directory for the version --%>
-<link rel="stylesheet" type="text/css" href="/assets/yui-2.9.0/container/assets/container.css" />
+	<jwr:style src="/yuipartial.css" media="all" />
 <%
 	if (request.getAttribute("__yui_load_calendar__") != null) {
 %>
-<link rel="stylesheet" type="text/css" href="/assets/yui-2.9.0/calendar/assets/skins/sam/calendar.css" />
+	<jwr:style src="/assets/yui-2.9.0/calendar/assets/skins/sam/calendar.css" media="all" />
 <%
 	}
 	//if (request.getAttribute("__yui_load_autocomplete__") != null) {
 %>
-<link rel="stylesheet" type="text/css" href="/assets/yui-2.9.0/autocomplete/assets/skins/sam/autocomplete.css" />
+	<jwr:style src="/assets/yui-2.9.0/autocomplete/assets/skins/sam/autocomplete.css" media="all" />
 <%
 	//}
 %>
-<link rel="stylesheet" type="text/css" href="/assets/yui-2.9.0/carousel/assets/carousel-core.css" />
 
-<script type="text/javascript" src="/assets/yui-2.9.0/yahoo/yahoo.js"></script>
-<script type="text/javascript" src="/assets/yui-2.9.0/yahoo-dom-event/yahoo-dom-event.js"></script>
-<script type="text/javascript" src="/assets/yui-2.9.0/event/event.js"></script>
-<script type="text/javascript" src="/assets/yui-2.9.0/dom/dom.js"></script>
-<script type="text/javascript" src="/assets/yui-2.9.0/event-mouseenter/event-mouseenter.js"></script>
-<script type="text/javascript" src="/assets/yui-2.9.0/connection/connection.js"></script>
-<script type="text/javascript" src="/assets/yui-2.9.0/animation/animation.js"></script>
-<script type="text/javascript" src="/assets/yui-2.9.0/dragdrop/dragdrop.js"></script>
-<script type="text/javascript" src="/assets/yui-2.9.0/utilities/utilities.js"></script>
-<script type="text/javascript" src="/assets/yui-2.9.0/container/container.js"></script>
-<script type="text/javascript" src="/assets/yui-2.9.0/json/json.js"></script>
-<script type="text/javascript" src="/assets/yui-2.9.0/datasource/datasource.js"></script>
-<script type="text/javascript" src="/assets/yui-2.9.0/carousel/carousel.js"></script>
-<fd:javascript src="/assets/javascript/carousel.js" />
+<jwr:script src="/yuipartial.js" useRandomParam="false" />
+
 <%
 	if (request.getAttribute("__yui_load_selector__") != null) {
-%><script type="text/javascript" src="/assets/yui-2.9.0/selector/selector.js"></script>
+%><jwr:script src="/assets/yui-2.9.0/selector/selector.js" useRandomParam="false" />
 <%
 	}
 	if (request.getAttribute("__yui_load_buttons__") != null) {
-%><script type="text/javascript" src="/assets/yui-2.9.0/element/element.js"></script>
-<script type="text/javascript" src="/assets/yui-2.9.0/button/button.js"></script>
+%>
+	<jwr:script src="/assets/yui-2.9.0/element/element.js" useRandomParam="false" />
+	<jwr:script src="/assets/yui-2.9.0/button/button.js" useRandomParam="false" />
 <%
 	}
 	if (request.getAttribute("__yui_load_dispatcher__") != null) {
-%><script type="text/javascript" src="/assets/yui-2.9.0/dispatcher/dispatcher.js"></script>
+%><jwr:script src="/assets/yui-2.9.0/dispatcher/dispatcher.js" useRandomParam="false" />
 <%
 	}
 	if (request.getAttribute("__yui_load_calendar__") != null) {
-%><script type="text/javascript" src="/assets/yui-2.9.0/calendar/calendar.js"></script>
+%><jwr:script src="/assets/yui-2.9.0/calendar/calendar.js" useRandomParam="false" />
 <%
 	}
 	/*if (request.getAttribute("__yui_load_autocomplete__") != null) {*/
-%><script type="text/javascript" src="/assets/yui-2.9.0/autocomplete/autocomplete.js"></script>
+%><jwr:script src="/assets/yui-2.9.0/autocomplete/autocomplete.js" useRandomParam="false" />
 <%
 	//}
 	if (request.getAttribute("__yui_animation__") != null) {
-%><script type="text/javascript" src="/assets/yui-2.9.0/animation/animation.js"></script>
+%><jwr:script src="/assets/yui-2.9.0/animation/animation.js" useRandomParam="false" />
 <%
 	}
 %>
-	<fd:javascript src="/assets/javascript/smsearch_autocomplete.js"/>
+	<jwr:script src="/assets/javascript/smsearch_autocomplete.js" useRandomParam="false" />
 <%
 	request.setAttribute("__yui_included__", Boolean.TRUE);
 }

@@ -184,6 +184,10 @@ public class SocialAccountService implements AccountService {
                             String preSuccessPage = (String) session.getAttribute(SessionName.PREV_SUCCESS_PAGE);
                             if (preSuccessPage != null) {
                                 session.removeAttribute(SessionName.PREV_SUCCESS_PAGE);
+                                // if preSuccessPage contains query parameter and has requireDecode=true, encode it
+                                if (preSuccessPage.contains("?") && preSuccessPage.contains("requireDecode=false")) {
+                                	return newURL + "/social/success.jsp?successPage=" + preSuccessPage.substring(1, preSuccessPage.indexOf("?")) + FDURLUtil.safeURLEncode(preSuccessPage.substring(preSuccessPage.indexOf("?")));
+                                }
                                 return newURL + "/social/success.jsp?successPage=" + preSuccessPage.substring(1, preSuccessPage.length());
                             } else {
                                 return newURL + "/social/success.jsp?successPage=" + FDURLUtil.safeURLEncode(updatedSuccessPage.substring(1, updatedSuccessPage.length()));
@@ -242,7 +246,7 @@ public class SocialAccountService implements AccountService {
                             String preSuccessPage = (String) session.getAttribute(SessionName.PREV_SUCCESS_PAGE);
 
                             if (preSuccessPage != null) {
-                                session.setAttribute("nextSuccesspage", preSuccessPage + "?socialnetwork=" + socialUserProfile.get("provider"));
+                                session.setAttribute("nextSuccesspage", preSuccessPage);
                             } else {
                                 session.setAttribute("nextSuccesspage", termsConditions + "?socialnetwork=" + socialUserProfile.get("provider"));
                             }
@@ -258,6 +262,11 @@ public class SocialAccountService implements AccountService {
                             if (FDStoreProperties.isLocalDeployment()) {
                                 newURL = newURL + ":" + request.getServerPort();
                             }
+                            String preSuccessPage = (String) session.getAttribute(SessionName.PREV_SUCCESS_PAGE);
+
+                            if (preSuccessPage != null) {
+                                session.setAttribute("nextSuccesspage", preSuccessPage);
+                            } 
                             socialLoginRecognized = socialLoginRecognized + "?socialnetwork=" + socialUserProfile.get("provider");
                             return newURL + socialLoginRecognized;
                         }
@@ -332,6 +341,9 @@ public class SocialAccountService implements AccountService {
                             session.setAttribute(SessionName.SOCIAL_LOGIN_PROVIDER, providerName);
                             if (preSuccessPage != null) {
                                 session.removeAttribute(SessionName.PREV_SUCCESS_PAGE);
+                                if (preSuccessPage.contains("?") && preSuccessPage.contains("requireDecode=false")) {
+                                	return newURL + "/social/success.jsp?successPage=" + preSuccessPage.substring(1, preSuccessPage.indexOf("?")) + FDURLUtil.safeURLEncode(preSuccessPage.substring(preSuccessPage.indexOf("?")));
+                                }
                                 return newURL + "/social/success.jsp?successPage=" + preSuccessPage.substring(1, preSuccessPage.length());
                             } else {
                                 return newURL + "/social/success.jsp?successPage=" + updatedSuccessPage.substring(1, updatedSuccessPage.length());

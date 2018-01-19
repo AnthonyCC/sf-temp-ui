@@ -330,7 +330,12 @@ public class ScoreProvider implements DataAccess {
     // Map<ContentKey, double[]>
     protected Map<ContentKey, double[]> globalScores = new HashMap<ContentKey, double[]>();
 
-    // SessionCache<UserId:String, SessionCache.TimedEntry<Map<ContentKey,double[]>>>
+    public Map<ContentKey, double[]> getGlobalScores() {
+		return globalScores;
+	}
+
+
+	// SessionCache<UserId:String, SessionCache.TimedEntry<Map<ContentKey,double[]>>>
     private SessionCache<String, SessionCache.TimedEntry<Map<ContentKey,double[]>>> personalizedScores
         = new SessionCache<String, SessionCache.TimedEntry<Map<ContentKey,double[]>>>(FDStoreProperties.getSmartstorePersonalizedScoresCacheEntries(),0.75f);
 

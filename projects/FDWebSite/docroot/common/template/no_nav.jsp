@@ -3,11 +3,14 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 
 <% //expanded page dimensions
 final int W_NO_NAV_TOTAL = 970;
 
 request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE);
+
+String pageURI = request.getRequestURI();
 %>
 <%-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ --%>
 <!--[if lt IE 7]> <html class="no-js lt-ie10 lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
@@ -18,24 +21,14 @@ request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE);
 <head>
     <tmpl:get name="seoMetaTag"/>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-	<% if (request.getRequestURI().contains("/myfd")) { %>
-	<fd:javascript src="/assets/javascript/cufon-yui.js"/>
-	<fd:javascript src="/assets/javascript/EagleCufon.font.js"/>
-	<fd:javascript src="/assets/javascript/EagleCufonBold.font.js"/>
-	<script type="text/javascript" language="javascript">
-		Cufon.replace('.myfd-header-text', { fontFamily: 'EagleCufonBold' });
-		Cufon.replace('.myfd-category a', { fontFamily: 'EagleCufon' });
-		Cufon.replace('.myfd-category a strong', { fontFamily: 'EagleCufonBold' });
-		Cufon.replace('.myfd-category a b', { fontFamily: 'EagleCufonBold' });
-		Cufon.replace('.eagle-bold', { fontFamily: 'EagleCufonBold' });
-	</script>
-	<% } %>
-  <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
+  	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-	<fd:css href="/assets/css/giftcards.css" media="all" />
-	<fd:css href="/assets/css/timeslots.css" media="all" />
+	<jwr:style src="/giftcards.css" media="all" />
+	<jwr:style src="/timeslots.css" media="all" />
   <tmpl:get name='extraCss'/>
-	<%@ include file="/shared/template/includes/ccl.jspf" %>
+  	<% if (pageURI.indexOf("/help/") == -1) { %>
+		<%@ include file="/shared/template/includes/ccl.jspf" %>
+	<% } %>
 <%		
     {
        String onbeforeunload = (String)request.getAttribute("windowOnBeforeUnload");
@@ -62,7 +55,6 @@ request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE);
 		String color = "999966";
 		String suffix = "";
 
-		String pageURI = request.getRequestURI();
 
 			if (pageURI.indexOf("view_cart") > -1) {
 				inViewCart = true;

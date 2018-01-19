@@ -321,12 +321,19 @@ public class SinglePageCheckoutFacade {
         formLocation.setSelected(getSelectedAddressId(deliveryAddresses));
 
         if (StandingOrderHelper.isSO3StandingOrder(user)) {
-            if (null != user.getCurrentStandingOrder().getAddressId()) {
-                formLocation.setSelected(user.getCurrentStandingOrder().getAddressId());
-            } else {
-//                user.getCurrentStandingOrder().setAddressId(formLocation.getSelected());
-            	formLocation.setSelected(null);
-            }
+        	FDStandingOrder currentSO = user.getCurrentStandingOrder();
+    		formLocation.setSelected(null);	
+    		//checks valid corporate address
+        	List<LocationData> validCoAddress = formLocation.getAddresses();
+        	for( LocationData address: validCoAddress){
+        		if(address.getId().equals(currentSO.getAddressId())){
+        			formLocation.setSelected(currentSO.getAddressId());
+        			break;
+        		}
+        	}if(null == formLocation.getSelected() && null != currentSO.getAddressId()){												//APPBUG-5367
+        		LOGGER.debug("addressID: "+currentSO.getAddressId()+" is no more in system, updating now at template level");
+        		StandingOrderHelper.evaluteSoAddressId(session, user, currentSO.getAddressId());
+        	}
         }
         formLocation.setOnOpenCoremetrics(CoremetricsService.defaultService().getCoremetricsData("address"));
         return formLocation;
@@ -619,32 +626,77 @@ public class SinglePageCheckoutFacade {
 
         if (formPaymentData.isCoveredByGiftCard() && !StandingOrderHelper.isSO3StandingOrder(user)) {
             paymentService.setNoPaymentMethod(user, request);
-        } else {        	            
-            List<PaymentData> userPaymentMethods = paymentService.loadUserPaymentMethods(user, request, paymentMethods);
-            formPaymentData.setPayments(userPaymentMethods);
-            boolean readyToBreak = false;
-            for (PaymentData data : userPaymentMethods) {
-                if (data.isSelected()) {
-                    formPaymentData.setSelected(data.getId());
-                    if (readyToBreak) {
-                    	break;
-                    } else {
-                    	readyToBreak = true;
-                    }
-                }
-                if (data.isDefault()) {
-                    formPaymentData.setDefault(data.isDefault());
-                    if (readyToBreak) {
-                    	break;
-                    } else {
-                    	readyToBreak = true;
-                    }
-                }
-            }
+        } else {
+        	 List<PaymentData> userPaymentMethods = paymentService.loadUserPaymentMethods(user, request, paymentMethods);
+        	 
+        	//APPDEV-6765
+             FDCartModel mCart = user.getShoppingCart();
+             if (mCart instanceof FDModifyCartModel && !StandingOrderHelper.isSO3StandingOrder(user)) {
+                 FDModifyCartModel modifyCart = (FDModifyCartModel) mCart;
+                 String orderId = modifyCart.getOriginalOrder().getErpSalesId();
+                 try {
+//                      FDOrderI order = FDCustomerManager.getOrder(orderId);
+                     if(null !=modifyCart.getPaymentMethod() && null !=modifyCart.getPaymentMethod().getPK()){
+                    	 String cartPaymentMethodPK= modifyCart.getPaymentMethod().getPK().getId();
+                          for(PaymentData PM : userPaymentMethods){
+                              if(PM.getId().equalsIgnoreCase(cartPaymentMethodPK) ){
+                            	  formPaymentData.setSelected(cartPaymentMethodPK);
+                                  PM.setSelected(true);
+                              }else{
+                                  PM.setSelected(false);
+                              }
+                           }
+                          
+                     }else{
+                         FDOrderI order = FDCustomerManager.getOrder(orderId);
+                         formPaymentData.setSelected(modifyCart.getOriginalOrder().getPaymentMethod().getPK().getId());
+                     }
+                 } catch (FDResourceException e) {
+                     LOGGER.error("Error while retreiving order details order id" + orderId);
+                 }
+             } else {
+				boolean readyToBreak = false;
+				for (PaymentData data : userPaymentMethods) {
+					if (data.isSelected()) {
+						formPaymentData.setSelected(data.getId());
+						if (readyToBreak) {
+							break;
+						} else {
+							readyToBreak = true;
+						}
+					}
+					if (data.isDefault()) {
+						formPaymentData.setDefault(data.isDefault());
+						if (readyToBreak) {
+							break;
+						} else {
+							readyToBreak = true;
+						}
+					}
+				}
+			}
+        	 formPaymentData.setPayments(userPaymentMethods);
             if (StandingOrderHelper.isSO3StandingOrder(user)) {
                 userPaymentMethods = removeEWalletPaymentMethod(userPaymentMethods);
+                
+                FDStandingOrder currentSO = user.getCurrentStandingOrder();
+                formPaymentData.setSelected(null);	
+        		//checks valid payments												//COS17-45
+                List<PaymentData> userPayments = formPaymentData.getPayments();
+            	for( PaymentData payment: userPayments){
+            		if(payment.getId().equals(currentSO.getPaymentMethodId())){
+            			formPaymentData.setSelected(currentSO.getPaymentMethodId());
+            			payment.setSelected(true);
+            		}else{
+            			payment.setSelected(false);
+            		}
+            	}if(null == formPaymentData.getSelected() && null != currentSO.getPaymentMethodId()){
+            		LOGGER.debug("paymentID: "+currentSO.getPaymentMethodId()+" is no more in system, updating now at template level");
+            		StandingOrderHelper.evaluteSOPaymentId(request.getSession(), user, currentSO.getPaymentMethodId());
+            	}
+            	
                 formPaymentData.setPayments(userPaymentMethods);
-                user.getCurrentStandingOrder().setPaymentMethodId(formPaymentData.getSelected());
+               // user.getCurrentStandingOrder().setPaymentMethodId(formPaymentData.getSelected());
                 formPaymentData.setMpEwalletStatus(false); // Masterpass wallet will be disable for Standing Orders
                 formPaymentData.setPpEwalletStatus(false); // PayPal wallet will be disable for Standing Orders
 

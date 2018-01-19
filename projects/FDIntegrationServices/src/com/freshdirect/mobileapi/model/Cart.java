@@ -776,7 +776,8 @@ public class Cart {
 					productLineItem.setSusbtituteProductDefaultPrice(null != cartLine.getInvoiceLine().getSubstituteProductDefaultPrice() ? cartLine.getInvoiceLine().getSubstituteProductDefaultPrice() : "");
 					productLineItem.setSubstituteProduct(null != cartLine.getInvoiceLine().getSubstituteProductId() ? cartLine.getInvoiceLine().getSubstituteProductId() : "");	
 					if(cartLine != null && cartLine.getInvoiceLine() != null && cartLine.getInvoiceLine().getSubstitutedSkuCode()!=null){
-					productLineItem.setSubstituteSkuQuantity(cartLine.getInvoiceLine().getWeight());
+					productLineItem.setSubstituteSkuQuantity(cartLine.getInvoiceLine().getQuantity());
+					productLineItem.setSubstituteProductImageURL(null != productConfiguration.getProduct().getProductData().getProductImage()?productConfiguration.getProduct().getProductData().getProductImage() : "");
 					}
 				}
                 
@@ -792,7 +793,11 @@ public class Cart {
                         .setEarliestAvailability((displayShortTermUnavailability && earliestAvailability != null && !(cartLine instanceof FDModifyCartLineI)) ? earliestAvailability
                                 : null);
                 productLineItem.setUnitPrice(cartLine.getUnitPrice());
+                if (cartLine != null && cartLine.getInvoiceLine() != null) {
+                productLineItem.setPrice(cartLine.getInvoiceLine().getPrice());
+                } else {
                 productLineItem.setPrice(cartLine.getPrice());
+                }
                 productLineItem.setHasDepositValue(cartLine.hasDepositValue());
                 productLineItem.setHasScaledPricing(cartLine.hasScaledPricing());
                 productLineItem.setEstimatedPrice(cartLine.isEstimatedPrice());

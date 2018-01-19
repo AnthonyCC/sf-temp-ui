@@ -68,11 +68,7 @@
 }
 
 #quickshop .oas-cnt {
-	width: 774px;
-	height: 95px;
-	float: left;
-	/*text-align: right;*/
-	margin-top: 12px;
+	clear:both;
 }
 
 /* general layout */

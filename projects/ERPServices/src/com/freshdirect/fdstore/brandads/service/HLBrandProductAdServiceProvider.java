@@ -177,7 +177,7 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 	
 	public HLBrandProductAdResponse getPdpAdProduct(HLBrandProductAdRequest hLBrandProductAdRequest)
 			throws BrandProductAdServiceException {
-		HLBrandProductAdResponse pageBeaconResponse =null;
+		HLBrandProductAdResponse updatePageBeaconResponse =null;
 		LOGGER.info("while making a call to Hooklogic(PdpPage) "+hLBrandProductAdRequest.getProductId());
 		StringBuilder urlToCallStr=new StringBuilder(hlAdConfigProvider.getBrandProductAdProviderPdpURL());
 		TreeMap<String,String> urlParameters = new TreeMap<String, String>();
@@ -194,9 +194,9 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 		StringBuilder urlToCall = getBaseUrl(urlToCallStr, urlParameters);
 		String jsonResponse = sendGetRequest(urlToCall);
 		HLBrandProductAdResponse response = parseResponse(jsonResponse, HLBrandProductAdResponse.class);
-		pageBeaconResponse=getPDPPageBeacon(pageBeaconResponse,hLBrandProductAdRequest);
+		updatePageBeaconResponse=getPDPPageBeacon(updatePageBeaconResponse,hLBrandProductAdRequest);
 		if(response!=null)
-			response.setPageBeacon((pageBeaconResponse!=null?pageBeaconResponse.getPageBeacon():null));
+			response.setUpdatePdpPageBeacon((updatePageBeaconResponse!=null?updatePageBeaconResponse.getPageBeacon():null));
 		return response;
 	}
 
@@ -211,6 +211,7 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 		urlParameters.put(HOOKLOGIC_PRODUCTID, hLBrandProductAdRequest.getProductId());
 		urlParameters.put(HOOKLOGIC_PUSERID, hLBrandProductAdRequest.getUserId());
 		urlParameters.put(HOOKLOGIC_HLPT, hlAdConfigProvider.getBrandProductAdProviderPdpHlpt());
+		urlParameters.put(HOOKLOGIC_BEACON, hlAdConfigProvider.getBrandProductsBeacon());
 		StringBuilder urlToCall = getBaseUrl(urlToCallStr, urlParameters);
 		String jsonResponse = sendGetRequest(urlToCall);
 		HLBrandProductAdResponse pageBeaconResponse = parseResponse(jsonResponse, HLBrandProductAdResponse.class);

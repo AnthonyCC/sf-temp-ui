@@ -16,6 +16,11 @@ abstract public class ErpCreditModel extends ModelSupport {
 	private String department;
 	private ErpAffiliate affiliate;
 
+	//Introduced Only For Storefront 2.0 Implementation
+	public ErpCreditModel(ErpAffiliate affiliate) {
+		this("", 0.0, affiliate);
+	}
+
 	public ErpCreditModel() {
 		this("", 0.0, ErpAffiliate.getEnum(ErpAffiliate.CODE_FD));
 	}

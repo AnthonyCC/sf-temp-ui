@@ -767,6 +767,13 @@ public class ProductImageTag extends BodyTagSupport {
             iAlt = "BACK";
             iStyle = burstImageStyle;
 
+        } else if (pl.isDisplayGoingOutOfStock()) {
+            iSrc = ((this.prefix != null) ? this.prefix : "") +
+                "/media_stat/images/bursts/brst_" + iSizeToken + "_goos" +
+                (supportsPNG ? ".png" : ".gif");
+            iAlt = "GOING OUT OF STOCK";
+            iStyle = burstImageStyle;
+
         }
 
         //override values (may or may not be used, depending on the burst that ends up being generated)

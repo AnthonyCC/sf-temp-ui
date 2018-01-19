@@ -1,11 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.fdstore;
 
 import java.rmi.RemoteException;
@@ -29,6 +21,7 @@ import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.EnumAlcoholicContent;
 import com.freshdirect.erp.SkuAvailabilityHistory;
+import com.freshdirect.erp.model.ErpMaterialSalesAreaModel;
 import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.fdstore.ejb.FDFactoryHome;
 import com.freshdirect.fdstore.ejb.FDFactorySB;
@@ -37,21 +30,10 @@ import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.payment.service.IECommerceService;
 /**
  * Singleton class for accessing the FD-layer factory session bean.
- *
- * @version $Revision$
- * @author $Author$
  */
 public class FDFactory {
 
 	private static FDFactoryHome factoryHome = null;
-
-	/**@link dependency
-	 * @label creates*/
-	/*#FDProductInfo lnkFDProductInfo;*/
-
-	/**@link dependency
-	 * @label creates*/
-	/*#FDProduct lnkFDProduct;*/
 
 	/**
 	 * Get current product information object for sku.
@@ -569,6 +551,22 @@ public class FDFactory {
 		}
 
 	}
+
+    public static Collection<ErpMaterialSalesAreaModel> getGoingOutOfStockSalesAreas() throws FDResourceException {
+        if (factoryHome == null) {
+            lookupFactoryHome();
+        }
+        try {
+            FDFactorySB sb = factoryHome.create();
+            return sb.getGoingOutOfStockSalesAreas();
+        } catch (CreateException ce) {
+            factoryHome = null;
+            throw new FDResourceException(ce, "Error creating session bean");
+        } catch (RemoteException re) {
+            factoryHome = null;
+            throw new FDResourceException(re, "Error talking to session bean");
+        }
+    }
 
 	/**
 	 * Utility method: nothing is ever discontinued, out of season, or indefinitely unavailable in preview mode

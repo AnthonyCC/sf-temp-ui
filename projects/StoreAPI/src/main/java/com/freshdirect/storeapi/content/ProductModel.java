@@ -871,6 +871,8 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 
 	public double getBackInStockAge();
 
+    public boolean isGoingOutOfStock();
+
 	public double getAge();
 
 	/**

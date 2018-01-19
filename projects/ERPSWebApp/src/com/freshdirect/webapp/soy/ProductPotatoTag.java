@@ -78,7 +78,7 @@ public class ProductPotatoTag extends SimpleTagSupport {
 	
     @Override
 	public void doTag() throws JspException {
-		LOGGER.info( "Creating data potato: " + name );
+		LOGGER.debug( "Creating data potato: " + name );
 
 		// Get the user
 		final FDUserI user = (FDUserI) ((PageContext) getJspContext()).getSession().getAttribute(SessionName.USER);
@@ -111,23 +111,23 @@ public class ProductPotatoTag extends SimpleTagSupport {
 
         if (incomplete) {
             // minimal potato population
-            LOGGER.info("Product " + productId + " is considered 'incomplete', produce light potatos");
+            LOGGER.debug("Product " + productId + " is considered 'incomplete', produce light potatos");
             final Map<String, ?> dataMap = DataPotatoField.digProductLight(user, product);
             ((PageContext) getJspContext()).setAttribute(name, dataMap);
 
             if (extraName != null) {
-                LOGGER.info("Creating light extra potato: " + extraName);
+                LOGGER.debug("Creating light extra potato: " + extraName);
                 final Map<String, ?> extraMap = DataPotatoField.digProductLightExtraData(user, product);
                 ((PageContext) getJspContext()).setAttribute(extraName, extraMap);
             }
         } else {
             // normal population
-            LOGGER.info("Product " + productId + " is produced potatos.");
+            LOGGER.debug("Product " + productId + " is produced potatos.");
             final Map<String, ?> dataMap = DataPotatoField.digProduct(user, product, variantId);
             ((PageContext) getJspContext()).setAttribute(name, dataMap);
 
             if (extraName != null) {
-                LOGGER.info("Creating extra potato: " + extraName);
+                LOGGER.debug("Creating extra potato: " + extraName);
                 final Map<String, ?> extraMap = DataPotatoField.digProductExtraData(user, product, ((PageContext) getJspContext()).getServletContext(), grpId, version);
                 ((PageContext) getJspContext()).setAttribute(extraName, extraMap);
             }

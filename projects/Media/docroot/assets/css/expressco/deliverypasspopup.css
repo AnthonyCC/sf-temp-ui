@@ -3,7 +3,7 @@
   display: inline-block;
   vertical-align: middle;
   text-align: left;
-  overflow: auto;
+/*   overflow: auto; */
   width:780px;
   max-width:780px;
   box-sizing:border-box;

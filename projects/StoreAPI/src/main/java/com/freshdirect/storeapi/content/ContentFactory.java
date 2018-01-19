@@ -26,8 +26,10 @@ import com.freshdirect.cms.cache.CmsCaches;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.cms.core.domain.ContentType;
+import com.freshdirect.common.context.FulfillmentContext;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.ZoneInfo;
+import com.freshdirect.erp.model.ErpMaterialSalesAreaModel;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
@@ -49,8 +51,9 @@ public class ContentFactory {
     private static final long NEW_AND_BACK_REFRESH_PERIOD = 1000 * 60 * 15; // 15 minutes
     private static final long DAY_IN_MILLISECONDS = 1000 * 3600 * 24;
 
-    private long newProductsLastUpdated = Long.MIN_VALUE;
-    private long backInStockProductsLastUpdated = Long.MIN_VALUE;
+    private long newProductsLastUpdated;
+    private long backInStockProductsLastUpdated;
+    private long goingOutOfStockProductsLastUpdated;
 
     private StoreModel store;
 
@@ -59,6 +62,7 @@ public class ContentFactory {
 
     private final Map<ContentKey, Map<String, Date>> newProductCache;
     private final Map<ContentKey, Map<String, Date>> backInStockProductCache;
+    private final Map<ContentKey, Collection<String>> goingOutOfStockProductCache;
 
     private ThreadLocal<UserContext> currentUserContext;
     private ThreadLocal<Boolean> eligibleForDDPP;
@@ -156,6 +160,7 @@ public class ContentFactory {
         nodesByKeyCache = CmsServiceLocator.cacheManager().getCache(NODES_BY_KEY_CACHE_NAME);
         newProductCache = new ConcurrentHashMap<ContentKey, Map<String, Date>>();
         backInStockProductCache = new ConcurrentHashMap<ContentKey, Map<String, Date>>();
+        goingOutOfStockProductCache = new HashMap<ContentKey, Collection<String>>();
 
         currentUserContext = new ThreadLocal<UserContext>() {
 
@@ -467,7 +472,7 @@ public class ContentFactory {
                             ProductModel p = filterProduct(sku.getContentName());
                             // Origin : [APPDEV-2857] Blocking Alcohol for customers outside of Alcohol Delivery Area
                             if (p != null && ContentUtil.isAvailableByContext(p)) {
-                                Map<String, Date> productNewness = newCache.get(p);
+                                Map<String, Date> productNewness = newCache.get(p.getContentKey());
                                 for (Map.Entry<String, Date> valueEntry : entry.getValue().entrySet()) {
 
                                     Date prev = null;
@@ -598,7 +603,7 @@ public class ContentFactory {
                             ProductModel p = filterProduct(sku.getContentName());
                             // Origin : [APPDEV-2857] Blocking Alcohol for customers outside of Alcohol Delivery Area
                             if (p != null && ContentUtil.isAvailableByContext(p)) {
-                                Map<String, Date> productNewness = newCache.get(p);
+                                Map<String, Date> productNewness = newCache.get(p.getContentKey());
                                 for (Map.Entry<String, Date> valueEntry : entry.getValue().entrySet()) {
 
                                     Date prev = null;
@@ -689,6 +694,49 @@ public class ContentFactory {
         }
     }
 
+    public boolean isGoingOutOfStockProduct(ContentKey key) {
+        if (System.currentTimeMillis() > goingOutOfStockProductsLastUpdated + NEW_AND_BACK_REFRESH_PERIOD) {
+            refreshGoingOutOfStockCache();
+        }
+        FulfillmentContext fulFillmentContext = getCurrentUserContext().getFulfillmentContext();
+        return goingOutOfStockProductCache.containsKey(key)
+                && goingOutOfStockProductCache.get(key).contains(fulFillmentContext.getSalesOrg() + fulFillmentContext.getDistChannel());
+    }
+
+    private void refreshGoingOutOfStockCache() {
+        Map<ContentKey, Collection<String>> newCache = new HashMap<ContentKey, Collection<String>>();
+        try {
+            Collection<ErpMaterialSalesAreaModel> goingOutOfStockSalesAreas = FDCachedFactory.getGoingOutOfStockSalesAreas();
+            for (ErpMaterialSalesAreaModel salesArea : goingOutOfStockSalesAreas) {
+                ContentKey skuKey = ContentKeyFactory.get(ContentType.Sku, salesArea.getSkuCode());
+                SkuModel sku = (SkuModel) getContentNodeByKey(skuKey);
+                try {
+                    if (sku != null && sku.getProductModel() != null && sku.getProductInfo() != null && !sku.isUnavailable()) {
+                        ProductModel p = filterProduct(sku.getContentName());
+                        if (p != null && ContentUtil.isAvailableByContext(p)) {
+                            Collection<String> sales = newCache.get(p.getContentKey());
+                            if (sales == null) {
+                                sales = new ArrayList<String>();
+                                newCache.put(p.getContentKey(), sales);
+                            }
+                            sales.add(salesArea.getSalesOrg() + salesArea.getDistChannel());
+                        }
+                    }
+                } catch (Exception e) {
+                    LOGGER.warn("skipping sku " + sku.getContentName() + " due to data discrepancy", e);
+                }
+            }
+        } catch (FDResourceException e) {
+            LOGGER.error("failed to update back-in-stock products cache; retrying a minute later", e);
+        }
+        LOGGER.info("reloaded going out of stock products: " + newCache.size());
+        synchronized (goingOutOfStockProductCache) {
+            goingOutOfStockProductCache.clear();
+            goingOutOfStockProductCache.putAll(newCache);
+            goingOutOfStockProductsLastUpdated = System.currentTimeMillis();
+        }
+    }
+
     /**
      * Forces to refresh the new and back-in-stock products cache
      */
@@ -697,6 +745,7 @@ public class ContentFactory {
         getNewProducts();
         backInStockProductsLastUpdated = Integer.MIN_VALUE;
         getBackInStockProducts();
+        refreshGoingOutOfStockCache();
     }
 
     private void buildWineIndex() {
@@ -975,7 +1024,7 @@ public class ContentFactory {
 
     public ContentNodeModel getContentNodeFromCache(ContentKey key) {
         ContentNodeModel model = null;
-        if (isAllowToUseContentCache(key.id)) {
+        if (isAllowToUseContentCache()) {
             ValueWrapper valueWrapper = nodesByKeyCache.get(key);
             if (valueWrapper != null) {
                 model = (ContentNodeModel) valueWrapper.get();
@@ -986,7 +1035,7 @@ public class ContentFactory {
 
     public ContentNodeModel getContentNodeFromCache(String nodeId) {
         ContentNodeModel model = null;
-        if (isAllowToUseContentCache(nodeId)) {
+        if (isAllowToUseContentCache()) {
             ValueWrapper valueWrapper = nodesByIdCache.get(nodeId);
             if (valueWrapper != null) {
                 model = (ContentNodeModel) valueWrapper.get();
@@ -1025,14 +1074,6 @@ public class ContentFactory {
 
     public boolean isAllowToUseContentCache() {
         return CmsServiceLocator.draftContextHolder().getDraftContext().isMainDraft();
-    }
-
-    public boolean isAllowToUseContentCache(String nodeId) {
-        boolean isAllowToUseContentCache = isAllowToUseContentCache();
-        if (!isAllowToUseContentCache){
-            isAllowToUseContentCache = !CmsServiceLocator.draftService().isContentKeyChanged(CmsServiceLocator.draftContextHolder().getDraftContext().getDraftId(), nodeId);
-        }
-        return isAllowToUseContentCache;
     }
 
     public void evictNodesByCaches() {

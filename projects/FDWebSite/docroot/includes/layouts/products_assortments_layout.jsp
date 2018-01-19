@@ -25,6 +25,7 @@
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='logic' prefix='logic' %>
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%
 
 	// Query string
@@ -47,7 +48,7 @@
 	if (FDStoreProperties.isCclAjaxDebugClient()) {
 		// debug JS libs
 		%>
-		<script type="text/javascript" src="/assets/javascript/rounded_corners.inc.js"></script>
+		<jwr:script src="/roundedcorners.js" useRandomParam="false" />
 		<%
 		} else {
 			// production JS libs
@@ -101,6 +102,7 @@
 		hideBursts.add(EnumBurstType.YOUR_FAVE);
 		hideBursts.add(EnumBurstType.NEW);
 		hideBursts.add(EnumBurstType.BACK_IN_STOCK);
+		hideBursts.add(EnumBurstType.GOING_OUT_OF_STOCK);
 
 	String checkHtml = "<img src=\"/media/images/buttons/checkmark_green_15x10.png\" alt=\"\" />"; //escape single quotes in here
 	List<ProductModel> globalUniqueProducts = new ArrayList<ProductModel>();

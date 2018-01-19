@@ -39,6 +39,7 @@
 
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 
 <% //expanded page dimensions
 final int W_YMAL_BOX_TOTAL = 590;
@@ -114,7 +115,7 @@ final int W_YMAL_BOX_INNER = 540;
 	}
 
 %>
-<fd:javascript src="/assets/javascript/rounded_corners.inc.js"/>
+<jwr:script src="/roundedcorners.js" useRandomParam="false" />
 <%-- PRICING PART --%>
 <fd:javascript src="/assets/javascript/pricing.js"/>
 <fd:TxProductPricingSupport formName="<%= TX_FORM_NAME %>" namespace="<%= TX_JS_NAMESPACE %>" customer="<%= fd_user %>" impressions="<%= impressions %>"/>
@@ -278,22 +279,16 @@ final int W_YMAL_BOX_INNER = 540;
 						
 						<tr>
 							<td class="ymal_addtocart" colspan="<%= rsize %>" class="text11bold">
-								<table width="100%">
-									<tr>
-										<td width="33%"></td>
-										<td align="center" width="34%">
+								        <div>
 											<input type="hidden" name="itemCount" value="<%= nConfProd %>">
-											<input type="image" id="addMultipleToCart" name="addMultipleToCart" src="/media_stat/images/template/quickshop/qs_add_selected_to_cart.gif" width="145" height="17" border="0" alt="ADD SELECTED TO CART">
+											<button class="cssbutton orange" type="input" id="addMultipleToCart" name="addMultipleToCart">ADD SELECTED TO CART</button></div>
 											<%--<fd:IsAlcoholic>
 												<fd:PopupHandler id="<%= TX_FORM_NAME %>" event="onclick" elementId="addMultipleToCart" quantityCheck="true" event="onclick"/>
 											</fd:IsAlcoholic>--%>
-										</td>
-										<td align="right" width="33%">
-											Total&nbsp;Price:&nbsp;&nbsp;<img src="/media_stat/images/layout/clear.gif" alt="" width="4" height="1"><input type="text" aria-label="total price" style="width:60px" name="total" value="" size="6" class="text11bold" onChange="" onFocus="blur()">
+										<div style="padding-top:5px;">
+									<span class="text14">Total Price:</span>&nbsp;&nbsp;<img src="/media_stat/images/layout/clear.gif" alt="" width="4" height="1"><input type="text" aria-label="total price" style="width:60px; height: 15px;" name="total" value="" size="6" class="text14bold" onChange="" onFocus="blur()">
 											<script type="text/javascript">	<%= TX_JS_NAMESPACE %>.updateTotal();</script>
-										</td>
-									</tr>
-								</table>
+									</div>
 							</td>
 						</tr>
 <%		} %>

@@ -2,6 +2,7 @@
 
 package com.freshdirect.customer;
 
+import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.framework.core.*;
 
 /**
@@ -17,6 +18,11 @@ public class ErpAppliedCreditModel extends ErpCreditModel {
     
     public ErpAppliedCreditModel () {
     	super();
+    }
+    
+    //Introduced For Storefront 2.0 Implementation
+    public ErpAppliedCreditModel (ErpAffiliate affiliate) {
+    	super(affiliate);
     }
     
     public ErpAppliedCreditModel (ErpAppliedCreditModel credit) {

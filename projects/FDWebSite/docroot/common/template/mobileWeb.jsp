@@ -60,9 +60,7 @@
 		}
 	%>
 
-	<fd:javascript src="/assets/javascript/locationbar.js" />
-	<fd:javascript src="/assets/javascript/locationbar_fdx.js" />
-
+    <jwr:script src="/locabarcomp.js" useRandomParam="false" />
 
     <jsp:include page="/common/template/includes/ad_server.jsp" flush="false" />
 	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
@@ -73,7 +71,7 @@
     <jwr:style src="/grid.css" media="all" />
     <jwr:style src="/oldglobal.css" media="all" />
     <jwr:style src="/global.css" media="all" />
-	<fd:css href="/assets/css/common/locationbar_fdx.css" />
+	<jwr:style src="/locabarfdx.css" media="all" />
 	<% if(request.getRequestURI().indexOf("/your_account/")>-1) { %>
 			<jwr:style src="/assets/css/common/styles.css" media="all" />
 			<jwr:style src="/assets/css/alerts_examples.css" media="all" />

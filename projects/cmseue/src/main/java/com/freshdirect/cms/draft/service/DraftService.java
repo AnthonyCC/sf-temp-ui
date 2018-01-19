@@ -9,7 +9,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -22,11 +21,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
-import com.freshdirect.cms.core.domain.Relationship;
-import com.freshdirect.cms.core.service.ContentTypeInfoService;
 import com.freshdirect.cms.draft.domain.Draft;
 import com.freshdirect.cms.draft.domain.DraftChange;
 import com.freshdirect.cms.draft.domain.DraftContext;
@@ -70,12 +66,6 @@ public class DraftService {
     @Autowired
     private CacheManager cacheManager;
 
-    @Autowired
-    private ContentTypeInfoService contentTypeInfoService;
-
-    @Autowired
-    private DraftChangeToContentNodeApplicator applicator;
-
     @Value("${cms.adminapp.path}")
     private String cmsAdminAppUri;
 
@@ -114,31 +104,6 @@ public class DraftService {
         RestTemplate updateDraftStatusTemplate = new RestTemplate();
         updateDraftStatusTemplate.postForLocation(uri, status, draftId.toString());
         invalidateDraftChangesCache(draftId);
-    }
-
-    public Set<ContentKey> getAllChangedContentKeys(Long draftId) {
-        final Set<ContentKey> keySet = new HashSet<ContentKey>();
-        for (final DraftChange change : getDraftChanges(draftId)) {
-            keySet.add(ContentKeyFactory.get(change.getContentKey()));
-        }
-        return keySet;
-    }
-
-    public Set<ContentKey> collectChildKeys(Long draftId) {
-        final Set<ContentKey> keySet = new HashSet<ContentKey>();
-        for (final DraftChange change : getDraftChanges(draftId)) {
-            ContentKey draftContentKey = ContentKeyFactory.get(change.getContentKey());
-
-            Attribute attr = contentTypeInfoService.findAttributeByName(draftContentKey.type, change.getAttributeName()).orNull();
-
-            if (attr instanceof Relationship) {
-                final Relationship relationship = (Relationship) attr;
-                List<ContentKey> clientKeys = applicator.getContentKeysFromRelationshipValue( relationship, change.getValue());
-
-                keySet.addAll(clientKeys);
-            }
-        }
-        return keySet;
     }
 
     public List<DraftChange> getFilteredDraftChanges(Long draftId, Date changedSince, final String userName, Set<ContentKey> contentKeys) {
@@ -183,28 +148,6 @@ public class DraftService {
             cacheManager.getCache(CMS_DRAFT_CHANGES_CACHE_NAME).put(new Element(draftId, draftChanges));
         }
         return Collections.unmodifiableList(draftChanges);
-    }
-
-    public boolean isContentKeyChanged(Long draftId, String nodeId) {
-        boolean isKeyChangedOnDraft = false;
-        for (final DraftChange change : getDraftChanges(draftId)) {
-            if (nodeId.equals(ContentKeyFactory.get(change.getContentKey()).id)) {
-                isKeyChangedOnDraft = true;
-                break;
-            }
-        }
-        return isKeyChangedOnDraft;
-    }
-
-    public boolean isContentKeyChanged(Long draftId, ContentKey contentKey) {
-        boolean isKeyChangedOnDraft = false;
-        for (final DraftChange change : getDraftChanges(draftId)) {
-            if (contentKey.equals(ContentKeyFactory.get(change.getContentKey()))) {
-                isKeyChangedOnDraft = true;
-                break;
-            }
-        }
-        return isKeyChangedOnDraft;
     }
 
     public void saveDraftChange(final Collection<DraftChange> draftChanges) {

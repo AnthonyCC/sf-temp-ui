@@ -44,6 +44,7 @@ var FreshDirect = FreshDirect || {};
     var times = {},
         zonePromoAmount = false,
         selectedDay = _selectedDay,
+        selectedTimeslot,
         orderArrayLevel = 0,
         previousDayId = null,
         days;
@@ -61,20 +62,35 @@ var FreshDirect = FreshDirect || {};
 
       if (data.selectedTimeslotId === e.id) {
         timeslot.selected = true;
-        times[dayId].selected = !selectedDay ? true : false;
-        selectedDay = selectedDay || dayId;
+        if (!timeslotSelector.isReserved) {
+          times[dayId].selected = !selectedDay ? true : false;
+          selectedDay = selectedDay || dayId;
+        }
       }
 
       if (data.reservedTimeslotId === e.id) {
         timeslot.reserved = true;
+        if (timeslotSelector.isReserved) {
+          times[dayId].selected = !selectedDay ? true : false;
+          selectedDay = selectedDay || dayId;
+        }
       }
 
       if (data.zonePromoAmount) {
         zonePromoAmount = true;
       }
 
-      if (times[dayId] && +dayId === +selectedDay) {
+      if (!timeslotSelector.isReserved && times[dayId] && +dayId === +selectedDay) {
         times[dayId].selected = true;
+        selectedTimeslot= e.id;
+      }
+
+      if (timeslotSelector.isReserved && times[dayId] && +dayId === +selectedDay) {
+        times[dayId].selected = true;
+        selectedTimeslot= e.id;
+        if (e.reserved) {
+          times[dayId].showReserved = true;
+        }
       }
 
       if (times[dayId]) {
@@ -105,7 +121,7 @@ var FreshDirect = FreshDirect || {};
     });
     days = Object.keys(times).sort();
     selectedDay = selectedDay ? selectedDay : days[0];
-    return {days: days, times: times, selectedDay: selectedDay, zonePromoAmount: zonePromoAmount};
+    return {days: days, times: times, selectedDay: selectedDay, selectedTimeslot: selectedTimeslot, zonePromoAmount: zonePromoAmount};
   }
 
   var timeslotSelector = Object.create(WIDGET,{
@@ -127,6 +143,9 @@ var FreshDirect = FreshDirect || {};
         var $ph = $(this.placeholder),
             data = data.result || this.timeSlots;
 
+        if($ph.hasClass('reserve-timeslot')) {
+          timeslotSelector.isReserved = true;
+        }
 
         if ($ph.length) {
           $ph.html(this.template(timeslotsFormating(data, selectedDay)));

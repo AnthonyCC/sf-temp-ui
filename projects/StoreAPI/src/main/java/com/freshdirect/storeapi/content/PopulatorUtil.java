@@ -18,6 +18,7 @@ public class PopulatorUtil {
 	private static final Logger LOGGER = Logger.getLogger(PopulatorUtil.class.getSimpleName());
 
     private static final String NODE_IS_NOT_FOUND_IN_CMS_ERROR_MESSAGE = "Node is not found in Content Management System";
+    private static final String NODE_IS_ARCHIVED_ERROR_MESSAGE = "Node is archived in Content Management System";
     private static final String PRODUCT_IS_DISCONTINUED_IN_CMS_ERROR_MESSAGE = "Product is discontinued in Content Management System";
 
 	public static final ProductModel getProduct( String productId, String categoryId ) {
@@ -147,7 +148,7 @@ public class PopulatorUtil {
         if (node == null) {
             errorMessage = getNodeNotFoundErrorMessage(NODE_IS_NOT_FOUND_IN_CMS_ERROR_MESSAGE, ids);
         } else if (PopulatorUtil.isNodeArchived(node)) {
-            errorMessage = getNodeNotFoundErrorMessage(NODE_IS_NOT_FOUND_IN_CMS_ERROR_MESSAGE, ids);
+            errorMessage = getNodeNotFoundErrorMessage(NODE_IS_ARCHIVED_ERROR_MESSAGE, ids);
         }
 
         if (errorMessage != null) {

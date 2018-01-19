@@ -54,11 +54,8 @@ if (mobWeb) {
       }());
     </script>
  <!-- <script type="text/javascript" src="https://js.braintreegateway.com/v2/braintree.js"></script> -->
- 	<script type="text/javascript" src="https://js.braintreegateway.com/js/braintree-2.21.0.min.js"></script>
-	<script src="<%= FDStoreProperties.getMasterpassLightBoxURL() %>" type="text/javascript"></script>
-
-
-<script src="<%= FDStoreProperties.getMasterpassLightBoxURL() %>" type="text/javascript"></script>
+ 	<script async type="text/javascript" src="https://js.braintreegateway.com/js/braintree-2.21.0.min.js"></script>
+	<script async src="<%= FDStoreProperties.getMasterpassLightBoxURL() %>" type="text/javascript"></script>
 
  	 <%if(fdTcAgree!=null&&!fdTcAgree.booleanValue()){%>
 		<script type="text/javascript">
@@ -145,11 +142,10 @@ if (mobWeb) {
           <% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user)) { %>
             <div id="cartCarousels">
      			<script>
-		          	$jq.ajax('/carousel/carousel.jsp?type=cart').then(function(page) {
+		          	$jq.ajax('/carousel/carousel.jsp?type=checkout').then(function(page) {
 		          		$jq('#expresscheckout #cartCarousels').html(page);
 		          	});
 		        </script>
-              <soy:render template="common.checkoutTabbedCarousel" data="${singlePageCheckoutPotato.carouselData}" />
             </div>
           <% } %>
         <% } %>
@@ -186,11 +182,11 @@ if (mobWeb) {
 			}
 	  	</style>
   	<% } %>
-    <fd:css href="/assets/css/timeslots.css" media="all" />
+    <jwr:style src="/timeslots.css" media="all" />
   </tmpl:put>
 
   <tmpl:put name="extraJs">
-    <fd:javascript src="/assets/javascript/timeslots.js" />
+    <jwr:script src="/assets/javascript/timeslots.js" useRandomParam="false" />
 
 	<script>
 	var checkout;

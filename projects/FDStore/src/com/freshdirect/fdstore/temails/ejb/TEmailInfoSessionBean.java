@@ -8,6 +8,8 @@ import java.util.Map;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.ejb.FDSessionBeanSupport;
 import com.freshdirect.fdstore.temails.TEmailConstants;
@@ -20,6 +22,7 @@ import com.freshdirect.mail.EnumEmailType;
 import com.freshdirect.mail.EnumTranEmailType;
 import com.freshdirect.mail.ejb.TEmailerGatewayHome;
 import com.freshdirect.mail.ejb.TMailerGatewaySB;
+import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.temails.TEmailRuntimeException;
 
 public class TEmailInfoSessionBean extends FDSessionBeanSupport{
@@ -38,24 +41,44 @@ public class TEmailInfoSessionBean extends FDSessionBeanSupport{
 		try
 		{
 			con=getConnection();
-						
+			EnumEStoreId estoreId = EnumEStoreId.FD;
+			EnumServiceType serviceType ;
+			/* TODO */
+			/*
+			 * The following is questionable and I'd like to eliminate it, its a risky way to get the estore id.
+			 */
+		if ( input.containsKey(TEmailConstants.ESTORE_ID)){
+			estoreId =  ((EnumEStoreId)input.get(TEmailConstants.ESTORE_ID));
+		 }
+		else{
+			 estoreId = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
+
+		}
+		
+		if ( input.containsKey(TEmailConstants.SERVICE_TYPE)){
+			serviceType =  ((EnumServiceType)input.get(TEmailConstants.SERVICE_TYPE));
+		 }
+		else{
+			serviceType =EnumServiceType.NONE ;
+		}
+
+		
+		
+
+			TEmailTemplateInfo tEmailTemplateInfo=TEmailInfoDAO.getTEmailTemplateInfo(con,tranType,
+					input.get(TEmailConstants.EMAIL_TYPE)!=null?EnumEmailType.getEnum((String)input.get(TEmailConstants.EMAIL_TYPE)):EnumEmailType.TEXT,estoreId,serviceType  );	
 			
-			//XMLEmailI xml=FDEmailFactory.getInstance().createConfirmOrderEmail((FDCustomerInfo)input.get(TEmailConstants.CUSTOMER_INP_KEY), (FDOrderI)input.get(TEmailConstants.ORDER_INP_KEY));
-			//System.out.println(xml.getXML());
-			
-			
-			TEmailTemplateInfo info=TEmailInfoDAO.getTEmailTemplateInfo(con,tranType,input.get(TEmailConstants.EMAIL_TYPE)!=null?EnumEmailType.getEnum((String)input.get(TEmailConstants.EMAIL_TYPE)):EnumEmailType.TEXT);			
-			if(info==null){
+			if(tEmailTemplateInfo==null){
 				isTemplateExist=false;	
-				throw new TEmailRuntimeException("No active templateId exist for tranType :"+tranType.getName());
+				LOGGER.error(String.format("CAnnot send email: No active templateId exist for TranType : %s, EstoreId:  %s, ServiceType:  %s ",  tranType.getName() ,estoreId.name(),serviceType.getName() ) );
+				throw new TEmailRuntimeException(String.format("No active templateId exist for TranType : %s, EstoreId:  %s, ServiceType:  %s ",  tranType.getName() ,estoreId.name(),serviceType.getName()  ));
 			} else {
-				LOGGER.debug("------------------------------------info:" + info.toString());
-				System.out.println("---------------------------info" + info.toString());
+				LOGGER.debug("------------------------------------info:" + tEmailTemplateInfo.toString());
+			//	System.out.println(this.getClass().getSimpleName() + " TEmailInfoSessionBean.sendmail(62) ---------------------------info" + tEmailTemplateInfo.toString());
 			}
 								
-			TEmailI mail=TEmailContentFactory.getInstance().createTransactionEmailModel(info, input);
+			TEmailI mail=TEmailContentFactory.getInstance().createTransactionEmailModel(tEmailTemplateInfo, input);
 									
-			System.out.println("TEmailI :"+mail.getEmailContent());
 			
 			TEmailInfoDAO.storeTransactionEmailInfo(con, (TransEmailInfoModel)mail);			
 			
@@ -85,13 +108,16 @@ public class TEmailInfoSessionBean extends FDSessionBeanSupport{
 	
 	
 	
-	public void sendFailedTransactions(int timeout){
+	public int sendFailedTransactions(int timeout){
 		Connection con=null;
+		int count =0;
 		try
 		{
 			con=getConnection();
 			List<TEmailI> failedTranList=TEmailInfoDAO.getFailedTransactions(con);
-			long startTime = System.currentTimeMillis();			
+			System.out.println(this.getClass().getName() + "&&&&&&&&&&&&&&&&&&&&&    retrieved this many failed trans: "+ failedTranList.size());
+			long startTime = System.currentTimeMillis();
+			count = failedTranList.size();
 			TEmailerGatewayHome home=getTMailerGatewayHome();
 			TMailerGatewaySB remote= home.create();
 			for(TEmailI mail: failedTranList ){			
@@ -118,7 +144,8 @@ public class TEmailInfoSessionBean extends FDSessionBeanSupport{
 		}
 		finally{
 			close(con);
-		}							
+		}	
+		return count;
 	}
 	
 	

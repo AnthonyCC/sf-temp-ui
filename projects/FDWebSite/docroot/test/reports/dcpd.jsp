@@ -23,9 +23,9 @@ if (prodsOnlyView) {
 
 
 /// List contentKeys = new ArrayList();
-List deptKeyz = Collections.EMPTY_LIST;
-List catKeyz = Collections.EMPTY_LIST;
-List recipeKeyz = Collections.EMPTY_LIST;
+List<String> deptKeyz = Collections.emptyList();
+List<String> catKeyz = Collections.emptyList();
+List<String> recipeKeyz = Collections.emptyList();
 DCPDReportQuery q = null;
 
 
@@ -47,12 +47,11 @@ if (deptKeyz.size() > 0 || catKeyz.size() > 0 || recipeKeyz.size() > 0) {
 
 if (!renderCSV) {
     Iterator it;
-%><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-   "http://www.w3.org/TR/html4/loose.dtd">
+%><!DOCTYPE html>
 
-<html lang="en-US" xml:lang="en-US">
+<html lang="en">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" lang="en-US">
+	<meta charset="utf-8" />
 	<title>DCPD Report</title>
 	<meta name="generator" content="TextMate http://macromates.com/">
 	<meta name="author" content="segabor">
@@ -302,6 +301,7 @@ if (!renderCSV) {
 	        <th>Full Name</th>
 			<th>SKU</th>
 			<th>Rating</th>
+			<th>Sustainability Rating</th>
 			<th>Material</th>
 			<th>Eligible</th>
             <th>Price</th>
@@ -309,7 +309,7 @@ if (!renderCSV) {
             <th>Deal</th>
 		</tr>
 <%
-	report.setNodeSeparator("    <tr><td colspan=\"6\" style=\"padding: 0; height: 6px; width: 100%; background-color: #cccc99\"></td></tr>");
+	report.setNodeSeparator("    <tr><td colspan=\"10\" style=\"padding: 0; height: 6px; width: 100%; background-color: #cccc99\"></td></tr>");
 	report.generate(q.getNodes());
 %>
     </table>

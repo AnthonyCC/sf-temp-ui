@@ -1290,6 +1290,9 @@ label[for="dontupdatecartlines"] {
     color: rgb(102,102,102);
     text-transform: capitalize;
 }
+.eTippingEnabled #subtotalbox2 .strl_text:after{
+	content:"";
+}
 
 .eTippingEnabled .subtotal__rowcell-mid{
 	font-weight:bold;
@@ -1320,7 +1323,9 @@ label[for="dontupdatecartlines"] {
 	line-height: 21px;
 	margin-bottom: 4px;
 }
-
+#subtotalbox2 .row-size-big .subtotal__rowcell-right{
+	height: 40px;
+}
 .eTippingEnabled .subtotal__rowcell-left,
 .eTippingEnabled .subtotal__rowcell-mid,
 .eTippingEnabled .subtotal__rowcell-right{

@@ -1,11 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- * 
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.fdstore.ejb;
 
 import java.rmi.RemoteException;
@@ -25,31 +17,27 @@ import javax.naming.NamingException;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.ERPServiceLocator;
-import com.freshdirect.customer.ErpGrpPriceModel;
 import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.SkuAvailabilityHistory;
 import com.freshdirect.erp.ejb.ErpGrpInfoHome;
 import com.freshdirect.erp.ejb.ErpGrpInfoSB;
-import com.freshdirect.erp.ejb.ErpInfoHome;
 import com.freshdirect.erp.ejb.ErpInfoSB;
 import com.freshdirect.erp.ejb.ErpMaterialEB;
 import com.freshdirect.erp.ejb.ErpMaterialHome;
-import com.freshdirect.erp.ejb.ErpProductEB;
 import com.freshdirect.erp.ejb.ErpProductFamilyHome;
 import com.freshdirect.erp.ejb.ErpProductFamilySB;
 import com.freshdirect.erp.ejb.ErpProductHome;
 import com.freshdirect.erp.ejb.ErpZoneInfoHome;
 import com.freshdirect.erp.ejb.ErpZoneInfoSB;
 import com.freshdirect.erp.model.ErpMaterialModel;
+import com.freshdirect.erp.model.ErpMaterialSalesAreaModel;
 import com.freshdirect.erp.model.ErpProductInfoModel;
-import com.freshdirect.erp.model.ErpProductModel;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDGroupNotFoundException;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.GroupScalePricing;
@@ -57,9 +45,6 @@ import com.freshdirect.framework.core.SessionBeanSupport;
 
 /**
  * Factory session bean implementation for FD objects.
- *
- * @version $Revision$
- * @author $Author$
  */
 public class FDFactorySessionBean extends SessionBeanSupport {
 	private static final long serialVersionUID = 8471002847721814732L;
@@ -300,7 +285,15 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 		}
 	}
 	
-	
+    public Collection<ErpMaterialSalesAreaModel> getGoingOutOfStockSalesAreas() throws FDResourceException {
+        try {
+            ErpInfoSB infoSB = this.getErpInfoSB();
+            return infoSB.findGoingOutOfStockSalesAreas();
+        } catch (RemoteException re) {
+            throw new FDResourceException(re);
+        }
+    }
+
 	/**
 	 * Get product with specified version. 
 	 *
@@ -552,11 +545,13 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public void ejbCreate() throws CreateException {
+	@Override
+    public void ejbCreate() throws CreateException {
 		// nothing required
 	}
 	
-	public void ejbRemove() {
+	@Override
+    public void ejbRemove() {
 		// nothing required
 	}
 	

@@ -14,7 +14,7 @@
 	pageContext.setAttribute("encodedUrlQuery", encodedUrlQuery);
 	
 %>
-	<fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" redirectPage="/login/login.jsp?${pageContext.request.queryString}" />
+	<fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" redirectPage="/login/login.jsp?template=oauth${encodedUrlQuery}" />
 <%
 	String redirectUrl = request.getParameter("successPage");
 	response.sendRedirect(redirectUrl);

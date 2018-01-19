@@ -89,11 +89,11 @@
   	</script>
 
     <jwr:style src="/newhomepage.css" media="all" />
+    
+    <jwr:style src="/homepage.css" media="all" />
 
     <%-- Keep the media include last, so it can always override any css auto-loaded --%>
     <fd:IncludeMedia name="/media/editorial/site_pages/stylesheet.html" />
-
-  <fd:css href="/assets/css/homepage/homepage.css" media="all" />
 </head>
   <body>
     <%@ include file="/shared/template/includes/i_body_start.jspf" %>

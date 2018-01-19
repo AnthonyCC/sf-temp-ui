@@ -269,9 +269,9 @@ SESSIONSTORAGE:
 		openMessages: function() {
 			messageData.messagesIsClosed = false;
 			messageStorage.messages.isClosed = false;
-			messageData.options.$messages.addClass(messageData.options.messagesOpenClass);
-			messageData.options.$messages.removeClass(messageData.options.messagesOpenVisHiddenClass);
-			$(messageData.options.$messages).trigger({
+			$(messageData.options.$messages.selector).addClass(messageData.options.messagesOpenClass);
+			$(messageData.options.$messages.selector).removeClass(messageData.options.messagesOpenVisHiddenClass);
+			$(messageData.options.$messages.selector).trigger({
 				type: 'messagesOpen'
 			});
 		},
@@ -327,9 +327,9 @@ SESSIONSTORAGE:
 		closeMessages: function() {
 			messageData.messagesIsClosed = true;
 			messageStorage.messages.isClosed = true;
-			messageData.options.$messages.removeClass(messageData.options.messagesOpenClass);
-			messageData.options.$messages.addClass(messageData.options.messagesOpenVisHiddenClass);
-			$(messageData.options.$messages).trigger({
+			$(messageData.options.$messages.selector).removeClass(messageData.options.messagesOpenClass);
+			$(messageData.options.$messages.selector).addClass(messageData.options.messagesOpenVisHiddenClass);
+			$(messageData.options.$messages.selector).trigger({
 				type: 'messagesClose'
 			});
 
@@ -411,15 +411,15 @@ SESSIONSTORAGE:
 
 
 			if (addHandler) {
-				messageData.options.$messages.addClass('hashandler');
+				$(messageData.options.$messages.selector).addClass('hashandler');
 			} else {
-				messageData.options.$messages.removeClass('hashandler');
+				$(messageData.options.$messages.selector).removeClass('hashandler');
 				messageData.options.$messages.messages('closeMessages');
 			}
 
-			return this.each(function(){
-				$('ul', messageData.options.$messages)[0].innerHTML = html;
-			});
+			$(messageData.options.$messages.selector+' ul').html(html);
+			
+			return messageData.options.$messages;
 		},
 		updateAlerts: function(alertsArr) {
 			if ($.isArray(alertsArr)) {

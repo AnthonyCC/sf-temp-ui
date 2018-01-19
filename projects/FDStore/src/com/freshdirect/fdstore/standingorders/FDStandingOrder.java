@@ -367,6 +367,7 @@ public class FDStandingOrder extends ModelSupport {
 		
 		ADDRESS( "We no longer deliver to the address you set up for this standing order.", "Use the link below to modify this standing order and choose a different address.",true ), 
 		PAYMENT( "There was a problem with the payment method you selected.", "Use the link below to modify this standing order and update the payment options.",true ), 
+		PAYMENT_DEL("The payment method is no longer available in system.","Please select another payment method for this template.", false),
 		ALCOHOL( "You must verify your age to receive deliveries containing alcohol.", "Use the link below to modify this standing order and confirm that you are over 21 years of age.",true ), 
 		MINORDER( "The order subtotal was below our $50 minimum.", "Please adjust the items or quantities by editing the shopping list for this standing order.",true ), 		
 		TIMESLOT_MINORDER( "The order subtotal was below our $x minimum.", "Please adjust the items or quantities by editing the shopping list for this standing order.",true),

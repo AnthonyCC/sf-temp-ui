@@ -64,18 +64,15 @@
   }());
   </script>
 
-  <%-- GTM initialization --%>
-  <%@include file="/common/template/includes/i_gtm_datalayer.jsp" %>
+	<%-- GTM initialization --%>
+	<%@include file="/common/template/includes/i_gtm_datalayer.jsp" %>
 
 	<jwr:script src="/fdlibs.js" useRandomParam="false" />
-	<script src="/assets/javascript/jquery/corner/jquery.corner.js" type="text/javascript" language="javascript"></script>
-	<fd:javascript src="/assets/javascript/dialog-base.js" />
-	<fd:javascript src="/assets/javascript/atcPendingOrder.js"/>
-	<fd:javascript src="/assets/javascript/popupLogicDispatcher.js"/>
-	<fd:javascript src="/assets/javascript/coremetrics.js"/>
-	<fd:javascript src="/assets/javascript/fd/common/USQLegalWarning.js"/>
+	<jwr:script src="/assets/javascript/jquery/corner/jquery.corner.js" useRandomParam="false" />
+	
+	<jwr:script src="/fdmisc.js" useRandomParam="false" />
 
-<%@ include file="/common/template/includes/extol_tags.jspf" %>
+	<%@ include file="/common/template/includes/extol_tags.jspf" %>
 
 
 	<script type="text/javascript" language="javascript">
@@ -110,18 +107,11 @@
 	</script>
 
 	<% if (request.getRequestURI().indexOf("/checkout/step_1_choose.jsp") == -1)  { %>
-		<fd:javascript src="/assets/javascript/prototype.js"/>
-		
-		<% if (request.getRequestURI().indexOf("/registration/invite_signup2.jsp") == -1)  { %>
-			<%-- when upgrading scriptaculous please create a new directory for the version --%>
-			<script src="/assets/javascript/scriptaculous/1.9.0/scriptaculous.js?load=effects,builder" type="text/javascript" language="javascript"></script>
-		<% } %>
-		<fd:javascript src="/assets/javascript/modalbox.js"/>
+		<jwr:script src="/protoscriptbox.js" useRandomParam="false" />
 	<% } %>
 
-	<fd:javascript src="/assets/javascript/common_javascript.js"/>
-	<fd:javascript src="/assets/javascript/rounded_corners.inc.js"/>
-	<fd:javascript src="/assets/javascript/FD_PromoEligibility.js"/>
+	<jwr:script src="/commonjavascript.js" useRandomParam="false" />
+	<jwr:script src="/roundedcorners.js" useRandomParam="false" />
 
 	<fd:IncludeMedia name="/media/editorial/site_pages/javascript.html"/>
 

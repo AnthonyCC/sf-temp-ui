@@ -14,12 +14,9 @@ import javax.naming.NamingException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.fdstore.FDEcommProperties;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.SilverPopupDetails;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
-import com.freshdirect.fdstore.ecomm.gateway.TEmailInfoService;
 import com.freshdirect.fdstore.silverpopup.util.FDIBMPushNotification;
 import com.freshdirect.fdstore.temails.ejb.TEmailInfoHome;
 import com.freshdirect.fdstore.temails.ejb.TEmailInfoSB;
@@ -38,15 +35,9 @@ public class IBMSilverPopupEmailCron {
 	public static void main(String[] args) throws Exception {
 		try {
 			LOGGER.info("SilverPopEmailCron Started.");
-			int count;
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.TEmailInfoSB)) {
-				count = TEmailInfoService.getInstance().sendFailedTransactions(100);
-			} else {
-				lookupSPSHome();
-				TEmailInfoSB clientSB = transactEmailInfoHome.create();
-				count =  clientSB. sendFailedTransactions(100);
-			}
-			
+			lookupSPSHome();
+			TEmailInfoSB clientSB = transactEmailInfoHome.create();
+			 int count =  clientSB. sendFailedTransactions(100);
 			LOGGER.info(" ******* IBMSilverPopupEmailCron:  failed emails retried successfully " + count);
 			
 		} catch (Exception e) {

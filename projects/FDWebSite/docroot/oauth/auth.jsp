@@ -44,7 +44,6 @@
 	<fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" redirectPage="/login/login.jsp?successPage=/oauth/auth.jsp${encodedUrlQuery}" />
 	<%
 		OAuth2Service authService = OAuth2Service.defaultService();
-		String mediaPath = "/media/oauth/" + clientId +"_vendor_premission_details.ftl";
 		
 	%>
 	<tmpl:insert template="/common/template/oAuth.jsp">
@@ -56,8 +55,8 @@
 					<input id="state" type="hidden" value="${param.state }" />
 				</div>
 				<div class="description">
-					<fd:IncludeMedia name="<%=mediaPath %>">
-						<h2 class="header"><strong class="app-name"><%=clientId %></strong> will use the info below under its privacy policy:</h2>
+					<fd:IncludeMedia name="/media/ouath/vendor_premission_details.ftl">
+						<h2 class="header"><strong class="app-name">StorePower</strong> will use the info below under its privacy policy:</h2>
 						<ul>
 							<li>Read User Info</li>
 							<li>Update Shopping Cart</li>

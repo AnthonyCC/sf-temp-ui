@@ -16,6 +16,7 @@ import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.fdstore.ewallet.EwalletConstants;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
+import com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.data.PageAction;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
@@ -85,14 +86,22 @@ public class PaymentMethodServlet extends BaseJsonServlet {
                         break;
                     }
                     case DELETE_PAYMENT_METHOD: {
-                        PaymentService.defaultService().deletePaymentMethod(paymentRequestData, request);
+                    	if (StandingOrderHelper.isSO3StandingOrder(user)) {
+                    		
+                    			String paymentId = FormDataService.defaultService().get(paymentRequestData, "id");
+                    			StandingOrderHelper.evaluteSOPaymentId(request.getSession(), user, paymentId);
+                    			if(paymentId.equalsIgnoreCase(user.getCurrentStandingOrder().getPaymentMethodId())){
+                    				user.getCurrentStandingOrder().setPaymentMethodId(null);
+                    				user.getCurrentStandingOrder().setLastError(ErrorCode.PAYMENT_DEL.name(), ErrorCode.PAYMENT_DEL.getErrorHeader(), ErrorCode.PAYMENT_DEL.getErrorDetail(null));
+                    			}
+                    		}
+                    	PaymentService.defaultService().deletePaymentMethod(paymentRequestData, request);
                         changed = true;
-                        if(StandingOrderHelper.isSO3StandingOrder(user)){
-                        	user.getCurrentStandingOrder().setPaymentMethodId(null);	
-                        }
+                        if(!StandingOrderHelper.isSO3StandingOrder(user)){
                         String defaultPayment = user.getFDCustomer().getDefaultPaymentMethodPK();
                         if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user) && null !=defaultPayment && !"".equals(defaultPayment)){
                         	PaymentService.defaultService().selectPaymentMethod(defaultPayment, pageAction.actionName, request);
+                        }
                         }
                         break;
                     }
@@ -100,6 +109,7 @@ public class PaymentMethodServlet extends BaseJsonServlet {
                         String paymentId = FormDataService.defaultService().get(paymentRequestData, "id");
     					if(StandingOrderHelper.isSO3StandingOrder(user)){
     						user.getCurrentStandingOrder().setPaymentMethodId(paymentId);
+    						StandingOrderHelper.clearSO3ErrorDetails(user.getCurrentStandingOrder(), new String[] {"PAYMENT_DEL"});
     					}
                         
                         // EWallet Express Checkout

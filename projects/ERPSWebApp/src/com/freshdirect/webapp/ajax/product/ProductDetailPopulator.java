@@ -1048,20 +1048,21 @@ public class ProductDetailPopulator {
 		boolean isNew = product.isNew();
 		boolean isYourFave = DYFUtil.isFavorite( product, user );
 		boolean isBackInStock = product.isBackInStock();
+        boolean isGoingOutOfStock = product.isGoingOutOfStock();
 		ProductReference prodRef = new ProductReferenceImpl(product);
 		boolean isFree = user.isProductSample(prodRef);
-	
+
 		/* compare against prop limits */
+        // determine what to display
 		if ((FDStoreProperties.getBurstsLowerLimit()<=deal) && (FDStoreProperties.getBurstUpperLimit()>=deal)) {
 			item.setDeal( deal );
-		}
-		
-		// determine what to display
-		if(isFree){
+        } else if (isFree) {
 			item.setBadge("free");
             item.setFreeSamplePromoProduct(isFree);
 		}else if ( useFavBurst && isYourFave ) {
 			item.setBadge( "fav" );
+        } else if (isGoingOutOfStock) {
+            item.setBadge("going");
 		} else if ( isNew ) {
 			item.setBadge( "new" );
 		} else if ( isBackInStock ) {

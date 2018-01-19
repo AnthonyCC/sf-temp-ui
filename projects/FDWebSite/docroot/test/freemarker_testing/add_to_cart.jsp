@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ --%>
 <!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
 <!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
@@ -17,8 +18,8 @@
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
   <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-	<fd:css href="/assets/css/giftcards.css"/>
-	<fd:css href="/assets/css/timeslots.css"/>
+	<jwr:style src="/giftcards.css" media="all" />
+	<jwr:style src="/timeslots.css" media="all" />
 	<%@ include file="/shared/template/includes/ccl.jspf" %>
 <%		
     {

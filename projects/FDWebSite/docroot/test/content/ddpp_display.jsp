@@ -106,6 +106,7 @@
 							hideBursts.add(EnumBurstType.YOUR_FAVE);
 							hideBursts.add(EnumBurstType.NEW);
 							hideBursts.add(EnumBurstType.BACK_IN_STOCK);
+							hideBursts.add(EnumBurstType.GOING_OUT_OF_STOCK);
 													
 							pi = cUtil.configure((ProductModel) pm, confContext);
 							impressions.add(pi);
