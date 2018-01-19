@@ -118,13 +118,15 @@
             {/call}
             {if $cartline.qu}{call common.quantitybox}{param quantity:$cartline.qu /}{param uid: 'cartline_change_'+$cartline.id /}{/call}{/if}
           </form>
-          {if $cartline.su}
+          {if length(keys($cartline.confOptions))}
             {foreach $key in keys($cartline.confOptions)}
               <select id="{$key}" name="{$key}" data-component="productDataConfiguration" data-productdata-name="{$key}" class="offscreen">
                 <option value="">{$key}</option>
                   <option value="{$cartline.confOptions[$key]}" selected></option>
               </select>
             {/foreach}
+          {/if}
+          {if $cartline.su}
             {call common.salesunit}{param options:$cartline.su /}{/call}
           {/if}
         {/if}
