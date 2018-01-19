@@ -521,8 +521,7 @@
 			{param listId:$listId /}
 			{param freeSamplePromoProduct:$freeSamplePromoProduct /}
 			{param mobWeb:$mobWeb /}
-      {param moduleData:$moduleData/}
-      {param badge:$badge/}
+            {param moduleData:$moduleData/}
 		{/call}
 		{call common.atcInCart}
 			{param amount:$inCartAmount /}
@@ -696,14 +695,10 @@
  * @param? freeSamplePromoProduct free sample product
  * @param? mobWeb
  * @param? moduleData
- * @param badge
  */
 {template .potatoTransactionalGridItemControls autoescape="false"}
   <div class="portrait-item-controls" data-component="product-controls">
     <div class="portrait-item-controls-content">
-      {if $badge == 'going'}
-        <div class="going-out">Last Chance!</div>
-      {/if}
       {if $availabilityMessage and not $mobWeb}
       <div class="portrait-item-availability-message">
         {$availabilityMessage}

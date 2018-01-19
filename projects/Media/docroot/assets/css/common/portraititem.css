@@ -123,8 +123,7 @@
 .lineitems22 .itemlist-item-addtocart > form.atc > .atc-info .incart-info,
 .portrait-item > form.atc > .atc-info .incart-info,
 .lineitems22 .itemlist-item-addtocart > .atc-info .incart-info,
-.portrait-item > .atc-info .incart-info,
-.portrait-item .atc .going-out {
+.portrait-item > .atc-info .incart-info {
   display: block;
   text-align: center;
   clear: both;
@@ -139,14 +138,6 @@
   margin-top: 2px;
   position: relative;
   z-index: 1;
-}
-
-.portrait-item .atc .going-out {
-  margin-top: 20px;
-}
-
-#transactionalPopup .transactional-popup-body .portrait-item .cssBurst.going {
-  display: none;
 }
 
 .lineitems22 .itemlist-item-controls.smaller .itemlist-item-addtocart > form.atc > .atc-info .incart-info,
