@@ -1,11 +1,17 @@
 <%@ page import='java.util.*' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
+<%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
+<%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
+<fd:CheckLoginStatus guestAllowed='true' recognizedAllowed='true' id='user' />
+<%
+	boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
+%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en-US" xml:lang="en-US">

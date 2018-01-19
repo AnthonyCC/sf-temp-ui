@@ -2605,3 +2605,54 @@ form.dispblock-fields td { /* force the tds to block so the label and field are 
     padding: 0px;
 	
 }
+
+/* forgot password */
+	#sulCont.signin-social-forgot-pass .form-side-social-header,
+	.signin-social-forgot-pass-confirm .form-side-social-header {
+		text-align: center;
+		padding: 1em 20px 0;
+		font-size: 1.40em;
+		line-height: 2em;
+	}
+	#sulCont.signin-social-forgot-pass .signin-social-forgot-pass-header-message-header,
+	.signin-social-forgot-pass-confirm .signin-social-forgot-pass-header-message-header  {
+		font-weight: bold;
+	}
+	#sulCont.signin-social-forgot-pass .signin-social-forgot-pass-header-message,
+	.signin-social-forgot-pass-confirm .signin-social-forgot-pass-header-message {
+		text-align: center;
+		line-height: 1.4em;
+		padding: 1em 20px 0;
+	}
+	#sulCont #lost_password input,
+	#sulCont #lost_password input.padding-input-box {
+		width: 100%;
+		padding: 8px 0 8px 0;
+	}
+	#sulCont.signin-social-forgot-pass #form_feilds {
+		padding: 1em 20px 0;
+	}
+	#sulCont #lost_password input#email.padding-input-box {
+		text-indent: 15px;
+	}
+	#sulCont #lost_password input#email.padding-input-box::placeholder {
+		color: #666;
+	}
+	#lost_password table {
+		width: 100%;
+	}
+	.signin-social-forgot-pass-help {
+		padding: 2em 20px 0;
+		font-size: 12px;
+		text-align: center;
+	}
+	.signin-social-forgot-pass-help-assbuttons a.cssbutton {
+		width: calc(50% - 3px);
+	}
+	.signin-social-forgot-pass-help a.cssbutton {
+		margin: 1em 0;
+	}
+	.signin-social-forgot-pass-confirm a.cssbutton {
+		width: 100%;
+		display: block;
+	}
