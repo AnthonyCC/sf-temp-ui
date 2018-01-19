@@ -51,7 +51,11 @@
     {foreach $cartline in $section.cartLines}
       {delcall common.cartline}
         {param cartline: $cartline/}
-        {param product: $section.products[$cartline.productId]/}
+        {param product}
+        {if $section.products and length(keys($section.products))}
+          {$section.products[$cartline.productId]}
+        {/if}
+        {/param}
       {/delcall}
     {/foreach}
   </div>
@@ -89,15 +93,16 @@
         {/if}
       </div>
     </div>
+/* ---------------- */
     <div class='cartline-delete cartline-box'>
-      {if $product.available}
+      {if $product and $product.available}
         <a class='cartline-link' data-remove-product="{$cartline.id}" href=''>
           <img src="/media_stat/images/icon-trash.png" alt="" class='cartline-delete-image' /><span class="accessibleCSS">Delete</span><span class="offscreen"> {$cartline.descr}</span>
         </a>
       {/if}
     </div>
     <div class='cartline-quantity cartline-box' data-component="product">
-      {if $product.available}
+      {if $product and $product.available}
         {if $cartline.price == '$0.00'}
           {if $cartline.su}
             {foreach $option in $cartline.su}
@@ -153,7 +158,7 @@
     </div>
     <div class='cartline-price cartline-box'>
       <div class='cartline-pricewrapper'>
-        {if $product.available}
+        {if $product and $product.available}
           {if $product.price == '$0.00'}
             <p class='cartline-price-value cartline-price-value-free'>FREE</p>
           {else}
@@ -165,6 +170,7 @@
         {/if}
       </div>
     </div>
+/* -------------------------- */
     <div class='cartline-price cartline-box original'>
       <div class='cartline-pricewrapper'>
         {if $cartline.price == '$0.00'}
