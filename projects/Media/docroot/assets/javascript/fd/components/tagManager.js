@@ -196,14 +196,12 @@ var dataLayer = window.dataLayer || [];
         unavailable_timeslot_present: unavts
       });
 
-      if (unavts === 'yes') {
-        dataLayer.push({
-          event: 'timeslot-unavailable',
-          eventCategory: 'timeslot',
-          eventAction: 'timeslot-checkout-modal',
-          eventLabel: 'yes'
-        });
-      }
+      dataLayer.push({
+        event: 'timeslot-unavailable',
+        eventCategory: 'timeslot',
+        eventAction: 'timeslot-checkout-modal',
+        eventLabel: unavts
+      });
     },
     topNavClick: function (data) {
       dataLayer.push({
