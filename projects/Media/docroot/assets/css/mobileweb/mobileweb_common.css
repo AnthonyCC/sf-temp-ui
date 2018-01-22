@@ -2608,7 +2608,8 @@ form.dispblock-fields td { /* force the tds to block so the label and field are 
 
 /* forgot password */
 	#sulCont.signin-social-forgot-pass .form-side-social-header,
-	.signin-social-forgot-pass-confirm .form-side-social-header {
+	.signin-social-forgot-pass-confirm .form-side-social-header,
+	.retrieve-password-header {
 		text-align: center;
 		padding: 1em 20px 0;
 		font-size: 1.40em;
@@ -2629,22 +2630,37 @@ form.dispblock-fields td { /* force the tds to block so the label and field are 
 		width: 100%;
 		padding: 8px 0 8px 0;
 	}
-	#sulCont.signin-social-forgot-pass #form_feilds {
+	#sulCont.signin-social-forgot-pass #form_feilds,
+	.retrieve-password-form-cont {
 		padding: 1em 20px 0;
 	}
 	#sulCont #lost_password input#email.padding-input-box {
 		text-indent: 15px;
 	}
-	#sulCont #lost_password input#email.padding-input-box::placeholder {
+	.retrieve-password-form-cont [fdform] label {
+		display: inline-block;
+		margin-top: 1em;
+	}
+	.retrieve-password-form-cont [fdform] input[type="password"],
+	.retrieve-password-form-cont [fdform] input[type="text"] {
+		border: 1px solid #c2c2c2;
+		height: 42px;
+	}
+	#sulCont #lost_password input#email.padding-input-box::placeholder,
+	.retrieve-password-form-cont input::placeholder {
 		color: #666;
 	}
 	#lost_password table {
 		width: 100%;
 	}
-	.signin-social-forgot-pass-help {
+	.signin-social-forgot-pass-help,
+	.retrieve-password-help {
 		padding: 2em 20px 0;
 		font-size: 12px;
 		text-align: center;
+	}
+	.retrieve-password-help {
+		padding: 2em 20px;
 	}
 	.signin-social-forgot-pass-help-assbuttons a.cssbutton {
 		width: calc(50% - 3px);
@@ -2652,7 +2668,50 @@ form.dispblock-fields td { /* force the tds to block so the label and field are 
 	.signin-social-forgot-pass-help a.cssbutton {
 		margin: 1em 0;
 	}
-	.signin-social-forgot-pass-confirm a.cssbutton {
+	.signin-social-forgot-pass-confirm a.cssbutton,
+	.retrieve-password-form-cont .cssbutton {
 		width: 100%;
 		display: block;
+	}
+	.retrieve-password-form-cont .show-password {
+		position: absolute;
+		bottom: 10px;
+		right: 8px;
+		width: 33px;
+		text-align: center;
+		font-size: 12px;
+		line-height: 12px;
+		background: #A4A5A4;
+		color: #fff;
+		padding: 6px 9px;
+		cursor: pointer;
+		border-radius: 3px;
+	}
+	.retrieve-password-form-passreqs {
+		color: #666;
+		font-size: 0.9em;
+		margin: 0 0 2em 0;
+	}
+	.retrieve-password-form-error {
+		display: block;
+		text-align: right;
+		color: #CC0000;
+		font-family: Verdana, Arial, sans-serif;
+	}
+	.retrieve-password-success-cont {
+		margin: 3em;
+		padding: 2em 0;
+		border: 1px solid #ccc;
+		text-align: center;
+	}
+	.retrieve-password-success-message {
+		font-weight: bold;
+		font-size: 20px;
+		margin: 0 2em 1em;
+	}
+	.retrieve-password-success-button {
+	}
+	.retrieve-password-success-checkimg img {
+		height: 100px;
+		width: 100px;
 	}
