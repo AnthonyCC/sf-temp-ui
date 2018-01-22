@@ -627,7 +627,7 @@ public class ErpSaleInfoDAO {
 		try {
 			ps = conn.prepareStatement(orderCountPastQuery);
 			ps.setString(1, erpCustomerId);
-			ps.setString(2, type.getName());
+			ps.setString(2, type.getSaleType());
 			ps.setDate(3, new java.sql.Date(day.getTime()));
 			rs = ps.executeQuery();
 			while (rs.next()) {
