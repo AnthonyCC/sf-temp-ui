@@ -219,7 +219,7 @@ public class CartOperationsTest {
 
     @Test
     public void testValidateConfigurationWithRequiredVariationAndNoUserConfig() {
-        FDVariation requiredVariation = FDVariationFactory.createRequiredVariation("requiredVariation", Arrays.asList("option1"));
+        FDVariation requiredVariation = FDVariationFactory.createRequiredVariation("requiredVariation", Arrays.asList("option1", "option2"));
         FDProduct testFDProduct = prepareTestProduct(new FDVariation[] { requiredVariation });
 
         AddToCartItem atcItem = new AddToCartItem();
@@ -233,7 +233,7 @@ public class CartOperationsTest {
 
     @Test
     public void testValidateConfigurationWithRequiredVariationAndBadUserConfig() {
-        FDVariation requiredVariation = FDVariationFactory.createRequiredVariation("requiredVariation", Arrays.asList("option1"));
+        FDVariation requiredVariation = FDVariationFactory.createRequiredVariation("requiredVariation", Arrays.asList("option1", "option2"));
         FDProduct testFDProduct = prepareTestProduct(new FDVariation[] { requiredVariation });
 
         AddToCartItem atcItem = new AddToCartItem();
