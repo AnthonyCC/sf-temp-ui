@@ -403,7 +403,7 @@ public class AccountController extends BaseController implements Comparator <Ord
     private TimeSlotCalculationResult getTimeSlotCalculationResult(SessionUser user, String addressId)
             throws FDException, JsonException {
         ShipToAddress shipToAddress = user.getDeliveryAddress(addressId);
-        TimeSlotCalculationResult timeSlotResult = shipToAddress.getDeliveryTimeslot(user, true);
+        TimeSlotCalculationResult timeSlotResult = shipToAddress!=null?shipToAddress.getDeliveryTimeslot(user, true):null;
         return timeSlotResult;
     }
 
