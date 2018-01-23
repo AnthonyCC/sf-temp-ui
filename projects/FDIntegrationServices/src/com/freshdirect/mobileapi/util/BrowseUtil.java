@@ -1498,7 +1498,7 @@ public class BrowseUtil {
         if (user != null) {
             String zipcode = user.getZipCode();
             if (zipcode != null && zipcode.trim().length() > 0) {
-                plantId = user.getUserContext().getFulfillmentContext().getPlantId();
+                plantId = user!=null&&user.getUserContext()!=null&&user.getUserContext().getFulfillmentContext()!=null?user.getUserContext().getFulfillmentContext().getPlantId():FDStoreProperties.getDefaultFdxPlantID();
             } else {
                 plantId = FDStoreProperties.getDefaultFdxPlantID();
             }
