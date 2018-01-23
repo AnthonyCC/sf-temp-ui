@@ -107,7 +107,6 @@ import com.freshdirect.storeapi.content.SortOptionModel;
 import com.freshdirect.storeapi.content.StoreModel;
 import com.freshdirect.storeapi.content.TagModel;
 import com.freshdirect.webapp.ajax.DataPotatoField;
-import com.freshdirect.webapp.ajax.browse.data.BrowseData;
 import com.freshdirect.webapp.ajax.browse.data.CmsFilteringFlowResult;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringFlow;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
@@ -119,6 +118,7 @@ import com.freshdirect.webapp.search.unbxd.UnbxdServiceUnavailableException;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.layout.LayoutManager.Settings;
 import com.freshdirect.webapp.taglib.unbxd.BrowseEventTag;
+import com.freshdirect.webapp.util.MediaUtils;
 
 public class BrowseUtil {
 	private static final org.apache.log4j.Category LOG = LoggerFactory.getInstance(BrowseUtil.class);
@@ -130,20 +130,27 @@ public class BrowseUtil {
     private BrowseUtil() {
     }
 
-
     public static BrowsePageResponse getBrowseResponse(SessionUser user, HttpServletRequest request) {
         final BrowsePageResponse result = new BrowsePageResponse();
+
         try {
         	FDSessionUser sessionUser = user.getFDSessionUser();
             final CmsFilteringNavigator navigator = CmsFilteringNavigator.createInstance(request, sessionUser);
-            if (navigator.populateSectionsOnly()) {
-            	BrowseData browseData = CmsFilteringFlow.getInstance().doBrowseSectionsFlow(navigator, sessionUser);
-            	result.setBrowse(DataPotatoField.digBrowse(browseData));
-            	result.setIncludeNullValue(false);
-            } else {
+
+            ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(navigator.getId());
+            LayoutManagerWrapper layoutManagerTagWrapper = new LayoutManagerWrapper(user);
+            Settings layoutManagerSetting = layoutManagerTagWrapper.getLayoutManagerSettings(currentFolder);
+
+            // if (layoutManagerSetting != null && EnumLayoutType.TEMPLATE_LAYOUT.getId() == layoutManagerSetting.getLayoutType()) {
+            // result.setBrowse(doFlowTemplateLayout(user.getFDSessionUser(), currentFolder));
+            // } else if (navigator.populateSectionsOnly()) {
+            // BrowseData browseData = CmsFilteringFlow.getInstance().doBrowseSectionsFlow(navigator, sessionUser);
+            // result.setBrowse(DataPotatoField.digBrowse(browseData));
+            // result.setIncludeNullValue(false);
+            // } else {
             	final CmsFilteringFlowResult flow = CmsFilteringFlow.getInstance().doFlow(navigator, sessionUser);
             	result.setBrowse(DataPotatoField.digBrowse(flow));
-            }
+            // }
 
         } catch (FDResourceException e) {
             result.addErrorMessage(e.getMessage());
@@ -157,8 +164,28 @@ public class BrowseUtil {
         } catch (FDNotFoundException e) {
             result.addErrorMessage(e.getMessage());
             LOG.error(e.getMessage());
+        } catch (FDException e) {
+            result.addErrorMessage(e.getMessage());
+            LOG.error(e.getMessage());
         }
         return result;
+    }
+
+    private static Map<String, String> doFlowTemplateLayout(FDSessionUser user, ContentNodeModel currentFolder) {
+        final Map<String, String> browse = new HashMap<String, String>();
+        if (currentFolder != null) {
+            String templatePath = null;
+            if (currentFolder instanceof CategoryModel) {
+                templatePath = ((CategoryModel) currentFolder).getContentTemplatePath();
+            }
+            if (currentFolder instanceof DepartmentModel) {
+                templatePath = ((DepartmentModel) currentFolder).getTemplatePath();
+            }
+            if (MediaUtils.checkMedia(templatePath)) {
+                browse.put("htmlTemplate", MediaUtils.renderHtmlToString(templatePath, user));
+            }
+        }
+        return browse;
     }
 
 	public static BrowseResult getCategories(BrowseQuery requestMessage, SessionUser user, HttpServletRequest request) throws FDException{

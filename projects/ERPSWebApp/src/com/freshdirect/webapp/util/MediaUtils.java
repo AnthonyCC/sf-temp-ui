@@ -118,34 +118,35 @@ public class MediaUtils {
         MediaUtils.renderMedia(url, out, context, errorReport);
     }
 
+    public static String renderHtmlToString(Html media, FDUserI user) {
+        return (media != null) ? renderHtmlToString(media.getPath(), user) : "";
+    }
+
     // based on IncludeMediaTag
-    public static String renderHtmlToString(Html media, FDSessionUser user) {
+    public static String renderHtmlToString(String name, FDUserI user) {
         String htmlString = "";
 
-        if (media != null) {
-            Map<String, Object> parameters = new HashMap<String, Object>();
-            /* pass user/sessionUser by default, so it doesn't need to be added every place this tag is used. */
-            parameters.put("user", user);
-            parameters.put("sessionUser", user);
-            String name = media.getPath();
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        /* pass user/sessionUser by default, so it doesn't need to be added every place this tag is used. */
+        parameters.put("user", user);
+        parameters.put("sessionUser", user);
 
-            if (name != null) {
-                StringWriter writer = new StringWriter();
-                PricingContext pc = user != null && user.getPricingContext() != null ? user.getPricingContext() : PricingContext.DEFAULT;
+        if (name != null) {
+            StringWriter writer = new StringWriter();
+            PricingContext pc = user != null && user.getPricingContext() != null ? user.getPricingContext() : PricingContext.DEFAULT;
 
+            try {
+                MediaUtils.render(name, writer, parameters, false, pc);
+                htmlString = writer.toString();
+            } catch (IOException e) {
+                LOGGER.error("IOException, returning empty string", e);
+            } catch (TemplateException e) {
+                LOGGER.error("TemplateException, returning empty string", e);
+            } finally {
                 try {
-                    MediaUtils.render(name, writer, parameters, false, pc);
-                    htmlString = writer.toString();
+                    writer.close();
                 } catch (IOException e) {
-                    LOGGER.error("IOException, returning empty string", e);
-                } catch (TemplateException e) {
-                    LOGGER.error("TemplateException, returning empty string", e);
-                } finally {
-                    try {
-                        writer.close();
-                    } catch (IOException e) {
-                        LOGGER.error(e);
-                    }
+                    LOGGER.error(e);
                 }
             }
         }
