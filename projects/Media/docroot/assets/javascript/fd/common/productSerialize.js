@@ -17,7 +17,7 @@ var FreshDirect = FreshDirect || {};
 		if( type === 'radio' && !$current.prop('checked') ) {
 			return previous;
 		}
-		previous[name] = value;
+		previous[name] = previous[name] || value;
 		return previous;
 	}
 	
