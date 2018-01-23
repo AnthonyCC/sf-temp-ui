@@ -925,14 +925,14 @@
 	</rule>
 	
 	<!-- route info -->
-	<!--   rule>
+	<rule>
         <from>^/v/([0-9]+)/route/deliveryinfo/(.*)</from>
         <to last="true">/routeinfo.do?action=deliveryinfo&amp;ver=$1</to>
     </rule>
     <rule>
         <from>^/v/([0-9]+)/route/deliveryinfoallroutes/(.*)</from>
         <to last="true">/routeinfo.do?action=deliveryinfoall&amp;ver=$1</to>
-    </rule -->
+    </rule>
 
 
 	<!-- Help -->
