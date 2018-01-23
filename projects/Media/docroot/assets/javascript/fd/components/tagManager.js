@@ -111,27 +111,27 @@ var dataLayer = window.dataLayer || [];
     },
     ddpp: function (ddppproducts) {
       var products = ddppproducts.map(function (product, idx) {
-            return productTransform(product, idx+1, {channel: 'rec_ddpp'});
+            return productTransform(product, idx+1, {channel: 'rec_ddpp', product: product});
           });
 
       fd.gtm.reportImpressions(products);
     },
     sections: function (sectionData) {
       var products = sectionProducts(sectionData).map(function (product, idx) {
-            return productTransform(product, idx+1);
+            return productTransform(product, idx+1, {product: product});
           });
 
       fd.gtm.reportImpressions(products);
     },
     items: function (reorderItems) {
       var products = reorderItems.map(function (product, idx) {
-            return productTransform(product, idx+1);
+            return productTransform(product, idx+1, {product: product});
           });
 
       fd.gtm.reportImpressions(products);
     },
     product: function (productData) {
-      var product = productTransform(productData);
+      var product = productTransform(productData, null, {product: product});
 
       dataLayer.push({
         ecommerce: {
@@ -603,13 +603,16 @@ var dataLayer = window.dataLayer || [];
   };
 
   // get list for product or product container
-  fd.gtm.getListChannel = function (el) {
+  fd.gtm.getListChannel = function (el, config) {
     var channel,
         urlPageType = fd.utils.getParameterByName('pageType'),
         pageType = fd.gtm.data && fd.gtm.data.googleAnalyticsData && fd.gtm.data.googleAnalyticsData.pageType && fd.gtm.data.googleAnalyticsData.pageType.pageType,
+        isHookLogic = (el && $(el).hasClass('isHookLogicProduct')) || (config && config.product && config.product.clickBeacon),
         productData = fd.modules.common.productSerialize(el)[0];
 
-    if (productData && productData.variantId) {
+    if (isHookLogic) {
+      channel = 'rec_criteo';
+    } else if (productData && productData.variantId) {
       channel = 'rec_' + productData.variantId;
     } else if (productData && productData.moduleVirtualCategory) {
       var mvc = productData.moduleVirtualCategory.split(':');
@@ -695,7 +698,7 @@ var dataLayer = window.dataLayer || [];
   fd.gtm.getListForProduct = function (el, config) {
     config = config || {};
 
-    var channel = config.channel ? 'channel_' + config.channel : fd.gtm.getListChannel(el),
+    var channel = config.channel ? 'channel_' + config.channel : fd.gtm.getListChannel(el, config),
         location = config.location ? 'loc_' + config.location : fd.gtm.getListLocation(el),
         title = config.title ? 'title_' + config.title : fd.gtm.getListCarousel(el);
 
