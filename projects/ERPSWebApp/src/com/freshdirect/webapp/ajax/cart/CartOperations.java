@@ -89,22 +89,20 @@ import com.freshdirect.webapp.unbxdanalytics.visitor.Visitor;
 import com.freshdirect.webapp.util.FDEventFactory;
 
 /**
- *	Helper class for cart operations
+ * Helper class for cart operations
  *
- *	Static, stateless utility class. 
+ * Static, stateless utility class.
  *
- *	Implements only simple cart operations for the cart widget and add-to-cart servlet (e.g. change quantity, remove items, add to cart),
- *	not the full set of cart operations (e.g. view cart page, checkout, ccl, etc...)
+ * Implements only simple cart operations for the cart widget and add-to-cart servlet (e.g. change quantity, remove items, add to cart), not the full set of cart operations (e.g.
+ * view cart page, checkout, ccl, etc...)
  *
- *	Implements 'pure' operations: 
- *	i.e. change quantity will not remove cartlines, only remove operation does.
- *	change quantity to zero will set quantity to the minimum and will not remove the cartline.
+ * Implements 'pure' operations: i.e. change quantity will not remove cartlines, only remove operation does. change quantity to zero will set quantity to the minimum and will not
+ * remove the cartline.
  *
- *	So the decision of what type of operation should happen has to be made before calling.
+ * So the decision of what type of operation should happen has to be made before calling.
  *
- *  business logic parts copied from FDShoppingCartController, 2013/03 (change/remove cartlines)
- *  business logic parts copied from FDShoppingCartController, 2013/05 (add to cart)
- *  
+ * business logic parts copied from FDShoppingCartController, 2013/03 (change/remove cartlines) business logic parts copied from FDShoppingCartController, 2013/05 (add to cart)
+ *
  * @author treer
  */
 public class CartOperations {
@@ -153,9 +151,9 @@ public class CartOperations {
             final boolean cosAction = CosFeatureUtil.isUnbxdCosAction(user, reqData.getCookies());
             final Visitor visitor = Visitor.withUser(user);
             final LocationInfo loc = LocationInfo.withUrl(reqData.getRequestUrl());
-			
-			// Create cartlines and collect them in a list 
-			List<FDCartLineI> cartLinesToAdd = new ArrayList<FDCartLineI>(items.size());
+
+            // Create cartlines and collect them in a list
+            List<FDCartLineI> cartLinesToAdd = new ArrayList<FDCartLineI>(items.size());
 
             for (AddToCartItem item : items) {
                 AddToCartResponseDataItem responseItem = new AddToCartResponseDataItem();
@@ -193,12 +191,12 @@ public class CartOperations {
                 } else if (FilteringFlowType.NEWPRODUCTS.toString().equalsIgnoreCase(pageType)) {
                     cartLine.setAddedFrom(EnumATCContext.NEWPRODUCTS);
                 }
-                
-            	if (!isExternalRequest) {
-	                cartLine.setCoremetricsPageContentHierarchy(reqData.getCoremetricsPageContentHierarchy());
-	                cartLine.setCoremetricsPageId(reqData.getCoremetricsPageId());
-	                cartLine.setCoremetricsVirtualCategory(reqData.getCoremetricsVirtualCategory());
-            	}
+
+                if (!isExternalRequest) {
+                    cartLine.setCoremetricsPageContentHierarchy(reqData.getCoremetricsPageContentHierarchy());
+                    cartLine.setCoremetricsPageId(reqData.getCoremetricsPageId());
+                    cartLine.setCoremetricsVirtualCategory(reqData.getCoremetricsVirtualCategory());
+                }
                 cartLine.setEStoreId(user.getUserContext().getStoreContext().getEStoreId());
                 // cartLine.setPlantId(user.getUserContext().getFulfillmentContext().getPlantId());
 
@@ -215,34 +213,34 @@ public class CartOperations {
                     final AnalyticsEventI event = AnalyticsEventFactory.createEvent(AnalyticsEventType.ATC, visitor, loc, null, null, cartLine, cosAction);
                     EventLoggerService.getInstance().log(event);
                 }
-                
-                if(cart instanceof FDModifyCartModel){
-                	FDModifyCartModel mOrder = (FDModifyCartModel)cart;
-                	cartLine.setOrderId(mOrder.getOriginalOrder().getSale().getId());
-                	saveNewCartline(user, cartLine, cartLine.getQuantity(), mOrder.getOriginalOrder().getSale().getId());
+
+                if (cart instanceof FDModifyCartModel) {
+                    FDModifyCartModel mOrder = (FDModifyCartModel) cart;
+                    cartLine.setOrderId(mOrder.getOriginalOrder().getSale().getId());
+                    saveNewCartline(user, cartLine, cartLine.getQuantity(), mOrder.getOriginalOrder().getSale().getId());
                 }
                 if (!isExternalRequest) {
-                	responseItem.setGoogleAnalyticsData(GoogleAnalyticsDataService.defaultService().populateAddToCartGAData(cartLine, item.getQuantity()));
+                    responseItem.setGoogleAnalyticsData(GoogleAnalyticsDataService.defaultService().populateAddToCartGAData(cartLine, item.getQuantity()));
                 }
-			}
-								
-			// add collected cartlines to cart
-			cart.addOrderLines(cartLinesToAdd);
-			
-			// log multiple add to cart events
-			logAddToCart( user, cartLinesToAdd, evtSrc, serverName );
-	
-			// Save
-			saveUserAndCart( user, cart );				
+            }
 
-			// ecoupons status - after add to cart 
-			populateECouponsStatus( responseData, user, cart, cartLinesToAdd, session );
-			
-		}
-		
-		return true;
+            // add collected cartlines to cart
+            cart.addOrderLines(cartLinesToAdd);
 
-	}
+            // log multiple add to cart events
+            logAddToCart(user, cartLinesToAdd, evtSrc, serverName);
+
+            // Save
+            saveUserAndCart(user, cart);
+
+            // ecoupons status - after add to cart
+            populateECouponsStatus(responseData, user, cart, cartLinesToAdd, session);
+
+        }
+
+        return true;
+
+    }
 
     private static void populateCoremetricsShopTag(AddToCartResponseData responseData, FDCartLineI cartLine, CoremetricsExtraData coremetricsExtraData) {
         // COREMETRICS SHOP5
@@ -253,18 +251,18 @@ public class CartOperations {
             ShopTagModel cmTag = AbstractShopTagModelBuilder.createTagModel(cartLine, cartLine.getProductRef(), false, coremetricsExtraData);
             responseData.addCoremetrics(cmTag.toStringList());
 
-			List<String> cmFinalTag = new ArrayList<String>(1);
-			cmFinalTag.add( AbstractCmShopTag.DISPLAY_SHOPS );
-			responseData.addCoremetrics( cmFinalTag );
-			
-		} catch ( SkipTagException ignore ) {
-			LOG.warn( "Failed to generate coremetrics data", ignore );
-		} catch ( FDResourceException ignore ) {
-			LOG.warn( "Failed to generate coremetrics data", ignore );
-		} catch ( FDInvalidConfigurationException ignore ) {
-			LOG.warn( "Failed to generate coremetrics data", ignore );
-		}
-	}
+            List<String> cmFinalTag = new ArrayList<String>(1);
+            cmFinalTag.add(AbstractCmShopTag.DISPLAY_SHOPS);
+            responseData.addCoremetrics(cmFinalTag);
+
+        } catch (SkipTagException ignore) {
+            LOG.warn("Failed to generate coremetrics data", ignore);
+        } catch (FDResourceException ignore) {
+            LOG.warn("Failed to generate coremetrics data", ignore);
+        } catch (FDInvalidConfigurationException ignore) {
+            LOG.warn("Failed to generate coremetrics data", ignore);
+        }
+    }
 
     public static void populateCoremetricsShopTag(CartData responseData, List<FDCartLineI> cartLines, FDCartModel cart, CmShop5Tag cmTag) {
         // COREMETRICS SHOP5
@@ -291,40 +289,40 @@ public class CartOperations {
 
             FDCustomerCouponUtil.evaluateCartAndCoupons(session);
 
-			Map<String, AddToCartCouponResponse> coupons = responseData.getCouponStatus();
-			
-			for ( FDCartLineI cartLine : cartLinesToAdd ) {
-				
-				// populate Ecoupons data
-				FDCustomerCoupon coupon = user.getCustomerCoupon( cartLine, EnumCouponContext.PRODUCT );
-				if ( coupon != null ) {
-					
-					String couponId = coupon.getCouponId();
-					
-					// DO NOT USE the coupon status in the FDCustomerCoupon object!
-					// We need a mocked version to display for add-to-cart:
-					EnumCouponStatus couponStatus = FDUserCouponUtil.getCouponStatus(coupon, cart.getRecentlyAppliedCoupons());
-					coupons.put( couponId, new AddToCartCouponResponse(cartLine.getAtcItemId(), generateFormattedCouponMessage( coupon, couponStatus )));
-				}
-			}
-			
-		} catch (Exception e) {
-			LOG.error( "Failed to populate ecoupons status messages after add to cart!", e );
-		}
-	}
+            Map<String, AddToCartCouponResponse> coupons = responseData.getCouponStatus();
 
-	public static String generateFormattedCouponMessage( FDCustomerCoupon coupon, EnumCouponStatus status ) {
-		if (null == status || !status.isDisplayMessage() ) {
-			return "";
-		}
-		
-		FDCouponTag manFdCouponTag = new FDCouponTag();
-		manFdCouponTag.setCoupon(coupon);
-		manFdCouponTag.setCouponStatusText( status.getDescription() );
-		manFdCouponTag.initContent( null );
-		
-		return manFdCouponTag.getStatusTextHtml();		
-	}
+            for (FDCartLineI cartLine : cartLinesToAdd) {
+
+                // populate Ecoupons data
+                FDCustomerCoupon coupon = user.getCustomerCoupon(cartLine, EnumCouponContext.PRODUCT);
+                if (coupon != null) {
+
+                    String couponId = coupon.getCouponId();
+
+                    // DO NOT USE the coupon status in the FDCustomerCoupon object!
+                    // We need a mocked version to display for add-to-cart:
+                    EnumCouponStatus couponStatus = FDUserCouponUtil.getCouponStatus(coupon, cart.getRecentlyAppliedCoupons());
+                    coupons.put(couponId, new AddToCartCouponResponse(cartLine.getAtcItemId(), generateFormattedCouponMessage(coupon, couponStatus)));
+                }
+            }
+
+        } catch (Exception e) {
+            LOG.error("Failed to populate ecoupons status messages after add to cart!", e);
+        }
+    }
+
+    public static String generateFormattedCouponMessage(FDCustomerCoupon coupon, EnumCouponStatus status) {
+        if (null == status || !status.isDisplayMessage()) {
+            return "";
+        }
+
+        FDCouponTag manFdCouponTag = new FDCouponTag();
+        manFdCouponTag.setCoupon(coupon);
+        manFdCouponTag.setCouponStatusText(status.getDescription());
+        manFdCouponTag.initContent(null);
+
+        return manFdCouponTag.getStatusTextHtml();
+    }
 
     public static void changeQuantity(FDUserI user, FDCartModel cart, FDCartLineI cartLine, double newQ, String serverName) {
 
@@ -503,36 +501,36 @@ public class CartOperations {
 
     public static void removeCartLine(FDUserI user, FDCartModel cart, FDCartLineI cartLine, String serverName) {
 
-		// parameter validation
-		if ( user == null ) {
-			LOG.error( "user is null" );
-			return;
-		}
-		if ( cart == null ) {
-			LOG.error( "cart is null" );
-			return;
-		}
-		if ( cartLine == null ) {
-			LOG.error( "cartLine is null" );
-			return;
-		}
-		
-		// Fetch additional data
-		ProductModel product = cartLine.lookupProduct();
-		if ( product == null ) {
-			LOG.error( "Failed to get product node for " + cartLine.getCategoryName() + " / " + cartLine.getProductName() + ", skipping." );
-			return;
-		}
+        // parameter validation
+        if (user == null) {
+            LOG.error("user is null");
+            return;
+        }
+        if (cart == null) {
+            LOG.error("cart is null");
+            return;
+        }
+        if (cartLine == null) {
+            LOG.error("cartLine is null");
+            return;
+        }
 
-		synchronized ( cart ) {
-			
-			cart.removeOrderLine( cartLine );
-			
-			logRemoveFromCart( user, cartLine, product, serverName );
-	
-			saveUserAndCart( user, cart );
-		}
-	}
+        // Fetch additional data
+        ProductModel product = cartLine.lookupProduct();
+        if (product == null) {
+            LOG.error("Failed to get product node for " + cartLine.getCategoryName() + " / " + cartLine.getProductName() + ", skipping.");
+            return;
+        }
+
+        synchronized (cart) {
+
+            cart.removeOrderLine(cartLine);
+
+            logRemoveFromCart(user, cartLine, product, serverName);
+
+            saveUserAndCart(user, cart);
+        }
+    }
 
     public static void saveUserAndCart(FDUserI user, FDCartModel cart) {
 
@@ -710,13 +708,13 @@ public class CartOperations {
 
     /**
      * Cartline processing: lookups, validation, post-processing.
-     * 
+     *
      * Salvaged from FDShoppingCartControllerTag.
-     * 
+     *
      * No support for 'original cartline scenario'.
-     * 
+     *
      * Inputs (AddToCartItem) : sku code is always required. productId, categoryId, recipeId are optional to provide context.
-     * 
+     *
      * @param user
      * @param cart
      * @param item
@@ -754,25 +752,25 @@ public class CartOperations {
         double quantity = 0.0;
         double maximumQuantity = 0.0;
 
-		String requestedUnit = item.getSalesUnit();
-		
-		if (requestedUnit == null || "".equals(requestedUnit) ) {
-			// no sales unit, this is an error			
-			responseItem.setStatus( Status.ERROR );
-			responseItem.setMessage( "Missing sales unit" );
-			return null;
-		}
-		
-		salesUnit = product.getSalesUnit(requestedUnit);
-		
-		if (salesUnit == null) {
-			// skip this item
-			responseItem.setStatus( Status.ERROR );
-			responseItem.setMessage( "Invalid sales unit" );
-			return null;
-		}
-		
-		quantity = extractQuantity( item );
+        String requestedUnit = item.getSalesUnit();
+
+        if (requestedUnit == null || "".equals(requestedUnit)) {
+            // no sales unit, this is an error
+            responseItem.setStatus(Status.ERROR);
+            responseItem.setMessage("Missing sales unit");
+            return null;
+        }
+
+        salesUnit = product.getSalesUnit(requestedUnit);
+
+        if (salesUnit == null) {
+            // skip this item
+            responseItem.setStatus(Status.ERROR);
+            responseItem.setMessage("Invalid sales unit");
+            return null;
+        }
+
+        quantity = extractQuantity(item);
 
         if (quantity == 0.0) {
             // skip this item
@@ -800,20 +798,20 @@ public class CartOperations {
         }
 
         errorMessage = validateQuantity(cart, getCartlinesQuantity(prodNode, cartLinesToAdd), prodNode, quantity, 0, maximumQuantity);
-		
-		if (errorMessage != null) {
-			responseItem.setStatus( Status.ERROR );
-			responseItem.setMessage(errorMessage);
-			return null;
-		}
-		
-		errorMessage = validateConfiguration(product,item);
 
-		if (errorMessage != null) {
-			responseItem.setStatus( Status.ERROR );
-			responseItem.setMessage(errorMessage);
-			return null;
-		}
+        if (errorMessage != null) {
+            responseItem.setStatus(Status.ERROR);
+            responseItem.setMessage(errorMessage);
+            return null;
+        }
+
+        errorMessage = validateConfiguration(product, item);
+
+        if (errorMessage != null) {
+            responseItem.setStatus(Status.ERROR);
+            responseItem.setMessage(errorMessage);
+            return null;
+        }
 
         // TODO: add 'agree to terms' warning/error
         // LOGGER.debug("Consented " + request.getParameter("consented" + suffix));
@@ -903,12 +901,12 @@ public class CartOperations {
             responseItem.setStatus(Status.ERROR);
             responseItem.setMessage("Product not available: " + e.getMessage());
         } catch (FDInvalidConfigurationException e) {
-        	responseItem.setStatus(Status.ERROR);
+            responseItem.setStatus(Status.ERROR);
             responseItem.setMessage("Warning - Invalid configuration: " + e.getMessage());
-		} catch (FDResourceException e) {
-        	responseItem.setStatus(Status.ERROR);
+        } catch (FDResourceException e) {
+            responseItem.setStatus(Status.ERROR);
             responseItem.setMessage("Product not found: " + e.getMessage());
-		} 
+        }
 
         responseItem.setInCartAmount(calculateInCartAmount(prodNode, cartLinesToAdd, cart, quantity));
         responseItem.setCartlineId(theCartLine.getRandomId());
@@ -922,20 +920,20 @@ public class CartOperations {
 
     public static double calculateInCartAmount(ProductModel product, List<FDCartLineI> cartLinesToAdd, FDCartModel cart, double quantity) {
 
-		double amount = getCartlinesQuantity( product, cartLinesToAdd ); // items not yet added
-		amount += cart.getTotalQuantity( product );
-		amount += quantity; // this item
+        double amount = getCartlinesQuantity(product, cartLinesToAdd); // items not yet added
+        amount += cart.getTotalQuantity(product);
+        amount += quantity; // this item
 
         return amount;
     }
 
     /**
      * Core processing. This creates the actual cartline.
-     * 
+     *
      * Salvaged from FDShoppingCartControllerTag.
-     * 
+     *
      * Support for 'original cartline scenario' is preserved, but not used.
-     * 
+     *
      * @param prodNode
      * @param product
      * @param quantity
@@ -976,25 +974,25 @@ public class CartOperations {
 
         }
 
-		return cartLine;
-	}
-	
-	
-	
-	/**
-	 * Validates item quantity in cart, returns an error message string, or null if OK.
-	 * 
-	 * Salvaged from FDShoppingCartControllerTag.
-	 * 
-	 * @param user
-	 * @param cart
-	 * @param originalQuantity	total quantity sum of existing line items for this product
-	 * @param prodNode
-	 * @param quantity
-	 * @param originalLineQuantity quantity of this cartline (for modify cartline scenario)
-	 * @param maximumQuantity
-	 * @return
-	 */
+        return cartLine;
+    }
+
+    /**
+     * Validates item quantity in cart, returns an error message string, or null if OK.
+     *
+     * Salvaged from FDShoppingCartControllerTag.
+     *
+     * @param user
+     * @param cart
+     * @param originalQuantity
+     *            total quantity sum of existing line items for this product
+     * @param prodNode
+     * @param quantity
+     * @param originalLineQuantity
+     *            quantity of this cartline (for modify cartline scenario)
+     * @param maximumQuantity
+     * @return
+     */
     private static String validateQuantity(FDCartModel cart, double originalQuantity, ProductModel prodNode, double quantity, double originalLineQuantity, double maximumQuantity) {
         String errorMessage = null;
         DecimalFormat formatter = new DecimalFormat("0.##");
@@ -1015,9 +1013,9 @@ public class CartOperations {
 
     /**
      * Validates configuration, returns an error message string, or null if OK.
-     * 
+     *
      * Salvaged from FDShoppingCartControllerTag.
-     * 
+     *
      */
     public static String validateConfiguration(FDProduct product, AddToCartItem item) {
         //
@@ -1039,82 +1037,81 @@ public class CartOperations {
             FDVariation variation = variations[i];
             FDVariationOption[] options = variation.getVariationOptions();
 
-			String optionName = varMap.get( variation.getName() );
+            String optionName = varMap.get(variation.getName());
 
-			if (options.length == 1) {
-				//
-				// there's only a single option, pick that
-				//
-				varMap.put(variation.getName(), options[0].getName());
+            if (options.length == 1) {
+                //
+                // there's only a single option, pick that
+                //
+                varMap.put(variation.getName(), options[0].getName());
 
-			} else if (((optionName == null) || "".equals(optionName)) && variation.isOptional()) {
-				//
-				// user didn't select anything for an optional variation, pick
-				// the SELECTED option for them
-				//
-				String selected = null;
-				for (int j = 0; j < options.length; j++) {
-					if (options[j].isSelected())
-						selected = options[j].getName();
-				}
-				varMap.put(variation.getName(), selected);
-			} else if (optionName != null && !"".equals(optionName)) {
-				//
-				// validate & add the option the user selected
-				//
-				boolean validOption = false;
-				for (int j = 0; j < options.length; j++) {
-					if (optionName.equals(options[j].getName())) {
-						validOption = true;
-						break;
-					}
-				}
-				if (!validOption) {
-					return "Please select " + variation.getDescription();
-				}
-			} else {
-				//
-				// user didn't select anything for a required variation, alert
-				// them
-				//
-				return "Please select " + variation.getDescription();
-			}
-		}
-		return null;
-	}
-	
-	/**
-	 * Deduce the quantity that has already been processed but not yet added to
-	 * the cart.
-	 * 
-	 * Salvaged from FDShoppingCartControllerTag.
-	 * 
-	 * @param product
-	 * @return total quantity of product already processed
-	 */
-	private static double getCartlinesQuantity(ProductModel product, List<FDCartLineI> cartLinesToAdd) {
-		String productId = product.getContentName();
-		double sum = 0;
-		for (Iterator<FDCartLineI> i = cartLinesToAdd.iterator(); i.hasNext();) {
-			FDCartLineI line = i.next();
-			if (productId.equals(line.getProductName())) {
-				sum += line.getQuantity();
-			}
-		}
-		return sum;
-	}
+            } else if (((optionName == null) || "".equals(optionName)) && variation.isOptional()) {
+                //
+                // user didn't select anything for an optional variation, pick
+                // the SELECTED option for them
+                //
+                String selected = null;
+                for (int j = 0; j < options.length; j++) {
+                    if (options[j].isSelected())
+                        selected = options[j].getName();
+                }
+                varMap.put(variation.getName(), selected);
+            } else if (optionName != null && !"".equals(optionName)) {
+                //
+                // validate & add the option the user selected
+                //
+                boolean validOption = false;
+                for (int j = 0; j < options.length; j++) {
+                    if (optionName.equals(options[j].getName())) {
+                        validOption = true;
+                        break;
+                    }
+                }
+                if (!validOption) {
+                    return "Please select " + variation.getDescription();
+                }
+            } else {
+                //
+                // user didn't select anything for a required variation, alert
+                // them
+                //
+                return "Please select " + variation.getDescription();
+            }
+        }
+        return null;
+    }
 
-	public static double extractQuantity( AddToCartItem item ) {
-		double quantity = 0.0;
-		try {
-			quantity = Double.parseDouble( item.getQuantity() );
-		} catch (NumberFormatException ignore) {
-		} catch (NullPointerException ignore) {
-		}
-		
-		return quantity;
-	}
-	
+    /**
+     * Deduce the quantity that has already been processed but not yet added to the cart.
+     *
+     * Salvaged from FDShoppingCartControllerTag.
+     *
+     * @param product
+     * @return total quantity of product already processed
+     */
+    private static double getCartlinesQuantity(ProductModel product, List<FDCartLineI> cartLinesToAdd) {
+        String productId = product.getContentName();
+        double sum = 0;
+        for (Iterator<FDCartLineI> i = cartLinesToAdd.iterator(); i.hasNext();) {
+            FDCartLineI line = i.next();
+            if (productId.equals(line.getProductName())) {
+                sum += line.getQuantity();
+            }
+        }
+        return sum;
+    }
+
+    public static double extractQuantity(AddToCartItem item) {
+        double quantity = 0.0;
+        try {
+            quantity = Double.parseDouble(item.getQuantity());
+        } catch (NumberFormatException ignore) {
+        } catch (NullPointerException ignore) {
+        }
+
+        return quantity;
+    }
+
     public static double extractMaximumQuantity(FDUserI user, String lineId, ProductModel prodNode) {
         double maximumQuantity = 0.0;
         MasqueradeContext context = user.getMasqueradeContext();
@@ -1125,7 +1122,7 @@ public class CartOperations {
         }
         return maximumQuantity;
     }
-    
+
     private static void saveNewCartline(FDUserI user, FDCartLineI newLine, double deltaQty, String orderId) {
         if (null == user.getMasqueradeContext()) {
             synchronized (newLine) {
