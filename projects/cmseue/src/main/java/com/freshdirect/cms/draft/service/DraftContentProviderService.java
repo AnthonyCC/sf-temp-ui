@@ -263,7 +263,7 @@ public class DraftContentProviderService extends ContextualContentProvider {
                 Set<ContentKey> originalChildKeys = collectChildKeysOf(originalNodes);
                 
                 invalidateDraftNodesCacheEntry(draftContext);
-                draftService.saveDraftChange(draftChangeExtractorService.extractChangesFromRequest(payload, originalNodes, draftContext, context.getAuthor()));
+                draftService.saveDraftChange(draftContext, draftChangeExtractorService.extractChangesFromRequest(payload, originalNodes, draftContext, context.getAuthor()));
                 invalidateDraftParentCacheForKeysOnDraft(collectKeysForCacheInvalidation(payload.keySet(), originalChildKeys));
                 
                 sendContentChangedNotification(draftContext, Sets.union(payload.keySet(), originalChildKeys));
