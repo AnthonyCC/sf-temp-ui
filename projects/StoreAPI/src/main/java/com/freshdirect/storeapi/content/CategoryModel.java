@@ -898,7 +898,7 @@ public class CategoryModel extends ProductContainer {
 	private boolean isActive(boolean filterNonDisplayableProducts) {
 	    List<ProductModel> products = getProducts();
 
-	    if (filterNonDisplayableProducts){
+	    if (filterNonDisplayableProducts&&products!=null&&!products.isEmpty()){
 	    	Iterator<ProductModel> itr = products.iterator();
 	        while(itr.hasNext()) {
 	        	ProductModel prod = itr.next();
@@ -911,7 +911,7 @@ public class CategoryModel extends ProductContainer {
 	        }
 	    }
 
-		if (!products.isEmpty()) {
+		if (products!=null&&!products.isEmpty()) {
 	        return true;
 	    }
 	    for (CategoryModel subCat : getSubcategories()) {
