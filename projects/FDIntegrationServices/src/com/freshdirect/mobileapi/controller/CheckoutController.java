@@ -938,7 +938,8 @@ public class CheckoutController extends BaseController {
         	}
         }
         else{
-        	if(subTotal != null && subTotal > user.getShoppingCart().getDeliveryReservation().getMinOrderAmt()) {
+        	if(subTotal != null && subTotal > (user!=null&&user.getShoppingCart()!=null&&user.getShoppingCart().getDeliveryReservation()!=null?
+        											user.getShoppingCart().getDeliveryReservation().getMinOrderAmt():0)) {
 				callAvalaraForTax(user);
         	}
         }
