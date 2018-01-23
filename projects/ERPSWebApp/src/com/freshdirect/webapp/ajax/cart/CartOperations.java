@@ -1078,7 +1078,34 @@ public class CartOperations {
                 return "Please select " + variation.getDescription();
             }
         }
+
+        sanitizeATCItemConfiguration(product, item);
+
         return null;
+    }
+
+    public static void sanitizeATCItemConfiguration(FDProduct product, AddToCartItem item) {
+        Map<String, String> configuration = item.getConfiguration();
+        FDVariation[] variations = product.getVariations();
+
+        //
+        // Sanitize ATC item configuration by removing dead / non-existent
+        // configuration items
+        //
+        List<String> configKeysToRemove = new ArrayList<String>();
+        loop0: for (String configurationKey : configuration.keySet()) {
+            for (int i = 0; i < variations.length; i++) {
+                FDVariation variation = variations[i];
+                if (configurationKey.equals(variation.getName())) {
+                    continue loop0;
+                }
+            }
+            configKeysToRemove.add(configurationKey);
+        }
+
+        for (String varName: configKeysToRemove) {
+            configuration.remove(varName);
+        }
     }
 
     /**
