@@ -610,7 +610,9 @@ var dataLayer = window.dataLayer || [];
         isHookLogic = (el && $(el).hasClass('isHookLogicProduct')) || (config && config.product && config.product.clickBeacon),
         productData = fd.modules.common.productSerialize(el)[0];
 
-    if (isHookLogic) {
+    if (el && $(el).closest('#atpfailure').length) {
+      channel = 'rec_atp';
+    } else if (isHookLogic) {
       channel = 'rec_criteo';
     } else if (productData && productData.variantId) {
       channel = 'rec_' + productData.variantId;
