@@ -1209,12 +1209,14 @@ public class BrowseUtil {
 	    private static AddressModel getAddress(BrowseQuery requestMessage) {
 
 	    	AddressModel a = new AddressModel();
-	        a.setZipCode(requestMessage.getZipCode());
-	        a.setAddress1(requestMessage.getAddress1());
-	        a.setApartment(requestMessage.getApartment());
-	        a.setCity(requestMessage.getCity());
-	        a.setState(requestMessage.getState());
-	        a.setServiceType(EnumServiceType.getEnum(requestMessage.getServiceType()));
+	    	if(requestMessage!=null){
+		        a.setZipCode(requestMessage.getZipCode());
+		        a.setAddress1(requestMessage.getAddress1());
+		        a.setApartment(requestMessage.getApartment());
+		        a.setCity(requestMessage.getCity());
+		        a.setState(requestMessage.getState());
+		        a.setServiceType(EnumServiceType.getEnum(requestMessage.getServiceType()));
+	    	}
 	        return a;
 
 	    }
