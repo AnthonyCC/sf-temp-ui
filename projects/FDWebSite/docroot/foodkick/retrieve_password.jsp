@@ -10,6 +10,7 @@
 	/*
 		LEAVE FOODKICK AS-IS
 	*/
+	boolean isSuccess = false;
 	boolean mobWeb = false; //FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
 	String pageTemplate = "includes/fklayout_tmpl.jsp"; //default
 	if (mobWeb) {
