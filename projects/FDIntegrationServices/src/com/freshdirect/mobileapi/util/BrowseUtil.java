@@ -1159,12 +1159,12 @@ public class BrowseUtil {
 
 	    private static void getSortOptionsForCategory(ContentNodeModel contentNode, SessionUser user, HttpServletRequest request, SortOptionInfo soi) {
 	    	//If Department loop through all categories in it
-	    	if(contentNode instanceof DepartmentModel){
+	    	if(contentNode!=null && contentNode instanceof DepartmentModel){
 	    		DepartmentModel dept = (DepartmentModel) contentNode;
 	    		for(CategoryModel m : dept.getCategories()){
 	    			getSortOptionsForCategory(m, user, request, soi);
 	    		}
-	    	} else if(contentNode instanceof CategoryModel){
+	    	} else if(contentNode!=null && contentNode instanceof CategoryModel){
 	    		CategoryModel cat = (CategoryModel)contentNode;
 	    		List<SortOptionModel> options = cat.getSortOptions();
 	    		SortType tmp;
