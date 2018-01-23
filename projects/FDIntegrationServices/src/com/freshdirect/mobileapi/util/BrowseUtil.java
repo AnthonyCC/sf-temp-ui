@@ -1469,7 +1469,7 @@ public class BrowseUtil {
 	    }
 
     public static CatalogInfo getCatalogInfo(BrowseQuery requestMessage, SessionUser user) {
-    	if(user.getFDSessionUser()!=null
+    	if(user!=null&&user.getFDSessionUser()!=null
     			&& user.getFDSessionUser().getIdentity()!=null
     			&& user.getAddress()!=null
     			&& !user.getAddress().isCustomerAnonymousAddress()){
