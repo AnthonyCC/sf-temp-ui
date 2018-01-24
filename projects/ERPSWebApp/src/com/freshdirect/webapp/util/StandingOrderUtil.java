@@ -230,14 +230,12 @@ public class StandingOrderUtil {
 				LOGGER.info("Starting to delete standing orders template based on delete date choosen by user.Delete date: "+so.getDeleteDate());
 				try {
 					FDActionInfo soinfo = new FDActionInfo( EnumTransactionSource.STANDING_ORDER, so.getCustomerIdentity(), 
-							INITIATOR_NAME, "so template deleted as per the delete date: "+so.getDeleteDate()+", choosen by user", null, null);
-					so.setDeleteDate(null);
+							INITIATOR_NAME, "SO template deleted as per the delete date: "+so.getDeleteDate()+", choosen by user", null, null);
 					deleteActivateSo(so, soinfo);
-					//return SOResult.createNull();
+					return SOResult.createSkipped(so, so.getCustomerIdentity(), so.getUserInfo(), "Skipping a customer choosed to delete this template");
 				} catch (Exception e) {
 					LOGGER.error(" Got the exception while deleting the So template:"+so.getId(), e);
 				}
-				LOGGER.info("Delete the So template based on template criteria choosen by user.");
 			}
 		}
 	
