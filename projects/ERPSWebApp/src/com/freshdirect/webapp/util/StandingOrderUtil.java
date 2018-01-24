@@ -227,13 +227,13 @@ public class StandingOrderUtil {
 		}else {
 			// delete date which was choose by user.
 			if(so.getDeleteDate()!=null && (dateFormat.format(now).equals(dateFormat.format(so.getDeleteDate())) || so.getDeleteDate().before(now) )) {
-				LOGGER.info("Starting to delete standing orders template based on delete date choosen by user.");
+				LOGGER.info("Starting to delete standing orders template based on delete date choosen by user.Delete date: "+so.getDeleteDate());
 				try {
 					FDActionInfo soinfo = new FDActionInfo( EnumTransactionSource.STANDING_ORDER, so.getCustomerIdentity(), 
 							INITIATOR_NAME, "so template deleted as per the delete date: "+so.getDeleteDate()+", choosen by user", null, null);
 					so.setDeleteDate(null);
 					deleteActivateSo(so, soinfo);
-					return SOResult.createNull();
+					//return SOResult.createNull();
 				} catch (Exception e) {
 					LOGGER.error(" Got the exception while deleting the So template:"+so.getId(), e);
 				}
