@@ -85,7 +85,7 @@ public class MobileApiProperties {
         defaults.put(PROP_OAS_PROTOCOL, "http");
         defaults.put(PROP_OAS_CACHE_TIMEOUT, "60");
         defaults.put(PROP_BROWSE_ENABLED, "true");
-        defaults.put(PROP_BASECONTROLLER_LOGGING_ENABLED, "true");
+        defaults.put(PROP_BASECONTROLLER_LOGGING_ENABLED, "false");
         defaults.put(PROP_ROUTE_DELIVERYINFO_ENABLED, "false");
         defaults.put(PROP_EXTERNAL_INTERFACE_ENABLED, "true");
         defaults.put(PROP_SUSTAINABILITY_RATING_ENABLED, "true");
