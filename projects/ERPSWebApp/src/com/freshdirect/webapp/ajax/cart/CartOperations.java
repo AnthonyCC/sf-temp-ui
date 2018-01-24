@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpSession;
 
@@ -1085,27 +1086,30 @@ public class CartOperations {
     }
 
     public static void sanitizeATCItemConfiguration(FDProduct product, AddToCartItem item) {
-        Map<String, String> configuration = item.getConfiguration();
-        FDVariation[] variations = product.getVariations();
+        Map<String, String> skuConfiguration = item.getConfiguration();
+        FDVariation[] skuVariations = product.getVariations();
 
         //
-        // Sanitize ATC item configuration by removing dead / non-existent
+        // Sanitize ATC item configuration by removing invalid
         // configuration items
         //
-        List<String> configKeysToRemove = new ArrayList<String>();
-        loop0: for (String configurationKey : configuration.keySet()) {
-            for (int i = 0; i < variations.length; i++) {
-                FDVariation variation = variations[i];
-                if (configurationKey.equals(variation.getName())) {
-                    continue loop0;
-                }
+        Iterator<Map.Entry<String, String>> configurationEntryIterator = skuConfiguration.entrySet().iterator();
+        while (configurationEntryIterator.hasNext()) {
+            final Entry<String, String> configurationEntry = configurationEntryIterator.next();
+            if (!lookupConfigurationNameInVariationList(configurationEntry.getKey(), skuVariations)) {
+                LOG.debug("Dropping invalid configuration "+configurationEntry.getKey()+":"+configurationEntry.getValue()+ " from SKU " + product.getSkuCode());
+                configurationEntryIterator.remove();
             }
-            configKeysToRemove.add(configurationKey);
         }
+    }
 
-        for (String varName: configKeysToRemove) {
-            configuration.remove(varName);
+    private static boolean lookupConfigurationNameInVariationList(String skuConfigName, FDVariation skuVariations[]) {
+        for (FDVariation variation: skuVariations) {
+            if (skuConfigName.equals(variation.getName())) {
+                return true;
+            }
         }
+        return false;
     }
 
     /**
