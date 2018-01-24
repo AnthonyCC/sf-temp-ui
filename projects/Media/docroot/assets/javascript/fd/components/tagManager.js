@@ -167,10 +167,25 @@ var dataLayer = window.dataLayer || [];
 
       ecommerce[qty > 0 ? 'add' : 'remove'] = addRemoveData;
 
+      // add product list if it was added from a transactional popup
+      if (qty > 0 && document.querySelector('.portrait-item[data-product-id="'+productData.id+'"]')) {
+        addRemoveData.actionField = {
+          list: fd.gtm.getListForProductId(productData.id)
+        };
+      }
+
       // send extra ATC-succes event for backward compatibility
       dataLayer.push({
         productId: productData.id,
         event: 'ATC-success'
+      });
+
+      // reset ATC data
+      dataLayer.push({
+        ecommerce: {
+          add: null,
+          remove: null
+        }
       });
 
       dataLayer.push({
@@ -705,6 +720,12 @@ var dataLayer = window.dataLayer || [];
         title = config.title ? 'title_' + config.title : fd.gtm.getListCarousel(el);
 
     return [channel, location, title].filter(function (e) { return e; }).join('-');
+  };
+
+  fd.gtm.getListForProductId = function (id, config) {
+    let el = document.querySelector('[data-product-id="'+id+'"]');
+
+    return fd.gtm.getListForProduct(el, config);
   };
 
 }(FreshDirect));
