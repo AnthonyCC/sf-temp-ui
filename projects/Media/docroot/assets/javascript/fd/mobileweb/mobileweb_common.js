@@ -231,9 +231,10 @@ var API;
 		/* CHECKOUT */
 		/* anchor header */
 		function co_alignHeader() {
-			var offsetTop = 0; 
-			offsetTop += $('#smartbanner:visible').outerHeight(true); //closed still returns height, so check for visible
-			$('[data-ec-page] .mm-page #cartheader, [data-ec-page] .mm-page #cartheader_co').css({'top': offsetTop+$('.mobweb-topnav').outerHeight(true)+'px' });
+			if (!$jq('#smartbanner').parent().hasClass('.mobweb-topnav')) { //move banner into nav
+				$jq('.mobweb-topnav').prepend($jq('#smartbanner'));
+			}
+			$('[data-ec-page] .mm-page #cartheader, [data-ec-page] .mm-page #cartheader_co').css({'top': $('.mobweb-topnav').outerHeight(true)+'px' });
 			$('[data-ec-page] .mm-page #content').css({'padding-top': ($('.mobweb-topnav').outerHeight(true)+$('[data-ec-page] .mm-page #cartheader, [data-ec-page] .mm-page #cartheader_co').outerHeight(true))+'px'});
 		}
 		$('#smartbanner .sb-close').on('click', co_alignHeader); //resize on smartbanner close
