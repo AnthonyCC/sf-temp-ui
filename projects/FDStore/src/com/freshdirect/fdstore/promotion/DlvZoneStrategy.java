@@ -156,7 +156,7 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 			List<FDTimeslot> tsRadiusLst = tsRadiusMap.get(_rootTSRadius);
 			if(tsRadiusLst != null){
 				for(FDTimeslot _slot : tsRadiusLst){
-					if(dlvStartTimeOfDay.equals(_slot.getStartTime()) && dlvEndTimeOfDay.equals(_slot.getEndTime())){
+					if(dlvStartTimeOfDay.equals(_slot.getDlvStartTime()) && dlvEndTimeOfDay.equals(_slot.getDlvEndTime())){
 						foundSlot = true;
 						break;
 					}
