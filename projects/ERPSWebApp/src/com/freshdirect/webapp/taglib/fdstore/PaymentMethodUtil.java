@@ -71,7 +71,8 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
     private final static int AMERICAN_EXPRESS	= 2;
     private final static int DISCOVER			= 3;
     private final static String NAME_REGEX      ="^[^\\n]*[A-Za-z]+[^\\n]*$";//"^[\\w.-_@(){}/?#$&!+%*<>=,\\s:;'|\"\\\\/`~]*[A-Za-z]+[\\w.-_@(){}/?#$&!+%*<>=,\\s:;'|\"\\\\/`~]*$"; 
-    
+    private static final String REGEX = "^(?!.*[&|<|>|\\\"|/|#|%|=])\\w.*$@";
+
     private PaymentMethodUtil() {
     }
     
@@ -416,12 +417,11 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
     	
     	
     	boolean isFiftyStateValidationReqd=true;
-    	//check name on card
+    	//check name on card		 //APPDEV-6661 check special charecters
         result.addError(
-        paymentMethod.getName()==null || paymentMethod.getName().trim().length() < 1,
-        PaymentMethodName.ACCOUNT_HOLDER, SystemMessageList.MSG_REQUIRED
-        );
-       
+        		paymentMethod.getName()==null || paymentMethod.getName().trim().length() < 1 || !isValidString(paymentMethod.getName()),
+        		PaymentMethodName.ACCOUNT_HOLDER, SystemMessageList.MSG_INVALID_CC_NAME
+        		);
         
         if((EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())||EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())) && checkAccountNumber(activityType)){
         	 result.addError( StringUtil.isEmpty(paymentMethod.getAccountNumber()),PaymentMethodName.ACCOUNT_NUMBER, SystemMessageList.MSG_REQUIRED );
@@ -834,4 +834,15 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
     public static void sortPaymentMethodsByPriority(List<ErpPaymentMethodI> paymentMethods){
     	Collections.sort(paymentMethods, new PaymentMethodDefaultComparator());
     }
+    
+    public static boolean isValidString(String value) {
+
+		String str2[]=value.split("");
+		for (int i = 0; i < str2.length; i++) {
+			if (!"".equalsIgnoreCase(str2[i]) && REGEX.contains(str2[i])) {
+				return false;
+			}
+		}
+		return true;
+	}
 }

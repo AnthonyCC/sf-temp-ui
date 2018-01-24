@@ -417,6 +417,8 @@ public class PaymentService {
                 validationErrors.add(new ValidationError(error.getType(), error.getDescription()));
             } else if (EnumUserInfoName.BIL_APARTMENT.getCode().equals(error.getType())) {
                 validationErrors.add(new ValidationError(error.getType(), error.getDescription()));
+            } else if (EnumUserInfoName.CARD_HOLDER.getCode().equals(error.getType())) {
+                validationErrors.add(new ValidationError(error.getType(), error.getDescription()));
             } else {
                 validationErrors.add(new ValidationError(PaymentMethodName.ACCOUNT_NUMBER, error.getDescription()));
             }
