@@ -93,6 +93,7 @@ import com.freshdirect.storeapi.content.CategorySectionModel;
 import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.storeapi.content.ContentNodeModel;
 import com.freshdirect.storeapi.content.DepartmentModel;
+import com.freshdirect.storeapi.content.EnumLayoutType;
 import com.freshdirect.storeapi.content.FilteringProductItem;
 import com.freshdirect.storeapi.content.PriceCalculator;
 import com.freshdirect.storeapi.content.ProductContainer;
@@ -107,6 +108,7 @@ import com.freshdirect.storeapi.content.SortOptionModel;
 import com.freshdirect.storeapi.content.StoreModel;
 import com.freshdirect.storeapi.content.TagModel;
 import com.freshdirect.webapp.ajax.DataPotatoField;
+import com.freshdirect.webapp.ajax.browse.data.BrowseData;
 import com.freshdirect.webapp.ajax.browse.data.CmsFilteringFlowResult;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringFlow;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
@@ -141,16 +143,16 @@ public class BrowseUtil {
             LayoutManagerWrapper layoutManagerTagWrapper = new LayoutManagerWrapper(user);
             Settings layoutManagerSetting = layoutManagerTagWrapper.getLayoutManagerSettings(currentFolder);
 
-            // if (layoutManagerSetting != null && EnumLayoutType.TEMPLATE_LAYOUT.getId() == layoutManagerSetting.getLayoutType()) {
-            // result.setBrowse(doFlowTemplateLayout(user.getFDSessionUser(), currentFolder));
-            // } else if (navigator.populateSectionsOnly()) {
-            // BrowseData browseData = CmsFilteringFlow.getInstance().doBrowseSectionsFlow(navigator, sessionUser);
-            // result.setBrowse(DataPotatoField.digBrowse(browseData));
-            // result.setIncludeNullValue(false);
-            // } else {
+            if (layoutManagerSetting != null && EnumLayoutType.TEMPLATE_LAYOUT.getId() == layoutManagerSetting.getLayoutType()) {
+                result.setBrowse(doFlowTemplateLayout(user.getFDSessionUser(), currentFolder));
+            } else if (navigator.populateSectionsOnly()) {
+                BrowseData browseData = CmsFilteringFlow.getInstance().doBrowseSectionsFlow(navigator, sessionUser);
+                result.setBrowse(DataPotatoField.digBrowse(browseData));
+                result.setIncludeNullValue(false);
+            } else {
             	final CmsFilteringFlowResult flow = CmsFilteringFlow.getInstance().doFlow(navigator, sessionUser);
             	result.setBrowse(DataPotatoField.digBrowse(flow));
-            // }
+            }
 
         } catch (FDResourceException e) {
             result.addErrorMessage(e.getMessage());
