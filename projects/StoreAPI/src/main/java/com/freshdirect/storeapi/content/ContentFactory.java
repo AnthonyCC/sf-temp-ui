@@ -695,12 +695,14 @@ public class ContentFactory {
     }
 
     public boolean isGoingOutOfStockProduct(ContentKey key) {
-        if (System.currentTimeMillis() > goingOutOfStockProductsLastUpdated + NEW_AND_BACK_REFRESH_PERIOD) {
+    	return false;
+    	//TODO: [APPDEV-6417]- commenting due to performance issues in PROD. Need to be reworked.
+/*        if (System.currentTimeMillis() > goingOutOfStockProductsLastUpdated + NEW_AND_BACK_REFRESH_PERIOD) {
             refreshGoingOutOfStockCache();
         }
         FulfillmentContext fulFillmentContext = getCurrentUserContext().getFulfillmentContext();
         return goingOutOfStockProductCache.containsKey(key)
-                && goingOutOfStockProductCache.get(key).contains(fulFillmentContext.getSalesOrg() + fulFillmentContext.getDistChannel());
+                && goingOutOfStockProductCache.get(key).contains(fulFillmentContext.getSalesOrg() + fulFillmentContext.getDistChannel());*/
     }
 
     private void refreshGoingOutOfStockCache() {
@@ -745,7 +747,8 @@ public class ContentFactory {
         getNewProducts();
         backInStockProductsLastUpdated = Integer.MIN_VALUE;
         getBackInStockProducts();
-        refreshGoingOutOfStockCache();
+      //TODO: [APPDEV-6417]- commenting due to performance issues in PROD. Need to be reworked.
+//        refreshGoingOutOfStockCache();
     }
 
     private void buildWineIndex() {
