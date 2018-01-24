@@ -3,6 +3,7 @@ package com.freshdirect.fdstore.temails;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Random;
 
@@ -74,9 +75,7 @@ public class SilverpopTemplateXmlFactory {
 			 if (null!= customerInfo){
 				 emailAddress = customerInfo.getEmailAddress(); 
 				 lName= customerInfo.getLastName();
-				 fName= customerInfo.getFirstName();
-				
-				 
+				 fName= customerInfo.getFirstName();	 
 			 }
 			 
 			 String cohortId =(String)  parameterHashMap.get(TEmailConstants.COHORT_ID);
@@ -89,9 +88,15 @@ public class SilverpopTemplateXmlFactory {
 				customerId =  (String) parameterHashMap.get(TEmailConstants.CUSTOMER_ID);
 			}
 
-			xmlTemplateStr=	 generateRegistrationEmailXml( templateID, emailAddress,  fName,customerId, cohortId);
+			xmlTemplateStr=	 generateRegistrationEmailXml( templateID, emailAddress,  fName,customerId, cohortId, Arrays.asList ( new String[] {"COHORT_ID"} ));
 			return xmlTemplateStr;
 	}
+	//temp
+	
+	
+/*	public String generateRegistrationEmailXml(String campaignCode, String emailAddress, String firstName, String customerId,  String cohortId){
+		return  generateRegistrationEmailXml( campaignCode, emailAddress, firstName, customerId,   cohortId, null);
+	}*/
 	
 	/**
 	 *  Creates the xml to be used by silverpop for customer registration emails.
@@ -103,7 +108,7 @@ public class SilverpopTemplateXmlFactory {
 	 * @return String, a fully formed xml ready to be posted to silverpop/IBM.
 	 */
 	//I dont think its a very good idea to have a parameter list of String, String, String, String, String but I dont see any solution now.
-	public String generateRegistrationEmailXml(String campaignCode, String emailAddress, String firstName, String customerId,  String cohortId ){
+	public String generateRegistrationEmailXml(String campaignCode, String emailAddress, String firstName, String customerId,  String cohortId, java.util.List<String> saveColums ){
 		  try {
 
 			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -125,10 +130,10 @@ public class SilverpopTemplateXmlFactory {
 			transaction(doc, rootElement);
 			
 			showAll(doc, rootElement);
-/*
- * SaveColumns not needed for this template
- */
-		//	saveColumns( doc, rootElement);
+
+			if (saveColums!= null &&  ! saveColums.isEmpty()){
+				saveColumns( doc, rootElement,saveColums );
+			}
 
 			Element recipient = recipient( doc,  rootElement, emailAddress);
 			 
@@ -237,25 +242,27 @@ private  void  createPersonalizationPair( Document doc,  Element anchorElement, 
  * Please Note, this method is here namely to generate a warning on the silverpop side, there is no save columns 
  * in the template at the time this was written
  */
-private  void saveColumns(Document doc, Element rootElement) {
-	Element save = doc.createElement("SAVE_COLUMNS");
-	//save.appendChild(doc.createTextNode("true"));
+private  void saveColumns(Document doc, Element rootElement, java.util.List<String> fields) {
+		Element save = doc.createElement("SAVE_COLUMNS");
+		// save.appendChild(doc.createTextNode("true"));
+		for (String field : fields) {
+			Element column_name = doc.createElement("COLUMN_NAME");
+			column_name.appendChild(doc.createTextNode(field));
+			save.appendChild(column_name);
+		}
 	
-	Element column_name1 = doc.createElement("COLUMN_NAME");
-	column_name1.appendChild(doc.createTextNode("FIRSTNAME"));
+	//Element column_name2 = doc.createElement("COLUMN_NAME");
 	
-	Element column_name2 = doc.createElement("COLUMN_NAME");
-	
-	Attr attr2 = doc.createAttribute("SAVE_TO_RESPONSE");
-	attr2.setValue("TRUE");
-	column_name2.setAttributeNode(attr2);
-	
-	
-	column_name2.appendChild(doc.createTextNode("ACCOUNT_NUMBER"));
+//	Attr attr2 = doc.createAttribute("SAVE_TO_RESPONSE");
+//	attr2.setValue("TRUE");
+//	column_name2.setAttributeNode(attr2);
+//	
+//	
+//	column_name2.appendChild(doc.createTextNode("ACCOUNT_NUMBER"));
 	
 	
-	save.appendChild(column_name1);
-	save.appendChild(column_name2);
+	//save.appendChild(column_name1);
+	//save.appendChild(column_name2);
 	
 	
 	rootElement.appendChild(save);
