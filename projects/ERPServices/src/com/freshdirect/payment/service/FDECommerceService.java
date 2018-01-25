@@ -136,6 +136,7 @@ import com.freshdirect.ecommerce.data.survey.FDSurveyData;
 import com.freshdirect.ecommerce.data.survey.FDSurveyResponseData;
 import com.freshdirect.ecommerce.data.survey.SurveyData;
 import com.freshdirect.ecommerce.data.survey.SurveyKeyData;
+import com.freshdirect.ecommerce.data.zoneInfo.ErpMasterInfoData;
 import com.freshdirect.erp.EnumApprovalStatus;
 import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.erp.ErpCOOLKey;
@@ -465,58 +466,6 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String ECOUPON_SUB_PENDING = "ecoupon/submitpendingcouponsales";
 	private static final String ECOUPON_SUBM_PENDING = "ecoupon/submitcoupontrans/";
 
-	private static final String UPDATE_REFERRAL_STATUS = "referral/status/update";
-	private static final String REMOVE_REFERRAL_OBJECTIVE = "referral/objective/delete";
-	private static final String REMOVE_REFERRAL_PARTNER = "referral/partner/delete";
-	private static final String REMOVE_REFERRAL_CAMPAIGN = "referral/campaign/delete";
-	private static final String REMOVE_REFERRAL_CHANNEL = "referral/channel/delete";
-	private static final String REMOVE_REFERRAL_PROGRAM = "referral/program/delete";
-	private static final String UPDATE_REFERRAL_OBJECTIVE = "referral/objective/update";
-	private static final String UPDATE_REFERRAL_PARTNER = "referral/partner/update";
-	private static final String UPDATE_REFERRAL_CAMPAIGN = "referral/campaign/update";
-	private static final String UPDATE_REFERRAL_CHANNEL = "referral/channel/update";
-	private static final String UPDATE_REFERRAL_PROGRAM = "referral/program/update";
-	private static final String CREATE_REFERRAL_CHANNEL = "referral/channel/create";
-	private static final String CREATE_REFERRAL_PARTNER = "referral/partner/create";
-	private static final String CREATE_REFERRAL_OBJECTIVE = "referral/objective/create";
-	private static final String CREATE_REFERRAL_CAMPAIGN = "referral/campaign/create";
-	private static final String CREATE_REFERRAL_PROGRAM = "referral/program/create";
-	private static final String CREATE_REFERRAL_HISTORY = "referral/history/create";
-	private static final String STORE_REFERRAL = "referral";
-	private static final String LOAD_REFERRAL_PK = "referral/id/";
-	private static final String LOAD_REFERRAL_PROGRAM_ID = "referral/programid/";
-	private static final String LOAD_REFERRAL_CUSTOMER_ID = "referral/customerId/";
-	private static final String LOAD_REFERRAL_EMAIL = "referral/emailId";
-	private static final String LOAD_REFERRAL_REPORT_CUSTOMER_ID = "referral/report/customerId/";
-	private static final String LOAD_REFERRAL_REPORT_REFERRAL_CUSTOMERID = "referral/report/referal/customerId/";
-	private static final String LOAD_REFERRAL_PROGRAM = "referral/program";
-	private static final String LOAD_REFERRAL_CHANNEL = "referral/channel";
-	private static final String LOAD_REFERRAL_PARTNER = "referral/partner";
-	private static final String LOAD_REFERRAL_OBJECTIVE = "referral/objective";
-	private static final String LOAD_REFERRAL_CAMPAIGN = "referral/campaign";
-	private static final String LOAD_REFERRAL_NAME_BY_REFERRAL_ID = "referral/name/customerId/";
-	private static final String LOAD_REFERRAL_PROGRAM_FROM_PK = "referral/programId/";
-	private static final String LOAD_LATEST_ACTIVE_REFERRAL_PROGRAM = "referral/activeprogram";
-	private static final String GET_REFERRAL_CHANNEL_MODEL = "referral/channel/chaId/";
-	private static final String GET_REFERRAL_CAMPAIGN_MODEL = "referral/campaign/chaId/";
-	private static final String GET_REFERRAL_OBJECTIVE_MODEL = "referral/objective/chaId/";
-	private static final String GET_REFERRAL_PARTNER_MODEL = "referral/partner/chaId/";
-	private static final String GET_REFERRAL_PROGRAM_MODEL = "referral/program/chaId/";
-	private static final String GET_REF_PROGRAM_FOR_REF_CHANNELS = "referral/program/refchannel";
-	private static final String GET_REFPROGRAM_FOR_REFPARTNER = "referral/program/refpartner";
-	private static final String GET_REFPROGRAM_FOR_REFCAMPAIGN = "referral/program/refcampaign";
-	private static final String GET_REFCAMPAIGN_FOR_REFOBJECTIVE = "referral/program/refobjective";
-	private static final String IS_REFERRAL_PARTNER_EXIST = "referral/partner/name/";
-	private static final String IS_REFERRAL_CAMPAIGN_EXIST = "referral/campaign/name/";
-	private static final String IS_REFERRAL_OBJECTIVE_EXIST = "referral/objective/name/";
-	private static final String IS_REFERRAL_CHANNEL_NAME_TYPE_EXIST = "referral/channel/name/";
-	private static final String IS_REFERRAL_PROGRAM_NAME_EXIST = "referral/program/name/";
-	private static final String GET_REFERRAL_PROGRAMS = "referral/program/criteria";
-	private static final String GET_REFERRAL_CHANNELS = "referral/channel/criteria";
-	private static final String GET_REFERRAL_CAMPAIGNS = "referral/campaign/criteria";
-	private static final String GET_REFERRAL_PARTNERS = "referral/partner/criteria";
-	private static final String GET_REFERRAL_OBJECTIVES = "referral/objective/criteria";
-	
 	private static final String FDFACTORY_FDPRODUCTINFO_SKUCODE = "productinfo/productinfobysku";
 	private static final String FDFACTORY_FDPRODUCTINFO_SKUCODE_VERSION = "productinfo/productbyskuandversion";
 	private static final String FDFACTORY_FDPRODUCTINFO_SKUCODES = "productinfo/productsbyskus";
@@ -985,14 +934,11 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 
 	@Override
 	public Collection<Object> loadAllZoneInfoMaster() throws RemoteException, FDResourceException {
-		/*Response<Collection<Object>> response;
-		response = httpGetDataTypeMap(getFdCommerceEndPoint(LOAD_ALL_ZONE_INFO), new TypeReference<Response<Collection<Object>>>() {});
-		if(!response.getResponseCode().equals("OK"))
-			throw new FDResourceException(response.getMessage());
-		return response.getData();*/
 		
 
 			Response<Collection<Object>> response = httpGetData(getFdCommerceEndPoint(ALL_ZONE_INFO_MASTER), Response.class);
+			if(!response.getResponseCode().equals("OK"))
+				throw new FDResourceException(response.getMessage());
 			return response.getData();
 
 		
@@ -1042,31 +988,38 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	@Override
 	public List<ErpZoneMasterInfo> getAllZoneInfoDetails()
 			throws RemoteException {
-		Response<List<ErpZoneMasterInfo>> response = new Response<List<ErpZoneMasterInfo>>();
+		Response<List<ErpMasterInfoData>> response = new Response<List<ErpMasterInfoData>>();
 		try {
-			response = httpGetDataTypeMap(getFdCommerceEndPoint(ALL_ZONE_INFO), new TypeReference<Response<List<ErpZoneMasterInfo>>>() {});
+			response = httpGetDataTypeMap(getFdCommerceEndPoint(ALL_ZONE_INFO), new TypeReference<Response<List<ErpMasterInfoData>>>() {});
 		} catch (FDResourceException e) {
 			
 			throw new RemoteException(response.getMessage());
 		}
 		if(!response.getResponseCode().equals("OK"))
 			throw new RemoteException(response.getMessage());
-		return response.getData();
+		return ModelConverter.buildErpMasterInfoList(response.getData());
 	}
 	
 	@Override
 	public Collection<Object> findZoneInfoMaster(String[] zoneIds)
 			throws RemoteException {
-		Response<Collection<Object>> response = new Response<Collection<Object>>();
-		try {
-			response = httpGetDataTypeMap(getFdCommerceEndPoint(LOAD_ZONE_BY_ZONEIDS), new TypeReference<Collection<Object>>() {});
-		} catch (FDResourceException e) {
-			
-			throw new RemoteException(response.getMessage());
+		try{
+		Request<String[]> request = new Request<String[]>();
+		request.setData(zoneIds);
+		String inputJson = buildRequest(request);
+		Response<Collection<Object>> response = null;
+		response =  this.postDataTypeMap(inputJson, getFdCommerceEndPoint(LOAD_ZONE_BY_ZONEIDS), new TypeReference<Response<Collection<Object>>>() {});
+		if(!response.getResponseCode().equals("OK")){
+			throw new FDResourceException(response.getMessage());
 		}
-		if(!response.getResponseCode().equals("OK"))
-			throw new RemoteException(response.getMessage());
 		return response.getData();
+	} catch (FDEcommServiceException e) {
+		LOGGER.error(e.getMessage());
+		throw new RemoteException(e.getMessage());
+	}catch (FDResourceException e){
+		LOGGER.error(e.getMessage());
+		throw new RemoteException(e.getMessage());
+	}
 	}
 	
 	

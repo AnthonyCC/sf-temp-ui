@@ -43,6 +43,7 @@ import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumComplaintDlvIssueType;
 import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.EnumZoneServiceType;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpComplaintReason;
 import com.freshdirect.customer.ErpCreditCardModel;
@@ -53,6 +54,8 @@ import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpPayPalCardModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
+import com.freshdirect.customer.ErpZoneMasterInfo;
+import com.freshdirect.customer.ErpZoneRegionInfo;
 import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.deliverypass.DeliveryPassType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
@@ -148,6 +151,8 @@ import com.freshdirect.ecommerce.data.referral.UserCreditData;
 import com.freshdirect.ecommerce.data.rules.RuleData;
 import com.freshdirect.ecommerce.data.security.TicketData;
 import com.freshdirect.ecommerce.data.utill.DayOfWeekSetData;
+import com.freshdirect.ecommerce.data.zoneInfo.ErpMasterInfoData;
+import com.freshdirect.ecommerce.data.zoneInfo.ErpZoneRegionInfoData;
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.EnumAlcoholicContent;
 import com.freshdirect.erp.EnumFeaturedHeaderType;
@@ -1650,7 +1655,7 @@ public class ModelConverter {
 	private static ErpPaymentMethodI createErpCreditCardModel(ErpPaymentMethodData source) {
 		ErpCreditCardModel model = new ErpCreditCardModel();
 		createErpPaymentMethod(model,source);
-		model.setExpirationDate(source.getExpirationDate());
+		model.setExpirationDate(new java.sql.Date(source.getExpirationDate()));
 		model.setCardType(EnumCardType.getCardType(source.getCardType()));
 		model.setAvsCkeckFailed(source.isAvsCkeckFailed());
 		model.setBypassAVSCheck(source.isBypassAVSCheck());
@@ -1695,7 +1700,7 @@ public class ModelConverter {
 		}
 		model.setOriginalAmount(source.getOriginalAmount());
 		model.setPurchaseSaleId(source.getPurchaseSaleId());
-		model.setPurchaseDate(source.getPurchaseDate());
+		model.setPurchaseDate(new java.sql.Date(source.getPurchaseDate()));
 		return model;
 		
 	}
@@ -2166,19 +2171,23 @@ public class ModelConverter {
 		return data;
 	}
 	
-	public static DeliveryPassTypeData buildDeliveryPassType(DeliveryPassType type) {
-		DeliveryPassTypeData data = new DeliveryPassTypeData();
-		data.setAutoRenewalSKU(type.getAutoRenewalSKU());
-		data.setAutoRenewDP(type.isAutoRenewDP());
-		data.setCode(type.getCode());
-		data.setDuration(type.getDuration());
-		data.setFreeTrialDP(type.isFreeTrialDP());
-		data.setFreeTrialRestricted(type.isFreeTrialRestricted());
-		data.setName(type.getName());
-		data.setNoOfDeliveries(type.getNoOfDeliveries());
-		data.setProfileValue(type.getProfileValue());
-		data.setUnlimited(type.isUnlimited());
-		return data;
+	public static DeliveryPassTypeData buildDeliveryPassType(
+			DeliveryPassType type) {
+		if (type != null) {
+			DeliveryPassTypeData data = new DeliveryPassTypeData();
+			data.setAutoRenewalSKU(type.getAutoRenewalSKU());
+			data.setAutoRenewDP(type.isAutoRenewDP());
+			data.setCode(type.getCode());
+			data.setDuration(type.getDuration());
+			data.setFreeTrialDP(type.isFreeTrialDP());
+			data.setFreeTrialRestricted(type.isFreeTrialRestricted());
+			data.setName(type.getName());
+			data.setNoOfDeliveries(type.getNoOfDeliveries());
+			data.setProfileValue(type.getProfileValue());
+			data.setUnlimited(type.isUnlimited());
+			return data;
+		}
+		return null;
 	}
 
 	public static FDCouponActivityLogData buildCouponActivityData(
@@ -2216,6 +2225,34 @@ public class ModelConverter {
 			return null;
 		AttributeCollection attributes = new AttributeCollection(attribute.getAttributes());
 		return attributes;
+	}
+
+	public static List<ErpZoneMasterInfo> buildErpMasterInfoList(List<ErpMasterInfoData> data) {
+		List<ErpZoneMasterInfo> zoneMasterInfoList = new ArrayList<ErpZoneMasterInfo>();
+		for (ErpMasterInfoData erpMasterInfoData : data) {
+			zoneMasterInfoList.add(buildErpMasterInfo(erpMasterInfoData));
+		}
+		return zoneMasterInfoList;
+	}
+
+	private static ErpZoneMasterInfo buildErpMasterInfo(ErpMasterInfoData erpMasterInfoData) {
+		if(erpMasterInfoData != null){
+		ErpZoneMasterInfo erpZoneMasterInfo = new ErpZoneMasterInfo(erpMasterInfoData.getSapId(), buildErpZoneRegionInfo(erpMasterInfoData.getRegion()), EnumZoneServiceType.getEnumByCode(erpMasterInfoData.getServiceType()),
+				erpMasterInfoData.getDescription());
+		erpZoneMasterInfo.setDefault(erpMasterInfoData.isDefault());
+		erpZoneMasterInfo.setId(erpMasterInfoData.getId());
+		erpZoneMasterInfo.setParentZone(buildErpMasterInfo(erpMasterInfoData.getParentZone()));
+		erpZoneMasterInfo.setVersion(erpMasterInfoData.getVersion());
+		return erpZoneMasterInfo;
+		}
+		return null;
+	}
+
+	private static ErpZoneRegionInfo buildErpZoneRegionInfo(ErpZoneRegionInfoData region) {
+		ErpZoneRegionInfo regionInfo = new ErpZoneRegionInfo(region.getSapId(), region.getDescription());
+		regionInfo.setId(region.getId());
+		regionInfo.setVersion(region.getVersion());
+		return regionInfo;
 	}
 }
 

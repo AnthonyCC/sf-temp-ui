@@ -90,7 +90,8 @@ public class FDEcommProperties {
 	public static final String PaymentSB = "com.freshdirect.payment.PaymentSB";
  
 	public static final String TEmailInfoSB = "com.freshdirect.fdstore.temails";
-	public static final String ProfileCreatorSB = "com.freshdirect.dataloader.payment.ProfileCreatorSB"; 
+	public static final String ProfileCreatorSB = "com.freshdirect.dataloader.payment.ProfileCreatorSB";
+	public static final String FDStandingOrderSB = "com.freshdirect.fdstore.standingorders.FDStandingOrdersSB"; 
   
     
     
@@ -151,6 +152,8 @@ public class FDEcommProperties {
         defaults.put(PaymentSB, FALSE);
         defaults.put(TEmailInfoSB, FALSE);
         defaults.put(ProfileCreatorSB, FALSE);
+        defaults.put(FDStandingOrderSB, FALSE);
+        
         refresh();
     }
 
