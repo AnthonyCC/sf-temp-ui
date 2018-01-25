@@ -640,7 +640,9 @@ public interface IECommerceService {
 
 	public HLBrandProductAdResponse getHomeAdProduct(HLBrandProductAdRequest hLBrandProductAdRequest) throws RemoteException;
 
-	public HLBrandProductAdResponse getPdpAdProduct(HLBrandProductAdRequest hLBrandProductAdRequest) throws RemoteException;;
+	public HLBrandProductAdResponse getPdpAdProduct(HLBrandProductAdRequest hLBrandProductAdRequest) throws RemoteException;
+
+	public Collection<ErpMaterialSalesAreaModel> getGoingOutOfStockSalesAreas()throws RemoteException;
 
 
 }

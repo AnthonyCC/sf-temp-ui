@@ -557,8 +557,15 @@ public class FDFactory {
             lookupFactoryHome();
         }
         try {
-            FDFactorySB sb = factoryHome.create();
-            return sb.getGoingOutOfStockSalesAreas();
+        	
+        	if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
+				return FDECommerceService.getInstance().getGoingOutOfStockSalesAreas();
+			}else{
+				FDFactorySB sb = factoryHome.create();
+	            return sb.getGoingOutOfStockSalesAreas();
+			}
+        	
+            
         } catch (CreateException ce) {
             factoryHome = null;
             throw new FDResourceException(ce, "Error creating session bean");

@@ -384,6 +384,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String ERP_SKUS_OLDNESS = "erpinfo/skuoldness";
 	private static final String ERP_REINTRODUCED_SKUCODES = "erpinfo/reintroducedskucodes";
 	private static final String ERP_OUTOFSTOCK_SKUCODES = "erpinfo/outofstockskucodes";
+	private static final String ERP_GOING_OUTOFSTOCK_SALAREA ="erpinfo/goingOutOfStockSalesAreas";
 	private static final String ERP_SKUS_BY_DEAL = "erpinfo/skusbydeal";
 	private static final String ERP_PEAK_PRODUCE_SKUS_BY_DEPARTMENT = "erpinfo/peakproduceskusbydepartment";
 	private static final String ERP_NEW_SKUS = "erpinfo/newskus";
@@ -3274,12 +3275,11 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		
 		Response<Map<String,ErpInventoryData>> response = null;
 		Map<String,ErpInventoryModel> erpInventoryModelMap = null;
-
 		try {
-			SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
-			String date1 = null;
+			
+			Long date1 = null;
 			if(date!=null){
-			date1 = format1.format(date); 
+			date1 = date.getTime(); 
 			}
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_LOAD_INVENTORY_INFO)+"/"+date1,  new TypeReference<Response<Map<String,ErpInventoryData>>>(){});
 			if(!response.getResponseCode().equals("OK")){
@@ -3391,6 +3391,25 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			throw new RemoteException(e.getMessage());
 		}
 		return response.getData();
+	}
+	
+	@Override
+	public Collection<ErpMaterialSalesAreaModel> getGoingOutOfStockSalesAreas()
+			throws RemoteException {
+		Response<Collection<ErpMaterialSalesAreaData>> response = null;
+		Collection<ErpMaterialSalesAreaModel> erpMaterialSalesAreaModel;
+		Request<String[]> request = new Request<String[]>();
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_GOING_OUTOFSTOCK_SALAREA),  new TypeReference<Response<Collection<ErpMaterialSalesAreaData>>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			erpMaterialSalesAreaModel = ErpMaterialSalesAreaModelConverter.convertListDataToListModel(response.getData());
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new FDRuntimeException(e, "Unable to process the request.");
+		}
+		return erpMaterialSalesAreaModel;
 	}
 	
 	
@@ -5249,5 +5268,6 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			throw new RemoteException(e.getMessage());
 		}
 	}
+
 
 }
