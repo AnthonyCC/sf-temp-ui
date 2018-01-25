@@ -1,6 +1,11 @@
 /* requires jquery, jquery.mmenu */
 var API;
 (function ($) {
+	/* experimental back/forward navigation fix */
+	if(!!window.performance && window.performance.navigation.type === 2) {
+		window.location.reload(true);
+	}
+	
 	$(document).ready(function() {
 		/* NAV */
 			$("#nav-menu").mmenu({
