@@ -151,6 +151,7 @@ public class CallCenterConverter {
 		customerOrderInfo.setFirstName(fdCustomerOrderInfoData.getFirstName());
 		if(fdCustomerOrderInfoData.getIdentity()  != null)
 		customerOrderInfo.setIdentity(buildFDIdentity(fdCustomerOrderInfoData.getIdentity()));
+		if(fdCustomerOrderInfoData.getLastCroModDate() != null)
 		customerOrderInfo.setLastCroModDate(new java.sql.Date(fdCustomerOrderInfoData.getLastCroModDate()));
 		customerOrderInfo.setLastName(fdCustomerOrderInfoData.getLastName());
 		if(fdCustomerOrderInfoData.getPaymentType() != null)
@@ -194,6 +195,7 @@ public class CallCenterConverter {
 		returnOrderData.setTransactionInitiator(returnOrder.getTransactionInitiator());
 		if(returnOrder.getTransactionSource() != null)
 		returnOrderData.setTransactionSource(returnOrder.getTransactionSource().getName());
+		returnOrderData.setTransactionId(returnOrder.getId());
 		return returnOrderData;
 	}
 
@@ -256,8 +258,8 @@ public class CallCenterConverter {
 			invoiceLineData.setQuantity(erpInvoiceLineModel.getQuantity());
 			invoiceLineData.setTaxValue(erpInvoiceLineModel.getTaxValue());
 			invoiceLineData.setWeight(erpInvoiceLineModel.getWeight());
-			invoiceLineData.setSubSkuStatus(erpInvoiceLineModel.getSubSkuStatus());
-			invoiceLineData.setSubstitutedSkuCode(erpInvoiceLineModel.getSubstitutedSkuCode());
+			//invoiceLineData.setSubSkuStatus(erpInvoiceLineModel.getSubSkuStatus());
+			//invoiceLineData.setSubstitutedSkuCode(erpInvoiceLineModel.getSubstitutedSkuCode());
 			invoiceLineModelData.add(invoiceLineData);
 		}
 		}
@@ -339,6 +341,7 @@ public class CallCenterConverter {
 		List mealItemList = new  ArrayList();
 		for (MealItemData mealItemData : items) {
 			MealItemModel mealItem = new MealItemModel();
+			if(mealItemData.getId() != null)
 			mealItem.setId(mealItemData.getId());
 			mealItem.setName(mealItemData.getName());
 			mealItem.setQuantity(mealItemData.getQuantity());
@@ -512,6 +515,7 @@ public class CallCenterConverter {
 		cancelReservationData.setInitiator(initiator);
 		cancelReservationData.setNotes(notes);
 		cancelReservationData.setResvCriteria(resvCriteria.getSearchType().getName());
+		cancelReservationData.setCriteriaMap(resvCriteria.getCriteriaMap());
 		return cancelReservationData;
 	}
 
@@ -580,14 +584,24 @@ public class CallCenterConverter {
 		return identityData;
 	}
 
-	public static Map buildReturnOrderResponse(Map<String, FDCustomerOrderInfoData> data) {
-		Map<String , FDCustomerOrderInfo> orderInfoMap = new HashMap<String, FDCustomerOrderInfo>();
+	public static Map buildReturnOrderResponse(Map<String, List<FDCustomerOrderInfoData>> data) {
+		Map<String , List<FDCustomerOrderInfo>> orderInfoMap = new HashMap<String, List<FDCustomerOrderInfo>>();
 		for (String returnOrder : data.keySet()) {
-			FDCustomerOrderInfoData info = data.get(returnOrder);
-			FDCustomerOrderInfo orderInfo = buildFDCustomerOrderInfoData(info);
+			List<FDCustomerOrderInfoData> info = data.get(returnOrder);
+			List<FDCustomerOrderInfo> orderInfo = buildFDCustomerOrderinfoList(info);
 			orderInfoMap.put(returnOrder, orderInfo);
 		}
 		return orderInfoMap;
+	}
+
+	
+
+	private static List<FDCustomerOrderInfo> buildFDCustomerOrderinfoList(List<FDCustomerOrderInfoData> info) {
+		 List<FDCustomerOrderInfo> customerOrderInfoList = new ArrayList<FDCustomerOrderInfo>();
+		 for (FDCustomerOrderInfoData fdCustomerOrderInfoData : info) {
+			 customerOrderInfoList.add(buildFDCustomerOrderInfoData(fdCustomerOrderInfoData));
+		}
+		return customerOrderInfoList;
 	}
 
 	public static CrmClick2CallData buildClick2CallData(CrmClick2CallModel click2CallModel) {
@@ -784,6 +798,15 @@ public class CallCenterConverter {
 		return customerReservationInfo;
 		
 		
+	}
+
+	public static List buildMealModelList(List<MealData> data) {
+		List list = new ArrayList();
+		for (MealData mealData : data) {
+			list.add(buildMealModel(mealData));
+		}
+		
+		return list;
 	}
 
 	
