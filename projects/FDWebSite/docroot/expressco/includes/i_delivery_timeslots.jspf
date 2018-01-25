@@ -26,6 +26,10 @@ String timeSlotId = null;
 ErpAddressModel address;
 boolean genericTimeSlot=false;
 boolean forceOrder = user.getMasqueradeContext()!=null && user.getMasqueradeContext().isForceOrderAvailable() && Boolean.parseBoolean(request.getParameter("forceorder"));
+
+if(user.getMasqueradeContext()!=null && user.getMasqueradeContext().isAddOnOrderEnabled()) {
+	forceOrder=true;
+}
 if(StandingOrderHelper.isSO3StandingOrder(user)){
 	genericTimeSlot=true;
 	address = currentStandingOrder.getDeliveryAddress();
