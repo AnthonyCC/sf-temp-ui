@@ -659,6 +659,7 @@ public class ProductDetailPopulator {
         data.setProductName( fullName );
         data.setProductNameNoBrand( productNameNoBrand );
         data.setBrandName( brandName );
+        data.setProductAltText(fullName.replace("\"", "\\\""));
 
 	    return data;
 	}
