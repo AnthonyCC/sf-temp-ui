@@ -131,7 +131,9 @@ var dataLayer = window.dataLayer || [];
       fd.gtm.reportImpressions(products);
     },
     product: function (productData) {
-      var product = productTransform(productData, null, {product: product});
+      var product = productTransform(productData, null, {product: productData});
+
+      delete product.list;
 
       dataLayer.push({
         ecommerce: {
