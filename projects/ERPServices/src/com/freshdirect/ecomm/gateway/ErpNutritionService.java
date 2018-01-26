@@ -177,10 +177,10 @@ public class ErpNutritionService extends AbstractEcommService implements ErpNutr
 		Response<Map<String, NutritionPanel>> response = null;
 
 		try {
-			String date1=null;
-			SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+			long date1=0;
+			
 			if(lastModified!=null){
-			date1 = format1.format(lastModified); 
+			date1 =lastModified.getTime(); 
 			}
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(NUTRITION_PANEL_BY_DATE)+"/"+date1,  new TypeReference<Response<Map<String, NutritionPanel>>>(){});
 			if(!response.getResponseCode().equals("OK")){
