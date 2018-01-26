@@ -146,7 +146,7 @@ public interface IECommerceService {
 	
 	public ErpZoneMasterInfo findZoneInfoMaster(String zoneId) throws RemoteException, FDResourceException;
 
-	public Collection<Object> loadAllZoneInfoMaster() throws RemoteException, FDResourceException;
+	public Collection<String> loadAllZoneInfoMaster() throws RemoteException, FDResourceException;
 
 	public String findZoneId(String zoneServiceType, String zoneId) throws RemoteException, FDResourceException;
 	

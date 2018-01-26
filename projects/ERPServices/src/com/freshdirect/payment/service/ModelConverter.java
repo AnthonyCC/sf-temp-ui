@@ -2235,7 +2235,7 @@ public class ModelConverter {
 		return zoneMasterInfoList;
 	}
 
-	private static ErpZoneMasterInfo buildErpMasterInfo(ErpMasterInfoData erpMasterInfoData) {
+	public static ErpZoneMasterInfo buildErpMasterInfo(ErpMasterInfoData erpMasterInfoData) {
 		if(erpMasterInfoData != null){
 		ErpZoneMasterInfo erpZoneMasterInfo = new ErpZoneMasterInfo(erpMasterInfoData.getSapId(), buildErpZoneRegionInfo(erpMasterInfoData.getRegion()), EnumZoneServiceType.getEnumByCode(erpMasterInfoData.getServiceType()),
 				erpMasterInfoData.getDescription());

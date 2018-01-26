@@ -926,18 +926,18 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	
 	@Override
 	public ErpZoneMasterInfo findZoneInfoMaster(String zoneId) throws RemoteException, FDResourceException {
-		Response<ErpZoneMasterInfo> response = new Response<ErpZoneMasterInfo>();
-		response = httpGetDataTypeMap(getFdCommerceEndPoint(ZONE_INFO_MASTER+"?zoneId="+ zoneId), new TypeReference<Response<ErpZoneMasterInfo>>() {});
+		Response<ErpMasterInfoData> response = new Response<ErpMasterInfoData>();
+		response = httpGetDataTypeMap(getFdCommerceEndPoint(ZONE_INFO_MASTER+"?zoneId="+ zoneId), new TypeReference<Response<ErpMasterInfoData>>() {});
 		if(!response.getResponseCode().equals("OK"))
 			throw new FDResourceException(response.getMessage());
-			return response.getData();
+			return ModelConverter.buildErpMasterInfo(response.getData());
 	}
 
 	@Override
-	public Collection<Object> loadAllZoneInfoMaster() throws RemoteException, FDResourceException {
+	public Collection<String> loadAllZoneInfoMaster() throws RemoteException, FDResourceException {
 		
 
-			Response<Collection<Object>> response = httpGetData(getFdCommerceEndPoint(ALL_ZONE_INFO_MASTER), Response.class);
+			Response<Collection<String>> response = httpGetData(getFdCommerceEndPoint(ALL_ZONE_INFO_MASTER), Response.class);
 			if(!response.getResponseCode().equals("OK"))
 				throw new FDResourceException(response.getMessage());
 			return response.getData();
@@ -1002,18 +1002,18 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	}
 	
 	@Override
-	public Collection<Object> findZoneInfoMaster(String[] zoneIds)
+	public Collection<ErpZoneMasterInfo> findZoneInfoMaster(String[] zoneIds)
 			throws RemoteException {
 		try{
 		Request<String[]> request = new Request<String[]>();
 		request.setData(zoneIds);
 		String inputJson = buildRequest(request);
-		Response<Collection<Object>> response = null;
-		response =  this.postDataTypeMap(inputJson, getFdCommerceEndPoint(LOAD_ZONE_BY_ZONEIDS), new TypeReference<Response<Collection<Object>>>() {});
+		Response<Collection<ErpMasterInfoData>> response = null;
+		response =  this.postDataTypeMap(inputJson, getFdCommerceEndPoint(LOAD_ZONE_BY_ZONEIDS), new TypeReference<Response<Collection<ErpMasterInfoData>>>() {});
 		if(!response.getResponseCode().equals("OK")){
 			throw new FDResourceException(response.getMessage());
 		}
-		return response.getData();
+		return ModelConverter.buildErpMasterInfoList((List<ErpMasterInfoData>) response.getData());
 	} catch (FDEcommServiceException e) {
 		LOGGER.error(e.getMessage());
 		throw new RemoteException(e.getMessage());
