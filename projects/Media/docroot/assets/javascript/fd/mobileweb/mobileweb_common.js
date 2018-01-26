@@ -5,6 +5,12 @@ var API;
 	if(!!window.performance && window.performance.navigation.type === 2) {
 		window.location.reload(true);
 	}
+	$(window).on('pageshow', function() { /* fix for back on ios safari */
+		$('.cartheader__button').attr('disabled', null);
+	});
+	$(window).on('pagehide', function() { /* pageshow covers, but just in case */
+		$('.cartheader__button').attr('disabled', null);
+	});
 	
 	$(document).ready(function() {
 		/* NAV */
