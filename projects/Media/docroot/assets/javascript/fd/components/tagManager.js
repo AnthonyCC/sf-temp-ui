@@ -1,6 +1,5 @@
 'use strict';
 
-
 var FreshDirect = window.FreshDirect || {};
 var GTMID = window.FreshDirect && window.FreshDirect.gtm && window.FreshDirect.gtm.key;
 var GTMAUTH = window.FreshDirect && window.FreshDirect.gtm && window.FreshDirect.gtm.auth;
@@ -49,6 +48,8 @@ var dataLayer = window.dataLayer || [];
 
     return productData;
   };
+
+  fd.gtm.productTransform = productTransform;
 
   var safeName = function (text) {
     return text.toString().toLowerCase()
@@ -773,6 +774,11 @@ var dataLayer = window.dataLayer || [];
   // product details
   if (productData) {
     fd.gtm.updateDataLayer({product: productData});
+
+    // report criteo products if there's any
+    if (fd.browse && fd.browse.data && fd.browse.data.adProducts && fd.browse.data.adProducts.products && fd.browse.data.adProducts.products.length) {
+      fd.gtm.reportImpressions(fd.browse.data.adProducts.products.map((p, i) => fd.gtm.productTransform(p, i+1, {product: p})));
+    }
   }
 
   // collect impressions from content modules
