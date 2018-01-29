@@ -726,7 +726,7 @@ var dataLayer = window.dataLayer || [];
   };
 
   fd.gtm.getListForProductId = function (id, config) {
-    let el = document.querySelector('[data-product-id="'+id+'"]');
+    var el = document.querySelector('[data-product-id="'+id+'"]');
 
     return fd.gtm.getListForProduct(el, config);
   };
@@ -777,7 +777,9 @@ var dataLayer = window.dataLayer || [];
 
     // report criteo products if there's any
     if (fd.browse && fd.browse.data && fd.browse.data.adProducts && fd.browse.data.adProducts.products && fd.browse.data.adProducts.products.length) {
-      fd.gtm.reportImpressions(fd.browse.data.adProducts.products.map((p, i) => fd.gtm.productTransform(p, i+1, {product: p})));
+      fd.gtm.reportImpressions(fd.browse.data.adProducts.products.map(function (p, i) {
+        return fd.gtm.productTransform(p, i+1, {product: p});
+      }));
     }
   }
 
