@@ -4363,7 +4363,7 @@ public class FDCustomerManager {
 	public static void logMassCancelActivity(ErpActivityRecord record) {
 		ActivityLogHome home = getActivityLogHome();
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("customer.ejb.ActivityLogSB")){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ActivityLogSB)){
 				FDECommerceService.getInstance().logActivity(record);
 			}else{
 				ActivityLogSB logSB = home.create();

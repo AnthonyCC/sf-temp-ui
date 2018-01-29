@@ -736,7 +736,7 @@ public class ModelConverter {
 		erpActivityRecordData.setSource(template.getSource() != null? template.getSource().getCode() : null);
 		erpActivityRecordData.setInitiator(template.getInitiator());
 		erpActivityRecordData.setType(template.getActivityType() != null ?template.getActivityType().getCode() : null);
-//		erpActivityRecordData.setNote(template.getNote()== null ?null : template.getNote());
+		erpActivityRecordData.setNote(template.getNote()== null ?null : template.getNote());
 		erpActivityRecordData.setDate(template.getDate()!= null ?template.getDate() : null);
 		erpActivityRecordData.setDeliveryPassId(template.getDeliveryPassId());
 		erpActivityRecordData.setChangeOrderId(template.getChangeOrderId());
