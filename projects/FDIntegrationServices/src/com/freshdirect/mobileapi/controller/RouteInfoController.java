@@ -35,7 +35,7 @@ public class RouteInfoController extends BaseController {
     			RouteInfo.class);
 		String routeNo = requestMessage.getRouteNo();
     	RoutesDataMessage responseMessage = new RoutesDataMessage();
-    	//if(MobileApiProperties.isRouteDeliveryInfoEnabled()){
+    	if(MobileApiProperties.isRouteDeliveryInfoEnabled()){
 	    	if(ACTION_DELIVERY_INFO.equals(action)) {
 	    		if(routeNo!=null){
 	    			responseMessage.setRouteData(FDDeliveryManager.getInstance().getRouteDetails(routeNo));
@@ -43,7 +43,7 @@ public class RouteInfoController extends BaseController {
 	        } else if(ACTION_DELIVERY_INFO_ALL.equals(action)) {
 	    			responseMessage.setRouteData(FDDeliveryManager.getInstance().getRoutesDetailsByCurrentDate());
 	        }
-    	//}
+    	}
     	setResponseMessage(model, responseMessage, user);
         return model;
     }
