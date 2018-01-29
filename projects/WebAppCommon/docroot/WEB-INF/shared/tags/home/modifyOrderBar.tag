@@ -24,6 +24,7 @@ attribute name="modifyOrderAlert" required="true" rtexprvalue="true" type="java.
 
 	boolean inMobWebTemplate = (request.getAttribute("inMobWebTemplate") != null) ? (Boolean)request.getAttribute("inMobWebTemplate") : false;
 	boolean mobWebModifyOrderTag = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
+	boolean isModifyingOrder = false;
 					if(user.getLevel() >= FDUserI.RECOGNIZED){
 							int pendingOrderCount = 0;
 							List<FDOrderInfoI> validPendingOrders = new ArrayList<FDOrderInfoI>();
@@ -45,8 +46,33 @@ attribute name="modifyOrderAlert" required="true" rtexprvalue="true" type="java.
 							//sort pending orders based on delivery date (the closer date goes first)
 							Collections.sort(validPendingOrders, new DeliveryDateComparator());							
 							
-							if(validPendingOrders.size() > 0){ %>
-								<% if(modifyOrderAlert){ %>
+							if(validPendingOrders.size() > 0) {
+								FDCartModel modifyOrderBarTagCart = user.getShoppingCart();
+								isModifyingOrder = modifyOrderBarTagCart instanceof FDModifyCartModel;
+								if (isModifyingOrder) {
+									FDModifyCartModel moCart = (FDModifyCartModel) modifyOrderBarTagCart;
+									if (moCart != null && 
+										moCart.getOriginalOrder() != null && 
+										moCart.getOriginalOrder().getDeliveryReservation() != null && 
+										moCart.getOriginalOrder().getDeliveryReservation().getTimeslot() != null) {
+									%>
+									<script>
+										$jq(function() {
+											var modifyingOrderTime = '<%= moCart.getOriginalOrder().getDeliveryReservation().getTimeslot().getDisplayString() %>';
+											var modifyingOrderDayOfWeek = '<%= new SimpleDateFormat("EEEEE").format(moCart.getOriginalOrder().getDeliveryReservation().getTimeslot().getDeliveryDate()) %>';
+										 	var showOrderMessage = function () {
+										 		fd.components.modifyOrderMessage.init(modifyingOrderTime, modifyingOrderDayOfWeek);
+										 	}
+										 	if (fd && fd.components && fd.components.modifyOrderMessage ) {
+										 		showOrderMessage();
+									 		} else if ($jq) {
+									 			$jq(document).one('modifyOrderMessage-loaded', showOrderMessage);
+									 		}
+								 		});
+									</script>
+								<% 
+									}
+								} else if (modifyOrderAlert) { %>
 									<script>
 										$jq("#locationbar .locabar-section.locabar-modify-order-section").css("display","block");
 										$jq("#locabar_modify_order_trigger #locabar-modify-order-count").html("<%= validPendingOrders.size() %>");
@@ -86,9 +112,6 @@ attribute name="modifyOrderAlert" required="true" rtexprvalue="true" type="java.
 											</div>
 										<% } %>
 									<% } else { %>
-										<%
-											FDCartModel modifyOrderBarTagCart = user.getShoppingCart();
-										%>
 										<% if (!(modifyOrderBarTagCart instanceof FDModifyCartModel)) { %>
 											<table width="100%" class="modify-order-alert-table">
 												<tr>
@@ -127,38 +150,6 @@ attribute name="modifyOrderAlert" required="true" rtexprvalue="true" type="java.
 											</table>
 										<% } %>
 									<% } %>
-								<% } else {%>
-									<div class="locabar-modify-order-dropdown">
-										<%
-											String orderName;
-											for(FDOrderInfoI item : validPendingOrders){										
-										%>
-											<hr class="so-alert-line-separator">
-											<div class="locabar-modify-order-dropdown-item">
-												<div class="locabar-modify-order-dropdown-img"></div>
-												<div class="locabar-modify-order-dropdown-container">
-													<div class="locabar-modify-order-dropdown-container-status-bold">Order Status: </div>
-													<div class="locabar-modify-order-dropdown-container-status"> <%=item.getOrderStatus().getDisplayName()%></div>
-													<div class="locabar-modify-order-dropdown-container-name">
-														<%
-														orderName = item.getErpSalesId();
-														if(soUpcomingDelivery.containsKey(item.getErpSalesId())){
-															orderName = soUpcomingDelivery.get(item.getErpSalesId());
-														}
-														%>
-													    <%= orderName %>
-													</div>
-													<div class="locabar-modify-order-dropdown-container-date-and-time"><span class="locabar-modify-order-alert-table-date"><%= new SimpleDateFormat("EEEEE, MMM d").format(item.getRequestedDate()) %></span><%=  DateUtil.formatHourAMPMRange(item.getDeliveryStartTime(),item.getDeliveryEndTime()) %></div>
-													<div class="locabar-modify-order-dropdown-container-buttons">
-														<div class="locabar-modify-order-dropdown-container-delails"><a href="/your_account/order_details.jsp?orderId=<%= item.getErpSalesId() %>">See Details <span class="offscreen">of order number <%= orderName %></span></a></div>
-														<div class="locabar-modify-order-dropdown-container-modify"><button class="modify-order-alert-button cssbutton cssbutton-flat green transparent" onclick="window.location.href='/your_account/modify_order.jsp?orderId=<%= item.getErpSalesId() %>&action=modify'"">Modify Order</button></div>
-														<div class="clear"></div>
-													</div>												
-												</div>
-												<div class="clear"></div>
-											</div>
-										<% } %>
-									</div>
-								<% } %>	
+								<% } %>
 							<% } %>							
 					<% } %>

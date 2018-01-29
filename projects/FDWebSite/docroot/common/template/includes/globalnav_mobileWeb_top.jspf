@@ -95,6 +95,35 @@
 					    		</div>
 							</div>
 						</div>
+						<% 
+						// if user is recognized, has placed order recently and shopping cart is in modifying mode
+						if (user != null && user.getLevel() >= FDUserI.RECOGNIZED && 
+							user.hasPendingOrder() && (user.getShoppingCart() instanceof FDModifyCartModel)) {
+							
+							FDModifyCartModel moCart = (FDModifyCartModel) user.getShoppingCart();
+							if (moCart != null && 
+								moCart.getOriginalOrder() != null && 
+								moCart.getOriginalOrder().getDeliveryReservation() != null && 
+								moCart.getOriginalOrder().getDeliveryReservation().getTimeslot() != null) {
+								%>
+								<script>
+									$jq(function() {
+										var modifyingOrderTime = '<%= moCart.getOriginalOrder().getDeliveryReservation().getTimeslot().getDisplayString() %>';
+										var modifyingOrderDayOfWeek = '<%= new SimpleDateFormat("EEEEE").format(moCart.getOriginalOrder().getDeliveryReservation().getTimeslot().getDeliveryDate()) %>';
+									 	var showModifyingOrderMessage = function () {
+									 		window.displayModifyingOrderMobile(modifyingOrderTime, modifyingOrderDayOfWeek);
+									 	}
+									 	if (window.displayModifyingOrderMobile) {
+									 		showModifyingOrderMessage();
+								 		} else if ($jq) {
+								 			$jq(document).one('displayModifyingOrderMobile-loaded', showModifyingOrderMessage);
+								 		}
+							 		});
+								</script>
+							<% 
+								}
+							}
+						%>
 					</fd:GetCart>
 				</div>
 			</div>
