@@ -64,7 +64,8 @@ public class ModelConverter {
 	}
 
 	private static Variant buildVariant(VariantData variantData) {
-		Variant variant = new Variant(variantData.getId(), EnumSiteFeature.getEnum(variantData.getSiteFeature()) , buildRecommendationServiceConfig(variantData.getServiceConfig()),buildTabStrategyPriorities(variantData.getTabStrategyPriorities()));
+		EnumSiteFeature enumFeature = EnumSiteFeature.getEnum(variantData.getSiteFeature());
+		Variant variant = new Variant(variantData.getId(), enumFeature, buildRecommendationServiceConfig(variantData.getServiceConfig()),buildTabStrategyPriorities(variantData.getTabStrategyPriorities()));
 		return variant;
 	}
 
