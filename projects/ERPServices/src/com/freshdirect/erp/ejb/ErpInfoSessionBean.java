@@ -33,6 +33,7 @@ import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialPrice;
 import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialSalesAreaInfo;
 import com.freshdirect.erp.model.ErpProductInfoModel.ErpPlantMaterialInfo;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.SalesAreaInfo;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.core.SessionBeanSupport;
@@ -1302,9 +1303,15 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				if(skus.containsKey(sku)) {
 					value=skus.get(sku);
 					value.put(new StringBuilder(5).append(rs.getString(2)).append(rs.getString(3)).toString(), rs.getTimestamp(4));
+					if(FDStoreProperties.isNewProductsForFdcUsingFdEnabled() && "0001".equals(rs.getString(2))){
+						value.put(new StringBuilder(5).append("1400").append(rs.getString(3)).toString(), rs.getTimestamp(4));
+					}
 				} else {
 					value=new HashMap<String,Date>();
 					value.put(new StringBuilder(5).append(rs.getString(2)).append(rs.getString(3)).toString(), rs.getTimestamp(4));
+					if(FDStoreProperties.isNewProductsForFdcUsingFdEnabled() && "0001".equals(rs.getString(2))){
+						value.put(new StringBuilder(5).append("1400").append(rs.getString(3)).toString(), rs.getTimestamp(4));
+					}
 				}
 				skus.put(sku, value);
 			}
@@ -1337,9 +1344,15 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				if(skus.containsKey(sku)) {
 					value=skus.get(sku);
 					value.put(new StringBuilder(5).append(rs.getString(2)).append(rs.getString(3)).toString(), rs.getTimestamp(4));
+					if(FDStoreProperties.isNewProductsForFdcUsingFdEnabled() && "0001".equals(rs.getString(2))){
+						value.put(new StringBuilder(5).append("1400").append(rs.getString(3)).toString(), rs.getTimestamp(4));
+					}
 				} else {
 					value=new HashMap<String,Date>();
 					value.put(new StringBuilder(5).append(rs.getString(2)).append(rs.getString(3)).toString(), rs.getTimestamp(4));
+					if(FDStoreProperties.isNewProductsForFdcUsingFdEnabled() && "0001".equals(rs.getString(2))){
+						value.put(new StringBuilder(5).append("1400").append(rs.getString(3)).toString(), rs.getTimestamp(4));
+					}
 				}
 				skus.put(sku, value);
 			}
@@ -1421,9 +1434,15 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
     		if(skus.containsKey(sku)) {
 				value=skus.get(sku);
 				value.put(new StringBuilder(5).append(salesOrg).append(distributionChannel).toString(), date);
+				if(FDStoreProperties.isNewProductsForFdcUsingFdEnabled() && "0001".equals(salesOrg)){
+					value.put(new StringBuilder(5).append("1400").append(distributionChannel).toString(), date);
+				}
 			} else {
 				value=new HashMap<String,Date>();
 				value.put(new StringBuilder(5).append(salesOrg).append(distributionChannel).toString(), date);
+				if(FDStoreProperties.isNewProductsForFdcUsingFdEnabled() && "0001".equals(salesOrg)){
+					value.put(new StringBuilder(5).append("1400").append(distributionChannel).toString(), date);
+				}
 			}
 //        	}
         	skus.put(sku, value);
