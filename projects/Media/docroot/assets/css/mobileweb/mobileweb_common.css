@@ -1549,7 +1549,7 @@ li.cleanli .gen-arrow {
 		display: none;
 	}
 	.mm-page #shoppinglists .shoppinglists .checkboxlist.shoppinglists-list{
-		max-height: 80px;
+/* 		max-height: 80px; */
 	}
 	/* reorder past orders */
 		#moreorderspopup {

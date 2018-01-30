@@ -689,7 +689,7 @@
 	<div class='cartsection__cartline' data-component='cartline' data-cartlineid='{$id}'>
 		<div class='cartline-imageholder cartline-box'>
 			<a class='cartline-link' href='{if $mealBundle or not $displayCheckout}/pdp.jsp?productId={$productId}&catId={$categoryId}&modify=true{else}/product_modify.jsp?cartLine={$id}&trk=cart{/if}'>
-				<img class='cartline-image' src='{if $image}{$image}{else}/media/images/temp/soon_80x80.gif{/if}' alt="Image of {$descr}" />
+				<img class='cartline-image' src='{if $image}{$image}{else}/media/images/temp/soon_80x80.gif{/if}' alt="{$descr}" />
 			</a>
 		</div>
 		<div class='cartline-title cartline-box'>
@@ -770,7 +770,7 @@
 				{if $freeSamplePromoProduct or $price == '$0.00'}
 					<p class='cartline-price-value cartline-price-value-free'>FREE</p>
 				{else}
-					<p class='cartline-price-value'>{$price}</p>
+					<p class='cartline-price-value' aria-live='polite'>{$price}</p>
 					{if $unitPrice}<p class='cartline-unitprice'>({$unitPrice}/{$unitScale})</p>{/if}
 				{/if}
 			</div>
@@ -834,10 +834,10 @@
 	<div class='cartsection__cartline' data-component='cartline' data-cartlineid='{$id}'>
 		<div class='cartline-imageholder cartline-box'>
 			{if $noModifyLinks}
-				<img class='cartline-image' src='{if $image}{$image}{else}/media/images/temp/soon_80x80.gif{/if}' alt="Image of {$descr}" />
+				<img class='cartline-image' src='{if $image}{$image}{else}/media/images/temp/soon_80x80.gif{/if}' alt="{$descr}" />
 			{else}
 				<a class='cartline-link' href='/product_modify.jsp?cartLine={$id}&trk=cart'>
-					<img class='cartline-image' src='{if $image}{$image}{else}/media/images/temp/soon_80x80.gif{/if}' alt="Image of {$descr}" />
+					<img class='cartline-image' src='{if $image}{$image}{else}/media/images/temp/soon_80x80.gif{/if}' alt="{$descr}" />
 				</a>
 			{/if}
 		</div>
@@ -904,7 +904,7 @@
 				{if $freeSamplePromoProduct or $price == '$0.00'}
 					<p class='cartline-price-value cartline-price-value-free'>FREE</p>
 				{else}
-					<p class='cartline-price-value'>{$price}</p>
+					<p class='cartline-price-value' aria-live='polite'>{$price}</p>
 					{if $unitPrice}<p class='cartline-unitprice'>({$unitPrice}/{$unitScale})</p>{/if}
 				{/if}
 			</div>
@@ -1381,7 +1381,7 @@
 			</label>
 								
 			{if $tipAppliedTick}
-				<img id="tipAppliedTick" src="/media/layout/nav/globalnav/fdx/locabar-check.png" alt="Image of Tick" />
+				<img id="tipAppliedTick" src="/media/layout/nav/globalnav/fdx/locabar-check.png" alt="Tick" />
 			{/if}
 			<br/>
 			<input type="hidden" name="action" value="applyETip" />

@@ -70,7 +70,7 @@
   <div class='cartsection__cartline' data-component='cartline' data-cartlineid='{$cartline.id}'>
     <div class='cartline-imageholder cartline-box'>
       <a class='cartline-link' href='/pdp.jsp?productId={$cartline.productId}&catId={$cartline.categoryId}'>
-        <img class='cartline-image' src='{if $cartline.image}{$cartline.image}{else}/media/images/temp/soon_80x80.gif{/if}' alt="Image of {$cartline.descr}" />
+        <img class='cartline-image' src='{if $cartline.image}{$cartline.image}{else}/media/images/temp/soon_80x80.gif{/if}' alt="{$cartline.descr}" />
       </a>
     </div>
     <div class='cartline-title cartline-box'>

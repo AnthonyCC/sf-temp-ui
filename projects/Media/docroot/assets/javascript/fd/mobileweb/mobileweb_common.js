@@ -177,20 +177,23 @@ var API;
 			}
 		});
 		$jq('.gen-accord-toggler').on('click touch', function(e) {
-			if ($jq(this).hasClass('open')) {
-				$jq(this).parent().find('.gen-accord-content').hide();
-			} else {
-				$jq(this).parent().find('.gen-accord-content').show();
-			}
-			$jq(this).find('.gen-accord-toggler-arrow').toggleClass('gen-accord-toggler-arrow_n');
-			$jq(this).toggleClass('open');
-		});
-		$jq('.gen-accord-toggler').keydown(function(event){
-			var keycode = (event.keyCode ? event.keyCode : event.which);
-			if(keycode == '13'){
-				$jq(this).trigger("click");
-			}
-		});
+            if ($jq(this).hasClass('open')){
+                $jq(this).parent().find('.gen-accord-content').hide();
+                $jq(this).attr('aria-expanded', false);
+            }else {
+                $jq(this).parent().find('.gen-accord-content').show();
+                $jq(this).attr('aria-expanded', true);
+            }
+            $jq(this).find('.gen-accord-toggler-arrow').toggleClass('gen-accord-toggler-arrow_n');
+            $jq(this).toggleClass('open');
+        });
+        $jq('.gen-accord-toggler').keydown(function(event){
+            var keycode = (event.keyCode ? event.keyCode : event.which);
+            if(keycode == '13'){
+               event.preventDefault();
+                $jq(this).trigger("click");
+            }
+        });
 		
 		/* timeslots */
 		/* use pre-init to set mobweb to true */
