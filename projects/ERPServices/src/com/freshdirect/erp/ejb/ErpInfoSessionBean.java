@@ -29,7 +29,6 @@ import com.freshdirect.erp.SkuAvailabilityHistory;
 import com.freshdirect.erp.model.ErpInventoryEntryModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
 import com.freshdirect.erp.model.ErpMaterialInfoModel;
-import com.freshdirect.erp.model.ErpMaterialSalesAreaModel;
 import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialPrice;
 import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialSalesAreaInfo;
@@ -1129,35 +1128,6 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		}
 	}
 	
-    private static final String QUERY_GOINGOUTOFSTOCK = "select msa.sales_org, msa.distribution_channel, msa.unavailability_status, msa.unavailability_date, msa.unavailability_reason, msa.sku_code, msa.daypart_value, msa.picking_plant_id from erps.material_sales_area msa, erps.material m,"
-            + " (select material_sap_id from erps.inventory_entry where start_date < sysdate and quantity > 0 group by material_sap_id) eie"
-            + " where msa.unavailability_status = 'TBDS'" + " and msa.version = (select max(version) from erps.material_sales_area msa1 where msa1.sku_code = msa.sku_code)"
-            + " and msa.mat_id = m.id" + " and m.sap_id in eie.material_sap_id";
-
-    public Collection<ErpMaterialSalesAreaModel> findGoingOutOfStockSalesAreas() {
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            conn = getConnection();
-            ps = conn.prepareStatement(QUERY_GOINGOUTOFSTOCK);
-            rs = ps.executeQuery();
-
-            Collection<ErpMaterialSalesAreaModel> salesAreas = new ArrayList<ErpMaterialSalesAreaModel>();
-            while (rs.next()) {
-                salesAreas.add(new ErpMaterialSalesAreaModel(rs.getString(1), rs.getString(2), rs.getString(3), rs.getTimestamp(4), rs.getString(5), rs.getString(6),
-                        rs.getString(7), rs.getString(8)));
-            }
-
-            return salesAreas;
-        } catch (SQLException sqle) {
-            LOGGER.error("Unable to find sales areas", sqle);
-            throw new EJBException(sqle);
-        } finally {
-            DaoUtil.close(rs, ps, conn);
-        }
-    }
-
 	public Collection<String> findSKUsByDeal(double lowerLimit, double upperLimit,List skuPrefixes) {
 		
 		

@@ -21,7 +21,6 @@ import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.EnumAlcoholicContent;
 import com.freshdirect.erp.SkuAvailabilityHistory;
-import com.freshdirect.erp.model.ErpMaterialSalesAreaModel;
 import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.fdstore.ejb.FDFactoryHome;
 import com.freshdirect.fdstore.ejb.FDFactorySB;
@@ -551,29 +550,6 @@ public class FDFactory {
 		}
 
 	}
-
-    public static Collection<ErpMaterialSalesAreaModel> getGoingOutOfStockSalesAreas() throws FDResourceException {
-        if (factoryHome == null) {
-            lookupFactoryHome();
-        }
-        try {
-        	
-        	if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
-				return FDECommerceService.getInstance().getGoingOutOfStockSalesAreas();
-			}else{
-				FDFactorySB sb = factoryHome.create();
-	            return sb.getGoingOutOfStockSalesAreas();
-			}
-        	
-            
-        } catch (CreateException ce) {
-            factoryHome = null;
-            throw new FDResourceException(ce, "Error creating session bean");
-        } catch (RemoteException re) {
-            factoryHome = null;
-            throw new FDResourceException(re, "Error talking to session bean");
-        }
-    }
 
 	/**
 	 * Utility method: nothing is ever discontinued, out of season, or indefinitely unavailable in preview mode
