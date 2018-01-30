@@ -608,10 +608,9 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	
 			Response<List<ZoneInfoDataWrapper>> response;
 			try {
-				SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
-				String date1 = null;
+				long date1 = 0;
 				if(lastPublished!=null){
-				date1 = format1.format(lastPublished); 
+				date1 = lastPublished.getTime(); 
 				}
 				response = httpGetDataTypeMap(getFdCommerceEndPoint(PRODUCT_BY_PROMO_TYPE+ppType+"/lastPublishDate/"+date1), new TypeReference<Response<List<ZoneInfoDataWrapper>>>() {});
 				if(!response.getResponseCode().equals("OK"))
@@ -638,9 +637,9 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			Response<Map<String, List<ZoneInfoDataWrapper>>> response;
 			try {
 				SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
-				String date1 = null;
+				long date1 = 0;
 				if(lastPublished!=null){
-				date1 = format1.format(lastPublished); 
+				date1 = lastPublished.getTime(); 
 				}
 				
 				response = httpGetDataTypeMap(getFdCommerceEndPoint(PROMOTION_BY_TYPE+ppType+"/lastPublishDate/"+date1), new TypeReference<Response<Map<String, List<ZoneInfoDataWrapper>>>>() {});
@@ -833,10 +832,9 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		
 		Response<Map<String, List<com.freshdirect.ecommerce.data.attributes.FlatAttribute>>> response = null;
 			try {
-				String date1=null;
-				SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+				long date1=0;
 				if(since!=null){
-				date1 = format1.format(since); 
+				date1 = since.getTime(); 
 				}
 				response =httpGetDataTypeMap(getFdCommerceEndPoint(LOAD_ATTRIBUTES_DATE+date1),new TypeReference<Response<Map<String, List<com.freshdirect.ecommerce.data.attributes.FlatAttribute>>>>() {});
 				if(!response.getResponseCode().equals("OK"))
@@ -1331,10 +1329,10 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			Response<List<CountryOfOriginData>> response = new Response<List<CountryOfOriginData>>();
 
 				try {
-					String date1=null;
-					SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+					long date1=0;
+					
 					if(since!=null){
-					date1 = format1.format(since); 
+					date1 = since.getTime(); 
 					}
 					response= httpGetDataTypeMap(getFdCommerceEndPoint(GET_COO_API+"/"+date1),  new TypeReference<Response<List<CountryOfOriginData>>>() {});
 
