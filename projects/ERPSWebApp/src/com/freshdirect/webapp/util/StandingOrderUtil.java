@@ -232,7 +232,7 @@ public class StandingOrderUtil {
 					FDActionInfo soinfo = new FDActionInfo( EnumTransactionSource.STANDING_ORDER, so.getCustomerIdentity(), 
 							INITIATOR_NAME, "SO template deleted as per the delete date: "+so.getDeleteDate()+", choosen by user", null, null);
 					deleteActivateSo(so, soinfo);
-					return SOResult.createSkipped(so, so.getCustomerIdentity(), so.getUserInfo(), "Skipping a customer choosed to delete this template");
+					return SOResult.createSkipped(so, so.getCustomerIdentity(), so.getUserInfo(), "Skipping and deleting template as per delete date chosen by user");
 				} catch (Exception e) {
 					LOGGER.error(" Got the exception while deleting the So template:"+so.getId(), e);
 				}
