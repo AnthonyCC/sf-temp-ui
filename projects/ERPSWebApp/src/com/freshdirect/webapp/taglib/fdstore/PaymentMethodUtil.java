@@ -71,7 +71,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
     private final static int AMERICAN_EXPRESS	= 2;
     private final static int DISCOVER			= 3;
     private final static String NAME_REGEX      ="^[^\\n]*[A-Za-z]+[^\\n]*$";//"^[\\w.-_@(){}/?#$&!+%*<>=,\\s:;'|\"\\\\/`~]*[A-Za-z]+[\\w.-_@(){}/?#$&!+%*<>=,\\s:;'|\"\\\\/`~]*$"; 
-    private static final String REGEX = "^(?!.*[&|<|>|\\\"|/|#|%|=])\\w.*$@";
+    private static final String REGEX = "^(?!.*[&|<|>|\\\"|/|#|%|=])\\.*$@";
 
     private PaymentMethodUtil() {
     }
