@@ -29,7 +29,6 @@
 %><%@ page import='com.freshdirect.smartstore.fdstore.SmartStoreUtil'
 %><%@ page import='com.freshdirect.fdstore.zone.FDZoneInfoManager'
 %><%@ page import='com.freshdirect.fdstore.ZonePriceListing'
-%><%@ page import='com.freshdirect.webapp.taglib.fdstore.FDSessionUser'
 %><%@ page import='com.freshdirect.webapp.util.JspMethods'
 %><%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"
 %><%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"
@@ -56,7 +55,6 @@
 %><fd:SmartSavingsUpdate justCheckSavingVariantId="true"></fd:SmartSavingsUpdate><%
 
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
-    FDSessionUser sessionUser = (FDSessionUser)user;
 
 		QueryStringBuilder queryString = new QueryStringBuilder();
 		if (user != null) {
@@ -226,6 +224,7 @@
 					.addParam("sv", storeVersion)
 					.addParam("zip", user.getZipCode())
 					.addParam("type", type)
+					.addParam("servicetype", user.isCorporateUser() ? "cos" : "home")
 					.addParam("depot", depotAffil)
 					.addParam("nod", lastOrderDate)
 					.addParam("fdnod",fdLastOrderDate)
