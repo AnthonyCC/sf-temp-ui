@@ -7,7 +7,6 @@ var FreshDirect = FreshDirect || {};
   var OAS_UPDATER = "OAS_UPDATER";
   var listPos = [];
   var lastSitePage = null;
-  var hasShownOAS = [];
   function OAS_SCRIPT_URL(OAS_url, OAS_sitepage, OAS_rns, OAS_listpos, OAS_query) {
 		return OAS_url + 'adstream_mjx.ads/' +
 				OAS_sitepage + '/1' + OAS_rns + '@' +
@@ -41,7 +40,7 @@ var FreshDirect = FreshDirect || {};
 							}
 						});
 						// if we need to show the oas as popup
-						if (showAsPopUp && hasShownOAS.indexOf(pos) === -1) {
+						if (showAsPopUp) {
 							setTimeout( function() {
 								var oasLink = $(e).children().not('script').first();
 								if (oasLink.length) {
@@ -66,7 +65,6 @@ var FreshDirect = FreshDirect || {};
 											'margin-left': (( $(e).width() /2) - 11) + 'px'
 										});
 									}
-									hasShownOAS.push(pos);
 									$(e).fadeIn(1000);
 								}
 							}, 1000);
