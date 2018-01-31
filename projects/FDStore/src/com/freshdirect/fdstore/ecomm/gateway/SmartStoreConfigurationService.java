@@ -3,6 +3,7 @@ package com.freshdirect.fdstore.ecomm.gateway;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.List;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.freshdirect.ecomm.gateway.AbstractEcommService;
@@ -46,7 +47,7 @@ public class SmartStoreConfigurationService extends AbstractEcommService impleme
 		} catch (FDResourceException e) {
 			throw new RemoteException(e.getMessage());
 		}
-		Collection<VariantData> data = response.getData();
+		List<VariantData> data = (List<VariantData>)response.getData();
 		Collection<Variant> variants = ModelConverter.buildVariantList(data);
 		return variants;
 	}
@@ -65,7 +66,7 @@ public class SmartStoreConfigurationService extends AbstractEcommService impleme
 		} catch (FDResourceException e) {
 			throw new RemoteException(e.getMessage());
 		}
-		Collection<DynamicSiteFeatureData> data = response.getData();
+		List<DynamicSiteFeatureData> data =(List<DynamicSiteFeatureData>) response.getData();
 		Collection<DynamicSiteFeature>  coll =  ModelConverter.buildDynamicSiteFeatureList(data);
 		return coll;
 	}

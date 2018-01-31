@@ -53,7 +53,7 @@ import com.freshdirect.smartstore.ejb.DynamicSiteFeature;
 public class ModelConverter {
 
 	public static Collection<Variant> buildVariantList(
-			Collection<VariantData> data) {
+			List<VariantData> data) {
 		Collection<Variant>  variants = new ArrayList<Variant>();
 		for (VariantData variantData : data) {
 			Variant variant = buildVariant(variantData);
@@ -143,7 +143,7 @@ public class ModelConverter {
 	}
 
 	public static Collection<DynamicSiteFeature> buildDynamicSiteFeatureList(
-			Collection<DynamicSiteFeatureData> data) {
+			List<DynamicSiteFeatureData> data) {
 		Collection<DynamicSiteFeature> featureList = new ArrayList<DynamicSiteFeature>();
 		for (DynamicSiteFeatureData dynamicSiteFeatureData : data) {
 			DynamicSiteFeature dynamicSiteFeature = new DynamicSiteFeature(dynamicSiteFeatureData.getName(), dynamicSiteFeatureData.getTitle(), dynamicSiteFeatureData.getPrez_title(), dynamicSiteFeatureData.getPrez_desc(), dynamicSiteFeatureData.isSmartSaving());
