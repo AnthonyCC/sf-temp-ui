@@ -468,8 +468,8 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String ECOUPON_SUBM_PENDING = "ecoupon/submitcoupontrans/";
 
 	private static final String FDFACTORY_FDPRODUCTINFO_SKUCODE = "productinfo/productinfobysku";
-	private static final String FDFACTORY_FDPRODUCTINFO_SKUCODE_VERSION = "productinfo/productbyskuandversion";
-	private static final String FDFACTORY_FDPRODUCTINFO_SKUCODES = "productinfo/productsbyskus";
+	private static final String FDFACTORY_FDPRODUCTINFO_SKUCODE_VERSION = "productinfo/productInfobyskuandversion";
+	private static final String FDFACTORY_FDPRODUCTINFO_SKUCODES = "productinfo/productsinfobyskus";
 	private static final String FDFACTORY_PRODUCTINFO_SKUCODES = "productinfo/productbyskuandversion";
 
 	private static final String CREATE_FRAUD_ENTRY="fraudactivity/create";
