@@ -82,7 +82,7 @@ import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.MakeGoodOrderInfo;
 import com.freshdirect.fdstore.customer.ProfileModel;
 import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
-import com.freshdirect.fdstore.ecomm.gateway.ModelConverter;
+import com.freshdirect.fdstore.ecomm.gateway.FDStoreModelConverter;
 import com.freshdirect.framework.util.GenericSearchCriteria;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.payment.EnumBankAccountType;
@@ -778,11 +778,11 @@ public class CallCenterConverter {
 	}
 
 	private static RestrictedAddressModel buildRestrictedAddressModel(RestrictedAddressModelData data) {
-		return  ModelConverter.buildRestrictedAddressModel(data);
+		return  FDStoreModelConverter.buildRestrictedAddressModel(data);
 	}
 
 	private static RestrictionI buildRestriction(RestrictionData restrictionData) {
-		return ModelConverter.buildRestriction(restrictionData);
+		return FDStoreModelConverter.buildRestriction(restrictionData);
 		
 	}
 		

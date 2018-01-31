@@ -50,7 +50,7 @@ import com.freshdirect.smartstore.RecommendationServiceType;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.ejb.DynamicSiteFeature;
 
-public class ModelConverter {
+public class FDStoreModelConverter {
 
 	public static Collection<Variant> buildVariantList(
 			List<VariantData> data) {

@@ -48,7 +48,7 @@ public class SmartStoreConfigurationService extends AbstractEcommService impleme
 			throw new RemoteException(e.getMessage());
 		}
 		List<VariantData> data = (List<VariantData>)response.getData();
-		Collection<Variant> variants = ModelConverter.buildVariantList(data);
+		Collection<Variant> variants = FDStoreModelConverter.buildVariantList(data);
 		return variants;
 	}
 
@@ -67,7 +67,7 @@ public class SmartStoreConfigurationService extends AbstractEcommService impleme
 			throw new RemoteException(e.getMessage());
 		}
 		List<DynamicSiteFeatureData> data =(List<DynamicSiteFeatureData>) response.getData();
-		Collection<DynamicSiteFeature>  coll =  ModelConverter.buildDynamicSiteFeatureList(data);
+		Collection<DynamicSiteFeature>  coll =  FDStoreModelConverter.buildDynamicSiteFeatureList(data);
 		return coll;
 	}
 
