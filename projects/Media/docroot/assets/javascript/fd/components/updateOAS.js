@@ -7,24 +7,23 @@ var FreshDirect = FreshDirect || {};
   var OAS_UPDATER = "OAS_UPDATER";
   var listPos = [];
   var lastSitePage = null;
-  
+  var hasShownOAS = [];
   function OAS_SCRIPT_URL(OAS_url, OAS_sitepage, OAS_rns, OAS_listpos, OAS_query) {
 		return OAS_url + 'adstream_mjx.ads/' +
 				OAS_sitepage + '/1' + OAS_rns + '@' +
 				OAS_listpos + '?' + OAS_query;
   }
   
-  function updateOAS(OAS_url, OAS_sitepage, OAS_rns, OAS_listpos, OAS_query) {
+  function updateOAS(OAS_url, OAS_sitepage, OAS_rns, OAS_listpos, OAS_query, showAsPopUp) {
     var scriptUrl = OAS_SCRIPT_URL(OAS_url, OAS_sitepage, OAS_rns, OAS_listpos.join(','), OAS_query);
-    
     postscribe(document.body, '<script src="'+scriptUrl+'"></script>', {
         done: function () {
-          done(OAS_listpos);
+          done(OAS_listpos, showAsPopUp);
         }, error: function () {}
     });
   }
 
-  function done(listPos) {
+  function done(listPos, showAsPopUp) {
 		listPos.forEach(function (pos) {
 			var selector = "#oas_"+pos+",#oas_b_"+pos;
 			$(selector).each(function(i,e){
@@ -41,6 +40,37 @@ var FreshDirect = FreshDirect || {};
 								console.log('updateOAS: done', pos, $(ee));
 							}
 						});
+						// if we need to show the oas as popup
+						if (showAsPopUp && hasShownOAS.indexOf(pos) === -1) {
+							setTimeout( function() {
+								var oasLink = $(e).children().not('script').first();
+								if (oasLink.length) {
+									$(e).attr('data-tooltip', true);
+									if (!oasLink.has('.tooptip-indicator').length) {
+										$(e).append('<div class="tooptip-indicator"></div>')
+									}
+									$(e).show();
+									if (fd.mobWeb) {
+										$(e).css({
+											'margin-top': '-' + (11 + $(e).height()) + 'px'
+											});
+										$('[data-tooltip] .tooptip-indicator').css({
+											'margin-left': (($(e).parent().width() /2) - 11) + 'px'
+										});
+									} else {
+										$(e).css({
+											'margin-top': '-' + (11 + $(e).height()) + 'px',
+											'margin-left': (-1 * (($(e).width() - $(e).parent().width()) /2)) + 'px'
+											});
+										$('[data-tooltip] .tooptip-indicator').css({
+											'margin-left': (( $(e).width() /2) - 11) + 'px'
+										});
+									}
+									hasShownOAS.push(pos);
+									$(e).fadeIn(1000);
+								}
+							}, 1000);
+						}
 					}
 				});
 			});

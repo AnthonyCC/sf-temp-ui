@@ -2548,9 +2548,6 @@ var fdTSDisplayPreInitializeFuncs = window['fdTSDisplayPreInitializeFuncs'] || [
 				reserveTimeslot.actionName.value='changeReservation';
 				$jq('#reserveTimeslot').submit();
 			}
-			else{
-				//$jq('[data-component="timeslotchangebutton"]').click();
-			}
 	       }
 		  });
 	$jq(document).on("focusin","#tsContainer .tsHeaderE",function(){

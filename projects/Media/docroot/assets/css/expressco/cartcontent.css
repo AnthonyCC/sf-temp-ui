@@ -1,9 +1,5 @@
-.cartsection__cartline{
-  margin: 0 0 5px 0;
-}
-
 #cartcontent .cartsection__cartline{
-  padding-left:30px;
+  padding-left: 20px;
 }
 
 .cartsection__cartline .cartline-box{
@@ -234,11 +230,11 @@
 
 .total{
   font-family:Verdana,Genava,sans-serif;
-  background:#efefec;
-  float:left;
+  background: #f4f4f3;
   margin:0 0 20px 0;
   padding:20px;
   box-sizing:border-box;
+  border-bottom: 12px solid #dcdcdc;
 }
 
 .total:after{
@@ -251,14 +247,7 @@
   vertical-align:top;
 }
 
-.total-right{
-  width:430px;
-  display:inline-block;
-  vertical-align:top;
-}
-
 .promotion-item{
-  display:inline-block;
   width: 294px;
   vertical-align: top;
 }
@@ -287,8 +276,10 @@
 }
 
 .promotion-text{
-  margin:0.5em 0;
-  font-size:13px;
+  font-size: 13px;
+  margin: 2em 0 0.2em 0;
+  color: #575860;
+  font-weight: normal;
 }
 
 .etip-text{
@@ -376,10 +367,6 @@
   width:50%;
   vertical-align:top;
 }
-.subtotal__rowcell-mid{
-  padding-left:5px;
-}
-
 .rowcell-padding-left{
   padding-left:5px;
 }
@@ -421,13 +408,11 @@
 	font-size:13px;
 	font-weight:bold;
 	color:#dd0303;
-	
 	margin-top: -5px;
 }
 
 .cartsection-wine{
 	border-top:1px solid #e0e3d0;
-	padding:20px 0;
 }
 
 .cartsection-wine .cartsection__title{
@@ -443,23 +428,24 @@
 	visibility:visible;
 }
 
-.cartsection__total,
-.cartsection__tax{
+.cartsection__total{
 	font-size:14px;
 	color:#333;
 	font-weight:bold;
 	text-align:right;
 	margin:0;
+	padding-right: 20px;
+}
+.cartsection__tax{
+	padding-right: 20px;
 }
 
 .cartsection__tax{
 	/*min-height:100px;*/
 }
 .cartsection__tax form{
-	float:right;
-	
-	margin-top:25px;
-	margin-bottom:25px;
+	padding-top:10px;
+	padding-bottom:25px;
 }
 .cartsection__tax form .strl_text, .cartsection__tax form a.tooltip-small{
 	float:left;
@@ -473,7 +459,9 @@ p.cartsection__tax{
 	border-top:1px solid #e0e3d0;
 	padding: 10px 0 15px 0;
 }
-
+.cartsection__totalwrapper.right{
+	padding-top: 30px;
+}
 .cartheader{
   padding:20px 0;
   border-bottom: 1px solid #e7e5e4;
@@ -772,7 +760,8 @@ label[for="dontupdatecartlines"] {
   position: relative;
 }
 
-[checkout-disabled]:before {
+[checkout-disabled]:before,
+[data-drawer-active] .checkout-contentheader:before {
   content: '';
   position: absolute;
   top: 0;
@@ -1104,20 +1093,19 @@ label[for="dontupdatecartlines"] {
 
 .tooltip_holder{
 	display:inline-block;
-	margin-right:10px;
 }
 
 .ttBox1stClass{
 	height:1px;
 }
-.ttBox1stClass, #toolTipTextBox{
+.ttBox1stClass, .toolTipTextBox{
 	position: absolute;
   left: -9999px;
 }
-.ttBox1stClass.shown, #toolTipTextBox.shown{
+.ttBox1stClass.shown, .toolTipTextBox.shown{
   left: auto;
 }
-.ttBox1stClass .tooltip-inner, #toolTipTextBox{
+.ttBox1stClass .tooltip-inner, .toolTipTextBox{
 	position: absolute;
   text-align:left;
 	
@@ -1168,7 +1156,7 @@ label[for="dontupdatecartlines"] {
 	-khtml-opacity: 0.0;
 	opacity: 0.0;
 }
-#tooltipPopup .tooltip-inner{
+.tooltipPopup .tooltip-inner{
 	font-size:12pt;
 	/*max-width:25%;*/
 	width: 400px;
@@ -1179,29 +1167,13 @@ label[for="dontupdatecartlines"] {
   margin-top: 1em;
 }
 
-
-.eTippingEnabled .subtotalboxes .subtotal__row{
-  
-}
-
-.eTippingEnabled #subtotalbox1{
-	margin-left: 651px;
-}
-/*.eTippingEnabled #subtotalbox1:before{*/
-.eTippingEnabled.cartsection-wine > .cartsection__totalwrapper > p.cartsection__tax:after{
-	content: " ";
-	border-top: 1px solid #DDD;
-	width: 970px;
-	height: 2px;
-	display: block;
-	/*margin-left: -670px;*/
-	margin-top: 35px;
-	margin-bottom:20px;
-}
 .eTippingEnabled #subtotalbox1 .subtotal__row{
 	white-space:nowrap;
 }
-.eTippingEnabled .subtotalboxes, .eTippingEnabled #subtotalbox1 .subtotal__row, .eTippingEnabled .cartsection__tax form{
+.eTippingEnabled .subtotalboxes, 
+.eTippingEnabled #subtotalbox1 .subtotal__row, 
+.eTippingEnabled .cartsection__tax form,
+.eTippingEnabled #subtotalbox2 .subtotal__row{
 	min-width: 300px;
 }
 
@@ -1213,17 +1185,31 @@ label[for="dontupdatecartlines"] {
 }
 
 .eTippingEnabled #subtotalbox2{
-	/*width: 140px;*/
 	float: right;
-	
-	min-width: 150px;
-    width: auto;
+	padding-bottom: 10px;
+	padding-right: 10px
 }
-
-#subtotalbox2{
+.eTippingEnabled #subtotalbox2 .subtotal__row[data-boxid="youSaved"]{
+	text-align: center;
+    height: 19px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #bb3c3b;
+}
+.view_cart #subtotalbox2{
 	width: 430px;
+	padding-bottom: 20px;
 }
-
+#cartcontent.checkout .cart-button{
+	text-align: center;
+}
+#cartcontent.view_cart .cart-button{
+	text-align: right;
+}
+.view_cart .total__promotion{
+	position: absolute;
+    padding-left: 20px;
+}
 /*#subtotalbox2 .rowcell-text-right{*/
  .total .rowcell-text-right{
 	text-align: right;
@@ -1242,34 +1228,36 @@ label[for="dontupdatecartlines"] {
 }
 
 .eTippingEnabled #subtotalbox2 .subtotal__row{
-	text-align: left;
+	text-align: center;
+    padding-right: 12px;
 }
 .eTippingEnabled .subtotal__rowcell-left{
 	width:initial;
     text-align: left;
 }
 .eTippingEnabled #subtotalbox2 .subtotal__rowcell-left{
-	display:block;
-	text-align: center;
-	width:100%;
-	clear:both;
+
 }
 .eTippingEnabled #subtotalbox2 .subtotal__rowcell-left.st_label_ssOrderTotal{
 	text-align: left;
+	display: inline-block;
+    line-height: 40px;
+    width: 100px;
 }
 .eTippingEnabled #subtotalbox2 #st_label_youSaved, .eTippingEnabled #subtotalbox2 .subtotal__rowcell-mid.st_val_youSaved{
 	display:inline;
 }
-.eTippingEnabled #subtotalbox2 #st_label_youSaved .strl_text, .eTippingEnabled #subtotalbox2 .subtotal__rowcell-mid.st_val_youSaved{
-	font-size:9pt;
-	color: #DF0000;
+.eTippingEnabled #subtotalbox2 #st_label_youSaved .strl_text, 
+.eTippingEnabled #subtotalbox2 .subtotal__rowcell-mid.st_val_youSaved{
+	font-size: 16px;
+	color: #bb3c3b;
+	font-weight: bold;
 }
-.eTippingEnabled .cartsection__totalwrapper{
-	width: 100%;
-}
-.eTippingEnabled .cartsection__totalwrapper .subtotal__rowcell-left {
+
+.eTippingEnabled .cartsection__totalwrapper .subtotal__rowcell-left,
+.eTippingEnabled .subtotalbox2 .subtotal__rowcell-left {
 	min-width: auto;
-	width: 170px;
+	width: 130px;
 	margin-right: 20px;
 	margin-bottom: 4px;
 	line-height: 21px;
@@ -1277,7 +1265,7 @@ label[for="dontupdatecartlines"] {
 }
 
 .eTippingEnabled .cartsection__totalwrapper #optionaltip.subtotal__rowcell-left {
-    min-width: 156px;
+    min-width: 130px;
 	display: table;
 }
 .eTippingEnabled form .subtotal__rowcell-left{
@@ -1311,9 +1299,6 @@ label[for="dontupdatecartlines"] {
 	font-weight: 700;
 	padding-left: 0px;
 }
-.eTippingEnabled .subtotal__row .subtotal__rowcell-right{
-	position:absolute;
-}
 
 .eTippingEnabled #subtotalbox1 .subtotal__rowcell-mid, 
 .eTippingEnabled .subtotal__row .subtotal__rowcell-right{
@@ -1326,6 +1311,26 @@ label[for="dontupdatecartlines"] {
 #subtotalbox2 .row-size-big .subtotal__rowcell-right{
 	height: 40px;
 }
+.eTippingEnabled .subtotal__rowcell-right .superscript,
+#checkout-cart-header .superscript{
+	position: relative;
+    top: -5px;
+    font-size: small;
+    font-weight: bold;
+}
+#checkout-cart-header .delivery-free-with-label {
+    font-size: 13px;
+    font-weight: bold;
+}
+#checkout-cart-header .delivery-pass-label {
+	color: #458b4c;
+    line-height: 20px;
+    font-size: 24px;
+    font-weight: bold;
+}
+.eTippingEnabled .row-size-big .subtotal__rowcell-right .superscript {
+	top: 0;
+}
 .eTippingEnabled .subtotal__rowcell-left,
 .eTippingEnabled .subtotal__rowcell-mid,
 .eTippingEnabled .subtotal__rowcell-right{
@@ -1336,7 +1341,7 @@ label[for="dontupdatecartlines"] {
   display: none;
 }
 
-.eTippingEnabled #tipDropdown, .eTippingEnabled #tipTextBox{
+.eTippingEnabled .tipDropdown, .eTippingEnabled .tipTextBox{
 	border: 2px solid rgb(194, 194, 194);
 	width: 125px;
 	padding-left:5px;
@@ -1349,25 +1354,26 @@ label[for="dontupdatecartlines"] {
     /*background: transparent url('http://dfoolong.github.io/assets/img/input-arrow-down.png') 97% center no-repeat;*/
 }
 
-.eTippingEnabled #tipDropdown, .eTippingEnabled #tipApply, .eTippingEnabled #tipApplied, .eTippingEnabled #tipTextBox{
+.eTippingEnabled .tipDropdown, .eTippingEnabled .tipApply, .eTippingEnabled .tipApplied, .eTippingEnabled .tipTextBox{
 	width: 129px;
 	box-sizing: border-box;
 }
-.eTippingEnabled #tipDropdown{
-	/*background: transparent url('/media/images/layout/input-arrow-down.png') 97% center no-repeat;*/
-	background: transparent url('/media/images/layout/input-arrow-down.png') no-repeat 97% center;
+.eTippingEnabled .tipDropdown,
+#checkout-cart-header .tipDropdown
+{
+	background: transparent url('/media/images/layout/input-arrow-down.png') no-repeat 88% center;
 	border-radius: 0px;
 	-webkit-border-radius: 0px;
 	-moz-border-radius: 0px;
 }
-.eTippingEnabled #tipDropdown:focus, .eTippingEnabled #tipTextBox:focus{
+.eTippingEnabled .tipDropdown:focus, .eTippingEnabled .tipTextBox:focus{
 	border-color: #4FA157;
 }
 .eTippingEnabled #tipTextBox::-ms-clear {
     display: none;
 }
 
-.eTippingEnabled #tipApply, .eTippingEnabled #tipApplied{
+.eTippingEnabled .tipApply, .eTippingEnabled .tipApplied{
 	border-radius: 3px;
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
@@ -1376,12 +1382,13 @@ label[for="dontupdatecartlines"] {
 	font-size: 12px;
 	font-weight: 700;
 	margin-top: 6px;
+	margin-left: 0;
 	padding-top: 7px;
 	padding-bottom: 7px;
 	height: 28px;
 }
 
-.eTippingEnabled #tipAppliedTick{
+.eTippingEnabled .tipAppliedTick{
   position: absolute;
   margin-top: 10px;
   margin-left: 5px;
@@ -1391,20 +1398,21 @@ label[for="dontupdatecartlines"] {
   content: " ";
 }
 
-.eTippingEnabled .rowcell-colon-right.st_label_youSaved:after{
+.eTippingEnabled .st_label.st_label_youSaved:after{
 	white-space: pre;
+	content: " ";
 }
-
-.eTippingEnabled .strl_text:after, .cartsection__total .strl_text:after, .cartsection__tax .strl_text:after{
-  content:":";
-}
-
 .eTippingEnabled .cartsection__total,
 .eTippingEnabled .cartsection__tax{
   font-size:16px;
   font-weight:normal;
 }
-
+.cartcontent .eTippingEnabled .cartsection__tax{
+	text-align: right;
+}
+.cartcontent .eTippingEnabled .cartsection__tax[fdform-container="etip"]{
+	text-align: left;
+}
 .eTippingEnabled .rowcontent-free-with-pass{
 	margin-left:0;
 	text-align:left;
@@ -1424,14 +1432,9 @@ label[for="dontupdatecartlines"] {
 	margin-bottom:10px;
 }
 .eTippingEnabled .strl_text{
-	font-size:16px;
+	font-size: 14px;
 }
-.eTippingEnabled #subtotalbox1 .strl_text, .eTippingEnabled .tooltip_holder, .icon-info-before{
-	display: table-cell;
-}
-.eTippingEnabled .orderSummary .strl_text{
 
-}
 .eTippingEnabled .orderSummary .subtotal__rowcell-mid{
 	width: 140px;
     text-align: left;
@@ -1442,6 +1445,7 @@ label[for="dontupdatecartlines"] {
 	text-transform:uppercase;
 	font-weight:bold;
 	font-size: 14pt;
+	line-height: 40px;
 	padding: 10px;
 	background-color: #6AAA6D;
 }
@@ -1470,16 +1474,16 @@ label[for="dontupdatecartlines"] {
 	/*background-color:rgb(157, 157, 157);*/
 }
 
-.eTippingEnabled #toolTipTextBox{
-    margin-left: -320px;
+.eTippingEnabled .toolTipTextBox{
+    margin-left: -500px;
     margin-top: -68px;
     width:440px;
     padding:13px 18px 13px 18px;
 }
-.eTippingEnabled #toolTipTextBox a, .eTippingEnabled .tooltip a{
+.eTippingEnabled .toolTipTextBox a, .eTippingEnabled .tooltip a{
 	text-decoration: underline;
 }
-.eTippingEnabled #toolTipTextBox:before {
+.eTippingEnabled .toolTipTextBox:before {
 	-webkit-transform: rotate(45deg);
 	-ms-transform: rotate(45deg);
 	transform: rotate(45deg);
@@ -1518,7 +1522,7 @@ label[for="dontupdatecartlines"] {
 	cursor:pointer;
 }
 #expresscheckout #cartcontent:before{
-	width: 120%;
+	width: 100%;
 }
 #expresscheckout .tabbed-carousel .tabs li{
 	padding: 10px;
@@ -1553,9 +1557,7 @@ label[for="dontupdatecartlines"] {
 }
 
 .row-style-saving .st_val_youSaved{
-	font-size: 10pt;
-	text-align: left;
-	color: #DF0000;
+	text-align: center;
 	display: inline-block;
 }
 
@@ -1588,4 +1590,10 @@ label[for="dontupdatecartlines"] {
  }
  .questions__right {
  	width: 100%;
+ }
+ #cartcontent .promotions{
+ 	background-color: #f4f4f3;
+    border-top: 2px solid #dcdcdc;
+    border-bottom: 2px solid #dcdcdc;
+    padding-left: 20px;
  }

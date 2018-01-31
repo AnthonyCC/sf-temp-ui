@@ -26,13 +26,14 @@
  * @param? softLimit
  * @param? isEBTused
  * @param? deliveryBegins
+ * @param? mobWeb
 */
 {template .viewcartlines autoescape="false"}
        {if $displayCheckout}
 	{call .couponMessage}
 		{param couponMessage: $couponMessage /}
 	{/call}
-	<div class='cartcontent'>
+	<div class='cartcontent viewcartlines'>
 		{foreach $section in $cartSections}
 			{call .cartsection data="$section"}
 				{param cartlineType: 'YOUR_CART' /}
@@ -54,12 +55,26 @@
 				{param containsWineSection : $containsWineSection /}
 				{param displayCheckout : $displayCheckout /}				
 				{param isEBTused : $isEBTused /}
+				{param mobWeb : $mobWeb /}
+				{param renderSubTotal1: true /}
 			{/call}
 		{/foreach}
 	</div>
    <div id="questions">
           {call .cartheaderQuestions /}
    </div>
+    {call .csr}
+    	{param customerServiceRepresentative: $customerServiceRepresentative /}
+    	{param userRecognized: $userRecognized /}
+    {/call}
+   	{call .promotions}
+		{param promotionApplied: $promotionApplied /}
+		{param deliveryPassTrialExpired: $deliveryPassTrialExpired /}
+		{param billingReferenceInfo: false /}
+		{param customerServiceRepresentative: $customerServiceRepresentative /}
+		{param displayCheckout: $displayCheckout /}
+		{param userRecognized: $userRecognized /}
+	{/call}
 	{call .total}
 		{param cartlineType: 'YOUR_CART' /}
 		{param subTotalBox: $subTotalBox /}
@@ -76,20 +91,19 @@
 		{param displayCheckout: $displayCheckout /}
 		{param totalWithoutTax: $totalWithoutTax /}
 		{param etipTotal: $etipTotal /}
-	{/call}
-	{call .footer}
 		{param buttonText: 'Checkout' /}
     	{param successPage: '/expressco/checkout.jsp' /}
+        {param displayCheckoutButton: $displayCheckout /}     
 		{param form: 'viewcart_startcheckout' /}
-		{param eTippingEnabled: $eTippingEnabled /}
-		{param avalaraEnabled: $avalaraEnabled /} 
-                     {param displayCheckout: $displayCheckout /}     
+	{/call}
+	{call .footer}
+		{param avalaraEnabled: $avalaraEnabled /}
+		{param buttonText: 'Checkout' /}
 	{/call}
        {else}
 			<div class='cartetip'>
        		  		{if not $displayCheckout and $eTippingEnabled and $cartSections[0]}
 						{call .etip}
-							{param subTotal: $subTotal /}
 							{param customTip: $customTip /}
 							{param isEBTused: $isEBTused /}
 							{param etipTotal: $etipTotal /}
@@ -145,6 +159,7 @@
                                   {param containsWineSection : $containsWineSection /}
                                   {param isEBTused : $isEBTused /}
                                   {param deliveryBegins : $deliveryBegins /}
+                                  {param renderSubTotal1: true /}
                            {/call}
                      {/foreach}
                      {else} 
@@ -162,6 +177,17 @@
                      {/if}
               </div>
               {if $cartSections[0]}
+          		    {call .csr}
+				    	{param customerServiceRepresentative: $customerServiceRepresentative /}
+				    	{param userRecognized: $userRecognized /}
+				    {/call}
+          		   	{call .promotions}
+						{param promotionApplied: $promotionApplied /}
+						{param deliveryPassTrialExpired: $deliveryPassTrialExpired /}
+						{param billingReferenceInfo: false /}
+						{param userRecognized: $userRecognized /}
+						{param displayCheckout: $displayCheckout /}
+					{/call}
               		{call .total}
 						 {param cartlineType: 'YOUR_CART' /}
 	                     {param subTotalBox: $subTotalBox /}
@@ -178,13 +204,13 @@
 	                     {param displayCheckout: $displayCheckout /}
 	                     {param totalWithoutTax: $totalWithoutTax /} 
 	                     {param etipTotal: $etipTotal /}
+                         {param buttonText: 'Checkout' /}
+                         {param form: 'viewcart_startcheckout' /}
+                         {param displayCheckoutButton: $displayCheckout /}
                      {/call}
 					 {call .footer}
-                           {param buttonText: 'Checkout' /}
-                           {param form: 'viewcart_startcheckout' /}
-                           {param eTippingEnabled: $eTippingEnabled /}
-                           {param avalaraEnabled: $avalaraEnabled /}
-                           {param displayCheckout: $displayCheckout /}     
+					 	{param buttonText: 'Checkout' /}
+					 	{param avalaraEnabled: $avalaraEnabled /}
                      {/call}
               {/if}
        {/if}
@@ -281,9 +307,10 @@
  * @param containsWineSection containsWineSection
  * @param? totalWithoutTax TotalWithoutTax 
  * @param? isEBTused
+ * @param? mobWeb
  */
 {template .checkoutlines autoescape="false"}
-	<div class='cartcontent'>
+	<div class='cartcontent checkoutlines'>
 		{foreach $section in $cartSections}
 			{call .cartsection data="$section"}
 				{param cartlineType: 'CHECKOUT' /}
@@ -304,32 +331,82 @@
 				{param isLastSection : isLast($section) /}
 				{param containsWineSection : $containsWineSection /}
 				{param isEBTused : $isEBTused /}
+				{param mobWeb : $mobWeb /}
+				{param renderSubTotal1: not $mobWeb /}
 			{/call}
 		{/foreach}
 	</div>
-	{call .total}
-		{param cartlineType: 'CHECKOUT' /}
-		{param subTotalBox: $subTotalBox /}
-		{param additionalInfo: $additionalInfo /}
-		{param goGreen: $goGreen /}
-		{param userRecognized: $userRecognized /}
-		{param billingReferenceInfo: $billingReferenceInfo /}
+	<div class="promotions">
+   	{call .promotions}
 		{param promotionApplied: $promotionApplied /}
 		{param deliveryPassTrialExpired: $deliveryPassTrialExpired /}
-		{param eTippingEnabled: $eTippingEnabled /}
-		{param avalaraEnabled: $avalaraEnabled /}
+		{param billingReferenceInfo: $billingReferenceInfo /}
+		{param userRecognized: $userRecognized /}
 		{param displayCheckout: $displayCheckout /}
-		{param customerServiceRepresentative: $customerServiceRepresentative /}
-		{param totalWithoutTax: $totalWithoutTax /}
-		{param etipTotal: $etipTotal /}
 	{/call}
+	</div>
+	{call .csr}
+    	{param customerServiceRepresentative: $customerServiceRepresentative /}
+    	{param userRecognized: $userRecognized /}
+    {/call}
+	{if not $mobWeb}
+		{call .total}
+			{param cartlineType: 'CHECKOUT' /}
+			{param subTotalBox: $subTotalBox /}
+			{param additionalInfo: $additionalInfo /}
+			{param goGreen: $goGreen /}
+			{param userRecognized: $userRecognized /}
+			{param billingReferenceInfo: $billingReferenceInfo /}
+			{param promotionApplied: $promotionApplied /}
+			{param deliveryPassTrialExpired: $deliveryPassTrialExpired /}
+			{param eTippingEnabled: $eTippingEnabled /}
+			{param avalaraEnabled: $avalaraEnabled /}
+			{param displayCheckout: $displayCheckout /}
+			{param customerServiceRepresentative: $customerServiceRepresentative /}
+			{param totalWithoutTax: $totalWithoutTax /}
+			{param etipTotal: $etipTotal /}
+			{param buttonText: 'Place Order' /}
+			{param form: 'checkout' /}
+			{param displayCheckoutButton: $displayCheckout /}
+		{/call}
+	{else}
+		{let $isETipEnabled: ($eTippingEnabled) or (not $displayCheckout) /}
+		<div class='cartsection {if $isETipEnabled}eTippingEnabled{/if}'>
+		<div class='cartsection__totalwrapper subtotal-box-1'>
+				<div id="subtotalbox1" class="subtotalboxes">
+					{if $subTotalBox and $subTotalBox.subTotalBox}
+						{call .subTotalBox}
+							{param cartlineType: 'CHECKOUT' /}
+							{param subTotalBox: $subTotalBox.subTotalBox /}
+							{param userRecognized: $userRecognized /}
+							{param userCorporate: $userCorporate /}
+							{param eTippingEnabled: $eTippingEnabled /}
+							{param avalaraEnabled: $avalaraEnabled /}
+							{param totalWithoutTax: $totalWithoutTax /}
+							{param displayCheckout: $displayCheckout /}
+							{param etipTotal: $etipTotal /}
+						{/call}
+					{/if}
+				</div>
+				{if $displayCheckout}
+					{call .etip}
+						{param customTip: $customTip /}
+						{param isEBTused: $isEBTused /}
+						{param etipTotal: $etipTotal /}
+						{param tipAmounts: $tipAmounts /}
+						{param tipApplied: $tipApplied /}
+						{param tipAppliedTick: $tipAppliedTick /}
+						{param displayCheckout: $displayCheckout /}
+					{/call}
+				{/if}
+		</div>
+	  </div>
+	{/if}
 	{call .footer}
 		{param buttonText: 'Place Order' /}
-		{param form: 'checkout' /}
-		{param eTippingEnabled: $eTippingEnabled /}
 		{param avalaraEnabled: $avalaraEnabled /}
-		{param displayCheckout: $displayCheckout /}
 	{/call}
+	
 {/template}
 
 /**
@@ -348,9 +425,10 @@
  * @param? displayCheckout
  * @param containsWineSection containsWineSection
  * @param? isEBTused
+ * @param? mobWeb
  */
 {template .successlines autoescape="false"}
-	<div class='cartcontent'>
+	<div class='cartcontent successlines'>
 		{foreach $section in $cartSections}
 			{call .cartsection data="$section"}
 				{param noModifyLinks: true /}
@@ -371,13 +449,14 @@
 				{param isLastSection : isLast($section) /}
 				{param containsWineSection : $containsWineSection /}
 				{param isEBTused : $isEBTused /}
+				{param displayCheckout: $displayCheckout /}
+				{param mobWeb : $mobWeb /}
+				{param renderSubTotal1: true /}
 			{/call}
 		{/foreach}
 	</div>
 	{call .footer}
 		{param avalaraEnabled: $avalaraEnabled /}
-		{param eTippingEnabled: $eTippingEnabled /}
-		{param displayCheckout: $displayCheckout /}
 	{/call}
 {/template}
 
@@ -388,6 +467,7 @@
  * @param? avalaraEnabled avalaraEnabled
  * @param? totalWithoutTax totalWithoutTax
  * @param? mobWeb is mobile web?
+ * @param? subTotalBox
  */
 {template .cartheader autoescape="false"}
 	<div class='cartheader'>
@@ -422,6 +502,13 @@
 		<div class='cartheader__action'>
 			<form fdform="viewcart_startcheckout" action="#" fdform-disable-resubmit="true" fdform-disable-resubmit-selector=".cssbutton.orange" fdform-disable-resubmit-release="manual">
 				{if $mobWeb}
+					{if $subTotalBox and $subTotalBox.estimatedTotalBox and length($subTotalBox.estimatedTotalBox)}
+						{foreach $box in $subTotalBox.estimatedTotalBox}
+							{if $box.id == 'youSaved'}
+								<div class="save-amount">You've Saved {$box.value}</div>
+							{/if}
+						{/foreach}
+					{/if}
 					<button class="cssbutton orange cartheader__button icon-chevron-right-after" fd-login-required fd-login-successpage="/expressco/checkout.jsp">
 						Checkout
 						{if $estimatedTotal}
@@ -436,6 +523,9 @@
 							</div>
 						{/if}
 					</button>
+					{literal}
+						<script>$jq('[data-ec-page] .mm-page .mobweb-topnav').trigger('resize');</script>
+					{/literal}
 				{else}
 					<button class="cssbutton orange cartheader__button icon-chevron-right-after" fd-login-required fd-login-successpage="/expressco/checkout.jsp">Checkout</button>
 				{/if}
@@ -511,7 +601,6 @@
  * @param? userRecognized is the user recognized?
  * @param? userCorporate
  * @param subTotalBox subtotal
- * @param subTotal
  * @param customTip customTip
  * @param eTippingEnabled eTippingEnabled
  * @param avalaraEnabled avalaraEnabled
@@ -524,6 +613,8 @@
  * @param? displayCheckout to display checkout
  * @param? noModifyLinks hide product modify links
  * @param? deliveryBegins
+ * @param? mobWeb
+ * @param? renderSubTotal1
  */
 {template .cartsection autoescape="false"}
 	/* HACK OVERRIDE (yes, there are a lot of those lately) for when this is the success page */
@@ -554,19 +645,26 @@
 			{/delcall}
 		{/foreach}
 
-		{if $info.subTotal}
+		
+	</div>/* end div.cartsection.cartsection-wine */
+	{if $info.subTotal}
        		{let $cartlineType: (not $displayCheckout and $cartlineType != 'CHECKOUT_SUCCESS')? 'CHECKOUT' : $cartlineType /}
-			
+			{let $isETipEnabled: ($eTippingEnabled and $cartlineType == 'CHECKOUT') or (not $displayCheckout and $cartlineType != 'CHECKOUT_SUCCESS') /}
 			{if $eTippingEnabled and $cartlineType == 'CHECKOUT' }
-				<div class='cartsection__totalwrapper'>
-					{if $numOfSections > 1 and $containsWineSection}
+				{if $numOfSections > 1 and $containsWineSection}
+					<div class='cartsection {if $info.wine}cartsection-wine{/if} {if $isETipEnabled}eTippingEnabled{/if}'>
+					<div class="cartsection__totalwrapper {if $isETipEnabled}eTippingEnabled{/if}">
 						<p class='cartsection__total'>
 							{if $info.subTotalText}{$info.subTotalText}{else}Subtotal{/if}: {$info.subTotal} {if $info.hasEstimatedPrice}*{/if}
 						</p>
 						<p class='cartsection__tax'>Tax: {$info.taxTotal}</p>
-					{/if}
-
-					{if $isLastSection or $numOfSections == 1}
+					</div>
+					</div>
+				{/if}
+				{if $renderSubTotal1}
+				<div class='cartsection {if $isETipEnabled}eTippingEnabled{/if}'>
+				{if $isLastSection or $numOfSections == 1}
+				<div class='cartsection__totalwrapper {if not $mobWeb}right{/if}'>
 						<div id="subtotalbox1" class="subtotalboxes">
 							{if $subTotalBox and $subTotalBox.subTotalBox}
 								{call .subTotalBox}
@@ -584,7 +682,6 @@
 						</div>
 						{if $displayCheckout}
 							{call .etip}
-								{param subTotal: $subTotal /}
 								{param customTip: $customTip /}
 								{param isEBTused: $isEBTused /}
 								{param etipTotal: $etipTotal /}
@@ -592,19 +689,18 @@
 								{param tipApplied: $tipApplied /}
 								{param tipAppliedTick: $tipAppliedTick /}
 								{param displayCheckout: $displayCheckout /}
-								{param etipTotal: $etipTotal /}
 							{/call}
 						{/if}
-					{/if}/* end {if $isLastSection or $numOfSections == 1} */
+					
 				</div>
+				{/if}/* end {if $isLastSection or $numOfSections == 1} */
+			  </div>
+			  {/if}
 			{else}
-				
 				/* only show subtotal if there's also wines */
 				{if ($isLastSection and $info.wine) or $containsWineSection}
+				<div class='cartsection {if $info.wine}cartsection-wine{/if} {if $isETipEnabled}eTippingEnabled{/if}'>
 					<div class='cartsection__totalwrapper'>
-						/* when will this be true in this else section? */
-						{if $eTippingEnabled and $cartlineType == 'CHECKOUT'}<div class="orderSummary">{/if}/* START div.orderSummary */
-						
 						<p class='cartsection__total'>
 							<span class="strl_text">
 							{if $info.subTotalText}
@@ -618,17 +714,6 @@
 							{/if}</span> <span class="subtotal__rowcell-mid">{$info.subTotal} {if $info.hasEstimatedPrice}*</span>{/if}
 						</p>
 							
-						/* when will this be true in this else section? */
-						{if $eTippingEnabled and $cartlineType == 'CHECKOUT'}
-							<div class="subtotal__rowcell-left" id="optionaltip">
-							 	<p class='cartsection__total'>
-							 		
-							 		<span class="strl_text">Optional Tip</span> <span class="subtotal__rowcell-mid">{$etipTotal}</span>
-							 		{call .optToolTip /}
-							 	</p>
-						 	</div>
-						{/if}
-	
 						{if $avalaraEnabled}
 							{if $cartlineType == 'CHECKOUT'}
 								<p class='cartsection__tax'><span class="strl_text">Tax</span> <span class="subtotal__rowcell-mid">{$info.taxTotal}</span></p>
@@ -636,21 +721,14 @@
 						{else}
 							<p class='cartsection__tax'><span class="strl_text">Tax</span> <span class="subtotal__rowcell-mid">{$info.taxTotal}</span></p>
 						{/if}
-							
-						/* when will this be true in this else section? */
-						{if $eTippingEnabled and $cartlineType == 'CHECKOUT'}
-								<div class="SSorderTotal">
-									{foreach $box in $subTotalBox.estimatedTotalBox}
-										<span class="strl_text">{$box.text}</span> <span class="subtotal__rowcell-mid">{$box.value}</span>
-									{/foreach}
-								</div>
-							</div>/* end div.orderSummary */
-						{/if}
 					</div>/* end cartsection__totalwrapper */
+				  </div>
+			    </div>
 				{/if} /* if ($isLastSection and $info.wine) or $containsWineSection */
+				
 			{/if}/* end if/else $eTippingEnabled and $cartlineType == 'CHECKOUT' */
 		{/if}
-	</div>/* end div.cartsection.cartsection-wine */
+		
 {/template}
 
 /**
@@ -921,26 +999,14 @@
 {/deltemplate}
 
 /**
-
- * @param cartlineType Cartsection type
- * @param subTotalBox subtotal
- * @param? additionalInfo Promotion info
  * @param? userRecognized is the user recognized?
- * @param? userCorporate
  * @param? deliveryPassTrialExpired
  * @param? promotionApplied
  * @param? billingReferenceInfo billing reference
- * @param eTippingEnabled eTippingEnabled
- * @param avalaraEnabled avalaraEnabled
- * @param? customerServiceRepresentative Customer service representative data
- * @param? totalWithoutTax TotalWithoutTax 
  * @param? displayCheckout to display checkout
- * @param etipTotal
  */
-{template .total autoescape="false"}
-{let $cartlineType: (not $displayCheckout)? 'CHECKOUT' : $cartlineType /}
-<div class='total {if $eTippingEnabled and $cartlineType == 'CHECKOUT'}eTippingEnabled{/if}'>
-	<div class='total-left'>
+{template .promotions autoescape="false"}
+
        {if $displayCheckout}
 		<div class='total__promotion'>
 			<div class='promotion-item' {if $promotionApplied}style="display: none;" aria-hidden="true"{/if} fdform-container="promotion" fdform-container-promotionremove>
@@ -987,64 +1053,87 @@
 				</div>
 			</div>
 		{/if} /*end if $userRecognized and $deliveryPassTrialExpired */
-		{if $userRecognized}
-			
-			{if $customerServiceRepresentative}
-				<div class="total-masq">
-					<form fdform="csrfield" fdform-endpoint-submit="/api/expresscheckout/csr" fdform-success="FreshDirect.utils.reloadOnSuccess"  action="#">
-						{if $customerServiceRepresentative.deliveryCharge > 0}
-							<p><label for="deliveryForceWaived">
-								Delivery Fee: Force Waive
-								<input id="deliveryForceWaived" type="checkbox" name="dlvForceWaive" {if $customerServiceRepresentative.deliveryForceWaived}checked{/if}>
-							</label></p>
-						{/if} /*end if $customerServiceRepresentative.deliveryCharge > 0 */
-						
-						{if $customerServiceRepresentative.deliveryChargePremium > 0}
-							<p><label for="deliveryForceWaivedPremium">
-								Delivery Fee: Force Waive Premium
-								<input id="deliveryForceWaivedPremium" type="checkbox" name="dlvForceWaivePremium" {if $customerServiceRepresentative.isPremiumDeliveryForceWaived}checked{/if}>
-							</label></p>
-						{/if}
-						
-						{if $customerServiceRepresentative.phoneCharge > 0}
-							<p><label for="phoneHandlingChargeWaived">
-								Waive Phone Handling Charge (${$customerServiceRepresentative.phoneCharge})
-								<input id="phoneHandlingChargeWaived" type="checkbox" name="waivePhoneHandlingCharge" {if $customerServiceRepresentative.phoneHandlingChargeWaived}checked{/if}>
-							</label></p>
-						{/if}
-						
-						<p><label for="emailInvoiceSendingSkipped">
-							Don't send e-mail invoice
-							<input id="emailInvoiceSendingSkipped" type="checkbox" name="silentMode" {if $customerServiceRepresentative.emailInvoiceSendingSkipped}checked{/if}>
-						</label></p>
-						<p><label for="customerInvoiceMessage">
-							Customer Invoice Message
-							<input id="customerInvoiceMessage" class="masq-input" type="text" name="customerInvoiceMessage" {if $customerServiceRepresentative.customerInvoiceMessage}value="{$customerServiceRepresentative.customerInvoiceMessage}"{/if}>
-						</label></p>
-						<p><button class="cssbutton green" fdform-button="submit">apply</button></p>
-					</form>
-				</div>
-			{/if} /* end if $customerServiceRepresentative */
-	    {/if} /* end if $userRecognized */
+		<div class="clear">
 		</div>
-		<div class='total__subtotal total-right'>
-			<div id="subtotalbox2" class="subtotalboxes">
-				{if $eTippingEnabled and $cartlineType == 'CHECKOUT' }	
-					{if $subTotalBox and $subTotalBox.estimatedTotalBox}
-						{call .subTotalBox}
-							{param cartlineType: $cartlineType /}
-							{param subTotalBox: $subTotalBox.estimatedTotalBox /}
-							{param userRecognized: $userRecognized /}
-							{param userCorporate: $userCorporate /}
-							{param eTippingEnabled: $eTippingEnabled /}
-							{param avalaraEnabled: $avalaraEnabled /}
-							{param totalWithoutTax: $totalWithoutTax /}
-							{param displayCheckout: $displayCheckout /}
-							{param etipTotal: $etipTotal /}
-						{/call}
-					{/if}
-				{else}
-					{if $subTotalBox and $subTotalBox.subTotalBox}
+{/template}
+
+/**
+ * @param? userRecognized is the user recognized?
+ * @param? customerServiceRepresentative Customer service representative data
+ */
+{template .csr autoescape="false"}
+{if $userRecognized and $customerServiceRepresentative}
+	<div class="total-masq">
+		<form fdform="csrfield" fdform-endpoint-submit="/api/expresscheckout/csr" fdform-success="FreshDirect.utils.reloadOnSuccess"  action="#">
+			{if $customerServiceRepresentative.deliveryCharge > 0}
+				<p><label for="deliveryForceWaived">
+					Delivery Fee: Force Waive
+					<input id="deliveryForceWaived" type="checkbox" name="dlvForceWaive" {if $customerServiceRepresentative.deliveryForceWaived}checked{/if}>
+				</label></p>
+			{/if} /*end if $customerServiceRepresentative.deliveryCharge > 0 */
+			
+			{if $customerServiceRepresentative.deliveryChargePremium > 0}
+				<p><label for="deliveryForceWaivedPremium">
+					Delivery Fee: Force Waive Premium
+					<input id="deliveryForceWaivedPremium" type="checkbox" name="dlvForceWaivePremium" {if $customerServiceRepresentative.isPremiumDeliveryForceWaived}checked{/if}>
+				</label></p>
+			{/if}
+			
+			{if $customerServiceRepresentative.phoneCharge > 0}
+				<p><label for="phoneHandlingChargeWaived">
+					Waive Phone Handling Charge (${$customerServiceRepresentative.phoneCharge})
+					<input id="phoneHandlingChargeWaived" type="checkbox" name="waivePhoneHandlingCharge" {if $customerServiceRepresentative.phoneHandlingChargeWaived}checked{/if}>
+				</label></p>
+			{/if}
+			
+			<p><label for="emailInvoiceSendingSkipped">
+				Don't send e-mail invoice
+				<input id="emailInvoiceSendingSkipped" type="checkbox" name="silentMode" {if $customerServiceRepresentative.emailInvoiceSendingSkipped}checked{/if}>
+			</label></p>
+			<p><label for="customerInvoiceMessage">
+				Customer Invoice Message
+				<input id="customerInvoiceMessage" class="masq-input" type="text" name="customerInvoiceMessage" {if $customerServiceRepresentative.customerInvoiceMessage}value="{$customerServiceRepresentative.customerInvoiceMessage}"{/if}>
+			</label></p>
+			<p><button class="cssbutton green" fdform-button="submit">apply</button></p>
+		</form>
+	</div>
+{/if} 
+{/template}
+/**
+ * @param cartlineType Cartsection type
+ * @param subTotalBox subtotal
+ * @param? additionalInfo Promotion info
+ * @param? userRecognized is the user recognized?
+ * @param? userCorporate
+ * @param eTippingEnabled eTippingEnabled
+ * @param avalaraEnabled avalaraEnabled
+ * @param? totalWithoutTax TotalWithoutTax 
+ * @param? etipTotal
+ * @param? displayCheckout to display checkout
+ * @param? displayCheckoutButton
+ * @param? buttonText
+ * @param? form
+ * @param? navLink
+ * @param? successPage
+ */
+{template .total autoescape="false"}
+{let $cartlineType: (not $displayCheckout)? 'CHECKOUT' : $cartlineType /}
+<div class='total {if $eTippingEnabled and $cartlineType == 'CHECKOUT'}eTippingEnabled{/if}'>
+	<div class='total__subtotal total-right right'>
+		<div id="subtotalbox2" class="subtotalboxes">
+				{if $eTippingEnabled and $cartlineType == 'CHECKOUT' and $subTotalBox and $subTotalBox.estimatedTotalBox}	
+					{call .subTotalBox}
+						{param cartlineType: $cartlineType /}
+						{param subTotalBox: $subTotalBox.estimatedTotalBox /}
+						{param userRecognized: $userRecognized /}
+						{param userCorporate: $userCorporate /}
+						{param eTippingEnabled: $eTippingEnabled /}
+						{param avalaraEnabled: $avalaraEnabled /}
+						{param totalWithoutTax: $totalWithoutTax /}
+						{param displayCheckout: $displayCheckout /}
+						{param etipTotal: $etipTotal /}
+					{/call}
+				{elseif $subTotalBox and $subTotalBox.subTotalBox}
 						{call .subTotalBox}
 							{param cartlineType: $cartlineType /}
 							{param subTotalBox: $subTotalBox.subTotalBox /}
@@ -1056,13 +1145,27 @@
 							{param displayCheckout: $displayCheckout /}
 							{param etipTotal: $etipTotal /}
 						{/call}
-					{/if}
-				{/if}
-			</div>
+				{/if} /* end if eTippingEnabled and $cartlineType == 'CHECKOUT' */
+			</div> /* end subtotalbox2*/
 			{call .additionalInfo}
 				{param additionalInfo: $additionalInfo /}
 			{/call}
+			<div class="clear"></div>
+			{if $displayCheckoutButton}
+				<div class="cart-button">
+					{if $form}
+						<div fdform-error-container="{$form}"></div>
+					{/if}
+					{if $form}<form fdform="{$form}" action="#">{/if}
+					{if $navLink}<a href='{$navLink}'>{/if}
+					{if $buttonText}<button class="cssbutton orange footer__button icon-chevron-right-after" fd-login-required {if $successPage}fd-login-successpage="{$successPage}"{/if}>{$buttonText}</button>{/if}
+					{if $navLink}</a>{/if}
+					{if $form}</form>{/if}
+				</div>
+			{/if}
+			
 		</div>
+		<div class="clear"></div>
 	</div>
 {/template}
 
@@ -1084,16 +1187,6 @@
 {/template}
 
 /**
-* @param? estimatedTotal
-*/
-{template .checkoutButton}
-	<button class="cssbutton orange checkout_button_w_subtotal icon-chevron-right-after">
-		<span>Place Order</span>
-		{if $estimatedTotal}<span class="est_total">Est. Total: {$estimatedTotal}</span>{/if}
-	</button>
-{/template}
-
-/**
 * @param? cartlineType cartlineType
 * @param? subTotalBox subTotalBox data
 * @param? userRecognized is the user recognised or not
@@ -1103,6 +1196,8 @@
 * @param? totalWithoutTax totalWithoutTax 
 * @param? displayCheckout
 * @param? etipTotal
+* @param? withContainer
+* @param? unescapeValue
 */
 {template .subTotalBox}
 	{let $subtotalUsed: 0 /}
@@ -1158,8 +1253,8 @@
 						{/if} /*end if $box.other and $box.other.promoCode */
 					{/if} /*end if $box.id == 'freefood' */
 				</div><!--end div.subtotal__rowcell-left.rowcell-colon-right -->
-
-				<div class='subtotal__rowcell-mid rowcell-text-right st_val st_val_{$box.id}'>
+				{if $withContainer} <div class="subtotal__row-value-container">{/if}
+				<div class='subtotal__rowcell-mid {$box.id=='youSaved'? '': 'rowcell-text-right'}  st_val st_val_{$box.id}'>
 					{if $box.id == 'deliveryfee' and ($deliveryUsed == 0) and not $box.other.deliveryPassPopupNeeded}
 						{if $eTippingEnabled and $cartlineTypeRevised == 'CHECKOUT'}
 							{call .dfToolTip /}
@@ -1171,10 +1266,11 @@
 						{let $deliveryUsed: 1 /}
 					{else}	
 						{if $avalaraEnabledRevised and $box.id=='ssOrderTotal' and $cartlineTypeRevised == 'YOUR_CART'}
-								{$totalWithoutTax}
-						   {else}	
-						   
-							    {$box.value}
+							{$totalWithoutTax}
+					    {elseif $unescapeValue}
+				    		 {$box.value|noAutoescape}
+				   		{else}
+						    {$box.value}
 						{/if}
 					{/if}
 				</div>
@@ -1231,9 +1327,18 @@
 					{/if} /*end if $box.id != 'deliveryfee' and $box.id != 'ssOrderTotal' */
 				{/if} /*end if $cartlineTypeRevised == 'YOUR_CART' */
 				
-				{if $box.other}
+				{if $box.other and 
+					(
+						((($avalaraEnabledRevised and $box.id != 'subtotal') or not $avalaraEnabledRevised ) and $box.other.mark) or
+						($box.id == 'redemptionpromo') or
+						($box.id == 'giftcardbalance') or
+						($box.other.deliveryPassPopupNeeded and $userRecognized and $userCorporate == false)
+					)
+				}
 					<div class='subtotal__rowcell-right'>
-					{if ($avalaraEnabledRevised and $box.id != 'subtotal') or not $avalaraEnabledRevised }	{if $box.other.mark}{$box.other.mark}{/if}{/if}
+						{if (($avalaraEnabledRevised and $box.id != 'subtotal') or not $avalaraEnabledRevised ) and ($box.other.mark)}	
+							<sup class="superscript">{$box.other.mark}</sup>
+						{/if}
 						{if $box.id == 'redemptionpromo'}
 							<form fdform="promotionremove" action="#"
 							fdform-endpoint-submit="/api/expresscheckout/promotion"
@@ -1255,6 +1360,7 @@
 					</div> <!-- end subtotal__rowcell-right -->
 				{/if} /*end if $box.other */
 			</div>
+			{if $withContainer} </div>{/if}
 			{if isLast($box) and $eTippingEnabled and not $displayCheckout and $box.id != 'ssOrderTotal'}
 				<div class='subtotal__row' data-boxid='etip'>
 					<div class='subtotal__rowcell-left rowcell-colon-right st_label st_label_etip' id='st_label_etip'>
@@ -1284,47 +1390,25 @@
 
 /**
  * @param? buttonText Display text of button
- * @param? navLink Where the button should navigate
- * @param? form form id for button
- * @param? displayCheckout to display checkout
  * @param avalaraEnabled avalaraEnabled
- * @param? successPage 
  */
 {template .footer autoescape="false"}
 	<div class='footer'>
-		{if $form}
-			<div fdform-error-container="{$form}"></div>
-		{/if}
-		<div class='footer__left'>
-			{if $avalaraEnabled}
-				{if $buttonText == 'Place Order'}
-					<p>
-						<span class='footer__legend'>* - Estimated Price</span>
-						<span class='footer__legend'>T - Taxable Item</span>
-						<span class='footer__legend'>D - State Bottle Deposit</span>
-						<span class='footer__legend'>S - Special Price</span>
-					</p>
-				{/if}
-			{else}
+      <div class="footer-legend">
+      		{if $avalaraEnabled and $buttonText == 'Place Order'}
 				<p>
-			
+					<span class='footer__legend'>* - Estimated Price</span>
+					<span class='footer__legend'>T - Taxable Item</span>
+					<span class='footer__legend'>D - State Bottle Deposit</span>
+					<span class='footer__legend'>S - Special Price</span>
 				</p>
-			{/if} /*end if $avalaraEnabled */
+			{/if}
 			<p class='footer__findout'>
 				Find out more about <a href='/help/estimated_price.jsp' data-ifrpopup='/help/estimated_price.jsp' data-ifrpopup-width='375' data-ifrpopup-height='335'>estimated prices</a>,
 				<a href='/help/taxes_fees.jsp' data-ifrpopup='/help/taxes_fees.jsp' data-ifrpopup-width='375' data-ifrpopup-height='335'>taxes, deposits, and fees</a>,<br class="NOMOBWEB" />
 				and other aspects of our <a href='/help/terms_of_service.jsp' data-ifrpopup='/help/terms_of_service.jsp?type=popup' data-ifrpopup-width='600'>customer agreement</a>
 			</p>
-		</div>
-              {if $displayCheckout}
-		<div class='footer__right'>
-			{if $form}<form fdform="{$form}" action="#">{/if}
-			{if $navLink}<a href='{$navLink}'>{/if}
-			{if $buttonText}<button class="cssbutton orange footer__button icon-chevron-right-after" fd-login-required {if $successPage}fd-login-successpage="{$successPage}"{/if}>{$buttonText}</button>{/if}
-			{if $navLink}</a>{/if}
-			{if $form}</form>{/if}
-		</div>
-              {/if}
+      </div>
 	</div> <!-- end div.footer -->
 {/template}
 
@@ -1340,7 +1424,6 @@
 {/template}
 
 /**
-* @param? subTotal
 * @param? customTip
 * @param? isEBTused
 * @param? etipTotal
@@ -1348,21 +1431,22 @@
 * @param? tipApplied
 * @param? tipAppliedTick
 * @param? displayCheckout
+* @param? id
+* #@
 */
 {template .etip}
 	<div class='cartsection__tax' fdform-container="etip">
-		<form fdform="etip" action="#" fdform-endpoint-submit="/api/expresscheckout/etip">
-			<input type="hidden" name="hiddenSubTotal" id="hiddenSubTotal" value="{$subTotal}" />
+		<form fdform="{$id? $id: 'etip'}" action="#" fdform-endpoint-submit="/api/expresscheckout/etip">
 
 			<div class="subtotal__rowcell-left" id="optionaltip">
-				<span class="strl_text">Optional Tip</span>
+				<span class="strl_text">Tip (Optional)</span>
 				{call .optToolTip /}
 									
 			</div>
-			{if not $displayCheckout}<div class="cartetip-container">{/if}
+			<div class="subtotal__rowcell-mid {if not $displayCheckout}cartetip-container{/if}">
 			<label for="tipDropdown">
 				<span class="offscreen">Optional Tip:</span>
-				<select id="tipDropdown" name="tipAmount" data-component="changeETip" {if $customTip}style="display:none" aria-hidden="true"{/if} {if $isEBTused}disabled title="Disabled for EBT purchases"{/if}>
+				<select class="tipDropdown" name="tipAmount" data-component="changeETip" {if $customTip}style="display:none" aria-hidden="true"{/if} {if $isEBTused}disabled title="Disabled for EBT purchases"{/if}>
 					{foreach $option in $tipAmounts}
 						<option value="{$option}" {if ($customTip and $option == 'Other Amount') or ( ('$' + $etipTotal) == $option) or (($tipApplied == false) and $option == '$0')}selected{/if}>
 						{$option}</option>
@@ -1373,29 +1457,97 @@
 			<label for="tipTextBox">
 				<span class="offscreen">Other Tip Amount:</span>
 									
-				<input type="text" id="tipTextBox" placeholder="0.00" name="otherTipAmount"
+				<input type="text" class="tipTextBox" placeholder="0.00" name="otherTipAmount"
 					{if not $customTip}style="display:none"{/if}
 					{if $etipTotal and $customTip}value="{$etipTotal}"{/if} {if $isEBTused}disabled title="Disabled for EBT purchases"{/if} data-component="tooltip"/>
 									
-				<div id="toolTipTextBox" class="tooltip" data-component="tooltipContent" role="tooltip"></div>
+				<div class="toolTipTextBox tooltip" data-component="tooltipContent" role="tooltip"></div>
 			</label>
 								
 			{if $tipAppliedTick}
-				<img id="tipAppliedTick" src="/media/layout/nav/globalnav/fdx/locabar-check.png" alt="Tick" />
+				<img class="tipAppliedTick" src="/media/layout/nav/globalnav/fdx/locabar-check.png" alt="Tick" />
 			{/if}
 			<br/>
 			<input type="hidden" name="action" value="applyETip" />
 
 			{if $tipApplied}
-				<button id="tipApplied" class="cssbutton grey" disabled>Tip Added</button>
-				<button id="tipApply" style="display:none" aria-hidden="true" class="cssbutton {if $isEBTused}grey{else}green{/if}" {if $isEBTused}disabled title="Disabled for EBT purchases"{/if}>Add Tip</button>
+				<button class="tipApplied cssbutton grey" disabled>Tip Added</button>
+				<button style="display:none" aria-hidden="true" class="tipApply cssbutton {if $isEBTused}grey{else}green transparent{/if}" {if $isEBTused}disabled title="Disabled for EBT purchases"{/if}>Add Tip</button>
 			{elseif ($etipTotal < 1) and $customTip and not $isEBTused}
-				<button id="tipApply" class="cssbutton grey" disabled {if $isEBTused}title="Disabled for EBT purchases"{/if}>Add Tip</button>
+				<button class="tipApply cssbutton grey" disabled {if $isEBTused}title="Disabled for EBT purchases"{/if}>Add Tip</button>
 			{else}
-				<button id="tipApply" class="cssbutton {if $isEBTused}grey{else}green{/if}" {if $isEBTused}disabled title="Disabled for EBT purchases"{/if}>Add Tip</button>
-				<button id="tipApplied" style="display:none" aria-hidden="true" class="cssbutton grey" disabled>Tip Added</button>
+				<button class="tipApply cssbutton {if $isEBTused}grey{else}green transparent{/if}" {if $isEBTused}disabled title="Disabled for EBT purchases"{/if}>Add Tip</button>
+				<button style="display:none" aria-hidden="true" class="tipApplied cssbutton grey" disabled>Tip Added</button>
 			{/if}
-			{if not $displayCheckout}</div>{/if}
+			</div>
 		</form>
 	</div><!--end div.cartsection__tax fdform-container="etip" -->
+{/template}
+
+/**
+* @param? deliveryFee
+* @param? estTotal
+* @param? estTotalLegend
+* @param? customTip
+* @param? isEBTused
+* @param? etipTotal
+* @param? tipAmounts
+* @param? tipApplied
+* @param? tipAppliedTick
+* @param? userRecognized
+* @param? userCorporate
+* @param? saveAmount
+* @param? mobWeb
+*/
+{template .checkoutCartHeader}
+	{if $deliveryFee} 
+	<div class="delivery-fee container medium-container"> 
+		{call .subTotalBox}
+			{param cartlineType: 'CHECKOUT' /}
+			{param subTotalBox: $deliveryFee /}
+			{param userRecognized: $userRecognized /}
+			{param userCorporate: $userCorporate /}
+			{param eTippingEnabled: false /}
+			{param avalaraEnabled: false /}
+			{param totalWithoutTax: false /}
+			{param displayCheckout: true /}
+			{param etipTotal: 0 /}
+			{param withContainer: true /}
+			{param unescapeValue: true /}
+		{/call}
+	</div>
+	{/if}
+	{if $tipAmounts}
+	<div class="tip container medium-container"> 
+		{call .etip}
+			{param customTip: $customTip /}
+			{param isEBTused: $isEBTused /}
+			{param etipTotal: $etipTotal /}
+			{param tipAmounts: $tipAmounts /}
+			{param tipApplied: $tipApplied /}
+			{param tipAppliedTick: $tipAppliedTick /}
+			{param id: 'checkoutCartHeader-etip' /}
+		{/call}
+	</div>
+	{/if}
+	{if not $mobWeb}
+	<div class="order-total container small-container">	
+		<div class="subtotal__row" >
+			<div class="subtotal__rowcell-left rowcell-colon-right">
+				<div id="oas_b_FirstECheckPromo" class="oas-cnt hidden" data-component="addpaymentmethodbutton" aria-haspopup="true" data-showechecktab='addpaymentmethod_bank'>
+					<script>try {lb} fd.modules.common.updateOAS(OAS_url, 'www.freshdirect.com/XCpaymentpromo', OAS_rns, ['FirstECheckPromo'], OAS_query, true);	{rb} catch (e) {lb} console.trace(e); {rb}</script>
+				</div>
+				<span class="strl_text">Order Total</span>
+			</div>
+			<div class="subtotal__rowcell-mid rowcell-text-right st_val ">{$estTotal}{if $estTotalLegend }<sup class="superscript">{{$estTotalLegend}}</sup>{/if}</div>
+			<div class="subtotal__rowcell-right"></div>
+		</div>
+	</div>
+	<div class="place-order container large-container {if not $saveAmount}no-save-amount{/if}">
+		{if $saveAmount}<div class="save-amount">You've Saved {$saveAmount}</div>{/if}
+		<form fdform="checkout" action="#" fdform-disable-resubmit="true" fdform-disable-resubmit-selector=".cssbutton.orange" fdform-disable-resubmit-release="manual">
+			<button class="cssbutton orange footer__button icon-chevron-right-after" fd-login-required="">Place Order</button>
+		</form>
+	</div>
+	{/if}
 {/template}

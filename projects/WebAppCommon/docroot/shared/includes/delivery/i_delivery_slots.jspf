@@ -277,11 +277,6 @@ if (timeslots.size() > 0) {
 				.append("					<div id=\"ts_d"+dayIndex+"_hE\" class=\"tsHeaderE\" style=\"display: none;\">\n")
 				.append("						<a href=\"#\" onclick=\"return false;\" class=\"accessibleOutlineFF\" aria-label=\""+TimeslotPageUtil.formatDayNameExp(day)+". "+((user.getCurrentStandingOrder())!=null?"": TimeslotPageUtil.formatDeliveryDateNew(day) )+" "+((timeslots.getTimeslotsForDate(day).size()==0)? "sorry! no delivery timeslots available" : " has "  +timeslots.getTimeslotsForDate(day).size()+  " timeslots ")+" \"><table cellspacing=\"0\" cellpadding=\"0\" width=\"100%\">\n")
 				.append("							<tr>\n")
-				.append("								<td class=\"tsHeaderE_top\" width=\"6\"><img src=\"/media_stat/images/layout/top_left.gif\" alt=\"\" width=\"6\" height=\"6\" /></td>\n")
-				.append("								<td class=\"tsHeaderE_topC\"><img src=\"/media_stat/images/layout/clear.gif\" alt=\"\" /></td>\n")
-				.append("								<td class=\"tsHeaderE_top\" width=\"6\" align=\"right\"><img src=\"/media_stat/images/layout/top_right.gif\" alt=\"\" width=\"6\" height=\"6\" /></td>\n")
-				.append("							</tr>\n")
-				.append("							<tr>\n")
 				.append("								<td align=\"center\" colspan=\"3\" valign=\"middle\">\n")
 				.append("									<div class=\"tsHeadE\" id=\"ts_d"+dayIndex+"_hE_content\" style=\"display: none;\">\n")
 				.append("										<div class=\"tsDayNameE\"><b>"+TimeslotPageUtil.formatDayNameExp(day)+"</b></div>\n");

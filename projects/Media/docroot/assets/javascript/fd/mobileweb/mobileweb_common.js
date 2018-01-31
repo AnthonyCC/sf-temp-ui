@@ -245,14 +245,29 @@ var API;
 		/* CHECKOUT */
 		/* anchor header */
 		function co_alignHeader() {
+			var cartHeaderEl = $('[data-ec-page] .mm-page #cartheader, [data-ec-page] .mm-page #cartheader_co');
+			if (cartHeaderEl) {
+				cartHeaderEl.find('.estimated-total').css({
+					"padding-top": (cartHeaderEl.find('.right').height() - cartHeaderEl.find('.estimated-total').height()) + "px"
+				});
+				
+				cartHeaderEl.css({'top': $(window).height() - cartHeaderEl.height()  +'px' });
+				$('footer').css({'padding-bottom': cartHeaderEl.height()+'px'});
+				/* floating footer fix */
+				$('html,body').css({
+				    '-webkit-overflow-scrolling' : 'touch',
+				    'overflow': 'auto',
+				    'height': '100%'
+				});
+			}
+		
 			if (!$jq('#smartbanner').parent().hasClass('.mobweb-topnav')) { //move banner into nav
 				$jq('.mobweb-topnav').prepend($jq('#smartbanner'));
 			}
-			$('[data-ec-page] .mm-page #cartheader, [data-ec-page] .mm-page #cartheader_co').css({'top': $('.mobweb-topnav').outerHeight(true)+'px' });
-			$('[data-ec-page] .mm-page #content').css({'padding-top': ($('.mobweb-topnav').outerHeight(true)+$('[data-ec-page] .mm-page #cartheader, [data-ec-page] .mm-page #cartheader_co').outerHeight(true))+'px'});
 		}
 		$('#smartbanner .sb-close').on('click', co_alignHeader); //resize on smartbanner close
-		$('[data-ec-page] .mm-page .mobweb-topnav').on('resize', co_alignHeader);
+		$('[data-ec-page] .mm-page .mobweb-topnav,[data-ec-page] .mm-page .checkout-top-nav').on('resize', co_alignHeader);
+		$(window).on('resize', co_alignHeader);
 		co_alignHeader();
 
 		/* display modifying order message */

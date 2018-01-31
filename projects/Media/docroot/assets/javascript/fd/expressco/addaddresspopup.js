@@ -77,10 +77,13 @@ var FreshDirect = FreshDirect || {};
         }
 
         this.refreshBody(data);
-        this.popup.show($t);
+        this.noscroll(true);
+        if ($(window).scrollTop() < 200) {
+        	this.popup.$el.css('top', $(window).scrollTop() + 40);
+        }
         this.popup.clicked = true;
 
-        this.noscroll(true);
+        this.popup.show($t);
 
         $('#'+this.popupId+' [fdform]').each(function (i, form) {
           fd.modules.common.forms.decorateFields(form);

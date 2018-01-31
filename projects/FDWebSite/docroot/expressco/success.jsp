@@ -94,7 +94,9 @@
             <soy:render template="expressco.addresspreview" data="${singlePageCheckoutSuccessPotato.address}" />
           </div>
           <div data-drawer-default-content="timeslot">
-            <soy:render template="expressco.successtimeslot" data="${singlePageCheckoutSuccessPotato.timeslot}" />
+          	<div class="drawer__previewitem">
+            	<soy:render template="expressco.timeslot" data="${singlePageCheckoutSuccessPotato.timeslot}" />
+            </div>
           </div>
           <div data-drawer-default-content="payment">
             <soy:render template="expressco.paymentmethodpreviewNew" data="${singlePageCheckoutSuccessPotato.payment}" />

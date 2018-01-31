@@ -15,11 +15,11 @@ public class DrawerService {
 
 	private static final String DRAWERS_KEY = "drawers";
 	private static final String PAYMENT_DRAWER_ID = "payment";
-	private static final String PAYMENT_DRAWER_TITLE = "Payment Method";
+	private static final String PAYMENT_DRAWER_TITLE = "Pay with";
 	private static final String DELIVERY_ADDRESS_DRAWER_ID = "address";
-	private static final String DELIVERY_ADDRESS_DRAWER_TITLE = "Delivery Address";
+	private static final String DELIVERY_ADDRESS_DRAWER_TITLE = "Deliver to";
 	private static final String DELIVERY_TIMESLOT_DRAWER_ID = "timeslot";
-	private static final String DELIVERY_TIMESLOT_DRAWER_TITLE = "Delivery Time";
+	private static final String DELIVERY_TIMESLOT_DRAWER_TITLE = "Arrive by";
 	
 	private DrawerService() {
 	}

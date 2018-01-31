@@ -23,16 +23,28 @@ var FreshDirect = FreshDirect || {};
       value: 'ec-drawer'
     },
     changeTrigger: {
-      value: '[data-drawer-id] .change,[data-drawer-activate]'
+      value: '.drawer__previewitem .change,[data-drawer-activate]'
     },
     cancelTrigger: {
-      value: '[data-drawer-id] .cancel,[data-drawer-active] [data-drawer-disabled],[data-drawer-active] [data-drawer-id]'
+        value: '[data-drawer-id] .cancel-button'
     },
     activate: {
       value: function (id) {
         if ($('[data-drawer-id="'+id+'"][data-drawer-locked]').size() === 0) {
           $(document.body).attr('data-drawer-active', id);
-          $('[data-drawer-content="'+id+'"]').focus();
+          if (fd.mobWeb) {
+        	  $('.drawer-row').removeClass('active').hide();
+        	  $('.drawer-row.auto-height').removeClass('auto-height').addClass('auto-height-disabled');
+        	  $('[data-drawer-default]').hide();
+        	  $('[data-drawer-id="'+id+'"]').parents('.drawer-row').addClass('active').show();
+          } else {
+        	  $('[data-drawer-id]').removeClass('active').hide();
+              $('[data-drawer-id="'+id+'"]').addClass('active').show();
+              $('.cancel .cancel-button:visible').focus();
+          }
+
+          
+		  $('#checkout-cart-header').hide();
         }
       }
     },
@@ -47,6 +59,15 @@ var FreshDirect = FreshDirect || {};
           } catch (e) {}
         }
         $(document.body).attr('data-drawer-active', null);
+        if(fd.mobWeb) {
+      	  $('.drawer-row').removeClass('active').show();
+      	  $('.drawer-row.auto-height-disabled').removeClass('auto-height-disabled').addClass('auto-height');
+      	  $('[data-drawer-default]').show();
+        } else {
+        	$('[data-drawer-id]').removeClass('active').show();
+        }
+        
+		$('#checkout-cart-header').show();
         $("#ec-drawer").trigger("drawer-reset");
 
         if (!config.noEvent) {
@@ -64,7 +85,7 @@ var FreshDirect = FreshDirect || {};
     changeClick: {
       value: function (e) {
         var ct = $(e.currentTarget),
-            target = ct.attr('data-drawer-activate') || ct.parent().attr('data-drawer-id');
+            target = ct.attr('data-drawer-activate') || ct.parent().attr('data-drawer-id') ||ct.parents('[data-drawer-default-content]').attr('data-drawer-default-content');
 
         DISPATCHER.signal('ec-drawer-click', {target: target});
 
@@ -108,7 +129,7 @@ var FreshDirect = FreshDirect || {};
 
   $(document).on('click', drawer.changeTrigger, drawer.changeClick.bind(drawer));
   $(document).on('click', drawer.cancelTrigger, drawer.cancel.bind(drawer));
-  $(document).on('keydown', '[data-drawer-content]', function (e) {
+  $(document).on('keydown', '[data-drawer-content], .drawer-header .active', function (e) {
     if (e.keyCode === fd.utils.keyCode.ESC) {
       drawer.reset();
     }
@@ -171,7 +192,10 @@ var FreshDirect = FreshDirect || {};
   $(document).on('click', '.clickable,.fake-radio', function(e) {
 	    $jq(this).closest('.drawer__item').find('[type="radio"]').click().focus();
 	});
-
+  $(document).on('click', '[data-drawer-id] .close-button', function(e) {
+	  var drawerId = $jq(this).parents('[data-drawer-id]').data('drawer-id');
+	  $jq('[data-drawer-content="' + drawerId + '"] form').submit();
+  });
   $(document).on('keydown', "[data-drawer-id]", function(e){
     // make drawer open by enter key
     if (e.which === 13) {

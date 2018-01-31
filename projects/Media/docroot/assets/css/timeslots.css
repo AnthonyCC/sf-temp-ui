@@ -97,7 +97,7 @@ table.tsHeaderE, .tsHeaderE {
 	border: 0px solid #ccc;
 	height: 66px;
 	width: 100%;
-	background-color: #78ABDC;
+	background-color: #579d5b;
 	padding-top: 0px;
 }
 
@@ -166,7 +166,6 @@ div.tsDayNameE {
 .tsDayDateE {
 	font-size:12px;
 	color:#FFFFFF;
-	font-weight:bold;
 	font-family: Verdana, Arial, sans-serif;
 	overflow: hidden;
 }
@@ -348,9 +347,6 @@ span.tsAdvanceHeader {
 .tsTable td div div, td.tsFooter, .tsTable td div {
 	border: 0 none;
 } 
-table.tsTable td table.tsTable td {
-	border-top: 1px solid #ccc;
-}
 
 .tsTable td .tsTable td {
 	margin-left: 0;
@@ -487,7 +483,7 @@ div.tsHeaderC {
 
 /* same day */
 .tsPremiumE {
-	color: #78ABDC;
+	color: #579d5b;
 	font-weight: bold;
 	font-size: 11px; 
 	font-family: Verdana, Arial, sans-serif;
@@ -503,7 +499,7 @@ div.tsHeaderC {
 	height: 28px;
 }
 .tsPremiumC {
-	color: #78ABDC;
+	color: #579d5b;
 	font-weight: bold;
 	font-size: 10px; 
 	font-family: Verdana, Arial, sans-serif;
@@ -522,9 +518,6 @@ div.tsHeaderC {
 	float: left; 
 	margin-top: 5px; 
 	margin-bottom: -5px;
-}
-.cutoffLR .cutoffDispChild div.premSlotTimer,
-.cutoffLR .cutoffDispChild div.premSlotMsg {
 }
 .premSlotTimer {
 	font-size: 18px;
@@ -960,8 +953,8 @@ td.noTopBorder {
 }
 
 .cutoffLR, .cutoffLR .cutoffDispChild {
-	background-color: #f7f7f7;
-	font-weight: bold;
+	background-color: #f4f4f3;
+	color: #575860;
 	text-align: center;
 	height: 27px;
 }
@@ -1107,16 +1100,7 @@ td.noTopBorder {
     margin-right: 10px;
     vertical-align: 2px;
 }
-#tsContainer .tcSelectionBGC input[type="button"] + label::before {
-    /*background-color: #4fa157;*/
-}
-#tsContainer .tsContentResE input[type="button"] + label::before {
-    /*background-color: #4fa157;*/
-}
-.tsWrapper{
-	padding: 10px;
-    margin-top: 20px;
-}
+
 .standing-orders-3 #ec-drawer #timeslots_grid .tsDayDateE, .standing-orders-3 #ec-drawer #timeslots_grid .tsDayDateC{
 	visibility:hidden !important;
 }
