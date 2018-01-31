@@ -75,7 +75,7 @@ public class ProductImageDataPopulator {
 
     // product images
     {
-    String fullName = productNode.getFullName().replace("\"", "\\\""); //escape double quotes
+    String fullName = productNode.getFullName().replace("\"", "").replace("'", ""); //escape double quotes
       // PROD_IMAGE_ZOOM - PROD_IMAGE_JUMBO
       if (productNode.getJumboImage() != null && !productNode.getJumboImage().isBlank()) {
     	  /* PROD_IMAGE_ZOOM */
