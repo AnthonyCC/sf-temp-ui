@@ -7,6 +7,7 @@ var FreshDirect = FreshDirect || {};
   var OAS_UPDATER = "OAS_UPDATER";
   var listPos = [];
   var lastSitePage = null;
+  var inProgressRequests = [];
   function OAS_SCRIPT_URL(OAS_url, OAS_sitepage, OAS_rns, OAS_listpos, OAS_query) {
 		return OAS_url + 'adstream_mjx.ads/' +
 				OAS_sitepage + '/1' + OAS_rns + '@' +
@@ -15,6 +16,13 @@ var FreshDirect = FreshDirect || {};
   
   function updateOAS(OAS_url, OAS_sitepage, OAS_rns, OAS_listpos, OAS_query, showAsPopUp) {
     var scriptUrl = OAS_SCRIPT_URL(OAS_url, OAS_sitepage, OAS_rns, OAS_listpos.join(','), OAS_query);
+    if (showAsPopUp) {
+    	if (inProgressRequests.indexOf(OAS_listpos.join(',')) !== -1) {
+    		return;
+    	} else {
+    		inProgressRequests.push(OAS_listpos.join(','));
+    	}
+    }
     postscribe(document.body, '<script src="'+scriptUrl+'"></script>', {
         done: function () {
           done(OAS_listpos, showAsPopUp);
@@ -41,6 +49,7 @@ var FreshDirect = FreshDirect || {};
 						});
 						// if we need to show the oas as popup
 						if (showAsPopUp) {
+							inProgressRequests[inProgressRequests.indexOf(listPos.join(','))] = null;
 							setTimeout( function() {
 								var oasLink = $(e).children().not('script').first();
 								if (oasLink.length) {
