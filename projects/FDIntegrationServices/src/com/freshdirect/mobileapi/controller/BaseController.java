@@ -719,6 +719,7 @@ public abstract class BaseController extends AbstractController implements Messa
         responseMessage.setMobileNumber(getMobileNumber(user));
         responseMessage.setPlantId(BrowseUtil.getPlantId(user));
         responseMessage.setProviders(ExternalAccountManager.getConnectedProvidersByUserId(user.getUsername(), EnumExternalLoginSource.SOCIAL));
+        responseMessage.setZipCode(user.getZipCode());
         return responseMessage;
     }
 
@@ -744,6 +745,7 @@ public abstract class BaseController extends AbstractController implements Messa
             responseMessage = new LoggedIn();
             responseMessage.setFailureMessage("User is not logged in.");
             responseMessage.setPlantId(BrowseUtil.getPlantId(user));
+            responseMessage.setZipCode(user.getZipCode());
         }
         return responseMessage;
     }
