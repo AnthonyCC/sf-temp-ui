@@ -126,6 +126,8 @@ var FreshDirect = FreshDirect || {};
 			window.setTimeout(sOResultsClose, 3000);
 			return false;
 		});
+        //update initial pricing display
+        $jq('#'+this.popupId+' [data-component="productDataConfiguration"]:first').trigger('change');
       }
     },
     open: {
