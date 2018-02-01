@@ -478,6 +478,8 @@
 * @param? abaRouteNumber
 * @param? eWalletID
 * @param? mpLogoURL
+* @param nameOnCard
+* @param? emailID
 */
 {template .paymentmethodpreviewitemNew autoescape="false"}
 <div class='drawer__previewitem'>
@@ -489,15 +491,21 @@
 		{else}
 			<p class='drawer__item__title'>{$bankName ? $bankName : $bankAccountType? $bankAccountType : $type}</p>
 	    {/if}
-	  {if $eWalletID != '2' and ($accountNumber or $expiration or $bankAccountType)}
 	  <div class="drawer__previewitem__section">
 	    <div class='section__body'>
-  	      {if $accountNumber}<p>Ending: {$accountNumber} </p>{/if}
-	      {if $expiration}<p>Exp: {$expiration}</p>{/if}
-	      {if $abaRouteNumber}<p>Routing # {$abaRouteNumber}</p>{/if}
-	    </div>
-	  </div>
+	  {if $eWalletID != '2' and ($accountNumber or $expiration or $bankAccountType)}
+		      {if $accountNumber}<p>Ending: {$accountNumber} </p>{/if}
+		      {if $expiration}<p>Exp: {$expiration}</p>{/if}
+		      {if $abaRouteNumber}<p>Routing: {$abaRouteNumber}</p>{/if}
+
+	  {elseif $eWalletID == '2'}
+			<p>{$nameOnCard}</p>
+	      	<p>{$emailID}</p>
+	  {else}
+	  		<p>{$nameOnCard}</p>
 	  {/if}
+	  	</div>
+	  </div>
   </div>
   <div class="drawer__item__action">
   	<button type="button" aria-haspopup="true" class="change cssbutton green small">Edit</button>
