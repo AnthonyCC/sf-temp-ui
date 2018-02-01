@@ -1467,7 +1467,7 @@ public class ModelConverter {
 //		area.setUnavailabilityDate(value.getUnavailabilityDate());
 		area.setUnavailabilityReason(value.getUnavailabilityReason());
 		area.setUnavailabilityStatus(value.getUnavailabilityStatus());
-		return null;
+		return area;
 	}
 
 	private static Map<String, FDPlantMaterial> createPlantMaterialInfoMap(
