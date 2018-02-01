@@ -828,7 +828,7 @@ public class Cart {
         }
         //Charge Lines
         //changes as part of APPDEV-6838
-        if (cart instanceof FDOrderI) {
+        if (cart instanceof FDOrderI && ((FDOrderI) cart).hasInvoice()) {
         	cartDetail.setEstimatedTotal(((FDOrderI) cart).getInvoicedTotal());
             cartDetail.setSubtotal(((FDOrderI) cart).getInvoicedSubTotal());
             
