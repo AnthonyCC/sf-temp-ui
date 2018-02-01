@@ -264,6 +264,11 @@ var API;
 			if (!$jq('#smartbanner').parent().hasClass('.mobweb-topnav')) { //move banner into nav
 				$jq('.mobweb-topnav').prepend($jq('#smartbanner'));
 			}
+			
+			// adjust the content's top position if top nav exists 
+			if ($('.mobweb-topnav').length && $('[data-ec-page] .mm-page #content').length) {
+				$('[data-ec-page] .mm-page #content').css({'padding-top': $('.mobweb-topnav').outerHeight(true)+'px'});
+			}
 		}
 		$('#smartbanner .sb-close').on('click', co_alignHeader); //resize on smartbanner close
 		$('[data-ec-page] .mm-page .mobweb-topnav,[data-ec-page] .mm-page .checkout-top-nav').on('resize', co_alignHeader);
