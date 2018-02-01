@@ -8,6 +8,14 @@ import com.freshdirect.webapp.ajax.expresscheckout.validation.ConstraintValidato
 import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.TwoFieldValidator;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationError;
 
+/**
+ * IF YOU ARE IN THIS CLASS MOST LIKELY YOU WILL HAVE TO DOUBLE CHECK 
+ * CrmPaymentMethodControllerTag
+ *  com.freshdirect.webapp.taglib.fdstore.PaymentMethodUtil
+ *  com.freshdirect.webapp.ajax.expresscheckout.validation.service.ValidationProviderService
+ *  com.freshdirect.fdstore.payments.util.PaymentMethodUtil
+ *  Especially if you are validating  BANKING account INFORMATION.
+ */
 public class ValidationProviderService {
 
 	private static final ValidationProviderService INSTANCE = new ValidationProviderService();

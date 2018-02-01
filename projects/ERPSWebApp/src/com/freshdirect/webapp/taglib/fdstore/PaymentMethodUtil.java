@@ -61,6 +61,15 @@ import com.freshdirect.webapp.util.StandingOrderHelper;
  * @version $Revision$
  * @author $Author$
  */
+
+/**
+ * IF YOU ARE IN THIS CLASS MOST LIKELY YOU WILL HAVE TO DOUBLE CHECK 
+ * CrmPaymentMethodControllerTag
+ *  com.freshdirect.webapp.taglib.fdstore.PaymentMethodUtil
+ *  com.freshdirect.webapp.ajax.expresscheckout.validation.service.ValidationProviderService
+ *  com.freshdirect.fdstore.payments.util.PaymentMethodUtil
+ *  Especially if you are validating  BANKING account INFORMATION. PROCESSFORM LINE 277!
+ */
 public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
     
     private static Category LOGGER = LoggerFactory.getInstance( PaymentMethodUtil.class );
