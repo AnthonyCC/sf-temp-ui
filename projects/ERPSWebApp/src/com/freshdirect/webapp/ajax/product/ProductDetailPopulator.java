@@ -1031,21 +1031,7 @@ public class ProductDetailPopulator {
 	}
 
 	private static void populateBursts( ProductData item, FDUserI user, ProductModel product, PriceCalculator priceCalculator, boolean useFavBurst ) {
-	
-		boolean showBurstImage = true;
-		ZonePriceInfoModel model;
-		
-		try {
-			model = priceCalculator.getZonePriceInfoModel();
-			if ( model != null ) {
-				showBurstImage = model.isShowBurstImage();
-			}
-		} catch ( FDResourceException ignore ) {
-		} catch ( FDSkuNotFoundException ignore ) {
-		}
-		
-		int deal = showBurstImage ? priceCalculator.getHighestDealPercentage() : priceCalculator.getGroupDealPercentage();
-		
+        int deal = priceCalculator.getHighestGroupDealPercentage();
 		boolean isNew = product.isNew();
 		boolean isYourFave = DYFUtil.isFavorite( product, user );
 		boolean isBackInStock = product.isBackInStock();
