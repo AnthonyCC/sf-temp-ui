@@ -78,9 +78,9 @@ public class UnattendedDeliveryTag extends AbstractGetterTag {
         return FDDeliveryManager.getInstance().getZoneInfo(thisAddress, date != null ? date : new Date(), null, null, thisAddress.getCustomerId());
     }
 
-    private static boolean checkZone(FDDeliveryZoneInfo zoneInfo, ErpAddressModel thisAddress, boolean checkUserOptions) {
+    private static boolean checkZone(FDDeliveryZoneInfo zoneInfo, ErpAddressModel thisAddress) {
         if (zoneInfo != null && thisAddress != null) {
-            if (zoneInfo.isUnattended() || (checkUserOptions && !EnumUnattendedDeliveryFlag.NOT_SEEN.equals(thisAddress.getUnattendedDeliveryFlag()))) {
+            if (zoneInfo.isUnattended()) {
                 return true;
             }
         }
@@ -92,7 +92,7 @@ public class UnattendedDeliveryTag extends AbstractGetterTag {
         try {
             if (address != null) {
                 FDDeliveryZoneInfo zoneInfo = getAddressZone(address, null);
-                result = (checkZone(zoneInfo, address, true));
+                result = (checkZone(zoneInfo, address));
             }
         } catch (FDResourceException e) {
             LOGGER.warn("FDResourceException during UnattendedDelivery availability check : " + e.getMessage());
@@ -115,7 +115,7 @@ public class UnattendedDeliveryTag extends AbstractGetterTag {
             if (address != null) {
                 // don't care whose address
                 FDDeliveryZoneInfo zoneInfo = getAddressZone(address, date);
-                if (checkZone(zoneInfo, address, checkUserOptions))
+                if (checkZone(zoneInfo, address))
                     return zoneInfo;
 
             } else if (addressId != null) {
@@ -130,7 +130,7 @@ public class UnattendedDeliveryTag extends AbstractGetterTag {
                     ErpAddressModel thisAddress = (ErpAddressModel) i.next();
                     if (addressId.equals(thisAddress.getPK().getId())) {
                         FDDeliveryZoneInfo zoneInfo = getAddressZone(thisAddress, date);
-                        if (checkZone(zoneInfo, thisAddress, checkUserOptions))
+                        if (checkZone(zoneInfo, thisAddress))
                             return zoneInfo;
                     }
                 }
