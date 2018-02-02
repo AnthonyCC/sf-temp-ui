@@ -253,12 +253,6 @@ var API;
 				
 				cartHeaderEl.css({'top': $(window).height() - cartHeaderEl.height()  +'px' });
 				$('footer').css({'padding-bottom': cartHeaderEl.height()+'px'});
-				/* floating footer fix */
-				$('html,body').css({
-				    '-webkit-overflow-scrolling' : 'touch',
-				    'overflow': 'auto',
-				    'height': '100%'
-				});
 			}
 		
 			if (!$jq('#smartbanner').parent().hasClass('.mobweb-topnav')) { //move banner into nav
