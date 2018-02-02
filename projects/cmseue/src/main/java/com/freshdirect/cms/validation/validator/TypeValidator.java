@@ -31,7 +31,7 @@ public class TypeValidator implements Validator {
         ValidationResults validationResults = new ValidationResults();
         ContentType contentType = contentKey.type;
         Set<Attribute> attributesForType = contentTypeInfoService.selectAttributes(contentType);
-        if (attributesForType != null && !attributesForType.isEmpty()) {
+        if ((attributesForType != null && !attributesForType.isEmpty()) || payload.isEmpty()) {
             validateRequired(contentKey, attributesForType, payload, validationResults);
             for (Attribute attribute : attributesForType) {
                 if (payload.containsKey(attribute)) {
@@ -41,7 +41,7 @@ public class TypeValidator implements Validator {
 
             validateExtraneousAttributes(contentKey, payload, validationResults);
         } else {
-            validationResults.addValidationResult(contentType, "Empty type, no attribute definitions", ValidationResultLevel.ERROR, TypeValidator.class);
+            validationResults.addValidationResult(contentType, "Can't save data for an empty type", ValidationResultLevel.ERROR, TypeValidator.class);
         }
 
         return validationResults;
