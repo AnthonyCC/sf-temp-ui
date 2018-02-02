@@ -53,6 +53,7 @@ public class GoogleAnalyticsReportingService {
         String customerId = order.getCustomerId();
         String hitType = "event";
         String documentLocation = "freshdirect.com/shipped";
+        String documentHostname = "freshdirect.com";
         String transactionId = order.getErpSalesId() + "-Shipped";
         String transactionAffiliation = "freshdirect.com";
 
@@ -63,6 +64,7 @@ public class GoogleAnalyticsReportingService {
 
         params.add(new BasicNameValuePair("t", hitType));
         params.add(new BasicNameValuePair("dl", documentLocation));
+        params.add(new BasicNameValuePair("dh", documentHostname));
         params.add(new BasicNameValuePair("ti", transactionId));
         params.add(new BasicNameValuePair("ta", transactionAffiliation));
 
