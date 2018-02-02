@@ -251,7 +251,7 @@ var API;
 					"padding-top": (cartHeaderEl.find('.right').height() - cartHeaderEl.find('.estimated-total').height()) + "px"
 				});
 				
-				cartHeaderEl.css({'top': $(window).height() - cartHeaderEl.height()  +'px' });
+				cartHeaderEl.css({'top': window.innerHeight - cartHeaderEl.height()  +'px' });
 				$('footer').css({'padding-bottom': cartHeaderEl.height()+'px'});
 			}
 		
