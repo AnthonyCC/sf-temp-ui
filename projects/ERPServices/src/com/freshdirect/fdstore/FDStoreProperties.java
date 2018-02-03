@@ -1111,7 +1111,7 @@ public class FDStoreProperties {
         defaults.put(PROP_REFRESHSECS_UPCPRODUCTINFO, "900");
         defaults.put(PROP_REFRESHSECS_ZONE, "600");
         defaults.put(PROP_REFRESHSECS_PRODUCT, "7200");
-        defaults.put(PROP_PRODUCT_CACHE_SIZE, "45000");
+        defaults.put(PROP_PRODUCT_CACHE_SIZE, "60000");//Changed from 45000 to 60000 on Feb 4th Patch
         defaults.put(PROP_ZONE_CACHE_SIZE, "10000");
         defaults.put(PROP_GRP_CACHE_SIZE, "10000");
         defaults.put(PROP_MEDIACONTENT_CACHE_SIZE, "0");
