@@ -728,20 +728,15 @@
 		font-size: 16px;
 		max-width: 845px;
 	}
-	.standing-orders-3-successtimeslot_date .standing-orders-3-successtimeslot_date-header-freq-text{
-		font-size: 1em;
-		white-space: normal;
-	}
+	.standing-orders-3-successtimeslot_date .standing-orders-3-successtimeslot_date-header-freq-text,
 	.standing-orders-3-successtimeslot_date .standing-orders-3-successtimeslot_date-header-small-text,
 	.successtimeslot .standing-orders-3-successtimeslot_date-reservation,
 	.successtimeslot .standing-orders-3-successtimeslot_date-next-delivery{
-		font-size: 0.5em;
-		font-weight: normal;
+		text-align: left;
+		font-size: 14px;
+	    color: #666;
 	}
-	.successtimeslot .standing-orders-3-successtimeslot_date-reservation,
-	.successtimeslot .standing-orders-3-successtimeslot_date-next-delivery{
-		padding-top: 10px;
-	}
+
 	.so-accidental-atc{
 		width: 386px;
 		font-family: Verdana;
