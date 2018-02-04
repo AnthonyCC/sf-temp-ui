@@ -44,6 +44,7 @@ boolean reqIsChefsTable = 		( "true".equalsIgnoreCase(NVL.apply(request.getParam
 boolean reqIsEcoFriendly = 		( "true".equalsIgnoreCase(NVL.apply(request.getParameter("isEcoFriendly"), "false").toString()) );
 boolean reqIsEcoFriendlyDepot = ( "true".equalsIgnoreCase(NVL.apply(request.getParameter("isEcoFriendlyDepot"), "false").toString()) );
 boolean reqIsAlcohol = 			( "true".equalsIgnoreCase(NVL.apply(request.getParameter("isAlcohol"), "false").toString()) );
+boolean reqIsAlcoholRest = 		( "true".equalsIgnoreCase(NVL.apply(request.getParameter("isAlcoholRest"), "false").toString()) );
 boolean reqIsWindowsSteering = 	( "true".equalsIgnoreCase(NVL.apply(request.getParameter("isWindowsSteering"), "false").toString()) );
 boolean reqIsMinOrderMet = 		( "true".equalsIgnoreCase(NVL.apply(request.getParameter("isMinOrderMet"), "false").toString()) );
 boolean reqIsMinOrderNotMet = 	( "true".equalsIgnoreCase(NVL.apply(request.getParameter("isMinOrderNotMet"), "false").toString()) );
@@ -62,7 +63,8 @@ boolean isUnavailable = 		reqIsUnavailable || ( slot.isUnavailable() );
 boolean isChefsTable = 			reqIsChefsTable || ( !slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity() );
 boolean isEcoFriendly = 		reqIsEcoFriendly || ( slot.isEcoFriendly() && !slot.isDepot() && !isChefsTable );
 boolean isEcoFriendlyDepot = 	reqIsEcoFriendlyDepot || ( slot.isEcoFriendly() && slot.isDepot() && !isChefsTable );
-boolean isAlcohol = 			reqIsAlcohol || ( !( isSoldOut || isUnavailable ) && deliveryModel.isAlcoholDelivery() && slot.isAlcoholRestricted() );
+boolean isAlcohol = 			reqIsAlcohol || ( deliveryModel.isAlcoholDelivery() && slot.isAlcoholRestricted() );
+boolean isAlcoholRest = 		reqIsAlcoholRest || ( !( isSoldOut || isUnavailable ) && isAlcohol );
 boolean isWindowsSteering = 	reqIsWindowsSteering || ( attribShowWindowsSteering && slot.getSteeringDiscount() > 0 );
 boolean isMinOrderMet = 		reqIsMinOrderMet || ( slot.isMinOrderSlot() && slot.isMinOrderMet() );
 boolean isMinOrderNotMet = 		reqIsMinOrderNotMet || ( slot.isMinOrderSlot() && !slot.isMinOrderMet() );
@@ -182,7 +184,7 @@ String labelText = ((isSoldOutOrUnavailable) ? ""
 				: (isEarlyAm) ? " early unattended"
 					: (isEcoFriendlyDepot) ? " Delivery&nbsp;Helper"
 						: (isEcoFriendly) ? " eco friendly"
-							:  (isAlcohol) ? " alcohol restricted"
+							:  (isAlcoholRest) ? " alcohol restricted"
 								: (isMinOrderNotMet) ? " " + slot.getMinOrderMsg()
 									: (isMinOrderMet) ? " " + slot.getMinOrderMsg()
 										: (isFdxFee) ? " " + slot.getPromoDeliveryFee()
@@ -261,10 +263,10 @@ stringBuffer.append("<div id=\""+htmlSlotTsId+"_timeInfo\" style=\"display: none
 /* SLOT ICONS/TEXT */
 String htmlClearImageIcon = "<img src=\"/media_stat/images/layout/clear.gif\" alt=\"\" width=\"16\" height=\"16\" border=\"0\">";
 String htmlCheckmarkIcon = "<img src=\"/media_stat/images/timeslots/check_mark.gif\" alt=\"\" width=\"17\" height=\"13\" border=\"0\">";
-String htmlEcoFriendlyIcon = "<img src=\"/media_stat/images/timeslots/ecofriendly_leaf.gif\" alt=\"Eco-Friendly\" width=\"16\" height=\"16\" border=\"0\">";
+String htmlEcoFriendlyIcon = "<img class=\"tsEcoFriendlyImage\" src=\"/media_stat/images/timeslots/ecofriendly_leaf.gif\" alt=\"Eco-Friendly\" width=\"16\" height=\"16\" border=\"0\">";
 
 /* SLOT ICONS/TEXT - Alcohol always gets a spot */
-if ( isAlcohol ) {
+if ( isAlcoholRest ) {
 	stringBuffer.append(TABLEVEL+"			<div class=\"fleft tsAlcoholResPropE\" id=\""+htmlSlotTsId+"_msgARE\">")
 				.append(TABLEVEL+"<img class=\"tsAlcoholImage\" src=\"/media_stat/images/timeslots/no_alcohol.gif\" width=\"16\" height=\"16\" border=\"0\">")
 				.append(TABLEVEL+"</div>\n");
@@ -359,6 +361,7 @@ if (isUnavailable) {
 					.append("</div>\n")
 				.append(TABLEVEL+"			</div>")
 				.append(TABLEVEL+"			<div class=\"tsDiscountPropC\" id=\""+htmlSlotTsId+"_msgC\">\n")
+				.append(TABLEVEL+"			"+((isEcoFriendly) ? htmlEcoFriendlyIcon : htmlClearImageIcon))
 				.append(TABLEVEL+"				<div><font class=\"tsDiscountC\">Save&nbsp;$"+CCFormatter.formatQuantity(slot.getSteeringDiscount())+"</font></div>\n")
 				.append(TABLEVEL+"			</div>");
 } else if(isEarlyAm){
@@ -389,7 +392,7 @@ if (isUnavailable) {
 					.append("</div>\n")
 				.append(TABLEVEL+"			</div>\n")
 				.append(TABLEVEL+"			<div class=\"tsEcoFriendlyPropC\" id=\""+htmlSlotTsId+"_msgC\">")
-					.append("<img class=\"tsEcoFriendlyImage\" src=\"/media_stat/images/timeslots/ecofriendly_leaf.gif\" alt=\"Eco-Friendly\" width=\"16\" height=\"16\" border=\"0\">\n")
+					.append(htmlEcoFriendlyIcon)
 				.append("</div>");
 } else if (isEcoFriendlyDepot){
 	stringBuffer.append(TABLEVEL+"			<div class=\"tsNeighbourhoodPropE\" id=\""+htmlSlotTsId+"_msgE\">\n")
