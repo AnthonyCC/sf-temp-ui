@@ -249,21 +249,21 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 
 				if(paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.ECHECK) || paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.CREDITCARD)
 						|| paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.DEBITCARD)){
-				 if(paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.CREDITCARD) || paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.DEBITCARD)){
+					if(paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.CREDITCARD) || paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.DEBITCARD)){
 
 						if(paymentMethod.isAvsCkeckFailed() && !paymentMethod.isBypassAVSCheck()){
 							result.addError(new ActionError("avsFailed",SystemMessageList.MSG_DEFAULT_PAYMENT_VERIVICATION_FAILURE));
 						}else if(null != paymentMethod.getExpirationDate() && paymentMethod.getExpirationDate().before(java.util.Calendar.getInstance().getTime())){
 							result.addError(new ActionError("cardExpired",SystemMessageList.MSG_CARD_EXPIRATION_DATE));
 						}
-				}
-				} else {
-					result.addError(new ActionError("wrongAccount",SystemMessageList.MSG_DEFAULT_PAYMENT_VERIVICATION_FAILURE));
-				}
+				 	}
+				}/* else {
+					result.addError(new ActionError("wrongAccount",SystemMessageList.MSG_DEFAULT_PAYMENT_VERIVICATION_FAILURE));	// commented APPDEV-6929 
+				}*/
 				if(result.isSuccess()){
-				FDCustomerManager.setDefaultPaymentMethod( info, pmPK, EnumPaymentMethodDefaultType.DEFAULT_CUST, true );
+					FDCustomerManager.setDefaultPaymentMethod( info, pmPK, EnumPaymentMethodDefaultType.DEFAULT_CUST, true );
 				}
-			user.refreshFdCustomer();
+				user.refreshFdCustomer();
 			}
 
 				/*

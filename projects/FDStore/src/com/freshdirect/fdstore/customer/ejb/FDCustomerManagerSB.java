@@ -116,7 +116,7 @@ import com.freshdirect.logistics.delivery.model.ShippingDetail;
  * @version $Revision:58$
  * @author $Author:Kashif Nadeem$
  */
-public interface FDCustomerManagerSB extends EJBObject {
+public interface FDCustomerManagerSB  extends EJBObject{
     
     
     /**
@@ -183,6 +183,7 @@ public interface FDCustomerManagerSB extends EJBObject {
      * @throws FDAuthenticationException if the userId/password was not found
      * @throws FDResourceException if an error occured using remote resources
      */
+    @Deprecated
     public FDIdentity login(String userId, String password) throws FDAuthenticationException, FDResourceException, RemoteException;
     public FDIdentity login(String userId) throws FDAuthenticationException, FDResourceException, RemoteException;
     
@@ -906,16 +907,51 @@ public interface FDCustomerManagerSB extends EJBObject {
 
 	public Map<String, List<PendingOrder>> getPendingDeliveries() throws FDResourceException, RemoteException;
 
+	/*
+	 *@deprecated
+	 * Please use the CustomerController and CustomerAccountServiceI in Storefront2.0 project.
+	 * It maps to resetDefaultPaymentMethodAndDefaultTypeForFDCustomerId()
+	 * 
+	 */
+	@Deprecated
 	public EnumPaymentMethodDefaultType getpaymentMethodDefaultType(String custId) throws FDResourceException, RemoteException;
 	
 	public boolean insertOrUpdateSilverPopup(SilverPopupDetails silverPopupDetails) throws FDResourceException, RemoteException;
 
+	/*
+	 *@deprecated
+	 * Please use the CustomerController and CustomerAccountServiceI in Storefront2.0 project.
+	 * It maps to CustomerAccountServiceI.getPendingPushNotifications();
+	 * 
+	 */
+	@Deprecated
 	public List<SilverPopupDetails> getSilverPopupDetails() throws FDResourceException, RemoteException;
 
+	/*
+	 *@deprecated
+	 * Please use the CustomerController and CustomerAccountServiceI in Storefront2.0 project.
+	 * It maps to CustomerAccountServiceI.setPushNotificationSentTimestamp(SilverPopupDetails pushNotification);
+	 * 
+	 */
+	@Deprecated
 	public void updateSPSuccessDetails(SilverPopupDetails detail) throws FDResourceException, RemoteException;
 	
+	/*
+	 *@deprecated
+	 * Please use the CustomerController and CustomerAccountServiceI in Storefront2.0 project.
+	 * It maps to CustomerAccountServiceI.getCookieByFdCustomerId(String fdCustomerId);
+	 * 
+	 */
+	@Deprecated
 	public String getCookieByFdCustomerId(String fdCustomerId) throws FDResourceException, RemoteException;
 
+	/*
+	 *@deprecated
+	 * Please use the CustomerController and CustomerAccountServiceI in Storefront2.0 project.
+	 * It maps to resetDefaultPaymentMethodAndDefaultTypeForFDCustomerId()
+	 * 
+	 */
+	@Deprecated
 	public int resetDefaultPaymentValueType(String custId) throws FDResourceException, RemoteException;
 
 	public ErpAuthorizationModel verifyCard(FDActionInfo info, ErpPaymentMethodI paymentMethod, boolean paymentechEnabled) throws FDResourceException, RemoteException, ErpPaymentMethodException;

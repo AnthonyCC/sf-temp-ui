@@ -26,20 +26,18 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonGenerator.Feature;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDEcommServiceException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.fdstore.FDEcommProperties;
 
 public abstract class AbstractEcommService {
 
@@ -209,20 +207,6 @@ public abstract class AbstractEcommService {
 		return responseOfTypestring;
 	}
 
-	/*
-	 * protected <T> T getData(String inputJson, String url, Class<T> clazz)
-	 * throws FDEcommServiceException {
-	 * 
-	 * try { HttpEntity<String> entity = getEntity(inputJson); RestTemplate
-	 * restTemplate = getRestTemplate(); ResponseEntity<T> response =
-	 * restTemplate.postForEntity(new URI(url), entity, clazz); return
-	 * response.getBody(); } catch (RestClientException e) {
-	 * LOGGER.info(e.getMessage()); LOGGER.info("api url:"+url); LOGGER.info(
-	 * "input json:"+inputJson); throw new FDEcommServiceException(
-	 * "PayPal API connection failure"); } catch (URISyntaxException e) {
-	 * LOGGER.info(e.getMessage()); LOGGER.info("api url:"+url); throw new
-	 * FDEcommServiceException("API syntax error"); } }
-	 */
 
 	/**
 	 * This method implementation is to get data for the HTTP GET
@@ -258,6 +242,19 @@ public abstract class AbstractEcommService {
 			LOGGER.info("api url:" + url);
 			throw new FDResourceException("API syntax error");
 		}
+	}
+	
+	protected <T> T httpGetData( String url, Class<T> clazz, Object[] params) throws FDResourceException {
+		
+		try {
+			RestTemplate restTemplate = getRestTemplate();		
+			ResponseEntity<T> response = restTemplate.getForEntity(url, clazz, params);
+			return response.getBody();
+		} catch (RestClientException e) {
+			LOGGER.info(e.getMessage());
+			LOGGER.info("api url:"+url);
+			throw new FDResourceException(e, "API connection failure");
+		} 
 	}
 
 	protected RestTemplate getRestTemplate() {

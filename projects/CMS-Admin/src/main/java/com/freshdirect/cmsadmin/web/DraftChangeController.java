@@ -24,7 +24,7 @@ public class DraftChangeController {
     private DraftChangeService draftChangeService;
 
     /**
-     * Load all draft changes
+     * Load all draft changes (full history) of _all_ draft branches (including deleted, failed and already merged ones)
      * 
      * @return list of draftChanges
      */
@@ -34,22 +34,32 @@ public class DraftChangeController {
     }
 
     /**
-     * Create draftChange
+     * Saves a list of draftChanges. All draftChanges have to belong to the same draft branch.
      * 
-     * @param draftChange
-     *            DraftChange entity
-     * @return list of draftChanges
+     * @param draftChange list of DraftChange entities
+     * @return all current draftChanges on the same draft branch
+     * @throws IllegalArgumentException in case of mixed draftChanges
      */
     @RequestMapping(value = CMS_DRAFT_CHANGE_PATH, method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<DraftChange> createDraftChange(@RequestBody List<DraftChange> draftChange) {
+        Draft draft = draftChange.get(0).getDraft();
+        for (DraftChange dc : draftChange) {
+            if (!draft.equals(dc.getDraft())) {
+                throw new IllegalArgumentException(); 
+            }
+         }
         draftChangeService.createDraftChange(draftChange);
-        return draftChangeService.loadAllDraftChanges();
+        return draftChangeService.loadAllChangesByDraft(draft);
     }
 
+    /**
+     * Returns all current draftChanges on the given draft branch.
+     * 
+     * @param draft (draftId)
+     * @return list of draftChanges
+     */
     @RequestMapping(value = CMS_DRAFT_CHANGE_ACTION_PATH, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<DraftChange> loadDraftChangesByDraft(@PathVariable("id") Draft draft) {
         return draftChangeService.loadAllChangesByDraft(draft);
     }
-
-
 }

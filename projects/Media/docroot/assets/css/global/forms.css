@@ -33,11 +33,13 @@
 }
 
 [fdform][fdform-locked] *:disabled {
-  background: #e8e8ea;
-  color: #858585;
+  background: #e1e1e1;
+  color: #fff;
   cursor: not-allowed;
 }
-
+[fdform][fdform-locked] *:disabled:before{
+	content: none;
+}
 .ec-popup [fdform] input[fdform-hidden],
 [fdform] [fdform-hidden]{
   display:none;

@@ -136,6 +136,7 @@ import com.freshdirect.ecommerce.data.survey.FDSurveyData;
 import com.freshdirect.ecommerce.data.survey.FDSurveyResponseData;
 import com.freshdirect.ecommerce.data.survey.SurveyData;
 import com.freshdirect.ecommerce.data.survey.SurveyKeyData;
+import com.freshdirect.ecommerce.data.zoneInfo.ErpMasterInfoData;
 import com.freshdirect.erp.EnumApprovalStatus;
 import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.erp.ErpCOOLKey;
@@ -383,6 +384,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String ERP_SKUS_OLDNESS = "erpinfo/skuoldness";
 	private static final String ERP_REINTRODUCED_SKUCODES = "erpinfo/reintroducedskucodes";
 	private static final String ERP_OUTOFSTOCK_SKUCODES = "erpinfo/outofstockskucodes";
+	private static final String ERP_GOING_OUTOFSTOCK_SALAREA ="erpinfo/goingOutOfStockSalesAreas";
 	private static final String ERP_SKUS_BY_DEAL = "erpinfo/skusbydeal";
 	private static final String ERP_PEAK_PRODUCE_SKUS_BY_DEPARTMENT = "erpinfo/peakproduceskusbydepartment";
 	private static final String ERP_NEW_SKUS = "erpinfo/newskus";
@@ -465,61 +467,9 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String ECOUPON_SUB_PENDING = "ecoupon/submitpendingcouponsales";
 	private static final String ECOUPON_SUBM_PENDING = "ecoupon/submitcoupontrans/";
 
-	private static final String UPDATE_REFERRAL_STATUS = "referral/status/update";
-	private static final String REMOVE_REFERRAL_OBJECTIVE = "referral/objective/delete";
-	private static final String REMOVE_REFERRAL_PARTNER = "referral/partner/delete";
-	private static final String REMOVE_REFERRAL_CAMPAIGN = "referral/campaign/delete";
-	private static final String REMOVE_REFERRAL_CHANNEL = "referral/channel/delete";
-	private static final String REMOVE_REFERRAL_PROGRAM = "referral/program/delete";
-	private static final String UPDATE_REFERRAL_OBJECTIVE = "referral/objective/update";
-	private static final String UPDATE_REFERRAL_PARTNER = "referral/partner/update";
-	private static final String UPDATE_REFERRAL_CAMPAIGN = "referral/campaign/update";
-	private static final String UPDATE_REFERRAL_CHANNEL = "referral/channel/update";
-	private static final String UPDATE_REFERRAL_PROGRAM = "referral/program/update";
-	private static final String CREATE_REFERRAL_CHANNEL = "referral/channel/create";
-	private static final String CREATE_REFERRAL_PARTNER = "referral/partner/create";
-	private static final String CREATE_REFERRAL_OBJECTIVE = "referral/objective/create";
-	private static final String CREATE_REFERRAL_CAMPAIGN = "referral/campaign/create";
-	private static final String CREATE_REFERRAL_PROGRAM = "referral/program/create";
-	private static final String CREATE_REFERRAL_HISTORY = "referral/history/create";
-	private static final String STORE_REFERRAL = "referral";
-	private static final String LOAD_REFERRAL_PK = "referral/id/";
-	private static final String LOAD_REFERRAL_PROGRAM_ID = "referral/programid/";
-	private static final String LOAD_REFERRAL_CUSTOMER_ID = "referral/customerId/";
-	private static final String LOAD_REFERRAL_EMAIL = "referral/emailId";
-	private static final String LOAD_REFERRAL_REPORT_CUSTOMER_ID = "referral/report/customerId/";
-	private static final String LOAD_REFERRAL_REPORT_REFERRAL_CUSTOMERID = "referral/report/referal/customerId/";
-	private static final String LOAD_REFERRAL_PROGRAM = "referral/program";
-	private static final String LOAD_REFERRAL_CHANNEL = "referral/channel";
-	private static final String LOAD_REFERRAL_PARTNER = "referral/partner";
-	private static final String LOAD_REFERRAL_OBJECTIVE = "referral/objective";
-	private static final String LOAD_REFERRAL_CAMPAIGN = "referral/campaign";
-	private static final String LOAD_REFERRAL_NAME_BY_REFERRAL_ID = "referral/name/customerId/";
-	private static final String LOAD_REFERRAL_PROGRAM_FROM_PK = "referral/programId/";
-	private static final String LOAD_LATEST_ACTIVE_REFERRAL_PROGRAM = "referral/activeprogram";
-	private static final String GET_REFERRAL_CHANNEL_MODEL = "referral/channel/chaId/";
-	private static final String GET_REFERRAL_CAMPAIGN_MODEL = "referral/campaign/chaId/";
-	private static final String GET_REFERRAL_OBJECTIVE_MODEL = "referral/objective/chaId/";
-	private static final String GET_REFERRAL_PARTNER_MODEL = "referral/partner/chaId/";
-	private static final String GET_REFERRAL_PROGRAM_MODEL = "referral/program/chaId/";
-	private static final String GET_REF_PROGRAM_FOR_REF_CHANNELS = "referral/program/refchannel";
-	private static final String GET_REFPROGRAM_FOR_REFPARTNER = "referral/program/refpartner";
-	private static final String GET_REFPROGRAM_FOR_REFCAMPAIGN = "referral/program/refcampaign";
-	private static final String GET_REFCAMPAIGN_FOR_REFOBJECTIVE = "referral/program/refobjective";
-	private static final String IS_REFERRAL_PARTNER_EXIST = "referral/partner/name/";
-	private static final String IS_REFERRAL_CAMPAIGN_EXIST = "referral/campaign/name/";
-	private static final String IS_REFERRAL_OBJECTIVE_EXIST = "referral/objective/name/";
-	private static final String IS_REFERRAL_CHANNEL_NAME_TYPE_EXIST = "referral/channel/name/";
-	private static final String IS_REFERRAL_PROGRAM_NAME_EXIST = "referral/program/name/";
-	private static final String GET_REFERRAL_PROGRAMS = "referral/program/criteria";
-	private static final String GET_REFERRAL_CHANNELS = "referral/channel/criteria";
-	private static final String GET_REFERRAL_CAMPAIGNS = "referral/campaign/criteria";
-	private static final String GET_REFERRAL_PARTNERS = "referral/partner/criteria";
-	private static final String GET_REFERRAL_OBJECTIVES = "referral/objective/criteria";
-	
 	private static final String FDFACTORY_FDPRODUCTINFO_SKUCODE = "productinfo/productinfobysku";
-	private static final String FDFACTORY_FDPRODUCTINFO_SKUCODE_VERSION = "productinfo/productbyskuandversion";
-	private static final String FDFACTORY_FDPRODUCTINFO_SKUCODES = "productinfo/productsbyskus";
+	private static final String FDFACTORY_FDPRODUCTINFO_SKUCODE_VERSION = "productinfo/productInfobyskuandversion";
+	private static final String FDFACTORY_FDPRODUCTINFO_SKUCODES = "productinfo/productsinfobyskus";
 	private static final String FDFACTORY_PRODUCTINFO_SKUCODES = "productinfo/productbyskuandversion";
 
 	private static final String CREATE_FRAUD_ENTRY="fraudactivity/create";
@@ -658,10 +608,9 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	
 			Response<List<ZoneInfoDataWrapper>> response;
 			try {
-				SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
-				String date1 = null;
+				long date1 = 0;
 				if(lastPublished!=null){
-				date1 = format1.format(lastPublished); 
+				date1 = lastPublished.getTime(); 
 				}
 				response = httpGetDataTypeMap(getFdCommerceEndPoint(PRODUCT_BY_PROMO_TYPE+ppType+"/lastPublishDate/"+date1), new TypeReference<Response<List<ZoneInfoDataWrapper>>>() {});
 				if(!response.getResponseCode().equals("OK"))
@@ -688,9 +637,9 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			Response<Map<String, List<ZoneInfoDataWrapper>>> response;
 			try {
 				SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
-				String date1 = null;
+				long date1 = 0;
 				if(lastPublished!=null){
-				date1 = format1.format(lastPublished); 
+				date1 = lastPublished.getTime(); 
 				}
 				
 				response = httpGetDataTypeMap(getFdCommerceEndPoint(PROMOTION_BY_TYPE+ppType+"/lastPublishDate/"+date1), new TypeReference<Response<Map<String, List<ZoneInfoDataWrapper>>>>() {});
@@ -883,10 +832,9 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		
 		Response<Map<String, List<com.freshdirect.ecommerce.data.attributes.FlatAttribute>>> response = null;
 			try {
-				String date1=null;
-				SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+				long date1=0;
 				if(since!=null){
-				date1 = format1.format(since); 
+				date1 = since.getTime(); 
 				}
 				response =httpGetDataTypeMap(getFdCommerceEndPoint(LOAD_ATTRIBUTES_DATE+date1),new TypeReference<Response<Map<String, List<com.freshdirect.ecommerce.data.attributes.FlatAttribute>>>>() {});
 				if(!response.getResponseCode().equals("OK"))
@@ -976,23 +924,20 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	
 	@Override
 	public ErpZoneMasterInfo findZoneInfoMaster(String zoneId) throws RemoteException, FDResourceException {
-		Response<ErpZoneMasterInfo> response = new Response<ErpZoneMasterInfo>();
-		response = httpGetDataTypeMap(getFdCommerceEndPoint(ZONE_INFO_MASTER+"?zoneId="+ zoneId), new TypeReference<Response<ErpZoneMasterInfo>>() {});
+		Response<ErpMasterInfoData> response = new Response<ErpMasterInfoData>();
+		response = httpGetDataTypeMap(getFdCommerceEndPoint(ZONE_INFO_MASTER+"?zoneId="+ zoneId), new TypeReference<Response<ErpMasterInfoData>>() {});
 		if(!response.getResponseCode().equals("OK"))
 			throw new FDResourceException(response.getMessage());
-			return response.getData();
+			return ModelConverter.buildErpMasterInfo(response.getData());
 	}
 
 	@Override
-	public Collection<Object> loadAllZoneInfoMaster() throws RemoteException, FDResourceException {
-		/*Response<Collection<Object>> response;
-		response = httpGetDataTypeMap(getFdCommerceEndPoint(LOAD_ALL_ZONE_INFO), new TypeReference<Response<Collection<Object>>>() {});
-		if(!response.getResponseCode().equals("OK"))
-			throw new FDResourceException(response.getMessage());
-		return response.getData();*/
+	public Collection<String> loadAllZoneInfoMaster() throws RemoteException, FDResourceException {
 		
 
-			Response<Collection<Object>> response = httpGetData(getFdCommerceEndPoint(ALL_ZONE_INFO_MASTER), Response.class);
+			Response<Collection<String>> response = httpGetData(getFdCommerceEndPoint(ALL_ZONE_INFO_MASTER), Response.class);
+			if(!response.getResponseCode().equals("OK"))
+				throw new FDResourceException(response.getMessage());
 			return response.getData();
 
 		
@@ -1042,31 +987,38 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	@Override
 	public List<ErpZoneMasterInfo> getAllZoneInfoDetails()
 			throws RemoteException {
-		Response<List<ErpZoneMasterInfo>> response = new Response<List<ErpZoneMasterInfo>>();
+		Response<List<ErpMasterInfoData>> response = new Response<List<ErpMasterInfoData>>();
 		try {
-			response = httpGetDataTypeMap(getFdCommerceEndPoint(ALL_ZONE_INFO), new TypeReference<Response<List<ErpZoneMasterInfo>>>() {});
+			response = httpGetDataTypeMap(getFdCommerceEndPoint(ALL_ZONE_INFO), new TypeReference<Response<List<ErpMasterInfoData>>>() {});
 		} catch (FDResourceException e) {
 			
 			throw new RemoteException(response.getMessage());
 		}
 		if(!response.getResponseCode().equals("OK"))
 			throw new RemoteException(response.getMessage());
-		return response.getData();
+		return ModelConverter.buildErpMasterInfoList(response.getData());
 	}
 	
 	@Override
-	public Collection<Object> findZoneInfoMaster(String[] zoneIds)
+	public Collection<ErpZoneMasterInfo> findZoneInfoMaster(String[] zoneIds)
 			throws RemoteException {
-		Response<Collection<Object>> response = new Response<Collection<Object>>();
-		try {
-			response = httpGetDataTypeMap(getFdCommerceEndPoint(LOAD_ZONE_BY_ZONEIDS), new TypeReference<Collection<Object>>() {});
-		} catch (FDResourceException e) {
-			
-			throw new RemoteException(response.getMessage());
+		try{
+		Request<String[]> request = new Request<String[]>();
+		request.setData(zoneIds);
+		String inputJson = buildRequest(request);
+		Response<Collection<ErpMasterInfoData>> response = null;
+		response =  this.postDataTypeMap(inputJson, getFdCommerceEndPoint(LOAD_ZONE_BY_ZONEIDS), new TypeReference<Response<Collection<ErpMasterInfoData>>>() {});
+		if(!response.getResponseCode().equals("OK")){
+			throw new FDResourceException(response.getMessage());
 		}
-		if(!response.getResponseCode().equals("OK"))
-			throw new RemoteException(response.getMessage());
-		return response.getData();
+		return ModelConverter.buildErpMasterInfoList((List<ErpMasterInfoData>) response.getData());
+	} catch (FDEcommServiceException e) {
+		LOGGER.error(e.getMessage());
+		throw new RemoteException(e.getMessage());
+	}catch (FDResourceException e){
+		LOGGER.error(e.getMessage());
+		throw new RemoteException(e.getMessage());
+	}
 	}
 	
 	
@@ -1377,10 +1329,10 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			Response<List<CountryOfOriginData>> response = new Response<List<CountryOfOriginData>>();
 
 				try {
-					String date1=null;
-					SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+					long date1=0;
+					
 					if(since!=null){
-					date1 = format1.format(since); 
+					date1 = since.getTime(); 
 					}
 					response= httpGetDataTypeMap(getFdCommerceEndPoint(GET_COO_API+"/"+date1),  new TypeReference<Response<List<CountryOfOriginData>>>() {});
 
@@ -3321,12 +3273,11 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		
 		Response<Map<String,ErpInventoryData>> response = null;
 		Map<String,ErpInventoryModel> erpInventoryModelMap = null;
-
 		try {
-			SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
-			String date1 = null;
+			
+			Long date1 = null;
 			if(date!=null){
-			date1 = format1.format(date); 
+			date1 = date.getTime(); 
 			}
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_LOAD_INVENTORY_INFO)+"/"+date1,  new TypeReference<Response<Map<String,ErpInventoryData>>>(){});
 			if(!response.getResponseCode().equals("OK")){
@@ -3438,6 +3389,25 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			throw new RemoteException(e.getMessage());
 		}
 		return response.getData();
+	}
+	
+	@Override
+	public Collection<ErpMaterialSalesAreaModel> getGoingOutOfStockSalesAreas()
+			throws RemoteException {
+		Response<Collection<ErpMaterialSalesAreaData>> response = null;
+		Collection<ErpMaterialSalesAreaModel> erpMaterialSalesAreaModel;
+		Request<String[]> request = new Request<String[]>();
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_GOING_OUTOFSTOCK_SALAREA),  new TypeReference<Response<Collection<ErpMaterialSalesAreaData>>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			erpMaterialSalesAreaModel = ErpMaterialSalesAreaModelConverter.convertListDataToListModel(response.getData());
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new FDRuntimeException(e, "Unable to process the request.");
+		}
+		return erpMaterialSalesAreaModel;
 	}
 	
 	
@@ -5296,5 +5266,6 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			throw new RemoteException(e.getMessage());
 		}
 	}
+
 
 }

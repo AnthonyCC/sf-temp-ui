@@ -951,24 +951,6 @@ span.cssbutton.annotation:hover {
   vertical-align:middle;
 }
 
-.pdp .span-7.first .going-out {
-  color: #458b4c;
-  text-align: center;
-  margin: 15px 0;
-}
-
-.pdp .span-8 .going-out {
-  box-sizing: border-box;
-  background-color: #ffffff;
-  border: 1px solid #f68139;
-  border-radius: 3px;
-  color: #e77630;
-  margin: 15px 0;
-  padding: 10px 0;
-  text-align: center;
-  width: 100%;
-}
-
 /* override empty value cursor */
 .main-image img[data-large-url=""]{
 	cursor:auto;

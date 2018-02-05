@@ -303,6 +303,8 @@ public class CrmManagerConverter {
 
 	public static CrmAgentModelData buildCrmAgentModelData(CrmAgentModel agent) {
 		CrmAgentModelData crmAgentData = new CrmAgentModelData();
+		if(agent.getId() != null)
+		crmAgentData.setId(agent.getId());
 		crmAgentData.setActive(agent.isActive());
 		crmAgentData.setAgentCaseQueues(buildCrmCaseQueuesData(agent.getAgentQueues()));
 		crmAgentData.setCreateDate(agent.getCreateDate());
@@ -314,7 +316,7 @@ public class CrmManagerConverter {
 		crmAgentData.setMasqueradeAllowed(agent.isMasqueradeAllowed());
 		crmAgentData.setPassword(agent.getPassword());
 		if(agent.getRole() != null)
-		crmAgentData.setRoleCode(agent.getRole().getName());
+		crmAgentData.setRoleCode(agent.getRole().getCode());
 		crmAgentData.setUserId(agent.getUserId());
 		return crmAgentData;
 		
@@ -464,12 +466,20 @@ public class CrmManagerConverter {
 
 	public static CrmCaseData buildCrmCaseData(CrmCaseModel crmCase) {
 		CrmCaseData crmCaseData = new CrmCaseData();
-		crmCaseData.setActions(crmCase.getActions());
+		crmCaseData.setActions(buildCrmCaseActionData(crmCase.getActions()));
 		crmCaseData.setCaseInfo(buildCrmCaseInfoData(crmCase.getCaseInfo()));
 		return crmCaseData;
 		
 	}
 	
+	private static List<CrmCaseActionData> buildCrmCaseActionData(List<CrmCaseAction> actions) {
+		List<CrmCaseActionData> caseActionDataList = new ArrayList<CrmCaseActionData>();
+		for (CrmCaseAction caseAction : actions) {
+			caseActionDataList.add(buildCrmCaseActionData(caseAction));
+		}
+		return caseActionDataList;
+	}
+
 	public static CrmCaseInfoData buildCrmCaseInfoData(CrmCaseInfo caseInfo) {
 		CrmCaseInfoData crmCaseInfoData = new CrmCaseInfoData();
 		crmCaseInfoData.setId(caseInfo.getId());
@@ -545,6 +555,7 @@ public class CrmManagerConverter {
 		caseAction.setAgentPK(action.getAgentPK().getId());
 		caseAction.setNote(action.getNote());
 		caseAction.setId(action.getId());
+		if(action.getTimestamp() != null)
 		caseAction.setTimestamp(action.getTimestamp().getTime());
 		caseAction.setCaseActionCode(action.getType().getCode());
 		return caseAction;

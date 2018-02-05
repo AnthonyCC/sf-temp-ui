@@ -96,7 +96,7 @@ public class MediaAssociatorService {
 
             if (id != null && suffix != null) {
                 Optional<MediaAssociationRule> associationRule = ruleService.getRuleByPrefixAndSuffix(prefix, suffix);
-                if (associationRule.isPresent()) {
+                if (associationRule.isPresent() && contentProviderService.containsContentKey(ContentKeyFactory.get(associationRule.get().getContentType(), id))) {
                     MediaAssociationRule rule = associationRule.get();
                     mediaAssociation = new HashMap<ContentKey, Attribute>();
                     mediaAssociation.put(ContentKeyFactory.get(rule.getContentType(), id), rule.getRelationship());

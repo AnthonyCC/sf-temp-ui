@@ -1,6 +1,5 @@
 package com.freshdirect.fdstore.ecomm.converter;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -10,7 +9,6 @@ import java.util.Map;
 
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpOrderLineModel;
-import com.freshdirect.ecomm.converter.FDActionInfoConverter;
 import com.freshdirect.ecommerce.data.customer.ErpActivityRecordData;
 import com.freshdirect.ecommerce.data.ecoupon.FDConfigurationData;
 import com.freshdirect.ecommerce.data.ecoupon.FDSkuData;
@@ -25,7 +23,6 @@ import com.freshdirect.ecommerce.data.standingorders.ResultData;
 import com.freshdirect.ecommerce.data.standingorders.ResultListData;
 import com.freshdirect.ecommerce.data.standingorders.StandingOrderErrorData;
 import com.freshdirect.ecommerce.data.standingorders.StandingOrderModifyData;
-import com.freshdirect.ecommerce.data.standingorders.StandingOrdersJobConfigData;
 import com.freshdirect.ecommerce.data.standingorders.UnAvailabilityDetailsData;
 import com.freshdirect.ecommerce.data.standingorders.UnavailabilityDetailsWrapper;
 import com.freshdirect.ecommerce.data.survey.FDIdentityData;
@@ -35,12 +32,8 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCartLineI;
-import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
-import com.freshdirect.fdstore.customer.FDProductSelectionI;
-import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.lists.FDCustomerList;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode;
@@ -51,7 +44,6 @@ import com.freshdirect.fdstore.standingorders.SOResult;
 import com.freshdirect.fdstore.standingorders.SOResult.Result;
 import com.freshdirect.fdstore.standingorders.SOResult.ResultList;
 import com.freshdirect.fdstore.standingorders.SOResult.Status;
-import com.freshdirect.fdstore.standingorders.StandingOrdersJobConfig;
 import com.freshdirect.fdstore.standingorders.UnAvailabilityDetails;
 import com.freshdirect.fdstore.standingorders.UnavailabilityReason;
 import com.freshdirect.payment.service.ModelConverter;
@@ -63,48 +55,36 @@ public class StandingOrderConverter {
 	}
 
 	public static FDStandingOrder buildStandingOrder(FDStandingOrderData so) {
-		if(null !=so){
-			FDStandingOrder standingOrderModel = new FDStandingOrder();
-			standingOrderModel.setActivate(so.getActivate());
-			standingOrderModel.setAddressId(so.getAddressId());
-			standingOrderModel.setAlcoholAgreement(so.isAlcoholAgreement());
-			standingOrderModel.setAltDeliveryInfo(buildStandingOrderAltdeliveryDate(so.getAltDeliveryInfo()));
-			standingOrderModel.setCustomerEmail(so.getCustomerEmail());
-			standingOrderModel.setCustomerId(so.getCustomerId());
-			standingOrderModel.setCustomerIdentity(buildFdIdentity(so.getCustomerIdentity()));
-			standingOrderModel.setCustomerListId(so.getCustomerListId());
-			standingOrderModel.setCustomerListName(so.getCustomerListName());
-			standingOrderModel.setDefault(so.isDefault());
-			standingOrderModel.setDeleted(so.isDeleted());
-			if(so.getDeleteDate() != null)
-			standingOrderModel.setDeleteDate(new Date(so.getDeleteDate()));
-			if(so.getEndTime() != null)
-			standingOrderModel.setEndTime(new Date(so.getEndTime()));
-			standingOrderModel.setFrequency(so.getFrequency());
-			standingOrderModel.setId(so.getId());
-			standingOrderModel.setLastError(so.getLastError(), so.getErrorHeader(), so.getErrorDetail());
-			standingOrderModel.setNewSo(so.isNewSo());
-			if(so.getNextDeliveryDate() != null)
-			standingOrderModel.setNextDeliveryDate(new Date(so.getNextDeliveryDate()));
-			standingOrderModel.setPaymentMethodId(so.getPaymentMethodId());
-			if(so.getPreviousDeliveryDate() != null)
-			standingOrderModel.setPreviousDeliveryDate(new Date(so.getPreviousDeliveryDate()));
-			standingOrderModel.setReminderOverlayForNewSo(so.isReminderOverlayForNewSo());
-			if(so.getStartTime() != null)
-			standingOrderModel.setStartTime(new Date(so.getStartTime()));
-			standingOrderModel.setTipAmount(so.getTipAmount());
-			if(null != so.getListData()){
-				FDCustomerList fdStandingOrderList =ListConverter.buildFDCustomerList(so.getListData());
-				try {
-					populateSODetails(standingOrderModel,fdStandingOrderList);
-				} catch (FDResourceException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			return standingOrderModel;
-			}
-		return null;
+		FDStandingOrder standingOrderModel = new FDStandingOrder();
+		standingOrderModel.setActivate(so.getActivate());
+		standingOrderModel.setAddressId(so.getAddressId());
+		standingOrderModel.setAlcoholAgreement(so.isAlcoholAgreement());
+		standingOrderModel.setAltDeliveryInfo(buildStandingOrderAltdeliveryDate(so.getAltDeliveryInfo()));
+		standingOrderModel.setCustomerEmail(so.getCustomerEmail());
+		standingOrderModel.setCustomerId(so.getCustomerId());
+		standingOrderModel.setCustomerIdentity(buildFdIdentity(so.getCustomerIdentity()));
+		standingOrderModel.setCustomerListId(so.getCustomerListId());
+		standingOrderModel.setCustomerListName(so.getCustomerListName());
+		standingOrderModel.setDefault(so.isDefault());
+		standingOrderModel.setDeleted(so.isDeleted());
+		if(so.getDeleteDate() != null)
+		standingOrderModel.setDeleteDate(new Date(so.getDeleteDate()));
+		if(so.getEndTime() != null)
+		standingOrderModel.setEndTime(new Date(so.getEndTime()));
+		standingOrderModel.setFrequency(so.getFrequency());
+		standingOrderModel.setId(so.getId());
+		standingOrderModel.setLastError(so.getLastError(), so.getErrorHeader(), so.getErrorDetail());
+		standingOrderModel.setNewSo(so.isNewSo());
+		if(so.getNextDeliveryDate() != null)
+		standingOrderModel.setNextDeliveryDate(new Date(so.getNextDeliveryDate()));
+		standingOrderModel.setPaymentMethodId(so.getPaymentMethodId());
+		if(so.getPreviousDeliveryDate() != null)
+		standingOrderModel.setPreviousDeliveryDate(new Date(so.getPreviousDeliveryDate()));
+		standingOrderModel.setReminderOverlayForNewSo(so.isReminderOverlayForNewSo());
+		if(so.getStartTime() != null)
+		standingOrderModel.setStartTime(new Date(so.getStartTime()));
+		standingOrderModel.setTipAmount(so.getTipAmount());
+		return standingOrderModel;
 	}
 	
 	
@@ -159,7 +139,7 @@ public class StandingOrderConverter {
 
 	public static StandingOrderModifyData buildStandingOrdermodifyData(FDActionInfo info, FDStandingOrder so , String saleId) throws FDResourceException {
 		StandingOrderModifyData soModiftData = new StandingOrderModifyData();
-		soModiftData.setInfo(FDActionInfoConverter.buildActionInfoData(info));
+		soModiftData.setInfo(ListConverter.buildActionInfoData(info));
 		soModiftData.setSaleId(saleId);
 		soModiftData.setSo(buildStandingOrderData(so));
 		return soModiftData;
@@ -200,9 +180,6 @@ public class StandingOrderConverter {
 		if(standingOrder.getStartTime() != null)
 		standingOrderData.setStartTime(standingOrder.getStartTime().getTime());
 		standingOrderData.setTipAmount(standingOrder.getTipAmount());
-		standingOrderData.setTimeSlotId(standingOrder.getTimeSlotId());
-		standingOrderData.setReservedDayOfweek(standingOrder.getReservedDayOfweek());
-		standingOrderData.setZone(standingOrder.getZone());
 		return standingOrderData;
 		}
 		return null ; 
@@ -345,7 +322,7 @@ public class StandingOrderConverter {
 	public static DeleteSOData buildDeleteSOData(FDActionInfo info,FDStandingOrder so, String deleteDate) throws FDResourceException {
 		DeleteSOData deleteSoData = new DeleteSOData();
 		deleteSoData.setDeleteDate(deleteDate);
-		deleteSoData.setInfo(FDActionInfoConverter.buildActionInfoData(info));
+		deleteSoData.setInfo(ListConverter.buildActionInfoData(info));
 		deleteSoData.setSo(buildStandingOrderData(so));
 		return deleteSoData;
 	}
@@ -378,8 +355,7 @@ public class StandingOrderConverter {
 		data.setSaleId(result.getSaleId());
 		data.setSoId(result.getSoId());
 		data.setStatus(result.getStatus().toString());
-		if(null !=result.getRequestedDate())
-			data.setRequestedDate(result.getRequestedDate().getTime());
+		data.setRequestedDate(result.getRequestedDate().getTime());
 		data.setUnavailabilityDetails(buildUnavailabilityDetailsData(result.getUnavailabilityDetails()));
 		return data;
 		
@@ -389,8 +365,6 @@ public class StandingOrderConverter {
 	private static List<UnavailabilityDetailsWrapper> buildUnavailabilityDetailsData(
 			Map<FDCartLineI, UnAvailabilityDetails> unavailabilityDetails) {
 		List<UnavailabilityDetailsWrapper> unavailabilityMap = new ArrayList<UnavailabilityDetailsWrapper>();
-		if(unavailabilityDetails==null)
-			return unavailabilityMap;
 		for (FDCartLineI cartLine : unavailabilityDetails.keySet()) {
 			UnavailabilityDetailsWrapper wrapper = new UnavailabilityDetailsWrapper();
 			FDCartLineData cartLineData  = new FDCartLineData();
@@ -497,42 +471,4 @@ public class StandingOrderConverter {
 	}
 
 
-	private static void populateSODetails(FDStandingOrder so,FDCustomerList fdStandingOrderList) throws FDResourceException{
-		
-		List<FDProductSelectionI> productSelectionList = null;
-		Connection conn = null;
-		if (null != fdStandingOrderList) {			
-			productSelectionList = OrderLineUtil.getValidProductSelectionsFromCCLItems(fdStandingOrderList.getLineItems());
-			for (FDProductSelectionI fdSelection : productSelectionList) {
-				FDCartLineI cartLine = new FDCartLineModel(fdSelection);
-				if (!cartLine.isInvalidConfig()) {
-					// cartLine.refreshConfiguration();
-					if(fdSelection.getCustomerListLineId()!=null)
-					cartLine.setCustomerListLineId(fdSelection.getCustomerListLineId());
-					so.getStandingOrderCart().addOrderLine(cartLine);
-				}
-			}
-
-			if (null != productSelectionList && !productSelectionList.isEmpty()) {
-				try {
-					so.getStandingOrderCart().refreshAll(true);
-				} catch (FDInvalidConfigurationException e) {
-//					LOGGER.warn("Exception in populateSODetails() ",e);
-				}
-			}
-			
-		}
-		
-	}
-	
-	public static StandingOrdersJobConfigData buildStandingOrdersJobConfigData(StandingOrdersJobConfig jobConfig){
-		StandingOrdersJobConfigData jobConfigData = new StandingOrdersJobConfigData();
-		if(null !=jobConfig){
-			jobConfigData.setSendReportEmail(jobConfig.isSendReportEmail());
-			jobConfigData.setSendReminderNotificationEmail(jobConfig.isSendReminderNotificationEmail());
-			jobConfigData.setCreateIfSoiExistsForWeek(jobConfig.isCreateIfSoiExistsForWeek());
-			jobConfigData.setForceCapacity(jobConfig.isForceCapacity());
-		}		
-		return jobConfigData;		
-	}
 }

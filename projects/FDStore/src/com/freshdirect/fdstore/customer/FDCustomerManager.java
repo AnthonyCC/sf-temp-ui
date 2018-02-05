@@ -89,6 +89,8 @@ import com.freshdirect.deliverypass.DlvPassUsageInfo;
 import com.freshdirect.deliverypass.DlvPassUsageLine;
 import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
+import com.freshdirect.ecomm.gateway.OrderServiceApiClient;
+import com.freshdirect.ecomm.gateway.OrderServiceApiClientI;
 import com.freshdirect.ecommerce.data.survey.FDIdentityData;
 import com.freshdirect.ecommerce.data.survey.FDSurveyResponseData;
 import com.freshdirect.ecommerce.data.survey.SurveyKeyData;
@@ -1738,11 +1740,16 @@ public class FDCustomerManager {
 		}
 
 		lookupManagerHome();
-
 		try {
+		
+		if(FDStoreProperties.isSF2_0_AndServiceEnabled("orderHistory_Api")){
+    		OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
+    		return new ErpOrderHistory(service.getOrderHistory(identity.getErpCustomerPK()));
+    	}else{
+		
 			FDCustomerManagerSB sb = managerHome.create();
 			return sb.getOrderHistoryInfo(identity);
-
+    	}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -1980,8 +1987,14 @@ public class FDCustomerManager {
 		lookupManagerHome();
 
 		try {
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("orderBelongsToUser_Api")){
+	    		OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
+	    		return service.isOrderBelongsToUser(identity.getErpCustomerPK(), saleId);
+	    	}else{
+			
 			FDCustomerManagerSB sb = managerHome.create();
 			return sb.isOrderBelongsToUser(identity, saleId);
+	    	}
 
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -2896,9 +2909,16 @@ public class FDCustomerManager {
 	public static FDOrderHistory getOrdersByDlvPassId(FDIdentity identity, String dlvPassId) throws FDResourceException {
 		lookupManagerHome();
 		try {
+			
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("ordersByDlvPass_Api")){
+	    		OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
+	    		return new FDOrderHistory(service.getOrdersByDlvPassId(identity.getErpCustomerPK(), dlvPassId));
+	    	}else{
+			
 			FDCustomerManagerSB sb = managerHome.create();
 			ErpOrderHistory history = sb.getOrdersByDlvPassId(identity, dlvPassId);
 			return new FDOrderHistory(history.getErpSaleInfos());
+	    	}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -2920,8 +2940,14 @@ public class FDCustomerManager {
 	public static List<DlvPassUsageLine> getRecentOrdersByDlvPassId(FDIdentity identity, String dlvPassId, int noOfDaysOld) throws FDResourceException {
 		lookupManagerHome();
 		try {
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("orderByDlvPass_recent_Api")){
+	    		OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
+	    		return service.getRecentOrdersByDlvPassId(identity.getErpCustomerPK(), dlvPassId, noOfDaysOld);
+	    	}else{
+			
 			FDCustomerManagerSB sb = managerHome.create();
 			return sb.getRecentOrdersByDlvPassId(identity, dlvPassId, noOfDaysOld);
+	    	}
 
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -2943,7 +2969,15 @@ public class FDCustomerManager {
 				//Return Empty map.
 				return dlvPassesInfo;
 			}
-			Map<String, DlvPassUsageInfo> usageInfos = sb.getDlvPassesUsageInfo(identity);
+			
+			Map<String, DlvPassUsageInfo> usageInfos = null;
+			
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("dlvPassUsage_Api")){
+	    		OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
+	    		usageInfos =  service.getDlvPassesUsageInfo(identity.getErpCustomerPK());
+	    	}else{
+	    		usageInfos = sb.getDlvPassesUsageInfo(identity);
+	    	}
 
 			List<Object> historyInfo = null;
 			for ( DeliveryPassModel model : dlvPasses ) {
@@ -3104,8 +3138,14 @@ public class FDCustomerManager {
 		}
 		lookupManagerHome();
 		try {
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("weborderHistory_Api")){
+	    		OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
+	    		return new ErpWebOrderHistory(service.getWebOrderHistory(identity.getErpCustomerPK()));
+	    	}else{
+			
 			FDCustomerManagerSB sb = managerHome.create();
 			return sb.getWebOrderHistoryInfo(identity);
+	    	}
 
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -3134,8 +3174,14 @@ public class FDCustomerManager {
 		}
 		lookupManagerHome();
 		try {
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("validordercount_Api")){
+	    		OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
+	    		return service.getValidOrderCount(identity.getErpCustomerPK());
+	    	}else{
+			
 			FDCustomerManagerSB sb = managerHome.create();
 			return sb.getValidOrderCount(identity);
+	    	}
 
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -3422,8 +3468,14 @@ public class FDCustomerManager {
 		String lastOrderId = null;
 		lookupManagerHome();
 		try {
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("lastOrderId_Api")){
+	    		OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
+	    		return service.getLastOrderId(identity.getErpCustomerPK());
+	    	}else{
+			
 			FDCustomerManagerSB customerManagerSessionBean = managerHome.create();
 			lastOrderId = customerManagerSessionBean.getLastOrderID(identity);
+	    	}
 		} catch (CreateException exception) {
 			invalidateManagerHome();
 			throw new FDResourceException(exception, "Error creating session bean");
@@ -3439,8 +3491,14 @@ public class FDCustomerManager {
 		String lastOrderId = null;
 		lookupManagerHome();
 		try {
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("lastOrderId_Estore_Api")){
+	    		OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
+	    		return service.getLastOrderId(identity.getErpCustomerPK(), eStoreId);
+	    	}else{
+			
 			FDCustomerManagerSB customerManagerSessionBean = managerHome.create();
 			lastOrderId = customerManagerSessionBean.getLastOrderID(identity, eStoreId);
+	    	}
 		} catch (CreateException exception) {
 			invalidateManagerHome();
 			throw new FDResourceException(exception, "Error creating session bean");
@@ -4305,7 +4363,7 @@ public class FDCustomerManager {
 	public static void logMassCancelActivity(ErpActivityRecord record) {
 		ActivityLogHome home = getActivityLogHome();
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("customer.ejb.ActivityLogSB")){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ActivityLogSB)){
 				FDECommerceService.getInstance().logActivity(record);
 			}else{
 				ActivityLogSB logSB = home.create();

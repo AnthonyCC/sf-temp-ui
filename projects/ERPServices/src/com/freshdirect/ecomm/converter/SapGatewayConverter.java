@@ -151,7 +151,7 @@ public class SapGatewayConverter {
 		if(adapter.getBankAccountType() != null)
 		erpPayment.setBankAccountType(adapter.getBankAccountType().getName());
 		erpPayment.setBankName(adapter.getBankName());
-		erpPayment.setExpirationDate(adapter.getExpiration());
+		erpPayment.setExpirationDate(adapter.getExpiration().getTime());
 		erpPayment.setName(adapter.getName());
 		erpPayment.setAccountNumber(adapter.getNumber());
 		if(adapter.getType() != null)
@@ -291,8 +291,8 @@ public class SapGatewayConverter {
 			invoiceLineData.setQuantity(erpInvoiceLineModel.getQuantity());
 			invoiceLineData.setTaxValue(erpInvoiceLineModel.getTaxValue());
 			invoiceLineData.setWeight(erpInvoiceLineModel.getWeight());
-			invoiceLineData.setSubSkuStatus(erpInvoiceLineModel.getSubSkuStatus());
-			invoiceLineData.setSubstitutedSkuCode(erpInvoiceLineModel.getSubstitutedSkuCode());
+			//invoiceLineData.setSubSkuStatus(erpInvoiceLineModel.getSubSkuStatus());
+			//invoiceLineData.setSubstitutedSkuCode(erpInvoiceLineModel.getSubstitutedSkuCode());
 			invoiceLineDataList.add(invoiceLineData);
 		}
 		}
@@ -788,7 +788,8 @@ public class SapGatewayConverter {
 		if(paymentMethod.getPaymentType() != null)
 		paymentData.setPaymentType(paymentMethod.getPaymentType().getName());
 		if(paymentMethod instanceof ErpCreditCardModel){
-			paymentData.setExpirationDate(paymentMethod.getExpirationDate());
+			if(paymentMethod.getExpirationDate() != null)
+			paymentData.setExpirationDate(paymentMethod.getExpirationDate().getTime());
 			if(paymentMethod.getCardType() != null)
 			paymentData.setCardType(paymentMethod.getCardType().getName());
 			paymentData.setAvsCkeckFailed(paymentMethod.isAvsCkeckFailed());
@@ -808,7 +809,7 @@ public class SapGatewayConverter {
 			paymentData.setBalance(paymentMethod.getBalance());
 			paymentData.setOriginalAmount(((ErpGiftCardModel) paymentMethod).getOriginalAmount());
 			paymentData.setPurchaseSaleId(((ErpGiftCardModel) paymentMethod).getPurchaseSaleId());
-			paymentData.setPurchaseDate(((ErpGiftCardModel) paymentMethod).getPurchaseDate());
+			paymentData.setPurchaseDate(((ErpGiftCardModel) paymentMethod).getPurchaseDate().getTime());
 		}
 		return paymentData;
 	}
@@ -1127,7 +1128,7 @@ public class SapGatewayConverter {
 	}
 
 
-	private static ErpPaymentMethodI buildPaymentMethodModel(ErpPaymentMethodData paymentData) {
+	public static ErpPaymentMethodI buildPaymentMethodModel(ErpPaymentMethodData paymentData) {
 
 		ErpPaymentMethodI model = null;
 		if(paymentData.getPaymentMethodType()==null){
@@ -1159,7 +1160,7 @@ public class SapGatewayConverter {
 	private static ErpPaymentMethodI createErpCreditCardModel(ErpPaymentMethodData source) {
 		ErpCreditCardModel model = new ErpCreditCardModel();
 		createErpPaymentMethod(model,source);
-		model.setExpirationDate(source.getExpirationDate());
+		model.setExpirationDate(new java.sql.Date(source.getExpirationDate()));
 		model.setCardType(EnumCardType.getCardType(source.getCardType()));
 		model.setAvsCkeckFailed(source.isAvsCkeckFailed());
 		model.setBypassAVSCheck(source.isBypassAVSCheck());
@@ -1207,7 +1208,7 @@ public class SapGatewayConverter {
 		}
 		model.setOriginalAmount(source.getOriginalAmount());
 		model.setPurchaseSaleId(source.getPurchaseSaleId());
-		model.setPurchaseDate(source.getPurchaseDate());
+		model.setPurchaseDate(new java.sql.Date(source.getPurchaseDate()));
 		return model;
 		
 	}
@@ -1324,7 +1325,7 @@ public class SapGatewayConverter {
 			giftCardModel.setBalance(erpGiftCardData.getBalance());
 			giftCardModel.setOriginalAmount(erpGiftCardData.getOriginalAmount());
 			giftCardModel.setPurchaseSaleId(erpGiftCardData.getPurchaseSaleId());
-			giftCardModel.setPurchaseDate(erpGiftCardData.getPurchaseDate());
+			giftCardModel.setPurchaseDate(new java.sql.Date(erpGiftCardData.getPurchaseDate()));
 			giftCardModelList.add(giftCardModel);
 		}
 		}

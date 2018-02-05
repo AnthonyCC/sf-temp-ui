@@ -24,7 +24,7 @@
 
 	<%
 	if (request.getHeader("User-Agent").indexOf("Mac") > -1) {
-		%><jwr:style src="/assets/css/mac_ie.css" media="all" /><%
+		%><jwr:style src="/opt_MAC_01.css" media="all" /><%
 	}
 	%>
 	<!--[if lte IE 6]>

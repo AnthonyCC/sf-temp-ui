@@ -479,7 +479,7 @@ public class OrderController extends BaseController {
 		QuickShop quickShop = new QuickShop();
 //		quickShop.setProducts(productPage);
 		
-		List<String> productIds = new ArrayList<String>(productPage.size());
+		List<String> productIds = new ArrayList<String>();
 		
 		for(ProductConfiguration pc : productPage){
 			productIds.add(pc.getProductId());

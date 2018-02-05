@@ -38,6 +38,14 @@ public class CrmPaymentMethodControllerTag extends AbstractControllerTag {
 	public void setPaymentMethod(ErpPaymentMethodI paymentMethod) {
 		this.paymentMethod = paymentMethod;
 	}
+	/**
+	 * IF YOU ARE IN THIS CLASS MOST LIKELY YOU WILL HAVE TO DOUBLE CHECK 
+	 * CrmPaymentMethodControllerTag
+	 *  com.freshdirect.webapp.taglib.fdstore.PaymentMethodUtil
+	 *  com.freshdirect.webapp.ajax.expresscheckout.validation.service.ValidationProviderService
+	 *  com.freshdirect.fdstore.payments.util.PaymentMethodUtil
+	 *  Especially if you are validating  BANKING account INFORMATION.
+	 */
 
 	protected boolean performAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
 		try {
@@ -151,6 +159,12 @@ public class CrmPaymentMethodControllerTag extends AbstractControllerTag {
 				PaymentMethodName.ACCOUNT_NUMBER_VERIFY, SystemMessageList.MSG_REQUIRED
 				);
 
+		        
+		        // Check to see that account number DOESNT contain a letter (a=z or A-Z) appdev 6789
+		        actionResult.addError(
+		        		accountNumber.matches(".*[a-zA-Z]+.*"),
+				PaymentMethodName.ACCOUNT_NUMBER, SystemMessageList.MSG_ACCOUNT_NUMBER_ILLEGAL_ALPHA
+				);
 		        // Check account number has at least 5 digits
 		        String scrubbedAccountNumber = PaymentMethodUtil.scrubAccountNumber(accountNumber);
 

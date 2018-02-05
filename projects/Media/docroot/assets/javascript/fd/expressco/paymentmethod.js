@@ -17,6 +17,12 @@ var FreshDirect = FreshDirect || {};
 				if (fd.utils.isDeveloper()) {
 					console.log('paymentMethod: callback', data);
 				}
+				// remove the xxxx in payment account number
+				if (data && data.payments) {
+					data.payments.forEach(function (p) {
+						p.accountNumber = p.accountNumber.replace('XXXX','');
+					});
+				}
 				DRAWER_WIDGET.callback.call(this, data);
 				this.check();
 				
@@ -58,7 +64,19 @@ var FreshDirect = FreshDirect || {};
 	});
 
 	paymentMethod.listen();
-
+	var externalPayment = Object.create(fd.modules.common.widget,{
+		signal:{
+			value: ['payment']
+		},
+		template: {
+			value: expressco.externalpayments
+		},
+		placeholder:{
+			value:'#external-payments-container'
+		}
+	});
+	externalPayment.listen();
+	
 	var defaultPaymentPrompt = Object.create(POPUPWIDGET,{
 		headerContent: {
 			value: ''

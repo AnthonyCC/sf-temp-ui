@@ -827,8 +827,15 @@ public class Cart {
             }
         }
         //Charge Lines
-        cartDetail.setEstimatedTotal(cart.getTotal());
-        cartDetail.setSubtotal(cart.getSubTotal());
+        //changes as part of APPDEV-6838
+        if (cart instanceof FDOrderI && ((FDOrderI) cart).hasInvoice()) {
+        	cartDetail.setEstimatedTotal(((FDOrderI) cart).getInvoicedTotal());
+            cartDetail.setSubtotal(((FDOrderI) cart).getInvoicedSubTotal());
+            
+        } else {
+        	cartDetail.setEstimatedTotal(cart.getTotal());
+            cartDetail.setSubtotal(cart.getSubTotal());
+        }
 
         double tip1 = cart.getTip();
         

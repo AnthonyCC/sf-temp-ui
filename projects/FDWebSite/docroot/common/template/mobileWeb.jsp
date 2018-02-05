@@ -123,7 +123,12 @@
     <div class="container-fluid" id="page-content"><!-- body cont s -->
 
 		<!-- top nav s -->
+		<% if (request.getRequestURI().indexOf("/expressco/checkout.jsp") > -1) {
+		%>
+		<%@ include file="/common/template/includes/checkoutnav_mobileWeb.jspf"%>
+		<% } else { %>
 		<%@ include file="/common/template/includes/globalnav_mobileWeb_top.jspf"%>
+		<%} %>
 		<!-- top nav e -->
 
 		<div id="content" autoscroll="true"><!-- content starts here-->

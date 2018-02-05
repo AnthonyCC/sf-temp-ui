@@ -212,14 +212,13 @@ input[type="socialButton"] {
 	width: 206px;
 	color: #000000;
 	padding: 8px 15px;
-    border: 1px solid #c2c2c2;
-    box-sizing: content-box;
-    background-color: #ffffff;
-    font-family: Verdana;
-    font-size: 16px;
-    font-weight: 400;
-    text-align: left;
-    
+	border: 1px solid #c2c2c2;
+	box-sizing: content-box;
+	background-color: #ffffff;
+	font-family: Verdana;
+	font-size: 16px;
+	font-weight: 400;
+	text-align: left;
 }
 #sulCont .form-side-social input.error,
 #sulCont #lost_password input.error,
@@ -303,7 +302,7 @@ input[type="socialButton"] {
 	line-height: 12px;
 }
 #sulCont form#lost_password {
-    padding-top: 18px;
+    /* padding-top: 18px; */
 }
 
 #sulCont form#lost_password input#altEmail[type="checkbox"]{

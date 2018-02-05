@@ -50,6 +50,7 @@ import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.promotion.PromotionHelper;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
+import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.fdstore.util.DlvTimeslotStats;
 import com.freshdirect.fdstore.util.FDTimeslotUtil;
 import com.freshdirect.fdstore.util.RestrictionUtil;
@@ -670,18 +671,30 @@ public class TimeslotService {
             boolean flg = false;
             FDOrderHistory h = (FDOrderHistory) user.getOrderHistory();
             if (null != h.getErpSaleInfos() && !h.getErpSaleInfos().isEmpty()) {
-                for (ErpSaleInfo fdOrderInfo : h.getErpSaleInfos()) {
-                    if (so.getId().equals(fdOrderInfo.getStandingOrderId()) && so.getFrequency() > 0 && !EnumSaleStatus.CANCELED.getStatusCode().equals(fdOrderInfo.getStatus().getStatusCode()) ) {
-                        flg = true;
-                        break;
-                    }
-                }
+				for (ErpSaleInfo fdOrderInfo : h.getErpSaleInfos()) {
+					// to prevent from already settled order to pass trough to manipulating dates on SO template		//COS17-51
+					if (so.getId().equalsIgnoreCase(fdOrderInfo.getStandingOrderId())
+							&& !fdOrderInfo.getStatus().isCanceled()
+							&& fdOrderInfo.getDeliveryCutoffTime().after(new Date())
+							&& FDStandingOrdersManager.getInstance().isModifiable(fdOrderInfo)
+							&& so.getFrequency() > 0) {
+									flg = true;
+									break;
+					}
+				}
             }
 
             if (flg) {
                 for (FDTimeslotUtil fdTimeslotUtil : deliveryModel.getTimeslotList()) {
+                	Date aheadDays = new Date();
+                	Calendar cal = Calendar.getInstance();
+                	cal.add(Calendar.DAY_OF_MONTH, 9);			// as we are getting timeslots for SO3-user from(2, 9) date ranges 
+                	cal.set(Calendar.HOUR_OF_DAY, 0);
+                	cal.set(Calendar.MINUTE, 0);
+                	aheadDays = cal.getTime();
                     for (FDTimeslot fdTimeslot : fdTimeslotUtil.getTimeslotsFlat()) {
-                        if (null != fdTimeslot.getSoFirstDeliveryDate()) {
+                    	// preventing manipulating of timeslots if firstDeliveryDate from logistics falls out from date ranges(2,9)	   //COS17-51
+                        if (null != fdTimeslot.getSoFirstDeliveryDate() && fdTimeslot.getSoFirstDeliveryDate().before(aheadDays)) {
                             fdTimeslot.setSoFirstDeliveryDate(getSubsequentDeliveryDate(fdTimeslot.getSoFirstDeliveryDate(), so.getFrequency()));
                         }
                     }

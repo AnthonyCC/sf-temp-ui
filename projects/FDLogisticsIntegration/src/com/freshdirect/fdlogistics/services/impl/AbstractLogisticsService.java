@@ -6,12 +6,14 @@ import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
@@ -78,6 +80,15 @@ public abstract class AbstractLogisticsService {
 	    requestFactory.setReadTimeout(FDStoreProperties.getLogisticsConnectionReadTimeout()*1000);
 	    requestFactory.setConnectTimeout(FDStoreProperties.getLogisticsConnectionTimeout()*1000);
 	    restTemplate.setRequestFactory(requestFactory);
+	    
+	    try {
+	    IdleConnectionMonitorThread staleMonitor = new IdleConnectionMonitorThread(cManager);
+	    staleMonitor.start();
+		staleMonitor.join(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
@@ -214,4 +225,44 @@ protected <T,E> Response<T> httpGetDataTypeMap( String url, TypeReference<E> typ
 		return FDStoreProperties.getFdCommerceApiUrl()	+ FDCOMMERCE_API_CONTEXT + 
 												 path;
 	}
+	
+	
+	
+	public static class IdleConnectionMonitorThread extends Thread {
+	    
+	    private final HttpClientConnectionManager connMgr;
+	    private volatile boolean shutdown;
+	    
+	    public IdleConnectionMonitorThread(HttpClientConnectionManager connMgr) {
+	        super();
+	        this.connMgr = connMgr;
+	    }
+	
+	    @Override
+	    public void run() {
+	        try {
+	            while (!shutdown) {
+	                synchronized (this) {
+	                    wait(5000);
+	                    // Close expired connections
+	                    connMgr.closeExpiredConnections();
+	                    // Optionally, close connections
+	                    // that have been idle longer than 30 sec
+	                    connMgr.closeIdleConnections(30, TimeUnit.SECONDS);
+	                }
+	            }
+	        } catch (InterruptedException ex) {
+	            // terminate
+	        }
+	    }
+	    
+	    public void shutdown() {
+	        shutdown = true;
+	        synchronized (this) {
+	            notifyAll();
+	        }
+	    }
+	    
+	}
+
 }

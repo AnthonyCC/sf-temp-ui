@@ -31,6 +31,7 @@ public class SoyRendererTag extends SimpleTagSupport {
     private static final Logger LOGGER = LoggerFactory.getInstance(SoyRendererTag.class);
 
     private String template;
+    private boolean injectAdditonalData = true;
     private Map<String, ?> data;
 
     public String getTemplate() {
@@ -41,6 +42,13 @@ public class SoyRendererTag extends SimpleTagSupport {
         this.template = template;
     }
 
+    public void setInjectAdditonalData(boolean injectAdditonalData) {
+    	this.injectAdditonalData = injectAdditonalData;
+    }
+    
+    public boolean getInjectAdditonalData() {
+    	return this.injectAdditonalData;
+    }
     public Map<String, ?> getData() {
         return data;
     }
@@ -63,15 +71,15 @@ public class SoyRendererTag extends SimpleTagSupport {
         if (data != null) {
             dataObj.putAll(data);
         }
-        
-        try {
-            dataObj.put("abFeatures", SoyTemplateEngine.convertToMap(FeaturesService.defaultService().getActiveFeaturesMapped(cookies, user)));
-            dataObj.put("metadata", SoyTemplateEngine.convertToMap(FormMetaDataService.defaultService().populateFormMetaData(user)));
-            dataObj.put("mobWeb", FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(((HttpServletRequest) pageContext.getRequest()).getHeader("User-Agent")));
-        } catch (FDResourceException e) {
-            LOGGER.error("Can not decorate soy data with additional information.", e);
+        if (injectAdditonalData) {
+	        try {
+	            dataObj.put("abFeatures", SoyTemplateEngine.convertToMap(FeaturesService.defaultService().getActiveFeaturesMapped(cookies, user)));
+	            dataObj.put("metadata", SoyTemplateEngine.convertToMap(FormMetaDataService.defaultService().populateFormMetaData(user)));
+	            dataObj.put("mobWeb", FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(((HttpServletRequest) pageContext.getRequest()).getHeader("User-Agent")));
+	        } catch (FDResourceException e) {
+	            LOGGER.error("Can not decorate soy data with additional information.", e);
+	        }
         }
-
         try {
             String result = StringEscapeUtils.unescapeHtml(SoyTemplateEngine.getInstance().render(servletCtx, template, new SoyMapData(dataObj)));
             out.write(result);

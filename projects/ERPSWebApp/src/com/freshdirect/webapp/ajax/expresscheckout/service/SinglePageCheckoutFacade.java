@@ -135,7 +135,16 @@ public class SinglePageCheckoutFacade {
         handleModifyCartPreSelections(user, request);
         result.setHeaderData(SinglePageCheckoutHeaderService.defaultService().populateHeader(user));
         result.setDrawer(DrawerService.defaultService().loadDrawer(user));
-        result.setPayment(loadUserPaymentMethods(user, request, customerModel.getPaymentMethods(), customerModel.getCustomerCredits()));
+        FormPaymentData paymentData = loadUserPaymentMethods(user, request, customerModel.getPaymentMethods(), customerModel.getCustomerCredits());
+        // remove the xxxx in account number
+    	if (paymentData.getPayments() != null) {
+    		for(PaymentData payment: paymentData.getPayments()) {
+    			if (payment.getAccountNumber() != null) {
+    				payment.setAccountNumber(payment.getAccountNumber().replace("XXXX", ""));
+    			}
+    		}
+    	}
+        result.setPayment(paymentData);
         result.setFormMetaData(FormMetaDataService.defaultService().populateFormMetaData(user));
         result.setAddress(loadAddress(user, request.getSession(), cart, customerModel.getShipToAddresses(),customerModel.getCustomerInfo()));
         if (FDStoreProperties.getAtpAvailabiltyMockEnabled()) {

@@ -4,7 +4,6 @@
 //var COLOR_NONSELECTED = '#4fa157', COLOR_SELECTED = '#458d4e';
 var COLOR_NONSELECTED = '#fff', COLOR_SELECTED = '#f6faf6';
 
-/* fix cart for now, until actual solution is found */
 $jq(document).on('ready', function() {
 	if ($jq('#popupcart').length) {
 		$jq('#popupcart').appendTo('#locabar_popupcart');
@@ -12,18 +11,10 @@ $jq(document).on('ready', function() {
 		$jq( '#locabar_popupcart' ).position({
 			my: 'right top',
 			at: 'right bottom+8',
-			of: '#locabar_popupcart_trigger'
+			of: '#locabar_popupcart_trigger',
+			collision : 'none'
 		});
 		
-		$jq('locabar_popupcart_trigger').on('mouseenter', function() {
-			/* just fix on every hover */
-			$jq( '#locabar_popupcart' ).position({
-				my: 'right top',
-				at: 'right bottom+8',
-				of: '#locabar_popupcart_trigger'
-			});
-			if ($jq( '#locabar_popupcart' ).css('top') === '10px') {}
-		});
 	}
 	
 });
@@ -34,7 +25,8 @@ if ($jq('#locabar_popupcart .ui-arrow.ui-top').length) {
 	$jq( '#locabar_popupcart .ui-arrow.ui-top' ).position({
 		my: 'right top',
 		at: 'right-20 top-16',
-		of: '#locabar_popupcart'
+		of: '#locabar_popupcart',
+		collision : 'none'
 	});
 }
 

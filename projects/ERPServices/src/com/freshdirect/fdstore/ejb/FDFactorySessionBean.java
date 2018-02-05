@@ -31,7 +31,6 @@ import com.freshdirect.erp.ejb.ErpProductHome;
 import com.freshdirect.erp.ejb.ErpZoneInfoHome;
 import com.freshdirect.erp.ejb.ErpZoneInfoSB;
 import com.freshdirect.erp.model.ErpMaterialModel;
-import com.freshdirect.erp.model.ErpMaterialSalesAreaModel;
 import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDGroupNotFoundException;
@@ -285,15 +284,6 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 		}
 	}
 	
-    public Collection<ErpMaterialSalesAreaModel> getGoingOutOfStockSalesAreas() throws FDResourceException {
-        try {
-            ErpInfoSB infoSB = this.getErpInfoSB();
-            return infoSB.findGoingOutOfStockSalesAreas();
-        } catch (RemoteException re) {
-            throw new FDResourceException(re);
-        }
-    }
-
 	/**
 	 * Get product with specified version. 
 	 *

@@ -8,6 +8,7 @@ import javax.ejb.CreateException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.customer.EnumExternalLoginSource;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
@@ -27,7 +28,7 @@ public class ExternalAccountManager{
 		lookupManagerHome();
 		String userId="";
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("accounts.external.ExternalAccountManagerSB")){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ExternalAccountManagerSB)){
 				IECommerceService service = FDECommerceService.getInstance();
 				userId=service.getUserIdForUserToken(userToken);
 				
@@ -51,7 +52,7 @@ public class ExternalAccountManager{
 		lookupManagerHome();
 		try {
 			boolean isUserEmailExist = false;
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("accounts.external.ExternalAccountManagerSB")){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ExternalAccountManagerSB)){
 				IECommerceService service = FDECommerceService.getInstance();
 				isUserEmailExist = service.isUserEmailAlreadyExist(email);
 				
@@ -75,7 +76,7 @@ public class ExternalAccountManager{
 		lookupManagerHome();
 		try {
 			int isUserEmailExist = 0;
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled("accounts.external.ExternalAccountManagerSB")) {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ExternalAccountManagerSB)) {
 				IECommerceService service = FDECommerceService.getInstance();
 				isUserEmailExist = service.isUserEmailAlreadyExist(email,provider);
 			} else {
@@ -98,7 +99,7 @@ public class ExternalAccountManager{
 		lookupManagerHome();
 		try {
 			List<String> connectedproviders = null;
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled("accounts.external.ExternalAccountManagerSB")) {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ExternalAccountManagerSB)) {
 				IECommerceService service = FDECommerceService.getInstance();
 				connectedproviders = service.getConnectedProvidersByUserId(userId, source);
 			} else {
@@ -120,7 +121,7 @@ public class ExternalAccountManager{
 		lookupManagerHome();
 		try {
 			List<String> connectedProviders = null;
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled("accounts.external.ExternalAccountManagerSB")) {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ExternalAccountManagerSB)) {
 				IECommerceService service = FDECommerceService.getInstance();
 				connectedProviders = service.getConnectedProvidersByUserId(userId);
 			} else {
@@ -142,7 +143,7 @@ public class ExternalAccountManager{
 	{
 		lookupManagerHome();
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled("accounts.external.ExternalAccountManagerSB")) {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ExternalAccountManagerSB)) {
 				IECommerceService service = FDECommerceService.getInstance();
 				return service.isExternalLoginOnlyUser(userId, source);
 			} else {
@@ -167,7 +168,7 @@ public class ExternalAccountManager{
 	{
 		lookupManagerHome();
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled("accounts.external.ExternalAccountManagerSB")) {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ExternalAccountManagerSB)) {
 				IECommerceService service = FDECommerceService.getInstance();
 				service.linkUserTokenToUserId(customerId, userId, userToken, identityToken, provider, displayName, preferredUserName, email, emailVerified);
 			} else {
@@ -198,7 +199,7 @@ public class ExternalAccountManager{
 	public static void unlinkExternalAccountWithUser(String email, String userToken, String provider) throws FDResourceException {
 		lookupManagerHome();
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled("accounts.external.ExternalAccountManagerSB")) {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ExternalAccountManagerSB)) {
 				IECommerceService service = FDECommerceService.getInstance();
 				service.unlinkExternalAccountWithUser(email, userToken, provider);
 			} else {
@@ -219,7 +220,7 @@ public class ExternalAccountManager{
 	public static void unlinkExternalAccountWithUser(String email, String provider) throws FDResourceException {
 		lookupManagerHome();
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled("accounts.external.ExternalAccountManagerSB")) {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ExternalAccountManagerSB)) {
 				IECommerceService service = FDECommerceService.getInstance();
 				service.unlinkExternalAccountWithUser(email, provider);
 			} else {
@@ -242,7 +243,7 @@ public class ExternalAccountManager{
 		lookupManagerHome();
 		try {
 			boolean isSocialLoginOnlyUser = false;
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled("accounts.external.ExternalAccountManagerSB")) {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ExternalAccountManagerSB)) {
 				IECommerceService service = FDECommerceService.getInstance();
 				isSocialLoginOnlyUser = service.isSocialLoginOnlyUser(customer_id);
 			} else {

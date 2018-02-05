@@ -581,8 +581,9 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			Date threeDaysAgo = DateUtil.addDays(DateUtil.truncate(new Date()), -1);
-			int ordersInOneDays = ErpSaleInfoDAO.getOrderCountPast(conn, erpCustomerPk.getId(), threeDaysAgo, EnumSaleType.GIFTCARD);
+//			Date threeDaysAgo = DateUtil.addDays(DateUtil.truncate(new Date()), -1);
+			Date _24HrsAgo = DateUtil.addDays(new Date(), -1);
+			int ordersInOneDays = ErpSaleInfoDAO.getOrderCountPast(conn, erpCustomerPk.getId(), _24HrsAgo, EnumSaleType.GIFTCARD);
 			LOGGER.debug("Found " + ordersInOneDays + " orders in past 24 hrs");
 			if (ordersInOneDays > ErpServicesProperties.getGiftCardOrderCountLimit() && !csr) {
 				return EnumFraudReason.MAX_ORDER_COUNT_LIMIT;

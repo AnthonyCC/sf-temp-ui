@@ -13,6 +13,7 @@ import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.service.ServiceException;
+import com.freshdirect.mobileapi.util.MobileApiProperties;
 
 /**
  * @author Rob
@@ -34,13 +35,15 @@ public class RouteInfoController extends BaseController {
     			RouteInfo.class);
 		String routeNo = requestMessage.getRouteNo();
     	RoutesDataMessage responseMessage = new RoutesDataMessage();
-    	if(ACTION_DELIVERY_INFO.equals(action)) {
-    		if(routeNo!=null){
-    			responseMessage.setRouteData(FDDeliveryManager.getInstance().getRouteDetails(routeNo));
-    		}
-        } else if(ACTION_DELIVERY_INFO_ALL.equals(action)) {
-    			responseMessage.setRouteData(FDDeliveryManager.getInstance().getRoutesDetailsByCurrentDate());
-        }
+    	if(MobileApiProperties.isRouteDeliveryInfoEnabled()){
+	    	if(ACTION_DELIVERY_INFO.equals(action)) {
+	    		if(routeNo!=null){
+	    			responseMessage.setRouteData(FDDeliveryManager.getInstance().getRouteDetails(routeNo));
+	    		}
+	        } else if(ACTION_DELIVERY_INFO_ALL.equals(action)) {
+	    			responseMessage.setRouteData(FDDeliveryManager.getInstance().getRoutesDetailsByCurrentDate());
+	        }
+    	}
     	setResponseMessage(model, responseMessage, user);
         return model;
     }

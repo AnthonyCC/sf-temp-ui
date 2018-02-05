@@ -4,19 +4,32 @@
  * @param addresses
  * @param? selected
  * @param? onOpenCoremetrics
+ * @param? mobWeb
  */
 {template .addresspreview autoescape="false"}
 {if $selected}
   {foreach $address in $addresses}
     {if $address.selected}
       {if $address.service_type == 'corporate'}
-        {call .address_office data="$address" /}
+        {call .address_office data="$address"}
+        	{param is_preview: true /}
+        	{param mobWeb: $mobWeb /}
+        	{param onOpenCoremetrics: $onOpenCoremetrics /}
+        {/call}
       {/if}
       {if $address.service_type == 'home'}
-        {call .address_home data="$address" /}
+        {call .address_home data="$address" }
+        	{param is_preview: true /}
+        	{param mobWeb: $mobWeb /}
+        	{param onOpenCoremetrics: $onOpenCoremetrics /}
+        {/call}
       {/if}
       {if $address.service_type == 'pickup'}
-        {call .address_pickup data="$address" /}
+        {call .address_pickup data="$address"}
+        	{param is_preview: true /}
+        	{param mobWeb: $mobWeb /}
+        	{param onOpenCoremetrics: $onOpenCoremetrics /}
+        {/call}
       {/if}
     {/if}
   {/foreach}
@@ -55,7 +68,7 @@
 	<form class="drawer__content" action="#" fdform="address" fdform-endpoint-submit="/api/expresscheckout/deliveryaddress" data-item-count="{length($addresses)}">
 	  <input type="hidden" name="action" value="selectDeliveryAddressMethod" />
 	  <div class="drawer__header">
-		<b>IMPORTANT:</b> Changing delivery address may require selection of a new delivery date/time <button class="cssbutton orange" data-component="addresschangebutton">Done<span class="offscreen">with Delivery Address</button>
+		<b>IMPORTANT:</b> Changing delivery address may require selection of a new delivery date/time
 	  </div>
 	  <div fdform-error-container></div>
 	  {foreach $address in $addresses}
@@ -82,6 +95,80 @@
 {/template}
 
 /**
+* @param? nick_name
+* @param? apartment
+* @param? city
+* @param? instructions
+* @param? phone
+* @param? phone_type
+* @param? state
+* @param? street_address
+* @param? street_address2
+* @param? zip
+* @param? bd_auth
+* @param? bd_first_name
+* @param? bd_last_name
+* @param? bd_instructions
+* @param? mobWeb
+* @param? onOpenCoremetrics
+*/
+{template .address_home_preivew autoescape="false"}
+<div class='drawer__previewitem'>
+  <div class='drawer__itemright'>
+  	{let $addresstitle: ($nick_name ? $nick_name : $street_address) /}
+    <p class='drawer__item__title' title="{$addresstitle}">{$addresstitle}</p>
+    <div class="drawer__item__section">
+      <div class='section__body'>
+      	{let $addressline: 
+      		($street_address ? $street_address + ' ' : '') + 
+	      	($apartment? 'Apt.' + $apartment + ' ': '') + 
+	      	($street_address2? $street_address2 + ' ' : '') + 
+      		($city? $city + ', ' : '') + 
+      		($state? $state + ' ' : '') + 
+      		($zip? $zip + ' ' : '')
+      	  /}
+		<p title="{$addressline}">
+			{$addressline}
+		</p>
+      </div>
+    </div>
+    <div class="drawer__item__section">
+      <p class='section__title'>Phone{if not $mobWeb} Number{/if}</p>
+      <div class='section__body'>
+        <p><span class="phone {$phone_type ? $phone_type : ''}" title="{$phone ? $phone : 'none provided'}">{$phone ? $phone : 'none provided'}</span></p>
+      </div>
+    </div>
+    <div class="drawer__item__section">
+      <p class='section__title'>Instructions</p>
+      <div class='section__body'>
+        <p title="{$instructions?$instructions : 'none provided'}">{$instructions?$instructions : 'none provided'}</p>
+      </div>
+    </div>
+    {if $bd_auth and $bd_auth != 'none'}
+    <div class="drawer__item__section  {$mobWeb? '' : 'padding-bottom-15'}">
+      <p class='section__title'>If I'm not home</p>
+      <div class='section__body'>
+        {if $bd_auth == 'neighbor'}
+        <p title="Deliver to my neighbor: {$bd_first_name ? $bd_first_name : ''} {$bd_last_name ? $bd_last_name : ''}">Deliver to my neighbor: {$bd_first_name ? $bd_first_name : ''} {$bd_last_name ? $bd_last_name : ''}</p>
+        {/if}
+        {if $bd_auth == 'doorman'}
+        <p title="Deliver to my doorman or the super">Deliver to my doorman or the super.</p>
+        {/if}
+        {if $bd_auth == 'unattended'}
+        <p title="Leave my order here: {$bd_instructions ? $bd_instructions : ''}">Leave my order here: {$bd_instructions ? $bd_instructions : ''}</p>
+        {/if}
+      </div>
+    </div>
+    {/if}
+  </div><!--/ drawer__itemright -->
+ 
+  <div class="drawer__item__action">
+    <button type="button" aria-haspopup="true" class="change cssbutton green transparent small" {if $onOpenCoremetrics}cm-click="{$onOpenCoremetrics}"{/if}>Edit</button>
+  </div>
+</div>
+{/template}
+
+/**
 * @param id
 * @param? selected
 * @param? nick_name
@@ -103,51 +190,49 @@
 * @param? bd_first_name
 * @param? bd_last_name
 * @param? bd_instructions
+* @param? is_preview
 ** param? bd_phone
 * @param? can_delete
 */
 {template .address_home autoescape="false"}
+{if $is_preview} 
+	{call .address_home_preivew data="all" }
+	{/call}
+{else}
 <div class='drawer__item'>
-  
   <input id="address_{$id}" value="{$id}" type='radio' class='drawer__itemleft customradio' name='id' {if $selected}checked{/if}/>
-
+  
   <div class='drawer__itemright clickable'>
     <p class='drawer__item__title'>{$nick_name ? $nick_name : $street_address}</p>
     <label for="address_{$id}" class='drawer__item__label'><div class="drawer__item__section">
-      <p class='section__title'>{$first_name ? $first_name : ''} {$last_name ? $last_name : ''}</p>
       <div class='section__body'>
+      	<p>{$first_name ? $first_name : ''} {$last_name ? $last_name : ''}</p>
         <p>{$street_address ? $street_address : ''} {if $apartment} Apt. {$apartment}{/if}</p>
         {if $street_address2}<p>{$street_address2}</p>{/if}
         <p>{$city ? $city : ''}, {$state ? $state : ''} {$zip ? $zip : ''}</p>
+        <p><span class="phone {$phone_type ? $phone_type : ''}" title="{$phone ? $phone : 'Phone: none provided'}">{$phone ? $phone : 'Phone: none provided'}</span></p>
       </div>
     </div></label>
     <div class="drawer__item__section">
-      <p class='section__title'>Best # for this address:</p>
-      <div class='section__body'>
-        <p><span class="phone {$phone_type ? $phone_type : ''}">{$phone ? $phone : ''}</span></p>
-      </div>
-    </div>
-    {if $instructions}
-    <div class="drawer__item__section">
       <p class='section__title'>Delivery Instructions:</p>
       <div class='section__body'>
-        <p>{$instructions}</p>
+        <p title="{$instructions? $instructions : 'none provided'}">{$instructions? $instructions : 'none provided'}</p>
       </div>
     </div>
-    {/if}
     {if $bd_auth and $bd_auth != 'none'}
-    <div class="drawer__item__section">
+    <div class="drawer__item__section padding-bottom-15">
       <p class='section__title'>If I'm not home:</p>
       <div class='section__body'>
         {if $bd_auth == 'neighbor'}
-        <p>Deliver to my neighbor: {$bd_first_name ? $bd_first_name : ''} {$bd_last_name ? $bd_last_name : ''}</p>
+        	{let $msg: 'Deliver to my neighbor: '+ ($bd_first_name ? $bd_first_name : '') +' ' + ($bd_last_name ? $bd_last_name : '') /}
+        <p title="{$msg}">{$msg}</p>
         {/if}
         {if $bd_auth == 'doorman'}
-        <p>Deliver to my doorman or the super.</p>
+        <p title="Deliver to my doorman or the super.">Deliver to my doorman or the super.</p>
         {/if}
         {if $bd_auth == 'unattended'}
         <p>Leave my order here:</p>
-        <p class="unattended">{$bd_instructions ? $bd_instructions : ''}</p>
+        <p class="unattended" title="{$bd_instructions ? $bd_instructions : ''}">{$bd_instructions ? $bd_instructions : ''}</p>
         {/if}
       </div>
     </div>
@@ -156,8 +241,59 @@
  
   <div class="drawer__item__action">
     {if $can_delete}<button type="button" aria-label="delete {$nick_name ? $nick_name : $street_address} {$first_name ? $first_name : ''} {$last_name ? $last_name : ''}" role="alertdialog" data-action="deleteDeliveryAddressMethod" data-confirm data-confirm-header="
-    Are you sure you want to permanently delete this address?" data-confirm-button-delete="FreshDirect.confirmFunctions.address_deleteDeliveryAddressMethod_{$id}" data-confirm-template="common.deleteconfirmpopup" class="action cssbutton transparent white icon-trash-new-before">Delete <span class="offscreen">{$nick_name ? $nick_name : $street_address} {$first_name ? $first_name : ''} {$last_name ? $last_name : ''}</span></button>{/if}
-    <button type="button" aria-haspopup="true" data-action="getDeliveryAddressMethod" class="action cssbutton transparent white icon-pencil-before">Edit <span class="offscreen">{$nick_name ? $nick_name : $street_address} {$first_name ? $first_name : ''} {$last_name ? $last_name : ''}</span></button>
+    Are you sure you want to permanently delete this address?" data-confirm-button-delete="FreshDirect.confirmFunctions.address_deleteDeliveryAddressMethod_{$id}" data-confirm-template="common.deleteconfirmpopup" class="action cssbutton transparent white icon-trash-new-before">Delete<span class="offscreen"> {$nick_name ? $nick_name : $street_address} {$first_name ? $first_name : ''} {$last_name ? $last_name : ''}</span></button>{/if}
+    <button type="button" aria-haspopup="true" data-action="getDeliveryAddressMethod" class="action cssbutton transparent white icon-pencil-before">Edit<span class="offscreen"> {$nick_name ? $nick_name : $street_address} {$first_name ? $first_name : ''} {$last_name ? $last_name : ''}</span></button>
+  </div>
+</div><!--/ drawer__item -->
+{/if}
+{/template}
+
+/**
+* @param? apartment
+* @param? floor 
+* @param? room
+* @param? city
+* @param? company_name
+* @param? instructions
+* @param? phone
+* @param? phone_type
+* @param? state
+* @param? street_address
+* @param? street_address2
+* @param? zip
+* @param? mobWeb
+* @param? onOpenCoremetrics
+*/
+{template .address_office_preview autoescape="false"}
+<div class='drawer__previewitem'>
+  <div class='drawer__itemright'>
+  	{let $addressTitle: ($company_name ? $company_name : $street_address) /}
+    <p class='drawer__item__title' title="{$addressTitle}">{$addressTitle}</p>
+      <div class="drawer__item__section">
+      <div class='section__body'>
+      	{let $addressLine: ($street_address ? $street_address : '') +  ' ' + ($floor ? $floor : '')+($room ? $room : '')+ ' ' +($apartment?' Apt. ' + $apartment + ' ' :'') +
+  		($street_address2? $street_address2:'')+($city ? $city : '')+', '+($state ? $state : '')+' ' +($zip ? $zip : '') /}
+  		<p title="{$addressLine}">
+  			{$addressLine}
+  		</p>
+      </div>
+    </div>
+    <div class="drawer__item__section">
+      <p class='section__title'>Phone{if not $mobWeb} Number{/if}</p>
+      <div class='section__body'>
+        <p><span class="phone {$phone_type ? $phone_type : ''}" title="{$phone ? $phone : 'none provided'}">{$phone ? $phone : 'none provided'}</span></p>
+      </div>
+    </div>
+    <div class="drawer__item__section">
+      <p class='section__title'>Instructions</p>
+      <div class='section__body'>
+        <p title="{$instructions?$instructions: 'none provided'}">{$instructions?$instructions: 'none provided'}</p>
+      </div>
+    </div>
+  </div><!--/ drawer__itemright -->
+  
+  <div class="drawer__item__action">
+    <button type="button" aria-haspopup="true" class="change cssbutton green transparent small" {if $onOpenCoremetrics}cm-click="{$onOpenCoremetrics}"{/if}>Edit</button>
   </div>
 </div><!--/ drawer__item -->
 {/template}
@@ -180,28 +316,27 @@
 * @param? street_address2
 * @param? zip
 * @param? can_delete
+* @param? is_preview
+* @param? mobWeb
 */
 {template .address_office autoescape="false"}
+{if $is_preview} 
+	{call .address_office_preview data="all" }
+	{/call}
+{else}
 <div class='drawer__item'>
-
   <input id="address_{$id}" value="{$id}" type='radio' class='drawer__itemleft customradio' name='id' {if $selected}checked{/if}/>
-
   <div class='drawer__itemright clickable'>
     <p class='drawer__item__title'>{$company_name ? $company_name : $street_address}</p>
       <label for="address_{$id}" class='drawer__item__label'><div class="drawer__item__section">
-      <p class='section__title'>{$first_name ? $first_name : ''} {$last_name ? $last_name : ''}</p>
       <div class='section__body'>
-        <p>{$street_address ? $street_address : ''} {$floor ? $floor : ''}{if $floor and $room}/{/if}{$room ? $room : ''} {if $apartment} Apt. {$apartment}{/if}</p>
+      	<p>{$first_name ? $first_name : ''} {$last_name ? $last_name : ''}</p>
+        <p>{$street_address ? $street_address : ''} {$floor ? $floor : ''}{$room ? $room : ''} {if $apartment} Apt. {$apartment}{/if}</p>
         {if $street_address2}<p>{$street_address2}</p>{/if}
         <p>{$city ? $city : ''}, {$state ? $state : ''} {$zip ? $zip : ''}</p>
+        <p><span class="phone {$phone_type ? $phone_type : ''}" title="{$phone ? $phone : 'Phone: none provided'}">{$phone ? $phone : 'Phone: none provided'}</span></p>
       </div>
     </div></label>
-    <div class="drawer__item__section">
-      <p class='section__title'>Best # for this address:</p>
-      <div class='section__body'>
-        <p><span class="phone {$phone_type ? $phone_type : ''}">{$phone ? $phone : ''}</span></p>
-      </div>
-    </div>
     {if $instructions}
     <div class="drawer__item__section">
       <p class='section__title'>Delivery Instructions:</p>
@@ -217,6 +352,7 @@
     <button type="button" aria-haspopup="true" data-action="getDeliveryAddressMethod" class="action cssbutton transparent white icon-pencil-before">Edit<span class="offscreen"> {$company_name ? $company_name : $street_address} {$first_name ? $first_name : ''} {$last_name ? $last_name : ''}</button>
   </div>
 </div><!--/ drawer__item -->
+{/if}
 {/template}
 
 /**
@@ -231,19 +367,24 @@
 * @param? popupurl
 * @param? phone
 * @param? times
+* @param? is_preview
 */
 {template .address_pickup autoescape="false"}
-<div class='drawer__item'>
-
+<div class='{$is_preview? 'drawer__previewitem': 'drawer__item'}'>
+  {if not $is_preview}
   <input id="address_{$id}" value="{$id}" type='radio' class='drawer__itemleft customradio' name='id' {if $selected}checked{/if}/>
-
+  {/if}
   <div class='drawer__itemright clickable'>
     <p class='drawer__item__title'>Pickup: {$name ? $name : ''}</p>
      <label for="address_{$id}" class='drawer__item__label'> <div class="drawer__item__section">
       <div class='section__body'>
+      {if $is_preview}
+        <p>{$street_address ? $street_address : ''} {$street_address2? $street_address2: ''} {$city ? $city : ''}, {$state ? $state : ''} {$zip ? $zip : ''}</p>
+      {else}
         <p>{$street_address ? $street_address : ''}</p>
         {if $street_address2}<p>{$street_address2}</p>{/if}
         <p>{$city ? $city : ''}, {$state ? $state : ''} {$zip ? $zip : ''}</p>
+      {/if}
       </div>
     </div></label>
     {if $times and length($times)}
@@ -275,6 +416,9 @@
     <a href="{$popupurl}" class="pickuppopup icon-maps-before" data-ifrpopup="{$popupurl}">Get directions and details</a>
   </div>
   {/if}
+  {if $is_preview}
+    <button type="button" aria-haspopup="true" class="action cssbutton transparent white icon-pencil-before">Edit</button>
+  {/if}
 </div><!--/ drawer__item -->
 {/template}
 
@@ -299,8 +443,7 @@
     <p class='drawer__item__title'>Pick Up Your Order</p>
     <div class="drawer__item__section">
       <div class='section__body'>
-        <p>{$street_address ? $street_address : ''}</p>
-        <p>{$city ? $city : ''}, {$state ? $state : ''} {$zip ? $zip : ''}</p>
+        <p>{$street_address ? $street_address : ''} {$city ? $city : ''}, {$state ? $state : ''} {$zip ? $zip : ''}</p>
       </div>
     </div>
     <div class="drawer__item__section">
@@ -311,11 +454,14 @@
     </div>
   </div><!--/ drawer__itemright -->
   </label>
-  {if $popupurl}
+  
   <div class="drawer__item__action">
+  	<button type="button" aria-haspopup="true" class="change cssbutton green transparent small">Edit</button>
+  	{if $popupurl}
     <a href="{$popupurl}" class="pickuppopup icon-maps-before" data-ifrpopup="{$popupurl}">Get directions and details</a>
+    {/if}
   </div>
-  {/if}
+ 
 </div><!--/ drawer__item -->
 </form>
 {/template}

@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -351,7 +352,7 @@ public class ProductController extends BaseController {
             return model;
         }
         // enable product incomplete true for pdp
-        final ProductPotatoData data = ProductPotatoUtil.getProductPotato(productId, null, user.getFDSessionUser(), true, true);
+        final ProductPotatoData data = ProductPotatoUtil.getProductPotato(productId, null, user.getFDSessionUser(), true, FDStoreProperties.getPreviewMode());
         if (data == null) {
             Message responseMessage = Message.createFailureMessage("Product not found");
             setResponseMessage(model, responseMessage, user);

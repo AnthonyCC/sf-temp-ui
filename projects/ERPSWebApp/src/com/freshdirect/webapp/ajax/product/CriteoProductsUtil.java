@@ -44,7 +44,7 @@ public class CriteoProductsUtil
 					hLBrandProductAdRequest);
 			if (hLBrandProductAdRequest.getUserId()!= null) {
 				HLBrandProductAdResponse response = FDBrandProductsAdManager.getHLadproductToHome(hLBrandProductAdRequest);
-				if (response != null) {
+				if (response != null && null !=response.getProductAd()) {
 					List<HLBrandProductAdInfo> hlBrandAdProductsMeta = response.getProductAd();
 					productsCount = hlBrandAdProductsMeta.size();
 					if (hlBrandAdProductsMeta != null)

@@ -81,6 +81,7 @@ import com.freshdirect.webapp.ajax.mealkit.service.MealkitService;
 import com.freshdirect.webapp.ajax.product.CriteoProductsUtil;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
+import com.freshdirect.webapp.cos.util.CosFeatureUtil;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.search.SearchService;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -296,7 +297,7 @@ public class CmsFilteringFlow {
     private CmsFilteringFlowResult doFlowForSearchType(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException, FDResourceException, FDNotFoundException {
     	BrowseData browseData = null;
     	String plantId = user.getUserContext().getFulfillmentContext().getPlantId();
-    	String cacheKey = user.getUser().getPrimaryKey()+ "," +plantId + "," + nav.getPageType() + ",sch_" + nav.getActiveTab();
+    	String cacheKey = user.getUser().getPrimaryKey()+ "," +plantId + "," + nav.getPageType() + ",sch_" + nav.getActiveTab() + ",cos_"+CosFeatureUtil.isUnbxdCosAction(user, nav.getRequestCookies());
     	BrowseDataContext browseDataContext = getBrowseDataContextFromCacheForPaging(nav, user, cacheKey);
     	if (browseDataContext == null) {
             browseDataContext = doSearchLikeFlow(nav, user);

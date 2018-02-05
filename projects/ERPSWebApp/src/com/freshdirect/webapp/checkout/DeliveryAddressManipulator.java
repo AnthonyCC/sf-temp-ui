@@ -791,7 +791,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 					shippingAddress.setUnattendedDeliveryFlag( EnumUnattendedDeliveryFlag.OPT_IN );
 					shippingAddress.setUnattendedDeliveryInstructions( EnumUserInfoName.DLV_UNATTENDED_DELIVERY_OPT.getCode() );
 					if ("".equals(unattendedDeliveryInstr))
-						unattendedDeliveryInstr = null;
+						unattendedDeliveryInstr = "OK";
 					shippingAddress.setUnattendedDeliveryInstructions(unattendedDeliveryInstr);
 				} else {
 					shippingAddress.setUnattendedDeliveryFlag( EnumUnattendedDeliveryFlag.OPT_OUT );

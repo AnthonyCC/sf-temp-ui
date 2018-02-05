@@ -1,13 +1,5 @@
-<%@ page import="com.freshdirect.fdstore.customer.FDCartModel" %>
-<%@ page import="com.freshdirect.fdstore.customer.FDModifyCartModel" %>
-<%
-Map<String,String> checkoutHeaderMap = new HashMap<String,String>();
-checkoutHeaderMap.put("phoneNumber", user.getCustomerServiceContact());
-checkoutHeaderMap.put("label", ((user.getShoppingCart() instanceof FDModifyCartModel) ? "Review<span class=\"NOMOBWEB\"> Changes</span>" : "Checkout"));
-%>
-
 <div class="checkout-top-nav">
-	<soy:render template="expressco.mobilecheckoutheader" data="<%=checkoutHeaderMap %>" />
+	<soy:render template="expressco.mobilecheckoutheader" data="${singlePageCheckoutPotato}" />
 	<script>
 		$jq('.container-fluid').addClass('mm-page');
 	</script>

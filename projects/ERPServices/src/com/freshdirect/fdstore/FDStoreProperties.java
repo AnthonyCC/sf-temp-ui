@@ -1013,6 +1013,8 @@ public class FDStoreProperties {
 	public final static String OAUTH2_CLIENT_SECRETS = "fdstore.oauth2.clientSecrets";
 	public final static String OAUTH2_CLIENT_REDIRECT_URIS = "fdstore.oauth2.clientRedirectUris";
 	
+	public final static String PROP_FDC_NEW_BACKIN_USE_FD_ENABLED = "fdstore.new.backinstock.fdc.use.fd.enabled";
+	
 
  	static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -1109,7 +1111,7 @@ public class FDStoreProperties {
         defaults.put(PROP_REFRESHSECS_UPCPRODUCTINFO, "900");
         defaults.put(PROP_REFRESHSECS_ZONE, "600");
         defaults.put(PROP_REFRESHSECS_PRODUCT, "7200");
-        defaults.put(PROP_PRODUCT_CACHE_SIZE, "45000");
+        defaults.put(PROP_PRODUCT_CACHE_SIZE, "60000");//Changed from 45000 to 60000 on Feb 4th Patch
         defaults.put(PROP_ZONE_CACHE_SIZE, "10000");
         defaults.put(PROP_GRP_CACHE_SIZE, "10000");
         defaults.put(PROP_MEDIACONTENT_CACHE_SIZE, "0");
@@ -1940,7 +1942,8 @@ public class FDStoreProperties {
 		defaults.put(DEFAULT_TOKEN_EXPIRATION, "2592000");
 		// Refresh Token : 180 days
 		defaults.put(DEFAULT_REFRESH_TOKEN_EXPIRATION, "15552000");
-
+		defaults.put(PROP_FDC_NEW_BACKIN_USE_FD_ENABLED,"false");
+		
         refresh();
     }
 
@@ -4936,4 +4939,7 @@ public class FDStoreProperties {
 	}
 
 
+	public static boolean isNewProductsForFdcUsingFdEnabled(){
+		return (Boolean.valueOf(get(PROP_FDC_NEW_BACKIN_USE_FD_ENABLED))).booleanValue();
+	}
 }

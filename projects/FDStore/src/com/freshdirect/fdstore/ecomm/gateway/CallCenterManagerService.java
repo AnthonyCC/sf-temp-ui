@@ -882,7 +882,7 @@ private static final String DO_GENERIC_SEARCH = "callcenter/genericSearch/search
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
-		return CallCenterConverter.buildReturnOrderResponse(response.getData());
+		return /*CallCenterConverter.buildReturnOrderResponse(response.getData())*/null;
 	}
 
 

@@ -4,10 +4,6 @@ import java.util.List;
 
 import com.freshdirect.mobileapi.controller.data.Message;
 
-/**
- * @author Rob
- *
- */
 public class LoggedIn extends Message {
 
     private String id;
@@ -50,6 +46,7 @@ public class LoggedIn extends Message {
     private String plantId;
     private String mobileNumber;
     private List<String> providers;
+    private String zipCode;
 
     public boolean isTcAcknowledge() {
 		return tcAcknowledge;
@@ -255,5 +252,13 @@ public class LoggedIn extends Message {
 
     public void setProviders(List<String> providers) {
         this.providers = providers;
+    }
+
+    public String getZipCode() {
+        return zipCode;
+    }
+
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
     }
 }

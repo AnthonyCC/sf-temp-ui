@@ -93,8 +93,8 @@ public class ErpAddressPersistentBean extends DependentPersistentBeanSupport {
 		this.altApartment = "";
 		this.altPhone = new PhoneNumber("");		
 		
-		this.unattendedDeliveryFlag = EnumUnattendedDeliveryFlag.NOT_SEEN;
-		this.unattendedDeliveryInstructions = "";
+		this.unattendedDeliveryFlag = EnumUnattendedDeliveryFlag.OPT_IN;
+		this.unattendedDeliveryInstructions = "OK";
 		this.customerId="";
 	}
 

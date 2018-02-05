@@ -6,25 +6,15 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import com.freshdirect.content.attributes.AttributeCollection;
 import com.freshdirect.content.attributes.EnumAttributeName;
 import com.freshdirect.fdstore.FDProduct;
-import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
-import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartItem;
 
-@RunWith(MockitoJUnitRunner.class)
 public class CartOperationsTest {
-
-    @Mock
-    private ProductModel productModel;
 
     @Test
     public void testValidateConfigurationWithNullInput() {
@@ -269,53 +259,9 @@ public class CartOperationsTest {
         Assert.assertNull("Unexpected error message", result);
     }
 
-    @Test
-    public void groupProductWhenProductDoesNotSoldSoldBySalesUnitAndPricedByEA() {
-        Mockito.when(productModel.isSoldBySalesUnits()).thenReturn(false);
-        boolean result = CartOperations.isProductGroupable(productModel, prepareSalesUnit("EA"));
-        Assert.assertTrue(result);
-    }
-
-    @Test
-    public void groupProductWhenProductDoesNotSoldSoldBySalesUnitAndPricedByCS() {
-        Mockito.when(productModel.isSoldBySalesUnits()).thenReturn(false);
-        boolean result = CartOperations.isProductGroupable(productModel, prepareSalesUnit("CS"));
-        Assert.assertTrue(result);
-    }
-
-    @Test
-    public void groupProductWhenProductDoesNotSoldSoldBySalesUnitAndPricedByPAK() {
-        Mockito.when(productModel.isSoldBySalesUnits()).thenReturn(false);
-        boolean result = CartOperations.isProductGroupable(productModel, prepareSalesUnit("PAK"));
-        Assert.assertTrue(result);
-    }
-
-    @Test
-    public void doNotGroupProductWhenProductSoldBySalesUnits() {
-        Mockito.when(productModel.isSoldBySalesUnits()).thenReturn(true);
-        boolean result = CartOperations.isProductGroupable(productModel, prepareSalesUnit("EA"));
-        Assert.assertFalse(result);
-    }
-
-    @Test
-    public void doNotGroupProductWhenProductSoldByLB() {
-        Mockito.when(productModel.isSoldBySalesUnits()).thenReturn(false);
-        boolean result = CartOperations.isProductGroupable(productModel, prepareSalesUnit("LB"));
-        Assert.assertFalse(result);
-    }
-
-    @Test
-    public void doNotGroupProductWhenSalesUnitIsNull() {
-        boolean result = CartOperations.isProductGroupable(productModel, null);
-        Assert.assertFalse(result);
-    }
-
-    private FDSalesUnit prepareSalesUnit(String name) {
-        return new FDSalesUnit(null, name, "description", 0, 0, "baseUnit");
-    }
-
     private FDProduct prepareTestProduct(FDVariation variations[]) {
-        return new FDProduct("TST00001", 1, null, null, variations, null, null, null, null, null, null);
+        FDProduct testFDProduct = new FDProduct("TST00001", 1, null, null, variations, null, null, null, null, null, null);
+        return testFDProduct;
     }
 
     private static class FDVariationFactory {

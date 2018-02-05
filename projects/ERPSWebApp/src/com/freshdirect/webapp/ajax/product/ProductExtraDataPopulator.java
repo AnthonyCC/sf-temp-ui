@@ -159,6 +159,16 @@ public class ProductExtraDataPopulator {
 		final String deptFullName =  department.getFullName();
 		
 		SkuModel defaultSku = PopulatorUtil.getDefSku( productNode );
+
+		try {
+			//if product is disc, then getDefSku returns null, but on PDP we need the prods anyway, so get first sku
+			if (defaultSku == null && ((ProductModel)productNode).getSkuCodes().size() > 0 ) {
+				defaultSku = ((ProductModel)productNode).getSku(0);
+			}
+		} catch (Exception e) {
+			LOG.warn("Exception while populating defaultSku: ", e);
+		}
+		
 		if ( defaultSku == null ) {
 			throw new FDSkuNotFoundException("No default SKU found for product " + productNode.getContentName());
 		}

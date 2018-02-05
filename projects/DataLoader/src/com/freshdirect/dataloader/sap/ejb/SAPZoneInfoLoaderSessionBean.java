@@ -34,6 +34,13 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  * @version $Revision$
  * @author $Author$
  */
+
+/**
+ *@deprecated Please use the ErpZoneInfoController and ErpZoneInfoLoaderI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public class SAPZoneInfoLoaderSessionBean extends SessionBeanSupport
 {
 	private static final long serialVersionUID = -552391839413280658L;

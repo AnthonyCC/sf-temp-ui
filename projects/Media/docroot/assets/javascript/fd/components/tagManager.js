@@ -1,6 +1,5 @@
 'use strict';
 
-
 var FreshDirect = window.FreshDirect || {};
 var GTMID = window.FreshDirect && window.FreshDirect.gtm && window.FreshDirect.gtm.key;
 var GTMAUTH = window.FreshDirect && window.FreshDirect.gtm && window.FreshDirect.gtm.auth;
@@ -49,6 +48,8 @@ var dataLayer = window.dataLayer || [];
 
     return productData;
   };
+
+  fd.gtm.productTransform = productTransform;
 
   var safeName = function (text) {
     return text.toString().toLowerCase()
@@ -111,27 +112,29 @@ var dataLayer = window.dataLayer || [];
     },
     ddpp: function (ddppproducts) {
       var products = ddppproducts.map(function (product, idx) {
-            return productTransform(product, idx+1, {channel: 'rec_ddpp'});
+            return productTransform(product, idx+1, {channel: 'rec_ddpp', product: product});
           });
 
       fd.gtm.reportImpressions(products);
     },
     sections: function (sectionData) {
       var products = sectionProducts(sectionData).map(function (product, idx) {
-            return productTransform(product, idx+1);
+            return productTransform(product, idx+1, {product: product});
           });
 
       fd.gtm.reportImpressions(products);
     },
     items: function (reorderItems) {
       var products = reorderItems.map(function (product, idx) {
-            return productTransform(product, idx+1);
+            return productTransform(product, idx+1, {product: product});
           });
 
       fd.gtm.reportImpressions(products);
     },
     product: function (productData) {
-      var product = productTransform(productData);
+      var product = productTransform(productData, null, {product: productData});
+
+      delete product.list;
 
       dataLayer.push({
         ecommerce: {
@@ -167,10 +170,25 @@ var dataLayer = window.dataLayer || [];
 
       ecommerce[qty > 0 ? 'add' : 'remove'] = addRemoveData;
 
+      // add product list if it was added from a transactional popup
+      if (qty > 0 && document.querySelector('.portrait-item[data-product-id="'+productData.id+'"]')) {
+        addRemoveData.actionField = {
+          list: fd.gtm.getListForProductId(productData.id)
+        };
+      }
+
       // send extra ATC-succes event for backward compatibility
       dataLayer.push({
         productId: productData.id,
         event: 'ATC-success'
+      });
+
+      // reset ATC data
+      dataLayer.push({
+        ecommerce: {
+          add: null,
+          remove: null
+        }
       });
 
       dataLayer.push({
@@ -196,14 +214,12 @@ var dataLayer = window.dataLayer || [];
         unavailable_timeslot_present: unavts
       });
 
-      if (unavts === 'yes') {
-        dataLayer.push({
-          event: 'timeslot-unavailable',
-          eventCategory: 'timeslot',
-          eventAction: 'timeslot-checkout-modal',
-          eventLabel: 'yes'
-        });
-      }
+      dataLayer.push({
+        event: 'timeslot-unavailable',
+        eventCategory: 'timeslot',
+        eventAction: 'timeslot-checkout-modal',
+        eventLabel: unavts
+      });
     },
     topNavClick: function (data) {
       dataLayer.push({
@@ -501,8 +517,8 @@ var dataLayer = window.dataLayer || [];
 
     productData = fd.modules.common.productSerialize(productE)[0];
 
-    productData.brand = productE.find('.portrait-item-header-name b').first().text();
-    productData.name = productE.find('.product-name-no-brand').first().text() || productE.find('.portrait-item-header-name').first().text();
+    productData.brand = productE.find('.portrait-item-header-name').first().find('b').text();
+    productData.name = productData.brand ? productE.find('.product-name-no-brand').first().text() : productE.find('.portrait-item-header-name').first().text();
     productData.price = productE.attr('data-price');
     productData.in_stock = productE.attr('data-in-stock');
     productData.new_product = productE.attr('data-new-product');
@@ -605,13 +621,18 @@ var dataLayer = window.dataLayer || [];
   };
 
   // get list for product or product container
-  fd.gtm.getListChannel = function (el) {
+  fd.gtm.getListChannel = function (el, config) {
     var channel,
         urlPageType = fd.utils.getParameterByName('pageType'),
         pageType = fd.gtm.data && fd.gtm.data.googleAnalyticsData && fd.gtm.data.googleAnalyticsData.pageType && fd.gtm.data.googleAnalyticsData.pageType.pageType,
+        isHookLogic = (el && $(el).hasClass('isHookLogicProduct')) || (config && config.product && config.product.clickBeacon),
         productData = fd.modules.common.productSerialize(el)[0];
 
-    if (productData && productData.variantId) {
+    if (el && $(el).closest('#atpfailure').length) {
+      channel = 'rec_atp';
+    } else if (isHookLogic) {
+      channel = 'rec_criteo';
+    } else if (productData && productData.variantId) {
       channel = 'rec_' + productData.variantId;
     } else if (productData && productData.moduleVirtualCategory) {
       var mvc = productData.moduleVirtualCategory.split(':');
@@ -697,11 +718,17 @@ var dataLayer = window.dataLayer || [];
   fd.gtm.getListForProduct = function (el, config) {
     config = config || {};
 
-    var channel = config.channel ? 'channel_' + config.channel : fd.gtm.getListChannel(el),
+    var channel = config.channel ? 'channel_' + config.channel : fd.gtm.getListChannel(el, config),
         location = config.location ? 'loc_' + config.location : fd.gtm.getListLocation(el),
         title = config.title ? 'title_' + config.title : fd.gtm.getListCarousel(el);
 
     return [channel, location, title].filter(function (e) { return e; }).join('-');
+  };
+
+  fd.gtm.getListForProductId = function (id, config) {
+    var el = document.querySelector('[data-product-id="'+id+'"]');
+
+    return fd.gtm.getListForProduct(el, config);
   };
 
 }(FreshDirect));
@@ -747,6 +774,13 @@ var dataLayer = window.dataLayer || [];
   // product details
   if (productData) {
     fd.gtm.updateDataLayer({product: productData});
+
+    // report criteo products if there's any
+    if (fd.browse && fd.browse.data && fd.browse.data.adProducts && fd.browse.data.adProducts.products && fd.browse.data.adProducts.products.length) {
+      fd.gtm.reportImpressions(fd.browse.data.adProducts.products.map(function (p, i) {
+        return fd.gtm.productTransform(p, i+1, {product: p});
+      }));
+    }
   }
 
   // collect impressions from content modules

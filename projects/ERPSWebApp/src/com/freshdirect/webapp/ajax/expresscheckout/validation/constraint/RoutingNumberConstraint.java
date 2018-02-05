@@ -6,7 +6,8 @@ public class RoutingNumberConstraint extends RegexConstraint {
 		super(optional);
 	}
 
-	private static final String ERROR_MESSAGE = "Valid routing number is required.";
+	private static final String ERROR_MESSAGE = "Valid routing number is required. "+ 
+			"<!-- RoutingNumberConstraint -->";
 	private static final String REGEX = "^\\d{9}$";
 
 	@Override

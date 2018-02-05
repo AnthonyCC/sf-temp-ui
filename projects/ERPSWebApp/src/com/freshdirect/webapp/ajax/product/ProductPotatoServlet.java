@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.storeapi.content.PopulatorUtil;
@@ -58,7 +59,7 @@ public class ProductPotatoServlet extends BaseJsonServlet {
 
                 ProductPotatoData productPotatoData = new ProductPotatoData();
 
-                ProductData productData = ProductDetailPopulator.createProductDataForCarousel(user, product);
+                ProductData productData = ProductDetailPopulator.createProductDataForCarousel(user, product, FDStoreProperties.getPreviewMode());
                 String variantId = request.getParameter("variantId");
                 if (variantId != null) {
                     productData.setVariantId(variantId);

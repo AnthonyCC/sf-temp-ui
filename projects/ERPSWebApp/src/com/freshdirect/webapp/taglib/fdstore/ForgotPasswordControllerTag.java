@@ -183,7 +183,7 @@ public class ForgotPasswordControllerTag extends BodyTagSupport {
 
 				//doRedirect(URI_HOME);
 
-				if (this.successPage != null) {
+				if (this.successPage != null && !"".equals(this.successPage)) {
 					 String newURL = "";
 					 if(FDStoreProperties.isLocalDeployment()){
 						 newURL = "http" + "://" + request.getServerName() + ":" + request.getServerPort();

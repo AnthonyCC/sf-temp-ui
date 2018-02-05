@@ -17,8 +17,8 @@
 		<tmpl:get name="extraJs" />
 		<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 	</head>
-	<!--[if lte IE 9]><body class="ie"><![endif]-->
-	<!--[if gt IE 9]><!--><body><!--<![endif]-->
+	<!--[if lte IE 9]><body class="ie" data-cmeventsource="<tmpl:get name='cmeventsource'/>"><![endif]-->
+	<!--[if gt IE 9]><!--><body data-cmeventsource="<tmpl:get name='cmeventsource'/>"><!--<![endif]-->
 		<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 
 		<div id="content">
@@ -27,6 +27,7 @@
 			<!-- content ends -->
 		</div>
 
+		<tmpl:get name='soypackage'/>
 		<tmpl:get name="soytemplates" />
 		<tmpl:get name="jsmodules" />
     	<tmpl:get name="extraJsFooter" />

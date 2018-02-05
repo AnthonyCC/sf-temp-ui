@@ -38,7 +38,8 @@ var FreshDirect = FreshDirect || {};
         		this.container = $('<div id="USQPopup"></div>').hide().append(popupContent).appendTo($('body'));
         		this.opened = true;
         		this.container.show();
-        		changeSizeOfBack()
+        		changeSizeOfBack();
+          		this.setTabIndexes();
         	});
           
 
@@ -60,16 +61,67 @@ var FreshDirect = FreshDirect || {};
         return !this.opened;
       }
     },
-    
+    setTabIndexes: {
+    	value: function() {
+			var $el = $('#USQPopup'),
+			lastEl = -1, $s, $f, $l;
+			
+			//clear existing tabindexes
+			$('[tabindex]').each(function(i,e) {
+				$(e).attr('tabindex', null);
+			});
+			
+			//clear existing tabindexes
+			$el.find('input, button, textarea, select, a').each(function(i,e) {
+				$(e).attr('tabindex', null);
+			});
+
+			// set new tabindices for popup
+			$s = $el.find('input, button, textarea, select, a').not('.USQ-close').not('[disabled]').not('[type="hidden"]').not('[nofocus]');
+			$s.each(function (i, tiel) {
+				var $tiel = $(tiel);
+				if (i === 0) { $f = $tiel; }
+				if (i === $s.length-1) { $l = $tiel; }
+
+				lastEl = i+1;
+
+				$tiel.attr('tabindex', lastEl);
+			});
+			//tabindex order for overlays and popup
+			$el.find('.USQ-close').each(function(i,e) {
+				if (!$(e).is(':hidden')) {
+					$(e).attr('tabindex', lastEl+=1);
+					$l = $(e);
+				}
+			});
+			$f.on('keydown', function(e) {
+				if (e.keyCode === jQuery.ui.keyCode.TAB && e.shiftKey) {
+					$l.focus();
+					return false;
+				}
+			});
+			$l.on('keydown', function(e) {
+				if (e.keyCode === jQuery.ui.keyCode.TAB & !e.shiftKey) {
+					$f.focus();
+					return false;
+				}
+			});
+			
+			//set focus
+			$el.find('button').first().focus();
+    	}
+    },
     open: {
       value: function () {
         if (!this.container) {
-          this.initPopup();
+        	this.initPopup();
         } else {
             this.opened = true;
             this.container.show();
             changeSizeOfBack();
+        	this.setTabIndexes();
         }
+        
         //hiding the background body scrollbar and adding margin with width of scrollbar, so the content will not move
         $("body").css("overflow","hidden");
         if(!$('.mm-page').length){
