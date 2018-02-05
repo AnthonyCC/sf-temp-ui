@@ -86,7 +86,7 @@ import com.freshdirect.mobileapi.util.ProductPotatoUtil;
 import com.freshdirect.storeapi.content.CMSPageRequest;
 import com.freshdirect.webapp.ajax.cart.CartOperations;
 import com.freshdirect.webapp.ajax.expresscheckout.availability.service.AvailabilityService;
-import com.freshdirect.webapp.ajax.expresscheckout.timeslot.service.TimeslotService;
+import com.freshdirect.webapp.ajax.product.data.ProductPotatoData;
 import com.freshdirect.webapp.cos.util.CosFeatureUtil;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
@@ -584,9 +584,15 @@ public class CheckoutController extends BaseController {
 
             if (isExtraResponseRequested(request)) {
                 user.setUserContext();
+                List<FDCartLineI> removedInvalidLines = removeInvalidLines(user.getFDSessionUser(), request.getServerName());
+                List<ProductPotatoData> removedProducts = new ArrayList<ProductPotatoData>(removedInvalidLines.size());
+                for (FDCartLineI cartLine : removedInvalidLines) {
+                    removedProducts.add(ProductPotatoUtil.getProductPotato( cartLine.lookupProduct(), user.getFDSessionUser(), false, true));
+                }
                 CMSPageRequest pageRequest = new CMSPageRequest();
                 pageRequest.setPlantId(BrowseUtil.getPlantId(user));
                 DeliveryTimeslotPageResponse pageResponse = new DeliveryTimeslotPageResponse();
+                pageResponse.setRemovedProducts(removedProducts);
                 populateHomePages(user, pageRequest, pageResponse, request);
                 pageResponse.setDeliveryTimeslot(slotResponse);
                 responseMessage = pageResponse;
@@ -1481,12 +1487,7 @@ public class CheckoutController extends BaseController {
         final FDUserI fdUser = user.getFDSessionUser();
 
         if (isWebRequest) {
-            FDCartModel cart = fdUser.getShoppingCart();
-            List<FDCartLineI> orderLines = cart.getOrderLines();
-            List<FDCartLineI> invalidLines = OrderLineUtil.getInvalidLines(orderLines, fdUser.getUserContext());
-            for (FDCartLineI invalidLine : invalidLines) {
-                CartOperations.removeCartLine(fdUser, cart, invalidLine, request.getServerName());
-            }
+            removeInvalidLines(fdUser, request.getServerName());
         }
 
         if (null != fdUser.getGiftCardList()) {
@@ -1629,6 +1630,15 @@ public class CheckoutController extends BaseController {
 
         setResponseMessage(model, message, user);
         return model;
+    }
+
+    private List<FDCartLineI> removeInvalidLines(final FDUserI fdUser, String serverName) {
+        FDCartModel cart = fdUser.getShoppingCart();
+        List<FDCartLineI> invalidLines = OrderLineUtil.getInvalidLines(cart.getOrderLines(), fdUser.getUserContext());
+        for (FDCartLineI invalidLine : invalidLines) {
+            CartOperations.removeCartLine(fdUser, cart, invalidLine, serverName);
+        }
+        return invalidLines;
     }
     
     private static boolean isSuccess(String messageStatus) {
