@@ -388,7 +388,8 @@ public class ProductDetailPopulator {
 	}
 
     // APPDEV-4251
-	public static ProductData createProductDataForCarousel( FDUserI user, ProductModel product ) throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
+    public static ProductData createProductDataForCarousel(FDUserI user, ProductModel product, boolean enableProductIncomplete)
+            throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
 		
 		if ( product == null ) {
 			BaseJsonServlet.returnHttpError( 500, "product not found" );
@@ -399,7 +400,7 @@ public class ProductDetailPopulator {
 			product = ProductPricingFactory.getInstance().getPricingAdapter( product, user.getUserContext().getPricingContext() );
 		}
 		
-        if (FDStoreProperties.getPreviewMode() && PopulatorUtil.isProductIncomplete(product) && !PopulatorUtil.isNodeArchived(product)) {
+        if (enableProductIncomplete && PopulatorUtil.isProductIncomplete(product) && !PopulatorUtil.isNodeArchived(product)) {
 			return createProductDataLight(user, product);
 		}
 		
@@ -1712,7 +1713,7 @@ public class ProductDetailPopulator {
 	}
 
 	public static void populateProductDataLight(FDUserI user, ProductModel product, ProductData data)
-			throws FDResourceException, HttpErrorResponse {
+            throws FDResourceException, HttpErrorResponse, FDSkuNotFoundException {
 		// Episode I - DO THE MAGIC / PREPARATIONS
 		
 		if ( !(product instanceof ProductModelPricingAdapter) ) {
@@ -1740,10 +1741,15 @@ public class ProductDetailPopulator {
 		// Populate product basic-level data
 		populateBasicProductData( data, user, product );
 
-		if (sku != null) {
-			// Populate transient-data
-			postProcessPopulate( user, data, sku.getSkuCode() );
-		}
+        if (sku != null) {
+            FDProductInfo productInfo_fam = sku.getProductInfo();
+            FDProduct fdProduct = sku.getProduct();
+            populateProductData(data, user, product, sku, fdProduct, priceCalculator, null, true, true);
+            populatePricing(data, fdProduct, productInfo_fam, priceCalculator, user);
+
+            // Populate transient-data
+            postProcessPopulate(user, data, sku.getSkuCode());
+        }
 	}
 
 	private static String fetchMedia(String mediaPath, FDUserI user, boolean quoted) throws IOException, TemplateException {

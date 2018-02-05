@@ -1708,7 +1708,7 @@ public class Product {
 	               	
 	                result.setProductExtraData(data);	
 	               	ProductData productData=new ProductData();
-	               	productData = ProductDetailPopulator.createProductData(user, productModel, true);
+                    productData = ProductDetailPopulator.createProductData(user, productModel, FDStoreProperties.getPreviewMode());
 	                ProductDetailPopulator.populateAvailabilityMessagesForMobile(productData, productModel, null, productModel.getDefaultSku());
 	                result.setProductData(productData);
 				} catch (FDResourceException e) {
