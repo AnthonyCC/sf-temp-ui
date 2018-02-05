@@ -303,6 +303,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String DLV_MANAGER_COUNTIES_BY_STATE = "dlvmanager/countiesbystate";
 	private static final String DLV_MANAGER_RELEASE_ORDER_LOCK = "dlvmanager/releaseorderlock";
 	private static final String DLV_MANAGER_COUNTIES_BY_ZIP = "dlvmanager/countiesbyzip";
+	private static final String DLV_MANAGER_ZIPATTRIBUTES_BY_ZIP = "dlvmanager/zipCodeAttributes";
 	private static final String DLV_MANAGER_CARTON_SCAN_INFO = "dlvmanager/cartoninfo";
 	private static final String DLV_MANAGER_MISSING_ORDER = "dlvmanager/updateorder";
 	
@@ -1976,8 +1977,8 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		String inputJson=null;
 		Set<StateCounty> stateCountySet = new HashSet<StateCounty>();
 		Response<List<StateCountyData>> response = this.httpGetDataTypeMap((getFdCommerceEndPoint(DLV_MANAGER_COUNTIES_BY_STATE)+"/"+state), new TypeReference<Response<List<StateCountyData>>>() {});
-		/*if(!response.getResponseCode().equals(HttpStatus.OK))
-			throw new FDResourceException(response.getMessage());*/
+		if(!response.getResponseCode().equals(HttpStatus.OK))
+			throw new FDResourceException(response.getMessage());
 		for (StateCountyData stateCountyData : response.getData()) {
 			StateCounty stateCounty = new StateCounty(stateCountyData.getState(), stateCountyData.getCounty(),
 					stateCountyData.getCity());
@@ -2003,10 +2004,8 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	@Override
 	public ZipCodeAttributes lookupZipCodeAttributes(String zip) throws FDResourceException {
 		String inputJson=null;
-		Response<StateCountyData> response = this.httpGetDataTypeMap((getFdCommerceEndPoint(DLV_MANAGER_COUNTIES_BY_ZIP+"/"+zip)), new TypeReference<Response<StateCountyData>>() {});
-		StateCountyData stateCountyData = response.getData();
-		ZipCodeAttributes zipAttributes = new ZipCodeAttributes(stateCountyData.getState(), stateCountyData.getCounty(),
-				stateCountyData.getCity(), false, zip );																		//check
+		Response<ZipCodeAttributes> response = this.httpGetDataTypeMap((getFdCommerceEndPoint(DLV_MANAGER_ZIPATTRIBUTES_BY_ZIP+"/"+zip)), new TypeReference<Response<ZipCodeAttributes>>() {});
+		ZipCodeAttributes zipAttributes = response.getData();
 		if(!response.getResponseCode().equals("OK"))
 			throw new FDResourceException(response.getMessage());
 		return zipAttributes;
