@@ -80,7 +80,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
     private final static int AMERICAN_EXPRESS	= 2;
     private final static int DISCOVER			= 3;
     private final static String NAME_REGEX      ="^[^\\n]*[A-Za-z]+[^\\n]*$";//"^[\\w.-_@(){}/?#$&!+%*<>=,\\s:;'|\"\\\\/`~]*[A-Za-z]+[\\w.-_@(){}/?#$&!+%*<>=,\\s:;'|\"\\\\/`~]*$"; 
-    private static final String REGEX = "^(?!.*[&|<|>|\\\"|/|#|%|=])\\.*$@+-:;{}~`";
+    private static final String REGEX = "%&<";
 
     private PaymentMethodUtil() {
     }
@@ -428,7 +428,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
     	boolean isFiftyStateValidationReqd=true;
     	//check name on card		 //APPDEV-6661 check special charecters
         result.addError(
-        		paymentMethod.getName()==null || paymentMethod.getName().trim().length() < 1 || !isValidString(paymentMethod.getName()),
+        		paymentMethod.getName()==null || paymentMethod.getName().trim().length() < 1 || !isValidString(paymentMethod.getName()) || Character.isDigit(paymentMethod.getName().charAt(0)) ,
         		PaymentMethodName.ACCOUNT_HOLDER, SystemMessageList.MSG_INVALID_CC_NAME
         		);
         
