@@ -1325,9 +1325,6 @@ public final class ContentTypes {
             .build();
     }
 
-    public static final class ErpCharacteristic {
-    }
-
     public static final class Brand {
         public static final Attribute FULL_NAME = stringAttribute("FULL_NAME")
             .build();

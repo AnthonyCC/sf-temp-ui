@@ -192,7 +192,20 @@ public abstract class BasicProductData implements Serializable {
      */
     protected Map<String, Object> soData;
 
-    public Map<String, Object> getSoData() {
+    /**
+     * Alt text for product (escaped double quotes)
+     */
+    protected String productAltText;
+    
+    public String getProductAltText() {
+		return productAltText;
+	}
+
+	public void setProductAltText(String productAltText) {
+		this.productAltText = productAltText;
+	}
+
+	public Map<String, Object> getSoData() {
         return soData;
     }
 

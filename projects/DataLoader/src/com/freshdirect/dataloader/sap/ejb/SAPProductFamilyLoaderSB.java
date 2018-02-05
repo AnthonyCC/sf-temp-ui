@@ -8,6 +8,12 @@ import javax.ejb.EJBObject;
 import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.dataloader.LoaderException;
 
+/**
+ *@deprecated Please use the SAPProductFamilyController and SAPProductFamilyLoaderServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public interface SAPProductFamilyLoaderSB extends EJBObject{
 	/** performs the actual load using data assembled by the parsers and the tree builder
      * in a single batch
@@ -17,6 +23,8 @@ public interface SAPProductFamilyLoaderSB extends EJBObject{
      * @throws RemoteException any system level problems
      * @throws LoaderException any problems encountered creating or updating objects in the system
      */    
+	@Deprecated
 	 public void loadData(List productFamilyList) throws RemoteException, LoaderException;
+	@Deprecated
 	public void updateCacheWithProdFly(List<String> familyIds)throws RemoteException, LoaderException;
 }

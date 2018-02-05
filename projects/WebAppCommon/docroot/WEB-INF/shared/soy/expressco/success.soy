@@ -116,65 +116,6 @@
 {/template}
 
 /**
- * @param? id
- ** param? year
- * @param? month
- * @param? dayOfMonth
- * @param? dayOfWeek
- * @param? timePeriod
- * @param? soFreq
- * @param? soActivated
- * @param? soCutOffDeliveryTime
- * @param? soCutOffFormattedDeliveryDate
- * @param? shortDayOfWeek
- * @param? soDeliveryDate
- */
-{template .successtimeslot autoescape="false"}
-	{if $soFreq and $dayOfWeek and isNonnull($soFreq)}
-		<div class="successtimeslot" timeslot-id="{$id ? $id : ''}">
-		  <div class="successtimeslot_date standing-orders-3-successtimeslot_date">
-		  	<div class="successtimeslot_time">
-		    	{$timePeriod ? $timePeriod : ''}
-		  	</div>
-		  	<div class="standing-orders-3-successtimeslot_date-header-small-text">Delivery scheduled for:</div>		  	
-		  		<div class="standing-orders-3-successtimeslot_date-header-freq-text">
-			  		{if $soFreq == '1'}
-			  			Every
-			  		{elseif $soFreq == '2'}
-			  			Every Other
-			  		{elseif $soFreq == '4'}
-			  			Every Fourth
-			  		{/if} {$dayOfWeek ? $dayOfWeek : ''}
-		  		</div>			
-		  </div>
-		  {if not $soActivated and $soCutOffFormattedDeliveryDate and $soCutOffDeliveryTime}
-			<div class="standing-orders-3-successtimeslot_date-reservation">
-			  	To keep this delivery reservation,</br>
-			  	activate this standing order by:</br>
-			  	{$soCutOffFormattedDeliveryDate} at {$soCutOffDeliveryTime}
-			</div>
-			<div class="standing-orders-3-successtimeslot_date-next-delivery">
-			  	First delivery on {$shortDayOfWeek}, {$soDeliveryDate}
-			</div>
-		  {else}
-		  	<div class="standing-orders-3-successtimeslot_date-next-delivery">
-			  	Next delivery on {$shortDayOfWeek}, {$soDeliveryDate}
-			</div>
-		  {/if}
-		</div>
-	{else}
-		<div class="successtimeslot" timeslot-id="{$id ? $id : ''}">
-		  <div class="successtimeslot_date">
-		    {$dayOfWeek ? $dayOfWeek : ''}, {$month ? $month : ''}/{$dayOfMonth ? $dayOfMonth : ''}
-		  </div>
-		  <div class="successtimeslot_time">
-		    {$timePeriod ? $timePeriod : ''}
-		  </div>
-		</div>
-	{/if}
-{/template}
-
-/**
 * @param orderId Number
 * @param receiptLines List of receipt data
 * @param saveAmount Value of amount you've saved

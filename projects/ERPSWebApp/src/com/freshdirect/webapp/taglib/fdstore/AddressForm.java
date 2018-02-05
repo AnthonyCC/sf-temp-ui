@@ -55,8 +55,8 @@ public class AddressForm implements WebFormI { // , AddressName
     private String altDlvExt = "";
     private String altDlvApartment = "";
 
-    private EnumUnattendedDeliveryFlag unattendedDeliveryFLag = EnumUnattendedDeliveryFlag.NOT_SEEN;
-    private String unattendedDeliveryInstructions = "";
+    private EnumUnattendedDeliveryFlag unattendedDeliveryFLag = EnumUnattendedDeliveryFlag.OPT_IN;
+    private String unattendedDeliveryInstructions = "OK";
 
     protected String getParam(HttpServletRequest request, String fieldName) {
         return NVL.apply(request.getParameter(fieldName), "").trim();
@@ -257,7 +257,10 @@ public class AddressForm implements WebFormI { // , AddressName
             result.addError(altDlvPhone == null || altDlvPhone.length() < 1, EnumUserInfoName.DLV_ALT_PHONE.getCode(), SystemMessageList.MSG_REQUIRED);
             result.addError(altDlvPhone != "" && PhoneNumber.normalize(altDlvPhone).startsWith("0"), EnumUserInfoName.DLV_ALT_PHONE.getCode(), SystemMessageList.MSG_PHONE_FORMAT);
             result.addError(altDlvPhone != "" && PhoneNumber.normalize(altDlvPhone).length() != 10, EnumUserInfoName.DLV_ALT_PHONE.getCode(), SystemMessageList.MSG_PHONE_FORMAT);
-
+        }
+        if (EnumUnattendedDeliveryFlag.OPT_IN.equals(unattendedDeliveryFLag)) {
+            result.addError(null == unattendedDeliveryInstructions || unattendedDeliveryInstructions.isEmpty(), EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode(),
+                    SystemMessageList.MSG_REQUIRED);
         }
     }
 }

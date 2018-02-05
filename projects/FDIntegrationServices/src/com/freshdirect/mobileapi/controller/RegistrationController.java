@@ -521,6 +521,7 @@ public class RegistrationController extends BaseController implements SystemMess
 		responseMessage.setCohort(user.getCohort());
 		responseMessage.setTotalOrderCount(user.getTotalOrderCount());
 		responseMessage.setTcAcknowledge(user.getTcAcknowledge());
+        responseMessage.setZipCode(user.getZipCode());
 		
 		return responseMessage;
 	}

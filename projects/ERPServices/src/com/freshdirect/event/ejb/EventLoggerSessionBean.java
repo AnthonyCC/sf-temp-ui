@@ -17,6 +17,12 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  * @author knadeem Date May 3, 2005
  */
 
+/**
+ *@deprecated Please use the EventLoggerController and EventLoggerServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public class EventLoggerSessionBean extends SessionBeanSupport {
 	
 	private static Category LOGGER = LoggerFactory.getInstance(EventLoggerSessionBean.class);

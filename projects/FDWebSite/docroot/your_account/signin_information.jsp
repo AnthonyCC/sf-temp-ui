@@ -719,10 +719,10 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 		<div class="youraccount_phone">
 			<h2>Mail And Phone Preferences</h2>
 			<fieldset><legend class="offscreen">mail and phone preferences:</legend>
-			<div class="youraccount_left_1 ext56"><input class="radio" type="checkbox" id="noContactMail" name="noContactMail" value="yes" <%=noContactMail%>></div>
-			<div class="youraccount_left_2 emailphne"><strong><label for="noContactMail">Please do not send me offers, and marketing messages in the mail.</label></strong></div>
-			<div class="youraccount_left_1 ext56"><input class="radio" type="checkbox" id="noContactPhone" name="noContactPhone" value="yes" <%=noContactPhone%>></div>
-			<div class="youraccount_left_2 emailphne" style="text-align:left;">
+			<div class="youraccount_left_1 ext56 mailnphne1"><input class="radio" type="checkbox" id="noContactMail" name="noContactMail" value="yes" <%=noContactMail%>></div>
+			<div class="youraccount_left_2 emailphne mailnphne2"><strong><label for="noContactMail">Please do not send me offers, and marketing messages in the mail.</label></strong></div>
+			<div class="youraccount_left_1 ext56 mailnphne1"><input class="radio" type="checkbox" id="noContactPhone" name="noContactPhone" value="yes" <%=noContactPhone%>></div>
+			<div class="youraccount_left_2 emailphne mailnphne2" style="text-align:left;">
 				<strong><label for="noContactPhone">Please do not contact me by phone about offers and other updates.</label></strong>
 				</br>We may still attempt to call you about issues or problems with a specific order you have scheduled for delivery.
 			</div>

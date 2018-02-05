@@ -52,4 +52,11 @@ public class DraftApplicatorService {
         Map<ContentKey, Map<Attribute, Object>> draftDecoratedNodes = new HashMap<ContentKey, Map<Attribute, Object>>(foundContentNodes);
         return draftDecoratedNodes;
     }
+    
+    public Map<Attribute, Object> applyDraftChangesToContentNode(List<DraftChange> draftChanges, Map<Attribute, Object> node) {
+        for (DraftChange draftChange : draftChanges) {
+            draftChangeToContentNodeApplicator.applyDraftChangeToNode(draftChange, node);
+        }
+        return node;
+    }
 }

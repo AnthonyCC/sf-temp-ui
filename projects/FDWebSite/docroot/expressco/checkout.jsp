@@ -83,7 +83,7 @@ if (mobWeb) {
 	</div>
   	<% } %>
   	<%-- MASQUERADE HEADER ENDS HERE --%>
-    <soy:render template="expressco.checkoutheader" data="${singlePageCheckoutPotato}" />
+    <soy:render template="expressco.checkoutheader" data="${singlePageCheckoutPotato}" injectAdditonalData="false" />
   </tmpl:put>
 
   <tmpl:put name="bottomnav">
@@ -106,37 +106,31 @@ if (mobWeb) {
       <div class="container">
 
       	<div id="cartheader_co">
+      	<% if (mobWeb) { %>
 	      	<div class="header cartheader">
-	          <% if (!mobWeb) { %>
-	          <div class="cartheader__text">
-	            <h1 class="checkout icon-cart_fast-before">Checkout</h1>
-	          </div><% } /* no spacing allowed */ %><div class="cartheader__action_w_subtotal">
-				<% if (!mobWeb) { %><div fdform-error-container="checkout"></div><% } %>
-	            <form fdform="checkout" action="#" id="checkoutbutton_top" fdform-disable-resubmit="true" fdform-disable-resubmit-selector=".cssbutton.orange" fdform-disable-resubmit-release="manual">
-	              <soy:render template="expressco.checkoutButton" data="${singlePageCheckoutPotato}" />
+	          <div class="cartheader__action_w_subtotal">
+	            <form fdform="checkout" action="#" id="checkoutbutton_bottom" fdform-disable-resubmit="true" fdform-disable-resubmit-selector=".cssbutton.orange" fdform-disable-resubmit-release="manual">
+	              <soy:render template="expressco.checkoutBanner" injectAdditonalData="false" data="${singlePageCheckoutPotato}" />
 	            </form>
-	            <a class="etipping-addtip-text" href='#tipDropdown'>Add a Tip</a>
 	          </div>
 	        </div>
-	        <%-- this needs to be AFTER the main header in mobweb (but still IN the header) --%>
-			<% if (mobWeb) { %><div fdform-error-container="checkout"></div><% } %>
+			<div fdform-error-container="checkout"></div>
+		<% } %>
         </div>
 
-
-         <% if (mobWeb) { %>
-         <div class="cartheader__text">
-           <h1 class="checkout icon-cart_fast-before">Checkout</h1>
-         </div>
-         <% } %>
         <div id="modifyorder">
-          <soy:render template="expressco.modifyorder" data="${singlePageCheckoutPotato}" />
+          <soy:render template="expressco.modifyorder" injectAdditonalData="false"  data="${singlePageCheckoutPotato}" />
         </div>
 
         <%-- drawer --%>
         <%-- TODO: render soy here --%>
         <div id="ec-drawer">
         </div>
+        <div id="checkout-cart-header"  data-ec-linetemplate="expressco.checkoutcartheader">
 
+        </div>
+        <div id="checkout-drawer-footer">
+        </div>
 
         <% if (!mobWeb) { /* no mobWeb for now */  %>
           <% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user)) { %>
@@ -151,8 +145,11 @@ if (mobWeb) {
         <% } %>
 
         <div class="checkout-contentheader">
-          <h2>Cart Details</h2>
-          <a class="cssbutton green" href="/expressco/view_cart.jsp">Edit Cart</a>
+          <div class="checkout-contentheader-text">Cart Details</div>
+          <div class="checkout-contentheader-actions right">
+          	<a class="cssbutton green transparent small" href="/expressco/view_cart.jsp">Modify Cart</a>
+          </div>
+          <div class="clear"></div>
         </div>
 
         <%-- cart content --%>

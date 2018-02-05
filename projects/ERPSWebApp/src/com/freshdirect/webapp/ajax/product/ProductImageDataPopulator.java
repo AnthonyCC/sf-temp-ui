@@ -75,28 +75,29 @@ public class ProductImageDataPopulator {
 
     // product images
     {
+    String fullName = productNode.getFullName().replace("\"", "").replace("'", ""); //escape double quotes
       // PROD_IMAGE_ZOOM - PROD_IMAGE_JUMBO
       if (productNode.getJumboImage() != null && !productNode.getJumboImage().isBlank()) {
     	  /* PROD_IMAGE_ZOOM */
-        addImageWithLarge(productNode.getZoomImage(), productNode.getJumboImage(), productNode.getFullName(), imageList);
+        addImageWithLarge(productNode.getZoomImage(), productNode.getJumboImage(), fullName, imageList);
       } else {
-        addImage(productNode.getZoomImage(), productNode.getFullName(), imageList);
+        addImage(productNode.getZoomImage(), fullName, imageList);
       }
             
       // ALTERNATE_IMAGE - ALTERNATE_IMAGE
-            addImage(productNode.getAlternateImage(), productNode.getFullName(), imageList);
+            addImage(productNode.getAlternateImage(), fullName, imageList);
       
       // DESCRIPTIVE_IMAGE (Wine Label) - DESCRIPTIVE_IMAGE
-            addImage(productNode.getDescriptiveImage(), productNode.getFullName(), imageList);
+            addImage(productNode.getDescriptiveImage(), fullName, imageList);
 
 		// PROD_IMAGE_DETAIL (Secondary / Category Image) - PROD_IMAGE_DETAIL
-		      //addImage( productNode.getDetailImage(), productNode.getFullName(), imageList );
+		      //addImage( productNode.getDetailImage(), fullName, imageList );
             
       // PROD_IMAGE (Secondary / Category Image) - PROD_IMAGE
-            //addImage( productNode.getProdImage(), productNode.getFullName(), imageList );
+            //addImage( productNode.getProdImage(), fullName, imageList );
       
       // PROD_IMAGE_PACKAGE - PROD_IMAGE_PACKAGE
-            addImage(productNode.getPackageImage(), productNode.getFullName(), imageList);
+            addImage(productNode.getPackageImage(), fullName, imageList);
       
     }
     

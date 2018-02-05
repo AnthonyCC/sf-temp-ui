@@ -45,6 +45,7 @@
   {param itemId:$item.itemId /}
   {param freeSamplePromoProduct:$item.freeSamplePromoProduct /}
   {param soData:$item.soData /}
+  {param productAltText:$item.productAltText /}
 {/call}
 {/template}
 
@@ -141,6 +142,7 @@
   {param newProduct:$item.newProduct /}
   {param itemIndex:$itemIndex /}
   {param listName:$listName /}
+  {param productAltText:$item.productAltText /}
 {/call}
 {/template}
 
@@ -185,6 +187,7 @@
  * @param productNameNoBrand
  * @param? freeSamplePromoProduct free sample product
  * @param? soData standing order data
+ * @param productAltText
  */
 {template .potatoGridItem autoescape="false"}
 {let $atcItemId: $itemId ? $itemId : 'atc_' + ($productId ? $productId : '') + '_' + ($skuCode ? $skuCode : '') + '_' +($catId ? $catId : '' ) /}
@@ -193,7 +196,7 @@
   <div class="portrait-item-productimage_wrapper">
     <a href="{$productPageUrl}" class="portrait-item-image-link">
       <div class="portrait-item-burst_wrapper">
-        <img src="{$productImage}" alt="Product Image - {$productName}" class="portrait-item-productimage">
+        <img src="{$productImage}" alt="Product Image - {$productAltText}" class="portrait-item-productimage">
         {call common.bursts}{param badge:$badge /}{param deal:$deal /}{/call}
       </div>
     </a>
@@ -325,6 +328,7 @@
  * @param? newProduct
  * @param? itemIndex
  * @param? listName
+ * @param productAltText
  */
 {template .potatoTransactionalGridItem autoescape="false"}
 /* this line return must be here, or there will be tabs in output html, which cause whitespace */
@@ -345,8 +349,8 @@
   {if $moduleData and $moduleData.moduleVirtualCategory}data-virtual-category="{$moduleData.moduleVirtualCategory}"{/if}
   {if $moduleData and $moduleData.dontFocusForm} data-dontfocusform="true"{/if}
 >
-	/* with modules (homepage), we can just use lazy loading */
-	{if $moduleData and $hookLogicBeaconImpression}<img data-src="{$hookLogicBeaconImpression}" style="visibility: hidden;" />{/if}
+	/* with modules (homepage), we can just use lazy loading. float right so they aren't loaded early due to carousel sizing */
+	{if $moduleData and $hookLogicBeaconImpression}<img data-src="{$hookLogicBeaconImpression}" style="float: right; visibility: hidden;" />{/if}
 	<div class="portrait-item-productimage_wrapper {$extraClass ? $extraClass + '-image_wrapper' : ''}">
 	{if not $discontinued}
 	  <a href="{$productPageUrl}{if $moduleData and $moduleData.moduleVirtualCategory}&cm_vc={$moduleData.moduleVirtualCategory}{/if}" class="portrait-item-image-link" {if $moduleData}data-cm-click="
@@ -355,9 +359,9 @@
     {/if}
 		<div class="portrait-item-burst_wrapper">
         {if $itemIndex and $itemIndex > 4}
-                <img class="portrait-item-productimage lazyload" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{$productImage}" alt="Product  Image - {$productName}" {if not $discontinued}data-product-url="{$productPageUrl}"{/if}>
+                <img class="portrait-item-productimage lazyload" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{$productImage}" alt="Product Image - {$productAltText}" {if not $discontinued}data-product-url="{$productPageUrl}"{/if}>
         {else}
-		<img src="{$productImage}" alt="Product  Image - {$productName}" class="portrait-item-productimage" {if not $discontinued}data-product-url="{$productPageUrl}"{/if}>
+		<img src="{$productImage}" alt="Product Image - {$productAltText}" class="portrait-item-productimage" {if not $discontinued}data-product-url="{$productPageUrl}"{/if}>
         {/if}
 			{if not $moduleData or not $moduleData.hideProductBadge}
         {call common.bursts}{param badge:$badge /}{param deal:$deal /}{param usq:$usq /}{/call}
@@ -521,8 +525,7 @@
 			{param listId:$listId /}
 			{param freeSamplePromoProduct:$freeSamplePromoProduct /}
 			{param mobWeb:$mobWeb /}
-      {param moduleData:$moduleData/}
-      {param badge:$badge/}
+            {param moduleData:$moduleData/}
 		{/call}
 		{call common.atcInCart}
 			{param amount:$inCartAmount /}
@@ -696,14 +699,10 @@
  * @param? freeSamplePromoProduct free sample product
  * @param? mobWeb
  * @param? moduleData
- * @param badge
  */
 {template .potatoTransactionalGridItemControls autoescape="false"}
   <div class="portrait-item-controls" data-component="product-controls">
     <div class="portrait-item-controls-content">
-      {if $badge == 'going'}
-        <div class="going-out">Last Chance!</div>
-      {/if}
       {if $availabilityMessage and not $mobWeb}
       <div class="portrait-item-availability-message">
         {$availabilityMessage}

@@ -22,6 +22,7 @@
       {if not $section.info.freeSample}
         {call .cartsection}
           {param section: $section /}
+          {param renderSubTotal1: true /}
         {/call}
       {/if}
     {/foreach}
@@ -51,7 +52,11 @@
     {foreach $cartline in $section.cartLines}
       {delcall common.cartline}
         {param cartline: $cartline/}
-        {param product: $section.products[$cartline.productId]/}
+        {param product}
+        {if $section.products and length(keys($section.products))}
+          {$section.products[$cartline.productId]}
+        {/if}
+        {/param}
       {/delcall}
     {/foreach}
   </div>
@@ -66,7 +71,7 @@
   <div class='cartsection__cartline' data-component='cartline' data-cartlineid='{$cartline.id}'>
     <div class='cartline-imageholder cartline-box'>
       <a class='cartline-link' href='/pdp.jsp?productId={$cartline.productId}&catId={$cartline.categoryId}'>
-        <img class='cartline-image' src='{if $cartline.image}{$cartline.image}{else}/media/images/temp/soon_80x80.gif{/if}' alt="Image of {$cartline.descr}" />
+        <img class='cartline-image' src='{if $cartline.image}{$cartline.image}{else}/media/images/temp/soon_80x80.gif{/if}' alt="{$cartline.descr}" />
       </a>
     </div>
     <div class='cartline-title cartline-box'>
@@ -89,15 +94,16 @@
         {/if}
       </div>
     </div>
+/* ---------------- */
     <div class='cartline-delete cartline-box'>
-      {if $product.available}
+      {if $product and $product.available}
         <a class='cartline-link' data-remove-product="{$cartline.id}" href=''>
           <img src="/media_stat/images/icon-trash.png" alt="" class='cartline-delete-image' /><span class="accessibleCSS">Delete</span><span class="offscreen"> {$cartline.descr}</span>
         </a>
       {/if}
     </div>
     <div class='cartline-quantity cartline-box' data-component="product">
-      {if $product.available}
+      {if $product and $product.available}
         {if $cartline.price == '$0.00'}
           {if $cartline.su}
             {foreach $option in $cartline.su}
@@ -118,13 +124,15 @@
             {/call}
             {if $cartline.qu}{call common.quantitybox}{param quantity:$cartline.qu /}{param uid: 'cartline_change_'+$cartline.id /}{/call}{/if}
           </form>
-          {if $cartline.su}
+          {if length(keys($cartline.confOptions))}
             {foreach $key in keys($cartline.confOptions)}
               <select id="{$key}" name="{$key}" data-component="productDataConfiguration" data-productdata-name="{$key}" class="offscreen">
                 <option value="">{$key}</option>
                   <option value="{$cartline.confOptions[$key]}" selected></option>
               </select>
             {/foreach}
+          {/if}
+          {if $cartline.su}
             {call common.salesunit}{param options:$cartline.su /}{/call}
           {/if}
         {/if}
@@ -151,7 +159,7 @@
     </div>
     <div class='cartline-price cartline-box'>
       <div class='cartline-pricewrapper'>
-        {if $product.available}
+        {if $product and $product.available}
           {if $product.price == '$0.00'}
             <p class='cartline-price-value cartline-price-value-free'>FREE</p>
           {else}
@@ -163,6 +171,7 @@
         {/if}
       </div>
     </div>
+/* -------------------------- */
     <div class='cartline-price cartline-box original'>
       <div class='cartline-pricewrapper'>
         {if $cartline.price == '$0.00'}

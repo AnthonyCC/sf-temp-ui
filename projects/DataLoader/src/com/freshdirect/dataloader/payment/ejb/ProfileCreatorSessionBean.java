@@ -39,6 +39,12 @@ import com.freshdirect.payment.gateway.Request;
 import com.freshdirect.payment.gateway.Response;
 import com.freshdirect.payment.gateway.impl.GatewayFactory;
 
+/**
+ *@deprecated Please use the ProfileCreatorController and ProfileCreatorServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public class ProfileCreatorSessionBean extends SessionBeanSupport {
 	
 	private final static ServiceLocator LOCATOR = new ServiceLocator();

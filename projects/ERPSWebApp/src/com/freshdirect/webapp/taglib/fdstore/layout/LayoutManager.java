@@ -121,6 +121,8 @@ public class LayoutManager extends BodyTagSupport {
 			s.setGrabberDepth(0);
 		}
 
+        s.setLayoutType(layoutType);
+
 		if (layoutType == EnumLayoutType.GENERIC.getId()) {
 			s.setLayoutFileName("/includes/layouts/generic_layout.jsp");
 			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.GROUP_BY_AVAILABILITY));
@@ -530,6 +532,7 @@ public class LayoutManager extends BodyTagSupport {
 		private String layoutFileName = null;
 		private List<SortStrategyElement> sortStrategy = new ArrayList<SortStrategyElement>();
 		private boolean returnSkus = false;
+        private int layoutType;
 
 		public boolean isFilterDiscontinued() {
 			return filterDiscontinued;
@@ -597,7 +600,7 @@ public class LayoutManager extends BodyTagSupport {
 					+ "\n ProductSortByFirst ="
 					+ layoutFileName
 					+ "\n returnSkus ="
-					+ returnSkus);
+                    + returnSkus + "\n layoutType =" + layoutType);
 		}
 		
 		public void setFilterDiscontinued(boolean b) {
@@ -646,6 +649,15 @@ public class LayoutManager extends BodyTagSupport {
 		public void setReturnSkus(boolean flag) {
 			this.returnSkus = flag;
 		}
+
+        public int getLayoutType() {
+            return layoutType;
+        }
+
+        public void setLayoutType(int layoutType) {
+            this.layoutType = layoutType;
+        }
+
 	}
 
 	

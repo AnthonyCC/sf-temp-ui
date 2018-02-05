@@ -68,11 +68,6 @@ public class PopulatorUtil {
 	 * @throws FDResourceException
 	 */
 	public static final boolean isProductIncomplete(ProductModel prd) throws FDResourceException, FDSkuNotFoundException {
-		if (!FDStoreProperties.getPreviewMode()) {
-			// usual business
-			return false;
-		}
-
 		if (null == prd.getSkus() || prd.getSkus().isEmpty()) {
 			// No SKUs found. This is really bad.
 			// Let the execution go and break somewhere else

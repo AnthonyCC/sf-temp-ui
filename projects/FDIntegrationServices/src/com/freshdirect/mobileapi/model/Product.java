@@ -1708,7 +1708,7 @@ public class Product {
 	               	
 	                result.setProductExtraData(data);	
 	               	ProductData productData=new ProductData();
-	               	productData = ProductDetailPopulator.createProductData(user, productModel, true);
+                    productData = ProductDetailPopulator.createProductData(user, productModel, FDStoreProperties.getPreviewMode());
 	                ProductDetailPopulator.populateAvailabilityMessagesForMobile(productData, productModel, null, productModel.getDefaultSku());
 	                result.setProductData(productData);
 				} catch (FDResourceException e) {
@@ -1769,9 +1769,9 @@ public class Product {
     public double getPrice(Sku sku, SalesUnit salesUnit, double quantity, Map<String, String> options) throws PricingException {
         double price = 0.0;
         //Pricing pricing = this.product.getFDProduct().getPricing();
-        String skuCode = sku.getSkuCode();
+        String skuCode = sku!=null?sku.getSkuCode():null;
         Pricing pricing = getFDProduct(skuCode).getPricing();
-        FDConfiguration configuration = new FDConfiguration(quantity, salesUnit.getName(), options);
+        FDConfiguration configuration = new FDConfiguration(quantity, salesUnit!=null?salesUnit.getName():null, options);
 
         if (sku != null && salesUnit != null && quantity > 0.0) {
             ConfiguredPrice configuredPrice = PricingEngine.getConfiguredPrice(pricing, configuration, pricingContext, getFDProductInfo(skuCode).getGroup(pricingContext.getZoneInfo()),quantity,null);

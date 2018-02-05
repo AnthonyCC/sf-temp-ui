@@ -116,19 +116,21 @@ public class DraftContentProviderService extends ContextualContentProvider {
     @Override
     public Map<Attribute, Object> getAllAttributesForContentKey(ContentKey contentKey) {
         Assert.notNull(contentKey, "ContentKey parameter can't be null!");
-        Optional<Map<ContentKey, Map<Attribute, Object>>> nodesOnDraft = getDraftNodesFromCache();
+        DraftContext draftContext = draftContextHolder.getDraftContext();
+        if (draftContext.isMainDraft()) {
+            return contentProviderService.getAllAttributesForContentKey(contentKey);
+        }
+
+        Optional<Map<ContentKey, Map<Attribute, Object>>> nodesOnDraft = getDraftNodesFromCache(draftContext);
         if (nodesOnDraft.isPresent() && nodesOnDraft.get().containsKey(contentKey)) {
             return nodesOnDraft.get().get(contentKey);
         }
-        Map<Attribute, Object> mainNode = contentProviderService.getAllAttributesForContentKey(contentKey);
-        Map<ContentKey, Map<Attribute, Object>> resultNode = new HashMap<ContentKey, Map<Attribute, Object>>();
-        resultNode.put(contentKey, mainNode);
-        if (!draftContextHolder.getDraftContext().isMainDraft()) {
-            List<DraftChange> draftChanges = draftService.getDraftChanges(draftContextHolder.getDraftContext().getDraftId());
-            resultNode.putAll(draftApplicatorService.applyDraftChangesToContentNodes(draftChanges, resultNode));
-            putNodeIntoDraftCache(contentKey, resultNode.get(contentKey));
-        }
-        return resultNode.get(contentKey);
+
+        Map<Attribute, Object> resultNode = new HashMap<Attribute, Object>(contentProviderService.getAllAttributesForContentKey(contentKey));
+        List<DraftChange> draftChanges = draftService.getDraftChanges(draftContext.getDraftId(), contentKey);
+        resultNode = draftApplicatorService.applyDraftChangesToContentNode(draftChanges, resultNode);
+        putNodeIntoDraftCache(draftContext, contentKey, resultNode);
+        return resultNode;
     }
 
     @Override
@@ -263,7 +265,7 @@ public class DraftContentProviderService extends ContextualContentProvider {
                 Set<ContentKey> originalChildKeys = collectChildKeysOf(originalNodes);
                 
                 invalidateDraftNodesCacheEntry(draftContext);
-                draftService.saveDraftChange(draftChangeExtractorService.extractChangesFromRequest(payload, originalNodes, draftContext, context.getAuthor()));
+                draftService.saveDraftChange(draftContext, draftChangeExtractorService.extractChangesFromRequest(payload, originalNodes, draftContext, context.getAuthor()));
                 invalidateDraftParentCacheForKeysOnDraft(collectKeysForCacheInvalidation(payload.keySet(), originalChildKeys));
                 
                 sendContentChangedNotification(draftContext, Sets.union(payload.keySet(), originalChildKeys));
@@ -337,32 +339,29 @@ public class DraftContentProviderService extends ContextualContentProvider {
         return originalNodes;
     }
 
-    private Optional<Map<ContentKey, Map<Attribute, Object>>> getDraftNodesFromCache() {
+    @SuppressWarnings("unchecked")
+    private Optional<Map<ContentKey, Map<Attribute, Object>>> getDraftNodesFromCache(final DraftContext draftContext) {
         Cache draftNodesCache = cacheManager.getCache(DRAFT_NODES_CACHE);
-        ValueWrapper nodesOfDraftContext = draftNodesCache.get(draftContextHolder.getDraftContext());
+        ValueWrapper nodesOfDraftContext = draftNodesCache.get(draftContext);
         if (nodesOfDraftContext != null) {
             return Optional.fromNullable((Map<ContentKey, Map<Attribute, Object>>) nodesOfDraftContext.get());
         }
         return Optional.absent();
     }
 
-    private void putNodeIntoDraftCache(final ContentKey contentKey, final Map<Attribute, Object> nodeAttributes) {
+    @SuppressWarnings("unchecked")
+    private void putNodeIntoDraftCache(final DraftContext draftContext, final ContentKey contentKey, final Map<Attribute, Object> nodeAttributes) {
         Cache draftNodesCache = cacheManager.getCache(DRAFT_NODES_CACHE);
-        ValueWrapper nodesOfDraftContext = draftNodesCache.get(draftContextHolder.getDraftContext());
+        ValueWrapper nodesOfDraftContext = draftNodesCache.get(draftContext);
         if (nodesOfDraftContext == null) {
-            draftNodesCache.put(draftContextHolder.getDraftContext(), new HashMap<ContentKey, Map<Attribute, Object>>() {
-
-                {
-                    put(contentKey, nodeAttributes);
-                }
-            });
+            Map<ContentKey, Map<Attribute, Object>> m = new HashMap<ContentKey, Map<Attribute,Object>>();
+            m.put(contentKey, nodeAttributes);
+            draftNodesCache.put(draftContext, m);
         } else {
             Map<ContentKey, Map<Attribute, Object>> cachedNodesOnDraft = (Map<ContentKey, Map<Attribute, Object>>) nodesOfDraftContext.get();
             cachedNodesOnDraft.put(contentKey, nodeAttributes);
         }
     }
-
-
 
     private Set<ContentKey> collectKeysForCacheInvalidation(Set<ContentKey> contentKeys, Collection<ContentKey> additionalKeys) {
         Set<ContentKey> keysToUpdate = new HashSet<ContentKey>();

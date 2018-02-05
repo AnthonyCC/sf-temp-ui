@@ -84,8 +84,8 @@
    <span fdform-error-for="zip" class="small-fieldset"></span>
   </div>
   <div  class="input-wrapper">
-    <label for="addaddress_home_phone" class="three-quarter-fieldset">Best # for this address:
-    	<input name="phone" id="addaddress_home_phone" placeholder="(xxx) xxx xxxx" {if not $data.phone}fdform-formatter="phone"{/if} fdform-fieldname="Phone Number" required value="{if $data.phone}{$data.phone}{/if}"/>
+    <label for="addaddress_home_phone" class="three-quarter-fieldset">Phone Number
+    	<input name="phone" id="addaddress_home_phone" placeholder="(xxx) xxx xxxx" fdform-formatter="phone" fdform-fieldname="Phone Number" required value="{if $data.phone}{$data.phone}{/if}"/>
     </label>
     <label for="addaddress_home_phone"  class="one-quarter-fieldset"> Ext.
     	<input name="phone_ext" placeholder="Ext." value="{if $data.phone_ext}{$data.phone_ext}{/if}" />
@@ -246,8 +246,8 @@
    <span fdform-error-for="zip" class="small-fieldset"></span>
   </div>
   <div class="input-wrapper">
-  	<label for="addaddress_office_phone" class="three-quarter-fieldset"> Phone Number
-    	<input name="phone"id="addaddress_office_phone" placeholder="(xxx) xxx xxxx" {if not $data.phone}fdform-formatter="phone"{/if} fdform-fieldname="Phone Number" required value="{if $data.phone}{$data.phone}{/if}"/>
+  	<label for="addaddress_office_phone" class="three-quarter-fieldset">Phone Number
+    	<input name="phone"id="addaddress_office_phone" placeholder="(xxx) xxx xxxx" fdform-formatter="phone" fdform-fieldname="Phone Number" required value="{if $data.phone}{$data.phone}{/if}"/>
    	</label>
    	<label for="addaddress_office_phone_ext" class="one-quarter-fieldset"> Ext.
     	<input id="addaddress_office_phone_ext" name="phone_ext" placeholder="Ext." value="{if $data.phone_ext}{$data.phone_ext}{/if}" /> 

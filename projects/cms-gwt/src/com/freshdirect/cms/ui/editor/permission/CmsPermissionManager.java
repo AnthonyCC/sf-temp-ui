@@ -147,6 +147,7 @@ public class CmsPermissionManager {
                 }
             }
             if (Permit.isAnyRejected(oldNodeStoreResult.values())) {
+                LOGGER.error("[REJECT] User " + user.getName() + " (old nodes)");
                 return Permit.REJECT;
             }
             // handle prototype node, which is not part of CMSManager content service yet.
@@ -175,6 +176,7 @@ public class CmsPermissionManager {
                 }
             }
             if (Permit.isAnyRejected(newNodeStoreResult.values())) {
+                LOGGER.error("[REJECT] User " + user.getName() + " (new nodes)");
                 return Permit.REJECT;
             }
 
@@ -274,7 +276,12 @@ public class CmsPermissionManager {
         } else {
             List<List<ContentKey>> contexts = contentProviderService.findContextsOf(nodeKey);
             for (List<ContentKey> context : contexts) {
-                rootKeys.add(context.get(context.size() - 1));
+                if (!context.isEmpty()) {
+                    ContentKey k = context.get(context.size() - 1);
+                    if (RootContentKey.isRootKey(k)) {
+                        rootKeys.add(k);
+                    }
+                }
             }
         }
 
@@ -308,7 +315,7 @@ public class CmsPermissionManager {
         // <3> ORPHAN TEST
         if (rootKeys.size() == 0) {
             /// LOGGER.debug("<3> " + nodeKey + " => SKIPPED");
-            return null;
+            return input.permitForOther;
         }
 
         // <4> STORE MEMBERSHIP

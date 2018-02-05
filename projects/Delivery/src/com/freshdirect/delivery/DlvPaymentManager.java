@@ -11,10 +11,13 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.customer.DlvSaleInfo;
 import com.freshdirect.customer.ErpDeliveryInfoModel;
+import com.freshdirect.customer.ErpOrderHistory;
 import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
+import com.freshdirect.ecomm.gateway.OrderServiceApiClient;
+import com.freshdirect.ecomm.gateway.OrderServiceApiClientI;
 import com.freshdirect.ecomm.gateway.PaymentGatewayService;
 import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
@@ -132,8 +135,13 @@ public class DlvPaymentManager {
 	
 	public synchronized DlvSaleInfo getSaleInfo(String orderNumber) throws FDResourceException, ErpSaleNotFoundException {
 		try{
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("orderHistory_Api")){
+	    		OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
+	    		return service.getDlvSaleInfo(orderNumber);
+	    	}else{
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerSB();
 			return sb.getDlvSaleInfo(orderNumber);
+	    	}
 		}catch(RemoteException re){
 			throw new FDResourceException (re, "Cannot talk to SB");
 		}

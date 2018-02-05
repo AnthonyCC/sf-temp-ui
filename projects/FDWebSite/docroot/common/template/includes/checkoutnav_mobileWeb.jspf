@@ -1,0 +1,6 @@
+<div class="checkout-top-nav">
+	<soy:render template="expressco.mobilecheckoutheader" data="${singlePageCheckoutPotato}" />
+	<script>
+		$jq('.container-fluid').addClass('mm-page');
+	</script>
+</div>

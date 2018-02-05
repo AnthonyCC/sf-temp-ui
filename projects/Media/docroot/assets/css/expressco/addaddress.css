@@ -191,14 +191,6 @@ div[bd-id] {
   content: 'Work';
 }
 
-[data-drawer-content="address"] [data-component="addresschangebutton"] {
-	font-size: 18px;
-	height: 45px;
-}
-[data-drawer-content="address"] [data-component="addresschangebutton"] {
-  float: right;
-}
-
 [data-drawer-default-content="address"] ul.pickuptimes,
 [data-drawer-content="address"] ul.pickuptimes {
   margin: 0;

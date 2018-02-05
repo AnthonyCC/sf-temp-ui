@@ -28,9 +28,16 @@
   {if not $mobWeb}
     <div class="drawer__header tableHeaderGroup" >
       <p class="timeslot_pattern_notification">
-        <iframe width="800" height="45" src="/OASonly.jsp?listPos=CheckoutTS&sitePage=www.freshdirect.com/XCpaymentpromo"></iframe>
+        <iframe width="800" onload="resizeIframe(this)" src="/OASonly.jsp?listPos=CheckoutTS&sitePage=www.freshdirect.com/XCpaymentpromo"></iframe>
+        {literal}
+        <script>
+		  function resizeIframe(obj) {
+		    obj.style.height =0;
+		    obj.style.height = obj.contentWindow.document.body.scrollHeight + 'px';
+		  }
+		</script>
+		{/literal}
       </p>
-      <button class="cssbutton orange" data-component="timeslotchangebutton">Done <span class="offscreen">with Delivery Time</span></button>
     </div>
   {/if}
 
@@ -53,7 +60,7 @@
 {template .timeselectorpreview autoescape="false"}
 {if $id and $timePeriod and $soFreq and $newSO3}
 	<div class='drawer__previewitem'>
-	  {call .successtimeslot}
+	  {call .timeslot}
 	    {param id: $id /}
 	    {param month: $month /}
 	    {param dayOfMonth: $dayOfMonth /}
@@ -61,25 +68,91 @@
 	    {param timePeriod: $timePeriod /}
 	    {param soFreq: $soFreq /}
 	  {/call}
-	  {if $showForceOrder}<label class='timeslot-force-order'>Force Order: <input data-component="forceorder" type="checkbox" {if $forceOrderEnabled}checked{/if}></label>{/if}
+	  {if $showForceOrder}<label class='timeslot-force-order left'>Force Order: <input data-component="forceorder" type="checkbox" {if $forceOrderEnabled}checked{/if}></label>{/if}
 	</div>
 {elseif $id and $timePeriod}
 	<div class='drawer__previewitem'>
-	  {call .successtimeslot}
+	  {call .timeslot}
 	    {param id: $id /}
 	    {param month: $month /}
 	    {param dayOfMonth: $dayOfMonth /}
 	    {param dayOfWeek: $dayOfWeek /}
 	    {param timePeriod: $timePeriod /}
 	  {/call}
-	  {if $showForceOrder}<label class='timeslot-force-order'>Force Order: <input data-component="forceorder" type="checkbox" {if $forceOrderEnabled}checked{/if}></label>{/if}
+	  {if $showForceOrder}<label class='timeslot-force-order left'>Force Order: <input data-component="forceorder" type="checkbox" {if $forceOrderEnabled}checked{/if}></label>{/if}
 	</div>
 {else}
 	<div class='drawer__previewitem'>
 	  <div class="drawer__previewitem__button__section">
 	  	<button class="cssbutton orange" data-drawer-activate="timeslot" {if $onOpenCoremetrics}cm-click="{$onOpenCoremetrics}"{/if}>Select a <span class="offscreen">Delivery</span>Time</button>
 	  </div>
-	  {if $showForceOrder}<label class='timeslot-force-order'>Force Order: <input data-component="forceorder" type="checkbox" {if $forceOrderEnabled}checked{/if}></label>{/if}
+	  {if $showForceOrder}<label class='timeslot-force-order left'>Force Order: <input data-component="forceorder" type="checkbox" {if $forceOrderEnabled}checked{/if}></label>{/if}
 	</div>
 {/if}
+{/template}
+
+
+/**
+ * @param? id
+ ** param? year
+ * @param? month
+ * @param? dayOfMonth
+ * @param? dayOfWeek
+ * @param? timePeriod
+ * @param? soFreq
+ * @param? soActivated
+ * @param? soCutOffDeliveryTime
+ * @param? soCutOffFormattedDeliveryDate
+ * @param? shortDayOfWeek
+ * @param? soDeliveryDate
+ * @param? onOpenCoremetrics
+ */
+{template .timeslot autoescape="false"}
+	{if $soFreq and $dayOfWeek and isNonnull($soFreq)}
+		<div class="successtimeslot is-so-freq drawer__itemright" timeslot-id="{$id ? $id : ''}">
+		  <div class="successtimeslot_date standing-orders-3-successtimeslot_date">
+		  	<div class="successtimeslot_time drawer__item__title">
+		    	{$timePeriod ? $timePeriod : ''}
+		  	</div>
+		  	<div class="standing-orders-3-successtimeslot_date-header-small-text">Delivery scheduled for:</div>		  	
+		  		<div class="standing-orders-3-successtimeslot_date-header-freq-text">
+			  		{if $soFreq == '1'}
+			  			Every
+			  		{elseif $soFreq == '2'}
+			  			Every Other
+			  		{elseif $soFreq == '4'}
+			  			Every Fourth
+			  		{/if} {$dayOfWeek ? $dayOfWeek : ''}
+		  		</div>			
+		  </div>
+		  {if not $soActivated and $soCutOffFormattedDeliveryDate and $soCutOffDeliveryTime}
+			<div class="standing-orders-3-successtimeslot_date-reservation">
+			  	To keep this delivery reservation,</br>
+			  	activate this standing order by:</br>
+			  	{$soCutOffFormattedDeliveryDate} at {$soCutOffDeliveryTime}
+			</div>
+			<div class="standing-orders-3-successtimeslot_date-next-delivery">
+			  	First delivery on {$shortDayOfWeek}, {$soDeliveryDate}
+			</div>
+		  {else}
+		  	<div class="standing-orders-3-successtimeslot_date-next-delivery">
+			  	Next delivery on {$shortDayOfWeek}, {$soDeliveryDate}
+			</div>
+		  {/if}
+		</div>
+	{else}
+		<div class="time-slot successtimeslot drawer__itemright" timeslot-id="{$id ? $id : ''}">
+		  <div class="drawer__item__title">
+		    {$dayOfWeek ? $dayOfWeek : ''}, {$month ? $month : ''}/{$dayOfMonth ? $dayOfMonth : ''}
+		  </div>
+		  <div class="successtimeslot_time drawer__item__section">
+		    <div class="section__body">
+		    	{$timePeriod ? $timePeriod : ''}
+		    </div>
+		  </div>
+		</div>
+	{/if}
+	<div class="drawer__item__action">
+	    <button type="button" aria-haspopup="true" class="change cssbutton green transparent small" {if $onOpenCoremetrics}cm-click="{$onOpenCoremetrics}"{/if}>Edit</button>
+    </div>
 {/template}

@@ -117,25 +117,6 @@
   font-weight:bold;
   text-decoration:none;
 }
-
-.successtimeslot {
-  text-align: center;
-  margin-top: 2em;
-  font-size: 24px;
-  font-weight: bold;
-}
-
-.successtimeslot .successtimeslot_date {
-  font-size: 1.25em;
-  white-space: nowrap;
-}
-
-.successtimeslot .successtimeslot_time {
-  color: #693;
-  font-size: 1.25em;
-  white-space: nowrap;
-}
-
 [data-receipt-id="automaticheaderdiscount"] .receipt-price,
 [data-receipt-id="redemptionPromo"] .receipt-price,
 [data-receipt-id="freefood"] .receipt-price,
@@ -151,12 +132,16 @@
   line-height: 44px;
   border-bottom: 1px solid #ddd;
 }
-
+#successpage .drawer__previewitem__section {
+	padding-bottom: 20px;
+}
 .successmodifyorder-cont {
 	margin-top: 20px;
 	text-align: center;
 }
 
-.successmodifyorderbutton-cont {
-	text-align: center;
+.successmodifyorderbutton-cont button{
+	margin-bottom: 50px;
+    padding: 10px 50px 10px 50px;
+    margin-top: 10px;
 }

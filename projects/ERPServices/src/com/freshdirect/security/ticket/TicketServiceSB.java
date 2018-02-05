@@ -4,6 +4,12 @@ import java.rmi.RemoteException;
 
 import javax.ejb.EJBObject;
 
+/**
+ *@deprecated Please use the TicketController and TicketServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public interface TicketServiceSB extends EJBObject {
 	/**
 	 * Create the ticket. Returns null if the ticket already exists.
@@ -12,6 +18,7 @@ public interface TicketServiceSB extends EJBObject {
 	 * @return null if ticket already exists
 	 * @throws RemoteException
 	 */
+	@Deprecated
 	Ticket createTicket(Ticket ticket) throws RemoteException;
 
 	/**
@@ -22,6 +29,7 @@ public interface TicketServiceSB extends EJBObject {
 	 * @return null if ticket does not exist
 	 * @throws RemoteException
 	 */
+	@Deprecated
 	Ticket updateTicket(Ticket ticket) throws RemoteException;
 
 	/**
@@ -31,5 +39,6 @@ public interface TicketServiceSB extends EJBObject {
 	 * @return null if the ticket does not exist
 	 * @throws RemoteException
 	 */
+	@Deprecated
 	Ticket retrieveTicket(String key) throws RemoteException;
 }

@@ -123,8 +123,7 @@
 .lineitems22 .itemlist-item-addtocart > form.atc > .atc-info .incart-info,
 .portrait-item > form.atc > .atc-info .incart-info,
 .lineitems22 .itemlist-item-addtocart > .atc-info .incart-info,
-.portrait-item > .atc-info .incart-info,
-.portrait-item .atc .going-out {
+.portrait-item > .atc-info .incart-info {
   display: block;
   text-align: center;
   clear: both;
@@ -139,14 +138,6 @@
   margin-top: 2px;
   position: relative;
   z-index: 1;
-}
-
-.portrait-item .atc .going-out {
-  margin-top: 20px;
-}
-
-#transactionalPopup .transactional-popup-body .portrait-item .cssBurst.going {
-  display: none;
 }
 
 .lineitems22 .itemlist-item-controls.smaller .itemlist-item-addtocart > form.atc > .atc-info .incart-info,
@@ -878,14 +869,15 @@ a.portrait-item-header-name:link {
 
 .qs-content .addtocart .iehelper,
 .portrait-item-controls .addtocart .iehelper {
- position: absolute;
- width: 1px;
- height: 1px;
- padding: 0;
- margin: -1px;
- overflow: hidden;
- clip: rect(0, 0, 0, 0);
- border: 0;
+/*  position: absolute; */
+/*  width: 1px; */
+/*  height: 1px; */
+/*  padding: 0; */
+/*  margin: -1px; */
+/*  overflow: hidden; */
+/*  clip: rect(0, 0, 0, 0); */
+/*  border: 0; */
+    display:none;
 }
 
 #transactionalPopup .portrait-item-controls .cssbutton.notext {

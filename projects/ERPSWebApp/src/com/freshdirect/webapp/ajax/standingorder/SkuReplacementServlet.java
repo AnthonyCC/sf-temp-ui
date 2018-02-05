@@ -16,10 +16,15 @@ import org.json.JSONObject;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.freshdirect.fdstore.FDEcommProperties;
+import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.ecomm.gateway.FDStandingOrdersService;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderProductSku;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderSkuResultInfo;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
+import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class SkuReplacementServlet extends HttpServlet {
 
@@ -53,9 +58,19 @@ public class SkuReplacementServlet extends HttpServlet {
 								.getInstance().validateSkuCode(existingSku,
 										replacementSku);
 					} else if (buttonAction.equalsIgnoreCase(REPLACE)) {
+						if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDStandingOrderSB)){
+							FDSessionUser user = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
+							String userId = user.getUserId();
+							fDStandingOrderSkuResultInfo = FDStandingOrdersManager
+									.getInstance().replaceSkuCode(existingSku,
+											replacementSku,userId);
+						}
+						else{
+					
 						fDStandingOrderSkuResultInfo = FDStandingOrdersManager
 								.getInstance().replaceSkuCode(existingSku,
-										replacementSku);
+										replacementSku,null);
+						}
 					}
 
 					List<FDStandingOrderProductSku> productList = fDStandingOrderSkuResultInfo

@@ -13,6 +13,12 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.BINInfo;
 
+/**
+ *@deprecated Please use the BINController and BINServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public class BINInfoManagerSessionBean extends ERPSessionBeanSupport {
 	
 	private static final long serialVersionUID = 1L;

@@ -522,7 +522,9 @@ public class CategoryModel extends ProductContainer {
     public List<ProductModel> getProducts() {
 
     	List<ProductModel> prodList = new ArrayList<ProductModel>();
-    	ZoneInfo pricingZone = ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo();
+    	ZoneInfo pricingZone = ContentFactory.getInstance()!=null&&ContentFactory.getInstance().getCurrentUserContext()!=null&&
+    								ContentFactory.getInstance().getCurrentUserContext().getPricingContext()!=null?
+    										ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo():null;
     	String currentProductPromotionType = getProductPromotionType();
 
     	if(!"E_COUPONS".equalsIgnoreCase(currentProductPromotionType) && (currentProductPromotionType == null || !ContentFactory.getInstance().isEligibleForDDPP())){
@@ -896,7 +898,7 @@ public class CategoryModel extends ProductContainer {
 	private boolean isActive(boolean filterNonDisplayableProducts) {
 	    List<ProductModel> products = getProducts();
 
-	    if (filterNonDisplayableProducts){
+	    if (filterNonDisplayableProducts&&products!=null&&!products.isEmpty()){
 	    	Iterator<ProductModel> itr = products.iterator();
 	        while(itr.hasNext()) {
 	        	ProductModel prod = itr.next();
@@ -909,7 +911,7 @@ public class CategoryModel extends ProductContainer {
 	        }
 	    }
 
-		if (!products.isEmpty()) {
+		if (products!=null&&!products.isEmpty()) {
 	        return true;
 	    }
 	    for (CategoryModel subCat : getSubcategories()) {

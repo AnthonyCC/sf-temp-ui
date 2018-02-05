@@ -93,6 +93,7 @@ import com.freshdirect.storeapi.content.CategorySectionModel;
 import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.storeapi.content.ContentNodeModel;
 import com.freshdirect.storeapi.content.DepartmentModel;
+import com.freshdirect.storeapi.content.EnumLayoutType;
 import com.freshdirect.storeapi.content.FilteringProductItem;
 import com.freshdirect.storeapi.content.PriceCalculator;
 import com.freshdirect.storeapi.content.ProductContainer;
@@ -119,6 +120,7 @@ import com.freshdirect.webapp.search.unbxd.UnbxdServiceUnavailableException;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.layout.LayoutManager.Settings;
 import com.freshdirect.webapp.taglib.unbxd.BrowseEventTag;
+import com.freshdirect.webapp.util.MediaUtils;
 
 public class BrowseUtil {
 	private static final org.apache.log4j.Category LOG = LoggerFactory.getInstance(BrowseUtil.class);
@@ -130,16 +132,23 @@ public class BrowseUtil {
     private BrowseUtil() {
     }
 
-
     public static BrowsePageResponse getBrowseResponse(SessionUser user, HttpServletRequest request) {
         final BrowsePageResponse result = new BrowsePageResponse();
+
         try {
         	FDSessionUser sessionUser = user.getFDSessionUser();
             final CmsFilteringNavigator navigator = CmsFilteringNavigator.createInstance(request, sessionUser);
-            if (navigator.populateSectionsOnly()) {
-            	BrowseData browseData = CmsFilteringFlow.getInstance().doBrowseSectionsFlow(navigator, sessionUser);
-            	result.setBrowse(DataPotatoField.digBrowse(browseData));
-            	result.setIncludeNullValue(false);
+
+            ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(navigator.getId());
+            LayoutManagerWrapper layoutManagerTagWrapper = new LayoutManagerWrapper(user);
+            Settings layoutManagerSetting = layoutManagerTagWrapper.getLayoutManagerSettings(currentFolder);
+
+            if (layoutManagerSetting != null && EnumLayoutType.TEMPLATE_LAYOUT.getId() == layoutManagerSetting.getLayoutType()) {
+                result.setBrowse(doFlowTemplateLayout(user.getFDSessionUser(), currentFolder));
+            } else if (navigator.populateSectionsOnly()) {
+                BrowseData browseData = CmsFilteringFlow.getInstance().doBrowseSectionsFlow(navigator, sessionUser);
+                result.setBrowse(DataPotatoField.digBrowse(browseData));
+                result.setIncludeNullValue(false);
             } else {
             	final CmsFilteringFlowResult flow = CmsFilteringFlow.getInstance().doFlow(navigator, sessionUser);
             	result.setBrowse(DataPotatoField.digBrowse(flow));
@@ -157,8 +166,28 @@ public class BrowseUtil {
         } catch (FDNotFoundException e) {
             result.addErrorMessage(e.getMessage());
             LOG.error(e.getMessage());
+        } catch (FDException e) {
+            result.addErrorMessage(e.getMessage());
+            LOG.error(e.getMessage());
         }
         return result;
+    }
+
+    private static Map<String, String> doFlowTemplateLayout(FDSessionUser user, ContentNodeModel currentFolder) {
+        final Map<String, String> browse = new HashMap<String, String>();
+        if (currentFolder != null) {
+            String templatePath = null;
+            if (currentFolder instanceof CategoryModel) {
+                templatePath = ((CategoryModel) currentFolder).getContentTemplatePath();
+            }
+            if (currentFolder instanceof DepartmentModel) {
+                templatePath = ((DepartmentModel) currentFolder).getTemplatePath();
+            }
+            if (MediaUtils.checkMedia(templatePath)) {
+                browse.put("htmlTemplate", MediaUtils.renderHtmlToString(templatePath, user));
+            }
+        }
+        return browse;
     }
 
 	public static BrowseResult getCategories(BrowseQuery requestMessage, SessionUser user, HttpServletRequest request) throws FDException{
@@ -1132,12 +1161,12 @@ public class BrowseUtil {
 
 	    private static void getSortOptionsForCategory(ContentNodeModel contentNode, SessionUser user, HttpServletRequest request, SortOptionInfo soi) {
 	    	//If Department loop through all categories in it
-	    	if(contentNode instanceof DepartmentModel){
+	    	if(contentNode!=null && contentNode instanceof DepartmentModel){
 	    		DepartmentModel dept = (DepartmentModel) contentNode;
 	    		for(CategoryModel m : dept.getCategories()){
 	    			getSortOptionsForCategory(m, user, request, soi);
 	    		}
-	    	} else if(contentNode instanceof CategoryModel){
+	    	} else if(contentNode!=null && contentNode instanceof CategoryModel){
 	    		CategoryModel cat = (CategoryModel)contentNode;
 	    		List<SortOptionModel> options = cat.getSortOptions();
 	    		SortType tmp;
@@ -1182,12 +1211,14 @@ public class BrowseUtil {
 	    private static AddressModel getAddress(BrowseQuery requestMessage) {
 
 	    	AddressModel a = new AddressModel();
-	        a.setZipCode(requestMessage.getZipCode());
-	        a.setAddress1(requestMessage.getAddress1());
-	        a.setApartment(requestMessage.getApartment());
-	        a.setCity(requestMessage.getCity());
-	        a.setState(requestMessage.getState());
-	        a.setServiceType(EnumServiceType.getEnum(requestMessage.getServiceType()));
+	    	if(requestMessage!=null){
+		        a.setZipCode(requestMessage.getZipCode());
+		        a.setAddress1(requestMessage.getAddress1());
+		        a.setApartment(requestMessage.getApartment());
+		        a.setCity(requestMessage.getCity());
+		        a.setState(requestMessage.getState());
+		        a.setServiceType(EnumServiceType.getEnum(requestMessage.getServiceType()));
+	    	}
 	        return a;
 
 	    }
@@ -1442,7 +1473,7 @@ public class BrowseUtil {
 	    }
 
     public static CatalogInfo getCatalogInfo(BrowseQuery requestMessage, SessionUser user) {
-    	if(user.getFDSessionUser()!=null
+    	if(user!=null&&user.getFDSessionUser()!=null
     			&& user.getFDSessionUser().getIdentity()!=null
     			&& user.getAddress()!=null
     			&& !user.getAddress().isCustomerAnonymousAddress()){
@@ -1469,7 +1500,7 @@ public class BrowseUtil {
         if (user != null) {
             String zipcode = user.getZipCode();
             if (zipcode != null && zipcode.trim().length() > 0) {
-                plantId = user.getUserContext().getFulfillmentContext().getPlantId();
+                plantId = user!=null&&user.getUserContext()!=null&&user.getUserContext().getFulfillmentContext()!=null?user.getUserContext().getFulfillmentContext().getPlantId():FDStoreProperties.getDefaultFdxPlantID();
             } else {
                 plantId = FDStoreProperties.getDefaultFdxPlantID();
             }

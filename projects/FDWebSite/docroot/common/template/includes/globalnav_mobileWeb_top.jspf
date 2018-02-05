@@ -18,7 +18,7 @@
 			</div>
 			<div class="pull-right rightSide">
 				<div class="navbar-ecomvalue">
-					<% if (!isHelp) { %>
+					<% if (!isHelp && false) { /* FDMW18-113: hide functionality */ %>
 						<a class="locabar-search" href="#" onclick="$jq('#search').toggle(); $jq(this).trigger('resize'); return false;"><span class="offscreen">Toggle Search Display</span></a>
 					<% } %>
 				</div>
@@ -95,16 +95,47 @@
 					    		</div>
 							</div>
 						</div>
+						<% 
+						// if user is recognized, has placed order recently and shopping cart is in modifying mode
+						if (user != null && user.getLevel() >= FDUserI.RECOGNIZED && 
+							user.hasPendingOrder() && (user.getShoppingCart() instanceof FDModifyCartModel)) {
+							
+							FDModifyCartModel moCart = (FDModifyCartModel) user.getShoppingCart();
+							if (moCart != null && 
+								moCart.getOriginalOrder() != null && 
+								moCart.getOriginalOrder().getDeliveryReservation() != null && 
+								moCart.getOriginalOrder().getDeliveryReservation().getTimeslot() != null) {
+								%>
+								<script>
+									$jq(function() {
+										var modifyingOrderTime = '<%= moCart.getOriginalOrder().getDeliveryReservation().getTimeslot().getDisplayString() %>';
+										var modifyingOrderDayOfWeek = '<%= new SimpleDateFormat("EEEEE").format(moCart.getOriginalOrder().getDeliveryReservation().getTimeslot().getDeliveryDate()) %>';
+									 	var showModifyingOrderMessage = function () {
+									 		window.displayModifyingOrderMobile(modifyingOrderTime, modifyingOrderDayOfWeek);
+									 	}
+									 	if (window.displayModifyingOrderMobile) {
+									 		showModifyingOrderMessage();
+								 		} else if ($jq) {
+								 			$jq(document).one('displayModifyingOrderMobile-loaded', showModifyingOrderMessage);
+								 		}
+							 		});
+								</script>
+							<% 
+								}
+							}
+						%>
 					</fd:GetCart>
 				</div>
 			</div>
 			<div class="clearfix"></div>
-			<div id="search" style="display: none;">
-				<form class="searchform" name="search" action="/search.jsp" method="get" accept-charset="UTF-8">
-					<span class="icon-search"></span>
-					<input type="text" id="topSearchField" aria-label="search" placeholder="Search" data-component="autocomplete" class="search ui-autocomplete-input fnt-18" name='searchParams' autocomplete="off" />
-				</form>
-			</div>
+			<% if (!isHelp) { /* FDMW18-113: hide in search */ %>
+				<div id="search" style="display: block;"><%-- FDMW18-113 : always show, change back to none if using toggle again --%>
+					<form class="searchform" name="search" action="/search.jsp" method="get" accept-charset="iso-8859-1">
+						<span class="icon-search"></span>
+						<input type="text" id="topSearchField" aria-label="search" placeholder="Search" data-component="autocomplete" class="search ui-autocomplete-input fnt-18" name='searchParams' autocomplete="off" />
+					</form>
+				</div>
+			<% } %>
 		</div>
 	</nav>
 </div>

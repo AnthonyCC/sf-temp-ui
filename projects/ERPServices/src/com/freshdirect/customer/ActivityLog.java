@@ -11,6 +11,7 @@ import javax.naming.NamingException;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.customer.ejb.ActivityLogHome;
 import com.freshdirect.customer.ejb.ActivityLogSB;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.ServiceLocator;
@@ -39,7 +40,7 @@ public class ActivityLog {
 
 	public Collection<ErpActivityRecord> findActivityByTemplate(ErpActivityRecord template) throws FDResourceException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("customer.ejb.ActivityLogSB")){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ActivityLogSB)){
 				return FDECommerceService.getInstance().findActivityByTemplate(template);
 			}
 			else{
@@ -65,7 +66,7 @@ public class ActivityLog {
 	
 	public void logActivity(ErpActivityRecord rec) throws FDResourceException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("customer.ejb.ActivityLogSB")){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ActivityLogSB)){
 				FDECommerceService.getInstance().logActivity(rec);
 			}
 			else{
@@ -91,7 +92,7 @@ public class ActivityLog {
 	
 	public Map<String, List> getFilterLists(ErpActivityRecord template) throws FDResourceException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("customer.ejb.ActivityLogSB")){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ActivityLogSB)){
 				return FDECommerceService.getInstance().getFilterLists(template);
 			}
 			else{

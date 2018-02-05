@@ -80,7 +80,7 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseContentProvider.class);
 
-    private final Set<ContentKey> allKeys = Collections.newSetFromMap(new ConcurrentHashMap<ContentKey, Boolean>());
+    private static final Set<ContentKey> allKeys = Collections.newSetFromMap(new ConcurrentHashMap<ContentKey, Boolean>());
 
     @Autowired
     protected ContentTypeInfoService contentTypeInfoService;

@@ -157,8 +157,14 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
+			
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
+				return CallCenterManagerService.getInstance().locateCompanyCustomers(criteria);
+			}
+			else {
 			CallCenterManagerSB sb = callCenterHome.create();
 			return sb.locateCompanyCustomers(criteria);
+			}
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -173,8 +179,13 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
+				 return CallCenterManagerService.getInstance().orderSummarySearch(criteria);
+			}
+			else {
 			CallCenterManagerSB sb = callCenterHome.create();
 			return sb.orderSummarySearch(criteria);
+			}
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -233,8 +244,13 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
+				return CallCenterManagerService.getInstance().getCreditSummaryForDate(date);
+			}
+			else {
 			CallCenterManagerSB sb = callCenterHome.create();
 			return sb.getCreditSummaryForDate(date);
+			}
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -382,8 +398,13 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
+				 CallCenterManagerService.getInstance().resubmitCustomer(customerID);
+			}
+			else {
 			CallCenterManagerSB sb = callCenterHome.create();
 			sb.resubmitCustomer(customerID);
+			}
 
 		} catch (CreateException ce) {
 			callCenterHome = null;
@@ -404,8 +425,13 @@ public class CallCenterServices {
 			if (!FDCustomerManager.orderBelongsToUser(identity, saleId)) {
 				throw new FDResourceException("Order not found in current user's order history.");
 			}
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
+				 CallCenterManagerService.getInstance().returnOrder(saleId, returnOrder);
+			}
+			else {
 			CallCenterManagerSB sb = callCenterHome.create();
 			sb.returnOrder(saleId, returnOrder);
+			}
 
 		} catch (CreateException ce) {
 			callCenterHome = null;
@@ -425,8 +451,13 @@ public class CallCenterServices {
 			if (!FDCustomerManager.orderBelongsToUser(identity, saleId)) {
 				throw new FDResourceException("Order not found in current user's order history.");
 			}
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
+				 CallCenterManagerService.getInstance().changeRedeliveryToReturn(saleId);
+			}
+			else {
 			CallCenterManagerSB sb = callCenterHome.create();
 			sb.changeRedeliveryToReturn(saleId);
+			}
 
 		} catch (CreateException ce) {
 			callCenterHome = null;
@@ -446,8 +477,13 @@ public class CallCenterServices {
 			if (!FDCustomerManager.orderBelongsToUser(identity, saleId)) {
 				throw new FDResourceException("Order not found in current user's order history.");
 			}
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
+				 CallCenterManagerService.getInstance().approveReturn(saleId, returnOrder);
+			}
+			else {
 			CallCenterManagerSB sb = callCenterHome.create();
 			sb.approveReturn(saleId, returnOrder);
+			}
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -487,8 +523,13 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
+				return CallCenterManagerService.getInstance().getOrdersByStatus(status);
+			}
+			else {
 			CallCenterManagerSB sb = callCenterHome.create();
 			return sb.getOrdersByStatus(status);
+			}
 
 		} catch (CreateException ce) {
 			callCenterHome = null;
@@ -548,8 +589,13 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
+				 return CallCenterManagerService.getInstance().resubmitPayment(saleId, payment, charges);
+			}
+			else {
 			CallCenterManagerSB sb = callCenterHome.create();
 			return sb.resubmitPayment(saleId, payment, charges);
+			}
 
 		} catch (CreateException ce) {
 			callCenterHome = null;
@@ -565,8 +611,13 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
+				return CallCenterManagerService.getInstance().getHolidayMeals(identity);
+			}
+			else {
 			CallCenterManagerSB sb = callCenterHome.create();
 			return sb.getHolidayMeals(identity);
+			}
 
 		} catch (CreateException ce) {
 			callCenterHome = null;
@@ -582,8 +633,13 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
+				return CallCenterManagerService.getInstance().saveHolidayMeal(identity, agent, meal);
+			}
+			else {
 			CallCenterManagerSB sb = callCenterHome.create();
 			return sb.saveHolidayMeal(identity, agent, meal);
+			}
 
 		} catch (CreateException ce) {
 			callCenterHome = null;
@@ -780,8 +836,13 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
+				 return CallCenterManagerService.getInstance().doGenericSearch(criteria);
+			}
+			else {
 			CallCenterManagerSB sb = callCenterHome.create();
 			return sb.doGenericSearch(criteria);
+			}
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -796,8 +857,13 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
+				 CallCenterManagerService.getInstance().createSnapShotForModifyOrders(criteria);
+			}
+			else {
 			CallCenterManagerSB sb = callCenterHome.create();
 			sb.createSnapShotForModifyOrders(criteria);
+			}
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -833,8 +899,13 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
+				return CallCenterManagerService.getInstance().cancelReservations(resvCriteria, initiator, notes);
+			}
+			else {
 			CallCenterManagerSB sb = callCenterHome.create();
 			return sb.cancelReservations(resvCriteria, initiator, notes);
+			}
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -870,8 +941,13 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
+				 return CallCenterManagerService.getInstance().returnOrders(info, returnOrders);
+			}
+			else {
 			CallCenterManagerSB sb = callCenterHome.create();
 			return sb.returnOrders(info, returnOrders);
+			}
 	
 		} catch (CreateException ce) {
 			callCenterHome = null;

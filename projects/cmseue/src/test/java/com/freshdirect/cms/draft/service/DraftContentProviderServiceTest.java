@@ -46,6 +46,7 @@ import com.freshdirect.cms.core.service.ContentProvider;
 import com.freshdirect.cms.core.service.ContentProviderService;
 import com.freshdirect.cms.core.service.ContentTypeInfoService;
 import com.freshdirect.cms.core.service.ContextService;
+import com.freshdirect.cms.draft.domain.Draft;
 import com.freshdirect.cms.draft.domain.DraftChange;
 import com.freshdirect.cms.draft.domain.DraftContext;
 import com.google.common.base.Optional;
@@ -56,6 +57,9 @@ import com.google.common.collect.ImmutableSet;
 @RunWith(MockitoJUnitRunner.class)
 @Category(UnitTest.class)
 public class DraftContentProviderServiceTest {
+
+    private static final String DRAFT_NAME = "testDraftContext";
+    private static final Long DRAFT_ID = 1234L;
 
     @Spy
     @InjectMocks
@@ -284,35 +288,28 @@ public class DraftContentProviderServiceTest {
     @Test
     public void testGetAllAttributesForContentKeyWithNotMainDraft() {
         ContentKey productKey = ContentKeyFactory.get(ContentType.Product, "test_prd");
+        Map<Attribute, Object> mainNode = ImmutableMap.of(ContentTypes.Product.FULL_NAME, (Object)"full_name_main");
+        Map<Attribute, Object> draftNode = ImmutableMap.of(ContentTypes.Product.FULL_NAME, (Object)"draft_overriden_full_name");
 
-        Map<Attribute, Object> mainNode = new HashMap<Attribute, Object>();
-        mainNode.put(ContentTypes.Product.FULL_NAME, "full_name_main");
-
-        Map<ContentKey, Map<Attribute, Object>> mainNodeWithContentKey = new HashMap<ContentKey, Map<Attribute, Object>>();
-        mainNodeWithContentKey.put(productKey, mainNode);
-
-        Map<Attribute, Object> draftNode = new HashMap<Attribute, Object>();
-        mainNode.put(ContentTypes.Product.FULL_NAME, "draft_overriden_full_name");
-
-        Map<ContentKey, Map<Attribute, Object>> draftNodeWithContentKey = new HashMap<ContentKey, Map<Attribute, Object>>();
-        mainNodeWithContentKey.put(productKey, draftNode);
-
-        DraftContext draftContext = new DraftContext();
-        draftContext.setDraftId(1);
-        draftContext.setDraftName("testDraftContext");
+        Draft draft = new Draft();
+        draft.setId(DRAFT_ID);
+        draft.setName(DRAFT_NAME);
+        DraftContext draftContext = new DraftContext(DRAFT_ID, DRAFT_NAME);
         Mockito.when(draftContextHolder.getDraftContext()).thenReturn(draftContext);
-
+        
         DraftChange draftChange = new DraftChange();
+        draftChange.setDraft(draft);
         draftChange.setAttributeName(ContentTypes.Product.FULL_NAME.getName());
         draftChange.setContentKey(productKey.toString());
         draftChange.setCreatedAt(System.currentTimeMillis());
         draftChange.setUserName("testUser");
         draftChange.setValue("draft_overriden_full_name");
+        List<DraftChange> draftChanges = ImmutableList.of(draftChange);
 
         Mockito.when(contentProviderService.getAllAttributesForContentKey(productKey)).thenReturn(mainNode);
 
-        Mockito.when(draftService.getDraftChanges(draftContext.getDraftId())).thenReturn(Arrays.asList(draftChange));
-        Mockito.when(draftApplicatorService.applyDraftChangesToContentNodes(Arrays.asList(draftChange), mainNodeWithContentKey)).thenReturn(draftNodeWithContentKey);
+        Mockito.when(draftService.getDraftChanges(DRAFT_ID, productKey)).thenReturn(draftChanges);
+        Mockito.when(draftApplicatorService.applyDraftChangesToContentNode(Mockito.eq(draftChanges), Mockito.eq(mainNode))).thenReturn(draftNode);
 
         Map<Attribute, Object> attributes = underTest.getAllAttributesForContentKey(productKey);
 
@@ -324,35 +321,28 @@ public class DraftContentProviderServiceTest {
     @Test
     public void testGetAttributeValuesWithNotMainDraft() {
         ContentKey productKey = ContentKeyFactory.get(ContentType.Product, "test_prd");
+        Map<Attribute, Object> mainNode = ImmutableMap.of(ContentTypes.Product.FULL_NAME, (Object)"full_name_main");
+        Map<Attribute, Object> draftNode = ImmutableMap.of(ContentTypes.Product.FULL_NAME, (Object)"draft_overriden_full_name");
 
-        Map<Attribute, Object> mainNode = new HashMap<Attribute, Object>();
-        mainNode.put(ContentTypes.Product.FULL_NAME, "full_name_main");
-
-        Map<ContentKey, Map<Attribute, Object>> mainNodeWithContentKey = new HashMap<ContentKey, Map<Attribute, Object>>();
-        mainNodeWithContentKey.put(productKey, mainNode);
-
-        Map<Attribute, Object> draftNode = new HashMap<Attribute, Object>();
-        mainNode.put(ContentTypes.Product.FULL_NAME, "draft_overriden_full_name");
-
-        Map<ContentKey, Map<Attribute, Object>> draftNodeWithContentKey = new HashMap<ContentKey, Map<Attribute, Object>>();
-        mainNodeWithContentKey.put(productKey, draftNode);
-
-        DraftContext draftContext = new DraftContext();
-        draftContext.setDraftId(1);
-        draftContext.setDraftName("testDraftContext");
+        Draft draft = new Draft();
+        draft.setId(DRAFT_ID);
+        draft.setName(DRAFT_NAME);
+        DraftContext draftContext = new DraftContext(DRAFT_ID, DRAFT_NAME);
         Mockito.when(draftContextHolder.getDraftContext()).thenReturn(draftContext);
-
+        
         DraftChange draftChange = new DraftChange();
+        draftChange.setDraft(draft);
         draftChange.setAttributeName(ContentTypes.Product.FULL_NAME.getName());
         draftChange.setContentKey(productKey.toString());
         draftChange.setCreatedAt(System.currentTimeMillis());
         draftChange.setUserName("testUser");
         draftChange.setValue("draft_overriden_full_name");
+        List<DraftChange> draftChanges = ImmutableList.of(draftChange);
 
         Mockito.when(contentProviderService.getAllAttributesForContentKey(productKey)).thenReturn(mainNode);
 
-        Mockito.when(draftService.getDraftChanges(draftContext.getDraftId())).thenReturn(Arrays.asList(draftChange));
-        Mockito.when(draftApplicatorService.applyDraftChangesToContentNodes(Arrays.asList(draftChange), mainNodeWithContentKey)).thenReturn(draftNodeWithContentKey);
+        Mockito.when(draftService.getDraftChanges(DRAFT_ID, productKey)).thenReturn(draftChanges);
+        Mockito.when(draftApplicatorService.applyDraftChangesToContentNode(Mockito.eq(draftChanges), Mockito.eq(mainNode))).thenReturn(draftNode);
 
         Map<Attribute, Object> attributes = underTest.getAttributeValues(productKey, Arrays.asList(ContentTypes.Product.FULL_NAME));
 
@@ -364,35 +354,28 @@ public class DraftContentProviderServiceTest {
     @Test
     public void testGetAttributeValueWithNotMainDraft() {
         ContentKey productKey = ContentKeyFactory.get(ContentType.Product, "test_prd");
+        Map<Attribute, Object> mainNode = ImmutableMap.of(ContentTypes.Product.FULL_NAME, (Object)"full_name_main");
+        Map<Attribute, Object> draftNode = ImmutableMap.of(ContentTypes.Product.FULL_NAME, (Object)"draft_overriden_full_name");
 
-        Map<Attribute, Object> mainNode = new HashMap<Attribute, Object>();
-        mainNode.put(ContentTypes.Product.FULL_NAME, "full_name_main");
-
-        Map<ContentKey, Map<Attribute, Object>> mainNodeWithContentKey = new HashMap<ContentKey, Map<Attribute, Object>>();
-        mainNodeWithContentKey.put(productKey, mainNode);
-
-        Map<Attribute, Object> draftNode = new HashMap<Attribute, Object>();
-        mainNode.put(ContentTypes.Product.FULL_NAME, "draft_overriden_full_name");
-
-        Map<ContentKey, Map<Attribute, Object>> draftNodeWithContentKey = new HashMap<ContentKey, Map<Attribute, Object>>();
-        mainNodeWithContentKey.put(productKey, draftNode);
-
-        DraftContext draftContext = new DraftContext();
-        draftContext.setDraftId(1);
-        draftContext.setDraftName("testDraftContext");
+        Draft draft = new Draft();
+        draft.setId(DRAFT_ID);
+        draft.setName(DRAFT_NAME);
+        DraftContext draftContext = new DraftContext(DRAFT_ID, DRAFT_NAME);
         Mockito.when(draftContextHolder.getDraftContext()).thenReturn(draftContext);
 
         DraftChange draftChange = new DraftChange();
+        draftChange.setDraft(draft);
         draftChange.setAttributeName(ContentTypes.Product.FULL_NAME.getName());
         draftChange.setContentKey(productKey.toString());
         draftChange.setCreatedAt(System.currentTimeMillis());
         draftChange.setUserName("testUser");
         draftChange.setValue("draft_overriden_full_name");
+        List<DraftChange> draftChanges = ImmutableList.of(draftChange);
 
         Mockito.when(contentProviderService.getAllAttributesForContentKey(productKey)).thenReturn(mainNode);
 
-        Mockito.when(draftService.getDraftChanges(draftContext.getDraftId())).thenReturn(Arrays.asList(draftChange));
-        Mockito.when(draftApplicatorService.applyDraftChangesToContentNodes(Arrays.asList(draftChange), mainNodeWithContentKey)).thenReturn(draftNodeWithContentKey);
+        Mockito.when(draftService.getDraftChanges(DRAFT_ID, productKey)).thenReturn(draftChanges);
+        Mockito.when(draftApplicatorService.applyDraftChangesToContentNode(Mockito.eq(draftChanges), Mockito.eq(mainNode))).thenReturn(draftNode);
 
         Optional<Object> attributeValueOptional = underTest.getAttributeValue(productKey, ContentTypes.Product.FULL_NAME);
 

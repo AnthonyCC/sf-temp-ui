@@ -8577,6 +8577,13 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	public static String UPDATE_SP_DETAILS = "update CUST.CUSTOMER_PUSHNOTIFICATION set SEND_TIMESTAMP=? where CUSTOMER_ID=? and DESTINATION =? ";
 
+	/*
+	 *@deprecated
+	 * Please use the CustomerController and CustomerAccountServiceI in Storefront2.0 project.
+	 * It maps to CustomerAccountServiceI.setPushNotificationSentTimestamp(SilverPopupDetails pushNotification);
+	 * 
+	 */
+	@Deprecated
 	public void updateSPSuccessDetails(SilverPopupDetails silverPopup) throws FDResourceException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -8598,6 +8605,13 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
+	/*
+	 *@deprecated
+	 * Please use the CustomerController and CustomerAccountServiceI in Storefront2.0 project.
+	 * It maps to CustomerAccountServiceI.getCookieByFdCustomerId(String fdCustomerId);
+	 * 
+	 */
+	@Deprecated
 	public String getCookieByFdCustomerId(String fdCustomerId) throws FDResourceException {
 		Connection conn = null;
 		try {
@@ -8610,6 +8624,13 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
+	/*
+	 *@deprecated
+	 * Please use the CustomerController and CustomerAccountServiceI in Storefront2.0 project.
+	 * It maps to CustomerAccountServiceI.setDefaultPaymentMethod(DefaultPaymentMethodData defaultPaymentMethodData);
+	 * 
+	 */
+	@Deprecated
 	public void updateFDCustomerDefaultPaymentMethodType(FDIdentity identity, EnumPaymentMethodDefaultType type,
 			String defaultPaymentMethodpk) throws FDResourceException {
 		try {
@@ -8623,6 +8644,13 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
+	/*
+	 *@deprecated
+	 * Please use the CustomerController and CustomerAccountServiceI in Storefront2.0 project.
+	 * It maps to CustomerAccountServiceI.getPaymentMethodDefaultTypeForFDCustomerId()
+	 * 
+	 */
+	@Deprecated
 	public EnumPaymentMethodDefaultType getpaymentMethodDefaultType(String custId) throws FDResourceException {
 		Connection conn = null;
 		try {
@@ -8635,6 +8663,13 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
+	/*
+	 *@deprecated
+	 * Please use the CustomerController and CustomerAccountServiceI in Storefront2.0 project.
+	 * It maps to CustomerAccountServiceI.resetDefaultPaymentMethodAndDefaultTypeForFDCustomerId()
+	 * 
+	 */
+	@Deprecated
 	public int resetDefaultPaymentValueType(String custId) throws FDResourceException {
 		Connection conn = null;
 		try {

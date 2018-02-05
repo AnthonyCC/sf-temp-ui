@@ -98,7 +98,7 @@ public class ProductPotatoUtil {
      * @return
      */
     public static ProductPotatoData getProductPotato(final String productId, final String categoryId, final FDUserI user, final boolean requiresExtraFields) {
-        return getProductPotato(productId, categoryId, user, requiresExtraFields, !FDStoreProperties.getPreviewMode());
+        return getProductPotato(productId, categoryId, user, requiresExtraFields, FDStoreProperties.getPreviewMode());
     }
 
     public static ProductPotatoData getProductPotato(final String productId, final String categoryId, final FDUserI user, final boolean requiresExtraFields, boolean enableProductIncomplete) {
@@ -110,8 +110,6 @@ public class ProductPotatoUtil {
         }
         return null;
     }
-
-
 
     /**
      * Finds and collects {@link ProductConfiguration} items by walking input collection recursively
@@ -142,14 +140,11 @@ public class ProductPotatoUtil {
         productConfiguration.setProductPotato(potato);
     }
 
-
-
     /**
      * Populate cart detail object with product potatoes
      * 
      * @param user
      * @param cartDetail
-     * @param servletContext
      */
     public static void populateCartDetailWithPotatoes(final FDUserI user, final CartDetail cartDetail) {
         List<ProductConfiguration> configurations = new ArrayList<ProductConfiguration>();

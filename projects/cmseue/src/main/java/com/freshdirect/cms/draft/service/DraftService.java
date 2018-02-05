@@ -28,6 +28,7 @@ import com.freshdirect.cms.draft.domain.DraftChange;
 import com.freshdirect.cms.draft.domain.DraftContext;
 import com.freshdirect.cms.draft.domain.DraftStatus;
 
+import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
@@ -43,7 +44,6 @@ public class DraftService {
     public static final Long CMS_DRAFT_DEFAULT_ID = 0L;
 
     public static final Comparator<DraftChange> ORDER_BY_CREATION_DATE_ASC = new Comparator<DraftChange>() {
-
         @Override
         public int compare(DraftChange o1, DraftChange o2) {
             return Long.valueOf(o1.getCreatedAt()).compareTo(Long.valueOf(o2.getCreatedAt()));
@@ -51,7 +51,6 @@ public class DraftService {
     };
 
     public static final Comparator<DraftChange> ORDER_BY_CREATION_DATE_DESC = new Comparator<DraftChange>() {
-
         @Override
         public int compare(DraftChange o1, DraftChange o2) {
             return Long.valueOf(o2.getCreatedAt()).compareTo(Long.valueOf(o1.getCreatedAt()));
@@ -63,6 +62,8 @@ public class DraftService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DraftService.class);
 
+    private static final RestTemplate REST_TEMPLATE = new RestTemplate();
+    
     @Autowired
     private CacheManager cacheManager;
 
@@ -84,8 +85,7 @@ public class DraftService {
         List<Draft> drafts;
         String uri = cmsAdminAppUri + CMS_DRAFT_PATH;
         LOGGER.info(MessageFormat.format("Load all drafts from uri[{0}]", uri));
-        RestTemplate getDraftsRestTemplate = new RestTemplate();
-        drafts = Arrays.asList(getDraftsRestTemplate.getForObject(uri, Draft[].class));
+        drafts = Arrays.asList(REST_TEMPLATE.getForObject(uri, Draft[].class));
         return drafts;
     }
 
@@ -101,8 +101,7 @@ public class DraftService {
     public void updateDraftStatusForDraft(Long draftId, DraftStatus status) {
         final String uri = cmsAdminAppUri + CMS_DRAFT_ACTION_PATH.replace("{id}", draftId.toString());
         LOGGER.info(MessageFormat.format("Updating draftStatus for draftId: {0} to {1}", draftId, status));
-        RestTemplate updateDraftStatusTemplate = new RestTemplate();
-        updateDraftStatusTemplate.postForLocation(uri, status, draftId.toString());
+        REST_TEMPLATE.postForLocation(uri, status, draftId.toString());
         invalidateDraftChangesCache(draftId);
     }
 
@@ -134,39 +133,36 @@ public class DraftService {
 
     @SuppressWarnings("unchecked")
     public List<DraftChange> getDraftChanges(Long draftId) {
-        List<DraftChange> draftChanges = (List<DraftChange>) (cacheManager.getCache(CMS_DRAFT_CHANGES_CACHE_NAME).get(draftId) == null ? null
-                : cacheManager.getCache(CMS_DRAFT_CHANGES_CACHE_NAME).get(draftId).getObjectValue());
-        if (draftChanges == null) {
-            final String uri = cmsAdminAppUri + CMS_DRAFT_CHANGE_ACTION_PATH;
-            RestTemplate getDraftChangesRestTemplate = new RestTemplate();
-            DraftChange[] allDraftChange = getDraftChangesRestTemplate.getForObject(uri, DraftChange[].class, Long.toString(draftId));
-            draftChanges = new ArrayList<DraftChange>();
-            for (DraftChange draftChange : allDraftChange) {
-                draftChanges.add(draftChange);
+        Cache cache = cacheManager.getCache(CMS_DRAFT_CHANGES_CACHE_NAME);
+        Element cacheElement = cache.get(draftId);
+        if (cacheElement != null) {
+            List<DraftChange> cachedDraftChanges = (List<DraftChange>)cacheElement.getObjectValue();
+            if (cachedDraftChanges != null) {
+                return Collections.unmodifiableList(cachedDraftChanges);
             }
-            Collections.sort(draftChanges, ORDER_BY_CREATION_DATE_ASC);
-            cacheManager.getCache(CMS_DRAFT_CHANGES_CACHE_NAME).put(new Element(draftId, draftChanges));
         }
-        return Collections.unmodifiableList(draftChanges);
+        
+        final String uri = cmsAdminAppUri + CMS_DRAFT_CHANGE_ACTION_PATH;
+        DraftChange[] allDraftChanges = REST_TEMPLATE.getForObject(uri, DraftChange[].class, Long.toString(draftId));
+        return Collections.unmodifiableList(updateDraftChangesCache(draftId, Arrays.asList(allDraftChanges)));
     }
 
-    public void saveDraftChange(final Collection<DraftChange> draftChanges) {
-        final String uri = cmsAdminAppUri + CMS_DRAFT_CHANGE_PATH;
-
-        if (draftChanges != null && !draftChanges.isEmpty()) {
-            RestTemplate saveDraftChangeRestTemplate = new RestTemplate();
-            DraftChange[] savedDraftChanges = saveDraftChangeRestTemplate.postForObject(uri, draftChanges, DraftChange[].class);
-            Draft draftOfChanges = draftChanges.iterator().next().getDraft();
-            List<DraftChange> cachedDraftChanges = getDraftChanges(draftOfChanges.getId());
-            List<DraftChange> notCachedDraftChanges = new ArrayList<DraftChange>();
-            for (DraftChange draftChange : savedDraftChanges) {
-                if (draftChange.getDraft().equals(draftOfChanges)) {
-                    if (cachedDraftChanges == null || !cachedDraftChanges.contains(draftChange)) {
-                        notCachedDraftChanges.add(draftChange);
-                    }
-                }
+    public List<DraftChange> getDraftChanges(Long draftId, ContentKey key) {
+        String keyStr = key.toString();
+        List<DraftChange> result = new ArrayList<DraftChange>();
+        for (DraftChange dc : getDraftChanges(draftId)) {
+            if (keyStr.equals(dc.getContentKey())) {
+                result.add(dc);
             }
-            updateDraftChangesCache(notCachedDraftChanges);
+        }
+        return result;
+    }
+    
+    public void saveDraftChange(final DraftContext draftContext, final Collection<DraftChange> draftChangesToSave) {
+        final String uri = cmsAdminAppUri + CMS_DRAFT_CHANGE_PATH;
+        if (draftChangesToSave != null && !draftChangesToSave.isEmpty()) {
+            DraftChange[] allDraftChanges = REST_TEMPLATE.postForObject(uri, draftChangesToSave, DraftChange[].class);
+            updateDraftChangesCache(draftContext.getDraftId(), Arrays.asList(allDraftChanges));
         }
     }
 
@@ -174,22 +170,16 @@ public class DraftService {
         cacheManager.getCache(CMS_DRAFT_CHANGES_CACHE_NAME).remove(draftId);
     }
 
-    @SuppressWarnings("unchecked")
-    private void updateDraftChangesCache(Collection<DraftChange> draftChanges) {
-        for (DraftChange draftChange : draftChanges) {
-            Long draftId = draftChange.getDraft().getId();
-            List<DraftChange> cachedDraftChanges = (List<DraftChange>) cacheManager.getCache(CMS_DRAFT_CHANGES_CACHE_NAME).get(draftId).getObjectValue();
-            if (cachedDraftChanges == null) {
-                List<DraftChange> changesOfNewDraft = new ArrayList<DraftChange>();
-                changesOfNewDraft.add(draftChange);
-                cacheManager.getCache(CMS_DRAFT_CHANGES_CACHE_NAME).put(new Element(draftId, changesOfNewDraft));
-            } else {
-                synchronized (cachedDraftChanges) {
-                    cachedDraftChanges.add(draftChange);
-                    Collections.sort(cachedDraftChanges, ORDER_BY_CREATION_DATE_ASC);
-                }
+    private List<DraftChange> updateDraftChangesCache(final Long draftId, final Collection<DraftChange> allDraftChanges) {
+        List<DraftChange> changeList = new ArrayList<DraftChange>();
+        for (DraftChange dc : allDraftChanges) {
+            if (draftId.equals(dc.getDraft().getId())) {
+                changeList.add(dc);
             }
         }
+        Collections.sort(changeList, ORDER_BY_CREATION_DATE_ASC);
+        cacheManager.getCache(CMS_DRAFT_CHANGES_CACHE_NAME).put(new Element(draftId, changeList));
+        return changeList;
     }
 
     public String decorateUrlWithDraft(String baseUrl, String draftId, String draftName) {
@@ -255,5 +245,4 @@ public class DraftService {
             return "";
         }
     }
-
 }

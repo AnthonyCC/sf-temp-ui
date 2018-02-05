@@ -11,6 +11,7 @@ import javax.servlet.jsp.tagext.VariableInfo;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.storeapi.content.PopulatorUtil;
@@ -103,7 +104,7 @@ public class ProductPotatoTag extends SimpleTagSupport {
 		 */
 		boolean incomplete = false;
 		try {
-            incomplete = PopulatorUtil.isProductIncomplete(product) && !PopulatorUtil.isNodeArchived(product);
+            incomplete = FDStoreProperties.getPreviewMode() && PopulatorUtil.isProductIncomplete(product) && !PopulatorUtil.isNodeArchived(product);
 		} catch (Exception e) {
 			throw new JspException(e);
 		}

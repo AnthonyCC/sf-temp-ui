@@ -165,16 +165,6 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 		try {
 			if ( "setDeliveryAddress".equalsIgnoreCase( action ) ) {
 				try {
-					// set unattended delivery flag to opt in if the user has not seen the unattended delivery notice
-					if(EnumTransactionSource.IPHONE_WEBSITE.getCode().equals(app)) {
-						com.freshdirect.customer.ErpAddressModel dlvAddress = currentUser.getShoppingCart().getDeliveryAddress();
-						if (dlvAddress != null) {
-					        if (EnumUnattendedDeliveryFlag.NOT_SEEN.equals(dlvAddress.getUnattendedDeliveryFlag())) {
-					        	dlvAddress.setUnattendedDeliveryFlag(EnumUnattendedDeliveryFlag.OPT_IN);					        	
-					        }
-						}
-					}
-					
 					LOGGER.debug("setDeliveryAddress[START] :");
                     DeliveryAddressManipulator m = new DeliveryAddressManipulator(request, response, result, action);
 					m.performSetDeliveryAddress(noContactPhonePage);

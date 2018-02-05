@@ -124,12 +124,4 @@ public class SinglePageCheckoutData {
 		this.standingOrderResponseData = standingOrderResponseData;
 	}
 
-    public ViewCartCarouselData getCarouselData() {
-        return carouselData;
-    }
-
-    public void setCarouselData(ViewCartCarouselData carouselData) {
-        this.carouselData = carouselData;
-    }
-
 }

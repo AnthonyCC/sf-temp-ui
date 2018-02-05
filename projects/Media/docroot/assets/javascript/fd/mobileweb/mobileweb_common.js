@@ -1,6 +1,17 @@
 /* requires jquery, jquery.mmenu */
 var API;
 (function ($) {
+	/* experimental back/forward navigation fix */
+	if(!!window.performance && window.performance.navigation.type === 2) {
+		window.location.reload(true);
+	}
+	$(window).on('pageshow', function() { /* fix for back on ios safari */
+		$('.cartheader__button').attr('disabled', null);
+	});
+	$(window).on('pagehide', function() { /* pageshow covers, but just in case */
+		$('.cartheader__button').attr('disabled', null);
+	});
+	
 	$(document).ready(function() {
 		/* NAV */
 			$("#nav-menu").mmenu({
@@ -166,20 +177,23 @@ var API;
 			}
 		});
 		$jq('.gen-accord-toggler').on('click touch', function(e) {
-			if ($jq(this).hasClass('open')) {
-				$jq(this).parent().find('.gen-accord-content').hide();
-			} else {
-				$jq(this).parent().find('.gen-accord-content').show();
-			}
-			$jq(this).find('.gen-accord-toggler-arrow').toggleClass('gen-accord-toggler-arrow_n');
-			$jq(this).toggleClass('open');
-		});
-		$jq('.gen-accord-toggler').keydown(function(event){
-			var keycode = (event.keyCode ? event.keyCode : event.which);
-			if(keycode == '13'){
-				$jq(this).trigger("click");
-			}
-		});
+            if ($jq(this).hasClass('open')){
+                $jq(this).parent().find('.gen-accord-content').hide();
+                $jq(this).attr('aria-expanded', false);
+            }else {
+                $jq(this).parent().find('.gen-accord-content').show();
+                $jq(this).attr('aria-expanded', true);
+            }
+            $jq(this).find('.gen-accord-toggler-arrow').toggleClass('gen-accord-toggler-arrow_n');
+            $jq(this).toggleClass('open');
+        });
+        $jq('.gen-accord-toggler').keydown(function(event){
+            var keycode = (event.keyCode ? event.keyCode : event.which);
+            if(keycode == '13'){
+               event.preventDefault();
+                $jq(this).trigger("click");
+            }
+        });
 		
 		/* timeslots */
 		/* use pre-init to set mobweb to true */
@@ -231,14 +245,43 @@ var API;
 		/* CHECKOUT */
 		/* anchor header */
 		function co_alignHeader() {
-			var offsetTop = 0; 
-			offsetTop += $('#smartbanner:visible').outerHeight(true); //closed still returns height, so check for visible
-			$('[data-ec-page] .mm-page #cartheader, [data-ec-page] .mm-page #cartheader_co').css({'top': offsetTop+$('.mobweb-topnav').outerHeight(true)+'px' });
-			$('[data-ec-page] .mm-page #content').css({'padding-top': ($('.mobweb-topnav').outerHeight(true)+$('[data-ec-page] .mm-page #cartheader, [data-ec-page] .mm-page #cartheader_co').outerHeight(true))+'px'});
+			var cartHeaderEl = $('[data-ec-page] .mm-page #cartheader, [data-ec-page] .mm-page #cartheader_co');
+			if (cartHeaderEl) {
+				cartHeaderEl.find('.estimated-total').css({
+					"padding-top": (cartHeaderEl.find('.right').height() - cartHeaderEl.find('.estimated-total').height()) + "px"
+				});
+				
+				cartHeaderEl.css({'top': window.innerHeight - cartHeaderEl.height()  +'px' });
+				$('footer').css({'padding-bottom': cartHeaderEl.height()+'px'});
+			}
+		
+			if (!$jq('#smartbanner').parent().hasClass('.mobweb-topnav')) { //move banner into nav
+				$jq('.mobweb-topnav').prepend($jq('#smartbanner'));
+			}
+			
+			// adjust the content's top position if top nav exists 
+			if ($('.mobweb-topnav').length && $('[data-ec-page] .mm-page #content').length) {
+				$('[data-ec-page] .mm-page #content').css({'padding-top': $('.mobweb-topnav').outerHeight(true)+'px'});
+			}
 		}
 		$('#smartbanner .sb-close').on('click', co_alignHeader); //resize on smartbanner close
-		$('[data-ec-page] .mm-page .mobweb-topnav').on('resize', co_alignHeader);
+		$('[data-ec-page] .mm-page .mobweb-topnav,[data-ec-page] .mm-page .checkout-top-nav').on('resize', co_alignHeader);
+		$(window).on('resize', co_alignHeader);
 		co_alignHeader();
 
+		/* display modifying order message */
+		window.displayModifyingOrderMobile = window.displayModifyingOrderMobile || function(time, dayOfWeek) {
+			if (!time || !dayOfWeek)
+				return;
+			var msg = '<div id="location-modify-order-message" style="position: static;text-align: center;font-size: 14px;line-height: 16px;padding: 15px 0 15px 0;background-color: #f68139;text-shadow: 1px 1px 0 #c85c19;color: #ffffff;border-bottom: none;">'+
+			'<div><strong class="modify-delivery-label">Modifying Delivery: </strong><div class="modify-delivery-time"><span>' + dayOfWeek + ' </span><span style="text-transform: uppercase;text-shadow: 1px 1px 0 rgba(200, 92, 25, 0.5);">' + time + '</span></div></div></div>';
+			if ($('#location-modify-order-message').length !== 0){
+				$('#location-modify-order-message').replaceWith(msg);
+			} else if ($('.mobweb-topnav .navbar').length) {
+				$(msg).insertBefore('.mobweb-topnav .navbar');
+			}
+			
+		}
+		$(document).trigger('displayModifyingOrderMobile-loaded').off('displayModifyingOrderMobile-loaded');
 	});
 }(jQuery));

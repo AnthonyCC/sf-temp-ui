@@ -191,8 +191,13 @@ public class SOResult implements Serializable {
 		 * 
 		 * @param status
 		 */
+		
 		private Result( Status status ) {
 			this.status = status;
+		}
+
+		public Result() {
+			
 		}
 
 		/**
@@ -377,11 +382,38 @@ public class SOResult implements Serializable {
 		}
 		
 		
+		
+		
 		@Override
 		public String toString() {
 			return "SOSRR["+status+", "+errorCode+", "+errorHeader+", "+errorDetail+"]";
 		}
+		//Introduced For Storefront 2.0 Implementation.
 		
+		
+		
+		public void setStatus(Status status) {
+			this.status = status;
+		}
+		public void setUnavailabilityDetails(
+				Map<FDCartLineI, UnAvailabilityDetails> unavailabilityDetails) {
+			this.unavailabilityDetails = unavailabilityDetails;
+		}
+		public void setErrorCode(ErrorCode errorCode) {
+			this.errorCode = errorCode;
+		}
+		public void setRequestedDate(Date requestedDate) {
+			this.requestedDate = requestedDate;
+		}
+		public void setSaleId(String saleId) {
+			this.saleId = saleId;
+		}
+		public void setSoId(String soId) {
+			this.soId = soId;
+		}
+		public void setCustomerId(String customerId) {
+			this.customerId = customerId;
+		}
 		public boolean isErrorOccured() {
 			return errorOccured;
 		}
@@ -467,6 +499,24 @@ public class SOResult implements Serializable {
 			}
 		}		
 		
+		//Introduced for Storefront 2.0 implementation.
+		public void setFailedCount(int failedCount) {
+			this.failedCount = failedCount;
+		}
+		public void setSuccessCount(int successCount) {
+			this.successCount = successCount;
+		}
+		public void setSkippedCount(int skippedCount) {
+			this.skippedCount = skippedCount;
+		}
+		public void setErrorOccured(boolean errorOccured) {
+			this.errorOccured = errorOccured;
+		}
+		
+		
+		public void setResults(List<Result> results) {
+			this.results = results;
+		}
 		@Override
 		public String toString() {
 			return "SOSRC["+successCount+" success, "+failedCount+" failed, "+skippedCount+" skipped, "+getTotalCount()+" total]"; 

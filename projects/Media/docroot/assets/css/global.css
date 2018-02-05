@@ -3415,6 +3415,10 @@ button.space {
 .lowercase {
 	text-transform: lowercase;
 }
+.text-uppercase {
+	text-transform: uppercase;
+}
+}
 .zipcodefld{
 	display:inline-block;
 	vertical-align:inherit;

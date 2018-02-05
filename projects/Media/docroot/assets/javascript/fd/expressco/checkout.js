@@ -57,7 +57,16 @@ var FreshDirect = FreshDirect || {};
     enableCheckout: {
       value: function () {
         FORMS.releaseLockFormResubmit($('[fdform="checkout"]'));
-        $('#cartcontent.checkout, .checkout-contentheader, [fdform="checkout"] button').attr('checkout-disabled', null);
+        $('#cartcontent.checkout, .checkout-contentheader, [fdform="checkout"] button').attr('checkout-disabled', null)
+        	.find('.tabbable').removeAttr('nofocus').each(function (i, e) {
+        		var originalTabIndex = $(e).data('orig-tab-index');
+        		if (originalTabIndex != null){
+        			$(e).attr('tabindex', originalTabIndex);
+        		} else {
+        			$(e).removeAttr('tabindex');
+        		}
+        			
+        	});
       }
     },
     enableTimeslot: {
@@ -68,7 +77,16 @@ var FreshDirect = FreshDirect || {};
     disableCheckout: {
       value: function () {
         FORMS.lockFormResubmit($('[fdform="checkout"]'));
-        $('#cartcontent.checkout, .checkout-contentheader, [fdform="checkout"] button').attr('checkout-disabled', 'true');
+        $('#cartcontent.checkout, .checkout-contentheader, [fdform="checkout"] button').attr('checkout-disabled', 'true')
+        	.find(':tabbable, .tabbable').addClass('tabbable').attr('nofocus', true).each(function(i, e) {
+        		// store the original tab index to the element
+        		if ($(e).data('orig-tab-index') == null) {
+        		var originalTabIndex = $(e).attr('tabindex');
+        		if (originalTabIndex != null)
+        			$(e).data('orig-tab-index', originalTabIndex);
+        		}
+        		$(e).attr('tabindex', -1);
+        	})
       }
     },
     disableTimeslot: {

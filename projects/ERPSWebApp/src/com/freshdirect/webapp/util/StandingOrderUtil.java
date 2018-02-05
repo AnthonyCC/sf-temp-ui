@@ -226,17 +226,16 @@ public class StandingOrderUtil {
 			}
 		}else {
 			// delete date which was choose by user.
-			if(so.getDeleteDate()!=null && dateFormat.format(now).equals(dateFormat.format(so.getDeleteDate()))) {
-				LOGGER.info("Starting to delete standing orders template based on delete date choosen by user.");
+			if(so.getDeleteDate()!=null && (dateFormat.format(now).equals(dateFormat.format(so.getDeleteDate())) || so.getDeleteDate().before(now) )) {
+				LOGGER.info("Starting to delete standing orders template based on delete date choosen by user.Delete date: "+so.getDeleteDate());
 				try {
 					FDActionInfo soinfo = new FDActionInfo( EnumTransactionSource.STANDING_ORDER, so.getCustomerIdentity(), 
-							INITIATOR_NAME, "so template deleted as per the delete date: "+so.getDeleteDate()+", choosen by user", null, null);
-					so.setDeleteDate(null);
+							INITIATOR_NAME, "SO template deleted as per the delete date: "+so.getDeleteDate()+", choosen by user", null, null);
 					deleteActivateSo(so, soinfo);
+					return SOResult.createSkipped(so, so.getCustomerIdentity(), so.getUserInfo(), "Skipping and deleting template as per delete date chosen by user");
 				} catch (Exception e) {
 					LOGGER.error(" Got the exception while deleting the So template:"+so.getId(), e);
 				}
-				LOGGER.info("Delete the So template based on template criteria choosen by user.");
 			}
 		}
 	
@@ -617,9 +616,6 @@ public class StandingOrderUtil {
 		if ( cartPrice < hardLimit ) {
 			//Display soft limit info for user. He doesn't know about hard limit. 
 			String msg = "The order subtotal ($"+cartPrice+") was below our $"+softLimit+" minimum.";
-			if( !vr.getUnavailableItems().isEmpty() && vr.getUnavailableItems().size()!= 0){
-				msg="The order subtotal ($"+cartPrice+") was below our $"+softLimit+" minimum. Some of the items in your cart are unavailable temporarily.";
-			}
 			LOGGER.info( msg );
 			return SOResult.createUserError( so, customer, customerInfo, ErrorCode.MINORDER, msg );
 		} else if(cartPrice >= hardLimit && cartPrice < softLimit) {
@@ -1010,9 +1006,11 @@ public class StandingOrderUtil {
 					}
 				} else {
 					vr.addUnavailableItem(cartLine, UnavailabilityReason.ATP, "Zero quantity", cartLine.getQuantity(),altSkuCode);
-					cart.removeOrderLineById(randomId);
-					LOGGER.debug("item has been removed from SO cart[only for this order instance] due to unavailablity "+cartLine.getSkuCode()+", of quantity:"+cartLine.getQuantity()+
-								", cart price drop is: "+cartLine.getPrice()+"$");
+					if(!FDStoreProperties.isIgnoreATPFailureForSO()) { // If the available qty is less than the minimum required qty for the item, we ignore this.
+						cart.removeOrderLineById(randomId);
+						LOGGER.debug("item has been removed from SO cart[only for this order instance] due to unavailablity "+cartLine.getSkuCode()+", of quantity:"+cartLine.getQuantity()+
+									", cart price drop is: "+cartLine.getPrice()+"$");
+					}
 				}
 			} else if (info instanceof FDCompositeAvailabilityInfo) {
 				/**

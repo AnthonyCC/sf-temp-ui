@@ -141,7 +141,7 @@ public class TEmailInfoService extends AbstractEcommService implements TEmailInf
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
-		return ModelConverter.buildTransMail(response.getData());
+		return FDStoreModelConverter.buildTransMail(response.getData());
 	}
 
 	@Override

@@ -1069,13 +1069,13 @@
 	width: 153px;
 	margin: 5px 0 0;
 }
-.standing-orders-3 #cartcontent .cartetip-container #tipTextBox{
+.standing-orders-3 #cartcontent .cartetip-container .tipTextBox{
 	width: 153px;
 }
-.standing-orders-3 #cartcontent .cartetip .cartetip-container #tipAppliedTick{
+.standing-orders-3 #cartcontent .cartetip .cartetip-container .tipAppliedTick{
 	padding: 0 0 0 5px;
 }
-.standing-orders-3 #cartcontent .cartetip #tipDropdown {
+.standing-orders-3 #cartcontent .cartetip .tipDropdown {
 	background: transparent url(/media/images/layout/input-arrow-down.png) no-repeat 97% center;
 	border-radius: 0px;
 	-webkit-border-radius: 0px;
@@ -1281,17 +1281,13 @@
 
 .standing-orders-3 #ec-drawer .drawer__item__title,
 .standing-orders-3 #ec-drawer .drawer__item__section .section__title,
-.standing-orders-3 #ec-drawer .standing-orders-3-successtimeslot_date .standing-orders-3-successtimeslot_date-header-freq-text,
 .standing-orders-3 #ec-drawer .successtimeslot .successtimeslot_time,
 .standing-orders-3 #ec-drawer .drawer__previewitem__title,
-.standing-orders-3 #ec-drawer .drawer__previewitem__section .section__title{
+.standing-orders-3 #ec-drawer .drawer__previewitem__section .section__title,
+.standing-orders-3 #ec-drawer .drawer__previewitem__section .section__body p{
 	text-align: left;
 	font-size: 14px;
-    font-weight: normal;
     color: #666;
-}
-#ec-drawer .standing-orders-3-successtimeslot_date .standing-orders-3-successtimeslot_date-header-freq-text{
-	padding-top: 20px;
 }
 .standing-orders-3 #ec-drawer .successtimeslot{
 	margin-top: 5px;
@@ -1309,10 +1305,6 @@
 }
 .standing-orders-3 #ec-drawer .drawer-content{
 	background: #fff;
-}
-.standing-orders-3 #ec-drawer [data-drawer-default-content="address"] .drawer__itemright{
-	margin-left: 10px;
-	max-width: 210px;
 }
 .standing-orders-3-so-settings-container{
 	background: #f7f7f7;
@@ -1645,7 +1637,7 @@
 	opacity: 0.7;
 	cursor: default;
 }
-.eTippingEnabled #tipDropdown {
+.eTippingEnabled .tipDropdown {
 	background: transparent url(/media/images/layout/input-arrow-down.png) no-repeat 97% center;
 	border-radius: 0px;
 	-webkit-border-radius: 0px;

@@ -275,7 +275,7 @@ public class ReferralCreditCron {
 						rec.setDate(new Date());
 						rec.setNote("$" + model.getReferral_fee() + ", "
 								+ model.getCustomerId());
-						if(FDStoreProperties.isSF2_0_AndServiceEnabled("customer.ejb.ActivityLogSB")){
+						if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ActivityLogSB)){
 							FDECommerceService.getInstance().logActivity(rec);
 						}
 						else{

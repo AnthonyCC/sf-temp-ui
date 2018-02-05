@@ -24,6 +24,12 @@ import com.freshdirect.fdstore.FDResourceException;
  * @version $Revision$
  * @author $Author$
  */
+/**
+ *@deprecated Please use the DbMonitorController and DbMonitorServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public class ErpMonitorSessionBean extends SessionBeanSupport {
     
     private final static Category LOGGER = LoggerFactory.getInstance( ErpMonitorSessionBean.class );

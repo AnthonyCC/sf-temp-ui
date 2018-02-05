@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +43,6 @@ import com.freshdirect.erp.ejb.ErpGrpInfoHome;
 import com.freshdirect.erp.ejb.ErpGrpInfoSB;
 import com.freshdirect.erp.ejb.ErpInfoSB;
 import com.freshdirect.erp.ejb.ErpProductFamilyHome;
-import com.freshdirect.erp.ejb.ErpProductFamilySB;
 import com.freshdirect.erp.model.ErpCharacteristicModel;
 import com.freshdirect.erp.model.ErpCharacteristicValueModel;
 import com.freshdirect.erp.model.ErpCharacteristicValuePriceModel;
@@ -84,8 +82,6 @@ import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.util.UnitPriceUtil;
 import com.freshdirect.framework.core.VersionedPrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.payment.service.FDECommerceService;
-import com.freshdirect.payment.service.IECommerceService;
 
 public class FDProductHelper {
 
@@ -410,7 +406,8 @@ public class FDProductHelper {
 	
 	}
 	 private Comparator<ErpMaterialPrice> matlPriceComparator = new Comparator<ErpMaterialPrice>() {
-	        public int compare(ErpMaterialPrice price1, ErpMaterialPrice price2) {
+	        @Override
+            public int compare(ErpMaterialPrice price1, ErpMaterialPrice price2) {
 	            if (price1.getScaleQuantity() == price2.getScaleQuantity()) return 0;
 	            else if (price1.getScaleQuantity() < price2.getScaleQuantity()) return -1;
 	            else return 1;
@@ -478,8 +475,7 @@ public class FDProductHelper {
 		
 		boolean isShowBurstImage = DealsHelper.isShowBurstImage(defaultPrice,promoPrice);;
 		
-		ErpMaterialPrice[] matPrices = matPriceList.toArray(new ErpMaterialPrice[0]);
-		int tieredDeal = DealsHelper.determineTieredDeal(defaultPrice, matPrices);
+        int tieredDeal = DealsHelper.determineTieredDeal(defaultPrice, matPriceList);
 		//LOGGER.debug("Tiered deal for sku: " + skuCode + " is:" + tieredDeal);
 		if (tieredDeal > 0 && DealsHelper.isDealOutOfBounds(tieredDeal)) {
 			//LOGGER.debug("tiered deal is out of bounds for SKU " + skuCode);
@@ -558,7 +554,8 @@ public class FDProductHelper {
 	}
 
 	private static class SalesUnitComparator implements Comparator<ErpSalesUnitModel> {
-		public int compare(ErpSalesUnitModel su1, ErpSalesUnitModel su2) {
+		@Override
+        public int compare(ErpSalesUnitModel su1, ErpSalesUnitModel su2) {
 			double ratio1 = ((double)su1.getNumerator()) / ((double)su1.getDenominator());
 			double ratio2 = ((double)su2.getNumerator()) / ((double)su2.getDenominator());
 			if (ratio1 < ratio2)
@@ -605,7 +602,8 @@ public class FDProductHelper {
 	}
 
 	private static class VariationOptionComparator extends AttributeComparator.Priority<ErpCharacteristicValueModel> {
-		public int compare(ErpCharacteristicValueModel o1, ErpCharacteristicValueModel o2) {
+		@Override
+        public int compare(ErpCharacteristicValueModel o1, ErpCharacteristicValueModel o2) {
 			int prio = super.compare(o1, o2);
 			if (prio!=0) {
 				return prio;

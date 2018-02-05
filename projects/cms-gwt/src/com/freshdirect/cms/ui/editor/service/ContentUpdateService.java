@@ -91,7 +91,7 @@ public class ContentUpdateService {
             LOGGER.error("No author");
             return new GwtSaveResponse("No author is provided");
         } else if (payload == null || payload.isEmpty()) {
-            LOGGER.error("No or empty content to save");
+            LOGGER.warn("No or empty content to save");
             return new GwtSaveResponse("No or empty content to save");
         }
 
@@ -112,6 +112,7 @@ public class ContentUpdateService {
                 }
 
             } else {
+                LOGGER.error("Permission error while saving for " + author.getName() + "/" + author.getPersonaName() + " on " + author.getDraftName());
                 response = new GwtSaveResponse("You have no efficient rights to save");
             }
 

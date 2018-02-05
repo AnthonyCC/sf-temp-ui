@@ -13,6 +13,8 @@ import java.util.Set;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.ZoneInfo;
+import com.freshdirect.fdstore.EnumAvailabilityStatus;
+import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -298,7 +300,18 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 
     @Override
     public boolean isGoingOutOfStock() {
-        return ContentFactory.getInstance().isGoingOutOfStockProduct(getContentKey());
+        boolean isToBeDiscontinuedSoon;
+        try {
+            FDProductInfo productInfo = FDCachedFactory.getProductInfo(getDefaultSkuCode());
+            ZoneInfo zone = getUserContext().getPricingContext().getZoneInfo();
+            EnumAvailabilityStatus availabilityStatus = productInfo.getAvailabilityStatus(zone.getSalesOrg(), zone.getDistributionChanel());
+            isToBeDiscontinuedSoon = EnumAvailabilityStatus.TO_BE_DISCONTINUED_SOON == availabilityStatus;
+        } catch (FDSkuNotFoundException e) {
+            isToBeDiscontinuedSoon = false;
+        } catch (FDResourceException e) {
+            isToBeDiscontinuedSoon = false;
+        }
+        return isToBeDiscontinuedSoon;
     }
 
 	@Override
