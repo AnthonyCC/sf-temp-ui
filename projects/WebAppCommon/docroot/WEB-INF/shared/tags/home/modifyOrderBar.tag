@@ -49,7 +49,7 @@ attribute name="modifyOrderAlert" required="true" rtexprvalue="true" type="java.
 							if(validPendingOrders.size() > 0) {
 								FDCartModel modifyOrderBarTagCart = user.getShoppingCart();
 								isModifyingOrder = modifyOrderBarTagCart instanceof FDModifyCartModel;
-								if (isModifyingOrder) {
+								if (isModifyingOrder && mobWebModifyOrderTag) {
 									FDModifyCartModel moCart = (FDModifyCartModel) modifyOrderBarTagCart;
 									if (moCart != null && 
 										moCart.getOriginalOrder() != null && 
@@ -150,6 +150,38 @@ attribute name="modifyOrderAlert" required="true" rtexprvalue="true" type="java.
 											</table>
 										<% } %>
 									<% } %>
-								<% } %>
+								<% } else { %>
+								<div class="locabar-modify-order-dropdown">
+										<%
+											String orderName;
+											for(FDOrderInfoI item : validPendingOrders){										
+										%>
+											<hr class="so-alert-line-separator">
+											<div class="locabar-modify-order-dropdown-item">
+												<div class="locabar-modify-order-dropdown-img"></div>
+												<div class="locabar-modify-order-dropdown-container">
+													<div class="locabar-modify-order-dropdown-container-status-bold">Order Status: </div>
+													<div class="locabar-modify-order-dropdown-container-status"> <%=item.getOrderStatus().getDisplayName()%></div>
+													<div class="locabar-modify-order-dropdown-container-name">
+														<%
+														orderName = item.getErpSalesId();
+														if(soUpcomingDelivery.containsKey(item.getErpSalesId())){
+															orderName = soUpcomingDelivery.get(item.getErpSalesId());
+														}
+														%>
+													    <%= orderName %>
+													</div>
+													<div class="locabar-modify-order-dropdown-container-date-and-time"><span class="locabar-modify-order-alert-table-date"><%= new SimpleDateFormat("EEEEE, MMM d").format(item.getRequestedDate()) %></span><%=  DateUtil.formatHourAMPMRange(item.getDeliveryStartTime(),item.getDeliveryEndTime()) %></div>
+													<div class="locabar-modify-order-dropdown-container-buttons">
+														<div class="locabar-modify-order-dropdown-container-delails"><a href="/your_account/order_details.jsp?orderId=<%= item.getErpSalesId() %>">See Details <span class="offscreen">of order number <%= orderName %></span></a></div>
+														<div class="locabar-modify-order-dropdown-container-modify"><button class="modify-order-alert-button cssbutton cssbutton-flat green transparent" onclick="window.location.href='/your_account/modify_order.jsp?orderId=<%= item.getErpSalesId() %>&action=modify'"">Modify Order</button></div>
+														<div class="clear"></div>
+													</div>												
+												</div>
+												<div class="clear"></div>
+											</div>
+										<% } %>
+									</div>
+								<%} %>
 							<% } %>							
 					<% } %>

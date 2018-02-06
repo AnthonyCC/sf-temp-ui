@@ -18,20 +18,6 @@ var FreshDirect = FreshDirect || {};
 					window.displayModifyingOrderMobile(time, dayOfWeek);
 				});
 			}
-		} else {
-			displayModifyingOrder(time, dayOfWeek);
-		}
-		
-	}
-	
-	function displayModifyingOrder(time, dayOfWeek) {
-		var msg = '<div id="location-modify-order-message" class="position-absolute"><div class="modify-order-container"><strong>Modifying Delivery: </strong><span class="modify-delivery-time"><span>' + dayOfWeek + ' </span><span class="text-uppercase">' + time + '</span></span></div></div>';
-		if ($('#location-modify-order-message').length !== 0){
-			$('#location-modify-order-message').replaceWith(msg);
-			$('.locabar-section.locabar-addresses-section, #location-tabs').hide();
-		} else if ($('#locationbar').length ) {
-			$('#locationbar').append(msg);
-			$('#locabar_addresses_trigger, #location-tabs').hide();
 		}
 		
 	}
