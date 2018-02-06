@@ -22,6 +22,12 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  * @author sathishkumar Merugu
  *
  */
+/**
+ *@deprecated Please use the FDBrandProductsAdController and FDBrandProductsAdServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public class FDBrandProductsAdManagerSessionBean extends ERPSessionBeanSupport {
 
 	/**
