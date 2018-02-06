@@ -1599,6 +1599,7 @@ public class ModelConverter {
 		model.setExpirationDate(data.getExpirationDate());
 		model.setFirstName(data.getFirstName());
 		model.setId(data.getId());
+		model.setPK(new PrimaryKey(data.getId()));
 		model.setLastModifyDate(data.getLastModifyDate());
 		model.setLastModifyUser(data.getLastModifyUser());
 		model.setLastName(data.getLastName());
@@ -1700,6 +1701,7 @@ public class ModelConverter {
 		}
 		model.setOriginalAmount(source.getOriginalAmount());
 		model.setPurchaseSaleId(source.getPurchaseSaleId());
+		if(source.getPurchaseDate() != null)
 		model.setPurchaseDate(new java.sql.Date(source.getPurchaseDate()));
 		return model;
 		
@@ -1726,6 +1728,7 @@ public class ModelConverter {
 		model.setEmailID(source.getEmailID());
 		model.setDeviceId(source.getDeviceId());
 		model.setDebitCard(source.isDebitCard());
+		model.setPaymentType(EnumPaymentType.getEnum(source.getPaymentType()));
 	}
 
 	public static CustomerCreditData buildCustomerCreditData(String referral_customer_id, String customer_id, int ref_fee,
