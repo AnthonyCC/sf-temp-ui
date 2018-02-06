@@ -10,10 +10,10 @@ import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.Variant;
 
 /**
- * Service configuration session bean interface.
- * 
- * @author istvan
- * 
+ *@deprecated Please use the SmartStoreServiceConfigurationController and SmartStoreConfigurationServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
  */
 public interface SmartStoreServiceConfigurationSB extends EJBObject {
 	/**
@@ -24,6 +24,7 @@ public interface SmartStoreServiceConfigurationSB extends EJBObject {
 	 * @throws RemoteException
 	 * @throws SQLException
 	 */
+	 @Deprecated
 	public Collection<Variant> getVariants(EnumSiteFeature feature) throws RemoteException,
 			SQLException;
 
@@ -35,5 +36,6 @@ public interface SmartStoreServiceConfigurationSB extends EJBObject {
 	 * @throws RemoteException
 	 * @throws SQLException
 	 */
+	 @Deprecated
 	public Collection<DynamicSiteFeature> getSiteFeatures(final String eStoreId) throws RemoteException, SQLException;
 }
