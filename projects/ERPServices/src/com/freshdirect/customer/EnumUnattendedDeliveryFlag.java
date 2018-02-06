@@ -9,6 +9,10 @@ import org.apache.commons.lang.enums.Enum;
 
 public class EnumUnattendedDeliveryFlag extends Enum {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6708819439580540734L;
 	// DEFAULT TYPES
 	public static final EnumUnattendedDeliveryFlag OPT_IN = new EnumUnattendedDeliveryFlag("OPT_IN", "Opted in");
 	public static final EnumUnattendedDeliveryFlag OPT_OUT = new EnumUnattendedDeliveryFlag("OPT_OUT", "Opted out");
