@@ -581,6 +581,12 @@ public class CheckoutController extends BaseController {
             com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots slotResponse = new com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots(
                     timeSlotResult);
             slotResponse.getCheckoutHeader().setHeader(user.getShoppingCart());
+            
+            if(Boolean.parseBoolean(reqestMessage.getReturnAddress())) {
+                ShipToAddress shipToAddressModel = ShipToAddress.wrap(user.getShoppingCart().getDeliveryAddress());
+                com.freshdirect.mobileapi.controller.data.response.ShipToAddress shipToAddressResponse = new com.freshdirect.mobileapi.controller.data.response.ShipToAddress(shipToAddressModel);
+                slotResponse.setAddress(shipToAddressResponse);
+            }
 
             if (isExtraResponseRequested(request)) {
                 user.setUserContext();
