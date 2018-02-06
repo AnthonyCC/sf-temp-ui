@@ -37,9 +37,12 @@ public class FDGrpInfoManager {
 	 		try{
 
 	 			lookupManagerHome();
+	 			if(FDStoreProperties.isSF2_0_AndServiceEnabled("grp.ejb.FDGrpInfoSB")){
+	 				zoneInfo= FDECommerceService.getInstance().loadAllGrpInfoMaster();
+	 			}else {
 	 			FDGrpInfoSB sb = managerHome.create();	 			
 	 			zoneInfo=sb.loadAllGrpInfoMaster();
-	 			
+	 			}
 	 		}catch (CreateException ce) {
 				invalidateManagerHome();
 				throw new FDResourceException(ce, "Error creating session bean");

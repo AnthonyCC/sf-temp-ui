@@ -24,7 +24,12 @@ import com.freshdirect.fdstore.GroupScalePricing;
 import com.freshdirect.fdstore.SalesAreaInfo;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
-
+/**
+ *@deprecated Please use the ERPGroupScaleController and ErpGrpInfoServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public class ErpGrpInfoSessionBean extends SessionBeanSupport{
 	
 	// This bean is being migrated to StoreFront 2.0 service get in touch with SF 2.0 team to get more details on this bean.
