@@ -34,6 +34,12 @@ import com.freshdirect.payment.fraud.RestrictedPaymentMethodCriteria;
 import com.freshdirect.payment.fraud.RestrictedPaymentMethodModel;
 import com.freshdirect.payment.service.FDECommerceService;
 
+/**
+ *@deprecated Please use the RestrictedPaymentMethod and RestrictedPaymentMethodServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public class RestrictedPaymentMethodSessionBean extends SessionBeanSupport {
 
 	private static final long	serialVersionUID	= -6357531295293265599L;
