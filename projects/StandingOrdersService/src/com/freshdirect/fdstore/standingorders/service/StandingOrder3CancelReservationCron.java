@@ -20,8 +20,13 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.ecomm.gateway.StandingOrder3CronService;
+import com.freshdirect.fdstore.ecomm.gateway.StandingOrder3CronServiceI;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.sap.ejb.SapException;
 
 /**
@@ -61,16 +66,28 @@ public class StandingOrder3CancelReservationCron {
 			lookupSO3CronHome();
 			StandingOrder3CronSB sb = so3CronHome.get().create();
 			LOGGER.info("Fetching non activated SO to be cleaned up");
-			if(null == soIdList){
-				soIdList = sb.queryForDeactivatingTimeslotEligible();
-			}
-			if(null != soIdList && !soIdList.isEmpty()){
-				LOGGER.info("Non Activated SOs :"+soIdList);
-				sb.removeSOfromLogistics(soIdList);
-				sb.removeTimeSlotInfoFromSO(soIdList);
-				
-			}
 			
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.StandingOrder3CronSB)){
+				LOGGER.info("Fetching non activated SO to be cleaned up, using SF 2.0 Service..");
+				StandingOrder3CronServiceI so3CronService = StandingOrder3CronService.getInstance();
+				soIdList = so3CronService.queryForDeactivatingTimeslotEligible();
+				if(null != soIdList && !soIdList.isEmpty()){
+					LOGGER.info("Non Activated SOs :"+soIdList);
+					so3CronService.removeSOfromLogistics(soIdList);
+					so3CronService.removeTimeSlotInfoFromSO(soIdList);
+					
+				}
+			}else{
+				if(null == soIdList){
+					soIdList = sb.queryForDeactivatingTimeslotEligible();
+				}
+				if(null != soIdList && !soIdList.isEmpty()){
+					LOGGER.info("Non Activated SOs :"+soIdList);
+					sb.removeSOfromLogistics(soIdList);
+					sb.removeTimeSlotInfoFromSO(soIdList);
+					
+				}
+			}
 		} catch (FDResourceException e) {
 			invalidateSOSHome();
 			LOGGER.error("FDResourceException in StandingOrder3CancelReservationCron: "+e);
