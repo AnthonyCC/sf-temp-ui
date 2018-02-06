@@ -155,7 +155,7 @@ public class FDEcommProperties {
         defaults.put(TEmailInfoSB, FALSE);
         defaults.put(ProfileCreatorSB, FALSE);
         defaults.put(FDStandingOrderSB, FALSE);
-        defaults.put(StandingOrder3CronSB, "true");
+        defaults.put(StandingOrder3CronSB, FALSE);
         defaults.put(FDCustomerManagerSB, FALSE);
         
         refresh();
