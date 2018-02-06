@@ -25,7 +25,7 @@ var FreshDirect = FreshDirect || {};
 	}
 	
 	function displayModifyingOrder(time, dayOfWeek) {
-		var msg = '<div id="location-modify-order-message" class="position-absolute"><div class="container"><strong>Modifying Delivery: </strong><span class="modify-delivery-time"><span>' + dayOfWeek + ' </span><span class="text-uppercase">' + time + '</span></span></div></div>';
+		var msg = '<div id="location-modify-order-message" class="position-absolute"><div class="modify-order-container"><strong>Modifying Delivery: </strong><span class="modify-delivery-time"><span>' + dayOfWeek + ' </span><span class="text-uppercase">' + time + '</span></span></div></div>';
 		if ($('#location-modify-order-message').length !== 0){
 			$('#location-modify-order-message').replaceWith(msg);
 			$('.locabar-section.locabar-addresses-section, #location-tabs').hide();
