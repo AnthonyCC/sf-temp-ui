@@ -742,7 +742,7 @@ public class ErpFactory {
 		}
 		try {
 			ErpNutritionSB nutrSB = nutritionHome.create();
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpNutritionSB)){
+			if(true){
         		return ErpNutritionService.getInstance().getNutritionPanel(skuCode);
         	}else{
         		return nutrSB.getNutritionPanel(skuCode);
