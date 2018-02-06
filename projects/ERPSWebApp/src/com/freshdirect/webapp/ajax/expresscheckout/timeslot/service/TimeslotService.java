@@ -18,7 +18,6 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpSaleInfo;
@@ -503,6 +502,7 @@ public class TimeslotService {
 
         deliveryModel.setShowPremiumSlots(showPremiumSlots);
 
+        if (!timeslotList.isEmpty()) {
         baseRange = new DateRange(timeslotList.get(0).getStartDate(), DateUtil.addDays(timeslotList.get(0).getEndDate(), 1));
 
         EnumDlvRestrictionReason specialHoliday = getNextHoliday(restrictions, baseRange, FDStoreProperties.getHolidayLookaheadDays());
@@ -578,6 +578,7 @@ public class TimeslotService {
             deliveryModel.setMinOrderReqd(false);
         }
 
+        }
         deliveryModel.setTimeslotList(timeslotList);
 
         stats.apply(deliveryModel);
