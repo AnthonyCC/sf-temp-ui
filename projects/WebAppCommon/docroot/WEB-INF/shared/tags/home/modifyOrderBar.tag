@@ -49,7 +49,9 @@ attribute name="modifyOrderAlert" required="true" rtexprvalue="true" type="java.
 							if(validPendingOrders.size() > 0) {
 								FDCartModel modifyOrderBarTagCart = user.getShoppingCart();
 								isModifyingOrder = modifyOrderBarTagCart instanceof FDModifyCartModel;
-								if (isModifyingOrder && mobWebModifyOrderTag) {
+								if (isModifyingOrder) {
+									// show modiyfing order message for mobile
+									if (mobWebModifyOrderTag) {
 									FDModifyCartModel moCart = (FDModifyCartModel) modifyOrderBarTagCart;
 									if (moCart != null && 
 										moCart.getOriginalOrder() != null && 
@@ -70,7 +72,7 @@ attribute name="modifyOrderAlert" required="true" rtexprvalue="true" type="java.
 									 		}
 								 		});
 									</script>
-								<% 
+								<% 		}
 									}
 								} else if (modifyOrderAlert) { %>
 									<script>
