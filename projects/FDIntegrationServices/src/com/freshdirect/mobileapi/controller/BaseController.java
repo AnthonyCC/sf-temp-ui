@@ -353,10 +353,10 @@ public abstract class BaseController extends AbstractController implements Messa
 	                setResponseMessage(model, responseMessage, user);
 	                try {
 		                if(MobileApiProperties.isBaseControllerLoggingEnabled()) {	                	
-		                	LOGGER.error("FDCRITICALERROR01 -"
+		                	LOGGER.error("FDCRITICALERROR01 for "
 		                			+ (user != null && user.getFDSessionUser() != null 
 		                					? (user.getFDSessionUser().getFDCustomer() != null ? user.getFDSessionUser().getFDCustomer().getErpCustomerPK() : user.getFDSessionUser().getPrimaryKey() ) : "NOUSER" ) 
-		                				+ " -> "+ ExceptionUtils.getRootCauseMessage(uncaughtException));
+		                				+ " -> "+ getRootCauseStackTrace(uncaughtException));
 		                }
 	                } catch(Exception cantHandle) {
 	                	LOGGER.error("FDCRITICALERROR02 - Error logging error in BaseController");
@@ -366,6 +366,18 @@ public abstract class BaseController extends AbstractController implements Messa
         }
 
         return model;
+    }
+    
+    private String getRootCauseStackTrace(Throwable e) {
+    	
+    	StringBuffer strBuf = new StringBuffer();
+    	String[] traces = ExceptionUtils.getRootCauseStackTrace(e);
+    	if(traces != null) {
+		    for (final String element : ExceptionUtils.getRootCauseStackTrace(e)) {
+		    	strBuf.append(element).append(" ");
+		    }
+    	}
+	    return strBuf.toString();
     }
 
     protected boolean isExtraResponseRequested(HttpServletRequest request) {
