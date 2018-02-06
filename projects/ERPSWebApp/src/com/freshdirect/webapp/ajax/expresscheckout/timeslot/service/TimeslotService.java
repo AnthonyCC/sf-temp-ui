@@ -695,8 +695,8 @@ public class TimeslotService {
                 	aheadDays = cal.getTime();
                     for (FDTimeslot fdTimeslot : fdTimeslotUtil.getTimeslotsFlat()) {
                     	// preventing manipulating of timeslots if firstDeliveryDate from logistics falls out from date ranges(2,9)	   //COS17-51
-                        if (null != fdTimeslot.getSoFirstDeliveryDate() && fdTimeslot.getSoFirstDeliveryDate().before(aheadDays)) {
-                            fdTimeslot.setSoFirstDeliveryDate(getSubsequentDeliveryDate(fdTimeslot.getSoFirstDeliveryDate(), so.getFrequency()));
+                    	if (null != fdTimeslot.getSoFirstDeliveryDate() && null != fdTimeslot.getDeliveryDate() && fdTimeslot.getSoFirstDeliveryDate().before(aheadDays)) {
+                            fdTimeslot.setSoFirstDeliveryDate(getSubsequentDeliveryDate(fdTimeslot.getDeliveryDate(), so.getFrequency()));
                         }
                     }
                 }
