@@ -1397,7 +1397,6 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			request.setData(hLRequestData);
 			String inputJson = buildRequest(request);
 			@SuppressWarnings("unchecked")
-//			Response<HLBrandProductAdResponse> response = this.postData(inputJson, getFdCommerceEndPoint(BRAND_SEARCH_BY_PRODUCT), Response.class);
 			Response<HLBrandProductAdResponse> response=this.postDataTypeMap(inputJson, getFdCommerceEndPoint(BRAND_SEARCH_BY_PRODUCT), new TypeReference<Response<HLBrandProductAdResponse>>() {});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
@@ -1434,7 +1433,6 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			request.setData(orderFeedDateFrom);
 			String inputJson = buildRequest(request);
 			@SuppressWarnings("unchecked")
-//			Response<HLBrandProductAdResponse> response = this.postData(inputJson, getFdCommerceEndPoint(BRAND_ORDER_SUBMIT_BYDATE), Response.class);
 			Response<HLBrandProductAdResponse> response=this.postDataTypeMap(inputJson, getFdCommerceEndPoint(BRAND_ORDER_SUBMIT_BYDATE), new TypeReference<Response<HLBrandProductAdResponse>>() {});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
@@ -1456,7 +1454,6 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			request.setData(ordersList);
 			String inputJson = buildRequest(request);
 			@SuppressWarnings("unchecked")
-//			Response<HLBrandProductAdResponse> response = this.postData(inputJson, getFdCommerceEndPoint(BRAND_ORDER_SUBMIT_SALEIDS), Response.class);
 			Response<HLBrandProductAdResponse> response=this.postDataTypeMap(inputJson, getFdCommerceEndPoint(BRAND_ORDER_SUBMIT_SALEIDS), new TypeReference<Response<HLBrandProductAdResponse>>() {});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
@@ -1527,7 +1524,6 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		String inputJson;
 		try {
 			inputJson = buildRequest(request.getData());
-//			response = this.postData(inputJson, getFdCommerceEndPoint(EXTOLE_MANAGER_SAVE), Response.class);
 			response=this.postDataTypeMap(inputJson, getFdCommerceEndPoint(EXTOLE_MANAGER_SAVE), new TypeReference<Response<HLBrandProductAdResponse>>() {});
 			if(!response.getResponseCode().equals("CREATED")){
 				throw new FDResourceException(response.getMessage());
@@ -1977,7 +1973,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		String inputJson=null;
 		Set<StateCounty> stateCountySet = new HashSet<StateCounty>();
 		Response<List<StateCountyData>> response = this.httpGetDataTypeMap((getFdCommerceEndPoint(DLV_MANAGER_COUNTIES_BY_STATE)+"/"+state), new TypeReference<Response<List<StateCountyData>>>() {});
-		if(!response.getResponseCode().equals(HttpStatus.OK))
+		if(!response.getResponseCode().equals("OK"))
 			throw new FDResourceException(response.getMessage());
 		for (StateCountyData stateCountyData : response.getData()) {
 			StateCounty stateCounty = new StateCounty(stateCountyData.getState(), stateCountyData.getCounty(),
@@ -5226,7 +5222,6 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			request.setData(hLBrandProductAdRequest);
 			String inputJson = buildRequest(request);
 			@SuppressWarnings("unchecked")
-//			Response<HLBrandProductAdResponse> response = this.postData(inputJson, getFdCommerceEndPoint(BRAND_SEARCH_BY_HOME_PRODUCT), Response.class);
 			Response<HLBrandProductAdResponse> response=this.postDataTypeMap(inputJson, getFdCommerceEndPoint(BRAND_SEARCH_BY_HOME_PRODUCT), new TypeReference<Response<HLBrandProductAdResponse>>() {});
 			
 			if(!response.getResponseCode().equals("OK")){
@@ -5250,7 +5245,6 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			request.setData(hLBrandProductAdRequest);
 			String inputJson = buildRequest(request);
 			@SuppressWarnings("unchecked")
-//			Response<HLBrandProductAdResponse> response = this.postData(inputJson, getFdCommerceEndPoint(BRAND_SEARCH_BY_PDP_PRODUCT), Response.class);
 			Response<HLBrandProductAdResponse> response=this.postDataTypeMap(inputJson, getFdCommerceEndPoint(BRAND_SEARCH_BY_PDP_PRODUCT), new TypeReference<Response<HLBrandProductAdResponse>>() {});
 			
 			if(!response.getResponseCode().equals("OK")){
