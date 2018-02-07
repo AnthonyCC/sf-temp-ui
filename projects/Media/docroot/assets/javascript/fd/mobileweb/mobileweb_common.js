@@ -242,17 +242,29 @@ var API;
 			return false;
 		});
 		
-		/* CHECKOUT */
+		/* CHECKOUT */	
+		var ua = window.navigator.userAgent;
+		var iOS = !!ua.match(/iPad/i) || !!ua.match(/iPhone/i);
+		var webkit = !!ua.match(/WebKit/i);
+		var iOSSafari = iOS && webkit && !ua.match(/CriOS/i);
 		/* anchor header */
 		function co_alignHeader() {
 			var cartHeaderEl = $('[data-ec-page] .mm-page #cartheader, [data-ec-page] .mm-page #cartheader_co');
 			if (cartHeaderEl) {
+
+				// if this is ios safari, add padding because of its navigation bar at the bottom
+				if (iOSSafari) {
+					// check to see if navigation bar is showing
+					var navBarHeight = window.innerHeight - $(window).height();
+					cartHeaderEl.css({'padding-bottom' : (navBarHeight > 0? 44 : 0)  + 'px'});
+					
+				} 
 				cartHeaderEl.find('.estimated-total').css({
 					"padding-top": (cartHeaderEl.find('.right').height() - cartHeaderEl.find('.estimated-total').height()) + "px"
 				});
 				
-				cartHeaderEl.css({'top': window.innerHeight - cartHeaderEl.height()  +'px' });
-				$('footer').css({'padding-bottom': cartHeaderEl.height()+'px'});
+				cartHeaderEl.css({'top': window.innerHeight - cartHeaderEl.outerHeight() +'px' });
+				$('footer').css({'padding-bottom': cartHeaderEl.outerHeight() + 'px'});
 			}
 		
 			if (!$jq('#smartbanner').parent().hasClass('.mobweb-topnav')) { //move banner into nav
