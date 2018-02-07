@@ -428,7 +428,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
     	boolean isFiftyStateValidationReqd=true;
     	//check name on card		 //APPDEV-6661 check special charecters
         result.addError(
-        		paymentMethod.getName()==null || paymentMethod.getName().trim().length() < 1 || !isValidString(paymentMethod.getName()) || Character.isDigit(paymentMethod.getName().charAt(0)) ,
+        		paymentMethod.getName()==null || paymentMethod.getName().trim().length() < 1 || !isValidString(paymentMethod.getName()) ,
         		PaymentMethodName.ACCOUNT_HOLDER, SystemMessageList.MSG_INVALID_CC_NAME
         		);
         
