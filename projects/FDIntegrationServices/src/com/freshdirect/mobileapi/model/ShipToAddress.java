@@ -126,9 +126,6 @@ public class ShipToAddress extends DeliveryAddress {
             newInstance.altType = AltAddressType.NONE;
         }
         
-        newInstance.setUnattendedDeliveryFlag(address.getUnattendedDeliveryFlag());
-        newInstance.setUnattendedDeliveryInstructions(address.getUnattendedDeliveryInstructions());
-        
         return newInstance;
     }
 

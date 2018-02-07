@@ -581,12 +581,6 @@ public class CheckoutController extends BaseController {
             com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots slotResponse = new com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots(
                     timeSlotResult);
             slotResponse.getCheckoutHeader().setHeader(user.getShoppingCart());
-            
-            if(Boolean.parseBoolean(reqestMessage.getReturnAddress())) {
-                ShipToAddress shipToAddressModel = ShipToAddress.wrap(user.getShoppingCart().getDeliveryAddress());
-                com.freshdirect.mobileapi.controller.data.response.ShipToAddress shipToAddressResponse = new com.freshdirect.mobileapi.controller.data.response.ShipToAddress(shipToAddressModel);
-                slotResponse.setAddress(shipToAddressResponse);
-            }
 
             if (isExtraResponseRequested(request)) {
                 user.setUserContext();
@@ -603,6 +597,10 @@ public class CheckoutController extends BaseController {
                 pageResponse.setDeliveryTimeslot(slotResponse);
                 responseMessage = pageResponse;
             } else {
+                ShipToAddress shipToAddressModel = ShipToAddress.wrap(user.getShoppingCart().getDeliveryAddress());
+                com.freshdirect.mobileapi.controller.data.response.ShipToAddress shipToAddressResponse = new com.freshdirect.mobileapi.controller.data.response.ShipToAddress(
+                        shipToAddressModel);
+                slotResponse.setAddress(shipToAddressResponse);
                 responseMessage = slotResponse;
             }
             responseMessage.setSuccessMessage("Order delivery Address have been set successfully.");
