@@ -9,7 +9,12 @@ import javax.ejb.FinderException;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.sap.SapOrderPickEligibleInfo;
 import com.freshdirect.sap.ejb.SapException;
-
+/**
+ *@deprecated Please use the FDXOrderPickEligibleController and FDXOrderPickEligibleServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public interface FDXOrderPickEligibleCronSB extends EJBObject{ 
 
 	public void queryForSalesPickEligible() throws RemoteException;
