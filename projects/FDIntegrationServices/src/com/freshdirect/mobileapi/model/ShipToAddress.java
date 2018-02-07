@@ -232,10 +232,10 @@ public class ShipToAddress extends DeliveryAddress {
 			 serviceResult = FDDeliveryManager.getInstance().getDeliveryServicesByAddress(addressModel);
 		} catch (FDResourceException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
 		} catch (FDInvalidAddressException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
 		}		
 		return (null!=serviceResult)?serviceResult.getAvailableServices(): new HashSet();		
 	}

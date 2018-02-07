@@ -1713,16 +1713,16 @@ public class Product {
 	                result.setProductData(productData);
 				} catch (FDResourceException e) {
 
-					e.printStackTrace();
+					//e.printStackTrace();
 				} catch (FDSkuNotFoundException e) {
 
-					e.printStackTrace();
+					//e.printStackTrace();
 				} /*catch (HttpErrorResponse e) {
 
 					e.printStackTrace();
 				}*/ catch (HttpErrorResponse e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 	        }
         }

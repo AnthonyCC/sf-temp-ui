@@ -272,7 +272,7 @@ public class SearchController extends BaseController {
                 setResponseMessage(model, data, user);
             } catch (InvalidFilteringArgumentException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
         }
 
@@ -451,7 +451,7 @@ public class SearchController extends BaseController {
             data.setDefaultSortOptions();
         } catch (InvalidFilteringArgumentException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 
         setResponseMessage(model, data, user);

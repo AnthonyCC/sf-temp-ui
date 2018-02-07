@@ -397,7 +397,7 @@ public class OrderController extends BaseController {
             	}
             }
         } catch (ArrayIndexOutOfBoundsException ae) {
-        	ae.printStackTrace();
+        	//ae.printStackTrace();
 			LOGGER.error("Error ArrayIndexOutOfBoundsException in getProductsFromOrderDept(): " + ae);
 			throw new FDException(ae);
         } catch (ModelException e) {
@@ -433,7 +433,7 @@ public class OrderController extends BaseController {
 				}
 			}
 		} catch (ArrayIndexOutOfBoundsException ae) {
-	        ae.printStackTrace();
+	        //ae.printStackTrace();
 			LOGGER.error("Error ArrayIndexOutOfBoundsException in getEveryItemEverOrdered(): " + ae);
 			throw new FDException(ae);
         } catch (ModelException e) {
@@ -469,7 +469,7 @@ public class OrderController extends BaseController {
 				}
 			}
 		} catch (ArrayIndexOutOfBoundsException ae) {
-        	ae.printStackTrace();
+        	//ae.printStackTrace();
 			LOGGER.error("Error ArrayIndexOutOfBoundsException in getEveryItemEverOrderedEx(): " + ae);
 			throw new FDException(ae);
 		} catch (ModelException e) {
@@ -574,7 +574,7 @@ public class OrderController extends BaseController {
 	    		qCartDepartments.addAll(departmentList);
     		}
     	} catch (ArrayIndexOutOfBoundsException ae) {
-        	ae.printStackTrace();
+        	//ae.printStackTrace();
 			LOGGER.error("Error ArrayIndexOutOfBoundsException in getDeptForQuickshopEveryItem(): " + ae);
 			throw new FDException(ae);
     	} catch (ModelException e) {

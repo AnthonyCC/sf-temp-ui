@@ -525,7 +525,7 @@ public class CheckoutController extends BaseController {
     	try {
 			FDCustomerManager.storeDPTCAgreeDate(AccountActivityUtil.getActionInfo(request.getSession()), user.getFDSessionUser().getIdentity().getErpCustomerPK(), new Date());
 		} catch(FDResourceException exp) {
-			exp.printStackTrace();
+			//exp.printStackTrace();
 			setResponseMessage(model, Message.createFailureMessage(MSG_ACCEPT_DP_TERMSANDCONDITIONS_FAILED), user);
 			return model;
 		}

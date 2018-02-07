@@ -143,7 +143,7 @@ public class NewBrowseUtil {
 																		, null
 																		, EnumCouponContext.PRODUCT));								
 						} catch (ModelException e) {
-							e.printStackTrace();
+							//e.printStackTrace();
 						}
     				}
     			}					
@@ -160,7 +160,7 @@ public class NewBrowseUtil {
     			result.setDeptCarouselResult(deptCarouselResult);
     			
 			} catch (Exception e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			}  
     		if(deptCarouselResult.getProducts() == null || deptCarouselResult.getProducts().isEmpty()) {
     			deptCarouselResult.setSuccessMessage("No recommendations found.");
@@ -196,7 +196,7 @@ public class NewBrowseUtil {
         		categoryCarouselResult = getProductsFromCarouselForCategory(contentId, model, user, request, response,carouselProductCount);
 			} catch (JsonException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
         	result.setCategoryCarouselResult(categoryCarouselResult);
         	
@@ -373,7 +373,7 @@ public class NewBrowseUtil {
 										
 							} catch (JsonException e) {
 								// TODO Auto-generated catch block
-								e.printStackTrace();
+								//e.printStackTrace();
 							}
 
 							if (loadCategoriesCarouselCount <= 0)
@@ -473,7 +473,7 @@ public class NewBrowseUtil {
 				}
 			} catch (URISyntaxException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 			return map;
 		}

@@ -20,11 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpConnection;
 import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.HttpRecoverableException;
-import org.apache.commons.httpclient.MethodRetryHandler;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -117,10 +113,10 @@ public class RecipesController extends BaseController {
 			}
 		} catch (HttpException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		return get;
 
@@ -157,7 +153,7 @@ public class RecipesController extends BaseController {
 			try {
 				get.releaseConnection();
 			} catch (Exception e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
 		return model;
@@ -276,7 +272,7 @@ public class RecipesController extends BaseController {
 			throw new RuntimeException(e);
 		}
 	}
-	private GetMethod returnMethod(RecipeDetailResponse recipe) throws HttpException{
+	private static GetMethod returnMethod(RecipeDetailResponse recipe) throws HttpException{
 		HttpClient http = new HttpClient();
 		GetMethod get = new GetMethod(RECIPYURL_API + "/shopping?recipes=" +recipe.getRecipeId() + "&stores=freshdirect&inStockOnly=false&fields=*(recipe(ingredients(list(*))),products(ingredient,products(*)))");
 		get.addRequestHeader("Authorization","Bearer " + RECIPY_API_TOKEN.get());
@@ -365,10 +361,10 @@ public class RecipesController extends BaseController {
 				}
 			} 
 			catch (JsonParseException e) { 
-				e.printStackTrace();
+				//e.printStackTrace();
 			}	
 			catch (JsonMappingException e) { 
-				e.printStackTrace();			
+				//e.printStackTrace();			
 			}
 	
 		
@@ -404,7 +400,7 @@ public class RecipesController extends BaseController {
 		return model;
 	}
 	
-	private GetMethod getMethodURL(String searchTerm) throws HttpException, IOException{
+	private static GetMethod getMethodURL(String searchTerm) throws HttpException, IOException{
 		final HttpClient http = new HttpClient();
 		String url = RECIPYURL_API + "/recipes?expand=recipes";
 		if (searchTerm != null) {
@@ -428,7 +424,7 @@ public class RecipesController extends BaseController {
 		}
 	}
 
-	private String urlEncode(final String query) {
+	private static String urlEncode(final String query) {
 		try {
 			return URLEncoder.encode(query, "UTF-8");
 		} catch (final UnsupportedEncodingException e) {
@@ -515,5 +511,23 @@ public class RecipesController extends BaseController {
 	@Override
 	protected boolean validateUser() {
 		return false; // guest browsing
+	}
+	
+	public static void main(String a[]) throws Exception {
+		updateToken();
+		GetMethod get = getMethodURL("grilling");
+		if (200 == get.getStatusCode()) {
+			System.out.println(">>>>>>>>>>>>>"+ get.getResponseBodyAsString());
+			
+			RecipeDetailResponse recipe = new RecipeDetailResponse();
+			recipe.setRecipeId("vjYrNIcts");
+			GetMethod get1 =  returnMethod(recipe);
+			
+			if (200 == get1.getStatusCode()) {
+				System.out.println("$$$$$$$$$$$$$$$$$"+ get1.getResponseBodyAsString());
+			}
+		} else {
+			System.out.println(">>>>>>>>>>>>>"+ get.getStatusCode());
+		}
 	}
 }
