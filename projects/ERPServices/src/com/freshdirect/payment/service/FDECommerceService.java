@@ -4177,20 +4177,19 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	}
 	
 	@Override
-	public void queryForFDXSalesPickEligible() throws RemoteException  {
+	public List<SapOrderPickEligibleInfo> queryForFDXSalesPickEligible() throws RemoteException  {
 		String inputJson=null;
-		Response<String> response = null;
+		Response<List<SapOrderPickEligibleInfo>> response = null;
 		try {
 			response = 	httpGetData( getFdCommerceEndPoint(GET_FDX_QUERYFORSALESPICKELIGIBLE), Response.class);
+			List<SapOrderPickEligibleInfo> sapOrderPickeligibleList = response.getData();
+			return sapOrderPickeligibleList;
 			//response = postData(inputJson, getFdCommerceEndPoint(GET_FDX_QUERYFORSALESPICKELIGIBLE), Response.class);
 		} catch (FDResourceException e) {
 			// TODO Auto-generated catch block
 			LOGGER.error("Failure in queryForSalesPickEligible  Error: ",e);
 			throw new RemoteException(" queryForSalesPickEligible failure" , e);
 		}
-		if(!response.getResponseCode().equals("OK"))
-			throw new RemoteException(response.getMessage());
-		
 	}
 	@Override
 	public void sendFDXEligibleOrdersToSap(List<SapOrderPickEligibleInfo> eligibleSapOrderLst) throws RemoteException  {
@@ -4198,7 +4197,6 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		Response<String> response = null;
 		try {
 			Request<List<SapOrderPickEligibleInfo> > requestofSapList = new Request<List<SapOrderPickEligibleInfo> >();
-			requestofSapList.setData(eligibleSapOrderLst);
 			requestofSapList.setData(eligibleSapOrderLst);
 			String inputJson = buildRequest(requestofSapList);
 			System.out.println("sendFDXEligibleOrdersToSap calling url: "+getFdCommerceEndPoint(POST_FDX_ELIGIBLE_SENDORDERSTOSAP) );
