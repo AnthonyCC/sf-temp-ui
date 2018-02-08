@@ -2,7 +2,7 @@ package com.freshdirect.webapp.ajax.expresscheckout.validation.constraint;
 
 public class TextConstraint extends RegexConstraint {
 
-	private static final String ERROR_MESSAGE = "Use letters and numbers only.";
+	private static final String ERROR_MESSAGE = "Please enter name exactly as it appears on card.";
 	// Allow every non-empty characters except &,<,>,",/,#,%,=
 	private static final String REGEX = "^(?!.*[&|<|>|\\\"|/|#|%|=])\\w.*$";
 
