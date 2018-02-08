@@ -104,7 +104,7 @@ import com.freshdirect.webapp.util.RequestUtil;
 
 public class CheckoutController extends BaseController {
 
-    private static Category LOGGER = LoggerFactory.getInstance(CheckoutController.class);
+    private static final Category LOGGER = LoggerFactory.getInstance(CheckoutController.class);
 
     private static final String PARAM_SLOT_ID = "slotId";
     private final static String ACTION_GET_REMOVE_UNAVAILABLE_ITEMS = "removeunavailableitems";
@@ -587,7 +587,9 @@ public class CheckoutController extends BaseController {
                 List<FDCartLineI> removedInvalidLines = removeInvalidLines(user.getFDSessionUser(), request.getServerName());
                 List<ProductPotatoData> removedProducts = new ArrayList<ProductPotatoData>(removedInvalidLines.size());
                 for (FDCartLineI cartLine : removedInvalidLines) {
-                    removedProducts.add(ProductPotatoUtil.getProductPotato( cartLine.lookupProduct(), user.getFDSessionUser(), false, true));
+                    ProductPotatoData productPotato = ProductPotatoUtil.getProductPotato( cartLine.lookupProduct(), user.getFDSessionUser(), false, true);
+                    productPotato.getProductData().setInCartAmount(cartLine.getQuantity());
+                    removedProducts.add(productPotato);
                 }
                 CMSPageRequest pageRequest = new CMSPageRequest();
                 pageRequest.setPlantId(BrowseUtil.getPlantId(user));
