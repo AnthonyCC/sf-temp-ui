@@ -136,7 +136,7 @@ public class SmartStoreController extends BaseController {
 																			, null
 																			, EnumCouponContext.PRODUCT));								
 							} catch (ModelException e) {
-								e.printStackTrace();
+								//e.printStackTrace();
 							}
         				}
         			}					
@@ -151,7 +151,7 @@ public class SmartStoreController extends BaseController {
 	    			OverriddenVariantsHelper.AllowAnonymousUsers = allowRestore;
 	    			
 				} catch (FDResourceException e) {
-					e.printStackTrace();
+					//e.printStackTrace();
 				}     		    			
 			}
 						
@@ -297,7 +297,7 @@ public class SmartStoreController extends BaseController {
 				}
 			} catch (URISyntaxException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 			return map;
 		}

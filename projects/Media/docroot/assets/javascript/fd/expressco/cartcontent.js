@@ -844,7 +844,7 @@ function parseTipTotal(data) {
 				}
 				
 				if (data.eTippingEnabled && data.tipAmounts) {
-					checkoutCartHeaderData.etipTotal = parseTipTotal(data);
+					checkoutCartHeaderData.etipTotal = parseTipTotal(data) || data.etipTotal;
 					checkoutCartHeaderData.tipAmounts = data.tipAmounts;
 					checkoutCartHeaderData.tipApplied = data.tipApplied;
 					checkoutCartHeaderData.isEBTused = data.isEBTused;

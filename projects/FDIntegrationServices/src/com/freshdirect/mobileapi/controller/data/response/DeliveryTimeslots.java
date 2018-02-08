@@ -40,6 +40,8 @@ public class DeliveryTimeslots extends CheckoutResponse {
     
     private boolean minOrderReqd;
     
+    private ShipToAddress address;
+    
 
     public String getReservedTimeslotId() {
         return reservedTimeslotId;
@@ -127,4 +129,13 @@ public class DeliveryTimeslots extends CheckoutResponse {
 		return showMinNotMetMessage;
 	}
 
+	
+    public ShipToAddress getAddress() {
+        return address;
+    }
+    
+    public void setAddress(ShipToAddress address) {
+        this.address = address;
+    }
+	
 }

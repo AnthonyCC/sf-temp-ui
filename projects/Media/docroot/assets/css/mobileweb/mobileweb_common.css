@@ -1687,6 +1687,8 @@ li.cleanli .gen-arrow {
 		    overflow: hidden;
 		    height: 77px;
 		    background-color: #f4f4f3;
+		    float: left;
+		    -webkit-text-size-adjust: 100%;
 		}
 		[data-ec-page] .mm-page #ec-drawer .drawer-row[data-row-id="address"].auto-height .drawer-header{
 		    height: 100%;
@@ -1781,9 +1783,6 @@ li.cleanli .gen-arrow {
 			min-width: 160px;
 	    	margin-left: -50px;
 		}
-		[data-ec-page] .mm-page #ec-drawer .drawer-header {
-			float: left 
-		}
 		[data-ec-page] .mm-page #ec-drawer .active .drawer-content{
 			height: 100%;
 			width: 100%;
@@ -1800,7 +1799,8 @@ li.cleanli .gen-arrow {
 		[data-ec-page] .mm-page #ec-drawer .drawer-row[data-row-id="address"].auto-height .drawer-content{
 			height: 100%;
 			padding-left: 26%;
-		    margin-bottom: -6px;
+		    margin-bottom: -1px;
+		    display: block;
 		}
 		[data-ec-page] .mm-page #ec-drawer .drawer__previewitem {
 			padding: 0;

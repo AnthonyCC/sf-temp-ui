@@ -392,7 +392,7 @@ public class ExternalAccountController extends BaseController implements SystemM
 		try {
 			user = getUserFromSession(request, response);
 		} catch (NoSessionException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		MergeCartControllerTagWrapper tagWrapper = new MergeCartControllerTagWrapper(user);
 		ActionResult mergeActionResult = tagWrapper.mergeCart(currentCart);

@@ -109,7 +109,7 @@ public class ExternalInterfaceController extends BaseController {
     		        		LOGGER.info("T001: Unable to find Order " + saleId);
     		        	}
     	        	} catch(Exception e) {
-    	        		e.printStackTrace();
+    	        		//e.printStackTrace();
     	        		LOGGER.info("T001_EXP: Unable to find Order " + saleId);
     	        	}
     	        }
@@ -129,7 +129,7 @@ public class ExternalInterfaceController extends BaseController {
      	    		   responseMessage = Message.createSuccessMessage("T002 Successfull.");
      	    	   } 
      	        } catch(Exception e) {
-	        		e.printStackTrace();
+	        		//e.printStackTrace();
 	        		LOGGER.info("T002_EXP: Unable to save IVR Call log for Order ");
 	        	}
      	        if(responseMessage == null) {
@@ -203,13 +203,13 @@ public class ExternalInterfaceController extends BaseController {
 	        					sb.append(line);
 	        				}
         				}catch (IOException e) {
-        					e.printStackTrace();
+        					//e.printStackTrace();
         				} finally {
         					if (br != null) {
         						try {
         							br.close();
         						} catch (IOException e) {
-        							e.printStackTrace();
+        							//e.printStackTrace();
         						}
         					}
         				}
@@ -242,7 +242,7 @@ public class ExternalInterfaceController extends BaseController {
     				
     				
     			} catch(Exception e) {
-    				e.printStackTrace();
+    				//e.printStackTrace();
     				responseMessage=Message.createFailureMessage("T005 Failed.");
     				LOGGER.info("T005_EXP: Unable to save fdx delivery info received ");
     			}  

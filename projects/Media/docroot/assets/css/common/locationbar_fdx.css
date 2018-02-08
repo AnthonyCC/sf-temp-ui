@@ -983,6 +983,10 @@
     width: 100%;
     z-index: -1;
 }
+#location-modify-order-message .modify-order-container {
+	width: 970px;
+    margin: 0 auto;
+}
 #location-modify-order-message .modify-delivery-label {
 	text-shadow: 1px 1px 0 #c85c19;
 }

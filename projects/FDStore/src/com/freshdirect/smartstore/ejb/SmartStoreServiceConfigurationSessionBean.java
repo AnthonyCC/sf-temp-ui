@@ -24,9 +24,10 @@ import com.freshdirect.smartstore.RecommendationServiceType;
 import com.freshdirect.smartstore.Variant;
 
 /**
- * Service configuration session bean implementation.
- * 
- * @author istvan
+ *@deprecated Please use the SmartStoreServiceConfigurationController and SmartStoreConfigurationServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
  */
 public class SmartStoreServiceConfigurationSessionBean extends SessionBeanSupport {
 	private static final long serialVersionUID = -3423410150966343739L;

@@ -35,7 +35,7 @@
 					
 		});
 	</script>
-<div class="youraccount_user_social">
+<div class="youraccount_user_social" id="signin_user_social">
 	<form name="social_accounts" method="post">
 	
 		<div class="youraccount_social">

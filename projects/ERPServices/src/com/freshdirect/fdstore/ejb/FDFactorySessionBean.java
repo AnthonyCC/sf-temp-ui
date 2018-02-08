@@ -45,6 +45,12 @@ import com.freshdirect.framework.core.SessionBeanSupport;
 /**
  * Factory session bean implementation for FD objects.
  */
+/**
+ *@deprecated Please use the FDFactoryController and FDFactoryServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public class FDFactorySessionBean extends SessionBeanSupport {
 	private static final long serialVersionUID = 8471002847721814732L;
 

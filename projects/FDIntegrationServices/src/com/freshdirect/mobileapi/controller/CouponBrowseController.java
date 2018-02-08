@@ -76,7 +76,7 @@ public class CouponBrowseController extends BaseController {
     				products.add(Product.wrap(pm, user.getFDSessionUser().getUser(), null, EnumCouponContext.PRODUCT));
     			} catch (ModelException e) {
     				// TODO Auto-generated catch block
-    				e.printStackTrace();
+    				//e.printStackTrace();
     			}
         	}
         	for(Product p:products) {

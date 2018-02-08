@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.log4j.Category;
 import org.springframework.core.io.Resource;
@@ -350,14 +351,33 @@ public abstract class BaseController extends AbstractController implements Messa
 					String printedTrace = traceFor(uncaughtException);
 					Message responseMessage = getErrorMessage(ERR_SYSTEM, printedTrace);
 	                setResponseMessage(model, responseMessage, user);
-	                if(MobileApiProperties.isBaseControllerLoggingEnabled()){
-	                	LOGGER.error("FDCRITICALERROR01 - " + printedTrace);
+	                try {
+		                if(MobileApiProperties.isBaseControllerLoggingEnabled()) {	                	
+		                	LOGGER.error("FDCRITICALERROR01 for "
+		                			+ (user != null && user.getFDSessionUser() != null 
+		                					? (user.getFDSessionUser().getFDCustomer() != null ? user.getFDSessionUser().getFDCustomer().getErpCustomerPK() : user.getFDSessionUser().getPrimaryKey() ) : "NOUSER" ) 
+		                				+ " -> "+ getRootCauseStackTrace(uncaughtException));
+		                }
+	                } catch(Exception cantHandle) {
+	                	LOGGER.error("FDCRITICALERROR02 - Error logging error in BaseController");
 	                }
 				}
 			}
         }
 
         return model;
+    }
+    
+    private String getRootCauseStackTrace(Throwable e) {
+    	
+    	StringBuffer strBuf = new StringBuffer();
+    	String[] traces = ExceptionUtils.getRootCauseStackTrace(e);
+    	if(traces != null) {
+		    for (final String element : ExceptionUtils.getRootCauseStackTrace(e)) {
+		    	strBuf.append(element).append(" ");
+		    }
+    	}
+	    return strBuf.toString();
     }
 
     protected boolean isExtraResponseRequested(HttpServletRequest request) {

@@ -687,7 +687,7 @@ public class SessionUser {
 			}
 		} catch (FDResourceException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
 		};
 		return 0;
 	}

@@ -3,9 +3,12 @@
 <%@ page import="java.util.Map" %>
 <%@ page import="java.util.Iterator" %>
 <%@ page import="java.util.LinkedHashMap" %>
+<%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'%>
 <%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter'%>
 <%@ page import="com.freshdirect.webapp.util.JspMethods" %>
+<%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
+<%@ page import="com.freshdirect.fdstore.customer.FDModifyCartModel" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib prefix="fd" uri="freshdirect" %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
@@ -14,6 +17,16 @@
 	String uri = request.getRequestURI().toLowerCase();
 	boolean mobWeb_locationbar_layout_fdx = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
 	boolean inMobWebTemplate = (request.getAttribute("inMobWebTemplate") != null) ? (Boolean)request.getAttribute("inMobWebTemplate") : false;
+	FDModifyCartModel moCart = null;
+	boolean isModifyingOrder = user != null && 
+			user.getLevel() >= FDUserI.RECOGNIZED && 
+			user.hasPendingOrder() && 
+			user.getShoppingCart() instanceof FDModifyCartModel && 
+			(moCart = (FDModifyCartModel) user.getShoppingCart()) != null  &&
+			moCart.getOriginalOrder() != null && 
+			moCart.getOriginalOrder().getDeliveryReservation() != null && 
+			moCart.getOriginalOrder().getDeliveryReservation().getTimeslot() != null;
+			
 %>
 <% if (inMobWebTemplate && mobWeb_locationbar_layout_fdx) { %>
 	<%-- for now, output nothing... except address since it sets the JS for locabar --%>
@@ -22,16 +35,28 @@
 	<tmpl:get name="topwarningbar" />
 	
 	<div id="locationbar" class="<%= (uri.contains("/checkout/") || uri.contains("view_cart.jsp") || uri.contains("merge_cart.jsp") || uri.contains("/gift_card/")) ? "disableCart" : "" %>">
+		<% if (!mobWeb_locationbar_layout_fdx && isModifyingOrder && moCart != null) { %>
+		<div id="location-modify-order-message" class="position-absolute">
+			<div class="modify-order-container">
+				<strong>Modifying Delivery: </strong>
+				<span class="modify-delivery-time"><span><%= new SimpleDateFormat("EEEEE").format(moCart.getOriginalOrder().getDeliveryReservation().getTimeslot().getDeliveryDate()) %></span> <span class="text-uppercase"><%= moCart.getOriginalOrder().getDeliveryReservation().getTimeslot().getDisplayString() %></span></span>
+			</div>
+		</div>
+		<% } else { %>
 		<div id="location-tabs">
 			<div class="locabar-spacer"></div>
 			<tmpl:get name="tab_fd" />
 			<tmpl:get name="tab_fdx" />
 			<tmpl:get name="tab_cos" />
 		</div>
-		
+		<%} %>
 		<%-- fright sections --%>
 		<div class="locabar-right-sections">
-			<tmpl:get name="modify_order" /><tmpl:get name="messages" /><tmpl:get name="zip_address" /><tmpl:get name="sign_in" /><tmpl:get name="cartTotal" />
+			<tmpl:get name="modify_order" /><tmpl:get name="messages" />
+			<% if (!isModifyingOrder){ %>
+			<tmpl:get name="zip_address" />
+			<% } %>
+			<tmpl:get name="sign_in" /><tmpl:get name="cartTotal" />
 		</div>
 	</div>
 	

@@ -43,6 +43,12 @@ import com.freshdirect.framework.util.DayOfWeekSet;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
+/**
+ *@deprecated Please use the ErpInfoController and ErpInfoServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public class ErpInfoSessionBean extends SessionBeanSupport {
 
     private static final Category LOGGER = LoggerFactory.getInstance(ErpInfoSessionBean.class);

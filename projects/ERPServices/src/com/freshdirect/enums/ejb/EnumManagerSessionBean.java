@@ -12,6 +12,12 @@ import com.freshdirect.enums.EnumDAOI;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
+/**
+ *@deprecated Please use the EnumManagerController and EnumManagerServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public class EnumManagerSessionBean extends SessionBeanSupport {
 
 	private final static Category LOGGER = LoggerFactory.getInstance(EnumManagerSessionBean.class);

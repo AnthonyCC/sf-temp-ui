@@ -205,7 +205,7 @@ public class AccountController extends BaseController implements Comparator <Ord
 				}
 			} catch (PricingException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
         }
         orderInfos = creditedorderInfos;

@@ -32,6 +32,10 @@ public class ShipToAddress extends DeliveryAddress {
     private String instructions;
     
     private Set availableServiceTypes;
+    
+    private String unattendedDeliveryFlag;
+    
+    private String unattendedDeliveryInstructions;
 
 	public Set getAvailableServiceTypes() {
 		return availableServiceTypes;
@@ -76,6 +80,9 @@ public class ShipToAddress extends DeliveryAddress {
         if(store!=null && store.getContentName()!=null && "FDX".equals(store.getContentName())) {
             this.availableServiceTypes = address.getAvailableServiceTypes();
          }
+        
+        this.unattendedDeliveryFlag = address.getUnattendedDeliveryFlag().getName();
+        this.unattendedDeliveryInstructions = address.getUnattendedDeliveryInstructions();
     }
 
     public String getFirstName() {
@@ -171,4 +178,19 @@ public class ShipToAddress extends DeliveryAddress {
 		this.deliveryInstruction = deliveryInstruction;
 	}
 
+    public String getUnattendedDeliveryFlag() {
+        return unattendedDeliveryFlag;
+    }
+
+    public void setUnattendedDeliveryFlag(String unattendedDeliveryFlag) {
+        this.unattendedDeliveryFlag = unattendedDeliveryFlag;
+    }
+    
+    public String getUnattendedDeliveryInstructions() {
+        return unattendedDeliveryInstructions;
+    }
+    
+    public void setUnattendedDeliveryInstructions(String unattendedDeliveryInstructions) {
+        this.unattendedDeliveryInstructions = unattendedDeliveryInstructions;
+    }
 }

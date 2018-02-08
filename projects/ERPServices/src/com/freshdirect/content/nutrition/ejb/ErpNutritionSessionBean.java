@@ -44,6 +44,12 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 /** This class have different methods for MappingLoader and KwikeeLoader to
  * call in order to persist Nutrition data in database.
  */
+/**
+ *@deprecated Please use the ErpNutritionController and ErpNutritionServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public class ErpNutritionSessionBean extends SessionBeanSupport {
     
 	private static final long	serialVersionUID	= 270497771665382812L;

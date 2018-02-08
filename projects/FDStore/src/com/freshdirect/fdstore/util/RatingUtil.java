@@ -76,7 +76,7 @@ public class RatingUtil {
 		if (rating!=null && (prodPageRatingNames.size()>0 || prodPageTextRatingNames.size()>0) ) {
                     String ratingLabel = productNode.getRatingProdName();
                     if (ratingLabel==null) {
-    			ratingLabel = "";
+                    		ratingLabel = "";
                     }
                     List<ProductRating> webRatings = new ArrayList<ProductRating>();
                     List<ProductRating> webTextRatings = new ArrayList<ProductRating>();
@@ -85,18 +85,20 @@ public class RatingUtil {
                         if (rating.get(i) instanceof DomainValue) {
                         
                             DomainValue domainValue = (DomainValue) rating.get(i);
-                            Domain domain = domainValue.getDomain();
-                            String ratingName = domain.getName();
-                            String ratingValueLabel = domain.getLabel();
-            
-                            if (prodPageRatingNames.contains(ratingName.toLowerCase())) {
-                                ProductRating productRating = new ProductRating(ratingValueLabel, domainValue.getValue());
-                                webRatings.add(productRating);
-                            }
-                            // check to see if this is one of the text ratings
-                            if (prodPageTextRatingNames.contains(ratingName.toLowerCase())) {
-                                ProductRating productRating = new ProductRating(ratingValueLabel, domainValue.getValue());
-                                webTextRatings.add(productRating);
+                            if(domainValue != null && domainValue.getDomain() != null) {
+	                            Domain domain = domainValue.getDomain();
+	                            String ratingName = domain.getName();
+	                            String ratingValueLabel = domain.getLabel();
+	            
+	                            if (prodPageRatingNames.contains(ratingName.toLowerCase())) {
+	                                ProductRating productRating = new ProductRating(ratingValueLabel, domainValue.getValue());
+	                                webRatings.add(productRating);
+	                            }
+	                            // check to see if this is one of the text ratings
+	                            if (prodPageTextRatingNames.contains(ratingName.toLowerCase())) {
+	                                ProductRating productRating = new ProductRating(ratingValueLabel, domainValue.getValue());
+	                                webTextRatings.add(productRating);
+	                            }
                             }
                         }
                     }

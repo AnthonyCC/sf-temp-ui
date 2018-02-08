@@ -6,11 +6,15 @@ import java.util.List;
 import com.freshdirect.affiliate.ExternalAgency;
 import com.freshdirect.common.context.StoreContext;
 import com.freshdirect.common.context.UserContext;
+import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.common.pricing.ZoneInfo;
+import com.freshdirect.common.pricing.ZoneInfo.PricingIndicator;
 import com.freshdirect.crm.CrmCaseQueue;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.ecommerce.data.ecoupon.CrmAgentModelData;
 import com.freshdirect.ecommerce.data.ecoupon.ErpOrderLineModelData;
 import com.freshdirect.ecommerce.data.ecoupon.FDConfigurationData;
+import com.freshdirect.ecommerce.data.erp.pricing.ZoneInfoData;
 import com.freshdirect.ecommerce.data.fdstore.FDGroupData;
 import com.freshdirect.ecommerce.data.fdstore.FDSkuData;
 import com.freshdirect.ecommerce.data.list.CustomerCreatedListData;
@@ -22,6 +26,7 @@ import com.freshdirect.ecommerce.data.list.FDCustomerListData;
 import com.freshdirect.ecommerce.data.list.FDCustomerListInfoData;
 import com.freshdirect.ecommerce.data.list.FDCustomerListItemData;
 import com.freshdirect.ecommerce.data.list.FDProductSelectionData;
+import com.freshdirect.ecommerce.data.list.PricingContextData;
 import com.freshdirect.ecommerce.data.list.RenameCustomerListData;
 import com.freshdirect.ecommerce.data.list.RenameListData;
 import com.freshdirect.ecommerce.data.list.SaleStatisticsData;
@@ -269,6 +274,7 @@ public class ListConverter {
 		customerListData.setCustomerId(fdCustomerList.getCustomerPk().getId());
 		customerListData.setCustomerListId(fdCustomerList.getId());
 		customerListData.seteStoreType(fdCustomerList.geteStoreType());
+
 		customerListData.setLineItems(buildCustomerListLineItem(fdCustomerList.getLineItems()));
 		customerListData.setModificationDate(fdCustomerList.getModificationDate());
 		customerListData.setName(fdCustomerList.getName());
@@ -405,7 +411,26 @@ public class ListConverter {
 	private static UserContext buildUserContext(UserContextData userCtx) {
 		UserContext usercontext = new  UserContext();
 		usercontext.setStoreContext(StoreContext.createStoreContext(EnumEStoreId.valueOfContentId(userCtx.getEstoreId())));
+		if(userCtx.getPricingContext()!=null)
+			usercontext.setPricingContext(buildPricingContextData(userCtx.getPricingContext()));
 		return usercontext;
+	}
+	private  static PricingContext buildPricingContextData(PricingContextData pricingContextdata) {
+		PricingContext pricingContext = new PricingContext(buildPricingZone(pricingContextdata.getPricingZone()));
+		
+		return pricingContext;
+	}
+	private static ZoneInfo buildPricingZone(ZoneInfoData zoneInfoData) {
+		ZoneInfo zoneInfo = null;
+		if(zoneInfoData!=null){
+		 zoneInfo = new ZoneInfo(
+				zoneInfoData.getZoneId(),
+				zoneInfoData.getSalesOrg(),
+				zoneInfoData.getDistributionChanel(),
+				ZoneInfo.PricingIndicator.valueOf(zoneInfoData.getPricingIndicator().name()),
+				buildPricingZone(zoneInfoData.getParent()));
+		}
+		return zoneInfo;
 	}
 
 	private static FDSku buildFDSKU(FDSkuData sku) {
