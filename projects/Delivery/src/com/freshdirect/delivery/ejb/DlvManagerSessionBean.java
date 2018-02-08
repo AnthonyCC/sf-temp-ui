@@ -79,7 +79,12 @@ import com.freshdirect.logistics.delivery.model.SystemMessageList;
 import com.freshdirect.logistics.fdstore.StateCounty;
 import com.freshdirect.logistics.fdstore.ZipCodeAttributes;
 import com.freshdirect.logistics.fdx.controller.data.request.CreateOrderRequest;
-
+/**
+ *@deprecated Please use the DlvManagerController and DlvManagerServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public class DlvManagerSessionBean extends SessionBeanSupport {
 	
 

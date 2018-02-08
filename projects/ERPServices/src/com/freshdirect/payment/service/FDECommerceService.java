@@ -303,6 +303,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String DLV_MANAGER_COUNTIES_BY_STATE = "dlvmanager/countiesbystate";
 	private static final String DLV_MANAGER_RELEASE_ORDER_LOCK = "dlvmanager/releaseorderlock";
 	private static final String DLV_MANAGER_COUNTIES_BY_ZIP = "dlvmanager/countiesbyzip";
+	private static final String DLV_MANAGER_ZIPATTRIBUTES_BY_ZIP = "dlvmanager/zipCodeAttributes";
 	private static final String DLV_MANAGER_CARTON_SCAN_INFO = "dlvmanager/cartoninfo";
 	private static final String DLV_MANAGER_MISSING_ORDER = "dlvmanager/updateorder";
 	
@@ -1396,7 +1397,6 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			request.setData(hLRequestData);
 			String inputJson = buildRequest(request);
 			@SuppressWarnings("unchecked")
-//			Response<HLBrandProductAdResponse> response = this.postData(inputJson, getFdCommerceEndPoint(BRAND_SEARCH_BY_PRODUCT), Response.class);
 			Response<HLBrandProductAdResponse> response=this.postDataTypeMap(inputJson, getFdCommerceEndPoint(BRAND_SEARCH_BY_PRODUCT), new TypeReference<Response<HLBrandProductAdResponse>>() {});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
@@ -1433,7 +1433,6 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			request.setData(orderFeedDateFrom);
 			String inputJson = buildRequest(request);
 			@SuppressWarnings("unchecked")
-//			Response<HLBrandProductAdResponse> response = this.postData(inputJson, getFdCommerceEndPoint(BRAND_ORDER_SUBMIT_BYDATE), Response.class);
 			Response<HLBrandProductAdResponse> response=this.postDataTypeMap(inputJson, getFdCommerceEndPoint(BRAND_ORDER_SUBMIT_BYDATE), new TypeReference<Response<HLBrandProductAdResponse>>() {});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
@@ -1455,7 +1454,6 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			request.setData(ordersList);
 			String inputJson = buildRequest(request);
 			@SuppressWarnings("unchecked")
-//			Response<HLBrandProductAdResponse> response = this.postData(inputJson, getFdCommerceEndPoint(BRAND_ORDER_SUBMIT_SALEIDS), Response.class);
 			Response<HLBrandProductAdResponse> response=this.postDataTypeMap(inputJson, getFdCommerceEndPoint(BRAND_ORDER_SUBMIT_SALEIDS), new TypeReference<Response<HLBrandProductAdResponse>>() {});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
@@ -1526,7 +1524,6 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		String inputJson;
 		try {
 			inputJson = buildRequest(request.getData());
-//			response = this.postData(inputJson, getFdCommerceEndPoint(EXTOLE_MANAGER_SAVE), Response.class);
 			response=this.postDataTypeMap(inputJson, getFdCommerceEndPoint(EXTOLE_MANAGER_SAVE), new TypeReference<Response<HLBrandProductAdResponse>>() {});
 			if(!response.getResponseCode().equals("CREATED")){
 				throw new FDResourceException(response.getMessage());
@@ -1976,8 +1973,8 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		String inputJson=null;
 		Set<StateCounty> stateCountySet = new HashSet<StateCounty>();
 		Response<List<StateCountyData>> response = this.httpGetDataTypeMap((getFdCommerceEndPoint(DLV_MANAGER_COUNTIES_BY_STATE)+"/"+state), new TypeReference<Response<List<StateCountyData>>>() {});
-		/*if(!response.getResponseCode().equals(HttpStatus.OK))
-			throw new FDResourceException(response.getMessage());*/
+		if(!response.getResponseCode().equals("OK"))
+			throw new FDResourceException(response.getMessage());
 		for (StateCountyData stateCountyData : response.getData()) {
 			StateCounty stateCounty = new StateCounty(stateCountyData.getState(), stateCountyData.getCounty(),
 					stateCountyData.getCity());
@@ -2003,10 +2000,8 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	@Override
 	public ZipCodeAttributes lookupZipCodeAttributes(String zip) throws FDResourceException {
 		String inputJson=null;
-		Response<StateCountyData> response = this.httpGetDataTypeMap((getFdCommerceEndPoint(DLV_MANAGER_COUNTIES_BY_ZIP+"/"+zip)), new TypeReference<Response<StateCountyData>>() {});
-		StateCountyData stateCountyData = response.getData();
-		ZipCodeAttributes zipAttributes = new ZipCodeAttributes(stateCountyData.getState(), stateCountyData.getCounty(),
-				stateCountyData.getCity(), false, zip );																		//check
+		Response<ZipCodeAttributes> response = this.httpGetDataTypeMap((getFdCommerceEndPoint(DLV_MANAGER_ZIPATTRIBUTES_BY_ZIP+"/"+zip)), new TypeReference<Response<ZipCodeAttributes>>() {});
+		ZipCodeAttributes zipAttributes = response.getData();
 		if(!response.getResponseCode().equals("OK"))
 			throw new FDResourceException(response.getMessage());
 		return zipAttributes;
@@ -4182,20 +4177,19 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	}
 	
 	@Override
-	public void queryForFDXSalesPickEligible() throws RemoteException  {
+	public List<SapOrderPickEligibleInfo> queryForFDXSalesPickEligible() throws RemoteException  {
 		String inputJson=null;
-		Response<String> response = null;
+		Response<List<SapOrderPickEligibleInfo>> response = null;
 		try {
 			response = 	httpGetData( getFdCommerceEndPoint(GET_FDX_QUERYFORSALESPICKELIGIBLE), Response.class);
+			List<SapOrderPickEligibleInfo> sapOrderPickeligibleList = response.getData();
+			return sapOrderPickeligibleList;
 			//response = postData(inputJson, getFdCommerceEndPoint(GET_FDX_QUERYFORSALESPICKELIGIBLE), Response.class);
 		} catch (FDResourceException e) {
 			// TODO Auto-generated catch block
 			LOGGER.error("Failure in queryForSalesPickEligible  Error: ",e);
 			throw new RemoteException(" queryForSalesPickEligible failure" , e);
 		}
-		if(!response.getResponseCode().equals("OK"))
-			throw new RemoteException(response.getMessage());
-		
 	}
 	@Override
 	public void sendFDXEligibleOrdersToSap(List<SapOrderPickEligibleInfo> eligibleSapOrderLst) throws RemoteException  {
@@ -4203,7 +4197,6 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		Response<String> response = null;
 		try {
 			Request<List<SapOrderPickEligibleInfo> > requestofSapList = new Request<List<SapOrderPickEligibleInfo> >();
-			requestofSapList.setData(eligibleSapOrderLst);
 			requestofSapList.setData(eligibleSapOrderLst);
 			String inputJson = buildRequest(requestofSapList);
 			System.out.println("sendFDXEligibleOrdersToSap calling url: "+getFdCommerceEndPoint(POST_FDX_ELIGIBLE_SENDORDERSTOSAP) );
@@ -5227,7 +5220,6 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			request.setData(hLBrandProductAdRequest);
 			String inputJson = buildRequest(request);
 			@SuppressWarnings("unchecked")
-//			Response<HLBrandProductAdResponse> response = this.postData(inputJson, getFdCommerceEndPoint(BRAND_SEARCH_BY_HOME_PRODUCT), Response.class);
 			Response<HLBrandProductAdResponse> response=this.postDataTypeMap(inputJson, getFdCommerceEndPoint(BRAND_SEARCH_BY_HOME_PRODUCT), new TypeReference<Response<HLBrandProductAdResponse>>() {});
 			
 			if(!response.getResponseCode().equals("OK")){
@@ -5251,7 +5243,6 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			request.setData(hLBrandProductAdRequest);
 			String inputJson = buildRequest(request);
 			@SuppressWarnings("unchecked")
-//			Response<HLBrandProductAdResponse> response = this.postData(inputJson, getFdCommerceEndPoint(BRAND_SEARCH_BY_PDP_PRODUCT), Response.class);
 			Response<HLBrandProductAdResponse> response=this.postDataTypeMap(inputJson, getFdCommerceEndPoint(BRAND_SEARCH_BY_PDP_PRODUCT), new TypeReference<Response<HLBrandProductAdResponse>>() {});
 			
 			if(!response.getResponseCode().equals("OK")){

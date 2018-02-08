@@ -20,7 +20,12 @@ import com.freshdirect.sap.SapOrderPickEligibleInfo;
 import com.freshdirect.sap.SapProperties;
 import com.freshdirect.sap.command.SapSendOrderPickEligibleCommand;
 import com.freshdirect.sap.ejb.SapException;
-
+/**
+ *@deprecated Please use the FDXOrderPickEligibleController and SessionImpressionLogServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public class FDXOrderPickEligibleSessionBean extends SessionBeanSupport {
 
 	/**

@@ -268,7 +268,7 @@ private static final String DO_GENERIC_SEARCH = "callcenter/genericSearch/search
 	public EnumPaymentResponse resubmitPayment(String saleId,ErpPaymentMethodI payment, Collection charges)
 			throws FDResourceException, ErpTransactionException,
 			RemoteException {
-		Request<ResubmitPaymentData> request = new Request<ResubmitPaymentData>();
+ 		Request<ResubmitPaymentData> request = new Request<ResubmitPaymentData>();
 		Response<String> response = new Response<String>();
 		try{
 			request.setData(CallCenterConverter.buildResubmitPaymentData(payment,charges));
@@ -284,7 +284,7 @@ private static final String DO_GENERIC_SEARCH = "callcenter/genericSearch/search
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
-		return EnumPaymentResponse.getEnum(response.getData());
+		return null; // As per legacy implementation the reponse is always null in ERpCustomerManagerSB.
 	}
 
 
@@ -453,9 +453,9 @@ private static final String DO_GENERIC_SEARCH = "callcenter/genericSearch/search
 	@Override
 	public List getHolidayMeals(FDIdentity identity)throws FDResourceException, RemoteException {
 		//Generic list will create problem but this methos has dependency on Meal Persistance bean so only stub code for this mthod
-		Response<List> response = new Response<List>();
+		Response<List<MealData>> response = new Response<List<MealData>>();
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_HOLIDAY_MEALS +identity.getErpCustomerPK()),  new TypeReference<Response<List>>(){});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_HOLIDAY_MEALS +identity.getErpCustomerPK()),  new TypeReference<Response<List<MealData>>>(){});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
@@ -463,18 +463,19 @@ private static final String DO_GENERIC_SEARCH = "callcenter/genericSearch/search
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
-		return response.getData();
+		return CallCenterConverter.buildMealModelList(response.getData());
 	}
 
 
 	@Override
 	public <E> List locateCompanyCustomers(GenericSearchCriteria criteria)
 			throws FDResourceException, RemoteException {
-
+		Request<Map<String,String>> request = new Request<Map<String,String>>();
 		Response<List> response = null;
 		try {
-			response = httpGetDataTypeMap(
-					getFdCommerceEndPoint(LOCATE_COMPANY_CUSTOMERS
+			request.setData(criteria.getCriteriaMap());
+			String inputJson = buildRequest(request);
+			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(LOCATE_COMPANY_CUSTOMERS
 							+ criteria.getSearchType().getName()),
 							(TypeReference<E>)typeReferenceFor(criteria));
 			if (!response.getResponseCode().equals("OK"))
@@ -482,6 +483,8 @@ private static final String DO_GENERIC_SEARCH = "callcenter/genericSearch/search
 
 		} catch (FDResourceException e) {
 			LOGGER.error(e.getMessage());
+			throw new RemoteException();
+		} catch (FDEcommServiceException e) {
 			throw new RemoteException();
 		}
 
@@ -491,13 +494,18 @@ private static final String DO_GENERIC_SEARCH = "callcenter/genericSearch/search
 	@Override
 	public List orderSummarySearch(GenericSearchCriteria criteria)throws FDResourceException, RemoteException {
 		Response<List<RestrictionData>> response = new Response<List<RestrictionData>>();
-		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ORDER_SUMMARY_SEARCH+criteria.getSearchType().getName()),  new TypeReference<Response<List<RestrictionData>>>(){});
+		Request<Map<String , String>> request = new Request<Map<String,String>>();
+		try{
+			request.setData(criteria.getCriteriaMap());
+			String inputJson = buildRequest(request);
+			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(ORDER_SUMMARY_SEARCH+criteria.getSearchType().getName()),  new TypeReference<Response<List<RestrictionData>>>(){});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDRuntimeException e){
 			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		} catch (FDEcommServiceException e) {
 			throw new RemoteException(e.getMessage());
 		}
 		return DlvRestrictionModelConverter.buildDlvRestrictionListResponse(response.getData());
@@ -867,11 +875,11 @@ private static final String DO_GENERIC_SEARCH = "callcenter/genericSearch/search
 	public Map returnOrders(FDActionInfo info, List returnOrders)
 			throws FDResourceException, RemoteException {
 		Request<ReturnOrderData> request = new Request<ReturnOrderData>();
-		Response<Map<String, FDCustomerOrderInfoData>> response = new Response<Map<String, FDCustomerOrderInfoData>>();
+		Response<Map<String, List<FDCustomerOrderInfoData>>> response = new Response<Map<String, List<FDCustomerOrderInfoData>>>();
 		try{
 			request.setData(CallCenterConverter.buildReturnOrderData(info , returnOrders));
 			String inputJson = buildRequest(request);
-			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(RETURN_ORDERS),new TypeReference<Response<Map<String, FDCustomerOrderInfoData>>>() {});
+			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(RETURN_ORDERS),new TypeReference<Response<Map<String, List<FDCustomerOrderInfoData>>>>() {});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
@@ -882,7 +890,7 @@ private static final String DO_GENERIC_SEARCH = "callcenter/genericSearch/search
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
-		return /*CallCenterConverter.buildReturnOrderResponse(response.getData())*/null;
+		return CallCenterConverter.buildReturnOrderResponse(response.getData());
 	}
 
 
@@ -954,13 +962,19 @@ private static final String DO_GENERIC_SEARCH = "callcenter/genericSearch/search
 	@Override
 	public void createSnapShotForModifyOrders(GenericSearchCriteria criteria)
 			throws FDResourceException, RemoteException {
+		Request<Map<String , String>> request = new Request<Map<String , String>>();
 		Response<String> response = new Response<String>();
-		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(CREATE_SNAPSHOT_FOR_MODIFY_ORDERS+ criteria.getSearchType().getName()),  new TypeReference<Response<String>>(){});
+		try{
+			request.setData(criteria.getCriteriaMap());
+			String inputJson = buildRequest(request);
+			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(CREATE_SNAPSHOT_FOR_MODIFY_ORDERS+criteria.getSearchType().getName()),new TypeReference<Response<String>>() {});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
-		} catch (FDRuntimeException e){
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		} catch (FDEcommServiceException e) {
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}

@@ -18,7 +18,6 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpSaleInfo;
@@ -503,6 +502,7 @@ public class TimeslotService {
 
         deliveryModel.setShowPremiumSlots(showPremiumSlots);
 
+        if (!timeslotList.isEmpty()) {
         baseRange = new DateRange(timeslotList.get(0).getStartDate(), DateUtil.addDays(timeslotList.get(0).getEndDate(), 1));
 
         EnumDlvRestrictionReason specialHoliday = getNextHoliday(restrictions, baseRange, FDStoreProperties.getHolidayLookaheadDays());
@@ -578,6 +578,7 @@ public class TimeslotService {
             deliveryModel.setMinOrderReqd(false);
         }
 
+        }
         deliveryModel.setTimeslotList(timeslotList);
 
         stats.apply(deliveryModel);
@@ -694,8 +695,8 @@ public class TimeslotService {
                 	aheadDays = cal.getTime();
                     for (FDTimeslot fdTimeslot : fdTimeslotUtil.getTimeslotsFlat()) {
                     	// preventing manipulating of timeslots if firstDeliveryDate from logistics falls out from date ranges(2,9)	   //COS17-51
-                        if (null != fdTimeslot.getSoFirstDeliveryDate() && fdTimeslot.getSoFirstDeliveryDate().before(aheadDays)) {
-                            fdTimeslot.setSoFirstDeliveryDate(getSubsequentDeliveryDate(fdTimeslot.getSoFirstDeliveryDate(), so.getFrequency()));
+                    	if (null != fdTimeslot.getSoFirstDeliveryDate() && null != fdTimeslot.getDeliveryDate() && fdTimeslot.getSoFirstDeliveryDate().before(aheadDays)) {
+                            fdTimeslot.setSoFirstDeliveryDate(getSubsequentDeliveryDate(fdTimeslot.getDeliveryDate(), so.getFrequency()));
                         }
                     }
                 }

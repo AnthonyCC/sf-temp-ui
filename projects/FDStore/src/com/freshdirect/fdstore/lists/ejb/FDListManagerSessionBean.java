@@ -44,6 +44,12 @@ import com.freshdirect.fdstore.lists.FDStandingOrderList;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
+/**
+ *@deprecated Please use the ListManagerController and ListManagerServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public class FDListManagerSessionBean extends FDSessionBeanSupport {
 
 	private static final long	serialVersionUID	= 3548977965120918261L;

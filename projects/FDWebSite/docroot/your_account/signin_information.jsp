@@ -464,7 +464,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	</div>
     
 
-<div class="youraccount_user_email">
+<div class="youraccount_user_email" id="signin_user_email">
 	<h2>Change Your E-mail/User Name <i>* Required Information</i></h2>
 
 	<form fdform name="update_user_name" method="post"  fdform-displayerrorafter>
@@ -516,7 +516,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	</form>
 </div>
 
-<div class="youraccount_user_password">
+<div class="youraccount_user_password" id="signin_user_password">
 
 		<%  boolean isPasswordAddedForSocialUser = UserUtil.isPasswordAddedForSocialUser(identity.getErpCustomerPK());
 			if((erpCustomer != null) && (erpCustomer.isSocialLoginOnly()) && !isPasswordAddedForSocialUser){
@@ -602,7 +602,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 </form>
 </div>
 
-<div class="youraccount_user_name">
+<div class="youraccount_user_name" id="signin_user_name">
 	<h2>Change Your Display Name</h2>
 	
 	<form fdform method="post" name="updateDisplayName"  fdform-displayerrorafter>
@@ -623,7 +623,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	</form>
 </div>
 
-<div class="youraccount_user_contact">
+<div class="youraccount_user_contact" id="signin_user_contact">
 	<form fdform method="post" name="updateContactInformation"  fdform-displayerrorafter>
 	<input type="hidden" name="actionName" value="changeContactInfo">
 	<div class="youraccount_contact">
@@ -688,7 +688,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 </div>
 
 <% if (FDStoreProperties.isEmailOptdownEnabled()) { %>
-<div class="youraccount_user_email_pref">
+<div class="youraccount_user_email_pref" id="signin_user_email_pref">
 	<form fdform id="update_email_preference_level" name="update_email_preference_level" method="post"  fdform-displayerrorafter>
 		<input type="hidden" name="actionName" value="changeEmailPreferenceLevel">
 		<div class="youraccount_email_pref">
@@ -713,7 +713,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	</form>
 </div>
 
-<div class="youraccount_user_phone">
+<div class="youraccount_user_phone" id="signin_user_phone">
 	<form fdform id="update_mail_phone_preference" name="update_mail_phone_preference" method="post"  fdform-displayerrorafter>
 		<input type="hidden" name="actionName" value="changeMailPhonePreference">
 		<div class="youraccount_phone">
@@ -736,7 +736,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	</form>
 </div>
 <% }else{ %>
-<div class="youraccount_user_email_pref">
+<div class="youraccount_user_email_pref" id="signin_user_email_pref">
 	<form fdform name="update_email_preference" method="post"  fdform-displayerrorafter>
 		<input type="hidden" name="actionName" value="changeEmailPreference">
 		<div class="youraccount_email_pref">
@@ -770,7 +770,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 
 
 <!-- mobile preferences-->
-<div class="youraccount_user_mobile_pref">
+<div class="youraccount_user_mobile_pref" id="signin_user_mobile_pref">
 <form fdform name="update_email_preference" method="post"  fdform-displayerrorafter>
 	<input type="hidden" name="actionName" value="mobilepreferences">
 	<input type="hidden" name="mobile_existing" value="<%=mobile_number%>">

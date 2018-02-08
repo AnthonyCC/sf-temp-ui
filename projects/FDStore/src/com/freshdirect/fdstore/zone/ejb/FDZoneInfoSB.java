@@ -22,14 +22,20 @@ import com.freshdirect.erp.model.ErpProductInfoModel;
  * @version $Revision$
  * @author $Author$
  */
+/**
+ *@deprecated Please use the ZoneInfoController and ZoneInfoServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public interface FDZoneInfoSB extends EJBObject {
-    
+	@Deprecated
 	public ErpZoneMasterInfo findZoneInfoMaster(String zoneId) throws RemoteException;
-    
+	@Deprecated
     public Collection loadAllZoneInfoMaster() throws RemoteException;       
-    
+	@Deprecated
     public  String findZoneId(String serviceType,String zipCode) throws RemoteException;
-    
+	@Deprecated
     public  String findZoneId(String serviceType,String zipCode,boolean isPickupOnlyORNotServicebleZip) throws RemoteException;
           
 }

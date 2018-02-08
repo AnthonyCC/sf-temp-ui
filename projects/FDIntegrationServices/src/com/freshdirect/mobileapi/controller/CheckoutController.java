@@ -104,7 +104,7 @@ import com.freshdirect.webapp.util.RequestUtil;
 
 public class CheckoutController extends BaseController {
 
-    private static Category LOGGER = LoggerFactory.getInstance(CheckoutController.class);
+    private static final Category LOGGER = LoggerFactory.getInstance(CheckoutController.class);
 
     private static final String PARAM_SLOT_ID = "slotId";
     private final static String ACTION_GET_REMOVE_UNAVAILABLE_ITEMS = "removeunavailableitems";
@@ -525,7 +525,7 @@ public class CheckoutController extends BaseController {
     	try {
 			FDCustomerManager.storeDPTCAgreeDate(AccountActivityUtil.getActionInfo(request.getSession()), user.getFDSessionUser().getIdentity().getErpCustomerPK(), new Date());
 		} catch(FDResourceException exp) {
-			exp.printStackTrace();
+			//exp.printStackTrace();
 			setResponseMessage(model, Message.createFailureMessage(MSG_ACCEPT_DP_TERMSANDCONDITIONS_FAILED), user);
 			return model;
 		}
@@ -587,7 +587,9 @@ public class CheckoutController extends BaseController {
                 List<FDCartLineI> removedInvalidLines = removeInvalidLines(user.getFDSessionUser(), request.getServerName());
                 List<ProductPotatoData> removedProducts = new ArrayList<ProductPotatoData>(removedInvalidLines.size());
                 for (FDCartLineI cartLine : removedInvalidLines) {
-                    removedProducts.add(ProductPotatoUtil.getProductPotato( cartLine.lookupProduct(), user.getFDSessionUser(), false, true));
+                    ProductPotatoData productPotato = ProductPotatoUtil.getProductPotato( cartLine.lookupProduct(), user.getFDSessionUser(), false, true);
+                    productPotato.getProductData().setInCartAmount(cartLine.getQuantity());
+                    removedProducts.add(productPotato);
                 }
                 CMSPageRequest pageRequest = new CMSPageRequest();
                 pageRequest.setPlantId(BrowseUtil.getPlantId(user));
@@ -597,6 +599,10 @@ public class CheckoutController extends BaseController {
                 pageResponse.setDeliveryTimeslot(slotResponse);
                 responseMessage = pageResponse;
             } else {
+                ShipToAddress shipToAddressModel = ShipToAddress.wrap(user.getShoppingCart().getDeliveryAddress());
+                com.freshdirect.mobileapi.controller.data.response.ShipToAddress shipToAddressResponse = new com.freshdirect.mobileapi.controller.data.response.ShipToAddress(
+                        shipToAddressModel);
+                slotResponse.setAddress(shipToAddressResponse);
                 responseMessage = slotResponse;
             }
             responseMessage.setSuccessMessage("Order delivery Address have been set successfully.");

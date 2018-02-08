@@ -75,7 +75,7 @@ public class PickslistController extends BaseController {
 					products.add(new Product(com.freshdirect.mobileapi.model.Product.wrap(productModel)));
 				} catch (final ModelException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 			}
 			response.setProducts(products);

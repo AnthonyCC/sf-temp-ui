@@ -16,7 +16,12 @@ import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
-
+/**
+ *@deprecated Please use the ERPGroupScaleController and ErpGrpInfoServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public class FDGrpInfoSessionBean extends SessionBeanSupport{
 	
     /** logger for messages

@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.freshdirect.ecomm.gateway.AbstractEcommService;
+import com.freshdirect.ecomm.gateway.CrmManagerService;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.ecommerce.data.dlvpass.DeliveryPassData;
@@ -17,7 +18,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class StandingOrder3CronService extends AbstractEcommService implements StandingOrder3CronServiceI {
 
-	private final static Category LOGGER = LoggerFactory.getInstance(StandingOrder3CronService.class);
+	private final static Category LOGGER = LoggerFactory.getInstance(CrmManagerService.class);
 	
 	private static final String QUERY_DEACTIVATE_TIMESLOTS = "standingOrder3Cron/queryDeactivateTimeslots";
 	private static final String REMOVE_TIMESLOT_FROM_SO = "standingOrder3Cron/removeTimeSlotInfoFromSO";

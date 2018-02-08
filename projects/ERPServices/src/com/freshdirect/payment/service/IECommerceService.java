@@ -535,7 +535,7 @@ public interface IECommerceService {
 	public String createFeedCmsFeed(String feedId, String storeId, String feedData) throws FDResourceException;
 	public String getCmsFeed(String storeID) throws FDResourceException;
 	
-	public void queryForFDXSalesPickEligible() throws RemoteException;
+	public List<SapOrderPickEligibleInfo> queryForFDXSalesPickEligible() throws RemoteException;
 	public void sendFDXEligibleOrdersToSap(List<SapOrderPickEligibleInfo> eligibleSapOrderLst) throws RemoteException;
 
 	public ErpMaterialBatchHistoryModel getMaterialBatchInfo() throws RemoteException;

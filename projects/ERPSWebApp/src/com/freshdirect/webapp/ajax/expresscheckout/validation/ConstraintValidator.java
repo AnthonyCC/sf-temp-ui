@@ -27,7 +27,7 @@ public class ConstraintValidator implements Validator {
             final String data = dataEntry.getValue();
             if (constraints.containsKey(key)) {
                 final Constraint<String> constraint = constraints.get(key);
-                if (!constraint.isValid(data)) {
+                if (!constraint.isValid(data) || (null != data && key.equalsIgnoreCase("cardHolderName") && Character.isDigit(data.trim().charAt(0)) )) {
                     validationErrors.add(new ValidationError(key, constraint.getErrorMessage()));
                 }
             }

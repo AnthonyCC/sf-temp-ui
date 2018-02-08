@@ -34,6 +34,12 @@ import com.freshdirect.fdstore.GroupScalePricing;
  * @version $Revision$
  * @author $Author$
  */
+/**
+ *@deprecated Please use the FDFactoryController and FDFactoryServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public interface FDFactorySB extends EJBObject {
     
 	/**
@@ -46,7 +52,7 @@ public interface FDFactorySB extends EJBObject {
  	 * @throws FDSkuNotFoundException if the SKU was not found in ERP services
 	 * @throws FDResourceException if an error occured using remote resources
 	 */
-	public FDProductInfo getProductInfo(String sku) throws RemoteException, FDSkuNotFoundException, FDResourceException;
+	@Deprecated public FDProductInfo getProductInfo(String sku) throws RemoteException, FDSkuNotFoundException, FDResourceException;
     
     /**
 	 * Get current product information object for a specific version of a sku.
@@ -59,7 +65,7 @@ public interface FDFactorySB extends EJBObject {
  	 * @throws FDSkuNotFoundException if the SKU was not found in ERP services
 	 * @throws FDResourceException if an error occured using remote resources
 	 */
-	public FDProductInfo getProductInfo(String sku, int version) throws RemoteException, FDSkuNotFoundException, FDResourceException;
+	@Deprecated public FDProductInfo getProductInfo(String sku, int version) throws RemoteException, FDSkuNotFoundException, FDResourceException;
 
 	/**
 	 * Get current product information object for multiple SKUs.
@@ -70,7 +76,7 @@ public interface FDFactorySB extends EJBObject {
 	 *
 	 * @throws FDResourceException if an error occured using remote resources
 	 */
-	public Collection getProductInfos(String[] skus) throws RemoteException, FDResourceException;
+	@Deprecated public Collection getProductInfos(String[] skus) throws RemoteException, FDResourceException;
 
 	/**
 	 * Get product with specified version. 
@@ -82,57 +88,57 @@ public interface FDFactorySB extends EJBObject {
 	 *
 	 * @throws FDSkuNotFoundException if the SKU was not found in ERP services
 	 */
-    public FDProduct getProduct(String sku, int version) throws RemoteException, FDSkuNotFoundException, FDResourceException;
+	@Deprecated  public FDProduct getProduct(String sku, int version) throws RemoteException, FDSkuNotFoundException, FDResourceException;
 
 	/** @return list of sku codes */
-    public Collection getNewSkuCodes(int days) throws RemoteException, FDResourceException;
+	@Deprecated   public Collection getNewSkuCodes(int days) throws RemoteException, FDResourceException;
 	
 	/** @return map of sku codes --&gt; oldness pairs */
-    public Map<String, Integer> getSkusOldness() throws RemoteException, FDResourceException;
+	@Deprecated  public Map<String, Integer> getSkusOldness() throws RemoteException, FDResourceException;
 
     /** @return list of sku codes */
-    public Collection getReintroducedSkuCodes(int days) throws RemoteException, FDResourceException;
+	@Deprecated public Collection getReintroducedSkuCodes(int days) throws RemoteException, FDResourceException;
 
 	/** @return list of sku codes */
-	public Collection getOutOfStockSkuCodes() throws RemoteException, FDResourceException;
+	@Deprecated public Collection getOutOfStockSkuCodes() throws RemoteException, FDResourceException;
 	
-	public Collection findSKUsByDeal(double lowerLimit, double upperLimit,List skuPrefixes)throws FDResourceException, RemoteException;
+	@Deprecated public Collection findSKUsByDeal(double lowerLimit, double upperLimit,List skuPrefixes)throws FDResourceException, RemoteException;
 
-	public List findPeakProduceSKUsByDepartment(List skuPrefixes) throws FDResourceException, RemoteException;
+	@Deprecated public List findPeakProduceSKUsByDepartment(List skuPrefixes) throws FDResourceException, RemoteException;
 	
 	
-	public ErpZoneMasterInfo getZoneInfo(String zoneId) throws RemoteException, FDResourceException;
+	@Deprecated public ErpZoneMasterInfo getZoneInfo(String zoneId) throws RemoteException, FDResourceException;
 	
-	public Collection getZoneInfos(String zoneIds[]) throws RemoteException, FDResourceException;
+	@Deprecated public Collection getZoneInfos(String zoneIds[]) throws RemoteException, FDResourceException;
 	
 	
-	public Collection getSkuCodes(String sapId) throws RemoteException, FDResourceException;
+	@Deprecated public Collection getSkuCodes(String sapId) throws RemoteException, FDResourceException;
 	
-	public GroupScalePricing getGrpInfo(FDGroup group) throws RemoteException, FDGroupNotFoundException, FDResourceException;
+	@Deprecated public GroupScalePricing getGrpInfo(FDGroup group) throws RemoteException, FDGroupNotFoundException, FDResourceException;
 	
-	public ErpProductFamilyModel getFamilyInfo(String familyId) throws RemoteException, FDGroupNotFoundException, FDResourceException;
+	@Deprecated public ErpProductFamilyModel getFamilyInfo(String familyId) throws RemoteException, FDGroupNotFoundException, FDResourceException;
 	
-	public Collection getFilteredSkus(List skuList) throws RemoteException, FDResourceException;
+	@Deprecated public Collection getFilteredSkus(List skuList) throws RemoteException, FDResourceException;
 	
-	public Collection<GroupScalePricing> getGrpInfos(FDGroup grpIds[]) throws RemoteException, FDResourceException;
+	@Deprecated public Collection<GroupScalePricing> getGrpInfos(FDGroup grpIds[]) throws RemoteException, FDResourceException;
 	
-	public Map<String, Map<String,Date>> getNewSkus() throws RemoteException, FDResourceException;
+	@Deprecated public Map<String, Map<String,Date>> getNewSkus() throws RemoteException, FDResourceException;
 
-	public Map<String, Map<String,Date>> getBackInStockSkus() throws RemoteException, FDResourceException;
+	@Deprecated public Map<String, Map<String,Date>> getBackInStockSkus() throws RemoteException, FDResourceException;
 
-	public Map<String, Map<String,Date>> getOverriddenNewSkus() throws RemoteException, FDResourceException;
+	@Deprecated public Map<String, Map<String,Date>> getOverriddenNewSkus() throws RemoteException, FDResourceException;
 
-	public Map<String, Map<String,Date>> getOverriddenBackInStockSkus() throws RemoteException, FDResourceException;
+	@Deprecated public Map<String, Map<String,Date>> getOverriddenBackInStockSkus() throws RemoteException, FDResourceException;
 	
-	public List<SkuAvailabilityHistory> getSkuAvailabilityHistory(String skuCode) throws RemoteException, FDResourceException;
+	@Deprecated public List<SkuAvailabilityHistory> getSkuAvailabilityHistory(String skuCode) throws RemoteException, FDResourceException;
 
-	public void refreshNewAndBackViews() throws RemoteException, FDResourceException; 
-	public FDGroup getLatestActiveGroup(String groupId) throws RemoteException, FDGroupNotFoundException, FDResourceException;
+	@Deprecated public void refreshNewAndBackViews() throws RemoteException, FDResourceException; 
+	@Deprecated public FDGroup getLatestActiveGroup(String groupId) throws RemoteException, FDGroupNotFoundException, FDResourceException;
 
-	public FDProductInfo getProductInfo(ErpProductInfoModel erpProdInfo) throws RemoteException, FDResourceException;
-	public ErpProductFamilyModel getSkuFamilyInfo(String materialId)throws RemoteException, FDGroupNotFoundException, FDResourceException;
+	@Deprecated public FDProductInfo getProductInfo(ErpProductInfoModel erpProdInfo) throws RemoteException, FDResourceException;
+	@Deprecated public ErpProductFamilyModel getSkuFamilyInfo(String materialId)throws RemoteException, FDGroupNotFoundException, FDResourceException;
 	
-	public  Map<String,FDGroup> getGroupIdentityForMaterial(String matId) throws RemoteException, FDResourceException;
+	@Deprecated public  Map<String,FDGroup> getGroupIdentityForMaterial(String matId) throws RemoteException, FDResourceException;
 	/**
 	 * Method to get all groups modified after lastModified time
 	 * @param lastModified
@@ -140,6 +146,6 @@ public interface FDFactorySB extends EJBObject {
 	 * @throws FDResourceException
 	 * @throws RemoteException
 	 */
-	public Map<String,List<String>> getModifiedOnlyGroups(Date lastModified) throws FDResourceException, RemoteException;
+	@Deprecated public Map<String,List<String>> getModifiedOnlyGroups(Date lastModified) throws FDResourceException, RemoteException;
 }
 

@@ -447,7 +447,7 @@ public class Product extends Message {
             }
         } catch (FDException e) {
             addErrorMessage("Error getting kosherRestrictions. Cause : " + e.getMessage());
-            e.printStackTrace();
+            //e.printStackTrace();
         }
 
         //this.earliestAvailabilityDate = product.getFilteredEarliestAvailabilityDate();

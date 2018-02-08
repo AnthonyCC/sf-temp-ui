@@ -146,10 +146,10 @@ public class Sku {
             return new Sku(priceCalc, skuModel, coupon,plantID);
         } catch (FDResourceException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            //e.printStackTrace();
         } catch (FDSkuNotFoundException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         return null;
     }
@@ -289,10 +289,10 @@ public class Sku {
             }
         } catch (FDResourceException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            //e.printStackTrace();
         } catch (FDSkuNotFoundException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         return scales;
     }

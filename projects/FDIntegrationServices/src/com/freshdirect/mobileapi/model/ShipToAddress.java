@@ -99,7 +99,7 @@ public class ShipToAddress extends DeliveryAddress {
         address.setCity(anonymousAddress.getCity());
         address.setState(anonymousAddress.getState());
         address.setServiceType(EnumServiceType.HOME);
-        
+
         ShipToAddress newInstance = new ShipToAddress();
         newInstance.address = address;
         return newInstance;
@@ -125,7 +125,7 @@ public class ShipToAddress extends DeliveryAddress {
         } else {
             newInstance.altType = AltAddressType.NONE;
         }
-
+        
         return newInstance;
     }
 
@@ -232,10 +232,10 @@ public class ShipToAddress extends DeliveryAddress {
 			 serviceResult = FDDeliveryManager.getInstance().getDeliveryServicesByAddress(addressModel);
 		} catch (FDResourceException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
 		} catch (FDInvalidAddressException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
 		}		
 		return (null!=serviceResult)?serviceResult.getAvailableServices(): new HashSet();		
 	}
@@ -256,16 +256,20 @@ public class ShipToAddress extends DeliveryAddress {
         return address.getAddressInfo();
     }
 
-    //    public Object getUnattendedDeliveryFlag() {
-    //        return address.getUnattendedDeliveryFlag();
-    //    }
-
     public String getUnattendedDeliveryInstructions() {
         return address.getUnattendedDeliveryInstructions();
     }
 
     public void setUnattendedDeliveryInstructions(String code) {
         address.setUnattendedDeliveryInstructions(code);
+    }
+    
+    public EnumUnattendedDeliveryFlag getUnattendedDeliveryFlag() {
+        return address.getUnattendedDeliveryFlag();
+    }
+    
+    public void setUnattendedDeliveryFlag(EnumUnattendedDeliveryFlag flag) {
+        address.setUnattendedDeliveryFlag(flag);
     }
 
     public static AddressModel setZoningInfoOnAddress(FDDeliveryZoneInfo dlvResponse, AddressModel address) {
@@ -284,10 +288,6 @@ public class ShipToAddress extends DeliveryAddress {
      * This approach avoid leaking FD logic classes outside packages, where they shouldn't be accessible
      */
 
-    void setUnattendedDeliveryFlag(EnumUnattendedDeliveryFlag flag) {
-        address.setUnattendedDeliveryFlag(flag);
-    }
-
     void setAltDelivery(EnumDeliverySetting doorman) {
         address.setAltDelivery(doorman);
     }
@@ -298,10 +298,6 @@ public class ShipToAddress extends DeliveryAddress {
 
     ErpAddressModel getAddress() {
         return address;
-    }
-
-    EnumUnattendedDeliveryFlag getUnattendedDeliveryFlag() {
-        return address.getUnattendedDeliveryFlag();
     }
 
     PrimaryKey getPK() {
