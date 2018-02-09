@@ -2451,10 +2451,10 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	@Override
 	public Map<String, List<String>> getModifiedOnlyGroups(Date lastModified)
 			throws RemoteException {
-		String date1 =null;
-		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+		long date1 =0;
+		
 		if(lastModified!=null){
-		date1 = format1.format(lastModified); 
+		date1 = lastModified.getTime(); 
 		}
 		Response<Map<String, List<String>>> response =null;
 		try {
