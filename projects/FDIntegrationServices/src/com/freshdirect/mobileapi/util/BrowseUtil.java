@@ -503,7 +503,7 @@ public class BrowseUtil {
 				}
 			} catch (URISyntaxException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 			return map;
 		}
@@ -1588,7 +1588,7 @@ public class BrowseUtil {
 				}
 
 			} catch (FDResourceException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 
 	    	if(keyList != null && keyList.size() > 0){
@@ -1735,10 +1735,10 @@ public class BrowseUtil {
 				up.setPriceText(UnitPriceUtil.getUnitPrice(fdSalesUnit, pc.getZonePriceInfoModel().getDefaultPrice()));
 			} catch (FDResourceException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
 			} catch (FDSkuNotFoundException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 	    	return up;
 

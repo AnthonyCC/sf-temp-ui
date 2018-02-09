@@ -522,7 +522,7 @@ public class CategoryModel extends ProductContainer {
     public List<ProductModel> getProducts() {
 
     	List<ProductModel> prodList = new ArrayList<ProductModel>();
-    	ZoneInfo pricingZone = ContentFactory.getInstance()!=null&&ContentFactory.getInstance().getCurrentUserContext()!=null&&
+    	ZoneInfo pricingZone = ContentFactory.getInstance()!=null && ContentFactory.getInstance().getCurrentUserContext()!=null &&
     								ContentFactory.getInstance().getCurrentUserContext().getPricingContext()!=null?
     										ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo():null;
     	String currentProductPromotionType = getProductPromotionType();
