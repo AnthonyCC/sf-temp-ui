@@ -766,13 +766,13 @@
 {deltemplate expressco.cartline autoescape="false" variant="'YOUR_CART'"}
 	<div class='cartsection__cartline' data-component='cartline' data-cartlineid='{$id}'>
 		<div class='cartline-imageholder cartline-box'>
-			<a class='cartline-link' href='{if $mealBundle or not $displayCheckout}/pdp.jsp?productId={$productId}&catId={$categoryId}&modify=true{else}/product_modify.jsp?cartLine={$id}&trk=cart{/if}'>
+			<a class='cartline-link' href='/product_modify.jsp?cartLine={$id}&trk=cart'>
 				<img class='cartline-image' src='{if $image}{$image}{else}/media/images/temp/soon_80x80.gif{/if}' alt="{$descr}" />
 			</a>
 		</div>
 		<div class='cartline-title cartline-box'>
 			<div class='cartline-titleholder'>
-				<a class='cartline-link' href='{if $mealBundle or not $displayCheckout}/pdp.jsp?productId={$productId}&catId={$categoryId}&modify=true{else}/product_modify.jsp?cartLine={$id}&trk=cart{/if}'>{$descr}</a>
+				<a class='cartline-link' href='/product_modify.jsp?cartLine={$id}&trk=cart'>{$descr}</a>
 				{if $newItem}
 					<span class="new">(new)</span>
 				{/if}
@@ -924,7 +924,7 @@
 				{if $noModifyLinks}
 					{$descr}
 				{else}
-					<a class='cartline-link' href='{if $mealBundle}/pdp.jsp?productId={$productId}&catId={$categoryId}&modify=true{else}/product_modify.jsp?cartLine={$id}&trk=cart{/if}'>{$descr}</a>
+					<a class='cartline-link' href='/product_modify.jsp?cartLine={$id}&trk=cart'>{$descr}</a>
 				{/if}
 				{if $newItem}
 					<span class="new">(new)</span>

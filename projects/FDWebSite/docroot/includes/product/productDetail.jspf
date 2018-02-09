@@ -189,7 +189,7 @@
 
 			</div>
 			<div class="span-8 prepend-1">
-					<soy:render template="pdp.productName" data="${productPotato}" />
+					<div class="pdp-productName"><soy:render template="pdp.productName" data="${productPotato}" /></div>
 
 					<c:if test="${productPotato.available}">
 						<div class="pdp-availability"><soy:render template="pdp.availability" data="${productPotato}" /></div>

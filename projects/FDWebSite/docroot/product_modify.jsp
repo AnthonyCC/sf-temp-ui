@@ -14,6 +14,7 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <% //expanded page dimensions
 final int W_PRODUCT_MODIFY_TOTAL = 600;
 %>
@@ -26,7 +27,7 @@ final int W_PRODUCT_MODIFY_TOTAL = 600;
 	FDCartLineI templateLine = null;
 	String catId = request.getParameter("catId");
 	String productId = request.getParameter("productId");
-	String skuCode = request.getParameter("skuCode");;
+	String skuCode = request.getParameter("skuCode");
     boolean isCallCenterApp = "callCenter".equalsIgnoreCase((String)session.getAttribute(SessionName.APPLICATION));
 
 	if (catId==null) {
@@ -60,15 +61,14 @@ final int W_PRODUCT_MODIFY_TOTAL = 600;
 %>
 <fd:ProductGroup id='productNode' categoryId='<%= catId %>' productId='<%= productId %>' skuCode='<%= skuCode%>'>
 <%
+	EnumProductLayout prodPageLayout = (productNode==null) ? null : productNode.getProductLayout();
+
 	if (productNode==null) {
 		throw new JspException("Product not found in Content Management System");
 	} else if (productNode.isDiscontinued()) {
 		throw new JspException("Product Discontinued");
 	}
 
-	if (EnumProductLayout.RECIPE_MEALKIT_PRODUCT.equals(productNode.getProductLayout())) {
-	    response.sendRedirect(response.encodeRedirectURL("/pdp.jsp?productId=" + productId + "&catId=" + catId + "&modify=true"));
-	}
 
 	String cartMode = CartName.MODIFY_CART;
 	String successPage;
@@ -99,12 +99,21 @@ final int W_PRODUCT_MODIFY_TOTAL = 600;
 
     <tmpl:put name='leftnav' direct='true'>
     </tmpl:put>
+	<tmpl:put name='extraCss' direct='true'>
+	  <jwr:style src="/quickshop.css" media="all" />
+	  <jwr:style src="/pdp.css" media="all" />
+	</tmpl:put>
 
 <tmpl:put name='content' direct='true'>
-	<div style="width: <%= (mobWeb) ? "100%" : W_PRODUCT_MODIFY_TOTAL+"px" %>" class="prodMod-cont">
-		<div class="center modProd-banner" style="margin-bottom: 6px;"><span>MODIFY ITEM IN CART</span></div>
+	<%
+		String pageContentDivWidth = W_PRODUCT_MODIFY_TOTAL+"px";
+		if (mobWeb || prodPageLayout.equals(EnumProductLayout.RECIPE_MEALKIT_PRODUCT)) { pageContentDivWidth = "100%"; }
+		if (prodPageLayout.equals(EnumProductLayout.HOLIDAY_MEAL_BUNDLE_PRODUCT)) { pageContentDivWidth = "775px"; }
+	%>
+	<div style="width: <%= pageContentDivWidth %>" class="prodMod-cont">
+		<div class="center modProd-banner" style="margin-bottom: 6px; width: <%= (mobWeb) ? "100%" : W_PRODUCT_MODIFY_TOTAL+"px" %>"><span>MODIFY ITEM IN CART</span></div>
 		
-		<div class="text12px prodMod-modLink" style="margin-bottom: 6px;">
+		<div class="text12px prodMod-modLink" style="margin-bottom: 6px; width: <%= (mobWeb) ? "100%" : W_PRODUCT_MODIFY_TOTAL+"px" %>"">
 			This item is now in your cart. After making changes to it, click "save changes" below. 
 			To remove it from your cart, click "remove item." To return to the page where you bought it, 
 			<a href="/product.jsp?productId=<%= productNode %>&catId=<%= productNode.getParentNode() %>&trk=pmod">click here</a>.
@@ -113,30 +122,41 @@ final int W_PRODUCT_MODIFY_TOTAL = 600;
 			<%@ include file="/includes/product/cutoff_notice.jspf" %>
 			<%@ include file="/includes/product/i_dayofweek_notice.jspf" %>
 		</div>
-			
 		<%
 			request.setAttribute("actionResult", result);
 			request.setAttribute("user", user);
 			request.setAttribute("productNode", productNode);
-			request.setAttribute("cartMode",cartMode);
+			request.setAttribute("cartMode", cartMode);
 			request.setAttribute("templateLine",templateLine);
+			request.setAttribute("modProductId", productNode);
+			request.setAttribute("modCatId", productNode.getParentNode());
 		
-		EnumProductLayout prodPageLayout = productNode.getProductLayout();
 		
-		// if this is the wine product layout, then modification always uses the perishable product layout
-		if (prodPageLayout.equals(EnumProductLayout.WINE)) prodPageLayout= EnumProductLayout.PERISHABLE;
-		
-		// if this is configuredProduct layout, then use the ComponentGroup layout to render the modify screen
-		if (prodPageLayout.equals(EnumProductLayout.CONFIGURED_PRODUCT) || 
-		        prodPageLayout.equals(EnumProductLayout.HOLIDAY_MEAL_BUNDLE_PRODUCT)) {
-		    prodPageLayout= EnumProductLayout.COMPONENTGROUP_MEAL;
-		}
-		
-		String productPage = prodPageLayout.getLayoutPath();
+			// if this is the wine product layout, then modification always uses the perishable product layout
+			if (prodPageLayout.equals(EnumProductLayout.WINE)) prodPageLayout= EnumProductLayout.PERISHABLE;
+			
+			// if this is configuredProduct layout, then use the ComponentGroup layout to render the modify screen
+			if (
+				prodPageLayout.equals(EnumProductLayout.CONFIGURED_PRODUCT)
+				/*|| prodPageLayout.equals(EnumProductLayout.HOLIDAY_MEAL_BUNDLE_PRODUCT)*/
+				/*|| prodPageLayout.equals(EnumProductLayout.RECIPE_MEALKIT_PRODUCT)*/
+			) {
+			    prodPageLayout= EnumProductLayout.COMPONENTGROUP_MEAL;
+			}
+			
+			String productPage = prodPageLayout.getLayoutPath();
 		%>
 		<jsp:include page="<%=productPage%>" flush="false"/>
 		
 	</div>
+	<script>
+    	window.FreshDirect = window.FreshDirect || {};
+    	FreshDirect.productModify = {};
+    	FreshDirect.productModify.prodPageLayoutName = '<%= prodPageLayout.getName() %>';
+    	FreshDirect.productModify.prodPageLayoutId = '<%= prodPageLayout.getId() %>';
+    	//update initial pricing display
+    	$jq(document).ready(function() { $jq('[data-component="quantitybox.value"]').trigger('change'); });
+	</script>
 </tmpl:put>
 
 </tmpl:insert>

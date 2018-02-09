@@ -413,35 +413,28 @@ List mg_reason = ComplaintUtil.getReasonsForDepartment("Makegood");
 		%>
 			<td colspan="2">
 			<div style="margin-left:16px; text-indent:-8px;">
-            <% if (productNode != null && productNode.getSpecialLayout() != null && productNode.getSpecialLayout() == EnumProductLayout.HOLIDAY_MEAL_BUNDLE_PRODUCT) { %>
-              <span class="text10bold">
-                <a class="product-link" href="/pdp.jsp?productId=<%= productNode.getContentKey().getId() %>&catId=<%= productNode.getCategory().getContentKey().getId() %>&modify=true&trk=cart">
-                  <%= cartLine.getDescription() %>
-                </a>
-              </span>&nbsp;<%=!cartLine.getConfigurationDesc().equals("")?"("+cartLine.getConfigurationDesc()+")":""%>
-            <% } else { %>
+            
     			<% if (!isFreeProd) { %>
     				<span class="text10bold"><a href="/product_modify.jsp?cartLine=<%= cartLine.getRandomId() %>&trk=cart"><%= cartLine.getDescription() %></a></span>&nbsp;<%=!cartLine.getConfigurationDesc().equals("")?"("+cartLine.getConfigurationDesc()+")":""%>
     			<% } else { %>
     				<span class="text10bold" style="color: #336600;"><%= cartLine.getDescription() %></span>&nbsp;<%=!cartLine.getConfigurationDesc().equals("")?"("+cartLine.getConfigurationDesc()+")":""%>
     			<% } %>
-            <% } %>
-			<% if (!isFreeProd) { %>
-				<%= fdProduct.getKosherInfo(ProductInfoUtil.getPickingPlantId(productNode.getSku(cartLine.getSkuCode()).getProductInfo())).isKosherProduction() ? " <span class=\"kosher\">**</span>":""  %>
-				<%= cartLine.getApplicableRestrictions().contains(EnumDlvRestrictionReason.PLATTER) ? " <font color=\"#FF9933\">**</font>":""  %>
-				<% if ((cart instanceof FDModifyCartModel) && !(cartLine instanceof FDModifyCartLineI)) { %><span class="text10rbold">(new)</span><% } %>
-				<% if ( discountMsg!=null && !"".equals(discountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= discountMsg %></span><% } %>
-				<% if ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= groupDiscountMsg %></span><% } %>
-				
-				
-				<% if (displayShortTermUnavailability && !(cartLine instanceof FDModifyCartLineI)) { 
-	
-	    				SkuModel a_sku = cartLine.getProductRef().lookupProductModel().getSku(cartLine.getSkuCode());
-	        			
-				}
-				%>
-				<% if (!displayLimitedAvailability && displayShortTermUnavailability && earliestAvailability != null && !(cartLine instanceof FDModifyCartLineI)) { %><br>&nbsp;&nbsp;<span class="text10rbold">Earliest Delivery <%=earliestAvailability%></span><%  }%>
-			<% } %>
+				<% if (!isFreeProd) { %>
+					<%= fdProduct.getKosherInfo(ProductInfoUtil.getPickingPlantId(productNode.getSku(cartLine.getSkuCode()).getProductInfo())).isKosherProduction() ? " <span class=\"kosher\">**</span>":""  %>
+					<%= cartLine.getApplicableRestrictions().contains(EnumDlvRestrictionReason.PLATTER) ? " <font color=\"#FF9933\">**</font>":""  %>
+					<% if ((cart instanceof FDModifyCartModel) && !(cartLine instanceof FDModifyCartLineI)) { %><span class="text10rbold">(new)</span><% } %>
+					<% if ( discountMsg!=null && !"".equals(discountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= discountMsg %></span><% } %>
+					<% if ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= groupDiscountMsg %></span><% } %>
+					
+					
+					<% if (displayShortTermUnavailability && !(cartLine instanceof FDModifyCartLineI)) { 
+		
+		    				SkuModel a_sku = cartLine.getProductRef().lookupProductModel().getSku(cartLine.getSkuCode());
+		        			
+					}
+					%>
+					<% if (!displayLimitedAvailability && displayShortTermUnavailability && earliestAvailability != null && !(cartLine instanceof FDModifyCartLineI)) { %><br>&nbsp;&nbsp;<span class="text10rbold">Earliest Delivery <%=earliestAvailability%></span><%  }%>
+				<% } %>
 			</div>
 			<% 
 				EnumCouponContext couponContext =EnumCouponContext.VIEWCART;
