@@ -99,14 +99,12 @@
 
 .accordion input[type=checkbox]:checked ~ #article {
 	padding-right: 40px;
-	
 	vertical-align:right;
-	color: grey;	
+	color: grey;
 	height: auto;
 	max-height:1000px;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
-	
 }
 .accordion input[type=checkbox]:checked ~ #article1 {
 	padding-right: 40px;
