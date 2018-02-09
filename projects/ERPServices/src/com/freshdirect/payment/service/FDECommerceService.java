@@ -2310,6 +2310,9 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		try {
 		
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_ALL_GROUP_INFO_API), new TypeReference<Response<Collection<FDGroupData>>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
 		} catch (FDResourceException e) {
 			LOGGER.error(e.getMessage());
 			throw new RemoteException( e.getMessage());
@@ -2451,10 +2454,10 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	@Override
 	public Map<String, List<String>> getModifiedOnlyGroups(Date lastModified)
 			throws RemoteException {
-		String date1 =null;
-		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+		long date1 =0;
+		
 		if(lastModified!=null){
-		date1 = format1.format(lastModified); 
+		date1 = lastModified.getTime(); 
 		}
 		Response<Map<String, List<String>>> response =null;
 		try {

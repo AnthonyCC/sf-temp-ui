@@ -111,11 +111,12 @@ public class DataPotatoField {
 	
     private static String populateEditUrl(String cartLineId, ProductData productData) {
         String editUrl;
-        if (productData.getHolidayMealBundleContainer().getMealIncludeDatas() == null) {
+        //no longer needed
+        //if (productData.getHolidayMealBundleContainer().getMealIncludeDatas() == null) {
             editUrl = String.format(CARTLINE_MODIFY_URL, cartLineId);
-        } else {
-            editUrl = String.format(PDP_MODIFY_URL, productData.getProductId(), productData.getCatId());
-        }
+        //} else {
+        //    editUrl = String.format(PDP_MODIFY_URL, productData.getProductId(), productData.getCatId());
+        //}
         return editUrl;
     }
 	

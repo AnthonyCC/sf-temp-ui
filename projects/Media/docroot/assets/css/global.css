@@ -1,5 +1,4 @@
 /* global, non-browser specific, css */
-
 @font-face {
 	font-family: 'BebasRegular';
 	src: url('/assets/css/fonts/BEBAS___-webfont.eot');
@@ -3293,10 +3292,13 @@ div#i_viewcart td {
 }
 
 .modProd-banner>span {
-	color: #F93;
-	font-size: 32px;
-    font-weight: bold;
-    font-family: Verdana, Arial, sans-serif;
+	font-family: Verdana, Arial, sans-serif;
+	font-size: 30px;
+	text-transform:uppercase;
+	color:#FF9933;
+	font-weight: bold;
+	margin: 15px 0;
+	text-align: center;
 }
 
 .browse-oas-top {

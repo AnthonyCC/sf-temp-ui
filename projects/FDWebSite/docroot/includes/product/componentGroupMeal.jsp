@@ -115,7 +115,7 @@ if (!hasTemplate) {
 	// build a map of characteristic. / req. char.values, now that we know the default sku
 	Map tmpConfig = new HashMap();
 	for (Iterator varItr= variations.keySet().iterator(); varItr.hasNext();) {
-		String variation = (String) varItr.next();;
+		String variation = (String) varItr.next();
 		String reqVarOpt = request.getParameter( variation );
 		if (reqVarOpt!=null && !"".equals(reqVarOpt)) {
 			tmpConfig.put(variation, reqVarOpt);

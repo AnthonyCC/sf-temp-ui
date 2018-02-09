@@ -926,6 +926,7 @@ public class FDURLUtil {
 			final HttpServletRequest req) {
 
 		StringBuilder redirBuilder = new StringBuilder();
+		String builtRedirectUrl = "";
 
 		// pick and pass fixed parameters first
 		for (final String pName : new String[]{ "cm_vc", "ppPreviewId", "redirected", "ppId" }) {
@@ -942,14 +943,14 @@ public class FDURLUtil {
 		FDURLUtil.appendCommonParameters(redirBuilder, req.getParameterMap());
 		
 		// unescape query param separators before appending params to redirect URL
-		String toBeAppended = redirBuilder.toString().replaceAll(ProductDisplayUtil.URL_PARAM_SEP, "&");
+		builtRedirectUrl = redirectUrl + redirBuilder.toString().replaceAll(ProductDisplayUtil.URL_PARAM_SEP, "&");
 		
-		if(toBeAppended!=null && toBeAppended.indexOf("?")==-1 && redirectUrl!=null && redirectUrl.indexOf("?")==-1) {
-			return (redirectUrl + toBeAppended).replaceFirst("&", "?");
+		/* check if the first param is properly separated by question mark */
+		if (builtRedirectUrl.indexOf("?") == -1) {
+			builtRedirectUrl = builtRedirectUrl.replaceFirst("&", "?");
 		}
 
-		// unescape query param separators before appending params to redirect URL
-				return redirectUrl + redirBuilder.toString().replaceAll(ProductDisplayUtil.URL_PARAM_SEP, "&");
+		return builtRedirectUrl;
 	}
 
 }

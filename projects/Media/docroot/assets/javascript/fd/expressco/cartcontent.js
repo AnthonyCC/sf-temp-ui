@@ -416,7 +416,7 @@ function parseTipTotal(data) {
           DISPATCHER.signal('googleAnalyticsData', data.googleAnalyticsData);
         }
 				
-				data.etipTotal = parseTipTotal(data);
+				data.etipTotal = parseTipTotal(data) || data.etipTotal;
 
 				/* APPDEV-4904 */
 				data.isEBTused = ( get_current_paymenttype_choice() == "EBT")? true : false;

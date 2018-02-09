@@ -405,6 +405,16 @@ public class ProductDetailPopulator {
 		}
 		
 		SkuModel sku = PopulatorUtil.getDefSku( product );
+		/* if this is not populated, then product name won't be displayed on pdp */
+		try {
+			//if product is disc, then getDefSku returns null, but on PDP we need the prods anyway, so get first sku
+			if (sku == null && ((ProductModel)product).getSkuCodes().size() > 0 ) {
+				sku = ((ProductModel)product).getSku(0);
+			}
+		} catch (Exception e) {
+			LOG.warn("Exception while populating defaultSku: ", e);
+		}
+		
 		if ( sku == null ) {
 			BaseJsonServlet.returnHttpError( 500, "default sku does not exist for this product: " + product.getContentName() );
 		}

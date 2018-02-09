@@ -940,7 +940,10 @@ public class FDFactory {
 								results.put(product, _value);
 							}
 						} else {
-							Map<String, Date> _value=new HashMap<String, Date>();
+							Map<String, Date> _value=results.get(product);
+							if(null == _value){
+								_value = new HashMap<String, Date>();
+							}
 							_value.put(valueEntry.getKey(), valueEntry.getValue());
 						    results.put(product,_value);
 						}
