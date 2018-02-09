@@ -355,11 +355,12 @@ public abstract class BaseController extends AbstractController implements Messa
 		                if(MobileApiProperties.isBaseControllerLoggingEnabled()) {	                	
 		                	LOGGER.error("FDCRITICALERROR01 for "
 		                			+ (user != null && user.getFDSessionUser() != null 
-		                					? (user.getFDSessionUser().getFDCustomer() != null ? user.getFDSessionUser().getFDCustomer().getErpCustomerPK() : user.getFDSessionUser().getPrimaryKey() ) : "NOUSER" ) 
+		                					? (user.getFDSessionUser().getIdentity() != null && user.getFDSessionUser().getFDCustomer() != null 
+		                							? user.getFDSessionUser().getFDCustomer().getErpCustomerPK() : user.getFDSessionUser().getPrimaryKey() ) : "NOUSER" ) 
 		                				+ " -> "+ getRootCauseStackTrace(uncaughtException));
 		                }
 	                } catch(Exception cantHandle) {
-	                	LOGGER.error("FDCRITICALERROR02 - Error logging error in BaseController");
+	                	LOGGER.error("FDCRITICALERROR02 - Error logging error in BaseController - "+cantHandle.getMessage());
 	                }
 				}
 			}
