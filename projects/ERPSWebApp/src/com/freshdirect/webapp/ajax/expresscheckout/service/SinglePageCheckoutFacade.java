@@ -161,12 +161,15 @@ public class SinglePageCheckoutFacade {
         }
         if (!StandingOrderHelper.isSO3StandingOrder(user)) {
             result.setRestriction(CheckoutService.defaultService().preCheckOrder(user));
-            result.setRedirectUrl(RedirectService.defaultService().populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL,
-                    availabilityService.selectWarningType(user)));
+            result.setRedirectUrl(populateRedirectUrl(user));
         }
         return result;
     }
 
+    public String populateRedirectUrl(FDUserI user) throws FDResourceException {
+    	return RedirectService.defaultService().populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL,
+                availabilityService.selectWarningType(user));
+    }
     public Map<String, Object> loadByPageAction(FDUserI user, HttpServletRequest request, PageAction pageAction, ValidationResult validationResult) throws FDResourceException,
             IOException, TemplateException, JspException, RedirectToPage, HttpErrorResponse {
         Map<String, Object> result = new HashMap<String, Object>();
@@ -318,6 +321,11 @@ public class SinglePageCheckoutFacade {
         }
         return result;
     }
+    
+	public FormLocationData loadAddress(final FDUserI user, final HttpSession session)
+			throws FDResourceException, JspException, RedirectToPage {
+		return loadAddress(user, session, populateCartDataFromParentOrder(user), null, null);
+	}
 
     public FormLocationData loadAddress(final FDUserI user, final HttpSession session, final FDCartI cart) throws FDResourceException, JspException, RedirectToPage {  	
     	return loadAddress(user,session,cart,null, null);
@@ -624,7 +632,7 @@ public class SinglePageCheckoutFacade {
 	private FormPaymentData loadUserPaymentMethods(FDUserI user, HttpServletRequest request) throws FDResourceException {
 		return loadUserPaymentMethods(user,request,null, null);
 	}
-    private FormPaymentData loadUserPaymentMethods(FDUserI user, HttpServletRequest request, List<ErpPaymentMethodI> paymentMethods,List customerCredits) throws FDResourceException {
+    public FormPaymentData loadUserPaymentMethods(FDUserI user, HttpServletRequest request, List<ErpPaymentMethodI> paymentMethods,List customerCredits) throws FDResourceException {
 
         FormPaymentData formPaymentData = new FormPaymentData();
 

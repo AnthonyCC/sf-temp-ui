@@ -33,7 +33,7 @@ public class SinglePageCheckoutPotatoTag extends SimpleTagSupport {
 	private static final String EWALLET_SESSION_ATTRIBUTE_NAME="EWALLET_CARD_TYPE";
 	private static final String MP_EWALLET_CARD="MP_CARD";
 	private static final String WALLET_SESSION_CARD_ID="WALLET_CARD_ID";
-	private final String EWALLET_ERROR_CODE = "WALLET_ERROR";
+	private static  final String EWALLET_ERROR_CODE = "WALLET_ERROR";
 	
 	
 	
@@ -85,7 +85,7 @@ public class SinglePageCheckoutPotatoTag extends SimpleTagSupport {
 	 * @param formpaymentData
 	 * @param request
 	 */
-	private void removeOlderEwalletPaymentMethod(FormPaymentData formpaymentData,HttpServletRequest request){
+	public static void removeOlderEwalletPaymentMethod(FormPaymentData formpaymentData,HttpServletRequest request){
 		if (formpaymentData != null && formpaymentData.getPayments()!=null) {
 			List<PaymentData> payments = formpaymentData.getPayments();
 			List<PaymentData> paymentsNew = new ArrayList<PaymentData>();
@@ -128,7 +128,7 @@ public class SinglePageCheckoutPotatoTag extends SimpleTagSupport {
 	 * @param formpaymentData
 	 * @param request
 	 */
-	private void checkEWalletCard(FormPaymentData formpaymentData,HttpServletRequest request){
+	public static void checkEWalletCard(FormPaymentData formpaymentData,HttpServletRequest request){
 		if (formpaymentData != null) {
 			if(request.getSession().getAttribute(EWALLET_ERROR_CODE) != null ){
 				formpaymentData.setWalletErrorMsg(request.getSession().getAttribute(EWALLET_ERROR_CODE).toString());

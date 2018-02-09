@@ -18,9 +18,10 @@ public class CmFieldDecoratorTag extends AbstractCmTag {
 		out.println("<input type='hidden' name='coremetricsPageContentHierarchy' value=''/>");
 		out.println("<input type='hidden' name='coremetricsVirtualCategory' value=''/>");
 		out.println(
-				wrapIntoScriptTag(	"FreshDirect.Coremetrics.setDecorationFieldValue('coremetricsPageId', " + CM_PAGE_ID + ");" +
+				wrapIntoScriptTag(	"window.coremetricsQueue = window.coremetricsQueue || [];window.coremetricsQueue.push(function(){" + 
+									"FreshDirect.Coremetrics.setDecorationFieldValue('coremetricsPageId', " + CM_PAGE_ID + ");" +
 									"FreshDirect.Coremetrics.setDecorationFieldValue('coremetricsPageContentHierarchy', " + CM_PAGE_CONTENT_HIERARCHY + ");" + 
-									"FreshDirect.Coremetrics.setDecorationFieldValue('coremetricsVirtualCategory', " + CM_VIRTUAL_CATEGORY + ");"));
+									"FreshDirect.Coremetrics.setDecorationFieldValue('coremetricsVirtualCategory', " + CM_VIRTUAL_CATEGORY + ");" + "})"));
 	}
 	
 	/**

@@ -81,7 +81,7 @@ public class CmRegistrationTag extends AbstractCmTag implements SessionName{
 			LOGGER.debug("cmregistration values @ @@ @ @@"+regModel.getRegistrationProfileValue());
 			LOGGER.debug("cmregistration COunty @ @@ @ @@"+regModel.getRegistrationCounty());
 
-			String tagJs = getFormattedTag(
+			String tagJs = getFormattedTagAsync(
 					toJsVar(regModel.getRegistrationId()),
 					toJsVar(regModel.getRegistrantEmail()),
 					toJsVar(regModel.getRegistrantCity()),

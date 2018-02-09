@@ -25,6 +25,7 @@ import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataResponse;
 import com.freshdirect.webapp.ajax.expresscheckout.service.FormDataService;
 import com.freshdirect.webapp.ajax.expresscheckout.service.SinglePageCheckoutFacade;
+import com.freshdirect.webapp.ajax.expresscheckout.timeslot.data.FormTimeslotData;
 import com.freshdirect.webapp.ajax.expresscheckout.timeslot.service.TimeslotService;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationError;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationResult;
@@ -108,6 +109,10 @@ public class TimeslotServlet extends BaseJsonServlet {
         ValidationResult validationResult = new ValidationResult();
 
         try {
+        	if (request.getParameter("action") != null) {
+        		doGetAction(request, response, user, request.getParameter("action"));
+        		return;
+        	}
             String timeSlotId = NVL.apply(request.getParameter(TIMESLOT_ID), "");
             TimeslotContext timeSlotContext = TimeslotContext.valueOf(NVL.apply(request.getParameter(TIMESLOT_CONTEXT), TimeslotContext.CHECKOUT_TIMESLOTS.toString()));
             boolean forceOrder = Boolean.getBoolean(request.getParameter(FORCE_ORDER));
@@ -139,6 +144,17 @@ public class TimeslotServlet extends BaseJsonServlet {
         writeResponseData(response, result);
     }
 
+    protected void doGetAction(HttpServletRequest request, HttpServletResponse response, FDUserI user, String action) throws HttpErrorResponse {
+    	if (action.equals("getCurrentSelected")) {
+    		FormTimeslotData data;
+			if (StandingOrderHelper.isSO3StandingOrder(user)) {
+				data = TimeslotService.defaultService().loadCartTimeslot(user, user.getSoTemplateCart());
+	        } else {
+	            data = TimeslotService.defaultService().loadCartTimeslot(user, user.getShoppingCart());
+	        }
+			writeResponseData(response, data);
+    	}
+    }
 	@Override
 	protected boolean synchronizeOnUser() {
 		return false;

@@ -156,9 +156,14 @@ var FreshDirect = FreshDirect || {};
   $(window).on('resize', function(){ changeSizeOfBack(); });
   
   //changes the background size of popup, so it will be bigger if the window is too small
+  var changeSizeOfBackStyleAdded = false;
   function changeSizeOfBack(){
-	  $('head').append('<style>#USQPopup:before{height:100%;}</style>');
-	  $('head').append('<style>#USQPopup:before{width:100%;}</style>');
+	  if (!changeSizeOfBackStyleAdded) {
+		  $('head').append('<style>#USQPopup:before{height:100%;}</style>');
+		  $('head').append('<style>#USQPopup:before{width:100%;}</style>');
+		  changeSizeOfBackStyleAdded = true;
+	  }
+	  
 	  $("#USQPopup.soShow").removeClass("soShow");
 	  if(FreshDirect.hasOwnProperty("standingorder") && FreshDirect.standingorder.USQPopupOpen){
 		  $("#USQPopup").addClass("soShow");

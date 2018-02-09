@@ -14,8 +14,6 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
-import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
-import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
@@ -43,6 +41,21 @@ public class DeliveryAddressServlet extends BaseJsonServlet {
 
     private static final long serialVersionUID = -7582639712245761241L;
 
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response, FDUserI user)
+			throws HttpErrorResponse {
+		try {
+			FormLocationData data = SinglePageCheckoutFacade.defaultFacade().loadAddress(user, request.getSession());
+			writeResponseData(response, data);
+		} catch (FDResourceException e) {
+			returnHttpError(500, "Failed to load delivery address.", e);
+		} catch (JspException e) {
+			returnHttpError(500, "Failed to load delivery address.", e);
+		} catch (RedirectToPage e) {
+			returnHttpError(500, "Failed to load delivery address.", e);
+		}
+	}
+	
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
         try {

@@ -10,7 +10,8 @@ var FreshDirect = FreshDirect || {};
 
   var timeslot = Object.create(DRAWER_WIDGET,{
     signal:{
-      value:'timeslot' // TODO
+      value:'timeslot',
+      writable: true
     },
     contentTemplate: {
       value: expressco.timeselectorcontent
@@ -59,33 +60,46 @@ var FreshDirect = FreshDirect || {};
         }
       }
     },
-    renderContent:{
-      value:function(drawerTemplateData){
-        $(timeslot.contentHolder()).html('');
-        $(timeslot.contentHolder()).html(timeslot.contentTemplate(drawerTemplateData));
-      }
+    renderContent: {
+    	value: function(drawerTemplateData) {
+			$(timeslot.contentHolder()).html('<p class="center">Loading...</p>');
+			this.getActualTimeSlotAjax.always( function() {
+				$(timeslot.contentHolder()).html(timeslot.contentTemplate(drawerTemplateData));
+				var drawerContent = $(timeslot.contentHolder() + ' [data-component="timeselectorcontent"]');
+				drawerContent.html(this.timeSlotJspData && this.timeSlotJspData.html);
+				if (this.timeSlotJspData && !this.timeSlotJspData.error) {
+					timeslot.initTimeSlot();
+				}
+				$(timeslot.contentHolder()).show();
+			}.bind(this));
+    	}
     },
     getActualTimeSlotJsp:{
       value:function(requestConfig){
-        var ajax = Bacon.fromPromise($.ajax(requestConfig));
-        var drawerContent = timeslot.contentHolder() + ' [data-component="timeselectorcontent"]';
-
-        ajax.onError(function(){
-          $(drawerContent).html('<p class="error">Something went wrong. Please refresh the page to continue.</p>');
+        this.getActualTimeSlotAjax = $.ajax(requestConfig);
+        this.hasRenderedContent = false;
+        
+        this.getActualTimeSlotAjax.fail(function(){
+        	this.timeSlotJspData = {
+    			error: true,
+    			html: '<p class="error">Something went wrong. Please refresh the page to continue.</p>'
+        	};
           return false;
-        });
+        }.bind(this));
 
-        ajax.onValue(function(ajaxData){
-          $(drawerContent).html(ajaxData);
-          timeslot.initTimeSlot();
-        });
+        this.getActualTimeSlotAjax.done(function(ajaxData) {
+        	this.timeSlotJspData = {
+    			error: false,
+    			html: ajaxData
+        	};
+        }.bind(this));
       }
     },
     initTimeSlot:{
-      value:function(){
+      value: function() {
         var note;
 
-        if(FreshDirect.fdTSDisplay){
+        if (FreshDirect.fdTSDisplay) {
           window.fdTSDisplay = new FreshDirect.fdTSDisplay("fdTSDisplay");
         }
 
@@ -108,15 +122,23 @@ var FreshDirect = FreshDirect || {};
       }
     },
     callback:{
-      value:function( value ) {
-        timeslot.renderContent(value);
-        timeslot.renderPreview(value);
-        timeslot.getActualTimeSlotJsp(timeslot.createRequestConfig({ forceorder: !!value.forceOrderEnabled }));
-        if($("#soFreq2").length > 0){
-        	$("#soFreq2").select2({
-				minimumResultsForSearch: Infinity
-        	});
-        };
+      value:function( value, signal) {
+    	  if (this.isOpenSignal(signal)) {
+    		  if (!this.hasRenderedContent) {
+    			  timeslot.renderContent(this.data);
+    			  this.hasRenderedContent = true;
+    		  }
+    	  } else {
+    		  this.data = value;
+    		  timeslot.renderPreview(value);
+    		  timeslot.getActualTimeSlotJsp(timeslot.createRequestConfig({ forceorder: !!value.forceOrderEnabled }));
+    		  
+    		  if ($("#soFreq2").length > 0) {
+    			  $("#soFreq2").select2({
+    				  minimumResultsForSearch: Infinity
+    			  });
+    		  };
+    	  }
       }
     },
     serialize:{

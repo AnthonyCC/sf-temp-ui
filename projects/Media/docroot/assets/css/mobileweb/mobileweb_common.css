@@ -1693,6 +1693,7 @@ li.cleanli .gen-arrow {
 		[data-ec-page] .mm-page #ec-drawer .drawer-row[data-row-id="address"].auto-height .drawer-header{
 		    height: 100%;
     		position: absolute;
+    		left: 0;
 		}
 		[data-ec-page] .mm-page #ec-drawer .drawer-row[data-row-id="address"].auto-height .drawer-header li{
 			height: 100%;

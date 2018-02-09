@@ -1,8 +1,9 @@
-<%@page import="com.freshdirect.common.context.MasqueradeContext"%>
-<%@page import="com.freshdirect.fdstore.FDStoreProperties"%>
+<%@ page import="com.freshdirect.common.context.MasqueradeContext"%>
+<%@ page import="com.freshdirect.fdstore.FDStoreProperties"%>
 <%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
 <%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
 <%@ page import="com.freshdirect.webapp.util.JspMethods" %>
+<%@ page import="java.util.*" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
@@ -17,7 +18,8 @@
 <fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" redirectPage="/login/login.jsp?successPage=/expressco/checkout.jsp" />
 <%
 MasqueradeContext masqueradeContext = user.getMasqueradeContext();
-
+Map<String,String> phoneNumberMap = new HashMap<String,String>();
+phoneNumberMap.put("phoneNumber", user.getCustomerServiceContact());
 boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
 String pageTemplate = "/expressco/includes/ec_template.jsp";
 if (mobWeb) {
@@ -29,7 +31,6 @@ if (mobWeb) {
 }
 %>
 <potato:pendingExternalAtcItem/>
-<potato:singlePageCheckout />
 
 <tmpl:insert template='<%= pageTemplate %>'>
   <tmpl:put name="soytemplates"><soy:import packageName="expressco"/></tmpl:put>
@@ -42,16 +43,6 @@ if (mobWeb) {
     <jwr:script src="/expressco.js" useRandomParam="false" />
 
     <script>
-      (function () {
-        FreshDirect.common.dispatcher.signal('drawer', FreshDirect.expressco.data.drawer);
-        FreshDirect.common.dispatcher.signal('payment', FreshDirect.expressco.data.payment);
-        FreshDirect.common.dispatcher.signal('address', FreshDirect.expressco.data.address);
-        FreshDirect.common.dispatcher.signal('timeslot', FreshDirect.expressco.data.timeslot);
-        FreshDirect.common.dispatcher.signal('atpFailure', FreshDirect.expressco.data.atpFailure);
-        if(FreshDirect.expressco.data.redirectUrl){
-          FreshDirect.common.dispatcher.signal('redirectUrl', FreshDirect.expressco.data.redirectUrl);
-        }
-      }());
     </script>
  <!-- <script type="text/javascript" src="https://js.braintreegateway.com/v2/braintree.js"></script> -->
  	<script async type="text/javascript" src="https://js.braintreegateway.com/js/braintree-2.21.0.min.js"></script>
@@ -83,7 +74,7 @@ if (mobWeb) {
 	</div>
   	<% } %>
   	<%-- MASQUERADE HEADER ENDS HERE --%>
-    <soy:render template="expressco.checkoutheader" data="${singlePageCheckoutPotato}" injectAdditonalData="false" />
+  	<soy:render template="expressco.checkoutheader" data="<%=phoneNumberMap %>" injectAdditonalData="false" />
   </tmpl:put>
 
   <tmpl:put name="bottomnav">
@@ -110,16 +101,11 @@ if (mobWeb) {
 	      	<div class="header cartheader">
 	          <div class="cartheader__action_w_subtotal">
 	            <form fdform="checkout" action="#" id="checkoutbutton_bottom" fdform-disable-resubmit="true" fdform-disable-resubmit-selector=".cssbutton.orange" fdform-disable-resubmit-release="manual">
-	              <soy:render template="expressco.checkoutBanner" injectAdditonalData="false" data="${singlePageCheckoutPotato}" />
 	            </form>
 	          </div>
 	        </div>
 			<div fdform-error-container="checkout"></div>
 		<% } %>
-        </div>
-
-        <div id="modifyorder">
-          <soy:render template="expressco.modifyorder" injectAdditonalData="false"  data="${singlePageCheckoutPotato}" />
         </div>
 
         <%-- drawer --%>
@@ -161,10 +147,12 @@ if (mobWeb) {
     </div>
 
     <script>
-      // potato loading
+      // makes ajax calls to retreive data and render soy components
+      $jq(document).ready(function($) {
+      	fd.expressco.checkout.initSoyComponents();
+      });
       window.FreshDirect.expressco = {};
-      window.FreshDirect.expressco.data = <fd:ToJSON object="${singlePageCheckoutPotato}" noHeaders="true"/>
-      window.FreshDirect.metaData = window.FreshDirect.expressco.data.formMetaData;
+
       window.FreshDirect.pendingCustomizations = <fd:ToJSON object="${pendingExternalAtcItemPotato}" noHeaders="true"/>
     </script>
   </tmpl:put>
@@ -182,8 +170,9 @@ if (mobWeb) {
     <jwr:style src="/timeslots.css" media="all" />
   </tmpl:put>
 
-  <tmpl:put name="extraJs">
-    <jwr:script src="/assets/javascript/timeslots.js" useRandomParam="false" />
+  <tmpl:put name="leastPrioritizeJs">
+    <jwr:script src="/assets/javascript/timeslots.js" async="true" useRandomParam="false" 
+    onload="fd && fd.expressco && fd.expressco.checkout && fd.expressco.checkout.timeslotDrawerDependencyLoaded()" />
 
 	<script>
 	var checkout;
