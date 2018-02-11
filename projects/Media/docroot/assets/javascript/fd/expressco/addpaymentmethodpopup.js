@@ -105,12 +105,18 @@ var FreshDirect = FreshDirect || {};
       }
     },
     syncCountryState:{
-		value: function(e, data) {
-			var curVal = $('#CC_bil_country').val();
-			if (FreshDirect.metaData.countryCodeIndexMap.hasOwnProperty(curVal)) {
-				/* get new "states" for country, wrap in option tags and replace in existing select box */
-				$('#CC_bil_state').html(FreshDirect.metaData.country[FreshDirect.metaData.countryCodeIndexMap[curVal]].states.reduce(function(a,c,i,d) { return a + '<option value="'+c.key+'"'+((c.selected)?" selected":"")+'>'+c.value+'</option>'; },'<option>--</option>'));
-			}
+		value: function(e, data) {			
+			/* get new "states" for country, wrap in option tags and replace in existing select box */
+			$('#CC_bil_state, #EC_bil_state, #ET_bil_state').each(function(i,e) {
+				var curVal = $('#'+$(e).attr('id').replace('state','country')).val();
+	
+				if (FreshDirect.metaData.countryCodeIndexMap.hasOwnProperty(curVal)) {
+					$(e).html( FreshDirect.metaData.country[FreshDirect.metaData.countryCodeIndexMap[curVal]].states
+						.reduce(function(a,c,i,d) { return a + '<option value="'+c.key+'"'+((c.selected)?" selected":"")+'>'+c.value+'</option>'; },'<option>--</option>') 
+					);
+	
+				}
+			});
 		}
 	}
   });
@@ -131,7 +137,7 @@ var FreshDirect = FreshDirect || {};
   });
 
   /* bind country change -> state update */
-  $(document).on('change', '#CC_bil_country', addpaymentmethodpopup.syncCountryState.bind(addpaymentmethodpopup));
+  $(document).on('change', '#CC_bil_country, #EC_bil_country, #ET_bil_country', addpaymentmethodpopup.syncCountryState.bind(addpaymentmethodpopup));
 	
   $(document).on('change', '#' + addpaymentmethodpopup.popupId + ' .formselector input',
     addpaymentmethodpopup.selectForm.bind(addpaymentmethodpopup));
