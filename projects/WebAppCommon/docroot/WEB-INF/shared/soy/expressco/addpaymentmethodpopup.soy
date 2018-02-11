@@ -92,7 +92,7 @@
 		      {if $data.metadata and $data.metadata.country}
 		      	{foreach $country in $data.metadata.country}
 		        	<option value="{$country.key}"
-		         	{if ($data.country and $country.key == $data.country) or (not $data.country and $country.selected)}selected{/if}>{$country.value}</option>
+		         	{if ($data.country and $country.key == $data.country) or ($data.bil_country and $country.key == $data.bil_country) or ((not $data.country and not $data.bil_country) and $country.selected)}selected{/if}>{$country.value}</option>
 		     	{/foreach}
 		      {/if}
 		    </select>
@@ -124,7 +124,7 @@
 	          {if $data.metadata and $data.metadata.state}
 	            {foreach $state in $data.metadata.state}
 	        	  <option value="{$state.key}"
-	              {if ($data.state and $state.key == $data.state) or (not $data.state and $state.selected)}selected{/if}>{$state.value}</option>
+	              {if ($data.state and $state.key == $data.state) or ($data.bil_state and $state.key == $data.bil_state) or ((not $data.state and not $data.bil_state) and $state.selected)}selected{/if}>{$state.value}</option>
 	           {/foreach}
 	          {/if}
 	      </select>
