@@ -97,11 +97,11 @@
 			
 			sectionData = new SectionData();
 			if(sectionCount == 0) {			
-				sectionData.setHeaderText("Your favorites with atleast "+ (int)ratingBaseLine + " star rating or " + (int)dealsBaseLine + "% discount " + (considerBackInStock ? "is back in stock" : "")); 
+				sectionData.setHeaderText("Your favorites with at least "+ (int)ratingBaseLine + "-star rating or " + (int)dealsBaseLine + "% discount " + (considerBackInStock ? "is back in stock" : "")); 
 				//.......................Your Fav that might INTEREST U!............................");
 				//sectionData.setMiddleMedia("https://lorempixel.com/800/100/food/2/");
 			} else {
-				sectionData.setHeaderText("Our favorites with atleast "+ (int)ratingBaseLine + " star rating or " + (int)dealsBaseLine + "% discount " + (considerBackInStock ? "is back in stock" : ""));
+				sectionData.setHeaderText("Our favorites with at least "+ (int)ratingBaseLine + "-star rating or " + (int)dealsBaseLine + "% discount " + (considerBackInStock ? "is back in stock" : ""));
 				//sectionData.setHeaderText(".......................Our Fav that might INTEREST U!..............................");
 				//sectionData.setMiddleMedia("https://lorempixel.com/800/100/fun/2/");
 			}
