@@ -1589,7 +1589,7 @@ public class FDStoreProperties {
         defaults.put(PROP_SOY_DEBUG, false);
 
         defaults.put(PROP_IP_LOCATOR_ENABLED, "true");
-        defaults.put(PROP_IP_LOCATOR_CLIENT_ID, "103310996");
+        defaults.put(PROP_IP_LOCATOR_CLIENT_ID, "e8lQTiN_7IOJZhUTjNQ_5t**");//103310996");
         defaults.put(PROP_IP_LOCATOR_URL, "https://iplocator.melissadata.net/v2/REST/Service.svc/doIPLocation");
         defaults.put(PROP_IP_LOCATORV4_URL, "http://globalip.melissadata.net/v4/WEB/iplocation/doiplocation");
         defaults.put(PROP_IP_LOCATORV4_ENABLED, "true");
