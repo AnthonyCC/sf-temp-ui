@@ -29,7 +29,8 @@ if (mobWeb) {
 }
 %>
 <tmpl:insert template="<%= pageTemplate %>">
-	<tmpl:put name='cmeventsource' direct='true'>TEST_PAGE</tmpl:put>
+	<%-- event source must be a valid enum --%>
+	<tmpl:put name='cmeventsource' direct='true'>UNKNOWN</tmpl:put>
 	
 	<tmpl:put name='extraCss' direct='true'>
 	</tmpl:put>
