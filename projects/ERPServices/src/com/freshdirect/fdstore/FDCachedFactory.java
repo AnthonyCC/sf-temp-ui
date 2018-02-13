@@ -567,10 +567,6 @@ public class FDCachedFactory {
 		return FDFactory.getOutOfStockSkuCodes();
 	}
 
-	public static Collection<ErpMaterialSalesAreaModel> getGoingOutOfStockSalesAreas() throws FDResourceException {
-		return FDFactory.getGoingOutOfStockSalesAreas();
-	}
-
 	public static Collection findSKUsByDeal(double lowerLimit, double upperLimit, List skuPrefixes)
 			throws FDResourceException {
 		return FDFactory.findSKUsByDeal(lowerLimit, upperLimit, skuPrefixes);
