@@ -7,6 +7,7 @@ import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 
 public class FDUserUtil {
 	
@@ -49,6 +50,22 @@ public class FDUserUtil {
 		return delPlantInfo;
 	}
 	
+	public static FDOrderAdapter getModifyingOrder(FDUserI user) {
+		if (user.getShoppingCart() instanceof FDModifyCartModel) {
+			FDModifyCartModel moCart = (FDModifyCartModel) user.getShoppingCart();
+			return moCart.getOriginalOrder();
+		}
+		return null;
+	}
+	
+	public static String getModifyingOrderId(FDUserI user) {
+		if (user.getShoppingCart() instanceof FDModifyCartModel) {
+			FDModifyCartModel moCart = (FDModifyCartModel) user.getShoppingCart();
+			FDOrderAdapter order =  moCart.getOriginalOrder();
+			return order == null? null : order.getErpSalesId();
+		}
+		return null;
+	}
 	public static void main(String[] a) {
 		EnumEStoreId eStore=null;
 		ErpDeliveryPlantInfoModel delPlantInfo=FDUserUtil.getDefaultDeliveryPlantInfo(eStore);
