@@ -4184,9 +4184,9 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	@Override
 	public List<SapOrderPickEligibleInfo> queryForFDXSalesPickEligible() throws RemoteException  {
 		String inputJson=null;
-		Response<List<SapOrderPickEligibleInfo>> response = null;
+		Response<List<SapOrderPickEligibleInfo>> response = new Response<List<SapOrderPickEligibleInfo>>();
 		try {
-			response = 	httpGetData( getFdCommerceEndPoint(GET_FDX_QUERYFORSALESPICKELIGIBLE), Response.class);
+			response = 	httpGetDataTypeMap( getFdCommerceEndPoint(GET_FDX_QUERYFORSALESPICKELIGIBLE), new TypeReference<Response<List<SapOrderPickEligibleInfo>>>(){});
 			List<SapOrderPickEligibleInfo> sapOrderPickeligibleList = response.getData();
 			return sapOrderPickeligibleList;
 			//response = postData(inputJson, getFdCommerceEndPoint(GET_FDX_QUERYFORSALESPICKELIGIBLE), Response.class);
