@@ -90,9 +90,7 @@ public class LruCache<K,V> {
 		head = null;
 		tail = null;
 	}
-	public int getSize() {
-		return size;
-	}
+	
 	protected final Entry<K,V> getEntry(Object key) {
 		Entry<K,V> entry = this.cache.get(key);
 		if (entry==null) {
