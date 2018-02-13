@@ -10,6 +10,7 @@ package com.freshdirect.framework.util;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * "Least-recently-used" cache.
@@ -89,7 +90,9 @@ public class LruCache<K,V> {
 		head = null;
 		tail = null;
 	}
-	
+	public int getSize() {
+		return size;
+	}
 	protected final Entry<K,V> getEntry(Object key) {
 		Entry<K,V> entry = this.cache.get(key);
 		if (entry==null) {
@@ -117,13 +120,21 @@ public class LruCache<K,V> {
 		
 		return entry;
 	}
+	
+	public int getSize() {
+		return size;
+	}
+	
+	public Set<K> keySet() {
+		return this.cache.keySet();
+	}
 
 	protected static class Entry<K,V> {
 		Entry<K,V> prev;
 		Entry<K,V> next;
 
-		final K key;
-		final V value;
+		protected final K key;
+		protected V value;
 
 		public Entry(K key, V value) {
 			this.key = key;
@@ -167,6 +178,7 @@ public class LruCache<K,V> {
 		}
 	}
 
+	
 	public synchronized int size() {
 		return size;
 	}

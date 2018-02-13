@@ -292,6 +292,8 @@ public class FDStoreProperties {
     private static final String CORS_DOMAIN = "fdstore.CORS.domain";
 
     public static final String PROP_SO3_ACTIVATE_CUTOFF_TIME = "fdstore.so3.activate.cutoff.time";
+    
+    public static final String DATABASE_IN_CONDITION_LIMIT = "fdstore.db.in.condition.limit";
     // Smart Search
     /**
      * @deprecated
@@ -1944,6 +1946,7 @@ public class FDStoreProperties {
 		defaults.put(DEFAULT_REFRESH_TOKEN_EXPIRATION, "15552000");
 		defaults.put(PROP_FDC_NEW_BACKIN_USE_FD_ENABLED,"false");
 		
+		defaults.put(DATABASE_IN_CONDITION_LIMIT, "50");
         refresh();
     }
 
@@ -4941,5 +4944,9 @@ public class FDStoreProperties {
 
 	public static boolean isNewProductsForFdcUsingFdEnabled(){
 		return (Boolean.valueOf(get(PROP_FDC_NEW_BACKIN_USE_FD_ENABLED))).booleanValue();
+	}
+
+	public static int getInConditionLimit() {
+		return Integer.parseInt(get(DATABASE_IN_CONDITION_LIMIT));
 	}
 }

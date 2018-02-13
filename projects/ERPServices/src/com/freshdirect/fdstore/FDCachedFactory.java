@@ -6,13 +6,16 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.Category;
 
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.SkuAvailabilityHistory;
+import com.freshdirect.framework.util.AsyncDBRefreshEhCache;
 import com.freshdirect.framework.util.LazyTimedCache;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
@@ -22,80 +25,54 @@ public class FDCachedFactory {
 
     private static final Category LOGGER = LoggerFactory.getInstance(FDCachedFactory.class);
 
+	/**
+	 * @link dependency
+	 * @label uses
+	 */
+	/* #FDFactory lnkFDFactory; */
+
 	private final static Object SKU_NOT_FOUND = new Object();
+
 	private final static Object GROUP_NOT_FOUND = new Object();
 
-	/** 
+	/**
 	 * FDProductInfo instances hashed by SKU strings.
 	 */
-	private final static LazyTimedCache<String, Object> productInfoCache =
-		new LazyTimedCache<String, Object>("FDProductInfo", FDStoreProperties.getProductCacheSize(), FDStoreProperties.getRefreshSecsProductInfo() * 1000);
+	private final static AsyncDBRefreshEhCache<String, Object> productInfoCache = new AsyncDBRefreshEhCache<String, Object>(
+			"FDProductInfo", FDStoreProperties.getProductCacheSize());
 
 	/**
 	 * FDProduct instances hashed by FDSku instances.
 	 */
 	private final static LazyTimedCache<FDSku, FDProduct> productCache = new LazyTimedCache<FDSku, FDProduct>("FDProduct", FDStoreProperties.getProductCacheSize(), FDStoreProperties.getRefreshSecsProduct() * 1000);
-	
-	
+
+
 	/**
 	 * FDProduct instances hashed by FDSku instances.
 	 */
 	private final static LazyTimedCache zoneCache = new LazyTimedCache("FDZoneInfo", FDStoreProperties.getZoneCacheSize(), FDStoreProperties.getRefreshSecsProduct() * 1000);
 
-	
 	/**
 	 * FDProduct instances hashed by FDSku instances.
 	 */
-	private final static LazyTimedCache<FDGroup, GroupScalePricing> grpCache = new LazyTimedCache<FDGroup, GroupScalePricing>("FDGroupInfo",FDStoreProperties.getGrpCacheSize(), FDStoreProperties.getRefreshSecsProduct() * 1000);
-	
-	/** 
-	 * FDProductInfo instances hashed by BARCODE strings.
-	 */
-//	private final static LazyTimedCache productUpcCache =
-//		new LazyTimedCache("FDProductInfo_UPC", FDStoreProperties.getProductCacheSize(), FDStoreProperties.getRefreshSecsUPCProductInfo() * 1000);
+	private final static LazyTimedCache<FDGroup, GroupScalePricing> grpCache = new LazyTimedCache<FDGroup, GroupScalePricing>("FDGroupInfo", FDStoreProperties.getGrpCacheSize(), FDStoreProperties.getRefreshSecsProduct() * 1000);
 
-	private final static Map productUpcCache= new ConcurrentHashMap();
-	
+	private final static Map productUpcCache = new ConcurrentHashMap();
+
 	/**
 	 * Thread that reloads expired productInfos, every 10 seconds.
 	 */
-	//[OPT-90] - Eliminate redundant GroupCache refresh from FDCachedFactory 
-	/*private final static Thread gRefreshThread = new LazyTimedCache.RefreshThread(grpCache, 10000) {
+	private final static Thread zRefreshThread = new LazyTimedCache.RefreshThread(zoneCache, 10000) {
 		@Override
-        protected void refresh(List expiredKeys) {
+		protected void refresh(List expiredKeys) {
 			try {
-				LOGGER.debug("FDGrpRefresh reloading "+expiredKeys.size()+" grpInfos");
-				Collection<GroupScalePricing> pis = FDFactory.getGrpInfo((FDGroup[])expiredKeys.toArray(new FDGroup[0]));
-
-				// cache these
-				GroupScalePricing tempi;
-				for (Iterator i=pis.iterator(); i.hasNext(); ) {
-					tempi = (GroupScalePricing)i.next();
-					this.cache.put(tempi, tempi);
-				}
-
-			} catch (Exception ex) {
-				LOGGER.warn("Error occured in FDGrpInfoRefresh", ex);
-			}
-		}
-	};*/
-
-	
-	
-	/**
-	 * Thread that reloads expired productInfos, every 10 seconds.
-	 */
-	private final static Thread zRefreshThread = new LazyTimedCache.RefreshThread(zoneCache,10000) {
-		@Override
-        protected void refresh(List expiredKeys) {
-			try {
-				LOGGER.debug("FDZoneRefresh reloading "+expiredKeys.size()+" zoneInfos");
-				Collection pis = FDFactory.getZoneInfo((String[])expiredKeys.toArray(new String[0]) );
+				LOGGER.debug("FDZoneRefresh reloading " + expiredKeys.size() + " zoneInfos");
+				Collection pis = FDFactory.getZoneInfo((String[]) expiredKeys.toArray(new String[0]));
 
 				// cache these
 				ErpZoneMasterInfo tempi;
-				for (Iterator i=pis.iterator(); i.hasNext(); ) {
-					tempi = (ErpZoneMasterInfo)i.next();
+				for (Iterator i = pis.iterator(); i.hasNext();) {
+					tempi = (ErpZoneMasterInfo) i.next();
 					this.cache.put(tempi.getSapId(), tempi);
 				}
 
@@ -105,27 +82,42 @@ public class FDCachedFactory {
 		}
 	};
 
-	
-
-	/**
-	 * Thread that reloads expired productInfos, every 10 seconds.
-	 */
-	private final static Thread piRefreshThread = new LazyTimedCache.RefreshThread(productInfoCache, 10000) {
+	private final static Thread piRefreshThread = new AsyncDBRefreshEhCache.RefreshThread<String, Object>(
+			productInfoCache, FDStoreProperties.getRefreshSecsProductInfo() * 1000) {
 		@Override
-        protected void refresh(List expiredKeys) {
+		protected void refresh(long lastUpdatedTimeStamp) throws Exception {
 			try {
-				LOGGER.debug("FDProductInfoRefresh reloading "+expiredKeys.size()+" productInfos");
-				Collection pis = FDFactory.getProductInfos( (String[])expiredKeys.toArray(new String[0]) );
+				// Add extra 120 seconds to guarantee no missing updates
+				long onceInTime = lastUpdatedTimeStamp - (120 * 1000);
+
+				LOGGER.debug("******* calling FDFactory.getModifiedSkuCodes(" + onceInTime + ");");
+				Set<String> recentlyUpdatedSkuCode = FDFactory.getModifiedSkuCodes(onceInTime);
+				LOGGER.info("******* " + recentlyUpdatedSkuCode.size() + " productInfos were updated -> ["
+						+ StringUtil.join(recentlyUpdatedSkuCode, ",") + "]");
+
+				if (recentlyUpdatedSkuCode.size() == 0) {
+					return;
+				}
+
+				// get the intersection of 2 sets of skyCodes
+				Set<String> keysInCache = cache.keySet();
+				recentlyUpdatedSkuCode.retainAll(keysInCache);
+
+				LOGGER.info("*******  re-cache following " + recentlyUpdatedSkuCode.size()
+						+ " productInfos from DB -> [" + StringUtil.join(recentlyUpdatedSkuCode, ",") + "]");
+
+				String[] recentlyUpdatedSkuCodeArray = recentlyUpdatedSkuCode.toArray(new String[0]);
+				Collection<FDProductInfo> pis = FDFactory.getProductInfos(recentlyUpdatedSkuCodeArray);
 
 				// cache these
 				FDProductInfo tempi;
-				for (Iterator i=pis.iterator(); i.hasNext(); ) {
-					tempi = (FDProductInfo)i.next();
-					this.cache.put(tempi.getSkuCode(), tempi);
+				for (Iterator<FDProductInfo> i = pis.iterator(); i.hasNext();) {
+					tempi = (FDProductInfo) i.next();
+					this.cache.update(tempi.getSkuCode(), tempi);
 				}
-
-			} catch (Exception ex) {
+			} catch (FDResourceException ex) {
 				LOGGER.warn("Error occured in FDProductInfoRefresh", ex);
+				throw new Exception(ex);
 			}
 		}
 	};
@@ -133,135 +125,129 @@ public class FDCachedFactory {
 	/**
 	 * Thread that reloads expired products, every 5 minutes.
 	 */
-	private final static Thread prodRefreshThread = new LazyTimedCache.RefreshThread(productCache, 5*60*1000) {
+	@SuppressWarnings("unchecked")
+	private final static Thread prodRefreshThread = new LazyTimedCache.RefreshThread(productCache, 5 * 60 * 1000) {
 		@Override
-        protected void refresh(List expiredKeys) {
+		protected void refresh(List expiredKeys) {
 			try {
-				LOGGER.debug("FDProductRefresh reloading "+expiredKeys.size()+" products");
-				
-				if(FDStoreProperties.isProductCacheOptimizationEnabled()){
-					//check and refresh only the latest version of the expired products in the cache.
-					for (Iterator iterator = expiredKeys.iterator(); iterator.hasNext();) {
+				LOGGER.debug("FDProductRefresh reloading " + expiredKeys.size() + " products");
+
+				if (FDStoreProperties.isProductCacheOptimizationEnabled()) {
+					// check and refresh only the latest version of the expired
+					// products in the cache.
+					for (Iterator<?> iterator = expiredKeys.iterator(); iterator.hasNext();) {
 						FDSku fdSku = (FDSku) iterator.next();
-						if(null != fdSku){
-							FDProductInfo pi = (FDProductInfo)productInfoCache.get(fdSku.getSkuCode());
-							if(null != pi){
-								if(null == this.cache.get(pi)){
+						if (null != fdSku) {
+							FDProductInfo pi = (FDProductInfo) productInfoCache.get(fdSku.getSkuCode());
+							if (null != pi) {
+								if (null == this.cache.get(pi)) {
 									fdSku = new FDSku(pi.getSkuCode(), pi.getVersion());
 									try {
-										this.cache.put(fdSku,FDFactory.getProduct(fdSku));
+										this.cache.put(fdSku, FDFactory.getProduct(fdSku));
 									} catch (FDSkuNotFoundException ex) {
 										// not found
 									}
-								}else{
-									this.cache.remove(fdSku);//remove the old versions of the product from cache once expired, as the cache has latest version.
+								} else {
+									this.cache.remove(fdSku);// remove the old
+																// versions of
+																// the product
+																// from cache
+																// once expired,
+																// as the cache
+																// has latest
+																// version.
 								}
 							}
 						}
-						
+
 					}
 				} else {
-						Collection prods = FDFactory.getProducts( (FDSku[])expiredKeys.toArray(new FDSku[0]) );
-		
-						// cache these
-						FDProduct temp;
-						for (Iterator i=prods.iterator(); i.hasNext(); ) {
-							temp = (FDProduct)i.next();
-							this.cache.put(temp, temp);
-						}
+					Collection<FDProduct> prods = FDFactory.getProducts((FDSku[]) expiredKeys.toArray(new FDSku[0]));
+
+					// cache these
+					FDProduct temp;
+					for (Iterator<FDProduct> i = prods.iterator(); i.hasNext();) {
+						temp = (FDProduct) i.next();
+						this.cache.put(temp, temp);
+					}
 				}
-				LOGGER.info("FDProductRefresh cache size: "+this.cache.size()+" products");
+				LOGGER.info("FDProductRefresh cache size: " + this.cache.size() + " products");
 
 			} catch (Exception ex) {
 				LOGGER.warn("Error occured in FDProductRefresh", ex);
 			}
 		}
 	};
-	
+
 	static {
-		//Staggered start times for different threads.
+		// Staggered start times for different threads.
 		piRefreshThread.start();
 		try {
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {
-			//Do nothing
+			// Do nothing
 		}
 		prodRefreshThread.start();
 		try {
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {
-			//Do nothing.
+			// Do nothing.
 		}
-//		gRefreshThread.start();
+		// gRefreshThread.start();
 	}
 
-	public static FDProductInfo getProductInfo(String sku, int version) throws FDResourceException, FDSkuNotFoundException {
-		return FDFactory.getProductInfo(sku, version);	
+	public static FDProductInfo getProductInfo(String sku, int version)
+			throws FDResourceException, FDSkuNotFoundException {
+		return FDFactory.getProductInfo(sku, version);
+	}
+
+	public static int getProductInfoCacheSize() {
+		return productInfoCache.size();
 	}
 
 	/**
 	 * Get current product information object for sku.
 	 *
-	 * @param sku SKU code
+	 * @param sku
+	 *            SKU code
 	 *
 	 * @return FDProductInfo object
 	 *
- 	 * @throws FDSkuNotFoundException if the SKU was not found in ERP services
-	 * @throws FDResourceException if an error occured using remote resources
+	 * @throws FDSkuNotFoundException
+	 *             if the SKU was not found in ERP services
+	 * @throws FDResourceException
+	 *             if an error occured using remote resources
 	 */
 	public static FDProductInfo getProductInfo(String sku) throws FDResourceException, FDSkuNotFoundException {
-		if(sku == null) {			
-			throw new FDSkuNotFoundException("SKU "+sku+" not found (cached)");			
+		if (sku == null) {
+			throw new FDSkuNotFoundException("SKU " + sku + " not found (cached)");
 		}
-		
+
 		Object cached = productInfoCache.get(sku);
 		FDProductInfo pi;
-		if (cached==null) {
-			try { 
+		if (cached == null) {
+			try {
 				pi = FDFactory.getProductInfo(sku);
 				productInfoCache.put(sku, pi);
-				if(null !=pi && pi.getUpc() != null && pi.getUpc().trim().length() > 0) {
+				if (null != pi && pi.getUpc() != null && pi.getUpc().trim().length() > 0) {
 					productUpcCache.put(pi.getUpc(), pi);
 				}
 			} catch (FDSkuNotFoundException ex) {
 				productInfoCache.put(sku, SKU_NOT_FOUND);
-				throw ex;	
+				throw ex;
 			}
-		} else if (cached==SKU_NOT_FOUND) {
-			throw new FDSkuNotFoundException("SKU "+sku+" not found (cached)");
+		} else if (cached == SKU_NOT_FOUND) {
+			throw new FDSkuNotFoundException("SKU " + sku + " not found (cached)");
 		} else {
 			pi = (FDProductInfo) cached;
 		}
+
 		return pi;
 	}
-	
+
 	public static FDProductInfo getProductInfoByUpc(String upc) {
-		return (FDProductInfo)productUpcCache.get(upc);
+		return (FDProductInfo) productUpcCache.get(upc);
 	}
-	
-	/**
-	 * Get zone information.
-	 * 
-	 * @param zoneId
-	 * @return
-	 * @throws FDResourceException
-	 */
-	public static ErpZoneMasterInfo getZoneInfo(String zoneId) throws FDResourceException{
-		Object cached = zoneCache.get(zoneId);
-		ErpZoneMasterInfo pi;
-		if (cached==null) {
-			try { 
-				pi = FDFactory.getZoneInfo(zoneId);
-				zoneCache.put(zoneId, pi);
-			} catch (FDResourceException ex) {				
-				throw ex;	
-			}
-		}  else {
-			pi = (ErpZoneMasterInfo) cached;
-		}
-		return pi;
-	}
-	
 
 	/**
 	 * Get zone information.
@@ -270,30 +256,55 @@ public class FDCachedFactory {
 	 * @return
 	 * @throws FDResourceException
 	 */
-	public static GroupScalePricing getGrpInfo(FDGroup group) throws FDResourceException, FDGroupNotFoundException{
+	public static ErpZoneMasterInfo getZoneInfo(String zoneId) throws FDResourceException {
+		Object cached = zoneCache.get(zoneId);
+		ErpZoneMasterInfo pi;
+		if (cached == null) {
+			try {
+				pi = FDFactory.getZoneInfo(zoneId);
+				zoneCache.put(zoneId, pi);
+			} catch (FDResourceException ex) {
+				throw ex;
+			}
+		} else {
+			pi = (ErpZoneMasterInfo) cached;
+		}
+		return pi;
+	}
+
+	/**
+	 * Get zone information.
+	 * 
+	 * @param zoneId
+	 * @return
+	 * @throws FDResourceException
+	 */
+	public static GroupScalePricing getGrpInfo(FDGroup group) throws FDResourceException, FDGroupNotFoundException {
 		GroupScalePricing cached = grpCache.get(group);
 		GroupScalePricing pi;
-		if (cached==null) {
-			try { 
+		if (cached == null) {
+			try {
 				pi = FDFactory.getGrpInfo(group);
 				grpCache.put(pi, pi);
-			} catch (FDResourceException ex) {				
-				throw ex;	
+			} catch (FDResourceException ex) {
+				throw ex;
 			}
-		}  else {
+		} else {
 			pi = cached;
 		}
 		return pi;
 	}
-	
+
 	/**
 	 * Get current product information object for multiple SKUs.
 	 *
-	 * @param skus array of SKU codes
+	 * @param skus
+	 *            array of SKU codes
 	 *
 	 * @return a list of FDProductInfo objects found
 	 *
-	 * @throws FDResourceException if an error occured using remote resources
+	 * @throws FDResourceException
+	 *             if an error occured using remote resources
 	 */
 	public static Collection getProductInfos(String[] skus) throws FDResourceException {
 		String[] missingSkus = new String[skus.length];
@@ -301,28 +312,28 @@ public class FDCachedFactory {
 		List foundProductInfos = new ArrayList(skus.length);
 
 		// find skus already in the cache
-		Object tempo;		
-		for (int i=0; i<skus.length; i++) {
+		Object tempo;
+		for (int i = 0; i < skus.length; i++) {
 			String sku = skus[i];
-			if(sku == null) {
+			if (sku == null) {
 				continue;
 			}
 			tempo = productInfoCache.get(sku);
-			if (tempo==null) {
-				missingSkus[missingCount++]=skus[i];
-			} else if (tempo!=SKU_NOT_FOUND) {
+			if (tempo == null) {
+				missingSkus[missingCount++] = skus[i];
+			} else if (tempo != SKU_NOT_FOUND) {
 				foundProductInfos.add(tempo);
 			}
 		}
 
-		if (missingCount==0) {
+		if (missingCount == 0) {
 			// nothing's missing
 			return foundProductInfos;
 		}
 
 		// get what's missing
 		String[] loadSkus;
-		if (missingCount==missingSkus.length) {
+		if (missingCount == missingSkus.length) {
 			// everything's missing
 			loadSkus = missingSkus;
 		} else {
@@ -334,55 +345,55 @@ public class FDCachedFactory {
 		FDProductInfo tempi;
 
 		// cache these
-		for (Iterator i=pis.iterator(); i.hasNext(); ) {
-			tempi = (FDProductInfo)i.next();
+		for (Iterator i = pis.iterator(); i.hasNext();) {
+			tempi = (FDProductInfo) i.next();
 			productInfoCache.put(tempi.getSkuCode(), tempi);
 			// New Cache to Speed up barcode scanning
-			if(tempi.getUpc() != null && tempi.getUpc().trim().length() > 0) {
+			if (tempi.getUpc() != null && tempi.getUpc().trim().length() > 0) {
 				productUpcCache.put(tempi.getUpc(), tempi);
 			}
 		}
-		
+
 		foundProductInfos.addAll(pis);
 		return foundProductInfos;
 	}
 
-	
-
 	/**
 	 * Get current product information object for multiple SKUs.
 	 *
-	 * @param skus array of SKU codes
+	 * @param skus
+	 *            array of SKU codes
 	 *
 	 * @return a list of FDProductInfo objects found
 	 *
-	 * @throws FDResourceException if an error occured using remote resources
+	 * @throws FDResourceException
+	 *             if an error occured using remote resources
 	 */
 	public static Collection getZoneInfos(String[] zoneIds) throws FDResourceException {
-				
+
 		String[] missingZoneIds = new String[zoneIds.length];
 		int missingCount = 0;
 		List foundZoneInfos = new ArrayList(zoneIds.length);
 
 		// find skus already in the cache
-		Object tempo;		
-		for (int i=0; i<zoneIds.length; i++) {
+		Object tempo;
+		for (int i = 0; i < zoneIds.length; i++) {
 			tempo = zoneCache.get(zoneIds[i]);
-			if (tempo==null) {
-				missingZoneIds[missingCount++]=zoneIds[i];
-			} else if (tempo!=SKU_NOT_FOUND) {
+			if (tempo == null) {
+				missingZoneIds[missingCount++] = zoneIds[i];
+			} else if (tempo != SKU_NOT_FOUND) {
 				foundZoneInfos.add(tempo);
 			}
 		}
 
-		if (missingCount==0) {
+		if (missingCount == 0) {
 			// nothing's missing
 			return foundZoneInfos;
 		}
 
 		// get what's missing
 		String[] loadZoneIds;
-		if (missingCount==missingZoneIds.length) {
+		if (missingCount == missingZoneIds.length) {
 			// everything's missing
 			loadZoneIds = missingZoneIds;
 		} else {
@@ -391,53 +402,52 @@ public class FDCachedFactory {
 		}
 		List pis = new ArrayList();
 		ErpZoneMasterInfo tempi;
-		
 
-		
 		// cache these
-		for (int i=0;i<loadZoneIds.length;i++) {
-			tempi= FDFactory.getZoneInfo(zoneIds[i]);
+		for (int i = 0; i < loadZoneIds.length; i++) {
+			tempi = FDFactory.getZoneInfo(zoneIds[i]);
 			zoneCache.put(tempi.getSapId(), tempi);
 			foundZoneInfos.add(tempi);
-		}				
-		return foundZoneInfos;						
+		}
+		return foundZoneInfos;
 	}
-	
-	
+
 	/**
 	 * Get current product information object for multiple SKUs.
 	 *
-	 * @param skus array of SKU codes
+	 * @param skus
+	 *            array of SKU codes
 	 *
 	 * @return a list of FDProductInfo objects found
 	 *
-	 * @throws FDResourceException if an error occured using remote resources
+	 * @throws FDResourceException
+	 *             if an error occured using remote resources
 	 */
 	public static Collection getGrpInfos(FDGroup[] grpIds) throws FDResourceException {
-				
+
 		FDGroup[] missingGrpIds = new FDGroup[grpIds.length];
 		int missingCount = 0;
 		List<GroupScalePricing> foundGrpInfos = new ArrayList<GroupScalePricing>(grpIds.length);
 
 		// find Groups already in the cache
-		GroupScalePricing tempo;		
-		for (int i=0; i<grpIds.length; i++) {
+		GroupScalePricing tempo;
+		for (int i = 0; i < grpIds.length; i++) {
 			tempo = grpCache.get(grpIds[i]);
-			if (tempo==null) {
-				missingGrpIds[missingCount++]=grpIds[i];
-			} else if (tempo!=GROUP_NOT_FOUND) {
+			if (tempo == null) {
+				missingGrpIds[missingCount++] = grpIds[i];
+			} else if (tempo != GROUP_NOT_FOUND) {
 				foundGrpInfos.add(tempo);
 			}
 		}
 
-		if (missingCount==0) {
+		if (missingCount == 0) {
 			// nothing's missing
 			return foundGrpInfos;
 		}
 
 		// get what's missing
 		FDGroup[] loadGrpIds;
-		if (missingCount==missingGrpIds.length) {
+		if (missingCount == missingGrpIds.length) {
 			// everything's missing
 			loadGrpIds = missingGrpIds;
 		} else {
@@ -447,66 +457,74 @@ public class FDCachedFactory {
 		GroupScalePricing tempi;
 		// cache these
 		Collection<GroupScalePricing> gsInfos = FDFactory.getGrpInfo(loadGrpIds);
-		for (Iterator<GroupScalePricing> i=gsInfos.iterator(); i.hasNext(); ) {
+		for (Iterator<GroupScalePricing> i = gsInfos.iterator(); i.hasNext();) {
 			tempi = i.next();
 			grpCache.put(tempi, tempi);
 		}
-		
+
 		foundGrpInfos.addAll(gsInfos);
-		return foundGrpInfos;		
+		return foundGrpInfos;
 	}
-	
-	
+
 	/**
-	 * Get product with specified version. 
+	 * Get product with specified version.
 	 *
-	 * @param sku SKU code
-	 * @param version requested version
+	 * @param sku
+	 *            SKU code
+	 * @param version
+	 *            requested version
 	 *
 	 * @return FDProduct object
 	 *
-	 * @throws FDSkuNotFoundException if the SKU was not found in ERP services
-	 * @throws FDResourceException if an error occured using remote resources
+	 * @throws FDSkuNotFoundException
+	 *             if the SKU was not found in ERP services
+	 * @throws FDResourceException
+	 *             if an error occured using remote resources
 	 */
 	public static FDProduct getProduct(String sku, int version) throws FDResourceException, FDSkuNotFoundException {
 		FDSku fdSku = new FDSku(sku, version);
 		FDProduct p = productCache.get(fdSku);
-		if (p==null) {
+		if (p == null) {
 			p = FDFactory.getProduct(sku, version);
 			productCache.put(fdSku, p);
 		}
-//		productCache.put(fdSku, p);
+		// productCache.put(fdSku, p);
 		return p;
 	}
 
 	/**
 	 * Convenience method to get the product for the specified FDProductInfo.
 	 *
-	 * @param sku FDSku instance
+	 * @param sku
+	 *            FDSku instance
 	 *
 	 * @return FDProduct object
 	 *
-	 * @throws FDSkuNotFoundException if the SKU was not found in ERP services
-	 * @throws FDResourceException if an error occured using remote resources
+	 * @throws FDSkuNotFoundException
+	 *             if the SKU was not found in ERP services
+	 * @throws FDResourceException
+	 *             if an error occured using remote resources
 	 */
 	public static FDProduct getProduct(FDSku sku) throws FDResourceException, FDSkuNotFoundException {
 		FDProduct p = productCache.get(sku);
-		if (p==null) {
+		if (p == null) {
 			p = FDFactory.getProduct(sku);
 			productCache.put(sku, p);
 		}
-//		productCache.put(sku, p);
+		// productCache.put(sku, p);
 		return p;
 	}
 
 	/**
 	 * Convenience method to get the product for the specified FDProductInfo.
 	 *
-	 * @param skus array of FDSku instances
+	 * @param skus
+	 *            array of FDSku instances
 	 *
 	 * @return collection of FDProduct objects found
 	 *
-	 * @throws FDResourceException if an error occured using remote resources
+	 * @throws FDResourceException
+	 *             if an error occured using remote resources
 	 */
 	public static Collection getProducts(FDSku[] skus) throws FDResourceException {
 		FDSku[] missingSkus = new FDSku[skus.length];
@@ -515,10 +533,10 @@ public class FDCachedFactory {
 
 		// find skus already in the cache
 		FDProduct temp;
-		for (int i=0; i<skus.length; i++) {
+		for (int i = 0; i < skus.length; i++) {
 			temp = productCache.get(skus[i]);
-			if (temp==null) {
-				missingSkus[missingCount++]=skus[i];
+			if (temp == null) {
+				missingSkus[missingCount++] = skus[i];
 			} else {
 				foundProducts.add(temp);
 			}
@@ -526,7 +544,7 @@ public class FDCachedFactory {
 
 		// get what's missing
 		FDSku[] loadSkus;
-		if (missingCount==missingSkus.length) {
+		if (missingCount == missingSkus.length) {
 			loadSkus = missingSkus;
 		} else {
 			loadSkus = new FDSku[missingCount];
@@ -536,11 +554,11 @@ public class FDCachedFactory {
 
 		// cache these
 		FDProduct o;
-		for (Iterator<FDProduct> i=prods.iterator(); i.hasNext(); ) {
+		for (Iterator<FDProduct> i = prods.iterator(); i.hasNext();) {
 			o = i.next();
-			productCache.put(o,o);
+			productCache.put(o, o);
 		}
-		
+
 		foundProducts.addAll(prods);
 		return foundProducts;
 	}
@@ -548,98 +566,71 @@ public class FDCachedFactory {
 	public static Collection getOutOfStockSkuCodes() throws FDResourceException {
 		return FDFactory.getOutOfStockSkuCodes();
 	}
-	
-	public static Collection findSKUsByDeal(double lowerLimit, double upperLimit,List skuPrefixes) throws FDResourceException {
+
+	public static Collection<ErpMaterialSalesAreaModel> getGoingOutOfStockSalesAreas() throws FDResourceException {
+		return FDFactory.getGoingOutOfStockSalesAreas();
+	}
+
+	public static Collection findSKUsByDeal(double lowerLimit, double upperLimit, List skuPrefixes)
+			throws FDResourceException {
 		return FDFactory.findSKUsByDeal(lowerLimit, upperLimit, skuPrefixes);
 	}
-	
+
 	public static List findPeakProduceSKUsByDepartment(List skuPrefixes) throws FDResourceException {
 		return FDFactory.findPeakProduceSKUsByDepartment(skuPrefixes);
 	}
-	
-	public static Map<String, Map<String,Date>> getNewSkus() throws FDResourceException {
+
+	public static Map<String, Map<String, Date>> getNewSkus() throws FDResourceException {
 		return FDFactory.getNewSkus();
 	}
 
-	public static Map<String, Map<String,Date>> getBackInStockSkus() throws FDResourceException {
+	public static Map<String, Map<String, Date>> getBackInStockSkus() throws FDResourceException {
 		return FDFactory.getBackInStockSkus();
 	}
-	
+
 	public static List<SkuAvailabilityHistory> getSkuAvailabilityHistory(String skuCode) throws FDResourceException {
 		return FDFactory.getSkuAvailabilityHistory(skuCode);
 	}
 
-	public static Map<String, Map<String,Date>> getOverriddenNewSkus() throws FDResourceException {
+	public static Map<String, Map<String, Date>> getOverriddenNewSkus() throws FDResourceException {
 		return FDFactory.getOverriddenNewSkus();
 	}
 
-	public static Map<String, Map<String,Date>> getOverdiddenBackInStockSkus() throws FDResourceException {
+	public static Map<String, Map<String, Date>> getOverdiddenBackInStockSkus() throws FDResourceException {
 		return FDFactory.getOverriddenBackInStockSkus();
 	}
-	
+
 	public static void refreshNewAndBackViews() throws FDResourceException {
 		FDFactory.refreshNewAndBackViews();
 	}
 
-	/*public static FDProductInfo addNewAvailabilityInformation(String skuCode, EnumAvailabilityStatus status, EnumOrderLineRating rating, String freshness) throws FDResourceException, FDSkuNotFoundException { 
-	    FDProductInfo prodInfo = getProductInfo(skuCode);
-	    if (status == null) {
-	        status = prodInfo.getAvailabilityStatus();
-	    }
-	    if (rating == null) {
-	        rating = prodInfo.getRating();
-	    }
-	    if (freshness == null) {
-	        freshness = prodInfo.getFreshness();
-	    }
-	    FDProductInfo copyInfo = prodInfo.copy(prodInfo.getVersion() + 1, status, rating, freshness);
-	    FDProduct prod = getProduct(skuCode, prodInfo.getVersion());
-	    FDProduct copyProd = prod.copy(copyInfo.getVersion());
-	    productInfoCache.put(skuCode, copyInfo);
-	    productCache.put(new FDSku(skuCode, copyInfo.getVersion()), copyProd);
-
-            return copyInfo;
-	}*/ //::FDX:: Not sure what purpose this serves. Commenting it out
-	
 	public static FDGroup getLatestActiveGroup(String groupId) throws FDResourceException, FDGroupNotFoundException {
 		return FDFactory.getLatestActiveGroup(groupId);
 	}
-	
-	/**
-	 * Method to refresh the caches for product promtoion skus.
-	 * @param skus
-	 * @throws FDResourceException
-	 */
-//	public static void refreshProductPromotionSkus(Set<String> skus)throws FDResourceException{
-//		for (Iterator iterator = skus.iterator(); iterator.hasNext();) {
-//			String sku = (String) iterator.next();
-//			refreshProductPromotionSku(sku);
-//		}		
-//	}
-	
-	public static void refreshProductPromotionSku(String sku)throws FDResourceException{
+
+	public static void refreshProductPromotionSku(String sku) throws FDResourceException {
 		FDProductInfo pi = null;
-		try { 
+		try {
 			pi = FDFactory.getProductInfo(sku);
 			productInfoCache.put(sku, pi);
-			if(null !=pi && pi.getUpc() != null && pi.getUpc().trim().length() > 0) {
+			if (null != pi && pi.getUpc() != null && pi.getUpc().trim().length() > 0) {
 				productUpcCache.put(pi.getUpc(), pi);
 			}
-			if(null !=pi){
+			if (null != pi) {
 				FDSku fdSku = new FDSku(sku, pi.getVersion());
 				FDProduct p = FDFactory.getProduct(fdSku);
 				productCache.put(fdSku, p);
 			}
 		} catch (FDSkuNotFoundException ex) {
-			productInfoCache.put(sku, SKU_NOT_FOUND);					
+			productInfoCache.put(sku, SKU_NOT_FOUND);
 		}
 	}
-	
-	public static void loadMaterialGroupCache(){
+
+	public static void loadMaterialGroupCache() {
 		FDMaterialGroupCache.loadMaterialGroups();
 	}
-	
-	public static Map<String,FDGroup> getGroupsByMaterial(String material) {
+
+	public static Map<String, FDGroup> getGroupsByMaterial(String material) {
 		return FDMaterialGroupCache.getGroupsByMaterial(material);
 	}
 }
