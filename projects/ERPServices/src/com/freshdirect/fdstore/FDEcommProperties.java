@@ -32,6 +32,7 @@ public class FDEcommProperties {
     
     private final static String FALSE="false";
     public final static String FDMonitorSB = "fdstore.monitor.FDMonitorSB";
+    public final static String GatewayActivityLog ="payment.ejb.GatewayActivityLogSB";
     public final static String ErpCOOLManagerSB = "erp.ejb.ErpCOOLManagerSB";
     public final static String ErpGrpInfoSB = "erp.ejb.ErpGrpInfoSB";
     public static final String EnumManagerSB = "enums.ejb.EnumManagerSB";
@@ -100,6 +101,7 @@ public class FDEcommProperties {
     static {
 
         defaults.put(FDMonitorSB,FALSE);
+        defaults.put(GatewayActivityLog,FALSE);
         defaults.put(ErpCOOLManagerSB ,FALSE);
         defaults.put(ErpGrpInfoSB,FALSE);
         defaults.put(EnumManagerSB,FALSE);

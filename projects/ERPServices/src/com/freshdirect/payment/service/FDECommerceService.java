@@ -196,6 +196,7 @@ import com.freshdirect.payment.ewallet.gateway.ejb.EwalletActivityLogModel;
 import com.freshdirect.payment.fraud.EnumRestrictedPaymentMethodStatus;
 import com.freshdirect.payment.fraud.RestrictedPaymentMethodCriteria;
 import com.freshdirect.payment.fraud.RestrictedPaymentMethodModel;
+import com.freshdirect.payment.gateway.GatewayType;
 import com.freshdirect.payment.gateway.ejb.FDGatewayActivityLogModel;
 import com.freshdirect.referral.extole.ExtoleServiceException;
 import com.freshdirect.referral.extole.model.ExtoleConversionRequest;
@@ -2821,8 +2822,9 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	}
 		
 	@Override
-	public void logGatewayActivity(FDGatewayActivityLogModel logModel)throws RemoteException{
+	public void logGatewayActivity(GatewayType gatewayType,com.freshdirect.payment.gateway.Response resp)throws RemoteException{
 		try {
+			FDGatewayActivityLogModel logModel = ModelConverter.getFDGatewayGatewayActivityLogModel(gatewayType,resp);
 			Request<FDGatewayActivityLogModelData> gatewayActivityLogReq = new Request<FDGatewayActivityLogModelData>();
 			gatewayActivityLogReq.setData(ModelConverter.convertFDGatewayActivityLogModel(logModel));
 			String inputJson = buildRequest(gatewayActivityLogReq);
@@ -5260,6 +5262,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			throw new RemoteException(e.getMessage());
 		}
 	}
+	
 
 
 }

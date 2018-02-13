@@ -16,6 +16,6 @@ import com.freshdirect.payment.gateway.GatewayType;
 import com.freshdirect.payment.gateway.Response;
 
 public interface GatewayActivityLogSB extends EJBObject {
-	
+	@Deprecated
 	public void logActivity(GatewayType gatewayType,Response response) throws RemoteException;
 }

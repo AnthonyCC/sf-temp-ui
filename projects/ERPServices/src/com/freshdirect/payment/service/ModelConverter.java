@@ -199,12 +199,12 @@ import com.freshdirect.fdstore.ZonePriceInfoListing;
 import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.ZonePriceModel;
-import com.freshdirect.fdstore.ecoupon.EnumCouponTransactionType;
 import com.freshdirect.fdstore.ecoupon.model.CouponCart;
 import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionDetailModel;
 import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionModel;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityContext;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityLogModel;
+import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.event.FDRecommendationEvent;
 import com.freshdirect.framework.mail.EmailI;
@@ -222,6 +222,15 @@ import com.freshdirect.payment.fraud.EnumRestrictedPatternType;
 import com.freshdirect.payment.fraud.EnumRestrictedPaymentMethodStatus;
 import com.freshdirect.payment.fraud.EnumRestrictionReason;
 import com.freshdirect.payment.fraud.RestrictedPaymentMethodModel;
+import com.freshdirect.payment.gateway.BillingInfo;
+import com.freshdirect.payment.gateway.CreditCard;
+import com.freshdirect.payment.gateway.CreditCardType;
+import com.freshdirect.payment.gateway.ECheck;
+import com.freshdirect.payment.gateway.GatewayType;
+import com.freshdirect.payment.gateway.PaymentMethod;
+import com.freshdirect.payment.gateway.PaymentMethodType;
+import com.freshdirect.payment.gateway.Response;
+import com.freshdirect.payment.gateway.TransactionType;
 import com.freshdirect.payment.gateway.ejb.FDGatewayActivityLogModel;
 import com.freshdirect.rules.Rule;
 import com.freshdirect.security.ticket.Ticket;
@@ -696,22 +705,28 @@ public class ModelConverter {
 		fdGatewayActivityLogModelData.setAuthCode(activityLogModel.getAuthCode());
 		fdGatewayActivityLogModelData.setAVSMatch(activityLogModel.isAVSMatch());
 		fdGatewayActivityLogModelData.setAvsResponse(activityLogModel.getAvsResponse());
+		if(activityLogModel.getBankAccountType() != null)
 		fdGatewayActivityLogModelData.setBankAccountType(activityLogModel.getBankAccountType().name());
+		if(activityLogModel.getCardType() != null)
 		fdGatewayActivityLogModelData.setCardType(activityLogModel.getCardType().name());
 		fdGatewayActivityLogModelData.setCity(activityLogModel.getCity());
 		fdGatewayActivityLogModelData.setCountryCode(activityLogModel.getCountryCode());
 		fdGatewayActivityLogModelData.setCustomerId(activityLogModel.getCustomerId());
+		fdGatewayActivityLogModelData.setCustomerName(activityLogModel.getCustomerName());
 		fdGatewayActivityLogModelData.setCVVMatch(activityLogModel.isCVVMatch());
 		fdGatewayActivityLogModelData.setCvvResponse(activityLogModel.getCvvResponse());
 		fdGatewayActivityLogModelData.setDeclined(activityLogModel.isDeclined());
 		fdGatewayActivityLogModelData.setDeviceId(activityLogModel.getDeviceId());
+		if(activityLogModel.getEStoreId() != null)
 		fdGatewayActivityLogModelData.seteStoreId(activityLogModel.getEStoreId().name());
 		fdGatewayActivityLogModelData.seteWalletId(activityLogModel.geteWalletId());
 		fdGatewayActivityLogModelData.seteWalletTxId(activityLogModel.geteWalletTxId());
 		fdGatewayActivityLogModelData.setExpirationDate(activityLogModel.getExpirationDate());
 		fdGatewayActivityLogModelData.setGatewayOrderID(activityLogModel.getGatewayOrderID());
+		if(activityLogModel.getGatewayType() != null)
 		fdGatewayActivityLogModelData.setGatewayType(activityLogModel.getGatewayType().getName());
 		fdGatewayActivityLogModelData.setMerchant(activityLogModel.getMerchant());
+		if(activityLogModel.getPaymentType() != null)
 		fdGatewayActivityLogModelData.setPaymentType(activityLogModel.getPaymentType().name());
 		fdGatewayActivityLogModelData.setProcessingError(activityLogModel.isProcessingError());
 		fdGatewayActivityLogModelData.setProfileId(activityLogModel.getProfileId());
@@ -721,6 +736,7 @@ public class ModelConverter {
 		fdGatewayActivityLogModelData.setState(activityLogModel.getState());
 		fdGatewayActivityLogModelData.setStatusCode(activityLogModel.getStatusCode());
 		fdGatewayActivityLogModelData.setStatusMsg(activityLogModel.getStatusMsg());
+		if(activityLogModel.getTransactionType() != null)
 		fdGatewayActivityLogModelData.setTransactionType(activityLogModel.getTransactionType().name());
 		fdGatewayActivityLogModelData.setTxRefIdx(activityLogModel.getTxRefIdx());
 		fdGatewayActivityLogModelData.setTxRefNum(activityLogModel.getTxRefNum());
@@ -2257,5 +2273,83 @@ public class ModelConverter {
 		regionInfo.setVersion(region.getVersion());
 		return regionInfo;
 	}
+
+	public static FDGatewayActivityLogModel getFDGatewayGatewayActivityLogModel(
+			GatewayType gatewayType,
+			com.freshdirect.payment.gateway.Response response) {
+		FDGatewayActivityLogModel logModel=new FDGatewayActivityLogModel();
+		logModel.setTransactionType(response.getTransactionType());
+		logModel.setGatewayType(gatewayType);
+		logModel.setApproved(response.isApproved());
+		logModel.setAuthCode(response.getAuthCode());
+		logModel.setAVSMatch(response.isAVSMatch());
+		logModel.setAvsResponse(response.getAVSResponse());
+		logModel.setProcessingError(response.isError());
+		logModel.setDeclined(response.isDeclined());
+		logModel.setRequestProcessed(response.isRequestProcessed());
+		logModel.setResponseCode(response.getResponseCode());
+		logModel.setResponseCodeAlt(response.getResponseCodeAlt());
+		logModel.setStatusCode(response.getStatusCode());
+		logModel.setStatusMsg(response.getStatusMessage());
+		
+		if(TransactionType.CC_VERIFY.equals(response.getTransactionType())) {
+			logModel.setCVVMatch(response.isCVVMatch());
+			logModel.setCvvResponse(response.getCVVResponse());
+		}
+		BillingInfo billingInfo=response.getBillingInfo();
+		if(billingInfo==null)
+			billingInfo=response.getRequest().getBillingInfo();
+		PaymentMethod pm=null;
+		if(billingInfo!=null) {
+			pm=billingInfo.getPaymentMethod();
+			logModel.setAmount(billingInfo.getAmount());
+			if (billingInfo.getMerchant()!=null)
+				logModel.setMerchant(billingInfo.getMerchant().name());
+			logModel.setGatewayOrderID(billingInfo.getTransactionID());
+			logModel.setTxRefNum(billingInfo.getTransactionRef());
+			logModel.setTxRefIdx(billingInfo.getTransactionRefIndex());
+			if(StringUtil.isEmpty(pm.getMaskedAccountNumber())){
+				pm=response.getRequest().getBillingInfo().getPaymentMethod();
+			}
+			if(pm!=null && !StringUtil.isEmpty(pm.getMaskedAccountNumber())) {
+				int l=pm.getMaskedAccountNumber().length();
+				logModel.setAccountNumLast4(l>4?
+						pm.getMaskedAccountNumber().substring(l-4,l):pm.getMaskedAccountNumber());
+				logModel.setCustomerId(pm.getCustomerID());
+				logModel.setProfileId(pm.getBillingProfileID());
+				logModel.setCustomerName(pm.getCustomerName());
+				logModel.setAddressLine1(pm.getAddressLine1());
+				logModel.setAddressLine2(pm.getAddressLine2());
+				logModel.setCity(pm.getCity());
+				logModel.setState(pm.getState());
+				logModel.setCountryCode(pm.getCountry());
+				logModel.setZipCode(pm.getZipCode());
+				logModel.setPaymentType(pm.getType());
+				if(PaymentMethodType.CREDIT_CARD.equals(pm.getType())) {
+				   CreditCard cc=(CreditCard)pm;
+					logModel.setCardType(cc.getCreditCardType());
+					logModel.setExpirationDate(cc.getExpirationDate());
+				}else if (PaymentMethodType.PP.equals(pm.getType())) {
+					logModel.setCardType(CreditCardType.PYPL);
+				}
+				else if(PaymentMethodType.ECHECK.equals(pm.getType())){
+					ECheck ec=(ECheck)pm;
+					logModel.setBankAccountType(ec.getBankAccountType());
+				}
+				
+				if(pm.getEwalletId() != null && pm.getEwalletId().equals(""+EnumEwalletType.PP.getValue())){
+					logModel.setDeviceId(pm.getDeviceId());
+				}
+				// Update EWallet ID
+				logModel.seteWalletId(response.getEwalletId());
+				logModel.seteWalletTxId(response.getEwalletTxId());
+				logModel.setEStoreId(billingInfo.getEStoreId());
+			}
+			
+		}
+		return logModel;
+		
+	}
+
 }
 

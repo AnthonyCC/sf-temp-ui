@@ -111,6 +111,8 @@ import com.freshdirect.payment.ewallet.gateway.ejb.EwalletActivityLogModel;
 import com.freshdirect.payment.fraud.EnumRestrictedPaymentMethodStatus;
 import com.freshdirect.payment.fraud.RestrictedPaymentMethodCriteria;
 import com.freshdirect.payment.fraud.RestrictedPaymentMethodModel;
+import com.freshdirect.payment.gateway.GatewayType;
+import com.freshdirect.payment.gateway.Response;
 import com.freshdirect.payment.gateway.ejb.FDGatewayActivityLogModel;
 import com.freshdirect.referral.extole.ExtoleServiceException;
 import com.freshdirect.referral.extole.model.ExtoleConversionRequest;
@@ -354,8 +356,7 @@ public interface IECommerceService {
 	public String getPreferredWinePrice(String erpCustomerId);
 
 
-	void logGatewayActivity(FDGatewayActivityLogModel logModel)
-			throws RemoteException;
+	void logGatewayActivity(GatewayType gatewayType,Response response)throws RemoteException;
 
 	public Map<String, Rule> getRules(String subsystem) throws FDResourceException, RemoteException;
 

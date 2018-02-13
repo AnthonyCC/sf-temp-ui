@@ -33,6 +33,7 @@ public class GatewayActivityLogSessionBean extends GatewaySessionBeanSupport {
 	
 	private static Category LOGGER = LoggerFactory.getInstance( GatewayActivityLogSessionBean.class );
 	
+	@Deprecated
 	public void logActivity(GatewayType gatewayType,Response response) {
 		
 		try {
@@ -45,7 +46,7 @@ public class GatewayActivityLogSessionBean extends GatewaySessionBeanSupport {
 			LOGGER.warn("Exception during sending message to queue.", ex);
 		}
 	}
-	
+	@Deprecated
 	private FDGatewayActivityLogModel getLogModel(GatewayType gatewayType,Response response) {
 		FDGatewayActivityLogModel logModel=new FDGatewayActivityLogModel();
 		logModel.setTransactionType(response.getTransactionType());
