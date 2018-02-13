@@ -17,9 +17,11 @@
 <%@ page import="java.util.Iterator" %>
 <%@ page import="java.util.LinkedHashMap" %>
 <%@ page import='com.freshdirect.fdlogistics.model.FDTimeslot'%>
-<%@page import="com.freshdirect.framework.util.log.LoggerFactory"%>
-<%@page import="org.apache.log4j.Logger"%>
-<%@page import="java.text.SimpleDateFormat"%>
+<%@ page import="com.freshdirect.framework.util.log.LoggerFactory"%>
+<%@ page import="org.apache.log4j.Logger"%>
+<%@ page import="java.text.SimpleDateFormat"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDCartModel" %>
+<%@ page import="com.freshdirect.fdstore.customer.FDModifyCartModel" %>
 <%@ taglib prefix="fd" uri="freshdirect" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -755,7 +757,10 @@ if (allPickupDepots != null) {
 							<div class="footer-buttons">
 								<span class="close"></span><br />
 								<a class="cart cssbutton cssbutton-flat" href="/view_cart.jsp">View Cart</a>
-								<a class="checkout cssbutton orange cssbutton-flat" href="/checkout/view_cart.jsp" fd-login-required>Checkout</a>
+								<%
+									FDCartModel locationbarFdxCart = user_locationbar_fdx.getShoppingCart();
+								%>
+								<a class="checkout cssbutton orange cssbutton-flat" href="/checkout/view_cart.jsp" fd-login-required><%= (locationbarFdxCart instanceof FDModifyCartModel) ? "Review Changes" : "Checkout" %></a>
 							</div>
 			    		</div>
 					</fd:GetCart>

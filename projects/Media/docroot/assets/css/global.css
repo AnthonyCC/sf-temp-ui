@@ -3294,8 +3294,6 @@ div#i_viewcart td {
 .modProd-banner>span {
 	font-family: Verdana, Arial, sans-serif;
 	font-size: 30px;
-	text-transform:uppercase;
-	color:#FF9933;
 	font-weight: bold;
 	margin: 15px 0;
 	text-align: center;
@@ -3424,3 +3422,5 @@ button.space {
 	display:inline-block;
 	vertical-align:inherit;
 }
+
+.prodMod-modLink { display: none; }

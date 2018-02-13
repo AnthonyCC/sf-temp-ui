@@ -1951,6 +1951,11 @@ li.cleanli .gen-arrow {
 		[data-ec-page] .mm-page .cartheader__button {
 			width: 100%;
 		}
+		[data-ec-page] .mm-page .cartheader__button.modify {
+			font-size: 15px;
+    		text-align: left;
+    		padding-left: 25px;
+		}
 		[data-ec-page] .mm-page .charges__rowcell {
 			width: 100%;
 			display: block;			
@@ -2401,13 +2406,6 @@ li.cleanli .gen-arrow {
 	
 	.mm-page .prodMod-buttons-cont button, .mm-page .prodMod-buttons-cont a {
 	    width: 100%;
-	}
-	.mm-page .modProd-banner {
-		background-color: #F93;
-	}
-	.mm-page .modProd-banner>span {
-		color: #fff;
-		font-size: 24px;
 	}
 	.mm-page .prodMod-modLink {
 		padding: 0 3px;

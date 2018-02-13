@@ -218,7 +218,7 @@
 		height: auto;
 		text-align: center;
 		font-size: 18px;
-		width: 150px;
+		min-width: 150px;
 		display: inline-block;
 		position: initial;
 
