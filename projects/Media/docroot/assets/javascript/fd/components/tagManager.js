@@ -551,19 +551,23 @@ var dataLayer = window.dataLayer || [];
     var reportProduct = function (elm) {
       var productData = fd.gtm.getProductData(elm, listData);
 
-      return {
-        id: productData.productId,
-        name: productData.name,
-        price: productData.price,
-        brand: productData.brand,
-        category: productData.categoryId,
-        variant: productData.variant !== 'null' ? productData.variant : "default variant",
-        new_product: productData.new_product,
-        sku: productData.skuCode,
-        in_stock: productData.in_stock,
-        position: parseInt(productData.position, 10) || 0,
-        list: productData.list
-      };
+      if (productData && productData.productId) {
+        return {
+          id: productData.productId,
+          name: productData.name,
+          price: productData.price,
+          brand: productData.brand,
+          category: productData.categoryId,
+          variant: productData.variant !== 'null' ? productData.variant : "default variant",
+          new_product: productData.new_product,
+          sku: productData.skuCode,
+          in_stock: productData.in_stock,
+          position: parseInt(productData.position, 10) || 0,
+          list: productData.list
+        };
+      }
+
+      return null;
     };
 
     $el.each(function (i, elm) {
@@ -584,8 +588,12 @@ var dataLayer = window.dataLayer || [];
   // report product impressions
   fd.gtm.reportImpressions = function (products, type) {
     type = type || 'impressionsPushed';
+    products = products.filter(function (p) {
+      return p && p.id;
+    });
+
     var checkAndReport = function () {
-      if (fd.gtm.check()) {
+      if (fd.gtm.check() && products && products.length) {
         resetImpressions();
         dataLayer.push({
           ecommerce: {
