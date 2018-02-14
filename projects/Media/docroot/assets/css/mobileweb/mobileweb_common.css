@@ -2994,9 +2994,11 @@ form.dispblock-fields td { /* force the tds to block so the label and field are 
 		width: 100px;
 	}
 	
-/* hide in mobweb */
-table.order_history_table td.order_history_table_id_header,
-table.order_history_table td.order_history_table_id
-{
-	display: none;
-}
+      /* hide in mobweb */
+    table.order_history_table td.order_history_table_id_header,
+    table.order_history_table td.order_history_table_id{
+         display: none;
+    }
+    select#order-field,select#contact_subject,textarea#msg-textarea{
+	 width:100%;
+	}

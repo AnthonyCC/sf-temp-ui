@@ -83,9 +83,9 @@
 }
 
 #help-page label{
-	width: 150px;
+	width: 155px;
     padding-right: 10px;
-    vertical-align: middle;
+/*     vertical-align: middle; */
     text-align: right;
 }
 
@@ -133,4 +133,13 @@
 .error {
 	color: #cc0000;
 	/*margin-left: 165px;*/
+}
+select#order-field,select#contact_subject{
+	width:357px;
+}
+.optionalaccess{
+	color: #999999;
+    font-weight: normal;
+    font-style: normal;
+    font-size:14px;
 }
