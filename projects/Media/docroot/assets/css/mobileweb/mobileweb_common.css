@@ -2794,7 +2794,7 @@ li.cleanli .gen-arrow {
 		font-size: 12px;
 	}
 	.mm-page table.order_history_table tr td:last-child{
-		max-width: 60px;
+		max-width: 80px;
 	}
 	.mm-page .order_history_table .order_history_table_id{
 		padding: 0 0 0 10px;
@@ -2993,3 +2993,10 @@ form.dispblock-fields td { /* force the tds to block so the label and field are 
 		height: 100px;
 		width: 100px;
 	}
+	
+/* hide in mobweb */
+table.order_history_table td.order_history_table_id_header,
+table.order_history_table td.order_history_table_id
+{
+	display: none;
+}

@@ -146,7 +146,7 @@ if (user.isEligibleForClientCodes()) {
 		<td class="text10bold order_history_table_total_header" bgcolor="#DDDDDD" <%= (mobWeb)? "" : "WIDTH='75'" %> align="right"><%= (mobWeb)? "" : "Order " %>Total</td>
 		<% if(!mobWeb){ %><td bgcolor="#DDDDDD"><img src="/media_stat/images/layout/clear.gif" width="40" height="1" alt="" border="0"></td> <% } %>
 		<td class="text10bold order_history_table_status_header" bgcolor="#DDDDDD" <%= (mobWeb)? "" : "WIDTH='90'" %>><%= (mobWeb)? "" : "Order " %>Status</td>
-		<% if(!mobWeb){ %><td class="text10bold" bgcolor="#DDDDDD" <%= (mobWeb)? "" : "WIDTH='250'" %>>Details</td><% } %>
+		<td class="text10bold" bgcolor="#DDDDDD" <%= (mobWeb)? "" : "WIDTH='250'" %>>Details</td>
 	</tr>
 	
 <%
@@ -198,14 +198,12 @@ for (FDOrderInfoI orderInfo : orderHistoryInfo) {
    <%} else {%>
 <td class="order_history_table_status"><%= status %></td>
    <%}%>
-		<% if(!mobWeb){ %>
 		<td>
 			<a href="<%= orderDetailsUrl %>"><%= orderInfo.isModifiable() ? "View/Modify" : "View" %><span class="offscreen">order <%= orderInfo.getErpSalesId() %> </span></a>
             <% if (orderInfo.isShopFromThisOrder()) { %>
-            | <a href="/quickshop/shop_from_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>">Shop From This Order<span class="offscreen">number <%= orderInfo.getErpSalesId() %></span></a>
+            | <a href="/quickshop/shop_from_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>">Shop Order<span class="offscreen"> number <%= orderInfo.getErpSalesId() %></span></a>
             <% } %>
 		</td>
-		<% } %>
 	</tr>
 <%
 } // orderInfo : orderHistoryInfo
