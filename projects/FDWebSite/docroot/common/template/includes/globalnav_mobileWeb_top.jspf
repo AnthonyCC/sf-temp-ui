@@ -22,35 +22,37 @@
 						<a class="locabar-search" href="#" onclick="$jq('#search').toggle(); $jq(this).trigger('resize'); return false;"><span class="offscreen">Toggle Search Display</span></a>
 					<% } %>
 				</div>
-				<div class="navbar-ecomvalue">
-				
-					<%
-						String temp_delivery_link = "/your_account/delivery_info_check_slots.jsp";
+				<% if (!(user.getShoppingCart() instanceof FDModifyCartModel)) { %>
+					<div class="navbar-ecomvalue">
 					
-						if (user != null && user.getLevel() >= FDUserI.RECOGNIZED) {
-							List<ErpAddressModel> allHomeAddresses = user.getAllHomeAddresses();
-							List<ErpAddressModel> allCorporateAddresses = user.getAllCorporateAddresses();
-							
-							if (user.getLevel() >= FDUserI.RECOGNIZED) {
-								temp_delivery_link = "/your_account/delivery_info_avail_slots.jsp";
-							} else {
-								temp_delivery_link = "/your_account/delivery_info_check_slots.jsp";
+						<%
+							String temp_delivery_link = "/your_account/delivery_info_check_slots.jsp";
+						
+							if (user != null && user.getLevel() >= FDUserI.RECOGNIZED) {
+								List<ErpAddressModel> allHomeAddresses = user.getAllHomeAddresses();
+								List<ErpAddressModel> allCorporateAddresses = user.getAllCorporateAddresses();
+								
+								if (user.getLevel() >= FDUserI.RECOGNIZED) {
+									temp_delivery_link = "/your_account/delivery_info_avail_slots.jsp";
+								} else {
+									temp_delivery_link = "/your_account/delivery_info_check_slots.jsp";
+								}
+								
+								//now check if they can go to reservation instead
+								if (user.isEligibleForPreReservation()) {
+									temp_delivery_link = (request.getAttribute("temp_delivery_link_attrib") != null) ? (String)request.getAttribute("temp_delivery_link_attrib").toString() : temp_delivery_link;
+								}
+								
+								//check if user has addresses besides pickup
+								if (allHomeAddresses.size() + allCorporateAddresses.size() == 0) {
+									//nope, change url
+									temp_delivery_link = "/help/delivery_info_check_slots.jsp";
+								}
 							}
-							
-							//now check if they can go to reservation instead
-							if (user.isEligibleForPreReservation()) {
-								temp_delivery_link = (request.getAttribute("temp_delivery_link_attrib") != null) ? (String)request.getAttribute("temp_delivery_link_attrib").toString() : temp_delivery_link;
-							}
-							
-							//check if user has addresses besides pickup
-							if (allHomeAddresses.size() + allCorporateAddresses.size() == 0) {
-								//nope, change url
-								temp_delivery_link = "/help/delivery_info_check_slots.jsp";
-							}
-						}
-					%>
-					<a href="<%= temp_delivery_link %>" class="icon-truck"><span class="offscreen">View Delivery Timeslots</span></a>
-				</div>
+						%>
+						<a href="<%= temp_delivery_link %>" class="icon-truck"><span class="offscreen">View Delivery Timeslots</span></a>
+					</div>
+				<% } %>
 				<%-- TODO: CART is hard-coded, boo --%>
 				<div class="navbar-ecomvalue">
 					<fd:GetCart id="cart">
