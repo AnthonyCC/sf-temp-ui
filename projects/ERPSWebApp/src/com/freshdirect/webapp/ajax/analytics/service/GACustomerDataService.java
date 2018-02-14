@@ -2,6 +2,7 @@ package com.freshdirect.webapp.ajax.analytics.service;
 
 import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.webapp.ajax.analytics.data.GACustomerData;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 
@@ -34,6 +35,7 @@ public class GACustomerDataService {
 	        customer.setOrderCount(Integer.toString(user.getAdjustedValidOrderCount()));
 	        customer.setDeliveryPassStatus(user.getDlvPassInfo() != null && user.getDlvPassInfo().getStatus() != null ? user.getDlvPassInfo().getStatus().getDisplayName() : null);
 	        customer.setCustomerId(user.getIdentity() != null ? user.getIdentity().getErpCustomerPK() : null);
+	        customer.setModifyMode((user.getShoppingCart() instanceof FDModifyCartModel));
 	        
 	        String paymentType = "";
 	        if(null != user.getIdentity()){

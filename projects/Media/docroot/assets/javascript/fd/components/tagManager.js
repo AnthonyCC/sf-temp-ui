@@ -74,6 +74,7 @@ var dataLayer = window.dataLayer || [];
           order_count: custData.orderCount || 0,
           delivery_pass_status: custData.deliveryPassStatus || '',
           customer_id: custData.customerId || '',
+          modifyMode: custData.modifyMode || false,
           zip_code: custData.zipCode || '',
           user_id: custData.userId || '',
           user_status: custData.userStatus || '',
