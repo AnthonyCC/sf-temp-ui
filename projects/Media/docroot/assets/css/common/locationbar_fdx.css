@@ -750,6 +750,9 @@
 	background-position: left 1px;
 	margin-left: 15px;
 }
+#location-modify-order-message ~ .locabar-right-sections #locabar_messages_trigger {
+	display: none; /* hide during modify */
+}
 
 .locabar-section .section-warning-small,
 .locabar-section .section-warning-small-circle  {
@@ -2068,3 +2071,10 @@ option.address-icon {
 	 [data-gc-page] .disableCart .locabar-arrow{
 		display: none;
 	}
+	
+#topnavitem_dlvType > a {
+	min-width: 110px;
+}
+.modify .gnav-footer [data-sffooter="gift_card"] {
+	display: none;
+}

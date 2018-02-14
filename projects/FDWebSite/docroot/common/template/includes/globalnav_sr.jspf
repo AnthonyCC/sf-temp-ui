@@ -127,11 +127,13 @@ if(user != null) {
 					<%
 					//if(Boolean.TRUE == pageContext.getAttribute(LocationHandlerTag.SERVICE_TYPE_MODIFICATION_ENABLED)){
 						%><div class="topnavitem" id="topnavitem_dlvType"><%
-						if(user.isCorporateUser()){
-							%><a href="/index.jsp?serviceType=HOME">Home delivery?</a><%
-						}else {
-							%><a href="/index.jsp?serviceType=CORPORATE">Office delivery?</a><%
-						}
+						if (!(user.getShoppingCart() instanceof FDModifyCartModel)) {
+							if(user.isCorporateUser()){
+								%><a href="/index.jsp?serviceType=HOME">Home delivery?</a><%
+							} else {
+								%><a href="/index.jsp?serviceType=CORPORATE">Office delivery?</a><%
+							}
+						} else { %><a></a><% /* to retain styling */ }
 						%></div><%
 					//}
 					/*

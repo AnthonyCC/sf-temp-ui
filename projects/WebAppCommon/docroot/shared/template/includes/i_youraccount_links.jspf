@@ -20,6 +20,7 @@
 <%
 	final Logger LOGGER = LoggerFactory.getInstance("i_youraccount_links.jspf");
 	FDSessionUser user_youract = (FDSessionUser)session.getAttribute(SessionName.USER);
+	boolean isModifyOrder_youract = (user_youract.getShoppingCart() instanceof FDModifyCartModel);
 
 	String dlvInfoLinkActLinks = "";
     if (user_youract.isPickupOnly()) {
@@ -43,10 +44,12 @@
 		*/
 		
 		/* 1-1 */
-			if(user_youract.isEligibleForPreReservation()){
-				folderMap.put("Reserve Delivery","/your_account/reserve_timeslot.jsp");
-			} else {
-		        folderMap.put("View Timeslots", "/help/delivery_info_check_slots.jsp"); //default
+			if (!isModifyOrder_youract) {
+				if(user_youract.isEligibleForPreReservation()){
+					folderMap.put("Reserve Delivery","/your_account/reserve_timeslot.jsp");
+				} else {
+			        folderMap.put("View Timeslots", "/help/delivery_info_check_slots.jsp"); //default
+				}
 			}
 		/* 1-2 */
 			folderMap.put("Your Top Items", "/quickshop/qs_top_items.jsp");
@@ -59,17 +62,21 @@
 		/* 1-5 */
 			folderMap.put("Shopping Lists","/quickshop/all_lists.jsp");
 		/* 1-6 */
-			try {
-				if(FDStoreProperties.isExtoleRafEnabled() && user_youract.isReferralProgramAvailable()){
-				//This is the default microsite url for RAF-- under My Account Refer a Friend Link
-				folderMap.put("Refer A Friend",FDStoreProperties.getPropExtoleMicrositeSubUrl());
+			if (!isModifyOrder_youract) {
+				try {
+					if(FDStoreProperties.isExtoleRafEnabled() && user_youract.isReferralProgramAvailable()){
+					//This is the default microsite url for RAF-- under My Account Refer a Friend Link
+					folderMap.put("Refer A Friend",FDStoreProperties.getPropExtoleMicrositeSubUrl());
+					}
+				} catch (Exception e) {
+					LOGGER.debug("Error in getting RAF link");
+					e.printStackTrace();
 				}
-			} catch (Exception e) {
-				LOGGER.debug("Error in getting RAF link");
-				e.printStackTrace();
 			}
 		/* 1-7 */
-			folderMap.put("Delivery Info", dlvInfoLinkActLinks);
+			if (!isModifyOrder_youract) {
+				folderMap.put("Delivery Info", dlvInfoLinkActLinks);
+			}
 		/* 1-8 */
 			folderMap.put("Help", "/help/index.jsp");
 		
@@ -90,8 +97,10 @@
 		/* 2-6 */
 			folderMap.put("Store Credits","/your_account/credits.jsp");
 		/* 2-7 */
-			if ( user_youract.isGiftCardsEnabled() ) {
-				 folderMap.put("Gift Cards","/your_account/giftcards.jsp");
+			if (!isModifyOrder_youract) {
+				if ( user_youract.isGiftCardsEnabled() ) {
+					 folderMap.put("Gift Cards","/your_account/giftcards.jsp");
+				}
 			}
 		
 		/* these should only show on your account page */		
