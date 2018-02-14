@@ -34,6 +34,7 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.FDUserUtil;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
 import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
 import com.freshdirect.fdstore.lists.FDListManager;
@@ -79,6 +80,8 @@ public class ManageStandingOrderServlet extends HttpServlet {
 
 				if (u != null) {
 					StandingOrderHelper.populateCurrentDeliveryDate(u, returnSO);
+					returnSO.put("modifyingOrderId", FDUserUtil.getModifyingOrderId(u));
+					
 				}
 				writeResponseData(response, returnSO);
 				

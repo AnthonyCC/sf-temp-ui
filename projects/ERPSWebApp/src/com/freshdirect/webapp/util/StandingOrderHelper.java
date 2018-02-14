@@ -39,6 +39,7 @@ import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDOrderInfoI;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.FDUserUtil;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.standingorders.DeliveryInterval;
@@ -832,6 +833,7 @@ public class StandingOrderHelper {
 		soSettings.put("soSoftLimit", (int)(ErpServicesProperties.getStandingOrderSoftLimit()));
 		soSettings.put("cartOverlayFirstTime", setCartOverlayFirstTime(user).isSoCartOverlayFirstTime());
 		soSettings.put("newSoFeature", setNewSoFeature(user).isSoFeatureOverlay());
+		soSettings.put("modifyingOrderId", FDUserUtil.getModifyingOrderId(user));
 		allSoData.put("soSettings", soSettings);
 		
 		/* these are the so's themselves */
