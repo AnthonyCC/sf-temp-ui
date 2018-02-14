@@ -12,6 +12,8 @@
 <%@page import="java.util.Map"%>
 <%@page import="java.util.Iterator"%>
 <%@page import="com.freshdirect.common.customer.EnumServiceType"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDCartModel" %>
+<%@ page import="com.freshdirect.fdstore.customer.FDModifyCartModel" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%-- 
 	requires: 
