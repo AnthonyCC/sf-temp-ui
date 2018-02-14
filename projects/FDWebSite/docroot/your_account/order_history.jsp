@@ -199,7 +199,10 @@ for (FDOrderInfoI orderInfo : orderHistoryInfo) {
 <td class="order_history_table_status"><%= status %></td>
    <%}%>
 		<td>
-			<a href="<%= orderDetailsUrl %>"><%= orderInfo.isModifiable() ? "View/Modify" : "View" %><span class="offscreen">order <%= orderInfo.getErpSalesId() %> </span></a>
+			<a href="<%= orderDetailsUrl %>">View<span class="offscreen">order <%= orderInfo.getErpSalesId() %> </span></a>
+            <% if (orderInfo.isModifiable()) { %>
+            | <a href="/your_account/modify_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>&action=modify">Modify<span class="offscreen">order <%= orderInfo.getErpSalesId() %> </span></a>
+            <% } %>
             <% if (orderInfo.isShopFromThisOrder()) { %>
             | <a href="/quickshop/shop_from_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>">Shop Order<span class="offscreen"> number <%= orderInfo.getErpSalesId() %></span></a>
             <% } %>
