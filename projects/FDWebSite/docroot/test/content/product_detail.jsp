@@ -37,7 +37,7 @@ boolean forceProductLayout = true; /* force the product to just use the normal l
 
 %>
 <tmpl:insert template="<%= pageTemplate %>">
-	<tmpl:put name='cmeventsource' direct='true'>Lightweight PDP</tmpl:put>
+	<tmpl:put name='cmeventsource' direct='true'>UNKNOWN</tmpl:put>
 	
 	<tmpl:put name='extraCss' direct='true'>
     	<jwr:style src="/quickshop.css" media="all" />
@@ -73,6 +73,10 @@ boolean forceProductLayout = true; /* force the product to just use the normal l
 			};
 			window.FreshDirect.pdp.data = <fd:ToJSON object="${productPotato}" noHeaders="true"/>;
 			window.FreshDirect.pdp.extraData = <fd:ToJSON object="${productExtraPotato}" noHeaders="true"/>;
+			
+			$jq(document).on('afterShow.fb', function( e, instance, slide ) {
+				instance.current.$content.find('[data-component="ATCButton"]').attr('data-ignoreredirect', true);
+			});
 	    </script>
 			
 	</tmpl:put>

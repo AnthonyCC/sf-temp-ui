@@ -32,13 +32,7 @@ if (mobWeb) {
 	<%-- event source must be a valid enum --%>
 	<tmpl:put name='cmeventsource' direct='true'>UNKNOWN</tmpl:put>
 	
-	<tmpl:put name='extraJs' direct='true'>
-	  
-	  <script src="//cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>
-	</tmpl:put>
 	<tmpl:put name='extraCss' direct='true'>
-      <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" crossorigin="anonymous">
-	  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" />
 	</tmpl:put>
 	
 	<tmpl:put name='soypackage' direct='true'>
@@ -61,30 +55,6 @@ if (mobWeb) {
 				<soy:render template="common.potatoTransactionalGridItem" data="${productPotato}" />
 			</section>
 		</section>
-		
-		<%-- plain iframe --%>
-		<iframe src="/test/content/product_detail.jsp?catId=wgd_prod_fru&productId=ftrp_mgo_atlforg"></iframe>
-		
-		Lightbox IFrame:
-		<%-- lightbox iframe --%>
-		<div class="col-4">
-		<label>
-			<h5>Applegate Sheet Pan Breakfast with Sweet Potatoes and Bacon</h5>
-			<a data-fancybox data-type="iframe" data-src="/test/content/product_detail.jsp?catId=wgd_prod_fru&productId=ftrp_mgo_atlforg" href="javascript:;">
-				<img src="https://blog.freshdirect.com/wp-content/uploads/2018/01/applegate-sheetpan-breakfast-680x680.jpg" alt="Applegate Sheet Pan Breakfast with Sweet Potatoes and Bacon" />
-			</a>
-		</label>
-		</div>
-		<%-- lightbox ajax --%>
-		Lightbox Ajax:
-		<div class="col-4">
-		<label>
-			<h5>Applegate Sheet Pan Breakfast with Sweet Potatoes and Bacon</h5>
-			<a data-fancybox data-type="ajax" data-filter=".content .pdp" data-src="/pdp.jsp?catId=wgd_prod_fru&productId=ftrp_mgo_atlforg" href="javascript:;">
-				<img src="https://blog.freshdirect.com/wp-content/uploads/2018/01/applegate-sheetpan-breakfast-680x680.jpg" alt="Applegate Sheet Pan Breakfast with Sweet Potatoes and Bacon" />
-			</a>
-		</label>
-		</div>
 		
 		<script><%-- bind to show events to remove cart confirm --%>
 			$jq(document).on('afterShow.fb', function( e, instance, slide ) {
