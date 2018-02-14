@@ -24,6 +24,7 @@
 		<script>
           	$jq.ajax('/carousel/carousel.jsp?type=ymal&currentNodeKey=${potatoes[0].cartLine.cmskey}').then(function(page) {
           		$jq('.pdp-cc .cc-ymalCarousel').html(page);
+              FreshDirect.components.carousel.changePage($jq('.pdp-cc .cc-ymalCarousel [data-component="carousel"]').first(), null);
           	});
         </script>
 	</div>

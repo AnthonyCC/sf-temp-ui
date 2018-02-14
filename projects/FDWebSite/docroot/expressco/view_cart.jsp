@@ -83,6 +83,7 @@ if (mobWeb) {
 					<script>
 			          	$jq.ajax('/carousel/carousel.jsp?type=cart').then(function(page) {
 			          		$jq('#cartCarousels').html(page);
+                    FreshDirect.components.carousel.changePage($jq('#cartCarousels [data-component="carousel"]').first(), null);
 			          	});
 			        </script>
 				</div>
