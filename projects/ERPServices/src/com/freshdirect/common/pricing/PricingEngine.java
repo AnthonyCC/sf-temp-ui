@@ -325,7 +325,7 @@ public class PricingEngine {
 		// regular pricing
 		ZonePriceModel zpm=pricing.getZonePrice(pricingZone);
 		ZoneInfo pz=pricingZone;
-		while(zpm==null && pz.hasParentZone() ) {
+		while(pz!=null && zpm==null && pz.hasParentZone() ) {
 			pz=pz.getParentZone();
 			zpm=pricing.getZonePrice(pz);
 			
