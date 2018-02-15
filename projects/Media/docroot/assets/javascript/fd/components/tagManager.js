@@ -643,12 +643,12 @@ var dataLayer = window.dataLayer || [];
       channel = 'rec_criteo';
     } else if (productData && productData.variantId) {
       channel = 'rec_' + productData.variantId;
+    } else if ($(el).closest('.transactional-related-item').length || $(el).parent().hasClass('relatedItem')) {
+      channel = 'rec_flyout';
     } else if (productData && productData.moduleVirtualCategory) {
       var mvc = productData.moduleVirtualCategory.split(':');
 
       channel = 'rec_' + mvc[mvc.length - 1];
-    } else if ($(el).closest('.transactional-related-item').length) {
-      channel = 'rec_flyout';
     } else {
       channel = urlPageType.toLowerCase() || pageType.toLowerCase();
       channel = channel === 'category_list' ? 'browse' : channel;
