@@ -30,6 +30,13 @@ import com.freshdirect.storeapi.fdstore.FDContentTypes;
  * @author istvan
  *
  */
+
+/**
+ *@deprecated Please use the ScoreFactorController and ScoreFactorI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */ 
 public class ScoreFactorSessionBean extends SessionBeanSupport {
 
 	private static Logger LOGGER = LoggerFactory.getInstance(ScoreFactorSessionBean.class);

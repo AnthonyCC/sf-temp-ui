@@ -35,6 +35,13 @@ import com.freshdirect.sms.EnumSMSAlertStatus;
 import com.freshdirect.sms.FDSmsGateway;
 import com.freshdirect.sms.model.st.STSmsResponse;
 import com.freshdirect.sms.service.SmsServiceException;
+
+/**
+ *@deprecated Please use the SmsAlertController and SmsAlertsServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */ 
 public class SmsAlertsSesionBean extends SessionBeanSupport {
 
 	private static final long serialVersionUID = 644348982911326540L;

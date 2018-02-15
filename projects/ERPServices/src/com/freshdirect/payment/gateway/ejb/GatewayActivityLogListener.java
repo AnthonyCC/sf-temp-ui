@@ -12,6 +12,12 @@ import org.apache.log4j.Category;
 import com.freshdirect.framework.core.MessageDrivenBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
+/**
+ *@deprecated Please use the GatewayActivityLogListener and FDGatewayActivityLogDAOI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */ 
 public class GatewayActivityLogListener extends MessageDrivenBeanSupport{
 
 

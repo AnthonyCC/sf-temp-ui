@@ -11,6 +11,12 @@ import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.sms.model.st.STSmsResponse;
 
+/**
+ *@deprecated Please use the SmsAlertController and SmsAlertsServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */ 
 public interface SmsAlertsSB extends EJBObject{
 
 	public boolean smsOptIn(String customerId,String mobileNumber, String eStoreId) throws RemoteException;

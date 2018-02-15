@@ -7,7 +7,12 @@ import java.sql.Types;
 
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.framework.core.SequenceGenerator;
-
+/**
+ *@deprecated Please use the  FDGatewayActivityLogDAOI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */ 
 public class FDGatewayActivityLogDAO {
 
 

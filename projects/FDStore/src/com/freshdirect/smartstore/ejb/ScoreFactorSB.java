@@ -17,6 +17,13 @@ import com.freshdirect.fdstore.content.EnumWinePrice;
  * @author istvan
  *
  */
+
+/**
+ *@deprecated Please use the ScoreFactorController and ScoreFactorI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */ 
 public interface ScoreFactorSB extends EJBObject {
 	
 	/**
