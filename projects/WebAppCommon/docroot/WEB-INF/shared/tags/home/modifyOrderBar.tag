@@ -44,37 +44,37 @@ attribute name="modifyOrderAlert" required="true" rtexprvalue="true" type="java.
 								}
 							}
 							//sort pending orders based on delivery date (the closer date goes first)
-							Collections.sort(validPendingOrders, new DeliveryDateComparator());							
+							Collections.sort(validPendingOrders, new DeliveryDateComparator());
 							
-							if(validPendingOrders.size() > 0) {
-								FDCartModel modifyOrderBarTagCart = user.getShoppingCart();
-								isModifyingOrder = modifyOrderBarTagCart instanceof FDModifyCartModel;
-								if (isModifyingOrder) {
-									// show modiyfing order message for mobile
-									if (mobWebModifyOrderTag) {
-									FDModifyCartModel moCart = (FDModifyCartModel) modifyOrderBarTagCart;
-									if (moCart != null && 
-										moCart.getOriginalOrder() != null && 
-										moCart.getOriginalOrder().getDeliveryReservation() != null && 
-										moCart.getOriginalOrder().getDeliveryReservation().getTimeslot() != null) {
-									%>
-									<script>
-										$jq(function() {
-											var modifyingOrderTime = '<%= moCart.getOriginalOrder().getDeliveryReservation().getTimeslot().getDisplayString() %>';
-											var modifyingOrderDayOfWeek = '<%= new SimpleDateFormat("EEEEE").format(moCart.getOriginalOrder().getDeliveryReservation().getTimeslot().getDeliveryDate()) %>';
-										 	var showOrderMessage = function () {
-										 		fd.components.modifyOrderMessage.init(modifyingOrderTime, modifyingOrderDayOfWeek);
-										 	}
-										 	if (fd && fd.components && fd.components.modifyOrderMessage ) {
-										 		showOrderMessage();
-									 		} else if ($jq) {
-									 			$jq(document).one('modifyOrderMessage-loaded', showOrderMessage);
-									 		}
-								 		});
-									</script>
-								<% 		}
-									}
-								} else if (modifyOrderAlert) { %>
+							FDCartModel modifyOrderBarTagCart = user.getShoppingCart();
+							isModifyingOrder = modifyOrderBarTagCart instanceof FDModifyCartModel;
+							if (isModifyingOrder) {
+								// show modifying order message for mobile
+								if (mobWebModifyOrderTag) {
+								FDModifyCartModel moCart = (FDModifyCartModel) modifyOrderBarTagCart;
+								if (moCart != null && 
+									moCart.getOriginalOrder() != null && 
+									moCart.getOriginalOrder().getDeliveryReservation() != null && 
+									moCart.getOriginalOrder().getDeliveryReservation().getTimeslot() != null) {
+								%>
+								<script>
+									$jq(function() {
+										var modifyingOrderTime = '<%= moCart.getOriginalOrder().getDeliveryReservation().getTimeslot().getDisplayString() %>';
+										var modifyingOrderDayOfWeek = '<%= new SimpleDateFormat("EEEEE").format(moCart.getOriginalOrder().getDeliveryReservation().getTimeslot().getDeliveryDate()) %>';
+									 	var showOrderMessage = function () {
+									 		fd.components.modifyOrderMessage.init(modifyingOrderTime, modifyingOrderDayOfWeek);
+									 	}
+									 	if (fd && fd.components && fd.components.modifyOrderMessage ) {
+									 		showOrderMessage();
+								 		} else if ($jq) {
+								 			$jq(document).one('modifyOrderMessage-loaded', showOrderMessage);
+								 		}
+							 		});
+								</script>
+							<% 		}
+								}
+							} else if(validPendingOrders.size() > 0) {
+								if (modifyOrderAlert) { %>
 									<script>
 										$jq("#locationbar .locabar-section.locabar-modify-order-section").css("display","block");
 										$jq("#locabar_modify_order_trigger #locabar-modify-order-count").html("<%= validPendingOrders.size() %>");

@@ -21,7 +21,6 @@
 	FDOrderAdapter modifyingOrder = null;
 	boolean isModifyingOrder = user != null &&
 			user.getLevel() >= FDUserI.RECOGNIZED &&
-			user.hasPendingOrder() &&
 			(modifyingOrder = FDUserUtil.getModifyingOrder(user)) != null &&
 			modifyingOrder.getDeliveryReservation() != null &&
 			modifyingOrder.getDeliveryReservation().getTimeslot() != null;

@@ -100,7 +100,7 @@
 						<% 
 						// if user is recognized, has placed order recently and shopping cart is in modifying mode
 						if (user != null && user.getLevel() >= FDUserI.RECOGNIZED && 
-							user.hasPendingOrder() && (user.getShoppingCart() instanceof FDModifyCartModel)) {
+							(user.getShoppingCart() instanceof FDModifyCartModel)) {
 							
 							FDModifyCartModel moCart = (FDModifyCartModel) user.getShoppingCart();
 							if (moCart != null && 
