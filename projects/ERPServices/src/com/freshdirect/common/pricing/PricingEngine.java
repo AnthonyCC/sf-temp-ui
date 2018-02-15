@@ -176,9 +176,9 @@ public class PricingEngine {
 		if (group != null)
 		{
 				try{
-					MaterialPrice grpMaterialPrice = GroupScaleUtil.getGroupScalePrice(group, ctx.getZoneInfo());
+					MaterialPrice grpMaterialPrice = GroupScaleUtil.getGroupScalePrice(group, ctx!=null?ctx.getZoneInfo():null);
 					if(grpMaterialPrice != null) {
-						ZoneInfo grpScalePriceZoneInfo = GroupScaleUtil.getGroupPricingZoneId(group, ctx.getZoneInfo());
+						ZoneInfo grpScalePriceZoneInfo = GroupScaleUtil.getGroupPricingZoneId(group, ctx!=null?ctx.getZoneInfo():null);
 						//Group Price exists for this zone.
 						if(grpQuantity > 0 && grpQuantity >= grpMaterialPrice.getScaleLowerBound()){
 							//Required when multiple group scale prices are supported.
@@ -187,7 +187,7 @@ public class PricingEngine {
 //							return calculateGrpScalePrice(pricing, configuration, grpQuantity, grpMaterialPrice,ctx.getZoneInfo());		
 							return calculateGrpScalePrice(pricing, configuration, grpQuantity, grpMaterialPrice,grpScalePriceZoneInfo);
 						} else {
-							return calculateSimplePrice(pricing, configuration, ctx.getZoneInfo());
+							return calculateSimplePrice(pricing, configuration, ctx!=null?ctx.getZoneInfo():null);
 						}
 					}
 				}catch(FDResourceException fe){
@@ -195,20 +195,20 @@ public class PricingEngine {
 				}
 		}
 		//Regular Pricing
-		ZonePriceModel zonePriceModel=pricing.getZonePrice(ctx.getZoneInfo());
+		ZonePriceModel zonePriceModel=pricing.getZonePrice(ctx!=null?ctx.getZoneInfo():null);
 		if(zonePriceModel==null) {
-			ZoneInfo zone=ctx.getZoneInfo();
-			while(zone.hasParentZone() && zonePriceModel==null ) {
+			ZoneInfo zone=ctx!=null?ctx.getZoneInfo():null;
+			while(zone!=null && zone.hasParentZone() && zonePriceModel==null ) {
 				zone=zone.getParentZone();
 				zonePriceModel=pricing.getZonePrice(zone);
 			}
 		}
 		if(zonePriceModel==null) 
-			throw new PricingException("No price defined for "+ctx.getZoneInfo());
+			throw new PricingException("No price defined for "+(ctx!=null?ctx.getZoneInfo():null));
 		if (zonePriceModel.hasScales()) {
-			return calculateScalePrice(pricing, configuration, ctx.getZoneInfo(),scaleQuantity);		
+			return calculateScalePrice(pricing, configuration, ctx!=null?ctx.getZoneInfo():null,scaleQuantity);		
 		} else {
-			return calculateSimplePrice(pricing, configuration, ctx.getZoneInfo());
+			return calculateSimplePrice(pricing, configuration, ctx!=null?ctx.getZoneInfo():null);
 		}
 	}
 

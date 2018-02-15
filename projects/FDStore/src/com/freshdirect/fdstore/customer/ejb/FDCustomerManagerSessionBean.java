@@ -8006,7 +8006,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		boolean status = true;
 		try {
 			conn = getConnection();
-			status = FDUserDAO.storeFDTCAgreeDate(conn, identity.getFDCustomerPK(), ackType);
+			status = FDUserDAO.storeFDTCAgreeDate(conn, identity!=null?identity.getFDCustomerPK():null, ackType);
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
@@ -8020,7 +8020,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		boolean status = true;
 		try {
 			conn = getConnection();
-			status=FDUserDAO.storeRAFClickIdPromoCode(conn, identity.getFDCustomerPK(), rafclickid, rafpromocode, eStoreId);
+			status=FDUserDAO.storeRAFClickIdPromoCode(conn, identity!=null?identity.getFDCustomerPK():null, rafclickid, rafpromocode, eStoreId);
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
