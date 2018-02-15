@@ -190,4 +190,14 @@ public class Message implements DateFormat, Cloneable {
     	return true;
     }
     
+    private boolean isreferralEligible;
+
+	public boolean isIsreferralEligible() {
+		return isreferralEligible;
+	}
+
+	public void setIsreferralEligible(boolean isreferralEligible) {
+		this.isreferralEligible = isreferralEligible;
+	}
+    
 }

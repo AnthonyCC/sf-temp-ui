@@ -629,7 +629,8 @@ public class FDUser extends ModelSupport implements FDUserI {
         // load referral promotion only to refer a friend target customers
         if (this.getIdentity() != null && FDStoreProperties.isExtoleRafEnabled() ? this.getRafPromoCode() != null : this.getReferralCustomerId() != null)
             try {
-                referralPromoList = FDPromotionNewManager.getReferralPromotions(this.getIdentity().getErpCustomerPK());
+            	EnumEStoreId storeId = ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId();
+                referralPromoList = FDPromotionNewManager.getReferralPromotions(this.getIdentity().getErpCustomerPK(),storeId);
             } catch (FDResourceException e) {
                 LOGGER.error("Error getting referral promotions.", e);
             }
@@ -3019,7 +3020,8 @@ public class FDUser extends ModelSupport implements FDUserI {
 
     public void setReferralPromoAvailable() {
         try {
-            referralFlag = getOrderHistory().hasSettledOrders();//FDReferralManager.getReferralDisplayFlag(this.getIdentity().getErpCustomerPK());
+        	EnumEStoreId estoreId = ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId();
+            referralFlag = getOrderHistory().hasSettledOrders(estoreId);//FDReferralManager.getReferralDisplayFlag(this.getIdentity().getErpCustomerPK());
             LOGGER.debug("Getting ref display for :" + this.getIdentity().getErpCustomerPK() + "-and flag is:" + referralFlag);
         } catch (FDResourceException e) {
             LOGGER.error("Exception getting totalCredit", e);

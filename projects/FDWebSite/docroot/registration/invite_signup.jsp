@@ -12,6 +12,7 @@
 <%@ page import="com.freshdirect.fdstore.referral.FDReferralManager"%>
 <%@ page import="com.freshdirect.fdstore.referral.ReferralPromotionModel"%>
 <%@ page import="com.freshdirect.fdstore.FDNotFoundException"%>
+<%@ page import="com.freshdirect.storeapi.content.ContentFactory" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
 <%@ page buffer="16kb" %>

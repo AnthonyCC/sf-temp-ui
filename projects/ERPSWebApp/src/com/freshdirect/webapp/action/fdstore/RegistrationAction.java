@@ -750,8 +750,8 @@ public class RegistrationAction extends WebActionSupport {
 				// setting dummy valuess for testing
 			//	fdCustomer.setRafClickId("dummyClickID");
 			//	fdCustomer.setRafPromoCode("dummyPromoCode");
-				fdCustomer.setRafClickId((String) session.getAttribute("CLICKID"));
-				fdCustomer.setRafPromoCode((String) session.getAttribute("COUPONCODE"));
+				fdCustomer.getCustomerEStoreModel().setRafClickId((String) session.getAttribute("CLICKID"));
+				fdCustomer.getCustomerEStoreModel().setRafPromoCode((String) session.getAttribute("COUPONCODE"));
 	
 				FDSurveyResponse survey = aInfo.getMarketingSurvey(new SurveyKey(EnumSurveyType.REGISTRATION_SURVEY, serviceType), request);
 				

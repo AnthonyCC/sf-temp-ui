@@ -4981,6 +4981,26 @@ public class FDCustomerManager {
 	return status;
 	}
 	
+	public static boolean updateRAFClickIDPromoCode(FDIdentity identity, String rafclickid,
+			String rafpromocode, EnumEStoreId eStoreId) throws FDResourceException {
+
+		lookupManagerHome();
+		boolean status=true;
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			status =sb.setRAFClickIDPromoCode(identity, rafclickid, rafpromocode, eStoreId);
+
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	
+	return status;
+	}
+	
 	public static String getParentOrderAddressId(String parentOrderId) throws FDResourceException {
 
 		lookupManagerHome();

@@ -45,6 +45,24 @@ public class FDCustomerEStoreModel extends ModelSupport{
 	private Boolean emailOptIn = false;
 	private Boolean fdxEmailOptIn = false;
 	private Boolean tcAcknowledge = false;
+	private String rafClickId;
+    private String rafPromoCode;
+	 
+    public String getRafClickId() {
+		return rafClickId;
+	}
+ 
+	public void setRafClickId(String rafClickId) {
+		this.rafClickId = rafClickId;
+	}
+    
+	public String getRafPromoCode() {
+		return rafPromoCode;
+	}
+ 
+	public void setRafPromoCode(String rafPromoCode) {
+		this.rafPromoCode = rafPromoCode;
+	}
 
 	
 	

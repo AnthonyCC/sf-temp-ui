@@ -126,6 +126,11 @@ public class ErpOrderHistory implements OrderHistoryI {
 	}
 	
 	@Override
+    public int getSettledOrderCount(EnumEStoreId estoreId) {
+		return ErpOrderHistoryUtil.getSettledOrderCountByStore(erpRegSaleInfos, estoreId);
+	}
+	
+	@Override
     public int getTotalRegularOrderCount(){
 		return ErpOrderHistoryUtil.getTotalRegularOrderCount(erpRegSaleInfos);
 	}
@@ -180,6 +185,11 @@ public class ErpOrderHistory implements OrderHistoryI {
 	@Override
 	public boolean hasSettledOrders() {
 		return ErpOrderHistoryUtil.hasSettledOrders(erpRegSaleInfos);
+	}
+	
+	@Override
+	public boolean hasSettledOrders(EnumEStoreId estoreId) {
+		return ErpOrderHistoryUtil.hasSettledOrders(erpRegSaleInfos, estoreId);
 	}
 
 }

@@ -8015,8 +8015,22 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		return status;
 	}
 
-	public String getParentOrderAddressId(String parentOrderId) throws FDResourceException {
-		LOGGER.info("getParentOrderAddressId... " + parentOrderId);
+	public boolean setRAFClickIDPromoCode(FDIdentity identity, String rafclickid, String rafpromocode, EnumEStoreId eStoreId) throws FDResourceException{
+		Connection conn = null;
+		boolean status = true;
+		try {
+			conn = getConnection();
+			status=FDUserDAO.storeRAFClickIdPromoCode(conn, identity.getFDCustomerPK(), rafclickid, rafpromocode, eStoreId);
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
+		return status;
+	}
+	
+	public String getParentOrderAddressId(String parentOrderId)throws FDResourceException{
+		LOGGER.info("getParentOrderAddressId... "+parentOrderId);
 		Connection conn = null;
 		String parentOrderAddressId = null;
 		try {

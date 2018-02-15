@@ -67,7 +67,7 @@ public class FDCustomerEStorePersistentBean extends DependentPersistentBeanSuppo
 	@Override
 	public PrimaryKey create(Connection conn) throws SQLException {
 		this.setPK(this.getParentPK());
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.FDCUSTOMER_ESTORE (FDCUSTOMER_ID, E_STORE, DEFAULT_SHIPTO, DEFAULT_PAYMENT, DEFAULT_DEPOT_LOC,EMAIL_OPTIN,TC_AGREE_DATE,TC_AGREE) values (?,?,?,?,?,?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.FDCUSTOMER_ESTORE (FDCUSTOMER_ID, E_STORE, DEFAULT_SHIPTO, DEFAULT_PAYMENT, DEFAULT_DEPOT_LOC,EMAIL_OPTIN,TC_AGREE_DATE,TC_AGREE,RAF_CLICK_ID,RAF_PROMO_CODE) values (?,?,?,?,?,?,?,?,?,?)");
 		ps.setString(1, this.getParentPK().getId());
 		ps.setString(2, model.geteStoreId().getContentId());
 		ps.setString(3, model.getDefaultShipToAddressPK());
@@ -76,6 +76,8 @@ public class FDCustomerEStorePersistentBean extends DependentPersistentBeanSuppo
 		ps.setString(6, model.getEmailOptIn()?"X":"");
 		ps.setTimestamp(7, new Timestamp(new Date().getTime()));
 		ps.setString(8, "X");
+		ps.setString(9, model.getRafClickId());
+		ps.setString(10, model.getRafPromoCode());
 
 		try {
 			if (ps.executeUpdate() != 1) {
@@ -99,7 +101,7 @@ public class FDCustomerEStorePersistentBean extends DependentPersistentBeanSuppo
 		ResultSet rs = null;
 		try {
 			ps = conn.prepareStatement(
-					"SELECT DEFAULT_SHIPTO, DEFAULT_PAYMENT, DEFAULT_DEPOT_LOC,TC_AGREE,EMAIL_OPTIN FROM CUST.FDCUSTOMER_ESTORE WHERE FDCUSTOMER_ID=? AND E_STORE=?");
+					"SELECT DEFAULT_SHIPTO, DEFAULT_PAYMENT, DEFAULT_DEPOT_LOC,TC_AGREE,EMAIL_OPTIN,RAF_CLICK_ID,RAF_PROMO_CODE FROM CUST.FDCUSTOMER_ESTORE WHERE FDCUSTOMER_ID=? AND E_STORE=?");
 			ps.setString(1, this.getParentPK().getId());
 			ps.setString(2, eStoreId.getContentId());
 			rs = ps.executeQuery();
@@ -111,6 +113,8 @@ public class FDCustomerEStorePersistentBean extends DependentPersistentBeanSuppo
 				model.setDefaultDepotLocationPK(rs.getString("DEFAULT_DEPOT_LOC"));
 				model.setTcAcknowledge("X".equalsIgnoreCase(rs.getString("TC_AGREE")) ? true : false);
 				model.setEmailOptIn("X".equalsIgnoreCase(rs.getString("EMAIL_OPTIN")) ? true : false);
+				model.setRafClickId(rs.getString("RAF_CLICK_ID"));
+				model.setRafPromoCode(rs.getString("RAF_PROMO_CODE"));
 				if (EnumEStoreId.FDX.equals(eStoreId)) {
 					model.setFdxEmailOptIn("X".equalsIgnoreCase(rs.getString("EMAIL_OPTIN")) ? true : false);
 				} else {

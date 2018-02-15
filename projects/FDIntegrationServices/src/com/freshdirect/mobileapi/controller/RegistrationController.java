@@ -228,6 +228,8 @@ public class RegistrationController extends BaseController implements SystemMess
 		registerMessage.setSecurityQuestion(requestMessage.getSecurityQuestion());
 		registerMessage.setServiceType(requestMessage.getServiceType());
 		registerMessage.setWorkPhone(requestMessage.getWorkPhone());
+		registerMessage.setRafclickid(requestMessage.getRafclickid());
+		registerMessage.setRafpromocode(requestMessage.getRafpromocode());
 		
 		ResultBundle resultBundle = tagWrapper.register(registerMessage);	
 		

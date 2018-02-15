@@ -6,7 +6,8 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName" %>
 <%@ page import="com.freshdirect.common.address.AddressModel" %>
 <%@ page import="com.freshdirect.fdstore.referral.FDReferralManager"%>
-
+<%@ page import="com.freshdirect.storeapi.content.ContentFactory" %>
+<%@ page import="com.freshdirect.fdstore.EnumEStoreId" %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
 
 <%
@@ -35,7 +36,7 @@
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>
 
 <%CmRegistrationTag.setRegistrationLocation(session,"referee"); %>
-
+<fd:CheckLoginStatus guestAllowed='true' />
 	<fd:RegistrationController actionName='registerEx' successPage='<%= successPage %>' fraudPage='<%= failurePage %>' result='result'>
 	<%
 		String email = (String) session.getAttribute("REFERRAL_EMAIL");
@@ -44,8 +45,8 @@
 		String lastname = NVL.apply(request.getParameter(EnumUserInfoName.DLV_LAST_NAME.getCode()), "");
 		String password = NVL.apply(request.getParameter(EnumUserInfoName.PASSWORD.getCode()), "");
 	/* 	String passwordhint = NVL.apply(request.getParameter(EnumUserInfoName.PASSWORD_HINT.getCode()), ""); */		
-
-		if(FDReferralManager.isReferreSignUpComplete(email)) {
+		EnumEStoreId storeid = ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId();
+		if(FDReferralManager.isReferreSignUpComplete(email, storeid)) {
 			//phew finally complete
 			System.out.println("Did not come here?====================================================================================");
 

@@ -38,8 +38,8 @@ public class FDCustomerModel extends ModelSupport implements FDCustomerI {
     private java.util.Date passwordRequestExpiration;
     private FDCustomerEStoreModel customerEStoreModel;
     private FDCustomerEStoreModel customerSmsPreferenceModel;
-    private String rafClickId;
-    private String rafPromoCode;
+    //private String rafClickId;
+    //private String rafPromoCode;
     private EnumPaymentMethodDefaultType defaultPaymentType;
     
 	/**
@@ -205,13 +205,13 @@ public class FDCustomerModel extends ModelSupport implements FDCustomerI {
 		this.customerEStoreModel = customerEStoreModel;
 	}
 	
-	public String getRafClickId() {
-		return rafClickId;
-	}
-
-	public void setRafClickId(String rafClickId) {
-		this.rafClickId = rafClickId;
-	}
+//	public String getRafClickId() {
+//		return rafClickId;
+//	}
+//
+//	public void setRafClickId(String rafClickId) {
+//		this.rafClickId = rafClickId;
+//	}
 
 	
 	public FDCustomerEStoreModel getCustomerSmsPreferenceModel() {
@@ -230,13 +230,13 @@ public class FDCustomerModel extends ModelSupport implements FDCustomerI {
 		
 	}
 
-	public String getRafPromoCode() {
-		return rafPromoCode;
-	}
-
-	public void setRafPromoCode(String rafPromoCode) {
-		this.rafPromoCode = rafPromoCode;
-	}
+//	public String getRafPromoCode() {
+//		return rafPromoCode;
+//	}
+//
+//	public void setRafPromoCode(String rafPromoCode) {
+//		this.rafPromoCode = rafPromoCode;
+//	}
 
 	public EnumPaymentMethodDefaultType getDefaultPaymentType() {
 		return defaultPaymentType;

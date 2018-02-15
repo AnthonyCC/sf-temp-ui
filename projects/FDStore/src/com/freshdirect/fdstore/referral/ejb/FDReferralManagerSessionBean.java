@@ -26,6 +26,7 @@ import com.freshdirect.customer.ErpCustomerCreditModel;
 import com.freshdirect.customer.ejb.ErpCustomerEB;
 import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -1488,11 +1489,11 @@ public class FDReferralManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 	
-	public boolean isReferreSignUpComplete(String email) throws FDResourceException, RemoteException {
+	public boolean isReferreSignUpComplete(String email, EnumEStoreId storeid) throws FDResourceException, RemoteException {
 		Connection conn = null;
 		try {
 			conn = this.getConnection();
-			return FDReferAFriendDAO.isReferreSignUpComplete(conn, email);
+			return FDReferAFriendDAO.isReferreSignUpComplete(conn, email, storeid);
 		} catch (SQLException e) {
 			this.getSessionContext().setRollbackOnly();
 			throw new FDResourceException(e);

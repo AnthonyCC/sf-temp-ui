@@ -386,6 +386,8 @@ public class LoginController extends BaseController  implements SystemMessageLis
 		String channel = requestMessage.getChannel();
 		String destination = requestMessage.getDestination();
 		String qualifier = requestMessage.getQualifier();
+		String rafclickid = requestMessage.getRafclickid();
+		String rafpromocode = requestMessage.getRafpromocode();
 		Message responseMessage = null;
 		SessionUser user = null;
 
@@ -489,7 +491,10 @@ public class LoginController extends BaseController  implements SystemMessageLis
 		            }
 				}
 			}
-
+            if(rafclickid!=null && rafpromocode!=null && !user.getFDSessionUser().getOrderHistory().hasSettledOrders(eStore)){
+            	FDCustomerManager.updateRAFClickIDPromoCode(user.getFDSessionUser().getIdentity(), rafclickid, rafpromocode, eStore);
+            }
+            responseMessage.setIsreferralEligible(user.getFDSessionUser().isReferralProgramAvailable());
 		} catch (FDAuthenticationException ex) {
 			if ("Account disabled".equals(ex.getMessage())) {
 				responseMessage = getErrorMessage(ERR_AUTHENTICATION,

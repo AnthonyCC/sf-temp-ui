@@ -21,6 +21,7 @@ import javax.ejb.EJBException;
 import javax.ejb.FinderException;
 import javax.ejb.ObjectNotFoundException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.customer.EnumServiceType;
@@ -67,8 +68,8 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 	private int pymtVerifyAttempts;
 	private FDCustomerEStorePersistentBean customerEStore;
 	private FDCustomerSmsPreferencePersistentBean customerSmsPreferences;
-	private String rafClickId;
-	private String rafPromoCode;
+//	private String rafClickId;
+//	private String rafPromoCode;
 	private EnumPaymentMethodDefaultType defaultPaymentMethodType;
 	/**
 	 * Copy into model.
@@ -90,8 +91,8 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		model.setDepotCode(this.depotCode);
 		model.setPasswordRequestExpiration(this.passwordRequestExpiration);
 		model.setCustomerEStoreModel((FDCustomerEStoreModel)this.customerEStore.getModel());
-		model.setRafClickId(this.rafClickId);
-		model.setRafPromoCode(this.rafPromoCode);
+//		model.setRafClickId(this.rafClickId);
+//		model.setRafPromoCode(this.rafPromoCode);
 		model.setCustomerSmsPreferenceModel((FDCustomerEStoreModel)this.customerSmsPreferences.getModel());
 		model.setDefaultPaymentType(this.defaultPaymentMethodType);
 		return model;
@@ -113,8 +114,8 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		this.passwordHint = m.getPasswordHint();
 		this.depotCode = m.getDepotCode();
 		this.customerEStore.setFromModel(m.getCustomerEStoreModel());
-		this.rafClickId = m.getRafClickId();
-		this.rafPromoCode = m.getRafPromoCode();
+//		this.rafClickId = m.getRafClickId();
+//		this.rafPromoCode = m.getRafPromoCode();
 		this.customerSmsPreferences.setFromModel(m.getCustomerSmsPreferenceModel());
 		this.defaultPaymentMethodType = m.getDefaultPaymentType();
 		this.setModified();
@@ -327,8 +328,8 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 	//	ps.setString(7, this.passwordHint); removed this column
 		ps.setString(7, this.defaultDepotLocationPK);
 		ps.setString(8, this.depotCode);
-		ps.setString(9, this.rafClickId);
-		ps.setString(10, this.rafPromoCode);
+		ps.setString(9, StringUtils.EMPTY);
+		ps.setString(10, StringUtils.EMPTY);
 		ps.setString(11, (null != this.defaultPaymentMethodType &&  !this.defaultPaymentMethodType.getName().equals(EnumPaymentMethodDefaultType.UNDEFINED.getName()))?
 				this.defaultPaymentMethodType.getName(): null);
 
@@ -720,30 +721,30 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 	/**
 	 * @return the rafClickId
 	 */
-	public String getRafClickId() {
-		return rafClickId;
-	}
-
-	/**
-	 * @param rafClickId the rafClickId to set
-	 */
-	public void setRafClickId(String rafClickId) {
-		this.rafClickId = rafClickId;
-	}
-
-	/**
-	 * @return the rafPromoCode
-	 */
-	public String getRafPromoCode() {
-		return rafPromoCode;
-	}
-
-	/**
-	 * @param rafPromoCode the rafPromoCode to set
-	 */
-	public void setRafPromoCode(String rafPromoCode) {
-		this.rafPromoCode = rafPromoCode;
-	}
+//	public String getRafClickId() {
+//		return rafClickId;
+//	}
+//
+//	/**
+//	 * @param rafClickId the rafClickId to set
+//	 */
+//	public void setRafClickId(String rafClickId) {
+//		this.rafClickId = rafClickId;
+//	}
+//
+//	/**
+//	 * @return the rafPromoCode
+//	 */
+//	public String getRafPromoCode() {
+//		return rafPromoCode;
+//	}
+//
+//	/**
+//	 * @param rafPromoCode the rafPromoCode to set
+//	 */
+//	public void setRafPromoCode(String rafPromoCode) {
+//		this.rafPromoCode = rafPromoCode;
+//	}
 
 	public EnumPaymentMethodDefaultType getDefaultPaymentMethodType() {
 		return defaultPaymentMethodType;

@@ -70,4 +70,24 @@ public class Login extends Message {
 	public void setQualifier(String qualifier) {
 		this.qualifier = qualifier;
 	}
+	
+	public String rafclickid;
+	
+	public String getRafclickid() {
+		return rafclickid;
+	}
+
+	public void setRafclickid(String rafclickid) {
+		this.rafclickid = rafclickid;
+	}
+
+	public String rafpromocode;
+	
+	public String getRafpromocode() {
+		return rafpromocode;
+	}
+
+	public void setRafpromocode(String rafpromocode) {
+		this.rafpromocode = rafpromocode;
+	}
 }
