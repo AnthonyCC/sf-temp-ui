@@ -79,6 +79,7 @@ if (user.isEligibleForClientCodes()) {
 <!-- error message handling here -->
 <fd:OrderHistoryInfo id='orderHistoryInfo'>
 <%	if (orderHistoryInfo.size() > 0) {
+		String modifyingOrderId = FDUserUtil.getModifyingOrderId(user);
 		int orderNumber = 0;
 		int rowCounter = 0;
 
@@ -188,7 +189,10 @@ for (FDOrderInfoI orderInfo : orderHistoryInfo) {
 		<% if(!mobWeb){ %><td></td><% } %>
 <%
 	String status = "";
-	if (orderInfo.getSaleType().equals(EnumSaleType.GIFTCARD) || orderInfo.getSaleType().equals(EnumSaleType.DONATION)) {
+	boolean orderIsModifying = modifyingOrderId !=null && modifyingOrderId.equals(orderInfo.getErpSalesId());
+	if (orderIsModifying) {
+		status = "Modifying...";
+	} else if (orderInfo.getSaleType().equals(EnumSaleType.GIFTCARD) || orderInfo.getSaleType().equals(EnumSaleType.DONATION)) {
 		status = orderInfo.isPending() ? "In Process" : "Completed";
 	} else {
 		status = orderInfo.getOrderStatus().getDisplayName();
@@ -200,9 +204,11 @@ for (FDOrderInfoI orderInfo : orderHistoryInfo) {
    <%}%>
 		<td>
 			<a href="<%= orderDetailsUrl %>">View<span class="offscreen">order <%= orderInfo.getErpSalesId() %> </span></a>
-            <% if (orderInfo.isModifiable()) { %>
+            <% if (orderIsModifying) { %>
+            | <a href="/your_account/cancel_modify_order.jsp">Cancel Changes</a>
+           	<% } else if (orderInfo.isModifiable()){%>
             | <a href="/your_account/modify_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>&action=modify">Modify<span class="offscreen">order <%= orderInfo.getErpSalesId() %> </span></a>
-            <% } %>
+            <% }%>
             <% if (orderInfo.isShopFromThisOrder()) { %>
             | <a href="/quickshop/shop_from_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>">Shop Order<span class="offscreen"> number <%= orderInfo.getErpSalesId() %></span></a>
             <% } %>
