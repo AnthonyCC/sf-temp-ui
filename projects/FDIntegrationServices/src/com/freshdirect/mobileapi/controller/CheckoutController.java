@@ -566,8 +566,8 @@ public class CheckoutController extends BaseController {
     	Checkout checkout = new Checkout(user);
     	ResultBundle resultBundle = null;
     	Message responseMessage = null;
-        
-    	if(reqestMessage.getId()!=null&&reqestMessage.getType()!=null){
+    	
+    	if(reqestMessage.getType() != null) {
 	    	 if (isExtraResponseRequested(request)) {
 	    	     resultBundle = checkout.setCheckoutDeliveryAddressEx(reqestMessage.getId(), DeliveryAddressType.valueOf(reqestMessage.getType()));
 	    	 } else {
@@ -576,7 +576,8 @@ public class CheckoutController extends BaseController {
 	        ActionResult result = resultBundle.getActionResult();
 	        propogateSetSessionValues(request.getSession(), resultBundle);
 	        
-	       if (result.isSuccess()) {
+	        
+	        if (result.isSuccess()) {
 	            DeliveryAddress deliveryAddress = DeliveryAddress.wrap(user.getShoppingCart().getDeliveryAddress());
 	            TimeSlotCalculationResult timeSlotResult = deliveryAddress.getDeliveryTimeslot(user, false, isCheckoutAuthenticated(request));
 	            
@@ -611,10 +612,10 @@ public class CheckoutController extends BaseController {
 	        } else {
 	            responseMessage = getErrorMessage(result, request);
 	        }
-	    }else{
-	    	responseMessage = new Message();
-	    	responseMessage.setFailureMessage("Address Id and Type are required");
-	    }
+    	} else {
+    		responseMessage = new Message();
+   	    	responseMessage.setFailureMessage("Address Type is required");
+    	}
         setResponseMessage(model, responseMessage, user);
         
         return model;
@@ -634,9 +635,9 @@ public class CheckoutController extends BaseController {
     	    	
     	Checkout checkout = new Checkout(user);
     	Message responseMessage = null;
-    	if(reqestMessage.getId()!=null&&reqestMessage.getType()!=null){
-	        ResultBundle resultBundle = checkout.setCheckoutDeliveryAddressEx(reqestMessage.getId(), DeliveryAddressType.valueOf(reqestMessage
-	                .getType()));
+    	
+    	if(reqestMessage.getType() != null) {
+	        ResultBundle resultBundle = checkout.setCheckoutDeliveryAddressEx(reqestMessage.getId(), DeliveryAddressType.valueOf(reqestMessage.getType()));
 	        ActionResult result = resultBundle.getActionResult();
 	        
 	        propogateSetSessionValues(request.getSession(), resultBundle);
@@ -677,10 +678,10 @@ public class CheckoutController extends BaseController {
 	        	responseMessage = getErrorMessage(result, request);
 	        	
 	        }
-    	}else{
-	    	responseMessage = new Message();
-	    	responseMessage.setFailureMessage("Address Id and Type are required");
-	    }
+    	} else {
+    		responseMessage = new Message();
+   	    	responseMessage.setFailureMessage("Address Type is required");
+    	}
         setResponseMessage(model, responseMessage, user);
         
         return model;
