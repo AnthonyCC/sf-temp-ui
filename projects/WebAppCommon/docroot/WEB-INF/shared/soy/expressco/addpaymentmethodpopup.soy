@@ -138,7 +138,7 @@
   	</div>
   	<div class="input-wrapper">
 		<label for="CC_phone">Best # for billing inquiries
-	  		<input name="phone" id="CC_phone" placeholder="(xxx) xxx xxxx" fdform-formatter="phone" value="{if $data.phone}{$data.phone}{/if}" required />
+	  		<input name="phone" id="CC_phone" type="tel" placeholder="(xxx) xxx xxxx" fdform-formatter="phone" value="{if $data.phone}{$data.phone}{/if}" required />
 	  	</label>
 	  	<span fdform-error-for="phone"></span>
 	</div>
@@ -260,7 +260,7 @@
     </div>
     <div class="input-wrapper">
     	<label for="EC_phone"> Best # for billing inquiries
-        	<input name="phone" id="EC_phone" placeholder="(xxx) xxx xxxx" fdform-formatter="phone" value="{if $data.phone}{$data.phone}{/if}" required />
+        	<input name="phone" id="EC_phone" type="tel" placeholder="(xxx) xxx xxxx" fdform-formatter="phone" value="{if $data.phone}{$data.phone}{/if}" required />
     	</label>
     	<span fdform-error-for="phone"></span>
     </div>
@@ -356,7 +356,7 @@
     <span fdform-error-for="bil_zipcode" class="small-fieldset"></span>
   </div>
   <label for="ET_phone">Best # for billing inquiries
-    <input name="phone" placeholder="(xxx) xxx xxxx" fdform-formatter="phone" value="{if $data.phone}{$data.phone}{/if}" required />
+    <input name="phone" type="tel" placeholder="(xxx) xxx xxxx" fdform-formatter="phone" value="{if $data.phone}{$data.phone}{/if}" required />
   </label>
   <span fdform-error-for="phone"></span>
   <div class="buttons">
