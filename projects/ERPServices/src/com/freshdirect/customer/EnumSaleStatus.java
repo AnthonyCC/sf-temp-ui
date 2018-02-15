@@ -138,6 +138,10 @@ public class EnumSaleStatus implements java.io.Serializable {
 		return this.equals(NEW);
 	}
 
+	public boolean isSapSubmitPending() {
+		return this.equals(NEW) || this.equals(MODIFIED) ;
+	}
+	
 	@Override
 	public String toString() {
 		return statusCode;

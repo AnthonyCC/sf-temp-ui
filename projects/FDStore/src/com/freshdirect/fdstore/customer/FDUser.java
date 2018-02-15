@@ -2926,7 +2926,7 @@ public class FDUser extends ModelSupport implements FDUserI {
                 if (currentDate.before(orderInfo.getDeliveryCutoffTime())) {
                     validPendingOrders.add(orderInfo);
                 }
-            } else if (orderInfo.isNewOrder() && EnumSaleType.REGULAR.equals(orderInfo.getSaleType())) {
+            } else if (orderInfo.isSapSubmitPending() && EnumSaleType.REGULAR.equals(orderInfo.getSaleType())) {
                 this.setAnyNewOrder(true);
             }
         }
