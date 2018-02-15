@@ -748,6 +748,7 @@ var dataLayer = window.dataLayer || [];
   var gtmData = fd.gtm && fd.gtm.data && fd.gtm.data.googleAnalyticsData;
   var browseData = fd.browse && fd.browse.data;
   var productData = fd.pdp && fd.pdp.data;
+  var productExtraData = fd.pdp && fd.pdp.extraData;
 
   if (gtmData) {
     fd.gtm.updateDataLayer(gtmData);
@@ -788,6 +789,13 @@ var dataLayer = window.dataLayer || [];
     if (fd.browse && fd.browse.data && fd.browse.data.adProducts && fd.browse.data.adProducts.products && fd.browse.data.adProducts.products.length) {
       fd.gtm.reportImpressions(fd.browse.data.adProducts.products.map(function (p, i) {
         return fd.gtm.productTransform(p, i+1, {product: p});
+      }));
+    }
+
+    // report group scale products
+    if (productExtraData && productExtraData.groupScaleData && productExtraData.groupScaleData.groupProducts && productExtraData.groupScaleData.groupProducts.length) {
+      fd.gtm.reportImpressions(productExtraData.groupScaleData.groupProducts.map(function (p, i) {
+        return fd.gtm.productTransform(p, i+1, {product: p, channel: 'rec_groupscale'});
       }));
     }
   }
