@@ -848,8 +848,8 @@ public class UserUtil {
 				FDActionInfo info = AccountActivityUtil.getActionInfo(request.getSession());
 				boolean isDefaultPaymentMethodRegistered = false;
 				try {
-					isDefaultPaymentMethodRegistered = !(null == user.getFDCustomer().getDefaultPaymentType() ||
-							user.getFDCustomer().getDefaultPaymentType().getName().equals(EnumPaymentMethodDefaultType.UNDEFINED.getName()));
+					isDefaultPaymentMethodRegistered = !(user==null || user.getFDCustomer()==null || user.getFDCustomer().getDefaultPaymentType()==null ||
+							user.getFDCustomer().getDefaultPaymentType().getName()==null || user.getFDCustomer().getDefaultPaymentType().getName().equals(EnumPaymentMethodDefaultType.UNDEFINED.getName()));
 				} catch (FDResourceException e) {
 					LOGGER.error(e);
 				}
