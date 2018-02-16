@@ -785,7 +785,9 @@ public abstract class BaseController extends AbstractController implements Messa
                 fdSessionUser = LocatorUtil.useIpLocator(request.getSession(), request, response);
             }
             EnumTransactionSource src = getTransactionSourceEnum(request, null);
-            fdSessionUser.getUser().setApplication(src);
+            if(fdSessionUser.getUser()!=null){
+            	fdSessionUser.getUser().setApplication(src);
+            }
             fdSessionUser.isLoggedIn(true);
             request.getSession().setAttribute(SessionName.APPLICATION, src.getCode());
             request.getSession().setAttribute(SessionName.USER, fdSessionUser);
