@@ -1784,8 +1784,8 @@ public class Product {
     public double getEstimatedQuantity(Sku sku, SalesUnit salesUnit, double quantity) throws PricingException {
         double estimatedQuantity = 0.0;
 
-        Pricing pricing = getFDProduct(sku.getSkuCode()).getPricing();
-        SalesUnitRatio sur = pricing.findSalesUnitRatio(salesUnit.getName());
+        Pricing pricing = getFDProduct(sku!=null?sku.getSkuCode():null).getPricing();
+        SalesUnitRatio sur = pricing.findSalesUnitRatio(salesUnit!=null?salesUnit.getName():null);
 
         estimatedQuantity = sur.getRatio() * quantity;
         return estimatedQuantity;
