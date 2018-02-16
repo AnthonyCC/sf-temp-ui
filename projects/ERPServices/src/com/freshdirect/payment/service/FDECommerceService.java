@@ -4189,7 +4189,6 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			response = 	httpGetDataTypeMap( getFdCommerceEndPoint(GET_FDX_QUERYFORSALESPICKELIGIBLE), new TypeReference<Response<List<SapOrderPickEligibleInfo>>>(){});
 			List<SapOrderPickEligibleInfo> sapOrderPickeligibleList = response.getData();
 			return sapOrderPickeligibleList;
-			//response = postData(inputJson, getFdCommerceEndPoint(GET_FDX_QUERYFORSALESPICKELIGIBLE), Response.class);
 		} catch (FDResourceException e) {
 			// TODO Auto-generated catch block
 			LOGGER.error("Failure in queryForSalesPickEligible  Error: ",e);
@@ -4204,9 +4203,8 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			Request<List<SapOrderPickEligibleInfo> > requestofSapList = new Request<List<SapOrderPickEligibleInfo> >();
 			requestofSapList.setData(eligibleSapOrderLst);
 			String inputJson = buildRequest(requestofSapList);
-			System.out.println("sendFDXEligibleOrdersToSap calling url: "+getFdCommerceEndPoint(POST_FDX_ELIGIBLE_SENDORDERSTOSAP) );
+			LOGGER.debug("sendFDXEligibleOrdersToSap calling url: "+getFdCommerceEndPoint(POST_FDX_ELIGIBLE_SENDORDERSTOSAP) );
 			response = 	postData(   inputJson,getFdCommerceEndPoint(POST_FDX_ELIGIBLE_SENDORDERSTOSAP),Response.class);
-			//response = postData(inputJson, getFdCommerceEndPoint(GET_FDX_QUERYFORSALESPICKELIGIBLE), Response.class);
 		}
 		catch (FDEcommServiceException e) {
 			LOGGER.error(e.getMessage());
