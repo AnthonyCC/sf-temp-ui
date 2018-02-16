@@ -339,6 +339,10 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		deliveryAddressModel.setServiceType(addressForm.getDeliveryAddress().getServiceType());
 		
 		performEditDeliveryAddress(event, user, result, session, cart, actionName, erpAddress, deliveryAddressModel,shipToAddressId);
+		
+		if (StandingOrderHelper.isEligibleForSo3_0(user)) {
+				StandingOrderHelper.evaluteEditSoAddressID(session, user, shipToAddressId);
+			}
 		}
 		
 	public static void performEditDeliveryAddress(TimeslotEvent event,FDSessionUser user, ActionResult actionResult, HttpSession session, FDCartModel cart, String actionName,ErpAddressModel erpAddress, AddressModel deliveryAddressModel, String updatedDeliveryAddressId) throws FDResourceException {
@@ -346,10 +350,6 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		if (erpAddressModel == null) {
 			return;
 		}
-		if(StandingOrderHelper.isEligibleForSo3_0(user)){
-			StandingOrderHelper.evaluteEditSoAddressID(session, user, updatedDeliveryAddressId);
-		}
-		
 		/*boolean foundFraud = AddressUtil.updateShipToAddress(session, actionResult, user, updatedDeliveryAddressId, erpAddress);
 		
 		//[APPDEV-5568]- Reset the usercontext, as the address is updated.

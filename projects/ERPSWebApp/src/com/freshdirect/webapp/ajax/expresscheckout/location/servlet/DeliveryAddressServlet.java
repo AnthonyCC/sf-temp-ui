@@ -74,6 +74,7 @@ public class DeliveryAddressServlet extends BaseJsonServlet {
                         ErpAddressModel selectedAddressModel = DeliveryAddressService.defaultService().createErpAddressModel(selectedLocationData);
                         deliveryAddressResponse.getSubmitForm().getResult().put(ADDRESS_BY_ID_KEY, deliveryAddressForm);
                         deliveryAddressResponse.getSubmitForm().getResult().put(DeliveryAddressValidationConstants.UNATTENDED_DELIVERY, DeliveryAddressService.defaultService().checkUnattendedDelivery(selectedAddressModel));
+                        canBeSaved =false;
                         break;
                     }
                     case ADD_DELIVERY_ADDRESS_METHOD: {
@@ -93,10 +94,15 @@ public class DeliveryAddressServlet extends BaseJsonServlet {
                     	List<ValidationError> validationErrors = DeliveryAddressService.defaultService().editDeliveryAddressMethod(deliveryAddressRequest, request.getSession(),
                                 user);
                         validationResult.getErrors().addAll(validationErrors);
-                        if (StandingOrderHelper.isSO3StandingOrder(user) && null != user.getCurrentStandingOrder() && 
-                        		!deliveryAddressId.equalsIgnoreCase(user.getCurrentStandingOrder().getAddressId()) ) {
-                        	canBeSaved =false;
+                        if (validationResult.getErrors().isEmpty() && StandingOrderHelper.isSO3StandingOrder(user) && null != user.getCurrentStandingOrder() ){
+                        	if(!deliveryAddressId.equalsIgnoreCase(user.getCurrentStandingOrder().getAddressId()) ) {
+                        		canBeSaved =false;
+                        	}else{
+                        		// editing the address which has timeslots on a template
+                        		canBeSaved = StandingOrderHelper.editAddressOnTemplate(user);
+                        	}
                         }
+                        		
                         break;
                     }
                     case DELETE_DELIVERY_ADDRESS_METHOD: {

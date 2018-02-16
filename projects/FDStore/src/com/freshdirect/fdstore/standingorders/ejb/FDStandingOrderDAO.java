@@ -57,7 +57,7 @@ public class FDStandingOrderDAO {
 
 	private static final Logger LOGGER = LoggerFactory.getInstance( FDStandingOrderDAO.class );
 
-	private static final String FIELDZ_ALL = "SO.ID, SO.CUSTOMER_ID, SO.CUSTOMERLIST_ID, SO.ADDRESS_ID, SO.PAYMENTMETHOD_ID, SO.START_TIME, SO.END_TIME, SO.NEXT_DATE, SO.FREQUENCY, SO.ALCOHOL_AGREEMENT, SO.DELETED, SO.LAST_ERROR, SO.ERROR_HEADER, SO.ERROR_DETAIL, CCL.NAME, C.USER_ID,SO.IS_ACTIVATED,SO.DEFAULT_SO, SO.TIP, SO.REMINDER_OVERLAY, SO.DELETE_DATE";
+	private static final String FIELDZ_ALL = "SO.ID, SO.CUSTOMER_ID, SO.CUSTOMERLIST_ID, SO.ADDRESS_ID, SO.PAYMENTMETHOD_ID, SO.START_TIME, SO.END_TIME, SO.NEXT_DATE, SO.FREQUENCY, SO.ALCOHOL_AGREEMENT, SO.DELETED, SO.LAST_ERROR, SO.ERROR_HEADER, SO.ERROR_DETAIL, CCL.NAME, C.USER_ID,SO.IS_ACTIVATED,SO.DEFAULT_SO,SO.ZONE_CODE, SO.TIP, SO.REMINDER_OVERLAY, SO.DELETE_DATE";
 
 	private static final String LOAD_CUSTOMER_OLD_STANDING_ORDERS =
 		"select " + FIELDZ_ALL + " " +
@@ -125,8 +125,8 @@ public class FDStandingOrderDAO {
 		"left join CUST.CUSTOMER c on (C.ID = SO.CUSTOMER_ID) " +
 		"where SO.ID=?";
 
-	private static final String INSERT_STANDING_ORDER = "insert into CUST.STANDING_ORDER(ID, CUSTOMER_ID, CUSTOMERLIST_ID, ADDRESS_ID, PAYMENTMETHOD_ID, START_TIME, END_TIME, NEXT_DATE, FREQUENCY, ALCOHOL_AGREEMENT, DELETED, LAST_ERROR, ERROR_HEADER, ERROR_DETAIL,IS_ACTIVATED,CREATED_TIME,MODIFIED_TIME, TIP,DEFAULT_SO,REMINDER_OVERLAY) " +
-	"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?,?)";
+	private static final String INSERT_STANDING_ORDER = "insert into CUST.STANDING_ORDER(ID, CUSTOMER_ID, CUSTOMERLIST_ID, ADDRESS_ID, PAYMENTMETHOD_ID, START_TIME, END_TIME, NEXT_DATE, FREQUENCY, ALCOHOL_AGREEMENT, DELETED, LAST_ERROR, ERROR_HEADER, ERROR_DETAIL,IS_ACTIVATED,ZONE_CODE,CREATED_TIME,MODIFIED_TIME, TIP,DEFAULT_SO,REMINDER_OVERLAY) " +
+	"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?,?,?)";
 	
 	private static final String UPDATE_STANDING_ORDER = "update CUST.STANDING_ORDER set " +
 	"CUSTOMER_ID = ?, " +
@@ -145,7 +145,8 @@ public class FDStandingOrderDAO {
 	"IS_ACTIVATED= ?, "+
 	"MODIFIED_TIME= ?, "+
 	"DELETE_DATE= ?, "+
-	"TIP=?"+
+	"TIP=?, "+
+	"ZONE_CODE=?"+
 	"where ID = ?";
 	
 	
@@ -477,7 +478,7 @@ public class FDStandingOrderDAO {
 		so.setCustomerListName( listName );
 		so.setActivate( rs.getString("IS_ACTIVATED") );
 		so.setDefault(rs.getString("DEFAULT_SO")!=null && "Y".equals(rs.getString("DEFAULT_SO"))?true:false);
-		
+		so.setZone(rs.getString("ZONE_CODE"));
 		so.setTipAmount(rs.getDouble("TIP"));
 		so.setReminderOverlayForNewSo(rs.getString("REMINDER_OVERLAY")!=null?(rs.getString("REMINDER_OVERLAY").equalsIgnoreCase("Y")?true:false):false);
 		so.setDeleteDate(rs.getDate("DELETE_DATE"));
@@ -603,6 +604,7 @@ public class FDStandingOrderDAO {
 			ps.setString(counter++, so.getErrorHeader());
 			ps.setString(counter++, so.getErrorDetail());
 			ps.setString(counter++, null!=so.getActivate()? so.getActivate():null);
+			ps.setString(counter++, so.getZone());
 			ps.setTimestamp(counter++, new Timestamp( currDate.getTime() ));//Created Time
 			ps.setTimestamp(counter++, new Timestamp( currDate.getTime() ));//Modified Time
 			ps.setDouble(counter++, so.getTipAmount());
@@ -653,6 +655,7 @@ public class FDStandingOrderDAO {
 			ps.setTimestamp(counter++, new Timestamp( currDate.getTime() ));//Modified Time
 			ps.setDate(counter++, so.getDeleteDate()!=null?(java.sql.Date) so.getDeleteDate():null);
 			ps.setDouble(counter++,so.getTipAmount());
+			ps.setString(counter++, so.getZone());
 			ps.setString(counter++, so.getId());
 
 			ps.executeUpdate();

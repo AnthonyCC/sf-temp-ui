@@ -17,10 +17,13 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpSaleInfo;
+import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
+import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.EnumCheckoutMode;
@@ -49,6 +52,7 @@ import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.fdstore.util.FDTimeslotUtil;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.logistics.delivery.model.EnumRegionServiceType;
 import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.ajax.expresscheckout.location.data.FormLocationData;
 import com.freshdirect.webapp.ajax.expresscheckout.payment.data.FormPaymentData;
@@ -403,9 +407,11 @@ public class StandingOrderHelper {
 			for ( FDTimeslot ts : l ) {		
 				if ( deliveryTimes.checkTimeslot( ts ) ) {
 					// this time slot matches to SO template window, and is within the cutoff time
-					LOGGER.info( "Found matched timeslot: " + ts.toString() );
+					LOGGER.info( "Found matched timeslot: " + ts.getId() );
 					_tmpTimeslot = ts;
 					__so_timeslotId = ts.getId();
+					so.setTimeSlotId(__so_timeslotId);
+					so.setZone(ts.getZoneCode());
 					if(ts.isTimeslotRestricted()){ 
 						ts.setTimeslotRestricted(false);
 						ts.setSoldOut(false);
@@ -758,19 +764,19 @@ public class StandingOrderHelper {
 	
 	public static FDStandingOrder populateStandingOrderDetails(FDStandingOrder so, Map<String, Object> responseDate) {
 		FormLocationData addressLocationData=(FormLocationData) responseDate.get(SinglePageCheckoutFacade.ADDRESS_JSON_KEY);
-		FormTimeslotData timeSlotData=(FormTimeslotData) responseDate.get(SinglePageCheckoutFacade.TIMESLOT_JSON_KEY);
+		//FormTimeslotData timeSlotData=(FormTimeslotData) responseDate.get(SinglePageCheckoutFacade.TIMESLOT_JSON_KEY);
 		FormPaymentData paymentData=(FormPaymentData) responseDate.get(SinglePageCheckoutFacade.PAYMENT_JSON_KEY);
 
 		if(null!=addressLocationData && null!=addressLocationData.getSelected()){
 			so.setAddressId(addressLocationData.getSelected());
 		}if(null!=paymentData && null!=paymentData.getSelected()){
 			so.setPaymentMethodId(paymentData.getSelected());
-		}if(null!=timeSlotData){
+		}/*if(null!=timeSlotData){
 			so.setStartTime(null);
 			so.setEndTime(null);
 			so.setNextDeliveryDate(null);
 		}
-		
+		*/
 	return so;
 	
 	}
@@ -1052,13 +1058,15 @@ public class StandingOrderHelper {
 		so.setStartTime(timeSlot.getStartTime());
 		so.setEndTime(timeSlot.getEndTime());
 		so.setTimeSlotId(timeSlot.getId());
+		so.setZone(timeSlot.getZoneCode());
+		so.setZoneNew(timeSlot.getZoneCode());
 		Calendar c = Calendar.getInstance();
 		c.setTime(so.getNextDeliveryDate());
 		so.setReservedDayOfweek(c.get(Calendar.DAY_OF_WEEK));
 	}
 	
 	public static void loadSO3CartTimeSlot(FormTimeslotData timeslotData,FDStandingOrder so) {
-        if(null!=so.getNextDeliveryDate()&& null!=so.getStartTime()&& null!=so.getEndTime()){
+        if(null!=so.getNextDeliveryDate()&& null!=so.getStartTime()&& null!=so.getEndTime() ){
             Calendar startTimeCalendar = DateUtil.toCalendar(so.getNextDeliveryDate());
             String dayNames[] = new DateFormatSymbols().getWeekdays();
             timeslotData.setId(DEFAULT_TIMESLOT_ID);
@@ -1344,6 +1352,7 @@ private static String convert(Date time) {
 					soValidtemplate.setStartTime(null);
 					soValidtemplate.setEndTime(null);
 					soValidtemplate.setNextDeliveryDate(null);
+					soValidtemplate.setZone(null);
 					soValidtemplate.setLastError(ErrorCode.NO_ADDRESS.name(), ErrorCode.NO_ADDRESS.getErrorHeader(), ErrorCode.NO_ADDRESS.getErrorDetail(null));
 					if (session != null) {
 						FDActionInfo info = AccountActivityUtil.getActionInfo(session);
@@ -1396,6 +1405,7 @@ private static String convert(Date time) {
 	}
 	
 	//if SO user edits address, to delete the timeslots in templates if any, to avoid mismatch of timslot with updated address
+	// coming from 'address page nav only'
 	public static void evaluteEditSoAddressID(HttpSession session, FDSessionUser user, String deliveryAddressId) {
 		Collection<FDStandingOrder> SOList = user.getAllSO3();
 		try {
@@ -1407,6 +1417,7 @@ private static String convert(Date time) {
 					soValidtemplate.setStartTime(null);
 					soValidtemplate.setEndTime(null);
 					soValidtemplate.setNextDeliveryDate(null);
+					soValidtemplate.setZone(null);
 					if (session != null) {
 						FDActionInfo info = AccountActivityUtil.getActionInfo(session);
 						FDStandingOrdersManager.getInstance().save(info, soValidtemplate);
@@ -1446,4 +1457,58 @@ private static String convert(Date time) {
 				e.printStackTrace();
 			}
 			}
+		
+		//COS17-56		editing of address zones at SO template-address level only
+	public static boolean editAddressOnTemplate(FDUserI user) throws FDResourceException {
+		FDStandingOrder so = user.getCurrentStandingOrder();
+		if (null != so) {
+			FDDeliveryZoneInfo zoneInfo = getZoneInfoFromLogistics(so);
+			so.setZoneNew(zoneInfo.getZoneCode());
+			if (null != so.getZoneNew() && null != so.getZone() && !so.getZone().equalsIgnoreCase(so.getZoneNew())) {
+				so.setNextDeliveryDate(null);
+				so.setStartTime(null);
+				so.setEndTime(null);
+				so.setZone(null);
+				LOGGER.debug("SO id: " + so.getId()+" timeslots has been nullified. "
+						+ "New zone: "+so.getZoneNew()+" for new address: "+user.getCurrentStandingOrder().getDeliveryAddress()+"."
+								+ " Old address: " + user.getSoTemplateCart().getDeliveryAddress());
+
+				return true;
+
+			} else if (null != so.getZoneNew() && null != so.getZone()
+					&& (so.getZone().equalsIgnoreCase(so.getZoneNew())) && null != so.getNextDeliveryDate()
+					&& null != so.getTimeSlotId() ) {
+				// updating address of SOtemplate to logistics to be on safe side
+				ErpAddressModel address = so.getDeliveryAddress();
+				try {
+					Calendar c = Calendar.getInstance();
+					c.setTime(so.getNextDeliveryDate());	// if so.getNextDeliveryDate() is null, will get NullPointException
+					so.setReservedDayOfweek(c.get(Calendar.DAY_OF_WEEK));
+					com.freshdirect.logistics.controller.data.Result update = FDStandingOrdersManager.getInstance()
+							.saveStandingOrderToLogistics(so.getId(), so.getTimeSlotId(),
+									Integer.toString(so.getReservedDayOfweek()), so.getUser().getHistoricOrderSize(),
+									so.getCustomerId(), address, so.getUser().isNewSO3Enabled());
+					LOGGER.debug("SaveStandingOrderToLogistics() status: " + update.getStatus()
+							+ ", for SO id:" + so.getId() + ",zone_id: "+so.getZoneNew()+" ,address: " + address);
+				} catch (FDAuthenticationException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return false;
+	}
+
+		//COS17-56	-to get zoneInfo of address from SO template ## call to logistics
+		public static FDDeliveryZoneInfo getZoneInfoFromLogistics(FDStandingOrder so) throws FDResourceException {
+			AddressModel newAddress = so.getDeliveryAddress();
+			FDDeliveryZoneInfo zoneInfo = null;
+			String identity = so.getCustomerId();
+			try {
+				zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(newAddress, new Date(), null, EnumRegionServiceType.CORPORATE, identity);
+				LOGGER.debug("getZoneInfoFromLogistics(), customerID: "+identity+", ZONE_CODE is:: " + zoneInfo.getZoneCode()+" , for address: " + newAddress);
+			} catch (FDInvalidAddressException e) {
+				e.printStackTrace();
+			}
+			return zoneInfo;
+		}
 }

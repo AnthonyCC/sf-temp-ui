@@ -26,6 +26,7 @@ import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
@@ -123,6 +124,10 @@ public class ManageStandingOrderServlet extends HttpServlet {
 
 	
 						FDStandingOrder so = FDStandingOrdersManager.getInstance().load(new PrimaryKey(soId));
+						if(null ==so.getZone() && null != so.getAddressId()){											//COS17-56
+							FDDeliveryZoneInfo zoneInfo =StandingOrderHelper.getZoneInfoFromLogistics(so);
+							so.setZone(zoneInfo.getZoneCode());
+						}
 						u.setCurrentStandingOrder(so);
 						so.setNewSo(true);
 						if(!so.getStandingOrderCart().getOrderLines().isEmpty()){
