@@ -159,12 +159,12 @@ public class Pricing implements Serializable {
 	private ZonePriceModel _getZonePrice(ZoneInfo pricingZoneInfo) {
 		try {
 		
-			ZonePriceModel zpModel = this.zonePriceList.getZonePrice(pricingZoneInfo.hasParentZone()?new ZoneInfo(pricingZoneInfo.getPricingZoneId(),pricingZoneInfo.getSalesOrg(),pricingZoneInfo.getDistributionChanel()):pricingZoneInfo);
+			ZonePriceModel zpModel = this.zonePriceList.getZonePrice((pricingZoneInfo!=null && pricingZoneInfo.hasParentZone())?new ZoneInfo(pricingZoneInfo.getPricingZoneId(),pricingZoneInfo.getSalesOrg(),pricingZoneInfo.getDistributionChanel()):pricingZoneInfo);
 			if(zpModel == null) {
 				//::FDX:do a item cascading to its parent until we find a price info.
-				ErpZoneMasterInfo zoneInfo = FDCachedFactory.getZoneInfo(pricingZoneInfo.getPricingZoneId());
+				ErpZoneMasterInfo zoneInfo = FDCachedFactory.getZoneInfo(pricingZoneInfo!=null?pricingZoneInfo.getPricingZoneId():null);
 				if(zoneInfo.getParentZone()!=null)
-					zpModel = _getZonePrice(new ZoneInfo(zoneInfo.getParentZone().getSapId(),pricingZoneInfo.getSalesOrg(),pricingZoneInfo.getDistributionChanel()));
+					zpModel = _getZonePrice(new ZoneInfo(zoneInfo.getParentZone().getSapId(),pricingZoneInfo!=null?pricingZoneInfo.getSalesOrg():null,pricingZoneInfo!=null?pricingZoneInfo.getDistributionChanel():null));
 			}
 			return zpModel;
 		}
@@ -181,7 +181,7 @@ public class Pricing implements Serializable {
 	public ZonePriceModel getZonePrice(ZoneInfo pricingZoneInfo) {
 		ZoneInfo zone=pricingZoneInfo;
 		ZonePriceModel zpModel=_getZonePrice(zone);
-		while(zpModel==null && zone.hasParentZone()) {
+		while(zone!=null && zpModel==null && zone.hasParentZone()) {
 			zone=zone.getParentZone();
 			zpModel=_getZonePrice(zone);
 		}
