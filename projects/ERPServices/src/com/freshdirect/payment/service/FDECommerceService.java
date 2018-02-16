@@ -765,70 +765,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			binData.setCardType(binInfo.getCardType().getFdName());
 		return binData;
 	}
-	@Override
-	public com.freshdirect.content.attributes.FlatAttributeCollection getAttributes(String[] rootIds) {
-		
-		Response<FlatAttributeCollection> response = null;
-		FlatAttributeCollection result = null;
-		Request<String[]> request = new Request<String[]>();
-			try {
-				request.setData(rootIds);
-				String inputJson;
-				inputJson = buildRequest(request);
-				response = postDataTypeMap(inputJson,getFdCommerceEndPoint(PROD_MATERIAL_ATTRIBUTES),new TypeReference<Response<FlatAttributeCollection>>() {});
-				if(!response.getResponseCode().equals("OK"))
-					throw new FDResourceException(response.getMessage());
-					
-			} catch (FDResourceException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}catch (FDEcommServiceException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			return buildFlatAttributeModel(response.getData());
-	}
-
-	@Override
-	public void storeAttributes(
-			com.freshdirect.content.attributes.FlatAttributeCollection attrs,
-			String user, String sapId) throws FDResourceException {
-		
-		String inputJson;
-		Response<String> response = null;
-		try {
-			inputJson = buildRequest(buildFlatAttributeModel(attrs));
-			 response = postData(inputJson, getFdCommerceEndPoint(SAVE_ATTRIBUTES+"?sapId="+sapId+"&user="+user), Response.class);
-			if(!response.getResponseCode().equals("OK"))
-				throw new FDResourceException(response.getMessage());
-		} catch (FDEcommServiceException e) {
-			
-			throw new FDResourceException(response.getMessage());
-		}
-	}
-	private com.freshdirect.content.attributes.FlatAttributeCollection buildFlatAttributeModel(
-			FlatAttributeCollection data) {
-			List<FlatAttribute> lst = new ArrayList();
-			for(com.freshdirect.ecommerce.data.attributes.FlatAttribute flatAtt:data.getFlatAttributes()){
-				FlatAttribute flata = new FlatAttribute(flatAtt.getIdPath(), flatAtt.getName(), flatAtt.getValue());
-				lst.add(flata);
-			}
-			com.freshdirect.content.attributes.FlatAttributeCollection  flatCollection = new com.freshdirect.content.attributes.FlatAttributeCollection(lst);
-			
-		return flatCollection;
-	}
-	private FlatAttributeCollection buildFlatAttributeModel(
-			com.freshdirect.content.attributes.FlatAttributeCollection data) {
-			List<com.freshdirect.ecommerce.data.attributes.FlatAttribute> lst = new ArrayList();
-			for(FlatAttribute flatAtt:data.getFlatAttributes()){
-				com.freshdirect.ecommerce.data.attributes.FlatAttribute flata = new com.freshdirect.ecommerce.data.attributes.FlatAttribute(flatAtt.getIdPath(), flatAtt.getName(), flatAtt.getValue());
-				lst.add(flata);
-			}
-			FlatAttributeCollection  flatCollection = new FlatAttributeCollection(lst);
-			
-		return flatCollection;
-	}
+	
 	@Override
 	public Map loadAttributes(Date since) throws AttributeException {
 		

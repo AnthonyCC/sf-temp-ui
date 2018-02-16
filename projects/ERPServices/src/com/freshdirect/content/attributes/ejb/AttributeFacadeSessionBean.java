@@ -43,12 +43,7 @@ import com.freshdirect.erp.model.ActivityLog;
  * @version $Revision$
  * @author $Author$
  */
-/**
- *@deprecated Please use the AttributeFacadeController and AttributeFacadeServiceI in Storefront2.0 project.
- * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
- *
- *
- */
+
 public class AttributeFacadeSessionBean extends SessionBeanSupport {
 
 	private static final long serialVersionUID = 1L;
@@ -60,11 +55,14 @@ public class AttributeFacadeSessionBean extends SessionBeanSupport {
 	 *
 	 * @return the bean's home interface name
 	 */
-	@Deprecated
 	protected String getResourceCacheKey() {
 		return "com.freshdirect.content.attributes.ejb.AttributeFacadeHome";
 	}
 
+	/**
+	 *@deprecated This method is moved to backoffice project.
+	 * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+	 */
 	@Deprecated
 	public FlatAttributeCollection getAttributes(String[] rootIds) throws AttributeException {
 		List attribs = new ArrayList();
@@ -73,9 +71,19 @@ public class AttributeFacadeSessionBean extends SessionBeanSupport {
 		}
 		return new FlatAttributeCollection(attribs);
 	}
+	
+	/**
+	 *@deprecated Please use the AttributeFacadeController and AttributeFacadeServiceI in Storefront2.0 project.
+	 * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+	 */
 	@Deprecated
 	private static final String LOAD_ATTR_QUERY = "select root_id, child1_id, child2_id, atr_type, atr_name, atr_value, date_modified "
 			+ "from erps.attributes " + "where date_modified > ? " + "order by root_id ";
+	
+	/**
+	 *@deprecated Please use the AttributeFacadeController and AttributeFacadeServiceI in Storefront2.0 project.
+	 * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+	 */
 	@Deprecated
 	public Map loadAttributes(Date since) throws AttributeException {
 		Connection conn = null;
@@ -149,6 +157,11 @@ public class AttributeFacadeSessionBean extends SessionBeanSupport {
 			close(conn);
 		}
 	}
+	
+	/**
+	 *@deprecated This method is moved to backoffice project.
+	 * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+	 */
 	@Deprecated
 	protected List getAttributeList(String rootId) throws AttributeException {
 		Connection conn = null;
@@ -220,6 +233,11 @@ public class AttributeFacadeSessionBean extends SessionBeanSupport {
 			close(conn);
 		}
 	}
+	
+	/**
+	 *@deprecated This method is moved to backoffice project.
+	 * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+	 */
 	@Deprecated
 	public void storeAttributes(FlatAttributeCollection attributes, String user, String sapId)
 			throws AttributeException {

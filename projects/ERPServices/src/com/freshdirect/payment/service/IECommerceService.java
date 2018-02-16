@@ -136,10 +136,6 @@ public interface IECommerceService {
 
 	public Map<ZoneInfo, List<FDProductPromotionInfo>> getAllProductsByType(String ppType) throws FDResourceException;
 
-	public FlatAttributeCollection getAttributes(String[] rootIds);
-
-	public void storeAttributes(FlatAttributeCollection attrs, String user,	String sapId) throws FDResourceException;
-
 	public Map loadAttributes(Date since) throws AttributeException;
 
 	public BatchModel getBatch(int batchId)throws FDResourceException;
