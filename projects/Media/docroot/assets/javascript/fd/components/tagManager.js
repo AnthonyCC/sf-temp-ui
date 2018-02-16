@@ -651,7 +651,7 @@ var dataLayer = window.dataLayer || [];
       channel = 'rec_' + mvc[mvc.length - 1];
     } else {
       channel = urlPageType.toLowerCase() || pageType.toLowerCase();
-      channel = channel === 'category_list' ? 'browse' : channel;
+      channel = 'category_list#ecoupon#newproducts'.indexOf(channel) > -1 ? 'browse' : channel;
     }
 
     return channel ? 'channel_' + channel : '';
