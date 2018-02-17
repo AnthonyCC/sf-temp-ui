@@ -1783,11 +1783,18 @@ public class Product {
 
     public double getEstimatedQuantity(Sku sku, SalesUnit salesUnit, double quantity) throws PricingException {
         double estimatedQuantity = 0.0;
-
-        Pricing pricing = getFDProduct(sku!=null?sku.getSkuCode():null).getPricing();
-        SalesUnitRatio sur = pricing.findSalesUnitRatio(salesUnit!=null?salesUnit.getName():null);
-
-        estimatedQuantity = sur.getRatio() * quantity;
+        
+        if(sku != null && salesUnit != null) {
+        	FDProduct _product = getFDProduct(sku.getSkuCode());
+        	
+        	if(_product != null) {
+		        Pricing pricing = _product.getPricing();
+		        if(pricing != null) {
+		        	SalesUnitRatio sur = pricing.findSalesUnitRatio(salesUnit.getName());
+		        	estimatedQuantity = sur.getRatio() * quantity;
+		        }	
+        	}
+        }
         return estimatedQuantity;
     }
 
