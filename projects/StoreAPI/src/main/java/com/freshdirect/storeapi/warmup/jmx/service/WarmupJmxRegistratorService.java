@@ -1,5 +1,7 @@
 package com.freshdirect.storeapi.warmup.jmx.service;
 
+import java.util.UUID;
+
 import javax.annotation.PostConstruct;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
@@ -12,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class WarmupJmxRegistratorService {
 
-    public static final String WARMUP_JMX_PUBLISHER_OBJECTNAME = "com.freshdirect.storeapi:Type=Warmup,Name=WarmupJmx,Location=" + System.getProperty("weblogic.Name");
+    public static final String WARMUP_JMX_PUBLISHER_OBJECTNAME = "com.freshdirect.storeapi:Type=Warmup,Name=WarmupJmx,Location=" + System.getProperty("weblogic.Name") + UUID.randomUUID();
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WarmupJmxRegistratorService.class);
 
