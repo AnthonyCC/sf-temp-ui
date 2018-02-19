@@ -13,17 +13,16 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.ErpCustomerCreditModel;
-import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCustomerCreditHistoryModel;
-import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.referral.FDReferralManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -68,6 +67,7 @@ public class AccountController extends BaseController implements Comparator <Ord
     private static final String ACTION_GET_CREDIT_HISTORY = "getcredits";
     private static final String ACTION_ACCEPT_DP_TERMSANDCONDITIONS = "acceptDeliveryPassTermsAndConditions";
     private static final String ACTION_ADD_PROFILE = "addProfile";
+    private static final String ACTION_DP_FREE_TRIAL="dpFreeTrial";
 
     @Override
     protected ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model, String action,
@@ -117,7 +117,14 @@ public class AccountController extends BaseController implements Comparator <Ord
 				FDActionInfo info =	AccountActivityUtil.getActionInfo(request.getSession(), notePrefix + requestMessage.getNotes());
 				FDCustomerManager.setProfileAttribute(user.getFDSessionUser().getIdentity(),requestMessage.getName(), requestMessage.getValue(), info);
 				setResponseMessage(model, Message.createSuccessMessage(MSG_ACCEPT_DP_TERMSANDCONDITIONS), user);
-	        }
+			} else if (ACTION_DP_FREE_TRIAL.equals(action)) {
+				if (null != user.getFDSessionUser().getIdentity() && !user.getFDSessionUser().getDpFreeTrialOptin()) {
+					FDCustomerManager.updateDpFreeTrialOptin(true,
+							user.getFDSessionUser().getIdentity().getFDCustomerPK());
+					user.updateDpFreeTrialOptin(true);
+				}
+				setResponseMessage(model, Message.createSuccessMessage(MSG_DPFREETRIAL_OPTIN_SUCCESS), user);
+			}
         }else{
     		Message responseMessage = new Message();
             responseMessage.setStatus(Message.STATUS_FAILED);
@@ -126,18 +133,18 @@ public class AccountController extends BaseController implements Comparator <Ord
     	}
         return model;
     }
-    
+
     public boolean UserExists(SessionUser user){
     	return user!=null ? true:false;
     }
 
     private ModelAndView getOrderHistory(ModelAndView model, SessionUser user, HttpServletRequest request, HttpServletResponse response) throws FDException, JsonException {
-        
+
         List<OrderInfo> orderInfos = user.getCompleteOrderHistory();
-        
+
         OrderHistory responseMessage = new OrderHistory();
         List<Order> orders = OrderHistory.Order.createOrderList(orderInfos, user);
-        
+
         String postData = getPostData(request, response);
         int page = 1;
         int resultMax = orders != null ? orders.size() : 0;
@@ -149,7 +156,7 @@ public class AccountController extends BaseController implements Comparator <Ord
             resultMax = requestMessage.getMax();
         }
         ListPaginator<Order> paginator = new ListPaginator<Order>(orders, resultMax);
-        
+
         if(orders != null && !orders.isEmpty()){
         	java.util.Collections.sort(orders, new AccountController());
         	String firstOrder = orders.get(0).getId();
@@ -161,23 +168,23 @@ public class AccountController extends BaseController implements Comparator <Ord
             orders.get(0).setStatus(orderDetail.getStatus());
 
         }
-        
+
         responseMessage.setOrders(paginator.getPage(page));
-        
+
         setResponseMessage(model, responseMessage, user);
         return model;
     }
-    
+
     private ModelAndView getCreditHistory(ModelAndView model, SessionUser user, HttpServletRequest request, HttpServletResponse response) throws FDException, JsonException {
-        
+
     	CreditHistory responseMessage = new CreditHistory();
         FDIdentity customerIdentity = user.getFDSessionUser().getIdentity();
-        
+
         FDCustomerCreditHistoryModel creditHistory = FDCustomerManager.getCreditHistory(customerIdentity);
 		responseMessage.setRemainingAmount(creditHistory.getRemainingAmount());
-        
+
         List<ErpCustomerCreditModel> mimList = FDReferralManager.getUserCredits(customerIdentity.getErpCustomerPK());
-        
+
         responseMessage.setTotalResultCount(mimList.size());
         List<CreditHistory.Credit> crlist = new ArrayList<CreditHistory.Credit>();
         for(ErpCustomerCreditModel cm : mimList) {
@@ -193,9 +200,9 @@ public class AccountController extends BaseController implements Comparator <Ord
         setResponseMessage(model, responseMessage, user);
         return model;
     }
-    
+
  private ModelAndView getCreditedOrderHistory(ModelAndView model, SessionUser user, HttpServletRequest request, HttpServletResponse response) throws FDException, JsonException {
-        
+
         List<OrderInfo> orderInfos = user.getCompleteOrderHistory();
         List<OrderInfo> creditedorderInfos = new ArrayList<OrderInfo>();
         for(OrderInfo orderinfo : orderInfos){
@@ -209,10 +216,10 @@ public class AccountController extends BaseController implements Comparator <Ord
 			}
         }
         orderInfos = creditedorderInfos;
-        
+
         OrderHistory responseMessage = new OrderHistory();
         List<Order> orders = OrderHistory.Order.createOrderList(orderInfos, user);
-        
+
         String postData = getPostData(request, response);
         int page = 1;
         int resultMax = orders != null ? orders.size() : 0;
@@ -224,7 +231,7 @@ public class AccountController extends BaseController implements Comparator <Ord
             resultMax = requestMessage.getMax();
         }
         ListPaginator<Order> paginator = new ListPaginator<Order>(orders, resultMax);
-        
+
         if(orders != null && !orders.isEmpty()){
         	java.util.Collections.sort(orders, new AccountController());
         	String firstOrder = orders.get(0).getId();
@@ -236,15 +243,15 @@ public class AccountController extends BaseController implements Comparator <Ord
             orders.get(0).setStatus(orderDetail.getStatus());
 
         }
-        
+
         responseMessage.setOrders(paginator.getPage(page));
-        
+
         setResponseMessage(model, responseMessage, user);
         return model;
     }
 
     /**
-     * 
+     *
      * @param requestMessage
      */
     private ReserveTimeslot defaultReservationType(ReserveTimeslot requestMessage) {
@@ -323,7 +330,7 @@ public class AccountController extends BaseController implements Comparator <Ord
         }
         ShipToAddress anonymousAddress = null;
         if (addressId == null) {
-        	if(user.getAddress() != null && user.getAddress().getAddress1() != null && user.getAddress().getAddress1().trim().length() > 0 
+        	if(user.getAddress() != null && user.getAddress().getAddress1() != null && user.getAddress().getAddress1().trim().length() > 0
         			&& user.getAddress().isCustomerAnonymousAddress()) {
     			anonymousAddress = ShipToAddress.wrap(user.getAddress());
     		} else {
@@ -333,12 +340,12 @@ public class AccountController extends BaseController implements Comparator <Ord
 		            } else{
 		            	if(user.getDeliveryAddresses().size() > 0) {//This can happen when user signed up through Iphone.
 		            		addressId =  user.getDeliveryAddresses().get(0).getId();
-		            	}	            	
+		            	}
 		            }
 	        	}
-    		}        	
+    		}
         }
-        
+
         if (anonymousAddress != null) {
             DeliveryTimeslots deliveryTimeslots = getDeliveryTimeslots(user, addressId);
             ReservationTimeslots responseMessage = new ReservationTimeslots(new DeliveryAddresses(), deliveryTimeslots, user);
@@ -352,18 +359,18 @@ public class AccountController extends BaseController implements Comparator <Ord
         } else {
     		return getReservationTimeslot(model, request, user, addressId);
     	}
-        
+
     }
-    
+
     private ModelAndView getDeliveryTimeslotByTimezone(ModelAndView model, SessionUser user, String timezone, boolean excludeaddr) throws FDException, JsonException, ServiceException {
         String addressId = null;
-        
+
         //FDX-1873 - Show timeslots for anonymous address
         if(user.getAddress() == null || (user.getAddress() != null && !user.getAddress().isCustomerAnonymousAddress())) {
         	addressId = user.getReservationAddressId();
         }
         ShipToAddress anonymousAddress = null;
-        
+
         if (addressId == null) {
         	if(user.getAddress() != null && user.getAddress().getAddress1() != null && user.getAddress().getAddress1().trim().length() > 0) {
     			anonymousAddress = ShipToAddress.wrap(user.getAddress());
@@ -374,14 +381,14 @@ public class AccountController extends BaseController implements Comparator <Ord
 		            } else{
 		            	if(user.getDeliveryAddresses().size() > 0) {//This can happen when user signed up through Iphone.
 		            		addressId =  user.getDeliveryAddresses().get(0).getId();
-		            	}	            	
+		            	}
 		            }
 	        	}
-    		}        	
+    		}
         }
-        
+
         if (anonymousAddress != null) {
-        	
+
         	TimeSlotCalculationResult timeSlotResult = anonymousAddress.getDeliveryTimeslot(user, false);
             DeliveryTimeslots deliveryTimeslots = new DeliveryTimeslots(timeSlotResult);
             ReservationTimeslots responseMessage = new ReservationTimeslots(new DeliveryAddresses(), deliveryTimeslots, user);
@@ -389,15 +396,15 @@ public class AccountController extends BaseController implements Comparator <Ord
             setResponseMessage(model, responseMessage, user);
             return model;
     	} else if(addressId == null) {
-        	
+
         	Message responseMessage = Message.createSuccessMessage("You need to add a delivery address to perform this action.");
     		setResponseMessage(model, responseMessage, user);
     		return model;
         } else {
-    		
+
     		return getDeliveryTimeslotByTimezone(model, user, addressId, timezone, excludeaddr);
     	}
-        
+
     }
 
     private TimeSlotCalculationResult getTimeSlotCalculationResult(SessionUser user, String addressId)
@@ -420,7 +427,7 @@ public class AccountController extends BaseController implements Comparator <Ord
         }
         responseMessage.setSuccessMessage("Delivery timeslots have been retrieved successfully.");
         setResponseMessage(model, responseMessage, user);
-        
+
         return model;
     }
 
@@ -440,10 +447,10 @@ public class AccountController extends BaseController implements Comparator <Ord
         }
         return deliveryTimeslots;
     }
-   
+
    private ModelAndView getDeliveryTimeslotByTimezone(ModelAndView model, SessionUser user, String addressId, String timezone, boolean excludeaddr) throws FDException, JsonException,
 		   ServiceException {
-		
+
 		DeliveryAddresses deliveryAddresses = null;
 		if(excludeaddr!=true){
 			deliveryAddresses = getDeliveryAddresses(user);
@@ -451,11 +458,11 @@ public class AccountController extends BaseController implements Comparator <Ord
 		}
 		TimeSlotCalculationResult timeSlotResult = getTimeSlotCalculationResult(user, addressId);
 		DeliveryTimeslots deliveryTimeslots = new DeliveryTimeslots(timeSlotResult);
-		
+
 		ReservationTimeslots responseMessage = new ReservationTimeslots(deliveryAddresses, deliveryTimeslots, user);
 		responseMessage.setSuccessMessage("Delivery timeslots have been retrieved successfully.");
 		setResponseMessage(model, responseMessage, user);
-		
+
 		return model;
 	}
 
@@ -463,7 +470,7 @@ public class AccountController extends BaseController implements Comparator <Ord
         List<ShipToAddress> deliveryAddresses = user.getDeliveryAddresses();
         DeliveryAddresses responseMessage = new DeliveryAddresses(null, null, ShipToAddress.filter(deliveryAddresses,
                 DeliveryAddressType.RESIDENTIAL), ShipToAddress.filter(deliveryAddresses, DeliveryAddressType.CORP), null);
-        
+
         responseMessage.setResidentialDeliveryMinimum(user.getMinimumOrderAmount());
         responseMessage.setDepotDeliveryMinimum(user.getMinimumOrderAmount());
         responseMessage.setCorporateDeliveryMinimum(user.getMinCorpOrderAmount());
@@ -480,7 +487,7 @@ public class AccountController extends BaseController implements Comparator <Ord
      * @throws JsonMappingException
      * @throws IOException
      * @throws ServiceException
-     * @throws JsonException 
+     * @throws JsonException
      */
     private ModelAndView getDeliveryAddresses(ModelAndView model, SessionUser user) throws FDException, ServiceException, JsonException {
         DeliveryAddresses responseMessage = getDeliveryAddresses(user);
@@ -495,7 +502,7 @@ public class AccountController extends BaseController implements Comparator <Ord
 		cal.add(Calendar.HOUR, hours);
 		return cal.getTime();
 	}
-    
+
     @Override
     public int compare (Order order1, Order order2){
     	return order2.getId().compareTo(order1.getId());
