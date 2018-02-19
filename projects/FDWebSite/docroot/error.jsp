@@ -2,6 +2,7 @@
 <%@ page isErrorPage="true" %>
 <%@ page import='com.freshdirect.webapp.util.JspLogger' %>
 <%@ page import='com.freshdirect.webapp.util.AjaxErrorHandlingService' %>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c'%>
 <%
 
@@ -123,6 +124,45 @@ try {
       </pre>
     </c:if>
   </div>
+  <script>
+    window.FreshDirect = window.FreshDirect || {};
+    var fd = window.FreshDirect;
+    var dataLayer = window.dataLayer || [];
+    
+    fd.gtm = fd.gtm || {};
+    fd.gtm.key = '<%= FDStoreProperties.getGoogleTagManagerKey() %>';
+    fd.gtm.auth = '<%= FDStoreProperties.getGoogleTagManagerAuthToken() %>';
+    fd.gtm.preview = '<%= FDStoreProperties.getGoogleTagManagerPreviewId() %>';
+
+    dataLayer.push({
+      'config-ga-key': '<%= FDStoreProperties.getGoogleAnalyticsKey() %>',
+      'config-ga-domain': '<%= FDStoreProperties.getGoogleAnlayticsDomain() %>'
+    });
+
+    // load google tag manager
+    (function(fd) {
+      var loadGTM = function (w,d,s,l,i) {
+        w[l]=w[l]||[];
+        w[l].push({
+            'gtm.start':new Date().getTime(),
+            event:'gtm.js'
+        });
+
+        var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),
+            dl=l!=='dataLayer'?'&l='+l:'';
+
+        j.async=true;
+        j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl+(fd.gtm.auth ? '&gtm_auth='+fd.gtm.auth : '')+(fd.gtm.preview ? '&gtm_preview='+fd.gtm.preview+'&gtm_cookies_win=x' : '');
+        f.parentNode.insertBefore(j,f);
+      };
+
+      loadGTM(window, document, 'script', 'dataLayer', fd.gtm.key);
+
+    }(FreshDirect));
+
+  </script>
+
 </body>
 </html>
       <%
