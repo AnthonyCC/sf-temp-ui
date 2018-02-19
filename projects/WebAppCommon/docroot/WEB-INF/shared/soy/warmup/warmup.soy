@@ -5,6 +5,7 @@
 * @param inProgress
 * @param repeatedWarmupCanHappen
 * @param manualWarmupAllowed
+* @param warmupState
 */
 {template .main}
 <html>
@@ -14,6 +15,9 @@
   </title>
   </head>
   <body>
+  <div>
+    <p>Warmup state is: {$warmupState}</p>
+  </div>
   {if $inProgress}
     {call .inprogress}{/call}
   {elseif not $manualWarmupAllowed}
