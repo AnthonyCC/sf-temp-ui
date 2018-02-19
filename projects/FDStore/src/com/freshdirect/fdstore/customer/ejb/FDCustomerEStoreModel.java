@@ -4,20 +4,17 @@ import java.util.Date;
 
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.fdstore.EnumEStoreId;
-import com.freshdirect.fdstore.customer.FDCustomerModel;
-import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.ModelSupport;
-import com.freshdirect.sms.EnumSMSAlertStatus;
 
 /**
- * 
+ *
  * @author ksriram
  * Customer's store specific default delivery address, payment method and depot location info.
  */
 public class FDCustomerEStoreModel extends ModelSupport{
 
 	private static final long serialVersionUID = -8890913479519201820L;
-	
+
 	private String fdCustomerPk;
 	private String defaultShipToAddressPK;
 	private String defaultPaymentMethodPK;
@@ -63,9 +60,10 @@ public class FDCustomerEStoreModel extends ModelSupport{
 	public void setRafPromoCode(String rafPromoCode) {
 		this.rafPromoCode = rafPromoCode;
 	}
+	private Boolean dpFreeTrailOptin = false;
 
-	
-	
+
+
 
 	public String getCrmStore() {
 		return crmStore;
@@ -107,10 +105,10 @@ public class FDCustomerEStoreModel extends ModelSupport{
 		this.offersNotification = offersNotification;
 	}
 
-	
 
-	
-	
+
+
+
 	public PhoneNumber getMobileNumber() {
 		return mobileNumber;
 	}
@@ -118,7 +116,7 @@ public class FDCustomerEStoreModel extends ModelSupport{
 	public void setMobileNumber(PhoneNumber mobileNumber) {
 		this.mobileNumber = mobileNumber;
 	}
-	
+
 	public PhoneNumber getFdxMobileNumber() {
 		return fdxMobileNumber;
 	}
@@ -313,7 +311,11 @@ public class FDCustomerEStoreModel extends ModelSupport{
 		this.fdxEmailOptIn = fdxEmailOptIn;
 	}
 
-	
-	
+	public Boolean getDpFreeTrialOptin() {
+		return dpFreeTrailOptin;
+	}
 
+	public void setDpFreeTrialOptin(Boolean dpFreeTrailOptin) {
+		this.dpFreeTrailOptin = dpFreeTrailOptin;
+	}
 }

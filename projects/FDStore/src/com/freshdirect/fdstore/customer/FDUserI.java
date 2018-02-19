@@ -49,7 +49,6 @@ import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
 import com.freshdirect.logistics.delivery.model.EnumRegionServiceType;
 import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.storeapi.content.ProductReference;
-import com.freshdirect.logistics.delivery.model.FulfillmentInfo;
 
 public interface FDUserI extends java.io.Serializable {
 
@@ -57,7 +56,7 @@ public interface FDUserI extends java.io.Serializable {
     /*
      * public final static double MINIMUM_ORDER_AMOUNT = 30.00; public final static double FDX_MINIMUM_ORDER_AMOUNT = 20.00; public final static double MIN_CORP_ORDER_AMOUNT =
      * 50.00; //TODO : need to check with Tiru public final static double FDX_MIN_ORDER_AMOUNT = 30.00;
-     * 
+     *
      * public final static double BASE_DELIVERY_FEE = 4.99; // Used for site text public final static double CORP_DELIVERY_FEE = 9.99; // Used for site text public final static
      * double CORP_DELIVERY_FEE_MONDAY = 14.99; // Used for site text
      */public final static int CHEFS_TABLE_ORDER_COUNT_QUALIFIER = 12;
@@ -707,25 +706,25 @@ public interface FDUserI extends java.io.Serializable {
     public Collection<FDStandingOrder> getValidSO3();
 
     public void setValidSO3(Collection<FDStandingOrder> sos);
-    
+
     public Collection<FDStandingOrder> getAllSO3();
-    
+
     public void setAllSO3(Collection<FDStandingOrder> sos);
 
     public boolean isRefreshSO3();
 
     public void setRefreshSO3(boolean isRefreshSO3);
-    
+
     public boolean isRefreshSO3Settings();
 
     public void setRefreshSO3Settings(boolean isRefreshSO3Settings);
-    
+
     public void setValidSO3Data(Map<String, Object> validSO3Data);
-    
+
     public Map<String, Object> getValidSO3Data();
 
     public boolean isZipCheckPopupUsed();
-    
+
     public Map<String, String> getSoCartLineMessagesMap();
 
 	public void setSoCartLineMessagesMap(Map<String, String> soCartLineMessagesMap);
@@ -733,29 +732,35 @@ public interface FDUserI extends java.io.Serializable {
 	public boolean isSoCartOverlayFirstTime();
 
 	public void setSoCartOverlayFirstTime(boolean soCartOverlayFirstTime);
-			
+
 	public boolean isRefreshSoCartOverlay();
-	
+
 	public void setRefreshSoCartOverlay(boolean isRefreshSoCartOverlay);
-	
+
 	public boolean isSoFeatureOverlay();
-	
+
 	public void setSoFeatureOverlay(boolean soFeatureOverlay);
 
 	public boolean isRefreshNewSoFeature();
 
 	public void setRefreshNewSoFeature(boolean isRefreshNewSoFeature);
-	
+
 	public int resetDefaultPaymentValueType();
-	
+
 	/*// Only created for jackson parsing in Storefront 2.0
 	public void setReferrerEligible(Boolean referrerEligible) ;*/
-	
+
 	public ErpCustomerInfoModel getCustomerInfoModel() throws FDResourceException ;
-	
+
 	public void refreshFdCustomer() throws FDResourceException;
 
     public  FDDeliveryZoneInfo overrideZoneInfo(ErpAddressModel address,FDDeliveryZoneInfo deliveryZoneInfo) throws FDResourceException,FDInvalidAddressException;
 
+    public boolean getDpFreeTrialOptin();
 
+    public void setDpFreeTrialOptin(boolean dpFreeTrialOptin);
+
+    public String getDpFreeTrialOptinStDate() throws FDResourceException;
+
+    public void updateDpFreeTrialOptin(boolean dpFreeTrialOptin);
 }

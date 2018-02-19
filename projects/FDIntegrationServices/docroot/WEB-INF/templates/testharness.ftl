@@ -602,6 +602,11 @@ function loadStuff() {
   	$("#header").val('');
   	$("#payload").val('{ "name" : "", "value" : "", notes : ""}');
 
+  } else if (loaddata == "DpFreeTrialOptin") {
+  	$("#url").val("/saptest12@freshdirect.com/account/deliverypass/dpfreetrial/");
+  	$("#header").val('');
+  	$("#payload").val("");
+
   }else if (loaddata == "AcceptDeliveryPassTermsAndConditions") {
   	$("#url").val("/saptest12@freshdirect.com/account/dpacceptterms/");
   	$("#header").val('');
@@ -1807,6 +1812,7 @@ function doStuff() {
   <option value="GetMobileGoGreenPreferences">ACCOUNT - Get GoGreen Preferences</option>
   <option value="SetMobileGoGreenPreferences">ACCOUNT - Set GoGreen Preferences</option>
   <option value="AddProfile">ACCOUNT - Add Profile</option>
+  <option value="DpFreeTrialOptin">ACCOUNT - Set DeliveryPass Free Trial</option>
 
   <option value=""> ========== MISC ========== </option>
   <option value="EmailCapture">Email Capture</option>
