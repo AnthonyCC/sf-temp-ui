@@ -806,7 +806,8 @@ function parseTipTotal(data) {
 			userRecognized: null,
 			userCorporate: null,
 			mobWeb: null,
-			saveAmount: null
+			saveAmount: null,
+			modifyOrder: null
 		};
 	var checkoutCartHeader = Object.create(WIDGET,{
 		signal:{
@@ -852,7 +853,8 @@ function parseTipTotal(data) {
 					checkoutCartHeaderData.tipAppliedTick = data.tipAppliedTick;
 				}
 				checkoutCartHeaderData.mobWeb = fd.mobWeb;
-
+				checkoutCartHeaderData.modifyOrder = checkoutCartHeaderData.modifyOrder || data.modifyOrder;
+				
 				return expressco.checkoutCartHeader(checkoutCartHeaderData);
 			}
 		},

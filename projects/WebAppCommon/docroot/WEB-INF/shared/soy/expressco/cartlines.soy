@@ -309,6 +309,7 @@
  * @param? totalWithoutTax TotalWithoutTax 
  * @param? isEBTused
  * @param? mobWeb
+ * @param? modifyOrder
  */
 {template .checkoutlines autoescape="false"}
 	<div class='cartcontent checkoutlines'>
@@ -366,7 +367,7 @@
 			{param customerServiceRepresentative: $customerServiceRepresentative /}
 			{param totalWithoutTax: $totalWithoutTax /}
 			{param etipTotal: $etipTotal /}
-			{param buttonText: 'Place Order' /}
+			{param buttonText: ($modifyOrder and $modifyOrder == true) ? 'Save Changes' : 'Checkout' /}
 			{param form: 'checkout' /}
 			{param displayCheckoutButton: $displayCheckout /}
 		{/call}
@@ -1500,6 +1501,7 @@
 * @param? userCorporate
 * @param? saveAmount
 * @param? mobWeb
+* @param? modifyOrder
 */
 {template .checkoutCartHeader}
 	{if $deliveryFee} 
@@ -1548,7 +1550,7 @@
 	<div class="place-order container large-container {if not $saveAmount}no-save-amount{/if}">
 		{if $saveAmount}<div class="save-amount">You've Saved {$saveAmount}</div>{/if}
 		<form fdform="checkout" action="#" fdform-disable-resubmit="true" fdform-disable-resubmit-selector=".cssbutton.orange" fdform-disable-resubmit-release="manual">
-			<button class="cssbutton orange footer__button icon-chevron-right-after" fd-login-required="">Place Order</button>
+			<button class="cssbutton orange footer__button icon-chevron-right-after" fd-login-required="">{($modifyOrder and $modifyOrder == true)? 'Save Changes': 'Place Order'}</button>
 		</form>
 	</div>
 	{/if}
