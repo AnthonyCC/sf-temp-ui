@@ -82,7 +82,7 @@ if (editorialPath!=null && !"".equals(editorialPath.trim())) {  %>
 			</tr>
 		  	<tr>
 				<td style="padding-right: 6px;"><input aria-label="recipe search" class="accessible_search" name="keyword" size="20"></td>
-				<td style="padding-right: 10px;"><button class="cssbutton orange small">Find</button></td>
+				<td style="padding-right: 10px;"><button type="submit" class="cssbutton orange small">Find</button></td>
 				<td><a href="/recipe_search.jsp?trk=dpage">Advanced recipe search</a></td>
 			</tr>
 		  	 </table>
