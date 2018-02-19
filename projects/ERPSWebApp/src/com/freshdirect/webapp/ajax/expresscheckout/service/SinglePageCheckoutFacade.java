@@ -324,7 +324,10 @@ public class SinglePageCheckoutFacade {
     
 	public FormLocationData loadAddress(final FDUserI user, final HttpSession session)
 			throws FDResourceException, JspException, RedirectToPage {
-		return loadAddress(user, session, populateCartDataFromParentOrder(user), null, null);
+		
+		ErpCustomerModel customerModel = FDCustomerManager.getCustomer(user.getIdentity());
+		return loadAddress(user, session, populateCartDataFromParentOrder(user), customerModel.getShipToAddresses(),
+				customerModel.getCustomerInfo());
 	}
 
     public FormLocationData loadAddress(final FDUserI user, final HttpSession session, final FDCartI cart) throws FDResourceException, JspException, RedirectToPage {  	
