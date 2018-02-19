@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class WarmupJmxRegistratorService {
 
-    public static final String WARMUP_JMX_PUBLISHER_OBJECTNAME = "com.freshdirect.storeapi:Type=Warmup,Name=WarmupJmx,Location=" + System.getProperty("weblogic.Name") + UUID.randomUUID();
+    public static final String WARMUP_JMX_PUBLISHER_OBJECTNAME = "com.freshdirect.storeapi:Type=Warmup,Name=WarmupJmx" + UUID.randomUUID() + ",Location=" + System.getProperty("weblogic.Name");
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WarmupJmxRegistratorService.class);
 
