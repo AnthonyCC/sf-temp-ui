@@ -95,12 +95,14 @@ public class FDEcommProperties {
 	public static final String FDStandingOrderSB = "com.freshdirect.fdstore.standingorders.FDStandingOrdersSB"; 
 	public static final String StandingOrder3CronSB = "com.freshdirect.fdstore.standingorders.service.StandingOrder3CronSB";
 	public static final String FDCustomerManagerSB="com.freshdirect.customer.FDCustomerManagerSB";
+	public static final String SaleCronSB="payment.ejb.SaleCronSB";
   
     
     
     static {
 
         defaults.put(FDMonitorSB,FALSE);
+        defaults.put(SaleCronSB,FALSE);
         defaults.put(GatewayActivityLog,FALSE);
         defaults.put(ErpCOOLManagerSB ,FALSE);
         defaults.put(ErpGrpInfoSB,FALSE);

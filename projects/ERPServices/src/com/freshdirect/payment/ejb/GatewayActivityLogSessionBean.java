@@ -27,7 +27,12 @@ import com.freshdirect.payment.gateway.Response;
 import com.freshdirect.payment.gateway.TransactionType;
 import com.freshdirect.payment.gateway.ejb.FDGatewayActivityLogModel;
 
-
+/**
+ *@deprecated Please use the GatewayActivityLogController and GatewayActivityLogServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */ 
 
 public class GatewayActivityLogSessionBean extends GatewaySessionBeanSupport {
 	
