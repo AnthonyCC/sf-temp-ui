@@ -66,6 +66,7 @@ public class WarmupService {
                 public void run() {
                     WarmupReloadableCacheAdapter.defaultService().evictCaches();
                     CmsServiceLocator.contentProviderService().initializeContent();
+                    CmsServiceLocator.mediaService().loadAll();
                     try {
                         CmsServiceLocator.luceneManager().closeAllIndexSearcher();
                     } catch (IOException e) {
