@@ -1913,7 +1913,7 @@ public class FDStoreProperties {
         defaults.put(GLOBAL_SF2_0_ENABLED, "false");
 
         //DCS-23
-        defaults.put(PROP_DEBIT_SWITCH_NOTICE_ENABLED, "true");
+        defaults.put(PROP_DEBIT_SWITCH_NOTICE_ENABLED, "false");
 
         defaults.put(PROP_LOG_AKAMAI_HEADER_ENABLED,"true");
 
