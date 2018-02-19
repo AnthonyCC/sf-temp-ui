@@ -1,3 +1,13 @@
+
+.ui-widget-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;	
+	background: #666666 none 50% 50% repeat;
+	opacity: .50;
+	filter: Alpha(Opacity=50);
+}
+
 .ui-dialog {
 	-webkit-box-shadow: 7px 7px 5px rgba(50, 50, 50, 0.5);
 	-moz-box-shadow:    7px 7px 5px rgba(50, 50, 50, 0.5);

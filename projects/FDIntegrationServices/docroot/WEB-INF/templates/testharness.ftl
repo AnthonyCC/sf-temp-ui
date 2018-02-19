@@ -384,6 +384,7 @@ function loadStuff() {
   	$("#header").val('');
   	$("#payload").val('{ "paymentMethodId" : ""}');
 
+  } else if (loaddata == "AddDeliveryAddress") {
   	$("#url").val("/saptest12@freshdirect.com/deliveryaddress/add/");
   	$("#header").val('');
   	$("#payload").val('{"dlvfirstname" : "David","dlvlastname" : "Saad", "dlvhomephone" : "7189281226","dlvhomephoneext" : "","address1" : "23-30 Borden Ave","address2" : "","apartment" : "","city" : "Long Island","state" : "NY","zipcode" : "11101","country" : "US","deliveryInstructions" : "", "doorman":"false", "dlvServiceType" : "HOME"}');
@@ -600,11 +601,6 @@ function loadStuff() {
   	$("#url").val("/saptest12@freshdirect.com/account/profile/add/");
   	$("#header").val('');
   	$("#payload").val('{ "name" : "", "value" : "", notes : ""}');
-
-  } else if (loaddata == "DpFreeTrialOptin") {
-  	$("#url").val("/saptest12@freshdirect.com/account/deliverypass/dpfreetrial/");
-  	$("#header").val('');
-  	$("#payload").val("");
 
   }else if (loaddata == "AcceptDeliveryPassTermsAndConditions") {
   	$("#url").val("/saptest12@freshdirect.com/account/dpacceptterms/");
@@ -1811,7 +1807,6 @@ function doStuff() {
   <option value="GetMobileGoGreenPreferences">ACCOUNT - Get GoGreen Preferences</option>
   <option value="SetMobileGoGreenPreferences">ACCOUNT - Set GoGreen Preferences</option>
   <option value="AddProfile">ACCOUNT - Add Profile</option>
-  <option value="DpFreeTrialOptin">ACCOUNT - Set DeliveryPass Free Trial</option>
 
   <option value=""> ========== MISC ========== </option>
   <option value="EmailCapture">Email Capture</option>

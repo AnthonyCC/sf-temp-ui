@@ -141,7 +141,6 @@ public class CartSubTotalBoxService {
         }
 
         boolean deliveryPassPopupNeeded = false;
-        boolean deliveryPassFreeTrialEligible = user.isDPFreeTrialOptInEligible();
         String deliveryPassName = DELIVERY_FEE_NAME;
         String deliveryPassValue = ZERO_POINT_ZERO_ZERO_VALUE;
         if (isDlvPromotionApplied) {
@@ -195,7 +194,6 @@ public class CartSubTotalBoxService {
         data.setId(DELIVERY_FEE_ID);
         data.setText(deliveryPassName);
         data.setValue(deliveryPassValue);
-        data.getOther().put("deliveryPassFreeTrialEligible", deliveryPassFreeTrialEligible);
         data.getOther().put("deliveryPassPopupNeeded", deliveryPassPopupNeeded);
         if (isTaxableItemInCart) {
             data.getOther().put(MARK_KEY, TAXABLE_ITEM_MARK);

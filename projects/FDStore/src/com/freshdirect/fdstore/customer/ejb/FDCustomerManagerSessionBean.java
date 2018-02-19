@@ -403,12 +403,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	/**
 	 * Register and log in a new customer.
-	 *
+	 * 
 	 * @param ErpCustomerModel
 	 *            erpCustomer
 	 * @param FDCustomerModel
 	 *            fdCustomer
-	 *
+	 * 
 	 * @return the resulting FDIdentity
 	 * @throws FDResourceException
 	 *             if an error occured using remote resources
@@ -1000,7 +1000,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	/**
 	 * Returns a Map containing the audience promo ID and audience details.
 	 * promoId --> FDPromoAudienceInfo.
-	 *
+	 * 
 	 * @param user
 	 * @return
 	 * @throws SQLException
@@ -1289,12 +1289,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	/**
 	 * Authenticate and log in a customer.
-	 *
+	 * 
 	 * @param userId
 	 * @param password
-	 *
+	 * 
 	 * @return user identity reference
-	 *
+	 * 
 	 * @throws FDAuthenticationException
 	 *             if the userId/password was not found
 	 * @throws FDResourceException
@@ -1527,10 +1527,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	/**
 	 * Get all the payment methods of the customer.
-	 *
+	 * 
 	 * @param identity
 	 *            the customer's identity reference
-	 *
+	 * 
 	 * @return collection of ErpPaymentMethodModel objects
 	 * @throws FDResourceException
 	 *             if an error occured using remote resources
@@ -1549,12 +1549,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	/**
 	 * Add a payment method for the customer.
-	 *
+	 * 
 	 * @param identity
 	 *            the customer's identity reference
 	 * @param paymentMethod
 	 *            ErpPaymentMethodI to add
-	 *
+	 * 
 	 * @throws FDResourceException
 	 *             if an error occured using remote resources
 	 */
@@ -1704,12 +1704,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	/**
 	 * set the default payment method on the customer
-	 *
+	 * 
 	 * @param identy
 	 *            the customer's identity
 	 * @param PK
 	 *            primary key of the paymentMethod that will be referenced.
-	 *
+	 * 
 	 *            Throws FDResourceException
 	 */
 	public void setDefaultPaymentMethod(FDActionInfo info, PrimaryKey paymentMethodPK,
@@ -1758,7 +1758,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	/***************************************************************************
 	 * return the Pk Id that is stored in the defaultPaymentMethodPK field @
 	 * param Identity the customers Identity
-	 *
+	 * 
 	 * Throws FDresourceException
 	 */
 	public String getDefaultPaymentMethodPK(FDIdentity identity) throws FDResourceException {
@@ -1799,12 +1799,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	/**
 	 * update a payment method for the customer
-	 *
+	 * 
 	 * @param identity
 	 *            the customer's identity reference
 	 * @param paymentMethod
 	 *            ErpPaymentMethodI to update
-	 *
+	 * 
 	 * @throws FDResourceException
 	 *             if an error occured using remote resources
 	 */
@@ -1917,12 +1917,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	/**
 	 * remove a payment method for the customer
-	 *
+	 * 
 	 * @param identity
 	 *            the customer's identity reference
 	 * @param pk
 	 *            PrimaryKey of the paymentMethod to remove
-	 *
+	 * 
 	 *            throws FDResourceException if an error occured using remote
 	 *            resources
 	 */
@@ -2004,14 +2004,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	/**
 	 * update the customer info
-	 *
+	 * 
 	 * @param identity
 	 *            the customer's identity reference
 	 * @param ErpCustomerInfoModel
 	 *            to update
 	 * @param String
 	 *            password hint
-	 *
+	 * 
 	 * @throws FDResourceException
 	 *             if an error occured using remote resources
 	 */
@@ -2111,12 +2111,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	/**
 	 * Get the customer's every ship to address.
-	 *
+	 * 
 	 * @param identity
 	 *            the customer's identity reference
-	 *
+	 * 
 	 * @return collection of ErpAddresModel objects
-	 *
+	 * 
 	 * @throws FDResourceException
 	 *             if an error occured using remote resources
 	 */
@@ -2134,12 +2134,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	/**
 	 * Add a ship to address for the customer.
-	 *
+	 * 
 	 * @param identity
 	 *            the customer's identity reference
 	 * @param address
 	 *            ErpAddressModel to add
-	 *
+	 * 
 	 * @throws FDResourceException
 	 *             if an error occured using remote resources
 	 */
@@ -2180,12 +2180,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	/**
 	 * update a ship to address for the customer
-	 *
+	 * 
 	 * @param identity
 	 *            the customer's identity reference
 	 * @param address
 	 *            ErpAddressModel to update
-	 *
+	 * 
 	 * @throws FDResourceException
 	 *             if an error occured using remote resources
 	 */
@@ -2227,12 +2227,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	/**
 	 * set the default ship to Address PK on the customer
-	 *
+	 * 
 	 * @param identy
 	 *            the customer's identity
 	 * @param PK
 	 *            primary key of the Ship-To-Address.
-	 *
+	 * 
 	 *            Throws FDResourceException
 	 */
 	public void setDefaultShipToAddressPK(FDIdentity identity, String shipToAddressPK) throws FDResourceException {
@@ -2250,7 +2250,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	/***************************************************************************
 	 * return the Pk Id that is stored in the defaultPShipToAddressPK field @
 	 * param Identity the customers Identity
-	 *
+	 * 
 	 * Throws FDresourceException
 	 */
 	public String getDefaultShipToAddressPK(FDIdentity identity) throws FDResourceException {
@@ -2282,12 +2282,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	/**
 	 * remove a ship to address for the customer
-	 *
+	 * 
 	 * @param identity
 	 *            the customer's identity reference
 	 * @param pk
 	 *            PrimaryKey of the address to remove
-	 *
+	 * 
 	 * @throws FDResourceException
 	 *             if an error occured using remote resources
 	 */
@@ -2531,7 +2531,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					/*
 					 * FDOrderI order = getOrder(pk.getId()); FDCustomerInfo
 					 * custInfo = this.getCustomerInfo(identity);
-					 *
+					 * 
 					 * int orderCount = getValidOrderCount(identity);
 					 * custInfo.setNumberOfOrders(orderCount); Calendar cal =
 					 * calculateCutOffTime(order); //To get the cutoff time for
@@ -3673,7 +3673,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	/**
 	 * charge an order (modify & send msg to SAP) due to Insufficent funds.
-	 *
+	 * 
 	 * @param identity
 	 *            the customer's identity reference
 	 * @throws FDResourceException
@@ -3764,7 +3764,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	/**
 	 * Adds a complaint to the user's list of complaints and begins the
 	 * associated credit issuing process
-	 *
+	 * 
 	 * @param ErpComplaintModel
 	 *            represents the complaint
 	 * @param String
@@ -3814,7 +3814,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	/**
 	 * Adds a complaint to the user's list of complaints and begins the
 	 * associated credit issuing process
-	 *
+	 * 
 	 * @param ErpComplaintModel
 	 *            represents the complaint
 	 * @param String
@@ -3912,7 +3912,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	/**
 	 * Check availability of an order.
-	 *
+	 * 
 	 * @return Map of order line number / FDAvailabilityI objects
 	 */
 	public Map<String, FDAvailabilityI> checkAvailability(FDIdentity identity, ErpCreateOrderModel createOrder,
@@ -4194,7 +4194,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 
 	/**
-	 *
+	 * 
 	 * @return Map of String (productId) -> Integer (score)
 	 * @throws FDResourceException
 	 */
@@ -4224,16 +4224,16 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	/**
 	 * Locate customer records matching the specified criteria
-	 *
+	 * 
 	 * @param custNumber
 	 * @param firstName
 	 * @param middleName
 	 * @param lastName
 	 * @param email
 	 * @param phone
-	 *
+	 * 
 	 * @return Collection of CustomerSearchResult objects
-	 *
+	 * 
 	 * @throws FDResourceException
 	 *             if an error occured using remote resources
 	 */
@@ -4421,10 +4421,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	/**
 	 * Store the user.
-	 *
+	 * 
 	 * @param user
 	 *            the customer's user object
-	 *
+	 * 
 	 * @throws FDResourceException
 	 *             if an error occured using remote resources
 	 */
@@ -4903,10 +4903,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	/**
 	 * Template method that returns the cache key to use for caching resources.
-	 *
+	 * 
 	 * @return the bean's home interface name
 	 */
-	@Override
 	protected String getResourceCacheKey() {
 		return "com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome";
 	}
@@ -5150,7 +5149,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	/**
 	 * Set this customer as alert on/alert off.
-	 *
+	 * 
 	 * @param PrimaryKey
 	 *            customer indentifier
 	 * @param boolean
@@ -5175,7 +5174,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	public List<ErpCustomerAlertModel> getAlerts(PrimaryKey pk) {
 		try {
-			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
+			ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
 			return sb.getAlerts(pk);
 		} catch (RemoteException ex) {
 			LOGGER.warn(ex);
@@ -5188,7 +5187,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	public boolean isOnAlert(PrimaryKey pk, String alertType) {
 		try {
-			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
+			ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
 			return sb.isOnAlert(pk, alertType);
 		} catch (RemoteException ex) {
 			LOGGER.warn(ex);
@@ -5201,7 +5200,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	public boolean isOnAlert(PrimaryKey pk) {
 		try {
-			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
+			ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
 			return sb.isOnAlert(pk);
 		} catch (RemoteException ex) {
 			LOGGER.warn(ex);
@@ -5355,7 +5354,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	/**
 	 * This method returns the list of delivery passes that are linked to this
 	 * customer's account.
-	 *
+	 * 
 	 * @param customerId
 	 * @return java.util.List
 	 */
@@ -5378,7 +5377,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 * This method returns Map containing dlvPassId as key and DlvPassUsageInfo
 	 * as value.
 	 * 
-	 *
 	 * @param identity
 	 * @return
 	 */
@@ -5402,7 +5400,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	/**
 	 * This method returns the list of orders that used the specified delivery
 	 * pass.
-	 *
+	 * 
 	 * @param dlvPassId
 	 * @return java.util.List
 	 */
@@ -5437,7 +5435,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	/**
 	 * This method returns the one or more delivery passes that are linked to
 	 * this customer's account for the specified delivery pass status.
-	 *
+	 * 
 	 * @param customerId
 	 * @return java.util.List
 	 */
@@ -5506,7 +5504,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	/**
 	 * SmartStore
-	 *
+	 * 
 	 * @param saleId
 	 *            order ID
 	 * @param FDIdentity
@@ -5575,7 +5573,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			 * on subsequent order before the pass being activated. If that
 			 * order(using delivery promo) is cancelled after the DP is active,
 			 * dont curtail his expiration date.
-			 *
+			 * 
 			 */
 			if ((dlvPass.getOrgExpirationDate() != null)
 					&& (dlvPass.getOrgExpirationDate().compareTo(dlvPass.getExpirationDate()) == 0)) {
@@ -5609,7 +5607,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			 * on subsequent order before the pass being activated. If that
 			 * order(using delivery promo) is cancelled after the DP is active,
 			 * dont curtail his expiration date.
-			 *
+			 * 
 			 */
 			if ((dlvPass.getOrgExpirationDate() != null)
 					&& (dlvPass.getOrgExpirationDate().compareTo(dlvPass.getExpirationDate()) == 0)) {
@@ -5797,7 +5795,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	/**
 	 * Place an order (send msg to SAP, persist order).
-	 *
+	 * 
 	 * @param identity
 	 *            the customer's identity reference
 	 * @return String sale id
@@ -5821,10 +5819,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				// order contains delivery pass.
 				DeliveryPassModel newPass = DeliveryPassUtil.constructDeliveryPassFromOrder(customerPk, pk.getId(),
 						createOrder);
-				if(status != null && hasCustomerDpFreeTrialOptin(identity.getFDCustomerPK())) {
-					newPass.setStatus(status);
-				}
-
 				DlvPassManagerSB dlvpsb = this.getDlvPassManagerHome().create();
 				String dlvPassId = dlvpsb.create(newPass);
 				newPass.setPK(new PrimaryKey(dlvPassId));
@@ -5851,14 +5845,13 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			LOGGER.warn("Cannot Create ErpCustomerManagerSessionBean", ce);
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
-			
 			throw new FDResourceException(re);
 		}
 	}
 
 	/**
 	 * Place an order (send msg to SAP, persist order).
-	 *
+	 * 
 	 * @param identity
 	 *            the customer's identity reference
 	 * @return String sale id
@@ -6437,7 +6430,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	/**
 	 * Captures email address from non-customer visiting iphone app
-	 *
+	 * 
 	 * @param emailId
 	 * @return
 	 * @throws FDResourceException
@@ -6830,7 +6823,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		// -Invoke ErpCustomerManagerSessionBean.sendCreateOrderToSAP
 
 		try {
-			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
+			ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
 			List<ErpSaleInfo> nsmOrders = sb.getNSMOrdersForGC();
 			if (null != nsmOrders) {
 				for (ErpSaleInfo erpSaleInfo : nsmOrders) {
@@ -7828,7 +7821,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				FDCartonInfo f = new FDCartonInfo(carton, cartonDetails);
 				cartonInfo.add(f);
 				for (int j = 0; j < carton.getDetails().size(); j++) {
-					ErpCartonDetails detail = carton.getDetails().get(j);
+					ErpCartonDetails detail = (ErpCartonDetails) carton.getDetails().get(j);
 
 					FDCartLineI cartLine = null;
 					for (int k = 0; k < order.getOrderLines().size(); k++) {
@@ -8702,50 +8695,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			return FDUserDAO.resetDefaultPaymentValueType(conn, custId);
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle, "Some problem in getting default payment method info");
-		} finally {
-			close(conn);
-		}
-	}
-
-	public void setDpFreeTrialOptin(boolean dpFreeTrialOptin, String custId, FDActionInfo info) throws FDResourceException {
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			FDUserDAO.updateDpFreeTrialOptin(conn, dpFreeTrialOptin,custId);
-			this.logActivity(info.createActivity(EnumAccountActivityType.DP_FREE_TRIAL_OPT_IN));
-
-		} catch (SQLException sqle) {
-			throw new FDResourceException(sqle, "Some problem in updating  dpFreeTrialOptin value.");
-		} finally {
-			close(conn);
-		}
-	}
-
-
-	public Date getDpFreeTrialOptinDate(String custId) throws FDResourceException {
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			return FDUserDAO.getDpFreeTrialOptinDate(conn,custId);
-		} catch (SQLException sqle) {
-			throw new FDResourceException(sqle, "Some problem in updating  dpFreeTrialOptin value.");
-		} finally {
-			close(conn);
-		}
-	}
-
-	public List<String> getAllCustIdsOfFreeTrialSubsOrder() throws FDResourceException, RemoteException ,CreateException{
-		DlvPassManagerSB dlvpsb = this.getDlvPassManagerHome().create();
-		return dlvpsb.getAllCustIdsOfFreeTrialSubsOrder();
-	}
-
-	public boolean hasCustomerDpFreeTrialOptin(String custId) throws FDResourceException {
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			return FDUserDAO.hasCustomerDpFreeTrialOptin(conn, custId);
-		} catch (SQLException sqle) {
-			throw new FDResourceException(sqle, "Some problem in getting dpFreeTrialOptin value.");
 		} finally {
 			close(conn);
 		}

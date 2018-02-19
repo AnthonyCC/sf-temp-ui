@@ -1,7 +1,7 @@
 package com.freshdirect.deliverypass.ejb;
 
 /**
- *
+ * 
  * @author skrishnasamy
  * @version 1.0
  */
@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -44,7 +45,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 	private static final long	serialVersionUID	= -8374322338305804910L;
 
 	private static final Category LOGGER = LoggerFactory.getInstance(DlvPassManagerSessionBean.class);
-
+	
 	private final static ServiceLocator LOCATOR = new ServiceLocator();
 
 	/** Creates new DlvManagerSessionBean */
@@ -54,10 +55,9 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 
 	/**
 	 * Template method that returns the cache key to use for caching resources.
-	 *
+	 * 
 	 * @return the bean's home interface name
 	 */
-	@Override
 	protected String getResourceCacheKey() {
 		return "com.freshdirect.deliverypass.ejb.DlvPassManagerHome";
 	}
@@ -65,7 +65,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 	/**
 	 * This method creates a new delivery pass in the system for the specified
 	 * customer.
-	 *
+	 * 
 	 * @param model
 	 * @return
 	 */
@@ -75,7 +75,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 		try {
 			/*
 			 * Make sure there is no active/pending/ready to use delivery pass more than the permissable limit..
-			 *
+			 * 
 			 */
 			Map<Comparable, Serializable> statusMap = getAllStatusMap(model.getCustomerId());
 			if(statusMap != null && statusMap.size() > 0){
@@ -84,7 +84,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 					throw new DeliveryPassException("We're sorry. The order cannot be submitted since this account has reached the DeliveryPass limit.",model.getCustomerId());
 				}
 			}
-
+			
 			if(model.getType().isAutoRenewDP()) {
 				ErpCustomerEB eb = this.getErpCustomerHome().findByPrimaryKey(new PrimaryKey(model.getCustomerId()));
 				ErpCustomerInfoModel info = eb.getCustomerInfo();
@@ -153,7 +153,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 
 	/**
 	 * This method applies an unlimited pass.
-	 *
+	 * 
 	 * @param customerPk
 	 * @param conn
 	 * @param dlvPassInfo
@@ -182,7 +182,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 
 	/**
 	 * This method applies a BSGS pass.
-	 *
+	 * 
 	 * @param customerPk
 	 * @param conn
 	 * @param dlvPassInfo
@@ -207,7 +207,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 		int usageCnt = dlvPassInfo.getUsageCount();
 		usageCnt = usageCnt + 1;
 		dlvPassInfo.setUsageCount(usageCnt);
-
+		
 		if (remDeliveries == 0) {
 			// There are no more deliveries left. So set the status to expired pending.
 			//The status then changed to expired once the order is delivery confirmed.
@@ -217,9 +217,9 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 	}
 
 	/**
-	 * This method applies a new delivery pass model to the order in which it was
+	 * This method applies a new delivery pass model to the order in which it was 
 	 * purchased.
-	 *
+	 * 
 	 * @param DeliveryPassModel
 	 */
 	public void applyNew(DeliveryPassModel model) {
@@ -258,24 +258,24 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
-
+	
 	public void revoke(DeliveryPassModel appliedPass, DeliveryPassModel activePass) {
-
+		
 		if(activePass==null) {
 			revoke(appliedPass);
 			return;
 		}
 		boolean isUnlimitedPassApplied=appliedPass.getType().isUnlimited();
-		if( !isUnlimitedPassApplied &&
+		if( !isUnlimitedPassApplied && 
 			!(appliedPass.getPK().getId().equals(activePass.getPK().getId())) ) {
-
+			
 			activePass.setStatus(EnumDlvPassStatus.READY_TO_USE);
 			update(activePass);
-
+			
 		}
 		revoke(appliedPass);
 	}
-
+	
 	/**
 	 * This method revokes the used delivery pass.
 	 * @param customerPk
@@ -304,7 +304,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 					appliedPass.setStatus(EnumDlvPassStatus.ACTIVE);
 				}
 			}
-
+			
 			//Decrement usage count.
 			int usageCnt = appliedPass.getUsageCount();
 			usageCnt = usageCnt - 1;
@@ -324,12 +324,12 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
-
+	
 	/**
 	 * This method updates the existing pending delivery pass linked with a
 	 * customer's account to a new delivery pass that the customer purchased
 	 * during Modify order.
-	 *
+	 * 
 	 * @param purchaseOrderId -
 	 *            This parameter will be required when the system allows the
 	 *            customer to buy more than one delivery pass at any given time.
@@ -348,7 +348,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 			 * Returns a list containing one item.
 			 */
 			List<DeliveryPassModel> deliveryPasses = DeliveryPassDAO.getDeliveryPassesByOrderId(conn, purchaseOrderId);
-
+					
 			if (deliveryPasses == null || deliveryPasses.size() == 0) {
 				throw new DeliveryPassException(
 						"There is no DeliveryPass found for this purchase order id.",
@@ -364,8 +364,8 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 				info.setHasAutoRenewDP(null);
 				info.setAutoRenewDPSKU(null);
 				eb.setCustomerInfo(info);
-			}
-
+			}			
+			
 			// Create the new delivery pass in the system.
 			pk = DeliveryPassDAO.create(conn, newPass);
 			if(newPass.getType().isAutoRenewDP()) {
@@ -374,7 +374,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 				info.setHasAutoRenewDP("Y");
 				info.setAutoRenewDPSKU(newPass.getType().getAutoRenewalSKU());
 				eb.setCustomerInfo(info);
-			}
+			}			
 
 		} catch (SQLException e) {
 			LOGGER.warn("SQLException while modifying the delivery pass.", e);
@@ -402,7 +402,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 	/**
 	 * This method removes an existing delivery pass from the system
 	 * when user modifies an order by removing a delivery pass.
-	 *
+	 * 
 	 * @param DeliveryPassModel
 	 * @throws DeliveryPassException
 	 */
@@ -418,7 +418,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 				info.setHasAutoRenewDP(null);
 				info.setAutoRenewDPSKU(null);
 				eb.setCustomerInfo(info);
-			}
+			}			
 		} catch (SQLException e) {
 			LOGGER.warn("SQLException while removing the delivery pass.", e);
 			throw new EJBException(e);
@@ -435,11 +435,11 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
-
+	
 	/**
 	 * This method cancels an existing active delivery pass from the system on
 	 * CSR request.
-	 *
+	 * 
 	 * @param deliveryPassId
 	 */
 	public void cancel(DeliveryPassModel dlvPassModel) {
@@ -449,14 +449,14 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 			// Update the delivery pass status to Cancelled/Order Cancelled.
 			DeliveryPassDAO.update(conn, dlvPassModel,false);
 			if(dlvPassModel.getType().isAutoRenewDP()) {
-
+				
 				ErpCustomerEB eb = this.getErpCustomerHome().findByPrimaryKey(new PrimaryKey(dlvPassModel.getCustomerId()));
 				ErpCustomerInfoModel info = eb.getCustomerInfo();
 				info.setHasAutoRenewDP(null);
 				info.setAutoRenewDPSKU(null);
 				eb.setCustomerInfo(info);
 			}
-
+			
 		} catch (SQLException e) {
 			LOGGER.warn("SQLException while cancelling the delivery pass.", e);
 			throw new EJBException(e);
@@ -477,7 +477,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 	/**
 	 * This method reactivates a cancelled delivery pass from the system on CSR
 	 * request.
-	 *
+	 * 
 	 * @param deliveryPassId
 	 */
 	public void reactivate(DeliveryPassModel dlvPassModel) {
@@ -507,7 +507,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 	/**
 	 * This method reactivates a cancelled delivery pass from the system on CSR
 	 * request.
-	 *
+	 * 
 	 * @param deliveryPassId
 	 */
 	private void update(DeliveryPassModel dlvPassModel) {
@@ -536,7 +536,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 	/**
 	 * This method increments the delivery count of a active BSGS pass on CSR
 	 * request.
-	 *
+	 * 
 	 * @param deliveryPassId
 	 * @param delta -
 	 *            the incremental value
@@ -551,7 +551,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 			numOfCredits = numOfCredits + delta;
 			dlvPassModel.setRemainingDlvs(remNoOfDlvs);
 			dlvPassModel.setNoOfCredits(numOfCredits);
-
+			
 			/*	This is the case when a BSGS pass is already expired and
 			 *	when the last delivery is credited back due to a return, you put it back to
 			 *	Active state.
@@ -559,7 +559,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 			if (remNoOfDlvs == 1 && EnumDlvPassStatus.EXPIRED_PENDING.equals(dlvPassModel.getStatus())) {
 				// The pass has one delivery left. So set the status to Active.
 				dlvPassModel.setStatus(EnumDlvPassStatus.ACTIVE);
-			}
+			}			
 			// Update the delivery pass remNoOfDlvs and num of credits to the db.
 			DeliveryPassDAO.update(conn, dlvPassModel,false);
 		} catch (SQLException e) {
@@ -583,19 +583,19 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 	/**
 	 * This method increments the expiration period of the unlimited pass by x
 	 * no.of days on CSR request.
-	 *
+	 * 
 	 * @param deliveryPassId
 	 * @param noOfdays
 	 */
 	public void extendExpirationPeriod(DeliveryPassModel dlvPassModel, int noOfdays) {
-
+		
 		if(!dlvPassModel.getType().isUnlimited())
 			return;
 
 		Connection conn = null;
 		boolean setOrigExpDate=false;
 		try {
-
+			
 			conn = getConnection();
 			Date expDate = dlvPassModel.getExpirationDate();
 			Calendar cal = Calendar.getInstance();
@@ -637,7 +637,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 	/**
 	 * This method returns a list of one or more delivery passes linked to this
 	 * customer account.
-	 *
+	 * 
 	 * @param customerPk
 	 * @return List - returns null if no delivery passes available for this
 	 *         customer.
@@ -669,7 +669,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 	/**
 	 * This method returns a list of one or more delivery passes linked to this
 	 * customer account based on given status.
-	 *
+	 * 
 	 * @param customerPk
 	 * @return List - returns null if no delivery passes available for this
 	 *         customer.
@@ -700,7 +700,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 	/**
 	 * This method returns details on a specific delivery pass linked to this
 	 * customer account.
-	 *
+	 * 
 	 * @param dlvpassId
 	 * @return List - returns null if no delivery passes available for this
 	 *         customer.
@@ -730,11 +730,11 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 		}
 		return deliveryPass;
 	}
-
+	
 	/**
 	 * This method returns a list of one or more delivery passes linked to this
 	 * order Id.
-	 *
+	 * 
 	 * @param orderId
 	 * @return List - returns null if no delivery passes available for this
 	 *         customer.
@@ -762,7 +762,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 		}
 		return deliveryPasses;
 	}
-
+	
 	public Map<Comparable, Serializable> getAllStatusMap(String customerPk){
 		Connection conn = null;
 		Map<Comparable, Serializable> allStatusMap = new HashMap<Comparable, Serializable>();
@@ -801,7 +801,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 					   (dlvPassStatus==EnumDlvPassStatus.PENDING)||
 					   (dlvPassStatus==EnumDlvPassStatus.READY_TO_USE)
 					   ) {
-
+						
 						usablePassCount=Integer.parseInt(allStatusMap.get(DlvPassConstants.USABLE_PASS_COUNT).toString());
 						usablePassCount++;
 						allStatusMap.put(DlvPassConstants.USABLE_PASS_COUNT, String.valueOf(usablePassCount));
@@ -812,7 +812,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 							allStatusMap.put(DlvPassConstants.AUTORENEW_DP_PRICE,new Double(model.getAmount()));
 							allStatusMap.put(DlvPassConstants.AUTORENEW_DP_TYPE,model.getType());
 						}
-
+						
 					}
 					Object ObjKey = allStatusMap.get(dlvPassStatus);
 					if(ObjKey != null){
@@ -841,7 +841,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 		return allStatusMap;
-
+		
 	}
 	/**
 	 * This method updates the existing delivery pass with the new price.
@@ -869,13 +869,13 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 				LOGGER.warn("SQLException while closing conn in cleanup", e);
 			}
 		}
-
+		
 	}
 	public void activateReadyToUsePass(DeliveryPassModel dlvPass) {
-
+		
 		if(!isReadyToUse(dlvPass.getStatus()))
 			return;
-
+		
 		Connection conn = null;
 		try {
 			conn = getConnection();
@@ -884,7 +884,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 				Date expiryDate=getExpirationDate(dlvPass.getType());
 				dlvPass.setOrgExpirationDate(expiryDate);
 				dlvPass.setExpirationDate(expiryDate);
-
+				
 			}
 			DeliveryPassDAO.update(conn, dlvPass,true);
 		} catch (SQLException e) {
@@ -902,9 +902,9 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 				LOGGER.warn("SQLException while closing conn in cleanup", e);
 			}
 		}
-
+		
 	}
-
+	
 	public  boolean isReadyToUse(EnumDlvPassStatus dpStatus) {
 		if(EnumDlvPassStatus.READY_TO_USE.equals(dpStatus)) {
 			return true;
@@ -914,7 +914,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 	   public Date getExpirationDate(DeliveryPassType dlvPassType) {
-
+		   
 		   if(dlvPassType.isUnlimited()) {
 				Calendar cal = Calendar.getInstance(Locale.US);
 				//Add duration to today's date to calculate expiration date.
@@ -938,7 +938,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 			} catch (Exception e) {
 				LOGGER.warn("Exception during hasPurchasedPass() for customer :"+customerPK,e);
 				throw new EJBException(e);
-			}
+			} 
 			finally {
 				try {
 					if (conn != null) {
@@ -952,7 +952,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 
 	   }
 	   public List<DeliveryPassModel> getUsableAutoRenewPasses(String customerPK ) {
-
+		   
 		   List<DeliveryPassModel> autoRenewPasses=null;
 			Connection conn = null;
 			try {
@@ -961,7 +961,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 			} catch (Exception e) {
 				LOGGER.warn("Exception during getUsableAutoRenewPasses() for customer :"+customerPK,e);
 				throw new EJBException(e);
-			}
+			} 
 			finally {
 				try {
 					if (conn != null) {
@@ -981,7 +981,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 			} catch (Exception e) {
 				LOGGER.warn("Exception during getAutoRenewalInfo()",e);
 				throw new EJBException(e);
-			}
+			} 
 			finally {
 				try {
 					if (conn != null) {
@@ -992,9 +992,9 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 				}
 			}
 
-
+		   
 	   }
-
+		
 		private ErpCustomerHome getErpCustomerHome() {
 			try {
 				return (ErpCustomerHome) LOCATOR.getRemoteHome("freshdirect.erp.Customer");
@@ -1002,10 +1002,10 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 				throw new EJBException(e);
 			}
 		}
-
+   
 
 	    public int getDaysSinceDPExpiry(String customerID) {
-
+	    	
 			Connection conn = null;
 			try {
 				conn = getConnection();
@@ -1013,7 +1013,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 			} catch (Exception e) {
 				LOGGER.warn("Exception during getAutoRenewalInfo()",e);
 				throw new EJBException(e);
-			}
+			} 
 			finally {
 				try {
 					if (conn != null) {
@@ -1024,9 +1024,9 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 				}
 			}
 	    }
-
+	    
 	    public int getDaysToDPExpiry(String customerID, String activeDPID) {
-
+	    	
 			Connection conn = null;
 			try {
 				conn = getConnection();
@@ -1034,7 +1034,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 			} catch (Exception e) {
 				LOGGER.warn("Exception during getAutoRenewalInfo()",e);
 				throw new EJBException(e);
-			}
+			} 
 			finally {
 				try {
 					if (conn != null) {
@@ -1047,17 +1047,17 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 	    }
 
 	    public List<List<String>> getPendingPasses() {
-
+	    	
 	    	Connection conn = null;
 			try {
 				conn = getConnection();
 				 return DeliveryPassDAO.getPendingPasses(conn);
-
-
+				 
+				 
 			} catch (Exception e) {
 				LOGGER.warn("Exception during getPendingPasses()",e);
 				throw new EJBException(e);
-			}
+			} 
 			finally {
 				try {
 					if (conn != null) {
@@ -1066,38 +1066,9 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 				} catch (SQLException e) {
 					LOGGER.warn("SQLException while closing conn in cleanup during getPendingPasses() call", e);
 				}
-
+				
 			}
 	    }
-
-	/**
-	 * Identify all the customers for whom the free trail subscription orders have to be placed.
-	 *
-	 * @return
-	 */
-	public List<String> getAllCustIdsOfFreeTrialSubsOrder() {
-
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			return DeliveryPassDAO.getAllCustIdsOfFreeTrialSubsOrder(conn);
-
-		} catch (Exception e) {
-			LOGGER.warn("Exception during getAllCustIdsOfFreeTrialSubsOrder()", e);
-			throw new EJBException(e);
-		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				LOGGER.warn(
-						"SQLException while closing conn in cleanup during getAllCustIdsOfFreeTrialSubsOrder() call",
-						e);
-			}
-
-		}
-	}
-
-
+	   
+	    
 }

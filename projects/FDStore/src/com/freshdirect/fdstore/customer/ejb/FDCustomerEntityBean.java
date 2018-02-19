@@ -71,7 +71,6 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 //	private String rafClickId;
 //	private String rafPromoCode;
 	private EnumPaymentMethodDefaultType defaultPaymentMethodType;
-	private boolean dpFreeTrailOptin;
 	/**
 	 * Copy into model.
 	 *
@@ -756,11 +755,4 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		this.setModified();
 	}
 
-	public boolean getDpFreeTrialOptin() {
-		return dpFreeTrailOptin;
-	}
-
-	public void setDpFreeTrailOptin(boolean dpFreeTrailOptin) {
-		this.dpFreeTrailOptin = dpFreeTrailOptin;
-	}
 }

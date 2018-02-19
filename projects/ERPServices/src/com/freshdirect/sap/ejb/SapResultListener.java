@@ -61,7 +61,6 @@ import com.freshdirect.erp.ejb.FDXOrderPickEligibleCronSB;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDPayPalServiceException;
-import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.MessageDrivenBeanSupport;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -71,7 +70,6 @@ import com.freshdirect.giftcard.ejb.GCGatewayHome;
 import com.freshdirect.giftcard.ejb.GCGatewaySB;
 import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
 import com.freshdirect.mail.ErpMailSender;
-import com.freshdirect.payment.PaymentManager;
 import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.routing.ejb.ErpRoutingGatewayHome;
 import com.freshdirect.routing.ejb.ErpRoutingGatewaySB;
@@ -217,20 +215,6 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 						addInvoice(saleEB, saleId, ((SapCreateSalesOrder) command).getInvoiceNumber());
 						ErpDeliveryConfirmModel deliveryConfirmModel = new ErpDeliveryConfirmModel();
 						saleEB.addDeliveryConfirm(deliveryConfirmModel);
-						
-						//Subscription only orders: Execute payment capture immediately after the delivery confirmation.
-						if(EnumSaleType.SUBSCRIPTION.equals(saleType)){
-							ErpAbstractOrderModel order = saleEB.getCurrentOrder();
-							if(null != order && order.getAmount() <=0){ //Free-trial DP
-								saleEB.forcePaymentStatus();
-							}
-							/*try{
-								PaymentManager paymentManager = new PaymentManager();
-								paymentManager.captureAuthorization(saleId);
-							}catch(ErpTransactionException te){
-								LOGGER.warn( "Sale is not in the right status to be captured: "+saleId, te);
-							}*/
-						}
 					}
 					if (EnumSaleType.GIFTCARD.equals(saleType)) {
 						saleEB.cutoff();
