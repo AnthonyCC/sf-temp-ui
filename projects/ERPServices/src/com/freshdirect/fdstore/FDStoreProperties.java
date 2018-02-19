@@ -1017,6 +1017,8 @@ public class FDStoreProperties {
 	
 	public final static String PROP_FDC_NEW_BACKIN_USE_FD_ENABLED = "fdstore.new.backinstock.fdc.use.fd.enabled";
 	
+	public final static String PROP_FD_DP_FREE_TRIAL_OPTIN_FEATURE_ENABLED = "fdstore.fd.dp.freetrial.optin.feature.enabled";
+	
 
  	static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -1947,6 +1949,8 @@ public class FDStoreProperties {
 		defaults.put(PROP_FDC_NEW_BACKIN_USE_FD_ENABLED,"false");
 		
 		defaults.put(DATABASE_IN_CONDITION_LIMIT, "50");
+		defaults.put(PROP_FD_DP_FREE_TRIAL_OPTIN_FEATURE_ENABLED, "false");
+		
         refresh();
     }
 
@@ -4949,4 +4953,9 @@ public class FDStoreProperties {
 	public static int getInConditionLimit() {
 		return Integer.parseInt(get(DATABASE_IN_CONDITION_LIMIT));
 	}
+	
+	public static boolean isDlvPassFreeTrialOptinFeatureEnabled(){
+		return (Boolean.valueOf(get(PROP_FD_DP_FREE_TRIAL_OPTIN_FEATURE_ENABLED))).booleanValue();
+	}
+	
 }

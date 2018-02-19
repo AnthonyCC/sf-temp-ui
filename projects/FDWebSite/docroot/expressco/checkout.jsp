@@ -18,8 +18,9 @@
 <fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" redirectPage="/login/login.jsp?successPage=/expressco/checkout.jsp" />
 <%
 MasqueradeContext masqueradeContext = user.getMasqueradeContext();
-Map<String,String> phoneNumberMap = new HashMap<String,String>();
-phoneNumberMap.put("phoneNumber", user.getCustomerServiceContact());
+Map<String,String> checkoutHeaderMap = new HashMap<String,String>();
+checkoutHeaderMap.put("phoneNumber", user.getCustomerServiceContact());
+checkoutHeaderMap.put("label", "Checkout");
 boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
 String pageTemplate = "/expressco/includes/ec_template.jsp";
 if (mobWeb) {
@@ -74,7 +75,7 @@ if (mobWeb) {
 	</div>
   	<% } %>
   	<%-- MASQUERADE HEADER ENDS HERE --%>
-  	<soy:render template="expressco.checkoutheader" data="<%=phoneNumberMap %>" injectAdditonalData="false" />
+  	<soy:render template="expressco.checkoutheader" data="<%=checkoutHeaderMap %>" injectAdditonalData="false" />
   </tmpl:put>
 
   <tmpl:put name="bottomnav">

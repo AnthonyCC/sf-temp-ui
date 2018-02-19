@@ -57,8 +57,32 @@
 		<fd:ErrorHandler result='<%=result%>' name='dlvpass_discontinued' id='errorMsg'>
 		   <%@ include file="/includes/i_error_messages.jspf" %>   
 		</fd:ErrorHandler>
+		
+    <%if(user.getDpFreeTrialOptin() && user.isDlvPassNone()) {  %>
     
-        <fd:WebViewDeliveryPass id='viewContent'>
+    <table width="<%= W_YA_DELIVERY_PASS_TOTAL %>" align="center" border="0" cellpadding="0" cellspacing="0">
+			<tr>
+				<td colspan="2" class="text11">
+					<font class="title18">FreshDirect DeliveryPass</font>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">Your membership details.
+					<br>
+					<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+					<IMG src="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="<%= W_YA_DELIVERY_PASS_TOTAL %>" HEIGHT="1" BORDER="0"><BR>
+					<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><br><br>
+					
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" class="text13">
+					<font class="text13">You have opted into the DeliveryPass Free Trial on <%= user.getDpFreeTrialOptinStDate() %> date. You will start receiving free deliveries on your next order.</font><br><br>
+				</td>
+			</tr>
+			
+		<%} else { %>
+			<fd:WebViewDeliveryPass id='viewContent'>
         	
 		<table width="<%= W_YA_DELIVERY_PASS_TOTAL %>" align="center" border="0" cellpadding="0" cellspacing="0">
 			<tr>
@@ -320,6 +344,7 @@
 			</tr>	
 		</table>
         </fd:WebViewDeliveryPass>
+        <%} %>
 </fd:DlvPassSignupController>        
 	<table width="<%= W_YA_DELIVERY_PASS_TOTAL %>" align="center" border="0" cellpadding="0" cellspacing="0">
 		<tr>

@@ -77,7 +77,7 @@ public class SessionUser {
 
         return newInstance;
     }
-    
+
     // DOOR3 FD-iPad FDIP-474
 	public boolean isFutureZoneNotificationEmailSentForCurrentAddress()
 	{
@@ -105,9 +105,9 @@ public class SessionUser {
     }
 
     public List<PaymentMethod> getEwallet(List PaymentMethods) {
-    	
+
         List<PaymentMethod> ewallet = new ArrayList<PaymentMethod>();
-        if(MobileApiProperties.isPayPalEnabled()){	// Check PayPal wallet is Enabled 
+        if(MobileApiProperties.isPayPalEnabled()){	// Check PayPal wallet is Enabled
 	        for (ErpPaymentMethodI paymentMethod : (List<ErpPaymentMethodI>) PaymentMethods) {
 	           if( EnumCardType.PAYPAL.equals(paymentMethod.getCardType())) {
 					com.freshdirect.mobileapi.model.PaymentMethod paymentMethodModel =com.freshdirect.mobileapi.model.PaymentMethod.wrap(paymentMethod);
@@ -128,7 +128,7 @@ public class SessionUser {
         }
         return electronicChecks;
     }
-    
+
     public List<PaymentMethod> getEBTCards(List paymentMethods) {
         List<PaymentMethod> ebtCards = new ArrayList<PaymentMethod>();
         if(null !=paymentMethods){
@@ -202,26 +202,26 @@ public class SessionUser {
     public List<OrderInfo> getCompleteOrderHistory() throws FDException {
         OrderHistoryInfoTagWrapper wrapper = new OrderHistoryInfoTagWrapper(this);
 
-        List<FDOrderInfoI> history = (List<FDOrderInfoI>) wrapper.getOrderHistoryInfo();
+        List<FDOrderInfoI> history = wrapper.getOrderHistoryInfo();
 
         List<FDOrderInfoI> filteredHistory = new ArrayList<FDOrderInfoI>();
-        
+
         //Filtering out Giftcart and Donation
         for(FDOrderInfoI historyItem : history) {
             if(!EnumSaleType.GIFTCARD.equals(historyItem.getSaleType()) && !EnumSaleType.DONATION.equals(historyItem.getSaleType())) {
                 filteredHistory.add(historyItem);
             }
         }
-        
+
         return OrderInfo.wrap(filteredHistory);
     }
 
     /**
-     * DUP: duplicated code from 
+     * DUP: duplicated code from
      * Class - com.freshdirect.webapp.taglib.fdstore.UserUtil
      * Method - getCustomerServiceContact
      * Comment - refactored to remove dependencies on HTTPServletRequest
-     * 
+     *
      * @param request
      * @return
      */
@@ -323,8 +323,8 @@ public class SessionUser {
             } catch (ModelException e) {
                 throw new FDResourceException(e);
             }
-            //            
-            //            
+            //
+            //
             //            ProductConfiguration productConfiguration = new ProductConfiguration();
             //            try {
             //                Product productData = Product.wrap(product.getProductRef().lookupProduct(), this.sessionUser.getUser());
@@ -344,7 +344,7 @@ public class SessionUser {
         }
         return result;
     }
-    
+
     public List<ProductConfiguration> getStarterListProducts(String starterListId) throws FDException, ModelException {
         List<ProductConfiguration> result = new ArrayList<ProductConfiguration>();
 
@@ -370,7 +370,7 @@ public class SessionUser {
             } catch (ModelException e) {
                 throw new FDResourceException(e);
             }
-            
+
             productConfiguration.setFromProductSelection(ProductSelection.wrap(product));
 
             for (FDCartLineI cartLine : cartLines) {
@@ -442,7 +442,7 @@ public class SessionUser {
             //Specific reservation doesn't exist. try to match by day of week and time range.
             String foundId = "";
             ErpCustomerInfoModel customerInfo = FDCustomerFactory.getErpCustomerInfo(sessionUser.getIdentity());
-            boolean hasWeeklyReservation = customerInfo.getRsvAddressId() != null && !"".equals(customerInfo.getRsvAddressId()) 
+            boolean hasWeeklyReservation = customerInfo.getRsvAddressId() != null && !"".equals(customerInfo.getRsvAddressId())
             		&&  address != null && address.getPK() != null && address.getPK().getId() != null && customerInfo.getRsvAddressId().equals(address.getPK().getId());
             if (hasWeeklyReservation) {
                 int maxloop = 8;
@@ -474,8 +474,8 @@ public class SessionUser {
             }
         }
 
-        
-        //Set timeslot for checkout         
+
+        //Set timeslot for checkout
         FDReservation deliveryReservation = this.sessionUser.getShoppingCart().getDeliveryReservation();
         if (deliveryReservation != null && matchReservationToAddress(deliveryReservation, address)) {
             timeSlotCalculationResult.setPreselectedTimeslotId(deliveryReservation.getTimeslotId());
@@ -483,15 +483,15 @@ public class SessionUser {
             	timeSlotCalculationResult.setShowMinNotMetMessage(true);
             else
             	timeSlotCalculationResult.setShowMinNotMetMessage(false);
-            	
+
         }
     }
-    
+
     private boolean matchReservationToAddress(FDReservation deliveryReservation, ErpAddressModel address) {
     	String addressId = null;
     	if(address!=null && address.getPK() != null && address.getPK().getId() != null)
     		addressId = address.getPK().getId();
-    	return (deliveryReservation!=null && !TimeslotLogic.isAddressChange(deliveryReservation.getAddress(), address, addressId, 
+    	return (deliveryReservation!=null && !TimeslotLogic.isAddressChange(deliveryReservation.getAddress(), address, addressId,
     			deliveryReservation.getAddressId()));
 //    	return (deliveryReservation != null && address != null && address.getPK() != null && address.getPK().getId() != null
 //                   && address.getPK().getId().equals(deliveryReservation.getAddressId())
@@ -500,7 +500,7 @@ public class SessionUser {
 //                   && address.getApartment().equals(deliveryReservation.getAddress().getApartment())
 //                   && address.getZipCode().equals(deliveryReservation.getAddress().getZipCode()));
     }
-    
+
     public String getDefaultShipToAddress() throws FDResourceException {
         String addressId = FDCustomerManager.getDefaultShipToAddressPK(sessionUser.getIdentity());
         return addressId;
@@ -529,9 +529,9 @@ public class SessionUser {
     public String getCutoffInfo() throws FDException {
         GetCutoffInfoTagWrapper wrapper = new GetCutoffInfoTagWrapper(this);
         String messageString = null;
-        
+
         CutoffInfo cutoffInfo = wrapper.getCutoff();
-        
+
         /*
          * DUP: FDWebSite/docroot/common/template/includes/i_cutoff_warning.jsp
          * LAST UPDATED ON: 11/17/2009
@@ -587,7 +587,7 @@ public class SessionUser {
             }
             messageString = message.toString();
         }
-        
+
         return messageString;
     }
 
@@ -615,47 +615,47 @@ public class SessionUser {
     public void setUserContext() {
         ContentFactory.getInstance().setCurrentUserContext(sessionUser.getUserContext());
     }
-    
+
     public void setEligibleForDDPP() {
         ContentFactory.getInstance().setEligibleForDDPP(FDStoreProperties.isDDPPEnabled() || sessionUser.isEligibleForDDPP());
     }
-    
-    
+
+
     public double getMaxSignupPromotion() {
         return sessionUser.getMaxSignupPromotion();
-        
+
     }
     public String getZipCode() {
     	return sessionUser.getZipCode();
     }
-    
+
     public int getPromoErrorCode(String promoCode) {
     	return sessionUser.getPromoErrorCode(promoCode);
     }
     public EnumServiceType getServiceType() {
     	return sessionUser.getUserServiceType();
     }
-    
+
     public boolean isLoggedIn() {
     	return (sessionUser.getIdentity() != null) ;
     }
-    
+
     public AddressModel getAddress() {
     	return sessionUser.getAddress();
     }
-    
+
     public boolean isDpNewTcBlocking() {
     	return sessionUser.isDpNewTcBlocking(false); //Mobile API doesnt care about view count of t&c
     }
-    
+
     public boolean isEbtAccepted() {
 		return sessionUser.isEbtAccepted();
 	}
-    
+
     public String getPrimaryKey() {
 		return sessionUser.getPrimaryKey();
 	}
-    
+
     public boolean isCouponEvaluationRequired() {
 		return sessionUser.isCouponEvaluationRequired();
 	}
@@ -663,22 +663,22 @@ public class SessionUser {
 	public void setCouponEvaluationRequired(boolean couponEvaluationRequired) {
 		sessionUser.setCouponEvaluationRequired(couponEvaluationRequired);
 	}
-	
+
 	public boolean isRefreshCouponWalletRequired() {
 		return sessionUser.isRefreshCouponWalletRequired();
 	}
 	public void setRefreshCouponWalletRequired(boolean refreshCouponWalletRequired) {
 		sessionUser.setRefreshCouponWalletRequired(refreshCouponWalletRequired);
 	}
-	
+
 	public EnumServiceType getSelectedServiceType() {
     	return sessionUser.getSelectedServiceType();
     }
-	
+
 	public String getCohort() {
 		return sessionUser.getCohortName();
 	}
-	
+
 	public int getTotalOrderCount() {
 		try {
 			OrderHistoryI _history = sessionUser.getOrderHistory();
@@ -691,7 +691,7 @@ public class SessionUser {
 		};
 		return 0;
 	}
-	
+
 	public boolean isFake() {
 		return false;
 	}
@@ -703,37 +703,37 @@ public class SessionUser {
 			return "";
 		}
 	}
-	
+
 	public void setAddress(AddressModel a) {
 		sessionUser.setAddress(a);
 	}
 	public boolean getTcAcknowledge(){
 		return sessionUser.getTcAcknowledge();
 	}
-	
+
 	public void setTcAcknowledge(boolean ack){
 		this.sessionUser.setTcAcknowledge(ack);
 	}
-	
-	
+
+
 	public boolean isVHInDelivery() throws FDResourceException {
 		return this.sessionUser.isVHInDelivery();
-		
+
 	}
 
-	
+
 	public boolean isVHOutOfDelivery() throws FDResourceException {
 		return this.sessionUser.isVHOutOfDelivery();
 	}
-	
+
 	public boolean isVoucherHolder() throws FDResourceException {
 		return this.isVHInDelivery() || this.isVHOutOfDelivery();
 	}
-	
+
 	public boolean isAvalaraTaxed(){
 		return this.sessionUser.isAvalaraTaxed();
 	}
-	
+
 	public void setIsAvalaraTaxed(boolean isAvalaraTaxed){
 		this.sessionUser.setIsAvalaraTaxed(isAvalaraTaxed);
 	}
@@ -745,19 +745,19 @@ public class SessionUser {
 	public void setSoContainerOpen(boolean isSoContainerOpen) {
 		this.sessionUser.setSoContainerOpen(isSoContainerOpen);
 	}
-	
+
 	public UserContext getUserContext() {
         return sessionUser.getUserContext();
     }
-	
+
 	public boolean isMobilePlatForm(){
 		return this.sessionUser.isMobilePlatForm();
 	}
-	
+
 	public void setIsMobilePlatForm(boolean isMobilePlatForm){
 		this.sessionUser.setMobilePlatForm(isMobilePlatForm);
 	}
-	
+
 	public String isFromLogin() {
 		return this.sessionUser.isFromLogin();
 	}
@@ -765,5 +765,13 @@ public class SessionUser {
 
 	public void setFromLogin(String fromLogin) {
 		this.sessionUser.setFromLogin(fromLogin);
+	}
+
+	public void updateDpFreeTrialOptin(boolean dpFreeTrialOptin) {
+		this.sessionUser.updateDpFreeTrialOptin(dpFreeTrialOptin);
+	}
+
+	public boolean isDPFreeTrialOptInEligible(){
+		return !this.sessionUser.getDpFreeTrialOptin() && (null == this.sessionUser.getDlvPassInfo() || !this.sessionUser.getDlvPassInfo().isFreeTrialRestricted());
 	}
 }

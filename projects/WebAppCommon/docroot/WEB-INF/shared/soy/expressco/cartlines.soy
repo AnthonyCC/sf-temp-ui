@@ -1360,7 +1360,11 @@
 							</form>
 						{/if}
 						{if $box.other.deliveryPassPopupNeeded and $userRecognized and $userCorporate == false}
-							<span class="free-link-holder">&nbsp;or <a href="#" class="free-link" data-component="deliverypasspopup">Free</a></span>
+							{if $box.other.deliveryPassFreeTrialEligible}
+								<span class="free-link-holder">&nbsp;or <a href="javascript:doOverlayDialogNew('/includes/freetrial_popup.jsp');" class="free-link" >Free</a></span>
+							{else}
+								<span class="free-link-holder">&nbsp;or <a href="#" class="free-link" data-component="deliverypasspopup">Free</a></span>
+							{/if}
 						{/if}
 					</div> <!-- end subtotal__rowcell-right -->
 				{/if} /*end if $box.other */
