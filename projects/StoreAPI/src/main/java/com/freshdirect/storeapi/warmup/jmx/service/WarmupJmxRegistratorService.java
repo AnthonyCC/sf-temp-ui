@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class WarmupJmxRegistratorService {
 
-    public static final String WARMUP_JMX_PUBLISHER_OBJECTNAME = "com.freshdirect.storeapi:Type=Warmup,Name=WarmupJmx" + UUID.randomUUID() + ",Location=" + System.getProperty("weblogic.Name");
+    public static final String WARMUP_JMX_PUBLISHER_OBJECTNAME = "com.freshdirect.storeapi:Type=Warmup,Name=WarmupJmx-" + UUID.randomUUID() + ",Location=" + System.getProperty("weblogic.Name");
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WarmupJmxRegistratorService.class);
 
@@ -29,7 +29,6 @@ public class WarmupJmxRegistratorService {
     public void registerWarmupMBeans() {
         LOGGER.info("Registering WarmupJmxPublisher");
         try {
-
             MBeanServer connection = RuntimeMBeanConnector.connectToRuntimeMBeanServer();
             if (connection != null) {
                 ObjectName warmupJmxPublisherMbeanName = new ObjectName(WARMUP_JMX_PUBLISHER_OBJECTNAME);
@@ -44,5 +43,4 @@ public class WarmupJmxRegistratorService {
             LOGGER.error("WarmupJmxPublisher Error while registering JMXWarmupMBeans", e);
         }
     }
-
 }
