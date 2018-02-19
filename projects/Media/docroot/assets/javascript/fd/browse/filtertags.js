@@ -3,7 +3,7 @@ var FreshDirect = FreshDirect || {};
 
 (function (fd) {
   "use strict";
-
+  
   var $ = fd.libs.$;
   var WIDGET = fd.modules.common.widget;
   var cm = fd.components.coremetrics;
@@ -20,6 +20,12 @@ var FreshDirect = FreshDirect || {};
     },
     handleClick:{
       value:function(clickEvent){
+
+    	  var keyCode = clickEvent.keyCode;
+    	  if (clickEvent.type=="keyup"&&(keyCode!=13)){
+    		  return;
+    	  } 
+
         var clicked = $(clickEvent.currentTarget),
             menu = FreshDirect.browse.menu,
             parent = clicked.parents('[data-component="filtertags"]');
@@ -42,6 +48,6 @@ var FreshDirect = FreshDirect || {};
 
   filtertags.listen();
   $(document).on('click',filtertags.placeholder+' [data-component="filtertag"]',filtertags.handleClick.bind(filtertags));
-
+  $(document).on('keyup',filtertags.placeholder+' [data-component="filtertag"]',filtertags.handleClick.bind(filtertags));
   fd.modules.common.utils.register("browse", "filtertags", filtertags, fd);
 }(FreshDirect));

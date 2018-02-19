@@ -374,6 +374,7 @@ public class CartDataService {
         item.setNewItem((cart instanceof FDModifyCartModel) && !(cartLine instanceof FDModifyCartLineI));
         item.setPrice(JspMethods.formatPrice(cartLine.getPrice()));
         item.setDescr(cartLine.getDescription());
+        item.setDescrAlt(cartLine.getDescription());
         item.setConfDescr(cartLine.getConfigurationDesc());
         item.setConfOptions(cartLine.getConfiguration().getOptions());
         Discount tempDisc = cartLine.getDiscount();

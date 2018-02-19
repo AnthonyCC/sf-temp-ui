@@ -6,7 +6,7 @@
 	{if $filterLabels and length($filterLabels) > 0}
     <ul class="filterTags" data-component="filtertags">
       {foreach $filterLabel in $filterLabels}
-        <li data-component="filtertag" data-id="{$filterLabel.id}" data-parentid="{$filterLabel.parentId}" class="icon-cancel-circle-before"><span>{$filterLabel.name}</span></li>
+        <li tabindex="0" data-component="filtertag" data-id="{$filterLabel.id}" data-parentid="{$filterLabel.parentId}" class="icon-cancel-circle-before"><span class="offscreen">remove</span><span>{$filterLabel.name}</span><span class="offscreen">filter</span></li>
       {/foreach}
     </ul>
 	{/if}

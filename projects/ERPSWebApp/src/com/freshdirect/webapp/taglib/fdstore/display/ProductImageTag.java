@@ -415,7 +415,7 @@ public class ProductImageTag extends BodyTagSupport {
         }
 
         buf.append(" alt=\"");
-        buf.append(product.getFullName());
+        buf.append(product.getFullName().replace("\"", "").replace("'", ""));
         buf.append("\"");
 
         //setting a style will override coupon style

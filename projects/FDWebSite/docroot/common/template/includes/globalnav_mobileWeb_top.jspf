@@ -8,6 +8,9 @@
 		<%@ include file="/shared/locationbar/locationbar_fdx.jsp" %>
 	</div>
 	<nav class="navbar">
+		<!-- Adding Skip to Navigation : Start-->
+	<a href="#skip_to_content" class="skipnav">Skip to Content</a>
+        <!-- Adding Skip to Navigation : End-->
 		<div class="navbar-header">
 			<div class="pull-left navbar-header-left">
 				<button id="navbarShow" type="button" class="navbar-toggle pull-left">
@@ -141,7 +144,7 @@
 		</div>
 	</nav>
 </div>
-
+<span id="skip_to_content"></span>
 <%-- nav menu --%>
 <%
 	StoreModel store = ContentFactory.getInstance().getStore();
