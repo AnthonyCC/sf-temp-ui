@@ -166,7 +166,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 
     private boolean surveySkipped = false;
     public String fromLogin;
-
+    
     private transient ErpCustomerInfoModel customerInfoModel;
     private transient FDOrderHistory cachedOrderHistory;
     private transient CustomerAvgOrderSize historicOrderSize;
@@ -303,27 +303,27 @@ public class FDUser extends ModelSupport implements FDUserI {
     private boolean vHPopupDisplay = false;
 
     private Collection<FDStandingOrder> validSO3s = new ArrayList<FDStandingOrder>();
-
+    
     private Collection<FDStandingOrder> allSO3s = new ArrayList<FDStandingOrder>();
-
+    
     private Map<String, Object> validSO3Data = new HashMap<String, Object>();
 
     private boolean refreshSO3 = true;
-
+    
     private boolean refreshSO3Settings = true;
 
     private boolean isZipCheckPopupUsed = false;
-
+    
     private Map<String,String> soCartLineMessagesMap=new HashMap<String,String>();
-
+    
     private boolean refreshSoCartOverlay = true;
-
+    
     private boolean  soCartOverlayFirstTime = false;
-
+    
     private boolean refreshNewSoFeature = true;
-
+    
     private boolean soFeatureOverlay = false;
-
+    
 	public Date getTcAcknowledgeDate() {
         return tcAcknowledgeDate;
     }
@@ -414,7 +414,7 @@ public class FDUser extends ModelSupport implements FDUserI {
             this.shoppingCart.setEStoreId(this.getUserContext().getStoreContext().getEStoreId());
         }
     }
-
+    
     // Used only for Storefront 2.0
     public FDUser(PrimaryKey pk,UserContext userContext) {
         super();
@@ -454,7 +454,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     public void setZipCode(String zipCode) {
     	setZipCode(zipCode, true);
     }
-
+    
     public void setZipCode(String zipCode, boolean populateUserContext) {
         AddressModel a = new AddressModel();
         a.setZipCode(zipCode);
@@ -485,7 +485,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 
     }
 
-
+    
     @Override
     public AddressModel getAddress() {
         return this.address;
@@ -638,9 +638,9 @@ public class FDUser extends ModelSupport implements FDUserI {
 
     @Override
     public void updateUserState() {
-    	this.updateUserState(true);
+    	this.updateUserState(true);        
     }
-
+    
     @Override
     public void updateUserState(boolean syncServiceType){
     	try {
@@ -654,8 +654,8 @@ public class FDUser extends ModelSupport implements FDUserI {
 	        		}
 	        	}
 	    	}
-
-
+    	
+        	
             this.getShoppingCart().recalculateTaxAndBottleDeposit(getZipCode());
             this.getShoppingCart().updateSurcharges(new FDRulesContextImpl(this));
             /* APPDEV-1888 */
@@ -667,7 +667,7 @@ public class FDUser extends ModelSupport implements FDUserI {
         } catch (FDResourceException e) {
             throw new FDRuntimeException(e.getMessage());
         }
-
+    	
     }
 
     @Override
@@ -690,7 +690,7 @@ public class FDUser extends ModelSupport implements FDUserI {
         this.clearPromoErrorCodes();
         this.getShoppingCart().setDlvPassExtn(null);
         this.getShoppingCart().setDlvPromotionApplied(false);
-        if ((this.getShoppingCart().getDeliveryPassCount() > 0) || (this.isDlvPassActive()) || this.getDpFreeTrialOptin()) {
+        if ((this.getShoppingCart().getDeliveryPassCount() > 0) || (this.isDlvPassActive())) {
             this.getShoppingCart().setDlvPassApplied(true);
         }
 
@@ -796,10 +796,10 @@ public class FDUser extends ModelSupport implements FDUserI {
 
     /*
      * private OrderHistoryI getOrderHistoryInfo() throws FDResourceException {
-     *
+     * 
      * This change is rollbacked temporarily. if(EnumTransactionSource.CUSTOMER_REP.equals(application)){ //If CRM load entire order history. return
      * FDCustomerManager.getOrderHistoryInfo(this.identity); } else { //Load only Order History Summary. return FDCustomerManager.getWebOrderHistoryInfo(this.identity); }
-     *
+     * 
      * //Load Entire order history inspite of CRM or WEB. return FDCustomerManager.getOrderHistoryInfo(this.identity); }
      */
 
@@ -1289,14 +1289,14 @@ public class FDUser extends ModelSupport implements FDUserI {
         try {
         	// ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId();
         	boolean isChefsTable = this.isChefsTable();
-        	return getCustomerServiceContact(isChefsTable, isChefsTable? null : extractStateFromAddress(),
+        	return getCustomerServiceContact(isChefsTable, isChefsTable? null : extractStateFromAddress(), 
         			 ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId());
         } catch (FDResourceException e) {
             throw new FDRuntimeException(e);
         }
     }
     /**
-     *
+     * 
      * @param isChefsTable boolean, obvious
      * @param state String state, two digit state, we are looking for PA use case
      * @param eStoreId  EnumEStoreId, logic is either FK or FDX
@@ -1308,13 +1308,13 @@ public class FDUser extends ModelSupport implements FDUserI {
     	else {
     		return  FDStoreProperties.FOODKICK_SERVICE_CONTACT;
     	}
-
+ 
   }
-
+    
 
 
     public String getCustomerServiceContact(boolean isChefsTable, String state) {
-
+        
 //        String state = "";
         String contactNumber =   FDStoreProperties.getDefaultCustomerServiceContact() ; //1-866-283-7374";// DEFAULT
         if (isChefsTable) {
@@ -1327,7 +1327,7 @@ public class FDUser extends ModelSupport implements FDUserI {
         }
         return contactNumber;
 
-
+        
     }
     private String extractStateFromAddress() {
         String state = "";
@@ -1419,7 +1419,7 @@ public class FDUser extends ModelSupport implements FDUserI {
         }
         return userId;
     }
-
+    
     public void setUserId(String userId){
     	this.userId =userId;
     }
@@ -1449,7 +1449,7 @@ public class FDUser extends ModelSupport implements FDUserI {
             referrerEligible = Boolean.valueOf(calc.isEligible(new FDRulesContextImpl(this)));
         }
         return referrerEligible.booleanValue();
-
+        
     }
 
     @Override
@@ -1892,7 +1892,7 @@ public class FDUser extends ModelSupport implements FDUserI {
         	if(null == hasAutoRenewDP){
 	            FDCustomerModel customer = this.getFDCustomer();
 	            String customerPK = customer.getErpCustomerPK();
-
+	
 	            hasAutoRenewDP = FDCustomerManager.hasAutoRenewDP(customerPK);
 	            return hasAutoRenewDP;
         	}
@@ -1900,7 +1900,7 @@ public class FDUser extends ModelSupport implements FDUserI {
         }
         return EnumDPAutoRenewalType.NONE;
     }*/
-
+    
     public EnumDPAutoRenewalType hasAutoRenewDP() throws FDResourceException {
         if (this.identity != null) {
             String customerPK = identity.getErpCustomerPK();
@@ -2306,9 +2306,9 @@ public class FDUser extends ModelSupport implements FDUserI {
 
     /**
      * Ensures StandingOrder feature is enabled for the customer
-     *
+     * 
      * 1. Check personal availability in profile attributes 2. Check global availability in fdstore.properties
-     *
+     * 
      */
     protected boolean isSOEnabled() {
         // Check personal flag in user profile
@@ -2333,9 +2333,9 @@ public class FDUser extends ModelSupport implements FDUserI {
 
     /**
      * Ensures customer is eligible for StandingOrder feature.
-     *
+     * 
      * 1. Check if so is enabled (globally or for the user) 2. Check if customer satisfies every requirement.
-     *
+     * 
      */
     @Override
     public boolean isEligibleForStandingOrders() {
@@ -2434,7 +2434,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 
         return userContext;
     }
-
+    
     public UserContext getUserContext(boolean override) {
         try {
 
@@ -2470,12 +2470,12 @@ public class FDUser extends ModelSupport implements FDUserI {
     }
 
     private FulfillmentInfo getFulfillmentInfo(ErpAddressModel address, Date deliveryDate, boolean override) {
-        try {
+        try {      	
         	FDDeliveryZoneInfo deliveryZoneInfo = FDDeliveryManager.getInstance().getZoneInfo(address, (deliveryDate!=null)?deliveryDate: getNextDay(), getHistoricOrderSize(), this.getRegionSvcType(address.getId()),
-                     address.getCustomerId());
+                     address.getCustomerId());  
         	if(override){
 	        	//APPDEV 6442 FDC transition changes
-	        	FDDeliveryZoneInfo f = overrideZoneInfo(address, deliveryZoneInfo);
+	        	FDDeliveryZoneInfo f = overrideZoneInfo(address, deliveryZoneInfo);       	 
 	            if (f!=null && f.getFulfillmentInfo()!=null){
 	            	return f.getFulfillmentInfo();
 	            }
@@ -2494,9 +2494,9 @@ public class FDUser extends ModelSupport implements FDUserI {
     public  FDDeliveryZoneInfo overrideZoneInfo(ErpAddressModel address,
 			FDDeliveryZoneInfo deliveryZoneInfo) throws FDResourceException,FDInvalidAddressException {
 		int lookAheadDays = FDStoreProperties.getFdcTransitionLookAheadDays();
-
+		
 		if(lookAheadDays > 0){
-		FDDeliveryZoneInfo reservationDeliveryZoneInfo = getReservationDeliveryZoneInfo(address);
+		FDDeliveryZoneInfo reservationDeliveryZoneInfo = getReservationDeliveryZoneInfo(address); 
 		//Case 1: If the user has a reservation, we will be using the fulfillment information associated with user's reservation as the user context at the time of login
 		if(null!=reservationDeliveryZoneInfo){
 			return reservationDeliveryZoneInfo;
@@ -2530,7 +2530,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 		return isDifferentPlant;
 
 	}
-
+	
 	private FDDeliveryZoneInfo getReservationDeliveryZoneInfo(ErpAddressModel address) {
 
 		Date standardReservationDeliveryDate = null;
@@ -2580,7 +2580,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 		}
 		return null;
 	}
-
+	
 	private UserContext setFulfillmentAndPricingContext(UserContext userContext, ErpAddressModel address, boolean override) throws FDResourceException {
 
         FulfillmentContext fulfillmentContext = new FulfillmentContext();
@@ -2602,15 +2602,15 @@ public class FDUser extends ModelSupport implements FDUserI {
         ZoneInfo zoneInfo = null;
 
         if (isAddressValidForFulfillmentCheck(address)) {
-            fulfillmentInfo = getFulfillmentInfo(address, (this.getShoppingCart() instanceof FDModifyCartModel)?
-            		(this.getShoppingCart()!=null && this.getShoppingCart().getDeliveryReservation()!=null
-            		&& this.getShoppingCart().getDeliveryReservation().getTimeslot()!=null
-            		&& this.getShoppingCart().getDeliveryReservation().getTimeslot().getDeliveryDate()!=null ?
+            fulfillmentInfo = getFulfillmentInfo(address, (this.getShoppingCart() instanceof FDModifyCartModel)? 
+            		(this.getShoppingCart()!=null && this.getShoppingCart().getDeliveryReservation()!=null 
+            		&& this.getShoppingCart().getDeliveryReservation().getTimeslot()!=null 
+            		&& this.getShoppingCart().getDeliveryReservation().getTimeslot().getDeliveryDate()!=null ? 
             		this.getShoppingCart().getDeliveryReservation().getTimeslot().getDeliveryDate() : null):
-            		(this.getShoppingCart()!=null && this.getShoppingCart().getDeliveryReservation()!=null
-            		&& this.getShoppingCart().getDeliveryReservation().getTimeslot()!=null
+            		(this.getShoppingCart()!=null && this.getShoppingCart().getDeliveryReservation()!=null 
+            		&& this.getShoppingCart().getDeliveryReservation().getTimeslot()!=null 
             		&& this.getShoppingCart().getDeliveryReservation().getTimeslot().getDeliveryDate()!=null
-            		&& address!=null && address.getPK()!=null
+            		&& address!=null && address.getPK()!=null 
             		&& this.getShoppingCart().getDeliveryReservation().getAddressId()!=null
             		&& this.getShoppingCart().getDeliveryReservation().getAddressId().equals(address.getId())
             		&& !this.getShoppingCart().getDeliveryReservation().getTimeslot().getDeliveryDate().before(today()))?
@@ -2655,7 +2655,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 		}
 		return isPickupOnlyORNotServicebleZip;
 	}
-
+	
     /** use getUserContext().setPricingContext() instead */
     @Deprecated
     protected void setPricingContext(PricingContext pricingContext) {
@@ -2913,13 +2913,13 @@ public class FDUser extends ModelSupport implements FDUserI {
 
                 /*
                  * if we wanted individual types of GC or donation orders, use this code String ordDeliveryType = orderInfo.getDeliveryType().toString();
-                 *
+                 * 
                  * //gift cards String gcCodePersonal = EnumDeliveryType.GIFT_CARD_PERSONAL.getCode(); String gcCodeCorporate = EnumDeliveryType.GIFT_CARD_CORPORATE.getCode();
-                 *
+                 * 
                  * if ((ordDeliveryType).equals(gcCodePersonal)) continue; if ((ordDeliveryType).equals(gcCodeCorporate)) continue;
-                 *
+                 * 
                  * //robin hood String donatePersonal = EnumDeliveryType.DONATION_INDIVIDUAL.getCode(); String donateCorporate = EnumDeliveryType.DONATION_BUSINESS.getCode();
-                 *
+                 * 
                  * if ((ordDeliveryType).equals(donatePersonal)) continue; if ((ordDeliveryType).equals(donateCorporate)) continue;
                  */
 
@@ -3605,7 +3605,7 @@ public class FDUser extends ModelSupport implements FDUserI {
         }
         return d;
     }
-
+    
     private Date getNextDay() {
         Date today=today();
         if (EnumEStoreId.FDX.equals(getUserContext().getStoreContext().getEStoreId())){
@@ -3733,7 +3733,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see com.freshdirect.fdstore.customer.FDUserI#isNewSO3Enabled() To enable customer to SO 3
      */
 
@@ -3743,9 +3743,9 @@ public class FDUser extends ModelSupport implements FDUserI {
         /*
          * // Check personal flag in user profile boolean isSO3EnabledInProfile=false; try { //TODO need to change this once get identity issue is resolved if(getLevel()>=2){
          * isSO3EnabledInProfile = Boolean.valueOf(getFDCustomer().getProfile().getAttribute(PROFILE_SO3_KEY)).booleanValue(); }
-         *
+         * 
          * } catch (FDResourceException e) { LOGGER.error("Error in isNewSO3Enabled  : customer id " + this.identity, e);
-         *
+         * 
          * } return isSO3EnabledInProfile;
          */
     }
@@ -3776,7 +3776,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     public void setAllSO3(Collection<FDStandingOrder> allSO3s) {
         this.allSO3s = allSO3s;
     }
-
+    
     @Override
     public boolean isRefreshSO3() {
         return this.refreshSO3;
@@ -3788,7 +3788,7 @@ public class FDUser extends ModelSupport implements FDUserI {
         if(refreshSO3){
 			setRefreshSO3Settings(true);
 		}
-
+        
     }
 
     @Override
@@ -3843,7 +3843,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 			setRefreshSO3Settings(true);
 		}
 	}
-
+	
 	public String isFromLogin() {
 		return fromLogin;
 	}
@@ -3865,7 +3865,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 		if(refreshNewSoFeature){
 			setRefreshSO3Settings(true);
 		}
-
+		
 	}
 
 	@Override
@@ -3887,12 +3887,12 @@ public class FDUser extends ModelSupport implements FDUserI {
     public void setValidSO3Data(Map<String, Object> validSO3Data){
 		this.validSO3Data = validSO3Data;
 	}
-
+    
     @Override
     public Map<String, Object> getValidSO3Data(){
     	return this.validSO3Data;
     }
-
+		
     @Override
     public boolean isRefreshSO3Settings(){
     	return this.refreshSO3Settings;
@@ -3902,7 +3902,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     public void setRefreshSO3Settings(boolean isRefreshSO3Settings){
     	this.refreshSO3Settings = isRefreshSO3Settings;
     }
-
+    
     @Override
     public int resetDefaultPaymentValueType() {
 		try {
@@ -3910,7 +3910,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 		} catch (FDResourceException e) {
 			LOGGER.error("Error in resetting default payment method in fdcustomer: " + this.identity, e);
 		}
-		return 0;
+		return 0;		
 	}
 
 	@Override
@@ -3920,55 +3920,4 @@ public class FDUser extends ModelSupport implements FDUserI {
         }
 		this.cachedFDCustomer = FDCustomerFactory.getFDCustomer(this.identity);
 	}
-
-	@Override
-	public boolean getDpFreeTrialOptin() {
-
-		/*try {
-			this.cachedFDCustomer = this.getFDCustomer();
-		} catch (FDResourceException e) {
-			LOGGER.warn("Error in getDpFreeTrialOptin() " + e);
-		}*/
-		if (this.cachedFDCustomer != null && this.cachedFDCustomer.getCustomerEStoreModel() != null) {
-
-			return this.cachedFDCustomer.getCustomerEStoreModel().getDpFreeTrialOptin();
-
-		} else {
-			return false;
-		}
-
-	}
-
-	@Override
-	public void setDpFreeTrialOptin(boolean dpFreeTrialOptin) {
-		if (null == this.cachedFDCustomer) {
-            try {
-                this.cachedFDCustomer = FDCustomerFactory.getFDCustomer(this.identity);
-            } catch (FDResourceException e) {
-                LOGGER.warn("Error in setDpFreeTrialOptin() " + e);
-            }
-        }
-        if (null != this.cachedFDCustomer) {
-            this.cachedFDCustomer.getCustomerEStoreModel().setDpFreeTrialOptin(dpFreeTrialOptin);
-        }
-    }
-
-	@Override
-    public void updateDpFreeTrialOptin(boolean dpFreeTrialOptin) {
-		if (null != this.cachedFDCustomer) {
-			this.cachedFDCustomer.getCustomerEStoreModel().setDpFreeTrialOptin(dpFreeTrialOptin);
-		}
-
-	}
-
-	@Override
-    public String getDpFreeTrialOptinStDate() throws FDResourceException {
-
-        Date dpFreeTrialOptinStDate =FDCustomerManager.getDpFreeTrialOptinDate(this.identity.getFDCustomerPK());
-
-        SimpleDateFormat dateFmtDisplay = new SimpleDateFormat("MM/dd/yyyy",Locale.US);
-
-        return dateFmtDisplay.format(dpFreeTrialOptinStDate);
-    }
-
 }

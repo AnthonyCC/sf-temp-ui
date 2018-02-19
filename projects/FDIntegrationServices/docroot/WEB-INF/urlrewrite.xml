@@ -888,12 +888,6 @@
 		<to last="true">/account.do?action=addProfile&amp;ver=$1</to>
 	</rule>
 	
-	<!--  DeliveryPass Free Trial Subscription -->
-	<rule>
-		<from>^/v/([0-9]+)/(.*)/account/deliverypass/dpfreetrial/</from>
-		<to last="true">/account.do?action=dpFreeTrial&amp;ver=$1</to>
-	</rule>
-	
 	<!-- Delivery Pass Accept Terms and Conditions -->
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/account/dpacceptterms/</from>

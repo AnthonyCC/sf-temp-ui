@@ -11,20 +11,20 @@ import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.framework.core.DependentPersistentBeanSupport;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
-import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.framework.util.DaoUtil;
 
 /**
- *
+ * 
  * @author ksriram
  *
  */
 public class FDCustomerEStorePersistentBean extends DependentPersistentBeanSupport{
 
 	private static final long serialVersionUID = 8004436858355527189L;
-
+	
 	private FDCustomerEStoreModel model;
-
+	
 	public FDCustomerEStorePersistentBean() {
 		super();
 		model = new FDCustomerEStoreModel();
@@ -48,7 +48,7 @@ public class FDCustomerEStorePersistentBean extends DependentPersistentBeanSuppo
 			model.setDefaultShipToAddressPK(rs.getString("DEFAULT_SHIPTO"));
 			model.setDefaultPaymentMethodPK(rs.getString("DEFAULT_PAYMENT"));
 			model.setDefaultDepotLocationPK(rs.getString("DEFAULT_DEPOT_LOCATION"));
-			bean.setParentPK(parentPK);
+			bean.setParentPK(parentPK);			
 			bean.setFromModel(model);
 			lst.add(bean);
 		}
@@ -67,7 +67,7 @@ public class FDCustomerEStorePersistentBean extends DependentPersistentBeanSuppo
 	@Override
 	public PrimaryKey create(Connection conn) throws SQLException {
 		this.setPK(this.getParentPK());
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.FDCUSTOMER_ESTORE (FDCUSTOMER_ID, E_STORE, DEFAULT_SHIPTO, DEFAULT_PAYMENT, DEFAULT_DEPOT_LOC,EMAIL_OPTIN,TC_AGREE_DATE,TC_AGREE,RAF_CLICK_ID,RAF_PROMO_CODE, DP_FREE_TRIAL_OPTIN) values (?,?,?,?,?,?,?,?,?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.FDCUSTOMER_ESTORE (FDCUSTOMER_ID, E_STORE, DEFAULT_SHIPTO, DEFAULT_PAYMENT, DEFAULT_DEPOT_LOC,EMAIL_OPTIN,TC_AGREE_DATE,TC_AGREE,RAF_CLICK_ID,RAF_PROMO_CODE) values (?,?,?,?,?,?,?,?,?,?)");
 		ps.setString(1, this.getParentPK().getId());
 		ps.setString(2, model.geteStoreId().getContentId());
 		ps.setString(3, model.getDefaultShipToAddressPK());
@@ -78,7 +78,6 @@ public class FDCustomerEStorePersistentBean extends DependentPersistentBeanSuppo
 		ps.setString(8, "X");
 		ps.setString(9, model.getRafClickId());
 		ps.setString(10, model.getRafPromoCode());
-		ps.setString(11, "N");
 
 		try {
 			if (ps.executeUpdate() != 1) {
@@ -98,11 +97,11 @@ public class FDCustomerEStorePersistentBean extends DependentPersistentBeanSuppo
 		EnumEStoreId eStoreId =getCustomerEStoreId();
 
 		PreparedStatement ps = null;
-
+		
 		ResultSet rs = null;
 		try {
 			ps = conn.prepareStatement(
-					"SELECT DEFAULT_SHIPTO, DEFAULT_PAYMENT, DEFAULT_DEPOT_LOC,TC_AGREE,EMAIL_OPTIN,RAF_CLICK_ID,RAF_PROMO_CODE,DP_FREE_TRIAL_OPTIN FROM CUST.FDCUSTOMER_ESTORE WHERE FDCUSTOMER_ID=? AND E_STORE=?");
+					"SELECT DEFAULT_SHIPTO, DEFAULT_PAYMENT, DEFAULT_DEPOT_LOC,TC_AGREE,EMAIL_OPTIN,RAF_CLICK_ID,RAF_PROMO_CODE FROM CUST.FDCUSTOMER_ESTORE WHERE FDCUSTOMER_ID=? AND E_STORE=?");
 			ps.setString(1, this.getParentPK().getId());
 			ps.setString(2, eStoreId.getContentId());
 			rs = ps.executeQuery();
@@ -116,7 +115,6 @@ public class FDCustomerEStorePersistentBean extends DependentPersistentBeanSuppo
 				model.setEmailOptIn("X".equalsIgnoreCase(rs.getString("EMAIL_OPTIN")) ? true : false);
 				model.setRafClickId(rs.getString("RAF_CLICK_ID"));
 				model.setRafPromoCode(rs.getString("RAF_PROMO_CODE"));
-				model.setDpFreeTrialOptin("Y".equalsIgnoreCase(rs.getString("DP_FREE_TRIAL_OPTIN")) ? true : false);
 				if (EnumEStoreId.FDX.equals(eStoreId)) {
 					model.setFdxEmailOptIn("X".equalsIgnoreCase(rs.getString("EMAIL_OPTIN")) ? true : false);
 				} else {
@@ -129,11 +127,11 @@ public class FDCustomerEStorePersistentBean extends DependentPersistentBeanSuppo
 						model.setFdxEmailOptIn("X".equalsIgnoreCase(rs.getString("EMAIL_OPTIN")) ? true : false);
 					}
 				}
-			}
+			} 
 		} finally {
 			DaoUtil.close(rs, ps);
 		}
-
+		
 	}
 
 	@Override
@@ -142,23 +140,21 @@ public class FDCustomerEStorePersistentBean extends DependentPersistentBeanSuppo
 		PreparedStatement ps = null;
 		try {
 			ps = conn.prepareStatement(
-					"UPDATE CUST.FDCUSTOMER_ESTORE SET DEFAULT_SHIPTO=?, DEFAULT_PAYMENT=?, DEFAULT_DEPOT_LOC=?, DP_FREE_TRIAL_OPTIN=? WHERE FDCUSTOMER_ID=? AND E_STORE=?");
+					"UPDATE CUST.FDCUSTOMER_ESTORE SET DEFAULT_SHIPTO=?, DEFAULT_PAYMENT=?, DEFAULT_DEPOT_LOC=? WHERE FDCUSTOMER_ID=? AND E_STORE=?");
 			ps.setString(1, model.getDefaultShipToAddressPK());
 			ps.setString(2, model.getDefaultPaymentMethodPK());
 			ps.setString(3, model.getDefaultDepotLocationPK());
-			ps.setString(4, model.getDpFreeTrialOptin() ? "Y":"N");
-			ps.setString(5, this.getParentPK().getId());
-			ps.setString(6, eStoreId.getContentId());
+			ps.setString(4, this.getParentPK().getId());
+			ps.setString(5, eStoreId.getContentId());
 			if (ps.executeUpdate() < 1) {
 				create(conn);
-			}
+			} 
 		} finally {
 			DaoUtil.close(ps);
 		}
 		this.unsetModified();
-
+		
 	}
-
 
 	@Override
 	public void remove(Connection conn) throws SQLException {
@@ -168,16 +164,16 @@ public class FDCustomerEStorePersistentBean extends DependentPersistentBeanSuppo
 			ps.setString(1, this.getPK().getId());
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("Row not deleted");
-			}
+			} 
 		} finally {
 			DaoUtil.close(ps);
-		}
+		}	
 	}
 
 	@Override
 	public void setFromModel(ModelI model) {
 		this.model =(FDCustomerEStoreModel)model;
-
+		
 	}
 
 	private static EnumEStoreId getCustomerEStoreId(){
