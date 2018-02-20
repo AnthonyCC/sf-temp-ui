@@ -101,6 +101,10 @@ public class DeliveryPassFreeTrialCron {
 
 	public static void main(String[] args) {
 
+		if(!FDStoreProperties.isDlvPassFreeTrialOptinFeatureEnabled()){
+            LOGGER.info("DeliveryPassFreeTrialCron : " + "Free Trial Opt-in feature is not enabled.");
+            return;
+        }
 		List<String> custIds = null;
 		Context ctx = null;
 		try {
