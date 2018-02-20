@@ -163,7 +163,7 @@ public class Pricing implements Serializable {
 			if(zpModel == null) {
 				//::FDX:do a item cascading to its parent until we find a price info.
 				ErpZoneMasterInfo zoneInfo = FDCachedFactory.getZoneInfo(pricingZoneInfo!=null?pricingZoneInfo.getPricingZoneId():null);
-				if(zoneInfo.getParentZone()!=null)
+				if(zoneInfo!=null && zoneInfo.getParentZone()!=null)
 					zpModel = _getZonePrice(new ZoneInfo(zoneInfo.getParentZone().getSapId(),pricingZoneInfo!=null?pricingZoneInfo.getSalesOrg():null,pricingZoneInfo!=null?pricingZoneInfo.getDistributionChanel():null));
 			}
 			return zpModel;

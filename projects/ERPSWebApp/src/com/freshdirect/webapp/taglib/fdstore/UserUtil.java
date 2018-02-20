@@ -855,7 +855,7 @@ public class UserUtil {
 				} catch (FDResourceException e) {
 					LOGGER.error(e);
 				}
-				if (!isDefaultPaymentMethodRegistered) {
+				if (user!=null&&!isDefaultPaymentMethodRegistered) {
 					new Thread(new DefaultPaymentMethod(info, EnumPaymentMethodDefaultType.DEFAULT_SYS, user.getPaymentMethods())).start();
 				}
 			}

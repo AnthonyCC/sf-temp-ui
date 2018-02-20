@@ -1488,9 +1488,14 @@ public class BrowseUtil {
     }
 
     public static CatalogInfo getCatalogInfo(SessionUser user) {
-        String plantId = user.getFDSessionUser().getUserContext().getFulfillmentContext().getPlantId();
-        PricingContext pc = user.getFDSessionUser().getUserContext().getPricingContext();
-        user.setUserContext();
+        String plantId = user!=null&&user.getFDSessionUser()!=null&&user.getFDSessionUser().getUserContext()!=null&&
+        					user.getFDSessionUser().getUserContext().getFulfillmentContext()!=null?
+        							user.getFDSessionUser().getUserContext().getFulfillmentContext().getPlantId():null;
+        PricingContext pc = user!=null&&user.getFDSessionUser()!=null&&
+        						user.getFDSessionUser().getUserContext()!=null?
+        							user.getFDSessionUser().getUserContext().getPricingContext():null;
+        if(user!=null)
+        	user.setUserContext();
         CatalogId catalogId = new CatalogInfo.CatalogId(ContentFactory.getInstance().getStoreKey().getId(), plantId, pc.getZoneInfo());
         return new CatalogInfo(catalogId);
     }

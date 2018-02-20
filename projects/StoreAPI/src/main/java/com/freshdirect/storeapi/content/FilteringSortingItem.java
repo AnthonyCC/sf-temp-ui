@@ -140,9 +140,11 @@ public class FilteringSortingItem<N extends ContentNodeModel> implements Seriali
 	}
 	
 	public static <N extends ContentNodeModel> List<FilteringSortingItem<N>> wrap(List<N> nodes) {
-		List<FilteringSortingItem<N>> items = new ArrayList<FilteringSortingItem<N>>(nodes.size());
+		List<FilteringSortingItem<N>> items = new ArrayList<FilteringSortingItem<N>>(nodes!=null?nodes.size():0);
+		if(nodes!=null){
 		for (N node : nodes)
 			items.add(new FilteringSortingItem<N>(node));
+		}
 		return items;
 	}
 

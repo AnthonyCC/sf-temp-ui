@@ -31,7 +31,7 @@ public class FDCustomerFactory {
     }
 
 	public static FDCustomerModel getFDCustomer(FDIdentity identity) throws FDResourceException {
-		return getFDCustomer( identity.getFDCustomerPK() );
+		return getFDCustomer( identity!=null?identity.getFDCustomerPK():null );
 	}
 
 	public static FDCustomerModel getFDCustomer(String fdCustomerId) throws FDResourceException {
@@ -83,7 +83,7 @@ public class FDCustomerFactory {
 	}
 
 	public static ErpCustomerModel getErpCustomer(FDIdentity identity) throws FDResourceException {
-		return getErpCustomer( identity.getErpCustomerPK() );
+		return getErpCustomer( identity!=null?identity.getErpCustomerPK():null );
 	}
 
 	public static ErpCustomerModel getErpCustomer(String erpCustomerId) throws FDResourceException {
