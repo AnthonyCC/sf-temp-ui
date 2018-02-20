@@ -104,11 +104,10 @@ class="action-item heating-instructions icon-clock-before"><span class="action-i
 		<input type="hidden" name="catId" value="{$catId}">
 		<input type="hidden" name="skuCode" value="{$skuCode}">
 		
- 		{let $cssbuttons: 'true' /}
 		{call common.quantitybox }
 			{param quantity:$quantity /}
     		{param uid:$productId /}
-    		{param cssbuttons:$cssbuttons /}
+    		{param cssbuttons:true /}
     		{param modQuantity: $modQuantity /}
 		{/call}
 		{call pdp.subtotal data="all" /}

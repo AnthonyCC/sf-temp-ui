@@ -3321,8 +3321,8 @@ table.accessibilitySpacing td{
 .icon-base.icon-pdf{
 	background-image: url('/media/images/icons/adobe-pdf.png');
 }
-td .qtyinput a.quantity_minus,
-td .qtyinput a.quantity_plus{
+.qtyinput .quantity_minus,
+.qtyinput .quantity_plus{
     width: 36px;
     color: #ffffff;
     background-color: #4fa157;
@@ -3347,12 +3347,12 @@ td .qtyinput a.quantity_plus{
     -ms-user-select: none;
     user-select: none;
 }
-td .qtyinput a.quantity_minus:hover,
-td .qtyinput a.quantity_plus:hover{
+.qtyinput .quantity_minus:hover,
+.qtyinput .quantity_plus:hover{
     background-color: #458d4e;
     border: 1px solid #458d4e;
 }
-td .qtyinput input[type="text"].qty {
+.qtyinput input[type="text"].qty {
     width: 58px;
     height: 36px;
     font-size: 18px;
@@ -3362,7 +3362,7 @@ td .qtyinput input[type="text"].qty {
     padding: 0;
     border: 2px #c2c2c2 solid;
 }
-td .qtyinput input[type="text"].qty:hover{
+.qtyinput input[type="text"].qty:hover{
     border-color: #68aa6d;
 }
 #popupcart .qtyinput input.qty {
