@@ -139,6 +139,13 @@ try {
       'config-ga-domain': '<%= FDStoreProperties.getGoogleAnlayticsDomain() %>'
     });
 
+    dataLayer.push({
+      event: 'error',
+      eventCategory: 'Error',
+      eventAction: '500 Error',
+      eventLabel: '500 Error'
+    });
+
     // load google tag manager
     (function(fd) {
       var loadGTM = function (w,d,s,l,i) {
