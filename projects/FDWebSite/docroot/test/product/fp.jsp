@@ -232,6 +232,14 @@
 	      			</li>
 	      		<% } %>
       		</ul>
+
+      		<ul>
+      			<li>
+      				<label><input id="" type="checkbox" data-uriparam="cbis" name="cbis-menu" <%= (considerBackInStock) ? "checked=\"checked\"" : "" %>><span><span>
+      					<strong>Back In Stock</strong>
+					</span></span></label>
+      			</li>
+      		</ul>
       	</div>
       </div>
     </div>
@@ -247,7 +255,8 @@
 			}
 		}
     	$jq('[data-uriparam]').on('click', function(event) {
-    		window.location = window.location.pathname + updateQueryStringParameter(window.location.search, $jq(this).attr('data-uriparam'), $jq(this).val());
+    		var curVal = ($jq(this).attr('type') === 'checkbox') ? $jq(this).is(':checked') : $jq(this).val();
+    		window.location = window.location.pathname + updateQueryStringParameter(window.location.search, $jq(this).attr('data-uriparam'), curVal);
     	});
     </script>
   </tmpl:put>
@@ -268,6 +277,9 @@
 
 	      window.FreshDirect.browse.data.sortOptions = window.FreshDirect.browse.data.sortOptions || {};
 	    </script>
+	    <style>
+	    	.browseContent h2 { font-size: 23px; }
+	    </style>
   </tmpl:put>
 
   <tmpl:put name='extraJsModules'>
