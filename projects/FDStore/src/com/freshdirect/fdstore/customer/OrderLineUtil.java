@@ -553,7 +553,7 @@ public class OrderLineUtil {
 		                    */
 		        	return true;
 		        }
-		        ZoneInfo zone=userCtx.getPricingContext().getZoneInfo();
+		        ZoneInfo zone= userCtx!=null&&userCtx.getPricingContext()!=null?userCtx.getPricingContext().getZoneInfo():null;
 		        // find most recent fd product based on sku
 		        FDProductInfo productInfo;
 				try {
@@ -566,7 +566,7 @@ public class OrderLineUtil {
 					return true;
 				}
 		
-				if (!productInfo.isAvailable(zone.getSalesOrg(),zone.getDistributionChanel())) {
+				if (!productInfo.isAvailable(zone!=null?zone.getSalesOrg():null,zone!=null?zone.getDistributionChanel():null)) {
 					
 					/*throw new FDInvalidConfigurationException.Unavailable(
 							prodNode.getFullName()
