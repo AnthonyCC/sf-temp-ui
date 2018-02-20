@@ -15,26 +15,6 @@
 </div>
 
 {/template}
-/**
- * @param? headerData
- */
-{template .mobilecheckoutheader autoescape="false"}
-<div class="checkout__header">
-	<div class="left">
-	  <a href="/" class="headerlink">
-	  	<img class="header-logo" src="/media/layout/nav/globalnav/fdx/fd-logo_199.png" alt="FreshDirect homepage redirect" />
-	  </a>
-	  <span class="checkout-label">Checkout</span>
-  	</div>
-  	<div class="right">
-	  	<strong>Need Help?</strong>
-	  	<br />
-	  	<span class="">
-	  		{if $headerData and $headerData.phoneNumber}{$headerData.phoneNumber}{else}1-212-796-8002{/if}
-	  	</span>
-  	</div>
-  	<div class="clear"></div>
-</div>
 
 /**
  * @param? headerData
