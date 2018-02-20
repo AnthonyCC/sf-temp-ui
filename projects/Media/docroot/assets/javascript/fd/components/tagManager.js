@@ -676,6 +676,15 @@ var dataLayer = window.dataLayer || [];
       location = pageType.toLowerCase();
     }
 
+    // reorder - strange behavior fallback
+    if (location === 'top_items') {
+      location = 'reorder_your_top_items';
+    } else if (location === 'past_orders') {
+      location = 'reorder_your_past_orders';
+    } else if (location === 'shopping_lists') {
+      location = 'reorder_your_shopping_lists';
+    }
+
     // product
     if (el) {
       el = $(el).closest('[data-component="product"]');
