@@ -724,11 +724,11 @@ public class Cart {
 
                     //Automatically add "agree to terms". In order to end up in cart or prev order, user must have agreed already. Website does
                     //something similar with hidden input fields.
-                    if (productData.hasTerms()) {
+                    if (productData!=null&&productData.hasTerms()) {
                         productConfiguration.addPassbackParam(RequestParamName.REQ_PARAM_AGREE_TO_TERMS, "yes");
                     }
 
-                    Sku sku = productData.getSkyByCode(cartLine.getSkuCode());
+                    Sku sku = productData!=null?productData.getSkyByCode(cartLine.getSkuCode()):null;
                     if (sku == null) {
                         LOG.warn("sku=" + cartLine.getSkuCode() + "::product desc=" + cartLine.getDescription() + " was null");
                         if (cartLine.getSkuCode() != null) {
