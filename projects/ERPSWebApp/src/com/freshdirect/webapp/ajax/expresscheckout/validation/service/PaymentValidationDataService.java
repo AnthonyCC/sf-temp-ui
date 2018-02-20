@@ -70,6 +70,10 @@ public class PaymentValidationDataService implements FormValidationService {
 				if ( (EnumUserInfoName.BIL_STATE.getCode()).equals(error.getName()) && !(paymentRequestData.getFormData().get(EnumUserInfoName.BIL_COUNTRY.getCode())).equals("US")) {
 					validationErrorIterator.remove();
 				}
+				//if international, ignore zip error
+				if ( (EnumUserInfoName.BIL_ZIPCODE.getCode()).equals(error.getName()) && !(paymentRequestData.getFormData().get(EnumUserInfoName.BIL_COUNTRY.getCode())).equals("US")) {
+					validationErrorIterator.remove();
+				}
 			}
 		}
 	}

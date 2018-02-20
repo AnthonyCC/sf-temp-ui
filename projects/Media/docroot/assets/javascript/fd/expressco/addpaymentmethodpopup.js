@@ -107,14 +107,21 @@ var FreshDirect = FreshDirect || {};
     syncCountryState:{
 		value: function(e, data) {			
 			/* get new "states" for country, wrap in option tags and replace in existing select box */
-			$('#CC_bil_state, #EC_bil_state, #ET_bil_state').each(function(i,e) {
-				var curVal = $('#'+$(e).attr('id').replace('state','country')).val();
+			$('#CC_bil_state, #EC_bil_state, #ET_bil_state').each(function(ii,ee) {
+				var curVal = $('#'+$(ee).attr('id').replace('state','country')).val();
+				var $zipField = $('#'+$(ee).attr('id').replace('state','zipcode'));
 	
 				if (FreshDirect.metaData.countryCodeIndexMap.hasOwnProperty(curVal)) {
-					$(e).html( FreshDirect.metaData.country[FreshDirect.metaData.countryCodeIndexMap[curVal]].states
+					$(ee).html( FreshDirect.metaData.country[FreshDirect.metaData.countryCodeIndexMap[curVal]].states
 						.reduce(function(a,c,i,d) { return a + '<option value="'+c.key+'"'+((c.selected)?" selected":"")+'>'+c.value+'</option>'; },'<option>--</option>') 
 					);
 	
+				}
+				//remove/replace zip validation depending on country
+				$zipField.attr('fdform-v-zipcode', (curVal === 'US') ? '' : null);
+				//trigger revalidation, but only on visible elem
+				if ($zipField.val() !== '' && $zipField.is(':visible')) {
+					$zipField.change(); //trigger revalidation	
 				}
 			});
 		}
