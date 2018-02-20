@@ -24,6 +24,9 @@
 <fd:CheckLoginStatus id="user" guestAllowed="true" recognizedAllowed="true" />
 
 <%
+	if(!FDStoreProperties.isDlvPassFreeTrialOptinFeatureEnabled()){
+		response.sendRedirect("/");
+	}
 	boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
 	String template = "/expressco/includes/ec_template.jsp";
 	if (mobWeb) {

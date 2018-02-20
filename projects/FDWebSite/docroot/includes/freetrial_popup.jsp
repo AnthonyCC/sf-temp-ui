@@ -10,14 +10,23 @@
 	        url: '/api/freetrial',
 	        type: 'POST',
 	        success: function(message) {
+	        	var closePopup = "$jq('.overlay-dialog-new .ui-dialog-titlebar-close').click()";
 	        	if(message.STATUS == "ERROR"){
 	        		var errorMessagePopup = '<div class="error-container"><div class="error-img"><img src="/media/editorial/site_pages/error_message/error_icecream.svg" alt="FreshDirect" border="0"></div><div class="error-header">Hold Your Horseradishes!</div>';
 	        		errorMessagePopup += '<div class="error-text">' + message.MESSAGE + '</div>';
-	        		errorMessagePopup += '<a class="error-button cssbutton cssbutton-flat green" href="/">Continue Shopping</a></div>';
+	        		if($jq(".ui-dialog:visible .dpn").length > 0){
+	        			errorMessagePopup += '<a class="error-button cssbutton cssbutton-flat green" href="javascript:' + closePopup + '">Continue Shopping</a></div>';
+	        		} else {
+	        			errorMessagePopup += '<a class="error-button cssbutton cssbutton-flat green" href="/">Continue Shopping</a></div>';
+	        		}
 	        		doOverlayDialogByHtmlNew(errorMessagePopup);
 	        	} else {
 	        		if($jq(".ui-dialog:visible .dpn").length > 0){
-	        			doOverlayDialogNew("/includes/freetrialsuccess_popup.jsp");
+	        			$jq("#cartcontent").trigger('cartcontent-update');
+	        			var successMessagePopup = '<div class="dpn"><div class="dpn-container"><div class="dpn-success"><div class="dpn-success-header"><div class="dpn-success-check">&#10004;</div><p>Success!</p><p>Thanks for signing up.</p></div>';
+	        				successMessagePopup += '<div class="dpn-success-text"><p>Your DeliveryPass<sup>&reg;</sup> trial will activate on your next purchase. Get ready to save!</p><p>You can edit your DeliveryPass setting <a href="/your_account/delivery_pass.jsp">here</a>.</p></div>';
+	        				successMessagePopup += '<div class="dpn-success-a"><button onclick="' + closePopup + '" class="dpn-success-start-shopping cssbutton cssbutton-flat orange">Start Saving</button></div></div></div></div>';
+	        				doOverlayDialogByHtmlNew(successMessagePopup);
 	        		} else {
 	        			window.location.href = "/freetrialsuccess.jsp";
 	        		}
@@ -27,6 +36,13 @@
 	        	doOverlayDialogNew("/includes/error_message_popup.jsp");
 	        }
 	 	});
+	}
+	function noThanks(){
+		if($jq(".ui-dialog:visible .dpn").length > 0){
+			$jq('.overlay-dialog-new .ui-dialog-titlebar-close').click()
+		} else {
+			window.location.href = "/";
+		}
 	}
 </script>
 
@@ -49,7 +65,7 @@
 		</div>
 		<div class="dpn-footer dpn-footer-login-required">
 			<div class="dpn-footer-no">
-				<a href="/">No thanks, I hate saving money.</a>
+				<a href="javascript:noThanks();">No thanks, I hate saving money.</a>
 			</div>
 			<div class="dpn-footer-yes">
 				<% if(user_dp.getLevel() == FDUserI.SIGNED_IN){ %>
@@ -63,5 +79,3 @@
 		</div>
 	</div>
 </div>
-
-<fd:css href="/assets/css/delivery_pass.css" />
