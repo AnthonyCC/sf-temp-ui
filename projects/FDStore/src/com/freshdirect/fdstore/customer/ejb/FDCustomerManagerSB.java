@@ -943,7 +943,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
 	 * It maps to CustomerAccountServiceI.getCookieByFdCustomerId(String fdCustomerId);
 	 *
 	 */
-	@Deprecated
+	
 	/*
 	 *@deprecated
 	 * Please use the CustomerController and CustomerAccountServiceI in Storefront2.0 project.
