@@ -1340,7 +1340,7 @@ public class FDStoreProperties {
         defaults.put(PROP_GC_NSM_FREQ_SECS, "600");
         defaults.put(PROP_ZONE_PRICING_ENABLED, "true");
         defaults.put(PROP_ZONE_PRICING_AD_ENABLED, "true");
-        defaults.put(PROP_ZONE_PICKUP_ZIPCODE, "11101");
+        defaults.put(PROP_ZONE_PICKUP_ZIPCODE, "07076");
         defaults.put(PROP_FDX_ZONE_ZIPCODE, "10036");
 
         // Window Steering
@@ -1831,7 +1831,7 @@ public class FDStoreProperties {
 
         defaults.put(PROP_UNBXD_API_KEY, "91a4d42b07d3346afbae9ee63134c5d2");
         defaults.put(PROP_UNBXD_SITE_KEY, "freshdirect_dev-u1469033821585");
-        defaults.put(PROP_UNBXD_COS_SITE_KEY, "freshdirect_dev-u1469033821585");
+        defaults.put(PROP_UNBXD_COS_SITE_KEY, "cos_dev-u1508499587553");
         defaults.put(PROP_UNBXD_BASE_URL, "http://search.unbxdapi.com/");
         defaults.put(PROP_UNBXD_FALLBACK_ON_ERROR, "false");
         defaults.put(PROP_UNBXD_TRACKING_BASE_URL, "http://tracker.unbxdapi.com/v2/1p.jpg");
@@ -1917,7 +1917,7 @@ public class FDStoreProperties {
         //DCS-23
         defaults.put(PROP_DEBIT_SWITCH_NOTICE_ENABLED, "false");
 
-        defaults.put(PROP_LOG_AKAMAI_HEADER_ENABLED,"true");
+        defaults.put(PROP_LOG_AKAMAI_HEADER_ENABLED,"false");
 
         //APPDEV-6442
         defaults.put(PROP_FDC_TRANSITION_LOOK_AHEAD_DAYS, "0");
