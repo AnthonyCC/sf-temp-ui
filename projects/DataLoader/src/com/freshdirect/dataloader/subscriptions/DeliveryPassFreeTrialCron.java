@@ -2,10 +2,8 @@ package com.freshdirect.dataloader.subscriptions;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -13,7 +11,6 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.ejb.CreateException;
 import javax.mail.MessagingException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -41,16 +38,12 @@ import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
-import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
-import com.freshdirect.deliverypass.ejb.DlvPassManagerSB;
-import com.freshdirect.ecomm.gateway.DlvPassManagerService;
 import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfiguration;
-import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSalesUnit;
@@ -113,7 +106,7 @@ public class DeliveryPassFreeTrialCron {
 
 			custIds = getAllCustIdsOfFreeTrialSubsOrder();
 			if (custIds != null && custIds.size()>0) {
-				String arSKU = "MKT0072335";
+				String arSKU = FDStoreProperties.getTwoMonthTrailDPSku();//"MKT0072335";
 				LOGGER.info(
 						"DeliveryPassFreeTrialCron : " + custIds.size() + " customers eligible for FreeTrial.");
 				for (String erpCustomerID : custIds ) {
@@ -136,7 +129,7 @@ public class DeliveryPassFreeTrialCron {
 			LOGGER.error("Error running DeliveryPassFreeTrialCron :", e);
 			email("ALL", e.toString());
 		} finally {
-			emailPendingPassReport();
+			//emailPendingPassReport();
 			try {
 				if (ctx != null) {
 					ctx.close();
@@ -190,11 +183,13 @@ public class DeliveryPassFreeTrialCron {
 			if( !StringUtil.isEmpty(pymtMethod.getProfileID()) && pymtMethod.getProfileID().equals(_pymtMethod.getProfileID()))
 			    {
 				matchedPymtMethods.add(_pymtMethod);
+				exists = true;
 			} else if(pymtMethod.getCardType().equals(_pymtMethod.getCardType()) ) {
 
 				if(!StringUtils.isEmpty(pymtMethod.getMaskedAccountNumber()) && !StringUtils.isEmpty(_pymtMethod.getMaskedAccountNumber())&& _pymtMethod.getMaskedAccountNumber().length()>=4) {
 					if(pymtMethod.getMaskedAccountNumber().endsWith(_pymtMethod.getMaskedAccountNumber().substring(_pymtMethod.getMaskedAccountNumber().length()-4))) {
 						matchedPymtMethods.add(_pymtMethod);
+						exists = true;
 					}
 				}
 			}
@@ -456,7 +451,7 @@ public class DeliveryPassFreeTrialCron {
 
 		try {
 			Date now = DateUtil.truncate(new Date());
-			String subject="Unable to deliverypass for customer id :	"+customerID;
+			String subject="Unable to create free-trial deliverypass order for customer id :	"+customerID;
 			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
 			StringBuffer buff = new StringBuffer();
 			String br = "\n";
@@ -471,7 +466,7 @@ public class DeliveryPassFreeTrialCron {
 							subject, buff.toString());
 
 		} catch (MessagingException e) {
-			LOGGER.warn("Error Sending deliveryPass exception email: ", e);
+			LOGGER.warn("Error Sending free-trial deliveryPass exception email: ", e);
 		}
 	}
 
@@ -482,134 +477,7 @@ public class DeliveryPassFreeTrialCron {
 
 	}
 
-	private static void emailPendingPassReport()
-	{
-		Calendar cal = Calendar.getInstance();
-		//cal.add(Calendar.DATE, 1);
-		Context ctx = null;
-		List<List<String>> pendingPasses =null;
-		try
-		{
-
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.DlvPassManagerSB)){
-				pendingPasses = DlvPassManagerService.getInstance().getPendingPasses();
-			}else{
-				ctx = getInitialContext();
-				DlvPassManagerSB dlvPassManagerSB = null;
-				DlvPassManagerHome dph =(DlvPassManagerHome) ctx.lookup("freshdirect.erp.DlvPassManager");
-				dlvPassManagerSB = dph.create();
-				pendingPasses =dlvPassManagerSB.getPendingPasses();
-			}
-
-			if(pendingPasses.size()>0)
-				email( cal.getTime(),pendingPasses);
-		}
-		catch(NamingException e)
-		{
-			email(cal.getTime(),e);
-		}  catch (RemoteException e) {
-
-			email(cal.getTime(),e);
-		} catch (CreateException e) {
-
-			email(cal.getTime(),e);
-		}
-		finally {
-			try {
-				if (ctx != null) {
-					ctx.close();
-					ctx = null;
-				}
-			} catch (NamingException ne) {
-
-				// TODO Auto-generated catch block
-				ne.printStackTrace();
-
-			}
-		}
-	}
-
-	private static void email(Date processDate, Exception e) {
-		// TODO Auto-generated method stub
-		try {
-			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
-			String subject="Pending DeliveryPass Report	for "+ (processDate != null ? dateFormatter.format(Calendar.getInstance()) : " date error");
-
-			StringBuffer buff = new StringBuffer();
-
-			buff.append("<html>").append("<body>");
-
-
-				buff.append("<B> Error running report</B>");
-				buff.append(e.toString());
-
-			buff.append("</body>").append("</html>");
-
-			ErpMailSender mailer = new ErpMailSender();
-			mailer.sendMail(ErpServicesProperties.getCronFailureMailFrom(),
-					ErpServicesProperties.getCronFailureMailTo(),ErpServicesProperties.getCronFailureMailCC(),
-					subject, buff.toString(), true, "");
-
-		}catch (MessagingException _e) {
-			LOGGER.warn("Error Sending DeliveryPass report email: ", _e);
-		}
-
-	}
-	private static void email(Date processDate, List<List<String>> info) {
-		// TODO Auto-generated method stub
-		try {
-			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
-			String subject="Pending DeliveryPass Report	for"+ (processDate != null ? dateFormatter.format(processDate) : " date error");
-
-			StringBuffer buff = new StringBuffer();
-
-			buff.append("<html>").append("<body>");
-
-			if(info != null && info.size()>0) {
-				buff.append(getDataAsString(info));
-			} else if (info==null) {
-				buff.append("<B> Error running report</B>");
-			}
-			else {
-				buff.append("<B> Not data returned</B>");
-			}
-			buff.append("</body>").append("</html>");
-
-			ErpMailSender mailer = new ErpMailSender();
-			mailer.sendMail(ErpServicesProperties.getDPReportMailFrom(),
-					ErpServicesProperties.getDPReportMailTo(),ErpServicesProperties.getDPReportMailCC(),
-					subject, buff.toString(), true, "");
-
-		}catch (MessagingException e) {
-			LOGGER.warn("Error Sending Sale Cron report email: ", e);
-		}
-
-	}
-	private static String getDataAsString(List<List<String>> customers) {
-
-    	StringBuffer buf=new StringBuffer(1000);
-    	buf.append("<b> Total pending delivery-passes on past orders :"+customers.size()+"</b>");
-    	buf.append("<br><br><table border=\"1\" valign=\"top\" align=\"left\" cellpadding=\"0\" cellspacing=\"0\">");
-		buf.append("<tr>").append(buildSimpleTag("th","Customer Name"))
-						  .append(buildSimpleTag("th","User Id"))
-						  .append(buildSimpleTag("th","Order #"))
-						  .append(buildSimpleTag("th","Order Type"))
-						  .append(buildSimpleTag("th","Order Status"))
-						  .append(buildSimpleTag("th","Delivery Date"))
-						  .append("</tr>");
-		List<String> customerInfo=null;
-		for(Iterator<List<String>> i = customers.iterator(); i.hasNext();){
-			customerInfo  =  i.next();
-				buf.append("<tr>");
-				for(Iterator<String> j = customerInfo.iterator(); j.hasNext();) {
-					buf.append(buildSimpleTag("td",j.next()));
-				}
-				buf.append("</tr>");
-		}
-		buf.append("</table>");
-		return buf.toString();
-    }
-
+	
 	private static ErpPaymentMethodI getPaymentMethod(String paymentMethodPk, Collection<ErpPaymentMethodI> paymentMethods){
 		for(Iterator<ErpPaymentMethodI> i=paymentMethods.iterator(); i.hasNext();){
 			ErpPaymentMethodI pmethod = i.next();
@@ -620,15 +488,7 @@ public class DeliveryPassFreeTrialCron {
 		return null;
 	}
 
-    private static String buildSimpleTag( String tagName,String input) {
-    	return new StringBuilder().append("<")
-    	                          .append(tagName)
-    	                          .append(">").append(input)
-    	                          .append("</")
-    	                          .append(tagName)
-    	                          .append(">").toString();
-    }
-
+    
     private static void initializeSpringContext() {
         AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
         rootContext.register(RootConfiguration.class);

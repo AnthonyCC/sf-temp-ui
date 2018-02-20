@@ -341,12 +341,9 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		
 		if (StandingOrderHelper.isEligibleForSo3_0(user)) {
 				StandingOrderHelper.evaluteEditSoAddressID(session, user, shipToAddressId);
-			}
-		
-		if (StandingOrderHelper.isEligibleForSo3_0(user)) {
-				StandingOrderHelper.evaluteEditSoAddressID(session, user, shipToAddressId);
-			}
 		}
+				
+	}
 
 	public static void performEditDeliveryAddress(TimeslotEvent event,FDSessionUser user, ActionResult actionResult, HttpSession session, FDCartModel cart, String actionName,ErpAddressModel erpAddress, AddressModel deliveryAddressModel, String updatedDeliveryAddressId) throws FDResourceException {
 		ErpAddressModel erpAddressModel = checkDeliveryAddressInForm(user, actionResult, session, cart, actionName, erpAddress, deliveryAddressModel);
