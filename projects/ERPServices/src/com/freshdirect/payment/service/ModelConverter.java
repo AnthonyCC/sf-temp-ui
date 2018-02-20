@@ -1596,41 +1596,50 @@ public class ModelConverter {
 
 	public static RestrictedPaymentMethodModel buildRestrictedPaymentMethodModel(
 			RestrictedPaymentMethodData data) {
-		RestrictedPaymentMethodModel model = new RestrictedPaymentMethodModel();
-		model.setAbaRouteNumber(data.getAbaRouteNumber());
-		if(data.getAbaRoutePatternType()!=null)
-		model.setAbaRoutePatternType(EnumRestrictedPatternType.getEnum(data.getAbaRoutePatternType()));
-		model.setAccountNumber(data.getAccountNumber());
-		if(data.getAccountPatternType()!=null)
-		model.setAccountPatternType(EnumRestrictedPatternType.getEnum(data.getAccountPatternType()));
-		if(data.getBankAccountType()!=null)
-		model.setBankAccountType(EnumBankAccountType.getEnum(data.getBankAccountType()));
-		model.setBankName(data.getBankName());
-		if(data.getCardType()!=null)
-		model.setCardType(EnumCardType.getEnum(data.getCardType()));
-		model.setCaseId(data.getCaseId());
-		model.setCreateDate(data.getCreateDate());
-		model.setCreateUser(data.getCreateUser());
-		model.setCustomerId(data.getCustomerId());
-		model.setExpirationDate(data.getExpirationDate());
-		model.setFirstName(data.getFirstName());
-		model.setId(data.getId());
-		model.setPK(new PrimaryKey(data.getId()));
-		model.setLastModifyDate(data.getLastModifyDate());
-		model.setLastModifyUser(data.getLastModifyUser());
-		model.setLastName(data.getLastName());
-		model.setNote(data.getNote());
-		model.setPaymentMethodId(data.getPaymentMethodId());
-		if(data.getPaymentMethodType()!=null)
-		model.setPaymentMethodType(EnumPaymentMethodType.getEnum(data.getPaymentMethodType()));
-		model.setProfileID(data.getProfileID());
-		if(data.getReason()!=null)
-		model.setReason(EnumRestrictionReason.getEnum(data.getReason()));
-		if(data.getSource()!=null)
-		model.setSource(EnumTransactionSource.getTransactionSource(data.getSource()));
-		if(data.getStatus()!=null)
-		model.setStatus(EnumRestrictedPaymentMethodStatus.getEnum(data.getStatus()));
-		return model;
+		if (data != null) {
+			RestrictedPaymentMethodModel model = new RestrictedPaymentMethodModel();
+			model.setAbaRouteNumber(data.getAbaRouteNumber());
+			if (data.getAbaRoutePatternType() != null)
+				model.setAbaRoutePatternType(EnumRestrictedPatternType
+						.getEnum(data.getAbaRoutePatternType()));
+			model.setAccountNumber(data.getAccountNumber());
+			if (data.getAccountPatternType() != null)
+				model.setAccountPatternType(EnumRestrictedPatternType
+						.getEnum(data.getAccountPatternType()));
+			if (data.getBankAccountType() != null)
+				model.setBankAccountType(EnumBankAccountType.getEnum(data
+						.getBankAccountType()));
+			model.setBankName(data.getBankName());
+			if (data.getCardType() != null)
+				model.setCardType(EnumCardType.getEnum(data.getCardType()));
+			model.setCaseId(data.getCaseId());
+			model.setCreateDate(data.getCreateDate());
+			model.setCreateUser(data.getCreateUser());
+			model.setCustomerId(data.getCustomerId());
+			model.setExpirationDate(data.getExpirationDate());
+			model.setFirstName(data.getFirstName());
+			model.setId(data.getId());
+			model.setPK(new PrimaryKey(data.getId()));
+			model.setLastModifyDate(data.getLastModifyDate());
+			model.setLastModifyUser(data.getLastModifyUser());
+			model.setLastName(data.getLastName());
+			model.setNote(data.getNote());
+			model.setPaymentMethodId(data.getPaymentMethodId());
+			if (data.getPaymentMethodType() != null)
+				model.setPaymentMethodType(EnumPaymentMethodType.getEnum(data
+						.getPaymentMethodType()));
+			model.setProfileID(data.getProfileID());
+			if (data.getReason() != null)
+				model.setReason(EnumRestrictionReason.getEnum(data.getReason()));
+			if (data.getSource() != null)
+				model.setSource(EnumTransactionSource.getTransactionSource(data
+						.getSource()));
+			if (data.getStatus() != null)
+				model.setStatus(EnumRestrictedPaymentMethodStatus.getEnum(data
+						.getStatus()));
+			return model;
+		}
+		return null;
 	}
 
 	

@@ -4944,8 +4944,14 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			String paymentMethodId, EnumRestrictedPaymentMethodStatus status) throws RemoteException {
 		Response<RestrictedPaymentMethodData> response = null;
 		RestrictedPaymentMethodModel model;
+		String paymentMethodStatus  = null;
+		if(status != null){
+			paymentMethodStatus= status.getName();
+		}else {
+			paymentMethodStatus = null;
+		}
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(FIND_FRAUD_ENTRY_ID_STATUS)+"/"+paymentMethodId+"/"+status.getName(),  new TypeReference<Response<RestrictedPaymentMethodData>>(){});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(FIND_FRAUD_ENTRY_ID_STATUS)+"/"+paymentMethodId+"/"+paymentMethodStatus,  new TypeReference<Response<RestrictedPaymentMethodData>>(){});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
