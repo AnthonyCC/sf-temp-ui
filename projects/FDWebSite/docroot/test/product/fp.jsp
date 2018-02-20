@@ -38,9 +38,9 @@
 	// http://localhost:7001/test/product/fp.jsp?pageType=browse&id=fp&rbl=4&dbl=40&pbl=10000&cn=false&cbis=false
 	double ratingBaseLine = 4;
 	double popularityBaseLine = 10000;
-	double dealsBaseLine = 30;
-	boolean considerNew = true;
-	boolean considerBackInStock = true;
+	double dealsBaseLine = 20;
+	boolean considerNew = false;
+	boolean considerBackInStock = false;
 		
 	final CmsFilteringNavigator nav = CmsFilteringNavigator.createInstance(request, user);
 	nav.setPageTypeType(FilteringFlowType.BROWSE);
@@ -97,11 +97,11 @@
 			
 			sectionData = new SectionData();
 			if(sectionCount == 0) {			
-				sectionData.setHeaderText("Your favorites with at least "+ (int)ratingBaseLine + "-star rating or " + (int)dealsBaseLine + "% discount " + (considerBackInStock ? "is back in stock" : "")); 
+				sectionData.setHeaderText("Your favorites with at least "+ (int)ratingBaseLine + "-star rating or " + (int)dealsBaseLine + "% discount " + (considerBackInStock ? "or is back in stock" : "")); 
 				//.......................Your Fav that might INTEREST U!............................");
 				//sectionData.setMiddleMedia("https://lorempixel.com/800/100/food/2/");
 			} else {
-				sectionData.setHeaderText("Our favorites with at least "+ (int)ratingBaseLine + "-star rating or " + (int)dealsBaseLine + "% discount " + (considerBackInStock ? "is back in stock" : ""));
+				sectionData.setHeaderText("Our favorites with at least "+ (int)ratingBaseLine + "-star rating or " + (int)dealsBaseLine + "% discount " + (considerBackInStock ? "or is back in stock" : ""));
 				//sectionData.setHeaderText(".......................Our Fav that might INTEREST U!..............................");
 				//sectionData.setMiddleMedia("https://lorempixel.com/800/100/fun/2/");
 			}
@@ -213,7 +213,7 @@
       	<div class="menuBox">
       		<h2>TOP-RATED</h2>
       		<ul>
-      			<% for (int ratingVal = 5; ratingVal >= 0; ratingVal--) { %>
+      			<% for (int ratingVal = 5; ratingVal > 0; ratingVal--) { %>
 	      			<li>
 	      				<label><input id="" type="radio" data-uriparam="rbl" name="expertrating-menu" value="<%= ratingVal %>" <%= (ratingBaseLine==ratingVal) ? "checked=\"checked\"" : "" %>><span><span>
 	      					<div class="rating"><b class="expertrating smallrating rating-<%= ratingVal*2 %>">Rating <%= ratingVal %> out of 5</b><%= (ratingVal < 5) ? " & Up" : "" %></div>
@@ -224,7 +224,7 @@
       		
       		<h2>DEAL %-OFF</h2>
       		<ul>
-      			<% for (int i = 100; i >= 0; i=i-25) { %>
+      			<% for (int i = 80; i >= 10; i=i-10) { %>
 	      			<li>
 	      				<label><input id="" type="radio" data-uriparam="dbl" name="discount-menu" value="<%= i %>" <%= (dealsBaseLine==i) ? "checked=\"checked\"" : "" %>><span><span>
 	      					<%= i %>% off<%= (i < 100) ? " & Up" : "" %>

@@ -207,8 +207,8 @@ public class CmsFilteringNavigator {
         cmsFilteringNavigator.setPageSize(pageSpecificPageSize);
 
         if ((id == null || id.equals(""))
-                && (cmsFilteringNavigator.getPageType().equals(FilteringFlowType.BROWSE) || cmsFilteringNavigator.getPageType().equals(FilteringFlowType.PRES_PICKS) || cmsFilteringNavigator
-                        .getPageType().equals(FilteringFlowType.STAFF_PICKS))) {
+                && (cmsFilteringNavigator.getPageType() != null && (cmsFilteringNavigator.getPageType().equals(FilteringFlowType.BROWSE) || cmsFilteringNavigator.getPageType().equals(FilteringFlowType.PRES_PICKS) || cmsFilteringNavigator
+                        .getPageType().equals(FilteringFlowType.STAFF_PICKS)))) {
             throw new InvalidFilteringArgumentException("ID parameter is null", InvalidFilteringArgumentException.Type.CANNOT_DISPLAY_NODE);
         }
         cmsFilteringNavigator.setRequestCookies(request.getCookies());
