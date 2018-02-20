@@ -741,7 +741,6 @@ if (allPickupDepots != null) {
 							</div>
 						</div>
 						<div id="popupcart">
-						   	<div class="modifynote"><div class="modifynote-content">You are changing a placed order. <a href="/view_cart.jsp?trk=sidcrt">Click for details.</a></div></div>
 						   	<div class="header"><span class="quantity">Quantity</span><span class="price">Price</span></div>
 						   	<div class="body">
 						       	<table class="content"></table>
