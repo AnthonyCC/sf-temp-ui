@@ -1380,7 +1380,6 @@ function doOverlayWindow(olURL, titleVar) {
 		overlayDialog.load(olURL, function() { overlayDialog.dialog('open'); });
 		$jq('.ui-dialog').addClass('overlay-dialog-new').css('z-index','1001');
 		$jq('.ui-widget-overlay').css('z-index','1000');
-		if(FreshDirect.mobWeb){ overlayDialog.addClass('mm-page-overlay') }
 	}
 	
 	/* use dialog by css selector */
@@ -1409,7 +1408,6 @@ function doOverlayWindow(olURL, titleVar) {
 		overlayDialog.dialog('open');
 		$jq('.ui-dialog').addClass('overlay-dialog-new').css('z-index','1001');
 		$jq('.ui-widget-overlay').css('z-index','1000');
-		if(FreshDirect.mobWeb){ overlayDialog.addClass('mm-page-overlay') }
 	}
 
 	/* use dialog by url */
