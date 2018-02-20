@@ -175,7 +175,7 @@ public class DeliveryPassUtil {
 			// Get the info from active pass.
 			isUnlimited = user.getDlvPassInfo().isUnlimited();
 		} else if (user.getShoppingCart().getDeliveryPassCount() > 0 || user.isDlvPassActive()
-				|| (user.getDpFreeTrialOptin() && !user.getDlvPassInfo().isFreeTrialRestricted())) {
+				|| (user.applyFreeTrailOptinBasedDP())) {
 			isUnlimited = true;
 		} else {
 			List orderLines = user.getShoppingCart().getOrderLines();

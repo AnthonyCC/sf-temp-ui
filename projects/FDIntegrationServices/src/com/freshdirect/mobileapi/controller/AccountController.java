@@ -119,24 +119,30 @@ public class AccountController extends BaseController implements Comparator <Ord
 				FDCustomerManager.setProfileAttribute(user.getFDSessionUser().getIdentity(),requestMessage.getName(), requestMessage.getValue(), info);
 				setResponseMessage(model, Message.createSuccessMessage(MSG_ACCEPT_DP_TERMSANDCONDITIONS), user);
 			} else if (ACTION_DP_FREE_TRIAL.equals(action)) {
-
-				if (null != user.getFDSessionUser().getIdentity() && !user.getFDSessionUser().getDpFreeTrialOptin()) {
-					if(null == user.getFDSessionUser().getDlvPassInfo() || EnumDlvPassStatus.NONE.equals(user.getFDSessionUser().getDlvPassInfo().getStatus())) {
-						FDCustomerManager.updateDpFreeTrialOptin(true,
-								user.getFDSessionUser().getIdentity().getFDCustomerPK(),AccountActivityUtil.getActionInfo(request.getSession()));
-						user.updateDpFreeTrialOptin(true);
-						setResponseMessage(model, Message.createSuccessMessage(MSG_DPFREETRIAL_OPTIN_SUCCESS), user);
+				if(FDStoreProperties.isDlvPassFreeTrialOptinFeatureEnabled()){
+					if (null != user.getFDSessionUser().getIdentity() && !user.getFDSessionUser().getDpFreeTrialOptin()) {
+						if(null == user.getFDSessionUser().getDlvPassInfo() || EnumDlvPassStatus.NONE.equals(user.getFDSessionUser().getDlvPassInfo().getStatus())) {
+							FDCustomerManager.updateDpFreeTrialOptin(true,
+									user.getFDSessionUser().getIdentity().getFDCustomerPK(),AccountActivityUtil.getActionInfo(request.getSession()));
+							user.updateDpFreeTrialOptin(true);
+							setResponseMessage(model, Message.createSuccessMessage(MSG_DPFREETRIAL_OPTIN_SUCCESS), user);
+						}else {
+							Message responseMessage = new Message();
+				            responseMessage.setStatus(Message.STATUS_FAILED);
+				            responseMessage =  getErrorMessage(DPFREETRIAL_OPTIN_FAILED, MSG_DPFREETRIAL_OPTIN_ERROR);
+				            setResponseMessage(model, responseMessage, user);
+						}
+	
 					}else {
-						Message responseMessage = new Message();
+			    		Message responseMessage = new Message();
 			            responseMessage.setStatus(Message.STATUS_FAILED);
-			            responseMessage =  getErrorMessage(DPFREETRIAL_OPTIN_FAILED, MSG_DPFREETRIAL_OPTIN_ERROR);
+			            responseMessage =  getErrorMessage(DPFREETRIAL_OPTIN_FAILED, MSG_DPFREETRIAL_OPTIN_ALREADY);
 			            setResponseMessage(model, responseMessage, user);
 					}
-
-				}else {
-		    		Message responseMessage = new Message();
+				} else{
+					Message responseMessage = new Message();
 		            responseMessage.setStatus(Message.STATUS_FAILED);
-		            responseMessage =  getErrorMessage(DPFREETRIAL_OPTIN_FAILED, MSG_DPFREETRIAL_OPTIN_ALREADY);
+		            responseMessage =  getErrorMessage(DPFREETRIAL_OPTIN_FAILED, MSG_DPFREETRIAL_OPTIN_DISABLED_ERROR);
 		            setResponseMessage(model, responseMessage, user);
 				}
 			}

@@ -271,6 +271,7 @@ public interface MessageCodes {
     public final static String MSG_DPFREETRIAL_OPTIN_SUCCESS = "DeliveryPass Free Trial Optin Success.";
     public final static String MSG_DPFREETRIAL_OPTIN_ALREADY= "You have already signed up for the free DeliveryPass trial. Your next order placed will have free delivery.";
     public final static String MSG_DPFREETRIAL_OPTIN_ERROR= "You have already had a DeliveryPass and are not eligible for the free trial.";
+    public final static String MSG_DPFREETRIAL_OPTIN_DISABLED_ERROR= "The feature is not available at this time.";
 
 
 
