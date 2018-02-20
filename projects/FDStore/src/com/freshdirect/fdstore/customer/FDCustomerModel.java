@@ -238,7 +238,8 @@ public class FDCustomerModel extends ModelSupport implements FDCustomerI {
 	public void setPymtVerifyAttempts(int pymtVerifyAttempts)
 			throws RemoteException {
 		// TODO Auto-generated method stub
-
+	}
+	
 //	public String getRafPromoCode() {
 //		return rafPromoCode;
 //	}
