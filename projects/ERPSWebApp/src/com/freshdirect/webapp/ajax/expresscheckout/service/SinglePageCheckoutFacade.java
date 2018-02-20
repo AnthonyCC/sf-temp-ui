@@ -325,9 +325,7 @@ public class SinglePageCheckoutFacade {
 	public FormLocationData loadAddress(final FDUserI user, final HttpSession session)
 			throws FDResourceException, JspException, RedirectToPage {
 		
-		ErpCustomerModel customerModel = FDCustomerManager.getCustomer(user.getIdentity());
-		return loadAddress(user, session, populateCartDataFromParentOrder(user), customerModel.getShipToAddresses(),
-				customerModel.getCustomerInfo());
+		return loadAddress(user, session, populateCartDataFromParentOrder(user), null, null);
 	}
 
     public FormLocationData loadAddress(final FDUserI user, final HttpSession session, final FDCartI cart) throws FDResourceException, JspException, RedirectToPage {  	
@@ -443,7 +441,7 @@ public class SinglePageCheckoutFacade {
         return selectedPaymentId;
     }
 
-    private List<ValidationError> handleModifyCartPreSelections(FDUserI user, HttpServletRequest request) throws FDResourceException, JspException, RedirectToPage {
+    public List<ValidationError> handleModifyCartPreSelections(FDUserI user, HttpServletRequest request) throws FDResourceException, JspException, RedirectToPage {
         FDCartModel cart = StandingOrderHelper.isSO3StandingOrder(user) ? user.getSoTemplateCart() : user.getShoppingCart();
 
         List<ValidationError> validationErrors = new ArrayList<ValidationError>();

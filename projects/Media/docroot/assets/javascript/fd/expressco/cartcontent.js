@@ -826,7 +826,7 @@ function parseTipTotal(data) {
 								deliveryFeeValue = '<div><span class="delivery-free-with-label">Free with</span><div class="delivery-pass-label">DeliveryPass</div></div>';
 								freeWithDeliveryPass = true;
 							}
-							checkoutCartHeaderData.deliveryFee = [{id: 'checkout-cart-header-'+box.id+(showDeliveryPass? '' :freeWithDeliveryPass?'-with-delivery-pass':'-no-action'), text: box.text, value: deliveryFeeValue, other: box.other}];
+							checkoutCartHeaderData.deliveryFee = [{id: 'checkout-cart-header-'+box.id+(showDeliveryPass? '' :freeWithDeliveryPass?'-with-delivery-pass':'-no-action'), text: box.text, value: deliveryFeeValue, other: (freeWithDeliveryPass? null : box.other)}];
 						}
 					});
 					checkoutCartHeaderData.userCorporate = subTotalBox.userCorporate;

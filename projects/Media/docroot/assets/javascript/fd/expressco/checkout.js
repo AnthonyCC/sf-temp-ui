@@ -167,9 +167,9 @@ var FreshDirect = FreshDirect || {};
 	  		if (d)
 	  			FreshDirect.common.dispatcher.signal('atpFailure', d);
 	  	});
-
-	  // Load Drawer
 	  var drawerDeferred = jQuery.Deferred();
+	  var contextDeferred = jQuery.Deferred();
+	  // Load Drawer, Form metadata, and session context info for checkout
 	  $.when($.get('/api/expresscheckout?action=getDrawer'), $.get('/api/expresscheckout?action=getFormMetaData'))
 	  	.done( function (v1, v2) {
 	  		window.FreshDirect = window.FreshDirect || {};
@@ -178,31 +178,31 @@ var FreshDirect = FreshDirect || {};
 	  		FreshDirect.common.dispatcher.signal('drawer', v1 && v1[0]);
 	  		drawerDeferred.resolve();
 	  	});
-	  // Load payment
-	  $.get('/api/expresscheckout/payment')
-	  	.done( function (d) {
-	  		drawerDeferred.then(function () {
-	  			FreshDirect.common.dispatcher.signal('payment', d);
-	  		});
-	  	});
-	  // Load address;
-	  $.get('/api/expresscheckout/deliveryaddress')
-	  	.done( function (d) {
-	  		drawerDeferred.then(function () {
-	  			FreshDirect.common.dispatcher.signal('address', d);
-	  		});
-	  	});
+	  $.get('/api/expresscheckout?action=resetContext').done( function() {
+		  contextDeferred.resolve();
+	  });
+
+	  $.when(drawerDeferred, contextDeferred).then(function () {
+		  // Load payment
+		  $.get('/api/expresscheckout/payment')
+			.done( function (d) {
+				FreshDirect.common.dispatcher.signal('payment', d);
+			});
+		  // Load address
+		  $.get('/api/expresscheckout/deliveryaddress')
+		  	.done( function (d) {
+		  		FreshDirect.common.dispatcher.signal('address', d);
+			});
+		  	
+		// Load timeslot;
+		  $.get('/api/expresscheckout/timeslot?action=getCurrentSelected')
+		  	.done( function (d) {
+		  		timeslotDrawerDeferred.then(function () {
+		  			FreshDirect.common.dispatcher.signal('timeslot', d);
+		  		});
+		  	});
+	  });
 	  
-	  // Load timeslot;
-	  $.get('/api/expresscheckout/timeslot?action=getCurrentSelected')
-	  	.done( function (d) {
-	  		$.when(drawerDeferred, timeslotDrawerDeferred).then(function () {
-	  			FreshDirect.common.dispatcher.signal('timeslot', d);
-	  		});
-	  	});
-	  
-	  // Reset SO data in session and Avalara Tax context
-	  $.get('/api/expresscheckout?action=resetContext');
   }
   fd.utils.registerModule('expressco', 'checkout', {
     coFlowChecker: coFlowChecker,

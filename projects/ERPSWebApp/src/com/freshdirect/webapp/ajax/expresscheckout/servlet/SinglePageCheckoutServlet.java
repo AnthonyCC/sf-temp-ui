@@ -81,6 +81,7 @@ public class SinglePageCheckoutServlet extends BaseJsonServlet {
 			StandingOrderHelper.clearSO3Context(user, request.getParameter("isSO"),
 					request.getParameter("standingOrder"));
 
+			SinglePageCheckoutFacade.defaultFacade().handleModifyCartPreSelections(user, request);
 			if (FDStoreProperties.getAvalaraTaxEnabled() && null != user.getShoppingCart()
 					&& null != user.getShoppingCart().getDeliveryAddress()) {
 				CheckoutService.defaultService().getAvalaraTax(user.getShoppingCart());
