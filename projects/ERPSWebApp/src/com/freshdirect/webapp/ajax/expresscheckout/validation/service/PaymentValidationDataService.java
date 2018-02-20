@@ -55,12 +55,16 @@ public class PaymentValidationDataService implements FormValidationService {
 	}
 
 	private void removeUnnecessaryValidationErrors(final FormDataRequest paymentRequestData, List<ValidationError> validationErrors) {
-		if (validationErrors != null && !validationErrors.isEmpty() && "editPaymentMethod".equals(paymentRequestData.getFormData().get("action"))) {
+		if (validationErrors != null && !validationErrors.isEmpty() 
+			&& ( "editPaymentMethod".equals(paymentRequestData.getFormData().get("action")) || "addPaymentMethod".equals(paymentRequestData.getFormData().get("action")) )
+		) {
 			Iterator<ValidationError> validationErrorIterator = validationErrors.iterator();
 			while (validationErrorIterator.hasNext()) {
 				ValidationError error = validationErrorIterator.next();
-				if (PaymentMethodName.ACCOUNT_NUMBER.equals(error.getName())) {
-					validationErrorIterator.remove();
+				if ("editPaymentMethod".equals(paymentRequestData.getFormData().get("action"))) {
+					if (PaymentMethodName.ACCOUNT_NUMBER.equals(error.getName())) {
+						validationErrorIterator.remove();
+					}
 				}
 				//if international, ignore state error
 				if ( (EnumUserInfoName.BIL_STATE.getCode()).equals(error.getName()) && !(paymentRequestData.getFormData().get(EnumUserInfoName.BIL_COUNTRY.getCode())).equals("US")) {
