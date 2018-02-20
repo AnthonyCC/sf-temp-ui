@@ -194,7 +194,7 @@
 	}
 %>
 
-<tmpl:insert template='/common/template/browse_noleftnav_template.jsp'>
+<tmpl:insert template='/common/template/browse_template.jsp'>
   
    <tmpl:put name='soypackage' direct='true'>
     <soy:import packageName="browse" />
@@ -205,6 +205,51 @@
     <jwr:style src="/quickshop.css" media="all" />
     <jwr:style src="/browse.css" media="all" />
     <jwr:style src="/srch.css" media="all" />
+  </tmpl:put>
+  
+  <tmpl:put name='leftnav' direct='true'>
+    <div id="leftnav">
+      <div data-component="menu">
+      	<div class="menuBox">
+      		<h2>TOP-RATED</h2>
+      		<ul>
+      			<% for (int ratingVal = 5; ratingVal >= 0; ratingVal--) { %>
+	      			<li>
+	      				<label><input id="" type="radio" data-uriparam="rbl" name="expertrating-menu" value="<%= ratingVal %>" <%= (ratingBaseLine==ratingVal) ? "checked=\"checked\"" : "" %>><span><span>
+	      					<div class="rating"><b class="expertrating smallrating rating-<%= ratingVal*2 %>">Rating <%= ratingVal %> out of 5</b><%= (ratingVal < 5) ? " & Up" : "" %></div>
+						</span></span></label>
+	      			</li>
+	      		<% } %>
+      		</ul>
+      		
+      		<h2>DEAL %-OFF</h2>
+      		<ul>
+      			<% for (int i = 100; i >= 0; i=i-25) { %>
+	      			<li>
+	      				<label><input id="" type="radio" data-uriparam="dbl" name="discount-menu" value="<%= i %>" <%= (dealsBaseLine==i) ? "checked=\"checked\"" : "" %>><span><span>
+	      					<%= i %>% off<%= (i < 100) ? " & Up" : "" %>
+						</span></span></label>
+	      			</li>
+	      		<% } %>
+      		</ul>
+      	</div>
+      </div>
+    </div>
+    <script>
+    	//handle fake menu
+		function updateQueryStringParameter(uri, key, value) {
+			var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+			var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+			if (uri.match(re)) {
+				return uri.replace(re, '$1' + key + "=" + value + '$2');
+			} else {
+				return uri + separator + key + "=" + value;
+			}
+		}
+    	$jq('[data-uriparam]').on('click', function(event) {
+    		window.location = window.location.pathname + updateQueryStringParameter(window.location.search, $jq(this).attr('data-uriparam'), $jq(this).val());
+    	});
+    </script>
   </tmpl:put>
 
   <tmpl:put name='content' direct='true'>
