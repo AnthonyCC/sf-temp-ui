@@ -586,10 +586,11 @@ public class DeliveryPassDAO {
 		}
 	}
 
-	private static String FREE_TRIAL_SUBS_ORDER_CUST_SQL = "select distinct fd.erp_customer_id from cust.fdcustomer fd,CUST.FDCUSTOMER_ESTORE fde, cust.sale s "
-			+ " where fd.id =fDE.FDCUSTOMER_ID and s.customer_id=fd.erp_customer_id and s.type='REG' and s.e_store='FreshDirect' and S.CROMOD_DATE > sysdate-1 "
-			+ " and FDE.DP_FREE_TRIAL_OPTIN is not null and FDE.DP_FREE_TRIAL_OPTIN='Y' and fde.e_store='FreshDirect'  and not exists (select 1 from cust.delivery_pass dp "
-			+ " where dp.customer_id=fd.erp_customer_id and dp.status not in ('CAO','CAN'))";
+	private static String FREE_TRIAL_SUBS_ORDER_CUST_SQL = "select distinct fd.erp_customer_id from cust.fdcustomer fd,CUST.FDCUSTOMER_ESTORE fde, cust.sale s, cust.salesaction sa, cust.deliveryinfo di "+
+             "where fde.FDCUSTOMER_ID =fd.id and fde.e_store='FreshDirect' and s.customer_id=fd.erp_customer_id and s.type='REG' and sa.action_date > sysdate-1 "+
+             "and s.id=sa.sale_id and s.cromod_date=sa.action_date and sa.action_type in('CRO','MOD') and di.salesaction_id=sa.id and di.delivery_type='H' "+
+             "and FDE.DP_FREE_TRIAL_OPTIN is not null and FDE.DP_FREE_TRIAL_OPTIN='Y' and not exists (select id from cust.delivery_pass dp " +
+             "where dp.customer_id=fd.erp_customer_id and dp.status not in ('CAO','CAN'))";
 
 	public static List<String> getAllCustIdsOfFreeTrialSubsOrder(Connection conn) throws SQLException {
 		PreparedStatement ps = null;

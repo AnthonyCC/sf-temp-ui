@@ -772,6 +772,6 @@ public class SessionUser {
 	}
 
 	public boolean isDPFreeTrialOptInEligible(){
-		return !this.sessionUser.getDpFreeTrialOptin() && (null == this.sessionUser.getDlvPassInfo() || !this.sessionUser.getDlvPassInfo().isFreeTrialRestricted());
+		return sessionUser.isDPFreeTrialOptInEligible();		
 	}
 }

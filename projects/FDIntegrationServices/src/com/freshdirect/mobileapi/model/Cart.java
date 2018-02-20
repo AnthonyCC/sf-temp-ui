@@ -857,8 +857,7 @@ public class Cart {
 			cartDetail.setIsDlvPassApplied(((FDCartModel) cart).isDlvPassApplied());
 
 			if (user.getFDSessionUser().getShoppingCart().getDeliveryPassCount() > 0
-					|| user.getFDSessionUser().isDlvPassActive() || (user.getFDSessionUser().getDpFreeTrialOptin()
-							&& !user.getFDSessionUser().getDlvPassInfo().isFreeTrialRestricted())){
+					|| user.getFDSessionUser().isDlvPassActive() || (user.getFDSessionUser().applyFreeTrailOptinBasedDP())){
 				cartDetail.setIsDlvPassApplied(true);
 			}
 			

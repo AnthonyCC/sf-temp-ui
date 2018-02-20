@@ -690,7 +690,7 @@ public class FDUser extends ModelSupport implements FDUserI {
         this.clearPromoErrorCodes();
         this.getShoppingCart().setDlvPassExtn(null);
         this.getShoppingCart().setDlvPromotionApplied(false);
-        if ((this.getShoppingCart().getDeliveryPassCount() > 0) || (this.isDlvPassActive()) || (this.getDpFreeTrialOptin() && !this.getDlvPassInfo().isFreeTrialRestricted())) {
+        if ((this.getShoppingCart().getDeliveryPassCount() > 0) || (this.isDlvPassActive()) || (this.applyFreeTrailOptinBasedDP())) {
         	this.getShoppingCart().setDlvPassApplied(true);
         }
 
@@ -3975,4 +3975,11 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public boolean isDPFreeTrialOptInEligible(){
 		return FDStoreProperties.isDlvPassFreeTrialOptinFeatureEnabled() && !this.getDpFreeTrialOptin() && (null == this.getDlvPassInfo() || !this.getDlvPassInfo().isFreeTrialRestricted());
 	}
+
+	@Override
+	public boolean applyFreeTrailOptinBasedDP() {
+		return FDStoreProperties.isDlvPassFreeTrialOptinFeatureEnabled() && this.getDpFreeTrialOptin() && (null == this.getDlvPassInfo() || !this.getDlvPassInfo().isFreeTrialRestricted());
+	}
+	
+	
 }

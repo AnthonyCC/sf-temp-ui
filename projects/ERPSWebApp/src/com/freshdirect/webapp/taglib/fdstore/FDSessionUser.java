@@ -2457,4 +2457,8 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	{
 		return this.user.isDPFreeTrialOptInEligible();
 	}
+	
+	public boolean applyFreeTrailOptinBasedDP() {
+		return this.user.applyFreeTrailOptinBasedDP();
+	}
 }

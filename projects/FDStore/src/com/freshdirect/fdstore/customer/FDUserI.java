@@ -766,4 +766,6 @@ public interface FDUserI extends java.io.Serializable {
     
     
     public boolean isDPFreeTrialOptInEligible();
+    
+    public boolean applyFreeTrailOptinBasedDP();
 }
