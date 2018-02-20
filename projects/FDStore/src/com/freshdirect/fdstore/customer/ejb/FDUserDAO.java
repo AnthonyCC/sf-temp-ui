@@ -187,14 +187,14 @@ public class FDUserDAO {
 
     /**
      * Load cart into user instance
-     * 
+     *
      * @param conn
      *            JDBC connection
      * @param user
      *            customer instance
      * @param lazy
      *            Lazy mode == prevent orderlines accessing ProductModels. Good for CRM and other store-less apps
-     * 
+     *
      * @throws SQLException
      */
     private static void loadCart(Connection conn, FDUser user, final boolean lazy) throws SQLException {
@@ -212,7 +212,7 @@ public class FDUserDAO {
                 .getPlantId()), user.getUserContext().getPricingContext().getZoneInfo());
         delPlantInfo.setCatalogKey(catalogKey);
         cart.setDeliveryPlantInfo(delPlantInfo);
-        
+
         user.setShoppingCart(cart);
     }
 
@@ -259,7 +259,7 @@ public class FDUserDAO {
 
 
     public static FDUser getFDUserZipCode(Connection conn, FDIdentity identity) throws SQLException {
-        
+
         String query = "SELECT fdu.ADDRESS1, NVL(fde.ZIPCODE,fdu.ZIPCODE) ZIPCODE FROM CUST.FDUSER fdu, CUST.FDUSER_ESTORE fde WHERE fdu.FDCUSTOMER_ID=? AND  fdu.id= FDE.FDUSER_ID(+)";
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -277,15 +277,15 @@ public class FDUserDAO {
 				try {
 					rs.close();
 				} catch (Exception e) {
-	
+
 				}
 			}
-	
+
 			if (null != ps) {
 				try {
 					ps.close();
 				} catch (Exception e) {
-	
+
 				}
 			}
 		}
@@ -298,7 +298,7 @@ public class FDUserDAO {
     }
     /**
      * Recognize customer with given identity
-     * 
+     *
      * @param conn
      *            JDBC Connection
      * @param identity
@@ -631,7 +631,7 @@ public class FDUserDAO {
 
     /**
      * [APPREQ-369] Store Cohort ID for the given user
-     * 
+     *
      * @param conn
      * @param user
      * @throws SQLException
@@ -1465,7 +1465,7 @@ public class FDUserDAO {
         return addOnOrderCountOfParent;
 
     }
-    
+
     public static String getCookieByFdCustomerId(Connection conn, String fdCustomerId){
     	String cookie = null;
     	PreparedStatement ps = null;
@@ -1476,7 +1476,7 @@ public class FDUserDAO {
 				        .prepareStatement("select fdu.cookie from cust.fdcustomer fdc, cust.fduser fdu where fdc.id = fdu.fdcustomer_id and fdc.id= ? ");
 				ps.setString(1, fdCustomerId);
 				rs = ps.executeQuery();
-	
+
 				if (rs.next()) {
 				    cookie = rs.getString(1);
 				}
@@ -1487,24 +1487,24 @@ public class FDUserDAO {
 					try {
 						rs.close();
 					} catch (SQLException e) {
-						
+
 					}
 				}
-				
+
 				if( null != ps){
 					try {
 						ps.close();
 					} catch (SQLException e) {
-	
+
 					}
 				}
-				
+
 			}
     	}
         return cookie;
     }
 
-    
+
 	public static EnumPaymentMethodDefaultType getpaymentMethodDefaultType(String custId, Connection conn) throws SQLException {
 		PreparedStatement pstmt = null;
 		String defaultPaymentMethod = "";
@@ -1534,8 +1534,79 @@ public class FDUserDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return 0;		
+		return 0;
 	}
 
-    
+	public static int updateDpFreeTrialOptin(Connection conn, boolean dpFreeTrialOptin, String custId) {
+		int result = 0;
+		PreparedStatement ps = null;
+		try {
+
+			String value = dpFreeTrialOptin ? "Y" : "N";
+			ps = conn.prepareStatement(
+					"update cust.fdcustomer_estore set DP_FREE_TRIAL_OPTIN=?,DP_FREE_TRIAL_OPTIN_DATE=? where fdcustomer_id=?");
+			ps.setString(1, value);
+			ps.setTimestamp(2, new Timestamp(new Date().getTime()));
+			ps.setString(3, custId);
+			result = ps.executeUpdate();
+
+		} catch (SQLException e) {
+			LOGGER.error("Exception occured while updating Delivery Pass Free Trial, " + e);
+		} finally {
+			if (null != ps) {
+				try {
+					ps.close();
+				} catch (SQLException e) {
+					LOGGER.error("Exception occured while updating Delivery Pass Free Trial, " + e);
+				}
+			}
+		}
+		return result;
+	}
+
+	public static Date getDpFreeTrialOptinDate(Connection conn,String custId) {
+		Date freeTrialDate = null;
+		try {
+
+			PreparedStatement pstmt = null;
+
+	        pstmt = conn
+	                .prepareStatement("SELECT DP_FREE_TRIAL_OPTIN_DATE FROM cust.fdcustomer_estore where fdcustomer_id=? and dp_free_trial_optin='Y'");
+	        pstmt.setString(1, custId);
+	        ResultSet rs = pstmt.executeQuery();
+
+	        if (rs.next()) {
+	        	freeTrialDate = rs.getDate(1);
+	        }
+
+		} catch (SQLException e) {
+			LOGGER.error("Exception occured while getting Delivery Pass Free Trial, " + e);
+		}
+		return freeTrialDate;
+	}
+
+	public static boolean hasCustomerDpFreeTrialOptin(Connection conn,String custId) {
+		boolean found = false;
+		try {
+
+			PreparedStatement pstmt = null;
+
+	        pstmt = conn
+	                .prepareStatement("SELECT count(fdcustomer_id) FROM cust.fdcustomer_estore where fdcustomer_id=? and dp_free_trial_optin='Y' "
+	                		+ " and DP_FREE_TRIAL_OPTIN_DATE is not null");
+	        pstmt.setString(1, custId);
+	        ResultSet rs = pstmt.executeQuery();
+
+	        if (rs.next()) {
+	        	if( rs.getInt(1) > 0){
+	        		found = true;
+	        	}
+	        }
+
+		} catch (SQLException e) {
+			LOGGER.error("Exception occured while getting Delivery Pass Free Trial, " + e);
+		}
+		return found;
+	}
+
 }
