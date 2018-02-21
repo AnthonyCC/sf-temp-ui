@@ -42,7 +42,7 @@
 
 .dpn-header{
 	background: #458b4c;
-	background-image: linear-gradient(326deg, #458b4c, #65a86b 50%, #66a86c, #68aa6e);
+	background-image: linear-gradient(to left, #4fa157, #458d4e);
     color: #FFFFFF;
     text-align: center;
     font-weight: bold;
@@ -79,7 +79,7 @@
 
 .dpn-center-list{
 	margin: 0 auto 20px;
-	max-width: 290px;
+	max-width: 330px;
 }
 
 .dpn-center-list-item{
@@ -88,42 +88,28 @@
 
 .dpn-center-list-icon{
 	float: left;
-    background: #458b4c;
-    color: #FFFFFF;
-	height: 28px;
-	width: 28px;
-	border-radius: 28px;
-	text-align: center;
-	font-size: 19px;
 }
-.dpn-center-list-icon-star{
-    float: left;
-	background-color: #f68139;
-	color: #FFF;
-	height: 28px;
-	width: 28px;
-	border-radius: 28px;
-	text-align: center;
-	font-size: 24px;
-	line-height: 26px;
+.dpn-center-list-icon img{
+	height: 30px;
+	width: 30px;
 }
 .dpn-center-list-text{
 	padding: 4px 0 0 45px;
     font-weight: bold;
-    font-size: 13px;
+    font-size: 16px;
 }
 
 .dpn-center-agreement{
 	text-align: center;
     padding: 5px 0;
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .dpn-center-terms{
 	text-align: center;
     padding: 0px 88px;
     font-weight: bold;
-	font-size: 12px;
+	font-size: 13px;
 	color: #575860;
 }
 
@@ -136,16 +122,21 @@
 	float: left;
 	margin: 28px 0 0;
 }
-
+.dpn-footer-no-logged{
+	float: left;
+	margin: 22px 0 0;
+}
 .dpn-footer-login-required .dpn-footer-no{
 	margin: 8px 0 0;
 }
-
 .dpn-footer-no a{
 	font-weight: bold;
     font-size: 16px;
 }
-
+.dpn-footer-no-logged a{
+	font-weight: bold;
+    font-size: 16px;
+}
 .dpn-footer-yes{
 	float: right;
 }
@@ -160,6 +151,7 @@
 
 .dpn-footer-yes-button{
 	width: 367px;
+	font-size: 18px;
 }
 
 .dpn-footer-login-button{
@@ -177,7 +169,7 @@
 
 .dpn-success-header{
 	background: #458b4c;
-	background-image: linear-gradient(326deg, #458b4c, #65a86b 50%, #66a86c, #68aa6e);
+	background-image: linear-gradient(to left, #4fa157, #458d4e);
     color: #FFFFFF;
     font-weight: bold;
     font-size: 46px;
@@ -185,25 +177,12 @@
     text-align: center;
 }
 
-.dpn-success-check{
-	color: #458b4c;
-    background: #FFFFFF;
-	width: 100px;
-	height: 100px;
-	margin: 10px auto 14px;
-	border-radius: 100px;
-	text-align: center;
-	font-size: 65px;
-    font-weight: bold;
-	box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.35);
-    -webkit-box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.35);
-    -moz-box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.35);
-}
-
 .dpn-success-header p{
 	margin: 0;
 }
-
+.dpn-success-check{
+	max-height: 140px;
+}
 .dpn-success-text{
 	padding: 10px 60px 15px;
     font-size: 22px;
@@ -215,10 +194,16 @@
 }
 .dpn-success a.dpn-success-start-shopping{
 	font-size: 18px;
-	margin: 0 0 50px;
+	margin: 0 0 20px;
 	width: 370px;
 }
-
+.dpn-success .dpn-success-setting{
+	font-size: 22px;
+	padding: 0px 0 30px;
+}
+.dpn-success .dpn-success-setting a sup{
+    font-size: 14px;
+}
 .mm-page .dpn-header,
 .mm-page-overlay .dpn-header{
 	font-size: 25px;
@@ -226,20 +211,26 @@
 }
 .mm-page .dpn-header-text,
 .mm-page-overlay .dpn-header-text{
+	font-size: 32px;
 	margin: 0 30px 15px;
 	line-height: 34px;
 }
 .mm-page .dpn-header-desc,
 .mm-page-overlay .dpn-header-desc{
-	font-size: 14px;
+	font-size: 18px;
+	margin: 0 34px;
 }
 .mm-page .dpn-center-header,
-.mm-page-overlay .dpn-center-header{
-	font-size: 26px;
+.mm-page-overlay .dpn-center-header,
+.mm-page .dpn-center-terms br,
+.mm-page-overlay .dpn-center-terms br,
+.mm-page .dpn-success-text br,
+.mm-page-overlay .dpn-success-text br{
+	display: none;
 }
 .mm-page .dpn-center-list,
 .mm-page-overlay .dpn-center-list{
-	padding: 0 0 20px 35px;
+	padding: 15px 0 0;
 }
 .mm-page .dpn-center-list-text,
 .mm-page-overlay .dpn-center-list-text{
@@ -250,27 +241,43 @@
 .mm-page-overlay .dpn-center-agreement,
 .mm-page-overlay .dpn-center-terms{
 	padding: 5px 15px;
-	font-size: 10px;
+	font-size: 12px;
 	text-align: left;
 	font-weight: normal;
 }
+.mm-page .dpn-center-terms,
+.mm-page-overlay .dpn-center-terms{
+	font-weight: bold;
+}
 .mm-page .dpn-footer,
 .mm-page-overlay .dpn-footer{
-	padding: 10px 10px;
+	padding: 20px 10px;
 }
 .mm-page .dpn-footer-no,
-.mm-page-overlay .dpn-footer-no{
+.mm-page-overlay .dpn-footer-no,
+.mm-page .dpn-footer-no-logged,
+.mm-page-overlay .dpn-footer-no-logged{
 	width: 35%;
-    margin: 15px 0 0;
+	margin: 2px 0 0;
+}
+.mm-page .dpn-footer-no-logged,
+.mm-page-overlay .dpn-footer-no-logged{
+	margin: 10px 0 0;
 }
 .mm-page  .dpn-footer-no a,
-.mm-page-overlay  .dpn-footer-no a{
+.mm-page-overlay  .dpn-footer-no a,
+.mm-page .dpn-footer-no-logged a,
+.mm-page-overlay .dpn-footer-no-logged a{
 	font-size: 11px;
 }
 .mm-page .dpn-footer-yes,
 .mm-page-overlay .dpn-footer-yes{
 	width: 65%;
     text-align: center;
+}
+.mm-page .dpn-footer-login-button,
+.mm-page-overlay .dpn-footer-login-button{
+	width: 100%;
 }
 .mm-page .dpn-footer-yes-text,
 .mm-page-overlay .dpn-footer-yes-text{
@@ -284,14 +291,15 @@
 .mm-page .dpn-success-header,
 .mm-page-overlay .dpn-success-header{
 	font-size: 22px;
-	padding: 40px 30px;
+	padding: 30px 0;
 }
-.mm-page .dpn-success-check,
-.mm-page-overlay .dpn-success-check{
-	width: 60px;
-	height: 60px;
-	border-radius: 60px;
-	font-size: 42px;
+.mm-page .dpn-success-check img,
+.mm-page-overlay .dpn-success-check img{
+	height: 80px;
+}
+.mm-page .dpn-success-header p,
+.mm-page-overlay .dpn-success-header p{
+	font-size: 26px;
 }
 .mm-page .dpn-success-text,
 .mm-page-overlay .dpn-success-text{
@@ -299,9 +307,14 @@
 	font-size: 13px;
 	text-align: left;
 }
+.mm-page .dpn-success-text sup,
+.mm-page-overlay .dpn-success-text sup{
+	font-size: 10px;
+}
 .mm-page .dpn-success-text p,
 .mm-page-overlay .dpn-success-text p{
-	margin: 0.6em 0;
+	margin: 0.6em 0 1.5em;
+	font-size: 16px;
 }
 .mm-page .dpn-success-a,
 .mm-page-overlay .dpn-success-a{
@@ -310,8 +323,12 @@
 .mm-page .dpn-success a.dpn-success-start-shopping,
 .mm-page-overlay .dpn-success a.dpn-success-start-shopping{
 	font-size: 16px;
-	margin: 0 0 40px;
+	margin: 0 0 25px;
 	width: 100%;
+}
+.mm-page .dpn-success .dpn-success-setting,
+.mm-page-overlay .dpn-success .dpn-success-setting{
+	font-size: 16px;
 }
 .error-container{
 	max-width: 480px;
@@ -328,11 +345,14 @@
 	font-weight: bold;
 	padding: 40px 0 24px;
 }
+.error-header-noimg{
+	padding: 0 0 24px;
+}
 .error-text{
 	font-family: Verdana;
 	font-size: 18px;
 }
-button.error-button{
+.error-container button.error-button{
 	margin: 40px 0 0;
     width: 100%;
     max-width: 420px;
@@ -341,6 +361,8 @@ button.error-button{
 }
 .error-container a.error-button{
 	margin: 40px 0 0;
+	width: 100%;
+    max-width: 420px;
 	font-family: Verdana;
     font-size: 18px;
 }
