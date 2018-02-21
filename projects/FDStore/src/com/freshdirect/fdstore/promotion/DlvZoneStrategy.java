@@ -1,7 +1,6 @@
 package com.freshdirect.fdstore.promotion;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -105,9 +104,9 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 						if(e && null !=dlvTimeSlots && !dlvTimeSlots.isEmpty()){
 							List<PromotionDlvTimeSlot> dlvTimeSlotList = dlvTimeSlots.get(day);
 							if(null != dlvTimeSlotList) {								
-								if((!(dlvTimeSlot.isPremiumSlot() && promotionCode.startsWith("WS_"))
-										|| FDStoreProperties.allowDiscountsOnPremiumSlots())
-										&& checkDlvTimeSlots(dlvTimeSlot, dlvTimeSlotList, null, context.getUser(), true))
+                                if (isWindowSteeringPromotionApplicable(promotionCode, dlvDayType, context.getShoppingCart().getTransactionSource())
+                                        && (!(dlvTimeSlot.isPremiumSlot() && promotionCode.startsWith("WS_")) || FDStoreProperties.allowDiscountsOnPremiumSlots())
+                                        && checkDlvTimeSlots(dlvTimeSlot, dlvTimeSlotList, null, context.getUser(), true))
 									return ALLOW;
 								else{
 									context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_TIMESLOT_SELECTED.getErrorCode());
@@ -375,6 +374,12 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 		this.fdxTierType = fdxTierType;
 	}
 	
-	
+    // regular window steering promotions are not applicable for standing orders
+    private boolean isWindowSteeringPromotionApplicable(String promotionCode, EnumDeliveryOption deliveryDayType, EnumTransactionSource transactionSource) {
+        PromotionI promotion = PromotionFactory.getInstance().getPromotion(promotionCode);
+        return !(EnumOfferType.WINDOW_STEERING.equals(promotion.getOfferType()) 
+                && EnumDeliveryOption.REGULAR.equals(deliveryDayType)
+                && EnumTransactionSource.STANDING_ORDER.equals(transactionSource));
+    }
 }
  
