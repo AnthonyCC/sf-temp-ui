@@ -1113,6 +1113,7 @@ public class ModelConverter {
 	public static Map<String, ErpInventoryModel> convertErpInventoryDataMapToModelMap(
 			Map<String, ErpInventoryData> data) {
 		Map<String,ErpInventoryModel> modelMap = new HashMap<String, ErpInventoryModel>();
+		if(data!=null)
 		for (Entry<String, ErpInventoryData> dataMap : data.entrySet()) {
 			String key = dataMap.getKey();
 			ErpInventoryModel model = convertErpInventoryDataToModel(dataMap.getValue());

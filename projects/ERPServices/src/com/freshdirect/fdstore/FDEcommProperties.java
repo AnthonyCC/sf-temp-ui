@@ -96,6 +96,8 @@ public class FDEcommProperties {
 	public static final String StandingOrder3CronSB = "com.freshdirect.fdstore.standingorders.service.StandingOrder3CronSB";
 	public static final String FDCustomerManagerSB="com.freshdirect.customer.FDCustomerManagerSB";
 	public static final String SaleCronSB="payment.ejb.SaleCronSB";
+	public static final String ErpInfoSB_WarmUp="erp.ejb.ErpInfoSB_WarmUp";
+	
   
     
     
@@ -154,6 +156,7 @@ public class FDEcommProperties {
         defaults.put(EwalletServiceSB, FALSE);
         defaults.put(CoremetricsCdfServiceSB, FALSE);
         defaults.put(CrmManagerSB, FALSE);
+        defaults.put(FDPromotionManagerNewSB, FALSE);
         defaults.put(CallCenterManagerSB, FALSE);
         defaults.put(PaymentSB, FALSE);
         defaults.put(TEmailInfoSB, FALSE);
@@ -161,6 +164,8 @@ public class FDEcommProperties {
         defaults.put(FDStandingOrderSB, FALSE);
         defaults.put(StandingOrder3CronSB, FALSE);
         defaults.put(FDCustomerManagerSB, FALSE);
+        defaults.put(ErpInfoSB_WarmUp, FALSE);
+        
         
         refresh();
     }

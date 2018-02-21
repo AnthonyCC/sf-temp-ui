@@ -3211,8 +3211,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		Response<Map<String,ErpInventoryData>> response = null;
 		Map<String,ErpInventoryModel> erpInventoryModelMap = null;
 		try {
-			
-			Long date1 = null;
+			long date1 = 0;
 			if(date!=null){
 			date1 = date.getTime(); 
 			}
