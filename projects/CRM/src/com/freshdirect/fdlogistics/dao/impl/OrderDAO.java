@@ -227,6 +227,8 @@ public class OrderDAO extends BaseDAO implements IOrderDAO {
 					Customer customer = new Customer();
 					customer.setCustomerId(rs.getString("customer_id"));
 					customer.setMobilePhone(rs.getString("mobile_number"));
+					customer.setFirstName(rs.getString("first_name"));
+					customer.setLastName(rs.getString("last_name"));
 
 					infoModel.setCustomer(customer);
 					infoModel.setOrderStatus(rs.getString("status"));
