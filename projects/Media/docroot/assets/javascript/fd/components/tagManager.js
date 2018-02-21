@@ -645,6 +645,8 @@ var dataLayer = window.dataLayer || [];
       channel = 'rec_' + productData.variantId;
     } else if ($(el).closest('.transactional-related-item').length || $(el).parent().hasClass('relatedItem')) {
       channel = 'rec_flyout';
+    } else if (el && $(el).closest('[data-component="carousel"]').length) {
+      channel = 'rec';
     } else if (productData && productData.moduleVirtualCategory) {
       var mvc = productData.moduleVirtualCategory.split(':');
 
