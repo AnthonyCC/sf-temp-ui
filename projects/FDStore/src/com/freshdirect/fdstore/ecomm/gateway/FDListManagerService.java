@@ -459,7 +459,11 @@ public class FDListManagerService extends AbstractEcommService implements FDList
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
-		return  (FDCustomerCreatedList) ListConverter.buildFDCustomerList(response.getData());
+		FDCustomerCreatedList finalList = (FDCustomerCreatedList) ListConverter.buildFDCustomerList(response.getData());
+		if(finalList!=null){
+			finalList.cleanList();
+		}
+		return  finalList;
 	}
 
 	@Override
