@@ -187,6 +187,10 @@ public interface FDCustomerManagerSB  extends EJBObject{
     public FDIdentity login(String userId, String password) throws FDAuthenticationException, FDResourceException, RemoteException;
     public FDIdentity login(String userId) throws FDAuthenticationException, FDResourceException, RemoteException;
 
+    @Deprecated
+    /*
+     * SF2.0 end point /customers?userId=<your user-id>. Refer CustomersApiClientI.EndPoints.CUSTOMER_ID_FOR_USER
+     */
     public PrimaryKey getCustomerId(String userId) throws FDResourceException, RemoteException;
 
     public FDCustomerInfo getCustomerInfo(FDIdentity identity) throws FDResourceException, RemoteException;
@@ -221,6 +225,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      *
      *Throws FDresourceException
      */
+    @Deprecated
     public String getDefaultPaymentMethodPK(FDIdentity identity) throws FDResourceException,RemoteException;
 
     /**
@@ -522,7 +527,9 @@ public interface FDCustomerManagerSB  extends EJBObject{
 
     public boolean sendPasswordEmail(String emailAddress, boolean tAltEmail) throws RemoteException, FDResourceException, PasswordNotExpiredException ;
 
+    @Deprecated
     public boolean isCorrectPasswordHint(String emailAddress, String hint) throws FDResourceException, ErpFraudException, RemoteException;
+    @Deprecated
 
     public boolean isPasswordRequestExpired(String emailAddress, String passReq) throws FDResourceException, RemoteException;
 
