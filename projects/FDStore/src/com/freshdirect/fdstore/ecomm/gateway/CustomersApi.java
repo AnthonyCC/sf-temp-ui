@@ -117,7 +117,7 @@ public class CustomersApi extends AbstractEcommService implements CustomersApiCl
 			  //System.out.println(customer.getDefaultShippingAddressId("10236962695"));//10236962695
 			//System.out.println(customer.getProfile("10236962695"));//10236962695
 			System.out.println(customer.getPromotionHistory("10236962595"));
-			 
+			//System.out.println(customer.getProfileForCustomerId("10236962595"));//10236962695 
 			
 		}
 
@@ -188,6 +188,28 @@ public class CustomersApi extends AbstractEcommService implements CustomersApiCl
 
 	}
 
+	@Override
+    public ProfileModel getProfileForCustomerId(String customerId) throws FDResourceException {
+		
+		String data="";
+		ProfileModel profileData=null;
+		data = httpGetData(getFdCommerceEndPoint(EndPoints.PROFILES_FOR_CUSTOMER.getValue() ), String.class, new Object[]{customerId});
+		try {
+			Response<ProfileModel> response= getMapper().readValue(data, new TypeReference<Response<ProfileModel>>() { });
+			profileData=response.getData();
+			
+			return profileData;
+			
+		} catch (JsonParseException e) {
+				throw new FDResourceException(e);
+		} catch (JsonMappingException e) {
+				throw new FDResourceException(e);
+		} catch (IOException e) {
+				throw new FDResourceException(e);
+		}
+			
+
+	}
 
 	@Override
 	public ErpPromotionHistory getPromotionHistory(String customerId) throws FDResourceException {

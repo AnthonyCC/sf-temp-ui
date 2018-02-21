@@ -20,6 +20,7 @@ public interface CustomersApiClientI {
 		PAYMENT_METHOD_DEFAULT_TYPE_FOR_FDCUSTOMER("fdCustomers/{fdCustomerId}/paymentMethodDefaultType"),
 		DEFAULT_SHIPPING_ADDRESS_ID_FOR_FDCUSTOMER("fdCustomers/{fdCustomerId}/defaultShippingAddressId"),
 		PROFILES("fdCustomers/{fdCustomerId}/profiles"),
+		PROFILES_FOR_CUSTOMER("customers/{customerId}/profiles"),
 		PROMOTION_HISTORY("customers/{customerId}/promotion-history"),
 		PASS_REQUEST_STATUS("customers/isPassRequestExpired?emailId={emailId}&passRequestId={passRequestId}");
 		
@@ -55,6 +56,8 @@ public interface CustomersApiClientI {
 	public ProfileModel getProfile(String fdCustomerId) throws FDResourceException;
 	
 	public ErpPromotionHistory getPromotionHistory(String customerId) throws FDResourceException;
+
+	ProfileModel getProfileForCustomerId(String customerId)	throws FDResourceException;
 	
 	
 
