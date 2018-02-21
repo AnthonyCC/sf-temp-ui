@@ -51,7 +51,7 @@ public class ReportingService {
     // secondary label reports folders
     public static final List<ContentKey> CMS_REPORT_NODE_KEYS = FluentIterable
             .from(Arrays.asList("circularReferences", "hierarchyReport", "invisibleProducts", "multipleReferences", "primaryHomes", "multiHome", "recentChanges",
-            "recipesSummary", "stackedSkus"))
+                    "recipesSummary", "stackedSkus", "brokenMediaLinks"))
             .transform(MAKE_REPORT_KEY)
             .toImmutableList();
 
@@ -112,6 +112,7 @@ public class ReportingService {
         LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "recentChanges"), "Recent changes");
         LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "recipesSummary"), "Recipes summary");
         LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "stackedSkus"), "Stacked Skus");
+        LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "brokenMediaLinks"), "Broken Media Links");
 
         LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "scarabRules"), "Scarab merchandising rules");
         LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "smartCatRecs"), "Smart categories");
@@ -282,6 +283,12 @@ public class ReportingService {
 
             values.put(ReportAttributes.CmsReport.name, "Smart categories");
             values.put(ReportAttributes.CmsReport.description, "Smart category recommenders");
+            values.put(ReportAttributes.CmsReport.results, result);
+        } else if ("brokenMediaLinks".equals(contentKey.id)) {
+            List<Map<Attribute, Object>> result = repository.fetchBrokenMediaLinks();
+
+            values.put(ReportAttributes.CmsReport.name, "Broken Media Links");
+            values.put(ReportAttributes.CmsReport.description, "Shows the nodes and fields where an invalid media is linked");
             values.put(ReportAttributes.CmsReport.results, result);
         } else {
             values.put(ReportAttributes.CmsReport.name, "Unknown report " + contentKey.id);
