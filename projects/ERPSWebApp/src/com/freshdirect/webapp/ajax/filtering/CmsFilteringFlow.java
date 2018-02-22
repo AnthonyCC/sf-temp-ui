@@ -296,7 +296,7 @@ public class CmsFilteringFlow {
     
     private CmsFilteringFlowResult doFlowForSearchType(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException, FDResourceException, FDNotFoundException {
     	BrowseData browseData = null;
-    	String plantId = user.getUserContext().getFulfillmentContext().getPlantId();
+    	String plantId = user!=null&&user.getUserContext()!=null&&user.getUserContext().getFulfillmentContext()!=null?user.getUserContext().getFulfillmentContext().getPlantId():null;
     	String cacheKey = user.getUser().getPrimaryKey()+ "," +plantId + "," + nav.getPageType() + ",sch_" + nav.getActiveTab() + ",cos_"+CosFeatureUtil.isUnbxdCosAction(user, nav.getRequestCookies());
     	BrowseDataContext browseDataContext = getBrowseDataContextFromCacheForPaging(nav, user, cacheKey);
     	if (browseDataContext == null) {
