@@ -615,7 +615,7 @@ public class UserUtil {
 //            FDUser loginUser = FDCustomerManager.recognize(identity);
 //            LOGGER.info("FDUser : erpId = " + loginUser.getIdentity().getErpCustomerPK() + " : " + loginUser.getIdentity().getFDCustomerPK());
 
-            FDSessionUser currentUser = (FDSessionUser) session.getAttribute(SessionName.USER);
+            FDSessionUser currentUser = session.getAttribute(SessionName.USER)!=null?(FDSessionUser) session.getAttribute(SessionName.USER):null;
 
            /* // FDX-1873 - Show timeslots for anonymous address
             if(currentUser!=null && currentUser.getAddress() != null && currentUser.getAddress().getAddress1() != null
