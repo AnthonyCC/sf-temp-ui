@@ -205,7 +205,7 @@ for (FDOrderInfoI orderInfo : orderHistoryInfo) {
 		<td>
 			<a href="<%= orderDetailsUrl %>">View<span class="offscreen">order <%= orderInfo.getErpSalesId() %> </span></a>
             <% if (orderIsModifying) { %>
-            | <a href="/your_account/cancel_modify_order.jsp">Cancel Changes</a>
+            | <a href="/your_account/cancel_modify_order.jsp">Cancel Changes<span class="offscreen"> for order number <%= orderInfo.getErpSalesId() %></span></a>
            	<% } else if (orderInfo.isModifiable()){%>
             | <a href="/your_account/modify_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>&action=modify">Modify<span class="offscreen">order <%= orderInfo.getErpSalesId() %> </span></a>
             <% }%>
