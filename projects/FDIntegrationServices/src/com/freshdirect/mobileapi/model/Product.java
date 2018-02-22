@@ -1755,8 +1755,8 @@ public class Product {
      */
     public String getAutoConfiguredSalesUnit() {
         String autoConfiguredSalesUnit = null;
-        if (!product.getProductModel().isUnavailable()) {
-            FDConfigurableI configuration = product.getFDProduct().getAutoconfiguration(product.getProductModel().isSoldBySalesUnits(), 1);
+        if (product!=null&&product.getProductModel()!=null&&!product.getProductModel().isUnavailable()) {
+            FDConfigurableI configuration = product.getFDProduct()!=null?product.getFDProduct().getAutoconfiguration(product.getProductModel().isSoldBySalesUnits(), 1):null;
             if (configuration != null) {
                 autoConfiguredSalesUnit = configuration.getSalesUnit();
             }
