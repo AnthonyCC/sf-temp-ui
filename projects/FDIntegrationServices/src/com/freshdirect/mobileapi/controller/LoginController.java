@@ -494,7 +494,6 @@ public class LoginController extends BaseController  implements SystemMessageLis
             if(rafclickid!=null && rafpromocode!=null && !user.getFDSessionUser().getOrderHistory().hasSettledOrders(eStore)){
             	FDCustomerManager.updateRAFClickIDPromoCode(user.getFDSessionUser().getIdentity(), rafclickid, rafpromocode, eStore);
             }
-            responseMessage.setIsreferralEligible(user.getFDSessionUser().isReferralProgramAvailable());
 		} catch (FDAuthenticationException ex) {
 			if ("Account disabled".equals(ex.getMessage())) {
 				responseMessage = getErrorMessage(ERR_AUTHENTICATION,
@@ -561,6 +560,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
         // FDX-1873 - Show timeslots for anonymous address
         boolean deliveryAddr = setDeliveryAddress(user);
         responseMessage.setAnonymousAddressSetFromAcc(deliveryAddr);
+        responseMessage.setIsreferralEligible(user.getFDSessionUser().isReferralProgramAvailable());
         return responseMessage;
     }
 
