@@ -1405,7 +1405,8 @@ function doOverlayWindow(olURL, titleVar) {
 	}
 	
 	function doOverlayDialogByHtmlNew(olHtml) {
-		var overlayDialog = setupOverlayDialog();		
+		$jq('#uimodal-output').dialog('close');
+		var overlayDialog = setupOverlayDialog();
 		overlayDialog.html(olHtml);
 		overlayDialog.dialog('open');
 		$jq('.ui-dialog').addClass('overlay-dialog-new').css('z-index','1001');
