@@ -1496,7 +1496,7 @@ public class BrowseUtil {
         							user.getFDSessionUser().getUserContext().getPricingContext():null;
         if(user!=null)
         	user.setUserContext();
-        CatalogId catalogId = new CatalogInfo.CatalogId(ContentFactory.getInstance().getStoreKey().getId(), plantId, pc.getZoneInfo());
+        CatalogId catalogId = new CatalogInfo.CatalogId(ContentFactory.getInstance().getStoreKey().getId(), plantId, pc!=null?pc.getZoneInfo():null);
         return new CatalogInfo(catalogId);
     }
 
