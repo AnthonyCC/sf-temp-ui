@@ -2002,6 +2002,11 @@ div.control, div.slotRow, div.time {
 		right: -35px;
 		background: none;
 	}
+	.ui-dialog.overlay-dialog-new.mm-page-overlay .ui-dialog-titlebar button.ui-dialog-titlebar-close{
+		right: 15px;
+		top: 15px;
+		z-index: 1;
+	}
 	.ui-dialog.overlay-dialog-new .ui-dialog-titlebar button.ui-dialog-titlebar-close span.ui-icon-closethick{
 		width: 25px;
 		height: 25px;

@@ -10,7 +10,7 @@
 	        url: '/api/freetrial',
 	        type: 'POST',
 	        success: function(message) {
-	        	var closePopup = "$jq('.overlay-dialog-new .ui-dialog-titlebar-close').click()";
+	        	var closePopup = "$jq('#uimodal-output').dialog('close')";
 	        	if(message.STATUS == "ERROR"){
 	        		var errorMessagePopup = '<div class="error-container"><div class="error-header error-header-noimg">Hold Your Horseradishes!</div>';
 	        		errorMessagePopup += '<div class="error-text">' + message.MESSAGE + '</div>';
