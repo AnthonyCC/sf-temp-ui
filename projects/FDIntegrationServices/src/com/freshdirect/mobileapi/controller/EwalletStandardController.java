@@ -104,7 +104,13 @@ public class EwalletStandardController extends BaseController{
         		Map<String,String> errorMsg = checkRequiredData(requestMessage,res,ACTION_EWALLET_GENERATE_CLIENT_TOKEN);
         		if(errorMsg !=null && errorMsg.isEmpty()){
 		        	EwalletService ewalletService = new EwalletService(); 
-		        	requestMessage.setCustomerId(user.getFDSessionUser().getFDCustomer().getErpCustomerPK());
+		        	try{
+		        		requestMessage.setCustomerId(user.getFDSessionUser().getFDCustomer().getErpCustomerPK());
+		        	} catch(IllegalStateException ex){
+		        		res.addErrorMessage("User Identity is unknown");
+		        		setResponseMessage(model, res, user);
+		                return model;
+		        	}
 		        	res = ewalletService.generateClientToken(requestMessage);
         		}else{
         			res.addErrorMessages(errorMsg);
