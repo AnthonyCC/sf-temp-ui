@@ -279,7 +279,8 @@ var dataLayer = window.dataLayer || [];
                 revenue: coData.revenue || 0,
                 tax: coData.tax || 0,
                 shipping: coData.shippingCost || 0,
-                coupon: coData.couponCode && coData.couponCode.join(','),
+                // #AN-147 coupon: coData.couponCode && coData.couponCode.join(','),
+                coupon: coData.redemptionCode && coData.redemptionCode.join(','),
                 redemption_code: coData.redemptionCode && coData.redemptionCode.join(','),
                 etipping: coData.etipping || 0
               },
