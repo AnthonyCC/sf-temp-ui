@@ -18,13 +18,13 @@ import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.jndi.JndiTemplate;
@@ -35,20 +35,26 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import com.freshdirect.cms.changecontrol.controller.ChangePropagatorController;
 import com.freshdirect.cms.changecontrol.service.ContentNodeChangeResultSetExtractor;
+import com.freshdirect.cms.draft.controller.DraftPopulatorController;
+import com.freshdirect.cms.mediaassociation.controller.NotificationReceiverController;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
 @Profile("database")
-@EnableWebMvc
 @EnableCaching
 @EnableAsync
 @EnableJpaRepositories({ "com.freshdirect.cms.persistence.repository", "com.freshdirect.cms.changecontrol.repository", "com.freshdirect.cms.media.repository" })
 @EnableTransactionManagement(proxyTargetClass = true)
-@ComponentScan("com.freshdirect.cms")
+@ComponentScan(basePackages={"com.freshdirect.cms"},
+excludeFilters={
+    @ComponentScan.Filter(type=FilterType.ASSIGNABLE_TYPE, value=DraftPopulatorController.class),
+    @ComponentScan.Filter(type=FilterType.ASSIGNABLE_TYPE, value=NotificationReceiverController.class),
+    @ComponentScan.Filter(type=FilterType.ASSIGNABLE_TYPE, value=ChangePropagatorController.class)
+})
 public class DatabaseProfileConfiguration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseProfileConfiguration.class);
@@ -294,11 +300,6 @@ public class DatabaseProfileConfiguration {
         configurer.setLocation(new ClassPathResource("fdcms-db.properties"));
         configurer.setIgnoreUnresolvablePlaceholders(true);
         return configurer;
-    }
-
-    @Bean
-    public MappingJackson2HttpMessageConverter converter() {
-        return new MappingJackson2HttpMessageConverter();
     }
 
     @Bean

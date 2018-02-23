@@ -7,6 +7,20 @@
 	<description>Guess what</description>
 	<display-name>FDWebSite Application</display-name>
 
+	<!-- Parent Spring context that includes CMS services -->
+	<!-- Definition file: beanRefContext.xml, project: cmseue -->
+	<context-param>
+		<param-name>parentContextKey</param-name>
+		<param-value>parentApplicationContext</param-value>
+	</context-param>
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value></param-value>
+	</context-param>
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
 	<filter>
 		<description>Monitors the execution time FDWebSite Requests</description>
 		<display-name>FDWebSite Request Monitor</display-name>
@@ -90,7 +104,7 @@
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<init-param>
 			<param-name>contextConfigLocation</param-name>
-			<param-value>com.freshdirect.cms.configuration com.freshdirect.storeapi.configuration</param-value>
+			<param-value>com.freshdirect.appconfig.storefront</param-value>
 		</init-param>
 		<init-param>
 			<param-name>contextClass</param-name>
@@ -102,7 +116,6 @@
 		<servlet-name>cms-dispatcher</servlet-name>
 		<url-pattern>/cms/*</url-pattern>
 	</servlet-mapping>
-
 	<servlet>
 		<servlet-name>com.freshdirect.webapp.util.json.FDJSONRPCServlet</servlet-name>
 		<servlet-class>com.freshdirect.webapp.util.json.FDJSONRPCServlet</servlet-class>

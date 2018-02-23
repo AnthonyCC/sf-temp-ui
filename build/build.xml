@@ -2096,9 +2096,10 @@
 				<exclude name="web.xml"/>
 			</webinf>
 			<lib file="${work.dir}/cms-gwt.jar"/>
-			<lib file="${thirdparty.home}/ColorPicker-GWT-1.6.jar"/>
 			<lib file="${thirdparty.home}/gxt.jar"/>
 			<lib file="${thirdparty.home}/gwt/gwt-servlet.jar"/>
+			<lib file="${thirdparty.home}/gwt/gwt-maps.jar"/>
+			<lib file="${thirdparty.home}/gwt/ColorPicker-GWT-1.6.jar"/>
 
 			<lib dir="${thirdparty.home}">
 				<include name="poi-3.5-FINAL-20090928.jar" />
@@ -2143,7 +2144,6 @@
 				<include name="lucene-queries-3.0.3.jar" />
 				<include name="lucene-snowball-3.0.3.jar" />
 				<include name="guava-12.0.jar" />
-				<include name="joox-1.4.0.jar" />
 				<include name="joda-time-2.9.6.jar" />
 				<include name="ehcache-2.10.1.jar" />
 				<include name="jackson-databind-2.6.3.jar" />
@@ -2378,7 +2378,6 @@
 				<!-- include name="lucene-queries-3.0.3.jar" / -->
 				<!-- include name="lucene-snowball-3.0.3.jar" / -->
 				<include name="guava-12.0.jar" />
-				<include name="joox-1.4.0.jar" />
 				<include name="joda-time-2.9.6.jar" />
 				<include name="ehcache-2.10.1.jar" />
 				<include name="jackson-databind-2.6.3.jar" />
@@ -2767,7 +2766,6 @@
 				<!-- include name="lucene-queries-3.0.3.jar" / -->
 				<!-- include name="lucene-snowball-3.0.3.jar" / -->
 				<include name="guava-12.0.jar" />
-				<include name="joox-1.4.0.jar" />
 				<include name="joda-time-2.9.6.jar" />
 				<include name="ehcache-2.10.1.jar" />
 				<include name="jackson-databind-2.6.3.jar" />
@@ -3408,7 +3406,6 @@
 	<pathelement location="${thirdparty.home}/lucene-queries-3.0.3.jar" />
 	<pathelement location="${thirdparty.home}/lucene-snowball-3.0.3.jar" />
 	<pathelement location="${thirdparty.home}/guava-12.0.jar" />
-	<pathelement location="${thirdparty.home}/joox-1.4.0.jar" />
 	<pathelement location="${thirdparty.home}/joda-time-2.9.6.jar" />
 	<pathelement location="${thirdparty.home}/ehcache-2.10.1.jar" />
 	<pathelement location="${thirdparty.home}/jackson-databind-2.6.3.jar" />
