@@ -3,21 +3,19 @@ package com.freshdirect.cms.ui.editor.publish.flow.tasks.impl;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.List;
 
-import org.apache.commons.lang3.CharEncoding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.freshdirect.cms.ui.editor.publish.domain.StorePublishMessageSeverity;
 import com.freshdirect.cms.ui.editor.publish.entity.StorePublishMessage;
@@ -52,32 +50,17 @@ public class MediaDeltaPublisherTask extends ConsumerTask<List<String>> {
         publishMessageLogger.log(publishId, new StorePublishMessage(StorePublishMessageSeverity.INFO, "Generating media delta", MediaDeltaPublisherTask.class.getSimpleName()));
         File rootDir = new File(targetPath, MEDIA_DELTA_FOLDERNAME);
 
-        final URL baseUrl;
-        try {
-            baseUrl = new URL(repositoryUrl);
-
-            for (String childPath : input) {
-                File destinationFile = new File(rootDir, childPath);
-                URL sourceURL = null;
-                try {
-                    sourceURL = constructSpaceSafeUrl(baseUrl, childPath);
-                    downloadFileFromRepository(sourceURL, destinationFile);
-                } catch (MalformedURLException e) {
-                    LOGGER.error("There is a missing URL " + baseUrl.getPath() + childPath, e);
-                    publishMessageLogger.log(publishId, new StorePublishMessage(StorePublishMessageSeverity.WARNING, "There is a missing URL " + baseUrl.getPath() + childPath,
-                            MediaDeltaPublisherTask.class.getSimpleName()));
-                } catch (UnsupportedEncodingException ue) {
-                    LOGGER.error("Error while encoding URL " + baseUrl.getPath() + childPath, ue);
-                    publishMessageLogger.log(publishId, new StorePublishMessage(StorePublishMessageSeverity.WARNING,
-                            "There was an encoding error while encoding: " + baseUrl.getPath() + childPath, MediaDeltaPublisherTask.class.getSimpleName()));
-                }
+        for (String childPath : input) {
+            File destinationFile = new File(rootDir, childPath);
+            URL sourceURL = null;
+            try {
+                sourceURL = UriComponentsBuilder.fromUriString(repositoryUrl).path(childPath).build().encode().toUri().toURL();
+                downloadFileFromRepository(sourceURL, destinationFile);
+            } catch (MalformedURLException e) {
+                LOGGER.error("There is a missing URL " + sourceURL, e);
+                publishMessageLogger.log(publishId,
+                        new StorePublishMessage(StorePublishMessageSeverity.WARNING, "There is a missing URL " + sourceURL, MediaDeltaPublisherTask.class.getSimpleName()));
             }
-        } catch (
-
-        MalformedURLException e) {
-            LOGGER.error("There is a missing URL " + repositoryUrl, e);
-            publishMessageLogger.log(publishId,
-                    new StorePublishMessage(StorePublishMessageSeverity.WARNING, "There is a missing URL " + repositoryUrl, MediaDeltaPublisherTask.class.getSimpleName()));
         }
     }
 
@@ -99,8 +82,7 @@ public class MediaDeltaPublisherTask extends ConsumerTask<List<String>> {
         } catch (IOException e) {
             LOGGER.error("Cannot check out missing media " + sourceURL, e);
             publishMessageLogger.log(publishId,
-                    new StorePublishMessage(StorePublishMessageSeverity.WARNING, "Couldn't download file: " + destinationFile,
-                    MediaDeltaPublisherTask.class.getSimpleName()));
+                    new StorePublishMessage(StorePublishMessageSeverity.WARNING, "Couldn't download file: " + destinationFile, MediaDeltaPublisherTask.class.getSimpleName()));
         } finally {
             if (fileOutputStream != null) {
                 try {
@@ -124,13 +106,5 @@ public class MediaDeltaPublisherTask extends ConsumerTask<List<String>> {
         if (directory != null && !directory.exists()) {
             directory.mkdirs();
         }
-    }
-
-    private URL constructSpaceSafeUrl(URL baseUrl, String childPath) throws UnsupportedEncodingException, MalformedURLException {
-        StringBuilder urlSafeChildPath = new StringBuilder();
-        for (String childPathPart : childPath.split("/")) {
-            urlSafeChildPath.append("/").append(URLEncoder.encode(childPathPart, CharEncoding.UTF_8));
-        }
-        return new URL(baseUrl.getProtocol(), baseUrl.getHost(), baseUrl.getPort(), baseUrl.getPath() + urlSafeChildPath.toString().replaceAll("\\+", "%20"));
     }
 }
