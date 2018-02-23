@@ -2074,6 +2074,8 @@ public class ModelConverter {
 				FDVariation variation = new FDVariation(attribute, fdVariation.getName(), buildVariationOptions(fdVariation.getVariationOptions()));
 				variations[i]=variation; 
 			}
+		}else if(variationDatas==null){
+			variations = new FDVariation[0];
 		}
 		return variations;
 	}
