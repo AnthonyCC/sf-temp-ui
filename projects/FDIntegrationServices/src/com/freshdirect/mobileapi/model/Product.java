@@ -1723,6 +1723,9 @@ public class Product {
 				}*/ catch (HttpErrorResponse e) {
 					// TODO Auto-generated catch block
 					//e.printStackTrace();
+				} catch (FDRuntimeException e) {
+
+					//e.printStackTrace();
 				}
 	        }
         }

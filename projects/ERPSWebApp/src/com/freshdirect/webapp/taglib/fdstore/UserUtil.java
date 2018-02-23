@@ -614,8 +614,12 @@ public class UserUtil {
             String loginCookie = FDCustomerManager.getCookieByFdCustomerId(identity.getFDCustomerPK());
 //            FDUser loginUser = FDCustomerManager.recognize(identity);
 //            LOGGER.info("FDUser : erpId = " + loginUser.getIdentity().getErpCustomerPK() + " : " + loginUser.getIdentity().getFDCustomerPK());
-
-            FDSessionUser currentUser = (FDSessionUser) session.getAttribute(SessionName.USER);
+            
+            FDSessionUser currentUser = null;
+            try{
+            	currentUser = (FDSessionUser) session.getAttribute(SessionName.USER);
+            }catch(IllegalStateException e){
+            }
 
            /* // FDX-1873 - Show timeslots for anonymous address
             if(currentUser!=null && currentUser.getAddress() != null && currentUser.getAddress().getAddress1() != null
