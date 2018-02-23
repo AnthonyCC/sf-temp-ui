@@ -12,8 +12,16 @@ import com.freshdirect.framework.core.SequenceGenerator;
  * @author Aniwesh Vatsal
  *
  */
+
+/**
+ *@deprecated Please use the EwalletActivityLogDaoI and JdbcEwalletActivityLogDao in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */ 
 public class EwalletActivityLogDAO {
 
+	@Deprecated
 	public static void log(EwalletActivityLogModel log, Connection conn) {
 		PreparedStatement ps = null;
 		try {

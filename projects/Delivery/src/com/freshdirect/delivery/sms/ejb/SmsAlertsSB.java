@@ -19,14 +19,23 @@ import com.freshdirect.sms.model.st.STSmsResponse;
  */ 
 public interface SmsAlertsSB extends EJBObject{
 
+	@Deprecated
 	public boolean smsOptIn(String customerId,String mobileNumber, String eStoreId) throws RemoteException;
+	@Deprecated
 	public boolean smsOptInNonMarketing(String customerId,String mobileNumber, String eStoreId) throws RemoteException;
+	@Deprecated
 	public boolean smsOptInMarketing(String customerId,String mobileNumber, String eStoreId) throws RemoteException;
+	@Deprecated
 	public void expireOptin() throws RemoteException;
+	@Deprecated
 	public void updateSmsReceived(String mobileNumber, String shortCode, String carrierName, Date receivedDate, String message, EnumEStoreId eStoreId) throws RemoteException;
+	@Deprecated
 	public List<STSmsResponse> sendSmsToGateway(List<SmsAlertETAInfo> etaInfoList) throws RemoteException;
+	@Deprecated
 	public boolean smsOrderCancel(String customerId, String mobileNumber, String orderId, String eStoreId) throws RemoteException;
+	@Deprecated
 	public boolean smsOrderConfirmation(String customerId, String mobileNumber, String orderId, String eStoreId) throws RemoteException;
+	@Deprecated
 	public boolean smsOrderModification(String customerId, String mobileNumber, String orderId, String eStoreId) throws RemoteException;
 	
 }

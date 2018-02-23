@@ -93,7 +93,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 	 * @param mobileNumber
 	 * @return
 	 */
-	
+	@Deprecated
 	public boolean smsOptIn(String customerId, String mobileNumber, String eStoreId) {
 		boolean isSent = false;
 
@@ -132,7 +132,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 
 		return isSent;
 	}
-	
+	@Deprecated
 	public boolean smsOptInNonMarketing(String customerId, String mobileNumber, String eStoreId) {
 		boolean isSent = false;
 
@@ -172,7 +172,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 
 		return isSent;
 	}
-	
+	@Deprecated
 	public boolean smsOptInMarketing(String customerId, String mobileNumber, String eStoreId) {
 		boolean isSent = false;
 
@@ -212,7 +212,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 
 		return isSent;
 	}
-	
+	@Deprecated
 	public boolean smsOrderConfirmation(String customerId, String mobileNumber, String orderId, String eStoreId) {
 		boolean isSent = false;
 		Connection con = null;
@@ -252,6 +252,8 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 
 		return isSent;
 	}
+	
+	@Deprecated
 	public boolean smsOrderModification(String customerId, String mobileNumber, String orderId, String eStoreId) {
 		boolean isSent = false;
 		Connection con = null;
@@ -295,7 +297,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 		return isSent;
 	}
 		
-	
+	@Deprecated
 	public boolean smsOrderCancel(String customerId, String mobileNumber, String orderId, String eStoreId) {
 		boolean isSent = false;
 		Connection con = null;
@@ -341,6 +343,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 	 * expired ( based on configured time) and expires them.
 	 * 
 	 */
+	@Deprecated
 	public void expireOptin() {
 		Connection con = null;
 		PreparedStatement ps=null;
@@ -434,6 +437,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 	 * @param receivedDate
 	 * @param message
 	 */
+	@Deprecated
 	public void updateSmsReceived(String mobileNumber, String shortCode,
 			String carrierName, Date receivedDate, String message, EnumEStoreId eStoreId) throws RemoteException  {
 		Connection con = null;
@@ -476,7 +480,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 		}
 
 	}
-	
+	@Deprecated
 	private void updateSmsMessagesReceived(String mobileNumber, String shortCode,
 			String carrierName, Date receivedDate, String message, SmsCustInfo customerInfo, Connection con, String confirmed, EnumEStoreId eStoreId) 
 					throws SQLException, SmsServiceException, FDResourceException {
@@ -638,7 +642,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 	}
 
 
-	
+	@Deprecated
 	public List<STSmsResponse> sendSmsToGateway(List<SmsAlertETAInfo> etaInfoList){
 		List<STSmsResponse> etaSmsUpdateList = SmsUtil.getEtaSmsUpdateList(etaInfoList);
 		return etaSmsUpdateList;
@@ -652,6 +656,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 	 * @param smsResponseModel
 	 * @throws SQLException
 	 */
+	@Deprecated
 	private void updateSmsAlertCaptured(Connection con,
 			STSmsResponse smsResponseModel, String alertType,
 			String customerId) throws SQLException {
@@ -691,7 +696,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 		}
 
 	}
-
+	@Deprecated
 	private List<SmsCustInfo> getCustomerInfoList(Connection con, String mobileNumber,  EnumEStoreId eStoreId) 
 			throws SQLException, RemoteException {
 		List<SmsCustInfo> customerInfoList = new ArrayList<SmsCustInfo>();
@@ -724,7 +729,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 
 		return customerInfoList;
 	}
-
+	@Deprecated
 	private String isConfirmed(String text) {
 		String confirmed = "OTHER";
 		text = text.toUpperCase();

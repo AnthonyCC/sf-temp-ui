@@ -15,7 +15,12 @@ import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
-
+/**
+ *@deprecated Please use the ZoneInfoController and ZoneInfoServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public class ErpZoneInfoSessionBean extends SessionBeanSupport{
 	
     /** logger for messages

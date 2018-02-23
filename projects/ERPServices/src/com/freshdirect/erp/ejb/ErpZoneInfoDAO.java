@@ -19,7 +19,12 @@ import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
-
+/**
+ *@deprecated Please use the ErpZoneInfoDao  in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public class ErpZoneInfoDAO {
 
     /** logger for messages
@@ -125,6 +130,7 @@ public class ErpZoneInfoDAO {
     
     
                     
+    @Deprecated
     public static String findZoneId(Connection con,String serviceType,String zipCode) throws SQLException{		
 		   Connection conn = con;
 		   List zoneIdList=new ArrayList();	
@@ -157,7 +163,7 @@ public class ErpZoneInfoDAO {
     													  " and z.DEFAULT_ZONE='X' and z.service_type=?";
     
     
-    
+    @Deprecated
     public static String findZoneId(Connection con,String serviceType) throws SQLException{		
 		   Connection conn = con;
 		   List zoneIdList=new ArrayList();	
@@ -183,7 +189,7 @@ public class ErpZoneInfoDAO {
     
     
 	private static final String ALL_ZONE_PRICING_SELECT_SQL="select max(id), sap_id, max(version) from erps.pricing_zone group by (sap_id)";
-   	
+	@Deprecated
 	public static Collection getAllZoneIds(Connection con) throws SQLException{
 		
 		   Connection conn = con;
@@ -210,7 +216,7 @@ public class ErpZoneInfoDAO {
 	private static final String ZONE_PRICING_SELECT_SQL="select ID, SAP_ID, REGION_ID, SERVICE_TYPE, PARENT_ZONE_ID, DEFAULT_ZONE, VERSION, DESCRIPTION, WEB_DESCRIPTION "+   
 														" from  erps.pricing_zone where sap_id=? and version=(select max(version) version from erps.pricing_zone where sap_id=?) ";
 	
-	
+	@Deprecated
 	public static ErpZoneMasterInfo getZoneInfoDetails(Connection con,String zoneId) throws SQLException{
 		   Connection conn = con;
 		   ErpZoneMasterInfo zoneInfo=null;
@@ -252,7 +258,7 @@ public class ErpZoneInfoDAO {
 	
 	private static final String ZONE_PRICING_SELECT_ALL_SQL="select ID, SAP_ID, REGION_ID, SERVICE_TYPE, PARENT_ZONE_ID, DEFAULT_ZONE, VERSION, DESCRIPTION, WEB_DESCRIPTION "+   
     "from  erps.pricing_zone p where version=(select max(version) version from erps.pricing_zone p1 where p1.sap_id=p.sap_id) order by sap_id ";
-	
+	@Deprecated
 	public static List<ErpZoneMasterInfo> getAllZoneInfoDetails(Connection con) throws SQLException{
 		   Connection conn = con;
 		   List<ErpZoneMasterInfo> zoneInfoList=new ArrayList<ErpZoneMasterInfo>();
@@ -291,7 +297,7 @@ public class ErpZoneInfoDAO {
 	}
 	
 	public static final String ZONE_PRICING_REGION_SELECT_SQL="select ID, VERSION, DESCRIPTION, SAP_ID  from erps.pricing_region where id=?";
-	
+	@Deprecated
 	public static ErpZoneRegionInfo getZoneRegionInfoDetails(Connection con,String id) throws SQLException{
 		   Connection conn = con;
 		   ErpZoneRegionInfo zoneRegionInfo=null;
@@ -314,7 +320,7 @@ public class ErpZoneInfoDAO {
 
 
     private static final String ZONE_PRICING_ZIP_SELECT="select ID, REGION_ID,VERSION,ZIP_CODE from erps.pricing_region_zips where region_id=?";	
-	
+    @Deprecated
 	public static List getZoneInfoZipDetails(Connection con,ErpZoneRegionInfo regionInfo) throws SQLException{
 		   Connection conn = con;
 		   
@@ -345,7 +351,7 @@ public class ErpZoneInfoDAO {
 	private static final String ZONE_PRICING_SQL="insert into erps.pricing_zone (ID, SAP_ID, REGION_ID, SERVICE_TYPE, PARENT_ZONE_ID, DEFAULT_ZONE, VERSION, DESCRIPTION, WEB_DESCRIPTION) "+
 	" values (?,?,?,?,?,?,?,?,?)";
 			
-	
+	@Deprecated
 	public static void createZoneMasterInfo(Connection con,int batchNumber,List zoneInfoList ) throws SQLException{
 		
 		   Connection conn = con;
@@ -391,6 +397,7 @@ public class ErpZoneInfoDAO {
      * @throws SQLException any problems while getting a unique id
      * @return an id that uniquely identifies a persistent object
      */    
+	@Deprecated
     protected static String getNextId(Connection conn, String schema) throws SQLException {
 		return SequenceGenerator.getNextId(conn, schema);
     }
@@ -398,7 +405,7 @@ public class ErpZoneInfoDAO {
 	
 	private static final String ZONE_PRICING_REGION_SQL="insert into erps.pricing_region (ID, SAP_ID , VERSION, DESCRIPTION) values (?,?,?,?)";
 
-	
+	@Deprecated
 	public static void createZonePricingRegionInfo(Connection con,int batchNumber,ErpZoneRegionInfo region ) throws SQLException{
 		
 		   Connection conn = con;
@@ -427,7 +434,7 @@ public class ErpZoneInfoDAO {
 	private static final String ZONE_PRICING_REGION_ZIPS_SQL="insert into erps.PRICING_REGION_ZIPS (ID, REGION_ID, VERSION, ZIP_CODE) "+
 															" values (?,?,?,?)";
 
-	
+	@Deprecated
 	public static void createZonePricingRegionZipInfo(Connection con,int batchNumber,List zoneInfoZipList) throws SQLException {
 		
 		   Connection conn = con;

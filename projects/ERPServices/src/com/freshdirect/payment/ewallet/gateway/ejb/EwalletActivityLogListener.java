@@ -16,6 +16,13 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  * @author garooru
  *
  */
+
+/**
+ *@deprecated Please use the EwalletActivityListener in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */ 
 public class EwalletActivityLogListener extends MessageDrivenBeanSupport {
 
 	private static Category LOGGER = LoggerFactory.getInstance(EwalletActivityLogListener.class);
@@ -36,7 +43,7 @@ public class EwalletActivityLogListener extends MessageDrivenBeanSupport {
 
 	}
 	
-
+	@Deprecated
 	public void logEwalletActivity(EwalletActivityLogModel logModel){
 		Connection conn = null;
 		try {
