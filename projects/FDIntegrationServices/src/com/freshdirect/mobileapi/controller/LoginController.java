@@ -360,7 +360,11 @@ public class LoginController extends BaseController  implements SystemMessageLis
             populateResponseWithEnabledAdditionsForWebClient(user, messageResponse, request, null);
             responseMessage = messageResponse;
         } else {
-            responseMessage = formatLoginMessage(user);
+        	try{
+        		responseMessage = formatLoginMessage(user);
+        	}catch(IllegalStateException e){
+        		// supress
+        	}
         }
         return responseMessage;
     }
