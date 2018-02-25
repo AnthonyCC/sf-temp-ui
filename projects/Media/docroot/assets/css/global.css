@@ -3329,13 +3329,12 @@ table.accessibilitySpacing td{
 .qtyinput .quantity_minus,
 .qtyinput .quantity_plus{
     width: 36px;
-    color: #ffffff;
     background-color: #4fa157;
     border: 1px solid #4fa157;
     height: 34px;
     line-height: 32px;
     font-size: 24px;
-	font-family: Verdana;
+    font-family: Verdana;
     text-align: center;
     font-weight: bold;
     color: #fff;

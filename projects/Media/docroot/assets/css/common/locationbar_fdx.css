@@ -162,6 +162,13 @@
 	#popupcart tr.cartline .quantity .qtyinput {
 		height: 25px;
 	}
+	#popupcart tr.cartline .quantity .qtyinput.small button {
+		border: none;
+		color: transparent;
+	}
+	#popupcart tr.cartline .quantity .qtyinput.small button:hover {
+		background-color: transparent;
+	}
 	#popupcart tr.cartline:hover .quantity .qtyinput.small .qty,
 	#popupcart tr.cartline:focus .quantity .qtyinput.small .qty
 	{
