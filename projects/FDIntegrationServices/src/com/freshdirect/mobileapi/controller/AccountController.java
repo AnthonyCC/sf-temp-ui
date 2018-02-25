@@ -393,7 +393,8 @@ public class AccountController extends BaseController implements Comparator <Ord
         ShipToAddress anonymousAddress = null;
 
         if (addressId == null) {
-        	if(user.getAddress() != null && user.getAddress().getAddress1() != null && user.getAddress().getAddress1().trim().length() > 0) {
+        	if(user.getAddress() != null && user.getAddress().getAddress1() != null && user.getAddress().getAddress1().trim().length() > 0 
+        			&& user.getAddress().isCustomerAnonymousAddress()) {
     			anonymousAddress = ShipToAddress.wrap(user.getAddress());
     		} else {
 	        	if(user.getFDSessionUser() != null && user.getFDSessionUser().getIdentity() != null ) {
@@ -407,9 +408,11 @@ public class AccountController extends BaseController implements Comparator <Ord
 	        	}
     		}
         }
-
+        
+        LOGGER.info("getDeliveryTimeslotByTimezone: " + addressId );
         if (anonymousAddress != null) {
-
+        	
+        	LOGGER.info("getDeliveryTimeslotByTimezone[anonymousAddress]: " + anonymousAddress.getStreet1() + ":" + anonymousAddress.getPostalCode() );
         	TimeSlotCalculationResult timeSlotResult = anonymousAddress.getDeliveryTimeslot(user, false);
             DeliveryTimeslots deliveryTimeslots = new DeliveryTimeslots(timeSlotResult);
             ReservationTimeslots responseMessage = new ReservationTimeslots(new DeliveryAddresses(), deliveryTimeslots, user);
