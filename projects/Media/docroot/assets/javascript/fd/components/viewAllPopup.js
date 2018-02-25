@@ -36,6 +36,14 @@ var FreshDirect = FreshDirect || {};
     hasClose: {
       value: true
     },
+    doCriteoImpressionBeacons: {
+    	value: function(e) {
+    		$('#'+this.popupId).find('[data-hooklogic-beacon-impress]').each(function(i,e) {
+    			$(e).append('<img src="'+$(e).attr('data-hooklogic-beacon-impress')+'" alt="" style="display: none;" />');
+    			$(e).attr('data-hooklogic-beacon-impress', null); //remove
+    		});
+    	}
+    },
     openPopup:{
       value: function (e) {
         var moduleId = e.currentTarget.getAttribute('data-module-id'),
@@ -78,6 +86,8 @@ var FreshDirect = FreshDirect || {};
         this.refreshBody(data);
 
         fd.common.dispatcher.signal('productImpressions', { el: $('#'+this.popupId), type: 'impressionsViewAll'});
+        
+        this.doCriteoImpressionBeacons();
       }
     }
   });
