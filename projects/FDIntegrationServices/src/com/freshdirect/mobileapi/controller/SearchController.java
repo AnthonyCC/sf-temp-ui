@@ -176,13 +176,8 @@ public class SearchController extends BaseController {
                 if(pageType!=null && searchParams!=null){
                     final CmsFilteringNavigator nav = CmsFilteringNavigator.createInstance(request, user.getFDSessionUser());
                     SearchResults sr = SearchService.getInstance().searchProducts(searchTerm, nav.getRequestCookies(), user.getFDSessionUser(), nav.getRequestUrl(), nav.getReferer());
-                    if(platform!=null){
-                    	user.getFDSessionUser().setPlatForm(platform);
-                    	user.getFDSessionUser().setLat(lat);
-                    	user.getFDSessionUser().setPdUserId(pdUserId);
-                    	
-                    }
-                    SearchResultsUtil.getHLBrandProductAdProducts(sr, nav, user.getFDSessionUser());
+
+                    SearchResultsUtil.getHLBrandProductAdProducts(sr, nav, user.getFDSessionUser(), platform, lat, pdUserId);
                     if(!sr.getAdProducts().isEmpty()){
                     	List<AdProducts> adProductList = new ArrayList<AdProducts>();
                     	for(FilteringSortingItem<ProductModel> adproduct : sr.getAdProducts()){
@@ -363,12 +358,8 @@ public class SearchController extends BaseController {
         if(pageType!=null && searchParams!=null){
             final CmsFilteringNavigator nav = CmsFilteringNavigator.createInstance(request, user.getFDSessionUser());
             SearchResults sr = SearchService.getInstance().searchProducts(searchTerm, nav.getRequestCookies(), user.getFDSessionUser(), nav.getRequestUrl(), nav.getReferer());
-            if(platform!=null ){
-            	user.getFDSessionUser().setPlatForm(platform);
-            	user.getFDSessionUser().setLat(lat);
-            	user.getFDSessionUser().setPdUserId(pdUserId);
-            }
-            SearchResultsUtil.getHLBrandProductAdProducts(sr, nav, user.getFDSessionUser());
+
+            SearchResultsUtil.getHLBrandProductAdProducts(sr, nav, user.getFDSessionUser(), platform, lat, pdUserId);
             if(!sr.getAdProducts().isEmpty()){
             	List<AdProducts> adProductList = new ArrayList<AdProducts>();
             	for(FilteringSortingItem<ProductModel> adproduct : sr.getAdProducts()){

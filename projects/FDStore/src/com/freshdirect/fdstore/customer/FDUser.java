@@ -2342,9 +2342,9 @@ public class FDUser extends ModelSupport implements FDUserI {
         if (isSOEligible == null) {
             isSOEligible = Boolean.FALSE;
             EnumEStoreId eStoreId = (null !=this.getUserContext() && null !=this.getUserContext().getStoreContext()) ? this.getUserContext().getStoreContext().getEStoreId() : EnumEStoreId.FD;
-            if (!EnumEStoreId.FDX.equals(eStoreId) && isSOEnabled()) {
-                isSOEligible = hasCorporateOrder() || isCorporateUser();
-            }
+			if (!EnumEStoreId.FDX.equals(eStoreId) && isSOEnabled()) {
+				isSOEligible = isCorporateUser() || hasCorporateOrder();
+			}
         }
 
         // LOGGER.debug("Customer eligible for SO: " + isSOEligible);

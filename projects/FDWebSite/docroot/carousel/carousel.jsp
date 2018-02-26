@@ -36,10 +36,13 @@
 	} else if ("search".equals(type)) {
 		String productId = request.getParameter("productId");
 	%>
-        <potato:searchRecommender productid="<%=productId%>" />
-        <soy:render template="srch.carousel" data="${searchRecommenderPotato}" />
-        
-
+        <potato:searchRecommender productId="<%=productId%>" />
+        <soy:render template="srch.carousel" injectAdditonalData="false" data="${searchRecommenderPotato}" />
+	<%
+	} else if ("pres-picks".equals(type)) {
+	%>
+	 	<potato:presPickRecommender />
+        <soy:render template="srch.carouselWrapper" injectAdditonalData="false" data="${presPickRecommenderPotato}" />
 	<%
 	}
 %>

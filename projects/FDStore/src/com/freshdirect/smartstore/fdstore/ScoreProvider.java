@@ -596,6 +596,10 @@ public class ScoreProvider implements DataAccess {
             return Collections.emptyMap();
         }
 
+        public boolean isUserHasScore(String erpCustomerId) {
+        	Map<ContentKey,double[]> scores = storePersonalizedScores(erpCustomerId);
+            return scores != null && !scores.isEmpty();
+        }
         /**
          * return true, if the user has score for that given content key.
          *

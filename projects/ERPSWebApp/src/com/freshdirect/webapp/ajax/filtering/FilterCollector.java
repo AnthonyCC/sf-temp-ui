@@ -9,6 +9,7 @@ import com.freshdirect.content.nutrition.EnumKosherSymbolValue;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.content.nutrition.NutritionValueEnum;
 import com.freshdirect.fdstore.FDKosherInfo;
+import com.freshdirect.fdstore.FDNutritionCache;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
@@ -38,10 +39,19 @@ public class FilterCollector {
 		return INSTANCE;
 	}
 
-	public void collectBrandAndShowMeOnlyFilters(NavigationModel navigationModel, ProductModel product) throws FDResourceException, FDSkuNotFoundException {
+	public void collectBrandAndShowMeOnlyFilters(NavigationModel navigationModel, ProductModel product)
+			throws FDResourceException, FDSkuNotFoundException {
 		collectBrandFilters(navigationModel, product);
 		Set<String> showMeOnlyOfSearchResults = navigationModel.getShowMeOnlyOfSearchResults();
-		collectShowMeOnlyNewFilter(product, showMeOnlyOfSearchResults);
+		if (!showMeOnlyOfSearchResults.contains("new")) {
+			collectShowMeOnlyNewFilter(product, showMeOnlyOfSearchResults);
+		}
+		// if "kosher", "organic" and "sale" are in the result already,
+		// we don't need to do additional check
+		if (showMeOnlyOfSearchResults.contains("kosher") && showMeOnlyOfSearchResults.contains("organic")
+				&& showMeOnlyOfSearchResults.contains("onsale")) {
+			return;
+		}
 		try {
 			final SkuModel defSku = PopulatorUtil.getDefSku(product);
 			if (defSku == null) {
@@ -51,11 +61,18 @@ public class FilterCollector {
 
 			FDProduct fdProduct = defSku.getProduct();
 			if (fdProduct != null) {
-				String plantID=ProductInfoUtil.getPickingPlantId(defSku.getProductInfo());;
 
-				collectShowMeOnlyKosherFilter(showMeOnlyOfSearchResults, fdProduct.getKosherInfo(plantID));
-				collectShowMeOnlyOrganicFilter(showMeOnlyOfSearchResults, fdProduct.getNutritionInfoList(ErpNutritionInfoType.ORGANIC));
-				collectShowMeOnlyOnSaleFilter(product, showMeOnlyOfSearchResults);
+				if (!showMeOnlyOfSearchResults.contains("kosher")) {
+					String plantID = ProductInfoUtil.getPickingPlantId(defSku.getProductInfo());
+					collectShowMeOnlyKosherFilter(showMeOnlyOfSearchResults, fdProduct.getKosherInfo(plantID));
+				}
+				if (!showMeOnlyOfSearchResults.contains("organic")) {
+					collectShowMeOnlyOrganicFilter(showMeOnlyOfSearchResults, FDNutritionCache.getInstance()
+							.getNutrition(defSku.getSkuCode()).getNutritionInfoList(ErpNutritionInfoType.ORGANIC));
+				}
+				if (!showMeOnlyOfSearchResults.contains("onsale")) {
+					collectShowMeOnlyOnSaleFilter(product, showMeOnlyOfSearchResults);
+				}
 			}
 		} catch (FDSkuNotFoundException exc) {
 			// absorb exception

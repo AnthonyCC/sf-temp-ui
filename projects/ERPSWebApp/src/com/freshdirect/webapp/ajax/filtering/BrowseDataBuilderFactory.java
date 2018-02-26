@@ -67,7 +67,6 @@ import com.freshdirect.webapp.ajax.data.CMSModelToSoyDataConverter;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.globalnav.data.DepartmentData;
 import com.freshdirect.webapp.globalnav.data.SuperDepartmentData;
-import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.util.MediaUtils;
 import com.freshdirect.webapp.util.ProductRecommenderUtil;
 
@@ -136,7 +135,7 @@ public class BrowseDataBuilderFactory {
 
 
 		@Override
-		public BrowseDataContext buildBrowseData(NavigationModel navigationModel, FDSessionUser user, CmsFilteringNavigator nav) {
+		public BrowseDataContext buildBrowseData(NavigationModel navigationModel, FDUserI user, CmsFilteringNavigator nav) {
 
 			SuperDepartmentModel superDepartmentModel = (SuperDepartmentModel) navigationModel.getSelectedContentNodeModel();
 			SuperDepartmentData superDepartmentData = CMSModelToSoyDataConverter.createSuperDepartmentData(superDepartmentModel, user);
@@ -174,7 +173,7 @@ public class BrowseDataBuilderFactory {
 		
 
 		@Override
-		public BrowseDataContext buildBrowseData(NavigationModel navigationModel, FDSessionUser user, CmsFilteringNavigator nav) {
+		public BrowseDataContext buildBrowseData(NavigationModel navigationModel, FDUserI user, CmsFilteringNavigator nav) {
 	
 			List<CategoryData> regularSubCategories = new ArrayList<CategoryData>();
 			List<CategoryData> preferenceSubCategories = new ArrayList<CategoryData>();
@@ -282,7 +281,7 @@ public class BrowseDataBuilderFactory {
 	public class CategoryDataBuilder implements BrowseDataBuilderI {
 
 		@Override
-		public BrowseDataContext buildBrowseData(NavigationModel navigationModel, FDSessionUser user, CmsFilteringNavigator nav) {
+		public BrowseDataContext buildBrowseData(NavigationModel navigationModel, FDUserI user, CmsFilteringNavigator nav) {
 			
 			BrowseDataContext data = new BrowseDataContext();
 			List<SectionContext> sections = new ArrayList<SectionContext>();
@@ -348,7 +347,7 @@ public class BrowseDataBuilderFactory {
 	public class SubCategoryDataBuilder implements BrowseDataBuilderI {
 
 		@Override
-		public BrowseDataContext buildBrowseData(NavigationModel navigationModel, FDSessionUser user, CmsFilteringNavigator nav) {
+		public BrowseDataContext buildBrowseData(NavigationModel navigationModel, FDUserI user, CmsFilteringNavigator nav) {
 			
 			BrowseDataContext data = new BrowseDataContext();
 			List<SectionContext> sections = new ArrayList<SectionContext>();
@@ -380,7 +379,7 @@ public class BrowseDataBuilderFactory {
 	public class SubSubCategoryDataBuilder implements BrowseDataBuilderI {
 
 		@Override
-		public BrowseDataContext buildBrowseData(NavigationModel navigationModel, FDSessionUser user, CmsFilteringNavigator nav) {
+		public BrowseDataContext buildBrowseData(NavigationModel navigationModel, FDUserI user, CmsFilteringNavigator nav) {
 			
 			BrowseDataContext data = new BrowseDataContext();
 			List<SectionContext> sections = new ArrayList<SectionContext>();
@@ -417,7 +416,7 @@ public class BrowseDataBuilderFactory {
 	public class SearchPageDataBuilder implements BrowseDataBuilderI {
 
 		@Override
-		public BrowseDataContext buildBrowseData(NavigationModel navigationModel, FDSessionUser user, CmsFilteringNavigator nav) {
+		public BrowseDataContext buildBrowseData(NavigationModel navigationModel, FDUserI user, CmsFilteringNavigator nav) {
 			
 			BrowseDataContext data = new BrowseDataContext();
 			List<SectionContext> sections = new ArrayList<SectionContext>();
@@ -441,7 +440,7 @@ public class BrowseDataBuilderFactory {
 	public class RecipePageDataBuilder implements BrowseDataBuilderI {
 
 		@Override
-		public BrowseDataContext buildBrowseData(NavigationModel navigationModel, FDSessionUser user, CmsFilteringNavigator nav) {
+		public BrowseDataContext buildBrowseData(NavigationModel navigationModel, FDUserI user, CmsFilteringNavigator nav) {
 			BrowseDataContext browseDataContext = new BrowseDataContext();
 			List<SectionContext> sections = new ArrayList<SectionContext>();
 			SectionContext sectionContext = new SectionContext();
@@ -455,7 +454,7 @@ public class BrowseDataBuilderFactory {
 		
 	}
 
-	private List<CategoryData> createCategoryDatas(CategoryModel cat, FDSessionUser user, boolean showPopularCategoriesGlobal){
+	private List<CategoryData> createCategoryDatas(CategoryModel cat, FDUserI user, boolean showPopularCategoriesGlobal){
 		List<CategoryData> categories = new ArrayList<CategoryData>();
 		for(CategoryModel subCat : cat.getSubcategories()){
 			if (NavigationUtil.isCategoryHiddenInContext(user, subCat)) {
@@ -474,7 +473,7 @@ public class BrowseDataBuilderFactory {
 	 * 
 	 * create section tree (product list grouped by subcategories)
 	 */
-	public SectionContext createSectionTree(CategoryModel cat, int level, FDSessionUser user){
+	public SectionContext createSectionTree(CategoryModel cat, int level, FDUserI user){
 		
 		List<SectionContext> sections = new ArrayList<SectionContext>();
 		
@@ -511,7 +510,7 @@ public class BrowseDataBuilderFactory {
 		return section;
 	}
 	
-	public SectionContext createProductSection(CategoryModel cat, FDSessionUser user, NavigationModel navModel){
+	public SectionContext createProductSection(CategoryModel cat, FDUserI user, NavigationModel navModel){
 		
 		// create the ONE section contains all products
 		SectionContext section = createSection(cat, user);
@@ -525,7 +524,7 @@ public class BrowseDataBuilderFactory {
 		
 	}
 	
-	public void collectAllProducts(CategoryModel cat, int level, FDSessionUser user, Set<ProductModel> prods){
+	public void collectAllProducts(CategoryModel cat, int level, FDUserI user, Set<ProductModel> prods){
 		
 		if(cat.getRedirectUrlClean()!=null){ // no products shown in case of redirect url
 			return;
@@ -556,7 +555,7 @@ public class BrowseDataBuilderFactory {
 	 * @return
 	 * create a simple section
 	 */
-	private SectionContext createSection(CategoryModel cat, FDSessionUser user){
+	private SectionContext createSection(CategoryModel cat, FDUserI user){
 		SectionContext section = new SectionContext();
 		section.setCatId(cat.getContentName());
 		Image headerImage = cat.getNameImage();
@@ -689,7 +688,7 @@ public class BrowseDataBuilderFactory {
 		return recipeHits;
 	}
 	
-	private void appendHtml(DescriptiveDataI data, Html dataMedia, Html middleMedia, FDSessionUser user){
+	private void appendHtml(DescriptiveDataI data, Html dataMedia, Html middleMedia, FDUserI user){
 		if(dataMedia!=null){
 			data.setMedia(MediaUtils.renderHtmlToString(dataMedia, user));
 		}
@@ -704,7 +703,7 @@ public class BrowseDataBuilderFactory {
 		}
 	}
 
-    private void appendCatDepthFields(BrowseDataContext data, CategoryModel cat, FDSessionUser user,
+    private void appendCatDepthFields(BrowseDataContext data, CategoryModel cat, FDUserI user,
             boolean productListing) {
 		appendHtml(data.getDescriptiveContent(), cat.getCategoryBanner(), cat.getBrowseMiddleMedia(), user);
 		appendTitle(data, cat.getDepartment().getTitleBar());
@@ -720,7 +719,7 @@ public class BrowseDataBuilderFactory {
 		}
 	}
 	
-	private CarouselData createCarouselData(String id, String name, List<ProductModel> products, FDSessionUser user, String cmEventSource){
+	private CarouselData createCarouselData(String id, String name, List<ProductModel> products, FDUserI user, String cmEventSource){
 		return CarouselService.defaultService().createCarouselData(id, name, products, user, cmEventSource, null);
 	}
 
@@ -905,7 +904,7 @@ public class BrowseDataBuilderFactory {
 	/**
 	 * appends carousels using shown products if necessary
 	 */
-	public void appendCarousels(BrowseData browseData, BrowseDataContext browseDataContext, FDSessionUser user, Set<ContentKey> shownProductKeysForRecommender, boolean disableCategoryYmalRecommender, boolean isPdp){
+	public void appendCarousels(BrowseData browseData, BrowseDataContext browseDataContext, FDUserI user, Set<ContentKey> shownProductKeysForRecommender, boolean disableCategoryYmalRecommender, boolean isPdp){
 		//Product Listing Page Scarab
 		if (browseData.getCarousels().getCarousel1() == null && shownProductKeysForRecommender.size() > 0) {
 			try {
@@ -940,7 +939,7 @@ public class BrowseDataBuilderFactory {
 		}
 	}
 	
-	public void appendSearchLikeCarousel(BrowseData browseData, FDSessionUser user, FilteringFlowType pageType, String activeTab){
+	public void appendSearchLikeCarousel(BrowseData browseData, FDUserI user, FilteringFlowType pageType, String activeTab){
 		
 		try {
 			switch (pageType) {

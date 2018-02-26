@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.webapp.ajax.browse.data.BrowseData;
 import com.freshdirect.webapp.ajax.browse.data.PagerData;
 import com.freshdirect.webapp.ajax.browse.data.SectionData;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
-import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 
 public class BrowseDataPagerHelper {
 
@@ -33,7 +33,7 @@ public class BrowseDataPagerHelper {
 	 * @param cmsFilteringNavigator
 	 * @return
 	 */
-	public static void createPagerContext(BrowseData browseData, CmsFilteringNavigator cmsFilteringNavigator, FDSessionUser user) {
+	public static void createPagerContext(BrowseData browseData, CmsFilteringNavigator cmsFilteringNavigator, FDUserI user) {
 		
 		PagerData pagerData = new PagerData();
 		pagerData.setPageSize(cmsFilteringNavigator.getPageSize());
@@ -93,7 +93,7 @@ public class BrowseDataPagerHelper {
 	 * @param fetchResults
 	 * @return
 	 */
-	private static Map<String, Integer> fetchSectionData(SectionData sectionData, Map<String, Integer> fetchResults, boolean all, CmsFilteringNavigator nav, FDSessionUser user) {
+	private static Map<String, Integer> fetchSectionData(SectionData sectionData, Map<String, Integer> fetchResults, boolean all, CmsFilteringNavigator nav, FDUserI user) {
 		
 		if (sectionData.getSections() != null && sectionData.getSections().size() > 0) {
 			Iterator<SectionData> sectionDataIterator = sectionData.getSections().iterator();
@@ -196,7 +196,7 @@ public class BrowseDataPagerHelper {
 		
 	}
 	
-	private static int populateProducts(List<ProductData> productList, Map<String, Integer> fetchResults, CmsFilteringNavigator nav, FDSessionUser user, int displaySize){
+	private static int populateProducts(List<ProductData> productList, Map<String, Integer> fetchResults, CmsFilteringNavigator nav, FDUserI user, int displaySize){
 		Iterator<ProductData> productIterator = productList.iterator();
 		int validProductNumber = 0;
 		int productRemoved = 0;
@@ -218,7 +218,7 @@ public class BrowseDataPagerHelper {
 		return productRemoved;
 	}
 	
-	private static boolean populateProductData(ProductData productData, CmsFilteringNavigator nav, FDSessionUser user) {
+	private static boolean populateProductData(ProductData productData, CmsFilteringNavigator nav, FDUserI user) {
 		try {
 			ProductDetailPopulator.populateBrowseProductData(productData, user, nav, (nav.isPdp() || FDStoreProperties.getPreviewMode()));
 		} catch(Exception e) {

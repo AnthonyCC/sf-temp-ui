@@ -808,7 +808,7 @@ public class StandingOrderHelper {
 	 * method is needed for separate checks outside of here
 	 * */
 	public static boolean isEligibleForSo3_0(FDUserI user) {
-		if (user.isEligibleForStandingOrders() && user.isNewSO3Enabled()) {
+		if (user.isNewSO3Enabled() && user.isEligibleForStandingOrders()) {
 			return true;
 		}
 		return false;

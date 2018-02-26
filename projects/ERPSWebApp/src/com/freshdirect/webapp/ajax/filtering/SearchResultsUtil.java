@@ -19,6 +19,7 @@ import com.freshdirect.fdstore.brandads.FDBrandProductsAdManager;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdInfo;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.pricing.ProductModelPricingAdapter;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -132,14 +133,15 @@ public class SearchResultsUtil {
 	
 	
 	
-public static SearchResults getHLBrandProductAdProducts(SearchResults searchResults, CmsFilteringNavigator nav, FDSessionUser user) {
+public static SearchResults getHLBrandProductAdProducts(SearchResults searchResults, CmsFilteringNavigator nav, FDUserI user, String platform, String lat, String pbUserId) {
 		
 
 		List<ProductModel> adPrducts = new ArrayList<ProductModel>();
 		HLBrandProductAdRequest hLBrandProductAdRequest=new HLBrandProductAdRequest();
 		try {
-			 hLBrandProductAdRequest.setSearchKeyWord(searchResults.getSuggestedTerm()!=null?searchResults.getSuggestedTerm():nav.getSearchParams());
-			 setPlatFormValues(user, hLBrandProductAdRequest);
+			hLBrandProductAdRequest.setSearchKeyWord(searchResults.getSuggestedTerm() != null
+					? searchResults.getSuggestedTerm() : nav.getSearchParams());
+			setPlatFormValues(user, hLBrandProductAdRequest, nav.isMobile(), platform, lat, pbUserId);
 			if(hLBrandProductAdRequest.getUserId()!=null) {
 			HLBrandProductAdResponse hlBrandProductAdResponse = FDBrandProductsAdManager.getHLBrandproducts(hLBrandProductAdRequest);
 			if(hlBrandProductAdResponse!=null){
@@ -185,28 +187,28 @@ public static SearchResults getHLBrandProductAdProducts(SearchResults searchResu
 		return searchResults;
 	}
 
-	public static void setPlatFormValues(FDSessionUser user, HLBrandProductAdRequest hLBrandProductAdRequest) {
-		if (user.getUser() != null && user.getUser().getPK() != null && user.getUser().getPK().getId() != null) {
-			hLBrandProductAdRequest.setUserId(user.getUser().getPK().getId());
-			if (user.getPlatForm() != null) {
-				hLBrandProductAdRequest.setPlatformSource(user.getPlatForm());
-				hLBrandProductAdRequest.setLat(user.getLat());
-				hLBrandProductAdRequest.setPdUserId(user.getPdUserId());
+	public static void setPlatFormValues(FDUserI user, HLBrandProductAdRequest hLBrandProductAdRequest, boolean isMobile, String platform, String lat, String pdUserId) {
+	
+		if (user != null && user.getPrimaryKey() != null) {
+			hLBrandProductAdRequest.setUserId(user.getPrimaryKey());
+			if (platform != null) {
+				hLBrandProductAdRequest.setPlatformSource(platform);
+				hLBrandProductAdRequest.setLat(lat);
+				hLBrandProductAdRequest.setPdUserId(pdUserId);
 			} else {
-				hLBrandProductAdRequest.setPlatformSource(user
-						.isMobilePlatForm() ? MOBILE_PLATFORM : WEB_PLATFORM);
+				hLBrandProductAdRequest.setPlatformSource(isMobile? MOBILE_PLATFORM : WEB_PLATFORM);
 			}
 		}
 	}
 	
 	
-	public static SearchResults getProductsWithCoupons(FDSessionUser user) {
+	public static SearchResults getProductsWithCoupons(FDUserI user) {
 		
 		return FDCustomerCouponUtil.getCouponsAsSearchResults(user, false);
 		
 	}
 	
-	public static SearchResults getNewProducts(CmsFilteringNavigator nav, FDSessionUser user) {
+	public static SearchResults getNewProducts(CmsFilteringNavigator nav, FDUserI user) {
 		
 		//legacy code from newproducts...
 		

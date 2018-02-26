@@ -328,7 +328,7 @@ public class FDCustomerManager {
 		return recognize(identity, null, null,null);
 	}
 	public static FDUser recognize(FDIdentity identity, boolean updateUserState ) throws FDAuthenticationException, FDResourceException {
-		return recognize(identity, null, null,null, updateUserState);
+		return recognize(identity, null, null,null, updateUserState, true);
 	}
 
 	public static FDUser recognize(FDIdentity identity, MasqueradeContext ctx) throws FDAuthenticationException, FDResourceException {
@@ -338,7 +338,7 @@ public class FDCustomerManager {
 
 	public static FDUser recognize(FDIdentity identity, MasqueradeContext ctx, boolean updateUserState) throws FDAuthenticationException, FDResourceException {
 
-		return recognize(identity, null, null, ctx, updateUserState);
+		return recognize(identity, null, null, ctx, updateUserState, true);
 	}
 
 	public static FDUser recognize(FDIdentity identity, EnumEStoreId eStoreId) throws FDAuthenticationException, FDResourceException {
@@ -350,7 +350,7 @@ public class FDCustomerManager {
 	}
 
 	public static FDUser recognize(FDIdentity identity, EnumTransactionSource source, EnumEStoreId eStoreId,MasqueradeContext ctx) throws FDAuthenticationException, FDResourceException {
-		return recognize(identity, source, eStoreId, ctx, true);
+		return recognize(identity, source, eStoreId, ctx, true, true);
 	}
 	/*
 	 * This new method was added as part of task PERF-22. This method
@@ -359,7 +359,9 @@ public class FDCustomerManager {
 	 * object should be loaded before the FDSessionUser object is created
 	 * where it is actually set.
 	 */
-	public static FDUser recognize(FDIdentity identity, EnumTransactionSource source, EnumEStoreId eStoreId,MasqueradeContext ctx, boolean updateUserState) throws FDAuthenticationException, FDResourceException {
+	public static FDUser recognize(FDIdentity identity, EnumTransactionSource source, EnumEStoreId eStoreId,
+			MasqueradeContext ctx, boolean updateUserState, boolean populateShoppingCart)
+			throws FDAuthenticationException, FDResourceException {
 		lookupManagerHome();
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
@@ -371,8 +373,9 @@ public class FDCustomerManager {
 			if(user.isVoucherHolder() && EnumEStoreId.FDX.equals( user.getUserContext().getStoreContext().getEStoreId() )){
 				throw new FDAuthenticationException("voucherredemption");
 			}
-			populateShoppingCart(user, updateUserState, true);
-
+			if (populateShoppingCart) {
+				populateShoppingCart(user, updateUserState, true);
+			}
 			return user;
 
 		} catch (CreateException ce) {
