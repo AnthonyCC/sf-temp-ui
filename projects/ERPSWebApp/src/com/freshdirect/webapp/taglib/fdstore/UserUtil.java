@@ -110,8 +110,11 @@ public class UserUtil {
             FDCustomerCouponUtil.initCustomerCoupons(session);
         }
 
-        if (user == null && RobotRecognizer.isFriendlyRobot(userAgent, serverName)) {
+        if (user == null && RobotRecognizer.isFriendlyRobot(userAgent)) {
             user = RobotUtil.createRobotUser(session);
+            if(!guestAllowed) {
+            	LOGGER.info("FDCRITICALSEOERROR01:" + userAgent + ":" + serverName + ":" + request.getRequestURI());
+            }
         }
 
         if (user == null) {

@@ -18,17 +18,6 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 public class RobotRecognizer {
 	
     private static final Category LOGGER = LoggerFactory.getInstance(RobotRecognizer.class);
-
-    public static boolean isFriendlyRobot(String userAgent, String serverName) {
-		//
-		// don't let robots index the site via an affiliate URL
-		//
-        if (serverName.toLowerCase().indexOf("bestcellars") >= 0) {
-			return false;
-		}
-		
-        return isFriendlyRobot(userAgent);
-    }        
         
     public static boolean isFriendlyRobot(String userAgent) {
     	    	
