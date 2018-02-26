@@ -21,6 +21,9 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import javax.ejb.ObjectNotFoundException;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 import org.springframework.http.HttpStatus;
@@ -142,6 +145,7 @@ import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.erp.ErpCOOLKey;
 import com.freshdirect.erp.ErpProductPromotionPreviewInfo;
 import com.freshdirect.erp.SkuAvailabilityHistory;
+import com.freshdirect.erp.ejb.ErpCharacteristicValuePriceHome;
 import com.freshdirect.erp.model.BatchModel;
 import com.freshdirect.erp.model.ErpCharacteristicValuePriceModel;
 import com.freshdirect.erp.model.ErpClassModel;
@@ -166,6 +170,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.GroupScalePricing;
 import com.freshdirect.fdstore.SalesAreaInfo;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
@@ -180,6 +185,8 @@ import com.freshdirect.fdstore.ecoupon.model.FDCouponEligibleInfo;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponInfo;
 import com.freshdirect.fdstore.ecoupon.model.FDCustomerCouponHistoryInfo;
 import com.freshdirect.fdstore.ecoupon.model.FDCustomerCouponWallet;
+import com.freshdirect.fdstore.ejb.FDFactoryHome;
+import com.freshdirect.fdstore.ejb.FDProductHelper;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.event.FDRecommendationEvent;
 import com.freshdirect.framework.event.FDWebEvent;
@@ -473,6 +480,8 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String FDFACTORY_FDPRODUCTINFO_SKUCODE_VERSION = "productinfo/productInfobyskuandversion";
 	private static final String FDFACTORY_FDPRODUCTINFO_SKUCODES = "productinfo/productsinfobyskus";
 	private static final String FDFACTORY_PRODUCTINFO_SKUCODES = "productinfo/productbyskuandversion";
+	private static final String FDFACTORY_CHARECTERISTIC_BYMATID = "productinfo/findByMaterialId";
+	
 
 	private static final String CREATE_FRAUD_ENTRY="fraudactivity/create";
 	private static final String FIND_FRAUD_ENTRY_ID="fraudactivity/findbyid";
@@ -4799,36 +4808,44 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	@Override
 	public FDProductInfo getProductInfo(String skuCode) throws FDSkuNotFoundException, RemoteException {
 
-		Response<FDProductInfoData> response = null;
-		FDProductInfo fdProductInfo;
+		Response<ErpProductInfoModelData> response = null;
+		ErpProductInfoModel model=null;
+		FDProductInfo fdProductInfo=null;
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(FDFACTORY_FDPRODUCTINFO_SKUCODE)+"/"+skuCode,  new TypeReference<Response<FDProductInfoData>>(){});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(FDFACTORY_FDPRODUCTINFO_SKUCODE)+"/"+skuCode,  new TypeReference<Response<ErpProductInfoModelData>>(){});
 			if(response.getData() == null){
 				throw new FDSkuNotFoundException(response.getMessage());
 			}
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
-			fdProductInfo = ModelConverter.fdProductInfoDataToModel(response.getData());
+			model = ModelConverter.buildProdInfoMod(response.getData());
 			
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
+		try {
+			fdProductInfo= productHelper.getFDProductInfoNew(model);
+		} catch (FDResourceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			//throw new FDResourceException(e);
+		}//::FDX::
 		return fdProductInfo;
 	
 	}
 	@Override
 	public FDProductInfo getProductInfo(String skuCode, int version) throws RemoteException {
-		Response<FDProductInfoData> response = null;
+		Response<ErpProductInfoModelData> response = null;
 		FDProductInfo fdProductInfo;
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(FDFACTORY_FDPRODUCTINFO_SKUCODE_VERSION)+"/"+skuCode+"/"+version,  new TypeReference<Response<FDProductInfoData>>(){});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(FDFACTORY_FDPRODUCTINFO_SKUCODE_VERSION)+"/"+skuCode+"/"+version,  new TypeReference<Response<ErpProductInfoModelData>>(){});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
-			fdProductInfo = ModelConverter.fdProductInfoDataToModel(response.getData());
-			
+			ErpProductInfoModel model = ModelConverter.buildProdInfoMod(response.getData());
+			fdProductInfo = productHelper.getFDProductInfoNew(model);
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
@@ -4837,44 +4854,71 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	}
 	@Override
 	public Collection getProductInfos(String[] skus) throws FDResourceException, RemoteException {
-		Response<Collection<FDProductInfoData>> response = null;
+		Response<Collection<ErpProductInfoModelData>> response = null;
 		Request<String[]> request = new Request<String[]>();
 		Collection<FDProductInfo> fdProductInfos = new ArrayList<FDProductInfo>();
 			try {
 				request.setData(skus);
 				String inputJson;
 				inputJson = buildRequest(request);
-				response = postDataTypeMap(inputJson,getFdCommerceEndPoint(FDFACTORY_FDPRODUCTINFO_SKUCODES),new TypeReference<Response<Collection<FDProductInfoData>>>() {});
+				response = postDataTypeMap(inputJson,getFdCommerceEndPoint(FDFACTORY_FDPRODUCTINFO_SKUCODES),new TypeReference<Response<Collection<ErpProductInfoModelData>>>() {});
 				if(!response.getResponseCode().equals("OK"))
 					throw new FDResourceException(response.getMessage());
 					
-				for (FDProductInfoData fdProductInfoData : response.getData()) {
-					fdProductInfos.add(ModelConverter.fdProductInfoDataToModel(fdProductInfoData));
+				for (ErpProductInfoModelData fdProductInfoData : response.getData()) {
+					ErpProductInfoModel model = ModelConverter.buildProdInfoMod(fdProductInfoData);
+					fdProductInfos.add(productHelper.getFDProductInfoNew(model));
 				}
 				
 			} catch (FDEcommServiceException e) {
 				
 				throw new RemoteException(e.getMessage());
-			}
+			} 
 			return fdProductInfos;
 	}
+	private FDProductHelper productHelper = new FDProductHelper();
 	@Override
 	public FDProduct getProduct(String sku, int version) throws RemoteException {
-		Response<FDProductData> response = null;
+		Response<ErpMaterialData> response = null;
 		FDProduct fdProduct;
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(FDFACTORY_PRODUCTINFO_SKUCODES)+"/"+sku+"/"+version,  new TypeReference<Response<FDProductData>>(){});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(FDFACTORY_PRODUCTINFO_SKUCODES)+"/"+sku+"/"+version,  new TypeReference<Response<ErpMaterialData>>(){});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
-			fdProduct = ModelConverter.buildFdProduct(response.getData());
 			
+			ErpMaterialModel model = ModelConverter.convertErpMaterialDataToModel(response.getData());
+			fdProduct = productHelper.getFDProduct(model);
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
 		return fdProduct;
 	}
+	
+	
+	
+	@Override
+	public Collection<ErpCharacteristicValuePriceModel> findByMaterialId(String materialId, int version) throws RemoteException {
+		Response<Collection<ErpCharacteristicValuePriceData>> response = null;
+		Collection<ErpCharacteristicValuePriceModel>	charModel = null;	
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(FDFACTORY_CHARECTERISTIC_BYMATID)+"/"+materialId+"/"+version,  new TypeReference<Response<Collection<ErpCharacteristicValuePriceData>>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			charModel=new ArrayList();
+			for(ErpCharacteristicValuePriceData dataList:response.getData()){
+				ErpCharacteristicValuePriceModel model = ModelConverter.createErpCharacteristicValuePriceModel(dataList);
+				charModel.add(model);
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return charModel;
+	}
+	
 	
 	@Override
 	public PrimaryKey createRestrictedPaymentMethod(

@@ -641,5 +641,7 @@ public interface IECommerceService {
 
 	public Collection<ErpMaterialSalesAreaModel> getGoingOutOfStockSalesAreas()throws RemoteException;
 
+	public Collection<ErpCharacteristicValuePriceModel> findByMaterialId(String materialId, int version) throws RemoteException;
+
 
 }

@@ -638,9 +638,10 @@ public class FDFactory {
 		}
 		try {
 			FDFactorySB sb = factoryHome.create();
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB))
-				return FDECommerceService.getInstance().getProduct(sku, version);
-			else{
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB)){
+				IECommerceService service =  FDECommerceService.getInstance();
+				return service.getProduct(sku, version);
+			}else{
 				return sb.getProduct(sku, version);
 			}
 

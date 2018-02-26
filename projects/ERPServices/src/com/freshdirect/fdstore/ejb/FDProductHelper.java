@@ -82,6 +82,7 @@ import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.util.UnitPriceUtil;
 import com.freshdirect.framework.core.VersionedPrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.payment.service.FDECommerceService;
 
 public class FDProductHelper {
 
@@ -633,19 +634,36 @@ public class FDProductHelper {
 	}
 
 	protected Pricing getPricing(ErpMaterialModel material) throws FDResourceException {
-		if (this.charValueHome==null) {
-			this.lookupCharValueHome();
-		}
+	
 		
 		try {
-			Collection<ErpCharacteristicValuePriceEB> cvPriceEBs = this.charValueHome.findByMaterial( (VersionedPrimaryKey)material.getPK() );
-			ErpCharacteristicValuePriceModel[] cvPrices = new ErpCharacteristicValuePriceModel[cvPriceEBs.size()];
-			
-			// create model array
-			int count=0;
-			for (Iterator<ErpCharacteristicValuePriceEB> i=cvPriceEBs.iterator(); i.hasNext(); count++) {
-				cvPrices[count]= (ErpCharacteristicValuePriceModel) i.next().getModel();
+			Collection<ErpCharacteristicValuePriceEB> cvPriceEBs;
+			ErpCharacteristicValuePriceModel[] cvPrices ;
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB)){
+				VersionedPrimaryKey verMatIds = (VersionedPrimaryKey)material.getPK();
+				Collection<ErpCharacteristicValuePriceModel> charList = FDECommerceService.getInstance().findByMaterialId(verMatIds.getId(),verMatIds.getVersion());
+				cvPrices = new ErpCharacteristicValuePriceModel[charList.size()];
+				int count=0;
+				for(Iterator<ErpCharacteristicValuePriceModel> i=charList.iterator(); i.hasNext(); count++){
+					cvPrices[count]=(ErpCharacteristicValuePriceModel) i.next();
+							}
+			}else{
+				if (this.charValueHome==null) {
+					this.lookupCharValueHome();
+				}
+				
+				cvPriceEBs = this.charValueHome.findByMaterial( (VersionedPrimaryKey)material.getPK() );
+				 cvPrices = new ErpCharacteristicValuePriceModel[cvPriceEBs.size()];
+				// create model array
+				int count=0;
+				for (Iterator<ErpCharacteristicValuePriceEB> i=cvPriceEBs.iterator(); i.hasNext(); count++) {
+					cvPrices[count]= (ErpCharacteristicValuePriceModel) i.next().getModel();
+				}
 			}
+			
+			
+			
+			
 			
 						
 			return PricingFactory.getPricing( material, cvPrices );

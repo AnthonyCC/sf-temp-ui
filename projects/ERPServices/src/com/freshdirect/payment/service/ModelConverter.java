@@ -156,6 +156,7 @@ import com.freshdirect.ecommerce.data.zoneInfo.ErpZoneRegionInfoData;
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.EnumAlcoholicContent;
 import com.freshdirect.erp.EnumFeaturedHeaderType;
+import com.freshdirect.erp.EnumProductApprovalStatus;
 import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.erp.ErpCOOLKey;
 import com.freshdirect.erp.ErpProductPromotionPreviewInfo;
@@ -206,6 +207,7 @@ import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityContext;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityLogModel;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.core.VersionedPrimaryKey;
 import com.freshdirect.framework.event.FDRecommendationEvent;
 import com.freshdirect.framework.mail.EmailI;
 import com.freshdirect.framework.mail.FTLEmailI;
@@ -545,7 +547,7 @@ public class ModelConverter {
 				 SortedSet set =materialPlants[i].getBlockedDays().getDaysOfWeek();
 				 int[] days = new int[set.size()];
 				 int j = 0;
-				for(Iterator it = set.iterator(); it.hasNext();){int elem = (Integer) it.next();days[j]=elem;j++;}
+				for(Iterator it = set.iterator(); it.hasNext();){int elem = Integer.parseInt((String)it.next());days[j]=elem;j++;}
 			 ds = new DayOfWeekSet(days);
 			}
 			ErpPlantMaterialInfo matData = new ErpPlantMaterialInfo(
@@ -869,7 +871,130 @@ public class ModelConverter {
 		return data;
 	}
 	
+	public static ErpMaterialModel convertErpMaterialDataToModel(
+			ErpMaterialData data) {
+		
+		List<ErpClassModel> erpClass = createErpClassList(data.getClasses());
+		List<ErpMaterialPriceModel> erpMaterialPrice = createErpMaterialPriceList(data.getPrices());
+		List<ErpSalesUnitModel> salesUnits = createErpSalesUnitList(data.getSalesUnits());
+		List<ErpSalesUnitModel> displaySalesUnits = createErpSalesUnitList(data.getDisplaySalesUnits());
+		List<ErpPlantMaterialModel> erpPlantMaterial = createErpPlantMaterialList(data.getMaterialPlants());
+		List<ErpMaterialSalesAreaModel> erpMaterialSalesArea = createErpMaterialSalesAreaList(data.getMaterialSalesAreas());
+	
+		
+		ErpMaterialModel model = new ErpMaterialModel(data.getSapId(), 
+				data.getBaseUnit(), 
+				data.getDescription(), 
+				data.getUPC(),
+				data.getQuantityCharacteristic(),
+				data.getSalesUnitCharacteristic(), 
+				EnumAlcoholicContent.getAlcoholicContent(data.getAlcoholicContent()), 
+				data.isTaxable(), 
+				data.getTaxCode(), 
+				data.getSkuCode(),
+				data.getDaysFresh(),EnumProductApprovalStatus.getApprovalStatus(data.getApprovalStatus()), 
+				data.getMaterialType(), erpMaterialPrice,
+				salesUnits, erpClass, displaySalesUnits,
+				erpPlantMaterial,erpMaterialSalesArea, data.getMaterialGroup());
+		
+		VersionedPrimaryKey primaryKey = new VersionedPrimaryKey(data.getVersionedPrimaryKeyData().getMaterialId(), data.getVersionedPrimaryKeyData().getVersionId());
+		model.setPK(primaryKey);
+		return model;
+	}
+	private static List<ErpMaterialSalesAreaModel> createErpMaterialSalesAreaList(
+			List<ErpMaterialSalesAreaData> materialSalesAreas) {
+		List<ErpMaterialSalesAreaModel> list = new ArrayList<ErpMaterialSalesAreaModel> ();
+		for(ErpMaterialSalesAreaData data: materialSalesAreas){
+			ErpMaterialSalesAreaModel model = new ErpMaterialSalesAreaModel(data.getSalesOrg(),
+					data.getDistChannel(),data.getUnavailabilityStatus(),data.getUnavailabilityDate(),data.getUnavailabilityReason(),
+					data.getSkuCode(),data.getDayPartSelling(),data.getPickingPlantId());
+			list.add(model);
+		}
+		return list;
+	}
 
+	private static List<ErpPlantMaterialModel> createErpPlantMaterialList(
+			List<ErpPlantMaterialData> materialPlants) {
+		List<ErpPlantMaterialModel>  erpPlantMaterialList = new ArrayList<ErpPlantMaterialModel>();
+		for (ErpPlantMaterialData erpPlantMaterialModel : materialPlants) {
+			ErpPlantMaterialModel model = new ErpPlantMaterialModel();
+			model.setAtpRule(EnumATPRule.getEnum(erpPlantMaterialModel.getAtpRule()));
+			if(erpPlantMaterialModel.getBlockedDays()!=null){
+			int[] weekDays =new int[erpPlantMaterialModel.getBlockedDays().getDaysOfWeek().toArray().length];
+			Object[] obj = erpPlantMaterialModel.getBlockedDays().getDaysOfWeek().toArray();
+		    for (int i = 0; i < obj.length; i++){
+		    	int tempval =(Integer)obj[i];
+		    	weekDays[i]=tempval;
+		    }
+			model.setBlockedDays(new DayOfWeekSet(weekDays));
+			}
+			erpPlantMaterialList.add(model);
+		}
+		return erpPlantMaterialList;
+	}
+
+	private static List createErpSalesUnitList(List<ErpSalesUnitData> salesUnits) {
+		List<ErpSalesUnitModel> erpSaleUnits = new ArrayList<ErpSalesUnitModel>();
+		for (ErpSalesUnitData salesUnit : salesUnits) {
+			ErpSalesUnitModel model = new	ErpSalesUnitModel();
+			model.setAlternativeUnit(salesUnit.getAlternativeUnit());
+			model.setBaseUnit(salesUnit.getBaseUnit());
+			model.setDenominator(salesUnit.getDenominator());
+			model.setDescription(salesUnit.getDescription());
+			model.setDisplayInd(salesUnit.isDisplayInd());
+			model.setId(salesUnit.getId());
+			model.setNumerator(salesUnit.getNumerator());
+			model.setUnitPriceDenominator(salesUnit.getUnitPriceDenominator());
+			model.setUnitPriceDescription(salesUnit.getUnitPriceDescription());
+			model.setUnitPriceNumerator(salesUnit.getUnitPriceNumerator());
+			erpSaleUnits.add(model);
+			}
+		return erpSaleUnits;
+		}
+
+	
+	public static List<ErpMaterialPriceModel> createErpMaterialPriceList(List<ErpMaterialPriceData> erpMaterialPricedata) {
+		List<ErpMaterialPriceModel>  erpPlantMaterial = new ArrayList<ErpMaterialPriceModel>();
+		for (ErpMaterialPriceData data: erpMaterialPricedata) {
+		
+			ErpMaterialPriceModel model = new ErpMaterialPriceModel
+					(data.getSapId(), data.getPrice(), data.getPricingUnit(),
+							 data.getScaleQuantity(),data.getScaleUnit(), data.getSapZoneId(),
+							data.getPromoPrice(), data.getSalesOrg(),data.getDistChannel())
+					;
+			erpPlantMaterial.add(model);
+		}
+		return erpPlantMaterial;
+	}
+
+	private static List<ErpClassModel> createErpClassList(
+			List<ErpClassData> classes) {
+		List<ErpClassModel> classlist = new ArrayList<ErpClassModel>();
+		for(ErpClassData data : classes){
+			classlist.add(new ErpClassModel(data.getSapId(),createErpCharacteristicList(data.getCharacteristics())));
+		}
+		return classlist;
+	}
+
+	private static List<ErpCharacteristicModel> createErpCharacteristicList(List<ErpCharacteristicData> data) {
+		List<ErpCharacteristicModel>  erpCharacteristicModel = new ArrayList<ErpCharacteristicModel>();
+		for (ErpCharacteristicData erpClassdata : data) {
+			erpCharacteristicModel.add(new ErpCharacteristicModel(erpClassdata.getName(),createErpCharacteristicValueList(erpClassdata.getCharacteristicValues())));
+		}
+		return erpCharacteristicModel;
+	}
+	
+	public static List<ErpCharacteristicValueModel> createErpCharacteristicValueList(List<ErpCharacteristicValueData> list) {
+		List<ErpCharacteristicValueModel>  erpCharacteristicValueModel = new ArrayList<ErpCharacteristicValueModel>();
+		for (ErpCharacteristicValueData erpCharacteristicValueData : list) {
+			ErpCharacteristicValueModel model = new ErpCharacteristicValueModel(erpCharacteristicValueData.getName(),erpCharacteristicValueData.getDescription());
+			model.setId(erpCharacteristicValueData.getId());
+			model.setPK(new PrimaryKey(erpCharacteristicValueData.getId()));
+			erpCharacteristicValueModel.add(model);
+		}
+		return erpCharacteristicValueModel;
+	}
+	
 	private static List getErpSaleUnitModelList(
 			List<ErpSalesUnitModel> salesUnits) {
 		List<ErpSalesUnitData> erpSaleUnits = new ArrayList<ErpSalesUnitData>();
@@ -1089,6 +1214,24 @@ public class ModelConverter {
 		data.setSalesOrg(key.getSalesOrg());
 		data.setSapId(key.getSapId());
 		return data;
+	}
+	
+	public static ErpCharacteristicValuePriceModel createErpCharacteristicValuePriceModel(
+			ErpCharacteristicValuePriceData  data) {
+		ErpCharacteristicValuePriceModel model = new ErpCharacteristicValuePriceModel();
+		model.setCharacteristicName(data.getCharacteristicName());
+		model.setCharacteristicValueId(data.getCharacteristicValueId());
+		model.setCharacteristicValueName(data.getCharacteristicValueName());
+		model.setClassName(data.getClassName());
+		model.setConditionType(data.getConditionType());
+		model.setDistChannel(data.getDistChannel());
+		model.setId(data.getId());
+		model.setMaterialId(data.getMaterialId());
+		model.setPrice(data.getPrice());
+		model.setPricingUnit(data.getPricingUnit());
+		model.setSalesOrg(data.getSalesOrg());
+		model.setSapId(data.getSapId());
+		return model;
 	}
 
 	public static ErpInventoryModel convertErpInventoryDataToModel(
