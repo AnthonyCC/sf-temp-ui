@@ -110,7 +110,7 @@ public class UserUtil {
             FDCustomerCouponUtil.initCustomerCoupons(session);
         }
 
-        if (user == null && guestAllowed && RobotRecognizer.isFriendlyRobot(serverName, userAgent)) {
+        if (user == null && RobotRecognizer.isFriendlyRobot(serverName, userAgent)) {
             user = RobotUtil.createRobotUser(session);
         }
 
