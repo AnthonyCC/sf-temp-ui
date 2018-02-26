@@ -10,12 +10,11 @@
 	        url: '/api/freetrial',
 	        type: 'POST',
 	        success: function(message) {
-	        	var closePopup = "$jq('.overlay-dialog-new .ui-dialog-titlebar-close').click()";
 	        	if(message.STATUS == "ERROR"){
 	        		var errorMessagePopup = '<div class="error-container"><div class="error-header error-header-noimg">Hold Your Horseradishes!</div>';
 	        		errorMessagePopup += '<div class="error-text">' + message.MESSAGE + '</div>';
 	        		if($jq(".ui-dialog:visible .dpn").length > 0){
-	        			errorMessagePopup += '<a class="error-button cssbutton cssbutton-flat green" href="javascript:' + closePopup + '">Continue Shopping</a></div>';
+	        			errorMessagePopup += '<a class="error-button cssbutton cssbutton-flat green" href="javascript:closePopup()">Continue Shopping</a></div>';
 	        		} else {
 	        			errorMessagePopup += '<a class="error-button cssbutton cssbutton-flat green" href="/">Continue Shopping</a></div>';
 	        		}
@@ -25,7 +24,7 @@
 	        			$jq("#cartcontent").trigger('cartcontent-update');
 	        			var successMessagePopup = '<div class="dpn"><div class="dpn-container"><div class="dpn-success"><div class="dpn-success-header"><div class="dpn-success-check"><img src="/media/editorial/site_pages/deliverypass/images/large-check.svg" alt="Success check"></div><p>Success!</p><p>Thanks for signing up.</p></div>';
 	        				successMessagePopup += '<div class="dpn-success-text"><p>Your DeliveryPass<sup>&reg;</sup> trial will activate on your next purchase.</br>Visit your DeliveryPass<sup>&reg;</sup> Settings for more details.</br>Get ready to save!</p></div>';
-	        				successMessagePopup += '<div class="dpn-success-a"><a href="javascript:' + closePopup + '" class="dpn-success-start-shopping cssbutton cssbutton-flat orange">Start Saving</a></div><div class="dpn-success-setting"><a href="/your_account/delivery_pass.jsp">DeliveryPass<sup>&reg;</sup> Settings</a></div></div></div></div>';
+	        				successMessagePopup += '<div class="dpn-success-a"><a href="javascript:closePopup()" class="dpn-success-start-shopping cssbutton cssbutton-flat orange">Start Saving</a></div><div class="dpn-success-setting"><a href="/your_account/delivery_pass.jsp">DeliveryPass<sup>&reg;</sup> Settings</a></div></div></div></div>';
 	        				doOverlayDialogByHtmlNew(successMessagePopup);
 	        		} else {
 	        			window.location.href = "/freetrialsuccess.jsp";
@@ -36,6 +35,9 @@
 	        	doOverlayDialogNew("/includes/error_message_popup.jsp");
 	        }
 	 	});
+	}
+	function closePopup(){
+		$jq("#uimodal-output").dialog("close");
 	}
 	function noThanks(){
 		if($jq(".ui-dialog:visible .dpn").length > 0){
