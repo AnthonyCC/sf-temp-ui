@@ -97,6 +97,7 @@ public class FDEcommProperties {
 	public static final String FDCustomerManagerSB="com.freshdirect.customer.FDCustomerManagerSB";
 	public static final String SaleCronSB="payment.ejb.SaleCronSB";
 	public static final String ErpInfoSB_WarmUp="erp.ejb.ErpInfoSB_WarmUp";
+	public static final String FDFactorySB_WarmUp ="fdstore.ejb.FDFactorySB_WarmUp";
 	
   
     
@@ -126,6 +127,7 @@ public class FDEcommProperties {
         defaults.put(RecommendationEventLoggerSB ,FALSE);
         defaults.put(EventLoggerSB ,FALSE);
         defaults.put(FDFactorySB ,FALSE);
+        defaults.put(FDFactorySB_WarmUp ,FALSE);
         defaults.put(FDCouponActivityLogSB,FALSE);
         defaults.put(EwalletActivityLogSB ,FALSE);
         defaults.put(FDExtoleManagerSB ,FALSE);

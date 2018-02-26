@@ -639,7 +639,7 @@ public class FDProductHelper {
 		try {
 			Collection<ErpCharacteristicValuePriceEB> cvPriceEBs;
 			ErpCharacteristicValuePriceModel[] cvPrices ;
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB)){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB_WarmUp)){
 				VersionedPrimaryKey verMatIds = (VersionedPrimaryKey)material.getPK();
 				Collection<ErpCharacteristicValuePriceModel> charList = FDECommerceService.getInstance().findByMaterialId(verMatIds.getId(),verMatIds.getVersion());
 				cvPrices = new ErpCharacteristicValuePriceModel[charList.size()];
