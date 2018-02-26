@@ -813,6 +813,9 @@ function parseTipTotal(data) {
 		signal:{
 			value: ['cartData','subTotalBox','checkoutCartHeader']
 		},
+		headerData: {
+			value: checkoutCartHeaderData
+		},
 		template: {
 			value: function(data) {
 				var subTotalBox = data.subTotalBox;
@@ -937,4 +940,5 @@ function parseTipTotal(data) {
 		cartcontent.onTipEntered.bind(cartcontent));
 
 	fd.modules.common.utils.register('expressco', 'cartcontent', cartcontent, fd);
+	fd.modules.common.utils.register('expressco', 'checkoutCartHeader', checkoutCartHeader, fd);
 }(FreshDirect));

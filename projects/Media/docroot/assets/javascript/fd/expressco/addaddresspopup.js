@@ -67,6 +67,8 @@ var FreshDirect = FreshDirect || {};
 
         data = data || {};
         data.metadata = data.metadata || fd.expressco.data.formMetaData;
+        data.service_type = data.service_type || (fd.expressco.checkoutCartHeader.headerData.userCorporate ? "corporate" : "home");
+
         if(typeof FreshDirect.standingorder !== "undefined" && typeof FreshDirect.standingorder.isStandingOrderContext !== "undefined"){
         	data.service_type = 'corporate';
         	data.standing_order = true;
