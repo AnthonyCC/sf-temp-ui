@@ -72,8 +72,9 @@
 					<div class="dpn-center-list-text">Bonus $5 off Tue-Fri Deliveries</div>
 				</div>
 			</div>
-			<div class="dpn-center-agreement">By signing up for DeliveryPass<sup>&reg;</sup>, you are agreeing to the Terms and Conditions set forth <a href="javascript:pop('/shared/template/generic_popup.jsp?contentPath=/media/editorial/picks/deliverypass/dp_tc.html&windowSize=large&name=Delivery Pass Information',400,560,alt='Delivery Pass Information')">here</a>.</div>
-			<div class="dpn-center-terms">Your DeliveryPass<sup>&reg;</sup> membership continues until canceled.<br/>You can cancel anytime by calling customer service at 1-866-283-7374.</div>
+			<div class="dpn-center-agreement">By signing up for DeliveryPass<sup>&reg;</sup>, you are agreeing to the Terms and Conditions set forth here.</div>
+			<div class="dpn-center-agreement-link"><a href="javascript:pop('/shared/template/generic_popup.jsp?contentPath=/media/editorial/picks/deliverypass/dp_tc.html&windowSize=large&name=Delivery Pass Information',400,560,alt='Delivery Pass Information')">Terms and Conditions</a></div>
+			<div class="dpn-center-terms">Your DeliveryPass<sup>&reg;</sup> membership continues until canceled. You can cancel anytime by calling customer service at 1-866-283-7374.</div>
 		</div>
 		<div class="dpn-footer dpn-footer-login-required">
 			<% if(user_dp.getLevel() == FDUserI.SIGNED_IN){ %>

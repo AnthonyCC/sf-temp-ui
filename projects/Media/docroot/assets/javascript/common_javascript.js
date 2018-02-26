@@ -1321,9 +1321,13 @@ function doOverlayWindow(olURL, titleVar) {
 			draggable: false,
 			open: function() {
 				$jq('body').css({ 'overflow': 'hidden' });
-				
-				overlayDialog.dialog('option', 'maxClientHeight', 0.95);
-				overlayDialog.dialog('option', 'maxClientWidth', 0.95);
+				if(FreshDirect.mobWeb){
+					overlayDialog.dialog('option', 'maxClientHeight', 1);
+					overlayDialog.dialog('option', 'maxClientWidth', 1);
+				} else {
+					overlayDialog.dialog('option', 'maxClientHeight', 0.95);
+					overlayDialog.dialog('option', 'maxClientWidth', 0.95);
+				}
 				overlayDialog.dialog('option', 'maxHeight', Math.round(document.documentElement.clientHeight * overlayDialog.dialog('option', 'maxClientHeight')));
 				overlayDialog.dialog('option', 'maxWidth',  Math.round(document.documentElement.clientWidth * overlayDialog.dialog('option', 'maxClientWidth')));
 
@@ -1381,7 +1385,7 @@ function doOverlayWindow(olURL, titleVar) {
 		overlayDialog.load(olURL, function() { overlayDialog.dialog('open'); setTimeout(function(){ dialogWindowRealignFunc(); }, 1); });
 		$jq('.ui-dialog').addClass('overlay-dialog-new').css('z-index','1001');
 		$jq('.ui-widget-overlay').css('z-index','1000');
-		if(FreshDirect.mobWeb){ $jq('.ui-dialog').addClass('mm-page-overlay') }
+		if(FreshDirect.mobWeb){ $jq('.ui-dialog').addClass('mm-page-overlay'); }
 	}
 	
 	/* use dialog by css selector */
