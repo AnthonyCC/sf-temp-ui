@@ -323,6 +323,7 @@
     <tag>
         <name>presPickRecommender</name>
         <tagclass>com.freshdirect.webapp.search.PresPickRecommenderPotatoTag</tagclass>
+		<body-content>empty</body-content>
     </tag>
     <tag>
         <name>singlePageCheckout</name>
