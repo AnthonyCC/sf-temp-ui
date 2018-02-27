@@ -15,6 +15,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpCustomerCreditModel;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -1566,16 +1567,16 @@ public class FDReferralManager {
 		  }		
 	  }
 	
-	public static boolean isReferreSignUpComplete(String email) throws FDResourceException {
+	public static boolean isReferreSignUpComplete(String email, EnumEStoreId storeid) throws FDResourceException {
 		  lookupManagerHome(); 
 
 		  try {
 			  if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)){
-				  return FDReferralManagerService.getInstance().isReferreSignUpComplete(email);
+				  return FDReferralManagerService.getInstance().isReferreSignUpComplete(email, storeid);
 			  }
 			  else{
 				  FDReferralManagerSB sb = managerHome.create();
-				  return sb.isReferreSignUpComplete(email);
+				  return sb.isReferreSignUpComplete(email, storeid);
 			  }
 		  } catch (CreateException ce) {
 			  invalidateManagerHome();

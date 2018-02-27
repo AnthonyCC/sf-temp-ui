@@ -573,12 +573,8 @@ public class ErpFactory {
 			GetRootNodesErpVisitor idVisitor = new GetRootNodesErpVisitor();
 			erpModel.accept(idVisitor);
 			String[] rootIds = idVisitor.getRootIds();
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("attributes.ejb.AttributeFacadeSB")){
-				attrs= FDECommerceService.getInstance().getAttributes(rootIds);
-			}else{
 			AttributeFacadeSB atrSB = attributeHome.create();
 			attrs = atrSB.getAttributes(rootIds);
-			}
 			//
 			// apply attributes to the erpmodel and its children
 			//
@@ -612,11 +608,8 @@ public class ErpFactory {
 			//
 			// ask it to save the attributes
 			//
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("attributes.ejb.AttributeFacadeSB")){
-				FDECommerceService.getInstance().storeAttributes(attrs, user, sapId);
-			}else{
+			
 			atrSB.storeAttributes(attrs, user, sapId);
-			}
 			
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
@@ -633,11 +626,7 @@ public class ErpFactory {
 					GetRootNodesErpVisitor idVisitor = new GetRootNodesErpVisitor();
 					erpModel.accept(idVisitor);
 					String[] rootIds = idVisitor.getRootIds();
-					if(FDStoreProperties.isSF2_0_AndServiceEnabled("attributes.ejb.AttributeFacadeSB")){
-						attrs= FDECommerceService.getInstance().getAttributes(rootIds);
-					}else{
 					attrs = atrSB.getAttributes(rootIds);
-					}
 					///JJ
 					//
 					// and re-apply attributes to the erpObject and its characteristics

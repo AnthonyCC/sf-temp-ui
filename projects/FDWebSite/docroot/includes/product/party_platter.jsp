@@ -545,10 +545,10 @@ if (isAvailable ) { %>
 			String referer = request.getParameter("referer");
 			if (referer==null) referer = request.getHeader("Referer");
 			if (referer==null) referer = "/view_cart.jsp";			%>
-			<button type="submit" class="cssbutton green small icon-cart-new-after" id="save_changes.x" name="save_changes.x" value="SAVE CHANGES">SAVE CHANGES</button><br/>
+			<button type="submit" class="cssbutton orange" id="save_changes.x" name="save_changes.x" value="SAVE CHANGES">SAVE CHANGES</button><br/>
 			<button type="submit" id="remove_from_cart" name="remove_from_cart.x" value="REMOVE ITEM" class="cssbutton transparent white icon-trash-new-before remove-item-button">Remove Item</button><br/>	
 			<input type="hidden" name="referer" value="<%= referer %>">
-			<a  class="cssbutton green transparent small icon-arrow-left-before" href="<%=referer%>">NO CHANGE</a><BR>
+			<a  class="cssbutton green transparent" href="<%=referer%>">Back to Cart</a><BR>
 	<%	} else {   %>
 		 <input type="image" name="addMultipleToCart" src="/media_stat/images/buttons/add_to_cart.gif" width="93" height="20" hspace="4" vspace="4" border="0" alt="ADD SELECTED ITEMS TO CART">
 	<%  } 

@@ -5,6 +5,11 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
+import javax.ejb.FinderException;
+
+import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.sap.ejb.SapException;
+
 public interface SaleCronServiceI {
 
 	public void authorizeSales(long timeout) throws RemoteException;
@@ -32,5 +37,7 @@ public interface SaleCronServiceI {
 	public void captureEBTSales(long timeout) throws RemoteException;
 	
 	public void settleEBTSales() throws RemoteException;
+	
+	public void settleEBTSales(List<String> saleIds)throws FinderException, RemoteException, ErpTransactionException, SapException, RemoteException;
 
 }

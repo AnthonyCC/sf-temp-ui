@@ -61,10 +61,15 @@ public class RegistrationControllerTagWrapper extends ControllerTagWrapper imple
     public ResultBundle register(RegisterMessage registerMessage) throws FDException {
         addExpectedSessionValues(new String[] {SESSION_PARAM_APPLICATION,SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT,
         		SESSION_PARAM_SS_PREV_RECOMMENDATIONS, SESSION_PARAM_SAVINGS_FEATURE_LOOK_UP_TABLE,
-        		SESSION_PARAM_PREV_SAVINGS_VARIANT, SESSION_PARAM_USER, SESSION_PARAM_REFERRAL_NAME,SessionName.SOCIAL_USER, SESSION_PARAM_SOCIALONLYACCOUNT , SESSION_PARAM_SOCIALONLYEMAIL , SESSION_PARAM_SOCIALONLYACCOUNT_SKIP_VALIDATION, CLICK_ID, COUPON_CODE}, new String[] {SESSION_PARAM_SS_PREV_RECOMMENDATIONS, 
+        		SESSION_PARAM_PREV_SAVINGS_VARIANT, SESSION_PARAM_USER, SESSION_PARAM_REFERRAL_NAME,SessionName.SOCIAL_USER, SESSION_PARAM_SOCIALONLYACCOUNT , SESSION_PARAM_SOCIALONLYEMAIL , SESSION_PARAM_SOCIALONLYACCOUNT_SKIP_VALIDATION, CLICK_ID, COUPON_CODE, MSG_FOR_LOGIN_PAGE}, new String[] {SESSION_PARAM_SS_PREV_RECOMMENDATIONS, 
         		SESSION_PARAM_SAVINGS_FEATURE_LOOK_UP_TABLE,SESSION_PARAM_PREV_SAVINGS_VARIANT, SESSION_PARAM_USER, SESSION_PARAM_LITE_SIGNUP_COMPLETE,
-        		SESSION_PARAM_PENDING_REGISTRATION_EVENT, SESSION_PARAM_PENDING_LOGIN_EVENT, SESSION_PARAM_REGISTRATION_LOCATION, SESSION_PARAM_REGISTRATION_ORIG_ZIP_CODE,SessionName.SOCIAL_USER, SESSION_PARAM_SOCIALONLYACCOUNT , SESSION_PARAM_SOCIALONLYEMAIL , SESSION_PARAM_SOCIALONLYACCOUNT_SKIP_VALIDATION, CLICK_ID, COUPON_CODE}); //gets,sets
-    	
+        		SESSION_PARAM_PENDING_REGISTRATION_EVENT, SESSION_PARAM_PENDING_LOGIN_EVENT, SESSION_PARAM_REGISTRATION_LOCATION, SESSION_PARAM_REGISTRATION_ORIG_ZIP_CODE,SessionName.SOCIAL_USER, SESSION_PARAM_SOCIALONLYACCOUNT , SESSION_PARAM_SOCIALONLYEMAIL , SESSION_PARAM_SOCIALONLYACCOUNT_SKIP_VALIDATION, CLICK_ID, COUPON_CODE, MSG_FOR_LOGIN_PAGE}); //gets,sets
+        if(null !=registerMessage.getRafclickid() && !"".equals(registerMessage.getRafclickid())){
+			pageContext.getSession().setAttribute("CLICKID",registerMessage.getRafclickid());
+		}
+        if(null !=registerMessage.getRafpromocode() && !"".equals(registerMessage.getRafpromocode())){
+			pageContext.getSession().setAttribute("COUPONCODE",registerMessage.getRafpromocode());
+        }
         addExpectedRequestValues(new String[] {"title", EnumUserInfoName.DLV_FIRST_NAME.getCode(),EnumUserInfoName.DLV_LAST_NAME.getCode(),
         		EnumUserInfoName.DLV_HOME_PHONE.getCode(),"homephoneext","busphone", "busphoneext", "cellphone", "cellphoneext",
         		"workDepartment", "employeeId", EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.REPEAT_EMAIL.getCode(),
@@ -79,8 +84,8 @@ public class RegistrationControllerTagWrapper extends ControllerTagWrapper imple
         		EnumUserInfoName.DLV_STATE.getCode(),
         		EnumUserInfoName.DLV_ZIPCODE.getCode(),
         		EnumUserInfoName.DLV_WORK_PHONE.getCode(),
-        		"selectAddressList", "deliveryTypeFlag", REQ_PARAM_LITE_SIGNUP,REQ_PARAM_LITE_SIGNUP_SOCIAL,"userToken","provider", "DELIVERYADDRESS","EXPRESSSIGNUP_SKIP_VALIDATION"}
-        		, new String[] {});//gets,sets
+        		"selectAddressList", "deliveryTypeFlag", REQ_PARAM_LITE_SIGNUP,REQ_PARAM_LITE_SIGNUP_SOCIAL,"userToken","provider", "DELIVERYADDRESS","EXPRESSSIGNUP_SKIP_VALIDATION", "fd_successPage"}
+        		, new String[] {"fd_successPage"});//gets,sets
         addRequestValue(REQ_PARAM_SOURCE,  new String[]{});
 
         addRequestValue(EnumUserInfoName.DLV_FIRST_NAME.getCode(), registerMessage.getFirstName());

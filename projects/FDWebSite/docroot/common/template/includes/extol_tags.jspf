@@ -3,6 +3,8 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import="com.freshdirect.customer.EnumSaleStatus" %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties'%>
+<%@ page import="com.freshdirect.fdstore.customer.FDCartModel" %>
+<%@ page import="com.freshdirect.fdstore.customer.FDModifyCartModel" %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%
 //start local block
@@ -30,7 +32,7 @@
 	}
 	
 	//PASS 1 of 3.  Basic customer vars only defined here.	
-	if( FDStoreProperties.isExtoleRafEnabled() && (((user_e1 != null) && (isValidPage == true)) || isSignupPage == true) && (user_e1 != null && !user_e1.isEligibleForStandingOrders()) ){
+	if( FDStoreProperties.isExtoleRafEnabled() && (((user_e1 != null) && (isValidPage == true)) || isSignupPage == true) && (user_e1 != null && !user_e1.isEligibleForStandingOrders()) && !(user_e1 != null && user_e1.getShoppingCart() instanceof FDModifyCartModel) ){
 		
 		int user_getLevel = user_e1.getLevel();
 	

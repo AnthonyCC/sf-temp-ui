@@ -19,7 +19,6 @@
   </head>
 <!--[if lte IE 9]><body class="ie" data-ec-page="<tmpl:get name="ecpage" />"> <![endif]-->
 <!--[if gt IE 9]><!--><body data-ec-page="<tmpl:get name="ecpage" />"><!--<![endif]-->
-    <%@ include file="/shared/template/includes/i_body_start.jspf" %>
     <tmpl:get name="globalnav" />
 
     <div id="content">
@@ -33,5 +32,8 @@
 
     <tmpl:get name="soytemplates" />
     <tmpl:get name="jsmodules" />
+    <!-- leastPrioritizeJs, they are most likely not needed on page load and/or async-->
+    <tmpl:get name="leastPrioritizeJs"/>
+    <%@ include file="/shared/template/includes/i_body_end.jspf" %>
   </body>
 </html>

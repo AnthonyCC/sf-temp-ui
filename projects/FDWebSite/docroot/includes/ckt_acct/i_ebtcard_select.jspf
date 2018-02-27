@@ -136,7 +136,7 @@ final int W_EBTCARD_SELECT_CARD = 270;
 								<div class="paymentMethod-buttons-cont">
 									<a href="<%= editPage1+( (editPage1.indexOf("?")!=-1) ? "&" : "?" )+"paymentId="+paymentPKId %>" data-paymentidedit="<%= paymentPKId %>" class="cssbutton green transparent small">EDIT<span class="offscreen"> Payment Option <%=paymentM.getName()%></span></a>&nbsp;
 									<% if (numCreditCards>1) { %>
-										<button class="cssbutton ghost red small" name="delete_cc" onClick="javascript:return deletePaymentMethod(this,'<%=paymentPKId%>', <%=standingOrderDependencyIds%>, helpSoInfo)">DELETE <span class="offscreen"> Payment Option <%=paymentM.getName()%></span></button>
+										<button type="button" class="cssbutton ghost red small" name="delete_cc" onClick="javascript:return deletePaymentMethod(this,'<%=paymentPKId%>', <%=standingOrderDependencyIds%>, helpSoInfo)">DELETE <span class="offscreen"> Payment Option <%=paymentM.getName()%></span></button>
 									<% } %>
 									<!-- error message about card being expired goes here -->
 									<img src="/media_stat/images/layout/clear.gif" width="<%= W_CREDITCARD_SELECT_CARD %>" height="1" alt="" />

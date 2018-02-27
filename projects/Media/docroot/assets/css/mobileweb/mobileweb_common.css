@@ -1693,6 +1693,7 @@ li.cleanli .gen-arrow {
 		[data-ec-page] .mm-page #ec-drawer .drawer-row[data-row-id="address"].auto-height .drawer-header{
 		    height: 100%;
     		position: absolute;
+    		left: 0;
 		}
 		[data-ec-page] .mm-page #ec-drawer .drawer-row[data-row-id="address"].auto-height .drawer-header li{
 			height: 100%;
@@ -1949,6 +1950,11 @@ li.cleanli .gen-arrow {
 		}
 		[data-ec-page] .mm-page .cartheader__button {
 			width: 100%;
+		}
+		[data-ec-page] .mm-page .cartheader__button.modify {
+			font-size: 15px;
+    		text-align: left;
+    		padding-left: 25px;
 		}
 		[data-ec-page] .mm-page .charges__rowcell {
 			width: 100%;
@@ -2401,13 +2407,6 @@ li.cleanli .gen-arrow {
 	.mm-page .prodMod-buttons-cont button, .mm-page .prodMod-buttons-cont a {
 	    width: 100%;
 	}
-	.mm-page .modProd-banner {
-		background-color: #F93;
-	}
-	.mm-page .modProd-banner>span {
-		color: #fff;
-		font-size: 24px;
-	}
 	.mm-page .prodMod-modLink {
 		padding: 0 3px;
 	}
@@ -2435,6 +2434,9 @@ li.cleanli .gen-arrow {
 	/* VIEW CART */
 	.mm-page .container.mobweb-checkout{
 		width: 100%;
+	}
+	.mm-page .modifyorder {
+		margin-top: 0;
 	}
 	.mm-page .container.mobweb-checkout .warningBox{
 		width: 100%;
@@ -2792,7 +2794,7 @@ li.cleanli .gen-arrow {
 		font-size: 12px;
 	}
 	.mm-page table.order_history_table tr td:last-child{
-		max-width: 60px;
+		max-width: 80px;
 	}
 	.mm-page .order_history_table .order_history_table_id{
 		padding: 0 0 0 10px;
@@ -2990,4 +2992,13 @@ form.dispblock-fields td { /* force the tds to block so the label and field are 
 	.retrieve-password-success-checkimg img {
 		height: 100px;
 		width: 100px;
+	}
+	
+      /* hide in mobweb */
+    table.order_history_table td.order_history_table_id_header,
+    table.order_history_table td.order_history_table_id{
+         display: none;
+    }
+    select#order-field,select#contact_subject,textarea#msg-textarea{
+	 width:100%;
 	}

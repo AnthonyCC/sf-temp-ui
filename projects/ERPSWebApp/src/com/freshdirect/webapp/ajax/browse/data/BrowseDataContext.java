@@ -33,6 +33,9 @@ public class BrowseDataContext extends BrowseData {
 	@JsonIgnore
 	private Map<String, List<String>> requestFilterParams;
 
+	@JsonIgnore
+	private Map<String, Boolean> dataFilterParams;
+
     public BrowseData extractBrowseDataPrototype(FDUserI user, CmsFilteringNavigator nav) {
 		List<SectionData> sections = new ArrayList<SectionData>();
 		for(SectionContext context : sectionContexts){
@@ -88,5 +91,13 @@ public class BrowseDataContext extends BrowseData {
 
     public void setRequestFilterParams(Map<String, List<String>> requestFilterParams) {
         this.requestFilterParams = requestFilterParams;
+    }
+    
+    public Map<String, Boolean> getDataFilterParams() {
+        return dataFilterParams;
+    }
+
+    public void setDataFilterParams(Map<String, Boolean> dataFilterParams) {
+        this.dataFilterParams = dataFilterParams;
     }
 }

@@ -19,6 +19,7 @@ import org.apache.log4j.Category;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpCustomerCreditModel;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.referral.ManageInvitesModel;
 import com.freshdirect.fdstore.referral.ReferralPromotionModel;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -964,7 +965,7 @@ public class FDReferAFriendDAO {
 		return null;	
 	}
 	
-	public static boolean isReferreSignUpComplete(Connection conn, String email) throws SQLException {
+	public static boolean isReferreSignUpComplete(Connection conn, String email, EnumEStoreId storeid) throws SQLException {
 		PreparedStatement ps = null;
 		ResultSet rset = null;
 		try {
@@ -976,12 +977,16 @@ public class FDReferAFriendDAO {
 										"and FC.REFERER_CUSTOMER_ID is not null");
 */		ps = conn.prepareStatement( "select count(*) from " + 
 		"cust.customer c, " +
-		"cust.fdcustomer fc " +
+		"cust.fdcustomer fc,  " +
+		"cust.fdcustomer_estore fce  " +
 		"where upper(c.user_id) = upper(?) " +
 		"and c.id = fc.erp_customer_id " +
-		"and FC.RAF_CLICK_ID is not null");
+		"and fc.id = fce.fdcustomer_id (+) " +
+		"and Fce.e_store (+) = ? " +
+		"and FCE.RAF_CLICK_ID is not null");
 			
 			ps.setString(1, email);
+			ps.setString(2, null != storeid ? storeid.getContentId() : EnumEStoreId.FD.getContentId());
 			rset = ps.executeQuery();
 			while(rset.next()) {
 				int cnt = rset.getInt(1);

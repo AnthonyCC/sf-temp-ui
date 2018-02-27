@@ -7,13 +7,14 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
-import com.freshdirect.fdstore.ewallet.EwalletConstants;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode;
@@ -27,6 +28,7 @@ import com.freshdirect.webapp.ajax.expresscheckout.payment.data.PaymentEditData;
 import com.freshdirect.webapp.ajax.expresscheckout.payment.service.PaymentService;
 import com.freshdirect.webapp.ajax.expresscheckout.service.FormDataService;
 import com.freshdirect.webapp.ajax.expresscheckout.service.SinglePageCheckoutFacade;
+import com.freshdirect.webapp.ajax.expresscheckout.tag.SinglePageCheckoutPotatoTag;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationError;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationResult;
 import com.freshdirect.webapp.util.StandingOrderHelper;
@@ -47,7 +49,33 @@ public class PaymentMethodServlet extends BaseJsonServlet {
 //    private static final String MASTERPASS_REQ_ATTR_MPPREFERREDCARD="mpEwalletPreferredCard";
 //    private boolean preCheckoutCallRequired = true;
 //    private List<PaymentData> walletCards ; 
+	
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response, FDUserI user)
+			throws HttpErrorResponse {
+		try {
+			ErpCustomerModel customerModel = FDCustomerManager.getCustomer(user.getIdentity());
+			FormPaymentData paymentData = SinglePageCheckoutFacade.defaultFacade().loadUserPaymentMethods(user, request,
+					customerModel.getPaymentMethods(), customerModel.getCustomerCredits());
+			// remove the xxxx in account number
+			if (paymentData != null) {
+				if (paymentData.getPayments() != null) {
+					for (PaymentData payment : paymentData.getPayments()) {
+						if (payment.getAccountNumber() != null) {
+							payment.setAccountNumber(payment.getAccountNumber().replace("XXXX", ""));
+						}
+					}
+				}
+				SinglePageCheckoutPotatoTag.checkEWalletCard(paymentData, request);
+				SinglePageCheckoutPotatoTag.removeOlderEwalletPaymentMethod(paymentData, request);
+			}
 
+			writeResponseData(response, paymentData);
+		} catch (FDResourceException e) {
+			returnHttpError(500, "Failed to load delivery address.", e);
+		}
+	}
+	
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
         try {

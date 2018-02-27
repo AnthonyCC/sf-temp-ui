@@ -922,7 +922,7 @@ public class MenuBuilderFactory {
 	 * @param browseData
 	 * walk through on menu items and check which one is available
 	 */
-	public void checkMenuStatus(BrowseDataContext browseData, NavigationModel navModel, FDSessionUser user){
+	public void checkMenuStatus(BrowseDataContext browseData, NavigationModel navModel, FDUserI user){
 		checkMenuStatus(browseData, navModel, user, false);
 	}
 	/**
@@ -932,7 +932,7 @@ public class MenuBuilderFactory {
 	 * @param setHitCount when true, hitCount is added to the menu filter (SINGLE SELECT FILTER GROUP)
 	 * walk through on menu items and check which one is available
 	 */
-	public void checkMenuStatus(BrowseDataContext browseData, NavigationModel navModel, FDSessionUser user, boolean setHitCount){
+	public void checkMenuStatus(BrowseDataContext browseData, NavigationModel navModel, FDUserI user, boolean setHitCount){
 
 		List<MenuBoxData> menu = navModel.getLeftNav();
 		
@@ -1017,9 +1017,6 @@ public class MenuBuilderFactory {
 							it.remove();
 						}
 
-						final long t1 = System.currentTimeMillis();
-						
-						LOGGER.debug("Filtered " + pfSize + " products for each " + box.getItems().size() + " menu itmes in " + ((t1-t0)/1000) + " secs");
 					}
 
 				} else { // NAVIGATION BOX (CATEGORIES)

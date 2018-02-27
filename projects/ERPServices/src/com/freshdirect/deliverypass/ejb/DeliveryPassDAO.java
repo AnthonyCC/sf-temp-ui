@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.freshdirect.deliverypass.ejb;
 
@@ -32,20 +32,20 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 public class DeliveryPassDAO {
 	private static final Category LOGGER = LoggerFactory.getInstance(DeliveryPassDAO.class);
 	/**
-	 * 
+	 *
 	 */
 	public DeliveryPassDAO() {
 		super();
 	}
-	
+
 	private final static String CREATE_DELIVERY_PASS = "INSERT INTO CUST.DELIVERY_PASS(ID, CUSTOMER_ID, TYPE, DESCRIPTION, PURCHASE_DATE, AMOUNT, PURCHASE_ORDER_ID, TOTAL_NUM_DLVS, REM_NUM_DLVS, ORG_EXP_DATE, EXP_DATE, USAGE_CNT, STATUS) values (?,?,?,?,?,?,?,?,?,?,?,?,?)";
-	
+
 	public static PrimaryKey create(Connection conn, DeliveryPassModel model) throws SQLException {
 		PreparedStatement ps = null;
 		String id = null;
 		try{
 			ps = conn.prepareStatement(CREATE_DELIVERY_PASS);
-			id = SequenceGenerator.getNextId(conn, "CUST"); 
+			id = SequenceGenerator.getNextId(conn, "CUST");
 			ps.setString(1, id);
 			ps.setString(2, model.getCustomerId());
 			ps.setString(3, model.getType().getCode());
@@ -58,7 +58,7 @@ public class DeliveryPassDAO {
 			ps.setInt(9, model.getRemainingDlvs());
 			Date orgExpDate = model.getOrgExpirationDate();
 			Date expDate = model.getExpirationDate();
-			
+
 			if (orgExpDate != null) {
 				ps.setTimestamp(10,new Timestamp(orgExpDate.getTime()));//Original Expiration Date.
 				ps.setTimestamp(11,new Timestamp(expDate.getTime()));//Expiration Date
@@ -66,7 +66,7 @@ public class DeliveryPassDAO {
 			} else {
 				ps.setNull(10, Types.TIMESTAMP);//Original Expiration Date.
 				ps.setNull(11, Types.TIMESTAMP);
-			}	
+			}
 			ps.setInt(12, model.getUsageCount());
 			ps.setString(13, model.getStatus().getName());
 			if (ps.executeUpdate() != 1) {
@@ -82,9 +82,9 @@ public class DeliveryPassDAO {
 		}
 		return new PrimaryKey(id);
 	}
-	
+
 	private final static String GET_DELIVERY_PASS_INFO = "SELECT ID, CUSTOMER_ID, TYPE, DESCRIPTION, PURCHASE_DATE, AMOUNT, PURCHASE_ORDER_ID, TOTAL_NUM_DLVS, REM_NUM_DLVS, ORG_EXP_DATE, EXP_DATE, USAGE_CNT, NUM_OF_CREDITS, STATUS from CUST.DELIVERY_PASS where ID = ?";
-	
+
 	public static DeliveryPassModel getDeliveryPassInfo(Connection conn, PrimaryKey pk) throws SQLException {
 		DeliveryPassModel deliveryPassInfo = null;
 		PreparedStatement ps = null;
@@ -107,9 +107,9 @@ public class DeliveryPassDAO {
 		}
 		return deliveryPassInfo;
 	}
-	
+
 	private final static String GET_DELIVERY_PASSES = "SELECT ID, CUSTOMER_ID, TYPE, DESCRIPTION, PURCHASE_DATE, AMOUNT, PURCHASE_ORDER_ID, TOTAL_NUM_DLVS, REM_NUM_DLVS, ORG_EXP_DATE, EXP_DATE, USAGE_CNT, NUM_OF_CREDITS, STATUS from CUST.DELIVERY_PASS where CUSTOMER_ID = ? ORDER BY PURCHASE_DATE DESC";
-	
+
 	public static List<DeliveryPassModel> getDeliveryPasses(Connection conn, String customerPk) throws SQLException {
 		List<DeliveryPassModel> deliveryPasses = null;
 		PreparedStatement ps = null;
@@ -132,14 +132,14 @@ public class DeliveryPassDAO {
 				rs.close();
 			if(ps != null)
 				ps.close();
-		}		
+		}
 		return deliveryPasses;
 	}
-	
+
 	private final static String GET_DELIVERY_PASSES_BY_STATUS = "SELECT ID, CUSTOMER_ID, TYPE, DESCRIPTION, PURCHASE_DATE, AMOUNT, PURCHASE_ORDER_ID, TOTAL_NUM_DLVS, REM_NUM_DLVS, ORG_EXP_DATE, EXP_DATE, USAGE_CNT, NUM_OF_CREDITS, STATUS from CUST.DELIVERY_PASS where CUSTOMER_ID = ? and STATUS = ? ORDER BY PURCHASE_DATE DESC";
-	
-	
-	
+
+
+
 	public static List<DeliveryPassModel> getDlvPassesByStatus(Connection conn, String customerPk, EnumDlvPassStatus status) throws SQLException {
 		List<DeliveryPassModel> deliveryPasses = new ArrayList<DeliveryPassModel>();
 		PreparedStatement ps = null;
@@ -160,12 +160,12 @@ public class DeliveryPassDAO {
 				rs.close();
 			if(ps != null)
 				ps.close();
-		}	
+		}
 		return deliveryPasses;
 	}
-	
+
 	private final static String GET_DELIVERY_PASS_STATUS_COUNT = "SELECT  STATUS, count(STATUS) from CUST.DELIVERY_PASS where CUSTOMER_ID = ? GROUP BY STATUS";
-	
+
 	public static Map<EnumDlvPassStatus,Integer> getAllStatusCount(Connection conn, String customerPk) throws SQLException {
 		Map<EnumDlvPassStatus,Integer> statusCount = null;
 		PreparedStatement ps = null;
@@ -188,19 +188,19 @@ public class DeliveryPassDAO {
 				rs.close();
 			if(ps != null)
 				ps.close();
-		}	
+		}
 		return statusCount;
-	}	
+	}
 	private final static String UPDATE_DLV_PASS = "UPDATE CUST.DELIVERY_PASS SET REM_NUM_DLVS = ?, EXP_DATE = ?, USAGE_CNT = ?, STATUS = ?, NUM_OF_CREDITS = ? where ID = ?";
-	
+
 	private final static String UPDATE_DLV_PASS_1 = "UPDATE CUST.DELIVERY_PASS SET REM_NUM_DLVS = ?, EXP_DATE = ?, ORG_EXP_DATE = ?, USAGE_CNT = ?, STATUS = ?, NUM_OF_CREDITS = ? where ID = ?";
-	
-	
+
+
 	public static boolean update(Connection conn, DeliveryPassModel model, boolean setOrigExpDate) throws SQLException {
 		boolean retValue = true;
 		PreparedStatement ps = null;
 		try{
-			
+
 			if(setOrigExpDate) {
 				ps = conn.prepareStatement(UPDATE_DLV_PASS_1);
 				ps.setInt(1, model.getRemainingDlvs());
@@ -210,7 +210,7 @@ public class DeliveryPassDAO {
 				ps.setString(5, model.getStatus().getName());
 				ps.setInt(6, model.getNoOfCredits());
 				ps.setString(7, model.getPK().getId());
-				
+
 			}
 			else {
 				ps = conn.prepareStatement(UPDATE_DLV_PASS);
@@ -232,12 +232,12 @@ public class DeliveryPassDAO {
 		finally{
 			if(ps != null)
 				ps.close();
-		}	
+		}
 		return retValue;
 	}
 
 	private static void setTimestamp(PreparedStatement pstmt, int index, Date date) throws SQLException {
-		
+
 		if(date!=null) {
 			pstmt.setTimestamp(index,new Timestamp(date.getTime()));
 		}
@@ -245,9 +245,9 @@ public class DeliveryPassDAO {
 			pstmt.setNull(index, Types.TIMESTAMP);
 		}
 	}
-	
+
 	private final static String DELETE_DLV_PASS = "DELETE FROM CUST.DELIVERY_PASS where ID = ?";
-	
+
 	public static boolean remove(Connection conn, PrimaryKey pk) throws SQLException {
 		boolean retValue = true;
 		PreparedStatement ps = null;
@@ -264,8 +264,8 @@ public class DeliveryPassDAO {
 		finally{
 			if(ps != null)
 				ps.close();
-		}	
-		return retValue;		
+		}
+		return retValue;
 	}
 	private final static String GET_DELIVERY_PASSES_BY_ORDERID = "SELECT ID, CUSTOMER_ID, TYPE, DESCRIPTION, PURCHASE_DATE, AMOUNT, PURCHASE_ORDER_ID, TOTAL_NUM_DLVS, REM_NUM_DLVS, ORG_EXP_DATE, EXP_DATE, USAGE_CNT, NUM_OF_CREDITS, STATUS from CUST.DELIVERY_PASS where PURCHASE_ORDER_ID = ?";
 	/**
@@ -298,12 +298,12 @@ public class DeliveryPassDAO {
 				rs.close();
 			if(ps != null)
 				ps.close();
-		}	
-		return deliveryPasses;		
+		}
+		return deliveryPasses;
 	}
 
 	private final static String UPDATE_PRICE = "UPDATE CUST.DELIVERY_PASS SET AMOUNT = ? where ID = ?";
-	
+
 	public static boolean updatePrice(Connection conn, DeliveryPassModel model, double newPrice) throws SQLException {
 		boolean retValue = true;
 		PreparedStatement ps = null;
@@ -320,10 +320,10 @@ public class DeliveryPassDAO {
 			throw sexp;
 		}
 		finally{
-			
+
 			if(ps != null)
 				ps.close();
-		}	
+		}
 		return retValue;
 	}
 
@@ -335,7 +335,7 @@ public class DeliveryPassDAO {
 		String purchaseOrderId = rs.getString("PURCHASE_ORDER_ID");
 		Date purchaseDt = rs.getTimestamp("PURCHASE_DATE");
 		double amount = rs.getDouble("AMOUNT");
-		
+
 		int totalNoOfDlvs = rs.getInt("TOTAL_NUM_DLVS");
 		int remNoOfDlvs = rs.getInt("REM_NUM_DLVS");
 		Date expDate = rs.getTimestamp("EXP_DATE");
@@ -343,14 +343,14 @@ public class DeliveryPassDAO {
 		int usageCnt = rs.getInt("USAGE_CNT");
 		int noOfCredits = rs.getInt("NUM_OF_CREDITS");
 		EnumDlvPassStatus status = EnumDlvPassStatus.getEnum(rs.getString("STATUS"));
-		
-		return new DeliveryPassModel(pk, customerId, type, description, purchaseOrderId, 
+
+		return new DeliveryPassModel(pk, customerId, type, description, purchaseOrderId,
 				purchaseDt, amount, totalNoOfDlvs, remNoOfDlvs, orgExpDate, expDate, usageCnt, noOfCredits, status);
 	}
-	
+
 	private final static String HAS_PURCHASED_PASS_QUERY = "SELECT * FROM CUST.DELIVERY_PASS WHERE CUSTOMER_ID=? AND STATUS IN ('ACT','PEN','RTU','CAN','STF')";
 	public static boolean hasPurchasedPass(Connection conn, String customerPK) throws SQLException {
-		
+
 		boolean retValue = false;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -369,13 +369,13 @@ public class DeliveryPassDAO {
 				rs.close();
 			if(ps != null)
 				ps.close();
-		}	
+		}
 		return retValue;
 	}
-	
+
 	private final static String GET_USABLE_AUTORENEW_PASSES_QUERY = "SELECT * FROM CUST.DELIVERY_PASS WHERE CUSTOMER_ID=? AND ( STATUS IN ('PEN','RTU')  OR (STATUS='ACT' AND TRUNC(EXP_DATE)>TRUNC(SYSDATE))) AND TYPE IN (SELECT SKU_CODE FROM CUST.DLV_PASS_TYPE WHERE IS_AUTORENEW_DP='Y')";
-	
-	public static List<DeliveryPassModel> getUsableAutoRenewPasses(Connection conn, String customerPK) throws SQLException {        
+
+	public static List<DeliveryPassModel> getUsableAutoRenewPasses(Connection conn, String customerPK) throws SQLException {
 		List<DeliveryPassModel> autoRenewPasses=new ArrayList<DeliveryPassModel>(5);
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -394,10 +394,10 @@ public class DeliveryPassDAO {
 				rs.close();
 			if(ps != null)
 				ps.close();
-		}	
+		}
 		return autoRenewPasses;
 
-		
+
 	}
 
 	private final static String GET_AUTORENEWAL_INFO_QUERY = "select ci.customer_id,ci.autorenew_dp_type from cust.customerinfo ci, cust.customer c  where "+
@@ -418,12 +418,12 @@ public class DeliveryPassDAO {
 		List<String> autoRenewalSKU=new ArrayList<String>(10);
 		autoRenewalInfo[0]=customer;
 		autoRenewalInfo[1]=autoRenewalSKU;
-		
+
 		try{
 			ps = conn.prepareStatement(GET_AUTORENEWAL_INFO_QUERY);
 			rs = ps.executeQuery();
 			String defaultRenewalSKU=FDStoreProperties.getDefaultRenewalDP();
-			 
+
 			while (rs.next()) {
 				customer.add(rs.getString(1));
 				if((rs.getString(2)!=null)&& !("".equals(rs.getString(2)))) {
@@ -442,9 +442,9 @@ public class DeliveryPassDAO {
 				rs.close();
 			if(ps != null)
 				ps.close();
-		}	
+		}
 
-		
+
 	}
 
 
@@ -453,7 +453,7 @@ public class DeliveryPassDAO {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		int days=0;
-		
+
 		try{
 			ps = conn.prepareStatement(GET_DAYS_SINCE_DP_EXPIRED_QUERY);
 			ps.setString(1, customerID);
@@ -471,27 +471,27 @@ public class DeliveryPassDAO {
 				rs.close();
 			if(ps != null)
 				ps.close();
-		}	
+		}
 
 	}
-	
-	
+
+
 	private final static String GET_DAYS_TO_DP_EXPIRED_QUERY="select ceil((select exp_date from cust.delivery_pass where id=?) -sysdate)+"+
 	                                                         " NVL((select sum(duration) from cust.delivery_pass dp, cust.dlv_pass_type dpt where customer_id=? and dp.id!=? and dp.type=dpt.SKU_CODE and dp.status IN ('PEN','RTU')),0) as days "
 	                                                         +" from cust.delivery_pass where customer_id=? and rownum=1";
-	
+
 	public static int getDaysToDPExpiry(Connection conn, String customerID, String dpID) throws SQLException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		int days=0;
-		
+
 		try{
 			ps = conn.prepareStatement(GET_DAYS_TO_DP_EXPIRED_QUERY);
 			ps.setString(1, dpID);
 			ps.setString(2, customerID);
 			ps.setString(3, dpID);
 			ps.setString(4, customerID);
-			
+
 			rs = ps.executeQuery();
 
 			if(rs.next()) {
@@ -506,15 +506,15 @@ public class DeliveryPassDAO {
 				rs.close();
 			if(ps != null)
 				ps.close();
-		}	
+		}
 
 	}
-	
+
 	 private static String GET_OPEN_CASES_FOR_MISSING_PAYMENTS=
 	" SELECT  INITCAP(CI.LAST_NAME) ||\',\'||INITCAP(CI.FIRST_NAME) as \"Customer Name\", "+
     " C.USER_ID AS \"User Id\", case.summary AS \"DP Renewal failure reason\" , CASE.CREATE_DATE as \"Failed On\", "+
     " FROM cust.case case, cust.customer c, cust.customerinfo ci "+
-    " WHERE c.id=case.customer_id AND case_subject='DPQ-009' and  case_state<>'CLSD' "+  
+    " WHERE c.id=case.customer_id AND case_subject='DPQ-009' and  case_state<>'CLSD' "+
     " AND create_date BETWEEN TRUNC(SYSDATE-30) and SYSDATE "+
     " AND c.id=CI.CUSTOMER_ID "+
     " ORDER BY TRUNC(CASE.CREATE_DATE) DESC , INITCAP(CI.LAST_NAME) ||','||INITCAP(CI.FIRST_NAME) ASC";
@@ -543,7 +543,7 @@ public class DeliveryPassDAO {
 				rs.close();
 			if(ps != null)
 				ps.close();
-		}		
+		}
 	}
 	private static String GET_PENDING_DP="select INITCAP(CI.LAST_NAME) ||','||INITCAP(CI.FIRST_NAME) as \"Customer Name\", C.USER_ID AS \"User Id\",s.id as \"Order #\","+
     " case s.type when 'REG' then 'Regular' when 'SUB' then 'DP Renewal' else s.type end as \"Order Type\", "+
@@ -555,7 +555,7 @@ public class DeliveryPassDAO {
 	" and s.id=DP.PURCHASE_ORDER_ID and s.customer_id=DP.CUSTOMER_ID and c.id=CI.CUSTOMER_ID and s.customer_id=c.id"+
 	" and s.cromod_date=sa.action_date and sa.action_type in ('CRO','MOD') and s.id=sa.sale_id "+
 	" and SA.REQUESTED_DATE<trunc(sysdate) order by SA.REQUESTED_DATE, INITCAP(CI.LAST_NAME) ||','||INITCAP(CI.FIRST_NAME)";
-	
+
 	public static List<List<String>> getPendingPasses(Connection conn) throws SQLException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -583,7 +583,35 @@ public class DeliveryPassDAO {
 				rs.close();
 			if(ps != null)
 				ps.close();
-		}		
+		}
+	}
+
+	private static String FREE_TRIAL_SUBS_ORDER_CUST_SQL = "select distinct fd.erp_customer_id from cust.fdcustomer fd,CUST.FDCUSTOMER_ESTORE fde, cust.sale s, cust.salesaction sa, cust.deliveryinfo di "+
+             "where fde.FDCUSTOMER_ID =fd.id and fde.e_store='FreshDirect' and s.customer_id=fd.erp_customer_id and s.type='REG' and sa.action_date > sysdate-1 "+
+             "and s.id=sa.sale_id and s.cromod_date=sa.action_date and sa.action_type in('CRO','MOD') and di.salesaction_id=sa.id and di.delivery_type='H' "+
+             "and FDE.DP_FREE_TRIAL_OPTIN is not null and FDE.DP_FREE_TRIAL_OPTIN='Y' and SA.ACTION_DATE > FDE.DP_FREE_TRIAL_OPTIN_DATE and not exists (select id from cust.delivery_pass dp " +
+             "where dp.customer_id=fd.erp_customer_id and dp.status not in ('CAO','CAN'))";
+
+	public static List<String> getAllCustIdsOfFreeTrialSubsOrder(Connection conn) throws SQLException {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<String> custInfo = new ArrayList<String>(10);
+		try {
+			ps = conn.prepareStatement(FREE_TRIAL_SUBS_ORDER_CUST_SQL);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				custInfo.add(rs.getString(1));
+
+			}
+			return custInfo;
+		} catch (SQLException exp) {
+			throw exp;
+		} finally {
+			if (rs != null)
+				rs.close();
+			if (ps != null)
+				ps.close();
+		}
 	}
 
 }

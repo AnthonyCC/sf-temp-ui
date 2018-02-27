@@ -998,6 +998,7 @@
 .standing-orders-3 #cartcontent .cartsection.eTippingEnabled .cartsection__totalwrapper{
 	width: auto;
 	padding-top: 20px;
+	padding-right: 0;
 }
 .standing-orders-3 #cartcontent .cartsection__cartline .cartline-title{
 	width: 500px;
@@ -1021,12 +1022,14 @@
 
 .standing-orders-3 #cartcontent .total .total-right{
 	width: 400px;
+	padding-right: 28px;
 }
 .standing-orders-3 #cartcontent .total .total__subtotal #subtotalbox2{
 	float: none;
 }
 .standing-orders-3 #cartcontent .total .total__subtotal #subtotalbox2 .subtotal__row{
 	text-align: right;
+	padding-right: 0;
 }
 .standing-orders-3 #cartcontent .total .total__subtotal #subtotalbox2 .subtotal__rowcell-left{
 	display: inline;

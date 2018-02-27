@@ -30,6 +30,7 @@ import com.freshdirect.ecommerce.data.referral.ReferralProgramInvitationData;
 import com.freshdirect.ecommerce.data.referral.ReferralPromotionData;
 import com.freshdirect.ecommerce.data.referral.ReferralSearchCriteriaData;
 import com.freshdirect.ecommerce.data.referral.UserCreditData;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDEcommServiceException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
@@ -975,7 +976,7 @@ public class FDReferralManagerService extends AbstractEcommService implements FD
 
 	}
 	@Override
-	public boolean isReferreSignUpComplete(String email)throws FDResourceException, RemoteException {
+	public boolean isReferreSignUpComplete(String email, EnumEStoreId storeid)throws FDResourceException, RemoteException {
 		Response<Boolean> response = new Response<Boolean>();
 		try {
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(IS_REFERRAL_COMPLETE + email),  new TypeReference<Response<Boolean>>(){});

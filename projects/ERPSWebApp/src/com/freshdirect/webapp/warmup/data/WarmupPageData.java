@@ -7,6 +7,7 @@ public class WarmupPageData {
     private boolean inProgress;
     private boolean repeatedWarmupCanHappen;
     private boolean manualWarmupAllowed;
+    private String warmupState;
 
     public WarmupPageData() {
     }
@@ -41,6 +42,14 @@ public class WarmupPageData {
 
     public void setManualWarmupAllowed(boolean manualWarmupAllowed) {
         this.manualWarmupAllowed = manualWarmupAllowed;
+    }
+
+    public String getWarmupState() {
+        return warmupState;
+    }
+
+    public void setWarmupState(String warmupState) {
+        this.warmupState = warmupState;
     }
 
 }

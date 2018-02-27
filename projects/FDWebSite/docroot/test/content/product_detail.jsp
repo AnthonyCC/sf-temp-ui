@@ -14,16 +14,16 @@
 <fd:CheckDraftContextTag/>
 
 <%-- get all the product data needed for display --%>
-<potato:product name="productPotato" extraName="productExtraPotato" productId='<%=request.getParameter("productId")%>' categoryId='<%=request.getParameter("catId")%>' variantId='<%=request.getParameter("variantId")%>' grpId='<%=request.getParameter("grpId")%>' version='<%=request.getParameter("version")%>' />
-<potato:browse name="browsePotato" pdp="true" nodeId='<%=request.getParameter("catId")%>'/>
-<fd:ProductGroup id='productNode' categoryId='<%=request.getParameter("catId")%>' productId='<%=request.getParameter("productId")%>' >
+<potato:product name="productPotato" extraName="productExtraPotato" productId='${param.productId}' categoryId='${param.catId}' variantId='${param.variantId}' grpId='${param.grpId}' version='${param.version}' />
+<potato:browse name="browsePotato" pdp="true" nodeId='${param.catId}'/>
+<fd:ProductGroup id='productNode' categoryId='${param.catId}' productId='${param.productId}' >
 
 <%
 boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
 String pageTemplate = "/common/template/no_nav_html5.jsp";
 if (mobWeb) {
 	pageTemplate = "/common/template/mobileWeb.jsp"; //mobWeb template
-	String oasSitePage = (request.getAttribute("sitePage") == null) ? "www.freshdirect.com" : request.getAttribute("sitePage").toString();
+	String oasSitePage = request.getAttribute("sitePage").toString();
 	if (oasSitePage.startsWith("www.freshdirect.com/") && !oasSitePage.startsWith("www.freshdirect.com/mobileweb/")) {
 		request.setAttribute("sitePage", oasSitePage.replace("www.freshdirect.com/", "www.freshdirect.com/mobileweb/")); //change for OAS	
 	}
@@ -37,7 +37,7 @@ boolean forceProductLayout = true; /* force the product to just use the normal l
 
 %>
 <tmpl:insert template="<%= pageTemplate %>">
-	<tmpl:put name='eventsource' direct='true'>UNKNOWN</tmpl:put>
+	<tmpl:put name='cmeventsource' direct='true'>UNKNOWN</tmpl:put>
 	
 	<tmpl:put name='extraCss' direct='true'>
     	<jwr:style src="/quickshop.css" media="all" />

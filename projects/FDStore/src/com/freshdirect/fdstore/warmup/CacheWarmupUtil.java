@@ -200,10 +200,14 @@ public class CacheWarmupUtil {
 
     public static void warmupGroupes() throws FDResourceException {
         LOGGER.info("Loading grp data");
-        Collection<FDGroup> grpInfoList = FDGrpInfoManager.loadAllGrpInfoMaster();
-        @SuppressWarnings("unchecked")
-        final Collection<GroupScalePricing> grpInfos = FDCachedFactory.getGrpInfos(grpInfoList.toArray(new FDGroup[0]));
-        LOGGER.info("Lightweight grp data loaded size is :" + grpInfos.size());
+        try {
+			Collection<FDGroup> grpInfoList = FDGrpInfoManager.loadAllGrpInfoMaster();
+			@SuppressWarnings("unchecked")
+			final Collection<GroupScalePricing> grpInfos = FDCachedFactory.getGrpInfos(grpInfoList.toArray(new FDGroup[0]));
+			LOGGER.info("Lightweight grp data loaded size is :" + grpInfos.size());
+		} catch (Exception e) {
+			 LOGGER.warn("Loading grp data failed:", e);
+		}
     }
 
     public static void warmupMaterialGroups() throws FDResourceException {

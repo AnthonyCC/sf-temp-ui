@@ -49,6 +49,7 @@
 				{call .standingOrderSettingsItem}
 					{param item: $item /}
 					{param softLimit : $soData.settingsData.soSettings.soSoftLimit /}
+					{param modifyingOrderId : $soData.settingsData.soSettings.modifyingOrderId /}
 				{/call}	
 			</div>
 			<div class="standing-orders-3-so-settings-drawer-cart">
@@ -96,6 +97,7 @@
 /**
  * @param? item
  * @param? softLimit
+ * @param? modifyingOrderId
  */
 {template .standingOrderSettingsItem}
 	<div class="standing-orders-3-so-settings-item-text-container">
@@ -154,6 +156,7 @@
 			<div class="standing-orders-3-so-settings-item-details">
 				{call .soSettingsDetails}
 					{param item: $item /}
+					{param modifyingOrderId: $modifyingOrderId /}
 				{/call}	
 			</div>		
 		</div>
@@ -276,12 +279,17 @@
 
 /**
  * @param? item
+ * @param? modifyingOrderId
  */
 {template .soSettingsDetails}
 	{if $item.isEligileToShowModifyInfo}
 		<div class="standing-orders-3-so-settings-item-details-header">Next Delivery:</div>
 		<div class="standing-orders-3-so-settings-item-details-container standing-orders-3-so-settings-item-details-container-red">
-			<div class="standing-orders-3-so-settings-item-details-left">Date & Time:</div><div class="standing-orders-3-so-settings-item-details-right">{if $item.currentDeliveryDate and $item.currentDeliveryTime}{$item.currentDayOfWeek}, {$item.currentDeliveryDate}, {$item.currentDeliveryTime}{else}None{/if}</div>{if $item.upComingOrderId}<button class="standing-orders-3-so-settings-item-details-modify-next-delivery cssbutton cssbutton-flat orange" onclick="window.location.href='/your_account/modify_order.jsp?orderId={$item.upComingOrderId}&action=modify'">Modify Next Delivery</button>{/if}
+			<div class="standing-orders-3-so-settings-item-details-left">Date & Time:</div><div class="standing-orders-3-so-settings-item-details-right">{if $item.currentDeliveryDate and $item.currentDeliveryTime}{$item.currentDayOfWeek}, {$item.currentDeliveryDate}, {$item.currentDeliveryTime}{else}None{/if}</div>
+				{call .modifyNextDeliveryButton}
+					{param upComingOrderId: $item.upComingOrderId /}
+					{param modifyingOrderId: $modifyingOrderId /}
+				{/call}
 		</div>		
 		<div class="standing-orders-3-so-settings-item-details-container">
 			<div class="standing-orders-3-so-settings-item-details-left">Estimated Total:</div><div class="standing-orders-3-so-settings-item-details-right standing-orders-3-so-settings-item-details-etotal">{call common.formatDecimalPrice}{param price:$item.amount /}{/call}</div>
@@ -302,7 +310,11 @@
 	{else}
 		<div class="standing-orders-3-so-settings-item-details-header">Next Delivery:</div>
 		<div class="standing-orders-3-so-settings-item-details-container">
-			<div class="standing-orders-3-so-settings-item-details-left">Date & Time:</div><div class="standing-orders-3-so-settings-item-details-right">{if $item.currentDeliveryDate and $item.currentDeliveryTime}{$item.currentDayOfWeek}, {$item.currentDeliveryDate}, {$item.currentDeliveryTime}{else}None{/if}</div>{if $item.upComingOrderId}<button class="standing-orders-3-so-settings-item-details-modify-next-delivery cssbutton cssbutton-flat orange" onclick="window.location.href='/your_account/modify_order.jsp?orderId={$item.upComingOrderId}&action=modify'">Modify Next Delivery</button>{/if}
+			<div class="standing-orders-3-so-settings-item-details-left">Date & Time:</div><div class="standing-orders-3-so-settings-item-details-right">{if $item.currentDeliveryDate and $item.currentDeliveryTime}{$item.currentDayOfWeek}, {$item.currentDeliveryDate}, {$item.currentDeliveryTime}{else}None{/if}</div>
+			{call .modifyNextDeliveryButton}
+				{param upComingOrderId: $item.upComingOrderId /}
+				{param modifyingOrderId: $modifyingOrderId /}
+			{/call}
 		</div>
 		<div class="standing-orders-3-so-settings-item-details-container">
 			<div class="standing-orders-3-so-settings-item-details-left">Frequency:</div><div class="standing-orders-3-so-settings-item-details-right">{if $item.frequencyDesc and $item.dayOfWeek}{$item.frequencyDesc}{$item.dayOfWeek}{else}None{/if}</div>
@@ -310,6 +322,21 @@
 		<div class="standing-orders-3-so-settings-item-details-container">
 			<div class="standing-orders-3-so-settings-item-details-left">Estimated Total:</div><div class="standing-orders-3-so-settings-item-details-right standing-orders-3-so-settings-item-details-etotal">{call common.formatDecimalPrice}{param price:$item.amount /}{/call}</div>
 		</div>
+	{/if}
+{/template}
+
+/**
+ * @param? upComingOrderId
+ * @param? modifyingOrderId
+ */
+{template .modifyNextDeliveryButton}
+	{if not $upComingOrderId}
+	{elseif $upComingOrderId == $modifyingOrderId}
+		<button class="standing-orders-3-so-settings-item-details-modify-cancel cssbutton cssbutton-flat orange transparent" onclick="window.location.href='/your_account/cancel_modify_order.jsp'">Cancel Changes</button>
+	{elseif $modifyingOrderId}
+		<button class="standing-orders-3-so-settings-item-details-modify-next-delivery cssbutton cssbutton-flat orange" disabled onclick="window.location.href='/your_account/modify_order.jsp?orderId={$upComingOrderId}&action=modify'">Modify Next Delivery</button>
+	{else}
+		<button class="standing-orders-3-so-settings-item-details-modify-next-delivery cssbutton cssbutton-flat orange" onclick="window.location.href='/your_account/modify_order.jsp?orderId={$upComingOrderId}&action=modify'">Modify Next Delivery</button>
 	{/if}
 {/template}
 

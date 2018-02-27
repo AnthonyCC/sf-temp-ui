@@ -29,6 +29,10 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.dataloader.payment.ejb.SaleCronHome;
 import com.freshdirect.dataloader.payment.ejb.SaleCronSB;
 import com.freshdirect.fdstore.CallCenterServices;
+import com.freshdirect.fdstore.FDEcommProperties;
+import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.ecomm.gateway.SaleCronService;
+import com.freshdirect.fdstore.ecomm.gateway.SaleCronServiceI;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
@@ -59,11 +63,19 @@ public class SaleCronRunner {
 		try {
 			ctx = getInitialContext();
 			SaleCronHome home = (SaleCronHome) ctx.lookup("freshdirect.dataloader.SaleCron");
-
+			int affected ;
+			List<Date> dates;
 			SaleCronSB sb = home.create();
-			sb.cancelAuthorizationFailed();
-			List<Date> dates = sb.queryCutoffReportDeliveryDates();
-			int affected = sb.cutoffSales();
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SaleCronSB)){
+				SaleCronService.getInstance().cancelAuthorizationFailed();
+				dates = SaleCronService.getInstance().queryCutoffReportDeliveryDates();
+				affected = SaleCronService.getInstance().cutoffSales();
+			}
+			else{
+				sb.cancelAuthorizationFailed();
+				dates = sb.queryCutoffReportDeliveryDates();
+				 affected = sb.cutoffSales();
+			}
 			
 			if (affected > 0 && "true".equalsIgnoreCase(ErpServicesProperties.getSendCutoffEmail())) {
 				for(Date day : dates)
@@ -73,12 +85,20 @@ public class SaleCronRunner {
 					CallCenterServices.emailCutoffTimeReport(cal.getTime());
 					}
 			}
-			//First clear pending reverse auth for cancelled orders.
-			sb.reverseAuthorizeSales(authTimeout);
-			//Second Pre auth gift card.
-			sb.preAuthorizeSales(authTimeout);
-			//Third perform CC authorization.
-			sb.authorizeSales(authTimeout);
+			
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SaleCronSB)){
+				SaleCronService.getInstance().reverseAuthorizeSales(authTimeout);
+				SaleCronService.getInstance().preAuthorizeSales(authTimeout);
+				SaleCronService.getInstance().authorizeSales(authTimeout);
+			}
+			else{
+				//First clear pending reverse auth for cancelled orders.
+				sb.reverseAuthorizeSales(authTimeout);
+				//Second Pre auth gift card.
+				sb.preAuthorizeSales(authTimeout);
+				//Third perform CC authorization.
+				sb.authorizeSales(authTimeout);
+			}
 			// remved the following task, create a new cron job for it.
 			//sb.captureSales(captureTimeout); 
 

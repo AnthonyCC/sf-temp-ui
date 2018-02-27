@@ -47,7 +47,6 @@
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	
-	<!-- TODO: BULK LOADER SERVLET -->
 	<servlet>
         <servlet-name>bulkUpload</servlet-name>
         <servlet-class>com.freshdirect.cms.ui.serviceimpl.BulkLoaderXlsUploadServlet</servlet-class>
@@ -72,9 +71,6 @@
 		<servlet-name>spring-dispatcher</servlet-name>
 		<url-pattern>/cms/*</url-pattern>
 	</servlet-mapping>
-	<!-- TODO: CSV EXPORT SERVLET -->
-	<!-- TODO: Media Change Notification -->
-	<!-- TODO: Draft Populator Servlet -->
 	<servlet-mapping>
 		<servlet-name>contentService</servlet-name>
 		<url-pattern>/contentService</url-pattern>

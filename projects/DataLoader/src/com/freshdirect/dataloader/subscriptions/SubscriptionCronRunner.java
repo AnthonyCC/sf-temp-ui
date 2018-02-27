@@ -11,6 +11,9 @@ import org.apache.log4j.Category;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.dataloader.payment.ejb.SaleCronHome;
 import com.freshdirect.dataloader.payment.ejb.SaleCronSB;
+import com.freshdirect.fdstore.FDEcommProperties;
+import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.ecomm.gateway.SaleCronService;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class SubscriptionCronRunner {
@@ -39,9 +42,13 @@ public class SubscriptionCronRunner {
 		try {
 			ctx = getInitialContext();
 			SaleCronHome home = (SaleCronHome) ctx.lookup("freshdirect.dataloader.SaleCron");
-
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SaleCronSB)){
+				SaleCronService.getInstance().authorizeSubscriptions(authTimeout);
+			}
+			else{
 			SaleCronSB sb = home.create();
 			sb.authorizeSubscriptions(authTimeout);
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();

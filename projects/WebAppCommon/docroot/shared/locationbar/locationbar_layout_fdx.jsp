@@ -8,7 +8,8 @@
 <%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter'%>
 <%@ page import="com.freshdirect.webapp.util.JspMethods" %>
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
-<%@ page import="com.freshdirect.fdstore.customer.FDModifyCartModel" %>
+<%@ page import="com.freshdirect.fdstore.customer.FDUserUtil"%>
+<%@ page import="com.freshdirect.fdstore.customer.adapter.FDOrderAdapter" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib prefix="fd" uri="freshdirect" %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
@@ -17,15 +18,12 @@
 	String uri = request.getRequestURI().toLowerCase();
 	boolean mobWeb_locationbar_layout_fdx = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
 	boolean inMobWebTemplate = (request.getAttribute("inMobWebTemplate") != null) ? (Boolean)request.getAttribute("inMobWebTemplate") : false;
-	FDModifyCartModel moCart = null;
-	boolean isModifyingOrder = user != null && 
-			user.getLevel() >= FDUserI.RECOGNIZED && 
-			user.hasPendingOrder() && 
-			user.getShoppingCart() instanceof FDModifyCartModel && 
-			(moCart = (FDModifyCartModel) user.getShoppingCart()) != null  &&
-			moCart.getOriginalOrder() != null && 
-			moCart.getOriginalOrder().getDeliveryReservation() != null && 
-			moCart.getOriginalOrder().getDeliveryReservation().getTimeslot() != null;
+	FDOrderAdapter modifyingOrder = null;
+	boolean isModifyingOrder = user != null &&
+			user.getLevel() >= FDUserI.RECOGNIZED &&
+			(modifyingOrder = FDUserUtil.getModifyingOrder(user)) != null &&
+			modifyingOrder.getDeliveryReservation() != null &&
+			modifyingOrder.getDeliveryReservation().getTimeslot() != null;
 			
 %>
 <% if (inMobWebTemplate && mobWeb_locationbar_layout_fdx) { %>
@@ -35,11 +33,11 @@
 	<tmpl:get name="topwarningbar" />
 	
 	<div id="locationbar" class="<%= (uri.contains("/checkout/") || uri.contains("view_cart.jsp") || uri.contains("merge_cart.jsp") || uri.contains("/gift_card/")) ? "disableCart" : "" %>">
-		<% if (!mobWeb_locationbar_layout_fdx && isModifyingOrder && moCart != null) { %>
+		<% if (!mobWeb_locationbar_layout_fdx && isModifyingOrder && modifyingOrder != null) { %>
 		<div id="location-modify-order-message" class="position-absolute">
 			<div class="modify-order-container">
 				<strong>Modifying Delivery: </strong>
-				<span class="modify-delivery-time"><span><%= new SimpleDateFormat("EEEEE").format(moCart.getOriginalOrder().getDeliveryReservation().getTimeslot().getDeliveryDate()) %></span> <span class="text-uppercase"><%= moCart.getOriginalOrder().getDeliveryReservation().getTimeslot().getDisplayString() %></span></span>
+				<span class="modify-delivery-time"><span><%= new SimpleDateFormat("EEEEE").format(modifyingOrder.getDeliveryReservation().getTimeslot().getDeliveryDate()) %></span> <span class="text-uppercase"><%= modifyingOrder.getDeliveryReservation().getTimeslot().getDisplayString() %></span></span>
 			</div>
 		</div>
 		<% } else { %>

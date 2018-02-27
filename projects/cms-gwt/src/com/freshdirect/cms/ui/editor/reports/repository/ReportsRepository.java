@@ -208,6 +208,10 @@ public class ReportsRepository {
             + " "
             + "on product=product_scope";
 
+    private static final String QUERY_BROKEN_MEDIA_LINKS = "select r.PARENT_CONTENTNODE_ID  as parent_key$, r.DEF_NAME as attribute, r.CHILD_CONTENTNODE_ID as media from RELATIONSHIP r "
+            + " left join (select concat(type,concat(':',id)) as mediaids from MEDIA) m on r.CHILD_CONTENTNODE_ID = m.mediaids "
+            + " where r.DEF_CONTENTTYPE in ('Html', 'Image', 'Template', 'MediaFolder') and m.mediaids is null";
+
     // -- SMART STORE REPORTS --
 
     private static final String QUERY_SCARAB_MERCHANDISING_RULES = "select parent_contentnode_id as parent_key$, def_name as group$, child_contentnode_id as child_key$ "
@@ -377,6 +381,10 @@ public class ReportsRepository {
 
     public List<Map<Attribute,Object>> fetchSmartCategoryRecommenders() {
         return fetchReport(QUERY_SMART_CATEGORY_RECOMMENDERS);
+    }
+
+    public List<Map<Attribute, Object>> fetchBrokenMediaLinks() {
+        return fetchReport(QUERY_BROKEN_MEDIA_LINKS);
     }
 
 }

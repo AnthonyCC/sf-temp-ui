@@ -93,7 +93,7 @@ final int W_PRODUCT_MODIFY_TOTAL = 600;
 <tmpl:insert template='<%= pageTemplate %>'>
 
     <tmpl:put name="seoMetaTag" direct='true'>
-        <fd:SEOMetaTag title="FreshDirect - Modify Item in Cart"/>
+        <fd:SEOMetaTag title="FreshDirect - Edit Item in Cart"/>
     </tmpl:put>
 <%--     <tmpl:put name='title' direct='true'>FreshDirect - Modify Item in Cart <% // productNode.getFullName() %></tmpl:put> --%>
 
@@ -111,12 +111,13 @@ final int W_PRODUCT_MODIFY_TOTAL = 600;
 		if (prodPageLayout.equals(EnumProductLayout.HOLIDAY_MEAL_BUNDLE_PRODUCT)) { pageContentDivWidth = "775px"; }
 	%>
 	<div style="width: <%= pageContentDivWidth %>" class="prodMod-cont">
-		<div class="center modProd-banner" style="margin-bottom: 6px; width: <%= (mobWeb) ? "100%" : W_PRODUCT_MODIFY_TOTAL+"px" %>"><span>MODIFY ITEM IN CART</span></div>
+		<div class="center modProd-banner" style="margin-bottom: 6px; width: <%= (mobWeb) ? "100%" : W_PRODUCT_MODIFY_TOTAL+"px" %>"><span>Edit Item in Cart</span></div>
 		
+		<%-- leaving this in code since the link is useful for QA. Hidden via css --%>
 		<div class="text12px prodMod-modLink" style="margin-bottom: 6px; width: <%= (mobWeb) ? "100%" : W_PRODUCT_MODIFY_TOTAL+"px" %>"">
 			This item is now in your cart. After making changes to it, click "save changes" below. 
 			To remove it from your cart, click "remove item." To return to the page where you bought it, 
-			<a href="/product.jsp?productId=<%= productNode %>&catId=<%= productNode.getParentNode() %>&trk=pmod">click here</a>.
+			<a href="/pdp.jsp?productId=<%= productNode %>&catId=<%= productNode.getParentNode() %>&trk=pmod">click here</a>.
 		</div>
 		<div class="" style="margin-bottom: 6px;">
 			<%@ include file="/includes/product/cutoff_notice.jspf" %>

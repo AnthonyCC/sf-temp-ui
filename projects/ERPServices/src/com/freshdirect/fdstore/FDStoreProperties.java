@@ -292,6 +292,8 @@ public class FDStoreProperties {
     private static final String CORS_DOMAIN = "fdstore.CORS.domain";
 
     public static final String PROP_SO3_ACTIVATE_CUTOFF_TIME = "fdstore.so3.activate.cutoff.time";
+    
+    public static final String DATABASE_IN_CONDITION_LIMIT = "fdstore.db.in.condition.limit";
     // Smart Search
     /**
      * @deprecated
@@ -1015,6 +1017,8 @@ public class FDStoreProperties {
 	
 	public final static String PROP_FDC_NEW_BACKIN_USE_FD_ENABLED = "fdstore.new.backinstock.fdc.use.fd.enabled";
 	
+	public final static String PROP_FD_DP_FREE_TRIAL_OPTIN_FEATURE_ENABLED = "fdstore.fd.dp.freetrial.optin.feature.enabled";
+	
 
  	static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -1336,7 +1340,7 @@ public class FDStoreProperties {
         defaults.put(PROP_GC_NSM_FREQ_SECS, "600");
         defaults.put(PROP_ZONE_PRICING_ENABLED, "true");
         defaults.put(PROP_ZONE_PRICING_AD_ENABLED, "true");
-        defaults.put(PROP_ZONE_PICKUP_ZIPCODE, "11101");
+        defaults.put(PROP_ZONE_PICKUP_ZIPCODE, "07076");
         defaults.put(PROP_FDX_ZONE_ZIPCODE, "10036");
 
         // Window Steering
@@ -1589,7 +1593,7 @@ public class FDStoreProperties {
         defaults.put(PROP_SOY_DEBUG, false);
 
         defaults.put(PROP_IP_LOCATOR_ENABLED, "true");
-        defaults.put(PROP_IP_LOCATOR_CLIENT_ID, "103310996");
+        defaults.put(PROP_IP_LOCATOR_CLIENT_ID, "e8lQTiN_7IOJZhUTjNQ_5t**");//103310996");
         defaults.put(PROP_IP_LOCATOR_URL, "https://iplocator.melissadata.net/v2/REST/Service.svc/doIPLocation");
         defaults.put(PROP_IP_LOCATORV4_URL, "http://globalip.melissadata.net/v4/WEB/iplocation/doiplocation");
         defaults.put(PROP_IP_LOCATORV4_ENABLED, "true");
@@ -1827,7 +1831,7 @@ public class FDStoreProperties {
 
         defaults.put(PROP_UNBXD_API_KEY, "91a4d42b07d3346afbae9ee63134c5d2");
         defaults.put(PROP_UNBXD_SITE_KEY, "freshdirect_dev-u1469033821585");
-        defaults.put(PROP_UNBXD_COS_SITE_KEY, "freshdirect_dev-u1469033821585");
+        defaults.put(PROP_UNBXD_COS_SITE_KEY, "cos_dev-u1508499587553");
         defaults.put(PROP_UNBXD_BASE_URL, "http://search.unbxdapi.com/");
         defaults.put(PROP_UNBXD_FALLBACK_ON_ERROR, "false");
         defaults.put(PROP_UNBXD_TRACKING_BASE_URL, "http://tracker.unbxdapi.com/v2/1p.jpg");
@@ -1911,9 +1915,9 @@ public class FDStoreProperties {
         defaults.put(GLOBAL_SF2_0_ENABLED, "false");
 
         //DCS-23
-        defaults.put(PROP_DEBIT_SWITCH_NOTICE_ENABLED, "true");
+        defaults.put(PROP_DEBIT_SWITCH_NOTICE_ENABLED, "false");
 
-        defaults.put(PROP_LOG_AKAMAI_HEADER_ENABLED,"true");
+        defaults.put(PROP_LOG_AKAMAI_HEADER_ENABLED,"false");
 
         //APPDEV-6442
         defaults.put(PROP_FDC_TRANSITION_LOOK_AHEAD_DAYS, "0");
@@ -1943,6 +1947,9 @@ public class FDStoreProperties {
 		// Refresh Token : 180 days
 		defaults.put(DEFAULT_REFRESH_TOKEN_EXPIRATION, "15552000");
 		defaults.put(PROP_FDC_NEW_BACKIN_USE_FD_ENABLED,"false");
+		
+		defaults.put(DATABASE_IN_CONDITION_LIMIT, "50");
+		defaults.put(PROP_FD_DP_FREE_TRIAL_OPTIN_FEATURE_ENABLED, "false");
 		
         refresh();
     }
@@ -4942,4 +4949,13 @@ public class FDStoreProperties {
 	public static boolean isNewProductsForFdcUsingFdEnabled(){
 		return (Boolean.valueOf(get(PROP_FDC_NEW_BACKIN_USE_FD_ENABLED))).booleanValue();
 	}
+
+	public static int getInConditionLimit() {
+		return Integer.parseInt(get(DATABASE_IN_CONDITION_LIMIT));
+	}
+	
+	public static boolean isDlvPassFreeTrialOptinFeatureEnabled(){
+		return (Boolean.valueOf(get(PROP_FD_DP_FREE_TRIAL_OPTIN_FEATURE_ENABLED))).booleanValue();
+	}
+	
 }

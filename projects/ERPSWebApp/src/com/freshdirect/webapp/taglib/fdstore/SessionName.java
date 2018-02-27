@@ -90,6 +90,8 @@ public interface SessionName {
     public static final String CLICK_ID = "CLICKID";
     public static final String COUPONCODE = "COUPONCODE";
     
+    public static final String MSG_FOR_LOGIN_PAGE = "MSG_FOR_LOGIN_PAGE";
+    
     // PayPal
     public static final String PAYPAL_DEVICE_ID = "DEVICE_ID";
 

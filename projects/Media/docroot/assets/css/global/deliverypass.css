@@ -31,8 +31,7 @@
 	font-family: Verdana;
 }
 
-.dpn-container,
-.dpn-success-container{
+.dpn-container{
 	max-width: 800px;
 	width: 100%;
     margin: auto;
@@ -40,12 +39,7 @@
     -webkit-box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.35);
     -moz-box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.35);
 }
-.dpn-success-container{
-	max-width: 660px;
-}
-.deliverypass-payment{
-	max-width: 375px;
-}
+
 .dpn-header{
 	background: #458b4c;
 	background-image: linear-gradient(to left, #4fa157, #458d4e);
@@ -161,10 +155,9 @@
 	font-size: 18px;
 }
 
-button.dpn-footer-login-button{
+.dpn-footer-login-button{
 	width: 340px;
 	font-size: 14px;
-	font-family: Verdana, Arial, sans-serif;
 }
 
 .ui-widget button.dpn-footer-yes-button{
@@ -176,8 +169,7 @@ button.dpn-footer-login-button{
 	text-align: center;
 }
 
-.dpn-success-header,
-.deliverypass-payment-header{
+.dpn-success-header{
 	background: #458b4c;
 	background-image: linear-gradient(to left, #4fa157, #458d4e);
     color: #FFFFFF;
@@ -186,147 +178,10 @@ button.dpn-footer-login-button{
     padding: 40px 100px;
     text-align: center;
 }
-.deliverypass-payment-header{
-	padding: 52px 50px;
-    font-size: 30px;
-}
-.dpn-success-header p,
-.deliverypass-payment-header p{
-	margin: 0;
-}
-.deliverypass-payment #ec-drawer{
-	
-}
-.deliverypass-payment [data-component="drawer"][data-drawer-columns="1"] li{
-	padding: 0px 24px;
-}
-.deliverypass-payment .drawer__content{
-	width: auto;
-}
-.deliverypass-payment .cartsection__title,
-.deliverypass-payment .cartsection__cartline .cartline-imageholder,
-.deliverypass-payment .cartline-titleholder .cartline-descriptor,
-.deliverypass-payment .cartsection__cartline .cartline-delete,
-.deliverypass-payment .cartline-quantity-bigger.cartline-quantity,
-.deliverypass-payment .cartsection__cartline .cartline-unitprice,
-.deliverypass-payment .cartsection__cartline .cartline-legend,
-.deliverypass-payment #subtotalbox1 [data-boxid="subtotal"]{
-	display: none;
-}
-.deliverypass-payment #expresscheckout.deliverypasscheckout #cartcontent .promotions{
-	background: none;
-	padding: 20px;
-	border: 0;
-}
-.deliverypass-payment #cartcontent .promotions .promotion-item{
-	width: auto;
-}
-.deliverypass-payment .promotion-text{
-	font-size: 14px;
-	font-weight: bold;
-	margin: 0;
-}
-.deliverypass-payment #cartcontent .promotion-input{
-	font-size: 14px;
-	padding: 5px 4px;
-}
-.deliverypass-payment .promotion-item .promotion-input ~ button{
-	text-transform: capitalize;
-	font-size: 14px;
-}
-.deliverypass-payment .cartcontent{
-	padding: 0 0 0 20px;
-}
-.deliverypass-payment #cartcontent .cartsection__cartline{
-	padding: 0 0 10px;
-}
 
-.deliverypass-payment #cartcontent .cartsection__cartline .cartline-title{
-	width: 265px;
-	padding: 0;
-}
-.deliverypass-payment .cartsection__cartline .cartline-price{
-	width: 70px;
-}
-.deliverypass-payment .cartsection__cartline .cartline-pricewrapper{
+.dpn-success-header p{
 	margin: 0;
 }
-.deliverypass-payment .cartsection__totalwrapper{
-	border:0;
-	padding: 0;
-}
-.deliverypass-payment .subtotal__row{
-	font-size: 14px;
-	padding: 0 0 10px;
-}
-.deliverypass-payment #cartcontent .cartsection__totalwrapper .subtotal__rowcell-left{
-	width: 196px;
-	margin: 0;
-	font-weight: normal;
-	color: #444444;
-}
-.deliverypass-payment #cartcontent .cartsection__totalwrapper #st_label_redemptionpromo{
-	width:196px;
-}
-.deliverypass-payment #cartcontent #subtotalbox1 .subtotal__rowcell-mid,
-.deliverypass-payment #cartcontent .subtotal__row .subtotal__rowcell-right{
-	width: 70px;
-	margin: 0;
-	font-weight: normal;
-	text-align: right;
-}
-.deliverypass-payment .checkout .eTippingEnabled a.note {
-	/* text-decoration:underline; */
-}
-.deliverypass-payment .total{
-	background: none;
-	border: 0;
-	margin: 0;
-	padding: 6px 0 0 20px;
-}
-.deliverypass-payment .total #subtotalbox2{
-	padding: 0;
-	float: none;
-}
-.deliverypass-payment .total #subtotalbox2 .subtotal__row{
-	padding: 0;
-	text-align: left;
-}
-.deliverypass-payment .total #subtotalbox2 .subtotal__rowcell-left.st_label_ssOrderTotal{
-	width: 230px;
-	line-height: normal;
-	font-size: 16px;
-	margin: 0;
-}
-.deliverypass-payment .total #subtotalbox2 .subtotal__rowcell-mid,
-.deliverypass-payment #subtotalbox2 .row-size-big .subtotal__rowcell-mid.st_val{
-	text-align: right;
-	font-size: 16px;
-	width: 105px;
-}
-.deliverypass-payment .total #subtotalbox2 .strl_text{
-	color: #444444;
-	font-weight: bold;
-}
-.deliverypass-payment #cartcontent .cart-button{
-	padding: 45px 20px 20px 0;
-}
-.deliverypass-payment [fdform="checkout"] button{
-	width: 315px;
-	height: 36px;
-	margin: auto;
-	text-align: center;
-	font-size: 14px;
-	font-family: Verdana;
-	font-weight: bold;
-}
-.deliverypass-payment .deliverypass-payment-cancel{
-	font-size: 14px;
-	color: #458d4e;
-	text-align: center;
-	padding: 0 0 40px;
-}
-
 .dpn-success-check{
 	max-height: 140px;
 }
@@ -335,37 +190,9 @@ button.dpn-footer-login-button{
     font-size: 22px;
 	color: #575860;
 }
+
 .dpn-success-text sup{
 	font-size: 14px;
-}
-.dpn-success-text-receipt{
-	font-family: Verdana;
-	font-size: 18px;
-	color: #575860;
-	padding: 24px 10px;
-	line-height: 36px;
-  	border-bottom: solid 1px #d4d4d4;
-}
-.dpn-success-text-table{
-	padding: 24px 0 50px;
-}
-.dpn-success-text-table-line,
-.dpn-success-text-table-line-total{
-	text-align: left;
-	font-family: Verdana;
-	font-size: 14px;
-	margin: 0 120px 12px;
-}
-.dpn-success-text-table-line-total{
-	font-weight: bold;
-	margin: 6px 120px 0;
-}
-.dpn-success-text-table-left{
-	display: inline-block;
-	max-width: 325px;
-}
-.dpn-success-text-table-right{
-	float: right;
 }
 .dpn-success a.dpn-success-start-shopping{
 	font-size: 18px;
@@ -482,13 +309,6 @@ button.dpn-footer-login-button{
 	font-size: 13px;
 	text-align: left;
 }
-.mm-page .dpn-success-text-receipt,
-.mm-page-overlay .dpn-success-text-receipt{
-	padding: 20px 18px;
-	line-height: 28px;
-	font-size: 13px;
-	text-align: center;
-}
 .mm-page .dpn-success-text sup,
 .mm-page-overlay .dpn-success-text sup{
 	font-size: 10px;
@@ -496,21 +316,6 @@ button.dpn-footer-login-button{
 .mm-page .dpn-success-text p,
 .mm-page-overlay .dpn-success-text p{
 	margin: 0.6em 0 1.5em;
-	font-size: 16px;
-}
-.mm-page .dpn-success-text-table-line,
-.mm-page-overlay .dpn-success-text-table-line{
-	margin: 0 20px 12px;
-	font-size: 14px;
-}
-.mm-page .dpn-success-text-table-left,
-.mm-page-overlay .dpn-success-text-table-left{
-	max-width: 250px;
-}
-.mm-page .dpn-success-text-table-line-total,
-.mm-page-overlay .dpn-success-text-table-line-total{
-	margin: 6px 20px 0;
-	font-weight: bold;
 	font-size: 16px;
 }
 .mm-page .dpn-success-a,
@@ -562,408 +367,4 @@ button.dpn-footer-login-button{
     max-width: 420px;
 	font-family: Verdana;
     font-size: 18px;
-}
-
-.dp-container .switch {
-	position: relative;
-	display: inline-block;
-	width: 49px;
-	height: 24px;
-	vertical-align: top;
-	margin:0px;
-}
-
-.dp-container .spinner {
-	display: none;
-    position: absolute;
-    border: 3px solid #ccc;
-    border-top: 3px solid transparent;
-    border-radius: 50%;
-    box-sizing: border-box;
-    width: 17px;
-    height: 17px;
-    animation:spin 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
-    margin: 0;
-    top: -13px;
-    left: 7px;
-    margin-left: auto;
-    margin-right: auto;
-    background-color: #fff;
-}
-
-.dp-container{
-    font-family: Verdana;
-    font-size: 14px;
-}
-.dp-page-header{
-    font-size: 18px;
-    font-weight: bold;
-    text-align: left;
-    padding: 0 0 8px;
-    margin: 0 0 30px;
-    border-bottom: 1px solid #f68139;
-}
-.dp-content{
-    max-width: 555px;
-    text-align: left;
-}
-.dp-benefits{
-	float: left;
-}
-.dp-header{
-	font-size: 16px;
-    font-weight: bold;
-    text-align: left;
-    padding: 0 0 24px;
-}
-.dp-plan .dp-header{
-	text-align: center;
-	padding: 0 0 8px;
-}
-.dp-benefits-list-item{
-	clear: both;
-	padding: 0 0 23px;
-}
-.dp-benefits-list-icon{
-	float: left;
-}
-.dp-benefits-list-text{
-	font-size: 14px;
-	padding: 0 0 0 53px;
-	max-width: 320px;
-}
-.dp-plan{
-	float: right;
-}
-.dp-plan-name{
-	font-size: 23px;
-    font-weight: bold;
-    max-width: 180px;
-    text-align: center;
-    color: #ffffff;
-    background-color: #444444;
-    padding: 21px 0;
-    border-radius: 6px;
-}
-.dp-plan-data{
-	padding: 24px 0;
-}
-.dp-plan-ordersplaced{
-	float: left;
-    padding: 0 36px 0 0;
-}
-.dp-plan-saved{
-	float: left;
-    padding: 0 36px 0 0;
-}
-.dp-plan-activated{
-	float: left;
-    padding: 0 36px 0 0;
-}
-.dp-plan-activate-header{
-	font-weight: bold;
-}
-.dp-plan-activate-text{
-	font-size: 20px;
-    font-weight: bold;
-    color: #458d4e;
-}
-.dp-renew-text-bold,
-.dp-expire-text-bold{
-	font-weight: bold;
-}
-.dp-renew{
-	border-top: 1px solid #e5e5e5;
-    padding: 24px 0;
-}
-.dp-payment{
-	border-top: 1px solid #e5e5e5;
-	border-bottom: 1px solid #e5e5e5;
-    padding: 24px 0;
-    margin: 0 0 24px;
-}
-.dp-renew-date .dp-expire-date-text,
-.dp-renew-date .dp-expire-text-bold,
-.dp-renew-date.dp-dispay-renew-date .dp-renew-date-text,
-.dp-renew-date.dp-dispay-renew-date .dp-renew-text-bold{
-	display: inline;
-}
-.dp-renew-date .dp-renew-date-text,
-.dp-renew-date .dp-renew-text-bold,
-.dp-renew-date.dp-dispay-renew-date .dp-expire-date-text,
-.dp-renew-date.dp-dispay-renew-date .dp-expire-text-bold,
-.dp-container .dp-autorenew-error-text{
-	display: none;
-}
-.dp-container .dp-display-autorenew-loading .spinner,
-.dp-container .dp-display-autorenew-error .dp-autorenew-error-text{
-	display: inline-block;
-}
-.dp-autorenew-error{
-	display: inline-block;
-	position: relative;
-    padding: 0 0 0 20px;
-}
-.dp-container .dp-autorenew-error-text{
-	font-size: 14px;
-	padding: 12px 14px 0;
-}
-.dp-auto-renew{
-	padding: 18px 0;
-}
-.dp-auto-renew-text{
-	display: inline-block;
-	font-size: 16px;
-    font-weight: bold;
-    padding: 0px 12px 0 0;
-    vertical-align: top;
-}
-.dp-renew-text{
-	clear: both;
-	padding: 16px 0 0;
-}
-.dp-payment-data{
-
-}
-.dp-payment-img{
-	display: inline-block;
-	padding-right: 20px;
-}
-.dp-payment-img img{
-	max-height: 30px;
-}
-.dp-payment-text{
-	display: inline-block;
-	padding: 3px 0 0;
-	vertical-align: top;
-}
-.dp-learn-more{
-
-}
-.mm-page .dp-container{
-	margin: 0 20px;
-}
-.mm-page .dp-page-header{
-	border: 0;
-}
-.mm-page .dp-plan{
-	float: none;
-	margin: 0 0 30px;
-}
-.mm-page .dp-plan-name{
-	margin: auto;
-}
-.mm-page .dp-benefits{
-	
-}
-.dp-payment-method-cc{
-
-}
-.dp-plans-container{
-	max-width: 622px;
-}
-.dp-plans-header{
-	padding: 40px 80px 20px;
-}
-.dp-plans-header-fd{
-	margin: 0 0 0 23px;
-}
-.dp-plans-header-fd img{
-	width: 127px;
-}
-.dp-plans-header-dp{
-	font-size: 48px;
-	margin: 0 0 0 23px;
-}
-.dp-plans-header-dp sup{
-	font-size: 18px;
-}
-.dp-plans-header-truck{
-	
-}
-.dp-plans-header-truck img{
-	padding: 0px 0 0 20px;
-	height: 46px;
-}
-.dp-plans-header-text{
-	font-size: 18px;
-	text-align: center;
-	padding: 7px 0 0;
-}
-.dp-plans-header-text .dp-plans-header-text-circle{
-	color: #4fa157;
-	font-size: 15px;
-	vertical-align: top;
-}
-.dp-plans-item{
-	padding: 0 0 20px 30px;
-}
-.dp-plans-item-header{
-	font-size: 16px;
-}
-.dp-plans-item-header .dp-plans-item-header-name{
-	font-size: 20px;
-	font-weight: bold;
-}
-.dp-plans-item-cont{
-	float: left;
-    border: solid 2px #4fa157;
-    border-top: solid 4px #4fa157;
-    padding: 16px 24px;
-    width: 280px;
-    box-sizing: border-box;
-}
-.dp-plans-item .dp-plans-item-cont-first{
-	border-right: 0;
-}
-.dp-plans-item-cont-term{
-	font-size: 18px;
-}
-.dp-plans-item-cont-cost{
-	font-size: 14px;
-    float: left;
-    width: 125px;
-}
-.dp-plans-item-cont-cost-amount{
-	font-size: 36px;
-}
-.dp-plans-item-cont-permonth{
-	font-size: 16px;
-	float: left;
-    width: 125px;
-}
-.dp-plans-item-cont button{
-	margin: 10px 0 0 13px;
-	padding: 10px 13px;
-	font-size: 14px;
-	font-family: Verdana;
-}
-.dp-plans-bottom{
-	font-size: 14px;
-    text-align: center;
-    padding: 30px 38px 40px;
-}
-.dp-plans-bottom-text{
-	
-}
-.dp-plans-bottom-terms{
-	margin: 8px;
-}
-.dp-plans-bottom a{
-	
-}
-.dp-plans-bottom sup{
-	
-}
-/* toggle button change with reference to style guide*/
-.dp-container .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ffffff;
-    border: 2px solid #666666;
-    -webkit-transition: .25s;
-    transition: .25s;
-  }
-
-  .dp-container .slider.round {
-    border-radius: 22px;
-  }
-
-  .dp-container .slider.round:before {
-    border-radius: 50%;
-  }
-
-  /* Status */
-  .dp-container .slider:after{
-    position: relative;
-    content: 'Off';
-    float: none;
-    display: inline-block;
-    color: #222222;
-    font-size: 14px;
-    top: 0px;
-    left: 47px;
-/*     width: 300px; */
-    padding-left:10px;
-    padding-right:25px;
-    letter-spacing: .2px;
-  }
-
-  .dp-container .slider:before {
-    position: absolute;
-    content: "";
-    height: 16px;
-    width: 16px;
-    left: 2px;
-    bottom: 2px;
-    background-color: #666666;
-    -webkit-transition: .25s;
-    transition: .25s;
-  }
-
-  /* If Checked */
-  .dp-container input:checked + .slider {
-    background-color: #4fa157;
-    border-color: #4fa157;
-  }
-
-  .dp-container input:checked + .slider:after {
-    content: 'On';
-  }
-
-  /* Hovered */
-  .dp-container input:hover + .slider{
-    border: 2px solid #4fa157;
-  }
-
-  .dp-container input:focus:hover + .slider{
-    border: 2px solid #666666;
-  }
-
-  .dp-container input:checked:focus:hover + .slider{
-    border: 2px solid #4fa157;
-  }
-
-  /* Focused */
-  .dp-container input:focus + .slider {
-    box-shadow: 0 0 0 2px #666666;
-  }
-
-  .dp-container input:checked:focus + .slider {
-    box-shadow: 0 0 0 2px #4fa157;
-  }
-
-  .dp-container input:hover + .slider:before {
-    -webkit-transform: translateX(4px);
-    -ms-transform: translateX(4px);
-    transform: translateX(4px);    
-  }
-
-  .dp-container input:checked + .slider:before {
-    background-color: #ffffff;
-    -webkit-transform: translateX(25px);
-    -ms-transform: translateX(25px);
-    transform: translateX(25px);
-  }
-
-  .dp-container input:checked:focus + .slider:before,
-  .dp-container input:checked:hover + .slider:before {
-    background-color: #ffffff;
-  }
-
-  .dp-container input:checked:hover + .slider:before {
-    -webkit-transform: translateX(21px);
-    -ms-transform: translateX(21px);
-    transform: translateX(21px);
-  }
-  .dp-container input:focus + .slider:before,
-  .dp-container input:hover + .slider:before{
-	background-color: #4fa157;
-}
- .dp-container span.slider.round.test:after{
-	display:none;
 }

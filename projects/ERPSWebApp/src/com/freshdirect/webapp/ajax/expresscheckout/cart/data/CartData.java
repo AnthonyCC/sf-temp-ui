@@ -589,6 +589,11 @@ public class CartData extends AbstractCoremetricsResponse {
         /**
          * Configuration description text
          */
+        /**
+         * String description alt, placeholder for "clean" string (i.e. no quotes)
+         */
+        private String descrAlt;
+        
         private String confDescr;
 
         private Map<String, String> confOptions;
@@ -646,6 +651,14 @@ public class CartData extends AbstractCoremetricsResponse {
 
         public void setDescr(String descr) {
             this.descr = descr;
+        }
+       
+        public String getDescrAlt() {
+            return descrAlt;
+        }
+
+        public void setDescrAlt(String descrAlt) {
+            this.descrAlt = descrAlt.replace("\"", "").replace("'", "");
         }
 
         public String getConfDescr() {

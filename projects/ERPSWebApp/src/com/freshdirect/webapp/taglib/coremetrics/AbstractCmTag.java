@@ -169,7 +169,41 @@ public abstract class AbstractCmTag extends SimpleTagSupport {
 	public abstract String getTagJs() throws SkipTagException; 
 	
 	protected abstract String getFunctionName();
+	
+	protected String getQueueName() {
+		return "cmTagQueue";
+	}
+	
+	protected String getFormattedTagAsync(String... params) {
+		return getFormattedTagAsync(getQueueName(), getFunctionName(), params);
+	}
 
+	protected String getFormattedTagAsync(String queueName, String functionName, String[] params) {
+		StringBuilder sb = new StringBuilder();
+
+		// If library is loaded, call function. Otherwise, add the function to the queue.
+		// Elements in the queue will be executed in order when the library is loaded
+		sb.append("if (typeof " + functionName + " !== 'undefined') {");
+		sb.append(getFormattedTag(functionName, params));
+		sb.append("} else {");
+		// append string: var cmTagQueue = cmTagQueue || [];
+		sb.append("var " + queueName + "=" + queueName + "||[];");
+
+		// push function to the queue, for example, cmTagQueue.push(['cmSetClientID', '99999999', false, "testdata.coremetrics.com", "mysite.com"]);
+		sb.append(queueName + ".push(['" + functionName + "',");
+
+		for (int i = 0; i < params.length; i++) {
+			if (i > 0) {
+				sb.append(PARAM_DELIMITER);
+			}
+			sb.append(params[i]);
+		}
+
+		sb.append("]);}");
+
+		return sb.toString();
+	}
+	
 	protected String getFormattedTag(String... params){
 		return getFormattedTag(getFunctionName(), params);
 	}

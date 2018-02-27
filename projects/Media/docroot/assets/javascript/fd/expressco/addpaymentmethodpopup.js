@@ -87,6 +87,12 @@ var FreshDirect = FreshDirect || {};
         } catch (e) {
           console.trace(e);
         }
+        
+        this.syncCountryState();
+        //sync ui state selected to data state
+        if (data.hasOwnProperty('bil_state')) {
+            $('#CC_bil_state').val(data.bil_state);	
+        }
       }
     },
     selectForm: {
@@ -97,7 +103,29 @@ var FreshDirect = FreshDirect || {};
 
         $parent.attr('data-show', val);
       }
-    }
+    },
+    syncCountryState:{
+		value: function(e, data) {			
+			/* get new "states" for country, wrap in option tags and replace in existing select box */
+			$('#CC_bil_state, #EC_bil_state, #ET_bil_state').each(function(ii,ee) {
+				var curVal = $('#'+$(ee).attr('id').replace('state','country')).val();
+				var $zipField = $('#'+$(ee).attr('id').replace('state','zipcode'));
+	
+				if (FreshDirect.metaData.countryCodeIndexMap.hasOwnProperty(curVal)) {
+					$(ee).html( FreshDirect.metaData.country[FreshDirect.metaData.countryCodeIndexMap[curVal]].states
+						.reduce(function(a,c,i,d) { return a + '<option value="'+c.key+'"'+((c.selected)?" selected":"")+'>'+c.value+'</option>'; },'<option>--</option>') 
+					);
+	
+				}
+				//remove/replace zip validation depending on country
+				$zipField.attr('fdform-v-zipcode', (curVal === 'US') ? '' : null);
+				//trigger revalidation, but only on visible elem
+				if ($zipField.val() !== '' && $zipField.is(':visible')) {
+					$zipField.change(); //trigger revalidation	
+				}
+			});
+		}
+	}
   });
 
   addpaymentmethodpopup.listen();
@@ -115,6 +143,9 @@ var FreshDirect = FreshDirect || {};
     }
   });
 
+  /* bind country change -> state update */
+  $(document).on('change', '#CC_bil_country, #EC_bil_country, #ET_bil_country', addpaymentmethodpopup.syncCountryState.bind(addpaymentmethodpopup));
+	
   $(document).on('change', '#' + addpaymentmethodpopup.popupId + ' .formselector input',
     addpaymentmethodpopup.selectForm.bind(addpaymentmethodpopup));
 

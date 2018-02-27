@@ -38,7 +38,7 @@ public class DeliveryPassOneClickServlet extends BaseJsonServlet {
 		if(FDStoreProperties.isDlvPassFreeTrialOptinFeatureEnabled()){
 			if ( null !=user && null != user.getIdentity()){
 				FDIdentity identity = user.getIdentity();
-				if(null == user.getDlvPassInfo() || user.isDlvPassNone()) { 
+				if(null == user.getDlvPassInfo() || EnumDlvPassStatus.NONE.equals(user.getDlvPassInfo().getStatus())) {
 					if (!user.getDpFreeTrialOptin()){ //Eligible
 						try {
 							FDActionInfo info=AccountActivityUtil.getActionInfo(request.getSession(), "DeliveryPass Free-Trial Opt-in");
@@ -52,12 +52,10 @@ public class DeliveryPassOneClickServlet extends BaseJsonServlet {
 					}else { //Already Opted-in for Free-Trial DP
 						responseData.put("STATUS", "ERROR");
 						responseData.put("MESSAGE", "You have already signed up for the free DeliveryPass trial. Your next order placed will have free delivery.");
-						responseData.put("ERRORTYPE", "signedup");
 					}
 				} else { //Not eligible for Free-Trial DP
 					responseData.put("STATUS", "ERROR");
 					responseData.put("MESSAGE", "You have already had a DeliveryPass and are not eligible for the free trial.");
-					responseData.put("ERRORTYPE", "ineligible");
 				}
 				
 			}

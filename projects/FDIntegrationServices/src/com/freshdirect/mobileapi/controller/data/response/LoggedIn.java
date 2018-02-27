@@ -261,4 +261,14 @@ public class LoggedIn extends Message {
     public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
     }
+    
+    private boolean isreferralEligible;
+
+	public boolean isIsreferralEligible() {
+		return isreferralEligible;
+	}
+
+	public void setIsreferralEligible(boolean isreferralEligible) {
+		this.isreferralEligible = isreferralEligible;
+	}
 }

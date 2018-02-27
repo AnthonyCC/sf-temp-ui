@@ -30,11 +30,19 @@ final int W_DNAV_TOTAL = 970;
 		} else { %>
 			<%@ include file="/shared/template/includes/ccl.jspf" %>
 	<% } %>
-
-<%@ include file="/shared/template/includes/i_head_end.jspf" %>
+	
+	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
+	<jwr:script src="/assets/javascript/jquery.hint.js" useRandomParam="false" />
+	<jwr:script src="/assets/javascript/jquery.pwstrength.js" useRandomParam="false" />
 	<script type="text/javascript" src="/assets/javascript/scripts.js"></script>
+	
 	<script type="text/javascript">
-        jQuery(function($jq) { $jq('#password1').pwstrength(); });
+        jQuery(function($jq) {
+          var pwd = $jq('#password1');
+          if (pwd && pwd.pwstrength) {
+            pwd.pwstrength();
+          }
+        });
   	 </script>
     <!--  Added for Password Strength Display -->
     <link rel="stylesheet" type="text/css" href="/assets/css/common/reset1.css"/>

@@ -17,10 +17,23 @@ public class RegisterMessage extends ZipCheck {
 	private String securityQuestion;
 	private String workPhone;
 	private String dlvhomephone;
+	private String rafclickid;
+	private String rafpromocode;
 	//private boolean partialDelivery;
 	
+	public String getRafclickid() {
+		return rafclickid;
+	}
+	public void setRafclickid(String rafclickid) {
+		this.rafclickid = rafclickid;
+	}
 	
-	
+	public String getRafpromocode() {
+		return rafpromocode;
+	}
+	public void setRafpromocode(String rafpromocode) {
+		this.rafpromocode = rafpromocode;
+	}
 	public String getDlvhomephone() {
 		return dlvhomephone;
 	}

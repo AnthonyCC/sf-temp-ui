@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationError;
+import com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName;
 import com.freshdirect.webapp.taglib.fdstore.PaymentMethodName;
 
 public class PaymentValidationDataService implements FormValidationService {
@@ -54,11 +55,23 @@ public class PaymentValidationDataService implements FormValidationService {
 	}
 
 	private void removeUnnecessaryValidationErrors(final FormDataRequest paymentRequestData, List<ValidationError> validationErrors) {
-		if (validationErrors != null && !validationErrors.isEmpty() && "editPaymentMethod".equals(paymentRequestData.getFormData().get("action"))) {
+		if (validationErrors != null && !validationErrors.isEmpty() 
+			&& ( "editPaymentMethod".equals(paymentRequestData.getFormData().get("action")) || "addPaymentMethod".equals(paymentRequestData.getFormData().get("action")) )
+		) {
 			Iterator<ValidationError> validationErrorIterator = validationErrors.iterator();
 			while (validationErrorIterator.hasNext()) {
 				ValidationError error = validationErrorIterator.next();
-				if (PaymentMethodName.ACCOUNT_NUMBER.equals(error.getName())) {
+				if ("editPaymentMethod".equals(paymentRequestData.getFormData().get("action"))) {
+					if (PaymentMethodName.ACCOUNT_NUMBER.equals(error.getName())) {
+						validationErrorIterator.remove();
+					}
+				}
+				//if international, ignore state error
+				if ( (EnumUserInfoName.BIL_STATE.getCode()).equals(error.getName()) && !(paymentRequestData.getFormData().get(EnumUserInfoName.BIL_COUNTRY.getCode())).equals("US")) {
+					validationErrorIterator.remove();
+				}
+				//if international, ignore zip error
+				if ( (EnumUserInfoName.BIL_ZIPCODE.getCode()).equals(error.getName()) && !(paymentRequestData.getFormData().get(EnumUserInfoName.BIL_COUNTRY.getCode())).equals("US")) {
 					validationErrorIterator.remove();
 				}
 			}

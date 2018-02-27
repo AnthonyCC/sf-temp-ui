@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.ejb.EJBObject;
 import javax.ejb.ObjectNotFoundException;
@@ -54,7 +55,7 @@ public interface ErpInfoSB extends EJBObject {
 	 @Deprecated
     public ErpProductInfoModel findProductBySku(String skuCode, int version) throws RemoteException, ObjectNotFoundException;
 	 @Deprecated
-    public Collection findProductsBySku(String[] skuCodes) throws RemoteException;
+    public Collection<ErpProductInfoModel> findProductsBySku(String[] skuCodes) throws RemoteException;
 	 @Deprecated
     public Collection findProductsBySapId(String sapId) throws RemoteException;
 	 @Deprecated
@@ -95,6 +96,9 @@ public interface ErpInfoSB extends EJBObject {
 	public Map<String, Map<String,Date>> getNewSkus() throws RemoteException;
 	 @Deprecated
 	public Map<String, Map<String,Date>> getBackInStockSkus() throws RemoteException;
+
+	public Set<String> getModifiedSkus(long lastModifiedTime) throws RemoteException;
+
 	 @Deprecated
 	public Map<String, Map<String,Date>> getOverriddenNewSkus() throws RemoteException;
 	 @Deprecated

@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.ejb.CreateException;
 import javax.ejb.FinderException;
@@ -695,4 +696,15 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 			throw new FDResourceException(re);
 		}
 	}
+
+	public Set<String> getModifiedSkus(long lastModified) throws FDResourceException {
+		try {
+			ErpInfoSB infoSB = this.getErpInfoSB();
+
+			return infoSB.getModifiedSkus(lastModified);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		}
+	}
+
 }

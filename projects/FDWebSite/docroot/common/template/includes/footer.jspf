@@ -14,7 +14,8 @@
 	FDSessionUser sessionUser = (FDSessionUser) session.getAttribute(SessionName.USER);	
 	if(sessionUser != null) {
 		sessionUserLevel_footer = sessionUser.getLevel();
-	}	
+	}
+	FDUser user_footer = sessionUser.getUser();
     String bottomUri = request.getRequestURI();
 	String deptId = request.getParameter("deptId") != null ? request.getParameter("deptId") : "";
     String catId = request.getParameter("catId") != null ? request.getParameter("catId") : "";
@@ -86,7 +87,7 @@ if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDU
 </script>
 --%>
 <center>
-<table data-component="footer-cont" width="<%=W_FOOTER_TOTAL %>" cellpadding="0" cellspacing="0" border="0" class="<%= (FDStoreProperties.isFdxLocationbarEnabled()) ? "hasFDX" : "" %>">
+<table data-component="footer-cont" width="<%=W_FOOTER_TOTAL %>" cellpadding="0" cellspacing="0" border="0" class="<%= (FDStoreProperties.isFdxLocationbarEnabled()) ? "hasFDX" : "" %><%= (user_footer.getShoppingCart() instanceof FDModifyCartModel) ? " modify" : "" %>">
 	<tr>
 		<td>
 			<img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" /><br />

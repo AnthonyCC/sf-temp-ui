@@ -106,7 +106,7 @@ user.setSoTemplateCart(new FDCartModel());
 			<a class="so3-create-new-so-link cssbutton cssbutton-flat green" href="/quickshop/new_standing_order.jsp">Go!</a>
 		</div>
 		<div class="standing-orders-3-so-setting-tutorial">
-			<a class="standing-orders-3-so-setting-tutorial-pdf icon-base icon-pdf" href="/media/editorial/site_pages/standing_orders/SO2017_tutorial.pdf" target="_blank"></a>
+			<a class="standing-orders-3-so-setting-tutorial-pdf icon-base icon-pdf" href="/media/editorial/site_pages/standing_orders/SO2017_tutorial.pdf" target="_blank"><span class="offscreen">download user guide pdf</span></a>
 			<a class="standing-orders-3-so-setting-tutorial-text" href="/media/editorial/site_pages/standing_orders/SO2017_tutorial.pdf" target="_blank"><b>Need Help?</b> Download the User Guide.</a>
 		</div>
 		<div class="clear"></div>

@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 
 import javax.mail.MessagingException;
 import javax.naming.Context;
@@ -33,6 +34,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
 
 import com.freshdirect.payment.service.FDECommerceService;
+import com.freshdirect.sap.SapOrderPickEligibleInfo;
 
 public class FDXOrderPickEligibleCronRunner {
 
@@ -44,8 +46,8 @@ public class FDXOrderPickEligibleCronRunner {
 		try {
 			ctx = getInitialContext();
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDXOrderPickEligibleSB)) {//storefront 2.0 story sf17-64
-
-				FDECommerceService.getInstance().queryForFDXSalesPickEligible();
+				List<SapOrderPickEligibleInfo> eligibleSapOrderLst = FDECommerceService.getInstance().queryForFDXSalesPickEligible();
+				FDECommerceService.getInstance().sendFDXEligibleOrdersToSap(eligibleSapOrderLst);
 			} else {
 
 				FDXOrderPickEligibleCronHome home = (FDXOrderPickEligibleCronHome) ctx

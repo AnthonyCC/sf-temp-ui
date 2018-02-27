@@ -111,6 +111,8 @@ import com.freshdirect.payment.ewallet.gateway.ejb.EwalletActivityLogModel;
 import com.freshdirect.payment.fraud.EnumRestrictedPaymentMethodStatus;
 import com.freshdirect.payment.fraud.RestrictedPaymentMethodCriteria;
 import com.freshdirect.payment.fraud.RestrictedPaymentMethodModel;
+import com.freshdirect.payment.gateway.GatewayType;
+import com.freshdirect.payment.gateway.Response;
 import com.freshdirect.payment.gateway.ejb.FDGatewayActivityLogModel;
 import com.freshdirect.referral.extole.ExtoleServiceException;
 import com.freshdirect.referral.extole.model.ExtoleConversionRequest;
@@ -133,10 +135,6 @@ public interface IECommerceService {
 	public void saveBINInfo(List<List<BINInfo>> binInfos) throws FDResourceException;
 
 	public Map<ZoneInfo, List<FDProductPromotionInfo>> getAllProductsByType(String ppType) throws FDResourceException;
-
-	public FlatAttributeCollection getAttributes(String[] rootIds);
-
-	public void storeAttributes(FlatAttributeCollection attrs, String user,	String sapId) throws FDResourceException;
 
 	public Map loadAttributes(Date since) throws AttributeException;
 
@@ -354,8 +352,7 @@ public interface IECommerceService {
 	public String getPreferredWinePrice(String erpCustomerId);
 
 
-	void logGatewayActivity(FDGatewayActivityLogModel logModel)
-			throws RemoteException;
+	void logGatewayActivity(GatewayType gatewayType,Response response)throws RemoteException;
 
 	public Map<String, Rule> getRules(String subsystem) throws FDResourceException, RemoteException;
 
@@ -643,6 +640,8 @@ public interface IECommerceService {
 	public HLBrandProductAdResponse getPdpAdProduct(HLBrandProductAdRequest hLBrandProductAdRequest) throws RemoteException;
 
 	public Collection<ErpMaterialSalesAreaModel> getGoingOutOfStockSalesAreas()throws RemoteException;
+
+	public Collection<ErpCharacteristicValuePriceModel> findByMaterialId(String materialId, int version) throws RemoteException;
 
 
 }

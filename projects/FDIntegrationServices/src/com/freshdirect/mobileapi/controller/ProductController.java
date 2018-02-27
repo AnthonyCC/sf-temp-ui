@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -310,6 +311,8 @@ public class ProductController extends BaseController {
 	                }
 	            } catch (PricingException e) {
 	                LOGGER.error("PricingException encountered on " + productConf.toString(), e);
+	            } catch (FDRuntimeException ex) {
+	                LOGGER.error("FDRuntimeException encountered on " + productConf.toString(), ex);
 	            }
 	            setResponseMessage(model, price, user);
 	        }

@@ -19,6 +19,7 @@ import com.freshdirect.ecommerce.data.referral.ReferralProgramData;
 import com.freshdirect.ecommerce.data.referral.ReferralProgramInvitationData;
 import com.freshdirect.ecommerce.data.referral.ReferralPromotionData;
 import com.freshdirect.ecommerce.data.referral.ReferralSearchCriteriaData;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 
 
@@ -156,7 +157,7 @@ public interface FDReferralManagerServiceI {
 	 
 	 public abstract String getReferralName(String referralId) throws FDResourceException, RemoteException;
 	 
-	 public abstract boolean isReferreSignUpComplete(String email) throws FDResourceException, RemoteException;
+	 public abstract boolean isReferreSignUpComplete(String email, EnumEStoreId storeid) throws FDResourceException, RemoteException;
 	 
 	 public abstract List<ReferralPromotionData> getSettledTransaction() throws FDResourceException, RemoteException;
 	 

@@ -503,7 +503,7 @@ public class BrowseUtil {
 				}
 			} catch (URISyntaxException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 			return map;
 		}
@@ -1488,10 +1488,15 @@ public class BrowseUtil {
     }
 
     public static CatalogInfo getCatalogInfo(SessionUser user) {
-        String plantId = user.getFDSessionUser().getUserContext().getFulfillmentContext().getPlantId();
-        PricingContext pc = user.getFDSessionUser().getUserContext().getPricingContext();
-        user.setUserContext();
-        CatalogId catalogId = new CatalogInfo.CatalogId(ContentFactory.getInstance().getStoreKey().getId(), plantId, pc.getZoneInfo());
+        String plantId = user!=null&&user.getFDSessionUser()!=null&&user.getFDSessionUser().getUserContext()!=null&&
+        					user.getFDSessionUser().getUserContext().getFulfillmentContext()!=null?
+        							user.getFDSessionUser().getUserContext().getFulfillmentContext().getPlantId():null;
+        PricingContext pc = user!=null&&user.getFDSessionUser()!=null&&
+        						user.getFDSessionUser().getUserContext()!=null?
+        							user.getFDSessionUser().getUserContext().getPricingContext():null;
+        if(user!=null)
+        	user.setUserContext();
+        CatalogId catalogId = new CatalogInfo.CatalogId(ContentFactory.getInstance().getStoreKey().getId(), plantId, pc!=null?pc.getZoneInfo():null);
         return new CatalogInfo(catalogId);
     }
 
@@ -1588,7 +1593,7 @@ public class BrowseUtil {
 				}
 
 			} catch (FDResourceException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 
 	    	if(keyList != null && keyList.size() > 0){
@@ -1735,10 +1740,10 @@ public class BrowseUtil {
 				up.setPriceText(UnitPriceUtil.getUnitPrice(fdSalesUnit, pc.getZonePriceInfoModel().getDefaultPrice()));
 			} catch (FDResourceException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
 			} catch (FDSkuNotFoundException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 	    	return up;
 

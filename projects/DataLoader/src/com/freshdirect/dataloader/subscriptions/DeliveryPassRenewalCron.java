@@ -192,11 +192,13 @@ public class DeliveryPassRenewalCron {
 			if( !StringUtil.isEmpty(pymtMethod.getProfileID()) && pymtMethod.getProfileID().equals(_pymtMethod.getProfileID()))	
 			    {
 				matchedPymtMethods.add(_pymtMethod);
+				exists = true;
 			} else if(pymtMethod.getCardType().equals(_pymtMethod.getCardType()) ) {
 				
 				if(!StringUtils.isEmpty(pymtMethod.getMaskedAccountNumber()) && !StringUtils.isEmpty(_pymtMethod.getMaskedAccountNumber())&& _pymtMethod.getMaskedAccountNumber().length()>=4) {
 					if(pymtMethod.getMaskedAccountNumber().endsWith(_pymtMethod.getMaskedAccountNumber().substring(_pymtMethod.getMaskedAccountNumber().length()-4))) {
 						matchedPymtMethods.add(_pymtMethod);
+						exists = true;
 					}
 				}
 			}

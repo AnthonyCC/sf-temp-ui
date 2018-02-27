@@ -92,7 +92,7 @@ RecipeSource featuredSource = ((RecipeCategory)recipeCategory).getFeaturedSource
 			MediaI srcImg = featuredSource.getImage();
 			List srcAuthors = featuredSource.getAuthors();
 			if (srcImg!=null) {  %>
-		   	  <a href="<%=ckbkURL%>"><img src="<%=srcImg.getPath()%>" alt="" border="0" width="<%=srcImg.getWidth()%>" height="<%=srcImg.getHeight()%>"></a>
+		   	  <a href="<%=ckbkURL%>"><img src="<%=srcImg.getPath()%>" alt="<%=featuredSource.getName()%>" border="0" width="<%=srcImg.getWidth()%>" height="<%=srcImg.getHeight()%>"></a>
 			  <br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8"><br>
 <% 			} %>
 			Browse recipes from<br>

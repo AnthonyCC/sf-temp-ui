@@ -110,8 +110,11 @@ public class UserUtil {
             FDCustomerCouponUtil.initCustomerCoupons(session);
         }
 
-        if (user == null && guestAllowed && RobotRecognizer.isFriendlyRobot(serverName, userAgent)) {
+        if (user == null && RobotRecognizer.isFriendlyRobot(userAgent)) {
             user = RobotUtil.createRobotUser(session);
+            if(!guestAllowed) {
+            	LOGGER.info("FDCRITICALSEOERROR01:" + userAgent + ":" + serverName + ":" + request.getRequestURI());
+            }
         }
 
         if (user == null) {
@@ -614,8 +617,12 @@ public class UserUtil {
             String loginCookie = FDCustomerManager.getCookieByFdCustomerId(identity.getFDCustomerPK());
 //            FDUser loginUser = FDCustomerManager.recognize(identity);
 //            LOGGER.info("FDUser : erpId = " + loginUser.getIdentity().getErpCustomerPK() + " : " + loginUser.getIdentity().getFDCustomerPK());
-
-            FDSessionUser currentUser = (FDSessionUser) session.getAttribute(SessionName.USER);
+            
+            FDSessionUser currentUser = null;
+            try{
+            	currentUser = (FDSessionUser) session.getAttribute(SessionName.USER);
+            }catch(IllegalStateException e){
+            }
 
            /* // FDX-1873 - Show timeslots for anonymous address
             if(currentUser!=null && currentUser.getAddress() != null && currentUser.getAddress().getAddress1() != null
@@ -848,12 +855,14 @@ public class UserUtil {
 				FDActionInfo info = AccountActivityUtil.getActionInfo(request.getSession());
 				boolean isDefaultPaymentMethodRegistered = false;
 				try {
-					isDefaultPaymentMethodRegistered = !(null == user.getFDCustomer().getDefaultPaymentType() ||
-							user.getFDCustomer().getDefaultPaymentType().getName().equals(EnumPaymentMethodDefaultType.UNDEFINED.getName()));
+					if(user != null && user.getIdentity() != null && user.getFDCustomer() != null) {
+						isDefaultPaymentMethodRegistered = user.getFDCustomer().getDefaultPaymentType() != null && user.getFDCustomer().getDefaultPaymentType().getName() != null
+																	&& !(user.getFDCustomer().getDefaultPaymentType().getName().equals(EnumPaymentMethodDefaultType.UNDEFINED.getName()));
+					}					
 				} catch (FDResourceException e) {
 					LOGGER.error(e);
 				}
-				if (!isDefaultPaymentMethodRegistered) {
+				if (user!=null&&!isDefaultPaymentMethodRegistered) {
 					new Thread(new DefaultPaymentMethod(info, EnumPaymentMethodDefaultType.DEFAULT_SYS, user.getPaymentMethods())).start();
 				}
 			}

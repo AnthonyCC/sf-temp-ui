@@ -230,14 +230,16 @@ public class ProductImpression {
 	public FDGroup getFDGroup() {
 		FDGroup group = null;
 		Iterator<SkuModel> it = this.getProductModel().getSkus().iterator();
-		String salesOrg=this.calculator.getPricingContext().getZoneInfo().getSalesOrg();
-		String distributionChannel=this.calculator.getPricingContext().getZoneInfo().getDistributionChanel();
+		String salesOrg=this!=null&&this.calculator!=null&&this.calculator.getPricingContext()!=null&&this.calculator.getPricingContext().getZoneInfo()!=null?
+							this.calculator.getPricingContext().getZoneInfo().getSalesOrg():null;
+		String distributionChannel=this!=null&&this.calculator!=null&&this.calculator.getPricingContext()!=null&&this.calculator.getPricingContext().getZoneInfo()!=null?
+									this.calculator.getPricingContext().getZoneInfo().getDistributionChanel():null;
 		while(it.hasNext()){
 			SkuModel sku = it.next();
 			try{
-				if(sku != null && !sku.isUnavailable()) {
+				if(sku != null && !sku.isUnavailable() && sku.getProductInfo()!=null) {
 					//if atleast one sku participates in a group.
-					group = sku.getProductInfo().getGroup(this.calculator.getPricingContext().getZoneInfo());//salesOrg,distributionChannel) ;
+					group = sku.getProductInfo().getGroup(this!=null&&this.calculator!=null&&this.calculator.getPricingContext()!=null?this.calculator.getPricingContext().getZoneInfo():null);//salesOrg,distributionChannel) ;
 					if(group != null)
 						break;
 				}

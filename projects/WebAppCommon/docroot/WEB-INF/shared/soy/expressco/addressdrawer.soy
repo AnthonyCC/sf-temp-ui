@@ -406,7 +406,7 @@
     <div class="drawer__item__section phone">
       <p class='section__title'>Your Phone Number:</p>
       <div class='section__body'>
-        <input name="{$id}_phone" placeholder="(xxx) xxx xxxx" aria-label="enter your phone number" {if not $phone}fdform-formatter="phone"{/if} fdform-fieldname="Phone Number" value="{if $phone}{$phone}{/if}"/>
+        <input name="{$id}_phone" type="tel" placeholder="(xxx) xxx xxxx" aria-label="enter your phone number" {if not $phone}fdform-formatter="phone"{/if} fdform-fieldname="Phone Number" value="{if $phone}{$phone}{/if}"/>
       </div>
     </div>
   </div><!--/ drawer__itemright -->

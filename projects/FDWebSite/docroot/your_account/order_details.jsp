@@ -166,6 +166,7 @@ if(orderId==null){
 	    boolean hasClientCodes = (user.isEligibleForClientCodes() && cart.hasClientCodes());
 	    boolean hasModify = allowModifyOrder.booleanValue();
 	    boolean hasCancel = allowCancelOrder.booleanValue();
+	    boolean isModifying = orderId != null && orderId.equals(FDUserUtil.getModifyingOrderId(user));
 	%>
 	<table width="<%= W_YA_ORDER_DETAILS_TOTAL %>" align="center" border="0" cellpadding="0" cellspacing="0">
 		<tr>
@@ -179,47 +180,30 @@ if(orderId==null){
 		       </font> &nbsp;&nbsp;&nbsp;<br>
 		        <%-- Having trouble, send an e-mail to <A HREF="mailto:accounthelp@freshdirect.com">accounthelp@freshdirect.com</A> or call 1-866-2UFRESH.--%>
 		    </td>
-		    <td width="<%= W_YA_ORDER_DETAILS_TOTAL/2 %>" border="0" cellpadding="0" cellspacing="0" style="text-align: right;">
-		    	<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.printinvoice, user)) { %><a href="javascript:window.print()" class="cssbutton small khaki noprint" style="margin-right: 10px;" title="Click here to print invoice for this order">print</a><% } %>
-		    	<% if (user.getMasqueradeContext() != null && EnumSaleType.REGULAR.equals(cart.getOrderType())) { %><button type="button" name="Reorder" onclick="FreshDirect.components.reorderPopup.openPopup(<%= orderId %>)" class="cssbutton small purple nontransparent">re-order</button><% } %>
-		    	<% if (hasCredit || hasClientCodes || hasModify || hasCancel) { %>
-		    		<% if (hasModify || hasCancel || hasClientCodes || hasCredit) { %>
-			    		<table class="fright">
-				    		<tr>
-					    		<% if (hasCredit) { %>
-									<td align="right" valign="middle" class="text11" style="padding: 0 10px;"><i>Credit was issued for this order.</i></td>
-					    		<% } %>
-							    <% if (hasClientCodes) { %>
-							    	<td nowrap="nowrap" class="noprint">
-										<a class="cssbutton small blue fright" title="Click here to export client codes for this order" href="/api/clientCodeReport.jsp?sale=<%= orderId %>" style="margin-left: 10px;">
-											<span class="butMiddle butText">export&nbsp;client&nbsp;codes</span>
-										</a>
-									</td>
-							    <% } %>
-				    			<% if (hasModify) { %>
-								    <td nowrap="nowrap" class="noprint">
-										<a class="cssbutton small orange fright" title="Click here to modify this order" style="margin-left: 10px;" href="/your_account/modify_order.jsp?orderId=<%= orderId %>&action=modify">modify order</a>
-								    </td>
-				    			<% } %>
-				    			<% if (hasCancel) { %>
-								    <td nowrap="nowrap" class="noprint">
-										<a class="cssbutton small red transparent fright" title="Click here to cancel this order" style="margin-left: 10px;" href="/your_account/cancel_order.jsp?orderId=<%=orderId%>">cancel order</a>
-								    </td>
-							   <% } %>
-				    		</tr>
-				    	</table>
-		    		<% } %>
-		    	<% } else { %>
-		    		&nbsp;
-		    	<% } %>
+		    <td>
+		    	<% if (hasCredit) { %>
+					<i>Credit was issued for this order.</i>
+	    		<% } %>
+		    </td>
+		    <td class="noprint actions" width="<%= W_YA_ORDER_DETAILS_TOTAL/2 %>" border="0" cellpadding="0" cellspacing="0" style="text-align: right;">
+				<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.printinvoice, user)) { %><button onclick="window.print()" class="cssbutton medium khaki noprint" title="Click here to print invoice for this order">Print</button><% } %>
+		    	<% if (user.getMasqueradeContext() != null && EnumSaleType.REGULAR.equals(cart.getOrderType())) { %><button type="button" name="Reorder" onclick="FreshDirect.components.reorderPopup.openPopup(<%= orderId %>)" class="cssbutton medium purple nontransparent">Re-Order</button><% } %>
+				<% if (hasClientCodes) { %>
+					<button class="cssbutton medium blue" title="Click here to export client codes for this order" onclick="location.href='/api/clientCodeReport.jsp?sale=<%= orderId %>'">
+						Export Client Codes
+					</button>
+				<% } %>
+				<% if(isModifying) {%>
+					<button class="cssbutton medium orange" title="Click here to cancel changes"  onclick="location.href='/your_account/cancel_modify_order.jsp'">Cancel Changes</button>
+			   	<% } else if (hasModify) { %>
+					<button class="cssbutton medium orange" title="Click here to modify this order"  onclick="location.href='/your_account/modify_order.jsp?orderId=<%= orderId %>&action=modify'">Modify Order</button>
+				<% } %>
+    			<% if (hasCancel) { %>
+						<button class="cssbutton medium red transparent" title="Click here to cancel this order" onclick="location.href='/your_account/cancel_order.jsp?orderId=<%=orderId%>'">Cancel Order</button>
+				    
+			   	<% } %>
 				<%  if (!cart.isPending()) { %>
-					<table class="fright">
-						<tr>
-						    <td class="noprint">
-								<a class="cssbutton small blue fright" href="/quickshop/shop_from_order.jsp?orderId=<%= orderId %>" title="Click here to reorder items from this order in Quickshop">shop from this order</a>
-							</td>
-						</tr>
-					</table>
+						<button class="cssbutton medium blue" onclick="location.href='/quickshop/shop_from_order.jsp?orderId=<%= orderId %>'" title="Click here to reorder items from this order in Quickshop">Shop From This Order</button>
 				<% } %>
 		    </td>
 		</tr>

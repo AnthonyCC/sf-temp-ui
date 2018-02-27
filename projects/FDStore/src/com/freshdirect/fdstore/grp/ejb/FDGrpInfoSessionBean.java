@@ -30,7 +30,7 @@ public class FDGrpInfoSessionBean extends SessionBeanSupport{
 
 	private final static ServiceLocator LOCATOR = new ServiceLocator();
    
-    
+    @Deprecated
     public Collection<FDGroup> loadAllGrpInfoMaster() throws RemoteException{
    	 Collection<FDGroup> groups=null;
 		try{
@@ -43,6 +43,7 @@ public class FDGrpInfoSessionBean extends SessionBeanSupport{
 		}
 		return groups;
    }
+    @Deprecated
     public int getLatestVersionNumber(String grpId) {
  		try{
  			ErpGrpInfoHome home=getErpGrpInfoHome();

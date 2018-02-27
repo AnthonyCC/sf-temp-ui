@@ -21,6 +21,12 @@
    border-left: 2px solid #dcdcdc;
 }
 
+.drawer-content-loading {
+	min-height: 62px;
+}
+.drawer-content-loading:before{
+	content: url(/media_stat/images/navigation/spinner.gif);
+}
 .drawer-content > ul{
 	background-image: linear-gradient(to top, #f3f3f3, #ffffff);
 	border-bottom: 1px solid #dcdcdc;
@@ -107,7 +113,6 @@
 [data-component="drawer"] [data-drawer-content] {
   position: relative;
   max-height: 0;
-  transition: max-height .5s linear;
   margin-top: -1px;
   z-index: 1001;
   visibility: hidden;
@@ -122,7 +127,6 @@
 [data-drawer-active="timeslot"] [data-drawer-content="timeslot"],
 [data-drawer-active="payment"]  [data-drawer-content="payment"]  {
   max-height:10000px;
-  transition: max-height .5s linear .5s;
   visibility: visible;
 }
 

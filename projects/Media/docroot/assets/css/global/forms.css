@@ -412,3 +412,10 @@ span[fdform-error] {
     vertical-align: middle;
     text-align: right;
 }
+input#search-faq2,input.accessible_search {
+    border:2px solid #c2c2c2;
+}
+
+input#search-faq2:focus,input#search-faq2:hover {
+        border:2px solid #68aa6d;
+}

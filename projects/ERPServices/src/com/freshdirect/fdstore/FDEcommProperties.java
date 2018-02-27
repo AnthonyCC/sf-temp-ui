@@ -32,6 +32,7 @@ public class FDEcommProperties {
     
     private final static String FALSE="false";
     public final static String FDMonitorSB = "fdstore.monitor.FDMonitorSB";
+    public final static String GatewayActivityLog ="payment.ejb.GatewayActivityLogSB";
     public final static String ErpCOOLManagerSB = "erp.ejb.ErpCOOLManagerSB";
     public final static String ErpGrpInfoSB = "erp.ejb.ErpGrpInfoSB";
     public static final String EnumManagerSB = "enums.ejb.EnumManagerSB";
@@ -94,12 +95,18 @@ public class FDEcommProperties {
 	public static final String FDStandingOrderSB = "com.freshdirect.fdstore.standingorders.FDStandingOrdersSB"; 
 	public static final String StandingOrder3CronSB = "com.freshdirect.fdstore.standingorders.service.StandingOrder3CronSB";
 	public static final String FDCustomerManagerSB="com.freshdirect.customer.FDCustomerManagerSB";
+	public static final String SaleCronSB="payment.ejb.SaleCronSB";
+	public static final String ErpInfoSB_WarmUp="erp.ejb.ErpInfoSB_WarmUp";
+	public static final String FDFactorySB_WarmUp ="fdstore.ejb.FDFactorySB_WarmUp";
+	
   
     
     
     static {
 
         defaults.put(FDMonitorSB,FALSE);
+        defaults.put(SaleCronSB,FALSE);
+        defaults.put(GatewayActivityLog,FALSE);
         defaults.put(ErpCOOLManagerSB ,FALSE);
         defaults.put(ErpGrpInfoSB,FALSE);
         defaults.put(EnumManagerSB,FALSE);
@@ -120,6 +127,7 @@ public class FDEcommProperties {
         defaults.put(RecommendationEventLoggerSB ,FALSE);
         defaults.put(EventLoggerSB ,FALSE);
         defaults.put(FDFactorySB ,FALSE);
+        defaults.put(FDFactorySB_WarmUp ,FALSE);
         defaults.put(FDCouponActivityLogSB,FALSE);
         defaults.put(EwalletActivityLogSB ,FALSE);
         defaults.put(FDExtoleManagerSB ,FALSE);
@@ -150,6 +158,7 @@ public class FDEcommProperties {
         defaults.put(EwalletServiceSB, FALSE);
         defaults.put(CoremetricsCdfServiceSB, FALSE);
         defaults.put(CrmManagerSB, FALSE);
+        defaults.put(FDPromotionManagerNewSB, FALSE);
         defaults.put(CallCenterManagerSB, FALSE);
         defaults.put(PaymentSB, FALSE);
         defaults.put(TEmailInfoSB, FALSE);
@@ -157,6 +166,8 @@ public class FDEcommProperties {
         defaults.put(FDStandingOrderSB, FALSE);
         defaults.put(StandingOrder3CronSB, FALSE);
         defaults.put(FDCustomerManagerSB, FALSE);
+        defaults.put(ErpInfoSB_WarmUp, FALSE);
+        
         
         refresh();
     }

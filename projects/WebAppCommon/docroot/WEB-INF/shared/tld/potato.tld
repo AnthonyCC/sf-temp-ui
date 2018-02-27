@@ -321,6 +321,10 @@
         </attribute>
     </tag>
     <tag>
+        <name>presPickRecommender</name>
+        <tagclass>com.freshdirect.webapp.search.PresPickRecommenderPotatoTag</tagclass>
+    </tag>
+    <tag>
         <name>singlePageCheckout</name>
         <tag-class>com.freshdirect.webapp.ajax.expresscheckout.tag.SinglePageCheckoutPotatoTag</tag-class>
         <body-content>empty</body-content>

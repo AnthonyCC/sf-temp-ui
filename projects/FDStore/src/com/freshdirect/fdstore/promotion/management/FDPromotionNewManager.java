@@ -18,6 +18,7 @@ import javax.naming.NamingException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.crm.CrmAgentModel;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -1147,12 +1148,12 @@ public class FDPromotionNewManager {
 		}
 	}
 
-	public static List<PromotionI> getReferralPromotions(String customerId) throws FDResourceException {
+	public static List<PromotionI> getReferralPromotions(String customerId, EnumEStoreId storeid) throws FDResourceException {
 		lookupManagerHome();
 
 		try {
 			FDPromotionManagerNewSB sb = managerHome.create();
-			return sb.getReferralPromotions(customerId);
+			return sb.getReferralPromotions(customerId, storeid);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");

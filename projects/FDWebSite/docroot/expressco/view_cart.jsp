@@ -58,7 +58,13 @@ if (mobWeb) {
       <div id="warningmessage">
         <soy:render template="expressco.warningmessage" data="${cartDataPotato}" />
       </div>
-
+		
+		<% if (mobWeb) { /* copy of this text from expressco.cartheader */ %>
+			<div class='cartheader__text mobweb'>
+				<h1 class='cartheader__title'>Your Cart</h1>
+			</div>
+		<% } %>
+		
       <div id="modifyorder">
         <soy:render template="expressco.modifyorder" data="${cartDataPotato}" />
       </div>
@@ -68,9 +74,6 @@ if (mobWeb) {
       </div>
       
 		<% if (mobWeb) { /* copy of this text from expressco.cartheader */ %>
-			<div class='cartheader__text mobweb'>
-				<h1 class='cartheader__title'>Your Cart</h1>
-			</div>
 			<%-- cart content --%>
 			<div id="cartcontent" class="view_cart" data-ec-linetemplate="expressco.viewcartlines"></div>
 		<% } else { //normal web %>
@@ -80,6 +83,7 @@ if (mobWeb) {
 					<script>
 			          	$jq.ajax('/carousel/carousel.jsp?type=cart').then(function(page) {
 			          		$jq('#cartCarousels').html(page);
+                    FreshDirect.components.carousel.changePage($jq('#cartCarousels [data-component="carousel"]').first(), null);
 			          	});
 			        </script>
 				</div>

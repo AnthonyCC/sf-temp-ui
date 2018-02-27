@@ -31,28 +31,19 @@ public class CustomMapper {
 		if(data!=null){
 			List<ErpSaleInfo> orderList = new ArrayList<ErpSaleInfo>();
 			for(ErpSaleInfoData elem : data){
-				orderList.add(map(elem));
-			}
-			return orderList;
-		}
-		
-		return null;
-	}
-	
-	public static ErpSaleInfo map(ErpSaleInfoData elem) {
-		if(elem!=null){
-			ErpSaleInfo orderInfo =	new ErpSaleInfo(elem.getSaleId(), elem.getErpCustomerId(), EnumSaleStatus.getSaleStatus(elem.getStatus()), elem.getAmount(), elem.getSubTotal()
+				orderList.add(new ErpSaleInfo(elem.getSaleId(), elem.getErpCustomerId(), EnumSaleStatus.getSaleStatus(elem.getStatus()), elem.getAmount(), elem.getSubTotal()
 						, elem.getRequestedDate(), elem.getCreateRequestedDate(), 
-						EnumTransactionSource.getTransactionSource(elem.getSource()), elem.getCreateDate(), elem.getCreateBy(), 
-						EnumTransactionSource.getTransactionSource(elem.getModSource()), elem.getModDate(), 
-						elem.getModBy(), elem.getDeliveryStart(), elem.getDeliveryEnd(), elem.getCutoffTime(), 
-						EnumDeliveryType.getDeliveryType(elem.getDeliveryType()), elem.getPendingCreditAmount(), elem.getAppliedCreditAmount(), 
+						EnumTransactionSource.getTransactionSource(elem.getSource()), elem.getCreateDate(), elem.getCreatedBy(), 
+						EnumTransactionSource.getTransactionSource(elem.getModificationSource()), elem.getModificationDate(), 
+						elem.getModifiedBy(), elem.getDeliveryStartTime(), elem.getDeliveryEndTime(), elem.getDeliveryCutoffTime(), 
+						EnumDeliveryType.getDeliveryType(elem.getDeliveryType()), elem.getPendingCreditAmount(), elem.getApprovedCreditAmount(), 
 						elem.getZone(), EnumPaymentMethodType.getEnum(elem.getPaymentMethodType()), 
 						elem.getDlvPassId(), EnumSaleType.getSaleType(elem.getSaleType()), 
 						elem.getTruckNumber(), elem.getStopSequence(), elem.isMakeGood(), elem.getStandingOrderId(), elem.isSoHolidayMovement(), 
 						EnumEStoreId.valueOfContentId(elem.geteStore()), elem.getPlantId(), elem.getSalesOrg(), elem.getDistributionChanel(), 
-						EnumEwalletType.getEnum(elem.getEwalletType()));
-						return orderInfo;
+						EnumEwalletType.getEnum(elem.getEwalletType())));
+			}
+			return orderList;
 		}
 		
 		return null;
@@ -68,12 +59,6 @@ public class CustomMapper {
 			}
 			return dlvpassList;
 	}
-		return null;
-	}
-
-	public static List<DlvSaleInfo> mapDeliveryOrders(
-			List<DlvSaleInfoData> parseResponse) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }

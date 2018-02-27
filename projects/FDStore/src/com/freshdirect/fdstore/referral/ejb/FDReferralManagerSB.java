@@ -12,6 +12,7 @@ import javax.ejb.EJBObject;
 
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpCustomerCreditModel;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -181,7 +182,7 @@ public interface FDReferralManagerSB extends EJBObject {
 	 
 	 public abstract String getReferralName(String referralId) throws FDResourceException, RemoteException;
 	 
-	 public abstract boolean isReferreSignUpComplete(String email) throws FDResourceException, RemoteException;
+	 public abstract boolean isReferreSignUpComplete(String email, EnumEStoreId storeid) throws FDResourceException, RemoteException;
 	 
 	 public abstract List<ReferralPromotionModel>  getSettledTransaction() throws FDResourceException, RemoteException;
 

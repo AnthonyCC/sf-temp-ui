@@ -15,6 +15,7 @@ import javax.ejb.FinderException;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.crm.CrmAgentModel;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.ejb.FDSessionBeanSupport;
 import com.freshdirect.fdstore.promotion.EnumPromoChangeType;
@@ -1051,11 +1052,11 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 		}		
 	}
 	
-	public List<PromotionI> getReferralPromotions(String customerId) throws FDResourceException {
+	public List<PromotionI> getReferralPromotions(String customerId, EnumEStoreId storeid) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			return FDPromotionNewDAO.getReferralPromotions(customerId, conn);
+			return FDPromotionNewDAO.getReferralPromotions(customerId, storeid, conn);
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {

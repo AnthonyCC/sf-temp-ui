@@ -439,6 +439,32 @@ public class FDFactory {
 	}
 
 	/**
+	 * Get the sku codes from erps.material table that have been modified since
+	 * lastModifiedTime
+	 * 
+	 * @param lastModified
+	 *            unix timestamp in ms
+	 * @return
+	 * @throws FDResourceException
+	 */
+	public static Set<String> getModifiedSkuCodes(long lastModified) throws FDResourceException {
+		if (factoryHome == null) {
+			lookupFactoryHome();
+		}
+		try {
+			FDFactorySB sb = factoryHome.create();
+			Set<String> skus = sb.getModifiedSkus(lastModified);
+			return skus;
+		} catch (CreateException ce) {
+			factoryHome = null;
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			factoryHome = null;
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+
+	/**
 	 * @param days
 	 * @return
 	 * @throws FDResourceException
@@ -612,9 +638,10 @@ public class FDFactory {
 		}
 		try {
 			FDFactorySB sb = factoryHome.create();
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB))
-				return FDECommerceService.getInstance().getProduct(sku, version);
-			else{
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB_WarmUp)){
+				IECommerceService service =  FDECommerceService.getInstance();
+				return service.getProduct(sku, version);
+			}else{
 				return sb.getProduct(sku, version);
 			}
 

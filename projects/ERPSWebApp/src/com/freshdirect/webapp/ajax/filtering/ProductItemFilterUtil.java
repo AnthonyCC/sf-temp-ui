@@ -10,6 +10,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.storeapi.content.FilteringProductItem;
 import com.freshdirect.storeapi.content.FilteringSortingItem;
@@ -87,17 +88,21 @@ public class ProductItemFilterUtil {
 		
 	}
 	
-	public static int countItemsForFilter(List<FilteringProductItem> items, ProductItemFilterI filter){
-		if(filter==null){
+	public static int countItemsForFilter(List<FilteringProductItem> items, ProductItemFilterI filter) {
+		if (filter == null) {
 			return items.size();
 		}
 		int count = 0;
-		for(FilteringProductItem item : items){
+
+		for (FilteringProductItem item : items) {
 			try {
-				if(filter.apply(item)){
+				if (filter.apply(item)) {
 					++count;
 				}
 			} catch (FDResourceException e) {
+				LOG.error("Could not apply filter on product: " + item.getProductModel());
+				continue;
+			} catch (FDRuntimeException e) {
 				LOG.error("Could not apply filter on product: " + item.getProductModel());
 				continue;
 			}

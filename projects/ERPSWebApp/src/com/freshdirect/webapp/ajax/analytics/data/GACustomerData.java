@@ -19,8 +19,9 @@ public class GACustomerData {
     private String deliveryPassStatus;
     private String customerId;
     private String defaultPaymentType;
+    private boolean isModifyMode = false;
 
-    public GACustomerData(String zipCode, String userId, String userStatus, String userType, String loginType, String chefsTable, String deliveryPass, String deliveryType,
+	public GACustomerData(String zipCode, String userId, String userStatus, String userType, String loginType, String chefsTable, String deliveryPass, String deliveryType,
             String cohort) {
         super();
         this.zipCode = zipCode;
@@ -155,5 +156,13 @@ public class GACustomerData {
 
 	public void setDefaultPaymentType(String defaultPaymentType) {
 		this.defaultPaymentType = defaultPaymentType;
-	}    
+	}
+	
+    public boolean isModifyMode() {
+		return isModifyMode;
+	}
+
+	public void setModifyMode(boolean isModifyMode) {
+		this.isModifyMode = isModifyMode;
+	}
 }

@@ -5,6 +5,8 @@
 <%@ page import="com.freshdirect.webapp.util.FDFaqUtil" %>
 <%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'%>
 <%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter'%>
+<%@ page import='com.freshdirect.storeapi.content.ContentNodeModel' %>
+<%@ page import='com.freshdirect.storeapi.content.ContentFactory' %>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ taglib uri='template' prefix='tmpl' 
 %><%@ taglib uri='logic' prefix='logic'
@@ -120,9 +122,14 @@
             if (request.getParameter("page") != null) {
                 pageId = "FAQ"+faqPage;
             }
+           
+            ContentNodeModel contentNode = ContentFactory.getInstance().getContentNode(faqPage);
+            String pageTitle = "FAQ - "+((contentNode != null) ? contentNode.getCmsAttributeValue("name") : "")+" | FreshDirect" ;
        %>
+       
+       
        <tmpl:put name="seoMetaTag" direct="true">
-       <fd:SEOMetaTag title="FreshDirect - Help - FAQs" pageId="<%= pageId %>"></fd:SEOMetaTag>
+       <fd:SEOMetaTag title="<%= pageTitle %>" pageId="<%= pageId %>"></fd:SEOMetaTag>
        </tmpl:put>
 	<tmpl:put name='leftnav' direct='true'>
 	</tmpl:put>

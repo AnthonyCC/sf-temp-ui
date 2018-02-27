@@ -222,7 +222,7 @@ public class HomeController extends BaseController {
 		WebPageResponse pageResponse = new WebPageResponse();
 		CMSPageRequest pageRequest = parseRequestObject(request, response, CMSPageRequest.class);
 		
-		if(!pageRequest.isPreview() && pageRequest.getPlantId() == null){
+		if(pageRequest != null && !pageRequest.isPreview() && pageRequest.getPlantId() == null){
 			String plantId= user.getFDSessionUser().getUserContext().getFulfillmentContext().getPlantId();
 			pageRequest.setPlantId(plantId);
 		}

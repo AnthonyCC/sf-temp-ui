@@ -170,17 +170,17 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     private boolean isSoContainerOpen = false;
 
     private boolean zipPopupSeenInSession = false;
-    
+
 	private Map<String,String> soCartLineMessagesMap=new HashMap<String,String>();
 
 	private boolean soCartOverlayFirstTime = false;
-	
+
 	private boolean isRefreshSoCartOverlay=true;
-	
+
 	private boolean soFeatureOverlay = false;
-	
+
 	private boolean isRefreshNewSoFeature = true;
-	
+
     @Override
     public boolean isSoContainerOpen() {
         return isSoContainerOpen;
@@ -429,9 +429,9 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
             }
         }
     }
-    
+
     public void insertOrUpdateSilverPopup(SilverPopupDetails details) {
- 
+
         if (null != details && null != details.getCustomerId() && !"".equals(details.getCustomerId())) {
             LOGGER.info("Saving Silverpopup details");
             try {
@@ -440,7 +440,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
                 LOGGER.warn("Unable to save Silver popup", ex);
             }
         }
-    }    
+    }
 
     private boolean isCartPersistent() {
         //
@@ -514,7 +514,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     public void setAddress(AddressModel a) {
         this.user.setAddress(a);
     }
-    
+
     public void setAddress(AddressModel a, boolean populateUserContext) {
         this.user.setAddress(a, populateUserContext);
     }
@@ -618,7 +618,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     public void updateUserState(boolean syncServiceType) {
         this.user.updateUserState(syncServiceType);
     }
-    
+
     public void resetCachedCustomerInfo() throws FDResourceException {
         this.user.resetCustomerInfoModel();
     }
@@ -704,7 +704,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
     /**
      * overrides minimum order limit in case Standing Order checkout
-     * 
+     *
      * @return
      */
     private Double getOverrideMinimumAmount() {
@@ -1510,7 +1510,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     public UserContext getUserContext() {
         return user.getUserContext();
     }
-    
+
     public UserContext getUserContext(boolean override) {
         return user.getUserContext(override);
     }
@@ -2268,7 +2268,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     public void setAllSO3(Collection<FDStandingOrder> allSO3s) {
         this.user.setAllSO3(allSO3s);
     }
-    
+
     @Override
     public boolean isRefreshSO3() {
         // TODO Auto-generated method stub
@@ -2280,7 +2280,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
         this.user.setRefreshSO3(isRefreshSO3);
 
     }
-    
+
     public String getPlatForm() {
         return platForm;
     }
@@ -2362,8 +2362,8 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     @Override
     public void setRefreshNewSoFeature(boolean isRefreshNewSoFeature) {
 		this.isRefreshNewSoFeature = isRefreshNewSoFeature;
-	}    
-	
+	}
+
 	public String isFromLogin() {
 		return user.isFromLogin();
 	}
@@ -2377,12 +2377,12 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     public void setValidSO3Data(Map<String, Object> validSO3Data){
 		this.user.setValidSO3Data(validSO3Data);
 	}
-    
+
     @Override
     public Map<String, Object> getValidSO3Data(){
     	return this.user.getValidSO3Data();
     }
-    
+
     @Override
     public boolean isRefreshSO3Settings(){
     	return this.user.isRefreshSO3Settings();
@@ -2400,7 +2400,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public void setLat(String lat) {
 		this.lat = lat;
 	}
-		
+
 	public String getPdUserId() {
 		return pdUserId;
 	}
@@ -2410,12 +2410,13 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	}
 
 
+	@Override
 	public ErpCustomerInfoModel getCustomerInfoModel() throws FDResourceException {
 		return this.user.getCustomerInfoModel();
 	}
 	@Override
 	public int resetDefaultPaymentValueType() {
-		return user.resetDefaultPaymentValueType();		
+		return user.resetDefaultPaymentValueType();
 	}
 
 	@Override
@@ -2430,4 +2431,34 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		return user.overrideZoneInfo(address, deliveryZoneInfo);
 	}
 
+	@Override
+	public boolean getDpFreeTrialOptin() {
+		return user.getDpFreeTrialOptin();
+	}
+
+	@Override
+	public void setDpFreeTrialOptin(boolean dpFreeTrialOptin) {
+		this.user.setDpFreeTrialOptin(dpFreeTrialOptin);
+
+	}
+
+	@Override
+	public String getDpFreeTrialOptinStDate() throws FDResourceException {
+		return user.getDpFreeTrialOptinStDate();
+	}
+
+	@Override
+	public void updateDpFreeTrialOptin(boolean dpFreeTrialOptin) {
+		this.user.updateDpFreeTrialOptin(dpFreeTrialOptin);
+	}
+	
+	@Override
+	public boolean isDPFreeTrialOptInEligible()
+	{
+		return this.user.isDPFreeTrialOptInEligible();
+	}
+	
+	public boolean applyFreeTrailOptinBasedDP() {
+		return this.user.applyFreeTrailOptinBasedDP();
+	}
 }

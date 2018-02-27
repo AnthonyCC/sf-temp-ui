@@ -297,6 +297,18 @@ ul.products .description-skin{
   color: #f93;
 }
 
+.browse-filtertags li:focus:before {
+  color: #f93;
+}
+
+.browse-filtertags li:focus span {
+    text-decoration: underline;
+}
+
+.browse-filtertags li:focus{
+	outline:none;
+}
+
 .srch #sorter,
 .browse #sorter {
   overflow: hidden;

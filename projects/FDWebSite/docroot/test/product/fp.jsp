@@ -38,9 +38,9 @@
 	// http://localhost:7001/test/product/fp.jsp?pageType=browse&id=fp&rbl=4&dbl=40&pbl=10000&cn=false&cbis=false
 	double ratingBaseLine = 4;
 	double popularityBaseLine = 10000;
-	double dealsBaseLine = 30;
-	boolean considerNew = true;
-	boolean considerBackInStock = true;
+	double dealsBaseLine = 20;
+	boolean considerNew = false;
+	boolean considerBackInStock = false;
 		
 	final CmsFilteringNavigator nav = CmsFilteringNavigator.createInstance(request, user);
 	nav.setPageTypeType(FilteringFlowType.BROWSE);
@@ -97,11 +97,11 @@
 			
 			sectionData = new SectionData();
 			if(sectionCount == 0) {			
-				sectionData.setHeaderText("Your favorites with atleast "+ (int)ratingBaseLine + " star rating or " + (int)dealsBaseLine + "% discount " + (considerBackInStock ? "is back in stock" : "")); 
+				sectionData.setHeaderText("Your favorites with at least "+ (int)ratingBaseLine + "-star rating or " + (int)dealsBaseLine + "% discount " + (considerBackInStock ? "or is back in stock" : "")); 
 				//.......................Your Fav that might INTEREST U!............................");
 				//sectionData.setMiddleMedia("https://lorempixel.com/800/100/food/2/");
 			} else {
-				sectionData.setHeaderText("Our favorites with atleast "+ (int)ratingBaseLine + " star rating or " + (int)dealsBaseLine + "% discount " + (considerBackInStock ? "is back in stock" : ""));
+				sectionData.setHeaderText("Our favorites with at least "+ (int)ratingBaseLine + "-star rating or " + (int)dealsBaseLine + "% discount " + (considerBackInStock ? "or is back in stock" : ""));
 				//sectionData.setHeaderText(".......................Our Fav that might INTEREST U!..............................");
 				//sectionData.setMiddleMedia("https://lorempixel.com/800/100/fun/2/");
 			}
@@ -194,7 +194,7 @@
 	}
 %>
 
-<tmpl:insert template='/common/template/browse_noleftnav_template.jsp'>
+<tmpl:insert template='/common/template/browse_template.jsp'>
   
    <tmpl:put name='soypackage' direct='true'>
     <soy:import packageName="browse" />
@@ -205,6 +205,60 @@
     <jwr:style src="/quickshop.css" media="all" />
     <jwr:style src="/browse.css" media="all" />
     <jwr:style src="/srch.css" media="all" />
+  </tmpl:put>
+  
+  <tmpl:put name='leftnav' direct='true'>
+    <div id="leftnav">
+      <div data-component="menu">
+      	<div class="menuBox">
+      		<h2>TOP-RATED</h2>
+      		<ul>
+      			<% for (int ratingVal = 5; ratingVal > 0; ratingVal--) { %>
+	      			<li>
+	      				<label><input id="" type="radio" data-uriparam="rbl" name="expertrating-menu" value="<%= ratingVal %>" <%= (ratingBaseLine==ratingVal) ? "checked=\"checked\"" : "" %>><span><span>
+	      					<div class="rating"><b class="expertrating smallrating rating-<%= ratingVal*2 %>">Rating <%= ratingVal %> out of 5</b><%= (ratingVal < 5) ? " & Up" : "" %></div>
+						</span></span></label>
+	      			</li>
+	      		<% } %>
+      		</ul>
+      		
+      		<h2>DEAL %-OFF</h2>
+      		<ul>
+      			<% for (int i = 80; i >= 10; i=i-10) { %>
+	      			<li>
+	      				<label><input id="" type="radio" data-uriparam="dbl" name="discount-menu" value="<%= i %>" <%= (dealsBaseLine==i) ? "checked=\"checked\"" : "" %>><span><span>
+	      					<%= i %>% off<%= (i < 100) ? " & Up" : "" %>
+						</span></span></label>
+	      			</li>
+	      		<% } %>
+      		</ul>
+
+      		<ul>
+      			<li>
+      				<label><input id="" type="checkbox" data-uriparam="cbis" name="cbis-menu" <%= (considerBackInStock) ? "checked=\"checked\"" : "" %>><span><span>
+      					<strong>Back In Stock</strong>
+					</span></span></label>
+      			</li>
+      		</ul>
+      	</div>
+      </div>
+    </div>
+    <script>
+    	//handle fake menu
+		function updateQueryStringParameter(uri, key, value) {
+			var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+			var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+			if (uri.match(re)) {
+				return uri.replace(re, '$1' + key + "=" + value + '$2');
+			} else {
+				return uri + separator + key + "=" + value;
+			}
+		}
+    	$jq('[data-uriparam]').on('click', function(event) {
+    		var curVal = ($jq(this).attr('type') === 'checkbox') ? $jq(this).is(':checked') : $jq(this).val();
+    		window.location = window.location.pathname + updateQueryStringParameter(window.location.search, $jq(this).attr('data-uriparam'), curVal);
+    	});
+    </script>
   </tmpl:put>
 
   <tmpl:put name='content' direct='true'>
@@ -223,6 +277,9 @@
 
 	      window.FreshDirect.browse.data.sortOptions = window.FreshDirect.browse.data.sortOptions || {};
 	    </script>
+	    <style>
+	    	.browseContent h2 { font-size: 23px; }
+	    </style>
   </tmpl:put>
 
   <tmpl:put name='extraJsModules'>

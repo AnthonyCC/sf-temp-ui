@@ -6,7 +6,8 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName" %>
 <%@ page import="com.freshdirect.common.address.AddressModel" %>
 <%@ page import="com.freshdirect.fdstore.referral.FDReferralManager"%>
-
+<%@ page import="com.freshdirect.storeapi.content.ContentFactory" %>
+<%@ page import="com.freshdirect.fdstore.EnumEStoreId" %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
 
 <%
@@ -42,8 +43,8 @@
 		String lastname = NVL.apply(request.getParameter(EnumUserInfoName.DLV_LAST_NAME.getCode()), "");
 		String password = NVL.apply(request.getParameter(EnumUserInfoName.PASSWORD.getCode()), "");
 		String passwordhint = NVL.apply(request.getParameter(EnumUserInfoName.PASSWORD_HINT.getCode()), "");		
-
-		if(FDReferralManager.isReferreSignUpComplete(email)) {
+		EnumEStoreId storeid = ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId();
+		if(FDReferralManager.isReferreSignUpComplete(email, storeid)) {
 			//phew finally complete
 			System.out.println("Did not come here?====================================================================================");
 

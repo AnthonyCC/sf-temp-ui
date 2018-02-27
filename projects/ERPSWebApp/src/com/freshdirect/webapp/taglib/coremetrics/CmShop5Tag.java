@@ -40,7 +40,7 @@ public class CmShop5Tag extends AbstractCmShopTag<Shop5TagModelBuilder> {
 
     @Override
     protected void appendTag(StringBuilder shopScriptSb, ShopTagModel tagModel) {
-        shopScriptSb.append(getFormattedTag(toJsVar(tagModel.getProductId()), toJsVar(tagModel.getProductName()), toJsVar(tagModel.getQuantity()),
+        shopScriptSb.append(getFormattedTagAsync(toJsVar(tagModel.getProductId()), toJsVar(tagModel.getProductName()), toJsVar(tagModel.getQuantity()),
                 toJsVar(tagModel.getUnitPrice()), toJsVar(tagModel.getCategoryId()), toJsVar(mapToAttrString(tagModel.getAttributesMaps()))));
     }
 

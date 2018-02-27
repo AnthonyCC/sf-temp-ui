@@ -59,6 +59,7 @@ public class FDStandingOrder extends ModelSupport {
 
 	String customerListName;	// Only used when standing order is not yet persisted!
 	String zone;
+	String zoneNew;
 	FDStandingOrderAltDeliveryDate altDeliveryInfo;
 
 	public static final String STANDING_ORDER_DETAIL_PAGE	= "/quickshop/qs_so_details.jsp";
@@ -527,6 +528,14 @@ public class FDStandingOrder extends ModelSupport {
 
 	public void setZone(String zone) {
 		this.zone = zone;
+	}
+
+	public String getZoneNew() {
+		return zoneNew;
+	}
+
+	public void setZoneNew(String zoneNew) {
+		this.zoneNew = zoneNew;
 	}
 
 	public FDOrderInfoI getUpcomingDelivery() {

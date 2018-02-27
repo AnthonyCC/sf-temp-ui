@@ -95,7 +95,7 @@
  * @param id
  */
 {template .drawerpreview autoescape="false"}
-<li data-drawer-default-content="{$id}">{$preview ? $preview : ''}</li>
+<li data-drawer-default-content="{$id}">{$preview ? $preview : '<div class="drawer-content-loading center"></div>'}</li>
 {/template}
 
 /**

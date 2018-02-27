@@ -139,7 +139,7 @@
 											<option value="<%= orderInfo.getErpSalesId() %>">#<%= orderInfo.getErpSalesId() %> - <%=orderInfo.getOrderStatus().getDisplayName()%> - <%= dateFormatter.format( orderInfo.getRequestedDate() ) %></option>
 										</logic:iterate>
 									</select>
-									<span class="small">(optional)</span>
+									<span class="optionalaccess">(optional)</span>
 							<% } %>
 						</fd:OrderHistoryInfo>
 					<% } %>

@@ -35,7 +35,7 @@ final int W_DELIVERY_INFO_NAV_TOTAL = 970;
 		folderMap.put("Home Delivery","/help/delivery_info.jsp");
 		folderMap.put("Corporate Delivery","/help/delivery_info_cos.jsp");
 		/* if(user.isDepotUser()){ folderMap.put("Depot Delivery","/help/delivery_info_depot.jsp"); } */
-		folderMap.put("","");
+		folderMap.put("",""); //spacer for the delivery information navigation
 		
 	//second column onward (fills based on maxRows)
 		if (user.getLevel() >= FDUserI.RECOGNIZED) {
@@ -99,8 +99,12 @@ final int W_DELIVERY_INFO_NAV_TOTAL = 970;
 													<a href="<%= folderMap.get(str)%>"><%= str %></a><br />
 												<% } %>
 											<% } else { %>
-												<a href="<%= folderMap.get(str)%>"><%= str %></a><br />
-											<% } %>
+												<% if ("".equals(folderMap.get(str))) { %>
+                                                    <%= str %><br />
+                                                <% } else { %>
+                                                    <a href="<%= folderMap.get(str)%>"><%= str %></a><br />
+                                                <% } %>
+                                           <% } %>
 										<% } else { %>
 											&nbsp;<br />
 										<% } %>

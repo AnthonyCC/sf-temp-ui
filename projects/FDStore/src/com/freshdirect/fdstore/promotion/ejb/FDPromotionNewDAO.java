@@ -27,6 +27,7 @@ import com.freshdirect.delivery.EnumComparisionType;
 import com.freshdirect.delivery.EnumDeliveryOption;
 import com.freshdirect.delivery.EnumPromoFDXTierType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.promotion.ActiveInactiveStrategy;
 import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
@@ -1617,11 +1618,14 @@ public class FDPromotionNewDAO {
 	public static final String GET_REF_EXTOLE_PROMO = "SELECT p.* "
 			+ "FROM  CUST.PROMOTION_NEW p, "
 			+ "CUST.FDCUSTOMER fc, "
-			+ "CUST.CUSTOMER c "
+			+ "CUST.CUSTOMER c, "
+			+ "CUST.FDCUSTOMER_ESTORE fde "
 			+ "where fc.ERP_CUSTOMER_ID = ? "
+			+ "and 	   fde.E_STORE(+)=? "
 			+ "and     fc.ERP_CUSTOMER_ID = c.ID "
-			+ "and     fc.RAF_PROMO_CODE=p.RAF_PROMO_CODE and p.referral_promo='Y' "
-			+ "and     fc.raf_promo_code is not null "
+			+ "and     fde.FDCUSTOMER_ID(+) = fc.ID "
+			+ "and     fde.RAF_PROMO_CODE=p.RAF_PROMO_CODE and p.referral_promo='Y' "
+			+ "and     fde.raf_promo_code is not null "
 			+ "and     p.status in ('LIVE') "
 			+ "and    (p.expiration_date > (sysdate-7) or p.expiration_date is null) "
 			+ "and     p.redemption_code is  null "
@@ -1643,7 +1647,7 @@ public class FDPromotionNewDAO {
 				"and     p.redemption_code is null " +
 				"and    (rp.Delete_flag is null or rp.delete_flag != 'Y')";
 
-	public static List<PromotionI> getReferralPromotions(String customerId, Connection conn) throws SQLException {
+	public static List<PromotionI> getReferralPromotions(String customerId, EnumEStoreId storeid, Connection conn) throws SQLException {
 		LOGGER.debug("Query is "+GET_REF_PROMO);
 		String query = GET_REF_PROMO;
 		if(FDStoreProperties.isExtoleRafEnabled()){
@@ -1651,6 +1655,9 @@ public class FDPromotionNewDAO {
 		}
 		PreparedStatement ps = conn.prepareStatement(query);
 		ps.setString(1, customerId);
+		if(FDStoreProperties.isExtoleRafEnabled()){
+			ps.setString(2, null != storeid ? storeid.getContentId() : EnumEStoreId.FD.getContentId());
+		}
 		ResultSet rs = ps.executeQuery();
 		List<PromotionI> promotions =  new ArrayList<PromotionI>();
 		while(rs.next()) {

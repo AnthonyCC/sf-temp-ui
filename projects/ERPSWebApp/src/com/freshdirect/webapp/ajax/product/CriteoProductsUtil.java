@@ -4,8 +4,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
+import org.apache.log4j.Logger;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
@@ -40,8 +39,10 @@ public class CriteoProductsUtil
 		StringBuffer updatedPageBeacon = new StringBuffer(A_SHOWN);
 		int productsCount = 0;
 		try {
-			SearchResultsUtil.setPlatFormValues((FDSessionUser) user,
-					hLBrandProductAdRequest);
+			FDSessionUser sessionUser = (FDSessionUser) user;
+			SearchResultsUtil.setPlatFormValues(user, hLBrandProductAdRequest, sessionUser.isMobilePlatForm(),
+					sessionUser.getPlatForm(), sessionUser.getLat(), sessionUser.getPdUserId());
+
 			if (hLBrandProductAdRequest.getUserId()!= null) {
 				HLBrandProductAdResponse response = FDBrandProductsAdManager.getHLadproductToHome(hLBrandProductAdRequest);
 				if (response != null && null !=response.getProductAd()) {
@@ -128,7 +129,9 @@ public class CriteoProductsUtil
 		int productsCount = 0;
 		boolean pdpPage=true;
 		try {
-			SearchResultsUtil.setPlatFormValues((FDSessionUser) user, hLBrandProductAdRequest);
+			FDSessionUser sessionUser = (FDSessionUser) user;
+			SearchResultsUtil.setPlatFormValues(user, hLBrandProductAdRequest, sessionUser.isMobilePlatForm(),
+					sessionUser.getPlatForm(), sessionUser.getLat(), sessionUser.getPdUserId());
 			if (hLBrandProductAdRequest.getUserId() != null) {
 				setProductSkucode(browseData, hLBrandProductAdRequest);
 				HLBrandProductAdResponse response = FDBrandProductsAdManager.getHLadproductToPdp(hLBrandProductAdRequest);

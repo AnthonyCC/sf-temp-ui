@@ -306,7 +306,6 @@
 }
 #checkout-cart-header .delivery-fee .free-link:hover {
     background-color: #458d4e;
-    border: 1px solid #458d4e;
 }
 #checkout-cart-header .cartsection__tax,
 #checkout-cart-header .subtotal__row  {

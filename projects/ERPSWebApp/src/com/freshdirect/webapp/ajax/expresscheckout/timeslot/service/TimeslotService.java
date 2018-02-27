@@ -409,12 +409,7 @@ public class TimeslotService {
         deliveryModel.setZonePromoAmount(PromotionHelper.getDiscount(user, deliveryModel.getZoneId()));
 
         // set selected timeslot ID according to next delivery date of standing order template
-        if (StandingOrderHelper.isSO3StandingOrder(user)) {
-            deliveryModel.setTimeSlotId("");
-
-        } else {
-            deliveryModel.setTimeSlotId(StandingOrderHelper.findMatchingSlot(so, tsu));
-        }
+        deliveryModel.setTimeSlotId(StandingOrderHelper.findMatchingSlot(so, tsu));				//COS17-56
         deliveryModel.setPreReserved(false);
         deliveryModel.setPreReserveSlotId(null);
         if (StandingOrderHelper.isSO3StandingOrder(user)) {

@@ -415,8 +415,8 @@ function parseTipTotal(data) {
         if (data.googleAnalyticsData) {
           DISPATCHER.signal('googleAnalyticsData', data.googleAnalyticsData);
         }
-				
-				data.etipTotal = parseTipTotal(data) || data.etipTotal;
+				var parsedTipTotal = parseTipTotal(data);
+				data.etipTotal = parsedTipTotal == null? data.etipTotal : parsedTipTotal;
 
 				/* APPDEV-4904 */
 				data.isEBTused = ( get_current_paymenttype_choice() == "EBT")? true : false;
@@ -806,11 +806,15 @@ function parseTipTotal(data) {
 			userRecognized: null,
 			userCorporate: null,
 			mobWeb: null,
-			saveAmount: null
+			saveAmount: null,
+			modifyOrder: null
 		};
 	var checkoutCartHeader = Object.create(WIDGET,{
 		signal:{
 			value: ['cartData','subTotalBox','checkoutCartHeader']
+		},
+		headerData: {
+			value: checkoutCartHeaderData
 		},
 		template: {
 			value: function(data) {
@@ -825,7 +829,7 @@ function parseTipTotal(data) {
 								deliveryFeeValue = '<div><span class="delivery-free-with-label">Free with</span><div class="delivery-pass-label">DeliveryPass</div></div>';
 								freeWithDeliveryPass = true;
 							}
-							checkoutCartHeaderData.deliveryFee = [{id: 'checkout-cart-header-'+box.id+(showDeliveryPass? '' :freeWithDeliveryPass?'-with-delivery-pass':'-no-action'), text: box.text, value: deliveryFeeValue, other: box.other}];
+							checkoutCartHeaderData.deliveryFee = [{id: 'checkout-cart-header-'+box.id+(showDeliveryPass? '' :freeWithDeliveryPass?'-with-delivery-pass':'-no-action'), text: box.text, value: deliveryFeeValue, other: (freeWithDeliveryPass? null : box.other)}];
 						}
 					});
 					checkoutCartHeaderData.userCorporate = subTotalBox.userCorporate;
@@ -852,7 +856,8 @@ function parseTipTotal(data) {
 					checkoutCartHeaderData.tipAppliedTick = data.tipAppliedTick;
 				}
 				checkoutCartHeaderData.mobWeb = fd.mobWeb;
-
+				checkoutCartHeaderData.modifyOrder = checkoutCartHeaderData.modifyOrder || data.modifyOrder;
+				
 				return expressco.checkoutCartHeader(checkoutCartHeaderData);
 			}
 		},
@@ -935,4 +940,5 @@ function parseTipTotal(data) {
 		cartcontent.onTipEntered.bind(cartcontent));
 
 	fd.modules.common.utils.register('expressco', 'cartcontent', cartcontent, fd);
+	fd.modules.common.utils.register('expressco', 'checkoutCartHeader', checkoutCartHeader, fd);
 }(FreshDirect));

@@ -480,9 +480,10 @@ public class OrderController extends BaseController {
 //		quickShop.setProducts(productPage);
 		
 		List<String> productIds = new ArrayList<String>();
-		
-		for(ProductConfiguration pc : productPage){
-			productIds.add(pc.getProductId());
+		if(productPage!=null && !productPage.isEmpty()){
+			for(ProductConfiguration pc : productPage){
+				productIds.add(pc.getProductId());
+			}
 		}
 		quickShop.setProductIds(productIds);
 		quickShop.setTotalResultCount(products != null ? products.size() : 0);

@@ -32,6 +32,7 @@ public class LazyTimedCache<K,V> extends TimedLruCache<K,V> {
 	 * Handle an expired TimedEntry. Renews the lease on the entry, adds it to the list of expired keys,
 	 * notifies waiting threads, and returns the value. Does not remove the entry from cache.
 	 */
+	@Override
 	protected V getExpired(TimedEntry<K,V> entry) {
 		this.expiredKeys.add( entry.key );
 		entry.renewLease(this.expire);
