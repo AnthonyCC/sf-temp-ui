@@ -46,11 +46,11 @@
 						<img src="<%=FK_CONFIG_DIRS.get("SVG_SRC") %>hamburger_helper.svg" />
 					</a>
 					<ul class="dropdown mobile_dropdown" id="mobile_dropdown_menu">
-						<li><a href="<%=url_prefix %>#How_it_works">How It Works</a></li>
-						<li><a href="<%=url_prefix %>#Featured_Food">Featured Food</a></li>
-						<!--  <li><a href="<%=url_prefix %>#MYFOODKICK">#MYFOODKICK</a></li>-->
-						<li><a href="about_us.jsp">About Us</a></li>
-						<li><a href="<%=url_prefix %>#Get_Foodkick">Get Foodkick</a></li>
+						<!-- <li><a href="<%=url_prefix %>#How_it_works">How It Works</a></li> -->
+						<!-- <li><a href="<%=url_prefix %>#Featured_Food">Featured Food</a></li> -->
+						<!-- <li><a href="<%=url_prefix %>#MYFOODKICK">#MYFOODKICK</a></li> -->
+						<!-- <li><a href="about_us.jsp">About Us</a></li> -->
+						<!-- <li><a href="<%=url_prefix %>#Get_Foodkick">Get Foodkick</a></li> -->
 						
 						<li>
 							<a href="<%=FK_CONFIG_URLS.get("FD_SITE_LINK") %>" class="locabar-tab locabar-tab-fdx-cont"><div class="locabar-tab-fdx"></div></a>
@@ -58,16 +58,16 @@
 					</ul>
 				</li>
 			
-				<li class="standard_link"><a href="<%=url_prefix %>#How_it_works">How It Works</a></li>
-				<li class="standard_link"><a href="<%=url_prefix %>#Featured_Food">Featured Food</a></li>
+				<!-- <li class="standard_link"><a href="<%=url_prefix %>#How_it_works">How It Works</a></li> -->
+				<!-- <li class="standard_link"><a href="<%=url_prefix %>#Featured_Food">Featured Food</a></li> -->
 				<li class="logo_link">
-					<a href="<%=url_prefix %>#slideshow">
+					<a href="https://www.foodkick.com">
 						<img src="<%=FK_CONFIG_DIRS.get("SVG_SRC") %>freshkick_logo_v2.svg" />
 					</a>
 				</li>
-				<!--  <li class="standard_link"><a href="<%=url_prefix %>#MYFOODKICK">#MYFOODKICK</a></li> -->
-				<li class="standard_link"><a href="about_us.jsp">About Us</a></li>
-				<li class="standard_link"><a href="<%=url_prefix %>#Get_Foodkick">Get Foodkick</a></li>
+				<!-- <li class="standard_link"><a href="<%=url_prefix %>#MYFOODKICK">#MYFOODKICK</a></li> -->
+				<!-- <li class="standard_link"><a href="about_us.jsp">About Us</a></li> -->
+				<!-- <li class="standard_link"><a href="<%=url_prefix %>#Get_Foodkick">Get Foodkick</a></li> -->
 			</ul>
 		</nav>
 
