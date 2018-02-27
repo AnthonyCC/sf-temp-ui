@@ -147,6 +147,11 @@ request.setAttribute("noyui", true);
 
 				for (CategoryModel curCat: catModels) {
 					String curCatLink = "/browse.jsp?id="+curCat;
+					
+					//hard-code skip FK if in modify mode
+					if ((user.getShoppingCart() instanceof FDModifyCartModel) && "wgd_dwnld".equalsIgnoreCase(curCat.getContentKey().getId())) {
+						continue;
+					}
 					//skip if cat has no prod(s) and is not redirecting
 					if ("".equals(curCat.getRedirectURL()) && !hasProduct_hprd(curCat)) {
 						continue;
@@ -161,7 +166,7 @@ request.setAttribute("noyui", true);
 
 					 %>
 
-					<a href="<%= curCatLink %>">
+					<a href="<%= curCatLink %>" data-catid="<%= curCat.getContentKey().getId() %>">
 					    <div class="home-page-banner">
 						    <img data-src="<%= (curCat.getTabletThumbnailImage() != null) ? curCat.getTabletThumbnailImage().getPathWithPublishId() : "" %>" alt="" />
 							<div class="home-page-banner-subtext-cont">

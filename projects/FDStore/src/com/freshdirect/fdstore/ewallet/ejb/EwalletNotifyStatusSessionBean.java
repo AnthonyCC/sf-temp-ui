@@ -28,6 +28,14 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  * @author Ismail Mohammed
  *
  */
+
+
+/**
+ *@deprecated Please use the EwalletNotifyStatusController and EwalletNotifyStatusServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public class EwalletNotifyStatusSessionBean extends SessionBeanSupport {
 	
 	/**
@@ -40,7 +48,7 @@ public class EwalletNotifyStatusSessionBean extends SessionBeanSupport {
 	
 	//TODO get all wallet types and loop through for posting
 	private static final String MASTERPASS_EWALLET_TYPE="MP";
-	
+	@Deprecated
 	public void loadTrxnsForPostBack(int maxDays) throws RemoteException {
 		Connection conn = null;
 		try {
@@ -73,6 +81,8 @@ public class EwalletNotifyStatusSessionBean extends SessionBeanSupport {
 	/* 
 	 * Facade for posting trxns to Ewallet provider
 	 */
+	
+	@Deprecated
 	public void postTrxnsToEwallet() throws RemoteException {
 		long time_method_start = System.currentTimeMillis();
 		long curr = System.currentTimeMillis();

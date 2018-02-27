@@ -13,20 +13,40 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.data.PageAction;
+import com.freshdirect.webapp.ajax.expresscheckout.checkout.service.CheckoutService;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataResponse;
+import com.freshdirect.webapp.ajax.expresscheckout.data.FormRestriction;
 import com.freshdirect.webapp.ajax.expresscheckout.restriction.service.RestrictionService;
 import com.freshdirect.webapp.ajax.expresscheckout.service.FormDataService;
 import com.freshdirect.webapp.ajax.expresscheckout.service.SinglePageCheckoutFacade;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationResult;
 import com.freshdirect.webapp.checkout.RedirectToPage;
 import com.freshdirect.webapp.util.FDEventUtil;
+import com.freshdirect.webapp.util.StandingOrderHelper;
 
 public class RestrictionServlet extends BaseJsonServlet {
 
 
 	private static final long serialVersionUID = -7582639712245761241L;
 
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response, FDUserI user)
+			throws HttpErrorResponse {
+		try {
+			if (!StandingOrderHelper.isSO3StandingOrder(user)) {
+				FormRestriction restriction = CheckoutService.defaultService().preCheckOrder(user);
+				writeResponseData(response, restriction);
+			}
+		} catch (FDResourceException e) {
+			returnHttpError(500, "Failed to load restriction.", e);
+		} catch (IOException e) {
+			returnHttpError(500, "Failed to load restriction.", e);
+		} catch (TemplateException e) {
+			returnHttpError(500, "Failed to load restriction.", e);
+		}
+	}
+	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
 		try {

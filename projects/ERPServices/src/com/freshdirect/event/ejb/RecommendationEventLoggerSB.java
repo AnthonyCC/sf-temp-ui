@@ -13,6 +13,13 @@ import com.freshdirect.framework.event.FDRecommendationEvent;
  * @author istvan
  *
  */
+
+/**
+ *@deprecated Please use the RecommendationEventLoggerController and RecommendationEventLoggerServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */ 
 public interface RecommendationEventLoggerSB  extends EJBObject {
 
 	/**

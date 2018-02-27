@@ -189,5 +189,4 @@ public class Message implements DateFormat, Cloneable {
     public boolean includeNullValue() {
     	return true;
     }
-    
 }

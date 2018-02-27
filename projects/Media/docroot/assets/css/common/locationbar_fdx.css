@@ -162,6 +162,13 @@
 	#popupcart tr.cartline .quantity .qtyinput {
 		height: 25px;
 	}
+	#popupcart tr.cartline .quantity .qtyinput.small button {
+		border: none;
+		color: transparent;
+	}
+	#popupcart tr.cartline .quantity .qtyinput.small button:hover {
+		background-color: transparent;
+	}
 	#popupcart tr.cartline:hover .quantity .qtyinput.small .qty,
 	#popupcart tr.cartline:focus .quantity .qtyinput.small .qty
 	{
@@ -218,7 +225,7 @@
 		height: auto;
 		text-align: center;
 		font-size: 18px;
-		width: 150px;
+		min-width: 150px;
 		display: inline-block;
 		position: initial;
 
@@ -749,6 +756,9 @@
 	padding-left: 26px;
 	background-position: left 1px;
 	margin-left: 15px;
+}
+#location-modify-order-message ~ .locabar-right-sections #locabar_messages_trigger {
+	display: none; /* hide during modify */
 }
 
 .locabar-section .section-warning-small,
@@ -2068,3 +2078,10 @@ option.address-icon {
 	 [data-gc-page] .disableCart .locabar-arrow{
 		display: none;
 	}
+	
+#topnavitem_dlvType > a {
+	min-width: 110px;
+}
+.modify .gnav-footer [data-sffooter="gift_card"] {
+	display: none;
+}

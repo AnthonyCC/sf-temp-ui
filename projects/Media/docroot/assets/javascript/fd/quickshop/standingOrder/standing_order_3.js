@@ -451,7 +451,7 @@ function activateSo(id){
 function updateSOItem(id, data){
 	var soID = "#soid_" + id;
 	var softLimit = FreshDirect.standingorder.softLimitDisplay || "50";
-	$jq(soID + " .standing-orders-3-so-settings-item").html(standingorder.standingOrderSettingsItem({item:data, softLimit:softLimit}));
+	$jq(soID + " .standing-orders-3-so-settings-item").html(standingorder.standingOrderSettingsItem({item:data, softLimit:softLimit, modifyingOrderId: data.modifyingOrderId}));
 
 }
 

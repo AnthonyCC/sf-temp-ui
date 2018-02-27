@@ -27,6 +27,7 @@
  * @param? isEBTused
  * @param? deliveryBegins
  * @param? mobWeb
+ * @param? modifyOrder
 */
 {template .viewcartlines autoescape="false"}
        {if $displayCheckout}
@@ -91,7 +92,7 @@
 		{param displayCheckout: $displayCheckout /}
 		{param totalWithoutTax: $totalWithoutTax /}
 		{param etipTotal: $etipTotal /}
-		{param buttonText: 'Checkout' /}
+		{param buttonText: ($modifyOrder and $modifyOrder == true) ? 'Review Changes' : 'Checkout' /}
     	{param successPage: '/expressco/checkout.jsp' /}
         {param displayCheckoutButton: $displayCheckout /}     
 		{param form: 'viewcart_startcheckout' /}
@@ -204,7 +205,7 @@
 	                     {param displayCheckout: $displayCheckout /}
 	                     {param totalWithoutTax: $totalWithoutTax /} 
 	                     {param etipTotal: $etipTotal /}
-                         {param buttonText: 'Checkout' /}
+                         {param buttonText: ($modifyOrder and $modifyOrder == true) ? 'Review Changes' : 'Checkout' /}
                          {param form: 'viewcart_startcheckout' /}
                          {param displayCheckoutButton: $displayCheckout /}
                      {/call}
@@ -308,6 +309,7 @@
  * @param? totalWithoutTax TotalWithoutTax 
  * @param? isEBTused
  * @param? mobWeb
+ * @param? modifyOrder
  */
 {template .checkoutlines autoescape="false"}
 	<div class='cartcontent checkoutlines'>
@@ -365,7 +367,7 @@
 			{param customerServiceRepresentative: $customerServiceRepresentative /}
 			{param totalWithoutTax: $totalWithoutTax /}
 			{param etipTotal: $etipTotal /}
-			{param buttonText: 'Place Order' /}
+			{param buttonText: ($modifyOrder and $modifyOrder == true) ? 'Save Changes' : 'Place Order' /}
 			{param form: 'checkout' /}
 			{param displayCheckoutButton: $displayCheckout /}
 		{/call}
@@ -468,6 +470,7 @@
  * @param? totalWithoutTax totalWithoutTax
  * @param? mobWeb is mobile web?
  * @param? subTotalBox
+ * @param? modifyOrder
  */
 {template .cartheader autoescape="false"}
 	<div class='cartheader'>
@@ -509,8 +512,8 @@
 							{/if}
 						{/foreach}
 					{/if}
-					<button class="cssbutton orange cartheader__button icon-chevron-right-after" fd-login-required fd-login-successpage="/expressco/checkout.jsp">
-						Checkout
+					<button class="cssbutton orange cartheader__button icon-chevron-right-after{if $modifyOrder and $modifyOrder == true} modify{/if}" fd-login-required fd-login-successpage="/expressco/checkout.jsp">
+						{if $modifyOrder and $modifyOrder == true}Review Changes{else}Checkout{/if}
 						{if $estimatedTotal}
 							<div class="charges__row">
 								{if $avalaraEnabled}
@@ -527,7 +530,7 @@
 						<script>$jq('[data-ec-page] .mm-page .mobweb-topnav').trigger('resize');</script>
 					{/literal}
 				{else}
-					<button class="cssbutton orange cartheader__button icon-chevron-right-after" fd-login-required fd-login-successpage="/expressco/checkout.jsp">Checkout</button>
+					<button class="cssbutton orange cartheader__button icon-chevron-right-after" fd-login-required fd-login-successpage="/expressco/checkout.jsp">{if $modifyOrder and $modifyOrder == true}Review Changes{else}Checkout{/if}</button>
 				{/if}
 			</form>
 		</div>
@@ -734,6 +737,7 @@
 /**
  * @param id Unique id of cartline item
  * @param descr Cartline item name
+ * @param descrAlt Cartline item alt
  * @param confDescr Additional info for cartline item beside name
  * @param price Cartline price
  * @param qu Map of quantity descriptors
@@ -767,7 +771,7 @@
 	<div class='cartsection__cartline' data-component='cartline' data-cartlineid='{$id}'>
 		<div class='cartline-imageholder cartline-box'>
 			<a class='cartline-link' href='/product_modify.jsp?cartLine={$id}&trk=cart'>
-				<img class='cartline-image' src='{if $image}{$image}{else}/media/images/temp/soon_80x80.gif{/if}' alt="{$descr}" />
+				<img class='cartline-image' src='{if $image}{$image}{else}/media/images/temp/soon_80x80.gif{/if}' alt="{$descrAlt}" />
 			</a>
 		</div>
 		<div class='cartline-title cartline-box'>
@@ -883,6 +887,7 @@
 /**
  * @param id Unique id of cartline item
  * @param descr Cartline item name
+ * @param descrAlt Cartline item alt
  * @param confDescr Additional info for cartline item beside name
  * @param price Cartline price
  * @param qu Map of quantity descriptors
@@ -912,10 +917,10 @@
 	<div class='cartsection__cartline' data-component='cartline' data-cartlineid='{$id}'>
 		<div class='cartline-imageholder cartline-box'>
 			{if $noModifyLinks}
-				<img class='cartline-image' src='{if $image}{$image}{else}/media/images/temp/soon_80x80.gif{/if}' alt="{$descr}" />
+				<img class='cartline-image' src='{if $image}{$image}{else}/media/images/temp/soon_80x80.gif{/if}' alt="{$descrAlt}" />
 			{else}
 				<a class='cartline-link' href='/product_modify.jsp?cartLine={$id}&trk=cart'>
-					<img class='cartline-image' src='{if $image}{$image}{else}/media/images/temp/soon_80x80.gif{/if}' alt="{$descr}" />
+					<img class='cartline-image' src='{if $image}{$image}{else}/media/images/temp/soon_80x80.gif{/if}' alt="{$descrAlt}" />
 				</a>
 			{/if}
 		</div>
@@ -1355,7 +1360,11 @@
 							</form>
 						{/if}
 						{if $box.other.deliveryPassPopupNeeded and $userRecognized and $userCorporate == false}
-							<span class="free-link-holder">&nbsp;or <a href="#" class="free-link" data-component="deliverypasspopup">Free</a></span>
+							{if $box.other.deliveryPassFreeTrialEligible}
+								<span class="free-link-holder">&nbsp;or <a href="javascript:doOverlayDialogNew('/includes/freetrial_popup.jsp');" class="free-link" >Free</a></span>
+							{else}
+								<span class="free-link-holder">&nbsp;or <a href="#" class="free-link" data-component="deliverypasspopup">Free</a></span>
+							{/if}
 						{/if}
 					</div> <!-- end subtotal__rowcell-right -->
 				{/if} /*end if $box.other */
@@ -1498,6 +1507,7 @@
 * @param? userCorporate
 * @param? saveAmount
 * @param? mobWeb
+* @param? modifyOrder
 */
 {template .checkoutCartHeader}
 	{if $deliveryFee} 
@@ -1546,7 +1556,7 @@
 	<div class="place-order container large-container {if not $saveAmount}no-save-amount{/if}">
 		{if $saveAmount}<div class="save-amount">You've Saved {$saveAmount}</div>{/if}
 		<form fdform="checkout" action="#" fdform-disable-resubmit="true" fdform-disable-resubmit-selector=".cssbutton.orange" fdform-disable-resubmit-release="manual">
-			<button class="cssbutton orange footer__button icon-chevron-right-after" fd-login-required="">Place Order</button>
+			<button class="cssbutton orange footer__button icon-chevron-right-after" fd-login-required="">{($modifyOrder and $modifyOrder == true)? 'Save Changes': 'Place Order'}</button>
 		</form>
 	</div>
 	{/if}

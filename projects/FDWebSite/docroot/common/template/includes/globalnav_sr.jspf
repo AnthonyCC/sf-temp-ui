@@ -127,11 +127,13 @@ if(user != null) {
 					<%
 					//if(Boolean.TRUE == pageContext.getAttribute(LocationHandlerTag.SERVICE_TYPE_MODIFICATION_ENABLED)){
 						%><div class="topnavitem" id="topnavitem_dlvType"><%
-						if(user.isCorporateUser()){
-							%><a href="/index.jsp?serviceType=HOME">Home delivery?</a><%
-						}else {
-							%><a href="/index.jsp?serviceType=CORPORATE">Office delivery?</a><%
-						}
+						if (!(user.getShoppingCart() instanceof FDModifyCartModel)) {
+							if(user.isCorporateUser()){
+								%><a href="/index.jsp?serviceType=HOME">Home delivery?</a><%
+							} else {
+								%><a href="/index.jsp?serviceType=CORPORATE">Office delivery?</a><%
+							}
+						} else { %><a></a><% /* to retain styling */ }
 						%></div><%
 					//}
 					/*
@@ -237,7 +239,6 @@ if(user != null) {
 						</div>
 					</div>
 					<div id="popupcart">
-			        	<div class="modifynote"><div class="modifynote-content">You are changing a placed order. <a href="/view_cart.jsp?trk=sidcrt">Click for details.</a></div></div>
 			        	<div class="header"><span class="quantity">QTY</span><span class="item">ITEM</span><span class="price">PRICE</span></div>
 			        	<div class="body">
 			            	<table class="content"></table>

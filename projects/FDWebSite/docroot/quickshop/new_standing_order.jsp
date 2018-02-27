@@ -159,6 +159,6 @@ user.setSoTemplateCart(new FDCartModel());
 
 	<tmpl:put name="extraJs">
 		<jwr:script src="/assets/javascript/timeslots.js" useRandomParam="false" />
-		<jwr:script src="/qsstandingorder.js" />
+		<jwr:script src="/qsstandingorder.js" useRandomParam="false" />
 	</tmpl:put>
 </tmpl:insert>

@@ -214,11 +214,6 @@
   font-weight:700;
 }
 
-.thxgiving-addtocart .quantity_minus,
-.thxgiving-addtocart .quantity_plus{
-  margin-top:15px;
-}
-
 .thxgiving-top-media{
     font-family: Verdana,Geneva,sans-serif;
     font-size:16px;
@@ -304,29 +299,11 @@
 	margin-top: 0;
 }
 
-.thxgiving-addtocart .soShow .quantity_plus, 
-.thxgiving-addtocart .soShow .quantity_minus {
-	background: url(/media_stat/images/sprites/plusminus.png) transparent center center no-repeat;
-    width: 27px;
-    height: 27px;
-    text-indent: 27px;
-    cursor: pointer;
-    border: none;
-    margin-top: 2px;
-}
-
 .thxgiving-addtocart .soShow .qtyinput input[type="text"].qty {
 	width: 3em;
 	border: 2px solid #c2c2c2;
 	font-size: 16px;
 	line-height: 24px;
-	height: 24px;
+	height: 32px;
 }
 
-.thxgiving-addtocart .soShow .quantity_minus {
-	background-position: -27px 0;
-}
-
-.thxgiving-addtocart .soShow .quantity_plus {
-	background-position: 0 0;
-}

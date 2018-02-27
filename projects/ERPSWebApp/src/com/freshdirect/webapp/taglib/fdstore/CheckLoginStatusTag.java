@@ -24,10 +24,6 @@ import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.WineFilter;
-import com.freshdirect.fdstore.customer.FDActionInfo;
-import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
-import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.fdstore.sempixel.FDSemPixelCache;
 import com.freshdirect.fdstore.sempixel.SemPixelModel;
 import com.freshdirect.framework.util.NVL;
@@ -35,8 +31,6 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
-import com.freshdirect.storeapi.application.CmsManager;
-import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.webapp.ajax.location.LocationHandlerService;
 import com.freshdirect.webapp.util.LocatorUtil;
 import com.freshdirect.webapp.util.RobotRecognizer;
@@ -191,13 +185,16 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
             // to let in
             //
 
-                if (guestAllowed && RobotRecognizer.isFriendlyRobot(request.getHeader("User-Agent"), request.getServerName())) {
+                if (RobotRecognizer.isFriendlyRobot(request.getHeader("User-Agent"))) {
                 //
                 // make sure the robot has a user in it's session so that pages
                 // won't blow up for it
                 //
                 if (user == null) {
                     user = RobotUtil.createRobotUser(session);
+                }
+                if(!guestAllowed) {
+                	LOGGER.info("FDCRITICALSEOERROR02:" + request.getHeader("User-Agent") + ":" + request.getServerName() + ":" + request.getRequestURI());
                 }
             } else {
                 if (request.getParameter("siteAccessPage") == null) { // if user navigates on site access do not redirect

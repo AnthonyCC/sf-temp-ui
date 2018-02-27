@@ -39,7 +39,7 @@ public class CmOrderTag extends AbstractCmTag {
 
         OrderTagModel model = builder.buildTagModel();
 
-        String tagJs = getFormattedTag(toJsVar(model.getOrderId()), toJsVar(model.getOrderSubtotal()), toJsVar(model.getOrderShipping()), toJsVar(model.getRegistrationId()),
+        String tagJs = getFormattedTagAsync(toJsVar(model.getOrderId()), toJsVar(model.getOrderSubtotal()), toJsVar(model.getOrderShipping()), toJsVar(model.getRegistrationId()),
                 toJsVar(model.getRegistrantCity()), toJsVar(model.getRegistrantState()), toJsVar(model.getRegistrantPostalCode()),
                 toJsVar(mapToAttrString(model.getAttributesMaps())));
 

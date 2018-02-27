@@ -23,7 +23,7 @@
 	<%-- 	<%@ include file="/common/template/includes/metatags.jspf" %> --%>
 		<tmpl:get name="seoMetaTag"/>
         <%@ include file="/common/template/includes/i_javascripts.jspf" %>
-        <jwr:script src="/qsstandingorder.js" />
+        <jwr:script src="/qsstandingorder.js" useRandomParam="false" />
 	  	<jwr:style src="/grid.css" media="all" />
 		<jwr:style src="/global.css" media="all" />
         <jwr:style src="/oldglobal.css" media="all" />

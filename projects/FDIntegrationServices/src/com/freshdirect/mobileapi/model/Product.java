@@ -1723,6 +1723,9 @@ public class Product {
 				}*/ catch (HttpErrorResponse e) {
 					// TODO Auto-generated catch block
 					//e.printStackTrace();
+				} catch (FDRuntimeException e) {
+
+					//e.printStackTrace();
 				}
 	        }
         }
@@ -1755,8 +1758,8 @@ public class Product {
      */
     public String getAutoConfiguredSalesUnit() {
         String autoConfiguredSalesUnit = null;
-        if (!product.getProductModel().isUnavailable()) {
-            FDConfigurableI configuration = product.getFDProduct().getAutoconfiguration(product.getProductModel().isSoldBySalesUnits(), 1);
+        if (product!=null&&product.getProductModel()!=null&&!product.getProductModel().isUnavailable()) {
+            FDConfigurableI configuration = product.getFDProduct()!=null?product.getFDProduct().getAutoconfiguration(product.getProductModel().isSoldBySalesUnits(), 1):null;
             if (configuration != null) {
                 autoConfiguredSalesUnit = configuration.getSalesUnit();
             }
@@ -1783,11 +1786,18 @@ public class Product {
 
     public double getEstimatedQuantity(Sku sku, SalesUnit salesUnit, double quantity) throws PricingException {
         double estimatedQuantity = 0.0;
-
-        Pricing pricing = getFDProduct(sku.getSkuCode()).getPricing();
-        SalesUnitRatio sur = pricing.findSalesUnitRatio(salesUnit.getName());
-
-        estimatedQuantity = sur.getRatio() * quantity;
+        
+        if(sku != null && salesUnit != null) {
+        	FDProduct _product = getFDProduct(sku.getSkuCode());
+        	
+        	if(_product != null) {
+		        Pricing pricing = _product.getPricing();
+		        if(pricing != null) {
+		        	SalesUnitRatio sur = pricing.findSalesUnitRatio(salesUnit.getName());
+		        	estimatedQuantity = sur.getRatio() * quantity;
+		        }	
+        	}
+        }
         return estimatedQuantity;
     }
 

@@ -16,8 +16,14 @@ var FreshDirect = FreshDirect || {};
 		playOneItem:{
 			value:function( coremetricsItem ){
 				try{
-					var fname = coremetricsItem.shift();
-					window[fname].apply(window,coremetricsItem);
+					if (typeof coremetricsItem[0] !== 'undefined') {
+						var fname = coremetricsItem.shift();
+						window[fname].apply(window,coremetricsItem);
+					} else {
+						// coremetrics library has not been loaded, add the item to the queue
+						var cmTagQueue = cmTagQueue||[];
+						cmTagQueue.push(coremetricsItem);
+					}
 				} catch(e) {
 					// console.log('cm: '+e);
 				}

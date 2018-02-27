@@ -630,10 +630,10 @@ public class Checkout {
 
                 Integer key = info.getKey();
                 FDCartLineI cartLine = cart.getOrderLineById(key.intValue());
-
-                item.setDescription(cartLine.getDescription());
-                item.setConfigurationDesc(cartLine.getConfigurationDesc());
-                item.setQuantity(cartLine.getQuantity());
+                
+                item.setDescription(cartLine!=null?cartLine.getDescription():null);
+                item.setConfigurationDesc(cartLine!=null?cartLine.getConfigurationDesc():null);
+                item.setQuantity(cartLine!=null?cartLine.getQuantity():null);
 
                 ItemAvailabilityError itemAvailabilityError = new ItemAvailabilityError();
                 item.setError(itemAvailabilityError);

@@ -1318,8 +1318,8 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
         if (origPricingCtx != null) {
             pricingZoneId = origPricingCtx.getZoneInfo();
         } else {
-            pricingZoneId = user.getUserContext().getPricingContext().getZoneInfo();
-            userContext = user.getUserContext();
+            pricingZoneId = user!=null&&user.getUserContext()!=null&&user.getUserContext().getPricingContext()!=null?user.getUserContext().getPricingContext().getZoneInfo():null;
+            userContext = user!=null?user.getUserContext():null;
         }
 
         FDGroup originalGrp = null;

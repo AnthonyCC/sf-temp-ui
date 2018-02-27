@@ -47,5 +47,6 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-beans-4.0.1.RELEASE.jar"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/fdcommerce-data.jar"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/ehcache-2.10.1.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

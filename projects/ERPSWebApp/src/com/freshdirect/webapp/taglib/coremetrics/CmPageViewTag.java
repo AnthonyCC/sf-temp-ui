@@ -56,12 +56,14 @@ public class CmPageViewTag extends AbstractCmTag {
         }
 
         StringBuilder sb = new StringBuilder();
-        sb.append(getFormattedTag(toJsVar(tagModel.getPageId()), toJsVar(tagModel.getCategoryId()), toJsVar(tagModel.getSearchTerm()), toJsVar(tagModel.getSearchResults()),
+        sb.append(getFormattedTagAsync(toJsVar(tagModel.getPageId()), toJsVar(tagModel.getCategoryId()), toJsVar(tagModel.getSearchTerm()), toJsVar(tagModel.getSearchResults()),
                 toJsVar(mapToAttrString(tagModel.getAttributesMaps()))));
 
         sb.append(getTagDelimiter());
-        sb.append(getFormattedTag(INIT_TRACKING_JS_PBJECT, new String[] { toJsVar(tagModel.getPageId()), toJsVar(getPackedPageLocationSubset(tagModel)),
-                toJsVar(CM_VC == null ? "" : CM_VC) }));
+        sb.append("window.coremetricsQueue = window.coremetricsQueue || [];window.coremetricsQueue.push(function(){" + 
+        		getFormattedTag(INIT_TRACKING_JS_PBJECT, new String[] { toJsVar(tagModel.getPageId()), toJsVar(getPackedPageLocationSubset(tagModel)),
+                toJsVar(CM_VC == null ? "" : CM_VC) } )+
+				"});");
 
         // LOGGER.debug(sb.toString());
         return sb.toString();

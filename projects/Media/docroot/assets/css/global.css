@@ -2002,6 +2002,11 @@ div.control, div.slotRow, div.time {
 		right: -35px;
 		background: none;
 	}
+	.ui-dialog.overlay-dialog-new.mm-page-overlay .ui-dialog-titlebar button.ui-dialog-titlebar-close{
+		right: 15px;
+		top: 15px;
+		z-index: 1;
+	}
 	.ui-dialog.overlay-dialog-new .ui-dialog-titlebar button.ui-dialog-titlebar-close span.ui-icon-closethick{
 		width: 25px;
 		height: 25px;
@@ -3294,8 +3299,6 @@ div#i_viewcart td {
 .modProd-banner>span {
 	font-family: Verdana, Arial, sans-serif;
 	font-size: 30px;
-	text-transform:uppercase;
-	color:#FF9933;
 	font-weight: bold;
 	margin: 15px 0;
 	text-align: center;
@@ -3323,16 +3326,15 @@ table.accessibilitySpacing td{
 .icon-base.icon-pdf{
 	background-image: url('/media/images/icons/adobe-pdf.png');
 }
-td .qtyinput a.quantity_minus,
-td .qtyinput a.quantity_plus{
+.qtyinput .quantity_minus,
+.qtyinput .quantity_plus{
     width: 36px;
-    color: #ffffff;
     background-color: #4fa157;
     border: 1px solid #4fa157;
     height: 34px;
     line-height: 32px;
     font-size: 24px;
-	font-family: Verdana;
+    font-family: Verdana;
     text-align: center;
     font-weight: bold;
     color: #fff;
@@ -3349,12 +3351,12 @@ td .qtyinput a.quantity_plus{
     -ms-user-select: none;
     user-select: none;
 }
-td .qtyinput a.quantity_minus:hover,
-td .qtyinput a.quantity_plus:hover{
+.qtyinput .quantity_minus:hover,
+.qtyinput .quantity_plus:hover{
     background-color: #458d4e;
     border: 1px solid #458d4e;
 }
-td .qtyinput input[type="text"].qty {
+.qtyinput input[type="text"].qty {
     width: 58px;
     height: 36px;
     font-size: 18px;
@@ -3364,7 +3366,7 @@ td .qtyinput input[type="text"].qty {
     padding: 0;
     border: 2px #c2c2c2 solid;
 }
-td .qtyinput input[type="text"].qty:hover{
+.qtyinput input[type="text"].qty:hover{
     border-color: #68aa6d;
 }
 #popupcart .qtyinput input.qty {
@@ -3423,4 +3425,38 @@ button.space {
 .zipcodefld{
 	display:inline-block;
 	vertical-align:inherit;
+}
+
+.prodMod-modLink { display: none; }
+ table.order_history_table {
+	font-size: 14px;
+}
+
+table.order_history_table tr{
+	height: 50px;
+}
+
+table.order_history_table td{
+	font-size: inherit;
+	padding: 0 0 0 10px;
+}
+
+table.order_history_table td.order_history_table_total_header{
+	width: 100px;
+}
+
+table.order_history_table td.order_history_table_status_header{
+	width: 110px;
+}
+
+table.order_history_table td img {
+	width: 20px;
+}
+
+table.order_history_table tr:nth-child(odd){
+	background-color: #f8f8f8;
+}
+
+table.order_history_table tr:nth-child(1) td{
+	background-color: #eee;
 }

@@ -35,6 +35,16 @@ public class ErpOrderHistoryUtil {
 		}
 		return ret;
 	}
+    
+    public static int getSettledOrderCountByStore(Collection<ErpSaleInfo> erpSaleInfos, EnumEStoreId estoreId) {
+		int ret = 0;
+        for (ErpSaleInfo saleInfo : erpSaleInfos) {
+			if (saleInfo.isSettled() && saleInfo.geteStore().equals(estoreId)) {
+				ret++;
+			}
+		}
+		return ret;
+	}
 	
     public static int getPhoneOrderCount(Collection<ErpSaleInfo> erpSaleInfos) {
 		int ret = 0;
@@ -334,6 +344,17 @@ public class ErpOrderHistoryUtil {
 		boolean hasSettledOrder = false;
         for (ErpSaleInfo saleInfo : erpSaleInfos) {
 			if (saleInfo.isSettled()) {
+				hasSettledOrder =true;
+				break;
+			}
+		}
+		return hasSettledOrder;
+	}
+    
+    public static boolean hasSettledOrders(Collection<ErpSaleInfo> erpSaleInfos, EnumEStoreId estoreId) {
+		boolean hasSettledOrder = false;
+        for (ErpSaleInfo saleInfo : erpSaleInfos) {
+			if (saleInfo.isSettled() && estoreId.equals(saleInfo.geteStore())) {
 				hasSettledOrder =true;
 				break;
 			}

@@ -8,10 +8,13 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
+import com.freshdirect.webapp.ajax.checkout.UnavailabilityPopulator;
+import com.freshdirect.webapp.ajax.checkout.data.UnavailabilityData;
 import com.freshdirect.webapp.ajax.data.PageAction;
 import com.freshdirect.webapp.ajax.expresscheckout.availability.service.AvailabilityService;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
@@ -20,11 +23,28 @@ import com.freshdirect.webapp.ajax.expresscheckout.service.FormDataService;
 import com.freshdirect.webapp.ajax.expresscheckout.service.SinglePageCheckoutFacade;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationResult;
 import com.freshdirect.webapp.checkout.RedirectToPage;
+import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 
 public class AtpRestrictionServlet extends BaseJsonServlet {
 
 	private static final long serialVersionUID = 8187391559285687167L;
 
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response, FDUserI user)
+			throws HttpErrorResponse {
+
+		if (FDStoreProperties.getAtpAvailabiltyMockEnabled()) {
+			UnavailabilityData atpFailureData = UnavailabilityPopulator.createUnavailabilityData((FDSessionUser) user);
+			if (!atpFailureData.getNonReplaceableLines().isEmpty() || !atpFailureData.getReplaceableLines().isEmpty()
+					|| atpFailureData.getNotMetMinAmount() != null || !atpFailureData.getPasses().isEmpty()) {
+				writeResponseData(response, atpFailureData);
+			} else {
+				writeResponseData(response, null);
+			}
+		}
+
+	}
+	
     @SuppressWarnings("unchecked")
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {

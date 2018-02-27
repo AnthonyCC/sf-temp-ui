@@ -119,7 +119,7 @@ public class GroupScalePricing extends FDGroup {
 		ZoneInfo zone=pricingZoneInfo;
 		GrpZonePriceModel zpModel=_getZonePrice(zone);
 		//APPDEV-6291 - Group Scale Pricing(Cascade for Sales Org) 
-		while(zpModel==null && zone.hasParentZone() && PricingIndicator.SALE.equals(zone.getPricingIndicator())) {
+		while(zpModel==null && zone!=null && zone.hasParentZone() && PricingIndicator.SALE.equals(zone.getPricingIndicator())) {
 			zone=zone.getParentZone();
 			zpModel=_getZonePrice(zone);
 		}

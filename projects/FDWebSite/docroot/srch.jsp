@@ -256,6 +256,18 @@
 
   <tmpl:put name='bottom' direct='true'>
     <c:choose>
+    	<c:when test="${browsePotato.searchParams.pageType == 'PRES_PICKS'}">
+    		<div class="srch-carousel pres-picks-carousel">
+    			<script>
+
+				if ($jq('.pres-picks-carousel').length > 0) {
+					$jq.ajax('/carousel/carousel.jsp?type=pres-picks').then(function(page) {
+						$jq('.pres-picks-carousel').html(page);
+					});
+				}
+				</script>
+    		</div>
+    	</c:when>
 	    <c:when test="${browsePotato.searchParams.pageType != 'SEARCH'}">
 	      <div class="srch-carousel">
 	        <soy:render template="srch.carouselWrapper" data="${browsePotato.carousels}" />

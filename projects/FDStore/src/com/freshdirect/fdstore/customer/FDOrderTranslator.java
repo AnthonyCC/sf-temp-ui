@@ -120,7 +120,7 @@ public class FDOrderTranslator {
 				deliveryInfo.setDeliveryStartTime(deliveryReservation.getStartTime());
 				deliveryInfo.setDeliveryEndTime(deliveryReservation.getEndTime());
 				
-				if(EnumEStoreId.FDX.name().equals(cart.getEStoreId().name())){
+				if(EnumEStoreId.FDX.equals(cart.getEStoreId())){
 					LOGGER.warn("Customer : "+order.getCustomerId()+ " and eStore :"+cart.getEStoreId()+" delivery plant :"+deliveryInfo.getDeliveryPlantInfo());
 					deliveryInfo.setOriginalCutoffTime(deliveryReservation.getTimeslot().getOriginalCutoffDateTime()); // this is used by CSR
 					//give minimum time specified in  deliveryReservation.getTimeslot().getMinDurationForModStart() to start order modification

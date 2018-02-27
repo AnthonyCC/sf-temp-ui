@@ -72,6 +72,12 @@ var FreshDirect = FreshDirect || {};
     var vislibleProducts = elements.slice(newPage * itemPerPage, (newPage+1) * itemPerPage).filter(':not([data-impression-reported])');
     vislibleProducts.each(function (i, pEl) {
       pEl.setAttribute('data-impression-reported', 'true');
+      
+      //do criteo beacons
+      if ($(pEl).attr('data-hooklogic-beacon-impress') !== undefined) {
+    	  $(pEl).append('<img src="'+$(pEl).attr('data-hooklogic-beacon-impress')+'" alt="" style="display: none;" />');
+    	  $(pEl).attr('data-hooklogic-beacon-impress', null); //remove
+      }
     });
 
     if (vislibleProducts.length) {

@@ -16,9 +16,9 @@ import com.freshdirect.sap.ejb.SapException;
  *
  */
 public interface FDXOrderPickEligibleCronSB extends EJBObject{ 
-
+	@Deprecated
 	public void queryForSalesPickEligible() throws RemoteException;
-	
+	@Deprecated
 	public void sendOrdersToSAP(List<SapOrderPickEligibleInfo> list) throws FinderException, RemoteException, ErpTransactionException, SapException;
 
 }

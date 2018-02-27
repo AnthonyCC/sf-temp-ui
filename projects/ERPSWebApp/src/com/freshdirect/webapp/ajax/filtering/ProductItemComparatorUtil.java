@@ -62,7 +62,7 @@ public class ProductItemComparatorUtil {
 			String userId = identity == null ? null : identity.getErpCustomerPK();
 			
 			List<FilteringProductItem> allProductItems = data.getSectionContexts().get(0).getProductItems();
-			if (allProductItems!=null){
+			if (allProductItems != null && ScoreProvider.getInstance().isUserHasScore(userId)){
 
 				//collect available favorites
 				List<FilteringProductItem> favourites = new ArrayList<FilteringProductItem>();

@@ -148,7 +148,8 @@
           <script>
           	$jq.ajax('/carousel/carousel.jsp').then(function(page) {
           		$jq('#qs-carousel').html(page);
-          		if (fd.common.tabbedRecommender) {
+              FreshDirect.components.carousel.changePage($jq('#qs-carousel [data-component="carousel"]').first(), null);
+          		if (FreshDirect.common.tabbedRecommender) {
 	          		var firstTab = $jq('#qs-carousel [data-component="tabbedRecommender"] [data-tabname]:first-child');
 					fd.common.tabbedRecommender.selectTab($('#qs-carousel [data-component="tabbedRecommender"]'),firstTab.data('tabname'),firstTab);
 				}

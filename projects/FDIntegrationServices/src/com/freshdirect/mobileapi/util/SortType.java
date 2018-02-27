@@ -20,7 +20,11 @@ public enum SortType {
 	EXPIRATION_DATE("expr"),
 	PERC_DISCOUNT("poff"),
 	DOLLAR_DISCOUNT("doff"),
-    SUSTAINABILITY_RATING("sust");
+    SUSTAINABILITY_RATING("sust"),
+    ECOUPON("ecoupon"),
+    YOURFAVES("yourFaves"),
+    CUSTFAVES("custFaves"),
+    CUSTOMER_RATING("cxpr");
     String fdSortValue;
     
     
@@ -103,7 +107,7 @@ public enum SortType {
     public String getSortValue(){
         return fdSortValue;
     }
-    
+        
     public static SortType wrap(SortOptionModel model)
     {
     	if(model == null || model.getContentName() == null)
@@ -124,29 +128,23 @@ public enum SortType {
     		o = SUSTAINABILITY_RATING;
     	} else if(toCheck.contains("name")){
     		o = NAME;
-    	} else if(toCheck.contains("")){
-    		
-    	} else if(toCheck.contains("")){
-    		
-    	} else if(toCheck.contains("")){
-    		
-    	} else if(toCheck.contains("")){
-    		
-    	} else if(toCheck.contains("")){
-    		
-    	} else if(toCheck.contains("")){
-    		
-    	} else if(toCheck.contains("")){
-    		
-    	} else if(toCheck.contains("")){
-    		
-    	} else if(toCheck.contains("")){
-    		
-    	} else if(toCheck.contains("")){
-    		
-    	} else if(toCheck.contains("")){
-    		
-    	}
+    	} else if(toCheck.contains("relevancy")){
+    		o = RELEVANCY;
+    	} else if(toCheck.contains("ourfavorites")){
+    		o = OURFAVES;
+    	} else if(toCheck.contains("department")){
+    		o = DEPARTMENT;
+    	} else if(toCheck.contains("recency")){
+    		o = RECENCY;
+    	} else if(toCheck.contains("ecoupon")){
+    		o = ECOUPON;
+    	} else if(toCheck.contains("yourfavorites")){
+    		o = YOURFAVES;
+    	} else if(toCheck.contains("customerfavoritesfirst")){
+    		o = CUSTFAVES;
+    	} else if(toCheck.contains("customerrating")){
+    		o = CUSTOMER_RATING;
+    	} 
     	
     	return o;
     }

@@ -6,7 +6,7 @@
 {template .breadcrumbs}
 {foreach $dataItem in $data}
 {if $dataItem}
-<li><label for="{$dataItem.filteringUrlValue}">{$dataItem.name}</label></li>
+<li><label tabindex="0" for="{$dataItem.filteringUrlValue}"><span class="offscreen">delete</span>{$dataItem.name}<span class="offscreen">filter</span></label></li>
 {/if}
 {/foreach}
 {/template}

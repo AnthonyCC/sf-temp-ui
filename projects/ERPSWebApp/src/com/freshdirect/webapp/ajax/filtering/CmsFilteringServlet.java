@@ -17,6 +17,9 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.coremetrics.builder.PageViewTagInput;
 import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
+import com.freshdirect.fdstore.customer.FDAuthenticationException;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -30,7 +33,6 @@ import com.freshdirect.webapp.ajax.browse.data.BrowseData.SearchParams;
 import com.freshdirect.webapp.ajax.browse.data.BrowseData.SearchParams.Tab;
 import com.freshdirect.webapp.ajax.browse.data.CmsFilteringFlowResult;
 import com.freshdirect.webapp.features.service.FeaturesService;
-import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.unbxd.BrowseEventTag;
 
 public class CmsFilteringServlet extends BaseJsonServlet {
@@ -50,17 +52,26 @@ public class CmsFilteringServlet extends BaseJsonServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
 
         try {
-            final CmsFilteringNavigator navigator = CmsFilteringNavigator.createInstance(request, user);
-            final CmsFilteringFlowResult result = CmsFilteringFlow.getInstance().doFlow(navigator, (FDSessionUser) user);
-
-            writeResponseData(response, result);
+        	boolean isOAuth = isOAuthTokenInHeader(request);
+        	
+        	if (isOAuth && user.getIdentity() != null) {
+				user = FDCustomerManager.recognize(user.getIdentity(), null, null, null, false, false);
+			}
+        	
+            final CmsFilteringNavigator navigator = CmsFilteringNavigator.createInstance(request, user, false);
+            final CmsFilteringFlowResult flow = CmsFilteringFlow.getInstance().doFlow(navigator, user);
+            final Map<String, ?> payload = DataPotatoField.digBrowse(flow);
+            writeResponseData(response, payload);
         } catch (InvalidFilteringArgumentException e) {
             returnHttpError(400, "JSON contains invalid arguments", e); // 400 Bad Request
         } catch (FDNotFoundException e) {
             returnHttpError(404, "Node is not found in CMS", e); // 404 Bad Request
         } catch (FDResourceException e) {
             returnHttpError(500, "Unable to load Global Navigation", e);
-        }
+        } catch (FDAuthenticationException e) {
+        	LOGGER.error("Failed to recognize user", e);
+			returnHttpError(500, "Failed to get user.");
+		}
 
     }
 
@@ -80,9 +91,13 @@ public class CmsFilteringServlet extends BaseJsonServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
 
         try {
-            CmsFilteringNavigator navigator = CmsFilteringNavigator.createInstance(request, user);
-            ContentFactory.getInstance().setEligibleForDDPP(FDStoreProperties.isDDPPEnabled() || ((FDSessionUser) user).isEligibleForDDPP());
-            final CmsFilteringFlowResult flow = CmsFilteringFlow.getInstance().doFlow(navigator, (FDSessionUser) user);
+        	boolean isOAuthRequest = isOAuthTokenInHeader(request);
+			if (isOAuthRequest && user.getIdentity() != null) {
+				user = FDCustomerManager.recognize(user.getIdentity(), null, null, null, false, false);
+			}
+            CmsFilteringNavigator navigator = CmsFilteringNavigator.createInstance(request, user, true);
+            ContentFactory.getInstance().setEligibleForDDPP(FDStoreProperties.isDDPPEnabled() || ((FDUser) user).isEligibleForDDPP());
+            final CmsFilteringFlowResult flow = CmsFilteringFlow.getInstance().doFlow(navigator, user);
             final Map<String, ?> payload = DataPotatoField.digBrowse(flow);
 
             if (request.getParameterMap().keySet().contains("data")) {
@@ -175,11 +190,18 @@ public class CmsFilteringServlet extends BaseJsonServlet {
                     returnHttpError(400, "JSON contains invalid arguments", e); // 400 Bad Request
                     break;
             }
-        }
+        } catch (FDAuthenticationException e) {
+        	LOGGER.error("Failed to recognize user", e);
+			returnHttpError(500, "Failed to get user.");
+		}
     }
 
     @Override
     protected int getRequiredUserLevel() {
         return FDUserI.GUEST;
+    }
+    
+    protected boolean isOAuthEnabled() {
+    	return true;
     }
 }

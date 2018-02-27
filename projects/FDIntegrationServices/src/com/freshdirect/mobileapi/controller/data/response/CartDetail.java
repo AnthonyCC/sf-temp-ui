@@ -945,4 +945,13 @@ public class CartDetail {
 		this.reservationId = reservationId;
 	}
 	
+	private boolean isDpFreeTrialEligible = false;
+
+    public boolean isDpFreeTrialEligible() {
+        return isDpFreeTrialEligible;
+    }
+
+    public void setisDpFreeTrialEligible(boolean isDpFreeTrialEligible) {
+        this.isDpFreeTrialEligible = isDpFreeTrialEligible;
+    }
 }

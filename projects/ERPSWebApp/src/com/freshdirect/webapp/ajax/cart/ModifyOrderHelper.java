@@ -44,9 +44,9 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 
 public class ModifyOrderHelper {
-	
+
 	private static Category LOGGER = LoggerFactory.getInstance(ModifyOrderHelper.class);
-	
+
 	public static void handleDeliveryPassPromotion(FDSessionUser currentUser, FDStandingOrder currentStandingOrder, EnumCheckoutMode checkOutMode,
 			FDOrderAdapter order, FDModifyCartModel cart) throws FDResourceException, FDInvalidConfigurationException {
 		Set<String> usedPromoCodes = order.getSale().getUsedPromotionCodes();
@@ -58,10 +58,10 @@ public class ModifyOrderHelper {
 				for (Iterator<PromotionApplicatorI> i = ((Promotion)promo).getApplicatorList().iterator(); i.hasNext();) {
 					PromotionApplicatorI _applicator = i.next();
 					if (_applicator instanceof ExtendDeliveryPassApplicator) {
-						app = (ExtendDeliveryPassApplicator)_applicator;						
+						app = (ExtendDeliveryPassApplicator)_applicator;
 					}
 				}
-				
+
 				if(app != null) {
 					cart.setCurrentDlvPassExtendDays(app.getExtendDays());
 					break;
@@ -73,19 +73,19 @@ public class ModifyOrderHelper {
 				*/
 			}
 		}
-		
+
 		cart.refreshAll(true);
 		currentUser.setCurrentStandingOrder(currentStandingOrder);
 		currentUser.setCheckoutMode(checkOutMode);
 		currentUser.setShoppingCart( cart );
 	}
-	
+
 	public static void handleReservation(FDOrderAdapter order, FDModifyCartModel cart) throws FDResourceException {
 		LOGGER.info("Get Reservation By Id: "+ order.getDeliveryReservationId() + " Sale ID: "+ order.getSale().getId());
 		FDReservation reservation = FDDeliveryManager.getInstance().getReservation( order.getDeliveryReservationId(), order.getSale().getId() );
 		cart.setDeliveryReservation(reservation);
 	}
-	
+
 	public static void handleRedemptionPromotions(FDSessionUser currentUser, FDOrderAdapter order) {
 		for ( String promoCode : order.getUsedPromotionCodes() ) {
 			Promotion promo = (Promotion) PromotionFactory.getInstance().getPromotion(promoCode);
@@ -94,29 +94,29 @@ public class ModifyOrderHelper {
 				currentUser.setRedeemedPromotion(PromotionFactory.getInstance().getPromotion(promoCode));
 			}
 		}
-		
+
 		// recalculate promotion
 		currentUser.invalidateCache();
 		currentUser.updateUserState( );
 	}
-	
+
 	public static void handleCoupons(HttpSession session) {
 		FDCustomerCouponUtil.getCustomerCoupons(session);
 		FDCustomerCouponUtil.evaluateCartAndCoupons(session);
 	}
-	
+
 	public static void updateSession(FDSessionUser currentUser, HttpSession session) {
 		session.setAttribute( SessionName.USER, currentUser );
         //The previous recommendations of the current user need to be removed.
         session.removeAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);
 	}
-	
+
 	public static void handleDlvPass(FDModifyCartModel cart, FDUserI fdUser) {
-		if(fdUser.getShoppingCart().getDeliveryPassCount()>0 || fdUser.isDlvPassActive()){
-			cart.setDlvPassApplied(true);			
+		if(fdUser.getShoppingCart().getDeliveryPassCount()>0 || fdUser.isDlvPassActive() || ( fdUser.applyFreeTrailOptinBasedDP() )){
+			cart.setDlvPassApplied(true);
 		}
 	}
-	
+
 	public static void loadGiftCardsIntoCart(FDUserI user, FDOrderI originalOrder) {
 		FDGiftCardInfoList gcList = user.getGiftCardList();
 		//Clear any hold amounts.
@@ -130,7 +130,7 @@ public class ModifyOrderHelper {
 		    		if(fg != null) {
 		    			//Found. Gift card already validated. set hold amount = amount applied on this order.
 		    			fg.setHoldAmount(originalOrder.getAppliedAmount(certNum));
-		    		} 
+		    		}
 		    	}
 	    	}
 		}
@@ -151,28 +151,28 @@ public class ModifyOrderHelper {
 					order.getDeliveryInfo().setDeliveryCutoffTime(cal.getTime());
 					order.getDeliveryReservation().getTimeslot().setCutoffDateTime(cal.getTime());
 					order.getDeliveryReservation().getTimeslot().setCutoffTime(new TimeOfDay(cal.getTime()));
-					
+
 				}else{
 					order.getDeliveryInfo().setDeliveryCutoffTime(order.getDeliveryInfo().getDeliveryCutoffTime());
 					order.getDeliveryReservation().getTimeslot().setCutoffDateTime(order.getDeliveryInfo().getDeliveryCutoffTime());
 					order.getDeliveryReservation().getTimeslot().setCutoffTime(new TimeOfDay(order.getDeliveryInfo().getDeliveryCutoffTime()));
 				}
 			}
-			
-			EnumTransactionSource transactionSource = (session.getAttribute(SessionName.CUSTOMER_SERVICE_REP)!=null 
-					|| CrmSession.getCurrentAgent(session)!=null 
+
+			EnumTransactionSource transactionSource = (session.getAttribute(SessionName.CUSTOMER_SERVICE_REP)!=null
+					|| CrmSession.getCurrentAgent(session)!=null
 					|| currentUser.getMasqueradeContext()!=null) ? EnumTransactionSource.CUSTOMER_REP : EnumTransactionSource.WEBSITE;
 
-			
+
 			if((EnumTransactionSource.CUSTOMER_REP.equals(transactionSource)) ||
-						(order.getDeliveryInfo().getDeliveryCutoffTime()!=null && 
+						(order.getDeliveryInfo().getDeliveryCutoffTime()!=null &&
 						order.getDeliveryInfo().getOriginalCutoffTime()!=null &&
 						order.getDeliveryInfo().getDeliveryCutoffTime().after(order.getDeliveryInfo().getOriginalCutoffTime()))){
 				order.getDeliveryInfo().setDeliveryCutoffTime(order.getDeliveryInfo().getOriginalCutoffTime());
 				order.getDeliveryReservation().getTimeslot().setCutoffDateTime(order.getDeliveryInfo().getOriginalCutoffTime());
 				order.getDeliveryReservation().getTimeslot().setCutoffTime(new TimeOfDay(order.getDeliveryInfo().getOriginalCutoffTime()));
 			}
-			
+
 		}
 
 	}

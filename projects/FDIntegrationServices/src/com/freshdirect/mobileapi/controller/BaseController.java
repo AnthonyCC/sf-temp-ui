@@ -355,11 +355,12 @@ public abstract class BaseController extends AbstractController implements Messa
 		                if(MobileApiProperties.isBaseControllerLoggingEnabled()) {	                	
 		                	LOGGER.error("FDCRITICALERROR01 for "
 		                			+ (user != null && user.getFDSessionUser() != null 
-		                					? (user.getFDSessionUser().getFDCustomer() != null ? user.getFDSessionUser().getFDCustomer().getErpCustomerPK() : user.getFDSessionUser().getPrimaryKey() ) : "NOUSER" ) 
+		                					? (user.getFDSessionUser().getIdentity() != null && user.getFDSessionUser().getFDCustomer() != null 
+		                							? user.getFDSessionUser().getFDCustomer().getErpCustomerPK() : user.getFDSessionUser().getPrimaryKey() ) : "NOUSER" ) 
 		                				+ " -> "+ getRootCauseStackTrace(uncaughtException));
 		                }
 	                } catch(Exception cantHandle) {
-	                	LOGGER.error("FDCRITICALERROR02 - Error logging error in BaseController");
+	                	LOGGER.error("FDCRITICALERROR02 - Error logging error in BaseController - "+cantHandle.getMessage());
 	                }
 				}
 			}
@@ -784,7 +785,9 @@ public abstract class BaseController extends AbstractController implements Messa
                 fdSessionUser = LocatorUtil.useIpLocator(request.getSession(), request, response);
             }
             EnumTransactionSource src = getTransactionSourceEnum(request, null);
-            fdSessionUser.getUser().setApplication(src);
+            if(fdSessionUser.getUser()!=null){
+            	fdSessionUser.getUser().setApplication(src);
+            }
             fdSessionUser.isLoggedIn(true);
             request.getSession().setAttribute(SessionName.APPLICATION, src.getCode());
             request.getSession().setAttribute(SessionName.USER, fdSessionUser);

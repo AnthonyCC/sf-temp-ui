@@ -25,6 +25,9 @@ import org.apache.log4j.Category;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.dataloader.payment.ejb.SaleCronHome;
 import com.freshdirect.dataloader.payment.ejb.SaleCronSB;
+import com.freshdirect.fdstore.FDEcommProperties;
+import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.ecomm.gateway.SaleCronService;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
 
@@ -58,8 +61,15 @@ public class CaptureCronRunner {
 
 			SaleCronSB sb = home.create();
 			//First post auth sales for gift cards.
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SaleCronSB)){
+				SaleCronService.getInstance().postAuthSales(captureTimeout);
+				SaleCronService.getInstance().captureSales(captureTimeout);
+				
+			}
+			else{
 			sb.postAuthSales(captureTimeout);
 			sb.captureSales(captureTimeout);
+			}
 			LOGGER.info("CaptureCron finished");
 		} catch (Exception e) {
 			LOGGER.error(e);

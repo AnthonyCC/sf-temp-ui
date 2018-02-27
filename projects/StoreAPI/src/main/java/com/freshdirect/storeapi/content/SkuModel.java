@@ -172,11 +172,19 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
             FDProductInfo fdpi = this.getProductInfo();
             // String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
             // FDAvailabilityI av = AvailabilityFactory.createAvailability(this, fdpi,plantID);
-            String salesOrg = ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo().getSalesOrg();
-            String distChannel = ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo().getDistributionChanel();
+            String salesOrg = ContentFactory.getInstance()!=null&&ContentFactory.getInstance().getCurrentUserContext()!=null&&
+            					ContentFactory.getInstance().getCurrentUserContext().getPricingContext()!=null&&
+            						ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo()!=null?
+            							ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo().getSalesOrg():null;
+            String distChannel = ContentFactory.getInstance()!=null&&ContentFactory.getInstance().getCurrentUserContext()!=null&&
+            						ContentFactory.getInstance().getCurrentUserContext().getPricingContext()!=null&&
+            							ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo()!=null?
+            								ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo().getDistributionChanel():null;
             String pickingPlantId = fdpi.getPickingPlantId(salesOrg, distChannel);
             if (null == pickingPlantId || "".equals(pickingPlantId.trim())) {
-                pickingPlantId = ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+                pickingPlantId = ContentFactory.getInstance()!=null&&ContentFactory.getInstance().getCurrentUserContext()!=null&&
+                					ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext()!=null?
+                						ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId():null;
             }
             //System.out.println(this.getClass().getName() + String.format("  salesOrg %s, distChannel %s, pickingPlantId %s" , salesOrg, distChannel, pickingPlantId));
             FDAvailabilityI av = AvailabilityFactory.createAvailability(this, fdpi, pickingPlantId);

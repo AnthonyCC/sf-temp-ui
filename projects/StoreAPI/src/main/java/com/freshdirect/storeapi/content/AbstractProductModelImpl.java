@@ -272,7 +272,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 
 	private String getProductNewnessKey() {
 		String key="";
-		ZoneInfo zone=this.getUserContext().getPricingContext().getZoneInfo();
+		ZoneInfo zone=this!=null&&this.getUserContext()!=null&&this.getUserContext().getPricingContext()!=null?this.getUserContext().getPricingContext().getZoneInfo():null;
 		if(zone!=null) {
 			key=new StringBuilder(5).append(zone.getSalesOrg()).append(zone.getDistributionChanel()).toString();
 		}

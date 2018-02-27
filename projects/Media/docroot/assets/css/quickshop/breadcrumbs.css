@@ -38,7 +38,18 @@
 	text-decoration:underline;
 }
 
+.no-touch #breadcrumbs li label:focus {
+	text-decoration:underline;
+}
+
 #breadcrumbs li label:hover:before {
 	background: url('/media_stat/images/quickshop/buttons-sprite.png') no-repeat -160px -561px  #eedfee;
 }
 
+#breadcrumbs li label:focus:before {
+	background: url('/media_stat/images/quickshop/buttons-sprite.png') no-repeat -160px -561px  #eedfee;
+}
+
+ul#breadcrumbs li label{
+	outline:none;
+}

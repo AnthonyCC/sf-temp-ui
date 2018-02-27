@@ -74,6 +74,7 @@ var dataLayer = window.dataLayer || [];
           order_count: custData.orderCount || 0,
           delivery_pass_status: custData.deliveryPassStatus || '',
           customer_id: custData.customerId || '',
+          modifyMode: custData.modifyMode || false,
           zip_code: custData.zipCode || '',
           user_id: custData.userId || '',
           user_status: custData.userStatus || '',
@@ -278,7 +279,8 @@ var dataLayer = window.dataLayer || [];
                 revenue: coData.revenue || 0,
                 tax: coData.tax || 0,
                 shipping: coData.shippingCost || 0,
-                coupon: coData.couponCode && coData.couponCode.join(','),
+                // #AN-147 coupon: coData.couponCode && coData.couponCode.join(','),
+                coupon: coData.redemptionCode && coData.redemptionCode.join(','),
                 redemption_code: coData.redemptionCode && coData.redemptionCode.join(','),
                 etipping: coData.etipping || 0
               },
@@ -551,19 +553,23 @@ var dataLayer = window.dataLayer || [];
     var reportProduct = function (elm) {
       var productData = fd.gtm.getProductData(elm, listData);
 
-      return {
-        id: productData.productId,
-        name: productData.name,
-        price: productData.price,
-        brand: productData.brand,
-        category: productData.categoryId,
-        variant: productData.variant !== 'null' ? productData.variant : "default variant",
-        new_product: productData.new_product,
-        sku: productData.skuCode,
-        in_stock: productData.in_stock,
-        position: parseInt(productData.position, 10) || 0,
-        list: productData.list
-      };
+      if (productData && productData.productId) {
+        return {
+          id: productData.productId,
+          name: productData.name,
+          price: productData.price,
+          brand: productData.brand,
+          category: productData.categoryId,
+          variant: productData.variant !== 'null' ? productData.variant : "default variant",
+          new_product: productData.new_product,
+          sku: productData.skuCode,
+          in_stock: productData.in_stock,
+          position: parseInt(productData.position, 10) || 0,
+          list: productData.list
+        };
+      }
+
+      return null;
     };
 
     $el.each(function (i, elm) {
@@ -584,8 +590,12 @@ var dataLayer = window.dataLayer || [];
   // report product impressions
   fd.gtm.reportImpressions = function (products, type) {
     type = type || 'impressionsPushed';
+    products = products.filter(function (p) {
+      return p && p.id;
+    });
+
     var checkAndReport = function () {
-      if (fd.gtm.check()) {
+      if (fd.gtm.check() && products && products.length) {
         resetImpressions();
         dataLayer.push({
           ecommerce: {
@@ -634,15 +644,17 @@ var dataLayer = window.dataLayer || [];
       channel = 'rec_criteo';
     } else if (productData && productData.variantId) {
       channel = 'rec_' + productData.variantId;
+    } else if ($(el).closest('.transactional-related-item').length || $(el).parent().hasClass('relatedItem')) {
+      channel = 'rec_flyout';
+    } else if (el && $(el).closest('[data-component="carousel"]').length) {
+      channel = 'rec';
     } else if (productData && productData.moduleVirtualCategory) {
       var mvc = productData.moduleVirtualCategory.split(':');
 
       channel = 'rec_' + mvc[mvc.length - 1];
-    } else if ($(el).closest('.transactional-related-item').length) {
-      channel = 'rec_flyout';
     } else {
       channel = urlPageType.toLowerCase() || pageType.toLowerCase();
-      channel = channel === 'category_list' ? 'browse' : channel;
+      channel = 'category_list#ecoupon#newproducts'.indexOf(channel) > -1 ? 'browse' : channel;
     }
 
     return channel ? 'channel_' + channel : '';
@@ -665,6 +677,15 @@ var dataLayer = window.dataLayer || [];
       location = 'reorder_' + safeName($('ul.qs-tabs li .selected').text());
     } else {
       location = pageType.toLowerCase();
+    }
+
+    // reorder - strange behavior fallback
+    if (location === 'top_items') {
+      location = 'reorder_your_top_items';
+    } else if (location === 'past_orders') {
+      location = 'reorder_your_past_orders';
+    } else if (location === 'shopping_lists') {
+      location = 'reorder_your_shopping_lists';
     }
 
     // product
@@ -739,6 +760,7 @@ var dataLayer = window.dataLayer || [];
   var gtmData = fd.gtm && fd.gtm.data && fd.gtm.data.googleAnalyticsData;
   var browseData = fd.browse && fd.browse.data;
   var productData = fd.pdp && fd.pdp.data;
+  var productExtraData = fd.pdp && fd.pdp.extraData;
 
   if (gtmData) {
     fd.gtm.updateDataLayer(gtmData);
@@ -779,6 +801,13 @@ var dataLayer = window.dataLayer || [];
     if (fd.browse && fd.browse.data && fd.browse.data.adProducts && fd.browse.data.adProducts.products && fd.browse.data.adProducts.products.length) {
       fd.gtm.reportImpressions(fd.browse.data.adProducts.products.map(function (p, i) {
         return fd.gtm.productTransform(p, i+1, {product: p});
+      }));
+    }
+
+    // report group scale products
+    if (productExtraData && productExtraData.groupScaleData && productExtraData.groupScaleData.groupProducts && productExtraData.groupScaleData.groupProducts.length) {
+      fd.gtm.reportImpressions(productExtraData.groupScaleData.groupProducts.map(function (p, i) {
+        return fd.gtm.productTransform(p, i+1, {product: p, channel: 'rec_groupscale'});
       }));
     }
   }

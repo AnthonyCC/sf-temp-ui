@@ -213,34 +213,39 @@ public class ListConverter {
 	private static List<FDCustomerListItem> buildCustomerListLine(List<FDCustomerListItemData> lineItems) {
 		List<FDCustomerListItem>  customerListItemList = new ArrayList<FDCustomerListItem>();
 		for (FDCustomerListItemData fdCustomerListItem : lineItems) {
-			if(fdCustomerListItem.getReturnType().equals(FDCustomerProductListLineItem.class.getSimpleName())){
-				FDCustomerProductListLineItem productlistLineItem = new FDCustomerProductListLineItem(fdCustomerListItem.getProductListLineItem().getSkuCode(), buildFDConfiguration(fdCustomerListItem.getProductListLineItem().getConfigurationData()));
-				productlistLineItem.setRecipeSourceId(fdCustomerListItem.getProductListLineItem().getRecipeSourceId());
-				productlistLineItem.setSojustAddedItemToCart(fdCustomerListItem.getProductListLineItem().isSojustAddedItemToCart());
-				productlistLineItem.setFrequency(fdCustomerListItem.getFrequency());
-				productlistLineItem.setFirstPurchase(fdCustomerListItem.getFirstPurchase());
-				productlistLineItem.setLastPurchase(fdCustomerListItem.getLastPurchase());
-				productlistLineItem.setDeleted(fdCustomerListItem.getDeleted());
-				if(fdCustomerListItem.getCustomerListItemId() != null)
-				productlistLineItem.setId(fdCustomerListItem.getCustomerListItemId());
-				customerListItemList.add(productlistLineItem);
-			}
-			else if (fdCustomerListItem.getReturnType().equals(FDCustomerRecipeListLineItem.class.getSimpleName())){
-				FDCustomerRecipeListLineItem customerRecipeListLineItem = new FDCustomerRecipeListLineItem();
-				if(fdCustomerListItem.getRecipeListLineItemData() != null){
-					customerRecipeListLineItem.setRecipeId(fdCustomerListItem.getRecipeListLineItemData().getRecipeId());
-					customerRecipeListLineItem.setRecipeName(fdCustomerListItem.getRecipeListLineItemData().getRecipeName());
-				}
-				customerRecipeListLineItem.setFrequency(fdCustomerListItem.getFrequency());
-				customerRecipeListLineItem.setFirstPurchase(fdCustomerListItem.getFirstPurchase());
-				customerRecipeListLineItem.setLastPurchase(fdCustomerListItem.getLastPurchase());
-				customerRecipeListLineItem.setDeleted(fdCustomerListItem.getDeleted());
-				customerRecipeListLineItem.setId(fdCustomerListItem.getCustomerListItemId());
-				customerListItemList.add(customerRecipeListLineItem);
-			}
-
+			customerListItemList.add(buildFDCustomerListItem(fdCustomerListItem));
 		}
 		return customerListItemList;
+	}
+
+	public static FDCustomerListItem buildFDCustomerListItem(
+			FDCustomerListItemData fdCustomerListItem) {
+		if(fdCustomerListItem.getReturnType().equals(FDCustomerProductListLineItem.class.getSimpleName())){
+			FDCustomerProductListLineItem productlistLineItem = new FDCustomerProductListLineItem(fdCustomerListItem.getProductListLineItem().getSkuCode(), buildFDConfiguration(fdCustomerListItem.getProductListLineItem().getConfigurationData()));
+			productlistLineItem.setRecipeSourceId(fdCustomerListItem.getProductListLineItem().getRecipeSourceId());
+			productlistLineItem.setSojustAddedItemToCart(fdCustomerListItem.getProductListLineItem().isSojustAddedItemToCart());
+			productlistLineItem.setFrequency(fdCustomerListItem.getFrequency());
+			productlistLineItem.setFirstPurchase(fdCustomerListItem.getFirstPurchase());
+			productlistLineItem.setLastPurchase(fdCustomerListItem.getLastPurchase());
+			productlistLineItem.setDeleted(fdCustomerListItem.getDeleted());
+			if(fdCustomerListItem.getCustomerListItemId() != null)
+			productlistLineItem.setId(fdCustomerListItem.getCustomerListItemId());
+			return productlistLineItem;
+		}
+		else if (fdCustomerListItem.getReturnType().equals(FDCustomerRecipeListLineItem.class.getSimpleName())){
+			FDCustomerRecipeListLineItem customerRecipeListLineItem = new FDCustomerRecipeListLineItem();
+			if(fdCustomerListItem.getRecipeListLineItemData() != null){
+				customerRecipeListLineItem.setRecipeId(fdCustomerListItem.getRecipeListLineItemData().getRecipeId());
+				customerRecipeListLineItem.setRecipeName(fdCustomerListItem.getRecipeListLineItemData().getRecipeName());
+			}
+			customerRecipeListLineItem.setFrequency(fdCustomerListItem.getFrequency());
+			customerRecipeListLineItem.setFirstPurchase(fdCustomerListItem.getFirstPurchase());
+			customerRecipeListLineItem.setLastPurchase(fdCustomerListItem.getLastPurchase());
+			customerRecipeListLineItem.setDeleted(fdCustomerListItem.getDeleted());
+			customerRecipeListLineItem.setId(fdCustomerListItem.getCustomerListItemId());
+			return customerRecipeListLineItem;
+		} else return null;
+
 	}
 
 	private static FDConfiguration buildFDConfiguration(FDConfigurationData configurationData) {
@@ -447,7 +452,7 @@ public class ListConverter {
 		return groupModel;
 	}
 
-	private static SaleStatisticsI buildSaleStatisticsI(SaleStatisticsData statistics) {
+	public static SaleStatisticsI buildSaleStatisticsI(SaleStatisticsData statistics) {
 		FDQsProductListLineItem salestatistics = new FDQsProductListLineItem(statistics.getCustomerListItemData().getProductListline().getSkuCode(), buildFDConfiguration(statistics.getCustomerListItemData().getProductListline().getConfigurationData()),
 				statistics.getCustomerListItemData().getProductListline().getRecipeSourceId());
 		salestatistics.setDeliveryStartDate(statistics.getCustomerListItemData().getDeliveryStartDate());
@@ -458,8 +463,6 @@ public class ListConverter {
 		salestatistics.setSaleStatus(EnumSaleStatus.getSaleStatus(statistics.getCustomerListItemData().getSaleStatus()));
 		return salestatistics;
 	}
-
-
 
 
 }

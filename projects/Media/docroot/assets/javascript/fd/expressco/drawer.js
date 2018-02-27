@@ -32,6 +32,7 @@ var FreshDirect = FreshDirect || {};
       value: function (id) {
         if ($('[data-drawer-id="'+id+'"][data-drawer-locked]').size() === 0) {
           $(document.body).attr('data-drawer-active', id);
+          DISPATCHER.signal(id + '-drawer-on-open');
           if (fd.mobWeb) {
         	  $('.drawer-row').removeClass('active').hide();
         	  $('.drawer-row.auto-height').removeClass('auto-height').addClass('auto-height-disabled');

@@ -42,7 +42,7 @@ public class FDXOrderPickEligibleSessionBean extends SessionBeanSupport {
 			"and SA.ACTION_TYPE in('CRO','MOD') " +
 			"and sa.id=di.salesaction_id and (sysdate - sa.ACTION_DATE)*24* 60 > di.mod_start_x and di.delivery_type = 'X' and sa.requested_date = trunc(sysdate)"; 
 
-
+	@Deprecated
 	public void queryForSalesPickEligible() {
 		
 		if(SapProperties.isBlackhole()){
@@ -67,6 +67,7 @@ public class FDXOrderPickEligibleSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
+	@Deprecated
 	public void sendOrdersToSAP(List<SapOrderPickEligibleInfo> list) throws FinderException, RemoteException,
 			ErpTransactionException, SapException {
 			
@@ -80,7 +81,7 @@ public class FDXOrderPickEligibleSessionBean extends SessionBeanSupport {
 		}
 	}
 	
-	
+	@Deprecated
 	private List<SapOrderPickEligibleInfo> queryForSales(Connection conn, String query) throws SQLException {
 		List<SapOrderPickEligibleInfo> list = new ArrayList<SapOrderPickEligibleInfo>();
 		PreparedStatement ps = conn.prepareStatement(query);

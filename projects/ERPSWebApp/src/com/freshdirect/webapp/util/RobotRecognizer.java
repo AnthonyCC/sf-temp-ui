@@ -1,6 +1,8 @@
 package com.freshdirect.webapp.util;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 import java.util.regex.Pattern;
@@ -16,20 +18,9 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 public class RobotRecognizer {
 	
     private static final Category LOGGER = LoggerFactory.getInstance(RobotRecognizer.class);
-
-    public static boolean isFriendlyRobot(String userAgent, String serverName) {
-		//
-		// don't let robots index the site via an affiliate URL
-		//
-        if (serverName.toLowerCase().indexOf("bestcellars") >= 0) {
-			return false;
-		}
-		
-        return isFriendlyRobot(userAgent);
-    }        
         
     public static boolean isFriendlyRobot(String userAgent) {
-
+    	    	
         //
         // no user agent?  very unfriendly...
         //
@@ -167,19 +158,18 @@ public class RobotRecognizer {
 		friendlyRobotPatterns.add(Pattern.compile("^.*weborama.*$")); // weborama-fetcher (+http://www.weborama.com)
 		friendlyRobotPatterns.add(Pattern.compile("^.*cxense.*$")); // Mozilla/5.0 (Macintosh; U; Intel Mac OS X; en-US) AppleWebKit/533.3 (KHTML, like Gecko) cXensebot/1.1a; +http://www.cxense.com/bot.html/0.1 Safari/533.3
 		friendlyRobotPatterns.add(Pattern.compile("^.*outlook.*$")); //Microsoft Office/15.0 (Windows NT 6.1; Microsoft Outlook 15.0.4919; Pro)
+		friendlyRobotPatterns.add(Pattern.compile("^.*phantomjs.*$")); //Mozilla/5.0 (Unknown; Linux x86_64) AppleWebKit/538.1 (KHTML, like Gecko) PhantomJS/2.1.1 Safari/538.1 Prerender (+https://github.com/prerender/prerender)
 		//END : OCT 2016 Start Blocking more bots and crawlers
 		
 		//START : Feb 2017 Start Blocking Movable Ink email campaign web crop module 
 		friendlyRobotPatterns.add(Pattern.compile("^.*movableink.*$")); // Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_7; en-us) AppleWebKit/533.21.1 (KHTML, like Gecko) Version/5.0.5 Safari/533.3 with MovableInk
 		//END : Feb 2017 Start Blocking Movable Ink email campaign web crop module 
+		
+		friendlyRobotPatterns.add(Pattern.compile("^.*bot.*$")); //Try to catch all bots
+		friendlyRobotPatterns.add(Pattern.compile("^.*prerender.*$")); //Prerender used for FoodKick SEO
     }
     
-    public static void main(String a[]) {
-    	
-    	LOGGER.info("IsFriendly Robot : "+ "Pinterest/0.2 (+http://www.pinterest.com/)" + " --> " 
-    			+ RobotRecognizer.isFriendlyRobot("Pinterest/0.2 (+http://www.pinterest.com/)") );
-    }
-    
+        
     private final static Set<String> hostileAgents = new HashSet<String>();
     static {
         hostileAgents.add("bmclient");
@@ -224,5 +214,88 @@ public class RobotRecognizer {
         }
         return s.containsAll(googlebotUserAgentParts);
     }
+    
+    public static void main(String a[]) {
+    	List<String> bAgents = new ArrayList<String>();
+    	
+    	//Good Browsers
+    	bAgents.add("Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)");
+    	bAgents.add("Mozilla/5.0 (Windows NT 5.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Safari/537.36 Edge/13.10586");
+    	bAgents.add("Mozilla/5.0 (Windows NT 6.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Safari/537.36 Edge/13.10586");
+    	bAgents.add("Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Safari/537.36 Edge/13.10586");
+    	bAgents.add("Mozilla/5.0 (iPad; CPU OS 10_2_1 like Mac OS X) AppleWebKit/602.4.6 (KHTML, like Gecko) Version/10.0 Mobile/14D27 Safari/602.1");
+    	bAgents.add("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0");
+    	bAgents.add("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.10240");
+    	bAgents.add("Mozilla/5.0 (Windows NT 6.1; Win64; x64; Trident/7.0; rv:11.0) like Gecko");
+    	bAgents.add("Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36");
+    	bAgents.add("Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)");
+    	bAgents.add("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.65 Safari/537.36");
+    	bAgents.add("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+    	bAgents.add("Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36");
+    	bAgents.add("Mozilla/5.0 (Windows NT 6.3; WOW64; rv:52.0) Gecko/20100101 Firefox/52.0");
+    	bAgents.add("Mozilla/5.0 (Windows NT 6.0; WOW64; rv:52.0) Gecko/20100101 Firefox/52.0");
+    	bAgents.add("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/603.3.8 (KHTML, like Gecko) Version/10.1.2 Safari/603.3.8");
+    	bAgents.add("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36 OPR/43.0.2442.991");
+    	bAgents.add("Mozilla/5.0 (Windows NT 6.3; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0");
+    	bAgents.add("Mozilla/5.0 (Windows NT 6.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36");
+    	bAgents.add("Mozilla/5.0 (Windows NT 6.2; WOW64; rv:52.0) Gecko/20100101 Firefox/52.0");
+    	bAgents.add("Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36");
+    	bAgents.add("Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36 OPR/42.0.2393.94");
+    	bAgents.add("Mozilla/5.0 (Windows NT 5.1; WOW64; rv:52.0) Gecko/20100101 Firefox/52.0");
+    	bAgents.add("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36");
+    	bAgents.add("Mozilla/5.0 (Windows NT 5.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36");
+    	bAgents.add("Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.10240");
+    	bAgents.add("Mozilla/5.0 (Windows NT 10.0; WOW64; rv:48.0) Gecko/20100101 Firefox/48.0");
+    	bAgents.add("Mozilla/5.0 (Windows NT 6.2; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0");
+    	bAgents.add("Mozilla/5.0 (Windows NT 5.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0");
+    	bAgents.add("Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36 Edge/15.15063");
+    	bAgents.add("Mozilla/5.0 (Windows NT 6.0; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0");
+    	bAgents.add("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/601.4.4 (KHTML, like Gecko) Version/9.0.3 Safari/601.4.4");
+    	bAgents.add("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0");
+    	bAgents.add("Mozilla/5.0 (iPhone; CPU iPhone OS 10_2_1 like Mac OS X) AppleWebKit/602.4.6 (KHTML, like Gecko) Version/10.0 Mobile/14D27 Safari/602.1");
+    	bAgents.add("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36");
+    	bAgents.add("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36");
+    	bAgents.add("Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+    	bAgents.add("Mozilla/5.0 (Windows NT 6.3; WOW64; rv:41.0) Gecko/20100101 Firefox/41.0");
+    	bAgents.add("Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36");
+    	bAgents.add("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/602.4.8 (KHTML, like Gecko) Version/10.0.3 Safari/602.4.8");
+    	bAgents.add("Mozilla/5.0 (iPhone; CPU iPhone OS 9_3 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13E188a Safari/601.1");
+    	bAgents.add("Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.104 Safari/537.36");
+    	bAgents.add("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_4) AppleWebKit/603.1.30 (KHTML, like Gecko) Version/10.1 Safari/603.1.30");
+    	bAgents.add("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/601.5.17 (KHTML, like Gecko) Version/9.1 Safari/601.5.17");
+    	bAgents.add("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36");
+    	bAgents.add("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/603.2.4 (KHTML, like Gecko) Version/10.1.1 Safari/603.2.4");
+    	bAgents.add("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36");
+    	bAgents.add("Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36");
+    	bAgents.add("Mozilla/5.0 (Windows NT 6.3; WOW64; rv:46.0) Gecko/20100101 Firefox/46.0");
+    	bAgents.add("Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36");
+    	
+    	//Good and Bad Bots
+    	bAgents.add("rogerbot/1.2 (https://moz.com/help/guides/moz-procedures/what-is-rogerbot, rogerbot-crawler+aardwolf-crawl-production-crawler-18@moz.com)");
+    	bAgents.add("Mozilla/5.0 (Unknown; Linux x86_64) AppleWebKit/538.1 (KHTML, like Gecko) PhantomJS/2.1.1 Safari/538.1 Prerender (+https://github.com/prerender/prerender)");
+    	bAgents.add("rogerbot/1.2 (https://moz.com/help/guides/moz-procedures/what-is-rogerbot, rogerbot-crawler+aardwolf-crawl-production-crawler-60@moz.com)");
+    	bAgents.add("Caliperbot/1.0 (+http://www.conductor.com/caliperbot)");
+    	bAgents.add("Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)");
+    	bAgents.add("Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)");
+    	bAgents.add("Mozilla/5.0 (compatible; SemrushBot/1.2~bl; +http://www.semrush.com/bot.html)");
+    	bAgents.add("Zend\\Http\\Client");
+    	bAgents.add("Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)");
+    	bAgents.add("Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0; CHKD 1.2; Akamai_Site_Analyzer)");
+    	bAgents.add("Companybook-Crawler (+https://www.companybooknetworking.com/)");
+    	bAgents.add("Pingdom.com_bot_version_1.4_(http://www.pingdom.com/)");
+    	bAgents.add("Microsoft Office/14.0 (Windows NT 6.1; Microsoft Outlook 14.0.7177; Pro)");
+    	bAgents.add("CCBot/2.0 (http://commoncrawl.org/faq/)");
+    	bAgents.add("Panopta v1.1");
+    	bAgents.add("Mozilla/5.0 (Windows; U; Windows NT 6.0; en-GB; rv:1.0; trendictionbot0.5.0; trendiction search; http://www.trendiction.de/bot; please let us know of any problems; web at trendiction.com) Gecko/20071127 Firefox/3.0.0.11");
+    	bAgents.add("Mozilla/5.0 (compatible; MJ12bot/v1.4.8; http://mj12bot.com/)");
+    	bAgents.add("Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)");
+    	bAgents.add("AdsBot-Google (+http://www.google.com/adsbot.html)");
+    	bAgents.add("Mozilla/5.0 (compatible; DotBot/1.1; http://www.opensiteexplorer.org/dotbot, help@moz.com)");
+
+    	for(String userAgent : bAgents) {
+    		RobotRecognizer.isFriendlyRobot(userAgent);
+    	}
+    }
+
     
 }

@@ -381,7 +381,7 @@ public class FDProductInfo extends FDSku  {
 
     		ZoneInfo zone=pricingZoneInfo;
         		ZonePriceInfoModel zpModel=_getZonePriceInfo(zone);
-        		while(zpModel==null && zone.hasParentZone()) {
+        		while(zone!=null && zpModel==null && zone.hasParentZone()) {
         			zone=zone.getParentZone();
         			zpModel=_getZonePriceInfo(zone);
         		}

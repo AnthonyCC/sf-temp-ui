@@ -63,7 +63,7 @@ String[] checkErrorType = {"technical_difficulty", EnumUserInfoName.DLV_NOT_IN_Z
     String fldDlvInstructions = "none";
     String tmpFldDlvInstructions = "";
     String fldCompanyName = "";
-    EnumServiceType fldServiceType = EnumServiceType.HOME;
+    EnumServiceType fldServiceType = _user.getSelectedServiceType();
         
     String fldAltDelivery = EnumUserInfoName.NO_ALT_DELIVERY.getCode();
     boolean isAltDelivery = false;

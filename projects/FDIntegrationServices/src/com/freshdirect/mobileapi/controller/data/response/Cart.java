@@ -13,8 +13,10 @@ public class Cart extends Message {
     private Date modificationCutoffTime;
 
     private CartDetail cartDetail;
+    
+//    private boolean dpFreeTrialEligible;
 
-    public String getModificationCutoffTime() {
+	public String getModificationCutoffTime() {
         if (modificationCutoffTime == null){
             return null;
         } else {
@@ -54,5 +56,4 @@ public class Cart extends Message {
     public void setRecentlyAddedItems(List<String> recentlyAddedItems) {
         this.recentlyAddedItems = recentlyAddedItems;
     }
-
 }

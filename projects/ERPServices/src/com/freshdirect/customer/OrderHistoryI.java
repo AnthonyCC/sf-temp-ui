@@ -60,4 +60,8 @@ public interface OrderHistoryI extends Serializable {
 	public int getValidMasterPassOrderCount();
 	
 	public boolean hasSettledOrders();
+	
+	public boolean hasSettledOrders(EnumEStoreId estoreId);
+
+	public int getSettledOrderCount(EnumEStoreId estoreId);
 }

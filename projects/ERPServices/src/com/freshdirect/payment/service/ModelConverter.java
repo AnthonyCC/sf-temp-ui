@@ -156,6 +156,7 @@ import com.freshdirect.ecommerce.data.zoneInfo.ErpZoneRegionInfoData;
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.EnumAlcoholicContent;
 import com.freshdirect.erp.EnumFeaturedHeaderType;
+import com.freshdirect.erp.EnumProductApprovalStatus;
 import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.erp.ErpCOOLKey;
 import com.freshdirect.erp.ErpProductPromotionPreviewInfo;
@@ -199,13 +200,14 @@ import com.freshdirect.fdstore.ZonePriceInfoListing;
 import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.ZonePriceModel;
-import com.freshdirect.fdstore.ecoupon.EnumCouponTransactionType;
 import com.freshdirect.fdstore.ecoupon.model.CouponCart;
 import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionDetailModel;
 import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionModel;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityContext;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityLogModel;
+import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.core.VersionedPrimaryKey;
 import com.freshdirect.framework.event.FDRecommendationEvent;
 import com.freshdirect.framework.mail.EmailI;
 import com.freshdirect.framework.mail.FTLEmailI;
@@ -222,6 +224,15 @@ import com.freshdirect.payment.fraud.EnumRestrictedPatternType;
 import com.freshdirect.payment.fraud.EnumRestrictedPaymentMethodStatus;
 import com.freshdirect.payment.fraud.EnumRestrictionReason;
 import com.freshdirect.payment.fraud.RestrictedPaymentMethodModel;
+import com.freshdirect.payment.gateway.BillingInfo;
+import com.freshdirect.payment.gateway.CreditCard;
+import com.freshdirect.payment.gateway.CreditCardType;
+import com.freshdirect.payment.gateway.ECheck;
+import com.freshdirect.payment.gateway.GatewayType;
+import com.freshdirect.payment.gateway.PaymentMethod;
+import com.freshdirect.payment.gateway.PaymentMethodType;
+import com.freshdirect.payment.gateway.Response;
+import com.freshdirect.payment.gateway.TransactionType;
 import com.freshdirect.payment.gateway.ejb.FDGatewayActivityLogModel;
 import com.freshdirect.rules.Rule;
 import com.freshdirect.security.ticket.Ticket;
@@ -536,7 +547,7 @@ public class ModelConverter {
 				 SortedSet set =materialPlants[i].getBlockedDays().getDaysOfWeek();
 				 int[] days = new int[set.size()];
 				 int j = 0;
-				for(Iterator it = set.iterator(); it.hasNext();){int elem = (Integer) it.next();days[j]=elem;j++;}
+				for(Iterator it = set.iterator(); it.hasNext();){int elem = Integer.parseInt((String)it.next());days[j]=elem;j++;}
 			 ds = new DayOfWeekSet(days);
 			}
 			ErpPlantMaterialInfo matData = new ErpPlantMaterialInfo(
@@ -696,22 +707,28 @@ public class ModelConverter {
 		fdGatewayActivityLogModelData.setAuthCode(activityLogModel.getAuthCode());
 		fdGatewayActivityLogModelData.setAVSMatch(activityLogModel.isAVSMatch());
 		fdGatewayActivityLogModelData.setAvsResponse(activityLogModel.getAvsResponse());
+		if(activityLogModel.getBankAccountType() != null)
 		fdGatewayActivityLogModelData.setBankAccountType(activityLogModel.getBankAccountType().name());
+		if(activityLogModel.getCardType() != null)
 		fdGatewayActivityLogModelData.setCardType(activityLogModel.getCardType().name());
 		fdGatewayActivityLogModelData.setCity(activityLogModel.getCity());
 		fdGatewayActivityLogModelData.setCountryCode(activityLogModel.getCountryCode());
 		fdGatewayActivityLogModelData.setCustomerId(activityLogModel.getCustomerId());
+		fdGatewayActivityLogModelData.setCustomerName(activityLogModel.getCustomerName());
 		fdGatewayActivityLogModelData.setCVVMatch(activityLogModel.isCVVMatch());
 		fdGatewayActivityLogModelData.setCvvResponse(activityLogModel.getCvvResponse());
 		fdGatewayActivityLogModelData.setDeclined(activityLogModel.isDeclined());
 		fdGatewayActivityLogModelData.setDeviceId(activityLogModel.getDeviceId());
+		if(activityLogModel.getEStoreId() != null)
 		fdGatewayActivityLogModelData.seteStoreId(activityLogModel.getEStoreId().name());
 		fdGatewayActivityLogModelData.seteWalletId(activityLogModel.geteWalletId());
 		fdGatewayActivityLogModelData.seteWalletTxId(activityLogModel.geteWalletTxId());
 		fdGatewayActivityLogModelData.setExpirationDate(activityLogModel.getExpirationDate());
 		fdGatewayActivityLogModelData.setGatewayOrderID(activityLogModel.getGatewayOrderID());
+		if(activityLogModel.getGatewayType() != null)
 		fdGatewayActivityLogModelData.setGatewayType(activityLogModel.getGatewayType().getName());
 		fdGatewayActivityLogModelData.setMerchant(activityLogModel.getMerchant());
+		if(activityLogModel.getPaymentType() != null)
 		fdGatewayActivityLogModelData.setPaymentType(activityLogModel.getPaymentType().name());
 		fdGatewayActivityLogModelData.setProcessingError(activityLogModel.isProcessingError());
 		fdGatewayActivityLogModelData.setProfileId(activityLogModel.getProfileId());
@@ -721,6 +738,7 @@ public class ModelConverter {
 		fdGatewayActivityLogModelData.setState(activityLogModel.getState());
 		fdGatewayActivityLogModelData.setStatusCode(activityLogModel.getStatusCode());
 		fdGatewayActivityLogModelData.setStatusMsg(activityLogModel.getStatusMsg());
+		if(activityLogModel.getTransactionType() != null)
 		fdGatewayActivityLogModelData.setTransactionType(activityLogModel.getTransactionType().name());
 		fdGatewayActivityLogModelData.setTxRefIdx(activityLogModel.getTxRefIdx());
 		fdGatewayActivityLogModelData.setTxRefNum(activityLogModel.getTxRefNum());
@@ -853,7 +871,130 @@ public class ModelConverter {
 		return data;
 	}
 	
+	public static ErpMaterialModel convertErpMaterialDataToModel(
+			ErpMaterialData data) {
+		
+		List<ErpClassModel> erpClass = createErpClassList(data.getClasses());
+		List<ErpMaterialPriceModel> erpMaterialPrice = createErpMaterialPriceList(data.getPrices());
+		List<ErpSalesUnitModel> salesUnits = createErpSalesUnitList(data.getSalesUnits());
+		List<ErpSalesUnitModel> displaySalesUnits = createErpSalesUnitList(data.getDisplaySalesUnits());
+		List<ErpPlantMaterialModel> erpPlantMaterial = createErpPlantMaterialList(data.getMaterialPlants());
+		List<ErpMaterialSalesAreaModel> erpMaterialSalesArea = createErpMaterialSalesAreaList(data.getMaterialSalesAreas());
+	
+		
+		ErpMaterialModel model = new ErpMaterialModel(data.getSapId(), 
+				data.getBaseUnit(), 
+				data.getDescription(), 
+				data.getUPC(),
+				data.getQuantityCharacteristic(),
+				data.getSalesUnitCharacteristic(), 
+				EnumAlcoholicContent.getAlcoholicContent(data.getAlcoholicContent()), 
+				data.isTaxable(), 
+				data.getTaxCode(), 
+				data.getSkuCode(),
+				data.getDaysFresh(),EnumProductApprovalStatus.getApprovalStatus(data.getApprovalStatus()), 
+				data.getMaterialType(), erpMaterialPrice,
+				salesUnits, erpClass, displaySalesUnits,
+				erpPlantMaterial,erpMaterialSalesArea, data.getMaterialGroup());
+		
+		VersionedPrimaryKey primaryKey = new VersionedPrimaryKey(data.getVersionedPrimaryKeyData().getMaterialId(), data.getVersionedPrimaryKeyData().getVersionId());
+		model.setPK(primaryKey);
+		return model;
+	}
+	private static List<ErpMaterialSalesAreaModel> createErpMaterialSalesAreaList(
+			List<ErpMaterialSalesAreaData> materialSalesAreas) {
+		List<ErpMaterialSalesAreaModel> list = new ArrayList<ErpMaterialSalesAreaModel> ();
+		for(ErpMaterialSalesAreaData data: materialSalesAreas){
+			ErpMaterialSalesAreaModel model = new ErpMaterialSalesAreaModel(data.getSalesOrg(),
+					data.getDistChannel(),data.getUnavailabilityStatus(),data.getUnavailabilityDate(),data.getUnavailabilityReason(),
+					data.getSkuCode(),data.getDayPartSelling(),data.getPickingPlantId());
+			list.add(model);
+		}
+		return list;
+	}
 
+	private static List<ErpPlantMaterialModel> createErpPlantMaterialList(
+			List<ErpPlantMaterialData> materialPlants) {
+		List<ErpPlantMaterialModel>  erpPlantMaterialList = new ArrayList<ErpPlantMaterialModel>();
+		for (ErpPlantMaterialData erpPlantMaterialModel : materialPlants) {
+			ErpPlantMaterialModel model = new ErpPlantMaterialModel();
+			model.setAtpRule(EnumATPRule.getEnum(erpPlantMaterialModel.getAtpRule()));
+			if(erpPlantMaterialModel.getBlockedDays()!=null){
+			int[] weekDays =new int[erpPlantMaterialModel.getBlockedDays().getDaysOfWeek().toArray().length];
+			Object[] obj = erpPlantMaterialModel.getBlockedDays().getDaysOfWeek().toArray();
+		    for (int i = 0; i < obj.length; i++){
+		    	int tempval =(Integer)obj[i];
+		    	weekDays[i]=tempval;
+		    }
+			model.setBlockedDays(new DayOfWeekSet(weekDays));
+			}
+			erpPlantMaterialList.add(model);
+		}
+		return erpPlantMaterialList;
+	}
+
+	private static List createErpSalesUnitList(List<ErpSalesUnitData> salesUnits) {
+		List<ErpSalesUnitModel> erpSaleUnits = new ArrayList<ErpSalesUnitModel>();
+		for (ErpSalesUnitData salesUnit : salesUnits) {
+			ErpSalesUnitModel model = new	ErpSalesUnitModel();
+			model.setAlternativeUnit(salesUnit.getAlternativeUnit());
+			model.setBaseUnit(salesUnit.getBaseUnit());
+			model.setDenominator(salesUnit.getDenominator());
+			model.setDescription(salesUnit.getDescription());
+			model.setDisplayInd(salesUnit.isDisplayInd());
+			model.setId(salesUnit.getId());
+			model.setNumerator(salesUnit.getNumerator());
+			model.setUnitPriceDenominator(salesUnit.getUnitPriceDenominator());
+			model.setUnitPriceDescription(salesUnit.getUnitPriceDescription());
+			model.setUnitPriceNumerator(salesUnit.getUnitPriceNumerator());
+			erpSaleUnits.add(model);
+			}
+		return erpSaleUnits;
+		}
+
+	
+	public static List<ErpMaterialPriceModel> createErpMaterialPriceList(List<ErpMaterialPriceData> erpMaterialPricedata) {
+		List<ErpMaterialPriceModel>  erpPlantMaterial = new ArrayList<ErpMaterialPriceModel>();
+		for (ErpMaterialPriceData data: erpMaterialPricedata) {
+		
+			ErpMaterialPriceModel model = new ErpMaterialPriceModel
+					(data.getSapId(), data.getPrice(), data.getPricingUnit(),
+							 data.getScaleQuantity(),data.getScaleUnit(), data.getSapZoneId(),
+							data.getPromoPrice(), data.getSalesOrg(),data.getDistChannel())
+					;
+			erpPlantMaterial.add(model);
+		}
+		return erpPlantMaterial;
+	}
+
+	private static List<ErpClassModel> createErpClassList(
+			List<ErpClassData> classes) {
+		List<ErpClassModel> classlist = new ArrayList<ErpClassModel>();
+		for(ErpClassData data : classes){
+			classlist.add(new ErpClassModel(data.getSapId(),createErpCharacteristicList(data.getCharacteristics())));
+		}
+		return classlist;
+	}
+
+	private static List<ErpCharacteristicModel> createErpCharacteristicList(List<ErpCharacteristicData> data) {
+		List<ErpCharacteristicModel>  erpCharacteristicModel = new ArrayList<ErpCharacteristicModel>();
+		for (ErpCharacteristicData erpClassdata : data) {
+			erpCharacteristicModel.add(new ErpCharacteristicModel(erpClassdata.getName(),createErpCharacteristicValueList(erpClassdata.getCharacteristicValues())));
+		}
+		return erpCharacteristicModel;
+	}
+	
+	public static List<ErpCharacteristicValueModel> createErpCharacteristicValueList(List<ErpCharacteristicValueData> list) {
+		List<ErpCharacteristicValueModel>  erpCharacteristicValueModel = new ArrayList<ErpCharacteristicValueModel>();
+		for (ErpCharacteristicValueData erpCharacteristicValueData : list) {
+			ErpCharacteristicValueModel model = new ErpCharacteristicValueModel(erpCharacteristicValueData.getName(),erpCharacteristicValueData.getDescription());
+			model.setId(erpCharacteristicValueData.getId());
+			model.setPK(new PrimaryKey(erpCharacteristicValueData.getId()));
+			erpCharacteristicValueModel.add(model);
+		}
+		return erpCharacteristicValueModel;
+	}
+	
 	private static List getErpSaleUnitModelList(
 			List<ErpSalesUnitModel> salesUnits) {
 		List<ErpSalesUnitData> erpSaleUnits = new ArrayList<ErpSalesUnitData>();
@@ -1074,6 +1215,24 @@ public class ModelConverter {
 		data.setSapId(key.getSapId());
 		return data;
 	}
+	
+	public static ErpCharacteristicValuePriceModel createErpCharacteristicValuePriceModel(
+			ErpCharacteristicValuePriceData  data) {
+		ErpCharacteristicValuePriceModel model = new ErpCharacteristicValuePriceModel();
+		model.setCharacteristicName(data.getCharacteristicName());
+		model.setCharacteristicValueId(data.getCharacteristicValueId());
+		model.setCharacteristicValueName(data.getCharacteristicValueName());
+		model.setClassName(data.getClassName());
+		model.setConditionType(data.getConditionType());
+		model.setDistChannel(data.getDistChannel());
+		model.setId(data.getId());
+		model.setMaterialId(data.getMaterialId());
+		model.setPrice(data.getPrice());
+		model.setPricingUnit(data.getPricingUnit());
+		model.setSalesOrg(data.getSalesOrg());
+		model.setSapId(data.getSapId());
+		return model;
+	}
 
 	public static ErpInventoryModel convertErpInventoryDataToModel(
 			ErpInventoryData erpInventoryData) {
@@ -1097,6 +1256,7 @@ public class ModelConverter {
 	public static Map<String, ErpInventoryModel> convertErpInventoryDataMapToModelMap(
 			Map<String, ErpInventoryData> data) {
 		Map<String,ErpInventoryModel> modelMap = new HashMap<String, ErpInventoryModel>();
+		if(data!=null)
 		for (Entry<String, ErpInventoryData> dataMap : data.entrySet()) {
 			String key = dataMap.getKey();
 			ErpInventoryModel model = convertErpInventoryDataToModel(dataMap.getValue());
@@ -1580,41 +1740,50 @@ public class ModelConverter {
 
 	public static RestrictedPaymentMethodModel buildRestrictedPaymentMethodModel(
 			RestrictedPaymentMethodData data) {
-		RestrictedPaymentMethodModel model = new RestrictedPaymentMethodModel();
-		model.setAbaRouteNumber(data.getAbaRouteNumber());
-		if(data.getAbaRoutePatternType()!=null)
-		model.setAbaRoutePatternType(EnumRestrictedPatternType.getEnum(data.getAbaRoutePatternType()));
-		model.setAccountNumber(data.getAccountNumber());
-		if(data.getAccountPatternType()!=null)
-		model.setAccountPatternType(EnumRestrictedPatternType.getEnum(data.getAccountPatternType()));
-		if(data.getBankAccountType()!=null)
-		model.setBankAccountType(EnumBankAccountType.getEnum(data.getBankAccountType()));
-		model.setBankName(data.getBankName());
-		if(data.getCardType()!=null)
-		model.setCardType(EnumCardType.getEnum(data.getCardType()));
-		model.setCaseId(data.getCaseId());
-		model.setCreateDate(data.getCreateDate());
-		model.setCreateUser(data.getCreateUser());
-		model.setCustomerId(data.getCustomerId());
-		model.setExpirationDate(data.getExpirationDate());
-		model.setFirstName(data.getFirstName());
-		model.setId(data.getId());
-		model.setPK(new PrimaryKey(data.getId()));
-		model.setLastModifyDate(data.getLastModifyDate());
-		model.setLastModifyUser(data.getLastModifyUser());
-		model.setLastName(data.getLastName());
-		model.setNote(data.getNote());
-		model.setPaymentMethodId(data.getPaymentMethodId());
-		if(data.getPaymentMethodType()!=null)
-		model.setPaymentMethodType(EnumPaymentMethodType.getEnum(data.getPaymentMethodType()));
-		model.setProfileID(data.getProfileID());
-		if(data.getReason()!=null)
-		model.setReason(EnumRestrictionReason.getEnum(data.getReason()));
-		if(data.getSource()!=null)
-		model.setSource(EnumTransactionSource.getTransactionSource(data.getSource()));
-		if(data.getStatus()!=null)
-		model.setStatus(EnumRestrictedPaymentMethodStatus.getEnum(data.getStatus()));
-		return model;
+		if (data != null) {
+			RestrictedPaymentMethodModel model = new RestrictedPaymentMethodModel();
+			model.setAbaRouteNumber(data.getAbaRouteNumber());
+			if (data.getAbaRoutePatternType() != null)
+				model.setAbaRoutePatternType(EnumRestrictedPatternType
+						.getEnum(data.getAbaRoutePatternType()));
+			model.setAccountNumber(data.getAccountNumber());
+			if (data.getAccountPatternType() != null)
+				model.setAccountPatternType(EnumRestrictedPatternType
+						.getEnum(data.getAccountPatternType()));
+			if (data.getBankAccountType() != null)
+				model.setBankAccountType(EnumBankAccountType.getEnum(data
+						.getBankAccountType()));
+			model.setBankName(data.getBankName());
+			if (data.getCardType() != null)
+				model.setCardType(EnumCardType.getEnum(data.getCardType()));
+			model.setCaseId(data.getCaseId());
+			model.setCreateDate(data.getCreateDate());
+			model.setCreateUser(data.getCreateUser());
+			model.setCustomerId(data.getCustomerId());
+			model.setExpirationDate(data.getExpirationDate());
+			model.setFirstName(data.getFirstName());
+			model.setId(data.getId());
+			model.setPK(new PrimaryKey(data.getId()));
+			model.setLastModifyDate(data.getLastModifyDate());
+			model.setLastModifyUser(data.getLastModifyUser());
+			model.setLastName(data.getLastName());
+			model.setNote(data.getNote());
+			model.setPaymentMethodId(data.getPaymentMethodId());
+			if (data.getPaymentMethodType() != null)
+				model.setPaymentMethodType(EnumPaymentMethodType.getEnum(data
+						.getPaymentMethodType()));
+			model.setProfileID(data.getProfileID());
+			if (data.getReason() != null)
+				model.setReason(EnumRestrictionReason.getEnum(data.getReason()));
+			if (data.getSource() != null)
+				model.setSource(EnumTransactionSource.getTransactionSource(data
+						.getSource()));
+			if (data.getStatus() != null)
+				model.setStatus(EnumRestrictedPaymentMethodStatus.getEnum(data
+						.getStatus()));
+			return model;
+		}
+		return null;
 	}
 
 	
@@ -2048,6 +2217,8 @@ public class ModelConverter {
 				FDVariation variation = new FDVariation(attribute, fdVariation.getName(), buildVariationOptions(fdVariation.getVariationOptions()));
 				variations[i]=variation; 
 			}
+		}else if(variationDatas==null){
+			variations = new FDVariation[0];
 		}
 		return variations;
 	}
@@ -2257,5 +2428,83 @@ public class ModelConverter {
 		regionInfo.setVersion(region.getVersion());
 		return regionInfo;
 	}
+
+	public static FDGatewayActivityLogModel getFDGatewayGatewayActivityLogModel(
+			GatewayType gatewayType,
+			com.freshdirect.payment.gateway.Response response) {
+		FDGatewayActivityLogModel logModel=new FDGatewayActivityLogModel();
+		logModel.setTransactionType(response.getTransactionType());
+		logModel.setGatewayType(gatewayType);
+		logModel.setApproved(response.isApproved());
+		logModel.setAuthCode(response.getAuthCode());
+		logModel.setAVSMatch(response.isAVSMatch());
+		logModel.setAvsResponse(response.getAVSResponse());
+		logModel.setProcessingError(response.isError());
+		logModel.setDeclined(response.isDeclined());
+		logModel.setRequestProcessed(response.isRequestProcessed());
+		logModel.setResponseCode(response.getResponseCode());
+		logModel.setResponseCodeAlt(response.getResponseCodeAlt());
+		logModel.setStatusCode(response.getStatusCode());
+		logModel.setStatusMsg(response.getStatusMessage());
+		
+		if(TransactionType.CC_VERIFY.equals(response.getTransactionType())) {
+			logModel.setCVVMatch(response.isCVVMatch());
+			logModel.setCvvResponse(response.getCVVResponse());
+		}
+		BillingInfo billingInfo=response.getBillingInfo();
+		if(billingInfo==null)
+			billingInfo=response.getRequest().getBillingInfo();
+		PaymentMethod pm=null;
+		if(billingInfo!=null) {
+			pm=billingInfo.getPaymentMethod();
+			logModel.setAmount(billingInfo.getAmount());
+			if (billingInfo.getMerchant()!=null)
+				logModel.setMerchant(billingInfo.getMerchant().name());
+			logModel.setGatewayOrderID(billingInfo.getTransactionID());
+			logModel.setTxRefNum(billingInfo.getTransactionRef());
+			logModel.setTxRefIdx(billingInfo.getTransactionRefIndex());
+			if(StringUtil.isEmpty(pm.getMaskedAccountNumber())){
+				pm=response.getRequest().getBillingInfo().getPaymentMethod();
+			}
+			if(pm!=null && !StringUtil.isEmpty(pm.getMaskedAccountNumber())) {
+				int l=pm.getMaskedAccountNumber().length();
+				logModel.setAccountNumLast4(l>4?
+						pm.getMaskedAccountNumber().substring(l-4,l):pm.getMaskedAccountNumber());
+				logModel.setCustomerId(pm.getCustomerID());
+				logModel.setProfileId(pm.getBillingProfileID());
+				logModel.setCustomerName(pm.getCustomerName());
+				logModel.setAddressLine1(pm.getAddressLine1());
+				logModel.setAddressLine2(pm.getAddressLine2());
+				logModel.setCity(pm.getCity());
+				logModel.setState(pm.getState());
+				logModel.setCountryCode(pm.getCountry());
+				logModel.setZipCode(pm.getZipCode());
+				logModel.setPaymentType(pm.getType());
+				if(PaymentMethodType.CREDIT_CARD.equals(pm.getType())) {
+				   CreditCard cc=(CreditCard)pm;
+					logModel.setCardType(cc.getCreditCardType());
+					logModel.setExpirationDate(cc.getExpirationDate());
+				}else if (PaymentMethodType.PP.equals(pm.getType())) {
+					logModel.setCardType(CreditCardType.PYPL);
+				}
+				else if(PaymentMethodType.ECHECK.equals(pm.getType())){
+					ECheck ec=(ECheck)pm;
+					logModel.setBankAccountType(ec.getBankAccountType());
+				}
+				
+				if(pm.getEwalletId() != null && pm.getEwalletId().equals(""+EnumEwalletType.PP.getValue())){
+					logModel.setDeviceId(pm.getDeviceId());
+				}
+				// Update EWallet ID
+				logModel.seteWalletId(response.getEwalletId());
+				logModel.seteWalletTxId(response.getEwalletTxId());
+				logModel.setEStoreId(billingInfo.getEStoreId());
+			}
+			
+		}
+		return logModel;
+		
+	}
+
 }
 

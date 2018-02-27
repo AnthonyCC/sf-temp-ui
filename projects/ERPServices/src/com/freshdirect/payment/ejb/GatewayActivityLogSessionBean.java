@@ -27,12 +27,18 @@ import com.freshdirect.payment.gateway.Response;
 import com.freshdirect.payment.gateway.TransactionType;
 import com.freshdirect.payment.gateway.ejb.FDGatewayActivityLogModel;
 
-
+/**
+ *@deprecated Please use the GatewayActivityLogController and GatewayActivityLogServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */ 
 
 public class GatewayActivityLogSessionBean extends GatewaySessionBeanSupport {
 	
 	private static Category LOGGER = LoggerFactory.getInstance( GatewayActivityLogSessionBean.class );
 	
+	@Deprecated
 	public void logActivity(GatewayType gatewayType,Response response) {
 		
 		try {
@@ -45,7 +51,7 @@ public class GatewayActivityLogSessionBean extends GatewaySessionBeanSupport {
 			LOGGER.warn("Exception during sending message to queue.", ex);
 		}
 	}
-	
+	@Deprecated
 	private FDGatewayActivityLogModel getLogModel(GatewayType gatewayType,Response response) {
 		FDGatewayActivityLogModel logModel=new FDGatewayActivityLogModel();
 		logModel.setTransactionType(response.getTransactionType());

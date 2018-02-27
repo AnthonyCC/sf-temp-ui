@@ -38,7 +38,7 @@ public class FoodKickSitemapProperties {
         DEFAULTS.put(BROWSE_CONTEXT_PATH_TEMPLATE, "/browse/{0}");
         DEFAULTS.put(DEPARTMENT_CONTEXT_PATH_TEMPLATE, "/department/{0}");
         DEFAULTS.put(BASE_PATH, "https://www.foodkick.com");
-        DEFAULTS.put(BASE_PATH_POSTFIX, "/#!");
+        DEFAULTS.put(BASE_PATH_POSTFIX, "");
         DEFAULTS.put(CONTEXT_PATH, "/sitemap");
         DEFAULTS.put(DIRECTORY_PATH, "/var/tmp/sitemap");
     }

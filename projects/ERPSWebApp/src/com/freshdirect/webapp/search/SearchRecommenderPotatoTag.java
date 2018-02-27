@@ -12,15 +12,10 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.webapp.ajax.browse.data.CarouselData;
 import com.freshdirect.webapp.ajax.browse.service.CarouselService;
 import com.freshdirect.webapp.ajax.reorder.QuickShopHelper;
-import com.freshdirect.webapp.ajax.reorder.service.QuickShopCarouselService;
-import com.freshdirect.webapp.ajax.reorder.service.QuickShopCrazyQuickshopRecommendationService;
-import com.freshdirect.webapp.ajax.viewcart.data.RecommendationTab;
-import com.freshdirect.webapp.ajax.viewcart.data.ViewCartCarouselData;
 import com.freshdirect.webapp.soy.SoyTemplateEngine;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.util.ProductRecommenderUtil;

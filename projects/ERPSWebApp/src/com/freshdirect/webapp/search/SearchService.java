@@ -147,6 +147,10 @@ public class SearchService {
         return INSTANCE;
     }
 
+    
+    public SearchResults searchProducts(String searchTerm, Cookie[] cookies, FDUserI user, String requestUrl, String referer) {
+    	return searchProducts(searchTerm, cookies, user, requestUrl, referer, true);
+    }
     /**
      * Perform search operation
      * 
@@ -160,14 +164,17 @@ public class SearchService {
      * @param referer
      * @return
      */
-    public SearchResults searchProducts(String searchTerm, Cookie[] cookies, FDUserI user, String requestUrl, String referer) {
+    public SearchResults searchProducts(String searchTerm, Cookie[] cookies, FDUserI user, String requestUrl, String referer, boolean searchRecipe) {
         SearchResults searchResults = new SearchResults(); 
         boolean isUnbxdSearchEnabled = FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, cookies, user);
         if(searchTerm != null && searchTerm.trim().length() > 0){
-            // get search results from Lucene service if isUnbxdSearchEnabled is false
-        	// otherwise, just get the recipes result from Lucene
-            searchResults = isUnbxdSearchEnabled? StoreServiceLocator.contentSearch().searchRecipes(searchTerm) : StoreServiceLocator.contentSearch().searchProducts(searchTerm);
-            final boolean cosAction = CosFeatureUtil.isUnbxdCosAction(user, cookies);
+			// if isUnbxdSearchEnabled is false, get search product & receipts from Lucene service 
+			// else if isUnbxdSearchEnabled = true && searchRecipe = true, search the recipes from Lucene
+        	// 
+			searchResults = isUnbxdSearchEnabled
+					? (searchRecipe ? StoreServiceLocator.contentSearch().searchRecipes(searchTerm) : searchResults)
+					: StoreServiceLocator.contentSearch().searchProducts(searchTerm);
+			final boolean cosAction = CosFeatureUtil.isUnbxdCosAction(user, cookies);
             
             if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, cookies, user)) {
                 // notify UNBXD analytics

@@ -8,7 +8,7 @@ if (typeof FreshDirect === "undefined" || !FreshDirect) {
 	FreshDirect.USQLegalWarning = USQLegalWarning;
 	
 	var rootWindow = window;
-	while (rootWindow.parent && rootWindow.parent != rootWindow)
+	while (rootWindow.parent && rootWindow.parent !== rootWindow && rootWindow.parent.FreshDirect)
 		rootWindow = rootWindow.parent;
 
 	USQLegalWarning.rootWindow = rootWindow;
@@ -170,8 +170,8 @@ if (typeof FreshDirect === "undefined" || !FreshDirect) {
 	
 	USQLegalWarning.checkHealthCondition = function(c_name, value)
 	{
-		var cookieValue = rootWindow.FreshDirect.USQLegalWarning.getCookie(c_name);
-		var jSessionId = rootWindow.FreshDirect.USQLegalWarning.getJSessionId();
+		var cookieValue = (rootWindow.FreshDirect || FreshDirect).USQLegalWarning.getCookie(c_name);
+		var jSessionId = (rootWindow.FreshDirect || FreshDirect).USQLegalWarning.getJSessionId();
 		if (cookieValue == value + "@" + jSessionId) return true;
 		return false;
 	};

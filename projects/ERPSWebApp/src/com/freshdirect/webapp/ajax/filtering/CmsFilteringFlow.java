@@ -32,6 +32,7 @@ import com.freshdirect.fdstore.brandads.service.BrandProductAdServiceException;
 import com.freshdirect.fdstore.content.browse.filter.BrandFilter;
 import com.freshdirect.fdstore.content.browse.filter.ContentNodeFilter;
 import com.freshdirect.fdstore.content.util.SmartSearchUtils;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.framework.util.NVL;
@@ -150,7 +151,7 @@ public class CmsFilteringFlow {
 		return browseData;
 	}
 
-	public CmsFilteringFlowResult doFlow(CmsFilteringNavigator nav, FDSessionUser user)
+	public CmsFilteringFlowResult doFlow(CmsFilteringNavigator nav, FDUserI user)
 			throws InvalidFilteringArgumentException, FDResourceException, FDNotFoundException {
 
 		if (null == nav || null == nav.getPageType()) {
@@ -163,15 +164,15 @@ public class CmsFilteringFlow {
 		}
 	}
 
-    private CmsFilteringFlowResult doFlowForBrowseType(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException, FDResourceException, FDNotFoundException {
+    private CmsFilteringFlowResult doFlowForBrowseType(CmsFilteringNavigator nav, FDUserI user) throws InvalidFilteringArgumentException, FDResourceException, FDNotFoundException {
         BrowseData browseData = null;
         String plantId = user.getUserContext().getFulfillmentContext().getPlantId();
-        String cacheKey = user.getUser().getPrimaryKey()+ "," +plantId + "," + nav.getId();
-        BrowseDataContext browseDataContext = getBrowseDataContextFromCacheForPaging(nav, user, cacheKey);
+        String cacheKey = user.getPrimaryKey()+ "," +plantId + "," + nav.getId();
+        BrowseDataContext browseDataContext = getBrowseDataContextFromCacheForPaging(nav, cacheKey);
         
-    	if (browseDataContext == null) {
-            browseDataContext = doBrowseFlow(nav, user);
-        }
+		if (browseDataContext == null) {
+			browseDataContext = doBrowseFlow(nav, user);
+		}
 
         if (!nav.isPdp() && !nav.isSpecialPage()) { //TODO quick fix for TKG meals (special layouts)
             EhCacheUtilWrapper.putObjectToCache(CmsCaches.BR_USER_REFINEMENT_CACHE.cacheName, cacheKey, browseDataContext);
@@ -263,7 +264,7 @@ public class CmsFilteringFlow {
             if (shownProductKeysForRecommender.size() == 0 && browseDataContext.getNavigationModel().isProductListing()) {
                 browseData.getSections().setAllSectionsEmpty(true);
             }
-            EhCacheUtilWrapper.putObjectToCache(CmsCaches.BR_USER_REFINEMENT_CACHE.cacheName, user.getUser().getPrimaryKey()+ "," +plantId, browseDataContext);
+            EhCacheUtilWrapper.putObjectToCache(CmsCaches.BR_USER_REFINEMENT_CACHE.cacheName, user.getPrimaryKey()+ "," +plantId, browseDataContext);
 
             // only display recommenders if on last page
             PagerData pagerData = browseData.getPager();
@@ -294,14 +295,16 @@ public class CmsFilteringFlow {
         return new CmsFilteringFlowResult(browseData, null !=browseDataContext ? browseDataContext.getNavigationModel() :null);
     }
     
-    private CmsFilteringFlowResult doFlowForSearchType(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException, FDResourceException, FDNotFoundException {
+    private CmsFilteringFlowResult doFlowForSearchType(CmsFilteringNavigator nav, FDUserI user) throws InvalidFilteringArgumentException, FDResourceException, FDNotFoundException {
     	BrowseData browseData = null;
-    	String plantId = user.getUserContext().getFulfillmentContext().getPlantId();
-    	String cacheKey = user.getUser().getPrimaryKey()+ "," +plantId + "," + nav.getPageType() + ",sch_" + nav.getActiveTab() + ",cos_"+CosFeatureUtil.isUnbxdCosAction(user, nav.getRequestCookies());
-    	BrowseDataContext browseDataContext = getBrowseDataContextFromCacheForPaging(nav, user, cacheKey);
-    	if (browseDataContext == null) {
-            browseDataContext = doSearchLikeFlow(nav, user);
-        }
+    	BrowseDataContext browseDataContext = null;
+    	
+    	String plantId = user!=null&&user.getUserContext()!=null&&user.getUserContext().getFulfillmentContext()!=null?user.getUserContext().getFulfillmentContext().getPlantId():null;
+    	String cacheKey = user.getPrimaryKey()+ "," +plantId + "," + nav.getPageType() + ",sch_" + nav.getActiveTab();
+    	browseDataContext = getBrowseDataContextFromCacheForPaging(nav, cacheKey);
+		if (browseDataContext == null) {
+			browseDataContext = doSearchLikeFlow(nav, user);
+		}
         EhCacheUtilWrapper.putObjectToCache(CmsCaches.BR_USER_REFINEMENT_CACHE.cacheName, cacheKey, browseDataContext);
 
         BrowseDataBuilderFactory.getInstance().processSorting(browseDataContext, nav, user);
@@ -343,22 +346,27 @@ public class CmsFilteringFlow {
             populateProductData(browseData, nav, user);
         }
 
-        BrowseDataBuilderFactory.getInstance().appendSearchLikeCarousel(browseData, user, nav.getPageType(), nav.getActiveTab());
+		if (nav.isDescriptiveContentRequested()) {
+			try {
+				browseData.getDescriptiveContent()
+						.setUrl(URLEncoder.encode(nav.assembleQueryString(), CharEncoding.UTF_8));
+			} catch (UnsupportedEncodingException e) {
+				LOG.error(e);
+				throw new FDResourceException(e);
+			}
+		} else {
+			browseData.setDescriptiveContent(null);
+			
+		}
 
-        try {
-            browseData.getDescriptiveContent().setUrl(URLEncoder.encode(nav.assembleQueryString(), CharEncoding.UTF_8));
-        } catch (UnsupportedEncodingException e) {
-            LOG.error(e);
-            throw new FDResourceException(e);
-        }
-        browseData.getSortOptions().setCurrentOrderAsc(nav.isOrderAscending());
+		browseData.getSortOptions().setCurrentOrderAsc(nav.isOrderAscending());
 
         populateSearchCarouselProductLimit(nav.getActivePage(), browseDataContext);
         return new CmsFilteringFlowResult(browseData, null !=browseDataContext ? browseDataContext.getNavigationModel() :null);
     }
     /* call this BEFORE BrowseDataPagerHelper.createPagerContext(browseData, nav); */
     /* allowOnlyHLRows will toggle filling in empty rows to display the entire HL list */
-    public void insertHookLogicProductsIntoBrowseData(List<ProductData> prodList, List<ProductData> hlProdList, FDSessionUser user, boolean allowOnlyHLRows) {
+    public void insertHookLogicProductsIntoBrowseData(List<ProductData> prodList, List<ProductData> hlProdList, FDUserI user, boolean allowOnlyHLRows) {
         /* skip out if hlProds passed in are invalid or empty */
         if (hlProdList == null || hlProdList.size() == 0 || prodList == null || prodList.size() == 0) { return; }
 
@@ -388,7 +396,7 @@ public class CmsFilteringFlow {
         }
     }
 
-    private void populateProductData(BrowseData browseData, CmsFilteringNavigator nav, FDSessionUser user) {
+    private void populateProductData(BrowseData browseData, CmsFilteringNavigator nav, FDUserI user) {
     	List<SectionData> sections = browseData.getSections().getSections();
     	if (sections != null && !sections.isEmpty()) {
     		for (SectionData section : sections) {
@@ -396,7 +404,7 @@ public class CmsFilteringFlow {
     		}
     	}
     }
-    private void populateProductData(SectionData sectionData, CmsFilteringNavigator nav, FDSessionUser user) {
+    private void populateProductData(SectionData sectionData, CmsFilteringNavigator nav, FDUserI user) {
     	// if this section has products, populate them
     	List<ProductData> products = sectionData.getProducts();
     	if (products != null && !products.isEmpty()) {
@@ -440,7 +448,7 @@ public class CmsFilteringFlow {
         }
     }
 
-    private BrowseDataContext getBrowseDataContextFromCacheForPaging(CmsFilteringNavigator nav, FDSessionUser user, String cacheKey) {
+    private BrowseDataContext getBrowseDataContextFromCacheForPaging(CmsFilteringNavigator nav, String cacheKey) {
         BrowseDataContext browseDataContext = null;
         // use userRefinementCache
 
@@ -482,31 +490,32 @@ public class CmsFilteringFlow {
     }
 
     private boolean isBrowseRequestForSameFilter(CmsFilteringNavigator navigator, BrowseDataContext browseDataContext) {
-    	Map<String, List<String>> navFilter = navigator.getRequestFilterParams();
-    	Map<String, List<String>> contextFilter = browseDataContext.getRequestFilterParams();
-
-    	// If navFilter is null && contextFilter is empty or vice versa
-    	if ( (navFilter == null && contextFilter != null && contextFilter.size() == 0) ||
-    			(navFilter != null && contextFilter == null && navFilter.size() == 0)){
-    		return true;
-    	}
-    	// If navFilter is null && contextFilter is not empty or vice versa
-    	if ( (navFilter == null && contextFilter != null) ||
-    			(navFilter != null && contextFilter == null)){
-    		return false;
-    	}
-    	// If navFilter and contextFilter are null or empty
-    	if ( (navFilter == null && contextFilter == null) ||
-    			(navFilter.size() == 0 && contextFilter.size() == 0)){
-    		return true;
-    	}
-
-    	if(navFilter.size() != contextFilter.size()){
-    		return false;
-    	}
-        return navFilter.equals(contextFilter);
+        return compareFilters(navigator.getRequestFilterParams(), browseDataContext.getRequestFilterParams()) &&
+        		compareFilters(navigator.getDataFilterParams(), browseDataContext.getDataFilterParams());
     }
+    
+    private boolean compareFilters(Map<String, ?> filter1, Map<String, ?> filter2){
+    	// If filter1 is null && filter2 is empty or vice versa
+    	if ( (filter1 == null && filter2 != null && filter2.size() == 0) ||
+    			(filter1 != null && filter2 == null && filter1.size() == 0)){
+    		return true;
+    	}
+    	// If filter1 is null && filter2 is not empty or vice versa
+    	if ( (filter1 == null && filter2 != null) ||
+    			(filter1 != null && filter2 == null)){
+    		return false;
+    	}
+    	// If filter1 and filter2 are null or empty
+    	if ( (filter1 == null && filter2 == null) ||
+    			(filter1.size() == 0 && filter2.size() == 0)){
+    		return true;
+    	}
 
+    	if(filter1.size() != filter2.size()){
+    		return false;
+    	}
+        return filter1.equals(filter2);
+    }
     private void populateSearchCarouselProductLimit(int activePage, BrowseDataContext browseDataContext) {
         int searchCarouselProductLimit;
         int noOfAdProducts = (null != browseDataContext.getAdProducts() && null != browseDataContext.getAdProducts().getProducts()) ? browseDataContext.getAdProducts()
@@ -522,7 +531,7 @@ public class CmsFilteringFlow {
         browseDataContext.getSections().setLimit(searchCarouselProductLimit);
     }
 
-    private BrowseDataContext doSearchLikeFlow(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException {
+    private BrowseDataContext doSearchLikeFlow(CmsFilteringNavigator nav, FDUserI user) throws InvalidFilteringArgumentException {
         NavigationModel navigationModel = new NavigationModel();
         SearchResults searchResults = null;
 
@@ -538,11 +547,15 @@ public class CmsFilteringFlow {
                         nav.setSearchParams(searchParams);
                     }
                 }
+                searchResults = SearchService.getInstance().searchProducts(searchParams, nav.getRequestCookies(), user,
+					nav.getRequestUrl(), nav.getReferer(), nav.isReceipeRequested());
 
-                searchResults = SearchService.getInstance().searchProducts(searchParams, nav.getRequestCookies(), user, nav.getRequestUrl(), nav.getReferer());
-                if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.hooklogic2016, user)){               //if(FDStoreProperties.isHookLogicEnabled()){
-                    SearchResultsUtil.getHLBrandProductAdProducts(searchResults, nav,  user);
-                 }
+                if (nav.isAdProductRequested() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.hooklogic2016, user)) {               //if(FDStoreProperties.isHookLogicEnabled()){
+                    SearchResultsUtil.getHLBrandProductAdProducts(searchResults, nav,  user, null, null, null);
+                } else {
+                	searchResults.setAdProducts(null);
+                }
+
                 collectSearchRelevancyScores(searchResults, nav.getRequestCookies(), user);
                 break;
             case NEWPRODUCTS:
@@ -568,10 +581,11 @@ public class CmsFilteringFlow {
             searchPageType = SearchPageType.RECIPE;
         } else {
             processProducts(nav.getPageType(), navigationModel, searchResults);
-            searchPageType = SearchPageType.PRODUCT; // TODO why is this set again?
         }
 
-        setupAllAndActiveFiltersForNavigationModel(nav, user, navigationModel);
+        if (nav.isMenuBoxAndFilterRequested()) {
+        	setupAllAndActiveFiltersForNavigationModel(nav, user, navigationModel);
+        }
 
         BrowseDataContext browseDataContext = BrowseDataBuilderFactory.createBuilder(null, navigationModel.isSuperDepartment(), searchPageType).buildBrowseData(navigationModel,
                 user, nav);
@@ -593,83 +607,15 @@ public class CmsFilteringFlow {
             setupAllAndActiveFiltersForNavigationModel(nav, user, navigationModel);
             browseDataContext = BrowseDataBuilderFactory.createBuilder(null, navigationModel.isSuperDepartment(), searchPageType).buildBrowseData(navigationModel, user, nav);
         }
-
-        // refresh context sensitive filters
-        if (navigationModel.getActiveFilters().size() > 0 && searchPageType == SearchPageType.PRODUCT && browseDataContext.getSectionContexts().size() > 0) {
-            refreshResultDependantFilters(nav.getPageType(), navigationModel, browseDataContext.getSectionContexts().get(0).getProductItems());
-            setupAllAndActiveFiltersForNavigationModel(nav, user, navigationModel);
-        }
+        
+        browseDataContext.setRequestFilterParams(nav.getRequestFilterParams());
+        browseDataContext.setDataFilterParams(nav.getDataFilterParams());
+        
         savePageTypeForCaching(nav.getPageType(), browseDataContext);
-        browseDataContext.setNavigationModel(navigationModel);
-        MenuBuilderI menuBuilder = MenuBuilderFactory.createBuilderByPageType(null, navigationModel.isSuperDepartment(), searchPageType);
-        // create menu
-        navigationModel.setLeftNav(menuBuilder.buildMenu(navigationModel.getAllFilters(), navigationModel, nav));
-        if (!navigationModel.isSuperDepartment()) { // don't do these in case of super department page
-            // menu availability check
-            MenuBuilderFactory.getInstance().checkMenuStatus(browseDataContext, navigationModel, user, true);
-            reOrderAllMenuItemsByHitCount(navigationModel, browseDataContext);
-            reOrderAllMenuItemsByName(navigationModel);
-        }
-        browseDataContext.getMenuBoxes().setMenuBoxes(navigationModel.getLeftNav());
-        BrowseData.DescriptiveDataCointainer descriptiveContent = browseDataContext.getDescriptiveContent();
-        switch (nav.getPageType()) { // TODO warning
-            case SEARCH:
-                String pageTitle = nav.getSearchParams() == null ? "" : " - " + nav.getSearchParams();
-                descriptiveContent.setPageTitle("FreshDirect - Search" + pageTitle);
-                descriptiveContent.setOasSitePage("www.freshdirect.com/search");
-                Html searchPageTopMediaBanner = ContentFactory.getInstance().getStore().getSearchPageTopMediaBanner();
-                if (searchPageTopMediaBanner != null) {
-                    descriptiveContent.setMedia(MediaUtils.renderHtmlToString(searchPageTopMediaBanner, user));
-                    descriptiveContent.setMediaLocation("TOP");
-                }
-                break;
-            case ECOUPON:
-                descriptiveContent.setPageTitle("FreshDirect - Coupon Circular Page");
-                descriptiveContent.setOasSitePage("www.freshdirect.com/ecoupon");
-                Html ecouponsPageTopMediaBanner = ContentFactory.getInstance().getStore().getEcouponsPageTopMediaBanner();
-                if (ecouponsPageTopMediaBanner != null) {
-                    descriptiveContent.setMedia(MediaUtils.renderHtmlToString(ecouponsPageTopMediaBanner, user));
-                    descriptiveContent.setMediaLocation("TOP");
-                }
-                break;
-            case PRES_PICKS:
-                descriptiveContent.setPageTitle("FreshDirect - Fresh Deals");
-                ContentNodeModel node = ContentFactory.getInstance().getContentNode(nav.getId());
-                if (node != null)
-                    descriptiveContent.setOasSitePage(node.getPath());
-                Html presidentPicksPageTopMediaBanner = ContentFactory.getInstance().getStore().getPresidentPicksPageTopMediaBanner();
-                if (presidentPicksPageTopMediaBanner != null) {
-                    descriptiveContent.setMedia(MediaUtils.renderHtmlToString(presidentPicksPageTopMediaBanner, user));
-                    descriptiveContent.setMediaLocation("TOP");
-                }
-                break;
-            case STAFF_PICKS:
-                descriptiveContent.setPageTitle("FreshDirect - Staff Picks");
-                ContentNodeModel staffPicksNode = ContentFactory.getInstance().getContentNode(nav.getId());
-                if (staffPicksNode != null) {
-                    descriptiveContent.setOasSitePage(staffPicksNode.getPath());
-                } else {
-                    descriptiveContent.setOasSitePage("www.freshdirect.com/staffpicks");
-                }
-                Html staffPicksPageTopMediaBanner = ContentFactory.getInstance().getStore().getStaffPicksPageTopMediaBanner();
-                if (staffPicksPageTopMediaBanner != null) {
-                    descriptiveContent.setMedia(MediaUtils.renderHtmlToString(staffPicksPageTopMediaBanner, user));
-                    descriptiveContent.setMediaLocation("TOP");
-                }
-                break;
-            case NEWPRODUCTS:
-                descriptiveContent.setPageTitle("FreshDirect - New products");
-                descriptiveContent.setOasSitePage("www.freshdirect.com/newproducts");
-                Html newProductsPageTopMediaBanner = ContentFactory.getInstance().getStore().getNewProductsPageTopMediaBanner();
-                if (newProductsPageTopMediaBanner != null) {
-                    descriptiveContent.setMedia(MediaUtils.renderHtmlToString(newProductsPageTopMediaBanner, user));
-                    descriptiveContent.setMediaLocation("TOP");
-                }
-                break;
-            default:
-                LOG.error("Invalid page type: " + nav.getPageType());
-                throw new InvalidFilteringArgumentException("Invalid page type: " + nav.getPageType(), InvalidFilteringArgumentException.Type.CANNOT_DISPLAY_NODE, FALLBACK_URL);
-        }
+        
+        setupFilterAndMenu(nav, user, navigationModel, searchPageType, browseDataContext);	
+        
+        setDescriptiveContent(nav, user, browseDataContext);
         browseDataContext.getSearchParams().setSearchParams(nav.getSearchParams());
         browseDataContext.getSearchParams().setListSearchParams(nav.getListSearchParams());
         browseDataContext.getSearchParams().setListSearchParamsList(getSearchList(nav.getListSearchParams()));
@@ -813,19 +759,119 @@ public class CmsFilteringFlow {
             }
         }
 
-        relocateBrandFilterBasedOnCmsSetting(browseDataContext);
-
+        if (nav.isMenuBoxAndFilterRequested()) {
+	        relocateBrandFilterBasedOnCmsSetting(browseDataContext);
+	        // populate browseData with filterLabels
+	        BrowseDataBuilderFactory.getInstance().populateWithFilterLabels(browseDataContext, navigationModel);
+        }
+        
         if (FilteringFlowType.SEARCH.equals(nav.getPageType())) {
             browseDataContext.setGoogleAnalyticsData(GoogleAnalyticsDataService.defaultService().populateSearchGAData(browseDataContext.getSearchParams()));
         }
 
-        // populate browseData with filterLabels
-        BrowseDataBuilderFactory.getInstance().populateWithFilterLabels(browseDataContext, navigationModel);
-
         return browseDataContext;
     }
 
+	private void setupFilterAndMenu(CmsFilteringNavigator nav, FDUserI user, NavigationModel navigationModel,
+			SearchPageType searchPageType, BrowseDataContext browseDataContext) {
+
+		// if menus and filters are not requested, just set the navigation model without populating it.
+		if (!nav.isMenuBoxAndFilterRequested()) {
+			browseDataContext.setNavigationModel(navigationModel);
+			return;
+		}
+        // refresh context sensitive filters
+        if (navigationModel.getActiveFilters().size() > 0 && searchPageType == SearchPageType.PRODUCT && browseDataContext.getSectionContexts().size() > 0) {
+            refreshResultDependantFilters(nav.getPageType(), navigationModel, browseDataContext.getSectionContexts().get(0).getProductItems());
+            setupAllAndActiveFiltersForNavigationModel(nav, user, navigationModel);
+        }
+        
+        browseDataContext.setNavigationModel(navigationModel);
+        MenuBuilderI menuBuilder = MenuBuilderFactory.createBuilderByPageType(null, navigationModel.isSuperDepartment(), searchPageType);
+        // create menu
+        navigationModel.setLeftNav(menuBuilder.buildMenu(navigationModel.getAllFilters(), navigationModel, nav));
+        if (!navigationModel.isSuperDepartment()) { // don't do these in case of super department page
+            // menu availability check
+            MenuBuilderFactory.getInstance().checkMenuStatus(browseDataContext, navigationModel, user, true);
+            reOrderAllMenuItemsByHitCount(navigationModel, browseDataContext);
+            reOrderAllMenuItemsByName(navigationModel);
+        }
+        browseDataContext.getMenuBoxes().setMenuBoxes(navigationModel.getLeftNav());
+	}
+
+	private void setDescriptiveContent(CmsFilteringNavigator nav, FDUserI user, BrowseDataContext browseDataContext)
+			throws InvalidFilteringArgumentException {
+
+		if (!nav.isDescriptiveContentRequested()) {
+			return;
+		}
+        BrowseData.DescriptiveDataCointainer descriptiveContent = browseDataContext.getDescriptiveContent();
+        switch (nav.getPageType()) {
+            case SEARCH:
+                String pageTitle = nav.getSearchParams() == null ? "" : " - " + nav.getSearchParams();
+                descriptiveContent.setPageTitle("FreshDirect - Search" + pageTitle);
+                descriptiveContent.setOasSitePage("www.freshdirect.com/search");
+                Html searchPageTopMediaBanner = ContentFactory.getInstance().getStore().getSearchPageTopMediaBanner();
+                if (searchPageTopMediaBanner != null) {
+                    descriptiveContent.setMedia(MediaUtils.renderHtmlToString(searchPageTopMediaBanner, user));
+                    descriptiveContent.setMediaLocation("TOP");
+                }
+                break;
+            case ECOUPON:
+                descriptiveContent.setPageTitle("FreshDirect - Coupon Circular Page");
+                descriptiveContent.setOasSitePage("www.freshdirect.com/ecoupon");
+                Html ecouponsPageTopMediaBanner = ContentFactory.getInstance().getStore().getEcouponsPageTopMediaBanner();
+                if (ecouponsPageTopMediaBanner != null) {
+                    descriptiveContent.setMedia(MediaUtils.renderHtmlToString(ecouponsPageTopMediaBanner, user));
+                    descriptiveContent.setMediaLocation("TOP");
+                }
+                break;
+            case PRES_PICKS:
+                descriptiveContent.setPageTitle("FreshDirect - Fresh Deals");
+                ContentNodeModel node = ContentFactory.getInstance().getContentNode(nav.getId());
+                if (node != null)
+                    descriptiveContent.setOasSitePage(node.getPath());
+                Html presidentPicksPageTopMediaBanner = ContentFactory.getInstance().getStore().getPresidentPicksPageTopMediaBanner();
+                if (presidentPicksPageTopMediaBanner != null) {
+                    descriptiveContent.setMedia(MediaUtils.renderHtmlToString(presidentPicksPageTopMediaBanner, user));
+                    descriptiveContent.setMediaLocation("TOP");
+                }
+                break;
+            case STAFF_PICKS:
+                descriptiveContent.setPageTitle("FreshDirect - Staff Picks");
+                ContentNodeModel staffPicksNode = ContentFactory.getInstance().getContentNode(nav.getId());
+                if (staffPicksNode != null) {
+                    descriptiveContent.setOasSitePage(staffPicksNode.getPath());
+                } else {
+                    descriptiveContent.setOasSitePage("www.freshdirect.com/staffpicks");
+                }
+                Html staffPicksPageTopMediaBanner = ContentFactory.getInstance().getStore().getStaffPicksPageTopMediaBanner();
+                if (staffPicksPageTopMediaBanner != null) {
+                    descriptiveContent.setMedia(MediaUtils.renderHtmlToString(staffPicksPageTopMediaBanner, user));
+                    descriptiveContent.setMediaLocation("TOP");
+                }
+                break;
+            case NEWPRODUCTS:
+                descriptiveContent.setPageTitle("FreshDirect - New products");
+                descriptiveContent.setOasSitePage("www.freshdirect.com/newproducts");
+                Html newProductsPageTopMediaBanner = ContentFactory.getInstance().getStore().getNewProductsPageTopMediaBanner();
+                if (newProductsPageTopMediaBanner != null) {
+                    descriptiveContent.setMedia(MediaUtils.renderHtmlToString(newProductsPageTopMediaBanner, user));
+                    descriptiveContent.setMediaLocation("TOP");
+                }
+                break;
+            default:
+                LOG.error("Invalid page type: " + nav.getPageType());
+                throw new InvalidFilteringArgumentException("Invalid page type: " + nav.getPageType(), InvalidFilteringArgumentException.Type.CANNOT_DISPLAY_NODE, FALLBACK_URL);
+        }
+	}
+
     private void relocateBrandFilterBasedOnCmsSetting(BrowseDataContext browseDataContext) {
+		// If search result doesn't need to show filter/menu,
+		// navigation model will be null
+		if (browseDataContext.getNavigationModel() == null) {
+			return;
+		}
         EnumBrandFilterLocation location = browseDataContext.getNavigationModel().getBrandFilterLocation();
         if (location != null && EnumBrandFilterLocation.ORIGINAL != location) {
             MenuBuilderFactory.getInstance().relocateBrandFilter(browseDataContext.getMenuBoxes().getMenuBoxes(), location);
@@ -883,7 +929,7 @@ public class CmsFilteringFlow {
         }
     }
 
-    private void setupAllAndActiveFiltersForNavigationModel(CmsFilteringNavigator nav, FDSessionUser user, NavigationModel navigationModel) {
+    private void setupAllAndActiveFiltersForNavigationModel(CmsFilteringNavigator nav, FDUserI user, NavigationModel navigationModel) {
         navigationModel.setAllFilters(NavigationUtil.createSearchFilterGroups(navigationModel, nav, user));
         navigationModel.setActiveFilters(NavigationUtil.selectActiveFilters(navigationModel.getAllFilters(), nav));
     }
@@ -945,11 +991,11 @@ public class CmsFilteringFlow {
     }
 
     /** based on ProductsFilterImpl.createComparator() and FilteringComparatorUtil.createProductComparator() */
-    private void collectSearchRelevancyScores(SearchResults searchResults, Cookie[] cookies, FDSessionUser user) {
+    private void collectSearchRelevancyScores(SearchResults searchResults, Cookie[] cookies, FDUserI user) {
         String suggestedTerm = NVL.apply(searchResults.getSuggestedTerm(), searchResults.getSearchTerm());
         List<FilteringSortingItem<ProductModel>> products = searchResults.getProducts();
 
-        if(FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, cookies, user)){
+        if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, cookies, user)) {
             //for unbxd search results the relevancy is the order of in which the products are returned
             for(int i = products.size(); i > 0; i--){
                 products.get(products.size() - i).putSortingValue(EnumSortingValue.TERM_SCORE, i);
@@ -1003,7 +1049,7 @@ public class CmsFilteringFlow {
         }
     }
 
-    private BrowseDataContext doBrowseFlow(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException, FDResourceException, FDNotFoundException {
+    private BrowseDataContext doBrowseFlow(CmsFilteringNavigator nav, FDUserI user) throws InvalidFilteringArgumentException, FDResourceException, FDNotFoundException {
 
         BrowseDataContext browseDataContext = null;
 
@@ -1037,7 +1083,7 @@ public class CmsFilteringFlow {
             Map<String, String> hlCatEmptyProductPageBeacon=new HashMap<String, String>();
             List<SectionContext> sectionContexts = browseDataContext.getSectionContexts();
             getAdProductsByCategory(user, navigationModel, catId, hlSelectionsofProductsList, hlSelectionsofPageBeacons, sectionContexts,
-            		browseDataContext, hlCatProductsCount, hlCatEmptyProductPageBeacon);
+            		browseDataContext, hlCatProductsCount, hlCatEmptyProductPageBeacon, nav.isMobile());
             browseDataContext.getAdProducts().setHlSelectionOfProductList(hlSelectionsofProductsList);
             browseDataContext.getAdProducts().setHlSelectionsPageBeacons(hlSelectionsofPageBeacons);
             browseDataContext.getAdProducts().setHlCatProductsCount(hlCatProductsCount);
@@ -1094,7 +1140,7 @@ public class CmsFilteringFlow {
         return browseDataContext;
     }
 
-	private boolean displayHookLogicProducts(CmsFilteringNavigator nav, FDSessionUser user,
+	private boolean displayHookLogicProducts(CmsFilteringNavigator nav, FDUserI user,
 			ContentNodeModel contentNodeModel) {
 		return FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.hooklogic2016, user) && FDStoreProperties.isHookLogicForCategoriesEnabled()
 				&& !isExcludedForHookLogicProducts(contentNodeModel, nav);
@@ -1122,29 +1168,30 @@ public class CmsFilteringFlow {
 		}
 		return isExcluded;
 	}
-    private void getAdProductsByCategory(FDSessionUser user, NavigationModel navigationModel, String catId, Map<String, List<ProductData>> hlSelectionsofProductsList,
+    private void getAdProductsByCategory(FDUserI user, NavigationModel navigationModel, String catId, Map<String, List<ProductData>> hlSelectionsofProductsList,
             Map<String, String> hlSelectionsofPageBeacons, List<SectionContext> sectionContexts, BrowseDataContext browseDataContext, Map<String, Integer> hlCatProductsCount,
-            Map<String, String> hlCatEmptyProductPageBeacon) throws FDResourceException {
+            Map<String, String> hlCatEmptyProductPageBeacon, boolean isMobile) throws FDResourceException {
+		
         if (null != sectionContexts) {
             for (Iterator<SectionContext> iterator = sectionContexts.iterator(); iterator.hasNext();) {
                 SectionContext categorySectionsContext = iterator.next();
                 getAdProductsByCategory(user, navigationModel, categorySectionsContext.getCatId(), hlSelectionsofProductsList, hlSelectionsofPageBeacons,
-                        categorySectionsContext.getSectionContexts(), browseDataContext, hlCatProductsCount, hlCatEmptyProductPageBeacon);
+                        categorySectionsContext.getSectionContexts(), browseDataContext, hlCatProductsCount, hlCatEmptyProductPageBeacon, isMobile);
             }
-            getAdProductsByCategory(user, navigationModel, catId, hlSelectionsofProductsList, hlSelectionsofPageBeacons, browseDataContext, hlCatProductsCount, hlCatEmptyProductPageBeacon);
+            getAdProductsByCategory(user, navigationModel, catId, hlSelectionsofProductsList, hlSelectionsofPageBeacons, browseDataContext, hlCatProductsCount, hlCatEmptyProductPageBeacon, isMobile);
         }
     }
 
-    private void getAdProductsByCategory(FDSessionUser user, NavigationModel navigationModel, String catId, Map<String, List<ProductData>> hlSelectionsofProductsList,
+    private void getAdProductsByCategory(FDUserI user, NavigationModel navigationModel, String catId, Map<String, List<ProductData>> hlSelectionsofProductsList,
             Map<String, String> hlSelectionsofPageBeacons, BrowseDataContext browseDataContext,
-            Map<String, Integer> hlCatProductsCount, Map<String, String> hlCatEmptyProductPageBeacon) throws FDResourceException {
+            Map<String, Integer> hlCatProductsCount, Map<String, String> hlCatEmptyProductPageBeacon, boolean isMobile) throws FDResourceException {
 
         HLBrandProductAdRequest hLBrandProductAdRequest = new HLBrandProductAdRequest();
-        hLBrandProductAdRequest.setUserId(user.getUser().getPK().getId());
-        hLBrandProductAdRequest.setCustomerId(user.getUser().getPK().getId());
+        hLBrandProductAdRequest.setUserId(user.getPrimaryKey());
+        hLBrandProductAdRequest.setCustomerId(user.getPrimaryKey());
         hLBrandProductAdRequest.setCategoryId(catId);
 
-        if(user.isMobilePlatForm())
+        if(isMobile)
 			hLBrandProductAdRequest.setPlatformSource("mobile");
 	 	  else
 		 	 hLBrandProductAdRequest.setPlatformSource("web");
@@ -1246,7 +1293,7 @@ public class CmsFilteringFlow {
         }
     }
 
-    private boolean isCategoryAggregationApplicable(CmsFilteringNavigator nav, FDSessionUser user, ContentNodeModel contentNodeModel) {
+    private boolean isCategoryAggregationApplicable(CmsFilteringNavigator nav, FDUserI user, ContentNodeModel contentNodeModel) {
         boolean isAggregationFeatureActive = FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.browseaggregatedcategories1_0, nav.getRequestCookies(), user);
         boolean containsCategoryProperties = FDStoreProperties.getBrowseAggregatedCategories().contains(contentNodeModel.getContentKey().getEncoded());
         return (isAggregationFeatureActive && containsCategoryProperties) || nav.isAggregateCategories();
@@ -1283,7 +1330,7 @@ public class CmsFilteringFlow {
         return departmentorSuperDepartment;
     }
 
-    private void validateNode(CmsFilteringNavigator nav, ContentNodeModel contentNodeModel, String id, FDSessionUser user) throws InvalidFilteringArgumentException {
+    private void validateNode(CmsFilteringNavigator nav, ContentNodeModel contentNodeModel, String id, FDUserI user) throws InvalidFilteringArgumentException {
 
         if (!FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, user) && contentNodeModel instanceof SuperDepartmentModel) {
             throw new InvalidFilteringArgumentException("Following SuperDepartment page is referred without globalNav rolled out: " + id,
@@ -1349,7 +1396,7 @@ public class CmsFilteringFlow {
      *
      * if department has only one usable category then return with that categoryId
      */
-    private String isSpecialRedirectConditionsApply(DepartmentModel dept, FDSessionUser user) {
+    private String isSpecialRedirectConditionsApply(DepartmentModel dept, FDUserI user) {
 
         String theOnlyOne = null;
 
@@ -1381,7 +1428,7 @@ public class CmsFilteringFlow {
         return null;
     }
 
-    private void buildHlCategoriesPageBeacon(Map<String, String> hlSelectionsofPageBeacon, BrowseDataContext browseDataContext, FDSessionUser user,
+    private void buildHlCategoriesPageBeacon(Map<String, String> hlSelectionsofPageBeacon, BrowseDataContext browseDataContext, FDUserI user,
             List<FilteringSortingItem<ProductModel>> productResults, String catId) {
         try {
             List<FilteringProductItem> items = ProductItemFilterUtil.createFilteringProductItemsFromSearchResults(productResults);
@@ -1425,7 +1472,7 @@ public class CmsFilteringFlow {
         }
     }
 
-    private List<ProductData> getProductDataList(FDSessionUser user, List<FilteringSortingItem<ProductModel>> hlItems, NavigationModel navigationModel) {
+    private List<ProductData> getProductDataList(FDUserI user, List<FilteringSortingItem<ProductModel>> hlItems, NavigationModel navigationModel) {
 
         List<FilteringProductItem> items = ProductItemFilterUtil.createFilteringProductItemsFromSearchResults(hlItems);
         ProductData productData = null;

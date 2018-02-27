@@ -458,8 +458,9 @@ var FreshDirect = FreshDirect || {};
     // TODO check if 'blur' is needed
     $(document).on('change', this.selector+' input, '+this.selector+' select, '+this.selector+' textarea', this.validateInputField.bind(this));
     $(document).on('keydown', this.selector+' input, '+this.selector+' select', this.keyDownHandler.bind(this));
-
-    $(document).on('paste keydown focus', '['+this.attrPrefix+'-formatter]', this.focusedFormatter.bind(this));
+    // if this is andriod, bind to textInput event also.
+    var focusedBindEvents = fd && fd.mobWeb && navigator.userAgent.toLowerCase().indexOf('android') !== -1? 'paste keydown textInput focus' : 'paste keydown focus';
+    $(document).on(focusedBindEvents, '['+this.attrPrefix+'-formatter]', this.focusedFormatter.bind(this));
     $(document).on('change', '['+this.attrPrefix+'-formatter]', this.formatter.bind(this));
 
     // try to create unique ids for fields that are missing it
@@ -696,14 +697,76 @@ var FreshDirect = FreshDirect || {};
   });
 
 
-  // default formatters
+  var checkPhoneInput = function (keyCode, e, mask, $el) {
+	  var val = $el.val(),
+	  	pos = $el.prop('selectionStart'),
+	  	oldch, ch, newpos;
+	  if (keyCode >= 48 && keyCode <= 57 && pos < mask.length) {
+        // numbers
+        ch = (keyCode - 48) + '';
+        oldch = val.substr(pos, 1);
 
+        for (newpos = pos; newpos < mask.length && oldch !== 'x' && oldch !== +oldch+''; newpos++) {
+          oldch = val.substr(newpos, 1);
+          pos = newpos;
+        }
+
+        if (newpos < mask.length) {
+          var newValue = val.substr(0, pos) + ch + val.substr(pos+1);
+	      $el.val(newValue);
+          setTimeout(function () {
+			$el[0].setSelectionRange(pos+1, pos+1);
+	  	  });
+        }
+
+        e.preventDefault();
+      } else if (keyCode >= 96 && keyCode <= 105 && pos < mask.length) {
+        // keypad
+        ch = (keyCode - 96) + '';
+        oldch = val.substr(pos, 1);
+
+        for (newpos = pos; newpos < mask.length && oldch !== 'x' && oldch !== +oldch+''; newpos++) {
+          oldch = val.substr(newpos, 1);
+          pos = newpos;
+        }
+
+        if (newpos < mask.length) {
+          var newValue = val.substr(0, pos) + ch + val.substr(pos+1);
+          $el.val(newValue);
+          $el[0].setSelectionRange(pos+1, pos+1);
+        }
+
+        e.preventDefault();
+      } else if (keyCode === 32 && pos < mask.length) {
+        // Space
+        $el[0].setSelectionRange(pos+1, pos+1);
+
+        e.preventDefault();
+      } else if (keyCode === 8 && pos > 0) {
+        // BS
+        $el.val(val.substr(0, pos-1) + mask.substr(pos-1, 1) + val.substr(pos));
+        $el[0].setSelectionRange(pos-1, pos-1);
+
+        e.preventDefault();
+      } else if (keyCode === 37 || keyCode === 39 || keyCode === 9) {
+        // cursors/tab, do nothing
+      } else if (keyCode === 229){
+        // Andriod specific event, unrecognizable key code
+        setTimeout(function () {
+        	$el[0].setSelectionRange(pos, pos);
+        });
+        e.preventDefault();
+      } else {
+        e.preventDefault();
+      }
+  }
+  // default formatters
+  var enableTextInputCheck = false;
   // phone number formatter
   forms.registerFormatter('phone', function ($el, focused, e) {
     var val = $el.val(),
-        pos = $el.prop('selectionStart'),
-        mask = $el.attr('fdform-mask') || $el.prop('placeholder'),
-        ch, oldch, newpos;
+    	pos = $el.prop('selectionStart'),
+        mask = $el.attr('fdform-mask') || $el.prop('placeholder');
 
     if (!val || val.length < mask.length) {
       $el.val(mask);
@@ -723,56 +786,24 @@ var FreshDirect = FreshDirect || {};
     if (e.type === 'paste') {
       e.preventDefault();
     }
-
-    if (e.type === 'keydown') {
-      if (e.keyCode >= 48 && e.keyCode <= 57 && pos < mask.length) {
-        // numbers
-        ch = (e.keyCode - 48) + '';
-        oldch = val.substr(pos, 1);
-
-        for (newpos = pos; newpos < mask.length && oldch !== 'x' && oldch !== +oldch+''; newpos++) {
-          oldch = val.substr(newpos, 1);
-          pos = newpos;
-        }
-
-        if (newpos < mask.length) {
-          $el.val(val.substr(0, pos) + ch + val.substr(pos+1));
-          $el[0].setSelectionRange(pos+1, pos+1);
-        }
-
-        e.preventDefault();
-      } else if (e.keyCode >= 96 && e.keyCode <= 105 && pos < mask.length) {
-        // keypad
-        ch = (e.keyCode - 96) + '';
-        oldch = val.substr(pos, 1);
-
-        for (newpos = pos; newpos < mask.length && oldch !== 'x' && oldch !== +oldch+''; newpos++) {
-          oldch = val.substr(newpos, 1);
-          pos = newpos;
-        }
-
-        if (newpos < mask.length) {
-          $el.val(val.substr(0, pos) + ch + val.substr(pos+1));
-          $el[0].setSelectionRange(pos+1, pos+1);
-        }
-
-        e.preventDefault();
-      } else if (e.keyCode === 32 && pos < mask.length) {
-        // Space
-        $el[0].setSelectionRange(pos+1, pos+1);
-
-        e.preventDefault();
-      } else if (e.keyCode === 8 && pos > 0) {
-        // BS
-        $el.val(val.substr(0, pos-1) + mask.substr(pos-1, 1) + val.substr(pos));
-        $el[0].setSelectionRange(pos-1, pos-1);
-
-        e.preventDefault();
-      } else if (e.keyCode === 37 || e.keyCode === 39 || e.keyCode === 9) {
-        // cursors/tab, do nothing
-      } else {
-        e.preventDefault();
-      }
+    if (e.type === 'textInput' ) {
+    	if (enableTextInputCheck) {
+    		var textEntered = e.originalEvent && e.originalEvent.data;
+    			// allow number only
+	    		if (textEntered && textEntered < 10) {
+	    			for (var i = 0; i < textEntered.length; i++) {
+	    				var charCode = textEntered.charCodeAt(i);
+	    				checkPhoneInput(charCode, e, mask, $el);
+	    			}	
+    			} else {
+    				e.preventDefault();
+    			}
+		} else {
+			e.preventDefault();
+		}
+    } else if (e.type === 'keydown') {
+      checkPhoneInput(e.keyCode, e, mask, $el);
+      enableTextInputCheck = e.keyCode === 229;
     }
 
   });

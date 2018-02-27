@@ -73,18 +73,19 @@ if (editorialPath!=null && !"".equals(editorialPath.trim())) {  %>
 			</logic:iterate><br><br>
 		  </logic:iterate>
 		  <br>
+		  <form fdform name="recipeSearch" method="get" action="/recipe_search.jsp?trk=rdsrch">
 		  <table cellpadding="0" cellspacing="0" border="0">
-		  	<form name="recipeSearch" method="get" action="/recipe_search.jsp?trk=rdsrch">
+		  	
 			<tr>
 				<td colspan="3" style="padding-bottom: 4px;"><img src="/media_stat/recipe/rechm_recipe_search.gif" width="98" height="10" alt="RECIPE SEARCH"></td>
 			</tr>
 		  	<tr>
-				<td style="padding-right: 6px;"><input aria-label="recipe search" name="keyword" size="20"></td>
-				<td style="padding-right: 10px;"><input type="image" src="/media_stat/recipe/rechm_find_button.gif" border="0" alt="FIND"></td>
+				<td style="padding-right: 6px;"><input aria-label="recipe search" class="accessible_search" name="keyword" size="20"></td>
+				<td style="padding-right: 10px;"><button type="submit" class="cssbutton orange small">Find</button></td>
 				<td><a href="/recipe_search.jsp?trk=dpage">Advanced recipe search</a></td>
 			</tr>
-		  	</form>
-		  </table>
+		  	 </table>
+		  	 </form>
 		  <img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="">
 		</td>
         <td valign="top">

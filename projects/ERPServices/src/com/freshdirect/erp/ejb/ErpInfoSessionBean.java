@@ -9,6 +9,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -360,48 +361,115 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		}
 	}
 
+	private final static String QUERY_PRODUCTS_BY_SKUS = "SELECT m.skuCode, m.version, m.sap_id, p.plant_id,ms.sales_org,ms.distribution_channel, ms.unavailability_status, ms.unavailability_date, "
+			+ "ms.unavailability_reason, m.description, p.atp_rule, p.rating, price, "
+			+ "pricing_unit, promo_price, scale_unit, scale_quantity, sap_zone_id, mp.sales_org as mp_sales_org,mp.distribution_channel as mp_distribution_channel,  "
+			+ "p.daysfresh, p.days_in_house, p.sustainability_rating, m.upc,p.KOSHER_PRODUCTION,p.platter,p.blocked_days,p.HIDE_OOS,ms.DAYPART_VALUE, m.alcoholic_content, ms.picking_plant_id "
+			+ "FROM erps.materialprice mp, erps.material m,erps.plant_material p,erps.material_sales_area ms, "
+			+ "(SELECT MAX(m1.version) AS V,  m1.skuCode as skuCode FROM erps.material m1 WHERE m1.skucode in (?) group by m1.skuCode) t "
+			+ "WHERE  m.id=p.mat_id AND m.id= mp.mat_id and m.id=ms.mat_id AND m.version=t.V AND m.skuCode = t.skuCode AND m.skucode in (?)";
+
 	public Collection<ErpProductInfoModel> findProductsBySku(String[] skuCodes) {
 		Connection conn = null;
-		PreparedStatement ps = null;
 		List<ErpProductInfoModel> products = new ArrayList<ErpProductInfoModel>();
-		long time = System.currentTimeMillis(); 
-		
-		if (skuCodes != null && skuCodes.length > 0) {
-			try {
-				conn = getConnection();
-				ps = conn.prepareStatement(QUERY_PRODUCTS_BY_SKU);
-				for (int i = 0; i < skuCodes.length; i++) {
-					ps.setString(1, skuCodes[i]);
-					ps.setString(2, skuCodes[i]);
-					ResultSet rs = null;
-					try {
-						rs = ps.executeQuery();
-						if (rs.next()) {
-							ErpProductInfoModel m = fetchErpProductInfoModel(rs, skuCodes[i]);
-							products.add(m);
-						}
-						if(i%1000 == 0) {
-							LOGGER.debug(i + " lightweight products loaded in "+ ((System.currentTimeMillis()-time)/1000) + "secs");
-							time = System.currentTimeMillis();
-						}
-					} finally {
-						close(rs);						
+		PreparedStatement maxPs = null;
+		if (skuCodes == null || skuCodes.length == 0) {
+			return products;
+		}
+		try {
+			conn = getConnection();
+			int inConditionLimit = FDStoreProperties.getInConditionLimit();
+			// if # of skus is more than the limitation, prepare a ps which allow 50 skus to pass in the in clause to reuse. 
+			// In the last iteration, pass null to the method so it dynamic generates the last one.
+			if (skuCodes.length > inConditionLimit) {
+				maxPs = prepareGetModifiedSkuStatement(inConditionLimit, conn);
+				for (int i = 0; i  < skuCodes.length; i = i + FDStoreProperties.getInConditionLimit()) {
+					if ( (i + FDStoreProperties.getInConditionLimit()) < skuCodes.length) {
+						findProductsBySku(Arrays.copyOfRange(skuCodes, i, i + FDStoreProperties.getInConditionLimit()), products, conn, maxPs);
+					} else {
+						findProductsBySku(Arrays.copyOfRange(skuCodes, i, skuCodes.length), products, conn, null);
 					}
 				}
-			} catch (SQLException sqle) {
-				LOGGER.error("Error finding SKUs ", sqle);
-				throw new EJBException(sqle);
-			} catch (Exception e) {
-				LOGGER.error("Unhandled exception in findProductsBySku : " + e.getMessage());
-				throw new EJBException(e);
-			} finally {
-				close(ps); 
-				close(conn);
+			} else {
+				findProductsBySku(skuCodes, products, conn, null);
 			}
+
+		} catch (SQLException sqle) {
+			LOGGER.error("Error finding SKUs ", sqle);
+			throw new EJBException(sqle);
+		} catch (Exception e) {
+			LOGGER.error("Unhandled exception in findProductsBySku : " + e.getMessage());
+			throw new EJBException(e);
+		} finally {
+			if (maxPs != null) close(maxPs);
+			close(conn);
 		}
+
 		return products;
 	}
 
+
+	private void findProductsBySku(String[] skuCodes, List<ErpProductInfoModel> products, Connection conn, PreparedStatement ps) {  
+		ResultSet rs = null;
+		PreparedStatement generatedPs = null;
+		try {
+			if (ps == null) {
+				generatedPs = ps = prepareGetModifiedSkuStatement(skuCodes.length, conn);
+			}
+			
+			for (int i = 0; i < skuCodes.length; i++) {
+				ps.setString(1 + i, skuCodes[i]);
+				ps.setString(1 + i + skuCodes.length, skuCodes[i]);
+			}
+			Map<String, ErpProductMetaData> productSkuMap = new HashMap<String, ErpProductMetaData>();
+
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				String skuCode = rs.getString("skuCode");
+				ErpProductMetaData productMetaData;
+				if (productSkuMap.containsKey(skuCode)) {
+					productMetaData = productSkuMap.get(skuCode);
+				} else {
+					productMetaData = new ErpProductMetaData(rs);
+					productSkuMap.put(skuCode, productMetaData);
+				}
+				fetchErpProductInfoModel(rs, productMetaData.matNos, productMetaData.matPrices,
+						productMetaData.matPlants, productMetaData.matSalesAreas, rs.getString("daysfresh"));
+
+			}
+			// convert the data gathered from result set to ErpProductInfoModel
+			for (String skuCode : skuCodes) {
+				if (productSkuMap.containsKey(skuCode)) {
+					products.add(productSkuMap.get(skuCode).toErpProductInfoModel(skuCode));
+				}
+			}
+			
+
+		} catch (SQLException sqle) {
+			LOGGER.error("Error finding SKUs ", sqle);
+			throw new EJBException(sqle);
+		} catch (Exception e) {
+			LOGGER.error("Unhandled exception in findProductsBySku : " + e.getMessage());
+			throw new EJBException(e);
+		} finally {
+			if (rs != null) close(rs);
+			if (generatedPs != null) close(generatedPs);
+		}
+	}
+
+	private PreparedStatement prepareGetModifiedSkuStatement(int length, Connection conn)
+			throws SQLException {
+		StringBuilder builder = new StringBuilder();
+		PreparedStatement ps;
+		for (int i = 0; i < length; i++) {
+			if (builder.length() > 0) {
+				builder.append(',');
+			}
+			builder.append("?");
+		}
+		ps = conn.prepareStatement(QUERY_PRODUCTS_BY_SKUS.replace("?", builder.toString()));
+		return ps;
+	}
     /**
      * @param rs
      * @param skuCode
@@ -1330,7 +1398,84 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
             DaoUtil.close(rs,ps,conn);
 		}
 	}
+	private final static String QUERY_NEW_VERSION_FROM_GROUP = "SELECT 1 FROM ERPS.GRP_HISTORY WHERE DATE_CREATED >= ? ";
 	
+	private final static String QUERY_MODIFIED_SKU_FROM_MATERIAL = "SELECT DISTINCT m.skucode FROM erps.history h INNER JOIN erps.material m ON h.VERSION = m.VERSION WHERE h.DATE_CREATED > ? ";
+	
+	private final static String QUERY_MODIFIED_SKU_FROM_GROUP = "SELECT distinct m.skucode  from ERPS.MATERIAL_GRP mg, ERPS.GRP_SCALE_MASTER gsm,erps.material m,"+
+			"(SELECT GSM.SAP_ID, GSM.VERSION FROM ERPS.MATERIAL_GRP mg,ERPS.GRP_SCALE_MASTER gsm, ERPS.GRP_HISTORY gh WHERE gh.version=gsm.version AND "+
+			"MG.GRP_ID=GSM.ID AND gh.version=(SELECT MAX(gsm1.version) FROM ERPS.GRP_SCALE_MASTER gsm1,ERPS.GRP_HISTORY gh1 WHERE "+
+			"gsm1.sap_id=GSM.SAP_ID AND gh1.version=gsm1.version AND GH1.DATE_CREATED < ? ))a,"+
+
+			"(SELECT GSM.SAP_ID, GSM.VERSION FROM ERPS.MATERIAL_GRP mg,ERPS.GRP_SCALE_MASTER gsm, ERPS.GRP_HISTORY gh WHERE gh.version=gsm.version AND "+
+			"MG.GRP_ID=GSM.ID AND gh.version=(SELECT MAX(gsm1.version) FROM ERPS.GRP_SCALE_MASTER gsm1,ERPS.GRP_HISTORY gh1 WHERE "+
+			"gsm1.sap_id=GSM.SAP_ID AND gh1.version=gsm1.version AND GH1.DATE_CREATED >= ? ))b "+
+
+			"where GSM.SAP_ID=a.sap_id and GSM.SAP_ID=b.sap_id and (gsm.version=a.version or gsm.version=b.version) and gsm.id=MG.GRP_ID and m.sap_id=MG.MAT_ID ";
+	
+	
+	private final static String QUERY_MODIFIED_SKU_ALL = "SELECT DISTINCT SKUCODE FROM ( "
+			+ QUERY_MODIFIED_SKU_FROM_MATERIAL
+			+ "UNION ALL " 
+			+ QUERY_MODIFIED_SKU_FROM_GROUP
+			+ ")";
+
+	/**
+	 * Get the sku codes from erps.material table that have been modified since lastModifiedTime
+	 * @param lastModifiedTime unix time in ms
+	 * @return
+	 */
+	public Set<String> getModifiedSkus(long lastModifiedTime) {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		try {
+			Timestamp timestamp = new Timestamp(lastModifiedTime);
+			conn = getConnection();
+
+			ps = conn.prepareStatement(QUERY_NEW_VERSION_FROM_GROUP);
+			boolean hasNewEntryFromGroup = false;
+			ps.setTimestamp(1, timestamp);
+			ResultSet checkNewEntryRs = ps.executeQuery();
+			try {
+				if (checkNewEntryRs.next()) {
+					hasNewEntryFromGroup = true;
+				}
+				
+			} finally {
+				close(checkNewEntryRs);
+			}
+			if (hasNewEntryFromGroup) {
+				ps = conn.prepareStatement(QUERY_MODIFIED_SKU_ALL);
+				
+				ps.setTimestamp(1, timestamp);
+				ps.setTimestamp(2, timestamp);
+				ps.setTimestamp(3, timestamp);
+			} else {
+				ps = conn.prepareStatement(QUERY_MODIFIED_SKU_FROM_MATERIAL);
+				
+				ps.setTimestamp(1, timestamp);
+			}
+			ResultSet rs = ps.executeQuery();
+
+			HashSet<String> results = new HashSet<String>();
+			try {
+				while (rs.next()) {
+					String sc = rs.getString(1);
+					results.add(sc);
+				}
+			} finally {
+				close(rs);
+			}
+			return results;
+
+		} catch (SQLException sqle) {
+			LOGGER.error("Unable to find skus by last modified: " + lastModifiedTime, sqle);
+			throw new EJBException(sqle);
+		} finally {
+			DaoUtil.close(null, ps, conn);
+		}
+	}
+
 	private static final String QUERY_BACK_IN_STOCK_SKUS = 
 		"SELECT * FROM erps.back_in_stock_products_v1";
 
@@ -1721,6 +1866,35 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			throw new EJBException(sqle);
 		} finally {
             DaoUtil.close(null,ps,conn);
+		}
+	}
+
+	class ErpProductMetaData {
+		private List<String> matNos;
+		private Set<ErpMaterialPrice> matPrices;
+		private Set<ErpPlantMaterialInfo> matPlants;
+		private Set<ErpMaterialSalesAreaInfo> matSalesAreas;
+		private int version;
+		private String descr;
+		private String upc;
+		private EnumAlcoholicContent alcoholType;
+
+		public ErpProductMetaData(ResultSet rs) throws SQLException {
+			version = rs.getInt("version");
+			descr = rs.getString("description");
+			upc = rs.getString("upc");
+			alcoholType = getEnumAlcoholicContent(rs.getString("ALCOHOLIC_CONTENT"));
+			matNos = new ArrayList<String>(5);
+			matPrices = new HashSet<ErpMaterialPrice>(5);
+			matPlants = new HashSet<ErpPlantMaterialInfo>(5);
+			matSalesAreas = new HashSet<ErpMaterialSalesAreaInfo>(5);
+		}
+
+		public ErpProductInfoModel toErpProductInfoModel(String skuCode) {
+			return new ErpProductInfoModel(skuCode, version, matNos.toArray(new String[0]), descr,
+					matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]), upc,
+					matPlants.toArray(new ErpProductInfoModel.ErpPlantMaterialInfo[0]),
+					matSalesAreas.toArray(new ErpProductInfoModel.ErpMaterialSalesAreaInfo[0]), alcoholType);
 		}
 	}
 }

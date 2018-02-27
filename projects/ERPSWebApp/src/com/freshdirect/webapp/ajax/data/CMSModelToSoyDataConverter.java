@@ -9,6 +9,7 @@ import java.util.Map;
 
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.storeapi.content.CategoryModel;
 import com.freshdirect.storeapi.content.CategorySectionModel;
 import com.freshdirect.storeapi.content.ContentNodeModel;
@@ -27,7 +28,7 @@ import com.freshdirect.webapp.util.MediaUtils;
 
 public class CMSModelToSoyDataConverter {
 
-	public static CategoryData createCategoryData(CategoryModel cat, FDSessionUser user, boolean extractPopularCategories){
+	public static CategoryData createCategoryData(CategoryModel cat, FDUserI user, boolean extractPopularCategories){
 		
 		if (cat == null) return null;
 		
@@ -48,7 +49,7 @@ public class CMSModelToSoyDataConverter {
 		return new CategoryData(catImage == null ? null : domains+catImage.getPath(), cat.getContentKey().getId(), cat.getFullName(), globalNavPostNameImage == null ? null : globalNavPostNameImage.getPath(), popularCategories);
 	}
 	
-	private static void extractCategorySections(DepartmentData departmentData, List<CategorySectionModel> categorySectionList, FDSessionUser user) {
+	private static void extractCategorySections(DepartmentData departmentData, List<CategorySectionModel> categorySectionList, FDUserI user) {
 		List<Map<String, Object>> columnSection = new ArrayList<Map<String, Object>>();
 
 		for (CategorySectionModel globalNavCategorySectionModel : categorySectionList) {
@@ -74,7 +75,7 @@ public class CMSModelToSoyDataConverter {
 		
 	}
 	
-	public static DepartmentData createDepartmentData(DepartmentModel departmentModel, FDSessionUser user) {
+	public static DepartmentData createDepartmentData(DepartmentModel departmentModel, FDUserI user) {
 		
 		DepartmentData departmentData = new DepartmentData();
 		
@@ -229,7 +230,7 @@ public class CMSModelToSoyDataConverter {
 		return result;
 	}
 	
-	public static SuperDepartmentData createSuperDepartmentData(SuperDepartmentModel superDepartmentModel, FDSessionUser user) {
+	public static SuperDepartmentData createSuperDepartmentData(SuperDepartmentModel superDepartmentModel, FDUserI user) {
 		
 		SuperDepartmentData superDepartmentData = new SuperDepartmentData();
 

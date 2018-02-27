@@ -10,10 +10,15 @@ var FreshDirect = FreshDirect || {};
 	var DISPATCHER = fd.common.dispatcher;
 	var paymentMethod = Object.create(DRAWER_WIDGET,{
 		signal: {
-			value:'payment'
+			value:'payment',
+			writable: true
 		},
 		callback: {
-			value: function (data) {
+			value: function (data, signal) {
+				if (this.isOpenSignal(signal)) {
+					DRAWER_WIDGET.callback.call(this, data, signal);
+					return;
+				}
 				if (fd.utils.isDeveloper()) {
 					console.log('paymentMethod: callback', data);
 				}
@@ -23,7 +28,7 @@ var FreshDirect = FreshDirect || {};
 						p.accountNumber = p.accountNumber.replace('XXXX','');
 					});
 				}
-				DRAWER_WIDGET.callback.call(this, data);
+				DRAWER_WIDGET.callback.call(this, data, signal);
 				this.check();
 				
 				/* APPDEV-4904, update the global freshdirect object */

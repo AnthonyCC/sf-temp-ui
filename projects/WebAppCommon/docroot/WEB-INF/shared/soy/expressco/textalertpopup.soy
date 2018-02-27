@@ -8,7 +8,7 @@
 <form id="textalert" fdform="textalert" action="#" novalidate fdform-endpoint-submit="/api/expresscheckout/textalert/submit">
   <div id="textalert_formbody">
     {if $data.header}{$data.header}{/if}
-    <p class="mobile">Mobile # <input name="mobile" aria-label="enter your mobile number" placeholder="(xxx) xxx xxxx" fdform-formatter="phone" fdform-fieldname="Mobile" required></p>
+    <p class="mobile">Mobile # <input name="mobile" type="tel" aria-label="enter your mobile number" placeholder="(xxx) xxx xxxx" fdform-formatter="phone" fdform-fieldname="Mobile" required></p>
     <span fdform-error-for="mobile"><span>
     <p class="choices-title">Select Your Alerts</p>
     <span fdform-error-for="notices"></span>

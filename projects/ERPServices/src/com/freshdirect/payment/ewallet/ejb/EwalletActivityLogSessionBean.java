@@ -12,13 +12,20 @@ import com.freshdirect.payment.ewallet.gateway.ejb.EwalletActivityLogModel;
  * @author garooru
  *
  */
+
+/**
+ *@deprecated Please use the EwalletActivityLogController and EwalletActivityLogServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */ 
 @SuppressWarnings("serial")
 public class EwalletActivityLogSessionBean extends GatewaySessionBeanSupport {
 
 
 	private static Category LOGGER = LoggerFactory
 			.getInstance(EwalletActivityLogSessionBean.class);
-
+	@Deprecated
 	public void logActivity(EwalletActivityLogModel eWalletLogModel) {
 
 		try {

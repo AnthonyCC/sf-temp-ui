@@ -36,14 +36,14 @@ public class CmElementTag extends AbstractCmTag {
 			
 			String attr = "\"-_--_--_--_--_--_--_--_--_--_--_-\"+video.title+\"-_-\"+state+\"-_-\"+Math.round(player.getCurrentTime())+\"-_-\"+Math.round(player.getDuration())";
 			
-			tagJs = getFormattedTag(
+			tagJs = getFormattedTagAsync(
 					toJsObject(tagModel.getElementId()),
 					toJsVar(tagModel.getElementCategory()),
 					attr);
 			
 		} else {
 			
-			tagJs = getFormattedTag( 
+			tagJs = getFormattedTagAsync( 
 					toJsVar(tagModel.getElementId()), 
 					toJsVar(tagModel.getElementCategory()), 
 					toJsVar(mapToAttrString(tagModel.getAttributesMaps())));

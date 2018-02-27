@@ -30,10 +30,12 @@ public class TimedLruCache<K,V> extends LruCache<K,V> {
 		this.expire = expire;
 	}
 
+	@Override
 	public synchronized void put(K key, V value) {
 		super.putEntry( new TimedEntry<K,V>(key, value, this.expire) );
 	}
 
+	@Override
 	public synchronized V get(K key) {
 		Entry<K,V> entry = this.getEntry(key);
 		if (entry==null) {

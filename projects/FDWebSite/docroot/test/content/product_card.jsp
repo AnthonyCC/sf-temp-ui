@@ -29,7 +29,8 @@ if (mobWeb) {
 }
 %>
 <tmpl:insert template="<%= pageTemplate %>">
-	<tmpl:put name='cmeventsource' direct='true'>TEST_PAGE</tmpl:put>
+	<%-- event source must be a valid enum --%>
+	<tmpl:put name='cmeventsource' direct='true'>UNKNOWN</tmpl:put>
 	
 	<tmpl:put name='extraCss' direct='true'>
 	</tmpl:put>
@@ -54,6 +55,12 @@ if (mobWeb) {
 				<soy:render template="common.potatoTransactionalGridItem" data="${productPotato}" />
 			</section>
 		</section>
+		
+		<script><%-- bind to show events to remove cart confirm --%>
+			$jq(document).on('afterShow.fb', function( e, instance, slide ) {
+				instance.current.$content.find('[data-component="ATCButton"]').attr('data-ignoreredirect', true);
+			});
+		</script>
 	</tmpl:put>
 
 	<tmpl:put name="jsmodules">

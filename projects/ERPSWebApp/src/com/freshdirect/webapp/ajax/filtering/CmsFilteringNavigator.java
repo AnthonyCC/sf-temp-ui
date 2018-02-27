@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,9 +24,12 @@ import com.freshdirect.content.nutrition.ErpNutritionType;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
+import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.webapp.ajax.JsonHelper;
 import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
 import com.freshdirect.webapp.features.service.FeaturesService;
+import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 import com.freshdirect.webapp.util.RequestUtil;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -47,6 +51,8 @@ public class CmsFilteringNavigator {
 
     // filtering
     private Map<String, List<String>> requestFilterParams = new TreeMap<String, List<String>>();
+
+    private Map<String, Boolean> dataFilterParams = new HashMap<String, Boolean>();
 
     // show all product on the actual page
     private boolean all = false;
@@ -76,7 +82,15 @@ public class CmsFilteringNavigator {
     private String ppPreviewId = null;
 
     private String picksId = null;
+    
+    private boolean isMobile;
 
+    public CmsFilteringNavigator() {
+    	this(true);
+    }
+    public CmsFilteringNavigator(boolean defaultGetAllData) {
+    	this.setDafaultGetAllData(defaultGetAllData);
+    }
     public String getPicksId() {
         return picksId;
     }
@@ -85,6 +99,48 @@ public class CmsFilteringNavigator {
         this.picksId = picksId;
     }
 
+    public boolean isMobile() {
+        return isMobile;
+    }
+
+    public void setIsMobile(boolean isMobile) {
+        this.isMobile = isMobile;
+    }
+    
+	public boolean isReceipeRequested() {
+		return this.getDataFilterParams().containsKey("searchReceipeRequested")
+				&& this.getDataFilterParams().get("searchReceipeRequested");
+	}
+
+	public void setReceipeRequested(boolean searchReceipe) {
+		this.getDataFilterParams().put("searchReceipeRequested", searchReceipe);
+	}
+	
+	public boolean isDescriptiveContentRequested() {
+		return this.getDataFilterParams().containsKey("descriptiveContentRequested")
+				&& this.getDataFilterParams().get("descriptiveContentRequested");
+	}
+
+	public void setDescriptiveContentRequested(boolean descriptiveContentRequested) {
+		this.getDataFilterParams().put("descriptiveContentRequested", descriptiveContentRequested);
+	}
+	
+	public boolean isMenuBoxAndFilterRequested() {
+		return this.getDataFilterParams().containsKey("menuBoxFilterRequested")
+				&& this.getDataFilterParams().get("menuBoxFilterRequested");
+	}
+	
+	public void setAdProductRequested(boolean adProductRequested) {
+		this.getDataFilterParams().put("adProductRequested", adProductRequested);
+	}
+	
+	public boolean isAdProductRequested() {
+		return this.getDataFilterParams().containsKey("adProductRequested")
+				&& this.getDataFilterParams().get("adProductRequested");
+	}
+	public void setMenuBoxFilterRequested(boolean menuBoxFilterRequested) {
+		this.getDataFilterParams().put("menuBoxFilterRequested", menuBoxFilterRequested);
+	}
     private int productHits = 0;
     private int recipeHits = 0;
 
@@ -97,14 +153,20 @@ public class CmsFilteringNavigator {
     
     private boolean populateSectionsOnly;
     
-    /**
-     * Creates a CmsFilteringNavigator instance out of request parameter map.
-     * 
-     * @return CmsFilteringNavigator
-     * @throws FDResourceException
-     * @throws InvalidFilteringArgumentException
-     */
     public static CmsFilteringNavigator createInstance(HttpServletRequest request, FDUserI fdUser) throws InvalidFilteringArgumentException, FDResourceException {
+    	return createInstance(request, fdUser, true);
+    }
+    
+	/**
+	 * Creates a CmsFilteringNavigator instance out of request parameter map.
+	 * @param request
+	 * @param fdUser
+	 * @param defaultGetAllData, true to get all data (menuboxs, filters, receipe)
+	 * @return
+	 * @throws InvalidFilteringArgumentException
+	 * @throws FDResourceException
+	 */
+    public static CmsFilteringNavigator createInstance(HttpServletRequest request, FDUserI fdUser, boolean defaultGetAllData) throws InvalidFilteringArgumentException, FDResourceException {
 
         try {
             request.setCharacterEncoding(CharEncoding.UTF_8);
@@ -120,6 +182,7 @@ public class CmsFilteringNavigator {
 
             try {   
                 cmsFilteringNavigator = JsonHelper.parseRequestData(request, CmsFilteringNavigator.class);
+                cmsFilteringNavigator.setDafaultGetAllData(defaultGetAllData);
             } catch (JsonParseException e) {
                 throw new InvalidFilteringArgumentException(e, InvalidFilteringArgumentException.Type.CANNOT_DISPLAY_NODE);
             } catch (JsonMappingException e) {
@@ -130,7 +193,8 @@ public class CmsFilteringNavigator {
 
         } else {
 
-            cmsFilteringNavigator = new CmsFilteringNavigator();
+            cmsFilteringNavigator = new CmsFilteringNavigator(defaultGetAllData);
+
             for (String param : paramNames) {
 
                 String[] paramValues = paramMap.get(param);
@@ -160,6 +224,12 @@ public class CmsFilteringNavigator {
                         cmsFilteringNavigator.setActiveTab(paramValue.toLowerCase());
                     } else if ("picksId".equalsIgnoreCase(param)) {
                         cmsFilteringNavigator.setPicksId(paramValue);
+                    } else if ("searchReceipe".equalsIgnoreCase(param)) {
+                    	cmsFilteringNavigator.setReceipeRequested(Boolean.parseBoolean(paramValue.toLowerCase()));
+                    } else if ("getMenuBoxAndFilter".equalsIgnoreCase(param)) {
+                    	cmsFilteringNavigator.setMenuBoxFilterRequested(Boolean.parseBoolean(paramValue.toLowerCase()));
+                    } else if ("getDescriptiveContent".equalsIgnoreCase(param)) {
+                    	cmsFilteringNavigator.setDescriptiveContentRequested(Boolean.parseBoolean(paramValue.toLowerCase()));
                     } else if ("pageType".equalsIgnoreCase(param)) {
                         // Do nothing but exclude from 'filtering params'
                     } else { // No match for any other CmsFilteringNavigator property => must be a filtering domain
@@ -207,13 +277,14 @@ public class CmsFilteringNavigator {
         cmsFilteringNavigator.setPageSize(pageSpecificPageSize);
 
         if ((id == null || id.equals(""))
-                && (cmsFilteringNavigator.getPageType().equals(FilteringFlowType.BROWSE) || cmsFilteringNavigator.getPageType().equals(FilteringFlowType.PRES_PICKS) || cmsFilteringNavigator
-                        .getPageType().equals(FilteringFlowType.STAFF_PICKS))) {
+                && (cmsFilteringNavigator.getPageType() != null && (cmsFilteringNavigator.getPageType().equals(FilteringFlowType.BROWSE) || cmsFilteringNavigator.getPageType().equals(FilteringFlowType.PRES_PICKS) || cmsFilteringNavigator
+                        .getPageType().equals(FilteringFlowType.STAFF_PICKS)))) {
             throw new InvalidFilteringArgumentException("ID parameter is null", InvalidFilteringArgumentException.Type.CANNOT_DISPLAY_NODE);
         }
         cmsFilteringNavigator.setRequestCookies(request.getCookies());
         cmsFilteringNavigator.setReferer(request.getHeader(HttpHeaders.REFERER));
         cmsFilteringNavigator.setRequestUrl(RequestUtil.getFullRequestUrl(request));
+        cmsFilteringNavigator.setIsMobile(UserUtil.isMobile(request.getHeader("User-Agent")) && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, fdUser));
         return cmsFilteringNavigator;
     }
 
@@ -336,6 +407,15 @@ public class CmsFilteringNavigator {
         this.requestFilterParams = requestFilterParams;
     }
 
+    public Map<String, Boolean> getDataFilterParams() {
+        return dataFilterParams;
+    }
+    
+
+    public void setDataFilterParams(Map<String, Boolean> dataFilterParams) {
+        this.dataFilterParams = dataFilterParams;
+    }
+    
     public String getId() {
         return id;
     }
@@ -529,5 +609,12 @@ public class CmsFilteringNavigator {
 	}
 	public void setPopulateSectionsOnly(boolean b){
 		populateSectionsOnly = b;
+	}
+	
+	public void setDafaultGetAllData(boolean b) {
+		this.setReceipeRequested(b);
+		this.setMenuBoxFilterRequested(b);
+		this.setDescriptiveContentRequested(b);
+		this.setAdProductRequested(b);
 	}
 }

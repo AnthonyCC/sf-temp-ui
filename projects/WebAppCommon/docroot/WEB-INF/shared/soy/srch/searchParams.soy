@@ -149,7 +149,7 @@ Showing <b>{$hits}</b> {$hits > 1 ? $itemType + 's' : $itemType} found for <b>{$
     <div class="ddpp transactional" data-transactional-align="true">
     {foreach $product in $products}
       <div class="ddpp-item radius-border border-green">
-        {if $product.featuredHeader}<img class="ddpp-ribbon" data-transactional-trigger="true" src="/media/images/ddpp_ribbons/{$product.featuredHeader}.png" alt="">{/if}
+        {if $product.featuredHeader}<img class="ddpp-ribbon" data-transactional-trigger="true" src="/media/images/ddpp_ribbons/{$product.featuredHeader}.png" role="presentation" alt="">{/if}
         {call common.transactionalGridItem}
           {param item:$product /}
         {/call}

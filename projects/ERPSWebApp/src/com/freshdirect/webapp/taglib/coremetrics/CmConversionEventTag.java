@@ -42,7 +42,7 @@ public class CmConversionEventTag extends AbstractCmTag {
 	
 	private String getTagJs(ConversionEventTagModel tagModel){
 		
-		String tagJs = getFormattedTag( 
+		String tagJs = getFormattedTagAsync( 
 				toJsVar(tagModel.getEventId()), 
 				toJsVar(tagModel.getActionType()), 
 				toJsVar(tagModel.getEventCategoryId()), 

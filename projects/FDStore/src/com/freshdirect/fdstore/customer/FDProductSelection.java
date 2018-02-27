@@ -697,7 +697,7 @@ public class FDProductSelection implements FDProductSelectionI {
 				FDProductInfo _p=this.lookupFDProductInfo();
 				if(_p!=null){
 //					group = _p.getGroup(this.getUserContext().getPricingContext().getZoneInfo().getSalesOrg(),this.getUserContext().getPricingContext().getZoneInfo().getDistributionChanel());
-					group = _p.getGroup(this!=null&&this.getUserContext()!=null&&this.getUserContext().getPricingContext()!=null?this.getUserContext().getPricingContext().getZoneInfo():null);
+					group = _p.getGroup(this != null && this.getUserContext()!=null && this.getUserContext().getPricingContext() !=null ? this.getUserContext().getPricingContext().getZoneInfo() : null);
 				}
 			}
 		 

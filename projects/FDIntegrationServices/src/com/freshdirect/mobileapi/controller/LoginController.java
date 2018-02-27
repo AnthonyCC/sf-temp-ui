@@ -360,7 +360,11 @@ public class LoginController extends BaseController  implements SystemMessageLis
             populateResponseWithEnabledAdditionsForWebClient(user, messageResponse, request, null);
             responseMessage = messageResponse;
         } else {
-            responseMessage = formatLoginMessage(user);
+        	try{
+        		responseMessage = formatLoginMessage(user);
+        	}catch(IllegalStateException e){
+        		// supress
+        	}
         }
         return responseMessage;
     }
@@ -386,6 +390,8 @@ public class LoginController extends BaseController  implements SystemMessageLis
 		String channel = requestMessage.getChannel();
 		String destination = requestMessage.getDestination();
 		String qualifier = requestMessage.getQualifier();
+		String rafclickid = requestMessage.getRafclickid();
+		String rafpromocode = requestMessage.getRafpromocode();
 		Message responseMessage = null;
 		SessionUser user = null;
 
@@ -489,7 +495,9 @@ public class LoginController extends BaseController  implements SystemMessageLis
 		            }
 				}
 			}
-
+            if(rafclickid!=null && rafpromocode!=null && !user.getFDSessionUser().getOrderHistory().hasSettledOrders(eStore)){
+            	FDCustomerManager.updateRAFClickIDPromoCode(user.getFDSessionUser().getIdentity(), rafclickid, rafpromocode, eStore);
+            }
 		} catch (FDAuthenticationException ex) {
 			if ("Account disabled".equals(ex.getMessage())) {
 				responseMessage = getErrorMessage(ERR_AUTHENTICATION,
@@ -556,6 +564,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
         // FDX-1873 - Show timeslots for anonymous address
         boolean deliveryAddr = setDeliveryAddress(user);
         responseMessage.setAnonymousAddressSetFromAcc(deliveryAddr);
+        responseMessage.setIsreferralEligible(user.getFDSessionUser().isReferralProgramAvailable());
         return responseMessage;
     }
 

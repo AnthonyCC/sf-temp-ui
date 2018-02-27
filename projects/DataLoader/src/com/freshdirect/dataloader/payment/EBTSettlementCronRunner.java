@@ -17,6 +17,9 @@ import org.apache.log4j.Category;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.dataloader.payment.ejb.SaleCronHome;
 import com.freshdirect.dataloader.payment.ejb.SaleCronSB;
+import com.freshdirect.fdstore.FDEcommProperties;
+import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.ecomm.gateway.SaleCronService;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
 
@@ -46,9 +49,16 @@ public class EBTSettlementCronRunner {
 			SaleCronHome home = (SaleCronHome) ctx.lookup("freshdirect.dataloader.SaleCron");
 
 			SaleCronSB sb = home.create();
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SaleCronSB)){
+				SaleCronService.getInstance().postAuthEBTSales(captureTimeout);
+				SaleCronService.getInstance().captureEBTSales(captureTimeout);
+				SaleCronService.getInstance().settleEBTSales();
+			}
+			else{
 			sb.postAuthEBTSales(captureTimeout);
 			sb.captureEBTSales(captureTimeout);
 			sb.settleEBTSales();
+			}
 			LOGGER.info("EBTSettlementCron finished");
 		} catch (Exception e) {
 			StringWriter sw = new StringWriter();

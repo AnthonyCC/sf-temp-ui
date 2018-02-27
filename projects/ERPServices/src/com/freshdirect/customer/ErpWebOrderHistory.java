@@ -31,6 +31,8 @@ public class ErpWebOrderHistory implements OrderHistoryI {
     private static final String VALID_FDX_STORE_ORDER_COUNT = "validFdxStoreOrderCount";
 	private static final String VALID_PHONE_ORDER_COUNT = "validPhoneOrderCount";
 	private static final String SETTLED_ORDER_COUNT = "settledOrderCount";
+	private static final String SETTLED_FD_ORDER_COUNT = "settledFDOrderCount";
+	private static final String SETTLED_FDX_ORDER_COUNT = "settledFDXOrderCount";
 	private static final String UNSETTLED_EBT_ORDER_COUNT = "UnsettledEBTOrderCount";
 	private static final String VALID_MASTERPASS_ORDER_COUNT = "validMasterPassOrderCount";
 	private static final String FIRST_ORDER_DATE_FOR_FD = "firstOrderDateForFD";
@@ -62,6 +64,8 @@ public class ErpWebOrderHistory implements OrderHistoryI {
         orderHistoryInfo.put(VALID_FDX_STORE_ORDER_COUNT, ErpOrderHistoryUtil.getValidOrderCount(erpSaleInfos, EnumEStoreId.FDX));
         orderHistoryInfo.put(VALID_PHONE_ORDER_COUNT, ErpOrderHistoryUtil.getValidPhoneOrderCount(erpSaleInfos));
         orderHistoryInfo.put(SETTLED_ORDER_COUNT, ErpOrderHistoryUtil.getSettledOrderCount(erpSaleInfos));
+        orderHistoryInfo.put(SETTLED_FD_ORDER_COUNT, ErpOrderHistoryUtil.getSettledOrderCountByStore(erpSaleInfos, EnumEStoreId.FD));
+        orderHistoryInfo.put(SETTLED_FDX_ORDER_COUNT, ErpOrderHistoryUtil.getSettledOrderCountByStore(erpSaleInfos, EnumEStoreId.FDX));
         orderHistoryInfo.put(UNSETTLED_EBT_ORDER_COUNT, ErpOrderHistoryUtil.getUnSettledEBTOrderCount(erpSaleInfos));
         orderHistoryInfo.put(VALID_MASTERPASS_ORDER_COUNT, ErpOrderHistoryUtil.getValidMasterPassOrderCount(erpSaleInfos));
         orderHistoryInfo.put(VALID_ORDER_COUNT_FD_HOME, ErpOrderHistoryUtil.getValidOrderCount(erpSaleInfos, EnumDeliveryType.HOME));
@@ -186,6 +190,15 @@ public class ErpWebOrderHistory implements OrderHistoryI {
 	}
 	
 	@Override
+    public int getSettledOrderCount(EnumEStoreId estoreId) {
+		if(estoreId.equals(EnumEStoreId.FDX)){
+			return ((Integer)orderHistoryInfo.get(SETTLED_FDX_ORDER_COUNT)).intValue();
+		}else{
+			return ((Integer)orderHistoryInfo.get(SETTLED_FD_ORDER_COUNT)).intValue();
+		}
+	}
+	
+	@Override
     public double getOrderSubTotalForChefsTableEligibility() {
 		return 0.0;
 	}
@@ -221,6 +234,8 @@ public class ErpWebOrderHistory implements OrderHistoryI {
 		buf.append("ReturnOrderCount "+getReturnOrderCount()+"\n");
 		buf.append("DeliveredOrderCount "+getDeliveredOrderCount()+"\n");
 		buf.append("SettledOrderCount "+getSettledOrderCount()+"\n");
+		buf.append("SettledOrderCountFD "+getSettledOrderCount(EnumEStoreId.FD)+"\n");
+		buf.append("SettledOrderCountFDX "+getSettledOrderCount(EnumEStoreId.FDX)+"\n");
 		buf.append("UnSettledEBTOrderCount "+getUnSettledEBTOrderCount()+"\n");
 		return buf.toString();
 	}
@@ -262,6 +277,11 @@ public class ErpWebOrderHistory implements OrderHistoryI {
 	@Override
 	public boolean hasSettledOrders() {
 		return getSettledOrderCount() > 0;
+	}
+	
+	@Override
+	public boolean hasSettledOrders(EnumEStoreId estoreId) {
+		return getSettledOrderCount(estoreId) > 0;
 	}
 
 }

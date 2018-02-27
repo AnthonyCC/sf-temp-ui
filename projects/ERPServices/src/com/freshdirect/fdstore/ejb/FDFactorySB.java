@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.ejb.EJBObject;
 
@@ -147,5 +148,7 @@ public interface FDFactorySB extends EJBObject {
 	 * @throws RemoteException
 	 */
 	@Deprecated public Map<String,List<String>> getModifiedOnlyGroups(Date lastModified) throws FDResourceException, RemoteException;
+
+	public Set<String> getModifiedSkus(long lastModified) throws FDResourceException, RemoteException;
 }
 

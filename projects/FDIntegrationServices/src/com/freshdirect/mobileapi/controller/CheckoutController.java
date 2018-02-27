@@ -565,50 +565,57 @@ public class CheckoutController extends BaseController {
     	    	
     	Checkout checkout = new Checkout(user);
     	ResultBundle resultBundle = null;
-    	 if (isExtraResponseRequested(request)) {
-    	     resultBundle = checkout.setCheckoutDeliveryAddressEx(reqestMessage.getId(), DeliveryAddressType.valueOf(reqestMessage.getType()));
-    	 } else {
-    	     resultBundle = checkout.setCheckoutDeliveryAddress(reqestMessage.getId(), DeliveryAddressType.valueOf(reqestMessage.getType()));
-    	 }
-        ActionResult result = resultBundle.getActionResult();
-        propogateSetSessionValues(request.getSession(), resultBundle);
-        
-        Message responseMessage = null;
-        if (result.isSuccess()) {
-            DeliveryAddress deliveryAddress = DeliveryAddress.wrap(user.getShoppingCart().getDeliveryAddress());
-            TimeSlotCalculationResult timeSlotResult = deliveryAddress.getDeliveryTimeslot(user, false, isCheckoutAuthenticated(request));
-            
-            com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots slotResponse = new com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots(
-                    timeSlotResult);
-            slotResponse.getCheckoutHeader().setHeader(user.getShoppingCart());
-
-            if (isExtraResponseRequested(request)) {
-                user.setUserContext();
-                List<FDCartLineI> removedInvalidLines = removeInvalidLines(user.getFDSessionUser(), request.getServerName());
-                List<ProductPotatoData> removedProducts = new ArrayList<ProductPotatoData>(removedInvalidLines.size());
-                for (FDCartLineI cartLine : removedInvalidLines) {
-                    ProductPotatoData productPotato = ProductPotatoUtil.getProductPotato( cartLine.lookupProduct(), user.getFDSessionUser(), false, true);
-                    productPotato.getProductData().setInCartAmount(cartLine.getQuantity());
-                    removedProducts.add(productPotato);
-                }
-                CMSPageRequest pageRequest = new CMSPageRequest();
-                pageRequest.setPlantId(BrowseUtil.getPlantId(user));
-                DeliveryTimeslotPageResponse pageResponse = new DeliveryTimeslotPageResponse();
-                pageResponse.setRemovedProducts(removedProducts);
-                populateHomePages(user, pageRequest, pageResponse, request);
-                pageResponse.setDeliveryTimeslot(slotResponse);
-                responseMessage = pageResponse;
-            } else {
-                ShipToAddress shipToAddressModel = ShipToAddress.wrap(user.getShoppingCart().getDeliveryAddress());
-                com.freshdirect.mobileapi.controller.data.response.ShipToAddress shipToAddressResponse = new com.freshdirect.mobileapi.controller.data.response.ShipToAddress(
-                        shipToAddressModel);
-                slotResponse.setAddress(shipToAddressResponse);
-                responseMessage = slotResponse;
-            }
-            responseMessage.setSuccessMessage("Order delivery Address have been set successfully.");
-        } else {
-            responseMessage = getErrorMessage(result, request);
-        }
+    	Message responseMessage = null;
+    	
+    	if(reqestMessage.getType() != null) {
+	    	 if (isExtraResponseRequested(request)) {
+	    	     resultBundle = checkout.setCheckoutDeliveryAddressEx(reqestMessage.getId(), DeliveryAddressType.valueOf(reqestMessage.getType()));
+	    	 } else {
+	    	     resultBundle = checkout.setCheckoutDeliveryAddress(reqestMessage.getId(), DeliveryAddressType.valueOf(reqestMessage.getType()));
+	    	 }
+	        ActionResult result = resultBundle.getActionResult();
+	        propogateSetSessionValues(request.getSession(), resultBundle);
+	        
+	        
+	        if (result.isSuccess()) {
+	            DeliveryAddress deliveryAddress = DeliveryAddress.wrap(user.getShoppingCart().getDeliveryAddress());
+	            TimeSlotCalculationResult timeSlotResult = deliveryAddress.getDeliveryTimeslot(user, false, isCheckoutAuthenticated(request));
+	            
+	            com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots slotResponse = new com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots(
+	                    timeSlotResult);
+	            slotResponse.getCheckoutHeader().setHeader(user.getShoppingCart());
+	
+	            if (isExtraResponseRequested(request)) {
+	                user.setUserContext();
+	                List<FDCartLineI> removedInvalidLines = removeInvalidLines(user.getFDSessionUser(), request.getServerName());
+	                List<ProductPotatoData> removedProducts = new ArrayList<ProductPotatoData>(removedInvalidLines.size());
+	                for (FDCartLineI cartLine : removedInvalidLines) {
+	                    ProductPotatoData productPotato = ProductPotatoUtil.getProductPotato( cartLine.lookupProduct(), user.getFDSessionUser(), false, true);
+	                    productPotato.getProductData().setInCartAmount(cartLine.getQuantity());
+	                    removedProducts.add(productPotato);
+	                }
+	                CMSPageRequest pageRequest = new CMSPageRequest();
+	                pageRequest.setPlantId(BrowseUtil.getPlantId(user));
+	                DeliveryTimeslotPageResponse pageResponse = new DeliveryTimeslotPageResponse();
+	                pageResponse.setRemovedProducts(removedProducts);
+	                populateHomePages(user, pageRequest, pageResponse, request);
+	                pageResponse.setDeliveryTimeslot(slotResponse);
+	                responseMessage = pageResponse;
+	            } else {
+	                ShipToAddress shipToAddressModel = ShipToAddress.wrap(user.getShoppingCart().getDeliveryAddress());
+	                com.freshdirect.mobileapi.controller.data.response.ShipToAddress shipToAddressResponse = new com.freshdirect.mobileapi.controller.data.response.ShipToAddress(
+	                        shipToAddressModel);
+	                slotResponse.setAddress(shipToAddressResponse);
+	                responseMessage = slotResponse;
+	            }
+	            responseMessage.setSuccessMessage("Order delivery Address have been set successfully.");
+	        } else {
+	            responseMessage = getErrorMessage(result, request);
+	        }
+    	} else {
+    		responseMessage = new Message();
+   	    	responseMessage.setFailureMessage("Address Type is required");
+    	}
         setResponseMessage(model, responseMessage, user);
         
         return model;
@@ -627,49 +634,54 @@ public class CheckoutController extends BaseController {
             HttpServletRequest request) throws FDException, JsonException {
     	    	
     	Checkout checkout = new Checkout(user);
+    	Message responseMessage = null;
     	
-        ResultBundle resultBundle = checkout.setCheckoutDeliveryAddressEx(reqestMessage.getId(), DeliveryAddressType.valueOf(reqestMessage
-                .getType()));
-        ActionResult result = resultBundle.getActionResult();
-        
-        propogateSetSessionValues(request.getSession(), resultBundle);
-        
-        Message responseMessage = new DynamicAvailabilityError();
-        if(result.isSuccess()&& user.getShoppingCart()!=null && user.getFDSessionUser().getShoppingCart().getItemCount()>0) {
-        	
-        	List<FDCartLineI> invalidLines=OrderLineUtil.getInvalidLines(user.getShoppingCart().getOrderLines(), user.getFDSessionUser().getUserContext());
-        	
-        	if(invalidLines.size()>0) {
-        		
-        		Cart cart = user.getShoppingCart();
-		        CartDetail cartDetail = cart.getCartDetail(user, EnumCouponContext.VIEWCART);
-		        com.freshdirect.mobileapi.controller.data.response.Cart _responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
-		        _responseMessage.addErrorMessage(DIR_ERROR_KEY,MessageCodes.ERR_DIR_ADDRESS_SET_EX);
-		        _responseMessage.setCartDetail(cartDetail);
-		        /*if(!user.getFDSessionUser().isCouponsSystemAvailable()) {
-		        	responseMessage.addWarningMessage(MessageCodes.WARNING_COUPONSYSTEM_UNAVAILABLE, SystemMessageList.MSG_COUPONS_SYSTEM_NOT_AVAILABLE);
-		        }*/
-		        setResponseMessage(model, _responseMessage, user);
-		        return model;
-        		
-        	} else {
-        		responseMessage.setSuccessMessage("Address Set Successfully.");
-        	}
-        }
-    
-        
-        if (result.isSuccess()) {    
-        	// FDX-1873 - Show timeslots for anonymous address
-        	if(user != null && user.getAddress() != null) {
-        		user.getAddress().setCustomerAnonymousAddress(false);
-        	}
-        	
-            responseMessage.setSuccessMessage("Address Set Successfully.");            
-        }else {  
-        	
-        	responseMessage = getErrorMessage(result, request);
-        	
-        }
+    	if(reqestMessage.getType() != null) {
+	        ResultBundle resultBundle = checkout.setCheckoutDeliveryAddressEx(reqestMessage.getId(), DeliveryAddressType.valueOf(reqestMessage.getType()));
+	        ActionResult result = resultBundle.getActionResult();
+	        
+	        propogateSetSessionValues(request.getSession(), resultBundle);
+	        
+	        responseMessage = new DynamicAvailabilityError();
+	        if(result.isSuccess()&& user.getShoppingCart()!=null && user.getFDSessionUser().getShoppingCart().getItemCount()>0) {
+	        	
+	        	List<FDCartLineI> invalidLines=OrderLineUtil.getInvalidLines(user.getShoppingCart().getOrderLines(), user.getFDSessionUser().getUserContext());
+	        	
+	        	if(invalidLines.size()>0) {
+	        		
+	        		Cart cart = user.getShoppingCart();
+			        CartDetail cartDetail = cart.getCartDetail(user, EnumCouponContext.VIEWCART);
+			        com.freshdirect.mobileapi.controller.data.response.Cart _responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
+			        _responseMessage.addErrorMessage(DIR_ERROR_KEY,MessageCodes.ERR_DIR_ADDRESS_SET_EX);
+			        _responseMessage.setCartDetail(cartDetail);
+			        /*if(!user.getFDSessionUser().isCouponsSystemAvailable()) {
+			        	responseMessage.addWarningMessage(MessageCodes.WARNING_COUPONSYSTEM_UNAVAILABLE, SystemMessageList.MSG_COUPONS_SYSTEM_NOT_AVAILABLE);
+			        }*/
+			        setResponseMessage(model, _responseMessage, user);
+			        return model;
+	        		
+	        	} else {
+	        		responseMessage.setSuccessMessage("Address Set Successfully.");
+	        	}
+	        }
+	    
+	        
+	        if (result.isSuccess()) {    
+	        	// FDX-1873 - Show timeslots for anonymous address
+	        	if(user != null && user.getAddress() != null) {
+	        		user.getAddress().setCustomerAnonymousAddress(false);
+	        	}
+	        	
+	            responseMessage.setSuccessMessage("Address Set Successfully.");            
+	        }else {  
+	        	
+	        	responseMessage = getErrorMessage(result, request);
+	        	
+	        }
+    	} else {
+    		responseMessage = new Message();
+   	    	responseMessage.setFailureMessage("Address Type is required");
+    	}
         setResponseMessage(model, responseMessage, user);
         
         return model;

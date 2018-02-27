@@ -132,7 +132,8 @@ public class ProductLabeling {
 			String skuCode = calculator.getSkuModel() != null ? calculator.getSkuModel().getSkuCode() : null;
 			if(skuCode != null) {
 				FDProductInfo info= calculator.getProductInfo();			
-				ZonePriceInfoModel model=info.getZonePriceInfo(customer!=null?customer.getUserContext().getPricingContext().getZoneInfo():pricingZone);
+				ZonePriceInfoModel model=info.getZonePriceInfo(customer!=null && customer.getUserContext() != null && customer.getUserContext().getPricingContext() != null 
+																	? customer.getUserContext().getPricingContext().getZoneInfo() : pricingZone);
 				if(model!=null)
 					showBurstImage=model.isShowBurstImage();			
 			}

@@ -38,7 +38,9 @@ var FreshDirect = FreshDirect || {};
 				postscribe($(e), '<script>OAS_RICH("'+pos+'");</script>', {
 					error: function () {},
 					done: function (pos) {
+						var hasEmptyImage = false;
 						$.each($('a[href*="/default/empty.gif/"]'), function(ii, ee) {
+							hasEmptyImage = true;
 							$(ee).attr("tabindex", "-1");
 							$(ee).attr("role", "presentation");
 							$(ee).attr("aria-hidden", "true");
@@ -47,8 +49,8 @@ var FreshDirect = FreshDirect || {};
 								console.log('updateOAS: done', pos, $(ee));
 							}
 						});
-						// if we need to show the oas as popup
-						if (showAsPopUp) {
+						// if oas doesn't return an empty image and we need to show the oas as popup
+						if (showAsPopUp && !hasEmptyImage) {
 							inProgressRequests[inProgressRequests.indexOf(listPos.join(','))] = null;
 							setTimeout( function() {
 								var oasLink = $(e).children().not('script').first();

@@ -18,6 +18,7 @@ public class WarmupService {
     private static final WarmupService INSTANCE = new WarmupService();
 
     private WarmupService() {
+        LOGGER.info("Creating new WarmupService instance");
     }
 
     public static WarmupService defaultService() {
@@ -25,14 +26,16 @@ public class WarmupService {
     }
 
     public WarmupPageData populateWarmupPageData() {
+        WarmupState warmupState = Warmup.WARMUP_STATE.get();
         WarmupPageData result = new WarmupPageData();
-        if (WarmupState.NOT_TRIGGERED.equals(Warmup.WARMUP_STATE.get())) {
+        result.setWarmupState(warmupState.toString());
+        if (WarmupState.NOT_TRIGGERED.equals(warmupState)) {
             result.setNotTriggered(true);
         }
-        if (WarmupState.IN_PROGRESS.equals(Warmup.WARMUP_STATE.get())) {
+        if (WarmupState.IN_PROGRESS.equals(warmupState)) {
             result.setInProgress(true);
         }
-        if (WarmupState.FINISHED.equals(Warmup.WARMUP_STATE.get())) {
+        if (WarmupState.FINISHED.equals(warmupState)) {
             result.setRepeatedWarmupCanHappen(CmsServiceLocator.contentProviderService().isReadOnlyContent());
         }
         result.setManualWarmupAllowed(isManualWarmupAllowed());
@@ -42,14 +45,13 @@ public class WarmupService {
     public void repeatWarmup() {
     	
         if (!isManualWarmupAllowed()) {
+            LOGGER.info("Manual warmup is not allowed, not starting warmup!");
             return;
         }
-    	LOGGER.debug("Warmup.WARMUP_STATE=========================="+Warmup.WARMUP_STATE);
-    	LOGGER.debug("CmsServiceLocator.contentProviderService().isReadOnlyContent()=========================="+CmsServiceLocator.contentProviderService().isReadOnlyContent());
 
         if (Warmup.WARMUP_STATE.compareAndSet(WarmupState.NOT_TRIGGERED, WarmupState.IN_PROGRESS) || Warmup.WARMUP_STATE.compareAndSet(WarmupState.FAILED, WarmupState.IN_PROGRESS)) {
+            LOGGER.info("Starting warmup-thread");
             new Thread("warmup-thread") {
-
                 @Override
                 public void run() {
                     Warmup warmup = new Warmup();
@@ -58,12 +60,13 @@ public class WarmupService {
                 };
             }.start();
         } else if (CmsServiceLocator.contentProviderService().isReadOnlyContent() && Warmup.WARMUP_STATE.compareAndSet(WarmupState.FINISHED, WarmupState.IN_PROGRESS)) {
+            LOGGER.info("Starting warmup-repeat-thread");
             new Thread("warmup-repeat-thread") {
-
                 @Override
                 public void run() {
                     WarmupReloadableCacheAdapter.defaultService().evictCaches();
                     CmsServiceLocator.contentProviderService().initializeContent();
+                    CmsServiceLocator.mediaService().loadAll();
                     try {
                         CmsServiceLocator.luceneManager().closeAllIndexSearcher();
                     } catch (IOException e) {
@@ -74,6 +77,8 @@ public class WarmupService {
                     //Warmup.WARMUP_STATE.set(WarmupState.FINISHED);
                 };
             }.start();
+        } else {
+            LOGGER.info("NOT starting warmup!");
         }
     }
 

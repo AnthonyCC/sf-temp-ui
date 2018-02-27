@@ -26,6 +26,7 @@ import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
@@ -34,6 +35,7 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.FDUserUtil;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
 import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
 import com.freshdirect.fdstore.lists.FDListManager;
@@ -79,6 +81,8 @@ public class ManageStandingOrderServlet extends HttpServlet {
 
 				if (u != null) {
 					StandingOrderHelper.populateCurrentDeliveryDate(u, returnSO);
+					returnSO.put("modifyingOrderId", FDUserUtil.getModifyingOrderId(u));
+					
 				}
 				writeResponseData(response, returnSO);
 				
@@ -120,6 +124,10 @@ public class ManageStandingOrderServlet extends HttpServlet {
 
 	
 						FDStandingOrder so = FDStandingOrdersManager.getInstance().load(new PrimaryKey(soId));
+						if(null ==so.getZone() && null != so.getAddressId()){											//COS17-56
+							FDDeliveryZoneInfo zoneInfo =StandingOrderHelper.getZoneInfoFromLogistics(so);
+							so.setZone(zoneInfo.getZoneCode());
+						}
 						u.setCurrentStandingOrder(so);
 						so.setNewSo(true);
 						if(!so.getStandingOrderCart().getOrderLines().isEmpty()){
