@@ -499,10 +499,10 @@
 		      {if $abaRouteNumber}<p>Routing: {$abaRouteNumber}</p>{/if}
 
 	  {elseif $eWalletID == '2'}
-			<p>{$nameOnCard}</p>
-	      	<p>{$emailID}</p>
+			{if $nameOnCard}<p>{$nameOnCard}</p>{/if}
+	      	{if $emailID} <p>{$emailID}</p>{/if}
 	  {else}
-	  		<p>{$nameOnCard}</p>
+	  		{if $nameOnCard}<p>{$nameOnCard}</p>{/if}
 	  {/if}
 	  	</div>
 	  </div>
