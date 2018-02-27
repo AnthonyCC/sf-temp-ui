@@ -150,6 +150,8 @@ public class ListConverter {
 	}
 
 	public static FDCustomerList buildFDCustomerList(FDCustomerListData data) {
+		if(data==null)
+			return null;
 		if(data.getReturnType().equals(FDCustomerProductList.class.getSimpleName())){
 			FDCustomerList fdCustomerList = createListByType(EnumCustomerListType.getEnum(data.getListType()));
 			fdCustomerList.setCreateDate(data.getCreateDate());
