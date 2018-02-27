@@ -178,7 +178,7 @@ var FreshDirect = FreshDirect || {};
 	  		FreshDirect.common.dispatcher.signal('drawer', v1 && v1[0]);
 	  		drawerDeferred.resolve();
 	  	});
-	  $.get('/api/expresscheckout?action=resetContext').done( function() {
+	  $.get('/api/expresscheckout?action=resetContext').always( function() {
 		  contextDeferred.resolve();
 	  });
 
