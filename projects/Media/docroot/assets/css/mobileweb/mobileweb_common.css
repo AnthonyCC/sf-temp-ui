@@ -1,3 +1,11 @@
+/* duplicate styling from framework to get the same styling outside of the menu */
+	.mm-menu-fake .mm-listview>li .mm-next:after {
+		border-color: rgba(0,0,0,.3);
+	}
+	.mm-menu-fake .mm-listview {
+		border-color: rgba(0,0,0,.1);
+	}
+
 body {
 	font-family: Verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
 	font-size: 14px;
@@ -2611,8 +2619,8 @@ li.cleanli .gen-arrow {
 		word-wrap: break-word;
 		word-break: break-word;
 	}
-	
-	.mm-page .manage-account-container{
+	.mm-page .manage-account-container .mm-menu-fake {
+		margin: 0 10px 20px 10px;
 		background: #F2F0EF;
 	}
 	.mm-page .manage_account a{
@@ -2634,10 +2642,10 @@ li.cleanli .gen-arrow {
 		border: 0;
 		margin: 0;
 		padding: 25px 10px;
+		background-color: #fff;
 	}
 	.mm-page .manage_account .manage_account_desc,
 	.mm-page .manage_account br,
-	.mm-page .manage-account-heading p,
 	.mm-page .manage_account .selectedAddressIsHome-false,
 	.mm-page .manage-account-container .continue-shopping,
 	.mm-page .manage_account #yourAccount_reorder .new_purple_button_style #reorder-icon-big,
