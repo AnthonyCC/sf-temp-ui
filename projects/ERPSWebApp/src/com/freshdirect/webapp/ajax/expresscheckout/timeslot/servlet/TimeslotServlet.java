@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 
+import org.apache.log4j.Category;
+
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.fdstore.FDResourceException;
@@ -17,6 +19,7 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.NVL;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.logistics.delivery.model.TimeslotContext;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
@@ -38,6 +41,8 @@ import com.freshdirect.webapp.util.StandingOrderUtil;
 public class TimeslotServlet extends BaseJsonServlet {
 
     private static final long serialVersionUID = 8229972384125974371L;
+    
+	private static Category LOGGER = LoggerFactory.getInstance(TimeslotServlet.class);
 
     private static final String TIMESLOT_DATA = "timeslotData";
     private static final String TIMESLOT_ID = "timeslotId";
@@ -80,8 +85,10 @@ public class TimeslotServlet extends BaseJsonServlet {
 				}
 			} catch (FDResourceException e) {
                 validationResult.getErrors().add(new ValidationError("Could not reserve timeslot due to technical difficulty."));
+                LOGGER.error("Could not reserve timeslot due to technical difficulty. 1" , e);
 			} catch (ParseException e) {
                 validationResult.getErrors().add(new ValidationError("Could not reserve timeslot due to technical difficulty."));
+                LOGGER.error("Could not reserve timeslot due to technical difficulty. 2" , e);
 			}
 			if (validationResult.getErrors().isEmpty()) {
 				try {
@@ -89,18 +96,25 @@ public class TimeslotServlet extends BaseJsonServlet {
 					responseData.getSubmitForm().setResult(checkoutData);
 				} catch (FDResourceException e) {
                     validationResult.getErrors().add(new ValidationError("Could not load checkout data due to technical difficulty."));
+                    LOGGER.error("Could not reserve timeslot due to technical difficulty. 3" , e);
 				} catch (JspException e) {
                     validationResult.getErrors().add(new ValidationError("Could not load checkout data due to technical difficulty."));
+                    LOGGER.error("Could not reserve timeslot due to technical difficulty. 4" , e);
 				} catch (RedirectToPage e) {
                     validationResult.getErrors().add(new ValidationError("Could not load checkout data due to technical difficulty."));
+                    LOGGER.error("Could not reserve timeslot due to technical difficulty. 5" , e);
 				}
 			}
 			responseData.getSubmitForm().setSuccess(validationResult.getErrors().isEmpty());
 			writeResponseData(response, responseData);
 		} catch (IOException e) {
 			returnHttpError(500, "Failed to load Learn More media for restriction message.", e);
+            LOGGER.error("Failed to load Learn More media for restriction message." , e);
 		} catch (TemplateException e) {
 			returnHttpError(500, "Failed to render Learn More HTML media for restricion message.", e);
+            LOGGER.error("Failed to render Learn More HTML media for restricion message." , e);
+		} catch (Exception e) {
+            LOGGER.error("Could not reserve timeslot due to technical difficulty. 6" , e);
 		}
 	}
 
