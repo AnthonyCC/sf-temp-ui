@@ -144,9 +144,12 @@ public class TimeslotServlet extends BaseJsonServlet {
         writeResponseData(response, result);
     }
 
-    protected void doGetAction(HttpServletRequest request, HttpServletResponse response, FDUserI user, String action) throws HttpErrorResponse {
+    protected void doGetAction(HttpServletRequest request, HttpServletResponse response, FDUserI user, String action) throws HttpErrorResponse, FDResourceException {
     	if (action.equals("getCurrentSelected")) {
     		FormTimeslotData data;
+    		
+    		TimeslotService.defaultService().applyPreReservedDeliveryTimeslot(request.getSession());
+    		
 			if (StandingOrderHelper.isSO3StandingOrder(user)) {
 				data = TimeslotService.defaultService().loadCartTimeslot(user, user.getSoTemplateCart());
 	        } else {
