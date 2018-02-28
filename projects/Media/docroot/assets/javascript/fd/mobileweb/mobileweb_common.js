@@ -55,16 +55,18 @@ var API;
 			
 			$('.signin>a').on('click', function(e) {
 				e.stopPropagation();
-				window.top.location = '/login/login.jsp?successPage=' + window.location.pathname + window.location.search + window.location.hash;
+				window.top.location = '/login/login.jsp?successPage=' + encodeURIComponent(window.location.pathname + window.location.search + window.location.hash);
 	
 				API.close();
+				return false;
 			});
 			$('.createacc>a').on('click', function(e) {
 				e.stopPropagation();
-				window.top.location = '/social/signup_lite.jsp?successPage=' + window.location.pathname + window.location.search + window.location.hash;
+				window.top.location = '/social/signup_lite.jsp?successPage=' + encodeURIComponent(window.location.pathname + window.location.search + window.location.hash);
 	
 	
 				API.close();
+				return false;
 			});
 			$('.logout>a').on('click', function(e) {
 				window.top.location = '/logout.jsp';
