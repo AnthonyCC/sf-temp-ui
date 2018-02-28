@@ -204,10 +204,10 @@
 			</span>
 			<ul class="navMenuItems-reorder rem-navbar">
 				<li>
-					<span class="glBreadcrumblink"><a href="/quickshop/qs_top_items.jsp">Your Top Items</a></span>
+					<span class="glBreadcrumblink"><a href="/quickshop/qs_top_items.jsp">Items</a></span>
 				</li>
 				<li>
-					<span class="glBreadcrumblink"><a href="/quickshop/qs_past_orders.jsp">Your Last Order</a></span>
+					<span class="glBreadcrumblink"><a href="/quickshop/qs_past_orders.jsp">Orders</a></span>
 				</li>
 				<!-- 
 					<li>
