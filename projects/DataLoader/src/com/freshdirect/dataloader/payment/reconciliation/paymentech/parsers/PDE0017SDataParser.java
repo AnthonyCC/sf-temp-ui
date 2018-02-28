@@ -22,7 +22,7 @@ public class PDE0017SDataParser extends PaymentechSettlementParser {
 		this.fields.add(new Field(RESERVED_FIELD_2, 0, false));
 		this.fields.add(new Field(CURRENCY, 3, true));
 		this.fields.add(new Field(MOP, 2, true));
-		this.fields.add(new Field(CATEGORY, 6, true));
+		this.fields.add(new Field(CATEGORY, 8, true));//change from 6 to 8 bytes as per revision 6.4
 		this.fields.add(new Field(IS_FINANCIAL, 3, true));
 		this.fields.add(new Field(COUNT, 10, true));
 		this.fields.add(new Field(AMOUNT, 16, false));

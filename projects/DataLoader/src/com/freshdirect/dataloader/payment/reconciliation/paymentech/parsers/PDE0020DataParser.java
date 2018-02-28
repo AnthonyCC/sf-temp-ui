@@ -34,8 +34,8 @@ public class PDE0020DataParser extends PaymentechSettlementParser {
 		this.fields.add(new Field(STATUS_FLAG, 1, false));
 		this.fields.add(new Field(SEQUENCE_NUM, 10, true));
 		this.fields.add(new Field(MERCHANT_ORDER_NUM, 22, true));
-		this.fields.add(new Field(ACCOUNT_NUMBER, 19, true));
-		this.fields.add(new Field(REASON_CODE, 2, true));
+		this.fields.add(new Field(ACCOUNT_NUMBER, 19, true));//note below was 2 bytes only
+		this.fields.add(new Field(REASON_CODE, 6, true));//Reason Code field to expand the length from 3 bytes to 6 bytes.
 		this.fields.add(new Field(TRANSACTION_DATE, 10, true));
 		this.fields.add(new Field(CBK_DATE, 10, true));
 		this.fields.add(new Field(ACTIVITY_DATE, 10, true));
