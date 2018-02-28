@@ -12,6 +12,7 @@ import java.util.Set;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.AccountNumberConstraint;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.Constraint;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.CreditCardConstraint;
+import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.DeliveryInstructionsConstraint;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.NameConstraint;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.PhoneConstraint;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.PredefinedTextConstraint;
@@ -66,7 +67,7 @@ public class ConstraintProviderService {
             put(DeliveryAddressValidationConstants.BACKUP_DELIVERY_LAST_NAME, new TextConstraint(true));
             put(DeliveryAddressValidationConstants.BACKUP_DELIVERY_ADDRESS, new TextConstraint(true));
             put(DeliveryAddressValidationConstants.BACKUP_DELIVERY_PHONE, new PhoneConstraint(true));
-            put(DeliveryAddressValidationConstants.BACKUP_DELIVERY_INSTRUCTIONS, new TextConstraint(true));
+            put(DeliveryAddressValidationConstants.BACKUP_DELIVERY_INSTRUCTIONS, new DeliveryInstructionsConstraint(true));
         }
     };
 
