@@ -14,6 +14,14 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  * @author Aniwesh Vatsal
  *
  */
+
+
+/**
+ *@deprecated Please use the ErpEWalletDAOI  in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */ 
 public class ErpEWalletDAO {
 	
 	/** logger for messages
@@ -29,6 +37,8 @@ public class ErpEWalletDAO {
 	 * @return
 	 * @throws SQLException
 	 */
+	
+	@Deprecated
 	public static ErpEWalletModel getEWalletById(Connection conn,String eWalletID) throws SQLException{
 
     	ErpEWalletModel erpEWalletModel = new ErpEWalletModel();
@@ -63,6 +73,8 @@ public class ErpEWalletDAO {
 	 * @return
 	 * @throws SQLException
 	 */
+	
+	@Deprecated
 	public static ErpEWalletModel getEWalletByType(Connection conn,String eWalletType) throws SQLException{
 
     	ErpEWalletModel erpEWalletModel = new ErpEWalletModel();
