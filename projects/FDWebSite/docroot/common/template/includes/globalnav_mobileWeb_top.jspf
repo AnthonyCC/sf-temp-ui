@@ -136,6 +136,7 @@
 				<div id="search" style="display: block;"><%-- FDMW18-113 : always show, change back to none if using toggle again --%>
 					<form class="searchform" name="search" action="/search.jsp" method="get" accept-charset="iso-8859-1">
 						<span class="icon-search"></span>
+						<span class="icon-cancel-circle-after" style="display: none;"></span>
 						<input type="text" id="topSearchField" aria-label="search" placeholder="Search" data-component="autocomplete" class="search ui-autocomplete-input fnt-18" name='searchParams' autocomplete="off" />
 					</form>
 				</div>

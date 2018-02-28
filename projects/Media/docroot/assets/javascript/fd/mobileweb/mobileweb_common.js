@@ -295,5 +295,18 @@ var API;
 			
 		}
 		$(document).trigger('displayModifyingOrderMobile-loaded').off('displayModifyingOrderMobile-loaded');
+		
+		/* show/hide search icon */
+		$(document).on('keyup change', '#topSearchField', function(e) {
+			if ($(e.target).val() !== '') {
+				$('#search span.icon-cancel-circle-after').show();
+			} else {
+				$('#search span.icon-cancel-circle-after').hide();
+			}
+		});
+		/* set icon to clear field */
+		$('#search span.icon-cancel-circle-after').on('click', function(e) {
+			$('#topSearchField').val('').trigger('change');
+		});
 	});
 }(jQuery));
