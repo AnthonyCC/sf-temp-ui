@@ -4,6 +4,7 @@
 package com.freshdirect.ecomm.gateway;
 
 import java.rmi.RemoteException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +28,7 @@ public class OrderServiceApiClient extends AbstractEcommService implements Order
 	
 	private static OrderServiceApiClient INSTANCE;
 	
-	private final static Category LOGGER = LoggerFactory.getInstance(CrmManagerService.class);
+	private final static Category LOGGER = LoggerFactory.getInstance(OrderServiceApiClient.class);
 
 	private static final String ORDER_HISTORY_API = "customers/{customerId}/orders";
 	private static final String LAST_ORDER_ID_API = "customers/{customerId}/orders/last";
@@ -39,6 +40,8 @@ public class OrderServiceApiClient extends AbstractEcommService implements Order
 	private static final String VALID_ORDERCOUNT_API = "customers/{customerId}/orders/count";
 	private static final String ORDER_BELONGS_TOUSER_API = "customers/{customerId}/orders/{orderId}/";
 	private static final String WEB_ORDER_HISTORY_API = "customers/{customerId}/orders?web";
+	
+	private static final String ORDERS_BYTRUCK = "orders/deliveryDate/{date}/truck/{truckId}";
 	
 	public static OrderServiceApiClientI getInstance() {
 		if (INSTANCE == null)
@@ -236,6 +239,26 @@ public class OrderServiceApiClient extends AbstractEcommService implements Order
 		}else{
 			throw new FDResourceException("API error");
 		}
+	}
+
+	@Override
+	public List<DlvSaleInfo> getOrdersByTruck(String truckNumber, Date dlvDate) throws RemoteException {
+
+		try{
+			String response = httpGetData(getFdCommerceEndPoint(ORDERS_BYTRUCK), String.class, new Object[]{truckNumber, dlvDate});
+			try{
+				Response<List<DlvSaleInfoData>> info  = getMapper().readValue(response, new TypeReference<Response<List<DlvSaleInfoData> >>() { });
+				return CustomMapper.mapDeliveryOrders(parseResponse(info));
+			}catch(Exception e){
+				LOGGER.info("Exception converting {} to ListOfObjects "+response);
+				LOGGER.info(e);
+				throw new FDResourceException(e);
+			}
+		
+		}  catch (FDResourceException e) {
+			throw new RemoteException(e.getMessage());
+		}
+	
 	}
 
 	

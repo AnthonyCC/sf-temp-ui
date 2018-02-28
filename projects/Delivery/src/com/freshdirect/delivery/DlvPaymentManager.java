@@ -96,10 +96,16 @@ public class DlvPaymentManager {
 	
 	public synchronized List getOrdersByTruckNumber(String truckNumber, Date deliveryDate) throws FDResourceException {
 		try{
-			ErpCustomerManagerSB sb = this.getErpCustomerManagerSB();
-			List ret = sb.getOrdersByTruckNumber(truckNumber, deliveryDate);
 			
-			return ret;
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("ordersByTruck_Api")){
+	    		OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
+	    		return service.getOrdersByTruck(truckNumber, deliveryDate);
+	    	}else{
+			
+			
+			ErpCustomerManagerSB sb = this.getErpCustomerManagerSB();
+			return sb.getOrdersByTruckNumber(truckNumber, deliveryDate);
+	    	}	
 		}catch(RemoteException re){
 			LOGGER.warn("RemoteException: ", re);
 			throw new FDResourceException(re, "Cannot talk to SB");

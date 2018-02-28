@@ -33,10 +33,10 @@ public class CustomMapper {
 			for(ErpSaleInfoData elem : data){
 				orderList.add(new ErpSaleInfo(elem.getSaleId(), elem.getErpCustomerId(), EnumSaleStatus.getSaleStatus(elem.getStatus()), elem.getAmount(), elem.getSubTotal()
 						, elem.getRequestedDate(), elem.getCreateRequestedDate(), 
-						EnumTransactionSource.getTransactionSource(elem.getSource()), elem.getCreateDate(), elem.getCreatedBy(), 
-						EnumTransactionSource.getTransactionSource(elem.getModificationSource()), elem.getModificationDate(), 
-						elem.getModifiedBy(), elem.getDeliveryStartTime(), elem.getDeliveryEndTime(), elem.getDeliveryCutoffTime(), 
-						EnumDeliveryType.getDeliveryType(elem.getDeliveryType()), elem.getPendingCreditAmount(), elem.getApprovedCreditAmount(), 
+						EnumTransactionSource.getTransactionSource(elem.getSource()), elem.getCreateDate(), elem.getCreateBy(), 
+						EnumTransactionSource.getTransactionSource(elem.getModSource()), elem.getModDate(), 
+						elem.getModBy(), elem.getDeliveryStart(), elem.getDeliveryEnd(), elem.getCutoffTime(), 
+						EnumDeliveryType.getDeliveryType(elem.getDeliveryType()), elem.getPendingCreditAmount(), elem.getAppliedCreditAmount(), 
 						elem.getZone(), EnumPaymentMethodType.getEnum(elem.getPaymentMethodType()), 
 						elem.getDlvPassId(), EnumSaleType.getSaleType(elem.getSaleType()), 
 						elem.getTruckNumber(), elem.getStopSequence(), elem.isMakeGood(), elem.getStandingOrderId(), elem.isSoHolidayMovement(), 
@@ -59,6 +59,12 @@ public class CustomMapper {
 			}
 			return dlvpassList;
 	}
+		return null;
+	}
+
+	public static List<DlvSaleInfo> mapDeliveryOrders(
+			List<DlvSaleInfoData> parseResponse) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 }

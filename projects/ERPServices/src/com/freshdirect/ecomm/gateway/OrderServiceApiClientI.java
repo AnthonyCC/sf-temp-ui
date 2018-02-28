@@ -1,6 +1,7 @@
 package com.freshdirect.ecomm.gateway;
 
 import java.rmi.RemoteException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +34,8 @@ public interface OrderServiceApiClientI {
 
 	List<ErpSaleInfo> getWebOrderHistory(String customerId)
 			throws FDResourceException, RemoteException;
+
+	List<DlvSaleInfo> getOrdersByTruck(String truckNumber, Date dlvDate) throws RemoteException;
 
 
 }
