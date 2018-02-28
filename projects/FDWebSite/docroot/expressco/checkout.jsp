@@ -154,7 +154,8 @@ if (mobWeb) {
       	fd.expressco.checkout.initSoyComponents();
       });
       window.FreshDirect.expressco = {};
-
+      window.FreshDirect.properties = window.FreshDirect.properties || {};
+      window.FreshDirect.properties.displayDeliveryFeeForCosUserInHeader = <%=FDStoreProperties.shouldShowDeliveryFeeForCheckoutPageCosCustomer()%>
       window.FreshDirect.pendingCustomizations = <fd:ToJSON object="${pendingExternalAtcItemPotato}" noHeaders="true"/>
     </script>
   </tmpl:put>

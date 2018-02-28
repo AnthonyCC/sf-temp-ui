@@ -924,6 +924,7 @@ public class FDStoreProperties {
     private static final String PROP_VIEWCART_PAGE_CURRENT_CUSTOMER_CAROUSEL_SITE_FEATURES = "fdstore.viewcart.current.customer.carousel.site.features";
     private static final String PROP_CHECKOUT_PAGE_NEW_CUSTOMER_CAROUSEL_SITE_FEATURES = "fdstore.checkout.new.customer.carousel.site.features";
     private static final String PROP_CHECKOUT_PAGE_CURRENT_CUSTOMER_CAROUSEL_SITE_FEATURES = "fdstore.checkout.current.customer.carousel.site.features";
+    private static final String PROP_CHECKOUT_PAGE_COS_CUSTOMER_DISPLAY_DELIVERY_FEE_HEADER = "fdstore.checkout.cos.customer.display.delivery.fee";
 
     // APPDEV-5893
     private static final String PROP_USER_CART_SAVE_INTERVAL = "fdstore.user.cart.save.interval";
@@ -1851,7 +1852,8 @@ public class FDStoreProperties {
         defaults.put(PROP_VIEWCART_PAGE_CURRENT_CUSTOMER_CAROUSEL_SITE_FEATURES, "PRODUCT_SAMPLE, DYF, TOP_ITEMS_QS");
         defaults.put(PROP_CHECKOUT_PAGE_NEW_CUSTOMER_CAROUSEL_SITE_FEATURES, "C_YMAL, FAVORITES, PRODUCT_SAMPLE");
         defaults.put(PROP_CHECKOUT_PAGE_CURRENT_CUSTOMER_CAROUSEL_SITE_FEATURES, "DYF, TOP_ITEMS_QS, PRODUCT_SAMPLE");
-
+        defaults.put(PROP_CHECKOUT_PAGE_COS_CUSTOMER_DISPLAY_DELIVERY_FEE_HEADER, false);
+        
         defaults.put(PROP_USER_CART_SAVE_INTERVAL, "0");
 
         defaults.put(PROP_HOMEPAGE_REDESIGN_CURRENTCOS_USER_CONTAINER_CONTENT_KEY, "ModuleContainer:mc_hp_ato_exist_cust");
@@ -4747,6 +4749,9 @@ public class FDStoreProperties {
         return getAsList(PROP_CHECKOUT_PAGE_CURRENT_CUSTOMER_CAROUSEL_SITE_FEATURES);
     }
 
+    public static boolean shouldShowDeliveryFeeForCheckoutPageCosCustomer() {
+    	 return (Boolean.valueOf(get(PROP_CHECKOUT_PAGE_COS_CUSTOMER_DISPLAY_DELIVERY_FEE_HEADER))).booleanValue();
+    }
     public static int getUserCartSaveInterval() {
         return Integer.parseInt(get(PROP_USER_CART_SAVE_INTERVAL));
     }

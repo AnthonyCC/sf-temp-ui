@@ -271,6 +271,13 @@
 	width: 30%;
     margin-top: 8px;
 }
+#checkout-cart-header .large-v2-container {
+	width: 31.75%;
+}
+#checkout-cart-header .large-v3-container {
+	margin-top: 8px;
+	width: 36%;
+}
 #checkout-cart-header .medium-container {
     width: 26%;
 }
