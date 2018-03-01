@@ -49,7 +49,8 @@ public class EnumPaymentechCategory extends Enum {
 	public static final EnumPaymentechCategory PREARB_DENIED = new EnumPaymentechCategory("OPADENY");  //as per revision 6.4 Chase paymentTech
 	public static final EnumPaymentechCategory PREARB_ACCEPTED = new EnumPaymentechCategory("OPACCEPT");  //as per revision 6.4 Chase paymentTech
 	
-
+	public static final EnumPaymentechCategory OUTGOING_PREARB_ACCEPTED = new EnumPaymentechCategory("OPAACCEPT");  //as per revision 6.5 Chase paymentTech
+	
 	protected EnumPaymentechCategory(String name) {
 		super(name);
 	}
