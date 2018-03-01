@@ -1626,7 +1626,7 @@ public class Product {
      */
     public String getHeatingInstructions() {
         String result = "";
-        if (isAvailable()) {
+        if (product!=null&&product.getFDProduct()!=null&&isAvailable()) {
             result = product.getFDProduct().getNutritionInfoString(ErpNutritionInfoType.HEATING);
         }
         return result;
