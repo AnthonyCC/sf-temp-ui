@@ -96,11 +96,8 @@ public class SitemapCmsPopulator {
 
 	private void populateProducts(ContentNodeI node, List<ContentKey> paths) {
         for (ContentNodeI categoryNode : getContentNodes(getNodeChildren(node))) {       	
-            if (FDContentTypes.PRODUCT.equals(categoryNode.getKey().getType()) && isSitemapValid(categoryNode)) {
-            	            
-            	boolean testSku = isSKUUnavailableWithStatus(categoryNode, "TEST");
-            	          
-                if (node.getKey().equals(getPrimaryHomeKey(categoryNode.getKey())) && !testSku) {
+            if (FDContentTypes.PRODUCT.equals(categoryNode.getKey().getType()) && isSitemapValid(categoryNode)) {           	                   	          
+                if (node.getKey().equals(getPrimaryHomeKey(categoryNode.getKey()))) {
                     paths.add(categoryNode.getKey());
                 }
             }
@@ -120,7 +117,7 @@ public class SitemapCmsPopulator {
     }
 
     private Boolean isSitemapValid(ContentNodeI node) {
-        return !Boolean.TRUE.equals(node.getAttributeValue("SKIP_SITEMAP")) && !isKeyOrphan(node.getKey());
+        return !Boolean.TRUE.equals(node.getAttributeValue("SKIP_SITEMAP")) && !isKeyOrphan(node.getKey()) && !isSKUUnavailableWithTestStatus(node);
     }
 
     private Collection<ContentNodeI> getNodesByType(ContentType type) {
@@ -155,20 +152,17 @@ public class SitemapCmsPopulator {
     }
     
     @SuppressWarnings("unchecked")
-	private boolean isSKUUnavailableWithStatus(ContentNodeI productNode, String skuUnavailablityStatus) {
+	private boolean isSKUUnavailableWithTestStatus(ContentNodeI productNode) {
     	boolean skuMatch = false;
     	
-    	ArrayList<ContentKey> skus = (ArrayList<ContentKey>) productNode.getAttributeValue("skus");
+    	List<ContentKey> skus = (ArrayList<ContentKey>) productNode.getAttributeValue("skus");
    	   	
-        if (skus != null && skuUnavailablityStatus != null) {
+        if (skus != null) {
     		for (ContentKey contentKey : skus) {
 					FDProductInfo fdProductInfo;
 					try {
-						fdProductInfo = FDCachedFactory.getProductInfo(contentKey.getId());
-						HashMap<String,FDMaterialSalesArea> availability = new HashMap<String, FDMaterialSalesArea>(fdProductInfo.getAvailability());
-						for (FDMaterialSalesArea msa : availability.values()) {
-							skuMatch = skuUnavailablityStatus.equalsIgnoreCase(msa.getUnavailabilityStatus());
-						}
+						fdProductInfo = FDCachedFactory.getProductInfo(contentKey.getId());						
+						skuMatch = fdProductInfo.isTestInAnyArea();
 					} catch (FDResourceException e) {
 						// Sku not found in ERPS. Can happen as cms skus are easily created for preview purposes.
 						LOGGER.warn("SKU not found during Sitemap generation: "+contentKey.getId());
