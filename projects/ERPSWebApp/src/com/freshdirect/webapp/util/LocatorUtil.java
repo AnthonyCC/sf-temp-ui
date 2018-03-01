@@ -34,7 +34,7 @@ public class LocatorUtil {
     public static FDSessionUser useIpLocator(HttpSession session, HttpServletRequest request, HttpServletResponse response) {
     	FDSessionUser user = null;
     	
-    	if (FDStoreProperties.isIpLocatorEnabled()) {
+        if (FDStoreProperties.isIpLocatorEnabled() && !RobotRecognizer.isRobot(request)) {
     		RequestClassifier requestClassifier = new RequestClassifier(request);
     		int rolloutPercent = FDStoreProperties.getIpLocatorRolloutPercent(); 
     		
@@ -65,7 +65,9 @@ public class LocatorUtil {
 				}
 
     		}    	
-    	} 
+        } else if (RobotRecognizer.isFriendlyRobot(request)) {
+            user = RobotUtil.createRobotUser(session);
+        }
     	
    		return user;
     }

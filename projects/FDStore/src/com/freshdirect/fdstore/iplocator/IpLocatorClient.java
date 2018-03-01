@@ -24,10 +24,11 @@ import org.xml.sax.SAXException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.framework.marker.ThirdPartyIntegration;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
-public class IpLocatorClient {
+public class IpLocatorClient implements ThirdPartyIntegration {
 
 	private static final Category LOGGER = LoggerFactory.getInstance(IpLocatorClient.class);
 	
