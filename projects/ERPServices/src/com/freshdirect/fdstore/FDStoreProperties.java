@@ -1931,7 +1931,7 @@ public class FDStoreProperties {
  	   	defaults.put(PENNSYLVANIA_SERVICE_CONTACT, "1-215-825-5726");
 
  	   	//Delivery Pass sent as a free products for trail
-        defaults.put(PROP_ENABLE_FREE_PRODUCT,"false"); // Enable free product
+        defaults.put(PROP_ENABLE_FREE_PRODUCT,"true"); // Enable free product
         
         defaults.put(PROP_ENABLE_WEBSITE_MOBILE_SAME_NUTRITION_SOY,"false");
 

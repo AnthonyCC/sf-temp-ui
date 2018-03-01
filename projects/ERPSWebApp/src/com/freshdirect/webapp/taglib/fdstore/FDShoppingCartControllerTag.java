@@ -763,8 +763,8 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
         if(null ==userContext){
         	userContext = ContentFactory.getInstance().getCurrentUserContext();
         }
-        String salesOrg = userContext.getPricingContext().getZoneInfo().getSalesOrg();
-        String distrChannel = userContext.getPricingContext().getZoneInfo().getDistributionChanel();
+        String salesOrg = (null !=userContext.getPricingContext() && null !=userContext.getPricingContext().getZoneInfo() ? userContext.getPricingContext().getZoneInfo().getSalesOrg():null);
+        String distrChannel = (null !=userContext.getPricingContext() && null !=userContext.getPricingContext().getZoneInfo() ? userContext.getPricingContext().getZoneInfo().getDistributionChanel():null);
         for (int i = 0; i < cart.numberOfOrderLines(); i++) {
             FDCartLineI cartLine = cart.getOrderLine(i);
             if (cartLine instanceof FDModifyCartLineI) {
