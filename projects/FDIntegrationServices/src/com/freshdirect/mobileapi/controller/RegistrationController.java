@@ -815,11 +815,12 @@ public class RegistrationController extends BaseController implements SystemMess
     }
     
     private ModelAndView getMobileGoGreenPreference(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException, JsonException {
-	        FDSessionUser fduser = user.getFDSessionUser();
+	        FDSessionUser fduser = user!=null?user.getFDSessionUser():null;
     		String goGreen=null;
     		GoGreenPreferencesResult goGreenPreferencesResult = new GoGreenPreferencesResult();
     		
-    		if(EnumEStoreId.FD.getContentId().equals(fduser.getUserContext().getStoreContext().getEStoreId().getContentId()))
+    		if(fduser!=null&&fduser.getIdentity()!=null&&fduser.getUserContext()!=null&&fduser.getUserContext().getStoreContext()!=null&&fduser.getUserContext().getStoreContext().getEStoreId()!=null&&
+    				EnumEStoreId.FD.getContentId().equals(fduser.getUserContext().getStoreContext().getEStoreId().getContentId()))
     			
     			  goGreen=GoGreenService.defaultService().loadGoGreenOption(fduser);
     		
