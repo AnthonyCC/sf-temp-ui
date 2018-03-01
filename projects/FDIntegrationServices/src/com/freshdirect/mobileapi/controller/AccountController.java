@@ -374,7 +374,7 @@ public class AccountController extends BaseController implements Comparator <Ord
             setResponseMessage(model, responseMessage, user);
             return model;
     	} else if(addressId == null) {
-        	Message responseMessage = Message.createSuccessMessage("You need to add a delivery address to perform this action.");
+        	Message responseMessage = Message.createFailureMessage("You need to add a delivery address to perform this action.");
     		setResponseMessage(model, responseMessage, user);
     		return model;
         } else {
@@ -421,7 +421,7 @@ public class AccountController extends BaseController implements Comparator <Ord
             return model;
     	} else if(addressId == null) {
 
-        	Message responseMessage = Message.createSuccessMessage("You need to add a delivery address to perform this action.");
+        	Message responseMessage = Message.createFailureMessage("You need to add a delivery address to perform this action.");
     		setResponseMessage(model, responseMessage, user);
     		return model;
         } else {
