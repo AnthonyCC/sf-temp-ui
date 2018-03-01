@@ -8,14 +8,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Category;
+
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentType;
+import com.freshdirect.fdstore.FDCachedFactory;
+import com.freshdirect.fdstore.FDMaterialSalesArea;
+import com.freshdirect.fdstore.FDProductInfo;
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.storeapi.ContentNodeI;
 import com.freshdirect.storeapi.application.CmsManager;
 import com.freshdirect.storeapi.fdstore.FDContentTypes;
 
+
 public class SitemapCmsPopulator {
 
+	private static final Category LOGGER = LoggerFactory.getInstance(SitemapCmsPopulator.class);
+	
     private static final SitemapCmsPopulator INSTANCE = new SitemapCmsPopulator();
 
     public static SitemapCmsPopulator getInstance() {
@@ -83,10 +94,13 @@ public class SitemapCmsPopulator {
         }
     }
 
-    private void populateProducts(ContentNodeI node, List<ContentKey> paths) {
-        for (ContentNodeI categoryNode : getContentNodes(getNodeChildren(node))) {
+	private void populateProducts(ContentNodeI node, List<ContentKey> paths) {
+        for (ContentNodeI categoryNode : getContentNodes(getNodeChildren(node))) {       	
             if (FDContentTypes.PRODUCT.equals(categoryNode.getKey().getType()) && isSitemapValid(categoryNode)) {
-                if (node.getKey().equals(getPrimaryHomeKey(categoryNode.getKey()))) {
+            	            
+            	boolean testSku = isSKUUnavailableWithStatus(categoryNode, "TEST");
+            	          
+                if (node.getKey().equals(getPrimaryHomeKey(categoryNode.getKey())) && !testSku) {
                     paths.add(categoryNode.getKey());
                 }
             }
@@ -138,6 +152,34 @@ public class SitemapCmsPopulator {
             }
         }
         return isOrphan;
+    }
+    
+    @SuppressWarnings("unchecked")
+	private boolean isSKUUnavailableWithStatus(ContentNodeI productNode, String skuUnavailablityStatus) {
+    	boolean skuMatch = false;
+    	
+    	ArrayList<ContentKey> skus = (ArrayList<ContentKey>) productNode.getAttributeValue("skus");
+   	   	
+        if (skus != null && skuUnavailablityStatus != null) {
+    		for (ContentKey contentKey : skus) {
+					FDProductInfo fdProductInfo;
+					try {
+						fdProductInfo = FDCachedFactory.getProductInfo(contentKey.getId());
+						HashMap<String,FDMaterialSalesArea> availability = new HashMap<String, FDMaterialSalesArea>(fdProductInfo.getAvailability());
+						for (FDMaterialSalesArea msa : availability.values()) {
+							skuMatch = skuUnavailablityStatus.equalsIgnoreCase(msa.getUnavailabilityStatus());
+						}
+					} catch (FDResourceException e) {
+						// Sku not found in ERPS. Can happen as cms skus are easily created for preview purposes.
+						LOGGER.warn("SKU not found during Sitemap generation: "+contentKey.getId());
+					} catch (FDSkuNotFoundException e) {
+						// Sku not found in ERPS. Can happen as cms skus are easily created for preview purposes.
+						LOGGER.warn("SKU not found during Sitemap generation: "+contentKey.getId());
+					}															                		
+			}
+		}
+        
+        return skuMatch;
     }
 
 }
