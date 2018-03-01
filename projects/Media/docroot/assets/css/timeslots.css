@@ -422,7 +422,7 @@ div.tsHeaderC {
 	float: left;
 }
 .tsDiscountPropC {
-	padding:2px 0 0 4px;
+	padding: 0 0 0 4px;
 }
 
 /*Variable minimum order slot*/
@@ -832,7 +832,7 @@ td.noTopBorder {
 .dayPart {
 	cursor: pointer;
 }
-.dayPart td {
+#tsContainer td .dayPart td {
 	font-size: 1px;
 	line-height: 1px;
 	background-color: #ccc;
