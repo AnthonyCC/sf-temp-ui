@@ -631,7 +631,10 @@ public class UserUtil {
             }*/
 
             if(session.getAttribute("TICK_TIE_CUSTOMER") != null) {
-            	session.removeAttribute(SessionName.USER);
+            	try{
+            		session.removeAttribute(SessionName.USER);
+            	}catch(IllegalStateException e){
+                }
             	currentUser = null;
             }
 
