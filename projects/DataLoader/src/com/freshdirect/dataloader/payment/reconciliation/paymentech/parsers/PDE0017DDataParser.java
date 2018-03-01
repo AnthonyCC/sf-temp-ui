@@ -33,7 +33,7 @@ public class PDE0017DDataParser extends PaymentechSettlementParser {
 		this.fields.add(new Field(ISSUER_CBK_AMOUNT, 17, true));
 		this.fields.add(new Field(PARTIAL_REPRESENTMENT, 1, true));
 		this.fields.add(new Field(CURRENCY, 3, true));
-		this.fields.add(new Field(CATEGORY, 8, true));//change from 6 to 8 bytes as per revision 6.4
+		this.fields.add(new Field(CATEGORY, 9, true));//change from 6 to 8 bytes as per revision 6.5
 		this.fields.add(new Field(STATUS_FLAG, 1, false));
 		this.fields.add(new Field(SEQUENCE_NUM, 10, true));
 		this.fields.add(new Field(MERCHANT_ORDER_NUM, 22, true));

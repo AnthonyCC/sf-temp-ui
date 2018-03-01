@@ -30,7 +30,7 @@ public class PDE0020DataParser extends PaymentechSettlementParser {
 		this.fields.add(new Field(RESERVED_1, 0, false));
 		this.fields.add(new Field(RESERVED_2, 0, false));
 		this.fields.add(new Field(CURRENCY, 3, true));
-		this.fields.add(new Field(CATEGORY, 6, true));
+		this.fields.add(new Field(CATEGORY, 9, true));
 		this.fields.add(new Field(STATUS_FLAG, 1, false));
 		this.fields.add(new Field(SEQUENCE_NUM, 10, true));
 		this.fields.add(new Field(MERCHANT_ORDER_NUM, 22, true));
