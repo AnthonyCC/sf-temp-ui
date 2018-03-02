@@ -468,17 +468,18 @@ public class PriceCalculator {
             zonePriceInfoModel = info != null ? info.getZonePriceInfo(ctx.getZoneInfo()) : null;
         }
         */
-
-        ZoneInfo zone=ctx.getZoneInfo();
-        if (zonePriceInfoModel == null) {
-        	FDProductInfo info = getProductInfo();
-        	if(info!=null) {
-        		zonePriceInfoModel=info.getZonePriceInfo(zone);
-        		/*while(zonePriceInfoModel==null && zone!=null) {
-        			zone=zone.getParentZone();
-        			zonePriceInfoModel=info.getZonePriceInfo(zone);
-        		}*/
-        	}
+    	if (ctx != null) {
+	        ZoneInfo zone=ctx.getZoneInfo();
+	        if (zonePriceInfoModel == null) {
+	        	FDProductInfo info = getProductInfo();
+	        	if(info!=null) {
+	        		zonePriceInfoModel=info.getZonePriceInfo(zone);
+	        		/*while(zonePriceInfoModel==null && zone!=null) {
+	        			zone=zone.getParentZone();
+	        			zonePriceInfoModel=info.getZonePriceInfo(zone);
+	        		}*/
+	        	}
+	        }
         }
         return zonePriceInfoModel;
 
