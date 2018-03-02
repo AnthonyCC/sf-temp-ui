@@ -102,9 +102,10 @@
 		<filter-name>CORSFilter</filter-name>
 		<url-pattern>/assets/*</url-pattern>
 	</filter-mapping>
+	<!-- SF 2.0 UI warmup config using CMSDispatcherServlet  -->
 	<servlet>
 		<servlet-name>cms-dispatcher</servlet-name>
-		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<servlet-class>com.freshdirect.webapp.util.CMSDispatcherServlet</servlet-class>
 		<init-param>
 			<param-name>contextConfigLocation</param-name>
 			<param-value>com.freshdirect.appconfig.storefront</param-value>
