@@ -6,20 +6,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Category;
 
 import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.webapp.util.FDURLUtil;
 
 public class ExternalAccountControllerTag extends com.freshdirect.framework.webapp.BodyTagSupport implements SessionName {
 
     private static final long serialVersionUID = -7466852553179595103L;
-    private static Category LOGGER = LoggerFactory.getInstance(ExternalAccountControllerTag.class);
-    private Object result;
+    private String result;
 
     @Override
     public int doStartTag() throws JspException {
@@ -28,6 +25,16 @@ public class ExternalAccountControllerTag extends com.freshdirect.framework.weba
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
         HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
         String source = (request.getParameter("source") == null) ? "" : (String) request.getParameter("source");
+
+        String redirectUrl = request.getParameter("successPage");
+        String urlStyle = request.getParameter("urlStyle");
+
+        if (redirectUrl != null) {
+            if ("fragment".equals(urlStyle)) {
+                redirectUrl = FDURLUtil.convertQueryToFragmentUrl(redirectUrl);
+            }
+            session.setAttribute(SessionName.PREV_SUCCESS_PAGE, redirectUrl);
+        }
 
         String redirectPage = AccountServiceFactory.getService(source).login(session, request, response);
 
@@ -58,10 +65,7 @@ public class ExternalAccountControllerTag extends com.freshdirect.framework.weba
         HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
         try {
             response.sendRedirect(url);
-            JspWriter writer = pageContext.getOut();
-            writer.close();
             return SKIP_BODY;
-
         } catch (IOException ioe) {
             throw new JspException(ioe.getMessage());
         }

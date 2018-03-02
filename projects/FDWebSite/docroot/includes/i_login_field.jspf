@@ -1,4 +1,4 @@
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties"%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
@@ -277,10 +277,13 @@
 				_oneall.push([ 'social_login', 'set_grid_sizes', [ 1, 2 ] ]);
 				_oneall.push([ 'social_login', 'set_custom_css_uri', '//'+window.location.host+'/media/social_login/social_login_media.css']);
 				
+				var originPath = window.location.search.substring(1);
+				var originFragment = window.top.location.hash.substring(1);
+				var originUrl = (originFragment ? 'urlStyle=fragment&' + originPath + '?' + originFragment : originPath);
 				<% if(FDStoreProperties.isLocalDeployment()){ %>
-					_oneall.push([ 'social_login', 'set_callback_uri', document.location.protocol + '<%= "//" + request.getServerName() + ":" + request.getServerPort()+"/social/social_login_success.jsp?isFromLogin=true"  %>' ]);
+					_oneall.push([ 'social_login', 'set_callback_uri', document.location.protocol + '<%= "//" + request.getServerName() + ":" + request.getServerPort()+"/social/social_login_success.jsp?isFromLogin=true&" %>' + originUrl]);
 				<% } else { %>
-					_oneall.push([ 'social_login', 'set_callback_uri', 'https://' + document.location.host + '/social/social_login_success.jsp?isFromLogin=true' ]);
+					_oneall.push([ 'social_login', 'set_callback_uri', 'https://' + document.location.host + '/social/social_login_success.jsp?isFromLogin=true&' + originUrl]);
 				<% } %>			
 			
 				_oneall.push([ 'social_login', 'set_event', 'on_login_redirect', my_on_login_redirect ]);
