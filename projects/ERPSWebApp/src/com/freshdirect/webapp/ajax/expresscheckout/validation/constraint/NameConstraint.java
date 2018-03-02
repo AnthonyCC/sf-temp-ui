@@ -8,7 +8,8 @@ public class NameConstraint extends RegexConstraint {
 
 	private static final String ERROR_MESSAGE = "Please enter name exactly as it appears on card.";
 
-	private static final String REGEX = "";
+	// Allow every non-empty characters except &,<,>,",#,%,=
+	private static final String REGEX = "^(?!.*[&|<|>|\\\"|/|#|%|=])\\w.*$";
 
 	@Override
 	public String getErrorMessage() {
