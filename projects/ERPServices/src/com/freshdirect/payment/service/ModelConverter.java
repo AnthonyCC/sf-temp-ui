@@ -47,6 +47,7 @@ import com.freshdirect.customer.EnumZoneServiceType;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpComplaintReason;
 import com.freshdirect.customer.ErpCreditCardModel;
+import com.freshdirect.customer.ErpCustEWalletModel;
 import com.freshdirect.customer.ErpCustomerCreditModel;
 import com.freshdirect.customer.ErpECheckModel;
 import com.freshdirect.customer.ErpEbtCardModel;
@@ -92,6 +93,7 @@ import com.freshdirect.ecommerce.data.enums.EnumComplaintDlvIssueTypeData;
 import com.freshdirect.ecommerce.data.enums.EnumFeaturedHeaderTypeData;
 import com.freshdirect.ecommerce.data.enums.ErpAffiliateData;
 import com.freshdirect.ecommerce.data.erp.coo.CountryOfOriginData;
+import com.freshdirect.ecommerce.data.erp.ewallet.ErpCustEWalletData;
 import com.freshdirect.ecommerce.data.erp.inventory.ErpInventoryData;
 import com.freshdirect.ecommerce.data.erp.inventory.ErpInventoryEntryData;
 import com.freshdirect.ecommerce.data.erp.material.AttributeCollectionData;
@@ -365,7 +367,7 @@ public class ModelConverter {
 
 	public static Map<ErpCOOLKey, ErpCOOLInfo> buildCoolModel(
 			List<CountryOfOriginData> list) {
-		Map<ErpCOOLKey, ErpCOOLInfo> erpCOOLInfo=null;
+		Map<ErpCOOLKey, ErpCOOLInfo> erpCOOLInfo=new HashMap<ErpCOOLKey, ErpCOOLInfo>();
 		ErpCOOLInfo info=null;
 		ErpCOOLKey key=null;
 		for(CountryOfOriginData data: list) {
@@ -2504,6 +2506,17 @@ public class ModelConverter {
 		}
 		return logModel;
 		
+	}
+
+	public static ErpCustEWalletModel buildErpCustEwalletModel(ErpCustEWalletData data) {
+		ErpCustEWalletModel erpCustEwalletModel = new ErpCustEWalletModel();
+		erpCustEwalletModel.setCustomerId(data.getCustomerId());
+		erpCustEwalletModel.setEmailId(data.getEmailId());
+		erpCustEwalletModel.seteWalletId(data.geteWalletId());
+		if(data.getId() != null)
+		erpCustEwalletModel.setId(data.getId());
+		erpCustEwalletModel.setLongAccessToken(data.getLongAccessToken());
+		return erpCustEwalletModel;
 	}
 
 }
