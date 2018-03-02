@@ -32,7 +32,7 @@ if (mobWeb) {
 }
 %>
 <potato:pendingExternalAtcItem/>
-
+<potato:singlePageCheckout action="resetContext" />
 <tmpl:insert template='<%= pageTemplate %>'>
   <tmpl:put name="soytemplates"><soy:import packageName="expressco"/></tmpl:put>
 
