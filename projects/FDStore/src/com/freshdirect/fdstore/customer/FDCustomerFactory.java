@@ -119,7 +119,7 @@ public class FDCustomerFactory {
 	}
 
 	public static ErpCustomerInfoModel getErpCustomerInfo(FDIdentity identity) throws FDResourceException {
-		return getErpCustomerInfo( identity.getErpCustomerPK() );
+		return getErpCustomerInfo( null !=identity ? identity.getErpCustomerPK():null );
 	}
 
 	public static ErpCustomerInfoModel getErpCustomerInfo(String erpCustomerId) throws FDResourceException {
