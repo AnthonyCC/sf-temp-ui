@@ -123,20 +123,23 @@ public class FDCustomerFactory {
 	}
 
 	public static ErpCustomerInfoModel getErpCustomerInfo(String erpCustomerId) throws FDResourceException {
-		if (erpCustomerInfoHome == null) {
-			lookupErpCustomerInfoHome();
+		if(null !=erpCustomerId){
+			if (erpCustomerInfoHome == null) {
+				lookupErpCustomerInfoHome();
+			}
+			
+			try {
+				ErpCustomerInfoModel customerInfo = (ErpCustomerInfoModel) erpCustomerInfoHome.findByErpCustomerId(erpCustomerId).getModel();
+				return customerInfo;
+			} catch(FinderException fe) {
+				erpCustomerInfoHome = null;
+				throw new FDResourceException(fe);
+			} catch(RemoteException re) {
+				erpCustomerInfoHome = null;
+				throw new FDResourceException(re);
+			}
 		}
-		
-		try {
-			ErpCustomerInfoModel customerInfo = (ErpCustomerInfoModel) erpCustomerInfoHome.findByErpCustomerId(erpCustomerId).getModel();
-			return customerInfo;
-		} catch(FinderException fe) {
-			erpCustomerInfoHome = null;
-			throw new FDResourceException(fe);
-		} catch(RemoteException re) {
-			erpCustomerInfoHome = null;
-			throw new FDResourceException(re);
-		}
+		return null;
 	}
 	
 	public static List<ErpCustomerCreditModel> getCustomerCreditsByErpCustId (String erpCustomerId) throws FDResourceException{
