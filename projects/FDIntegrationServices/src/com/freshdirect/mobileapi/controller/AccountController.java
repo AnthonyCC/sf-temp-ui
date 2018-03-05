@@ -374,10 +374,13 @@ public class AccountController extends BaseController implements Comparator <Ord
             setResponseMessage(model, responseMessage, user);
             return model;
     	} else if(addressId == null) {
-        	Message responseMessage = Message.createFailureMessage("You need to add a delivery address to perform this action.");
-    		setResponseMessage(model, responseMessage, user);
-    		return model;
-        } else {
+    		// Temp fix for null address ids for iphone apps 2.2 and earlier
+    		DeliveryTimeslots deliveryTimeslots = new DeliveryTimeslots(null);//getDeliveryTimeslots(user, addressId);
+            ReservationTimeslots responseMessage = new ReservationTimeslots(new DeliveryAddresses(), deliveryTimeslots, user);
+            responseMessage.addWarningMessage("No address found for user");
+            setResponseMessage(model, responseMessage, user);
+            return model;
+    	} else {
     		return getReservationTimeslot(model, request, user, addressId);
     	}
 
@@ -411,7 +414,6 @@ public class AccountController extends BaseController implements Comparator <Ord
         
         LOGGER.info("getDeliveryTimeslotByTimezone: " + addressId );
         if (anonymousAddress != null) {
-        	
         	LOGGER.info("getDeliveryTimeslotByTimezone[anonymousAddress]: " + anonymousAddress.getStreet1() + ":" + anonymousAddress.getPostalCode() );
         	TimeSlotCalculationResult timeSlotResult = anonymousAddress.getDeliveryTimeslot(user, false);
             DeliveryTimeslots deliveryTimeslots = new DeliveryTimeslots(timeSlotResult);
@@ -420,12 +422,13 @@ public class AccountController extends BaseController implements Comparator <Ord
             setResponseMessage(model, responseMessage, user);
             return model;
     	} else if(addressId == null) {
-
-        	Message responseMessage = Message.createFailureMessage("You need to add a delivery address to perform this action.");
-    		setResponseMessage(model, responseMessage, user);
-    		return model;
+    		// Temp fix for null address ids for iphone apps 2.2 and earlier
+    		DeliveryTimeslots deliveryTimeslots = new DeliveryTimeslots(null);//getDeliveryTimeslots(user, addressId);
+            ReservationTimeslots responseMessage = new ReservationTimeslots(new DeliveryAddresses(), deliveryTimeslots, user);
+            responseMessage.addWarningMessage("No address found for user");
+            setResponseMessage(model, responseMessage, user);
+            return model;
         } else {
-
     		return getDeliveryTimeslotByTimezone(model, user, addressId, timezone, excludeaddr);
     	}
 
