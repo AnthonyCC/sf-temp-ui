@@ -47,7 +47,7 @@ public class LoginServlet extends HttpServlet {
 		if (loginRequest != null) {
 			// validate captcha if it's enabled
 			if (loginRequest.isCaptchaEnabled()) {
-				boolean isCaptchaSuccess = CaptchaUtil.validateCaptchaV2(loginRequest.getCaptchaToken(), request.getRemoteAddr());
+				boolean isCaptchaSuccess = CaptchaUtil.validateCaptchaV2(loginRequest.getCaptchaToken(), request.getRemoteAddr(), request.getSession(), SessionName.LOGIN_ATTEMPT, FDStoreProperties.getMaxInvalidLoginAttempt());
 				if (!isCaptchaSuccess) {
 					loginResponse.addError("captcha", SystemMessageList.MSG_INVALID_CAPTCHA);
 					writeResponse(response, loginResponse);

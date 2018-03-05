@@ -34,6 +34,7 @@ public class PaymentMethodRequest extends Message {
 	private String billingRef;
 	private String csv;
 	private String billingCtry;
+	private String captchaToken;
 	
 	public String getBillingCtry() {
 		return billingCtry;
@@ -160,6 +161,12 @@ public class PaymentMethodRequest extends Message {
 	}
 	public void setBillingRef(String billingRef) {
 		this.billingRef = billingRef;
+	}
+	public String getCaptchaToken() {
+		return captchaToken;
+	}
+	public void setCaptchaToken(String captchaToken) {
+		this.captchaToken = captchaToken;
 	}
 	
 

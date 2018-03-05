@@ -17,6 +17,7 @@ import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerCreditUtil;
@@ -32,11 +33,9 @@ import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.framework.webapp.ActionWarning;
 import com.freshdirect.payment.EnumPaymentMethodType;
-import com.freshdirect.webapp.ajax.BaseJsonServlet;
-import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
-import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
-import com.freshdirect.webapp.ajax.expresscheckout.service.FormDataService;
+import com.freshdirect.webapp.action.Action;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -45,6 +44,7 @@ import com.freshdirect.webapp.taglib.fdstore.PaymentMethodUtil;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.taglib.fdstore.UserUtil;
+import com.freshdirect.webapp.util.CaptchaUtil;
 import com.freshdirect.webapp.util.StandingOrderHelper;
 
 public class PaymentMethodManipulator extends CheckoutManipulator {
@@ -301,20 +301,27 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		}
 	}
 
-	public void performAddAndSetPaymentMethod() throws FDResourceException {
+	public String performAddAndSetPaymentMethod() throws FDResourceException {
 		//
 		// add the payment method
 		//
 		FDIdentity identity = getIdentity();
 		if ( identity == null ) {
 		    result.addError( new ActionError( "unexpected_error", "User Identity cannot be Null" ) );
-		    return;
 		}
-
+		if (!checkCaptcha()) {
+    		return Action.ERROR;
+    	}
+		
 		ErpPaymentMethodI paymentMethod = PaymentMethodUtil.processForm( request, result, identity );
+		if (paymentMethod.getPaymentMethodType() == EnumPaymentMethodType.CREDITCARD
+				|| paymentMethod.getPaymentMethodType() == EnumPaymentMethodType.DEBITCARD) {
+			checkPaymentAttempt();
+		}
 		if ( result.isSuccess() ) {
             performAddAndSetPaymentMethod(request, session, getUser(), result, paymentMethod, actionName);
 		}
+		return Action.SUCCESS;
 	}
 
     public static void performAddAndSetPaymentMethod(HttpServletRequest request, HttpSession session, FDUserI user, ActionResult result, ErpPaymentMethodI paymentMethod,
@@ -346,11 +353,21 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
         }
 
 	}
-	public void performAddPaymentMethod() throws FDResourceException {
+	public String performAddPaymentMethod() throws FDResourceException {
+		if (!checkCaptcha()) {
+    		return Action.ERROR;
+    	}
 		ErpPaymentMethodI paymentMethod = PaymentMethodUtil.processForm( request, result, getIdentity() );
+		
+		if (paymentMethod.getPaymentMethodType() == EnumPaymentMethodType.CREDITCARD
+				|| paymentMethod.getPaymentMethodType() == EnumPaymentMethodType.DEBITCARD) {
+			checkPaymentAttempt();
+		}
+		
 		if ( result.isSuccess() ) {
 			performAddPaymentMethod(paymentMethod, result, request, getUser());
 		}
+		return Action.SUCCESS;
 	}
 
 	/**
@@ -395,11 +412,22 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
     }
 
 
-    public void performEditPaymentMethod() throws FDResourceException {
+    public String performEditPaymentMethod() throws FDResourceException {
+    	if (!checkCaptcha()) {
+    		return Action.ERROR;
+    	}
+    	
         ErpPaymentMethodI paymentMethod = PaymentMethodUtil.processEditForm(request, result, getIdentity());
+        
+		if (paymentMethod.getPaymentMethodType() == EnumPaymentMethodType.CREDITCARD
+				|| paymentMethod.getPaymentMethodType() == EnumPaymentMethodType.DEBITCARD) {
+			checkPaymentAttempt();
+		}
+        
         if(result.isSuccess()){
             performEditPaymentMethod(request, paymentMethod, result, getUser());
         }
+        return Action.SUCCESS;
     }
 
     public static void performEditPaymentMethod(HttpServletRequest request, ErpPaymentMethodI paymentMethod, ActionResult result, FDUserI user) throws FDResourceException {
@@ -496,4 +524,30 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		}
 		return paymentMethods;
 	}
+	
+	private boolean checkCaptcha() {
+		String captchaToken = request.getParameter("captchaToken") != null
+				? request.getParameter("captchaToken").toString()
+				: null;
+		boolean isCaptchaSuccess = CaptchaUtil.validateCaptchaV2(captchaToken,
+				request.getRemoteAddr(), session, SessionName.PAYMENT_ATTEMPT, FDStoreProperties.getMaxInvalidPaymentAttempt());
+		if (!isCaptchaSuccess) {
+			result.addError(new ActionError("captcha", SystemMessageList.MSG_INVALID_CAPTCHA));
+			return false;
+		}
+		
+		return true;
+	}
+	
+	private void checkPaymentAttempt() {
+    	if (result.getErrors().isEmpty()) {
+    		session.setAttribute(SessionName.PAYMENT_ATTEMPT, 0);
+    	} else {
+    		int currentAttempt = session.getAttribute(SessionName.PAYMENT_ATTEMPT) != null ? (Integer) session.getAttribute(SessionName.PAYMENT_ATTEMPT) : Integer.valueOf(0);
+    		session.setAttribute(SessionName.PAYMENT_ATTEMPT, ++currentAttempt);
+    		if (currentAttempt >= FDStoreProperties.getMaxInvalidPaymentAttempt()) {
+    			result.addWarning(new ActionWarning("excessiveAttempt","excessiveAttempt"));
+    		}
+    	}
+    }
 }

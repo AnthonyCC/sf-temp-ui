@@ -10,24 +10,27 @@ var FreshDirect = FreshDirect || {};
 		captchaPublicKey = captchaPublicKey || publicKey;
 	  // load recaptcha api if it hasn't been loaded yet
 	  if (!window.grecaptcha) {
-	  var script = document.createElement('script');
-	  script.src = 'https://www.google.com/recaptcha/api.js?onload=onCaptchaLoadCallback&render=explicit';
-	  script.async = true;
-	  script.defer = true;
-	  document.head.appendChild(script); //or something of the likes
-	  
-	  window.onCaptchaLoadCallback = function () {
+		  var script = document.createElement('script');
+		  script.src = 'https://www.google.com/recaptcha/api.js?onload=onCaptchaLoadCallback&render=explicit';
+		  script.async = true;
+		  script.defer = true;
+		  document.head.appendChild(script);
+		  
+		  window.onCaptchaLoadCallback = function () {
 			if (callback && typeof callback === 'function') {
 				callback();
 			}
 		  };
 	  } else {
 		if (callback && typeof callback === 'function') {
-				callback();
-			}
+			callback();
+		}
 	  }
 	}
 	
+	function setKey(key) {
+		captchaPublicKey = key;
+	}
 	function render(container, callback, errorCallback, expiredCallback ) {
 	    try {
 	    	captchaWidgetId = grecaptcha.render(container, {
@@ -47,14 +50,18 @@ var FreshDirect = FreshDirect || {};
 
 	}
 	function getResponse(){
-		return grecaptcha.getResponse(captchaWidgetId);
+		try {
+			return grecaptcha.getResponse(captchaWidgetId);
+		} catch(e) {
+			return null;
+		}
 	}
 	
-	function isEnabled(container) {
-		return $jq(container).length && $jq(container).val() === 'true' && window.grecaptcha;
+	function isEnabled() {
+		return (captchaWidgetId !=null) && window.grecaptcha;
 	}
-	function isValid(container) {
-		return !isEnabled(container) || !!grecaptcha.getResponse();
+	function isValid() {
+		return !isEnabled() || !!grecaptcha.getResponse();
 	}
 	// if component is not registered, register
 	if (!fd.components.captchaWidget) {
@@ -64,7 +71,8 @@ var FreshDirect = FreshDirect || {};
 			reset: reset,
 			isEnabled: isEnabled,
 			isValid: isValid,
-			getResponse: getResponse
+			getResponse: getResponse,
+			setKey: setKey
 		};
 		if (fd.modules && fd.modules.common && fd.modules.common.utils){
 			fd.modules.common.utils.register("components", "captchaWidget", captchaWidget,

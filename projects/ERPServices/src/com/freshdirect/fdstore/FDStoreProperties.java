@@ -759,6 +759,9 @@ public class FDStoreProperties {
     // Max Invalid Login counts for Recaptcha
     private final static String PROP_MAX_INVALID_LOGIN_ATTEMPT = "fdstore.max.invalid.login.count";
 
+    // Max Invalid Payment counts for Recaptcha
+    private final static String PROP_MAX_INVALID_PAYMENT_ATTEMPT = "fdstore.max.invalid.payment.count";
+    
     // Limiting the quicksearch results in mobile
     private final static String QUICKSHOP_ALL_ITEMS_MAX = "fdstore.quickshop.max.results";
 
@@ -1716,6 +1719,7 @@ public class FDStoreProperties {
         defaults.put(PROP_RECAPTCHA_PUBLIC_KEY, "6LdQn0YUAAAAALfZUrX-x4IeOmdUkkUrwMwZdhsd");
         defaults.put(PROP_RECAPTCHA_PRIVATE_KEY, "6LdQn0YUAAAAAB3iHC6AzFH_Sd5k9z0uAwfvPUkZ");
         defaults.put(PROP_MAX_INVALID_LOGIN_ATTEMPT, "10");
+        defaults.put(PROP_MAX_INVALID_PAYMENT_ATTEMPT, "10");
         defaults.put(PROP_TIP_RANGE_CONFIG, "0,25,0.5;");
 
         defaults.put(SUB_DOMAIN, "");
@@ -4246,6 +4250,15 @@ public class FDStoreProperties {
         }
     }
 
+    public static int getMaxInvalidPaymentAttempt() {
+        try {
+            return Integer.parseInt(get(PROP_MAX_INVALID_PAYMENT_ATTEMPT));
+        } catch (Exception e) {
+        	// disable if the property is not set or invalid
+            return 0;
+        }
+    }
+    
     public static int getQuickShopResultMaxLimit() {
         try {
             return Integer.parseInt(get(QUICKSHOP_ALL_ITEMS_MAX));

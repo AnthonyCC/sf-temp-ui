@@ -355,4 +355,6 @@ public interface RequestParamName {
     public static final String REQ_PARAM_GO_GREEN = "go_green";
     
     public static final String REQ_PARAM_DATA = "data";
+    
+    public static final String REQ_PARAM_CAPTCHA_TOKEN = "captchaToken";
 }

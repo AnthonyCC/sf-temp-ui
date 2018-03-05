@@ -13,6 +13,7 @@
 <%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
 <%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
 <%@ page import="com.freshdirect.webapp.util.JspMethods"%>
+<%@ page import='com.freshdirect.webapp.util.CaptchaUtil' %>
 
 <fd:CheckLoginStatus id="user" guestAllowed='true'
 	recognizedAllowed='true' />
@@ -35,9 +36,7 @@
 	boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
 	
 	//Captcha.
-	Integer attemptString = (Integer)session.getAttribute("fdLoginAttempt");
-	int attempt = attemptString != null ? Integer.valueOf(attemptString): 0;
-	int invalidAttempt = FDStoreProperties.getMaxInvalidLoginAttempt();		
+	boolean showCaptcha = CaptchaUtil.isExcessiveAttempt(FDStoreProperties.getMaxInvalidLoginAttempt(), session, SessionName.LOGIN_ATTEMPT);
 	String publicKey= FDStoreProperties.getRecaptchaPublicKey();
 
 %>
@@ -112,11 +111,10 @@
 										autocomplete="email" tabindex="2" /></td>
 								</tr>
 								
-							<% if (attempt >= invalidAttempt) { %>
+							<% if (showCaptcha) { %>
 							<jwr:script src="/assets/javascript/fd/captcha/captchaWidget.js" useRandomParam="false" />
 								<tr id="login-g-recaptcha-container">
 									<td colspan="2">
-										<input id="login-g-recaptcha-enabled" name="captchaEnabled" type="hidden" value="true">	
 										<div id="login-g-recaptcha" class="g-recaptcha"></div>
 									</td>
 									

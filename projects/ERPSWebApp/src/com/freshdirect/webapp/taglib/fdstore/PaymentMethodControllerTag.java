@@ -18,6 +18,8 @@ import com.freshdirect.customer.*;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.EnumPaymentMethodType;
+import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationError;
+import com.freshdirect.webapp.util.CaptchaUtil;
 
 import org.apache.log4j.*;
 
@@ -53,14 +55,21 @@ public class PaymentMethodControllerTag extends com.freshdirect.framework.webapp
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
         HttpSession session = pageContext.getSession();
         ActionResult actionResult = new ActionResult();
-
+        boolean isAddOrEditCard = false;
         if (("POST".equalsIgnoreCase(request.getMethod()))) {
             user = (FDUserI) session.getAttribute(SessionName.USER);
             
 
 			try {
 	            if(actionName.equalsIgnoreCase("addPaymentMethod")) {
+	            	if (!checkCaptcha(request, actionResult)) {
+	            		return EVAL_BODY_BUFFERED;
+	            	}
 	                ErpPaymentMethodI paymentMethod = PaymentMethodUtil.processForm(request, actionResult, user.getIdentity());
+					if (paymentMethod.getPaymentMethodType() == EnumPaymentMethodType.CREDITCARD
+							|| paymentMethod.getPaymentMethodType() == EnumPaymentMethodType.DEBITCARD) {
+						isAddOrEditCard = true;
+					}
 	                if(actionResult.isSuccess()){
 	                    PaymentMethodUtil.validatePaymentMethod(request, paymentMethod, actionResult, user,true,EnumAccountActivityType.ADD_PAYMENT_METHOD);
 	            		if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
@@ -78,7 +87,14 @@ public class PaymentMethodControllerTag extends com.freshdirect.framework.webapp
 	                    }
 	                }
 	            } else if(actionName.equalsIgnoreCase("editPaymentMethod")) {
-	            	ErpPaymentMethodI paymentMethod = PaymentMethodUtil.processEditForm(request, actionResult, user.getIdentity());	            	
+	            	if (!checkCaptcha(request, actionResult)) {
+	            		return EVAL_BODY_BUFFERED;
+	            	}
+	            	ErpPaymentMethodI paymentMethod = PaymentMethodUtil.processEditForm(request, actionResult, user.getIdentity());
+					if (paymentMethod.getPaymentMethodType() == EnumPaymentMethodType.CREDITCARD
+							|| paymentMethod.getPaymentMethodType() == EnumPaymentMethodType.DEBITCARD) {
+						isAddOrEditCard = true;
+					}
 	                if(actionResult.isSuccess()){
 	                    PaymentMethodUtil.validatePaymentMethod(request, paymentMethod, actionResult, user,true,EnumAccountActivityType.UPDATE_PAYMENT_METHOD);
 	                    if(actionResult.isSuccess()){
@@ -111,7 +127,17 @@ public class PaymentMethodControllerTag extends com.freshdirect.framework.webapp
 				LOGGER.error("Error performing action "+actionName, ex);
 				actionResult.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_TECHNICAL_ERROR));
             }
-
+			
+			// if action is add or edit credit/debit card, reset or increment the attempt number depends on the result
+			if (isAddOrEditCard) {
+		        if (actionResult.isSuccess()) {
+		        	session.setAttribute(SessionName.PAYMENT_ATTEMPT, 0);
+		        } else {
+		        	int currentAttempt = session.getAttribute(SessionName.PAYMENT_ATTEMPT) != null ? (Integer) session.getAttribute(SessionName.PAYMENT_ATTEMPT) : Integer.valueOf(0);
+		    		session.setAttribute(SessionName.PAYMENT_ATTEMPT, ++currentAttempt);
+		        }
+	        }
+			
             // redirect to success page if an action was successfully performed
             // and a success page was defined
             //
@@ -140,10 +166,27 @@ public class PaymentMethodControllerTag extends com.freshdirect.framework.webapp
                 }
             }
         }
+
         // place the result as a scripting variable in the page
         //
         pageContext.setAttribute(this.result, actionResult);
         return EVAL_BODY_BUFFERED;
     }
-    
+    private boolean checkCaptcha(HttpServletRequest request, ActionResult result) {
+    	HttpSession session = request.getSession();
+    	String ip = request.getRemoteAddr();
+    	String captchaToken = request.getParameter("g-recaptcha-response") != null
+				? request.getParameter("g-recaptcha-response").toString()
+				: null;
+				
+		boolean isCaptchaSuccess = CaptchaUtil.validateCaptchaV2(captchaToken,
+				ip, session, SessionName.PAYMENT_ATTEMPT, FDStoreProperties.getMaxInvalidPaymentAttempt());
+		if (!isCaptchaSuccess) {
+			result.addError(new ActionError("captcha", SystemMessageList.MSG_INVALID_CAPTCHA));
+			pageContext.setAttribute(this.result, result);
+			return false;
+		}
+		
+		return true;
+	}
 }

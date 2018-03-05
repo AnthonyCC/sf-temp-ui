@@ -7,6 +7,7 @@
 <%@ page import='com.freshdirect.common.customer.EnumServiceType' %>
 <%@ page import="com.freshdirect.framework.util.NVL"%>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
+<%@ page import='com.freshdirect.webapp.util.CaptchaUtil' %>
 <%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
 <%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -25,7 +26,7 @@
 		$jq('#signinbtn').attr('disabled', true);
 		// on keyup we will check every time the form is valid or not
 		$jq('#fd_login').bind('change keyup', function() {
-			var isCaptchaValid = !FreshDirect || !FreshDirect.components || !FreshDirect.components.captchaWidget || FreshDirect.components.captchaWidget.isValid('#login-g-recaptcha-enabled');
+			var isCaptchaValid = !FreshDirect || !FreshDirect.components || !FreshDirect.components.captchaWidget || FreshDirect.components.captchaWidget.isValid();
 		    if($jq(this).validate().checkForm() && isCaptchaValid) { // form is valid
 		        $jq('#signinbtn').removeClass('button_disabled').attr('disabled', false);
 	
@@ -45,13 +46,6 @@
 	String userFromSession = null;
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 	if(user != null) userFromSession = user.getUserId();
-	
-	//Captcha.
-	Integer attemptString = (Integer)session.getAttribute("fdLoginAttempt");
-	int attempt = attemptString != null ? Integer.valueOf(attemptString): 0;
-	int invalidAttempt = FDStoreProperties.getMaxInvalidLoginAttempt();		
-	String publicKey= FDStoreProperties.getRecaptchaPublicKey();
-	
 	String userid = NVL.apply(request.getParameter("userid"), NVL.apply(user.getUserId(), ""));
 	
 	
@@ -75,6 +69,9 @@
 
 <div id="sulCont" class="signup-style-social social-singin login-page">
 	<%
+	//Captcha.
+	boolean showCaptcha = CaptchaUtil.isExcessiveAttempt(FDStoreProperties.getMaxInvalidLoginAttempt(), session, SessionName.LOGIN_ATTEMPT);
+	String publicKey= FDStoreProperties.getRecaptchaPublicKey();
 		if(session.getAttribute("MSG_FOR_LOGIN_PAGE") != null) {
 		//Message to display from referral signup page.
 	%>
@@ -158,11 +155,10 @@
 						<input id="password" aria-label="password" name="password" class="padding-input-box text11ref inputDef required" type="password" size="23" placeholder="Password">
 					</td>
 				</tr>
-				<% if (attempt >= invalidAttempt) { %>
+				<% if (showCaptcha) { %>
 				<jwr:script src="/assets/javascript/fd/captcha/captchaWidget.js" useRandomParam="false" />
 				<tr id="login-g-recaptcha-container">
 					<td colspan="2">
-						<input id="login-g-recaptcha-enabled" name="captchaEnabled" type="hidden" value="true" />
 						<div id="login-g-recaptcha" class="g-recaptcha"></div>
 					</td>
 					
@@ -334,7 +330,7 @@
 				<table border="0" cellpadding="0" cellspacing="0">
 				<tr>
 					<td colspan="2">
-					<%if(attempt >= invalidAttempt){%>
+					<%if(showCaptcha){%>
 						<input name="captchaEnabled" type="hidden" value="true">	
 						<div class="g-recaptcha" data-sitekey="<%=publicKey%>"></div>
 						<fd:ErrorHandler result='<%=result%>' name='captcha' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>

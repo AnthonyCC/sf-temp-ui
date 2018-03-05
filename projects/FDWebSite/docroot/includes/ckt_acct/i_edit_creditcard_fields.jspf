@@ -365,7 +365,7 @@ String addEBTPage = fromCheckout1 ? "/checkout/step_3_ebt_add.jsp" : "/your_acco
 	</TD>
 </TR>
 <%}%>
-
+<%@ include file="/includes/ckt_acct/i_creditcard_captcha.jspf" %>
 </TABLE>
 
 <br><br>

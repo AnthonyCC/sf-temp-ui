@@ -11,7 +11,7 @@ var FreshDirect = FreshDirect || {};
 		$('#fd_login').bind(
 				'change keyup',
 				function() {
-					var isCaptchaValid = !fd.components.captchaWidget || fd.components.captchaWidget.isValid('#login-g-recaptcha-enabled');
+					var isCaptchaValid = !fd.components.captchaWidget || fd.components.captchaWidget.isValid();
 				  
 					if ($jq(this).validate().checkForm() && isCaptchaValid) { // form is valid
 						$jq('#signinbtn').removeClass('button_disabled')
@@ -131,7 +131,6 @@ var FreshDirect = FreshDirect || {};
     		$jq('#fd_login').trigger('change');
 		}, function () {
 			$jq('#login-g-recaptcha-container').hide();
-    		$jq('#login-g-recaptcha-enabled').val(false);
 		}, function () {
 			$jq('#fd_login').trigger('change');
 		});
@@ -146,8 +145,7 @@ var FreshDirect = FreshDirect || {};
 				userId : email,
 				password: password
 		};
-		if (fd.components.captchaWidget && fd.components.captchaWidget.isEnabled('#login-g-recaptcha-enabled')) {
-			loginData.captchaEnabled = true;
+		if (fd.components.captchaWidget && fd.components.captchaWidget.isEnabled()) {
 			loginData.captchaToken = fd.components.captchaWidget.getResponse()
 		}
 		$.post('/api/login/', {
@@ -160,7 +158,7 @@ var FreshDirect = FreshDirect || {};
 						fd.gtm.updateDataLayer(fd.gtm.data.googleAnalyticsData);
 				}
 				parent.document.location = responseJson.successPage || sucessTarget || parent.document.location;
-			} else if (responseJson.message === 'CaptchaRedirect' && (!fd.components.captchaWidget || !fd.components.captchaWidget.isEnabled('#login-g-recaptcha-enabled'))){
+			} else if (responseJson.message === 'CaptchaRedirect' && (!fd.components.captchaWidget || !fd.components.captchaWidget.isEnabled())){
 				FreshDirect.modules.common.login.socialLogin();
 			}else {
 				showError(responseJson.errorMessages);
@@ -189,7 +187,7 @@ var FreshDirect = FreshDirect || {};
 		$('.social-login-spinner').hide();
 		$('#fd_login .error-message').html(errorMessage).show();
 
-		if (fd.components.captchaWidget && fd.components.captchaWidget.isEnabled('#login-g-recaptcha-enabled')) {
+		if (fd.components.captchaWidget && fd.components.captchaWidget.isEnabled()) {
 			fd.components.captchaWidget.reset();
 		}
 		if (fd.gtm && fd.gtm.data) {
