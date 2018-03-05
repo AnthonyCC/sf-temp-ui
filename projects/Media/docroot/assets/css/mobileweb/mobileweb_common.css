@@ -2376,7 +2376,7 @@ li.cleanli .gen-arrow {
 				max-width: 100%; /* size image to column */
 				max-height: auto !important;
 			}
-			button.modifyorder-cancelbutton {
+			a.cssbutton.transparent.orange.modifyorder-cancelbutton,a.cssbutton.cssbutton-flat.green.transparent.modifyorder-cancelbutton {
 				position: relative;
 				width: 100%;
 				right: auto;
@@ -2808,7 +2808,15 @@ li.cleanli .gen-arrow {
 		text-align: left;
 		font-size: 12px;
 	}
+	.mm-page table.order_history_table tr th{
+		padding: 10px 0;
+		text-align: left;
+		font-size: 12px;
+	}
 	.mm-page table.order_history_table tr td:last-child{
+		max-width: 80px;
+	}
+	.mm-page table.order_history_table tr th:last-child{
 		max-width: 80px;
 	}
 	.mm-page .order_history_table .order_history_table_id{
@@ -3010,10 +3018,23 @@ form.dispblock-fields td { /* force the tds to block so the label and field are 
 	}
 	
       /* hide in mobweb */
-    table.order_history_table td.order_history_table_id_header,
-    table.order_history_table td.order_history_table_id{
+    .order_history_table .order_history_table_id_header,
+    .order_history_table .order_history_table_id{
          display: none;
     }
+    
     select#order-field,select#contact_subject,textarea#msg-textarea{
-	 width:100%;
+	     width:100%;
 	}
+	
+	input[aria-label="estimated price:"][disabled="disabled"],input[aria-label="estimated quantity"][disabled="disabled"]{
+	    background-color: #ffff;
+        border-top: 2px solid #ffffff;
+        border-right: 2px solid #ffffff;
+        border-bottom: 2px solid #d4d4d4;
+        border-left: 2px solid #ffffff;
+    }
+    input#price_field{
+        width:100%;
+        margin-top:4px;
+    }

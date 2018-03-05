@@ -1203,6 +1203,7 @@
 * @param? etipTotal
 * @param? withContainer
 * @param? unescapeValue
+* @param? isHeader - if cart header vs cart detail
 */
 {template .subTotalBox}
 	{let $subtotalUsed: 0 /}
@@ -1361,9 +1362,9 @@
 						{/if}
 						{if $box.other.deliveryPassPopupNeeded and $userRecognized and $userCorporate == false}
 							{if $box.other.deliveryPassFreeTrialEligible}
-								<span class="free-link-holder">&nbsp;or <a href="javascript:doOverlayDialogNew('/includes/freetrial_popup.jsp');" class="free-link" >Free</a></span>
+								<span class="free-link-holder">&nbsp;or <a href="javascript:doOverlayDialogNew('/includes/freetrial_popup.jsp');" class="{if $isHeader}cssbutton small green {/if}free-link" >Free</a></span>
 							{else}
-								<span class="free-link-holder">&nbsp;or <a href="#" class="free-link" data-component="deliverypasspopup">Free</a></span>
+								<span class="free-link-holder">&nbsp;or <a href="#" class="{if $isHeader}cssbutton small green {/if}free-link" data-component="deliverypasspopup">Free</a></span>
 							{/if}
 						{/if}
 					</div> <!-- end subtotal__rowcell-right -->
@@ -1525,6 +1526,7 @@
 			{param etipTotal: 0 /}
 			{param withContainer: true /}
 			{param unescapeValue: true /}
+			{param isHeader: true /}
 		{/call}
 	</div>
 	{/if}

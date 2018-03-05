@@ -373,7 +373,7 @@ if ( skuSize == 0 ) {
         			<br/><span class="space2pix"><br/></span>
 					<fd:ErrorHandler result='<%=result%>' name='salesUnit' id='errorMsg'>
 						<span class="text11rbold"><%=errorMsg%></span><br/>
-						<% if ( errorMsg != "" ) { %><img src="/media_stat/images/layout/error.gif" border="0"><% } %>
+						<% if ( errorMsg != "" ) { %><img src="/media_stat/images/layout/error.gif" alt="" border="0"><% } %>
 					</fd:ErrorHandler>
 
 	        		<%
@@ -860,7 +860,7 @@ if ( skuSize == 0 ) {
     					 
 
 	        				if ( displayEstimatedQuantity ) {
-	            				%><a href="javascript:popup('/help/estimated_price.jsp','small')" class="text11bold">Estimated</a>&nbsp;<input class="text11" type="text" aria-label="estimated quantity" name="EST_QTY" size="7" onChange="" onFocus="blur()" value="">
+	            				%><a href="javascript:popup('/help/estimated_price.jsp','small')" class="text11bold">Estimated</a>&nbsp;<input class="text11" type="text" aria-label="estimated quantity" name="EST_QTY" size="7" onChange="" aria-live="polite" tabindex="0" disabled="disabled" value="">
 	            				<%
 	        				} else if ( isPricedByLB ) {
 	            				%><a href="javascript:popup('/help/estimated_price.jsp','small')" class="text11bold">Estimated Price</a><%
@@ -868,7 +868,7 @@ if ( skuSize == 0 ) {
 	            				%>Price<%
 	        				}
 	
-	    					%>&nbsp;<input class="text11bold" aria-label="estimated price:" type="text" name="PRICE" size="6" onChange="" onFocus="blur()" value="">
+	    					%>&nbsp;<input class="text11bold" aria-label="estimated price:" type="text" name="PRICE" size="6" onChange="" disabled="disabled" aria-live="polite" tabindex="0" value="">
 	    					
     					</td></tr>
 					<% } %>

@@ -98,7 +98,7 @@ var FreshDirect = FreshDirect || {};
 				//fire impression
 				if ($(this).attr('data-hooklogic-beacon-impress') !== 'http:') { //catch invalid data from HL
 					if ($('.browseContent .HLpageBeaconImg.impress-page_'+activePage+'_id_'+i+'_'+$(this).attr('id')).length === 0 && $(this).attr('data-hooklogic-beacon-impress') !== null) {
-						$('.browseContent').append('<img style="display: none;" class="HLpageBeaconImg impress-page_'+activePage+'_id_'+i+'_'+$(this).attr('id')+'" src="' + $(this).attr('data-hooklogic-beacon-impress') + '&random=' + new Date().getTime() + '" />');
+						$('.browseContent').append('<img style="display: none;" alt="" class="HLpageBeaconImg impress-page_'+activePage+'_id_'+i+'_'+$(this).attr('id')+'" src="' + $(this).attr('data-hooklogic-beacon-impress') + '&random=' + new Date().getTime() + '" />');
 					}
 				}
 			});
@@ -108,22 +108,22 @@ var FreshDirect = FreshDirect || {};
 			/* add page beacon (if it doesn't already exist) and we're on the first page only */
 			if(activePage == 1){
 				if (window.FreshDirect.browse.data.adProducts.hlEmptyProductsPagebeacon !== null && $(".browse-sections-top .browseContent .HLpageBeaconImg.empty_Product_page_SEARCH").length === 0)
-							$(".browse-sections-top .browseContent").append('<img style="display: none;" class="HLpageBeaconImg empty_Product_page_SEARCH" src="' + window.FreshDirect.browse.data.adProducts.hlEmptyProductsPagebeacon + '&aShown'+''+'&random=' + new Date().getTime() + '" />');
+							$(".browse-sections-top .browseContent").append('<img style="display: none;" alt="" class="HLpageBeaconImg empty_Product_page_SEARCH" src="' + window.FreshDirect.browse.data.adProducts.hlEmptyProductsPagebeacon + '&aShown'+''+'&random=' + new Date().getTime() + '" />');
 				
 				if (window.FreshDirect.browse.data.adProducts.pageBeacon !== null) {
 					if (hlSkusStr !== '' && $(".browse-sections-top .browseContent .HLpageBeaconImg.page_SEARCH").length === 0) { /* only one instance at a time */
 						if (FreshDirect.browse.data.adProducts.products.length === FreshDirect.browse.data.adProducts.hlProductsCount) {
 							
 							//all hlprods
-							$(".browse-sections-top .browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_SEARCH" src="' + window.FreshDirect.browse.data.adProducts.pageBeacon + 'all&random=' + new Date().getTime() + '" />');
+							$(".browse-sections-top .browseContent").append('<img alt="" style="display: none;" class="HLpageBeaconImg page_SEARCH" src="' + window.FreshDirect.browse.data.adProducts.pageBeacon + 'all&random=' + new Date().getTime() + '" />');
 						} else {
 							//not ALL hlprods
-							$(".browse-sections-top .browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_SEARCH" src="' + window.FreshDirect.browse.data.adProducts.pageBeacon + hlSkusStr + '&random=' + new Date().getTime() + '" />');
+							$(".browse-sections-top .browseContent").append('<img alt="" style="display: none;" class="HLpageBeaconImg page_SEARCH" src="' + window.FreshDirect.browse.data.adProducts.pageBeacon + hlSkusStr + '&random=' + new Date().getTime() + '" />');
 						}
 						
 					} else if (hlSkusStr === '' && $(".browse-sections-top .browseContent .HLpageBeaconImg.page_SEARCH").length === 0) { /* only one instance at a time */
 						//no hlprods
-						$(".browse-sections-top .browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_SEARCH" src="' + window.FreshDirect.browse.data.adProducts.pageBeacon + 'none&random=' + new Date().getTime() + '" />');
+						$(".browse-sections-top .browseContent").append('<img alt="" style="display: none;" class="HLpageBeaconImg page_SEARCH" src="' + window.FreshDirect.browse.data.adProducts.pageBeacon + 'none&random=' + new Date().getTime() + '" />');
 					}
 				}
 			}
@@ -141,7 +141,7 @@ var FreshDirect = FreshDirect || {};
 					//fire impression
 					if ($(this).attr('data-hooklogic-beacon-impress') !== 'http:') { //catch invalid data from HL
 						if ($('.browseContent .HLpageBeaconImg.impress-page_'+activePage+'_id_'+cur+'_'+$(this).attr('id')).length === 0) {
-							$('.browseContent').append('<img style="display: none;" class="HLpageBeaconImg impress-page_'+activePage+'_id_'+cur+'_'+$(this).attr('id')+'" src="' + $(this).attr('data-hooklogic-beacon-impress') + '&random=' + new Date().getTime() + '" />');
+							$('.browseContent').append('<img alt="" style="display: none;" class="HLpageBeaconImg impress-page_'+activePage+'_id_'+cur+'_'+$(this).attr('id')+'" src="' + $(this).attr('data-hooklogic-beacon-impress') + '&random=' + new Date().getTime() + '" />');
 						}
 					}
 				});
@@ -153,14 +153,14 @@ var FreshDirect = FreshDirect || {};
 						if (hlSkusStr !== '' && $('.browseContent .HLpageBeaconImg.page_'+activePage+'_id_'+cur).length === 0) {
 							if (FreshDirect.browse.data.adProducts.hlSelectionOfProductList[cur].length === FreshDirect.browse.data.adProducts.hlCatProductsCount[cur]) {
 								//all hlprods
-								$(".browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_'+activePage+'_id_'+cur+'" src="' + window.FreshDirect.browse.data.adProducts.hlSelectionsPageBeacons[cur] + 'all&random=' + new Date().getTime() + '" />');
+								$(".browseContent").append('<img style="display: none;" alt="" class="HLpageBeaconImg page_'+activePage+'_id_'+cur+'" src="' + window.FreshDirect.browse.data.adProducts.hlSelectionsPageBeacons[cur] + 'all&random=' + new Date().getTime() + '" />');
 							} else {
 								//not ALL hlprods
-								$(".browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_'+activePage+'_id_'+cur+'" src="' + window.FreshDirect.browse.data.adProducts.hlSelectionsPageBeacons[cur] + hlSkusStr + '&random=' + new Date().getTime() + '" />');
+								$(".browseContent").append('<img style="display: none;" alt="" class="HLpageBeaconImg page_'+activePage+'_id_'+cur+'" src="' + window.FreshDirect.browse.data.adProducts.hlSelectionsPageBeacons[cur] + hlSkusStr + '&random=' + new Date().getTime() + '" />');
 							}
 						} else if (hlSkusStr === '' && $('.browseContent .HLpageBeaconImg.page_'+activePage+'_id_'+cur).length === 0) {
 							//no hlprods
-							$(".browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_'+activePage+'_id_'+cur+'" src="' + window.FreshDirect.browse.data.adProducts.hlSelectionsPageBeacons[cur] + 'none&random=' + new Date().getTime() + '" />');
+							$(".browseContent").append('<img alt="" style="display: none;" class="HLpageBeaconImg page_'+activePage+'_id_'+cur+'" src="' + window.FreshDirect.browse.data.adProducts.hlSelectionsPageBeacons[cur] + 'none&random=' + new Date().getTime() + '" />');
 						}
 					}
 				}
@@ -168,7 +168,7 @@ var FreshDirect = FreshDirect || {};
 			
 			for (var cur in FreshDirect.browse.data.adProducts.hlSelectionsEmptyProductsPageBeacons) {	
 				if (FreshDirect.browse.data.adProducts.hlSelectionsEmptyProductsPageBeacons[cur].length !==0 && $('.browseContent .HLpageBeaconImg.emptyPage_'+activePage+'_id_'+cur).length === 0) {
-				$(".browseContent").append('<img style="display: none;" class="HLpageBeaconImg emptyPage_'+activePage+'_id_'+cur+'" src="' +
+				$(".browseContent").append('<img alt="" style="display: none;" class="HLpageBeaconImg emptyPage_'+activePage+'_id_'+cur+'" src="' +
 						window.FreshDirect.browse.data.adProducts.hlSelectionsEmptyProductsPageBeacons[cur] + '&aShown'+'&random='  + new Date().getTime() + '" />');
 				}
 			}

@@ -154,7 +154,7 @@ Collection myErrs=((ActionResult)result).getErrors();
 %>
 <TR VALIGN="top">
     <TD WIDTH="15" height="18" VALIGN="top">
-            <img src="/media_stat/images/layout/error.gif" border="0">
+            <img src="/media_stat/images/layout/error.gif" alt="" border="0">
             </td><td width="335">
       <FONT class="text11rbold"><%=errDesc%></FONT>
     </TD></tr>

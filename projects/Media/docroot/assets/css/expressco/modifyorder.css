@@ -31,7 +31,7 @@
   font-weight: bold
 }
 
-.modifyorder-cancelbutton{
+a.cssbutton.transparent.orange.modifyorder-cancelbutton,a.cssbutton.cssbutton-flat.green.transparent.modifyorder-cancelbutton{
   font-size:18px;
   font-weight:bold;
   float:right;
