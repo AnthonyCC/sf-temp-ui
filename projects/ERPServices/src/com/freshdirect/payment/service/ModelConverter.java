@@ -2037,27 +2037,28 @@ public class ModelConverter {
 
 	public static NutritionInfoAttribute buildNutritionAttribute(
 			NutritionInfoAttributeData value) {
-		NutritionInfoAttribute data = new NutritionInfoAttribute(buildErpNutritionInfoType(value.getType()), value.getPriority(), buildEnumKosherSymbolValue(value.getValue()));
+		ErpNutritionInfoType nutType= buildErpNutritionInfoType(value.getType());
+		NutritionInfoAttribute data = new NutritionInfoAttribute(nutType, value.getPriority(), buildEnumKosherSymbolValue(nutType,value.getValue()));
 		return data;
 	}
 
-	private static Object buildEnumKosherSymbolValue(Object obj) {
+	private static Object buildEnumKosherSymbolValue(ErpNutritionInfoType nutType,Object obj) {
 		   Object value = null;
 		   if(obj==null)
 			   return null;
 		  String code =  getCode(obj);
-		 if (code.equals(ErpNutritionInfoType.CLAIM.getCode())) {
+		 if (nutType.equals(ErpNutritionInfoType.CLAIM)) {
              value = EnumClaimValue.getValueForCode(code);
-         } else if (code.equals(ErpNutritionInfoType.KOSHER_SYMBOL.getCode())) {
+         } else if (nutType.equals(ErpNutritionInfoType.KOSHER_SYMBOL)) {
              value = EnumKosherSymbolValue.getValueForCode(code);
-         } else if (code.equals(ErpNutritionInfoType.KOSHER_TYPE.getCode())) {
+         } else if (nutType.equals(ErpNutritionInfoType.KOSHER_TYPE)) {
              value =  EnumKosherTypeValue.getValueForCode(code);
-         } else if (code.equalsIgnoreCase(ErpNutritionInfoType.ALLERGEN.getCode())) {
+         } else if (nutType.equals(ErpNutritionInfoType.ALLERGEN)) {
              value = EnumAllergenValue.getValueForCode(code);
-         } else if (code.equals(ErpNutritionInfoType.ORGANIC.getCode())) {
+         } else if (nutType.equals(ErpNutritionInfoType.ORGANIC)) {
              value = EnumOrganicValue.getValueForCode(code);
          } else {
-             value = (String)code;
+             value = code;
          }
 		return value;
 	}
