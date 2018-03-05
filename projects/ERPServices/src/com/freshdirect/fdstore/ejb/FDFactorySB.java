@@ -148,7 +148,7 @@ public interface FDFactorySB extends EJBObject {
 	 * @throws RemoteException
 	 */
 	@Deprecated public Map<String,List<String>> getModifiedOnlyGroups(Date lastModified) throws FDResourceException, RemoteException;
-
+	@Deprecated 
 	public Set<String> getModifiedSkus(long lastModified) throws FDResourceException, RemoteException;
 }
 

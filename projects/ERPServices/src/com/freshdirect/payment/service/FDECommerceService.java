@@ -389,6 +389,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String ERP_PRODUCTINFO_LIKEUPC = "erpinfo/productslikeupc";
 	private static final String ERP_INVENTORY_INFO = "erpinfo/inventoryinfo";
 	private static final String ERP_LOAD_INVENTORY_INFO = "erpinfo/loadinventory";
+	private static final String ERP_LOAD_MODIFIED_SKUS = "erpinfo/loadModifiedSkus";
 	
 	private static final String ERP_NEW_SKUS_DAYS = "erpinfo/newskucodes";
 	private static final String ERP_SKUS_OLDNESS = "erpinfo/skuoldness";
@@ -5246,6 +5247,21 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
+	}
+	@Override
+	public Set<String> getModifiedSkus(long lastModified) throws RemoteException {
+		Response<Set<String> > response = new Response<Set<String> >(); 
+		try {
+			response = httpGetData(getFdCommerceEndPoint(ERP_LOAD_MODIFIED_SKUS)+"/"+lastModified, Response.class);
+		
+			if(!response.getResponseCode().equals("OK"))
+				throw new RemoteException(response.getMessage());
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		
+		}
+		return response.getData();
 	}
 	
 
