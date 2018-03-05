@@ -1325,7 +1325,7 @@ function doOverlayWindow(olURL, titleVar) {
 					overlayDialog.dialog('option', 'maxClientHeight', 1);
 					overlayDialog.dialog('option', 'maxClientWidth', 1);
 				} else {
-					overlayDialog.dialog('option', 'maxClientHeight', 0.95);
+					overlayDialog.dialog('option', 'maxClientHeight', 0.85);
 					overlayDialog.dialog('option', 'maxClientWidth', 0.95);
 				}
 				overlayDialog.dialog('option', 'maxHeight', Math.round(document.documentElement.clientHeight * overlayDialog.dialog('option', 'maxClientHeight')));

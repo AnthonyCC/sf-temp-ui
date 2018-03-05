@@ -1998,8 +1998,8 @@ div.control, div.slotRow, div.time {
 	}
 	.ui-dialog.overlay-dialog-new .ui-dialog-titlebar button.ui-dialog-titlebar-close{
 		position: absolute;
-		top: -35px;
-		right: -35px;
+		top: -27px;
+		right: -27px;
 		background: none;
 	}
 	.ui-dialog.overlay-dialog-new.mm-page-overlay .ui-dialog-titlebar button.ui-dialog-titlebar-close{
