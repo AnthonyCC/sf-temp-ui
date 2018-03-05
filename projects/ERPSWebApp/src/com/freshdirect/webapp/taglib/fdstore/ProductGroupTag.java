@@ -36,10 +36,10 @@ public class ProductGroupTag extends AbstractGetterTag<ProductModel> {
             product = PopulatorUtil.getProductByName(skuCode);
         } else {
             PopulatorUtil.isNodeNotFound(product, categoryId, productId);
-			}
+		}
 
         return ProductPricingFactory.getInstance().getPricingAdapter(product, null);
-		}
+	}
 
 	public static class TagEI extends AbstractGetterTag.TagEI {
 		@Override
