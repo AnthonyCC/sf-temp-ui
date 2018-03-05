@@ -75,6 +75,9 @@ public class FDOrderTranslator {
 	private static void translateOrder(FDCartModel cart, ErpAbstractOrderModel order, boolean skipModifyLines, boolean sameDeliveryDate) throws FDResourceException {
 //		try {
 			order.setTaxationType(cart.getTaxationType());
+			if(null == cart.getEStoreId()){
+				cart.setEStoreId(ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId());
+			}
 		    order.seteStoreId(null !=cart.getEStoreId() ? cart.getEStoreId(): ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId());
 			order.setPaymentMethod(cart.getPaymentMethod());
 			//System.out.println("Selected gift cards "+cart.getSelectedGiftCards() != null ? cart.getSelectedGiftCards().size() : 0);

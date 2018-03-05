@@ -36,17 +36,19 @@ public class SearchRecommenderPotatoTag extends SimpleTagSupport {
 			HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
             HttpSession session = request.getSession();
             FDSessionUser user = (FDSessionUser) QuickShopHelper.getUserFromSession(session);
-            Recommendations recommendations = ProductRecommenderUtil.getSearchPageRecommendations(user, getProductId());
-    		if (recommendations != null && recommendations.getAllProducts().size() > 0) {
-    			CarouselData carouselData = CarouselService.defaultService().createCarouselData(null, "You Might Also Like",
-                            recommendations.getAllProducts(), user, "", recommendations.getVariant().getId());
-    			HashMap<String, Object > data = new HashMap<String, Object>();
-    			data.put("carousel", SoyTemplateEngine.convertToMap(carouselData));
-    			pageContext.setAttribute(POTATO_NAME, data);
-    			
-    		} else {
-    			pageContext.setAttribute(POTATO_NAME, null);
-    		}
+            if(null !=user){
+	            Recommendations recommendations = ProductRecommenderUtil.getSearchPageRecommendations(user, getProductId());
+	    		if (recommendations != null && recommendations.getAllProducts().size() > 0) {
+	    			CarouselData carouselData = CarouselService.defaultService().createCarouselData(null, "You Might Also Like",
+	                            recommendations.getAllProducts(), user, "", recommendations.getVariant().getId());
+	    			HashMap<String, Object > data = new HashMap<String, Object>();
+	    			data.put("carousel", SoyTemplateEngine.convertToMap(carouselData));
+	    			pageContext.setAttribute(POTATO_NAME, data);
+	    			
+	    		} else {
+	    			pageContext.setAttribute(POTATO_NAME, null);
+	    		}
+            }
 			
 		} catch (Exception e) {
 			LOGGER.error("search recommendation failed", e);
