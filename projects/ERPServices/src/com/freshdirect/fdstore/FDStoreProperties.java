@@ -1020,6 +1020,7 @@ public class FDStoreProperties {
 	
 	public final static String PROP_FD_DP_FREE_TRIAL_OPTIN_FEATURE_ENABLED = "fdstore.fd.dp.freetrial.optin.feature.enabled";
 	
+	public final static String PROP_DB_PARTIAL_JOIN_OPTIMIZER_ENABLED = "fdstore.db.partial.join.optimizer.enabled";
 
  	static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -1952,6 +1953,8 @@ public class FDStoreProperties {
 		
 		defaults.put(DATABASE_IN_CONDITION_LIMIT, "50");
 		defaults.put(PROP_FD_DP_FREE_TRIAL_OPTIN_FEATURE_ENABLED, "false");
+		
+		defaults.put(PROP_DB_PARTIAL_JOIN_OPTIMIZER_ENABLED, "false");
 		
         refresh();
     }
@@ -4963,4 +4966,7 @@ public class FDStoreProperties {
 		return (Boolean.valueOf(get(PROP_FD_DP_FREE_TRIAL_OPTIN_FEATURE_ENABLED))).booleanValue();
 	}
 	
+	public static boolean isPartialJoinOptimizerEnabled() {
+		return (Boolean.valueOf(get(PROP_DB_PARTIAL_JOIN_OPTIMIZER_ENABLED))).booleanValue();
+	}
 }

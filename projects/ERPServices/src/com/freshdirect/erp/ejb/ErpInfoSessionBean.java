@@ -1447,13 +1447,16 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			}
 			
 			// run alter session set "_optimizer_partial_join_eval"=false;
+			// this is needed for production env as the oracle db has a bug that is not yet patched.
 			Statement s = null;
-			try {
-				s = conn.createStatement();
-				s.executeUpdate("alter session set \"_optimizer_partial_join_eval\"=false");
-			} finally {
-				if (s != null) {
-					s.close();
+			if (!FDStoreProperties.isPartialJoinOptimizerEnabled()) {
+				try {
+					s = conn.createStatement();
+					s.executeUpdate("alter session set \"_optimizer_partial_join_eval\"=false");
+				} finally {
+					if (s != null) {
+						s.close();
+					}
 				}
 			}
 			if (hasNewEntryFromGroup) {
