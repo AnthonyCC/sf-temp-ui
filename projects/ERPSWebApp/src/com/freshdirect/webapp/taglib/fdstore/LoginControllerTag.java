@@ -49,12 +49,11 @@ public class LoginControllerTag extends AbstractControllerTag {
         Integer fdLoginAttempt = session.getAttribute(SessionName.LOGIN_ATTEMPT) != null ? (Integer) session.getAttribute(SessionName.LOGIN_ATTEMPT) : Integer.valueOf(0);
 		boolean isCaptchaSuccess = true;
 		
-		if (request.getParameter("captchaEnabled") != null) {
+		if ("true".equals(request.getParameter("captchaEnabled"))) {
 			isCaptchaSuccess = CaptchaUtil.validateCaptcha(request);
 			LOGGER.debug("Captcha enabled");
 		}
-		String test = EnumUserInfoName.USER_ID.getCode();
-		String test1 = request.getParameter(test);
+		
 		String userId = request.getParameter(EnumUserInfoName.USER_ID.getCode()).trim();
 		String password = request.getParameter(EnumUserInfoName.PASSWORD.getCode()).trim();
 		HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();

@@ -11,7 +11,9 @@ var FreshDirect = FreshDirect || {};
 		$('#fd_login').bind(
 				'change keyup',
 				function() {
-					if ($jq(this).validate().checkForm()) { // form is valid
+					var isCaptchaValid = !fd.components.captchaWidget || fd.components.captchaWidget.isValid('#login-g-recaptcha-enabled');
+				  
+					if ($jq(this).validate().checkForm() && isCaptchaValid) { // form is valid
 						$jq('#signinbtn').removeClass('button_disabled')
 								.prop('disabled', false);
 						$jq('#signinbtn').attr("tabindex",3);
@@ -123,15 +125,33 @@ var FreshDirect = FreshDirect || {};
 			ga('send', 'pageview');
 		}
 	}
-	
+
+	function renderCaptchaWidget() {
+		fd.components.captchaWidget.render('login-g-recaptcha', function() {
+    		$jq('#fd_login').trigger('change');
+		}, function () {
+			$jq('#login-g-recaptcha-container').hide();
+    		$jq('#login-g-recaptcha-enabled').val(false);
+		}, function () {
+			$jq('#fd_login').trigger('change');
+		});
+	}
 	function login(e) {
 		$('.social-login-spinner').show();
 		e.preventDefault();
 		var email = $('#fd_login #email').val();
 		var password = $('#fd_login #password').val();
 		var sucessTarget = $('#fd_login #success-target').val();
+		var loginData = {
+				userId : email,
+				password: password
+		};
+		if (fd.components.captchaWidget && fd.components.captchaWidget.isEnabled('#login-g-recaptcha-enabled')) {
+			loginData.captchaEnabled = true;
+			loginData.captchaToken = fd.components.captchaWidget.getResponse()
+		}
 		$.post('/api/login/', {
-			"data" : '{"userId" : "'+ email + '","password" : "'+password+'"}'
+			"data" : JSON.stringify(loginData) 
 		}).then(function(response) {
 			var responseJson = JSON.parse(response);
 			if (responseJson.success) { 
@@ -140,8 +160,10 @@ var FreshDirect = FreshDirect || {};
 						fd.gtm.updateDataLayer(fd.gtm.data.googleAnalyticsData);
 				}
 				parent.document.location = responseJson.successPage || sucessTarget || parent.document.location;
-			} else {
-				showError();
+			} else if (responseJson.message === 'CaptchaRedirect' && (!fd.components.captchaWidget || !fd.components.captchaWidget.isEnabled('#login-g-recaptcha-enabled'))){
+				FreshDirect.modules.common.login.socialLogin();
+			}else {
+				showError(responseJson.errorMessages);
 			}
 			
 			
@@ -152,13 +174,24 @@ var FreshDirect = FreshDirect || {};
 
 	}
 	
-	function showError() {
+	function showError(message) {
+		var errorMessage;
+		if (!message) {
+			//default message;
+			errorMessage = 'Email and password do not match.</br>Please try again.';
+			$('#email_img').addClass('show_bg_arrow');
+			$('#email').addClass('error');
+			$('#password_img').addClass('show_bg_arrow');
+			$('#password').addClass('error');
+		} else if (message.captcha) {
+			errorMessage = 'Captcha is not valid.</br>Please try again.';
+		}
 		$('.social-login-spinner').hide();
-		$('#fd_login .error-message').show();
-		$('#email_img').addClass('show_bg_arrow');
-		$('#email').addClass('error');
-		$('#password_img').addClass('show_bg_arrow');
-		$('#password').addClass('error');
+		$('#fd_login .error-message').html(errorMessage).show();
+
+		if (fd.components.captchaWidget && fd.components.captchaWidget.isEnabled('#login-g-recaptcha-enabled')) {
+			fd.components.captchaWidget.reset();
+		}
 		if (fd.gtm && fd.gtm.data) {
             	fd.gtm.data.googleAnalyticsData.login.loginAttempt = 'fail';
             	fd.gtm.updateDataLayer(fd.gtm.data.googleAnalyticsData);
@@ -167,17 +200,12 @@ var FreshDirect = FreshDirect || {};
 	// if component is not registered, register
 	if (!fd.components.loginForm) {
 		var loginForm = {
-			init : init
+			init : init,
+			onCaptchaLoadCallback: renderCaptchaWidget
 		};
 
 		fd.modules.common.utils.register("components", "loginForm", loginForm,
 				fd);
 	}
-//	$(window).on('resize', function() {
-//
-//        $jq('.login-ajax-overlay .fixedPopupContent').css({'height': 'auto'});
-//        $jq('.login-ajax-overlay .fixedPopupContent').css({'height': $jq(this).height() + 'px'});
-//        
-//    });
 	
 }(FreshDirect));

@@ -1,4 +1,4 @@
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties"%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
@@ -25,7 +25,8 @@
 		$jq('#signinbtn').attr('disabled', true);
 		// on keyup we will check every time the form is valid or not
 		$jq('#fd_login').bind('change keyup', function() {
-		    if($jq(this).validate().checkForm()) { // form is valid
+			var isCaptchaValid = !FreshDirect || !FreshDirect.components || !FreshDirect.components.captchaWidget || FreshDirect.components.captchaWidget.isValid('#login-g-recaptcha-enabled');
+		    if($jq(this).validate().checkForm() && isCaptchaValid) { // form is valid
 		        $jq('#signinbtn').removeClass('button_disabled').attr('disabled', false);
 	
 		    } else { // form is invalid
@@ -115,9 +116,12 @@
 		<form name="fd_login" id="fd_login" method="post" >
 			<%
 			if (!result.isSuccess()) {
+				//default error message
 				String errorMsg = "<div class='error-message'>Email and password do not match.</br>Please try again.</div>";
-				String isSocialLoginOnlyUser = (String)session.getAttribute("IS_SOCIAL_LOGIN_USER_VALIDATION");            				            				
-				if(isSocialLoginOnlyUser != null && isSocialLoginOnlyUser.length()>0 ){
+				String isSocialLoginOnlyUser = (String)session.getAttribute("IS_SOCIAL_LOGIN_USER_VALIDATION");           
+				if (result.hasError("captcha")){
+					errorMsg = "<div class='error-message'>Captcha is not valid.</br>Please try again.</div>";
+				} else if(isSocialLoginOnlyUser != null && isSocialLoginOnlyUser.length()>0 ){
 					session.setAttribute("IS_SOCIAL_LOGIN_USER_VALIDATION", null); 
 				    errorMsg = "<div class='error-message'>An account with this e-mail already exists.</br>Please Sign in with your e-mail or social account.</div>";		                    	
 				}
@@ -154,6 +158,28 @@
 						<input id="password" aria-label="password" name="password" class="padding-input-box text11ref inputDef required" type="password" size="23" placeholder="Password">
 					</td>
 				</tr>
+				<% if (attempt >= invalidAttempt) { %>
+				<jwr:script src="/assets/javascript/fd/captcha/captchaWidget.js" useRandomParam="false" />
+				<tr id="login-g-recaptcha-container">
+					<td colspan="2">
+						<input id="login-g-recaptcha-enabled" name="captchaEnabled" type="hidden" value="true" />
+						<div id="login-g-recaptcha" class="g-recaptcha"></div>
+					</td>
+					
+				</tr>
+				<script type="text/javascript">
+				FreshDirect.components.captchaWidget.init('<%=publicKey%>', function() {
+					FreshDirect.components.captchaWidget.render('login-g-recaptcha', function() {
+						$jq('#fd_login').trigger('change');
+					}, function() {
+						$jq('#login-g-recaptcha-container').hide();
+		        		$jq('#login-g-recaptcha-enabled').val(false);
+					}, function () {
+						$jq('#fd_login').trigger('change');
+					});
+				});
+				</script>
+				<% } %>
 				<tr>
 					<td></td>
 					<td style="padding-top: 15px;">

@@ -1713,8 +1713,8 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.akamaiimageconvertor", "GLOBAL:ENABLED,false;");
 
         // Default reCaptcha Public & Private krys
-        defaults.put(PROP_RECAPTCHA_PUBLIC_KEY, "6LdmgQYTAAAAAEqZbKoF4WpDqFU7pyAO-40mxdnc");
-        defaults.put(PROP_RECAPTCHA_PRIVATE_KEY, "6LdmgQYTAAAAAJcKVYSoFavVDLSLdV3x-fWsOtqH");
+        defaults.put(PROP_RECAPTCHA_PUBLIC_KEY, "6LdQn0YUAAAAALfZUrX-x4IeOmdUkkUrwMwZdhsd");
+        defaults.put(PROP_RECAPTCHA_PRIVATE_KEY, "6LdQn0YUAAAAAB3iHC6AzFH_Sd5k9z0uAwfvPUkZ");
         defaults.put(PROP_MAX_INVALID_LOGIN_ATTEMPT, "10");
         defaults.put(PROP_TIP_RANGE_CONFIG, "0,25,0.5;");
 
@@ -4231,11 +4231,11 @@ public class FDStoreProperties {
 
     // Recaptcha getter methods
     public static String getRecaptchaPublicKey() {
-        return StringUtils.defaultIfEmpty(get(PROP_RECAPTCHA_PUBLIC_KEY), "6LeEWAITAAAAAJTkH82Z7gsg1J28IHsjtPjBoPHX");
+        return StringUtils.defaultIfEmpty(get(PROP_RECAPTCHA_PUBLIC_KEY), "6LdQn0YUAAAAALfZUrX-x4IeOmdUkkUrwMwZdhsd");
     }
 
     public static String getRecaptchaPrivateKey() {
-        return StringUtils.defaultIfEmpty(get(PROP_RECAPTCHA_PRIVATE_KEY), "6LeEWAITAAAAACmiHCIyTDfZz_SkCPtPIN_c1HSN");
+        return StringUtils.defaultIfEmpty(get(PROP_RECAPTCHA_PRIVATE_KEY), "6LdQn0YUAAAAAB3iHC6AzFH_Sd5k9z0uAwfvPUkZ");
     }
 
     public static int getMaxInvalidLoginAttempt() {

@@ -16,7 +16,6 @@
 
 <fd:CheckLoginStatus id="user" guestAllowed='true'
 	recognizedAllowed='true' />
-
 <%
 	String uri = request.getRequestURI();
 	String successPage = request.getParameter("successPage");
@@ -34,6 +33,12 @@
 	if (preSuccessPage != null && preSuccessPage.length() > 0)
 		session.setAttribute(SessionName.PREV_SUCCESS_PAGE, preSuccessPage);
 	boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
+	
+	//Captcha.
+	Integer attemptString = (Integer)session.getAttribute("fdLoginAttempt");
+	int attempt = attemptString != null ? Integer.valueOf(attemptString): 0;
+	int invalidAttempt = FDStoreProperties.getMaxInvalidLoginAttempt();		
+	String publicKey= FDStoreProperties.getRecaptchaPublicKey();
 
 %>
 
@@ -106,6 +111,23 @@
 										type="password" size="23" placeholder="Password"
 										autocomplete="email" tabindex="2" /></td>
 								</tr>
+								
+							<% if (attempt >= invalidAttempt) { %>
+							<jwr:script src="/assets/javascript/fd/captcha/captchaWidget.js" useRandomParam="false" />
+								<tr id="login-g-recaptcha-container">
+									<td colspan="2">
+										<input id="login-g-recaptcha-enabled" name="captchaEnabled" type="hidden" value="true">	
+										<div id="login-g-recaptcha" class="g-recaptcha"></div>
+									</td>
+									
+								</tr>
+								<script type="text/javascript">
+								  FreshDirect.components.captchaWidget.init('<%=publicKey%>', function() {
+									  FreshDirect.components.loginForm.onCaptchaLoadCallback();  
+								  });
+								 
+								</script>
+							<% } %>
 								<tr>
 									<td></td>
 									<td style="padding-top: 15px;">
