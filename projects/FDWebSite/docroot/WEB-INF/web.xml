@@ -649,7 +649,7 @@
   
 	<servlet>
 		<servlet-name>JavascriptServlet</servlet-name>
-		<servlet-class>net.jawr.web.servlet.JawrServlet</servlet-class>
+		<servlet-class>com.freshdirect.webapp.jawr.JawrServlet</servlet-class>
 		<init-param>
 			<param-name>configLocation</param-name>
 			<param-value>/com/freshdirect/webapp/config/jawr.properties</param-value>
@@ -662,7 +662,7 @@
 	</servlet>
 	<servlet>
 		<servlet-name>CssServlet</servlet-name>
-		<servlet-class>net.jawr.web.servlet.JawrServlet</servlet-class>
+		<servlet-class>com.freshdirect.webapp.jawr.JawrServlet</servlet-class>
 		<init-param>
 			<param-name>configLocation</param-name>
 			<param-value>/com/freshdirect/webapp/config/jawr.properties</param-value>
