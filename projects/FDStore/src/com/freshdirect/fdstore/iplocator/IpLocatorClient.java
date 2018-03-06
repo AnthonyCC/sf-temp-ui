@@ -87,7 +87,7 @@ public class IpLocatorClient implements ThirdPartyIntegration {
 		}
 		return ipLocatorData;
 	}		
-	}
+	
 	public IpLocatorData getCachedIpInfo(String key) {
 		return CmsServiceLocator.ehCacheUtil().getObjectFromCache(CmsCaches.IP_LOCATOR_CACHE_NAME.cacheName, key);
 	}
