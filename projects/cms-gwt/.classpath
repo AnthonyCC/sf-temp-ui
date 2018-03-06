@@ -18,7 +18,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/cmseue"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/slf4j-api-1.6.6.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/slf4j-jdk14-1.6.6.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/guava-12.0.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/guava-15.0.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-core-4.0.1.RELEASE.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-beans-4.0.1.RELEASE.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-web-4.0.1.RELEASE.jar"/>

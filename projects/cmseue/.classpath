@@ -40,7 +40,7 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/lucene-core-3.0.3.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/lucene-queries-3.0.3.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/lucene-snowball-3.0.3.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/guava-12.0.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/guava-15.0.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/joox-1.4.0.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/joda-time-2.9.6.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/ehcache-2.10.1.jar"/>
