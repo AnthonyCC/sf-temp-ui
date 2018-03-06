@@ -8,13 +8,16 @@ $jq(document).on('ready', function() {
 	if ($jq('#popupcart').length) {
 		$jq('#popupcart').appendTo('#locabar_popupcart');
 		
-		$jq( '#locabar_popupcart' ).position({
-			my: 'right top',
-			at: 'right bottom+8',
-			of: '#locabar_popupcart_trigger',
-			collision : 'none'
-		});
-		
+		var setupPopUpCartPostion = function() {
+			$jq( '#locabar_popupcart' ).position({
+				my: 'right top',
+				at: 'right bottom+8',
+				of: '#locabar_popupcart_trigger',
+				collision : 'none'
+			});
+		};
+
+		$jq('#locabar_popupcart_trigger').on('mouseenter', setupPopUpCartPostion);
 	}
 	
 });
