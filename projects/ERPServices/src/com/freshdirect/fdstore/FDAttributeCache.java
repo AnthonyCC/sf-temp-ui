@@ -19,6 +19,7 @@ import com.freshdirect.content.attributes.FlatAttribute;
 import com.freshdirect.content.attributes.FlatAttributeCollection;
 import com.freshdirect.content.attributes.ejb.AttributeFacadeHome;
 import com.freshdirect.content.attributes.ejb.AttributeFacadeSB;
+import com.freshdirect.ecomm.gateway.AttributeFacadeService;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.service.FDECommerceService;
@@ -45,7 +46,7 @@ public class FDAttributeCache extends FDAbstractCache {
 			Map data=null;
 			LOGGER.info("REFRESHING");
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled("attributes.ejb.AttributeFacadeSB")){
-				data=FDECommerceService.getInstance().loadAttributes(since);
+				data=AttributeFacadeService.getInstance().loadAttributes(since);
 			}else{
 			AttributeFacadeSB sb = this.lookupAttributeHome().create();
 			data = sb.loadAttributes(since);

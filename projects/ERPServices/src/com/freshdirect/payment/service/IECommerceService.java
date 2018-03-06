@@ -136,8 +136,6 @@ public interface IECommerceService {
 
 	public Map<ZoneInfo, List<FDProductPromotionInfo>> getAllProductsByType(String ppType) throws FDResourceException;
 
-	public Map loadAttributes(Date since) throws AttributeException;
-
 	public BatchModel getBatch(int batchId)throws FDResourceException;
 
 	public Collection getRecentBatches()throws FDResourceException;
@@ -375,76 +373,10 @@ public interface IECommerceService {
 	
 	public void sendRegisterGiftCard(String saleId, double saleAmount) throws RemoteException;
 
-
-	public Collection findMaterialsByBatch(int batchNum) throws RemoteException;
-
-
-	public Collection findMaterialsBySapId(String sapId) throws RemoteException;
-
-	public Collection findMaterialsBySku(String skuCode) throws RemoteException;
-
-	public Collection findMaterialsByDescription(String description) throws RemoteException;
-
-	public Collection findMaterialsByCharacteristic(String classAndCharName) throws RemoteException;
-	
-	public Collection findMaterialsByClass(String searchterm) throws RemoteException;
-
-	public ErpProductInfoModel findProductBySku(String skuCode) throws RemoteException, ObjectNotFoundException;
-
-	public Collection findProductsBySapId(String searchterm) throws RemoteException;
-
-	public Collection findProductsByDescription(String searchterm) throws RemoteException;
-
-	public Collection findProductsLikeSku(String sku) throws RemoteException;
-
-	public Collection<ErpProductInfoModel> findProductsByUPC(String upc) throws RemoteException;
-
-	public Collection<String> findProductsByCustomerUPC(String erpCustomerPK, String upc) throws RemoteException;
-
-	public Collection findProductsLikeUPC(String searchterm) throws RemoteException;
-
-	public Collection<String> findSkusBySapId(String sapId) throws RemoteException;
-
-	public Collection<String> findNewSkuCodes(int days) throws RemoteException;
-
-	public Map<String, Integer> getSkusOldness() throws RemoteException;
-
 	public ErpProductInfoModel findProductBySkuAndVersion(String skuCode, int version) throws RemoteException;
-
-	public Collection<String> findReintroducedSkuCodes(int days) throws RemoteException;
-
-	public Collection<String> findOutOfStockSkuCodes() throws RemoteException;
-
-	public Collection findProductsBySku(String[] skuCodes) throws RemoteException;
-
-	public void setOverriddenNewness(String sku,Map<String, String> salesAreaOverrides) throws RemoteException;
-
-	public void setOverriddenBackInStock(String sku,Map<String, String> salesAreaOverrides) throws RemoteException;
-
-	public Map<String, String> getOverriddenNewness(String sku) throws RemoteException;
-
-	public Map<String, String> getOverriddenBackInStock(String sku) throws RemoteException;
-
-	public Map<String, Map<String, Date>> getNewSkus() throws RemoteException;
-
-	public Map<String, Map<String, Date>> getBackInStockSkus() throws RemoteException;
-
-	public Map<String, Map<String, Date>> getOverriddenNewSkus() throws RemoteException;
-
-	public Map<String, Map<String, Date>> getOverriddenBackInStockSkus() throws RemoteException;
-
-	public List<SkuAvailabilityHistory> getSkuAvailabilityHistory(String skuCode) throws RemoteException;
-
-	public void refreshNewAndBackViews() throws RemoteException;
-
-	public Collection<String> findSKUsByDeal(double lowerLimit, double upperLimit,List skuPrefixes) throws RemoteException;
 
 	public Collection<String> findPeakProduceSKUsByDepartment(List<String> skuPrefixes) throws RemoteException;
 
-	public ErpInventoryModel getInventoryInfo(String materialNo) throws RemoteException;
-
-	public Map<String, ErpInventoryModel> loadInventoryInfo(Date date)	throws RemoteException;
-	
 	public List getDlvRestrictions(String dlvReason,String dlvType,String dlvCriterion) throws FDResourceException, RemoteException;
 	
 	public Object getDlvRestriction(String restrictionId) throws FDResourceException, RemoteException;
@@ -599,14 +531,6 @@ public interface IECommerceService {
 	
 	public void enqueueEmail(EmailI email) throws RemoteException;
 	
-	public FDProductInfo getProductInfo(String sku) throws FDSkuNotFoundException, RemoteException;
-
-	public FDProductInfo getProductInfo(String sku, int version) throws RemoteException;
-
-	public Collection getProductInfos(String[] skus) throws FDResourceException, RemoteException;
-	
-	public FDProduct getProduct(String sku, int version) throws RemoteException;
-	
 	public PrimaryKey createRestrictedPaymentMethod(RestrictedPaymentMethodModel restrictedPaymentMethod) throws RemoteException;
 
 	public RestrictedPaymentMethodModel findRestrictedPaymentMethodByPrimaryKey(PrimaryKey pk) throws RemoteException;
@@ -643,7 +567,6 @@ public interface IECommerceService {
 
 	public Collection<ErpCharacteristicValuePriceModel> findByMaterialId(String materialId, int version) throws RemoteException;
 
-	public Set<String> getModifiedSkus(long lastModified) throws RemoteException;
 
 
 }
