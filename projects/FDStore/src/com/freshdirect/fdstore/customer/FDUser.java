@@ -323,6 +323,8 @@ public class FDUser extends ModelSupport implements FDUserI {
     private boolean refreshNewSoFeature = true;
 
     private boolean soFeatureOverlay = false;
+    
+    private Collection<FDStandingOrder> activeSO3s = new ArrayList<FDStandingOrder>();
 
 	public Date getTcAcknowledgeDate() {
         return tcAcknowledgeDate;
@@ -3980,6 +3982,13 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public boolean applyFreeTrailOptinBasedDP() {
 		return FDStoreProperties.isDlvPassFreeTrialOptinFeatureEnabled() && this.getDpFreeTrialOptin() && (null == this.getDlvPassInfo() || !this.getDlvPassInfo().isFreeTrialRestricted());
 	}
-	
+
+	public Collection<FDStandingOrder> getActiveSO3s() {
+		return activeSO3s;
+	}
+
+	public void setActiveSO3s(Collection<FDStandingOrder> activeSO3s) {
+		this.activeSO3s = activeSO3s;
+	}
 	
 }

@@ -84,7 +84,8 @@ var dataLayer = window.dataLayer || [];
           deliverypass: custData.deliveryPass || '',
           delivery_type: custData.deliveryType || '',
           cohort: custData.cohort || 'unknown',
-          default_payment_type: custData.defaultPaymentType || ''
+          default_payment_type: custData.defaultPaymentType || '',
+          hasActiveSO3s: custData.hasActiveSO3s || ''
         },
         // variables for "old" tags
         'user-customer-type': custData.deliveryType || '',

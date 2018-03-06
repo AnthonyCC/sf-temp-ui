@@ -2280,6 +2280,16 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
         this.user.setRefreshSO3(isRefreshSO3);
 
     }
+    
+    @Override
+    public Collection<FDStandingOrder> getActiveSO3s() {
+        return user.getActiveSO3s();
+    }
+
+    @Override
+    public void setActiveSO3s(Collection<FDStandingOrder> validSO3s) {
+        this.user.setActiveSO3s(validSO3s);
+    }
 
     public String getPlatForm() {
         return platForm;
