@@ -32,7 +32,8 @@ public enum CmsCaches {
     MATERIAL_SALES_UNITS_CACHE("materialSalesUnitsCache", CacheDataSource.ERPS, CacheWarmupAction.NOT_RELOADABLE),
     MATERIAL_CHARACTERISTICS_CACHE("materialCharacteristicsCache", CacheDataSource.ERPS, CacheWarmupAction.NOT_RELOADABLE),
     MATERIAL_DATA_CACHE("materialDataCache", CacheDataSource.ERPS, CacheWarmupAction.NOT_RELOADABLE),
-    RECOMMENDATION_CHECK_CACHE_NAME("recommCheckCache", CacheDataSource.STORE, CacheWarmupAction.RELOADABLE);
+    RECOMMENDATION_CHECK_CACHE_NAME("recommCheckCache", CacheDataSource.STORE, CacheWarmupAction.RELOADABLE),
+	IP_LOCATOR_CACHE_NAME("ipLocationCache", CacheDataSource.STORE, CacheWarmupAction.RELOADABLE);
 
     public String cacheName;
     public CacheDataSource source;

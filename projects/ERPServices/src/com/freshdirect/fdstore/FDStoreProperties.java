@@ -648,6 +648,7 @@ public class FDStoreProperties {
 
     // APPDEV-2448 IP Sniff
     private final static String PROP_IP_LOCATOR_ENABLED = "fdstore.iplocator.enabled";
+    private final static String PROP_IP_LOCATOR_CACHE_ENABLED = "fdstore.iplocator.cache.enabled";
     private final static String PROP_IP_LOCATOR_CLIENT_ID = "fdstore.iplocator.clientid";
     private final static String PROP_IP_LOCATOR_URL = "fdstore.iplocator.url";
     private final static String PROP_IP_LOCATORV4_URL = "fdstore.iplocatorv4.url";
@@ -1598,6 +1599,7 @@ public class FDStoreProperties {
         defaults.put(PROP_SOY_DEBUG, false);
 
         defaults.put(PROP_IP_LOCATOR_ENABLED, "true");
+        defaults.put(PROP_IP_LOCATOR_CACHE_ENABLED, "true");
         defaults.put(PROP_IP_LOCATOR_CLIENT_ID, "e8lQTiN_7IOJZhUTjNQ_5t**");//103310996");
         defaults.put(PROP_IP_LOCATOR_URL, "https://iplocator.melissadata.net/v2/REST/Service.svc/doIPLocation");
         defaults.put(PROP_IP_LOCATORV4_URL, "http://globalip.melissadata.net/v4/WEB/iplocation/doiplocation");
@@ -3886,6 +3888,10 @@ public class FDStoreProperties {
 
     public static boolean isIpLocatorEnabled() {
         return (Boolean.valueOf(get(PROP_IP_LOCATOR_ENABLED))).booleanValue();
+    }
+
+    public static boolean isIpLocatorCacheEnabled() {
+        return (Boolean.valueOf(get(PROP_IP_LOCATOR_CACHE_ENABLED))).booleanValue();
     }
 
     public static String getIpLocatorClientId() {
