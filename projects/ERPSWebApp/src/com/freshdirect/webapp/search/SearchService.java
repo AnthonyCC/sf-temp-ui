@@ -168,6 +168,9 @@ public class SearchService {
         SearchResults searchResults = new SearchResults(); 
 
         boolean isUnbxdSearchEnabled = FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, cookies, user) && !user.isRobot();
+        if(user != null && user.isRobot()) {
+        	LOGGER.warn("FDBOTSEARCH01 for " + user.getCookie() + ":" + searchTerm + ":" + requestUrl + ":" + referer + ":" + searchRecipe);
+        }
         if(searchTerm != null && searchTerm.trim().length() > 0){
 			// if isUnbxdSearchEnabled is false, get search product & receipts from Lucene service 
 			// else if isUnbxdSearchEnabled = true && searchRecipe = true, search the recipes from Lucene
