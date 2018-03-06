@@ -24,6 +24,7 @@ import com.freshdirect.erp.SkuAvailabilityHistory;
 import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.fdstore.ejb.FDFactoryHome;
 import com.freshdirect.fdstore.ejb.FDFactorySB;
+import com.freshdirect.fdstore.ejb.FDProductHelper;
 import com.freshdirect.framework.util.DayOfWeekSet;
 import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.payment.service.IECommerceService;
@@ -49,7 +50,6 @@ public class FDFactory {
 			lookupFactoryHome();
 		}
 		try {
-			FDFactorySB sb = factoryHome.create();
 
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB)){
 				if (!FDStoreProperties.getPreviewMode()) {
@@ -62,6 +62,8 @@ public class FDFactory {
 	            	}
 	            }
 			}else{
+				FDFactorySB sb = factoryHome.create();
+
 				if (!FDStoreProperties.getPreviewMode()) {
 					return sb.getProductInfo(sku);
 	            } else {
@@ -83,14 +85,17 @@ public class FDFactory {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
-
 	public static FDProductInfo getProductInfo(ErpProductInfoModel erpProdInfo) throws FDResourceException {
 		if (factoryHome==null) {
 			lookupFactoryHome();
 		}
 		try {
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB_WarmUp)){
+				return new FDProductHelper().getFDProductInfoNew(erpProdInfo);//::FDX::
+			}else{
 			FDFactorySB sb = factoryHome.create();
 			return sb.getProductInfo(erpProdInfo);
+			}
 
 		} catch (CreateException ce) {
 			factoryHome=null;
@@ -117,10 +122,11 @@ public class FDFactory {
 			lookupFactoryHome();
 		}
 		try {
-			FDFactorySB sb = factoryHome.create();
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB)){
 				return FDECommerceService.getInstance().getProductInfo(sku,version);
 			}else{
+				FDFactorySB sb = factoryHome.create();
+
 				return sb.getProductInfo(sku, version);
 			}
 
@@ -146,12 +152,13 @@ public class FDFactory {
 			lookupFactoryHome();
 		}
 		try {
-			FDFactorySB sb = factoryHome.create();
 			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
 				return FDECommerceService.getInstance().findSkusBySapId(sapId);
 			}else{
+				FDFactorySB sb = factoryHome.create();
+
 				return sb.getSkuCodes(sapId);
 			}
 
@@ -170,10 +177,14 @@ public class FDFactory {
 			lookupFactoryHome();
 		}
 		try {
-			FDFactorySB sb = factoryHome.create();
 			for(Iterator<String>it = sapIds.iterator();it.hasNext();) {
 				String sapId = it.next();
+				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB_WarmUp)){
+					skuCodes.addAll(FDECommerceService.getInstance().findSkusBySapId(sapId));
+				}else{
+				FDFactorySB sb = factoryHome.create();
 				skuCodes.addAll(sb.getSkuCodes(sapId));
+				}
 			}
             return skuCodes;
 
@@ -201,12 +212,13 @@ public class FDFactory {
 			lookupFactoryHome();
 		}
 		try {
-			FDFactorySB sb = factoryHome.create();
 			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling FDZoneInfoSB equivalent service in  2.0
 		   	if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDZoneInfoSB)){
 		   		return FDECommerceService.getInstance().findZoneInfoMaster(zoneId);
 		   	}else{
+				FDFactorySB sb = factoryHome.create();
+
 		   		return sb.getZoneInfo(zoneId);
 		   	}
 
@@ -238,12 +250,13 @@ public class FDFactory {
 		}
 		GroupScalePricing pi;
 		try {
-			FDFactorySB sb = factoryHome.create();
 			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpgrpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpGrpInfoSB)){
 				pi = FDECommerceService.getInstance().findGrpInfoMaster(group);
 			}else{
+				FDFactorySB sb = factoryHome.create();
+
 				pi = sb.getGrpInfo(group);
 
 			}
@@ -264,14 +277,15 @@ public class FDFactory {
 		}
 		ErpProductFamilyModel pi;
 		try {
-			FDFactorySB sb = factoryHome.create();
 			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpProductFamilySessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpProductFamilySB)){
 				pi = FDECommerceService.getInstance().findFamilyInfo(familyId);
-        	}else
-        		pi = sb.getFamilyInfo(familyId);
+        	}else{
+    			FDFactorySB sb = factoryHome.create();
 
+        		pi = sb.getFamilyInfo(familyId);
+        	}
 		}catch (CreateException ce) {
 			factoryHome=null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -293,15 +307,16 @@ public class FDFactory {
 		}
 		ErpProductFamilyModel pi;
 		try {
-			FDFactorySB sb = factoryHome.create();
 			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpProductFamilySessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpProductFamilySB)){
         		IECommerceService service = FDECommerceService.getInstance();
         		pi = service.findSkuFamilyInfo(materialId);
-        	}else
-        		pi = sb.getSkuFamilyInfo(materialId);
+        	}else{
+    			FDFactorySB sb = factoryHome.create();
 
+        		pi = sb.getSkuFamilyInfo(materialId);
+        	}
 		}catch (CreateException ce) {
 			factoryHome=null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -330,12 +345,13 @@ public class FDFactory {
 			lookupFactoryHome();
 		}
 		try {
-			FDFactorySB sb = factoryHome.create();
 			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpZoneInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpZoneInfoSB)){
 				return FDECommerceService.getInstance().findZoneInfoMaster(zoneIds);
 			}else{
+				FDFactorySB sb = factoryHome.create();
+
 				return sb.getZoneInfos(zoneIds);
 			}
 		} catch (CreateException ce) {
@@ -400,10 +416,11 @@ public class FDFactory {
 			lookupFactoryHome();
 		}
 		try {
-			FDFactorySB sb = factoryHome.create();
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB)){
 				pinfos = FDECommerceService.getInstance().getProductInfos(skus);
 			}else{
+				FDFactorySB sb = factoryHome.create();
+
 				pinfos = sb.getProductInfos(skus);
 			}
             if (FDStoreProperties.getPreviewMode()) {
@@ -451,9 +468,14 @@ public class FDFactory {
 		if (factoryHome == null) {
 			lookupFactoryHome();
 		}
+		Set<String> skus=null;
 		try {
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB_WarmUp)){
+				skus=FDECommerceService.getInstance().getModifiedSkus(lastModified);
+			}else{
 			FDFactorySB sb = factoryHome.create();
-			Set<String> skus = sb.getModifiedSkus(lastModified);
+			skus = sb.getModifiedSkus(lastModified);
+			}
 			return skus;
 		} catch (CreateException ce) {
 			factoryHome = null;
@@ -474,12 +496,13 @@ public class FDFactory {
 			lookupFactoryHome();
 		}
 		try {
-			FDFactorySB sb = factoryHome.create();
 			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
 				return FDECommerceService.getInstance().findNewSkuCodes(days);
 			}else{
+				FDFactorySB sb = factoryHome.create();
+
 				return sb.getNewSkuCodes(days);
 			}
 
@@ -501,12 +524,13 @@ public class FDFactory {
 			lookupFactoryHome();
 		}
 		try {
-			FDFactorySB sb = factoryHome.create();
 			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
 				return FDECommerceService.getInstance().getSkusOldness();
 			}else{
+				FDFactorySB sb = factoryHome.create();
+
 				return sb.getSkusOldness();
 			}
 
@@ -529,12 +553,13 @@ public class FDFactory {
 			lookupFactoryHome();
 		}
 		try {
-			FDFactorySB sb = factoryHome.create();
 			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
 				return FDECommerceService.getInstance().findReintroducedSkuCodes(days);
 			}else{
+				FDFactorySB sb = factoryHome.create();
+
 				return sb.getReintroducedSkuCodes(days);
 			}
 
@@ -558,12 +583,13 @@ public class FDFactory {
 			lookupFactoryHome();
 		}
 		try {
-			FDFactorySB sb = factoryHome.create();
 			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
 				return FDECommerceService.getInstance().findOutOfStockSkuCodes();
 			}else{
+				FDFactorySB sb = factoryHome.create();
+
 				return sb.getOutOfStockSkuCodes();
 			}
 
@@ -637,11 +663,12 @@ public class FDFactory {
 			lookupFactoryHome();
 		}
 		try {
-			FDFactorySB sb = factoryHome.create();
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB_WarmUp)){
 				IECommerceService service =  FDECommerceService.getInstance();
 				return service.getProduct(sku, version);
 			}else{
+				FDFactorySB sb = factoryHome.create();
+
 				return sb.getProduct(sku, version);
 			}
 
@@ -684,12 +711,13 @@ public class FDFactory {
 			lookupFactoryHome();
 		}
 		try {
-			FDFactorySB sb = factoryHome.create();
 			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpGrpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpGrpInfoSB)){
 				return FDECommerceService.getInstance().getFilteredSkus(skuList);
 			}else{
+				FDFactorySB sb = factoryHome.create();
+
 				return sb.getFilteredSkus(skuList);
 			}
 
@@ -744,12 +772,12 @@ public class FDFactory {
 			lookupFactoryHome();
 		}
 		try {
-			FDFactorySB sb = factoryHome.create();
 			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
 				return FDECommerceService.getInstance().findSKUsByDeal(lowerLimit, upperLimit, skuPrefixes);
 			}else{
+				FDFactorySB sb = factoryHome.create();
 				return sb.findSKUsByDeal(lowerLimit, upperLimit, skuPrefixes);
 			}
 
@@ -774,12 +802,12 @@ public class FDFactory {
 			lookupFactoryHome();
 		}
 		try {
-			FDFactorySB sb = factoryHome.create();
 			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
 				return (List) FDECommerceService.getInstance().findPeakProduceSKUsByDepartment(skuPrefixes);
 			}else{
+				FDFactorySB sb = factoryHome.create();
 				return sb.findPeakProduceSKUsByDepartment(skuPrefixes);
 			}
 
@@ -805,7 +833,6 @@ public class FDFactory {
 			lookupFactoryHome();
 		}
 		try {
-			FDFactorySB sb = factoryHome.create();
 			Date now = new Date();
 			Date first = new Date(now.getTime() - 30l * 24l * 3600000l);
 			// FDFactortySession bean is just a pass through,
@@ -815,6 +842,8 @@ public class FDFactory {
 				overridden = FDECommerceService.getInstance().getOverriddenNewSkus();
 				overriddenBack = FDECommerceService.getInstance().getOverriddenBackInStockSkus();
 			}else{
+				FDFactorySB sb = factoryHome.create();
+
 				regular = sb.getNewSkus();
 				overridden = sb.getOverriddenNewSkus();
 				overriddenBack = sb.getOverriddenBackInStockSkus();
@@ -913,7 +942,6 @@ public class FDFactory {
 			lookupFactoryHome();
 		}
 		try {
-			FDFactorySB sb = factoryHome.create();
 			Date now = new Date();
 			Date first = new Date(now.getTime() - 30l * 24l * 3600000l);
 			// FDFactortySession bean is just a pass through,
@@ -922,6 +950,8 @@ public class FDFactory {
 				regular = FDECommerceService.getInstance().getBackInStockSkus();
 				overridden = FDECommerceService.getInstance().getOverriddenBackInStockSkus();
 			}else{
+				FDFactorySB sb = factoryHome.create();
+
 				regular = sb.getBackInStockSkus();
 				overridden = sb.getOverriddenBackInStockSkus();
 			}
@@ -1003,12 +1033,13 @@ public class FDFactory {
 			lookupFactoryHome();
 		}
 		try {
-			FDFactorySB sb = factoryHome.create();
 			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
 				return FDECommerceService.getInstance().getOverriddenNewSkus();
 			}else{
+				FDFactorySB sb = factoryHome.create();
+
 				return sb.getOverriddenNewSkus();
 			}
 		} catch (CreateException ce) {
@@ -1025,12 +1056,13 @@ public class FDFactory {
 			lookupFactoryHome();
 		}
 		try {
-			FDFactorySB sb = factoryHome.create();
 			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
 				return FDECommerceService.getInstance().getOverriddenBackInStockSkus();
 			}else{
+				FDFactorySB sb = factoryHome.create();
+
 				return sb.getOverriddenBackInStockSkus();
 			}
 		} catch (CreateException ce) {
@@ -1047,12 +1079,13 @@ public class FDFactory {
 			lookupFactoryHome();
 		}
 		try {
-			FDFactorySB sb = factoryHome.create();
 			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
 				return FDECommerceService.getInstance().getSkuAvailabilityHistory(skuCode);
 			}else{
+				FDFactorySB sb = factoryHome.create();
+
 				return sb.getSkuAvailabilityHistory(skuCode);
 			}
 
@@ -1070,12 +1103,13 @@ public class FDFactory {
 			lookupFactoryHome();
 		}
 		try {
-			FDFactorySB sb = factoryHome.create();
 			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
 				FDECommerceService.getInstance().refreshNewAndBackViews();
 			}else{
+				FDFactorySB sb = factoryHome.create();
+
 				sb.refreshNewAndBackViews();
 			}
 
@@ -1140,10 +1174,11 @@ public class FDFactory {
 		try {
 			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpGrpInfoSessionBean equivalent service in  2.0
-			FDFactorySB sb = factoryHome.create();
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpGrpInfoSB)){
 				return 	FDECommerceService.getInstance().getModifiedOnlyGroups(lastModified);
 			}else{
+				FDFactorySB sb = factoryHome.create();
+
 				return sb.getModifiedOnlyGroups(lastModified);
 			}
 

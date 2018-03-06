@@ -142,6 +142,11 @@
 	  	</label>
 	  	<span fdform-error-for="phone"></span>
 	</div>
+	  <div id="cc-payment-g-recaptcha-container" name="captcha">
+	  	<input id="cc-payment-g-recaptcha-enabled" name="captchaEnabled" type="hidden" value="{$data.showCaptcha? 'true' : 'false'}">	
+		<div id="cc-payment-g-recaptcha" class="g-recaptcha"></div>
+		<span fdform-error-for="captcha"></span>
+	  </div>
 	<div class="buttons">
     	<button class="cssbutton green transparent medium close" fdform-button="cancel">Cancel</button>
     	<button class="cssbutton green large" type="submit">Save</button>
@@ -359,6 +364,7 @@
     <input name="phone" type="tel" placeholder="(xxx) xxx xxxx" fdform-formatter="phone" value="{if $data.phone}{$data.phone}{/if}" required />
   </label>
   <span fdform-error-for="phone"></span>
+
   <div class="buttons">
     <button class="cssbutton green transparent medium close" fdform-button="cancel">Cancel</button>
     <button class="cssbutton green large" type="submit">Save</button>

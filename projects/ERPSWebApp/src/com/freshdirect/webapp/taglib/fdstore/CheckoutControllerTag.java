@@ -339,7 +339,10 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 
 			} else if ( "addAndSetPaymentMethod".equalsIgnoreCase( action ) ) {
                 PaymentMethodManipulator m = new PaymentMethodManipulator(request, response, result, action);
-				m.performAddAndSetPaymentMethod();
+				String outcome = m.performAddAndSetPaymentMethod();
+				if ( outcome.equals( Action.ERROR ) ) {
+					return true; 
+				}
 				if ( result.isSuccess() ) {
 					UserValidationUtil.validateOrderMinimum( session, result );
 					checkEBTRestrictedLineItems(cart, isNotCallCenter);					
@@ -347,11 +350,17 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 
 			} else if ( "addPaymentMethod".equalsIgnoreCase( action ) || "gc_addPaymentMethod".equalsIgnoreCase( action ) ) {
                 PaymentMethodManipulator m = new PaymentMethodManipulator(request, response, result, action);
-				m.performAddPaymentMethod();
+				String outcome = m.performAddPaymentMethod();
+				if ( outcome.equals( Action.ERROR ) ) {
+					return true; 
+				}
 
 			}else if ( "editPaymentMethod".equalsIgnoreCase( action )) {//Added IPhone functionality APPDEV-1565
                 PaymentMethodManipulator m = new PaymentMethodManipulator(request, response, result, action);
-				m.performEditPaymentMethod();
+                String outcome = m.performEditPaymentMethod();
+                if ( outcome.equals( Action.ERROR ) ) {
+					return true; 
+				}
 
 			} else if ( "setPaymentAndSubmit".equalsIgnoreCase( action ) ) {
 				if ( UserValidationUtil.validateOrderMinimum( session, result ) ) {

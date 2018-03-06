@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -1443,6 +1444,20 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				
 			} finally {
 				close(checkNewEntryRs);
+			}
+			
+			// run alter session set "_optimizer_partial_join_eval"=false;
+			// this is needed for production env as the oracle db has a bug that is not yet patched.
+			Statement s = null;
+			if (!FDStoreProperties.isPartialJoinOptimizerEnabled()) {
+				try {
+					s = conn.createStatement();
+					s.executeUpdate("alter session set \"_optimizer_partial_join_eval\"=false");
+				} finally {
+					if (s != null) {
+						s.close();
+					}
+				}
 			}
 			if (hasNewEntryFromGroup) {
 				ps = conn.prepareStatement(QUERY_MODIFIED_SKU_ALL);

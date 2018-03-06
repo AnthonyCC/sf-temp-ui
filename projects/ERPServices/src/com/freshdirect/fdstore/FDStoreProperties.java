@@ -759,6 +759,9 @@ public class FDStoreProperties {
     // Max Invalid Login counts for Recaptcha
     private final static String PROP_MAX_INVALID_LOGIN_ATTEMPT = "fdstore.max.invalid.login.count";
 
+    // Max Invalid Payment counts for Recaptcha
+    private final static String PROP_MAX_INVALID_PAYMENT_ATTEMPT = "fdstore.max.invalid.payment.count";
+    
     // Limiting the quicksearch results in mobile
     private final static String QUICKSHOP_ALL_ITEMS_MAX = "fdstore.quickshop.max.results";
 
@@ -924,6 +927,7 @@ public class FDStoreProperties {
     private static final String PROP_VIEWCART_PAGE_CURRENT_CUSTOMER_CAROUSEL_SITE_FEATURES = "fdstore.viewcart.current.customer.carousel.site.features";
     private static final String PROP_CHECKOUT_PAGE_NEW_CUSTOMER_CAROUSEL_SITE_FEATURES = "fdstore.checkout.new.customer.carousel.site.features";
     private static final String PROP_CHECKOUT_PAGE_CURRENT_CUSTOMER_CAROUSEL_SITE_FEATURES = "fdstore.checkout.current.customer.carousel.site.features";
+    private static final String PROP_CHECKOUT_PAGE_COS_CUSTOMER_DISPLAY_DELIVERY_FEE_HEADER = "fdstore.checkout.cos.customer.display.delivery.fee";
 
     // APPDEV-5893
     private static final String PROP_USER_CART_SAVE_INTERVAL = "fdstore.user.cart.save.interval";
@@ -1019,6 +1023,7 @@ public class FDStoreProperties {
 	
 	public final static String PROP_FD_DP_FREE_TRIAL_OPTIN_FEATURE_ENABLED = "fdstore.fd.dp.freetrial.optin.feature.enabled";
 	
+	public final static String PROP_DB_PARTIAL_JOIN_OPTIMIZER_ENABLED = "fdstore.db.partial.join.optimizer.enabled";
 
  	static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -1711,9 +1716,10 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.akamaiimageconvertor", "GLOBAL:ENABLED,false;");
 
         // Default reCaptcha Public & Private krys
-        defaults.put(PROP_RECAPTCHA_PUBLIC_KEY, "6LdmgQYTAAAAAEqZbKoF4WpDqFU7pyAO-40mxdnc");
-        defaults.put(PROP_RECAPTCHA_PRIVATE_KEY, "6LdmgQYTAAAAAJcKVYSoFavVDLSLdV3x-fWsOtqH");
+        defaults.put(PROP_RECAPTCHA_PUBLIC_KEY, "6LdQn0YUAAAAALfZUrX-x4IeOmdUkkUrwMwZdhsd");
+        defaults.put(PROP_RECAPTCHA_PRIVATE_KEY, "6LdQn0YUAAAAAB3iHC6AzFH_Sd5k9z0uAwfvPUkZ");
         defaults.put(PROP_MAX_INVALID_LOGIN_ATTEMPT, "10");
+        defaults.put(PROP_MAX_INVALID_PAYMENT_ATTEMPT, "10");
         defaults.put(PROP_TIP_RANGE_CONFIG, "0,25,0.5;");
 
         defaults.put(SUB_DOMAIN, "");
@@ -1851,7 +1857,8 @@ public class FDStoreProperties {
         defaults.put(PROP_VIEWCART_PAGE_CURRENT_CUSTOMER_CAROUSEL_SITE_FEATURES, "PRODUCT_SAMPLE, DYF, TOP_ITEMS_QS");
         defaults.put(PROP_CHECKOUT_PAGE_NEW_CUSTOMER_CAROUSEL_SITE_FEATURES, "C_YMAL, FAVORITES, PRODUCT_SAMPLE");
         defaults.put(PROP_CHECKOUT_PAGE_CURRENT_CUSTOMER_CAROUSEL_SITE_FEATURES, "DYF, TOP_ITEMS_QS, PRODUCT_SAMPLE");
-
+        defaults.put(PROP_CHECKOUT_PAGE_COS_CUSTOMER_DISPLAY_DELIVERY_FEE_HEADER, false);
+        
         defaults.put(PROP_USER_CART_SAVE_INTERVAL, "0");
 
         defaults.put(PROP_HOMEPAGE_REDESIGN_CURRENTCOS_USER_CONTAINER_CONTENT_KEY, "ModuleContainer:mc_hp_ato_exist_cust");
@@ -1929,7 +1936,7 @@ public class FDStoreProperties {
  	   	defaults.put(PENNSYLVANIA_SERVICE_CONTACT, "1-215-825-5726");
 
  	   	//Delivery Pass sent as a free products for trail
-        defaults.put(PROP_ENABLE_FREE_PRODUCT,"false"); // Enable free product
+        defaults.put(PROP_ENABLE_FREE_PRODUCT,"true"); // Enable free product
         
         defaults.put(PROP_ENABLE_WEBSITE_MOBILE_SAME_NUTRITION_SOY,"false");
 
@@ -1950,6 +1957,8 @@ public class FDStoreProperties {
 		
 		defaults.put(DATABASE_IN_CONDITION_LIMIT, "50");
 		defaults.put(PROP_FD_DP_FREE_TRIAL_OPTIN_FEATURE_ENABLED, "false");
+		
+		defaults.put(PROP_DB_PARTIAL_JOIN_OPTIMIZER_ENABLED, "false");
 		
         refresh();
     }
@@ -4226,11 +4235,11 @@ public class FDStoreProperties {
 
     // Recaptcha getter methods
     public static String getRecaptchaPublicKey() {
-        return StringUtils.defaultIfEmpty(get(PROP_RECAPTCHA_PUBLIC_KEY), "6LeEWAITAAAAAJTkH82Z7gsg1J28IHsjtPjBoPHX");
+        return StringUtils.defaultIfEmpty(get(PROP_RECAPTCHA_PUBLIC_KEY), "6LdQn0YUAAAAALfZUrX-x4IeOmdUkkUrwMwZdhsd");
     }
 
     public static String getRecaptchaPrivateKey() {
-        return StringUtils.defaultIfEmpty(get(PROP_RECAPTCHA_PRIVATE_KEY), "6LeEWAITAAAAACmiHCIyTDfZz_SkCPtPIN_c1HSN");
+        return StringUtils.defaultIfEmpty(get(PROP_RECAPTCHA_PRIVATE_KEY), "6LdQn0YUAAAAAB3iHC6AzFH_Sd5k9z0uAwfvPUkZ");
     }
 
     public static int getMaxInvalidLoginAttempt() {
@@ -4241,6 +4250,15 @@ public class FDStoreProperties {
         }
     }
 
+    public static int getMaxInvalidPaymentAttempt() {
+        try {
+            return Integer.parseInt(get(PROP_MAX_INVALID_PAYMENT_ATTEMPT));
+        } catch (Exception e) {
+        	// disable if the property is not set or invalid
+            return 0;
+        }
+    }
+    
     public static int getQuickShopResultMaxLimit() {
         try {
             return Integer.parseInt(get(QUICKSHOP_ALL_ITEMS_MAX));
@@ -4747,6 +4765,9 @@ public class FDStoreProperties {
         return getAsList(PROP_CHECKOUT_PAGE_CURRENT_CUSTOMER_CAROUSEL_SITE_FEATURES);
     }
 
+    public static boolean shouldShowDeliveryFeeForCheckoutPageCosCustomer() {
+    	 return (Boolean.valueOf(get(PROP_CHECKOUT_PAGE_COS_CUSTOMER_DISPLAY_DELIVERY_FEE_HEADER))).booleanValue();
+    }
     public static int getUserCartSaveInterval() {
         return Integer.parseInt(get(PROP_USER_CART_SAVE_INTERVAL));
     }
@@ -4958,4 +4979,7 @@ public class FDStoreProperties {
 		return (Boolean.valueOf(get(PROP_FD_DP_FREE_TRIAL_OPTIN_FEATURE_ENABLED))).booleanValue();
 	}
 	
+	public static boolean isPartialJoinOptimizerEnabled() {
+		return (Boolean.valueOf(get(PROP_DB_PARTIAL_JOIN_OPTIMIZER_ENABLED))).booleanValue();
+	}
 }

@@ -105,7 +105,7 @@ public class GoogleAnalyticsReportingService {
             params.add(new BasicNameValuePair(productNameKeyStarter + "ca", product.getCategory().getContentName()));
 		    params.add(new BasicNameValuePair(productNameKeyStarter + "br", product.getPrimaryBrandName()));
             params.add(new BasicNameValuePair(productNameKeyStarter + "va", product.getContentName()));
-            params.add(new BasicNameValuePair(productNameKeyStarter + "pr", Double.toString(product.getPriceCalculator().getDefaultPriceValue())));
+            params.add(new BasicNameValuePair(productNameKeyStarter + "pr", Double.toString(null !=product.getPriceCalculator() ? product.getPriceCalculator().getDefaultPriceValue() : 0)));
             params.add(new BasicNameValuePair(productNameKeyStarter + "qt", roundQuantity(cartLine.getQuantity())));
 		    params.add(new BasicNameValuePair(productNameKeyStarter + "ps", Integer.toString(productIndex)));
 		    params.add(new BasicNameValuePair(productNameKeyStarter + "cd3", Boolean.toString(product.isNew())));

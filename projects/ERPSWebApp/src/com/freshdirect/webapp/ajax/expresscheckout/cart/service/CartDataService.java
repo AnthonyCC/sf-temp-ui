@@ -255,9 +255,9 @@ public class CartDataService {
 
     private ModifyCartData isModifyOrderMode(HttpSession session) {
         FDUserI mUser = (FDUserI) session.getAttribute(SessionName.USER);
-        FDCartModel mCart = mUser.getShoppingCart();
+        FDCartModel mCart = null !=mUser ? mUser.getShoppingCart() : null;
         ModifyCartData modifyCartData = new ModifyCartData();
-        if (mCart instanceof FDModifyCartModel) {
+        if (null !=mCart && mCart instanceof FDModifyCartModel) {
             modifyCartData.setModifyOrderEnabled(true);
             FDModifyCartModel modifyCart = (FDModifyCartModel) mCart;
             String orderId = modifyCart.getOriginalOrder().getErpSalesId();

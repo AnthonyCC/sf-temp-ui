@@ -41,6 +41,8 @@ public class AtpRestrictionServlet extends BaseJsonServlet {
 			} else {
 				writeResponseData(response, null);
 			}
+		} else {
+			writeResponseData(response, null);
 		}
 
 	}

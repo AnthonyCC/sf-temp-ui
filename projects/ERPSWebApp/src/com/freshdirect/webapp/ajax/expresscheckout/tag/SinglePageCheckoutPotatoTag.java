@@ -30,6 +30,7 @@ public class SinglePageCheckoutPotatoTag extends SimpleTagSupport {
 
 	private String name = "singlePageCheckoutPotato";
 	private String standingOrder=null;
+	private String action;
 	private static final String EWALLET_SESSION_ATTRIBUTE_NAME="EWALLET_CARD_TYPE";
 	private static final String MP_EWALLET_CARD="MP_CARD";
 	private static final String WALLET_SESSION_CARD_ID="WALLET_CARD_ID";
@@ -62,16 +63,26 @@ public class SinglePageCheckoutPotatoTag extends SimpleTagSupport {
 		try {
             StandingOrderHelper.clearSO3Context(user, request.getParameter("isSO"), standingOrder);
 
-			SinglePageCheckoutData result = SinglePageCheckoutFacade.defaultFacade().load(user, request);
-			if(FDStoreProperties.getAvalaraTaxEnabled() && null != user.getShoppingCart().getDeliveryAddress()){
-			CheckoutService.defaultService().getAvalaraTax(user.getShoppingCart());
+			if (action != null && action.equals("resetContext")) {
+				SinglePageCheckoutFacade.defaultFacade().handleModifyCartPreSelections(user, request);
+				if (FDStoreProperties.getAvalaraTaxEnabled() && null != user.getShoppingCart().getDeliveryAddress()) {
+					CheckoutService.defaultService().getAvalaraTax(user.getShoppingCart());
+				}
+
+			} else {
+				SinglePageCheckoutData result = SinglePageCheckoutFacade.defaultFacade().load(user, request);
+				if (FDStoreProperties.getAvalaraTaxEnabled() && null != user.getShoppingCart().getDeliveryAddress()) {
+					CheckoutService.defaultService().getAvalaraTax(user.getShoppingCart());
+				}
+
+				// Check whether EWallet Card used for order
+				checkEWalletCard(result.getPayment(), request);
+				removeOlderEwalletPaymentMethod(result.getPayment(), request);
+				Map<String, ?> potato = SoyTemplateEngine.convertToMap(result);
+				context.setAttribute(name, potato);
 			}
-			// Check whether EWallet Card used for order 
-			checkEWalletCard(result.getPayment(),request);
-			removeOlderEwalletPaymentMethod(result.getPayment(),request);
 			
-			Map<String, ?> potato = SoyTemplateEngine.convertToMap(result);
-			context.setAttribute(name, potato);
+
 		} catch (FDResourceException e) {
 			throw new JspException(e);
 		} catch (TemplateException e) {
@@ -209,6 +220,14 @@ public class SinglePageCheckoutPotatoTag extends SimpleTagSupport {
 	 */
 	public void setStandingOrder(String standingOrder) {
 		this.standingOrder = standingOrder;
+	}
+
+	public String getAction() {
+		return action;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
 	}
 	
 	

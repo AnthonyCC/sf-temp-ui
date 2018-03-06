@@ -81,7 +81,7 @@ public class ShipToAddress extends DeliveryAddress {
             this.availableServiceTypes = address.getAvailableServiceTypes();
          }
         
-        this.unattendedDeliveryFlag = address.getUnattendedDeliveryFlag().getName();
+        this.unattendedDeliveryFlag = (null !=address.getUnattendedDeliveryFlag()? address.getUnattendedDeliveryFlag().getName():"");
         this.unattendedDeliveryInstructions = address.getUnattendedDeliveryInstructions();
     }
 

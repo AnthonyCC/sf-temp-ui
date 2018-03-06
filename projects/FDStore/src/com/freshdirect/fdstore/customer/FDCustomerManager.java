@@ -1576,8 +1576,14 @@ public class FDCustomerManager {
 	public static List<DlvSaleInfo> getOrdersByTruck(String truckNumber, Date dlvDate) throws FDResourceException {
 		lookupManagerHome();
 		try {
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("ordersByTruck_Api")){
+	    		OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
+	    		return service.getOrdersByTruck(truckNumber, dlvDate);
+	    	}else{
+			
 			FDCustomerManagerSB sb = managerHome.create();
 			return sb.getOrdersByTruck(truckNumber, dlvDate);
+	    	}
 
 		} catch (CreateException ce) {
 			invalidateManagerHome();

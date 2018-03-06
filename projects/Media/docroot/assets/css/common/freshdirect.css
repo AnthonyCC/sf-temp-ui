@@ -1164,3 +1164,7 @@ a.lv-link:focus {
     outline: 2px solid #5fb069;
     display: inline-block;
 }
+input[aria-label="estimated price:"][disabled="disabled"],input[aria-label="estimated quantity"][disabled="disabled"]{
+	background-color: #ffff;
+    border: 1px solid #0000006e;
+}

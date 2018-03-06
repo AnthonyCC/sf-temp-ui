@@ -93,6 +93,7 @@ import com.freshdirect.ecommerce.data.enums.EnumComplaintDlvIssueTypeData;
 import com.freshdirect.ecommerce.data.enums.EnumFeaturedHeaderTypeData;
 import com.freshdirect.ecommerce.data.enums.ErpAffiliateData;
 import com.freshdirect.ecommerce.data.erp.coo.CountryOfOriginData;
+import com.freshdirect.ecommerce.data.erp.ewallet.ErpCustEWalletData;
 import com.freshdirect.ecommerce.data.erp.inventory.ErpInventoryData;
 import com.freshdirect.ecommerce.data.erp.inventory.ErpRestrictedAvailabilityData;
 import com.freshdirect.ecommerce.data.erp.inventory.RestrictedInfoParam;
@@ -388,6 +389,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String ERP_PRODUCTINFO_LIKEUPC = "erpinfo/productslikeupc";
 	private static final String ERP_INVENTORY_INFO = "erpinfo/inventoryinfo";
 	private static final String ERP_LOAD_INVENTORY_INFO = "erpinfo/loadinventory";
+	private static final String ERP_LOAD_MODIFIED_SKUS = "erpinfo/loadModifiedSkus";
 	
 	private static final String ERP_NEW_SKUS_DAYS = "erpinfo/newskucodes";
 	private static final String ERP_SKUS_OLDNESS = "erpinfo/skuoldness";
@@ -1734,11 +1736,11 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	@Override
 	public ErpCustEWalletModel getLongAccessTokenByCustID(String custID, String eWalletType) throws RemoteException {
 		try {
-			Response<ErpCustEWalletModel> response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_CUSTEWALLET_TOKEN_BY_CUSTID) + custID + "/" + eWalletType, new TypeReference<Response<ErpCustEWalletModel>>() {});
+			Response<ErpCustEWalletData> response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_CUSTEWALLET_TOKEN_BY_CUSTID) + custID + "/" + eWalletType, new TypeReference<Response<ErpCustEWalletData>>() {});
 			if (!response.getResponseCode().equals("OK")) {
 				throw new FDResourceException(response.getMessage());
 			}
-			return response.getData();
+			return ModelConverter.buildErpCustEwalletModel(response.getData());
 		} catch (FDResourceException e) {
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
@@ -5245,6 +5247,21 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
+	}
+	@Override
+	public Set<String> getModifiedSkus(long lastModified) throws RemoteException {
+		Response<Set<String> > response = new Response<Set<String> >(); 
+		try {
+			response = httpGetData(getFdCommerceEndPoint(ERP_LOAD_MODIFIED_SKUS)+"/"+lastModified, Response.class);
+		
+			if(!response.getResponseCode().equals("OK"))
+				throw new RemoteException(response.getMessage());
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		
+		}
+		return response.getData();
 	}
 	
 

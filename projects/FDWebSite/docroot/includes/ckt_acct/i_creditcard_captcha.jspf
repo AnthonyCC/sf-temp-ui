@@ -1,4 +1,3 @@
-<%@ page import="com.freshdirect.enums.CaptchaType" %>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
@@ -7,7 +6,7 @@
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr"%>
 <% 
 boolean showCaptchaInPayment = CaptchaUtil.isExcessiveAttempt(FDStoreProperties.getMaxInvalidPaymentAttempt(), session, SessionName.PAYMENT_ATTEMPT);
-String publicKey= FDStoreProperties.getRecaptchaPublicKey(CaptchaType.PAYMENT);
+String publicKey= FDStoreProperties.getRecaptchaPublicKey();
 %>
 
 <% if (showCaptchaInPayment) { %>
@@ -18,13 +17,13 @@ String publicKey= FDStoreProperties.getRecaptchaPublicKey(CaptchaType.PAYMENT);
 		<input id="cc-payment-g-recaptcha-enabled" name="captchaEnabled" type="hidden" value="true" />
 		<div id="cc-payment-g-recaptcha" class="g-recaptcha"></div>
 		<script type="text/javascript">
-				FreshDirect.components.captchaWidget.init('cc-payment-g-recaptcha', '<%=publicKey%>', function() {
+				FreshDirect.components.captchaWidget.init('<%=publicKey%>', function() {
 					FreshDirect.components.captchaWidget.render('cc-payment-g-recaptcha', null, function() {
 						$jq('#cc-payment-g-recaptcha-container').hide();
 					},null);
 				});
 				</script>
-		<fd:ErrorHandler result='<%=result%>' name='captcha' id='errorMsg'><div class="errortext"><%=errorMsg%></div></fd:ErrorHandler>
+		<fd:ErrorHandler result='<%=result%>' name='captcha' id='errorMsg'><div class="text11rbold"><%=errorMsg%></div></fd:ErrorHandler>
 	</td>
 	
 </TR>

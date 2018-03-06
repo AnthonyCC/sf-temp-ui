@@ -9,12 +9,17 @@ import java.util.List;
 import org.apache.commons.lang.CharEncoding;
 import org.apache.log4j.Logger;
 
+import com.freshdirect.framework.marker.ThirdPartyIntegration;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.http.HttpService;
 import com.freshdirect.webapp.autosuggest.unbxd.dto.UnbxdAutosuggestResponseRoot;
 import com.freshdirect.webapp.search.unbxd.dto.UnbxdSearchResponseRoot;
 
-public class UnbxdIntegrationService {
+/**
+ * This is the service which communicates with the unbxd search and autossuggest endpoints
+ *
+ */
+public class UnbxdIntegrationService implements ThirdPartyIntegration {
 
     private static final Logger LOGGER = LoggerFactory.getInstance(UnbxdIntegrationService.class);
 

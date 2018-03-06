@@ -266,6 +266,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 			boolean chefsTable, boolean isForced, boolean hasSteeringDiscount,
 			TimeslotEvent event, HttpSession session) throws FDResourceException, ReservationException {
 		String custId = user.getIdentity().getErpCustomerPK();
+		LOGGER.info("custId---------------------"+custId);
 		FDReservation timeSlotResrv =
 				FDDeliveryManager.getInstance().reserveTimeslot(
 					timeSlot.getId(),
@@ -274,7 +275,11 @@ public class ChooseTimeslotAction extends WebActionSupport {
 					TimeslotLogic.encodeCustomer(erpAddress, user),
 					chefsTable,
 					null, isForced,event, hasSteeringDiscount, (timeSlot.getDlvfeeTier()!=null)?timeSlot.getDlvfeeTier().name():null);
+		LOGGER.info("custId------------1---------"+custId);
+
 			TimeslotLogic.applyOrderMinimum(user,timeSlotResrv.getTimeslot());
+			LOGGER.info("custId----------2-----------"+custId);
+
 			if (EnumCheckoutMode.NORMAL == user.getCheckoutMode()) {
 				setDeliveryTimeslot(session, timeSlotResrv);
 			} else {

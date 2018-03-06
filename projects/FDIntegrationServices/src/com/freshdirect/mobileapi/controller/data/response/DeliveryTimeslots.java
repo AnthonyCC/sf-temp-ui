@@ -77,23 +77,25 @@ public class DeliveryTimeslots extends CheckoutResponse {
      * @param result
      */
     public DeliveryTimeslots(TimeSlotCalculationResult result) {
-        List<TimeslotList> slotLists = result.getTimeslotList();
-        for (TimeslotList slotList : slotLists) {
-            timeSlots.addAll(Timeslot.initWithList(slotList.getTimeslots(result.isUserChefTable())));
+        List<TimeslotList> slotLists = result!=null?result.getTimeslotList():null;
+        if(slotLists!=null){
+	        for (TimeslotList slotList : slotLists) {
+	            timeSlots.addAll(Timeslot.initWithList(slotList.getTimeslots(result.isUserChefTable())));
+	        }
         }
-        List<String> restrictionMessages = result.getMessages();
+        List<String> restrictionMessages = result!=null?result.getMessages():null;
         if(restrictionMessages != null) {
 	        for (String restrictionMessage : restrictionMessages) {
 	            this.restrictions.add(new Restriction(restrictionMessage));
 	        }
         }
-        this.selectedTimeslotId = result.getPreselectedTimeslotId();
-        this.reservedTimeslotId = result.getReservationTimeslotId();
-        this.showPremiumSlots = result.isShowPremiumSlots();
-        this.showDPTermsAndConditions = result.isShowDPTermsAndConditions();
-        this.sameDayCutoff = result.getSameDayCutoff();
-        this.minOrderReqd = result.isMinOrderReqd();
-        this.showMinNotMetMessage = result.isShowMinNotMetMessage();
+        this.selectedTimeslotId = result!=null?result.getPreselectedTimeslotId():null;
+        this.reservedTimeslotId = result!=null?result.getReservationTimeslotId():null;
+        this.showPremiumSlots = result!=null?result.isShowPremiumSlots():false;
+        this.showDPTermsAndConditions = result!=null?result.isShowDPTermsAndConditions():false;
+        this.sameDayCutoff = result!=null?result.getSameDayCutoff():null;
+        this.minOrderReqd = result!=null?result.isMinOrderReqd():false;
+        this.showMinNotMetMessage = result!=null?result.isShowMinNotMetMessage():false;
         
     }
 

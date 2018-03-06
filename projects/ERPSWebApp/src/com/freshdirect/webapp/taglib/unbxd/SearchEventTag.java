@@ -32,11 +32,11 @@ public class SearchEventTag extends SimpleTagSupport {
         final HttpSession session = pageContext.getSession();
         final HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
         final FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
-        
+
         if (user != null) {
             if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, request.getCookies(), user)) {
                 final String query = request.getParameter("searchParams");
-				final boolean cosAction = CosFeatureUtil.isUnbxdCosAction(user, request.getCookies());
+                final boolean cosAction = CosFeatureUtil.isUnbxdCosAction(user, request.getCookies());
                 doSendEvent(user, RequestUtil.getFullRequestUrl(request), request.getHeader(HttpHeaders.REFERER), query, cosAction);
             } else {
                 LOGGER.debug("UNBXD feature is off, not sending event ...");
@@ -45,12 +45,14 @@ public class SearchEventTag extends SimpleTagSupport {
     }
 
     public static void doSendEvent(FDUserI user, String requestURL, String referer, String query, boolean cosAction) {
-        final Visitor visitor = Visitor.withUser(user);
-        final LocationInfo loc = LocationInfo.withUrlAndReferer(requestURL, referer);
+        if (!user.isRobot()) {
+            final Visitor visitor = Visitor.withUser(user);
+            final LocationInfo loc = LocationInfo.withUrlAndReferer(requestURL, referer);
 
-        AnalyticsEventI event = AnalyticsEventFactory.createEvent(AnalyticsEventType.SEARCH, visitor, loc, query, null, null, cosAction);
+            AnalyticsEventI event = AnalyticsEventFactory.createEvent(AnalyticsEventType.SEARCH, visitor, loc, query, null, null, cosAction);
 
-        // log event
-        EventLoggerService.getInstance().log(event);
+            // log event
+            EventLoggerService.getInstance().log(event);
+        }
     }
 }

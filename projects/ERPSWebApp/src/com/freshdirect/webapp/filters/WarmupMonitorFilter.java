@@ -30,8 +30,10 @@ public class WarmupMonitorFilter extends AbstractFilter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = ((HttpServletRequest) request);
         try {
+        	System.out.println("!WarmupService.defaultService().isWarmupFinished()================"+!WarmupService.defaultService().isWarmupFinished());
 	        if (!WarmupService.defaultService().isWarmupFinished()) {
 	            String requestURI = ((HttpServletRequest) request).getRequestURI();
+	        	System.out.println("requestURI================"+requestURI);
 	            if (!WARMUP_PAGE_PATH.equals(requestURI)) {
 	                String requestHeader = httpServletRequest.getHeader(AJAX_INDICATOR_REQUEST_HEADER_NAME);
 	                if (AJAX_INDICATOR_REQUEST_HEADER_VALUE.equals(requestHeader)) {

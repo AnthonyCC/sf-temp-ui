@@ -1,3 +1,11 @@
+/* duplicate styling from framework to get the same styling outside of the menu */
+	.mm-menu-fake .mm-listview>li .mm-next:after {
+		border-color: rgba(0,0,0,.3);
+	}
+	.mm-menu-fake .mm-listview {
+		border-color: rgba(0,0,0,.1);
+	}
+
 body {
 	font-family: Verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
 	font-size: 14px;
@@ -229,8 +237,15 @@ body.no-scroll {
 	color: #6AAA6D;
 	position: absolute;
 	font-size: 20px;
+}
+#search span.icon-search,
+.search-cont span.icon-search {
 	left: 10px;
 	top: 6px;
+}
+#search span.icon-cancel-circle-after,
+.search-cont span.icon-cancel-circle-after {
+	right: 10px;
 }
 .search-cont #search-faq {
 	height: 32px;
@@ -2361,7 +2376,7 @@ li.cleanli .gen-arrow {
 				max-width: 100%; /* size image to column */
 				max-height: auto !important;
 			}
-			button.modifyorder-cancelbutton {
+			a.cssbutton.transparent.orange.modifyorder-cancelbutton,a.cssbutton.cssbutton-flat.green.transparent.modifyorder-cancelbutton {
 				position: relative;
 				width: 100%;
 				right: auto;
@@ -2611,8 +2626,8 @@ li.cleanli .gen-arrow {
 		word-wrap: break-word;
 		word-break: break-word;
 	}
-	
-	.mm-page .manage-account-container{
+	.mm-page .manage-account-container .mm-menu-fake {
+		margin: 0 10px 20px 10px;
 		background: #F2F0EF;
 	}
 	.mm-page .manage_account a{
@@ -2634,10 +2649,10 @@ li.cleanli .gen-arrow {
 		border: 0;
 		margin: 0;
 		padding: 25px 10px;
+		background-color: #fff;
 	}
 	.mm-page .manage_account .manage_account_desc,
 	.mm-page .manage_account br,
-	.mm-page .manage-account-heading p,
 	.mm-page .manage_account .selectedAddressIsHome-false,
 	.mm-page .manage-account-container .continue-shopping,
 	.mm-page .manage_account #yourAccount_reorder .new_purple_button_style #reorder-icon-big,
@@ -2793,7 +2808,15 @@ li.cleanli .gen-arrow {
 		text-align: left;
 		font-size: 12px;
 	}
+	.mm-page table.order_history_table tr th{
+		padding: 10px 0;
+		text-align: left;
+		font-size: 12px;
+	}
 	.mm-page table.order_history_table tr td:last-child{
+		max-width: 80px;
+	}
+	.mm-page table.order_history_table tr th:last-child{
 		max-width: 80px;
 	}
 	.mm-page .order_history_table .order_history_table_id{
@@ -2995,10 +3018,23 @@ form.dispblock-fields td { /* force the tds to block so the label and field are 
 	}
 	
       /* hide in mobweb */
-    table.order_history_table td.order_history_table_id_header,
-    table.order_history_table td.order_history_table_id{
+    .order_history_table .order_history_table_id_header,
+    .order_history_table .order_history_table_id{
          display: none;
     }
+    
     select#order-field,select#contact_subject,textarea#msg-textarea{
-	 width:100%;
+	     width:100%;
 	}
+	
+	input[aria-label="estimated price:"][disabled="disabled"],input[aria-label="estimated quantity"][disabled="disabled"]{
+	    background-color: #ffff;
+        border-top: 2px solid #ffffff;
+        border-right: 2px solid #ffffff;
+        border-bottom: 2px solid #d4d4d4;
+        border-left: 2px solid #ffffff;
+    }
+    input#price_field{
+        width:100%;
+        margin-top:4px;
+    }

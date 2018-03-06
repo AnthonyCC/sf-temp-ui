@@ -477,8 +477,12 @@ var FreshDirect = FreshDirect || {};
     callback: {
       value: function (data) {
         var id = data.fdform,
-            form = forms.get(id);
+            form = forms.get(id),
+            validationFailureFunc = (form && form.validationFailure);
 
+        if (validationFailureFunc) {
+        	validationFailureFunc(data);
+        }
         forms.showErrors(form, data.errors, true);
 
         if (data.result) {

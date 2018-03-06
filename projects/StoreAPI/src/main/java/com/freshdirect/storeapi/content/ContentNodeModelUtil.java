@@ -13,12 +13,14 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.springframework.util.Assert;
 
 import com.freshdirect.WineUtil;
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.cms.core.domain.ContentType;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.storeapi.ContentNodeI;
 import com.freshdirect.storeapi.application.CmsManager;
@@ -573,5 +575,25 @@ public class ContentNodeModelUtil {
             }
         }
         return isDescendant;
+    }
+
+    public static boolean isContentNodeModelHiddenByRedirectUrl(ContentNodeModel model) {
+        Assert.notNull(model, "model parameter is mandatory");
+
+        String hideUrl = null;
+        String redirectUrl = null;
+
+        if (!FDStoreProperties.getPreviewMode()) {
+            hideUrl = model.getHideUrl();
+        }
+        if (model instanceof HasRedirectUrl) {
+            redirectUrl = ((HasRedirectUrl) model).getRedirectUrl();
+        }
+
+        return isRedirectUrlValid(hideUrl) || isRedirectUrlValid(redirectUrl);
+    }
+
+    public static boolean isRedirectUrlValid(String redirectUrl) {
+        return redirectUrl != null && !"".equals(redirectUrl) && !"nm".equals(redirectUrl);
     }
 }

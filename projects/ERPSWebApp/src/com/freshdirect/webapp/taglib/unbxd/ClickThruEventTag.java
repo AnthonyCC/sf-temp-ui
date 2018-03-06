@@ -24,11 +24,11 @@ import com.freshdirect.webapp.unbxdanalytics.visitor.Visitor;
 import com.freshdirect.webapp.util.RequestUtil;
 
 public class ClickThruEventTag extends SimpleTagSupport {
-    
+
     private static final Logger LOGGER = LoggerFactory.getInstance(ClickThruEventTag.class);
 
     private ProductModel product = null;
-    
+
     public void setProduct(ProductModel product) {
         this.product = product;
     }
@@ -39,7 +39,7 @@ public class ClickThruEventTag extends SimpleTagSupport {
         final HttpSession session = pageContext.getSession();
         final HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();
         final FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
-        
+
         if (user != null) {
             if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, req.getCookies(), user)) {
                 doSendEvent(user, req, product);
@@ -48,19 +48,21 @@ public class ClickThruEventTag extends SimpleTagSupport {
             }
         }
     }
-    
+
     public static void doSendEvent(FDUserI user, HttpServletRequest request, ProductModel model) {
-    		final boolean cosAction = CosFeatureUtil.isUnbxdCosAction(user, request.getCookies());
-    		doSendEvent(user, RequestUtil.getFullRequestUrl(request), request.getHeader(HttpHeaders.REFERER), model, cosAction);
+        final boolean cosAction = CosFeatureUtil.isUnbxdCosAction(user, request.getCookies());
+        doSendEvent(user, RequestUtil.getFullRequestUrl(request), request.getHeader(HttpHeaders.REFERER), model, cosAction);
     }
-    
+
     public static void doSendEvent(FDUserI user, String requestedUrl, String referer, ProductModel model, boolean cosAction) {
-        final Visitor visitor = Visitor.withUser(user);
-        final LocationInfo loc = LocationInfo.withUrlAndReferer(requestedUrl, referer);
+        if (!user.isRobot()) {
+            final Visitor visitor = Visitor.withUser(user);
+            final LocationInfo loc = LocationInfo.withUrlAndReferer(requestedUrl, referer);
 
-        AnalyticsEventI event = AnalyticsEventFactory.createEvent(AnalyticsEventType.CLICK_THRU, visitor, loc, null, model, null, cosAction);
+            AnalyticsEventI event = AnalyticsEventFactory.createEvent(AnalyticsEventType.CLICK_THRU, visitor, loc, null, model, null, cosAction);
 
-        // log event
-        EventLoggerService.getInstance().log(event);
+            // log event
+            EventLoggerService.getInstance().log(event);
+        }
     }
 }

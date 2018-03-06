@@ -12,6 +12,8 @@ import java.util.Set;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.AccountNumberConstraint;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.Constraint;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.CreditCardConstraint;
+import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.DeliveryInstructionsConstraint;
+import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.NameConstraint;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.PhoneConstraint;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.PredefinedTextConstraint;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.constraint.RoutingNumberConstraint;
@@ -65,7 +67,7 @@ public class ConstraintProviderService {
             put(DeliveryAddressValidationConstants.BACKUP_DELIVERY_LAST_NAME, new TextConstraint(true));
             put(DeliveryAddressValidationConstants.BACKUP_DELIVERY_ADDRESS, new TextConstraint(true));
             put(DeliveryAddressValidationConstants.BACKUP_DELIVERY_PHONE, new PhoneConstraint(true));
-            put(DeliveryAddressValidationConstants.BACKUP_DELIVERY_INSTRUCTIONS, new TextConstraint(true));
+            put(DeliveryAddressValidationConstants.BACKUP_DELIVERY_INSTRUCTIONS, new DeliveryInstructionsConstraint(true));
         }
     };
 
@@ -92,7 +94,7 @@ public class ConstraintProviderService {
     private static final Map<String, Constraint<String>> CREDIT_CARD_PAYMENT_CONSTRAINTS = new HashMap<String, Constraint<String>>() {
 
         {
-            put(PaymentMethodName.ACCOUNT_HOLDER, new TextConstraint(false));
+        	put(PaymentMethodName.ACCOUNT_HOLDER, new NameConstraint(false));
             put(PaymentMethodName.CARD_BRAND, new TextConstraint(false));
             put(PaymentMethodName.ACCOUNT_NUMBER, new CreditCardConstraint(false));
             put(PaymentMethodName.CARD_EXP_MONTH, new TextConstraint(false));

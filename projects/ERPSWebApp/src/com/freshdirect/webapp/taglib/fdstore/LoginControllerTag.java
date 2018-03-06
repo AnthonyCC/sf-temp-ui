@@ -47,14 +47,9 @@ public class LoginControllerTag extends AbstractControllerTag {
     protected boolean performAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
 		HttpSession session = request.getSession(true);
         Integer fdLoginAttempt = session.getAttribute(SessionName.LOGIN_ATTEMPT) != null ? (Integer) session.getAttribute(SessionName.LOGIN_ATTEMPT) : Integer.valueOf(0);
-		boolean isCaptchaSuccess = true;
 		
-		if (request.getParameter("captchaEnabled") != null) {
-			isCaptchaSuccess = CaptchaUtil.validateCaptcha(request);
-			LOGGER.debug("Captcha enabled");
-		}
-		String test = EnumUserInfoName.USER_ID.getCode();
-		String test1 = request.getParameter(test);
+		boolean isCaptchaSuccess = CaptchaUtil.validateCaptchaV2(request.getParameter("g-recaptcha-response"), request.getRemoteAddr(), session, SessionName.LOGIN_ATTEMPT, FDStoreProperties.getMaxInvalidLoginAttempt());
+			
 		String userId = request.getParameter(EnumUserInfoName.USER_ID.getCode()).trim();
 		String password = request.getParameter(EnumUserInfoName.PASSWORD.getCode()).trim();
 		HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();

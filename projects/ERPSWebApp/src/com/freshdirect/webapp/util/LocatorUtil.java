@@ -34,38 +34,35 @@ public class LocatorUtil {
     public static FDSessionUser useIpLocator(HttpSession session, HttpServletRequest request, HttpServletResponse response) {
     	FDSessionUser user = null;
     	
-    	if (FDStoreProperties.isIpLocatorEnabled()) {
+        if (FDStoreProperties.isIpLocatorEnabled() && !RobotRecognizer.isRobot(request)) {
     		RequestClassifier requestClassifier = new RequestClassifier(request);
-    		int rolloutPercent = FDStoreProperties.getIpLocatorRolloutPercent(); 
-    		
-    		if (requestClassifier.isInHashRange(rolloutPercent)){ //check if rolled out to user
-		    	try {
-	    			//used mocked ip address parameter (for testing) if exists
-			    	String ip = NVL.apply(request.getParameter(IP_LOCATOR_MOCKED_IP_ADDRESS), RequestUtil.getClientIp(request)); 
-			    	
-			    	if(FDStoreProperties.isLoggingAkamaiEdgescapgeHeaderInfoEnabled()){
-			    		logAkamaiEdgescapeHeaderInfo(request);
-			    	}
-		    		IpLocatorData ipLocatorData = IpLocatorClient.getInstance().getData(ip);
-		    		
-		    		IpLocatorEventDTO ipLocatorEventDTO = new IpLocatorEventDTO();
-		    		ipLocatorEventDTO.setIp(ip);
-		    		ipLocatorEventDTO.setIpLocZipCode(ipLocatorData.getZipCode());
-		    		ipLocatorEventDTO.setIpLocCountry(ipLocatorData.getCountryCode());
-		    		ipLocatorEventDTO.setIpLocRegion(ipLocatorData.getRegion());
-		    		ipLocatorEventDTO.setIpLocCity(ipLocatorData.getCity());
-		    		ipLocatorEventDTO.setUserAgent(requestClassifier.getUserAgent());
-		    		ipLocatorEventDTO.setUaHashPercent(requestClassifier.getHashPercent());
-		    		ipLocatorEventDTO.setIplocRolloutPercent(rolloutPercent);
-		    		
-                    user = createUser(session, response, ipLocatorData, ipLocatorEventDTO);
-	
-		    	} catch (Exception e) {
-					LOGGER.error("IP Locator failed: ", e);
-				}
+    		try {
+    			//used mocked ip address parameter (for testing) if exists
+		    	String ip = NVL.apply(request.getParameter(IP_LOCATOR_MOCKED_IP_ADDRESS), RequestUtil.getClientIp(request)); 
+		    	
+		    	if(FDStoreProperties.isLoggingAkamaiEdgescapgeHeaderInfoEnabled()){
+		    		logAkamaiEdgescapeHeaderInfo(request);
+		    	}
+	    		IpLocatorData ipLocatorData = IpLocatorClient.getInstance().getData(ip);
+	    		
+	    		IpLocatorEventDTO ipLocatorEventDTO = new IpLocatorEventDTO();
+	    		ipLocatorEventDTO.setIp(ip);
+	    		ipLocatorEventDTO.setIpLocZipCode(ipLocatorData.getZipCode());
+	    		ipLocatorEventDTO.setIpLocCountry(ipLocatorData.getCountryCode());
+	    		ipLocatorEventDTO.setIpLocRegion(ipLocatorData.getRegion());
+	    		ipLocatorEventDTO.setIpLocCity(ipLocatorData.getCity());
+	    		ipLocatorEventDTO.setUserAgent(requestClassifier.getUserAgent());
+	    		ipLocatorEventDTO.setUaHashPercent(requestClassifier.getHashPercent());
+	    		ipLocatorEventDTO.setIplocRolloutPercent(100);
+	    		
+                user = createUser(session, response, ipLocatorData, ipLocatorEventDTO);
 
-    		}    	
-    	} 
+	    	} catch (Exception e) {
+				LOGGER.error("IP Locator failed: ", e);
+			} 	
+        } else if (RobotRecognizer.isFriendlyRobot(request)) {
+            user = RobotUtil.createRobotUser(session);
+        }
     	
    		return user;
     }

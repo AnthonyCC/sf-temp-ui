@@ -674,7 +674,8 @@ public class Cart {
                     if (view.isDisplayDepartment() || AFFILIATE_USQ_WINES_CODE.equalsIgnoreCase(view.getAffiliate().getCode())) {
 
                         //This gets the first item's department, does not apply to Recipe
-                        String lastDeptImgName = cartLine.lookupProduct().getDepartment().getContentName() + "_cart.gif";
+                        String lastDeptImgName = cartLine!=null&&cartLine.lookupProduct()!=null&&cartLine.lookupProduct().getDepartment()!=null?
+                        							cartLine.lookupProduct().getDepartment().getContentName() + "_cart.gif":null;
 
                         if (lastDept.startsWith("Recipe: ")) {
                             //                            if (null == recipeDeptGroup) {

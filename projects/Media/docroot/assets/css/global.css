@@ -1998,8 +1998,8 @@ div.control, div.slotRow, div.time {
 	}
 	.ui-dialog.overlay-dialog-new .ui-dialog-titlebar button.ui-dialog-titlebar-close{
 		position: absolute;
-		top: -35px;
-		right: -35px;
+		top: -27px;
+		right: -27px;
 		background: none;
 	}
 	.ui-dialog.overlay-dialog-new.mm-page-overlay .ui-dialog-titlebar button.ui-dialog-titlebar-close{
@@ -3436,20 +3436,20 @@ table.order_history_table tr{
 	height: 50px;
 }
 
-table.order_history_table td{
+table.order_history_table td,table.order_history_table th{
 	font-size: inherit;
 	padding: 0 0 0 10px;
 }
 
-table.order_history_table td.order_history_table_total_header{
+.order_history_table .order_history_table_total_header{
 	width: 100px;
 }
 
-table.order_history_table td.order_history_table_status_header{
+.order_history_table .order_history_table_status_header{
 	width: 110px;
 }
 
-table.order_history_table td img {
+.order_history_table img {
 	width: 20px;
 }
 
@@ -3457,6 +3457,6 @@ table.order_history_table tr:nth-child(odd){
 	background-color: #f8f8f8;
 }
 
-table.order_history_table tr:nth-child(1) td{
+table.order_history_table tr:nth-child(1) th{
 	background-color: #eee;
 }

@@ -5,11 +5,17 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.framework.marker.ThirdPartyIntegration;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventI;
 import com.freshdirect.webapp.unbxdanalytics.eventsink.EventSinkI;
 
-public final class EventLoggerService implements EventSinkI {
+/**
+ * This sends the unbxd analytics events to unbxd
+ * 
+ *
+ */
+public final class EventLoggerService implements EventSinkI, ThirdPartyIntegration {
 
     private static final Logger LOGGER = LoggerFactory.getInstance(EventLoggerService.class);
 
