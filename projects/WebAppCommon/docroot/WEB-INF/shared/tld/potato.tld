@@ -339,6 +339,11 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+		<attribute>
+            <name>action</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>
     <tag>
         <name>singlePageCheckoutSuccess</name>
@@ -346,11 +351,6 @@
         <body-content>empty</body-content>
         <attribute>
             <name>name</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-		<attribute>
-            <name>action</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
