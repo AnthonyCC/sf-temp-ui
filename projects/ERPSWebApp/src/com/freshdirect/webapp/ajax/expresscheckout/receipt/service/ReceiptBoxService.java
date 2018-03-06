@@ -59,6 +59,8 @@ public class ReceiptBoxService {
     private static final String ZERO_POINT_ZERO_ZERO_VALUE = "$0.00";
     private static final String TIP_TEXT = "Optional Tip";
     private static final String TIP_ID = "tip";
+    private static final String ORDER_FREE_TRIAL_MSG_ID = "ORDER_FREE_TRIAL_MSG_ID";
+    private static final String ORDER_FREE_TRIAL_MSG = "ORDER_FREE_TRIAL_MSG";
 
     private static final ReceiptBoxService INSTANCE = new ReceiptBoxService();
 
@@ -90,15 +92,22 @@ public class ReceiptBoxService {
             receiptBox.add(data);
         }
     }
-
+    
     public void populateDeliveryChargeToBox(List<CartSubTotalFieldData> receiptBox, FDOrderI order, FDUserI user) {
-        if (order.isDlvPassApplied()) {
+    	boolean freeTrialOptinBasedDPApplied = order.isChargeWaived(EnumChargeType.DELIVERY) &&  user.applyFreeTrailOptinBasedDP();
+    	
+        if (order.isDlvPassApplied() || freeTrialOptinBasedDPApplied) {
             CartSubTotalFieldData data = new CartSubTotalFieldData();
             data.setId(DELIVERY_CHARGE_ID);
             data.setText(DELIVERY_CHARGE_NAME);
             String deliveryPassAppliedMessage = DeliveryPassUtil.getDlvPassAppliedMessage(user);
             data.setValue(deliveryPassAppliedMessage);
             receiptBox.add(data);
+            
+            if(freeTrialOptinBasedDPApplied) {
+            	data.getOther().put(ORDER_FREE_TRIAL_MSG, freeTrialOptinBasedDPApplied);
+            }
+            
         } else if (order.getChargeAmount(EnumChargeType.DELIVERY) > 0) {
             if (order.isChargeWaived(EnumChargeType.DELIVERY)) {
                 CartSubTotalFieldData data = new CartSubTotalFieldData();
