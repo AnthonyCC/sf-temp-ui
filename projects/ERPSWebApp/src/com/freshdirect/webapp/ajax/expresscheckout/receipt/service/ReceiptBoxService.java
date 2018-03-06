@@ -59,7 +59,6 @@ public class ReceiptBoxService {
     private static final String ZERO_POINT_ZERO_ZERO_VALUE = "$0.00";
     private static final String TIP_TEXT = "Optional Tip";
     private static final String TIP_ID = "tip";
-    private static final String ORDER_FREE_TRIAL_MSG_ID = "ORDER_FREE_TRIAL_MSG_ID";
     private static final String ORDER_FREE_TRIAL_MSG = "ORDER_FREE_TRIAL_MSG";
 
     private static final ReceiptBoxService INSTANCE = new ReceiptBoxService();
