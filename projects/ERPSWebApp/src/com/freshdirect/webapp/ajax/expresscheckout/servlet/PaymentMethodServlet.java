@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
@@ -18,6 +19,7 @@ import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode;
+import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.data.PageAction;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
@@ -31,6 +33,9 @@ import com.freshdirect.webapp.ajax.expresscheckout.service.SinglePageCheckoutFac
 import com.freshdirect.webapp.ajax.expresscheckout.tag.SinglePageCheckoutPotatoTag;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationError;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationResult;
+import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
+import com.freshdirect.webapp.util.CaptchaUtil;
 import com.freshdirect.webapp.util.StandingOrderHelper;
 import com.freshdirect.webapp.util.StandingOrderUtil;
 
@@ -85,9 +90,13 @@ public class PaymentMethodServlet extends BaseJsonServlet {
             request.setAttribute("pageAction", pageAction);
             boolean changed = false;
             final FormDataResponse paymentSubmitResponse = FormDataService.defaultService().prepareFormDataResponse(paymentRequestData, validationResult);
+            HttpSession session = request.getSession();
             if (pageAction != null) {
                 switch (pageAction) {
                     case ADD_PAYMENT_METHOD: {
+                    	if (!checkCaptcha(paymentRequestData, request.getRemoteAddr(), session, validationResult, paymentSubmitResponse, response)) {
+                    		return;
+                    	}
                         List<ValidationError> validationErrors = PaymentService.defaultService().addPaymentMethod(paymentRequestData, request, user);
                         validationResult.getErrors().addAll(validationErrors);
                         if (validationErrors.isEmpty()) {
@@ -104,12 +113,18 @@ public class PaymentMethodServlet extends BaseJsonServlet {
                                 validationResult.getErrors().addAll(validationErrors);
                             }
                         }
+                        checkPaymentAttempt(validationResult, session);
                         changed = true;
                         break;
                     }
                     case EDIT_PAYMENT_METHOD: {
+                    	if (!checkCaptcha(paymentRequestData, request.getRemoteAddr(), session, validationResult, paymentSubmitResponse, response)) {
+                    		return;
+                    	}
                         List<ValidationError> validationErrors = PaymentService.defaultService().editPaymentMethod(paymentRequestData, request, user);
                         validationResult.getErrors().addAll(validationErrors);
+                        
+                        checkPaymentAttempt(validationResult, session);
                         changed = true;
                         break;
                     }
@@ -209,7 +224,9 @@ public class PaymentMethodServlet extends BaseJsonServlet {
                         String paymentId = FormDataService.defaultService().get(paymentRequestData, "id");
                         PaymentEditData userPaymentMethod = PaymentService.defaultService().loadUserPaymentMethod(user, paymentId);
                         paymentSubmitResponse.getSubmitForm().getResult().put("paymentEditValue", userPaymentMethod);
-                        break;
+						paymentSubmitResponse.getSubmitForm().getResult().put("showCaptcha", CaptchaUtil.isExcessiveAttempt(
+								FDStoreProperties.getMaxInvalidPaymentAttempt(), session, SessionName.PAYMENT_ATTEMPT));
+						break;
                     }
 /*                    case MASTERPASS_PICK_MP_PAYMENTMETHOD: {
                     	String selectedWalletCardId ="";
@@ -502,5 +519,33 @@ public class PaymentMethodServlet extends BaseJsonServlet {
     @Override
     protected boolean synchronizeOnUser() {
         return false;
+    }
+    
+	private boolean checkCaptcha(FormDataRequest request, String ip, HttpSession session, ValidationResult result, FormDataResponse paymentSubmitResponse, HttpServletResponse response) throws HttpErrorResponse {
+		String captchaToken = request.getFormData().get("g-recaptcha-response") != null
+				? request.getFormData().get("g-recaptcha-response").toString()
+				: null;
+		boolean isCaptchaSuccess = CaptchaUtil.validateCaptchaV2(captchaToken,
+				ip, session, SessionName.PAYMENT_ATTEMPT, FDStoreProperties.getMaxInvalidPaymentAttempt());
+		if (!isCaptchaSuccess) {
+			result.addError(new ValidationError("captcha", SystemMessageList.MSG_INVALID_CAPTCHA));
+    		paymentSubmitResponse.getSubmitForm().setSuccess(false);
+    		writeResponseData(response, paymentSubmitResponse);
+			return false;
+		}
+		
+		return true;
+	}
+    
+    private void checkPaymentAttempt(ValidationResult result, HttpSession session) {
+    	if (result.getErrors().isEmpty()) {
+    		session.setAttribute(SessionName.PAYMENT_ATTEMPT, 0);
+    	} else {
+    		int currentAttempt = session.getAttribute(SessionName.PAYMENT_ATTEMPT) != null ? (Integer) session.getAttribute(SessionName.PAYMENT_ATTEMPT) : Integer.valueOf(0);
+    		session.setAttribute(SessionName.PAYMENT_ATTEMPT, ++currentAttempt);
+    		if (currentAttempt >= FDStoreProperties.getMaxInvalidPaymentAttempt()) {
+    			result.addError(new ValidationError("excessiveAttempt",""));
+    		}
+    	}
     }
 }

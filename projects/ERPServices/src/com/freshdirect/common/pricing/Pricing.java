@@ -186,7 +186,7 @@ public class Pricing implements Serializable {
 			zpModel=_getZonePrice(zone);
 		}
 		try {
-			if(!pricingZoneInfo.getSalesOrg().equals(zpModel.getPricingZone().getSalesOrg()) && ZoneInfo.PricingIndicator.BASE.equals(pricingZoneInfo.getPricingIndicator()) && !isWineOrSpirit) {
+			if(null !=pricingZoneInfo && !pricingZoneInfo.getSalesOrg().equals(zpModel.getPricingZone().getSalesOrg()) && ZoneInfo.PricingIndicator.BASE.equals(pricingZoneInfo.getPricingIndicator()) && !isWineOrSpirit) {
 				MaterialPrice[] baseIndicatorMaterialPrice=getBaseIndicatorMaterialPrice(zpModel.getMaterialPrices());
 				return new ZonePriceModel(zpModel.getPricingZone(),baseIndicatorMaterialPrice);
 			}else 

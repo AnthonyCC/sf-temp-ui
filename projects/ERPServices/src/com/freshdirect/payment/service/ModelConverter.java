@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
 
@@ -24,6 +25,11 @@ import com.freshdirect.common.pricing.SalesUnitRatio;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.content.attributes.AttributeCollection;
 import com.freshdirect.content.attributes.AttributesI;
+import com.freshdirect.content.nutrition.EnumAllergenValue;
+import com.freshdirect.content.nutrition.EnumClaimValue;
+import com.freshdirect.content.nutrition.EnumKosherSymbolValue;
+import com.freshdirect.content.nutrition.EnumKosherTypeValue;
+import com.freshdirect.content.nutrition.EnumOrganicValue;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.content.nutrition.ErpNutritionModel;
 import com.freshdirect.content.nutrition.NutritionInfoAttribute;
@@ -47,6 +53,7 @@ import com.freshdirect.customer.EnumZoneServiceType;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpComplaintReason;
 import com.freshdirect.customer.ErpCreditCardModel;
+import com.freshdirect.customer.ErpCustEWalletModel;
 import com.freshdirect.customer.ErpCustomerCreditModel;
 import com.freshdirect.customer.ErpECheckModel;
 import com.freshdirect.customer.ErpEbtCardModel;
@@ -92,6 +99,7 @@ import com.freshdirect.ecommerce.data.enums.EnumComplaintDlvIssueTypeData;
 import com.freshdirect.ecommerce.data.enums.EnumFeaturedHeaderTypeData;
 import com.freshdirect.ecommerce.data.enums.ErpAffiliateData;
 import com.freshdirect.ecommerce.data.erp.coo.CountryOfOriginData;
+import com.freshdirect.ecommerce.data.erp.ewallet.ErpCustEWalletData;
 import com.freshdirect.ecommerce.data.erp.inventory.ErpInventoryData;
 import com.freshdirect.ecommerce.data.erp.inventory.ErpInventoryEntryData;
 import com.freshdirect.ecommerce.data.erp.material.AttributeCollectionData;
@@ -365,7 +373,7 @@ public class ModelConverter {
 
 	public static Map<ErpCOOLKey, ErpCOOLInfo> buildCoolModel(
 			List<CountryOfOriginData> list) {
-		Map<ErpCOOLKey, ErpCOOLInfo> erpCOOLInfo=null;
+		Map<ErpCOOLKey, ErpCOOLInfo> erpCOOLInfo=new HashMap<ErpCOOLKey, ErpCOOLInfo>();
 		ErpCOOLInfo info=null;
 		ErpCOOLKey key=null;
 		for(CountryOfOriginData data: list) {
@@ -2029,10 +2037,65 @@ public class ModelConverter {
 
 	public static NutritionInfoAttribute buildNutritionAttribute(
 			NutritionInfoAttributeData value) {
-		NutritionInfoAttribute data = new NutritionInfoAttribute(buildErpNutritionInfoType(value.getType()), value.getPriority(), value.getValue());
+		ErpNutritionInfoType nutType= buildErpNutritionInfoType(value.getType());
+		NutritionInfoAttribute data = new NutritionInfoAttribute(nutType, value.getPriority(), buildEnumKosherSymbolValue(nutType,value.getValue()));
 		return data;
 	}
 
+	private static Object buildEnumKosherSymbolValue(ErpNutritionInfoType nutType,Object obj) {
+		   Object value = null;
+		   if(obj==null)
+			   return null;
+		  String code =  getCode(obj);
+		 if (nutType.equals(ErpNutritionInfoType.CLAIM)) {
+             value = EnumClaimValue.getValueForCode(code);
+         } else if (nutType.equals(ErpNutritionInfoType.KOSHER_SYMBOL)) {
+             value = EnumKosherSymbolValue.getValueForCode(code);
+         } else if (nutType.equals(ErpNutritionInfoType.KOSHER_TYPE)) {
+             value =  EnumKosherTypeValue.getValueForCode(code);
+         } else if (nutType.equals(ErpNutritionInfoType.ALLERGEN)) {
+             value = EnumAllergenValue.getValueForCode(code);
+         } else if (nutType.equals(ErpNutritionInfoType.ORGANIC)) {
+             value = EnumOrganicValue.getValueForCode(code);
+         } else {
+             value = code;
+         }
+		return value;
+	}
+	private static String getCode(Object objData){
+		String code=null;
+		List objDataTemp = null;
+		Map objDataMap=null;
+		if(objData instanceof  ArrayList){
+			objDataTemp = (ArrayList)objData;
+			objDataMap = (Map)objDataTemp.get(0);
+			Set keys = objDataMap.keySet();
+			for(Object key:keys){
+				String keyData=(String)key;
+				if(keyData.equalsIgnoreCase("value")){
+					Map coded = (Map)objDataMap.get(keyData);
+					for(Object valueKey:coded.keySet()){
+						String valuekeyData=(String)valueKey;
+						if(valuekeyData.equalsIgnoreCase("Code"))
+							code = (String)coded.get(valuekeyData);
+					}
+				}
+			}
+		}else if(objData instanceof  Map){
+			objDataMap =(Map) objData;
+			Set keys = objDataMap.keySet();
+			for(Object key:keys){
+				String keyData=(String)key;
+				if(keyData.equalsIgnoreCase("Code"))
+					code = (String)objDataMap.get(keyData);
+			}
+		}else if(objData instanceof  String){
+			code = (String)objData;
+			}
+		
+		return code;
+		
+	}
 	public static ErpNutritionInfoType buildErpNutritionInfoType(ErpNutritionInfoTypeData key) {
 		ErpNutritionInfoType data =    ErpNutritionInfoType.getInfoType(key.getCode());
 		return data;
@@ -2504,6 +2567,17 @@ public class ModelConverter {
 		}
 		return logModel;
 		
+	}
+
+	public static ErpCustEWalletModel buildErpCustEwalletModel(ErpCustEWalletData data) {
+		ErpCustEWalletModel erpCustEwalletModel = new ErpCustEWalletModel();
+		erpCustEwalletModel.setCustomerId(data.getCustomerId());
+		erpCustEwalletModel.setEmailId(data.getEmailId());
+		erpCustEwalletModel.seteWalletId(data.geteWalletId());
+		if(data.getId() != null)
+		erpCustEwalletModel.setId(data.getId());
+		erpCustEwalletModel.setLongAccessToken(data.getLongAccessToken());
+		return erpCustEwalletModel;
 	}
 
 }

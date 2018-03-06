@@ -205,6 +205,14 @@ public final class ZoneInfo implements java.io.Serializable, Comparable<ZoneInfo
 	public PricingIndicator getPricingIndicator() {
 		return pricingIndicator;
 	}
+	public String getZoneId() {
+		return zoneId;
+	}
+	public ZoneInfo getParent() {
+		return parent;
+	}
+	
+	
 	
 	
 }

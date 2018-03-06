@@ -606,7 +606,7 @@ if (isAvailable ) {
 					<a href="javascript:chgNamedQty(pricing,'quantity<%=suffix%>',<%= productNode.getQuantityIncrement() %>,<%= productNode.getQuantityMinimum() %>,<%= user.getQuantityMaximum(productNode) %>);" class="quantity_plus">+<div class="vahidden">Increase quantity</div></a>
 					<%= (mobWeb && CartName.MODIFY_CART.equals(cartMode)) ? "<br />" : "" %>
 					<span class="qtyprice"><label for="price_field">Price</label></span>
-					<input class="<%= (mobWeb) ? "qty " : "" %>qtypriceinput accessibleblurinput" type="text" id="price_field" name="price" size="6" disabled="disabled" onChange="" onFocus="blur()" value=""/>
+					<input class="<%= (mobWeb) ? "qty " : "" %>qtypriceinput accessibleblurinput" type="text" aria-live="polite" id="price_field" name="price" size="6" disabled="disabled" onChange="" tabindex="0" value=""/>
 				</div>
 			<% if (mobWeb && CartName.MODIFY_CART.equals(cartMode)) { %>
 				<%-- do nothing, but make the row a single column (above), the divs will handle the split --%>

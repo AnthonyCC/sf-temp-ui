@@ -820,18 +820,24 @@ function parseTipTotal(data) {
 			value: function(data) {
 				var subTotalBox = data.subTotalBox;
 				if (subTotalBox && subTotalBox.subTotalBox && subTotalBox.subTotalBox.length) {
-					subTotalBox.subTotalBox.forEach( function(box) {
-						if (box.id === 'deliveryfee') {
-							var showDeliveryPass = box.other && box.other.deliveryPassPopupNeeded;
-							var freeWithDeliveryPass = false;
-							var deliveryFeeValue = box.value;
-							if (!showDeliveryPass && box.value && box.value == 'FREE with DeliveryPass') {
-								deliveryFeeValue = '<div><span class="delivery-free-with-label">Free with</span><div class="delivery-pass-label">DeliveryPass</div></div>';
-								freeWithDeliveryPass = true;
+					// APPDEV-7055, do not show delivery fee if displayDeliveryFeeForCosUserInHeader is false and user is COS
+					var displayDeliveryFee = !subTotalBox.userCorporate || (fd && fd.properties && fd.properties.displayDeliveryFeeForCosUserInHeader);
+					if (displayDeliveryFee) {
+						subTotalBox.subTotalBox.forEach( function(box) {
+							if (box.id === 'deliveryfee') {
+								var showDeliveryPass = box.other && box.other.deliveryPassPopupNeeded;
+								var freeWithDeliveryPass = false;
+								var deliveryFeeValue = box.value;
+								if (!showDeliveryPass && box.value && box.value == 'FREE with DeliveryPass') {
+									deliveryFeeValue = '<div><span class="delivery-free-with-label">Free with</span><div class="delivery-pass-label">DeliveryPass</div></div>';
+									freeWithDeliveryPass = true;
+								}
+								checkoutCartHeaderData.deliveryFee = [{id: 'checkout-cart-header-'+box.id+(showDeliveryPass? '' :freeWithDeliveryPass?'-with-delivery-pass':'-no-action'), text: box.text, value: deliveryFeeValue, other: (freeWithDeliveryPass? null : box.other)}];
 							}
-							checkoutCartHeaderData.deliveryFee = [{id: 'checkout-cart-header-'+box.id+(showDeliveryPass? '' :freeWithDeliveryPass?'-with-delivery-pass':'-no-action'), text: box.text, value: deliveryFeeValue, other: (freeWithDeliveryPass? null : box.other)}];
-						}
-					});
+						});
+					} else {
+						checkoutCartHeaderData.deliveryFee = null;
+					}
 					checkoutCartHeaderData.userCorporate = subTotalBox.userCorporate;
 					checkoutCartHeaderData.userRecognized = subTotalBox.userRecognized;
 				}

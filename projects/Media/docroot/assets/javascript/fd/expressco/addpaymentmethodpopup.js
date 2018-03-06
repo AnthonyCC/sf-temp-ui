@@ -60,14 +60,20 @@ var FreshDirect = FreshDirect || {};
       }
     },
     open: {
-      value: function (e, data) {
+      value: function (e, data, showCaptcha) {
         var $t = e && $(e.currentTarget) || $(document.body),
         	tabToShow = $t.attr('data-showechecktab');
         e && e.preventDefault();
 
         data = data || {};
         data.metadata = data.metadata || fd.metaData || fd.expressco.data.formMetaData;
-
+        if (showCaptcha != null) {
+        	fd.user = fd.user || {};
+        	fd.user.showCaptchaInPayment = showCaptcha;
+        } else {
+        	showCaptcha = fd.user && fd.user.showCaptchaInPayment;
+        }
+        data.showCaptcha = showCaptcha;
         this.refreshBody(data);
         this.popup.show($t);
         this.popup.clicked = true;
@@ -80,6 +86,10 @@ var FreshDirect = FreshDirect || {};
 
         $('#'+this.popupId+' [fdform]').each(function (i, form) {
           fd.modules.common.forms.decorateFields(form);
+          var formId = $(form).attr('fdform');
+          if (showCaptcha && fd.forms && fd.forms[formId] && fd.forms[formId].displayCaptcha) {
+        	  fd.forms[formId].displayCaptcha();
+          }
         });
 
         try {

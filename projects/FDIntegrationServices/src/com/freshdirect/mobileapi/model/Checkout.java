@@ -135,8 +135,9 @@ public class Checkout {
         return result;
     }
 
-    public ResultBundle addPaymentMethod(PaymentMethodRequest paymentMethod) throws FDException {
+    public ResultBundle addPaymentMethod(PaymentMethodRequest paymentMethod, Object attempt) throws FDException {   
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
+        tagWrapper.addSessionValue(SessionName.PAYMENT_ATTEMPT, attempt);
         return tagWrapper.addPaymentMethod(paymentMethod);
     }
 
@@ -167,14 +168,16 @@ public class Checkout {
         return result;
     }
 
-    public ResultBundle addAndSetPaymentMethod(PaymentMethodRequest paymentMethod) throws FDException {
+    public ResultBundle addAndSetPaymentMethod(PaymentMethodRequest paymentMethod, Object attempt) throws FDException {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
+        tagWrapper.addSessionValue(SessionName.PAYMENT_ATTEMPT, attempt);
         ResultBundle result = tagWrapper.addAndSetPaymentMethod(paymentMethod);
         return result;
     }
 
-    public ResultBundle editPaymentMethod(PaymentMethodRequest paymentMethod) throws FDException {
+    public ResultBundle editPaymentMethod(PaymentMethodRequest paymentMethod, Object attempt) throws FDException {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
+        tagWrapper.addSessionValue(SessionName.PAYMENT_ATTEMPT, attempt);
         ResultBundle result = tagWrapper.editPaymentMethod(paymentMethod);
         return result;
     }

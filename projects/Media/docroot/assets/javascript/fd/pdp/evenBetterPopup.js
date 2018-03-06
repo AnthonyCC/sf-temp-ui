@@ -105,7 +105,7 @@ var FreshDirect = FreshDirect || {};
                 				return; //stop multiple firings
                 			}
                         	var url = $parent.data('hooklogic-beacon-click');
-                        	$parent.append('<img class="hl-beacon-click" id="'+id+'" src="'+url+'&rand='+new Date().getTime()+'" style="display: none;" />');
+                        	$parent.append('<img alt="" class="hl-beacon-click" id="'+id+'" src="'+url+'&rand='+new Date().getTime()+'" style="display: none;" />');
                 		});
                 	}
         	  }

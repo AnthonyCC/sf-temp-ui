@@ -1626,7 +1626,7 @@ public class Product {
      */
     public String getHeatingInstructions() {
         String result = "";
-        if (isAvailable()) {
+        if (product!=null&&product.getFDProduct()!=null&&isAvailable()) {
             result = product.getFDProduct().getNutritionInfoString(ErpNutritionInfoType.HEATING);
         }
         return result;
@@ -1924,7 +1924,7 @@ public class Product {
 
     public static Product getProductWithAnalyticsEventSend(String id, String categoryId, FDCartLineI cartLine, SessionUser user, HttpServletRequest request) throws ServiceException{
         Product product = getProduct(id, categoryId, cartLine, user);
-        if(FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, request.getCookies(), user.getFDSessionUser())){
+        if(FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, request.getCookies(), user.getFDSessionUser())&&user!=null&&product!=null&&product.product!=null){
           ClickThruEventTag.doSendEvent(user.getFDSessionUser(), request, product.product.getProductModel());
         }
         return product;

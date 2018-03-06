@@ -136,6 +136,7 @@
 				<div id="search" style="display: block;"><%-- FDMW18-113 : always show, change back to none if using toggle again --%>
 					<form class="searchform" name="search" action="/search.jsp" method="get" accept-charset="iso-8859-1">
 						<span class="icon-search"></span>
+						<span class="icon-cancel-circle-after" style="display: none;"></span>
 						<input type="text" id="topSearchField" aria-label="search" placeholder="Search" data-component="autocomplete" class="search ui-autocomplete-input fnt-18" name='searchParams' autocomplete="off" />
 					</form>
 				</div>
@@ -203,10 +204,10 @@
 			</span>
 			<ul class="navMenuItems-reorder rem-navbar">
 				<li>
-					<span class="glBreadcrumblink"><a href="/quickshop/qs_top_items.jsp">Your Top Items</a></span>
+					<span class="glBreadcrumblink"><a href="/quickshop/qs_top_items.jsp">Items</a></span>
 				</li>
 				<li>
-					<span class="glBreadcrumblink"><a href="/quickshop/qs_past_orders.jsp">Your Last Order</a></span>
+					<span class="glBreadcrumblink"><a href="/quickshop/qs_past_orders.jsp">Orders</a></span>
 				</li>
 				<!-- 
 					<li>
@@ -255,7 +256,7 @@
 		</li>
 		
 		<li class="hide-on-subopen no-divider">
-			<span><a href="/your_account/manage_account.jsp">Your Account</a></span>
+			<span><a href="/your_account/manage_account.jsp">Settings</a></span>
 		</li>
 		<li class="hide-on-subopen no-divider">
 			<span><a href="/help/index.jsp">Help</a></span>

@@ -287,6 +287,19 @@ public class FDProductInfo extends FDSku  {
 					|| "TEST".equalsIgnoreCase(sa.getUnavailabilityStatus());
 		return true;//Consider no sales area information from SAP as discontinued status
     }
+    
+    public boolean isTestInAnyArea() {   	
+    	boolean testSku = false;
+    	for (FDMaterialSalesArea msa : this.materialAvailability.values()) {
+			if (!testSku) {
+				testSku = "TEST".equalsIgnoreCase(msa.getUnavailabilityStatus());
+			}
+			else {
+				break;
+			}			
+		}    	
+		return testSku;
+    }
 
     public boolean isOutOfSeason(String salesOrg, String distributionChannel) {
     	FDMaterialSalesArea sa= this.materialAvailability.get(new String(salesOrg+distributionChannel));

@@ -1203,6 +1203,7 @@
 * @param? etipTotal
 * @param? withContainer
 * @param? unescapeValue
+* @param? isHeader - if cart header vs cart detail
 */
 {template .subTotalBox}
 	{let $subtotalUsed: 0 /}
@@ -1361,9 +1362,9 @@
 						{/if}
 						{if $box.other.deliveryPassPopupNeeded and $userRecognized and $userCorporate == false}
 							{if $box.other.deliveryPassFreeTrialEligible}
-								<span class="free-link-holder">&nbsp;or <a href="javascript:doOverlayDialogNew('/includes/freetrial_popup.jsp');" class="free-link" >Free</a></span>
+								<span class="free-link-holder">&nbsp;or <a href="javascript:doOverlayDialogNew('/includes/freetrial_popup.jsp');" class="{if $isHeader}cssbutton small green {/if}free-link" >Free</a></span>
 							{else}
-								<span class="free-link-holder">&nbsp;or <a href="#" class="free-link" data-component="deliverypasspopup">Free</a></span>
+								<span class="free-link-holder">&nbsp;or <a href="#" class="{if $isHeader}cssbutton small green {/if}free-link" data-component="deliverypasspopup">Free</a></span>
 							{/if}
 						{/if}
 					</div> <!-- end subtotal__rowcell-right -->
@@ -1510,6 +1511,7 @@
 * @param? modifyOrder
 */
 {template .checkoutCartHeader}
+	{let $showDeliveryFee : $deliveryFee != null /}
 	{if $deliveryFee} 
 	<div class="delivery-fee container medium-container"> 
 		{call .subTotalBox}
@@ -1524,11 +1526,12 @@
 			{param etipTotal: 0 /}
 			{param withContainer: true /}
 			{param unescapeValue: true /}
+			{param isHeader: true /}
 		{/call}
 	</div>
 	{/if}
 	{if $tipAmounts}
-	<div class="tip container medium-container"> 
+	<div class="tip container {$showDeliveryFee?'medium' : 'large-v2'}-container"> 
 		{call .etip}
 			{param customTip: $customTip /}
 			{param isEBTused: $isEBTused /}
@@ -1541,7 +1544,7 @@
 	</div>
 	{/if}
 	{if not $mobWeb}
-	<div class="order-total container small-container">	
+	<div class="order-total container {$showDeliveryFee?'small' : 'large-v2'}-container">	
 		<div class="subtotal__row" >
 			<div class="subtotal__rowcell-left rowcell-colon-right">
 				<div id="oas_b_FirstECheckPromo" class="oas-cnt hidden" data-component="addpaymentmethodbutton" aria-haspopup="true" data-showechecktab='addpaymentmethod_bank'>
@@ -1553,7 +1556,7 @@
 			<div class="subtotal__rowcell-right"></div>
 		</div>
 	</div>
-	<div class="place-order container large-container {if not $saveAmount}no-save-amount{/if}">
+	<div class="place-order container {$showDeliveryFee?'large' : 'large-v3'}-container {if not $saveAmount}no-save-amount{/if}">
 		{if $saveAmount}<div class="save-amount">You've Saved {$saveAmount}</div>{/if}
 		<form fdform="checkout" action="#" fdform-disable-resubmit="true" fdform-disable-resubmit-selector=".cssbutton.orange" fdform-disable-resubmit-release="manual">
 			<button class="cssbutton orange footer__button icon-chevron-right-after" fd-login-required="">{($modifyOrder and $modifyOrder == true)? 'Save Changes': 'Place Order'}</button>

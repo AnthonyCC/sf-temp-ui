@@ -201,11 +201,46 @@ var FreshDirect = FreshDirect || {};
 	// $(document).on('click', paymentMethod.previewHolder(),	paymentMethod.previewClick.bind(paymentMethod));
 
 	// payment related forms
+	var displayCaptcha = function (formId) {
+		var containerName = formId.toLowerCase() + '-payment-g-recaptcha';
+		if ($jq('#' + containerName + '-container').length === 0) {
+			return;
+		} else if ($jq('#' + containerName).children().length){
+			fd.components.captchaWidget.reset();
+		} else {
+	 		fd.components.captchaWidget.init(null,  function() {
+				fd.components.captchaWidget.render(containerName, function() {
+					$jq('[fdform="' + formId + '"]').trigger('change');
+				}, function () {
+					$jq('#' + containerName + '-container').hide();
+				}, function () {
+					$jq('[fdform="' + formId + '"]').trigger('change');
+				});
+			});
+		}
+	}
 	fd.modules.common.forms.register({
 	id: "CC",
 	success: function () {
 		if (fd.expressco.addpaymentmethodpopup) {
 			fd.expressco.addpaymentmethodpopup.close();
+		}
+		fd.user = fd.user || {};
+		fd.user.showCaptchaInPayment = false;
+	},
+	displayCaptcha: function () {
+		return displayCaptcha('CC');
+	},
+	validationFailure: function (data) {
+		if (data && data.errors && data.errors.length) {
+			data.errors.forEach(function(e) {
+				//display captcha if user has tried too many times
+				if (e.name === 'excessiveAttempt') {
+					displayCaptcha(data.fdform);
+					fd.user = fd.user || {};
+					fd.user.showCaptchaInPayment = true;
+				}
+			});
 		}
 	}
 	});
@@ -306,8 +341,8 @@ var FreshDirect = FreshDirect || {};
 	fd.modules.common.forms.register({
 		id: "payment_loadPaymentMethod",
 		success: function (id, result) {
-			if (id &&	result && result.paymentEditValue) {
-				fd.expressco.addpaymentmethodpopup.open(null, result.paymentEditValue);
+			if (id && result && result.paymentEditValue) {
+				fd.expressco.addpaymentmethodpopup.open(null, result.paymentEditValue, result.showCaptcha);
 			}
 		}
 	});

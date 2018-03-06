@@ -86,6 +86,7 @@ public class SinglePageCheckoutServlet extends BaseJsonServlet {
 					&& null != user.getShoppingCart().getDeliveryAddress()) {
 				CheckoutService.defaultService().getAvalaraTax(user.getShoppingCart());
 			}
+			writeResponseData(response, null);
 		} else if (action.equals("getDrawer")) {
 			Map<String, List<DrawerData>> data = DrawerService.defaultService().loadDrawer(user);
 			writeResponseData(response, data);

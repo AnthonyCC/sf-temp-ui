@@ -166,7 +166,8 @@ public class SearchService {
      */
     public SearchResults searchProducts(String searchTerm, Cookie[] cookies, FDUserI user, String requestUrl, String referer, boolean searchRecipe) {
         SearchResults searchResults = new SearchResults(); 
-        boolean isUnbxdSearchEnabled = FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, cookies, user);
+
+        boolean isUnbxdSearchEnabled = FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, cookies, user) && !user.isRobot();
         if(searchTerm != null && searchTerm.trim().length() > 0){
 			// if isUnbxdSearchEnabled is false, get search product & receipts from Lucene service 
 			// else if isUnbxdSearchEnabled = true && searchRecipe = true, search the recipes from Lucene

@@ -36,7 +36,7 @@ public class BrowseEventTag extends SimpleTagSupport {
         final HttpSession session = pageContext.getSession();
         final HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();
         final FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
-        
+
         if (user != null) {
             final String contentId = req.getParameter("id");
             if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, req.getCookies(), user)) {
@@ -52,22 +52,24 @@ public class BrowseEventTag extends SimpleTagSupport {
     }
 
     public static void doSendEvent(String containerId, FDUserI user, HttpServletRequest request) {
-        final ContentNodeModel model = ContentFactory.getInstance().getContentNode(containerId);
-        final boolean cosAction = CosFeatureUtil.isUnbxdCosAction(user, request.getCookies());
-        
-        if (model instanceof ProductContainer) {
-            final Visitor visitor = Visitor.withUser(user);
-            final LocationInfo loc = LocationInfo.withUrlAndReferer(RequestUtil.getFullRequestUrl(request), request.getHeader(HttpHeaders.REFERER));
+        if (!user.isRobot()) {
+            final ContentNodeModel model = ContentFactory.getInstance().getContentNode(containerId);
+            final boolean cosAction = CosFeatureUtil.isUnbxdCosAction(user, request.getCookies());
 
-            AnalyticsEventI event = AnalyticsEventFactory.createEvent(AnalyticsEventType.BROWSE, visitor, loc, null, model, null, cosAction);
+            if (model instanceof ProductContainer) {
+                final Visitor visitor = Visitor.withUser(user);
+                final LocationInfo loc = LocationInfo.withUrlAndReferer(RequestUtil.getFullRequestUrl(request), request.getHeader(HttpHeaders.REFERER));
 
-            LOGGER.debug("Sending browse event for content ID " + containerId);
+                AnalyticsEventI event = AnalyticsEventFactory.createEvent(AnalyticsEventType.BROWSE, visitor, loc, null, model, null, cosAction);
 
-            // log event
-            EventLoggerService.getInstance().log(event);
+                LOGGER.debug("Sending browse event for content ID " + containerId);
 
-        } else {
-            LOGGER.debug("Discard event for content ID " + containerId);
+                // log event
+                EventLoggerService.getInstance().log(event);
+
+            } else {
+                LOGGER.debug("Discard event for content ID " + containerId);
+            }
         }
     }
 }

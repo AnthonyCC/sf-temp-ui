@@ -2,7 +2,9 @@
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties"%>
 <%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
 <%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName" %>
 <%@ page import="com.freshdirect.webapp.util.JspMethods" %>
+<%@ page import="com.freshdirect.webapp.util.CaptchaUtil" %>
 <%@ page import="java.util.*" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -30,9 +32,11 @@ if (mobWeb) {
 		request.setAttribute("sitePage", oasSitePage.replace("www.freshdirect.com/", "www.freshdirect.com/mobileweb/")); //change for OAS
 	}
 }
+
+boolean showCaptchaInPayment = CaptchaUtil.isExcessiveAttempt(FDStoreProperties.getMaxInvalidPaymentAttempt(), session, SessionName.PAYMENT_ATTEMPT);
 %>
 <potato:pendingExternalAtcItem/>
-
+<potato:singlePageCheckout action="resetContext" />
 <tmpl:insert template='<%= pageTemplate %>'>
   <tmpl:put name="soytemplates"><soy:import packageName="expressco"/></tmpl:put>
 
@@ -154,7 +158,8 @@ if (mobWeb) {
       	fd.expressco.checkout.initSoyComponents();
       });
       window.FreshDirect.expressco = {};
-
+      window.FreshDirect.properties = window.FreshDirect.properties || {};
+      window.FreshDirect.properties.displayDeliveryFeeForCosUserInHeader = <%=FDStoreProperties.shouldShowDeliveryFeeForCheckoutPageCosCustomer()%>
       window.FreshDirect.pendingCustomizations = <fd:ToJSON object="${pendingExternalAtcItemPotato}" noHeaders="true"/>
     </script>
   </tmpl:put>
@@ -175,9 +180,17 @@ if (mobWeb) {
   <tmpl:put name="leastPrioritizeJs">
     <jwr:script src="/assets/javascript/timeslots.js" async="true" useRandomParam="false" 
     onload="fd && fd.expressco && fd.expressco.checkout && fd.expressco.checkout.timeslotDrawerDependencyLoaded()" />
-
+	<jwr:script src="/assets/javascript/fd/captcha/captchaWidget.js" useRandomParam="false" />
+	
 	<script>
-	var checkout;
+		if (<%=showCaptchaInPayment%>) {
+	  		FreshDirect.components.captchaWidget.init('<%=FDStoreProperties.getRecaptchaPublicKey()%>');
+	  		FreshDirect.user = FreshDirect.user || {};
+	  		FreshDirect.user.showCaptchaInPayment = true;
+	  	} else {
+	  		FreshDirect.components.captchaWidget.setKey('<%=FDStoreProperties.getRecaptchaPublicKey()%>');
+	  	}
+		var checkout;
 		//While loading the screen get the Device ID from braintress
 		jQuery(document).ready(function($){
 			var $ = jQuery;

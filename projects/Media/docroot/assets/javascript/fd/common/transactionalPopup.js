@@ -292,7 +292,7 @@ var FreshDirect = FreshDirect || {};
                 				return; //stop multiple firings
                 			}
                         	var url = $('#'+popupId + ' [data-hooklogic-beacon-click]:first').data('hooklogic-beacon-click');
-                        	$('#'+popupId).append('<img class="hl-beacon-click" id="'+id+'" src="'+url+'&rand='+new Date().getTime()+'" style="display: none;" />');
+                        	$('#'+popupId).append('<img alt="" class="hl-beacon-click" id="'+id+'" src="'+url+'&rand='+new Date().getTime()+'" style="display: none;" />');
                 		});
                 	}
         	  }

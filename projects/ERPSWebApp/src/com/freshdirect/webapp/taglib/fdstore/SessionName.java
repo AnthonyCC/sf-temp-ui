@@ -100,4 +100,6 @@ public interface SessionName {
     public static final String LOGIN_SUCCESS = "loginSuccess";
     public static final String SIGNUP_SUCCESS = "signupSuccess";
     public static final String SOCIAL_LOGIN_SUCCESS = "socialLoginSuccess";
+    
+    public static final String PAYMENT_ATTEMPT = "fdPaymentAttempt";
 }

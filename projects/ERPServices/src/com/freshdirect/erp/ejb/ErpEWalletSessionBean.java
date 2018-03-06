@@ -19,6 +19,14 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  * @author Aniwesh Vatsal
  *
  */
+
+
+/**
+ *@deprecated Please use the ErpEWalletController and ErpEWalletServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */ 
 public class ErpEWalletSessionBean extends SessionBeanSupport {
 
 	private static final long serialVersionUID = -2328457228177148829L;
@@ -28,6 +36,7 @@ public class ErpEWalletSessionBean extends SessionBeanSupport {
 	private static Category LOGGER = LoggerFactory
 			.getInstance(ErpEWalletSessionBean.class);
 
+	@Deprecated
 	public List<ErpEWalletModel> getAllEWallets() throws RemoteException{
 		return null;
 	}
@@ -37,6 +46,7 @@ public class ErpEWalletSessionBean extends SessionBeanSupport {
 	 * @return
 	 * @throws RemoteException
 	 */
+	@Deprecated
 	public ErpEWalletModel findEWalletById(String eWalletId)
 			throws RemoteException{
 		Connection conn = null;
@@ -65,6 +75,8 @@ public class ErpEWalletSessionBean extends SessionBeanSupport {
 	 * @return
 	 * @throws RemoteException
 	 */
+	
+	@Deprecated
 	public ErpEWalletModel findEWalletByType(String eWalletType)
 			throws RemoteException{
 		Connection conn = null;
@@ -94,6 +106,8 @@ public class ErpEWalletSessionBean extends SessionBeanSupport {
 	 * @param eWalletType
 	 * @return
 	 */
+	
+	@Deprecated
 	public ErpCustEWalletModel getLongAccessTokenByCustID(String custID, String eWalletType){
 		Connection conn = null;
 		ErpCustEWalletModel erpCustEWalletModel = null;
@@ -121,6 +135,7 @@ public class ErpEWalletSessionBean extends SessionBeanSupport {
 	 * @return
 	 * @throws RemoteException
 	 */
+	@Deprecated
 	public int insertCustomerLongAccessToken(ErpCustEWalletModel custEWallet) throws RemoteException
 	{
 		
@@ -145,7 +160,7 @@ public class ErpEWalletSessionBean extends SessionBeanSupport {
 		return row;
 		
 	}
-	
+	@Deprecated
 	public int updateLongAccessToken(String custId, String longAccessToken,String eWalletType) throws RemoteException{
 		Connection conn = null;
 		int row=0;
@@ -174,6 +189,8 @@ public class ErpEWalletSessionBean extends SessionBeanSupport {
 	 * @return
 	 * @throws RemoteException
 	 */
+	
+	@Deprecated
 	public int deleteLongAccessToken(String custId, String eWalletID) throws RemoteException{
 		Connection conn = null;
 		int row=0;

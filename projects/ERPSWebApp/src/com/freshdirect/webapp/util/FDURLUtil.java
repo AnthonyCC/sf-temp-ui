@@ -953,4 +953,12 @@ public class FDURLUtil {
 		return builtRedirectUrl;
 	}
 
+    public static String convertQueryToFragmentUrl(String url) {
+        return url.replaceFirst("\\?", "#");
+    }
+
+    public static String convertFragmentToQueryUrl(String url) {
+        return url.replaceFirst("#", "?");
+    }
+
 }

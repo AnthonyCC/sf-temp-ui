@@ -61,7 +61,7 @@ if (result == null || productNode==null || cartMode==null || user==null ){
 ContentFactory cf = ContentFactory.getInstance();
 List skus = new ArrayList();
 final CategoryModel parentCat = (CategoryModel) productNode.getParentNode();
-String errImage = "<img src=\"/media_stat/images/layout/error.gif\" border=\"0\">";
+String errImage = "<img src=\"/media_stat/images/layout/error.gif\" alt=\"\" border=\"0\" >";
 String noErrImage = ""; 
 String chefPickIndicator = "<img src=\"/media_stat/images/layout/star11.gif\" alt=\"recommended\" border=\"0\">";
 String prodPopup = "prod_desc_popup.jsp?";

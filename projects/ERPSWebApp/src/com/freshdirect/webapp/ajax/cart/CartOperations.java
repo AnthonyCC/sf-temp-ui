@@ -210,7 +210,7 @@ public class CartOperations {
                     populateCoremetricsShopTag(responseData, cartLine, cmExtraData);
                 }
                 // [APPDEV-5353] UNBXD Analytics Events
-                if (isUNBXDAnalyticsAvailable) {
+                if (isUNBXDAnalyticsAvailable && !user.isRobot()) {
                     final AnalyticsEventI event = AnalyticsEventFactory.createEvent(AnalyticsEventType.ATC, visitor, loc, null, null, cartLine, cosAction);
                     EventLoggerService.getInstance().log(event);
                 }

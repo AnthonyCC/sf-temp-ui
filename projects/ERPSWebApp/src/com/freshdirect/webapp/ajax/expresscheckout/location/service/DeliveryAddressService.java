@@ -503,7 +503,7 @@ public class DeliveryAddressService {
         pickupDepotLocationData.setPopupUrl(preparePickupPopupUrl(deliveryDepotModel.getDepotCode(), addressId));
         pickupDepotLocationData.setOpeningHours(OpeningHourConstants.getOpeningHours());
 
-        if (customerInfoModel.getOtherPhone() != null && !"".equals(customerInfoModel.getOtherPhone().toString())) {
+        if (null != customerInfoModel && customerInfoModel.getOtherPhone() != null && !"".equals(customerInfoModel.getOtherPhone().toString())) {
             pickupDepotLocationData.setPhone(customerInfoModel.getOtherPhone().getPhone());
         }
 

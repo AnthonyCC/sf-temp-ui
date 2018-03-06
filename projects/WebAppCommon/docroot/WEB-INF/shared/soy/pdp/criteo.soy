@@ -6,8 +6,8 @@
  */
 {template .criteo}
 	{if $adProducts.pageBeacon and $adProducts.pageBeacon != ''}
-		<img src="{$adProducts.pageBeacon}" style="display: none;" />
-		<img src="{$adProducts.updatePdpPageBeacon}" style="display: none;" />
+		<img src="{$adProducts.pageBeacon}" alt="" style="display: none;" />
+		<img src="{$adProducts.updatePdpPageBeacon}" alt="" style="display: none;" />
 	{/if}
     {if $adProducts.products and length($adProducts.products) > 0}
 		<div class="pdp-evenbetter">
@@ -70,7 +70,7 @@
 	
 	<div class="pdp-evenbetter-item" data-component="evenBetterItem" data-product-id="{$productId}" data-cat-id="{$catId}">
 		<div class="pdp-evenbetter-popupContainer {($clickBeacon) ? 'isHookLogicProduct' :''}"{if $clickBeacon} data-hooklogic-beacon-click="{$clickBeacon}"{/if} data-product-id="{$productId}" data-cat-id="{$catId}">
-			{if $imageBeacon}<img src="{$imageBeacon}" class="hl-beacon-product-impression" id="{$productId}"  style="display: none;" />{/if}
+			{if $imageBeacon}<img alt="" src="{$imageBeacon}" class="hl-beacon-product-impression" id="{$productId}"  style="display: none;" />{/if}
 			<div class="pdp-evenbetter-image">
 				<div class="portrait-item-burst_wrapper">
 					<img src="{$productImage}" alt="{$productNameNoBrand}" data-evenbetteritem-trigger class="portrait-item-productimage">

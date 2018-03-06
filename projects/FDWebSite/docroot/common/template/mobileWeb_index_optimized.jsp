@@ -3434,12 +3434,21 @@ img {
 	position: relative
 }
 
-#search span,.search-cont span {
+
+#search span, /* id is an override */
+.search-cont span {
 	color: #6AAA6D;
 	position: absolute;
 	font-size: 20px;
+}
+#search span.icon-search,
+.search-cont span.icon-search {
 	left: 10px;
-	top: 6px
+	top: 6px;
+}
+#search span.icon-cancel-circle-after,
+.search-cont span.icon-cancel-circle-after {
+	right: 10px;
 }
 
 .search-cont #search-faq {

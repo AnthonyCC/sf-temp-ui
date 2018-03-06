@@ -42,12 +42,14 @@ import com.freshdirect.storeapi.content.AbstractProductItemFilter;
 import com.freshdirect.storeapi.content.CategoryModel;
 import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.ContentNodeModelUtil;
 import com.freshdirect.storeapi.content.DepartmentModel;
 import com.freshdirect.storeapi.content.EnumBrandFilterLocation;
 import com.freshdirect.storeapi.content.EnumLayoutType;
 import com.freshdirect.storeapi.content.EnumSortingValue;
 import com.freshdirect.storeapi.content.FilteringProductItem;
 import com.freshdirect.storeapi.content.FilteringSortingItem;
+import com.freshdirect.storeapi.content.HasRedirectUrl;
 import com.freshdirect.storeapi.content.Html;
 import com.freshdirect.storeapi.content.PopulatorUtil;
 import com.freshdirect.storeapi.content.ProductContainer;
@@ -133,7 +135,7 @@ public class CmsFilteringFlow {
 
 		// pagination
 		BrowseDataPagerHelper.createPagerContext(browseData, nav, user);
-        
+
 		if (!nav.isPdp()) {
 			browseData.getSortOptions().setCurrentOrderAsc(nav.isOrderAscending());
 		}
@@ -169,10 +171,10 @@ public class CmsFilteringFlow {
         String plantId = user.getUserContext().getFulfillmentContext().getPlantId();
         String cacheKey = user.getPrimaryKey()+ "," +plantId + "," + nav.getId();
         BrowseDataContext browseDataContext = getBrowseDataContextFromCacheForPaging(nav, cacheKey);
-        
-		if (browseDataContext == null) {
-			browseDataContext = doBrowseFlow(nav, user);
-		}
+
+    	if (browseDataContext == null) {
+            browseDataContext = doBrowseFlow(nav, user);
+        }
 
         if (!nav.isPdp() && !nav.isSpecialPage()) { //TODO quick fix for TKG meals (special layouts)
             EhCacheUtilWrapper.putObjectToCache(CmsCaches.BR_USER_REFINEMENT_CACHE.cacheName, cacheKey, browseDataContext);
@@ -257,7 +259,7 @@ public class CmsFilteringFlow {
 
             // -- PAGING --
             BrowseDataPagerHelper.createPagerContext(browseData, nav, user);
-           
+
             Set<ContentKey> shownProductKeysForRecommender = new HashSet<ContentKey>();
             BrowseDataBuilderFactory.getInstance().collectAllProductKeysForRecommender(browseData.getSections().getSections(), shownProductKeysForRecommender);
             // -- SET NO PRODUCTS MESSAGE --
@@ -342,7 +344,7 @@ public class CmsFilteringFlow {
                 || (FilteringFlowType.PRES_PICKS.equals(nav.getPageType()) && FDStoreProperties.isPresidentPicksPagingEnabled())) {
             BrowseDataPagerHelper.createPagerContext(browseData, nav, user);
         } else {
-         	// Populate product data 
+         	// Populate product data
             populateProductData(browseData, nav, user);
         }
 
@@ -456,7 +458,7 @@ public class CmsFilteringFlow {
         if (browseDataContext == null || nav.isPdp()) {
         	return null;
         }
-        if (!isRequestForTheSamePageType(nav, browseDataContext) || 
+        if (!isRequestForTheSamePageType(nav, browseDataContext) ||
         		(!nav.getPageType().equals(FilteringFlowType.BROWSE) && !nav.getPageType().equals(FilteringFlowType.SEARCH))) {
             EhCacheUtilWrapper.removeFromCache(CmsCaches.BR_USER_REFINEMENT_CACHE.cacheName, cacheKey); // if cached has other page type
             browseDataContext = null;
@@ -1365,10 +1367,19 @@ public class CmsFilteringFlow {
             }
         }
 
+        // handle hide url case
+        if (!ContentFactory.getInstance().getPreviewMode()) {
+            String hideUrl = contentNodeModel.getHideUrl();
+
+            if (!nav.isPdp() && ContentNodeModelUtil.isRedirectUrlValid(hideUrl)) {
+                throw new InvalidFilteringArgumentException("Node is hidden on production site; browser will be redirected to: " + id, InvalidFilteringArgumentException.Type.NODE_HAS_REDIRECT_URL, hideUrl);
+            }
+        }
+
         // handle redirect url
-        if (!(contentNodeModel instanceof SuperDepartmentModel)) {
-            String redirectUrl = ((ProductContainer) contentNodeModel).getRedirectUrlClean();
-            if (!nav.isPdp() && redirectUrl != null) {
+        if (contentNodeModel instanceof HasRedirectUrl) {
+            String redirectUrl = ((HasRedirectUrl) contentNodeModel).getRedirectUrl();
+            if (!nav.isPdp() && ContentNodeModelUtil.isRedirectUrlValid(redirectUrl)) {
                 throw new InvalidFilteringArgumentException("Node has redirect URL: " + id, InvalidFilteringArgumentException.Type.NODE_HAS_REDIRECT_URL, redirectUrl);
             }
         }

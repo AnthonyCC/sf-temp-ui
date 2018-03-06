@@ -858,18 +858,20 @@ public class CheckoutController extends BaseController {
         propogateSetSessionValues(request.getSession(), resultBundle);
 
         Message responseMessage = null;
-        if (result.isSuccess()) {
-            ActionResult availabliltyResult = performAvailabilityCheck(user, request.getSession());
-            if (availabliltyResult.isSuccess()) {
-                responseMessage = Message.createSuccessMessage("Delivery slot reserved successfully.");
-            } else {
-                responseMessage = getErrorMessage(availabliltyResult, request);
-            }
-            responseMessage.addWarningMessages(availabliltyResult.getWarnings());
-        } else {
-            responseMessage = getErrorMessage(result, request);
+        if(null !=result ){
+	        if (result.isSuccess()) {
+	            ActionResult availabliltyResult = performAvailabilityCheck(user, request.getSession());
+	            if (availabliltyResult.isSuccess()) {
+	                responseMessage = Message.createSuccessMessage("Delivery slot reserved successfully.");
+	            } else {
+	                responseMessage = getErrorMessage(availabliltyResult, request);
+	            }
+	            responseMessage.addWarningMessages(availabliltyResult.getWarnings());
+	        } else {
+	            responseMessage = getErrorMessage(result, request);
+	        }
+        	responseMessage.addWarningMessages(result.getWarnings());
         }
-        responseMessage.addWarningMessages(result.getWarnings());
         setResponseMessage(model, responseMessage, user);
 
         return model;
@@ -1077,7 +1079,7 @@ public class CheckoutController extends BaseController {
     private ModelAndView addPaymentMethod(ModelAndView model, SessionUser user, PaymentMethodRequest reqestMessage,
             HttpServletRequest request, HttpServletResponse response) throws FDException, JsonException {
         Checkout checkout = new Checkout(user);
-        ResultBundle resultBundle = checkout.addPaymentMethod(reqestMessage);
+        ResultBundle resultBundle = checkout.addPaymentMethod(reqestMessage, request.getSession().getAttribute(SessionName.PAYMENT_ATTEMPT));
         
         ActionResult result = resultBundle.getActionResult();
         
@@ -1124,7 +1126,7 @@ public class CheckoutController extends BaseController {
     private ModelAndView addAndSetPaymentMethod(ModelAndView model, SessionUser user, PaymentMethodRequest reqestMessage,
             HttpServletRequest request, HttpServletResponse response) throws FDException, JsonException {
         Checkout checkout = new Checkout(user);
-        ResultBundle resultBundle = checkout.addAndSetPaymentMethod(reqestMessage);
+        ResultBundle resultBundle = checkout.addAndSetPaymentMethod(reqestMessage, request.getSession().getAttribute(SessionName.PAYMENT_ATTEMPT));
         ActionResult result = resultBundle.getActionResult();
 
         propogateSetSessionValues(request.getSession(), resultBundle);
@@ -1146,7 +1148,7 @@ public class CheckoutController extends BaseController {
     private ModelAndView editPaymentMethod(ModelAndView model, SessionUser user, PaymentMethodRequest reqestMessage,
             HttpServletRequest request, HttpServletResponse response) throws FDException, JsonException {
         Checkout checkout = new Checkout(user);
-        ResultBundle resultBundle = checkout.editPaymentMethod(reqestMessage);
+        ResultBundle resultBundle = checkout.editPaymentMethod(reqestMessage, request.getSession().getAttribute(SessionName.PAYMENT_ATTEMPT));
         ActionResult result = resultBundle.getActionResult();
 
         propogateSetSessionValues(request.getSession(), resultBundle);

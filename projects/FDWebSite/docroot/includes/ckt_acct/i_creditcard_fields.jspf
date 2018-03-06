@@ -1,13 +1,18 @@
 <%@ page import='com.freshdirect.common.customer.*,com.freshdirect.fdstore.*' %>
-<%@ page import ='com.freshdirect.fdstore.customer.*'%>
-<%@ page import ='com.freshdirect.fdstore.promotion.*'%>
+<%@ page import='com.freshdirect.fdstore.customer.*'%>
+<%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='java.util.*'%>
 <%@ page import='com.freshdirect.customer.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName" %>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
+<%@ page import='com.freshdirect.webapp.util.CaptchaUtil' %>
+
 <%@ page import='com.freshdirect.framework.webapp.*' %>
 <%@ page import="com.freshdirect.payment.BillingCountryInfo"%>
 <%@ page import="com.freshdirect.payment.BillingRegionInfo"%>
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr"%>
+
 <% //expanded page dimensions
 final int W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL = 970;
 
@@ -380,6 +385,7 @@ if (isValidPaymentId) {
 	</TD>
 </TR>
 <%}%>
+<%@ include file="/includes/ckt_acct/i_creditcard_captcha.jspf" %>
 
 </TABLE>
 

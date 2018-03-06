@@ -7,6 +7,8 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.regex.Pattern;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.log4j.Category;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -19,6 +21,11 @@ public class RobotRecognizer {
 	
     private static final Category LOGGER = LoggerFactory.getInstance(RobotRecognizer.class);
         
+    public static boolean isFriendlyRobot(HttpServletRequest request) {
+        String userAgent = request.getHeader("User-Agent") == null ? "" : request.getHeader("User-Agent");
+        return isFriendlyRobot(userAgent);
+    }
+
     public static boolean isFriendlyRobot(String userAgent) {
     	    	
         //
@@ -65,6 +72,15 @@ public class RobotRecognizer {
         return false;
     }
     
+    public static boolean isRobot(HttpServletRequest request) {
+        String userAgent = request.getHeader("User-Agent") == null ? "" : request.getHeader("User-Agent");
+        return isRobot(userAgent);
+    }
+
+    public static boolean isRobot(String userAgent) {
+        return isFriendlyRobot(userAgent) || isHostileRobot(userAgent);
+    }
+
     /**
      * list refreshed by APPDEV-3197, use the following queries to refresh the list from time to time: 
      * select count(*), user_agent from MIS.iplocator_event_log group by user_agent having count(*) > 1000 order by count(*) desc

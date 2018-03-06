@@ -467,5 +467,9 @@ br.new_cust{
 .login-ajax-overlay.fixedpopup .ajaxpopup-body {
 	width: 465px;
 }
+#login-g-recaptcha {
+	padding-top: 15px;
+	width: 230px;
+}
 
 
