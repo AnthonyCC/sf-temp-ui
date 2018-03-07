@@ -251,7 +251,7 @@ public class FDFactoryService extends ExtTimeAbstractEcommService implements FDF
 		ErpProductInfoModel model=null;
 		FDProductInfo fdProductInfo=null;
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(FDFACTORY_FDPRODUCTINFO_SKUCODE)+"/"+skuCode,  new TypeReference<Response<ErpProductInfoModelData>>(){});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(FDFACTORY_FDPRODUCTINFO_SKUCODE)+"/"+skuCode.trim(),  new TypeReference<Response<ErpProductInfoModelData>>(){});
 			if(response.getData() == null){
 				throw new FDSkuNotFoundException(response.getMessage());
 			}
@@ -282,7 +282,7 @@ public class FDFactoryService extends ExtTimeAbstractEcommService implements FDF
 		Response<ErpProductInfoModelData> response = null;
 		FDProductInfo fdProductInfo;
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(FDFACTORY_FDPRODUCTINFO_SKUCODE_VERSION)+"/"+skuCode+"/"+version,  new TypeReference<Response<ErpProductInfoModelData>>(){});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(FDFACTORY_FDPRODUCTINFO_SKUCODE_VERSION)+"/"+(skuCode.trim())+"/"+version,  new TypeReference<Response<ErpProductInfoModelData>>(){});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
@@ -326,7 +326,7 @@ public class FDFactoryService extends ExtTimeAbstractEcommService implements FDF
 		Response<ErpMaterialData> response = null;
 		FDProduct fdProduct;
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(FDFACTORY_PRODUCTINFO_SKUCODES)+"/"+sku+"/"+version,  new TypeReference<Response<ErpMaterialData>>(){});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(FDFACTORY_PRODUCTINFO_SKUCODES)+"/"+sku.trim()+"/"+version,  new TypeReference<Response<ErpMaterialData>>(){});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
