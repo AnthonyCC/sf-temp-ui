@@ -84,6 +84,9 @@
 		overflowToDisk="false" diskPersistent="false" timeToLiveSeconds="86400"
 		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
 
+	<cache name="contentKeyCache" eternal="true" maxElementsInMemory="470000"
+		overflowToDisk="false" diskPersistent="false" transactionalMode="off" />
+
 	<cache name="parentKeysCache" eternal="false"
 		maxElementsInMemory="470000" overflowToDisk="false" diskPersistent="false"
 		timeToLiveSeconds="86400" memoryStoreEvictionPolicy="LRU"
