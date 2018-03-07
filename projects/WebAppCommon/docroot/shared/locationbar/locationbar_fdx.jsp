@@ -21,7 +21,9 @@
 <%@ page import="org.apache.log4j.Logger"%>
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDCartModel" %>
+<%@ page import="com.freshdirect.fdstore.customer.FDUserUtil" %>
 <%@ page import="com.freshdirect.fdstore.customer.FDModifyCartModel" %>
+<%@ page import="com.freshdirect.fdstore.customer.adapter.FDOrderAdapter" %>
 <%@ taglib prefix="fd" uri="freshdirect" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -145,48 +147,6 @@ if (allPickupDepots != null) {
 					<span class="offscreen"> delivery alerts</span>
 				</div>
 			</div>
-			
-		 <%-- test messages 
-			
-				<div class="messages invisible" id="test1" data-type="test1"><a href="xyz">this is a test message</a></div>
-				<div class="messages invisible" id="test2" data-type="test2"><a href="xyz">this is a test message</a></div>
-				<div class="messages invisible" id="test3" data-type="test3"><a href="xyz">this is a test message</a></div>
-				<script>
-			
-					$jq(document).ready(function() {
-						$jq('#test1').messages('add','test1');
-						$jq('#test2').messages('add','test2');
-						$jq('#test3').messages('add','test3');
-						
-						/*	//alert notification message close
-						if($jq("#messages.open").length>0){
-							$jq(".locabar-messages-section").hide();
-						}
-						$jq("#locabar-messages-close").click(function(){
-							$jq(".locabar-messages-section").show();
-							$jq(".locabar_messages_trigger").focus();
-						});
-						
-						$jq(".locabar-messages-section").click(function(){
-							if($jq("#messages.open").length>0){
-								$jq(this).hide();
-							}
-						});
-						
-						
-						if($jq("#modifyorderalert").css("display")=="none"){
-							$jq("#locabar_modify_order_trigger").show();
-						}else{
-							$jq("#locabar_modify_order_trigger").hide();
-						}
-						$jq("#modifyorderalert .alert-closeHandler").click(function(){
-							$jq("#locabar_modify_order_trigger").removeClass("alertOpen");
-							$jq("#locabar_modify_order_trigger").show();
-						});*/  
-					}); 
-				</script>
-		--%>
-			 
 	</div></tmpl:put>
 
 <%-- FOODKICK tab --%>
@@ -220,7 +180,12 @@ if (allPickupDepots != null) {
 		String reservationDate = "";
 		String reservationTime = "";
 		boolean foundSelectedAddress = false;
+		FDOrderAdapter modifyingOrder = FDUserUtil.getModifyingOrder(user_locationbar_fdx);
 		String foundSelectedAddressType = "";
+		// set the foundSelectedAddressType to home if the address in the order that is modifying has home service type.
+		if (modifyingOrder != null && modifyingOrder.getDeliveryAddress() != null && modifyingOrder.getDeliveryAddress().getServiceType() == EnumServiceType.HOME) {
+			foundSelectedAddressType = EnumServiceType.HOME.toString();
+		}
 		AddressModel userReservervationAddressModel = null; //matched by id, may still end up null
 		
 	
@@ -271,7 +236,7 @@ if (allPickupDepots != null) {
 											ifSelected = " selected=\"selected\"";
 											
 											foundSelectedAddress = true;
-											foundSelectedAddressType = "HOME";
+											foundSelectedAddressType = EnumServiceType.HOME.toString();
 										}else{
 											ifSel_CheckImg = "none";
 											ifSel_cssClass = "";
@@ -347,7 +312,7 @@ if (allPickupDepots != null) {
 					</div>
 					<%
 						/* one last zipAddDisplayString change now that we know selected address type */
-						if (isEligibleForPreReservation && userReservervation == null && "HOME".equals(foundSelectedAddressType)) {
+						if (isEligibleForPreReservation && userReservervation == null && EnumServiceType.HOME.toString().equals(foundSelectedAddressType)) {
 							zipAddDisplayString = "Delivery Times";
 						}
 
@@ -540,9 +505,9 @@ if (allPickupDepots != null) {
 							<% if (userReservervation == null || !(userReservervation.getAddressId()).equals( ((selectedAddress!=null) ? selectedAddress.getId() : null) ) ) { %>
 								<div class="locabar_addresses-reservation-none">
 									<div class="locabar_addresses-reservation-view-cont">
-										<a href="<%=temp_delivery_link %>" style="<%= ((foundSelectedAddress && (foundSelectedAddressType == "HOME"))) ? " display: none;" : "" %>" class="cssbutton green transparent cssbutton-flat locabar_addresses-reservation-view">View Timeslots</a>
+										<a href="<%=temp_delivery_link %>" style="<%= ((foundSelectedAddress && (foundSelectedAddressType == EnumServiceType.HOME.toString()))) ? " display: none;" : "" %>" class="cssbutton green transparent cssbutton-flat locabar_addresses-reservation-view">View Timeslots</a>
 									</div>
-									<% if (foundSelectedAddress && (foundSelectedAddressType != "HOME")) { %>
+									<% if (foundSelectedAddress && (foundSelectedAddressType != EnumServiceType.HOME.toString())) { %>
 										<div class="locabar_addresses-reservation-make-cont" style="display: none;">
 											<a href="/your_account/reserve_timeslot.jsp" class="cssbutton orange cssbutton-flat locabar_addresses-reservation-make disabled">Make a Reservation</a>
 											<%-- This text is also in locationbar_fdx.js --%>
@@ -679,11 +644,11 @@ if (allPickupDepots != null) {
 									<% } %>
 									<% if ("View Timeslots".equals(str)) { /* this item changes based on user and addresses */ %>
 										<div class="section-line"><a href="<%= temp_delivery_link %>" fd-login-required><%= str %></a></div>
-									<% } else if ("Reserve Delivery".equals(str) && !"HOME".equals(foundSelectedAddressType) ) { %>
+									<% } else if ("Reserve Delivery".equals(str) && !EnumServiceType.HOME.toString().equals(foundSelectedAddressType) ) { %>
 										<%-- If the user has the ability to reserve and non-Home selected, modify Reserve Link --%>
 										<div class="section-line"><a href="<%= temp_delivery_link %>" fd-login-required>View Timeslots</a></div>
 									<% } else if ("DeliveryPass".equals(str) ) { %>
-										<% if ("HOME".equals(foundSelectedAddressType) ) { /* only if home is selected */ %>
+										<% if (EnumServiceType.HOME.toString().equals(foundSelectedAddressType) ) { /* only if home is selected */ %>
 											<div class="section-line"><a href="<%= folderMap.get(str)%>" fd-login-required><%= str %></a></div>								
 										<% } %>
 									<% } else { %>
