@@ -49,30 +49,7 @@ attribute name="modifyOrderAlert" required="true" rtexprvalue="true" type="java.
 							FDCartModel modifyOrderBarTagCart = user.getShoppingCart();
 							isModifyingOrder = modifyOrderBarTagCart instanceof FDModifyCartModel;
 							if (isModifyingOrder) {
-								// show modifying order message for mobile
-								if (mobWebModifyOrderTag) {
-								FDModifyCartModel moCart = (FDModifyCartModel) modifyOrderBarTagCart;
-								if (moCart != null && 
-									moCart.getOriginalOrder() != null && 
-									moCart.getOriginalOrder().getDeliveryReservation() != null && 
-									moCart.getOriginalOrder().getDeliveryReservation().getTimeslot() != null) {
-								%>
-								<script>
-									$jq(function() {
-										var modifyingOrderTime = '<%= moCart.getOriginalOrder().getDeliveryReservation().getTimeslot().getDisplayString() %>';
-										var modifyingOrderDayOfWeek = '<%= new SimpleDateFormat("EEEEE").format(moCart.getOriginalOrder().getDeliveryReservation().getTimeslot().getDeliveryDate()) %>';
-									 	var showOrderMessage = function () {
-									 		fd.components.modifyOrderMessage.init(modifyingOrderTime, modifyingOrderDayOfWeek);
-									 	}
-									 	if (fd && fd.components && fd.components.modifyOrderMessage ) {
-									 		showOrderMessage();
-								 		} else if ($jq) {
-								 			$jq(document).one('modifyOrderMessage-loaded', showOrderMessage);
-								 		}
-							 		});
-								</script>
-							<% 		}
-								}
+								
 							} else if(validPendingOrders.size() > 0) {
 								if (modifyOrderAlert) { %>
 									<script>

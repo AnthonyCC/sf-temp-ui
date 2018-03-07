@@ -39,6 +39,16 @@
 				<strong>Modifying Delivery: </strong>
 				<span class="modify-delivery-time"><span><%= new SimpleDateFormat("EEEEE").format(modifyingOrder.getDeliveryReservation().getTimeslot().getDeliveryDate()) %></span> <span class="text-uppercase"><%= modifyingOrder.getDeliveryReservation().getTimeslot().getDisplayString() %></span></span>
 			</div>
+			<script>
+				var modifyOrderInitFunc = function () {
+					FreshDirect.components.modifyOrderMessage.stickyMessage('#locationbar', 0);
+					}
+				if (FreshDirect.components && FreshDirect.components.modifyOrderMessage) {
+					modifyOrderInitFunc();
+				} else {
+					$(document).on('modifyOrderMessage-loaded', modifyOrderInitFunc);
+				}
+			</script>
 		</div>
 		<% } else { %>
 		<div id="location-tabs">

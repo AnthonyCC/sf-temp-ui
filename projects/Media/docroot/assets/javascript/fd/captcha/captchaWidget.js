@@ -1,4 +1,3 @@
-/*global jQuery*/
 var FreshDirect = FreshDirect || {};
 
 (function(fd) {

@@ -2,6 +2,7 @@
 <%@ page import="com.freshdirect.webapp.taglib.location.LocationHandlerTag"%>
 <%@ page import='com.freshdirect.common.address.AddressModel' %>
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
+<%@ page import="com.freshdirect.fdstore.customer.FDUserUtil" %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties'%>
 <%@page import="com.freshdirect.webapp.ajax.quickshop.QuickShopHelper"%>
 <%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
@@ -32,7 +33,8 @@
 	boolean isReorderOrders = (mobweb_uri.indexOf("/qs_past_orders.jsp") != -1) ? true : false;
 	boolean isCheckout = (mobweb_uri.indexOf("/expressco/") != -1) ? true : false;
 	boolean isHelp = (mobweb_uri.indexOf("/help/") != -1) ? true : false;
-
+	boolean isModifyOrder = FDUserUtil.getModifyingOrder(user) != null;
+	
 	Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
 	boolean useFdxGlobalNav = FDStoreProperties.isFdxLocationbarEnabled();
 
@@ -4448,6 +4450,9 @@ div#mobilehomeMainDiv a {
    	// --%>
    	<% if (FDStoreProperties.isDfpEnabled()) { /* only load if needed */ %>
 		<jwr:script src="/mobileweb_index_optimized_footer.js" useRandomParam="false" defer="true" async="true" />
+	<% } %>
+	<% if (isModifyOrder) { %>
+		<jwr:script src="/modifyorder.js" useRandomParam="false" async="true" defer="true" />
 	<% } %>
   </body>
 </html>

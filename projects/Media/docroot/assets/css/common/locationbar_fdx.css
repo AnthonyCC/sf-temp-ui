@@ -989,7 +989,6 @@
     color: #ffffff;
     text-shadow: 1px 1px 0 #c85c19;
     top: -5px;
-    position: absolute;
     width: 100%;
     z-index: -1;
 }

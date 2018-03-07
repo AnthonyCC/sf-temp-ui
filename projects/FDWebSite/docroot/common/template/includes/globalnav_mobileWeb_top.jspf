@@ -115,12 +115,13 @@
 										var modifyingOrderTime = '<%= moCart.getOriginalOrder().getDeliveryReservation().getTimeslot().getDisplayString() %>';
 										var modifyingOrderDayOfWeek = '<%= new SimpleDateFormat("EEEEE").format(moCart.getOriginalOrder().getDeliveryReservation().getTimeslot().getDeliveryDate()) %>';
 									 	var showModifyingOrderMessage = function () {
-									 		window.displayModifyingOrderMobile(modifyingOrderTime, modifyingOrderDayOfWeek);
+									 		FreshDirect.components.modifyOrderMessage.init(modifyingOrderTime, modifyingOrderDayOfWeek);
+									 		FreshDirect.components.modifyOrderMessage.stickyMessage('#location-modify-order-message', 0);
 									 	}
-									 	if (window.displayModifyingOrderMobile) {
+									 	if (window.FreshDirect && FreshDirect.components && FreshDirect.components.modifyOrderMessage) {
 									 		showModifyingOrderMessage();
 								 		} else if ($jq) {
-								 			$jq(document).one('displayModifyingOrderMobile-loaded', showModifyingOrderMessage);
+								 			$jq(document).one('modifyOrderMessage-loaded', showModifyingOrderMessage);
 								 		}
 							 		});
 								</script>
