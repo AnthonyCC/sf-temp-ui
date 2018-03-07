@@ -46,7 +46,7 @@
 				if (FreshDirect.components && FreshDirect.components.modifyOrderMessage) {
 					modifyOrderInitFunc();
 				} else {
-					$(document).on('modifyOrderMessage-loaded', modifyOrderInitFunc);
+					$jq(document).on('modifyOrderMessage-loaded', modifyOrderInitFunc);
 				}
 			</script>
 		</div>
