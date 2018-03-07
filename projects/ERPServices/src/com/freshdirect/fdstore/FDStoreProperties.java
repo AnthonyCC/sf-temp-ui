@@ -1960,7 +1960,7 @@ public class FDStoreProperties {
 		defaults.put(DATABASE_IN_CONDITION_LIMIT, "50");
 		defaults.put(PROP_FD_DP_FREE_TRIAL_OPTIN_FEATURE_ENABLED, "false");
 		
-		defaults.put(PROP_DB_PARTIAL_JOIN_OPTIMIZER_ENABLED, "false");
+		defaults.put(PROP_DB_PARTIAL_JOIN_OPTIMIZER_ENABLED, "true");
 		
         refresh();
     }
