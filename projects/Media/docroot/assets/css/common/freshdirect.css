@@ -1167,4 +1167,5 @@ a.lv-link:focus {
 input[aria-label="estimated price:"][disabled="disabled"],input[aria-label="estimated quantity"][disabled="disabled"]{
 	background-color: #ffff;
     border: 1px solid #0000006e;
+    text-align: right;
 }
