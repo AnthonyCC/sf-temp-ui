@@ -437,7 +437,7 @@ public class DeliveryPassFreeTrialCron {
 		}
 		catch (ErpSaleNotFoundException e) {
 			LOGGER.info("Unable to find a home/pickup order using credit card for customer: "+erpCustomerID);
-			createCase(erpCustomerID,CrmCaseSubject.CODE_AUTO_BILL_PAYMENT_MISSING,DlvPassConstants.AUTORENEW_PYMT_METHOD_UNKNOWN);
+//			createCase(erpCustomerID,CrmCaseSubject.CODE_AUTO_BILL_PAYMENT_MISSING,DlvPassConstants.AUTORENEW_PYMT_METHOD_UNKNOWN);
 			return null;
 		}
 	}
@@ -449,7 +449,7 @@ public class DeliveryPassFreeTrialCron {
 		} catch (FDResourceException e) {
 			String customerID=identity.getErpCustomerPK();
 			LOGGER.warn("Unable to find payment method for deliveryPass order for customer :"+customerID);
-			createCase(customerID,CrmCaseSubject.CODE_AUTO_BILL_PAYMENT_MISSING,DlvPassConstants.AUTORENEW_PYMT_METHOD_UNKNOWN);
+//			createCase(customerID,CrmCaseSubject.CODE_AUTO_BILL_PAYMENT_MISSING,DlvPassConstants.AUTORENEW_PYMT_METHOD_UNKNOWN);
 			return null;
 		}
 	}
@@ -458,15 +458,6 @@ public class DeliveryPassFreeTrialCron {
 
 		PrimaryKey salePK = saleId != null ? new PrimaryKey(saleId) : null;
 		return new CrmSystemCaseInfo(new PrimaryKey(customerPK), salePK, subject, summary);
-	}
-
-	private static void createCase(String customerID, String subject, String summary) throws FDResourceException {
-
-		CrmSystemCaseInfo caseInfo=buildCase( customerID, null,CrmCaseSubject.getEnum(subject),summary);
-		FDCustomerManager.createCase(caseInfo);
-		/*ErpCreateCaseCommand cmd = new ErpCreateCaseCommand(LOCATOR, caseInfo);
-		cmd.setRequiresNewTx(true);
-		cmd.execute();*/
 	}
 
 	public static void email(String customerID, String exceptionMsg) {
