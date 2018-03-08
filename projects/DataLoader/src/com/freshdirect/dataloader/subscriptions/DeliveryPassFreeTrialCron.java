@@ -253,7 +253,16 @@ public class DeliveryPassFreeTrialCron {
 			Collection<ErpPaymentMethodI> paymentMethods = FDCustomerManager.getPaymentMethods(identity);
 			List<ErpPaymentMethodI> paymentMethodList = new ArrayList<ErpPaymentMethodI>(paymentMethods);
 			if(!paymentMethodList.isEmpty()){
-				pymtMethod = paymentMethodList.get(0);
+				for (ErpPaymentMethodI erpPaymentMethodI : paymentMethodList) {
+					
+					if(!erpPaymentMethodI.getCardType().equals(EnumCardType.PAYPAL) && !erpPaymentMethodI.getCardType().equals(EnumCardType.ECP) && isExpiredCC(erpPaymentMethodI)) {
+						continue;
+					} else{
+						pymtMethod = erpPaymentMethodI;
+						break;
+					}
+				}
+//				pymtMethod = paymentMethodList.get(0);
 				LOGGER.info("First payment method from the list is chosen for customer :"+erpCustomerID);
 			}
 		}
