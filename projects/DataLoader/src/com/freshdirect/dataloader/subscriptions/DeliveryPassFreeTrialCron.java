@@ -216,8 +216,19 @@ public class DeliveryPassFreeTrialCron {
 		lastOrder=getLastNonCOSOrder(erpCustomerID);
 		String orderID="";
 		ErpAddressModel address = null;		
+		try {
+			identity=getFDIdentity(erpCustomerID);
+			user=FDCustomerManager.getFDUser(identity);
+			actionInfo=getFDActionInfo(identity);
+			actionInfo.setIdentity(user.getIdentity());
+		} catch (FDAuthenticationException e) {
+			LOGGER.warn("Unable to place free-trial Delivery Pass order for customer :"+erpCustomerID);
+			StringWriter sw = new StringWriter();
+			e.printStackTrace(new PrintWriter(sw));
+			email(erpCustomerID,sw.getBuffer().toString());
+		}
 		if(lastOrder!=null) {
-			try {
+			/*try {
 				identity=getFDIdentity(erpCustomerID);
 				actionInfo=getFDActionInfo(identity);
 				user=FDCustomerManager.getFDUser(identity);
@@ -228,8 +239,8 @@ public class DeliveryPassFreeTrialCron {
 				StringWriter sw = new StringWriter();
 				ae.printStackTrace(new PrintWriter(sw));
 				email(erpCustomerID,sw.getBuffer().toString());
-			}
-
+			}*/
+			address = lastOrder.getDeliveryAddress();
 			pymtMethod=getMatchedPaymentMethod(lastOrder.getPaymentMethod(),getPaymentMethods(user.getIdentity()));
 			/*if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user)){
 				if(null==user.getFDCustomer().getDefaultPaymentMethodPK() || null == user.getFDCustomer().getDefaultPaymentType() ||
