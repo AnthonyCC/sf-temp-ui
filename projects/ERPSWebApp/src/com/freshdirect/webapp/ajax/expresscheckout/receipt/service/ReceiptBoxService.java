@@ -101,11 +101,11 @@ public class ReceiptBoxService {
             data.setText(DELIVERY_CHARGE_NAME);
             String deliveryPassAppliedMessage = DeliveryPassUtil.getDlvPassAppliedMessage(user);
             data.setValue(deliveryPassAppliedMessage);
-            receiptBox.add(data);
             
             if(freeTrialOptinBasedDPApplied) {
             	data.getOther().put(ORDER_FREE_TRIAL_MSG, freeTrialOptinBasedDPApplied);
             }
+            receiptBox.add(data);
             
         } else if (order.getChargeAmount(EnumChargeType.DELIVERY) > 0) {
             if (order.isChargeWaived(EnumChargeType.DELIVERY)) {

@@ -14,6 +14,7 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
@@ -31,6 +32,7 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.fdstore.payments.util.PaymentMethodUtil;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
@@ -46,6 +48,7 @@ import com.freshdirect.webapp.ajax.checkout.data.UnavailabilityData;
 import com.freshdirect.webapp.ajax.data.PageAction;
 import com.freshdirect.webapp.ajax.expresscheckout.availability.service.AvailabilityService;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData;
+import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartSubTotalFieldData;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.service.CartDataService;
 import com.freshdirect.webapp.ajax.expresscheckout.checkout.service.CheckoutService;
 import com.freshdirect.webapp.ajax.expresscheckout.content.service.ContentFactoryService;
@@ -93,6 +96,9 @@ public class SinglePageCheckoutFacade {
     private static final String CART_DATA_JSON_KEY = "cartData";
     private static final String BILLING_REFERENCE_INFO_JSON_KEY = "billingReferenceInfo";
     private static final String FORM_META_DATA_JSON_KEY = "formMetaData";
+    private static final String DELIVERY_CHARGE_ID = "deliverycharge";
+    private static final String DELIVERY_CHARGE_NAME = "Delivery Charge";
+    private static final String ORDER_FREE_TRIAL_MSG = "ORDER_FREE_TRIAL_MSG";
     // private static final String MASTERPASS_EWALLET_TYPE = "MP";
     // private static final String WALLET_SESSION_CARD_ID="WALLET_CARD_ID";
     // private static final String EWALLET_SESSION_ATTRIBUTE_NAME="EWALLET_CARD_TYPE";
@@ -586,6 +592,8 @@ public class SinglePageCheckoutFacade {
     }
 
     private SuccessPageData loadSuccessPageData(final FDOrderI order, final String requestURI, final FDUserI user) throws FDResourceException {
+    	boolean freeTrialOptinBasedDPApplied = order.isChargeWaived(EnumChargeType.DELIVERY) &&  user.applyFreeTrailOptinBasedDP();
+
         SuccessPageData successPageData = new SuccessPageData();
         successPageData.setHeader(contentFactoryService.getExpressCheckoutReceiptHeader(user));
         successPageData.setRightBlock(contentFactoryService.getExpressCheckoutReceiptEditorial(user));
@@ -601,6 +609,18 @@ public class SinglePageCheckoutFacade {
         successPageData.setDeliveryType(order.getDeliveryType().getCode());
         if(StandingOrderHelper.isSO3StandingOrder(user)){
         	populateSOActivationSuccess(successPageData,user);
+        }
+        //For Free Trial to show the message
+
+        if (order.isDlvPassApplied() || freeTrialOptinBasedDPApplied) {
+        	successPageData.setId(DELIVERY_CHARGE_ID);
+        	successPageData.setText(DELIVERY_CHARGE_NAME);
+            String deliveryPassAppliedMessage = DeliveryPassUtil.getDlvPassAppliedMessage(user);
+            successPageData.setValue(deliveryPassAppliedMessage);
+            
+            if(freeTrialOptinBasedDPApplied) {
+            	successPageData.getOther().put(ORDER_FREE_TRIAL_MSG, freeTrialOptinBasedDPApplied);
+            }
         }
         successPageData.setReceipt(receiptService.populateReceiptData(order, requestURI, user));
         return successPageData;
