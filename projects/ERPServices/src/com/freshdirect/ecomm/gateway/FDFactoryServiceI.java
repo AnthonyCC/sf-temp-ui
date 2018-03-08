@@ -13,13 +13,13 @@ public interface FDFactoryServiceI {
 
 	public FDProductInfo getProductInfo(String sku) throws FDSkuNotFoundException, RemoteException;
 
-	public FDProductInfo getProductInfo(String skuCode, int version) throws RemoteException;
+	public FDProductInfo getProductInfo(String skuCode, int version) throws RemoteException, FDSkuNotFoundException;
 
 	public Collection getProductInfos(String[] skus) throws FDResourceException, RemoteException;
 
-	public FDProduct getProduct(String sku, int version) throws RemoteException;
+	public FDProduct getProduct(String sku, int version) throws RemoteException, FDSkuNotFoundException;
 
-	public Collection<String> findSkusBySapId(String sapId) throws RemoteException;
+	public Collection<String> findSkusBySapId(String sapId) throws RemoteException, FDSkuNotFoundException;
 
 	public Set<String> getModifiedSkus(long lastModifiedTime) throws RemoteException;
 

@@ -278,13 +278,16 @@ public class FDFactoryService extends ExtTimeAbstractEcommService implements FDF
 	
 	
 	@Override
-	public FDProductInfo getProductInfo(String skuCode, int version) throws RemoteException {
+	public FDProductInfo getProductInfo(String skuCode, int version) throws RemoteException,FDSkuNotFoundException {
 		Response<ErpProductInfoModelData> response = null;
 		FDProductInfo fdProductInfo;
 		try {
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(FDFACTORY_FDPRODUCTINFO_SKUCODE_VERSION)+"/"+(skuCode.trim())+"/"+version,  new TypeReference<Response<ErpProductInfoModelData>>(){});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
+			}
+			if(response.getData()==null){
+				throw new FDSkuNotFoundException(response.getMessage());
 			}
 			ErpProductInfoModel model = ModelConverter.buildProdInfoMod(response.getData());
 			fdProductInfo = productHelper.getFDProductInfoNew(model);
@@ -322,13 +325,15 @@ public class FDFactoryService extends ExtTimeAbstractEcommService implements FDF
 	
 	private FDProductHelper productHelper = new FDProductHelper();
 	@Override
-	public FDProduct getProduct(String sku, int version) throws RemoteException {
+	public FDProduct getProduct(String sku, int version) throws RemoteException,FDSkuNotFoundException {
 		Response<ErpMaterialData> response = null;
 		FDProduct fdProduct;
 		try {
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(FDFACTORY_PRODUCTINFO_SKUCODES)+"/"+sku.trim()+"/"+version,  new TypeReference<Response<ErpMaterialData>>(){});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
+			}else if(response.getData()==null){
+				throw new FDSkuNotFoundException(response.getMessage());
 			}
 			
 			ErpMaterialModel model = ModelConverter.convertErpMaterialDataToModel(response.getData());
@@ -341,13 +346,16 @@ public class FDFactoryService extends ExtTimeAbstractEcommService implements FDF
 	}
 	
 	@Override
-	public Collection<String> findSkusBySapId(String sapId) throws RemoteException {
+	public Collection<String> findSkusBySapId(String sapId) throws RemoteException, FDSkuNotFoundException {
 		
 		Response<Collection<String>> response = null;
 		try {
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_SKUS_SAPID)+"/"+sapId,  new TypeReference<Response<Collection>>(){});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
+			}
+			if(response.getData()==null){
+				throw new FDSkuNotFoundException(response.getMessage());
 			}
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
