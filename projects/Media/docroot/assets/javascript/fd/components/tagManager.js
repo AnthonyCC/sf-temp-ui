@@ -224,14 +224,11 @@ var dataLayer = window.dataLayer || [];
       var unavts = fd.gtm.isUnavailableTimeslotPresent() ? 'yes' : 'no';
 
       dataLayer.push({
-        page_name: 'Available Delivery Timeslots - Modal',
-        unavailable_timeslot_present: unavts
-      });
-
-      dataLayer.push({
         event: 'timeslot-unavailable',
         eventCategory: 'timeslot',
         eventAction: 'timeslot-checkout-modal',
+        page_name: 'Available Delivery Timeslots - Modal',
+        unavailable_timeslot_present: unavts,
         eventLabel: unavts
       });
     },
