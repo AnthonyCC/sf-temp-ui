@@ -215,16 +215,7 @@ public class DeliveryPassFreeTrialCron {
 		CustomerRatingAdaptor cra=null;
 		lastOrder=getLastNonCOSOrder(erpCustomerID);
 		String orderID="";
-		ErpAddressModel address = null;
-		try {
-			identity=getFDIdentity(erpCustomerID);
-			user=FDCustomerManager.getFDUser(identity);
-			actionInfo=getFDActionInfo(identity);
-			actionInfo.setIdentity(user.getIdentity());
-		} catch (FDAuthenticationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		ErpAddressModel address = null;		
 		if(lastOrder!=null) {
 			try {
 				identity=getFDIdentity(erpCustomerID);
@@ -255,47 +246,55 @@ public class DeliveryPassFreeTrialCron {
 			}else{
 			pymtMethod=getMatchedPaymentMethod(lastOrder.getPaymentMethod(),getPaymentMethods(user.getIdentity()));
 			}*/
-		} else{
+		} 
+		
+		if(null == pymtMethod){
 			identity = new FDIdentity(erpCustomerID);
 			Collection<ErpPaymentMethodI> paymentMethods = FDCustomerManager.getPaymentMethods(identity);
 			List<ErpPaymentMethodI> paymentMethodList = new ArrayList<ErpPaymentMethodI>(paymentMethods);
 			if(!paymentMethodList.isEmpty()){
 				pymtMethod = paymentMethodList.get(0);
+				LOGGER.info("First payment method from the list is chosen for customer :"+erpCustomerID);
 			}
+		}
+		if(null == address) {
 			Collection<ErpAddressModel> addresses = FDCustomerManager.getShipToAddresses(identity);
 			List<ErpAddressModel> addressesList = new ArrayList<ErpAddressModel>(addresses);
-			if(null != addressesList && !addressesList.isEmpty())
+			if(null != addressesList && !addressesList.isEmpty()){
 				address = addressesList.get(0);
-		}
-			if(pymtMethod!=null && address != null) {
-				if(!pymtMethod.getCardType().equals(EnumCardType.PAYPAL) && !pymtMethod.getCardType().equals(EnumCardType.ECP) && isExpiredCC(pymtMethod)) {
-					LOGGER.warn("DeliveryPass order payment method is expired for customer :"+erpCustomerID);
-					/*createCase(erpCustomerID,CrmCaseSubject.CODE_AUTO_BILL_PAYMENT_MISSING,DlvPassConstants.AUTORENEW_PYMT_METHOD_CC_EXPIRED);
-					FDCustomerInfo customerInfo=FDCustomerManager.getCustomerInfo(identity);
-					XMLEmailI email =FDEmailFactory.getInstance().createAutoRenewDPCCExpiredEmail(customerInfo);
-
-					FDCustomerManager.sendEmail(email);*/
-					email(erpCustomerID,"Free-trial deliveryPass order payment method is expired for customer :"+erpCustomerID);
-				} else {
-					try {
-
-						cra=new CustomerRatingAdaptor(user.getFDCustomer().getProfile(),user.isCorporateUser(),user.getAdjustedValidOrderCount());
-						orderID=placeOrder(actionInfo,cra,arSKU,pymtMethod,address,user.getUserContext());
-
-					}
-					catch(FDResourceException fe) {
-						LOGGER.warn("Unable to place deliveryPass order for customer :"+erpCustomerID);
-						StringWriter sw = new StringWriter();
-						fe.printStackTrace(new PrintWriter(sw));
-						email(erpCustomerID,sw.getBuffer().toString());
-					}
-				}
-
-			} else {
-				LOGGER.warn("Unable to find payment method for deliveryPass order for customer :"+erpCustomerID);
-//				createCase(erpCustomerID,CrmCaseSubject.CODE_AUTO_BILL_PAYMENT_MISSING,DlvPassConstants.AUTORENEW_PYMT_METHOD_UNKNOWN);
-				email(erpCustomerID,"Unable to find payment method for free-trial deliveryPass order for customer :"+erpCustomerID);
+				LOGGER.info("First address from the list is chosen for customer :"+erpCustomerID);
 			}
+		}
+		
+		if(pymtMethod!=null && address != null) {
+			if(!pymtMethod.getCardType().equals(EnumCardType.PAYPAL) && !pymtMethod.getCardType().equals(EnumCardType.ECP) && isExpiredCC(pymtMethod)) {
+				LOGGER.warn("Free-trial deliveryPass order payment method is expired for customer :"+erpCustomerID);
+				/*createCase(erpCustomerID,CrmCaseSubject.CODE_AUTO_BILL_PAYMENT_MISSING,DlvPassConstants.AUTORENEW_PYMT_METHOD_CC_EXPIRED);
+				FDCustomerInfo customerInfo=FDCustomerManager.getCustomerInfo(identity);
+				XMLEmailI email =FDEmailFactory.getInstance().createAutoRenewDPCCExpiredEmail(customerInfo);
+
+				FDCustomerManager.sendEmail(email);*/
+				email(erpCustomerID,"Free-trial deliveryPass order payment method is expired for customer :"+erpCustomerID);
+			} else {
+				try {
+
+					cra=new CustomerRatingAdaptor(user.getFDCustomer().getProfile(),user.isCorporateUser(),user.getAdjustedValidOrderCount());
+					orderID=placeOrder(actionInfo,cra,arSKU,pymtMethod,address,user.getUserContext());
+
+				}
+				catch(FDResourceException fe) {
+					LOGGER.warn("Unable to place free-trial deliveryPass order for customer :"+erpCustomerID);
+					StringWriter sw = new StringWriter();
+					fe.printStackTrace(new PrintWriter(sw));
+					email(erpCustomerID,sw.getBuffer().toString());
+				}
+			}
+
+		} else {
+			LOGGER.warn("Unable to find payment method for free-trial deliveryPass order for customer :"+erpCustomerID);
+//				createCase(erpCustomerID,CrmCaseSubject.CODE_AUTO_BILL_PAYMENT_MISSING,DlvPassConstants.AUTORENEW_PYMT_METHOD_UNKNOWN);
+			email(erpCustomerID,"Unable to find payment method for free-trial deliveryPass order for customer :"+erpCustomerID);
+		}
 
 		return orderID;
 
