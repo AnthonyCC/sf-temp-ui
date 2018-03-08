@@ -1,9 +1,7 @@
 package com.freshdirect.webapp.ajax.expresscheckout.location.service;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -130,8 +128,10 @@ public class DeliveryAddressService {
             throws FDResourceException, JspException, RedirectToPage {
         List<ValidationError> validationErrors = new ArrayList<ValidationError>();
         ErpAddressModel deliveryAddress = user.getShoppingCart().getDeliveryAddress();
-        if (deliveryAddress == null || ((deliveryAddress instanceof ErpDepotAddressModel) && ((ErpDepotAddressModel) deliveryAddress).getZoneCode() == null)
-                || deliveryAddress.getId() == null || user.getShoppingCart().getZoneInfo() == null || !deliveryAddress.getId().equals(deliveryAddressId) || StandingOrderHelper.isSO3StandingOrder(user)) {
+        boolean deliveryAddressExists = FDCustomerManager.getAddress(user.getIdentity(), deliveryAddressId) != null;
+
+        if (deliveryAddressExists && (deliveryAddress == null || ((deliveryAddress instanceof ErpDepotAddressModel) && ((ErpDepotAddressModel) deliveryAddress).getZoneCode() == null)
+                || deliveryAddress.getId() == null || user.getShoppingCart().getZoneInfo() == null || !deliveryAddress.getId().equals(deliveryAddressId) || StandingOrderHelper.isSO3StandingOrder(user))) {
             ActionResult actionResult = new ActionResult();
             if(deliveryAddress!=null){
             	LOGGER.info("address Id: "+deliveryAddress.getId()+ " " +deliveryAddressId);
