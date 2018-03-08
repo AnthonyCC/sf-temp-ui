@@ -200,12 +200,24 @@ var dataLayer = window.dataLayer || [];
       return {event: event};
     },
     coStep: function (coStepData) {
-      dataLayer.push({
-        ecommerce: {
-          checkout: {
-            actionField: coStepData
-          }
+      var cosData = {
+        checkout: {
+          actionField: coStepData
         }
+      };
+
+      if (coStepData.delivery_type) {
+        cosData.delivery_type = coStepData.delivery_type;
+      }
+      if (coStepData.available_timeslot_value) {
+        cosData.available_timeslot_value = coStepData.available_timeslot_value;
+      }
+      if (coStepData.unavailable_timeslot_present) {
+        cosData.unavailable_timeslot_present = coStepData.unavailable_timeslot_present;
+      }
+
+      dataLayer.push({
+        ecommerce: cosData
       });
     },
     timeslotOpened: function () {
