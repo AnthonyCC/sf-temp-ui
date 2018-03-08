@@ -105,7 +105,7 @@ if (user.isEligibleForClientCodes()) {
 <%-- Order Info --%>
 <div class="text11 order_history_header" style="width: <%= (mobWeb)? "100%" : (W_YA_ORDER_HISTORY_TOTAL + "px") %>; text-align: left;">
 	<div class="order_history_header_h"><font class="title18">Your Orders</font></div>
-	<div class="order_history_header_desc">Please review your orders. To check the status of an order, click on the order number.</div>
+	<div class="order_history_header_desc">To check the status of an order, click the order number or "View" link in the Details column.</div>
 </div>
 <div class="NOMOBWEB" style="height: 1px; width: <%= (mobWeb)? "100%" : (W_YA_ORDER_HISTORY_TOTAL + "px") %>; background-color: #ff9933; margin-top: 8px; margin-bottom: 8px;"></div>
 <!-- client codes begin -->
