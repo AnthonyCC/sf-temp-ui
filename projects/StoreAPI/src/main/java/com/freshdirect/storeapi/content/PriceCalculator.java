@@ -86,7 +86,7 @@ public class PriceCalculator {
     }
 
     public FDGroup getProductGroup() throws FDResourceException, FDSkuNotFoundException{
-         return skuModel != null && getProductInfo()!=null ? getProductInfo().getGroup(this!=null&&this.getPricingContext()!=null?this.getPricingContext().getZoneInfo():null) : null;
+         return skuModel != null && getProductInfo()!=null ? getProductInfo().getGroup(this.getPricingContext()!=null?this.getPricingContext().getZoneInfo():null) : null;
     }
 
     public double getDefaultPriceValue() {
