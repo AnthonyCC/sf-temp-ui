@@ -282,7 +282,7 @@ public class FDFactoryService extends ExtTimeAbstractEcommService implements FDF
 		Response<ErpProductInfoModelData> response = null;
 		FDProductInfo fdProductInfo;
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(FDFACTORY_FDPRODUCTINFO_SKUCODE_VERSION)+"/"+(skuCode.trim())+"/"+version,  new TypeReference<Response<ErpProductInfoModelData>>(){});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(FDFACTORY_FDPRODUCTINFO_SKUCODE_VERSION)+"/"+skuCode.trim()+"/"+version,  new TypeReference<Response<ErpProductInfoModelData>>(){});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
@@ -350,7 +350,7 @@ public class FDFactoryService extends ExtTimeAbstractEcommService implements FDF
 		
 		Response<Collection<String>> response = null;
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_SKUS_SAPID)+"/"+sapId,  new TypeReference<Response<Collection>>(){});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_SKUS_SAPID)+"/"+sapId.trim(),  new TypeReference<Response<Collection>>(){});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
