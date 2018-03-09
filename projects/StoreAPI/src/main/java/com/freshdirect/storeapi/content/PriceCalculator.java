@@ -96,6 +96,8 @@ public class PriceCalculator {
             FDProductInfo productInfo = getProductInfo();
             if (productInfo == null)
                 return 0.0;
+            if(null == getZonePriceInfoModel())
+            	return 0.0;
             return getZonePriceInfoModel().getDefaultPrice();
         } catch (FDResourceException e) {
             throw new RuntimeException(e);
