@@ -440,7 +440,11 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			}
 
 			session.removeAttribute(SessionName.MODIFY_CART_PRESELECTION_COMPLETED);
-			session.removeAttribute(SessionName.PAYMENT_BILLING_REFERENCE);
+			try{
+				session.removeAttribute(SessionName.PAYMENT_BILLING_REFERENCE);
+			}catch(IllegalAccessError e){
+				
+			}
 		}
 
 
