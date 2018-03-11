@@ -100,9 +100,9 @@ public class ProductConfigServlet extends BaseJsonServlet {
 		} else {
 			// get product in specified category context
 			LOG.debug("get product in specified category context"+categoryId+":"+productId);
-			LOG.debug("ContentFactory.getInstance()========"+ContentFactory.getInstance());
-			LOG.debug("ContentFactory.getInstance()===="+ContentFactory.getInstance());
-			LOG.debug("ContentFactory.getInstance().getCurrentUserContext()========"+ContentFactory.getInstance().getCurrentUserContext());
+			LOG.debug("ContentFactory.getInstance().getCurrentUserContext().getFdIdentity()========"+ContentFactory.getInstance().getCurrentUserContext().getFdIdentity());
+			LOG.debug("ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId()========"+ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId());
+			LOG.debug("ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext()========"+ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().toString());
 			LOG.debug("ContentFactory.getInstance().getCurrentUserContext().getPricingContext()====="+ContentFactory.getInstance().getCurrentUserContext().getPricingContext());
 			LOG.debug("ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo()==="+ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo());
 			product = ContentFactory.getInstance().getProductByName( categoryId, productId );
