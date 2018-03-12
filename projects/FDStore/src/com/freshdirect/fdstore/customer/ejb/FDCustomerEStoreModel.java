@@ -44,6 +44,7 @@ public class FDCustomerEStoreModel extends ModelSupport{
 	private Boolean tcAcknowledge = false;
 	private String rafClickId;
     private String rafPromoCode;
+    private Boolean dpFreeTrailOptin = false;
 	 
     public String getRafClickId() {
 		return rafClickId;
@@ -60,11 +61,7 @@ public class FDCustomerEStoreModel extends ModelSupport{
 	public void setRafPromoCode(String rafPromoCode) {
 		this.rafPromoCode = rafPromoCode;
 	}
-	private Boolean dpFreeTrailOptin = false;
-
-
-
-
+	
 	public String getCrmStore() {
 		return crmStore;
 	}
@@ -104,10 +101,6 @@ public class FDCustomerEStoreModel extends ModelSupport{
 	public void setOffersNotification(Boolean offersNotification) {
 		this.offersNotification = offersNotification;
 	}
-
-
-
-
 
 	public PhoneNumber getMobileNumber() {
 		return mobileNumber;
