@@ -245,14 +245,16 @@ public class FDFactoryService extends ExtTimeAbstractEcommService implements FDF
 	}
 	
 	@Override
-	public FDProductInfo getProductInfo(String skuCode) throws FDSkuNotFoundException, RemoteException {
+	public FDProductInfo getProductInfo(String sku) throws FDSkuNotFoundException, RemoteException {
 
 		Response<ErpProductInfoModelData> response = null;
 		ErpProductInfoModel model=null;
 		FDProductInfo fdProductInfo=null;
-		String sku = skuCode.trim();
+		String skuCode = sku.replaceAll("[^\\x00-\\x7F]","");
+		skuCode = skuCode.trim();
+		
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(FDFACTORY_FDPRODUCTINFO_SKUCODE)+"/"+sku,  new TypeReference<Response<ErpProductInfoModelData>>(){});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(FDFACTORY_FDPRODUCTINFO_SKUCODE)+"/"+skuCode,  new TypeReference<Response<ErpProductInfoModelData>>(){});
 			if(response.getData() == null){
 				throw new FDSkuNotFoundException(response.getMessage());
 			}
@@ -282,9 +284,10 @@ public class FDFactoryService extends ExtTimeAbstractEcommService implements FDF
 	public FDProductInfo getProductInfo(String skuCode, int version) throws RemoteException,FDSkuNotFoundException {
 		Response<ErpProductInfoModelData> response = null;
 		FDProductInfo fdProductInfo;
-		String sku = skuCode.trim();
+		String sku = skuCode.replaceAll("[^\\x00-\\x7F]","");
+		sku = skuCode.trim();
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(FDFACTORY_FDPRODUCTINFO_SKUCODE_VERSION)+"/"+sku+"/"+version,  new TypeReference<Response<ErpProductInfoModelData>>(){});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(FDFACTORY_FDPRODUCTINFO_SKUCODE_VERSION)+"/"+URLEncoder.encode(sku)+"/"+version,  new TypeReference<Response<ErpProductInfoModelData>>(){});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
@@ -330,7 +333,8 @@ public class FDFactoryService extends ExtTimeAbstractEcommService implements FDF
 	public FDProduct getProduct(String sku, int version) throws RemoteException,FDSkuNotFoundException {
 		Response<ErpMaterialData> response = null;
 		FDProduct fdProduct;
-		String skuCode = sku.trim();
+		String skuCode = sku.replaceAll("[^\\x00-\\x7F]","");
+		skuCode = sku.trim();
 
 		try {
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(FDFACTORY_PRODUCTINFO_SKUCODES)+"/"+skuCode+"/"+version,  new TypeReference<Response<ErpMaterialData>>(){});
