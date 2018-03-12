@@ -14,22 +14,22 @@ import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
 public class BrowseDataContext extends BrowseData {
 
 	private static final long serialVersionUID = 3281468863959645884L;
-	
+
 	@JsonIgnore
     private List<SectionContext> sectionContexts = new ArrayList<SectionContext>();
-	
+
 	@JsonIgnore
 	private List<FilteringProductItem> unfilteredItems = new ArrayList<FilteringProductItem>();
-	
+
 	@JsonIgnore
 	private ContentNodeModel currentContainer;
-	
+
 	@JsonIgnore
 	private NavigationModel navigationModel;
-	
+
 	@JsonIgnore
 	private FilteringFlowType pageType;
-	
+
 	@JsonIgnore
 	private Map<String, List<String>> requestFilterParams;
 
@@ -39,7 +39,7 @@ public class BrowseDataContext extends BrowseData {
     public BrowseData extractBrowseDataPrototype(FDUserI user, CmsFilteringNavigator nav) {
 		List<SectionData> sections = new ArrayList<SectionData>();
 		for(SectionContext context : sectionContexts){
-            sections.add(context.extractDataFromContext(user, nav));
+            sections.add(context.extractDataFromContext(nav));
 		}
 		this.getSections().setSections(sections);
 		return this;
@@ -84,7 +84,7 @@ public class BrowseDataContext extends BrowseData {
 	public void setPageType(FilteringFlowType pageType) {
 		this.pageType = pageType;
 	}
-	
+
     public Map<String, List<String>> getRequestFilterParams() {
         return requestFilterParams;
     }
@@ -92,7 +92,7 @@ public class BrowseDataContext extends BrowseData {
     public void setRequestFilterParams(Map<String, List<String>> requestFilterParams) {
         this.requestFilterParams = requestFilterParams;
     }
-    
+
     public Map<String, Boolean> getDataFilterParams() {
         return dataFilterParams;
     }
