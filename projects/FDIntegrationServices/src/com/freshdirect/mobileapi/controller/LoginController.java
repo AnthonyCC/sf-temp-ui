@@ -211,7 +211,12 @@ public class LoginController extends BaseController  implements SystemMessageLis
 				 responseMessage = getErrorMessage("Invalid Address", "Invalid address");
 			}
 		}
-
+		if(responseMessage==null){
+			responseMessage = getErrorMessage("RESP_MSG_NULL", "Response Message Null");
+			LOGGER.error("LOGINCONTROLLER - Response Message Null for action - " + action + " and user " + (user != null && user.getFDSessionUser() != null 
+					? (user.getFDSessionUser().getIdentity() != null && user.getFDSessionUser().getFDCustomer() != null 
+					? user.getFDSessionUser().getFDCustomer().getErpCustomerPK() : user.getFDSessionUser().getPrimaryKey() ) : "NOUSER" ) );
+		}
 		setResponseMessage(model, responseMessage, user);
 		return model;
 	}
