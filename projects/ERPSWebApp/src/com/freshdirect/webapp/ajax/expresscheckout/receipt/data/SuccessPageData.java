@@ -17,7 +17,7 @@ public class SuccessPageData {
     private String id;
 	private String text;
 	private String value;
-	private Map<String, Object> other = new HashMap<String, Object>();
+	private boolean deliveryPassTrialActivated=false;
 
     // START SO 3.1 ACTIVATION SUCCESS PAGE
 
@@ -226,12 +226,12 @@ public class SuccessPageData {
 		this.value = value;
 	}
 
-	public Map<String, Object> getOther() {
-		return other;
+	public boolean isDeliveryPassTrialActivated() {
+		return deliveryPassTrialActivated;
 	}
 
-	public void setOther(Map<String, Object> other) {
-		this.other = other;
+	public void setDeliveryPassTrialActivated(boolean deliveryPassTrialActivated) {
+		this.deliveryPassTrialActivated = deliveryPassTrialActivated;
 	}
     
 }

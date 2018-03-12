@@ -619,7 +619,7 @@ public class SinglePageCheckoutFacade {
             successPageData.setValue(deliveryPassAppliedMessage);
             
             if(freeTrialOptinBasedDPApplied) {
-            	successPageData.getOther().put(ORDER_FREE_TRIAL_MSG, freeTrialOptinBasedDPApplied);
+            	successPageData.setDeliveryPassTrialActivated(freeTrialOptinBasedDPApplied);
             }
         }
         successPageData.setReceipt(receiptService.populateReceiptData(order, requestURI, user));
