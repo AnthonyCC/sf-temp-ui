@@ -17,7 +17,7 @@
 </c:if>
 
 <div class="pdp pdp-cc">
-	<soy:render template="serverRendered.pdp.cartConfirmIterator" data="${cartConfirmPotatoes}" />
+	<soy:render template="serverRendered.pdp.cartConfirmIterator" data="${cartConfirmPotatoes}" injectAdditonalData="false" />
 	<div class="span-16 first cc-ymalCarousel">
 		<script>
           	$jq.ajax('/carousel/carousel.jsp?type=ymal&currentNodeKey=${cartConfirmPotatoes["cartConfirmPotatoes"][0].cartLine.cmskey}').then(function(page) {
