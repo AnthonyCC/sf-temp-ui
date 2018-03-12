@@ -36,6 +36,11 @@ public class SoyTemplateEngine {
 	public static final String SOY_BASE = "/WEB-INF/shared/soy/";
 	
 	/**
+	 * Base namespace for soy server rendered templates
+	 */
+	private static final String SOY_SERVER_TEMPLATE_BASE = "serverRendered/";
+	
+	/**
 	 * The usual logger...
 	 */
 	private static final Logger LOGGER = LoggerFactory.getInstance( SoyTemplateEngine.class );
@@ -334,6 +339,14 @@ public class SoyTemplateEngine {
 		
 		if ( resolveDependencies ) {
 			String dependencies = (String)props.get( pkgStr );
+			// server rendered templates by default have dependency to the base namespace
+			if (dependencies == null && pkgStr.startsWith(SOY_SERVER_TEMPLATE_BASE)) {
+				dependencies = pkgStr.replaceFirst(SOY_SERVER_TEMPLATE_BASE, "");
+				String subDep = (String)props.get( dependencies );
+				if (subDep != null) {
+					dependencies += " ," + subDep;
+				}
+			}
 			if ( dependencies != null ) {
 				StringTokenizer tok = new StringTokenizer( dependencies, " ," );
 				while ( tok.hasMoreTokens() ) {
