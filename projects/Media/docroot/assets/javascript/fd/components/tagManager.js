@@ -31,7 +31,8 @@ var dataLayer = window.dataLayer || [];
   var productTransform = function (product, idx, listData) {
     var productData = {
       name: product.productName,
-      id: product.productId,
+      // id: product.productId, // #AN-162
+      id: product.skuCode,
       price: product.price,
       brand: product.brandName,
       category: product.catId,
@@ -155,7 +156,8 @@ var dataLayer = window.dataLayer || [];
           qty = parseInt(productData.quantity, 10) || 0,
           addRemoveData = {
               products: [{
-                id: productData.id,
+                // id: productData.id, // #AN-162
+                id: productData.sku,
                 name: productData.name,
                 price: productData.price,
                 brand: productData.brand,
@@ -297,7 +299,8 @@ var dataLayer = window.dataLayer || [];
               products: coData.products && Object.keys(coData.products).map(function (k) {
                 var productData = coData.products[k];
                 return {
-                  id: productData.id,
+                  // id: productData.id, // #AN-162
+                  id: productData.sku,
                   name: productData.name,
                   price: productData.price,
                   brand: productData.brand,
@@ -338,7 +341,8 @@ var dataLayer = window.dataLayer || [];
               products: coData.products && Object.keys(coData.products).map(function (k) {
                 var productData = coData.products[k];
                 return {
-                  id: productData.id,
+                  // id: productData.id, // #AN-162
+                  id: productData.sku,
                   name: productData.name,
                   price: productData.price,
                   brand: productData.brand,
@@ -565,7 +569,8 @@ var dataLayer = window.dataLayer || [];
 
       if (productData && productData.productId) {
         return {
-          id: productData.productId,
+          // id: productData.productId, // #AN-162
+          id: productData.skuCode,
           name: productData.name,
           price: productData.price,
           brand: productData.brand,
@@ -1161,7 +1166,8 @@ var dataLayer = window.dataLayer || [];
             list: productData.list || fd.gtm.getListForProduct(e.target)
           },
           products: [{
-            id: productData.productId,
+            // id: productData.productId, // #AN-162
+            id: productData.skuCode,
             name: productData.name,
             price: productData.price,
             brand: productData.brand,
