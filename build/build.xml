@@ -124,7 +124,16 @@
 		<pathelement location="${thirdparty.home}/jackson-databind-2.2.0.jar"/>
 		<pathelement location="${thirdparty.home}/jackson-annotations-2.2.0.jar"/>
 		<pathelement location="${thirdparty.home}/jawr-core-3.8.jar"/>
-		<pathelement location="${thirdparty.home}/soy-latest.jar"/>
+		<pathelement location="${thirdparty.home}/closure-compiler-v20131014.jar"/>
+		<!-- soy -->
+		<pathelement location="${thirdparty.home}/soy-excluding-deps-2012-12-21.jar" />
+		<pathelement location="${thirdparty.home}/javax.inject.jar" />
+		<pathelement location="${thirdparty.home}/guice-multibindings-3.0.jar" />
+		<pathelement location="${thirdparty.home}/guice-assistedinject-3.0.jar" />
+		<pathelement location="${thirdparty.home}/guice-3.0.jar" />
+		<pathelement location="${thirdparty.home}/icu4j-4_8_1_1.jar" />
+		<pathelement location="${thirdparty.home}/guava-15.0.jar" />
+		
 		<pathelement location="${thirdparty.home}/commons-vfs2-2.0.jar"/>
 		<pathelement location="${thirdparty.home}/zip4j_1.3.2.jar"/>
 		<pathelement location="${thirdparty.home}/logistics-data-0.0.1-SNAPSHOT.jar"/>
@@ -1371,9 +1380,16 @@
 					<include name="jsonrpc-1.0.jar"/>
 					<include name="bsh-2.0b4.jar"/>
 					<include name="jawr-core-3.8.jar"/>
-					<include name="soy-latest.jar"/>
-
-
+					<include name="closure-compiler-v20131014.jar"/>
+					<!-- soy -->
+					<include name="soy-excluding-deps-2012-12-21.jar"/>
+					<include name="javax.inject.jar"/>
+					<include name="guice-multibindings-3.0.jar"/>
+					<include name="guice-assistedinject-3.0.jar"/>
+					<include name="guice-3.0.jar"/>
+					<include name="icu4j-4_8_1_1.jar" />
+					<include name="guava-15.0.jar"/>
+					
 					<include name="jasypt-1.5.jar"/>
 					<include name="core-renderer.jar"/>
 					<include name="iText-2.0.8.jar"/>
@@ -1511,7 +1527,15 @@
 					<include name="jug-lgpl-2.0.0.jar"/>
 					<include name="jsonrpc-1.0.jar"/>
 					<include name="jawr-core-3.8.jar"/>
-					<include name="soy-latest.jar"/>
+					<include name="closure-compiler-v20131014.jar"/>
+					<!-- soy -->
+					<include name="soy-excluding-deps-2012-12-21.jar"/>
+					<include name="javax.inject.jar"/>
+					<include name="guice-multibindings-3.0.jar"/>
+					<include name="guice-assistedinject-3.0.jar"/>
+					<include name="guice-3.0.jar"/>
+					<include name="icu4j-4_8_1_1.jar" />
+					<include name="guava-15.0.jar"/>
 					<!-- additional -->
 
 					<include name="lucene-core-${lucene.version}.jar"/>
@@ -1977,6 +2001,7 @@
 			<pathelement location="${work.dir}/DeliveryEJB-WL.jar"/>
 			<pathelement location="${work.dir}/cmseue.jar"/>
 			<pathelement location="${work.dir}/StoreAPI.jar"/>
+			<pathelement location="${work.dir}/Delivery.jar"/>
 			<pathelement location="${work.dir}/FDStoreEJB-WL.jar"/>
 			<pathelement location="${work.dir}/DataLoaderEJB-WL.jar"/>
 			<pathelement location="${work.dir}/ERPSWebApp.jar"/>
@@ -2065,7 +2090,7 @@
 			<pathelement location="${thirdparty.home}/hibernate-jpa-2.1-api-1.0.0.Final.jar" />
 
 			<!-- other third-party libs -->
-			<pathelement location="${thirdparty.home}/guava-12.0.jar" />
+			<pathelement location="${thirdparty.home}/guava-15.0.jar" />
 			<pathelement location="${thirdparty.home}/joda-time-2.9.6.jar" />
 			<pathelement location="${thirdparty.home}/dom4j-1.6.1.jar" />
 			<pathelement location="${thirdparty.home}/slf4j-api-1.6.6.jar" />
@@ -2164,7 +2189,7 @@
 				<include name="lucene-core-3.0.3.jar" />
 				<include name="lucene-queries-3.0.3.jar" />
 				<include name="lucene-snowball-3.0.3.jar" />
-				<include name="guava-12.0.jar" />
+				<include name="guava-15.0.jar" />
 				<include name="joda-time-2.9.6.jar" />
 				<include name="ehcache-2.10.1.jar" />
 				<include name="jackson-databind-2.6.3.jar" />
@@ -2222,6 +2247,7 @@
 			<pathelement location="${thirdparty.home}/jackson-annotations-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/hivemind-1.1.1.jar"/>
 			<pathelement location="${thirdparty.home}/hivemind-lib-1.1.1.jar"/>
+			<pathelement location="${thirdparty.home}/${scarab.jar}"/>
 		</path>
 		<makeWebProject
 			project="ERPSAdmin"
@@ -2398,7 +2424,7 @@
 				<!-- include name="lucene-core-3.0.3.jar" / -->
 				<!-- include name="lucene-queries-3.0.3.jar" / -->
 				<!-- include name="lucene-snowball-3.0.3.jar" / -->
-				<include name="guava-12.0.jar" />
+				<include name="guava-15.0.jar" />
 				<include name="joda-time-2.9.6.jar" />
 				<include name="ehcache-2.10.1.jar" />
 				<include name="jackson-databind-2.6.3.jar" />
@@ -2530,6 +2556,7 @@
 				<include name="ERPSWebApp.jar"/>
 				<include name="StoreAPI.jar"/>
 				<include name="cmseue.jar" />
+				<include name="Delivery.jar"/>
 				<include name="FDLogisticsIntegration.jar"/>
 			</libraries>
 			<lib>
@@ -2625,7 +2652,7 @@
 				<include name="JFEP-0.1.0.jar"/>
 				<include name="antlr-2.7.5H3.jar"/>
 				<include name="lpsolve55j.jar"/>
-				<include name="guava-12.0.jar"/>
+				<include name="guava-15.0.jar"/>
 				<include name="ctah-api-client.jar"/>
 				<include name="jackson-core-2.2.0.jar"/>
 				<include name="jackson-databind-2.2.0.jar"/>
@@ -2659,6 +2686,7 @@
 				<include name="FDStoreEJB-WL.jar"/>
 				<include name="cmseue.jar" />
 				<include name="StoreAPI.jar"/>
+				<include name="Delivery.jar"/>
 				<include name="DataLoaderEJB-WL.jar"/>
 				<include name="FDLogisticsIntegration.jar"/>
 			</libraries>
@@ -2683,6 +2711,7 @@
 				<include name="httpmime-4.5.jar"/>
 				<include name="hivemind-1.1.1.jar"/>
 				<include name="hivemind-lib-1.1.1.jar"/>
+				<include name="${scarab.jar}"/>
 			</lib>
 		</makeEar>
 	</target>
@@ -2786,7 +2815,7 @@
 				<!-- include name="lucene-core-3.0.3.jar" / -->
 				<!-- include name="lucene-queries-3.0.3.jar" / -->
 				<!-- include name="lucene-snowball-3.0.3.jar" / -->
-				<include name="guava-12.0.jar" />
+				<include name="guava-15.0.jar" />
 				<include name="joda-time-2.9.6.jar" />
 				<include name="ehcache-2.10.1.jar" />
 				<include name="jackson-databind-2.6.3.jar" />
@@ -2883,7 +2912,16 @@
 			<zipfileset src="${thirdparty.home}/javassist-3.4.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/jsonrpc-1.0.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/jawr-core-3.8.jar" excludes="META-INF/*"/>
-			<zipfileset src="${thirdparty.home}/soy-latest.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/closure-compiler-v20131014.jar" excludes="META-INF/*"/>
+			<!-- soy -->
+			<zipfileset src="${thirdparty.home}/soy-excluding-deps-2012-12-21.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/javax.inject.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/guice-multibindings-3.0.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/guice-assistedinject-3.0.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/guice-3.0.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/icu4j-4_8_1_1.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/guava-15.0.jar" excludes="META-INF/*"/>
+			
 			<zipfileset src="${thirdparty.home}/ehcache-2.10.1.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/slf4j-api-1.6.6.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/slf4j-jdk14-1.6.6.jar" excludes="META-INF/*"/>
@@ -3426,7 +3464,7 @@
 	<pathelement location="${thirdparty.home}/lucene-core-3.0.3.jar" />
 	<pathelement location="${thirdparty.home}/lucene-queries-3.0.3.jar" />
 	<pathelement location="${thirdparty.home}/lucene-snowball-3.0.3.jar" />
-	<pathelement location="${thirdparty.home}/guava-12.0.jar" />
+	<pathelement location="${thirdparty.home}/guava-15.0.jar" />
 	<pathelement location="${thirdparty.home}/joda-time-2.9.6.jar" />
 	<pathelement location="${thirdparty.home}/ehcache-2.10.1.jar" />
 	<pathelement location="${thirdparty.home}/jackson-databind-2.6.3.jar" />

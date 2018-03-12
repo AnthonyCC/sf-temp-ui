@@ -526,9 +526,15 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 	}
 	
 	private boolean checkCaptcha() {
-		String captchaToken = request.getParameter("captchaToken") != null
-				? request.getParameter("captchaToken").toString()
-				: null;
+		String captchaToken = null;
+		try {
+			captchaToken = request.getParameter("captchaToken") != null
+					? request.getParameter("captchaToken").toString()
+					: null;
+		} catch (Exception e) {
+			//exception happens, do not validate captcha
+			return true;
+		}
 		boolean isCaptchaSuccess = CaptchaUtil.validateCaptchaV2(captchaToken,
 				request.getRemoteAddr(), session, SessionName.PAYMENT_ATTEMPT, FDStoreProperties.getMaxInvalidPaymentAttempt());
 		if (!isCaptchaSuccess) {

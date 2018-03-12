@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.http.HttpHeaders;
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumDeliveryType;
@@ -827,6 +828,11 @@ public class Cart {
                 }
             }
         }
+        
+        if(user!=null && user.getFDSessionUser()!=null) {
+        	user.getFDSessionUser().updateUserState();
+        }
+        
         //Charge Lines
         //changes as part of APPDEV-6838
         if (cart instanceof FDOrderI && ((FDOrderI) cart).hasInvoice()) {
@@ -857,8 +863,8 @@ public class Cart {
 		} else if (cart instanceof FDCartModel) {
 			cartDetail.setIsDlvPassApplied(((FDCartModel) cart).isDlvPassApplied());
 
-			if (user.getFDSessionUser().getShoppingCart().getDeliveryPassCount() > 0
-					|| user.getFDSessionUser().isDlvPassActive() || (user.getFDSessionUser().applyFreeTrailOptinBasedDP())){
+			if (user.getSelectedServiceType() == EnumServiceType.HOME && (user.getFDSessionUser().getShoppingCart().getDeliveryPassCount() > 0
+					|| user.getFDSessionUser().isDlvPassActive() || user.getFDSessionUser().applyFreeTrailOptinBasedDP())){
 				cartDetail.setIsDlvPassApplied(true);
 			}
 			

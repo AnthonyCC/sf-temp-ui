@@ -194,8 +194,10 @@ public class ChooseTimeslotAction extends WebActionSupport {
 					call_zoneswitch_logic( previousZone, cart, user, erpAddress, session);
 					
 				}catch (ReservationUnavailableException re) {
-							actionResult.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_CHECKOUT_TIMESLOT_NA));
+					LOGGER.error(" ReservationUnavailableException error during reserving a timeslot", re);
+					actionResult.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_CHECKOUT_TIMESLOT_NA));
 				}catch (ReservationException re) {
+					LOGGER.error("ReservationException error during reserving a timeslot ", re);
 					actionResult.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_CHECKOUT_TIMESLOT_NA));
 				}
 					}

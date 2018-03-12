@@ -226,9 +226,13 @@ public class CartController extends BaseController {
     	TimeslotService.defaultService().applyPreReservedDeliveryTimeslot(request.getSession());
         
         Cart cart = user.getShoppingCart();
-        while(ContentFactory.getInstance().getCurrentUserContext().getPricingContext() == null){
-    		continue;
+        if(ContentFactory.getInstance().getCurrentUserContext().getPricingContext() == null && user != null){
+        	if(null == user.getUserContext()){
+        		user.getFDSessionUser().getUser().resetUserContext();
+        	}
+        	user.setUserContext();
     	}
+       
         CartDetail cartDetail = cart.getCartDetail(user, EnumCouponContext.VIEWCART);
         com.freshdirect.mobileapi.controller.data.response.Cart responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
         responseMessage.setSuccessMessage("Cart detail has been retrieved successfully.");

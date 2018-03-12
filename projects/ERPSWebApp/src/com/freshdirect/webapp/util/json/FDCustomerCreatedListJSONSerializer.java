@@ -3,6 +3,7 @@ package com.freshdirect.webapp.util.json;
 import java.util.Iterator;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.freshdirect.fdstore.FDConfiguration;
@@ -66,32 +67,37 @@ public class FDCustomerCreatedListJSONSerializer extends AbstractSerializer
 			throws MarshallException {
 		FDCustomerCreatedList selection = (FDCustomerCreatedList)o;
 		JSONObject jsObject = new JSONObject();
-		jsObject.put("javaClass",o.getClass().getName());
-		JSONArray jsArray = new JSONArray();
-		for(Iterator i = selection.getLineItems().iterator(); i.hasNext();) {
-			
-			FDCustomerProductListLineItem lineItem = (FDCustomerProductListLineItem)i.next();
-			JSONObject jsItem= new JSONObject();
-			jsItem.put("fullName", lineItem.getFullName());
-			jsItem.put("skuCode",lineItem.getSkuCode());
-			jsItem.put("recipeSourceId",NVL.apply(lineItem.getRecipeSourceId(),nullId));
-			jsItem.put(
-				"configuration",
-				FDConfigurationJSONSerializer.getNoClassTagInstance().marshall(state,lineItem.getConfiguration()));
-			jsItem.put("categoryID", lineItem.getCategoryId());
-			jsItem.put("productID", lineItem.getProductId());
-			if (lineItem.getPK() != null)
-				jsItem.put("lineID", lineItem.getPK().getId());
-			else
-				jsItem.put("lineID", nullId);
-			jsArray.put(jsItem);
-		}
-		jsObject.put("selection", jsArray);
+		try {
+			jsObject.put("javaClass",o.getClass().getName());
+			JSONArray jsArray = new JSONArray();
+			for(Iterator i = selection.getLineItems().iterator(); i.hasNext();) {
+				
+				FDCustomerProductListLineItem lineItem = (FDCustomerProductListLineItem)i.next();
+				JSONObject jsItem= new JSONObject();
+				jsItem.put("fullName", lineItem.getFullName());
+				jsItem.put("skuCode",lineItem.getSkuCode());
+				jsItem.put("recipeSourceId",NVL.apply(lineItem.getRecipeSourceId(),nullId));
+				jsItem.put(
+					"configuration",
+					FDConfigurationJSONSerializer.getNoClassTagInstance().marshall(state,lineItem.getConfiguration()));
+				jsItem.put("categoryID", lineItem.getCategoryId());
+				jsItem.put("productID", lineItem.getProductId());
+				if (lineItem.getPK() != null)
+					jsItem.put("lineID", lineItem.getPK().getId());
+				else
+					jsItem.put("lineID", nullId);
+				jsArray.put(jsItem);
+			}
+			jsObject.put("selection", jsArray);
 
-		if (selection.getId() != null)
-			jsObject.put("listID", selection.getId());
-		else
-			jsObject.put("listID", nullId);
+			if (selection.getId() != null)
+				jsObject.put("listID", selection.getId());
+			else
+				jsObject.put("listID", nullId);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		return jsObject;
 	}
@@ -112,49 +118,55 @@ public class FDCustomerCreatedListJSONSerializer extends AbstractSerializer
 	public Object unmarshall(SerializerState state, Class clazz, Object o)
 			throws UnmarshallException {
 		JSONObject jsObject = (JSONObject)o;
-		String jClass = jsObject.getString("javaClass");
-		if (jClass == null) throw new UnmarshallException("no type hint");
 		try {
-		    if (!FDCustomerCreatedList.class.isAssignableFrom(Class.forName(jClass))) 
-			    throw new UnmarshallException("Class implementing  " + FDCustomerCreatedList.class.getName() +
-				    " expected for javaClass instead of " + jClass);
-		} catch(ClassNotFoundException e) {
-			throw new UnmarshallException("Unrecognized class " + jClass);
-		}
-		if (clazz != null) {
-			if (!clazz.isAssignableFrom(clazz)) { 
-				throw new UnmarshallException("Class implementing " + FDCustomerCreatedList.class.getName() +
-					" expected instead of " + clazz);
+			String jClass = jsObject.getString("javaClass");
+			if (jClass == null) throw new UnmarshallException("no type hint");
+			try {
+			    if (!FDCustomerCreatedList.class.isAssignableFrom(Class.forName(jClass))) 
+				    throw new UnmarshallException("Class implementing  " + FDCustomerCreatedList.class.getName() +
+					    " expected for javaClass instead of " + jClass);
+			} catch(ClassNotFoundException e) {
+				throw new UnmarshallException("Unrecognized class " + jClass);
 			}
-		}
+			if (clazz != null) {
+				if (!clazz.isAssignableFrom(clazz)) { 
+					throw new UnmarshallException("Class implementing " + FDCustomerCreatedList.class.getName() +
+						" expected instead of " + clazz);
+				}
+			}
+				
+
+			FDCustomerCreatedList selection = new FDCustomerCreatedList();		
+			if (!nullId.equals(jsObject.getString("listID"))) {
+				selection.setId(jsObject.getString("listID"));
+			}
+
+
+			JSONArray jsArray = jsObject.getJSONArray("selection");
+			for(int i = 0; i< jsArray.length(); ++i) {
+				JSONObject jsItem = jsArray.getJSONObject(i);
+				String recipeSourceId = jsItem.getString("recipeSourceId");
+				FDCustomerProductListLineItem lineItem = 
+					new FDCustomerProductListLineItem(
+						jsItem.getString("skuCode"),
+						(FDConfiguration)FDConfigurationJSONSerializer.getNoClassTagInstance().unmarshall(
+								state,
+								FDConfiguration.class,
+								jsItem.get("configuration")
+						    ),
+						nullId.equals(recipeSourceId) ? null : recipeSourceId
+					);
+				if (!nullId.equals(jsItem.getString("lineID")))
+					lineItem.setPK( new PrimaryKey(jsItem.getString("lineID")) );
+
+				selection.addLineItem(lineItem);
+			}
 			
-
-		FDCustomerCreatedList selection = new FDCustomerCreatedList();		
-		if (!nullId.equals(jsObject.getString("listID"))) {
-			selection.setId(jsObject.getString("listID"));
+			return selection;
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
-
-		JSONArray jsArray = jsObject.getJSONArray("selection");
-		for(int i = 0; i< jsArray.length(); ++i) {
-			JSONObject jsItem = jsArray.getJSONObject(i);
-			String recipeSourceId = jsItem.getString("recipeSourceId");
-			FDCustomerProductListLineItem lineItem = 
-				new FDCustomerProductListLineItem(
-					jsItem.getString("skuCode"),
-					(FDConfiguration)FDConfigurationJSONSerializer.getNoClassTagInstance().unmarshall(
-							state,
-							FDConfiguration.class,
-							jsItem.get("configuration")
-					    ),
-					nullId.equals(recipeSourceId) ? null : recipeSourceId
-				);
-			if (!nullId.equals(jsItem.getString("lineID")))
-				lineItem.setPK( new PrimaryKey(jsItem.getString("lineID")) );
-
-			selection.addLineItem(lineItem);
-		}
-		
-		return selection;
+		return null;
 	}
 }
