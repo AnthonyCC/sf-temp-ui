@@ -37,6 +37,8 @@ public class ShipToAddress extends DeliveryAddress {
     
     private String unattendedDeliveryInstructions;
 
+    private boolean unattendedEnabledZone;
+
 	public Set getAvailableServiceTypes() {
 		return availableServiceTypes;
 	}
@@ -81,8 +83,9 @@ public class ShipToAddress extends DeliveryAddress {
             this.availableServiceTypes = address.getAvailableServiceTypes();
          }
         
-        this.unattendedDeliveryFlag = (null !=address.getUnattendedDeliveryFlag()? address.getUnattendedDeliveryFlag().getName():"");
+        this.unattendedDeliveryFlag = (null != address.getUnattendedDeliveryFlag() ? address.getUnattendedDeliveryFlag().getName() : "");
         this.unattendedDeliveryInstructions = address.getUnattendedDeliveryInstructions();
+        this.unattendedEnabledZone = address.isUnattendedEnabledZone();
     }
 
     public String getFirstName() {
@@ -161,11 +164,13 @@ public class ShipToAddress extends DeliveryAddress {
         this.altType = altType;
     }
 
-	public String getInstructions() {
+	@Override
+    public String getInstructions() {
 		return instructions;
 	}
 
-	public void setInstructions(String instructions) {
+	@Override
+    public void setInstructions(String instructions) {
 		this.instructions = instructions;
 	}
 	
@@ -192,5 +197,13 @@ public class ShipToAddress extends DeliveryAddress {
     
     public void setUnattendedDeliveryInstructions(String unattendedDeliveryInstructions) {
         this.unattendedDeliveryInstructions = unattendedDeliveryInstructions;
+    }
+
+    public boolean isUnattendedEnabledZone() {
+        return unattendedEnabledZone;
+    }
+
+    public void setUnattendedEnabledZone(boolean unattendedEnabledZone) {
+        this.unattendedEnabledZone = unattendedEnabledZone;
     }
 }
