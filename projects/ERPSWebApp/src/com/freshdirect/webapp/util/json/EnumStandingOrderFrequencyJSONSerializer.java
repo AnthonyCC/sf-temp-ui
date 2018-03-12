@@ -1,5 +1,6 @@
 package com.freshdirect.webapp.util.json;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.freshdirect.fdstore.standingorders.EnumStandingOrderFrequency;
@@ -50,10 +51,15 @@ public class EnumStandingOrderFrequencyJSONSerializer extends AbstractSerializer
 			EnumStandingOrderFrequency en = (EnumStandingOrderFrequency) obj;
 			
 			JSONObject jsObject = new JSONObject();
+			try {
 			jsObject.put("javaClass", en.getClass().getName());
 			jsObject.put("_ord", en.ordinal());
 			jsObject.put("title", en.getTitle());
 			jsObject.put("frequency", en.getFrequency());
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			return jsObject;
 		}
@@ -73,13 +79,19 @@ public class EnumStandingOrderFrequencyJSONSerializer extends AbstractSerializer
 	public Object unmarshall(SerializerState state, Class klass, Object obj) throws UnmarshallException {
 
 		final JSONObject jsObject = (JSONObject) obj;
-		final int ord = jsObject.getInt("_ord");
+		int ord;
+		try {
+			ord = jsObject.getInt("_ord");
 		
 		for (EnumStandingOrderFrequency item : EnumStandingOrderFrequency.values()) {
 			if (item.ordinal() == ord)
 				return item;
 		}
-
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return null;
 	}
 }

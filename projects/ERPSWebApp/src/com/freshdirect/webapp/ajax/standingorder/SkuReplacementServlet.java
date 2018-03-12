@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Category;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -114,9 +115,14 @@ public class SkuReplacementServlet extends HttpServlet {
 					_msg).toString());
 			LOGGER.error(_msg);
 			json = new JSONObject();
-			json.put("result",
-					"Operation Failed.Please Contact Development Team.Error Message Details:"
-							+ e.getMessage());
+			try {
+				json.put("result",
+						"Operation Failed.Please Contact Development Team.Error Message Details:"
+								+ e.getMessage());
+			} catch (JSONException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			response.getWriter().print(json);
 		}
 	}

@@ -53,17 +53,17 @@ public class ReportingService {
             .from(Arrays.asList("circularReferences", "hierarchyReport", "invisibleProducts", "multipleReferences", "primaryHomes", "multiHome", "recentChanges",
                     "recipesSummary", "stackedSkus", "brokenMediaLinks"))
             .transform(MAKE_REPORT_KEY)
-            .toImmutableList();
+            .toList();
 
     public static final List<ContentKey> SMARTSTORE_REPORT_NODE_KEYS = FluentIterable
             .from(Arrays.asList("scarabRules", "smartCatRecs", "ymalSets"))
             .transform(MAKE_REPORT_KEY)
-            .toImmutableList();
+            .toList();
 
     public static final List<ContentKey> CMS_QUERY_NODE_KEYS = FluentIterable
             .from(Arrays.asList("orphans", "recent", "unreachable"))
             .transform(MAKE_QUERY_KEY)
-            .toImmutableList();
+            .toList();
 
     public static final Set<ContentKey> ALL_REPORTING_KEYS = new HashSet<ContentKey>() {
         {

@@ -7,6 +7,7 @@ import com.metaparadigm.jsonrpc.Serializer;
 import com.metaparadigm.jsonrpc.SerializerState;
 import com.metaparadigm.jsonrpc.UnmarshallException;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Iterator;
@@ -76,7 +77,10 @@ public class FDConfigurationJSONSerializer extends AbstractSerializer implements
 			throws MarshallException {
 		FDConfiguration conf = (FDConfiguration)object;
 		JSONObject ser_obj = new JSONObject();
-		if (useClassTag) ser_obj.put("javaClass", com.freshdirect.fdstore.FDConfiguration.class.getName());
+		if (useClassTag)
+			try {
+				ser_obj.put("javaClass", com.freshdirect.fdstore.FDConfiguration.class.getName());
+			
 		ser_obj.put("quantity", conf.getQuantity());
 		ser_obj.put("salesUnit", conf.getSalesUnit());
 		JSONObject ser_options = new JSONObject();
@@ -85,6 +89,10 @@ public class FDConfigurationJSONSerializer extends AbstractSerializer implements
 			ser_options.put((String)option.getKey(),option.getValue());
 		}
 		ser_obj.put("options", ser_options);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		return ser_obj;
 	}
 
@@ -104,11 +112,12 @@ public class FDConfigurationJSONSerializer extends AbstractSerializer implements
 			throws UnmarshallException {
 		JSONObject jsObject = (JSONObject)o;
 		if (useClassTag) {
-		    String jClass = jsObject.getString("javaClass");
+		    String jClass;
+			try {
+				jClass = jsObject.getString("javaClass");
 		    if (jClass == null) throw new UnmarshallException("no type hint");
 		    if (!FDConfiguration.class.getName().equals(jClass)) 
 			    throw new UnmarshallException(FDConfiguration.class.getName() + " expected for javaClass instead of " + jClass);
-		}
 	    // if class specified
 		if (clazz != null) {
 			if (!clazz.equals(FDConfiguration.class)) 
@@ -123,7 +132,16 @@ public class FDConfigurationJSONSerializer extends AbstractSerializer implements
 		   String key = (String)i.next();
 		   options.put(key,jsOptions.get(key));
 		}
+		
 		return new FDConfiguration(quant,salesUnit,options);
-	}
 
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+			
+	}
+		return null;
+	}
+		
 }

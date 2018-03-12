@@ -163,7 +163,10 @@ public class GrabberService implements GrabberServiceI {
 			case ERPS:
                 return new CacheEntryIdentifier(CmsCaches.BR_ERPS_PRODUCT_GRABBER_CACHE.cacheName, grabberKey);
 			case ERPS_PRICING_ZONE:
-				String zoneId = ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo().toString(); //thread local for user
+				String zoneId = ContentFactory.getInstance()!=null&&ContentFactory.getInstance().getCurrentUserContext()!=null&&
+								ContentFactory.getInstance().getCurrentUserContext().getPricingContext()!=null&&
+								ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo()!=null?
+								ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo().toString():null; //thread local for user
                 return new CacheEntryIdentifier(CmsCaches.BR_ERPS_ZONE_PRODUCT_GRABBER_CACHE.cacheName, grabberKey + PRICING_ZONE_ID_DELIMETER + zoneId);
 			default: //NO_CACHING:
 				return null;

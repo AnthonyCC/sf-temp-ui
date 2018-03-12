@@ -3,6 +3,7 @@ package com.freshdirect.webapp.util;
 
 import org.json.JSONObject;
 import org.json.JSONArray;
+import org.json.JSONException;
 
 import com.metaparadigm.jsonrpc.AbstractSerializer;
 import com.metaparadigm.jsonrpc.MarshallException;
@@ -97,34 +98,39 @@ public class ItemSelectionCheckResult {
     		ItemSelectionCheckResult checkResult = (ItemSelectionCheckResult)o;
     		JSONObject jsObject = new JSONObject();
     		
-    		jsObject.put("type", checkResult.responseType);
-    		if (checkResult.selection != null)
-    			jsObject.putOpt("items",FDCustomerCreatedListJSONSerializer.getInstance().marshall(state,checkResult.selection));
+    		try {
+				jsObject.put("type", checkResult.responseType);
+				if (checkResult.selection != null)
+					jsObject.putOpt("items",FDCustomerCreatedListJSONSerializer.getInstance().marshall(state,checkResult.selection));
    
-    		JSONArray jsErrors = new JSONArray();
-    		for(Iterator I = checkResult.errors.iterator(); I.hasNext();) {
-    			 ActionError error = (ActionError)I.next();
-    			 JSONObject jsError = new JSONObject();
-    			 jsError.put("type", error.getType());
-    			 jsError.put("description", error.getDescription());
-    			 jsErrors.put(jsError);
+				JSONArray jsErrors = new JSONArray();
+				for(Iterator I = checkResult.errors.iterator(); I.hasNext();) {
+					 ActionError error = (ActionError)I.next();
+					 JSONObject jsError = new JSONObject();
+					 jsError.put("type", error.getType());
+					 jsError.put("description", error.getDescription());
+					 jsErrors.put(jsError);
 
-    		}
-    		jsObject.put("errors",jsErrors);
-    		
-    		JSONArray jsWarnings = new JSONArray();
-    		for(Iterator I = checkResult.warnings.iterator(); I.hasNext();) {
-    			 ActionWarning warning = (ActionWarning)I.next();
-    			 JSONObject jsWarning = new JSONObject();
-    			 jsWarning.put("type", warning.getType());
-    			 jsWarning.put("description", warning.getDescription());
-    			 jsWarnings.put(jsWarning);
+				}
+				jsObject.put("errors",jsErrors);
+				
+				JSONArray jsWarnings = new JSONArray();
+				for(Iterator I = checkResult.warnings.iterator(); I.hasNext();) {
+					 ActionWarning warning = (ActionWarning)I.next();
+					 JSONObject jsWarning = new JSONObject();
+					 jsWarning.put("type", warning.getType());
+					 jsWarning.put("description", warning.getDescription());
+					 jsWarnings.put(jsWarning);
 
-    		}
-    		jsObject.put("warnings",jsWarnings);
-    		
-    		jsObject.putOpt("list_name", checkResult.listName);
-    		jsObject.putOpt("line_count",checkResult.lineCount);
+				}
+				jsObject.put("warnings",jsWarnings);
+				
+				jsObject.putOpt("list_name", checkResult.listName);
+				jsObject.putOpt("line_count",checkResult.lineCount);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
     		return jsObject;
     	}
     	
@@ -154,8 +160,9 @@ public class ItemSelectionCheckResult {
      * 
      * @return JSON string of this instance
      * @throws MarshallException
+     * @throws JSONException 
      */
-    public String toJSON() throws MarshallException {
+    public String toJSON() throws MarshallException, JSONException {
     	return ((JSONObject)ser.marshall(new SerializerState(), this)).toString(4);
     }
     

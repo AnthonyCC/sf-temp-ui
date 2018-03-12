@@ -293,7 +293,7 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         addRequestValue(REQ_PARAM_BIL_COUNTRY, paymentMethod.getBillingCtry());
         addRequestValue(REQ_PARAM_IS_PAYMENT_METHOD_GIFT_CARD, "false");
         addRequestValue(REQ_PARAM_IS_PAYMENT_METHOD_DONATION, "false");
-        
+        addRequestValue(REQ_PARAM_CAPTCHA_TOKEN, paymentMethod.getCaptchaToken());
 
         getWrapTarget().setActionName(ACTION_ADD_PAYMENT_METHOD);
         setMethodMode(true);

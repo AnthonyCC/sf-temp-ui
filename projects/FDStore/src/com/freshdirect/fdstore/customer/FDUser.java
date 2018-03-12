@@ -2538,7 +2538,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 		ErpAddressModel standardReservationAddress = null;
 		ErpAddressModel weeklyOrOneTimeReservationAddress = null;
 		//Extract the delivery date and address from the user's standard reservation which is set to user's shopping cart
-		if (null != this.getShoppingCart() & null != this.getShoppingCart().getDeliveryReservation()) {
+		if (null != this.getShoppingCart() && null != this.getShoppingCart().getDeliveryReservation()) {
 			standardReservationDeliveryDate = this.getShoppingCart().getDeliveryReservation().getDeliveryDate();
 			standardReservationAddress = this.getShoppingCart().getDeliveryAddress();
 		}
@@ -2549,7 +2549,9 @@ public class FDUser extends ModelSupport implements FDUserI {
 		}
 
 		// Weekly or One time reservation has higher precedence than Standard reservation
-		if (null != weeklyOrOneTimeReservationDeliveryDate & null != weeklyOrOneTimeReservationAddress && this.getReservation().getAddressId().equalsIgnoreCase(address.getId())) {
+		if (address!=null && null != weeklyOrOneTimeReservationDeliveryDate && null != weeklyOrOneTimeReservationAddress && this.getReservation() != null 
+				&& this.getReservation().getAddressId()!=null 
+				&& this.getReservation().getAddressId().equalsIgnoreCase(address.getId())) {
 			try {
 				return FDDeliveryManager.getInstance().getZoneInfo(
 								weeklyOrOneTimeReservationAddress,
@@ -2564,7 +2566,9 @@ public class FDUser extends ModelSupport implements FDUserI {
 			}
 		}
 		//checking if the user has any standard reservation
-		if (null != standardReservationDeliveryDate & null != standardReservationAddress  && this.getShoppingCart().getDeliveryReservation().getAddressId().equalsIgnoreCase(address.getId())) {
+		if (address!=null && null != standardReservationDeliveryDate && null != standardReservationAddress  && this.getShoppingCart()!=null &&
+				this.getShoppingCart().getDeliveryReservation()!=null && this.getShoppingCart().getDeliveryReservation().getAddressId()!=null &&
+				this.getShoppingCart().getDeliveryReservation().getAddressId().equalsIgnoreCase(address.getId())) {
 			try {
 				return FDDeliveryManager.getInstance().getZoneInfo(
 								standardReservationAddress,
