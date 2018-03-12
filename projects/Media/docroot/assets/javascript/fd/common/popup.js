@@ -5,7 +5,6 @@ var FreshDirect = FreshDirect || {};
 
     var $ = fd.libs.$;
     var WIDGET = fd.modules.common.widget;
-    var DISPATCHER = fd.common.dispatcher;
 
     // TMP: move to popupwidget.js?
     var popupWidget = Object.create(WIDGET,{
@@ -201,9 +200,14 @@ var FreshDirect = FreshDirect || {};
           }
         }
     });
-
-    fd.modules.common.utils.register("modules.common", "popupWidget", popupWidget, fd);
-
+    if (fd.modules && fd.modules.common && fd.modules.common.utils) {
+    	fd.modules.common.utils.register("modules.common", "popupWidget", popupWidget, fd);
+    } else {
+    	//self register
+    	fd.modules = fd.modules || {};
+    	fd.modules.common = fd.modules.common || {};
+    	fd.modules.common.popupWidget = popupWidget;
+    }
 
   /**
    * Init popup

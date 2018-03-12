@@ -527,5 +527,11 @@ var FreshDirect = FreshDirect || {};
   };
 
   // register in fd namespace
-  fd.modules.common.utils.register("modules.common", "PopupContent", PopupContent, fd);
+  if (fd.modules && fd.modules.common && fd.modules.common.utils) {
+	  fd.modules.common.utils.register("modules.common", "PopupContent", PopupContent, fd);
+  } else {
+	  fd.modules = fd.modules || {};
+	  fd.modules.common = fd.modules.common || {};
+	  fd.modules.common.PopupContent = PopupContent;
+  }
 }(FreshDirect));

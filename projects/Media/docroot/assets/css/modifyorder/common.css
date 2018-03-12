@@ -1,0 +1,23 @@
+.cancel-modify-confirm-popup#confirmpopup {
+	position: fixed !important;
+	background: #fff;
+	margin: 15px;
+}
+.cancel-modify-confirm-popup .qs-popup-content{
+	padding: 30px 40px;
+}
+.cancel-modify-confirm-popup .qs-popup-content p {
+	font-size: 16px;
+    color: #555555;
+}
+.cancel-modify-confirm-popup .qs-popup-header {
+	display: none;
+}
+
+.cancel-modify-confirm-popup .qs-popup-content .buttons button{
+	width: 100%;
+    margin: 0;
+}
+.cancel-modify-confirm-popup .qs-popup-content .buttons button+button{
+	margin-top: 20px;
+}
