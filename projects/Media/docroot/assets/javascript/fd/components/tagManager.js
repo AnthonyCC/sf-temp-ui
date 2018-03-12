@@ -29,6 +29,7 @@ var dataLayer = window.dataLayer || [];
   };
 
   var productTransform = function (product, idx, listData) {
+    listData.product = product;
     var productData = {
       name: product.productName,
       // id: product.productId, // #AN-162
@@ -743,6 +744,8 @@ var dataLayer = window.dataLayer || [];
 
       if (carouselE.length) {
         title = safeName(carouselE.find('.tabs li.selected').text());
+      } else if (productE.closest('.pdp-likethat').length) {
+        title = safeName(productE.closest('.pdp-likethat').find('h2').first().text());
       } else {
         title = safeName(productE.closest('.carousel, .carousels').find('.carousel-header, .header').text());
       }
@@ -754,9 +757,27 @@ var dataLayer = window.dataLayer || [];
   fd.gtm.getListForProduct = function (el, config) {
     config = config || {};
 
-    var channel = config.channel ? 'channel_' + config.channel : fd.gtm.getListChannel(el, config),
-        location = config.location ? 'loc_' + config.location : fd.gtm.getListLocation(el),
-        title = config.title ? 'title_' + config.title : fd.gtm.getListCarousel(el);
+    var productId = config.product && config.product.productId,
+        productE = el || (productId && document.querySelector('[data-product-id="'+productId+'"]'));
+
+    var channel, location, title;
+
+    if (productE) {
+      productE = $(productE);
+      channel = productE.attr('data-list-channel');
+      location = productE.attr('data-list-location');
+      title = productE.attr('data-list-title');
+    }
+
+    channel = channel || (config.channel ? 'channel_' + config.channel : fd.gtm.getListChannel(el, config));
+    location = location || (config.location ? 'loc_' + config.location : fd.gtm.getListLocation(el));
+    title = title || (config.title ? 'title_' + config.title : fd.gtm.getListCarousel(el));
+
+    if (productE) {
+      productE.attr('data-list-channel', channel);
+      productE.attr('data-list-location', location);
+      productE.attr('data-list-title', title);
+    }
 
     return [channel, location, title].filter(function (e) { return e; }).join('-');
   };
@@ -816,6 +837,13 @@ var dataLayer = window.dataLayer || [];
     if (fd.browse && fd.browse.data && fd.browse.data.adProducts && fd.browse.data.adProducts.products && fd.browse.data.adProducts.products.length) {
       fd.gtm.reportImpressions(fd.browse.data.adProducts.products.map(function (p, i) {
         return fd.gtm.productTransform(p, i+1, {product: p});
+      }));
+    }
+
+    // report family (?) products if there's any
+    if (fd.pdp && fd.pdp.extraData && fd.pdp.extraData.familyProducts && fd.pdp.extraData.familyProducts.length) {
+      fd.gtm.reportImpressions(fd.pdp.extraData.familyProducts.map(function (p, i) {
+        return fd.gtm.productTransform(p, i+1, {product: p, channel: 'rec_family_products'});
       }));
     }
 
