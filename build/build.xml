@@ -1980,6 +1980,7 @@
 			<pathelement location="${work.dir}/DeliveryEJB-WL.jar"/>
 			<pathelement location="${work.dir}/cmseue.jar"/>
 			<pathelement location="${work.dir}/StoreAPI.jar"/>
+			<pathelement location="${work.dir}/Delivery.jar"/>
 			<pathelement location="${work.dir}/FDStoreEJB-WL.jar"/>
 			<pathelement location="${work.dir}/DataLoaderEJB-WL.jar"/>
 			<pathelement location="${work.dir}/ERPSWebApp.jar"/>
@@ -2225,6 +2226,7 @@
 			<pathelement location="${thirdparty.home}/jackson-annotations-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/hivemind-1.1.1.jar"/>
 			<pathelement location="${thirdparty.home}/hivemind-lib-1.1.1.jar"/>
+			<pathelement location="${thirdparty.home}/${scarab.jar}"/>
 		</path>
 		<makeWebProject
 			project="ERPSAdmin"
@@ -2533,6 +2535,7 @@
 				<include name="ERPSWebApp.jar"/>
 				<include name="StoreAPI.jar"/>
 				<include name="cmseue.jar" />
+				<include name="Delivery.jar"/>
 				<include name="FDLogisticsIntegration.jar"/>
 			</libraries>
 			<lib>
@@ -2662,6 +2665,7 @@
 				<include name="FDStoreEJB-WL.jar"/>
 				<include name="cmseue.jar" />
 				<include name="StoreAPI.jar"/>
+				<include name="Delivery.jar"/>
 				<include name="DataLoaderEJB-WL.jar"/>
 				<include name="FDLogisticsIntegration.jar"/>
 			</libraries>
@@ -2686,6 +2690,7 @@
 				<include name="httpmime-4.5.jar"/>
 				<include name="hivemind-1.1.1.jar"/>
 				<include name="hivemind-lib-1.1.1.jar"/>
+				<include name="${scarab.jar}"/>
 			</lib>
 		</makeEar>
 	</target>
