@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.cms.core.domain.ContentType;
-import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.content.FilteringFlow;
 import com.freshdirect.fdstore.content.GenericFilterDecorator;
 import com.freshdirect.fdstore.content.GenericFilteringMenuBuilder;
@@ -43,7 +42,6 @@ public class QuickShopFilterImpl extends FilteringFlow<QuickShopLineItemWrapper>
 
 	public QuickShopFilterImpl(FilteringNavigator nav, FDUserI user, Set<FilteringValue> filters, List<FilteringSortingItem<QuickShopLineItemWrapper>> items, List<String> activeReplacements,
 			EnumQuickShopTab tabType, QuickShopListRequestObject requestData) {
-		super();
 		this.nav = nav;
 		this.user = user;
 		this.filters = filters;
@@ -55,12 +53,6 @@ public class QuickShopFilterImpl extends FilteringFlow<QuickShopLineItemWrapper>
 
 	public FilteringNavigator getNav() {
 		return nav;
-	}
-
-	public PricingContext getPricingContext() {
-		if (user != null)
-			return user.getPricingContext();
-		return PricingContext.DEFAULT;
 	}
 
 	public QuickShopListRequestObject getRequestData() {
@@ -98,7 +90,7 @@ public class QuickShopFilterImpl extends FilteringFlow<QuickShopLineItemWrapper>
 
 	@Override
 	protected Comparator<FilteringSortingItem<QuickShopLineItemWrapper>> createComparator(List<FilteringSortingItem<QuickShopLineItemWrapper>> items) {
-		return QuickShopComparatorUtil.createQuickShopItemComparator(items, user.getPricingContext(), nav);
+        return QuickShopComparatorUtil.createQuickShopItemComparator(items, user.getUserContext().getPricingContext(), nav);
 	}
 
 	@Override
@@ -266,9 +258,6 @@ public class QuickShopFilterImpl extends FilteringFlow<QuickShopLineItemWrapper>
 
 	@Override
 	protected void preProcess(List<FilteringSortingItem<QuickShopLineItemWrapper>> items) {
-		if (EnumQuickShopTab.PAST_ORDERS.equals(tabType)) {
-			QuickShopHelper.removeSkuDuplicatesInPastOrders(items);
-		}
 		if (EnumQuickShopTab.PAST_ORDERS.equals(tabType) && items != null && !items.isEmpty()) {
 			if (requestData.getOrderIdList() == null || requestData.getOrderIdList().isEmpty()) {
 				QuickShopSortingService.defaultService().sortByWrappedDeliveryDateAndOrderId(items);

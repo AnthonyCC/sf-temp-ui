@@ -35,7 +35,6 @@ import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.GenericFilterDecorator;
-import com.freshdirect.fdstore.pricing.ProductModelPricingAdapter;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.storeapi.content.BrandModel;
@@ -64,7 +63,7 @@ public class QuickShopFilterValueDecorator extends GenericFilterDecorator<Filter
 	public void decorateItem(FilteringSortingItem<QuickShopLineItemWrapper> item) {
 
 		QuickShopLineItemWrapper node = item.getNode();
-		ProductModelPricingAdapter product = node.getProduct();
+        ProductModel product = node.getProduct();
 
 		List<ProductModel> parents = collectParents(product);
 
@@ -89,7 +88,7 @@ public class QuickShopFilterValueDecorator extends GenericFilterDecorator<Filter
 					menu.setFilter(filter);
 					menus.add(menu);
 
-					item.putFilteringValue(TIME_FRAME_ALL, filter.getName());
+                        item.putFilteringValue(TIME_FRAME_ALL, filter.getName());
 					item.putMenuValue(TIME_FRAME_ALL, menus);
 					break;
 				}
@@ -404,7 +403,7 @@ public class QuickShopFilterValueDecorator extends GenericFilterDecorator<Filter
 
 	}
 
-	private List<ProductModel> collectParents(ProductModelPricingAdapter node) {
+    private List<ProductModel> collectParents(ProductModel node) {
 		List<ProductModel> parentNodes = new ArrayList<ProductModel>();
 
 		Collection<ContentKey> parents = ContentFactory.getInstance().getParentKeys(node.getContentKey());
