@@ -93,7 +93,7 @@ public class FDFactory {
 			lookupFactoryHome();
 		}
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB_WarmUp)){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB)){
 				return new FDProductHelper().getFDProductInfoNew(erpProdInfo);//::FDX::
 			}else{
 			FDFactorySB sb = factoryHome.create();
@@ -182,7 +182,7 @@ public class FDFactory {
 		try {
 			for(Iterator<String>it = sapIds.iterator();it.hasNext();) {
 				String sapId = it.next();
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB_WarmUp)){
+				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB)){
 					skuCodes.addAll(FDFactoryService.getInstance().findSkusBySapId(sapId));
 				}else{
 				FDFactorySB sb = factoryHome.create();
