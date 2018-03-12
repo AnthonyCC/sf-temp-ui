@@ -35,7 +35,6 @@ import net.jawr.web.util.io.TeeOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.google.common.io.CharStreams;
 import com.google.javascript.jscomp.CommandLineRunner;
 import com.google.javascript.jscomp.Compiler;
@@ -151,8 +150,8 @@ public class FDClosureGlobalPostProcessor extends AbstractChainedGlobalProcessor
 	 * , java.util.List)
 	 */
 	public void processBundles(GlobalPostProcessingContext ctx, List<JoinableResourceBundle> bundles) {
-		/* disable on local to speed up restart */
-		if (!FDStoreProperties.isLocalDeployment() && ctx.hasBundleToBeProcessed()) {
+
+		if (ctx.hasBundleToBeProcessed()) {
 			String workingDir = ctx.getRsReaderHandler().getWorkingDirectory();
 
 			if (srcDir == null || destDir == null || tempDir == null || srcZipDir == null || destZipDir == null) {
