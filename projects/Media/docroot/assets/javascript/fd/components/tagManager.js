@@ -29,9 +29,11 @@ var dataLayer = window.dataLayer || [];
   };
 
   var productTransform = function (product, idx, listData) {
+    listData.product = product;
     var productData = {
       name: product.productName,
-      id: product.productId,
+      // id: product.productId, // #AN-162
+      id: product.skuCode,
       price: product.price,
       brand: product.brandName,
       category: product.catId,
@@ -154,7 +156,8 @@ var dataLayer = window.dataLayer || [];
           qty = parseInt(productData.quantity, 10) || 0,
           addRemoveData = {
               products: [{
-                id: productData.id,
+                // id: productData.id, // #AN-162
+                id: productData.sku,
                 name: productData.name,
                 price: productData.price,
                 brand: productData.brand,
@@ -199,26 +202,35 @@ var dataLayer = window.dataLayer || [];
       return {event: event};
     },
     coStep: function (coStepData) {
-      dataLayer.push({
-        ecommerce: {
-          checkout: {
-            actionField: coStepData
-          }
+      var cosData = {
+        checkout: {
+          actionField: coStepData
         }
+      };
+
+      if (coStepData.delivery_type) {
+        cosData.delivery_type = coStepData.delivery_type;
+      }
+      if (coStepData.available_timeslot_value) {
+        cosData.available_timeslot_value = coStepData.available_timeslot_value;
+      }
+      if (coStepData.unavailable_timeslot_present) {
+        cosData.unavailable_timeslot_present = coStepData.unavailable_timeslot_present;
+      }
+
+      dataLayer.push({
+        ecommerce: cosData
       });
     },
     timeslotOpened: function () {
       var unavts = fd.gtm.isUnavailableTimeslotPresent() ? 'yes' : 'no';
 
       dataLayer.push({
-        page_name: 'Available Delivery Timeslots - Modal',
-        unavailable_timeslot_present: unavts
-      });
-
-      dataLayer.push({
         event: 'timeslot-unavailable',
         eventCategory: 'timeslot',
         eventAction: 'timeslot-checkout-modal',
+        page_name: 'Available Delivery Timeslots - Modal',
+        unavailable_timeslot_present: unavts,
         eventLabel: unavts
       });
     },
@@ -287,7 +299,8 @@ var dataLayer = window.dataLayer || [];
               products: coData.products && Object.keys(coData.products).map(function (k) {
                 var productData = coData.products[k];
                 return {
-                  id: productData.id,
+                  // id: productData.id, // #AN-162
+                  id: productData.sku,
                   name: productData.name,
                   price: productData.price,
                   brand: productData.brand,
@@ -328,7 +341,8 @@ var dataLayer = window.dataLayer || [];
               products: coData.products && Object.keys(coData.products).map(function (k) {
                 var productData = coData.products[k];
                 return {
-                  id: productData.id,
+                  // id: productData.id, // #AN-162
+                  id: productData.sku,
                   name: productData.name,
                   price: productData.price,
                   brand: productData.brand,
@@ -555,7 +569,8 @@ var dataLayer = window.dataLayer || [];
 
       if (productData && productData.productId) {
         return {
-          id: productData.productId,
+          // id: productData.productId, // #AN-162
+          id: productData.skuCode,
           name: productData.name,
           price: productData.price,
           brand: productData.brand,
@@ -728,6 +743,8 @@ var dataLayer = window.dataLayer || [];
 
       if (carouselE.length) {
         title = safeName(carouselE.find('.tabs li.selected').text());
+      } else if (productE.closest('.pdp-likethat').length) {
+        title = safeName(productE.closest('.pdp-likethat').find('h2').first().text());
       } else {
         title = safeName(productE.closest('.carousel, .carousels').find('.carousel-header, .header').text());
       }
@@ -739,9 +756,27 @@ var dataLayer = window.dataLayer || [];
   fd.gtm.getListForProduct = function (el, config) {
     config = config || {};
 
-    var channel = config.channel ? 'channel_' + config.channel : fd.gtm.getListChannel(el, config),
-        location = config.location ? 'loc_' + config.location : fd.gtm.getListLocation(el),
-        title = config.title ? 'title_' + config.title : fd.gtm.getListCarousel(el);
+    var productId = config.product && config.product.productId,
+        productE = el || (productId && document.querySelector('[data-product-id="'+productId+'"]'));
+
+    var channel, location, title;
+
+    if (productE) {
+      productE = $(productE);
+      channel = productE.attr('data-list-channel');
+      location = productE.attr('data-list-location');
+      title = productE.attr('data-list-title');
+    }
+
+    channel = channel || (config.channel ? 'channel_' + config.channel : fd.gtm.getListChannel(el, config));
+    location = location || (config.location ? 'loc_' + config.location : fd.gtm.getListLocation(el));
+    title = title || (config.title ? 'title_' + config.title : fd.gtm.getListCarousel(el));
+
+    if (productE) {
+      productE.attr('data-list-channel', channel);
+      productE.attr('data-list-location', location);
+      productE.attr('data-list-title', title);
+    }
 
     return [channel, location, title].filter(function (e) { return e; }).join('-');
   };
@@ -801,6 +836,13 @@ var dataLayer = window.dataLayer || [];
     if (fd.browse && fd.browse.data && fd.browse.data.adProducts && fd.browse.data.adProducts.products && fd.browse.data.adProducts.products.length) {
       fd.gtm.reportImpressions(fd.browse.data.adProducts.products.map(function (p, i) {
         return fd.gtm.productTransform(p, i+1, {product: p});
+      }));
+    }
+
+    // report family (?) products if there's any
+    if (fd.pdp && fd.pdp.extraData && fd.pdp.extraData.familyProducts && fd.pdp.extraData.familyProducts.length) {
+      fd.gtm.reportImpressions(fd.pdp.extraData.familyProducts.map(function (p, i) {
+        return fd.gtm.productTransform(p, i+1, {product: p, channel: 'rec_family_products'});
       }));
     }
 
@@ -1151,7 +1193,8 @@ var dataLayer = window.dataLayer || [];
             list: productData.list || fd.gtm.getListForProduct(e.target)
           },
           products: [{
-            id: productData.productId,
+            // id: productData.productId, // #AN-162
+            id: productData.skuCode,
             name: productData.name,
             price: productData.price,
             brand: productData.brand,

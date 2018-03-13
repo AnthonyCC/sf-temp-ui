@@ -268,9 +268,9 @@ public class PriceCalculator {
     						}
     					}
     				}
+    				//At this point there is no gs price defined for default sku.
+        			return priceModel.getHighestDealPercentage();
     			}
-    			//At this point there is no gs price defined for default sku.
-    			return priceModel.getHighestDealPercentage();
             } catch (FDSkuNotFoundException ex) {
             } catch (FDResourceException e) {
             }
