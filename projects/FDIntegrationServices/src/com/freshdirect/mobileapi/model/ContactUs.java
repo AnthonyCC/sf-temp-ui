@@ -35,31 +35,31 @@ public class ContactUs {
      * @return
      */
     public Map<String, String> getContactUsSubjects() {
-        ContactFdControllerWrapper tagWrapper = new ContactFdControllerWrapper(this.sessionUser);
-        Selection[] selections;
         Map<String, String> values = new LinkedHashMap<String, String>();
-        
-        String storeKey = ContentFactory.getInstance().getCurrentUserContext() != null 
-				&& ContentFactory.getInstance().getCurrentUserContext().getStoreContext() != null
-					&& ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId() != null
-						&& !EnumEStoreId.FD.equals(ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId()) 
-								? ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId().getContentId().toLowerCase() : null;
-        
-        if(storeKey!=null){
-        	if(this.sessionUser!=null&&this.sessionUser.isLoggedIn()){
-        		selections = tagWrapper.getSubjectsFdx();
-        	}else{
-        		selections = tagWrapper.getSubjectsFdxAnonymous();
-        	}
-        }else{
-        	selections = tagWrapper.getSubjects();
+        if(this.sessionUser!=null){
+	        ContactFdControllerWrapper tagWrapper = new ContactFdControllerWrapper(this.sessionUser);
+	        Selection[] selections;
+	        String storeKey = ContentFactory.getInstance().getCurrentUserContext() != null 
+					&& ContentFactory.getInstance().getCurrentUserContext().getStoreContext() != null
+						&& ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId() != null
+							&& !EnumEStoreId.FD.equals(ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId()) 
+									? ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId().getContentId().toLowerCase() : null;
+	        
+	        if(storeKey!=null){
+	        	if(this.sessionUser.isLoggedIn()){
+	        		selections = tagWrapper.getSubjectsFdx();
+	        	}else{
+	        		selections = tagWrapper.getSubjectsFdxAnonymous();
+	        	}
+	        }else{
+	        	selections = tagWrapper.getSubjects();
+	        }
+	        int index = 0;
+	        for (Selection selection : selections) {
+	            values.put(Integer.toString(index), selection.getDescription());
+	            index++;
+	        }
         }
-        int index = 0;
-        for (Selection selection : selections) {
-            values.put(Integer.toString(index), selection.getDescription());
-            index++;
-        }
-
         return values;
     }
 

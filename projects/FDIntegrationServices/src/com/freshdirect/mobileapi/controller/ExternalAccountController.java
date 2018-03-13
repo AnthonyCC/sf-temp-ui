@@ -95,6 +95,12 @@ public class ExternalAccountController extends BaseController implements SystemM
 		    String redirectUrl = getRedirectUrl(request, message);
 			redirectAfterLogin(response, redirectUrl);
 		}
+		if(message==null){
+			message = getErrorMessage("RESP_MSG_NULL", "Response Message Null");
+			LOGGER.error("EXTERNALACCOUNTCONTROLLER - Response Message Null for action - " + action + " and user " + (user != null && user.getFDSessionUser() != null 
+					? (user.getFDSessionUser().getIdentity() != null && user.getFDSessionUser().getFDCustomer() != null 
+					? user.getFDSessionUser().getFDCustomer().getErpCustomerPK() : user.getFDSessionUser().getPrimaryKey() ) : "NOUSER" ) );
+		}
 		setResponseMessage(model, message, user);
 		return model;
 	}

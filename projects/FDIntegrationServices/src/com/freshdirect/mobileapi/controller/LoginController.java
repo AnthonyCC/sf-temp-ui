@@ -211,7 +211,12 @@ public class LoginController extends BaseController  implements SystemMessageLis
 				 responseMessage = getErrorMessage("Invalid Address", "Invalid address");
 			}
 		}
-
+		if(responseMessage==null){
+			responseMessage = getErrorMessage("RESP_MSG_NULL", "Response Message Null");
+			LOGGER.error("LOGINCONTROLLER - Response Message Null for action - " + action + " and user " + (user != null && user.getFDSessionUser() != null 
+					? (user.getFDSessionUser().getIdentity() != null && user.getFDSessionUser().getFDCustomer() != null 
+					? user.getFDSessionUser().getFDCustomer().getErpCustomerPK() : user.getFDSessionUser().getPrimaryKey() ) : "NOUSER" ) );
+		}
 		setResponseMessage(model, responseMessage, user);
 		return model;
 	}
@@ -442,13 +447,15 @@ public class LoginController extends BaseController  implements SystemMessageLis
 			}
 			user.getFDSessionUser().saveCart();
 			//Silver popup changes start
-			SilverPopupDetails details = new SilverPopupDetails();
-			details.setCustomerId(user.getFDSessionUser().getIdentity().getErpCustomerPK());
-			details.setDestination(destination);
-			details.setQualifier(qualifier);
-			details.setChannel(channel);
-			if (null != details.getDestination() && !details.getDestination().isEmpty() && null!=details.getQualifier()  && !details.getQualifier().isEmpty()) {
-				user.getFDSessionUser().insertOrUpdateSilverPopup(details);
+			if(user.getFDSessionUser().getIdentity()!=null){
+				SilverPopupDetails details = new SilverPopupDetails();
+				details.setCustomerId(user.getFDSessionUser().getIdentity().getErpCustomerPK());
+				details.setDestination(destination);
+				details.setQualifier(qualifier);
+				details.setChannel(channel);
+				if (null != details.getDestination() && !details.getDestination().isEmpty() && null!=details.getQualifier()  && !details.getQualifier().isEmpty()) {
+					user.getFDSessionUser().insertOrUpdateSilverPopup(details);
+				}
 			}
 			//Silver popup changes End
             if (isExtraResponseRequested(request)) {

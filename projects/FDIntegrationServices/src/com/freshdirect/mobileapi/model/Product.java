@@ -1864,7 +1864,7 @@ public class Product {
 
     public int getHighestDealPercentage() {
         int result = 0;
-        if (!product.getProductModel().isUnavailable()) {
+        if (product!=null&&product.getProductModel()!=null&&!product.getProductModel().isUnavailable()&&defaultPriceCalculator!=null) {
             //result = product.getProductInfo().getHighestDealPercentage();
             result = defaultPriceCalculator.getHighestDealPercentage();
             if(result == 0) {

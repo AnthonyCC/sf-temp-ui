@@ -390,6 +390,7 @@ public class QuickShopHelper {
 					&& result.get(0).getProduct().getUserContext()!=null
 					&& result.get(0).getProduct().getUserContext().getFulfillmentContext()!=null
 					&& result.get(0).getProduct().getUserContext().getFulfillmentContext().getPlantId()!=null
+					&& user!=null && user.getUserContext()!=null && user.getUserContext().getFulfillmentContext()!= null && user.getIdentity()!=null
 					&& !result.get(0).getProduct().getUserContext().getFulfillmentContext().getPlantId().equals(user.getUserContext().getFulfillmentContext().getPlantId())){
 			    CmsServiceLocator.ehCacheUtil().removeFromCache(cacheName, user.getIdentity().getErpCustomerPK());
 				result = CmsServiceLocator.ehCacheUtil().getListFromCache(cacheName, user.getIdentity().getErpCustomerPK());
@@ -409,7 +410,7 @@ public class QuickShopHelper {
 						result = result.subList(0, topItemMaxCount);
 					}
 				}
-				if (!result.isEmpty()) {
+				if (!result.isEmpty() && user!= null && user.getIdentity()!=null) {
 	                CmsServiceLocator.ehCacheUtil().putListToCache(cacheName, user.getIdentity().getErpCustomerPK(), new ArrayList<QuickShopLineItemWrapper>(result));
 				}
 			} else {
