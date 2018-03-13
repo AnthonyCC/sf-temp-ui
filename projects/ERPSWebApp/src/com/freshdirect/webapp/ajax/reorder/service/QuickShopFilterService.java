@@ -141,8 +141,8 @@ public class QuickShopFilterService {
                 if (lineItem.getConfiguration() != null) {
                     filteredItems.add(item);
                 } else {
-                    int quantityCompare = Double.compare(aggregatedQuantity, lineItem.getQuantity().getQuantity());
-                    if (quantityCompare > 0) {
+                    int quantityCompare = Double.compare(aggregatedQuantity, Math.min(lineItem.getQuantity().getQuantity(), lineItem.getQuantity().getqMax()));
+                    if (quantityCompare >= 0) {
                         maxQuantityBySkuCode.remove(lineItem.getSkuCode());
                         try {
                             FilteringSortingItem<QuickShopLineItemWrapper> clonedItem = QuickShopHelper.createQuickShopFilteringItemWrapper(item.getNode().getProduct(), user);
@@ -163,12 +163,14 @@ public class QuickShopFilterService {
     private Map<String, Double> aggregateProductQuantity(List<FilteringSortingItem<QuickShopLineItemWrapper>> items) {
         Map<String, Double> maxQuantitiesBySkuCode = new HashMap<String, Double>();
         for (FilteringSortingItem<QuickShopLineItemWrapper> item : items) {
-            String skuCode = item.getNode().getItem().getSkuCode();
-            double quantity = item.getNode().getItem().getQuantity().getQuantity();
+            QuickShopLineItem lineItem = item.getNode().getItem();
+            String skuCode = lineItem.getSkuCode();
+            double quantity = lineItem.getQuantity().getQuantity();
+            double maxQuantity = lineItem.getQuantity().getqMax();
             if (maxQuantitiesBySkuCode.containsKey(skuCode)) {
                 quantity += maxQuantitiesBySkuCode.get(skuCode);
             }
-            maxQuantitiesBySkuCode.put(skuCode, quantity);
+            maxQuantitiesBySkuCode.put(skuCode, Math.min(maxQuantity, quantity));
         }
         return maxQuantitiesBySkuCode;
     }
