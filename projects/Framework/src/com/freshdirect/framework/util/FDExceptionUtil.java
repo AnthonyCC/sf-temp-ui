@@ -7,10 +7,12 @@ public class FDExceptionUtil {
 	public static String getRootCauseStackTrace(Throwable e) {
 
 		StringBuffer strBuf = new StringBuffer();
-		String[] traces = ExceptionUtils.getRootCauseStackTrace(e);
-		if (traces != null) {
-			for (final String element : ExceptionUtils.getRootCauseStackTrace(e)) {
-				strBuf.append(element).append(" ");
+		if(e != null) {
+			String[] traces = ExceptionUtils.getRootCauseStackTrace(e);
+			if (traces != null) {
+				for (final String element : ExceptionUtils.getRootCauseStackTrace(e)) {
+					strBuf.append(element).append(" ");
+				}
 			}
 		}
 		return strBuf.toString();
