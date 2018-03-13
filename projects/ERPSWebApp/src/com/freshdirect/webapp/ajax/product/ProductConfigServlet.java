@@ -18,6 +18,8 @@ import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.storeapi.content.ContentFactory;
@@ -84,6 +86,7 @@ public class ProductConfigServlet extends BaseJsonServlet {
 	protected ProductConfigResponseData createProductConfigData( FDUserI user, ProductConfigRequestData reqData ) throws FDResourceException, HttpErrorResponse {
 
 		String productId = reqData.getProductId();
+        ContentFactory.getInstance().setEligibleForDDPP(FDStoreProperties.isDDPPEnabled() || ((FDUser) user).isEligibleForDDPP());
 		if ( productId == null ) {
 			returnHttpError( 400, "productId not specified" );	// 400 Bad Request
 		}
@@ -94,17 +97,9 @@ public class ProductConfigServlet extends BaseJsonServlet {
 		String categoryId = reqData.getCategoryId();
 		if ( categoryId == null ) {
 			// get product in its primary home
-			LOG.debug("get product in its primary home "+productId);
-			LOG.debug("ContentFactory.getInstance()"+ContentFactory.getInstance());
 			product = (ProductModel)ContentFactory.getInstance().getContentNodeByKey( ContentKeyFactory.get(ContentType.Product, productId) );
 		} else {
 			// get product in specified category context
-			LOG.debug("get product in specified category context"+categoryId+":"+productId);
-			LOG.debug("ContentFactory.getInstance().getCurrentUserContext().getFdIdentity()========"+ContentFactory.getInstance().getCurrentUserContext().getFdIdentity());
-			LOG.debug("ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId()========"+ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId());
-			LOG.debug("ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext()========"+ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().toString());
-			LOG.debug("ContentFactory.getInstance().getCurrentUserContext().getPricingContext()====="+ContentFactory.getInstance().getCurrentUserContext().getPricingContext());
-			LOG.debug("ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo()==="+ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo());
 			product = ContentFactory.getInstance().getProductByName( categoryId, productId );
 		}
 
