@@ -131,7 +131,7 @@ public class ConstraintProviderService {
     private static final Map<String, Constraint<String>> EBT_PAYMENT_CONSTRAINTS = new HashMap<String, Constraint<String>>() {
 
         {
-            put(PaymentMethodName.ACCOUNT_HOLDER, new TextConstraint(false));
+            put(PaymentMethodName.ACCOUNT_HOLDER, new NameConstraint(false));
             put(PaymentMethodName.ACCOUNT_NUMBER, new CreditCardConstraint(false));
             put(EnumUserInfoName.BIL_COUNTRY.getCode(), new TextConstraint(false));
             put(EnumUserInfoName.BIL_ADDRESS_1.getCode(), new StreetTextConstraint(false));
