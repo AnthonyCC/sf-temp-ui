@@ -2,10 +2,16 @@
 <%@ page isErrorPage="true" %>
 <%@ page import='com.freshdirect.webapp.util.JspLogger' %>
 <%@ page import='com.freshdirect.webapp.util.AjaxErrorHandlingService' %>
-<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
-<%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c'%>
-<%
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@page import="com.freshdirect.framework.util.log.LoggerFactory"%><%@page import="org.apache.log4j.Logger"%>
+<%@page import="com.freshdirect.webapp.util.FDExceptionUtil"%>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+
+<%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c'%>
+
+<%
 /****
  * Error page
  *
@@ -14,11 +20,21 @@
  */
 
 try {
+	%><fd:CheckLoginStatus id="user" /><%
+	Logger LOGGER = LoggerFactory.getInstance("error.jsp");
+ 
+	
   if ("XMLHttpRequest".equalsIgnoreCase(request.getHeader("X-Requested-With"))) {
     // AJAX errors
     String message = AjaxErrorHandlingService.defaultService().prepareErrorMessageForAjaxCall(request, response);
     String primaryErrorMessage = AjaxErrorHandlingService.defaultService().getPrimaryErrorMessage(message);
     String secondaryErrorMessage = AjaxErrorHandlingService.defaultService().getSecondaryErrorMessage(message);
+    
+    if (message != null || message!="") { 
+    LOGGER.warn("FDWEBERROR01 for "
+    		+ (user != null ? (user.getIdentity() != null && user.getFDCustomer() != null ? user.getFDCustomer().getErpCustomerPK() : user.getPrimaryKey() ) : "NOUSER" )
+    		+ " -> "+ message);    
+    }
   %>
   {"error": {"primary": "<%= primaryErrorMessage%>", "secondary": "<%= secondaryErrorMessage%>"}}
   <%
@@ -29,6 +45,9 @@ try {
     if (exception != null) { 
 
       JspLogger.GENERIC.error("Got an error page", exception);
+      LOGGER.warn("FDWEBERROR02 for "
+    		  + (user != null ? (user.getIdentity() != null && user.getFDCustomer() != null ? user.getFDCustomer().getErpCustomerPK() : user.getPrimaryKey() ) : "NOUSER" )
+    		  + " -> "+ FDExceptionUtil.getRootCauseStackTrace(exception));
       %>
 <!DOCTYPE html>
 <html lang="en-US" xml:lang="en-US">
