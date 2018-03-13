@@ -20,7 +20,8 @@
 	    		+ (user != null ? (user.getIdentity() != null && user.getFDCustomer() != null ? user.getFDCustomer().getErpCustomerPK() : user.getPrimaryKey() ) : "NOUSER" )
 	    		+ " : "+ CookieMonster.getCookie(request) 
 	    		+ " : "+ request.getRequestURL()
-	    		+ " : "+ request.getHeader("referer")    		
+	    		+ " : "+ request.getHeader("referer") 
+	    		+ " : "+ request.getHeader("User-Agent")
 	    		+ " : "+ errorMessage); 
 		} catch (Exception exp) {
 			LOGGER.warn("FDWEBERROR-03 error logging error " + exp.getMessage());
