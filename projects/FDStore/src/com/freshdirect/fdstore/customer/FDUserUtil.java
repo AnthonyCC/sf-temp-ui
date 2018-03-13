@@ -1,5 +1,7 @@
 package com.freshdirect.fdstore.customer;
 
+import org.apache.log4j.Category;
+
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.CatalogKey;
 import com.freshdirect.customer.ErpDeliveryPlantInfoModel;
@@ -8,9 +10,10 @@ import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class FDUserUtil {
-	
+	private static Category		LOGGER	= LoggerFactory.getInstance( FDUserUtil.class );	
 	public static boolean isAlcoholRestricted(String zipCode) throws FDResourceException {
 		String county = FDDeliveryManager.getInstance().lookupCountyByZip(zipCode);
 		 String state = FDDeliveryManager.getInstance().lookupStateByZip(zipCode);
@@ -26,11 +29,18 @@ public class FDUserUtil {
 	
 	public static ErpDeliveryPlantInfoModel getDeliveryPlantInfo(UserContext userContext) {
 		ErpDeliveryPlantInfoModel delPlantInfo=new ErpDeliveryPlantInfoModel();
-		delPlantInfo.setPlantId(userContext.getFulfillmentContext().getPlantId());
-		delPlantInfo.setSalesOrg(userContext.getPricingContext().getZoneInfo().getSalesOrg());
-		delPlantInfo.setDistChannel(userContext.getPricingContext().getZoneInfo().getDistributionChanel());
-		CatalogKey catalogKey = new CatalogKey(userContext.getStoreContext().getEStoreId().name(),Long.parseLong(userContext.getFulfillmentContext().getPlantId()),userContext.getPricingContext().getZoneInfo());
-		delPlantInfo.setCatalogKey(catalogKey);
+		if(null == userContext){
+			LOGGER.warn(" UserContext is null ");
+		}else if(null == userContext.getFulfillmentContext()){
+			LOGGER.warn(" FulfillmentContext is null ");
+		}
+		if(null !=userContext){ //TODO: Populate it with default values.
+			delPlantInfo.setPlantId(userContext.getFulfillmentContext().getPlantId());
+			delPlantInfo.setSalesOrg(userContext.getPricingContext().getZoneInfo().getSalesOrg());
+			delPlantInfo.setDistChannel(userContext.getPricingContext().getZoneInfo().getDistributionChanel());
+			CatalogKey catalogKey = new CatalogKey(userContext.getStoreContext().getEStoreId().name(),Long.parseLong(userContext.getFulfillmentContext().getPlantId()),userContext.getPricingContext().getZoneInfo());
+			delPlantInfo.setCatalogKey(catalogKey);
+		}
 		return delPlantInfo;
 	}
 
