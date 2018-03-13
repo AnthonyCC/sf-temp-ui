@@ -447,13 +447,15 @@ public class LoginController extends BaseController  implements SystemMessageLis
 			}
 			user.getFDSessionUser().saveCart();
 			//Silver popup changes start
-			SilverPopupDetails details = new SilverPopupDetails();
-			details.setCustomerId(user.getFDSessionUser().getIdentity().getErpCustomerPK());
-			details.setDestination(destination);
-			details.setQualifier(qualifier);
-			details.setChannel(channel);
-			if (null != details.getDestination() && !details.getDestination().isEmpty() && null!=details.getQualifier()  && !details.getQualifier().isEmpty()) {
-				user.getFDSessionUser().insertOrUpdateSilverPopup(details);
+			if(user.getFDSessionUser().getIdentity()!=null){
+				SilverPopupDetails details = new SilverPopupDetails();
+				details.setCustomerId(user.getFDSessionUser().getIdentity().getErpCustomerPK());
+				details.setDestination(destination);
+				details.setQualifier(qualifier);
+				details.setChannel(channel);
+				if (null != details.getDestination() && !details.getDestination().isEmpty() && null!=details.getQualifier()  && !details.getQualifier().isEmpty()) {
+					user.getFDSessionUser().insertOrUpdateSilverPopup(details);
+				}
 			}
 			//Silver popup changes End
             if (isExtraResponseRequested(request)) {
