@@ -1,12 +1,9 @@
 package com.freshdirect.webapp.ajax.product;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
 import org.apache.log4j.Category;
-
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.brandads.FDBrandProductsAdManager;

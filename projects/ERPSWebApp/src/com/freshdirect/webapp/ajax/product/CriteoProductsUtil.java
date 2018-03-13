@@ -1,8 +1,13 @@
 package com.freshdirect.webapp.ajax.product;
-import java.util.*;
-import java.util.Map.Entry;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
 
-import org.apache.log4j.Logger;
+import org.apache.log4j.Logger;
+
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
