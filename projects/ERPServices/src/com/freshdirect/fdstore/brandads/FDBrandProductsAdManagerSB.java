@@ -23,6 +23,6 @@ public interface FDBrandProductsAdManagerSB extends EJBObject{
 	@Deprecated public void submittedOrderdDetailsToHL(List<String> orders) throws FDResourceException, BrandProductAdServiceException, RemoteException;
 	@Deprecated public Date getLastSentFeedOrderTime() throws FDResourceException, RemoteException;
 	@Deprecated public HLBrandProductAdResponse getCategoryProducts(HLBrandProductAdRequest hLRequestData) throws FDResourceException, BrandProductAdServiceException, RemoteException;
-	@Deprecated public HLBrandProductAdResponse getHomeAdProduct(HLBrandProductAdRequest hLBrandProductAdRequest) throws BrandProductAdServiceException, RemoteException;
 	@Deprecated public HLBrandProductAdResponse getPdpAdProduct(HLBrandProductAdRequest hLBrandProductAdRequest) throws BrandProductAdServiceException, RemoteException;
+	@Deprecated public HLBrandProductAdResponse getHLadproductToHomeByFDPriority(HLBrandProductAdRequest hLBrandProductAdRequest) throws BrandProductAdServiceException, RemoteException;
 }

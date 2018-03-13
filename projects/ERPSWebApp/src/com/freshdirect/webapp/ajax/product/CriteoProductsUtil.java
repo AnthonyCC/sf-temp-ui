@@ -1,13 +1,12 @@
 package com.freshdirect.webapp.ajax.product;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.brandads.FDBrandProductsAdManager;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdInfo;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
@@ -42,23 +41,29 @@ public class CriteoProductsUtil
 			FDSessionUser sessionUser = (FDSessionUser) user;
 			SearchResultsUtil.setPlatFormValues(user, hLBrandProductAdRequest, sessionUser.isMobilePlatForm(),
 					sessionUser.getPlatForm(), sessionUser.getLat(), sessionUser.getPdUserId());
-
-			if (hLBrandProductAdRequest.getUserId()!= null) {
-				HLBrandProductAdResponse response = FDBrandProductsAdManager.getHLadproductToHome(hLBrandProductAdRequest);
-				if (response != null && null !=response.getProductAd()) {
-					List<HLBrandProductAdInfo> hlBrandAdProductsMeta = response.getProductAd();
-					productsCount = hlBrandAdProductsMeta.size();
-					if (hlBrandAdProductsMeta != null)
-						addHlBrandProducts(user, adPrducts, updatedPageBeacon, hlBrandAdProductsMeta,false);
-					moduleData.setAdProducts(adPrducts);
-					if (productsCount == adPrducts.size()) {
-						moduleData.setAdHomePageBeacon(response.getPageBeacon()	+ A_SHOWN_ALL);
-					} else if (productsCount > 0 && adPrducts.size() == 0) {
-						moduleData.setAdHomePageBeacon(response.getPageBeacon()	+ A_SHOWN_NONE);
-					} else {
-						moduleData.setAdHomePageBeacon(response.getPageBeacon()	+ updatedPageBeacon.toString());
-					}
+			Map<String, List<HLBrandProductAdInfo>> cretioProductsCacheList=new HashMap<String, List<HLBrandProductAdInfo>> ();
+			//cache Criteo products
+			cretioProductsCacheList.putAll(CriteoProductsHomePageCache.getInstance().getProducts());
+			List<HLBrandProductAdInfo> hlBrandAdProductsMeta=new ArrayList<HLBrandProductAdInfo>();
+			//getting Keys from property file
+			List<String> keys = getFDSearchPriorityKeyWords();
+			//setting HasMap to List here 
+			for(String key: keys){
+				if (null != cretioProductsCacheList.get(key) && !cretioProductsCacheList.get(key).isEmpty()) {
+					hlBrandAdProductsMeta.addAll(cretioProductsCacheList.get(key));
 				}
+			}
+			productsCount = hlBrandAdProductsMeta.size();
+			if (hlBrandAdProductsMeta != null){
+				addHlBrandProducts(user, adPrducts, updatedPageBeacon, hlBrandAdProductsMeta,false);
+			}
+			moduleData.setAdProducts(adPrducts);
+			if (productsCount == adPrducts.size()) {
+				moduleData.setAdHomePageBeacon(cretioProductsCacheList.get(keys.get(0)).get(0).getPageBeacon()	+ A_SHOWN_ALL);
+			} else if (productsCount > 0 && adPrducts.size() == 0) {
+				moduleData.setAdHomePageBeacon(cretioProductsCacheList.get(keys.get(0)).get(0).getPageBeacon()	+ A_SHOWN_NONE);
+			} else {
+				moduleData.setAdHomePageBeacon(cretioProductsCacheList.get(keys.get(0)).get(0).getPageBeacon()	+ updatedPageBeacon.toString());
 			}
 		} catch (Exception e) {
 			LOG.warn("Exception while populating Criteo returned product: ", e);
@@ -178,6 +183,24 @@ public class CriteoProductsUtil
 			LOG.warn("Exception while populating Criteo PDP product: ", e);
 		}
 	}
+	
+		public static List<String> getFDSearchPriorityKeyWords() {
+			List<String> FDsearchKeys = new ArrayList<String>(  );
+			 try {
+	             String skuPrefixes = FDStoreProperties.getFDHomeCriteoPriorityKeys();
+	             if (skuPrefixes != null && !"".equals(skuPrefixes)) {
+	                 StringTokenizer st = new StringTokenizer(skuPrefixes, ","); // split comma-delimited list
+	                 String curPrefix = ""; // holds prefix to check against
 
-
+	                 while (st.hasMoreElements()) {
+	                     curPrefix = st.nextToken();
+	                     // if prefix matches get product info
+	                     FDsearchKeys.add(curPrefix);
+	                 }
+	             }
+	         } catch (Exception ignore) {
+	        	 //ignore
+	         }
+			return FDsearchKeys;
+		}
 }

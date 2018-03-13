@@ -559,7 +559,7 @@ public interface IECommerceService {
 
 	public void loadTrxnsForPostBack(int maxDays) throws RemoteException;
 
-	public HLBrandProductAdResponse getHomeAdProduct(HLBrandProductAdRequest hLBrandProductAdRequest) throws RemoteException;
+	public HLBrandProductAdResponse getHLadproductToHomeByFDPriority(HLBrandProductAdRequest hLBrandProductAdRequest) throws RemoteException;
 
 	public HLBrandProductAdResponse getPdpAdProduct(HLBrandProductAdRequest hLBrandProductAdRequest) throws RemoteException;
 

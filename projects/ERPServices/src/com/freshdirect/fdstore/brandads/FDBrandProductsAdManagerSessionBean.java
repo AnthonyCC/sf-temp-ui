@@ -181,11 +181,11 @@ public class FDBrandProductsAdManagerSessionBean extends ERPSessionBeanSupport {
 		}
 		return lastSentFeedOrderTime;
 	}
-	
-	public HLBrandProductAdResponse getHomeAdProduct(HLBrandProductAdRequest hLBrandProductAdRequest){
+
+	public HLBrandProductAdResponse getHLadproductToHomeByFDPriority(HLBrandProductAdRequest hLBrandProductAdRequest){
 		HLBrandProductAdResponse hlBrandProductAdResponse=null;
 		if(!FDStoreProperties.isHookLogicBlackHoleEnabled()){
-			hlBrandProductAdResponse = FDBrandProductsAdGateway.getHomeAdProduct(hLBrandProductAdRequest);
+			hlBrandProductAdResponse = FDBrandProductsAdGateway.getHLadproductToHomeByFDPriority(hLBrandProductAdRequest);
 			return hlBrandProductAdResponse;
 		}
 		return hlBrandProductAdResponse;		

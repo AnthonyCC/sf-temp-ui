@@ -4365,7 +4365,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		
 	}
 	@Override
-	public HLBrandProductAdResponse getHomeAdProduct(
+	public HLBrandProductAdResponse getHLadproductToHomeByFDPriority(
 			HLBrandProductAdRequest hLBrandProductAdRequest) throws RemoteException {
 		try {
 			Request<HLBrandProductAdRequest> request = new Request<HLBrandProductAdRequest>();
