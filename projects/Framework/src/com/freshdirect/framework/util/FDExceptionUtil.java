@@ -1,4 +1,4 @@
-package com.freshdirect.webapp.util;
+package com.freshdirect.framework.util;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 

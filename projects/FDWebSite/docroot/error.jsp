@@ -6,7 +6,7 @@
 
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@page import="com.freshdirect.framework.util.log.LoggerFactory"%><%@page import="org.apache.log4j.Logger"%>
-<%@page import="com.freshdirect.webapp.util.FDExceptionUtil"%>
+<%@page import="com.freshdirect.framework.util.FDExceptionUtil"%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c'%>
@@ -20,9 +20,8 @@
  */
 
 try {
-	%><fd:CheckLoginStatus id="user" /><%
 	Logger LOGGER = LoggerFactory.getInstance("error.jsp");
- 
+	FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 	
   if ("XMLHttpRequest".equalsIgnoreCase(request.getHeader("X-Requested-With"))) {
     // AJAX errors
