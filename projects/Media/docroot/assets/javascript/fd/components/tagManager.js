@@ -224,16 +224,18 @@ var dataLayer = window.dataLayer || [];
       });
     },
     timeslotOpened: function () {
-      var unavts = fd.gtm.isUnavailableTimeslotPresent() ? 'yes' : 'no';
+      setTimeout(function () {
+        var unavts = fd.gtm.isUnavailableTimeslotPresent() ? 'yes' : 'no';
 
-      dataLayer.push({
-        event: 'timeslot-unavailable',
-        eventCategory: 'timeslot',
-        eventAction: 'timeslot-checkout-modal',
-        page_name: 'Available Delivery Timeslots - Modal',
-        unavailable_timeslot_present: unavts,
-        eventLabel: unavts
-      });
+        dataLayer.push({
+          event: 'timeslot-unavailable',
+          eventCategory: 'timeslot',
+          eventAction: 'timeslot-checkout-modal',
+          page_name: 'Available Delivery Timeslots - Modal',
+          unavailable_timeslot_present: unavts,
+          eventLabel: unavts
+        });
+      }, 10);
     },
     topNavClick: function (data) {
       dataLayer.push({
