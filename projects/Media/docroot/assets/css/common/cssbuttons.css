@@ -44,6 +44,11 @@ a.cssbutton:active {
 	text-decoration:none;
 }
 
+.cssbutton.full-width,
+a.cssbutton.full-width {
+	width: 100%;
+}
+
 a.cssbutton.large,
 button.cssbutton.large,
 .cssbutton.large {

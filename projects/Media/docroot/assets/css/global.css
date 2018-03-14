@@ -17,6 +17,7 @@ body.OASonly { padding: 0; margin: 0; overflow: hidden;}
 center {clear:both;}
 
 table { text-align: left; }
+table.text-align-center {text-align: center}
 td {
 	font-size: 10px;
 	font-family: Verdana, Arial, sans-serif;
@@ -3424,6 +3425,12 @@ button.space {
 }
 .position-absolute {
 	position: absolute;
+}
+.padding-left-10{
+	padding-left: 10px;
+}
+.padding-right-10{
+	padding-right: 10px;
 }
 .zipcodefld{
 	display:inline-block;
