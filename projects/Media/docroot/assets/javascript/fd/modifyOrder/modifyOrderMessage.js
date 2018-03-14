@@ -31,7 +31,6 @@ var FreshDirect = FreshDirect || {};
 			'data-confirm-class="cancel-modify-confirm-popup" '+
 			'data-hide-background="true" '+
 			'data-confirm data-confirm-message="Are you sure you want to <br> cancel all changes?" data-confirm-template="common.confirmpopup" class="">Cancel Changes</a></div>'+
-			//'<div class="location-modify-order-cancel" style="float: right; padding: 10px 15px 0 0"><a style="color:white" href="/your_account/cancel_modify_order.jsp" >Cancel Changes</a></div>'+
 			'<div style="clear:both"></div>'+
 			'</div>';
 			fd.popups = fd.popups || {};
@@ -54,6 +53,11 @@ var FreshDirect = FreshDirect || {};
 		});
 	}
 	function cancelChanges() {
+		if (fd.gtm) {
+			fd.gtm.updateDataLayer({
+			  cancelModifyOrder: 'banner'
+		  });
+		}
 		document.location.href = "/your_account/cancel_modify_order.jsp";
 	}
 	// if component is not registered, register this component

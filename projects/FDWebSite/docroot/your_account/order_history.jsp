@@ -205,9 +205,9 @@ for (FDOrderInfoI orderInfo : orderHistoryInfo) {
 		<td>
 			<a href="<%= orderDetailsUrl %>">View<span class="offscreen">order <%= orderInfo.getErpSalesId() %> </span></a>
             <% if (orderIsModifying) { %>
-            | <a href="/your_account/cancel_modify_order.jsp">Cancel Changes<span class="offscreen"> for order number <%= orderInfo.getErpSalesId() %></span></a>
+            | <a class="cancel-modify-order-btn" data-gtm-source="order-history" href="/your_account/cancel_modify_order.jsp">Cancel Changes<span class="offscreen"> for order number <%= orderInfo.getErpSalesId() %></span></a>
            	<% } else if (orderInfo.isModifiable() && modifyingOrderId == null){%>
-            | <a href="/your_account/modify_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>&action=modify">Modify<span class="offscreen">order <%= orderInfo.getErpSalesId() %> </span></a>
+            | <a class="modify-order-btn" data-gtm-source="order-history" href="/your_account/modify_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>&action=modify">Modify<span class="offscreen">order <%= orderInfo.getErpSalesId() %> </span></a>
             <% }%>
             <% if (orderInfo.isShopFromThisOrder()) { %>
             | <a href="/quickshop/shop_from_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>">Shop Order<span class="offscreen"> number <%= orderInfo.getErpSalesId() %></span></a>

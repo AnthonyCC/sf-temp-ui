@@ -185,9 +185,9 @@ if(orderId==null){
 					</button>
 				<% } %>
 				<% if(isModifying) {%>
-					<button class="cssbutton medium orange" title="Click here to cancel changes"  onclick="location.href='/your_account/cancel_modify_order.jsp'">Cancel Changes</button>
+					<button class="cssbutton medium orange cancel-modify-order-btn" data-gtm-source="order-details" title="Click here to cancel changes"  onclick="location.href='/your_account/cancel_modify_order.jsp'">Cancel Changes</button>
 			   	<% } else if (hasModify) { %>
-					<button class="cssbutton medium orange" title="Click here to modify this order"  onclick="location.href='/your_account/modify_order.jsp?orderId=<%= orderId %>&action=modify'">Modify Order</button>
+					<button class="cssbutton medium orange modify-order-btn" data-gtm-source="order-details" title="Click here to modify this order"  onclick="location.href='/your_account/modify_order.jsp?orderId=<%= orderId %>&action=modify'">Modify Order</button>
 				<% } %>
     			<% if (hasCancel) { %>
 						<button class="cssbutton medium red transparent" title="Click here to cancel this order" onclick="location.href='/your_account/cancel_order.jsp?orderId=<%=orderId%>'">Cancel Order</button>

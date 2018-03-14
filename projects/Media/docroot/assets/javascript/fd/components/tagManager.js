@@ -379,6 +379,32 @@ var dataLayer = window.dataLayer || [];
 
       return null;
     },
+    createOrderATC: function () {
+    	dataLayer.push({
+    	     event: 'modify-click',
+    	     eventCategory: 'modify',
+    	     eventAction: 'create new order',
+    	     eventLabel: 'atc create new',
+    	});
+    },
+    modifyOrder: function (source){
+    	source = (source || '').replace('-', ' ');
+    	dataLayer.push({
+    	      event: 'modify-click',
+    	      eventCategory: 'modify',
+    	      eventAction: 'enter modify mode',
+    	      eventLabel: source + ' modify',
+    	});
+    },
+    cancelModifyOrder: function(source) {
+    	source = (source || '').replace('-', ' ');
+    	dataLayer.push({
+	      event: 'modify-click',
+	      eventCategory: 'modify',
+	      eventAction: 'cancel changes',
+	      eventLabel: source + ' cancel changes',
+    	});
+    },
     cancelOrder: function (orderData) {
       if (orderData.orderId) {
         dataLayer.push({
@@ -1175,6 +1201,26 @@ var dataLayer = window.dataLayer || [];
 (function(fd) {
   var $=fd.libs.$;
 
+  function onModifyOrderClick() {
+	  $(document).on('click', '.modify-order-btn', function(e) {
+		  fd.gtm.updateDataLayer({
+			  modifyOrder: $(e.target).data('gtm-source')
+		  });
+		  
+	  });
+	  $(document).on('click', '.cancel-modify-order-btn', function (e) {
+		  fd.gtm.updateDataLayer({
+			  cancelModifyOrder: $(e.target).data('gtm-source')
+		  });
+		  
+	  });
+	  $(document).on('click', '.create-order-atc', function(e) {
+		  fd.gtm.updateDataLayer({
+			  createOrderATC: null
+		  });
+	  })
+  }
+
   // product click
   $(document).on('click', '[data-component="product"] a[href]', function (e) {
 	if(!(e.ctrlKey || e.shiftKey || e.metaKey || e.target.target == "_blank" || e.target.target == "_top")){
@@ -1286,4 +1332,6 @@ var dataLayer = window.dataLayer || [];
       });
     }
   });
+  // modify order related click
+  onModifyOrderClick();
 }(FreshDirect));
