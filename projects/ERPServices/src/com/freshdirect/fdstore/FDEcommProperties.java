@@ -102,6 +102,7 @@ public class FDEcommProperties {
 	private static final String PROP_ECOM_SERVICE_CONNECTION_POOL = "fdstore.ecom.service.conn.read.timeout";
 	private static final String PROP_ECOM_SERVICE_CONN_READ_TIMEOUT = "fdstore.ecom.service.conn.request.timeout";
 	private static final String PROP_ECOM_SERVICE_CONNECTION_REQUEST_TIMEOUT = "fdstore.ecom.service.conn.pool";
+	public static final String FDFactorySB_WarmUp_BULKSKU ="fdstore.ejb.FDFactorySB_WarmUp_BulkSkus";
    
     
     static {

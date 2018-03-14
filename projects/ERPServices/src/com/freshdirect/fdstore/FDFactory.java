@@ -738,7 +738,7 @@ public class FDFactory {
 		// !!! optimize this, so that it only makes one call to the session bean
 		List products = new ArrayList(skus.length);
 		
-		if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB_WarmUp)){
+		if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB_WarmUp_BULKSKU)){
 			try {
 				products = FDFactoryService.getInstance().getProduct(skus);
 			} catch (RemoteException e) {

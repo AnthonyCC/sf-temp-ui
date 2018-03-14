@@ -236,7 +236,7 @@ public class FDFactoryService extends ExtTimeAbstractEcommService implements FDF
 	private static final String FDFACTORY_FDPRODUCTINFO_SKUCODE = "productinfo/productinfobysku";
 	private static final String FDFACTORY_FDPRODUCTINFO_SKUCODE_VERSION = "productinfo/productInfobyskuandversion";
 	private static final String FDFACTORY_FDPRODUCTINFO_SKUCODES = "productinfo/productsinfobyskus";
-	private static final String FDFACTORY_PRODUCTINFO_SKUCODES = "productinfo/productbyskuandversion";
+	private static final String FDFACTORY_PRODUCTBY_SKUCODES = "productinfo/productbyskuandversion";
 	private static final String FDFACTORY_PRODUCTINFO_FDSKUCODES = "productinfo/productbyFdskus";
 	private static final String FDFACTORY_PRODUCTINFO_BB_SKUCODES_TEMP = "productinfo/productbyFdskusTemp";
 	
@@ -336,21 +336,20 @@ public class FDFactoryService extends ExtTimeAbstractEcommService implements FDF
 	@Override
 	public FDProduct getProduct(String sku, int version) throws RemoteException,FDSkuNotFoundException {
 
-		Response<ErpMaterialData> response = null;
+		Response<FDProductData> response = null;
 		FDProduct fdProduct;
 		String skuCode = sku.replaceAll("[^\\x00-\\x7F]","");
 		skuCode = sku.trim();
 
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(FDFACTORY_PRODUCTINFO_SKUCODES)+"/"+skuCode+"/"+version,  new TypeReference<Response<ErpMaterialData>>(){});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(FDFACTORY_PRODUCTBY_SKUCODES)+"/"+skuCode+"/"+version,  new TypeReference<Response<FDProductData>>(){});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}else if(response.getData()==null){
 				throw new FDSkuNotFoundException(response.getMessage());
 			}
 			
-			ErpMaterialModel model = ModelConverter.convertErpMaterialDataToModel(response.getData());
-			fdProduct = productHelper.getFDProduct(model);
+			fdProduct = ModelConverter.buildFdProduct(response.getData());
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
