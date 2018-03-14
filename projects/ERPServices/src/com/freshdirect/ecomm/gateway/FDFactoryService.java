@@ -174,6 +174,7 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.GroupScalePricing;
 import com.freshdirect.fdstore.SalesAreaInfo;
+import com.freshdirect.fdstore.ZonePriceModel;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -236,6 +237,9 @@ public class FDFactoryService extends ExtTimeAbstractEcommService implements FDF
 	private static final String FDFACTORY_FDPRODUCTINFO_SKUCODE_VERSION = "productinfo/productInfobyskuandversion";
 	private static final String FDFACTORY_FDPRODUCTINFO_SKUCODES = "productinfo/productsinfobyskus";
 	private static final String FDFACTORY_PRODUCTINFO_SKUCODES = "productinfo/productbyskuandversion";
+	private static final String FDFACTORY_PRODUCTINFO_FDSKUCODES = "productinfo/productbyFdskus";
+	private static final String FDFACTORY_PRODUCTINFO_BB_SKUCODES_TEMP = "productinfo/productbyFdskusTemp";
+	
 	
 	public static FDFactoryServiceI getInstance() {
 		if (INSTANCE == null)
@@ -331,6 +335,7 @@ public class FDFactoryService extends ExtTimeAbstractEcommService implements FDF
 	private FDProductHelper productHelper = new FDProductHelper();
 	@Override
 	public FDProduct getProduct(String sku, int version) throws RemoteException,FDSkuNotFoundException {
+
 		Response<ErpMaterialData> response = null;
 		FDProduct fdProduct;
 		String skuCode = sku.replaceAll("[^\\x00-\\x7F]","");
@@ -350,6 +355,7 @@ public class FDFactoryService extends ExtTimeAbstractEcommService implements FDF
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
+
 		return fdProduct;
 	}
 	
@@ -389,4 +395,44 @@ public class FDFactoryService extends ExtTimeAbstractEcommService implements FDF
 		return response.getData();
 	}
 
+	@Override
+	public List getProduct(FDSku[] skus) throws RemoteException {
+		Response<Collection<FDProductData>> response = null;
+		Request<FDSkuData[]> request = new Request<FDSkuData[]>();
+		List<FDProduct> fdProductList = new ArrayList<FDProduct>();
+		FDSkuData[] skuData = new FDSkuData[skus.length];
+		for(int i=0;i<skus.length;i++){
+			FDSkuData fdSkuData =new FDSkuData();
+			FDSku fdSku = skus[i];
+			fdSkuData.setSkuCode(fdSku.getSkuCode());
+			fdSkuData.setVersion(fdSku.getVersion());
+			skuData[i]=fdSkuData;
+		}
+			try {
+				request.setData(skuData);
+				String inputJson;
+				inputJson = buildRequest(request);
+				response = postDataTypeMap(inputJson,getFdCommerceEndPoint(FDFACTORY_PRODUCTINFO_FDSKUCODES),new TypeReference<Response<Collection<FDProductData>>>() {});
+				if(!response.getResponseCode().equals("OK"))
+					throw new FDResourceException(response.getMessage());
+				if(response.getData()==null)
+					throw new FDResourceException(response.getMessage());
+					
+				for (FDProductData fdProductData : response.getData()) {
+					FDProduct model = ModelConverter.buildFdProduct(fdProductData);
+					fdProductList.add(model);
+				}
+				
+			} catch (FDEcommServiceException e) {
+				LOGGER.error(e.getMessage());
+				throw new RemoteException(e.getMessage());
+			} catch (FDResourceException e){
+				LOGGER.error(e.getMessage());
+				throw new RemoteException(e.getMessage());
+			}
+			return fdProductList;
+	}
+
+	
+	
 }

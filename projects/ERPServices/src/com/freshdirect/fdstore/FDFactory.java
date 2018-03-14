@@ -737,13 +737,25 @@ public class FDFactory {
 	public static Collection getProducts(FDSku[] skus) throws FDResourceException {
 		// !!! optimize this, so that it only makes one call to the session bean
 		List products = new ArrayList(skus.length);
-		for (int i=0; i<skus.length; i++) {
+		
+		if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB_WarmUp)){
 			try {
-				products.add( getProduct(skus[i]) );
-			} catch (FDSkuNotFoundException ex) {
-				// not found
+				products = FDFactoryService.getInstance().getProduct(skus);
+			} catch (RemoteException e) {
+				e.printStackTrace();
+				throw new FDResourceException(e);
 			}
+		}else {
+			for (int i=0; i<skus.length; i++) {
+				try {
+					products.add( getProduct(skus[i]) );
+				} catch (FDSkuNotFoundException ex) {
+					// not found
+				}
+			}
+			
 		}
+		
 		return products;
 	}
 

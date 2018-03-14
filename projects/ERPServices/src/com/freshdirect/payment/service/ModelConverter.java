@@ -2236,8 +2236,9 @@ public class ModelConverter {
 
 	private static ZonePriceModel buildZonePriceModel(ZonePriceData value, ZoneInfo key) {
 		MaterialPrice[] matPrices = buildMaterialPriceArray(value.getMaterialPrices());
-		ZonePriceModel model = new ZonePriceModel(key, matPrices);
-		return null;
+		ZoneInfo zoneInfo = buildZoneInfo(value.getZoneInfo());
+		ZonePriceModel model = new ZonePriceModel(zoneInfo, matPrices);
+		return model;
 	}
 
 	private static MaterialPrice[] buildMaterialPriceArray(
