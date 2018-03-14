@@ -18,7 +18,12 @@ import org.apache.log4j.Logger;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
-
+/**
+ *@deprecated Please use the VariantSelectionController and VariantSelectionServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public class VariantSelectionSessionBean extends SessionBeanSupport {
 	private static final long serialVersionUID = 7401851794123258702L;
 
@@ -53,7 +58,7 @@ public class VariantSelectionSessionBean extends SessionBeanSupport {
 	final static String SQL_GETVARIANTMAP = getVariantMapQuery("current_date");
 	
 	final static String SQL_GETVARIANTMAP_ON = getVariantMapQuery("?");
-	
+	@Deprecated
 	public Map<String,String> getVariantMap(EnumSiteFeature feature) throws RemoteException {
 		return getVariantMap(feature, null);
 	}
@@ -64,6 +69,7 @@ public class VariantSelectionSessionBean extends SessionBeanSupport {
 	 * @return Variant assignment map
 	 * @throws RemoteException
 	 */
+	@Deprecated
 	public Map<String,String> getVariantMap(EnumSiteFeature feature, Date date) throws RemoteException {
 		Connection conn = null;
 		Map<String,String> cohortVariantMap = new HashMap<String,String>();
@@ -105,6 +111,7 @@ public class VariantSelectionSessionBean extends SessionBeanSupport {
 	 * Returns (cohort ID, weight) pairs indexed by cohort IDs
 	 * @return
 	 */
+	@Deprecated
 	public Map<String, Integer> getCohorts() throws RemoteException {
 		Connection conn = null;
 		Map<String, Integer> cohortMap = new HashMap<String, Integer>();
@@ -136,6 +143,7 @@ public class VariantSelectionSessionBean extends SessionBeanSupport {
 	 *  
 	 * @return
 	 */
+	@Deprecated
 	public List<String> getCohortNames() throws RemoteException {
 		Connection conn = null;
 		List<String> cohortNames = new ArrayList<String>();
@@ -169,6 +177,7 @@ public class VariantSelectionSessionBean extends SessionBeanSupport {
 	 * @return list of variant IDs
 	 * @throws RemoteException
 	 */
+	@Deprecated
 	public List<String> getVariants(EnumSiteFeature feature) throws RemoteException {
 		Connection conn = null;
 		List<String> variantList = new ArrayList<String>();
@@ -196,7 +205,7 @@ public class VariantSelectionSessionBean extends SessionBeanSupport {
                 return variantList;
 	}
 
-	
+	@Deprecated
 	public List<Date> getStartDates() throws RemoteException {
 		Connection conn = null;
 		List<Date> dateList = new ArrayList<Date>();
