@@ -103,6 +103,7 @@ public class FDEcommProperties {
 	private static final String PROP_ECOM_SERVICE_CONN_READ_TIMEOUT = "fdstore.ecom.service.conn.request.timeout";
 	private static final String PROP_ECOM_SERVICE_CONNECTION_REQUEST_TIMEOUT = "fdstore.ecom.service.conn.pool";
 	public static final String FDFactorySB_WarmUp_BULKSKU ="fdstore.ejb.FDFactorySB_WarmUp_BulkSkus";
+	public final static String PROP_JCO_CLIENT_LISTENER_COOL_INFO_ENABLED = "jco.client.listeners.coolinfo.Enabled";
    
     
     static {
