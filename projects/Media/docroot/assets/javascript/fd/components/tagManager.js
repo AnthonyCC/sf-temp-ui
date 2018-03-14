@@ -39,9 +39,9 @@ var dataLayer = window.dataLayer || [];
       category: product.catId,
       variant: product.variantId || 'default variant',
       list: fd.gtm.getListForProduct(null, listData),
-      new_product: product.newProduct,
+      dimension6: product.newProduct,
       sku: product.skuCode,
-      in_stock: product.available
+      dimension3: product.available
     };
 
     if (idx) {
@@ -164,9 +164,9 @@ var dataLayer = window.dataLayer || [];
                 brand: productData.brand,
                 category: productData.category,
                 variant: productData.variant,
-                new_product: productData.newProduct,
+                dimension6: productData.newProduct,
                 sku: productData.sku,
-                in_stock: true,
+                dimension3: true,
                 quantity: qty > 0 ? qty : -qty
               }]
           },
@@ -309,9 +309,9 @@ var dataLayer = window.dataLayer || [];
                   brand: productData.brand,
                   category: productData.category,
                   variant: productData.variant,
-                  new_product: productData.newProduct,
+                  dimension6: productData.newProduct,
                   sku: productData.sku,
-                  in_stock: true,
+                  dimension3: true,
                   quantity: parseInt(productData.quantity, 10) || 0 // quantity should be an integer
                 };
               }),
@@ -351,9 +351,9 @@ var dataLayer = window.dataLayer || [];
                   brand: productData.brand,
                   category: productData.category,
                   variant: productData.variant,
-                  new_product: productData.newProduct,
+                  dimension6: productData.newProduct,
                   sku: productData.sku,
-                  in_stock: true,
+                  dimension3: true,
                   quantity: parseInt(productData.quantity, 10) || 0 // quantity should be an integer
                 };
               })
@@ -579,9 +579,9 @@ var dataLayer = window.dataLayer || [];
           brand: productData.brand,
           category: productData.categoryId,
           variant: productData.variant !== 'null' ? productData.variant : "default variant",
-          new_product: productData.new_product,
+          dimension6: productData.new_product,
           sku: productData.skuCode,
-          in_stock: productData.in_stock,
+          dimension3: productData.in_stock,
           position: parseInt(productData.position, 10) || 0,
           list: productData.list
         };
@@ -1203,9 +1203,9 @@ var dataLayer = window.dataLayer || [];
             brand: productData.brand,
             category: productData.categoryId,
             variant: productData.variant !== 'null' ? productData.variant : "default variant",
-            new_product: productData.new_product,
+            dimension6: productData.new_product,
             sku: productData.skuCode,
-            in_stock: productData.in_stock,
+            dimension3: productData.in_stock,
             position: parseInt(productData.position, 10) || 0
           }]
         }
