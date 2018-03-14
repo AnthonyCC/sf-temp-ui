@@ -2,10 +2,34 @@
 <%@ page isErrorPage="true" %>
 <%@ page import='com.freshdirect.webapp.util.JspLogger' %>
 <%@ page import='com.freshdirect.webapp.util.AjaxErrorHandlingService' %>
-<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
-<%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c'%>
-<%
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@page import="com.freshdirect.framework.util.log.LoggerFactory"%><%@page import="org.apache.log4j.Logger"%>
+<%@page import="com.freshdirect.framework.util.FDExceptionUtil"%>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+
+<%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c'%>
+
+<%!
+	Logger LOGGER = LoggerFactory.getInstance("error.jsp");
+
+	public void log500(HttpServletRequest request, FDSessionUser user, String errorCode, String errorMessage){
+		try {
+			LOGGER.warn(errorCode + " for "
+	    		+ (user != null ? (user.getIdentity() != null && user.getFDCustomer() != null ? user.getFDCustomer().getErpCustomerPK() : user.getPrimaryKey() ) : "NOUSER" )
+	    		+ " : "+ CookieMonster.getCookie(request) 
+	    		+ " : "+ request.getRequestURL()
+	    		+ " : "+ request.getHeader("referer") 
+	    		+ " : "+ request.getHeader("User-Agent")
+	    		+ " : "+ errorMessage); 
+		} catch (Exception exp) {
+			LOGGER.warn("FDWEBERROR-03 error logging error " + exp.getMessage());
+		}
+	}
+%>
+
+<%
 /****
  * Error page
  *
@@ -14,22 +38,26 @@
  */
 
 try {
+	
+  FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+	
   if ("XMLHttpRequest".equalsIgnoreCase(request.getHeader("X-Requested-With"))) {
     // AJAX errors
     String message = AjaxErrorHandlingService.defaultService().prepareErrorMessageForAjaxCall(request, response);
     String primaryErrorMessage = AjaxErrorHandlingService.defaultService().getPrimaryErrorMessage(message);
     String secondaryErrorMessage = AjaxErrorHandlingService.defaultService().getSecondaryErrorMessage(message);
-  %>
+    
+    log500(request, user, "FDWEBERROR-01", message);
+%>
   {"error": {"primary": "<%= primaryErrorMessage%>", "secondary": "<%= secondaryErrorMessage%>"}}
-  <%
+<%
   } else {
     // standard JSP errors
     response.setStatus(500);
-
-    if (exception != null) { 
-
-      JspLogger.GENERIC.error("Got an error page", exception);
-      %>
+    log500(request, user, "FDWEBERROR-02", FDExceptionUtil.getRootCauseStackTrace(exception));
+        
+ %>
+ 
 <!DOCTYPE html>
 <html lang="en-US" xml:lang="en-US">
 <head>
@@ -172,12 +200,11 @@ try {
 
 </body>
 </html>
-      <%
-    }
+<%
   } // end of standard JSP error page
 } catch (Exception fatalError) {
   JspLogger.GENERIC.error("FatalError in error page", fatalError);
-  %>
+%>
 	<%=  String.valueOf(fatalError) %>
 <%
 }
