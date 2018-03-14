@@ -1,2 +1,9 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
+<%@ page import="com.freshdirect.fdstore.customer.FDUserUtil"%>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
+
+<% if (FDUserUtil.getModifyingOrder((FDSessionUser)session.getAttribute(SessionName.USER)) != null) { %>
+	<jwr:style src="/modifyorder.css" media="all" />
+<% } %>
 <fd:CmInit/>

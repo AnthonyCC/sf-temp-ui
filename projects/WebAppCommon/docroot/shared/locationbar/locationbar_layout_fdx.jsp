@@ -34,14 +34,31 @@
 	
 	<div id="locationbar" class="<%= (uri.contains("/checkout/") || uri.contains("view_cart.jsp") || uri.contains("merge_cart.jsp") || uri.contains("/gift_card/")) ? "disableCart" : "" %>">
 		<% if (!mobWeb_locationbar_layout_fdx && isModifyingOrder && modifyingOrder != null) { %>
-		<div id="location-modify-order-message" class="position-absolute">
+		<div id="location-modify-order-message" class="position-absolute modify-order-bar">
 			<div class="modify-order-container">
-				<strong>Modifying Delivery: </strong>
-				<span class="modify-delivery-time"><span><%= new SimpleDateFormat("EEEEE").format(modifyingOrder.getDeliveryReservation().getTimeslot().getDeliveryDate()) %></span> <span class="text-uppercase"><%= modifyingOrder.getDeliveryReservation().getTimeslot().getDisplayString() %></span></span>
+				<strong>Modifying Order: </strong>
+				<span class="modify-delivery-time"><span><%= new SimpleDateFormat("EEE").format(modifyingOrder.getDeliveryReservation().getTimeslot().getDeliveryDate()) %></span> <span class="text-uppercase"><%= modifyingOrder.getDeliveryReservation().getTimeslot().getDisplayString() %></span></span>
+				<span class="location-modify-order-cancel position-absolute">
+					<span>
+						<a class="cancel-changes-link"  href="javascript:void(0);" role="alertdialog" 
+						data-alignpopupfunction="modifyOrderAlign" 
+						data-confirm-data="{&quot;buttons&quot;:[{&quot;id&quot;:&quot;accept&quot;,&quot;class&quot;:&quot;large cssbutton orange&quot;,&quot;name&quot;:&quot;Cancel Changes&quot;},{&quot;id&quot;:&quot;deny&quot;,&quot;class&quot;:&quot;large cssbutton green transparent&quot;,&quot;name&quot;:&quot;Nevermind&quot;}]}" 
+						data-confirm-button-accept="FreshDirect.components.modifyOrderMessage.cancelChanges" 
+						data-confirm-class="cancel-modify-confirm-popup" 
+						data-hide-background="true" 
+						data-confirm
+						data-confirm-message="Are you sure you want to <br> cancel all changes?" 
+						data-confirm-template="common.confirmpopup">
+							Cancel Changes
+						</a>
+					</span>
+				</span>
 			</div>
+			
 			<script>
 				var modifyOrderInitFunc = function () {
 					FreshDirect.components.modifyOrderMessage.stickyMessage('#locationbar', 0);
+					FreshDirect.components.modifyOrderMessage.initAlignFunction();
 					}
 				if (FreshDirect.components && FreshDirect.components.modifyOrderMessage) {
 					modifyOrderInitFunc();

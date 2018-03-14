@@ -757,9 +757,6 @@
 	background-position: left 1px;
 	margin-left: 15px;
 }
-#location-modify-order-message ~ .locabar-right-sections #locabar_messages_trigger {
-	display: none; /* hide during modify */
-}
 
 .locabar-section .section-warning-small,
 .locabar-section .section-warning-small-circle  {
@@ -980,29 +977,6 @@
 	text-align: center;
 }
 
-/* start modifying order message */
-#location-modify-order-message {
-    line-height: 46px;
-    font-size: 18px;
-    background-color: #f68139;
-    border-bottom: solid 1px #dddddd;
-    color: #ffffff;
-    text-shadow: 1px 1px 0 #c85c19;
-    top: -5px;
-    width: 100%;
-    z-index: -1;
-}
-#location-modify-order-message .modify-order-container {
-	width: 970px;
-    margin: 0 auto;
-}
-#location-modify-order-message .modify-delivery-label {
-	text-shadow: 1px 1px 0 #c85c19;
-}
-#location-modify-order-message .modify-delivery-time {
-	text-shadow: 1px 1px 0 rgba(200, 92, 25, 0.5)
-}
-/* end modifying order message */
 /* transitions */
 	#locabar_addresses_trigger #locabar_addresses,
 	#locabar_popupcart_trigger #locabar_popupcart,
