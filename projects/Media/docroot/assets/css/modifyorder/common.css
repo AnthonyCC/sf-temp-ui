@@ -50,8 +50,9 @@
     font-size: 18px;
     border-bottom: solid 1px #dddddd;
     text-shadow: 1px 1px 0 #c85c19;
-    top: -5px;
+    top: -3px;
     width: 100%;
+    position: fixed;
 }
 #location-modify-order-message .modify-order-container {
 	width: 970px;

@@ -34,7 +34,7 @@
 	
 	<div id="locationbar" class="<%= (uri.contains("/checkout/") || uri.contains("view_cart.jsp") || uri.contains("merge_cart.jsp") || uri.contains("/gift_card/")) ? "disableCart" : "" %>">
 		<% if (!mobWeb_locationbar_layout_fdx && isModifyingOrder && modifyingOrder != null) { %>
-		<div id="location-modify-order-message" class="position-absolute modify-order-bar">
+		<div id="location-modify-order-message" class="modify-order-bar">
 			<div class="modify-order-container">
 				<strong>Modifying Order: </strong>
 				<span class="modify-delivery-time"><span><%= new SimpleDateFormat("EEE").format(modifyingOrder.getDeliveryReservation().getTimeslot().getDeliveryDate()) %></span> <span class="text-uppercase"><%= modifyingOrder.getDeliveryReservation().getTimeslot().getDisplayString() %></span></span>
