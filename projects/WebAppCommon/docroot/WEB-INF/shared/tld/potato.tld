@@ -159,43 +159,6 @@
 	</tag>
 
 	<tag>
-		<name>recommender</name>
-		<tag-class>com.freshdirect.webapp.soy.RecommenderPotatoTag</tag-class>
-		<teiclass>com.freshdirect.webapp.soy.RecommenderPotatoTag$TagEI</teiclass>
-		<body-content>empty</body-content>
-		<attribute>
-			<name>name</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>siteFeature</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>maxItems</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>currentNodeKey</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>cmEventSource</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>sendVariant</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-
-	<tag>
 		<name>merchant</name>
 		<tag-class>com.freshdirect.webapp.soy.MerchantPotatoTag</tag-class>
 		<teiclass>com.freshdirect.webapp.soy.MerchantPotatoTag$TagEI</teiclass>
@@ -292,19 +255,6 @@
 <tag>
         <name>viewCart</name>
         <tagclass>com.freshdirect.webapp.ajax.viewcart.ViewCartPotatoTag</tagclass>
-    </tag>
-	<!-- APPDEV-3901 -->
-    <tag>
-        <name>qsRecommender</name>
-        <tagclass>com.freshdirect.webapp.ajax.reorder.QuickShopRecommenderPotatoTag</tagclass>
-    </tag>
-    <tag>
-        <name>searchRecommender</name>
-        <tagclass>com.freshdirect.webapp.search.SearchRecommenderPotatoTag</tagclass>
-    </tag>
-    <tag>
-        <name>presPickRecommender</name>
-        <tagclass>com.freshdirect.webapp.search.PresPickRecommenderPotatoTag</tagclass>
     </tag>
     <tag>
         <name>singlePageCheckout</name>

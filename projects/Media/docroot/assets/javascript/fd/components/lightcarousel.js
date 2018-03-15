@@ -29,7 +29,7 @@ var FreshDirect = FreshDirect || {};
     var $mask = $('[data-component="carousel-mask"]', carousel ),
         $list = $('[data-component="carousel-list"]', carousel ),
         elements = $list.children(),
-        itemsize = Math.floor(elements[0].getBoundingClientRect().width), //decimals throw off calc
+        itemsize = elements.length? Math.floor(elements[0].getBoundingClientRect().width) : 0, //decimals throw off calc
         currentPage = carousel.data('carousel-page') || 0,
         itemPerPage = Math.floor($mask.width() / itemsize) || 1,
         nrPages = Math.ceil($list.children().size() / itemPerPage),
