@@ -1,4 +1,16 @@
 {namespace browse}
+
+/**
+ * @param? titleBar titleBar
+ */
+{template .titleBarWrapper autoescape="false"}
+  {if $titleBar}
+    <div class="browse-titlebar">
+    	{call .titleBar data="all" /}
+    </div>
+  {/if}
+{/template}
+
 /**
  * @param? titleBar titleBar
  */

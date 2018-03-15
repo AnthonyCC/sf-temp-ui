@@ -78,7 +78,7 @@ if (allPickupDepots != null) {
 	<tmpl:put name="fdx_login_form">
     	<div id="login_cont_formContent" style="display: none; z-index: 1002" class="locabar_login">
     		<div class="handler close-handler" id="login_cont_formContent_close"></div>
-    		<div class="logo"><img src="/media/layout/nav/globalnav/fdx/logo.png"  alt="FreshDirect" border="0" /></div>
+    		<div class="logo"><img src="/media/layout/nav/globalnav/fdx/logo.png"  alt="FreshDirect" /></div>
     		<div class="sign-in">Sign in</div>
     		<form id="login_cont_formContentForm">
     			<div class="fieldInputs"><input id="login_cont_formContent_email" name="userId" value="Email" data-deftext="Email" class="ccc" /></div>
@@ -714,8 +714,8 @@ if (allPickupDepots != null) {
 						   	</div>
 						   	<div class="footer">
 								<span class="subtotal">Subtotal: </span> <span>
-									<div class="totalprice"><%=JspMethods.formatPrice(cart.getSubTotal())%></div>
-									<div class="save-amount"><%=JspMethods.formatPrice(cart.getSaveAmount(false))%></div>
+									<span class="totalprice"><%=JspMethods.formatPrice(cart.getSubTotal())%></span><br />
+									<span class="save-amount"><%=JspMethods.formatPrice(cart.getSaveAmount(false))%></span>
 								</span>
 							</div>
 							<div class="footer-buttons">

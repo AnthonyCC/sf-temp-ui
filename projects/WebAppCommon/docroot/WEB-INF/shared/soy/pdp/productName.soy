@@ -8,8 +8,10 @@
 	<h1 class="pdpTitle">
 		<span itemprop="name">
 		{if $productName}{$productName}{/if}
-		{if $akaName}<p class="productDisplay-akaName">"{$akaName|noAutoescape}"</p>{/if}
         </span>
-        <span class="annotation cssbutton transparent white icon-info2-before notext">?</span>
   	</h1>
+  	{if $akaName}
+  		<h2><span class="productDisplay-akaName">"{$akaName|noAutoescape}"</span></h2>
+  	{/if}
+    <div class="annotation cssbutton transparent white icon-info2-before notext">?</div>
 {/template}

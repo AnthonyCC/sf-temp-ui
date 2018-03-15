@@ -75,9 +75,9 @@ if(user != null) {
   <div class="container globalnav_top <%= (uri.contains("/checkout/") || uri.contains("view_cart.jsp") || uri.contains("merge_cart.jsp")) ? "disableCart" : "" %>">
   <%
     if(user.isDepotUser()){%>
-        <a class="logo" href="<%= FDURLUtil.getLandingPageUrl(user)%>"><img src="/media_stat/images/logos/<%=user.getDepotCode()%>_depot_logo.gif"  alt="" border="0"></a>
+        <a class="logo" href="<%= FDURLUtil.getLandingPageUrl(user)%>"><img src="/media_stat/images/logos/<%=user.getDepotCode()%>_depot_logo.gif" alt="" /></a>
     <% } else { %>
-      <a class="logo" href="<%= FDURLUtil.getLandingPageUrl(user)%>" ><img src="/media/images/navigation/global_nav/fd_logo_on.gif" border="0" alt="FreshDirect" name="FD_LOGO"></a>
+      <a class="logo" href="<%= FDURLUtil.getLandingPageUrl(user)%>" ><img src="/media/images/navigation/global_nav/fd_logo_on.gif" alt="FreshDirect" name="FD_LOGO" /></a>
     <% } %>
     <%
         String hasEcouponsClass="";

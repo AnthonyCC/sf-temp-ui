@@ -76,7 +76,7 @@
 		</div>
 		<%} %>
 		<%-- fright sections --%>
-		<div class="locabar-right-sections">
+		<div class="locabar-right-sections" role="menubar">
 			<tmpl:get name="modify_order" /><tmpl:get name="messages" />
 			<% if (!isModifyingOrder){ %>
 			<tmpl:get name="zip_address" />

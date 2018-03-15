@@ -38,6 +38,7 @@
 <potato:product name="productPotato" extraName="productExtraPotato" productId='${param.productId}' categoryId='${param.catId}' variantId='${param.variantId}' grpId='${param.grpId}' version='${param.version}' />
 <potato:browse name="browsePotato" pdp="true" nodeId='${param.catId}'/>
 
+	
 <fd:ProductGroup id='productNode' categoryId='${param.catId}' productId='${param.productId}' >
 
 <%
@@ -124,11 +125,10 @@ if (mobWeb) {
     <jwr:style src="/quickshop.css" media="all" />
     <jwr:style src="/pdp.css" media="all" />
   </tmpl:put>
-    <tmpl:put name='deptnav' direct='true'>
-    <div class="browse-titlebar">
-      <soy:render template="browse.titleBar" data="${browsePotato.descriptiveContent}" />
-    </div>
-  </tmpl:put>
+  
+	<tmpl:put name='deptnav' direct='true'>
+		<soy:render template="browse.titleBarWrapper" data="${browsePotato.descriptiveContent}" />
+	</tmpl:put>
 
   <tmpl:put name='leftnav' direct='true'>
     <div id="leftnav">

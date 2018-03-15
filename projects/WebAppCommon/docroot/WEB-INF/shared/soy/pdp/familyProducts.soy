@@ -7,7 +7,7 @@
 {template .familyProducts}
     {if $familyProducts and length($familyProducts) > 0}
 		<div class="pdp-evenbetter">
-			<h2 {if $mobWeb}tabindex="0"{/if} class="familyproducts {if $mobWeb}gen-accord-toggler{/if}">Try These Too!</h2>
+			<div {if $mobWeb}tabindex="0"{/if} class="header familyproducts {if $mobWeb}gen-accord-toggler{/if}">Try These Too!</div>
 			<div class="{if $mobWeb} gen-accord-content{/if}" {if $mobWeb}style="display: none;"{/if}>
 				{foreach $familyProducts in $familyProducts}
 					{if not isFirst($familyProducts)} <hr/> {/if}

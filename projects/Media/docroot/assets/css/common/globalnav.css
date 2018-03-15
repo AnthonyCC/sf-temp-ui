@@ -526,13 +526,18 @@ ul.globalnavPopups li {
 }
 
 .gnav .department h3,
-.globalnav-popup .department h3{
+.globalnav-popup .department h3,
+.gnav .department .column-heading,
+.globalnav-popup .department .column-heading
+{
   margin-bottom:0px;
   color:#414141;
 }
 
 .gnav .department h3:after,
-.globalnav-popup .department h3:after {
+.globalnav-popup .department h3:after,
+.gnav .department .column-heading:after,
+.globalnav-popup .department .column-heading:after {
   content: '';
   display: inline-block;
 }
@@ -1122,7 +1127,9 @@ ul.subdepartments {
   line-height: 20px;
 }
 
-.deptcontainer > .department h3 {
+.deptcontainer > .department h3,
+.deptcontainer > .department .column-heading
+{
   margin-top: 0;
   margin-bottom: 0;
   color: #414141;
@@ -1245,4 +1252,10 @@ ul.subdepartments {
 	width:1px;
 	height:1px;
 	overflow:hidden;
+}
+
+table[data-component="footer-cont"] {
+	margin: 0 auto;
+	width: 970px;
+	border: 0;
 }
