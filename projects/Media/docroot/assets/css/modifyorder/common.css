@@ -64,3 +64,8 @@
 .modify-order-bar .modify-delivery-time {
 	text-shadow: 1px 1px 0 rgba(200, 92, 25, 0.5)
 }
+
+#locationbar-sticky-wrapper .locabar-right-sections {
+	position: fixed;
+	top: 1px;
+}
