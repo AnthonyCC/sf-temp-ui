@@ -924,7 +924,17 @@ public class StandingOrderHelper {
 
 	private static void refreshSO3(FDUserI user) throws FDResourceException, FDInvalidConfigurationException {
 		user.setValidSO3(FDStandingOrdersManager.getInstance().getValidStandingOrder(user.getIdentity()));
-		user.setAllSO3(FDStandingOrdersManager.getInstance().loadCustomerNewStandingOrders(user.getIdentity()));
+		Collection<FDStandingOrder> allSOlist = FDStandingOrdersManager.getInstance().loadCustomerNewStandingOrders(user.getIdentity());
+		Collection<FDStandingOrder> activeSOList = new ArrayList<FDStandingOrder>();
+		
+		for (FDStandingOrder curSO : allSOlist) {
+			if (StandingOrderHelper.isSOActivated(curSO)) {
+				activeSOList.add(curSO);
+			}
+		}
+		user.setActiveSO3s(activeSOList);
+		
+		user.setAllSO3(allSOlist);
 		user.setRefreshSO3(false);
 	}
 	
