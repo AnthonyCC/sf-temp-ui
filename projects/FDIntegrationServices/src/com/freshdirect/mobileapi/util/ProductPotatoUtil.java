@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDResourceException;
@@ -77,12 +78,24 @@ public class ProductPotatoUtil {
             } catch (FDResourceException e) {
                 LOGGER.error("Failed to load product " + productId);
             } catch (FDSkuNotFoundException e) {
-                LOGGER.error("No SKU for product " + productId);
+                LOGGER.error("No SKU for product " + productId + " -> " + getRootCauseStackTrace(e));
             } catch (HttpErrorResponse e) {
                 LOGGER.error("Failed to load product " + productId);
             }
         }
         return null;
+    }
+    
+    private static String getRootCauseStackTrace(Throwable e) {
+    	
+    	StringBuffer strBuf = new StringBuffer();
+    	String[] traces = ExceptionUtils.getRootCauseStackTrace(e);
+    	if(traces != null) {
+		    for (final String element : ExceptionUtils.getRootCauseStackTrace(e)) {
+		    	strBuf.append(element).append(" ");
+		    }
+    	}
+	    return strBuf.toString();
     }
 
 
