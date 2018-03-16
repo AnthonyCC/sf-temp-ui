@@ -309,20 +309,22 @@ public class FDFactoryService extends ExtTimeAbstractEcommService implements FDF
 	
 	@Override
 	public Collection getProductInfos(String[] skus) throws FDResourceException, RemoteException {
-		Response<Collection<ErpProductInfoModelData>> response = null;
+		Response<Collection<FDProductInfoData>> response = null;
 		Request<String[]> request = new Request<String[]>();
 		Collection<FDProductInfo> fdProductInfos = new ArrayList<FDProductInfo>();
 			try {
 				request.setData(skus);
 				String inputJson;
 				inputJson = buildRequest(request);
-				response = postDataTypeMap(inputJson,getFdCommerceEndPoint(FDFACTORY_FDPRODUCTINFO_SKUCODES),new TypeReference<Response<Collection<ErpProductInfoModelData>>>() {});
+				response = postDataTypeMap(inputJson,getFdCommerceEndPoint(FDFACTORY_FDPRODUCTINFO_SKUCODES),new TypeReference<Response<Collection<FDProductInfoData>>>() {});
 				if(!response.getResponseCode().equals("OK"))
 					throw new FDResourceException(response.getMessage());
+				if(response.getData()==null)
+					return fdProductInfos; // returning empty list
 					
-				for (ErpProductInfoModelData fdProductInfoData : response.getData()) {
-					ErpProductInfoModel model = ModelConverter.buildProdInfoMod(fdProductInfoData);
-					fdProductInfos.add(productHelper.getFDProductInfoNew(model));
+				for (FDProductInfoData fdProductInfoData : response.getData()) {
+					 FDProductInfo model = ModelConverter.fdProductInfoDataToModel(fdProductInfoData);
+					fdProductInfos.add(model);
 				}
 				
 			} catch (FDEcommServiceException e) {
