@@ -68,6 +68,7 @@
 #locationbar-sticky-wrapper .locabar-right-sections {
 	position: fixed;
 	top: 1px;
+	height: 42px;
 }
 #location-modify-order-message ~ .locabar-right-sections #locabar_messages_trigger {
 	display: none; /* hide during modify */
