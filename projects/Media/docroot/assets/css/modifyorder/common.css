@@ -69,3 +69,6 @@
 	position: fixed;
 	top: 1px;
 }
+#location-modify-order-message ~ .locabar-right-sections #locabar_messages_trigger {
+	display: none; /* hide during modify */
+}
