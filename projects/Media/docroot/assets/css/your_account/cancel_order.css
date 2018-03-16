@@ -7,7 +7,7 @@
     margin-top: 20px;
     margin-bottom: 20px;
 }
-.cancel-order-table .buttons .inline .cancel-order-form{
+.cancel-order-table .buttons .inline.cancel-order-form{
 	display: inline;
     padding-left: 15px;
 }

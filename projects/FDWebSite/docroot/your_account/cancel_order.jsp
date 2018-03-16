@@ -124,13 +124,13 @@
 				<tr>
 					<td class="buttons">
 						<span class="<%=mobWeb?"block padding-left-10 padding-right-10": "inline" %>">
-							<a class="cssbutton orange <%=mobWeb?"full-width":""%>" href="order_details.jsp?orderId=<%= orderId %>">Do Not Cancel Order</a>
+							<a class="cssbutton orange <%=mobWeb?"full-width":""%>" href="order_details.jsp?orderId=<%= orderId %>">Do Not Cancel Order<span class="offscreen"> number <%= orderId %></span></a>
 						</span>
 						
 						<form class="cancel-order-form <%=mobWeb?"block padding-left-10 padding-right-10": "inline" %>" name="cancel_order" method="POST" action="/your_account/cancel_order.jsp">
 							<input type="hidden" name="action" value="cancel" />
 							<input type="hidden" name="orderId" value="<%= orderId %>" />
-							<button type="submit" class="cssbutton red transparent <%=mobWeb?"full-width":""%>">Cancel Order</button>
+							<button type="submit" class="cssbutton red transparent <%=mobWeb?"full-width":""%>">Cancel Order<span class="offscreen"> number <%= orderId %></span></button>
 						</form>
 						
 					</td>
