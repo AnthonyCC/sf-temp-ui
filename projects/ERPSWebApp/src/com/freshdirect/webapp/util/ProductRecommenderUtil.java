@@ -20,6 +20,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.browse.sorter.ProductItemSorterFactory;
+import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.ValueHolder;
@@ -28,6 +29,7 @@ import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.fdstore.Recommendations;
+import com.freshdirect.smartstore.fdstore.ScoreProvider;
 import com.freshdirect.smartstore.fdstore.VariantSelector;
 import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
 import com.freshdirect.storeapi.content.CategoryModel;
@@ -541,4 +543,77 @@ public class ProductRecommenderUtil {
         }
         return sortedProducts;
     }
+    
+    //Method added as part of FDLabs of Aggregated Customer and Global Favorites page
+    public static List<List<ProductModel>> getYouLoveWeLoveProducts(FDUserI user, double ratingBaseLine
+    		, double dealsBaseLine, double popularityBaseLine
+    		, boolean considerNew , boolean considerBackInStock, boolean sortProducts, int maxNoOfProducts) throws FDResourceException {
+
+    	List<List<ProductModel>> result = new ArrayList<List<ProductModel>>();
+    	ProductModel productModel = null;
+    	String customerId = null;
+    	
+    	if(user.getIdentity() != null) {
+			FDCustomerModel fdCustomerModel = user.getFDCustomer();
+			if(fdCustomerModel != null) {
+				customerId = fdCustomerModel.getErpCustomerPK();
+			}
+		}
+    	
+    	List<ProductModel> youLove = new ArrayList<ProductModel>();
+    	if(customerId != null) {
+	    	Map<ContentKey,Float> customerPersonalizedProductScores = ScoreProvider.getInstance().getUserProductScores(customerId);	//2149848491
+	    	for (Map.Entry<ContentKey,Float> entry : customerPersonalizedProductScores.entrySet()) {
+	    		productModel = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(entry.getKey());
+	    		if(isYouLoveWeLoveProduct(productModel, ratingBaseLine, dealsBaseLine, considerNew, considerBackInStock)) {
+	    			youLove.add(productModel);
+	    		}
+	    	}	    	
+    	}
+    	
+    	if(youLove.size() > 0 && sortProducts) {
+    		youLove = ProductRecommenderUtil.sortProducts(user, youLove, SortStrategyType.CUSTOMER_POPULARITY , false, maxNoOfProducts);
+    	}
+    	result.add(youLove);
+
+    	List<ProductModel> weLove = new ArrayList<ProductModel>();
+    	Map<ContentKey, double[]> globalProductScores = ScoreProvider.getInstance().getGlobalScores();
+
+    	for (Map.Entry<ContentKey, double[]> entry : globalProductScores.entrySet()) {			
+    		double[] value = entry.getValue();
+
+    		if(value[4] >= popularityBaseLine) {
+    			productModel = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(entry.getKey());
+    			if(isYouLoveWeLoveProduct(productModel, ratingBaseLine, dealsBaseLine, considerNew, considerBackInStock)) {
+    				weLove.add(productModel);
+    			}
+    		}
+    	}
+    	
+    	if(weLove.size() > 0 && sortProducts) {
+    		weLove = ProductRecommenderUtil.sortProducts(user, weLove, SortStrategyType.POPULARITY , false, maxNoOfProducts);
+    	}
+    	result.add(weLove);
+
+    	return result;
+    }
+
+    private static boolean isYouLoveWeLoveProduct(ProductModel productModel, double ratingBaseLine, double dealsBaseLine
+    		, boolean considerNew , boolean considerBackInStock) {
+    	boolean result = false;
+    	try {
+    		result = (!productModel.isUnavailable() && 
+    				((considerNew && productModel.isNew()) || productModel.getPriceCalculator().getHighestDealPercentage() > dealsBaseLine 
+    						|| (considerBackInStock && productModel.isBackInStock()) 
+    						|| (productModel.getProductRatingEnum() != null && (productModel.getProductRatingEnum().getValue())/2  >= ratingBaseLine)));
+    				
+    	} catch (Exception e) {
+    		//System.out.println("isYouLoveWeLoveProduct..failed...."+productModel.getContentKey().getId());			
+    	}
+
+
+
+    	return result;
+    }
+
 }

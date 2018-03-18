@@ -33,6 +33,7 @@ import com.freshdirect.fdstore.content.browse.filter.BrandFilter;
 import com.freshdirect.fdstore.content.browse.filter.ContentNodeFilter;
 import com.freshdirect.fdstore.content.util.SmartSearchUtils;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.framework.util.NVL;
@@ -84,11 +85,11 @@ import com.freshdirect.webapp.ajax.mealkit.service.MealkitService;
 import com.freshdirect.webapp.ajax.product.CriteoProductsUtil;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
-import com.freshdirect.webapp.cos.util.CosFeatureUtil;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.search.SearchService;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.util.MediaUtils;
+import com.freshdirect.webapp.util.ProductRecommenderUtil;
 
 public class CmsFilteringFlow {
 
@@ -1508,4 +1509,61 @@ public class CmsFilteringFlow {
         }
         return hlProductDataList;
     }
+    
+  //Method added as part of FDLabs of Aggregated Customer and Global Favorites page, will be soon integrated with browse.jsp
+	public BrowseData getWeLoveYouLoveData(FDUserI user, CmsFilteringNavigator nav, double ratingBaseLine
+    		, double dealsBaseLine, double popularityBaseLine
+    		, boolean considerNew , boolean considerBackInStock, boolean sortProducts, int maxNoOfProducts) throws FDResourceException {
+		
+		List<List<ProductModel>> interestingProductGroups = ProductRecommenderUtil.getYouLoveWeLoveProducts(user, ratingBaseLine, dealsBaseLine
+																, popularityBaseLine, considerNew, considerBackInStock, sortProducts, maxNoOfProducts);
+		
+		BrowseData browseData = new BrowseData();
+		
+		List<SectionData> sections = new ArrayList<SectionData>();
+		browseData.getSections().setSections(sections);
+		
+		int sectionCount = 0;
+		SectionData sectionData = null;
+		ProductData productData = null;
+		
+		List<ContentKey> uniqueProducts = new ArrayList<ContentKey>();
+		
+		if(interestingProductGroups != null) {
+			for(List<ProductModel> interestingProducts :  interestingProductGroups) {
+				if(interestingProducts !=null && interestingProducts.size() > 0) {
+														
+					List<ProductData> productDatas = new ArrayList<ProductData>();
+										
+					for(ProductModel product : interestingProducts) {
+						if(!uniqueProducts.contains(product.getContentKey())) {
+							product = ProductPricingFactory.getInstance().getPricingAdapter( product, user.getUserContext().getPricingContext());
+							productData = new ProductData(product);
+							try {
+								ProductDetailPopulator.populateBrowseProductData(productData, user, nav, false);
+								productDatas.add(productData);
+							} catch(Exception e) {
+								//System.out.println("Failed to populate product data for " + product==null ? "null": product.getContentName() + " (" + e.getMessage() + ")");
+							}
+							uniqueProducts.add(product.getContentKey());
+						}
+					}
+					if(productDatas.size() > 0) {
+						sectionData = new SectionData();
+						if(sectionCount == 0) {			
+							sectionData.setHeaderText("Your favorites with at least "+ (int)ratingBaseLine + "-star rating or " + (int)dealsBaseLine + "% discount " + (considerBackInStock ? "or is back in stock" : "")); 					
+						} else {
+							sectionData.setHeaderText("Our favorites with at least "+ (int)ratingBaseLine + "-star rating or " + (int)dealsBaseLine + "% discount " + (considerBackInStock ? "or is back in stock" : ""));					
+						}
+						sections.add(sectionData);
+						sectionData.setProducts(productDatas);
+					}
+				}
+				sectionCount++;
+			}
+		}
+		return browseData;
+	}
+			
+
 }
