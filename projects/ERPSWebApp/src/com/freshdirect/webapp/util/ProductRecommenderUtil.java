@@ -571,8 +571,8 @@ public class ProductRecommenderUtil {
 	    	}	    	
     	}
     	
-    	if(youLove.size() > 0 && sortProducts) {
-    		youLove = ProductRecommenderUtil.sortProducts(user, youLove, SortStrategyType.CUSTOMER_POPULARITY , false, maxNoOfProducts);
+    	if(youLove.size() > 0) {
+    		youLove = ProductRecommenderUtil.sortProducts(user, youLove, (sortProducts ? SortStrategyType.CUSTOMER_POPULARITY : SortStrategyType.SALE), false, maxNoOfProducts);
     	}
     	result.add(youLove);
 
@@ -590,8 +590,8 @@ public class ProductRecommenderUtil {
     		}
     	}
     	
-    	if(weLove.size() > 0 && sortProducts) {
-    		weLove = ProductRecommenderUtil.sortProducts(user, weLove, SortStrategyType.POPULARITY , false, maxNoOfProducts);
+    	if(weLove.size() > 0) {
+    		weLove = ProductRecommenderUtil.sortProducts(user, weLove, (sortProducts ? SortStrategyType.POPULARITY : SortStrategyType.SALE), false, maxNoOfProducts);
     	}
     	result.add(weLove);
 
