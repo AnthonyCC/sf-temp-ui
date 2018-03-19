@@ -16,6 +16,7 @@ import org.mockito.stubbing.Answer;
 
 import com.freshdirect.cms.category.UnitTest;
 import com.freshdirect.cms.contentvalidation.correction.CorrectionManager;
+import com.freshdirect.cms.contentvalidation.validator.Validator;
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
@@ -24,7 +25,6 @@ import com.freshdirect.cms.core.domain.ContentTypes;
 import com.freshdirect.cms.validation.ValidationResultLevel;
 import com.freshdirect.cms.validation.ValidationResults;
 import com.freshdirect.cms.validation.exception.ValidationFailedException;
-import com.freshdirect.cms.validation.validator.Validator;
 
 @RunWith(MockitoJUnitRunner.class)
 @Category(UnitTest.class)

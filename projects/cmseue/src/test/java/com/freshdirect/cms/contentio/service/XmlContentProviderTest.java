@@ -19,7 +19,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.freshdirect.cms.category.UnitTest;
 import com.freshdirect.cms.contentio.xml.FlexContentHandler;
 import com.freshdirect.cms.contentio.xml.XmlContentMetadataService;
-import com.freshdirect.cms.core.converter.SerializedScalarValueToObjectConverter;
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.AttributeFlags;
 import com.freshdirect.cms.core.domain.ContentKey;
@@ -27,7 +26,6 @@ import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.cms.core.domain.ContentTypes;
 import com.freshdirect.cms.core.domain.Scalar;
-import com.freshdirect.cms.core.service.ContentKeyParentsCollectorService;
 import com.freshdirect.cms.util.EntityFactory;
 import com.google.common.base.Optional;
 
@@ -54,13 +52,7 @@ public class XmlContentProviderTest {
     private FlexContentHandler flexContentHandler;
 
     @Mock
-    private SerializedScalarValueToObjectConverter serializedScalarValueToObjectConverter;
-
-    @Mock
     private XmlContentMetadataService xmlContentMetadataService;
-
-    @Mock
-    private ContentKeyParentsCollectorService contentKeyParentsCollectorService;
 
     @Before
     public void beforeTests() {
@@ -80,10 +72,6 @@ public class XmlContentProviderTest {
         nodes.put(ContentKeyFactory.get(ContentType.Category, MOCKED_CATEGORY_ID), categoryAttributes);
 
         Mockito.when(flexContentHandler.getContentNodes()).thenReturn(nodes);
-        Mockito.when(serializedScalarValueToObjectConverter.convert(ContentTypes.Product.FULL_NAME, MOCKED_PRODUCT_FULL_NAME)).thenReturn(MOCKED_PRODUCT_FULL_NAME);
-        Mockito.when(serializedScalarValueToObjectConverter.convert(ContentTypes.Product.AKA, MOCKED_PRODUCT_AKA)).thenReturn(MOCKED_PRODUCT_AKA);
-        Mockito.when(serializedScalarValueToObjectConverter.convert(ContentTypes.Category.FULL_NAME, MOCKED_CATEGORY_FULL_NAME)).thenReturn(MOCKED_CATEGORY_FULL_NAME);
-        Mockito.when(serializedScalarValueToObjectConverter.convert(ContentTypes.Category.ALT_TEXT, MOCKED_CATEGORY_ALT_TEXT)).thenReturn(MOCKED_CATEGORY_ALT_TEXT);
 
         underTest.buildAll(flexContentHandler);
     }

@@ -163,6 +163,7 @@
     </module>
     <module name="VisibilityModifier">
       <property name="severity" value="error"/>
+      <property name="protectedAllowed" value="true"/>
       <property name="packageAllowed" value="true"/>
     </module>
     <module name="ArrayTypeStyle">

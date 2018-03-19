@@ -43,8 +43,8 @@ import com.google.common.collect.ImmutableSet;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @Category(UnitTest.class)
-@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = { com.freshdirect.cms.core.service.NodeCollectionContentProviderServiceTest.Config.class })
-public class NodeCollectionContentProviderServiceTest {
+@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = { com.freshdirect.cms.core.service.NodeCollectionContentProviderTest.Config.class })
+public class NodeCollectionContentProviderTest {
 
     private static final Set<ContentKey> NO_PARENTS = Collections.emptySet();
 
@@ -69,9 +69,6 @@ public class NodeCollectionContentProviderServiceTest {
 
     @Autowired
     private ContextService contextService;
-
-    @Autowired
-    private ContentKeyParentsCollectorService contentKeyParentsCollectorService;
 
     private static Map<ContentKey, Map<Attribute, Object>> simpleStore() {
         Map<ContentKey, Map<Attribute, Object>> testNodes = new HashMap<ContentKey, Map<Attribute, Object>>();
@@ -116,14 +113,14 @@ public class NodeCollectionContentProviderServiceTest {
         return Collections.<ContentKey, Map<Attribute, Object>>emptyMap();
     }
 
-    private NodeCollectionContentProviderService buildProvider(Map<ContentKey, Map<Attribute, Object>> testNodes) {
-        return new NodeCollectionContentProviderService(contentTypeInfoService, contentKeyParentsCollectorService, contextService, testNodes);
+    private NodeCollectionContentProvider buildProvider(Map<ContentKey, Map<Attribute, Object>> testNodes) {
+        return new NodeCollectionContentProvider(contentTypeInfoService, contextService, testNodes);
     }
 
 
     @Test
     public void testContainsKey() {
-        NodeCollectionContentProviderService underTest = buildProvider(simpleStore());
+        NodeCollectionContentProvider underTest = buildProvider(simpleStore());
 
         assertTrue(underTest.containsContentKey(PRODUCT_KEY));
         assertTrue(underTest.containsContentKey(DEPT_FD_KEY));
@@ -139,7 +136,7 @@ public class NodeCollectionContentProviderServiceTest {
 
     @Test
     public void testParentKeys() {
-        NodeCollectionContentProviderService underTest = buildProvider(simpleStore());
+        NodeCollectionContentProvider underTest = buildProvider(simpleStore());
 
         final Set<ContentKey> parentKeys = underTest.getParentKeys(PRODUCT_KEY);
         assertNotNull(parentKeys);
@@ -155,7 +152,7 @@ public class NodeCollectionContentProviderServiceTest {
 
     @Test
     public void testPrimaryHomes() {
-        NodeCollectionContentProviderService underTest = buildProvider(simpleStore());
+        NodeCollectionContentProvider underTest = buildProvider(simpleStore());
 
         final Map<ContentKey, ContentKey> primaryHomes = underTest.findPrimaryHomes(PRODUCT_KEY);
         assertNotNull(primaryHomes);
@@ -171,13 +168,13 @@ public class NodeCollectionContentProviderServiceTest {
 
     @Test
     public void testIsOrphan() {
-        NodeCollectionContentProviderService underTest = buildProvider(simpleStore());
+        NodeCollectionContentProvider underTest = buildProvider(simpleStore());
 
         assertTrue(!underTest.isOrphan(STORE_FRESHDIRECT.contentKey, STORE_FRESHDIRECT.contentKey));
         assertTrue(!underTest.isOrphan(STORE_FOODKICK.contentKey, STORE_FOODKICK.contentKey));
         assertTrue(underTest.isOrphan(STORE_FRESHDIRECT.contentKey, STORE_FOODKICK.contentKey));
         assertTrue(underTest.isOrphan(STORE_FOODKICK.contentKey, STORE_FRESHDIRECT.contentKey));
-        
+
         assertTrue(!underTest.isOrphan(PRODUCT_KEY, STORE_FRESHDIRECT.contentKey));
         assertTrue(!underTest.isOrphan(DEPT_FD_KEY, STORE_FRESHDIRECT.contentKey));
         assertTrue(!underTest.isOrphan(CAT_TOP_FD_KEY, STORE_FRESHDIRECT.contentKey));
@@ -202,7 +199,7 @@ public class NodeCollectionContentProviderServiceTest {
 
     @Test
     public void testFilterByStore() {
-        NodeCollectionContentProviderService underTest = buildProvider(simpleStore());
+        NodeCollectionContentProvider underTest = buildProvider(simpleStore());
 
         final Map<ContentKey, Map<Attribute, Object>> filterFD = underTest.filterNodesToStore(STORE_FRESHDIRECT.contentKey);
         assertNotNull(filterFD);
@@ -224,7 +221,7 @@ public class NodeCollectionContentProviderServiceTest {
 
     @Test
     public void testCollectByStore() {
-        NodeCollectionContentProviderService underTest = buildProvider(simpleStore());
+        NodeCollectionContentProvider underTest = buildProvider(simpleStore());
 
         final Map<ContentKey, Set<ContentKey>> parentsByStore = underTest.collectParentsPerStore(PRODUCT_KEY);
         assertNotNull(parentsByStore);
@@ -243,7 +240,7 @@ public class NodeCollectionContentProviderServiceTest {
 
     @Test
     public void testGetKeysByType() {
-        NodeCollectionContentProviderService underTest = buildProvider(simpleStore());
+        NodeCollectionContentProvider underTest = buildProvider(simpleStore());
 
         final Set<ContentKey> departmentNodes = underTest.getContentKeysByType(Department);
         assertNotNull(departmentNodes);
@@ -272,7 +269,7 @@ public class NodeCollectionContentProviderServiceTest {
 
     @Test
     public void testParentIndexBuilderWithEmptyContent() {
-        NodeCollectionContentProviderService emptyContainer = buildProvider(emptyStore());
+        NodeCollectionContentProvider emptyContainer = buildProvider(emptyStore());
 
         final ContentKey testKey = get(Category, "nonExistingCategory");
         final Map<ContentKey, Set<ContentKey>> parentIndex = emptyContainer.buildParentIndexFor(testKey);
@@ -285,7 +282,7 @@ public class NodeCollectionContentProviderServiceTest {
 
     @Test
     public void testParentIndexBuilderWithSingleNodeContent() {
-        NodeCollectionContentProviderService singleNodeContainer = buildProvider(singleNodeStore());
+        NodeCollectionContentProvider singleNodeContainer = buildProvider(singleNodeStore());
 
         final Map<ContentKey, Set<ContentKey>> parentIndex = singleNodeContainer.buildParentIndexFor(SINGLE_NODE_KEY);
         assertParentMapsEqual(ImmutableMap.of(SINGLE_NODE_KEY, NO_PARENTS), parentIndex);
@@ -309,8 +306,7 @@ public class NodeCollectionContentProviderServiceTest {
                 .asChild()
             .build();
 
-        NodeCollectionContentProviderService testContainer =
-                new NodeCollectionContentProviderService(contentTypeInfoService, contentKeyParentsCollectorService, contextService, testNodes);
+        NodeCollectionContentProvider testContainer = new NodeCollectionContentProvider(contentTypeInfoService, contextService, testNodes);
 
         // expected: [ fooChildKey => [fooKey], fooKey => [] ]
         Map<ContentKey, Set<ContentKey>> parentIndex = testContainer.buildParentIndexFor(fooChildKey);
@@ -363,8 +359,7 @@ public class NodeCollectionContentProviderServiceTest {
                 .asChild()
             .build();
 
-        NodeCollectionContentProviderService testContainer =
-                new NodeCollectionContentProviderService(contentTypeInfoService, contentKeyParentsCollectorService, contextService, testNodes);
+        NodeCollectionContentProvider testContainer = new NodeCollectionContentProvider(contentTypeInfoService, contextService, testNodes);
 
         // expected: [ fooChildKey => [fooKey], fooKey => [] ]
         Map<ContentKey, Set<ContentKey>> parentIndex = testContainer.buildParentIndexFor(fooChildKey);
@@ -415,8 +410,7 @@ public class NodeCollectionContentProviderServiceTest {
                 .connectedTo(homeKey)
             .build();
 
-        final NodeCollectionContentProviderService testContainer =
-                new NodeCollectionContentProviderService(contentTypeInfoService, contentKeyParentsCollectorService, contextService, testNodes);
+        final NodeCollectionContentProvider testContainer = new NodeCollectionContentProvider(contentTypeInfoService, contextService, testNodes);
 
         // expected: [ prod1key => [homeKey], homeKey => [deptKey], deptKey => [] ]
         Map<ContentKey, Set<ContentKey>> parentIndex = testContainer.buildParentIndexFor(prod1key);
@@ -466,8 +460,7 @@ public class NodeCollectionContentProviderServiceTest {
                 .connectedTo(home2key)
             .build();
 
-        final NodeCollectionContentProviderService testContainer =
-                new NodeCollectionContentProviderService(contentTypeInfoService, contentKeyParentsCollectorService, contextService, testNodes);
+        final NodeCollectionContentProvider testContainer = new NodeCollectionContentProvider(contentTypeInfoService, contextService, testNodes);
 
         // expected: [ prod1key => [home1key, home2key], home1key => [dept1key], home2key => [dept2key], dept1key => [], dept2key => [] ]
         Map<ContentKey, Set<ContentKey>> parentIndex = testContainer.buildParentIndexFor(prod1key);
@@ -505,8 +498,7 @@ public class NodeCollectionContentProviderServiceTest {
                 .connectedTo(home2key)
             .build();
 
-        final NodeCollectionContentProviderService testContainer =
-                new NodeCollectionContentProviderService(contentTypeInfoService, contentKeyParentsCollectorService, contextService, testNodes);
+        final NodeCollectionContentProvider testContainer = new NodeCollectionContentProvider(contentTypeInfoService, contextService, testNodes);
 
         // expected: [ prod1key => [home1key, home2key], home1key => [dept1key], home2key => [dept1key], dept1key => []]
         Map<ContentKey, Set<ContentKey>> parentIndex = testContainer.buildParentIndexFor(prod1key);
@@ -535,13 +527,13 @@ public class NodeCollectionContentProviderServiceTest {
     }
 
     @Configuration
-    @ComponentScan(basePackageClasses = { ContentKeyParentsCollectorService.class, ContentTypeInfoService.class, ContextService.class })
+    @ComponentScan(basePackageClasses = { ContentTypeInfoService.class, ContextService.class })
     @EnableCaching
     static class Config {
         @Bean
         public CacheManager cacheManager() {
             SimpleCacheManager cacheManager = new SimpleCacheManager();
-            cacheManager.setCaches(Arrays.asList(new ConcurrentMapCache("parentKeysCache"), new ConcurrentMapCache("allParentKeysCache")));
+            cacheManager.setCaches(Arrays.asList(new ConcurrentMapCache("parentKeysCache")));
             return cacheManager;
         }
     }

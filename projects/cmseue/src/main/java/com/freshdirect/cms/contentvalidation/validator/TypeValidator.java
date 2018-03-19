@@ -1,4 +1,4 @@
-package com.freshdirect.cms.validation.validator;
+package com.freshdirect.cms.contentvalidation.validator;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -41,7 +41,7 @@ public class TypeValidator implements Validator {
 
             validateExtraneousAttributes(contentKey, payload, validationResults);
         } else {
-            validationResults.addValidationResult(contentType, "Can't save data for an empty type", ValidationResultLevel.ERROR, TypeValidator.class);
+            validationResults.addValidationResult(contentKey, "Can't save data for an empty type", ValidationResultLevel.ERROR, TypeValidator.class);
         }
 
         return validationResults;

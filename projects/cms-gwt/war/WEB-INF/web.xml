@@ -4,18 +4,16 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	version="2.5" id="cms-gwt">
 
+    <display-name>cms-gwt</display-name>
+
 	<context-param>
 		<param-name>contextClass</param-name>
 		<param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
 	</context-param>
-
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>com.freshdirect.cms.configuration.RootConfiguration</param-value>
 	</context-param>
-
-	<display-name>cms-gwt</display-name>
-
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
@@ -26,7 +24,6 @@
 		<init-param>
 			<param-name>contextConfigLocation</param-name>
 			<param-value>
-			com.freshdirect.cms.ui.configuration
 			</param-value>
 		</init-param>
 		<init-param>

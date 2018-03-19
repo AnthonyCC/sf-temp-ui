@@ -20,11 +20,14 @@ public final class ContentKeyFactory {
     public static ContentKey get(ContentType type, String id) {
         Assert.notNull(type, "ContentType cannot be null");
         Assert.notNull(id, "ID cannot be null");
+        Assert.isTrue(!id.isEmpty(), "ID cannot be the empty string");
 
         return new ContentKey(type, id);
     }
 
     public static ContentKey get(String type, String id) {
+        Assert.notNull(type, "ContentType cannot be null");
+        
         return get(ContentType.valueOf(type), id);
     }
 

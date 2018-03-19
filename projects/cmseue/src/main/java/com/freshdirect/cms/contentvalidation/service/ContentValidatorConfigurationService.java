@@ -8,14 +8,15 @@ import org.springframework.stereotype.Service;
 
 import com.freshdirect.cms.contentvalidation.validator.ConditionalFieldValidator;
 import com.freshdirect.cms.contentvalidation.validator.ConfiguredProductValidator;
+import com.freshdirect.cms.contentvalidation.validator.CyclicReferenceValidator;
 import com.freshdirect.cms.contentvalidation.validator.DateIntervalValidator;
 import com.freshdirect.cms.contentvalidation.validator.PrimaryHomeValidator;
 import com.freshdirect.cms.contentvalidation.validator.RatingGroupValidator;
 import com.freshdirect.cms.contentvalidation.validator.RecipeChildNodeValidator;
 import com.freshdirect.cms.contentvalidation.validator.StructureValidator;
+import com.freshdirect.cms.contentvalidation.validator.TypeValidator;
 import com.freshdirect.cms.contentvalidation.validator.UniqueContentKeyValidator;
-import com.freshdirect.cms.validation.validator.TypeValidator;
-import com.freshdirect.cms.validation.validator.Validator;
+import com.freshdirect.cms.contentvalidation.validator.Validator;
 
 @Service
 public class ContentValidatorConfigurationService {
@@ -47,13 +48,16 @@ public class ContentValidatorConfigurationService {
     @Autowired
     private TypeValidator typeValidator;
 
+    @Autowired
+    private CyclicReferenceValidator cycleValidator;
+
     public List<Validator> getValidators() {
         if (configuredProductValidator != null) {
-            return Arrays.asList(typeValidator, conditionalFieldValidator, configuredProductValidator, dateIntervalValidator, primaryHomeValidator, recipeChildNodeValidator, structureValidator,
-                    uniqueContentKeyValidator, ratingGroupValidator);
+            return Arrays.asList(typeValidator, conditionalFieldValidator, configuredProductValidator, dateIntervalValidator, primaryHomeValidator,
+                    recipeChildNodeValidator, structureValidator, uniqueContentKeyValidator, ratingGroupValidator, cycleValidator);
         } else {
-            return Arrays.asList(typeValidator, conditionalFieldValidator, dateIntervalValidator, primaryHomeValidator, recipeChildNodeValidator, structureValidator,
-                uniqueContentKeyValidator, ratingGroupValidator);
+            return Arrays.asList(typeValidator, conditionalFieldValidator, dateIntervalValidator, primaryHomeValidator,
+                    recipeChildNodeValidator, structureValidator, uniqueContentKeyValidator, ratingGroupValidator, cycleValidator);
         }
     }
 }

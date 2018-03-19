@@ -1,4 +1,4 @@
-package com.freshdirect.cms.validation.validator;
+package com.freshdirect.cms.contentvalidation.validator;
 
 import java.util.Arrays;
 import java.util.Calendar;

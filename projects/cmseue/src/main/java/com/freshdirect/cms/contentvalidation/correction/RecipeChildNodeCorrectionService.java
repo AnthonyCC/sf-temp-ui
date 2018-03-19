@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import com.freshdirect.cms.changecontrol.domain.ContentUpdateContext;
 import com.freshdirect.cms.contentvalidation.validator.RecipeChildNodeValidator;
+import com.freshdirect.cms.contentvalidation.validator.Validator;
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
@@ -19,7 +20,6 @@ import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.cms.core.domain.ContentTypes;
 import com.freshdirect.cms.core.service.ContextualContentProvider;
 import com.freshdirect.cms.draft.service.DraftContextHolder;
-import com.freshdirect.cms.validation.validator.Validator;
 import com.google.common.base.Optional;
 
 @Profile({ "database", "test" })

@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.freshdirect.cms.validation.validator.Validator;
+import com.freshdirect.cms.contentvalidation.validator.Validator;
+import com.freshdirect.cms.core.domain.ContentKey;
 
 public class ValidationResults {
 
@@ -14,7 +15,7 @@ public class ValidationResults {
         validationResults.add(validationResult);
     }
 
-    public void addValidationResult(Object validatedObject, String message, ValidationResultLevel validationResultLevel, Class<? extends Validator> validatorClass) {
+    public void addValidationResult(ContentKey validatedObject, String message, ValidationResultLevel validationResultLevel, Class<? extends Validator> validatorClass) {
         validationResults.add(new ValidationResult(validatedObject, message, validationResultLevel, validatorClass));
     }
 

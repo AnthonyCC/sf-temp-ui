@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.freshdirect.cms.core.converter.ScalarValueToSerializedValueConverter;
+import com.freshdirect.cms.core.converter.ScalarValueConverter;
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentType;
@@ -33,9 +33,6 @@ public class ContentToXmlDocumentConverter {
 
     @Autowired
     private ContentTypeInfoService contentTypeInfoService;
-
-    @Autowired
-    private ScalarValueToSerializedValueConverter scalarValueToSerializedValueConverter;
 
     public Document convert(Map<ContentKey, Map<Attribute, Object>> contentNodes) {
         Document doc = DocumentHelper.createDocument();
@@ -64,7 +61,7 @@ public class ContentToXmlDocumentConverter {
 
     private void visitScalar(Element parent, Scalar attribute, Object value) {
         if (value != null) {
-            parent.addElement(attribute.getName()).addText(scalarValueToSerializedValueConverter.convert(attribute, value));
+            parent.addElement(attribute.getName()).addText(ScalarValueConverter.serializeToString(attribute, value));
         }
     }
 
@@ -93,8 +90,6 @@ public class ContentToXmlDocumentConverter {
         }
     }
 
-
-
     private void visitNullReferenceElement(Element parent) {
         parent.addElement("Null").addAttribute("ref", "null");
     }
@@ -102,5 +97,4 @@ public class ContentToXmlDocumentConverter {
     private void visitContentKey(Element parent, ContentKey key) {
         parent.addElement(key.type.name()).addAttribute("ref", key.id);
     }
-
 }

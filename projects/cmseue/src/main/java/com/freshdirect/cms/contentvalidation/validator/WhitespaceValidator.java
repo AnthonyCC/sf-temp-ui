@@ -10,7 +10,6 @@ import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.service.ContextualContentProvider;
 import com.freshdirect.cms.validation.ValidationResultLevel;
 import com.freshdirect.cms.validation.ValidationResults;
-import com.freshdirect.cms.validation.validator.Validator;
 
 @Component
 public class WhitespaceValidator implements Validator {

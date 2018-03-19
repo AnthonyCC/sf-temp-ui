@@ -12,7 +12,6 @@ import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.cms.core.service.ContextualContentProvider;
 import com.freshdirect.cms.validation.ValidationResultLevel;
 import com.freshdirect.cms.validation.ValidationResults;
-import com.freshdirect.cms.validation.validator.Validator;
 
 /**
  * Ensures nodes of the following type have a one and only one parent:
@@ -26,8 +25,19 @@ import com.freshdirect.cms.validation.validator.Validator;
  * <li>Recipe</li>
  * <li>RecipeSection</li>
  * <li>RecipeVariant</li>
+ * <li>StarterList</li>
  * </ul>
  *
+ * Except for parents that are of the following types:
+ * <ul>
+ * <li>ImageBanner</li>
+ * <li>Anchor</li>
+ * <li>Section</li>
+ * <li>WebPage</li>
+ * <li>PickList</li>
+ * <li>DarkStore</li>
+ * </ul>
+ * These parents do not count as parents.
  */
 @Component
 public class StructureValidator implements Validator {
@@ -46,14 +56,14 @@ public class StructureValidator implements Validator {
         TYPES.add(ContentType.StarterList);
     }
 
-    private static final Set<ContentType> IGNORABLE_TYPES = new HashSet<ContentType>();
+    private static final Set<ContentType> IGNORABLE_PARENT_TYPES = new HashSet<ContentType>();
     static {
-        IGNORABLE_TYPES.add(ContentType.ImageBanner);
-        IGNORABLE_TYPES.add(ContentType.Anchor);
-        IGNORABLE_TYPES.add(ContentType.Section);
-        IGNORABLE_TYPES.add(ContentType.WebPage);
-        IGNORABLE_TYPES.add(ContentType.PickList);
-        IGNORABLE_TYPES.add(ContentType.DarkStore);
+        IGNORABLE_PARENT_TYPES.add(ContentType.ImageBanner);
+        IGNORABLE_PARENT_TYPES.add(ContentType.Anchor);
+        IGNORABLE_PARENT_TYPES.add(ContentType.Section);
+        IGNORABLE_PARENT_TYPES.add(ContentType.WebPage);
+        IGNORABLE_PARENT_TYPES.add(ContentType.PickList);
+        IGNORABLE_PARENT_TYPES.add(ContentType.DarkStore);
     }
 
     @Override
@@ -63,7 +73,7 @@ public class StructureValidator implements Validator {
             Set<ContentKey> parentKeys = contentSource.getParentKeys(contentKey);
             Set<ContentKey> nonIgnorableKeys = new HashSet<ContentKey>();
             for (ContentKey parentKey : parentKeys) {
-                if (!IGNORABLE_TYPES.contains(parentKey.type)) {
+                if (!IGNORABLE_PARENT_TYPES.contains(parentKey.type)) {
                     nonIgnorableKeys.add(parentKey);
                 }
             }

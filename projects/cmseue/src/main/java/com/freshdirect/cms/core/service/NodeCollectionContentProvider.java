@@ -20,23 +20,21 @@ import com.freshdirect.cms.core.domain.ContentTypes;
 import com.freshdirect.cms.core.domain.RootContentKey;
 import com.google.common.base.Optional;
 
-public class NodeCollectionContentProviderService extends ContextualContentProvider implements UpdatableContentProvider {
+public class NodeCollectionContentProvider extends ContextualContentProvider implements UpdatableContentProvider {
 
     private Map<ContentKey, Map<Attribute, Object>> contentNodes;
     private Map<ContentKey, Set<ContentKey>> parentKeys;
 
-    public NodeCollectionContentProviderService(ContentTypeInfoService contentTypeInfoService, ContentKeyParentsCollectorService contentKeyParentsCollectorService,
-            ContextService contextService, Map<ContentKey, Map<Attribute, Object>> contentNodes) {
+    public NodeCollectionContentProvider(ContentTypeInfoService contentTypeInfoService, ContextService contextService, Map<ContentKey, Map<Attribute, Object>> contentNodes) {
         // set services
         super.contextService = contextService;
         super.contentTypeInfoService = contentTypeInfoService;
-        super.contentKeyParentsCollectorService = contentKeyParentsCollectorService;
 
         // set content base
         this.contentNodes = new HashMap<ContentKey, Map<Attribute, Object>>(contentNodes);
 
         // calculate parent keys
-        this.parentKeys = contentKeyParentsCollectorService.createParentKeysMap(contentNodes);
+        this.parentKeys = ParentIndexBuilder.createParentKeysMap(contentNodes);
     }
 
     public Map<ContentKey, Map<Attribute, Object>> filterNodesToStore(final ContentKey storeKey) {
@@ -107,7 +105,7 @@ public class NodeCollectionContentProviderService extends ContextualContentProvi
 
     @Override
     public Set<ContentKey> getContentKeys() {
-        return contentNodes.keySet();
+        return Collections.unmodifiableSet(contentNodes.keySet());
     }
 
     @Override
@@ -123,7 +121,7 @@ public class NodeCollectionContentProviderService extends ContextualContentProvi
 
     @Override
     public Set<ContentKey> getParentKeys(ContentKey key) {
-        return parentKeys.get(key) == null ? Collections.<ContentKey> emptySet() : parentKeys.get(key);
+        return parentKeys.get(key) == null ? Collections.<ContentKey>emptySet() : parentKeys.get(key);
     }
 
     @Override
@@ -168,7 +166,7 @@ public class NodeCollectionContentProviderService extends ContextualContentProvi
         }
 
         // recalculate parent keys
-        this.parentKeys = this.contentKeyParentsCollectorService.createParentKeysMap(contentNodes);
+        parentKeys = ParentIndexBuilder.createParentKeysMap(contentNodes);
 
         // NOTE: do we need to return changesets?
         return Optional.absent();
