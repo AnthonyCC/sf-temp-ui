@@ -320,10 +320,12 @@ public class CmsFilteringFlow {
         if(!browseDataContext.getSectionContexts().isEmpty() && null !=browseDataContext.getSectionContexts().get(0).getProductItems()){
 
         	for(FilteringProductItem filteredProduct: browseDataContext.getSectionContexts().get(0).getProductItems()){
-        		if(null !=browseDataContext.getAssortProducts() & null !=browseDataContext.getAssortProducts().getUnfilteredAssortedProducts()){
+        		if(null !=browseDataContext.getAssortProducts() & null !=browseDataContext.getAssortProducts().getUnfilteredAssortedProducts()
+        				&& !browseDataContext.getAssortProducts().getUnfilteredAssortedProducts().isEmpty()){
             		for(ProductData productData:browseDataContext.getAssortProducts().getUnfilteredAssortedProducts()){
             			if(productData.getProductId().equalsIgnoreCase(filteredProduct.getProductModel().getContentKey().getId())){
                 			browseDataContext.getAssortProducts().addProdDataToCat(productData.getErpCategory(), productData);
+                			break;
                 		}
             		}
         		}
