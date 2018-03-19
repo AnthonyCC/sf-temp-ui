@@ -381,7 +381,7 @@ public class ReportingService {
             Map<Attribute, Object> row = new LinkedHashMap<Attribute, Object>();
 
             if (HiddenProductReason.ARCHIVED != hiddenProduct.getReason()) {
-                row.put(changedByAttribute, hiddenProduct.getChangedBy());
+                row.put(changedByAttribute, hiddenProduct.getAuthor());
                 row.put(changeDateAttribute, formatter.format(hiddenProduct.getChangeDate()));
 
                 row.put(productKeyAttribute, hiddenProduct.getProductKey().toString());
