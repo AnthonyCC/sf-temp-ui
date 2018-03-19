@@ -1119,6 +1119,7 @@ public final class AttributeLabels {
             put("SEARCH_RELEVANCY", "Search Relevancy");
             put("FAVS_FIRST", "Favs First");
             put("CUSTOMER_POPULARITY", "Customer Popularity");
+            put("STAFF_PICKS_OUR_FAVS", "Staff Picks");
         }});
 
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Banner, ContentTypes.Banner.location), "Location");
