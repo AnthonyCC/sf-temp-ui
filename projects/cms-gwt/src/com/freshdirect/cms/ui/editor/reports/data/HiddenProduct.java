@@ -41,6 +41,6 @@ public class HiddenProduct {
 
     @Override
     public String toString() {
-        return "{store:'"+storeKey.id+"'; product:'"+productKey.id+"'; primaryHome:'"+primaryHomeKey.id+"'; reason: '"+reason.name()+"'; at:'\"+changeDate.toString()+\"'}";
+        return "{store:'"+storeKey.id+"'; product:'"+productKey.id+"'; primaryHome:'"+primaryHomeKey.id+"'; reason: '"+reason.name()+"'}";
     }
 }
