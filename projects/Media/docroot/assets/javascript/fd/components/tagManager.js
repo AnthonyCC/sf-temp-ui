@@ -205,7 +205,8 @@ var dataLayer = window.dataLayer || [];
     coStep: function (coStepData) {
       var cosData = {
         checkout: {
-          actionField: coStepData
+          actionField: coStepData,
+          products: fd.gtm.getValue('ecommerce.checkout.products')
         }
       };
 
