@@ -14,10 +14,6 @@
 <%@ page import="com.freshdirect.webapp.ajax.product.data.*"%>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*"%>
 <%@ page import="com.freshdirect.webapp.util.*" %>
-<%@ page import="com.freshdirect.fdstore.FDStoreProperties" %>
-<%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
-<%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
-<%@ page import="com.freshdirect.webapp.util.JspMethods" %>
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@page import="java.net.*"%>
 <%@page import="java.util.*"%>
@@ -28,50 +24,74 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
+<%@ taglib uri='oscache' prefix='oscache' %>
 
 <%@ taglib uri="fd-data-potatoes" prefix="potato" %>
 <%@ taglib uri="unbxd" prefix='unbxd' %>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
 
 <fd:CheckLoginStatus id="user" guestAllowed='true' recognizedAllowed='true' />
-<%!MySaleItemsData mySaleItemsData;%>
 
 <%
 	//Sample URL : http://localhost:7001/test/product/fp.jsp?pageType=browse&id=fp&rbl=3&dbl=10&pbl=10000&cn=false&cbis=false
 	// https://dev1.nj01/test/product/fp.jsp?pageType=browse&id=fp&rbl=4&dbl=40&pbl=10000&cn=false&cbis=false
 	// http://localhost:7001/test/product/fp.jsp?pageType=browse&id=fp&rbl=4&dbl=40&pbl=10000&cn=false&cbis=false
 	//http://localhost:7001/test/product/fp.jsp?sp=true&mnp=5
+	double ratingBaseLine = 4;
+	double popularityBaseLine = 10000;
+	double dealsBaseLine = 20;
+	boolean considerNew = false;
+	boolean considerBackInStock = false;
+	boolean sortProducts = true;
+	int maxNoOfProducts = 50;
+	
+	String customerId = null;
 	try {
-		final CmsFilteringNavigator navigator = CmsFilteringNavigator.createInstance(request, user);
-		navigator.setPageTypeType(FilteringFlowType.BROWSE);
-		mySaleItemsData = CmsFilteringFlow.getInstance().getSaleItems(request, user, navigator, false);
-		pageContext.setAttribute("browsePotato", DataPotatoField.digBrowse(mySaleItemsData.getBrowsedata()));
+		if(request.getParameter("rbl") != null) {
+			ratingBaseLine = Double.parseDouble(request.getParameter("rbl"));
+		}
+		
+		if(request.getParameter("pbl") != null) {
+			popularityBaseLine = Double.parseDouble(request.getParameter("pbl"));
+		}
+		
+		if(request.getParameter("dbl") != null) {
+			dealsBaseLine = Double.parseDouble(request.getParameter("dbl"));
+		}
+		
+		if(request.getParameter("cn") != null) {
+			considerNew = Boolean.parseBoolean(request.getParameter("cn"));
+		}
+		
+		if(request.getParameter("cbis") != null) {
+			considerBackInStock = Boolean.parseBoolean(request.getParameter("cbis"));
+		}
+		
+		if(request.getParameter("sp") != null) {			
+			sortProducts = Boolean.parseBoolean(request.getParameter("sp"));
+			
+		}
+		
+		if(request.getParameter("mnp") != null) {			
+			maxNoOfProducts = Integer.parseInt(request.getParameter("mnp"));
+			
+		}
+		
+		final CmsFilteringNavigator nav = CmsFilteringNavigator.createInstance(request, user);
+		nav.setPageTypeType(FilteringFlowType.BROWSE);
+		BrowseData browseData = CmsFilteringFlow.getInstance().getWeLoveYouLoveData(user, nav, ratingBaseLine, dealsBaseLine, popularityBaseLine
+																						, considerNew, considerBackInStock, sortProducts, maxNoOfProducts) ;
+
+		pageContext.setAttribute("browsePotato", DataPotatoField.digBrowse(browseData));
 		
 	} catch (Exception e) {
 		throw e;
 		//User no found or invalid parameters
-	}
-	
-	String template = "/common/template/browse_template.jsp";
-	//not set, set a default
-	request.setAttribute("sitePage", "www.freshdirect.com/favorite.jsp");
-
-	boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
-	if (mobWeb) {
-		template = "/common/template/mobileWeb.jsp"; //mobWeb template
-		String oasSitePage = (request.getAttribute("sitePage") == null) ? "www.freshdirect.com" : request.getAttribute("sitePage").toString();
-		if (oasSitePage.startsWith("www.freshdirect.com/") && !oasSitePage.startsWith("www.freshdirect.com/mobileweb/")) {
-			request.setAttribute("sitePage", oasSitePage.replace("www.freshdirect.com/", "www.freshdirect.com/mobileweb/")); //change for OAS
-		}
-	}
+	}		
 %>
 
-<tmpl:insert template='<%=template %>'>
-    <tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag title="FreshDirect - My Sale Items" pageId="my_sale_items"></fd:SEOMetaTag>
-	</tmpl:put>
-   
+<tmpl:insert template='/common/template/browse_template.jsp'>
+  
    <tmpl:put name='soypackage' direct='true'>
     <soy:import packageName="browse" />
     <soy:import packageName="srch" />
@@ -91,7 +111,7 @@
       		<ul>
       			<% for (int ratingVal = 5; ratingVal > 0; ratingVal--) { %>
 	      			<li>
-	      				<label><input id="" type="radio" data-uriparam="rbl" name="expertrating-menu" value="<%= ratingVal %>" <%= (mySaleItemsData.getRatingBaseLine()==ratingVal) ? "checked=\"checked\"" : "" %>><span><span>
+	      				<label><input id="" type="radio" data-uriparam="rbl" name="expertrating-menu" value="<%= ratingVal %>" <%= (ratingBaseLine==ratingVal) ? "checked=\"checked\"" : "" %>><span><span>
 	      					<div class="rating"><b class="expertrating smallrating rating-<%= ratingVal*2 %>">Rating <%= ratingVal %> out of 5</b><%= (ratingVal < 5) ? " & Up" : "" %></div>
 						</span></span></label>
 	      			</li>
@@ -102,7 +122,7 @@
       		<ul>
       			<% for (int i = 80; i >= 10; i=i-10) { %>
 	      			<li>
-	      				<label><input id="" type="radio" data-uriparam="dbl" name="discount-menu" value="<%= i %>" <%= (mySaleItemsData.getDealsBaseLine()==i) ? "checked=\"checked\"" : "" %>><span><span>
+	      				<label><input id="" type="radio" data-uriparam="dbl" name="discount-menu" value="<%= i %>" <%= (dealsBaseLine==i) ? "checked=\"checked\"" : "" %>><span><span>
 	      					<%= i %>% off<%= (i < 100) ? " & Up" : "" %>
 						</span></span></label>
 	      			</li>
@@ -111,7 +131,7 @@
 
       		<ul>
       			<li>
-      				<label><input id="" type="checkbox" data-uriparam="cbis" name="cbis-menu" <%= (mySaleItemsData.isConsiderBackInStock()) ? "checked=\"checked\"" : "" %>><span><span>
+      				<label><input id="" type="checkbox" data-uriparam="cbis" name="cbis-menu" <%= (considerBackInStock) ? "checked=\"checked\"" : "" %>><span><span>
       					<strong>Back In Stock</strong>
 					</span></span></label>
       			</li>
@@ -134,9 +154,6 @@
     		var curVal = ($jq(this).attr('type') === 'checkbox') ? $jq(this).is(':checked') : $jq(this).val();
     		window.location = window.location.pathname + updateQueryStringParameter(window.location.search, $jq(this).attr('data-uriparam'), curVal);
     	});
-    	//add refine button
-    	$jq('.main').prepend('<div class="refine-btn-cont"><button class="cssbutton green transparent refine-btn">Refine <span class="offscreen">Results</span></button></div>');
-		$jq('.refine-btn').on('click', function(e) { $jq('.leftnav').toggle(); });
     </script>
   </tmpl:put>
 
@@ -151,6 +168,7 @@
 
 	      window.FreshDirect.browse.data = <fd:ToJSON object="${browsePotato}" noHeaders="true"/>
 	      window.FreshDirect.globalnav.data = <fd:ToJSON object="${globalnav}" noHeaders="true"/>
+	      window.FreshDirect.coremetricsData = window.FreshDirect.browse.data.coremetrics;
 	      window.FreshDirect.browse.data.searchParams = window.FreshDirect.browse.data.searchParams || {};
 
 	      window.FreshDirect.browse.data.sortOptions = window.FreshDirect.browse.data.sortOptions || {};
