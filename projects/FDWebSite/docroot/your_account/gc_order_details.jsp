@@ -147,14 +147,14 @@ FDRecipientList recipients = cart.getGiftCardRecipients();
         <td colspan="7"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
     </tr>
     <tr class="th">
-        <td width="85">Certificate #</td>
-        <td width="100">Date Purchased</td>
-        <td width="80">Gift Amount</td>
-        <td width="80">Card Type</td>
-        <td>Recipient</td>
-        <td width="70">Status</td>
-        <td width="60">&nbsp;</td>
-        <td width="60">&nbsp;</td>
+        <th width="85">Certificate #</th>
+        <th width="100">Date Purchased</th>
+        <th width="80">Gift Amount</th>
+        <th width="80">Card Type</th>
+        <th>Recipient</th>
+        <th width="70">Status</th>
+        <th width="60">&nbsp;</th>
+        <th width="60">&nbsp;</th>
     </tr>
     <%
                 DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy");

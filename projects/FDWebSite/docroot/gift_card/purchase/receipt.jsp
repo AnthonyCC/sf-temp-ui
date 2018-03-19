@@ -251,7 +251,8 @@ int indx = 1;
 
 <table class="recipTable">
 		<tr>
-			<td><div class="recipAmount">Amount</div></td>
+		    <th><div class="offscreen">Recipient list</div></th>
+			<th><div class="recipAmount">Amount</div></th>
 		</tr>
 			<%
 			Iterator<RecipientModel> i = recipients.getRecipients().listIterator();
@@ -259,16 +260,15 @@ int indx = 1;
 				ErpRecipentModel erm = (ErpRecipentModel)i.next();
 			%>
 		<tr>
-			<td>
+			 <td>
 				<div class="recipRow" id="<%=erm.getSale_id()%>Row">
 					<div class="recipNumber" id="<%=erm.getSale_id()%>Number"><%= indx %>.&nbsp;</div>
 					<div class="recipName" id="<%=erm.getSale_id()%>Name"><%= erm.getRecipientName()%></div>
-
-					<div class="recipAmount" id="<%=erm.getSale_id()%>Amount">$<%= erm.getFormattedAmount() %></div>
-
-
-				</div>
-			<td>
+               </div>
+            </td>
+			  <td>
+			     <div class="recipAmount" id="<%=erm.getSale_id()%>Amount"><b>$<%= erm.getFormattedAmount() %></b></div>
+			  </td>
 		</tr>
 			<%
 				indx++;

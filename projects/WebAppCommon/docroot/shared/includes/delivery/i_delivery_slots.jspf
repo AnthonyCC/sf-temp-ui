@@ -259,7 +259,7 @@ if (timeslots.size() > 0) {
 
 	stringBuffer.append("				<td class=\"ts_d\" valign=\"top\">\n")
 				.append("					<div id=\"ts_d"+dayIndex+"_hC\" class=\"tsHeaderC\" >\n")
-				.append("						<a href=\"#\" onclick=\"return false;\" class=\"accessibleOutlineFF\"  aria-label=\""+TimeslotPageUtil.formatDayNameExp(day)+". "+((user.getCurrentStandingOrder())!=null?"": TimeslotPageUtil.formatDeliveryDateNew(day) )+"  "+((timeslots.getTimeslotsForDate(day).size()==0)? "sorry! no delivery timeslots available" : " has "  +timeslots.getTimeslotsForDate(day).size()+  " timeslots ")+"  \"><table cellspacing=\"0\" cellpadding=\"0\" width=\"100%\">\n")
+				.append("						<a href=\"#\" onclick=\"return false;\" class=\"accessibleOutlineFF\"  aria-label=\""+TimeslotPageUtil.formatDayNameExp(day)+". "+((user.getCurrentStandingOrder())!=null?"": TimeslotPageUtil.formatDeliveryDateNew(day) )+"  "+((timeslots.getTimeslotsForDate(day).size()==0)? "sorry! no delivery timeslots available" : " has "  +timeslots.getTimeslotsForDate(day).size()+  " timeslots, Press ENTER key to view timeslots")+"  \"><table cellspacing=\"0\" cellpadding=\"0\" width=\"100%\">\n")
 				.append("							<tr>\n")
 				.append("								<td align=\"center\" colspan=\"3\">\n")
 				.append("									<div class=\"tsDayNameC\"><b>"+TimeslotPageUtil.formatDayName(day)+"</b></div>\n");

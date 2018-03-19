@@ -94,10 +94,10 @@ attribute name="modifyOrderAlert" required="true" rtexprvalue="true" type="java.
 										<% if (!(modifyOrderBarTagCart instanceof FDModifyCartModel)) { %>
 											<table width="100%" class="modify-order-alert-table">
 												<tr>
-													<td width="21%" class="modify-order-alert-table-header-status">Order Status</td>
-													<td width="22%" class="modify-order-alert-table-header-time">Delivery Time</td>
-													<td width="31%" class="modify-order-alert-table-header-name">Name</td>
-													<td width="26%" colspan="2"></td>
+													<th width="21%" class="modify-order-alert-table-header-status">Order Status</th>
+													<th width="22%" class="modify-order-alert-table-header-time">Delivery Time</th>
+													<th width="31%" class="modify-order-alert-table-header-name">Name</th>
+													<th width="26%" colspan="2"><span class="offscreen">details of order </span></th>
 												</tr>
 												<%
 													String orderName;

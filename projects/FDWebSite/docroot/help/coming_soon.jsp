@@ -12,7 +12,7 @@
 <tr>
 	<td width="1"><img src="/media_stat/images/layout/clear.gif" width="1" height="200" alt="" border="0"></td>
 	<td>
-		<img src="/media_stat/images/template/help/pg_coming_soon.gif" width="426" height="113" alt="" border="0">
+		<img src="/media_stat/images/template/help/pg_coming_soon.gif" width="426" height="113" alt="this page comming soon" border="0">
 	</td>
 </tr>
 		<tr><td></td>

@@ -188,11 +188,12 @@
   font-weight: 500;
 }
 
-.content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-header .header-title h1 {
+.content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-header .header-title h2.accessibleHeading {
   font-size: 25px;
   font-family: 'Brandon Text';
   font-weight: 500;
   text-transform: uppercase;
+  line-height:1;
 }
 
 #viewallPopup .content-module.editorial-module.product-carousel .editorial-content .left-side,

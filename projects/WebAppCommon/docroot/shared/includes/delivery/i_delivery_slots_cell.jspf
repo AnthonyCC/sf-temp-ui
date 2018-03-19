@@ -262,13 +262,13 @@ stringBuffer.append("<div id=\""+htmlSlotTsId+"_timeInfo\" style=\"display: none
 
 /* SLOT ICONS/TEXT */
 String htmlClearImageIcon = "<img src=\"/media_stat/images/layout/clear.gif\" alt=\"\" width=\"16\" height=\"16\" border=\"0\">";
-String htmlCheckmarkIcon = "<img src=\"/media_stat/images/timeslots/check_mark.gif\" alt=\"\" width=\"17\" height=\"13\" border=\"0\">";
+String htmlCheckmarkIcon = "<img src=\"/media_stat/images/timeslots/check_mark.gif\" alt=\"selected\" width=\"17\" height=\"13\" border=\"0\">";
 String htmlEcoFriendlyIcon = "<img class=\"tsEcoFriendlyImage\" src=\"/media_stat/images/timeslots/ecofriendly_leaf.gif\" alt=\"Eco-Friendly\" width=\"16\" height=\"16\" border=\"0\">";
 
 /* SLOT ICONS/TEXT - Alcohol always gets a spot */
 if ( isAlcoholRest ) {
 	stringBuffer.append(TABLEVEL+"			<div class=\"fleft tsAlcoholResPropE\" id=\""+htmlSlotTsId+"_msgARE\">")
-				.append(TABLEVEL+"<img class=\"tsAlcoholImage\" src=\"/media_stat/images/timeslots/no_alcohol.gif\" width=\"16\" height=\"16\" border=\"0\">")
+				.append(TABLEVEL+"<img class=\"tsAlcoholImage\" src=\"/media_stat/images/timeslots/no_alcohol.gif\" alt=\"alcohol restricted\" width=\"16\" height=\"16\" border=\"0\">")
 				.append(TABLEVEL+"</div>\n");
 } else {
 	stringBuffer.append(TABLEVEL+"			<div class=\"fleft tsAlcoholResPropE\" id=\""+htmlSlotTsId+"_msgARE\">")
@@ -298,7 +298,7 @@ if (isUnavailable) {
 					.append("</div>\n")
 				.append(TABLEVEL+"			</div>")
 				.append(TABLEVEL+"			<div class=\"tsMinOrderPropC\" id=\""+htmlSlotTsId+"_msgC\">\n")
-				.append("<img src=\"/media_stat/images/timeslots/diamond_icon.png\" width=\"16\" height=\"15\" border=\"0\">")
+				.append("<img src=\"/media_stat/images/timeslots/diamond_icon.png\" alt=\"minimum order required\" width=\"16\" height=\"15\" border=\"0\">")
 				.append(TABLEVEL+"			</div>");
 } else if( isMinOrderMet ) {
 	stringBuffer.append(TABLEVEL+"			<div class=\"tsMinOrderPropE\" id=\""+htmlSlotTsId+"_msgE\">")
@@ -308,7 +308,7 @@ if (isUnavailable) {
 					.append("</div>\n")
 				.append(TABLEVEL+"			</div>")
 				.append(TABLEVEL+"			<div class=\"tsMinOrderPropC\" id=\""+htmlSlotTsId+"_msgC\">\n")
-				.append("<img src=\"/media_stat/images/timeslots/diamond_icon.png\" width=\"16\" height=\"15\" border=\"0\">")
+				.append("<img src=\"/media_stat/images/timeslots/diamond_icon.png\" alt=\"minimum order required\"  width=\"16\" height=\"15\" border=\"0\">")
 				.append(TABLEVEL+"			</div>");
 } else if (isSelectedSlotId) {
 	stringBuffer.append(TABLEVEL+"			<div class=\"tsSelectedSlotPropE\" id=\""+htmlSlotTsId+"_msgE\">\n")
@@ -377,12 +377,12 @@ if (isUnavailable) {
 } else if (isChefsTable) { 
 	stringBuffer.append(TABLEVEL+"			<div class=\"tsChefstablePropE\" id=\""+htmlSlotTsId+"_msgE\">\n")
 				.append(TABLEVEL+"				<div>")
-						.append("<img src=\"/media_stat/images/timeslots/purple_star.gif\" width=\"16\" height=\"15\" border=\"0\">")
+						.append("<img src=\"/media_stat/images/timeslots/purple_star.gif\" alt=\"chefs table customer\" width=\"16\" height=\"15\" border=\"0\">")
 						.append("<div><font class=\"tsChefstableE\">&nbsp;CHEF'S&nbsp;TABLE</font></div>")
 					.append("</div>\n")
 				.append(TABLEVEL+"			</div>\n")
 				.append(TABLEVEL+"			<div class=\"tsChefstablePropC\" id=\""+htmlSlotTsId+"_msgC\">")
-					.append("<img src=\"/media_stat/images/timeslots/purple_star.gif\" width=\"16\" height=\"15\" border=\"0\">")
+					.append("<img src=\"/media_stat/images/timeslots/purple_star.gif\" alt=\"chefs table customer\" width=\"16\" height=\"15\" border=\"0\">")
 				.append("</div>\n");
 } else if (isEcoFriendly){
 	stringBuffer.append(TABLEVEL+"			<div class=\"tsEcoFriendlyPropE\" id=\""+htmlSlotTsId+"_msgE\">\n")
@@ -397,12 +397,12 @@ if (isUnavailable) {
 } else if (isEcoFriendlyDepot){
 	stringBuffer.append(TABLEVEL+"			<div class=\"tsNeighbourhoodPropE\" id=\""+htmlSlotTsId+"_msgE\">\n")
 				.append(TABLEVEL+"				<div>")
-						.append("<img src=\"/media_stat/images/timeslots/neighbourhood_favs.gif\" width=\"15\" height=\"20\" border=\"0\">")
+						.append("<img src=\"/media_stat/images/timeslots/neighbourhood_favs.gif\" alt=\"neighbourhood favourite\" width=\"15\" height=\"20\" border=\"0\">")
 						.append("<div class=\"tsNeighbourhoodE\">Delivery&nbsp;Helper</font></div>")
 					.append("</div>\n")
 				.append(TABLEVEL+"			</div>\n")
 				.append(TABLEVEL+"			<div class=\"tsNeighbourhoodPropC\" id=\""+htmlSlotTsId+"_msgC\">")
-					.append("<img src=\"/media_stat/images/timeslots/neighbourhood_favs.gif\" width=\"15\" height=\"20\" border=\"0\">")
+					.append("<img src=\"/media_stat/images/timeslots/neighbourhood_favs.gif\" alt=\"neighbourhood favourite\" width=\"15\" height=\"20\" border=\"0\">")
 				.append("</div>");
 } else if (isForceSlot) { 
 	stringBuffer.append("<div class=\"tsForceC\" id=\""+htmlSlotTsId+"_forceX\"><b>F</b></div>\n");

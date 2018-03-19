@@ -48,7 +48,7 @@ final int W_CHECKOUT_STEP_4_RECEIPT_TOTAL = 970;
     </TD>
 </TR>
 <TR VALIGN="BOTTOM">
-  <TD WIDTH="<%=W_CHECKOUT_STEP_4_RECEIPT_TOTAL-200%>"><A HREF="/index.jsp"><img src="/media_stat/images/logos/fd_logo_md.gif" width="216" height="42" border="0" alt="FreshDirect"></A></TD>
+  <TD WIDTH="<%=W_CHECKOUT_STEP_4_RECEIPT_TOTAL-200%>"><A HREF="/index.jsp"><img src="/media_stat/images/logos/fd_logo_md.gif" width="216" height="42" border="0" alt=" redirect to FreshDirect homepage"></A></TD>
   <TD WIDTH="200" ALIGN="right">    
         <A HREF="javascript:window.print();" onMouseOver="swapImage('print','/media/images/navigation/global_nav/print_page_01.gif')" onMouseOut="swapImage('print','/media/images/navigation/global_nav/print_page.gif')"><img name="print" src="/media_stat/images/navigation/global_nav/print_page.gif" width="54" height="26" border="0" alt="PRINT PAGE"></A>
   </TD>
