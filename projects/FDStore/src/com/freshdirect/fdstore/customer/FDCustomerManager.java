@@ -3261,6 +3261,23 @@ public class FDCustomerManager {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
+	
+	
+	public static FDOrderI getLastNonCOSOrder(String customerID, EnumSaleType saleType) throws FDResourceException,ErpSaleNotFoundException {
+		lookupManagerHome();
+		FDCustomerManagerSB sb=null;
+		try {
+			sb = managerHome.create();
+			FDOrderI order = sb.getLastNonCOSOrder( customerID, saleType );
+			return order;
+		} catch ( CreateException ce ) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
 
 	public static String placeSubscriptionOrder( FDActionInfo info,
 			 									 FDCartModel cart,
