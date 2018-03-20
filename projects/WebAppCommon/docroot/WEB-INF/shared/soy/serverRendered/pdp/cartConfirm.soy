@@ -27,8 +27,8 @@
 			{/call}
 
 			<p class="cc-product-actions">
-				<a class="cssbutton blue" href="{$editUrl}">edit item</a>
-				<button class="cssbutton purple addtolist" data-component="addToListButton">add to list</button>
+				<a class="cssbutton orange transparent" href="{$editUrl}">Edit Item</a>
+				<a class="addtolist" data-component="addToListButton" href="#" >Add to List</a>
 			</p>
 			{call common.productData}
 				{param productId:$cartLine.productId /}
@@ -54,6 +54,7 @@
  * @param cartConfirmPotatoes list of cart confirm potatoes
  * @param backUrl continue shopping url
  * @param subTotal sum of prices in cart
+ * @param isModifyingOrder
  */
 {template .cartConfirmIterator}
   {if $cartConfirmPotatoes and length($cartConfirmPotatoes)}
@@ -71,8 +72,8 @@
       {/foreach}
 
       <p class="cc-actions">
-        <a class="cssbutton large green" href="{$backUrl}">continue shopping</a>
-        <a class="cssbutton large orange" href="/checkout/view_cart.jsp">checkout</a>
+        <a class="cssbutton large green" href="{$backUrl}">Continue Shopping</a>
+        <a class="cssbutton large orange" href="/checkout/view_cart.jsp">{$isModifyingOrder? 'Review Changes' : 'Checkout'}</a>
       </p>
 
       <div class="cc-total">
