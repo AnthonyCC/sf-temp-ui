@@ -239,6 +239,8 @@ public class EwalletPostBackModel implements Serializable {
 	public String getTransactionStatus() {
 		return transactionStatus[status];
 	}
+	
+
 	/**
 	 * @param transactionStatus the transactionStatus to set
 	 */
@@ -304,6 +306,12 @@ public class EwalletPostBackModel implements Serializable {
 	 */
 	public void setExtension(Object extension) {
 		this.extension = extension;
+	}
+	
+	
+	//Introduced for Storefront 2.0
+	public void setTransactionStatus(String[] transactionStatus) {
+		this.transactionStatus = transactionStatus;
 	}
 	
 	@Override
