@@ -35,6 +35,7 @@ import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.EnumCheckoutMode;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
@@ -71,6 +72,7 @@ import com.freshdirect.giftcard.ErpRecipentModel;
 import com.freshdirect.giftcard.RecipientModel;
 import com.freshdirect.giftcard.ServiceUnavailableException;
 import com.freshdirect.payment.BINCache;
+import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.webapp.action.WebActionSupport;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.coremetrics.CmShop9Tag;
@@ -577,8 +579,10 @@ public class SubmitOrderAction extends WebActionSupport {
 			CustomerRatingAdaptor cra = new CustomerRatingAdaptor(user.getFDCustomer().getProfile(),user.isCorporateUser(),user.getAdjustedValidOrderCount());
 		   
 			boolean isFriendReferred=false;
-			if(FDStoreProperties.isExtoleRafEnabled() && user.getRafClickId()!=null  && user.getOrderHistory().getSettledOrderCount()<1 
-					&&user.getRafPromoCode()!=null && !user.isReferralPromotionFraud()){
+			EnumEStoreId eStore = user.getUserContext() != null && user.getUserContext().getStoreContext() != null ? user.getUserContext().getStoreContext().getEStoreId()
+                    : EnumEStoreId.FD;
+			if(FDStoreProperties.isExtoleRafEnabled() && user.getRafClickId()!=null  && user.getOrderHistory()!=null && !user.getOrderHistory().hasSettledOrders(eStore) 
+					&& user.getRafPromoCode()!=null && !user.isReferralPromotionFraud()){
 				isFriendReferred=true;
 			}
 			
