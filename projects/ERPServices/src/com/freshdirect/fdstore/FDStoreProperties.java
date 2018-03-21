@@ -854,15 +854,6 @@ public class FDStoreProperties {
     public final static String PROP_FD_BRAND_PRODUCTS_AD_HOME = "freshdirect.fdstore.fdBrandProductsAdManager";
     public final static String PROP_HL_PRODUCTS_COUNT = "fdstore.hlproductscount";
 
-    /**
-     * URL to the CMS Admin REST interface
-     */
-    private static final String PROP_CMS_ADMIN_REST_URL = "cms.adminapp.path";
-    /**
-     * URL to the CMS Admin UI
-     */
-    private static final String PROP_CMS_ADMIN_UI_URL = "cms.adminapp.ui.url";
-
     // [APPDEV-4650]
     public static final String PROP_ENABLE_XC_FOR_CRM_AGENTS = "crm.xc.enabled";
 
@@ -4456,14 +4447,6 @@ public class FDStoreProperties {
 
     public static String getFdxAppUrl_Apple() {
         return get(PROP_FDX_APP_APPLE_URL);
-    }
-
-    public static String getCMSAdminServiceURL() {
-        return get(PROP_CMS_ADMIN_REST_URL);
-    }
-
-    public static String getCMSAdminUiURL() {
-        return get(PROP_CMS_ADMIN_UI_URL);
     }
 
     public static boolean isETippingEnabled() {
