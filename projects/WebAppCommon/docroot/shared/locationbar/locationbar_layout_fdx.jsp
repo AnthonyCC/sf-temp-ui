@@ -44,6 +44,7 @@
 						data-alignpopupfunction="modifyOrderAlign" 
 						data-confirm-data="{&quot;buttons&quot;:[{&quot;id&quot;:&quot;accept&quot;,&quot;class&quot;:&quot;large cssbutton orange&quot;,&quot;name&quot;:&quot;Cancel Changes&quot;},{&quot;id&quot;:&quot;deny&quot;,&quot;class&quot;:&quot;large cssbutton green transparent&quot;,&quot;name&quot;:&quot;Nevermind&quot;}]}" 
 						data-confirm-button-accept="FreshDirect.components.modifyOrderMessage.cancelChanges" 
+						data-confirm-button-deny="FreshDirect.components.modifyOrderMessage.keepModifyMode"
 						data-confirm-class="cancel-modify-confirm-popup" 
 						data-hide-background="true" 
 						data-confirm

@@ -28,6 +28,7 @@ var FreshDirect = FreshDirect || {};
 			'data-alignpopupfunction="modifyOrderAlign" '+
 			'data-confirm-data=\''+ JSON.stringify(popupConfig)+'\' '+
 			'data-confirm-button-accept="FreshDirect.components.modifyOrderMessage.cancelChanges" '+
+			'data-confirm-button-deny="FreshDirect.components.modifyOrderMessage.keepModifyMode" '+
 			'data-confirm-class="cancel-modify-confirm-popup" '+
 			'data-hide-background="true" '+
 			'data-confirm data-confirm-message="Are you sure you want to <br> cancel all changes?" data-confirm-template="common.confirmpopup" class="">Cancel Changes</a></span></div>'+
@@ -47,10 +48,18 @@ var FreshDirect = FreshDirect || {};
 		});
 	}
 	
-	function cancelChanges() {
-		if (fd.gtm) {
+	function keepModifyMode() {
+		if (fd.gtm && fd.gtm.updateDataLayer) {
 			fd.gtm.updateDataLayer({
-			  cancelModifyOrder: 'banner'
+				  keepModifyOrder: null
+			  });
+		}
+	}
+	
+	function cancelChanges() {
+		if (fd.gtm && fd.gtm.updateDataLayer) {
+			fd.gtm.updateDataLayer({
+			  cancelModifyOrder: 'banner modal'
 		  });
 		}
 		document.location.href = "/your_account/cancel_modify_order.jsp";
@@ -78,6 +87,7 @@ var FreshDirect = FreshDirect || {};
 			init : init,
 			stickyMessage: stickyMessage,
 			cancelChanges: cancelChanges,
+			keepModifyMode: keepModifyMode,
 			initAlignFunction: initAlignFunction
 		};
 		
