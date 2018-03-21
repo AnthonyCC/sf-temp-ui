@@ -90,6 +90,7 @@ public class FDEcommProperties {
 	public static final String CallCenterManagerSB = "com.freshdirect.fdstore.customer.CallCenterManagerSB"; 
 	public static final String PaymentSB = "com.freshdirect.payment.PaymentSB";
  
+	public static final String ProductFeedSB = "com.freshdirect.fdstore.content.productfeed.ProductFeedSB";
 	public static final String TEmailInfoSB = "com.freshdirect.fdstore.temails";
 	public static final String ProfileCreatorSB = "com.freshdirect.dataloader.payment.ProfileCreatorSB";
 	public static final String FDStandingOrderSB = "com.freshdirect.fdstore.standingorders.FDStandingOrdersSB"; 
@@ -109,6 +110,7 @@ public class FDEcommProperties {
     static {
 
         defaults.put(FDMonitorSB,FALSE);
+        defaults.put(ProductFeedSB,FALSE);
         defaults.put(SaleCronSB,FALSE);
         defaults.put(GatewayActivityLog,FALSE);
         defaults.put(ErpCOOLManagerSB ,FALSE);
@@ -313,5 +315,6 @@ public class FDEcommProperties {
 	            return 60;
 	        }
 	    }
+	  
 	
 }
