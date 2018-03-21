@@ -1,9 +1,7 @@
 package com.freshdirect.webapp.ajax.product;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
@@ -46,29 +44,21 @@ public class CriteoProductsUtil
 			FDSessionUser sessionUser = (FDSessionUser) user;
 			SearchResultsUtil.setPlatFormValues(user, hLBrandProductAdRequest, sessionUser.isMobilePlatForm(),
 					sessionUser.getPlatForm(), sessionUser.getLat(), sessionUser.getPdUserId());
-			Map<String, List<HLBrandProductAdInfo>> cretioProductsCacheList=new HashMap<String, List<HLBrandProductAdInfo>> ();
+			List<HLBrandProductAdInfo> cretioProductsCacheList=new ArrayList<HLBrandProductAdInfo> ();
 			//cache Criteo products
-			cretioProductsCacheList.putAll(CriteoProductsHomePageCache.getInstance().getProducts());
-			List<HLBrandProductAdInfo> hlBrandAdProductsMeta=new ArrayList<HLBrandProductAdInfo>();
-			//getting Keys from property file
-			List<String> keys = getFDSearchPriorityKeyWords();
-			//setting HasMap to List here 
-			for(String key: keys){
-				if (null != cretioProductsCacheList.get(key) && !cretioProductsCacheList.get(key).isEmpty()) {
-					hlBrandAdProductsMeta.addAll(cretioProductsCacheList.get(key));
-				}
-			}
-			productsCount = hlBrandAdProductsMeta.size();
-			if (hlBrandAdProductsMeta != null){
-				addHlBrandProducts(user, adPrducts, updatedPageBeacon, hlBrandAdProductsMeta,false);
+			cretioProductsCacheList.addAll(CriteoProductsHomePageCache.getInstance().getProducts());
+		
+			productsCount = cretioProductsCacheList.size();
+			if (cretioProductsCacheList != null){
+				addHlBrandProducts(user, adPrducts, updatedPageBeacon, cretioProductsCacheList,false);
 			}
 			moduleData.setAdProducts(adPrducts);
 			if (productsCount == adPrducts.size()) {
-				moduleData.setAdHomePageBeacon(cretioProductsCacheList.get(keys.get(0)).get(0).getPageBeacon()	+ A_SHOWN_ALL);
+				moduleData.setAdHomePageBeacon(cretioProductsCacheList.get(0).getPageBeacon()	+ A_SHOWN_ALL);
 			} else if (productsCount > 0 && adPrducts.size() == 0) {
-				moduleData.setAdHomePageBeacon(cretioProductsCacheList.get(keys.get(0)).get(0).getPageBeacon()	+ A_SHOWN_NONE);
+				moduleData.setAdHomePageBeacon(cretioProductsCacheList.get(0).getPageBeacon()	+ A_SHOWN_NONE);
 			} else {
-				moduleData.setAdHomePageBeacon(cretioProductsCacheList.get(keys.get(0)).get(0).getPageBeacon()	+ updatedPageBeacon.toString());
+				moduleData.setAdHomePageBeacon(cretioProductsCacheList.get(0).getPageBeacon() + updatedPageBeacon.toString());
 			}
 		} catch (Exception e) {
 			LOG.warn("Exception while populating Criteo returned product: ", e);
