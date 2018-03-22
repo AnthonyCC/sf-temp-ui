@@ -1020,6 +1020,13 @@ public class FDStoreProperties {
 	private static final String FD_PRIORITY_SEARCH_KEYS = "fdstore.criteo.fdpriorityhomepagecriteo";
 	
 	private static final String FD_HOME_CRITEO_MAX_DISPLAY = "fdstore.criteo.fdhomecriteomaxdisplay";
+	
+	/*
+	 * Appdev 6760 allowing new products materializied views to be tuned to number of days requires a v2 version to be called 
+	 */
+	
+	public final static String FDSTORE_DB_NEW_PRODUCTS_MATERIALIZEDVIEW_V2_ENABLED = "fdstore.db.new.products.materializedview.v2.enabled";
+	
 
  	static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -1959,6 +1966,14 @@ public class FDStoreProperties {
 		
 		defaults.put(FD_PRIORITY_SEARCH_KEYS, "BUTTER,EGG,MILK,YOGURT");
 		defaults.put(FD_HOME_CRITEO_MAX_DISPLAY, "12");
+		
+		/*
+		 * Appdev 6760 allowing new products materializied views to be tuned to number of days requires a v2 version to be called 
+		 */
+		
+		defaults.put(FDSTORE_DB_NEW_PRODUCTS_MATERIALIZEDVIEW_V2_ENABLED, "false");
+		
+
 		
         refresh();
     }
@@ -4986,4 +5001,10 @@ public class FDStoreProperties {
 	public static int getFDHomeCriteoMaxDisplayProducts() {
 		return Integer.parseInt(get(FD_HOME_CRITEO_MAX_DISPLAY));
 	}
+	
+	//appdev 6760 new mat view tunable via sub table.
+	public static boolean isNewProdMatViewV2Enabled() {
+		return (Boolean.valueOf(get(FDSTORE_DB_NEW_PRODUCTS_MATERIALIZEDVIEW_V2_ENABLED))).booleanValue();
+	}
+	
 }
