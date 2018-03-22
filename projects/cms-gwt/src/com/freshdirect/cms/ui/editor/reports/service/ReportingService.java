@@ -1,14 +1,19 @@
 package com.freshdirect.cms.ui.editor.reports.service;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -18,14 +23,21 @@ import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.cms.core.domain.RootContentKey;
+import com.freshdirect.cms.core.domain.builder.AttributeBuilder;
 import com.freshdirect.cms.ui.editor.ReportAttributes;
+import com.freshdirect.cms.ui.editor.reports.data.HiddenProduct;
+import com.freshdirect.cms.ui.editor.reports.data.HiddenProductByChange;
+import com.freshdirect.cms.ui.editor.reports.data.HiddenProductReason;
 import com.freshdirect.cms.ui.editor.reports.repository.ReportsRepository;
+import com.freshdirect.cms.ui.model.attributes.TableAttribute.ColumnType;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.FluentIterable;
 
 @Service
 public class ReportingService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReportingService.class);
 
     // direct subfolders of CMSReports
     public static final ContentKey CMS_REPORTS_FOLDER_KEY = ContentKeyFactory.get(ContentType.FDFolder, "flex_1009");
@@ -51,7 +63,7 @@ public class ReportingService {
     // secondary label reports folders
     public static final List<ContentKey> CMS_REPORT_NODE_KEYS = FluentIterable
             .from(Arrays.asList("circularReferences", "hierarchyReport", "invisibleProducts", "multipleReferences", "primaryHomes", "multiHome", "recentChanges",
-                    "recipesSummary", "stackedSkus", "brokenMediaLinks"))
+                    "recipesSummary", "stackedSkus", "brokenMediaLinks", "hiddenProducts", "recentHiddenProducts"))
             .transform(MAKE_REPORT_KEY)
             .toList();
 
@@ -79,6 +91,9 @@ public class ReportingService {
 
     @Autowired
     private ReportsRepository repository;
+
+    @Autowired
+    private HiddenProductsService hiddenProductsService;
 
     public List<ContentKey> reportNodesOfFolder(ContentKey reportFolder) {
 
@@ -113,6 +128,8 @@ public class ReportingService {
         LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "recipesSummary"), "Recipes summary");
         LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "stackedSkus"), "Stacked Skus");
         LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "brokenMediaLinks"), "Broken Media Links");
+        LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "hiddenProducts"), "Hidden Products");
+        LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "recentHiddenProducts"), "Recent Hidden Products");
 
         LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "scarabRules"), "Scarab merchandising rules");
         LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "smartCatRecs"), "Smart categories");
@@ -290,10 +307,91 @@ public class ReportingService {
             values.put(ReportAttributes.CmsReport.name, "Broken Media Links");
             values.put(ReportAttributes.CmsReport.description, "Shows the nodes and fields where an invalid media is linked");
             values.put(ReportAttributes.CmsReport.results, result);
+        } else if ("hiddenProducts".equals(contentKey.id)) {
+            List<Map<Attribute, Object>> result = fetchHiddenProducts();
+
+            values.put(ReportAttributes.CmsReport.name, "Hidden Products");
+            values.put(ReportAttributes.CmsReport.description, "List of products hidden on storefront");
+            values.put(ReportAttributes.CmsReport.results, result);
+        } else if ("recentHiddenProducts".equals(contentKey.id)) {
+            List<Map<Attribute, Object>> result = fetchRecentlyHiddenProducts();
+
+            values.put(ReportAttributes.CmsReport.name, "Recent Hidden Products");
+            values.put(ReportAttributes.CmsReport.description, "List of products got hidden in the last week");
+            values.put(ReportAttributes.CmsReport.results, result);
         } else {
             values.put(ReportAttributes.CmsReport.name, "Unknown report " + contentKey.id);
             values.put(ReportAttributes.CmsReport.description, "");
             values.put(ReportAttributes.CmsReport.results, Collections.emptyList());
         }
+    }
+
+    private List<Map<Attribute, Object>> fetchHiddenProducts() {
+        List<Map<Attribute, Object>> reportPayload = new ArrayList<Map<Attribute,Object>>();
+
+        Attribute storeKeyAttribute = AttributeBuilder.attribute().name(ColumnType.KEY.name() + "|" + "STORE_ID").type(String.class).build();
+        Attribute productKeyAttribute = AttributeBuilder.attribute().name(ColumnType.KEY.name() + "|" + "PRODUCT_ID").type(String.class).build();
+        Attribute primaryHomeAttribute = AttributeBuilder.attribute().name(ColumnType.KEY.name() + "|" + "PRIMARY_HOME").type(String.class).build();
+        Attribute reasonAttribute = AttributeBuilder.attribute().name(ColumnType.NORMAL.name() + "|" + "REASON").type(String.class).build();
+
+        List<HiddenProduct> hiddenProducts = hiddenProductsService.queryHiddenProducts();
+
+        int archivedProducts = 0;
+        for (HiddenProduct hiddenProduct : hiddenProducts) {
+            Map<Attribute, Object> row = new LinkedHashMap<Attribute, Object>();
+
+            if (HiddenProductReason.ARCHIVED != hiddenProduct.getReason()) {
+                row.put(storeKeyAttribute, hiddenProduct.getStoreKey().toString());
+                row.put(productKeyAttribute, hiddenProduct.getProductKey().toString());
+                row.put(primaryHomeAttribute, hiddenProduct.getPrimaryHomeKey().toString());
+                row.put(reasonAttribute, hiddenProduct.getReason().getDescription());
+
+                reportPayload.add(row);
+            } else {
+                archivedProducts++;
+            }
+        }
+
+        LOGGER.debug("Skipped " + archivedProducts + " archived products from the report");
+
+        return reportPayload;
+    }
+
+    private List<Map<Attribute, Object>> fetchRecentlyHiddenProducts() {
+        final DateFormat formatter = new SimpleDateFormat("EEE, MMM d, hh:mm a");
+
+        List<Map<Attribute, Object>> reportPayload = new ArrayList<Map<Attribute,Object>>();
+
+        Attribute changedByAttribute = AttributeBuilder.attribute().name(ColumnType.NORMAL.name() + "|" + "AUTHOR").type(String.class).build();
+        Attribute changeDateAttribute = AttributeBuilder.attribute().name(ColumnType.NORMAL.name() + "|" + "TIME").type(String.class).build();
+        Attribute productKeyAttribute = AttributeBuilder.attribute().name(ColumnType.KEY.name() + "|" + "PRODUCT_ID").type(String.class).build();
+        Attribute primaryHomeAttribute = AttributeBuilder.attribute().name(ColumnType.KEY.name() + "|" + "NEW_HOME").type(String.class).build();
+        Attribute reasonAttribute = AttributeBuilder.attribute().name(ColumnType.NORMAL.name() + "|" + "REASON").type(String.class).build();
+        Attribute changeNoteAttribute = AttributeBuilder.attribute().name(ColumnType.NORMAL.name() + "|" + "NOTE").type(String.class).build();
+
+        List<HiddenProductByChange> hiddenProducts = hiddenProductsService.queryHiddenProductsInChanges();
+
+        int archivedProducts = 0;
+        for (HiddenProductByChange hiddenProduct : hiddenProducts) {
+            Map<Attribute, Object> row = new LinkedHashMap<Attribute, Object>();
+
+            if (HiddenProductReason.ARCHIVED != hiddenProduct.getReason()) {
+                row.put(changedByAttribute, hiddenProduct.getChangedBy());
+                row.put(changeDateAttribute, formatter.format(hiddenProduct.getChangeDate()));
+
+                row.put(productKeyAttribute, hiddenProduct.getProductKey().toString());
+                row.put(primaryHomeAttribute, hiddenProduct.getPrimaryHomeKey().toString());
+                row.put(reasonAttribute, hiddenProduct.getReason().getDescription());
+                row.put(changeNoteAttribute, hiddenProduct.getChangeNote());
+
+                reportPayload.add(row);
+            } else {
+                archivedProducts++;
+            }
+        }
+
+        LOGGER.debug("Skipped " + archivedProducts + " archived products from the report");
+
+        return reportPayload;
     }
 }

@@ -259,12 +259,14 @@
     	<c:when test="${browsePotato.searchParams.pageType == 'PRES_PICKS'}">
     		<div class="srch-carousel pres-picks-carousel">
     			<script>
-
-				if ($jq('.pres-picks-carousel').length > 0) {
-					$jq.ajax('/carousel/carousel.jsp?type=pres-picks').then(function(page) {
-						$jq('.pres-picks-carousel').html(page);
+					$jq(document).ready(function() {
+						if ($jq('.pres-picks-carousel').length > 0) {
+							$jq.ajax('/api/carousel?type=pres-picks').then(function(data) {
+								$jq('.pres-picks-carousel').html(srch.carouselWrapper(data));
+							});
+						}
 					});
-				}
+	          		
 				</script>
     		</div>
     	</c:when>

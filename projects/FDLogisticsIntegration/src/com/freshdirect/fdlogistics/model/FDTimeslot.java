@@ -171,7 +171,7 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 		StringBuffer sb = new StringBuffer();
 
 		formatCal(startCal, true, sb);
-		sb.append("-");
+		sb.append(" - ");
 		formatCal(endCal, true, sb);
 
 		return sb.toString();
@@ -194,9 +194,9 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 		}
 		if (showAmPm) {
 			if (marker == Calendar.AM) {
-				sb.append("am");
+				sb.append(" am");
 			} else {
-				sb.append("pm");
+				sb.append(" pm");
 			}
 		}
 	}

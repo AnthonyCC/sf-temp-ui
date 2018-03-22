@@ -1933,7 +1933,7 @@ public final class ContentTypes {
         public static final Attribute strategy = stringEnum("strategy")
             .withValues("CUSTOMER_RATING", "EXPERT_RATING", "NAME", "POPULARITY", "PRICE", "SALE", "SUSTAINABILITY_RATING", "DEPARTMENT", "E_COUPON_DOLLAR_DISCOUNT",
                         "E_COUPON_EXPIRATION_DATE", "E_COUPON_PERCENT_DISCOUNT", "E_COUPON_POPULARITY", "E_COUPON_START_DATE", "RECENCY", "SEARCH_RELEVANCY", "FAVS_FIRST",
-                        "CUSTOMER_POPULARITY")
+                        "CUSTOMER_POPULARITY","STAFF_PICKS_OUR_FAVS")
             .required()
             .build();
     }

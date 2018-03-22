@@ -51,11 +51,13 @@
 {/if}
 {if $sections and $sections[0] and $sections[0].products and $sections[0].products[0].productId}
 <script>
-
-if ($jq('#searchPanel .srch-carousel').length > 0)
-$jq.ajax('/carousel/carousel.jsp?type=search&productId={$sections[0].products[0].productId}').then(function(page) {literal} {
-	$jq('#searchPanel .srch-carousel').html(page);
-}{/literal});
+$jq(document).ready(function() {literal}{{/literal}
+	if ($jq('#searchPanel .srch-carousel').length > 0)
+		$jq.ajax('/api/carousel?type=search&productId={$sections[0].products[0].productId}').then(function(data) {literal}{
+			$jq('#searchPanel .srch-carousel').html(srch.carousel(data));
+		}
+});
+{/literal});
 </script>
 {/if}
 {/template}

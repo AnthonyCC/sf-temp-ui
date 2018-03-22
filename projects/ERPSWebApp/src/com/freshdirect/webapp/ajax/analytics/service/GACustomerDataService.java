@@ -36,6 +36,7 @@ public class GACustomerDataService {
 	        customer.setDeliveryPassStatus(user.getDlvPassInfo() != null && user.getDlvPassInfo().getStatus() != null ? user.getDlvPassInfo().getStatus().getDisplayName() : null);
 	        customer.setCustomerId(user.getIdentity() != null ? user.getIdentity().getErpCustomerPK() : null);
 	        customer.setModifyMode((user.getShoppingCart() instanceof FDModifyCartModel));
+	        customer.setHasActiveSO3s((user.getActiveSO3s().size()>0)?"T":"F");
 	        
 	        String paymentType = "";
 	        if(null != user.getIdentity()){

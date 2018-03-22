@@ -2,6 +2,7 @@
 <%@ page import="com.freshdirect.webapp.taglib.location.LocationHandlerTag"%>
 <%@ page import='com.freshdirect.common.address.AddressModel' %>
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
+<%@ page import="com.freshdirect.fdstore.customer.FDUserUtil" %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties'%>
 <%@page import="com.freshdirect.webapp.ajax.quickshop.QuickShopHelper"%>
 <%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
@@ -13,6 +14,7 @@
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
 <%@ taglib uri="/WEB-INF/shared/tld/components.tld" prefix='comp' %>
 <%@ taglib uri='logic' prefix='logic' %>
+<%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
 <%
 	/* ================================================================================
 	 *	THIS IS A WIP VERSION FOR OPTIMIZATION TESTS
@@ -32,7 +34,8 @@
 	boolean isReorderOrders = (mobweb_uri.indexOf("/qs_past_orders.jsp") != -1) ? true : false;
 	boolean isCheckout = (mobweb_uri.indexOf("/expressco/") != -1) ? true : false;
 	boolean isHelp = (mobweb_uri.indexOf("/help/") != -1) ? true : false;
-
+	boolean isModifyOrder = FDUserUtil.getModifyingOrder(user) != null;
+	
 	Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
 	boolean useFdxGlobalNav = FDStoreProperties.isFdxLocationbarEnabled();
 
@@ -41,6 +44,9 @@
 %>
 <html lang="en-US" xml:lang="en-US">
   <head>
+  <% if (isModifyOrder) { %>
+  		<jwr:style src="/global.css" media="all" />
+  <% } %>
 <%--   	<title><tmpl:get name="title"/></title> --%>
   	
 	<style>
@@ -4110,7 +4116,9 @@ div#mobilehomeMainDiv a {
 
     <tmpl:get name="extraCss" />
     <tmpl:get name='nutritionCss'/>
-
+	<% if (isModifyOrder) { %>
+			<jwr:style src="/modifyorder.css" media="all" />
+	<%} %>
 		<%-- Feature version switcher --%>
 		<features:potato />
 		<%-- LOAD JS --%>
@@ -4448,6 +4456,17 @@ div#mobilehomeMainDiv a {
    	// --%>
    	<% if (FDStoreProperties.isDfpEnabled()) { /* only load if needed */ %>
 		<jwr:script src="/mobileweb_index_optimized_footer.js" useRandomParam="false" defer="true" async="true" />
+	<% } %>
+	<% if (isModifyOrder) { %>
+		<%--
+			Load soy.common and fd libs. When the users is in modify order mode, they must have landed in the view cart page already
+			so this shouldn't cause any performance issue as these files have been cached by the browser.
+		--%>
+
+		<jwr:script src="/fdlibs.js" useRandomParam="false" />
+		<soy:import packageName="common"/>
+		<jwr:script src="/modifyorderdeps.js" useRandomParam="false" />
+		<jwr:script src="/modifyorder.js" useRandomParam="false" async="true" defer="true" />
 	<% } %>
   </body>
 </html>

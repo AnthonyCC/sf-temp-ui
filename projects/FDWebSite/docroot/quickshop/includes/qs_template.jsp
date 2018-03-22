@@ -146,13 +146,15 @@
         	<div id="qs-carousel">
         	</div>
           <script>
-          	$jq.ajax('/carousel/carousel.jsp').then(function(page) {
-          		$jq('#qs-carousel').html(page);
+          	$jq(document).ready(function() {
+	          	$jq.ajax('/api/carousel').then(function(data) {
+	          		$jq('#qs-carousel').html(common.qsBottomTabbedCarousel(data));
+	          		if (FreshDirect.common.tabbedRecommender) {
+		          		var firstTab = $jq('#qs-carousel [data-component="tabbedRecommender"] [data-tabname]:first-child');
+						fd.common.tabbedRecommender.selectTab($('#qs-carousel [data-component="tabbedRecommender"]'),firstTab.data('tabname'),firstTab);
+					}
               FreshDirect.components.carousel.changePage($jq('#qs-carousel [data-component="carousel"]').first(), null);
-          		if (FreshDirect.common.tabbedRecommender) {
-	          		var firstTab = $jq('#qs-carousel [data-component="tabbedRecommender"] [data-tabname]:first-child');
-					fd.common.tabbedRecommender.selectTab($('#qs-carousel [data-component="tabbedRecommender"]'),firstTab.data('tabname'),firstTab);
-				}
+	          	});
           	});
           </script>
         </c:otherwise>

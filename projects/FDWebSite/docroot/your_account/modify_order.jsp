@@ -51,16 +51,6 @@
 		<table style="width: <%= (mobWeb) ? "100%" : W_YA_MODIFY_ORDER+"px" %>;" border="0" cellpadding="0" cellspacing="0">
 		<%
 			if (allowModifyOrder.booleanValue() && cartOrOrder != null) {
-			
-		        StringBuffer custName = new StringBuffer(50);
-		        custName.append(customerModel.getFirstName());
-		        if (customerModel.getMiddleName()!=null && customerModel.getMiddleName().trim().length()>0) {
-		            custName.append(" ");
-		            custName.append(customerModel.getMiddleName());
-		            custName.append(" ");
-		        }
-		        custName.append(customerModel.getLastName());
-				
 				//
 				// get delivery info
 				//

@@ -11,6 +11,7 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.ecomm.gateway.ErpInfoService;
 import com.freshdirect.erp.ejb.ErpInfoHome;
 import com.freshdirect.erp.ejb.ErpInfoSB;
 import com.freshdirect.erp.model.ErpInventoryModel;
@@ -40,7 +41,7 @@ public class FDInventoryCache extends FDAbstractCache<String, ErpInventoryModel>
 			Map<String, ErpInventoryModel> data;
 			ErpInfoSB sb = this.lookupInfoHome().create();
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB_WarmUp))
-				data = FDECommerceService.getInstance().loadInventoryInfo(since);
+				data = ErpInfoService.getInstance().loadInventoryInfo(since);
 			else
 				data = sb.loadInventoryInfo(since);
 			LOGGER.info("REFRESHED: " + data.size());

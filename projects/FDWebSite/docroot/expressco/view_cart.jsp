@@ -81,9 +81,11 @@ if (mobWeb) {
 			<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user_view_cart)) { %>
 				<div id="cartCarousels">
 					<script>
-			          	$jq.ajax('/carousel/carousel.jsp?type=cart').then(function(page) {
-			          		$jq('#cartCarousels').html(page);
+						$jq(document).ready(function() {
+			          		$jq.ajax('/api/carousel?type=cart').then(function(data) {
+			          			$jq('#cartCarousels').html(common.viewCartTabbedCarousel(data));
                     FreshDirect.components.carousel.changePage($jq('#cartCarousels [data-component="carousel"]').first(), null);
+				          	});
 			          	});
 			        </script>
 				</div>

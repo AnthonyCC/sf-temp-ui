@@ -2432,7 +2432,8 @@ li.cleanli .gen-arrow {
 		width: 100%;
 		display: block;
 	}
-	.mm-page .prodMod-cont .qtyinput {
+	.mm-page .prodMod-cont .qtyinput,
+	.mm-page .product-price-quantity-container input:last-child {
     	margin-bottom: 10px;
 	}
 	.mm-page .ttBox1stClass .tooltip-inner{
@@ -3033,6 +3034,7 @@ form.dispblock-fields td { /* force the tds to block so the label and field are 
         border-right: 2px solid #ffffff;
         border-bottom: 2px solid #d4d4d4;
         border-left: 2px solid #ffffff;
+        padding-top: 5px;
     }
     input#price_field{
         width:100%;

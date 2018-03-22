@@ -131,13 +131,14 @@ SESSIONSTORAGE:
 	};
 
 	function getJsessionId() {
-		return ($.isFunction(fd.USQLegalWarning.getJSessionId))
-				? fd.USQLegalWarning.getJSessionId()
-				: function() {
-					return (fd.USQLegalWarning.hasOwnProperty('sessionStore'))
-						? fd.USQLegalWarning.sessionStore
-						: 'FD_NO_SESSION_ID';
-				};
+		var jsessionId = 'FD_NO_SESSION_ID';
+		
+		if ($.isFunction(fd.USQLegalWarning.getJSessionId)) {
+			jsessionId = fd.USQLegalWarning.getJSessionId();
+		} else if (fd.USQLegalWarning.hasOwnProperty('sessionStore')) {
+			jsessionId = fd.USQLegalWarning.sessionStore;
+		}
+		return jsessionId;
 	}
 
 	function getMessageStorage() {

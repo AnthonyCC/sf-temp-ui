@@ -202,7 +202,8 @@
 					.addParam("nod", lastOrderDate)
 					.addParam("do",
 							user.getAdjustedValidOrderCount())
-					.addParam("win", 2);
+					.addParam("win", 2)
+					.addParam("COSSTO", ((user.getActiveSO3s().size()>0)?'T':'F'));
 
 			if (cartDeptIds.size() > 0) {
 				StringBuffer cartString = new StringBuffer();

@@ -159,43 +159,6 @@
 	</tag>
 
 	<tag>
-		<name>recommender</name>
-		<tag-class>com.freshdirect.webapp.soy.RecommenderPotatoTag</tag-class>
-		<teiclass>com.freshdirect.webapp.soy.RecommenderPotatoTag$TagEI</teiclass>
-		<body-content>empty</body-content>
-		<attribute>
-			<name>name</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>siteFeature</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>maxItems</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>currentNodeKey</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>cmEventSource</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>sendVariant</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-
-	<tag>
 		<name>merchant</name>
 		<tag-class>com.freshdirect.webapp.soy.MerchantPotatoTag</tag-class>
 		<teiclass>com.freshdirect.webapp.soy.MerchantPotatoTag$TagEI</teiclass>
@@ -272,8 +235,7 @@
 		<name>navigationhighlight</name>
 		<tagclass>com.freshdirect.webapp.globalnav.NavigationHighlightTag</tagclass>
 		<info> </info>
-		<body-content>empty</body-content>
-		<attribute>
+		<body-content>empty</body-content>		<attribute>
 			<name>name</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
@@ -297,38 +259,16 @@
 <tag>
         <name>viewCart</name>
         <tagclass>com.freshdirect.webapp.ajax.viewcart.ViewCartPotatoTag</tagclass>
-        <body-content>empty</body-content>
+		<body-content>empty</body-content>
         <attribute>
 		<name>name</name>
 		<required>false</required>
 		<rtexprvalue>true</rtexprvalue>
 	</attribute>
     </tag>
-	<!-- APPDEV-3901 -->
-    <tag>
-        <name>qsRecommender</name>
-        <tagclass>com.freshdirect.webapp.ajax.reorder.QuickShopRecommenderPotatoTag</tagclass>
-        <body-content>empty</body-content>
-    </tag>
-    <tag>
-        <name>searchRecommender</name>
-        <tagclass>com.freshdirect.webapp.search.SearchRecommenderPotatoTag</tagclass>
-		<body-content>empty</body-content>
-		<attribute>
-            <name>productId</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
-    <tag>
-        <name>presPickRecommender</name>
-        <tagclass>com.freshdirect.webapp.search.PresPickRecommenderPotatoTag</tagclass>
-		<body-content>empty</body-content>
-    </tag>
     <tag>
         <name>singlePageCheckout</name>
         <tag-class>com.freshdirect.webapp.ajax.expresscheckout.tag.SinglePageCheckoutPotatoTag</tag-class>
-        <body-content>empty</body-content>
         <attribute>
             <name>name</name>
             <required>false</required>
@@ -339,27 +279,25 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
-		<attribute>
-            <name>action</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
     </tag>
     <tag>
         <name>singlePageCheckoutSuccess</name>
         <tag-class>com.freshdirect.webapp.ajax.expresscheckout.tag.SinglePageCheckoutSuccessPotatoTag</tag-class>
-        <body-content>empty</body-content>
+		<body-content>empty</body-content>
         <attribute>
             <name>name</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
-    </tag>
+		<attribute>
+            <name>action</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>    </tag>
     <tag>
         <name>cartData</name>
         <tag-class>com.freshdirect.webapp.ajax.expresscheckout.cart.tag.CartDataPotatoTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
+        <body-content>empty</body-content>        <attribute>
             <name>name</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -373,8 +311,7 @@
 	<tag>
 		<name>modulehandling</name>
 		<tagclass>com.freshdirect.webapp.ajax.modulehandling.ModuleHandlingPotatoTag</tagclass>
-		<body-content>empty</body-content>
-		<info></info>
+		<body-content>empty</body-content>		<info></info>
 		<attribute>
 			<name>name</name>
 			<required>true</required>
@@ -389,8 +326,7 @@
 	<tag>
 		<name>googleAnalytics</name>
 		<tagclass>com.freshdirect.webapp.ajax.analytics.tag.GoogleAnalyticsPotatoTag</tagclass>
-		<body-content>empty</body-content>
-		<attribute>
+		<body-content>empty</body-content>		<attribute>
 			<name>name</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>

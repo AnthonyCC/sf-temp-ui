@@ -127,10 +127,12 @@ boolean showCaptchaInPayment = CaptchaUtil.isExcessiveAttempt(FDStoreProperties.
           <% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user)) { %>
             <div id="cartCarousels">
      			<script>
-		          	$jq.ajax('/carousel/carousel.jsp?type=checkout').then(function(page) {
-		          		$jq('#expresscheckout #cartCarousels').html(page);
+     				$jq(document).ready(function() {
+		          		$jq.ajax('/api/carousel?type=checkout').then(function(data) {
+			          		$jq('#expresscheckout #cartCarousels').html(common.checkoutTabbedCarousel(data));
                   FreshDirect.components.carousel.changePage($jq('#cartCarousels [data-component="carousel"]').first(), null);
-		          	});
+			          	});
+	     			});
 		        </script>
             </div>
           <% } %>

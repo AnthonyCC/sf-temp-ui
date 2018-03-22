@@ -25,6 +25,13 @@ import com.freshdirect.storeapi.fdstore.FDContentTypes;
  * @author segabor
  *
  */
+
+/**
+ *@deprecated Please use the DynamicSiteFeatureController and DynamicSiteFeatureServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public class DyfModelSessionBean extends SessionBeanSupport {
 	private static final long serialVersionUID = 3140508241201048967L;
 
@@ -47,6 +54,7 @@ public class DyfModelSessionBean extends SessionBeanSupport {
 	 * @return Map of frequencies indexed by product ContentKeys
 	 * @throws RemoteException
 	 */
+	@Deprecated
 	public Map getProductFrequencies(String customerID) throws RemoteException {
 		Connection conn = null;
 		// Map<ContentKey,Integer>
@@ -88,6 +96,7 @@ public class DyfModelSessionBean extends SessionBeanSupport {
 	 * @return List of product ContentKeys
 	 * @throws RemoteException
 	 */
+	@Deprecated
 	public Set getProducts(String customerID) throws RemoteException {
 		Connection conn = null;
 		Set result = new HashSet();
@@ -119,7 +128,7 @@ public class DyfModelSessionBean extends SessionBeanSupport {
 
         return result;
 	}
-
+	@Deprecated
 	public Map getGlobalProductScores() throws RemoteException {
 		Connection conn = null;
 		// Map<ContentKey,Float>

@@ -1,0 +1,20 @@
+.cancel-order-table .delivery-info-container{
+	width: 605px;
+    margin: auto;
+    border-radius: 3px;
+    background-color: #e8e8ea;
+    padding: 10px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.cancel-order-table .buttons .inline .cancel-order-form{
+	display: inline;
+    padding-left: 15px;
+}
+.cancel-order-table .buttons .block + .block{
+	margin-top: 25px;
+}
+.having-problem-container{
+    text-align: left;
+    padding-top: 65px;
+}

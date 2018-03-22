@@ -26,6 +26,7 @@ import com.freshdirect.content.nutrition.ErpNutritionModel;
 import com.freshdirect.content.nutrition.ejb.ErpNutritionHome;
 import com.freshdirect.content.nutrition.ejb.ErpNutritionSB;
 import com.freshdirect.content.nutrition.panel.NutritionPanel;
+import com.freshdirect.ecomm.gateway.ErpInfoService;
 import com.freshdirect.ecomm.gateway.ErpNutritionService;
 import com.freshdirect.ecomm.gateway.ErpNutritionServiceI;
 import com.freshdirect.erp.ejb.BatchManagerHome;
@@ -93,7 +94,7 @@ public class ErpFactory {
 		try {
 			ErpInfoSB infoSB = erpInfoHome.create();
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpInfoSB"))
-				return FDECommerceService.getInstance().findMaterialsBySapId(searchterm);
+				return ErpInfoService.getInstance().findMaterialsBySapId(searchterm);
 			else
 				return infoSB.findMaterialsBySapId(searchterm);
 		} catch (CreateException ce) {
@@ -110,7 +111,7 @@ public class ErpFactory {
 		try {
 			ErpInfoSB infoSB = erpInfoHome.create();
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpInfoSB"))
-				return FDECommerceService.getInstance().findMaterialsBySku(searchterm);
+				return ErpInfoService.getInstance().findMaterialsBySku(searchterm);
 			else
 				return infoSB.findMaterialsBySku(searchterm);
 		} catch (CreateException ce) {
@@ -127,7 +128,7 @@ public class ErpFactory {
 		try {
 			ErpInfoSB infoSB = erpInfoHome.create();
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpInfoSB"))
-				return FDECommerceService.getInstance().findMaterialsByDescription(searchterm);
+				return ErpInfoService.getInstance().findMaterialsByDescription(searchterm);
 			else
 			return infoSB.findMaterialsByDescription(searchterm);
 		} catch (CreateException ce) {
@@ -144,7 +145,7 @@ public class ErpFactory {
 		try {
 			ErpInfoSB infoSB = erpInfoHome.create();
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpInfoSB"))
-				return FDECommerceService.getInstance().findMaterialsByClass(searchterm);
+				return ErpInfoService.getInstance().findMaterialsByClass(searchterm);
 			else
 				return infoSB.findMaterialsByClass(searchterm);
 		} catch (CreateException ce) {
@@ -161,7 +162,7 @@ public class ErpFactory {
 		try {
 			ErpInfoSB infoSB = erpInfoHome.create();
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpInfoSB"))
-				return FDECommerceService.getInstance().findMaterialsByCharacteristic(searchterm);
+				return ErpInfoService.getInstance().findMaterialsByCharacteristic(searchterm);
 			else
 			return infoSB.findMaterialsByCharacteristic(searchterm);
 		} catch (CreateException ce) {
@@ -178,7 +179,7 @@ public class ErpFactory {
 		try {
 			ErpInfoSB infoSB = erpInfoHome.create();
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpInfoSB"))
-				return FDECommerceService.getInstance().findMaterialsByBatch(batchNum);
+				return ErpInfoService.getInstance().findMaterialsByBatch(batchNum);
 			else
 				return infoSB.findMaterialsByBatch(batchNum);
 		} catch (CreateException ce) {
@@ -195,7 +196,7 @@ public class ErpFactory {
 		try {
 			ErpInfoSB infoSB = erpInfoHome.create();
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpInfoSB"))
-				return FDECommerceService.getInstance().findProductsBySapId(searchterm);
+				return ErpInfoService.getInstance().findProductsBySapId(searchterm);
 			else
 				return infoSB.findProductsBySapId(searchterm);
 		} catch (CreateException ce) {
@@ -213,7 +214,7 @@ public class ErpFactory {
 			ErpInfoSB infoSB = erpInfoHome.create();
 			try {
 				if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpInfoSB"))
-					return FDECommerceService.getInstance().findProductBySku(searchterm);
+					return ErpInfoService.getInstance().findProductBySku(searchterm);
 				else
 					return infoSB.findProductBySku(searchterm);
 			} catch (ObjectNotFoundException onfe) {
@@ -233,7 +234,7 @@ public class ErpFactory {
 		try {
 			ErpInfoSB infoSB = erpInfoHome.create();
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpInfoSB"))
-				return FDECommerceService.getInstance().findProductsLikeSku(searchterm);
+				return ErpInfoService.getInstance().findProductsLikeSku(searchterm);
 			else
 				return infoSB.findProductsLikeSku(searchterm);
 		} catch (CreateException ce) {
@@ -250,7 +251,7 @@ public class ErpFactory {
 		try {
 			ErpInfoSB infoSB = erpInfoHome.create();
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpInfoSB"))
-				return FDECommerceService.getInstance().findProductsByDescription(searchterm);
+				return ErpInfoService.getInstance().findProductsByDescription(searchterm);
 			else
 				return infoSB.findProductsByDescription(searchterm);
 		} catch (CreateException ce) {
@@ -267,7 +268,7 @@ public class ErpFactory {
 		try {
 			ErpInfoSB infoSB = erpInfoHome.create();
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpInfoSB"))
-				return FDECommerceService.getInstance().findProductsLikeUPC(searchterm);
+				return ErpInfoService.getInstance().findProductsLikeUPC(searchterm);
 			else
 				return infoSB.findProductsLikeUPC(searchterm);
 		} catch (CreateException ce) {
@@ -284,7 +285,7 @@ public class ErpFactory {
 		try {
 			ErpInfoSB infoSB = erpInfoHome.create();
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpInfoSB"))
-				return FDECommerceService.getInstance().findProductsByUPC(upc);
+				return ErpInfoService.getInstance().findProductsByUPC(upc);
 			else
 				return infoSB.findProductsByUPC(upc);
 		} catch (CreateException ce) {
@@ -301,7 +302,7 @@ public class ErpFactory {
 		try {
 			ErpInfoSB infoSB = erpInfoHome.create();
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpInfoSB"))
-				return FDECommerceService.getInstance().findProductsByCustomerUPC(erpCustomerPK,upc);
+				return ErpInfoService.getInstance().findProductsByCustomerUPC(erpCustomerPK,upc);
 			else
 			return infoSB.findProductsByCustomerUPC(erpCustomerPK, upc);
 		} catch (CreateException ce) {
@@ -861,7 +862,7 @@ public class ErpFactory {
 		try {
 			ErpInfoSB infoSB = erpInfoHome.create();
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpInfoSB")){
-				FDECommerceService.getInstance().setOverriddenBackInStock(sku, salesAreaOverrides);
+				ErpInfoService.getInstance().setOverriddenBackInStock(sku, salesAreaOverrides);
 			}else{
 				infoSB.setOverriddenBackInStock(sku, salesAreaOverrides);
 			}
@@ -879,7 +880,7 @@ public class ErpFactory {
 		try {
 			ErpInfoSB infoSB = erpInfoHome.create();
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpInfoSB")){
-				FDECommerceService.getInstance().setOverriddenNewness(sku, salesAreaOverrides);
+				ErpInfoService.getInstance().setOverriddenNewness(sku, salesAreaOverrides);
 			}else{
 				infoSB.setOverriddenNewness(sku, salesAreaOverrides);
 			}
@@ -897,7 +898,7 @@ public class ErpFactory {
 		try {
 			ErpInfoSB infoSB = erpInfoHome.create();
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpInfoSB")){
-				return FDECommerceService.getInstance().getOverriddenBackInStock(sku);
+				return ErpInfoService.getInstance().getOverriddenBackInStock(sku);
 			}else{
 			 return infoSB.getOverriddenBackInStock(sku);
 			}
@@ -915,7 +916,7 @@ public class ErpFactory {
 		try {
 			ErpInfoSB infoSB = erpInfoHome.create();
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpInfoSB")){
-				return FDECommerceService.getInstance().getOverriddenNewness(sku);
+				return ErpInfoService.getInstance().getOverriddenNewness(sku);
 			}else{
 			 return infoSB.getOverriddenNewness(sku);
 			}

@@ -117,16 +117,16 @@ public class FDBrandProductsAdManager {
 		
 	}
 	
-	public static HLBrandProductAdResponse getHLadproductToHome(HLBrandProductAdRequest hLBrandProductAdRequest) throws FDResourceException {
+	public static HLBrandProductAdResponse getHLadproductToHomeByFDPriority(HLBrandProductAdRequest hLBrandProductAdRequest) throws FDResourceException {
 		lookupManagerHome();
 		
 		try {
 			HLBrandProductAdResponse result = null;
 			FDBrandProductsAdManagerSB sb = managerHome.create();
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.brandads.FDBrandProductsAdManagerSB")){
-				result = FDECommerceService.getInstance().getHomeAdProduct(hLBrandProductAdRequest);
+				result = FDECommerceService.getInstance().getHLadproductToHomeByFDPriority(hLBrandProductAdRequest);
 			}else{
-				result= sb.getHomeAdProduct(hLBrandProductAdRequest);
+				result= sb.getHLadproductToHomeByFDPriority(hLBrandProductAdRequest);
 		}
 			return result;
 		} catch (RemoteException e) {

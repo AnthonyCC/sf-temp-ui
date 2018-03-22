@@ -234,7 +234,8 @@
 					.addParam("fddo",user.getAdjustedValidOrderCount(EnumEStoreId.FD) - user.getAdjustedValidOrderCount(EnumDeliveryType.CORPORATE))
 					.addParam("cosdo", user.getAdjustedValidOrderCount(EnumDeliveryType.CORPORATE))
 					.addParam("fkdo",user.getAdjustedValidOrderCount(EnumEStoreId.FDX))
-					.addParam("win", 2);
+					.addParam("win", 2)
+					.addParam("COSSTO", ((user.getActiveSO3s().size()>0)?'T':'F'));
 
 			if (cartDeptIds.size() > 0) {
 				StringBuffer cartString = new StringBuffer();

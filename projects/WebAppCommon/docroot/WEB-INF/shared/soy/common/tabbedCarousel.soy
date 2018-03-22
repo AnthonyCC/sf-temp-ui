@@ -55,7 +55,7 @@
   </ul>
   {foreach $tab in $recommendationTabs}
     {if $tab.selected}
-      <div role="tabpanel" class="tab-container light-carousel" data-component="tabpanel" data-cmSiteFeature="{$tab.siteFeature}" data-cmeventsource="{if $tab.carouselData.cmEventSource}{$tab.carouselData.cmEventSource}{else}tabbedRecommender{/if}">
+      <div role="tabpanel" class="tab-container light-carousel" data-component="tabpanel" data-cmSiteFeature="{$tab.siteFeature}" data-cmeventsource="{if $tab.carouselData and $tab.carouselData.cmEventSource}{$tab.carouselData.cmEventSource}{else}tabbedRecommender{/if}">
         {if $tab.carouselData and $tab.carouselData.products}
           {call common.simpleCarousel}
             {param items:$tab.carouselData.products /}

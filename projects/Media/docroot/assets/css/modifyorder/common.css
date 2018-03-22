@@ -1,0 +1,71 @@
+.cancel-modify-confirm-popup#confirmpopup {
+	position: fixed !important;
+	background: #fff;
+	margin: 15px;
+}
+.cancel-modify-confirm-popup .qs-popup-content {
+	padding: 30px 40px;
+}
+.cancel-modify-confirm-popup .qs-popup-content p {
+	font-size: 16px;
+    color: #555555;
+}
+.cancel-modify-confirm-popup .qs-popup-header {
+	display: none;
+}
+
+.cancel-modify-confirm-popup .qs-popup-content .buttons button {
+	width: 100%;
+    margin: 0;
+}
+.cancel-modify-confirm-popup .qs-popup-content .buttons button+button {
+	margin-top: 20px;
+}
+.modify-order-bar {
+	color: #ffffff;
+    background-color: #f68139;
+}
+.modify-order-bar .cancel-changes-link {
+	font-size: 14px;
+	font-weight: bold;
+	color: #ffffff;
+	text-shadow: 1px 1px 0 rgba(200, 92, 25, 0.5);
+}
+#location-modify-order-message .location-modify-order-cancel {
+	padding-left: 30px;
+	margin-top: -1px;
+}
+#location-modify-order-bar {
+	padding: 15px 0;
+}
+#location-modify-order-bar .location-modify-order-cancel {
+	padding: 10px 15px 0 0;
+}
+.modify-order-bar .location-modify-order-cancel span {
+	border-bottom: solid 1px #ffffff;
+}
+
+#location-modify-order-message {
+    line-height: 46px;
+    font-size: 18px;
+    border-bottom: solid 1px #dddddd;
+    text-shadow: 1px 1px 0 #c85c19;
+    top: -3px;
+    width: 100%;
+    position: fixed;
+}
+#location-modify-order-message .modify-order-container {
+	width: 970px;
+    margin: 0 auto;
+}
+.modify-order-bar .modify-delivery-label {
+	text-shadow: 1px 1px 0 #c85c19;
+}
+.modify-order-bar .modify-delivery-time {
+	text-shadow: 1px 1px 0 rgba(200, 92, 25, 0.5)
+}
+
+#locationbar-sticky-wrapper .locabar-right-sections {
+	position: fixed;
+	top: 1px;
+}
