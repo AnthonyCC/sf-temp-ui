@@ -11,8 +11,8 @@ public interface BrandProductAdService {
 	HLBrandProductAdResponse getSearchbykeyword(HLBrandProductAdRequest hLRequestData) throws BrandProductAdServiceException;
 	void submittedOrderdDetailsToHL(HLOrderFeedDataModel hLOrderFeedDataModel) throws BrandProductAdServiceException;
 	HLBrandProductAdResponse getCategoryProducts(HLBrandProductAdRequest hLRequestData) throws BrandProductAdServiceException;
-	HLBrandProductAdResponse getHomeAdProduct(HLBrandProductAdRequest HLRequestData) throws BrandProductAdServiceException;
 	HLBrandProductAdResponse getPdpAdProduct(HLBrandProductAdRequest hLBrandProductAdRequest) throws BrandProductAdServiceException;
+	HLBrandProductAdResponse getHLadproductToHomeByFDPriority(HLBrandProductAdRequest hLBrandProductAdRequest) throws BrandProductAdServiceException;
 
 	
 }

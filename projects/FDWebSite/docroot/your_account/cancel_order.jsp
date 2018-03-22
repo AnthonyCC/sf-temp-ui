@@ -10,9 +10,11 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
+
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 <%
-	final int W_YA_CANCEL_ORDER = 970; //expanded page dimensions
+	final int W_YA_CANCEL_ORDER = 605; //expanded page dimensions
 
 	String orderId = request.getParameter("orderId");
 	NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance( Locale.US );
@@ -37,99 +39,107 @@
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Your Account - Cancel Order"/>
   </tmpl:put>
+  <temp:put name="extraCss" direct="true">
+	<jwr:style src="/your_account.css" media="all"/>
+  </temp:put>
 <%--   <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Cancel Order</tmpl:put> --%>
     <tmpl:put name='content' direct='true'>
-	    
-		<table style="width: <%= (mobWeb) ? "100%" : W_YA_CANCEL_ORDER+"px" %>;" border="0" cellpadding="0" cellspacing="0">
+    	<%=mobWeb?"<br>": "" %>
+		<table class="text-align-center cancel-order-table" style="width: <%= (mobWeb) ? "100%" : W_YA_CANCEL_ORDER+"px" %>;" border="0" cellpadding="0" cellspacing="0" >
 		<%
 			FDOrderI cartOrOrder = FDCustomerManager.getOrder(orderId);
 			
 			if (allowCancelOrder.booleanValue() && cartOrOrder != null) {
-				
-				StringBuffer custName = new StringBuffer(50);
-				custName.append(customerModel.getFirstName());
-				if (customerModel.getMiddleName()!=null && customerModel.getMiddleName().trim().length()>0) {
-				    custName.append(" ");
-				    custName.append(customerModel.getMiddleName());
-				    custName.append(" ");
-				}
-				custName.append(customerModel.getLastName());
-				
+								
 				//
 				// get delivery info
 				//
 				ErpAddressModel dlvAddress = cartOrOrder.getDeliveryAddress();
-				      SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MM/dd/yy");
-				      String fmtDlvDateTime = dateFormatter.format(cartOrOrder.getDeliveryReservation().getStartTime()).toUpperCase();
-				      Calendar dlvStart = Calendar.getInstance();
-				      dlvStart.setTime(cartOrOrder.getDeliveryReservation().getStartTime());
-				      Calendar dlvEnd =   Calendar.getInstance();
-				      dlvEnd.setTime(cartOrOrder.getDeliveryReservation().getEndTime());
+				SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE M/d/yy");
+				SimpleDateFormat monthDayFormatter = new SimpleDateFormat("M/d");
+				String fmtDlvDateTime = dateFormatter.format(cartOrOrder.getDeliveryReservation().getStartTime());
+				String deliveryMonthDay = monthDayFormatter.format(cartOrOrder.getDeliveryReservation().getStartTime());
+				Calendar dlvStart = Calendar.getInstance();
+				dlvStart.setTime(cartOrOrder.getDeliveryReservation().getStartTime());
+				Calendar dlvEnd =   Calendar.getInstance();
+				dlvEnd.setTime(cartOrOrder.getDeliveryReservation().getEndTime());
 				int startHour =  dlvStart.get(Calendar.HOUR_OF_DAY);
 				int endHour = dlvEnd.get(Calendar.HOUR_OF_DAY); 
 				
-				String sStartHour = startHour==12? "noon" : (startHour>12 ? ""+(startHour-12) : ""+startHour);
-				String sEndHour = endHour==0 ? "12 am" : (endHour==12 ? "noon" : (endHour>12 ? (endHour-12)+" pm" : endHour+" am"));
-				
-				//
-				// get payment info
-				//
-				ErpPaymentMethodI paymentMethod =(ErpPaymentMethodI) cartOrOrder.getPaymentMethod();
+				String sStartHour = startHour==12? "NOON" : (startHour>12 ? ""+(startHour-12) : ""+startHour);
+				String sEndHour = endHour==0 ? "12 AM" : (endHour==12 ? "NOON" : (endHour>12 ? (endHour-12)+" PM" : endHour+" AM"));
 				
 				//
 				// get order line info
 				//
 			%>
 				<tr>
-					<td class="title18" colspan="3">Cancel <% if (cartOrOrder.getStandingOrderName() != null){ %><%= cartOrOrder.getStandingOrderName() %>, <%= cartOrOrder.getSODeliveryDate() %> Delivery, <% } %>Order # <%= orderId %> ?</td>
-				</tr>
-				<tr>
-					<td style="width: 1%; max-width: 10px;"><img src="/media_stat/images/layout/clear.gif" height="6" alt="" /></td>
-					<td style="width: <%= (mobWeb) ? "50%" : (W_YA_CANCEL_ORDER - 210)+"px" %>;"><img src="/media_stat/images/layout/clear.gif" height="6" alt="" /></td>
-					<td style="width: <%= (mobWeb) ? "49%" : 200+"px" %>;"><img src="/media_stat/images/layout/clear.gif" height="6" alt="" /></td>
-				</tr>
-				<tr style="background-color: #FF9933;">
-					<td>&nbsp;</td>
-					<td class="text10w" colspan="1" height="16" valign="middle"><img src="/media_stat/images/template/youraccount/currently_scheduled.gif" width="124" height="8" border="0" alt="CURRENTLY SCHEDULED" vspace="2" align="absbottom"><%= (mobWeb) ? "<br />" : "" %>&nbsp;&nbsp;<%=fmtDlvDateTime%>@<%=sStartHour%>-<%=sEndHour%></td>
-					<td align="right" class="text11wbold" valign="middle">Estimated Total: <%= currencyFormatter.format(cartOrOrder.getTotal()) %>&nbsp;&nbsp;</td>
-				</tr>
-				<tr>
-					<td>&nbsp;</td>
-					<td colspan="2" class="text13">
-						<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10"><br />
-						You are about to cancel this order. If you cancel it, you will not receive a delivery and your account will not be charged. We will save the items from this order in "Reorder."<br />
-						<br />
-						If you would like to change this order instead, <a href="/your_account/modify_order.jsp?orderId=<%= orderId %>">click here<span class="offscreen">If you would like to change this order instead</span></a>.<br />
-						<br />
-						For full details of our cancellation policy, <a href="javascript:popup('/help/faq_index.jsp?show=shopping#question7','large')">click here<span class="offscreen">For full details of our cancellation policy</span></a>.<br />
-						<img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" />
-						<div align="center">
-							<form name="cancel_order" method="POST" action="/your_account/cancel_order.jsp">
-								<input type="hidden" name="action" value="cancel" />
-								<input type="hidden" name="orderId" value="<%= orderId %>" />
-								<button type="submit" class="imgButtonRed">cancel order</button>
-							</form>
-						</div>
-						<img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" />
+					<td class="title19" colspan="3">
+						<% if (mobWeb) { %>
+							Cancel <%=(cartOrOrder.getStandingOrderName() != null? cartOrOrder.getStandingOrderName() : "Order") %>
+						<% } else { %> 
+							Cancel Order<%=(cartOrOrder.getStandingOrderName() != null? ":" + cartOrOrder.getStandingOrderName() : "") %>
+						<% } %>
 					</td>
 				</tr>
-				<tr class="NOMOBWEB"><td bgcolor="#CCCCCC" colspan="3"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%= W_YA_CANCEL_ORDER %>" height="1" border="0"></td></tr>
+					<td class="text19" colspan="3">
+						<%=deliveryMonthDay %> Delivery, Order # <%=orderId %>
+					</td>
+				</tr>
 				<tr>
-					<td colspan="3"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8"><br />
-						<table cellspacing="0" cellpadding="0" border="0">
-							<tr>
-							    <td rowspan="2"><a href="order_details.jsp?orderId=<%= orderId %>"><img src="/media_stat/images/template/youraccount/cross.gif" alt="do not cancel the order" border="0"></a></td>
-							    <td><a href="order_details.jsp?orderId=<%= orderId %>"><img src="/media_stat/images/template/youraccount/do_not_cancel_order.gif" border="0" alt="Do not Cancel Order"></a></td>
-							</tr>
-							<tr><td>and deliver as originally specified</td></tr>
-						</table>
+					<td class="title15" colspan="3">
+						<div class="delivery-info-container" style="width:<%=mobWeb? "100%": "605px"%>" >
+							Currently Scheduled:<%=mobWeb?"<br>":" "%><%=fmtDlvDateTime%> @ <%=sStartHour%>-<%=sEndHour%>
+							<br>
+							Estimated Total: <%= currencyFormatter.format(cartOrOrder.getTotal()) %>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="text15<%=mobWeb?" padding-left-10 padding-right-10": "" %>" colspan="3">
+					You are about to cancel this order. 
+					If you cancel it, you will not receive a delivery and your account will not be charged. We will save the items from this order in "Reorder".
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<br>
+					</td>
+				</tr>
+				<tr>
+					<td class="text15<%=mobWeb?" padding-left-10 padding-right-10": "" %>" colspan="3">
+						For full details of our cancellation policy, see our <a href="javascript:popup('/help/faq_index.jsp?show=shopping#question7','large')">Shopping FAQ</a>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<br>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<br>
+					</td>
+				</tr>
+				<tr>
+					<td class="buttons">
+						<span class="<%=mobWeb?"block padding-left-10 padding-right-10": "inline" %>">
+							<a class="cssbutton orange <%=mobWeb?"full-width":""%>" href="order_details.jsp?orderId=<%= orderId %>">Do Not Cancel Order</a>
+						</span>
+						
+						<form class="cancel-order-form <%=mobWeb?"block padding-left-10 padding-right-10": "inline" %>" name="cancel_order" method="POST" action="/your_account/cancel_order.jsp">
+							<input type="hidden" name="action" value="cancel" />
+							<input type="hidden" name="orderId" value="<%= orderId %>" />
+							<button type="submit" class="cssbutton red transparent <%=mobWeb?"full-width":""%>">Cancel Order</button>
+						</form>
+						
 					</td>
 				</tr>
 			<% } %>
-			<tr>
-				<td colspan="3"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="20"><br /><b>Having Problems?</b><br /><%@ include file="/includes/i_footer_account.jspf" %></td>
-			</tr>
 		</table>
+		<div class="having-problem-container padding-left-10 padding-right-10">
+			<b>Having Problems?</b><br /><%@ include file="/includes/i_footer_account.jspf" %>
+		</div>
 	</tmpl:put>
 </tmpl:insert>
 </fd:ModifyOrderController>

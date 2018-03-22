@@ -74,10 +74,10 @@ span.cssbutton.annotation:hover {
   overflow: hidden;
 }
 
-.pdp h1 .productDisplay-akaName {
-  font-family:Verdana,sans-serif;
+.pdp .productDisplay-akaName {
+	font-family:Verdana,sans-serif;
 	font-size:16px;
-  font-weight: normal;
+	font-weight: normal;
 	color:#333;
 	margin:2px 0 0 0;
 }
@@ -427,7 +427,7 @@ span.cssbutton.annotation:hover {
 	position:relative;
 }
 
-.pdp .pdp-evenbetter h2 {
+.pdp .pdp-evenbetter .header {
 	font-family:"EagleBook";
 	font-size:21px;
 	color:#98659d;
@@ -438,12 +438,12 @@ span.cssbutton.annotation:hover {
 	-moz-osx-font-smoothing: grayscale;
 }
 
-.pdp .pdp-evenbetter h2.familyproducts,
-.pdp .pdp-evenbetter h2.groupProducts {
+.pdp .pdp-evenbetter .header.familyproducts,
+.pdp .pdp-evenbetter .header.groupProducts {
 	color: #C00;
 }
 
-.pdp .pdp-likethat h2 {
+.pdp .pdp-likethat .header {
   font-family: Verdana, Arial, sans-serif;
   color:#333;
   font-size:20px;

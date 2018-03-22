@@ -19,7 +19,9 @@ public class GACustomerData {
     private String deliveryPassStatus;
     private String customerId;
     private String defaultPaymentType;
+    
     private boolean isModifyMode = false;
+    private String hasActiveSO3s; //APPDEV-7007 value is [T|F]
 
 	public GACustomerData(String zipCode, String userId, String userStatus, String userType, String loginType, String chefsTable, String deliveryPass, String deliveryType,
             String cohort) {
@@ -164,5 +166,13 @@ public class GACustomerData {
 
 	public void setModifyMode(boolean isModifyMode) {
 		this.isModifyMode = isModifyMode;
+	}
+
+	public String getHasActiveSO3s() {
+		return hasActiveSO3s;
+	}
+
+	public void setHasActiveSO3s(String hasActiveSO3s) {
+		this.hasActiveSO3s = hasActiveSO3s;
 	}
 }

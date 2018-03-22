@@ -856,7 +856,7 @@ if ( skuSize == 0 ) {
 
         			
     				if ( !priceShown ) { %>
-    					<tr><td class="text11bold" style="<%= CSSTableStyle %>padding-top:8px; white-space: nowrap"><%
+    					<tr><td class="text11bold product-price-quantity-container" style="<%= CSSTableStyle %>padding-top:8px; padding-bottom: 8px;white-space: nowrap"><%
     					 
 
 	        				if ( displayEstimatedQuantity ) {

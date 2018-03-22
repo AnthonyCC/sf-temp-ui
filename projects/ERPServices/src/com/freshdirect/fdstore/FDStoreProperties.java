@@ -1025,6 +1025,10 @@ public class FDStoreProperties {
 	public final static String PROP_FD_DP_FREE_TRIAL_OPTIN_FEATURE_ENABLED = "fdstore.fd.dp.freetrial.optin.feature.enabled";
 	
 	public final static String PROP_DB_PARTIAL_JOIN_OPTIMIZER_ENABLED = "fdstore.db.partial.join.optimizer.enabled";
+	
+	private static final String FD_PRIORITY_SEARCH_KEYS = "fdstore.criteo.fdpriorityhomepagecriteo";
+	
+	private static final String FD_HOME_CRITEO_MAX_DISPLAY = "fdstore.criteo.fdhomecriteomaxdisplay";
 
  	static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -1961,6 +1965,9 @@ public class FDStoreProperties {
 		defaults.put(PROP_FD_DP_FREE_TRIAL_OPTIN_FEATURE_ENABLED, "false");
 		
 		defaults.put(PROP_DB_PARTIAL_JOIN_OPTIMIZER_ENABLED, "true");
+		
+		defaults.put(FD_PRIORITY_SEARCH_KEYS, "BUTTER,EGG,MILK,YOGURT");
+		defaults.put(FD_HOME_CRITEO_MAX_DISPLAY, "12");
 		
         refresh();
     }
@@ -4987,5 +4994,13 @@ public class FDStoreProperties {
 	
 	public static boolean isPartialJoinOptimizerEnabled() {
 		return (Boolean.valueOf(get(PROP_DB_PARTIAL_JOIN_OPTIMIZER_ENABLED))).booleanValue();
+	}
+
+	public static String getFDHomeCriteoPriorityKeys() {
+		return get(FD_PRIORITY_SEARCH_KEYS);
+	}
+
+	public static int getFDHomeCriteoMaxDisplayProducts() {
+		return Integer.parseInt(get(FD_HOME_CRITEO_MAX_DISPLAY));
 	}
 }

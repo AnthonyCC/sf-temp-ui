@@ -79,18 +79,18 @@ public static HLBrandProductAdResponse getCategoryProducts(HLBrandProductAdReque
 		
 	}
 	
-	public static HLBrandProductAdResponse getHomeAdProduct(HLBrandProductAdRequest hLBrandProductAdRequest) {
+	public static HLBrandProductAdResponse getHLadproductToHomeByFDPriority(HLBrandProductAdRequest hLBrandProductAdRequest) {
 		HLBrandProductAdResponse hlBrandProductAdResponse=null;
 		
 		try {
-			hlBrandProductAdResponse =getService().getHomeAdProduct(hLBrandProductAdRequest);
+			hlBrandProductAdResponse =getService().getHLadproductToHomeByFDPriority(hLBrandProductAdRequest);
 		} catch (BrandProductAdServiceException e) {
-			LOG.error("Exception while getting HLBrandProductAd metadata:"+e.getMessage());
+			LOG.error("Exception while getting getHLadproductToHomeByFDPriority metadata:"+e.getMessage());
 		}
 		
 		return hlBrandProductAdResponse;		
 	}
-
+	
 	public static HLBrandProductAdResponse getPdpAdProduct(HLBrandProductAdRequest hLBrandProductAdRequest) {
 		HLBrandProductAdResponse hlBrandProductAdResponse=null;
 		

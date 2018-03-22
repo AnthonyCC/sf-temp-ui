@@ -75,24 +75,24 @@
 				</div>
 			</div>
 			<div class="dpn-center-agreement">By signing up for DeliveryPass<sup>&reg;</sup>, you are agreeing to the Terms and Conditions set forth here.</div>
-			<div class="dpn-center-agreement-link"><a href="javascript:pop('/shared/template/generic_popup.jsp?contentPath=/media/editorial/picks/deliverypass/dp_tc.html&windowSize=large&name=Delivery Pass Information',400,560,alt='Delivery Pass Information')">Terms and Conditions</a></div>
+			<div class="dpn-center-agreement-link"><a href="javascript:pop('/shared/template/generic_popup.jsp?contentPath=/media/editorial/picks/deliverypass/dp_tc.html&windowSize=large&name=Delivery Pass Information',400,560,alt='Delivery Pass Information')"  tabindex="2">Terms and Conditions</a></div>
 			<div class="dpn-center-terms">Your DeliveryPass<sup>&reg;</sup> membership continues until canceled. You can cancel anytime by calling customer service at 1-866-283-7374.</div>
 		</div>
 		<div class="dpn-footer dpn-footer-login-required">
 			<% if(user_dp.getLevel() == FDUserI.SIGNED_IN){ %>
 				<div class="dpn-footer-no-logged">
-					<a href="javascript:noThanks();">No thanks, I hate saving money.</a>
+					<a href="javascript:noThanks();" tabindex="3">No thanks, I hate saving money.</a>
 				</div>
 				<div class="dpn-footer-yes">
 					<div class="dpn-footer-yes-text">No commitments, cancel any time.</div>
-					<button onclick="getFreeDelivery()" class="dpn-footer-yes-button cssbutton cssbutton-flat orange">Start 60 Day Free Trial</button>
+					<button onclick="getFreeDelivery()" class="dpn-footer-yes-button cssbutton cssbutton-flat orange" tabindex="1">Start 60 Day Free Trial</button>
 				</div>
 			<% } else { %>
 				<div class="dpn-footer-no">
-					<a href="javascript:noThanks();">No thanks, I hate saving money.</a>
+					<a href="javascript:noThanks();" tabindex="3">No thanks, I hate saving money.</a>
 				</div>
 				<div class="dpn-footer-yes">
-					<button class="dpn-footer-login-button cssbutton cssbutton-flat green" fd-login-required>Sign In to Get Started</button>
+					<button class="dpn-footer-login-button cssbutton cssbutton-flat green" tabindex="1" fd-login-required fd-login-successpage-current>Sign In to Get Started</button>
 				</div>
 			<% } %>
 			<div class="clear"></div>

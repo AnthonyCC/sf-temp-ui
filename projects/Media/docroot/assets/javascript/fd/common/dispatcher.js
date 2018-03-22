@@ -71,6 +71,12 @@ var FreshDirect = FreshDirect || {};
     // send signal
     signal(signalName, params);
   });
-
-  fd.modules.common.utils.register("common", "dispatcher", dispatcher, fd);
+  
+  if (fd.modules && fd.modules.common && fd.modules.common.utils) {
+    fd.modules.common.utils.register("common", "dispatcher", dispatcher, fd);
+  } else {
+    fd.modules = fd.modules || {};
+	fd.modules.common = fd.modules.common || {};
+	fd.modules.common.dispatcher = dispatcher;
+  }
 }(FreshDirect));

@@ -1,7 +1,6 @@
 package com.freshdirect.webapp.ajax.carousel;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,10 +12,8 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
-import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
@@ -26,9 +23,10 @@ import com.freshdirect.storeapi.content.ContentNodeModel;
 import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.DataPotatoField;
-import com.freshdirect.webapp.ajax.browse.data.BrowseData.CarouselDataCointainer;
 import com.freshdirect.webapp.ajax.browse.data.CarouselData;
+import com.freshdirect.webapp.ajax.browse.data.BrowseData.CarouselDataCointainer;
 import com.freshdirect.webapp.ajax.browse.service.CarouselService;
+import com.freshdirect.webapp.ajax.reorder.QuickShopHelper;
 import com.freshdirect.webapp.ajax.reorder.service.QuickShopCarouselService;
 import com.freshdirect.webapp.ajax.reorder.service.QuickShopCrazyQuickshopRecommendationService;
 import com.freshdirect.webapp.ajax.viewcart.data.RecommendationTab;
@@ -45,102 +43,77 @@ public class CarouselServlet extends BaseJsonServlet {
 
 	@Override
 	// For OAuth2 token endpoint, GET is disabled
-    protected void doGet(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response, FDUserI u) throws HttpErrorResponse {
 
-        String type = request.getParameter("type");
-        CarouselType carouselType = CarouselType.fromString(type);
+		String type = request.getParameter("type");
+		HttpSession session = request.getSession();
+		FDSessionUser sessionUser = (FDSessionUser) QuickShopHelper.getUserFromSession(session);
 
-        HttpSession session = request.getSession();
-        FDSessionUser sessionUser = (FDSessionUser) user;
+		if (type == null || type.isEmpty()) {
+			ViewCartCarouselData carousels = getQuickShopCarousel(request, sessionUser);
+			writeResponseData(response, carousels);
 
-        Object carousel = null;
+		} else if (type.equals("checkout")) {
+			ViewCartCarouselData carousels = getCheckoutCarousel(request, sessionUser);
+			writeResponseData(response, carousels);
 
-        switch (carouselType) {
-            case QUICKSHOP:
-                carousel = getQuickShopCarousel(request, sessionUser);
-                break;
+		} else if (type.equals("cart")) {
+			ViewCartCarouselData carousels = getViewCartCarousel(request, sessionUser);
+			writeResponseData(response, carousels);
 
-            case CHECKOUT:
-                carousel = getCheckoutCarousel(request, sessionUser);
-                break;
+		} else if (type.equals("pres-picks")) {
+			CarouselDataCointainer carouselData = getPresPickCarousel(sessionUser);
+			writeResponseData(response, carouselData);
 
-            case CART:
-                carousel = getViewCartCarousel(request, sessionUser);
-                break;
+		} else if (type.equals("search")) {
+			CarouselData carouselData = getSearchCarousel(request, sessionUser);
+			writeResponseData(response, carouselData);
 
-            case PRESIDENT_PICKS: {
-                Map<String, Object> carousels = new HashMap<String, Object>();
-                carousels.put("carousels", getPresPickCarousel(sessionUser));
-                carousel = carousels;
-            }
-                break;
+		} else if (type.equals("ymal") || type.equals("deals")) {
+			Map<String, ?> dataMap = getProductCarousel(request, session, sessionUser);
+			writeResponseData(response, dataMap);
 
-            case SEARCH: {
-                Map<String, Object> carousels = new HashMap<String, Object>();
-                carousels.put("carousels", getSearchCarousel(request, sessionUser));
-                carousel = carousels;
-            }
-                break;
+		} else {
+			LOGGER.error("unsupported carousel type " + type);
+			writeResponseData(response, null);
+		}
+	}
 
-            case YMAL:
-                // Fall-through
-            case DEALS:
-                carousel = getProductCarousel(request, session, sessionUser);
-                break;
-
-            default:
-                LOGGER.error("unsupported carousel type " + type);
-                break;
-        }
-
-        writeResponseData(response, carousel);
-    }
-
-    private Map<String, ?> getProductCarousel(HttpServletRequest request, HttpSession session,
+	private Map<String, ?> getProductCarousel(HttpServletRequest request, HttpSession session,
 			FDSessionUser sessionUser) {
 		String currentNodeKey = request.getParameter("currentNodeKey");
 		String siteFeature = request.getParameter("siteFeature");
-		String eventSource = request.getParameter("eventSource");
-        String type = request.getParameter("type");
-        Boolean sendVariant = Boolean.parseBoolean(NVL.apply(request.getParameter("sendVariant"), "false"));
-        Integer maxItems = Integer.parseInt(NVL.apply(request.getParameter("maxItems"), "0"));
-
-        List<ProductModel> products = new ArrayList<ProductModel>();
+		String cmEventSource = request.getParameter("cmEventSource");
+		boolean sendVariant = request.getParameter("sendVariant") != null
+				? Boolean.parseBoolean(request.getParameter("sendVariant"))
+				: false;
+		List<ProductModel> products = new ArrayList<ProductModel>();
 		Recommendations results = null;
+		try {
 
-        boolean isNewProductsCarouselLoaded = false;
+			int maxItems = request.getParameter("maxItems") != null ? Integer.parseInt(request.getParameter("maxItems"))
+					: 0;
+			FDStoreRecommender recommender = FDStoreRecommender.getInstance();
 
-        if ("deals".equals(type) && FDStoreProperties.isCartConfirmPageNewProductsCarouselEnabled()) {
-            products = CarouselService.defaultService().collectNewProducts(FDStoreProperties.isCartConfirmPageNewProductsCarouselRandomizeProductOrderEnabled());
-            if (products.size() >= FDStoreProperties.getMinimumItemsCountInCarousel()) {
-                isNewProductsCarouselLoaded = true;
-                siteFeature = CarouselService.NEW_PRODUCTS_CAROUSEL_VIRTUAL_SITE_FEATURE;
-            }
-        }
+			ContentNodeModel currentNode = null;
+			if (currentNodeKey != null && currentNodeKey.length() != 0) {
+				currentNode = ContentFactory.getInstance().getContentNodeByKey(ContentKeyFactory.get(currentNodeKey));
+			}
 
-        if (!isNewProductsCarouselLoaded) {
-            try {
-                FDStoreRecommender recommender = FDStoreRecommender.getInstance();
+			results = recommender.getRecommendations(EnumSiteFeature.getEnum(siteFeature), sessionUser,
+					ProductRecommenderUtil.createSessionInput(session, sessionUser, maxItems, currentNode, null));
 
-                ContentNodeModel currentNode = null;
-                if (currentNodeKey != null && currentNodeKey.length() != 0) {
-                    currentNode = ContentFactory.getInstance().getContentNodeByKey(ContentKeyFactory.get(currentNodeKey));
-                }
+			ProductRecommenderUtil.persistToSession(session, results);
 
-                results = recommender.getRecommendations(EnumSiteFeature.getEnum(siteFeature), sessionUser,
-                        ProductRecommenderUtil.createSessionInput(session, sessionUser, maxItems, currentNode, null));
+			products = results.getAllProducts();
 
-                ProductRecommenderUtil.persistToSession(session, results);
+			if (products.size() > maxItems) {
+				products = products.subList(0, maxItems);
+			}
 
-                products = results.getAllProducts();
-                if (products.size() > maxItems) {
-                    products = products.subList(0, maxItems);
-                }
-
-            } catch (FDResourceException e) {
-                LOGGER.warn("Failed to get recommendations for siteFeature:" + siteFeature, e);
-            }
-        }
+		} catch (FDResourceException e) {
+			LOGGER.warn("Failed to get recommendations for siteFeature:" + siteFeature, e);
+		}
 
 		Map<String, ?> dataMap = null;
 
@@ -150,25 +123,22 @@ public class CarouselServlet extends BaseJsonServlet {
 			dataMap = DataPotatoField.digProductListFromModels(sessionUser, products);
 		}
 
-		if (eventSource != null) {
-			((Map<String, Object>) dataMap).put("eventSource", eventSource);
+		if (cmEventSource != null) {
+			((Map<String, Object>) dataMap).put("cmEventSource", cmEventSource);
 		}
-
-        ((Map<String, Object>) dataMap).put("isNewProductsCarouselLoaded", isNewProductsCarouselLoaded);
 		return dataMap;
 	}
 
-    private CarouselDataCointainer getSearchCarousel(HttpServletRequest request, FDSessionUser sessionUser) {
-        CarouselDataCointainer carouselData = new CarouselDataCointainer();
-        String productId = request.getParameter("productId");
-
-        try {
+	private CarouselData getSearchCarousel(HttpServletRequest request, FDSessionUser sessionUser) {
+		String productId = request.getParameter("productId");
+		CarouselData carouselData = null;
+		try {
 			if (null != sessionUser) {
 				Recommendations recommendations = ProductRecommenderUtil.getSearchPageRecommendations(sessionUser,
 						productId);
 				if (recommendations != null && recommendations.getAllProducts().size() > 0) {
-                    carouselData.setCarousel1(CarouselService.defaultService().createCarouselData(null, "You Might Also Like", recommendations.getAllProducts(), sessionUser, "",
-                            recommendations.getVariant().getId()));
+					carouselData = CarouselService.defaultService().createCarouselData(null, "You Might Also Like",
+							recommendations.getAllProducts(), sessionUser, "", recommendations.getVariant().getId());
 
 				}
 			}
@@ -181,28 +151,18 @@ public class CarouselServlet extends BaseJsonServlet {
 
 	private CarouselDataCointainer getPresPickCarousel(FDSessionUser sessionUser) {
 		CarouselDataCointainer carouselData = new CarouselDataCointainer();
-
-        if (FDStoreProperties.isFreshDealsPageNewProductsCarouselEnabled()) {
-            List<ProductModel> newProducts = CarouselService.defaultService()
-                    .collectNewProducts(FDStoreProperties.isFreshDealsPageNewProductsCarouselRandomizeProductOrderEnabled());
-            carouselData.setCarousel1(CarouselService.defaultService().createCarouselDataWithMinProductLimit(null, CarouselService.NEW_PRODUCTS_CAROUSEL_NAME.toUpperCase(),
-                    newProducts, sessionUser, null, null));
-        }
-
 		try {
-            SessionInput si = new SessionInput(sessionUser);
+			SessionInput si = new SessionInput(sessionUser);
+			si.setCurrentNode(ContentFactory.getInstance().getContentNode("gro"));
+			Recommendations groRecommendations = ProductRecommenderUtil.doRecommend(sessionUser,
+					EnumSiteFeature.BRAND_NAME_DEALS, si);
 
-            if (carouselData.getCarousel1() == null) {
-                si.setCurrentNode(ContentFactory.getInstance().getContentNode("gro"));
-                Recommendations groRecommendations = ProductRecommenderUtil.doRecommend(sessionUser, EnumSiteFeature.BRAND_NAME_DEALS, si);
-
-                if (groRecommendations != null && groRecommendations.getAllProducts().size() > 0) {
-                    carouselData.setCarousel1(CarouselService.defaultService().createCarouselData(null, groRecommendations.getVariant().getServiceConfig().get("prez_title_gro"),
-                            groRecommendations.getAllProducts(), sessionUser, "", groRecommendations.getVariant().getId()));
-                }
-
-            }
-            si.setCurrentNode(ContentFactory.getInstance().getContentNode("fro"));
+			if (groRecommendations != null && groRecommendations.getAllProducts().size() > 0) {
+				carouselData.setCarousel1(CarouselService.defaultService().createCarouselData(null,
+						groRecommendations.getVariant().getServiceConfig().get("prez_title_gro"),
+						groRecommendations.getAllProducts(), sessionUser, "", groRecommendations.getVariant().getId()));
+			}
+			si.setCurrentNode(ContentFactory.getInstance().getContentNode("fro"));
 			Recommendations froRecommendations = ProductRecommenderUtil.doRecommend(sessionUser,
 					EnumSiteFeature.BRAND_NAME_DEALS, si);
 			if (froRecommendations != null && froRecommendations.getAllProducts().size() > 0) {
@@ -224,7 +184,7 @@ public class CarouselServlet extends BaseJsonServlet {
 		return carouselData;
 	}
 
-    private ViewCartCarouselData getViewCartCarousel(HttpServletRequest request, FDSessionUser sessionUser) {
+	private ViewCartCarouselData getViewCartCarousel(HttpServletRequest request, FDSessionUser sessionUser) {
 		ViewCartCarouselData carousels = null;
 		try {
 			SessionInput input;
@@ -254,46 +214,32 @@ public class CarouselServlet extends BaseJsonServlet {
 		return carousels;
 	}
 
-    private ViewCartCarouselData getQuickShopCarousel(HttpServletRequest request, FDSessionUser sessionUser) {
-        ViewCartCarouselData carousels = null;
+	private ViewCartCarouselData getQuickShopCarousel(HttpServletRequest request, FDSessionUser sessionUser) {
+		ViewCartCarouselData carousels = null;
+		try {
 
-        try {
-            SessionInput input = QuickShopCarouselService.defaultService().createSessionInput(sessionUser, request);
-            carousels = QuickShopCarouselService.defaultService().populateTabsRecommendations(request, sessionUser, input);
-            carousels.getRecommendationTabs().add(0, new RecommendationTab(QuickShopCrazyQuickshopRecommendationService.defaultService().getTheCrazyQuickshopTitle(null),
-                    QuickShopCrazyQuickshopRecommendationService.QUICKSHOP_VIRTUAL_SITE_FEATURE));
+			SessionInput input = QuickShopCarouselService.defaultService().createSessionInput(sessionUser, request);
+			carousels = QuickShopCarouselService.defaultService().populateTabsRecommendations(request, sessionUser,
+					input);
+			carousels.getRecommendationTabs().add(0,
+					new RecommendationTab(
+							QuickShopCrazyQuickshopRecommendationService.defaultService()
+									.getTheCrazyQuickshopTitle(null),
+							QuickShopCrazyQuickshopRecommendationService.QUICKSHOP_VIRTUAL_SITE_FEATURE));
+			boolean isFirstTab = true;
+			for (RecommendationTab tab : carousels.getRecommendationTabs()) {
+				tab.setSelected(isFirstTab);
+				isFirstTab = false;
+			}
 
-            if (FDStoreProperties.isReorderPageNewProductsCarouselEnabled()) {
-                List<ProductModel> newProducts = CarouselService.defaultService()
-                        .collectNewProducts(FDStoreProperties.isReorderPageNewProductsCarouselRandomizeProductOrderEnabled());
-                CarouselData carouselData = CarouselService.defaultService().createCarouselDataWithMinProductLimit(null, CarouselService.NEW_PRODUCTS_CAROUSEL_NAME,
-                        newProducts, sessionUser, null, null);
-                if (carouselData != null) {
-                    RecommendationTab recommendationTab = new RecommendationTab(CarouselService.NEW_PRODUCTS_CAROUSEL_NAME,
-                            CarouselService.NEW_PRODUCTS_CAROUSEL_VIRTUAL_SITE_FEATURE);
-                    carousels.getRecommendationTabs().add(0, recommendationTab);
-                }
-            }
-
-            boolean isFirstTab = true;
-            for (RecommendationTab tab : carousels.getRecommendationTabs()) {
-                tab.setSelected(isFirstTab);
-                isFirstTab = false;
-            }
-
-        } catch (FDResourceException e) {
-            LOGGER.error("recommendation failed", e);
-        }
-        return carousels;
-    }
+		} catch (Exception e) {
+			LOGGER.error("recommendation failed", e);
+		}
+		return carousels;
+	}
 
 	@Override
 	protected boolean synchronizeOnUser() {
 		return false;
-	}
-	
-	@Override 
-	protected int getRequiredUserLevel() {
-		return FDUserI.GUEST;
 	}
 }

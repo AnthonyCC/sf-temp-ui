@@ -1,6 +1,7 @@
 package com.freshdirect.mobileapi.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,6 +25,8 @@ import com.freshdirect.framework.core.PrimaryKey;
 public class ShipToAddress extends DeliveryAddress {
 
     private AltAddressType altType;
+
+    private boolean unattendedEnabledZone;
 
     public AltAddressType getAltType() {
         return altType;
@@ -102,6 +105,8 @@ public class ShipToAddress extends DeliveryAddress {
 
         ShipToAddress newInstance = new ShipToAddress();
         newInstance.address = address;
+
+        initializeZoneUnattendedData(newInstance);
         return newInstance;
  	}
 
@@ -126,7 +131,17 @@ public class ShipToAddress extends DeliveryAddress {
             newInstance.altType = AltAddressType.NONE;
         }
         
+        initializeZoneUnattendedData(newInstance);
         return newInstance;
+    }
+
+    private static void initializeZoneUnattendedData(ShipToAddress address) {
+        try {
+            FDDeliveryZoneInfo zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(address.address, new Date(), null, null, null);
+            address.unattendedEnabledZone = zoneInfo.isUnattended();
+        } catch (Exception e) {
+            address.unattendedEnabledZone = false;
+        }
     }
 
     public String getInstructions() {
@@ -270,6 +285,10 @@ public class ShipToAddress extends DeliveryAddress {
     
     public void setUnattendedDeliveryFlag(EnumUnattendedDeliveryFlag flag) {
         address.setUnattendedDeliveryFlag(flag);
+    }
+
+    public boolean isUnattendedEnabledZone() {
+        return unattendedEnabledZone;
     }
 
     public static AddressModel setZoningInfoOnAddress(FDDeliveryZoneInfo dlvResponse, AddressModel address) {

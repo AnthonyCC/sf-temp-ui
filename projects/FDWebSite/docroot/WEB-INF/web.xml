@@ -651,6 +651,15 @@
     <url-pattern>/api/freetrial</url-pattern>
   </servlet-mapping>
   
+  	<servlet>
+		<servlet-name>CarouselServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.ajax.carousel.CarouselServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>CarouselServlet</servlet-name>
+		<url-pattern>/api/carousel</url-pattern>
+	</servlet-mapping>
+	
 	<servlet>
 		<servlet-name>JavascriptServlet</servlet-name>
 		<servlet-class>com.freshdirect.webapp.jawr.JawrServlet</servlet-class>

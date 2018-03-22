@@ -2,9 +2,10 @@
 <%@ page import="com.freshdirect.webapp.taglib.location.LocationHandlerTag"%>
 <%@ page import='com.freshdirect.common.address.AddressModel' %>
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
+<%@ page import="com.freshdirect.fdstore.customer.FDUserUtil" %>
 <%@ page import="com.freshdirect.webapp.soy.SoyTemplateEngine"%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties'%>
-<%@page import="com.freshdirect.webapp.ajax.quickshop.QuickShopHelper"%>
+<%@ page import="com.freshdirect.webapp.ajax.quickshop.QuickShopHelper"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
@@ -22,6 +23,7 @@
 	boolean isReorderOrders = (mobweb_uri.indexOf("/qs_past_orders.jsp") != -1) ? true : false;
 	boolean isCheckout = (mobweb_uri.indexOf("/expressco/") != -1) ? true : false;
 	boolean isHelp = (mobweb_uri.indexOf("/help/") != -1) ? true : false;
+	boolean isModifyOrder = FDUserUtil.getModifyingOrder(user) != null;
 
 	Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
 	boolean useFdxGlobalNav = FDStoreProperties.isFdxLocationbarEnabled();
@@ -96,7 +98,9 @@
     <tmpl:get name="extraCss" />
     <tmpl:get name="extraJs" />
     <tmpl:get name='nutritionCss'/>
-
+	<% if (isModifyOrder) { %>
+			<jwr:style src="/modifyorder.css" media="all" />
+	<%} %>
     <%
 		if ( (request.getRequestURI().indexOf("/your_account/giftcards.jsp")>-1) || (request.getRequestURI().indexOf("/your_account/gc_order_details.jsp")>-1) ) {
 			//do nothing

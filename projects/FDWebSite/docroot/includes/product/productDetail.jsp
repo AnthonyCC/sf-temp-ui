@@ -61,9 +61,9 @@
 	<div class="prodDetail">
 		<fd:CmFieldDecorator/>
 		<%if (FDStoreProperties.isAdServerEnabled()) {%>
-			<center class="oas-cnt" id='oas_ProductNote'><script type="text/javascript">OAS_AD('ProductNote');</script></center>
+			<div class="center oas-cnt" id='oas_ProductNote'><script type="text/javascript">OAS_AD('ProductNote');</script></div>
 		<%} else {%>
-    		<center><%@ include file="/shared/includes/product/i_product_quality_note.jspf" %></center>
+    		<div class="center"><%@ include file="/shared/includes/product/i_product_quality_note.jspf" %></div>
 		<%}%>
 
 		<% if (mobWeb) { %>

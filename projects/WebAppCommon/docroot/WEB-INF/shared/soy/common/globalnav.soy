@@ -44,24 +44,29 @@
     //{call .globalnavSuperDepartment data="$menuitem" /}
         <!-- SUPERDEPARTMENT - {$menuitem.id} -->
         <div class="subdepartments_cont">
-        <ul class="subdepartments">
-      {foreach $department in $menuitem.departments}
-            <li class="submenuitem" data-component="globalnav-submenu-item" data-id="{$department.id}">
-              <span class="submenuitem-link">
-                <a href="/browse.jsp?id={$department.id}">{$department.name ? $department.name : $department.id}</a>
-              </span>
-              <div class="arrow-down"></div>
-            </li>
-          {/foreach}
-        </ul>
-      </div>
+          {if $menuitem.departments}
+            <ul class="subdepartments">
+              {foreach $department in $menuitem.departments}
+                <li class="submenuitem" data-component="globalnav-submenu-item" data-id="{$department.id}">
+                  <span class="submenuitem-link">
+                    <a href="/browse.jsp?id={$department.id}">{$department.name ? $department.name : $department.id}</a>
+                  </span>
+                  <div class="arrow-down"></div>
+                </li>
+              {/foreach}
+            </ul>
+          {/if}
+		</div>
   </li>
   {/if}
-  {foreach $department in $menuitem.departments}
-    {call .globalnavDepartment}
-     {param department: $department/}
-    {/call}
-  {/foreach}
+  //looping over depts here will duplicate the dept menus from a superdept
+  //is there a scenerio where a dept will be in a superdept but not in the main list of depts?
+  //
+  //{foreach $department in $menuitem.departments}
+  //  {call .globalnavDepartment}
+  //   {param department: $department/}
+  //  {/call}
+  //{/foreach}
 {else}
   {call .globalnavDepartment}
    {param department: $menuitem/}
@@ -106,6 +111,7 @@
 
 {if not $department.hideDropDown}
 <li class="department" data-component="globalnav-popup-body" data-id="{$department.id}" data-popup-type="department">
+<!-- start dept {$department.id} -->
  <div class="deptcontainer">
    {if $department.heroImage}
      <div class="heroimg_cont"><img class="heroimg lazyload" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{$department.heroImage}" alt="{if $department.name}{$department.name} department{/if}" /></div>
@@ -116,7 +122,12 @@
            {foreach $column in $department.dropDownCategories}
              <div class="dropdown-column">
                {foreach $elem in $column}
-                 <h3 class="column-heading">{$elem.headline}</h3>
+                 {if $elem.headline}
+                 	<h3 class="column-heading">{$elem.headline}</h3>
+                 {else}
+                 	<span class="column-heading"><!-- spacer --></span>
+                 {/if}
+                 <!-- start category list -->
                  <ul>
                    {foreach $category in $elem.categories}
                      <li>
@@ -130,13 +141,19 @@
                      </li>
                    {/foreach}
                  </ul>
+                 <!-- end category list -->
                {/foreach}
              </div>
            {/foreach}
        {/if}
        {if $hasPrefCategories}
          <div class="dropdown-column">
-           <h3 class="column-heading">{$department.preferenceCategoriesNavHeader}</h3>
+			{if $department.preferenceCategoriesNavHeader}
+           		<h3 class="column-heading">{$department.preferenceCategoriesNavHeader}</h3>
+			{else}
+				<span class="column-heading"><!-- spacer --></span>
+			{/if}
+			<!-- start preferenceCategories list -->
            <ul>
              {foreach $category in $department.preferenceCategories}
                <li>
@@ -150,14 +167,15 @@
                </li>
              {/foreach}
            </ul>
+			<!-- end preferenceCategories list -->
          </div>
        {/if}
        {if $department.seasonalMedia}
-         <div class="seasonal-media">{$department.seasonalMedia}</div>
+         <div class="seasonal-media globalnav.soy {$department.name}">{$department.seasonalMedia}</div>
        {/if}
      </div>
    {/if}
- </div>
+ </div><!-- end dept {$department.id} -->
 </li>
 {/if}
 {/template}

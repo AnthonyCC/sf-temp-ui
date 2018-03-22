@@ -78,18 +78,6 @@ final int W_YA_GC_ORDER_DETAILS = 970;
 <fd:GetOrder id='cart' saleId='<%= orderId %>'>
 <%
     if (cart != null) {
-        // !!! REFACTOR: duplicates code from checkout pages
-    
-        StringBuffer custName = new StringBuffer(50);
-        custName.append(customerModel.getFirstName());
-        if (customerModel.getMiddleName()!=null && customerModel.getMiddleName().trim().length()>0) {
-            custName.append(" ");
-            custName.append(customerModel.getMiddleName());
-        }
-        custName.append(" ");
-        custName.append(customerModel.getLastName());
-        
-        
         //
         // get payment info
         //

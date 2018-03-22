@@ -16,24 +16,28 @@
 	<jsp:forward page="/checkout/view_cart.jsp"/>
 </c:if>
 
-<c:set var="potatoes" value='${cartConfirmPotatoes["cartConfirmPotatoes"]}'/>
-
 <div class="pdp pdp-cc">
-  <soy:render template="pdp.cartConfirmIterator" data="${cartConfirmPotatoes}" />
+	<soy:render template="serverRendered.pdp.cartConfirmIterator" data="${cartConfirmPotatoes}" injectAdditonalData="false" />
 	<div class="span-16 first cc-ymalCarousel">
 		<script>
-          	$jq.ajax('/carousel/carousel.jsp?type=ymal&currentNodeKey=${potatoes[0].cartLine.cmskey}').then(function(page) {
-          		$jq('.pdp-cc .cc-ymalCarousel').html(page);
+			$jq(document).ready(function() {
+	          	$jq.ajax('/api/carousel?siteFeature=YMAL&maxItems=25&cmEventSource=CC_YMAL&sendVariant=true&type=ymal&currentNodeKey=${cartConfirmPotatoes["cartConfirmPotatoes"][0].cartLine.cmskey}').then(function(data) {
+	          		$jq('.pdp-cc .cc-ymalCarousel').html(common.ymalCarousel(data));
               FreshDirect.components.carousel.changePage($jq('.pdp-cc .cc-ymalCarousel [data-component="carousel"]').first(), null);
-          	});
+          		});
+			});
         </script>
 	</div>
 	<div class="span-16 first cc-tabbedCarousel">
 		<script>
-          	$jq.ajax('/carousel/carousel.jsp?type=deals').then(function(page) {
-          		$jq('.pdp-cc .cc-tabbedCarousel').html(page);
-          	});
+			$jq(document).ready(function() {
+	          	$jq.ajax('/api/carousel?type=deals&siteFeature=DEALS_QS&maxItems=15&cmEventSource=cc_tabbedRecommender').then(function(data) {
+	          		if (data) {
+	          			data.selected = 'deals';
+	          			$jq('.pdp-cc .cc-tabbedCarousel').html(common.tabbedCarousel(data));
+	          		}
+	          	});
+			});
         </script>
 	</div>
 </div>
-<script>cartConfirm=<fd:ToJSON object="${cartConfirmPotatoes}" noHeaders="true"/></script>

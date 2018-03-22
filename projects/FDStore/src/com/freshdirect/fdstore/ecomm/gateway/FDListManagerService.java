@@ -8,17 +8,15 @@ import org.apache.log4j.Category;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.freshdirect.common.context.StoreContext;
-import com.freshdirect.ecomm.gateway.AbstractEcommService;
+import com.freshdirect.ecomm.gateway.ExtTimeAbstractEcommService;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.ecommerce.data.list.CopyCustomerListData;
 import com.freshdirect.ecommerce.data.list.CustomerCreatedListData;
 import com.freshdirect.ecommerce.data.list.CustomerListRequest;
-import com.freshdirect.ecommerce.data.list.CustomerProductListLineItemData;
 import com.freshdirect.ecommerce.data.list.FDCustomerListData;
 import com.freshdirect.ecommerce.data.list.FDCustomerListInfoData;
 import com.freshdirect.ecommerce.data.list.FDCustomerListItemData;
-import com.freshdirect.ecommerce.data.list.FDProductSelectionData;
 import com.freshdirect.ecommerce.data.list.RenameCustomerListData;
 import com.freshdirect.ecommerce.data.list.RenameListData;
 import com.freshdirect.ecommerce.data.list.SaleStatisticsData;
@@ -44,7 +42,7 @@ import com.freshdirect.fdstore.lists.FDStandingOrderList;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
-public class FDListManagerService extends AbstractEcommService implements FDListManagerServiceI{
+public class FDListManagerService extends ExtTimeAbstractEcommService implements FDListManagerServiceI{
 	
 	private final static Category LOGGER = LoggerFactory.getInstance(FDReferralManagerService.class);
 	

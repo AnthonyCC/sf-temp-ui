@@ -86,8 +86,8 @@ if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDU
 	fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
 </script>
 --%>
-<center>
-<table data-component="footer-cont" width="<%=W_FOOTER_TOTAL %>" cellpadding="0" cellspacing="0" border="0" class="<%= (FDStoreProperties.isFdxLocationbarEnabled()) ? "hasFDX" : "" %><%= (user_footer.getShoppingCart() instanceof FDModifyCartModel) ? " modify" : "" %>">
+<div class="center">
+<table data-component="footer-cont" class="<%= (FDStoreProperties.isFdxLocationbarEnabled()) ? "hasFDX" : "" %><%= (user_footer.getShoppingCart() instanceof FDModifyCartModel) ? " modify" : "" %>">
 	<tr>
 		<td>
 			<img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" /><br />
@@ -108,7 +108,7 @@ if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDU
 	</td>
 	</tr>
 	<tr>
-		<td align="center" class="text11bold" style="padding: 5px 0px;">
+		<td class="text11bold" style="text-align: center; padding: 5px 0px;">
 			<% if (FDStoreProperties.isSocialFooterStatic()) { %>
 				<div id="socialFooterStatic">
 					<a href="http://www.facebook.com/FreshDirect" target="_social-facebook">
@@ -194,31 +194,31 @@ if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDU
 			<div style="float:left; width:1px; height:40px; margin: 0px 10px" class="dotted_separator_v"></div>
 			<div style="float:right; padding: 10px 5px 0px 5px">
 				<a href="/index.jsp?serviceType=HOME">Home</a>
-				&nbsp;&nbsp;<font color="#999999"><b>|</b></font>
+				&nbsp;&nbsp;<span style="color: #999999"><b>|</b></span>
         &nbsp;&nbsp;<a href="/your_account/manage_account.jsp" fd-login-required>Your Account</a>
 				
-				&nbsp;&nbsp;<font color="#999999"><b>|</b></font>
+				&nbsp;&nbsp;<span style="color: #999999"><b>|</b></span>
 				&nbsp;&nbsp;<a href="/help/index.jsp">Help/FAQ</a>
-				&nbsp;&nbsp;<font color="#999999"><b>|</b></font>
+				&nbsp;&nbsp;<span style="color: #999999"><b>|</b></span>
 				&nbsp;&nbsp;<a href="/help/index.jsp?trk=bnav">Contact Us</a>
 			</div>
 		</td>
 	</tr>
 	<tr>
-		<td align="center" class="text11bold">
+		<td class="text11bold" style="text-align: center;">
 			<div style="width:100%; height:1px" class="dotted_separator_h"></div>
 		</td>
 	</tr>
 	<tr>
-		<td align="center" class="text11" style="padding-top: 10px">
+		<td class="text11" style="padding-top: 10px; text-align: center;">
 			<%@ include file="/shared/template/includes/copyright.jspf" %><br />
 			
 			<fd:IncludeMedia name="/media/layout/nav/globalnav/footer/after_copyright_footer.ftl">
 				<img src="/media_stat/images/layout/clear.gif" width="1" height="6" alt="" /><br />
 				<a href="/help/privacy_policy.jsp">Privacy Policy</a>
-				&nbsp;<font color="#999999">|</font>
+				&nbsp;<span style="color: #999999">|</span>
 				&nbsp;<a href="/help/terms_of_service.jsp">Customer Agreement</a>
-				&nbsp;<font color="#999999">|</font>
+				&nbsp;<span style="color: #999999">|</span>
 				&nbsp;<a href="/help/platform_agreement.jsp">Platform Terms of Use</a>
 			</fd:IncludeMedia>
 		</td>
@@ -235,5 +235,5 @@ if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDU
 %>
 
 <br /><img src="/media_stat/images/layout/clear.gif" width="1" height="6" alt="" />
-</center>
+</div>
 

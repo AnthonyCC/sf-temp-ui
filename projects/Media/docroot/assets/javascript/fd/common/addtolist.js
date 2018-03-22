@@ -97,7 +97,7 @@ var FreshDirect = FreshDirect || {};
           /* APPDEV-4138 END */
           if(trimmed.length > 0){
         	  /* APPDEV-4138 START*/
-		   /* if(lists.indexOf(name)>-1) {*/
+		   /* if(lists.indexOf(name)>-1)Â {*/
         	
         	  if(lists.indexOf(name.toUpperCase())>-1) {
         	 /* APPDEV-4138 END */  
@@ -170,7 +170,7 @@ var FreshDirect = FreshDirect || {};
       value:null
     },
     trigger: {
-      value: '[data-component=product] button.addtolist, [data-component=product] span.addtolist'
+      value: '[data-component=product] button.addtolist, [data-component=product] a.addtolist, [data-component=product] span.addtolist'
     },
     popupId: {
       value: 'addtolistpopup'

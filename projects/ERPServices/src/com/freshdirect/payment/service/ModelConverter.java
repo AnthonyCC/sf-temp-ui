@@ -2188,7 +2188,7 @@ public class ModelConverter {
 	}
 	private static CharacteristicValuePrice[] buildCharacteristicValuePrice(
 			CharacteristicValuePriceData[] characteristicValuePriceDatas) {
-		CharacteristicValuePrice[] models = null;
+		CharacteristicValuePrice[] models = new CharacteristicValuePrice[0] ;
 		if (characteristicValuePriceDatas != null
 				&& characteristicValuePriceDatas.length > 0) {
 			models = new CharacteristicValuePrice[characteristicValuePriceDatas.length];
@@ -2207,7 +2207,7 @@ public class ModelConverter {
 	}
 
 	private static SalesUnitRatio[] buildSalesRatios(SalesUnitRatioData[] salesUnitRatios) {
-		SalesUnitRatio[] models = null;
+		SalesUnitRatio[] models = new SalesUnitRatio[0];
 		if(salesUnitRatios!=null && salesUnitRatios.length > 0){
 			models = new SalesUnitRatio[salesUnitRatios.length];
 			for(int i=0;i<salesUnitRatios.length;i++){
@@ -2236,13 +2236,14 @@ public class ModelConverter {
 
 	private static ZonePriceModel buildZonePriceModel(ZonePriceData value, ZoneInfo key) {
 		MaterialPrice[] matPrices = buildMaterialPriceArray(value.getMaterialPrices());
-		ZonePriceModel model = new ZonePriceModel(key, matPrices);
-		return null;
+		ZoneInfo zoneInfo = buildZoneInfo(value.getZoneInfo());
+		ZonePriceModel model = new ZonePriceModel(zoneInfo, matPrices);
+		return model;
 	}
 
 	private static MaterialPrice[] buildMaterialPriceArray(
 			com.freshdirect.ecommerce.data.common.pricing.MaterialPrice[] materialPrices) {
-		MaterialPrice[] price = null;
+		MaterialPrice[] price = new MaterialPrice[0];
 		if(materialPrices!=null && materialPrices.length > 0){
 			price = new MaterialPrice[materialPrices.length];
 			for (int i = 0; i < materialPrices.length; i++) {
@@ -2256,7 +2257,7 @@ public class ModelConverter {
 
 	private static FDSalesUnit[] buildFDSalesUnitArray(
 			FDSalesUnitData[] salesUnitDatas) {
-		FDSalesUnit[] salesUnits = null;
+		FDSalesUnit[] salesUnits = new FDSalesUnit[0];
 		if(salesUnitDatas!=null && salesUnitDatas.length > 0){
 			salesUnits = new FDSalesUnit[salesUnitDatas.length];
 			for (int i = 0; i < salesUnitDatas.length; i++) {
@@ -2271,7 +2272,7 @@ public class ModelConverter {
 	}
 
 	private static FDVariation[] buildFDVariation(FDVariationData[] variationDatas) {
-		FDVariation[] variations = null;
+		FDVariation[] variations = new FDVariation[0];
 		if(variationDatas!=null && variationDatas.length > 0){
 			variations = new FDVariation[variationDatas.length];
 			for (int i = 0; i < variationDatas.length; i++) {
@@ -2288,7 +2289,7 @@ public class ModelConverter {
 
 	private static FDVariationOption[] buildVariationOptions(
 			FDVariationOptionData[] variationOptionDatas) {
-		FDVariationOption[] variationOptions = null;
+		FDVariationOption[] variationOptions = new FDVariationOption[0];
 		if(variationOptionDatas!=null && variationOptionDatas.length > 0){
 			variationOptions = new FDVariationOption[variationOptionDatas.length];
 			for (int i = 0; i < variationOptionDatas.length; i++) {

@@ -16,6 +16,7 @@ import org.apache.log4j.Category;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.ZoneInfo;
+import com.freshdirect.ecomm.gateway.ErpInfoService;
 import com.freshdirect.erp.ejb.ErpInfoHome;
 import com.freshdirect.erp.ejb.ErpInfoSB;
 import com.freshdirect.erp.model.ErpProductInfoModel;
@@ -65,7 +66,7 @@ public class CartLineFactory {
 				Collection<ErpProductInfoModel> prods  = new ArrayList<ErpProductInfoModel>();
 				String mat = materials[i];
 				if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpInfoSB"))
-					prods = FDECommerceService.getInstance().findProductsBySapId(mat);
+					prods = ErpInfoService.getInstance().findProductsBySapId(mat);
 				else
 					prods = infoBean.findProductsBySapId(mat);
 			

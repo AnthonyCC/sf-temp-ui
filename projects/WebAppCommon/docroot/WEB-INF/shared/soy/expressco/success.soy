@@ -9,6 +9,7 @@
 * @param? soOrderDate
 * @param? orderModifiable
 * @param? hasSettledOrder
+* @param? deliveryPassTrialActivated
 * @param? deliveryType
 * @param? soActivate
 * @param? soFrequency
@@ -29,6 +30,7 @@
     {param soName: $soName /}
     {param soOrderDate: $soOrderDate /}
     {param orderModifiable: $orderModifiable /}
+    {param deliveryPassTrialActivated: $deliveryPassTrialActivated /}
     {param hasSettledOrder: $hasSettledOrder /}
     {param deliveryType: $deliveryType /}
   {/call}
@@ -52,6 +54,7 @@
 	    {param orderModifiable: $orderModifiable /}
 	    {param soActivate: $soActivate /}
 	    {param hasSettledOrder: $hasSettledOrder /}
+	    {param deliveryPassTrialActivated: $deliveryPassTrialActivated /}
 	    {param deliveryType: $deliveryType /}
  	{/call}
 {/if}
@@ -70,6 +73,7 @@
  * @param? orderId Number of order
  * @param? rightBlock
  * @param? receipt
+ * @param? deliveryPassTrialActivated
  * @param? soName
  * @param? soOrderDate
  * @param? orderModifiable
@@ -100,6 +104,7 @@
       {param soName: $soName /}
       {param soOrderDate: $soOrderDate /}
       {param orderModifiable: $orderModifiable /}
+      {param deliveryPassTrialActivated: $deliveryPassTrialActivated /}
       {param soActivate: $soActivate /}
     {/call}
     {if $hasSettledOrder and $deliveryType == 'H'}<div class="raf-success"><a target="_blank" href="//refer.freshdirect.com/orderconfirmpage2525"><img src="/media/images/promotions/raf/RAF_success_450x89.jpg" alt="Refer-A-Friend" /></a></div>{/if}
@@ -121,6 +126,7 @@
 * @param saveAmount Value of amount you've saved
 * @param totalLabel Label of Subtotal
 * @param total Value of Subtotal
+* @param? deliveryPassTrialActivated
 * @param? soName
 * @param? soOrderDate
 * @param orderModifiable
@@ -128,6 +134,9 @@
 */
 {template .receiptBox autoescape="false"}
 <div class="orderbox">
+  {if $deliveryPassTrialActivated}
+  	<div class="dpsuccess">Congratulations! Your DeliveryPass<sup>&reg;</sup> trial is good to go.</div>
+  {/if}
   {if $soActivate}
      <h2 class="orderid">{$soName}</h2>
   {else}
@@ -159,7 +168,7 @@
   {/if}
   {if $orderModifiable}
   <div class="successmodifyorderbutton-cont">
-  <button class="cssbutton orange" onclick="location.href='/your_account/modify_order.jsp?orderId={$orderId}&amp;action=modify'">Modify Order</button>
+  <button class="cssbutton orange modify-order-btn" data-gtm-source="order confirmation" onclick="location.href='/your_account/modify_order.jsp?orderId={$orderId}&amp;action=modify'">Modify Order</button>
   </div>
   {/if}
 </div>

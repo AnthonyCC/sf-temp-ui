@@ -187,7 +187,7 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 				if(windowType != null && windowType.length > 0 
 						&& ((radiusEvaluated && checkSteeringDiscountFlag(user, dlvTimeslotModel))
 								||(!radiusEvaluated && dlvTimeslotModel.hasSteeringRadius() 
-										&& tsWindowMap != null && checkTimeSlotRadius(dlvStartTimeOfDay, dlvEndTimeOfDay, tsWindowMap.get(windowDuration))))) {					
+										/*&& tsWindowMap != null && checkTimeSlotRadius(dlvStartTimeOfDay, dlvEndTimeOfDay, tsWindowMap.get(windowDuration))*/))) {					
 						
 						for(int i = 0;i < windowType.length; i++) {
 							if(!"ALL".equalsIgnoreCase(windowType[i].trim())){

@@ -47,6 +47,7 @@ import com.freshdirect.framework.util.SqlUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.logistics.delivery.dto.CustomerAvgOrderSize;
 import com.freshdirect.sms.EnumSMSAlertStatus;
+import com.freshdirect.storeapi.content.ContentFactory;
 
 public class FDUserDAO {
 
@@ -1540,14 +1541,22 @@ public class FDUserDAO {
 	public static int updateDpFreeTrialOptin(Connection conn, boolean dpFreeTrialOptin, String custId) {
 		int result = 0;
 		PreparedStatement ps = null;
+		EnumEStoreId eStoreId =  EnumEStoreId.FD;
+		try {
+			eStoreId = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
+		} catch (Exception e1) {
+			LOGGER.warn("Exception :", e1);
+		}
+
 		try {
 
 			String value = dpFreeTrialOptin ? "Y" : "N";
 			ps = conn.prepareStatement(
-					"update cust.fdcustomer_estore set DP_FREE_TRIAL_OPTIN=?,DP_FREE_TRIAL_OPTIN_DATE=? where fdcustomer_id=?");
+					"update cust.fdcustomer_estore set DP_FREE_TRIAL_OPTIN=?,DP_FREE_TRIAL_OPTIN_DATE=? where fdcustomer_id=? and e_store=?");
 			ps.setString(1, value);
 			ps.setTimestamp(2, new Timestamp(new Date().getTime()));
 			ps.setString(3, custId);
+			ps.setString(4, eStoreId.getContentId());
 			result = ps.executeUpdate();
 
 		} catch (SQLException e) {

@@ -99,10 +99,8 @@
 		/* 2-6 */
 			folderMap.put("Store Credits","/your_account/credits.jsp");
 		/* 2-7 */
-			if (!isModifyOrder_youract) {
-				if ( user_youract.isGiftCardsEnabled() ) {
-					 folderMap.put("Gift Cards","/your_account/giftcards.jsp");
-				}
+			if ( user_youract.isGiftCardsEnabled() ) {
+				 folderMap.put("Gift Cards","/your_account/giftcards.jsp");
 			}
 		
 		/* these should only show on your account page */		

@@ -98,9 +98,13 @@ public class FDEcommProperties {
 	public static final String SaleCronSB="payment.ejb.SaleCronSB";
 	public static final String ErpInfoSB_WarmUp="erp.ejb.ErpInfoSB_WarmUp";
 	public static final String FDFactorySB_WarmUp ="fdstore.ejb.FDFactorySB_WarmUp";
-	
-  
-    
+	private static final String PROP_ECOM_SERVICE_CONNECTION_TIMEOUT = "fdstore.ecom.service.conn.timeout";
+	private static final String PROP_ECOM_SERVICE_CONNECTION_POOL = "fdstore.ecom.service.conn.read.timeout";
+	private static final String PROP_ECOM_SERVICE_CONN_READ_TIMEOUT = "fdstore.ecom.service.conn.request.timeout";
+	private static final String PROP_ECOM_SERVICE_CONNECTION_REQUEST_TIMEOUT = "fdstore.ecom.service.conn.pool";
+	public static final String FDFactorySB_WarmUp_BULKSKU ="fdstore.ejb.FDFactorySB_WarmUp_BulkSkus";
+	public final static String PROP_JCO_CLIENT_LISTENER_COOL_INFO_ENABLED = "jco.client.listeners.coolinfo.Enabled";
+   
     
     static {
 
@@ -278,6 +282,36 @@ public class FDEcommProperties {
 		return false;
 	}
 
+	 public static int getEcomServiceConnectionTimeout() {
+	        try {
+	            return Integer.parseInt(config.getProperty(PROP_ECOM_SERVICE_CONNECTION_TIMEOUT));
+	        } catch (NumberFormatException e) {
+	            return 60;
+	        }
+	    }
 
+	    public static int getEcomServiceConnectionPool() {
+	        try {
+	            return Integer.parseInt(config.getProperty(PROP_ECOM_SERVICE_CONNECTION_POOL));
+	        } catch (NumberFormatException e) {
+	            return 10;
+	        }
+	    }
+
+	    public static int getEcomServiceConnectionReadTimeout() {
+	        try {
+	            return Integer.parseInt(config.getProperty(PROP_ECOM_SERVICE_CONN_READ_TIMEOUT));
+	        } catch (NumberFormatException e) {
+	            return 300;
+	        }
+	    }
+
+	    public static int getEcomServiceConnectionRequestTimeout() {
+	        try {
+	            return Integer.parseInt(config.getProperty(PROP_ECOM_SERVICE_CONNECTION_REQUEST_TIMEOUT));
+	        } catch (NumberFormatException e) {
+	            return 60;
+	        }
+	    }
 	
 }

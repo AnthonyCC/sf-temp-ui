@@ -7,7 +7,7 @@ var FreshDirect = FreshDirect || {};
 
 	var $=fd.libs.$;
   var POPUPWIDGET = fd.modules.common.popupWidget;
-
+  var customClass = null;
   var confirmpopup = Object.create(POPUPWIDGET,{
     headerContent: {
       value: ''
@@ -34,7 +34,12 @@ var FreshDirect = FreshDirect || {};
       value: {
         zIndex: 2000,
         ghostZIndex: 2010,
-        halign: 'left'
+        halign: 'left',
+        hidecallback: function() {
+        	if (customClass) {
+        		confirmpopup.popup.$el.removeClass(customClass);
+            }
+        }
       }
     },
     decorate: {
@@ -78,8 +83,10 @@ var FreshDirect = FreshDirect || {};
             template = data.template || $t.attr('data-confirm-template'),
             process = data.process || $t.attr('data-confirm-process'),
             processFn = fd.modules.common.utils.discover(process),
-            bt = fd.modules.common.utils.discover(template) || common.confirmpopup;
-
+            bt = fd.modules.common.utils.discover(template) || common.confirmpopup,
+            hideBackground = $t.attr('data-hide-background') != null;
+            
+        customClass = $t.attr('data-confirm-class');
         this.$currentTrigger = $t;
 
         data.message = message || data.message;
@@ -94,6 +101,13 @@ var FreshDirect = FreshDirect || {};
           this.popup.show($t, null);
           this.popup.clicked = true;
         }
+        if (customClass) {
+        	confirmpopup.popup.$el.addClass(customClass);
+        }
+        
+        if (hideBackground) {
+        	confirmpopup.popup.$overlay.css('opacity', '0.8');
+        }
       }
     }
   });
@@ -104,6 +118,12 @@ var FreshDirect = FreshDirect || {};
   $(document).on('click', '#' + confirmpopup.popupId + ' .close', confirmpopup.close.bind(confirmpopup));
   $(document).on('click', '#' + confirmpopup.popupId + ' [data-button]', confirmpopup.buttonClick.bind(confirmpopup));
 
-  fd.modules.common.utils.register("components", "confirmpopup", confirmpopup, fd);
+  if (fd.modules && fd.modules.common && fd.modules.common.utils) {
+	  fd.modules.common.utils.register("components", "confirmpopup", confirmpopup, fd);
+  } else {
+	  // self register
+	  fd.components = fd.components || {};
+	  fd.components.confirmpopup = confirmpopup;
+  }
 
 }(FreshDirect));

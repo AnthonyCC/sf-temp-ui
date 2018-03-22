@@ -9,7 +9,7 @@
 {template .modifyBRDPopup2}
 <div id="MBRDPopup2" class="BRD-popup-container">
 	<div class="BRD-popup qs-popup">
-		<h2 class="qs-popup-header"><span>You are modifying a pending order.</span><button class="MBRD-close">close</button></h2>
+		<h2 class="qs-popup-header"><span>You are modifying a pending order.</span><button class="MBRD-close create-order-atc">close</button></h2>
 		<div class="qs-popup-content" {if $eventSource}data-cmeventsource="{$eventSource}"{/if}>
 			<p class="MBRD-order">
 				<label for="MBRDOrder">Choose which order to modify:</label>
@@ -61,8 +61,8 @@
 				</div>
 			{/if}
 			<p class="MBRD-buttons">
-				<button class="MBRD-cancel">Cancel</button>
-				<button class="MBRD-modify" data-ref="#MBRDPopup2">Modify Order</button>
+				<button class="MBRD-cancel create-order-atc">Cancel</button>
+				<button class="MBRD-modify modify-order-btn" data-gtm-source="atc" data-ref="#MBRDPopup2">Modify Order</button>
 			</p>
 		</div>
 	</div>

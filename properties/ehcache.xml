@@ -158,6 +158,6 @@
                 memoryStoreEvictionPolicy="LRU">
      </cache>
 	<!-- ipLocatorCache -->
-    <cache name="ipLocationCache" maxEntriesLocalHeap="50000" eternal="false" timeToLiveSeconds="86400" memoryStoreEvictionPolicy="FIFO" transactionalMode="off" />
+    <cache name="ipLocationCache" maxEntriesLocalHeap="50000" eternal="false" timeToLiveSeconds="432000" memoryStoreEvictionPolicy="FIFO" transactionalMode="off" />
 </ehcache>
 

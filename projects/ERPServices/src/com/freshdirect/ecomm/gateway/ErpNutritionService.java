@@ -22,7 +22,7 @@ import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.payment.service.IECommerceService;
 import com.freshdirect.payment.service.ModelConverter;
 
-public class ErpNutritionService extends AbstractEcommService implements ErpNutritionServiceI{
+public class ErpNutritionService extends ExtTimeAbstractEcommService implements ErpNutritionServiceI{
 	
 	private final static Category LOGGER = LoggerFactory
 			.getInstance(FDECommerceService.class);

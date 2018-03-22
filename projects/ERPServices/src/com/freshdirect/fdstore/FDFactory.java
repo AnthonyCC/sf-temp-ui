@@ -18,6 +18,9 @@ import javax.naming.NamingException;
 
 import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.customer.ErpZoneMasterInfo;
+import com.freshdirect.ecomm.gateway.ErpInfoService;
+import com.freshdirect.ecomm.gateway.FDFactoryService;
+import com.freshdirect.ecomm.gateway.FDFactoryServiceI;
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.EnumAlcoholicContent;
 import com.freshdirect.erp.SkuAvailabilityHistory;
@@ -53,10 +56,10 @@ public class FDFactory {
 
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB)){
 				if (!FDStoreProperties.getPreviewMode()) {
-					return FDECommerceService.getInstance().getProductInfo(sku);
+					return FDFactoryService.getInstance().getProductInfo(sku);
 	            } else {
 	            	try {
-	            		return getPreviewProductInfo( FDECommerceService.getInstance().getProductInfo(sku) );
+	            		return getPreviewProductInfo( FDFactoryService.getInstance().getProductInfo(sku) );
 	            	} catch (FDSkuNotFoundException ex) {
 	            		return getPreviewProductInfo(sku);
 	            	}
@@ -90,7 +93,7 @@ public class FDFactory {
 			lookupFactoryHome();
 		}
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB_WarmUp)){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB)){
 				return new FDProductHelper().getFDProductInfoNew(erpProdInfo);//::FDX::
 			}else{
 			FDFactorySB sb = factoryHome.create();
@@ -123,7 +126,7 @@ public class FDFactory {
 		}
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB)){
-				return FDECommerceService.getInstance().getProductInfo(sku,version);
+				return FDFactoryService.getInstance().getProductInfo(sku,version);
 			}else{
 				FDFactorySB sb = factoryHome.create();
 
@@ -155,7 +158,7 @@ public class FDFactory {
 			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
-				return FDECommerceService.getInstance().findSkusBySapId(sapId);
+				return FDFactoryService.getInstance().findSkusBySapId(sapId);
 			}else{
 				FDFactorySB sb = factoryHome.create();
 
@@ -179,8 +182,8 @@ public class FDFactory {
 		try {
 			for(Iterator<String>it = sapIds.iterator();it.hasNext();) {
 				String sapId = it.next();
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB_WarmUp)){
-					skuCodes.addAll(FDECommerceService.getInstance().findSkusBySapId(sapId));
+				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB)){
+					skuCodes.addAll(FDFactoryService.getInstance().findSkusBySapId(sapId));
 				}else{
 				FDFactorySB sb = factoryHome.create();
 				skuCodes.addAll(sb.getSkuCodes(sapId));
@@ -417,7 +420,7 @@ public class FDFactory {
 		}
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB)){
-				pinfos = FDECommerceService.getInstance().getProductInfos(skus);
+				pinfos = FDFactoryService.getInstance().getProductInfos(skus);
 			}else{
 				FDFactorySB sb = factoryHome.create();
 
@@ -471,7 +474,7 @@ public class FDFactory {
 		Set<String> skus=null;
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB_WarmUp)){
-				skus=FDECommerceService.getInstance().getModifiedSkus(lastModified);
+				skus=FDFactoryService.getInstance().getModifiedSkus(lastModified);
 			}else{
 			FDFactorySB sb = factoryHome.create();
 			skus = sb.getModifiedSkus(lastModified);
@@ -499,7 +502,7 @@ public class FDFactory {
 			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
-				return FDECommerceService.getInstance().findNewSkuCodes(days);
+				return ErpInfoService.getInstance().findNewSkuCodes(days);
 			}else{
 				FDFactorySB sb = factoryHome.create();
 
@@ -527,7 +530,7 @@ public class FDFactory {
 			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
-				return FDECommerceService.getInstance().getSkusOldness();
+				return ErpInfoService.getInstance().getSkusOldness();
 			}else{
 				FDFactorySB sb = factoryHome.create();
 
@@ -556,7 +559,7 @@ public class FDFactory {
 			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
-				return FDECommerceService.getInstance().findReintroducedSkuCodes(days);
+				return ErpInfoService.getInstance().findReintroducedSkuCodes(days);
 			}else{
 				FDFactorySB sb = factoryHome.create();
 
@@ -586,7 +589,7 @@ public class FDFactory {
 			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
-				return FDECommerceService.getInstance().findOutOfStockSkuCodes();
+				return ErpInfoService.getInstance().findOutOfStockSkuCodes();
 			}else{
 				FDFactorySB sb = factoryHome.create();
 
@@ -664,7 +667,7 @@ public class FDFactory {
 		}
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB_WarmUp)){
-				IECommerceService service =  FDECommerceService.getInstance();
+				FDFactoryServiceI service =  FDFactoryService.getInstance();
 				return service.getProduct(sku, version);
 			}else{
 				FDFactorySB sb = factoryHome.create();
@@ -734,13 +737,25 @@ public class FDFactory {
 	public static Collection getProducts(FDSku[] skus) throws FDResourceException {
 		// !!! optimize this, so that it only makes one call to the session bean
 		List products = new ArrayList(skus.length);
-		for (int i=0; i<skus.length; i++) {
+		
+		if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB_WarmUp_BULKSKU)){
 			try {
-				products.add( getProduct(skus[i]) );
-			} catch (FDSkuNotFoundException ex) {
-				// not found
+				products = FDFactoryService.getInstance().getProduct(skus);
+			} catch (RemoteException e) {
+				e.printStackTrace();
+				throw new FDResourceException(e);
 			}
+		}else {
+			for (int i=0; i<skus.length; i++) {
+				try {
+					products.add( getProduct(skus[i]) );
+				} catch (FDSkuNotFoundException ex) {
+					// not found
+				}
+			}
+			
 		}
+		
 		return products;
 	}
 
@@ -775,7 +790,7 @@ public class FDFactory {
 			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
-				return FDECommerceService.getInstance().findSKUsByDeal(lowerLimit, upperLimit, skuPrefixes);
+				return ErpInfoService.getInstance().findSKUsByDeal(lowerLimit, upperLimit, skuPrefixes);
 			}else{
 				FDFactorySB sb = factoryHome.create();
 				return sb.findSKUsByDeal(lowerLimit, upperLimit, skuPrefixes);
@@ -838,9 +853,9 @@ public class FDFactory {
 			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
-				regular = FDECommerceService.getInstance().getNewSkus();
-				overridden = FDECommerceService.getInstance().getOverriddenNewSkus();
-				overriddenBack = FDECommerceService.getInstance().getOverriddenBackInStockSkus();
+				regular = ErpInfoService.getInstance().getNewSkus();
+				overridden = ErpInfoService.getInstance().getOverriddenNewSkus();
+				overriddenBack = ErpInfoService.getInstance().getOverriddenBackInStockSkus();
 			}else{
 				FDFactorySB sb = factoryHome.create();
 
@@ -947,8 +962,8 @@ public class FDFactory {
 			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
-				regular = FDECommerceService.getInstance().getBackInStockSkus();
-				overridden = FDECommerceService.getInstance().getOverriddenBackInStockSkus();
+				regular = ErpInfoService.getInstance().getBackInStockSkus();
+				overridden = ErpInfoService.getInstance().getOverriddenBackInStockSkus();
 			}else{
 				FDFactorySB sb = factoryHome.create();
 
@@ -1036,7 +1051,7 @@ public class FDFactory {
 			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
-				return FDECommerceService.getInstance().getOverriddenNewSkus();
+				return ErpInfoService.getInstance().getOverriddenNewSkus();
 			}else{
 				FDFactorySB sb = factoryHome.create();
 
@@ -1059,7 +1074,7 @@ public class FDFactory {
 			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
-				return FDECommerceService.getInstance().getOverriddenBackInStockSkus();
+				return ErpInfoService.getInstance().getOverriddenBackInStockSkus();
 			}else{
 				FDFactorySB sb = factoryHome.create();
 
@@ -1082,7 +1097,7 @@ public class FDFactory {
 			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
-				return FDECommerceService.getInstance().getSkuAvailabilityHistory(skuCode);
+				return ErpInfoService.getInstance().getSkuAvailabilityHistory(skuCode);
 			}else{
 				FDFactorySB sb = factoryHome.create();
 
@@ -1106,7 +1121,7 @@ public class FDFactory {
 			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
-				FDECommerceService.getInstance().refreshNewAndBackViews();
+				ErpInfoService.getInstance().refreshNewAndBackViews();
 			}else{
 				FDFactorySB sb = factoryHome.create();
 

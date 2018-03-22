@@ -11,7 +11,7 @@
 	{/if}
     {if $adProducts.products and length($adProducts.products) > 0}
 		<div class="pdp-evenbetter">
-			<h2 {if $mobWeb}tabindex="0"{/if} class="criteoProducts {if $mobWeb}gen-accord-toggler{/if}">Featured Product{if length($adProducts.products) > 1}s{/if}</h2>
+			<div {if $mobWeb}tabindex="0"{/if} class="header criteoProducts {if $mobWeb}gen-accord-toggler{/if}">Featured Product{if length($adProducts.products) > 1}s{/if}</div>
 			<div class="{if $mobWeb} gen-accord-content{/if}" {if $mobWeb}style="display: none;"{/if}>
 				{foreach $criteoProd in $adProducts.products}
 					{if not isFirst($criteoProd)} <hr/> {/if}

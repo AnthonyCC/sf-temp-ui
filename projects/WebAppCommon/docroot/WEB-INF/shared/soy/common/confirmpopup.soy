@@ -6,7 +6,7 @@
 {template .confirmpopup autoescape="true"}
 {if $data.message}
 <p>
-{$data.message}
+{$data.message|noAutoescape}
 </p>
 {/if}
 <div class="buttons">

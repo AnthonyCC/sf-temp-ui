@@ -768,4 +768,8 @@ public interface FDUserI extends java.io.Serializable {
     public boolean isDPFreeTrialOptInEligible();
     
     public boolean applyFreeTrailOptinBasedDP();
+
+    public Collection<FDStandingOrder> getActiveSO3s();
+    
+	public void setActiveSO3s(Collection<FDStandingOrder> sos);
 }

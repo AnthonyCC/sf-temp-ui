@@ -148,23 +148,19 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 		LOGGER.info("Succesfully submitted Orderd details to HL");
 	}
 
-	/*APPDEV- 6204 Implementation of Criteo(New Hooklogic) for index.jsp and pdp.jsp */
+	public HLBrandProductAdResponse getHLadproductToHomeByFDPriority(HLBrandProductAdRequest hLRequestData) throws BrandProductAdServiceException {
+		LOGGER.info("while making a call to Hook Logic search word: "+hLRequestData.getSearchKeyWord());
 
-
-	
-	public HLBrandProductAdResponse getHomeAdProduct(HLBrandProductAdRequest HLRequestData) throws BrandProductAdServiceException {
-
-		LOGGER.info("while making a call to Hooklogic(homepage)  Productslist from Hooklogic:");
-		StringBuilder urlToCallStr=new StringBuilder(hlAdConfigProvider.getBrandProductAdProviderHomePageURL());
+		StringBuilder urlToCallStr=new StringBuilder(hlAdConfigProvider.getBrandProductAdProviderURL());
 		TreeMap<String,String> urlParameters = new TreeMap<String, String>();
 		urlParameters.put(HOOKLOGIC_APIKEY, hlAdConfigProvider.getBrandProductAdProviderAPIKey());
-		urlParameters.put(HOOKLOGIC_HLPT, hlAdConfigProvider.getBrandProductAdProviderHomeHlpt());
-		urlParameters.put(HOOKLOGIC_TAXONOMY, hlAdConfigProvider.getBrandProductAdHomePageTaxonomy());
-		urlParameters.put(HOOKLOGIC_CREATIVE, hlAdConfigProvider.getBrandProductAdProviderHomePageCreative());
-		urlParameters.put(HOOKLOGIC_PUSERID, HLRequestData.getUserId());
-		urlParameters.put(HOOKLOGIC_PLATFORM, HLRequestData.getPlatformSource());
-		urlParameters.put(HOOKLOGIC_MAXMES, hlAdConfigProvider.getBrandProductAdProviderMaxmes());
-		urlParameters.put(HOOKLOGIC_BEACON, hlAdConfigProvider.getBrandProductsBeacon());
+		urlParameters.put(HOOKLOGIC_HLPT, hlAdConfigProvider.getBrandProductAdProviderHlpt());
+		urlParameters.put(HOOKLOGIC_KEYWORD, hLRequestData.getSearchKeyWord());
+		urlParameters.put(HOOKLOGIC_CREATIVE, hlAdConfigProvider.getBrandProductAdProviderPdpCreative());
+		urlParameters.put(HOOKLOGIC_PUSERID, hLRequestData.getUserId());
+		urlParameters.put(HOOKLOGIC_PLATFORM, hLRequestData.getPlatformSource());
+		urlParameters.put(HOOKLOGIC_MINMES, hlAdConfigProvider.getBrandProductAdProviderMinmes());
+		urlParameters.put(HOOKLOGIC_MAXMES, hlAdConfigProvider.getBrandProductAdProviderMinmes());// we need only 1 list of product from Criteo # Homepage
 
 		StringBuilder urlToCall = getBaseUrl(urlToCallStr, urlParameters);
 		String jsonResponse = sendGetRequest(urlToCall);
@@ -172,8 +168,6 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 		return response;
 
 	}
-
-
 	
 	public HLBrandProductAdResponse getPdpAdProduct(HLBrandProductAdRequest hLBrandProductAdRequest)
 			throws BrandProductAdServiceException {
