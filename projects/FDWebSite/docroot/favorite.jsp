@@ -91,7 +91,10 @@
 %>
 
 <tmpl:insert template='/common/template/browse_template.jsp'>
-  
+    <tmpl:put name="seoMetaTag" direct="true">
+		<fd:SEOMetaTag title="FreshDirect - My Sale Items" pageId="my_sale_items"></fd:SEOMetaTag>
+	</tmpl:put>
+   
    <tmpl:put name='soypackage' direct='true'>
     <soy:import packageName="browse" />
     <soy:import packageName="srch" />
