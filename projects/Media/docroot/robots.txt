@@ -15,6 +15,7 @@ Disallow: /health_warning.jsp
 Disallow: *jsessionid*
 Disallow: /invite/
 Disallow: /shared/popup.jsp$
+Disallow: /pdp.jsp$
 Disallow: *grpId=*
 Sitemap: https://www.freshdirect.com/sitemap/sitemap.xml.gz
 Sitemap: https://www.freshdirect.com/sitemap/sitemap_category_index.xml
