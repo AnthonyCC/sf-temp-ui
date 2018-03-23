@@ -11,7 +11,7 @@ var FreshDirect = FreshDirect || {};
 
 	var $=fd.libs.$;
   var $popup = $('<div id="annotationPopup"></div>');
-  var $trigger = $('.pdp h1 .annotation');
+  var $trigger = $('.pdp .annotation');
 
   $trigger.css({
     display: 'block'

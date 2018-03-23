@@ -246,7 +246,7 @@ public class QuickShopHelper {
 		}
 
 		if (skuModel == null) {
-			skuModel = productModel.getDefaultSku();
+            skuModel = productModel.getDefaultSku();
 		}
 		String skuCode = skuModel.getSkuCode();
 
@@ -736,7 +736,7 @@ public class QuickShopHelper {
 	}
 
     public static FilteringSortingItem<QuickShopLineItemWrapper> createQuickShopFilteringItemWrapper(ProductModel model, FDUserI user) throws FDResourceException {
-        QuickShopLineItem aggregatedLineItem = QuickShopHelper.createItemFromProduct(model, model.getDefaultSku(), user, true);
+        QuickShopLineItem aggregatedLineItem = QuickShopHelper.createItemFromProduct(model, model.getSku(0), user, true);
         QuickShopLineItemWrapper wrapper = new QuickShopLineItemWrapper(aggregatedLineItem, model);
         return new FilteringSortingItem<QuickShopLineItemWrapper>(wrapper);
     }
