@@ -1357,6 +1357,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 
 	private static final String QUERY_NEW_SKUS =
 		"SELECT * FROM erps.new_products_v1";
+	private static final String QUERY_NEW_SKUS_V2 =
+			"SELECT * FROM erps.new_products_v2";
 
 	public Map<String, Map<String,Date>> getNewSkus(/*String salesOrg, String distributionChannel*/) {
 		Connection conn = null;
@@ -1364,7 +1366,13 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		ResultSet rs = null;
 		try {
 			conn = getConnection();
-			ps = conn.prepareStatement(QUERY_NEW_SKUS);
+			if (FDStoreProperties.isNewProdMatViewV2Enabled()){
+				ps = conn.prepareStatement(QUERY_NEW_SKUS_V2);
+			}
+			
+			else{
+				ps = conn.prepareStatement(QUERY_NEW_SKUS);
+			}
 			/*ps.setString(1, salesOrg);
 			ps.setString(2, distributionChannel);
 			*/
@@ -1493,6 +1501,10 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 
 	private static final String QUERY_BACK_IN_STOCK_SKUS = 
 		"SELECT * FROM erps.back_in_stock_products_v1";
+	private static final String QUERY_BACK_IN_STOCK_SKUS_V2 = 
+			"SELECT * FROM erps.back_in_stock_products_v2";
+	
+
 
 	public Map<String, Map<String,Date>> getBackInStockSkus() {
 		Connection conn = null;
@@ -1500,7 +1512,12 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		ResultSet rs = null;
 		try {
 			conn = getConnection();
+			if (FDStoreProperties.isNewProdMatViewV2Enabled()){
+				ps = conn.prepareStatement(QUERY_BACK_IN_STOCK_SKUS_V2);	
+			}
+			else{
 			ps = conn.prepareStatement(QUERY_BACK_IN_STOCK_SKUS);
+			}
 			rs = ps.executeQuery();
 			Map<String, Map<String,Date>> skus = new TreeMap<String, Map<String,Date>>();
 			String sku="";
@@ -1805,7 +1822,12 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		PreparedStatement ps = null;
 		try {
 			conn = getConnection();
-			ps = conn.prepareCall("CALL erps.refresh_new_and_back()");
+			if (FDStoreProperties.isNewProdMatViewV2Enabled()){
+				ps = conn.prepareCall("CALL erps.refresh_new_and_back_v2()");
+			}
+			else{
+				ps = conn.prepareCall("CALL erps.refresh_new_and_back()");
+			}
 			ps.execute();
 		} catch (SQLException sqle) {
 			LOGGER.error("Unable to update materialized views (NEW_PRODUCTS and BACK_IN_STOCK_PRODUCTS)", sqle);

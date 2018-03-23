@@ -141,12 +141,15 @@ public class QuickShopFilterService {
                 if (lineItem.getConfiguration() != null) {
                     filteredItems.add(item);
                 } else {
-                    int quantityCompare = Double.compare(aggregatedQuantity, Math.min(lineItem.getQuantity().getQuantity(), lineItem.getQuantity().getqMax()));
+                    double maxQuantity = lineItem.getQuantity().getqMax();
+                    double quantity = lineItem.getQuantity().getQuantity();
+                    int quantityCompare = Double.compare(aggregatedQuantity, Math.min(quantity, maxQuantity));
                     if (quantityCompare >= 0) {
                         maxQuantityBySkuCode.remove(lineItem.getSkuCode());
                         try {
                             FilteringSortingItem<QuickShopLineItemWrapper> clonedItem = QuickShopHelper.createQuickShopFilteringItemWrapper(item.getNode().getProduct(), user);
-                            clonedItem.getNode().getItem().getQuantity().setQuantity(aggregatedQuantity);
+                            double quantityInCart = user.getShoppingCart().calculateAggregatedQuantityBySku(lineItem.getSkuCode());
+                            clonedItem.getNode().getItem().getQuantity().setQuantity(Math.min(maxQuantity - quantityInCart, aggregatedQuantity));
                             filteredItems.add(clonedItem);
                         } catch (FDResourceException e) {
                             LOG.debug("Error when cloned filtering quickshop line item of contentkey " + item.getNode().getProduct().getContentKey(), e);
