@@ -671,6 +671,11 @@
 		<from>^/v/([0-9]+)/(.*)/ping/</from>
 		<to last="true">/login.do?action=ping&amp;ver=$1</to>
 	</rule>
+	
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/initiatesessionuser/</from>
+		<to last="true">/login.do?action=initiatesessionuser&amp;ver=$1</to>
+	</rule>
 
 	<!-- Refresh -->
 	<rule>

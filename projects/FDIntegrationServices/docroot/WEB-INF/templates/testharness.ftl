@@ -1072,6 +1072,11 @@ function loadStuff() {
   	$("#header").val('');
   	$("#payload").val("");
 
+  } else if (loaddata == "InitiateSessionUserWeb") {
+  	$("#url").val("/saptest12@freshdirect.com/initiatesessionuser/");
+  	$("#header").val('{ "X-FD-Extra-Response" : "INCLUDE_USERINFO" }');
+  	$("#payload").val("");
+
   } else if (loaddata == "PingWeb") {
   	$("#url").val("/saptest12@freshdirect.com/ping/");
     $("#header").val('{ "X-FD-Extra-Response" : "INCLUDE_USERINFO,INCLUDE_CART" }');
@@ -1601,6 +1606,7 @@ function doStuff() {
   <option value="Logout">Logout</option>
   <option value="Ping">Ping</option>
   <option value="PingWeb">Ping Web</option>
+  <option value="InitiateSessionUserWeb">Initiate Session User Web</option>
   <option value="Session">Session</option>
   <option value="AddAnonymousAddress">Add Anonymous Address</option>  
   <option value="LoginRefresh">Login Refresh</option>

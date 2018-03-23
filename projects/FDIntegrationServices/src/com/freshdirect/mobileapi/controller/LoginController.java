@@ -86,6 +86,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
     private static final String ACTION_FORGOT_PASSWORD = "forgotpassword";
     private static final String ACTION_CHANGE_PASSWORD = "changepassword";
     private static final String ACTION_PING = "ping";
+    private static final String ACTION_INITIATE_SESSION_USER = "initiatesessionuser";
     private static final String ACTION_SOURCE = "source";
 	private static final String MSG_INVALID_EMAIL = "Invalid or missing email address. If you need assistance please call us at 1-866-283-7374.";
 	private static final String MSG_EMAIL_NOT_EXPIRED = "An email was already sent. Please try again later.";
@@ -134,6 +135,8 @@ public class LoginController extends BaseController  implements SystemMessageLis
 			responseMessage = login(requestMessage, request, response, false);
 		} else if (ACTION_PING.equals(action)) {
 		    responseMessage = ping(request, response);
+        } else if (ACTION_INITIATE_SESSION_USER.equals(action)) {
+            responseMessage = initiateSessionUser(request, response);
 		} else if (ACTION_LOGOUT.equals(action)) {
 		    responseMessage = logout(user, request, response);
 		}else if (ACTION_SOURCE.equals(action)) {
@@ -373,6 +376,18 @@ public class LoginController extends BaseController  implements SystemMessageLis
         }
         return responseMessage;
     }
+
+    private Message initiateSessionUser(HttpServletRequest request, HttpServletResponse response) {
+        Message responseMessage = new Message();
+        try {
+            getUserFromSession(request, response);
+            responseMessage.setStatus(Message.STATUS_SUCCESS);
+        } catch (NoSessionException e) {
+            responseMessage.setStatus(Message.STATUS_FAILED);
+        }
+        return responseMessage;
+    }
+
 
 	/**
 	 * @param requestMessage
