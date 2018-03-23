@@ -37,7 +37,7 @@ public class CriteoProductsHomePageCache {
 		return this.hlba;
 	}
 									/*  30 min interval , 60,000 milliseconds/Min	*/
-	private ExpiringReference< ArrayList<HLBrandProductAdInfo>> criteoProd = new ExpiringReference<ArrayList<HLBrandProductAdInfo>>(30 * 60 * 1000) {
+	private ExpiringReference< ArrayList<HLBrandProductAdInfo>> criteoProd = new ExpiringReference<ArrayList<HLBrandProductAdInfo>>(3 * 60 * 1000) {
 		@Override
 		protected ArrayList<HLBrandProductAdInfo> load() {
 			try {
@@ -77,7 +77,8 @@ public class CriteoProductsHomePageCache {
 			List<String> keys = CriteoProductsUtil.getFDSearchPriorityKeyWords();
 			int  maxCount = FDStoreProperties.getFDHomeCriteoMaxDisplayProducts();
 			int count = 0;
-		while (count < maxCount) {
+			int exitLoop=0;
+		while ((count < maxCount) &&( exitLoop <  50)) {
 			if (!keys.isEmpty() && keys.size() != 0) {
 				for (String key : keys) {
 					try {
@@ -87,17 +88,15 @@ public class CriteoProductsHomePageCache {
 							hLBrandProductAdRequest.setUserId("null");
 						}
 						response = FDBrandProductsAdManager.getHLadproductToHomeByFDPriority(hLBrandProductAdRequest);
-						if (null == response) {
-							count++;  /*  if criteo api is down this will be  useful to break out of the 'infinity loop'	 */
-							break;
-						}
-						if (null != response.getSearchProductAd()) {
+						if (null != response && null != response.getSearchProductAd()) {
 							response.getSearchProductAd().get(0).setPageBeacon(response.getPageBeacon());
 							hlba.addAll(response.getSearchProductAd());
 							count++;
-							if (count > maxCount) {
+							if (count >= maxCount) {
 								break;
 							}
+						} else {
+							exitLoop++; /* as this comes on FD home page, incase it falls to infinity loop , this helps to exit	 */
 						}
 					} catch (FDResourceException e) {
 						LOGGER.debug("Exception occured while making call to Criteo search-Api: " + e);
