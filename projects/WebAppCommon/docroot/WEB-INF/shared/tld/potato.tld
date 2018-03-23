@@ -269,6 +269,7 @@
     <tag>
         <name>singlePageCheckout</name>
         <tag-class>com.freshdirect.webapp.ajax.expresscheckout.tag.SinglePageCheckoutPotatoTag</tag-class>
+        <body-content>empty</body-content>
         <attribute>
             <name>name</name>
             <required>false</required>
