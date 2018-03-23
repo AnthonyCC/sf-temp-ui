@@ -108,7 +108,7 @@ public class CriteoProductsHomePageCache {
 				boolean found = false;
 				for (String key : keys) {
 					if (null != cacheCriteoMap.get(key) && !cacheCriteoMap.get(key).isEmpty()
-							&& cacheCriteoMap.get(key).size() >= (j + 1)) {
+							&& cacheCriteoMap.get(key).size() >= (j + 1) && (i < maxCount) ) {
 						hlba.add(cacheCriteoMap.get(key).get(j));
 						found = true;
 						i++;
