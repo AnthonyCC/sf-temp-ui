@@ -313,6 +313,15 @@ public class FDUserDAO {
     public static FDUser recognizeWithIdentity(Connection conn, FDIdentity identity, EnumEStoreId eStoreId, final boolean lazy, boolean populateDeliveryPlantInfo) throws SQLException, FDResourceException {
         LOGGER.debug("attempting to load FDUser from identity");
         PreparedStatement ps = conn.prepareStatement(LOAD_FROM_IDENTITY_QUERY);
+        
+        if(null == eStoreId){
+	        try {
+				eStoreId = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
+			} catch (Exception e1) {
+				LOGGER.warn("Exception :", e1);
+			}
+        }
+
         ps.setString(1, identity.getErpCustomerPK());
         ps.setString(2, null != eStoreId ? eStoreId.getContentId() : EnumEStoreId.FD.getContentId());
         ps.setString(3, null != eStoreId ? eStoreId.getContentId() : EnumEStoreId.FD.getContentId());
