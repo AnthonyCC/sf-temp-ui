@@ -98,11 +98,10 @@ public class CriteoProductsHomePageCache {
 					}
 				}
 			}
-		
-		//setting HasMap to ArrayList here
-			
+			//setting HasMap to ArrayList here
 			int i=0;
 			int j=0;
+			boolean hasValues= false;
 		if (!keys.isEmpty() && keys.size() != 0) {
 			while (i < maxCount && j < maxCount && i >= j) {
 				boolean found = false;
@@ -111,6 +110,7 @@ public class CriteoProductsHomePageCache {
 							&& cacheCriteoMap.get(key).size() >= (j + 1) && (i < maxCount) ) {
 						hlba.add(cacheCriteoMap.get(key).get(j));
 						found = true;
+						hasValues = true;
 						i++;
 					}
 				}
@@ -120,7 +120,18 @@ public class CriteoProductsHomePageCache {
 				j++;
 			}
 		}
-			return hlba;
+		// to satisfy maxCount property we are duplicating 
+		if(hasValues && !hlba.isEmpty() && (hlba.size()<maxCount) ) {
+			i= hlba.size();
+			j=0;
+			while ( i < maxCount) {
+				hlba.add(hlba.get(j));//System.out.println(list.get(i));
+				i++;	
+				j++;
+			}
+		}
+		
+		return hlba;	/* this is the final list which we are saving in server cache*/
 	
 	}
 }
