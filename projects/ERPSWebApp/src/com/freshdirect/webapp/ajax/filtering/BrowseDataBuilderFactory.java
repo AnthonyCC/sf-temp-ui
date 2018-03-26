@@ -10,7 +10,6 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.springframework.util.Assert;
 
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
@@ -747,14 +746,14 @@ public class BrowseDataBuilderFactory {
             Variant variant) {
         CarouselData carousel = null;
 
-        Assert.notNull(items, "Required parameter 'items' is null!");
-
-        if (items.size() >= FDStoreProperties.getMinimumItemsCountInCarousel()) {
-            carousel = CarouselService.defaultService().createCarouselData(carouselId, carouselName, items, user, eventSource != null ? eventSource.getName() : null,
-                    variant != null ? variant.getId() : null);
-            LOG.debug("Carousel '" + carouselName + "' was populated with ("+items.size()+" items");
-        } else {
-            LOG.debug("Carousel '" + carouselName + "' was not populated, too few items ("+items.size()+")");
+        if (items != null) {
+            if (items.size() >= FDStoreProperties.getMinimumItemsCountInCarousel()) {
+                carousel = CarouselService.defaultService().createCarouselData(carouselId, carouselName, items, user, eventSource != null ? eventSource.getName() : null,
+                        variant != null ? variant.getId() : null);
+                LOG.debug("Carousel '" + carouselName + "' was populated with (" + items.size() + " items");
+            } else {
+                LOG.debug("Carousel '" + carouselName + "' was not populated, too few items (" + items.size() + ")");
+            }
         }
         return carousel;
     }
