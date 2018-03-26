@@ -31,7 +31,7 @@ var dataLayer = window.dataLayer || [];
   var productTransform = function (product, idx, listData) {
     listData.product = product;
     var productData = {
-      name: product.productName,
+      name: product.productNameNoBrand || product.productName,
       // id: product.productId, // #AN-162
       id: product.skuCode,
       price: product.price,
@@ -61,6 +61,18 @@ var dataLayer = window.dataLayer || [];
       .replace(/^_+/, '')           // Trim _ from start of text
       .replace(/_+$/, '');          // Trim _ from the end of text
   };
+
+  var deBrand = function (name, brand) {
+    if (name.indexOf(brand) === 0) {
+      name = name.substr(brand.length);
+    }
+    if (name[0] === " ") {
+      name = name.substr(1);
+    }
+
+    return name;
+  };
+  fd.gtm.deBrand = deBrand;
 
   var resetImpressions = function () {
     FreshDirect.gtm.setValue('ecommerce.impressions', null);
@@ -159,7 +171,7 @@ var dataLayer = window.dataLayer || [];
               products: [{
                 // id: productData.id, // #AN-162
                 id: productData.sku,
-                name: productData.name,
+                name: deBrand(productData.name, productData.brand),
                 price: productData.price,
                 brand: productData.brand,
                 category: productData.category,
@@ -305,7 +317,7 @@ var dataLayer = window.dataLayer || [];
                 return {
                   // id: productData.id, // #AN-162
                   id: productData.sku,
-                  name: productData.name,
+                  name: deBrand(productData.name, productData.brand),
                   price: productData.price,
                   brand: productData.brand,
                   category: productData.category,
@@ -347,7 +359,7 @@ var dataLayer = window.dataLayer || [];
                 return {
                   // id: productData.id, // #AN-162
                   id: productData.sku,
-                  name: productData.name,
+                  name: deBrand(productData.name, productData.brand),
                   price: productData.price,
                   brand: productData.brand,
                   category: productData.category,
@@ -609,7 +621,7 @@ var dataLayer = window.dataLayer || [];
         return {
           // id: productData.productId, // #AN-162
           id: productData.skuCode,
-          name: productData.name,
+          name: deBrand(productData.name, productData.brand),
           price: productData.price,
           brand: productData.brand,
           category: productData.categoryId,
@@ -1253,7 +1265,7 @@ var dataLayer = window.dataLayer || [];
           products: [{
             // id: productData.productId, // #AN-162
             id: productData.skuCode,
-            name: productData.name,
+            name: fd.gtm.deBrand(productData.name, productData.brand),
             price: productData.price,
             brand: productData.brand,
             category: productData.categoryId,
