@@ -1020,19 +1020,17 @@ public class FDStoreProperties {
 	private static final String FD_PRIORITY_SEARCH_KEYS = "fdstore.criteo.fdpriorityhomepagecriteo";
 
 	private static final String FD_HOME_CRITEO_MAX_DISPLAY = "fdstore.criteo.fdhomecriteomaxdisplay";
-	
+
 	private static final String FD_HOME_CRITEO_CACHE_REFRESH_MIN = "fdstore.criteo.criteoservercacherefreshminutes";
-	
+
 	/*
-	 * Appdev 6760 allowing new products materializied views to be tuned to number of days requires a v2 version to be called 
+	 * Appdev 6760 allowing new products materializied views to be tuned to number of days requires a v2 version to be called
 	 */
-	
+
 	public final static String FDSTORE_DB_NEW_PRODUCTS_MATERIALIZEDVIEW_V2_ENABLED = "fdstore.db.new.products.materializedview.v2.enabled";
-	
+
 
 	private static final String PROP_CAROUSEL_MIN_ITEMS = "fdstore.carousel.minimum.items";
-
-	private static final int CAROUSEL_MIN_ITEMS_DEFAULT = 4;
 
  	static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -1972,18 +1970,20 @@ public class FDStoreProperties {
 
 		defaults.put(FD_PRIORITY_SEARCH_KEYS, "BUTTER,EGG,MILK,YOGURT");
 		defaults.put(FD_HOME_CRITEO_MAX_DISPLAY, "12");
+
 		defaults.put(FD_HOME_CRITEO_CACHE_REFRESH_MIN, "30");
-		
+
+
 		/*
-		 * Appdev 6760 allowing new products materializied views to be tuned to number of days requires a v2 version to be called 
+		 * Appdev 6760 allowing new products materializied views to be tuned to number of days requires a v2 version to be called
 		 */
-		
+
 		defaults.put(FDSTORE_DB_NEW_PRODUCTS_MATERIALIZEDVIEW_V2_ENABLED, "false");
-		
 
-		
 
-		defaults.put(PROP_CAROUSEL_MIN_ITEMS, Integer.toString(CAROUSEL_MIN_ITEMS_DEFAULT));
+
+
+		defaults.put(PROP_CAROUSEL_MIN_ITEMS, "4");
 
         refresh();
     }
@@ -5007,28 +5007,22 @@ public class FDStoreProperties {
 	public static String getFDHomeCriteoPriorityKeys() {
 		return get(FD_PRIORITY_SEARCH_KEYS);
 	}
-	
+
 	public static int getFDHomeCriteoMaxDisplayProducts() {
 		return Integer.parseInt(get(FD_HOME_CRITEO_MAX_DISPLAY));
 	}
-	
+
 	public static int getFDHomeCriteoServerCacheRefresh() {
 		return Integer.parseInt(get(FD_HOME_CRITEO_CACHE_REFRESH_MIN));
 	}
-	
+
 	//appdev 6760 new mat view tunable via sub table.
 	public static boolean isNewProdMatViewV2Enabled() {
 		return (Boolean.valueOf(get(FDSTORE_DB_NEW_PRODUCTS_MATERIALIZEDVIEW_V2_ENABLED))).booleanValue();
 	}
-	
+
 
 	public static int getMinimumItemsCountInCarousel() {
-	    int value = CAROUSEL_MIN_ITEMS_DEFAULT;
-	    try {
-	        value = Integer.parseInt(get(PROP_CAROUSEL_MIN_ITEMS));
-	    } catch (NumberFormatException exc) {
-	    }
-
-	    return value > 0 ? value : CAROUSEL_MIN_ITEMS_DEFAULT;
+        return Integer.parseInt(get(PROP_CAROUSEL_MIN_ITEMS));
 	}
 }
