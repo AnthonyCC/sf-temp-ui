@@ -242,6 +242,7 @@ public class FDSurveyFactory {
     }  
     
     private static FDSurveyResponse buildFdSurveyResponse(FDSurveyResponseData responseData) {
+    	if(responseData != null && responseData.getIdentity() != null){
 		FDIdentity fdIdentity = new FDIdentity(responseData.getIdentity().getErpCustomerPK(), responseData.getIdentity().getFdCustomerPK());
 		SurveyKey surveykey = new SurveyKey(EnumSurveyType.getEnum(responseData.getKey().getSurveyType()), EnumServiceType.getEnum(responseData.getKey().getUserType()));
 		FDSurveyResponse fdSurveyResponse = null;
@@ -254,6 +255,8 @@ public class FDSurveyFactory {
 		}
 		fdSurveyResponse.setAnswers(responseData.getAnswers());
 		return fdSurveyResponse;
+    	}
+    	return null;
 	}
 
     public static FDSurveyResponse getSurveyResponse(FDIdentity identity, SurveyKey survey) throws FDResourceException {
