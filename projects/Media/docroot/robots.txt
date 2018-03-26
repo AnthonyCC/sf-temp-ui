@@ -1,4 +1,6 @@
 User-agent: *
+User-agent: AdsBot-Google
+User-agent: AdsBot-Google-Mobile
 Disallow: /site_access/
 Disallow: /registration/
 Disallow: /quickshop/
@@ -12,6 +14,10 @@ Disallow: /group.jsp
 Disallow: /health_warning.jsp
 Disallow: *jsessionid*
 Disallow: /invite/
+Disallow: /shared/popup.jsp$
+Disallow: /pdp.jsp$
+Disallow: /shared/recipe_print.jsp$
+Disallow: /rating_ranking.jsp$
 Disallow: *grpId=*
 Sitemap: https://www.freshdirect.com/sitemap/sitemap.xml.gz
 Sitemap: https://www.freshdirect.com/sitemap/sitemap_category_index.xml

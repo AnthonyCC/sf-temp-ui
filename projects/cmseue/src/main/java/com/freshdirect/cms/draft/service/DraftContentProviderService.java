@@ -290,12 +290,9 @@ public class DraftContentProviderService extends ContextualContentProvider {
         }
     }
 
-    public void invalidateDraftNodesCacheEntry(DraftContext draftContext) {
-        Cache draftNodesCache = cacheManager.getCache(DRAFT_NODES_CACHE);
-        ValueWrapper nodesOfDraftContext = draftNodesCache.get(draftContext);
-        if (nodesOfDraftContext != null) {
-            draftNodesCache.evict(draftContextHolder.getDraftContext());
-        }
+    public void invalidateDraftCaches(DraftContext draftContext) {
+        cacheManager.getCache(DRAFT_NODES_CACHE).evict(draftContextHolder.getDraftContext());
+        cacheManager.getCache(DRAFT_PARENT_CACHE).evict(draftContextHolder.getDraftContext());
     }
 
     private void invalidateDraftParentCacheForKeysOnDraft(Set<ContentKey> contentKeys) {

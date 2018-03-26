@@ -1030,6 +1030,8 @@ public class FDStoreProperties {
 	
 	private static final String FD_HOME_CRITEO_MAX_DISPLAY = "fdstore.criteo.fdhomecriteomaxdisplay";
 	
+	private static final String FD_HOME_CRITEO_CACHE_REFRESH_MIN = "fdstore.criteo.criteoservercacherefreshminutes";
+	
 	/*
 	 * Appdev 6760 allowing new products materializied views to be tuned to number of days requires a v2 version to be called 
 	 */
@@ -1975,6 +1977,7 @@ public class FDStoreProperties {
 		
 		defaults.put(FD_PRIORITY_SEARCH_KEYS, "BUTTER,EGG,MILK,YOGURT");
 		defaults.put(FD_HOME_CRITEO_MAX_DISPLAY, "12");
+		defaults.put(FD_HOME_CRITEO_CACHE_REFRESH_MIN, "30");
 		
 		/*
 		 * Appdev 6760 allowing new products materializied views to be tuned to number of days requires a v2 version to be called 
@@ -5014,9 +5017,13 @@ public class FDStoreProperties {
 	public static String getFDHomeCriteoPriorityKeys() {
 		return get(FD_PRIORITY_SEARCH_KEYS);
 	}
-
+	
 	public static int getFDHomeCriteoMaxDisplayProducts() {
 		return Integer.parseInt(get(FD_HOME_CRITEO_MAX_DISPLAY));
+	}
+	
+	public static int getFDHomeCriteoServerCacheRefresh() {
+		return Integer.parseInt(get(FD_HOME_CRITEO_CACHE_REFRESH_MIN));
 	}
 	
 	//appdev 6760 new mat view tunable via sub table.
