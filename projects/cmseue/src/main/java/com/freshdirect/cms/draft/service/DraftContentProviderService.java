@@ -284,8 +284,8 @@ public class DraftContentProviderService extends ContextualContentProvider {
     }
 
     public void invalidateDraftCaches(DraftContext draftContext) {
-        cacheManager.getCache(DRAFT_NODES_CACHE).evict(draftContext);
-        cacheManager.getCache(DRAFT_PARENT_CACHE).evict(draftContext);
+        cacheManager.getCache(DRAFT_NODES_CACHE).evict(draftContextHolder.getDraftContext());
+        cacheManager.getCache(DRAFT_PARENT_CACHE).evict(draftContextHolder.getDraftContext());
     }
 
     private Map<ContentKey, Map<Attribute, Object>> collectOriginalNodes(Map<ContentKey, Map<Attribute, Object>> payload) {

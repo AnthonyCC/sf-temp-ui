@@ -194,15 +194,14 @@ public class ContentNodeModelUtil {
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public static boolean refreshModels(ContentNodeModelImpl refModel, String refNodeAttr, List<? extends ContentNodeModel> childModels, boolean setParent, boolean inheritedAttrs) {
-        if (CmsManager.getInstance().isReadOnlyContent()) {
-            return false;
-        }
+    public static boolean refreshModels(ContentNodeModelImpl refModel, String refNodeAttr, List<? extends ContentNodeModel> childModels, boolean setParent,
+            boolean inheritedAttrs) {
+        Collection<? extends ContentNodeModel> updatedChildModels = new ArrayList<ContentNodeModel>();
 
         List<ContentKey> recentKeys = grabFreshChildKeys(refModel.getContentKey(), refNodeAttr, refModel.getParentKey());
-        final boolean updateChildModels = !compareKeys(recentKeys, childModels);
+
+        final boolean updateChildModels = !CmsManager.getInstance().isReadOnlyContent() || !compareKeys(recentKeys, childModels);
         if (updateChildModels) {
-            Collection<? extends ContentNodeModel> updatedChildModels = new ArrayList<ContentNodeModel>();
             for (int i = 0; i < recentKeys.size(); i++) {
                 ContentKey key = recentKeys.get(i);
                 ContentNodeModel newModel = buildChildContentNode(refModel, key, setParent, i);
@@ -217,10 +216,11 @@ public class ContentNodeModelUtil {
                 ((List) childModels).addAll(updatedChildModels);
             }
         }
+
         return updateChildModels;
     }
 
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings({ "unchecked", "deprecation" })
     private static List<ContentKey> grabFreshChildKeys(ContentKey contentKey, String attributeName, ContentKey parentKey) {
         ContentNodeI cmsNode = CmsManager.getInstance().getContentNode(contentKey);
         Attribute attributeDefinition = cmsNode.getAttribute(attributeName);
