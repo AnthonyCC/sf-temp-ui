@@ -156,11 +156,11 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 		urlParameters.put(HOOKLOGIC_APIKEY, hlAdConfigProvider.getBrandProductAdProviderAPIKey());
 		urlParameters.put(HOOKLOGIC_HLPT, hlAdConfigProvider.getBrandProductAdProviderHlpt());
 		urlParameters.put(HOOKLOGIC_KEYWORD, hLRequestData.getSearchKeyWord());
-		urlParameters.put(HOOKLOGIC_CREATIVE, hlAdConfigProvider.getBrandProductAdProviderPdpCreative());
+		urlParameters.put(HOOKLOGIC_CREATIVE, hlAdConfigProvider.getBrandProductAdProviderHomePageCreative());
 		urlParameters.put(HOOKLOGIC_PUSERID, hLRequestData.getUserId());
 		urlParameters.put(HOOKLOGIC_PLATFORM, hLRequestData.getPlatformSource());
 		urlParameters.put(HOOKLOGIC_MINMES, hlAdConfigProvider.getBrandProductAdProviderMinmes());
-		urlParameters.put(HOOKLOGIC_MAXMES, hlAdConfigProvider.getBrandProductAdProviderMinmes());// we need only 1 list of product from Criteo # Homepage
+		urlParameters.put(HOOKLOGIC_MAXMES, hlAdConfigProvider.getBrandProductAdProviderMaxmes());// we need only 1 list of product from Criteo # Homepage
 
 		StringBuilder urlToCall = getBaseUrl(urlToCallStr, urlParameters);
 		String jsonResponse = sendGetRequest(urlToCall);

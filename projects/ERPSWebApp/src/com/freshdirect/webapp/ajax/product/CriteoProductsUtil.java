@@ -52,6 +52,16 @@ public class CriteoProductsUtil
 			if (cretioProductsCacheList != null){
 				addHlBrandProducts(user, adPrducts, updatedPageBeacon, cretioProductsCacheList,false);
 			}
+			int  maxCount = FDStoreProperties.getFDHomeCriteoMaxDisplayProducts();
+			if( null != adPrducts && !adPrducts.isEmpty() && (adPrducts.size()<maxCount) ) {			//APPBUG-5520 
+				int i= adPrducts.size();
+				int j=0;
+				while ( i < maxCount) {
+					adPrducts.add(adPrducts.get(j));
+					i++;	
+					j++;
+				}
+			}
 			moduleData.setAdProducts(adPrducts);
 			if (productsCount == adPrducts.size()) {
 				moduleData.setAdHomePageBeacon(cretioProductsCacheList.get(0).getPageBeacon()	+ A_SHOWN_ALL);

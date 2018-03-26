@@ -10,7 +10,15 @@ import com.freshdirect.webapp.features.service.FeaturesService;
 public final class CosFeatureUtil {
 
 	public static boolean isUnbxdCosAction(FDUserI user, Cookie[] cookies) {
-        return FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.cosRedesign2017, cookies, user) && user.isCorporateUser()
-                && "FreshDirect".equals(ContentFactory.getInstance().getStoreKey().getId());
+
+		boolean cosAction = false;
+
+		if (user != null) {
+			cosAction = FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.cosRedesign2017, cookies,
+					user) && user.isCorporateUser()
+					&& "FreshDirect".equals(ContentFactory.getInstance().getStoreKey().getId());
+		}
+
+		return cosAction;
 	}
 }

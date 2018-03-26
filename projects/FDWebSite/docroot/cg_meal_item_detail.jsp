@@ -131,9 +131,9 @@ if (productNode != null) {
                 continue;
             }
             try {
-                ProductModel pm = PopulatorUtil.getProductByName(optSkuCode);
-                if (pm!=null ) {
-                   if ( !pm.isUnavailable()   && availOptSkuMap.get(optSkuCode)==null) {
+                ProductModel pm = ContentFactory.getInstance().getProduct(optSkuCode);
+                if (pm!=null) {
+                   if ( !pm.isUnavailable() && availOptSkuMap.get(optSkuCode)==null) {
                     availOptSkuMap.put(optSkuCode,pm);
                    } else if ( pm.isUnavailable() ) {
                         unAvailCount++;
@@ -208,7 +208,7 @@ int prodCount = 0;%>
 					    continue;
 					}
 
-					ProductModel pm =(ProductModel) PopulatorUtil.getProductByName(optSkuCode);
+					ProductModel pm = ContentFactory.getInstance().getProduct(optSkuCode);
 					if (pm.getSku(optSkuCode).isUnavailable()) continue;
 					if (pm!=null && !prodList.contains(pm)) {
 						prodList.add(pm);
@@ -285,7 +285,7 @@ int prodCount = 0;%>
 		Image prodImg = null;
 		String prodDescription = null;
 
-		compProduct =  PopulatorUtil.getProductByName(skuCode);
+		compProduct = ContentFactory.getInstance().getProduct(skuCode);
         productNode = productNode == null ? compProduct : productNode;
 		prodImg = compProduct.getDetailImage();
 		prodDescription = ((Html)compProduct.getProductDescription()).getPath();
