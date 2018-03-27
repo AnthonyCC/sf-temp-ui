@@ -148,7 +148,7 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 			fdInfo.setHtmlEmail(!erpInfo.isEmailPlaintext());
 			fdInfo.setEmailAddress(erpInfo.getEmail());
 			fdInfo.setGoGreen(erpInfo.isGoGreen());
-			LOGGER.debug("Start - Sending Invoice email");
+			LOGGER.debug("Start - Sending Invoice email:"+saleId);
 			MailerGatewaySB mailBean = this.getMailerGatewayHome().create();
 			try {
 				
@@ -157,10 +157,14 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 				LOGGER.warn("Unexpected Exception while sending invoice email, for order#: "+saleId, e1);
 				e1.printStackTrace();
 			}
-			LOGGER.debug("End - Sending Invoice email");
+			LOGGER.debug("End - Sending Invoice email:"+saleId);
             try {
                 if (saleModel.geteStoreId() == EnumEStoreId.FD) {
+                	LOGGER.info("Start - Sending Invoice GAEvent:"+saleId);
                     GoogleAnalyticsReportingService.defaultService().postGAReporting(fdOrder);
+                    LOGGER.info("End - Sending Invoice GAEvent:"+saleId);
+                } else {
+                	LOGGER.info("EStore Filtered - Not Sending Invoice GAEvent:"+saleId);
                 }
 			} catch (Exception e) {
 				LOGGER.warn("Unexpected Exception in GoogleAnalyticsReportingService while reported to GA, for order#: "+saleId, e);
