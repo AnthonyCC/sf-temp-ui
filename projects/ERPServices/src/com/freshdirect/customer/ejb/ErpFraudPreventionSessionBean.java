@@ -44,6 +44,13 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  * @version $Revision:26$
  * @author $Author:Kashif Nadeem$
  */
+
+/**
+ *@deprecated Please use the FraudPreventionServiceI  in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 
 	private static final long	serialVersionUID	= 1799458790722386756L;
@@ -62,7 +69,7 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 	protected String getResourceCacheKey() {
 		return "com.freshdirect.customer.ejb.ErpFraudHome";
 	}
-	
+	@Deprecated
 	public Set<EnumFraudReason> checkRegistrationFraud(ErpCustomerModel erpCustomer) {
 
 		if (!"true".equalsIgnoreCase(ErpServicesProperties.getCheckForFraud())) {
@@ -116,7 +123,7 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 		}
 		return (fraudReasons);
 	}
-
+	@Deprecated
 	public boolean checkShipToAddressFraud(String erpCustomerId, ErpAddressModel address) {
 
 		if (!"true".equals(ErpServicesProperties.getCheckForFraud())) {
@@ -151,7 +158,7 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 		}
 		return retval;
 	}
-
+	@Deprecated
 	public boolean checkBillToAddressFraud(String erpCustomerId, ContactAddressModel address) {
 
 		if (!"true".equals(ErpServicesProperties.getCheckForFraud())) {
@@ -185,7 +192,7 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 		}
 		return retval;
 	}
-
+	@Deprecated
 	public boolean checkPhoneFraud(String erpCustomerId, Collection<PhoneNumber> phones) {
 
 		if (!"true".equals(ErpServicesProperties.getCheckForFraud())) {
@@ -225,6 +232,7 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 	/**
 	 * @return null, or fraud reason
 	 */
+	@Deprecated
 	public EnumFraudReason preCheckOrderFraud(
 		PrimaryKey erpCustomerPk,
 		ErpAbstractOrderModel order,
@@ -360,6 +368,7 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 	 *  do fraud checks that create cases, now that the order is created(or not) but case will not be rolled back
 	 * @return void
 	 */
+	@Deprecated
 	public void postCheckOrderFraud(PrimaryKey salePk, PrimaryKey erpCustomerPk, ErpAbstractOrderModel order, CrmAgentRole agentRole) {
 		if (!"true".equalsIgnoreCase(ErpServicesProperties.getCheckForFraud())) {
 			// no check, no problem :)
@@ -463,6 +472,7 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 	 * Checks for orders over acceptable threshhold. Creates a CRM case if order total > $750 
 	 * @return true if order total > $750 and not for CSR
 	 */
+	@Deprecated
 	
 	public void postCheckGiftCardFraud(PrimaryKey salePk, PrimaryKey erpCustomerPk, ErpAbstractOrderModel order, CrmAgentRole agentRole) {
 		if (!"true".equalsIgnoreCase(ErpServicesProperties.getCheckForFraud())) {
@@ -545,7 +555,7 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 	}
 	
 	
-	
+	@Deprecated
 	public EnumFraudReason preCheckGiftCardFraud(PrimaryKey erpCustomerPk, ErpAbstractOrderModel order, CrmAgentRole agentRole){
 		
 
@@ -623,7 +633,7 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 
 	}
 	
-
+	@Deprecated
 	public EnumFraudReason preCheckDonationFraud(PrimaryKey erpCustomerPk, ErpAbstractOrderModel order, CrmAgentRole agentRole){
 		
 
@@ -635,7 +645,7 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 		return null;
 		
 	}
-	
+	@Deprecated
 	public void postCheckDonationFraud(PrimaryKey salePk, PrimaryKey erpCustomerPk, ErpAbstractOrderModel order, CrmAgentRole agentRole) {
 		if (!"true".equalsIgnoreCase(ErpServicesProperties.getCheckForFraud())) {
 			// no check, no problem :)

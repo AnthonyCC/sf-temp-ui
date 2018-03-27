@@ -1538,7 +1538,9 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	@Override
 	public void storeSurvey(FDSurveyResponseData survey) throws FDResourceException {
 		try {
-			String inputJson = buildRequest(survey);
+			Request<FDSurveyResponseData> request = new Request<FDSurveyResponseData>();
+			request.setData(survey);
+			String inputJson = buildRequest(request);
 			Response<FDSurveyResponseData> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(STORE_SURVEY), new TypeReference<Response<Void>>() {});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
