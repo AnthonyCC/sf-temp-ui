@@ -1559,7 +1559,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 				request.setData(listData);
 				String inputJson = buildRequest(request);
 				@SuppressWarnings("unchecked")
-				Response<String> response = this.postData(inputJson, getFdCommerceEndPoint(SAP_GROUP_PRICE_LOADER_LOAD_API), Response.class);
+				Response<String> response = this.postData(inputJson, getFdCommerceEndPoint(SAP_GROUP_PRICE_LOADER_LOAD_API), Response.class);				
 				if(!response.getResponseCode().equals("OK")){
 					throw new FDResourceException(response.getMessage());
 				}
@@ -3509,16 +3509,21 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		try {
 			
 			material = ModelConverter.convertErpMaterialModelToData(model);
-			for (Entry<String, ErpClassModel> classMap : createErpClassModel.entrySet()) {
-				ErpClassData data =	ModelConverter.convertErpClassModelToData(classMap.getValue());
-				erpClassMap.put(classMap.getKey(), data);
+			if (createErpClassModel != null) {
+				for (Entry<String, ErpClassModel> classMap : createErpClassModel.entrySet()) {
+					ErpClassData data = ModelConverter.convertErpClassModelToData(classMap.getValue());
+					erpClassMap.put(classMap.getKey(), data);
+				}
 			}
-			for (Entry<ErpCharacteristicValuePriceModel, Map<String, String>> charValueMap : chMap.entrySet()) {
-				CharacteristicValueMapData characteristicValueMap = new CharacteristicValueMapData();
-				ErpCharacteristicValuePriceData data = ModelConverter.createErpCharacteristicValuePriceData(charValueMap.getKey());
-				characteristicValueMap.setCaracteristicMapValue(charValueMap.getValue());
-				characteristicValueMap.setErpCharValueData(data);
-				charValueMapList.add(characteristicValueMap);
+			if (chMap != null) {
+				for (Entry<ErpCharacteristicValuePriceModel, Map<String, String>> charValueMap : chMap.entrySet()) {
+					CharacteristicValueMapData characteristicValueMap = new CharacteristicValueMapData();
+					ErpCharacteristicValuePriceData data = ModelConverter
+							.createErpCharacteristicValuePriceData(charValueMap.getKey());
+					characteristicValueMap.setCaracteristicMapValue(charValueMap.getValue());
+					characteristicValueMap.setErpCharValueData(data);
+					charValueMapList.add(characteristicValueMap);
+				}
 			}
 			sapLoadDataInputParam.setBatchNumber(batchNumber);
 			sapLoadDataInputParam.setMaterial(material);

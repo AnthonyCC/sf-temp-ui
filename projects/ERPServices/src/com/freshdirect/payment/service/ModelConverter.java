@@ -861,14 +861,14 @@ public class ModelConverter {
 		data.setMaterialGroup(model.getMaterialGroup());
 		data.setSapId(model.getSapId());
 		data.setSalesUnits(getErpSaleUnitModelList(model.getSalesUnits()));
-		data.setAlcoholicContent(model.getAlcoholicContent().getCode());
+		data.setAlcoholicContent(model.getAlcoholicContent() != null ? model.getAlcoholicContent().getCode() : null);
 		data.setTaxable(model.isTaxable());
 		data.setTaxCode(model.getTaxCode());
 		data.setDisplaySalesUnits(getErpSaleUnitModelList(model.getDisplaySalesUnits()));
 		data.setSkuCode(model.getSkuCode());
 		data.setDaysFresh(model.getDaysFresh());
 		data.setMaterialType( model.getMaterialType());
-		data.setApprovalStatus(model.getApprovalStatus().getStatusCode());
+		data.setApprovalStatus(model.getApprovalStatus() != null ? model.getApprovalStatus().getStatusCode() : null);
 
 		data.setPrices(erpMaterialPriceDatas);
 		data.setClasses(erpClassDatas);
