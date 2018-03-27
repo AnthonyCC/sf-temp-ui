@@ -46,14 +46,13 @@ public class LoginServlet extends HttpServlet {
 		LoginRequest loginRequest = parseRequestData(request, response, LoginRequest.class);
 		if (loginRequest != null) {
 			// validate captcha if it's enabled
-			if (loginRequest.isCaptchaEnabled()) {
-				boolean isCaptchaSuccess = CaptchaUtil.validateCaptchaV2(loginRequest.getCaptchaToken(), request.getRemoteAddr(), request.getSession(), SessionName.LOGIN_ATTEMPT, FDStoreProperties.getMaxInvalidLoginAttempt());
-				if (!isCaptchaSuccess) {
-					loginResponse.addError("captcha", SystemMessageList.MSG_INVALID_CAPTCHA);
-					writeResponse(response, loginResponse);
-					return;
-				}
+			boolean isCaptchaSuccess = CaptchaUtil.validateCaptchaV2(loginRequest.getCaptchaToken(), request.getRemoteAddr(), request.getSession(), SessionName.LOGIN_ATTEMPT, FDStoreProperties.getMaxInvalidLoginAttempt());
+			if (!isCaptchaSuccess) {
+				loginResponse.addError("captcha", SystemMessageList.MSG_INVALID_CAPTCHA);
+				writeResponse(response, loginResponse);
+				return;
 			}
+			
 			ActionResult actionResult = new ActionResult();
 			String updatedSuccessPage = UserUtil.loginUser(request.getSession(), request, response, actionResult
 															, loginRequest.getUserId(), loginRequest.getPassword(), mergePage, loginRequest.getSuccessPage(), false);
