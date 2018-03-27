@@ -152,6 +152,12 @@ html,body {
 }
 
 /*homepage redesign*/
+
+.oas-homepageredesign{
+	height: 560px;
+}
+
+
 .oas-homepageredesign,
 .oas-homepageredesign .full {
   width: 100%;

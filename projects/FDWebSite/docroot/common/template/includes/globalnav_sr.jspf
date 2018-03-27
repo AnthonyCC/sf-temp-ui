@@ -71,6 +71,10 @@ if(user != null) {
 		%><div id="oas_SystemMessage">
   			<script type="text/javascript">OAS_AD('SystemMessage');</script>
   		</div>
+			<div id="oas_DFPSystemMessage" ad-size-width='970' ad-size-height='80' class="container">
+				<script type="text/javascript">OAS_AD('DFPSystemMessage');</script>
+			</div>
+	
 	<% } else { %>
     	<div class="message" data-type="system"><fd:GetSiteAnnouncements id="announcments" user="<%=user%>">
 	    <logic:iterate id="ann" collection="<%=announcments%>" type="com.freshdirect.fdstore.FDSiteAnnouncementI">
@@ -121,9 +125,9 @@ if(user != null) {
 							<button id="topInputFindButton_fdx" class="locabar-search cssbutton fdxgreen cssbutton-flat"><span class="offscreen">search</span></button>
 						</form>
 					</div>
-	
+
 					<%-- nav links next to search field --%>
-				
+
 					<%
 					//if(Boolean.TRUE == pageContext.getAttribute(LocationHandlerTag.SERVICE_TYPE_MODIFICATION_ENABLED)){
 						%><div class="topnavitem" id="topnavitem_dlvType"><%
@@ -143,12 +147,12 @@ if(user != null) {
 					the mockups imply that one or the other should always show
 					*/
 					%>
-				
-					
+
+
 					<div class="topnavitem" id="topnavitem_help">
 				        <a href="/help/index.jsp?trk=gnav">Help</a>
 				    </div>
-			       
+
 					<div class="topnavitem" id="topnavitem_reorder">
 	          			<a href="/quickshop/index.jsp" fd-login-required class="icon-reorder-icon-before">Reorder</a>
 					</div>
@@ -157,14 +161,14 @@ if(user != null) {
 							<a href="/registration/signup.jsp" class="signUpButton cssbutton orange" data-component="signup">Create Account</a>
 						</div>
 			        <% } %>
-	
+
 			        <% if (user != null && user.getLevel() != FDUserI.GUEST && user.isEligibleForStandingOrders() && user.isNewSO3Enabled()) {  %>
 						<div class="topnavitem" id="topnavitem_standingorders">
 			            	<a href="/quickshop/standing_orders.jsp" class="cssbutton cssbutton-flat purple nontransparent" fd-login-required>Standing Orders</a>
 			        	</div>
 			        <% } %>
 			    <% } %>
-			       
+
 
 			    <br style="clear: both;" />
 			</div>
@@ -274,7 +278,7 @@ if(user != null) {
 	<!-- GLOBALNAV -->
 	<potato:globalnav/>
 
-	
+
 
 	<div class="container global<%= (useFdxGlobalNav) ? " hasFDX" : "" %>">
 	    <nav class="gnav" data-component="globalnav">
