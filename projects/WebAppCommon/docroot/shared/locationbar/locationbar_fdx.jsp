@@ -714,9 +714,12 @@ if (allPickupDepots != null) {
 						   	</div>
 						   	<div class="footer">
 								<span class="subtotal">Subtotal: </span> <span>
-									<span class="totalprice"><%=JspMethods.formatPrice(cart.getSubTotal())%></span><br />
-									<span class="save-amount"><%=JspMethods.formatPrice(cart.getSaveAmount(false))%></span>
+									<span class="totalprice"><%=JspMethods.formatPrice(cart.getSubTotal())%></span>
 								</span>
+							</div>
+							<div class="save-amount">
+								<strong><span class="message right"><%=JspMethods.formatPrice(cart.getSaveAmount(false))%></span></strong>
+								<div class="clear"></div>
 							</div>
 							<div class="footer-buttons">
 								<span class="close"></span><br />

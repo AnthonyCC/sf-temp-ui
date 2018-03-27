@@ -1733,8 +1733,8 @@ public class FDStoreProperties {
         // Default reCaptcha Public & Private krys
         defaults.put(PROP_RECAPTCHA_PUBLIC_KEY, "6LdQn0YUAAAAALfZUrX-x4IeOmdUkkUrwMwZdhsd");
         defaults.put(PROP_RECAPTCHA_PRIVATE_KEY, "6LdQn0YUAAAAAB3iHC6AzFH_Sd5k9z0uAwfvPUkZ");
-        defaults.put(PROP_MAX_INVALID_LOGIN_ATTEMPT, "10");
-        defaults.put(PROP_MAX_INVALID_PAYMENT_ATTEMPT, "10");
+        defaults.put(PROP_MAX_INVALID_LOGIN_ATTEMPT, "5");
+        defaults.put(PROP_MAX_INVALID_PAYMENT_ATTEMPT, "5");
         defaults.put(PROP_TIP_RANGE_CONFIG, "0,25,0.5;");
 
         defaults.put(SUB_DOMAIN, "");
