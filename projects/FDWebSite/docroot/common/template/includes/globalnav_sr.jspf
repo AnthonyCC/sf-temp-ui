@@ -15,6 +15,7 @@
 	String uri = request.getRequestURI().toLowerCase();
     boolean onCartPage = (uri.contains("/checkout/") && !uri.contains("view_cart.jsp") /*|| uri.contains("view_cart.jsp")|| uri.contains("merge_cart.jsp")*/ );
     boolean inGiftcard = uri.contains("/gift_card/") || (null != request.getParameter("successPage") && request.getParameter("successPage").toLowerCase().indexOf("/gift_card/") != -1);
+    boolean inReorder = uri.startsWith("/quickshop/");
 
 	final int W_GLOBAL_NAV_TOP_TOTAL = 970;
 	String hasEcouponsClass="";
@@ -96,7 +97,7 @@ if(user != null) {
     <div class="message invisible" id="deliveryetawarning" data-type="deliveryetawarning"><%@ include file="/common/template/includes/i_delivery_eta_info.jspf"%></div>
 
 <!-- GLOBALNAV TOP -->
-	<div class="container globalnav_top<%= (onCartPage) ? " disableCart" : "" %><%= (useFdxGlobalNav) ? " hasFDX" : "" %>">
+	<div class="container globalnav_top<%= (onCartPage) ? " disableCart" : "" %><%= (useFdxGlobalNav) ? " hasFDX" : "" %><%= (inReorder) ? " inReorder" : "" %>">
 
 		<% if (useFdxGlobalNav) { %>
 
@@ -274,7 +275,7 @@ if(user != null) {
 	</div>
 <% } %>
 
-<% if (!onCartPage && !inGiftcard) { %>
+<% if (!onCartPage && !inGiftcard && !inReorder) { %>
 	<!-- GLOBALNAV -->
 	<potato:globalnav/>
 
