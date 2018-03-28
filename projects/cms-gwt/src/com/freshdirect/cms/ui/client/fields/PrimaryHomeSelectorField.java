@@ -145,10 +145,10 @@ public class PrimaryHomeSelectorField extends OneToManyRelationField {
 				TreeContentNodeModel categoryNode = new TreeContentNodeModel("Category", contexts.getLabel(p),
 						_pathFragments[_pathFragments.length - 2]);
 
-				String cosContextOverride = contexts.getCosContext(p);
-				if (!GwtNodeContext.COS_CONTEXTOVERRIDE_COLOR_NOOVERRIDE.equals(cosContextOverride)) {
-					categoryNode.setIconOverride(contexts.getCosContext(p));
-				}
+                String cosContextOverride = contexts.getCosContext(p);
+                if (!GwtNodeContext.COS_CONTEXTOVERRIDE_COLOR_NOOVERRIDE.equals(cosContextOverride)) {
+                    categoryNode.setIconOverride(contexts.getCosContext(p));
+                }
 
 				categoryNode.setHasChildren(false);
 				_treeStore.insert(categoryNode, 0, false);
@@ -158,7 +158,8 @@ public class PrimaryHomeSelectorField extends OneToManyRelationField {
 		tree.hideToolbar();
 		popup.setHeading(getFieldLabel());
 		popup.addListener(Events.Select, new Listener<BaseEvent>() {
-			public void handleEvent(BaseEvent be) {
+			@Override
+            public void handleEvent(BaseEvent be) {
 				addOneToManyModels(popup.getSelectedItems());
 			}
 		});

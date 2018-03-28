@@ -137,25 +137,25 @@ public class ContentLoaderService {
     }
 
 	public String decorateContextOverride(ContentKey key,boolean useDefault) {
-		String contextStyle = "";
+        String contextStyle = "";
 
-		if (useDefault) {
-			contextStyle = GwtNodeContext.COS_CONTEXTOVERRIDE_COLOR_NOOVERRIDE;
-		}
+        if (useDefault) {
+            contextStyle = GwtNodeContext.COS_CONTEXTOVERRIDE_COLOR_NOOVERRIDE;
+        }
 
-		Optional<Attribute> catalogAttribute = contentTypeInfoService.findAttributeByName(key.type, "catalog");
-		Optional<Object> catalogAttributeValue = contentProviderService.getAttributeValue(key, catalogAttribute.get());
+        Optional<Attribute> catalogAttribute = contentTypeInfoService.findAttributeByName(key.type, "catalog");
+        Optional<Object> catalogAttributeValue = contentProviderService.getAttributeValue(key, catalogAttribute.get());
 
-		if (catalogAttribute.isPresent() && catalogAttributeValue.isPresent()) {
-			String catalogValue = catalogAttributeValue.get().toString();
+        if (catalogAttribute.isPresent() && catalogAttributeValue.isPresent()) {
+            String catalogValue = catalogAttributeValue.get().toString();
 
-			if ("ALL".equals(catalogValue)) {
-				contextStyle = GwtNodeContext.COS_CONTEXTOVERRIDE_COLOR_RED;
-			} else if ("CORPORATE".equals(catalogValue)) {
-				contextStyle = GwtNodeContext.COS_CONTEXTOVERRIDE_COLOR_GREEN;
-			}
-		}
-		return contextStyle;
+            if ("ALL".equals(catalogValue)) {
+                contextStyle = GwtNodeContext.COS_CONTEXTOVERRIDE_COLOR_RED;
+            } else if ("CORPORATE".equals(catalogValue)) {
+                contextStyle = GwtNodeContext.COS_CONTEXTOVERRIDE_COLOR_GREEN;
+            }
+        }
+        return contextStyle;
 	}
 
     public Map<Attribute, Object> getAllAttributesForVirtualNode(ContentKey contentKey) {
@@ -832,7 +832,7 @@ public class ContentLoaderService {
     }
 
     private void decorateIconOverride(ContentKey key, ContentNodeModel model) {
-		String iconOverride = decorateContextOverride(key, false);
-		model.setIconOverride(iconOverride);
+        String iconOverride = decorateContextOverride(key, false);
+        model.setIconOverride(iconOverride);
     }
 }

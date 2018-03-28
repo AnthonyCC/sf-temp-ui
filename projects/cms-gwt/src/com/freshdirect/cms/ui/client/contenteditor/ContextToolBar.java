@@ -87,13 +87,13 @@ public class ContextToolBar extends LayoutContainer {
         
         final List<String> contextPathsList = new ArrayList<String>(ctx.size());
         final List<String> contextLabelsList = new ArrayList<String>(ctx.size());
-		final List<String> contextCosStyle = new ArrayList<String>(ctx.size());
+		final List<String> contextCosStyles = new ArrayList<String>(ctx.size());
         Listener<BaseEvent> synchronizeButtonClick = null;
 
         for (String path : ctx.getPaths()) {
             contextPathsList.add(path);
             contextLabelsList.add(ctx.getLabel(path));
-			contextCosStyle.add(ctx.getCosContext(path));
+			contextCosStyles.add(ctx.getCosContext(path));
         }
         
         ToolButton synchronizeButton = new ToolButton("synchronize-button");
@@ -126,7 +126,7 @@ public class ContextToolBar extends LayoutContainer {
 				public void handleEvent(ListViewEvent<SimpleComboValue<String>> be) {
 					List<Element> viewElements = contextListView.getElements();
 					for (int i = 0; i < viewElements.size(); i++) {
-						viewElements.get(i).addClassName(contextCosStyle.get(i));
+						viewElements.get(i).addClassName(contextCosStyles.get(i));
 					}
 				}
 			});

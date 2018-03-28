@@ -59,7 +59,7 @@ public class StoreContextService {
             singleContext.add(key);
 
 			gwtContext.addContext(buildPath(singleContext), buildLabel(singleContext),
-					new HashMap<String, ContentNodeAttributeI>(), "NoOverride");
+                    new HashMap<String, ContentNodeAttributeI>(), GwtNodeContext.COS_CONTEXTOVERRIDE_COLOR_NOOVERRIDE);
         } else {
 
             for (List<ContentKey> context : contextList) {
@@ -79,13 +79,13 @@ public class StoreContextService {
     }
 
 	private String buildCosContextColor(List<ContentKey> context) {
-		String cosContextStyle = "NoOverride";
-		ContentKey departmentContentKey = context.get(context.size() - 2);
-		if (ContentType.Department.equals(departmentContentKey.getType())) {
-			cosContextStyle = contentLoaderService.decorateContextOverride(departmentContentKey, true);
-		}
+        String cosContextStyle = GwtNodeContext.COS_CONTEXTOVERRIDE_COLOR_NOOVERRIDE;
+        ContentKey departmentContentKey = context.get(context.size() - 2);
+        if (ContentType.Department.equals(departmentContentKey.getType())) {
+            cosContextStyle = contentLoaderService.decorateContextOverride(departmentContentKey, true);
+        }
 
-		return cosContextStyle;
+        return cosContextStyle;
 	}
 
     // Label: "FDX > FDX FRU > FDX OTHER > Lady Apple"
