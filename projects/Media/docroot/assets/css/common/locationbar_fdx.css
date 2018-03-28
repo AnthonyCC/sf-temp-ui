@@ -151,8 +151,9 @@
 	#popupcart .footer .save-amount{
 	    float: right;
 	    padding-right: 50px;
-	    font-size: small;
+	    font-size: 13px;
 	    color: #DF0000;
+	    padding-top: 0;
 	}
 
 	[data-component="subtotal"], .subtotal {

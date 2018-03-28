@@ -713,10 +713,9 @@ if (allPickupDepots != null) {
 						       	<p class="spinner">Loading cart...</p>
 						   	</div>
 						   	<div class="footer">
-								<span class="subtotal">Subtotal: </span> <span>
-									<span class="totalprice"><%=JspMethods.formatPrice(cart.getSubTotal())%></span><br />
-									<span class="save-amount"><%=JspMethods.formatPrice(cart.getSaveAmount(false))%></span>
-								</span>
+								<span class="subtotal">Subtotal: </span>
+								<span class="totalprice"><%=JspMethods.formatPrice(cart.getSubTotal())%></span>
+								<span class="save-amount">You've Saved <%=JspMethods.formatPrice(cart.getSaveAmount(false))%></span>
 							</div>
 							<div class="footer-buttons">
 								<span class="close"></span><br />
