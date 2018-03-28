@@ -71,7 +71,9 @@ import com.google.common.base.Optional;
 @Service
 public class ContentLoaderService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ContentLoaderService.class);
+
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ContentLoaderService.class);
 
     @Autowired
     private ContextualContentProvider contentProviderService;
@@ -133,6 +135,28 @@ public class ContentLoaderService {
         }
 
     }
+
+	public String decorateContextOverride(ContentKey key,boolean useDefault) {
+		String contextStyle = "";
+
+		if (useDefault) {
+			contextStyle = GwtNodeContext.COS_CONTEXTOVERRIDE_COLOR_NOOVERRIDE;
+		}
+
+		Optional<Attribute> catalogAttribute = contentTypeInfoService.findAttributeByName(key.type, "catalog");
+		Optional<Object> catalogAttributeValue = contentProviderService.getAttributeValue(key, catalogAttribute.get());
+
+		if (catalogAttribute.isPresent() && catalogAttributeValue.isPresent()) {
+			String catalogValue = catalogAttributeValue.get().toString();
+
+			if ("ALL".equals(catalogValue)) {
+				contextStyle = GwtNodeContext.COS_CONTEXTOVERRIDE_COLOR_RED;
+			} else if ("CORPORATE".equals(catalogValue)) {
+				contextStyle = GwtNodeContext.COS_CONTEXTOVERRIDE_COLOR_GREEN;
+			}
+		}
+		return contextStyle;
+	}
 
     public Map<Attribute, Object> getAllAttributesForVirtualNode(ContentKey contentKey) {
         Map<Attribute, Object> values = new HashMap<Attribute, Object>();
@@ -808,18 +832,7 @@ public class ContentLoaderService {
     }
 
     private void decorateIconOverride(ContentKey key, ContentNodeModel model) {
-
-        Optional<Attribute> catalogAttribute = contentTypeInfoService.findAttributeByName(key.type, "catalog");
-        Optional<Object> catalogAttributeValue = contentProviderService.getAttributeValue(key, catalogAttribute.get());
-
-        if (catalogAttribute.isPresent() && catalogAttributeValue.isPresent()) {
-            String catalogValue = catalogAttributeValue.get().toString();
-
-            if ("ALL".equals(catalogValue)) {
-                model.setIconOverride("OverrideRed");
-            } else if ("CORPORATE".equals(catalogValue)) {
-                model.setIconOverride("OverrideGreen");
-            }
-        }
+		String iconOverride = decorateContextOverride(key, false);
+		model.setIconOverride(iconOverride);
     }
 }

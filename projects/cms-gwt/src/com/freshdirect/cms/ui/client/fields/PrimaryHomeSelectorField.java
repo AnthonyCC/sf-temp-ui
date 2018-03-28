@@ -142,9 +142,14 @@ public class PrimaryHomeSelectorField extends OneToManyRelationField {
 		for (String p : contexts.getPaths()) {
 			if (p.contains(selKey)) {
 				String[] _pathFragments = p.split("\\|");
-				TreeContentNodeModel categoryNode = new TreeContentNodeModel("Category",
-						contexts.getLabel(p),
-						_pathFragments[_pathFragments.length-2]);
+				TreeContentNodeModel categoryNode = new TreeContentNodeModel("Category", contexts.getLabel(p),
+						_pathFragments[_pathFragments.length - 2]);
+
+				String cosContextOverride = contexts.getCosContext(p);
+				if (!GwtNodeContext.COS_CONTEXTOVERRIDE_COLOR_NOOVERRIDE.equals(cosContextOverride)) {
+					categoryNode.setIconOverride(contexts.getCosContext(p));
+				}
+
 				categoryNode.setHasChildren(false);
 				_treeStore.insert(categoryNode, 0, false);
 			}

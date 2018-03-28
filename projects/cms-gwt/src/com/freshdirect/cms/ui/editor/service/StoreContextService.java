@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.cms.core.domain.ContextualAttributeFetchScope;
 import com.freshdirect.cms.core.domain.RootContentKey;
 import com.freshdirect.cms.core.service.ContextualContentProvider;
@@ -57,7 +58,8 @@ public class StoreContextService {
             List<ContentKey> singleContext = new ArrayList<ContentKey>();
             singleContext.add(key);
 
-            gwtContext.addContext(buildPath(singleContext), buildLabel(singleContext), new HashMap<String, ContentNodeAttributeI>());
+			gwtContext.addContext(buildPath(singleContext), buildLabel(singleContext),
+					new HashMap<String, ContentNodeAttributeI>(), "NoOverride");
         } else {
 
             for (List<ContentKey> context : contextList) {
@@ -68,12 +70,23 @@ public class StoreContextService {
                     inheritedAttr = new HashMap<String, ContentNodeAttributeI>();
                 }
 
-                gwtContext.addContext(buildPath(context), buildLabel(context), inheritedAttr);
+				gwtContext.addContext(buildPath(context), buildLabel(context), inheritedAttr,
+						buildCosContextColor(context));
             }
         }
 
         return gwtContext;
     }
+
+	private String buildCosContextColor(List<ContentKey> context) {
+		String cosContextStyle = "NoOverride";
+		ContentKey departmentContentKey = context.get(context.size() - 2);
+		if (ContentType.Department.equals(departmentContentKey.getType())) {
+			cosContextStyle = contentLoaderService.decorateContextOverride(departmentContentKey, true);
+		}
+
+		return cosContextStyle;
+	}
 
     // Label: "FDX > FDX FRU > FDX OTHER > Lady Apple"
     private String buildLabel(List<ContentKey> context) {
