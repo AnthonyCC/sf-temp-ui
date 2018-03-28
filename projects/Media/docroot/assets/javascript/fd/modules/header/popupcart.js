@@ -63,7 +63,7 @@ var FreshDirect = FreshDirect || {};
   };
   
   function updateSaveAmount(saveAmount) {
-	  saveAmountElement.find('.message').html("You've Saved " + saveAmount);
+	  saveAmountElement.html("You've Saved " + saveAmount);
 	  if (saveAmount){
 		  saveAmountElement.show();
 	  } else {
