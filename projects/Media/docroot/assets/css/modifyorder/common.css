@@ -68,4 +68,5 @@
 #locationbar-sticky-wrapper .locabar-right-sections {
 	position: fixed;
 	top: 1px;
+	height: 42px;
 }
