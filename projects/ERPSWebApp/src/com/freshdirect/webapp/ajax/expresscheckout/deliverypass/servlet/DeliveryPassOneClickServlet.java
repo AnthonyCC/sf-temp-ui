@@ -52,10 +52,12 @@ public class DeliveryPassOneClickServlet extends BaseJsonServlet {
 					}else { //Already Opted-in for Free-Trial DP
 						responseData.put("STATUS", "ERROR");
 						responseData.put("MESSAGE", "You have already signed up for the free DeliveryPass trial. Your next order placed will have free delivery.");
+						responseData.put("ERRORTYPE", "signedup");
 					}
 				} else { //Not eligible for Free-Trial DP
 					responseData.put("STATUS", "ERROR");
 					responseData.put("MESSAGE", "You have already had a DeliveryPass and are not eligible for the free trial.");
+					responseData.put("ERRORTYPE", "ineligible");
 				}
 				
 			}

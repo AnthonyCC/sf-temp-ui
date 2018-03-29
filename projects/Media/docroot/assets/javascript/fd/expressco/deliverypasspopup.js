@@ -150,6 +150,15 @@ var FreshDirect = FreshDirect || {};
     }
   });
   $(document).on('click', deliverypasspopup.toggleTrigger, deliverypasspopup.toggle.bind(deliverypasspopup));
-
+  $(document).on('click', "[data-component='deliverypassfreetrialpopup']", function (e) {
+	dataLayer.push({
+      'event': 'deliverypass-click',
+      'eventCategory': 'deliverypass',
+      'eventAction': 'free delivery',
+      'eventLabel': 'free'
+    });
+    doOverlayDialogNew('/includes/freetrial_popup.jsp');
+  });
+  
   fd.modules.common.utils.register('expressco', 'deliverypasspopup', deliverypasspopup, fd);
 }(FreshDirect));

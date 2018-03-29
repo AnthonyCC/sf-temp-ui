@@ -1362,9 +1362,9 @@
 						{/if}
 						{if $box.other.deliveryPassPopupNeeded and $userRecognized and $userCorporate == false}
 							{if $box.other.deliveryPassFreeTrialEligible}
-								<span class="free-link-holder">&nbsp;or <a href="javascript:doOverlayDialogNew('/includes/freetrial_popup.jsp');" class="{if $isHeader}cssbutton small green {/if}free-link" >Free</a></span>
+								<span class="free-link-holder">&nbsp;or <a href="#" data-component="deliverypassfreetrialpopup" class="{if $isHeader}cssbutton small green {/if}free-link" >Free<span class="offscreen">with Delivery Pass trial</span></a></span>
 							{else}
-								<span class="free-link-holder">&nbsp;or <a href="#" class="{if $isHeader}cssbutton small green {/if}free-link" data-component="deliverypasspopup">Free</a></span>
+								<span class="free-link-holder">&nbsp;or <a href="#" class="{if $isHeader}cssbutton small green {/if}free-link" data-component="deliverypasspopup">Free<span class="offscreen">with Delivery Pass</span></a></span>
 							{/if}
 						{/if}
 					</div> <!-- end subtotal__rowcell-right -->
