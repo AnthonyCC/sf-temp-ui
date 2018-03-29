@@ -567,6 +567,7 @@ public interface IECommerceService {
 
 	public Collection<ErpCharacteristicValuePriceModel> findByMaterialId(String materialId, int version) throws RemoteException;
 
+	public boolean uploadProductFeed() throws FDResourceException;
 
 
 }

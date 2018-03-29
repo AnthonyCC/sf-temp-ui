@@ -228,6 +228,9 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String FAMILYID_FOR_MATERIAL = "productfamily/familyid";
 	private static final String FAMILY_INFO = "productfamily/familyinfo";
 	private static final String SKU_FAMILY_INFO = "productfamily/skufamilyinfo";
+	
+	private static final String UPLOAD_PRODUCT_FEED = "productfeed/upload";
+	
 	private static final String USERID_BY_USERTOKEN = "account/external/userIdbyusertoken";
 	private static final String USER_EMAIL_EXIST = "account/external/checkemailexist";
 	private static final String LINK_USER_TOKEN = "account/external/linkusertoken";
@@ -4414,6 +4417,20 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		}catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
+		}
+	}
+	@Override
+	public boolean uploadProductFeed() throws FDResourceException {
+		try {
+			Response<Boolean> response = this.httpGetDataTypeMap(getFdCommerceEndPoint(UPLOAD_PRODUCT_FEED),
+					new TypeReference<Response<Boolean>>() {});
+			if (!response.getResponseCode().equals("OK")) {
+				throw new FDResourceException(response.getMessage());
+			}
+			return response.getData();
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage());
+			throw new FDResourceException(e);
 		}
 	}
 
