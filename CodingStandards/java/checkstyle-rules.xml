@@ -12,12 +12,15 @@
   <property name="severity" value="warning"/>
   <module name="TreeWalker">
     <property name="tabWidth" value="4"/>
-    <module name="FileContentsHolder"/>
     <module name="JavadocMethod">
       <property name="severity" value="ignore"/>
       <property name="scope" value="protected"/>
       <property name="allowUndeclaredRTE" value="true"/>
       <property name="allowMissingPropertyJavadoc" value="true"/>
+    </module>
+    <module name="SuppressionCommentFilter">
+      <property name="offCommentFormat" value="Generated code begins here"/>
+      <property name="onCommentFormat" value="Generated code ends here"/>
     </module>
     <module name="JavadocType">
       <property name="severity" value="ignore"/>
@@ -330,10 +333,6 @@
   </module>
   <module name="SuppressionFilter">
     <property name="file" value="${samedir}/checkstyle-suppressions.xml"/>
-  </module>
-  <module name="SuppressionCommentFilter">
-    <property name="offCommentFormat" value="Generated code begins here"/>
-    <property name="onCommentFormat" value="Generated code ends here"/>
   </module>
   <module name="FileLength">
     <property name="severity" value="error"/>
