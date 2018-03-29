@@ -560,6 +560,11 @@ public class CmsFilteringFlow {
                 } else {
                 	searchResults.setAdProducts(null);
                 }
+                
+                //remove recipe results
+                if (!FDStoreProperties.isSearchRecipeResultsEnabled()) {
+                	searchResults.emptyRecipes();
+                }
 
                 collectSearchRelevancyScores(searchResults, nav.getRequestCookies(), user);
                 break;
