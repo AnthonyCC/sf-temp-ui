@@ -381,12 +381,16 @@
 					</executions>
 					<configuration>
 						<includes>**\/*.java</includes>
-						<sourceDirectories>${project.build.sourceDirectory}</sourceDirectories>
+						<sourceDirectories>
+							<sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+						</sourceDirectories>
 						<propertyExpansion>samedir=${project.basedir}/../../CodingStandards/java</propertyExpansion>
 						<configLocation>${project.basedir}/../../CodingStandards/java/checkstyle-rules.xml</configLocation>
 						<suppressionsLocation>${project.basedir}/../../CodingStandards/java/checkstyle-suppressions.xml</suppressionsLocation>
 						<includeTestSourceDirectory>true</includeTestSourceDirectory>
-						<testSourceDirectories>${project.build.testSourceDirectory}</testSourceDirectories>
+						<testSourceDirectories>
+							<testSourceDirectory>${project.build.testSourceDirectory}</testSourceDirectory>
+						</testSourceDirectories>
 						<failOnViolation>false</failOnViolation>
 						<failsOnError>false</failsOnError>
 						<maxAllowedViolations>0</maxAllowedViolations>
