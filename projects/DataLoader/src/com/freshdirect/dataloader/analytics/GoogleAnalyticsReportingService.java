@@ -11,7 +11,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.log4j.Logger;
 
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -20,7 +19,6 @@ import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
-import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.http.HttpService;
 import com.freshdirect.storeapi.content.ProductModel;
 
@@ -29,7 +27,6 @@ public class GoogleAnalyticsReportingService {
     private static final GoogleAnalyticsReportingService INSTANCE = new GoogleAnalyticsReportingService();
     public static final String GOOGLE_ANALYTICS_HOST = "https://www.google-analytics.com/collect";
     public static final String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36";
-    private static final Logger LOGGER = LoggerFactory.getInstance(GoogleAnalyticsReportingService.class);
     private static final Integer GA_QUANTITY_LIMIT = 200;
 
     private GoogleAnalyticsReportingService() {
@@ -38,7 +35,6 @@ public class GoogleAnalyticsReportingService {
     public static GoogleAnalyticsReportingService defaultService() {
         return INSTANCE;
     }
-
 
     public HttpResponse postGAReporting(FDOrderI order) throws UnsupportedEncodingException, IOException {
         return HttpService.defaultService().postDataWithHttpEntity(GOOGLE_ANALYTICS_HOST, assembleTransactionPayloadForGA(order), USER_AGENT);
@@ -142,7 +138,6 @@ public class GoogleAnalyticsReportingService {
     }
 
     private String roundQuantity(double quantity) {
-
         if (quantity < 0) {
             quantity = Math.floor(quantity);
             quantity = (quantity < -GA_QUANTITY_LIMIT) ? -GA_QUANTITY_LIMIT : quantity;
