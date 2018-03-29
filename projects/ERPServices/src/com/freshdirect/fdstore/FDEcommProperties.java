@@ -106,8 +106,10 @@ public class FDEcommProperties {
 	public static final String FDFactorySB_WarmUp_BULKSKU ="fdstore.ejb.FDFactorySB_WarmUp_BulkSkus";
 	public final static String PROP_JCO_CLIENT_LISTENER_COOL_INFO_ENABLED = "jco.client.listeners.coolinfo.enabled";
 	public final static String PROP_JCO_CLIENT_LISTENER_PRODUCT_PROMOTION_ENABLED = "jco.client.listeners.productPromotion.enabled";
+	public final static String PROP_JCO_CLIENT_LISTENER_INVENTORY_INFO_ENABLED = "jco.client.listeners.inventoryInfo.Enabled";
+	public final static String PROP_JCO_CLIENT_LISTENER_RESTRICTED_AVAILABILITY_INFO_ENABLED = "jco.client.listeners.restrictedAvailabilityInfo.Enabled";
+
    
-    
     static {
 
         defaults.put(FDMonitorSB,FALSE);

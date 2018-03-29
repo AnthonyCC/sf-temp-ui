@@ -6,6 +6,8 @@ import weblogic.application.ApplicationLifecycleEvent;
 import weblogic.application.ApplicationLifecycleListener;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.fdstore.FDEcommProperties;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class WLSSapAvailRestrictedInfoServer extends ApplicationLifecycleListener {
@@ -15,7 +17,7 @@ public class WLSSapAvailRestrictedInfoServer extends ApplicationLifecycleListene
 	@Override
     public void postStart(ApplicationLifecycleEvent evt) {
 		
-		if (ErpServicesProperties.getJcoClientListenersEnabled()) {
+		if (ErpServicesProperties.getJcoClientListenersEnabled() && FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PROP_JCO_CLIENT_LISTENER_RESTRICTED_AVAILABILITY_INFO_ENABLED)) {
 
 			final String gwHost = ErpServicesProperties.getJcoClientListenHost();
 			if (gwHost == null)
