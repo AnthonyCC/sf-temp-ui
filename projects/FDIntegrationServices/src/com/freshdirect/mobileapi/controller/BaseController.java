@@ -649,8 +649,7 @@ public abstract class BaseController extends AbstractController implements Messa
         }
         configuration.setStoreVersion(storeVersion);
 
-		configuration.setVerifyPaymentMethod(FDStoreProperties
-				.isPaymentMethodVerificationEnabled());
+		configuration.setVerifyPaymentMethod(FDStoreProperties.isPaymentMethodVerificationForMobileApiEnabled());
 		configuration.setEcouponEnabled(FDCouponProperties.isCouponsEnabled());
 		configuration.setAdServerUrl(FDStoreProperties.getAdServerUrl());
 

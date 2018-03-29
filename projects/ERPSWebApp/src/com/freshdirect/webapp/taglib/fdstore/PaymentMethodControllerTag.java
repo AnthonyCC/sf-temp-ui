@@ -96,7 +96,7 @@ public class PaymentMethodControllerTag extends com.freshdirect.framework.webapp
 						isAddOrEditCard = true;
 					}
 	                if(actionResult.isSuccess()){
-	                    PaymentMethodUtil.validatePaymentMethod(request, paymentMethod, actionResult, user,true,EnumAccountActivityType.UPDATE_PAYMENT_METHOD);
+	                    PaymentMethodUtil.validatePaymentMethod(request, paymentMethod, actionResult, user, true, EnumAccountActivityType.UPDATE_PAYMENT_METHOD);
 	                    if(actionResult.isSuccess()){
 	                    	paymentMethod.setAvsCkeckFailed(false);
 	                        PaymentMethodUtil.editPaymentMethod(request, actionResult, paymentMethod);

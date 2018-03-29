@@ -1,4 +1,5 @@
-[fdform] [invalid] {
+[fdform] [invalid],
+[fdform] input[type="tel"][invalid] {
   outline: none;
   border-color: #cb2848;
   background: #fcf4f5;

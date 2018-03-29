@@ -39,7 +39,12 @@ var FreshDirect = FreshDirect || {};
       value: expressco.eccenterpopup
     },
     bodyTemplate: {
-      value: expressco.addpaymentmethodpopup
+      value: function (data) {
+    	  if (data) {
+    		  data.isPaymentMethodVerificationEnabled = fd.properties && fd.properties.isPaymentMethodVerificationEnabled
+    	  }
+    	  return expressco.addpaymentmethodpopup(data);
+      }
     },
     popupId: {
       value: 'addpaymentmethodpopup'

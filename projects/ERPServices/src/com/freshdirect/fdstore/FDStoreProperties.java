@@ -507,6 +507,8 @@ public class FDStoreProperties {
 
     private final static String WS_PROMOTION_PRODUCTION_MODE = "fdstore.ws.promotion.production.mode";
     private static final String PROP_PAYMENT_METHOD_VERIFICATION_ENABLED = "fdstore.paymentmethod.verify";
+    private static final String PROP_MOBILEAPI_PAYMENT_METHOD_VERIFICATION_ENABLED = "fdstore.mobileapi.paymentmethod.verify";
+    
     private static final String PROP_PAYMENT_METHOD_VERIFICATION_LIMIT = "fdstore.paymentmethod.verify.limit";
 
     private static final String PROP_ORDER_HISTORY_QUERY_ID = "fdstore.orderhistory.query.id";
@@ -1472,6 +1474,7 @@ public class FDStoreProperties {
         defaults.put(PROP_MKTADMIN_USER_NAME, "qaadmin");
         defaults.put(PROP_MKTADMIN_PASSWORD, "password01");
 
+        defaults.put(PROP_MOBILEAPI_PAYMENT_METHOD_VERIFICATION_ENABLED, "false");
         defaults.put(PROP_PAYMENT_METHOD_VERIFICATION_ENABLED, "false");
         defaults.put(PROP_PAYMENT_METHOD_VERIFICATION_LIMIT, "5");
 
@@ -3525,7 +3528,9 @@ public class FDStoreProperties {
     public static boolean isPaymentMethodVerificationEnabled() {
         return (new Boolean(get(PROP_PAYMENT_METHOD_VERIFICATION_ENABLED))).booleanValue();
     }
-
+    public static boolean isPaymentMethodVerificationForMobileApiEnabled() {
+        return (new Boolean(get(PROP_MOBILEAPI_PAYMENT_METHOD_VERIFICATION_ENABLED))).booleanValue();
+    }
     public static int getPaymentMethodVerificationLimit() {
         return Integer.parseInt(get(PROP_PAYMENT_METHOD_VERIFICATION_LIMIT));
     }

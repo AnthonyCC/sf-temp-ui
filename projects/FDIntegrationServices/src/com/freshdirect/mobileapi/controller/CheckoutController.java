@@ -1267,7 +1267,7 @@ public class CheckoutController extends BaseController {
     private ModelAndView getCVVStatus(ModelAndView model, SessionUser user) throws FDException, JsonException {
 
     	Message responseMessage = new CVVResponse();
-    	((CVVResponse)responseMessage).setEnabled(FDStoreProperties.isPaymentMethodVerificationEnabled());
+    	((CVVResponse)responseMessage).setEnabled(FDStoreProperties.isPaymentMethodVerificationForMobileApiEnabled());
         setResponseMessage(model, responseMessage, user);
         return model;
     }

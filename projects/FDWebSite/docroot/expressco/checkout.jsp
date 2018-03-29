@@ -162,6 +162,7 @@ boolean showCaptchaInPayment = CaptchaUtil.isExcessiveAttempt(FDStoreProperties.
       window.FreshDirect.expressco = {};
       window.FreshDirect.properties = window.FreshDirect.properties || {};
       window.FreshDirect.properties.displayDeliveryFeeForCosUserInHeader = <%=FDStoreProperties.shouldShowDeliveryFeeForCheckoutPageCosCustomer()%>
+      window.FreshDirect.properties.isPaymentMethodVerificationEnabled = <%=FDStoreProperties.isPaymentMethodVerificationEnabled()%>
       window.FreshDirect.pendingCustomizations = <fd:ToJSON object="${pendingExternalAtcItemPotato}" noHeaders="true"/>
     </script>
   </tmpl:put>
