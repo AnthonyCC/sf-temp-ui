@@ -290,7 +290,6 @@
 		<checkoutLabeled dir="projects/DataLoader/src"/>
 		<checkoutLabeled dir="projects/ERPSWebApp/src"/>
 		<checkoutLabeled dir="projects/RulesAdmin"/>
-		<checkoutLabeled dir="projects/ERPSAdmin"/>
 		<checkoutLabeled dir="projects/FDWebSite"/>
 		<checkoutLabeled dir="projects/CRM/docroot"/>
 		<checkoutLabeled dir="projects/Tools/src"/>
@@ -347,7 +346,6 @@
 		<checkoutLatest dir="projects/DataLoader/src"/>
 		<checkoutLatest dir="projects/ERPSWebApp/src"/>
 		<checkoutLatest dir="projects/RulesAdmin"/>
-		<checkoutLatest dir="projects/ERPSAdmin"/>
 		<checkoutLatest dir="projects/FDWebSite"/>
 		<checkoutLatest dir="projects/CRM/docroot"/>
 		<checkoutLatest dir="projects/Tools/src"/>
@@ -396,7 +394,7 @@
 
 	</target>
 
-	<target name="webapps" depends="fdwebsite,crm,erpsadmin,rulesadmin,cms-gwt,mrktAdmin,fdintegrationservices" description="Build all WAR files">
+	<target name="webapps" depends="fdwebsite,crm,rulesadmin,cms-gwt,mrktAdmin,fdintegrationservices" description="Build all WAR files">
 	</target>
 
 	<target name="all" depends="clean,prereq,build" description="Build everything, no checkout, no tests">
@@ -427,7 +425,6 @@
 		<mkdir dir="${work.dir}/FDWebSite" />
 		<mkdir dir="${work.dir}/CRM" />
 		<mkdir dir="${work.dir}/RulesAdmin" />
-		<mkdir dir="${work.dir}/ERPSAdmin" />
 		<mkdir dir="${work.dir}/Tools" />
 		<mkdir dir="${work.dir}/Tests" />
 		<mkdir dir="${work.dir}/FunctionalTests" />
@@ -453,7 +450,6 @@
 
 		<delete dir="${basedir}/projects/FDWebSite/docroot/WEB-INF/shared"/>
 		<delete dir="${basedir}/projects/CRM/docroot/WEB-INF/shared"/>
-		<delete dir="${basedir}/projects/ERPSAdmin/docroot/WEB-INF/shared"/>
 		<delete dir="${basedir}/projects/CRM/docroot/help"/>
 		<delete dir="${basedir}/projects/CRM/docroot/survey"/>
 		<delete dir="${basedir}/projects/CRM/docroot/includes/delivery"/>
@@ -470,7 +466,6 @@
 		<delete dir="${basedir}/projects/CRM/docroot/assets"/>
 		<delete dir="${basedir}/projects/CRM/docroot/ccassets"/>
 		<delete dir="${basedir}/projects/CRM/docroot/media_stat"/>
-		<delete dir="${basedir}/projects/ERPSAdmin/docroot/assets"/>
 
 
 		<copy todir="${basedir}/projects/FDIntegrationServices/docroot/WEB-INF/shared">
@@ -482,9 +477,6 @@
 		</copy>
 
 		<copy todir="${basedir}/projects/CRM/docroot/WEB-INF/shared">
-			<fileset dir="${basedir}/projects/WebAppCommon/docroot/WEB-INF/shared"/>
-		</copy>
-		<copy todir="${basedir}/projects/ERPSAdmin/docroot/WEB-INF/shared">
 			<fileset dir="${basedir}/projects/WebAppCommon/docroot/WEB-INF/shared"/>
 		</copy>
 
@@ -538,9 +530,7 @@
 		<copy todir="${basedir}/projects/CRM/docroot/media_stat">
 			<fileset dir="${basedir}/projects/Media/docroot/media_stat"/>
 		</copy>
-		<copy todir="${basedir}/projects/ERPSAdmin/docroot/assets">
-			<fileset dir="${basedir}/projects/Media/docroot/assets"/>
-		</copy>
+
 	</target>
 
 	<target name="build" depends="framework,cmseue,erpservices,storeApi,FDLogisticsIntegration,delivery,fdstore,dataloader,erpswebapp,tools,StandingOrdersService,CoremetricsService,fdstorefront-domain" description="Build everything">
@@ -2212,27 +2202,6 @@
 			classpathref="rulesadmin.classpath"/>
 	</target>
 
-	<target name="erpsadmin" description="Build ERPSAdmin .war file">
-		<path id="erpsadmin.classpath">
-			<pathelement location="${work.dir}/Framework.jar"/>
-			<pathelement location="${work.dir}/ERPServicesEJB-WL.jar"/>
-			<pathelement location="${work.dir}/cmseue.jar"/>
-			<pathelement location="${work.dir}/StoreAPI.jar"/>
-			<pathelement location="${work.dir}/DataLoaderEJB-WL.jar"/>
-			<pathelement location="${work.dir}/ERPSWebApp.jar"/>
-			<pathelement location="${thirdparty.home}/struts.jar"/>
-			<pathelement location="${thirdparty.home}/jackson-core-2.2.0.jar"/>
-			<pathelement location="${thirdparty.home}/jackson-databind-2.2.0.jar"/>
-			<pathelement location="${thirdparty.home}/jackson-annotations-2.2.0.jar"/>
-			<pathelement location="${thirdparty.home}/hivemind-1.1.1.jar"/>
-			<pathelement location="${thirdparty.home}/hivemind-lib-1.1.1.jar"/>
-			<pathelement location="${thirdparty.home}/${scarab.jar}"/>
-		</path>
-		<makeWebProject
-			project="ERPSAdmin"
-			classpathref="erpsadmin.classpath"/>
-	</target>
-
 	<target name="StandingOrdersService" description="Build Standing Orders Service" depends="erpswebapp">
 		<path id="StandingOrdersService.classpath">
 			<pathelement location="${work.dir}/Framework.jar"/>
@@ -2652,49 +2621,6 @@
 		</makeFDAdminEar>
 	</target>
 
-	<target name="erps-app" description="EAR that contains the all the code and resources for the ERPSAdmin application">
-		<makeEar application="ERPSAdmin">
-			<ejbs>
-				<include name="ERPSAdmin.war"/>
-				<include name="RulesAdmin.war"/>
-			</ejbs>
-			<libraries>
-				<include name="Framework.jar"/>
-				<include name="ERPSWebApp.jar"/>
-				<include name="ERPServicesEJB-WL.jar"/>
-				<include name="FDStoreEJB-WL.jar"/>
-				<include name="cmseue.jar" />
-				<include name="StoreAPI.jar"/>
-				<include name="Delivery.jar"/>
-				<include name="DataLoaderEJB-WL.jar"/>
-				<include name="FDLogisticsIntegration.jar"/>
-			</libraries>
-			<lib>
-				<!-- <include name="oscache-2.4.jar"/> -->
-				<include name="struts.jar"/>
-				<include name="poi-3.5-FINAL-20090928.jar"/>
-				<include name="tapestry-4.0.2.jar"/>
-				<include name="tapestry-contrib-4.0.2.jar"/>
-				<include name="tacos-core-4.0.2-20070420.095420-14.jar"/>
-				<include name="jackson-core-2.2.0.jar"/>
-				<include name="jackson-databind-2.2.0.jar"/>
-				<include name="jackson-annotations-2.2.0.jar"/>
-				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
-				<include name="orika-core-1.5.0.jar"/>
-				<include name="fdcommerce-data.jar"/>
-				<!-- masterpass integration -->
-				<include name="masterpassExpressSdk.jar"/>
-				<include name="braintree-java-2.53.0.jar"/>
-				<include name="httpclient-4.5.jar"/>
-				<include name="httpcore-4.4.1.jar"/>
-				<include name="httpmime-4.5.jar"/>
-				<include name="hivemind-1.1.1.jar"/>
-				<include name="hivemind-lib-1.1.1.jar"/>
-				<include name="${scarab.jar}"/>
-			</lib>
-		</makeEar>
-	</target>
-
 	<target name="cms-app" description="Content Management System EAR">
 		<makeEar application="ContentManagement">
 			<ejbs>
@@ -2807,7 +2733,7 @@
 		</makeEar>
 	</target>
 
-	<target name="ears" description="build all apps" depends="backend-app,sap-app,storefront-app,crm-app,erps-app,cms-app,fdadmin-app,fdintegrationservices-app,wpjar">
+	<target name="ears" description="build all apps" depends="backend-app,sap-app,storefront-app,crm-app,cms-app,fdadmin-app,fdintegrationservices-app,wpjar">
 	</target>
 
 	<target name="wpjar" description="make wordpress redistributable package">
