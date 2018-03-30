@@ -651,23 +651,25 @@ public class RegistrationController extends BaseController implements SystemMess
     	RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());        
         FDSessionUser fduser = user.getFDSessionUser();        
 		FDIdentity identity  = fduser.getIdentity();
-		
-		FDCustomerModel fdCustomerModel=FDCustomerFactory.getFDCustomer(identity);
-        ResultBundle resultBundle = tagWrapper.setMobilePreferences(reqestMessage, fdCustomerModel.getCustomerSmsPreferenceModel(), fduser.getUserContext().getStoreContext().getEStoreId().getContentId());
-        ActionResult result = resultBundle.getActionResult();
-        propogateSetSessionValues(request.getSession(), resultBundle);
-        if (result.isSuccess()) {
-            if (isResponseAdditionalEnable(request, EnumResponseAdditional.INCLUDE_USERINFO)) {
-                responseMessage = super.formatLoginMessage(user);
-            } else {
-                responseMessage = new Message();
-            }
-            responseMessage.setSuccessMessage("Contact Number added successfully.");
-        } else {
-            responseMessage = getErrorMessage(result, request);
-        }
-        responseMessage.addWarningMessages(result.getWarnings());   
-    	
+		if(identity!=null){
+			FDCustomerModel fdCustomerModel=FDCustomerFactory.getFDCustomer(identity);
+	        ResultBundle resultBundle = tagWrapper.setMobilePreferences(reqestMessage, fdCustomerModel.getCustomerSmsPreferenceModel(), fduser.getUserContext().getStoreContext().getEStoreId().getContentId());
+	        ActionResult result = resultBundle.getActionResult();
+	        propogateSetSessionValues(request.getSession(), resultBundle);
+	        if (result.isSuccess()) {
+	            if (isResponseAdditionalEnable(request, EnumResponseAdditional.INCLUDE_USERINFO)) {
+	                responseMessage = super.formatLoginMessage(user);
+	            } else {
+	                responseMessage = new Message();
+	            }
+	            responseMessage.setSuccessMessage("Contact Number added successfully.");
+	        } else {
+	            responseMessage = getErrorMessage(result, request);
+	        }
+	        responseMessage.addWarningMessages(result.getWarnings());   
+		}else{
+			responseMessage = getErrorMessage("NO_IDENTITY_FOUND", "No Identity found for user");
+		}
         setResponseMessage(model, responseMessage, user);
         return model;
     }
@@ -678,18 +680,20 @@ public class RegistrationController extends BaseController implements SystemMess
     	RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());        
         FDSessionUser fduser = user.getFDSessionUser();        
 		FDIdentity identity  = fduser.getIdentity();
-		
-		FDCustomerModel fdCustomerModel=FDCustomerFactory.getFDCustomer(identity);
-        ResultBundle resultBundle = tagWrapper.setMobilePreferencesFirstOrder(reqestMessage, fdCustomerModel.getCustomerSmsPreferenceModel(), fduser.getUserContext().getStoreContext().getEStoreId().getContentId());
-        ActionResult result = resultBundle.getActionResult();
-        propogateSetSessionValues(request.getSession(), resultBundle);
-        if (result.isSuccess()) {
-            responseMessage = Message.createSuccessMessage("Contact Number added successfully.");
-        } else {
-            responseMessage = getErrorMessage(result, request);
-        }
-        responseMessage.addWarningMessages(result.getWarnings());   
-    	
+		if(identity!=null){
+			FDCustomerModel fdCustomerModel=FDCustomerFactory.getFDCustomer(identity);
+	        ResultBundle resultBundle = tagWrapper.setMobilePreferencesFirstOrder(reqestMessage, fdCustomerModel.getCustomerSmsPreferenceModel(), fduser.getUserContext().getStoreContext().getEStoreId().getContentId());
+	        ActionResult result = resultBundle.getActionResult();
+	        propogateSetSessionValues(request.getSession(), resultBundle);
+	        if (result.isSuccess()) {
+	            responseMessage = Message.createSuccessMessage("Contact Number added successfully.");
+	        } else {
+	            responseMessage = getErrorMessage(result, request);
+	        }
+	        responseMessage.addWarningMessages(result.getWarnings());   
+		}else{
+			responseMessage = getErrorMessage("NO_IDENTITY_FOUND", "No Identity found for user");
+		}
         setResponseMessage(model, responseMessage, user);
         return model;
     }
@@ -700,18 +704,20 @@ public class RegistrationController extends BaseController implements SystemMess
     	RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());        
         FDSessionUser fduser = user.getFDSessionUser();        
 		FDIdentity identity  = fduser.getIdentity();
-		
-		FDCustomerModel fdCustomerModel=FDCustomerFactory.getFDCustomer(identity);
-        ResultBundle resultBundle = tagWrapper.setMobilePreferencesFirstOrderFD(reqestMessage, fdCustomerModel.getCustomerSmsPreferenceModel(), fduser.getUserContext().getStoreContext().getEStoreId().getContentId());
-        ActionResult result = resultBundle.getActionResult();
-        propogateSetSessionValues(request.getSession(), resultBundle);
-        if (result.isSuccess()) {
-            responseMessage = Message.createSuccessMessage("Contact Number added successfully.");
-        } else {
-            responseMessage = getErrorMessage(result, request);
-        }
-        responseMessage.addWarningMessages(result.getWarnings());   
-    	
+		if(identity!=null){
+			FDCustomerModel fdCustomerModel=FDCustomerFactory.getFDCustomer(identity);
+	        ResultBundle resultBundle = tagWrapper.setMobilePreferencesFirstOrderFD(reqestMessage, fdCustomerModel.getCustomerSmsPreferenceModel(), fduser.getUserContext().getStoreContext().getEStoreId().getContentId());
+	        ActionResult result = resultBundle.getActionResult();
+	        propogateSetSessionValues(request.getSession(), resultBundle);
+	        if (result.isSuccess()) {
+	            responseMessage = Message.createSuccessMessage("Contact Number added successfully.");
+	        } else {
+	            responseMessage = getErrorMessage(result, request);
+	        }
+	        responseMessage.addWarningMessages(result.getWarnings());   
+		}else{
+			responseMessage = getErrorMessage("NO_IDENTITY_FOUND", "No Identity found for user");
+		}
         setResponseMessage(model, responseMessage, user);
         return model;
     }
@@ -724,26 +730,29 @@ public class RegistrationController extends BaseController implements SystemMess
     	
         FDSessionUser fduser = user.getFDSessionUser();        
 		FDIdentity identity  = fduser.getIdentity();
-		
-		ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
-		
-		if("Y".equalsIgnoreCase(reqestMessage.getEmail_subscribed()) ){
-			cm.setEmailPreferenceLevel("2");
-		} else {
-			cm.setEmailPreferenceLevel("0");
+		if(identity!=null){
+			ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
+			
+			if("Y".equalsIgnoreCase(reqestMessage.getEmail_subscribed()) ){
+				cm.setEmailPreferenceLevel("2");
+			} else {
+				cm.setEmailPreferenceLevel("0");
+			}
+										       
+			ResultBundle resultBundle = tagWrapper.setEmailPreferences(reqestMessage, cm);
+			ActionResult result = resultBundle.getActionResult();
+			propogateSetSessionValues(request.getSession(), resultBundle);
+			
+			if(result.isSuccess()){
+				responseMessage = Message.createSuccessMessage("Successfully changed email preference");
+			} else {
+				responseMessage = getErrorMessage(result, request);
+			}
+			
+			responseMessage.addWarningMessages(result.getWarnings());
+		}else{
+			responseMessage = getErrorMessage("NO_IDENTITY_FOUND", "No Identity found for user");
 		}
-									       
-		ResultBundle resultBundle = tagWrapper.setEmailPreferences(reqestMessage, cm);
-		ActionResult result = resultBundle.getActionResult();
-		propogateSetSessionValues(request.getSession(), resultBundle);
-		
-		if(result.isSuccess()){
-			responseMessage = Message.createSuccessMessage("Successfully changed email preference");
-		} else {
-			responseMessage = getErrorMessage(result, request);
-		}
-		
-		responseMessage.addWarningMessages(result.getWarnings());
     	setResponseMessage(model, responseMessage, user);
     	
     	return model;
@@ -753,16 +762,19 @@ public class RegistrationController extends BaseController implements SystemMess
     	
         FDSessionUser fduser = user.getFDSessionUser();        
 		FDIdentity identity  = fduser.getIdentity();
-		
-		ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
-		EmailPreferencesResult responseMessage = new EmailPreferencesResult();
-		if("2".equals(cm.getEmailPreferenceLevel())){
-			responseMessage.setEmail_subscribed("Y");
-		} else {
-			responseMessage.setEmail_subscribed("N");
+		if(identity!=null){
+			ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
+			EmailPreferencesResult responseMessage = new EmailPreferencesResult();
+			if("2".equals(cm.getEmailPreferenceLevel())){
+				responseMessage.setEmail_subscribed("Y");
+			} else {
+				responseMessage.setEmail_subscribed("N");
+			}
+			setResponseMessage(model, responseMessage, user);
+		}else{
+			Message responseMessage = getErrorMessage("NO_IDENTITY_FOUND", "No Identity found for user");
+			setResponseMessage(model, responseMessage, user);
 		}
-		
-    	setResponseMessage(model, responseMessage, user);
     	
     	return model;
     }
@@ -771,26 +783,29 @@ public class RegistrationController extends BaseController implements SystemMess
        
     	FDSessionUser fduser = user.getFDSessionUser();        
 		FDIdentity identity  = fduser.getIdentity();
-		
-		FDCustomerModel fdCustomerModel=FDCustomerFactory.getFDCustomer(identity);
-		FDCustomerEStoreModel customerSmsPreferenceModel =fdCustomerModel.getCustomerSmsPreferenceModel();
-		MobilePreferencesResult mobileresponseMessage = new MobilePreferencesResult();
-		
-		if(EnumEStoreId.FDX.getContentId().equals(fduser.getUserContext().getStoreContext().getEStoreId().getContentId()))
-			{
-				  mobileresponseMessage.setOrder_notices(EnumSMSAlertStatus.NONE.value().equalsIgnoreCase(customerSmsPreferenceModel.getFdxOrderNotices())? false:true);
-	    		  mobileresponseMessage.setOrder_exceptions(EnumSMSAlertStatus.NONE.value().equalsIgnoreCase(customerSmsPreferenceModel.getFdxOrderExceptions())? false:true);
-				  mobileresponseMessage.setOffers(EnumSMSAlertStatus.NONE.value().equalsIgnoreCase(customerSmsPreferenceModel.getFdxOffers())? false:true);
-				  mobileresponseMessage.setMobile_number(customerSmsPreferenceModel.getFdxMobileNumber()!=null?customerSmsPreferenceModel.getFdxMobileNumber().getPhone():"");
-			}else{
-				  mobileresponseMessage.setOrder_notices(EnumSMSAlertStatus.NONE.value().equalsIgnoreCase(customerSmsPreferenceModel.getOrderNotices())? false:true);
-	    		  mobileresponseMessage.setOrder_exceptions(EnumSMSAlertStatus.NONE.value().equalsIgnoreCase(customerSmsPreferenceModel.getOrderExceptions())? false:true);
-				  mobileresponseMessage.setOffers(EnumSMSAlertStatus.NONE.value().equalsIgnoreCase(customerSmsPreferenceModel.getOffers())? false:true);
-				  mobileresponseMessage.setMobile_number(customerSmsPreferenceModel.getMobileNumber()!=null?customerSmsPreferenceModel.getMobileNumber().getPhone():"");
-	    	     }
+		if(identity!=null){
+			FDCustomerModel fdCustomerModel=FDCustomerFactory.getFDCustomer(identity);
+			FDCustomerEStoreModel customerSmsPreferenceModel =fdCustomerModel.getCustomerSmsPreferenceModel();
+			MobilePreferencesResult mobileresponseMessage = new MobilePreferencesResult();
 			
-    	setResponseMessage(model, mobileresponseMessage, user);
-    	
+			if(EnumEStoreId.FDX.getContentId().equals(fduser.getUserContext().getStoreContext().getEStoreId().getContentId()))
+				{
+					  mobileresponseMessage.setOrder_notices(EnumSMSAlertStatus.NONE.value().equalsIgnoreCase(customerSmsPreferenceModel.getFdxOrderNotices())? false:true);
+		    		  mobileresponseMessage.setOrder_exceptions(EnumSMSAlertStatus.NONE.value().equalsIgnoreCase(customerSmsPreferenceModel.getFdxOrderExceptions())? false:true);
+					  mobileresponseMessage.setOffers(EnumSMSAlertStatus.NONE.value().equalsIgnoreCase(customerSmsPreferenceModel.getFdxOffers())? false:true);
+					  mobileresponseMessage.setMobile_number(customerSmsPreferenceModel.getFdxMobileNumber()!=null?customerSmsPreferenceModel.getFdxMobileNumber().getPhone():"");
+				}else{
+					  mobileresponseMessage.setOrder_notices(EnumSMSAlertStatus.NONE.value().equalsIgnoreCase(customerSmsPreferenceModel.getOrderNotices())? false:true);
+		    		  mobileresponseMessage.setOrder_exceptions(EnumSMSAlertStatus.NONE.value().equalsIgnoreCase(customerSmsPreferenceModel.getOrderExceptions())? false:true);
+					  mobileresponseMessage.setOffers(EnumSMSAlertStatus.NONE.value().equalsIgnoreCase(customerSmsPreferenceModel.getOffers())? false:true);
+					  mobileresponseMessage.setMobile_number(customerSmsPreferenceModel.getMobileNumber()!=null?customerSmsPreferenceModel.getMobileNumber().getPhone():"");
+		    	     }
+			
+	    	setResponseMessage(model, mobileresponseMessage, user);
+		}else{
+			Message responseMessage = getErrorMessage("NO_IDENTITY_FOUND", "No Identity found for user");
+			setResponseMessage(model, responseMessage, user);
+		}
     	return model;
     
     }
