@@ -736,7 +736,11 @@ public class Cart {
                         if (cartLine.getSkuCode() != null) {
                             LOG
                                     .debug("cartLine.getSkuCode() was not null. setting skucode only at config level and not prod. letting product default.");
-                            productConfiguration.populateProductWithModel(productData, cartLine.getSkuCode());
+                            if(productData!=null){
+                            	productConfiguration.populateProductWithModel(productData, cartLine.getSkuCode());
+                            }else {
+                                LOG.debug("productData is null");
+                            }
                         } else {
                             LOG.debug("cartLine.getSkuCode() was null. should we skip this one?");
                         }
