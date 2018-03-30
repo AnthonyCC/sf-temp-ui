@@ -203,8 +203,17 @@
 .timeslot-selector .select-warningmessages {background-color: #FFF9D7;text-align: left;margin: 10px 20px;}
 
 .select-warningmessages {}
-.timeslot-selector .select-warningmessages-icon {font-size: 24px;display: inline-block;width: 40px;}
-.timeslot-selector .select-warningmessages-cont {display: inline-block;}
+.timeslot-selector .select-warningmessages-icon {
+	font-size: 24px;
+	display: inline-block;
+	width: 40px;
+	vertical-align: top;
+	margin: 10px 0 0 0;
+}
+.timeslot-selector .select-warningmessages-cont {
+	display: inline-block;
+	 max-width: calc( 100% - 40px);
+}
 .timeslot-selector .select-warningmessages .select-warningmessage {
 	
 }
