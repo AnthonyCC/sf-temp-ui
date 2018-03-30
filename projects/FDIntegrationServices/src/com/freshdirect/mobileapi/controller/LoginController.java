@@ -306,11 +306,14 @@ public class LoginController extends BaseController  implements SystemMessageLis
 	 */
 	private Message logout(SessionUser user, HttpServletRequest request, HttpServletResponse response)
 			throws JsonException {
-
-		removeUserInSession(user, request, response);
-
-		Message responseMessage = Message
+		Message responseMessage = null;
+		try{
+			removeUserInSession(user, request, response);
+			responseMessage = Message
 				.createSuccessMessage("User logged out successfully.");
+		}catch(IllegalStateException e){
+			responseMessage = getErrorMessage("SESSION_INVALID_EXCEPTION","USER session is invalid");
+		}
 		return responseMessage;
 	}
 	/**
