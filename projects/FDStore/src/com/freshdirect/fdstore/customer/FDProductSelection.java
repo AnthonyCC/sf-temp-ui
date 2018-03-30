@@ -438,7 +438,7 @@ public class FDProductSelection implements FDProductSelectionI {
 	}
 	
 	public double getConfiguredPrice() {
-		return this.price.getConfiguredPrice();
+		return this.price!=null ? this.price.getConfiguredPrice() : 0;
 	}
 
 	//
