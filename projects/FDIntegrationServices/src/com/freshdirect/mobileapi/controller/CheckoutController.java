@@ -479,27 +479,30 @@ public class CheckoutController extends BaseController {
      */
     private ModelAndView getDeliveryAddresses(ModelAndView model, SessionUser user) throws FDException, JsonException {
         Checkout checkout = new Checkout(user);
-        List<ShipToAddress> deliveryAddresses = user.getDeliveryAddresses();
-        DeliveryAddresses responseMessage = new DeliveryAddresses(checkout.getPreselectedDeliveryAddressId(), checkout.getSelectedDeliveryAddressId(), ShipToAddress
-                .filter(deliveryAddresses, DeliveryAddressType.RESIDENTIAL), ShipToAddress.filter(deliveryAddresses,
-                DeliveryAddressType.CORP), Depot.getPickupDepots());
-        
-		if (user.isVoucherHolder()) {
-			List<com.freshdirect.mobileapi.controller.data.response.ShipToAddress> latestAddress = new ArrayList<com.freshdirect.mobileapi.controller.data.response.ShipToAddress>();
-
-			for (com.freshdirect.mobileapi.controller.data.response.ShipToAddress shipToAddress : responseMessage
-					.getResidentialAddresses()) {
-				if (shipToAddress.getId().equals(
-						responseMessage.getPreSelectedId())) {
-					latestAddress.add(shipToAddress);
-					break;
+        List<ShipToAddress> deliveryAddresses = new ArrayList<ShipToAddress>();
+        DeliveryAddresses responseMessage = new DeliveryAddresses();
+        if(user!=null&&user.getFDSessionUser()!=null&&user.getFDSessionUser().getIdentity()!=null){
+        	deliveryAddresses = user.getDeliveryAddresses();
+	        responseMessage = new DeliveryAddresses(checkout.getPreselectedDeliveryAddressId(), checkout.getSelectedDeliveryAddressId(), ShipToAddress
+	                .filter(deliveryAddresses, DeliveryAddressType.RESIDENTIAL), ShipToAddress.filter(deliveryAddresses,
+	                DeliveryAddressType.CORP), Depot.getPickupDepots());
+	        
+			if (user.isVoucherHolder()) {
+				List<com.freshdirect.mobileapi.controller.data.response.ShipToAddress> latestAddress = new ArrayList<com.freshdirect.mobileapi.controller.data.response.ShipToAddress>();
+	
+				for (com.freshdirect.mobileapi.controller.data.response.ShipToAddress shipToAddress : responseMessage
+						.getResidentialAddresses()) {
+					if (shipToAddress.getId().equals(
+							responseMessage.getPreSelectedId())) {
+						latestAddress.add(shipToAddress);
+						break;
+					}
 				}
+				responseMessage.setResidentialAddresses(latestAddress);
+				responseMessage.getDepot().clear();
+				
 			}
-			responseMessage.setResidentialAddresses(latestAddress);
-			responseMessage.getDepot().clear();
-
-		}
-
+        }
         
         responseMessage.setResidentialDeliveryMinimum(user.getMinimumOrderAmount());
         responseMessage.setDepotDeliveryMinimum(user.getMinimumOrderAmount());
