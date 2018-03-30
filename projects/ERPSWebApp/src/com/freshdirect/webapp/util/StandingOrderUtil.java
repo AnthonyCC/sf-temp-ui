@@ -679,8 +679,8 @@ public class StandingOrderUtil {
 				}
 			}
 			
-			
-			String orderId = FDCustomerManager.placeOrder( orderActionInfo, cart, customerUser.getAllAppliedPromos(), false, cra, null ,false);
+			int fdcOrderCount = (FDStoreProperties.isFdcFirstOrderEmailMsgEnabled()) ? customerUser.getOrderHistory().getValidOrderCount("1400") : -1;
+			String orderId = FDCustomerManager.placeOrder( orderActionInfo, cart, customerUser.getAllAppliedPromos(), false, cra, null , false, fdcOrderCount);
 			
 			long cmrequestStart = System.currentTimeMillis();
 			try {

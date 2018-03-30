@@ -2309,7 +2309,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	public String placeOrder(FDActionInfo info, ErpCreateOrderModel createOrder, Set<String> usedPromotionCodes,
 			String reservationId, boolean sendEmail, CustomerRatingI cra, CrmAgentRole agentRole,
-			EnumDlvPassStatus status, boolean isFriendReferred) throws FDResourceException, ErpFraudException,
+			EnumDlvPassStatus status, boolean isFriendReferred, int fdcOrderCount) throws FDResourceException, ErpFraudException,
 			ErpAuthorizationException, ErpAddressVerificationException, ReservationException, DeliveryPassException,
 			FDPaymentInadequateException, ErpTransactionException, InvalidCardException {
 
@@ -2573,6 +2573,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					int orderCount = getValidOrderCount(identity);
 					fdInfo.setNumberOfOrders(orderCount);
 					fdInfo.setUserGiftCardsBalance(calculateGiftCardsBalance(this.getGiftCards(identity)));
+					fdInfo.setFdcOrderCount(fdcOrderCount);
 
 					this.doEmail(FDEmailFactory.getInstance().createConfirmOrderEmail(fdInfo, order));
 				}
@@ -3045,7 +3046,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 */
 	public void modifyOrder(FDActionInfo info, String saleId, ErpModifyOrderModel order, Set<String> usedPromotionCodes,
 			String oldReservationId, boolean sendEmail, CustomerRatingI cra, CrmAgentRole agentRole,
-			EnumDlvPassStatus status, boolean hasCoupons)
+			EnumDlvPassStatus status, boolean hasCoupons, int fdcOrderCount)
 			throws FDResourceException, ErpTransactionException, ErpFraudException, ErpAuthorizationException,
 			DeliveryPassException, FDPaymentInadequateException, InvalidCardException, ErpAddressVerificationException {
 
@@ -3357,6 +3358,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				FDCustomerInfo fdInfo = this.getCustomerInfo(identity);
 				int orderCount = getValidOrderCount(identity);
 				fdInfo.setNumberOfOrders(orderCount);
+				fdInfo.setFdcOrderCount(fdcOrderCount);
 
 				this.doEmail(FDEmailFactory.getInstance().createModifyOrderEmail(fdInfo, fdOrder));
 
@@ -3509,6 +3511,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				FDCustomerInfo fdInfo = this.getCustomerInfo(identity);
 				int orderCount = getValidOrderCount(identity);
 				fdInfo.setNumberOfOrders(orderCount);
+				fdInfo.setFdcOrderCount(-1);
 
 				this.doEmail(FDEmailFactory.getInstance().createModifyOrderEmail(fdInfo, fdOrder));
 			}
@@ -7180,7 +7183,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			}
 
 			this.modifyOrder(info, saleId, order, appliedPromos, oldReservationId, sendEmail, cra, agentRole, status,
-					hasCoupons);
+					hasCoupons, -1); //don't send FDC order count during bulk edit [APPDEV-7108]
 
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);

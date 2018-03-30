@@ -1804,10 +1804,17 @@ public class FDCustomerManager {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
-
+	//pass-through
+	public static String placeOrder(
+			FDActionInfo info, FDCartModel cart, Set<String> appliedPromos,
+			boolean sendEmail, CustomerRatingI cra, EnumDlvPassStatus status, boolean isFriendReferred)
+		throws FDResourceException, ErpFraudException, ErpAuthorizationException,ErpAddressVerificationException, ReservationException,
+			FDPaymentInadequateException, ErpTransactionException, DeliveryPassException {
+		return placeOrder(info, cart, appliedPromos, sendEmail, cra, status, isFriendReferred, -1); //-1 for "not set"
+	}
 	public static String placeOrder(
 		FDActionInfo info, FDCartModel cart, Set<String> appliedPromos,
-		boolean sendEmail, CustomerRatingI cra, EnumDlvPassStatus status, boolean isFriendReferred)
+		boolean sendEmail, CustomerRatingI cra, EnumDlvPassStatus status, boolean isFriendReferred, int fdcOrderCount)
 	throws FDResourceException, ErpFraudException, ErpAuthorizationException,ErpAddressVerificationException, ReservationException,
 		FDPaymentInadequateException, ErpTransactionException, DeliveryPassException {
 
@@ -1836,7 +1843,10 @@ public class FDCustomerManager {
 					sendEmail,
 					cra,
 					info.getAgent() == null ? null : info.getAgent().getRole(),
-					status,isFriendReferred);
+					status,
+					isFriendReferred,
+					fdcOrderCount
+				);
 
 			LOGGER.info(">>> Reservation "+cart.getDeliveryReservation().getPK().getId()+" "+" Order "+ orderId);
 
@@ -1889,6 +1899,8 @@ public class FDCustomerManager {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
+	
+	//pass-through
 
 	public static void modifyOrder(
 		FDActionInfo info,
@@ -1896,7 +1908,22 @@ public class FDCustomerManager {
 		Set<String> appliedPromos,
 		boolean sendEmail,
 		CustomerRatingI cra,
-		EnumDlvPassStatus status,boolean hasSomeCaptures)
+		EnumDlvPassStatus status,
+		boolean hasSomeCaptures)
+		throws FDResourceException, ErpTransactionException, ErpFraudException, ErpAuthorizationException,DeliveryPassException,ErpAddressVerificationException,
+		FDPaymentInadequateException
+		{
+			modifyOrder(info, cart, appliedPromos, sendEmail, cra, status, hasSomeCaptures, -1); //-1 for "not set"
+		}
+	public static void modifyOrder(
+		FDActionInfo info,
+		FDModifyCartModel cart,
+		Set<String> appliedPromos,
+		boolean sendEmail,
+		CustomerRatingI cra,
+		EnumDlvPassStatus status,
+		boolean hasSomeCaptures,
+		int fdcOrderCount)
 		throws FDResourceException, ErpTransactionException, ErpFraudException, ErpAuthorizationException,DeliveryPassException,ErpAddressVerificationException,
 		FDPaymentInadequateException
 		{
@@ -1926,26 +1953,30 @@ public class FDCustomerManager {
 //			EnumSaleType type = cart.getOriginalOrder().getOrderType();
 			if (EnumSaleType.REGULAR.equals(type)){
 				sb.modifyOrder(
-						info,
-						saleId,
-						order,
-						appliedPromos,
-						cart.getOriginalReservationId(),
-						sendEmail,
-						cra,
-						info.getAgent() == null ? null : info.getAgent().getRole(),
-						status,hasCouponDiscounts);
+					info,
+					saleId,
+					order,
+					appliedPromos,
+					cart.getOriginalReservationId(),
+					sendEmail,
+					cra,
+					info.getAgent() == null ? null : info.getAgent().getRole(),
+					status,
+					hasCouponDiscounts,
+					fdcOrderCount
+				);
 			}else if (EnumSaleType.SUBSCRIPTION.equals(type)){
 				sb.modifyAutoRenewOrder(
-						info,
-						saleId,
-						order,
-						appliedPromos,
-						cart.getOriginalReservationId(),
-						sendEmail,
-						cra,
-						info.getAgent() == null ? null : info.getAgent().getRole(),
-						status);
+					info,
+					saleId,
+					order,
+					appliedPromos,
+					cart.getOriginalReservationId(),
+					sendEmail,
+					cra,
+					info.getAgent() == null ? null : info.getAgent().getRole(),
+					status
+				);
 				sb.authorizeSale(info.getIdentity().getErpCustomerPK().toString(), saleId, type, cra);
 			}
 

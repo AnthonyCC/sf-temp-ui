@@ -41,6 +41,8 @@ public class ErpWebOrderHistory implements OrderHistoryI {
 	private static final String VALID_ORDER_COUNT_FD_CORP = "validOrderCountForFDCorp";
 	private static final String VALID_ORDER_COUNT_FD_PICKUP = "validOrderCountForFDPickUp";
 	private static final String VALID_ORDER_COUNT_FDX = "validOrderCountForFDX";
+	private static final String VALID_ORDER_COUNT_FDC_SALESORG = "validOrderCountSalesOrg";
+	
 	
     public ErpWebOrderHistory(Collection<ErpSaleInfo> erpSaleInfos) {
 		//Populate the orderHistoryInfo using erpSaleInfos Collection.
@@ -72,6 +74,7 @@ public class ErpWebOrderHistory implements OrderHistoryI {
         orderHistoryInfo.put(VALID_ORDER_COUNT_FD_CORP, ErpOrderHistoryUtil.getValidOrderCount(erpSaleInfos, EnumDeliveryType.CORPORATE));
         orderHistoryInfo.put(VALID_ORDER_COUNT_FD_PICKUP, ErpOrderHistoryUtil.getValidOrderCount(erpSaleInfos, EnumDeliveryType.PICKUP));
         orderHistoryInfo.put(VALID_ORDER_COUNT_FDX, ErpOrderHistoryUtil.getValidOrderCount(erpSaleInfos, EnumDeliveryType.FDX));
+        orderHistoryInfo.put(VALID_ORDER_COUNT_FDC_SALESORG, ErpOrderHistoryUtil.getValidOrderCount(erpSaleInfos, "1400"));
 	}
 
 	@Override
@@ -282,6 +285,12 @@ public class ErpWebOrderHistory implements OrderHistoryI {
 	@Override
 	public boolean hasSettledOrders(EnumEStoreId estoreId) {
 		return getSettledOrderCount(estoreId) > 0;
+	}
+
+	@Override
+	public int getValidOrderCount(String salesOrg) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

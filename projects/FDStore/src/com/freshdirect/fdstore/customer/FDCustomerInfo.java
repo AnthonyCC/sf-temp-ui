@@ -33,6 +33,7 @@ public class FDCustomerInfo implements java.io.Serializable {
     private String customerServiceContact;
     private double userGiftCardsBalance;
     private boolean goGreen;
+    private int fdcOrderCount = -1;
 	
 	public FDCustomerInfo(String firstName, String lastName){
 		this.firstName = firstName;
@@ -209,8 +210,17 @@ public class FDCustomerInfo implements java.io.Serializable {
 		this.goGreen = goGreen;
 	}
 
+	public int getFdcOrderCount() {
+		return fdcOrderCount;
+	}
+
+	public void setFdcOrderCount(int fdcOrderCount) {
+		this.fdcOrderCount = fdcOrderCount;
+	}
+
 	public void getUserInfo(FDUserI customerUser) throws FDResourceException {
 		this.setChefsTable(customerUser.isChefsTable());
 		this.setCustomerServiceContact(customerUser.getCustomerServiceContact());
 	}
+
 }
