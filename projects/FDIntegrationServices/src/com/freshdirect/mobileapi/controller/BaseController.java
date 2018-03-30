@@ -733,9 +733,9 @@ public abstract class BaseController extends AbstractController implements Messa
                 .getSelectedServiceType().toString() : "");
         responseMessage.setCohort(user.getCohort());
         responseMessage.setTotalOrderCount(user.getTotalOrderCount());
-
-        responseMessage.setTcAcknowledge(user.getTcAcknowledge());
-
+        if(user!=null&&user.getFDSessionUser()!=null&&user.getFDSessionUser().getIdentity()!=null){
+        	responseMessage.setTcAcknowledge(user.getTcAcknowledge());
+        }
         responseMessage.setMobileNumber(getMobileNumber(user));
         responseMessage.setPlantId(BrowseUtil.getPlantId(user));
         responseMessage.setProviders(ExternalAccountManager.getConnectedProvidersByUserId(user.getUsername(), EnumExternalLoginSource.SOCIAL));
