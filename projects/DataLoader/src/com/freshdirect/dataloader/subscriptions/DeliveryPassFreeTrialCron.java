@@ -62,6 +62,7 @@ import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.fdstore.customer.FDUser;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.FDUserUtil;
 import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
@@ -77,6 +78,8 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.logistics.delivery.model.EnumZipCheckResponses;
 import com.freshdirect.mail.ErpMailSender;
+import com.freshdirect.payment.EnumPaymentMethodType;
+import com.freshdirect.payment.PaymentManager;
 import com.freshdirect.storeapi.configuration.StoreAPIConfig;
 import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.storeapi.content.ProductModel;
@@ -198,7 +201,7 @@ public class DeliveryPassFreeTrialCron {
 			return exists?_pymtMethod:null;
 		else {
 			for (ErpPaymentMethodI temp : matchedPymtMethods) {
-				if(temp.getCardType().equals(EnumCardType.PAYPAL) || temp.getCardType().equals(EnumCardType.ECP) || !isExpiredCC(temp)) {
+				if(temp.getCardType().equals(EnumCardType.PAYPAL) || temp.getCardType().equals(EnumCardType.ECP) || temp.getCardType().equals(EnumCardType.GCP) || !isExpiredCC(temp)) {
 					return temp;
 				}
 			}
@@ -242,6 +245,10 @@ public class DeliveryPassFreeTrialCron {
 			}*/
 			address = lastOrder.getDeliveryAddress();
 			pymtMethod=getMatchedPaymentMethod(lastOrder.getPaymentMethod(),getPaymentMethods(user.getIdentity()));
+			if(pymtMethod == null && lastOrder.getPaymentMethod().getCardType().equals(EnumCardType.GCP))
+			{
+				pymtMethod = createGiftCardPaymentMethod(user);
+			}
 			/*if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user)){
 				if(null==user.getFDCustomer().getDefaultPaymentMethodPK() || null == user.getFDCustomer().getDefaultPaymentType() ||
 						user.getFDCustomer().getDefaultPaymentType().getName().equals(EnumPaymentMethodDefaultType.UNDEFINED.getName())){
@@ -264,9 +271,9 @@ public class DeliveryPassFreeTrialCron {
 			Collection<ErpPaymentMethodI> paymentMethods = FDCustomerManager.getPaymentMethods(identity);
 			List<ErpPaymentMethodI> paymentMethodList = new ArrayList<ErpPaymentMethodI>(paymentMethods);
 			if(!paymentMethodList.isEmpty()){
-				for (ErpPaymentMethodI erpPaymentMethodI : paymentMethodList) {
 					
-					if(!erpPaymentMethodI.getCardType().equals(EnumCardType.PAYPAL) && !erpPaymentMethodI.getCardType().equals(EnumCardType.ECP) && isExpiredCC(erpPaymentMethodI)) {
+				for (ErpPaymentMethodI erpPaymentMethodI : paymentMethodList) {
+					if(!erpPaymentMethodI.getCardType().equals(EnumCardType.PAYPAL) && !erpPaymentMethodI.getCardType().equals(EnumCardType.ECP) && !erpPaymentMethodI.getCardType().equals(EnumCardType.GCP) && isExpiredCC(erpPaymentMethodI)) {
 						continue;
 					} else{
 						pymtMethod = erpPaymentMethodI;
@@ -287,7 +294,7 @@ public class DeliveryPassFreeTrialCron {
 		}
 		
 		if(pymtMethod!=null && address != null) {
-			if(!pymtMethod.getCardType().equals(EnumCardType.PAYPAL) && !pymtMethod.getCardType().equals(EnumCardType.ECP) && isExpiredCC(pymtMethod)) {
+			if(!pymtMethod.getCardType().equals(EnumCardType.PAYPAL) && !pymtMethod.getCardType().equals(EnumCardType.ECP) && !pymtMethod.getCardType().equals(EnumCardType.GCP) && isExpiredCC(pymtMethod)) {
 				LOGGER.warn("Free-trial deliveryPass order payment method is expired for customer :"+erpCustomerID);
 				/*createCase(erpCustomerID,CrmCaseSubject.CODE_AUTO_BILL_PAYMENT_MISSING,DlvPassConstants.AUTORENEW_PYMT_METHOD_CC_EXPIRED);
 				FDCustomerInfo customerInfo=FDCustomerManager.getCustomerInfo(identity);
@@ -518,5 +525,18 @@ public class DeliveryPassFreeTrialCron {
 		}
 		return custIds;
 	}
-
+	
+	//This is for DP17-117 added from ERPSWebApp project com.freshdirect.webapp.taglib.fdstore.PaymentMethodUtil.createGiftCardPaymentMethod(FDUserI user)
+	
+	public static ErpPaymentMethodI createGiftCardPaymentMethod(FDUserI user) throws FDResourceException {
+		ErpPaymentMethodI paymentMethod = PaymentManager.createInstance(EnumPaymentMethodType.GIFTCARD);
+		paymentMethod.setName(user.getFirstName() + " " + user.getLastName());
+		paymentMethod.setAccountNumber("1000");
+		paymentMethod.setAddress1("23-30 Borden Ave");
+		paymentMethod.setCity("Long Island City");
+		paymentMethod.setState("NY");
+		paymentMethod.setZipCode("11101");
+		paymentMethod.setCountry("US");
+		return paymentMethod;
+	}
 }
