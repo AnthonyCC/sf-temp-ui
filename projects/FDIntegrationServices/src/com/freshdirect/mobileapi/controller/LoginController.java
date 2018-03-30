@@ -540,6 +540,9 @@ public class LoginController extends BaseController  implements SystemMessageLis
 				}
 			}
 			request.getSession().setAttribute(SessionName.APPLICATION,null);
+		}catch(IllegalStateException e){
+			responseMessage = getErrorMessage("SESSION_INVALID_EXCEPTION","USER session is invalid");
+			request.getSession().setAttribute(SessionName.APPLICATION,null);
 		}
 		return responseMessage;
 	}
