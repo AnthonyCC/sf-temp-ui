@@ -1385,13 +1385,17 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				sku=rs.getString(1);
 				if(skus.containsKey(sku)) {
 					value=skus.get(sku);
-					value.put(new StringBuilder(5).append(rs.getString(2)).append(rs.getString(3)).toString(), rs.getTimestamp(4));
+					if(!FDStoreProperties.isNewProductsForFdcUsingFdEnabled() || !"1400".equals(rs.getString(2))){
+						value.put(new StringBuilder(5).append(rs.getString(2)).append(rs.getString(3)).toString(), rs.getTimestamp(4));
+					}
 					if(FDStoreProperties.isNewProductsForFdcUsingFdEnabled() && "0001".equals(rs.getString(2))){
 						value.put(new StringBuilder(5).append("1400").append(rs.getString(3)).toString(), rs.getTimestamp(4));
 					}
 				} else {
 					value=new HashMap<String,Date>();
-					value.put(new StringBuilder(5).append(rs.getString(2)).append(rs.getString(3)).toString(), rs.getTimestamp(4));
+					if(!FDStoreProperties.isNewProductsForFdcUsingFdEnabled() || !"1400".equals(rs.getString(2))){
+						value.put(new StringBuilder(5).append(rs.getString(2)).append(rs.getString(3)).toString(), rs.getTimestamp(4));
+					}
 					if(FDStoreProperties.isNewProductsForFdcUsingFdEnabled() && "0001".equals(rs.getString(2))){
 						value.put(new StringBuilder(5).append("1400").append(rs.getString(3)).toString(), rs.getTimestamp(4));
 					}
@@ -1526,13 +1530,17 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				sku=rs.getString(1);
 				if(skus.containsKey(sku)) {
 					value=skus.get(sku);
-					value.put(new StringBuilder(5).append(rs.getString(2)).append(rs.getString(3)).toString(), rs.getTimestamp(4));
+					if(!FDStoreProperties.isNewProductsForFdcUsingFdEnabled() || !"1400".equals(rs.getString(2))){
+						value.put(new StringBuilder(5).append(rs.getString(2)).append(rs.getString(3)).toString(), rs.getTimestamp(4));
+					}
 					if(FDStoreProperties.isNewProductsForFdcUsingFdEnabled() && "0001".equals(rs.getString(2))){
 						value.put(new StringBuilder(5).append("1400").append(rs.getString(3)).toString(), rs.getTimestamp(4));
 					}
 				} else {
 					value=new HashMap<String,Date>();
-					value.put(new StringBuilder(5).append(rs.getString(2)).append(rs.getString(3)).toString(), rs.getTimestamp(4));
+					if(!FDStoreProperties.isNewProductsForFdcUsingFdEnabled() || !"1400".equals(rs.getString(2))){
+						value.put(new StringBuilder(5).append(rs.getString(2)).append(rs.getString(3)).toString(), rs.getTimestamp(4));
+					}
 					if(FDStoreProperties.isNewProductsForFdcUsingFdEnabled() && "0001".equals(rs.getString(2))){
 						value.put(new StringBuilder(5).append("1400").append(rs.getString(3)).toString(), rs.getTimestamp(4));
 					}
@@ -1616,13 +1624,17 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			}
     		if(skus.containsKey(sku)) {
 				value=skus.get(sku);
-				value.put(new StringBuilder(5).append(salesOrg).append(distributionChannel).toString(), date);
+				if(!FDStoreProperties.isNewProductsForFdcUsingFdEnabled() || !"1400".equals(rs.getString(2))){
+					value.put(new StringBuilder(5).append(salesOrg).append(distributionChannel).toString(), date);
+				}
 				if(FDStoreProperties.isNewProductsForFdcUsingFdEnabled() && "0001".equals(salesOrg)){
 					value.put(new StringBuilder(5).append("1400").append(distributionChannel).toString(), date);
 				}
 			} else {
 				value=new HashMap<String,Date>();
-				value.put(new StringBuilder(5).append(salesOrg).append(distributionChannel).toString(), date);
+				if(!FDStoreProperties.isNewProductsForFdcUsingFdEnabled() || !"1400".equals(rs.getString(2))){
+					value.put(new StringBuilder(5).append(salesOrg).append(distributionChannel).toString(), date);
+				}
 				if(FDStoreProperties.isNewProductsForFdcUsingFdEnabled() && "0001".equals(salesOrg)){
 					value.put(new StringBuilder(5).append("1400").append(distributionChannel).toString(), date);
 				}
