@@ -126,8 +126,11 @@ var FreshDirect = FreshDirect || {};
       $input.val(newVal);
     }
 
-    markProductChanged($this);
-    triggerEvent($this,$input.val());
+    //allow tabbing past without update
+    if (e.keyCode !== fd.utils.keyCode.TAB) {
+        markProductChanged($this);
+        triggerEvent($this,$input.val());    
+    }
   });
 
   $(document).on('change','[data-component="quantitybox.value"]',function(){

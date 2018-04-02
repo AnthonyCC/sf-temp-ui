@@ -6,7 +6,7 @@
  * @param activePage active page number
  */
 {template .pagerItem private="true" autoescape="false"}
-<button class="pagination-pager-button cssbutton green {$pageNumber==$activePage ? 'selected' : 'transparent'}" data-page="{$pageNumber}">{$pageNumber+1}</button>
+<button class="pagination-pager-button cssbutton green {$pageNumber==$activePage ? 'selected' : 'transparent'}" data-page="{$pageNumber}"><span class="offscreen">page</span>{$pageNumber+1}</button>
 {/template}
 
 /**

@@ -1902,7 +1902,7 @@ li.cleanli .gen-arrow {
 		    border-bottom: 1px solid #dcdcdc;
 		    padding-bottom: 10px;
 	    }
-	    [data-ec-page] .mm-page #checkout-cart-header #optionaltip {
+	    [data-ec-page] .mm-page #checkout-cart-header .optionaltip {
 	    	padding-top: 17px;
 	    }
 	    [data-ec-page] .mm-page #checkout-cart-header .tooltip_holder {
@@ -2061,7 +2061,7 @@ li.cleanli .gen-arrow {
 				float: none;
 				width: auto;
 			}
-			[data-ec-page] .mm-page .eTippingEnabled .cartsection__totalwrapper #optionaltip.subtotal__rowcell-left {
+			[data-ec-page] .mm-page .eTippingEnabled .cartsection__totalwrapper .optionaltip.subtotal__rowcell-left {
 				margin-right: 0;
 			}
 			[data-ec-page] .mm-page #payment-method-separator hr {
@@ -2098,7 +2098,7 @@ li.cleanli .gen-arrow {
 		[data-ec-page] .mm-page .cartsection__tax form {
 			float: none;
 		}
-		[data-ec-page] .mm-page #optionaltip .strl_text {
+		[data-ec-page] .mm-page .optionaltip .strl_text {
 			white-space: nowrap;
 		}
 		[data-ec-page] .mm-page #cartheader .cartheader .cartheader__text {

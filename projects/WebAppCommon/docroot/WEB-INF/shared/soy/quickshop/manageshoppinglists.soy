@@ -31,7 +31,7 @@
  * @param item list info
  */ 
 {template .editListInfo private="true" autoescape="true"}
-  <span class="name" data-listid="{$item.listId}" data-listname="{$item.name}"><span class="error"></span><label for="rename_{$item.name}" class="offscreen">Manage lists name {$item.name}</label><input id="rename_{$item.name}" name="rename" maxlength="35" value="{$item.name}"/></span>
+  <span class="name" data-listid="{$item.listId}" data-listname="{$item.name}"><span class="error"></span><input id="rename_{$item.name}" aria-label="rename {$item.name}" name="rename" maxlength="35" value="{$item.name}"/></span>
   <span class="default"><label><input type="radio" name="default" {if $item.default}checked{/if}/>Make <span class="offscreen">{$item.name}</span> Default List</label></span>
   <span class="delete"><label><input type="checkbox" name="delete" id="list_delete_{$item.listId}" {if $item.delete}checked{/if}/>Delete <span class="offscreen">{$item.name}</span> List</label></span>
 {/template}
@@ -43,11 +43,11 @@
 <form fdform="managelists" action="#" fdform-submit="FreshDirect.modules.common.forms.submitFns.defaultButton">
   <ul class="manage">
     {foreach $listInfo in $data}
-      <li class="item">
+      <li class="item"><fieldset><legend class="offscreen">manage shopping list {$listInfo.name} </legend>
         {call .editListInfoQS22}
           {param item:$listInfo /}
         {/call}
-      </li>
+      </fieldset></li>
     {/foreach}
   </ul>
   <div class="buttons">
@@ -61,7 +61,7 @@
  * @param item list info
  */ 
 {template .editListInfoQS22 private="true" autoescape="true"}
-  <span class="name" data-listid="{$item.listId}" data-listname="{$item.name}"><span class="error"></span><label for="rename_{$item.name}" class="offscreen">Manage lists name {$item.name}</label><input id="rename_{$item.name}" name="rename" maxlength="35" value="{$item.name}"/></span>
+  <span class="name" data-listid="{$item.listId}" data-listname="{$item.name}"><span class="error"></span><input id="rename_{$item.name}" aria-label="rename {$item.name}" name="rename" maxlength="35" value="{$item.name}"/></span>
   <span class="default"><label><input type="radio" name="default" {if $item.default}checked{/if}/>Make <span class="offscreen">{$item.name}</span> Default List</label></span>
   <span class="delete"><label><input type="checkbox" name="delete" id="list_delete_{$item.listId}" {if $item.delete}checked{/if}/>Delete <span class="offscreen">{$item.name}</span> List</label></span>
 {/template}

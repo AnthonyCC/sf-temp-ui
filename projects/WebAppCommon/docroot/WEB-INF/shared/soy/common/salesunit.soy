@@ -4,12 +4,13 @@
  * @param options list of salesunit options
  * @param? label sales unit label
  * @param? optional
+ * @param? id - html optional id
  */
 {template .salesunit}
 <div class="itemlist-item-salesunit errorcontainer">
   <span class="error"><img src="/media_stat/images/layout/error.gif" alt="" />Please select <em>{if $label}{$label}{/if}</em></span>
   <label>{if $label}<span class="offscreen">{$label}</span>{else}<span class="offscreen">Please Choose</span>{/if}
-    <select class="salesunit customsimpleselect" data-component="salesunit" data-productdata-name="salesUnit" {if isNonnull($optional) and not $optional}data-atc-required="true" data-atl-required="true"{/if}>
+    <select {if $id}id="{$id}"{/if} class="salesunit customsimpleselect" data-component="salesunit" data-productdata-name="salesUnit" {if isNonnull($optional) and not $optional}data-atc-required="true" data-atl-required="true"{/if}>
     {if $label}<option value="">{$label}</option>{/if}
     {foreach $option in $options}
       <option value="{$option.id}" {($option.selected) ? 'selected="selected"' : ''}>{$option.name}</option>

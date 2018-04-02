@@ -10,11 +10,11 @@
       {if $menuBox.name}<h3>{$menuBox.name}</h3>{/if}
       {if $menuBox.items and length($menuBox.items) > 0}
       <ul><fieldset><legend><span class="offscreen">
-      {if $menuBox.boxType == 'FILTER'}filter by {$menuBox.name}
+      {if $menuBox.boxType == 'FILTER'}filter products by {$menuBox.name}
       {else}
-      {if $menuBox.boxType == 'SUPERDEPARTMENT'}choose by department
+      {if $menuBox.boxType == 'SUPERDEPARTMENT'}filter products by department
       {else}
-      Choose by category
+      filter products by category
       {/if}
       {/if}
       </span></legend>
@@ -106,11 +106,11 @@
   {for $col in range(0, $maxcols)}
     {if $col * $n + $mod < $l}
       <ul><fieldset><legend><span class="offscreen">
-      {if $menuBox.boxType == 'FILTER'}filter by {$menuBox.name}
+      {if $menuBox.boxType == 'FILTER'}filter products by {$menuBox.name}
       {else}
-      {if $menuBox.boxType == 'SUPERDEPARTMENT'}choose by department
+      {if $menuBox.boxType == 'SUPERDEPARTMENT'}filter products by department
       {else}
-      Choose by category
+      filter products by category
       {/if}
       {/if}
       </span></legend>
@@ -164,11 +164,11 @@
 */
 {template .popupLayout autoescape="false"}
   <ul><fieldset><legend><span class="offscreen">
-      {if $menuBox.boxType == 'FILTER'}filter by {$menuBox.name}
+      {if $menuBox.boxType == 'FILTER'}filter products by {$menuBox.name}
       {else}
-      {if $menuBox.boxType == 'SUPERDEPARTMENT'}choose by department
+      {if $menuBox.boxType == 'SUPERDEPARTMENT'}filter products by department
       {else}
-      Choose by category
+      filter products by category
       {/if}
       {/if}
       </span></legend>
@@ -184,11 +184,11 @@
       {/if}
     {else}
      </fieldset> </ul><ul><fieldset><legend><span class="offscreen">
-      {if $menuBox.boxType == 'FILTER'}filter by {$menuBox.name}
+      {if $menuBox.boxType == 'FILTER'}filter products by {$menuBox.name}
       {else}
-      {if $menuBox.boxType == 'SUPERDEPARTMENT'}choose by department
+      {if $menuBox.boxType == 'SUPERDEPARTMENT'}filter products by department
       {else}
-      Choose by category
+      filter products by category
       {/if}
       {/if}
       </span></legend>

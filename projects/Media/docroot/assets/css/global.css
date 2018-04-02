@@ -3470,3 +3470,6 @@ table.order_history_table tr:nth-child(odd){
 table.order_history_table tr:nth-child(1) th{
 	background-color: #eee;
 }
+#transactionalPopup .customsimpleselect {
+    width: 100%;
+}
