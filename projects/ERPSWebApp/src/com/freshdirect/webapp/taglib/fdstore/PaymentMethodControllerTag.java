@@ -15,7 +15,7 @@ import com.freshdirect.framework.webapp.*;
 import com.freshdirect.fdstore.*;
 import com.freshdirect.fdstore.customer.*;
 import com.freshdirect.customer.*;
-
+import com.freshdirect.enums.CaptchaType;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationError;
@@ -179,8 +179,8 @@ public class PaymentMethodControllerTag extends com.freshdirect.framework.webapp
 				? request.getParameter("g-recaptcha-response").toString()
 				: null;
 				
-		boolean isCaptchaSuccess = CaptchaUtil.validateCaptchaV2(captchaToken,
-				ip, session, SessionName.PAYMENT_ATTEMPT, FDStoreProperties.getMaxInvalidPaymentAttempt());
+		boolean isCaptchaSuccess = CaptchaUtil.validateCaptcha(captchaToken,
+				ip, CaptchaType.PAYMENT, session, SessionName.PAYMENT_ATTEMPT, FDStoreProperties.getMaxInvalidPaymentAttempt());
 		if (!isCaptchaSuccess) {
 			result.addError(new ActionError("captcha", SystemMessageList.MSG_INVALID_CAPTCHA));
 			pageContext.setAttribute(this.result, result);

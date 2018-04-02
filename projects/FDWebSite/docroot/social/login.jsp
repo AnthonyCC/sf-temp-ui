@@ -3,6 +3,7 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName"%>
 <%@ page import="java.text.MessageFormat"%>
 <%@ page import="java.util.List"%>
+<%@ page import="com.freshdirect.enums.CaptchaType" %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ page import='com.freshdirect.fdstore.customer.*'%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
@@ -37,7 +38,7 @@
 	
 	//Captcha.
 	boolean showCaptcha = CaptchaUtil.isExcessiveAttempt(FDStoreProperties.getMaxInvalidLoginAttempt(), session, SessionName.LOGIN_ATTEMPT);
-	String publicKey= FDStoreProperties.getRecaptchaPublicKey();
+	String publicKey= FDStoreProperties.getRecaptchaPublicKey(CaptchaType.SIGN_IN);
 
 %>
 

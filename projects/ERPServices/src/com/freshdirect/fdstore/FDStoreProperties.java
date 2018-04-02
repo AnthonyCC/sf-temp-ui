@@ -24,6 +24,7 @@ import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
+import com.freshdirect.enums.CaptchaType;
 import com.freshdirect.framework.util.ConfigHelper;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
@@ -4278,13 +4279,17 @@ public class FDStoreProperties {
         return get(PROP_FDEXTOLEMGR_HOME);
     }
 
-    // Recaptcha getter methods
-    public static String getRecaptchaPublicKey() {
-        return StringUtils.defaultIfEmpty(get(PROP_RECAPTCHA_PUBLIC_KEY), "6LdQn0YUAAAAALfZUrX-x4IeOmdUkkUrwMwZdhsd");
-    }
+	// Recaptcha getter methods
+	public static String getRecaptchaPublicKey(CaptchaType type) {
+		String key = StringUtils.defaultIfEmpty(get(PROP_RECAPTCHA_PUBLIC_KEY),
+				"6LdQn0YUAAAAALfZUrX-x4IeOmdUkkUrwMwZdhsd,6LcYYFAUAAAAAOWJFZgnZnVNNXr31rebRjsnoSA0");
+		return getValueFromProperty(key, type.getValue());
+		
+	}
 
-    public static String getRecaptchaPrivateKey() {
-        return StringUtils.defaultIfEmpty(get(PROP_RECAPTCHA_PRIVATE_KEY), "6LdQn0YUAAAAAB3iHC6AzFH_Sd5k9z0uAwfvPUkZ");
+    public static String getRecaptchaPrivateKey(CaptchaType type) {
+        String key = StringUtils.defaultIfEmpty(get(PROP_RECAPTCHA_PRIVATE_KEY), "6LdQn0YUAAAAAB3iHC6AzFH_Sd5k9z0uAwfvPUkZ,6LcYYFAUAAAAAOWJFZgnZnVNNXr31rebRjsnoSA0");
+        return getValueFromProperty(key, type.getValue());
     }
 
     public static int getMaxInvalidLoginAttempt() {
@@ -5044,5 +5049,18 @@ public class FDStoreProperties {
 
 	public static int getMinimumItemsCountInCarousel() {
         return Integer.parseInt(get(PROP_CAROUSEL_MIN_ITEMS));
+	}
+	
+	private static String getValueFromProperty(String property, int i) {
+		if (property.contains(",")) {
+			String[] keys = property.split(",");
+			if (i >= keys.length) {
+				return keys[0];
+			} else {
+				return keys[i];
+			}
+		} else {
+			return property;
+		}
 	}
 }
