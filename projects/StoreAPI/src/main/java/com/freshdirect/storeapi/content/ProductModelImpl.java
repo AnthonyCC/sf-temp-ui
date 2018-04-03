@@ -296,7 +296,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 		List<BrandModel> newList = new ArrayList<BrandModel>();
 		for (int i = 0; i < brandModels.size(); i++) {
 			BrandModel b = brandModels.get(i);
-			String str = b.getFullName();
+			String str = b!=null?b.getFullName():null;
 			if ((str != null) && !str.equals("")) {
 				newList.add(b);
 			}
