@@ -1024,8 +1024,12 @@ public class BrowseDataBuilderFactory {
 			for(SectionData section : sections){
 				if(section.getProducts()!=null){
 					for(ProductData data : section.getProducts()){
-						if (shownProductKeysForRecommender.size() < ProductRecommenderUtil.MAX_LIST_CONTENT_SIZE){
-                            shownProductKeysForRecommender.add(ContentKeyFactory.get(FDContentTypes.PRODUCT, data.getProductId()));
+                        if (shownProductKeysForRecommender.size() < ProductRecommenderUtil.MAX_LIST_CONTENT_SIZE) {
+                            if (null != data.getProductId()) {
+                                shownProductKeysForRecommender.add(ContentKeyFactory.get(FDContentTypes.PRODUCT, data.getProductId()));
+                            } else {
+                                LOG.info("Product ID was null for contentKey: " + data.getCMSKey() + " with name: " + data.getProductName());
+                            }
                         } else {
                             return;
                         }
