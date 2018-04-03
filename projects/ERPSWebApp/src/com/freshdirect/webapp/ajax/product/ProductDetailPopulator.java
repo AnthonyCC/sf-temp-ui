@@ -1186,7 +1186,7 @@ public class ProductDetailPopulator {
 	private static String generateSalesUnitDescrPDP(FDProduct product, FDProductSelectionI theProduct, ProductModel productModel, SkuModel sku, boolean isMultiChoice) {
 
 		FDSalesUnit unit = product.getSalesUnit(theProduct.getConfiguration().getSalesUnit());
-		String salesUnitDescr = unit.getDescription();
+		String salesUnitDescr = unit!=null?unit.getDescription():null;
 
 		StringBuffer PDPsalesUnitDescr = new StringBuffer();
 
