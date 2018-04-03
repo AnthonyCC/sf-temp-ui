@@ -875,6 +875,12 @@ public class CheckoutController extends BaseController {
 	        }
         	responseMessage.addWarningMessages(result.getWarnings());
         }
+        if(responseMessage==null){
+			responseMessage = getErrorMessage("RESP_MSG_NULL", "Response Message Null");
+			LOGGER.error("CHECKOUTCONTROLLER - Response Message Null for action reserveTimeslot and user " + (user != null && user.getFDSessionUser() != null 
+					? (user.getFDSessionUser().getIdentity() != null && user.getFDSessionUser().getFDCustomer() != null 
+					? user.getFDSessionUser().getFDCustomer().getErpCustomerPK() : user.getFDSessionUser().getPrimaryKey() ) : "NOUSER" ) );
+		}
         setResponseMessage(model, responseMessage, user);
 
         return model;
