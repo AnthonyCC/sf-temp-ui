@@ -4114,6 +4114,8 @@ div#mobilehomeMainDiv a {
 
   	<tmpl:get name='facebookmeta'/>
 
+    <fd:CanonicalPageLink/>
+
     <tmpl:get name="extraCss" />
     <tmpl:get name='nutritionCss'/>
 	<% if (isModifyOrder) { %>

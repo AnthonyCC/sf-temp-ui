@@ -46,6 +46,7 @@
   	<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1">
 	<meta name="fragment" content="!">
 
+    <fd:CanonicalPageLink/>
     <%@ include file="/common/template/includes/i_javascripts_browse.jspf" %>
 
     <%-- THIS SETUP NEEDS TO BE BEFORE THE LOCABAR JS --%>

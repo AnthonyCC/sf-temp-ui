@@ -5742,6 +5742,12 @@
 		</attribute>
 	</tag>
 
+	<tag>
+		<name>CanonicalPageLink</name>
+		<tagclass>com.freshdirect.webapp.taglib.CanonicalPageTag</tagclass>
+		<bodycontent>empty</bodycontent>
+	</tag>
+
 	<tag-file>
        <name>SEOMetaTag</name>
        <path>/WEB-INF/shared/tags/common/metatags.tag</path>
