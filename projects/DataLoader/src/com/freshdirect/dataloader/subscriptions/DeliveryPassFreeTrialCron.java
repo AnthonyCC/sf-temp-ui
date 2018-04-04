@@ -334,7 +334,7 @@ public class DeliveryPassFreeTrialCron {
 		FDCartModel cart=null;
 		try {
 			cart=new FDCartModel();
-			cart.addOrderLine(getCartLine(skuCode));
+			cart.addOrderLine(getCartLine(skuCode, userCtx));
 			cart.setPaymentMethod(paymentMethod);
 			cart.setDeliveryAddress(deliveryAddress);
 			cart.recalculateTaxAndBottleDeposit(cart.getDeliveryAddress().getZipCode());
@@ -370,7 +370,7 @@ public class DeliveryPassFreeTrialCron {
 		return cart;
 	}
 
-	private static FDCartLineI getCartLine(String skuCode) throws FDSkuNotFoundException, FDResourceException  {
+	private static FDCartLineI getCartLine(String skuCode,UserContext userCtx) throws FDSkuNotFoundException, FDResourceException  {
 
 		ProductModel prodNode = null;
 		FDProduct product=null;
@@ -384,7 +384,7 @@ public class DeliveryPassFreeTrialCron {
 		//TODO Need to pre-select pricing zone based on last order delivery type and zipcode.
 		FDCartLineModel cartLine = new FDCartLineModel(new FDSku(product), prodNode
 				, new FDConfiguration(quantity, salesUnit
-				.getName(), varMap), null, ContentFactory.getInstance().getCurrentUserContext());
+				.getName(), varMap), null, userCtx);
 
 		try {
 			cartLine.refreshConfiguration();
