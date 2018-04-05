@@ -194,6 +194,7 @@ var dataLayer = window.dataLayer || [];
                 dimension6: productData.newProduct,
                 sku: productData.sku,
                 dimension3: ""+true,
+                position: fd.gtm.getPositionForProductId(productData.id),
                 quantity: qty > 0 ? qty : -qty
               }]
           },
@@ -850,6 +851,17 @@ var dataLayer = window.dataLayer || [];
     var el = document.querySelector('[data-product-id="'+id+'"]');
 
     return fd.gtm.getListForProduct(el, config);
+  };
+
+  fd.gtm.getPositionForProductId = function (id) {
+    var el = document.querySelector('[data-product-id="'+id+'"]'),
+        position = 1;
+
+    if (el && el.parentElement) {
+      position = Array.prototype.slice.call(el.parentElement.children).indexOf(el) + 1;
+    }
+
+    return position;
   };
 
 }(FreshDirect));
