@@ -1,7 +1,6 @@
 package com.freshdirect.webapp.taglib.validation;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,13 +25,9 @@ public class RequiredParameterValidatorTag extends SimpleTagSupport {
         
         PageContext ctx = (PageContext) getJspContext();
         HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
-        
-        List<String> splitParams = new ArrayList<String>();
         List<String> missingParams = new ArrayList<String>();
 
-        splitParams.addAll(Arrays.asList(parameters.split(",")));
-
-        for (String parameter : splitParams) {
+        for (String parameter : parameters.split(",")) {
             String requestParam = request.getParameter(parameter);
             if (null == requestParam || "".equals(requestParam)) {
                 missingParams.add(parameter);
