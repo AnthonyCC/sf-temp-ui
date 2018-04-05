@@ -28,7 +28,7 @@ public class RequiredParameterValidatorTag extends SimpleTagSupport {
         List<String> missingParams = new ArrayList<String>();
 
         for (String parameter : parameters.split(",")) {
-            String requestParam = request.getParameter(parameter);
+            String requestParam = request.getParameter(parameter.trim());
             if (null == requestParam || "".equals(requestParam)) {
                 missingParams.add(parameter);
             }
