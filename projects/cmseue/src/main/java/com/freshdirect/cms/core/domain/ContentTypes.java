@@ -2233,6 +2233,7 @@ public final class ContentTypes {
             .build();
         public static final Attribute sourceNode = linkOneOf(Brand, Category, Department).toName("sourceNode")
             .build();
+        public static final Attribute randomizeProductOrder = booleanAttribute("randomizeProductOrder").build();
     }
 
     public static final class Image {

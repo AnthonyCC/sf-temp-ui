@@ -1036,6 +1036,11 @@ public class FDStoreProperties {
 
 
 	private static final String PROP_CAROUSEL_MIN_ITEMS = "fdstore.carousel.minimum.items";
+	
+	
+	private static final String PROP_NEW_PRODUCTS_PAGE_CAROUSEL_ENABLED = "fdstore.newproductspage.carousel.enabled";
+	private static final String PROP_NEW_PRODUCTS_PAGE_CAROUSEL_CONTAINER_CONTENT_KEY = "fdstore.newproductspage.carousel.contentkey";
+	
 
 	public final static String PROP_IS_FDC_FIRST_ORDER_EMAIL_MSG_ENABLED = "fdstore.fdc.firstorderemailmsg.enabled";
  	static {
@@ -1995,6 +2000,10 @@ public class FDStoreProperties {
 		defaults.put(PROP_CAROUSEL_MIN_ITEMS, "4");
 
 		defaults.put(PROP_IS_FDC_FIRST_ORDER_EMAIL_MSG_ENABLED, "false");
+		
+		defaults.put(PROP_NEW_PRODUCTS_PAGE_CAROUSEL_ENABLED, "true");
+        defaults.put(PROP_NEW_PRODUCTS_PAGE_CAROUSEL_CONTAINER_CONTENT_KEY, "ModuleContainer:new_prod");
+
 		
         refresh();
     }
@@ -5063,4 +5072,13 @@ public class FDStoreProperties {
 			return property;
 		}
 	}
+	
+	
+	  public static String getPropNewProductsPageCarouselContainerContentKey() {
+          return get(PROP_NEW_PRODUCTS_PAGE_CAROUSEL_CONTAINER_CONTENT_KEY);
+      }
+
+      public static boolean isPropNewProductsPageCarouselEnabled() {
+          return (Boolean.valueOf(get(PROP_NEW_PRODUCTS_PAGE_CAROUSEL_ENABLED))).booleanValue();
+      }
 }

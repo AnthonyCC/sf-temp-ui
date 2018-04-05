@@ -1320,6 +1320,7 @@ public final class AttributeLabels {
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Module, ContentTypes.Module.headerGraphic), "Header Graphic");
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Module, ContentTypes.Module.editorialContent), "Editorial Content");
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Module, ContentTypes.Module.sourceNode), "Source Node");
+        ATTRIBUTE_LABELS.put(keyOf(ContentType.Module, ContentTypes.Module.randomizeProductOrder), "Randomize Product Order");
 
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Image, ContentTypes.Image.height), "Height");
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Image, ContentTypes.Image.width), "Width");

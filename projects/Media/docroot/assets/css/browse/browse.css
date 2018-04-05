@@ -370,6 +370,9 @@ ul.products .description-skin{
 .container.browse .noCarousel2 [data-component="carousel"] {
   margin: 0 16px;
 }
+.container.srch .product-carousel [data-component="carousel"] {
+  margin: 0;
+}
 
 .container.browse [data-component="carousel-mask"] {
   margin: 0 11px 0px;

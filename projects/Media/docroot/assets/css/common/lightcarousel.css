@@ -63,11 +63,6 @@
   background-color: #82817a;
 }
 
-.srch .carousel [data-component="carousel"] ul.pager,
-.browse .carousels [data-component="carousel"] ul.pager {
- 	display: none;
-}
-
 [data-component="carousel-prev"],
 [data-component="carousel-next"],
 [data-component="carousel-view-all"] {
