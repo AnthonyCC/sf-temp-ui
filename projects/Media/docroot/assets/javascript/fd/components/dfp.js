@@ -54,7 +54,7 @@ var googletag = window.googletag || {};
   };
 
   function getSpecialTargetingKey(slot) {
-    return !!document.querySelector("[id^=oas_" + slot);
+    return !!document.querySelector("[id^=oas_" + slot + "]");
   }
 
 
