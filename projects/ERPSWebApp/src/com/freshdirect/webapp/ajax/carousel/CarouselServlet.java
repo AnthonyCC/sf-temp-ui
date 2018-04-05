@@ -242,4 +242,9 @@ public class CarouselServlet extends BaseJsonServlet {
 	protected boolean synchronizeOnUser() {
 		return false;
 	}
+	
+	@Override 
+	protected int getRequiredUserLevel() {
+		return FDUserI.GUEST;
+	}
 }
