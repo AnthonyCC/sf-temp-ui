@@ -28,7 +28,11 @@
 
 .modifyorder-cutoff{
   padding-top: 15px;
-  font-weight: bold
+  font-weight: bold;
+  font-size: 14px;
+}
+.modifyorder-info {
+  font-size: 14px;
 }
 
 a.cssbutton.transparent.orange.modifyorder-cancelbutton,a.cssbutton.cssbutton-flat.green.transparent.modifyorder-cancelbutton{
