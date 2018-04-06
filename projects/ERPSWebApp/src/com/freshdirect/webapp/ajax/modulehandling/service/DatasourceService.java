@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.core.domain.ContentTypes;
 import com.freshdirect.fdstore.FDNotFoundException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -211,9 +212,6 @@ public class DatasourceService {
         switch (datasourceEnum) {
             case MOST_POPULAR_PRODUCTS:
                 products = ModuleContentService.getDefaultService().generateRecommendationProducts(session, user, MOST_POPULAR_PRODUCTS_SITE_FEATURE);
-                // moduleData.setCriteoHomeProducts(Criteo.getHomeAdProduct(u\er));
-                // moduleData.setAdProducts(Criteo.getHomeAdProduct(user));
-                // moduleData.setAdPrdPageBeacon();
                 break;
             case TOP_ITEMS:
                 products = ModuleContentService.getDefaultService().generateRecommendationProducts(session, user, TOP_ITEMS_SITE_FEATURE);
@@ -261,7 +259,7 @@ public class DatasourceService {
                 break;
         }
 
-        boolean randomizeProductOrder = ContentNodeUtil.getBooleanAttribute(module, "randomizeProductOrder");
+        boolean randomizeProductOrder = ContentNodeUtil.getBooleanAttribute(module, ContentTypes.Module.randomizeProductOrder.getName());
         if (randomizeProductOrder) {
             java.util.Collections.shuffle(products);
         }
