@@ -60,7 +60,7 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 			<tr>
 				<td colspan="3" class="title16">
 					<% if (FDStoreProperties.isAdServerEnabled()) { %>
-        				<div id='oas_CategoryNote'>
+        				<div id='oas_CategoryNote' ad-fixed-size="true" ad-size-height="95" ad-size-width="774">
 							<script>
 								OAS_AD('CategoryNote');
 							</script>

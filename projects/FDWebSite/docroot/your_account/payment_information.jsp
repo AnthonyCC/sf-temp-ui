@@ -20,8 +20,8 @@
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 <c:set var="sitePage" scope="request" value="/your_account/payment_information.jsp" />
 <c:set var="listPos" scope="request" value="SystemMessage,CategoryNote" />
-<% 
-	
+<%
+
 	//expanded page dimensions
 	final int W_YA_PAYMENT_INFO_TOTAL = 970;
 
@@ -46,7 +46,7 @@
     <tmpl:put name='content' direct='true'>
     <div class="content<%= (mobWeb) ? " mm-page" : "" %>">
 		<fd:PaymentMethodController actionName='<%=actionName%>' result='result'>
-		
+
 		<%
 		boolean hasCheck = false;
 		boolean hasEBT = false;
@@ -92,9 +92,9 @@
 		boolean isCheckEligible	= user.isCheckEligible();
 		// MP Use Case #4
 		/* ErpCustEWalletModel erpCustEWalletModel = FDCustomerManager.findLongAccessTokenByCustID(user.getFDCustomer().getErpCustomerPK(), "MP"); */
-		
+
 		%>
-		
+
 		<!-- error message handling here -->
 		<table width="<%= W_YA_PAYMENT_INFO_TOTAL %>" border="0" cellpadding="0" cellspacing="0">
 			<tr>
@@ -107,15 +107,15 @@
 				</td>
 			</tr>
 		</table>
-		
+
 		<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><br />
 		<IMG src="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>" HEIGHT="1" BORDER="0"><br />
 		<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><br /><br />
 		<!--  MP Use Case #4 -->
 		<!-- <script type="text/javascript" src="https://sandbox.masterpass.com/lightbox/Switch/integration/MasterPass.client.js"></script> -->
-		
+
 		<script type="text/javascript" src="https://js.braintreegateway.com/js/braintree-2.21.0.min.js"></script>
-		<div id='oas_CategoryNote'>
+		<div id='oas_CategoryNote' ad-fixed-size="true" ad-size-height="95" ad-size-width="774">
 		  <SCRIPT LANGUAGE=JavaScript>
 		  	<!--
 		  	OAS_AD('CategoryNote');
@@ -123,14 +123,14 @@
 		  </SCRIPT>
 		</div>
 		<!--  PP Use Case  -->
-		
-		
+
+
 		<fd:GetStandingOrderDependencyIds id="standingOrderDependencyIds" type="paymentMethod">
-		
+
 		     <input type="hidden" name="isPayPalDown" id= "isPayPalDown" value="false">
-		
+
 		<!--  MP Use Case #4 implemenation. Please use this component -->
-		
+
 		       		<fd:GetStandingOrderHelpInfo id="helpSoInfo">
 		              <script type="text/javascript">var helpSoInfo=<%=helpSoInfo%>;</script>
 		              <table width="<%= W_YA_PAYMENT_INFO_TOTAL %>" border="0" cellspacing="0" cellpadding="0">
@@ -173,7 +173,7 @@
 						<%
 							/* this display code seriously needs a re-write, one card per paypal row? */
 							boolean hidePPDefaultSelectRadio = true;
-							if ((request.getRequestURI().toLowerCase().indexOf("your_account/payment_information.jsp")>-1)) { 
+							if ((request.getRequestURI().toLowerCase().indexOf("your_account/payment_information.jsp")>-1)) {
 								hidePPDefaultSelectRadio = false;
 							}
 						%>
@@ -333,7 +333,7 @@
 					// Brain Trees setup -- END
 				}
 			});
-	
+
 			$(document).on('click', '#PP-connect', function(event) {
 				if (event.preventDefault) {
 					event.preventDefault();
@@ -349,7 +349,7 @@
 					$('#PP_ERROR').css("display", "none");
 				}
 			});
-	
+
 			$(document).on('click', '#deletePPWallet', function() {
 				$.ajax({
 					url: "/api/expresscheckout/addpayment/ewalletPayment?data={\"fdform\":\"EPPDISC\",\"formdata\":{\"action\":\"PP_Disconnect_Wallet\",\"ewalletType\":\"PP\"}}",
@@ -370,7 +370,7 @@
 				});
 			});
 		}(jQuery));
-	
+
 		function brainTreeSetup($){
 			$.ajax({
 				url: "/api/expresscheckout/addpayment/ewalletPayment?data={\"fdform\":\"PPSTART\",\"formdata\":{\"action\":\"PP_Connecting_Start\",\"ewalletType\":\"PP\"}}",
@@ -393,11 +393,11 @@
 									checkout = integration;
 									// checkout.paypal.initAuthFlow();
 									deviceObj = JSON.parse(integration.deviceData);
-	
+
 								},
 								// For saving the PayPal payment Method to FD
 								onPaymentMethodReceived: function(payload) {
-	
+
 									$.ajax({
 										url: "/api/expresscheckout/addpayment/ewalletPayment?data={\"fdform\":\"PPEND\",\"formdata\":{\"action\":\"PP_Connecting_End\",\"ewalletType\":" +
 											"\"PP\",\"origin\":\"your_account\",\"paymentMethodNonce\":\"" + payload.nonce + "\",\"email\":\"" + payload.details.email + "\",\"firstName\":\"" + payload.details.firstName + "\"," +

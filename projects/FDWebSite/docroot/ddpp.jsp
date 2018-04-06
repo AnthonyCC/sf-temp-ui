@@ -20,15 +20,15 @@
 %><%@ page import='java.text.DecimalFormat'
 %><%@ page import='java.text.SimpleDateFormat'
 %><%@ page import='org.apache.commons.lang.StringEscapeUtils'
-%><%@ page import='com.freshdirect.storeapi.util.*' 
-%><%@ page import='com.freshdirect.storeapi.attributes.*' 
-%><%@ page import='com.freshdirect.content.attributes.*'
-%><%@ page import='com.freshdirect.fdstore.*' 
-%><%@ page import='com.freshdirect.fdstore.content.*'  
+%><%@ page import='com.freshdirect.storeapi.util.*'
 %><%@ page import='com.freshdirect.storeapi.attributes.*'
-%><%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*' 
-%><%@ page import='com.freshdirect.fdstore.customer.*' 
-%><%@ page import='com.freshdirect.framework.util.*' 
+%><%@ page import='com.freshdirect.content.attributes.*'
+%><%@ page import='com.freshdirect.fdstore.*'
+%><%@ page import='com.freshdirect.fdstore.content.*'
+%><%@ page import='com.freshdirect.storeapi.attributes.*'
+%><%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*'
+%><%@ page import='com.freshdirect.fdstore.customer.*'
+%><%@ page import='com.freshdirect.framework.util.*'
 %><%@ page import='com.freshdirect.framework.webapp.*'
 %><%@ page import='com.freshdirect.webapp.taglib.fdstore.*'
 %><%@ page import='com.freshdirect.webapp.taglib.fdstore.*'
@@ -471,7 +471,7 @@ if (categoryModel != null) {
 	<tmpl:put name="productsOnly">products-only</tmpl:put>
 	<tmpl:put name="cmPageViewTag"><fd:CmPageView wrapIntoScriptTag="true" currentFolder="<%=currentFolder%>"/></tmpl:put>
 	<tmpl:put name="oas-header-1">
-		<div class="PPHeader" id='oas_PPHeader'>
+		<div class="PPHeader" id='oas_PPHeader' ad-fixed-size="true" ad-size-height="100" ad-size-width="970">
 			<script type="text/javascript">
 					OAS_AD('PPHeader');
 			</script>
@@ -643,7 +643,7 @@ if (categoryModel != null) {
 									curLeftPos = curLeftPos + 255; /* take from css, cont width + 14 (gutter) */
 								%>
 							</logic:iterate>
-							<div class="PPSuperBuy">
+							<div class="PPSuperBuy" ad-fixed-size="true" ad-size-height="228" ad-size-width="275">
 								<script type="text/javascript">
 										OAS_AD('PPSuperBuy');
 								</script>

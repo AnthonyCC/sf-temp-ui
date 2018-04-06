@@ -46,7 +46,7 @@
 				</tr>
                  <tr>
                      <td align="center" colspan="3">
-                      <div id='oas_CategoryNote'>
+                      <div id='oas_CategoryNote' ad-fixed-size="true" ad-size-height="95" ad-size-width="774">
                         <SCRIPT LANGUAGE=JavaScript>
 			                    <!--
 	                        OAS_AD('CategoryNote');

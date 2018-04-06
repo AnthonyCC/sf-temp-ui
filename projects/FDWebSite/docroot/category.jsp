@@ -1,8 +1,8 @@
-<%@ page import='com.freshdirect.webapp.util.*' 
+<%@ page import='com.freshdirect.webapp.util.*'
 %><%@ page import='com.freshdirect.storeapi.content.*'
 %><%@ page import='com.freshdirect.fdstore.promotion.*'
-%><%@ page import='com.freshdirect.webapp.taglib.fdstore.*' 
-%><%@ page import='com.freshdirect.storeapi.attributes.*' 
+%><%@ page import='com.freshdirect.webapp.taglib.fdstore.*'
+%><%@ page import='com.freshdirect.storeapi.attributes.*'
 %><%@ page import='java.net.URLEncoder'
 %><%@ page import="com.freshdirect.fdstore.util.RatingUtil"
 %><%@ page import="com.freshdirect.fdstore.rollout.*"
@@ -317,7 +317,7 @@ final int W_CATEGORY_NO_LEFT_NAV = 765;
 						|| ( isWineLayout && EnumLayoutType.TRANSAC_GROUPED_ITEMS.getId()==layoutType ) ) {
 
 						if (FDStoreProperties.isAdServerEnabled()) { %>
-              <div id='oas_CategoryNote'>
+              <div id='oas_CategoryNote' ad-fixed-size="true" ad-size-height="95" ad-size-width="774">
                 <script type="text/javascript">
   								OAS_AD('CategoryNote');
   							</script>

@@ -23,42 +23,39 @@ var googletag = window.googletag || {};
 (function (fd) {
   "use strict";
 
-
-  var fixedSizeSlots = document.querySelectorAll('[ad-fixed-size]');
-  for (var i = 0; i < fixedSizeSlots.length; ++i) {
-    var height = fixedSizeSlots[i].getAttribute('ad-size-height');
-    var width = fixedSizeSlots[i].getAttribute('ad-size-width');
-    if (height && width) {
-      fixedSizeSlots[i].style.height = height + 'px' ;
-      fixedSizeSlots[i].style.width = width + 'px';
-    }
-  }
-
-
-  /* using strict means this function declaration needs to not be nested */
-  function getDfpSlotNameFromOasName(slot) {
-    return slot.id.substring(4,slot.id.length);
-  }
-
-  function getTimeslotsData() {
-  		var week = document.querySelectorAll('.tsDayDateC');
-  		var weekList = [];
-  		for (var i = 0; i < 7; ++i) {
-  			var day = 'day' + i;
-  			var text = week[i].innerText.replace(/\s/g, '');
-        var dayText = {};
-        dayText[day] = text;
-        weekList.push(dayText);
-  		}
-  		return weekList;
-  };
-
-  function getSpecialTargetingKey(slot) {
-    return !!document.querySelector("[id^=oas_" + slot + "]");
-  }
-
-
   if (fd.properties.isDFPEnabled) {
+
+    var fixedSizeSlots = document.querySelectorAll('[ad-fixed-size]');
+    for (var i = 0; i < fixedSizeSlots.length; ++i) {
+      var height = fixedSizeSlots[i].getAttribute('ad-size-height');
+      var width = fixedSizeSlots[i].getAttribute('ad-size-width');
+      if (height && width) {
+        fixedSizeSlots[i].style.height = height + 'px' ;
+        fixedSizeSlots[i].style.width = width + 'px';
+      }
+    }
+
+    function getDfpSlotNameFromOasName(slot) {
+      return slot.id.substring(4,slot.id.length);
+    }
+
+    function getTimeslotsData() {
+    		var week = document.querySelectorAll('.tsDayDateC');
+    		var weekList = [];
+    		for (var i = 0; i < 7; ++i) {
+    			var day = 'day' + i;
+    			var text = week[i].innerText.replace(/\s/g, '');
+          var dayText = {};
+          dayText[day] = text;
+          weekList.push(dayText);
+    		}
+    		return weekList;
+    };
+
+    function getSpecialTargetingKey(slot) {
+      return !!document.querySelector("[id^=oas_" + slot);
+    }
+
     var $=fd.libs.$,
         slots=document.querySelectorAll("[id^=oas_]"),
         query = DFP_query,

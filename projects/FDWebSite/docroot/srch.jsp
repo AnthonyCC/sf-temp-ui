@@ -221,10 +221,10 @@
 		</div>
 	</tmpl:put>
 
-	<tmpl:put name='content' direct='true'>
-		<div id="searchPanel" role="tabpanel" tabindex="0">
-			<div class="oas-cnt PPSearchContent" id="oas_PPSearchContent">
-				<script type="text/javascript">
+  <tmpl:put name='content' direct='true'>
+    <div id="searchPanel" role="tabpanel" tabindex="0">
+	    <div class="oas-cnt" ad-fixed-size="true" ad-size-height="95" ad-size-width="774" id="oas_PPSearchContent">
+	     <script type="text/javascript">
 	       OAS_AD('PPSearchContent');
 	     </script>
 			</div>
@@ -329,7 +329,7 @@
 							});
 						}
 					});
-	          		
+
 				</script>
 				</div>
 			</c:when>
