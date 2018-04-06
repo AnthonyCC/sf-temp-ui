@@ -1,0 +1,16 @@
+<%
+	String cssSelected=(itemSelected) ? "selected" :"";
+	String cssDisabled=(itemDisabled) ? "disabled" :"";
+%>
+	<li class="<%= cssSelected %><%= cssDisabled %>">
+<% if(itemDisabled) { %>
+<span><%= currentLabel %></span>
+<% } else { 
+		if(itemSelected) {
+%>			
+<a href="<%= currentUrl %>" class="clearfilter">X</a><span><%= currentLabel %></span>
+<%		} else {  %>
+<a href="<%= currentUrl %>"><%= currentLabel %></a>
+<%		} 
+	} %>
+</li>
