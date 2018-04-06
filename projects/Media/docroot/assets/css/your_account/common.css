@@ -53,3 +53,10 @@
   text-transform: none;
   
 }
+
+.order-details.actions {
+	text-align: left;
+}
+.order-details .cancel-order-btn {
+	float: right;
+}
