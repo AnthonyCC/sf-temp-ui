@@ -138,8 +138,45 @@ public class ProductExtraDataPopulator {
         return data;
     }
 
+    public static ProductExtraData populateClaimsDataForMobile(ProductExtraData data, ProductModel productNode) throws FDResourceException, FDSkuNotFoundException {
+        return populateClaimsData(data, productNode);
+    }
+
     private static void populateLightExtraData(ProductExtraData data, FDUserI user, ProductModel product) {
+        final DepartmentModel departmentNode = product.getDepartment();
+        final String departmentFullName = departmentNode.getFullName();
+
+        SkuModel defaultSku = null;
+        try {
+            defaultSku = fetchDefaultSkuForProductModel(product);
+        } catch (FDSkuNotFoundException e) {
+            LOG.debug("Could not find sku for product" + product.getContentKey(), e);
+        }
+
         populateProductDescription(data, user, product.getProductDescription());
+        populateSeasonTextAndServingSuggestions(data, product);
+        populateCustomerServiceContact(data, user);
+        populateDeliBuyingGuide(data, product);
+        populateRelatedRecipes(data, product);
+        if (defaultSku != null) {
+            populateOriginData(data, product, defaultSku);
+        }
+        populateStorageGuideData(data, product, user, departmentNode);
+        populateUsageList(data, product);
+        populateFreshTips(data, product);
+        populateHowToCookItFolders(data, product);
+        populateDonenessGuides(data, product);
+        populateCheeseData(data, departmentFullName);
+        populatePartiallyFrozenBakeryHack(data, product, departmentFullName);
+        populateProductMedias(data, product, user, false);
+        populatePageTitle(data, product);
+        populateWineData(data, user, product);
+
+        try {
+            populateWebRatings(data, product);
+        } catch (FDResourceException e1) {
+            LOG.debug("Couldn't populate web ratings for productExtraData light for product: " + product.getContentKey(), e1);
+        }
     }
 
     private static void populateData(ProductExtraData data, FDUserI user, ProductModel productNode, String groupId, String groupVersion, boolean includeProductAboutMedia,
@@ -181,10 +218,6 @@ public class ProductExtraDataPopulator {
         populateSeasonTextAndServingSuggestions(data, productNode);
         populatePageTitle(data, productNode);
         populateCustomerServiceContact(data, user);
-    }
-
-    public static ProductExtraData populateClaimsDataForMobile(ProductExtraData data, ProductModel productNode) throws FDResourceException, FDSkuNotFoundException {
-        return populateClaimsData(data, productNode);
     }
 
     private static FDProductInfo fetchFDProductInfoForSkuModel(SkuModel skuModel) {
