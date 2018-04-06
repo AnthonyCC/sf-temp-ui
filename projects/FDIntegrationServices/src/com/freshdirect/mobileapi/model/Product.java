@@ -1699,7 +1699,7 @@ public class Product {
 	            result = new Product(productModel, user, variant, cartLine, ctx, isQuickBuy);
 	            try {
 				    ProductExtraData data= new ProductExtraData();
-	                data=ProductExtraDataPopulator.populateClaimsDataForMobile(data, user, productModel, null, null);
+                    data = ProductExtraDataPopulator.populateClaimsDataForMobile(data, productModel);
 	                data=ProductExtraDataPopulator.populateWineData(data, user, productModel);
 	                if ( productModel.getProductAbout() != null ) {
 	        			TitledMedia tm = (TitledMedia) productModel.getProductAbout();
