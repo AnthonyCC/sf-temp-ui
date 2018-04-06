@@ -90,43 +90,46 @@ import com.freshdirect.webapp.util.MediaUtils;
 import com.freshdirect.webapp.util.NutritionInfoPanelRendererUtil;
 
 public class ProductExtraDataPopulator {
-	private static final Logger LOG = LoggerFactory.getInstance( ProductExtraDataPopulator.class );
-	private static final java.text.DecimalFormat QTY_FORMATTER = new java.text.DecimalFormat("0");
-	private static final java.text.DecimalFormat TOTAL_FORMATTER = new java.text.DecimalFormat("0.00");
-    private static final String POPUP_PAGE = "/shared/popup.jsp";
-	
-	public static ProductExtraData createExtraData( FDUserI user, ProductModel product, String grpId, String grpVersion, boolean includeProductAboutMedia)
-			throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
-	return  createExtraData( user,  product, grpId, grpVersion, includeProductAboutMedia, null);
-	}
-	//appdev 6259 nutrition panel from soy required including a css to go with it to build the page/viewport.
 
-	public static ProductExtraData createExtraData( FDUserI user, ProductModel product, String grpId, String grpVersion, boolean includeProductAboutMedia, String cssValue) throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
-		
-		if ( product == null ) {
-			BaseJsonServlet.returnHttpError( 500, "product not found" );
-		}
-		
-		// Create response data object
-		ProductExtraData data = new ProductExtraData();
-		
-		// First populate product-level data
-		populateData( data, user, product, grpId, grpVersion, includeProductAboutMedia, cssValue );
-		
-		return data;
-	}
-	
-	public static ProductExtraData createExtraData( FDUserI user, String productId, String categoryId, String grpId, String grpVersion ) throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
-		
-		if ( productId == null ) {
-			BaseJsonServlet.returnHttpError( 400, "productId not specified" );	// 400 Bad Request
-		}
-	
-		// Get the ProductModel
-		ProductModel product = PopulatorUtil.getProduct( productId, categoryId );
-		
-		return createExtraData( user, product, grpId, grpVersion, true, null );
-	}
+    private static final Logger LOG = LoggerFactory.getInstance(ProductExtraDataPopulator.class);
+    private static final java.text.DecimalFormat QTY_FORMATTER = new java.text.DecimalFormat("0");
+    private static final java.text.DecimalFormat TOTAL_FORMATTER = new java.text.DecimalFormat("0.00");
+    private static final String POPUP_PAGE = "/shared/popup.jsp";
+
+    public static ProductExtraData createExtraData(FDUserI user, ProductModel product, String grpId, String grpVersion, boolean includeProductAboutMedia)
+            throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
+        return createExtraData(user, product, grpId, grpVersion, includeProductAboutMedia, null);
+    }
+    // appdev 6259 nutrition panel from soy required including a css to go with it to build the page/viewport.
+
+    public static ProductExtraData createExtraData(FDUserI user, ProductModel product, String grpId, String grpVersion, boolean includeProductAboutMedia, String cssValue)
+            throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
+
+        if (product == null) {
+            BaseJsonServlet.returnHttpError(500, "product not found");
+        }
+
+        // Create response data object
+        ProductExtraData data = new ProductExtraData();
+
+        // First populate product-level data
+        populateData(data, user, product, grpId, grpVersion, includeProductAboutMedia, cssValue);
+
+        return data;
+    }
+
+    public static ProductExtraData createExtraData(FDUserI user, String productId, String categoryId, String grpId, String grpVersion)
+            throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
+
+        if (productId == null) {
+            BaseJsonServlet.returnHttpError(400, "productId not specified"); // 400 Bad Request
+        }
+
+        // Get the ProductModel
+        ProductModel product = PopulatorUtil.getProduct(productId, categoryId);
+
+        return createExtraData(user, product, grpId, grpVersion, true, null);
+    }
 
     public static ProductExtraData createLightExtraData(FDUserI user, ProductModel product) throws HttpErrorResponse {
 
@@ -146,9 +149,9 @@ public class ProductExtraDataPopulator {
     private static void populateLightExtraData(ProductExtraData data, FDUserI user, ProductModel product) {
         populateProductDescription(data, user, product.getProductDescription());
     }
-	
-    private static void populateData(ProductExtraData data, FDUserI user, ProductModel productNode, String groupId, String groupVersion, boolean includeProductAboutMedia, String cssValue)
-            throws FDResourceException, FDSkuNotFoundException {
+
+    private static void populateData(ProductExtraData data, FDUserI user, ProductModel productNode, String groupId, String groupVersion, boolean includeProductAboutMedia,
+            String cssValue) throws FDResourceException, FDSkuNotFoundException {
 
         final DepartmentModel departmentNode = productNode.getDepartment();
         final String departmentName = departmentNode.getContentName();
@@ -200,7 +203,7 @@ public class ProductExtraDataPopulator {
                 LOG.debug(e);
             } catch (FDSkuNotFoundException e) {
                 LOG.debug(e);
-            }   
+            }
         }
         return productInfo;
     }
@@ -426,45 +429,45 @@ public class ProductExtraDataPopulator {
     }
 
     private static void populateProductBrands(ProductExtraData data, ProductModel productNode, SkuModel defaultSku, FDProductInfo productInfo) {
-            final boolean isWineLayout = EnumProductLayout.NEW_WINE_PRODUCT.equals(productNode.getProductLayout());
-            final int MAX_BRANDS_TO_SHOW = isWineLayout ? 1 : 2;
+        final boolean isWineLayout = EnumProductLayout.NEW_WINE_PRODUCT.equals(productNode.getProductLayout());
+        final int MAX_BRANDS_TO_SHOW = isWineLayout ? 1 : 2;
 
-            @SuppressWarnings("unchecked")
-            List<BrandModel> productBrands = productNode.getDisplayableBrands(MAX_BRANDS_TO_SHOW);
+        @SuppressWarnings("unchecked")
+        List<BrandModel> productBrands = productNode.getDisplayableBrands(MAX_BRANDS_TO_SHOW);
 
-            if (defaultSku != null && FDStoreProperties.isSeafoodSustainEnabled()) {
-                EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating(ProductInfoUtil.getPickingPlantId(productInfo));
-                if (enumRating != null) {
-                    if (enumRating != null && enumRating.isEligibleToDisplay() && (enumRating.getId() == 4 || enumRating.getId() == 5)) {
-                        ContentNodeModel ssBrandCheck = ContentFactory.getInstance().getContentNode("bd_ocean_friendly");
-                        if (ssBrandCheck instanceof BrandModel) {
-                            productBrands.add((BrandModel) ssBrandCheck);
-                        }
+        if (defaultSku != null && FDStoreProperties.isSeafoodSustainEnabled()) {
+            EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating(ProductInfoUtil.getPickingPlantId(productInfo));
+            if (enumRating != null) {
+                if (enumRating != null && enumRating.isEligibleToDisplay() && (enumRating.getId() == 4 || enumRating.getId() == 5)) {
+                    ContentNodeModel ssBrandCheck = ContentFactory.getInstance().getContentNode("bd_ocean_friendly");
+                    if (ssBrandCheck instanceof BrandModel) {
+                        productBrands.add((BrandModel) ssBrandCheck);
                     }
                 }
             }
+        }
 
-            List<BrandInfo> brandInfos = new ArrayList<BrandInfo>(productBrands.size());
-            for (final BrandModel brandModel : productBrands) {
-                Html brandAttrib = brandModel.getPopupContent();
+        List<BrandInfo> brandInfos = new ArrayList<BrandInfo>(productBrands.size());
+        for (final BrandModel brandModel : productBrands) {
+            Html brandAttrib = brandModel.getPopupContent();
 
-                BrandInfo brandInfo = new BrandInfo();
-                brandInfo.id = brandModel.getContentName();
-                brandInfo.name = brandModel.getFullName();
-                brandInfo.alt = brandModel.getAltText();
+            BrandInfo brandInfo = new BrandInfo();
+            brandInfo.id = brandModel.getContentName();
+            brandInfo.name = brandModel.getFullName();
+            brandInfo.alt = brandModel.getAltText();
 
-                Image blogo = brandModel.getLogoSmall();
-                if (blogo != null) {
-                    brandInfo.logoPath = blogo.getPath();
-                    brandInfo.logoWidth = blogo.getWidth();
-                    brandInfo.logoHeight = blogo.getHeight();
-                }
-                if (brandAttrib != null) {
-                    brandInfo.contentPath = "/shared/brandpop.jsp?brandId=" + brandModel.getContentKey().getId();
-                }
-                brandInfos.add(brandInfo);
+            Image blogo = brandModel.getLogoSmall();
+            if (blogo != null) {
+                brandInfo.logoPath = blogo.getPath();
+                brandInfo.logoWidth = blogo.getWidth();
+                brandInfo.logoHeight = blogo.getHeight();
             }
-            data.setBrands(brandInfos);
+            if (brandAttrib != null) {
+                brandInfo.contentPath = "/shared/brandpop.jsp?brandId=" + brandModel.getContentKey().getId();
+            }
+            brandInfos.add(brandInfo);
+        }
+        data.setBrands(brandInfos);
     }
 
     private static void populateCheeseData(ProductExtraData data, String departmentName) {
@@ -953,95 +956,94 @@ public class ProductExtraDataPopulator {
         }
     }
 
-	public static ProductExtraData populateWineData(ProductExtraData data, FDUserI user,
-			ProductModel productNode) {
-		WineData wd = new WineData();
+    public static ProductExtraData populateWineData(ProductExtraData data, FDUserI user, ProductModel productNode) {
+        WineData wd = new WineData();
 
-		/** code snipped from  WineRegionLabel#doStart method */
-		DomainValue wineCountry = productNode.getWineCountry();
-		List<DomainValue> wineRegion = productNode.getNewWineRegion();
-		String wineCity = productNode.getWineCity();
-		if (wineCity.trim().length() == 0)
-			wineCity = null;
-		List<DomainValue> wineVintageList = productNode.getWineVintage();
-		DomainValue wineVintage = wineVintageList.size() > 0 ? wineVintageList.get(0) : null;
-		if (wineVintage != null && "vintage_nv".equals(wineVintage.getContentKey().getId())) {
-			wineVintage = null;
-		}
+        /** code snipped from WineRegionLabel#doStart method */
+        DomainValue wineCountry = productNode.getWineCountry();
+        List<DomainValue> wineRegion = productNode.getNewWineRegion();
+        String wineCity = productNode.getWineCity();
+        if (wineCity.trim().length() == 0)
+            wineCity = null;
+        List<DomainValue> wineVintageList = productNode.getWineVintage();
+        DomainValue wineVintage = wineVintageList.size() > 0 ? wineVintageList.get(0) : null;
+        if (wineVintage != null && "vintage_nv".equals(wineVintage.getContentKey().getId())) {
+            wineVintage = null;
+        }
 
-		List<DomainValue> wTypes = productNode.getNewWineType();
-		List<String> typesList = new ArrayList<String>();
-		List<String> wTypeIconPaths = new ArrayList<String>();
-		for (DomainValue wtv : wTypes) {
-			final String type = wtv.getValue();
-			typesList.add(type);
-			wTypeIconPaths.add("/media/editorial/win_"+WineUtil.getWineAssociateId().toLowerCase()+"/icons/"+wtv.getContentName().toLowerCase()+".gif");
-		}
-		wd.types = typesList;
-		wd.typeIconPaths = wTypeIconPaths;
-		
-		List<String> varietals = new ArrayList<String>();
-		for (DomainValue wvv : productNode.getWineVarietal()) {
-			varietals.add(wvv.getValue());
-		}
-		wd.varietals = varietals;
-		
-		if (wineCountry != null) {
-			wd.country = wineCountry.getValue();
-		}
-		if (!wineRegion.isEmpty()) {
-			wd.region = wineRegion.get(0).getLabel();
-		}
-		if (wineCity != null) {
-			wd.city = wineCity;
-		}
-		if (wineVintage != null) {
-			wd.vintage = wineVintage.getValue();
-		}
+        List<DomainValue> wTypes = productNode.getNewWineType();
+        List<String> typesList = new ArrayList<String>();
+        List<String> wTypeIconPaths = new ArrayList<String>();
+        for (DomainValue wtv : wTypes) {
+            final String type = wtv.getValue();
+            typesList.add(type);
+            wTypeIconPaths.add("/media/editorial/win_" + WineUtil.getWineAssociateId().toLowerCase() + "/icons/" + wtv.getContentName().toLowerCase() + ".gif");
+        }
+        wd.types = typesList;
+        wd.typeIconPaths = wTypeIconPaths;
 
-		wd.classification = productNode.getWineClassification();
+        List<String> varietals = new ArrayList<String>();
+        for (DomainValue wvv : productNode.getWineVarietal()) {
+            varietals.add(wvv.getValue());
+        }
+        wd.varietals = varietals;
 
-		// grape type / blending
-		wd.grape = productNode.getWineType();
+        if (wineCountry != null) {
+            wd.country = wineCountry.getValue();
+        }
+        if (!wineRegion.isEmpty()) {
+            wd.region = wineRegion.get(0).getLabel();
+        }
+        if (wineCity != null) {
+            wd.city = wineCity;
+        }
+        if (wineVintage != null) {
+            wd.vintage = wineVintage.getValue();
+        }
 
-		wd.importer = productNode.getWineImporter();
-		
-		wd.agingNotes = productNode.getWineAging();
-		
-		wd.alcoholGrade = productNode.getWineAlchoholContent();
+        wd.classification = productNode.getWineClassification();
 
-		// reviews
-		List<WineRating> ratings = new ArrayList<WineRating>();
-		if (productNode.getWineRating1() != null && productNode.getWineRating1().size() > 0) {
-			WineRating r = processWineRating(productNode.getWineRating1(), user, productNode.getWineReview1());
-			if (r != null) {
-				ratings.add(r);
-			}
-		}
-		if (productNode.getWineRating2() != null && productNode.getWineRating2().size() > 0) {
-			WineRating r = processWineRating(productNode.getWineRating2(), user, productNode.getWineReview2());
-			if (r != null) {
-				ratings.add(r);
-			}
-		}
-		if (productNode.getWineRating3() != null && productNode.getWineRating3().size() > 0) {
-			WineRating r = processWineRating(productNode.getWineRating3(), user, productNode.getWineReview3());
-			if (r != null) {
-				ratings.add(r);
-			}
-		}
+        // grape type / blending
+        wd.grape = productNode.getWineType();
 
-		if (ratings.size() > 0) {
-			wd.ratings = ratings;
-		}
+        wd.importer = productNode.getWineImporter();
 
-		if (productNode.hasWineOtherRatings()) {
-			// ??
-		}
-		
-		data.setWineData(wd);
-		return data;
-	}
+        wd.agingNotes = productNode.getWineAging();
+
+        wd.alcoholGrade = productNode.getWineAlchoholContent();
+
+        // reviews
+        List<WineRating> ratings = new ArrayList<WineRating>();
+        if (productNode.getWineRating1() != null && productNode.getWineRating1().size() > 0) {
+            WineRating r = processWineRating(productNode.getWineRating1(), user, productNode.getWineReview1());
+            if (r != null) {
+                ratings.add(r);
+            }
+        }
+        if (productNode.getWineRating2() != null && productNode.getWineRating2().size() > 0) {
+            WineRating r = processWineRating(productNode.getWineRating2(), user, productNode.getWineReview2());
+            if (r != null) {
+                ratings.add(r);
+            }
+        }
+        if (productNode.getWineRating3() != null && productNode.getWineRating3().size() > 0) {
+            WineRating r = processWineRating(productNode.getWineRating3(), user, productNode.getWineReview3());
+            if (r != null) {
+                ratings.add(r);
+            }
+        }
+
+        if (ratings.size() > 0) {
+            wd.ratings = ratings;
+        }
+
+        if (productNode.hasWineOtherRatings()) {
+            // ??
+        }
+
+        data.setWineData(wd);
+        return data;
+    }
 
     private static void populateProductDescription(ProductExtraData data, FDUserI user, MediaI media) {
         String productDescription = null;
@@ -1057,117 +1059,115 @@ public class ProductExtraDataPopulator {
         data.setProductDescription(productDescription);
     }
 
+    private static WineRating processWineRating(List<DomainValue> wineRatingDomainValues, FDUserI user, Html reviewMedia) {
+        if (wineRatingDomainValues == null || wineRatingDomainValues.size() == 0)
+            return null;
 
-	private static WineRating processWineRating(List<DomainValue> wineRatingDomainValues, FDUserI user, Html reviewMedia) {
-		if (wineRatingDomainValues == null || wineRatingDomainValues.size() == 0)
-			return null;
-		
-		WineRating wineRating = new WineRating();
-		// pick only the first rating
-		DomainValue domainValue = wineRatingDomainValues.get(0);
-		wineRating.reviewer = domainValue.getDomainName();
-		wineRating.rating = domainValue.getValue();
-		wineRating.ratingKey = domainValue.getContentName();
-		wineRating.iconPath = "/media/editorial/win_"+WineUtil.getWineAssociateId().toLowerCase()+"/icons/rating_small/" + domainValue.getContentName() + ".gif";
+        WineRating wineRating = new WineRating();
+        // pick only the first rating
+        DomainValue domainValue = wineRatingDomainValues.get(0);
+        wineRating.reviewer = domainValue.getDomainName();
+        wineRating.rating = domainValue.getValue();
+        wineRating.ratingKey = domainValue.getContentName();
+        wineRating.iconPath = "/media/editorial/win_" + WineUtil.getWineAssociateId().toLowerCase() + "/icons/rating_small/" + domainValue.getContentName() + ".gif";
 
-		if (reviewMedia != null) {
-			TitledMedia tm = (TitledMedia)reviewMedia;
-			try {
-				wineRating.media = fetchMedia(tm.getPath(), user, false);
-			} catch (IOException e) {
-				LOG.error("Failed to fetch wine rating media " + tm.getPath(), e);
-			} catch (TemplateException e) {
-				LOG.error("Failed to fetch wine rating media " + tm.getPath(), e);
-			}
-		}
-		
-		return wineRating;
-	}
+        if (reviewMedia != null) {
+            TitledMedia tm = (TitledMedia) reviewMedia;
+            try {
+                wineRating.media = fetchMedia(tm.getPath(), user, false);
+            } catch (IOException e) {
+                LOG.error("Failed to fetch wine rating media " + tm.getPath(), e);
+            } catch (TemplateException e) {
+                LOG.error("Failed to fetch wine rating media " + tm.getPath(), e);
+            }
+        }
 
-	private static String fetchMedia(String mediaPath, FDUserI user, boolean quoted) throws IOException, TemplateException {
-		if (mediaPath == null)
-			return null;
+        return wineRating;
+    }
 
-		Map<String,Object> parameters = new HashMap<String,Object>();
-		
-		/* pass user/sessionUser by default, so it doesn't need to be added every place this tag is used. */
-		parameters.put("user", user);
-		parameters.put("sessionUser", user);
-		
-		StringWriter out = new StringWriter();
-				
-		MediaUtils.render(mediaPath, out, parameters, false, 
-				user != null && user.getUserContext().getPricingContext() != null ? user.getUserContext().getPricingContext() : PricingContext.DEFAULT);
+    private static String fetchMedia(String mediaPath, FDUserI user, boolean quoted) throws IOException, TemplateException {
+        if (mediaPath == null)
+            return null;
 
-		String outString = out.toString();
-		
-		//fix media if needed
-		outString = MediaUtils.fixMedia(outString);
-		
-		return quoted ? JSONObject.quote( outString ) : outString;
-	}
-	
-	public static  ProductExtraData populateClaimsDataForMobile(ProductExtraData data, FDUserI user,
-			ProductModel productNode, String grpId, String grpVersion) throws FDResourceException, FDSkuNotFoundException {
-			return 	populateClaimsData(data, user, productNode, grpId, grpVersion);
-	}
-	
-	private static ProductExtraData populateClaimsData(ProductExtraData data, FDUserI user,
-			ProductModel productNode, String grpId, String grpVersion) throws FDResourceException, FDSkuNotFoundException {
-		
-		// organic claims
-		{
-			@SuppressWarnings("unchecked")
-			Set<EnumOrganicValue> commonOrgs = productNode.getCommonNutritionInfo(ErpNutritionInfoType.ORGANIC);
-			if (!commonOrgs.isEmpty()) {
-				List<String> aList = new ArrayList<String>(commonOrgs.size());
-				for (EnumOrganicValue claim : commonOrgs) {
-					if(!EnumOrganicValue.getValueForCode("NONE").equals(claim)) {
-						//Changed for APPDEV-705
+        Map<String, Object> parameters = new HashMap<String, Object>();
 
-						//check for different text than what Enum has (Enum shows in ERPSy-Daisy)
-						if(EnumOrganicValue.getValueForCode("CERT_ORGN").equals(claim)){
-							// %><div>&bull; Organic</div><%
-							aList.add("Organic");
-						}else{
-							//don't use empty
-							if ( !"".equals(claim.getName()) ) {
-								// %><div>&bull; <%= claim.getName() %></div><%
-								aList.add(claim.getName());
-							}
-						}
-					}
-				}
+        /* pass user/sessionUser by default, so it doesn't need to be added every place this tag is used. */
+        parameters.put("user", user);
+        parameters.put("sessionUser", user);
 
-				data.setOrganicClaims(aList);
-			}
-		}
+        StringWriter out = new StringWriter();
 
+        MediaUtils.render(mediaPath, out, parameters, false,
+                user != null && user.getUserContext().getPricingContext() != null ? user.getUserContext().getPricingContext() : PricingContext.DEFAULT);
 
-		// claims
-		{
-			@SuppressWarnings("unchecked")
-			Set<EnumClaimValue> common = productNode.getCommonNutritionInfo(ErpNutritionInfoType.CLAIM);
-			if (!common.isEmpty()) {
-				List<String> aList = new ArrayList<String>(common.size());
-				for (EnumClaimValue claim : common) {
-					if (!EnumClaimValue.getValueForCode("NONE").equals(claim) && !EnumClaimValue.getValueForCode("OAN").equals(claim)) {
-						//Changed for APPDEV-705
+        String outString = out.toString();
 
-						//check for different text than what Enum has (Enum shows in ERPSy-Daisy)
-						if(EnumClaimValue.getValueForCode("FR_ANTI").equals(claim)){
-							// %><div>&bull; Raised Without Antibiotics</div><%
-							aList.add("Raised Without Antibiotics");
-						}else{
-							// %><div style="margin-left:8px; text-indent: -8px;">&bull; <%= claim %></div><%
-							aList.add(claim.toString());
-						}
-					}
-				}
-				data.setClaims(aList);
-			}
-		}
-		return data;
-	}
+        // fix media if needed
+        outString = MediaUtils.fixMedia(outString);
+
+        return quoted ? JSONObject.quote(outString) : outString;
+    }
+
+    public static ProductExtraData populateClaimsDataForMobile(ProductExtraData data, FDUserI user, ProductModel productNode, String grpId, String grpVersion)
+            throws FDResourceException, FDSkuNotFoundException {
+        return populateClaimsData(data, user, productNode, grpId, grpVersion);
+    }
+
+    private static ProductExtraData populateClaimsData(ProductExtraData data, FDUserI user, ProductModel productNode, String grpId, String grpVersion)
+            throws FDResourceException, FDSkuNotFoundException {
+
+        // organic claims
+        {
+            @SuppressWarnings("unchecked")
+            Set<EnumOrganicValue> commonOrgs = productNode.getCommonNutritionInfo(ErpNutritionInfoType.ORGANIC);
+            if (!commonOrgs.isEmpty()) {
+                List<String> aList = new ArrayList<String>(commonOrgs.size());
+                for (EnumOrganicValue claim : commonOrgs) {
+                    if (!EnumOrganicValue.getValueForCode("NONE").equals(claim)) {
+                        // Changed for APPDEV-705
+
+                        // check for different text than what Enum has (Enum shows in ERPSy-Daisy)
+                        if (EnumOrganicValue.getValueForCode("CERT_ORGN").equals(claim)) {
+                            // %><div>&bull; Organic</div><%
+                            aList.add("Organic");
+                        } else {
+                            // don't use empty
+                            if (!"".equals(claim.getName())) {
+                                // %><div>&bull; <%= claim.getName() %></div><%
+                                aList.add(claim.getName());
+                            }
+                        }
+                    }
+                }
+
+                data.setOrganicClaims(aList);
+            }
+        }
+
+        // claims
+        {
+            @SuppressWarnings("unchecked")
+            Set<EnumClaimValue> common = productNode.getCommonNutritionInfo(ErpNutritionInfoType.CLAIM);
+            if (!common.isEmpty()) {
+                List<String> aList = new ArrayList<String>(common.size());
+                for (EnumClaimValue claim : common) {
+                    if (!EnumClaimValue.getValueForCode("NONE").equals(claim) && !EnumClaimValue.getValueForCode("OAN").equals(claim)) {
+                        // Changed for APPDEV-705
+
+                        // check for different text than what Enum has (Enum shows in ERPSy-Daisy)
+                        if (EnumClaimValue.getValueForCode("FR_ANTI").equals(claim)) {
+                            // %><div>&bull; Raised Without Antibiotics</div><%
+                            aList.add("Raised Without Antibiotics");
+                        } else {
+                            // %><div style="margin-left:8px; text-indent: -8px;">&bull; <%= claim %></div><%
+                            aList.add(claim.toString());
+                        }
+                    }
+                }
+                data.setClaims(aList);
+            }
+        }
+        return data;
+    }
 
 }
