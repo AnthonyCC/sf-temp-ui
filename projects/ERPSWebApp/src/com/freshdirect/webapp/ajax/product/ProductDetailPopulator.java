@@ -624,7 +624,7 @@ public class ProductDetailPopulator {
 			data.setAlcoholic( isAlcoholic( product, fdProduct ) );
 			data.setUsq( isUsq( product, fdProduct ) );
 		} catch (Exception ignore) {
-			LOG.debug( "Failed to set alcoholic and usq flags" + ignore.getMessage() );
+            LOG.debug("Failed to set alcoholic and usq flags " + ignore.getMessage());
 			// ignore any errors
 		}
 
@@ -696,11 +696,6 @@ public class ProductDetailPopulator {
 		item.setHasTerms( productModel.hasTerms() );
 		item.setDiscontinued(productModel.isDiscontinued());
 		item.setOutOfSeason(productModel.isOutOfSeason());
-
-		//Redundant - Its already populated in 'populateBasicProductData()' call prior to calling this method 'populateProductData()'.
-		/*if(StandingOrderHelper.isEligibleForSo3_0(user)){
-			item.setSoData(StandingOrderHelper.getAllSoData(user,true,false));
-		}*/
         item.setNewProduct(productModel.isNew());
 
 		populateAvailable(item, user, productModel);
