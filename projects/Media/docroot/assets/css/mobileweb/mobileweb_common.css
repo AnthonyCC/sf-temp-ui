@@ -3040,3 +3040,43 @@ form.dispblock-fields td { /* force the tds to block so the label and field are 
         width:100%;
         margin-top:4px;
     }
+    /* FAVORITES TEST*/
+	    /* with a left nav */
+	    nav.leftnav~section.content {
+			width: 100%;
+			/* margin-left: 10px; */
+		}
+		section.main {
+			margin: 0;
+		}
+		section.main .leftnav h2 {
+			font-size: 12px;
+			font-weight: bold;
+		}
+		section.main:before {
+			width: 0;
+			top: 25px;
+			border: 0;
+		}
+		section.main .leftnav {
+			position: absolute;
+			z-index: 100;
+			padding: 0;
+			margin: 0;
+			border-bottom: 1px solid #dce6be;
+			top: 47px;
+		}
+		section.main .leftnav .menuBox {
+			margin-top: 0;
+			padding: 3px;
+		}
+		[data-component="menu"] {
+			margin: 5px;
+		}
+		.refine-btn-cont {
+			background: #f0f5e1;
+			border: 1px solid #dce6be;
+			padding: 5px;
+		}
+		.refine-btn {
+		}
