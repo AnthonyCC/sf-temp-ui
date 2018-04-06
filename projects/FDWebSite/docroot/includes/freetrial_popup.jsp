@@ -21,6 +21,9 @@
 	        		errorMessagePopup += '<div class="error-text">' + message.MESSAGE + '</div>';
 	        		if($jq(".ui-dialog:visible .dpn").length > 0){
 	        			errorMessagePopup += '<a dpfreetrial-close-popup class="error-button cssbutton cssbutton-flat green" href="#">Continue Shopping</a></div>';
+	        			$jq(".overlay-dialog-new .dpn").on("click", "[dpfreetrial-close-popup]", function(){
+	        				$jq("#uimodal-output").dialog("close");
+	        			});
 	        		} else {
 	        			errorMessagePopup += '<a class="error-button cssbutton cssbutton-flat green" href="/">Continue Shopping</a></div>';
 	        		}
@@ -38,6 +41,9 @@
 	        				successMessagePopup += '<div class="dpn-success-text"><p>Your DeliveryPass<sup>&reg;</sup> trial will activate on your next purchase.</br>Visit your DeliveryPass<sup>&reg;</sup> Settings for more details.</br>Get ready to save!</p></div>';
 	        				successMessagePopup += '<div class="dpn-success-a"><a dpfreetrial-close-popup href="#" class="dpn-success-start-shopping cssbutton cssbutton-flat orange">Start Saving</a></div><div class="dpn-success-setting"><a href="/your_account/delivery_pass.jsp">DeliveryPass<sup>&reg;</sup> Settings</a></div></div></div></div>';
 	        				doOverlayDialogByHtmlNew(successMessagePopup);
+	        				$jq(".overlay-dialog-new .dpn").on("click", "[dpfreetrial-close-popup]", function(){
+	        					$jq("#uimodal-output").dialog("close");
+	        				});
 	        		} else {
 	        			window.location.href = "/freetrialsuccess.jsp";
 	        		}
@@ -72,7 +78,6 @@
 		});
 	});
 	$jq(".overlay-dialog-new .dpn").on("click", "[dpfreetrial-terms]", function(){
-		console.log("Terms");
 		pop("/shared/template/generic_popup.jsp?contentPath=/media/editorial/picks/deliverypass/dp_tc.html&windowSize=large&name=Delivery Pass Information',400,560,alt='Delivery Pass Information");
 	});
 	$jq(".overlay-dialog-new .dpn").on("click", "[dpfreetrial-close-popup]", function(){
