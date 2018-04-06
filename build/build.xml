@@ -2986,7 +2986,7 @@
 
 			<!-- FD classes -->
 			<zipfileset src="${work.dir}/Framework.jar" />
-			<zipfileset src="${work.dir}/ERPServicesEJB-WL.jar" excludes="META-INF/*" />
+			<zipfileset src="${work.dir}/ERPServicesEJB-WL.jar" excludes="META-INF/*, com/freshdirect/fdstore/*Cache*" />
 			<zipfileset src="${work.dir}/DeliveryEJB-WL.jar" excludes="META-INF/*" />
 			<zipfileset src="${work.dir}/cmseue.jar" excludes="META-INF/*" />
 			<zipfileset src="${work.dir}/StoreAPI.jar" excludes="META-INF/*" />
