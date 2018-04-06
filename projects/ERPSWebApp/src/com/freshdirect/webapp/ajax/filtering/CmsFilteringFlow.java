@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.CharEncoding;
 import org.apache.log4j.Logger;
@@ -72,6 +73,7 @@ import com.freshdirect.webapp.ajax.browse.data.BrowseDataContext;
 import com.freshdirect.webapp.ajax.browse.data.BrowseDataContextService;
 import com.freshdirect.webapp.ajax.browse.data.CmsFilteringFlowResult;
 import com.freshdirect.webapp.ajax.browse.data.MenuBoxData;
+import com.freshdirect.webapp.ajax.browse.data.MySaleItemsData;
 import com.freshdirect.webapp.ajax.browse.data.NavDepth;
 import com.freshdirect.webapp.ajax.browse.data.NavigationModel;
 import com.freshdirect.webapp.ajax.browse.data.PagerData;
@@ -1516,6 +1518,88 @@ public class CmsFilteringFlow {
         }
         return hlProductDataList;
     }
+    
+    public MySaleItemsData getSaleItems(HttpServletRequest request,
+			FDUserI user, CmsFilteringNavigator navigator, boolean isMobile) throws Exception {
+    	double ratingBaseLine = 4;
+		double popularityBaseLine = 10000;
+		double dealsBaseLine = 20;
+		boolean considerNew = false;
+		boolean considerBackInStock = false;
+		boolean sortProducts = true;
+		int maxNoOfProducts = 50;
+    	try {
+	    	if(isMobile){
+	    		return getSaleItemsMobile(request, user, navigator, ratingBaseLine, dealsBaseLine, popularityBaseLine,
+							considerNew, considerBackInStock, sortProducts, maxNoOfProducts); 
+	    	} else {
+	    		return getSaleItemsWeb(request, user, navigator, ratingBaseLine, dealsBaseLine, popularityBaseLine,
+							considerNew, considerBackInStock, sortProducts, maxNoOfProducts);
+	    	}
+    	} catch(Exception e){
+    		throw e;
+    	}
+    }
+    
+    public MySaleItemsData getSaleItemsMobile(HttpServletRequest request,
+			FDUserI user, CmsFilteringNavigator navigator, double ratingBaseLine, double dealsBaseLine, double popularityBaseLine
+			, boolean considerNew, boolean considerBackInStock, boolean sortProducts, int maxNoOfProducts)
+			throws InvalidFilteringArgumentException, FDResourceException {
+		
+		ratingBaseLine = navigator.getRatingBaseLine();
+		dealsBaseLine = navigator.getDealsBaseLine();
+		popularityBaseLine = navigator.getPopularityBaseLine();
+		considerNew = navigator.isConsiderNew();
+		considerBackInStock = navigator.isConsiderBackInStock();
+		sortProducts = navigator.isSortProducts();
+		maxNoOfProducts = navigator.getMaxNoOfProducts();
+		
+		BrowseData browseData = getWeLoveYouLoveData(user, navigator, ratingBaseLine, dealsBaseLine, popularityBaseLine,
+													 	considerNew, considerBackInStock, sortProducts, maxNoOfProducts) ;
+		MySaleItemsData mySaleItemsData = new MySaleItemsData();
+		mySaleItemsData.setBrowsedata(browseData);
+		mySaleItemsData.setRatingBaseLine(ratingBaseLine);
+		mySaleItemsData.setDealsBaseLine(dealsBaseLine);
+		mySaleItemsData.setConsiderBackInStock(considerBackInStock);
+		return mySaleItemsData;
+	}
+    
+    public MySaleItemsData getSaleItemsWeb(HttpServletRequest request,
+			FDUserI user, CmsFilteringNavigator navigator, double ratingBaseLine, double dealsBaseLine, double popularityBaseLine
+			, boolean considerNew, boolean considerBackInStock, boolean sortProducts, int maxNoOfProducts)
+			throws InvalidFilteringArgumentException, FDResourceException {
+	
+		if(request.getParameter("rbl") != null) {
+			ratingBaseLine = Double.parseDouble(request.getParameter("rbl"));
+		}
+		if(request.getParameter("pbl") != null) {
+			popularityBaseLine = Double.parseDouble(request.getParameter("pbl"));
+		}
+		if(request.getParameter("dbl") != null) {
+			dealsBaseLine = Double.parseDouble(request.getParameter("dbl"));
+		}
+		if(request.getParameter("cn") != null) {
+			considerNew = Boolean.parseBoolean(request.getParameter("cn"));
+		}
+		if(request.getParameter("cbis") != null) {
+			considerBackInStock = Boolean.parseBoolean(request.getParameter("cbis"));
+		}
+		if(request.getParameter("sp") != null) {			
+			sortProducts = Boolean.parseBoolean(request.getParameter("sp"));
+		}
+		if(request.getParameter("mnp") != null) {			
+			maxNoOfProducts = Integer.parseInt(request.getParameter("mnp"));
+		}
+			
+		BrowseData browseData = getWeLoveYouLoveData(user, navigator, ratingBaseLine, dealsBaseLine, popularityBaseLine,
+														considerNew, considerBackInStock, sortProducts, maxNoOfProducts) ;
+		MySaleItemsData mySaleItemsData = new MySaleItemsData();
+		mySaleItemsData.setBrowsedata(browseData);
+		mySaleItemsData.setRatingBaseLine(ratingBaseLine);
+		mySaleItemsData.setDealsBaseLine(dealsBaseLine);
+		mySaleItemsData.setConsiderBackInStock(considerBackInStock);
+		return mySaleItemsData;
+	}
 
   //Method added as part of FDLabs of Aggregated Customer and Global Favorites page, will be soon integrated with browse.jsp
 	public BrowseData getWeLoveYouLoveData(FDUserI user, CmsFilteringNavigator nav, double ratingBaseLine

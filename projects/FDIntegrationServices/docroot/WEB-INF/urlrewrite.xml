@@ -968,6 +968,10 @@
 		<to last="true">/browse.do?action=getCategoriesSortDetail&amp;browseTerm=$2&amp;ver=$1</to>
 	</rule>
 	<rule>
+		<from>^/v/([0-9]+)/browse/getsaleitems/(.*)</from>
+		<to last="true">/browse.do?action=getSaleItems&amp;browseTerm=$2&amp;ver=$1</to>
+	</rule>
+	<rule>
 		<from>^/v/([0-9]+)/browse/sortoptionsforcategory/(.*)</from>
 		<to last="true">/browse.do?action=getSortOptionsForCategory&amp;&amp;ver=$1</to>
 	</rule>
