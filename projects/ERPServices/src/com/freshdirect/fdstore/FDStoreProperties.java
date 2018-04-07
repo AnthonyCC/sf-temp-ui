@@ -1039,6 +1039,7 @@ public class FDStoreProperties {
 	public final static String FDSTORE_DB_NEW_PRODUCTS_MATERIALIZEDVIEW_V2_ENABLED = "fdstore.db.new.products.materializedview.v2.enabled";
 	
 
+	public final static String PROP_IS_FDC_FIRST_ORDER_EMAIL_MSG_ENABLED = "fdstore.fdc.firstorderemailmsg.enabled";
  	static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_INIT_CTX_FACTORY, "weblogic.jndi.WLInitialContextFactory");
@@ -1986,6 +1987,8 @@ public class FDStoreProperties {
 		defaults.put(FDSTORE_DB_NEW_PRODUCTS_MATERIALIZEDVIEW_V2_ENABLED, "false");
 		
 
+		
+		defaults.put(PROP_IS_FDC_FIRST_ORDER_EMAIL_MSG_ENABLED, "false");
 		
         refresh();
     }
@@ -5026,6 +5029,10 @@ public class FDStoreProperties {
 		return Integer.parseInt(get(FD_HOME_CRITEO_CACHE_REFRESH_MIN));
 	}
 	
+	public static boolean isFdcFirstOrderEmailMsgEnabled() {
+		return (Boolean.valueOf(get(PROP_IS_FDC_FIRST_ORDER_EMAIL_MSG_ENABLED))).booleanValue();
+	}
+
 	//appdev 6760 new mat view tunable via sub table.
 	public static boolean isNewProdMatViewV2Enabled() {
 		return (Boolean.valueOf(get(FDSTORE_DB_NEW_PRODUCTS_MATERIALIZEDVIEW_V2_ENABLED))).booleanValue();

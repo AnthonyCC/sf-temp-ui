@@ -392,7 +392,10 @@ public interface FDCustomerManagerSB  extends EJBObject{
 		boolean sendEmail,
 		CustomerRatingI cra,
 		CrmAgentRole agentRole,
-		EnumDlvPassStatus status, boolean isFriendReferred)
+		EnumDlvPassStatus status,
+		boolean isFriendReferred,
+		int fdcOrderCount
+	)
 		throws FDResourceException,
 		ErpFraudException,
 		ErpAuthorizationException,
@@ -427,7 +430,10 @@ public interface FDCustomerManagerSB  extends EJBObject{
 		boolean sendEmail,
 		CustomerRatingI cra,
 		CrmAgentRole agentRole,
-		EnumDlvPassStatus status,boolean hasCoupons)
+		EnumDlvPassStatus status,
+		boolean hasCoupons,
+		int fdcOrderCount
+	)
 		throws FDResourceException,
 		ErpFraudException,
 		ErpAuthorizationException,

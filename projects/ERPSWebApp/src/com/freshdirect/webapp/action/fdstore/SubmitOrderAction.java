@@ -599,6 +599,8 @@ public class SubmitOrderAction extends WebActionSupport {
 			//List selectedGiftCards = user.getGiftCardList().getSelectedGiftcards();
 			//cart.setSelectedGiftCards(selectedGiftCards);
 			String taxationType = request.getAttribute("TAXATION_TYPE")!=null?request.getAttribute("TAXATION_TYPE").toString():"";
+
+			int fdcOrderCount = (FDStoreProperties.isFdcFirstOrderEmailMsgEnabled()) ? user.getOrderHistory().getValidOrderCount("1400") : -1;
 			
 			if (cart instanceof FDModifyCartModel) {
 				// modify order
@@ -622,7 +624,11 @@ public class SubmitOrderAction extends WebActionSupport {
 					info,
 					modCart,
 					appliedPromos,
-					sendEmail, cra, status,false
+					sendEmail,
+					cra, 
+					status,
+					false,
+					fdcOrderCount
 				);
 				modifying = true;
 	            //The previous recommendations of the current user need to be removed.
@@ -637,7 +643,8 @@ public class SubmitOrderAction extends WebActionSupport {
 				if(user.getOrderHistory().getTotalOrderCount() <=0){
 					isFirstOrder= true;
 				}
-				orderNumber = FDCustomerManager.placeOrder(info, cart, appliedPromos, sendEmail,cra,status ,isFriendReferred);
+				
+				orderNumber = FDCustomerManager.placeOrder(info, cart, appliedPromos, sendEmail,cra,status ,isFriendReferred, fdcOrderCount);
 			    //[APPDEV-4574]-Auto optin for emails, if its customer's first order.
 				if(isFirstOrder){
 					FDCustomerManager.storeEmailPreferenceFlag(user.getIdentity().getFDCustomerPK(), "X",user.getUserContext().getStoreContext().getEStoreId());

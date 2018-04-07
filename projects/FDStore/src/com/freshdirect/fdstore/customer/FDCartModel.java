@@ -2249,14 +2249,4 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		this.donationSampleProducts = donationProducts;
 	}
 
-    public double calculateAggregatedQuantityBySku(String skucode) {
-        double sumQuantity = 0d;
-        for (FDCartLineI orderLine : orderLines) {
-            if (orderLine.getSkuCode().equals(skucode)){
-                sumQuantity += orderLine.getQuantity();
-            }
-        }
-        return sumQuantity;
-    }
-
 }

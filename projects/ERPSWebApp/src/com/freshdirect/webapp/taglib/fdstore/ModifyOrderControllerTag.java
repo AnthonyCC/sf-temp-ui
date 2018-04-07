@@ -54,6 +54,7 @@ import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -820,6 +821,9 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 						appliedPromos = user.getPromotionEligibility().getAppliedPromotionCodes();; 
 					}
 					modCart.refreshAll(true);
+					
+
+					int fdcOrderCount = (FDStoreProperties.isFdcFirstOrderEmailMsgEnabled()) ? user.getOrderHistory().getValidOrderCount("1400") : -1;
 					FDCustomerManager.modifyOrder(AccountActivityUtil.getActionInfo(session), modCart, appliedPromos, false,cra, user.getDeliveryPassStatus(),false);
 
 				}

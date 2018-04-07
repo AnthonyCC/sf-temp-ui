@@ -2,8 +2,10 @@ package com.freshdirect.fdstore.customer;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.context.FulfillmentContext;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.CatalogKey;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.customer.ErpDeliveryPlantInfoModel;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
@@ -31,10 +33,15 @@ public class FDUserUtil {
 		ErpDeliveryPlantInfoModel delPlantInfo=new ErpDeliveryPlantInfoModel();
 		if(null == userContext){
 			LOGGER.warn(" UserContext is null ");
-		}else if(null == userContext.getFulfillmentContext()){
-			LOGGER.warn(" FulfillmentContext is null ");
+		}else { 
+			if(null == userContext.getFulfillmentContext()){
+				LOGGER.warn(" FulfillmentContext is null ");
+			}
+			if(null == userContext.getPricingContext()){
+				LOGGER.warn(" PricingContext is null ");
+			}
 		}
-		if(null !=userContext){ //TODO: Populate it with default values if usercontext is null.
+		if(null !=userContext && null !=userContext.getFulfillmentContext() && null !=userContext.getPricingContext()){ //TODO: Populate it with default values.
 			delPlantInfo.setPlantId(userContext.getFulfillmentContext().getPlantId());
 			delPlantInfo.setSalesOrg(userContext.getPricingContext().getZoneInfo().getSalesOrg());
 			delPlantInfo.setDistChannel(userContext.getPricingContext().getZoneInfo().getDistributionChanel());

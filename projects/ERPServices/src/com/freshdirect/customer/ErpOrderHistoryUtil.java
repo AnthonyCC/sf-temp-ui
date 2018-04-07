@@ -122,6 +122,18 @@ public class ErpOrderHistoryUtil {
         }
         return count;
     }
+    
+    public static int getValidOrderCount(Collection<ErpSaleInfo> erpSaleInfos, String salesOrg) {
+        int count = 0;
+		if(null != salesOrg){
+	        for (ErpSaleInfo saleInfo : erpSaleInfos) {
+	            if ((salesOrg.equals(saleInfo.getSalesOrg())) && !saleInfo.getStatus().isCanceled()) {
+	                count++;
+	            }
+	        }
+		}
+        return count;
+    }
 
 	public static int getValidPhoneOrderCount(Collection erpSaleInfos){
 		int ret = 0;
