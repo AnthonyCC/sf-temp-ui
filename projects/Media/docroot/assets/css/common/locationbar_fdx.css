@@ -148,10 +148,12 @@
 		display: inline-block;
 		float: right;
 	}
-	#popupcart .save-amount{
+	#popupcart .footer .save-amount{
+	    float: right;
 	    padding-right: 50px;
+	    font-size: 13px;
 	    color: #DF0000;
-        padding-top: 5px;
+	    padding-top: 0;
 	}
 
 	[data-component="subtotal"], .subtotal {

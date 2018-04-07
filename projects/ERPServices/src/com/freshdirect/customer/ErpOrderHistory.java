@@ -109,6 +109,11 @@ public class ErpOrderHistory implements OrderHistoryI {
     public int getValidOrderCount(EnumDeliveryType deliveryType){
 		return ErpOrderHistoryUtil.getValidOrderCount(erpRegSaleInfos,deliveryType);
 	}
+	
+	@Override
+    public int getValidOrderCount(String salesOrg){
+		return ErpOrderHistoryUtil.getValidOrderCount(erpRegSaleInfos, salesOrg);
+	}
 
     @Override
     public int getValidOrderCount(EnumEStoreId storeId) {

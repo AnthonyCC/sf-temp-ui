@@ -164,6 +164,11 @@
 							FreshDirect<br/>
 							<xsl:choose><xsl:when test="order/deliveryType != 'C'">Customer Service Group</xsl:when><xsl:otherwise>Corporate Services Group</xsl:otherwise></xsl:choose></p>
 							
+							<xsl:comment>fdcOrderCount is CURRENT (so confirm is called DURING place, so it's 0 during first order)</xsl:comment>
+							<xsl:if test="customer/fdcOrderCount = 0 and order/deliveryInfo/deliveryPlantInfo/salesOrg = '1400'">
+								<div style="margin: 20px 0; padding: 10px;"><a href="https://www.freshdirect.com/recycle" style="text-decoration: none; border: 0;"><img src="https://www.freshdirect.com/media/images/email/boxes_to_bags/banner.jpg" alt="We're switching from boxes to bags. A fresh new look! Learn more" style="border: 0;" /></a></div>
+							</xsl:if>
+							
 							<xsl:if test="order/deliveryType = 'H' and customer/numberOfOrders &gt; 1">
 									<p><a target="_blank" href="https://refer.freshdirect.com/orderconfirmemail2525"><img src="https://www.freshdirect.com/media/images/promotions/raf/RAF_email_216x42.jpg" alt="Refer A Friend" /></a></p>
 							</xsl:if>

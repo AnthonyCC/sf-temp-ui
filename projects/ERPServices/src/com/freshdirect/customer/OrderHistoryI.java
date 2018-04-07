@@ -64,4 +64,6 @@ public interface OrderHistoryI extends Serializable {
 	public boolean hasSettledOrders(EnumEStoreId estoreId);
 
 	public int getSettledOrderCount(EnumEStoreId estoreId);
+
+	public int getValidOrderCount(String salesOrg);
 }
