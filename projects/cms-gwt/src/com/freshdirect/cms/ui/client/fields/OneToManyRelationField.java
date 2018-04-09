@@ -126,7 +126,7 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 
             if (contentTypes.isEmpty()) {
                 // ALERT
-                MessageBox.alert("Operation Denied", "You're not allowed to create content node", null);
+                MessageBox.alert("Operation Denied", "You're not allowed to create content nodes", null);
                 return;
             } else if (contentTypes.size() == 1) {
                 generateUniqueIdForType(contentTypes.iterator().next());

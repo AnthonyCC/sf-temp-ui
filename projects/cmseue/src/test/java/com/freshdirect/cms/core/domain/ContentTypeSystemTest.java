@@ -38,7 +38,8 @@ import com.google.common.collect.ImmutableSet;
 public class ContentTypeSystemTest {
 
     // content types known to have no declared attributes in CMS
-    private final Set<ContentType> KNOWN_EMPTY_TYPES = ImmutableSet.<ContentType> of(ErpMaterial, ErpClass, ErpCharacteristic, ErpCharacteristicValue, ErpSalesUnit, CmsQuery, CmsReport);
+    private final Set<ContentType> KNOWN_EMPTY_TYPES =
+            ImmutableSet.<ContentType>of(ErpMaterial, ErpClass, ErpCharacteristic, ErpCharacteristicValue, ErpSalesUnit, CmsQuery, CmsReport);
 
     @Autowired
     private ContentTypeInfoService contentTypeInfoService;

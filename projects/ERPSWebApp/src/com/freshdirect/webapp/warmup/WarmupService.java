@@ -45,12 +45,12 @@ public class WarmupService {
     public void repeatWarmup() {
     	
         if (!isManualWarmupAllowed()) {
-            LOGGER.info("Manual warmup is not allowed, not starting warmup!");
+            LOGGER.info("[WARMUP] Manual warmup is not allowed, not starting warmup!");
             return;
         }
 
         if (Warmup.WARMUP_STATE.compareAndSet(WarmupState.NOT_TRIGGERED, WarmupState.IN_PROGRESS) || Warmup.WARMUP_STATE.compareAndSet(WarmupState.FAILED, WarmupState.IN_PROGRESS)) {
-            LOGGER.info("Starting warmup-thread");
+            LOGGER.info("[WARMUP] Starting warmup-thread");
             new Thread("warmup-thread") {
                 @Override
                 public void run() {
@@ -60,25 +60,39 @@ public class WarmupService {
                 };
             }.start();
         } else if (CmsServiceLocator.contentProviderService().isReadOnlyContent() && Warmup.WARMUP_STATE.compareAndSet(WarmupState.FINISHED, WarmupState.IN_PROGRESS)) {
-            LOGGER.info("Starting warmup-repeat-thread");
+            LOGGER.info("[WARMUP] Starting warmup-repeat-thread");
             new Thread("warmup-repeat-thread") {
                 @Override
                 public void run() {
+                    LOGGER.info("[WARMUP] Evicting caches");
                     WarmupReloadableCacheAdapter.defaultService().evictCaches();
+                    LOGGER.info("[WARMUP] Caches evicted.");
+                    
+                    LOGGER.info("[WARMUP] Reloading contentprovider service");
                     CmsServiceLocator.contentProviderService().initializeContent();
+                    LOGGER.info("[WARMUP] Contentprovider service reloaded");
+                    
+                    LOGGER.info("[WARMUP] Reloading media service");
                     CmsServiceLocator.mediaService().loadAll();
+                    LOGGER.info("[WARMUP] Media service reloaded");
+                    
                     try {
+                        LOGGER.info("[WARMUP] Closing lucene index searcher");
                         CmsServiceLocator.luceneManager().closeAllIndexSearcher();
+                        LOGGER.info("[WARMUP] Lucene index searcher closed");
                     } catch (IOException e) {
-                        LOGGER.error("Closing Index searchers failed.", e);
+                        LOGGER.error("[WARMUP] Closing Index searchers failed.", e);
                     }
+                    
+                    LOGGER.info("[WARMUP] Starting repeat-warmup");
                     Warmup warmup = new Warmup();
                     warmup.repeatWarmup();
+                    LOGGER.info("[WARMUP] Repeat-warmup started");
                     //Warmup.WARMUP_STATE.set(WarmupState.FINISHED);
                 };
             }.start();
         } else {
-            LOGGER.info("NOT starting warmup!");
+            LOGGER.info("[WARMUP] NOT starting warmup!");
         }
     }
 

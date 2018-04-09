@@ -31,9 +31,7 @@ import com.freshdirect.cms.cache.CmsCaches;
 import com.freshdirect.cms.changecontrol.service.ContentChangeControlService;
 import com.freshdirect.cms.changecontrol.service.ContentNodeChangeResultSetExtractor;
 import com.freshdirect.cms.changecontrol.service.DatabaseChangeControlService;
-import com.freshdirect.cms.core.converter.ScalarValueToSerializedValueConverter;
-import com.freshdirect.cms.core.converter.SerializedScalarValueToObjectConverter;
-import com.freshdirect.cms.core.service.ContentKeyParentsCollectorService;
+import com.freshdirect.cms.contentvalidation.validator.TypeValidator;
 import com.freshdirect.cms.core.service.ContentProvider;
 import com.freshdirect.cms.core.service.ContentTypeInfoService;
 import com.freshdirect.cms.media.converter.MediaEntityToMediaConverter;
@@ -47,9 +45,6 @@ import com.freshdirect.cms.persistence.entity.converter.ScalarToAttributeEntityC
 import com.freshdirect.cms.persistence.repository.BatchSavingRepository;
 import com.freshdirect.cms.persistence.repository.NavigationTreeRepository;
 import com.freshdirect.cms.persistence.service.DatabaseContentProvider;
-import com.freshdirect.cms.validation.service.ValidatorService;
-import com.freshdirect.cms.validation.validator.KeyValidator;
-import com.freshdirect.cms.validation.validator.TypeValidator;
 
 @Configuration
 @EnableJpaRepositories({ "com.freshdirect.cms.persistence.repository", "com.freshdirect.cms.changecontrol.repository", "com.freshdirect.cms.media.repository" })
@@ -83,11 +78,6 @@ public class DatabaseTestConfiguration {
     }
 
     @Bean
-    public ContentKeyParentsCollectorService contentKeyParentsCollectorService() {
-        return new ContentKeyParentsCollectorService();
-    }
-
-    @Bean
     public AttributeEntityToValueConverter attributeEntityToValueConverter() {
         return new AttributeEntityToValueConverter();
     }
@@ -113,29 +103,13 @@ public class DatabaseTestConfiguration {
     }
 
     @Bean
-    public ValidatorService validatorService() {
-        return new ValidatorService();
-    }
-
-    @Bean
     public ContentChangeControlService contentChangeControlService() {
         return new DatabaseChangeControlService();
     }
 
     @Bean
-    public ScalarValueToSerializedValueConverter scalarValueToSerializedValueConverter() {
-        return new ScalarValueToSerializedValueConverter();
-
-    }
-
-    @Bean
     public TypeValidator typeValidator() {
         return new TypeValidator();
-    }
-
-    @Bean
-    public KeyValidator keyValidator() {
-        return new KeyValidator();
     }
 
     @Bean
@@ -145,11 +119,6 @@ public class DatabaseTestConfiguration {
                 new ConcurrentMapCache(CmsCaches.PARENT_KEYS_CACHE.cacheName),
                 new ConcurrentMapCache(CmsCaches.ATTRIBUTE_CACHE.cacheName)));
         return cacheManager;
-    }
-
-    @Bean
-    public SerializedScalarValueToObjectConverter coverter() {
-        return new SerializedScalarValueToObjectConverter();
     }
 
     @Bean

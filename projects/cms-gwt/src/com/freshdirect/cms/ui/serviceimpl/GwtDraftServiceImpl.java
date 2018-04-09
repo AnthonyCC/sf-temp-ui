@@ -21,6 +21,7 @@ import com.freshdirect.cms.draft.service.DraftService;
 import com.freshdirect.cms.draft.validation.service.DraftValidatorService;
 import com.freshdirect.cms.ui.editor.converter.DraftChangeToGwtDraftChangeConverter;
 import com.freshdirect.cms.ui.editor.permission.service.PersonaService;
+import com.freshdirect.cms.ui.editor.service.IndexingService;
 import com.freshdirect.cms.ui.model.GwtUser;
 import com.freshdirect.cms.ui.model.draft.GwtDraftChange;
 import com.freshdirect.cms.ui.service.GwtDraftService;
@@ -42,6 +43,7 @@ public class GwtDraftServiceImpl extends GwtServiceBase implements GwtDraftServi
     private DraftValidatorService draftValidatorService = CmsServiceLocator.getDraftValidatorService();
     private DraftMergeService draftMergeService = CmsServiceLocator.getDraftMergeService();
     private PersonaService personaService = EditorServiceLocator.personaService();
+    private IndexingService indexingService = EditorServiceLocator.indexingService();
 
     public GwtDraftServiceImpl() {
         super();
@@ -94,10 +96,19 @@ public class GwtDraftServiceImpl extends GwtServiceBase implements GwtDraftServi
         List<GwtDraftChange> gwtDraftChanges = processValidationResults(validationResultsByDraftChange);
 
         if (success) {
+            // start a search re-index asynchronously
+            new Thread(new AsyncSearchIndex()).start();
             personaService.invalidatePersona(getThreadLocalRequest().getUserPrincipal().getName());
         }
 
         return gwtDraftChanges;
+    }
+    
+    private class AsyncSearchIndex implements Runnable {
+        @Override
+        public void run() {
+            indexingService.indexAll();
+        }
     }
 
     private void validateUserActionForDraft(GwtUser user) {

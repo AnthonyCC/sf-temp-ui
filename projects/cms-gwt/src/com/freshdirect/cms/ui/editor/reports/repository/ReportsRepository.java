@@ -18,8 +18,6 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -31,20 +29,14 @@ import org.springframework.util.Assert;
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
-import com.freshdirect.cms.core.domain.RootContentKey;
 import com.freshdirect.cms.core.domain.builder.AttributeBuilder;
 import com.freshdirect.cms.ui.model.attributes.TableAttribute;
 
 @Repository
 public class ReportsRepository {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ReportsRepository.class);
-
-    private static final String QUERY_ORPHANS = "select id from cms_contentnode cn "
-            + "where contenttype_id not in (''Html'',''Image'',''Store'',''ErpCharacteristic'') "
-            + "and id not in (''{0}'',''{1}'') "
-            + "and not exists (select child_contentnode_id from cms_navtree where child_contentnode_id=cn.id)";
-
+    // TODO : remove remaining navtree references
+    
     private static final String QUERY_UNREACHABLE = "select id from cms_contentnode cn "
             + "where contenttype_id not in ('Html','Image','Store','ErpCharacteristic') "
             + "and id not in ('FDFolder:recipes') "
@@ -262,13 +254,6 @@ public class ReportsRepository {
     @Autowired
     private void setDataSource(DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
-    }
-
-    public List<ContentKey> fetchOrphanObjects() {
-        String query = MessageFormat.format(QUERY_ORPHANS, RootContentKey.RECIPES.contentKey.toString(), RootContentKey.SHARED_RESOURCES.contentKey.toString());
-        List<ContentKey> result = jdbcTemplate.query(query, CONTENT_KEY_MAPPER);
-
-        return result;
     }
 
     public List<ContentKey> fetchUnreachableStoreObjects() {

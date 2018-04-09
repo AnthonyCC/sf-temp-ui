@@ -1184,7 +1184,7 @@
 			<form fdform="checkout" action="#">
 				<p class='promotion-text'>Billing reference/Client code</p>
 				<div>
-					<input type="text" class="promotion-input" name="billingReference" value="{$billingReference ? $billingReference : ''}" placeholder="Enter here" />
+					<input type="text" aria-label="enter billing reference or client code" class="promotion-input" name="billingReference" value="{$billingReference ? $billingReference : ''}" placeholder="Enter here" />
 				</div>
 			</form>
 		</div>
@@ -1454,9 +1454,9 @@
 									
 			</div>
 			<div class="subtotal__rowcell-mid {if not $displayCheckout}cartetip-container{/if}">
-			<label for="tipDropdown">
+			<label for="ec_tipDropdown">
 				<span class="offscreen">Optional Tip:</span>
-				<select class="tipDropdown" name="tipAmount" data-component="changeETip" {if $customTip}style="display:none" aria-hidden="true"{/if} {if $isEBTused}disabled title="Disabled for EBT purchases"{/if}>
+				<select class="tipDropdown" id="ec_tipDropdown" name="tipAmount" data-component="changeETip" {if $customTip}style="display:none" aria-hidden="true"{/if} {if $isEBTused}disabled title="Disabled for EBT purchases"{/if}>
 					{foreach $option in $tipAmounts}
 						<option value="{$option}" {if ($customTip and $option == 'Other Amount') or ( ('$' + $etipTotal) == $option) or (($tipApplied == false) and $option == '$0')}selected{/if}>
 						{$option}</option>
@@ -1464,10 +1464,10 @@
 				</select>
 			</label>
 
-			<label for="tipTextBox">
+			<label for="ec_tipTextBox">
 				<span class="offscreen">Other Tip Amount:</span>
 									
-				<input type="text" class="tipTextBox" placeholder="0.00" name="otherTipAmount"
+				<input type="text" class="tipTextBox" id="ec_tipTextBox" placeholder="0.00" name="otherTipAmount"
 					{if not $customTip}style="display:none"{/if}
 					{if $etipTotal and $customTip}value="{$etipTotal}"{/if} {if $isEBTused}disabled title="Disabled for EBT purchases"{/if} data-component="tooltip"/>
 									

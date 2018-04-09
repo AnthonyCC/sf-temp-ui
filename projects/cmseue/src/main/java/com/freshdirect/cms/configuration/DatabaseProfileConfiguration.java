@@ -49,11 +49,11 @@ import com.zaxxer.hikari.HikariDataSource;
 @EnableAsync
 @EnableJpaRepositories({ "com.freshdirect.cms.persistence.repository", "com.freshdirect.cms.changecontrol.repository", "com.freshdirect.cms.media.repository" })
 @EnableTransactionManagement(proxyTargetClass = true)
-@ComponentScan(basePackages={"com.freshdirect.cms"},
-excludeFilters={
-    @ComponentScan.Filter(type=FilterType.ASSIGNABLE_TYPE, value=DraftPopulatorController.class),
-    @ComponentScan.Filter(type=FilterType.ASSIGNABLE_TYPE, value=NotificationReceiverController.class),
-    @ComponentScan.Filter(type=FilterType.ASSIGNABLE_TYPE, value=ChangePropagatorController.class)
+@ComponentScan(basePackages = {"com.freshdirect.cms"},
+    excludeFilters = {
+    @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = DraftPopulatorController.class),
+    @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = NotificationReceiverController.class),
+    @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = ChangePropagatorController.class)
 })
 public class DatabaseProfileConfiguration {
 

@@ -74,9 +74,6 @@ public class ContentProviderService extends ContextualContentProvider {
 
     /**
      * Return all content keys that refer to this content key as parent
-     *
-     * @param key
-     * @return
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -84,7 +81,7 @@ public class ContentProviderService extends ContextualContentProvider {
         final Cache cache = cacheManager.getCache(PARENT_KEYS_CACHE_NAME);
         final ValueWrapper cachedEntry = cache.get(key);
 
-        Set<ContentKey> result = Collections.<ContentKey> emptySet();
+        Set<ContentKey> result = Collections.<ContentKey>emptySet();
 
         if (cachedEntry == null) {
             result = contentProvider.getParentKeys(key);
@@ -238,7 +235,7 @@ public class ContentProviderService extends ContextualContentProvider {
         for (ContentKey candidateKey : parentKeys) {
             Optional<Object> optionalValue = contentProvider.getAttributeValue(candidateKey, relationship);
             if (optionalValue.isPresent() && childContentKey.equals(optionalValue.get())) {
-                return Optional.<Object> of(candidateKey);
+                return Optional.<Object>of(candidateKey);
             }
         }
 

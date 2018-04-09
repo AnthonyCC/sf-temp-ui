@@ -44,7 +44,6 @@ import com.freshdirect.cms.persistence.repository.ContentNodeEntityRepository;
 import com.freshdirect.cms.persistence.repository.NavigationTreeRepository;
 import com.freshdirect.cms.persistence.repository.RelationshipEntityRepository;
 import com.freshdirect.cms.util.EntityFactory;
-import com.freshdirect.cms.validation.service.ValidatorService;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -79,9 +78,6 @@ public class DatabaseContentProviderTest {
 
     @Mock
     private AttributeEntityToValueConverter attributeEntityToValueConverter;
-
-    @Mock
-    private ValidatorService validatorService;
 
     @Mock
     private ContentKeyToContentNodeEntityConverter converter;

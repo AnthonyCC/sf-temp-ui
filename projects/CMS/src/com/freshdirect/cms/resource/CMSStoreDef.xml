@@ -2487,6 +2487,7 @@
 				<EnumValue value="RECENCY" label="Recency"/>
 				<EnumValue value="SEARCH_RELEVANCY" label="Search Relevancy"/>
 				<EnumValue value="FAVS_FIRST" label="Favs First"/>	
+				<EnumValue value="STAFF_PICKS_OUR_FAVS" label="Staff Picks Our Favs"/>	
 			</EnumDef>
 		</AttributeDefs>
 	</ContentTypeDef>

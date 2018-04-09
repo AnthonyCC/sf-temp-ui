@@ -214,7 +214,7 @@ lastDepartmentName = null;
                     <tr>
                         <td width="100%"><fd:CCLCheck>
 			                 <!-- Add to Shopping List  -->
-			                 <a href="/unsupported.jsp" onclick="CCL.add_recent_cart_items(); return false;"><img src="/media_stat/ccl/lists_link_all_with_icon_dfgs.gif" alt="save to shopping list" style="border: 0;"/></a><span style="padding-left: 15px"></span>
+			                 <a href="/unsupported.jsp" onclick="CCL.add_recent_cart_items(); return false;"><img src="/media_stat/ccl/lists_link_all_with_icon_dfgs.gif" alt="save all items to shopping list" style="border: 0;"/></a><span style="padding-left: 15px"></span>
 			                 <div style="padding-left: 18px"></div>
                         </fd:CCLCheck></td>
                         <td align="right" valign="top">Subtotal:&nbsp;&nbsp;</td>

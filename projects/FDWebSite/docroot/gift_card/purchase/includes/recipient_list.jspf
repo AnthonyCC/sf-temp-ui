@@ -54,7 +54,8 @@ FDRecipientList recipList = giftUser.getRecipientList();
 
 		<table class="recipTable">
 			<tr>
-				<td><div class="recipAmount right">Amount</div></td>
+			    <th><div class="offscreen">Recipient list</div></th>
+				<th><div class="recipAmount right">Amount</div></th>
 			</tr>
 				<%
 				for (RecipientModel rm : recipients) {
@@ -66,7 +67,7 @@ FDRecipientList recipList = giftUser.getRecipientList();
 						<div class="recipNumber" id="<%=srm.getRandomId()%>Number"><%= indx %>.&nbsp;</div>
 						<div class="recipName" id="<%=srm.getRandomId()%>Name"><%= srm.getRecipientName()%></div>
 
-						<div class="recipAmount" id="<%=srm.getRandomId()%>Amount">$<%= srm.getFormattedAmount() %></div>
+						
 						<% if(EnumGiftCardType.DONATION_GIFTCARD.equals(giftUser.getGiftCardType())) {
 							String gcDonId=request.getParameter("gcDonId");
 							if(null==gcDonId){
@@ -79,6 +80,7 @@ FDRecipientList recipList = giftUser.getRecipientList();
 						<% } %>
 					</div>
 				</td>
+				<td><div class="recipAmount" id="<%=srm.getRandomId()%>Amount"><b>$<%= srm.getFormattedAmount() %></b></div></td>
 			</tr>
 				<%
 					indx++;

@@ -25,7 +25,7 @@ import org.xml.sax.SAXException;
 
 import com.freshdirect.cms.CmsServiceLocator;
 import com.freshdirect.cms.contentio.xml.FlexContentHandler;
-import com.freshdirect.cms.core.converter.SerializedScalarValueToObjectConverter;
+import com.freshdirect.cms.core.converter.ScalarValueConverter;
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentType;
@@ -671,8 +671,6 @@ public class CMSContentFactory {
 			dataInputSource.setEncoding("UTF-8");
 			parser.parse(dataInputSource, handler);
 
-            SerializedScalarValueToObjectConverter serializedScalarValueToObjectConverter = CmsServiceLocator.serializedScalarValueToObjectConverter();
-
 			final Map<ContentKey, Map<Attribute, Object>> contentNodes = handler.getContentNodes();
 
 			Map<ContentKey, ContentNodeI> result = new HashMap<ContentKey, ContentNodeI>();
@@ -685,7 +683,10 @@ public class CMSContentFactory {
                         Object value = rawEntry.getValue();
 
                         if (attribute instanceof Scalar && value != null) {
-                            value = serializedScalarValueToObjectConverter.convert(attribute, value.toString());
+                            // FIXME: this is weird: we are converting Objects to Objects by toString() + deserialize()
+                            // this seems invalid, but the value is always a String for Scalars,
+                            // so we are hopefully converting from Strings to Objects
+                            value = ScalarValueConverter.deserializeToObject((Scalar) attribute, value.toString());
                         }
 
                         payload.put(attribute, value);

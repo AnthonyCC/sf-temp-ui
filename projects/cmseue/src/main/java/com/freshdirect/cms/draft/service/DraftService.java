@@ -136,28 +136,17 @@ public class DraftService {
         Cache cache = cacheManager.getCache(CMS_DRAFT_CHANGES_CACHE_NAME);
         Element cacheElement = cache.get(draftId);
         if (cacheElement != null) {
-            List<DraftChange> cachedDraftChanges = (List<DraftChange>)cacheElement.getObjectValue();
+            List<DraftChange> cachedDraftChanges = (List<DraftChange>) cacheElement.getObjectValue();
             if (cachedDraftChanges != null) {
                 return Collections.unmodifiableList(cachedDraftChanges);
             }
         }
-        
+
         final String uri = cmsAdminAppUri + CMS_DRAFT_CHANGE_ACTION_PATH;
         DraftChange[] allDraftChanges = REST_TEMPLATE.getForObject(uri, DraftChange[].class, Long.toString(draftId));
         return Collections.unmodifiableList(updateDraftChangesCache(draftId, Arrays.asList(allDraftChanges)));
     }
 
-    public List<DraftChange> getDraftChanges(Long draftId, ContentKey key) {
-        String keyStr = key.toString();
-        List<DraftChange> result = new ArrayList<DraftChange>();
-        for (DraftChange dc : getDraftChanges(draftId)) {
-            if (keyStr.equals(dc.getContentKey())) {
-                result.add(dc);
-            }
-        }
-        return result;
-    }
-    
     public void saveDraftChange(final DraftContext draftContext, final Collection<DraftChange> draftChangesToSave) {
         final String uri = cmsAdminAppUri + CMS_DRAFT_CHANGE_PATH;
         if (draftChangesToSave != null && !draftChangesToSave.isEmpty()) {

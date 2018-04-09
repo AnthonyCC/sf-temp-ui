@@ -3,7 +3,6 @@ package com.freshdirect.cms.changecontrol.service;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -115,8 +114,7 @@ public class ChangePropagatorService {
         Assert.notNull(draftContext, "Draft parameter can't be null!");
         draftService.invalidateDraftChangesCache(draftContext.getDraftId());
         if (contentProviderService instanceof DraftContentProviderService) {
-            ((DraftContentProviderService) contentProviderService).updateDraftParentCacheForKeys(contentKeys, Collections.<ContentKey>emptySet());
-            ((DraftContentProviderService) contentProviderService).invalidateDraftNodesCacheEntry(draftContext);
+            ((DraftContentProviderService) contentProviderService).invalidateDraftCaches(draftContext);
         }
     }
 

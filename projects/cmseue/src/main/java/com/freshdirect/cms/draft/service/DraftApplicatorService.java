@@ -1,62 +1,87 @@
 package com.freshdirect.cms.draft.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
+import com.freshdirect.cms.core.converter.ScalarValueConverter;
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
+import com.freshdirect.cms.core.domain.ContentType;
+import com.freshdirect.cms.core.domain.Relationship;
+import com.freshdirect.cms.core.domain.RelationshipCardinality;
+import com.freshdirect.cms.core.domain.Scalar;
+import com.freshdirect.cms.core.service.ContentTypeInfoService;
 import com.freshdirect.cms.draft.domain.DraftChange;
+import com.google.common.base.Optional;
+import com.google.common.base.Splitter;
 
 @Service
 public class DraftApplicatorService {
 
+    public static final char SEPARATOR = '|';
+    private static final Splitter SPLITTER = Splitter.on(SEPARATOR);
+
     @Autowired
-    private DraftChangeToContentNodeApplicator draftChangeToContentNodeApplicator;
+    private ContentTypeInfoService contentTypeInfoService;
 
-    public Map<ContentKey, Map<Attribute, Object>> applyDraftChangesToContentNodes(List<DraftChange> draftChanges, Map<ContentKey, Map<Attribute, Object>> nodes) {
+    /**
+     * Converts a list of DraftChange-s to ContentNode style Map-s (Map<ContentKey, Map<Attribute, Object>>)
+     *
+     * Only contains the 'diff' of the draft change, it has to be 'merged' with data from MAIN to get a complete contentnode.
+     */
+    public Map<ContentKey, Map<Attribute, Object>> convertDraftChanges(List<DraftChange> draftChanges) {
+        Assert.notNull(draftChanges);
 
-        Map<ContentKey, Map<Attribute, Object>> foundContentNodes = new LinkedHashMap<ContentKey, Map<Attribute, Object>>();
+        Map<ContentKey, Map<Attribute, Object>> nodeMap = new HashMap<ContentKey, Map<Attribute, Object>>();
 
         for (DraftChange draftChange : draftChanges) {
-            boolean contentNodeFound = false;
-            ContentKey draftChangeKey = ContentKeyFactory.get(draftChange.getContentKey());
-            Map<Attribute, Object> prevHandledNode = foundContentNodes.get(draftChangeKey);
+            ContentKey contentKey = ContentKeyFactory.get(draftChange.getContentKey());
 
-            if (prevHandledNode != null) {
-                Map<Attribute, Object> draftDecoratedNode = draftChangeToContentNodeApplicator.applyDraftChangeToNode(draftChange, prevHandledNode);
-                foundContentNodes.put(draftChangeKey, draftDecoratedNode);
-                contentNodeFound = true;
-            } else {
+            Map<Attribute, Object> attributeMap = nodeMap.get(contentKey);
+            if (attributeMap == null) {
+                attributeMap = new HashMap<Attribute, Object>();
+                nodeMap.put(contentKey, attributeMap);
+            }
 
-                for (ContentKey nodeFromMainKey : nodes.keySet()) {
-                    if (draftChangeKey.equals(nodeFromMainKey)) {
-                        Map<Attribute, Object> draftDecoratedNode = draftChangeToContentNodeApplicator.applyDraftChangeToNode(draftChange, nodes.get(nodeFromMainKey));
-                        foundContentNodes.put(draftChangeKey, draftDecoratedNode);
-                        contentNodeFound = true;
-                        break;
-                    }
+            final Attribute attributeDefinition = getAttributeDefinition(contentKey.type, draftChange.getAttributeName());
+            if (attributeDefinition instanceof Relationship) {
+                Relationship relationship = (Relationship) attributeDefinition;
+                List<ContentKey> keys = getContentKeysFromRelationshipValue(draftChange.getValue());
+                if (relationship.getCardinality() == RelationshipCardinality.ONE) {
+                    attributeMap.put(relationship, keys.isEmpty() ? null : keys.get(0));
+                } else {
+                    attributeMap.put(relationship, keys);
                 }
-
-                if (!contentNodeFound) {
-                    Map<ContentKey, Map<Attribute, Object>> draftDecoratedNode = draftChangeToContentNodeApplicator.createContentNodeFromDraftChange(draftChange);
-                    foundContentNodes.put(draftChangeKey, draftDecoratedNode.get(draftChangeKey));
-                }
+            } else if (attributeDefinition instanceof Scalar) {
+                Scalar scalarAttribute = (Scalar) attributeDefinition;
+                attributeMap.put(scalarAttribute, ScalarValueConverter.deserializeToObject(scalarAttribute, draftChange.getValue()));
             }
         }
-        Map<ContentKey, Map<Attribute, Object>> draftDecoratedNodes = new HashMap<ContentKey, Map<Attribute, Object>>(foundContentNodes);
-        return draftDecoratedNodes;
+        return nodeMap;
     }
-    
-    public Map<Attribute, Object> applyDraftChangesToContentNode(List<DraftChange> draftChanges, Map<Attribute, Object> node) {
-        for (DraftChange draftChange : draftChanges) {
-            draftChangeToContentNodeApplicator.applyDraftChangeToNode(draftChange, node);
+
+    private Attribute getAttributeDefinition(ContentType type, String attributeName) {
+        final Optional<Attribute> optionalAttribute = contentTypeInfoService.findAttributeByName(type, attributeName);
+        if (!optionalAttribute.isPresent()) {
+            throw new IllegalArgumentException("There is no attribute " + attributeName + " for type " + type);
         }
-        return node;
+        return optionalAttribute.get();
+    }
+
+    public static List<ContentKey> getContentKeysFromRelationshipValue(String value) {
+        List<ContentKey> result = new ArrayList<ContentKey>();
+        if (value != null) {
+            for (String key : SPLITTER.split(value)) {
+                result.add(ContentKeyFactory.get(key));
+            }
+        }
+        return result;
     }
 }

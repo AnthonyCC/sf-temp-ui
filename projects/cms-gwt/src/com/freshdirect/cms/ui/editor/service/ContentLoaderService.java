@@ -19,10 +19,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.extjs.gxt.ui.client.widget.form.Time;
-import com.freshdirect.cms.contentvalidation.correction.PrimaryHomeCorrectionService;
 import com.freshdirect.cms.contentvalidation.validator.UniqueContentKeyValidator;
 import com.freshdirect.cms.contentvalidation.validator.WhitespaceValidator;
-import com.freshdirect.cms.core.converter.ScalarValueToSerializedValueConverter;
+import com.freshdirect.cms.core.converter.ScalarValueConverter;
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
@@ -99,13 +98,7 @@ public class ContentLoaderService {
     private PreviewLinkProvider previewLinkService;
 
     @Autowired
-    private PrimaryHomeCorrectionService primaryHomeCorrectionService;
-
-    @Autowired
     private ReportingService reportingService;
-
-    @Autowired
-    private ScalarValueToSerializedValueConverter scalarValueToSerializedValueConverter;
 
     @Autowired
     private StoreContextService storeContextService;
@@ -445,21 +438,6 @@ public class ContentLoaderService {
         return attr;
     }
 
-    private List<ContentKey> buildFixedPrimaryHomeList(ContentKey contentKey, List<ContentKey> originalPrimaryHomes, Set<ContentKey> storeKeysWithoutPrimaryHome) {
-        List<ContentKey> fixedPrimaryHomes = new ArrayList<ContentKey>();
-
-        // fill up with original parent categories
-        fixedPrimaryHomes.addAll(originalPrimaryHomes);
-
-        // add missing primary home values
-        Map<ContentKey, ContentKey> primaryHomesPerStore = primaryHomeCorrectionService.pickPrimaryHomes(contentKey, contentProviderService);
-        for (ContentKey storeKey : storeKeysWithoutPrimaryHome) {
-            fixedPrimaryHomes.add(primaryHomesPerStore.get(storeKey));
-        }
-
-        return fixedPrimaryHomes;
-    }
-
     private Map<String, Set<String>> collectParentsPerStore(ContentKey contentKey) {
         Map<String, Set<String>> parentCategoriesPerStore = new HashMap<String, Set<String>>();
 
@@ -489,43 +467,6 @@ public class ContentLoaderService {
             decorateModel(key, result);
         }
         return result;
-    }
-
-    private Set<ContentKey> findStoreKeysForWhichProductDoesNotHavePrimaryHomeSetYet(List<ContentKey> originalPrimaryHomes,
-            Map<ContentKey, Set<ContentKey>> homeCategoriesPerStore) {
-        Set<ContentKey> storeKeysWithoutHome = new HashSet<ContentKey>();
-        for (Map.Entry<ContentKey, Set<ContentKey>> entry : homeCategoriesPerStore.entrySet()) {
-            final ContentKey storeKey = entry.getKey();
-
-            // intersect parent homes and parent categories belonging to the given store
-            Set<ContentKey> testSet = new HashSet<ContentKey>();
-            testSet.addAll(originalPrimaryHomes);
-            testSet.retainAll(entry.getValue());
-
-            // no primary home found for the given store, record it
-            if (testSet.isEmpty()) {
-                storeKeysWithoutHome.add(storeKey);
-            }
-        }
-
-        return storeKeysWithoutHome;
-    }
-
-    private Set<ContentKey> findInvalidButSetPrimaryHomes(List<ContentKey> originalPrimaryHomes, Map<ContentKey, Set<ContentKey>> homeCategoriesPerStore) {
-        Set<ContentKey> invalidPrimaryHomes = new HashSet<ContentKey>();
-        for(ContentKey primaryHome : originalPrimaryHomes){
-            boolean found = false;
-            for (ContentKey storeKey : homeCategoriesPerStore.keySet()) {
-                if (homeCategoriesPerStore.get(storeKey).contains(primaryHome)) {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                invalidPrimaryHomes.add(primaryHome);
-            }
-        }
-        return invalidPrimaryHomes;
     }
 
     private Object getContentKeyAttributeValue(ContentKey key, String childColumnName) {
@@ -664,18 +605,16 @@ public class ContentLoaderService {
         }
 
         Optional<Attribute> optionalAttribute = contentTypeInfoService.findAttributeByName(contentKey.type, col);
-
         if (optionalAttribute.isPresent()) {
             Attribute attribute = optionalAttribute.get();
-
             Optional<Object> optionalValue = contentProviderService.getAttributeValue(contentKey, attribute);
 
             if (optionalValue.isPresent()) {
-
                 attrValue = optionalValue.get();
 
                 if (attribute instanceof Scalar) {
-                    attrValue = scalarValueToSerializedValueConverter.convert((Scalar) attribute, attrValue);
+                    // FIXME: this is weird: we are converting Objects to Objects by serialize() and casting the resulting String back to Object
+                    attrValue = ScalarValueConverter.serializeToString((Scalar) attribute, attrValue);
                 } else if (attrValue instanceof ContentKey) {
                     attrValue = getContentKeyAttributeValue((ContentKey) attrValue, childColumnName);
                 }

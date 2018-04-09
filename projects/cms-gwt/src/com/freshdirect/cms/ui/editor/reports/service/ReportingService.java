@@ -23,6 +23,7 @@ import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.cms.core.domain.RootContentKey;
+import com.freshdirect.cms.core.service.ContextualContentProvider;
 import com.freshdirect.cms.core.domain.builder.AttributeBuilder;
 import com.freshdirect.cms.ui.editor.ReportAttributes;
 import com.freshdirect.cms.ui.editor.reports.data.HiddenProduct;
@@ -91,6 +92,9 @@ public class ReportingService {
 
     @Autowired
     private ReportsRepository repository;
+
+    @Autowired
+    private ContextualContentProvider contentProviderService;
 
     @Autowired
     private HiddenProductsService hiddenProductsService;
@@ -215,14 +219,15 @@ public class ReportingService {
         List<ContentKey> keys = null;
 
         if ("orphans".equals(queryKey.id)) {
-            keys = repository.fetchOrphanObjects();
+            long t = System.currentTimeMillis();
+            keys = new ArrayList<ContentKey>(contentProviderService.getOrphanKeys());
+            LOGGER.info("Querying orphans: Found " + keys.size() + " orphan keys in " + (System.currentTimeMillis() - t) + "ms");
         } else if ("recent".equals(queryKey.id)) {
             keys = repository.fetchRecentlyModifiedObjects();
         } else if ("unreachable".equals(queryKey.id)) {
             keys = repository.fetchUnreachableStoreObjects();
         }
         return keys;
-
     }
 
     public void performCmsReport(ContentKey contentKey, Map<Attribute, Object> values) {
@@ -376,7 +381,7 @@ public class ReportingService {
             Map<Attribute, Object> row = new LinkedHashMap<Attribute, Object>();
 
             if (HiddenProductReason.ARCHIVED != hiddenProduct.getReason()) {
-                row.put(changedByAttribute, hiddenProduct.getChangedBy());
+                row.put(changedByAttribute, hiddenProduct.getAuthor());
                 row.put(changeDateAttribute, formatter.format(hiddenProduct.getChangeDate()));
 
                 row.put(productKeyAttribute, hiddenProduct.getProductKey().toString());

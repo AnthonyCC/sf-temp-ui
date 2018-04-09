@@ -419,13 +419,14 @@ public class FDFactory {
 			lookupFactoryHome();
 		}
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB)){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB_WarmUp)){
 				pinfos = FDFactoryService.getInstance().getProductInfos(skus);
 			}else{
 				FDFactorySB sb = factoryHome.create();
 
 				pinfos = sb.getProductInfos(skus);
 			}
+			
             if (FDStoreProperties.getPreviewMode()) {
 
             	Set foundSkus = new HashSet();

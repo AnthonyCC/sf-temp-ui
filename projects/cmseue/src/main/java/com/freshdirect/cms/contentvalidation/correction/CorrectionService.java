@@ -2,16 +2,16 @@ package com.freshdirect.cms.contentvalidation.correction;
 
 import java.util.Map;
 
+import com.freshdirect.cms.contentvalidation.validator.Validator;
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.service.ContextualContentProvider;
-import com.freshdirect.cms.validation.validator.Validator;
 
 public interface CorrectionService {
 
     /**
-     * Every CorrectionService implementation supports only one {@link com.freshdirect.cms.validation.validator.Validator}. The CorrectionService is potentially able to fix the
-     * errors which were identified by those validator
+     * Every CorrectionService implementation supports only one {@link com.freshdirect.cms.contentvalidation.validator.Validator}.
+     * The CorrectionService is potentially able to fix the errors which were identified by those validator
      *
      * @return the supported Validator's class
      */

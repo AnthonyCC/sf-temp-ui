@@ -33,12 +33,12 @@ import org.xml.sax.SAXException;
 
 import com.freshdirect.cms.contentio.xml.FlexContentHandler;
 import com.freshdirect.cms.contentio.xml.XmlContentMetadataService;
-import com.freshdirect.cms.core.converter.SerializedScalarValueToObjectConverter;
+import com.freshdirect.cms.core.converter.ScalarValueConverter;
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.cms.core.domain.Scalar;
-import com.freshdirect.cms.core.service.ContentKeyParentsCollectorService;
+import com.freshdirect.cms.core.service.ParentIndexBuilder;
 import com.freshdirect.cms.core.service.ContentProvider;
 import com.freshdirect.cms.core.service.ContentSource;
 import com.google.common.base.Optional;
@@ -60,13 +60,7 @@ public class XmlContentProvider implements ContentProvider {
     private String storeXmlName;
 
     @Autowired
-    private SerializedScalarValueToObjectConverter serializedScalarValueToObjectConverter;
-
-    @Autowired
     private XmlContentMetadataService xmlContentMetadataService;
-
-    @Autowired
-    private ContentKeyParentsCollectorService contentKeyParentsCollectorService;
 
     private Map<ContentKey, Map<Attribute, Object>> contentNodes;
 
@@ -83,7 +77,7 @@ public class XmlContentProvider implements ContentProvider {
     public Map<Attribute, Object> getAllAttributesForContentKey(ContentKey contentKey) {
         Assert.notNull(contentKey, "ContentKey parameter can't be null!");
 
-        return contentNodes.containsKey(contentKey) ? contentNodes.get(contentKey) : Collections.<Attribute, Object> emptyMap();
+        return contentNodes.containsKey(contentKey) ? contentNodes.get(contentKey) : Collections.<Attribute, Object>emptyMap();
     }
 
     @Override
@@ -138,13 +132,13 @@ public class XmlContentProvider implements ContentProvider {
     public Set<ContentKey> getContentKeysByType(ContentType type) {
         Assert.notNull(type, "ContentType parameter can't be null!");
 
-        return keysOfType.containsKey(type) ? keysOfType.get(type) : Collections.<ContentKey> emptySet();
+        return keysOfType.containsKey(type) ? keysOfType.get(type) : Collections.<ContentKey>emptySet();
     }
 
     @Override
     public Set<ContentKey> getParentKeys(ContentKey contentKey) {
         Assert.notNull(contentKey, "contentKey parameter can't be null!");
-        return parentKeys.containsKey(contentKey) ? parentKeys.get(contentKey) : Collections.<ContentKey> emptySet();
+        return parentKeys.containsKey(contentKey) ? parentKeys.get(contentKey) : Collections.<ContentKey>emptySet();
     }
 
     @Override
@@ -165,14 +159,12 @@ public class XmlContentProvider implements ContentProvider {
                 }
             }
         }
-
         return result;
     }
 
     @Override
     public void saveAttribute(ContentKey contentKey, Attribute attribute, Object attributeValue) {
         throw new UnsupportedOperationException("saveAttribute it not supported!");
-
     }
 
     @Override
@@ -244,7 +236,7 @@ public class XmlContentProvider implements ContentProvider {
                     Object value = rawEntry.getValue();
 
                     if (attribute instanceof Scalar && value != null) {
-                        value = serializedScalarValueToObjectConverter.convert(attribute, value.toString());
+                        value = ScalarValueConverter.deserializeToObject((Scalar) attribute, value.toString());
                     }
 
                     payload.put(attribute, value);
@@ -268,7 +260,7 @@ public class XmlContentProvider implements ContentProvider {
         }
 
         // process parent keys
-        parentKeys = contentKeyParentsCollectorService.createParentKeysMap(contentNodes);
+        parentKeys = ParentIndexBuilder.createParentKeysMap(contentNodes);
     }
 
     private void buildMetadata(FlexContentHandler flexContentHandler) {
@@ -280,7 +272,7 @@ public class XmlContentProvider implements ContentProvider {
 
     @Override
     public Map<ContentKey, Set<ContentKey>> generateParentKeysMap() {
-        return contentKeyParentsCollectorService.createParentKeysMap();
+        return parentKeys;
     }
 
     private InputStream setupInputStream(String fileName) throws IOException {

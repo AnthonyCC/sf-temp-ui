@@ -162,7 +162,7 @@ public class TypeValidator implements Validator {
         for (Attribute attribute : attributesForType) {
             if (attribute.getFlags().isRequired() && (!attributesWithValues.containsKey(attribute) || attributesWithValues.get(attribute) == null)) {
                 validationResults.addValidationResult(contentKey,
-                        attribute.getName() + " is required",
+                        "No value found for required attribute '" + attribute.getName() + "'",
                         ValidationResultLevel.ERROR, TypeValidator.class);
             }
         }

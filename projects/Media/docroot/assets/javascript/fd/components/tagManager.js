@@ -41,7 +41,7 @@ var dataLayer = window.dataLayer || [];
       list: fd.gtm.getListForProduct(null, listData),
       dimension6: product.newProduct,
       sku: product.skuCode,
-      dimension3: product.available
+      dimension3: ""+product.available
     };
 
     if (idx) {
@@ -178,7 +178,7 @@ var dataLayer = window.dataLayer || [];
                 variant: productData.variant,
                 dimension6: productData.newProduct,
                 sku: productData.sku,
-                dimension3: true,
+                dimension3: ""+true,
                 quantity: qty > 0 ? qty : -qty
               }]
           },
@@ -217,7 +217,8 @@ var dataLayer = window.dataLayer || [];
     coStep: function (coStepData) {
       var cosData = {
         checkout: {
-          actionField: coStepData
+          actionField: coStepData,
+          products: fd.gtm.getValue('ecommerce.checkout.products')
         }
       };
 
@@ -323,7 +324,7 @@ var dataLayer = window.dataLayer || [];
                   variant: productData.variant,
                   dimension6: productData.newProduct,
                   sku: productData.sku,
-                  dimension3: true,
+                  dimension3: ""+true,
                   quantity: parseInt(productData.quantity, 10) || 0 // quantity should be an integer
                 };
               }),
@@ -365,7 +366,7 @@ var dataLayer = window.dataLayer || [];
                   variant: productData.variant,
                   dimension6: productData.newProduct,
                   sku: productData.sku,
-                  dimension3: true,
+                  dimension3: ""+true,
                   quantity: parseInt(productData.quantity, 10) || 0 // quantity should be an integer
                 };
               })
@@ -619,7 +620,7 @@ var dataLayer = window.dataLayer || [];
           variant: productData.variant !== 'null' ? productData.variant : "default variant",
           dimension6: productData.new_product,
           sku: productData.skuCode,
-          dimension3: productData.in_stock,
+          dimension3: ""+productData.in_stock,
           position: parseInt(productData.position, 10) || 0,
           list: productData.list
         };
@@ -1263,7 +1264,7 @@ var dataLayer = window.dataLayer || [];
             variant: productData.variant !== 'null' ? productData.variant : "default variant",
             dimension6: productData.new_product,
             sku: productData.skuCode,
-            dimension3: productData.in_stock,
+            dimension3: ""+productData.in_stock,
             position: parseInt(productData.position, 10) || 0
           }]
         }

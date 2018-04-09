@@ -15,11 +15,8 @@ public class ScalarAttributeTest {
 
     @Test
     public void testScalarWithNullName() {
-
         try {
-            @SuppressWarnings("unused")
-            Attribute scalar = new Scalar(null, AttributeFlags.NONE, true, null);
-
+            new Scalar(null, AttributeFlags.NONE, true, null);
             fail("Creating scalars with null name should blow up the test");
         } catch (IllegalArgumentException exc) {
             assertTrue(exc.getMessage().contains("Missing name"));
@@ -29,7 +26,6 @@ public class ScalarAttributeTest {
     @Test
     public void testScalarWithNullFlags() {
         Scalar scalar = new Scalar("attr1", null, true, String.class);
-
         assertTrue("Scalar type mismatch", String.class.equals(scalar.getType()));
         assertTrue("Scalar should not be enumerated", !scalar.isEnumerated());
         assertTrue("Flags not specified in construction should fall back to NONE", AttributeFlags.NONE == scalar.getFlags());
@@ -37,11 +33,8 @@ public class ScalarAttributeTest {
 
     @Test
     public void testScalarWithNullType() {
-
         try {
-            @SuppressWarnings("unused")
-            Attribute scalar = new Scalar("test", AttributeFlags.NONE, true, null);
-
+            new Scalar("test", AttributeFlags.NONE, true, null);
             fail("Creating scalars with null type should blow up the test");
         } catch (IllegalArgumentException exc) {
             assertTrue(exc.getMessage().contains("is null"));
@@ -51,20 +44,16 @@ public class ScalarAttributeTest {
     @Test
     public void testScalarWithInvalidType() {
         try {
-            @SuppressWarnings("unused")
-            Attribute scalar = new Scalar("test", AttributeFlags.NONE, true, Long.class);
-
+            new Scalar("test", AttributeFlags.NONE, true, Long.class);
             fail("Creating scalars with java.lang.Long type should blow up the test");
         } catch (IllegalArgumentException exc) {
             assertTrue(exc.getMessage().contains("Unsupported scalar type"));
         }
-
     }
 
     @Test
     public void testScalarWithValidTypes() {
         try {
-            @SuppressWarnings("unused")
             Scalar scalar;
 
             scalar = new Scalar("stringAttr", AttributeFlags.NONE, true, String.class);
@@ -89,16 +78,12 @@ public class ScalarAttributeTest {
         } catch (IllegalArgumentException exc) {
             fail(exc.getMessage());
         }
-
     }
 
     @Test
     public void testEnumWithNullEnums() {
-
         try {
-            @SuppressWarnings("unused")
-            Attribute scalar = new Scalar("test", AttributeFlags.NONE, true, null, null);
-
+            new Scalar("test", AttributeFlags.NONE, true, null, null);
             fail("Creating enums with null enum list should blow up the test");
         } catch (IllegalArgumentException exc) {
             assertTrue(exc.getMessage().contains("is null"));
@@ -107,11 +92,8 @@ public class ScalarAttributeTest {
 
     @Test
     public void testEnumWithEmptyEnums() {
-
         try {
-            @SuppressWarnings("unused")
-            Attribute scalar = new Scalar("test", AttributeFlags.NONE, true, null, new Class<?>[] {});
-
+            new Scalar("test", AttributeFlags.NONE, true, null, new Class<?>[] {});
             fail("Creating enums with empty enum list should blow up the test");
         } catch (IllegalArgumentException exc) {
             assertTrue(exc.getMessage().contains("is null"));
@@ -121,33 +103,28 @@ public class ScalarAttributeTest {
     @Test
     public void testEnumWithNotMatchingTypes() {
         try {
-            @SuppressWarnings("unused")
-            Attribute scalar = new Scalar("test", AttributeFlags.NONE, true, Integer.class, new String[] {"a", "b"});
-
+            new Scalar("test", AttributeFlags.NONE, true, Integer.class, new String[] {"a", "b"});
             fail("Creating scalars with java.lang.Long type should blow up the test");
         } catch (IllegalArgumentException exc) {
             assertTrue(exc.getMessage().contains("must match scalar type"));
         }
-
     }
 
     @Test
     public void testEnumWithSomeNullEnums() {
         try {
-            @SuppressWarnings("unused")
-            Attribute scalar = new Scalar("test", AttributeFlags.NONE, true, String.class, new String[] {"a", null, "b"});
-
+            new Scalar("test", AttributeFlags.NONE, true, String.class, new String[] {"a", null, "b"});
             fail("Creating scalars having null enum should blow up the test");
         } catch (IllegalArgumentException exc) {
             assertTrue(exc.getMessage().contains("null enumerated"));
         }
-
     }
 
     @Test
     public void testEnumWithValidTypes() {
         try {
             Scalar scalar;
+
             scalar = new Scalar("test", AttributeFlags.NONE, true, String.class, new String[] {"a", "b"});
             assertTrue("Scalar type mismatch", String.class.equals(scalar.getType()));
             assertTrue("Scalar should be enumerated", scalar.isEnumerated());

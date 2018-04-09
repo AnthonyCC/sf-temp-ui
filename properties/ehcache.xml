@@ -92,16 +92,6 @@
 		timeToLiveSeconds="86400" memoryStoreEvictionPolicy="LRU"
 		transactionalMode="off" />
 
-	<cache name="draftParentCache" eternal="false"
-		maxElementsInMemory="100000" overflowToDisk="false" diskPersistent="false"
-		timeToLiveSeconds="86400" memoryStoreEvictionPolicy="LRU"
-		transactionalMode="off" />
-
-	<cache name="cmsDraftChangesCache" eternal="false"
-		maxElementsInMemory="100000" overflowToDisk="false" diskPersistent="false"
-		timeToLiveSeconds="86400" memoryStoreEvictionPolicy="LRU"
-		transactionalMode="off" />
-
 	<cache name="keyBySkuCodeCache" eternal="true"
 		maxEntriesLocalHeap="40000" overflowToDisk="false" diskPersistent="false"
 		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
@@ -114,14 +104,22 @@
 		overflowToDisk="false" diskPersistent="false"
 		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
 
-	<!-- this cache is used only with database profile (gwt and preview) - -->
-	<cache name="draftNodes" eternal="true" maxEntriesLocalHeap="40000"
-		overflowToDisk="false" diskPersistent="false"
-		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
-
 	<cache name="cmsPersona" eternal="false" maxElementsInMemory="20"
 		overflowToDisk="false" diskPersistent="false" timeToLiveSeconds="300"
 		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
+
+	<!--- CMS DRAFT CACHES -->
+	<cache name="cmsDraftChangesCache" eternal="false" timeToLiveSeconds="86400" 
+		maxEntriesLocalHeap="100" overflowToDisk="false" diskPersistent="false"
+		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
+
+	<cache name="draftNodes" eternal="false" timeToLiveSeconds="86400" 
+		maxEntriesLocalHeap="100" overflowToDisk="false" diskPersistent="false"
+		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
+
+	<cache name="draftParentCache" eternal="false" timeToLiveSeconds="86400" 
+		maxEntriesLocalHeap="100" overflowToDisk="false" diskPersistent="false"
+		memoryStoreEvictionPolicy="LRU"	transactionalMode="off" />
 
 	<!-- ERPS CACHES -->
 	<cache name="skuMaterialsCache" eternal="false"
