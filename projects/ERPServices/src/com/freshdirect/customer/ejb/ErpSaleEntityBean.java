@@ -1883,4 +1883,79 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		}
 	}
 	
+	private final static String GET_NTH_NONCOS_REG_ORDER_QUERY_DP_TRIAL = "select id from ( select s.id,sa.requested_date, row_number() over (order by sa.REQUESTED_DATE DESC) row_num from cust.sale s, cust.salesaction sa, cust.deliveryinfo di,cust.paymentinfo pi where "
+			+ " s.CUSTOMER_ID=? and s.type='REG' and s.id=sa.sale_id and pi.salesaction_id=sa.id and "
+			+
+			// " sa.action_type IN ('CRO','MOD') and sa.action_date=(select max_date from cust.sale_cro_mod_date scmd where scmd.sale_id=s.id) and "+
+			" sa.action_type IN ('CRO','MOD') and sa.action_date=s.cromod_date and "
+			+ " di.salesaction_id=sa.id and di.delivery_type <>'C'and pi.on_fd_account<>'M'";
+
+	private final static String GET_NTH_NONCOS_SUB_ORDER_QUERY_DP_TRIAL = "select id from ( select s.id,sa.requested_date, row_number() over (order by sa.REQUESTED_DATE DESC) row_num from cust.sale s, cust.salesaction sa, cust.deliveryinfo di,cust.paymentinfo pi where "
+			+ " s.CUSTOMER_ID=? and s.type='SUB' and s.id=sa.sale_id and pi.salesaction_id=sa.id and "
+			+
+			// " sa.action_type IN ('CRO','MOD') and sa.action_date=(select max_date from cust.sale_cro_mod_date scmd where scmd.sale_id=s.id) and "+
+			" sa.action_type IN ('CRO','MOD') and sa.action_date=s.cromod_date and "
+			+ " di.salesaction_id=sa.id  and di.delivery_type <>'C'";
+
+	public PrimaryKey ejbFindByCriteria(String customerID,	EnumSaleType saleType, List<EnumPaymentMethodType> pymtMethodTypes)
+			throws ObjectNotFoundException, FinderException {
+		if(null != pymtMethodTypes && pymtMethodTypes.size() >0){
+		Connection conn = null;
+		PreparedStatement ps = null;
+		StringBuffer sb1 = new  StringBuffer(GET_NTH_NONCOS_REG_ORDER_QUERY_DP_TRIAL );
+		StringBuffer sb2 = new  StringBuffer(GET_NTH_NONCOS_SUB_ORDER_QUERY_DP_TRIAL);
+		
+		sb1.append(" and pi.payment_method_type in (?");
+		sb2.append(" and pi.payment_method_type in (?");
+				
+		for(int i=0; i<pymtMethodTypes.size()-1;i++){
+		sb1.append(",?");
+		sb2.append(",?");
+		}
+		sb1.append(")) where row_num=1");
+		sb2.append(")) where row_num=1");
+		try {
+			if (null == saleType) {
+				saleType = EnumSaleType.REGULAR;
+			}
+			conn = getConnection();
+			if (EnumSaleType.REGULAR.equals(saleType)) {
+				ps = conn.prepareStatement(sb1.toString());
+			} else {
+				ps = conn.prepareStatement(sb2.toString());
+			}
+			ps.setString(1, customerID);
+			for(int i=0;i<pymtMethodTypes.size();i++){
+				ps.setString(i+2, pymtMethodTypes.get(i).getName());
+			}
+			ResultSet rs = ps.executeQuery();
+			if (!rs.next()) {
+				throw new ObjectNotFoundException(new StringBuffer(100)
+						.append("Unable to find ErpSale for customer : ")
+						.append(customerID).append(" with sale status as ")
+						.append(" and payment type as ")
+						.append(pymtMethodTypes.toString()).toString());
+			}
+
+			PrimaryKey foundPk = new PrimaryKey(rs.getString(1));
+			rs.close();
+			ps.close();
+
+			return foundPk;
+
+		} catch (SQLException sqle) {
+			throw new FinderException(sqle.getMessage());
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException sqle2) {
+				LOGGER.warn("Error closing connection", sqle2);
+			}
+		}
+		}
+		return null;
+	}
+	
 }

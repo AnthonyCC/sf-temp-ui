@@ -40,7 +40,9 @@
 </head>
 
 <body>
+   <div style="height:365px;">
 	<%@ include file="/social/i_forgot_password_fields.jspf" %>
+	</div>
 	<%@ include file="/common/template/includes/i_jsmodules.jspf" %>
 </body>
 </html>

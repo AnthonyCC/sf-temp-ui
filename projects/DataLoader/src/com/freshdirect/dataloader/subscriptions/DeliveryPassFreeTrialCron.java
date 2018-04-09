@@ -423,11 +423,11 @@ public class DeliveryPassFreeTrialCron {
 		FDDeliveryZoneInfo zInfo =new FDDeliveryZoneInfo("1","1","1",EnumZipCheckResponses.DELIVER);
 		return zInfo;
 	}
-
+	
 	private static FDOrderI getLastNonCOSOrder(String erpCustomerID) throws FDResourceException {
 
 		try {
-			return FDCustomerManager.getLastNonCOSOrder(erpCustomerID, EnumSaleType.REGULAR, EnumSaleStatus.SETTLED);
+			return FDCustomerManager.getLastNonCOSOrder(erpCustomerID, EnumSaleType.REGULAR);
 		} catch (FDResourceException e) {
 			LOGGER.warn("Unable to find payment method for deliveryPass order for customer :"+erpCustomerID);
 			StringWriter sw = new StringWriter();

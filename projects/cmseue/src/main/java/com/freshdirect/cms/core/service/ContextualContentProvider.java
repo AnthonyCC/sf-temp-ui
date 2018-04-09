@@ -26,6 +26,7 @@ import com.freshdirect.cms.core.domain.ContentTypes;
 import com.freshdirect.cms.core.domain.ContextualAttributeFetchScope;
 import com.freshdirect.cms.core.domain.Relationship;
 import com.freshdirect.cms.core.domain.RelationshipCardinality;
+import com.freshdirect.cms.core.domain.RootContentKey;
 import com.freshdirect.cms.validation.ValidationResults;
 import com.freshdirect.cms.validation.exception.ValidationFailedException;
 import com.google.common.base.Optional;
@@ -37,9 +38,6 @@ public abstract class ContextualContentProvider {
 
     @Autowired
     protected ContextService contextService;
-
-    @Autowired
-    protected ContentKeyParentsCollectorService contentKeyParentsCollectorService;
 
     @Autowired
     private ValidatorService validatorService;
@@ -324,7 +322,7 @@ public abstract class ContextualContentProvider {
     public void validateContent(Map<ContentKey, Map<Attribute, Object>> payload) throws ValidationFailedException {
 
         MaskedContentProvider modifiedContent = new MaskedContentProvider(this,
-                new NodeCollectionContentProviderService(contentTypeInfoService, contentKeyParentsCollectorService, contextService, payload));
+                new NodeCollectionContentProvider(contentTypeInfoService, contextService, payload));
 
         // collect keys to be validated
         Set<ContentKey> keysToValidate = new HashSet<ContentKey>(payload.keySet());
@@ -419,7 +417,7 @@ public abstract class ContextualContentProvider {
         }
         return childKeys;
     }
-    
+
     protected Map<ContentKey, Set<ContentKey>> buildParentIndexFor(final ContentKey contentKey) {
         Set<ContentKey> actualParents = getParentKeys(contentKey);
         Map<ContentKey, Set<ContentKey>> parentIndex = new HashMap<ContentKey, Set<ContentKey>>();
@@ -431,5 +429,19 @@ public abstract class ContextualContentProvider {
         parentIndex.put(contentKey, actualParents);
 
         return parentIndex;
+    }
+
+    public Set<ContentKey> getOrphanKeys() {
+        Set<ContentKey> orphans = new HashSet<ContentKey>();
+        for (ContentKey key : getContentKeys()) {
+            if (!isIgnorableTypeForOrphans(key.type) && !RootContentKey.isRootKey(key) && getParentKeys(key).isEmpty()) {
+                orphans.add(key);
+            }
+        }
+        return orphans;
+    }
+
+    private boolean isIgnorableTypeForOrphans(ContentType type) {
+        return type == ContentType.Image || type == ContentType.Html || type == ContentType.ErpCharacteristic;
     }
 }

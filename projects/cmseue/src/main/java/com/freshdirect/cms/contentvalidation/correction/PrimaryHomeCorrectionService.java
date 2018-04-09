@@ -16,13 +16,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 import com.freshdirect.cms.contentvalidation.validator.PrimaryHomeValidator;
+import com.freshdirect.cms.contentvalidation.validator.Validator;
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.cms.core.domain.ContentTypes;
 import com.freshdirect.cms.core.domain.ContextualAttributeFetchScope;
 import com.freshdirect.cms.core.service.ContextualContentProvider;
-import com.freshdirect.cms.validation.validator.Validator;
 import com.google.common.base.Optional;
 
 @Profile({ "database", "test" })
@@ -41,7 +41,7 @@ public class PrimaryHomeCorrectionService implements CorrectionService {
     public void correct(ContentKey contentKey, Map<Attribute, Object> attributesWithValues, ContextualContentProvider contentSource) {
         if (contentKey.type == ContentType.Product) {
             Map<ContentKey, ContentKey> fixedPrimaryHomes = pickPrimaryHomes(contentKey, contentSource);
-            LinkedHashMap<ContentKey, Map<Attribute, Object>> fixedPrimaryHomesPayload = new LinkedHashMap<ContentKey, Map<Attribute,Object>>();
+            LinkedHashMap<ContentKey, Map<Attribute, Object>> fixedPrimaryHomesPayload = new LinkedHashMap<ContentKey, Map<Attribute, Object>>();
             Map<Attribute, Object> primaryHomes = new HashMap<Attribute, Object>();
             if (!fixedPrimaryHomes.isEmpty()) {
                 primaryHomes.put(ContentTypes.Product.PRIMARY_HOME, Arrays.asList(fixedPrimaryHomes.values().toArray()));

@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -35,30 +33,16 @@ import com.google.common.base.Optional;
 @Service
 public class HiddenProductsService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(HiddenProductsService.class);
-
     private static final ContentKey ARCHIVE_DEPARTMENT_KEY = ContentKeyFactory.get(ContentType.Department, "Archive");
 
+    @Autowired
     private ContentProviderService contentProviderService;
 
+    @Autowired
     private ContentChangeControlService contentChangeControlService;
 
+    @Autowired
     private PrimaryHomeCorrectionService primaryHomeCorrectionService;
-
-    @Autowired
-    public void setContentProviderService(ContentProviderService contentProviderService) {
-        this.contentProviderService = contentProviderService;
-    }
-
-    @Autowired
-    public void setContentChangeControlService(ContentChangeControlService contentChangeControlService) {
-        this.contentChangeControlService = contentChangeControlService;
-    }
-
-    @Autowired
-    public void setPrimaryHomeCorrectionService(PrimaryHomeCorrectionService primaryHomeCorrectionService) {
-        this.primaryHomeCorrectionService = primaryHomeCorrectionService;
-    }
 
     public List<HiddenProduct> queryHiddenProducts() {
         List<HiddenProduct> queryResult = new ArrayList<HiddenProduct>();
@@ -71,7 +55,6 @@ public class HiddenProductsService {
                 final ContentKey homeCategoryKey = primaryHomeInStore.getValue();
                 final HiddenProductReason reason = isProductHidden(storeKey, productKey, homeCategoryKey);
                 if (reason.isHidden()) {
-                    // LOGGER.info("Store: " + storeKey + "; PRD: " + productKey + " is hidden; reason: " + reason.name());
                     HiddenProduct hiddenProduct = new HiddenProduct(storeKey, productKey, homeCategoryKey, reason);
                     queryResult.add(hiddenProduct);
                 }
@@ -165,45 +148,65 @@ public class HiddenProductsService {
         Assert.isTrue(ContentType.Product == productKey.type);
         Assert.isTrue(ContentType.Category == primaryHome.type);
 
-        // orphan product is hidden
         if (contentProviderService.isOrphan(productKey, storeKey)) {
             return HiddenProductReason.ORPHAN;
         }
 
-        // Archived
-        List<List<ContentKey>> contexts = contentProviderService.findContextsOf(productKey);
-        if (!contexts.isEmpty()) {
-            for (List<ContentKey> context : contexts) {
-                final int size = context.size();
-                if (size > 2 && RootContentKey.STORE_FRESHDIRECT.contentKey.equals(context.get(size - 1)) && ARCHIVE_DEPARTMENT_KEY.equals(context.get(size - 2))) {
-                    return HiddenProductReason.ARCHIVED;
-                }
-            }
+        if (checkProductIsArchived(productKey)) {
+            return HiddenProductReason.ARCHIVED;
         }
 
-        // HIDE_URL is defined
-        Optional<Object> hideUrlAttr = contentProviderService.fetchContextualizedAttributeValue(productKey, ContentTypes.Product.HIDE_URL, primaryHome,
-                ContextualAttributeFetchScope.INCLUDE_MODEL_VALUES);
-        if (hideUrlAttr.isPresent()) {
-            String urlValue = (String) hideUrlAttr.get();
-
-            if (isRedirectUrlMeaningful(urlValue)) {
-                return HiddenProductReason.HIDDEN_BY_HIDE_URL;
-            }
+        if (checkProductIsHiddenByHideURL(productKey, primaryHome)) {
+            return HiddenProductReason.HIDDEN_BY_HIDE_URL;
         }
 
-        // REDIRECT_URL defined
+        if (checkProductIsHiddenByRedirectURL(productKey, primaryHome)) {
+            return HiddenProductReason.HIDDEN_BY_REDIRECT_URL;
+        }
+
+        return HiddenProductReason.VISIBLE;
+    }
+
+    private boolean checkProductIsHiddenByRedirectURL(ContentKey productKey, ContentKey primaryHome) {
         Optional<Object> redirectUrlAttr = contentProviderService.fetchContextualizedAttributeValue(productKey, ContentTypes.Product.REDIRECT_URL, primaryHome,
                 ContextualAttributeFetchScope.INCLUDE_MODEL_VALUES);
         if (redirectUrlAttr.isPresent()) {
             String urlValue = (String) redirectUrlAttr.get();
 
             if (isRedirectUrlMeaningful(urlValue)) {
-                return HiddenProductReason.HIDDEN_BY_REDIRECT_URL;
+                return true;
             }
         }
 
-        return HiddenProductReason.NOT_HIDDEN;
+        return false;
+    }
+
+    private boolean checkProductIsHiddenByHideURL(ContentKey productKey, ContentKey primaryHome) {
+        Optional<Object> hideUrlAttr = contentProviderService.fetchContextualizedAttributeValue(productKey, ContentTypes.Product.HIDE_URL, primaryHome,
+                ContextualAttributeFetchScope.INCLUDE_MODEL_VALUES);
+        if (hideUrlAttr.isPresent()) {
+            String urlValue = (String) hideUrlAttr.get();
+
+            if (isRedirectUrlMeaningful(urlValue)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean checkProductIsArchived(ContentKey productKey) {
+        List<List<ContentKey>> contexts = contentProviderService.findContextsOf(productKey);
+        if (!contexts.isEmpty()) {
+            for (List<ContentKey> context : contexts) {
+                final int size = context.size();
+                if (size > 2 && RootContentKey.STORE_FRESHDIRECT.contentKey.equals(context.get(size - 1)) && ARCHIVE_DEPARTMENT_KEY.equals(context.get(size - 2))) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private boolean isRedirectUrlMeaningful(String redirectUrl) {

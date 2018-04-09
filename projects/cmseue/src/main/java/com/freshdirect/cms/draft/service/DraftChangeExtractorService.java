@@ -10,13 +10,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.freshdirect.cms.core.converter.ScalarValueConverter;
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentNodeComparatorUtil;
 import com.freshdirect.cms.core.domain.Relationship;
 import com.freshdirect.cms.core.domain.RelationshipCardinality;
+import com.freshdirect.cms.core.domain.Scalar;
 import com.freshdirect.cms.core.service.ContentTypeInfoService;
-import com.freshdirect.cms.draft.converter.AttributeValueToStringConverter;
 import com.freshdirect.cms.draft.domain.Draft;
 import com.freshdirect.cms.draft.domain.DraftChange;
 import com.freshdirect.cms.draft.domain.DraftContext;
@@ -27,11 +28,8 @@ public class DraftChangeExtractorService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DraftChangeExtractorService.class);
 
-    private static final Joiner JOINER = Joiner.on(DraftChangeToContentNodeApplicator.SEPARATOR).skipNulls();
+    private static final Joiner JOINER = Joiner.on(DraftApplicatorService.SEPARATOR).skipNulls();
     
-    @Autowired
-    private AttributeValueToStringConverter attributeValueToStringConverter;
-
     @Autowired
     private ContentTypeInfoService contentTypeInfoService;
 
@@ -143,14 +141,14 @@ public class DraftChangeExtractorService {
         final String serializedValue;
 
         // serialize value
-        if (value == null) {
-            serializedValue = null;
-        } else if (definition instanceof Relationship) {
+        if (definition instanceof Relationship) {
             // serialize relationship value
             serializedValue = serializeRelationshipValue(value, (Relationship) definition);
-        } else {
+        } else if (definition instanceof Scalar) {
             // serialize scalar value
-            serializedValue = attributeValueToStringConverter.convert(definition, value);
+            serializedValue = ScalarValueConverter.serializeToString((Scalar) definition, value);
+        } else {
+            serializedValue = null;
         }
         return serializedValue;
     }

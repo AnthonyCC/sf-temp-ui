@@ -22,7 +22,6 @@ import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.cms.core.domain.ContentTypes;
 import com.freshdirect.cms.core.service.ContentTypeInfoService;
-import com.freshdirect.cms.draft.converter.AttributeValueToStringConverter;
 import com.freshdirect.cms.draft.domain.Draft;
 import com.freshdirect.cms.draft.domain.DraftChange;
 import com.freshdirect.cms.draft.domain.DraftStatus;
@@ -31,9 +30,6 @@ import com.google.common.base.Optional;
 @RunWith(MockitoJUnitRunner.class)
 @Category(UnitTest.class)
 public class DraftChangeExtractorServiceTest {
-
-    @Mock
-    private AttributeValueToStringConverter attributeValueToStringConverter;
 
     @Mock
     private ContentTypeInfoService contentTypeInfoService;
@@ -64,7 +60,6 @@ public class DraftChangeExtractorServiceTest {
         draft.setName("test-draft");
 
         Mockito.when(contentTypeInfoService.findAttributeByName(ContentType.Product, "FULL_NAME")).thenReturn(Optional.fromNullable(ContentTypes.Product.FULL_NAME));
-        Mockito.when(attributeValueToStringConverter.convert(ContentTypes.Product.FULL_NAME, "changedName")).thenReturn("changedName");
 
         List<DraftChange> draftChanges = underTest.extractChanges(changedNodes, originalNodes, "testUser", draft);
 
@@ -163,7 +158,6 @@ public class DraftChangeExtractorServiceTest {
         draft.setLastModifiedAt(new Date());
         draft.setName("test-draft");
 
-        Mockito.when(attributeValueToStringConverter.convert(ContentTypes.Product.FULL_NAME, "changedName")).thenReturn("changedName");
         Mockito.when(contentTypeInfoService.findAttributeByName(ContentType.Product, "skus")).thenReturn(Optional.fromNullable(ContentTypes.Product.skus));
         Mockito.when(contentTypeInfoService.findAttributeByName(ContentType.Product, "PREFERRED_SKU")).thenReturn(Optional.fromNullable(ContentTypes.Product.PREFERRED_SKU));
         Mockito.when(contentTypeInfoService.findAttributeByName(ContentType.Product, "FULL_NAME")).thenReturn(Optional.fromNullable(ContentTypes.Product.FULL_NAME));

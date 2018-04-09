@@ -10,8 +10,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.freshdirect.cms.category.UnitTest;
 import com.freshdirect.cms.contentvalidation.validator.RecipeChildNodeValidator;
+import com.freshdirect.cms.contentvalidation.validator.Validator;
 import com.freshdirect.cms.core.service.ContentProviderService;
-import com.freshdirect.cms.validation.validator.Validator;
 
 @RunWith(MockitoJUnitRunner.class)
 @Category(UnitTest.class)

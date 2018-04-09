@@ -1,22 +1,23 @@
 package com.freshdirect.cms.validation;
 
-import com.freshdirect.cms.validation.validator.Validator;
+import com.freshdirect.cms.contentvalidation.validator.Validator;
+import com.freshdirect.cms.core.domain.ContentKey;
 
 public class ValidationResult {
 
-    private Object validatedObject;
+    private ContentKey validatedObject;
     private String message;
     private ValidationResultLevel validationResultLevel;
     private Class<? extends Validator> validatorClass;
 
-    public ValidationResult(Object validatedObject, String message, ValidationResultLevel resultLevel, Class<? extends Validator> validatorClass) {
+    public ValidationResult(ContentKey validatedObject, String message, ValidationResultLevel resultLevel, Class<? extends Validator> validatorClass) {
         this.validatedObject = validatedObject;
         this.message = message;
         this.validationResultLevel = resultLevel;
         this.validatorClass = validatorClass;
     }
 
-    public Object getValidatedObject() {
+    public ContentKey getValidatedObject() {
         return validatedObject;
     }
 
@@ -39,5 +40,4 @@ public class ValidationResult {
                 .append(validatorClass.getCanonicalName());
         return stringBuilder.toString();
     }
-
 }

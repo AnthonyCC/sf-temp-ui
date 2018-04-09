@@ -33,14 +33,10 @@ public class MaskedContentProviderTest {
     @Mock
     ContextualContentProvider maskProvider;
 
-    @Mock
-    ContentKeyParentsCollectorService contentKeyParentsCollectorService;
-
     private MaskedContentProvider testService;
 
     @Before
     public void setUp() {
-        maskProvider.contentKeyParentsCollectorService = contentKeyParentsCollectorService;
         testService = new MaskedContentProvider(baseProvider, maskProvider);
     }
 
@@ -113,7 +109,7 @@ public class MaskedContentProviderTest {
         assertTrue(testService.findContextsOf(maskProductKey).isEmpty());
     }
 
-    private final static ContentKey keyOf(ContentType type, String id) {
+    private static ContentKey keyOf(ContentType type, String id) {
         return ContentKeyFactory.get(type, id);
     }
 }

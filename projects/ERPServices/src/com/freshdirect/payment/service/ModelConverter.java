@@ -1502,8 +1502,14 @@ public class ModelConverter {
 		Map<String,FDGroup> groups = createFDGrpMap(fdProductInfoData.getGroups());
 		List<FDPlantMaterial> plantMaterialInfo = createPlantMaterialInfoList(fdProductInfoData.getPlantMaterialInfo());
 		Map<String, FDMaterialSalesArea> materialAvailability = createMaterialAvailability(fdProductInfoData.getMaterialAvailability());
-		FDProductInfo fdProductInfo = new FDProductInfo(fdProductInfoData.getSkuCode(),
-				fdProductInfoData.getVersion(), fdProductInfoData.getMaterialNumber(), null,groups,fdProductInfoData.getUpc(),plantMaterialInfo, zonePriceInfoList, materialAvailability,EnumAlcoholicContent.getAlcoholicContent(fdProductInfoData.getAlcoholType()));
+		FDProductInfo fdProductInfo = new FDProductInfo(
+				fdProductInfoData.getSkuCode(),
+				fdProductInfoData.getVersion(), 
+				fdProductInfoData.getMaterialNumber(), 
+				null,groups,fdProductInfoData.getUpc(),
+				plantMaterialInfo, zonePriceInfoList, 
+				materialAvailability,
+				EnumAlcoholicContent.getAlcoholicContent(fdProductInfoData.getAlcoholType()));
 		
 		return fdProductInfo;
 	}
@@ -1513,6 +1519,7 @@ public class ModelConverter {
 		List<FDPlantMaterial> fdPlantMaterials = new ArrayList<FDPlantMaterial>();
 		if(plantMaterialInfo!=null)
 		for (Entry<String, FDPlantMaterialData> fdPlantMaterial : plantMaterialInfo.entrySet()) {
+			String keyData = fdPlantMaterial.getKey();
 			fdPlantMaterials.add(buildFDPlantMaterial(fdPlantMaterial.getValue()));
 		}	
 		return fdPlantMaterials;
@@ -1632,7 +1639,7 @@ public class ModelConverter {
 		area.setDayPartValueType(value.getDayPartValueType()!=null? EnumDayPartValueType.getEnum(value.getDayPartValueType()):null);
 		area.setPickingPlantId(value.getPickingPlantId());
 		area.setSalesAreaInfo(buildSalesAreaInfo(value.getSalesAreaInfo()));
-//		area.setUnavailabilityDate(value.getUnavailabilityDate());
+		area.setUnavailabilityDate(new Date(value.getUnavailabilityDate().getTime()));
 		area.setUnavailabilityReason(value.getUnavailabilityReason());
 		area.setUnavailabilityStatus(value.getUnavailabilityStatus());
 		return area;

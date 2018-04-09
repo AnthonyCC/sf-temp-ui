@@ -113,6 +113,9 @@ public class ProductItemSorterFactory {
                     Comparator<FilteringProductItem> favoritesComparatorAdapter = adapterForProductModel(favoritesInnerComparator);
                     comparator = reverseOrder ? wrapReverseAvailAndName(favoritesComparatorAdapter) : wrapAvailAndName(favoritesComparatorAdapter);
                     break;
+                case STAFF_PICKS_OUR_FAVS:
+                	comparator = createDefaultComparator();
+                	break;
                 default:
                     comparator = reverseOrder ? reverseComparatorMap.get(sortStrategy) : comparatorMap.get(sortStrategy);
             }

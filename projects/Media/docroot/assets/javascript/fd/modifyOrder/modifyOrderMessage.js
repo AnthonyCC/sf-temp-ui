@@ -44,18 +44,6 @@ var FreshDirect = FreshDirect || {};
 	function stickyMessage(sel, topSpacing) {
 		$(document).ready(function() {
 			$(sel).sticky({topSpacing: topSpacing, zIndex: 1000});
-		
-			if (!fd.mobWeb){
-				var originalZIndex = null;
-				
-				$(sel).on('sticky-start', function() {
-					originalZIndex = $('#toptoolbar').css('z-index');
-					$('#toptoolbar').css('z-index', "600");
-				});
-			    $(sel).on('sticky-end', function() {
-			    	$('#toptoolbar').css('z-index', originalZIndex);
-			    });
-			}
 		});
 	}
 	

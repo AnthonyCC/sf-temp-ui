@@ -452,6 +452,9 @@ public class AccountController extends BaseController implements Comparator <Ord
             deliveryAddresses.setPreSelectedId(addressId);
             responseMessage = new ReservationTimeslots(deliveryAddresses, deliveryTimeslots, user);
         }
+        if(user!=null && user.getReservation()!=null && user.getReservation().getExpirationDateTime()!=null ){
+    		responseMessage.addNoticeMessage("ReservationEndTime", user.getReservation().getExpirationDateTime().toString());
+    	}
         responseMessage.setSuccessMessage("Delivery timeslots have been retrieved successfully.");
         setResponseMessage(model, responseMessage, user);
 
@@ -487,6 +490,9 @@ public class AccountController extends BaseController implements Comparator <Ord
 		DeliveryTimeslots deliveryTimeslots = new DeliveryTimeslots(timeSlotResult);
 
 		ReservationTimeslots responseMessage = new ReservationTimeslots(deliveryAddresses, deliveryTimeslots, user);
+		if(user!=null && user.getReservation()!=null && user.getReservation().getExpirationDateTime()!=null ){
+    		responseMessage.addNoticeMessage("ReservationEndTime", user.getReservation().getExpirationDateTime().toString());
+    	}
 		responseMessage.setSuccessMessage("Delivery timeslots have been retrieved successfully.");
 		setResponseMessage(model, responseMessage, user);
 

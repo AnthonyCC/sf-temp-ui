@@ -13,7 +13,6 @@ import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.cms.core.service.ContextualContentProvider;
 import com.freshdirect.cms.validation.ValidationResultLevel;
 import com.freshdirect.cms.validation.ValidationResults;
-import com.freshdirect.cms.validation.validator.Validator;
 
 /**
  * Ensures that ContentKey IDs for certain types are unique with respect to nodes of all such content types.

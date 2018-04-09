@@ -8,12 +8,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.freshdirect.cms.contentvalidation.validator.Validator;
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.service.ContextualContentProvider;
 import com.freshdirect.cms.validation.ValidationResult;
 import com.freshdirect.cms.validation.ValidationResults;
-import com.freshdirect.cms.validation.validator.Validator;
 
 @Service
 public class ContentValidatorService {

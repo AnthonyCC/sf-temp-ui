@@ -41,4 +41,6 @@ public interface ErpSaleHome extends EJBHome {
 	
 	public ErpSaleEB findByCriteria(String customerID,	EnumSaleType saleType, EnumSaleStatus saleStatus, List<EnumPaymentMethodType> pymtMethodTypes) throws FinderException, RemoteException;
 	
+	public ErpSaleEB findByCriteria(String customerID,	EnumSaleType saleType, List<EnumPaymentMethodType> pymtMethodTypes) throws FinderException, RemoteException;
+	
 }

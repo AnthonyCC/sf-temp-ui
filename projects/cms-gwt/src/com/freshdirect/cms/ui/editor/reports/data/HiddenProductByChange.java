@@ -8,7 +8,7 @@ public class HiddenProductByChange {
 
     private final Date changeDate;
 
-    private final String changedBy;
+    private final String author;
 
     private final String changeNote;
 
@@ -18,9 +18,9 @@ public class HiddenProductByChange {
 
     private final HiddenProductReason reason;
 
-    public HiddenProductByChange(Date changeDate, String changedBy, String changeNote, ContentKey productKey, ContentKey primaryHomeKey, HiddenProductReason reason) {
+    public HiddenProductByChange(Date changeDate, String author, String changeNote, ContentKey productKey, ContentKey primaryHomeKey, HiddenProductReason reason) {
         this.changeDate = changeDate;
-        this.changedBy = changedBy;
+        this.author = author;
         this.changeNote = changeNote;
         this.productKey = productKey;
         this.primaryHomeKey = primaryHomeKey;
@@ -33,8 +33,8 @@ public class HiddenProductByChange {
     }
 
 
-    public String getChangedBy() {
-        return changedBy;
+    public String getAuthor() {
+        return author;
     }
 
 
@@ -58,4 +58,8 @@ public class HiddenProductByChange {
     }
 
 
+    @Override
+    public String toString() {
+        return "{author:'"+author+"'; product:'"+productKey.id+"'; primaryHome:'"+primaryHomeKey.id+"'; reason: '"+reason.name()+"'; at:'"+changeDate.toString()+"'}";
+    }
 }

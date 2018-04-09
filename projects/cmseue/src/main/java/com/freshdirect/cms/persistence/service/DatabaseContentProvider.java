@@ -35,7 +35,7 @@ import com.freshdirect.cms.changecontrol.entity.ContentChangeDetailEntity;
 import com.freshdirect.cms.changecontrol.entity.ContentChangeEntity;
 import com.freshdirect.cms.changecontrol.entity.ContentChangeSetEntity;
 import com.freshdirect.cms.changecontrol.service.ContentChangeControlService;
-import com.freshdirect.cms.core.converter.ScalarValueToSerializedValueConverter;
+import com.freshdirect.cms.core.converter.ScalarValueConverter;
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
@@ -61,9 +61,6 @@ import com.freshdirect.cms.persistence.repository.BatchSavingRepository;
 import com.freshdirect.cms.persistence.repository.ContentNodeEntityRepository;
 import com.freshdirect.cms.persistence.repository.NavigationTreeRepository;
 import com.freshdirect.cms.persistence.repository.RelationshipEntityRepository;
-import com.freshdirect.cms.validation.ValidationResults;
-import com.freshdirect.cms.validation.exception.ValidationFailedException;
-import com.freshdirect.cms.validation.service.ValidatorService;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
@@ -110,16 +107,10 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
     private ScalarToAttributeEntityConverter scalarToAttributeEntityConverter;
 
     @Autowired
-    private ValidatorService validatorService;
-
-    @Autowired
     private CacheManager cacheManager;
 
     @Autowired
     private ContentChangeControlService contentChangeControlService;
-
-    @Autowired
-    private ScalarValueToSerializedValueConverter scalarValueToSerializedValueConverter;
 
     @Autowired
     private NavigationTreeRepository navigationTreeRepository;
@@ -267,18 +258,13 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
     @Override
     public Set<ContentKey> getContentKeysByType(ContentType type) {
         Assert.notNull(type, "ContentType parameter can't be null!");
-        final long t0 = System.currentTimeMillis();
 
-        Set<ContentKey> result = new HashSet<ContentKey>();        
+        Set<ContentKey> result = new HashSet<ContentKey>();
         for (ContentKey key : allKeys) {
             if (type == key.type) {
                 result.add(key);
             }
         }
-
-        final long t1 = System.currentTimeMillis();
-        LOGGER.debug("Collected " + result.size() + " keys of type " + type + " in " + (t1 - t0) + " ms");
-
         return result;
     }
 
@@ -303,10 +289,7 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
         Assert.notNull(contentKey, "ContentKey parameter can't be null!");
         Assert.notNull(attribute, "Attribute parameter can't be null!");
 
-        validateNode(contentKey, attribute, attributeValue);
-
         saveAttributeInternal(contentKey, attribute, attributeValue);
-
         cacheEvictors.evictAttributeCacheWithContentKey(contentKey);
     }
 
@@ -326,12 +309,9 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
         Assert.notNull(contentKey, "ContentKey parameter can't be null!");
         Assert.notNull(attributesWithValues, "Attribute values parameter can't be null!");
 
-        validateNode(contentKey, attributesWithValues);
-
         for (Map.Entry<Attribute, Object> entry : attributesWithValues.entrySet()) {
             saveAttributeInternal(contentKey, entry.getKey(), entry.getValue());
         }
-
         cacheEvictors.evictAttributeCacheWithContentKey(contentKey);
     }
 
@@ -421,7 +401,7 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
         Set<ContentKey> keysToUpdate = new HashSet<ContentKey>();
         keysToUpdate.add(contentKey);
         updateContentKeysCache(keysToUpdate);
-        evictParentKeysCache(keysToUpdate, Collections.<ContentKey> emptySet());
+        evictParentKeysCache(keysToUpdate, Collections.<ContentKey>emptySet());
         cacheEvictors.evictContentFactoryCaches(contentKey);
         LOGGER.debug("Evicting attributeCache, parentKeysCache, nodesByIdCache and nodesByKeyCache caches for contentKey: " + contentKey);
     }
@@ -501,20 +481,6 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
         return attributesWithValues;
     }
 
-    private void validateNode(ContentKey contentKey, Attribute attribute, Object attributeValue) {
-        Map<Attribute, Object> attributesWithValues = new HashMap<Attribute, Object>();
-        attributesWithValues.put(attribute, attributeValue);
-        validateNode(contentKey, attributesWithValues);
-    }
-
-    private void validateNode(ContentKey contentKey, Map<Attribute, Object> attributesWithValues) {
-        Map<Attribute, Object> attributesForContentKey = getAllAttributesForContentKey(contentKey);
-        for (Map.Entry<Attribute, Object> entry : attributesWithValues.entrySet()) {
-            attributesForContentKey.put(entry.getKey(), entry.getValue());
-        }
-        validatorService.validate(contentKey, attributesForContentKey);
-    }
-
     private List<AttributeEntity> selectAttributesByContentKeyAndName(List<AttributeEntity> attributes, ContentKey contentKey, List<String> names) {
         if (attributes == null || attributes.isEmpty()) {
             return Collections.emptyList();
@@ -585,14 +551,6 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
         Assert.notNull(payload, "Content payload cannot be null");
         Assert.notNull(context, "Update context must be provided");
 
-        // -- validation phase --
-
-        // validate updated content
-        ValidationResults validationResults = validateContent(payload);
-        if (validationResults.hasError()) {
-            throw new ValidationFailedException("Validation failed, save not happened!", validationResults);
-        }
-
         // collect keys of new content nodes
         Set<ContentKey> newKeys = collectKeysCreatedInPayload(payload);
 
@@ -631,20 +589,6 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
         evicAttributeCache(payload.keySet());
 
         return changes;
-    }
-
-    /**
-     * Perform content validation on input before saving changes
-     */
-    private ValidationResults validateContent(LinkedHashMap<ContentKey, Map<Attribute, Object>> payload) {
-        ValidationResults validationResults = new ValidationResults();
-        for (Map.Entry<ContentKey, Map<Attribute, Object>> entry : payload.entrySet()) {
-            ContentKey contentKey = entry.getKey();
-            Map<Attribute, Object> allAttributes = getAllAttributesForContentKey(contentKey);
-            allAttributes.putAll(entry.getValue()); // overriding the saved values with the changed ones
-            validationResults.addAll(validatorService.validate(contentKey, allAttributes));
-        }
-        return validationResults;
     }
 
     private Optional<ContentChangeSetEntity> recordChanges(Set<ContentKey> newKeys, Map<ContentKey, Map<Attribute, Object>> originalValues,
@@ -747,10 +691,8 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
     private ContentChangeDetailEntity createScalarValueChangeDetail(Scalar attr, Object originalValue, Object changedValue) {
         ContentChangeDetailEntity detail = new ContentChangeDetailEntity();
         detail.setAttributeName(attr.getName());
-
-        detail.setOldValue(scalarValueToSerializedValueConverter.convert(attr, originalValue));
-        detail.setNewValue(scalarValueToSerializedValueConverter.convert(attr, changedValue));
-
+        detail.setOldValue(ScalarValueConverter.serializeToString(attr, originalValue));
+        detail.setNewValue(ScalarValueConverter.serializeToString(attr, changedValue));
         return detail;
     }
 
@@ -768,8 +710,8 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
     private ContentChangeDetailEntity createManyRelationshipValueChangeDetail(Relationship relationship, Object originalValue, Object changedValue) {
         ContentChangeDetailEntity detail = null;
 
-        List<ContentKey> oldKeysList = originalValue != null ? (List<ContentKey>) originalValue : Collections.<ContentKey> emptyList();
-        List<ContentKey> changedKeysList = changedValue != null ? (List<ContentKey>) changedValue : Collections.<ContentKey> emptyList();
+        List<ContentKey> oldKeysList = originalValue != null ? (List<ContentKey>) originalValue : Collections.<ContentKey>emptyList();
+        List<ContentKey> changedKeysList = changedValue != null ? (List<ContentKey>) changedValue : Collections.<ContentKey>emptyList();
 
         if (!oldKeysList.equals(changedKeysList)) {
             detail = new ContentChangeDetailEntity();

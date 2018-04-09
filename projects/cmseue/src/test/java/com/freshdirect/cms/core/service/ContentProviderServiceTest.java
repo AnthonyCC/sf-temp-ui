@@ -51,19 +51,15 @@ public class ContentProviderServiceTest {
     private ContentTypeInfoService contentTypeInfoService;
 
     @Mock
-    private ContentKeyParentsCollectorService parentKeysTableGeneratorService;
-
-    @Mock
     private ContentProvider contentProvider;
 
-    @Mock
+    @Spy
     private ContextService contextService;
 
     @Spy
     @InjectMocks
     private ContentProviderService testService;
 
-    @SuppressWarnings("unchecked")
     @Before
     public void setUp() {
         // mock type info
@@ -111,16 +107,8 @@ public class ContentProviderServiceTest {
             parentKeysCache.put(entry.getKey(), entry.getValue());
         }
 
-        Cache allParentKeysCache = new ConcurrentMapCache("allParentKeysCache");
-        allParentKeysCache.put("all", parentKeysCache.getNativeCache());
-
         Mockito.when(contentProvider.generateParentKeysMap()).thenReturn(parentKeysMap);
-
         Mockito.when(cacheManager.getCache("parentKeysCache")).thenReturn(parentKeysCache);
-        Mockito.when(cacheManager.getCache("allParentKeysCache")).thenReturn(allParentKeysCache);
-        Mockito.when(contextService.buildGraphFromParentKeyStructure(Mockito.any(ContentKey.class), Mockito.anyMap())).thenCallRealMethod();
-        Mockito.when(contextService.selectTopKeysOf(Mockito.any(ContentKey.class), Mockito.anyList())).thenCallRealMethod();
-        Mockito.when(contextService.findContextsOf(Mockito.any(ContentKey.class), Mockito.anyMap())).thenCallRealMethod();
     }
 
     @Test

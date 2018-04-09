@@ -1416,7 +1416,7 @@ option.address-icon {
 #errorsoalerts .so-error-alert-button-container{
 	float: right;
 }
-#modifyorderalert table.modify-order-alert-table tr td,
+#modifyorderalert table.modify-order-alert-table tr th,#modifyorderalert table.modify-order-alert-table tr td,
 #locabar_modify_order_trigger #locabar_orders table.modify-order-alert-table tr td{
 	color:  #5a5a5a;
 	font-size: 12px;
@@ -1427,12 +1427,12 @@ option.address-icon {
 #locabar_modify_order_trigger #locabar_orders table.modify-order-alert-table tr:nth-child(odd) td{
 	padding: 10px 0;
 }
-#modifyorderalert table.modify-order-alert-table tr:first-child td,
+#modifyorderalert table.modify-order-alert-table tr:first-child th,
 #locabar_modify_order_trigger #locabar_orders table.modify-order-alert-table tr:first-child td{
 	border-bottom: 1px solid #CCC;
 	padding: 5px 0;
 }
-#modifyorderalert table.modify-order-alert-table tr:nth-child(odd) td:first-child,
+#modifyorderalert table.modify-order-alert-table tr:nth-child(odd) td:first-child,#modifyorderalert table.modify-order-alert-table tr:nth-child(odd) th:first-child,
 #locabar_modify_order_trigger #locabar_orders table.modify-order-alert-table tr:nth-child(odd) td:first-child{
 	padding-left: 30px;
 }
@@ -1446,7 +1446,7 @@ option.address-icon {
 #locabar_modify_order_trigger #locabar_orders table.modify-order-alert-table tr:nth-child(2) td .so-alert-line-separator{
 	display: none;
 }
-#modifyorderalert table.modify-order-alert-table tr td.modify-order-alert-table-header-status,
+#modifyorderalert table.modify-order-alert-table tr th.modify-order-alert-table-header-status,
 #locabar_modify_order_trigger #locabar_orders table.modify-order-alert-table tr td.modify-order-alert-table-header-status{
 	line-height: 15px;
 }

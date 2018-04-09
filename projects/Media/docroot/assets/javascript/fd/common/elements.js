@@ -27,22 +27,32 @@ var FreshDirect = FreshDirect || {};
 	     $(orig).wrap( "<div class='select-wrapper'></div>" );
 	   }
    } else if (this.el.hasClass('customcheckbox')) {
-      if (this.el.parent().hasClass('fake-checkbox-wrapper')) {
-  	    return this.el;
-  	   } else {
-         var id = orig.attr('id');
+	     if (this.el.parent().hasClass('fake-checkbox-wrapper')) {
+	         return this.el;
+	        } else {
+	        var id = orig.attr('id');
 
-         if (!id) {
-          var rnd = Math.random() + '';
-          rnd = rnd.substring(2, rnd.length);
-          id = 'customcheckbox_' + Date.now() +'_' + rnd;
-          orig.attr('id', id);
-         }
-  	     $(orig).wrap( "<span class='fake-checkbox-wrapper'></span>");
-  	     $(orig).parent().append('<label class="fake-checkbox" for="' + id + '"></label>');
-  	   }
-     };
-  };
+	        if (!id) {
+	         var rnd = Math.random() + '';
+	         rnd = rnd.substring(2, rnd.length);
+	         id = 'customcheckbox_' + Date.now() +'_' + rnd;
+	         orig.attr('id', id);
+	        }
+	        $origParent = $(orig).parent(); //original parent
+	        $origLabel = $origParent.find('.customcheckboxlabel'); //check for existing label
+	          $(orig).wrap( "<span class='fake-checkbox-wrapper'></span>"); //becomes new parent
+	         
+	          if ($origLabel.length) { //if existing label, move to correct place in dom
+	        	  if (!$origLabel.attr('for')) {
+	                  $origLabel.attr('for', id);
+	               }
+	             $(orig).parent().append($origLabel);
+	          } else { //generic empty checkbox
+	              $(orig).parent().append('<label class="fake-checkbox" for="' + id + '"></label>');
+	          }
+	        }
+          }
+	    };
 
   Elements.DEFAULT_CONFIG = {
     display: 'none'

@@ -37,7 +37,7 @@
               </div>
             {/if}
             {if $moduleData.editorialContainer.headerTitle}
-              <h1>{$moduleData.editorialContainer.headerTitle}</h1>
+              <h2 class="accessibleHeading">{$moduleData.editorialContainer.headerTitle}</h2>
             {/if}
             {if $moduleData.editorialContainer.headerSubtitle}
               <h2>{$moduleData.editorialContainer.headerSubtitle}</h2>
@@ -54,8 +54,26 @@
           </div>
           <div class="learn-more visible">
             <div class="gradient-space"></div>
-            <button class="visible" type="button" learn-more>Learn more</button>
-            <button type="button" show-less>Show less</button>
+            <button class="visible" type="button" learn-more>Learn more
+            <span class="offscreen">about {sp}
+             {if $moduleData.editorialContainer.headerTitle}
+              {$moduleData.editorialContainer.headerTitle}
+            {/if}
+            {if $moduleData.editorialContainer.headerSubtitle}
+              {$moduleData.editorialContainer.headerSubtitle}
+            {/if}
+            </span>
+            </button>
+            <button type="button" show-less>Show less
+            <span class="offscreen">about {sp}
+             {if $moduleData.editorialContainer.headerTitle}
+              {$moduleData.editorialContainer.headerTitle}
+            {/if}
+            {if $moduleData.editorialContainer.headerSubtitle}
+              {$moduleData.editorialContainer.headerSubtitle}
+            {/if}
+            </span>
+            </button>
           </div>
         </div>
       </div>

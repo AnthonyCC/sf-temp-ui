@@ -70,6 +70,7 @@ public class IndexConfiguration {
         CONFIGURATIONS.add(new AttributeIndexBuilder(ContentType.Module, ContentTypes.Module.name).build());
         CONFIGURATIONS.add(new AttributeIndexBuilder(ContentType.ModuleContainer, ContentTypes.ModuleContainer.name).build());
         CONFIGURATIONS.add(new AttributeIndexBuilder(ContentType.ModuleGroup, ContentTypes.ModuleGroup.name).build());
+        CONFIGURATIONS.add(new AttributeIndexBuilder(ContentType.FDFolder, ContentTypes.FDFolder.name).build());
     }
 
     public static IndexConfiguration getInstance() {

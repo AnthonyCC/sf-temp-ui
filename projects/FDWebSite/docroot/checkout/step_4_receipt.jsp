@@ -319,7 +319,7 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 					<!--
 					<img src="/media_stat/images/logos/fd_logo_md.gif" width="216" height="42" border="0" alt="FreshDirect" />
 					-->
-					<img src="/media/layout/nav/globalnav/fdx/fd-logo_v2.png" width="216" height="44" border="0" alt="FreshDirect" />
+					<img src="/media/layout/nav/globalnav/fdx/fd-logo_v2.png" width="216" height="44" border="0" alt="redirect to FreshDirect homepage" />
 				</a>
 			</td>
 			<td width="450" align="right">

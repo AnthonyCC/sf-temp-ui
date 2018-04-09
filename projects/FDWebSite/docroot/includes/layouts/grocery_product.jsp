@@ -1138,7 +1138,7 @@ if(((pageNumber -1) * itemsToDisplay) > skuCount) {
 			        <%-- /fd:IsAlcoholic --%>
 	        		<br />
 			        <fd:CCLCheck>
-			            <div style="margin: 7px 4px 0 4px;"><a id="ccl-add-action" href="/unsupported.jsp" onclick="return CCL.save_items('grocery_form',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_link_selected_with_icon_dfgs.gif" alt="save to shopping list" width="151" height="15" style="border: 0; padding-right: 14px"></a></div>
+			            <div style="margin: 7px 4px 0 4px;"><a id="ccl-add-action" href="/unsupported.jsp" onclick="return CCL.save_items('grocery_form',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_link_selected_with_icon_dfgs.gif" alt="save all items to shopping list" width="151" height="15" style="border: 0; padding-right: 14px"></a></div>
 						<div style="margin: 0 0 1ex 4px;"></div>
 			        </fd:CCLCheck>
 	        	</td>

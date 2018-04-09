@@ -209,5 +209,8 @@ var FreshDirect = FreshDirect || {};
     initSoyComponents: initSoyComponents,
     timeslotDrawerDependencyLoaded: timeslotDrawerDependencyLoaded
   }, fd, 'checkout', '2_0');
-
+  $(document).on('click','.skipnav',function(){
+	   $('#content :tabbable:first').focus();
+	   return false;
+	});
 }(FreshDirect));

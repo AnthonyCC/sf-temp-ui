@@ -9,7 +9,15 @@
     {if $menuBox.displayType == 'SIMPLE'}
       {if $menuBox.name}<h3>{$menuBox.name}</h3>{/if}
       {if $menuBox.items and length($menuBox.items) > 0}
-      <ul>
+      <ul><fieldset><legend><span class="offscreen">
+      {if $menuBox.boxType == 'FILTER'}filter by {$menuBox.name}
+      {else}
+      {if $menuBox.boxType == 'SUPERDEPARTMENT'}choose by department
+      {else}
+      Choose by category
+      {/if}
+      {/if}
+      </span></legend>
       {foreach $item in $menuBox.items}
         {if $item.urlParameter}
           {call .menuItem}
@@ -24,7 +32,7 @@
         	{/if}
         {/if}
       {/foreach}
-      </ul>
+      </fieldset></ul>
      {/if} 
     {elseif $menuBox.displayType == 'POPUP'}
       {if $menuBox.name}<h3>{$menuBox.name}</h3>{/if}      
@@ -97,7 +105,15 @@
   {let $mod: ($l >= $limit * $maxcols ? $l % $maxcols : 0) /}
   {for $col in range(0, $maxcols)}
     {if $col * $n + $mod < $l}
-      <ul>
+      <ul><fieldset><legend><span class="offscreen">
+      {if $menuBox.boxType == 'FILTER'}filter by {$menuBox.name}
+      {else}
+      {if $menuBox.boxType == 'SUPERDEPARTMENT'}choose by department
+      {else}
+      Choose by category
+      {/if}
+      {/if}
+      </span></legend>
       {for $i in range($col * $n + ($col < $mod ? $col : $mod), ($col + 1) * $n + ($col+1 < $mod ? $col+1 : $mod ))}
         {if $l > $i}
           {delcall browse.layoutBody variant="$bodyVariant"} 
@@ -106,7 +122,7 @@
           {/delcall}
         {/if}
       {/for}
-      </ul>
+     </fieldset> </ul>
     {/if}
   {/for}
 {/template}
@@ -147,7 +163,15 @@
 * @param menuBox list of menuitems
 */
 {template .popupLayout autoescape="false"}
-  <ul>
+  <ul><fieldset><legend><span class="offscreen">
+      {if $menuBox.boxType == 'FILTER'}filter by {$menuBox.name}
+      {else}
+      {if $menuBox.boxType == 'SUPERDEPARTMENT'}choose by department
+      {else}
+      Choose by category
+      {/if}
+      {/if}
+      </span></legend>
   {foreach $item in $menuBox.items}
     {if $item.name != 'marker'}
       {if $item.urlParameter}
@@ -159,10 +183,18 @@
         <li><h3 class="section-big">{$item.name}</h3></li>
       {/if}
     {else}
-      </ul><ul>
+     </fieldset> </ul><ul><fieldset><legend><span class="offscreen">
+      {if $menuBox.boxType == 'FILTER'}filter by {$menuBox.name}
+      {else}
+      {if $menuBox.boxType == 'SUPERDEPARTMENT'}choose by department
+      {else}
+      Choose by category
+      {/if}
+      {/if}
+      </span></legend>
     {/if}
   {/foreach}
-  </ul>
+ </fieldset> </ul>
 {/template}
 
 /**
