@@ -5,7 +5,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,8 +27,69 @@ import org.apache.tools.ant.util.DateUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.common.customer.EnumCardType;
+import com.freshdirect.customer.EnumChargeType;
+import com.freshdirect.customer.EnumDeliveryType;
+import com.freshdirect.delivery.EnumComparisionType;
 import com.freshdirect.delivery.EnumDeliveryOption;
+import com.freshdirect.delivery.EnumPromoFDXTierType;
+import com.freshdirect.fdstore.customer.adapter.PromotionContextAdapter;
+import com.freshdirect.fdstore.promotion.ActiveInactiveStrategy;
+import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
+import com.freshdirect.fdstore.promotion.AssignedCustomerStrategy;
+import com.freshdirect.fdstore.promotion.AudienceStrategy;
+import com.freshdirect.fdstore.promotion.CartStrategy;
+import com.freshdirect.fdstore.promotion.CompositeStrategy;
+import com.freshdirect.fdstore.promotion.CustomerStrategy;
+import com.freshdirect.fdstore.promotion.DCPDLineItemStrategy;
+import com.freshdirect.fdstore.promotion.DCPDiscountApplicator;
+import com.freshdirect.fdstore.promotion.DCPDiscountRule;
+import com.freshdirect.fdstore.promotion.DateRangeStrategy;
+import com.freshdirect.fdstore.promotion.DlvZoneStrategy;
+import com.freshdirect.fdstore.promotion.EnumDCPDContentType;
+import com.freshdirect.fdstore.promotion.EnumOrderType;
 import com.freshdirect.fdstore.promotion.EnumPromotionStatus;
+import com.freshdirect.fdstore.promotion.EnumPromotionType;
+import com.freshdirect.fdstore.promotion.ExtendDeliveryPassApplicator;
+import com.freshdirect.fdstore.promotion.FDMinDCPDTotalPromoData;
+import com.freshdirect.fdstore.promotion.FraudStrategy;
+import com.freshdirect.fdstore.promotion.GeographyStrategy;
+import com.freshdirect.fdstore.promotion.HeaderDiscountApplicator;
+import com.freshdirect.fdstore.promotion.HeaderDiscountRule;
+import com.freshdirect.fdstore.promotion.LimitedUseStrategy;
+import com.freshdirect.fdstore.promotion.LineItemDiscountApplicator;
+import com.freshdirect.fdstore.promotion.LineItemStrategyI;
+import com.freshdirect.fdstore.promotion.MaxLineItemCountStrategy;
+import com.freshdirect.fdstore.promotion.MaxRedemptionStrategy;
+import com.freshdirect.fdstore.promotion.MinimumSubtotalStrategy;
+import com.freshdirect.fdstore.promotion.OrderTypeStrategy;
+import com.freshdirect.fdstore.promotion.PercentOffApplicator;
+import com.freshdirect.fdstore.promotion.PerishableLineItemStrategy;
+import com.freshdirect.fdstore.promotion.ProductSampleApplicator;
+import com.freshdirect.fdstore.promotion.ProfileAttributeStrategy;
+import com.freshdirect.fdstore.promotion.Promotion;
+import com.freshdirect.fdstore.promotion.PromotionApplicatorI;
+import com.freshdirect.fdstore.promotion.PromotionContextI;
+import com.freshdirect.fdstore.promotion.PromotionDlvDate;
+import com.freshdirect.fdstore.promotion.PromotionDlvDay;
+import com.freshdirect.fdstore.promotion.PromotionDlvTimeSlot;
+import com.freshdirect.fdstore.promotion.PromotionGeography;
+import com.freshdirect.fdstore.promotion.PromotionStrategyI;
+import com.freshdirect.fdstore.promotion.RecommendationStrategy;
+import com.freshdirect.fdstore.promotion.RecommendedLineItemStrategy;
+import com.freshdirect.fdstore.promotion.RedemptionCodeStrategy;
+import com.freshdirect.fdstore.promotion.ReferAFriendStrategy;
+import com.freshdirect.fdstore.promotion.RuleBasedPromotionStrategy;
+import com.freshdirect.fdstore.promotion.SampleLineApplicator;
+import com.freshdirect.fdstore.promotion.SampleStrategy;
+import com.freshdirect.fdstore.promotion.SignupDiscountApplicator;
+import com.freshdirect.fdstore.promotion.SignupDiscountRule;
+import com.freshdirect.fdstore.promotion.SignupStrategy;
+import com.freshdirect.fdstore.promotion.SkuLimitStrategy;
+import com.freshdirect.fdstore.promotion.StateCountyStrategy;
+import com.freshdirect.fdstore.promotion.UniqueUseStrategy;
+import com.freshdirect.fdstore.promotion.WaiveChargeApplicator;
 import com.freshdirect.fdstore.promotion.management.FDPromoChangeDetailModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoChangeModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoContentModel;
@@ -44,6 +104,7 @@ import com.freshdirect.fdstore.promotion.management.WSAdminInfo;
 import com.freshdirect.fdstore.promotion.management.WSPromotionInfo;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.content.ProductReference;
 import com.metaparadigm.jsonrpc.AbstractSerializer;
 import com.metaparadigm.jsonrpc.MarshallException;
 import com.metaparadigm.jsonrpc.ObjectMatch;
@@ -61,7 +122,72 @@ public class FDPromotionJSONSerializer extends AbstractSerializer {
 		FDPromoPaymentStrategyModel.class, FDPromotionNewModel.class,
 		FDPromoChangeModel.class, FDPromoChangeDetailModel.class,
 		FDPromoDlvZoneStrategyModel.class, FDPromoDlvTimeSlotModel.class, WSPromotionInfo.class,WSAdminInfo.class, EnumPromotionStatus.class,
-		FDPromoDollarDiscount.class,FDPromoStateCountyRestriction.class,EnumDeliveryOption.class
+		FDPromoDollarDiscount.class,FDPromoStateCountyRestriction.class,EnumDeliveryOption.class,
+		Promotion.class,
+		EnumPromotionType.class,
+		PromotionStrategyI.class,
+		ActiveInactiveStrategy.class,
+		AssignedCustomerStrategy.class,
+		AudienceStrategy.class,
+		CartStrategy.class,
+		CompositeStrategy.class,
+		CustomerStrategy.class,
+		DateRangeStrategy.class,
+		DlvZoneStrategy.class,
+		FraudStrategy.class,
+		GeographyStrategy.class,
+		LimitedUseStrategy.class,
+		MaxRedemptionStrategy.class,
+		MinimumSubtotalStrategy.class,
+		OrderTypeStrategy.class,
+		ProfileAttributeStrategy.class,
+		RecommendationStrategy.class,
+		RedemptionCodeStrategy.class,
+		ReferAFriendStrategy.class,
+		RuleBasedPromotionStrategy.class,
+		SampleStrategy.class,
+		SignupStrategy.class,
+		StateCountyStrategy.class,
+		UniqueUseStrategy.class,
+		PromotionApplicatorI.class,
+		DCPDiscountApplicator.class,
+		ExtendDeliveryPassApplicator.class,
+		HeaderDiscountApplicator.class,
+		LineItemDiscountApplicator.class,
+		PercentOffApplicator.class,
+		ProductSampleApplicator.class,
+		SampleLineApplicator.class,
+		SignupDiscountApplicator.class,
+		WaiveChargeApplicator.class,
+		AssignedCustomerParam.class,//For AssignedCustomerStrategy.java
+		EnumDCPDContentType.class,//For CartStrategy.java
+		FDMinDCPDTotalPromoData.class,//For CartStrategy.java
+		EnumCardType.class,//For CustomerStrategy.java
+		EnumOrderType.class,//For CustomerStrategy.java, OrderTypeStrategy.java
+		EnumComparisionType.class,//For CustomerStrategy.java
+		EnumDeliveryType.class,//For CustomerStrategy.java
+		PromotionDlvTimeSlot.class,//For DlvZoneStrategy.java
+		PromotionDlvDate.class,//For DlvZoneStrategy.java
+		PromotionDlvDay.class,//For DlvZoneStrategy.java
+		EnumPromoFDXTierType.class,	//For DlvZoneStrategy.java
+		PromotionGeography.class,//For GeographyStrategy.java
+		PromotionContextI.class,//For PromotionApplicatorI.java
+		DCPDiscountRule.class,//For DCPDiscountApplicator.java
+		HeaderDiscountRule.class,//For HeaderDiscountApplicator.java
+		FDPromoDollarDiscount.class,//For HeaderDiscountRule.java
+		ProductReference.class,//For ProductSampleApplicator.java
+		SignupDiscountRule.class,//For SignupDiscountApplicator.java
+		EnumChargeType.class,//For WaiveChargeApplicator.java
+		LineItemStrategyI.class,//For LineItemDiscountApplicator.java
+		DCPDLineItemStrategy.class,
+		MaxLineItemCountStrategy.class,
+		PerishableLineItemStrategy.class,
+		RecommendedLineItemStrategy.class,
+		SkuLimitStrategy.class,
+		ContentKey.class,//For DCPDLineItemStrategy.java
+		PromotionContextAdapter.class
+		
+
 	};
 
 	private static Class<?>[] _JSONClasses = new Class[] { JSONObject.class };
