@@ -138,8 +138,18 @@ public class ProductExtraDataPopulator {
         return data;
     }
 
-    public static ProductExtraData populateClaimsDataForMobile(ProductExtraData data, ProductModel productNode) throws FDResourceException, FDSkuNotFoundException {
-        return populateClaimsData(data, productNode);
+    public static ProductExtraData populateClaimsData(ProductExtraData data, ProductModel productNode) throws FDResourceException, FDSkuNotFoundException {
+        List<String> claims = collectClaims(productNode);
+        List<String> organicClaims = collectOrganicClaims(productNode);
+
+        if (!organicClaims.isEmpty()) {
+            data.setOrganicClaims(organicClaims);
+        }
+
+        if (!claims.isEmpty()) {
+            data.setClaims(claims);
+        }
+        return data;
     }
 
     private static void populateLightExtraData(ProductExtraData data, FDUserI user, ProductModel product) {
@@ -1024,20 +1034,6 @@ public class ProductExtraDataPopulator {
         outString = MediaUtils.fixMedia(outString);
 
         return quoted ? JSONObject.quote(outString) : outString;
-    }
-
-    private static ProductExtraData populateClaimsData(ProductExtraData data, ProductModel productNode) throws FDResourceException, FDSkuNotFoundException {
-        List<String> claims = collectClaims(productNode);
-        List<String> organicClaims = collectOrganicClaims(productNode);
-
-        if (!organicClaims.isEmpty()) {
-            data.setOrganicClaims(organicClaims);
-        }
-
-        if (!claims.isEmpty()) {
-            data.setClaims(claims);
-        }
-        return data;
     }
 
     private static List<String> collectOrganicClaims(ProductModel productNode) throws FDResourceException {
