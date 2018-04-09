@@ -13,6 +13,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.message.BasicNameValuePair;
 
 import com.freshdirect.customer.EnumChargeType;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDOrderI;
@@ -36,23 +37,40 @@ public class GoogleAnalyticsReportingService {
         return INSTANCE;
     }
 
-    public HttpResponse postGAReporting(FDOrderI order) throws UnsupportedEncodingException, IOException {
-        return HttpService.defaultService().postDataWithHttpEntity(GOOGLE_ANALYTICS_HOST, assembleTransactionPayloadForGA(order), USER_AGENT);
+    public HttpResponse postGAReporting(FDOrderI order, EnumEStoreId eStoreId) throws UnsupportedEncodingException, IOException {
+        return HttpService.defaultService().postDataWithHttpEntity(GOOGLE_ANALYTICS_HOST, assembleTransactionPayloadForGA(order, eStoreId), USER_AGENT);
     }
 
-    public HttpEntity assembleTransactionPayloadForGA(FDOrderI order) throws UnsupportedEncodingException {
-        HttpEntity entity = null;
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
+    public HttpEntity assembleTransactionPayloadForGA(FDOrderI order, EnumEStoreId eStoreId) throws UnsupportedEncodingException {
+        String domain = null;
+        String trackingId = null;
+
+        switch (eStoreId) {
+            case FD:
+                domain = FDStoreProperties.getGoogleAnalyticsFdDomain();
+                trackingId = FDStoreProperties.getGoogleAnalyticsFdKey();
+                break;
+
+            case FDX:
+                domain = FDStoreProperties.getGoogleAnalyticsFdxDomain();
+                trackingId = FDStoreProperties.getGoogleAnalyticsFdxKey();
+                break;
+
+            default:
+                domain = FDStoreProperties.getGoogleAnlayticsDomain();
+                trackingId = FDStoreProperties.getGoogleAnalyticsKey();
+                break;
+        }
 
         String version = "1";
-        String trackingId = FDStoreProperties.getGoogleAnalyticsKey();
         String customerId = order.getCustomerId();
         String hitType = "event";
-        String documentLocation = "freshdirect.com/shipped";
-        String documentHostname = "freshdirect.com";
+        String documentLocation = domain + "/shipped";
         String transactionId = order.getErpSalesId() + "-Shipped";
-        String transactionAffiliation = "freshdirect.com";
+        String transactionAffiliation = domain;
+        String documentHostname = domain;
 
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("v", version));
         params.add(new BasicNameValuePair("tid", trackingId));
         params.add(new BasicNameValuePair("cid", customerId));
@@ -85,13 +103,10 @@ public class GoogleAnalyticsReportingService {
         params.add(new BasicNameValuePair("ec", "Ecommerce Action"));
         params.add(new BasicNameValuePair("ea", "Purchase"));
 
-        
-        entity = new UrlEncodedFormEntity(params);
-        return entity;
+        return new UrlEncodedFormEntity(params);
     }
 
     private void assembleProductList(List<NameValuePair> params, FDOrderI order, FDCartLineI cartLine, int productIndex) {
-
         ProductModel product = cartLine.lookupProduct();
 
         String productNameKeyStarter = "pr" + productIndex;
@@ -122,7 +137,7 @@ public class GoogleAnalyticsReportingService {
         return deliveryCost;
     }
 
-    public void populateRedeemedPromotionCodes(List<NameValuePair> params, FDOrderI order) {
+    private void populateRedeemedPromotionCodes(List<NameValuePair> params, FDOrderI order) {
         if (order instanceof FDOrderAdapter) {
             Set<String> usedPromotionCodes = ((FDOrderAdapter) order).getUsedPromotionCodes();
             if (usedPromotionCodes != null) {

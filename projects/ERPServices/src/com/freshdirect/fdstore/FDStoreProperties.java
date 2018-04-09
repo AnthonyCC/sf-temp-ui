@@ -538,10 +538,14 @@ public class FDStoreProperties {
     private static final String PROP_COUNTRY_INFO_REFRESH_INTERVAL = "fdstore.countryInfo.refresh.minutes";
     // APPDEV-2072 google analytics environment specific key
     private static final String PROP_GOOGLE_ANALYTICS_KEY = "fdstore.google.analytics.key";
+    private static final String PROP_GOOGLE_ANALYTICS_FD_KEY = "fdstore.google.analytics.fd.key";
+    private static final String PROP_GOOGLE_ANALYTICS_FDX_KEY = "fdstore.google.analytics.fdx.key";
     // APPDEV-3522 Google Analytics: Upgrade to Universal Analytics: Updates for Page Load Times
     private static final String PROP_GOOGLE_ANALYTICS_UNIVERSAL = "fdstore.google.analytics.universal";
 
     private static final String PROP_GOOGLE_ANALYTICS_DOMAIN = "fdstore.google.analytics.domain";
+    private static final String PROP_GOOGLE_ANALYTICS_FD_DOMAIN = "fdstore.google.analytics.fd.domain";
+    private static final String PROP_GOOGLE_ANALYTICS_FDX_DOMAIN = "fdstore.google.analytics.fdx.domain";
 
     // APPDEV-6030 Google Tag Manager
     private static final String PROP_GOOGLE_TAG_MANAGER_KEY = "fdstore.google.tagmanager.key";
@@ -1515,8 +1519,12 @@ public class FDStoreProperties {
         defaults.put(PROP_GOOGLE_TAG_MANAGER_PREVIEW_ID, "");
 
         // APPDEV-2072 google analytics key
-        defaults.put(PROP_GOOGLE_ANALYTICS_KEY, "UA-20535945-18"); // default to an empty string
+        defaults.put(PROP_GOOGLE_ANALYTICS_KEY, "UA-20535945-18");
+        defaults.put(PROP_GOOGLE_ANALYTICS_FD_KEY, "UA-20535945-18");
+        defaults.put(PROP_GOOGLE_ANALYTICS_FDX_KEY, "UA-20535945-18");
         defaults.put(PROP_GOOGLE_ANALYTICS_DOMAIN, ".freshdirect.com");
+        defaults.put(PROP_GOOGLE_ANALYTICS_FD_DOMAIN, "freshdirect.com");
+        defaults.put(PROP_GOOGLE_ANALYTICS_FDX_DOMAIN, "foodkick.com");
         // APPDEV-3522 Google Analytics: Upgrade to Universal Analytics: Updates for Page Load Times
         defaults.put(PROP_GOOGLE_ANALYTICS_UNIVERSAL, "true");
 
@@ -3595,8 +3603,24 @@ public class FDStoreProperties {
         return get(PROP_GOOGLE_ANALYTICS_KEY);
     }
 
+    public static String getGoogleAnalyticsFdKey() {
+        return get(PROP_GOOGLE_ANALYTICS_FD_KEY);
+    }
+
+    public static String getGoogleAnalyticsFdxKey() {
+        return get(PROP_GOOGLE_ANALYTICS_FDX_KEY);
+    }
+
     public static String getGoogleAnlayticsDomain() {
         return get(PROP_GOOGLE_ANALYTICS_DOMAIN);
+    }
+
+    public static String getGoogleAnalyticsFdDomain() {
+        return get(PROP_GOOGLE_ANALYTICS_FD_DOMAIN);
+    }
+
+    public static String getGoogleAnalyticsFdxDomain() {
+        return get(PROP_GOOGLE_ANALYTICS_FDX_DOMAIN);
     }
 
     // APPDEV-2072 google analytics key
