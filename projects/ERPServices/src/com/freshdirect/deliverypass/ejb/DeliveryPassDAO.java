@@ -590,7 +590,7 @@ public class DeliveryPassDAO {
              "where fde.FDCUSTOMER_ID =fd.id and fde.e_store='FreshDirect' and s.customer_id=fd.erp_customer_id and s.type='REG' and sa.action_date > sysdate-7 "+
              "and s.id=sa.sale_id and s.cromod_date=sa.action_date and sa.action_type in('CRO','MOD') and di.salesaction_id=sa.id and di.delivery_type='H' "+
              "and FDE.DP_FREE_TRIAL_OPTIN is not null and FDE.DP_FREE_TRIAL_OPTIN='Y' and SA.ACTION_DATE > FDE.DP_FREE_TRIAL_OPTIN_DATE and not exists (select id from cust.delivery_pass dp " +
-             "where dp.customer_id=fd.erp_customer_id and dp.status not in ('CAO','CAN'))  and c.id=s.customer_id and c.id=fd.erp_customer_id and c.active='1'";
+             "where dp.customer_id=fd.erp_customer_id and dp.status not in ('CAO','CAN'))  and c.id=s.customer_id and c.id=fd.erp_customer_id and c.active='1' and and exists (select 1 from cust.paymentmethod pm where pm.customer_id=c.id) ";
 
 	public static List<String> getAllCustIdsOfFreeTrialSubsOrder(Connection conn) throws SQLException {
 		PreparedStatement ps = null;
