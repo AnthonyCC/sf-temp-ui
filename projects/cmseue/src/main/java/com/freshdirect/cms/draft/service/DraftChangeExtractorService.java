@@ -39,7 +39,7 @@ public class DraftChangeExtractorService {
      * @param nodes
      * @return
      */
-    public List<DraftChange> extractChanges(Map<ContentKey, Map<Attribute, Object>> nodes, Map<ContentKey, Map<Attribute, Object>> originalNodes,
+    private List<DraftChange> extractChanges(Map<ContentKey, Map<Attribute, Object>> nodes, Map<ContentKey, Map<Attribute, Object>> originalNodes,
             final String userName, final Draft draft) {
         if (nodes == null || nodes.isEmpty()) {
             return Collections.emptyList();
