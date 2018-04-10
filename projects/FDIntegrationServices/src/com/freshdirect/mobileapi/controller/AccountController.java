@@ -481,20 +481,27 @@ public class AccountController extends BaseController implements Comparator <Ord
    private ModelAndView getDeliveryTimeslotByTimezone(ModelAndView model, SessionUser user, String addressId, String timezone, boolean excludeaddr) throws FDException, JsonException,
 		   ServiceException {
 
-		DeliveryAddresses deliveryAddresses = null;
-		if(excludeaddr!=true){
-			deliveryAddresses = getDeliveryAddresses(user);
-			deliveryAddresses.setPreSelectedId(addressId);
+	    if(user!=null&&user.getFDSessionUser()!=null&&user.getFDSessionUser().getIdentity()!=null){
+			DeliveryAddresses deliveryAddresses = null;
+			if(excludeaddr!=true){
+				deliveryAddresses = getDeliveryAddresses(user);
+				deliveryAddresses.setPreSelectedId(addressId);
+			}
+			TimeSlotCalculationResult timeSlotResult = getTimeSlotCalculationResult(user, addressId);
+			DeliveryTimeslots deliveryTimeslots = new DeliveryTimeslots(timeSlotResult);
+	
+			ReservationTimeslots responseMessage = new ReservationTimeslots(deliveryAddresses, deliveryTimeslots, user);
+			if(user!=null && user.getReservation()!=null && user.getReservation().getExpirationDateTime()!=null ){
+	    		responseMessage.addNoticeMessage("ReservationEndTime", user.getReservation().getExpirationDateTime().toString());
+	    	}
+			responseMessage.setSuccessMessage("Delivery timeslots have been retrieved successfully.");
+			setResponseMessage(model, responseMessage, user);
+		}else{
+			DeliveryTimeslots deliveryTimeslots = new DeliveryTimeslots(null);
+            ReservationTimeslots responseMessage = new ReservationTimeslots(new DeliveryAddresses(), deliveryTimeslots, user);
+            responseMessage.addWarningMessage("No identity found for user");
+            setResponseMessage(model, responseMessage, user);
 		}
-		TimeSlotCalculationResult timeSlotResult = getTimeSlotCalculationResult(user, addressId);
-		DeliveryTimeslots deliveryTimeslots = new DeliveryTimeslots(timeSlotResult);
-
-		ReservationTimeslots responseMessage = new ReservationTimeslots(deliveryAddresses, deliveryTimeslots, user);
-		if(user!=null && user.getReservation()!=null && user.getReservation().getExpirationDateTime()!=null ){
-    		responseMessage.addNoticeMessage("ReservationEndTime", user.getReservation().getExpirationDateTime().toString());
-    	}
-		responseMessage.setSuccessMessage("Delivery timeslots have been retrieved successfully.");
-		setResponseMessage(model, responseMessage, user);
 
 		return model;
 	}

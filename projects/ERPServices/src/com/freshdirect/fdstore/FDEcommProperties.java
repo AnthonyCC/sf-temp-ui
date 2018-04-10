@@ -90,6 +90,7 @@ public class FDEcommProperties {
 	public static final String CallCenterManagerSB = "com.freshdirect.fdstore.customer.CallCenterManagerSB"; 
 	public static final String PaymentSB = "com.freshdirect.payment.PaymentSB";
  
+	public static final String ProductFeedSB = "com.freshdirect.fdstore.content.productfeed.ProductFeedSB";
 	public static final String TEmailInfoSB = "com.freshdirect.fdstore.temails";
 	public static final String ProfileCreatorSB = "com.freshdirect.dataloader.payment.ProfileCreatorSB";
 	public static final String FDStandingOrderSB = "com.freshdirect.fdstore.standingorders.FDStandingOrdersSB"; 
@@ -103,12 +104,16 @@ public class FDEcommProperties {
 	private static final String PROP_ECOM_SERVICE_CONN_READ_TIMEOUT = "fdstore.ecom.service.conn.request.timeout";
 	private static final String PROP_ECOM_SERVICE_CONNECTION_REQUEST_TIMEOUT = "fdstore.ecom.service.conn.pool";
 	public static final String FDFactorySB_WarmUp_BULKSKU ="fdstore.ejb.FDFactorySB_WarmUp_BulkSkus";
-	public final static String PROP_JCO_CLIENT_LISTENER_COOL_INFO_ENABLED = "jco.client.listeners.coolinfo.Enabled";
+	public final static String PROP_JCO_CLIENT_LISTENER_COOL_INFO_ENABLED = "jco.client.listeners.coolinfo.enabled";
+	public final static String PROP_JCO_CLIENT_LISTENER_PRODUCT_PROMOTION_ENABLED = "jco.client.listeners.productPromotion.enabled";
+	public final static String PROP_JCO_CLIENT_LISTENER_INVENTORY_INFO_ENABLED = "jco.client.listeners.inventoryInfo.Enabled";
+	public final static String PROP_JCO_CLIENT_LISTENER_RESTRICTED_AVAILABILITY_INFO_ENABLED = "jco.client.listeners.restrictedAvailabilityInfo.Enabled";
+
    
-    
     static {
 
         defaults.put(FDMonitorSB,FALSE);
+        defaults.put(ProductFeedSB,FALSE);
         defaults.put(SaleCronSB,FALSE);
         defaults.put(GatewayActivityLog,FALSE);
         defaults.put(ErpCOOLManagerSB ,FALSE);
@@ -313,5 +318,6 @@ public class FDEcommProperties {
 	            return 60;
 	        }
 	    }
+	  
 	
 }

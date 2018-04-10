@@ -77,6 +77,7 @@
                                 // number formatter for char value prices
                                 java.text.DecimalFormat dformat = new java.text.DecimalFormat("0.00");
                             %>
+                            <%-- 
                             <logic:iterate id="charValue" collection="<%= cvs %>" type="com.freshdirect.erp.model.ErpCharacteristicValueModel">
                                 <fd:CharValuePrice id="charValuePrice" material="<%= material %>" charValue="<%= charValue %>">
                                 <tr>
@@ -99,6 +100,7 @@
                                     </tr>
                                 </fd:CharValuePrice>
                             </logic:iterate>
+                             --%>
                             <tr><td colspan=3></td><td align=right>No default selection</td><td align=center><input type=radio name='selected' value='none'<%= (!selected)?" CHECKED":"" %>></td><td colspan=2></td></tr>
                         </table>
                         </td></tr>

@@ -5,15 +5,16 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.log4j.Category;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 
-import org.apache.log4j.Category;
-
+import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.delivery.ReservationException;
+import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.template.TemplateException;
@@ -29,6 +30,7 @@ import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataResponse;
 import com.freshdirect.webapp.ajax.expresscheckout.service.FormDataService;
 import com.freshdirect.webapp.ajax.expresscheckout.service.SinglePageCheckoutFacade;
 import com.freshdirect.webapp.ajax.expresscheckout.timeslot.data.FormTimeslotData;
+import com.freshdirect.webapp.ajax.expresscheckout.timeslot.data.FormTimeslotsData;
 import com.freshdirect.webapp.ajax.expresscheckout.timeslot.service.TimeslotService;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationError;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationResult;
@@ -141,10 +143,14 @@ public class TimeslotServlet extends BaseJsonServlet {
                 for (ActionError error : result.getErrors()) {
                     validationResult.addError(new ValidationError(error.getType(), error.getDescription()));
                 }
+                
+                FormTimeslotsData returnData = TimeslotService.defaultService().loadTimeslotsData(user, result.getDeliveryTimeslotModel());
     
+                addWarningMessages(returnData, user);
+                
+                
                 if (result.isSuccess()) {
-                    validationResult.setResult(SoyTemplateEngine.convertToMap(TimeslotService.defaultService().loadTimeslotsData(user, result.getDeliveryTimeslotModel()),
-                            DateUtil.getStandardizedDateFormatter()));
+                    validationResult.setResult(SoyTemplateEngine.convertToMap(returnData, DateUtil.getStandardizedDateFormatter()));
                 }
             }
         } catch (ReservationException e) {
@@ -158,7 +164,20 @@ public class TimeslotServlet extends BaseJsonServlet {
         writeResponseData(response, result);
     }
 
-    protected void doGetAction(HttpServletRequest request, HttpServletResponse response, FDUserI user, String action) throws HttpErrorResponse, FDResourceException {
+    private void addWarningMessages(FormTimeslotsData returnData, FDUserI user) {
+        /* add dlvpass msg
+         * taken from i_delivery_timeslots.jspf -> i_delivery_pass_not_applied.jspf
+         * hard-coded for now
+         * 20180328 batchley */
+        if (user != null && user.getSelectedServiceType() == EnumServiceType.CORPORATE 
+        	&& !(EnumCheckoutMode.MODIFY_SO_TMPL == user.getCheckoutMode())
+        ) {
+        	returnData.addWarningMessage("FreshDirect DeliveryPass is not valid for corporate/office deliveries");
+        }
+		
+	}
+
+	protected void doGetAction(HttpServletRequest request, HttpServletResponse response, FDUserI user, String action) throws HttpErrorResponse, FDResourceException {
     	if (action.equals("getCurrentSelected")) {
     		FormTimeslotData data;
     		

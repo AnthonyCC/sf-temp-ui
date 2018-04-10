@@ -120,6 +120,7 @@ String ccZipCode = "";
 String ccAccountNumber = "";
 String ccExpireMonth = "";
 String ccExpireYear = "";
+String ccv = "";
 Date ccExpireDate = null;
 String custFname = null;
 String custLname = null;
@@ -152,6 +153,7 @@ if (isValidPaymentId) {
     ccAccountNumber = thisPaymentMethod.getMaskedAccountNumber();
     ccExpireDate = thisPaymentMethod.getExpirationDate();
     ccZipCode = thisPaymentMethod.getZipCode();
+    ccv = thisPaymentMethod.getCVV();
     Calendar calInstance = Calendar.getInstance();
     calInstance.setTime(ccExpireDate);
     ccExpireMonth = (calInstance.get(Calendar.MONTH)+1)+"";
@@ -217,6 +219,9 @@ if (isValidPaymentId) {
         ccZipCode = request.getParameter(EnumUserInfoName.BIL_ZIPCODE.getCode());
     }
 
+    if (request.getParameter(PaymentMethodName.CSV) != null) { 
+        ccv = request.getParameter(PaymentMethodName.CSV);
+    }
 %>
 	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 	<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>" alt="" HEIGHT="1" BORDER="0"><BR>
@@ -371,9 +376,15 @@ if (isValidPaymentId) {
 <TR>
 	<TD WIDTH="200" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.CSV%>"><span class="text11rbold"></fd:ErrorHandler><label for="<%=PaymentMethodName.CSV%>_field">*&nbsp;CVV&nbsp;&nbsp;</label><fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.CSV%>"></span></fd:ErrorHandler></TD>
 	<TD WIDTH="" CLASS="text12">
-		<input class="text11" maxlength="4" SIZE="4" type="text" id="<%=PaymentMethodName.CSV%>_field" name="<%=PaymentMethodName.CSV%>" required="true" > &nbsp;&nbsp;CVV code will not be stored and only used for validation purposes, <a href="javascript:popup('/shared/cvv.jsp','large')">locate this code</b></a>
+		<input class="text11" maxlength="4" SIZE="4" type="text" id="<%=PaymentMethodName.CSV%>_field" name="<%=PaymentMethodName.CSV%>" required="true" value="<%=ccv%>">
 	</TD>
-	
+</TR>
+<TR valign="MIDDLE">
+	<TD WIDTH="200" ALIGN="RIGHT" CLASS="text12">
+	</TD>
+	<TD>
+		CVV code will not be stored and only used for validation purposes, <a href="javascript:popup('/shared/cvv.jsp','large')">locate this code</b></a>
+	</TD>
 </TR>
 
 

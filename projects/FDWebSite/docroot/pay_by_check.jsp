@@ -34,7 +34,7 @@
 				</ul>
 				<strong>Did you know?</strong> While every order paid with a credit card costs FreshDirect a fee, the costs associated with banking accounts are much lower. As more customers switch to e-check payments, we save money and can pass the savings on to you.<br />
 				<br />
-        <div id='oas_CategoryNote'>
+        <div id='oas_CategoryNote' ad-fixed-size="true" ad-size-height="95" ad-size-width="774">
 					<SCRIPT LANGUAGE=JavaScript>
 						<!--
 						OAS_AD('CategoryNote');

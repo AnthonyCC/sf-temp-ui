@@ -19,14 +19,22 @@ import com.freshdirect.cms.ui.model.attributes.ContentNodeAttributeI;
  */
 public class GwtNodeContext implements Serializable {
 
+	public static final String COS_CONTEXTOVERRIDE_COLOR_GREEN = "OverrideGreen";
+
+	public static final String COS_CONTEXTOVERRIDE_COLOR_RED = "OverrideRed";
+
+	public static final String COS_CONTEXTOVERRIDE_COLOR_NOOVERRIDE = "NoOverride";
+
 	private static final long	serialVersionUID = 7669920517444756433L;
 
 	private Map< String, String > contextLabels = new HashMap<String, String> ();	// path => label
 	private Map< String, String > contextPaths = new HashMap<String, String> ();	// label => path
 	private Map< String, Map<String,ContentNodeAttributeI> > inheritedAttributes = new HashMap<String, Map<String,ContentNodeAttributeI>> ();
+	private Map<String, String> cosContext = new HashMap<String, String>();
 
     public void addContext(String path, String label) {
-        addContext(path, label, new HashMap<String, ContentNodeAttributeI>());
+		addContext(path, label, new HashMap<String, ContentNodeAttributeI>(),
+				COS_CONTEXTOVERRIDE_COLOR_NOOVERRIDE);
     }
 	/**
 	 * 	Adds a new context.
@@ -35,10 +43,12 @@ public class GwtNodeContext implements Serializable {
 	 * @param label	context label
 	 * @param inheritedAttr	map of inherited attributes
 	 */
-	public void addContext( String path, String label, Map<String, ContentNodeAttributeI> inheritedAttr ) {
+	public void addContext(String path, String label, Map<String, ContentNodeAttributeI> inheritedAttr,
+			String cosOverride) {
 		contextLabels.put( path, label );
 		contextPaths.put( label, path );
 		inheritedAttributes.put( path, inheritedAttr );
+		cosContext.put(path, cosOverride);
 	}
 
 	/**
@@ -70,6 +80,13 @@ public class GwtNodeContext implements Serializable {
 			return null;
 
 		return contextLabels.get( path );
+	}
+
+	public String getCosContext(String path) {
+		if (path == null)
+			return null;
+
+		return cosContext.get(path);
 	}
 
 	/**

@@ -1609,16 +1609,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 							throw new ErpTransactionException(response.getStatusMessage());
 						}
 					} else {
-
-						if (StringUtils.isEmpty(authModel.getAuthCode())) {
-							throw new ErpTransactionException();
-						}
-						if (!authModel.isZipMatch())
-							throw new ErpTransactionException("AVS");
-						else if (!authModel.isCVVMatch())
-							throw new ErpTransactionException("CVV");
-						else
-							throw new ErpTransactionException();
+						throw new ErpTransactionException();
 
 					}
 				} catch (ErpTransactionException e) {
@@ -1848,12 +1839,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 						if (response != null && response.isRequestProcessed())
 							authModel.setProfileID(response.getBillingInfo().getPaymentMethod().getBillingProfileID());
 					} else {
-						if (!authModel.isZipMatch())
-							throw new ErpTransactionException("AVS");
-						else if (!authModel.isCVVMatch())
-							throw new ErpTransactionException("CVV");
-						else
-							throw new ErpTransactionException();
+						throw new ErpTransactionException();
 					}
 				} catch (ErpTransactionException e) {
 					this.getSessionContext().setRollbackOnly();

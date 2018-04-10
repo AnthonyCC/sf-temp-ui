@@ -2418,12 +2418,11 @@ public class FDCustomerManager {
 		SurveyKeyData key = new SurveyKeyData();
 		key.setSurveyType(survey.getKey().getSurveyType().getLabel());
 		key.setUserType(survey.getKey().getUserType().toString());
-		FDSurveyResponseData fdSurveyResponse = new FDSurveyResponseData();
-		fdSurveyResponse.setAnswers(survey.getAnswers());
-		fdSurveyResponse.setIdentity(fdIdentity);
-		fdSurveyResponse.setKey(key);
+		surveyRequest.setAnswers(survey.getAnswers());
+		surveyRequest.setIdentity(fdIdentity);
+		surveyRequest.setKey(key);
 		if(survey.getSalePk()  != null && StringUtil.isEmpty(survey.getSalePk().getId())){
-			fdSurveyResponse.setSalePk(survey.getSalePk().getId());
+			surveyRequest.setSalePk(survey.getSalePk().getId());
 		}
 		return surveyRequest;
 	}

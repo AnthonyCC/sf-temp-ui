@@ -148,6 +148,7 @@ var FreshDirect = FreshDirect || {};
           ser['deliveryTimeslotId'] = timeslotId
         } else {
           var deliveryId = $("[fdform='timeslot'] #deliveryTimeslotId").val();
+          ser['deliveryTimeslotId'] = deliveryId;
 
           $(timeslot.contentHolder() + " form").serializeArray().map(function(k){
             ser[k.name] = k.value;

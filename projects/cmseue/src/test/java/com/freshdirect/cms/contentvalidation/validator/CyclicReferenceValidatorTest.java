@@ -88,4 +88,22 @@ public class CyclicReferenceValidatorTest {
         Assert.assertTrue(!result.hasWarning());
         Assert.assertTrue(!result.hasInfo());
     }
+
+    @Test
+    public void testChildKeyNotPartOfUpperIndirectCycle() {
+        ContentKey child = ContentKeyFactory.get("FDFolder:innocent_child");
+        ContentKey parent = ContentKeyFactory.get("FDFolder:evil_parent_folder");
+        ContentKey grandparent = ContentKeyFactory.get("FDFolder:evil_grandparent_folder");
+
+        Mockito.when(contentSource.getParentKeys(child)).thenReturn(ImmutableSet.of(parent));
+        Mockito.when(contentSource.getParentKeys(parent)).thenReturn(ImmutableSet.of(grandparent));
+        Mockito.when(contentSource.getParentKeys(grandparent)).thenReturn(ImmutableSet.of(parent));
+
+        ValidationResults result = underTest.validate(child, null, contentSource);
+
+        Assert.assertTrue(!result.getValidationResults().isEmpty());
+        Assert.assertTrue(result.hasError());
+        Assert.assertTrue(!result.hasWarning());
+        Assert.assertTrue(!result.hasInfo());
+    }
 }

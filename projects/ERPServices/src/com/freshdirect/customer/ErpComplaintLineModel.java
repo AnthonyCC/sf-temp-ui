@@ -9,7 +9,10 @@
 
 package com.freshdirect.customer;
 
+import org.apache.log4j.Logger;
+
 import com.freshdirect.framework.core.ModelSupport;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
  * ErpComplaintLineModel class
@@ -20,6 +23,8 @@ import com.freshdirect.framework.core.ModelSupport;
  */
 public class ErpComplaintLineModel extends ModelSupport {
 
+	private static final Logger LOGGER = LoggerFactory.getInstance(ErpComplaintLineModel.class);
+	
 	private String orderLineId;
 	private String orderLineNumber;
 	private double quantity;
@@ -109,12 +114,20 @@ public class ErpComplaintLineModel extends ModelSupport {
 
 		if (this.reason == null) {
 			isValid = false;
+			LOGGER.warn("ComplaintLine reason is missing. "+orderLineId);	
 		}
 		if (isOrderLineComplaint && (Integer.parseInt(this.orderLineNumber) < 0)) {
 			isValid = false;
+			LOGGER.warn("ComplaintLine - OrderLineNumer is invalid. "+orderLineId);
 		}
 		if (this.method == null || this.type == null) {
 			isValid = false;
+			if(this.method == null){
+				LOGGER.warn("ComplaintLine method is missing. "+orderLineId);
+			}
+			if(this.type == null){
+				LOGGER.warn("ComplaintLine type is missing. "+orderLineId);
+			}
 		}
 		return (isValid);
 	}

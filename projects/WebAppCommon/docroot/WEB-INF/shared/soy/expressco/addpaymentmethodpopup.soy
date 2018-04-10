@@ -2,6 +2,7 @@
 
 /**
  * @param data popup data
+ * @param? isPaymentMethodVerificationEnabled
  */
 {template .addpaymentmethodpopup autoescape="false"}
     <div class="formcontainer" data-show="{if not $data.paymentMethodType or $data.paymentMethodType == 'CC'}addpaymentmethod_creditcard{/if}{if $data.paymentMethodType == 'EC'}addpaymentmethod_bank{/if}{if $data.paymentMethodType == 'ET'}addpaymentmethod_ebt{/if}">
@@ -22,8 +23,10 @@
 
 /**
  * @param data popup data
+ * @param? isPaymentMethodVerificationEnabled
  */
 {template .methodcreditcard autoescape="false"}
+{let $showCvvField:$isPaymentMethodVerificationEnabled /}
 <form id="addpaymentmethod_creditcard" fdform="CC" action="#" novalidate fdform-endpoint-submit="/api/expresscheckout/payment" fdform-endpoint-validator="/api/expresscheckout/addpayment/validate" fdform-disable-resubmit="true">
  	{if not $data.id}
     	<input type="hidden" name="action" value="addPaymentMethod" />
@@ -56,9 +59,18 @@
 	   <span fdform-error-for="cardBrand"></span>
 	</div>
  	<div class="input-wrapper">
-		<label for="CC_cardNum" class="medium-fieldset">Card Number
+		<label for="CC_cardNum" class="{$showCvvField?'' :'medium-fieldset'}">Card Number
     		<input name="cardNum" id="CC_cardNum" placeholder='Card Number' value="{if $data.cardNum}{$data.cardNum}{/if}" required {if $data.id}disabled{/if}/>
   		</label>
+  		
+  		{if $showCvvField}
+  		<span fdform-error-for="cardNum" ></span>
+  			</div>
+  			<div class="input-wrapper">
+  			<label for="CC_cardCvv" class="medium-fieldset">CVV
+    			<input type="tel" name="csv" id="CC_cardCvv" placeholder='CVV' value="" required />
+			</label>
+  		{/if}
 	    <label for="CC_cardMonth" class="one-quarter-fieldset">Month
 			<select id="CC_cardMonth" class="customsimpleselect" name="cardMonth" required>
 			    <option value="">--</option>
@@ -81,7 +93,11 @@
 		          {/if}
 	        </select>
 		</label>
-	      <span fdform-error-for="cardNum" class="medium-fieldset"></span>
+	      {if $showCvvField}
+	      	<span fdform-error-for="csv" class="medium-fieldset"></span>
+	      {else}
+	      	<span fdform-error-for="cardNum" class="medium-fieldset"></span>
+	      {/if}
 	      <span fdform-error-for="cardMonth" class="one-quarter-fieldset"></span>
 	      <span fdform-error-for="cardYear" class="one-quarter-fieldset"></span>
   	</div>

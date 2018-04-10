@@ -1,10 +1,12 @@
 {namespace common}
 /**
+ * THESE VARIABLES COME FROM timeslotSelector.js : timeslotsFormating()
  * @param days
  * @param times
  * @param? selectedDay
  * @param? selectedTimeslot
  * @param? zonePromoAmount
+ * @param warningMessages
  */
 {template .timeslotSelector autoescape="false"}
 <div class="select-day" selectDay>
@@ -14,6 +16,16 @@
     {/foreach}
   </select>
 </div>
+{if length($warningMessages) > 0}
+	<div class="select-warningmessages">
+		<div class="select-warningmessages-icon icon-info2-after"></div>
+		<div class="select-warningmessages-cont">
+			{foreach $msg in $warningMessages}
+				<div class="select-warningmessage">{$msg}</div>
+		    {/foreach}
+		</div>
+	</div>
+{/if}
 <input id="deliveryTimeslotId" name="deliveryTimeslotId" type="hidden" value="{if $selectedTimeslot}{$selectedTimeslot}{/if}">
 {if $selectedDay}
   <div class="select-time" selectTimeslot>

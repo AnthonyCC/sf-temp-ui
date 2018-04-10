@@ -29,7 +29,9 @@
 }
 
 .departments.rounded-box .checkboxlist input[type="radio"] {
-  display: none;
+/*   display: none; */
+  position: absolute;
+  left: -9999px;
 }
 
 .departments.rounded-box .checkboxlist input[type="radio"] + label {

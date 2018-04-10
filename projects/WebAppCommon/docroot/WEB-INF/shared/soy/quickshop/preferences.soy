@@ -7,7 +7,7 @@
 {template .preferences}
 <div class="preferences {if $isRounded}rounded-box{/if}">
 	<div class="preferences-header qs-menu-header">Only Show</div>
-	<ul class="preferences-list checkboxlist" data-component="preferences">
+	<ul class="preferences-list checkboxlist" data-component="preferences"><fieldset><legend class="offscreen">filter products by preferences</legend>
 	{foreach $dataItem in $data}
     {if $dataItem.filteringUrlValue}
       <li>
@@ -20,8 +20,9 @@
       </li>
     {/if}
 	{/foreach}
-	</ul>
+	</fieldset></ul>
 </div>
+
 {/template}
 
 /**

@@ -929,7 +929,7 @@ public class ProductExtraDataPopulator {
 		
 		
 		/* placeholder for product family products */
-		if(FDStoreProperties.isProductFamilyEnabled())
+		if(FDStoreProperties.isProductFamilyEnabled() && EnumEStoreId.FDX != CmsManager.getInstance().getEStoreEnum())
 		{
 			List<ProductData> familyProducts = new ArrayList<ProductData>();
 			List<FilteringProductItem> modelList =  new ArrayList<FilteringProductItem>();

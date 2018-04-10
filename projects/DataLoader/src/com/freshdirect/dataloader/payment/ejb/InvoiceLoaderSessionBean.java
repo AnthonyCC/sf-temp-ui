@@ -29,7 +29,6 @@ import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
 import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.dataloader.analytics.GoogleAnalyticsReportingService;
-import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -47,12 +46,9 @@ import com.freshdirect.storeapi.content.Recipe;
 
 public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 
-	/**
-     *
-     */
     private static final long serialVersionUID = 1L;
-    private static Category LOGGER = LoggerFactory.getInstance(InvoiceLoaderSessionBean.class);
-	private final static ServiceLocator LOCATOR = new ServiceLocator();
+    private static final Category LOGGER = LoggerFactory.getInstance(InvoiceLoaderSessionBean.class);
+    private static final ServiceLocator LOCATOR = new ServiceLocator();
 
 	public void addAndReconcileInvoice(String saleId, ErpInvoiceModel invoice, ErpShippingInfo shippingInfo)
 		throws ErpTransactionException {
@@ -157,18 +153,15 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 				LOGGER.warn("Unexpected Exception while sending invoice email, for order#: "+saleId, e1);
 				e1.printStackTrace();
 			}
-			LOGGER.debug("End - Sending Invoice email:"+saleId);
+            LOGGER.debug("End - Sending Invoice email:" + saleId);
+
             try {
-                if (saleModel.geteStoreId() == EnumEStoreId.FD) {
-                	LOGGER.info("Start - Sending Invoice GAEvent:"+saleId);
-                    GoogleAnalyticsReportingService.defaultService().postGAReporting(fdOrder);
-                    LOGGER.info("End - Sending Invoice GAEvent:"+saleId);
-                } else {
-                	LOGGER.info("EStore Filtered - Not Sending Invoice GAEvent:"+saleId);
-                }
-			} catch (Exception e) {
-				LOGGER.warn("Unexpected Exception in GoogleAnalyticsReportingService while reported to GA, for order#: "+saleId, e);
-			}
+                LOGGER.info("Start - Sending Invoice GAEvent:" + saleId);
+                GoogleAnalyticsReportingService.defaultService().postGAReporting(fdOrder);
+                LOGGER.info("End - Sending Invoice GAEvent:" + saleId);
+            } catch (Exception e) {
+                LOGGER.warn("Unexpected Exception in GoogleAnalyticsReportingService while reported to GA, for order#: " + saleId, e);
+            }
 
 			// collect recipes that will be sent to the users
 			List orderLines = fdOrder.getOrderLines();

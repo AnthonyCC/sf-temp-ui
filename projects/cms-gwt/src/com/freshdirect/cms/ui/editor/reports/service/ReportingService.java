@@ -23,8 +23,8 @@ import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.cms.core.domain.RootContentKey;
-import com.freshdirect.cms.core.service.ContextualContentProvider;
 import com.freshdirect.cms.core.domain.builder.AttributeBuilder;
+import com.freshdirect.cms.core.service.ContextualContentProvider;
 import com.freshdirect.cms.ui.editor.ReportAttributes;
 import com.freshdirect.cms.ui.editor.reports.data.HiddenProduct;
 import com.freshdirect.cms.ui.editor.reports.data.HiddenProductByChange;
@@ -370,7 +370,7 @@ public class ReportingService {
         Attribute changedByAttribute = AttributeBuilder.attribute().name(ColumnType.NORMAL.name() + "|" + "AUTHOR").type(String.class).build();
         Attribute changeDateAttribute = AttributeBuilder.attribute().name(ColumnType.NORMAL.name() + "|" + "TIME").type(String.class).build();
         Attribute productKeyAttribute = AttributeBuilder.attribute().name(ColumnType.KEY.name() + "|" + "PRODUCT_ID").type(String.class).build();
-        Attribute primaryHomeAttribute = AttributeBuilder.attribute().name(ColumnType.KEY.name() + "|" + "NEW_HOME").type(String.class).build();
+        Attribute primaryHomeAttribute = AttributeBuilder.attribute().name(ColumnType.KEY.name() + "|" + "HOME").type(String.class).build();
         Attribute reasonAttribute = AttributeBuilder.attribute().name(ColumnType.NORMAL.name() + "|" + "REASON").type(String.class).build();
         Attribute changeNoteAttribute = AttributeBuilder.attribute().name(ColumnType.NORMAL.name() + "|" + "NOTE").type(String.class).build();
 

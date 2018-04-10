@@ -16,6 +16,7 @@ import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
+import com.freshdirect.enums.CaptchaType;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
@@ -535,8 +536,8 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 			//exception happens, do not validate captcha
 			return true;
 		}
-		boolean isCaptchaSuccess = CaptchaUtil.validateCaptchaV2(captchaToken,
-				request.getRemoteAddr(), session, SessionName.PAYMENT_ATTEMPT, FDStoreProperties.getMaxInvalidPaymentAttempt());
+		boolean isCaptchaSuccess = CaptchaUtil.validateCaptcha(captchaToken,
+				request.getRemoteAddr(), CaptchaType.PAYMENT, session, SessionName.PAYMENT_ATTEMPT, FDStoreProperties.getMaxInvalidPaymentAttempt());
 		if (!isCaptchaSuccess) {
 			result.addError(new ActionError("captcha", SystemMessageList.MSG_INVALID_CAPTCHA));
 			return false;

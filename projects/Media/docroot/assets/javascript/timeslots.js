@@ -2540,16 +2540,17 @@ var fdTSDisplayPreInitializeFuncs = window['fdTSDisplayPreInitializeFuncs'] || [
 	
 	
 	$jq(document).on('keydown', '.tsWrapper input[type="button"]', function (e) {
-		if (e.keyCode == 13) 
-		{
-			$jq(this).click();
-			e.preventDefault();
-			if ($jq('#reserveTimeslot').length) {
-				reserveTimeslot.actionName.value='changeReservation';
-				$jq('#reserveTimeslot').submit();
-			}
-	       }
-		  });
+        if (e.keyCode == 13) {
+            $jq(this).click();
+            e.preventDefault();
+            if ($jq('#reserveTimeslot').length) {
+                reserveTimeslot.actionName.value='changeReservation';
+                $jq('#reserveTimeslot').submit();
+            } else {
+                $jq('[fdform="timeslot"]').submit();
+            }
+        }
+    });
 	$jq(document).on("focusin","#tsContainer .tsHeaderE",function(){
 		$jq(this).css({"background":"#4fa157","border-top-right-radius":"6px","border-top-left-radius":"6px"});
 		

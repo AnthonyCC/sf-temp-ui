@@ -76,3 +76,6 @@
 .shoppinglists-list .selected .info {
   color: #fff;
 }
+button.shoppinglists-manage{
+    width: 100%;
+}

@@ -21,6 +21,12 @@ import com.freshdirect.framework.core.EntityBeanRemoteI;
  * @version    $Revision$
  * @author     $Author$
  */
+/**
+ * @deprecated Please use the ErpInventoryDaoI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public interface ErpInventoryEB extends EntityBeanRemoteI {
 
 	/**
@@ -32,6 +38,7 @@ public interface ErpInventoryEB extends EntityBeanRemoteI {
 	 *
 	 * @return true if the entires were stored
 	 */
+	@Deprecated
 	public boolean setEntries(Date dateCreated, Collection collection) throws RemoteException;
 	
 }

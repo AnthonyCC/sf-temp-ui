@@ -54,8 +54,8 @@
     <tmpl:put name="gridlistchange">
       <c:if test="${!isQS20}">
       <div class="gridlistchange">
-        <button class="cssbutton purple icon-grid-view-before notext" data-component="GridListButton" data-type="grid">grid</button>
-        <button class="cssbutton purple icon-list-view-before notext" data-component="GridListButton" data-type="list">list</button>
+        <button class="cssbutton purple icon-grid-view-before notext" data-component="GridListButton" data-type="grid">grid<span class="offscreen">view of products</span></button>
+        <button class="cssbutton purple icon-list-view-before notext" data-component="GridListButton" data-type="list">list<span class="offscreen">view of products</span></button>
       </div>
       </c:if>
     </tmpl:put>

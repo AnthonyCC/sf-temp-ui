@@ -1054,7 +1054,7 @@
 .standing-orders-3 #cartcontent .cartetip .subtotal__rowcell-left .strl_text:after{
 	content: "";
 }
-.standing-orders-3 #cartcontent .cartetip .subtotal__rowcell-left #optionalToolTip{
+.standing-orders-3 #cartcontent .cartetip .subtotal__rowcell-left .accessibleToolTip{
 	vertical-align: super;
 }
 .standing-orders-3 #cartcontent .cartetip .cartetip-container{

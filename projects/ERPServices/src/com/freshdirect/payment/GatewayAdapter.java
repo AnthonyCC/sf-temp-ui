@@ -890,6 +890,8 @@ public static PaymentGatewayRequest getPaymentGatewayRequest(Request request) {
 					 pmData.setCardType(PaymentechConstants.CardType.get( cc.getCreditCardType()).getType().name());
 				 }
 				 pmData.setExpirationDate(cc.getExpirationDate());
+				 pmData.setCVV(cc.getCVV());
+				 
 			 } else {
 				 
 				 ECheck ec=(ECheck)pm;

@@ -41,7 +41,8 @@
 		<jar.plugin.version>2.6</jar.plugin.version>
 		<compiler.plugin.version>3.3</compiler.plugin.version>
 		<tomcat7-maven-plugin.version>2.2</tomcat7-maven-plugin.version>
-		<checkstyle.plugin.version>2.17</checkstyle.plugin.version>
+		<checkstyle.plugin.version>3.0.0</checkstyle.plugin.version>
+		<checkstyle.version>8.8</checkstyle.version> <!-- this is not the checkstyle-maven-plugin version, but the checkstyle version! -->
 		<jacoco.plugin.version>0.7.9</jacoco.plugin.version>
 		<pmd.plugin.version>3.8</pmd.plugin.version>
 		<findbugs.plugin.version>3.0.3</findbugs.plugin.version>
@@ -362,6 +363,13 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-checkstyle-plugin</artifactId>
 					<version>${checkstyle.plugin.version}</version>
+					<dependencies>
+						<dependency>
+							<groupId>com.puppycrawl.tools</groupId>
+							<artifactId>checkstyle</artifactId>
+							<version>${checkstyle.version}</version>
+						</dependency>
+					</dependencies>
 					<executions>
 						<execution>
 							<id>checkstyle</id>
@@ -373,12 +381,16 @@
 					</executions>
 					<configuration>
 						<includes>**\/*.java</includes>
-						<sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+						<sourceDirectories>
+							<sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+						</sourceDirectories>
 						<propertyExpansion>samedir=${project.basedir}/../../CodingStandards/java</propertyExpansion>
 						<configLocation>${project.basedir}/../../CodingStandards/java/checkstyle-rules.xml</configLocation>
 						<suppressionsLocation>${project.basedir}/../../CodingStandards/java/checkstyle-suppressions.xml</suppressionsLocation>
 						<includeTestSourceDirectory>true</includeTestSourceDirectory>
-						<testSourceDirectory>${project.build.testSourceDirectory}</testSourceDirectory>
+						<testSourceDirectories>
+							<testSourceDirectory>${project.build.testSourceDirectory}</testSourceDirectory>
+						</testSourceDirectories>
 						<failOnViolation>false</failOnViolation>
 						<failsOnError>false</failsOnError>
 						<maxAllowedViolations>0</maxAllowedViolations>

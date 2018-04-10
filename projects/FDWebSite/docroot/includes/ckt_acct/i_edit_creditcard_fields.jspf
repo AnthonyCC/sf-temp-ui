@@ -114,6 +114,7 @@ String ccZipCode = "";
 String ccAccountNumber = "";
 String ccExpireMonth = "";
 String ccExpireYear = "";
+String cvv = "";
 Date ccExpireDate = null;
 String custFname = null;
 String custLname = null;
@@ -209,6 +210,10 @@ if (isValidPaymentId) {
     }
     if (request.getParameter(EnumUserInfoName.BIL_ZIPCODE.getCode())!=null) { 
         ccZipCode = request.getParameter(EnumUserInfoName.BIL_ZIPCODE.getCode());
+    }
+    
+    if (request.getParameter(PaymentMethodName.CSV) != null ) {
+    	cvv = request.getParameter(PaymentMethodName.CSV);
     }
 
 %>
@@ -351,12 +356,18 @@ String addEBTPage = fromCheckout1 ? "/checkout/step_3_ebt_add.jsp" : "/your_acco
 <TR>
 	<TD WIDTH="200" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.CSV%>"><span class="text11rbold"></fd:ErrorHandler><label for="<%=PaymentMethodName.CSV%>_creditfield">*&nbsp;CVV&nbsp;&nbsp;</label><fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.CSV%>"></span></fd:ErrorHandler></TD>
 	<TD WIDTH="" CLASS="text12">
-		<input class="text11" maxlength="4" SIZE="4" type="text" id="<%=PaymentMethodName.CSV%>_creditfield"  name="<%=PaymentMethodName.CSV%>" required="true" > &nbsp;&nbsp;CVV code will not be stored and only used for validation purposes, <a href="javascript:popup('/shared/cvv.jsp','large')">locate this code<span class="offscreen">on card </span></b></a>
+		<input class="text11" maxlength="4" SIZE="4" type="text" id="<%=PaymentMethodName.CSV%>_creditfield"  name="<%=PaymentMethodName.CSV%>" value="<%=cvv %>" required="true" >
 	</TD>
 	
 </TR>
 
-
+<TR valign="MIDDLE">
+	<TD WIDTH="200" ALIGN="RIGHT" CLASS="text12">
+	</TD>
+	<TD>
+		CVV code will not be stored and only used for validation purposes, <a href="javascript:popup('/shared/cvv.jsp','large')">locate this code</b></a>
+	</TD>
+</TR>
 <TR VALIGN="TOP">
 	<TD WIDTH="200" ALIGN="RIGHT" CLASS="text12"></TD>
 	<TD WIDTH="" CLASS="text12">

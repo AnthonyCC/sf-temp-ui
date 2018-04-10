@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
+import com.freshdirect.enums.CaptchaType;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
@@ -525,8 +526,8 @@ public class PaymentMethodServlet extends BaseJsonServlet {
 		String captchaToken = request.getFormData().get("g-recaptcha-response") != null
 				? request.getFormData().get("g-recaptcha-response").toString()
 				: null;
-		boolean isCaptchaSuccess = CaptchaUtil.validateCaptchaV2(captchaToken,
-				ip, session, SessionName.PAYMENT_ATTEMPT, FDStoreProperties.getMaxInvalidPaymentAttempt());
+		boolean isCaptchaSuccess = CaptchaUtil.validateCaptcha(captchaToken,
+				ip, CaptchaType.PAYMENT, session, SessionName.PAYMENT_ATTEMPT, FDStoreProperties.getMaxInvalidPaymentAttempt());
 		if (!isCaptchaSuccess) {
 			result.addError(new ValidationError("captcha", SystemMessageList.MSG_INVALID_CAPTCHA));
     		paymentSubmitResponse.getSubmitForm().setSuccess(false);

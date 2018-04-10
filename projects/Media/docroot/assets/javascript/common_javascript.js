@@ -1380,6 +1380,7 @@ function doOverlayWindow(olURL, titleVar) {
 	}
 	
 	function doOverlayDialogNew(olURL) {
+		$jq('#uimodal-output').off('dialogclose');
 		$jq('#uimodal-output').dialog('close');
 		var overlayDialog = setupOverlayDialog();
 		overlayDialog.load(olURL, function() { overlayDialog.dialog('open'); setTimeout(function(){ dialogWindowRealignFunc(); }, 1); });
@@ -1409,6 +1410,7 @@ function doOverlayWindow(olURL, titleVar) {
 	}
 	
 	function doOverlayDialogByHtmlNew(olHtml) {
+		$jq('#uimodal-output').off('dialogclose');
 		$jq('#uimodal-output').dialog('close');
 		var overlayDialog = setupOverlayDialog();
 		overlayDialog.html(olHtml);

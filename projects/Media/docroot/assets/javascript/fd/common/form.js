@@ -119,7 +119,8 @@ var FreshDirect = FreshDirect || {};
         formEl = this.getEl(form.id);
 
     if (e.keyCode === 13) {
-      // submit on enter
+    	if (formEl.attr(this.attrPrefix+'-no-submit-on-keydown')) { return; }
+    	// submit on enter
       e.preventDefault();
       e.stopPropagation();
 

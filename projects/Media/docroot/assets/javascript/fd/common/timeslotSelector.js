@@ -47,7 +47,8 @@ var FreshDirect = FreshDirect || {};
         selectedTimeslot,
         orderArrayLevel = 0,
         previousDayId = null,
-        days;
+        days,
+        warningMessages = (data.warningMessages || []);
 
     data.timeSlots.forEach(function(e) {
       var timeslot = e,
@@ -121,7 +122,14 @@ var FreshDirect = FreshDirect || {};
     });
     days = Object.keys(times).sort();
     selectedDay = selectedDay ? selectedDay : days[0];
-    return {days: days, times: times, selectedDay: selectedDay, selectedTimeslot: selectedTimeslot, zonePromoAmount: zonePromoAmount};
+    return {
+    	days: days, 
+    	times: times,
+    	selectedDay: selectedDay,
+    	selectedTimeslot: selectedTimeslot,
+    	zonePromoAmount: zonePromoAmount,
+    	warningMessages: warningMessages
+    };
   }
 
   var timeslotSelector = Object.create(WIDGET,{

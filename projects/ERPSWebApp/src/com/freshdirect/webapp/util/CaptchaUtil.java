@@ -1,6 +1,5 @@
 package com.freshdirect.webapp.util;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -9,6 +8,7 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import com.freshdirect.enums.CaptchaType;
 import com.freshdirect.fdstore.FDStoreProperties;
 
 /*
@@ -26,7 +26,7 @@ public class CaptchaUtil {
 		return maxAttemptAllowed != 0 && currentAttempt >= maxAttemptAllowed;
 	}
 
-	public static boolean validateCaptchaV2(String captchaToken, String remoteIp,  HttpSession session, String sessionName, int maxAttemptAllowed) {
+	public static boolean validateCaptcha(String captchaToken, String remoteIp, CaptchaType captchaType, HttpSession session, String sessionName, int maxAttemptAllowed) {
 		if (!isExcessiveAttempt(maxAttemptAllowed, session, sessionName)) {
 			return true;
 		}
@@ -41,7 +41,7 @@ public class CaptchaUtil {
 
 		boolean isCaptchaSuccess = false;
 		PostMethod postMethod = new PostMethod("https://www.google.com/recaptcha/api/siteverify");
-		postMethod.addParameter("secret", FDStoreProperties.getRecaptchaPrivateKey());
+		postMethod.addParameter("secret", FDStoreProperties.getRecaptchaPrivateKey(captchaType));
 		postMethod.addParameter("response", captchaToken);
 		postMethod.addParameter("remoteip", remoteIp);
 		try {
@@ -63,26 +63,4 @@ public class CaptchaUtil {
 		return isCaptchaSuccess;
 	}
 
-	public static boolean validateCaptchaV1(final ServletRequest request) {
-		boolean isCaptchaSuccess = false;
-		PostMethod postMethod = new PostMethod("http://api-verify.recaptcha.net/verify");
-		postMethod.addParameter("privatekey", FDStoreProperties.getRecaptchaPrivateKey());
-		postMethod.addParameter("response", StringUtils.defaultString(request.getParameter("recaptcha_response_field")));
-		postMethod.addParameter("challenge", StringUtils.defaultString(request.getParameter("recaptcha_challenge_field")));
-		postMethod.addParameter("remoteip", request.getRemoteAddr());
-		try {
-			HTTP_CLIENT.executeMethod(postMethod);
-			String response = postMethod.getResponseBodyAsString();
-			String[] a = response.split("\r?\n");
-			if (a.length < 1) {
-				isCaptchaSuccess = false;
-			}
-			isCaptchaSuccess = "true".equals(a[0]);
-		} catch (Exception e) {
-			LOGGER.error("Error connecting to google captcha", e);
-		} finally {
-			postMethod.releaseConnection();
-		}
-		return isCaptchaSuccess;
-	}
 }

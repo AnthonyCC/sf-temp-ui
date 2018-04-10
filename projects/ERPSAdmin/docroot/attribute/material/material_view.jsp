@@ -149,6 +149,7 @@
                             // number formatter for char value prices
                             java.text.DecimalFormat dformat = new java.text.DecimalFormat("0.00");
                         %>
+                        <%-- 
                         <logic:iterate id="charValue" collection="<%= cvs %>" type="com.freshdirect.erp.model.ErpCharacteristicValueModel">
                             <fd:CharValuePrice id="charValuePrice" material="<%= material %>" charValue="<%= charValue %>">
                             <tr>
@@ -163,6 +164,7 @@
                             </tr>
                              </fd:CharValuePrice>
                         </logic:iterate>
+                         --%>
                     </table>
                     </td></tr>
                 </table>

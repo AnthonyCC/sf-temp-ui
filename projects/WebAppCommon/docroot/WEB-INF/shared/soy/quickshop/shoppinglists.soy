@@ -9,7 +9,7 @@
 <div class="shoppinglists {if $isQS22}rounded-box{/if}">
 	<div class="shoppinglists-header qs-menu-header">YOUR LISTS ({$YOUR_LISTS.length})</div>
   {if not $isQS22}<div class="shoppinglists-manage">Manage Lists</div>{/if}
-	<ul class="checkboxlist shoppinglists-list">
+	<ul class="checkboxlist shoppinglists-list"><fieldset><legend class="offscreen">Filter products by your lists</legend>
 	{foreach $dataItem in $YOUR_LISTS}
 		{let $id}yourListId_{index($dataItem)}{/let}
 		<li>
@@ -19,8 +19,8 @@
 		  </span>			
 		</li>
 	{/foreach}
-	</ul>
-  {if $isQS22}<div class="shoppinglists-manage" data-alignpopup="tr-tl"><span>Manage Lists</span></div>{/if}
+	</fieldset></ul>
+  {if $isQS22}<button aria-haspopup="true" class="shoppinglists-manage" data-alignpopup="tr-tl"><span>Manage Lists</span></button>{/if}
 </div>
 {/template}
 

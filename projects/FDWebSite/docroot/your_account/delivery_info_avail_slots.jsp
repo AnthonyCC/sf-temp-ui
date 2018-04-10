@@ -24,6 +24,7 @@
 <%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'%>
 <%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter'%>
 <%@ page import="com.freshdirect.webapp.util.JspMethods" %>
+<%@ page import="com.freshdirect.fdstore.FDStoreProperties" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -80,7 +81,6 @@ if (mobWeb) {
 		<fd:SEOMetaTag title="Available Delivery Slots" pageId="delivery_info_avail"></fd:SEOMetaTag>
 	</tmpl:put>
 	<tmpl:put name='content' direct='true'>
-
 		<div class="delivery_info_mobweb_nav" <%= mobWeb ? "" : "style='display: none;'" %>>
 			<%@ include file="/help/delivery_info_nav.jspf" %>
 		</div>
@@ -88,9 +88,16 @@ if (mobWeb) {
 		<%//Finds the address%>
 		<%@ include file="/shared/includes/delivery/i_address_finder.jspf"%>
 
+		<% if (FDStoreProperties.isDfpEnabled()){
+		%>
+			<div id="oas_DFPDeliveryTimeslotMessage" ad-size-width='875' ad-size-height='100'>
+				<script type="text/javascript">OAS_AD('DFPDeliveryTimeslotMessage');</script>
+			</div>
+		<%} %>
+
 		<%//Finds the address & render the timeslots %>
     <% if (!mobWeb) { %>
-      <%@ include file="/shared/includes/delivery/i_delivery_timeslots.jspf"%>
+			<%@ include file="/shared/includes/delivery/i_delivery_timeslots.jspf"%>
     <%} else {%>
       <div class="timeslot-selector delivery-info-timeslot"></div>
       <% }%>

@@ -22,6 +22,7 @@ import com.freshdirect.erp.ejb.ErpInventoryManagerHome;
 import com.freshdirect.erp.ejb.ErpInventoryManagerSB;
 import com.freshdirect.erp.model.ErpInventoryEntryModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.sap.SapProperties;
@@ -217,12 +218,12 @@ public class FDInventoryJcoServer extends FdSapServer {
 	private void updateInventories(List<ErpInventoryModel> stockEntries) throws EJBException {
 		Context ctx = null;
 		try {
-			ctx = ErpServicesProperties.getInitialContext();
-			ErpInventoryManagerHome mgr = (ErpInventoryManagerHome) ctx.lookup("freshdirect.erp.InventoryManager");
-			ErpInventoryManagerSB sb = mgr.create();
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpInventoryManagerSB")){
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInventoryManagerSB)) {
 				FDECommerceService.getInstance().updateInventories(stockEntries);
-			}else{
+			} else {
+				ctx = ErpServicesProperties.getInitialContext();
+				ErpInventoryManagerHome mgr = (ErpInventoryManagerHome) ctx.lookup("freshdirect.erp.InventoryManager");
+				ErpInventoryManagerSB sb = mgr.create();
 				sb.updateInventories(stockEntries);
 			}
 		} catch (Exception ex) {

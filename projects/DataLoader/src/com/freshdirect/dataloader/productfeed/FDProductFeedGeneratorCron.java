@@ -14,10 +14,13 @@ import javax.naming.NamingException;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.fdstore.FDEcommProperties;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.productfeed.FDProductFeedHome;
 import com.freshdirect.fdstore.content.productfeed.FDProductFeedSB;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
+import com.freshdirect.payment.service.FDECommerceService;
 
 
 public class FDProductFeedGeneratorCron {
@@ -30,13 +33,16 @@ public class FDProductFeedGeneratorCron {
 	 */
 	public static void main(String[] args) {
 		
-		Context ctx = null;
 		try {
 			LOGGER.info("FDProductFeedGeneratorCron Started.");
-			ctx = getInitialContext();
-			FDProductFeedHome managerHome = (FDProductFeedHome) ctx.lookup("freshdirect.fdstore.ProductFeed");
-			FDProductFeedSB sb = managerHome.create();
-			sb.uploadProductFeed();
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ProductFeedSB)) {
+				FDECommerceService.getInstance().uploadProductFeed();
+			} else {
+				Context ctx = getInitialContext();
+				FDProductFeedHome managerHome = (FDProductFeedHome) ctx.lookup("freshdirect.fdstore.ProductFeed");
+				FDProductFeedSB sb = managerHome.create();
+				sb.uploadProductFeed();
+			}
 		} catch (Exception e) {
 			StringWriter sw = new StringWriter();
 			e.printStackTrace(new PrintWriter(sw));

@@ -13,7 +13,7 @@
 final int W_YA_EDIT_CREDITCARD = 970;
 %>
 <%! java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(); %>
-<% 
+<%
 String template = "/common/template/no_nav.jsp";
 
 String gcPage = (request.getParameter("gc")!=null)?request.getParameter("gc").toLowerCase():null;
@@ -26,7 +26,8 @@ String rhPage = (request.getParameter("rh")!=null)?request.getParameter("rh").to
 	}
 %>
 
-<fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
+<fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" />
+
 <tmpl:insert template='<%=template%>'>
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Your Account - Edit Credit / Debit Card"/>
@@ -42,6 +43,7 @@ if("true".equals(request.getParameter("gc"))) {
 	successRedirect = "/robin_hood/rh_submit_order.jsp";
 }
 boolean proceedThruCheckout=false;
+
 %>
 
 <fd:PaymentMethodController actionName='editPaymentMethod' result='result' successPage='<%=successRedirect%>'>

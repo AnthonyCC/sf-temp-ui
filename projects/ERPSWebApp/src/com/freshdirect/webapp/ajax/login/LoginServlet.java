@@ -18,6 +18,7 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.freshdirect.enums.CaptchaType;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
@@ -46,7 +47,7 @@ public class LoginServlet extends HttpServlet {
 		LoginRequest loginRequest = parseRequestData(request, response, LoginRequest.class);
 		if (loginRequest != null) {
 			// validate captcha if it's enabled
-			boolean isCaptchaSuccess = CaptchaUtil.validateCaptchaV2(loginRequest.getCaptchaToken(), request.getRemoteAddr(), request.getSession(), SessionName.LOGIN_ATTEMPT, FDStoreProperties.getMaxInvalidLoginAttempt());
+			boolean isCaptchaSuccess = CaptchaUtil.validateCaptcha(loginRequest.getCaptchaToken(), request.getRemoteAddr(), CaptchaType.SIGN_IN,request.getSession(), SessionName.LOGIN_ATTEMPT, FDStoreProperties.getMaxInvalidLoginAttempt());
 			if (!isCaptchaSuccess) {
 				loginResponse.addError("captcha", SystemMessageList.MSG_INVALID_CAPTCHA);
 				writeResponse(response, loginResponse);

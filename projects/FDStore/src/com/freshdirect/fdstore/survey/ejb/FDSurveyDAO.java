@@ -32,6 +32,13 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  * @author gopal
  *
  */
+
+/**
+ *@deprecated Please use the SurveyDaoI  in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public class FDSurveyDAO {
 	private static final Category LOGGER = LoggerFactory.getInstance(FDSurveyDAO.class);
     
@@ -48,6 +55,7 @@ public class FDSurveyDAO {
 	" cust.SURVEY_DEF sd, cust.SURVEY_QUESTION sq, cust.SURVEY_ANSWER sa, cust.SURVEY_SETUP ss, cust.SURVEY_QA sqa WHERE "+
     " sd.NAME=? AND sd.SERVICE_TYPE = ? AND sd.ID=ss.SURVEY AND ss.QUESTION=sq.ID AND ss.ACTIVE='Y' AND sq.ID=sqa.QUESTION AND sqa.ANSWER=sa.ID ORDER BY sd.NAME, ss.SEQUENCE, sqa.SEQUENCE ";
 	
+	@Deprecated
     public static FDSurvey loadSurvey(Connection conn, SurveyKey key) throws SQLException {
         FDSurvey survey = loadSurvey(conn, key.getSurveyType(), key.getUserType().name(), key);
         if (survey == null) {
@@ -101,6 +109,8 @@ public class FDSurveyDAO {
 	 " customer_id=(SELECT ID FROM cust.FDCUSTOMER WHERE erp_customer_id=?) "+ 
 	 " AND create_date=(SELECT MAX(create_date) FROM cust.SURVEY WHERE survey_name=? AND service_type = ? AND customer_id=(SELECT ID FROM cust.FDCUSTOMER WHERE erp_customer_id=?))) "+ 
 	 " AND sd.QUESTION=t.question(+) AND sd.ANSWER=t.AnswerName(+)	 ORDER BY QuestionNumber,AnswerNumber";
+	
+	@Deprecated
 	public static FDSurveyResponse getResponse(Connection conn,FDIdentity identity, SurveyKey key) throws SQLException {
 		
 		PreparedStatement ps = null;
@@ -130,7 +140,7 @@ public class FDSurveyDAO {
 	" WHERE s.CUSTOMER_ID=(SELECT ID FROM cust.FDCUSTOMER WHERE erp_customer_id=?) "+
 	" AND s.SURVEY_NAME=cps.NAME AND s.CREATE_DATE=(SELECT MAX(create_date) FROM cust.SURVEY WHERE CUSTOMER_ID=s.customer_id AND survey_name=s.survey_name)"+
 	" ORDER BY s.create_date DESC ";
-    
+	@Deprecated
         public static List<String> getCustomerProfileSurveys(Connection conn, FDIdentity identity, EnumServiceType serviceType) throws SQLException {
     
             PreparedStatement ps = null;
@@ -234,7 +244,7 @@ private static FDSurveyResponse getSurveyResponse(FDIdentity identity,SurveyKey 
 		return value;
 	}
 	
-
+	@Deprecated
 
         public static void storeSurvey(Connection conn, String id, FDSurveyResponse survey) throws SQLException {
                 PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.SURVEY(ID,CUSTOMER_ID,SURVEY_NAME,SALE_ID,CREATE_DATE, SERVICE_TYPE) VALUES(?, ?, ?, ?, SYSDATE, ?)");

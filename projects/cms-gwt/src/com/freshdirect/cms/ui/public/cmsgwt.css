@@ -759,3 +759,43 @@ dl.bulk-loader-preview-legend dd {
 	margin-top: 10px;
 	background-color: #F2F2F2;
 }
+
+
+.OverrideRed{
+}
+
+.OverrideRed:before{
+       display:inline-block;
+       background: url(img/icons/CategoryOverrideRed.gif);
+       content:" ";
+       vertical-align: bottom;
+       height: 16px;
+       width: 16px;
+       margin: 0 2px 0 0;
+}
+
+.OverrideGreen{
+}
+
+.OverrideGreen:before{
+       display:inline-block;
+       background: url(img/icons/CategoryOverrideGreen.gif);
+       content:" ";
+       vertical-align: bottom;
+       height: 16px;
+       width: 16px;
+       margin: 0 2px 0 0;
+}
+
+.NoOverride{
+}
+
+.NoOverride:before{
+       display:inline-block;
+       background: url(img/icons/Category.gif);
+       content:" ";
+       vertical-align: bottom;
+       height: 16px;
+       width: 16px;
+       margin: 0 2px 0 0;
+}

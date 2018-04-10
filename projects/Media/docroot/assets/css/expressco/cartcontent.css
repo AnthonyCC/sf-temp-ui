@@ -1264,7 +1264,7 @@ label[for="dontupdatecartlines"] {
 	white-space: normal;
 }
 
-.eTippingEnabled .cartsection__totalwrapper #optionaltip.subtotal__rowcell-left {
+.eTippingEnabled .cartsection__totalwrapper .optionaltip.subtotal__rowcell-left {
     min-width: 130px;
 	display: table;
 }
