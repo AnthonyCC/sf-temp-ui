@@ -180,4 +180,46 @@ public class DraftChangeExtractorServiceTest {
             }
         }
     }
+    
+    @Test
+    public void testExtractChangesWithNullValues() {
+        ContentKey productKey = ContentKeyFactory.get(ContentType.Product, "testProduct");
+        Map<Attribute, Object> originalAttributes = new HashMap<Attribute, Object>();
+        originalAttributes.put(ContentTypes.Product.SEASON_TEXT, "originalSeasonText");
+        originalAttributes.put(ContentTypes.Product.SELL_BY_SALESUNIT, "QUANTITY");
+        originalAttributes.put(ContentTypes.Product.EXCLUDED_EBT_PAYMENT, Boolean.TRUE);
+        originalAttributes.put(ContentTypes.Product.PROD_DESCR, ContentKeyFactory.get(ContentType.Html, "test-media"));
+
+        Map<Attribute, Object> changedAttributes = new HashMap<Attribute, Object>();
+        changedAttributes.put(ContentTypes.Product.SEASON_TEXT, null);
+        changedAttributes.put(ContentTypes.Product.SELL_BY_SALESUNIT, null);
+        changedAttributes.put(ContentTypes.Product.EXCLUDED_EBT_PAYMENT, null);
+        changedAttributes.put(ContentTypes.Product.PROD_DESCR, null);
+
+        Map<ContentKey, Map<Attribute, Object>> originalNodes = new HashMap<ContentKey, Map<Attribute, Object>>();
+        originalNodes.put(productKey, originalAttributes);
+
+        Map<ContentKey, Map<Attribute, Object>> changedNodes = new HashMap<ContentKey, Map<Attribute, Object>>();
+        changedNodes.put(productKey, changedAttributes);
+
+        Draft draft = new Draft();
+        draft.setCreatedAt(new Date());
+        draft.setDraftStatus(DraftStatus.CREATED);
+        draft.setId(1L);
+        draft.setLastModifiedAt(new Date());
+        draft.setName("test-draft");
+
+        Mockito.when(contentTypeInfoService.findAttributeByName(ContentType.Product, "SEASON_TEXT")).thenReturn(Optional.fromNullable(ContentTypes.Product.SEASON_TEXT));
+        Mockito.when(contentTypeInfoService.findAttributeByName(ContentType.Product, "SELL_BY_SALESUNIT")).thenReturn(Optional.fromNullable(ContentTypes.Product.SELL_BY_SALESUNIT));
+        Mockito.when(contentTypeInfoService.findAttributeByName(ContentType.Product, "EXCLUDED_EBT_PAYMENT")).thenReturn(Optional.fromNullable(ContentTypes.Product.EXCLUDED_EBT_PAYMENT));
+        Mockito.when(contentTypeInfoService.findAttributeByName(ContentType.Product, "PROD_DESCR")).thenReturn(Optional.fromNullable(ContentTypes.Product.PROD_DESCR));
+
+        List<DraftChange> draftChanges = underTest.extractChanges(changedNodes, originalNodes, "testUser", draft);
+
+        Assert.assertEquals(4, draftChanges.size());
+        for (DraftChange draftChange : draftChanges) {
+            Assert.assertEquals(productKey.toString(), draftChange.getContentKey());
+            Assert.assertEquals(null, draftChange.getValue());
+        }
+    }
 }
