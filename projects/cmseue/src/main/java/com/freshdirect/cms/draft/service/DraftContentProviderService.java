@@ -359,7 +359,7 @@ public class DraftContentProviderService extends ContextualContentProvider {
                     Relationship relationship = (Relationship) attribute;
                     if (relationship.getCardinality() == RelationshipCardinality.ONE) {
                         ContentKey childKey = (ContentKey) attributeEntry.getValue();
-                        if (!contentProviderService.containsContentKey(childKey)) {
+                        if (childKey != null && !contentProviderService.containsContentKey(childKey)) {
                             keySet.add(childKey);
                         }
                     } else {
