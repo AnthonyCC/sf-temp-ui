@@ -334,7 +334,7 @@
 				</div>
 			</c:when>
 			<c:when
-				test="${browsePotato.searchParams.pageType != 'SEARCH' && browsePotato.searchParams.pageType != 'NEWPRODUCTS'}">
+				test="${browsePotato.searchParams.pageType != 'SEARCH'}">
 				<div class="srch-carousel">
 					<soy:render template="srch.carouselWrapper"
 						data="${browsePotato.carousels}" />
