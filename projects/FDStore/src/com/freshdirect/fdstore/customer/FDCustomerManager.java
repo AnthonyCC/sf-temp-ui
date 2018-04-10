@@ -2580,8 +2580,6 @@ public class FDCustomerManager {
 
 
 		try {
-			//FDReferralProgramModel referralProgram = FDReferralManager.loadLastestActiveReferralProgram();
-			//mailInfo.setReferralProgram(referralProgram);
 			XMLEmailI email = FDEmailFactory.getInstance().createTellAFriendEmail(mailInfo, true);
 			XSLTransformer transformer = new XSLTransformer();
 			return transformer.transform(email.getXML(), email.getXslPath());

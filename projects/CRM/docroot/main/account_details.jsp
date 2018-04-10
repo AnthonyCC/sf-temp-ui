@@ -214,7 +214,7 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
             <% if (!agent.isFDX()) { %><%if (!forPrint){ %><div class="cust_sub_nav"><a href="javascript:popResize('/main/account_details.jsp?for=print','600','680')"><b>Print Version</b></a></div><% } %>
             <div class="cust_sub_nav"><a href="http://www.usps.com/zip4/" target="usps" class="" title="USPS ZIP check" style="color:#003399; text-decoration:none;"><span style="color:#CC0000;">&raquo;</span> USPS</a></div><%}%>
             <% 
-            	String referrerName = FDReferralManager.loadReferrerNameFromReferralCustomerId(user.getIdentity().getErpCustomerPK());
+            	String referrerName = null;//FDReferralManager.loadReferrerNameFromReferralCustomerId(user.getIdentity().getErpCustomerPK());
             	if (referrerName != null) {
             %>
             <div class="cust_sub_nav">
