@@ -259,7 +259,7 @@ public class DatasourceService {
                 break;
         }
 
-        boolean randomizeProductOrder = ContentNodeUtil.getBooleanAttribute(module, ContentTypes.Module.randomizeProductOrder.getName());
+        final boolean randomizeProductOrder = ContentNodeUtil.getBooleanAttribute(module, ContentTypes.Module.randomizeProductOrder.getName());
         if (randomizeProductOrder) {
             java.util.Collections.shuffle(products);
         }
