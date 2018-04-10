@@ -133,104 +133,110 @@
 		<%@ include file="/common/template/includes/globalnav_mobileWeb_top.jspf"%>
 		<%} %>
 		<!-- top nav e -->
-
-		<div id="content" autoscroll="true"><!-- content starts here-->
-			<!-- popcart s -->
-				<%-- PLACEHOLDER(S) FOR NOW --%>
-			<!-- popcart e -->
-
-		   	<!-- messages s -->
-		   	<jsp:include page="/shared/messages/messages_fdx.jsp" />
-
-		  	<% if (FDStoreProperties.isAdServerEnabled()) {
-				%><div id="oas_SystemMessage">
-  					<script type="text/javascript">OAS_AD('SystemMessage');</script>
-  				</div>
-			<% } else { %>
-		    	<div class="message" data-type="system"><fd:GetSiteAnnouncements id="announcments" user="<%=user%>">
-			    <logic:iterate id="ann" collection="<%=announcments%>" type="com.freshdirect.fdstore.FDSiteAnnouncementI">
-			        <table width="100%" cellpadding="0" cellspacing="0" border="0">
-			            <tr align="center">
-			                <td>
-			                    <font class="text12rbold"><%=ann.getHeader()%></font><br>
-			                    <%=ann.getCopy()%>
-			                    <br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="6">
-			                </td>
-			            </tr>
-			            <tr bgcolor="#999966"><td class="onePxTall"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td></tr>
-			        </table><br>
-			    </logic:iterate></fd:GetSiteAnnouncements></div><%
-			} %>
-
-			<%@ include file="/common/template/includes/i_cutoff_warning.jspf"%>
-
-    		<div class="message invisible" id="deliveryetawarning" data-type="deliveryetawarning"><%@ include file="/common/template/includes/i_delivery_eta_info.jspf"%></div>
-
-		   	<!-- messages e -->
-
-		   	<!-- modorder s -->
-		   	<%-- THIS IS HIDDEN FROM DISPLAY FOR NOW --%>
-		   	<div id="modifyorderalert_cont" class="">
-			   	<div id="modifyorderalert" class="alerts invisible" data-type="modifyorderalert">
-					<comp:modifyOrderBar user="<%= user %>" modifyOrderAlert="true" htmlId="test_modifyorderalert" />
-				</div>
-		   	</div>
-		   	<!-- modorder e -->
-
-			<section class="tabs">
-    			<!-- start : tabs -->
-    			<tmpl:get name='tabs'/>
-    			<!-- end : tabs -->
-  			</section>
-		    <nav class="leftnav" style="display: none;">
-		      <!-- start : leftnav -->
-		      <tmpl:get name='leftnav'/>
-		      <!-- end : leftnav -->
-		    </nav>
-		    <%
-				if (isReorder) {
+		
+			<div id="content" autoscroll="true"><!-- content starts here-->
+				<!-- popcart s -->
+					<%-- PLACEHOLDER(S) FOR NOW --%>
+				<!-- popcart e -->
+	
+			   	<!-- messages s -->
+			   	<jsp:include page="/shared/messages/messages_fdx.jsp" />
+	
+			  	<% if (FDStoreProperties.isAdServerEnabled()) {
+					%><div id="oas_SystemMessage">
+	  					<script type="text/javascript">OAS_AD('SystemMessage');</script>
+	  				</div>
+				<% } else { %>
+			    	<div class="message" data-type="system"><fd:GetSiteAnnouncements id="announcments" user="<%=user%>">
+				    <logic:iterate id="ann" collection="<%=announcments%>" type="com.freshdirect.fdstore.FDSiteAnnouncementI">
+				        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+				            <tr align="center">
+				                <td>
+				                    <font class="text12rbold"><%=ann.getHeader()%></font><br>
+				                    <%=ann.getCopy()%>
+				                    <br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="6">
+				                </td>
+				            </tr>
+				            <tr bgcolor="#999966"><td class="onePxTall"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td></tr>
+				        </table><br>
+				    </logic:iterate></fd:GetSiteAnnouncements></div><%
+				} %>
+	
+				<%@ include file="/common/template/includes/i_cutoff_warning.jspf"%>
+	
+	    		<div class="message invisible" id="deliveryetawarning" data-type="deliveryetawarning"><%@ include file="/common/template/includes/i_delivery_eta_info.jspf"%></div>
+	
+			   	<!-- messages e -->
+	
+			   	<!-- modorder s -->
+			   	<%-- THIS IS HIDDEN FROM DISPLAY FOR NOW --%>
+			   	<div id="modifyorderalert_cont" class="">
+				   	<div id="modifyorderalert" class="alerts invisible" data-type="modifyorderalert">
+						<comp:modifyOrderBar user="<%= user %>" modifyOrderAlert="true" htmlId="test_modifyorderalert" />
+					</div>
+			   	</div>
+			   	<!-- modorder e -->
+	
+				<section class="tabs">
+	    			<!-- start : tabs -->
+	    			<tmpl:get name='tabs'/>
+	    			<!-- end : tabs -->
+	  			</section>
+				<section class="main">
+					
+				    <nav class="leftnav" style="display: none;">
+				      <!-- start : leftnav -->
+				      <tmpl:get name='leftnav'/>
+				      <!-- end : leftnav -->
+				    </nav>
+				    <%
+						if (isReorder) {
+							%>
+							<div id="quickshop"  class="container text10 <tmpl:get name='containerClass' />">
+				                <div class="header">
+				                  <h1 class='qs-title icon-reorder-icon-before notext'>Reorder</h1><span class="qs-subtitle"><strong>Smart shopping</strong> from <strong>past orders &amp; lists</strong></span>
+				                </div>
+				                <% if(false){ //Remove if check when other pages done. This nav is hidden only because only Items page was optimized for mobile %>
+				                <div id="mm-reorder-nav">
+									<ul>
+										<li><a href="/quickshop/qs_top_items.jsp" class="cssbutton purple <% if(isReorderItems){ %>non<% }%>transparent">Items</a></li>
+										<li><a href="/quickshop/qs_past_orders.jsp" class="cssbutton purple <% if(isReorderOrders){ %>non<% }%>transparent">Orders</a></li>
+										<li><a href="/quickshop/qs_shop_from_list.jsp" class="cssbutton purple <% if(isReorderLists){ %>non<% }%>transparent">Lists</a></li>
+									</ul>
+									<% if (user.isEligibleForStandingOrders()) { %>
+										<div id="mm-reorder-nav-so"><a href="/quickshop/qs_standing_orders.jsp" class="cssbutton purple transparent">Standing Orders</a></div>
+									<%} %>
+						    	</div>
+						    	<%} %>
+		
+		
+			                <% if (isReorderItems) { %>
+			                	<h2>Your Top Items</h2>
+			                <% } %>
+			               <% if (isReorderLists) { %>
+			               		<h2>Your Shopping Lists</h2>
+			               <% } %>
+			               <% if (isReorderOrders) { %>
+			               		<h2>Your Last Order</h2>
+			               <% } %>
+			                 <tmpl:get name="pagination" />
+			                <%
+						}
 					%>
-					<div id="quickshop"  class="container text10 <tmpl:get name='containerClass' />">
-		                <div class="header">
-		                  <h1 class='qs-title icon-reorder-icon-before notext'>Reorder</h1><span class="qs-subtitle"><strong>Smart shopping</strong> from <strong>past orders &amp; lists</strong></span>
-		                </div>
-		                <% if(false){ //Remove if check when other pages done. This nav is hidden only because only Items page was optimized for mobile %>
-		                <div id="mm-reorder-nav">
-							<ul>
-								<li><a href="/quickshop/qs_top_items.jsp" class="cssbutton purple <% if(isReorderItems){ %>non<% }%>transparent">Items</a></li>
-								<li><a href="/quickshop/qs_past_orders.jsp" class="cssbutton purple <% if(isReorderOrders){ %>non<% }%>transparent">Orders</a></li>
-								<li><a href="/quickshop/qs_shop_from_list.jsp" class="cssbutton purple <% if(isReorderLists){ %>non<% }%>transparent">Lists</a></li>
-							</ul>
-							<% if (user.isEligibleForStandingOrders()) { %>
-								<div id="mm-reorder-nav-so"><a href="/quickshop/qs_standing_orders.jsp" class="cssbutton purple transparent">Standing Orders</a></div>
-							<%} %>
-				    	</div>
-				    	<%} %>
-
-
-	                <% if (isReorderItems) { %>
-	                	<h2>Your Top Items</h2>
-	                <% } %>
-	               <% if (isReorderLists) { %>
-	               		<h2>Your Shopping Lists</h2>
-	               <% } %>
-	               <% if (isReorderOrders) { %>
-	               		<h2>Your Last Order</h2>
-	               <% } %>
-	                 <tmpl:get name="pagination" />
-	                <%
-				}
-			%>
-			<% if (isReorder) { %>
-				<%-- container with qs-container is required --%>
-				<div class="qs-container"><tmpl:get name="menu" /></div>
-			<% } %>
-			<tmpl:get name="content" />
-		    <% if (isReorder) { %>
-				<tmpl:get name="pagination" />
-				</div>
-			<% } %>
-	    </div><!-- content ends above here-->
+					<% if (isReorder) { %>
+						<%-- container with qs-container is required --%>
+						<div class="qs-container"><tmpl:get name="menu" /></div>
+					<% } %>
+					<section class="content">
+						<tmpl:get name="content" />
+					</section>
+				    <% if (isReorder) { %>
+						<tmpl:get name="pagination" />
+						</div>
+					<% } %>
+		    
+				</section>
+		    </div><!-- content ends above here-->
 
 	    <!-- bottom nav s -->
 	    <%@ include file="/common/template/includes/globalnav_mobileWeb_bottom.jspf" %>

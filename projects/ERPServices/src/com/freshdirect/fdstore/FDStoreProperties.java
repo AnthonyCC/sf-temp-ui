@@ -24,6 +24,7 @@ import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
+import com.freshdirect.enums.CaptchaType;
 import com.freshdirect.framework.util.ConfigHelper;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
@@ -507,6 +508,8 @@ public class FDStoreProperties {
 
     private final static String WS_PROMOTION_PRODUCTION_MODE = "fdstore.ws.promotion.production.mode";
     private static final String PROP_PAYMENT_METHOD_VERIFICATION_ENABLED = "fdstore.paymentmethod.verify";
+    private static final String PROP_MOBILEAPI_PAYMENT_METHOD_VERIFICATION_ENABLED = "fdstore.mobileapi.paymentmethod.verify";
+    
     private static final String PROP_PAYMENT_METHOD_VERIFICATION_LIMIT = "fdstore.paymentmethod.verify.limit";
 
     private static final String PROP_ORDER_HISTORY_QUERY_ID = "fdstore.orderhistory.query.id";
@@ -710,6 +713,8 @@ public class FDStoreProperties {
     private static final String PROP_NEWPRODUCTS_PAGESIZE = "fdstore.newproducts.pagesize";
     private static final String PROP_ECOUPON_PAGESIZE = "fdstore.ecoupon.pagesize";
     private static final String PROP_SEARCH_PAGESIZE = "fdstore.search.pagesize";
+    private static final String PROP_SEARCH_RECIPE_RESULTS_ENABLED = "fdstore.search.recipe.results.enabled";
+    
     private static final String PROP_QUICKSHOP_PAGESIZE = "fdstore.quickshop.pagesize";
     private static final String PROP_BROWSE_POPULAR_CATEGORIES_MAX = "fdstore.browse.popularcategories.max";
 
@@ -853,15 +858,6 @@ public class FDStoreProperties {
     public static final String PROP_EXTOLE_MICROSITE_GLOBAL_NAV_URL = "fdstore.extole.microsite.global.nav.url";
     public final static String PROP_FD_BRAND_PRODUCTS_AD_HOME = "freshdirect.fdstore.fdBrandProductsAdManager";
     public final static String PROP_HL_PRODUCTS_COUNT = "fdstore.hlproductscount";
-
-    /**
-     * URL to the CMS Admin REST interface
-     */
-    private static final String PROP_CMS_ADMIN_REST_URL = "cms.adminapp.path";
-    /**
-     * URL to the CMS Admin UI
-     */
-    private static final String PROP_CMS_ADMIN_UI_URL = "cms.adminapp.ui.url";
 
     // [APPDEV-4650]
     public static final String PROP_ENABLE_XC_FOR_CRM_AGENTS = "crm.xc.enabled";
@@ -1029,17 +1025,18 @@ public class FDStoreProperties {
 	private static final String FD_PRIORITY_SEARCH_KEYS = "fdstore.criteo.fdpriorityhomepagecriteo";
 	
 	private static final String FD_HOME_CRITEO_MAX_DISPLAY = "fdstore.criteo.fdhomecriteomaxdisplay";
-	
-	private static final String FD_HOME_CRITEO_CACHE_REFRESH_MIN = "fdstore.criteo.criteoservercacherefreshminutes";
-	
-	/*
-	 * Appdev 6760 allowing new products materializied views to be tuned to number of days requires a v2 version to be called 
-	 */
-	
-	public final static String FDSTORE_DB_NEW_PRODUCTS_MATERIALIZEDVIEW_V2_ENABLED = "fdstore.db.new.products.materializedview.v2.enabled";
-	
 
-	public final static String PROP_IS_FDC_FIRST_ORDER_EMAIL_MSG_ENABLED = "fdstore.fdc.firstorderemailmsg.enabled";
+	private static final String FD_HOME_CRITEO_CACHE_REFRESH_MIN = "fdstore.criteo.criteoservercacherefreshminutes";
+
+	/*
+	 * Appdev 6760 allowing new products materializied views to be tuned to number of days requires a v2 version to be called
+	 */
+
+	public final static String FDSTORE_DB_NEW_PRODUCTS_MATERIALIZEDVIEW_V2_ENABLED = "fdstore.db.new.products.materializedview.v2.enabled";
+
+
+	private static final String PROP_CAROUSEL_MIN_ITEMS = "fdstore.carousel.minimum.items";
+
  	static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_INIT_CTX_FACTORY, "weblogic.jndi.WLInitialContextFactory");
@@ -1480,6 +1477,7 @@ public class FDStoreProperties {
         defaults.put(PROP_MKTADMIN_USER_NAME, "qaadmin");
         defaults.put(PROP_MKTADMIN_PASSWORD, "password01");
 
+        defaults.put(PROP_MOBILEAPI_PAYMENT_METHOD_VERIFICATION_ENABLED, "false");
         defaults.put(PROP_PAYMENT_METHOD_VERIFICATION_ENABLED, "false");
         defaults.put(PROP_PAYMENT_METHOD_VERIFICATION_LIMIT, "5");
 
@@ -1682,6 +1680,8 @@ public class FDStoreProperties {
         defaults.put(PROP_NEWPRODUCTS_PAGESIZE, "30");
         defaults.put(PROP_ECOUPON_PAGESIZE, "30");
         defaults.put(PROP_SEARCH_PAGESIZE, "30");
+        defaults.put(PROP_SEARCH_RECIPE_RESULTS_ENABLED, "false");
+        
         defaults.put(PROP_QUICKSHOP_PAGESIZE, "30");
         defaults.put(PROP_BROWSE_POPULAR_CATEGORIES_MAX, "5");
 
@@ -1975,21 +1975,24 @@ public class FDStoreProperties {
 		defaults.put(PROP_FD_DP_FREE_TRIAL_OPTIN_FEATURE_ENABLED, "false");
 		
 		defaults.put(PROP_DB_PARTIAL_JOIN_OPTIMIZER_ENABLED, "true");
-		
+
 		defaults.put(FD_PRIORITY_SEARCH_KEYS, "BUTTER,EGG,MILK,YOGURT");
 		defaults.put(FD_HOME_CRITEO_MAX_DISPLAY, "12");
-		defaults.put(FD_HOME_CRITEO_CACHE_REFRESH_MIN, "30");
-		
-		/*
-		 * Appdev 6760 allowing new products materializied views to be tuned to number of days requires a v2 version to be called 
-		 */
-		
-		defaults.put(FDSTORE_DB_NEW_PRODUCTS_MATERIALIZEDVIEW_V2_ENABLED, "false");
-		
 
-		
-		defaults.put(PROP_IS_FDC_FIRST_ORDER_EMAIL_MSG_ENABLED, "false");
-		
+		defaults.put(FD_HOME_CRITEO_CACHE_REFRESH_MIN, "30");
+
+
+		/*
+		 * Appdev 6760 allowing new products materializied views to be tuned to number of days requires a v2 version to be called
+		 */
+
+		defaults.put(FDSTORE_DB_NEW_PRODUCTS_MATERIALIZEDVIEW_V2_ENABLED, "false");
+
+
+
+
+		defaults.put(PROP_CAROUSEL_MIN_ITEMS, "4");
+
         refresh();
     }
 
@@ -3530,7 +3533,9 @@ public class FDStoreProperties {
     public static boolean isPaymentMethodVerificationEnabled() {
         return (new Boolean(get(PROP_PAYMENT_METHOD_VERIFICATION_ENABLED))).booleanValue();
     }
-
+    public static boolean isPaymentMethodVerificationForMobileApiEnabled() {
+        return (new Boolean(get(PROP_MOBILEAPI_PAYMENT_METHOD_VERIFICATION_ENABLED))).booleanValue();
+    }
     public static int getPaymentMethodVerificationLimit() {
         return Integer.parseInt(get(PROP_PAYMENT_METHOD_VERIFICATION_LIMIT));
     }
@@ -4077,6 +4082,10 @@ public class FDStoreProperties {
     public static int getSearchPageSize() {
         return Integer.parseInt(get(PROP_SEARCH_PAGESIZE));
     }
+    
+    public static boolean isSearchRecipeResultsEnabled() {
+        return Boolean.valueOf(get(PROP_SEARCH_RECIPE_RESULTS_ENABLED)).booleanValue();
+    }
 
     public static int getQuickShopPageSize() {
         return Integer.parseInt(get(PROP_QUICKSHOP_PAGESIZE));
@@ -4267,13 +4276,17 @@ public class FDStoreProperties {
         return get(PROP_FDEXTOLEMGR_HOME);
     }
 
-    // Recaptcha getter methods
-    public static String getRecaptchaPublicKey() {
-        return StringUtils.defaultIfEmpty(get(PROP_RECAPTCHA_PUBLIC_KEY), "6LdQn0YUAAAAALfZUrX-x4IeOmdUkkUrwMwZdhsd");
-    }
+	// Recaptcha getter methods
+	public static String getRecaptchaPublicKey(CaptchaType type) {
+		String key = StringUtils.defaultIfEmpty(get(PROP_RECAPTCHA_PUBLIC_KEY),
+				"6LdQn0YUAAAAALfZUrX-x4IeOmdUkkUrwMwZdhsd,6LcYYFAUAAAAAOWJFZgnZnVNNXr31rebRjsnoSA0");
+		return getValueFromProperty(key, type.getValue());
+		
+	}
 
-    public static String getRecaptchaPrivateKey() {
-        return StringUtils.defaultIfEmpty(get(PROP_RECAPTCHA_PRIVATE_KEY), "6LdQn0YUAAAAAB3iHC6AzFH_Sd5k9z0uAwfvPUkZ");
+    public static String getRecaptchaPrivateKey(CaptchaType type) {
+        String key = StringUtils.defaultIfEmpty(get(PROP_RECAPTCHA_PRIVATE_KEY), "6LdQn0YUAAAAAB3iHC6AzFH_Sd5k9z0uAwfvPUkZ,6LcYYFAUAAAAAOWJFZgnZnVNNXr31rebRjsnoSA0");
+        return getValueFromProperty(key, type.getValue());
     }
 
     public static int getMaxInvalidLoginAttempt() {
@@ -4477,14 +4490,6 @@ public class FDStoreProperties {
 
     public static String getFdxAppUrl_Apple() {
         return get(PROP_FDX_APP_APPLE_URL);
-    }
-
-    public static String getCMSAdminServiceURL() {
-        return get(PROP_CMS_ADMIN_REST_URL);
-    }
-
-    public static String getCMSAdminUiURL() {
-        return get(PROP_CMS_ADMIN_UI_URL);
     }
 
     public static boolean isETippingEnabled() {
@@ -5020,22 +5025,35 @@ public class FDStoreProperties {
 	public static String getFDHomeCriteoPriorityKeys() {
 		return get(FD_PRIORITY_SEARCH_KEYS);
 	}
-	
+
 	public static int getFDHomeCriteoMaxDisplayProducts() {
 		return Integer.parseInt(get(FD_HOME_CRITEO_MAX_DISPLAY));
 	}
-	
+
 	public static int getFDHomeCriteoServerCacheRefresh() {
 		return Integer.parseInt(get(FD_HOME_CRITEO_CACHE_REFRESH_MIN));
-	}
-	
-	public static boolean isFdcFirstOrderEmailMsgEnabled() {
-		return (Boolean.valueOf(get(PROP_IS_FDC_FIRST_ORDER_EMAIL_MSG_ENABLED))).booleanValue();
 	}
 
 	//appdev 6760 new mat view tunable via sub table.
 	public static boolean isNewProdMatViewV2Enabled() {
 		return (Boolean.valueOf(get(FDSTORE_DB_NEW_PRODUCTS_MATERIALIZEDVIEW_V2_ENABLED))).booleanValue();
 	}
+
+
+	public static int getMinimumItemsCountInCarousel() {
+        return Integer.parseInt(get(PROP_CAROUSEL_MIN_ITEMS));
+	}
 	
+	private static String getValueFromProperty(String property, int i) {
+		if (property.contains(",")) {
+			String[] keys = property.split(",");
+			if (i >= keys.length) {
+				return keys[0];
+			} else {
+				return keys[i];
+			}
+		} else {
+			return property;
+		}
+	}
 }

@@ -24,6 +24,12 @@ import com.freshdirect.erp.model.ErpSalesUnitModel;
  * @author kkanuganti
  * 
  */
+/**
+ *@deprecated Please use the SapLoaderController and SAPLoaderServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public interface SAPLoaderSB extends EJBObject
 {	
 	/**
@@ -34,6 +40,7 @@ public interface SAPLoaderSB extends EJBObject
 	 * @throws LoaderException
 	 *   any problems encountered creating batch number in the system
 	 */
+	@Deprecated
 	public ErpMaterialBatchHistoryModel getMaterialBatchInfo() throws RemoteException, LoaderException;
 	
 	/**
@@ -44,6 +51,7 @@ public interface SAPLoaderSB extends EJBObject
 	 * @throws LoaderException
 	 *   any problems encountered creating batch number in the system
 	 */
+	@Deprecated
 	public int createBatch() throws RemoteException, LoaderException;
 	
 	
@@ -57,6 +65,7 @@ public interface SAPLoaderSB extends EJBObject
 	 * @throws LoaderException
 	 *   any problems encountered updating batch record in the system
     */
+	@Deprecated
    public void updateBatchStatus(int batchNumber, EnumApprovalStatus batchStatus) throws RemoteException, LoaderException;
 
 	/**
@@ -76,6 +85,7 @@ public interface SAPLoaderSB extends EJBObject
 	 * @throws LoaderException
 	 *            any problems encountered creating or updating objects in the system
 	 */
+	@Deprecated
 	public void loadData(int batchNumber, ErpMaterialModel material, Map<String, ErpClassModel> classes, 
 			Map<ErpCharacteristicValuePriceModel, Map<String, String>> characteristicValuePrices) throws RemoteException,
 			LoaderException;
@@ -91,6 +101,7 @@ public interface SAPLoaderSB extends EJBObject
     * @throws LoaderException 
     * 		any problems encountered while creating or updating objects in the system
     */
+	@Deprecated
 	public void loadSalesUnits(int batchNumber, String materialNo, HashSet<ErpSalesUnitModel> salesUnits) throws RemoteException, LoaderException;
 
 
@@ -103,6 +114,7 @@ public interface SAPLoaderSB extends EJBObject
 	 * @throws RemoteException
 	 * @throws LoaderException
 	 */
+	@Deprecated
 	public void loadPriceRows(int batchNumber, String materialNo, List<ErpMaterialPriceModel> priceRows) throws RemoteException, LoaderException;
 	
 	
@@ -132,6 +144,7 @@ public interface SAPLoaderSB extends EJBObject
 	 * @throws RemoteException
 	 * @throws LoaderException
 	 */
+	@Deprecated
 	public void loadMaterialPlantsAndSalesAreas(int batchNumber, String materialNo, List<ErpPlantMaterialModel> plants, List<ErpMaterialSalesAreaModel> salesAreas) throws RemoteException, LoaderException;
 	
 

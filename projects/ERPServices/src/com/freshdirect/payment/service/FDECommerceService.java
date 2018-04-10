@@ -228,6 +228,9 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String FAMILYID_FOR_MATERIAL = "productfamily/familyid";
 	private static final String FAMILY_INFO = "productfamily/familyinfo";
 	private static final String SKU_FAMILY_INFO = "productfamily/skufamilyinfo";
+	
+	private static final String UPLOAD_PRODUCT_FEED = "productfeed/upload";
+	
 	private static final String USERID_BY_USERTOKEN = "account/external/userIdbyusertoken";
 	private static final String USER_EMAIL_EXIST = "account/external/checkemailexist";
 	private static final String LINK_USER_TOKEN = "account/external/linkusertoken";
@@ -1538,7 +1541,9 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	@Override
 	public void storeSurvey(FDSurveyResponseData survey) throws FDResourceException {
 		try {
-			String inputJson = buildRequest(survey);
+			Request<FDSurveyResponseData> request = new Request<FDSurveyResponseData>();
+			request.setData(survey);
+			String inputJson = buildRequest(request);
 			Response<FDSurveyResponseData> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(STORE_SURVEY), new TypeReference<Response<Void>>() {});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
@@ -1557,7 +1562,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 				request.setData(listData);
 				String inputJson = buildRequest(request);
 				@SuppressWarnings("unchecked")
-				Response<String> response = this.postData(inputJson, getFdCommerceEndPoint(SAP_GROUP_PRICE_LOADER_LOAD_API), Response.class);
+				Response<String> response = this.postData(inputJson, getFdCommerceEndPoint(SAP_GROUP_PRICE_LOADER_LOAD_API), Response.class);				
 				if(!response.getResponseCode().equals("OK")){
 					throw new FDResourceException(response.getMessage());
 				}
@@ -3507,16 +3512,21 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		try {
 			
 			material = ModelConverter.convertErpMaterialModelToData(model);
-			for (Entry<String, ErpClassModel> classMap : createErpClassModel.entrySet()) {
-				ErpClassData data =	ModelConverter.convertErpClassModelToData(classMap.getValue());
-				erpClassMap.put(classMap.getKey(), data);
+			if (createErpClassModel != null) {
+				for (Entry<String, ErpClassModel> classMap : createErpClassModel.entrySet()) {
+					ErpClassData data = ModelConverter.convertErpClassModelToData(classMap.getValue());
+					erpClassMap.put(classMap.getKey(), data);
+				}
 			}
-			for (Entry<ErpCharacteristicValuePriceModel, Map<String, String>> charValueMap : chMap.entrySet()) {
-				CharacteristicValueMapData characteristicValueMap = new CharacteristicValueMapData();
-				ErpCharacteristicValuePriceData data = ModelConverter.createErpCharacteristicValuePriceData(charValueMap.getKey());
-				characteristicValueMap.setCaracteristicMapValue(charValueMap.getValue());
-				characteristicValueMap.setErpCharValueData(data);
-				charValueMapList.add(characteristicValueMap);
+			if (chMap != null) {
+				for (Entry<ErpCharacteristicValuePriceModel, Map<String, String>> charValueMap : chMap.entrySet()) {
+					CharacteristicValueMapData characteristicValueMap = new CharacteristicValueMapData();
+					ErpCharacteristicValuePriceData data = ModelConverter
+							.createErpCharacteristicValuePriceData(charValueMap.getKey());
+					characteristicValueMap.setCaracteristicMapValue(charValueMap.getValue());
+					characteristicValueMap.setErpCharValueData(data);
+					charValueMapList.add(characteristicValueMap);
+				}
 			}
 			sapLoadDataInputParam.setBatchNumber(batchNumber);
 			sapLoadDataInputParam.setMaterial(material);
@@ -4407,6 +4417,20 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		}catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
+		}
+	}
+	@Override
+	public boolean uploadProductFeed() throws FDResourceException {
+		try {
+			Response<Boolean> response = this.httpGetDataTypeMap(getFdCommerceEndPoint(UPLOAD_PRODUCT_FEED),
+					new TypeReference<Response<Boolean>>() {});
+			if (!response.getResponseCode().equals("OK")) {
+				throw new FDResourceException(response.getMessage());
+			}
+			return response.getData();
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage());
+			throw new FDResourceException(e);
 		}
 	}
 

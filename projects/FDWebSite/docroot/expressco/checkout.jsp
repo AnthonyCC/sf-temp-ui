@@ -1,4 +1,5 @@
 <%@ page import="com.freshdirect.common.context.MasqueradeContext"%>
+<%@ page import="com.freshdirect.enums.CaptchaType" %>
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties"%>
 <%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
 <%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
@@ -162,6 +163,7 @@ boolean showCaptchaInPayment = CaptchaUtil.isExcessiveAttempt(FDStoreProperties.
       window.FreshDirect.expressco = {};
       window.FreshDirect.properties = window.FreshDirect.properties || {};
       window.FreshDirect.properties.displayDeliveryFeeForCosUserInHeader = <%=FDStoreProperties.shouldShowDeliveryFeeForCheckoutPageCosCustomer()%>
+      window.FreshDirect.properties.isPaymentMethodVerificationEnabled = <%=FDStoreProperties.isPaymentMethodVerificationEnabled()%>
       window.FreshDirect.pendingCustomizations = <fd:ToJSON object="${pendingExternalAtcItemPotato}" noHeaders="true"/>
     </script>
   </tmpl:put>
@@ -186,11 +188,11 @@ boolean showCaptchaInPayment = CaptchaUtil.isExcessiveAttempt(FDStoreProperties.
 	
 	<script>
 		if (<%=showCaptchaInPayment%>) {
-	  		FreshDirect.components.captchaWidget.init('<%=FDStoreProperties.getRecaptchaPublicKey()%>');
+	  		FreshDirect.components.captchaWidget.init('<%=FDStoreProperties.getRecaptchaPublicKey(CaptchaType.PAYMENT)%>');
 	  		FreshDirect.user = FreshDirect.user || {};
 	  		FreshDirect.user.showCaptchaInPayment = true;
 	  	} else {
-	  		FreshDirect.components.captchaWidget.setKey('<%=FDStoreProperties.getRecaptchaPublicKey()%>');
+	  		FreshDirect.components.captchaWidget.setKey('<%=FDStoreProperties.getRecaptchaPublicKey(CaptchaType.PAYMENT)%>');
 	  	}
 		var checkout;
 		//While loading the screen get the Device ID from braintress

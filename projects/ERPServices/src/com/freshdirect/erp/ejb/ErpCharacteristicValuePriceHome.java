@@ -20,18 +20,20 @@ import com.freshdirect.framework.core.*;
  *
  * @version    $Revision$
  * @author     $Author$
+ * @deprecated
  */
 public interface ErpCharacteristicValuePriceHome extends EJBHome {
 
 	/**
 	 * Create from model with specified version.
 	 */
+	@Deprecated
 	public ErpCharacteristicValuePriceEB create(int version, ModelI model) throws CreateException, RemoteException;
-
+	@Deprecated
 	public ErpCharacteristicValuePriceEB findByPrimaryKey(VersionedPrimaryKey vpk) throws FinderException, RemoteException;
-	
+	@Deprecated
 	public Collection findByMaterial(VersionedPrimaryKey materialPK) throws FinderException, RemoteException;
-    
+	@Deprecated
     public ErpCharacteristicValuePriceEB findByMaterialAndCharValue(VersionedPrimaryKey materialPK, VersionedPrimaryKey charValPK) throws FinderException, RemoteException;
 
 }

@@ -304,7 +304,7 @@ boolean isCheckEligible = false;
 
 <img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0"><br /><br />
 
-<div id='oas_CategoryNote'>
+<div id='oas_CategoryNote' ad-fixed-size="true" ad-size-height="95" ad-size-width="774">
   <script language="javascript">
   	<!--
   	OAS_AD('CategoryNote');

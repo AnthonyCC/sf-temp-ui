@@ -179,7 +179,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
         String bankName = RequestUtil.getRequestParameter(request,PaymentMethodName.BANK_NAME);
         String bankAccountType = RequestUtil.getRequestParameter(request,PaymentMethodName.BANK_ACCOUNT_TYPE);
         String bypassBadAccountCheck = RequestUtil.getRequestParameter(request,PaymentMethodName.BYPASS_BAD_ACCOUNT_CHECK);
-        String csv=RequestUtil.getRequestParameter(request,PaymentMethodName.CSV);
+        String csv= request.getParameter(PaymentMethodName.CSV);
         String name=RequestUtil.getRequestParameter(request,PaymentMethodName.ACCOUNT_HOLDER);
         boolean verifyBankAccountNumber = true;
         
@@ -238,25 +238,25 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	            expCal.setTime(date);
 	            expCal.set(Calendar.DATE, expCal.getActualMaximum(Calendar.DATE));
 	        }
-	        if(FDStoreProperties.isPaymentMethodVerificationEnabled()&& EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())) {
-	        	result.addError(
-		    	        csv == null || csv.length() <= 0,
-		    	        PaymentMethodName.CSV,SystemMessageList.MSG_REQUIRED
-		    	        );
-	        	
-		        	if(EnumCardType.AMEX.equals(EnumCardType.getCardType(cardType))) {
-		        		result.addError(
-				    	        csv != null & csv.length() != 0 & csv.length() !=4,
-				    	        PaymentMethodName.CSV,SystemMessageList.MSG_CVV_INCORRECT
-				    	        );
-		        	} else {
-		        		result.addError(
-				    	        csv != null & csv.length() != 0 & csv.length() !=3,
-				    	        PaymentMethodName.CSV,SystemMessageList.MSG_CVV_INCORRECT
-				    	        );
-		        	}
-	        	
-	        }            
+	        // check cvv code only if the following conditions is true
+	        // 1) isPaymentMethodVerificationEnabled is true
+	        // 2) the form has cvv field
+	        // 3) payment is credit card
+			if (FDStoreProperties.isPaymentMethodVerificationEnabled() &&
+					csv != null &&
+					EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())) {
+				result.addError(csv == null || csv.length() <= 0, PaymentMethodName.CSV,
+						SystemMessageList.MSG_REQUIRED);
+
+				if (EnumCardType.AMEX.equals(EnumCardType.getCardType(cardType))) {
+					result.addError(csv != null & csv.length() != 0 & csv.length() != 4, PaymentMethodName.CSV,
+							SystemMessageList.MSG_CVV_INCORRECT);
+				} else {
+					result.addError(csv != null & csv.length() != 0 & csv.length() != 3, PaymentMethodName.CSV,
+							SystemMessageList.MSG_CVV_INCORRECT);
+				}
+
+			}       
         } else if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
 	        if (abaRouteNumber != null && !"".equals(abaRouteNumber)) {
 	        	abaRouteNumber = StringUtils.leftPad(abaRouteNumber, 9, "0");
@@ -457,27 +457,22 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	        );
 	        
 	        // Check card number
-	        
-	        String csv=paymentMethod.getCVV();
-            if(FDStoreProperties.isPaymentMethodVerificationEnabled()/*&& !paymentMethod.isBypassAVSCheck()*/&& verifyCC) {
-	        	result.addError(
-		    	        csv == null || (csv!=null & csv.length() <= 0),
-		    	        PaymentMethodName.CSV,SystemMessageList.MSG_REQUIRED
-		    	        );
-	        	
-		        	if(EnumCardType.AMEX.equals(paymentMethod.getCardType())) {
-		        		result.addError(
-				    	        csv != null & csv.length() != 0 & csv.length() !=4,
-				    	        PaymentMethodName.CSV,SystemMessageList.MSG_CVV_INCORRECT
-				    	        );
-		        	} else {
-		        		result.addError(
-				    	        csv != null & csv.length() != 0 & csv.length() !=3,
-				    	        PaymentMethodName.CSV,SystemMessageList.MSG_CVV_INCORRECT
-				    	        );
-		        	}
-	        	
-	        }
+
+			String csv = paymentMethod.getCVV();
+			// 1) isPaymentMethodVerificationEnabled = true
+			// 2) verifyCC = true
+			// 3) csv is passed from the form, if csv is null, that means the form doesn't have the csv field and itdoesn't require user to enter csv.
+			if (FDStoreProperties.isPaymentMethodVerificationEnabled() && verifyCC && csv != null) {
+				boolean isEmptyCvv = csv.isEmpty() || csv.trim().length() == 0;
+				if (isEmptyCvv) {
+					result.addError(true, PaymentMethodName.CSV, SystemMessageList.MSG_REQUIRED);
+				} else if (EnumCardType.AMEX.equals(paymentMethod.getCardType())) {
+					result.addError(csv.length() < 4, PaymentMethodName.CSV, SystemMessageList.MSG_CVV_INCORRECT);
+				} else {
+					result.addError(csv.length() < 3, PaymentMethodName.CSV, SystemMessageList.MSG_CVV_INCORRECT);
+				}
+
+			}
            /* String name=RequestUtil.getRequestParameter(request,PaymentMethodName.ACCOUNT_HOLDER);
             result.addError(name == null ||"".equals(name),
 	    	        PaymentMethodName.ACCOUNT_HOLDER,SystemMessageList.MSG_REQUIRED

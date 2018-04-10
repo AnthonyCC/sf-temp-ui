@@ -3,6 +3,7 @@ var FreshDirect = FreshDirect || {};
 (function(fd) {
 	"use strict";
 	fd.components = fd.components || {};
+	var hasError = false;
 	var captchaWidgetId, captchaKey, captchaPublicKey;
 	
 	function init(publicKey, callback) {
@@ -32,9 +33,13 @@ var FreshDirect = FreshDirect || {};
 	}
 	function render(container, callback, errorCallback, expiredCallback ) {
 	    try {
+	    	hasError = false;
 	    	captchaWidgetId = grecaptcha.render(container, {
 	        	'sitekey' : captchaPublicKey,
-	        	'error-callback': errorCallback,
+	        	'error-callback': function() {
+	        		hasError = true;
+	        		errorCallback();
+	        	},
 	        	'expired-callback': expiredCallback,
 	        	'callback': callback
 	      });
@@ -57,7 +62,7 @@ var FreshDirect = FreshDirect || {};
 	}
 	
 	function isEnabled() {
-		return (captchaWidgetId !=null) && window.grecaptcha;
+		return (captchaWidgetId !=null) && !hasError && window.grecaptcha;
 	}
 	function isValid() {
 		return !isEnabled() || !!grecaptcha.getResponse();

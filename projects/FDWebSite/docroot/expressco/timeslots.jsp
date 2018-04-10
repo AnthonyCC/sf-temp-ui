@@ -18,7 +18,7 @@
     boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
 %>
 
-<form fdform="timeslot" name="reserveTimeslot">
+<form fdform="timeslot" name="reserveTimeslot" fdform-no-submit-on-keydown="true">
   <%
 
 	    //Render the timeslots

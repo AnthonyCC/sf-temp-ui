@@ -1319,7 +1319,7 @@ public class ProductDetailPopulator {
 
 	private static void populateSubtotalInfo( ProductData item, FDProduct fdProduct, FDProductInfo productInfo, PriceCalculator priceCalculator ) throws FDResourceException {
 
-		ZoneInfo pricingZone = priceCalculator.getPricingContext().getZoneInfo();
+		ZoneInfo pricingZone = priceCalculator!=null&&priceCalculator.getPricingContext()!=null?priceCalculator.getPricingContext().getZoneInfo():null;
 		MaterialPrice[] availMatPrices = fdProduct.getPricing().getZonePrice( pricingZone ).getMaterialPrices();
 		MaterialPrice[] matPrices = null;
 		List<MaterialPrice> matPriceList = new ArrayList<MaterialPrice>();

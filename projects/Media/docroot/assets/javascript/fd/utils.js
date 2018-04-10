@@ -174,6 +174,16 @@ var FreshDirect = FreshDirect || {};
     return vars;
   };
 
+
+  utils.setParameters = function (originalParameter, newParameter) {
+    var string = originalParameter
+    for (var i = 0; i < newParameter.length; ++i) {
+      var key = Object.keys(newParameter[i])[0];
+      string = string.concat('&' , key , '=' , newParameter[i][key]);
+		}
+    return string;
+  };
+
   // deprecated use getParameters()[name] instead
   utils.getParameterByName = function (name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");

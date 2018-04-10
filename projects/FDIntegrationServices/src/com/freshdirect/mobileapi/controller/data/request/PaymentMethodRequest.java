@@ -1,5 +1,6 @@
 package com.freshdirect.mobileapi.controller.data.request;
 
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.mobileapi.controller.data.Message;
 
 public class PaymentMethodRequest extends Message {
@@ -43,7 +44,8 @@ public class PaymentMethodRequest extends Message {
 		this.billingCtry = billingCtry;
 	}
 	public String getCsv() {
-		return csv;
+		// if isPaymentMethodVerificationForMobileApiEnabled is false, return null so the payment gw will not do cvv verification.
+		return FDStoreProperties.isPaymentMethodVerificationForMobileApiEnabled()? csv : null;
 	}
 	public void setCsv(String csv) {
 		this.csv = csv;

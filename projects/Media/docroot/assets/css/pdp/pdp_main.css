@@ -67,8 +67,8 @@ h1.pdpTitle,
 	display: inline;
 }
 
-span.cssbutton.annotation,
-span.cssbutton.annotation:hover {
+div.cssbutton.annotation,
+div.cssbutton.annotation:hover {
   display:none;
   color: #000;
   overflow: hidden;

@@ -1,6 +1,8 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
+<fd:CheckLoginStatus id='user' />
+
 <tmpl:insert template='/common/template/no_space_border.jsp'>
     <tmpl:put name="seoMetaTag" direct='true'>
         <fd:SEOMetaTag title="FreshDirect - Help"/>

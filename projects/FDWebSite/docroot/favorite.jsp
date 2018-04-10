@@ -14,6 +14,10 @@
 <%@ page import="com.freshdirect.webapp.ajax.product.data.*"%>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*"%>
 <%@ page import="com.freshdirect.webapp.util.*" %>
+<%@ page import="com.freshdirect.fdstore.FDStoreProperties" %>
+<%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
+<%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
+<%@ page import="com.freshdirect.webapp.util.JspMethods" %>
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@page import="java.net.*"%>
 <%@page import="java.util.*"%>
@@ -87,10 +91,23 @@
 	} catch (Exception e) {
 		throw e;
 		//User no found or invalid parameters
-	}		
+	}
+	
+	String template = "/common/template/browse_template.jsp";
+	//not set, set a default
+	request.setAttribute("sitePage", "www.freshdirect.com/favorite.jsp");
+
+	boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
+	if (mobWeb) {
+		template = "/common/template/mobileWeb.jsp"; //mobWeb template
+		String oasSitePage = request.getAttribute("sitePage").toString();
+		if (oasSitePage.startsWith("www.freshdirect.com/") && !oasSitePage.startsWith("www.freshdirect.com/mobileweb/")) {
+			request.setAttribute("sitePage", oasSitePage.replace("www.freshdirect.com/", "www.freshdirect.com/mobileweb/")); //change for OAS
+		}
+	}
 %>
 
-<tmpl:insert template='/common/template/browse_template.jsp'>
+<tmpl:insert template='<%=template %>'>
     <tmpl:put name="seoMetaTag" direct="true">
 		<fd:SEOMetaTag title="FreshDirect - My Sale Items" pageId="my_sale_items"></fd:SEOMetaTag>
 	</tmpl:put>
@@ -157,6 +174,9 @@
     		var curVal = ($jq(this).attr('type') === 'checkbox') ? $jq(this).is(':checked') : $jq(this).val();
     		window.location = window.location.pathname + updateQueryStringParameter(window.location.search, $jq(this).attr('data-uriparam'), curVal);
     	});
+    	//add refine button
+    	$jq('.main').prepend('<div class="refine-btn-cont"><button class="cssbutton green transparent refine-btn">Refine <span class="offscreen">Results</span></button></div>');
+		$jq('.refine-btn').on('click', function(e) { $jq('.leftnav').toggle(); });
     </script>
   </tmpl:put>
 

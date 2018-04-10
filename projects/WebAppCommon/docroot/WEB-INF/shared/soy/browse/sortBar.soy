@@ -12,14 +12,14 @@
 
         {foreach $sortOption in $sortOptions}
           <button data-sortid="{$sortOption.id}" data-direction="{$sortOption.orderAscending}" {$sortOption.selected ? 'data-currentdirection="'+$currentOrderAsc+'"' : ''}
-              class="sorter-element {isFirst($sortOption) ? 'first' : ''} {$sortOption.selected ? 'selected' : ''}  "><span>{$sortOption.name}</span></button>
+              class="sorter-element {isFirst($sortOption) ? 'first' : ''} {$sortOption.selected ? 'selected' : ''}  "><span class="offscreen">sort products by</span><span>{$sortOption.name}</span></button>
         {/foreach}
 
         {if $sortDropDowns and length($sortDropDowns)}
           {foreach $sortDropDown in $sortDropDowns}
             {if $sortDropDown.options and length($sortDropDown.options)}
             <span class="sortDropDown sorter-element">
-              <select class="customselect{foreach $option in $sortDropDown.options}{if $option.selected} selected{/if}{/foreach}" data-custom-select-button-class="sortSelectButton">
+              <select aria-label="sort products by category" class="customselect{foreach $option in $sortDropDown.options}{if $option.selected} selected{/if}{/foreach}" data-custom-select-button-class="sortSelectButton">
                 {foreach $option in $sortDropDown.options}
                   <option value="{$option.id ? $option.id : ''}" {$option.selected ? 'selected' : ''}>{$option.name}</option> 
                 {/foreach}            

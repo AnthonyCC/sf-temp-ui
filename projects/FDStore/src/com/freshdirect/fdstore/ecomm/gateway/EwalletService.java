@@ -7,8 +7,10 @@ import com.freshdirect.ecomm.gateway.AbstractEcommService;
 import com.freshdirect.ecommerce.data.attributes.FlatAttributeCollection;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
+import com.freshdirect.ecommerce.data.fdstore.EwalletData;
 import com.freshdirect.fdstore.FDEcommServiceException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.ecomm.converter.EwalletConverter;
 import com.freshdirect.fdstore.ewallet.EwalletRequestData;
 import com.freshdirect.fdstore.ewallet.EwalletResponseData;
 import com.freshdirect.payment.service.AbstractService;
@@ -44,13 +46,14 @@ public class EwalletService  extends AbstractEcommService implements EwalletServ
 	public EwalletResponseData getToken(EwalletRequestData ewalletRequestData)
 			throws RemoteException {
 		
-		Response<EwalletResponseData> response = null;
+		Response<com.freshdirect.ecommerce.data.fdstore.EwalletResponseData> response = null;
 		EwalletResponseData result = null;
-		Request<EwalletRequestData> request = new Request<EwalletRequestData>();
+		Request<EwalletData> request = new Request<EwalletData>();
 			try {
 				String inputJson;
+				request.setData(EwalletConverter.buildEwalletData(ewalletRequestData));
 				inputJson = buildRequest(request);
-				response = postDataTypeMap(inputJson,getFdCommerceEndPoint(GET_TOKEN),new TypeReference<Response<EwalletResponseData>>() {});
+				response = postDataTypeMap(inputJson,getFdCommerceEndPoint(GET_TOKEN),new TypeReference<Response<com.freshdirect.ecommerce.data.fdstore.EwalletResponseData>>() {});
 				if(!response.getResponseCode().equals("OK"))
 					throw new FDResourceException(response.getMessage());
 					
@@ -60,7 +63,7 @@ public class EwalletService  extends AbstractEcommService implements EwalletServ
 				throw new RemoteException(e.getMessage());
 			}
 			
-			return response.getData();
+			return EwalletConverter.buildEwalletResponseDate(response.getData());
 	}
 
 	@Override
@@ -152,9 +155,10 @@ public class EwalletService  extends AbstractEcommService implements EwalletServ
 		
 		Response<EwalletResponseData> response = null;
 		EwalletResponseData result = null;
-		Request<EwalletRequestData> request = new Request<EwalletRequestData>();
-			try {
+		Request<EwalletData> request = new Request<EwalletData>();
+		try {
 				String inputJson;
+				request.setData(EwalletConverter.buildEwalletData(ewalletRequestData));
 				inputJson = buildRequest(request);
 				response = postDataTypeMap(inputJson,getFdCommerceEndPoint(DISCONNECT),new TypeReference<Response<EwalletResponseData>>() {});
 				if(!response.getResponseCode().equals("OK"))
@@ -267,9 +271,10 @@ public class EwalletService  extends AbstractEcommService implements EwalletServ
 		
 		Response<EwalletResponseData> response = null;
 		EwalletResponseData result = null;
-		Request<EwalletRequestData> request = new Request<EwalletRequestData>();
+		Request<EwalletData> request = new Request<EwalletData>();
 			try {
 				String inputJson;
+				request.setData(EwalletConverter.buildEwalletData(ewalletRequestData));
 				inputJson = buildRequest(request);
 				response = postDataTypeMap(inputJson,getFdCommerceEndPoint(ADD_PAYPAL_WALLET),new TypeReference<Response<EwalletResponseData>>() {});
 				if(!response.getResponseCode().equals("OK"))

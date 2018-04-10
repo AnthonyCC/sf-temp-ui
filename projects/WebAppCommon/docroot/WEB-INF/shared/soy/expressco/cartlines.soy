@@ -246,6 +246,7 @@
 	{call .coreToolTip}
 		{param ttMaster2ndClass: 'optionalTTmaster' /}
 		{param iconId: 'optionalToolTip' /}
+		{param optToolTipClass: 'accessibleToolTip' /}
 		{param ttBox2ndClass: 'optionalTipToolTip' /}
 		{param ttTitle: 'Optional Tip' /}
 		{param ttBody}
@@ -266,6 +267,7 @@
  * tooltip core
  * @param? ttMaster2ndClass ttMaster2ndClass
  * @param iconId iconId
+ * @param? optToolTipClass optToolTipClass
  * @param? ttIcon2ndClass ttIcon2ndClass
  * @param ttTitle ttTitle
  * @param? ttBody ttBody
@@ -281,7 +283,7 @@
 			</div>
 		</div>
 		/*<a href="#" id="{$iconId}" data-component="tooltip" class="tooltip-small {if $ttIcon2ndClass}{$ttIcon2ndClass}{/if}">i</a>*/
-		<span id="{$iconId}" class="icon-info-before {if $ttIcon2ndClass}{$ttIcon2ndClass}{/if}"></span>
+		<span class="icon-info-before {if $ttIcon2ndClass}{$ttIcon2ndClass}{/if} {if $optToolTipClass}{$optToolTipClass}{/if}"></span>
 	</div>
 {/template}
 
@@ -770,13 +772,13 @@
 {deltemplate expressco.cartline autoescape="false" variant="'YOUR_CART'"}
 	<div class='cartsection__cartline' data-component='cartline' data-cartlineid='{$id}'>
 		<div class='cartline-imageholder cartline-box'>
-			<a class='cartline-link' href='/product_modify.jsp?cartLine={$id}&trk=cart'>
+			<a id="cartline_link_img_{$id}" class='cartline-link' href='/product_modify.jsp?cartLine={$id}&trk=cart'>
 				<img class='cartline-image' src='{if $image}{$image}{else}/media/images/temp/soon_80x80.gif{/if}' alt="{$descrAlt}" />
 			</a>
 		</div>
 		<div class='cartline-title cartline-box'>
 			<div class='cartline-titleholder'>
-				<a class='cartline-link' href='/product_modify.jsp?cartLine={$id}&trk=cart'>{$descr}</a>
+				<a id='cartline_link_{$id}' class='cartline-link' href='/product_modify.jsp?cartLine={$id}&trk=cart'>{$descr}</a>
 				{if $newItem}
 					<span class="new">(new)</span>
 				{/if}
@@ -814,7 +816,7 @@
 				{if $customerServiceRepresentative and $customerServiceRepresentative.complaintReasons}
 					<label class="cartline-complaint-reason-select">
 						Make Good reason:
-						<select data-component="complaintreason">
+						<select id='cartline_link_mgo_{$id}' data-component="complaintreason">
 							<option value="nil" {if not $complaintReason}selected{/if}>- Choose reason -</option>
 							{foreach $option in $customerServiceRepresentative.complaintReasons}
 								<option value="{$option.id}" {if $complaintReason and $complaintReason.id == $option.id}selected{/if}>{$option.reason}</option>
@@ -825,7 +827,7 @@
 			</div>
 		</div>
 		<div class='cartline-delete cartline-box'>
-			<a class='cartline-link' href='/expressco/view_cart.jsp?remove=1&cartLine={$id}'>
+			<a id='cartline_link_delete_{$id}' class='cartline-link' href='/expressco/view_cart.jsp?remove=1&cartLine={$id}'>
 				<img src="/media_stat/images/icon-trash.png" alt="" class='cartline-delete-image' /><span class="accessibleCSS">Delete</span><span class="offscreen"> {$descr}</span>
 			</a>
 		</div>
@@ -844,7 +846,7 @@
 						{call common.quantitybox}{param quantity:$qu /}{param uid: 'cartline_change_'+$id /}{/call}
 					</form>
 				{/if}
-				{if $su}{call common.salesunit}{param options:$su /}{/call}{/if}
+				{if $su}{call common.salesunit}{param options:$su /}{param id:'cartline_link_salesunit'+$id /}{/call}{/if}
 			{/if}
 		</div>
 		<div class='cartline-price cartline-box'>
@@ -1362,9 +1364,9 @@
 						{/if}
 						{if $box.other.deliveryPassPopupNeeded and $userRecognized and $userCorporate == false}
 							{if $box.other.deliveryPassFreeTrialEligible}
-								<span class="free-link-holder">&nbsp;or <a href="javascript:doOverlayDialogNew('/includes/freetrial_popup.jsp');" class="{if $isHeader}cssbutton small green {/if}free-link" >Free</a></span>
+								<span class="free-link-holder">&nbsp;or <a href="#" data-component="deliverypassfreetrialpopup" class="{if $isHeader}cssbutton small green {/if}free-link" >Free<span class="offscreen">with Delivery Pass trial</span></a></span>
 							{else}
-								<span class="free-link-holder">&nbsp;or <a href="#" class="{if $isHeader}cssbutton small green {/if}free-link" data-component="deliverypasspopup">Free</a></span>
+								<span class="free-link-holder">&nbsp;or <a href="#" class="{if $isHeader}cssbutton small green {/if}free-link" data-component="deliverypasspopup">Free<span class="offscreen">with Delivery Pass</span></a></span>
 							{/if}
 						{/if}
 					</div> <!-- end subtotal__rowcell-right -->
@@ -1448,7 +1450,7 @@
 	<div class='cartsection__tax' fdform-container="etip">
 		<form fdform="{$id? $id: 'etip'}" action="#" fdform-endpoint-submit="/api/expresscheckout/etip">
 
-			<div class="subtotal__rowcell-left" id="optionaltip">
+			<div class="subtotal__rowcell-left optionaltip">
 				<span class="strl_text">Tip (Optional)</span>
 				{call .optToolTip /}
 									

@@ -42,7 +42,7 @@ public class PaymentMethodData implements java.io.Serializable {
 	
 	private String routingNumber;
 	
-	
+	private String cvv;
 
 	public Date getExpirationDate() {
 		return expirationDate;
@@ -172,6 +172,12 @@ public class PaymentMethodData implements java.io.Serializable {
 		this.profileId = profileId;
 	}
 
+	public String getCVV() {
+		return cvv;
+	}
 
+	public void setCVV(String cvv) {
+		this.cvv = cvv;
+	}
 
 }

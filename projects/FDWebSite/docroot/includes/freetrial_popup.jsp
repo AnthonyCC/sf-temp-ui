@@ -6,6 +6,12 @@
 
 <script>
 	function getFreeDelivery(){
+		dataLayer.push({
+			'event': 'deliverypass-click',
+			'eventCategory': 'deliverypass',
+			'eventAction': 'confirm',
+			'eventLabel': 'start trial'
+		});
 		$jq.ajax({
 	        url: '/api/freetrial',
 	        type: 'POST',
@@ -14,18 +20,30 @@
 	        		var errorMessagePopup = '<div class="error-container"><div class="error-header error-header-noimg">Hold Your Horseradishes!</div>';
 	        		errorMessagePopup += '<div class="error-text">' + message.MESSAGE + '</div>';
 	        		if($jq(".ui-dialog:visible .dpn").length > 0){
-	        			errorMessagePopup += '<a class="error-button cssbutton cssbutton-flat green" href="javascript:closePopup()">Continue Shopping</a></div>';
+	        			errorMessagePopup += '<a dpfreetrial-close-popup class="error-button cssbutton cssbutton-flat green" href="#">Continue Shopping</a></div>';
+	        			$jq(".overlay-dialog-new .dpn").on("click", "[dpfreetrial-close-popup]", function(){
+	        				$jq("#uimodal-output").dialog("close");
+	        			});
 	        		} else {
 	        			errorMessagePopup += '<a class="error-button cssbutton cssbutton-flat green" href="/">Continue Shopping</a></div>';
 	        		}
 	        		doOverlayDialogByHtmlNew(errorMessagePopup);
+	        		dataLayer.push({
+						'event': 'deliverypass-click',
+						'eventCategory': 'deliverypass',
+						'eventAction': 'error',
+						'eventLabel': message.ERRORTYPE
+	        		});
 	        	} else {
 	        		if($jq(".ui-dialog:visible .dpn").length > 0){
 	        			$jq("#cartcontent").trigger('cartcontent-update');
 	        			var successMessagePopup = '<div class="dpn"><div class="dpn-container"><div class="dpn-success"><div class="dpn-success-header"><div class="dpn-success-check"><img src="/media/editorial/site_pages/deliverypass/images/large-check.svg" alt="Success check"></div><p>Success!</p><p>Thanks for signing up.</p></div>';
 	        				successMessagePopup += '<div class="dpn-success-text"><p>Your DeliveryPass<sup>&reg;</sup> trial will activate on your next purchase.</br>Visit your DeliveryPass<sup>&reg;</sup> Settings for more details.</br>Get ready to save!</p></div>';
-	        				successMessagePopup += '<div class="dpn-success-a"><a href="javascript:closePopup()" class="dpn-success-start-shopping cssbutton cssbutton-flat orange">Start Saving</a></div><div class="dpn-success-setting"><a href="/your_account/delivery_pass.jsp">DeliveryPass<sup>&reg;</sup> Settings</a></div></div></div></div>';
+	        				successMessagePopup += '<div class="dpn-success-a"><a dpfreetrial-close-popup href="#" class="dpn-success-start-shopping cssbutton cssbutton-flat orange">Start Saving</a></div><div class="dpn-success-setting"><a href="/your_account/delivery_pass.jsp">DeliveryPass<sup>&reg;</sup> Settings</a></div></div></div></div>';
 	        				doOverlayDialogByHtmlNew(successMessagePopup);
+	        				$jq(".overlay-dialog-new .dpn").on("click", "[dpfreetrial-close-popup]", function(){
+	        					$jq("#uimodal-output").dialog("close");
+	        				});
 	        		} else {
 	        			window.location.href = "/freetrialsuccess.jsp";
 	        		}
@@ -33,19 +51,52 @@
 	        },
 	        error: function() {
 	        	doOverlayDialogNew("/includes/error_message_popup.jsp");
+	        	dataLayer.push({
+		            'event': 'deliverypass-click',
+		            'eventCategory': 'deliverypass',
+		            'eventAction': 'error',
+		            'eventLabel': 'technical'
+	      		});
 	        }
 	 	});
 	}
-	function closePopup(){
-		$jq("#uimodal-output").dialog("close");
+	function dpLogin(){
+		dataLayer.push({
+			'event': 'deliverypass-click',
+			'eventCategory': 'deliverypass',
+			'eventAction': 'confirm',
+			'eventLabel': 'sign in to get started'
+		});
 	}
-	function noThanks(){
+	$jq('.overlay-dialog-new #uimodal-output').off("dialogclose");
+	$jq('.overlay-dialog-new #uimodal-output').on("dialogclose", function(e, ui){
+		dataLayer.push({
+			'event': 'deliverypass-click',
+			'eventCategory': 'deliverypass',
+			'eventAction': 'exit',
+			'eventLabel': 'x out'
+		});
+	});
+	$jq(".overlay-dialog-new .dpn").on("click", "[dpfreetrial-terms]", function(){
+		pop("/shared/template/generic_popup.jsp?contentPath=/media/editorial/picks/deliverypass/dp_tc.html&windowSize=large&name=Delivery Pass Information',400,560,alt='Delivery Pass Information");
+	});
+	$jq(".overlay-dialog-new .dpn").on("click", "[dpfreetrial-close-popup]", function(){
+		$jq("#uimodal-output").dialog("close");
+	});
+	$jq('.overlay-dialog-new .dpn').on("click", "[dpfreetrial-no-thanks]", function(){
+		dataLayer.push({
+			'event': 'deliverypass-click',
+			'eventCategory': 'deliverypass',
+			'eventAction': 'exit',
+			'eventLabel': 'no thanks'
+		});
 		if($jq(".ui-dialog:visible .dpn").length > 0){
-			$jq('.overlay-dialog-new .ui-dialog-titlebar-close').click()
+			$jq(".overlay-dialog-new #uimodal-output").off("dialogclose");
+			$jq(".overlay-dialog-new .ui-dialog-titlebar-close").click();
 		} else {
 			window.location.href = "/";
 		}
-	}
+	});
 	$jq(document).off("keydown", ".overlay-dialog-new");
 	$jq(document).on("keydown", ".overlay-dialog-new", function(e) {
 	    if (e.which == 9) {
@@ -54,12 +105,13 @@
 			}else if( $jq(document.activeElement).attr('tabindex') == 2){
 				setTimeout(function(){ $jq("[tabindex=3]").focus(); }, 5);
 			} else if( $jq(document.activeElement).attr('tabindex') == 3){
-				setTimeout(function(){ $jq(".overlay-dialog-new .ui-dialog-titlebar-close").focus(); }, 5);	    		 
+				setTimeout(function(){ $jq(".overlay-dialog-new .ui-dialog-titlebar-close").focus(); }, 5);
 			} else if( $jq(document.activeElement).hasClass("ui-dialog-titlebar-close")){
 				setTimeout(function(){ $jq("[tabindex=1]").focus(); }, 5);
 			}
 	    }
-	});
+	});	
+
 </script>
 
 <div class="dpn">
@@ -89,13 +141,13 @@
 				</div>
 			</div>
 			<div class="dpn-center-agreement">By signing up for DeliveryPass<sup>&reg;</sup>, you are agreeing to the Terms and Conditions set forth here.</div>
-			<div class="dpn-center-agreement-link"><a  tabindex="2" href="javascript:pop('/shared/template/generic_popup.jsp?contentPath=/media/editorial/picks/deliverypass/dp_tc.html&windowSize=large&name=Delivery Pass Information',400,560,alt='Delivery Pass Information')">Terms and Conditions</a></div>
+			<div class="dpn-center-agreement-link"><a  tabindex="2" href="#" dpfreetrial-terms>Terms and Conditions</a></div>
 			<div class="dpn-center-terms">Your DeliveryPass<sup>&reg;</sup> membership continues until canceled. You can cancel anytime by calling customer service at 1-866-283-7374.</div>
 		</div>
 		<div class="dpn-footer dpn-footer-login-required">
 			<% if(user_dp.getLevel() == FDUserI.SIGNED_IN){ %>
 				<div class="dpn-footer-no-logged">
-					<a href="javascript:noThanks();" tabindex="3">No thanks, I hate saving money.</a>
+					<a href="#" tabindex="3" dpfreetrial-no-thanks>No thanks, I hate saving money.</a>
 				</div>
 				<div class="dpn-footer-yes">
 					<div class="dpn-footer-yes-text">No commitments, cancel any time.</div>
@@ -103,10 +155,10 @@
 				</div>
 			<% } else { %>
 				<div class="dpn-footer-no">
-					<a href="javascript:noThanks();" tabindex="3">No thanks, I hate saving money.</a>
+					<a href="#" tabindex="3" dpfreetrial-no-thanks>No thanks, I hate saving money.</a>
 				</div>
 				<div class="dpn-footer-yes">
-					<button class="dpn-footer-login-button cssbutton cssbutton-flat green" tabindex="1" autofocus fd-login-required fd-login-successpage-current>Sign In to Get Started</button>
+					<button onclick="dpLogin()" class="dpn-footer-login-button cssbutton cssbutton-flat green" tabindex="1" autofocus fd-login-required fd-login-successpage-current>Sign In to Get Started</button>
 				</div>
 			<% } %>
 			<div class="clear"></div>

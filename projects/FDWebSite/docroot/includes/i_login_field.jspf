@@ -1,4 +1,4 @@
-
+<%@ page import="com.freshdirect.enums.CaptchaType" %>
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties"%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
@@ -71,7 +71,7 @@
 	<%
 	//Captcha.
 	boolean showCaptcha = CaptchaUtil.isExcessiveAttempt(FDStoreProperties.getMaxInvalidLoginAttempt(), session, SessionName.LOGIN_ATTEMPT);
-	String publicKey= FDStoreProperties.getRecaptchaPublicKey();
+	String publicKey= FDStoreProperties.getRecaptchaPublicKey(CaptchaType.SIGN_IN);
 		if(session.getAttribute("MSG_FOR_LOGIN_PAGE") != null) {
 		//Message to display from referral signup page.
 	%>

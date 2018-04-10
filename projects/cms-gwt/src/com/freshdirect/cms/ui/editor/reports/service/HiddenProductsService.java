@@ -2,9 +2,11 @@ package com.freshdirect.cms.ui.editor.reports.service;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -35,6 +37,34 @@ public class HiddenProductsService {
 
     private static final ContentKey ARCHIVE_DEPARTMENT_KEY = ContentKeyFactory.get(ContentType.Department, "Archive");
 
+    private static final Comparator<HiddenProductByChange> SORT_HIDDEN_PRODUCTS_BY_CHANGE = new Comparator<HiddenProductByChange>() {
+
+        @Override
+        public int compare(HiddenProductByChange p1, HiddenProductByChange p2) {
+
+            int n = -(p1.getChangeDate().compareTo(p2.getChangeDate()));
+            if (n == 0) {
+                n = p1.getProductKey().id.compareTo(p2.getProductKey().id);
+            }
+
+            return n;
+        }
+    };
+
+    private static final Comparator<HiddenProduct> SORT_HIDDEN_PRODUCTS = new Comparator<HiddenProduct>() {
+
+        @Override
+        public int compare(HiddenProduct p1, HiddenProduct p2) {
+
+            int n = p1.getStoreKey().id.compareTo(p2.getStoreKey().id);
+            if (n == 0) {
+                n = p1.getProductKey().id.compareTo(p2.getProductKey().id);
+            }
+
+            return n;
+        }
+    };
+
     @Autowired
     private ContentProviderService contentProviderService;
 
@@ -61,19 +91,7 @@ public class HiddenProductsService {
             }
         }
 
-        Collections.sort(queryResult, new Comparator<HiddenProduct>() {
-
-            @Override
-            public int compare(HiddenProduct p1, HiddenProduct p2) {
-
-                int n = p1.getStoreKey().id.compareTo(p2.getStoreKey().id);
-                if (n == 0) {
-                    n = p1.getProductKey().id.compareTo(p2.getProductKey().id);
-                }
-
-                return n;
-            }
-        });
+        Collections.sort(queryResult, SORT_HIDDEN_PRODUCTS);
 
         return queryResult;
     }
@@ -89,32 +107,32 @@ public class HiddenProductsService {
         cal.add(Calendar.DATE, -7);
         final Date startDate = cal.getTime();
 
-        Set<ContentChangeSetEntity> changeSets = contentChangeControlService.queryChangeSetEntities(null, null, startDate, endDate);
+        final Set<ContentChangeSetEntity> changeSets = contentChangeControlService.queryChangeSetEntities(null, null, startDate, endDate);
 
         for (ContentChangeSetEntity changeSet : changeSets) {
             for (ContentChangeEntity changedNode : changeSet.getChanges()) {
-                // select product
-                if (ContentType.Product == changedNode.getContentType() && changedNode.getContentKey().isPresent()) {
-                    final ContentKey productKey = changedNode.getContentKey().get();
+                final ContentKey contentKey = changedNode.getContentKey().get();
 
-                    for (ContentChangeDetailEntity detail : changedNode.getDetails()) {
-                        // select primary home attribute
-                        if (ContentTypes.Product.PRIMARY_HOME.getName().equals(detail.getAttributeName())) {
+                for (ContentChangeDetailEntity detail : changedNode.getDetails()) {
+                    final String attributeName = detail.getAttributeName();
 
-                            Map<ContentKey, ContentKey> storesAndHomes = primaryHomeCorrectionService.pickPrimaryHomes(productKey, contentProviderService);
-                            if (storesAndHomes == null || storesAndHomes.isEmpty()) {
-                                continue;
-                            }
+                    if (ContentType.Product == contentKey.type && ContentTypes.Product.PRIMARY_HOME.getName().equals(attributeName)) {
 
-                            for (Map.Entry<ContentKey, ContentKey> storeAndHome : storesAndHomes.entrySet()) {
-                                final ContentKey storeKey = storeAndHome.getKey();
-                                final ContentKey homeCategoryKey = storeAndHome.getValue();
-                                final HiddenProductReason reason = isProductHidden(storeKey, productKey, homeCategoryKey);
-                                if (reason.isHidden()) {
-                                    HiddenProductByChange hiddenProduct = new HiddenProductByChange(changeSet.getTimestamp(), changeSet.getUserId(),
-                                            changeSet.getNote(), productKey, homeCategoryKey, reason);
-                                    queryResult.add(hiddenProduct);
-                                }
+                        Optional<HiddenProductByChange> hiddenProduct = checkProductHiddenInPrimaryHomes(contentKey, changeSet);
+                        if (hiddenProduct.isPresent()) {
+                            queryResult.add(hiddenProduct.get());
+                        }
+
+                    } else if ((ContentTypes.Product.HIDE_URL.getName().equals(attributeName) || ContentTypes.Product.REDIRECT_URL.getName().equals(attributeName))
+                            && isRedirectUrlMeaningful(detail.getNewValue())) {
+
+                        Collection<ContentKey> candidateProducts = new HashSet<ContentKey>();
+                        collectProductKeys(contentKey, candidateProducts);
+
+                        for (ContentKey productKey : candidateProducts) {
+                            Optional<HiddenProductByChange> testResult = checkProductHiddenInPrimaryHomes(productKey, changeSet);
+                            if (testResult.isPresent()) {
+                                queryResult.add(testResult.get());
                             }
                         }
                     }
@@ -122,22 +140,28 @@ public class HiddenProductsService {
             }
         }
 
-        Collections.sort(queryResult, new Comparator<HiddenProductByChange>() {
-
-            @Override
-            public int compare(HiddenProductByChange p1, HiddenProductByChange p2) {
-
-                int n = -(p1.getChangeDate().compareTo(p2.getChangeDate()));
-                if (n == 0) {
-                    n = p1.getProductKey().id.compareTo(p2.getProductKey().id);
-                }
-
-                return n;
-            }
-        });
-
+        Collections.sort(queryResult, SORT_HIDDEN_PRODUCTS_BY_CHANGE);
 
         return queryResult;
+    }
+
+    private Optional<HiddenProductByChange> checkProductHiddenInPrimaryHomes(ContentKey productKey, ContentChangeSetEntity changeSet) {
+        Map<ContentKey, ContentKey> storesAndHomes = primaryHomeCorrectionService.pickPrimaryHomes(productKey, contentProviderService);
+        if (storesAndHomes == null || storesAndHomes.isEmpty()) {
+            return Optional.absent();
+        }
+
+        HiddenProductByChange hiddenProduct = null;
+        for (Map.Entry<ContentKey, ContentKey> storeAndHome : storesAndHomes.entrySet()) {
+            final ContentKey storeKey = storeAndHome.getKey();
+            final ContentKey homeCategoryKey = storeAndHome.getValue();
+            final HiddenProductReason reason = isProductHidden(storeKey, productKey, homeCategoryKey);
+            if (reason.isHidden()) {
+                hiddenProduct = new HiddenProductByChange(changeSet.getTimestamp(), changeSet.getUserId(), changeSet.getNote(), productKey, homeCategoryKey, reason);
+            }
+        }
+
+        return Optional.fromNullable(hiddenProduct);
     }
 
     private HiddenProductReason isProductHidden(ContentKey storeKey, ContentKey productKey, ContentKey primaryHome) {
@@ -211,5 +235,45 @@ public class HiddenProductsService {
 
     private boolean isRedirectUrlMeaningful(String redirectUrl) {
         return redirectUrl != null && !"".equals(redirectUrl) && !"nm".equals(redirectUrl);
+    }
+
+    private void collectProductKeys(ContentKey contentKey, Collection<ContentKey> productKeyBucket) {
+        Assert.notNull(contentKey);
+        Assert.notNull(productKeyBucket);
+
+        switch (contentKey.type) {
+            case Department:
+                {
+                    Optional<Object> value = contentProviderService.getAttributeValue(contentKey, ContentTypes.Department.categories);
+                    if (value.isPresent()) {
+                        List<ContentKey> categoryKeys = (List<ContentKey>) value.get();
+                        for (ContentKey categoryKey : categoryKeys) {
+                            collectProductKeys(categoryKey, productKeyBucket);
+                        }
+                    }
+                }
+                break;
+            case Category:
+                {
+                    Optional<Object> value = contentProviderService.getAttributeValue(contentKey, ContentTypes.Category.subcategories);
+                    if (value.isPresent()) {
+                        List<ContentKey> subcategoryKeys = (List<ContentKey>) value.get();
+                        for (ContentKey categoryKey : subcategoryKeys) {
+                            collectProductKeys(categoryKey, productKeyBucket);
+                        }
+                    }
+                    value = contentProviderService.getAttributeValue(contentKey, ContentTypes.Category.products);
+                    if (value.isPresent()) {
+                        List<ContentKey> productKeys = (List<ContentKey>) value.get();
+                        productKeyBucket.addAll(productKeys);
+                    }
+                }
+                break;
+            case Product:
+                productKeyBucket.add(contentKey);
+                break;
+            default:
+                break;
+        }
     }
 }

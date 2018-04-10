@@ -27,7 +27,12 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 
 
 
-
+/**
+ *@deprecated Please use the SurveyController and FDSurveyServiceI  in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 
 public class FDSurveySessionBean extends FDSessionBeanSupport {
 
@@ -48,7 +53,7 @@ public class FDSurveySessionBean extends FDSessionBeanSupport {
 	}
 
 
-	
+	@Deprecated
 	public FDSurvey getSurvey(SurveyKey key) {
 		Connection conn = null;
 		try {
@@ -64,7 +69,7 @@ public class FDSurveySessionBean extends FDSessionBeanSupport {
 		    close(conn);
 		}
 	}
-
+	@Deprecated
 	public FDSurveyResponse getCustomerProfile(FDIdentity identity, EnumServiceType serviceType) {
 		Connection conn = null;
 		try {
@@ -107,7 +112,7 @@ public class FDSurveySessionBean extends FDSessionBeanSupport {
                     close(conn);
 		}
 	}
-
+	@Deprecated
 	public FDSurveyResponse getSurveyResponse(FDIdentity identity, SurveyKey key) {
 		Connection conn = null;
 		try {
@@ -123,7 +128,7 @@ public class FDSurveySessionBean extends FDSessionBeanSupport {
                     close(conn);
 		}
 	}
-
+	@Deprecated
         public void storeSurvey(FDSurveyResponse survey) throws FDResourceException {
             Connection conn = null;
             try {

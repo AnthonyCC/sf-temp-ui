@@ -7,10 +7,12 @@ import java.util.Map;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.ListViewEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.NodeTree;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
@@ -25,6 +27,7 @@ import com.freshdirect.cms.ui.client.nodetree.TreeContentNodeModel;
 import com.freshdirect.cms.ui.client.views.ManageStoreView;
 import com.freshdirect.cms.ui.model.GwtNodeContext;
 import com.freshdirect.cms.ui.model.GwtNodeData;
+import com.google.gwt.user.client.Element;
 
 public class ContextToolBar extends LayoutContainer {
 	private static class Cache {
@@ -84,11 +87,13 @@ public class ContextToolBar extends LayoutContainer {
         
         final List<String> contextPathsList = new ArrayList<String>(ctx.size());
         final List<String> contextLabelsList = new ArrayList<String>(ctx.size());
+		final List<String> contextCosStyles = new ArrayList<String>(ctx.size());
         Listener<BaseEvent> synchronizeButtonClick = null;
 
         for (String path : ctx.getPaths()) {
             contextPathsList.add(path);
             contextLabelsList.add(ctx.getLabel(path));
+			contextCosStyles.add(ctx.getCosContext(path));
         }
         
         ToolButton synchronizeButton = new ToolButton("synchronize-button");
@@ -111,6 +116,20 @@ public class ContextToolBar extends LayoutContainer {
         	contextDropdown.setTriggerAction(TriggerAction.ALL);
             
             contextDropdown.add( contextLabelsList );
+
+			final ListView<SimpleComboValue<String>> contextListView = contextDropdown.getListView();
+
+			// Add style to field elements
+			contextListView.addListener(Events.Render, new Listener<ListViewEvent<SimpleComboValue<String>>>() {
+
+				@Override
+				public void handleEvent(ListViewEvent<SimpleComboValue<String>> be) {
+					List<Element> viewElements = contextListView.getElements();
+					for (int i = 0; i < viewElements.size(); i++) {
+						viewElements.get(i).addClassName(contextCosStyles.get(i));
+					}
+				}
+			});
   
             contextDropdown.addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<String>>() {
                 @Override

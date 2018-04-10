@@ -297,11 +297,11 @@ public class CmsFilteringFlow {
         }
         return new CmsFilteringFlowResult(browseData, null !=browseDataContext ? browseDataContext.getNavigationModel() :null);
     }
-    
+
     private CmsFilteringFlowResult doFlowForSearchType(CmsFilteringNavigator nav, FDUserI user) throws InvalidFilteringArgumentException, FDResourceException, FDNotFoundException {
     	BrowseData browseData = null;
     	BrowseDataContext browseDataContext = null;
-    	
+
     	String plantId = user!=null&&user.getUserContext()!=null&&user.getUserContext().getFulfillmentContext()!=null?user.getUserContext().getFulfillmentContext().getPlantId():null;
     	String cacheKey = user.getPrimaryKey()+ "," +plantId + "," + nav.getPageType() + ",sch_" + nav.getActiveTab();
     	browseDataContext = getBrowseDataContextFromCacheForPaging(nav, cacheKey);
@@ -361,7 +361,7 @@ public class CmsFilteringFlow {
 			}
 		} else {
 			browseData.setDescriptiveContent(null);
-			
+
 		}
 
 		browseData.getSortOptions().setCurrentOrderAsc(nav.isOrderAscending());
@@ -498,7 +498,7 @@ public class CmsFilteringFlow {
         return compareFilters(navigator.getRequestFilterParams(), browseDataContext.getRequestFilterParams()) &&
         		compareFilters(navigator.getDataFilterParams(), browseDataContext.getDataFilterParams());
     }
-    
+
     private boolean compareFilters(Map<String, ?> filter1, Map<String, ?> filter2){
     	// If filter1 is null && filter2 is empty or vice versa
     	if ( (filter1 == null && filter2 != null && filter2.size() == 0) ||
@@ -560,6 +560,11 @@ public class CmsFilteringFlow {
                 } else {
                 	searchResults.setAdProducts(null);
                 }
+                
+                //remove recipe results
+                if (!FDStoreProperties.isSearchRecipeResultsEnabled()) {
+                	searchResults.emptyRecipes();
+                }
 
                 collectSearchRelevancyScores(searchResults, nav.getRequestCookies(), user);
                 break;
@@ -612,14 +617,14 @@ public class CmsFilteringFlow {
             setupAllAndActiveFiltersForNavigationModel(nav, user, navigationModel);
             browseDataContext = BrowseDataBuilderFactory.createBuilder(null, navigationModel.isSuperDepartment(), searchPageType).buildBrowseData(navigationModel, user, nav);
         }
-        
+
         browseDataContext.setRequestFilterParams(nav.getRequestFilterParams());
         browseDataContext.setDataFilterParams(nav.getDataFilterParams());
-        
+
         savePageTypeForCaching(nav.getPageType(), browseDataContext);
-        
-        setupFilterAndMenu(nav, user, navigationModel, searchPageType, browseDataContext);	
-        
+
+        setupFilterAndMenu(nav, user, navigationModel, searchPageType, browseDataContext);
+
         setDescriptiveContent(nav, user, browseDataContext);
         browseDataContext.getSearchParams().setSearchParams(nav.getSearchParams());
         browseDataContext.getSearchParams().setListSearchParams(nav.getListSearchParams());
@@ -769,7 +774,7 @@ public class CmsFilteringFlow {
 	        // populate browseData with filterLabels
 	        BrowseDataBuilderFactory.getInstance().populateWithFilterLabels(browseDataContext, navigationModel);
         }
-        
+
         if (FilteringFlowType.SEARCH.equals(nav.getPageType())) {
             browseDataContext.setGoogleAnalyticsData(GoogleAnalyticsDataService.defaultService().populateSearchGAData(browseDataContext.getSearchParams()));
         }
@@ -790,7 +795,7 @@ public class CmsFilteringFlow {
             refreshResultDependantFilters(nav.getPageType(), navigationModel, browseDataContext.getSectionContexts().get(0).getProductItems());
             setupAllAndActiveFiltersForNavigationModel(nav, user, navigationModel);
         }
-        
+
         browseDataContext.setNavigationModel(navigationModel);
         MenuBuilderI menuBuilder = MenuBuilderFactory.createBuilderByPageType(null, navigationModel.isSuperDepartment(), searchPageType);
         // create menu
@@ -1176,7 +1181,7 @@ public class CmsFilteringFlow {
     private void getAdProductsByCategory(FDUserI user, NavigationModel navigationModel, String catId, Map<String, List<ProductData>> hlSelectionsofProductsList,
             Map<String, String> hlSelectionsofPageBeacons, List<SectionContext> sectionContexts, BrowseDataContext browseDataContext, Map<String, Integer> hlCatProductsCount,
             Map<String, String> hlCatEmptyProductPageBeacon, boolean isMobile) throws FDResourceException {
-		
+
         if (null != sectionContexts) {
             for (Iterator<SectionContext> iterator = sectionContexts.iterator(); iterator.hasNext();) {
                 SectionContext categorySectionsContext = iterator.next();
@@ -1511,32 +1516,32 @@ public class CmsFilteringFlow {
         }
         return hlProductDataList;
     }
-    
+
   //Method added as part of FDLabs of Aggregated Customer and Global Favorites page, will be soon integrated with browse.jsp
 	public BrowseData getWeLoveYouLoveData(FDUserI user, CmsFilteringNavigator nav, double ratingBaseLine
     		, double dealsBaseLine, double popularityBaseLine
     		, boolean considerNew , boolean considerBackInStock, boolean sortProducts, int maxNoOfProducts) throws FDResourceException {
-		
+
 		List<List<ProductModel>> interestingProductGroups = ProductRecommenderUtil.getYouLoveWeLoveProducts(user, ratingBaseLine, dealsBaseLine
 																, popularityBaseLine, considerNew, considerBackInStock, sortProducts, maxNoOfProducts);
-		
+
 		BrowseData browseData = new BrowseData();
-		
+
 		List<SectionData> sections = new ArrayList<SectionData>();
 		browseData.getSections().setSections(sections);
-		
+
 		int sectionCount = 0;
 		SectionData sectionData = null;
 		ProductData productData = null;
-		
+
 		List<ContentKey> uniqueProducts = new ArrayList<ContentKey>();
-		
+
 		if(interestingProductGroups != null) {
 			for(List<ProductModel> interestingProducts :  interestingProductGroups) {
 				if(interestingProducts !=null && interestingProducts.size() > 0) {
-														
+
 					List<ProductData> productDatas = new ArrayList<ProductData>();
-										
+
 					for(ProductModel product : interestingProducts) {
 						if(!uniqueProducts.contains(product.getContentKey())) {
 							product = ProductPricingFactory.getInstance().getPricingAdapter( product, user.getUserContext().getPricingContext());
@@ -1552,10 +1557,10 @@ public class CmsFilteringFlow {
 					}
 					if(productDatas.size() > 0) {
 						sectionData = new SectionData();
-						if(sectionCount == 0) {			
-							sectionData.setHeaderText("Your favorites with at least "+ (int)ratingBaseLine + "-star rating or " + (int)dealsBaseLine + "% discount " + (considerBackInStock ? "or is back in stock" : "")); 					
+						if(sectionCount == 0) {
+							sectionData.setHeaderText("Your favorites with at least "+ (int)ratingBaseLine + "-star rating or " + (int)dealsBaseLine + "% discount " + (considerBackInStock ? "or is back in stock" : ""));
 						} else {
-							sectionData.setHeaderText("Our favorites with at least "+ (int)ratingBaseLine + "-star rating or " + (int)dealsBaseLine + "% discount " + (considerBackInStock ? "or is back in stock" : ""));					
+							sectionData.setHeaderText("Our favorites with at least "+ (int)ratingBaseLine + "-star rating or " + (int)dealsBaseLine + "% discount " + (considerBackInStock ? "or is back in stock" : ""));
 						}
 						sections.add(sectionData);
 						sectionData.setProducts(productDatas);
@@ -1566,6 +1571,6 @@ public class CmsFilteringFlow {
 		}
 		return browseData;
 	}
-			
+
 
 }

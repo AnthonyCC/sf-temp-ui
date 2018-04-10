@@ -360,55 +360,6 @@ public class ErpFactory {
 		}
 	}
 
-	private ErpCharacteristicValuePriceHome cvpHome = null;
-
-	public ErpCharacteristicValuePriceModel getCharacteristicValuePrice(
-		ErpMaterialModel material,
-		ErpCharacteristicValueModel charValue)
-		throws FDResourceException {
-		if (cvpHome == null) {
-			lookupCVPriceHome();
-		}
-		try {
-			ErpCharacteristicValuePriceEB charValEB =
-				cvpHome.findByMaterialAndCharValue((VersionedPrimaryKey) material.getPK(), (VersionedPrimaryKey) charValue.getPK());
-			return (ErpCharacteristicValuePriceModel) charValEB.getModel();
-		} catch (ObjectNotFoundException onfe) {
-			//
-			// not found, price is zero...
-			//
-			ErpCharacteristicValuePriceModel charValuePrice = new ErpCharacteristicValuePriceModel();
-			charValuePrice.setCharacteristicValueId(charValue.getPK().getId());
-			charValuePrice.setConditionType("");
-			charValuePrice.setMaterialId(material.getPK().getId());
-			charValuePrice.setPrice(0.0);
-			charValuePrice.setPricingUnit("");
-			charValuePrice.setSapId("");
-			charValuePrice.setSalesOrg("");
-			charValuePrice.setDistChannel("");
-			return charValuePrice;
-		} catch (FinderException fe) {
-			throw new FDResourceException(fe);
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		}
-	}
-
-	private void lookupCVPriceHome() throws FDResourceException {
-		Context ctx = null;
-		try {
-			ctx = ErpServicesProperties.getInitialContext();
-			cvpHome = (ErpCharacteristicValuePriceHome) ctx.lookup(ErpServicesProperties.getCharacteristicValuePriceHome());
-		} catch (NamingException ne) {
-			throw new FDResourceException(ne);
-		} finally {
-			try {
-				ctx.close();
-			} catch (NamingException e) {
-			}
-		}
-	}
-
 	private ErpProductHome productHome = null;
 
 	public ErpProductModel getProduct(String skuCode) throws FDResourceException {

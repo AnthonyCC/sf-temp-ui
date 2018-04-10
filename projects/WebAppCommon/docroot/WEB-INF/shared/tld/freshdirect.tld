@@ -612,29 +612,6 @@
 	</tag>
 
 	<tag>
-		<name>CharValuePrice</name>
-		<tagclass>com.freshdirect.webapp.taglib.erp.CharValuePriceTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.erp.CharValuePriceTagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>id</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>material</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>charValue</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-
-	<tag>
 		<name>BatchSearch</name>
 		<tagclass>com.freshdirect.webapp.taglib.batch.BatchSearchTag</tagclass>
 		<teiclass>com.freshdirect.webapp.taglib.batch.BatchSearchTagEI</teiclass>

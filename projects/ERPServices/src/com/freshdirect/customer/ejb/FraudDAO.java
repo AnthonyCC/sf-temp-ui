@@ -33,11 +33,18 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  * @version $Revision$
  * @author $Author$
  */
+
+/**
+ *@deprecated Please use the FraudDaoI  in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public class FraudDAO implements java.io.Serializable {
 
 	private static Category LOGGER = LoggerFactory.getInstance(FraudDAO.class);
 
-
+@Deprecated
 	public boolean isDuplicateShipToAddress(Connection conn, ErpAddressModel address, String erpCustomerId) throws SQLException {
 		//
 		// Build the query
@@ -108,7 +115,7 @@ public class FraudDAO implements java.io.Serializable {
 			return false;
 		}
 	}
-
+@Deprecated
 	public boolean isDuplicateBillToAddress(Connection conn, AddressModel address, String erpCustomerId) throws SQLException {
 		//
 		// Build the query
@@ -159,11 +166,11 @@ public class FraudDAO implements java.io.Serializable {
 			return false;
 		}
 	}
-
+@Deprecated
 	public boolean isDuplicatePhone(Connection conn, PhoneNumber phone) throws SQLException {
 		return this.isDuplicatePhone(conn, phone, null);
 	}
-
+@Deprecated
 	public boolean isDuplicatePhone(Connection conn, PhoneNumber phone, String erpCustomerId) throws SQLException {
 		//
 		// Build the query

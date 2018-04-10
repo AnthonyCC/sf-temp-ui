@@ -74,6 +74,21 @@ var dataLayer = window.dataLayer || [];
   };
   fd.gtm.deBrand = deBrand;
 
+  var getDeliveryType = function (dtype) {
+    dtype = dtype.toUpperCase();
+
+    if (dtype === 'CORP') {
+      dtype = 'CORPORATE';
+    }
+
+    if (dtype !== 'CORPORATE') {
+      dtype = 'HOME';
+    }
+
+    return dtype;
+  };
+  fd.gtm.getDeliveryType = getDeliveryType;
+
   var resetImpressions = function () {
     FreshDirect.gtm.setValue('ecommerce.impressions', null);
     FreshDirect.gtm.setValue('ecommerce.impressions', []);
@@ -96,13 +111,13 @@ var dataLayer = window.dataLayer || [];
           login_type: custData.loginType || '',
           chef_table: custData.chefsTable || false,
           deliverypass: custData.deliveryPass || '',
-          delivery_type: custData.deliveryType || '',
+          delivery_type: getDeliveryType(custData.deliveryType),
           cohort: custData.cohort || 'unknown',
           default_payment_type: custData.defaultPaymentType || '',
           hasActiveSO3s: custData.hasActiveSO3s || ''
         },
         // variables for "old" tags
-        'user-customer-type': custData.deliveryType || '',
+        'user-customer-type': getDeliveryType(custData.deliveryType),
         'user-ct-status': custData.chefsTable || false,
         'user-del-county': custData.county || '',
         'user-marketing-segment': custData.marketingSegment || '',
@@ -223,7 +238,7 @@ var dataLayer = window.dataLayer || [];
       };
 
       if (coStepData.delivery_type) {
-        cosData.delivery_type = coStepData.delivery_type;
+        cosData.delivery_type = getDeliveryType(coStepData.delivery_type);
       }
       if (coStepData.available_timeslot_value) {
         cosData.available_timeslot_value = coStepData.available_timeslot_value;
@@ -328,7 +343,7 @@ var dataLayer = window.dataLayer || [];
                   quantity: parseInt(productData.quantity, 10) || 0 // quantity should be an integer
                 };
               }),
-              delivery_type: coData.deliveryType || 'unknown',
+              delivery_type: getDeliveryType(coData.deliveryType),
               available_timeslot_value: ts && ts.deliveryDate+' '+ts.displayString || 'unknown',
               unavailable_timeslot_present: fd.gtm.isUnavailableTimeslotPresent() ? 'yes' : 'no'
             }
@@ -457,7 +472,7 @@ var dataLayer = window.dataLayer || [];
           user_id: customer.userId,
           user_status: customer.userStatus,
           login_type: customer.loginType,
-          delivery_type: customer.deliveryType
+          delivery_type: getDeliveryType(customer.deliveryType)
         });
 
         return {event: 'user-login-success'};
@@ -1004,7 +1019,7 @@ var dataLayer = window.dataLayer || [];
       coStepData.step = 1;
 
       if (selectedAddress) {
-        coStepData.delivery_type = selectedAddress.service_type;
+        coStepData.delivery_type = fd.gtm.getDeliveryType(selectedAddress.service_type);
       }
 
       if (!fd.gtm._coDefaultAddressReported && !fd.gtm._coUserInteraction) {

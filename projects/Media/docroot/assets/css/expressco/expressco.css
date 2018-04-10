@@ -328,13 +328,13 @@
 	padding-top: 0;
 	padding-bottom: 0;
 }
-#checkout-cart-header #optionaltip .strl_text {
+#checkout-cart-header .optionaltip .strl_text {
 	vertical-align: top;
 }
-#checkout-cart-header #optionalToolTip[class^="icon-"]{
+#checkout-cart-header .accessibleToolTip{
 	padding-top: 3px;
 }
-#checkout-cart-header #optionalToolTip[class^="icon-"]:before{
+#checkout-cart-header .accessibleToolTip:before{
 	vertical-align: top;
 	padding-right: 0;
 }

@@ -24,7 +24,7 @@ final int W_GENERIC_LAYOUT_IS_DEPARTMENT = 765;
 final int W_GENERIC_LAYOUT_NOT_DEPARTMENT = 601;
 %>
 
-<div id='oas_CategoryNote'>
+<div id='oas_CategoryNote' ad-fixed-size="true" ad-size-height="95" ad-size-width="774">
   <script type="text/javascript">
   	OAS_AD('CategoryNote');
   </script>

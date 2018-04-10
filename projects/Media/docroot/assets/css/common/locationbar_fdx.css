@@ -151,9 +151,8 @@
 	#popupcart .footer .save-amount{
 	    float: right;
 	    padding-right: 50px;
-	    font-size: 13px;
+	    font-size: small;
 	    color: #DF0000;
-	    padding-top: 0;
 	}
 
 	[data-component="subtotal"], .subtotal {
@@ -262,9 +261,13 @@
 	.globalnav_top .topnavitem, .globalnav_top .topnavitem a {
 		margin: 5px 0 0 0px;
 	}
-	.container.globalnav_top.hasFDX{
+	.container.globalnav_top.hasFDX {
 		padding: 10px 0px 15px 0px;
 	}
+	.container.globalnav_top.hasFDX.inReorder {
+		padding: 10px 0px 0 0px;
+	}
+	
 	#topSearchField {
 		margin: 0px 0 0 0;
 		/*height: 40px!important;*/
