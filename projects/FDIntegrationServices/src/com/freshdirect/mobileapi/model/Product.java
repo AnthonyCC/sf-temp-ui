@@ -367,9 +367,12 @@ public class Product {
             } catch (FDSkuNotFoundException e1) {
                 // it will never happens, because only FDProduct construction can throw exception
             }
+            
+            if(this.defaultProduct!=null&&this.defaultProduct.getSalesUnits()!=null&&this.defaultProduct.getSalesUnits().length>0)
             this.isSoldByLB = this.isPricedByLB && ("LB".equalsIgnoreCase((this.defaultProduct.getSalesUnits()[0]).getName()));
 
             //APPDEV - 4361 : EstimatedQuantity not Returned for Some Products
+            if(this.defaultProduct!=null&&this.defaultProduct.getSalesUnits()!=null&&this.defaultProduct.getSalesUnits().length>0)
             this.isSoldByLBforDisplayEstimate = !this.hasSingleSalesUnit && ("LB".equalsIgnoreCase((this.defaultProduct.getSalesUnits()[0]).getName()));
 
             // display sales unit dropdown only (qty is always one)
@@ -418,7 +421,9 @@ public class Product {
                 } catch (FDSkuNotFoundException e) {
                     throw new ModelException("Error getting product from default sku", e);
                 }
-                String suDescr = fdProduct.getSalesUnits()[0].getDescription();
+                String suDescr = "";
+                if(fdProduct!=null&&fdProduct.getSalesUnits()!=null&&fdProduct.getSalesUnits().length>0)
+                suDescr = fdProduct.getSalesUnits()[0].getDescription();
                 if (this.hasSingleSku) {
                     /**
                      * DUP: FDWebSite/docroot/shared/includes/product/i_product_single_sku_box.jspf
