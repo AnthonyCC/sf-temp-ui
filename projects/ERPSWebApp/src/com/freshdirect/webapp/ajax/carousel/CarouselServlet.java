@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -23,8 +24,8 @@ import com.freshdirect.storeapi.content.ContentNodeModel;
 import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.DataPotatoField;
-import com.freshdirect.webapp.ajax.browse.data.CarouselData;
 import com.freshdirect.webapp.ajax.browse.data.BrowseData.CarouselDataCointainer;
+import com.freshdirect.webapp.ajax.browse.data.CarouselData;
 import com.freshdirect.webapp.ajax.browse.service.CarouselService;
 import com.freshdirect.webapp.ajax.reorder.QuickShopHelper;
 import com.freshdirect.webapp.ajax.reorder.service.QuickShopCarouselService;
@@ -151,18 +152,24 @@ public class CarouselServlet extends BaseJsonServlet {
 
 	private CarouselDataCointainer getPresPickCarousel(FDSessionUser sessionUser) {
 		CarouselDataCointainer carouselData = new CarouselDataCointainer();
-		try {
-			SessionInput si = new SessionInput(sessionUser);
-			si.setCurrentNode(ContentFactory.getInstance().getContentNode("gro"));
-			Recommendations groRecommendations = ProductRecommenderUtil.doRecommend(sessionUser,
-					EnumSiteFeature.BRAND_NAME_DEALS, si);
 
-			if (groRecommendations != null && groRecommendations.getAllProducts().size() > 0) {
-				carouselData.setCarousel1(CarouselService.defaultService().createCarouselData(null,
-						groRecommendations.getVariant().getServiceConfig().get("prez_title_gro"),
-						groRecommendations.getAllProducts(), sessionUser, "", groRecommendations.getVariant().getId()));
-			}
-			si.setCurrentNode(ContentFactory.getInstance().getContentNode("fro"));
+        carouselData.setCarousel1(CarouselService.defaultService().createNewProductsCarousel(sessionUser, FDStoreProperties.isPropFreshDealsPageNewProductsCarouselEnabled(),
+                FDStoreProperties.isPropFreshDealsPageNewProductsCarouselRandomizeProductOrderEnabled()));
+
+		try {
+            SessionInput si = new SessionInput(sessionUser);
+
+            if (carouselData.getCarousel1() == null) {
+                si.setCurrentNode(ContentFactory.getInstance().getContentNode("gro"));
+                Recommendations groRecommendations = ProductRecommenderUtil.doRecommend(sessionUser, EnumSiteFeature.BRAND_NAME_DEALS, si);
+
+                if (groRecommendations != null && groRecommendations.getAllProducts().size() > 0) {
+                    carouselData.setCarousel1(CarouselService.defaultService().createCarouselData(null, groRecommendations.getVariant().getServiceConfig().get("prez_title_gro"),
+                            groRecommendations.getAllProducts(), sessionUser, "", groRecommendations.getVariant().getId()));
+                }
+
+            }
+            si.setCurrentNode(ContentFactory.getInstance().getContentNode("fro"));
 			Recommendations froRecommendations = ProductRecommenderUtil.doRecommend(sessionUser,
 					EnumSiteFeature.BRAND_NAME_DEALS, si);
 			if (froRecommendations != null && froRecommendations.getAllProducts().size() > 0) {
@@ -184,7 +191,7 @@ public class CarouselServlet extends BaseJsonServlet {
 		return carouselData;
 	}
 
-	private ViewCartCarouselData getViewCartCarousel(HttpServletRequest request, FDSessionUser sessionUser) {
+    private ViewCartCarouselData getViewCartCarousel(HttpServletRequest request, FDSessionUser sessionUser) {
 		ViewCartCarouselData carousels = null;
 		try {
 			SessionInput input;
