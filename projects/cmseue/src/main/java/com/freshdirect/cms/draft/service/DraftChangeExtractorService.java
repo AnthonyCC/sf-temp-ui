@@ -167,7 +167,11 @@ public class DraftChangeExtractorService {
         final String serializedValue;
 
         if (definition.getCardinality() == RelationshipCardinality.ONE) {
-            serializedValue = ((ContentKey) value).toString();
+            if (value == null) {
+                serializedValue = null;
+            } else { 
+                serializedValue = ((ContentKey) value).toString();
+            }
         } else {
             List<ContentKey> keys = (List<ContentKey>) value;
             if (keys == null || keys.isEmpty()) {
