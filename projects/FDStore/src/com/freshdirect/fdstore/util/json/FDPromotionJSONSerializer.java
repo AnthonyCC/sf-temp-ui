@@ -48,6 +48,7 @@ import com.freshdirect.fdstore.promotion.DCPDiscountRule;
 import com.freshdirect.fdstore.promotion.DateRangeStrategy;
 import com.freshdirect.fdstore.promotion.DlvZoneStrategy;
 import com.freshdirect.fdstore.promotion.EnumDCPDContentType;
+import com.freshdirect.fdstore.promotion.EnumOfferType;
 import com.freshdirect.fdstore.promotion.EnumOrderType;
 import com.freshdirect.fdstore.promotion.EnumPromotionStatus;
 import com.freshdirect.fdstore.promotion.EnumPromotionType;
@@ -185,7 +186,8 @@ public class FDPromotionJSONSerializer extends AbstractSerializer {
 		RecommendedLineItemStrategy.class,
 		SkuLimitStrategy.class,
 		ContentKey.class,//For DCPDLineItemStrategy.java
-		PromotionContextAdapter.class
+		PromotionContextAdapter.class,
+		EnumOfferType.class
 		
 
 	};
