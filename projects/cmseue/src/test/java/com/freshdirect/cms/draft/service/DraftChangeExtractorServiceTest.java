@@ -1,6 +1,7 @@
 package com.freshdirect.cms.draft.service;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -150,7 +151,7 @@ public class DraftChangeExtractorServiceTest {
             }
         }
     }
-    
+
     @Test
     public void testExtractChangesWithNullValues() {
         ContentKey productKey = ContentKeyFactory.get(ContentType.Product, "testProduct");
@@ -159,7 +160,10 @@ public class DraftChangeExtractorServiceTest {
         originalAttributes.put(ContentTypes.Product.SELL_BY_SALESUNIT, "QUANTITY");
         originalAttributes.put(ContentTypes.Product.EXCLUDED_EBT_PAYMENT, Boolean.TRUE);
         originalAttributes.put(ContentTypes.Product.PROD_DESCR, ContentKeyFactory.get(ContentType.Html, "test-media"));
-        originalAttributes.put(ContentTypes.Product.skus, Arrays.asList(ContentKeyFactory.get(ContentType.Sku, "original-sku"), ContentKeyFactory.get(ContentType.Sku, "original-sku2")));
+        originalAttributes.put(ContentTypes.Product.skus,
+                Arrays.asList(ContentKeyFactory.get(ContentType.Sku, "original-sku"), ContentKeyFactory.get(ContentType.Sku, "original-sku2")));
+        originalAttributes.put(ContentTypes.Product.brands,
+                Arrays.asList(ContentKeyFactory.get(ContentType.Brand, "original-brand"), ContentKeyFactory.get(ContentType.Brand, "original-brand2")));
 
         Map<Attribute, Object> changedAttributes = new HashMap<Attribute, Object>();
         changedAttributes.put(ContentTypes.Product.SEASON_TEXT, null);
@@ -167,6 +171,7 @@ public class DraftChangeExtractorServiceTest {
         changedAttributes.put(ContentTypes.Product.EXCLUDED_EBT_PAYMENT, null);
         changedAttributes.put(ContentTypes.Product.PROD_DESCR, null);
         changedAttributes.put(ContentTypes.Product.skus, null);
+        changedAttributes.put(ContentTypes.Product.brands, Collections.emptyList());
 
         Map<ContentKey, Map<Attribute, Object>> originalNodes = new HashMap<ContentKey, Map<Attribute, Object>>();
         originalNodes.put(productKey, originalAttributes);
@@ -174,15 +179,22 @@ public class DraftChangeExtractorServiceTest {
         Map<ContentKey, Map<Attribute, Object>> changedNodes = new HashMap<ContentKey, Map<Attribute, Object>>();
         changedNodes.put(productKey, changedAttributes);
 
-        Mockito.when(contentTypeInfoService.findAttributeByName(ContentType.Product, "SEASON_TEXT")).thenReturn(Optional.fromNullable(ContentTypes.Product.SEASON_TEXT));
-        Mockito.when(contentTypeInfoService.findAttributeByName(ContentType.Product, "SELL_BY_SALESUNIT")).thenReturn(Optional.fromNullable(ContentTypes.Product.SELL_BY_SALESUNIT));
-        Mockito.when(contentTypeInfoService.findAttributeByName(ContentType.Product, "EXCLUDED_EBT_PAYMENT")).thenReturn(Optional.fromNullable(ContentTypes.Product.EXCLUDED_EBT_PAYMENT));
-        Mockito.when(contentTypeInfoService.findAttributeByName(ContentType.Product, "PROD_DESCR")).thenReturn(Optional.fromNullable(ContentTypes.Product.PROD_DESCR));
-        Mockito.when(contentTypeInfoService.findAttributeByName(ContentType.Product, "skus")).thenReturn(Optional.fromNullable(ContentTypes.Product.skus));
+        Mockito.when(contentTypeInfoService.findAttributeByName(ContentType.Product, "SEASON_TEXT"))
+            .thenReturn(Optional.fromNullable(ContentTypes.Product.SEASON_TEXT));
+        Mockito.when(contentTypeInfoService.findAttributeByName(ContentType.Product, "SELL_BY_SALESUNIT"))
+            .thenReturn(Optional.fromNullable(ContentTypes.Product.SELL_BY_SALESUNIT));
+        Mockito.when(contentTypeInfoService.findAttributeByName(ContentType.Product, "EXCLUDED_EBT_PAYMENT"))
+            .thenReturn(Optional.fromNullable(ContentTypes.Product.EXCLUDED_EBT_PAYMENT));
+        Mockito.when(contentTypeInfoService.findAttributeByName(ContentType.Product, "PROD_DESCR"))
+            .thenReturn(Optional.fromNullable(ContentTypes.Product.PROD_DESCR));
+        Mockito.when(contentTypeInfoService.findAttributeByName(ContentType.Product, "skus"))
+            .thenReturn(Optional.fromNullable(ContentTypes.Product.skus));
+        Mockito.when(contentTypeInfoService.findAttributeByName(ContentType.Product, "brands"))
+            .thenReturn(Optional.fromNullable(ContentTypes.Product.brands));
 
         List<DraftChange> draftChanges = underTest.extractChangesFromRequest(changedNodes, originalNodes, new DraftContext(1L, "test-draft"), "testUser");
 
-        Assert.assertEquals(5, draftChanges.size());
+        Assert.assertEquals(6, draftChanges.size());
         for (DraftChange draftChange : draftChanges) {
             Assert.assertEquals(productKey.toString(), draftChange.getContentKey());
             Assert.assertEquals(null, draftChange.getValue());

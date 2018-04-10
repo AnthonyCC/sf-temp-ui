@@ -29,7 +29,7 @@ public class DraftChangeExtractorService {
     private static final Logger LOGGER = LoggerFactory.getLogger(DraftChangeExtractorService.class);
 
     private static final Joiner JOINER = Joiner.on(DraftApplicatorService.SEPARATOR).skipNulls();
-    
+
     @Autowired
     private ContentTypeInfoService contentTypeInfoService;
 
@@ -169,7 +169,7 @@ public class DraftChangeExtractorService {
         if (definition.getCardinality() == RelationshipCardinality.ONE) {
             if (value == null) {
                 serializedValue = null;
-            } else { 
+            } else {
                 serializedValue = ((ContentKey) value).toString();
             }
         } else {
