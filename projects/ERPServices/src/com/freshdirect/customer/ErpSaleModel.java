@@ -12,6 +12,7 @@ import java.util.Set;
 
 import org.apache.log4j.Category;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.crm.CrmSystemCaseInfo;
@@ -139,6 +140,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		this.lock_timestamp = lock_timestamp;
 	}
 
+	@JsonIgnore
 	private boolean isStatus(EnumSaleStatus[] states) {
 		for (int i = 0; i < states.length; i++) {
 			if (status.equals(states[i])) {
@@ -148,12 +150,14 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		return false;
 	}
 
+	@JsonIgnore
 	private void assertStatus(EnumSaleStatus validState) throws ErpTransactionException {
 		if (!status.equals(validState)) {
 			throw new ErpTransactionException("Sale " + getPK().getId() + " is " + status + ". Expected " + validState);
 		}
 	}
 
+	@JsonIgnore
 	private void assertStatus(EnumSaleStatus[] validStates) throws ErpTransactionException {
 		if (!isStatus(validStates)) {
 			StringBuffer msg = new StringBuffer();
@@ -169,6 +173,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		}
 	}
 
+	@JsonIgnore
 	private EnumSaleStatus getNextState() {
 
 		if (!isFullyAuthorized()) {
@@ -191,11 +196,13 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		return avsMatch ? EnumSaleStatus.AUTHORIZED : EnumSaleStatus.AVS_EXCEPTION;
 	}
 
+	@JsonIgnore
 	private boolean isFullyAuthorized() {
 		AuthorizationStrategy s = new AuthorizationStrategy(this);
 		return s.getOutstandingAuthorizations().isEmpty();
 	}
 
+	@JsonIgnore
 	public  ErpChargeInvoiceModel getLastChargeInvoice () {
 		List<ErpTransactionI> lst = filterTransaction(ErpChargeInvoiceModel.class);
 		if(lst.isEmpty()) {
@@ -217,6 +224,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		return Collections.unmodifiableList(lst);
 	}
 
+	@JsonIgnore
 	public double getOutstandingCaptureAmount() {
 		ErpInvoiceModel inv = getLastInvoice();
 		double amount = MathUtil.roundDecimal(inv.getAmount());
@@ -227,6 +235,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		return MathUtil.roundDecimal(amount);
 	}
 
+	@JsonIgnore
 	public List<ErpCaptureModel> getCaptures(ErpAffiliate affiliate) {
 		List<ErpCaptureModel> lst = new ArrayList<ErpCaptureModel>();
 		for(ErpCaptureModel capture : getGoodCaptures()) {
@@ -237,6 +246,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		return lst;
 	}
 
+	@JsonIgnore
 	public List<ErpAuthorizationModel> getApprovedAuthorizations(ErpAffiliate affiliate, ErpPaymentMethodI pm) {
 		List<ErpAuthorizationModel> auths = new ArrayList<ErpAuthorizationModel>();
 		double _amount=0d;
@@ -265,6 +275,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		return auths;
 	}
 
+	@JsonIgnore
 	public List<ErpAuthorizationModel> getApprovedAuthorizations() {
 		List<String> capturedAuthCodes = new ArrayList<String>();
 		List<String> capturedSeqNums = new ArrayList<String>();
@@ -293,6 +304,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		return lst;
 	}
 
+	@JsonIgnore
 	public ErpAbstractOrderModel getCurrentOrder() {
 		ErpAbstractOrderModel lastOrder = null;
 		List<ErpTransactionModel> txs = new ArrayList<ErpTransactionModel>(transactions);
@@ -305,6 +317,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		return lastOrder;
 	}
 	
+	@JsonIgnore
 	public ErpAbstractOrderModel getFirstOrderTransaction() {
 		
 		ErpAbstractOrderModel createOrder = null;
@@ -483,6 +496,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		return caseBuilder.getCases();
 	}
 
+	@JsonIgnore
 	public ErpInvoiceModel getInvoice() throws ErpTransactionException {
 		assertStatus(
 			new EnumSaleStatus[] {
@@ -923,6 +937,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		}
 	}
 
+	@JsonIgnore
 	public java.util.Date getCaptureDate() throws ErpTransactionException {
 		assertStatus(new EnumSaleStatus[] { EnumSaleStatus.PAYMENT_PENDING, EnumSaleStatus.SETTLED });
 
@@ -939,6 +954,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		return captureDate;
 	}
 
+	@JsonIgnore
 	public List<ErpCaptureModel> getCaptures() {
 		List<ErpCaptureModel> captures = new ArrayList<ErpCaptureModel>();
 		for (ErpTransactionModel o : transactions) {
@@ -949,6 +965,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		return captures;
 	}
 
+	@JsonIgnore
 	public List<ErpVoidCaptureModel> getVoidCaptures() {
 		List<ErpVoidCaptureModel> voidCaptures = new ArrayList<ErpVoidCaptureModel>();
 		for (ErpTransactionModel o : transactions) {
@@ -959,6 +976,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		return voidCaptures;
 	}
 
+	@JsonIgnore
 	public List<ErpSettlementModel> getSettlements() throws ErpTransactionException {
 		assertStatus(new EnumSaleStatus[] { EnumSaleStatus.SETTLED, EnumSaleStatus.SETTLEMENT_FAILED, EnumSaleStatus.CHARGEBACK });
 		List<ErpSettlementModel> settlements = new ArrayList<ErpSettlementModel>();
@@ -970,6 +988,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		return settlements;
 	}
 
+	@JsonIgnore
 	public List<ErpAdjustmentModel> getAdjustments() throws ErpTransactionException {
 		assertStatus(new EnumSaleStatus[] { EnumSaleStatus.SETTLED, EnumSaleStatus.SETTLEMENT_FAILED });
 		List<ErpAdjustmentModel> adjustments = new ArrayList<ErpAdjustmentModel>();
@@ -1066,6 +1085,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		return Collections.unmodifiableCollection(transactions);
 	}
 
+	@JsonIgnore
 	public ErpAbstractOrderModel getRecentOrderTransaction() {
 		// get transaction sorted by date
 		List<ErpTransactionModel> txList = new ArrayList<ErpTransactionModel>(transactions);
@@ -1081,6 +1101,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		return lastOrder;
 	}
 	
+	@JsonIgnore
 	public ErpAbstractOrderModel getPreviousOrderTransaction() {
 		// get transaction sorted by date
 		List<ErpTransactionModel> txList = new ArrayList<ErpTransactionModel>(transactions);
@@ -1107,6 +1128,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		return Collections.unmodifiableCollection(complaints);
 	}
 
+	@JsonIgnore
 	public ErpComplaintModel getComplaint(String complaintId) {
 		for (ErpComplaintModel cm : complaints) {
 			if (cm.getPK().getId().equals(complaintId)) {
@@ -1116,6 +1138,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		return null;
 	}
 
+	@JsonIgnore
 	public List<ErpAuthorizationModel> getAuthorizations() {
 		List<ErpAuthorizationModel> auths = new ArrayList<ErpAuthorizationModel>();
 		for ( ErpTransactionModel m : transactions ) {
@@ -1126,6 +1149,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		return Collections.unmodifiableList(auths);
 	}
 
+	@JsonIgnore
 	public ErpGiftCardDlvConfirmModel getGCDeliveryConfirmation(){
 		for ( ErpTransactionModel m : transactions ) {
 			if ( m instanceof ErpGiftCardDlvConfirmModel && EnumTransactionType.GIFTCARD_DLV_CONFIRM.equals(m.getTransactionType())) {
@@ -1135,6 +1159,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		return null;		
 	}
 
+	@JsonIgnore
 	public List<ErpGiftCardDlvConfirmModel> getGCResendEmailTransaction(){
 		List<ErpGiftCardDlvConfirmModel> resendTransactions = new ArrayList<ErpGiftCardDlvConfirmModel>();
 		
@@ -1149,6 +1174,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		
 	}
 	
+	@JsonIgnore
 	public List<ErpGiftCardAuthModel> getGCTransactions() {
 		List<ErpGiftCardAuthModel> auths = new ArrayList<ErpGiftCardAuthModel>();
 		for ( ErpTransactionModel m : transactions ) {
@@ -1160,7 +1186,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		}
 		return Collections.unmodifiableList(auths);
 	}
-
+	@JsonIgnore
 	public List<ErpPreAuthGiftCardModel> getGCAuthorizations(ErpPaymentMethodI pm) {
 		List<ErpPreAuthGiftCardModel> auths = new ArrayList<ErpPreAuthGiftCardModel>();
 		for ( ErpTransactionModel m : transactions ) {
@@ -1172,7 +1198,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		}
 		return Collections.unmodifiableList(auths);
 	}
-	
+	@JsonIgnore
 	public List<Object> getGCReverseAuthorizations(ErpPaymentMethodI pm) {
 		List<Object> auths = new ArrayList<Object>();
 		for ( ErpTransactionModel obj : transactions ) {
@@ -1185,7 +1211,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		}
 		return Collections.unmodifiableList(auths);
 	}
-	
+	@JsonIgnore
 	private List<String> getGCReversePreAuthcodes(ErpPaymentMethodI pm) {
 		List<String> authCodes = new ArrayList<String>();
 		for ( ErpTransactionModel obj : transactions ) {
@@ -1197,7 +1223,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		}
 		return Collections.unmodifiableList(authCodes);
 	}
-
+	@JsonIgnore
 	private List<String> getGCReversePreAuthcodes() {
 		List<String> authCodes = new ArrayList<String>();
 		for ( ErpTransactionModel obj : transactions ) {
@@ -1220,7 +1246,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		}
 		return false;
 	}
-	
+	@JsonIgnore
 	public List<ErpPreAuthGiftCardModel> getPendingGCAuthorizations(ErpPaymentMethodI pm) {
 		List<ErpPreAuthGiftCardModel> pAuths = new ArrayList<ErpPreAuthGiftCardModel>();
 		List<ErpPreAuthGiftCardModel> auths = getGCAuthorizations(pm);
@@ -1232,7 +1258,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		}
 		return Collections.unmodifiableList(pAuths);
 	}
-	
+	@JsonIgnore
 	public List<ErpPreAuthGiftCardModel> getPendingGCAuthorizations() {
 		List<ErpPreAuthGiftCardModel> pAuths = new ArrayList<ErpPreAuthGiftCardModel>();
 		for ( ErpTransactionModel obj : transactions ) {
@@ -1245,7 +1271,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		return Collections.unmodifiableList(pAuths);
 		
 	}
-	
+	@JsonIgnore
 	public List<ErpReverseAuthGiftCardModel> getPendingReverseGCAuthorizations() {
 		List<ErpReverseAuthGiftCardModel> pAuths = new ArrayList<ErpReverseAuthGiftCardModel>();
 		for ( ErpTransactionModel obj : transactions ) {
@@ -1258,7 +1284,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		return Collections.unmodifiableList(pAuths);
 		
 	}
-	
+	@JsonIgnore
 	public List<ErpPreAuthGiftCardModel> getValidGCAuthorizations() {
 		List<ErpPreAuthGiftCardModel> pAuths = new ArrayList<ErpPreAuthGiftCardModel>();
 		List<String> reverseAuthCodes = getGCReversePreAuthcodes();
@@ -1271,6 +1297,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		}
 		return Collections.unmodifiableList(pAuths);
 	}
+	@JsonIgnore
 	public List<ErpPostAuthGiftCardModel> getValidGCPostAuthorizations() {
 		List<ErpPostAuthGiftCardModel> pAuths = new ArrayList<ErpPostAuthGiftCardModel>();
 		for ( ErpTransactionModel obj : transactions ) {
@@ -1282,6 +1309,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		}
 		return Collections.unmodifiableList(pAuths);
 	}
+	@JsonIgnore
 	public List<ErpReverseAuthGiftCardModel> getPendingGCReverseAuths(ErpPaymentMethodI pm) {
 		List<ErpReverseAuthGiftCardModel> rauths = new ArrayList<ErpReverseAuthGiftCardModel>();
 		for ( ErpTransactionModel obj : transactions ) {
@@ -1294,7 +1322,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		}
 		return Collections.unmodifiableList(rauths);
 	}
-	
+	@JsonIgnore
 	public List<ErpPreAuthGiftCardModel> getValidGCAuthorizations(ErpPaymentMethodI pm) {
 		List<ErpPreAuthGiftCardModel> vAuths = new ArrayList<ErpPreAuthGiftCardModel>();
 		List<ErpPreAuthGiftCardModel> auths = getGCAuthorizations(pm);
@@ -1405,7 +1433,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 						});
 		status = EnumSaleStatus.SETTLEMENT_SAP_PENDING;
 	}
-	
+	@JsonIgnore
 	public List<ErpAuthorizationModel> getFailedAuthorizations() {
 		List<ErpAuthorizationModel> failedAuths = new ArrayList<ErpAuthorizationModel>();
 		ErpAuthorizationModel authorization = null;
@@ -1428,7 +1456,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		}
 		return false;
 	}
-
+	@JsonIgnore
 	public List<ErpInvoiceModel> getInvoices() {
 
 		List<ErpInvoiceModel> invoices = new ArrayList<ErpInvoiceModel>();
@@ -1441,7 +1469,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		Collections.sort(invoices, ErpTransactionModel.TX_DATE_COMPARATOR);
 		return Collections.unmodifiableList(invoices);
 	}
-
+	@JsonIgnore
 	public ErpInvoiceModel getFirstInvoice() {
 		List<ErpInvoiceModel> invoices = getInvoices();
 		if (invoices.size() == 0) {
@@ -1450,7 +1478,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 
 		return invoices.get(0);
 	}
-
+	@JsonIgnore
 	public ErpInvoiceModel getLastInvoice() {
 		List<ErpInvoiceModel> invoices = getInvoices();
 		if (invoices.isEmpty()) {
@@ -1479,7 +1507,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		return cartonInfo;
 	}
 
-
+	@JsonIgnore
 	public ErpChargeInvoiceModel getChargeInvoice() {
 
 		ErpChargeInvoiceModel lastChargeInvoice = null;
@@ -1492,7 +1520,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		}
 		return lastChargeInvoice;
 	}
-
+	@JsonIgnore
 	public boolean getIsChargePayment( String authId ) {
 
 		for ( ErpTransactionModel obj : transactions ) {
@@ -1505,7 +1533,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		}
 		return false;
 	}
-
+	@JsonIgnore
 	public boolean getIsChargePayment( double chargeAmount ) {
 
 		for ( ErpTransactionModel obj : transactions ) {
@@ -1518,7 +1546,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		}
 		return false;
 	}
-
+	@JsonIgnore
 	public boolean hasChargeSettlement() {
 
 		for ( ErpTransactionModel obj : transactions ) {
@@ -1528,7 +1556,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		}
 		return false;
 	}
-
+	@JsonIgnore
 	public boolean hasFundsRedeposit() {
 
 		for ( ErpTransactionModel obj : transactions ) {
@@ -1538,7 +1566,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		}
 		return false;
 	}
-
+	@JsonIgnore
 	public EnumTransactionType getCurrentTransactionType() {
 
 		List<ErpTransactionModel> txs = new ArrayList<ErpTransactionModel>(transactions);
@@ -1548,7 +1576,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		}
 		return null;
 	}
-
+	@JsonIgnore
 	public List<ErpFailedSettlementModel> getFailedSettlements() {
 		List<ErpFailedSettlementModel> failedSettlements = new ArrayList<ErpFailedSettlementModel>();
 		for ( ErpTransactionModel m : transactions ) {
@@ -1558,7 +1586,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		}
 		return failedSettlements;
 	}
-
+	@JsonIgnore
 	public List<ErpChargeSettlementModel> getChargeSettlements() {
 		List<ErpChargeSettlementModel> chargeSettlements = new ArrayList<ErpChargeSettlementModel>();
 		for ( ErpTransactionModel m : transactions ) {
@@ -1568,7 +1596,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		}
 		return chargeSettlements;
 	}
-
+	@JsonIgnore
 	public List<ErpFundsRedepositModel> getFundsRedeposits() {
 		List<ErpFundsRedepositModel> fundsRedeposits = new ArrayList<ErpFundsRedepositModel>();
 		for ( ErpTransactionModel m : transactions ) {
@@ -1578,7 +1606,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		}
 		return fundsRedeposits;
 	}
-
+	@JsonIgnore
 	public List<ErpFailedChargeSettlementModel> getFailedChargeSettlements() {
 		List<ErpFailedChargeSettlementModel> failedChargeSettlements = new ArrayList<ErpFailedChargeSettlementModel>();
 		for ( ErpTransactionModel m : transactions ) {
@@ -1597,7 +1625,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 				});
 		status = EnumSaleStatus.SETTLEMENT_FAILED;
 	}
-
+	@JsonIgnore
 	public List<ErpCaptureModel> getGoodCaptures() {
 
 		ArrayList<ErpCaptureModel> goodCaptures = new ArrayList<ErpCaptureModel>();
@@ -1634,7 +1662,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		return goodCaptures;
 	}
 
-
+	@JsonIgnore
 	public boolean getIsSettlementFailedAfterSettled() {
 
 		if(EnumSaleStatus.SETTLEMENT_FAILED.equals(status)){
@@ -1681,7 +1709,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		}
 
 	}
-
+	@JsonIgnore
 	public int getNumberOfCaptures(){
 		List<ErpCaptureModel> l = getGoodCaptures();
 		for (ListIterator<ErpCaptureModel> i = l.listIterator(); i.hasNext();) {
@@ -1692,11 +1720,11 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		}
 		return l.size();
 	}
-
+	@JsonIgnore
 	public List<ErpTransactionI> getCashbacks(){
 		return filterTransaction(ErpCashbackModel.class);
 	}
-
+	@JsonIgnore
 	public ErpSettlementModel getSettlement (ErpAffiliate affiliate, double amount, String authCode) {
 		List<ErpTransactionI> l = filterTransaction(ErpSettlementModel.class);
 		ErpSettlementModel model = null;
@@ -1711,7 +1739,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 
 		return model;
 	}
-
+	@JsonIgnore
 	public ErpSettlementModel getSettlement (ErpAffiliate affiliate, String seqNumber) {
 		List<ErpTransactionI> l = filterTransaction(ErpSettlementModel.class);
 		ErpSettlementModel model = null;
@@ -1735,7 +1763,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 
 		return (ErpFailedSettlementModel) l.get(l.size() - 1);
 	}
-
+	@JsonIgnore
 	public ErpChargebackModel getLastChargeback(){
 		List<ErpTransactionI> l = filterTransaction(ErpChargebackModel.class);
 		if(l.isEmpty()) {
@@ -1744,7 +1772,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 
 		return (ErpChargebackModel) l.get(l.size() - 1);
 	}
-
+	@JsonIgnore
 	public ErpChargebackReversalModel getLastChargebackReversal(){
 		List<ErpTransactionI> l = filterTransaction(ErpChargebackReversalModel.class);
 		if(l.isEmpty()) {
@@ -1753,7 +1781,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 
 		return (ErpChargebackReversalModel)l.get(l.size() - 1);
 	}
-
+	@JsonIgnore
 	public ErpChargeSettlementModel getLastChargeSettlement() {
 		List<ErpTransactionI> l = filterTransaction(ErpChargeSettlementModel.class);
 		if(l.isEmpty()) {
@@ -1762,7 +1790,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 
 		return (ErpChargeSettlementModel) l.get(l.size() - 1);
 	}
-
+	@JsonIgnore
 	public boolean hasSplitTransaction() {
 		boolean fd = false;
 		boolean bc = false;
@@ -1794,7 +1822,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 
 		return fd && (bc || usq || fdw);
 	}
-
+	@JsonIgnore
 	public String getPreviousSettlementId(ErpAbstractSettlementModel settlement, boolean stlForStf) {
 		List<ErpTransactionI> l = filterTransaction(ErpSettlementModel.class);
 		String id = "";
@@ -1809,7 +1837,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 
 		return id;
 	}
-
+	@JsonIgnore
 	public String getCashbackId(ErpAffiliate affiliate, double amount) {
 		for( ErpTransactionI i : getCashbacks() ) {
 			ErpCashbackModel c = (ErpCashbackModel) i;
@@ -1851,14 +1879,14 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 	public String getStandingOrderId() {
 		return standingOrderId;
 	}
-	
+	@JsonIgnore
 	public boolean isEBTOrder(){
 		ErpAbstractOrderModel orderModel = getCurrentOrder();
 		ErpPaymentMethodI paymentMethod = orderModel.getPaymentMethod();
 		boolean isEBTOrder = (null !=paymentMethod && EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType()));
 		return isEBTOrder;
 	}
-	
+	@JsonIgnore
 	public boolean hasCouponDiscounts(){
 		boolean hasCoupons = false;
 		ErpAbstractOrderModel orderModel = getCurrentOrder();
@@ -1867,7 +1895,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		}
 		return hasCoupons;
 	}
-	
+	@JsonIgnore
 	public Set<ErpOrderLineModel> getAllCouponDiscounts(){
 		ErpAbstractOrderModel orderModel = getCurrentOrder();
 		Set<ErpOrderLineModel> couponDiscounts = null;
@@ -1912,7 +1940,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 	public void setStandingOrderName(String standingOrderName) {
 		this.standingOrderName = standingOrderName;
 	}
-	
+	@JsonIgnore
 	public List<ErpAuthorizationModel> getPPAuthorizations() {
 		List<ErpTransactionModel> txs = new ArrayList<ErpTransactionModel>(transactions);
 		Collections.sort(txs, Collections.reverseOrder(ErpTransactionI.TX_DATE_COMPARATOR));
