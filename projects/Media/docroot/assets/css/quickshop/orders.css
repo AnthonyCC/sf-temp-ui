@@ -187,6 +187,10 @@
 	content:'hide';	
 }
 
+#orders .moreorders fieldset { /* fix overflow */
+	max-height: 25px;
+}
+
 #moreorderspopup {
   width: auto;
   max-width:760px; /* 4*170 cols + 4*10 margin + 35 body padding */
