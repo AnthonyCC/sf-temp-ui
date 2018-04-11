@@ -41,6 +41,7 @@ public class CarouselServlet extends BaseJsonServlet {
 
 	private static final long serialVersionUID = 7146728571778380697L;
 	private static final Logger LOGGER = LoggerFactory.getInstance(CarouselServlet.class);
+    private static final String NEW_PRODUCTS_CAROUSEL_NAME = "New Products";
 
 	@Override
 	// For OAuth2 token endpoint, GET is disabled
@@ -153,8 +154,11 @@ public class CarouselServlet extends BaseJsonServlet {
 	private CarouselDataCointainer getPresPickCarousel(FDSessionUser sessionUser) {
 		CarouselDataCointainer carouselData = new CarouselDataCointainer();
 
-        carouselData.setCarousel1(CarouselService.defaultService().createNewProductsCarousel(sessionUser, FDStoreProperties.isPropFreshDealsPageNewProductsCarouselEnabled(),
-                FDStoreProperties.isPropFreshDealsPageNewProductsCarouselRandomizeProductOrderEnabled()));
+        final boolean isNewProductsCarouselEnabled = FDStoreProperties.isPropFreshDealsPageNewProductsCarouselEnabled();
+        if (isNewProductsCarouselEnabled) {
+            carouselData.setCarousel1(CarouselService.defaultService().createNewProductsCarousel(sessionUser,
+                    FDStoreProperties.isPropFreshDealsPageNewProductsCarouselRandomizeProductOrderEnabled()));
+        }
 
 		try {
             SessionInput si = new SessionInput(sessionUser);
@@ -233,6 +237,15 @@ public class CarouselServlet extends BaseJsonServlet {
 							QuickShopCrazyQuickshopRecommendationService.defaultService()
 									.getTheCrazyQuickshopTitle(null),
 							QuickShopCrazyQuickshopRecommendationService.QUICKSHOP_VIRTUAL_SITE_FEATURE));
+
+            final boolean isNewProductsCarouselEnabled = FDStoreProperties.isPropReorderPageNewProductsCarouselEnabled();
+            if (isNewProductsCarouselEnabled) {
+                RecommendationTab recommendationTab = new RecommendationTab(NEW_PRODUCTS_CAROUSEL_NAME, null);
+                recommendationTab.setCarouselData(CarouselService.defaultService().createNewProductsCarousel(sessionUser,
+                        FDStoreProperties.isPropReorderPageNewProductsCarouselRandomizeProductOrderEnabled()));
+                carousels.getRecommendationTabs().add(0, recommendationTab);
+            }
+
 			boolean isFirstTab = true;
 			for (RecommendationTab tab : carousels.getRecommendationTabs()) {
 				tab.setSelected(isFirstTab);

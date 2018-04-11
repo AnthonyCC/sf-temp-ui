@@ -8,15 +8,12 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
-import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.storeapi.content.CategoryModel;
 import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.browse.data.CarouselData;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
@@ -77,11 +74,10 @@ public class CarouselService {
 		return carousel;
 	}
 
-    public CarouselData createNewProductsCarousel(FDSessionUser sessionUser, boolean isNewProductsCarouselEnabled, boolean isRandomizeProductOrderEnabled) {
+    public CarouselData createNewProductsCarousel(FDSessionUser sessionUser, boolean isRandomizeProductOrderEnabled) {
 
         CarouselData carousel = null;
 
-        if (isNewProductsCarouselEnabled) {
             ContentKey newProductsCategoryContentKey = ContentKeyFactory.get(FDStoreProperties.getPropNewProductsCarouselSourceCategoryContentKey());
             List<ProductModel> products = ((CategoryModel) ContentFactory.getInstance().getContentNodeByKey(newProductsCategoryContentKey)).getAllChildProductsAsList();
 
@@ -91,7 +87,6 @@ public class CarouselService {
                 }
                 carousel = createCarouselData(null, "New products", products, sessionUser, null, null);
             }
-        }
         return carousel;
     }
 }
