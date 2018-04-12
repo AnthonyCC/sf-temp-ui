@@ -174,7 +174,7 @@ public class CartOperations {
                     cartLine.setOrderId(((FDModifyCartModel) cart).getOriginalOrder().getSale().getId());
                     updateModifiedCartlineQuantity(cartLine);
                 }
-                logEditCart(user, cartLine, product, serverName);
+                logEditCart(user, cartLine, serverName);
 
             } else {
                 // Modify order cart
@@ -189,7 +189,7 @@ public class CartOperations {
                 } else if (deltaQty < 0) {
                     // need to remove some
                     cartLine.setQuantity(newQ);
-                    logEditCart(user, cartLine, product, serverName);
+                    logEditCart(user, cartLine, serverName);
 
                 } else {
                     // deltaQty > 0, see how much can we add to this orderline
@@ -200,7 +200,7 @@ public class CartOperations {
                     if (origDiff > 0) {
                         double addToLine = Math.min(origDiff, deltaQty);
                         cartLine.setQuantity(oldQ + addToLine);
-                        logEditCart(user, cartLine, product, serverName);
+                        logEditCart(user, cartLine, serverName);
                         deltaQty -= addToLine;
                     }
 
@@ -287,12 +287,6 @@ public class CartOperations {
         }
 
         // Fetch additional data
-        ProductModel product = cartLine.lookupProduct();
-        if (product == null) {
-            LOG.error("Failed to get product node for " + cartLine.getCategoryName() + " / " + cartLine.getProductName() + ", skipping.");
-            return;
-        }
-
         FDProduct fdProduct = cartLine.lookupFDProduct();
         if (fdProduct == null) {
             LOG.error("Failed to get fdproduct for " + cartLine.getCategoryName() + " / " + cartLine.getProductName() + ", skipping.");
@@ -313,7 +307,7 @@ public class CartOperations {
                 }
 
                 cartLine.setSalesUnit(newSalesUnit);
-                logEditCart(user, cartLine, product, serverName);
+                logEditCart(user, cartLine, serverName);
 
                 saveUserAndCart(user, cart);
             }
@@ -336,13 +330,6 @@ public class CartOperations {
             return;
         }
 
-        // Fetch additional data
-        ProductModel product = cartLine.lookupProduct();
-        if (product == null) {
-            LOG.error("Failed to get product node for " + cartLine.getCategoryName() + " / " + cartLine.getProductName() + ", skipping.");
-            return;
-        }
-
         synchronized (cart) {
 
             if (cartLine instanceof FDCartLineModel) {
@@ -351,7 +338,7 @@ public class CartOperations {
 
             cart.removeOrderLine(cartLine);
 
-            logRemoveFromCart(user, cartLine, product, serverName);
+            logRemoveFromCart(user, cartLine, serverName);
 
             saveUserAndCart(user, cart);
         }
@@ -385,34 +372,33 @@ public class CartOperations {
         }
     }
 
-    private static void logEditCart(FDUserI user, FDCartLineI cartLine, ProductModel product, String serverName) {
+    private static void logEditCart(FDUserI user, FDCartLineI cartLine, String serverName) {
         FDCartLineEvent event = new FDEditCartEvent();
         event.setEventType(FDEventFactory.FD_MODIFY_CART_EVENT);
-        logCartEvent(event, user, cartLine, product, EnumEventSource.CART, serverName);
+        logCartEvent(event, user, cartLine, EnumEventSource.CART, serverName);
     }
 
     private static void logAddToCart(FDUserI user, FDCartLineI cartLine, ProductModel product, String serverName) {
         FDCartLineEvent event = new FDAddToCartEvent();
         event.setEventType(FDEventFactory.FD_ADD_TO_CART_EVENT);
-        logCartEvent(event, user, cartLine, product, EnumEventSource.CART, serverName);
+        logCartEvent(event, user, cartLine, EnumEventSource.CART, serverName);
     }
 
     private static void logAddToCart(FDUserI user, List<FDCartLineI> cartLines, EnumEventSource eventSource, String serverName) {
         for (FDCartLineI cartLine : cartLines) {
             FDCartLineEvent event = new FDAddToCartEvent();
             event.setEventType(FDEventFactory.FD_ADD_TO_CART_EVENT);
-            ProductModel product = cartLine.lookupProduct();
-            logCartEvent(event, user, cartLine, product, eventSource, serverName);
+            logCartEvent(event, user, cartLine, eventSource, serverName);
         }
     }
 
-    private static void logRemoveFromCart(FDUserI user, FDCartLineI cartLine, ProductModel product, String serverName) {
+    private static void logRemoveFromCart(FDUserI user, FDCartLineI cartLine, String serverName) {
         FDCartLineEvent event = new FDRemoveCartEvent();
         event.setEventType(FDEventFactory.FD_REMOVE_CART_EVENT);
-        logCartEvent(event, user, cartLine, product, EnumEventSource.CART, serverName);
+        logCartEvent(event, user, cartLine, EnumEventSource.CART, serverName);
     }
 
-    private static void logCartEvent(FDCartLineEvent event, FDUserI user, FDCartLineI cartLine, ProductModel product, EnumEventSource eventSource, String serverName) {
+    private static void logCartEvent(FDCartLineEvent event, FDUserI user, FDCartLineI cartLine, EnumEventSource eventSource, String serverName) {
         try {
 
             FDIdentity identity = user.getIdentity();
@@ -430,7 +416,7 @@ public class CartOperations {
             event.setApplication(src != null ? src.getCode() : EnumTransactionSource.WEBSITE.getCode());
 
             event.setCartlineId(cartLine.getCartlineId());
-            event.setDepartment(product.getDepartment().getContentName());
+            event.setDepartment(cartLine.getDepartmentDesc());
             event.setCategoryId(cartLine.getCategoryName());
             event.setProductId(cartLine.getProductName());
             event.setSkuCode(cartLine.getSkuCode());
