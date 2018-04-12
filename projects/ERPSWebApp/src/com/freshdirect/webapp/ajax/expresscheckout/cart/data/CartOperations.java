@@ -13,10 +13,8 @@ import com.freshdirect.event.FDAddToCartEvent;
 import com.freshdirect.event.FDCartLineEvent;
 import com.freshdirect.event.FDEditCartEvent;
 import com.freshdirect.event.FDRemoveCartEvent;
-import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.coremetrics.builder.AbstractShopTagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
 import com.freshdirect.fdstore.coremetrics.extradata.CoremetricsExtraData;
@@ -32,19 +30,12 @@ import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
-import com.freshdirect.fdstore.ecoupon.EnumCouponStatus;
-import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
 import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.ajax.ICoremetricsResponse;
-import com.freshdirect.webapp.ajax.cart.data.AddToCartItem;
-import com.freshdirect.webapp.ajax.cart.data.AddToCartResponseDataItem;
-import com.freshdirect.webapp.ajax.cart.data.AddToCartResponseDataItem.Status;
 import com.freshdirect.webapp.taglib.coremetrics.AbstractCmShopTag;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
-import com.freshdirect.webapp.taglib.fdstore.display.FDCouponTag;
 import com.freshdirect.webapp.util.FDEventFactory;
 
 /**
@@ -91,19 +82,6 @@ public class CartOperations {
         } catch (FDInvalidConfigurationException ignore) {
             LOG.warn("Failed to generate coremetrics data", ignore);
         }
-    }
-
-    public static String generateFormattedCouponMessage(FDCustomerCoupon coupon, EnumCouponStatus status) {
-        if (!status.isDisplayMessage()) {
-            return "";
-        }
-
-        FDCouponTag manFdCouponTag = new FDCouponTag();
-        manFdCouponTag.setCoupon(coupon);
-        manFdCouponTag.setCouponStatusText(status.getDescription());
-        manFdCouponTag.initContent(null);
-
-        return manFdCouponTag.getStatusTextHtml();
     }
 
     public static void changeQuantity(FDUserI user, FDCartModel cart, FDCartLineI cartLine, double newQ, String serverName) {
@@ -384,14 +362,6 @@ public class CartOperations {
         logCartEvent(event, user, cartLine, EnumEventSource.CART, serverName);
     }
 
-    private static void logAddToCart(FDUserI user, List<FDCartLineI> cartLines, EnumEventSource eventSource, String serverName) {
-        for (FDCartLineI cartLine : cartLines) {
-            FDCartLineEvent event = new FDAddToCartEvent();
-            event.setEventType(FDEventFactory.FD_ADD_TO_CART_EVENT);
-            logCartEvent(event, user, cartLine, eventSource, serverName);
-        }
-    }
-
     private static void logRemoveFromCart(FDUserI user, FDCartLineI cartLine, String serverName) {
         FDCartLineEvent event = new FDRemoveCartEvent();
         event.setEventType(FDEventFactory.FD_REMOVE_CART_EVENT);
@@ -449,112 +419,6 @@ public class CartOperations {
     }
 
     // =========================================== Methods for add to cart processing ===========================================
-
-    public static ProductModel getProductModelFromAddToCartItem(AddToCartItem item, AddToCartResponseDataItem responseItem) {
-
-        String skuCode = item.getSkuCode();
-        responseItem.setItemId(item.getAtcItemId());
-        if (skuCode == null || "".equals(skuCode)) {
-            // Missing skuCode
-            responseItem.setStatus(Status.ERROR);
-            responseItem.setMessage("Not available (SKU not specified)");
-            return null;
-        }
-
-        String productId = item.getProductId();
-        String categoryId = item.getCategoryId();
-
-        // TODO : what is the extra trick with wine categories?
-        // if (request.getParameter(paramWineCatId) != null)
-        // catName = request.getParameter(paramWineCatId);
-        // else
-        // catName = request.getParameter(paramCatId);
-
-        ProductModel prodNode = null;
-        try {
-            if (productId != null && categoryId != null) {
-                prodNode = ContentFactory.getInstance().getProductByName(categoryId, productId);
-            }
-            if (prodNode == null) {
-                prodNode = ContentFactory.getInstance().getProduct(skuCode);
-            }
-        } catch (FDSkuNotFoundException ex) {
-            responseItem.setStatus(Status.ERROR);
-            responseItem.setMessage("Not available (SKU not found)");
-            return null;
-        }
-
-        if (prodNode == null) {
-            responseItem.setStatus(Status.ERROR);
-            responseItem.setMessage("Not available (SKU not found)");
-            return null;
-        }
-
-        if (prodNode.getSku(skuCode).isUnavailable()) {
-            responseItem.setStatus(Status.ERROR);
-            responseItem.setMessage("Product not available (unavailable sku)");
-            return null;
-        }
-
-        return prodNode;
-    }
-
-    public static FDProduct getFDProductFromAddToCartItem(AddToCartItem item, AddToCartResponseDataItem responseItem) {
-
-        String skuCode = item.getSkuCode();
-        FDProduct product = null;
-        try {
-            product = FDCachedFactory.getProduct(FDCachedFactory.getProductInfo(skuCode));
-        } catch (FDResourceException fdre) {
-            responseItem.setStatus(Status.ERROR);
-            responseItem.setMessage("Not available (system error)");
-            return null;
-        } catch (FDSkuNotFoundException fdsnfe) {
-            responseItem.setStatus(Status.ERROR);
-            responseItem.setMessage("Not available (SKU not found)");
-            return null;
-        }
-        return product;
-    }
-
-    public static double calculateInCartAmount(ProductModel product, List<FDCartLineI> cartLinesToAdd, FDCartModel cart, double quantity) {
-
-        double amount = getCartlinesQuantity(product, cartLinesToAdd); // items not yet added
-        amount += cart.getTotalQuantity(product);
-        amount += quantity; // this item
-
-        return amount;
-    }
-
-    /**
-     * Deduce the quantity that has already been processed but not yet added to the cart.
-     *
-     * Salvaged from FDShoppingCartControllerTag.
-     *
-     * @param product
-     * @return total quantity of product already processed
-     */
-    private static double getCartlinesQuantity(ProductModel product, List<FDCartLineI> cartLinesToAdd) {
-        String productId = product.getContentName();
-        double sum = 0;
-        for (final FDCartLineI line : cartLinesToAdd) {
-            if (productId.equals(line.getProductName())) {
-                sum += line.getQuantity();
-            }
-        }
-        return sum;
-    }
-
-    public static double extractQuantity(AddToCartItem item) {
-        double quantity = 0.0;
-        try {
-            quantity = Double.parseDouble(item.getQuantity());
-        } catch (NumberFormatException ignore) {
-        } catch (NullPointerException ignore) {
-        }
-
-        return quantity;
-    }
 
     public static double extractMaximumQuantity(FDUserI user, String lineId, ProductModel prodNode) {
         double maximumQuantity = 0.0;
