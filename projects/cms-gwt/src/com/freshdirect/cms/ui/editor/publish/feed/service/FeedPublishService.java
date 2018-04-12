@@ -160,6 +160,7 @@ public class FeedPublishService {
                 feedPublishMessagingService.addMessage(publish, new FeedPublishMessage(FeedPublishMessageLevel.INFO, "FeedPublish succesfully finished"));
                 feedPublishMessagingService.modifyFeedPublishStatus(publish, PublishStatus.COMPLETE);
             } catch (Exception e) {
+            	LOGGER.error("Exception during feed publish ===== "+e.getMessage(), e);
                 feedPublishMessagingService.addMessage(publish,
                         new FeedPublishMessage(FeedPublishMessageLevel.FAILURE, "Exception happened: " + e.getMessage(), publish.getStoreKey().id));
                 feedPublishMessagingService.modifyFeedPublishStatus(publish, PublishStatus.FAILED);
