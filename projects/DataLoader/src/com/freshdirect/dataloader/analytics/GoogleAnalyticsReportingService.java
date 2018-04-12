@@ -11,6 +11,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.fdstore.EnumEStoreId;
@@ -20,10 +21,13 @@ import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.http.HttpService;
 import com.freshdirect.storeapi.content.ProductModel;
 
 public class GoogleAnalyticsReportingService {
+
+    private static final Logger LOGGER = LoggerFactory.getInstance(GoogleAnalyticsReportingService.class);
 
     private static final GoogleAnalyticsReportingService INSTANCE = new GoogleAnalyticsReportingService();
     public static final String GOOGLE_ANALYTICS_HOST = "https://www.google-analytics.com/collect";
@@ -38,7 +42,18 @@ public class GoogleAnalyticsReportingService {
     }
 
     public HttpResponse postGAReporting(FDOrderI order, EnumEStoreId eStoreId) throws UnsupportedEncodingException, IOException {
-        return HttpService.defaultService().postDataWithHttpEntity(GOOGLE_ANALYTICS_HOST, assembleTransactionPayloadForGA(order, eStoreId), USER_AGENT);
+        final HttpResponse response = HttpService.defaultService().postDataWithHttpEntity(GOOGLE_ANALYTICS_HOST, assembleTransactionPayloadForGA(order, eStoreId), USER_AGENT);
+
+        if (response != null) {
+            final int statusCode = response.getStatusLine().getStatusCode();
+            final boolean isHttpStatusOk = (statusCode >= 200 && statusCode < 299);
+
+            if (!isHttpStatusOk) {
+                final String orderId = order != null ? order.getErpSalesId() : "<null>";
+                LOGGER.error("Google Analytics returned with status code "+statusCode+" for GA event (order#="+orderId+"; eStoreId="+eStoreId+")");
+            }
+        }
+        return response;
     }
 
     public HttpEntity assembleTransactionPayloadForGA(FDOrderI order, EnumEStoreId eStoreId) throws UnsupportedEncodingException {
