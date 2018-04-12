@@ -2018,7 +2018,7 @@ public class FDStoreProperties {
         defaults.put(PROP_NEW_PRODUCTS_PAGE_CAROUSEL_CONTAINER_CONTENT_KEY, "ModuleContainer:new_prod");
 
         defaults.put(PROP_NEW_PRODUCTS_CAROUSEL_SOURCE_CATEGORY_CONTENT_KEY, "Category:newproduct_demo");
-        defaults.put(PROP_FRESH_DEALS_PAGE_NEW_PRODUCTS_CAROUSEL_ENABLED, "false");
+        defaults.put(PROP_FRESH_DEALS_PAGE_NEW_PRODUCTS_CAROUSEL_ENABLED, "true");
         defaults.put(PROP_FRESH_DEALS_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED, "true");
         defaults.put(PROP_REORDER_PAGE_NEW_PRODUCTS_CAROUSEL_ENABLED, "true");
         defaults.put(PROP_REORDER_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED, "true");
@@ -5108,31 +5108,31 @@ public class FDStoreProperties {
 	}
 	
 	
-	  public static String getPropNewProductsPageCarouselContainerContentKey() {
+	  public static String getNewProductsPageCarouselContainerContentKey() {
           return get(PROP_NEW_PRODUCTS_PAGE_CAROUSEL_CONTAINER_CONTENT_KEY);
       }
 
-      public static boolean isPropNewProductsPageCarouselEnabled() {
+      public static boolean isNewProductsPageCarouselEnabled() {
           return (Boolean.valueOf(get(PROP_NEW_PRODUCTS_PAGE_CAROUSEL_ENABLED))).booleanValue();
       }
 
-    public static boolean isPropFreshDealsPageNewProductsCarouselEnabled() {
+    public static boolean isFreshDealsPageNewProductsCarouselEnabled() {
         return (Boolean.valueOf(get(PROP_FRESH_DEALS_PAGE_NEW_PRODUCTS_CAROUSEL_ENABLED))).booleanValue();
     }
 
-    public static boolean isPropFreshDealsPageNewProductsCarouselRandomizeProductOrderEnabled() {
+    public static boolean isFreshDealsPageNewProductsCarouselRandomizeProductOrderEnabled() {
         return (Boolean.valueOf(get(PROP_FRESH_DEALS_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED))).booleanValue();
     }
 
-    public static String getPropNewProductsCarouselSourceCategoryContentKey() {
+    public static String getNewProductsCarouselSourceCategoryContentKey() {
         return get(PROP_NEW_PRODUCTS_CAROUSEL_SOURCE_CATEGORY_CONTENT_KEY);
     }
 
-    public static boolean isPropReorderPageNewProductsCarouselEnabled() {
+    public static boolean isReorderPageNewProductsCarouselEnabled() {
         return (Boolean.valueOf(get(PROP_REORDER_PAGE_NEW_PRODUCTS_CAROUSEL_ENABLED))).booleanValue();
     }
 
-    public static boolean isPropReorderPageNewProductsCarouselRandomizeProductOrderEnabled() {
+    public static boolean isReorderPageNewProductsCarouselRandomizeProductOrderEnabled() {
         return (Boolean.valueOf(get(PROP_REORDER_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED))).booleanValue();
     }
 

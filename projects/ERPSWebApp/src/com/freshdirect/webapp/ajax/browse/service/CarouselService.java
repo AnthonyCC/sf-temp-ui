@@ -17,7 +17,6 @@ import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.ajax.browse.data.CarouselData;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
-import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.util.FDURLUtil;
 
 public class CarouselService {
@@ -25,6 +24,8 @@ public class CarouselService {
 	private static final Logger LOGGER = LoggerFactory.getInstance(CarouselService.class);
 
     private static final CarouselService INSTANCE = new CarouselService();
+
+    private static final String NEW_PRODUCTS_CAROUSEL_NAME = "New Products";
 
 	private CarouselService() {
 	}
@@ -74,18 +75,18 @@ public class CarouselService {
 		return carousel;
 	}
 
-    public CarouselData createNewProductsCarousel(FDSessionUser sessionUser, boolean isRandomizeProductOrderEnabled) {
+    public CarouselData createNewProductsCarousel(FDUserI fdUserI, boolean isRandomizeProductOrderEnabled) {
 
         CarouselData carousel = null;
 
-            ContentKey newProductsCategoryContentKey = ContentKeyFactory.get(FDStoreProperties.getPropNewProductsCarouselSourceCategoryContentKey());
+            ContentKey newProductsCategoryContentKey = ContentKeyFactory.get(FDStoreProperties.getNewProductsCarouselSourceCategoryContentKey());
             List<ProductModel> products = ((CategoryModel) ContentFactory.getInstance().getContentNodeByKey(newProductsCategoryContentKey)).getAllChildProductsAsList();
 
             if (products != null && products.size() >= FDStoreProperties.getMinimumItemsCountInCarousel()) {
                 if (isRandomizeProductOrderEnabled) {
                     Collections.shuffle(products);
                 }
-                carousel = createCarouselData(null, "New products", products, sessionUser, null, null);
+            carousel = createCarouselData(null, NEW_PRODUCTS_CAROUSEL_NAME, products, fdUserI, null, null);
             }
         return carousel;
     }

@@ -119,9 +119,9 @@
 	</tmpl:put>
 
 	<%
-	    String moduleContainerId = FDStoreProperties.getPropNewProductsPageCarouselContainerContentKey();
+	    String moduleContainerId = FDStoreProperties.getNewProductsPageCarouselContainerContentKey();
 		pageContext.setAttribute("moduleContainerId", moduleContainerId);
-		boolean isModuleEnabled = FDStoreProperties.isPropNewProductsPageCarouselEnabled();
+		boolean isModuleEnabled = FDStoreProperties.isNewProductsPageCarouselEnabled();
 		pageContext.setAttribute("isModuleEnabled", isModuleEnabled);
 	%>
 

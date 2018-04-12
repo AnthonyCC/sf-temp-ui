@@ -154,10 +154,10 @@ public class CarouselServlet extends BaseJsonServlet {
 	private CarouselDataCointainer getPresPickCarousel(FDSessionUser sessionUser) {
 		CarouselDataCointainer carouselData = new CarouselDataCointainer();
 
-        final boolean isNewProductsCarouselEnabled = FDStoreProperties.isPropFreshDealsPageNewProductsCarouselEnabled();
+        final boolean isNewProductsCarouselEnabled = FDStoreProperties.isFreshDealsPageNewProductsCarouselEnabled();
         if (isNewProductsCarouselEnabled) {
             carouselData.setCarousel1(CarouselService.defaultService().createNewProductsCarousel(sessionUser,
-                    FDStoreProperties.isPropFreshDealsPageNewProductsCarouselRandomizeProductOrderEnabled()));
+                    FDStoreProperties.isFreshDealsPageNewProductsCarouselRandomizeProductOrderEnabled()));
         }
 
 		try {
@@ -238,11 +238,11 @@ public class CarouselServlet extends BaseJsonServlet {
 									.getTheCrazyQuickshopTitle(null),
 							QuickShopCrazyQuickshopRecommendationService.QUICKSHOP_VIRTUAL_SITE_FEATURE));
 
-            final boolean isNewProductsCarouselEnabled = FDStoreProperties.isPropReorderPageNewProductsCarouselEnabled();
+            final boolean isNewProductsCarouselEnabled = FDStoreProperties.isReorderPageNewProductsCarouselEnabled();
             if (isNewProductsCarouselEnabled) {
                 RecommendationTab recommendationTab = new RecommendationTab(NEW_PRODUCTS_CAROUSEL_NAME, null);
                 recommendationTab.setCarouselData(CarouselService.defaultService().createNewProductsCarousel(sessionUser,
-                        FDStoreProperties.isPropReorderPageNewProductsCarouselRandomizeProductOrderEnabled()));
+                        FDStoreProperties.isReorderPageNewProductsCarouselRandomizeProductOrderEnabled()));
                 carousels.getRecommendationTabs().add(0, recommendationTab);
             }
 
