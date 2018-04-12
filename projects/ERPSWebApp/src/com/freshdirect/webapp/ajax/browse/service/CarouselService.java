@@ -61,11 +61,7 @@ public class CarouselService {
 					productData.setVariantId(variantId);
 					productData.setProductPageUrl( FDURLUtil.getNewProductURI(product, variantId));
 					productDatas.add(productData);
-				} catch (FDResourceException e) {
-					LOGGER.error("failed to create ProductData", e);
-				} catch (FDSkuNotFoundException e) {
-					LOGGER.error("failed to create ProductData", e);
-				} catch (HttpErrorResponse e) {
+				} catch (Exception e) {
 					LOGGER.error("failed to create ProductData", e);
 				}
 			}

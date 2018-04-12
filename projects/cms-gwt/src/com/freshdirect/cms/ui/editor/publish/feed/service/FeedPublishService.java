@@ -84,10 +84,15 @@ public class FeedPublishService {
 
     @Async
     public void publishFeed(FeedPublish publish, List<ContentKey> storeKeys, String userId, String comment) {
+    	
+        LOGGER.debug("Feed publish Stores size ======= "+(storeKeys!=null?storeKeys.size():storeKeys));
+
 
         for (ContentKey storeKey : storeKeys) {
 
             publish.setStoreKey(storeKey);
+            
+            LOGGER.debug("Feed publish starts for the store ======= "+(storeKey!=null?storeKey.getId():storeKey));
 
             FeedPublishMessage message = new FeedPublishMessage(FeedPublishMessageLevel.INFO, "Starting feed publish", publish.getStoreKey().id);
             feedPublishMessagingService.addMessage(publish, message);
@@ -155,6 +160,7 @@ public class FeedPublishService {
                 feedPublishMessagingService.addMessage(publish, new FeedPublishMessage(FeedPublishMessageLevel.INFO, "FeedPublish succesfully finished"));
                 feedPublishMessagingService.modifyFeedPublishStatus(publish, PublishStatus.COMPLETE);
             } catch (Exception e) {
+            	LOGGER.error("Exception during feed publish ===== "+e.getMessage(), e);
                 feedPublishMessagingService.addMessage(publish,
                         new FeedPublishMessage(FeedPublishMessageLevel.FAILURE, "Exception happened: " + e.getMessage(), publish.getStoreKey().id));
                 feedPublishMessagingService.modifyFeedPublishStatus(publish, PublishStatus.FAILED);
