@@ -15,6 +15,7 @@ import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.delivery.EnumComparisionType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
@@ -41,15 +42,25 @@ public class CustomerStrategy implements PromotionStrategyI {
 	@Override
 	public int evaluate(String promotionCode, PromotionContextI context) {
 		
+		boolean isEligibleByDPFreeTrialOptIn = 
+				FDStoreProperties.isDlvPassFreeTrialOptinFeatureEnabled() && 
+				context.getUser().getDpFreeTrialOptin() && (context.getUser().getDlvPassInfo()==null || EnumDlvPassStatus.NONE.equals(context.getUser().getDlvPassInfo().getStatus()))
+				&& (dpTypes == null || dpTypes.isEmpty() || dpTypes.contains(FDStoreProperties.getTwoMonthTrailDPSku()));
+		
 		//Evaluate Cohorts
 		if(cohorts != null && cohorts.size() > 0 && !cohorts.contains(context.getUser().getCohortName())) return DENY;
 		
+		
+		
 		if(  dpTypes != null && dpTypes.size() > 0) {
-			if(context.getUser()==null || context.getUser().getDlvPassInfo()==null)return DENY;
-			else if( context.getUser().getDlvPassInfo().getTypePurchased()==null)return DENY;
-			else if( !dpTypes.contains(context.getUser().getDlvPassInfo().getTypePurchased().getCode()))
-				return DENY;
+			if(!isEligibleByDPFreeTrialOptIn){
+				if(context.getUser()==null || context.getUser().getDlvPassInfo()==null)return DENY;
+				else if( context.getUser().getDlvPassInfo().getTypePurchased()==null)return DENY;
+				else if( !dpTypes.contains(context.getUser().getDlvPassInfo().getTypePurchased().getCode()))
+					return DENY;
+			}
 		}
+		
 		
 		//Evaluate Order Range. range is not defined properly. DENY
 		if((orderRangeStart > 0 && orderRangeEnd <= 0) || (orderRangeStart <= 0 && orderRangeEnd > 0)) return DENY;
@@ -70,7 +81,7 @@ public class CustomerStrategy implements PromotionStrategyI {
 		}
 		
 		//Evaluate Delivery Pass Status
-		if(dpStatus != null){
+		if(dpStatus != null && !isEligibleByDPFreeTrialOptIn){
 			if(!context.getUser().getDeliveryPassStatus().equals(dpStatus)) return DENY;
 			if(dpStartDate != null && dpEndDate != null) {
 				Date dpExpDate = context.getUser().getDlvPassInfo().getExpDate();
