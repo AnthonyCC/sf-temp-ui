@@ -32,6 +32,7 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.content.DepartmentModel;
 import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.ajax.ICoremetricsResponse;
 import com.freshdirect.webapp.taglib.coremetrics.AbstractCmShopTag;
@@ -376,6 +377,8 @@ public class CartOperations {
                 event.setCustomerId(identity.getErpCustomerPK());
             }
 
+            ProductModel productModel = cartLine.lookupProduct();
+
             event.setServer(serverName);
             event.setCookie(user.getCookie());
             event.setTimestamp(new Date());
@@ -386,9 +389,16 @@ public class CartOperations {
             event.setApplication(src != null ? src.getCode() : EnumTransactionSource.WEBSITE.getCode());
 
             event.setCartlineId(cartLine.getCartlineId());
-            event.setDepartment(cartLine.getDepartmentDesc());
+            if (productModel != null) {
+                DepartmentModel departmentModel = productModel.getDepartment();
+                if (departmentModel != null) {
+                    event.setDepartment(departmentModel.getContentKey().id);
+                }
+            }
             event.setCategoryId(cartLine.getCategoryName());
-            event.setProductId(cartLine.getProductName());
+            if (productModel != null) {
+                event.setProductId(productModel.getContentKey().id);
+            }
             event.setSkuCode(cartLine.getSkuCode());
             event.setQuantity(String.valueOf(cartLine.getQuantity()));
             event.setSalesUnit(cartLine.getSalesUnit());
