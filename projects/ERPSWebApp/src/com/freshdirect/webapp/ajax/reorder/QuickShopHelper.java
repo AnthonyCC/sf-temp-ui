@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -183,7 +182,7 @@ public class QuickShopHelper {
 		}
 
 		// Wrap the resulting item - adds filtering info
-		QuickShopLineItemWrapper wrapper = new QuickShopLineItemWrapper(item, (ProductModelPricingAdapter) productModel);
+		QuickShopLineItemWrapper wrapper = new QuickShopLineItemWrapper(item, productModel);
 		if (list != null) {
 			wrapper.setCclId(list.getId());
 			item.setListId(list.getId());
@@ -247,7 +246,7 @@ public class QuickShopHelper {
 		}
 
 		if (skuModel == null) {
-			skuModel = productModel.getDefaultSku();
+            skuModel = productModel.getDefaultSku();
 		}
 		String skuCode = skuModel.getSkuCode();
 
@@ -584,27 +583,6 @@ public class QuickShopHelper {
 		}
 	}
 
-	public static void removeSkuDuplicatesInPastOrders(List<FilteringSortingItem<QuickShopLineItemWrapper>> items) {
-		Map<String, Set<String>> skus = new HashMap<String, Set<String>>();
-		Iterator<FilteringSortingItem<QuickShopLineItemWrapper>> it = items.iterator();
-		while (it.hasNext()) {
-			FilteringSortingItem<QuickShopLineItemWrapper> item = it.next();
-			String orderId = item.getNode().getOrderId();
-			Set<String> skusForOrder = skus.get(orderId);
-			String skuCode = item.getNode().getItem().getSkuCode();
-			if (skusForOrder != null) {
-				if (skusForOrder.contains(skuCode)) {
-					it.remove();
-					continue;
-				}
-			} else {
-				skusForOrder = new HashSet<String>();
-				skus.put(orderId, skusForOrder);
-			}
-			skusForOrder.add(skuCode);
-		}
-	}
-
 	public static FDUserI getUserFromSession(HttpSession session) {
 		return (FDUserI) session.getAttribute(SessionName.USER);
 	}
@@ -756,5 +734,11 @@ public class QuickShopHelper {
 			}
 		}
 	}
+
+    public static FilteringSortingItem<QuickShopLineItemWrapper> createQuickShopFilteringItemWrapper(ProductModel model, FDUserI user) throws FDResourceException {
+        QuickShopLineItem aggregatedLineItem = QuickShopHelper.createItemFromProduct(model, model.getSku(0), user, true);
+        QuickShopLineItemWrapper wrapper = new QuickShopLineItemWrapper(aggregatedLineItem, model);
+        return new FilteringSortingItem<QuickShopLineItemWrapper>(wrapper);
+    }
 
 }
