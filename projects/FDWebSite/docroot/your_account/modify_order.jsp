@@ -18,7 +18,10 @@
 	final int W_YA_MODIFY_ORDER = 970;
 
 	String orderId = request.getParameter("orderId");
-	
+	if (orderId == null || "".equals(orderId)) {
+		//redirect instead of blowing up
+		response.sendRedirect("/your_account/order_history.jsp");
+	}
 
 	NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance( Locale.US );
 	java.text.SimpleDateFormat modDateFormat = new java.text.SimpleDateFormat("h:mm a 'on' EEEE MMMM d, yyyy");
