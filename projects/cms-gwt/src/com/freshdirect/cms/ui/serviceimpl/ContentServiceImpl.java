@@ -320,10 +320,12 @@ public class ContentServiceImpl extends GwtServiceBase implements ContentService
             for (GwtChangeSet change : changes) {
 
                 for (GwtNodeChange nodechange : change.getNodeChanges()) {
-                    int length = nodechange.length();
-                    publishData.addContributor(change.getUserId(), length);
-                    publishData.addType(nodechange.getType(), length);
-                    changeCount += length;
+                    if (isFeedRelatedChange(nodechange.getType())) {
+                        int length = nodechange.length();
+                        publishData.addContributor(change.getUserId(), length);
+                        publishData.addType(nodechange.getType(), length);
+                        changeCount += length;
+                    }
                 }
             }
 
@@ -449,6 +451,18 @@ public class ContentServiceImpl extends GwtServiceBase implements ContentService
         LOGGER.info("feed publish kicked off by " + author.getName() + " : '" + comment + "'");
 
         return publishService.startPublish(PublishType.PUBLISH_X, comment, author.getName());
+    }
+
+    private boolean isFeedRelatedChange(String type) {
+        boolean feedRelatedChange = false;
+
+        for (ContentType contentType : feedPublishService.getTypestoPublish()) {
+            if (contentType.toString().equalsIgnoreCase(type)) {
+                feedRelatedChange = true;
+            }
+        }
+
+        return feedRelatedChange;
     }
 
 }

@@ -332,4 +332,8 @@ public class FeedPublishService {
     public List<FeedPublish> loadAll() {
         return entityToDomainConverter.convert(repository.findAll());
     }
+
+    public ContentType[] getTypestoPublish() {
+        return typesToPublish;
+    }
 }
