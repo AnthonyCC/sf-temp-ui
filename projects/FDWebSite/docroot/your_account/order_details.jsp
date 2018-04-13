@@ -161,7 +161,7 @@ if(orderId==null){
 	    boolean hasClientCodes = (user.isEligibleForClientCodes() && cart.hasClientCodes());
 	    boolean hasModify = allowModifyOrder.booleanValue();
 	    boolean hasCancel = allowCancelOrder.booleanValue();
-	    boolean isModifying = orderId != null && orderId.equals(FDUserUtil.getModifyingOrderId(user));
+	    boolean isViewingCurrentModifyOrder = orderId != null && orderId.equals(FDUserUtil.getModifyingOrderId(user));
 	%>
 	<table width="<%= W_YA_ORDER_DETAILS_TOTAL %>" align="center" border="0" cellpadding="0" cellspacing="0" style="margin-bottom: 10px;">
 		<tr>
@@ -206,10 +206,9 @@ if(orderId==null){
 				Export Client Codes
 			</button>
 		<% } %>
-		
-		<% if(isModifying) {%><%-- MODIFY - CANCEL CHANGES BUTTON --%>
+		<% if(isViewingCurrentModifyOrder) {%><%-- MODIFY - CANCEL CHANGES BUTTON --%>
 			<button class="cssbutton medium orange transparent cancel-modify-order-btn" data-gtm-source="order-details" title="Click here to cancel changes"  onclick="location.href='/your_account/cancel_modify_order.jsp'">Cancel Changes</button>
-	   	<% } else if (hasModify) { %><%-- MODIFY - MODIFY ORDER BUTTON --%>
+	   	<% } else if (hasModify && isViewingCurrentModifyOrder) { %><%-- MODIFY - MODIFY ORDER BUTTON --%>
 			<button class="cssbutton medium orange modify-order-btn" data-gtm-source="order-details" title="Click here to modify this order"  onclick="location.href='/your_account/modify_order.jsp?orderId=<%= orderId %>&action=modify'">Modify Order</button>
 		<% } %>
 		
