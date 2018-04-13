@@ -223,7 +223,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 
 			} else if ( "submitOrder".equalsIgnoreCase( action ) ) {
 				LOGGER.debug( "AVAILABILITY IS: " + getCart().getAvailability() );
-				if ( !getCart().isAvailabilityChecked() ) {
+				if ( ((String)pageContext.getSession().getAttribute("BYPASS_CART_VALIDATION")==null || !((String)pageContext.getSession().getAttribute("BYPASS_CART_VALIDATION")).equals("YES")) && !getCart().isAvailabilityChecked() ) {
 
 					this.setSuccessPage( backToViewCart );
 					return true;

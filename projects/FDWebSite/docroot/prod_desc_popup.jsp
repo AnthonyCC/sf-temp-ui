@@ -11,6 +11,8 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
+<fd:RequiredParameterValidator parameters="catId,prodId"/>
+
 <%
 String catId = request.getParameter("catId");
 String prodId = request.getParameter("prodId");

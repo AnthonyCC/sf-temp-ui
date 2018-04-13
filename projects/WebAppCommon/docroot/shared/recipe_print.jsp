@@ -27,7 +27,7 @@ if (variantId != null) {
 	variant = recipe.getDefaultVariant();
 
 } else {
-	throw new IllegalArgumentException("No variantId or recipeId supplied");
+	throw new FDNotFoundException("No variantId or recipeId supplied");
 }
 
 if (recipe == null) {
