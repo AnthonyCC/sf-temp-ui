@@ -75,7 +75,7 @@ public class CarouselService {
 		return carousel;
 	}
 
-    public CarouselData createNewProductsCarousel(FDUserI fdUserI, boolean isRandomizeProductOrderEnabled) {
+    public CarouselData createNewProductsCarousel(FDUserI user, boolean isRandomizeProductOrderEnabled) {
 
         CarouselData carousel = null;
 
@@ -86,7 +86,7 @@ public class CarouselService {
                 if (isRandomizeProductOrderEnabled) {
                     Collections.shuffle(products);
                 }
-            carousel = createCarouselData(null, NEW_PRODUCTS_CAROUSEL_NAME, products, fdUserI, null, null);
+            carousel = createCarouselData(null, NEW_PRODUCTS_CAROUSEL_NAME, products, user, null, null);
             }
         return carousel;
     }
