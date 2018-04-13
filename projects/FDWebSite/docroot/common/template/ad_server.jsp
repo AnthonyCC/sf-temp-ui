@@ -269,6 +269,7 @@
 
 			//Building up the values required for Delivery Pass Ads.
 			if (user.isEligibleForDeliveryPass()) {
+				queryString.addParam("dpnever", user.isDlvPassNone() ? "T" : "F");
 				String profileVal = user.getDlvPassProfileValue();
 
 				queryString.addParam("dpas", profileVal);
