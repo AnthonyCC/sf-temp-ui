@@ -942,7 +942,7 @@ public class BrowseDataBuilderFactory {
 	 */
 	public void appendCarousels(BrowseData browseData, BrowseDataContext browseDataContext, FDUserI user, Set<ContentKey> shownProductKeysForRecommender, boolean disableCategoryYmalRecommender, boolean isPdp){
 		//Product Listing Page Scarab
-		if (browseData.getCarousels().getCarousel1() == null && shownProductKeysForRecommender.size() > 0) {
+        if (!disableCategoryYmalRecommender && browseData.getCarousels().getCarousel1() == null && shownProductKeysForRecommender.size() > 0) {
 			try {
 				Recommendations recommendations = ProductRecommenderUtil.getBrowseProductListingPageRecommendations(user, shownProductKeysForRecommender);
 				List<ProductModel> products = recommendations.getAllProducts();

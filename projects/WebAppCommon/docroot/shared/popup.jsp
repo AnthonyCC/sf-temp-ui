@@ -92,7 +92,9 @@ if ("KOSHER".equalsIgnoreCase(attrib)) {
 	                pathToMedia = "/media/editorial/" + deptId +"/fd_defs/" + spec + ".html";
                 }
 } else {
-        prod =  cf.getProductByName(catId,prodId);
+    %>
+     <fd:RequiredParameterValidator parameters="catId,prodId"/>
+     <% prod =  cf.getProductByName(catId,prodId);
         prodImg = prod.getCategoryImage();
         dept = prod.getDepartment();
         deptName = dept.getFullName();

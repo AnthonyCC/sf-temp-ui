@@ -31,6 +31,8 @@
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
 
+<fd:RequiredParameterValidator parameters="productId"/>
+
 <fd:CheckLoginStatus id="user"/>
 <fd:CheckDraftContextTag/>
 <fd:PDPRedirector user="<%=user %>" />
