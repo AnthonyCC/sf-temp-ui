@@ -114,6 +114,7 @@ import com.freshdirect.payment.fraud.RestrictedPaymentMethodModel;
 import com.freshdirect.payment.gateway.GatewayType;
 import com.freshdirect.payment.gateway.Response;
 import com.freshdirect.payment.gateway.ejb.FDGatewayActivityLogModel;
+import com.freshdirect.payment.model.ErpSettlementSummaryModel;
 import com.freshdirect.referral.extole.ExtoleServiceException;
 import com.freshdirect.referral.extole.model.ExtoleConversionRequest;
 import com.freshdirect.referral.extole.model.ExtoleResponse;
@@ -568,6 +569,21 @@ public interface IECommerceService {
 	public Collection<ErpCharacteristicValuePriceModel> findByMaterialId(String materialId, int version) throws RemoteException;
 
 	public boolean uploadProductFeed() throws FDResourceException;
-
-
+	
+	public Map<String, String> getPPSettlementNotProcessed() throws RemoteException;
+	
+	public Map<String, Object> acquirePPLock(Date date) throws RemoteException;
+	
+	public void releasePPLock(List<String> settlementIds) throws RemoteException;
+	
+	public void insertNewSettlementRecord(Date date) throws RemoteException;
+	
+	public List<String> addPPSettlementSummary(ErpSettlementSummaryModel[] models) throws RemoteException;
+	
+	public void updatePayPalStatus(List<String> settlementIds) throws RemoteException;
+	
+	public List<ErpSettlementSummaryModel> getPPTrxns(List<String> ppStlmntIds) throws RemoteException;
+	
+	public void updatePPSettlementTransStatus(String settlementTransId) throws RemoteException;
+	
 }

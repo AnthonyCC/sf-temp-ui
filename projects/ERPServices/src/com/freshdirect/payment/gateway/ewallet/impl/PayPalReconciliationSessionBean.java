@@ -544,9 +544,6 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 	private static final String UPDATE_PP_SETTLEMENT = "update CUST.SETTLEMENT S set PROCESSED_TIME_DATE = systimestamp, " +
 			" ALL_RECORDS_PROCESSED = 'Y' where id = ?  and settlement_source = 'PP' and not exists(select 1 from CUST.SETTLEMENT_TRANSACTION ST where ST.settlement_id=s.id and status='P') ";
 	
-	private static final String UPDATE_PP_SETTLEMENT_TX = "update CUST.SETTLEMENT_TRANSACTION set PROCESSED_TIME_DATE = systimestamp, " +
-			" STATUS = 'C' where settlement_id = ? ";
-			
 	public void updatePayPalStatus(List<String> settlementIds) {
 		Connection conn = null;
 		PreparedStatement psStlmntUpd = null;
