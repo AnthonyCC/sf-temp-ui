@@ -5779,6 +5779,7 @@
 	<tag>
 		<name>RequiredParameterValidator</name>
 		<tagclass>com.freshdirect.webapp.taglib.validation.RequiredParameterValidatorTag</tagclass>
+		<bodycontent>EMPTY</bodycontent>
 		<info></info>
 		<attribute>
 			<name>parameters</name>
