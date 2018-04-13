@@ -147,7 +147,7 @@ public class QuickShopFilterService {
                     if (quantityCompare >= 0) {
                         maxQuantityBySkuCode.remove(lineItem.getSkuCode());
                         try {
-                            FilteringSortingItem<QuickShopLineItemWrapper> clonedItem = QuickShopHelper.createQuickShopFilteringItemWrapper(item.getNode().getProduct(), user);
+                            FilteringSortingItem<QuickShopLineItemWrapper> clonedItem = QuickShopHelper.copyQuickShopFilteringItemWrapper(item, user);
                             double quantityInCart = user.getShoppingCart().calculateAggregatedQuantityBySku(lineItem.getSkuCode());
                             clonedItem.getNode().getItem().getQuantity().setQuantity(Math.min(maxQuantity - quantityInCart, aggregatedQuantity));
                             filteredItems.add(clonedItem);

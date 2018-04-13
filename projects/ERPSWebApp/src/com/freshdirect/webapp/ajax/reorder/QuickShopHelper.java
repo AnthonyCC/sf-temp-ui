@@ -735,9 +735,29 @@ public class QuickShopHelper {
 		}
 	}
 
-    public static FilteringSortingItem<QuickShopLineItemWrapper> createQuickShopFilteringItemWrapper(ProductModel model, FDUserI user) throws FDResourceException {
-        QuickShopLineItem aggregatedLineItem = QuickShopHelper.createItemFromProduct(model, model.getSku(0), user, true);
-        QuickShopLineItemWrapper wrapper = new QuickShopLineItemWrapper(aggregatedLineItem, model);
+    public static FilteringSortingItem<QuickShopLineItemWrapper> copyQuickShopFilteringItemWrapper(FilteringSortingItem<QuickShopLineItemWrapper> originalItem, FDUserI user)
+            throws FDResourceException {
+        QuickShopLineItemWrapper node = originalItem.getNode();
+        ProductModel product = node.getProduct();
+
+        QuickShopLineItem item = QuickShopHelper.createItemFromProduct(product, product.getSku(0), user, true);
+        QuickShopLineItem lineItem = node.getItem();
+        item.setListId(lineItem.getListId());
+        item.setOriginalLineId(lineItem.getOriginalLineId());
+
+        QuickShopLineItemWrapper wrapper = new QuickShopLineItemWrapper(item, product);
+        wrapper.setDeliveryDate(node.getDeliveryDate());
+        wrapper.setInLastOrder(node.isInLastOrder());
+        wrapper.setOrderId(node.getOrderId());
+        wrapper.setCclId(node.getCclId());
+        wrapper.setListName(node.getListName());
+        wrapper.setRecipeName(node.getRecipeName());
+        wrapper.setStarterList(node.getStarterList());
+        wrapper.setRecipeId(node.getRecipeId());
+        wrapper.setUserScore(node.getUserScore());
+        wrapper.setOrderStatus(node.getOrderStatus());
+        wrapper.setRecipeAlive(node.isRecipeAlive());
+
         return new FilteringSortingItem<QuickShopLineItemWrapper>(wrapper);
     }
 
