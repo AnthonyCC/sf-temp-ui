@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -79,15 +78,19 @@ public class CarouselService {
 
         CarouselData carousel = null;
 
-            ContentKey newProductsCategoryContentKey = ContentKeyFactory.get(FDStoreProperties.getNewProductsCarouselSourceCategoryContentKey());
-            List<ProductModel> products = ((CategoryModel) ContentFactory.getInstance().getContentNodeByKey(newProductsCategoryContentKey)).getAllChildProductsAsList();
+        CategoryModel newProductsCategory = ((CategoryModel) ContentFactory.getInstance()
+                .getContentNodeByKey(ContentKeyFactory.get(FDStoreProperties.getNewProductsCarouselSourceCategoryContentKey())));
 
+        if (newProductsCategory != null) {
+            List<ProductModel> products = newProductsCategory.getAllChildProductsAsList();
             if (products != null && products.size() >= FDStoreProperties.getMinimumItemsCountInCarousel()) {
                 if (isRandomizeProductOrderEnabled) {
                     Collections.shuffle(products);
                 }
             carousel = createCarouselData(null, NEW_PRODUCTS_CAROUSEL_NAME, products, user, null, null);
             }
+
+        }
         return carousel;
     }
 }
