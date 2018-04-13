@@ -321,12 +321,14 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 																	 */
 								FDECommerceService.getInstance().sendSubmitOrderRequest(saleId,
 										(((ErpSaleModel) saleEB.getModel()).getCurrentOrder() != null
-												&& ((ErpSaleModel) saleEB.getModel()).getCurrentOrder()
-														.getPaymentMethod() != null)
-																? ((ErpSaleModel) saleEB.getModel())
-																		.getCurrentOrder().getPaymentMethod()
-																		.getReferencedOrder()
-																: null,
+										&& ((ErpSaleModel) saleEB.getModel()).getCurrentOrder()
+												.getPaymentMethod() != null && (EnumPaymentType.ADD_ON_ORDER.getName()
+												.equalsIgnoreCase(((ErpSaleModel) saleEB.getModel()).getCurrentOrder()
+														.getPaymentMethod().getPaymentType().getName())))
+														? ((ErpSaleModel) saleEB.getModel())
+																.getCurrentOrder().getPaymentMethod()
+																.getReferencedOrder()
+														: null,
 										saleEB.getCurrentOrder().getTip(),
 										saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId(),
 										saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getFirstName(),
@@ -352,7 +354,9 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 								erpRoutingGateway.sendSubmitOrderRequest(saleId,
 										(((ErpSaleModel) saleEB.getModel()).getCurrentOrder() != null
 												&& ((ErpSaleModel) saleEB.getModel()).getCurrentOrder()
-														.getPaymentMethod() != null)
+														.getPaymentMethod() != null && (EnumPaymentType.ADD_ON_ORDER.getName()
+														.equalsIgnoreCase(((ErpSaleModel) saleEB.getModel()).getCurrentOrder()
+																.getPaymentMethod().getPaymentType().getName())))
 																? ((ErpSaleModel) saleEB.getModel())
 																		.getCurrentOrder().getPaymentMethod()
 																		.getReferencedOrder()
