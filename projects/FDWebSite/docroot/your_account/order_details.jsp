@@ -9,6 +9,8 @@
 <%@ page import='com.freshdirect.common.pricing.EnumDiscountType' %>
 <%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
 <%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDCartModel" %>
+<%@ page import="com.freshdirect.fdstore.customer.FDModifyCartModel" %>
 
 <%@ page import="java.text.*" %>
 <%@ page import='java.util.List.*' %>
@@ -162,6 +164,7 @@ if(orderId==null){
 	    boolean hasModify = allowModifyOrder.booleanValue();
 	    boolean hasCancel = allowCancelOrder.booleanValue();
 	    boolean isViewingCurrentModifyOrder = orderId != null && orderId.equals(FDUserUtil.getModifyingOrderId(user));
+	    boolean isModifyOrder_order_details = (user.getShoppingCart() instanceof FDModifyCartModel);
 	%>
 	<table width="<%= W_YA_ORDER_DETAILS_TOTAL %>" align="center" border="0" cellpadding="0" cellspacing="0" style="margin-bottom: 10px;">
 		<tr>
@@ -208,11 +211,11 @@ if(orderId==null){
 		<% } %>
 		<% if(isViewingCurrentModifyOrder) {%><%-- MODIFY - CANCEL CHANGES BUTTON --%>
 			<button class="cssbutton medium orange transparent cancel-modify-order-btn" data-gtm-source="order-details" title="Click here to cancel changes"  onclick="location.href='/your_account/cancel_modify_order.jsp'">Cancel Changes</button>
-	   	<% } else if (hasModify && isViewingCurrentModifyOrder) { %><%-- MODIFY - MODIFY ORDER BUTTON --%>
+	   	<% } else if (!isModifyOrder_order_details && hasModify) { %><%-- MODIFY - MODIFY ORDER BUTTON --%>
 			<button class="cssbutton medium orange modify-order-btn" data-gtm-source="order-details" title="Click here to modify this order"  onclick="location.href='/your_account/modify_order.jsp?orderId=<%= orderId %>&action=modify'">Modify Order</button>
 		<% } %>
 		
-  		<%-- MODIFY - CANCEL ORDER BUTTON - this button is right aligned --%>
+  		<%-- CANCEL ORDER BUTTON - this button is right aligned --%>
   		<% if (hasCancel) { %>
 			<button class="cssbutton medium red transparent cancel-order-btn" title="Click here to cancel this order" onclick="location.href='/your_account/cancel_order.jsp?orderId=<%=orderId%>'">Cancel Order</button>
 		<% } %>
