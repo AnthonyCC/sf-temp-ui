@@ -464,16 +464,11 @@ public class CartOperations {
         }
 
         if (!unavailableCartLines.isEmpty()) {
-            LOG.debug("== The following SKUS are removed from cart due to dark store change ==");
-            LOG.debug("  Customer: " + fdUser.getIdentity());
-
             final String serverName = fdUser.getServerName();
             for (FDCartLineI cartLine : unavailableCartLines) {
                 CartOperations.removeCartLine(fdUser, cart, cartLine, serverName);
-                LOG.debug("  cartLine: " + cartLine.getCartlineId() + "; SKU: " + cartLine.getSkuCode());
+                LOG.debug("REMOVED cartLine: " + cartLine.getCartlineId() + "; SKU: " + cartLine.getSkuCode()+ "; Customer: " + fdUser.getIdentity());
             }
-        } else {
-            LOG.debug("  ... no cart item is removed.");
         }
         return unavailableCartLines;
     }
