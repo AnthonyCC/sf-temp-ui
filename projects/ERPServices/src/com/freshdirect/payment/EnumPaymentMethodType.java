@@ -6,6 +6,9 @@ import java.util.Map;
 
 import org.apache.commons.lang.enums.ValuedEnum;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 	
 public class EnumPaymentMethodType extends ValuedEnum {
 	public final static EnumPaymentMethodType CREDITCARD = new EnumPaymentMethodType("CC", "Credit Card", 0);
@@ -23,6 +26,7 @@ public class EnumPaymentMethodType extends ValuedEnum {
 		this.description = description;
 	}
 	
+	@JsonCreator
 	public static EnumPaymentMethodType getEnum(String code) {
 		return (EnumPaymentMethodType) getEnum(EnumPaymentMethodType.class, code);
 	}
@@ -49,6 +53,12 @@ public class EnumPaymentMethodType extends ValuedEnum {
 
 	public String toString() {
 		return this.description;		
+	}
+	
+	@JsonValue
+	public String getCode(){
+		return super.getName();
+		
 	}
 
 }

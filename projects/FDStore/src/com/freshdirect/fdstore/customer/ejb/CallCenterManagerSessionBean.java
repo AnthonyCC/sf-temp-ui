@@ -92,6 +92,8 @@ import com.freshdirect.deliverypass.EnumDlvPassExtendReason;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerSB;
+import com.freshdirect.ecomm.gateway.OrderResourceApiClient;
+import com.freshdirect.ecomm.gateway.OrderResourceApiClientI;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
@@ -938,7 +940,13 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 	public void resubmitOrder(String saleId, CustomerRatingI cra,EnumSaleType saleType) throws FDResourceException, ErpTransactionException {
         try {
             ErpCustomerManagerSB customerManagerSB = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
-            ErpSaleModel _order=customerManagerSB.getOrder(new PrimaryKey(saleId));
+            ErpSaleModel _order = null;
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("getOrder_Api")){
+	    		OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
+	    		_order =  service.getOrder(saleId);
+	    	}else{
+	    		_order=customerManagerSB.getOrder(new PrimaryKey(saleId));
+	    	}
             ErpAbstractOrderModel order =_order.getCurrentOrder();
             ErpDeliveryInfoModel dlvInfo=order.getDeliveryInfo();
             //@TODO Logistics ReIntegration Task - Need to determine if SAP is using the region send as part of Create/Change Sales Order. If not this logic will be removed. 
@@ -1833,7 +1841,13 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				try {
 					// Set it to actionInfo object to write to the activity log.
 					saleId = orderInfo.getSaleId();
-					ErpSaleModel saleModel = sb.getOrder(new PrimaryKey(saleId));
+					ErpSaleModel saleModel = null;
+					if(FDStoreProperties.isSF2_0_AndServiceEnabled("getOrder_Api")){
+			    		OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
+			    		saleModel =  service.getOrder(saleId);
+			    	}else{
+			    		saleModel = sb.getOrder(new PrimaryKey(saleId));
+			    	}
 					FDOrderI order = new FDOrderAdapter(saleModel);
 					ErpReturnOrderModel returnModel = getReturnModel(order);
 					// Process Full Return.
@@ -3262,7 +3276,13 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			if (saleId.indexOf("X") < 0) {
 				ErpCustomerManagerSB customerManagerSB = (ErpCustomerManagerSB) this.getErpCustomerManagerHome()
 						.create();
-				ErpSaleModel _order = customerManagerSB.getOrder(new PrimaryKey(saleId));
+				ErpSaleModel _order = null;
+				if(FDStoreProperties.isSF2_0_AndServiceEnabled("getOrder_Api")){
+		    		OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
+		    		_order =  service.getOrder(saleId);
+		    	}else{
+		    		_order = customerManagerSB.getOrder(new PrimaryKey(saleId));
+		    	}
 				if (_order == null)
 					return;
 				if (EnumSaleStatus.CANCELED.equals(_order.getStatus())) {
@@ -3359,7 +3379,13 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		Gateway gateway = (Gateway) GatewayFactory.getGateway(GatewayType.PAYMENTECH);
 		try {
 			ErpCustomerManagerSB customerManagerSB = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
-			ErpSaleModel _order = customerManagerSB.getOrder(new PrimaryKey(saleId));
+			ErpSaleModel _order = null;
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("getOrder_Api")){
+	    		OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
+	    		_order =  service.getOrder(saleId);
+	    	}else{
+	    		_order = customerManagerSB.getOrder(new PrimaryKey(saleId));
+	    	}
 			if (_order == null)
 				return;
 			if (EnumSaleStatus.PAYMENT_PENDING.equals(_order.getStatus())) {

@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.enums.Enum;
+
+import com.fasterxml.jackson.annotation.JsonValue;
  
 /**
  * 
