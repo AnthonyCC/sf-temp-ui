@@ -715,7 +715,7 @@ var dataLayer = window.dataLayer || [];
   fd.gtm.getListChannel = function (el, config) {
     var channel,
         urlPageType = fd.utils.getParameterByName('pageType'),
-        pageType = fd.gtm.data && fd.gtm.data.googleAnalyticsData && fd.gtm.data.googleAnalyticsData.pageType && fd.gtm.data.googleAnalyticsData.pageType.pageType,
+        pageType = fd.gtm.data && fd.gtm.data.googleAnalyticsData && fd.gtm.data.googleAnalyticsData.pageType && fd.gtm.data.googleAnalyticsData.pageType.pageType || 'unknown',
         isHookLogic = (el && $(el).hasClass('isHookLogicProduct')) || (config && config.product && config.product.clickBeacon),
         productData = fd.modules.common.productSerialize(el)[0];
 
@@ -745,7 +745,7 @@ var dataLayer = window.dataLayer || [];
     var urlPageType = fd.utils.getParameterByName('pageType'),
         productId = fd.utils.getParameterByName('productId'),
         searchParams = fd.utils.getParameterByName('searchParams'),
-        pageType = fd.gtm.data && fd.gtm.data.googleAnalyticsData && fd.gtm.data.googleAnalyticsData.pageType && fd.gtm.data.googleAnalyticsData.pageType.pageType,
+        pageType = fd.gtm.data && fd.gtm.data.googleAnalyticsData && fd.gtm.data.googleAnalyticsData.pageType && fd.gtm.data.googleAnalyticsData.pageType.pageType || 'unknown',
         location = urlPageType || pageType || '';
 
     if (window.location.pathname.indexOf('/pdp.jsp') > -1 && productId) {

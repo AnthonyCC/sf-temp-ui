@@ -1,0 +1,20 @@
+{namespace multisrch}
+/**
+ * @param? terms
+ */
+{template .searchInput autoescape="false"}
+<div class="multisearch-input" data-component="multisearch-input">
+  {if length($terms) < 10}
+  <form>
+    <label for="searchinput">search:</label>
+    <input id="searchinput" class="searchinput" type="text" placeholder="Search the store" data-component="autocomplete" autocomplete="off"/>
+    <button class="searchbutton" type="submit">Add</button>
+  </form>
+  {/if}
+  <ul>
+  {foreach $term in $terms}
+    <li data-searchterm="{$term}">{$term} <button class="remove">remove</button></li>
+  {/foreach}
+  </ul>
+</div>
+{/template}

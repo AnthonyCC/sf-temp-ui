@@ -109,19 +109,21 @@ var FreshDirect = FreshDirect || {};
 //          lastSitePage = sitePage;
 //        }
 
-        if (data.contentId) {
-          OAS_query = OAS_query.replace(/id=.*?&/, "id="+data.contentId+"&");
+        if (data.contentId && window.OAS_query) {
+          window.OAS_query = window.OAS_query.replace(/id=.*?&/, "id="+data.contentId+"&");
         }
         
-        if (data.url) {
+        if (data.url && window.OAS_query) {
         	 try {
-        		 OAS_query = OAS_query.replace(/searchParams=.*?&/, "searchParams=" + decodeURIComponent(data.url).match(/searchParams=([^&]+)&/)[1] + "&");
+        		 window.OAS_query = window.OAS_query.replace(/searchParams=.*?&/, "searchParams=" + decodeURIComponent(data.url).match(/searchParams=([^&]+)&/)[1] + "&");
         	 } catch (e) {
         		 
         	 }
         }
 
-        updateOAS(OAS_url, sitePage, OAS_rns, listPos, OAS_query);
+        if (window.OAS_url) {
+          updateOAS(window.OAS_url, sitePage, window.OAS_rns, listPos, window.OAS_query);
+        }
       }
     }
   }).listen();
