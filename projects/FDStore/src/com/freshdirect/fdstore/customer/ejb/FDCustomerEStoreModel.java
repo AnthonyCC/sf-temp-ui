@@ -1,6 +1,8 @@
 package com.freshdirect.fdstore.customer.ejb;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.fdstore.EnumEStoreId;
@@ -45,6 +47,8 @@ public class FDCustomerEStoreModel extends ModelSupport{
 	private String rafClickId;
     private String rafPromoCode;
     private Boolean dpFreeTrailOptin = false;
+
+    private Map<EnumEStoreId, Integer> informOrderModifyViewCount = new HashMap<EnumEStoreId, Integer>();
 	 
     public String getRafClickId() {
 		return rafClickId;
@@ -310,5 +314,31 @@ public class FDCustomerEStoreModel extends ModelSupport{
 
 	public void setDpFreeTrialOptin(Boolean dpFreeTrailOptin) {
 		this.dpFreeTrailOptin = dpFreeTrailOptin;
+	}
+
+	public int getInformOrderModifyViewCount(EnumEStoreId eStore, boolean increment) {
+
+		if (eStore == null) { /* default to current */
+			eStore = this.geteStoreId();
+		}
+		
+		int curVal = (this.informOrderModifyViewCount.containsKey(eStore)) ? this.informOrderModifyViewCount.get(eStore) : 0;
+		
+		if (increment) {
+			curVal++;
+		}
+		
+		this.setInformOrderModifyViewCount(eStore, curVal); //store always so unset values initialize and count (possibly first) view
+		
+		return curVal;
+	}
+
+	public void setInformOrderModifyViewCount(EnumEStoreId eStore, int informOrderModify) {
+
+		if (eStore == null) { /* default to current */
+			eStore = this.geteStoreId();
+		}
+		
+		this.informOrderModifyViewCount.put(eStore, informOrderModify);
 	}
 }

@@ -8803,4 +8803,16 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			close(conn);
 		}
 	}
+	
+	public void updateFDCustomerEStoreInfo(FDCustomerEStoreModel fdCustomerEStoreModel, String custId) throws FDResourceException {
+        try {
+            FDCustomerEB fdCustomerEB = this.getFdCustomerHome().findByPrimaryKey(new PrimaryKey(custId));
+            fdCustomerEB.setFDCustomerEStore(fdCustomerEStoreModel);
+        } catch (RemoteException ex) {
+            throw new FDResourceException(ex);
+        } catch (FinderException ex) {
+            throw new FDResourceException(ex);
+        }
+
+    }
 }

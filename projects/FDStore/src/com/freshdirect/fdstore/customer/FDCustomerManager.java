@@ -5552,4 +5552,20 @@ public class FDCustomerManager {
 				throw new FDResourceException(e, "Error creating session bean");
 			}
 		}
+		
+		public static void updateFDCustomerEStoreInfo(FDCustomerEStoreModel fdCustomerEStoreModel, String custId) throws FDResourceException {
+			lookupManagerHome();
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				sb.updateFDCustomerEStoreInfo(fdCustomerEStoreModel, custId);
+			}catch (RemoteException e) {
+				LOGGER.error("Error updating FDCustomerEStoreModel for custId:" + custId + " "+ e);
+				invalidateManagerHome();
+				throw new FDResourceException(e, "Error creating session bean");
+			} catch (CreateException e) {
+				LOGGER.error("Error updating FDCustomerEStoreModel for custId:" + custId + " "+ e);
+				invalidateManagerHome();
+				throw new FDResourceException(e, "Error creating session bean");
+			}
+		}
 }

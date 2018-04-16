@@ -230,11 +230,19 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		// redirect to success page if an action was successfully performed
 		// and a success page was defined
 		//
-		if (actionPerformed && results.isSuccess() && successPage!=null) {
+		if (actionPerformed && results.isSuccess() && successPage!=null && !"noSuccess".equals(successPage)) {
 			LOGGER.debug("Success, redirecting to: "+successPage);
 			HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
 			try {
 				response.sendRedirect(response.encodeRedirectURL(successPage));
+				JspWriter writer = pageContext.getOut();
+				writer.close();
+			} catch (IOException ioe) {
+				throw new JspException(ioe.getMessage());
+			}
+		}
+		if (actionPerformed && results.isSuccess() && "noSuccess".equals(successPage)) {
+			try {
 				JspWriter writer = pageContext.getOut();
 				writer.close();
 			} catch (IOException ioe) {
@@ -394,6 +402,8 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 
 			//set user as having seen the overlay and used it (in case of login step)
 			currentUser.setSuspendShowPendingOrderOverlay(true);
+			//set inform ordermodify flag
+			currentUser.setShowingInformOrderModify(true);
 		}catch (FDException ex) {
 			LOGGER.warn("Unable to create modify cart", ex);
 			throw new JspException(ex.getMessage());
@@ -422,6 +432,8 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
         
 		//reset user to see pendingOrder overlay again since they didn't check out
 		currentUser.setSuspendShowPendingOrderOverlay(false);
+		//clear inform ordermodify flag
+		currentUser.setShowingInformOrderModify(false);
 	}
 
 

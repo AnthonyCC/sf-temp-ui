@@ -266,6 +266,8 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				}
 				currentUser.setSuspendShowPendingOrderOverlay(false);
 				currentUser.setShowPendingOrderOverlay(true);
+				//clear inform ordermodify flag
+				currentUser.setShowingInformOrderModify(false);
 				
 				//prepare and store model for Coremetrics report
 				//   EXCEPT for make-good sessions!

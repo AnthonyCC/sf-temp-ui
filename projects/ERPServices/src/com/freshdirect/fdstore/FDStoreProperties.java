@@ -1045,14 +1045,16 @@ public class FDStoreProperties {
 	private static final String PROP_NEW_PRODUCTS_PAGE_CAROUSEL_ENABLED = "fdstore.newproductspage.carousel.enabled";
 	private static final String PROP_NEW_PRODUCTS_PAGE_CAROUSEL_CONTAINER_CONTENT_KEY = "fdstore.newproductspage.carousel.contentkey";
 
+	private static final String PROP_INFORM_ORDERMODIFY_ENABLED = "fdstore.inform.ordermodify.enabled";
+	private static final String PROP_INFORM_ORDERMODIFY_VIEWLIMIT = "fdstore.inform.ordermodify.viewCountLimit";
+	private static final String PROP_INFORM_ORDERMODIFY_MEDIAPATH = "fdstore.inform.ordermodify.mediaPath";
     public final static String PROP_IS_FDC_FIRST_ORDER_EMAIL_MSG_ENABLED = "fdstore.fdc.firstorderemailmsg.enabled";
-	
     private static final String PROP_NEW_PRODUCTS_CAROUSEL_SOURCE_CATEGORY_CONTENT_KEY = "fdstore.newproductscarousel.sourcecategory.contentkey";
     private static final String PROP_FRESH_DEALS_PAGE_NEW_PRODUCTS_CAROUSEL_ENABLED = "fdstore.freshdealspage.newproductscarousel.enabled";
     private static final String PROP_FRESH_DEALS_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED = "fdstore.freshdealspage.newproductscarousel.randomizeproductorder.enabled";
     private static final String PROP_REORDER_PAGE_NEW_PRODUCTS_CAROUSEL_ENABLED = "fdstore.reorderpage.newproductscarousel.enabled";
     private static final String PROP_REORDER_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED = "fdstore.reorderpage.newproductscarousel.randomizeproductorder.enabled";
-    static {
+ 	static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_INIT_CTX_FACTORY, "weblogic.jndi.WLInitialContextFactory");
         defaults.put(PROP_CRM_GEOCODELINK,
@@ -1681,7 +1683,8 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.standingorder3_0", "GLOBAL:ENABLED,false;");
         defaults.put("feature.rollout.browseaggregatedcategories1_0", "GLOBAL:ENABLED,false;");
         defaults.put("feature.rollout.debitCardSwitch", "GLOBAL:ENABLED,true;");
-
+        defaults.put("feature.rollout.modOrderConfirmPageRedesign", "GLOBAL:ENABLED,true;");
+        
         defaults.put(PROP_MEDIA_RENDER_UTILS_REALLY_CLOSE, "true");
         defaults.put(PROP_MEDIA_RENDER_UTILS_SOURCE_ENCODING, "ISO-8859-1");
 
@@ -2014,15 +2017,18 @@ public class FDStoreProperties {
 
 		defaults.put(PROP_IS_FDC_FIRST_ORDER_EMAIL_MSG_ENABLED, "false");
 		
-        defaults.put(PROP_NEW_PRODUCTS_PAGE_CAROUSEL_ENABLED, "true");
+		defaults.put(PROP_NEW_PRODUCTS_PAGE_CAROUSEL_ENABLED, "true");
         defaults.put(PROP_NEW_PRODUCTS_PAGE_CAROUSEL_CONTAINER_CONTENT_KEY, "ModuleContainer:new_prod");
-
+        
         defaults.put(PROP_NEW_PRODUCTS_CAROUSEL_SOURCE_CATEGORY_CONTENT_KEY, "Category:newproduct_demo");
         defaults.put(PROP_FRESH_DEALS_PAGE_NEW_PRODUCTS_CAROUSEL_ENABLED, "true");
         defaults.put(PROP_FRESH_DEALS_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED, "true");
         defaults.put(PROP_REORDER_PAGE_NEW_PRODUCTS_CAROUSEL_ENABLED, "true");
         defaults.put(PROP_REORDER_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED, "true");
-
+        defaults.put(PROP_INFORM_ORDERMODIFY_ENABLED, "false");
+        defaults.put(PROP_INFORM_ORDERMODIFY_MEDIAPATH, "");
+        defaults.put(PROP_INFORM_ORDERMODIFY_VIEWLIMIT, "5");
+		
         refresh();
     }
 
@@ -5107,14 +5113,13 @@ public class FDStoreProperties {
 		}
 	}
 	
-	
-	  public static String getNewProductsPageCarouselContainerContentKey() {
-          return get(PROP_NEW_PRODUCTS_PAGE_CAROUSEL_CONTAINER_CONTENT_KEY);
-      }
+	public static String getNewProductsPageCarouselContainerContentKey() {
+		return get(PROP_NEW_PRODUCTS_PAGE_CAROUSEL_CONTAINER_CONTENT_KEY);
+	}
 
-      public static boolean isNewProductsPageCarouselEnabled() {
-          return (Boolean.valueOf(get(PROP_NEW_PRODUCTS_PAGE_CAROUSEL_ENABLED))).booleanValue();
-      }
+	public static boolean isNewProductsPageCarouselEnabled() {
+		return (Boolean.valueOf(get(PROP_NEW_PRODUCTS_PAGE_CAROUSEL_ENABLED))).booleanValue();
+	}
 
     public static boolean isFreshDealsPageNewProductsCarouselEnabled() {
         return (Boolean.valueOf(get(PROP_FRESH_DEALS_PAGE_NEW_PRODUCTS_CAROUSEL_ENABLED))).booleanValue();
@@ -5135,5 +5140,14 @@ public class FDStoreProperties {
     public static boolean isReorderPageNewProductsCarouselRandomizeProductOrderEnabled() {
         return (Boolean.valueOf(get(PROP_REORDER_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED))).booleanValue();
     }
-
+    
+	public static boolean isInformOrderModifyEnabled() {
+		return (Boolean.valueOf(get(PROP_INFORM_ORDERMODIFY_ENABLED))).booleanValue();
+	}
+	public static int getInformOrderModifyViewCountLimit() {
+		return Integer.parseInt(get(PROP_INFORM_ORDERMODIFY_VIEWLIMIT));
+	}
+	public static String getInformOrderModifyMediaPath() {
+		return get(PROP_INFORM_ORDERMODIFY_MEDIAPATH);
+	}
 }

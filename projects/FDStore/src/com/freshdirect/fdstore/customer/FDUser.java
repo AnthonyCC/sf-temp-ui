@@ -323,7 +323,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     private boolean refreshNewSoFeature = true;
 
     private boolean soFeatureOverlay = false;
-
+    
     private Collection<FDStandingOrder> activeSO3s = new ArrayList<FDStandingOrder>();
 
 	public Date getTcAcknowledgeDate() {
@@ -2419,7 +2419,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 
                 userContext.setFdIdentity(getIdentity()); // TODO maybe FDIdentity should be removed from FDUser
                 userContext.setCustSapId(getCustSapId()); // Avalara needs customer's SAP Id.
-
+                
                 if (this.getAddress() != null && this.getAddress().isCustomerAnonymousAddress()) {
                     address = new ErpAddressModel(this.getAddress());
                 } else if (identity != null) {
@@ -2428,7 +2428,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 					} catch (Exception e) {
 						LOGGER.error("ERROR-USERCONTEXT-1: Exception while populating usercontext for user:"+getIdentity(), e);
 					}
-                }
+                } 
                 if (null == address && this.getAddress() != null) {
                     address = new ErpAddressModel(this.getAddress());
                 }
@@ -2464,7 +2464,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 					} catch (Exception e) {
 						LOGGER.error("ERROR-USERCONTEXT-3: Exception while populating usercontext for user:"+getIdentity(), e);
 					}
-                }
+                } 
 				if (null == address && this.getAddress() != null) {
                     address = new ErpAddressModel(this.getAddress());
                 }
@@ -2564,8 +2564,8 @@ public class FDUser extends ModelSupport implements FDUserI {
 		}
 
 		// Weekly or One time reservation has higher precedence than Standard reservation
-		if (address!=null && null != weeklyOrOneTimeReservationDeliveryDate && null != weeklyOrOneTimeReservationAddress && this.getReservation() != null
-				&& this.getReservation().getAddressId()!=null
+		if (address!=null && null != weeklyOrOneTimeReservationDeliveryDate && null != weeklyOrOneTimeReservationAddress && this.getReservation() != null 
+				&& this.getReservation().getAddressId()!=null 
 				&& this.getReservation().getAddressId().equalsIgnoreCase(address.getId())) {
 			try {
 				return FDDeliveryManager.getInstance().getZoneInfo(
@@ -3991,7 +3991,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 
         return dateFmtDisplay.format(dpFreeTrialOptinStDate);
     }
-
+	
 	@Override
 	public boolean isDPFreeTrialOptInEligible(){
 		return FDStoreProperties.isDlvPassFreeTrialOptinFeatureEnabled() && !this.getDpFreeTrialOptin() && (null == this.getDlvPassInfo() || !this.getDlvPassInfo().isFreeTrialRestricted());
@@ -4003,13 +4003,33 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 
 	@Override
-    public Collection<FDStandingOrder> getActiveSO3s() {
+	public Collection<FDStandingOrder> getActiveSO3s() {
 		return activeSO3s;
 	}
 
 	@Override
-    public void setActiveSO3s(Collection<FDStandingOrder> activeSO3s) {
+	public void setActiveSO3s(Collection<FDStandingOrder> activeSO3s) {
 		this.activeSO3s = activeSO3s;
 	}
 
+
+	public int getInformOrderModifyViewCount() { /* current estore, auto increment */
+		return getInformOrderModifyViewCount(null, true);
+	}
+	public int getInformOrderModifyViewCount(EnumEStoreId eStore) { /* auto increment */
+		return getInformOrderModifyViewCount(eStore, true);
+	}
+	public int getInformOrderModifyViewCount(EnumEStoreId eStore, boolean increment) {
+		if (this.cachedFDCustomer != null && this.cachedFDCustomer.getCustomerEStoreModel() != null) {
+			return this.cachedFDCustomer.getCustomerEStoreModel().getInformOrderModifyViewCount(eStore, increment);
+		} else {
+			return -1;
+		}
+	}
+
+	public void setInformOrderModifyViewCount(EnumEStoreId eStore, int informOrderModify) {
+		if (this.cachedFDCustomer != null && this.cachedFDCustomer.getCustomerEStoreModel() != null) {
+			this.cachedFDCustomer.getCustomerEStoreModel().setInformOrderModifyViewCount(eStore, informOrderModify);
+		}
+	}
 }

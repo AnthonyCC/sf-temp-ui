@@ -358,7 +358,7 @@
 		<servlet-name>LoginServlet</servlet-name>
 		<url-pattern>/api/login/*</url-pattern>
 	</servlet-mapping>
-
+	
 	<servlet>
 	   <servlet-name>OAuth2Authorization</servlet-name>
 	   <jsp-file>/oauth/auth.jsp</jsp-file>
@@ -654,6 +654,15 @@
 	<servlet-mapping>
 		<servlet-name>CarouselServlet</servlet-name>
 		<url-pattern>/api/carousel</url-pattern>
+	</servlet-mapping>
+	
+  	<servlet>
+		<servlet-name>InformationalServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.ajax.informational.InformationalServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>InformationalServlet</servlet-name>
+		<url-pattern>/api/informational</url-pattern>
 	</servlet-mapping>
 	
 	<servlet>

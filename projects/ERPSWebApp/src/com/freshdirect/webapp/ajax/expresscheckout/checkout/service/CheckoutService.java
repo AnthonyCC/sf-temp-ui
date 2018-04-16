@@ -143,6 +143,7 @@ public class CheckoutService {
 	}
 
 	public FormDataResponse submitOrder(final FDUserI user, FormDataRequest requestData, final HttpSession session, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		FDSessionUser sessionUser = (FDSessionUser) user;
 		FormDataResponse responseData = createResponseData(requestData);
 		String actionName = FormDataService.defaultService().get(requestData, "action");
 		String deviceId = FormDataService.defaultService().get(requestData, "ppDeviceId");
@@ -201,6 +202,8 @@ public class CheckoutService {
     				}
 					user.setSuspendShowPendingOrderOverlay(false);
 					user.setShowPendingOrderOverlay(true);
+					//clear inform ordermodify flag
+					sessionUser.setShowingInformOrderModify(false);
 					// prepare and store model for Coremetrics report
 					//   EXCEPT for make-good sessions!
 					if ( masqueradeMakeGoodOrderId == null ) {

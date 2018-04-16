@@ -272,6 +272,48 @@ var FreshDirect = FreshDirect || {};
     return o;
   };
 
+  /**
+   * Similar to discover(), checks for existence of nested Object attribute
+   * except: 
+   *   uses hasOwnProperty to verify
+   *   returns a boolean instead of object|null
+   * 
+   * @param {string} propertyPath - Path to check for existence of
+   * @param {string} [obj=window] - Object to search within
+   * 
+   * @return {boolean} checkObj contains propertyPath
+   * 
+   * @example
+      FreshDirect.utils.hasOwnNestedProperty('utils', FreshDirect);
+      //returns true
+
+      FreshDirect.utils.hasOwnNestedProperty('FreshDirect.utils');
+      //returns true, defaults to window
+
+      FreshDirect.utils.hasOwnNestedProperty('FreshDirect.utils', FreshDirect);
+      //returns false (expects FreshDirect.FreshDirect.utils)
+   */
+  utils.hasOwnNestedProperty = function(propertyPath, obj){
+    if (!propertyPath)
+        return false;
+    
+    var obj = obj || window;
+
+    var properties = propertyPath.split('.');
+
+    for (var i = 0; i < properties.length; i++) {
+      var prop = properties[i];
+
+      if (!obj || !obj.hasOwnProperty(prop)){
+        return false;
+      } else {
+          obj = obj[prop];
+      }
+    }
+
+    return true;
+  };
+
   //hash generate
   utils.createHash = function (string) {
     var hash = 0,
@@ -360,6 +402,7 @@ var FreshDirect = FreshDirect || {};
 
   // meaningful keyCode mappings
   utils.keyCode = {
+	TAB: 9,
     ENTER: 13,
     SPACE: 32,
     ESC: 27,

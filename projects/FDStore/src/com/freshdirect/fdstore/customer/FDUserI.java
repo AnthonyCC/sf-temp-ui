@@ -776,4 +776,10 @@ public interface FDUserI extends java.io.Serializable {
     public Collection<FDStandingOrder> getActiveSO3s();
 
 	public void setActiveSO3s(Collection<FDStandingOrder> sos);
+
+	public void setInformOrderModifyViewCount(EnumEStoreId eStore, int newValue);
+	public int getInformOrderModifyViewCount();
+	public int getInformOrderModifyViewCount(EnumEStoreId eStore);
+	public int getInformOrderModifyViewCount(EnumEStoreId eStore, boolean increment);
+
 }

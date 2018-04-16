@@ -1008,6 +1008,12 @@
         <div class="pageDesc">Helps to test Google Analytics.</div>
     </div>
 
+    <div class="tag informational ordermodify">
+        <div class="pageName"><span>Informational: Order Modify</span></div>
+        <div class="link"><a href="/test/google_analytics/index.jsp">/test/inform/ordermodify.jsp</a></div>
+        <div class="pageDesc">Informational: Order Modify data and functionality.</div>
+    </div>
+
 	<hr />
 </div>
 
