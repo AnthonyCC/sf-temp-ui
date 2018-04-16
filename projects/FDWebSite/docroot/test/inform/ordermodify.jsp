@@ -71,7 +71,7 @@
 		<div id="toptoolbar">
 			<% if (isModifyOrder_ordermodify && modifyingOrder_ordermodify != null) { %>
 				<div id="locationbar">
-					<%@ include file="/common/template/includes/i_modifyorderbar.jspf" %>
+					<%@ include file="/shared/template/includes/i_modifyorderbar.jspf" %>
 				</div>
 			<% } %>
 			<%-- MASQUERADE bar --%>
