@@ -333,7 +333,15 @@ public class FeedPublishService {
         return entityToDomainConverter.convert(repository.findAll());
     }
 
-    public ContentType[] getTypestoPublish() {
-        return typesToPublish;
+    public boolean isFeedRelatedChange(String type) {
+        boolean feedRelatedChange = false;
+
+        for (ContentType contentType : typesToPublish) {
+            if (contentType.toString().equalsIgnoreCase(type)) {
+                feedRelatedChange = true;
+            }
+        }
+
+        return feedRelatedChange;
     }
 }
