@@ -70,6 +70,16 @@ public abstract class AbstractEcommService {
 		restTemplate.setRequestFactory(requestFactory);
 
 	}
+	
+
+	protected <T> T parseResponse(Response<T> info) throws FDResourceException {
+		if(info!=null && info.getResponseCode().equalsIgnoreCase("OK")){
+			return info.getData();
+		}else{
+			throw new FDResourceException("API error");
+		}
+	}
+	
 
 	public <T> T postData(String inputJson, String url, Class<T> clazz) throws FDResourceException {
 
