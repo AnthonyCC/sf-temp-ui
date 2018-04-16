@@ -447,7 +447,7 @@ public class CartOperations {
         return maximumQuantity;
     }
 
-    public static List<FDCartLineI> removeUnavailableCartLines(final FDCartModel cart, final FDUserI fdUser, final String serverName) {
+    public static List<FDCartLineI> removeUnavailableCartLines(final FDCartModel cart, final FDUserI fdUser) {
         final ZoneInfo zoneInfo = fdUser.getUserContext().getPricingContext().getZoneInfo();
 
         final List<FDCartLineI> unavailableCartLines = new ArrayList<FDCartLineI>();
@@ -463,6 +463,7 @@ public class CartOperations {
             }
         }
 
+        final String serverName = fdUser.getServerName();
         for (FDCartLineI cartLine : unavailableCartLines) {
             CartOperations.removeCartLine(fdUser, cart, cartLine, serverName);
         }

@@ -1006,12 +1006,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
     private static void reconcileCartLinesAfterDarkStoreSwitch(FDCartModel cart, FDUserI user) {
         LOGGER.debug("Performing reconcileCartLinesAfterDarkStoreSwitch .. ");
 
-        String serverName = "www.freshdirect.com";
-        if (user instanceof FDSessionUser) {
-            serverName = ((FDSessionUser) user).getServerName();
-        }
-
-        List<FDCartLineI> removedCartLines = CartOperations.removeUnavailableCartLines(cart, user, serverName);
+        List<FDCartLineI> removedCartLines = CartOperations.removeUnavailableCartLines(cart, user);
 
         if (removedCartLines != null && !removedCartLines.isEmpty()) {
             LOGGER.debug("== The following SKUS are removed from cart due to dark store change ==");

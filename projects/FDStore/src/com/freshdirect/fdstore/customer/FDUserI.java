@@ -645,6 +645,10 @@ public interface FDUserI extends java.io.Serializable {
 
     public void setAnyNewOrder(boolean anyNewOrder);
 
+    public String getClientIp();
+
+    public String getServerName();
+
     public boolean hasJustLoggedIn();
 
     public boolean hasJustLoggedIn(boolean clear);
@@ -763,13 +767,13 @@ public interface FDUserI extends java.io.Serializable {
     public String getDpFreeTrialOptinStDate() throws FDResourceException;
 
     public void updateDpFreeTrialOptin(boolean dpFreeTrialOptin);
-    
-    
+
+
     public boolean isDPFreeTrialOptInEligible();
-    
+
     public boolean applyFreeTrailOptinBasedDP();
 
     public Collection<FDStandingOrder> getActiveSO3s();
-    
+
 	public void setActiveSO3s(Collection<FDStandingOrder> sos);
 }

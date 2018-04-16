@@ -2003,6 +2003,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
     }
 
+    @Override
     public String getClientIp() {
         return this.user.getClientIp();
     }
@@ -2011,6 +2012,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
         this.user.setClientIp(clientIp);
     }
 
+    @Override
     public String getServerName() {
         return this.user.getServerName();
     }
@@ -2280,7 +2282,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
         this.user.setRefreshSO3(isRefreshSO3);
 
     }
-    
+
     @Override
     public Collection<FDStandingOrder> getActiveSO3s() {
         return user.getActiveSO3s();
@@ -2461,14 +2463,15 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public void updateDpFreeTrialOptin(boolean dpFreeTrialOptin) {
 		this.user.updateDpFreeTrialOptin(dpFreeTrialOptin);
 	}
-	
+
 	@Override
 	public boolean isDPFreeTrialOptInEligible()
 	{
 		return this.user.isDPFreeTrialOptInEligible();
 	}
-	
-	public boolean applyFreeTrailOptinBasedDP() {
+
+	@Override
+    public boolean applyFreeTrailOptinBasedDP() {
 		return this.user.applyFreeTrailOptinBasedDP();
 	}
 }
