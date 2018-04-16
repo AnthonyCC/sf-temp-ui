@@ -7,13 +7,17 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.common.context.MasqueradeContext;
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.event.EventLogger;
 import com.freshdirect.event.FDAddToCartEvent;
 import com.freshdirect.event.FDCartLineEvent;
 import com.freshdirect.event.FDEditCartEvent;
 import com.freshdirect.event.FDRemoveCartEvent;
+import com.freshdirect.fdstore.FDCachedFactory;
+import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDProduct;
+import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.coremetrics.builder.AbstractShopTagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
@@ -443,5 +447,27 @@ public class CartOperations {
         return maximumQuantity;
     }
 
+    public static List<FDCartLineI> removeUnavailableCartLines(final FDCartModel cart, final FDUserI fdUser, final String serverName) {
+        final ZoneInfo zoneInfo = fdUser.getUserContext().getPricingContext().getZoneInfo();
+
+        final List<FDCartLineI> unavailableCartLines = new ArrayList<FDCartLineI>();
+        for (FDCartLineI cartLine : cart.getOrderLines()) {
+            try {
+                FDProductInfo productInfo = FDCachedFactory.getProductInfo(cartLine.getSkuCode());
+                if (!productInfo.isAvailable(zoneInfo.getSalesOrg(), zoneInfo.getDistributionChanel())) {
+                    unavailableCartLines.add(cartLine);
+                }
+            } catch (FDException e) {
+                LOG.error("Error raised while looking up fdProductInfo for cart line with SKU " + cartLine.getSkuCode(), e);
+                unavailableCartLines.add(cartLine);
+            }
+        }
+
+        for (FDCartLineI cartLine : unavailableCartLines) {
+            CartOperations.removeCartLine(fdUser, cart, cartLine, serverName);
+        }
+
+        return unavailableCartLines;
+    }
 
 }
