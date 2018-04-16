@@ -100,10 +100,10 @@ public class FDEcommProperties {
 	public static final String SaleCronSB="payment.ejb.SaleCronSB";
 	public static final String ErpInfoSB_WarmUp="erp.ejb.ErpInfoSB_WarmUp";
 	public static final String FDFactorySB_WarmUp ="fdstore.ejb.FDFactorySB_WarmUp";
-	private static final String PROP_ECOM_SERVICE_CONNECTION_TIMEOUT = "fdstore.ecom.service.conn.timeout";
-	private static final String PROP_ECOM_SERVICE_CONNECTION_POOL = "fdstore.ecom.service.conn.pool";
-	private static final String PROP_ECOM_SERVICE_CONN_READ_TIMEOUT = "fdstore.ecom.service.conn.read.timeout";
-	private static final String PROP_ECOM_SERVICE_CONNECTION_REQUEST_TIMEOUT = "fdstore.ecom.service.conn.request.timeout";
+	private static final String PROP_ECOM_SERVICE_CONNECTION_TIMEOUT = "ecom.service.conn.timeout";
+	private static final String PROP_ECOM_SERVICE_CONNECTION_POOL = "ecom.service.conn.pool";
+	private static final String PROP_ECOM_SERVICE_CONN_READ_TIMEOUT = "ecom.service.conn.read.timeout";
+	private static final String PROP_ECOM_SERVICE_CONNECTION_REQUEST_TIMEOUT = "ecom.service.conn.request.timeout";
 	public static final String FDFactorySB_WarmUp_BULKSKU ="fdstore.ejb.FDFactorySB_WarmUp_BulkSkus";
 	public final static String PROP_JCO_CLIENT_LISTENER_COOL_INFO_ENABLED = "jco.client.listeners.coolinfo.enabled";
 	public final static String PROP_JCO_CLIENT_LISTENER_PRODUCT_PROMOTION_ENABLED = "jco.client.listeners.productPromotion.enabled";
