@@ -999,25 +999,9 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 
 		// currently, dark store switch is expected only in FoodKick store
 		if (EnumEStoreId.FDX == CmsManager.getInstance().getEStoreEnum()) {
-		    DeliveryAddressManipulator.reconcileCartLinesAfterDarkStoreSwitch(cart, user);
+		    CartOperations.removeUnavailableCartLines(cart, user);
 		}
 	}
-
-    private static void reconcileCartLinesAfterDarkStoreSwitch(FDCartModel cart, FDUserI user) {
-        LOGGER.debug("Performing reconcileCartLinesAfterDarkStoreSwitch .. ");
-
-        List<FDCartLineI> removedCartLines = CartOperations.removeUnavailableCartLines(cart, user);
-
-        if (removedCartLines != null && !removedCartLines.isEmpty()) {
-            LOGGER.debug("== The following SKUS are removed from cart due to dark store change ==");
-            LOGGER.debug("  Customer=" + user.getIdentity());
-            for (final FDCartLineI removedCartLine : removedCartLines) {
-                LOGGER.debug("cartLine#=" + removedCartLine.getCartlineId() + "; SKU code=" + removedCartLine.getSkuCode());
-            }
-        } else {
-            LOGGER.debug("  No cart item is removed.");
-        }
-    }
 
 	private static void setDeliveryAddressInternal(FDUserI user, HttpSession session, final FDCartModel cart, ErpAddressModel address, FDDeliveryZoneInfo zoneInfo, boolean setServiceType)
 			throws FDResourceException {
