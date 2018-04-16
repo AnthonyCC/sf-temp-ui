@@ -55,6 +55,7 @@ import com.freshdirect.customer.ErpPaymentMethodException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.ewallet.EnumUserInfoName;
@@ -270,6 +271,16 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 				LOGGER.error("Exception While calling Checkout Masterpass Service"+exception.getMessage());
 				logMPEwalletRequestResponse(data,ewalletRequestData,MASTERPASS_CHECKOUT_TXN,MASTERPASS_TXN_FAIL);
 				eWalletValidationErrors.add(new ValidationError("Cannot Connect", "Error while calling Checkout Service."));
+				ValidationResult result = new ValidationResult();
+				result.setErrors(eWalletValidationErrors);
+				ewalletResponseData.setValidationResult(result);
+			}catch(JAXBException exception){
+				LOGGER.error("Exception While Parsing the Checkout Payload from Masterpass Service"+exception.getMessage());
+				logMPEwalletRequestResponse(data,ewalletRequestData,MASTERPASS_CHECKOUT_TXN,MASTERPASS_TXN_FAIL);
+				eWalletValidationErrors.add(new ValidationError(FDStoreProperties.getMasterpassExcMessage(), "Please choose a different wallet."));
+				ValidationResult result = new ValidationResult();
+				result.setErrors(eWalletValidationErrors);
+				ewalletResponseData.setValidationResult(result);
 			}
 			
 			if(eWalletValidationErrors.isEmpty()){
