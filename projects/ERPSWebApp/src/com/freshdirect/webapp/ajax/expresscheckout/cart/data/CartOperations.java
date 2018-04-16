@@ -32,6 +32,7 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.content.CategoryModel;
 import com.freshdirect.storeapi.content.DepartmentModel;
 import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.ajax.ICoremetricsResponse;
@@ -394,9 +395,10 @@ public class CartOperations {
                 if (departmentModel != null) {
                     event.setDepartment(departmentModel.getContentKey().id);
                 }
-            }
-            event.setCategoryId(cartLine.getCategoryName());
-            if (productModel != null) {
+                CategoryModel categoryModel = productModel.getCategory();
+                if (categoryModel != null) {
+                    event.setCategoryId(categoryModel.getContentKey().id);
+                }
                 event.setProductId(productModel.getContentKey().id);
             }
             event.setSkuCode(cartLine.getSkuCode());
@@ -440,5 +442,6 @@ public class CartOperations {
         }
         return maximumQuantity;
     }
+
 
 }
