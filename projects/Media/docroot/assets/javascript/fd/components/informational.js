@@ -5,12 +5,6 @@ var FreshDirect = FreshDirect || {};
 	"use strict";
 	var $ = fd.libs.$;
 
-	function devLog() { /* log helper */
-		if (fd.utils.isDeveloper()) {
-			console.log.apply( this, arguments );
-		}
-	}
-
 	function pushToDataLayer(dataObj) {
 		if (fd.utils.hasOwnNestedProperty('dataLayer')) {
 			dataLayer.push(dataObj);
@@ -109,13 +103,13 @@ var FreshDirect = FreshDirect || {};
 			}
 		},
 		init: {
-			value: function() {
-				if ( (this.isEnabled() && this.shouldFire()) || this.isTesting()) {
+			value: function(force, forceListeners) {
+				if ( (this.isEnabled() && this.shouldFire()) || this.isTesting() || forceListeners) {
 					this.addEventListeners();
 				}
-				if (this.isEnabled() && this.shouldFire()) {
+				if ((this.isEnabled() && this.shouldFire()) || force)  {
 					if (this.isTesting()) { /* don't fire on test page */
-						devLog( this.KEY, 'Test Page, ignoring fire call' );
+						if (fd.utils.isDeveloper()) { console.log( this.KEY, 'Test Page, ignoring fire call' ); }
 					} else {
 						this.fire();
 					}
@@ -137,13 +131,13 @@ var FreshDirect = FreshDirect || {};
 					var dataObj = JSON.parse($(e.target).attr('data-gtm-click'));
 					pushToDataLayer(dataObj);
 				} catch (ex) {
-					devLog(ex);
+					if (fd.utils.isDeveloper()) { console.log(ex); }
 				}
 			}
 		},
 		addEventListeners: {
 			value: function() {
-				devLog( this.KEY, 'adding event listeners' );
+				if (fd.utils.isDeveloper()) { console.log( this.KEY, 'adding event listeners' ); }
 				/* bind "don't show again" checkbox to maximize */
 				$(document).on('click', '#'+this.popupId+' [data-inform-fn-maximize]', this.maximize.bind(this));
 				$(document).on('click', '#'+this.popupId+' .close', this.close.bind(this));
@@ -155,15 +149,21 @@ var FreshDirect = FreshDirect || {};
 		},
 		conditionalNavigate: { /* navigate unless already at URI */
 			value: function(e) {
-				var checkUri = $(e).attr('data-conditional-navigate-uri') || $(e).attr('href') || '';
-				if (checkUri != '' && window.top.location.toString().indexOf('checkUri') == -1) {
+				var checkUriData = $(e.currentTarget).attr('data-conditional-navigate-uri'),
+				useCheckUriData = (checkUriData !== '' && checkUriData != null),
+				checkUri = (useCheckUriData) ? checkUriData : $(e.currentTarget).attr('href') || '';
+
+				if (window.top.location.toString().indexOf(checkUri) === -1) {
 					window.top.location = checkUri;
+				} else {
+					e.preventDefault();
+					return;
 				}
 			}
 		},
 		fire: {
 			value: function() {
-				devLog( this.KEY, 'fire call' );
+				if (fd.utils.isDeveloper()) { console.log( this.KEY, 'fire call' ); }
 
 				$.get(this.APIPATH, this.PAYLOADS.DEFAULT, this.handlerGetSuccess.bind(this)).fail(this.handlerGetError.bind(this));
 			}
@@ -185,7 +185,7 @@ var FreshDirect = FreshDirect || {};
 		},
 		open: {
 			value: function(data) {
-				devLog( this.KEY, 'fire call open', data );
+				if (fd.utils.isDeveloper()) { console.log( this.KEY, 'fire call open', data ); }
 
 				if (!data || !data.media) { return; }
 
@@ -204,25 +204,25 @@ var FreshDirect = FreshDirect || {};
 		handlerGetSuccess: {
 			value: function(resp) {
 				if (resp.success && resp.media !== '' && resp.viewCount <= resp.viewCountLimit) {
-					devLog( this.KEY, 'GET call success', resp );
+					if (fd.utils.isDeveloper()) { console.log( this.KEY, 'GET call success', resp ); }
 
 					this.open(resp);
 				} else {
-					devLog( this.KEY, 'GET call fail', resp );
+					if (fd.utils.isDeveloper()) { console.log( this.KEY, 'GET call fail', resp ); }
 				}
 			},
 			writable: true /* true so we can proxy in test page */
 		},
 		handlerGetError: {
 			value: function(resp) {
-				devLog( this.KEY, 'GET call error', err );
+				if (fd.utils.isDeveloper()) { console.log( this.KEY, 'GET call error', err ); }
 			},
 			writable: true /* true so we can proxy in test page */
 		},
 		handlerPostSuccess: {
 			value: function(resp) {
 				if (resp.success) {
-					devLog( this.KEY, 'POST call success', resp );
+					if (fd.utils.isDeveloper()) { console.log( this.KEY, 'POST call success', resp ); }
 
 					/* post-POST */
 					if (resp.action === this.ACTIONS.MAX) {
@@ -230,14 +230,14 @@ var FreshDirect = FreshDirect || {};
 						setTimeout((function() { this.close()}).bind(this), 500);
 					}
 				} else {
-					devLog( this.KEY, 'POST call fail', resp );
+					if (fd.utils.isDeveloper()) { console.log( this.KEY, 'POST call fail', resp ); }
 				}
 			},
 			writable: true /* true so we can proxy in test page */
 		},
 		handlerPostError: {
 			value: function(resp) {
-				devLog( this.KEY, 'POST call error', err );
+				if (fd.utils.isDeveloper()) { console.log( this.KEY, 'POST call error', err ); }
 			},
 			writable: true /* true so we can proxy in test page */
 		}

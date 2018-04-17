@@ -7,7 +7,7 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.FDSessionUser" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.*" %>
-
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <fd:CheckLoginStatus id="user" />
@@ -32,14 +32,15 @@
 		<fd:SEOMetaTag pageId="" includeSiteSearchLink="false" title="Informational: Order Modify"></fd:SEOMetaTag>
 	</tmpl:put>
 	<tmpl:put name='extraCss'>
-		<link rel="stylesheet" type="text/css" media="all" href="/assets/css/test/inform/ordermodify.css" />
+		<jwr:style src="/assets/css/test/inform/ordermodify.css" media="all" />
 	</tmpl:put>
 	<tmpl:put name='jsmodules'>
 		<%-- required for login --%>
 		<%@ include file="/common/template/includes/i_jsmodules_optimized.jspf" %>
 	</tmpl:put>
 	<tmpl:put name='extraJs'>
-		<script src="/assets/javascript/test/inform/ordermodify.js"></script>
+	
+		<jwr:script src="/assets/javascript/test/inform/ordermodify.js" useRandomParam="false" />
 		<script>
 			(function(fd) {
 				"use strict";
@@ -160,17 +161,18 @@
 			</div>
 			<div class="col col50p"><%-- NOTES ON SECTION --%>
 				Payload Templates:
+				<div class="rightActions">ctrl+leftClick to set and GET/POST payload</div> 
 				<div class="horizSep"></div>
 				
-				<button id="apiPayloadRefresh" class="cssbutton small green transparent" data-template="DEFAULT">default</button>: proper payload for a GET<br />
+				<button id="" class="cssbutton small green transparent apiPayloadTemplate" data-template="DEFAULT" data-template-method="GET">default</button>: proper payload for a GET<br />
 				<br />
-				<button id="" class="cssbutton small green apiPayloadTemplate" data-template="MIN">minimize</button>: set viewCount to 0, POST&nbsp;only<br />
+				<button id="" class="cssbutton small green apiPayloadTemplate" data-template="MIN" data-template-method="POST">minimize</button>: set viewCount to 0, POST&nbsp;only<br />
 				<br />
-				<button id="" class="cssbutton small green apiPayloadTemplate" data-template="MAX">maximize</button>: set viewCount to viewCountLimit, POST&nbsp;only<br />
+				<button id="" class="cssbutton small green apiPayloadTemplate" data-template="MAX" data-template-method="POST">maximize</button>: set viewCount to viewCountLimit, POST&nbsp;only<br />
 				<br />
-				<button id="" class="cssbutton small green apiPayloadTemplate" data-template="SEEN">seen</button>: set seen value, POST&nbsp;only
-					<button id="" class="cssbutton small green apiPayloadTemplate w75px" data-template="SEEN_TRUE">true</button>
-					<button id="" class="cssbutton small green apiPayloadTemplate w75px" data-template="SEEN_FALSE"><strong>false</strong></button>
+				<button id="" class="cssbutton small green apiPayloadTemplate" data-template="SEEN" data-template-method="POST">seen</button>: set seen value, POST&nbsp;only
+					<button id="" class="cssbutton small green apiPayloadTemplate w75px" data-template="SEEN_TRUE" data-template-method="POST">true</button>
+					<button id="" class="cssbutton small green apiPayloadTemplate w75px" data-template="SEEN_FALSE" data-template-method="POST"><strong>false</strong></button>
 					<br />
 				
 				<div class="horizSep"></div>

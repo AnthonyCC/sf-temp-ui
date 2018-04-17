@@ -65,8 +65,14 @@
 					$('#apiPayload').html(JSON.stringify(getApiPayloadObj(template), null, '\t'));
 				}
 				
-				$('#apiPayloadRefresh, .apiPayloadTemplate').on('click', function(e) {
+				$('.apiPayloadTemplate').on('click', function(e) {
 					refreshApiPayloadHtml($(this).attr('data-template'));
+
+					//ctrl click
+					if (e.ctrlKey) {
+						if ($(this).attr('data-template-method') === 'POST') { $('#apiPayloadPost').click(); }
+						if ($(this).attr('data-template-method') === 'GET') { $('#apiPayloadGet').click(); }
+					}
 				});
 				//GET
 				$('#apiPayloadGet').on('click', function(e) {

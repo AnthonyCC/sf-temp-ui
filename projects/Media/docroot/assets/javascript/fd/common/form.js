@@ -92,9 +92,12 @@ var FreshDirect = FreshDirect || {};
   forms.validateInputField = function (e) {
     var $el = $(e.currentTarget),
         id = $el.parents(this.selector).first().attr(this.attrPrefix),
-        form = this.get(id),
-        errors = [],
-        validators = this.getValidators($el, form);
+	    errors = [];
+    
+    if (!id || id === '') { return errors; }
+    
+    var form = this.get(id),
+	    validators = this.getValidators($el, form);
 
     if (validators.length) {
       this.clearFieldErrors($el, form);
