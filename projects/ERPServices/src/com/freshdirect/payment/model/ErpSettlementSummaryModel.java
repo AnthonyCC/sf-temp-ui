@@ -175,7 +175,7 @@ public class ErpSettlementSummaryModel extends ModelSupport{
 		this.summaryDetails.add(detail);
 	}
 	
-	public List<ErpSettlementSummaryModel> getInvoices(){
+	public List<ErpSettlementInvoiceModel> getInvoices(){
 		return this.invoices;
 	}
 	public void setInvoices(List invoices){
