@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -306,30 +307,53 @@ public class FDFactoryService extends ExtTimeAbstractEcommService implements FDF
 		return fdProductInfo;
 	}
 	
+	private static List<List<String>> splitList(List<String> list, int maxListSize) {
+        List<List<String>> splittedList = new ArrayList<List<String>>();
+        int itemsRemaining = list.size();
+        int start = 0;
+
+        while (itemsRemaining != 0) {
+        	int end = itemsRemaining >= maxListSize ? (start + maxListSize) : (start + itemsRemaining);
+
+            splittedList.add(list.subList(start, end));
+
+            int sizeOfFinalList = end - start;
+            itemsRemaining = itemsRemaining - sizeOfFinalList;
+            start = start + sizeOfFinalList;
+        }
+
+        return splittedList;
+    }
+	
 	@Override
 	public Collection getProductInfos(String[] skus) throws FDResourceException, RemoteException {
 		Response<Collection<FDProductInfoData>> response = null;
 		Request<String[]> request = new Request<String[]>();
 		Collection<FDProductInfo> fdProductInfos = new ArrayList<FDProductInfo>();
+		
+		
+		List<List<String>> buckets = splitList(Arrays.asList(skus), 500);
+		for(List<String> bucket: buckets) {
 			try {
-				request.setData(skus);
+				request.setData((String[]) bucket.toArray(new String[0]));
 				String inputJson;
 				inputJson = buildRequest(request);
 				response = postDataTypeMap(inputJson,getFdCommerceEndPoint(FDFACTORY_FDPRODUCTINFO_SKUCODES),new TypeReference<Response<Collection<FDProductInfoData>>>() {});
 				if(!response.getResponseCode().equals("OK"))
 					throw new FDResourceException(response.getMessage());
-				if(response.getData()==null)
-					return fdProductInfos; // returning empty list
-					
-				for (FDProductInfoData fdProductInfoData : response.getData()) {
-					 FDProductInfo model = ModelConverter.fdProductInfoDataToModel(fdProductInfoData);
-					fdProductInfos.add(model);
+				
+				if(response.getData()!=null ){	
+					for (FDProductInfoData fdProductInfoData : response.getData()) {
+						 FDProductInfo model = ModelConverter.fdProductInfoDataToModel(fdProductInfoData);
+						fdProductInfos.add(model);
+					}
 				}
 				
 			} catch (FDEcommServiceException e) {
 				
 				throw new RemoteException(e.getMessage());
 			} 
+		}
 			return fdProductInfos;
 	}
 	
