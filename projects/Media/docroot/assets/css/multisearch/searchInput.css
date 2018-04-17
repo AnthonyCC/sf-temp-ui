@@ -1,3 +1,7 @@
 .multisearch-input label {
   font-weight: bold;
 }
+
+.multisearch-input input {
+  width: 95%;
+}

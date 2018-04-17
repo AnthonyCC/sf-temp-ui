@@ -7,7 +7,7 @@
   <ul data-component="multisearch-list">
   {if $terms}
     {foreach $term in $terms}
-    <li data-searchresult="{$term}">{$term}</li>
+    <li data-searchresult="{$term}">Loading search results for {$term}...</li>
     {/foreach}
   {/if}
   </ul>
@@ -23,7 +23,7 @@
   <div class="content-module product-carousel single-module" id="search-results-{$searchParams.searchParams}">
     <div class="content-header" data-component="content-header">
       <div>
-        <h2>{$searchParams.searchParams}</h2>
+        <h2>{$searchParams.searchParams} {if $searchParams.searchTerm}<span class="term">({$searchParams.searchTerm})</span>{/if}</h2>
       </div>
     </div>
   	<div class="content">

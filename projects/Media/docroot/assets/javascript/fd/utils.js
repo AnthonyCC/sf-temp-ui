@@ -394,6 +394,16 @@ var FreshDirect = FreshDirect || {};
     return null;
   };
 
+  // escape unsafe input
+  utils.escapeHtml = function (unsafe) {
+    return unsafe
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  };
+
   // register utils under FreshDirect.modules.common.utils
   utils.register("modules.common", "utils", utils, fd);
 

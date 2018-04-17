@@ -18,24 +18,29 @@ var FreshDirect = FreshDirect || {};
       value:'#multisearch-input'
     },
     terms:{
-      value:[]
+      value:[],
+      writable: true
     },
     handleSubmit:{
       value: function (e) {
         e.preventDefault();
 
         var $el = $('[data-component="multisearch-input"] input'),
-            val = $el.val(),
-            idx = this.terms.indexOf(val);
+            term = $el.val();
 
-        // TODO escape term
-        if (val && this.terms.length < MAXTERMS) {
+        this.addTerm(term);
+        $el.val('');
+      }
+    },
+    addTerm:{
+      value: function (term) {
+        var idx = this.terms.indexOf(term);
+
+        if (term && this.terms.length < MAXTERMS) {
           if (idx === -1) {
-            this.terms.push(val);
+            this.terms.push(fd.utils.escapeHtml(term));
 
             this.termsChanged();
-          } else {
-            $el.val('');
           }
         }
       }
@@ -67,6 +72,11 @@ var FreshDirect = FreshDirect || {};
         data = data || {};
         data.terms = data.terms || this.terms;
 
+        if (this.terms !== data.terms) {
+          this.terms = data.terms;
+          this.termsChanged();
+        }
+
         WIDGET.render.call(this, data);
         FreshDirect.components.autoComplete.init(this.placeholder+' input');
         $('[data-component="multisearch-input"] input').val("");
@@ -83,6 +93,9 @@ var FreshDirect = FreshDirect || {};
 
 (function (fd) {
   setTimeout(function () {
-    fd.modules.multisearch.searchInput.render({}); // TODO initial list from url
+    var q = fd.utils.getParameterByName('q').split(',').map(fd.utils.escapeHtml);
+    fd.modules.multisearch.searchInput.render({
+      terms: q
+    });
   }, 10);
 }(FreshDirect));

@@ -1,38 +1,37 @@
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
+<%@ taglib uri='freshdirect' prefix='fd'%>
+<%@ taglib uri='template' prefix='tmpl'%>
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
-<!DOCTYPE html>
-<html lang="en-US" xml:lang="en-US">
-<head>
-  <meta charset="UTF-8">
-  <title>Multi-search test page</title>
-  <jwr:style src="/grid.css" media="all" />
-  <jwr:style src="/oldglobal.css" media="all" />
-  <jwr:style src="/global.css" media="all" />
-  <jwr:style src="/multisearch.css" media="all" />
-  <jwr:script src="/fdlibs.js"  useRandomParam="false" />
-</head>
-<body>
-  <h1>Multi-search test page</h1>
 
-  <div id="multisearch-input">
-  </div>
+<fd:CheckLoginStatus id="user" guestAllowed='true' recognizedAllowed='true' />
 
-  <div id="multisearch-results" class="contentModules">
-  </div>
+<tmpl:insert template='/common/template/browse_template.jsp'>
 
-  <soy:import packageName="common"/>
-  <soy:import packageName="multisrch"/>
+	<tmpl:put name='soypackage' direct='true'>
+    <soy:import packageName="common"/>
+    <soy:import packageName="multisrch"/>
+	</tmpl:put>
 
-<script>
-// don't open zipcheck
-var FreshDirect = window.FreshDirect || {};
-FreshDirect.user = FreshDirect.user || {};
-FreshDirect.user.isZipPopupUsed = true;
-</script>
+	<tmpl:put name='extraCss' direct='true'>
+    <jwr:style src="/multisearch.css" media="all" />
+	</tmpl:put>
 
-  <jwr:script src="/fdmodules.js" useRandomParam="false" />
-  <jwr:script src="/fdcomponents.js" useRandomParam="false" />
-  <jwr:script src="/fdcommon.js" useRandomParam="false" />
-  <jwr:script src="/multisearch.js" useRandomParam="false" />
-</body>
-</html>
+  <tmpl:put name="seoMetaTag" direct="true">
+    <fd:SEOMetaTag title="Search for multiple keywords"></fd:SEOMetaTag>
+  </tmpl:put>
+
+	<tmpl:put name='leftnav' direct='true'>
+    <div id="multisearch-input">
+    </div>
+  </tmpl:put>
+
+  <tmpl:put name='content' direct='true'>
+    <h1>Multi-search</h1>
+    <div id="multisearch-results" class="contentModules">
+    </div>
+  </tmpl:put>
+  
+	<tmpl:put name='extraJsModules'>
+    <jwr:script src="/multisearch.js" useRandomParam="false" />
+	</tmpl:put>
+</tmpl:insert>
