@@ -91,7 +91,7 @@ request.setAttribute("noyui", true);
 	<tmpl:put name="extraJsFooter"><%-- MOBILE, end of body --%>
 	</tmpl:put>
 
-	<tmpl:put name='content' direct='true'><%= seoMetaTag_pageId %>
+	<tmpl:put name='content' direct='true'>
 	<%!
 
 		//APPDEV- 4368:: Need Indicator for Empty Picks List Begin
