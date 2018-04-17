@@ -102,8 +102,10 @@
 .sorter-element.selected {
 	font-weight: bold;
 }
-
+/* bug fix for fire fox */
 .no-touch .sorter-element:hover > span,
-.no-touch .sorter-element:focus > span {
+.sorter-element:hover > span,
+.no-touch .sorter-element:focus > span,
+.sorter-element:focus > span {
 	text-decoration: underline;
 }

@@ -12,7 +12,7 @@
 
         {foreach $sortOption in $sortOptions}
           <button data-sortid="{$sortOption.id}" data-direction="{$sortOption.orderAscending}" {$sortOption.selected ? 'data-currentdirection="'+$currentOrderAsc+'"' : ''}
-              class="sorter-element {isFirst($sortOption) ? 'first' : ''} {$sortOption.selected ? 'selected' : ''}  "><span class="offscreen">sort products by</span><span>{$sortOption.name}</span></button>
+              aria-label="sort products by" class="sorter-element {isFirst($sortOption) ? 'first' : ''} {$sortOption.selected ? 'selected' : ''}  "><span>{$sortOption.name}</span></button>
         {/foreach}
 
         {if $sortDropDowns and length($sortDropDowns)}

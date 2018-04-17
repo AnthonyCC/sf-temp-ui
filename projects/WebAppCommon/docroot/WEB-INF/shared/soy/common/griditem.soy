@@ -142,7 +142,7 @@
   {param newProduct:$item.newProduct /}
   {param itemIndex:$itemIndex /}
   {param listName:$listName /}
-  {param productAltText:$item.productAltText /}
+  
 {/call}
 {/template}
 
@@ -328,7 +328,7 @@
  * @param? newProduct
  * @param? itemIndex
  * @param? listName
- * @param productAltText
+
  */
 {template .potatoTransactionalGridItem autoescape="false"}
 /* this line return must be here, or there will be tabs in output html, which cause whitespace */
@@ -349,25 +349,23 @@
   {if $moduleData and $moduleData.moduleVirtualCategory}data-virtual-category="{$moduleData.moduleVirtualCategory}"{/if}
   {if $moduleData and $moduleData.dontFocusForm} data-dontfocusform="true"{/if}
 >
-	<div class="portrait-item-productimage_wrapper {$extraClass ? $extraClass + '-image_wrapper' : ''}">
 	{if not $discontinued}
 	  <a href="{$productPageUrl}{if $moduleData and $moduleData.moduleVirtualCategory}&cm_vc={$moduleData.moduleVirtualCategory}{/if}" class="portrait-item-image-link" {if $moduleData}data-cm-click="
     {$productId}-_-{$productName}-_-
     {if $moduleData.moduleId}{$moduleData.moduleId}{else}no module ID{/if}"{/if}>
     {/if}
+	<div class="portrait-item-productimage_wrapper {$extraClass ? $extraClass + '-image_wrapper' : ''}">
+
 		<div class="portrait-item-burst_wrapper">
         {if $itemIndex and $itemIndex > 4}
-                <img class="portrait-item-productimage lazyload" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{$productImage}" alt="Product Image - {$productAltText}" {if not $discontinued}data-product-url="{$productPageUrl}"{/if}>
+                <img class="portrait-item-productimage lazyload" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{$productImage}" alt="" {if not $discontinued}data-product-url="{$productPageUrl}"{/if}>
         {else}
-		<img src="{$productImage}" alt="Product Image - {$productAltText}" class="portrait-item-productimage" {if not $discontinued}data-product-url="{$productPageUrl}"{/if}>
+		<img src="{$productImage}" alt="" class="portrait-item-productimage" {if not $discontinued}data-product-url="{$productPageUrl}"{/if}>
         {/if}
 			{if not $moduleData or not $moduleData.hideProductBadge}
         {call common.bursts}{param badge:$badge /}{param deal:$deal /}{param usq:$usq /}{/call}
       {/if}
 		</div>
-		{if not $discontinued}
-		</a>
-		{/if}
 		{if $timeToComplete and $timeToComplete>0}
 			<div class="portrait-product-list-time">
 				<span class="icon-clock2-before"><span>{$timeToComplete} minutes</span>
@@ -380,19 +378,25 @@
   		{if $discontinued}
   			<b>{$brandName}</b> <div class="product-name-no-brand">{$productNameNoBrand}</div>
   		{else}
-  			<a href="{$productPageUrl}{if $moduleData and $moduleData.moduleVirtualCategory}&cm_vc={$moduleData.moduleVirtualCategory}{/if}" class="portrait-item-header-name" {if $moduleData}data-cm-click="
+  			<span class="portrait-item-header-name" {if $moduleData}data-cm-click="
         {$productId}-_-{$productName}-_-
-        {if $moduleData.moduleId}{$moduleData.moduleId}{else}no module ID{/if}"{/if}><b>{$brandName}</b> <div class="product-name-no-brand">{$productNameNoBrand}</div></a>
+        {if $moduleData.moduleId}{$moduleData.moduleId}{else}no module ID{/if}"{/if}><b>{$brandName}</b> <div class="product-name-no-brand">{$productNameNoBrand}</div></span>
   		{/if}
   	{else}
   		{if $discontinued}
   			{$productName}
   		{else}
-  			<a href="{$productPageUrl}{if $moduleData and $moduleData.moduleVirtualCategory}&cm_vc={$moduleData.moduleVirtualCategory}{/if}" class="portrait-item-header-name" {if $moduleData}data-cm-click="
+  			<span class="portrait-item-header-name" {if $moduleData}data-cm-click="
         {$productId}-_-{$productName}-_-
-        {if $moduleData.moduleId}{$moduleData.moduleId}{else}no module ID{/if}"{/if}>{$productName}</a>
+        {if $moduleData.moduleId}{$moduleData.moduleId}{else}no module ID{/if}"{/if}>{$productName}</span>
   		{/if}
   	{/if}
+  	 {if not $discontinued}
+		
+		{/if}
+		</div>
+		</a>
+<div class="portrait-item-header">
   	<div class="rating">
   		{call common.rating.customer}{param ratingValue:$customerRating /}{param reviewCount:$customerRatingReviewCount /}{/call}
   		{call common.rating.expert}{param ratingValue:$expertRating /}{/call}

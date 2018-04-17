@@ -80,11 +80,13 @@ var FreshDirect = FreshDirect || {};
         }
         data.showCaptcha = showCaptcha;
         this.refreshBody(data);
+        $('#'+this.popupId).attr('data-tabindex', 'manual');
         this.popup.show($t);
         this.popup.clicked = true;
         
         if(tabToShow) {
         	$('.formcontainer').attr('data-show', tabToShow);
+        	$('#'+tabToShow+'_selector').click();
         }
 
         this.noscroll(true);

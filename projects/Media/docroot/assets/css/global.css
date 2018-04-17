@@ -3473,3 +3473,43 @@ table.order_history_table tr:nth-child(1) th{
 #transactionalPopup .customsimpleselect {
     width: 100%;
 }
+
+a.portrait-item-image-link{
+	display:grid;
+	color:#333;
+}
+
+a.portrait-item-image-link:focus .portrait-item-header{
+	outline:none !important;
+	text-decoration:underline;
+}
+a.portrait-item-image-link:focus{
+      outline:none !important;
+}
+a.portrait-item-image-link:hover .portrait-item-header{
+	outline:none !important;
+	text-decoration:underline;
+}
+
+a.portrait-item-price-deal:focus{
+    text-decoration:underline;
+    outline:none;
+}
+
+a.portrait-item-price-deal:hover{
+    text-decoration:underline;
+}
+/* firefox bug fix of focus state in reorder, browse pages */
+
+.menuBox li:hover *{
+text-decoration:underline;
+}
+.menuBox li.disabled:hover *{
+text-decoration:none;
+}
+.menuBox li.selected:focus *{
+text-decoration:underline;
+}
+section.main .leftnav .menuBox label input:focus + span > span{
+ text-decoration:underline;
+}

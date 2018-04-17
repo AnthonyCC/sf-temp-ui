@@ -90,7 +90,7 @@
     <label for="addaddress_home_phone"  class="one-quarter-fieldset"> Ext.
     	<input type="tel" name="phone_ext" placeholder="Ext." value="{if $data.phone_ext}{$data.phone_ext}{/if}" />
     </label>
-    <span class="cssbutton red deletephonenumber" data-replacenumbers="true">x</span> <span class="cssbutton green showaltphone">+</span>
+    <span class="cssbutton red deletephonenumber" data-replacenumbers="true">x<span class="offscreen">remove alternate phone number fields</span></span> <span class="cssbutton green showaltphone">+<span class="offscreen">add alernate phone number fields</span></span>
     <span fdform-error-for="phone" class="three-quarter-fieldset"></span>
     <span fdform-error-for="phone_ext" class="one-quarter-fieldset"></span>
     <div class="phonetype">

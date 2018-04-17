@@ -285,12 +285,19 @@
 	border: 0 !important;
 	background: none;
 	font-weight: normal;
-	color: #458b4c !important;
+	color: #408244 !important;
 }
 #transactionalPopup .portrait-item-atl .cssbutton:hover,
 .pdp-atc #pdp-atc-addtolist:hover,
 #evenBetterPopup .pdp-evenbetter-atc .pdp-evenbetter-atcbutton button.cssbutton[data-component="addToListButton"]:hover{
 	text-decoration: underline;
+	color: #5fb069 !important;
+}
+
+#transactionalPopup .portrait-item-atl button.deletefromlist.cssbutton.white.transparent.small.icon-trash-new2-before:focus{
+    box-shadow: 0 0 1px #bbb, 0 0 8px #bbb;
+    background-color: #ffffff;
+    text-decoration: underline;
 	color: #5fb069 !important;
 }
 #transactionalPopup [data-component="product"] > form {
@@ -1259,13 +1266,19 @@ a.portrait-item-header-name:link {
 }
 .qs-content .lineitems22 .itemlist-item-header-buttons button.addtolist{
 	border: 0;
-	color: #458b4c;
+	color: #408244;
 	font-weight: normal;
 }
 .qs-content .lineitems22 .itemlist-item-header-buttons button.addtolist:hover{
 	color: #5fb069;
 	background: none;
     text-decoration: underline;
+}
+.qs-content .lineitems22 .itemlist-item-header-buttons button.addtolist:focus{
+	color: #5fb069;
+	background: none;
+    text-decoration: underline;
+    box-shadow:none;
 }
 .qs-content .lineitems22 .itemlist-item-header-buttons button.deletefromlist{
 	border-left: 1px solid #e0e3d0;
@@ -1339,4 +1352,19 @@ a.portrait-item-header-name:link {
 .cssBurst.back, .cssBurst.back span,
 .cssBurst.going, .cssBurst.going span  {
 	background-color: #060;  /* green */
+}
+.pdp-atc #pdp-atc-addtolist:focus{
+	text-decoration: underline;
+	color: #5fb069 !important;
+	box-shadow:none;
+}
+#transactionalPopup .portrait-item-atl .fakeaddtolist.cssbutton.cssbutton-flat.purpleborder:focus{
+	text-decoration: underline;
+    color: #5fb069 !important;
+    box-shadow:none;
+}
+#evenBetterPopup .pdp-evenbetter-atc .pdp-evenbetter-atcbutton button.cssbutton[data-component="addToListButton"]:focus {
+    text-decoration: underline;
+    color: #5fb069 !important;
+    box-shadow:none;
 }
