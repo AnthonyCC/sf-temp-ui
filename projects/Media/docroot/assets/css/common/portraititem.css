@@ -347,7 +347,7 @@
   color:#999;
 }
 
-.portrait-item.unavailable .portrait-item-header:after{
+.portrait-item.unavailable .accessibility_unavailable:after{
   content:"Unavailable";
   display:block;
   font-weight:bold;
