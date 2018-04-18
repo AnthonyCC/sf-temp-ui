@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public class EnumSaleType implements Serializable {
 	/**
 	 * 
@@ -34,6 +37,7 @@ public class EnumSaleType implements Serializable {
 		SALETYPE_MAP.put( this.saleType, this );
 	}
 
+	@JsonValue
 	public String getSaleType() {
 		return this.saleType;
 	}
@@ -42,7 +46,7 @@ public class EnumSaleType implements Serializable {
         return this.name;
     }
     
-
+    @JsonCreator
 	public static EnumSaleType getSaleType(String saleType){
 		return (EnumSaleType) SALETYPE_MAP.get( saleType.toUpperCase() );
 	}

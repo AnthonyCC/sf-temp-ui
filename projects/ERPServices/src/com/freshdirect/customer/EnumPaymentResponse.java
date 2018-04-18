@@ -12,6 +12,9 @@ import java.util.Map;
 
 import org.apache.commons.lang.enums.ValuedEnum;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 
 
 /**
@@ -114,6 +117,7 @@ public class EnumPaymentResponse extends ValuedEnum {
 
     private String description;
 		
+    @JsonCreator
 	public static EnumPaymentResponse getEnum(String code) {
 		return (EnumPaymentResponse) getEnum(EnumPaymentResponse.class, code);
 	}
@@ -147,6 +151,7 @@ public class EnumPaymentResponse extends ValuedEnum {
         this.description = description;
     }
 
+    @JsonValue
     public String getCode() {
 		return getName();
 	}	
