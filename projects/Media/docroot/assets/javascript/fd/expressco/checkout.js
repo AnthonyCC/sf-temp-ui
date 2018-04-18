@@ -36,6 +36,14 @@ var FreshDirect = FreshDirect || {};
     },
     checkFlow: {
       value: function () {
+    	if ($('#expresscheckout').hasClass("deliverypasscheckout")) {
+    		var payment = (fd.expressco && fd.expressco.paymentmethod && fd.expressco.paymentmethod.data && fd.expressco.paymentmethod.data.selected) || (FORMS.serialize('payment').id);
+    		if (payment) {
+                this.enableCheckout();
+            } else {
+            	this.disableCheckout();
+            }
+    	} else {
         var address = (fd.expressco && fd.expressco.address && fd.expressco.address.data && fd.expressco.address.data.selected) || FORMS.serialize('address').id,
             timeslot = $('[timeslot-id]').attr('timeslot-id'),
             payment = (fd.expressco && fd.expressco.paymentmethod && fd.expressco.paymentmethod.data && fd.expressco.paymentmethod.data.selected) || (FORMS.serialize('payment').id)
@@ -51,7 +59,7 @@ var FreshDirect = FreshDirect || {};
           this.disableTimeslot();
           this.disableCheckout();
         }
-
+    	}
       }
     },
     enableCheckout: {

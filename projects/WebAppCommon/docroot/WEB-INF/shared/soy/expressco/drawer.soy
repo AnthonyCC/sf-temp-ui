@@ -12,7 +12,7 @@
 	{/call}
 {else}
 	{if $drawers and isNonnull($drawers)}
-		<div data-component="drawer" data-drawer-columns="3">
+		<div data-component="drawer" data-drawer-columns="{if length($drawers) == 1}1{else}3{/if}">
 		  <nav class="drawer-header" role="tablist">
 			{foreach $drawer in $drawers}
 			  {call .drawerheader}
@@ -49,7 +49,7 @@
 	{if $drawers and isNonnull($drawers)}
 		<div data-component="drawer" data-drawer-columns="1">
 			{foreach $drawer in $drawers}
-				<div class="drawer-row {$drawer.id == 'address'? 'auto-height' : ''}" data-row-id="{$drawer.id}">
+				<div class="drawer-row {if $drawer.id == 'address' or length($drawers) == 1} auto-height{/if}" data-row-id="{$drawer.id}">
 					<nav class="drawer-header" role="tablist">
 						{call .drawerheader}
 							{param title: $drawer.title /}

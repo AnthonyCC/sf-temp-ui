@@ -3,7 +3,57 @@
 <%@ taglib uri="freshdirect" prefix="fd" %>
 
 <fd:CheckLoginStatus id="user_dp" guestAllowed="true" recognizedAllowed="true" />
-
+<div class="dpn">
+	<div class="dpn-container">
+		<div class="dpn-header">
+			<div class="dpn-header-text">Get Free Delivery for 60 Days</div>
+			<div class="dpn-header-desc">Save every time you order, an unlimited amount of times!</div>
+		</div>
+		<div class="dpn-center">
+			<div class="dpn-center-header">DeliveryPass<sup>&reg;</sup></div>
+			<div class="dpn-center-list">
+				<div class="dpn-center-list-item">
+					<div class="dpn-center-list-icon"><img src="/media/editorial/site_pages/deliverypass/images/small-check.svg" alt="check"></div>
+					<div class="dpn-center-list-text">Unlimited Free Deliveries</div>
+				</div>
+				<div class="dpn-center-list-item">
+					<div class="dpn-center-list-icon"><img src="/media/editorial/site_pages/deliverypass/images/small-check.svg" alt="check"></div>
+					<div class="dpn-center-list-text">Exclusive Special Offers</div>
+				</div>
+				<div class="dpn-center-list-item">
+					<div class="dpn-center-list-icon"><img src="/media/editorial/site_pages/deliverypass/images/small-check.svg" alt="check"></div>
+					<div class="dpn-center-list-text">Timeslot Reservations</div>
+				</div>
+				<div class="dpn-center-list-item">
+					<div class="dpn-center-list-icon"><img src="/media/editorial/site_pages/deliverypass/images/bonus-star.svg" alt="bonus star"></div>
+					<div class="dpn-center-list-text">Bonus $5 off Tue-Fri Deliveries</div>
+				</div>
+			</div>
+			<div class="dpn-center-agreement">By signing up for DeliveryPass<sup>&reg;</sup>, you are agreeing to the Terms and Conditions set forth here.</div>
+			<div class="dpn-center-agreement-link"><a  tabindex="2" href="#" dpfreetrial-terms>Terms and Conditions</a></div>
+			<div class="dpn-center-terms">Your DeliveryPass<sup>&reg;</sup> membership continues until canceled. You can cancel anytime by calling customer service at 1-866-283-7374.</div>
+		</div>
+		<div class="dpn-footer dpn-footer-login-required">
+			<% if(user_dp.getLevel() == FDUserI.SIGNED_IN){ %>
+				<div class="dpn-footer-no-logged">
+					<a href="#" tabindex="3" dpfreetrial-no-thanks>No thanks, I hate saving money.</a>
+				</div>
+				<div class="dpn-footer-yes">
+					<div class="dpn-footer-yes-text">No commitments, cancel any time.</div>
+					<button onclick="getFreeDelivery()" tabindex="1" autofocus class="dpn-footer-yes-button cssbutton cssbutton-flat orange">Start 60 Day Free Trial</button>
+				</div>
+			<% } else { %>
+				<div class="dpn-footer-no">
+					<a href="#" tabindex="3" dpfreetrial-no-thanks>No thanks, I hate saving money.</a>
+				</div>
+				<div class="dpn-footer-yes">
+					<button onclick="dpLogin()" class="dpn-footer-login-button cssbutton cssbutton-flat green" tabindex="1" autofocus fd-login-required fd-login-successpage-current>Sign In to Get Started</button>
+				</div>
+			<% } %>
+			<div class="clear"></div>
+		</div>
+	</div>
+</div>
 <script>
 	function getFreeDelivery(){
 		dataLayer.push({
@@ -83,7 +133,7 @@
 	$jq(".overlay-dialog-new .dpn").on("click", "[dpfreetrial-close-popup]", function(){
 		$jq("#uimodal-output").dialog("close");
 	});
-	$jq('.overlay-dialog-new .dpn').on("click", "[dpfreetrial-no-thanks]", function(){
+	$jq('.dpn').on("click", "[dpfreetrial-no-thanks]", function(){
 		dataLayer.push({
 			'event': 'deliverypass-click',
 			'eventCategory': 'deliverypass',
@@ -110,58 +160,5 @@
 				setTimeout(function(){ $jq("[tabindex=1]").focus(); }, 5);
 			}
 	    }
-	});	
-
+	});
 </script>
-
-<div class="dpn">
-	<div class="dpn-container">
-		<div class="dpn-header">
-			<div class="dpn-header-text">Get Free Delivery for 60 Days</div>
-			<div class="dpn-header-desc">Save every time you order, an unlimited amount of times!</div>
-		</div>
-		<div class="dpn-center">
-			<div class="dpn-center-header">DeliveryPass<sup>&reg;</sup></div>
-			<div class="dpn-center-list">
-				<div class="dpn-center-list-item">
-					<div class="dpn-center-list-icon"><img src="/media/editorial/site_pages/deliverypass/images/small-check.svg" alt="check"></div>
-					<div class="dpn-center-list-text">Unlimited Free Deliveries</div>
-				</div>
-				<div class="dpn-center-list-item">
-					<div class="dpn-center-list-icon"><img src="/media/editorial/site_pages/deliverypass/images/small-check.svg" alt="check"></div>
-					<div class="dpn-center-list-text">Exclusive Special Offers</div>
-				</div>
-				<div class="dpn-center-list-item">
-					<div class="dpn-center-list-icon"><img src="/media/editorial/site_pages/deliverypass/images/small-check.svg" alt="check"></div>
-					<div class="dpn-center-list-text">Timeslot Reservations</div>
-				</div>
-				<div class="dpn-center-list-item">
-					<div class="dpn-center-list-icon"><img src="/media/editorial/site_pages/deliverypass/images/bonus-star.svg" alt="bonus star"></div>
-					<div class="dpn-center-list-text">Bonus $5 off Tue-Fri Deliveries</div>
-				</div>
-			</div>
-			<div class="dpn-center-agreement">By signing up for DeliveryPass<sup>&reg;</sup>, you are agreeing to the Terms and Conditions set forth here.</div>
-			<div class="dpn-center-agreement-link"><a  tabindex="2" href="#" dpfreetrial-terms>Terms and Conditions</a></div>
-			<div class="dpn-center-terms">Your DeliveryPass<sup>&reg;</sup> membership continues until canceled. You can cancel anytime by calling customer service at 1-866-283-7374.</div>
-		</div>
-		<div class="dpn-footer dpn-footer-login-required">
-			<% if(user_dp.getLevel() == FDUserI.SIGNED_IN){ %>
-				<div class="dpn-footer-no-logged">
-					<a href="#" tabindex="3" dpfreetrial-no-thanks>No thanks, I hate saving money.</a>
-				</div>
-				<div class="dpn-footer-yes">
-					<div class="dpn-footer-yes-text">No commitments, cancel any time.</div>
-					<button onclick="getFreeDelivery()" tabindex="1" autofocus class="dpn-footer-yes-button cssbutton cssbutton-flat orange">Start 60 Day Free Trial</button>
-				</div>
-			<% } else { %>
-				<div class="dpn-footer-no">
-					<a href="#" tabindex="3" dpfreetrial-no-thanks>No thanks, I hate saving money.</a>
-				</div>
-				<div class="dpn-footer-yes">
-					<button onclick="dpLogin()" class="dpn-footer-login-button cssbutton cssbutton-flat green" tabindex="1" autofocus fd-login-required fd-login-successpage-current>Sign In to Get Started</button>
-				</div>
-			<% } %>
-			<div class="clear"></div>
-		</div>
-	</div>
-</div>

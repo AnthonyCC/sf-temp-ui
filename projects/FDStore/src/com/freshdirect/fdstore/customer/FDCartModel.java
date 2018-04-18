@@ -1705,6 +1705,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 			return false;
 		}
 	}
+	
+
 
 	@Override
     public List<DlvPassAvailabilityInfo> getUnavailablePasses() {
@@ -2065,7 +2067,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 			// MISC
 			calc = new FeeCalculator("MISC");
 			double miscFee = 0.0;
-			if(null ==getPaymentMethod() || !EnumPaymentMethodType.EBT.equals(getPaymentMethod().getPaymentMethodType())){
+			if((null ==getPaymentMethod() || !EnumPaymentMethodType.EBT.equals(getPaymentMethod().getPaymentMethodType())) && !this.containsDlvPassOnly()){
 				miscFee =calc.calculateFee(ctx);
 			}
 			this.setChargeAmount(EnumChargeType.MISCELLANEOUS, miscFee);

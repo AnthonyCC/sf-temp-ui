@@ -80,7 +80,8 @@ public class AvailabilityService {
 					.getPaymentMethodType());
 		}
 		if (cart.containsUnlimitedPass())
-			if (cart.containsDlvPassOnly()) {
+			//if (cart.containsDlvPassOnly()) Changes as part of standalone deliverypass purchase (DP17-122)  
+			if(!FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && cart.containsDlvPassOnly()){
 				errorMessage = "Your cart contains only delivery pass item(s).";
 			} else if (!user.isOrderMinimumMet()
 					&& user.getMasqueradeContext() == null) {
@@ -153,8 +154,12 @@ public class AvailabilityService {
 		String warningType = null;
 		FDCartModel cart = user.getShoppingCart();
 		ErpAddressModel deliveryAddress = cart.getDeliveryAddress();
-
-		if (cart.containsDlvPassOnly()) {
+		
+		/* Change as part of standalone deliverypass purchase (DP17-122)
+		When the cart contains only deliverypass 
+			- disable the cart validation for DP when the property is enabled
+			- enable the DP only cart validation when the property is disabled */
+		if (!cart.isDlvPassCartAllowed() && cart.containsDlvPassOnly()) {
 			warningType = DELIVERY_PASS_ONLY;
 		} else if (cart.containsDonationProductsOnly()) {
 			warningType = DONATION_PRODUCTS_ONLY;
@@ -167,7 +172,8 @@ public class AvailabilityService {
 			warningType = GENERAL_UNDER_ORDER_MINIMUM_MESSAGE_KEY;
 		} else if (user.getShoppingCart().getOrderLines().isEmpty()) {
 			warningType = CART_IS_EMPTY;
-		}
+		
+		}	
 		return warningType;
 	}
 

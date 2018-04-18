@@ -1098,6 +1098,31 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 
 		}
 	}
+	
+	public void updateDeliveryPassActivation(String saleId) {
+
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			DeliveryPassDAO.updateDeliveryPassActivation(conn,saleId);
+
+		} catch (Exception e) {
+			LOGGER.warn("Exception during updateDeliveryPassActivation()", e);
+			throw new EJBException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				LOGGER.warn(
+						"SQLException while closing conn in cleanup during updateDeliveryPassActivation() call",
+						e);
+			}
+
+		}
+	}
+
 
 
 }

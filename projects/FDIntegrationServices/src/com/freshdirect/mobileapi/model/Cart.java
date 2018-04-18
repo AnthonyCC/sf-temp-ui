@@ -874,10 +874,15 @@ public class Cart {
 			
 			cartDetail.setisDpFreeTrialEligible(user.isDPFreeTrialOptInEligible());
 		}
-
+        //Changes as part of standalone deliverypass purchase for web and mobile api (DP17-122)
+        // Based on the this flag value - UI will switch between 2 checkout views ( regular checkout vs DP only checkout view)
+        if (cart.isDlvPassCartAllowed() && cart.containsDlvPassOnly()){
+        	cartDetail.setDeliveryPassCartOnly(true);
+        }
+        
         ErpPaymentMethodI paymentMethod = cart.getPaymentMethod();
         boolean isEBTPayment = (null!=paymentMethod && EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType()));
-        if(!isEBTPayment){
+        if(!isEBTPayment && !cart.containsDlvPassOnly()){
 	        //Delivery Charge
             if (cartDetail.isDlvPassApplied()) {
 
@@ -947,8 +952,10 @@ public class Cart {
                         .getPromotionCode(), redemptionCode, DiscountType.PROMO, discount.getAmount(), false, redemptionPromo.getDescription()));
             } else { //Its a automatic header discount
                 PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
+                if(!cart.containsDlvPassOnly()){
                 cartDetail.addDiscount(new com.freshdirect.mobileapi.controller.data.response.CartDetail.Discount(promotion
                         .getPromotionCode(), redemptionCode, DiscountType.PROMO, discount.getAmount(), true, promotion.getDescription()));
+                }
             }
         }
 

@@ -1045,6 +1045,11 @@ public class FDStoreProperties {
 	private static final String PROP_NEW_PRODUCTS_PAGE_CAROUSEL_ENABLED = "fdstore.newproductspage.carousel.enabled";
 	private static final String PROP_NEW_PRODUCTS_PAGE_CAROUSEL_CONTAINER_CONTENT_KEY = "fdstore.newproductspage.carousel.contentkey";
 
+	public final static String PROP_IS_FDC_FIRST_ORDER_EMAIL_MSG_ENABLED = "fdstore.fdc.firstorderemailmsg.enabled";
+	
+	public final static String PROP_FD_DP_STANDALONE_CHECKOUT_ENABLED = "fdstore.deliverypass.standalone.checkout.enabled";
+
+ 	
 	private static final String PROP_INFORM_ORDERMODIFY_ENABLED = "fdstore.inform.ordermodify.enabled";
 	private static final String PROP_INFORM_ORDERMODIFY_VIEWLIMIT = "fdstore.inform.ordermodify.viewCountLimit";
 	private static final String PROP_INFORM_ORDERMODIFY_MEDIAPATH = "fdstore.inform.ordermodify.mediaPath";
@@ -2019,6 +2024,9 @@ public class FDStoreProperties {
 		defaults.put(PROP_CAROUSEL_MIN_ITEMS, "4");
 
 		defaults.put(PROP_IS_FDC_FIRST_ORDER_EMAIL_MSG_ENABLED, "false");
+		
+		defaults.put(PROP_FD_DP_STANDALONE_CHECKOUT_ENABLED, "false");
+
 		
 		defaults.put(PROP_NEW_PRODUCTS_PAGE_CAROUSEL_ENABLED, "true");
         defaults.put(PROP_NEW_PRODUCTS_PAGE_CAROUSEL_CONTAINER_CONTENT_KEY, "ModuleContainer:new_prod");
@@ -5115,6 +5123,10 @@ public class FDStoreProperties {
 		} else {
 			return property;
 		}
+      }
+	
+	public static boolean isDlvPassStandAloneCheckoutEnabled(){
+		return (Boolean.valueOf(get(PROP_FD_DP_STANDALONE_CHECKOUT_ENABLED))).booleanValue();
 	}
 	
 	public static String getNewProductsPageCarouselContainerContentKey() {
