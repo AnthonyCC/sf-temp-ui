@@ -3475,7 +3475,7 @@ table.order_history_table tr:nth-child(1) th{
 }
 
 a.portrait-item-image-link{
-	display:grid;
+	display:block;
 	color:#333;
 }
 
