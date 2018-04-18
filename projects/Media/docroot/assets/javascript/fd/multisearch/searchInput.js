@@ -99,8 +99,26 @@ var FreshDirect = FreshDirect || {};
 
 // initialize based on query parameters
 (function (fd) {
+  var DEFAULTLIST = [
+    'eggs',
+    'milk',
+    'pizza',
+    'yoghurt',
+    'butter',
+    'carrots',
+    'garlic',
+    'bread',
+    'onion',
+    'chicken'
+  ];
+
   setTimeout(function () {
-    var q = fd.utils.getParameterByName('q').split(',').map(fd.utils.escapeHtml);
+    var q = fd.utils.getParameterByName('q').split(',').filter(function (kw) { return kw; }).map(fd.utils.escapeHtml);
+
+    if (q.length === 0) {
+      q = DEFAULTLIST;
+    }
+
     fd.modules.multisearch.searchInput.render({
       terms: q
     });
