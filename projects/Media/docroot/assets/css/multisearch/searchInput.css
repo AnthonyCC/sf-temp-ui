@@ -1,7 +1,129 @@
-.multisearch-input label {
+.multisearch-input > form {
+  margin: 0;
+  padding: 10px 6px;
+  background: #fffffa;
+  border: 1px solid #dce6be;
+  border-radius: 3px;
+  color: #333;
+  overflow: hidden;
+  list-style-type: none;
+}
+
+.multisearch-input > form > label {
+  line-height: 25px;
+  font-size: 12px;
+  display: block;
+  position: relative;
+  margin-top: 3px;
+  font-weight: bold;
+  text-transform: uppercase;
+  padding: 0;
+}
+
+.multisearch-input .inputholder {
+  position: relative;
+  height: 23px;
+  overflow: hidden;
+}
+
+.multisearch-input .inputholder > input {
+  border: 1px solid #dce6be;
+  border-radius: 3px;
+  padding: 3px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.multisearch-input .inputholder > button {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 3px;
+  margin: auto;
+  height: 17px;
+  width: 17px;
+  line-height: 17px;
+  border: 0;
+  border-radius: 3px;
+  background: #4fa157;
+  color: #fff;
+  font-size: 11px;
+  font-weight: bold;
+  text-indent: -999px;
+  overflow: hidden;
+}
+
+.multisearch-input .inputholder > button::after {
+  content: '➕';
+  display: block;
+  text-indent: 0;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.multisearch-input > ul {
+  margin: 10px 0 0;
+  padding: 10px 6px;
+  background: #fffffa;
+  border: 1px solid #dce6be;
+  border-radius: 3px;
+  color: #333;
+  overflow: hidden;
+  list-style-type: none;
+}
+
+.multisearch-input > ul > li {
+  line-height: 25px;
+  font-size: 12px;
+  display: block;
+  position: relative;
+  padding: 0 25px 0 5px;
+  margin-top: 3px;
+  border-radius: 3px;
+  background: #4fa157;
+  color: #fff;
   font-weight: bold;
 }
 
-.multisearch-input input {
-  width: 95%;
+.multisearch-input > ul > .title {
+  background: transparent;
+  color: inherit;
+  margin-top: 0;
+  text-transform: uppercase;
+  padding: 0;
+}
+
+.multisearch-input > ul > li > button {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 25px;
+  height: 25px;
+  margin: auto;
+  overflow: hidden;
+  background: transparent;
+  border: none;
+  font-weight: bold;
+  text-indent: -999px;
+  color: #fff;
+}
+
+.multisearch-input > ul > li > button::after {
+  content: '❌';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  display: block;
+  text-indent: 0;
+  line-height: 25px;
+  cursor: pointer;
 }

@@ -59,10 +59,16 @@ var FreshDirect = FreshDirect || {};
       }
     },
     termsChanged: {
-      value: function () {
+      value: function (dontpush) {
         DISPATCHER.signal('multiSearch', {
           terms: this.terms
         });
+
+        if (!dontpush) {
+          // set new url
+          var pathname = window.location.pathname;
+          window.history.pushState({terms: this.terms}, "search: "+this.terms.join(', '), pathname + "?q=" + this.terms.join(','));
+        }
 
         this.render();
       }
@@ -74,7 +80,7 @@ var FreshDirect = FreshDirect || {};
 
         if (this.terms !== data.terms) {
           this.terms = data.terms;
-          this.termsChanged();
+          this.termsChanged(data.dontpush);
         }
 
         WIDGET.render.call(this, data);
@@ -91,6 +97,7 @@ var FreshDirect = FreshDirect || {};
   fd.modules.common.utils.register("modules.multisearch", "searchInput", searchInput, fd);
 }(FreshDirect));
 
+// initialize based on query parameters
 (function (fd) {
   setTimeout(function () {
     var q = fd.utils.getParameterByName('q').split(',').map(fd.utils.escapeHtml);
@@ -98,4 +105,19 @@ var FreshDirect = FreshDirect || {};
       terms: q
     });
   }, 10);
+}(FreshDirect));
+
+// subscribe for popstate if feature is active
+(function (fd) {
+  var el = document.querySelector('#multisearch-input');
+
+  if (el) {
+    window.onpopstate = function (e) {
+      var state = e.state;
+      fd.modules.multisearch.searchInput.render({
+        terms: state.terms,
+        dontpush: true
+      });
+    };
+  }
 }(FreshDirect));

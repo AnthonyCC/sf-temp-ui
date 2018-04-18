@@ -6,14 +6,17 @@
 <div class="multisearch-input" data-component="multisearch-input">
   {if length($terms) < 10}
   <form>
-    <label for="searchinput">search:</label>
-    <input id="searchinput" class="searchinput" type="text" placeholder="Search the store" data-component="autocomplete" autocomplete="off"/>
-    <button class="searchbutton" type="submit">Add</button>
+    <label for="searchinput">Add keyword:</label>
+    <div class="inputholder">
+      <input id="searchinput" class="searchinput" type="text" placeholder="Search the store" data-component="autocomplete" autocomplete="off"/>
+      <button class="searchbutton" type="submit">Add to search list</button>
+    </div>
   </form>
   {/if}
   <ul>
+    <li class="title">Current keywords</li>
   {foreach $term in $terms}
-    <li data-searchterm="{$term}">{$term} <button class="remove">remove</button></li>
+    <li data-searchterm="{$term}">{$term} <button class="remove">remove {$term}</button></li>
   {/foreach}
   </ul>
 </div>

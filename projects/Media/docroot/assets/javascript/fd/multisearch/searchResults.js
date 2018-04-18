@@ -82,6 +82,7 @@ var FreshDirect = FreshDirect || {};
             searchParams: searchParams,
             products: sections.sections[0].products
           });
+          fd.components.carousel.changePage($(container).find('[data-component="carousel"]'), null);
         }
       }
     }
