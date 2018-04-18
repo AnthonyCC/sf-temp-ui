@@ -1,7 +1,7 @@
 <jwr:script src="/commonjavascript.js" useRandomParam="false" />
 
 <%
-	if (FDUserUtil.getModifyingOrder(jsUser) != null) {
+	if (jsUser != null && FDUserUtil.getModifyingOrder(jsUser) != null) {
 %>
 <jwr:script src="/modifyorder.js" useRandomParam="false" async="true" />
 <%

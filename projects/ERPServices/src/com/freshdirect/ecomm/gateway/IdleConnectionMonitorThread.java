@@ -12,7 +12,6 @@ public  class IdleConnectionMonitorThread extends Thread {
     public IdleConnectionMonitorThread(HttpClientConnectionManager connMgr) {
         super();
         this.connMgr = connMgr;
-        this.setDaemon(true);
     }
 
     @Override

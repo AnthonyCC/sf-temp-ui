@@ -17,12 +17,12 @@
 	public void log500(HttpServletRequest request, FDSessionUser user, String errorCode, String errorMessage){
 		try {
 			LOGGER.warn(errorCode + " for "
-	    		+ (user != null ? (user.getIdentity() != null && user.getFDCustomer() != null ? user.getFDCustomer().getErpCustomerPK() : user.getPrimaryKey() ) : "NOUSER" )
-	    		+ " : "+ CookieMonster.getCookie(request) 
-	    		+ " : "+ request.getRequestURL()
-	    		+ " : "+ request.getHeader("referer") 
-	    		+ " : "+ request.getHeader("User-Agent")
-	    		+ " : "+ errorMessage); 
+	    		+ " : User=" + (user != null ? (user.getIdentity() != null && user.getFDCustomer() != null ? user.getFDCustomer().getErpCustomerPK() : user.getPrimaryKey() ) : "NOUSER" )
+	    		+ " : Cookie=" + CookieMonster.getCookie(request) 
+	    		+ " : Request URL=" + request.getRequestURL().append("?"+request.getQueryString())
+	    		+ " : Referer=" + request.getHeader("referer") 
+	    		+ " : User-Agent=" + request.getHeader("User-Agent")
+	    		+ " : ErrorMessage=" + errorMessage); 
 		} catch (Exception exp) {
 			LOGGER.warn("FDWEBERROR-03 error logging error " + exp.getMessage());
 		}
