@@ -159,7 +159,7 @@ public class AvailabilityService {
 		When the cart contains only deliverypass 
 			- disable the cart validation for DP when the property is enabled
 			- enable the DP only cart validation when the property is disabled */
-		if (!cart.isDlvPassCartAllowed() && cart.containsDlvPassOnly()) {
+		if (!FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && cart.containsDlvPassOnly()) {
 			warningType = DELIVERY_PASS_ONLY;
 		} else if (cart.containsDonationProductsOnly()) {
 			warningType = DONATION_PRODUCTS_ONLY;

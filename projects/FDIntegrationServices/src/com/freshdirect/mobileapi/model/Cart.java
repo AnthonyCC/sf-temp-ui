@@ -876,7 +876,7 @@ public class Cart {
 		}
         //Changes as part of standalone deliverypass purchase for web and mobile api (DP17-122)
         // Based on the this flag value - UI will switch between 2 checkout views ( regular checkout vs DP only checkout view)
-        if (cart.isDlvPassCartAllowed() && cart.containsDlvPassOnly()){
+        if (FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && cart.containsDlvPassOnly()){
         	cartDetail.setDeliveryPassCartOnly(true);
         }
         
