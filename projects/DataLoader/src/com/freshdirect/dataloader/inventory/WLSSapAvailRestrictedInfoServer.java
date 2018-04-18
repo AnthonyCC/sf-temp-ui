@@ -17,7 +17,7 @@ public class WLSSapAvailRestrictedInfoServer extends ApplicationLifecycleListene
 	@Override
     public void postStart(ApplicationLifecycleEvent evt) {
 		
-		if (ErpServicesProperties.getJcoClientListenersEnabled() && FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PROP_JCO_CLIENT_LISTENER_RESTRICTED_AVAILABILITY_INFO_ENABLED)) {
+		if (ErpServicesProperties.getJcoClientListenersEnabled() ) {
 
 			final String gwHost = ErpServicesProperties.getJcoClientListenHost();
 			if (gwHost == null)

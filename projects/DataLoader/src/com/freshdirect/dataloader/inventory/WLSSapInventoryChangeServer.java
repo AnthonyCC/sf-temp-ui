@@ -20,7 +20,7 @@ public class WLSSapInventoryChangeServer extends ApplicationLifecycleListener {
 	@Override
     public void postStart(ApplicationLifecycleEvent evt) {
 		
-		if (ErpServicesProperties.getJcoClientListenersEnabled() && FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PROP_JCO_CLIENT_LISTENER_INVENTORY_INFO_ENABLED)) {
+		if (ErpServicesProperties.getJcoClientListenersEnabled()) {
 
 			final String gwHost = ErpServicesProperties.getJcoClientListenHost();
 			if (gwHost == null)

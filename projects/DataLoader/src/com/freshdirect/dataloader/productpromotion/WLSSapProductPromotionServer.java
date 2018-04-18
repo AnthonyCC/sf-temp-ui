@@ -21,7 +21,7 @@ public class WLSSapProductPromotionServer extends ApplicationLifecycleListener {
 
 		LOG.info("WLSSapProductPromotionServer");
 		
-		if (ErpServicesProperties.getJcoClientListenersEnabled() && FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PROP_JCO_CLIENT_LISTENER_PRODUCT_PROMOTION_ENABLED)) {
+		if (ErpServicesProperties.getJcoClientListenersEnabled()) {
 
 			final String gwHost = ErpServicesProperties.getJcoClientListenHost();
 			if (gwHost == null)

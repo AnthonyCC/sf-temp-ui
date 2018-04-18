@@ -340,23 +340,19 @@ public class BrowseDataBuilderFactory {
 
 				sections.add(catSection);
 
-				if(!nav.isPdp()){
-				    List<ProductModel> products = null;
-				    Variant variant = null;
-					try { //add scarab recommender for category listing page
-						Recommendations recommendations = ProductRecommenderUtil.getBrowseCategoryListingPageRecommendations(user, cat);
-						products = recommendations.getAllProducts();
-						variant = recommendations.getVariant();
-					} catch (FDResourceException e) {
-						LOG.error("recommendation failed",e);
-					}
-
-					CarouselData carouselData = createCarouselData(null, "You May Also Like", products, user, EnumEventSource.CSR, variant);
-				    if (carouselData != null) {
-				        data.getCarousels().setCarousel1(carouselData);
-				    }
-				}
-			}
+                if (!nav.isPdp()) {
+                    try {
+                        // add scarab recommender for category listing page
+                        Recommendations recommendations = ProductRecommenderUtil.getBrowseCategoryListingPageRecommendations(user, cat);
+                        List<ProductModel> products = recommendations.getAllProducts();
+                        if (products.size() > 0 && !cat.isDisableCategoryYmalRecommender()) {
+                            data.getCarousels().setCarousel1(createCarouselData(null, "You May Also Like", products, user, EnumEventSource.CSR, recommendations.getVariant()));
+                        }
+                    } catch (FDResourceException e) {
+                        LOG.error("recommendation failed", e);
+                    }
+                }
+            }
 
             data.setSectionContexts(checkEmpty(sections));
             appendCatDepthFields(data, cat, user, (nav.isAll() || subCats.size() == 0));
