@@ -37,9 +37,9 @@
 				
 				/* SQL helpers */
 				function getSqlSrcHtml() {
-					return (fd.inform.ordermodify.test.fdCustid !== 'GUEST')
-					? `--INFORM_ORDERMODIFY should equal ${fd.inform.ordermodify.test.viewCount}\nselect FDCUSTOMER_ID, E_STORE, INFORM_ORDERMODIFY from CUST.FDCUSTOMER_ESTORE fde where FDE.E_STORE = '${fd.inform.ordermodify.test.eStoreId}' and FDE.FDCUSTOMER_ID = '${fd.inform.ordermodify.test.fdCustid}';` 
-							: ``;
+					var sqlTemplate = "--INFORM_ORDERMODIFY should equal "+fd.inform.ordermodify.test.viewCount+"\nselect FDCUSTOMER_ID, E_STORE, INFORM_ORDERMODIFY from CUST.FDCUSTOMER_ESTORE fde where FDE.E_STORE = '"+fd.inform.ordermodify.test.eStoreId+"' and FDE.FDCUSTOMER_ID = '"+fd.inform.ordermodify.test.fdCustid+"';";
+
+					return (fd.inform.ordermodify.test.fdCustid !== 'GUEST') ? sqlTemplate : '';
 				}
 				
 				function refreshSqlSrcHtml() {
