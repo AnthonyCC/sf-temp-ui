@@ -1531,7 +1531,7 @@ public class FDStoreProperties {
         // APPDEV-2072 google analytics key
         defaults.put(PROP_GOOGLE_ANALYTICS_KEY, "UA-20535945-18");
         defaults.put(PROP_GOOGLE_ANALYTICS_FD_KEY, "UA-20535945-18");
-        defaults.put(PROP_GOOGLE_ANALYTICS_FDX_KEY, "UA-20535945-6");
+        defaults.put(PROP_GOOGLE_ANALYTICS_FDX_KEY, "UA-72306309-6");
         defaults.put(PROP_GOOGLE_ANALYTICS_DOMAIN, ".freshdirect.com");
         defaults.put(PROP_GOOGLE_ANALYTICS_FD_DOMAIN, "freshdirect.com");
         defaults.put(PROP_GOOGLE_ANALYTICS_FDX_DOMAIN, "foodkick.com");
