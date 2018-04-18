@@ -72,10 +72,6 @@
   width:100%;
 }
 
-.portrait-item-header {
-  margin-top: 12px;
-}
-
 .portrait-item-price {
   font-weight: bold;
 }
@@ -1196,6 +1192,10 @@ a.portrait-item-header-name:link {
 }
 
 .portrait-item-header{
+	margin-top: 0px;
+}
+
+.portrait-item-header .portrait-item-header-name{
 	margin-top: 8px;
 }
 
