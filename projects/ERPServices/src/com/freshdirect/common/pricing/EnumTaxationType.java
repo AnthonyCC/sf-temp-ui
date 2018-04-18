@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.enums.Enum;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
  
 /**
@@ -53,5 +54,10 @@ public class EnumTaxationType extends Enum implements java.io.Serializable {
 
 	public String getCode() {
 		return code;
-	}	
+	}
+	@JsonValue
+	public String toString() {
+		return super.getName();
+	}
+
 }
