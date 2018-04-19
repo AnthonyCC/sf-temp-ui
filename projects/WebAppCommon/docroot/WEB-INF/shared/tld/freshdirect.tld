@@ -5768,6 +5768,18 @@
 		<tagclass>com.freshdirect.webapp.taglib.CanonicalPageTag</tagclass>
 		<bodycontent>empty</bodycontent>
 	</tag>
+	
+	<tag>
+		<name>RequiredParameterValidator</name>
+		<tagclass>com.freshdirect.webapp.taglib.validation.RequiredParameterValidatorTag</tagclass>
+		<info></info>
+		<attribute>
+			<name>parameters</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<bodycontent>empty</bodycontent>	
+	</tag>
 
 	<tag-file>
        <name>SEOMetaTag</name>
