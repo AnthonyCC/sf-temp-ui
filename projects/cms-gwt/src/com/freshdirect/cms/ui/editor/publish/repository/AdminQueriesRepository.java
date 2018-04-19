@@ -42,7 +42,7 @@ public class AdminQueriesRepository {
             "      where STATUS='PROGRESS' " +
             "    ) " +
             "  ) " +
-            "  where dmins > 120 " +
+            "  where dmins > 60 " +
             ") ";
 
     private JdbcTemplate jdbcTemplate;
