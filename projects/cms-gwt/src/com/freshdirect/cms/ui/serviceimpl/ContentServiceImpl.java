@@ -320,10 +320,12 @@ public class ContentServiceImpl extends GwtServiceBase implements ContentService
             for (GwtChangeSet change : changes) {
 
                 for (GwtNodeChange nodechange : change.getNodeChanges()) {
-                    int length = nodechange.length();
-                    publishData.addContributor(change.getUserId(), length);
-                    publishData.addType(nodechange.getType(), length);
-                    changeCount += length;
+                    if (feedPublishService.isFeedRelatedChange(nodechange.getType())) {
+                        int length = nodechange.length();
+                        publishData.addContributor(change.getUserId(), length);
+                        publishData.addType(nodechange.getType(), length);
+                        changeCount += length;
+                    }
                 }
             }
 
@@ -450,5 +452,7 @@ public class ContentServiceImpl extends GwtServiceBase implements ContentService
 
         return publishService.startPublish(PublishType.PUBLISH_X, comment, author.getName());
     }
+
+
 
 }

@@ -2580,8 +2580,6 @@ public class FDCustomerManager {
 
 
 		try {
-			//FDReferralProgramModel referralProgram = FDReferralManager.loadLastestActiveReferralProgram();
-			//mailInfo.setReferralProgram(referralProgram);
 			XMLEmailI email = FDEmailFactory.getInstance().createTellAFriendEmail(mailInfo, true);
 			XSLTransformer transformer = new XSLTransformer();
 			return transformer.transform(email.getXML(), email.getXslPath());
@@ -5550,6 +5548,22 @@ public class FDCustomerManager {
 				throw new FDResourceException(e, "Error creating session bean");
 			} catch (CreateException e) {
 				LOGGER.error("Error at delivery pass free trial in fdcustomer "+ e);
+				invalidateManagerHome();
+				throw new FDResourceException(e, "Error creating session bean");
+			}
+		}
+		
+		public static void updateFDCustomerEStoreInfo(FDCustomerEStoreModel fdCustomerEStoreModel, String custId) throws FDResourceException {
+			lookupManagerHome();
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				sb.updateFDCustomerEStoreInfo(fdCustomerEStoreModel, custId);
+			}catch (RemoteException e) {
+				LOGGER.error("Error updating FDCustomerEStoreModel for custId:" + custId + " "+ e);
+				invalidateManagerHome();
+				throw new FDResourceException(e, "Error creating session bean");
+			} catch (CreateException e) {
+				LOGGER.error("Error updating FDCustomerEStoreModel for custId:" + custId + " "+ e);
 				invalidateManagerHome();
 				throw new FDResourceException(e, "Error creating session bean");
 			}

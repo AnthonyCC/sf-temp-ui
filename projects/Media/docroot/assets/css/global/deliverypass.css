@@ -31,13 +31,17 @@
 	font-family: Verdana;
 }
 
-.dpn-container{
+.dpn-container,
+.dpn-success-container{
 	max-width: 800px;
 	width: 100%;
     margin: auto;
 	box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.35);
     -webkit-box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.35);
     -moz-box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.35);
+}
+.dpn-success-container{
+	max-width: 660px;
 }
 
 .dpn-header{
@@ -191,9 +195,36 @@ button.dpn-footer-login-button{
     font-size: 22px;
 	color: #575860;
 }
-
 .dpn-success-text sup{
 	font-size: 14px;
+}
+.dpn-success-text-receipt{
+	font-family: Verdana;
+	font-size: 18px;
+	color: #575860;
+	padding: 24px 10px;
+	line-height: 36px;
+  	border-bottom: solid 1px #d4d4d4;
+}
+.dpn-success-text-table{
+	padding: 24px 0 50px;
+}
+.dpn-success-text-table-line,
+.dpn-success-text-table-line-total{
+	text-align: left;
+	font-family: Verdana;
+	font-size: 14px;
+	margin: 0 120px 12px;
+}
+.dpn-success-text-table-line-total{
+	font-weight: bold;
+	margin: 6px 120px 0;
+}
+.dpn-success-text-table-left{
+	display: inline-block;
+}
+.dpn-success-text-table-right{
+	float: right;
 }
 .dpn-success a.dpn-success-start-shopping{
 	font-size: 18px;
@@ -310,6 +341,13 @@ button.dpn-footer-login-button{
 	font-size: 13px;
 	text-align: left;
 }
+.mm-page .dpn-success-text-receipt,
+.mm-page-overlay .dpn-success-text-receipt{
+	padding: 20px 18px;
+	line-height: 28px;
+	font-size: 13px;
+	text-align: center;
+}
 .mm-page .dpn-success-text sup,
 .mm-page-overlay .dpn-success-text sup{
 	font-size: 10px;
@@ -317,6 +355,21 @@ button.dpn-footer-login-button{
 .mm-page .dpn-success-text p,
 .mm-page-overlay .dpn-success-text p{
 	margin: 0.6em 0 1.5em;
+	font-size: 16px;
+}
+.mm-page .dpn-success-text-table-line,
+.mm-page-overlay .dpn-success-text-table-line{
+	margin: 0 20px 12px;
+	font-size: 14px;
+}
+.mm-page .dpn-success-text-table-left,
+.mm-page-overlay .dpn-success-text-table-left{
+	max-width: 250px;
+}
+.mm-page .dpn-success-text-table-line-total,
+.mm-page-overlay .dpn-success-text-table-line-total{
+	margin: 6px 20px 0;
+	font-weight: bold;
 	font-size: 16px;
 }
 .mm-page .dpn-success-a,

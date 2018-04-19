@@ -986,5 +986,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
 	public List<String> getAllCustIdsOfFreeTrialSubsOrder() throws FDResourceException, RemoteException;
 
 	public boolean hasCustomerDpFreeTrialOptin(String custId) throws FDResourceException, RemoteException;
+	
+	public void updateFDCustomerEStoreInfo(FDCustomerEStoreModel fdCustomerEStoreModel, String custId) throws FDResourceException, RemoteException;
 }
 

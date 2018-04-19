@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.common.context.MasqueradeContext;
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.event.EventLogger;
 import com.freshdirect.event.FDAddToCartEvent;
@@ -14,9 +15,10 @@ import com.freshdirect.event.FDCartLineEvent;
 import com.freshdirect.event.FDEditCartEvent;
 import com.freshdirect.event.FDRemoveCartEvent;
 import com.freshdirect.fdstore.FDCachedFactory;
+import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDProduct;
+import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.coremetrics.builder.AbstractShopTagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
 import com.freshdirect.fdstore.coremetrics.extradata.CoremetricsExtraData;
@@ -32,19 +34,14 @@ import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
-import com.freshdirect.fdstore.ecoupon.EnumCouponStatus;
-import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
 import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.storeapi.content.DepartmentModel;
 import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.ajax.ICoremetricsResponse;
-import com.freshdirect.webapp.ajax.cart.data.AddToCartItem;
-import com.freshdirect.webapp.ajax.cart.data.AddToCartResponseDataItem;
-import com.freshdirect.webapp.ajax.cart.data.AddToCartResponseDataItem.Status;
 import com.freshdirect.webapp.taglib.coremetrics.AbstractCmShopTag;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
-import com.freshdirect.webapp.taglib.fdstore.display.FDCouponTag;
 import com.freshdirect.webapp.util.FDEventFactory;
 
 /**
@@ -91,19 +88,6 @@ public class CartOperations {
         } catch (FDInvalidConfigurationException ignore) {
             LOG.warn("Failed to generate coremetrics data", ignore);
         }
-    }
-
-    public static String generateFormattedCouponMessage(FDCustomerCoupon coupon, EnumCouponStatus status) {
-        if (!status.isDisplayMessage()) {
-            return "";
-        }
-
-        FDCouponTag manFdCouponTag = new FDCouponTag();
-        manFdCouponTag.setCoupon(coupon);
-        manFdCouponTag.setCouponStatusText(status.getDescription());
-        manFdCouponTag.initContent(null);
-
-        return manFdCouponTag.getStatusTextHtml();
     }
 
     public static void changeQuantity(FDUserI user, FDCartModel cart, FDCartLineI cartLine, double newQ, String serverName) {
@@ -174,7 +158,7 @@ public class CartOperations {
                     cartLine.setOrderId(((FDModifyCartModel) cart).getOriginalOrder().getSale().getId());
                     updateModifiedCartlineQuantity(cartLine);
                 }
-                logEditCart(user, cartLine, product, serverName);
+                logEditCart(user, cartLine, serverName);
 
             } else {
                 // Modify order cart
@@ -189,7 +173,7 @@ public class CartOperations {
                 } else if (deltaQty < 0) {
                     // need to remove some
                     cartLine.setQuantity(newQ);
-                    logEditCart(user, cartLine, product, serverName);
+                    logEditCart(user, cartLine, serverName);
 
                 } else {
                     // deltaQty > 0, see how much can we add to this orderline
@@ -200,7 +184,7 @@ public class CartOperations {
                     if (origDiff > 0) {
                         double addToLine = Math.min(origDiff, deltaQty);
                         cartLine.setQuantity(oldQ + addToLine);
-                        logEditCart(user, cartLine, product, serverName);
+                        logEditCart(user, cartLine, serverName);
                         deltaQty -= addToLine;
                     }
 
@@ -287,12 +271,6 @@ public class CartOperations {
         }
 
         // Fetch additional data
-        ProductModel product = cartLine.lookupProduct();
-        if (product == null) {
-            LOG.error("Failed to get product node for " + cartLine.getCategoryName() + " / " + cartLine.getProductName() + ", skipping.");
-            return;
-        }
-
         FDProduct fdProduct = cartLine.lookupFDProduct();
         if (fdProduct == null) {
             LOG.error("Failed to get fdproduct for " + cartLine.getCategoryName() + " / " + cartLine.getProductName() + ", skipping.");
@@ -313,7 +291,7 @@ public class CartOperations {
                 }
 
                 cartLine.setSalesUnit(newSalesUnit);
-                logEditCart(user, cartLine, product, serverName);
+                logEditCart(user, cartLine, serverName);
 
                 saveUserAndCart(user, cart);
             }
@@ -336,13 +314,6 @@ public class CartOperations {
             return;
         }
 
-        // Fetch additional data
-        ProductModel product = cartLine.lookupProduct();
-        if (product == null) {
-            LOG.error("Failed to get product node for " + cartLine.getCategoryName() + " / " + cartLine.getProductName() + ", skipping.");
-            return;
-        }
-
         synchronized (cart) {
 
             if (cartLine instanceof FDCartLineModel) {
@@ -351,7 +322,7 @@ public class CartOperations {
 
             cart.removeOrderLine(cartLine);
 
-            logRemoveFromCart(user, cartLine, product, serverName);
+            logRemoveFromCart(user, cartLine, serverName);
 
             saveUserAndCart(user, cart);
         }
@@ -385,40 +356,33 @@ public class CartOperations {
         }
     }
 
-    private static void logEditCart(FDUserI user, FDCartLineI cartLine, ProductModel product, String serverName) {
+    private static void logEditCart(FDUserI user, FDCartLineI cartLine, String serverName) {
         FDCartLineEvent event = new FDEditCartEvent();
         event.setEventType(FDEventFactory.FD_MODIFY_CART_EVENT);
-        logCartEvent(event, user, cartLine, product, EnumEventSource.CART, serverName);
+        logCartEvent(event, user, cartLine, EnumEventSource.CART, serverName);
     }
 
     private static void logAddToCart(FDUserI user, FDCartLineI cartLine, ProductModel product, String serverName) {
         FDCartLineEvent event = new FDAddToCartEvent();
         event.setEventType(FDEventFactory.FD_ADD_TO_CART_EVENT);
-        logCartEvent(event, user, cartLine, product, EnumEventSource.CART, serverName);
+        logCartEvent(event, user, cartLine, EnumEventSource.CART, serverName);
     }
 
-    private static void logAddToCart(FDUserI user, List<FDCartLineI> cartLines, EnumEventSource eventSource, String serverName) {
-        for (FDCartLineI cartLine : cartLines) {
-            FDCartLineEvent event = new FDAddToCartEvent();
-            event.setEventType(FDEventFactory.FD_ADD_TO_CART_EVENT);
-            ProductModel product = cartLine.lookupProduct();
-            logCartEvent(event, user, cartLine, product, eventSource, serverName);
-        }
-    }
-
-    private static void logRemoveFromCart(FDUserI user, FDCartLineI cartLine, ProductModel product, String serverName) {
+    private static void logRemoveFromCart(FDUserI user, FDCartLineI cartLine, String serverName) {
         FDCartLineEvent event = new FDRemoveCartEvent();
         event.setEventType(FDEventFactory.FD_REMOVE_CART_EVENT);
-        logCartEvent(event, user, cartLine, product, EnumEventSource.CART, serverName);
+        logCartEvent(event, user, cartLine, EnumEventSource.CART, serverName);
     }
 
-    private static void logCartEvent(FDCartLineEvent event, FDUserI user, FDCartLineI cartLine, ProductModel product, EnumEventSource eventSource, String serverName) {
+    private static void logCartEvent(FDCartLineEvent event, FDUserI user, FDCartLineI cartLine, EnumEventSource eventSource, String serverName) {
         try {
 
             FDIdentity identity = user.getIdentity();
             if (identity != null) {
                 event.setCustomerId(identity.getErpCustomerPK());
             }
+
+            ProductModel productModel = cartLine.lookupProduct();
 
             event.setServer(serverName);
             event.setCookie(user.getCookie());
@@ -430,9 +394,17 @@ public class CartOperations {
             event.setApplication(src != null ? src.getCode() : EnumTransactionSource.WEBSITE.getCode());
 
             event.setCartlineId(cartLine.getCartlineId());
-            event.setDepartment(product.getDepartment().getContentName());
-            event.setCategoryId(cartLine.getCategoryName());
-            event.setProductId(cartLine.getProductName());
+            if (productModel != null) {
+                DepartmentModel departmentModel = productModel.getDepartment();
+                if (departmentModel != null) {
+                    event.setDepartment(departmentModel.getContentKey().id);
+                }
+                CategoryModel categoryModel = productModel.getCategory();
+                if (categoryModel != null) {
+                    event.setCategoryId(categoryModel.getContentKey().id);
+                }
+                event.setProductId(productModel.getContentKey().id);
+            }
             event.setSkuCode(cartLine.getSkuCode());
             event.setQuantity(String.valueOf(cartLine.getQuantity()));
             event.setSalesUnit(cartLine.getSalesUnit());
@@ -464,112 +436,6 @@ public class CartOperations {
 
     // =========================================== Methods for add to cart processing ===========================================
 
-    public static ProductModel getProductModelFromAddToCartItem(AddToCartItem item, AddToCartResponseDataItem responseItem) {
-
-        String skuCode = item.getSkuCode();
-        responseItem.setItemId(item.getAtcItemId());
-        if (skuCode == null || "".equals(skuCode)) {
-            // Missing skuCode
-            responseItem.setStatus(Status.ERROR);
-            responseItem.setMessage("Not available (SKU not specified)");
-            return null;
-        }
-
-        String productId = item.getProductId();
-        String categoryId = item.getCategoryId();
-
-        // TODO : what is the extra trick with wine categories?
-        // if (request.getParameter(paramWineCatId) != null)
-        // catName = request.getParameter(paramWineCatId);
-        // else
-        // catName = request.getParameter(paramCatId);
-
-        ProductModel prodNode = null;
-        try {
-            if (productId != null && categoryId != null) {
-                prodNode = ContentFactory.getInstance().getProductByName(categoryId, productId);
-            }
-            if (prodNode == null) {
-                prodNode = ContentFactory.getInstance().getProduct(skuCode);
-            }
-        } catch (FDSkuNotFoundException ex) {
-            responseItem.setStatus(Status.ERROR);
-            responseItem.setMessage("Not available (SKU not found)");
-            return null;
-        }
-
-        if (prodNode == null) {
-            responseItem.setStatus(Status.ERROR);
-            responseItem.setMessage("Not available (SKU not found)");
-            return null;
-        }
-
-        if (prodNode.getSku(skuCode).isUnavailable()) {
-            responseItem.setStatus(Status.ERROR);
-            responseItem.setMessage("Product not available (unavailable sku)");
-            return null;
-        }
-
-        return prodNode;
-    }
-
-    public static FDProduct getFDProductFromAddToCartItem(AddToCartItem item, AddToCartResponseDataItem responseItem) {
-
-        String skuCode = item.getSkuCode();
-        FDProduct product = null;
-        try {
-            product = FDCachedFactory.getProduct(FDCachedFactory.getProductInfo(skuCode));
-        } catch (FDResourceException fdre) {
-            responseItem.setStatus(Status.ERROR);
-            responseItem.setMessage("Not available (system error)");
-            return null;
-        } catch (FDSkuNotFoundException fdsnfe) {
-            responseItem.setStatus(Status.ERROR);
-            responseItem.setMessage("Not available (SKU not found)");
-            return null;
-        }
-        return product;
-    }
-
-    public static double calculateInCartAmount(ProductModel product, List<FDCartLineI> cartLinesToAdd, FDCartModel cart, double quantity) {
-
-        double amount = getCartlinesQuantity(product, cartLinesToAdd); // items not yet added
-        amount += cart.getTotalQuantity(product);
-        amount += quantity; // this item
-
-        return amount;
-    }
-
-    /**
-     * Deduce the quantity that has already been processed but not yet added to the cart.
-     *
-     * Salvaged from FDShoppingCartControllerTag.
-     *
-     * @param product
-     * @return total quantity of product already processed
-     */
-    private static double getCartlinesQuantity(ProductModel product, List<FDCartLineI> cartLinesToAdd) {
-        String productId = product.getContentName();
-        double sum = 0;
-        for (final FDCartLineI line : cartLinesToAdd) {
-            if (productId.equals(line.getProductName())) {
-                sum += line.getQuantity();
-            }
-        }
-        return sum;
-    }
-
-    public static double extractQuantity(AddToCartItem item) {
-        double quantity = 0.0;
-        try {
-            quantity = Double.parseDouble(item.getQuantity());
-        } catch (NumberFormatException ignore) {
-        } catch (NullPointerException ignore) {
-        }
-
-        return quantity;
-    }
-
     public static double extractMaximumQuantity(FDUserI user, String lineId, ProductModel prodNode) {
         double maximumQuantity = 0.0;
         MasqueradeContext context = user.getMasqueradeContext();
@@ -579,6 +445,32 @@ public class CartOperations {
             maximumQuantity = user.getQuantityMaximum(prodNode);
         }
         return maximumQuantity;
+    }
+
+    public static List<FDCartLineI> removeUnavailableCartLines(final FDCartModel cart, final FDUserI fdUser) {
+        final ZoneInfo zoneInfo = fdUser.getUserContext().getPricingContext().getZoneInfo();
+
+        final List<FDCartLineI> unavailableCartLines = new ArrayList<FDCartLineI>();
+        for (FDCartLineI cartLine : cart.getOrderLines()) {
+            try {
+                FDProductInfo productInfo = FDCachedFactory.getProductInfo(cartLine.getSkuCode());
+                if (!productInfo.isAvailable(zoneInfo.getSalesOrg(), zoneInfo.getDistributionChanel())) {
+                    unavailableCartLines.add(cartLine);
+                }
+            } catch (FDException e) {
+                LOG.error("Error raised while looking up fdProductInfo for cart line with SKU " + cartLine.getSkuCode(), e);
+                unavailableCartLines.add(cartLine);
+            }
+        }
+
+        if (!unavailableCartLines.isEmpty()) {
+            final String serverName = fdUser.getServerName();
+            for (FDCartLineI cartLine : unavailableCartLines) {
+                CartOperations.removeCartLine(fdUser, cart, cartLine, serverName);
+                LOG.debug("REMOVED cartLine: " + cartLine.getCartlineId() + "; SKU: " + cartLine.getSkuCode()+ "; Customer: " + fdUser.getIdentity());
+            }
+        }
+        return unavailableCartLines;
     }
 
 }

@@ -194,6 +194,7 @@ var dataLayer = window.dataLayer || [];
                 dimension6: productData.newProduct,
                 sku: productData.sku,
                 dimension3: ""+true,
+                position: fd.gtm.getPositionForProductId(productData.id),
                 quantity: qty > 0 ? qty : -qty
               }]
           },
@@ -706,7 +707,7 @@ var dataLayer = window.dataLayer || [];
   fd.gtm.getListChannel = function (el, config) {
     var channel,
         urlPageType = fd.utils.getParameterByName('pageType'),
-        pageType = fd.gtm.data && fd.gtm.data.googleAnalyticsData && fd.gtm.data.googleAnalyticsData.pageType && fd.gtm.data.googleAnalyticsData.pageType.pageType,
+        pageType = fd.gtm.data && fd.gtm.data.googleAnalyticsData && fd.gtm.data.googleAnalyticsData.pageType && fd.gtm.data.googleAnalyticsData.pageType.pageType || 'unknown',
         isHookLogic = (el && $(el).hasClass('isHookLogicProduct')) || (config && config.product && config.product.clickBeacon),
         productData = fd.modules.common.productSerialize(el)[0];
 
@@ -736,7 +737,7 @@ var dataLayer = window.dataLayer || [];
     var urlPageType = fd.utils.getParameterByName('pageType'),
         productId = fd.utils.getParameterByName('productId'),
         searchParams = fd.utils.getParameterByName('searchParams'),
-        pageType = fd.gtm.data && fd.gtm.data.googleAnalyticsData && fd.gtm.data.googleAnalyticsData.pageType && fd.gtm.data.googleAnalyticsData.pageType.pageType,
+        pageType = fd.gtm.data && fd.gtm.data.googleAnalyticsData && fd.gtm.data.googleAnalyticsData.pageType && fd.gtm.data.googleAnalyticsData.pageType.pageType || 'unknown',
         location = urlPageType || pageType || '';
 
     if (window.location.pathname.indexOf('/pdp.jsp') > -1 && productId) {
@@ -842,6 +843,17 @@ var dataLayer = window.dataLayer || [];
     var el = document.querySelector('[data-product-id="'+id+'"]');
 
     return fd.gtm.getListForProduct(el, config);
+  };
+
+  fd.gtm.getPositionForProductId = function (id) {
+    var el = document.querySelector('[data-product-id="'+id+'"]'),
+        position = 1;
+
+    if (el && el.parentElement) {
+      position = Array.prototype.slice.call(el.parentElement.children).indexOf(el) + 1;
+    }
+
+    return position;
   };
 
 }(FreshDirect));

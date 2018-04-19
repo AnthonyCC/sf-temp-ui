@@ -9,6 +9,9 @@ package com.freshdirect.customer;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 /**
  *
  * @author  mrose
@@ -72,7 +75,8 @@ public class EnumTransactionType implements java.io.Serializable {
         this.updatable = updatable;
         CODE_MAP.put( this.code, this );
     }
-	public String getCode(){
+    @JsonValue
+    public String getCode(){
 		return this.code;
 	}
 
@@ -80,6 +84,7 @@ public class EnumTransactionType implements java.io.Serializable {
         return this.name;
     }
     
+    @JsonCreator
     public static EnumTransactionType getTransactionType(String code){
 		return (EnumTransactionType) CODE_MAP.get( code.toUpperCase() );
 	}

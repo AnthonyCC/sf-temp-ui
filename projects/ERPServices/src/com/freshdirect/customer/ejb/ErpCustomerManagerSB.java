@@ -57,6 +57,7 @@ import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDConfiguredProduct;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
 
@@ -66,6 +67,15 @@ import com.freshdirect.payment.EnumPaymentMethodType;
  * @version $Revision:52$
  * @author $Author:Viktor Szathmary$
  */
+
+/**
+ *@deprecated Please use the OrderResource in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
+
+
 public interface ErpCustomerManagerSB extends EJBObject {
     
     /**

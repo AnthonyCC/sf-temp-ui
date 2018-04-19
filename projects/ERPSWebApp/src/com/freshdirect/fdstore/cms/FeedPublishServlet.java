@@ -26,6 +26,7 @@ public class FeedPublishServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
         // UTF-8 needs to be enforced here, because the spring template does not enforce it.
+		LOGGER.info("Feed publish started from SF");
         request.setCharacterEncoding("UTF-8");
 		String feedData = request.getParameter("feedData");
 		String feedId = request.getParameter("feedId");
@@ -43,6 +44,7 @@ public class FeedPublishServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
         // UTF-8 needs to be enforced here, because the spring template does not enforce it.
+		LOGGER.info("Feed publish started from SF");
         request.setCharacterEncoding("UTF-8");
 		String feedData = request.getParameter("feedData");
 		String feedId = request.getParameter("feedId");

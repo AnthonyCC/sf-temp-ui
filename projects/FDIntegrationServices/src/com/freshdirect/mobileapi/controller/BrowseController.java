@@ -57,6 +57,7 @@ public class BrowseController extends BaseController {
     private static final String ACTION_GET_CATALOG_KEY_FOR_SESSION="getCatalogKeyForCurrentSession";
     private static final String ACTION_GET_SORT_OPTIONS_FOR_CATEGORY = "getSortOptionsForCategory";
     private static final String ACTION_GET_ALL_PRODUCTS_EX = "getAllProductsEX";
+    private static final String ACTION_GET_SALE_ITEMS = "getSaleItems";
 
     @Override
 	protected boolean validateUser() {
@@ -84,6 +85,14 @@ public class BrowseController extends BaseController {
         }
         if (ACTION_GET_CATEGORIES_SORT_DETAILED.equals(action)) {
             BrowsePageResponse res = BrowseUtil.getBrowseResponse(user, request);
+            setResponseMessage(model, res, user);
+            long endTime = System.currentTimeMillis();
+            LOG.debug(((endTime - startTime) / 1000) + " seconds");
+            return model;
+        }
+        
+        if (ACTION_GET_SALE_ITEMS.equals(action)) {
+        	BrowsePageResponse res = BrowseUtil.getSaleItems(user, request);
             setResponseMessage(model, res, user);
             long endTime = System.currentTimeMillis();
             LOG.debug(((endTime - startTime) / 1000) + " seconds");

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.webapp.ajax.expresscheckout.coremetrics.service.CoremetricsService;
 import com.freshdirect.webapp.ajax.expresscheckout.data.DrawerData;
@@ -36,9 +37,13 @@ public class DrawerService {
 
 	private List<DrawerData> loadDrawers(FDUserI user) {
 		List<DrawerData> drawers = new ArrayList<DrawerData>();
-		drawers.add(loadDeliveryAddressDrawer(user));
-		drawers.add(loadTimeslotDrawer(user));
-		drawers.add(loadPaymentDrawer());
+		if(FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && user.getShoppingCart().containsDlvPassOnly()){
+			drawers.add(loadPaymentDrawer());
+		} else {
+			drawers.add(loadDeliveryAddressDrawer(user));
+			drawers.add(loadTimeslotDrawer(user));
+			drawers.add(loadPaymentDrawer());
+		}
 		return drawers;
 	}
 

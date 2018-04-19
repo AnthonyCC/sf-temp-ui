@@ -24,6 +24,7 @@ import org.dom4j.Document;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.customer.EnumDeliveryType;
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpComplaintModel;
 import com.freshdirect.customer.ErpCustomerEmailModel;
@@ -34,7 +35,6 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCSContactHours;
 import com.freshdirect.fdstore.customer.FDCSContactHoursUtil;
-import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDOrderI;
@@ -144,6 +144,11 @@ public class FDEmailFactory {
 			email.setFromEmail(FDX_ORDER_EMAIL); //add to email's data for footer text
 			email.setFromAddress(new EmailAddress(FDX_GENERAL_LABEL, FDX_ORDER_EMAIL));
 			email.setSubject("We Got Your Order. Get Excited!");
+		} else if (order.getOrderType().equals(EnumSaleType.SUBSCRIPTION)){
+			email = new FDTransactionalEmail(customer, order);	
+			email.setXslPath("h_delivery_pass_order_confirm_v1.xsl", "h_delivery_pass_order_confirm_v1.xsl");
+			email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
+			email.setSubject("Thank You for Purchasing a DeliveryPass");
 		} else {
 			email = new FDTransactionalEmail(customer, order);
 	

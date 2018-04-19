@@ -233,13 +233,6 @@ public class OrderServiceApiClient extends AbstractEcommService implements Order
 		
 	}
 
-	private <T> T parseResponse(Response<T> info) throws FDResourceException {
-		if(info!=null && info.getResponseCode().equalsIgnoreCase("OK")){
-			return info.getData();
-		}else{
-			throw new FDResourceException("API error");
-		}
-	}
 
 	@Override
 	public List<DlvSaleInfo> getOrdersByTruck(String truckNumber, Date dlvDate) throws RemoteException {

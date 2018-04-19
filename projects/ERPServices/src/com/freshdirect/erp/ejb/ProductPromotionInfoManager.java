@@ -1,8 +1,6 @@
 package com.freshdirect.erp.ejb;
 
 import java.rmi.RemoteException;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -21,30 +19,30 @@ import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.service.FDECommerceService;
 
 public class ProductPromotionInfoManager {
 
 	private static Category LOGGER = LoggerFactory.getInstance(ProductPromotionInfoManager.class);
-	
+
 	private static ErpProductPromotionInfoHome managerHome = null;
-	
-	public static Map<ZoneInfo,List<FDProductPromotionInfo>> getAllProductsByType(String ppType) throws FDResourceException{
-		lookupManagerHome();
-		Map<ZoneInfo,List<FDProductPromotionInfo>> productPromoInfoMap=null;
+
+	public static Map<ZoneInfo, List<FDProductPromotionInfo>> getAllProductsByType(String ppType)
+			throws FDResourceException {
+		Map<ZoneInfo, List<FDProductPromotionInfo>> productPromoInfoMap = null;
 		try {
-			long startTime=  startIntervalTimer();
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpProductPromotionInfoSB)){
-				
-				productPromoInfoMap=FDECommerceService.getInstance().getAllProductsByType(ppType);
-				logTimeInterval(startTime,"FDECommerceService.getAllProductsByType" );
-			}else{
-				
+			long startTime = startIntervalTimer();
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpProductPromotionInfoSB)) {
+				productPromoInfoMap = FDECommerceService.getInstance().getAllProductsByType(ppType);
+				logTimeInterval(startTime, "FDECommerceService.getAllProductsByType");
+
+			} else {
+				lookupManagerHome();
 				ErpProductPromotionInfoSB sb = managerHome.create();
-				productPromoInfoMap =sb.getAllProductsByType(ppType);
-				logTimeInterval(startTime,"ErpProductPromotionInfoSB.getAllProductsByType" );
+				productPromoInfoMap = sb.getAllProductsByType(ppType);
+				logTimeInterval(startTime, "ErpProductPromotionInfoSB.getAllProductsByType");
+
 			}
 
 			return productPromoInfoMap;
@@ -54,22 +52,24 @@ public class ProductPromotionInfoManager {
 		} catch (RemoteException re) {
 			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
-		}		
+		}
 	}
-	
-	public static Map<ZoneInfo,List<FDProductPromotionInfo>> getAllProductsByType(String ppType, Date lastPublished) throws FDResourceException{
-		lookupManagerHome();
-		Map<ZoneInfo,List<FDProductPromotionInfo>> productPromoInfoMap= null;
+
+	public static Map<ZoneInfo, List<FDProductPromotionInfo>> getAllProductsByType(String ppType, Date lastPublished)
+			throws FDResourceException {
+		
+		Map<ZoneInfo, List<FDProductPromotionInfo>> productPromoInfoMap = null;
 		try {
-			long startTime=  startIntervalTimer();
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpProductPromotionInfoSB)){
-				
-				productPromoInfoMap= FDECommerceService.getInstance().getAllProductsByType(ppType,lastPublished);
-				logTimeInterval(startTime,"FDECommerceService.getAllProductsByType-date" );
-			}else{
-			ErpProductPromotionInfoSB sb = managerHome.create();
-			productPromoInfoMap =sb.getAllProductsByType(ppType,lastPublished);
-			logTimeInterval(startTime,"ErpProductPromotionInfoSB.getAllProductsByType-date" );
+			long startTime = startIntervalTimer();
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpProductPromotionInfoSB)) {
+
+				productPromoInfoMap = FDECommerceService.getInstance().getAllProductsByType(ppType, lastPublished);
+				logTimeInterval(startTime, "FDECommerceService.getAllProductsByType-date");
+			} else {
+				lookupManagerHome();
+				ErpProductPromotionInfoSB sb = managerHome.create();
+				productPromoInfoMap = sb.getAllProductsByType(ppType, lastPublished);
+				logTimeInterval(startTime, "ErpProductPromotionInfoSB.getAllProductsByType-date");
 			}
 			return productPromoInfoMap;
 		} catch (CreateException ce) {
@@ -78,9 +78,9 @@ public class ProductPromotionInfoManager {
 		} catch (RemoteException re) {
 			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
-		}		
+		}
 	}
-	
+
 	private static void lookupManagerHome() throws FDResourceException {
 		if (managerHome != null) {
 			return;
@@ -101,46 +101,48 @@ public class ProductPromotionInfoManager {
 			}
 		}
 	}
-	
+
 	public static List<ErpZoneMasterInfo> getAllZoneInfoDetails() throws FDResourceException {
-	     
-		
-		List<ErpZoneMasterInfo> zoneInfo=null;
-		try{
-			ErpZoneInfoHome home=getErpZoneInfoHome();
-			ErpZoneInfoSB remote= home.create();
-			long startTime=  startIntervalTimer();
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpZoneInfoSB)){
-				zoneInfo= FDECommerceService.getInstance().getAllZoneInfoDetails();
-				logTimeInterval(startTime,"FDECommerceService.getAllZoneInfoDetails" );
-			}else{
-			zoneInfo=remote.getAllZoneInfoDetails();
-			logTimeInterval(startTime,"ErpProductPromotionInfoSB.getAllZoneInfoDetails" );
+
+		List<ErpZoneMasterInfo> zoneInfo = null;
+		try {
+			
+			long startTime = startIntervalTimer();
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpZoneInfoSB)) {
+				zoneInfo = FDECommerceService.getInstance().getAllZoneInfoDetails();
+				logTimeInterval(startTime, "FDECommerceService.getAllZoneInfoDetails");
+			} else {
+				ErpZoneInfoHome home = getErpZoneInfoHome();
+				ErpZoneInfoSB remote = home.create();
+				zoneInfo = remote.getAllZoneInfoDetails();
+				logTimeInterval(startTime, "ErpProductPromotionInfoSB.getAllZoneInfoDetails");
 			}
-		}catch(CreateException sqle){
+		} catch (CreateException sqle) {
 			invalidateManagerHome();
-			LOGGER.error("Unable to load all getAllZoneInfoDetails " , sqle);			
+			LOGGER.error("Unable to load all getAllZoneInfoDetails ", sqle);
 			throw new FDResourceException(sqle);
 		} catch (RemoteException re) {
 			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 		return zoneInfo;
-				
-	}	
-	
-	public static ErpProductPromotionPreviewInfo getProductPromotionPreviewInfo(String ppPreviewId)throws FDResourceException{
-//		lookupManagerHome();
+
+	}
+
+	public static ErpProductPromotionPreviewInfo getProductPromotionPreviewInfo(String ppPreviewId)
+			throws FDResourceException {
+		// lookupManagerHome();
 		ErpProductPromotionPreviewInfo erpProductPromotionPreviewInfo;
 		try {
-			long startTime=  startIntervalTimer();
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpProductPromotionInfoSB)){
-				erpProductPromotionPreviewInfo=	FDECommerceService.getInstance().getProductPromotionPreviewInfo(ppPreviewId);
-				logTimeInterval(startTime,"FDECommerceService.getProductPromotionPreviewInfo" );
-			}else{
-			ErpProductPromotionInfoSB sb = managerHome.create();
-			erpProductPromotionPreviewInfo =sb.getProductPromotionPreviewInfo(ppPreviewId);
-			logTimeInterval(startTime,"ErpProductPromotionInfoSB.getProductPromotionPreviewInfo" );
+			long startTime = startIntervalTimer();
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpProductPromotionInfoSB)) {
+				erpProductPromotionPreviewInfo = FDECommerceService.getInstance()
+						.getProductPromotionPreviewInfo(ppPreviewId);
+				logTimeInterval(startTime, "FDECommerceService.getProductPromotionPreviewInfo");
+			} else {
+				ErpProductPromotionInfoSB sb = managerHome.create();
+				erpProductPromotionPreviewInfo = sb.getProductPromotionPreviewInfo(ppPreviewId);
+				logTimeInterval(startTime, "ErpProductPromotionInfoSB.getProductPromotionPreviewInfo");
 			}
 			return erpProductPromotionPreviewInfo;
 		} catch (CreateException ce) {
@@ -149,13 +151,13 @@ public class ProductPromotionInfoManager {
 		} catch (RemoteException re) {
 			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
-		}	
+		}
 	}
-		
+
 	private static void invalidateManagerHome() {
 		managerHome = null;
 	}
-	
+
 	private static ErpZoneInfoHome getErpZoneInfoHome() {
 		Context ctx = null;
 		try {
@@ -171,22 +173,24 @@ public class ProductPromotionInfoManager {
 			} catch (NamingException ne) {
 				LOGGER.warn("Cannot close Context while trying to cleanup", ne);
 			}
-		}		
+		}
 	}
-		
-	public static Map<String,Map<ZoneInfo,List<FDProductPromotionInfo>>> getAllPromotionsByType(String ppType,Date lastPublishedDate) throws FDResourceException{
-//		lookupManagerHome();
-		Map<String,Map<ZoneInfo,List<FDProductPromotionInfo>>> productPromoInfoMap;
+
+	public static Map<String, Map<ZoneInfo, List<FDProductPromotionInfo>>> getAllPromotionsByType(String ppType,
+			Date lastPublishedDate) throws FDResourceException {
+		// lookupManagerHome();
+		Map<String, Map<ZoneInfo, List<FDProductPromotionInfo>>> productPromoInfoMap;
 		try {
-			long startTime=  startIntervalTimer();
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpProductPromotionInfoSB)){
-			productPromoInfoMap= FDECommerceService.getInstance().getAllPromotionsByType(ppType,lastPublishedDate);
-			logTimeInterval(startTime,"FDECommerceService.getAllPromotionsByType" );
-			}else{
-			ErpProductPromotionInfoSB sb = managerHome.create();
-			productPromoInfoMap =sb.getAllPromotionsByType(ppType,lastPublishedDate);
-			logTimeInterval(startTime,"ErpProductPromotionInfoSB.getAllPromotionsByType" );
-			
+			long startTime = startIntervalTimer();
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpProductPromotionInfoSB)) {
+				productPromoInfoMap = FDECommerceService.getInstance().getAllPromotionsByType(ppType,
+						lastPublishedDate);
+				logTimeInterval(startTime, "FDECommerceService.getAllPromotionsByType");
+			} else {
+				ErpProductPromotionInfoSB sb = managerHome.create();
+				productPromoInfoMap = sb.getAllPromotionsByType(ppType, lastPublishedDate);
+				logTimeInterval(startTime, "ErpProductPromotionInfoSB.getAllPromotionsByType");
+
 			}
 			return productPromoInfoMap;
 		} catch (CreateException ce) {
@@ -195,32 +199,38 @@ public class ProductPromotionInfoManager {
 		} catch (RemoteException re) {
 			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
-		}		
+		}
 	}
-	
-	public static long startIntervalTimer(){
-		
-		 return System.currentTimeMillis();
+
+	public static long startIntervalTimer() {
+
+		return System.currentTimeMillis();
 	}
+
 	/**
 	 * returns the difference between the start time and the current time in Mills
+	 * 
 	 * @param startTime
 	 * @return
 	 */
-	public static long diffIntervalTimer(long startTime){
-		
-		 return (System.currentTimeMillis() -startTime ) ;
+	public static long diffIntervalTimer(long startTime) {
+
+		return (System.currentTimeMillis() - startTime);
 	}
+
 	/**
 	 * Logs the elapsed time of an operation
-	 * @param startTime the start time in ms
-	 * @param methodName, indicating sb or rst call.
+	 * 
+	 * @param startTime
+	 *            the start time in ms
+	 * @param methodName,
+	 *            indicating sb or rst call.
 	 */
-	public static  void logTimeInterval(long startTime, String methodName){
-		
+	public static void logTimeInterval(long startTime, String methodName) {
+
 		long totalElapsedTime = diffIntervalTimer(startTime);
-		LOGGER.info(methodName+  "Elapsed Time = "+totalElapsedTime+" ms" );
-		
+		LOGGER.info(methodName + "Elapsed Time = " + totalElapsedTime + " ms");
+
 	}
-	
+
 }

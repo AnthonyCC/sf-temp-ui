@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.core.domain.ContentTypes;
 import com.freshdirect.fdstore.FDNotFoundException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -56,17 +57,17 @@ public class DatasourceService {
     private SectionDataCointainer generateBrowseProductsForViewAll(ContentNodeI module, FDUserI user)
             throws FDResourceException, InvalidFilteringArgumentException, FDNotFoundException {
         ContentNodeI category = CmsManager.getInstance().getContentNode((ContentKey) module.getAttributeValue("sourceNode"));
-        String categoryId=null;
-        if(category!=null && category.getKey()!=null)
-        	categoryId = category.getKey().getId();
+        String categoryId = null;
+        if (category != null && category.getKey() != null)
+            categoryId = category.getKey().getId();
         return ModuleContentService.getDefaultService().loadBrowseSectionDataContainer(categoryId, user);
     }
 
     private List<ProductData> generateBrowseProducts(ContentNodeI module, FDUserI user) throws FDResourceException, InvalidFilteringArgumentException, FDNotFoundException {
         ContentNodeI category = CmsManager.getInstance().getContentNode((ContentKey) module.getAttributeValue("sourceNode"));
-        String categoryId=null;
-        if(category!=null && category.getKey()!=null)
-        	categoryId = category.getKey().getId();
+        String categoryId = null;
+        if (category != null && category.getKey() != null)
+            categoryId = category.getKey().getId();
         return ModuleContentService.getDefaultService().loadBrowseProducts(categoryId, user);
     }
 
@@ -197,8 +198,8 @@ public class DatasourceService {
 
     }
 
-    private ModuleData populateModuleData(ContentNodeI module, FDUserI user, HttpSession session, boolean showAllProducts) throws FDResourceException,
-            InvalidFilteringArgumentException, FDNotFoundException {
+    private ModuleData populateModuleData(ContentNodeI module, FDUserI user, HttpSession session, boolean showAllProducts)
+            throws FDResourceException, InvalidFilteringArgumentException, FDNotFoundException {
         ModuleData moduleData = new ModuleData();
         DatasourceType datasourceEnum = DatasourceType.convertAttributeValueToDatasourceType((String) module.getAttributeValue("productSourceType"));
         ModuleSourceType moduleSourceType = ModuleSourceType.convertAttributeValueToModuleSourceType(ContentNodeUtil.getStringAttribute(module, "displayType"));
@@ -211,9 +212,6 @@ public class DatasourceService {
         switch (datasourceEnum) {
             case MOST_POPULAR_PRODUCTS:
                 products = ModuleContentService.getDefaultService().generateRecommendationProducts(session, user, MOST_POPULAR_PRODUCTS_SITE_FEATURE);
-                //moduleData.setCriteoHomeProducts(Criteo.getHomeAdProduct(u\er));
-                //moduleData.setAdProducts(Criteo.getHomeAdProduct(user));
-                //moduleData.setAdPrdPageBeacon();
                 break;
             case TOP_ITEMS:
                 products = ModuleContentService.getDefaultService().generateRecommendationProducts(session, user, TOP_ITEMS_SITE_FEATURE);
@@ -238,10 +236,9 @@ public class DatasourceService {
                 break;
             case BROWSE:
                 // Special view all for browse data source with product lists.
-            	if (showAllProducts && ModuleSourceType.PRODUCT_LIST_MODULE.equals(moduleSourceType)) {
-            		sectionDataContainer = generateBrowseProductsForViewAll(module, user);
-            	}
-            	else {
+                if (showAllProducts && ModuleSourceType.PRODUCT_LIST_MODULE.equals(moduleSourceType)) {
+                    sectionDataContainer = generateBrowseProductsForViewAll(module, user);
+                } else {
                     products = generateBrowseProducts(module, user);
                 }
                 break;
@@ -255,11 +252,16 @@ public class DatasourceService {
                 products = ModuleContentService.getDefaultService().loadStaffPicksProducts(user);
                 break;
             case CRITEO:
-            	if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.hooklogic2016, user))
-            	CriteoProductsUtil.getHlHomePgBrandProducts(user, moduleData);
-            		break;
+                if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.hooklogic2016, user))
+                    CriteoProductsUtil.getHlHomePgBrandProducts(user, moduleData);
+                break;
             default:
                 break;
+        }
+
+        final boolean randomizeProductOrder = ContentNodeUtil.getBooleanAttribute(module, ContentTypes.Module.randomizeProductOrder.getName());
+        if (randomizeProductOrder) {
+            java.util.Collections.shuffle(products);
         }
 
         // LIMIT PRODUCTS

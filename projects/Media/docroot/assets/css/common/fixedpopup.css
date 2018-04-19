@@ -103,8 +103,7 @@
 	line-height: 30px;
 	padding: 0 30px 0 10px;
 }
-.qs-popup-help-icon,
-.qs-popup-close-icon {
+.qs-popup-help-icon, .qs-popup-close-icon, .close-icon {
 	position: absolute;
 	top: 7px;
 	right: 7px;
@@ -118,22 +117,22 @@
 	cursor: pointer;
 	z-index:1;
 }
-.qs-popup-close-icon {
+.qs-popup-close-icon, .close-icon {
   display: none;
-	top: -35px;
+  top: -35px;
   right: -35px;
-	width: 25px;
-	height: 25px;
-	background: url(/media_stat/images/close.png) no-repeat;
+  width: 25px;
+  height: 25px;
+  background: url(/media_stat/images/close.png) no-repeat;
   background-size: 100%;
 }
-.qs-hidehelp .qs-popup-help-icon {
+.qs-hidehelp .qs-popup-help-icon, .qs-hidehelp .help-icon {
   display: none;
 }
-.qs-hasclose .qs-popup-close-icon {
+.qs-hasclose .qs-popup-close-icon, .qs-hasclose .close-icon {
   display: block;
 }
-.qs-hasclose .qs-popup-help-icon {
+.qs-hasclose .qs-popup-help-icon, .qs-hasclose .help-icon {
   right: 40px;
 }
 .qs-popup-content {
@@ -274,6 +273,6 @@
   max-height:100%;
 }
 
-[data-ismobweb="true"] .qs-popup-close-icon {
+[data-ismobweb="true"] .qs-popup-close-icon, [data-ismobweb="true"] .close-icon {
   right:10px;
 }

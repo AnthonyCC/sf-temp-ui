@@ -3,6 +3,20 @@
   position: relative;
 }
 
+[data-component="drawer"][data-drawer-columns="1"]{
+	max-width: 500px;
+    margin: auto;
+}
+
+[data-component="drawer"][data-drawer-columns="1"] li{
+	list-style: none;
+	padding: 0px 85px;
+}
+[data-component="drawer"][data-drawer-columns="1"] .drawer-content > ul{
+	padding: 0;
+	margin: 0;
+}
+
 [data-component="drawer"] .drawer-header {
     background-color: #fafafa;
     border-bottom: 1px solid #dcdcdc;
@@ -175,4 +189,8 @@
   height: 12px;
   background-color: #dcdcdc;
   margin-bottom: 60px;
+}
+#expresscheckout.deliverypasscheckout #checkout-drawer-footer{
+	max-width: 500px;
+	margin: 0 auto 60px;
 }

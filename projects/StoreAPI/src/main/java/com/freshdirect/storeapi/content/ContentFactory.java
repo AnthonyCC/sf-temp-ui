@@ -26,6 +26,7 @@ import com.freshdirect.cms.cache.CmsCaches;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.cms.core.domain.ContentType;
+import com.freshdirect.cms.draft.domain.DraftContext;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.fdstore.FDCachedFactory;
@@ -975,38 +976,32 @@ public class ContentFactory {
 
     public ContentNodeModel getContentNodeFromCache(ContentKey key) {
         ContentNodeModel model = null;
-        if (isAllowToUseContentCache()) {
-            ValueWrapper valueWrapper = nodesByKeyCache.get(key);
-            if (valueWrapper != null) {
-                model = (ContentNodeModel) valueWrapper.get();
-            }
+        ValueWrapper valueWrapper = nodesByKeyCache.get(getNodeCacheKey(key.toString()));
+        if (valueWrapper != null) {
+            model = (ContentNodeModel) valueWrapper.get();
         }
         return model;
     }
 
     public ContentNodeModel getContentNodeFromCache(String nodeId) {
         ContentNodeModel model = null;
-        if (isAllowToUseContentCache()) {
-            ValueWrapper valueWrapper = nodesByIdCache.get(nodeId);
-            if (valueWrapper != null) {
-                model = (ContentNodeModel) valueWrapper.get();
-            }
+        ValueWrapper valueWrapper = nodesByIdCache.get(getNodeCacheKey(nodeId));
+        if (valueWrapper != null) {
+            model = (ContentNodeModel) valueWrapper.get();
         }
         return model;
     }
 
     public void updateContentNodeCaches(String nodeId, ContentNodeModel nodeModel) {
-        if (nodeModel != null && isAllowToUseContentCache()) {
-            nodesByIdCache.put(nodeId, nodeModel);
-            nodesByKeyCache.put(nodeModel.getContentKey(), nodeModel);
+        if (nodeModel != null) {
+            nodesByIdCache.put(getNodeCacheKey(nodeId), nodeModel);
+            nodesByKeyCache.put(getNodeCacheKey(nodeModel.getContentKey().toString()), nodeModel);
         }
     }
 
     public void removeContentNodeCaches(ContentKey key) {
-        if (isAllowToUseContentCache()) {
-            nodesByIdCache.evict(key.id);
-            nodesByKeyCache.evict(key);
-        }
+        nodesByIdCache.evict(getNodeCacheKey(key.id));
+        nodesByKeyCache.evict(getNodeCacheKey(key.toString()));
     }
 
     public void updateContentKeyCache(String skuCode, ContentKey key) {
@@ -1026,10 +1021,19 @@ public class ContentFactory {
     public boolean isAllowToUseContentCache() {
         return CmsServiceLocator.draftContextHolder().getDraftContext().isMainDraft();
     }
-
+    
     public void evictNodesByCaches() {
         store = null;
         nodesByIdCache.clear();
         nodesByKeyCache.clear();
+    }
+
+    private String getNodeCacheKey(String key) {
+        DraftContext draftContext = CmsServiceLocator.draftContextHolder().getDraftContext();
+        if (draftContext.isMainDraft()) {
+            return key;
+        } else {
+            return Long.toString(draftContext.getDraftId()) + '|' + key;
+        }
     }
 }

@@ -33,10 +33,13 @@ import com.freshdirect.dataloader.payment.PaymentFileType;
 import com.freshdirect.dataloader.payment.SFTPFileProcessor;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementLoaderUtil;
 import com.freshdirect.dataloader.payment.reconciliation.paypal.parsers.PayPalParser;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.ejb.ReconciliationSB;
 import com.freshdirect.payment.gateway.ewallet.impl.PayPalReconciliationSB;
+import com.freshdirect.payment.service.FDECommerceService;
 
 public class PayPalSFTPSettlementLoader {
 	
@@ -97,20 +100,37 @@ public class PayPalSFTPSettlementLoader {
 		try {
 			PayPalSFTPSettlementLoader loader = new PayPalSFTPSettlementLoader();
 			
-			ppReconSB = SettlementLoaderUtil.lookupPPReconciliationHome().create();
-		
-			Map<String, Object> lockInfo = ppReconSB.acquirePPLock(SF.parse(timestamp));
+			
+			Map<String, Object> lockInfo = null;
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaypalReconciliationSB)) {
+				lockInfo = FDECommerceService.getInstance().acquirePPLock(SF.parse(timestamp));
+			} else {
+				ppReconSB = SettlementLoaderUtil.lookupPPReconciliationHome().create();
+				lockInfo = ppReconSB.acquirePPLock(SF.parse(timestamp));
+			}
+			
 			settlementIds = (List<String>) lockInfo.get("settlementIds");
 			
 			PayPalSFTPSettlementLoader.isNEwRecordRequired = (Boolean) lockInfo.get("isNewRecord");
 			
 			loader.loadSettlements();
-			if (settlementIds != null && !settlementIds.isEmpty())
-				ppReconSB.releasePPLock(settlementIds);
+			if (settlementIds != null && !settlementIds.isEmpty()) {
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaypalReconciliationSB)) {
+					FDECommerceService.getInstance().releasePPLock(settlementIds);
+				} else {
+					ppReconSB.releasePPLock(settlementIds);
+				}
+			}
+				
 		} catch (Exception e) {
 			try {
-				if (settlementIds != null && !settlementIds.isEmpty())
-					ppReconSB.releasePPLock(settlementIds);
+				if (settlementIds != null && !settlementIds.isEmpty()){
+					if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaypalReconciliationSB)) {
+						FDECommerceService.getInstance().releasePPLock(settlementIds);
+					} else {
+						ppReconSB.releasePPLock(settlementIds);
+					}
+				}
 			} catch (Exception e2) {
 				LOGGER.info("Exception while releasing PP lock can be ignored ", e2);
 			}

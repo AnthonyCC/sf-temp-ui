@@ -7,9 +7,8 @@ import org.apache.log4j.Logger;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.cms.core.domain.ContentType;
-import com.freshdirect.fdstore.FDNotFoundException;
-import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.storeapi.fdstore.FDContentTypes;
@@ -138,7 +137,7 @@ public class PopulatorUtil {
         return departmentNode;
     }
 
-    public static void isNodeNotFound(final ContentNodeModel node, String... ids) throws FDNotFoundException {
+    public static void isNodeNotFound(final ContentNodeModel node, String... ids) throws FDResourceException {
         String errorMessage = null;
         if (node == null) {
             errorMessage = getNodeNotFoundErrorMessage(NODE_IS_NOT_FOUND_IN_CMS_ERROR_MESSAGE, ids);
@@ -147,11 +146,11 @@ public class PopulatorUtil {
         }
 
         if (errorMessage != null) {
-            throw new FDNotFoundException(errorMessage);
+            throw new FDResourceException(errorMessage);
         }
     }
 
-    public static void isProductNodeNotFound(final ProductModel node, String... ids) throws FDNotFoundException {
+    public static void isProductNodeNotFound(final ProductModel node, String... ids) throws FDResourceException {
         String errorMessage = null;
 
         isNodeNotFound(node, ids);
@@ -161,7 +160,7 @@ public class PopulatorUtil {
         }
 
         if (errorMessage != null) {
-            throw new FDNotFoundException(errorMessage);
+            throw new FDResourceException(errorMessage);
         }
     }
 
@@ -174,13 +173,13 @@ public class PopulatorUtil {
         return errorMessage.toString();
     }
 
-    public static ProductModel getProductByName(String categoryId, String productId) throws FDNotFoundException {
+    public static ProductModel getProductByName(String categoryId, String productId) throws FDResourceException {
         ProductModel productNode = ContentFactory.getInstance().getProductByName(categoryId, productId);
         PopulatorUtil.isProductNodeNotFound(productNode, "categoryId:" + categoryId, "productId:" + productId);
         return productNode;
     }
 
-    public static ProductModel getProductByName(String skuCode) throws FDNotFoundException {
+    public static ProductModel getProductByName(String skuCode) throws FDResourceException {
         ProductModel productNode = null;
         try {
             productNode = ContentFactory.getInstance().getProduct(skuCode);
@@ -191,21 +190,21 @@ public class PopulatorUtil {
         return productNode;
     }
 
-    public static ContentNodeModel getContentNode(String id) throws FDNotFoundException {
+    public static ContentNodeModel getContentNode(String id) throws FDResourceException {
         ContentNodeModel contentNode = ContentFactory.getInstance().getContentNode(id);
         PopulatorUtil.isNodeNotFound(contentNode, "id:" + id);
         return contentNode;
     }
 
-    public static ContentNodeModel getContentNode(ContentType type, String id) throws FDNotFoundException {
+    public static ContentNodeModel getContentNode(ContentType type, String id) throws FDResourceException {
         return PopulatorUtil.getContentNodeByKey(ContentKeyFactory.get(type, id));
     }
 
-    public static ContentNodeModel getContentNodeByKey(String key) throws FDNotFoundException {
+    public static ContentNodeModel getContentNodeByKey(String key) throws FDResourceException {
         return PopulatorUtil.getContentNodeByKey(ContentKeyFactory.get(key));
     }
 
-    public static ContentNodeModel getContentNodeByKey(ContentKey key) throws FDNotFoundException {
+    public static ContentNodeModel getContentNodeByKey(ContentKey key) throws FDResourceException {
         ContentNodeModel contentNode = ContentFactory.getInstance().getContentNodeByKey(key);
         PopulatorUtil.isNodeNotFound(contentNode, "contentkey:" + key);
         return contentNode;

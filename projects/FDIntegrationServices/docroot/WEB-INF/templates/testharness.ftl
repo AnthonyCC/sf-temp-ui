@@ -1105,6 +1105,12 @@ function loadStuff() {
 	var postdata = '{"pageType" : "BROWSE", "id" : "mls_entrees", "pageSize" : "30", "all" : "true", "activePage" : "0", "sortBy" : "Sort_PopularityUp", "orderAsc" : "true", "activeTab" : "product", "aggregateCategories" : "true"}';
   	$("#payload").val(postdata);
 
+  } else if (loaddata == "BrowseGetSaleItems") {
+  	$("#url").val("/browse/getsaleitems/");
+  	$("#header").val('');
+	var postdata = '{"ratingBaseLine" : "4", "popularityBaseLine" : "10000", "dealsBaseLine" : "20", "considerNew" : "false", "considerBackInStock" : "false", "sortProducts" : "true", "maxNoOfProducts" : "50"}';
+  	$("#payload").val(postdata);
+
   } else if (loaddata == "BrowseCategoryWeb") {
   	$("#url").val("/browse/categories/");
   	$("#header").val('{ "X-FD-Extra-Response" : "INCLUDE_USERINFO,INCLUDE_CART" }');
@@ -1689,6 +1695,7 @@ function doStuff() {
   <option value="BrowseDepartment">BROWSE - DEPARTMENT</option>
   <option value="BrowseCategory">BROWSE - CATEGORY</option>
   <option value="BrowseCategorySortDetail">BROWSE - CATEGORY SORT DETAIL</option>
+  <option value="BrowseGetSaleItems">BROWSE - GET SALE ITEMS</option>
   <option value="BrowseCategoryWeb">BROWSE - CATEGORY Web</option>
   <option value="BrowseCategoryContent">BROWSE - CATEGORYCONTENT</option>
   <option value="BrowseCategoryContentProductOnly">BROWSE - CATEGORYCONTENT(Product Only)</option>

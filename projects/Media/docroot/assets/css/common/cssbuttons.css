@@ -397,9 +397,17 @@ span.cssbutton.notext[class*=" icon-"] {
   font-weight: normal;
   text-shadow: none;
 }
-
+/* remove button focus and hover states in reorder pages */
 .cssbutton.white.transparent:hover {
   color: #888;
+  box-shadow: 0 0 1px #bbb, 0 0 8px #bbb;
+  background-color: #ffffff;
+}
+
+.cssbutton.white.transparent:focus{
+  color: #888;
+  box-shadow: 0 0 1px #bbb, 0 0 8px #bbb;
+  background-color: #ffffff;
 }
 
 .cssbutton.round {
@@ -459,4 +467,18 @@ span.cssbutton.notext[class*=" icon-"] {
 a.cssbutton.flat {
   font-weight: normal;
   padding: 5px 20px;
+}
+/* add to list buttons in reorder pages */
+
+#transactionalPopup .portrait-item-atl .addtolist.cssbutton.cssbutton-flat.purpleborder:focus{
+	color: #5fb069 !important;
+    text-decoration: underline !important;
+    outline-style: solid;
+    outline-color: white;
+    outline-width: thick;
+}
+
+button.addtolist.cssbutton.cssbutton-flat.purpleborder:hover{
+    color: #5fb069 !important;
+    text-decoration: underline !important;
 }

@@ -163,7 +163,7 @@ var FreshDirect = FreshDirect || {};
   
   function openAfterPageRender(){
 	  var ex = fd.expressco;
-	  if(ex && ex.data && ex.data.textMessageAlertData && ex.data.textMessageAlertData.show){
+	  if(ex && ex.data && ex.data.textMessageAlertData && ex.data.textMessageAlertData.show && $('.dpn-success-container').length==0){
 		  textalertpopup.open(null, ex.data.textMessageAlertData);
       }else{
     	  if(ex && ex.data && ex.data.goGreenShow){

@@ -2467,6 +2467,7 @@
 						    <CmsField><attribute>showViewAllOverlayOnImages</attribute></CmsField>	
 							<CmsField><attribute>productSourceType</attribute></CmsField>
 							<CmsField><attribute>sourceNode</attribute></CmsField>
+							<CmsField><attribute>randomizeProductOrder</attribute></CmsField>
 						    <CmsField><attribute>displayType</attribute></CmsField>
 						    <CmsField><attribute>imageGrid</attribute></CmsField>
 						    <CmsField><attribute>openHTML</attribute></CmsField>

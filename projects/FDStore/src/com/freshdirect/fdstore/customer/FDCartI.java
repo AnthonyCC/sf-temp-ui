@@ -171,5 +171,6 @@ public interface FDCartI extends java.io.Serializable {
 	double getAvalaraTaxValue(AvalaraContext avalaraContext);
 	public EnumNotificationType getTaxationType();
 	public void setTaxationType(EnumNotificationType taxationType);
-
+	
+	public boolean containsDlvPassOnly();
 }

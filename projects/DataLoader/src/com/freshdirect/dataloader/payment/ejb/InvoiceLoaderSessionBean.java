@@ -157,7 +157,7 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 
             try {
                 LOGGER.info("Start - Sending Invoice GAEvent:" + saleId);
-                GoogleAnalyticsReportingService.defaultService().postGAReporting(fdOrder);
+                GoogleAnalyticsReportingService.defaultService().postGAReporting(fdOrder, saleModel.geteStoreId());
                 LOGGER.info("End - Sending Invoice GAEvent:" + saleId);
             } catch (Exception e) {
                 LOGGER.warn("Unexpected Exception in GoogleAnalyticsReportingService while reported to GA, for order#: " + saleId, e);

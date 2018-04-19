@@ -4836,14 +4836,7 @@
 		<info></info>
 	</tag>
 
-
 	<tag>
-		<name>ReferAFriend</name>
-		<tagclass>com.freshdirect.webapp.taglib.fdstore.referral.ReferAFriendControllerTag</tagclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-	</tag>
-	  <tag>
 		<name>PPExportEmail</name>
 		<tagclass>com.freshdirect.webapp.taglib.productpromotion.PPExportEmailProductsTag</tagclass>
 		<teiclass>com.freshdirect.webapp.taglib.productpromotion.PPExportEmailProductsTag$TagEI</teiclass>
@@ -5774,18 +5767,6 @@
 		<name>CanonicalPageLink</name>
 		<tagclass>com.freshdirect.webapp.taglib.CanonicalPageTag</tagclass>
 		<bodycontent>empty</bodycontent>
-	</tag>
-	
-	<tag>
-		<name>RequiredParameterValidator</name>
-		<tagclass>com.freshdirect.webapp.taglib.validation.RequiredParameterValidatorTag</tagclass>
-		<bodycontent>EMPTY</bodycontent>
-		<info></info>
-		<attribute>
-			<name>parameters</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
 	</tag>
 
 	<tag-file>

@@ -23,7 +23,7 @@ public class DepartmentTag extends AbstractGetterTag<ContentNodeModel> {
     }
 
 	@Override
-    protected ContentNodeModel getResult() throws FDResourceException, FDNotFoundException {
+    protected ContentNodeModel getResult() throws FDResourceException {
         ContentNodeModel res = ContentFactory.getInstance().getContentNode(FDContentTypes.DEPARTMENT, this.departmentId);
         if (res == null) {
             res = ContentFactory.getInstance().getContentNode(FDContentTypes.RECIPE_DEPARTMENT, this.departmentId);

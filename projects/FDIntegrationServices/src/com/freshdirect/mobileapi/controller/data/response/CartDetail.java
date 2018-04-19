@@ -887,6 +887,9 @@ public class CartDetail {
 	private String reservationId;
 	private double totalSavedAmount;
 	private double tip;
+	
+	private boolean isDeliveryPassCartOnly;
+	
 	public double getTip() {
 		return tip;
 	}
@@ -954,4 +957,13 @@ public class CartDetail {
     public void setisDpFreeTrialEligible(boolean isDpFreeTrialEligible) {
         this.isDpFreeTrialEligible = isDpFreeTrialEligible;
     }
+    
+	public boolean isDeliveryPassCartOnly() {
+		return isDeliveryPassCartOnly;
+	}
+
+	public void setDeliveryPassCartOnly(boolean isDeliveryPassCartOnly) {
+		this.isDeliveryPassCartOnly = isDeliveryPassCartOnly;
+	}
+
 }

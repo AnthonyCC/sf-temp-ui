@@ -9,6 +9,8 @@
 <%@ page import='com.freshdirect.common.pricing.EnumDiscountType' %>
 <%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
 <%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDCartModel" %>
+<%@ page import="com.freshdirect.fdstore.customer.FDModifyCartModel" %>
 
 <%@ page import="java.text.*" %>
 <%@ page import='java.util.List.*' %>
@@ -17,6 +19,7 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <% //expanded page dimensions
 final int W_YA_ORDER_DETAILS_TOTAL = 970;
 final int W_YA_ORDER_DETAILS_3C_GAP = 41;
@@ -34,6 +37,9 @@ if(orderId==null){
     <fd:SEOMetaTag title="FreshDirect - Your Account - Order Details"/>
   </tmpl:put>
 <%--   <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Order Details</tmpl:put> --%>
+	<tmpl:put name='extraCss' direct='true'>
+		<jwr:style src="/your_account.css" media="all" />
+	</tmpl:put>
 	<tmpl:put name='printdata' direct='true'>order_details</tmpl:put>
     <tmpl:put name='content' direct='true'>
 <%
@@ -157,9 +163,10 @@ if(orderId==null){
 	    boolean hasClientCodes = (user.isEligibleForClientCodes() && cart.hasClientCodes());
 	    boolean hasModify = allowModifyOrder.booleanValue();
 	    boolean hasCancel = allowCancelOrder.booleanValue();
-	    boolean isModifying = orderId != null && orderId.equals(FDUserUtil.getModifyingOrderId(user));
+	    boolean isViewingCurrentModifyOrder = orderId != null && orderId.equals(FDUserUtil.getModifyingOrderId(user));
+	    boolean isModifyOrder_order_details = (user.getShoppingCart() instanceof FDModifyCartModel);
 	%>
-	<table width="<%= W_YA_ORDER_DETAILS_TOTAL %>" align="center" border="0" cellpadding="0" cellspacing="0">
+	<table width="<%= W_YA_ORDER_DETAILS_TOTAL %>" align="center" border="0" cellpadding="0" cellspacing="0" style="margin-bottom: 10px;">
 		<tr>
 		    <td class="text11">
 		       <font class="title18" >Order # <%= orderId %> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Status:
@@ -176,29 +183,45 @@ if(orderId==null){
 					<i>Credit was issued for this order.</i>
 	    		<% } %>
 		    </td>
-		    <td class="noprint actions" width="<%= W_YA_ORDER_DETAILS_TOTAL/2 %>" border="0" cellpadding="0" cellspacing="0" style="text-align: right;">
-				<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.printinvoice, user)) { %><button onclick="window.print()" class="cssbutton medium khaki noprint" title="Click here to print invoice for this order">Print</button><% } %>
-		    	<% if (user.getMasqueradeContext() != null && EnumSaleType.REGULAR.equals(cart.getOrderType())) { %><button type="button" name="Reorder" onclick="FreshDirect.components.reorderPopup.openPopup(<%= orderId %>)" class="cssbutton medium purple nontransparent">Re-Order</button><% } %>
-				<% if (hasClientCodes) { %>
-					<button class="cssbutton medium blue" title="Click here to export client codes for this order" onclick="location.href='/api/clientCodeReport.jsp?sale=<%= orderId %>'">
-						Export Client Codes
-					</button>
-				<% } %>
-				<% if(isModifying) {%>
-					<button class="cssbutton medium orange cancel-modify-order-btn" data-gtm-source="order-details" title="Click here to cancel changes"  onclick="location.href='/your_account/cancel_modify_order.jsp'">Cancel Changes</button>
-			   	<% } else if (hasModify) { %>
-					<button class="cssbutton medium orange modify-order-btn" data-gtm-source="order-details" title="Click here to modify this order"  onclick="location.href='/your_account/modify_order.jsp?orderId=<%= orderId %>&action=modify'">Modify Order</button>
-				<% } %>
-    			<% if (hasCancel) { %>
-						<button class="cssbutton medium red transparent" title="Click here to cancel this order" onclick="location.href='/your_account/cancel_order.jsp?orderId=<%=orderId%>'">Cancel Order</button>
-				    
-			   	<% } %>
-				<%  if (!cart.isPending()) { %>
-						<button class="cssbutton medium blue" onclick="location.href='/quickshop/shop_from_order.jsp?orderId=<%= orderId %>'" title="Click here to reorder items from this order in Quickshop">Shop From This Order</button>
-				<% } %>
-		    </td>
+		    
 		</tr>
 	</table>
+	
+	<div class="order-details noprint actions">
+		<%-- PRINT BUTTON --%>
+		<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.printinvoice, user)) { %>
+			<button onclick="window.print()" class="cssbutton medium green transparent" title="Click here to print invoice for this order">Print</button>
+		<% } %>
+		    
+		<%-- RE-ORDER BUTTON - disabled for now - 20180406 - batchley --%>
+		<% if (false && user.getMasqueradeContext() != null && EnumSaleType.REGULAR.equals(cart.getOrderType())) { %>
+			<button type="button" name="Reorder" onclick="FreshDirect.components.reorderPopup.openPopup(<%= orderId %>)" class="cssbutton medium purple nontransparent">Re-Order</button>
+		<% } %>
+		
+		<%-- SHOP FROM ORDER BUTTON --%>
+		<%  if (!cart.isPending()) { %>
+				<button class="cssbutton medium green transparent" onclick="location.href='/quickshop/shop_from_order.jsp?orderId=<%= orderId %>'" title="Click here to reorder items from this order in Quickshop">Shop From Order</button>
+		<% } %>
+		
+		<%-- EXPORT CLIENT CODES BUTTON --%>
+		<% if (hasClientCodes) { %>
+			<button class="cssbutton medium green transparent" title="Click here to export client codes for this order" onclick="location.href='/api/clientCodeReport.jsp?sale=<%= orderId %>'">
+				Export Client Codes
+			</button>
+		<% } %>
+		<% if(isViewingCurrentModifyOrder) {%><%-- MODIFY - CANCEL CHANGES BUTTON --%>
+			<button class="cssbutton medium orange transparent cancel-modify-order-btn" data-gtm-source="order-details" title="Click here to cancel changes"  onclick="location.href='/your_account/cancel_modify_order.jsp'">Cancel Changes</button>
+	   	<% } else if (!isModifyOrder_order_details && hasModify) { %><%-- MODIFY - MODIFY ORDER BUTTON --%>
+			<button class="cssbutton medium orange modify-order-btn" data-gtm-source="order-details" title="Click here to modify this order"  onclick="location.href='/your_account/modify_order.jsp?orderId=<%= orderId %>&action=modify'">Modify Order</button>
+		<% } %>
+		
+  		<%-- CANCEL ORDER BUTTON - this button is right aligned --%>
+  		<% if (hasCancel) { %>
+			<button class="cssbutton medium red transparent cancel-order-btn" title="Click here to cancel this order" onclick="location.href='/your_account/cancel_order.jsp?orderId=<%=orderId%>'">Cancel Order</button>
+		<% } %>
+	</div>
+	
+	<table width="<%= W_YA_ORDER_DETAILS_TOTAL %>" align="center" border="0" cellpadding="0" cellspacing="0">
 	<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" alt="" /><br />
 	<img src="/media_stat/images/layout/ff9933.gif" width="<%= W_YA_ORDER_DETAILS_TOTAL %>" height="1" border="0" alt="" /><br />
 	<img src="/media_stat/images/layout/clear.gif" width="1" height="15" border="0" alt="" /><br />

@@ -250,26 +250,31 @@ var FreshDirect = FreshDirect || {};
         });
       }
     }.bind(this));
+    
     $('input, button, textarea, select, a, [tabindex]').each(function (i, tiel) {
       var $tiel = $(tiel);
-
-      $tiel.attr('tabindex', '-1');
+      if (!$el.find($tiel).length) {
+          $tiel.attr('tabindex', '-1');
+      }
     });
 
+    
     // set new tabindices for popup
-    $el.find('input, button, textarea, select, a').not('[disabled]').not('[type="hidden"]').not('[nofocus]').each(function (i, tiel) {
-      var $tiel = $(tiel);
+    if ($el.attr('data-tabindex') !== 'manual') {
+        $el.find('input, button, textarea, select, a').not('[disabled]').not('[type="hidden"]').not('[nofocus]').each(function (i, tiel) {
+          var $tiel = $(tiel);
 
-      lastEl = i+1;
+          lastEl = i+1;
 
-      $tiel.attr('tabindex', lastEl);
-    });
+          $tiel.attr('tabindex', lastEl);
+        });
+    }
   //tabindex order for overlays and popup
     $el.find('.qs-popup-close-icon,.qs-popup-help-icon').each(function(i,e) {
         if (!$(e).is(':hidden')) {
               $(e).attr('tabindex', lastEl+=1);
         }
-});
+    });
     
 //    if ($el.find('.qs-popup-close-icon').size() > 0 ) {
 //        var close = $el.find('.qs-popup-close-icon')[0];

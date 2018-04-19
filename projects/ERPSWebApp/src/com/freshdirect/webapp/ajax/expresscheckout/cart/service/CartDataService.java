@@ -280,7 +280,13 @@ public class CartDataService {
 
             cutoffTime = ShoppingCartUtil.getCutoffByContext(cutoffTime, mUser);
 
-            modifyCartData.setCutoffTime(printDate(cutoffTime));
+            //check if cutoff is more than a week out, changing format if needed
+            if ( cutoffTime.after(weekFromOrderDate) ) {
+           	 	modifyCartData.setCutoffTime(new SimpleDateFormat("M/d, ha").format(cutoffTime));
+            } else {
+            	 modifyCartData.setCutoffTime(new SimpleDateFormat("EEEEE, ha").format(cutoffTime));
+            }
+           
             modifyCartData.setOneWeekLater(printDate(weekFromOrderDate));
         }
         return modifyCartData;

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.web.client.RestTemplate;
 
+import com.freshdirect.cms.cache.CacheEvictors;
 import com.freshdirect.cms.changecontrol.domain.ChangePropagationData;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentType;
@@ -53,6 +54,9 @@ public class ChangePropagatorService {
 
     @Autowired
     private DraftContextHolder draftContextHolder;
+
+    @Autowired
+    private CacheEvictors cacheEvictors;
 
     /**
      * This method notifies the preview nodes about the changed content
@@ -115,6 +119,12 @@ public class ChangePropagatorService {
         draftService.invalidateDraftChangesCache(draftContext.getDraftId());
         if (contentProviderService instanceof DraftContentProviderService) {
             ((DraftContentProviderService) contentProviderService).invalidateDraftCaches(draftContext);
+            for (ContentKey contentKey : contentKeys) {
+                cacheEvictors.evictContentFactoryDraftCaches(contentKey, draftContext);
+                for (ContentKey relatedKey : contentProviderService.getChildKeys(contentKey, false)) {
+                    cacheEvictors.evictContentFactoryDraftCaches(relatedKey, draftContext);
+                }
+            }
         }
     }
 

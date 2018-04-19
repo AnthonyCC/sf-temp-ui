@@ -284,8 +284,8 @@ public class DraftContentProviderService extends ContextualContentProvider {
     }
 
     public void invalidateDraftCaches(DraftContext draftContext) {
-        cacheManager.getCache(DRAFT_NODES_CACHE).evict(draftContextHolder.getDraftContext());
-        cacheManager.getCache(DRAFT_PARENT_CACHE).evict(draftContextHolder.getDraftContext());
+        cacheManager.getCache(DRAFT_NODES_CACHE).evict(draftContext);
+        cacheManager.getCache(DRAFT_PARENT_CACHE).evict(draftContext);
     }
 
     private Map<ContentKey, Map<Attribute, Object>> collectOriginalNodes(Map<ContentKey, Map<Attribute, Object>> payload) {
@@ -359,7 +359,7 @@ public class DraftContentProviderService extends ContextualContentProvider {
                     Relationship relationship = (Relationship) attribute;
                     if (relationship.getCardinality() == RelationshipCardinality.ONE) {
                         ContentKey childKey = (ContentKey) attributeEntry.getValue();
-                        if (!contentProviderService.containsContentKey(childKey)) {
+                        if (childKey != null && !contentProviderService.containsContentKey(childKey)) {
                             keySet.add(childKey);
                         }
                     } else {

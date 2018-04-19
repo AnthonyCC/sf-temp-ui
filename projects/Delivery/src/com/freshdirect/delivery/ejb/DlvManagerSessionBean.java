@@ -32,8 +32,6 @@ import java.util.StringTokenizer;
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.naming.NamingException;
-import javax.transaction.SystemException;
-import javax.transaction.UserTransaction;
 
 import org.apache.log4j.Category;
 
@@ -41,6 +39,7 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.pricing.EnumTaxationType;
 import com.freshdirect.common.pricing.MunicipalityInfo;
+import com.freshdirect.customer.ErpOrderHistory;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
@@ -50,6 +49,8 @@ import com.freshdirect.delivery.announcement.EnumPlacement;
 import com.freshdirect.delivery.announcement.EnumUserDeliveryStatus;
 import com.freshdirect.delivery.announcement.EnumUserLevel;
 import com.freshdirect.delivery.announcement.SiteAnnouncement;
+import com.freshdirect.ecomm.gateway.OrderResourceApiClient;
+import com.freshdirect.ecomm.gateway.OrderResourceApiClientI;
 import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.services.IAirclicService;
@@ -60,6 +61,7 @@ import com.freshdirect.fdlogistics.services.impl.LogisticsServiceLocator;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
@@ -647,7 +649,14 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
 
 			for (String orderId : list) {
-				ErpSaleModel order = sb.getOrder(new PrimaryKey(orderId));
+				ErpSaleModel order = null;
+				if(FDStoreProperties.isSF2_0_AndServiceEnabled("getOrder_Api")){
+		    		OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
+		    		order =  service.getOrder(orderId);
+		    	}else{
+		    		order =  sb.getOrder(new PrimaryKey(orderId));	
+		    	}
+				
 
 				CreateOrderRequest c = new CreateOrderRequest(
 						orderId,

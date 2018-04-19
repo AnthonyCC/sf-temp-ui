@@ -4,19 +4,20 @@ import java.util.Comparator;
 import java.util.Date;
 
 import com.freshdirect.cms.core.domain.ContentKey;
-import com.freshdirect.fdstore.pricing.ProductModelPricingAdapter;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.storeapi.content.ContentNodeModel;
 import com.freshdirect.storeapi.content.Html;
 import com.freshdirect.storeapi.content.Image;
+import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.storeapi.content.StarterList;
 
 public class QuickShopLineItemWrapper implements ContentNodeModel {
 
-	private QuickShopLineItem item;
-	private ProductModelPricingAdapter product;
+    private static final long serialVersionUID = -3321282432018011837L;
 
-	private Date deliveryDate;
+    private QuickShopLineItem item;
+    private ProductModel product;
+    private Date deliveryDate;
 	private boolean inLastOrder;
 	private String orderId;
 	private String cclId;
@@ -26,10 +27,9 @@ public class QuickShopLineItemWrapper implements ContentNodeModel {
 	private String recipeName;
 	private StarterList starterList;
 	private String orderStatus;
-
 	private Float userScore = 0f;
 
-	public QuickShopLineItemWrapper(QuickShopLineItem item, ProductModelPricingAdapter product) {
+    public QuickShopLineItemWrapper(QuickShopLineItem item, ProductModel product) {
 		this.item = item;
 		this.product = product;
 	}
@@ -148,11 +148,11 @@ public class QuickShopLineItemWrapper implements ContentNodeModel {
 		this.item = item;
 	}
 
-	public ProductModelPricingAdapter getProduct() {
+    public ProductModel getProduct() {
 		return product;
 	}
 
-	public void setProduct(ProductModelPricingAdapter product) {
+    public void setProduct(ProductModel product) {
 		this.product = product;
 	}
 

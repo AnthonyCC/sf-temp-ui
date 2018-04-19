@@ -19,53 +19,7 @@
 
   <%-- Feature version switcher --%>
   <features:potato />
-  <script type="text/javascript">
-  (function () {
-    window.FreshDirect = window.FreshDirect || {};
-    var fd = window.FreshDirect;
-
-    fd.features = fd.features || {};
-
-    fd.features.active = <fd:ToJSON object="${featuresPotato.active}" noHeaders="true"/>
-
-    fd.properties = fd.properties || {};
-    fd.properties.isLightSignupEnabled = <%= FDStoreProperties.isLightSignupEnabled() ? "true" : "false" %>;
-    fd.properties.isSocialLoginEnabled = <%= FDStoreProperties.isSocialLoginEnabled() ? "true" : "false" %>;
-    fd.properties.isDebitSwitchNoticeEnabled = <%= FDStoreProperties.isDebitSwitchNoticeEnabled() ? "true" : "false" %>;
-
-    <%
-    FDSessionUser jsUser = (FDSessionUser)session.getAttribute(SessionName.USER);
-    if (jsUser != null) {
-      int sessionUserLevel = jsUser.getLevel();
-      FDSessionUser sessionUser = (FDSessionUser) jsUser;
-      boolean hideZipCheckPopup = (!FDStoreProperties.isZipCheckOverLayEnabled() || (jsUser.getLevel() != FDSessionUser.GUEST || jsUser.isZipCheckPopupUsed() || sessionUser.isZipPopupSeenInSession()));
-
-      if (!hideZipCheckPopup){
-          sessionUser.setZipPopupSeenInSession(true);
-      }
-
-      String zipCode = jsUser.getZipCode();
-      String cohortName = jsUser.getCohortName();
-      MasqueradeContext jsMasqueradeContext = jsUser.getMasqueradeContext();
-    %>
-    fd.user = {};
-    fd.user.recognized = <%= sessionUserLevel == FDUserI.RECOGNIZED %>;
-    fd.user.guest = <%= sessionUserLevel == FDUserI.GUEST %>;
-    fd.mobWeb = <%= FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, jsUser) && JspMethods.isMobile(request.getHeader("User-Agent")) %>;
-    fd.user.isZipPopupUsed = <%= hideZipCheckPopup %>;
-    fd.user.zipCode = '<%= zipCode %>';
-    fd.user.cohortName = '<%= cohortName %>';
-    fd.user.isCorporateUser = <%= sessionUser.isCorporateUser() %>;
-    fd.user.sessionId = '<%=session.getId()%>';
-      <% if (jsMasqueradeContext != null) {%>
-        fd.user.masquerade = true;
-      <% } %>
-    <% } %>
-  }());
-  </script>
-
-	<%-- GTM initialization --%>
-	<%@include file="/common/template/includes/i_gtm_datalayer.jsp" %>
+	<%@ include file="/common/template/includes/i_jsFreshDirect.jspf" %>
 
 	<jwr:script src="/fdlibs.js" useRandomParam="false" />
 	<jwr:script src="/assets/javascript/jquery/corner/jquery.corner.js" useRandomParam="false" />
@@ -77,9 +31,6 @@
 
 	<script type="text/javascript" language="javascript">
 
-		var FreshDirect = FreshDirect || {};
-		FreshDirect.USQLegalWarning = FreshDirect.USQLegalWarning || {};
-		FreshDirect.USQLegalWarning.sessionStore = '<%=session.getId()%>';
 
 		var $jq;
 		var jqInit = false;

@@ -7,7 +7,6 @@
 <%
 	}
 %>
-<fd:IncludeMedia name="/media/editorial/site_pages/javascript.html" />
 
 <%
 	FDUserI dpTcCheckUser = (FDUserI) session.getAttribute(SessionName.USER);
@@ -27,3 +26,5 @@
 <%
 	}
 %>
+<%-- media include should always be last --%>
+<fd:IncludeMedia name="/media/editorial/site_pages/javascript.html" />

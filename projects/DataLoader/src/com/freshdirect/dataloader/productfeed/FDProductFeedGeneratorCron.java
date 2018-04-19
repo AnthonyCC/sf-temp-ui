@@ -36,8 +36,10 @@ public class FDProductFeedGeneratorCron {
 		try {
 			LOGGER.info("FDProductFeedGeneratorCron Started.");
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ProductFeedSB)) {
+				LOGGER.info("FDProductFeedGeneratorCron calling sf 2.0 service");
 				FDECommerceService.getInstance().uploadProductFeed();
 			} else {
+				LOGGER.info("FDProductFeedGeneratorCron calling ejb.");
 				Context ctx = getInitialContext();
 				FDProductFeedHome managerHome = (FDProductFeedHome) ctx.lookup("freshdirect.fdstore.ProductFeed");
 				FDProductFeedSB sb = managerHome.create();

@@ -108,8 +108,10 @@ import com.freshdirect.storeapi.content.SortOptionModel;
 import com.freshdirect.storeapi.content.StoreModel;
 import com.freshdirect.storeapi.content.TagModel;
 import com.freshdirect.webapp.ajax.DataPotatoField;
+import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
 import com.freshdirect.webapp.ajax.browse.data.BrowseData;
 import com.freshdirect.webapp.ajax.browse.data.CmsFilteringFlowResult;
+import com.freshdirect.webapp.ajax.browse.data.MySaleItemsData;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringFlow;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
 import com.freshdirect.webapp.ajax.filtering.InvalidFilteringArgumentException;
@@ -167,6 +169,23 @@ public class BrowseUtil {
             result.addErrorMessage(e.getMessage());
             LOG.error(e.getMessage());
         } catch (FDException e) {
+            result.addErrorMessage(e.getMessage());
+            LOG.error(e.getMessage());
+        }
+        return result;
+    }
+    
+    public static BrowsePageResponse getSaleItems(SessionUser user, HttpServletRequest request) {
+        final BrowsePageResponse result = new BrowsePageResponse();
+ 
+        try {
+        	FDSessionUser sessionUser = user.getFDSessionUser();
+        	final CmsFilteringNavigator navigator = CmsFilteringNavigator.createInstance(request, sessionUser);
+    		navigator.setPageTypeType(FilteringFlowType.BROWSE);
+    		MySaleItemsData mySaleItemsData = CmsFilteringFlow.getInstance().getSaleItems(request, sessionUser, navigator, true);
+    		result.setBrowse(DataPotatoField.digBrowse(mySaleItemsData.getBrowsedata()));
+            result.setIncludeNullValue(false);
+        } catch (Exception e) {
             result.addErrorMessage(e.getMessage());
             LOG.error(e.getMessage());
         }

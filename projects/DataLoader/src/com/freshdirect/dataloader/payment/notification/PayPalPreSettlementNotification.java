@@ -11,7 +11,10 @@ import javax.ejb.EJBException;
 
 
 import com.freshdirect.dataloader.payment.reconciliation.SettlementLoaderUtil;
+import com.freshdirect.fdstore.FDEcommProperties;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.payment.gateway.ewallet.impl.PayPalReconciliationSB;
+import com.freshdirect.payment.service.FDECommerceService;
 
 /**
  * This Job is to notify AppSupport with a list of dates that paypal settlement
@@ -30,12 +33,16 @@ public class PayPalPreSettlementNotification {
 	public static void main(String[] args) {
 
 		try {
-			if (null == ppReconSB) {
-				ppReconSB = SettlementLoaderUtil.lookupPPReconciliationHome().create();
+			Map<String, String> settlementNotExecutedDates = null;
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaypalReconciliationSB)) {
+				settlementNotExecutedDates = FDECommerceService.getInstance().getPPSettlementNotProcessed();
+			} else {
+				if (null == ppReconSB) {
+					ppReconSB = SettlementLoaderUtil.lookupPPReconciliationHome().create();
+				}
+				settlementNotExecutedDates = ppReconSB
+						.getPPSettlementNotProcessed();
 			}
-			Map<String, String> settlementNotExecutedDates = ppReconSB
-					.getPPSettlementNotProcessed();
-
 			if (settlementNotExecutedDates.size() != 7) {
 				String body = getEmailContent(settlementNotExecutedDates);
 				SettlementLoaderUtil.sendEmailNotification(" PayPal Settlement Not Processed ",

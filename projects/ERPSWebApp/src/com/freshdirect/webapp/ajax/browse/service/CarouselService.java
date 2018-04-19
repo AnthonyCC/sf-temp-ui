@@ -1,16 +1,18 @@
 package com.freshdirect.webapp.ajax.browse.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.cms.core.domain.ContentKeyFactory;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.browse.data.CarouselData;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
@@ -21,6 +23,8 @@ public class CarouselService {
 	private static final Logger LOGGER = LoggerFactory.getInstance(CarouselService.class);
 
     private static final CarouselService INSTANCE = new CarouselService();
+
+    private static final String NEW_PRODUCTS_CAROUSEL_NAME = "New Products";
 
 	private CarouselService() {
 	}
@@ -69,4 +73,24 @@ public class CarouselService {
         }
 		return carousel;
 	}
+
+    public CarouselData createNewProductsCarousel(FDUserI user, boolean isRandomizeProductOrderEnabled) {
+
+        CarouselData carousel = null;
+
+        CategoryModel newProductsCategory = ((CategoryModel) ContentFactory.getInstance()
+                .getContentNodeByKey(ContentKeyFactory.get(FDStoreProperties.getNewProductsCarouselSourceCategoryContentKey())));
+
+        if (newProductsCategory != null) {
+            List<ProductModel> products = newProductsCategory.getAllChildProductsAsList();
+            if (products != null && products.size() >= FDStoreProperties.getMinimumItemsCountInCarousel()) {
+                if (isRandomizeProductOrderEnabled) {
+                    Collections.shuffle(products);
+                }
+            carousel = createCarouselData(null, NEW_PRODUCTS_CAROUSEL_NAME, products, user, null, null);
+            }
+
+        }
+        return carousel;
+    }
 }

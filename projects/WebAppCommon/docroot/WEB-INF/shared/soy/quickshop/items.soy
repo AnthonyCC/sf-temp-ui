@@ -329,7 +329,7 @@
 			</div>
 			{if $item.available}
 				<div class="itemlist-item-header-buttons">
-					<button class="addtolist cssbutton transparent purple" data-alignpopup="tc-bc">Add to List</button>
+					<button class="addtolist cssbutton transparent purple noboxshadow txtunderline color-green" data-alignpopup="tc-bc">Add to List</button>
 					{if $type == 'shopfromlists' and not $replaced}
 						<button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="deletefromlist cssbutton transparent white icon-trash-new-before" aria-haspopup="true" data-alignpopup="tc-bc">Remove</button>
 						<button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="editinlist save cssbutton transparent purple">Save Changes</button>

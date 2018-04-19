@@ -725,8 +725,9 @@ section.main .leftnav .menuBox hr {
   padding: 0 5px;
   border-radius: 3px;
 }
-
-.no-touch .browse-popup-content li label:hover > span > span  {
+/* bug fix for Firefox */
+.no-touch .browse-popup-content li label:hover > span > span,
+.browse-popup-content li label:hover > span > span  {
   text-decoration: underline;
 }
 

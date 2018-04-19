@@ -1,12 +1,18 @@
 package com.freshdirect.fdstore.customer;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.context.FulfillmentContext;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.CatalogKey;
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpDeliveryPlantInfoModel;
+import com.freshdirect.customer.OrderHistoryI;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
@@ -83,6 +89,28 @@ public class FDUserUtil {
 		}
 		return null;
 	}
+	
+	public static List<FDOrderInfoI> getModifiableOrders(FDUserI user) {
+		List<FDOrderInfoI> modifiableOrders = new ArrayList<FDOrderInfoI>();
+		FDOrderHistory history;
+		try {
+			history = (FDOrderHistory) user.getOrderHistory();
+			List<FDOrderInfoI> orderHistoryInfo = new ArrayList<FDOrderInfoI>(history.getFDOrderInfos(EnumSaleType.REGULAR, user.getUserContext().getStoreContext().getEStoreId()));
+
+			for (Iterator<FDOrderInfoI> i = orderHistoryInfo.iterator(); i.hasNext();) {
+				FDOrderInfoI o = i.next();
+				if(o.isModifiable()) {
+					modifiableOrders.add(o);
+				}
+			}
+		} catch (FDResourceException e) {
+			LOGGER.debug("Error getting modifiable orders for user: "+user.getUserId());
+			e.printStackTrace();
+		}
+		
+		return modifiableOrders;
+	}
+	
 	public static void main(String[] a) {
 		EnumEStoreId eStore=null;
 		ErpDeliveryPlantInfoModel delPlantInfo=FDUserUtil.getDefaultDeliveryPlantInfo(eStore);

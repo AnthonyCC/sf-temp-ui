@@ -55,7 +55,7 @@ import com.google.common.collect.ImmutableSet;
 @Category(UnitTest.class)
 public class DraftContentProviderServiceTest {
 
-    private static final String DRAFT_NAME = "testDraftContext";
+    private static final String DRAFT_NAME = "testDraft";
     private static final Long DRAFT_ID = 1234L;
 
     @InjectMocks
@@ -88,6 +88,10 @@ public class DraftContentProviderServiceTest {
     @Mock
     private CacheManager cacheManager;
 
+    private Draft testDraft;
+    private DraftContext testDraftContext = new DraftContext(DRAFT_ID, DRAFT_NAME);
+    private DraftContext mainDraftContext = new DraftContext();
+
     @SuppressWarnings("unchecked")
     @Before
     public void setUp() {
@@ -115,7 +119,7 @@ public class DraftContentProviderServiceTest {
         Mockito.when(contentProviderService.getContentKeys())
                 .thenReturn(ImmutableSet.<ContentKey>of(RootContentKey.STORE_FRESHDIRECT.contentKey, RootContentKey.STORE_FOODKICK.contentKey,
                         get(Department, "dept1"), get(Department, "dept_fdx"),
-                        get(Category, "cat_1"), get(Category, "cat_2"), get(Category, "cat_orphan"),
+                        get(Category, "cat_1"), get(Category, "cat_2"), get(Category, "cat_fdx"), get(Category, "cat_orphan"),
                         get(Product, "prd_1"), get(Product, "prd_2"), get(Product, "prd_orphan")));
 
         // mock child keys
@@ -186,11 +190,36 @@ public class DraftContentProviderServiceTest {
                 return (Set<ContentKey>) (result == null ? Collections.emptySet() : result);
             }
         });
+
+        // test draft
+        testDraft = new Draft();
+        testDraft.setId(DRAFT_ID);
+        testDraft.setName(DRAFT_NAME);
+    }
+
+    @Test
+    public void testGetContentKeysOnMain() {
+        Mockito.when(draftContextHolder.getDraftContext()).thenReturn(mainDraftContext);
+        Assert.assertEquals(11, underTest.getContentKeys().size());
+        Assert.assertEquals(3, underTest.getContentKeysByType(ContentType.Product).size());
+        Assert.assertEquals(4, underTest.getContentKeysByType(ContentType.Category).size());
+        Assert.assertEquals(2, underTest.getContentKeysByType(ContentType.Department).size());
+        Assert.assertEquals(2, underTest.getContentKeysByType(ContentType.Store).size());
+    }
+
+    @Test
+    public void testGetContentKeysOnDraft() {
+        Mockito.when(draftContextHolder.getDraftContext()).thenReturn(testDraftContext);
+        Assert.assertEquals(11, underTest.getContentKeys().size());
+        Assert.assertEquals(3, underTest.getContentKeysByType(ContentType.Product).size());
+        Assert.assertEquals(4, underTest.getContentKeysByType(ContentType.Category).size());
+        Assert.assertEquals(2, underTest.getContentKeysByType(ContentType.Department).size());
+        Assert.assertEquals(2, underTest.getContentKeysByType(ContentType.Store).size());
     }
 
     @Test
     public void testOrphanContentKeysWithMainDraft() {
-        Mockito.when(draftContextHolder.getDraftContext()).thenReturn(new DraftContext());
+        Mockito.when(draftContextHolder.getDraftContext()).thenReturn(mainDraftContext);
         Mockito.when(contentProviderService.isOrphan(Mockito.any(ContentKey.class), Mockito.any(ContentKey.class))).thenReturn(Boolean.TRUE);
 
         assertTrue("It must be orphan", underTest.isOrphan(get(Product, "prd_orphan"), RootContentKey.STORE_FRESHDIRECT.contentKey));
@@ -200,7 +229,7 @@ public class DraftContentProviderServiceTest {
 
     @Test
     public void testNonOrphanContentKeysWithMainDraft() {
-        Mockito.when(draftContextHolder.getDraftContext()).thenReturn(new DraftContext());
+        Mockito.when(draftContextHolder.getDraftContext()).thenReturn(mainDraftContext);
         assertTrue("Product having ancestry chain up to store level may not be orphan", !underTest.isOrphan(get(Product, "prd_2"), RootContentKey.STORE_FRESHDIRECT.contentKey));
         assertTrue("Product having at least one valid context should not be orphan", !underTest.isOrphan(get(Product, "prd_1"), RootContentKey.STORE_FRESHDIRECT.contentKey));
     }
@@ -224,7 +253,7 @@ public class DraftContentProviderServiceTest {
         ContentKey department = ContentKeyFactory.get(ContentType.Department, "dept1");
         ContentKey store = RootContentKey.STORE_FRESHDIRECT.contentKey;
 
-        Mockito.when(draftContextHolder.getDraftContext()).thenReturn(new DraftContext());
+        Mockito.when(draftContextHolder.getDraftContext()).thenReturn(mainDraftContext);
         Mockito.when(contentProviderService.findContextsOf(productKey)).thenReturn(Arrays.asList(
                 Arrays.asList(productKey, parentNotPrimaryHome, department, store),
                 Arrays.asList(productKey, parentPrimaryHome, department, store)));
@@ -237,6 +266,12 @@ public class DraftContentProviderServiceTest {
         Assert.assertEquals(1, productPrimaryHomes.size());
         Assert.assertTrue(productPrimaryHomes.keySet().contains(RootContentKey.STORE_FRESHDIRECT.contentKey));
         Assert.assertEquals(parentPrimaryHome, productPrimaryHomes.get(RootContentKey.STORE_FRESHDIRECT.contentKey));
+
+        Assert.assertEquals(11, underTest.getContentKeys().size());
+        Assert.assertEquals(3, underTest.getContentKeysByType(ContentType.Product).size());
+        Assert.assertEquals(4, underTest.getContentKeysByType(ContentType.Category).size());
+        Assert.assertEquals(2, underTest.getContentKeysByType(ContentType.Department).size());
+        Assert.assertEquals(2, underTest.getContentKeysByType(ContentType.Store).size());
     }
 
     @SuppressWarnings("unchecked")
@@ -253,7 +288,7 @@ public class DraftContentProviderServiceTest {
 
         final List<ContentKey> primaryHomeAttributeValue = Arrays.asList(parentPrimaryHome, parentPrimaryHomeInFDX);
 
-        Mockito.when(draftContextHolder.getDraftContext()).thenReturn(new DraftContext());
+        Mockito.when(draftContextHolder.getDraftContext()).thenReturn(mainDraftContext);
         Mockito.when(contentProviderService.getAttributeValue(productKey, ContentTypes.Product.PRIMARY_HOME))
             .thenReturn(Optional.<Object>of(primaryHomeAttributeValue));
         Mockito.when(contentProviderService.findContextsOf(productKey)).thenReturn(Arrays.asList(
@@ -273,6 +308,12 @@ public class DraftContentProviderServiceTest {
         Assert.assertTrue(productPrimaryHomes.containsKey(fdxStore));
         Assert.assertEquals(parentPrimaryHome, productPrimaryHomes.get(RootContentKey.STORE_FRESHDIRECT.contentKey));
         Assert.assertEquals(parentPrimaryHomeInFDX, productPrimaryHomes.get(RootContentKey.STORE_FOODKICK.contentKey));
+
+        Assert.assertEquals(11, underTest.getContentKeys().size());
+        Assert.assertEquals(3, underTest.getContentKeysByType(ContentType.Product).size());
+        Assert.assertEquals(4, underTest.getContentKeysByType(ContentType.Category).size());
+        Assert.assertEquals(2, underTest.getContentKeysByType(ContentType.Department).size());
+        Assert.assertEquals(2, underTest.getContentKeysByType(ContentType.Store).size());
     }
 
     @Test
@@ -280,14 +321,9 @@ public class DraftContentProviderServiceTest {
         ContentKey productKey = ContentKeyFactory.get(ContentType.Product, "test_prd");
         Map<Attribute, Object> mainNode = ImmutableMap.of(ContentTypes.Product.FULL_NAME, (Object) "full_name_main");
 
-        Draft draft = new Draft();
-        draft.setId(DRAFT_ID);
-        draft.setName(DRAFT_NAME);
-        DraftContext draftContext = new DraftContext(DRAFT_ID, DRAFT_NAME);
-        Mockito.when(draftContextHolder.getDraftContext()).thenReturn(draftContext);
-
+        Mockito.when(draftContextHolder.getDraftContext()).thenReturn(testDraftContext);
         DraftChange draftChange = new DraftChange();
-        draftChange.setDraft(draft);
+        draftChange.setDraft(testDraft);
         draftChange.setAttributeName(ContentTypes.Product.FULL_NAME.getName());
         draftChange.setContentKey(productKey.toString());
         draftChange.setCreatedAt(System.currentTimeMillis());
@@ -307,6 +343,12 @@ public class DraftContentProviderServiceTest {
         Assert.assertTrue(attributes.containsKey(ContentTypes.Product.FULL_NAME));
         Assert.assertEquals(1, attributes.size());
         Assert.assertEquals("draft_overriden_full_name", attributes.get(ContentTypes.Product.FULL_NAME));
+
+        Assert.assertEquals(12, underTest.getContentKeys().size());
+        Assert.assertEquals(4, underTest.getContentKeysByType(ContentType.Product).size());
+        Assert.assertEquals(4, underTest.getContentKeysByType(ContentType.Category).size());
+        Assert.assertEquals(2, underTest.getContentKeysByType(ContentType.Department).size());
+        Assert.assertEquals(2, underTest.getContentKeysByType(ContentType.Store).size());
     }
 
     @Test
@@ -314,14 +356,9 @@ public class DraftContentProviderServiceTest {
         ContentKey productKey = ContentKeyFactory.get(ContentType.Product, "test_prd");
         Map<Attribute, Object> mainNode = ImmutableMap.of(ContentTypes.Product.FULL_NAME, (Object) "full_name_main");
 
-        Draft draft = new Draft();
-        draft.setId(DRAFT_ID);
-        draft.setName(DRAFT_NAME);
-        DraftContext draftContext = new DraftContext(DRAFT_ID, DRAFT_NAME);
-        Mockito.when(draftContextHolder.getDraftContext()).thenReturn(draftContext);
-
+        Mockito.when(draftContextHolder.getDraftContext()).thenReturn(testDraftContext);
         DraftChange draftChange = new DraftChange();
-        draftChange.setDraft(draft);
+        draftChange.setDraft(testDraft);
         draftChange.setAttributeName(ContentTypes.Product.FULL_NAME.getName());
         draftChange.setContentKey(productKey.toString());
         draftChange.setCreatedAt(System.currentTimeMillis());
@@ -341,6 +378,12 @@ public class DraftContentProviderServiceTest {
         Assert.assertTrue(attributes.containsKey(ContentTypes.Product.FULL_NAME));
         Assert.assertEquals(1, attributes.size());
         Assert.assertEquals("draft_overriden_full_name", attributes.get(ContentTypes.Product.FULL_NAME));
+
+        Assert.assertEquals(12, underTest.getContentKeys().size());
+        Assert.assertEquals(4, underTest.getContentKeysByType(ContentType.Product).size());
+        Assert.assertEquals(4, underTest.getContentKeysByType(ContentType.Category).size());
+        Assert.assertEquals(2, underTest.getContentKeysByType(ContentType.Department).size());
+        Assert.assertEquals(2, underTest.getContentKeysByType(ContentType.Store).size());
     }
 
     @Test
@@ -348,14 +391,9 @@ public class DraftContentProviderServiceTest {
         ContentKey productKey = ContentKeyFactory.get(ContentType.Product, "test_prd");
         Map<Attribute, Object> mainNode = ImmutableMap.of(ContentTypes.Product.FULL_NAME, (Object) "full_name_main");
 
-        Draft draft = new Draft();
-        draft.setId(DRAFT_ID);
-        draft.setName(DRAFT_NAME);
-        DraftContext draftContext = new DraftContext(DRAFT_ID, DRAFT_NAME);
-        Mockito.when(draftContextHolder.getDraftContext()).thenReturn(draftContext);
-
+        Mockito.when(draftContextHolder.getDraftContext()).thenReturn(testDraftContext);
         DraftChange draftChange = new DraftChange();
-        draftChange.setDraft(draft);
+        draftChange.setDraft(testDraft);
         draftChange.setAttributeName(ContentTypes.Product.FULL_NAME.getName());
         draftChange.setContentKey(productKey.toString());
         draftChange.setCreatedAt(System.currentTimeMillis());
@@ -374,17 +412,19 @@ public class DraftContentProviderServiceTest {
 
         Assert.assertTrue(attributeValueOptional.isPresent());
         Assert.assertEquals("draft_overriden_full_name", attributeValueOptional.get());
+
+        Assert.assertEquals(12, underTest.getContentKeys().size());
+        Assert.assertEquals(4, underTest.getContentKeysByType(ContentType.Product).size());
+        Assert.assertEquals(4, underTest.getContentKeysByType(ContentType.Category).size());
+        Assert.assertEquals(2, underTest.getContentKeysByType(ContentType.Department).size());
+        Assert.assertEquals(2, underTest.getContentKeysByType(ContentType.Store).size());
     }
 
     @Test
     public void testGetParentKeysOnDraftWhenNotParentChanged() {
-        DraftContext draftContext = new DraftContext();
-        draftContext.setDraftId(1L);
-        draftContext.setDraftName("test");
-
         ContentKey productOfTest = ContentKeyFactory.get(ContentType.Product, "prd_2");
 
-        Mockito.when(draftContextHolder.getDraftContext()).thenReturn(draftContext);
+        Mockito.when(draftContextHolder.getDraftContext()).thenReturn(testDraftContext);
         Mockito.when(draftService.getDraftChanges(Mockito.anyLong())).thenReturn(Collections.<DraftChange>emptyList());
 
         Set<ContentKey> parentsOnMain = contentProviderService.getParentKeys(productOfTest);
@@ -398,10 +438,6 @@ public class DraftContentProviderServiceTest {
 
     @Test
     public void testGetParentKeysOnDraftWhenNewParentOnDraft() {
-        DraftContext draftContext = new DraftContext();
-        draftContext.setDraftId(1L);
-        draftContext.setDraftName("test");
-
         final ContentKey productOfTest = ContentKeyFactory.get(ContentType.Product, "prd_2");
         final ContentKey parentCatOnDraft = ContentKeyFactory.get(ContentType.Category, "only_exists_on_draft");
 
@@ -412,7 +448,7 @@ public class DraftContentProviderServiceTest {
         List<DraftChange> draftChanges = ImmutableList.of(dc);
 
         Mockito.when(draftContextHolder.getDraftContext())
-                .thenReturn(draftContext);
+                .thenReturn(testDraftContext);
         Mockito.when(draftService.getDraftChanges(Mockito.anyLong()))
                 .thenReturn(draftChanges);
         Mockito.when(draftApplicatorService.convertDraftChanges(Mockito.eq(draftChanges)))
@@ -430,10 +466,6 @@ public class DraftContentProviderServiceTest {
 
     @Test
     public void testGetParentKeysOnDraftWhenParentFromMainIsNoParentAnymore() {
-        DraftContext draftContext = new DraftContext();
-        draftContext.setDraftId(1L);
-        draftContext.setDraftName("test");
-
         final ContentKey parentCatOnMain = ContentKeyFactory.get(ContentType.Category, "cat_2");
 
         DraftChange dc = new DraftChange();
@@ -442,7 +474,7 @@ public class DraftContentProviderServiceTest {
         dc.setValue(null);
         List<DraftChange> draftChanges = ImmutableList.of(dc);
 
-        Mockito.when(draftContextHolder.getDraftContext()).thenReturn(draftContext);
+        Mockito.when(draftContextHolder.getDraftContext()).thenReturn(testDraftContext);
         Mockito.when(draftService.getDraftChanges(Mockito.anyLong())).thenReturn(draftChanges);
 
         Map<ContentKey, Map<Attribute, Object>> draftNodes = ImmutableMap.<ContentKey, Map<Attribute, Object>>of(
@@ -460,10 +492,6 @@ public class DraftContentProviderServiceTest {
 
     @Test
     public void testGetParentKeysOnDraftWhenParentsWereExchanged() {
-        DraftContext draftContext = new DraftContext();
-        draftContext.setDraftId(1L);
-        draftContext.setDraftName("test");
-
         final ContentKey productOfTest = ContentKeyFactory.get(ContentType.Product, "prd_2");
         final ContentKey parentCatOnMain = ContentKeyFactory.get(ContentType.Category, "cat_2");
         final ContentKey parentCatOnDraft = ContentKeyFactory.get(ContentType.Category, "only_exists_on_draft");
@@ -485,7 +513,7 @@ public class DraftContentProviderServiceTest {
                 parentCatOnMain, ImmutableMap.<Attribute, Object>of(ContentTypes.Category.products, (Object) ImmutableList.of()));
 
         Mockito.when(draftContextHolder.getDraftContext())
-                .thenReturn(draftContext);
+                .thenReturn(testDraftContext);
         Mockito.when(draftService.getDraftChanges(Mockito.anyLong()))
                 .thenReturn(draftChanges);
         Mockito.when(draftApplicatorService.convertDraftChanges(Mockito.eq(draftChanges)))
@@ -496,17 +524,19 @@ public class DraftContentProviderServiceTest {
         Assert.assertNotNull(parentsOnDraft);
         Assert.assertEquals(1, parentsOnDraft.size());
         Assert.assertTrue(parentsOnDraft.contains(parentCatOnDraft));
+
+        Assert.assertEquals(12, underTest.getContentKeys().size());
+        Assert.assertEquals(3, underTest.getContentKeysByType(ContentType.Product).size());
+        Assert.assertEquals(5, underTest.getContentKeysByType(ContentType.Category).size());
+        Assert.assertEquals(2, underTest.getContentKeysByType(ContentType.Department).size());
+        Assert.assertEquals(2, underTest.getContentKeysByType(ContentType.Store).size());
     }
 
     @Test
     public void testFindContextsOf() {
-        DraftContext draftContext = new DraftContext();
-        draftContext.setDraftId(1L);
-        draftContext.setDraftName("test");
-
         ContentKey notOrphanProduct = get(Product, "prd_1");
 
-        Mockito.when(draftContextHolder.getDraftContext()).thenReturn(draftContext);
+        Mockito.when(draftContextHolder.getDraftContext()).thenReturn(testDraftContext);
         Mockito.when(draftService.getDraftChanges(Mockito.anyLong())).thenReturn(Collections.<DraftChange>emptyList());
 
         List<List<ContentKey>> contexts = underTest.findContextsOf(notOrphanProduct);

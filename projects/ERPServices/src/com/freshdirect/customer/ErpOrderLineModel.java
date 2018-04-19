@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.affiliate.ExternalAgency;
 import com.freshdirect.common.context.UserContext;
@@ -198,6 +199,7 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 		this.orderLineId = orderLineId;
 	}
 
+	@JsonIgnore
 	public ErpAffiliate getAffiliate() {
 		ErpAffiliate affiliate = ErpAffiliate.getEnum(this.affiliateCode);
 		return affiliate == null ? ErpAffiliate.getEnum(ErpAffiliate.CODE_FD) : affiliate;

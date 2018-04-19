@@ -48,7 +48,17 @@ import com.freshdirect.giftcard.ErpReverseAuthGiftCardModel;
  * ErpSale remote interface.
  * @version    $Revision:25$
  * @author     $Author:Viktor Szathmary$
+ * 
+ * 
  */
+
+/**
+ *@deprecated Please use the SaleRepository in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
+
 public interface ErpSaleEB extends EntityBeanRemoteI, ErpSaleI {
 
 	/**

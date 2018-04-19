@@ -7,6 +7,9 @@ import java.util.Map;
 
 import org.apache.commons.lang.enums.Enum;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public class EnumUnattendedDeliveryFlag extends Enum {
 	
 	/**
@@ -29,6 +32,7 @@ public class EnumUnattendedDeliveryFlag extends Enum {
 		return this.description;
 	}
 
+	@JsonCreator
 	public static EnumUnattendedDeliveryFlag getEnum(String name) {
 		return (EnumUnattendedDeliveryFlag) getEnum(EnumAlertType.class, name);
 	}
@@ -45,6 +49,7 @@ public class EnumUnattendedDeliveryFlag extends Enum {
 		return iterator(EnumUnattendedDeliveryFlag.class);
 	}
 
+	@JsonValue
 	public String toString() {
 		return this.getName();
 	}

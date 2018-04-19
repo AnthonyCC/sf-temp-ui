@@ -12,6 +12,7 @@ import org.apache.http.HttpHeaders;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.common.context.MasqueradeContext;
+import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -23,6 +24,8 @@ import com.freshdirect.fdstore.coremetrics.tagmodel.PageViewTagModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.FDUserUtil;
+import com.freshdirect.fdstore.deliverypass.DeliveryPassSubscriptionUtil;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.services.tax.AvalaraContext;
@@ -143,6 +146,7 @@ public class CheckoutService {
 	}
 
 	public FormDataResponse submitOrder(final FDUserI user, FormDataRequest requestData, final HttpSession session, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		FDSessionUser sessionUser = (FDSessionUser) user;
 		FormDataResponse responseData = createResponseData(requestData);
 		String actionName = FormDataService.defaultService().get(requestData, "action");
 		String deviceId = FormDataService.defaultService().get(requestData, "ppDeviceId");
@@ -150,18 +154,30 @@ public class CheckoutService {
         session.setAttribute(SessionName.PAYMENT_BILLING_REFERENCE, billingReference);
         session.setAttribute(SessionName.PAYPAL_DEVICE_ID, deviceId);
 		boolean checkoutPageReloadNeeded = false;
-		FormRestriction restriction = preCheckOrder(user);
+		FormRestriction restriction = null;
 		UnavailabilityData atpFailureData = null;
-        if (checkAtpCheckEligibleByRestrictions(restriction)) {
-			atpFailureData = applyAtpCheck(user);
-			if(null!=this.avalaraContext && this.avalaraContext.isAvalaraTaxed()){
-				request.setAttribute("TAXATION_TYPE", "AVAL");
-			}
-		}
 		FormRestriction checkPlaceOrderResult = null;
 		ActionResult actionResult = new ActionResult();
 		FDCartModel cart = user.getShoppingCart();
 //		AvalaraContext avalaraContext = new AvalaraContext(cart);
+		boolean isAtpCheckRequired = true;
+		if(FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && cart.containsDlvPassOnly()){
+			isAtpCheckRequired = false;
+			cart.setDeliveryAddress(DeliveryPassSubscriptionUtil.setDeliveryPassDeliveryAddress(user.getSelectedServiceType()));
+			FDReservation rsrv=DeliveryPassSubscriptionUtil.setFDReservation(user.getIdentity().getErpCustomerPK(),cart.getDeliveryAddress().getId());
+			cart.setDeliveryReservation(rsrv);
+			cart.setZoneInfo(DeliveryPassSubscriptionUtil.getZoneInfo(cart.getDeliveryAddress()));
+	        cart.setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(user.getUserContext()));
+	        cart.setEStoreId(user.getUserContext().getStoreContext().getEStoreId());
+		}else{
+			restriction = preCheckOrder(user);
+	        if (checkAtpCheckEligibleByRestrictions(restriction)) {
+				atpFailureData = applyAtpCheck(user);
+				if(null!=this.avalaraContext && this.avalaraContext.isAvalaraTaxed()){
+					request.setAttribute("TAXATION_TYPE", "AVAL");
+				}
+			}
+		}
 		List<ValidationError> checkEbtAddressPaymentSelectionError = DeliveryAddressService.defaultService().checkEbtAddressPaymentSelectionByZipCode(user, cart.getDeliveryAddress().getZipCode());
         DeliveryAddressManipulator.checkAddressRestriction(false, actionResult, cart.getDeliveryAddress());
         if (restriction == null && atpFailureData == null && checkEbtAddressPaymentSelectionError.isEmpty() && actionResult.isSuccess()) {
@@ -172,7 +188,7 @@ public class CheckoutService {
                 }
 				LOGGER.debug("AVAILABILITY IS: " + cart.getAvailability());
 				String outcome = null;
-				if (cart.isAvailabilityChecked()) {
+				if (!isAtpCheckRequired || cart.isAvailabilityChecked()) {
 					/*if(FDStoreProperties.getAvalaraTaxEnabled()){
 					avalaraContext.setCommit(false);
 			    	avalaraContext.setReturnTaxValue(cart.getAvalaraTaxValue(avalaraContext));
@@ -201,6 +217,8 @@ public class CheckoutService {
     				}
 					user.setSuspendShowPendingOrderOverlay(false);
 					user.setShowPendingOrderOverlay(true);
+					//clear inform ordermodify flag
+					sessionUser.setShowingInformOrderModify(false);
 					// prepare and store model for Coremetrics report
 					//   EXCEPT for make-good sessions!
 					if ( masqueradeMakeGoodOrderId == null ) {

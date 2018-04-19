@@ -7,9 +7,15 @@ import javax.servlet.http.HttpSession;
 
 import com.freshdirect.common.context.MasqueradeContext;
 import com.freshdirect.crm.CrmAgentModel;
+import com.freshdirect.deliverypass.EnumDlvPassStatus;
+import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartModel;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.FDUserUtil;
+import com.freshdirect.fdstore.deliverypass.DeliveryPassSubscriptionUtil;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
@@ -37,14 +43,14 @@ public class UserValidationUtil {
 		}
 		return true;
 	}
-
+	
 	public static boolean validateContainsDlvPassOnly(HttpServletRequest request, ActionResult result) {
-		//Check to see if cart contains only delivery pass.
 		HttpSession session = request.getSession();
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 		FDCartModel cart = user.getShoppingCart();
-		//if(cart.containsDlvPassOnly() && DeliveryPassUtil.isEligibleStatus(status)) {
-		if(cart.containsDlvPassOnly()) {
+		//Changes as part of standalone deliverypass purchase (DP17-122)
+		//if(cart.containsDlvPassOnly())
+		if(!FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && cart.containsDlvPassOnly()){
 			result.addError(new ActionError("error_dlv_pass_only", SystemMessageList.MSG_CONTAINS_DLV_PASS_ONLY));
 			return true;
 		}

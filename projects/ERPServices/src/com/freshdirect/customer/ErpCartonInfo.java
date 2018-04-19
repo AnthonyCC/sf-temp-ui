@@ -3,6 +3,8 @@ package com.freshdirect.customer;
 import java.io.Serializable;
 import java.util.*;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 public class ErpCartonInfo implements Serializable {
 
 	private static final long	serialVersionUID	= -2514030108616629805L;
@@ -62,6 +64,7 @@ public class ErpCartonInfo implements Serializable {
 		this.sapNumber = sapNumber;
 	}
 	
+	@JsonCreator
 	public ErpCartonInfo(
 		String orderNumber,
 		String sapNumber,

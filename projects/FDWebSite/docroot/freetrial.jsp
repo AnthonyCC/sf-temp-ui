@@ -35,7 +35,6 @@
 
 	MasqueradeContext masqueradeContext = user.getMasqueradeContext();
 %>
-
 <tmpl:insert template='<%= template %>'>
     <tmpl:put name="seoMetaTag" direct="true">
 		<fd:SEOMetaTag pageId="free_trial"></fd:SEOMetaTag>
@@ -86,11 +85,6 @@
     
     <tmpl:put name="extraCss">
 		<jwr:style src="/expressco.css" media="all" />
-	</tmpl:put>
-
-	<tmpl:put name="extraJs">
-		<fd:javascript src="/assets/javascript/timeslots.js" />
-		<jwr:script src="/qsstandingorder.js" />
 	</tmpl:put>
 </tmpl:insert>
 

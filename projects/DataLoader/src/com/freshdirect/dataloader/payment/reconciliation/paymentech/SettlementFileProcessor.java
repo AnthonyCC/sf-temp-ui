@@ -28,10 +28,13 @@ import com.freshdirect.dataloader.payment.reconciliation.SapFileBuilder;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementLoaderUtil;
 import com.freshdirect.dataloader.payment.reconciliation.paymentech.parsers.PaymentechFINParser;
 import com.freshdirect.dataloader.payment.reconciliation.paymentech.parsers.PaymentechPDEParser;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.ejb.ReconciliationSB;
 import com.freshdirect.payment.gateway.ewallet.impl.PayPalReconciliationSB;
+import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.sap.ejb.SapException;
 
 public class SettlementFileProcessor {
@@ -174,11 +177,18 @@ public class SettlementFileProcessor {
 			isFin = new FileInputStream(finFile);
 
 			PaymentechFINParser finParser = new PaymentechFINParser();
-			PayPalReconciliationSB ppReconSB = SettlementLoaderUtil.lookupPPReconciliationHome()
-					.create();
+			PayPalReconciliationSB ppReconSB = null;
+			
 			List<String> ppSettlementIds = null;
+			boolean isPPReconSB2Enabled = FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaypalReconciliationSB);
 			if (DataLoaderProperties.isPayPalSettlementEnabled()) {
-				Map<String, Object> lockInfo = ppReconSB.acquirePPLock(null);
+				Map<String, Object> lockInfo = null;
+				if (isPPReconSB2Enabled) {
+					lockInfo = FDECommerceService.getInstance().acquirePPLock(null);
+				} else {
+					ppReconSB = SettlementLoaderUtil.lookupPPReconciliationHome().create();
+					lockInfo = ppReconSB.acquirePPLock(null);
+				}
 				ppSettlementIds = (List<String>) lockInfo.get("settlementIds");
 				finParser.setClient(new PaymentechFINParserClient(builder, reconSB, ppReconSB,
 						ppSettlementIds));
@@ -189,7 +199,12 @@ public class SettlementFileProcessor {
 			finParser.parseFile(isFin);
 
 			if (DataLoaderProperties.isPayPalSettlementEnabled()) {
-				ppReconSB.releasePPLock(ppSettlementIds);
+				if (isPPReconSB2Enabled) {
+					
+					FDECommerceService.getInstance().releasePPLock(ppSettlementIds);
+				} else {
+					ppReconSB.releasePPLock(ppSettlementIds);
+				}
 			}
 
 			LOGGER.info("Finished loading FIN File");
