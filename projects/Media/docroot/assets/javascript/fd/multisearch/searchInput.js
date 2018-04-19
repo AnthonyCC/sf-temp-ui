@@ -140,3 +140,22 @@ var FreshDirect = FreshDirect || {};
     };
   }
 }(FreshDirect));
+
+// mobweb submen menu init
+(function (fd) {
+  var el = document.querySelector('.refine-btn-cont .modify-list-btn');
+
+  if (el) {
+    el.addEventListener('click', function (e) {
+      var leftnav = document.querySelector('.leftnav');
+
+      if (leftnav.style.display === 'none') {
+        leftnav.style.display = 'block';
+      } else {
+        leftnav.style.display = 'none';
+      }
+    });
+  }
+}(FreshDirect));
+
+
