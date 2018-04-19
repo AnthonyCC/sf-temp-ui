@@ -5,8 +5,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.naming.NamingException;
-
 import org.apache.log4j.Category;
 
 import com.freshdirect.framework.core.ServiceLocator;
@@ -36,7 +34,7 @@ public abstract class FDAbstractCache<K,V> {
 		try{
 			this.serviceLocator = new ServiceLocator(FDStoreProperties.getInitialContext());
 			this.refresh();
-		} catch (NamingException e) {
+		} catch (Exception e) {
 			throw new FDRuntimeException(e);
 		}		
 	}

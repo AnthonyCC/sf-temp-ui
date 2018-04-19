@@ -72,11 +72,13 @@ request.setAttribute("noyui", true);
 		}
 		request.setAttribute("sitePage", "www.freshdirect.com/mobileweb/index.jsp"); //change for OAS
 	}
+
+	String seoMetaTag_pageId = (isCorpotateUser) ? "cos_homepage" : "index";
 %>
 <tmpl:insert template="<%=pageTemplate %>">
 
 	<tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag pageId="index" includeSiteSearchLink="true" title="Welcome to FreshDirect"></fd:SEOMetaTag>
+		<fd:SEOMetaTag pageId="<%= seoMetaTag_pageId %>" includeSiteSearchLink="true" title="Welcome to FreshDirect"></fd:SEOMetaTag>
 	</tmpl:put>
 	<tmpl:put name="customCss">
 		<jwr:style src="/homepage.css" media="all" />

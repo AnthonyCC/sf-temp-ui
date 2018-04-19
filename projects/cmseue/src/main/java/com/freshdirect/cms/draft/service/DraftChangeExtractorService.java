@@ -29,7 +29,7 @@ public class DraftChangeExtractorService {
     private static final Logger LOGGER = LoggerFactory.getLogger(DraftChangeExtractorService.class);
 
     private static final Joiner JOINER = Joiner.on(DraftApplicatorService.SEPARATOR).skipNulls();
-    
+
     @Autowired
     private ContentTypeInfoService contentTypeInfoService;
 
@@ -39,7 +39,7 @@ public class DraftChangeExtractorService {
      * @param nodes
      * @return
      */
-    public List<DraftChange> extractChanges(Map<ContentKey, Map<Attribute, Object>> nodes, Map<ContentKey, Map<Attribute, Object>> originalNodes,
+    private List<DraftChange> extractChanges(Map<ContentKey, Map<Attribute, Object>> nodes, Map<ContentKey, Map<Attribute, Object>> originalNodes,
             final String userName, final Draft draft) {
         if (nodes == null || nodes.isEmpty()) {
             return Collections.emptyList();
@@ -167,7 +167,11 @@ public class DraftChangeExtractorService {
         final String serializedValue;
 
         if (definition.getCardinality() == RelationshipCardinality.ONE) {
-            serializedValue = ((ContentKey) value).toString();
+            if (value == null) {
+                serializedValue = null;
+            } else {
+                serializedValue = ((ContentKey) value).toString();
+            }
         } else {
             List<ContentKey> keys = (List<ContentKey>) value;
             if (keys == null || keys.isEmpty()) {

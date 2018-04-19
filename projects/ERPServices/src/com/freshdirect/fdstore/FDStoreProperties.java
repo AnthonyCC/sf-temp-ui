@@ -538,10 +538,14 @@ public class FDStoreProperties {
     private static final String PROP_COUNTRY_INFO_REFRESH_INTERVAL = "fdstore.countryInfo.refresh.minutes";
     // APPDEV-2072 google analytics environment specific key
     private static final String PROP_GOOGLE_ANALYTICS_KEY = "fdstore.google.analytics.key";
+    private static final String PROP_GOOGLE_ANALYTICS_FD_KEY = "fdstore.google.analytics.fd.key";
+    private static final String PROP_GOOGLE_ANALYTICS_FDX_KEY = "fdstore.google.analytics.fdx.key";
     // APPDEV-3522 Google Analytics: Upgrade to Universal Analytics: Updates for Page Load Times
     private static final String PROP_GOOGLE_ANALYTICS_UNIVERSAL = "fdstore.google.analytics.universal";
 
     private static final String PROP_GOOGLE_ANALYTICS_DOMAIN = "fdstore.google.analytics.domain";
+    private static final String PROP_GOOGLE_ANALYTICS_FD_DOMAIN = "fdstore.google.analytics.fd.domain";
+    private static final String PROP_GOOGLE_ANALYTICS_FDX_DOMAIN = "fdstore.google.analytics.fdx.domain";
 
     // APPDEV-6030 Google Tag Manager
     private static final String PROP_GOOGLE_TAG_MANAGER_KEY = "fdstore.google.tagmanager.key";
@@ -1036,8 +1040,28 @@ public class FDStoreProperties {
 
 
 	private static final String PROP_CAROUSEL_MIN_ITEMS = "fdstore.carousel.minimum.items";
+	
+	
+	private static final String PROP_NEW_PRODUCTS_PAGE_CAROUSEL_ENABLED = "fdstore.newproductspage.carousel.enabled";
+	private static final String PROP_NEW_PRODUCTS_PAGE_CAROUSEL_CONTAINER_CONTENT_KEY = "fdstore.newproductspage.carousel.contentkey";
 
- 	static {
+	public final static String PROP_IS_FDC_FIRST_ORDER_EMAIL_MSG_ENABLED = "fdstore.fdc.firstorderemailmsg.enabled";
+	
+	public final static String PROP_FD_DP_STANDALONE_CHECKOUT_ENABLED = "fdstore.deliverypass.standalone.checkout.enabled";
+
+ 	
+	private static final String PROP_INFORM_ORDERMODIFY_ENABLED = "fdstore.inform.ordermodify.enabled";
+	private static final String PROP_INFORM_ORDERMODIFY_VIEWLIMIT = "fdstore.inform.ordermodify.viewCountLimit";
+	private static final String PROP_INFORM_ORDERMODIFY_MEDIAPATH = "fdstore.inform.ordermodify.mediaPath";
+    private static final String PROP_NEW_PRODUCTS_CAROUSEL_SOURCE_CATEGORY_CONTENT_KEY = "fdstore.newproductscarousel.sourcecategory.contentkey";
+    private static final String PROP_FRESH_DEALS_PAGE_NEW_PRODUCTS_CAROUSEL_ENABLED = "fdstore.freshdealspage.newproductscarousel.enabled";
+    private static final String PROP_FRESH_DEALS_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED = "fdstore.freshdealspage.newproductscarousel.randomizeproductorder.enabled";
+    private static final String PROP_REORDER_PAGE_NEW_PRODUCTS_CAROUSEL_ENABLED = "fdstore.reorderpage.newproductscarousel.enabled";
+    private static final String PROP_REORDER_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED = "fdstore.reorderpage.newproductscarousel.randomizeproductorder.enabled";
+    private static final String MASTERPASS_EXCEPTION_MESSAGE = "masterpass.exception.message";
+
+    
+    static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_INIT_CTX_FACTORY, "weblogic.jndi.WLInitialContextFactory");
         defaults.put(PROP_CRM_GEOCODELINK,
@@ -1509,8 +1533,12 @@ public class FDStoreProperties {
         defaults.put(PROP_GOOGLE_TAG_MANAGER_PREVIEW_ID, "");
 
         // APPDEV-2072 google analytics key
-        defaults.put(PROP_GOOGLE_ANALYTICS_KEY, "UA-20535945-18"); // default to an empty string
+        defaults.put(PROP_GOOGLE_ANALYTICS_KEY, "UA-20535945-18");
+        defaults.put(PROP_GOOGLE_ANALYTICS_FD_KEY, "UA-20535945-18");
+        defaults.put(PROP_GOOGLE_ANALYTICS_FDX_KEY, "UA-72306309-6");
         defaults.put(PROP_GOOGLE_ANALYTICS_DOMAIN, ".freshdirect.com");
+        defaults.put(PROP_GOOGLE_ANALYTICS_FD_DOMAIN, "freshdirect.com");
+        defaults.put(PROP_GOOGLE_ANALYTICS_FDX_DOMAIN, "foodkick.com");
         // APPDEV-3522 Google Analytics: Upgrade to Universal Analytics: Updates for Page Load Times
         defaults.put(PROP_GOOGLE_ANALYTICS_UNIVERSAL, "true");
 
@@ -1662,7 +1690,8 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.standingorder3_0", "GLOBAL:ENABLED,false;");
         defaults.put("feature.rollout.browseaggregatedcategories1_0", "GLOBAL:ENABLED,false;");
         defaults.put("feature.rollout.debitCardSwitch", "GLOBAL:ENABLED,true;");
-
+        defaults.put("feature.rollout.modOrderConfirmPageRedesign", "GLOBAL:ENABLED,true;");
+        
         defaults.put(PROP_MEDIA_RENDER_UTILS_REALLY_CLOSE, "true");
         defaults.put(PROP_MEDIA_RENDER_UTILS_SOURCE_ENCODING, "ISO-8859-1");
 
@@ -1993,6 +2022,22 @@ public class FDStoreProperties {
 
 		defaults.put(PROP_CAROUSEL_MIN_ITEMS, "4");
 
+		defaults.put(PROP_FD_DP_STANDALONE_CHECKOUT_ENABLED, "false");
+
+		
+		defaults.put(PROP_NEW_PRODUCTS_PAGE_CAROUSEL_ENABLED, "true");
+        defaults.put(PROP_NEW_PRODUCTS_PAGE_CAROUSEL_CONTAINER_CONTENT_KEY, "ModuleContainer:new_prod");
+        
+        defaults.put(PROP_NEW_PRODUCTS_CAROUSEL_SOURCE_CATEGORY_CONTENT_KEY, "Category:newproduct_demo");
+        defaults.put(PROP_FRESH_DEALS_PAGE_NEW_PRODUCTS_CAROUSEL_ENABLED, "true");
+        defaults.put(PROP_FRESH_DEALS_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED, "true");
+        defaults.put(PROP_REORDER_PAGE_NEW_PRODUCTS_CAROUSEL_ENABLED, "true");
+        defaults.put(PROP_REORDER_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED, "true");
+        defaults.put(PROP_INFORM_ORDERMODIFY_ENABLED, "false");
+        defaults.put(PROP_INFORM_ORDERMODIFY_MEDIAPATH, "");
+        defaults.put(PROP_INFORM_ORDERMODIFY_VIEWLIMIT, "5");
+        defaults.put(MASTERPASS_EXCEPTION_MESSAGE, "Connection problem.  Please choose a different wallet.");
+        
         refresh();
     }
 
@@ -3583,8 +3628,24 @@ public class FDStoreProperties {
         return get(PROP_GOOGLE_ANALYTICS_KEY);
     }
 
+    public static String getGoogleAnalyticsFdKey() {
+        return get(PROP_GOOGLE_ANALYTICS_FD_KEY);
+    }
+
+    public static String getGoogleAnalyticsFdxKey() {
+        return get(PROP_GOOGLE_ANALYTICS_FDX_KEY);
+    }
+
     public static String getGoogleAnlayticsDomain() {
         return get(PROP_GOOGLE_ANALYTICS_DOMAIN);
+    }
+
+    public static String getGoogleAnalyticsFdDomain() {
+        return get(PROP_GOOGLE_ANALYTICS_FD_DOMAIN);
+    }
+
+    public static String getGoogleAnalyticsFdxDomain() {
+        return get(PROP_GOOGLE_ANALYTICS_FDX_DOMAIN);
     }
 
     // APPDEV-2072 google analytics key
@@ -5055,5 +5116,51 @@ public class FDStoreProperties {
 		} else {
 			return property;
 		}
+      }
+	
+	public static boolean isDlvPassStandAloneCheckoutEnabled(){
+		return (Boolean.valueOf(get(PROP_FD_DP_STANDALONE_CHECKOUT_ENABLED))).booleanValue();
+	}
+	
+	public static String getNewProductsPageCarouselContainerContentKey() {
+		return get(PROP_NEW_PRODUCTS_PAGE_CAROUSEL_CONTAINER_CONTENT_KEY);
+	}
+
+	public static boolean isNewProductsPageCarouselEnabled() {
+		return (Boolean.valueOf(get(PROP_NEW_PRODUCTS_PAGE_CAROUSEL_ENABLED))).booleanValue();
+	}
+
+    public static boolean isFreshDealsPageNewProductsCarouselEnabled() {
+        return (Boolean.valueOf(get(PROP_FRESH_DEALS_PAGE_NEW_PRODUCTS_CAROUSEL_ENABLED))).booleanValue();
+    }
+
+    public static boolean isFreshDealsPageNewProductsCarouselRandomizeProductOrderEnabled() {
+        return (Boolean.valueOf(get(PROP_FRESH_DEALS_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED))).booleanValue();
+    }
+
+    public static String getNewProductsCarouselSourceCategoryContentKey() {
+        return get(PROP_NEW_PRODUCTS_CAROUSEL_SOURCE_CATEGORY_CONTENT_KEY);
+    }
+
+    public static boolean isReorderPageNewProductsCarouselEnabled() {
+        return (Boolean.valueOf(get(PROP_REORDER_PAGE_NEW_PRODUCTS_CAROUSEL_ENABLED))).booleanValue();
+    }
+
+    public static boolean isReorderPageNewProductsCarouselRandomizeProductOrderEnabled() {
+        return (Boolean.valueOf(get(PROP_REORDER_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED))).booleanValue();
+    }
+    
+	public static boolean isInformOrderModifyEnabled() {
+		return (Boolean.valueOf(get(PROP_INFORM_ORDERMODIFY_ENABLED))).booleanValue();
+	}
+	public static int getInformOrderModifyViewCountLimit() {
+		return Integer.parseInt(get(PROP_INFORM_ORDERMODIFY_VIEWLIMIT));
+	}
+	public static String getInformOrderModifyMediaPath() {
+		return get(PROP_INFORM_ORDERMODIFY_MEDIAPATH);
+	}
+	
+	public static String getMasterpassExcMessage() {
+		 return get(MASTERPASS_EXCEPTION_MESSAGE);
 	}
 }

@@ -1002,6 +1002,18 @@
 		<div class="pageDesc">In order to modify the content of those products which has microwave link shows every product that has "Microwave-only, BPA-free container" text</div>
 	</div>
 
+    <div class="tag analytics">
+        <div class="pageName"><span>Google analytics</span></div>
+        <div class="link"><a href="/test/google_analytics/index.jsp">/test/google_analytics/index.jsp</a></div>
+        <div class="pageDesc">Helps to test Google Analytics.</div>
+    </div>
+
+    <div class="tag informational ordermodify">
+        <div class="pageName"><span>Informational: Order Modify</span></div>
+        <div class="link"><a href="/test/google_analytics/index.jsp">/test/inform/ordermodify.jsp</a></div>
+        <div class="pageDesc">Informational: Order Modify data and functionality.</div>
+    </div>
+
 	<hr />
 </div>
 

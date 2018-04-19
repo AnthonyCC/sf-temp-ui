@@ -370,6 +370,15 @@ ul.products .description-skin{
 .container.browse .noCarousel2 [data-component="carousel"] {
   margin: 0 16px;
 }
+.container.srch .srch-carousel.pres-picks-carousel [data-component="carousel"] {
+  padding-bottom: 12px;
+}
+.container.srch .srch-carousel.pres-picks-carousel [data-component="carousel"] .pager {
+  bottom: 0;
+}
+.container.srch .product-carousel [data-component="carousel"] {
+  margin: 0;
+}
 
 .container.browse [data-component="carousel-mask"] {
   margin: 0 11px 0px;

@@ -13,7 +13,8 @@
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en-US" xml:lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<tmpl:get name="seoMetaTag"/> 
+		<tmpl:get name="seoMetaTag"/>
+		<fd:CanonicalPageLink/>
 		<%@ include file="/common/template/includes/i_javascripts_optimized.jspf" %>
 		<%@ include file="/shared/template/includes/i_stylesheets_optimized.jspf" %>
 		<%@ include file="/shared/template/includes/i_head_end.jspf" %>

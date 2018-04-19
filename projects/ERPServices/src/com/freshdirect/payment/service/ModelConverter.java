@@ -1506,7 +1506,7 @@ public class ModelConverter {
 				fdProductInfoData.getSkuCode(),
 				fdProductInfoData.getVersion(), 
 				fdProductInfoData.getMaterialNumber(), 
-				null,groups,fdProductInfoData.getUpc(),
+				groups,fdProductInfoData.getUpc(),
 				plantMaterialInfo, zonePriceInfoList, 
 				materialAvailability,
 				EnumAlcoholicContent.getAlcoholicContent(fdProductInfoData.getAlcoholType()));

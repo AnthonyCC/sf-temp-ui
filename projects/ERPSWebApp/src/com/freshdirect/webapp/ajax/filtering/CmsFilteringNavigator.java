@@ -617,4 +617,54 @@ public class CmsFilteringNavigator {
 		this.setDescriptiveContentRequested(b);
 		this.setAdProductRequested(b);
 	}
+	
+	double ratingBaseLine;
+	public double getRatingBaseLine() {
+		return ratingBaseLine;
+	}
+	public void setRatingBaseLine(double ratingBaseLine) {
+		this.ratingBaseLine = ratingBaseLine;
+	}
+	double popularityBaseLine;
+	public double getPopularityBaseLine() {
+		return popularityBaseLine;
+	}
+	public void setPopularityBaseLine(double popularityBaseLine) {
+		this.popularityBaseLine = popularityBaseLine;
+	}
+	double dealsBaseLine;
+	public double getDealsBaseLine() {
+		return dealsBaseLine;
+	}
+	public void setDealsBaseLine(double dealsBaseLine) {
+		this.dealsBaseLine = dealsBaseLine;
+	}
+	boolean considerNew;
+	public boolean isConsiderNew() {
+		return considerNew;
+	}
+	public void setConsiderNew(boolean considerNew) {
+		this.considerNew = considerNew;
+	}
+	boolean considerBackInStock;
+	public boolean isConsiderBackInStock() {
+		return considerBackInStock;
+	}
+	public void setConsiderBackInStock(boolean considerBackInStock) {
+		this.considerBackInStock = considerBackInStock;
+	}
+	boolean sortProducts;
+	public boolean isSortProducts() {
+		return sortProducts;
+	}
+	public void setSortProducts(boolean sortProducts) {
+		this.sortProducts = sortProducts;
+	}
+	int maxNoOfProducts;
+	public int getMaxNoOfProducts() {
+		return maxNoOfProducts;
+	}
+	public void setMaxNoOfProducts(int maxNoOfProducts) {
+		this.maxNoOfProducts = maxNoOfProducts;
+	}
 }

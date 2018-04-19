@@ -398,7 +398,6 @@ public class FDProductHelper {
 			erpProductInfo.getSkuCode(),
 			erpProductInfo.getVersion(),
 			erpProductInfo.getMaterialSapIds(),
-			null,
 			groups,
 			erpProductInfo.getUpc(),
 			fdPlantMaterials,

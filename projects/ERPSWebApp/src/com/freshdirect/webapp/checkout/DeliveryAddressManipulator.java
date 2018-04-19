@@ -34,6 +34,7 @@ import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.EnumCheckoutMode;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -53,6 +54,8 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
+import com.freshdirect.storeapi.application.CmsManager;
+import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartOperations;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.AddressForm;
 import com.freshdirect.webapp.taglib.fdstore.AddressUtil;
@@ -338,11 +341,11 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		deliveryAddressModel.setServiceType(addressForm.getDeliveryAddress().getServiceType());
 
 		performEditDeliveryAddress(event, user, result, session, cart, actionName, erpAddress, deliveryAddressModel,shipToAddressId);
-		
+
 		if (StandingOrderHelper.isEligibleForSo3_0(user)) {
 				StandingOrderHelper.evaluteEditSoAddressID(session, user, shipToAddressId);
 		}
-				
+
 	}
 
 	public static void performEditDeliveryAddress(TimeslotEvent event,FDSessionUser user, ActionResult actionResult, HttpSession session, FDCartModel cart, String actionName,ErpAddressModel erpAddress, AddressModel deliveryAddressModel, String updatedDeliveryAddressId) throws FDResourceException {
@@ -984,7 +987,6 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		FDCartModel cart = getCart(user, actionName);
 		setDeliveryAddressInternal(user, session, cart, address, zoneInfo, setServiceType);
 
-
 		if (address instanceof ErpDepotAddressModel) {
 			FDCustomerManager.setDefaultDepotLocationPK( user.getIdentity(), locationId );
 			FDCustomerManager.setDefaultShipToAddressPK( user.getIdentity(), null );
@@ -995,6 +997,10 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			}
 		}
 
+		// currently, dark store switch is expected only in FoodKick store
+		if (EnumEStoreId.FDX == CmsManager.getInstance().getEStoreEnum()) {
+		    CartOperations.removeUnavailableCartLines(cart, user);
+		}
 	}
 
 	private static void setDeliveryAddressInternal(FDUserI user, HttpSession session, final FDCartModel cart, ErpAddressModel address, FDDeliveryZoneInfo zoneInfo, boolean setServiceType)

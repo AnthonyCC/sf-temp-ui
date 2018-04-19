@@ -156,7 +156,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
     private Set<ContentKey> checkoutUnavailableProductKeys; // set of items which failed the ATP test
 
-    public void setLastCOSSurveySuccess(boolean lastCOSSurveySuccess) {
+	public void setLastCOSSurveySuccess(boolean lastCOSSurveySuccess) {
         this.lastCOSSurveySuccess = lastCOSSurveySuccess;
     }
 
@@ -180,8 +180,10 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	private boolean soFeatureOverlay = false;
 
 	private boolean isRefreshNewSoFeature = true;
-
-    @Override
+	
+	private boolean showInformOrderModify = false;
+	
+	@Override
     public boolean isSoContainerOpen() {
         return isSoContainerOpen;
     }
@@ -294,6 +296,18 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
             this.saveCart(true);
             this.saveImpressions();
             this.releaseModificationLock();
+            
+            /* store on session time out */
+            try {
+            	if (user != null && user.getIdentity() != null && user.getIdentity().getErpCustomerPK() != null) {
+                	LOGGER.debug("Updating FDCustomerEStore (custId:"+user.getIdentity().getErpCustomerPK()+")");
+    				FDCustomerManager.updateFDCustomerEStoreInfo(this.getFDCustomer().getCustomerEStoreModel(), this.getFDCustomer().getId());	
+            	}
+			} catch (FDResourceException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+            
             if (FDStoreProperties.isSessionLoggingEnabled()) {
                 try {
                     if (user != null && user.getIdentity() != null && user.getIdentity().getErpCustomerPK() != null) {
@@ -2003,6 +2017,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
     }
 
+    @Override
     public String getClientIp() {
         return this.user.getClientIp();
     }
@@ -2011,6 +2026,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
         this.user.setClientIp(clientIp);
     }
 
+    @Override
     public String getServerName() {
         return this.user.getServerName();
     }
@@ -2280,7 +2296,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
         this.user.setRefreshSO3(isRefreshSO3);
 
     }
-    
+
     @Override
     public Collection<FDStandingOrder> getActiveSO3s() {
         return user.getActiveSO3s();
@@ -2461,14 +2477,43 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public void updateDpFreeTrialOptin(boolean dpFreeTrialOptin) {
 		this.user.updateDpFreeTrialOptin(dpFreeTrialOptin);
 	}
-	
+
 	@Override
 	public boolean isDPFreeTrialOptInEligible()
 	{
 		return this.user.isDPFreeTrialOptInEligible();
 	}
-	
-	public boolean applyFreeTrailOptinBasedDP() {
+
+	@Override
+    public boolean applyFreeTrailOptinBasedDP() {
 		return this.user.applyFreeTrailOptinBasedDP();
+	}
+
+	@Override
+	public int getInformOrderModifyViewCount() { /* current estore, auto increment */
+		return this.user.getInformOrderModifyViewCount(null, true);
+	}
+	
+	@Override
+	public int getInformOrderModifyViewCount(EnumEStoreId EStore) { /* auto increment */
+		return this.user.getInformOrderModifyViewCount(EStore, true);
+	}
+
+	@Override
+	public int getInformOrderModifyViewCount(EnumEStoreId EStore, boolean increment) {
+		return this.user.getInformOrderModifyViewCount(EStore, increment);
+	}
+
+	@Override
+	public void setInformOrderModifyViewCount(EnumEStoreId eStore, int newValue) {
+		this.user.setInformOrderModifyViewCount(eStore, newValue);
+	}
+
+    public boolean isShowingInformOrderModify() {
+		return showInformOrderModify;
+	}
+
+	public void setShowingInformOrderModify(boolean showInformOrderModify) {
+		this.showInformOrderModify = showInformOrderModify;
 	}
 }

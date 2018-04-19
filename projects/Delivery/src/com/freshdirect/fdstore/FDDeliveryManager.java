@@ -524,11 +524,14 @@ public class FDDeliveryManager {
 			if (muni != null && muni.isAlcoholRestricted()) {
 				return false;
 			}
-
-			DlvRestrictionManagerSB sb = getDlvRestrictionManagerHome()
-					.create();
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvRestrictionManagerSB")){
+				return FDECommerceService.getInstance().checkForAlcoholDelivery(address.getScrubbedStreet(),
+						address.getZipCode(), address.getApartment());
+			}else{
+			DlvRestrictionManagerSB sb = getDlvRestrictionManagerHome().create();
 			return sb.checkForAlcoholDelivery(address.getScrubbedStreet(),
 					address.getZipCode(), address.getApartment());
+			}
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {

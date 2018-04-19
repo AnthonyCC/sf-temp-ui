@@ -124,6 +124,9 @@ public class CreateStandingOrderTag extends BodyTagSupport {
 				u.setCheckoutMode( EnumCheckoutMode.CREATE_SO );
 
 				u.setSuspendShowPendingOrderOverlay(true);
+				
+				//clear inform ordermodify flag
+				u.setShowingInformOrderModify(false);
 
 				try {
 					// redirect to main page

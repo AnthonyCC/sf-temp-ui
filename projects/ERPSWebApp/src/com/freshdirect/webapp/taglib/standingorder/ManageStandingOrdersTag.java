@@ -212,6 +212,9 @@ public class ManageStandingOrdersTag extends AbstractGetterTag {
 			
 			user.setSuspendShowPendingOrderOverlay(true);
 			
+			//set inform ordermodify flag
+			user.setShowingInformOrderModify(true);
+			
 			cart.refreshAll(true);
 			//Refresh customer's coupon wallet.
 			FDCustomerCouponUtil.getCustomerCoupons(session);

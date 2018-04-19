@@ -3,32 +3,3 @@
   padding: 0;
   margin: 0;
 }
-
-.multisearch-results [data-component="multisearch-list"] .content-module .content-header {
-  margin-top: 10px;
-  height: 28px;
-}
-
-.multisearch-results [data-component="multisearch-list"] .content-header button.disable {
-  margin-right: 1em;
-}
-
-.multisearch-results [data-component="multisearch-list"] .content-header a.viewall {
-  text-transform: uppercase;
-}
-
-[data-ismobweb="true"] section.main .content {
-  max-width: 100%;
-}
-
-[data-ismobweb="true"] .content-module.product-carousel [data-component="carousel"] ul[data-component="carousel-list"] li {
-  width: 50%;
-}
-
-#multisearch-tutorial {
-  display: none;
-}
-
-#multisearch-tutorial.show {
-  display: block;
-}

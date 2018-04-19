@@ -9,7 +9,7 @@
 </table><br/>
 <center>
 	<b><a href="http://www.freshdirect.com/" style="color:#336600;font-size:12px;text-decoration:underline;">Go to FreshDirect</a></b> | <b><a href="http://www.freshdirect.com/help/contact_fd.jsp" style="color:#336600;font-size:12px;text-decoration:underline;">Contact Us</a></b> | <b><a href="http://www.freshdirect.com/help/faq_home.jsp?page=faqHome" style="color:#336600;font-size:12px;text-decoration:underline;">Frequently Asked Questions</a></b><br>
-		<span class="fdFooter_s">FreshDirect, LLC. 2 St Ann's Ave Bronx, NY 10454</span></br>
+		<span class="fdFooter_s">FreshDirect, LLC. 23-30 Borden Avenue Long Island City, NY 11101</span></br>
 	<br/><br/><img src="http://www.freshdirect.com/media_stat/images/template/freshness/fresh_guar_photos.jpg" alt=""/><br/>
 	<span class="fdFooter_s">&#169; 2002 - <xsl:value-of select="substring(//curYear,1,4)" /> Fresh Direct, LLC. All Rights Reserved.</span>
 

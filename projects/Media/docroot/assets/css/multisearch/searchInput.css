@@ -24,11 +24,6 @@
   position: relative;
   height: 23px;
   overflow: hidden;
-  margin-bottom: 5px;
-}
-
-[data-ismobweb="true"] .multisearch-input .inputholder {
-  height: 27px;
 }
 
 .multisearch-input .inputholder > input {
@@ -45,21 +40,21 @@
   bottom: 0;
   right: 3px;
   margin: auto;
-  height: 16px;
-  width: 31px;
+  height: 17px;
+  width: 17px;
   line-height: 17px;
   border: 0;
   border-radius: 3px;
   background: #4fa157;
   color: #fff;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: bold;
   text-indent: -999px;
   overflow: hidden;
 }
 
 .multisearch-input .inputholder > button::after {
-  content: 'Add';
+  content: '➕';
   display: block;
   text-indent: 0;
   position: absolute;
@@ -71,9 +66,8 @@
   cursor: pointer;
 }
 
-.multisearch-input > ul.termlist,
-.multisearch-input > ul.suggestions {
-  margin: 20px 0 10px 0;
+.multisearch-input > ul {
+  margin: 10px 0 0;
   padding: 10px 6px;
   background: #fffffa;
   border: 1px solid #dce6be;
@@ -83,8 +77,7 @@
   list-style-type: none;
 }
 
-.multisearch-input > ul.termlist > li,
-.multisearch-input > ul.suggestions > li {
+.multisearch-input > ul > li {
   line-height: 25px;
   font-size: 12px;
   display: block;
@@ -92,41 +85,12 @@
   padding: 0 25px 0 5px;
   margin-top: 3px;
   border-radius: 3px;
-  background: transparent;
-  color: inherit;
+  background: #4fa157;
+  color: #fff;
   font-weight: bold;
 }
 
-.multisearch-input > ul.termlist > li.headers,
-.multisearch-input > ul.suggestions > li.headers {
-  font-size: 9px;
-  padding: 0;
-  line-height: 1.4em;
-  overflow: hidden;
-}
-
-.multisearch-input > ul.termlist > li.headers > .checkbox-header {
-  float: left;
-}
-
-.multisearch-input > ul.termlist > li.headers > .x-header {
-  float: right;
-}
-
-.multisearch-input > ul.termlist > li[data-enabled] {
-  background: #4fa157;
-  color: #fff;
-}
-
-.multisearch-input > ul.termlist > li > label,
-.multisearch-input > ul.suggestions > li > label {
-  display: inline-block;
-  line-height: 21px;
-  cursor: pointer;
-}
-
-.multisearch-input > ul.termlist > .title,
-.multisearch-input > ul.suggestions > .title {
+.multisearch-input > ul > .title {
   background: transparent;
   color: inherit;
   margin-top: 0;
@@ -134,14 +98,7 @@
   padding: 0;
 }
 
-.multisearch-input > ul.termlist > li > input,
-.multisearch-input > ul.suggestions > li > input {
-  vertical-align: middle;
-  max-height: 25px;
-  max-width: 25px;
-}
-
-.multisearch-input > ul.termlist > li > button {
+.multisearch-input > ul > li > button {
   position: absolute;
   right: 0;
   top: 0;
@@ -154,15 +111,11 @@
   border: none;
   font-weight: bold;
   text-indent: -999px;
-}
-
-.multisearch-input > ul.termlist > li[data-enabled] > button {
   color: #fff;
 }
 
-.multisearch-input > ul.termlist > li > button::after {
-  content: '\e60b';
-  font-family: 'freshdirect_icons';
+.multisearch-input > ul > li > button::after {
+  content: '❌';
   position: absolute;
   top: 0;
   left: 0;
@@ -173,12 +126,4 @@
   text-indent: 0;
   line-height: 25px;
   cursor: pointer;
-  color: black;
-}
-
-.multisearch-input > ul.termlist > li[data-enabled] > button::after {
-  color: white;
-}
-.multisearch-input .searchinput-note {
-	padding-left: 3px;
 }

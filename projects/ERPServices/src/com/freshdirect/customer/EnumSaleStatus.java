@@ -2,6 +2,9 @@ package com.freshdirect.customer;
 
 import java.util.*;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 /**
  * Type-safe enumeration for order statuses.
  */
@@ -79,6 +82,7 @@ public class EnumSaleStatus implements java.io.Serializable {
 		STATUSCODE_MAP.put( this.statusCode, this );
 	}
 
+	@JsonValue
 	public String getStatusCode() {
 		return this.statusCode;
 	}
@@ -95,6 +99,7 @@ public class EnumSaleStatus implements java.io.Serializable {
     	return this.pending;
     }
 
+    @JsonCreator
 	public static EnumSaleStatus getSaleStatus(String statusCode) {
 		return STATUSCODE_MAP.get( statusCode.toUpperCase() );
 	}

@@ -3040,7 +3040,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     public void setReferralPromoAvailable() {
         try {
         	EnumEStoreId estoreId = ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId();
-            referralFlag = getOrderHistory().hasSettledOrders(estoreId);//FDReferralManager.getReferralDisplayFlag(this.getIdentity().getErpCustomerPK());
+            referralFlag = getOrderHistory().hasSettledOrders(estoreId);
             LOGGER.debug("Getting ref display for :" + this.getIdentity().getErpCustomerPK() + "-and flag is:" + referralFlag);
         } catch (FDResourceException e) {
             LOGGER.error("Exception getting totalCredit", e);
@@ -3457,6 +3457,7 @@ public class FDUser extends ModelSupport implements FDUserI {
         this.anyNewOrder = anyNewOrder;
     }
 
+    @Override
     public String getClientIp() {
         return clientIp;
     }
@@ -3465,6 +3466,7 @@ public class FDUser extends ModelSupport implements FDUserI {
         this.clientIp = clientIp;
     }
 
+    @Override
     public String getServerName() {
         return serverName;
     }
@@ -4000,12 +4002,34 @@ public class FDUser extends ModelSupport implements FDUserI {
 		return FDStoreProperties.isDlvPassFreeTrialOptinFeatureEnabled() && this.getDpFreeTrialOptin() && (null == this.getDlvPassInfo() || !this.getDlvPassInfo().isFreeTrialRestricted());
 	}
 
+	@Override
 	public Collection<FDStandingOrder> getActiveSO3s() {
 		return activeSO3s;
 	}
 
+	@Override
 	public void setActiveSO3s(Collection<FDStandingOrder> activeSO3s) {
 		this.activeSO3s = activeSO3s;
 	}
-	
+
+
+	public int getInformOrderModifyViewCount() { /* current estore, auto increment */
+		return getInformOrderModifyViewCount(null, true);
+	}
+	public int getInformOrderModifyViewCount(EnumEStoreId eStore) { /* auto increment */
+		return getInformOrderModifyViewCount(eStore, true);
+	}
+	public int getInformOrderModifyViewCount(EnumEStoreId eStore, boolean increment) {
+		if (this.cachedFDCustomer != null && this.cachedFDCustomer.getCustomerEStoreModel() != null) {
+			return this.cachedFDCustomer.getCustomerEStoreModel().getInformOrderModifyViewCount(eStore, increment);
+		} else {
+			return -1;
+		}
+	}
+
+	public void setInformOrderModifyViewCount(EnumEStoreId eStore, int informOrderModify) {
+		if (this.cachedFDCustomer != null && this.cachedFDCustomer.getCustomerEStoreModel() != null) {
+			this.cachedFDCustomer.getCustomerEStoreModel().setInformOrderModifyViewCount(eStore, informOrderModify);
+		}
+	}
 }

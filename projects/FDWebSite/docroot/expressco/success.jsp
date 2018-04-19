@@ -76,11 +76,15 @@
 				<fd:CmConversionEvent order="<%=order%>" orderModified="true"/>
 			<% } %>
 		</script>
-	</fd:GetOrder>
-  <% } %>
+	
 
   <div id='successpage'>
       <div class="container">
+      	<% if(FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && order.containsDlvPassOnly()){ %>
+	  		<div class="dpn-content">
+	        	<%@ include file="/includes/deliverypasssuccess.jsp" %>
+	        </div>
+  		<% } else { %>
         <div id="order-summary">
           <soy:render template="expressco.successpage" data="${singlePageCheckoutSuccessPotato.successPageData}" />
         </div>
@@ -108,7 +112,7 @@
         <div id="cartcontent" data-ec-linetemplate="expressco.successlines" data-drawer-disabled data-ec-request-uri="/api/expresscheckout/cartdata?orderId=${param['orderId']}">
 
         </div>
-
+		<% } %>
       </div>
 
     <script>
@@ -118,5 +122,7 @@
     </script>
 
   </div>
+  </fd:GetOrder>
+  <% } %>
   </tmpl:put>
 </tmpl:insert>

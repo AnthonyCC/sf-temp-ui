@@ -25,7 +25,8 @@ public enum EnumRolloutFeature {
     printinvoice("printinvoice", "2016"), // has print invoice button
     carttabcars("carttabcars", "2017"),
     debitCardSwitch("debitCardSwitch", "2017"),
-    cosRedesign2017("cosRedesign2017", "2017");
+    cosRedesign2017("cosRedesign2017", "2017"),
+    modOrderConfirmPageRedesign("modOrderConfirmPageRedesign", "2018");
 
     private final EnumRolloutFeature child;
     private final String cookieName;

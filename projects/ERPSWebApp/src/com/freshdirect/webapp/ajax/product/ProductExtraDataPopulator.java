@@ -6,11 +6,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.http.HttpStatus;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
@@ -27,7 +27,6 @@ import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.content.nutrition.ErpNutritionModel;
 import com.freshdirect.content.nutrition.panel.NutritionPanel;
 import com.freshdirect.customer.ErpProductFamilyModel;
-import com.freshdirect.erp.ErpFactory;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDCachedFactory;
@@ -91,977 +90,569 @@ import com.freshdirect.webapp.util.MediaUtils;
 import com.freshdirect.webapp.util.NutritionInfoPanelRendererUtil;
 
 public class ProductExtraDataPopulator {
-	private static final Logger LOG = LoggerFactory.getInstance( ProductExtraDataPopulator.class );
-	private static final java.text.DecimalFormat QTY_FORMATTER = new java.text.DecimalFormat("0");
-	private static final java.text.DecimalFormat TOTAL_FORMATTER = new java.text.DecimalFormat("0.00");
-	
-	public static ProductExtraData createExtraData( FDUserI user, ProductModel product, String grpId, String grpVersion, boolean includeProductAboutMedia)
-			throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
-	return  createExtraData( user,  product, grpId, grpVersion, includeProductAboutMedia, null);
-	}
-	//appdev 6259 nutrition panel from soy required including a css to go with it to build the page/viewport.
 
-	public static ProductExtraData createExtraData( FDUserI user, ProductModel product, String grpId, String grpVersion, boolean includeProductAboutMedia, String cssValue) throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
-		
-		if ( product == null ) {
-			BaseJsonServlet.returnHttpError( 500, "product not found" );
-		}
-		
-		// Create response data object
-		ProductExtraData data = new ProductExtraData();
-		
-		// First populate product-level data
-		populateData( data, user, product, grpId, grpVersion, includeProductAboutMedia, cssValue );
-		
-		return data;
-	}
-	
-	public static ProductExtraData createExtraData( FDUserI user, String productId, String categoryId, String grpId, String grpVersion ) throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
-		
-		if ( productId == null ) {
-			BaseJsonServlet.returnHttpError( 400, "productId not specified" );	// 400 Bad Request
-		}
-	
-		// Get the ProductModel
-		ProductModel product = PopulatorUtil.getProduct( productId, categoryId );
-		
-		return createExtraData( user, product, grpId, grpVersion, true, null );
-	}
+    private static final Logger LOG = LoggerFactory.getInstance(ProductExtraDataPopulator.class);
+    private static final java.text.DecimalFormat QUANTITY_FORMATTER = new java.text.DecimalFormat("0");
+    private static final java.text.DecimalFormat TOTAL_FORMATTER = new java.text.DecimalFormat("0.00");
+    private static final String POPUP_PAGE = "/shared/popup.jsp";
+
+    public static ProductExtraData createExtraData(FDUserI user, ProductModel product, String grpId, String grpVersion, boolean includeProductAboutMedia)
+            throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
+        return createExtraData(user, product, grpId, grpVersion, includeProductAboutMedia, null);
+    }
+
+    public static ProductExtraData createExtraData(FDUserI user, ProductModel product, String grpId, String grpVersion, boolean includeProductAboutMedia, String cssValue)
+            throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
+
+        if (product == null) {
+            BaseJsonServlet.returnHttpError(HttpStatus.SC_INTERNAL_SERVER_ERROR, "product not found");
+        }
+
+        ProductExtraData data = new ProductExtraData();
+        populateData(data, user, product, grpId, grpVersion, includeProductAboutMedia, cssValue);
+
+        return data;
+    }
+
+    public static ProductExtraData createExtraData(FDUserI user, String productId, String categoryId, String grpId, String grpVersion)
+            throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
+
+        if (productId == null) {
+            BaseJsonServlet.returnHttpError(HttpStatus.SC_BAD_REQUEST, "productId not specified");
+        }
+
+        ProductModel product = PopulatorUtil.getProduct(productId, categoryId);
+
+        return createExtraData(user, product, grpId, grpVersion, true, null);
+    }
 
     public static ProductExtraData createLightExtraData(FDUserI user, ProductModel product) throws HttpErrorResponse {
 
         if (product == null) {
-            BaseJsonServlet.returnHttpError(500, "product not found");
+            BaseJsonServlet.returnHttpError(HttpStatus.SC_INTERNAL_SERVER_ERROR, "product not found");
         }
 
-        // Create response data object
         ProductExtraData data = new ProductExtraData();
-
-        // First populate product-level data
         populateLightExtraData(data, user, product);
 
         return data;
     }
 
-    private static void populateLightExtraData(ProductExtraData data, FDUserI user, ProductModel product) {
-        data.setProductDescription(populateProductDescription(user, product.getProductDescription()));
+    public static ProductExtraData populateClaimsData(ProductExtraData data, ProductModel productNode) throws FDResourceException, FDSkuNotFoundException {
+        List<String> claims = collectClaims(productNode);
+        List<String> organicClaims = collectOrganicClaims(productNode);
+
+        if (!organicClaims.isEmpty()) {
+            data.setOrganicClaims(organicClaims);
+        }
+
+        if (!claims.isEmpty()) {
+            data.setClaims(claims);
+        }
+        return data;
     }
-	
-	private static void populateData(ProductExtraData data, FDUserI user,
-			ProductModel productNode, String grpId, String grpVersion, 
-			boolean incProductAboutMedia, String cssValue) throws FDResourceException, FDSkuNotFoundException {
 
-		final String popupPage = "/shared/popup.jsp";
+    private static void populateLightExtraData(ProductExtraData data, FDUserI user, ProductModel product) {
+        final DepartmentModel departmentNode = product.getDepartment();
+        final String departmentFullName = departmentNode.getFullName();
 
-		final DepartmentModel department = productNode.getDepartment();
-		// determine department type
-		final String deptName =  department.getContentName();
-		final String deptFullName =  department.getFullName();
-		
-		SkuModel defaultSku = PopulatorUtil.getDefSku( productNode );
+        SkuModel defaultSku = null;
+        try {
+            defaultSku = fetchDefaultSkuForProductModel(product);
+        } catch (FDSkuNotFoundException e) {
+            LOG.debug("Could not find sku for product" + product.getContentKey(), e);
+        }
 
-		try {
-			//if product is disc, then getDefSku returns null, but on PDP we need the prods anyway, so get first sku
-			if (defaultSku == null && ((ProductModel)productNode).getSkuCodes().size() > 0 ) {
-				defaultSku = ((ProductModel)productNode).getSku(0);
-			}
-		} catch (Exception e) {
-			LOG.warn("Exception while populating defaultSku: ", e);
-		}
-		
-		if ( defaultSku == null ) {
-			throw new FDSkuNotFoundException("No default SKU found for product " + productNode.getContentName());
-		}
-		
-		FDProduct fdprd = null;
-		FDProductInfo productInfo = null;
-		if (defaultSku != null) {
-			try {
-				productInfo	= FDCachedFactory.getProductInfo(defaultSku.getSkuCode());
-			} catch (FDResourceException e) {
-				LOG.debug(e);
-			} catch (FDSkuNotFoundException e) {
-				LOG.debug(e);
-			}
-			try {
-				fdprd		= FDCachedFactory.getProduct(productInfo);
-			} catch (FDResourceException e) {
-				LOG.debug(e);
-			} catch (FDSkuNotFoundException e) {
-				LOG.debug(e);
-			}
-		}
+        populateProductDescription(data, user, product.getProductDescription());
+        populateSeasonTextAndServingSuggestions(data, product);
+        populateCustomerServiceContact(data, user);
+        populateDeliBuyingGuide(data, product);
+        populateRelatedRecipes(data, product);
+        if (defaultSku != null) {
+            populateOriginData(data, product, defaultSku);
+        }
+        populateStorageGuideData(data, product, user, departmentNode);
+        populateUsageList(data, product);
+        populateFreshTips(data, product);
+        populateHowToCookItFolders(data, product);
+        populateDonenessGuides(data, product);
+        populateCheeseData(data, departmentFullName);
+        populatePartiallyFrozenBakeryHack(data, product, departmentFullName);
+        populateProductMedias(data, product, user, false);
+        populatePageTitle(data, product);
+        populateWineData(data, user, product);
 
+        try {
+            populateWebRatings(data, product);
+        } catch (FDResourceException e1) {
+            LOG.debug("Couldn't populate web ratings for productExtraData light for product: " + product.getContentKey(), e1);
+        }
+    }
 
-		// extract allergens
-		{
-			@SuppressWarnings("unchecked")
-			Set<EnumAllergenValue> common = productNode.getCommonNutritionInfo(ErpNutritionInfoType.ALLERGEN);
-			if (!common.isEmpty()) {
-				List<String> aList = new ArrayList<String>(common.size());
-				for (EnumAllergenValue allergen : common) {
-					if (!EnumAllergenValue.getValueForCode("NONE").equals(allergen)) {
-						aList.add(allergen.toString());
-					}
-				}
-				data.setAllergens(aList);
-			}
-		}
-		
-		data.setProductDescription(populateProductDescription(user, productNode.getProductDescription()));
-		
-		// product desc media
-		if ( productNode.getProductDescriptionNote() != null ) {
-			TitledMedia tm = (TitledMedia) productNode.getProductDescriptionNote();
-			try {
-				data.setProductDescriptionNote( fetchMedia(tm.getPath(), user, false) );
-			} catch (IOException e) {
-				LOG.error("Failed to fetch product description note media " + tm.getPath(), e);
-			} catch (TemplateException e) {
-				LOG.error("Failed to fetch product description note media " + tm.getPath(), e);
-			}
-		}
-		
-		// product about media
-		if ( productNode.getProductAbout() != null ) {
-			TitledMedia tm = (TitledMedia) productNode.getProductAbout();
-			try {
-				if(incProductAboutMedia){
-					data.setProductAboutMedia( fetchMedia(tm.getPath(), user, false) );
-				}
-                data.setProductAboutMediaPath(tm.getPath());
-			} catch (IOException e) {
-                LOG.error("Failed to fetch product about media " + tm.getPath(), e);
-			} catch (TemplateException e) {
-                LOG.error("Failed to fetch product about media " + tm.getPath(), e);
-			}
-		}
-		
-        // product terms media
-        if ( productNode.getProductTerms() != null ) {
-            TitledMedia tm = (TitledMedia) productNode.getProductTerms();
+    private static void populateData(ProductExtraData data, FDUserI user, ProductModel productNode, String groupId, String groupVersion, boolean includeProductAboutMedia,
+            String cssValue) throws FDResourceException, FDSkuNotFoundException {
+
+        final DepartmentModel departmentNode = productNode.getDepartment();
+        final String departmentName = departmentNode.getContentName();
+        final String departmentFullName = departmentNode.getFullName();
+        final SkuModel defaultSku = fetchDefaultSkuForProductModel(productNode);
+        final FDProductInfo fdProductInfo = fetchFDProductInfoForSkuModel(defaultSku);
+        final FDProduct fdProduct = fetchFDProductForFDProductInfo(fdProductInfo);
+        final String plantID = ProductInfoUtil.getPickingPlantId(fdProductInfo);
+
+        populateAllergenData(data, productNode);
+        populateProductDescription(data, user, productNode.getProductDescription());
+        populateProductMedias(data, productNode, user, includeProductAboutMedia);
+        populateClaimsData(data, productNode);
+        populateProductKosherData(data, productNode);
+        populateHeatingInstructions(data, fdProduct);
+        populatePartiallyFrozenBakeryHack(data, productNode, departmentFullName);
+        populateCountryOfOriginData(data, fdProductInfo, plantID);
+        populateDeliBuyingGuide(data, productNode);
+        populateCheeseData(data, departmentName);
+        populateProductBrands(data, productNode, defaultSku, fdProductInfo);
+        populateNutritions(data, defaultSku, cssValue, fdProduct);
+        populateDonenessGuides(data, productNode);
+        populateHowToCookItFolders(data, productNode);
+        populateFreshTips(data, productNode);
+        populateWebRatings(data, productNode);
+        populateUsageList(data, productNode);
+        populateStorageGuideData(data, productNode, user, departmentNode);
+        populateOriginData(data, productNode, defaultSku);
+        populateRelatedRecipes(data, productNode);
+        populateWineData(data, user, productNode);
+        populatePerishableProductData(data, fdProductInfo, plantID);
+        populateGroupScaleData(data, productNode, user, fdProductInfo, groupId, groupVersion, defaultSku);
+        populateComponentGroupsAndOptionalProducts(data, productNode, user, fdProductInfo);
+        populateFamilyProducts(data, productNode, user, fdProductInfo, defaultSku);
+        populateSeasonTextAndServingSuggestions(data, productNode);
+        populatePageTitle(data, productNode);
+        populateCustomerServiceContact(data, user);
+    }
+
+    private static FDProductInfo fetchFDProductInfoForSkuModel(SkuModel skuModel) {
+        FDProductInfo productInfo = null;
+        if (skuModel != null) {
             try {
-                data.setProductTermsMedia(fetchMedia(tm.getPath(), user, false));
+                productInfo = FDCachedFactory.getProductInfo(skuModel.getSkuCode());
+            } catch (FDResourceException e) {
+                LOG.debug(e);
+            } catch (FDSkuNotFoundException e) {
+                LOG.debug(e);
+            }
+        }
+        return productInfo;
+    }
+
+    private static FDProduct fetchFDProductForFDProductInfo(FDProductInfo productInfo) {
+        FDProduct fdProduct = null;
+        try {
+            fdProduct = FDCachedFactory.getProduct(productInfo);
+        } catch (FDResourceException e) {
+            LOG.debug(e);
+        } catch (FDSkuNotFoundException e) {
+            LOG.debug(e);
+        }
+        return fdProduct;
+    }
+
+    private static SkuModel fetchDefaultSkuForProductModel(ProductModel productNode) throws FDSkuNotFoundException {
+        SkuModel defaultSku = PopulatorUtil.getDefSku(productNode);
+        try {
+            // if product is disc, then getDefSku returns null, but on PDP we need the products anyway, so get first sku
+            if (defaultSku == null && productNode.getSkuCodes().size() > 0) {
+                defaultSku = productNode.getSku(0);
+            }
+        } catch (Exception e) {
+            LOG.warn("Exception while populating defaultSku: ", e);
+        }
+
+        if (defaultSku == null) {
+            throw new FDSkuNotFoundException("No default SKU found for product " + productNode.getContentName());
+        }
+
+        return defaultSku;
+    }
+
+    private static void populateSeasonTextAndServingSuggestions(ProductExtraData data, ProductModel productNode) {
+        data.setSeasonText(productNode.getSeasonText());
+        data.setServingSuggestions(productNode.getServingSuggestion());
+    }
+
+    private static void populateCustomerServiceContact(ProductExtraData data, FDUserI user) {
+        data.setCustomerServiceContact(user.getCustomerServiceContact());
+    }
+
+    private static void populateDeliBuyingGuide(ProductExtraData data, ProductModel productNode) {
+        final Double containerWeightHalfPint = productNode.getContainerWeightHalfPint();
+        final Double containerWeightPint = productNode.getContainerWeightPint();
+        final Double containerWeightQuart = productNode.getContainerWeightQuart();
+
+        if (containerWeightHalfPint != null) {
+            Map<String, Double> buyerGuide = new HashMap<String, Double>();
+            buyerGuide.put(ProductExtraData.KEY_CT_PINT05, containerWeightHalfPint);
+            if (containerWeightPint != null) {
+                buyerGuide.put(ProductExtraData.KEY_CT_PINT, containerWeightPint);
+                if (containerWeightQuart != null) {
+                    buyerGuide.put(ProductExtraData.KEY_CT_QUART, containerWeightQuart);
+                }
+            }
+            data.setBuyerGuide(buyerGuide);
+        }
+    }
+
+    private static void populatePerishableProductData(ProductExtraData data, FDProductInfo productInfo, String plantID) {
+        if (FDStoreProperties.IsFreshnessGuaranteedEnabled() && productInfo.getFreshness(plantID) != null) {
+            data.setFreshness(Integer.parseInt(productInfo.getFreshness(plantID)));
+        }
+    }
+
+    private static void populateRelatedRecipes(ProductExtraData data, ProductModel productNode) {
+        final String recipeCategoryId = productNode.getParentId();
+        List<RecipeData> recipeDatas = new ArrayList<RecipeData>();
+        for (Recipe recipe : productNode.getRelatedRecipes()) {
+            if (recipe.isAvailable()) {
+                final String recipeId = recipe.getContentName();
+                final String recipeName = recipe.getName();
+
+                RecipeData recipeData = new RecipeData(recipeId, recipeCategoryId, recipeName);
+                recipeDatas.add(recipeData);
+            }
+        }
+        if (recipeDatas.size() > 0) {
+            data.setRelatedRecipes(recipeDatas);
+        }
+    }
+
+    private static void populateOriginData(ProductExtraData data, ProductModel productNode, SkuModel defaultSku) {
+        if (defaultSku.getVariationMatrix() != null && defaultSku.getVariationMatrix().size() > 0) {
+            Map<String, SourceData> sourceToName = new HashMap<String, SourceData>();
+
+            // media
+            Html fdDefGradeMedia = productNode.getFddefGrade();
+            Html fdDefSourceMedia = productNode.getFddefSource();
+
+            TitledMedia titleMedia = null;
+            for (DomainValue domainValue : defaultSku.getVariationMatrix()) {
+                Domain domain = domainValue.getDomain();
+                final String domainName = domain.getContentName();
+
+                if ("grade".equalsIgnoreCase(domainName)) {
+                    titleMedia = (TitledMedia) fdDefGradeMedia;
+                } else if ("source".equalsIgnoreCase(domainName)) {
+                    titleMedia = (TitledMedia) fdDefSourceMedia;
+                } else {
+                    continue;
+                }
+
+                SourceData sourceData = new SourceData();
+                sourceData.label = domainValue.getValue();
+                if (titleMedia != null) {
+                    sourceData.path = titleMedia.getPath();
+                }
+
+                sourceToName.put(domainName, sourceData);
+            }
+
+            if (sourceToName.size() > 0) {
+                data.setSource(sourceToName);
+            }
+        }
+    }
+
+    private static void populateStorageGuideData(ProductExtraData data, ProductModel productNode, FDUserI user, DepartmentModel department) {
+        CategoryModel parentCategory = productNode.getCategory();
+        MediaModel categoryStorage = parentCategory.getCategoryStorageGuideMedia();
+        MediaModel departmentStorage = department.getDeptStorageGuideMedia();
+
+        if (parentCategory != null && categoryStorage != null) {
+            data.setCategoryStorageGuideLabel(department.getFullName() + " Storage Guide");
+            data.setCategoryStorageGuideLink(POPUP_PAGE + "?catId=" + parentCategory.getContentName() + "&attrib=CAT_STORAGE_GUIDE_MEDIA&tmpl=large");
+
+            TitledMedia tm = (TitledMedia) parentCategory.getCategoryStorageGuideMedia();
+            try {
+                data.setCategoryStorageGuide(fetchMedia(tm.getPath(), user, false));
             } catch (IOException e) {
-                LOG.error("Failed to fetch product term media " + tm.getPath(), e);
+                LOG.error("Failed to fetch media " + tm.getPath(), e);
             } catch (TemplateException e) {
-                LOG.error("Failed to fetch product term media " + tm.getPath(), e);
+                LOG.error("Failed to fetch media " + tm.getPath(), e);
             }
         }
 
-      //refactored code into this new method
-        populateClaimsData(data, user, productNode, grpId, grpVersion);
-        
-	/*	// organic claims
-		{
-			@SuppressWarnings("unchecked")
-			Set<EnumOrganicValue> commonOrgs = productNode.getCommonNutritionInfo(ErpNutritionInfoType.ORGANIC);
-			if (!commonOrgs.isEmpty()) {
-				List<String> aList = new ArrayList<String>(commonOrgs.size());
-				for (EnumOrganicValue claim : commonOrgs) {
-					if(!EnumOrganicValue.getValueForCode("NONE").equals(claim)) {
-						//Changed for APPDEV-705
+        if (categoryStorage != null) {
+            data.setStorageGuideCat(categoryStorage.getPath());
+        }
+        if (departmentStorage != null) {
+            data.setStorageGuideDept(departmentStorage.getPath());
+        }
+        data.setStorageGuideTitle(department.getFullName() + " Storage Guide");
+    }
 
-						//check for different text than what Enum has (Enum shows in ERPSy-Daisy)
-						if(EnumOrganicValue.getValueForCode("CERT_ORGN").equals(claim)){
-							// %><div>&bull; Organic</div><%
-							aList.add("Organic");
-						}else{
-							//don't use empty
-							if ( !"".equals(claim.getName()) ) {
-								// %><div>&bull; <%= claim.getName() %></div><%
-								aList.add(claim.getName());
-							}
-						}
-					}
-				}
+    private static void populateUsageList(ProductExtraData data, ProductModel productNode) {
+        if (productNode.getUsageList() != null && productNode.getUsageList().size() > 0) {
+            List<String> usageList = new ArrayList<String>();
+            for (Domain domain : productNode.getUsageList()) {
+                usageList.add(domain.getLabel());
+            }
+            data.setUsageList(usageList);
+        }
+    }
 
-				data.setOrganicClaims(aList);
-			}
-		}
+    private static void populateWebRatings(ProductExtraData data, ProductModel productNode) throws FDResourceException {
+        WebProductRating webProductRating = RatingUtil.getRatings(productNode);
+        data.setWebRating(webProductRating);
+    }
 
+    private static void populateFreshTips(ProductExtraData data, ProductModel productNode) {
+        final Html freshTipsMedia = productNode.getFreshTips();
+        if (freshTipsMedia != null) {
+            LabelAndLink labelAndLink = new LabelAndLink((TitledMedia) freshTipsMedia);
+            data.setFreshTips(labelAndLink);
+        }
+    }
 
-		// claims
-		{
-			@SuppressWarnings("unchecked")
-			Set<EnumClaimValue> common = productNode.getCommonNutritionInfo(ErpNutritionInfoType.CLAIM);
-			if (!common.isEmpty()) {
-				List<String> aList = new ArrayList<String>(common.size());
-				for (EnumClaimValue claim : common) {
-					if (!EnumClaimValue.getValueForCode("NONE").equals(claim) && !EnumClaimValue.getValueForCode("OAN").equals(claim)) {
-						//Changed for APPDEV-705
+    private static void populateHowToCookItFolders(ProductExtraData data, ProductModel productNode) {
+        List<WebHowToCookIt> howToCookItResult = HowToCookItUtil.getHowToCookIt(productNode);
+        data.setHowToCookItList(howToCookItResult);
+    }
 
-						//check for different text than what Enum has (Enum shows in ERPSy-Daisy)
-						if(EnumClaimValue.getValueForCode("FR_ANTI").equals(claim)){
-							// %><div>&bull; Raised Without Antibiotics</div><%
-							aList.add("Raised Without Antibiotics");
-						}else{
-							// %><div style="margin-left:8px; text-indent: -8px;">&bull; <%= claim %></div><%
-							aList.add(claim.toString());
-						}
-					}
-				}
-				data.setClaims(aList);
-			}
-		}
+    private static void populateDonenessGuides(ProductExtraData data, ProductModel productNode) {
+        List<Html> donenessGuides = productNode.getDonenessGuide();
+        if (donenessGuides != null && donenessGuides.size() > 0) {
+            List<LabelAndLink> labelAndLinks = new ArrayList<LabelAndLink>();
+            for (Html media : donenessGuides) {
+                LabelAndLink labelAndLink = new LabelAndLink((TitledMedia) media);
+                labelAndLinks.add(labelAndLink);
+            }
+            data.setDonenessGuideList(labelAndLinks);
+        }
+    }
 
-*/
-		// kosher type and symbol
-		{
-			PriceCalculator _pc = productNode.getPriceCalculator();
+    private static void populateNutritions(ProductExtraData data, SkuModel defaultSku, String cssValue, FDProduct fdProduct) {
+        final String skuCode = defaultSku.getSkuCode();
+        NutritionPanel nutritionPanel = FDNutritionPanelCache.getInstance().getNutritionPanel(skuCode);
 
-			final String kosherType = _pc.getKosherType();
-			final String kosherSymbol = _pc.getKosherSymbol();
+        if (cssValue != null && !cssValue.isEmpty()) {
+            nutritionPanel.setViewportCss(cssValue);
+        }
 
-			if(!"".equalsIgnoreCase(kosherType)) {
-				data.setKosherType(kosherType);
-			}
-			if (!"".equalsIgnoreCase(kosherSymbol)) {
-				data.setKosherSymbol(kosherSymbol);
+        if (nutritionPanel != null) {
+            data.setNutritionPanel(nutritionPanel);
+        } else if (fdProduct != null && fdProduct.hasNutritionFacts()) {
+            // old style
 
-				data.setKosherIconPath("/media/editorial/kosher/symbols/"+kosherSymbol.toLowerCase()+"_s.gif");
-				data.setKosherPopupPath( popupPage + "?attrib=KOSHER&amp;spec="+kosherSymbol.toLowerCase()+"&amp;tmpl=small");
-			}
-		}
+            ErpNutritionModel nutritionModel = FDNutritionCache.getInstance().getNutrition(defaultSku.getSkuCode());
 
+            if (nutritionModel != null) {
+                try {
+                    StringWriter wr = new StringWriter();
+                    if (NutritionInfoPanelRendererUtil.renderClassicPanel(nutritionModel, false, wr)) {
+                        data.setOldNutritionPanel(wr.toString());
+                    }
+                } catch (IOException e) {
+                    LOG.error("Failed to render old nutrition panel", e);
+                }
+            }
 
-		// heating instructions
-		{
-			if (fdprd != null && fdprd.hasNutritionInfo(ErpNutritionInfoType.HEATING)) {
-				data.setHeatingInstructions( fdprd.getNutritionInfoString(ErpNutritionInfoType.HEATING) );
-			}
-		}
-		
-		// partially frozen / baked
-		Html frozenMedia = productNode.getPartallyFrozen();
-		if (frozenMedia != null) {
-			try {
-				data.setPartiallyFrozenMedia(fetchMedia(frozenMedia.getPath(), user, false));
-				data.setFrozen(true);
-			} catch (IOException e) {
-				LOG.error("Failed to fetch partially frozen media " + frozenMedia.getPath(), e);
-			} catch (TemplateException e) {
-				LOG.error("Failed to fetch partially frozen media " + frozenMedia.getPath(), e);
-			}
-		}
-		
-		// Deprecated due to APPBUG-1705, preserved because you never know ...
-		if (productNode.isHasPartiallyFrozen()) {
-			if ("SEAFOOD".equalsIgnoreCase(deptFullName)) {
-				// seafood department
-				data.setFrozenSeafood(true);
-			} else if ("BAKERY".equalsIgnoreCase(deptFullName)) {
-				// bakery dept
-				data.setFrozenBakery(true);
-			}
-			
-		}
-		//String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
-		String plantID=ProductInfoUtil.getPickingPlantId(productInfo);
-		// origin (or Country of Origin Label, a.k.a. COOL)
-		if (productInfo != null) {
-			final String skuCode = productInfo.getSkuCode();
-			final List<String> coolList = productInfo.getCountryOfOrigin(plantID);
-			if (coolList != null && !coolList.isEmpty()) {
-				if (skuCode != null && (skuCode).startsWith("MEA")) {
-					data.setOriginTitle("Born, Raised and Harvested in");
-				} else {
-					data.setOriginTitle("Origin");
-				}
-			}
-		}
-		if (productInfo != null) {
-			final List<String> coolList = productInfo.getCountryOfOrigin(plantID);
-			if (coolList != null && !coolList.isEmpty()) {
-				data.setOrigin( AbstractProductModelImpl.getCOOLText(coolList) );
-			}
-		}
-		
-		// season text
-		data.setSeasonText(productNode.getSeasonText());
-		
-		// deli buying guide
-		// Example1: https://www.freshdirect.com/product.jsp?catId=ptdol&productId=ptdol_ptdklmtaoliv&trk=cpage&trkd=qb
-		{
-		    final Double cwHalfPint = productNode.getContainerWeightHalfPint();
-			final Double cwPint = productNode.getContainerWeightPint();
-			final Double cwQuart = productNode.getContainerWeightQuart();
+        } else {
+            // generate classic nutrition panel
+            LOG.warn("Not found new nutrition info data for SKU " + skuCode);
+        }
 
-			if ((cwHalfPint != null)) {
-		    	
-		    	Map<String, Double> dt = new HashMap<String, Double>();
-		    	
-		    	dt.put(ProductExtraData.KEY_CT_PINT05, cwHalfPint);
-		    	if ((cwPint != null)) {
-			    	dt.put(ProductExtraData.KEY_CT_PINT, cwPint);
-		    		if ((cwQuart != null)) {
-				    	dt.put(ProductExtraData.KEY_CT_QUART, cwQuart);
-		    		}
-		    	}
-		    	
-		    	data.setBuyerGuide(dt);
-		    }
-		}
-		
-		// cheese 101
-		if ("CHE".equalsIgnoreCase(deptName)) {
-			data.setCheese101(true);
-			data.setCheeseText("Learn the essentials &#151; from buying to serving");
-			data.setCheesePopupPath("/departments/cheese/101_selecting.jsp");
-		} else {
-			data.setCheese101(false);
-		}
+        if (fdProduct != null) {
+            data.setIngredients(fdProduct.getIngredients());
+        }
+    }
 
+    private static void populateProductBrands(ProductExtraData data, ProductModel productNode, SkuModel defaultSku, FDProductInfo productInfo) {
+        final boolean isWineLayout = EnumProductLayout.NEW_WINE_PRODUCT.equals(productNode.getProductLayout());
+        final int maxBrandsToShow = isWineLayout ? 1 : 2;
 
-		// product brands and links to brand pages
-		// TODO brand categories
-		{
-			final boolean isWineLayout = EnumProductLayout.NEW_WINE_PRODUCT.equals(productNode.getProductLayout());
-			final int MAX_BRANDS_TO_SHOW = isWineLayout ? 1 : 2;
-			
-			// get the brand logo, if any.
-			@SuppressWarnings("unchecked")
-			List<BrandModel> prodBrands = productNode.getDisplayableBrands(MAX_BRANDS_TO_SHOW);
+        @SuppressWarnings("unchecked")
+        List<BrandModel> productBrands = productNode.getDisplayableBrands(maxBrandsToShow);
 
-			/*
-			 * Append "Ocean-Friendly Seafood" brand to product
-			 *  if sustainability rating is over 4
-			 * 
-			 * According to ticket http://jira.freshdirect.com:8080/browse/APPDEV-2328
-			 */
-			if(defaultSku != null && FDStoreProperties.isSeafoodSustainEnabled()) {
-				//EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating(user.getUserContext().getFulfillmentContext().getPlantId());
-				EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating(ProductInfoUtil.getPickingPlantId(productInfo));
-				if ( enumRating != null) {
-					if ( enumRating != null && enumRating.isEligibleToDisplay() && (enumRating.getId() == 4 || enumRating.getId() == 5) ) {
-						ContentNodeModel ssBrandCheck = ContentFactory.getInstance().getContentNode("bd_ocean_friendly");
-						if (ssBrandCheck instanceof BrandModel) {
-							prodBrands.add( (BrandModel)ssBrandCheck );
-						}
-					}
-				}
-			}
+        if (defaultSku != null && FDStoreProperties.isSeafoodSustainEnabled()) {
+            EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating(ProductInfoUtil.getPickingPlantId(productInfo));
+            if (enumRating != null) {
+                if (enumRating != null && enumRating.isEligibleToDisplay() && (enumRating.getId() == 4 || enumRating.getId() == 5)) {
+                    ContentNodeModel ssBrandCheck = ContentFactory.getInstance().getContentNode("bd_ocean_friendly");
+                    if (ssBrandCheck instanceof BrandModel) {
+                        productBrands.add((BrandModel) ssBrandCheck);
+                    }
+                }
+            }
+        }
 
-			/* Process brands */
-			List<BrandInfo> bInfo = new ArrayList<BrandInfo>(prodBrands.size());
-			for (final BrandModel bm : prodBrands) {
-				Html brandAttrib = bm.getPopupContent();
+        List<BrandInfo> brandInfos = new ArrayList<BrandInfo>(productBrands.size());
+        for (final BrandModel brandModel : productBrands) {
+            Html brandAttrib = brandModel.getPopupContent();
 
-				BrandInfo bi = new BrandInfo();
-				bi.id = bm.getContentName();
-				bi.name = bm.getFullName();
-				bi.alt = bm.getAltText();
+            BrandInfo brandInfo = new BrandInfo();
+            brandInfo.id = brandModel.getContentName();
+            brandInfo.name = brandModel.getFullName();
+            brandInfo.alt = brandModel.getAltText();
 
-				// brand logo data
-				Image blogo = bm.getLogoSmall();
-				if (blogo != null) {
-					bi.logoPath = blogo.getPath();
-					bi.logoWidth = blogo.getWidth();
-					bi.logoHeight = blogo.getHeight();
-				}
-				// brand popup size
-				// Popup window URL: /shared/brandpop.jsp?brandId=<brand.id>
-				if (brandAttrib != null) {
-				    /*TitledMedia tm = (TitledMedia) brandAttrib;
-					bi.popupSize = tm.getPopupSize();
-					EnumPopupType popupType = EnumPopupType.getPopupType(tm
-							.getPopupSize());
-					bi.popupWidth = popupType.getWidth();
-					bi.popupHeight = popupType.getHeight(); */
-					bi.contentPath = "/shared/brandpop.jsp?brandId="+bm.getContentKey().getId();
-				}
+            Image blogo = brandModel.getLogoSmall();
+            if (blogo != null) {
+                brandInfo.logoPath = blogo.getPath();
+                brandInfo.logoWidth = blogo.getWidth();
+                brandInfo.logoHeight = blogo.getHeight();
+            }
+            if (brandAttrib != null) {
+                brandInfo.contentPath = "/shared/brandpop.jsp?brandId=" + brandModel.getContentKey().getId();
+            }
+            brandInfos.add(brandInfo);
+        }
+        data.setBrands(brandInfos);
+    }
 
-				bInfo.add(bi);
-			}
-			data.setBrands(bInfo);
-		}
-		
-		// nutritions
-		{
-			final boolean useCache = true;
-			final String skuCode = defaultSku.getSkuCode();
-			
-			NutritionPanel nutritionPanel = null;
+    private static void populateCheeseData(ProductExtraData data, String departmentName) {
+        if ("CHE".equalsIgnoreCase(departmentName)) {
+            data.setCheese101(true);
+            data.setCheeseText("Learn the essentials &#151; from buying to serving");
+            data.setCheesePopupPath("/departments/cheese/101_selecting.jsp");
+        } else {
+            data.setCheese101(false);
+        }
+    }
 
-			if ( useCache ) {
-				// For storefront get panel from cache
-				nutritionPanel = FDNutritionPanelCache.getInstance().getNutritionPanel( skuCode );
-			} else {
-				// No caching for erpsadmin, just get the real stuff directly
-				nutritionPanel = ErpFactory.getInstance().getNutritionPanel( skuCode );
-			}
-			if (cssValue!=null && ! cssValue.isEmpty()){
-				nutritionPanel.setViewportCss(cssValue);
-			}
+    private static void populateCountryOfOriginData(ProductExtraData data, FDProductInfo productInfo, String plantID) {
+        // origin (or Country of Origin Label, a.k.a. COOL)
+        if (productInfo != null) {
+            final String skuCode = productInfo.getSkuCode();
+            final List<String> coolList = productInfo.getCountryOfOrigin(plantID);
+            if (coolList != null && !coolList.isEmpty()) {
+                if (skuCode != null && skuCode.startsWith("MEA")) {
+                    data.setOriginTitle("Born, Raised and Harvested in");
+                } else {
+                    data.setOriginTitle("Origin");
+                }
+            }
+        }
+        if (productInfo != null) {
+            final List<String> coolList = productInfo.getCountryOfOrigin(plantID);
+            if (coolList != null && !coolList.isEmpty()) {
+                data.setOrigin(AbstractProductModelImpl.getCOOLText(coolList));
+            }
+        }
+    }
 
-			if (nutritionPanel != null) {
-				// nutritionMap.put(skuCode, panel);
-				data.setNutritionPanel(nutritionPanel);
-			} else if (fdprd != null && fdprd.hasNutritionFacts()) {
-				// old style
-				
-				ErpNutritionModel nutritionModel = FDNutritionCache.getInstance().getNutrition( defaultSku.getSkuCode() );
+    private static void populatePartiallyFrozenBakeryHack(ProductExtraData data, ProductModel productNode, String departmentFullName) {
+        // Deprecated due to APPBUG-1705, preserved because you never know ...
+        if (productNode.isHasPartiallyFrozen()) {
+            if ("SEAFOOD".equalsIgnoreCase(departmentFullName)) {
+                // seafood department
+                data.setFrozenSeafood(true);
+            } else if ("BAKERY".equalsIgnoreCase(departmentFullName)) {
+                // bakery dept
+                data.setFrozenBakery(true);
+            }
 
-				if (nutritionModel != null) {
-					try {
-						StringWriter wr = new StringWriter();
-						if (NutritionInfoPanelRendererUtil.renderClassicPanel(nutritionModel, false, wr)) {
-							data.setOldNutritionPanel(wr.toString());
-						}
-					} catch (IOException e) {
-						LOG.error("Failed to render old nutrition panel", e);
-					}
-				}
-				
-			} else {
-				// generate classic nutrition panel
-				
-				
-				LOG.warn("Not found new nutrition info data for SKU " + skuCode);
-			}
-		}
-		
-		// ** how to cook it **
+        }
+    }
 
-		// doneness guides
-		{
-			
-			List<Html> donenessGuides = productNode.getDonenessGuide();
-			if (donenessGuides != null && donenessGuides.size() > 0) {
-				List<LabelAndLink> dgList = new ArrayList<LabelAndLink>();
+    private static void populateHeatingInstructions(ProductExtraData data, FDProduct fdProduct) {
+        if (fdProduct != null && fdProduct.hasNutritionInfo(ErpNutritionInfoType.HEATING)) {
+            data.setHeatingInstructions(fdProduct.getNutritionInfoString(ErpNutritionInfoType.HEATING));
+        }
+    }
 
-				for (Html media : donenessGuides) {
-					LabelAndLink lal = new LabelAndLink((TitledMedia) media);
-					
-					dgList.add(lal);
-				}
-				
-				data.setDonenessGuideList(dgList);
-			}
-		}
+    private static void populateProductKosherData(ProductExtraData data, ProductModel productNode) throws FDResourceException {
+        PriceCalculator priceCalculator = productNode.getPriceCalculator();
 
-		// how-to cook it folders
-		{
-			List<WebHowToCookIt> howToCookItResult = HowToCookItUtil.getHowToCookIt( productNode );
-			data.setHowToCookItList(howToCookItResult);
-		}
-		
-		// fresh tips
-		{
-			final Html ftMedia = productNode.getFreshTips();
-			if (ftMedia != null) {
-				LabelAndLink lal = new LabelAndLink((TitledMedia) ftMedia);
-				data.setFreshTips(lal);
-			}
-		}
-		
-		// product web-ratings
-		{
-			WebProductRating webProductRating = RatingUtil.getRatings(productNode);
-			data.setWebRating( webProductRating );
-		}
-		
-		// usage list
-		{
-			if (productNode.getUsageList() != null && productNode.getUsageList().size() > 0) {
-				List<String> aList = new ArrayList<String>();
-				for (Domain d : productNode.getUsageList()) {
-					aList.add(d.getLabel());
-				}
-				data.setUsageList(aList);
-			}
-		}
-		
-		// storage guide (category level)
-		{
-			CategoryModel _parentNode = (CategoryModel) productNode
-					.getParentNode();
+        final String kosherType = priceCalculator.getKosherType();
+        final String kosherSymbol = priceCalculator.getKosherSymbol();
 
-//			if (_parentNode != null && _parentNode.getAliasCategory() != null) {
-//				_parentNode = _parentNode.getAliasCategory();
-//			}
-//
-			if (_parentNode != null && _parentNode.getCategoryStorageGuideMedia() != null) {
-				data.setCategoryStorageGuideLabel( department.getFullName() +" Storage Guide");
-				data.setCategoryStorageGuideLink( popupPage + "?catId=" + _parentNode.getContentName() + "&attrib=CAT_STORAGE_GUIDE_MEDIA&tmpl=large" );
+        if (!"".equalsIgnoreCase(kosherType)) {
+            data.setKosherType(kosherType);
+        }
+        if (!"".equalsIgnoreCase(kosherSymbol)) {
+            data.setKosherSymbol(kosherSymbol);
+            data.setKosherIconPath("/media/editorial/kosher/symbols/" + kosherSymbol.toLowerCase() + "_s.gif");
+            data.setKosherPopupPath(POPUP_PAGE + "?attrib=KOSHER&amp;spec=" + kosherSymbol.toLowerCase() + "&amp;tmpl=small");
+        }
+    }
 
-				TitledMedia tm = (TitledMedia) _parentNode.getCategoryStorageGuideMedia();
-				try {
-					data.setCategoryStorageGuide(fetchMedia(tm.getPath(), user, false));
-				} catch (IOException e) {
-					LOG.error("Failed to fetch media " + tm.getPath(), e);
-				} catch (TemplateException e) {
-					LOG.error("Failed to fetch media " + tm.getPath(), e);
-				}
-			}
-		}
-		
-		// ingredients
-		{
-			// FIXME might be part of nutritions data set
-			if (fdprd != null) {
-				data.setIngredients(fdprd.getIngredients());
-			}
-		}
-		
-		
-		// serving suggestions
-		{
-			data.setServingSuggestions(productNode.getServingSuggestion());
-		}
-		
-		// origin
-		// TBD
-		if (defaultSku.getVariationMatrix() != null && defaultSku.getVariationMatrix().size() > 0) {
-			Map<String,SourceData> map = new HashMap<String,SourceData>();
-			
-			// media
-			Html _fdDefGrade = productNode.getFddefGrade();
-			Html _fdDefSource = productNode.getFddefSource();
-			
-			TitledMedia tm = null;
-			for (DomainValue dv : defaultSku.getVariationMatrix()) {
-				Domain d = dv.getDomain();
-				final String dName = d.getContentName();
-				
-				if ("grade".equalsIgnoreCase(dName)) {
-					tm = (TitledMedia)_fdDefGrade;
-				} else if ("source".equalsIgnoreCase(dName)) {
-					tm = (TitledMedia)_fdDefSource;
-				} else {
-					continue;
-				}
-				
-				SourceData sd = new SourceData();
-				sd.label = dv.getValue();
-				if (tm != null) {
-					sd.path = tm.getPath();
-				}
-				
-				map.put(dName, sd);
-			}
-			
-			if (map.size() > 0) {
-				data.setSource(map);
-			}
-		}
-		
-		// related recipes
-		{
-			final String recipeCatId = productNode.getParentId();
-			List<RecipeData> rdl = new ArrayList<RecipeData>();
-			for (Recipe r : productNode.getRelatedRecipes()) {
-				if (r.isAvailable()) {
-					// 
-					final String recipeId = r.getContentName();
-					final String recipeName = r.getName();
-					
-					RecipeData rd = new RecipeData(recipeId, recipeCatId, recipeName);
-					rdl.add(rd);
-				}
-			}
-			if (rdl.size() > 0) {
-				data.setRelatedRecipes(rdl);
-			}
-		}
-		
-		// *** wine info ***
-		
-		/* first check if product is a wine */
-		//APPDEV 4131
-		//if (department != null && (WineUtil.getWineAssociateId()).equalsIgnoreCase( department.getContentKey().getId() )) {
-		
-		if (department != null){
-			populateWineData(data, user, productNode);
-		}
-		
-		// Storage guides
-		CategoryModel parentCat = productNode.getCategory();
-		MediaModel catStorage = parentCat.getCategoryStorageGuideMedia();
-		if ( catStorage != null ) {
-			data.setStorageGuideCat( catStorage.getPath() );
-		}
-		DepartmentModel parentDept = productNode.getDepartment();
-		MediaModel deptStorage = parentDept.getDeptStorageGuideMedia();
-		if ( deptStorage != null ) {
-			data.setStorageGuideDept( deptStorage.getPath() );
-		}
-		data.setStorageGuideTitle( parentDept.getFullName() + " Storage Guide" );
-		
-		
-		// --- --- //
-		// Perishable product - freshness warranty
-		if (FDStoreProperties.IsFreshnessGuaranteedEnabled() && productInfo.getFreshness(plantID) != null) {
-			// method above returns either a positive integer encoded in string
-			// or null
-			data.setFreshness( Integer.parseInt(productInfo.getFreshness(plantID)) );
-		}
-		
-		/* Group Scale products */
-		{
-			GroupScaleData gsData = new GroupScaleData(); //make sure this gets added, even if it's all nulls
-		
-			if (grpId != null && !"".equals(grpId)) {
-							
-				List<ProductData> groupProductsList = new ArrayList<ProductData>();
-					
-				/* set initial values */
-				gsData.grpId = grpId;
-				gsData.version = grpVersion;
-						
-				try{
-		
-					List<String> skuList = null; /* we'll use this to get the other products */
-					final String prioritySku = defaultSku.getSkuCode(); /* this is the sku for the product we're starting with, we skip adding it to the product list */
-					List <ProductModel> productModelList = new ArrayList<ProductModel>();
-							
-					if (grpId != null && !"".equals(grpId)) {
-						FDGroup group = null;
-								
-						if(grpVersion==null || (grpVersion!=null && "".equals(grpVersion.trim()))) {
-							group=GroupScaleUtil.getLatestActiveGroup(grpId);							
-							gsData.version = Integer.toString(group.getVersion());
-						} else {			
-							group = new FDGroup(grpId, Integer.parseInt(grpVersion));
-						}
-								
-						MaterialPrice matPrice = GroupScaleUtil.getGroupScalePrice(group, user.getUserContext().getPricingContext().getZoneInfo());
-							
-						if (matPrice != null) {
-							String grpQty = "0";
-							String grpTotalPrice = "0";
-							boolean isSaleUnitDiff = false;
-							double displayPrice = 0.0;
-										
-							if(matPrice.getPricingUnit().equals(matPrice.getScaleUnit()))
-								displayPrice = matPrice.getPrice() * matPrice.getScaleLowerBound();
-							else {
-								displayPrice = matPrice.getPrice();
-								isSaleUnitDiff = true;
-							}
-										
-							grpQty = QTY_FORMATTER.format(matPrice.getScaleLowerBound());
-										
-							if(matPrice.getScaleUnit().equals("LB"))//Other than eaches append the /pricing unit for clarity.
-								grpQty = grpQty + (matPrice.getScaleUnit().toLowerCase());
-				
-								grpTotalPrice = "$"+TOTAL_FORMATTER.format(displayPrice);
-										
-								if(isSaleUnitDiff)
-									grpTotalPrice = grpTotalPrice + "/" + (matPrice.getPricingUnit().toLowerCase());
-										
-									GroupScalePricing gsp = GroupScaleUtil.lookupGroupPricing(group);
-				
-									gsData.grpQty = grpQty;
-									gsData.grpTotalPrice = grpTotalPrice;
-									gsData.grpShortDesc = gsp.getShortDesc();
-									gsData.grpLongDesc = gsp.getLongDesc();
-										
-									skuList = gsp.getSkuList();
-						}
-					}
-					
-					if(skuList == null){
-						LOG.info("skuList is empty for groupId" +grpId+" "+grpVersion);
-					}
-					
-					if (skuList!=null) {
-						/* iterate over list of skus to get productModels */
-						Iterator<String> skuListIt = skuList.iterator();
-						while (skuListIt.hasNext()) {
-							String curSku = skuListIt.next();
-						if(prioritySku != null && prioritySku.equals(curSku))
-							//as it is already processed
-								continue;
-							try {
-							ProductModel pm = ContentFactory.getInstance().getProduct(curSku);
-								if (pm != null) {
-									productModelList.add(pm);
-								}
-							} catch (FDSkuNotFoundException se) {
-								//Ignore this sku. move to next
-							}
+    private static void populateProductMedias(ProductExtraData data, ProductModel productNode, FDUserI user, boolean includeProductAboutMedia) {
+        populateProductDescriptionMedia(data, productNode, user);
+        populateProductAboutMedia(data, productNode, user, includeProductAboutMedia);
+        populateProductTermsMedia(data, productNode, user);
+        populatePartiallyFrozenMedia(data, productNode, user);
+    }
 
-						}
-					}
-					/* now iterate over productModels to get ProductDatas */
-					Iterator<ProductModel> productModelListIt = productModelList.iterator();
-					while(productModelListIt.hasNext()){
-						ProductModel curPm = productModelListIt.next();
-						ProductData pd = new ProductData();
-						SkuModel skuModel = null;
-								
-						if ( !(curPm instanceof ProductModelPricingAdapter) ) {
-							// wrap it into a pricing adapter if naked
-							curPm = ProductPricingFactory.getInstance().getPricingAdapter( curPm, user.getUserContext().getPricingContext() );
-						}
-								
-						if ( skuModel == null ) {
-							skuModel = curPm.getDefaultSku();
-						}
-						
-						if (skuModel == null) {
-						       LOG.warn( "Default Sku not found for product: "+curPm);
-						       continue;
-						}
-						
-						String skuCode = skuModel.getSkuCode();
-								
-						try {
-							FDProductInfo productInfo_fam = skuModel.getProductInfo();
-							FDProduct fdProduct = skuModel.getProduct();
-								
-							PriceCalculator priceCalculator = curPm.getPriceCalculator();
-									
-							ProductDetailPopulator.populateBasicProductData( pd, user, curPm );
-							ProductDetailPopulator.populateProductData( pd, user, curPm, skuModel, fdProduct, priceCalculator, null, true, true );
-							ProductDetailPopulator.populatePricing( pd, fdProduct, productInfo_fam, priceCalculator,user );
-									
-							try {
-								ProductDetailPopulator.populateSkuData( pd, user, curPm, skuModel, fdProduct );
-							} catch (FDSkuNotFoundException e) {
-								LOG.error( "Failed to populate sku data", e );
-							} catch ( HttpErrorResponse e ) {
-								LOG.error( "Failed to populate sku data", e );
-							}
-									
-							ProductDetailPopulator.postProcessPopulate( user, pd, pd.getSkuCode() );
-									
-						} catch (FDSkuNotFoundException e) {
-							LOG.warn( "Sku not found: "+skuCode, e );
-						}
-								
-						groupProductsList.add(pd);
-								
-					}
-							
-					/* and finally set to Data */
-					gsData.groupProducts = groupProductsList;
-							
-							
-				}catch(FDResourceException fe){
-					//throw new JspException(fe);
-				} catch (FDGroupNotFoundException e) {
-					// TODO Auto-generated catch block
-					//throw new JspException(e);
-				}
-			
-			}
-				data.setGroupScaleData(gsData);
-		}
-		
-		/* component group meal component groups and optional products */
-			List<ComponentGroupModel> componentGroups = productNode.getComponentGroups();
-			List<ProductData> optProducts = new ArrayList<ProductData>();
-			List<FilteringProductItem> optProdModels =  new ArrayList<FilteringProductItem>();
-			
-			int compGrpIdx = 0;
-			for (Iterator cgItr = componentGroups.iterator(); cgItr.hasNext(); compGrpIdx++) {
-				ComponentGroupModel compGroup = (ComponentGroupModel) cgItr.next();
+    private static void populatePartiallyFrozenMedia(ProductExtraData data, ProductModel productNode, FDUserI user) {
+        Html frozenMedia = productNode.getPartallyFrozen();
+        if (frozenMedia != null) {
+            try {
+                data.setPartiallyFrozenMedia(fetchMedia(frozenMedia.getPath(), user, false));
+                data.setFrozen(true);
+            } catch (IOException e) {
+                LOG.error("Failed to fetch partially frozen media " + frozenMedia.getPath(), e);
+            } catch (TemplateException e) {
+                LOG.error("Failed to fetch partially frozen media " + frozenMedia.getPath(), e);
+            }
+        }
+    }
 
-				/* componentGroupMeal.jsp layout doesn't check preview mode */
-				if (compGroup.isUnavailable() && !(ContentFactory.getInstance().getPreviewMode())) continue;
+    private static void populateProductDescriptionMedia(ProductExtraData data, ProductModel productNode, FDUserI user) {
+        if (productNode.getProductDescriptionNote() != null) {
+            TitledMedia titleMedia = (TitledMedia) productNode.getProductDescriptionNote();
+            try {
+                data.setProductDescriptionNote(fetchMedia(titleMedia.getPath(), user, false));
+            } catch (IOException e) {
+                LOG.error("Failed to fetch product description note media " + titleMedia.getPath(), e);
+            } catch (TemplateException e) {
+                LOG.error("Failed to fetch product description note media " + titleMedia.getPath(), e);
+            }
+        }
 
-				//  dont show this component group stuff if it is for popup only 
-				if (compGroup.isShowInPopupOnly()) continue;
-				
-				if (compGroup.isShowOptions()) {
-					for (ProductModel pm : compGroup.getOptionalProducts()) {
-						FilteringProductItem fpt = new FilteringProductItem(pm);
-						optProdModels.add(fpt);
-					}
+    }
 
-					for (FilteringProductItem fpt : optProdModels )	{
-						
-						ProductModel productModel = fpt.getProductModel();
-						
-						ProductData pd = new ProductData();
-						SkuModel skuModel = null;
-	
-						if (!(productModel instanceof ProductModelPricingAdapter)) {
-							// wrap it into a pricing adapter if naked
-							productModel = ProductPricingFactory.getInstance()
-									.getPricingAdapter(productModel,
-									        user.getUserContext().getPricingContext());
-						}
-	
-						if (skuModel == null) {
-							skuModel = productModel.getDefaultSku();
-						}
-						//String skuCode = skuModel.getSkuCode();
-	
-						try {
-							if(skuModel==null) {continue;}
-							
-							FDProductInfo productInfo_fam = skuModel.getProductInfo();
-							FDProduct fdProduct = skuModel.getProduct();
-	
-							PriceCalculator priceCalculator = productModel.getPriceCalculator();
-	
-							ProductDetailPopulator.populateBasicProductData(pd, user, productModel);
-							
-							ProductDetailPopulator.populateProductData(pd, user,
-									productModel, skuModel, fdProduct, priceCalculator, null, true, true);
-							ProductDetailPopulator.populatePricing(pd, fdProduct, productInfo_fam, priceCalculator, user);
-	
-							try {
-								ProductDetailPopulator.populateSkuData(pd, user, productModel, skuModel, fdProduct);
-							} catch (FDSkuNotFoundException e) {
-								LOG.error("Failed to populate sku data", e);
-							} catch (HttpErrorResponse e) {
-								LOG.error("Failed to populate sku data", e);
-							}
-	
-							ProductDetailPopulator.postProcessPopulate(user, pd, pd.getSkuCode());
-	
-						} catch (FDSkuNotFoundException e) {
-							LOG.warn("Sku not found: " +pd.getSkuCode(), e);
-						}
-						
-						optProducts.add(pd);
-					}
-				}
-			}
+    private static void populateProductAboutMedia(ProductExtraData data, ProductModel productNode, FDUserI user, boolean includeProductAboutMedia) {
+        if (productNode.getProductAbout() != null) {
+            TitledMedia titleMedia = (TitledMedia) productNode.getProductAbout();
+            try {
+                if (includeProductAboutMedia) {
+                    data.setProductAboutMedia(fetchMedia(titleMedia.getPath(), user, false));
+                }
+                data.setProductAboutMediaPath(titleMedia.getPath());
+            } catch (IOException e) {
+                LOG.error("Failed to fetch product about media " + titleMedia.getPath(), e);
+            } catch (TemplateException e) {
+                LOG.error("Failed to fetch product about media " + titleMedia.getPath(), e);
+            }
+        }
 
-			data.setOptionalProducts(optProducts);
-			
-		/* component group meal component groups and optional products */
-		
-		
-		/* placeholder for product family products */
-		if(FDStoreProperties.isProductFamilyEnabled() && EnumEStoreId.FDX != CmsManager.getInstance().getEStoreEnum())
-		{
-			List<ProductData> familyProducts = new ArrayList<ProductData>();
-			List<FilteringProductItem> modelList =  new ArrayList<FilteringProductItem>();
+    }
 
-			/*SkuModel sku = productNode.getDefaultSku();
-			
-			FDProductInfo prodInfo = FDCachedFactory.getProductInfo( sku.getSkuCode() );
-			FDProduct fdProd = FDCachedFactory.getProduct( prodInfo );
-			*/
-			
-			String selectedProdSku = productNode.getDefaultSkuCode();
-			try {
-				//if product is disc, then getDefaultSkuCode returns null, but on PDP we need the prods anyway, so get first sku
-				if (selectedProdSku == null && ((ProductModel)productNode).getSkuCodes().size() > 0 ) {
-					selectedProdSku = ((ProductModel)productNode).getSku(0).getSkuCode();
-				}
-			} catch (Exception e) {
-				LOG.warn("Exception while populating family product's sku code: ", e);
-			}
-			
-			String familyID = productInfo.getFamilyID();
-			ErpProductFamilyModel products = null;
-			List<String> skuCodes = null;
-			if(familyID == null && productInfo.getMaterialNumber()!=null){
-				
-				try {
-					products = FDFactory.getSkuFamilyInfo(productInfo.getMaterialNumber());
-				} catch (FDGroupNotFoundException e) {
-					LOG.warn("No product family group exists for material: "+productInfo, e);
-				}
-				//skuCodes = products.getSkuList();
-				familyID = products.getFamilyId();
-				if(familyID!=null){
-                    CmsServiceLocator.ehCacheUtil().putListToCache(CmsCaches.FD_FAMILY_PRODUCT_CACHE.cacheName, familyID, products.getSkuList());
-				}
-			}
-			if(null != familyID){
-                skuCodes = CmsServiceLocator.ehCacheUtil().getListFromCache(CmsCaches.FD_FAMILY_PRODUCT_CACHE.cacheName, familyID);
-			}
-			
-			if(skuCodes == null&&familyID!=null){
-				
-				try {
-					products = FDFactory.getFamilyInfo(familyID);
-				} catch (FDGroupNotFoundException e) {
-					LOG.warn("No product family group exists for material: "+productInfo, e);
-				}
-				skuCodes = products.getSkuList();
-                CmsServiceLocator.ehCacheUtil().putListToCache(CmsCaches.FD_FAMILY_PRODUCT_CACHE.cacheName, familyID, products.getSkuList());
-			}
-			
-				
-			if(skuCodes!=null && selectedProdSku!=null){
-				duplicateSku : for (String skuCode : skuCodes) {
+    private static void populateProductTermsMedia(ProductExtraData data, ProductModel productNode, FDUserI user) {
+        if (productNode.getProductTerms() != null) {
+            TitledMedia titleMedia = (TitledMedia) productNode.getProductTerms();
+            try {
+                data.setProductTermsMedia(fetchMedia(titleMedia.getPath(), user, false));
+            } catch (IOException e) {
+                LOG.error("Failed to fetch product term media " + titleMedia.getPath(), e);
+            } catch (TemplateException e) {
+                LOG.error("Failed to fetch product term media " + titleMedia.getPath(), e);
+            }
+        }
+    }
 
-					if(selectedProdSku.equalsIgnoreCase(skuCode))
-					{continue duplicateSku;}
-				
-					ProductModel productModel = PopulatorUtil.getProduct(skuCode);
-					FilteringProductItem fpt = new FilteringProductItem(productModel);
-					modelList.add(fpt);
-			
-				}
-				//APPDEV-4256 Family Products Popularity Sort
-				Comparator<FilteringProductItem> comparator = ProductItemSorterFactory.createComparator(SortStrategyType.toEnum("POPULARITY"), user, true);
-				Collections.sort(modelList,comparator);
-				
-				/*Comparator<ProductModel> popComp = ScriptedContentNodeComparator.createGlobalComparator(user.getUserId(), user.getPricingContext());
-				Collections.sort( modelList, popComp );*/
-				
-				for (FilteringProductItem fpt : modelList )
-				{
-				
-				ProductModel productModel = fpt.getProductModel();
-				ProductData pd = new ProductData();
-				SkuModel skuModel = null;
+    private static void populateAllergenData(ProductExtraData data, ProductModel productNode) throws FDResourceException {
+        @SuppressWarnings("unchecked")
+        Set<EnumAllergenValue> common = productNode.getCommonNutritionInfo(ErpNutritionInfoType.ALLERGEN);
+        if (!common.isEmpty()) {
+            List<String> allergens = new ArrayList<String>(common.size());
+            for (EnumAllergenValue allergen : common) {
+                if (!EnumAllergenValue.getValueForCode("NONE").equals(allergen)) {
+                    allergens.add(allergen.toString());
+                }
+            }
+            data.setAllergens(allergens);
+        }
+    }
 
-				if (!(productModel instanceof ProductModelPricingAdapter)) {
-					// wrap it into a pricing adapter if naked
-					productModel = ProductPricingFactory.getInstance()
-							.getPricingAdapter(productModel,
-							        user.getUserContext().getPricingContext());
-				}
-
-				if (skuModel == null) {
-					skuModel = productModel.getDefaultSku();
-				}
-				//String skuCode = skuModel.getSkuCode();
-
-				try {
-					if(skuModel==null)
-					{continue;}
-					
-					FDProductInfo productInfo_fam = skuModel.getProductInfo();
-					FDProduct fdProduct = skuModel.getProduct();
-
-					PriceCalculator priceCalculator = productModel
-							.getPriceCalculator();
-
-					ProductDetailPopulator.populateBasicProductData(pd, user,
-							productModel);
-					
-					ProductDetailPopulator.populateProductData(pd, user,
-							productModel, skuModel, fdProduct, priceCalculator,
-							null, true, true);
-					ProductDetailPopulator.populatePricing(pd, fdProduct,
-							productInfo_fam, priceCalculator, user);
-
-					try {
-						ProductDetailPopulator.populateSkuData(pd, user,
-								productModel, skuModel, fdProduct);
-					} catch (FDSkuNotFoundException e) {
-						LOG.error("Failed to populate sku data", e);
-					} catch (HttpErrorResponse e) {
-						LOG.error("Failed to populate sku data", e);
-					}
-
-					ProductDetailPopulator.postProcessPopulate(user, pd,
-							pd.getSkuCode());
-
-				} catch (FDSkuNotFoundException e) {
-					LOG.warn("Sku not found: " +pd.getSkuCode(), e);
-				}
-											
-				familyProducts.add(pd);
-						
-			}	
-		}
-			data.setFamilyProducts(familyProducts);
-		}
-        data.setCustomerServiceContact(user.getCustomerServiceContact());
-
+    private static void populatePageTitle(ProductExtraData data, ProductModel productNode) {
         if (EnumEStoreId.FDX == CmsManager.getInstance().getEStoreEnum()) {
             data.setPageTitle(productNode.getFdxPageTitle());
             data.setSeoMetaDescription(productNode.getFdxSEOMetaDescription());
@@ -1069,100 +660,321 @@ public class ProductExtraDataPopulator {
             data.setPageTitle(productNode.getPageTitle());
             data.setSeoMetaDescription(productNode.getSEOMetaDescription());
         }
+    }
 
-	}
+    private static void populateGroupScaleData(ProductExtraData data, ProductModel productNode, FDUserI user, FDProductInfo productInfo, String groupId, String groupVersion,
+            SkuModel defaultSku) {
+        GroupScaleData groupScaleData = new GroupScaleData(); // make sure this gets added, even if it's all nulls
 
-	public static ProductExtraData populateWineData(ProductExtraData data, FDUserI user,
-			ProductModel productNode) {
-		WineData wd = new WineData();
+        if (groupId != null && !"".equals(groupId)) {
+            groupScaleData.grpId = groupId;
+            groupScaleData.version = groupVersion;
 
-		/** code snipped from  WineRegionLabel#doStart method */
-		DomainValue wineCountry = productNode.getWineCountry();
-		List<DomainValue> wineRegion = productNode.getNewWineRegion();
-		String wineCity = productNode.getWineCity();
-		if (wineCity.trim().length() == 0)
-			wineCity = null;
-		List<DomainValue> wineVintageList = productNode.getWineVintage();
-		DomainValue wineVintage = wineVintageList.size() > 0 ? wineVintageList.get(0) : null;
-		if (wineVintage != null && "vintage_nv".equals(wineVintage.getContentKey().getId())) {
-			wineVintage = null;
-		}
+            try {
+                List<String> skus = null;
+                final String prioritySku = defaultSku.getSkuCode();
+                List<ProductModel> productModels = new ArrayList<ProductModel>();
 
-		List<DomainValue> wTypes = productNode.getNewWineType();
-		List<String> typesList = new ArrayList<String>();
-		List<String> wTypeIconPaths = new ArrayList<String>();
-		for (DomainValue wtv : wTypes) {
-			final String type = wtv.getValue();
-			typesList.add(type);
-			wTypeIconPaths.add("/media/editorial/win_"+WineUtil.getWineAssociateId().toLowerCase()+"/icons/"+wtv.getContentName().toLowerCase()+".gif");
-		}
-		wd.types = typesList;
-		wd.typeIconPaths = wTypeIconPaths;
-		
-		List<String> varietals = new ArrayList<String>();
-		for (DomainValue wvv : productNode.getWineVarietal()) {
-			varietals.add(wvv.getValue());
-		}
-		wd.varietals = varietals;
-		
-		if (wineCountry != null) {
-			wd.country = wineCountry.getValue();
-		}
-		if (!wineRegion.isEmpty()) {
-			wd.region = wineRegion.get(0).getLabel();
-		}
-		if (wineCity != null) {
-			wd.city = wineCity;
-		}
-		if (wineVintage != null) {
-			wd.vintage = wineVintage.getValue();
-		}
+                if (groupId != null && !"".equals(groupId)) {
+                    FDGroup group = null;
 
-		wd.classification = productNode.getWineClassification();
+                    if (groupVersion == null || (groupVersion != null && "".equals(groupVersion.trim()))) {
+                        group = GroupScaleUtil.getLatestActiveGroup(groupId);
+                        groupScaleData.version = Integer.toString(group.getVersion());
+                    } else {
+                        group = new FDGroup(groupId, Integer.parseInt(groupVersion));
+                    }
 
-		// grape type / blending
-		wd.grape = productNode.getWineType();
+                    MaterialPrice materialPrice = GroupScaleUtil.getGroupScalePrice(group, user.getUserContext().getPricingContext().getZoneInfo());
 
-		wd.importer = productNode.getWineImporter();
-		
-		wd.agingNotes = productNode.getWineAging();
-		
-		wd.alcoholGrade = productNode.getWineAlchoholContent();
+                    if (materialPrice != null) {
+                        String groupQuantity = "0";
+                        String groupTotalPrice = "0";
+                        boolean saleUnitDifferent = false;
+                        double displayPrice = 0.0;
 
-		// reviews
-		List<WineRating> ratings = new ArrayList<WineRating>();
-		if (productNode.getWineRating1() != null && productNode.getWineRating1().size() > 0) {
-			WineRating r = processWineRating(productNode.getWineRating1(), user, productNode.getWineReview1());
-			if (r != null) {
-				ratings.add(r);
-			}
-		}
-		if (productNode.getWineRating2() != null && productNode.getWineRating2().size() > 0) {
-			WineRating r = processWineRating(productNode.getWineRating2(), user, productNode.getWineReview2());
-			if (r != null) {
-				ratings.add(r);
-			}
-		}
-		if (productNode.getWineRating3() != null && productNode.getWineRating3().size() > 0) {
-			WineRating r = processWineRating(productNode.getWineRating3(), user, productNode.getWineReview3());
-			if (r != null) {
-				ratings.add(r);
-			}
-		}
+                        if (materialPrice.getPricingUnit().equals(materialPrice.getScaleUnit())) {
+                            displayPrice = materialPrice.getPrice() * materialPrice.getScaleLowerBound();
+                        } else {
+                            displayPrice = materialPrice.getPrice();
+                            saleUnitDifferent = true;
+                        }
 
-		if (ratings.size() > 0) {
-			wd.ratings = ratings;
-		}
+                        groupQuantity = QUANTITY_FORMATTER.format(materialPrice.getScaleLowerBound());
 
-		if (productNode.hasWineOtherRatings()) {
-			// ??
-		}
-		
-		data.setWineData(wd);
-		return data;
-	}
+                        if (materialPrice.getScaleUnit().equals("LB")) {
+                            groupQuantity = groupQuantity + (materialPrice.getScaleUnit().toLowerCase());
+                        }
+                        groupTotalPrice = "$" + TOTAL_FORMATTER.format(displayPrice);
 
-    private static String populateProductDescription(FDUserI user, MediaI media) {
+                        if (saleUnitDifferent) {
+                            groupTotalPrice = groupTotalPrice + "/" + (materialPrice.getPricingUnit().toLowerCase());
+                        }
+
+                        GroupScalePricing groupScalePricing = GroupScaleUtil.lookupGroupPricing(group);
+
+                        groupScaleData.grpQty = groupQuantity;
+                        groupScaleData.grpTotalPrice = groupTotalPrice;
+                        groupScaleData.grpShortDesc = groupScalePricing.getShortDesc();
+                        groupScaleData.grpLongDesc = groupScalePricing.getLongDesc();
+
+                        skus = groupScalePricing.getSkuList();
+                    }
+                }
+
+                if (skus == null) {
+                    LOG.info("skuList is empty for groupId" + groupId + " " + groupVersion);
+                }
+
+                if (skus != null) {
+                    for (String currentSku : skus) {
+                        if (prioritySku != null && prioritySku.equals(currentSku)) {
+                            continue;
+                        }
+                        try {
+                            ProductModel productForSku = ContentFactory.getInstance().getProduct(currentSku);
+                            if (productForSku != null) {
+                                productModels.add(productForSku);
+                            }
+                        } catch (FDSkuNotFoundException se) {
+                            // Ignore this sku. move to next
+                            LOG.debug("Sku not found: " + currentSku, se);
+                        }
+                    }
+                }
+                groupScaleData.groupProducts = processProductModels(productModels, user);
+
+            } catch (FDResourceException fe) {
+                LOG.warn("Resource not found", fe);
+            } catch (FDGroupNotFoundException e) {
+                LOG.warn("Group not found!", e);
+            }
+        }
+        data.setGroupScaleData(groupScaleData);
+    }
+
+    private static void populateComponentGroupsAndOptionalProducts(ProductExtraData data, ProductModel productNode, FDUserI user, FDProductInfo productInfo)
+            throws FDResourceException {
+        List<ComponentGroupModel> componentGroups = productNode.getComponentGroups();
+        List<ProductModel> optionalProducts = new ArrayList<ProductModel>();
+
+        for (ComponentGroupModel componentGroup : componentGroups) {
+            if ((componentGroup.isUnavailable() && !(ContentFactory.getInstance().getPreviewMode())) || (componentGroup.isShowInPopupOnly())) {
+                continue;
+            }
+            if (componentGroup.isShowOptions()) {
+                optionalProducts = componentGroup.getOptionalProducts();
+            }
+        }
+
+        data.setOptionalProducts(processProductModels(optionalProducts, user));
+    }
+
+    private static void populateFamilyProducts(ProductExtraData data, ProductModel productNode, FDUserI user, FDProductInfo productInfo, SkuModel defaultSku)
+            throws FDResourceException, FDSkuNotFoundException {
+
+        if (FDStoreProperties.isProductFamilyEnabled() && EnumEStoreId.FDX != CmsManager.getInstance().getEStoreEnum()) {
+            List<FilteringProductItem> filteringProductItems = new ArrayList<FilteringProductItem>();
+
+            String selectedProdSku = defaultSku.getSkuCode();
+
+            String familyID = productInfo.getFamilyID();
+            ErpProductFamilyModel products = null;
+            List<String> skuCodes = null;
+            if (familyID == null && productInfo.getMaterialNumber() != null) {
+                try {
+                    products = FDFactory.getSkuFamilyInfo(productInfo.getMaterialNumber());
+                } catch (FDGroupNotFoundException e) {
+                    LOG.warn("No product family group exists for material: " + productInfo, e);
+                }
+                familyID = products.getFamilyId();
+                if (familyID != null) {
+                    CmsServiceLocator.ehCacheUtil().putListToCache(CmsCaches.FD_FAMILY_PRODUCT_CACHE.cacheName, familyID, products.getSkuList());
+                }
+            }
+            if (null != familyID) {
+                skuCodes = CmsServiceLocator.ehCacheUtil().getListFromCache(CmsCaches.FD_FAMILY_PRODUCT_CACHE.cacheName, familyID);
+            }
+
+            if (skuCodes == null && familyID != null) {
+                try {
+                    products = FDFactory.getFamilyInfo(familyID);
+                } catch (FDGroupNotFoundException e) {
+                    LOG.warn("No product family group exists for material: " + productInfo, e);
+                }
+                skuCodes = products.getSkuList();
+                CmsServiceLocator.ehCacheUtil().putListToCache(CmsCaches.FD_FAMILY_PRODUCT_CACHE.cacheName, familyID, products.getSkuList());
+            }
+
+            if (skuCodes != null && selectedProdSku != null) {
+                for (String skuCode : skuCodes) {
+                    if (selectedProdSku.equalsIgnoreCase(skuCode)) {
+                        continue;
+                    }
+                    ProductModel productModel = PopulatorUtil.getProduct(skuCode);
+                    FilteringProductItem filteringProductItem = new FilteringProductItem(productModel);
+                    filteringProductItems.add(filteringProductItem);
+                }
+
+                Comparator<FilteringProductItem> comparator = ProductItemSorterFactory.createComparator(SortStrategyType.toEnum("POPULARITY"), user, true);
+                Collections.sort(filteringProductItems, comparator);
+            }
+
+            data.setFamilyProducts(processFilteringProductItems(filteringProductItems, user));
+        }
+    }
+
+    private static List<ProductData> processFilteringProductItems(List<FilteringProductItem> filteringProductItems, FDUserI user) throws FDResourceException {
+        List<ProductData> resultData = new ArrayList<ProductData>();
+        for (FilteringProductItem filteringProductItem : filteringProductItems) {
+            ProductModel productModel = filteringProductItem.getProductModel();
+            ProductData productData = processProductModel(productModel, user);
+            if (productData != null) {
+                resultData.add(productData);
+            }
+        }
+        return resultData;
+    }
+
+    private static List<ProductData> processProductModels(List<ProductModel> productModels, FDUserI user) throws FDResourceException {
+        List<ProductData> result = new ArrayList<ProductData>();
+        for (ProductModel productModelToProcess : productModels) {
+            ProductData processed = processProductModel(productModelToProcess, user);
+            if (processed != null) {
+                result.add(processed);
+            }
+        }
+        return result;
+    }
+
+    private static ProductData processProductModel(ProductModel productModel, FDUserI user) throws FDResourceException {
+        ProductData resultProductData = null;
+        SkuModel skuModel = null;
+        ProductModel productModelToWorkWith = productModel;
+        if (!(productModel instanceof ProductModelPricingAdapter)) {
+            productModelToWorkWith = ProductPricingFactory.getInstance().getPricingAdapter(productModel, user.getUserContext().getPricingContext());
+        }
+
+        if (skuModel == null) {
+            skuModel = productModelToWorkWith.getDefaultSku();
+        }
+
+        if (skuModel != null) {
+            resultProductData = new ProductData();
+            String skuCode = skuModel.getSkuCode();
+            try {
+                FDProductInfo productInfoForPricing = skuModel.getProductInfo();
+                FDProduct fdProduct = skuModel.getProduct();
+
+                PriceCalculator priceCalculator = productModelToWorkWith.getPriceCalculator();
+                ProductDetailPopulator.populateBasicProductData(resultProductData, user, productModelToWorkWith);
+                ProductDetailPopulator.populateProductData(resultProductData, user, productModelToWorkWith, skuModel, fdProduct, priceCalculator, null, true, true);
+                ProductDetailPopulator.populatePricing(resultProductData, fdProduct, productInfoForPricing, priceCalculator, user);
+
+                try {
+                    ProductDetailPopulator.populateSkuData(resultProductData, user, productModelToWorkWith, skuModel, fdProduct);
+                } catch (FDSkuNotFoundException e) {
+                    LOG.error("Failed to populate sku data", e);
+                } catch (HttpErrorResponse e) {
+                    LOG.error("Failed to populate sku data", e);
+                }
+
+                ProductDetailPopulator.postProcessPopulate(user, resultProductData, resultProductData.getSkuCode());
+
+            } catch (FDSkuNotFoundException e) {
+                LOG.warn("Sku not found: " + skuCode, e);
+            }
+        }
+
+        return resultProductData;
+    }
+
+    public static ProductExtraData populateWineData(ProductExtraData data, FDUserI user, ProductModel productNode) {
+        WineData wineData = new WineData();
+
+        DomainValue wineCountry = productNode.getWineCountry();
+        List<DomainValue> wineRegion = productNode.getNewWineRegion();
+        String wineCity = productNode.getWineCity();
+        if (wineCity.trim().length() == 0) {
+            wineCity = null;
+        }
+        List<DomainValue> wineVintageList = productNode.getWineVintage();
+        DomainValue wineVintage = wineVintageList.size() > 0 ? wineVintageList.get(0) : null;
+        if (wineVintage != null && "vintage_nv".equals(wineVintage.getContentKey().getId())) {
+            wineVintage = null;
+        }
+
+        List<DomainValue> wineTypes = productNode.getNewWineType();
+        List<String> typeValues = new ArrayList<String>();
+        List<String> wineTypeIconPaths = new ArrayList<String>();
+        for (DomainValue wineTypeValue : wineTypes) {
+            final String type = wineTypeValue.getValue();
+            typeValues.add(type);
+            wineTypeIconPaths.add("/media/editorial/win_" + WineUtil.getWineAssociateId().toLowerCase() + "/icons/" + wineTypeValue.getContentName().toLowerCase() + ".gif");
+        }
+        wineData.types = typeValues;
+        wineData.typeIconPaths = wineTypeIconPaths;
+
+        List<String> varietals = new ArrayList<String>();
+        for (DomainValue wvv : productNode.getWineVarietal()) {
+            varietals.add(wvv.getValue());
+        }
+        wineData.varietals = varietals;
+
+        if (wineCountry != null) {
+            wineData.country = wineCountry.getValue();
+        }
+        if (!wineRegion.isEmpty()) {
+            wineData.region = wineRegion.get(0).getLabel();
+        }
+        if (wineCity != null) {
+            wineData.city = wineCity;
+        }
+        if (wineVintage != null) {
+            wineData.vintage = wineVintage.getValue();
+        }
+
+        wineData.classification = productNode.getWineClassification();
+
+        // grape type / blending
+        wineData.grape = productNode.getWineType();
+
+        wineData.importer = productNode.getWineImporter();
+
+        wineData.agingNotes = productNode.getWineAging();
+
+        wineData.alcoholGrade = productNode.getWineAlchoholContent();
+
+        // reviews
+        List<WineRating> ratings = new ArrayList<WineRating>();
+        if (productNode.getWineRating1() != null && productNode.getWineRating1().size() > 0) {
+            WineRating r = processWineRating(productNode.getWineRating1(), user, productNode.getWineReview1());
+            if (r != null) {
+                ratings.add(r);
+            }
+        }
+        if (productNode.getWineRating2() != null && productNode.getWineRating2().size() > 0) {
+            WineRating r = processWineRating(productNode.getWineRating2(), user, productNode.getWineReview2());
+            if (r != null) {
+                ratings.add(r);
+            }
+        }
+        if (productNode.getWineRating3() != null && productNode.getWineRating3().size() > 0) {
+            WineRating r = processWineRating(productNode.getWineRating3(), user, productNode.getWineReview3());
+            if (r != null) {
+                ratings.add(r);
+            }
+        }
+
+        if (ratings.size() > 0) {
+            wineData.ratings = ratings;
+        }
+
+        data.setWineData(wineData);
+        return data;
+    }
+
+    private static void populateProductDescription(ProductExtraData data, FDUserI user, MediaI media) {
         String productDescription = null;
         if (media != null) {
             try {
@@ -1173,120 +985,88 @@ public class ProductExtraDataPopulator {
                 LOG.error("Failed to fetch product description media " + media.getPath(), e);
             }
         }
-        return productDescription;
+        data.setProductDescription(productDescription);
     }
 
+    private static WineRating processWineRating(List<DomainValue> wineRatingDomainValues, FDUserI user, Html reviewMedia) {
+        if (wineRatingDomainValues == null || wineRatingDomainValues.size() == 0) {
+            return null;
+        }
+        WineRating wineRating = new WineRating();
+        DomainValue domainValue = wineRatingDomainValues.get(0);
+        wineRating.reviewer = domainValue.getDomainName();
+        wineRating.rating = domainValue.getValue();
+        wineRating.ratingKey = domainValue.getContentName();
+        wineRating.iconPath = "/media/editorial/win_" + WineUtil.getWineAssociateId().toLowerCase() + "/icons/rating_small/" + domainValue.getContentName() + ".gif";
 
-	private static WineRating processWineRating(List<DomainValue> wineRatingsDV, FDUserI user, Html reviewMedia) {
-		if (wineRatingsDV == null || wineRatingsDV.size() == 0)
-			return null;
-		
-		WineRating r = new WineRating();
-		// pick only the first rating
-		DomainValue dv = wineRatingsDV.get(0);
-		r.reviewer = dv.getDomainName();
-		r.rating = dv.getValue();
-		r.ratingKey = dv.getContentName();
-		r.iconPath = "/media/editorial/win_"+WineUtil.getWineAssociateId().toLowerCase()+"/icons/rating_small/" + dv.getContentName() + ".gif";
+        if (reviewMedia != null) {
+            TitledMedia tm = (TitledMedia) reviewMedia;
+            try {
+                wineRating.media = fetchMedia(tm.getPath(), user, false);
+            } catch (IOException e) {
+                LOG.error("Failed to fetch wine rating media " + tm.getPath(), e);
+            } catch (TemplateException e) {
+                LOG.error("Failed to fetch wine rating media " + tm.getPath(), e);
+            }
+        }
+        return wineRating;
+    }
 
-		if (reviewMedia != null) {
-			TitledMedia tm = (TitledMedia)reviewMedia;
-			try {
-				r.media = fetchMedia(tm.getPath(), user, false);
-			} catch (IOException e) {
-				LOG.error("Failed to fetch wine rating media " + tm.getPath(), e);
-			} catch (TemplateException e) {
-				LOG.error("Failed to fetch wine rating media " + tm.getPath(), e);
-			}
-		}
-		
-		return r;
-	}
+    private static String fetchMedia(String mediaPath, FDUserI user, boolean quoted) throws IOException, TemplateException {
+        if (mediaPath == null) {
+            return null;
+        }
 
-	private static String fetchMedia(String mediaPath, FDUserI user, boolean quoted) throws IOException, TemplateException {
-		if (mediaPath == null)
-			return null;
+        Map<String, Object> parameters = new HashMap<String, Object>();
 
-		Map<String,Object> parameters = new HashMap<String,Object>();
-		
-		/* pass user/sessionUser by default, so it doesn't need to be added every place this tag is used. */
-		parameters.put("user", user);
-		parameters.put("sessionUser", user);
-		
-		StringWriter out = new StringWriter();
-				
-		MediaUtils.render(mediaPath, out, parameters, false, 
-				user != null && user.getUserContext().getPricingContext() != null ? user.getUserContext().getPricingContext() : PricingContext.DEFAULT);
+        /* pass user/sessionUser by default, so it doesn't need to be added every place this tag is used. */
+        parameters.put("user", user);
+        parameters.put("sessionUser", user);
 
-		String outString = out.toString();
-		
-		//fix media if needed
-		outString = MediaUtils.fixMedia(outString);
-		
-		return quoted ? JSONObject.quote( outString ) : outString;
-	}
-	
-	public static  ProductExtraData populateClaimsDataForMobile(ProductExtraData data, FDUserI user,
-			ProductModel productNode, String grpId, String grpVersion) throws FDResourceException, FDSkuNotFoundException {
-			return 	populateClaimsData(data, user, productNode, grpId, grpVersion);
-	}
-	
-	private static ProductExtraData populateClaimsData(ProductExtraData data, FDUserI user,
-			ProductModel productNode, String grpId, String grpVersion) throws FDResourceException, FDSkuNotFoundException {
-		
-		// organic claims
-		{
-			@SuppressWarnings("unchecked")
-			Set<EnumOrganicValue> commonOrgs = productNode.getCommonNutritionInfo(ErpNutritionInfoType.ORGANIC);
-			if (!commonOrgs.isEmpty()) {
-				List<String> aList = new ArrayList<String>(commonOrgs.size());
-				for (EnumOrganicValue claim : commonOrgs) {
-					if(!EnumOrganicValue.getValueForCode("NONE").equals(claim)) {
-						//Changed for APPDEV-705
+        StringWriter out = new StringWriter();
 
-						//check for different text than what Enum has (Enum shows in ERPSy-Daisy)
-						if(EnumOrganicValue.getValueForCode("CERT_ORGN").equals(claim)){
-							// %><div>&bull; Organic</div><%
-							aList.add("Organic");
-						}else{
-							//don't use empty
-							if ( !"".equals(claim.getName()) ) {
-								// %><div>&bull; <%= claim.getName() %></div><%
-								aList.add(claim.getName());
-							}
-						}
-					}
-				}
+        MediaUtils.render(mediaPath, out, parameters, false,
+                user != null && user.getUserContext().getPricingContext() != null ? user.getUserContext().getPricingContext() : PricingContext.DEFAULT);
 
-				data.setOrganicClaims(aList);
-			}
-		}
+        String outString = out.toString();
 
+        // fix media if needed
+        outString = MediaUtils.fixMedia(outString);
 
-		// claims
-		{
-			@SuppressWarnings("unchecked")
-			Set<EnumClaimValue> common = productNode.getCommonNutritionInfo(ErpNutritionInfoType.CLAIM);
-			if (!common.isEmpty()) {
-				List<String> aList = new ArrayList<String>(common.size());
-				for (EnumClaimValue claim : common) {
-					if (!EnumClaimValue.getValueForCode("NONE").equals(claim) && !EnumClaimValue.getValueForCode("OAN").equals(claim)) {
-						//Changed for APPDEV-705
+        return quoted ? JSONObject.quote(outString) : outString;
+    }
 
-						//check for different text than what Enum has (Enum shows in ERPSy-Daisy)
-						if(EnumClaimValue.getValueForCode("FR_ANTI").equals(claim)){
-							// %><div>&bull; Raised Without Antibiotics</div><%
-							aList.add("Raised Without Antibiotics");
-						}else{
-							// %><div style="margin-left:8px; text-indent: -8px;">&bull; <%= claim %></div><%
-							aList.add(claim.toString());
-						}
-					}
-				}
-				data.setClaims(aList);
-			}
-		}
-		return data;
-	}
+    private static List<String> collectOrganicClaims(ProductModel productNode) throws FDResourceException {
+        @SuppressWarnings("unchecked")
+        Set<EnumOrganicValue> organicNutritionInfos = productNode.getCommonNutritionInfo(ErpNutritionInfoType.ORGANIC);
+        List<String> organicClaims = new ArrayList<String>(organicNutritionInfos.size());
+        for (EnumOrganicValue claim : organicNutritionInfos) {
+            if (!EnumOrganicValue.getValueForCode("NONE").equals(claim)) {
+                if (EnumOrganicValue.getValueForCode("CERT_ORGN").equals(claim)) {
+                    organicClaims.add("Organic");
+                } else {
+                    if (!"".equals(claim.getName())) {
+                        organicClaims.add(claim.getName());
+                    }
+                }
+            }
+        }
+        return organicClaims;
+    }
 
+    private static List<String> collectClaims(ProductModel productNode) throws FDResourceException {
+        @SuppressWarnings("unchecked")
+        Set<EnumClaimValue> claimNutritionInfos = productNode.getCommonNutritionInfo(ErpNutritionInfoType.CLAIM);
+        List<String> claims = new ArrayList<String>(claimNutritionInfos.size());
+        for (EnumClaimValue claim : claimNutritionInfos) {
+            if (!EnumClaimValue.getValueForCode("NONE").equals(claim) && !EnumClaimValue.getValueForCode("OAN").equals(claim)) {
+                if (EnumClaimValue.getValueForCode("FR_ANTI").equals(claim)) {
+                    claims.add("Raised Without Antibiotics");
+                } else {
+                    claims.add(claim.toString());
+                }
+            }
+        }
+        return claims;
+    }
 }

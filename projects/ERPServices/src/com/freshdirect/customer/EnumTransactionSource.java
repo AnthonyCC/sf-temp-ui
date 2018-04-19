@@ -2,6 +2,9 @@
 
 package com.freshdirect.customer;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum EnumTransactionSource {
 	WEBSITE("WEB", "Website"),
 	SYSTEM("SYS", "System"),
@@ -22,6 +25,7 @@ public enum EnumTransactionSource {
 		this.name = name;
 	}
 
+	@JsonValue
 	public String getCode() {
         return this.code;
     }
@@ -62,6 +66,8 @@ public enum EnumTransactionSource {
 				return null;
 		}
 	}
+	
+	@JsonCreator
 	public static EnumTransactionSource getTransactionSource(String code) {
 		if(WEBSITE.getCode().equalsIgnoreCase(code)){
 			return WEBSITE;

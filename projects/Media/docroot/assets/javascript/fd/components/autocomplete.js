@@ -14,10 +14,10 @@ var FreshDirect = FreshDirect || {};
 
         $(this).val(ui.item.value);
 
-        if (form) {
-          form.submit();
-        } else if (button.size()) {
+        if (button.size()) {
           button.click();
+        } else if (form) {
+          form.submit();
         }
       },
       open: function (e, ui) {

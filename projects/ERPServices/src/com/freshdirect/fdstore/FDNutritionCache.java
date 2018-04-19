@@ -4,8 +4,6 @@ import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.Map;
 
-import javax.ejb.CreateException;
-import javax.ejb.EJBException;
 import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
@@ -46,10 +44,7 @@ public class FDNutritionCache extends FDAbstractCache<String,ErpNutritionModel> 
 			}
 			LOGGER.info("REFRESHED: " + data.size());
 			return data;
-		} catch (RemoteException e) {
-			e.printStackTrace();
-			throw new FDRuntimeException(e);
-		} catch (CreateException e) {
+		} catch (Exception e) {
 			throw new FDRuntimeException(e);
 		}
 	}
@@ -70,12 +65,10 @@ public class FDNutritionCache extends FDAbstractCache<String,ErpNutritionModel> 
 		return ((ErpNutritionModel)item).getLastModifiedDate();
 	}
 	
-	private ErpNutritionHome lookupNutritionHome() {
-		try {
-			return (ErpNutritionHome) serviceLocator.getRemoteHome("freshdirect.content.Nutrition");
-		} catch (NamingException ne) {
-			throw new EJBException(ne);
-		}
+	private ErpNutritionHome lookupNutritionHome() throws Exception {
+		
+		return (ErpNutritionHome) serviceLocator.getRemoteHome("freshdirect.content.Nutrition");
+		
 	}
 
 }

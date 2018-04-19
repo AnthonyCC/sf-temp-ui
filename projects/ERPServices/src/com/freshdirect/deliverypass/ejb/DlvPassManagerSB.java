@@ -61,6 +61,8 @@ public interface DlvPassManagerSB extends EJBObject {
 	public List<List<String>> getPendingPasses()throws RemoteException;
 
 	public List<String> getAllCustIdsOfFreeTrialSubsOrder() throws RemoteException;
+	
+	public void updateDeliveryPassActivation(String saleId) throws RemoteException;
 
 }
 

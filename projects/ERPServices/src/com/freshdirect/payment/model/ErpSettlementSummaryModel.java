@@ -164,7 +164,7 @@ public class ErpSettlementSummaryModel extends ModelSupport{
 		this.settlementFileDate = settlementFileDate;
 	}
 	
-	public List getSummaryDetails(){
+	public List<ErpSummaryDetailModel> getSummaryDetails(){
 		return this.summaryDetails;
 	}
 	public void setSummaryDetails(List summaryDetails){
@@ -175,7 +175,7 @@ public class ErpSettlementSummaryModel extends ModelSupport{
 		this.summaryDetails.add(detail);
 	}
 	
-	public List getInvoices(){
+	public List<ErpSettlementInvoiceModel> getInvoices(){
 		return this.invoices;
 	}
 	public void setInvoices(List invoices){

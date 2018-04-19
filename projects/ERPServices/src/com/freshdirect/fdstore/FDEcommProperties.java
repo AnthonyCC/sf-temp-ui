@@ -68,10 +68,10 @@ public class FDEcommProperties {
     public final static String TestSupportSB = "test.ejb.TestSupportSB";
     public final static String ErpInfoSB = "erp.ejb.ErpInfoSB";
     public final static String ErpRoutingGatewaySB ="routing.ejb.ErpRoutingGatewaySB";
-    public  final static String FDXOrderPickEligibleSB ="erp.ejb.FDXOrderPickEligibleSB";//story SF17-64
-    public  final static String SAPLoaderSB ="sap.ejb.SAPLoaderSB";
-    public  final static String CmsFeedmanagerSB ="fdstore.cms.CMSFeedManagerSB";//story SF17-22
-    public final static  String FDReferralManagerSB = "fdstore.referral.ejb.FDReferralManagerSB";
+    public final static String FDXOrderPickEligibleSB ="erp.ejb.FDXOrderPickEligibleSB";//story SF17-64
+    public final static String SAPLoaderSB ="sap.ejb.SAPLoaderSB";
+    public final static String CmsFeedmanagerSB ="fdstore.cms.CMSFeedManagerSB";//story SF17-22
+    public final static String FDReferralManagerSB = "fdstore.referral.ejb.FDReferralManagerSB";
 	public final static String MailerGatewaySB ="mail.ejb.MailerGatewaySB";
 	public final static String ErpProductFamilySB ="erp.ejb.ErpProductFamilySB";
 	public final static String RestrictedPaymentMethodSB = "fraud.ejb.RestrictedPaymentMethodSB";
@@ -89,7 +89,8 @@ public class FDEcommProperties {
 	public final static  String FDSFGatewayStatsLogging = "fdstore.promotion.FDSFGatewayStatsLogging";//introduced with story SF17-88
 	public static final String CallCenterManagerSB = "com.freshdirect.fdstore.customer.CallCenterManagerSB"; 
 	public static final String PaymentSB = "com.freshdirect.payment.PaymentSB";
- 
+	public static final String PaypalReconciliationSB = "payment.gateway.ewallet.impl.PaypalReconciliationSB";
+	
 	public static final String ProductFeedSB = "com.freshdirect.fdstore.content.productfeed.ProductFeedSB";
 	public static final String TEmailInfoSB = "com.freshdirect.fdstore.temails";
 	public static final String ProfileCreatorSB = "com.freshdirect.dataloader.payment.ProfileCreatorSB";

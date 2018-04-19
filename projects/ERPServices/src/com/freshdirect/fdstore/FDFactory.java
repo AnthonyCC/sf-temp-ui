@@ -618,15 +618,8 @@ public class FDFactory {
 			EnumATPRule.JIT,
 			EnumAvailabilityStatus.AVAILABLE,
 			new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),
-			null, pinfo.getZonePriceInfoList(),pinfo.getGroups(),
+			pinfo.getZonePriceInfoList(),pinfo.getGroups(),
 			pinfo.getUpc(),pinfo.getFamilyID(),pinfo.getPlantMaterialInfo(),pinfo.getAvailability(),pinfo.getAlcoholType());
-
-		/*(String skuCode, int version,
-	    		String[] materialNumbers, EnumATPRule atpRule, EnumAvailabilityStatus availStatus, Date availDate,
-	    		FDInventoryCacheI inventory, EnumOrderLineRating rating, String freshness,
-	    		ZonePriceInfoListing zonePriceInfoList, FDGroup group, EnumSustainabilityRating sustainabilityRating,
-	    		String upc,List<FDPlantMaterial> plantMaterialInfo,Map<String, FDMaterialSalesArea> materialSalesArea)*/
-
 
 	}
 
@@ -646,7 +639,7 @@ public class FDFactory {
 		};
 		;
 
-		return new FDProductInfo(skuCode,0,null,null,ZonePriceInfoListing.getDummy(),plantInfo,mAvail,EnumAlcoholicContent.NONE);
+		return new FDProductInfo(skuCode,0,null,ZonePriceInfoListing.getDummy(),plantInfo,mAvail,EnumAlcoholicContent.NONE);
 
 	}
 

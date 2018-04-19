@@ -1546,4 +1546,10 @@ public class FDStandingOrderAdapter  implements FDOrderI{
         return 0;
     }
 
+	@Override
+	public boolean containsDlvPassOnly() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

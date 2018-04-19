@@ -80,6 +80,7 @@ var FreshDirect = FreshDirect || {};
 
         this.refreshBody(data);
         this.noscroll(true);
+        $('#'+this.popupId).attr('data-tabindex', 'manual');
         if ($(window).scrollTop() < 200) {
         	this.popup.$el.css('top', $(window).scrollTop() + 40);
         }

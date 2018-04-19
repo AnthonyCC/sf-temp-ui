@@ -35,58 +35,18 @@
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
 
 <fd:CheckLoginStatus id="user" guestAllowed='true' recognizedAllowed='true' />
+<%!MySaleItemsData mySaleItemsData;%>
 
 <%
 	//Sample URL : http://localhost:7001/test/product/fp.jsp?pageType=browse&id=fp&rbl=3&dbl=10&pbl=10000&cn=false&cbis=false
 	// https://dev1.nj01/test/product/fp.jsp?pageType=browse&id=fp&rbl=4&dbl=40&pbl=10000&cn=false&cbis=false
 	// http://localhost:7001/test/product/fp.jsp?pageType=browse&id=fp&rbl=4&dbl=40&pbl=10000&cn=false&cbis=false
 	//http://localhost:7001/test/product/fp.jsp?sp=true&mnp=5
-	double ratingBaseLine = 4;
-	double popularityBaseLine = 10000;
-	double dealsBaseLine = 20;
-	boolean considerNew = false;
-	boolean considerBackInStock = false;
-	boolean sortProducts = true;
-	int maxNoOfProducts = 50;
-	
-	String customerId = null;
 	try {
-		if(request.getParameter("rbl") != null) {
-			ratingBaseLine = Double.parseDouble(request.getParameter("rbl"));
-		}
-		
-		if(request.getParameter("pbl") != null) {
-			popularityBaseLine = Double.parseDouble(request.getParameter("pbl"));
-		}
-		
-		if(request.getParameter("dbl") != null) {
-			dealsBaseLine = Double.parseDouble(request.getParameter("dbl"));
-		}
-		
-		if(request.getParameter("cn") != null) {
-			considerNew = Boolean.parseBoolean(request.getParameter("cn"));
-		}
-		
-		if(request.getParameter("cbis") != null) {
-			considerBackInStock = Boolean.parseBoolean(request.getParameter("cbis"));
-		}
-		
-		if(request.getParameter("sp") != null) {			
-			sortProducts = Boolean.parseBoolean(request.getParameter("sp"));
-			
-		}
-		
-		if(request.getParameter("mnp") != null) {			
-			maxNoOfProducts = Integer.parseInt(request.getParameter("mnp"));
-			
-		}
-		
-		final CmsFilteringNavigator nav = CmsFilteringNavigator.createInstance(request, user);
-		nav.setPageTypeType(FilteringFlowType.BROWSE);
-		BrowseData browseData = CmsFilteringFlow.getInstance().getWeLoveYouLoveData(user, nav, ratingBaseLine, dealsBaseLine, popularityBaseLine
-																						, considerNew, considerBackInStock, sortProducts, maxNoOfProducts) ;
-
-		pageContext.setAttribute("browsePotato", DataPotatoField.digBrowse(browseData));
+		final CmsFilteringNavigator navigator = CmsFilteringNavigator.createInstance(request, user);
+		navigator.setPageTypeType(FilteringFlowType.BROWSE);
+		mySaleItemsData = CmsFilteringFlow.getInstance().getSaleItems(request, user, navigator, false);
+		pageContext.setAttribute("browsePotato", DataPotatoField.digBrowse(mySaleItemsData.getBrowsedata()));
 		
 	} catch (Exception e) {
 		throw e;
@@ -131,7 +91,7 @@
       		<ul>
       			<% for (int ratingVal = 5; ratingVal > 0; ratingVal--) { %>
 	      			<li>
-	      				<label><input id="" type="radio" data-uriparam="rbl" name="expertrating-menu" value="<%= ratingVal %>" <%= (ratingBaseLine==ratingVal) ? "checked=\"checked\"" : "" %>><span><span>
+	      				<label><input id="" type="radio" data-uriparam="rbl" name="expertrating-menu" value="<%= ratingVal %>" <%= (mySaleItemsData.getRatingBaseLine()==ratingVal) ? "checked=\"checked\"" : "" %>><span><span>
 	      					<div class="rating"><b class="expertrating smallrating rating-<%= ratingVal*2 %>">Rating <%= ratingVal %> out of 5</b><%= (ratingVal < 5) ? " & Up" : "" %></div>
 						</span></span></label>
 	      			</li>
@@ -142,7 +102,7 @@
       		<ul>
       			<% for (int i = 80; i >= 10; i=i-10) { %>
 	      			<li>
-	      				<label><input id="" type="radio" data-uriparam="dbl" name="discount-menu" value="<%= i %>" <%= (dealsBaseLine==i) ? "checked=\"checked\"" : "" %>><span><span>
+	      				<label><input id="" type="radio" data-uriparam="dbl" name="discount-menu" value="<%= i %>" <%= (mySaleItemsData.getDealsBaseLine()==i) ? "checked=\"checked\"" : "" %>><span><span>
 	      					<%= i %>% off<%= (i < 100) ? " & Up" : "" %>
 						</span></span></label>
 	      			</li>
@@ -151,7 +111,7 @@
 
       		<ul>
       			<li>
-      				<label><input id="" type="checkbox" data-uriparam="cbis" name="cbis-menu" <%= (considerBackInStock) ? "checked=\"checked\"" : "" %>><span><span>
+      				<label><input id="" type="checkbox" data-uriparam="cbis" name="cbis-menu" <%= (mySaleItemsData.isConsiderBackInStock()) ? "checked=\"checked\"" : "" %>><span><span>
       					<strong>Back In Stock</strong>
 					</span></span></label>
       			</li>

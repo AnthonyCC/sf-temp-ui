@@ -1234,6 +1234,8 @@ public class StandingOrderUtil {
 		
 		user.setCurrentStandingOrder(null);
 		user.setSuspendShowPendingOrderOverlay(false);
+		//clear inform ordermodify flag
+		user.setShowingInformOrderModify(false);
 		if ( !EnumCheckoutMode.NORMAL.equals( origMode ) ) {
 			
 			// RESET

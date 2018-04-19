@@ -18,7 +18,10 @@
 	final int W_YA_MODIFY_ORDER = 970;
 
 	String orderId = request.getParameter("orderId");
-	
+	if (orderId == null || "".equals(orderId)) {
+		//redirect instead of blowing up
+		response.sendRedirect("/your_account/order_history.jsp");
+	}
 
 	NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance( Locale.US );
 	java.text.SimpleDateFormat modDateFormat = new java.text.SimpleDateFormat("h:mm a 'on' EEEE MMMM d, yyyy");
@@ -40,8 +43,10 @@
 			request.setAttribute("sitePage", oasSitePage.replace("www.freshdirect.com/", "www.freshdirect.com/mobileweb/")); //change for OAS	
 		}
 	}
+	/* pass this param to bypass the success redirect (i.e. for initializing a modify via ajax) where you don't need the success page to load */
+	String successPage = (request.getParameter("noSuccess") != null) ? "noSuccess" : "/view_cart.jsp";
 %>
-<fd:ModifyOrderController orderId="<%= orderId %>" result="result" successPage='/view_cart.jsp'>
+<fd:ModifyOrderController orderId="<%= orderId %>" result="result" successPage='<%= successPage %>'>
 <tmpl:insert template='<%= pageTemplate %>'>
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Your Account - Modify Order"/>

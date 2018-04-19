@@ -132,13 +132,14 @@ public class FDPromotionVisitor {
          
          //Get All Automatic Promo codes.  Evaluate them.
          Collection<PromotionI> promotions = PromotionFactory.getInstance().getAllAutomaticPromotions();
+         if(!context.getShoppingCart().containsDlvPassOnly()){
          for (PromotionI autopromotion : promotions) {
                String promoCode = autopromotion.getPromotionCode();               
                boolean e = autopromotion.evaluate(context);
                eligibilities.setEligibility(promoCode, e);
                if(e && autopromotion.isFavoritesOnly()) eligibilities.addRecommendedPromo(promoCode); 
-        }
-         
+         	}
+         } 
          //Get the redemption promotion if user redeemed one and evaluate it.
          PromotionI redeemedPromotion = context.getRedeemedPromotion();
          if(redeemedPromotion != null){

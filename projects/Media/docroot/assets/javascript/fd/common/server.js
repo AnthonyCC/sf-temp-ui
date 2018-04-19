@@ -10,6 +10,9 @@ var FreshDirect = FreshDirect || {};
   
   var focusedElementId;
   var DISPATCHER = fd.common.dispatcher;
+  var MULTISIGNALS = {
+    searchSections: ['searchParams', 'sections']
+  };
   var errorMessages={
      // "401": '<div class="unauthorized">Session expired, please refresh!</div>',
       "500": function (e) {
@@ -43,7 +46,23 @@ var FreshDirect = FreshDirect || {};
 
   var successHandler = function( data ){
     try{
+      // single signals
       Object.keys( data ).forEach( _signalWidgets, data );
+      // multisignals
+      Object.keys(MULTISIGNALS).forEach(function (msignal) {
+        var keys = MULTISIGNALS[msignal],
+            msdata = {},
+            isIncruded = function (key) {
+              return Object.keys(data).indexOf(key) > -1;
+            };
+
+        if (keys.every(isIncruded)) {
+          keys.forEach(function (key) {
+            msdata[key] = data[key];
+          });
+          DISPATCHER.signal(msignal, msdata);
+        }
+      });
     } catch(e) {}
     try {
       if (focusedElementId) {

@@ -75,11 +75,11 @@ import com.freshdirect.storeapi.content.ProductModel;
 
 public class DeliveryPassSubscriptionUtil {
 	
-//	private static Category LOGGER = LoggerFactory.getInstance(DeliveryPassSubscriptionUtil.class);
-//	private static final DateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yyyy");
-//	private final static String CLASS_NAME=DeliveryPassSubscriptionUtil.class.getSimpleName();
+	private static Category LOGGER = LoggerFactory.getInstance(DeliveryPassSubscriptionUtil.class);
+	private static final DateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yyyy");
+	private final static String CLASS_NAME=DeliveryPassSubscriptionUtil.class.getSimpleName();
 	
-   /*public static String placeOrder(FDActionInfo actionInfo, CustomerRatingAdaptor cra, String arSKU, ErpPaymentMethodI pymtMethod, ErpAddressModel dlvAddress, UserContext userCtx) {
+   public static String placeOrder(FDActionInfo actionInfo, CustomerRatingAdaptor cra, String arSKU, ErpPaymentMethodI pymtMethod, ErpAddressModel dlvAddress, UserContext userCtx) {
 		String orderID = null;
 		FDCartModel cart=null;
 		try {
@@ -108,7 +108,7 @@ public class DeliveryPassSubscriptionUtil {
 		return orderID;
 	}
    
-*/  /* public static FDCartModel getCart(String skuCode,ErpPaymentMethodI paymentMethod,ErpAddressModel deliveryAddress, String erpCustomerID,UserContext userCtx) {
+   public static FDCartModel getCart(String skuCode,ErpPaymentMethodI paymentMethod,ErpAddressModel deliveryAddress, String erpCustomerID,UserContext userCtx) {
 
 		FDCartModel cart=null;
 		try {
@@ -148,8 +148,8 @@ public class DeliveryPassSubscriptionUtil {
 		}
 		return cart;
 	}
-*/
-	/*private static FDCartLineI getCartLine(String skuCode) throws FDSkuNotFoundException, FDResourceException  {
+
+	private static FDCartLineI getCartLine(String skuCode) throws FDSkuNotFoundException, FDResourceException  {
 
 		ProductModel prodNode = null;
 		FDProduct product=null;
@@ -180,10 +180,28 @@ public class DeliveryPassSubscriptionUtil {
 	private static FDIdentity getFDIdentity(String erpCustomerID) {
 		return new FDIdentity(erpCustomerID,null);
 	}
-*/
+
+	private static FDReservation getFDReservation(String customerID, String addressID) {
+		Date expirationDT = new Date(System.currentTimeMillis() + 1000);
+		FDTimeslot timeSlot=getFDTimeSlot();
+		FDReservation reservation=new FDReservation(new PrimaryKey("1"), timeSlot, expirationDT, EnumReservationType.STANDARD_RESERVATION, 
+				customerID, addressID,false, null,20,null,false,null,null);
+		return reservation;
+
+	}
+
+	private static FDTimeslot getFDTimeSlot() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public static FDDeliveryZoneInfo getZoneInfo(ErpAddressModel address) throws FDResourceException, FDInvalidAddressException {
+
+		FDDeliveryZoneInfo zInfo =new FDDeliveryZoneInfo("1","1","1",EnumZipCheckResponses.DELIVER);
+		return zInfo;
+	}
 
 	
-/*	private static ErpPaymentMethodI getPaymentMethod(String paymentMethodPk, Collection<ErpPaymentMethodI> paymentMethods){
+	private static ErpPaymentMethodI getPaymentMethod(String paymentMethodPk, Collection<ErpPaymentMethodI> paymentMethods){
 		for(Iterator<ErpPaymentMethodI> i=paymentMethods.iterator(); i.hasNext();){
 			ErpPaymentMethodI pmethod = i.next();
 			if(paymentMethodPk.equals(pmethod.getPK().getId())){
@@ -216,9 +234,9 @@ public class DeliveryPassSubscriptionUtil {
 //			createCase(erpCustomerID,CrmCaseSubject.CODE_AUTO_BILL_PAYMENT_MISSING,DlvPassConstants.AUTORENEW_PYMT_METHOD_UNKNOWN);
 			return null;
 		}
-	}*/
+	}
 
-/*	private static Collection<ErpPaymentMethodI> getPaymentMethods(FDIdentity identity) throws FDResourceException {
+	private static Collection<ErpPaymentMethodI> getPaymentMethods(FDIdentity identity) throws FDResourceException {
 
 		try {
 			return FDCustomerManager.getPaymentMethods(identity);
@@ -264,8 +282,8 @@ public class DeliveryPassSubscriptionUtil {
 			}
 			return null;
 		}
-	}*/
-/*	
+	}
+	
 	public static String placeOrder(String erpCustomerID, String arSKU, boolean isFirstOrder) throws FDResourceException {
 
 		FDIdentity identity=null;
@@ -293,10 +311,10 @@ public class DeliveryPassSubscriptionUtil {
 			pymtMethod=getMatchedPaymentMethod(lastOrder.getPaymentMethod(),getPaymentMethods(user.getIdentity()));
 		} else {
 			address=getDeliveryPassDeliveryAddress(user.getSelectedServiceType());
-			Collection<ErpPaymentMethodI> ccards = FDCustomerManager.getPaymentMethods(user.getIdentity());
+/*			Collection<ErpPaymentMethodI> ccards = FDCustomerManager.getPaymentMethods(user.getIdentity());
 			if(!ccards.isEmpty()){
 				pymtMethod=(ErpPaymentMethodI) ((ccards.toArray())[0]);
-			}
+			}*/
 		} 
 		
 		if(null == pymtMethod){
@@ -354,34 +372,13 @@ public class DeliveryPassSubscriptionUtil {
 	}
 
 
-*/	
-	private static FDReservation getFDReservation(String customerID, String addressID) {
-		Date expirationDT = new Date(System.currentTimeMillis() + 1000);
-		FDTimeslot timeSlot=getFDTimeSlot();
-		FDReservation reservation=new FDReservation(new PrimaryKey("1"), timeSlot, expirationDT, EnumReservationType.STANDARD_RESERVATION, 
-				customerID, addressID,false, null,20,null,false,null,null);
-		return reservation;
-
-	}
-
-	private static FDTimeslot getFDTimeSlot() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	public static FDDeliveryZoneInfo getZoneInfo(ErpAddressModel address) throws FDResourceException, FDInvalidAddressException {
-
-		FDDeliveryZoneInfo zInfo =new FDDeliveryZoneInfo("1","1","1",EnumZipCheckResponses.DELIVER);
-		return zInfo;
-	}
-
-	
 	private static ErpAddressModel getDeliveryPassDeliveryAddress(EnumServiceType sType){
 		ErpAddressModel address=new ErpAddressModel();
-		address.setAddress1(FDStoreProperties.getFdDefaultBillingStreet());
-		address.setCity(FDStoreProperties.getFdDefaultBillingTown());
-		address.setState(FDStoreProperties.getFdDefaultBillingState());
-		address.setCountry(FDStoreProperties.getFdDefaultBillingCountry());
-		address.setZipCode(FDStoreProperties.getFdDefaultBillingPostalcode());
+		address.setAddress1("23-30 borden ave");
+		address.setCity("Long Island City");
+		address.setState("NY");
+		address.setCountry("US");
+		address.setZipCode("11101");
 		address.setServiceType(sType);
 		return address;
 

@@ -17,6 +17,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.customer.EnumCardType;
+import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.customer.EnumWebServiceType;
 import com.freshdirect.customer.EnumFraudReason;
 import com.freshdirect.customer.EnumNotificationType;
@@ -54,6 +55,7 @@ import com.freshdirect.fdstore.customer.FDUserUtil;
 import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
+import com.freshdirect.fdstore.deliverypass.DeliveryPassSubscriptionUtil;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.fdstore.lists.FDCustomerRecipeList;
 import com.freshdirect.fdstore.lists.FDCustomerShoppingList;
@@ -453,7 +455,24 @@ public class SubmitOrderAction extends WebActionSupport {
 		
 		final String userApplicaionSource = (String)session.getAttribute(SessionName.APPLICATION);
 		final EnumTransactionSource transactionSource = session.getAttribute(SessionName.CUSTOMER_SERVICE_REP)!=null || CrmSession.getCurrentAgent(session)!=null||user.getMasqueradeContext()!=null ? EnumTransactionSource.CUSTOMER_REP : userApplicaionSource!=null?EnumTransactionSource.getTransactionSource(userApplicaionSource):EnumTransactionSource.WEBSITE;
-	       
+		
+		/* Changes as part of standalone deliverypass purchase for web and mobile api (DP17-122)
+		When the property is enabled and cart contains only deliverypass sku
+		1.Set the default address in the cart
+		2.Set the dummy timeslot/reservation in the cart
+		 */
+		if(FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && cart.containsDlvPassOnly()){
+			try{
+				cart.setDeliveryAddress(DeliveryPassSubscriptionUtil.setDeliveryPassDeliveryAddress(user.getSelectedServiceType()));
+				FDReservation rsrv=DeliveryPassSubscriptionUtil.setFDReservation(user.getIdentity().getErpCustomerPK(),cart.getDeliveryAddress().getId());
+				cart.setDeliveryReservation(rsrv);
+				cart.setZoneInfo(DeliveryPassSubscriptionUtil.getZoneInfo(cart.getDeliveryAddress()));
+			    cart.setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(user.getUserContext()));
+			    cart.setEStoreId(user.getUserContext().getStoreContext().getEStoreId());
+				} catch (Exception e){
+					throw new FDResourceException(e);
+			} 
+		} else {
 		 	// potential double-submission, how else would the user end up here...
 		if (cart.getDeliveryAddress()==null || reservation==null || reservation.getStartTime()==null || reservation.getEndTime()==null || cart.getPaymentMethod()==null ) {
 			return SUCCESS;
@@ -484,7 +503,9 @@ public class SubmitOrderAction extends WebActionSupport {
 				SystemMessageList.MSG_CHECKOUT_PAST_CUTOFF, new Object[] { cutoffTime }
 			));
 			return ERROR;
-		}
+			}
+		}	
+		
 		if(!cart.getPaymentMethod().isGiftCard()) {	
 			// set the default credit card to the one that is in the cart if Card does not belong to EWallet
 			ErpPaymentMethodModel paymentMethodModel = (ErpPaymentMethodModel) cart.getPaymentMethod();
@@ -508,7 +529,7 @@ public class SubmitOrderAction extends WebActionSupport {
                 FDCustomerManager.setDefaultDepotLocationPK(user.getIdentity(), ((ErpDepotAddressModel) address).getLocationId());
             } else {
                 // get the address pk and set the default address
-				if(!(user.isVoucherHolder() && user.getMasqueradeContext() == null)){
+				if(!(user.isVoucherHolder() && user.getMasqueradeContext() == null) && address.getPK() !=null){
 					FDCustomerManager.setDefaultShipToAddressPK(user.getIdentity(), address.getPK().getId());
 				}
             }
@@ -643,8 +664,20 @@ public class SubmitOrderAction extends WebActionSupport {
 				if(user.getOrderHistory().getTotalOrderCount() <=0){
 					isFirstOrder= true;
 				}
+				/* Changes as part of standalone deliverypass purchase for web and mobile api (DP17-122)
+					When the property is enabled and cart contains only deliverypass
+					- Place the subscription order else Place the regular order
+				*/
+				if (FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && cart.containsDlvPassOnly()) {
+					orderNumber = FDCustomerManager.placeSubscriptionOrder(
+							info, cart, appliedPromos, sendEmail, cra,
+							EnumDlvPassStatus.PENDING);
+				} else {
+					orderNumber = FDCustomerManager.placeOrder(info, cart,
+							appliedPromos, sendEmail, cra, status,
+							isFriendReferred, fdcOrderCount);
+				}
 				
-				orderNumber = FDCustomerManager.placeOrder(info, cart, appliedPromos, sendEmail,cra,status ,isFriendReferred, fdcOrderCount);
 			    //[APPDEV-4574]-Auto optin for emails, if its customer's first order.
 				if(isFirstOrder){
 					FDCustomerManager.storeEmailPreferenceFlag(user.getIdentity().getFDCustomerPK(), "X",user.getUserContext().getStoreContext().getEStoreId());

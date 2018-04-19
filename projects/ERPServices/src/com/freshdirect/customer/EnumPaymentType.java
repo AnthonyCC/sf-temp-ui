@@ -6,6 +6,9 @@ import java.util.Map;
 
 import org.apache.commons.lang.enums.Enum;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public class EnumPaymentType extends Enum {
 
 	public static final EnumPaymentType REGULAR = new EnumPaymentType("R", "Regular");
@@ -24,6 +27,7 @@ public class EnumPaymentType extends Enum {
 		return this.description;
 	}
 
+	@JsonCreator
 	public static EnumPaymentType getEnum(String name) {
 		return (EnumPaymentType) getEnum(EnumPaymentType.class, name);
 	}
@@ -40,6 +44,7 @@ public class EnumPaymentType extends Enum {
 		return iterator(EnumPaymentType.class);
 	}
 
+	@JsonValue
 	public String toString() {
 		return this.getName();
 	}

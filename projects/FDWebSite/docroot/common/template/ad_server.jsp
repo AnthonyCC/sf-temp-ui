@@ -187,6 +187,23 @@
 					break;
 				}
 			}
+			
+	     	if (uri.contains("/expressco/success.jsp")) {
+	          pageId = "order_confirm";
+	        }
+	        if (uri.contains("/shared/fee_info.jsp")) {
+	          pageId = "fuel_surcharge";
+	        }
+	        if (uri.contains("/your_account/delivery_info_avail_slots.jsp")) {
+	          pageId = "timeslot_avail";
+	        }
+	        if (uri.contains("/your_account/reserve_timeslot.jsp")) {
+	          pageId = "timeslot_reserve";
+	        }
+	        if (uri.contains("/your_account/manage_account.jsp")) {
+	          pageId = "account_manage";
+	        }
+			
 			if (smartSavingVariantId != null && smartSavingVariantId.length() > 0) {
 			    queryString.addParam("ssp", smartSavingVariantId);
 			}
@@ -269,6 +286,7 @@
 
 			//Building up the values required for Delivery Pass Ads.
 			if (user.isEligibleForDeliveryPass()) {
+				queryString.addParam("dpnever", user.isDlvPassNone() ? "T" : "F");
 				String profileVal = user.getDlvPassProfileValue();
 
 				queryString.addParam("dpas", profileVal);

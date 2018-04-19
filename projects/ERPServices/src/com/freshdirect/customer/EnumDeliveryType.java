@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 /**
  *
  * @author  jmccarter
@@ -44,6 +47,7 @@ public class EnumDeliveryType implements Serializable {
 		DELIVERY_TYPE_MAP.put(code, this);
 	}
 
+	@JsonValue
 	public String getCode() {
 		return this.code;
 	}
@@ -60,6 +64,7 @@ public class EnumDeliveryType implements Serializable {
 		return this.code;
 	}
 
+	@JsonCreator
 	public static EnumDeliveryType getDeliveryType(String code) {
 		return DELIVERY_TYPE_MAP.get(code);
 	}

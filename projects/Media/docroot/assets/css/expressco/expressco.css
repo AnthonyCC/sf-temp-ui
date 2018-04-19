@@ -398,3 +398,23 @@
     border-left: 8px solid transparent;
 }
 
+#expresscheckout.deliverypasscheckout #checkout-cart-header{
+	max-width: 500px;
+    margin: auto;
+}
+#expresscheckout.deliverypasscheckout #checkout-cart-header .small-container{
+	width: 40%;
+}
+#expresscheckout.deliverypasscheckout #checkout-cart-header .large-container{
+	width: 60%;
+}
+#expresscheckout.deliverypasscheckout #cartcontent .promotions{
+	padding-bottom: 20px;
+}
+#expresscheckout.deliverypasscheckout .delivery-fee,
+#expresscheckout.deliverypasscheckout .tip, 
+#expresscheckout.deliverypasscheckout #cartCarousels,
+#expresscheckout.deliverypasscheckout #subtotalbox1 [data-boxid="deliveryfee"],
+#expresscheckout.deliverypasscheckout .cartsection__tax[fdform-container="etip"]{
+  display: none;
+}

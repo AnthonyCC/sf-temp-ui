@@ -525,15 +525,10 @@ public class CategoryModel extends ProductContainer {
     	ZoneInfo pricingZone = ContentFactory.getInstance()!=null && ContentFactory.getInstance().getCurrentUserContext()!=null &&
     								ContentFactory.getInstance().getCurrentUserContext().getPricingContext()!=null?
     										ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo():null;
-        LOGGER.debug("pricingZone================="+pricingZone);
     	String currentProductPromotionType = getProductPromotionType();
-        LOGGER.debug("currentProductPromotionType================="+currentProductPromotionType);
-        LOGGER.debug("ContentFactory.getInstance().isEligibleForDDPP()================="+ContentFactory.getInstance().isEligibleForDDPP());
 
     	if(!"E_COUPONS".equalsIgnoreCase(currentProductPromotionType) && (currentProductPromotionType == null || !ContentFactory.getInstance().isEligibleForDDPP())){
     		prodList =getStaticProducts();
-            LOGGER.debug("prodList========1========="+prodList.size());
-
 	        Recommender recommender = getRecommender();
 	        if ( recommender == null ) {
 	        	recommenderKey = null;
@@ -568,14 +563,12 @@ public class CategoryModel extends ProductContainer {
 	//                List<ProductModel> recProds = recommendedProductsRefMap.get(zoneId).get();
 	                addDynamicProducts(recommendedProductsRefMap.get(pricingZone).get(), prodList,true);
 	            } catch (Exception e) {
-	                LOGGER.warn("exception during smart category recommendation", e);
 	                LOGGER.error("exception during smart category recommendation", e);
 	            }
 	        }
     	}else{
 //	        String currentProductPromotionType = getProductPromotionType();
 	        prodList = getPromotionPageProducts(prodList, pricingZone,currentProductPromotionType);
-            LOGGER.debug("prodList========2========="+prodList.size());
     	}
 
 
@@ -592,8 +585,6 @@ public class CategoryModel extends ProductContainer {
                 }
             }
 		}
-
-        LOGGER.debug("prodList========3========="+prodList.size());
         return prodList;
     }
 
@@ -612,7 +603,6 @@ public class CategoryModel extends ProductContainer {
 					}
 				}
 		    } catch (Exception e) {
-		        LOGGER.warn("exception during promo category product assignment", e);
                 LOGGER.error("exception during promo category product assignment", e);
 		    }
 		}

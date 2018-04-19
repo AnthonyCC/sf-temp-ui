@@ -1,6 +1,7 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
 import com.freshdirect.fdstore.FDNotFoundException;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.storeapi.content.ContentFactory;
@@ -32,10 +33,14 @@ public class ProductGroupTag extends AbstractGetterTag<ProductModel> {
     protected ProductModel getResult() throws FDSkuNotFoundException, FDNotFoundException {
         ProductModel product = ContentFactory.getInstance().getProductByName(categoryId, productId);
 
-        if (product == null && skuCode != null && !"".equalsIgnoreCase(skuCode)) {
-            product = PopulatorUtil.getProductByName(skuCode);
-        } else {
-            PopulatorUtil.isNodeNotFound(product, categoryId, productId);
+		try {
+			if (product == null && skuCode != null && !"".equalsIgnoreCase(skuCode)) {
+				product = PopulatorUtil.getProductByName(skuCode);
+			} else {
+				PopulatorUtil.isNodeNotFound(product, categoryId, productId);
+			}
+		} catch (FDResourceException ex) {
+			throw new FDNotFoundException(ex.getMessage());
 		}
 
         return ProductPricingFactory.getInstance().getPricingAdapter(product, null);

@@ -6,7 +6,6 @@ var FreshDirect = FreshDirect || {};
   var WIDGET = fd.modules.common.widget;
   var SIGNALTARGET = fd.common.signalTarget;
   var DISPATCHER = fd.common.dispatcher;
-  var PPC = fd.multisearch && fd.multisearch.productPerCarousel || 20;
 
   var searchResultList = Object.create(WIDGET,{
     signal:{
@@ -22,25 +21,10 @@ var FreshDirect = FreshDirect || {};
       value:[],
       writable: true
     },
-    displayTutorial: {
-      value: function () {
-        $('#multisearch-tutorial').addClass('show');
-      }
-    },
-    hideTutorial: {
-      value: function () {
-        $('#multisearch-tutorial').removeClass('show');
-      }
-    },
     render:{
       value:function(data){
         data = data || {};
         data.terms = data.terms || this.terms;
-
-        // only lowercase keywords are enabled
-        data.terms = data.terms.filter(function (term) {
-          return term === term.toLowerCase();
-        });
 
         var searchListEl = document.querySelector('[data-component="multisearch-list"]'),
             added = data.terms.filter(function (term) { return this.terms.indexOf(term) === -1;}.bind(this)),
@@ -56,9 +40,10 @@ var FreshDirect = FreshDirect || {};
             el.remove();
           });
 
-          searchListEl.innerHTML = added.reduce(function (p, c) {
+          searchListEl.innerHTML = searchListEl.innerHTML +
+            added.reduce(function (p, c) {
               return p + '<li data-searchresult="'+c+'">Loading search results for "'+c+'"...</li>';
-            }, '') + searchListEl.innerHTML;
+            }, '');
         }
 
         // call search API with newly added terms
@@ -66,11 +51,7 @@ var FreshDirect = FreshDirect || {};
           DISPATCHER.signal('server',{
             url: '/api/filter',
             data: {
-              data: JSON.stringify({
-                searchParams: term,
-                pageSize: PPC,
-                doNotFillPage: true
-              })
+              data: JSON.stringify({searchParams: term})
             },
             spinner: {
               timeout: 500,
@@ -78,13 +59,6 @@ var FreshDirect = FreshDirect || {};
             }
           });
         });
-
-        // display tutorial if there are no search terms
-        if (this.terms.length === 0) {
-          this.displayTutorial();
-        } else {
-          this.hideTutorial();
-        }
       }
     }
   });
@@ -114,23 +88,6 @@ var FreshDirect = FreshDirect || {};
     }
   });
   searchResult.listen();
-
-  $(document).on('click', '[data-component="multisearch-results"] button.disable', function (e) {
-    var el = e.target,
-        term = el.getAttribute('data-searchterm');
-    
-
-	if (fd.utils.hasOwnNestedProperty('dataLayer')) {
-		dataLayer.push({
-		    'event': 'expresssearch-click',
-		    'eventCategory': 'express search',
-		    'eventAction': 'done',
-		    'eventLabel': term.toLowerCase().trim().replace(/\s+/g, '+')
-		});
-	}
-
-    DISPATCHER.signal('removeSearchTerm', {term: term});
-  });
 
   fd.modules.common.utils.register("modules.multisearch", "searchResultList", searchResultList, fd);
   fd.modules.common.utils.register("modules.multisearch", "searchResult", searchResult, fd);

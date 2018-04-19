@@ -4109,10 +4109,12 @@ div#mobilehomeMainDiv a {
 
     <meta name="HandheldFriendly" content="True">
     <meta name="MobileOptimized" content="320">
-  	<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1">
+  	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="fragment" content="!">
 
   	<tmpl:get name='facebookmeta'/>
+
+    <fd:CanonicalPageLink/>
 
     <tmpl:get name="extraCss" />
     <tmpl:get name='nutritionCss'/>

@@ -163,7 +163,7 @@
   </div><!--/ drawer__itemright -->
  
   <div class="drawer__item__action">
-    <button type="button" aria-haspopup="true" class="change cssbutton green transparent small" {if $onOpenCoremetrics}cm-click="{$onOpenCoremetrics}"{/if}>Edit</button>
+    <button type="button" aria-haspopup="true" class="change cssbutton green transparent small" {if $onOpenCoremetrics}cm-click="{$onOpenCoremetrics}"{/if}>Edit<span class="offscreen">delivery address</span></button>
   </div>
 </div>
 {/template}
@@ -240,9 +240,9 @@
   </div><!--/ drawer__itemright -->
  
   <div class="drawer__item__action">
-    {if $can_delete}<button type="button" aria-label="delete {$nick_name ? $nick_name : $street_address} {$first_name ? $first_name : ''} {$last_name ? $last_name : ''}" role="alertdialog" data-action="deleteDeliveryAddressMethod" data-confirm data-confirm-header="
+    {if $can_delete}<button type="button" aria-label="delete {$nick_name ? $nick_name : $street_address} {$first_name ? $first_name : ''} {$last_name ? $last_name : ''} address" role="alertdialog" data-action="deleteDeliveryAddressMethod" data-confirm data-confirm-header="
     Are you sure you want to permanently delete this address?" data-confirm-button-delete="FreshDirect.confirmFunctions.address_deleteDeliveryAddressMethod_{$id}" data-confirm-template="common.deleteconfirmpopup" class="action cssbutton transparent white icon-trash-new-before">Delete<span class="offscreen"> {$nick_name ? $nick_name : $street_address} {$first_name ? $first_name : ''} {$last_name ? $last_name : ''}</span></button>{/if}
-    <button type="button" aria-haspopup="true" data-action="getDeliveryAddressMethod" class="action cssbutton transparent white icon-pencil-before">Edit<span class="offscreen"> {$nick_name ? $nick_name : $street_address} {$first_name ? $first_name : ''} {$last_name ? $last_name : ''}</span></button>
+    <button aria-label="edit {$nick_name ? $nick_name : $street_address} {$first_name ? $first_name : ''} {$last_name ? $last_name : ''} address" type="button" aria-haspopup="true" data-action="getDeliveryAddressMethod" class="action cssbutton transparent white icon-pencil-before">Edit<span class="offscreen"> {$nick_name ? $nick_name : $street_address} {$first_name ? $first_name : ''} {$last_name ? $last_name : ''}</span></button>
   </div>
 </div><!--/ drawer__item -->
 {/if}
@@ -293,7 +293,7 @@
   </div><!--/ drawer__itemright -->
   
   <div class="drawer__item__action">
-    <button type="button" aria-haspopup="true" class="change cssbutton green transparent small" {if $onOpenCoremetrics}cm-click="{$onOpenCoremetrics}"{/if}>Edit</button>
+    <button type="button" aria-haspopup="true" class="change cssbutton green transparent small" {if $onOpenCoremetrics}cm-click="{$onOpenCoremetrics}"{/if}>Edit<span class="offscreen">delivery address</span></button>
   </div>
 </div><!--/ drawer__item -->
 {/template}
@@ -348,8 +348,8 @@
   </div><!--/ drawer__itemright -->
   
   <div class="drawer__item__action">
-    {if $can_delete}<button type="button" tabindex="0" aria-label="delete {$company_name ? $company_name : $street_address} {$first_name ? $first_name : ''} {$last_name ? $last_name : ''}" role="alertdialog" data-action="deleteDeliveryAddressMethod" data-confirm data-confirm-header="Are you sure you want to permanently delete this address?" data-confirm-button-delete="FreshDirect.confirmFunctions.address_deleteDeliveryAddressMethod_{$id}" data-confirm-template="common.deleteconfirmpopup" class="action cssbutton transparent white icon-trash-new-before">Delete<span class="offscreen"> {$company_name ? $company_name : $street_address} {$first_name ? $first_name : ''} {$last_name ? $last_name : ''}</span></button>{/if}
-    <button type="button" aria-haspopup="true" data-action="getDeliveryAddressMethod" class="action cssbutton transparent white icon-pencil-before">Edit<span class="offscreen"> {$company_name ? $company_name : $street_address} {$first_name ? $first_name : ''} {$last_name ? $last_name : ''}</button>
+    {if $can_delete}<button type="button" tabindex="0" aria-label="delete {$company_name ? $company_name : $street_address} {$first_name ? $first_name : ''} {$last_name ? $last_name : ''} address" role="alertdialog" data-action="deleteDeliveryAddressMethod" data-confirm data-confirm-header="Are you sure you want to permanently delete this address?" data-confirm-button-delete="FreshDirect.confirmFunctions.address_deleteDeliveryAddressMethod_{$id}" data-confirm-template="common.deleteconfirmpopup" class="action cssbutton transparent white icon-trash-new-before">Delete<span class="offscreen"> {$company_name ? $company_name : $street_address} {$first_name ? $first_name : ''} {$last_name ? $last_name : ''}</span></button>{/if}
+    <button type="button" aria-label="edit {$company_name ? $company_name : $street_address} {$first_name ? $first_name : ''} {$last_name ? $last_name : ''} address" aria-haspopup="true" data-action="getDeliveryAddressMethod" class="action cssbutton transparent white icon-pencil-before">Edit<span class="offscreen"> {$company_name ? $company_name : $street_address} {$first_name ? $first_name : ''} {$last_name ? $last_name : ''}</button>
   </div>
 </div><!--/ drawer__item -->
 {/if}
@@ -456,7 +456,7 @@
   </label>
   
   <div class="drawer__item__action">
-  	<button type="button" aria-haspopup="true" class="change cssbutton green transparent small">Edit</button>
+  	<button type="button" aria-haspopup="true" class="change cssbutton green transparent small">Edit<span class="offscreen">delivery address</span></button>
   	{if $popupurl}
     <a href="{$popupurl}" class="pickuppopup icon-maps-before" data-ifrpopup="{$popupurl}">Get directions and details</a>
     {/if}

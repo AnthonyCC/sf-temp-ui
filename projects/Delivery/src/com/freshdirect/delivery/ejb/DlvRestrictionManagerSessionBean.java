@@ -20,6 +20,12 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
+/**
+ *@deprecated Please use the DlvRestrictionController and DlvRestrictionManagerServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public class DlvRestrictionManagerSessionBean  extends SessionBeanSupport {
 
 	private static Category LOGGER = LoggerFactory.getInstance(DlvRestrictionManagerSessionBean.class);

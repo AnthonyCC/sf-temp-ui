@@ -125,6 +125,9 @@ public class FDOrderAdapter implements FDOrderI {
 	private EnumNotificationType taxationtype;
 	
 	private FDInvoiceAdapter shipStatus;
+	
+	private FDCartModel cartModel;
+	
 	public FDOrderAdapter() {
 		orderLines = new ArrayList<FDCartLineI>();
 	}
@@ -1915,4 +1918,18 @@ public class FDOrderAdapter implements FDOrderI {
 		this.shipStatus = shipStatus;
 	}
 
+	
+
+	@Override
+	public boolean containsDlvPassOnly() {
+		//return cartModel!=null && cartModel.containsDlvPassOnly();
+		boolean deliveryPassOnly = true;
+		for ( FDCartLineI line : orderLines ) {
+			if (!line.lookupFDProduct().isDeliveryPass()) {
+				deliveryPassOnly = false;
+				break;
+			}
+		}
+		return deliveryPassOnly;
+	}
 }

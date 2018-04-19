@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.rmi.RemoteException;
+import java.sql.Connection;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -183,6 +184,7 @@ import com.freshdirect.payment.fraud.RestrictedPaymentMethodCriteria;
 import com.freshdirect.payment.fraud.RestrictedPaymentMethodModel;
 import com.freshdirect.payment.gateway.GatewayType;
 import com.freshdirect.payment.gateway.ejb.FDGatewayActivityLogModel;
+import com.freshdirect.payment.model.ErpSettlementSummaryModel;
 import com.freshdirect.referral.extole.ExtoleServiceException;
 import com.freshdirect.referral.extole.model.ExtoleConversionRequest;
 import com.freshdirect.referral.extole.model.ExtoleResponse;
@@ -432,6 +434,15 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String LOAD_ALL_FRAUD_ENTRY="fraudactivity/loadrestrictedpaymentmethd";
 	private static final String LOAD_ALL_BAD_ENTRY="fraudactivity/loadbadpaymentmethods";
 	private static final String LOAD_ALL_FRAUD_ENTRY_BY_ACCOUNTINFO="fraudactivity/paymentinfobyaccount";
+	
+	private static final String GET_PAYPAL_NOT_PROCESSED_SETTLEMENT = "paypalReconciliation/getPPSettlementNotProcessed";
+	private static final String ACQUIRE_PAYPAL_LOCK = "paypalReconciliation/lock/acquire";
+	private static final String RELEASE_PAYPAL_LOCK = "paypalReconciliation/lock/release";
+	private static final String CREATE_SETTLEMENT_RECORD = "paypalReconciliation/settlementRecord/create";
+	private static final String ADD_PAYPAL_SETTLEMENT_SUMMARY ="paypalReconciliation/settlementSummary/create";
+	private static final String UPDATE_PAYPAL_STATUS = "paypalReconciliation/status/update";
+	private static final String UPDATE_PAYPAL_SETTLEMENT_STATUS = "paypalReconciliation/settlementStatus/update";
+	private static final String GET_PAYPAL_TRANSACTIONS = "paypalReconciliation/tx";
 	
 	private static final String ENQUEUE_EMAIL = "mailer/enqueue";
 
@@ -4432,6 +4443,137 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			LOGGER.error(e.getMessage());
 			throw new FDResourceException(e);
 		}
+	}
+	@Override
+	public Map<String, String> getPPSettlementNotProcessed() throws RemoteException {
+		try {
+			Response<Map<String, String>> response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_PAYPAL_NOT_PROCESSED_SETTLEMENT),
+					new TypeReference<Response<Boolean>>() {});
+			if (!response.getResponseCode().equals("OK")) {
+				throw new RemoteException(response.getMessage());
+			}
+			return response.getData();
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+	}
+	@Override
+	public Map<String, Object> acquirePPLock(Date date) throws RemoteException {
+		Request<Date> request = new Request<Date>();
+		request.setData(date);
+		String inputJson;
+		try {
+			inputJson = buildRequest(request);
+			Response<Map<String, Object>> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(ACQUIRE_PAYPAL_LOCK), new TypeReference<Response<Map<String, Object>>>() {});
+			if (!response.getResponseCode().equals("OK")) {
+				throw new FDResourceException(response.getMessage());
+			}
+			return response.getData();
+		} catch (Exception e) {
+			LOGGER.error(e);
+			throw new RemoteException(e.getMessage());
+		} 
+		
+	}
+	@Override
+	public void releasePPLock(List<String> settlementIds) throws RemoteException {
+		Request<List<String>> request = new Request<List<String>>();
+		request.setData(settlementIds);
+		String inputJson;
+		try {
+			inputJson = buildRequest(request);
+			Response<Void> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(RELEASE_PAYPAL_LOCK), new TypeReference<Response<Void>>() {});
+			if (!response.getResponseCode().equals("OK")) {
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (Exception e) {
+			LOGGER.error(e);
+			throw new RemoteException(e.getMessage());
+		} 
+	}
+	@Override
+	public void insertNewSettlementRecord(Date date) throws RemoteException {
+		Request<Date> request = new Request<Date>();
+		request.setData(date);
+		String inputJson;
+		try {
+			inputJson = buildRequest(request);
+			Response<Void> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(CREATE_SETTLEMENT_RECORD), new TypeReference<Response<Void>>() {});
+			if (!response.getResponseCode().equals("OK")) {
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (Exception e) {
+			LOGGER.error(e);
+			throw new RemoteException(e.getMessage());
+		} 
+	}
+	@Override
+	public List<String> addPPSettlementSummary(ErpSettlementSummaryModel[] models) throws RemoteException {
+		Request<ErpSettlementSummaryModel[]> request = new Request<ErpSettlementSummaryModel[]>();
+		request.setData(models);
+		String inputJson;
+		try {
+			inputJson = buildRequest(request);
+			Response<List<String>> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(ADD_PAYPAL_SETTLEMENT_SUMMARY), new TypeReference<Response<List<String>>>() {});
+			if (!response.getResponseCode().equals("OK")) {
+				throw new FDResourceException(response.getMessage());
+			}
+			return response.getData();
+		} catch (Exception e) {
+			LOGGER.error(e);
+			throw new RemoteException(e.getMessage());
+		} 
+	}
+	@Override
+	public void updatePayPalStatus(List<String> settlementIds) throws RemoteException {
+		Request<List<String>> request = new Request<List<String>>();
+		request.setData(settlementIds);
+		String inputJson;
+		try {
+			inputJson = buildRequest(request);
+			Response<Void> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(UPDATE_PAYPAL_STATUS), new TypeReference<Response<Void>>() {});
+			if (!response.getResponseCode().equals("OK")) {
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (Exception e) {
+			LOGGER.error(e);
+			throw new RemoteException(e.getMessage());
+		} 
+		
+	}
+	@Override
+	public List<ErpSettlementSummaryModel> getPPTrxns(List<String> ppStlmntIds) throws RemoteException {
+		Request<List<String>> request = new Request<List<String>>();
+		request.setData(ppStlmntIds);
+		String inputJson;
+		try {
+			inputJson = buildRequest(request);
+			Response<List<ErpSettlementSummaryModel>> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(GET_PAYPAL_TRANSACTIONS), new TypeReference<Response<List<ErpSettlementSummaryModel>>>() {});
+			if (!response.getResponseCode().equals("OK")) {
+				throw new FDResourceException(response.getMessage());
+			}
+			return response.getData();
+		} catch (Exception e) {
+			LOGGER.error(e);
+			throw new RemoteException(e.getMessage());
+		} 
+	}
+	@Override
+	public void updatePPSettlementTransStatus(String settlementTransId) throws RemoteException {
+		Request<String> request = new Request<String>();
+		request.setData(settlementTransId);
+		String inputJson;
+		try {
+			inputJson = buildRequest(request);
+			Response<Void> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(UPDATE_PAYPAL_SETTLEMENT_STATUS), new TypeReference<Response<Void>>() {});
+			if (!response.getResponseCode().equals("OK")) {
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (Exception e) {
+			LOGGER.error(e);
+			throw new RemoteException(e.getMessage());
+		} 
 	}
 
 }

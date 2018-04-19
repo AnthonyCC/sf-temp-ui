@@ -1,9 +1,7 @@
 /* accessibility focus for close buttons */
-
+/*removed the checkout page add payment method ,add address method trash button outline*/
 input#PP_button:focus,
 input#MP_button:focus,
-button.action.cssbutton.transparent.white.icon-trash-new-before:focus,
-button.action.cssbutton.transparent.white.icon-pencil-before:focus,
 a.headerlink:focus
 {
     outline: #5fb069 solid 2px !important;

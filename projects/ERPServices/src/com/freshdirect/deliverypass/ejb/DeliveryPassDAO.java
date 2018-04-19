@@ -613,5 +613,27 @@ public class DeliveryPassDAO {
 				ps.close();
 		}
 	}
+	
+	private final static String UPDATE_DLV_PASS_ACTIVATION = "UPDATE cust.delivery_pass dp SET status='RTU' WHERE status IN ('PEN','STF') AND exists (select 1 from cust.sale s where s.id=DP.PURCHASE_ORDER_ID and s.status IN ( 'PPG','STP','STL'))  and purchase_order_id = ?";
+	
+	public static boolean updateDeliveryPassActivation(Connection conn, String saleId) throws SQLException {
+		boolean retvalue=false;
+		PreparedStatement ps = null;
+		try{
+			ps=conn.prepareStatement(UPDATE_DLV_PASS_ACTIVATION);
+			ps.setString(1, saleId);
+			if (ps.executeUpdate() <= 0) {
+				LOGGER.error("Error updating delivery pass.");
+
+			}
+		}catch(SQLException exp){
+			throw exp;
+		}
+		finally{
+			if(ps != null)
+				ps.close();
+		}
+		return retvalue;
+	}
 
 }

@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 
+import com.freshdirect.fdstore.FDNotFoundException;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.rollout.EnumFeatureRolloutStrategy;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
@@ -63,7 +65,12 @@ public class PDPRedirector extends BodyTagSupport {
 				String productId = request.getParameter( "productId" );					
 	
 				if ( productId != null && categoryId != null ) { 
-                    ProductModel productNode = PopulatorUtil.getProductByName(categoryId, productId);
+                    ProductModel productNode = null;
+					try {
+						productNode = PopulatorUtil.getProductByName(categoryId, productId);
+					} catch (FDResourceException e) {
+						throw new FDNotFoundException(e.getMessage());
+					}
 					if(productNode!=null){
 						redirectUrl = PDP_PAGE_URL + "?catId=" + categoryId + "&productId=" + productId + cm_vc_queryParam;						
 					}
@@ -88,7 +95,12 @@ public class PDPRedirector extends BodyTagSupport {
 				String productId = request.getParameter( "productId" );
 				
 				if ( productId != null && categoryId != null ) { 
-                    ProductModel productNode = PopulatorUtil.getProductByName(categoryId, productId);
+                    ProductModel productNode = null;
+					try {
+						productNode = PopulatorUtil.getProductByName(categoryId, productId);
+					} catch (FDResourceException e) {
+						throw new FDNotFoundException(e.getMessage());
+					}
 						if ( productNode.getLayout().isGroceryLayout() ) {
 							// if grocery layout redirect to category page
 							redirectUrl = OLD_CATEGORY_PAGE + "?catId=" + categoryId + "&prodCatId=" + categoryId + "&productId=" + productId + cm_vc_queryParam;
