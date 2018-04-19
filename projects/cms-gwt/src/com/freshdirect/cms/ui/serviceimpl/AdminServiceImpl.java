@@ -7,6 +7,7 @@ import com.freshdirect.cms.ui.editor.domain.IndexingStatus;
 import com.freshdirect.cms.ui.editor.service.IndexingService;
 import com.freshdirect.cms.ui.editor.service.PublishService;
 import com.freshdirect.cms.ui.model.AdminProcStatus;
+import com.freshdirect.cms.ui.model.publish.PublishType;
 import com.freshdirect.cms.ui.service.AdminService;
 
 public class AdminServiceImpl extends GwtServiceBase implements AdminService {
@@ -33,8 +34,8 @@ public class AdminServiceImpl extends GwtServiceBase implements AdminService {
     }
 
     @Override
-    public AdminProcStatus abortStuckPublishFlows() {
-        publishService.abortStuckPublishes();
+    public AdminProcStatus abortStuckPublishFlows(PublishType type) {
+        publishService.abortStuckPublishes(type);
         return new AdminProcStatus("abortStuckPublishFlows()", "Done", false, 0L, 0L);
     }
 

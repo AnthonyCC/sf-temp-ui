@@ -15,6 +15,7 @@ import com.freshdirect.cms.ui.client.CmsGwt;
 import com.freshdirect.cms.ui.client.MainLayout;
 import com.freshdirect.cms.ui.client.publish.PublishProgressListener;
 import com.freshdirect.cms.ui.model.AdminProcStatus;
+import com.freshdirect.cms.ui.model.publish.PublishType;
 import com.freshdirect.cms.ui.service.AdminService;
 import com.freshdirect.cms.ui.service.AdminServiceAsync;
 import com.freshdirect.cms.ui.service.BaseCallback;
@@ -97,10 +98,22 @@ public class AdministrationView extends LayoutContainer implements PublishProgre
         actionBar.addButton(new Button("Abort Stuck Publishes", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                admin.abortStuckPublishFlows(new BaseCallback<AdminProcStatus>() {
+                admin.abortStuckPublishFlows(PublishType.STORE_PUBLISH, new BaseCallback<AdminProcStatus>() {
                     @Override
                     public void onSuccess(AdminProcStatus result) {
                         MessageBox.info("Action Completed", "All publishes stuck in Progress state have been stopped.", null);
+                    }
+                });
+            }
+        }), defaultMargin);
+
+        actionBar.addButton(new Button("Abort Stuck Feed Publishes", new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                admin.abortStuckPublishFlows(PublishType.PUBLISH_X, new BaseCallback<AdminProcStatus>() {
+                    @Override
+                    public void onSuccess(AdminProcStatus result) {
+                        MessageBox.info("Action Completed", "All feed publishes stuck in Progress state have been stopped.", null);
                     }
                 });
             }

@@ -18,7 +18,6 @@ import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.cms.core.service.ContextualContentProvider;
 import com.freshdirect.cms.draft.domain.DraftContext;
 import com.freshdirect.cms.draft.service.DraftContextHolder;
-import com.freshdirect.cms.ui.editor.domain.PublishType;
 import com.freshdirect.cms.ui.editor.publish.feed.converter.FeedPublishToGwtPublishDataConverter;
 import com.freshdirect.cms.ui.editor.publish.feed.domain.FeedPublish;
 import com.freshdirect.cms.ui.editor.publish.feed.entity.PublishStatus;
@@ -26,6 +25,7 @@ import com.freshdirect.cms.ui.editor.publish.feed.service.FeedPublishMessagingSe
 import com.freshdirect.cms.ui.editor.publish.feed.service.FeedPublishService;
 import com.freshdirect.cms.ui.editor.publish.repository.AdminQueriesRepository;
 import com.freshdirect.cms.ui.model.publish.GwtPublishData;
+import com.freshdirect.cms.ui.model.publish.PublishType;
 import com.freshdirect.cms.ui.service.ServerException;
 
 @Service
@@ -97,8 +97,7 @@ public class PublishService {
     }
 
     @Transactional
-    public void abortStuckPublishes() {
-        adminQueriesRepository.updateStuckPublishStatus();
+    public void abortStuckPublishes(PublishType type) {
+        adminQueriesRepository.updateStuckPublishStatus(type);                
     }
-
 }
