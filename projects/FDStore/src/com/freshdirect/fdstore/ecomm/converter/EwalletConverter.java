@@ -141,33 +141,34 @@ public class EwalletConverter {
 		return paymentData;
 	}
 
-	public static EwalletResponseData buildEwalletResponseDate(com.freshdirect.ecommerce.data.fdstore.EwalletResponseData data) {
-		if(data != null){
-		EwalletResponseData response = new EwalletResponseData();
-		response.setAllowedPaymentMethodTypes(data.getAllowedPaymentMethodTypes());
-		response.setCallbackUrl(data.getCallbackUrl());
-		response.seteWalletExpressCheckout(data.geteWalletExpressCheckout());
-		response.seteWalletIdentifier(data.geteWalletIdentifier());
-		response.setLoyaltyEnabled(data.getLoyaltyEnabled());
-		response.setPairingRequest(data.getPairingRequest());
-		response.setPairingToken(data.getPairingToken());
-		if(data.getPaymentMethod() != null)
-		response.setPaymentMethod(ModelConverter.buildErpPaymentMethodModel(data.getPaymentMethod()));
-		response.setPreCheckoutTnxId(data.getPreCheckoutTnxId());
-		response.setPreferredMPCard(data.getPreferredMPCard());
-		response.setRedirectUrl(data.getRedirectUrl());
-		response.setReqDatatype(data.getReqDatatype());
-		response.setRequestBasicCkt(data.getRequestBasicCkt());
-		response.setResParam(data.getResParam());
-		response.setSuppressShippingEnable(data.getSuppressShippingEnable());
-		response.setToken(data.getToken());
-		response.setTransactionId(data.getTransactionId());
-		if(data.getTrxns() != null)
-		response.setTrxns(buildErpPostBackModel(data.getTrxns()));
-		if( data.getValidationResult() != null)
-		response.setValidationResult(buildValidationResult(data.getValidationResult()));
-		response.setVersion(data.getVersion());
-		return response;
+	public static EwalletResponseData buildEwalletResponseData(
+			com.freshdirect.ecommerce.data.fdstore.EwalletResponseData data) {
+		if (data != null) {
+			EwalletResponseData response = new EwalletResponseData();
+			response.setAllowedPaymentMethodTypes(data.getAllowedPaymentMethodTypes());
+			response.setCallbackUrl(data.getCallbackUrl());
+			response.seteWalletExpressCheckout(data.geteWalletExpressCheckout());
+			response.seteWalletIdentifier(data.geteWalletIdentifier());
+			response.setLoyaltyEnabled(data.getLoyaltyEnabled());
+			response.setPairingRequest(data.getPairingRequest());
+			response.setPairingToken(data.getPairingToken());
+			if (data.getPaymentMethod() != null)
+				response.setPaymentMethod(ModelConverter.buildErpPaymentMethodModel(data.getPaymentMethod()));
+			response.setPreCheckoutTnxId(data.getPreCheckoutTnxId());
+			response.setPreferredMPCard(data.getPreferredMPCard());
+			response.setRedirectUrl(data.getRedirectUrl());
+			response.setReqDatatype(data.getReqDatatype());
+			response.setRequestBasicCkt(data.getRequestBasicCkt());
+			response.setResParam(data.getResParam());
+			response.setSuppressShippingEnable(data.getSuppressShippingEnable());
+			response.setToken(data.getToken());
+			response.setTransactionId(data.getTransactionId());
+			if (data.getTrxns() != null)
+				response.setTrxns(buildErpPostBackModel(data.getTrxns()));
+			if (data.getValidationResult() != null)
+				response.setValidationResult(buildValidationResult(data.getValidationResult()));
+			response.setVersion(data.getVersion());
+			return response;
 		}
 		return null;
 	}
@@ -196,7 +197,7 @@ public class EwalletConverter {
 			model.setRecoverable(ewalletPostBackData.getRecoverable());
 			model.setSalesActionId(ewalletPostBackData.getSalesActionId());
 			model.setTransactionId(ewalletPostBackData.getTransactionId());
-			model.setTransactionStatus(ewalletPostBackData.getStatus());
+			model.setTransactionStatusValue(ewalletPostBackData.getStatus());
 		}
 		return walletPostBackModel;
 	}

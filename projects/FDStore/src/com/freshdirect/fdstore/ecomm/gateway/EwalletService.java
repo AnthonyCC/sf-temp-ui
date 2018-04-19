@@ -47,7 +47,6 @@ public class EwalletService  extends AbstractEcommService implements EwalletServ
 			throws RemoteException {
 		
 		Response<com.freshdirect.ecommerce.data.fdstore.EwalletResponseData> response = null;
-		EwalletResponseData result = null;
 		Request<EwalletData> request = new Request<EwalletData>();
 			try {
 				String inputJson;
@@ -63,7 +62,7 @@ public class EwalletService  extends AbstractEcommService implements EwalletServ
 				throw new RemoteException(e.getMessage());
 			}
 			
-			return EwalletConverter.buildEwalletResponseDate(response.getData());
+			return EwalletConverter.buildEwalletResponseData(response.getData());
 	}
 
 	@Override
@@ -71,7 +70,6 @@ public class EwalletService  extends AbstractEcommService implements EwalletServ
 			throws RemoteException {
 		
 		Response<EwalletResponseData> response = null;
-		EwalletResponseData result = null;
 		Request<EwalletRequestData> request = new Request<EwalletRequestData>();
 			try {
 				String inputJson;

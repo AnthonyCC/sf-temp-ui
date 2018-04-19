@@ -244,21 +244,13 @@ public class EwalletPostBackModel implements Serializable {
 	/**
 	 * @param transactionStatus the transactionStatus to set
 	 */
-	public void setTransactionStatus(int status) {
+	public void setTransactionStatusValue(int status) {
 		if (status != 0 || status != 1) {
 			throw new AssertionError("Postback request cannot have transaction status other than Success or Failure");
 		}
 		this.status = status;
 	}
-	/**
-	 * @param transactionStatus the transactionStatus to set
-	 */
-	public void setTransactionStatus(boolean status) {
-		if (status)
-			this.status = 1;
-		else
-			this.status = 0;
-	}
+	
 	/**
 	 * @return the approvalCode
 	 */

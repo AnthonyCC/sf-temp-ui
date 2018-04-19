@@ -1,11 +1,14 @@
 package com.freshdirect.common.address;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 public class ContactAddressModel extends AddressModel implements BasicContactAddressI {
 
 	private static final long	serialVersionUID	= -7794472986742379373L;
 	
 	private String firstName = "";
 	private String lastName = "";
+	@JsonDeserialize(using = PhoneNumberDeserializer.class)
 	private PhoneNumber phone = new PhoneNumber("");
 	
 	private String customerId="";

@@ -18,307 +18,332 @@ import com.freshdirect.fdstore.ewallet.impl.ejb.MasterpassServiceSB;
 import com.freshdirect.fdstore.ewallet.impl.ejb.PayPalServiceHome;
 import com.freshdirect.fdstore.ewallet.impl.ejb.PayPalServiceSB;
 
-
 /**
  * @author Aniwesh Vatsal
  *
  */
 public class EwalletServiceFactory {
 
-	private static final Logger LOG = Logger
-			.getLogger(EwalletServiceFactory.class);
+	private static final Logger LOG = Logger.getLogger(EwalletServiceFactory.class);
 
 	/**
 	 * @param ewalletRequestData
 	 * @return Returns the Ewallet service instance based on the Ewallet type
 	 */
-	public IEwallet getEwalletService(EwalletRequestData ewalletRequestData){
+	public IEwallet getEwalletService(EwalletRequestData ewalletRequestData) {
 		LOG.info("EwalletServiceFactory --> getEwalletService -> Entered ");
 		IEwallet ewallet = null;
-		if(ewalletRequestData != null && (EnumEwalletType.MP.getName().equals(ewalletRequestData.geteWalletType()) || 
-				EnumEwalletType.PP.getName().equals(ewalletRequestData.geteWalletType()))){
+		if (ewalletRequestData != null && (EnumEwalletType.MP.getName().equals(ewalletRequestData.geteWalletType())
+				|| EnumEwalletType.PP.getName().equals(ewalletRequestData.geteWalletType()))) {
 			ewallet = new EwalletServiceRemoteAdapter();
 			return ewallet;
 		}
 		LOG.info("EwalletServiceFactory --> getEwalletService -> Exit ");
 		return ewallet;
 	}
-	
+
 	/**
 	 * @param ewalletRequestData
 	 * @return Returns the Ewallet service instance based on the Ewallet type
 	 */
-	public IEwallet getVendorService(EwalletRequestData ewalletRequestData){
+	public IEwallet getVendorService(EwalletRequestData ewalletRequestData) {
 		LOG.info("EwalletServiceFactory --> getVendorService(ewalletRequestData) -> Entered ");
 		IEwallet ewallet = null;
-		if(ewalletRequestData != null && EnumEwalletType.MP.getName().equals(ewalletRequestData.geteWalletType())){
+		if (ewalletRequestData != null && EnumEwalletType.MP.getName().equals(ewalletRequestData.geteWalletType())) {
 			ewallet = new MPVendorServiceRemoteAdapter();
-		}else if(ewalletRequestData != null && EnumEwalletType.PP.getName().equals(ewalletRequestData.geteWalletType())){
+		} else if (ewalletRequestData != null
+				&& EnumEwalletType.PP.getName().equals(ewalletRequestData.geteWalletType())) {
 			ewallet = new PPVendorServiceRemoteAdapter();
 		}
 		LOG.info("EwalletServiceFactory --> getVendorService(ewalletRequestData) -> Exit ");
 		return ewallet;
 	}
-	
+
 	/**
 	 * @param ewalletRequestData
 	 * @return Returns the Ewallet service instance based on the Ewallet type
 	 */
-	public IEwallet getVendorService(EnumEwalletType type){
+	public IEwallet getVendorService(EnumEwalletType type) {
 		LOG.info("EwalletServiceFactory --> getVendorService -> Entered ");
 		IEwallet ewallet = null;
-		if(EnumEwalletType.MP.equals(type)){
+		if (EnumEwalletType.MP.equals(type)) {
 			ewallet = new MPVendorServiceRemoteAdapter();
 		}
 		LOG.info("EwalletServiceFactory --> getVendorService -> Exit ");
 		return ewallet;
 	}
-	
+
 	/**
 	 * @param ewalletRequestData
-	 * @return Returns the EwalletServiceRemoteAdapter instance based on the Ewallet type
+	 * @return Returns the EwalletServiceRemoteAdapter instance based on the Ewallet
+	 *         type
 	 */
-	public IEwallet.NotificationService getEwalletNotificationService(EwalletRequestData ewalletRequestData){
+	public IEwallet.NotificationService getEwalletNotificationService(EwalletRequestData ewalletRequestData) {
 		LOG.info("EwalletServiceFactory --> getEwalletNotificationService -> Entered ");
 		IEwallet.NotificationService ewallet = null;
-		if(ewalletRequestData!= null && EnumEwalletType.MP.getName().equals(ewalletRequestData.geteWalletType())){
+		if (ewalletRequestData != null && EnumEwalletType.MP.getName().equals(ewalletRequestData.geteWalletType())) {
 			ewallet = new EwalletServiceRemoteAdapter();
 		}
 		LOG.info("EwalletServiceFactory --> getEwalletNotificationService -> Exit ");
 		return ewallet;
 	}
-	
+
 	/**
 	 * @param ewalletRequestData
-	 * @return Returns the MPVendorServiceRemoteAdapter instance based on the Ewallet type
+	 * @return Returns the MPVendorServiceRemoteAdapter instance based on the
+	 *         Ewallet type
 	 */
-	public IEwallet.NotificationService getVendorNotificationService(EwalletRequestData ewalletRequestData){
+	public IEwallet.NotificationService getVendorNotificationService(EwalletRequestData ewalletRequestData) {
 		LOG.info("EwalletServiceFactory -->  getVendorNotificationService -> Entered ");
 		IEwallet.NotificationService ewallet = null;
-		if(EnumEwalletType.MP.getName().equals(ewalletRequestData.geteWalletType())){
+		if (EnumEwalletType.MP.getName().equals(ewalletRequestData.geteWalletType())) {
 			ewallet = new MPVendorServiceRemoteAdapter();
 		}
 		LOG.info("EwalletServiceFactory --> getEwalletService -> Exit ");
 		return ewallet;
 	}
-	
 
 	/**
 	 * @param ewalletRequestData
 	 * @return Returns the Ewallet service instance based on the Ewallet type
 	 */
-	public IEwallet.NotificationService getVendorNotificationService(EnumEwalletType type){
+	public IEwallet.NotificationService getVendorNotificationService(EnumEwalletType type) {
 		LOG.info("EwalletServiceFactory -->  getVendorNotificationService -> Entered ");
 		IEwallet.NotificationService ewallet = null;
-		if(EnumEwalletType.MP.equals(type)){
+		if (EnumEwalletType.MP.equals(type)) {
 			ewallet = new MPVendorServiceRemoteAdapter();
 		}
 		LOG.info("EwalletServiceFactory --> getVendorNotificationService -> Exit ");
 		return ewallet;
 	}
-	
+
 	private class EwalletServiceRemoteAdapter implements IEwallet, IEwallet.NotificationService {
-		
+
 		private EwalletServiceHome remoteHome = null;
-		
+
 		EwalletServiceRemoteAdapter() {
 			remoteHome = FDServiceLocator.getInstance().getEwalletServiceHome();
-			
+
 		}
 
-		/* (non-Javadoc)
-		 * @see com.freshdirect.fdstore.ewallet.IEwallet#getToken(com.freshdirect.fdstore.ewallet.EwalletRequestData)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * com.freshdirect.fdstore.ewallet.IEwallet#getToken(com.freshdirect.fdstore.
+		 * ewallet.EwalletRequestData)
 		 */
 		@Override
-		public EwalletResponseData getToken(
-				EwalletRequestData ewalletRequestData) {
+		public EwalletResponseData getToken(EwalletRequestData ewalletRequestData) {
 			EwalletResponseData resp = null;
 			try {
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)){
-					resp= EwalletService.getInstance().getToken(ewalletRequestData);
-				}else{
-				EwalletServiceSB remote = remoteHome.create();
-				resp = remote.getToken(ewalletRequestData);
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)) {
+					resp = EwalletService.getInstance().getToken(ewalletRequestData);
+				} else {
+					EwalletServiceSB remote = remoteHome.create();
+					resp = remote.getToken(ewalletRequestData);
 				}
 			} catch (CreateException e) {
 				throw new MasterpassRuntimeException(e);
 			} catch (RemoteException e) {
 				throw new MasterpassRuntimeException(e);
 			}
-			
+
 			if (resp == null) {
 				resp = new EwalletResponseData();
 			}
 			return resp;
 		}
 
-		/* (non-Javadoc)
-		 * @see com.freshdirect.fdstore.ewallet.IEwallet#checkout(com.freshdirect.fdstore.ewallet.EwalletRequestData)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * com.freshdirect.fdstore.ewallet.IEwallet#checkout(com.freshdirect.fdstore.
+		 * ewallet.EwalletRequestData)
 		 */
 		@Override
-		public EwalletResponseData checkout(
-				EwalletRequestData ewalletRequestData) {
-			EwalletResponseData resp = null;
-			try {if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)){
-				resp= EwalletService.getInstance().checkout(ewalletRequestData);
-			}else{
-				EwalletServiceSB remote = remoteHome.create();
-				resp = remote.checkout(ewalletRequestData);
-			}
-			} catch (CreateException e) {
-				throw new MasterpassRuntimeException(e);
-			} catch (RemoteException e) {
-				throw new MasterpassRuntimeException(e);
-			}
-			
-			if (resp == null) {
-				resp = new EwalletResponseData();
-			}
-			return resp;
-		}
-
-		/* (non-Javadoc)
-		 * @see com.freshdirect.fdstore.ewallet.IEwallet#expressCheckout(com.freshdirect.fdstore.ewallet.EwalletRequestData)
-		 */
-		@Override
-		public EwalletResponseData expressCheckout(
-				EwalletRequestData ewalletRequestData) {
+		public EwalletResponseData checkout(EwalletRequestData ewalletRequestData) {
 			EwalletResponseData resp = null;
 			try {
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)){
-					resp= EwalletService.getInstance().expressCheckout(ewalletRequestData);
-				}else{
-				EwalletServiceSB remote = remoteHome.create();
-				resp = remote.expressCheckout(ewalletRequestData);
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)) {
+					resp = EwalletService.getInstance().checkout(ewalletRequestData);
+				} else {
+					EwalletServiceSB remote = remoteHome.create();
+					resp = remote.checkout(ewalletRequestData);
 				}
 			} catch (CreateException e) {
 				throw new MasterpassRuntimeException(e);
 			} catch (RemoteException e) {
 				throw new MasterpassRuntimeException(e);
 			}
-			
+
 			if (resp == null) {
 				resp = new EwalletResponseData();
 			}
 			return resp;
 		}
 
-		/* (non-Javadoc)
-		 * @see com.freshdirect.fdstore.ewallet.IEwallet#connect(com.freshdirect.fdstore.ewallet.EwalletRequestData)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * com.freshdirect.fdstore.ewallet.IEwallet#expressCheckout(com.freshdirect.
+		 * fdstore.ewallet.EwalletRequestData)
 		 */
 		@Override
-		public EwalletResponseData connect(EwalletRequestData ewalletRequestData)
-				throws Exception {
+		public EwalletResponseData expressCheckout(EwalletRequestData ewalletRequestData) {
 			EwalletResponseData resp = null;
 			try {
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)){
-					resp= EwalletService.getInstance().connect(ewalletRequestData);
-				}else{
-				EwalletServiceSB remote = remoteHome.create();
-				resp = remote.connect(ewalletRequestData);
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)) {
+					resp = EwalletService.getInstance().expressCheckout(ewalletRequestData);
+				} else {
+					EwalletServiceSB remote = remoteHome.create();
+					resp = remote.expressCheckout(ewalletRequestData);
 				}
 			} catch (CreateException e) {
 				throw new MasterpassRuntimeException(e);
 			} catch (RemoteException e) {
 				throw new MasterpassRuntimeException(e);
 			}
-			
+
 			if (resp == null) {
 				resp = new EwalletResponseData();
 			}
 			return resp;
 		}
 
-		/* (non-Javadoc)
-		 * @see com.freshdirect.fdstore.ewallet.IEwallet#getAllPayMethodInEwallet(com.freshdirect.fdstore.ewallet.EwalletRequestData)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * com.freshdirect.fdstore.ewallet.IEwallet#connect(com.freshdirect.fdstore.
+		 * ewallet.EwalletRequestData)
 		 */
 		@Override
-		public EwalletResponseData getAllPayMethodInEwallet(
-				EwalletRequestData ewalletRequestData) {
+		public EwalletResponseData connect(EwalletRequestData ewalletRequestData) throws Exception {
 			EwalletResponseData resp = null;
 			try {
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)){
-					resp= EwalletService.getInstance().getAllPayMethodInEwallet(ewalletRequestData);
-				}else{
-				EwalletServiceSB remote = remoteHome.create();
-				resp = remote.getAllPayMethodInEwallet(ewalletRequestData);
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)) {
+					resp = EwalletService.getInstance().connect(ewalletRequestData);
+				} else {
+					EwalletServiceSB remote = remoteHome.create();
+					resp = remote.connect(ewalletRequestData);
 				}
 			} catch (CreateException e) {
 				throw new MasterpassRuntimeException(e);
 			} catch (RemoteException e) {
 				throw new MasterpassRuntimeException(e);
 			}
-			
+
 			if (resp == null) {
 				resp = new EwalletResponseData();
 			}
 			return resp;
 		}
 
-		/* (non-Javadoc)
-		 * @see com.freshdirect.fdstore.ewallet.IEwallet#connectComplete(com.freshdirect.fdstore.ewallet.EwalletRequestData)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see com.freshdirect.fdstore.ewallet.IEwallet#getAllPayMethodInEwallet(com.
+		 * freshdirect.fdstore.ewallet.EwalletRequestData)
 		 */
 		@Override
-		public EwalletResponseData connectComplete(
-				EwalletRequestData ewalletRequestData) {
+		public EwalletResponseData getAllPayMethodInEwallet(EwalletRequestData ewalletRequestData) {
 			EwalletResponseData resp = null;
 			try {
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)){
-					resp= EwalletService.getInstance().connectComplete(ewalletRequestData);
-				}else{
-				EwalletServiceSB remote = remoteHome.create();
-				resp = remote.connectComplete(ewalletRequestData);
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)) {
+					resp = EwalletService.getInstance().getAllPayMethodInEwallet(ewalletRequestData);
+				} else {
+					EwalletServiceSB remote = remoteHome.create();
+					resp = remote.getAllPayMethodInEwallet(ewalletRequestData);
 				}
 			} catch (CreateException e) {
 				throw new MasterpassRuntimeException(e);
 			} catch (RemoteException e) {
 				throw new MasterpassRuntimeException(e);
 			}
-			
+
 			if (resp == null) {
 				resp = new EwalletResponseData();
 			}
 			return resp;
 		}
 
-		/* (non-Javadoc)
-		 * @see com.freshdirect.fdstore.ewallet.IEwallet#disconnect(com.freshdirect.fdstore.ewallet.EwalletRequestData)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * com.freshdirect.fdstore.ewallet.IEwallet#connectComplete(com.freshdirect.
+		 * fdstore.ewallet.EwalletRequestData)
 		 */
 		@Override
-		public EwalletResponseData disconnect(
-				EwalletRequestData ewalletRequestData) {
+		public EwalletResponseData connectComplete(EwalletRequestData ewalletRequestData) {
 			EwalletResponseData resp = null;
 			try {
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)){
-					resp= EwalletService.getInstance().disconnect(ewalletRequestData);
-				}else{
-				EwalletServiceSB remote = remoteHome.create();
-				resp = remote.disconnect(ewalletRequestData);
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)) {
+					resp = EwalletService.getInstance().connectComplete(ewalletRequestData);
+				} else {
+					EwalletServiceSB remote = remoteHome.create();
+					resp = remote.connectComplete(ewalletRequestData);
 				}
 			} catch (CreateException e) {
 				throw new MasterpassRuntimeException(e);
 			} catch (RemoteException e) {
 				throw new MasterpassRuntimeException(e);
 			}
-			
+
 			if (resp == null) {
 				resp = new EwalletResponseData();
 			}
 			return resp;
 		}
-		
-		/* (non-Javadoc)
-		 * @see com.freshdirect.fdstore.ewallet.IEwallet#disconnect(com.freshdirect.fdstore.ewallet.EwalletRequestData)
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * com.freshdirect.fdstore.ewallet.IEwallet#disconnect(com.freshdirect.fdstore.
+		 * ewallet.EwalletRequestData)
+		 */
+		@Override
+		public EwalletResponseData disconnect(EwalletRequestData ewalletRequestData) {
+			EwalletResponseData resp = null;
+			try {
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)) {
+					resp = EwalletService.getInstance().disconnect(ewalletRequestData);
+				} else {
+					EwalletServiceSB remote = remoteHome.create();
+					resp = remote.disconnect(ewalletRequestData);
+				}
+			} catch (CreateException e) {
+				throw new MasterpassRuntimeException(e);
+			} catch (RemoteException e) {
+				throw new MasterpassRuntimeException(e);
+			}
+
+			if (resp == null) {
+				resp = new EwalletResponseData();
+			}
+			return resp;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * com.freshdirect.fdstore.ewallet.IEwallet#disconnect(com.freshdirect.fdstore.
+		 * ewallet.EwalletRequestData)
 		 */
 		public EwalletResponseData postbackTrxns(EwalletRequestData ewalletRequestData) {
 			EwalletResponseData resp = null;
 			try {
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)){
-					resp= EwalletService.getInstance().postbackTrxns(ewalletRequestData);
-				}else{
-				EwalletServiceSB remote = remoteHome.create();
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)) {
+					resp = EwalletService.getInstance().postbackTrxns(ewalletRequestData);
+				} else {
+					EwalletServiceSB remote = remoteHome.create();
 
-				resp = remote.postbackTrxns(ewalletRequestData);
+					resp = remote.postbackTrxns(ewalletRequestData);
 				}
 			} catch (CreateException e) {
 				throw new MasterpassRuntimeException(e);
@@ -333,22 +358,21 @@ public class EwalletServiceFactory {
 		}
 
 		@Override
-		public EwalletResponseData preStandardCheckout(
-				EwalletRequestData ewalletRequestData) {
+		public EwalletResponseData preStandardCheckout(EwalletRequestData ewalletRequestData) {
 			EwalletResponseData resp = null;
 			try {
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)){
-					resp= EwalletService.getInstance().preStandardCheckout(ewalletRequestData);
-				}else{
-				EwalletServiceSB remote = remoteHome.create();
-				resp = remote.preStandardCheckout(ewalletRequestData);
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)) {
+					resp = EwalletService.getInstance().preStandardCheckout(ewalletRequestData);
+				} else {
+					EwalletServiceSB remote = remoteHome.create();
+					resp = remote.preStandardCheckout(ewalletRequestData);
 				}
 			} catch (CreateException e) {
 				throw new MasterpassRuntimeException(e);
 			} catch (RemoteException e) {
 				throw new MasterpassRuntimeException(e);
 			}
-			
+
 			if (resp == null) {
 				resp = new EwalletResponseData();
 			}
@@ -356,22 +380,21 @@ public class EwalletServiceFactory {
 		}
 
 		@Override
-		public EwalletResponseData standardCheckout(
-				EwalletRequestData ewalletRequestData) {
+		public EwalletResponseData standardCheckout(EwalletRequestData ewalletRequestData) {
 			EwalletResponseData resp = null;
 			try {
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)){
-					resp= EwalletService.getInstance().standardCheckout(ewalletRequestData);
-				}else{
-				EwalletServiceSB remote = remoteHome.create();
-				resp = remote.standardCheckout(ewalletRequestData);
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)) {
+					resp = EwalletService.getInstance().standardCheckout(ewalletRequestData);
+				} else {
+					EwalletServiceSB remote = remoteHome.create();
+					resp = remote.standardCheckout(ewalletRequestData);
 				}
 			} catch (CreateException e) {
 				throw new MasterpassRuntimeException(e);
 			} catch (RemoteException e) {
 				throw new MasterpassRuntimeException(e);
 			}
-			
+
 			if (resp == null) {
 				resp = new EwalletResponseData();
 			}
@@ -379,22 +402,21 @@ public class EwalletServiceFactory {
 		}
 
 		@Override
-		public EwalletResponseData expressCheckoutWithoutPrecheckout(
-				EwalletRequestData ewalletRequestData) {
+		public EwalletResponseData expressCheckoutWithoutPrecheckout(EwalletRequestData ewalletRequestData) {
 			EwalletResponseData resp = null;
 			try {
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)){
-					resp= EwalletService.getInstance().expressCheckoutWithoutPrecheckout(ewalletRequestData);
-				}else{
-				EwalletServiceSB remote = remoteHome.create();
-				resp = remote.expressCheckoutWithoutPrecheckout(ewalletRequestData);
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)) {
+					resp = EwalletService.getInstance().expressCheckoutWithoutPrecheckout(ewalletRequestData);
+				} else {
+					EwalletServiceSB remote = remoteHome.create();
+					resp = remote.expressCheckoutWithoutPrecheckout(ewalletRequestData);
 				}
 			} catch (CreateException e) {
 				throw new MasterpassRuntimeException(e);
 			} catch (RemoteException e) {
 				throw new MasterpassRuntimeException(e);
 			}
-			
+
 			if (resp == null) {
 				resp = new EwalletResponseData();
 			}
@@ -402,22 +424,21 @@ public class EwalletServiceFactory {
 		}
 
 		@Override
-		public EwalletResponseData addPayPalWallet(
-				EwalletRequestData ewalletRequestData) throws Exception {
+		public EwalletResponseData addPayPalWallet(EwalletRequestData ewalletRequestData) throws Exception {
 			EwalletResponseData resp = null;
 			try {
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)){
-					resp= EwalletService.getInstance().addPayPalWallet(ewalletRequestData);
-				}else{
-				EwalletServiceSB remote = remoteHome.create();
-				resp = remote.addPayPalWallet(ewalletRequestData);
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)) {
+					resp = EwalletService.getInstance().addPayPalWallet(ewalletRequestData);
+				} else {
+					EwalletServiceSB remote = remoteHome.create();
+					resp = remote.addPayPalWallet(ewalletRequestData);
 				}
 			} catch (CreateException e) {
 				throw new MasterpassRuntimeException(e);
 			} catch (RemoteException e) {
 				throw new MasterpassRuntimeException(e);
 			}
-			
+
 			if (resp == null) {
 				resp = new EwalletResponseData();
 			}
@@ -425,216 +446,240 @@ public class EwalletServiceFactory {
 		}
 
 	}
-	
+
 	private class MPVendorServiceRemoteAdapter implements IEwallet, IEwallet.NotificationService {
-		
+
 		private MasterpassServiceHome remoteHome = null;
-		
+
 		MPVendorServiceRemoteAdapter() {
 			remoteHome = FDServiceLocator.getInstance().getMasterpassServiceHome();
-			
+
 		}
 
-		/* (non-Javadoc)
-		 * @see com.freshdirect.fdstore.ewallet.IEwallet#getToken(com.freshdirect.fdstore.ewallet.EwalletRequestData)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * com.freshdirect.fdstore.ewallet.IEwallet#getToken(com.freshdirect.fdstore.
+		 * ewallet.EwalletRequestData)
 		 */
 		@Override
-		public EwalletResponseData getToken(
-				EwalletRequestData ewalletRequestData) {
+		public EwalletResponseData getToken(EwalletRequestData ewalletRequestData) {
 			EwalletResponseData resp = null;
 			try {
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)){
-					resp= EwalletService.getInstance().getToken(ewalletRequestData);
-				}else{
-				MasterpassServiceSB remote = remoteHome.create();
-				resp = remote.getToken(ewalletRequestData);
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)) {
+					resp = EwalletService.getInstance().getToken(ewalletRequestData);
+				} else {
+					MasterpassServiceSB remote = remoteHome.create();
+					resp = remote.getToken(ewalletRequestData);
 				}
 			} catch (CreateException e) {
 				throw new MasterpassRuntimeException(e);
 			} catch (RemoteException e) {
 				throw new MasterpassRuntimeException(e);
 			}
-			
+
 			if (resp == null) {
 				resp = new EwalletResponseData();
 			}
 			return resp;
 		}
 
-		/* (non-Javadoc)
-		 * @see com.freshdirect.fdstore.ewallet.IEwallet#checkout(com.freshdirect.fdstore.ewallet.EwalletRequestData)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * com.freshdirect.fdstore.ewallet.IEwallet#checkout(com.freshdirect.fdstore.
+		 * ewallet.EwalletRequestData)
 		 */
 		@Override
-		public EwalletResponseData checkout(
-				EwalletRequestData ewalletRequestData) {
+		public EwalletResponseData checkout(EwalletRequestData ewalletRequestData) {
 			EwalletResponseData resp = null;
 			try {
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)){
-					resp= EwalletService.getInstance().checkout(ewalletRequestData);
-				}else{
-				MasterpassServiceSB remote = remoteHome.create();
-				resp = remote.checkout(ewalletRequestData);
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)) {
+					resp = EwalletService.getInstance().checkout(ewalletRequestData);
+				} else {
+					MasterpassServiceSB remote = remoteHome.create();
+					resp = remote.checkout(ewalletRequestData);
 				}
 			} catch (CreateException e) {
 				throw new MasterpassRuntimeException(e);
 			} catch (RemoteException e) {
 				throw new MasterpassRuntimeException(e);
 			}
-			
+
 			if (resp == null) {
 				resp = new EwalletResponseData();
 			}
 			return resp;
 		}
 
-		/* (non-Javadoc)
-		 * @see com.freshdirect.fdstore.ewallet.IEwallet#expressCheckout(com.freshdirect.fdstore.ewallet.EwalletRequestData)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * com.freshdirect.fdstore.ewallet.IEwallet#expressCheckout(com.freshdirect.
+		 * fdstore.ewallet.EwalletRequestData)
 		 */
 		@Override
-		public EwalletResponseData expressCheckout(
-				EwalletRequestData ewalletRequestData) {
+		public EwalletResponseData expressCheckout(EwalletRequestData ewalletRequestData) {
 			EwalletResponseData resp = null;
 			try {
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)){
-					resp= EwalletService.getInstance().expressCheckout(ewalletRequestData);
-				}else{
-				MasterpassServiceSB remote = remoteHome.create();
-				resp = remote.expressCheckout(ewalletRequestData);
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)) {
+					resp = EwalletService.getInstance().expressCheckout(ewalletRequestData);
+				} else {
+					MasterpassServiceSB remote = remoteHome.create();
+					resp = remote.expressCheckout(ewalletRequestData);
 				}
 			} catch (CreateException e) {
 				throw new MasterpassRuntimeException(e);
 			} catch (RemoteException e) {
 				throw new MasterpassRuntimeException(e);
 			}
-			
+
 			if (resp == null) {
 				resp = new EwalletResponseData();
 			}
 			return resp;
 		}
 
-		/* (non-Javadoc)
-		 * @see com.freshdirect.fdstore.ewallet.IEwallet#connect(com.freshdirect.fdstore.ewallet.EwalletRequestData)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * com.freshdirect.fdstore.ewallet.IEwallet#connect(com.freshdirect.fdstore.
+		 * ewallet.EwalletRequestData)
 		 */
 		@Override
-		public EwalletResponseData connect(EwalletRequestData ewalletRequestData)
-				throws Exception {
+		public EwalletResponseData connect(EwalletRequestData ewalletRequestData) throws Exception {
 			EwalletResponseData resp = null;
 			try {
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)){
-					resp= EwalletService.getInstance().connect(ewalletRequestData);
-				}else{
-				MasterpassServiceSB remote = remoteHome.create();
-				resp = remote.connect(ewalletRequestData);
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)) {
+					resp = EwalletService.getInstance().connect(ewalletRequestData);
+				} else {
+					MasterpassServiceSB remote = remoteHome.create();
+					resp = remote.connect(ewalletRequestData);
 				}
 			} catch (CreateException e) {
 				throw new MasterpassRuntimeException(e);
 			} catch (RemoteException e) {
 				throw new MasterpassRuntimeException(e);
 			}
-			
+
 			if (resp == null) {
 				resp = new EwalletResponseData();
 			}
 			return resp;
 		}
 
-		/* (non-Javadoc)
-		 * @see com.freshdirect.fdstore.ewallet.IEwallet#getAllPayMethodInEwallet(com.freshdirect.fdstore.ewallet.EwalletRequestData)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see com.freshdirect.fdstore.ewallet.IEwallet#getAllPayMethodInEwallet(com.
+		 * freshdirect.fdstore.ewallet.EwalletRequestData)
 		 */
 		@Override
-		public EwalletResponseData getAllPayMethodInEwallet(
-				EwalletRequestData ewalletRequestData) {
+		public EwalletResponseData getAllPayMethodInEwallet(EwalletRequestData ewalletRequestData) {
 			EwalletResponseData resp = null;
 			try {
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)){
-					resp= EwalletService.getInstance().getAllPayMethodInEwallet(ewalletRequestData);
-				}else{
-				MasterpassServiceSB remote = remoteHome.create();
-				resp = remote.getAllPayMethodInEwallet(ewalletRequestData);
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)) {
+					resp = EwalletService.getInstance().getAllPayMethodInEwallet(ewalletRequestData);
+				} else {
+					MasterpassServiceSB remote = remoteHome.create();
+					resp = remote.getAllPayMethodInEwallet(ewalletRequestData);
 				}
 			} catch (CreateException e) {
 				throw new MasterpassRuntimeException(e);
 			} catch (RemoteException e) {
 				throw new MasterpassRuntimeException(e);
 			}
-			
+
 			if (resp == null) {
 				resp = new EwalletResponseData();
 			}
 			return resp;
 		}
 
-		/* (non-Javadoc)
-		 * @see com.freshdirect.fdstore.ewallet.IEwallet#connectComplete(com.freshdirect.fdstore.ewallet.EwalletRequestData)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * com.freshdirect.fdstore.ewallet.IEwallet#connectComplete(com.freshdirect.
+		 * fdstore.ewallet.EwalletRequestData)
 		 */
 		@Override
-		public EwalletResponseData connectComplete(
-				EwalletRequestData ewalletRequestData) {
+		public EwalletResponseData connectComplete(EwalletRequestData ewalletRequestData) {
 			EwalletResponseData resp = null;
 			try {
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)){
-					resp= EwalletService.getInstance().connectComplete(ewalletRequestData);
-				}else{
-				MasterpassServiceSB remote = remoteHome.create();
-				resp = remote.connectComplete(ewalletRequestData);
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)) {
+					resp = EwalletService.getInstance().connectComplete(ewalletRequestData);
+				} else {
+					MasterpassServiceSB remote = remoteHome.create();
+					resp = remote.connectComplete(ewalletRequestData);
 				}
 			} catch (CreateException e) {
 				throw new MasterpassRuntimeException(e);
 			} catch (RemoteException e) {
 				throw new MasterpassRuntimeException(e);
 			}
-			
+
 			if (resp == null) {
 				resp = new EwalletResponseData();
 			}
 			return resp;
 		}
 
-		/* (non-Javadoc)
-		 * @see com.freshdirect.fdstore.ewallet.IEwallet#disconnect(com.freshdirect.fdstore.ewallet.EwalletRequestData)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * com.freshdirect.fdstore.ewallet.IEwallet#disconnect(com.freshdirect.fdstore.
+		 * ewallet.EwalletRequestData)
 		 */
 		@Override
-		public EwalletResponseData disconnect(
-				EwalletRequestData ewalletRequestData) {
+		public EwalletResponseData disconnect(EwalletRequestData ewalletRequestData) {
 			EwalletResponseData resp = null;
 			try {
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)){
-					resp= EwalletService.getInstance().disconnect(ewalletRequestData);
-				}else{
-				MasterpassServiceSB remote = remoteHome.create();
-				resp = remote.disconnect(ewalletRequestData);
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)) {
+					resp = EwalletService.getInstance().disconnect(ewalletRequestData);
+				} else {
+					MasterpassServiceSB remote = remoteHome.create();
+					resp = remote.disconnect(ewalletRequestData);
 				}
 			} catch (CreateException e) {
 				throw new MasterpassRuntimeException(e);
 			} catch (RemoteException e) {
 				throw new MasterpassRuntimeException(e);
 			}
-			
+
 			if (resp == null) {
 				resp = new EwalletResponseData();
 			}
 			return resp;
 		}
-		
-		/* (non-Javadoc)
-		 * @see com.freshdirect.fdstore.ewallet.IEwallet#disconnect(com.freshdirect.fdstore.ewallet.EwalletRequestData)
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * com.freshdirect.fdstore.ewallet.IEwallet#disconnect(com.freshdirect.fdstore.
+		 * ewallet.EwalletRequestData)
 		 */
 		public EwalletResponseData postbackTrxns(EwalletRequestData ewalletRequestData) {
 			EwalletResponseData resp = null;
 			try {
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)){
-					resp= EwalletService.getInstance().postbackTrxns(ewalletRequestData);
-				}else{
-				MasterpassServiceSB remote = remoteHome.create();
-				resp = remote.postback(ewalletRequestData);
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)) {
+					resp = EwalletService.getInstance().postbackTrxns(ewalletRequestData);
+				} else {
+					MasterpassServiceSB remote = remoteHome.create();
+					resp = remote.postback(ewalletRequestData);
 				}
 			} catch (CreateException e) {
 				throw new MasterpassRuntimeException(e);
 			} catch (RemoteException e) {
 				throw new MasterpassRuntimeException(e);
 			}
-			
+
 			if (resp == null) {
 				resp = new EwalletResponseData();
 			}
@@ -642,22 +687,21 @@ public class EwalletServiceFactory {
 		}
 
 		@Override
-		public EwalletResponseData preStandardCheckout(
-				EwalletRequestData ewalletRequestData) {
+		public EwalletResponseData preStandardCheckout(EwalletRequestData ewalletRequestData) {
 			EwalletResponseData resp = null;
 			try {
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)){
-					resp= EwalletService.getInstance().preStandardCheckout(ewalletRequestData);
-				}else{
-				MasterpassServiceSB remote = remoteHome.create();
-				resp = remote.preStandardCheckout(ewalletRequestData);
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)) {
+					resp = EwalletService.getInstance().preStandardCheckout(ewalletRequestData);
+				} else {
+					MasterpassServiceSB remote = remoteHome.create();
+					resp = remote.preStandardCheckout(ewalletRequestData);
 				}
 			} catch (CreateException e) {
 				throw new MasterpassRuntimeException(e);
 			} catch (RemoteException e) {
 				throw new MasterpassRuntimeException(e);
 			}
-			
+
 			if (resp == null) {
 				resp = new EwalletResponseData();
 			}
@@ -665,22 +709,21 @@ public class EwalletServiceFactory {
 		}
 
 		@Override
-		public EwalletResponseData standardCheckout(
-				EwalletRequestData ewalletRequestData) {
+		public EwalletResponseData standardCheckout(EwalletRequestData ewalletRequestData) {
 			EwalletResponseData resp = null;
 			try {
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)){
-					resp= EwalletService.getInstance().standardCheckout(ewalletRequestData);
-				}else{
-				MasterpassServiceSB remote = remoteHome.create();
-				resp = remote.standardCheckout(ewalletRequestData);
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)) {
+					resp = EwalletService.getInstance().standardCheckout(ewalletRequestData);
+				} else {
+					MasterpassServiceSB remote = remoteHome.create();
+					resp = remote.standardCheckout(ewalletRequestData);
 				}
 			} catch (CreateException e) {
 				throw new MasterpassRuntimeException(e);
 			} catch (RemoteException e) {
 				throw new MasterpassRuntimeException(e);
 			}
-			
+
 			if (resp == null) {
 				resp = new EwalletResponseData();
 			}
@@ -688,22 +731,21 @@ public class EwalletServiceFactory {
 		}
 
 		@Override
-		public EwalletResponseData expressCheckoutWithoutPrecheckout(
-				EwalletRequestData ewalletRequestData) {
+		public EwalletResponseData expressCheckoutWithoutPrecheckout(EwalletRequestData ewalletRequestData) {
 			EwalletResponseData resp = null;
 			try {
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)){
-					resp= EwalletService.getInstance().expressCheckoutWithoutPrecheckout(ewalletRequestData);
-				}else{
-				MasterpassServiceSB remote = remoteHome.create();
-				resp = remote.expressCheckoutWithoutPrecheckout(ewalletRequestData);
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)) {
+					resp = EwalletService.getInstance().expressCheckoutWithoutPrecheckout(ewalletRequestData);
+				} else {
+					MasterpassServiceSB remote = remoteHome.create();
+					resp = remote.expressCheckoutWithoutPrecheckout(ewalletRequestData);
 				}
 			} catch (CreateException e) {
 				throw new MasterpassRuntimeException(e);
 			} catch (RemoteException e) {
 				throw new MasterpassRuntimeException(e);
 			}
-			
+
 			if (resp == null) {
 				resp = new EwalletResponseData();
 			}
@@ -711,43 +753,45 @@ public class EwalletServiceFactory {
 		}
 
 		@Override
-		public EwalletResponseData addPayPalWallet(
-				EwalletRequestData ewalletRequestData) throws Exception {
+		public EwalletResponseData addPayPalWallet(EwalletRequestData ewalletRequestData) throws Exception {
 			return null;
 		}
 
 	}
-	
+
 	private class PPVendorServiceRemoteAdapter implements IEwallet, IEwallet.NotificationService {
-		
+
 		private PayPalServiceHome remoteHome = null;
-		
+
 		PPVendorServiceRemoteAdapter() {
 			remoteHome = FDServiceLocator.getInstance().getPayPalServiceHome();
-			
+
 		}
 
-		/* (non-Javadoc)
-		 * @see com.freshdirect.fdstore.ewallet.IEwallet#getToken(com.freshdirect.fdstore.ewallet.EwalletRequestData)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * com.freshdirect.fdstore.ewallet.IEwallet#getToken(com.freshdirect.fdstore.
+		 * ewallet.EwalletRequestData)
 		 */
 		@Override
-		public EwalletResponseData getToken(
-				EwalletRequestData ewalletRequestData) {
+		public EwalletResponseData getToken(EwalletRequestData ewalletRequestData) {
 			EwalletResponseData resp = null;
 			try {
-				
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)){
-					resp= EwalletService.getInstance().getToken(ewalletRequestData);
-				}else{
-				PayPalServiceSB remote = remoteHome.create();
-				resp = remote.getToken(ewalletRequestData);
+
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)) {
+					resp = EwalletService.getInstance().getToken(ewalletRequestData);
+				} else {
+					PayPalServiceSB remote = remoteHome.create();
+					resp = remote.getToken(ewalletRequestData);
 				}
 			} catch (CreateException e) {
 				throw new MasterpassRuntimeException(e);
 			} catch (RemoteException e) {
 				throw new MasterpassRuntimeException(e);
 			}
-			
+
 			if (resp == null) {
 				resp = new EwalletResponseData();
 			}
@@ -755,105 +799,94 @@ public class EwalletServiceFactory {
 		}
 
 		@Override
-		public EwalletResponseData postbackTrxns(
-				EwalletRequestData ewalletRequestData) throws Exception {
+		public EwalletResponseData postbackTrxns(EwalletRequestData ewalletRequestData) throws Exception {
 			return null;
 		}
 
 		@Override
-		public EwalletResponseData checkout(
-				EwalletRequestData ewalletRequestData) throws Exception {
+		public EwalletResponseData checkout(EwalletRequestData ewalletRequestData) throws Exception {
 			return null;
 		}
 
 		@Override
-		public EwalletResponseData expressCheckout(
-				EwalletRequestData ewalletRequestData) throws Exception {
+		public EwalletResponseData expressCheckout(EwalletRequestData ewalletRequestData) throws Exception {
 			return null;
 		}
 
 		@Override
-		public EwalletResponseData connect(EwalletRequestData ewalletRequestData)
+		public EwalletResponseData connect(EwalletRequestData ewalletRequestData) throws Exception {
+			return null;
+		}
+
+		@Override
+		public EwalletResponseData getAllPayMethodInEwallet(EwalletRequestData ewalletRequestData) throws Exception {
+			return null;
+		}
+
+		@Override
+		public EwalletResponseData connectComplete(EwalletRequestData ewalletRequestData) throws Exception {
+			return null;
+		}
+
+		@Override
+		public EwalletResponseData disconnect(EwalletRequestData ewalletRequestData) {
+			EwalletResponseData resp = null;
+			try {
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)) {
+					resp = EwalletService.getInstance().disconnect(ewalletRequestData);
+				} else {
+					PayPalServiceSB remote = remoteHome.create();
+					resp = remote.disconnect(ewalletRequestData);
+				}
+			} catch (CreateException e) {
+				throw new MasterpassRuntimeException(e);
+			} catch (RemoteException e) {
+				throw new MasterpassRuntimeException(e);
+			}
+
+			if (resp == null) {
+				resp = new EwalletResponseData();
+			}
+			return resp;
+		}
+
+		@Override
+		public EwalletResponseData standardCheckout(EwalletRequestData ewalletRequestData) throws Exception {
+			return null;
+		}
+
+		@Override
+		public EwalletResponseData preStandardCheckout(EwalletRequestData ewalletRequestData) throws Exception {
+			return null;
+		}
+
+		@Override
+		public EwalletResponseData expressCheckoutWithoutPrecheckout(EwalletRequestData ewalletRequestData)
 				throws Exception {
 			return null;
 		}
 
 		@Override
-		public EwalletResponseData getAllPayMethodInEwallet(
-				EwalletRequestData ewalletRequestData) throws Exception {
-			return null;
-		}
-
-		@Override
-		public EwalletResponseData connectComplete(
-				EwalletRequestData ewalletRequestData) throws Exception {
-			return null;
-		}
-
-		@Override
-		public EwalletResponseData disconnect(
-				EwalletRequestData ewalletRequestData) {
+		public EwalletResponseData addPayPalWallet(EwalletRequestData ewalletRequestData) throws Exception {
 			EwalletResponseData resp = null;
 			try {
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)){
-					resp= EwalletService.getInstance().disconnect(ewalletRequestData);
-				}else{
-				PayPalServiceSB remote = remoteHome.create();
-				resp = remote.disconnect(ewalletRequestData);
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)) {
+					resp = EwalletService.getInstance().addPayPalWallet(ewalletRequestData);
+				} else {
+					PayPalServiceSB remote = remoteHome.create();
+					resp = remote.addPayPalWallet(ewalletRequestData);
 				}
 			} catch (CreateException e) {
 				throw new MasterpassRuntimeException(e);
 			} catch (RemoteException e) {
 				throw new MasterpassRuntimeException(e);
 			}
-			
+
 			if (resp == null) {
 				resp = new EwalletResponseData();
 			}
 			return resp;
 		}
-
-		@Override
-		public EwalletResponseData standardCheckout(
-				EwalletRequestData ewalletRequestData) throws Exception {
-			return null;
-		}
-
-		@Override
-		public EwalletResponseData preStandardCheckout(
-				EwalletRequestData ewalletRequestData) throws Exception {
-			return null;
-		}
-
-		@Override
-		public EwalletResponseData expressCheckoutWithoutPrecheckout(
-				EwalletRequestData ewalletRequestData) throws Exception {
-			return null;
-		}
-
-		@Override
-		public EwalletResponseData addPayPalWallet(
-				EwalletRequestData ewalletRequestData) throws Exception {
-			EwalletResponseData resp = null;
-			try {
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)){
-					resp= EwalletService.getInstance().addPayPalWallet(ewalletRequestData);
-				}else{
-				PayPalServiceSB remote = remoteHome.create();
-				resp = remote.addPayPalWallet(ewalletRequestData);
-				}
-			} catch (CreateException e) {
-				throw new MasterpassRuntimeException(e);
-			} catch (RemoteException e) {
-				throw new MasterpassRuntimeException(e);
-			}
-			
-			if (resp == null) {
-				resp = new EwalletResponseData();
-			}
-			return resp;
-		}
-
 
 	}
 }

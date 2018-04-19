@@ -197,7 +197,7 @@ public abstract class AbstractEcommService {
 			LOGGER.info("api url:" + url);
 			throw new FDResourceException(e, "Json Parsing failure");
 		} catch (JsonMappingException e) {
-			LOGGER.info(e.getMessage());
+			LOGGER.error(e.getMessage());
 			LOGGER.info("api url:" + url);
 			throw new FDResourceException(e, "Json Mapping failure");
 		} catch (IOException e) {
