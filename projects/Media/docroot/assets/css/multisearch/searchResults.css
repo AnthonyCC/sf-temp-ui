@@ -3,3 +3,7 @@
   padding: 0;
   margin: 0;
 }
+
+.multisearch-results [data-component="multisearch-list"] .content-module .content-header {
+  margin-top: 10px;
+}

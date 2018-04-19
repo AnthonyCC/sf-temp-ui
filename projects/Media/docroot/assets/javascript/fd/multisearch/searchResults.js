@@ -40,10 +40,9 @@ var FreshDirect = FreshDirect || {};
             el.remove();
           });
 
-          searchListEl.innerHTML = searchListEl.innerHTML +
-            added.reduce(function (p, c) {
+          searchListEl.innerHTML = added.reduce(function (p, c) {
               return p + '<li data-searchresult="'+c+'">Loading search results for "'+c+'"...</li>';
-            }, '');
+            }, '') + searchListEl.innerHTML;
         }
 
         // call search API with newly added terms

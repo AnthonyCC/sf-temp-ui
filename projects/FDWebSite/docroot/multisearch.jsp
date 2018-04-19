@@ -17,7 +17,7 @@
 	</tmpl:put>
 
   <tmpl:put name="seoMetaTag" direct="true">
-    <fd:SEOMetaTag title="Search for multiple keywords"></fd:SEOMetaTag>
+    <fd:SEOMetaTag title="Search for multiple products"></fd:SEOMetaTag>
   </tmpl:put>
 
 	<tmpl:put name='leftnav' direct='true'>
@@ -26,7 +26,7 @@
   </tmpl:put>
 
   <tmpl:put name='content' direct='true'>
-    <h1>Multi-search</h1>
+    <h2>Type in a list of products and we will find them for you</h2>
     <div id="multisearch-results" class="contentModules">
     </div>
   </tmpl:put>
