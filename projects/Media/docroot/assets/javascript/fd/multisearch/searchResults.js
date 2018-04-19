@@ -50,7 +50,10 @@ var FreshDirect = FreshDirect || {};
           DISPATCHER.signal('server',{
             url: '/api/filter',
             data: {
-              data: JSON.stringify({searchParams: term})
+              data: JSON.stringify({
+                searchParams: term,
+                pageSize: 12
+              })
             },
             spinner: {
               timeout: 500,

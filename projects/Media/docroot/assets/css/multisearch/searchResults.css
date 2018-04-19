@@ -6,4 +6,9 @@
 
 .multisearch-results [data-component="multisearch-list"] .content-module .content-header {
   margin-top: 10px;
+  height: 28px;
+}
+
+.multisearch-results [data-component="multisearch-list"] .content-header a.viewall {
+  text-transform: uppercase;
 }
