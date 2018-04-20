@@ -12,12 +12,15 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.sitemap.SitemapData;
 import com.freshdirect.fdstore.sitemap.SitemapDataFactory;
 import com.freshdirect.fdstore.sitemap.SitemapHome;
 import com.freshdirect.fdstore.sitemap.SitemapSB;
+import com.freshdirect.fdstore.sitemap.SitemapSBImple;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.payment.service.FDECommerceService;
 
 public class SitemapTag extends SimpleTagSupport {
 
@@ -35,10 +38,14 @@ public class SitemapTag extends SimpleTagSupport {
                 LOGGER.debug("Generate sitemap");
                 Context initialContext = null;
                 try {
-                    initialContext = ErpServicesProperties.getInitialContext();
+                	if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SitemapSB)){
+            			FDECommerceService.getInstance().generateSitemap();
+                	}else{
+                   initialContext = ErpServicesProperties.getInitialContext();
                     SitemapHome managerHome = (SitemapHome) initialContext.lookup(SitemapHome.JNDI_HOME);
                     SitemapSB sb = managerHome.create();
                     sb.generateSitemap();
+                	}
                     ctx.setAttribute("siteMapGenerated", true);
                     LOGGER.debug("Generated sitemap successfully");
                 } catch (Exception e) {

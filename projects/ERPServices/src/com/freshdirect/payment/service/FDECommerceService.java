@@ -445,6 +445,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String GET_PAYPAL_TRANSACTIONS = "paypalReconciliation/tx";
 	
 	private static final String ENQUEUE_EMAIL = "mailer/enqueue";
+	private static final String SITEMAP_GENERATE = "sitemap/generate";
 
 	public static IECommerceService getInstance() {
 		if (INSTANCE == null)
@@ -4574,6 +4575,22 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			LOGGER.error(e);
 			throw new RemoteException(e.getMessage());
 		} 
+	}
+	@Override
+	public void generateSitemap() throws RemoteException {
+		try {
+			Response<String> response = this.httpGetDataTypeMap(getFdCommerceEndPoint(SITEMAP_GENERATE),
+					new TypeReference<Response<Boolean>>() {});
+			if (!response.getResponseCode().equals("OK")) {
+				throw new FDResourceException(response.getMessage());
+			}
+			if (!response.getData().equals("success")) {
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
 	}
 
 }

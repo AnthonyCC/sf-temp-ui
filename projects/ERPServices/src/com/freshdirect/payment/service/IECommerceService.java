@@ -585,5 +585,7 @@ public interface IECommerceService {
 	public List<ErpSettlementSummaryModel> getPPTrxns(List<String> ppStlmntIds) throws RemoteException;
 	
 	public void updatePPSettlementTransStatus(String settlementTransId) throws RemoteException;
+
+	public void generateSitemap() throws RemoteException;
 	
 }
