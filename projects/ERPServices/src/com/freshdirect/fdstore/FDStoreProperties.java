@@ -33,9 +33,9 @@ import com.freshdirect.logistics.delivery.model.EnumCompanyCode;
 
 public class FDStoreProperties {
 
-	// OAUTHDEMO
-	public static HashMap<String, String> VENDOR_MAP = new HashMap<String, String>();
-	
+    // OAUTHDEMO
+    public static HashMap<String, String> VENDOR_MAP = new HashMap<String, String>();
+
     private static final Category LOGGER = LoggerFactory.getInstance(FDStoreProperties.class);
     private static List<ConfigLoadedListener> listeners = new ArrayList<ConfigLoadedListener>();
     private static final SimpleDateFormat SF = new SimpleDateFormat("yyyy-MM-dd");
@@ -293,7 +293,7 @@ public class FDStoreProperties {
     private static final String CORS_DOMAIN = "fdstore.CORS.domain";
 
     public static final String PROP_SO3_ACTIVATE_CUTOFF_TIME = "fdstore.so3.activate.cutoff.time";
-    
+
     public static final String DATABASE_IN_CONDITION_LIMIT = "fdstore.db.in.condition.limit";
     // Smart Search
     /**
@@ -307,6 +307,10 @@ public class FDStoreProperties {
     private static final String PRIMARY_HOME_KEYWORDS_ENABLED = "fdstore.search.primaryHomeKeywordsEnabled";
     private static final String SEARCH_RECURSE_PARENT_ATTRIBUTES_ENABLED = "fdstore.search.recurseParentAttributesEnabled";
     private static final String SEARCH_GLOBALNAV_AUTOCOMPLETE_ENABLE = "fdstore.search.globalnav.autocomplete.enable";
+
+    // multi-search
+    private static final String MULTI_SEARCH_LIMIT = "fdstore.multisearch.limit";
+    private static final String MULTI_SEARCH_DEFAULT_LIST = "fdstore.multisearch.defaultlist";
 
     // COOL info
     private final static String PROP_COOLINFO_REFRESH_PERIOD = "fdstore.refresh.coolinfo";
@@ -509,7 +513,7 @@ public class FDStoreProperties {
     private final static String WS_PROMOTION_PRODUCTION_MODE = "fdstore.ws.promotion.production.mode";
     private static final String PROP_PAYMENT_METHOD_VERIFICATION_ENABLED = "fdstore.paymentmethod.verify";
     private static final String PROP_MOBILEAPI_PAYMENT_METHOD_VERIFICATION_ENABLED = "fdstore.mobileapi.paymentmethod.verify";
-    
+
     private static final String PROP_PAYMENT_METHOD_VERIFICATION_LIMIT = "fdstore.paymentmethod.verify.limit";
 
     private static final String PROP_ORDER_HISTORY_QUERY_ID = "fdstore.orderhistory.query.id";
@@ -718,7 +722,7 @@ public class FDStoreProperties {
     private static final String PROP_ECOUPON_PAGESIZE = "fdstore.ecoupon.pagesize";
     private static final String PROP_SEARCH_PAGESIZE = "fdstore.search.pagesize";
     private static final String PROP_SEARCH_RECIPE_RESULTS_ENABLED = "fdstore.search.recipe.results.enabled";
-    
+
     private static final String PROP_QUICKSHOP_PAGESIZE = "fdstore.quickshop.pagesize";
     private static final String PROP_BROWSE_POPULAR_CATEGORIES_MAX = "fdstore.browse.popularcategories.max";
 
@@ -771,7 +775,7 @@ public class FDStoreProperties {
 
     // Max Invalid Payment counts for Recaptcha
     private final static String PROP_MAX_INVALID_PAYMENT_ATTEMPT = "fdstore.max.invalid.payment.count";
-    
+
     // Limiting the quicksearch results in mobile
     private final static String QUICKSHOP_ALL_ITEMS_MAX = "fdstore.quickshop.max.results";
 
@@ -786,7 +790,7 @@ public class FDStoreProperties {
 
     private static final String PROP_PAYPAL_API_URL = "fdstore.paypalapi.url";
     private static final String PROP_MASTERPASSS_API_URL = "fdstore.masterpassapi.url";
-    
+
     private static final String PROP_ORBITAL_API_URL = "fdstore.orbitalapi.url";
     private static final String PROP_OMS_API_URL = "fdstore.omsapi.url";
     private static final String PROP_LOGISTICS_COMPANY_CODE = "fdstore.logistics.companycode";
@@ -962,27 +966,28 @@ public class FDStoreProperties {
     private static final String PROP_DFP_ENABLED = "fdstore.dfp.enabled";
     private static final String PROP_DFP_ID = "fdstore.dfp.id";
 
-	private final static String PROP_CLUSTER_NAME = "fdsystem.cluster.name";
-	private final static String PROP_NODE_NAME = "fdsystem.node.name";
+    private final static String PROP_CLUSTER_NAME = "fdsystem.cluster.name";
+    private final static String PROP_NODE_NAME = "fdsystem.node.name";
 
     private final static String PROP_PRODUCT_CACHE_OPTIMIZATION_ENABLED = "fdstore.product.cache.optimization.enabled";
 
     private final static String PROP_REQUEST_SCHEME_FOR_REDIRECT_URL = "fdstore.request.scheme.redirecturl";
-	private static final String PROP_PAYMENT_VERIFICATION_ENABLED = "payment.verification.enabled";
+    private static final String PROP_PAYMENT_VERIFICATION_ENABLED = "payment.verification.enabled";
 
-    /* APPDEV 6174
-     * IBM SilverPopup urls, tokens*/
+    /*
+     * APPDEV 6174 IBM SilverPopup urls, tokens
+     */
     private final static String IBM_ACCESSTOKEN_URL = "fdstore.ibm.accesstoken.url";
     private final static String IBM_PUSHNOTIFICATION_URL = "fdstore.ibm.pushnotification.url";
     private final static String IBM_WATSON_EMAIL_CAMPAIGN_URL = "fdstore.ibm.watsonemailcampaign.url";
-    //https://api3.ibmmarketingcould.com/XMLAPI
+    // https://api3.ibmmarketingcould.com/XMLAPI
     private final static String IBM_CLIENT_ID = "fdstore.ibm.client.id";
     private final static String IBM_CAMPAIGN_CLIENT_ID = "fdstore.ibm.campaign.client.id";
     private final static String IBM_CLIENT_SECRET = "fdstore.ibm.client.secret";
     private final static String IBM_CAMPAIGN_CLIENT_SECRET = "fdstore.ibm.campaign.client.secret";
     private final static String IBM_REFRESH_TOKEN = "fdstore.ibm.refresh.token";
     private final static String IBM_CAMPAIGN_REFRESH_TOKEN = "fdstore.ibm.campaign.refresh.token";
-	private static final String PAYMENT_TLSSHA_ENABLED = "fdstore.payment.tls.sha.enabled";
+    private static final String PAYMENT_TLSSHA_ENABLED = "fdstore.payment.tls.sha.enabled";
     private static final String PROP_REFRESHZONE_ENABLED = "fdstore.refresh.zone.enabled";
 
     private static final String GLOBAL_SF2_0_ENABLED = "fdstore_sf20_global_enabled";
@@ -993,66 +998,63 @@ public class FDStoreProperties {
 
     public final static long TEN_DAYS_IN_MILLIS = 1000 * 60 * 60 * 24 * 10;
 
-    //APPDEV 6442 FDC Transition
+    // APPDEV 6442 FDC Transition
 
     public final static String PROP_FDC_TRANSITION_LOOK_AHEAD_DAYS = "fdstore.fdctransition.lookAheadDays";
-    public final static String CUSTOMER_SERVICE_CONTACT	= "default.customer.service.contact";
- 	public final static String CHEFSTABLE_CONTACT_NUMBER = "chefstable.contact.number";
- 	public final static String FOODKICK_SERVICE_CONTACT	=	"foodkick.service.contact";
- 	public final static String PENNSYLVANIA_SERVICE_CONTACT	= "pennsylvania.service.contact";
+    public final static String CUSTOMER_SERVICE_CONTACT = "default.customer.service.contact";
+    public final static String CHEFSTABLE_CONTACT_NUMBER = "chefstable.contact.number";
+    public final static String FOODKICK_SERVICE_CONTACT = "foodkick.service.contact";
+    public final static String PENNSYLVANIA_SERVICE_CONTACT = "pennsylvania.service.contact";
 
- 	//Setting the product as free as SAP cannot get the value of a product as zero
- 	public final static String PROP_ENABLE_FREE_PRODUCT = "fdstore.enable.free.product";
- 	//appdev-6259
- 	public final static String PROP_ENABLE_WEBSITE_MOBILE_SAME_NUTRITION_SOY = "enable.website.mobile.same.nutrition.soy";
- 	
- 	//appdev-6184
- 	public final static String PROP_ENABLE_FDX_DISTINCT_AVAILABILITY = "enable.fdx.distinct.availability";
- 	 
- 	public final static String PROP_ENABLE_REPEAT_WARMUP = "enable.repeat.warmup";
+    // Setting the product as free as SAP cannot get the value of a product as zero
+    public final static String PROP_ENABLE_FREE_PRODUCT = "fdstore.enable.free.product";
+    // appdev-6259
+    public final static String PROP_ENABLE_WEBSITE_MOBILE_SAME_NUTRITION_SOY = "enable.website.mobile.same.nutrition.soy";
 
-	// OAuth2 Expirations
-	public final static String DEFAULT_CODE_EXPIRATION = "fdstore.oauth2.defaultCodeExpirationInSec";
-	public final static String DEFAULT_TOKEN_EXPIRATION = "fdstore.oauth2.defaultTokenExpirationInSec";
-	public final static String DEFAULT_REFRESH_TOKEN_EXPIRATION = "fdstore.oauth2.defaultRefreshTokenExpirationInSec";
-	// OAuth2 client data
-	public final static String OAUTH2_CLIENT_IDS = "fdstore.oauth2.clientIds";
-	public final static String OAUTH2_CLIENT_SECRETS = "fdstore.oauth2.clientSecrets";
-	public final static String OAUTH2_CLIENT_REDIRECT_URIS = "fdstore.oauth2.clientRedirectUris";
-	
-	public final static String PROP_FDC_NEW_BACKIN_USE_FD_ENABLED = "fdstore.new.backinstock.fdc.use.fd.enabled";
-	
-	public final static String PROP_FD_DP_FREE_TRIAL_OPTIN_FEATURE_ENABLED = "fdstore.fd.dp.freetrial.optin.feature.enabled";
-	
-	public final static String PROP_DB_PARTIAL_JOIN_OPTIMIZER_ENABLED = "fdstore.db.partial.join.optimizer.enabled";
-	
-	private static final String FD_PRIORITY_SEARCH_KEYS = "fdstore.criteo.fdpriorityhomepagecriteo";
-	
-	private static final String FD_HOME_CRITEO_MAX_DISPLAY = "fdstore.criteo.fdhomecriteomaxdisplay";
+    // appdev-6184
+    public final static String PROP_ENABLE_FDX_DISTINCT_AVAILABILITY = "enable.fdx.distinct.availability";
 
-	private static final String FD_HOME_CRITEO_CACHE_REFRESH_MIN = "fdstore.criteo.criteoservercacherefreshminutes";
+    public final static String PROP_ENABLE_REPEAT_WARMUP = "enable.repeat.warmup";
 
-	/*
-	 * Appdev 6760 allowing new products materializied views to be tuned to number of days requires a v2 version to be called
-	 */
+    // OAuth2 Expirations
+    public final static String DEFAULT_CODE_EXPIRATION = "fdstore.oauth2.defaultCodeExpirationInSec";
+    public final static String DEFAULT_TOKEN_EXPIRATION = "fdstore.oauth2.defaultTokenExpirationInSec";
+    public final static String DEFAULT_REFRESH_TOKEN_EXPIRATION = "fdstore.oauth2.defaultRefreshTokenExpirationInSec";
+    // OAuth2 client data
+    public final static String OAUTH2_CLIENT_IDS = "fdstore.oauth2.clientIds";
+    public final static String OAUTH2_CLIENT_SECRETS = "fdstore.oauth2.clientSecrets";
+    public final static String OAUTH2_CLIENT_REDIRECT_URIS = "fdstore.oauth2.clientRedirectUris";
 
-	public final static String FDSTORE_DB_NEW_PRODUCTS_MATERIALIZEDVIEW_V2_ENABLED = "fdstore.db.new.products.materializedview.v2.enabled";
+    public final static String PROP_FDC_NEW_BACKIN_USE_FD_ENABLED = "fdstore.new.backinstock.fdc.use.fd.enabled";
 
+    public final static String PROP_FD_DP_FREE_TRIAL_OPTIN_FEATURE_ENABLED = "fdstore.fd.dp.freetrial.optin.feature.enabled";
 
-	private static final String PROP_CAROUSEL_MIN_ITEMS = "fdstore.carousel.minimum.items";
-	
-	
-	private static final String PROP_NEW_PRODUCTS_PAGE_CAROUSEL_ENABLED = "fdstore.newproductspage.carousel.enabled";
-	private static final String PROP_NEW_PRODUCTS_PAGE_CAROUSEL_CONTAINER_CONTENT_KEY = "fdstore.newproductspage.carousel.contentkey";
+    public final static String PROP_DB_PARTIAL_JOIN_OPTIMIZER_ENABLED = "fdstore.db.partial.join.optimizer.enabled";
 
-	public final static String PROP_IS_FDC_FIRST_ORDER_EMAIL_MSG_ENABLED = "fdstore.fdc.firstorderemailmsg.enabled";
-	
-	public final static String PROP_FD_DP_STANDALONE_CHECKOUT_ENABLED = "fdstore.deliverypass.standalone.checkout.enabled";
+    private static final String FD_PRIORITY_SEARCH_KEYS = "fdstore.criteo.fdpriorityhomepagecriteo";
 
- 	
-	private static final String PROP_INFORM_ORDERMODIFY_ENABLED = "fdstore.inform.ordermodify.enabled";
-	private static final String PROP_INFORM_ORDERMODIFY_VIEWLIMIT = "fdstore.inform.ordermodify.viewCountLimit";
-	private static final String PROP_INFORM_ORDERMODIFY_MEDIAPATH = "fdstore.inform.ordermodify.mediaPath";
+    private static final String FD_HOME_CRITEO_MAX_DISPLAY = "fdstore.criteo.fdhomecriteomaxdisplay";
+
+    private static final String FD_HOME_CRITEO_CACHE_REFRESH_MIN = "fdstore.criteo.criteoservercacherefreshminutes";
+
+    /*
+     * Appdev 6760 allowing new products materializied views to be tuned to number of days requires a v2 version to be called
+     */
+
+    public final static String FDSTORE_DB_NEW_PRODUCTS_MATERIALIZEDVIEW_V2_ENABLED = "fdstore.db.new.products.materializedview.v2.enabled";
+
+    private static final String PROP_CAROUSEL_MIN_ITEMS = "fdstore.carousel.minimum.items";
+
+    private static final String PROP_NEW_PRODUCTS_PAGE_CAROUSEL_ENABLED = "fdstore.newproductspage.carousel.enabled";
+    private static final String PROP_NEW_PRODUCTS_PAGE_CAROUSEL_CONTAINER_CONTENT_KEY = "fdstore.newproductspage.carousel.contentkey";
+
+    public final static String PROP_IS_FDC_FIRST_ORDER_EMAIL_MSG_ENABLED = "fdstore.fdc.firstorderemailmsg.enabled";
+
+    public final static String PROP_FD_DP_STANDALONE_CHECKOUT_ENABLED = "fdstore.deliverypass.standalone.checkout.enabled";
+
+    private static final String PROP_INFORM_ORDERMODIFY_ENABLED = "fdstore.inform.ordermodify.enabled";
+    private static final String PROP_INFORM_ORDERMODIFY_VIEWLIMIT = "fdstore.inform.ordermodify.viewCountLimit";
+    private static final String PROP_INFORM_ORDERMODIFY_MEDIAPATH = "fdstore.inform.ordermodify.mediaPath";
     private static final String PROP_NEW_PRODUCTS_CAROUSEL_SOURCE_CATEGORY_CONTENT_KEY = "fdstore.newproductscarousel.sourcecategory.contentkey";
     private static final String PROP_FRESH_DEALS_PAGE_NEW_PRODUCTS_CAROUSEL_ENABLED = "fdstore.freshdealspage.newproductscarousel.enabled";
     private static final String PROP_FRESH_DEALS_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED = "fdstore.freshdealspage.newproductscarousel.randomizeproductorder.enabled";
@@ -1060,7 +1062,6 @@ public class FDStoreProperties {
     private static final String PROP_REORDER_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED = "fdstore.reorderpage.newproductscarousel.randomizeproductorder.enabled";
     private static final String MASTERPASS_EXCEPTION_MESSAGE = "masterpass.exception.message";
 
-    
     static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_INIT_CTX_FACTORY, "weblogic.jndi.WLInitialContextFactory");
@@ -1156,7 +1157,7 @@ public class FDStoreProperties {
         defaults.put(PROP_REFRESHSECS_UPCPRODUCTINFO, "900");
         defaults.put(PROP_REFRESHSECS_ZONE, "600");
         defaults.put(PROP_REFRESHSECS_PRODUCT, "7200");
-        defaults.put(PROP_PRODUCT_CACHE_SIZE, "60000");//Changed from 45000 to 60000 on Feb 4th Patch
+        defaults.put(PROP_PRODUCT_CACHE_SIZE, "60000");// Changed from 45000 to 60000 on Feb 4th Patch
         defaults.put(PROP_ZONE_CACHE_SIZE, "10000");
         defaults.put(PROP_GRP_CACHE_SIZE, "10000");
         defaults.put(PROP_MEDIACONTENT_CACHE_SIZE, "0");
@@ -1314,6 +1315,9 @@ public class FDStoreProperties {
         defaults.put(SEARCH_RECURSE_PARENT_ATTRIBUTES_ENABLED, "false");
         defaults.put(SEARCH_GLOBALNAV_AUTOCOMPLETE_ENABLE, "false");
 
+        defaults.put(MULTI_SEARCH_LIMIT, "25");
+        defaults.put(MULTI_SEARCH_DEFAULT_LIST, "eggs,milk,pizza,yogurt,butter,carrots,garlic,bread,onion,chicken");
+
         defaults.put(PROP_COOLINFO_REFRESH_PERIOD, "10");
 
         defaults.put(IMPRESSION_LOGGING, "false");
@@ -1334,7 +1338,8 @@ public class FDStoreProperties {
         defaults.put(PROP_FDWHATSGOOD_PEAKPRODUCE_ENABLED, "true");
         defaults.put(PROP_FDWHATSGOOD_BBLOCK_ENABLED, "false");
         defaults.put(PROP_FDWHATSGOOD_ROWS, "");
-        defaults.put(PROP_SUFFOLK_ZIPS, "11701,11702,11703,11704,11706,11717,11720,11724,11725,11726,11729,11731,11735,11740,11743,11746,11747,11749,11751,11755,11757,11767,11780,11787,11788,11795,11798");
+        defaults.put(PROP_SUFFOLK_ZIPS,
+                "11701,11702,11703,11704,11706,11717,11720,11724,11725,11726,11729,11731,11735,11740,11743,11746,11747,11749,11751,11755,11757,11767,11780,11787,11788,11795,11798");
 
         defaults.put(PROP_FDWHATSGOOD_DEBUG_ENABLED, "false");
 
@@ -1527,7 +1532,7 @@ public class FDStoreProperties {
         defaults.put(PROP_COUNTRY_INFO_REFRESH_INTERVAL, "5");
 
         // APPDEV-6030 Google Tag Manager
-        defaults.put(PROP_GOOGLE_TAG_MANAGER_KEY, "GTM-TMBSNJH");//GTM-KFMTML");
+        defaults.put(PROP_GOOGLE_TAG_MANAGER_KEY, "GTM-TMBSNJH");// GTM-KFMTML");
         // APPDEV-6285 support multiple environments in GTM
         defaults.put(PROP_GOOGLE_TAG_MANAGER_AUTH_TOKEN, "");
         defaults.put(PROP_GOOGLE_TAG_MANAGER_PREVIEW_ID, "");
@@ -1640,7 +1645,7 @@ public class FDStoreProperties {
 
         defaults.put(PROP_IP_LOCATOR_ENABLED, "true");
         defaults.put(PROP_IP_LOCATOR_CACHE_ENABLED, "true");
-        defaults.put(PROP_IP_LOCATOR_CLIENT_ID, "e8lQTiN_7IOJZhUTjNQ_5t**");//103310996");
+        defaults.put(PROP_IP_LOCATOR_CLIENT_ID, "e8lQTiN_7IOJZhUTjNQ_5t**");// 103310996");
         defaults.put(PROP_IP_LOCATOR_URL, "https://iplocator.melissadata.net/v2/REST/Service.svc/doIPLocation");
         defaults.put(PROP_IP_LOCATORV4_URL, "http://globalip.melissadata.net/v4/WEB/iplocation/doiplocation");
         defaults.put(PROP_IP_LOCATORV4_ENABLED, "true");
@@ -1691,7 +1696,7 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.browseaggregatedcategories1_0", "GLOBAL:ENABLED,false;");
         defaults.put("feature.rollout.debitCardSwitch", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.modOrderConfirmPageRedesign", "GLOBAL:ENABLED,true;");
-        
+
         defaults.put(PROP_MEDIA_RENDER_UTILS_REALLY_CLOSE, "true");
         defaults.put(PROP_MEDIA_RENDER_UTILS_SOURCE_ENCODING, "ISO-8859-1");
 
@@ -1710,7 +1715,7 @@ public class FDStoreProperties {
         defaults.put(PROP_ECOUPON_PAGESIZE, "30");
         defaults.put(PROP_SEARCH_PAGESIZE, "30");
         defaults.put(PROP_SEARCH_RECIPE_RESULTS_ENABLED, "false");
-        
+
         defaults.put(PROP_QUICKSHOP_PAGESIZE, "30");
         defaults.put(PROP_BROWSE_POPULAR_CATEGORIES_MAX, "5");
 
@@ -1775,7 +1780,7 @@ public class FDStoreProperties {
         defaults.put(PROP_FDCOMMERCE_API_URL, "http://localhost:8080");
         defaults.put(PROP_PAYPAL_API_URL, "http://logisticsdev1.nj01/paypal");
         defaults.put(PROP_MASTERPASSS_API_URL, "http://logisticsdev1.nj01/paypal");
-        
+
         defaults.put(PROP_ORBITAL_API_URL, "http://logisticsdev1.nj01/paypal");
         defaults.put(PROP_OMS_API_URL, "http://crmdev1.nj01/");
 
@@ -1889,7 +1894,6 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.unbxdintegrationblackhole2016", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.unbxdanalytics2016", "GLOBAL:ENABLED,true;");
 
-
         defaults.put(PROP_MEAL_KIT_MATERIAL_GROUP, "MEALKIT");
 
         defaults.put(PROP_PRODUCT_FEED_GENERATION_DEVELOPER_MODE_ENABLED, "false");
@@ -1903,7 +1907,7 @@ public class FDStoreProperties {
         defaults.put(PROP_CHECKOUT_PAGE_NEW_CUSTOMER_CAROUSEL_SITE_FEATURES, "C_YMAL, FAVORITES, PRODUCT_SAMPLE");
         defaults.put(PROP_CHECKOUT_PAGE_CURRENT_CUSTOMER_CAROUSEL_SITE_FEATURES, "DYF, TOP_ITEMS_QS, PRODUCT_SAMPLE");
         defaults.put(PROP_CHECKOUT_PAGE_COS_CUSTOMER_DISPLAY_DELIVERY_FEE_HEADER, false);
-        
+
         defaults.put(PROP_USER_CART_SAVE_INTERVAL, "0");
 
         defaults.put(PROP_HOMEPAGE_REDESIGN_CURRENTCOS_USER_CONTAINER_CONTENT_KEY, "ModuleContainer:mc_hp_ato_exist_cust");
@@ -1936,100 +1940,91 @@ public class FDStoreProperties {
         defaults.put(PROP_CLUSTER_NAME, "localhost");
         defaults.put(PROP_NODE_NAME, "localhost");
 
-
         defaults.put(PROP_PRODUCT_CACHE_OPTIMIZATION_ENABLED, "true");
 
         /* IBM silverpopup */
         defaults.put(IBM_ACCESSTOKEN_URL, "https://api3.ibmmarketingcloud.com/oauth/token");
         // for Dev DB
         defaults.put(IBM_PUSHNOTIFICATION_URL, "https://api3.silverpop.com:443/rest/databases/5979940/establishidentity/");
-        									 // https://api3.silverpop.com:443/rest/databases/{databaseid}/establishidentity/
-     //   defaults.put(IBM_WATSON_EMAIL_CAMPAIGN_URL, "https://api3.ibmmarketingcloud.com/XMLAPI");
+        // https://api3.silverpop.com:443/rest/databases/{databaseid}/establishidentity/
+        // defaults.put(IBM_WATSON_EMAIL_CAMPAIGN_URL, "https://api3.ibmmarketingcloud.com/XMLAPI");
         defaults.put(IBM_WATSON_EMAIL_CAMPAIGN_URL, "http://transact3.silverpop.com/XTMail");
-        										
-        
-        //private final static String IBM_WATSON_EMAIL_CAMPAIGN_URL = "fdstore.ibm.watsonemailcampaign.url";
-        //https://api3.ibmmarketingcould.com/XMLAPI
+
+        // private final static String IBM_WATSON_EMAIL_CAMPAIGN_URL = "fdstore.ibm.watsonemailcampaign.url";
+        // https://api3.ibmmarketingcould.com/XMLAPI
         // for Prod DB
-        //defaults.put(IBM_PUSHNOTIFICATION_URL, "https://api3.silverpop.com:443/rest/databases/3745165/establishidentity/");
+        // defaults.put(IBM_PUSHNOTIFICATION_URL, "https://api3.silverpop.com:443/rest/databases/3745165/establishidentity/");
         defaults.put(IBM_CLIENT_ID, "42c3eede-b1b2-43d2-b503-55682f190c2d");
-        
+
         defaults.put(IBM_CAMPAIGN_CLIENT_ID, "899e322b-977e-4a50-8320-7bba87b54085");
-        
+
         defaults.put(IBM_CLIENT_SECRET, "5f154ee0-bae6-4833-9ce2-e013b1b3c7d5");
         defaults.put(IBM_CAMPAIGN_CLIENT_SECRET, "e1a1982c-9d7b-480d-b871-f76354ce8cce");
-        
+
         defaults.put(IBM_REFRESH_TOKEN, "r_3872jS_Gh7VmanX2TcazBB_MJ1C_RBqbJWY6gvh3koS1");
-        defaults.put(IBM_CAMPAIGN_REFRESH_TOKEN, "rqeZfstHf754FkCIR2K5NC6O0IVE6ZxqQbBM_X1gTDcsS1");//"rqeZfstHf754FkCIR2K5NC6O0IVE6ZxqQbBM_X1gTDcsS1"
-     
-        defaults.put(PAYMENT_TLSSHA_ENABLED,"true");
+        defaults.put(IBM_CAMPAIGN_REFRESH_TOKEN, "rqeZfstHf754FkCIR2K5NC6O0IVE6ZxqQbBM_X1gTDcsS1");// "rqeZfstHf754FkCIR2K5NC6O0IVE6ZxqQbBM_X1gTDcsS1"
+
+        defaults.put(PAYMENT_TLSSHA_ENABLED, "true");
         defaults.put(PROP_PAYMENT_VERIFICATION_ENABLED, "true");
         defaults.put(GLOBAL_SF2_0_ENABLED, "false");
 
-        //DCS-23
+        // DCS-23
         defaults.put(PROP_DEBIT_SWITCH_NOTICE_ENABLED, "false");
 
-        defaults.put(PROP_LOG_AKAMAI_HEADER_ENABLED,"false");
+        defaults.put(PROP_LOG_AKAMAI_HEADER_ENABLED, "false");
 
-        //APPDEV-6442
+        // APPDEV-6442
         defaults.put(PROP_FDC_TRANSITION_LOOK_AHEAD_DAYS, "0");
 
-        //CUSTOMER CONTACT NUMBERS
- 	   	defaults.put(CUSTOMER_SERVICE_CONTACT, "1-866-283-7374");
- 	   	defaults.put(CHEFSTABLE_CONTACT_NUMBER, "1-866-511-1240");
- 	   	defaults.put(FOODKICK_SERVICE_CONTACT, "1-718-513-2785");
- 	   	defaults.put(PENNSYLVANIA_SERVICE_CONTACT, "1-215-825-5726");
+        // CUSTOMER CONTACT NUMBERS
+        defaults.put(CUSTOMER_SERVICE_CONTACT, "1-866-283-7374");
+        defaults.put(CHEFSTABLE_CONTACT_NUMBER, "1-866-511-1240");
+        defaults.put(FOODKICK_SERVICE_CONTACT, "1-718-513-2785");
+        defaults.put(PENNSYLVANIA_SERVICE_CONTACT, "1-215-825-5726");
 
- 	   	//Delivery Pass sent as a free products for trail
-        defaults.put(PROP_ENABLE_FREE_PRODUCT,"true"); // Enable free product
-        
-        defaults.put(PROP_ENABLE_WEBSITE_MOBILE_SAME_NUTRITION_SOY,"false");
+        // Delivery Pass sent as a free products for trail
+        defaults.put(PROP_ENABLE_FREE_PRODUCT, "true"); // Enable free product
 
-        defaults.put(PROP_ENABLE_FDX_DISTINCT_AVAILABILITY,"true");
-        
+        defaults.put(PROP_ENABLE_WEBSITE_MOBILE_SAME_NUTRITION_SOY, "false");
+
+        defaults.put(PROP_ENABLE_FDX_DISTINCT_AVAILABILITY, "true");
 
         defaults.put("feature.rollout.cosRedesign2017", "GLOBAL:ENABLED,false;");
         defaults.put(PROP_ENABLE_REPEAT_WARMUP, "true"); // controls manual warmup: LIVE PUBLISH
-        
 
         // Auth Code : 2 minutes
-		defaults.put(DEFAULT_CODE_EXPIRATION, "120");
-		// Access Token : 30 days
-		defaults.put(DEFAULT_TOKEN_EXPIRATION, "2592000");
-		// Refresh Token : 180 days
-		defaults.put(DEFAULT_REFRESH_TOKEN_EXPIRATION, "15552000");
-		defaults.put(PROP_FDC_NEW_BACKIN_USE_FD_ENABLED,"false");
-		
-		defaults.put(DATABASE_IN_CONDITION_LIMIT, "50");
-		defaults.put(PROP_FD_DP_FREE_TRIAL_OPTIN_FEATURE_ENABLED, "false");
-		
-		defaults.put(PROP_DB_PARTIAL_JOIN_OPTIMIZER_ENABLED, "true");
+        defaults.put(DEFAULT_CODE_EXPIRATION, "120");
+        // Access Token : 30 days
+        defaults.put(DEFAULT_TOKEN_EXPIRATION, "2592000");
+        // Refresh Token : 180 days
+        defaults.put(DEFAULT_REFRESH_TOKEN_EXPIRATION, "15552000");
+        defaults.put(PROP_FDC_NEW_BACKIN_USE_FD_ENABLED, "false");
 
-		defaults.put(FD_PRIORITY_SEARCH_KEYS, "BUTTER,EGG,MILK,YOGURT");
-		defaults.put(FD_HOME_CRITEO_MAX_DISPLAY, "12");
+        defaults.put(DATABASE_IN_CONDITION_LIMIT, "50");
+        defaults.put(PROP_FD_DP_FREE_TRIAL_OPTIN_FEATURE_ENABLED, "false");
 
-		defaults.put(FD_HOME_CRITEO_CACHE_REFRESH_MIN, "30");
+        defaults.put(PROP_DB_PARTIAL_JOIN_OPTIMIZER_ENABLED, "true");
 
+        defaults.put(FD_PRIORITY_SEARCH_KEYS, "BUTTER,EGG,MILK,YOGURT");
+        defaults.put(FD_HOME_CRITEO_MAX_DISPLAY, "12");
 
-		/*
-		 * Appdev 6760 allowing new products materializied views to be tuned to number of days requires a v2 version to be called
-		 */
+        defaults.put(FD_HOME_CRITEO_CACHE_REFRESH_MIN, "30");
 
-		defaults.put(FDSTORE_DB_NEW_PRODUCTS_MATERIALIZEDVIEW_V2_ENABLED, "false");
+        /*
+         * Appdev 6760 allowing new products materializied views to be tuned to number of days requires a v2 version to be called
+         */
 
+        defaults.put(FDSTORE_DB_NEW_PRODUCTS_MATERIALIZEDVIEW_V2_ENABLED, "false");
 
+        defaults.put(PROP_CAROUSEL_MIN_ITEMS, "4");
 
+        defaults.put(PROP_IS_FDC_FIRST_ORDER_EMAIL_MSG_ENABLED, "false");
 
-		defaults.put(PROP_CAROUSEL_MIN_ITEMS, "4");
+        defaults.put(PROP_FD_DP_STANDALONE_CHECKOUT_ENABLED, "false");
 
-		defaults.put(PROP_IS_FDC_FIRST_ORDER_EMAIL_MSG_ENABLED, "false");
-		
-		defaults.put(PROP_FD_DP_STANDALONE_CHECKOUT_ENABLED, "false");
-
-		
-		defaults.put(PROP_NEW_PRODUCTS_PAGE_CAROUSEL_ENABLED, "true");
+        defaults.put(PROP_NEW_PRODUCTS_PAGE_CAROUSEL_ENABLED, "true");
         defaults.put(PROP_NEW_PRODUCTS_PAGE_CAROUSEL_CONTAINER_CONTENT_KEY, "ModuleContainer:new_prod");
-        
+
         defaults.put(PROP_NEW_PRODUCTS_CAROUSEL_SOURCE_CATEGORY_CONTENT_KEY, "Category:newproduct_demo");
         defaults.put(PROP_FRESH_DEALS_PAGE_NEW_PRODUCTS_CAROUSEL_ENABLED, "true");
         defaults.put(PROP_FRESH_DEALS_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED, "true");
@@ -2039,7 +2034,7 @@ public class FDStoreProperties {
         defaults.put(PROP_INFORM_ORDERMODIFY_MEDIAPATH, "");
         defaults.put(PROP_INFORM_ORDERMODIFY_VIEWLIMIT, "5");
         defaults.put(MASTERPASS_EXCEPTION_MESSAGE, "Connection problem.  Please choose a different wallet.");
-        
+
         refresh();
     }
 
@@ -2054,14 +2049,14 @@ public class FDStoreProperties {
         long t = System.currentTimeMillis();
 
         if (force || ((t - lastRefresh) > REFRESH_PERIOD)) {
-        	synchronized (FDStoreProperties.class){
-        		 if (force || ((t - lastRefresh) > REFRESH_PERIOD)) {//double check
-		            config = ConfigHelper.getPropertiesFromClassLoader("fdstore.properties", defaults);
-		            lastRefresh = t;
-		            LOGGER.info("Loaded configuration from fdstore.properties: " + config);
-		            fireEvent();
-        		 }
-        	}
+            synchronized (FDStoreProperties.class) {
+                if (force || ((t - lastRefresh) > REFRESH_PERIOD)) {// double check
+                    config = ConfigHelper.getPropertiesFromClassLoader("fdstore.properties", defaults);
+                    lastRefresh = t;
+                    LOGGER.info("Loaded configuration from fdstore.properties: " + config);
+                    fireEvent();
+                }
+            }
         }
     }
 
@@ -2072,17 +2067,17 @@ public class FDStoreProperties {
 
     public static String get(String key) {
         refresh();
-        return config.getProperty(key);        
+        return config.getProperty(key);
     }
-    
+
     public static String get(String key, String defaultValue) {
         refresh();
-        return config.getProperty(key, defaultValue);        
+        return config.getProperty(key, defaultValue);
     }
 
     /**
      * A method to set a specific property. Use with care - it's here for testing purposes only.
-     *
+     * 
      * @param key
      *            the name of the property to set.
      * @param value
@@ -2131,9 +2126,9 @@ public class FDStoreProperties {
 
     /**
      * This property disables time window check on CRM issue credits page.
-     *
+     * 
      * For debug purposes.
-     *
+     * 
      * @return
      */
     public static boolean getDisableTimeWindowCheck() {
@@ -2361,8 +2356,9 @@ public class FDStoreProperties {
     }
 
     public static int getMediaContentCacheSize() {
-    	return Integer.parseInt(get(PROP_MEDIACONTENT_CACHE_SIZE));
+        return Integer.parseInt(get(PROP_MEDIACONTENT_CACHE_SIZE));
     }
+
     public static String getProductEmail() {
         return get(PROP_EMAIL_PRODUCT);
     }
@@ -2470,9 +2466,11 @@ public class FDStoreProperties {
     public static boolean isProductRecommendEnabled() {
         return Boolean.valueOf(get(PROP_PRODUCT_RECOMMEND_ENABLED)).booleanValue();
     }
+
     public static boolean isProductRecommendCheckCacheEnabled() {
         return Boolean.valueOf(get(PROP_PRODUCT_RECOMMEND_CHECK_CACHE_ENABLED)).booleanValue();
     }
+
     public static String getBSGSSignUpUrl(boolean isCallCenter) {
         if (isCallCenter) {
             return get(CRM_BSGS_SIGNUP_URL);
@@ -2845,7 +2843,7 @@ public class FDStoreProperties {
 
     /**
      * Is Smart Search feature enabled?
-     *
+     * 
      * @deprecated Property is no longer used
      */
     @Deprecated
@@ -2950,7 +2948,7 @@ public class FDStoreProperties {
 
     /**
      * Used for testing, do not call from the App.
-     *
+     * 
      * @param lastRefresh
      */
     public static void setLastRefresh(long lastRefresh) {
@@ -3129,7 +3127,7 @@ public class FDStoreProperties {
 
     /**
      * OSCACHE should be disabled when we are in some development environment. ( = annotation or preview mode ) Jsp-s can refer to this when deciding to use oscache or not.
-     *
+     * 
      * @return true if we are in production mode (use oscache), false if we are in development mode (disable oscache)
      */
     public static boolean useOscache() {
@@ -3228,7 +3226,7 @@ public class FDStoreProperties {
 
     /**
      * Returns API key to access Google Maps service No default value.
-     *
+     * 
      * @return
      */
     public static String getGoogleMapsAPIKey() {
@@ -3237,7 +3235,7 @@ public class FDStoreProperties {
 
     /**
      * APPDEV-1091
-     *
+     * 
      * @return URL to promotion publish servlet
      */
     public static String getPromoPublishURL() {
@@ -3296,7 +3294,7 @@ public class FDStoreProperties {
 
     /**
      * Global switch to turn on/off wine ratings display. Defaulted to on.
-     *
+     * 
      * @return
      */
     public static boolean isWineShowRatings() {
@@ -3339,7 +3337,7 @@ public class FDStoreProperties {
                 defaultValue = 40.0;
             }
 
-            //LOGGER.warn("cannot parse " + WINE_PRICE_BUCKET_BOUND_PREFIX + index + ", using default value " + defaultValue, e);
+            // LOGGER.warn("cannot parse " + WINE_PRICE_BUCKET_BOUND_PREFIX + index + ", using default value " + defaultValue, e);
 
             return defaultValue;
         }
@@ -3480,6 +3478,18 @@ public class FDStoreProperties {
         return Boolean.valueOf(get(SEARCH_GLOBALNAV_AUTOCOMPLETE_ENABLE));
     }
 
+    public static int getMultiSearchLimit() {
+        try {
+            return Integer.parseInt(get(MULTI_SEARCH_LIMIT));
+        } catch (Exception e) {
+            return 25;
+        }
+    }
+
+    public static String getMultiSearchDefaultList() {
+        return get(MULTI_SEARCH_DEFAULT_LIST);
+    }
+
     public static String getChefstableLabel() {
         return get(PROP_CT_TIMESLOT_LABEL);
     }
@@ -3580,9 +3590,11 @@ public class FDStoreProperties {
     public static boolean isPaymentMethodVerificationEnabled() {
         return (new Boolean(get(PROP_PAYMENT_METHOD_VERIFICATION_ENABLED))).booleanValue();
     }
+
     public static boolean isPaymentMethodVerificationForMobileApiEnabled() {
         return (new Boolean(get(PROP_MOBILEAPI_PAYMENT_METHOD_VERIFICATION_ENABLED))).booleanValue();
     }
+
     public static int getPaymentMethodVerificationLimit() {
         return Integer.parseInt(get(PROP_PAYMENT_METHOD_VERIFICATION_LIMIT));
     }
@@ -3711,7 +3723,7 @@ public class FDStoreProperties {
 
     /**
      * Used at store-front GUI. Sum of prices in the cart must be higher than this value in order to be able to submit order.
-     *
+     * 
      * @return Soft limit. Default is $50.
      */
     /*
@@ -3720,7 +3732,7 @@ public class FDStoreProperties {
 
     /**
      * Used at processing Standing Orders. After removing discontinued products from the cart, sum must be higher than this value.
-     *
+     * 
      * @return Hard limit. Default is $50.
      */
     /*
@@ -4145,7 +4157,7 @@ public class FDStoreProperties {
     public static int getSearchPageSize() {
         return Integer.parseInt(get(PROP_SEARCH_PAGESIZE));
     }
-    
+
     public static boolean isSearchRecipeResultsEnabled() {
         return Boolean.valueOf(get(PROP_SEARCH_RECIPE_RESULTS_ENABLED)).booleanValue();
     }
@@ -4224,7 +4236,7 @@ public class FDStoreProperties {
     }
 
     public static boolean isAllDealsCacheEnabled() {
-    	return ! isLocalDeployment() && Boolean.valueOf(get(PROP_ALL_DEALS_CACHE_ENABLED)).booleanValue();
+        return !isLocalDeployment() && Boolean.valueOf(get(PROP_ALL_DEALS_CACHE_ENABLED)).booleanValue();
     }
 
     public static boolean isSiteMapEnabled() {
@@ -4285,12 +4297,15 @@ public class FDStoreProperties {
     public static String getPayPalAPIUrl() {
         return get(PROP_PAYPAL_API_URL);
     }
+
     public static String getMasterPassAPIUrl() {
         return get(PROP_MASTERPASSS_API_URL);
     }
+
     public static String getOrbitalAPIUrl() {
         return get(PROP_ORBITAL_API_URL);
     }
+
     public static String getOMSAPIUrl() {
         return get(PROP_OMS_API_URL);
     }
@@ -4339,13 +4354,12 @@ public class FDStoreProperties {
         return get(PROP_FDEXTOLEMGR_HOME);
     }
 
-	// Recaptcha getter methods
-	public static String getRecaptchaPublicKey(CaptchaType type) {
-		String key = StringUtils.defaultIfEmpty(get(PROP_RECAPTCHA_PUBLIC_KEY),
-				"6LdQn0YUAAAAALfZUrX-x4IeOmdUkkUrwMwZdhsd,6LcYYFAUAAAAAOWJFZgnZnVNNXr31rebRjsnoSA0");
-		return getValueFromProperty(key, type.getValue());
-		
-	}
+    // Recaptcha getter methods
+    public static String getRecaptchaPublicKey(CaptchaType type) {
+        String key = StringUtils.defaultIfEmpty(get(PROP_RECAPTCHA_PUBLIC_KEY), "6LdQn0YUAAAAALfZUrX-x4IeOmdUkkUrwMwZdhsd,6LcYYFAUAAAAAOWJFZgnZnVNNXr31rebRjsnoSA0");
+        return getValueFromProperty(key, type.getValue());
+
+    }
 
     public static String getRecaptchaPrivateKey(CaptchaType type) {
         String key = StringUtils.defaultIfEmpty(get(PROP_RECAPTCHA_PRIVATE_KEY), "6LdQn0YUAAAAAB3iHC6AzFH_Sd5k9z0uAwfvPUkZ,6LcYYFAUAAAAAOWJFZgnZnVNNXr31rebRjsnoSA0");
@@ -4364,11 +4378,11 @@ public class FDStoreProperties {
         try {
             return Integer.parseInt(get(PROP_MAX_INVALID_PAYMENT_ATTEMPT));
         } catch (Exception e) {
-        	// disable if the property is not set or invalid
+            // disable if the property is not set or invalid
             return 0;
         }
     }
-    
+
     public static int getQuickShopResultMaxLimit() {
         try {
             return Integer.parseInt(get(QUICKSHOP_ALL_ITEMS_MAX));
@@ -4438,11 +4452,11 @@ public class FDStoreProperties {
     public static String getFeedPublishURL() {
         return get(PROP_FEED_PUBLISH_URL);
     }
-    
+
     public static String getFeedPublishCheck() {
         return get(PROP_FEED_PUBLISH_FROM_BKOFFICE);
     }
-    
+
     public static String getFeedPublishBackofficeURL() {
         return get(PROP_FEED_PUBLISH_BKOFFICE_URL);
     }
@@ -4613,7 +4627,7 @@ public class FDStoreProperties {
 
     /**
      * If true, CSR agents are allowed to use new XC pages in masquerade mode. Defaulted to true
-     *
+     * 
      * @ticket APPDEV-4660
      * @return
      */
@@ -4657,42 +4671,44 @@ public class FDStoreProperties {
         return Integer.parseInt(get(PROP_AVALARA_CRON_THREAD_COUNT) != null ? get(PROP_AVALARA_CRON_THREAD_COUNT) : "10");
     }
 
-    //@ IBM silverpopup chnages
-    public static String getIBMAccessTokenURL(){
-    	return get(IBM_ACCESSTOKEN_URL);
+    // @ IBM silverpopup chnages
+    public static String getIBMAccessTokenURL() {
+        return get(IBM_ACCESSTOKEN_URL);
     }
 
     public static String getIBMPushNotificationURL() {
         return get(IBM_PUSHNOTIFICATION_URL);
     }
+
     public static String getIBMWatsonEmailCampaignUrl() {
         return get(IBM_WATSON_EMAIL_CAMPAIGN_URL);
     }
-    
+
     public static String getIBMClientID() {
-		return get(IBM_CLIENT_ID);
-	}
-    
+        return get(IBM_CLIENT_ID);
+    }
+
     public static String getIBMCampaignClientID() {
-		return get(IBM_CAMPAIGN_CLIENT_ID);
-	}
+        return get(IBM_CAMPAIGN_CLIENT_ID);
+    }
 
     public static String getIBMClientSecret() {
-		return get(IBM_CLIENT_SECRET);
-	}
-    
+        return get(IBM_CLIENT_SECRET);
+    }
+
     public static String getIBMCampaignClientSecret() {
-		return get(IBM_CAMPAIGN_CLIENT_SECRET);
-	}
+        return get(IBM_CAMPAIGN_CLIENT_SECRET);
+    }
 
     public static String getIBMRefreshToken() {
-		return get(IBM_REFRESH_TOKEN);
-	}
-    
+        return get(IBM_REFRESH_TOKEN);
+    }
+
     public static String getIBMCampaignRefreshToken() {
-		return get(IBM_CAMPAIGN_REFRESH_TOKEN);
-	}
-    //end IBM silverpopup end
+        return get(IBM_CAMPAIGN_REFRESH_TOKEN);
+    }
+
+    // end IBM silverpopup end
 
     public static int getSO3ActivateCutoffTime() {
         return Integer.parseInt(get(PROP_SO3_ACTIVATE_CUTOFF_TIME));
@@ -4840,7 +4856,7 @@ public class FDStoreProperties {
     }
 
     public static boolean isSF2_0_AndServiceEnabled(String beanName) {
-    	return ((Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue()&&FDEcommProperties.isServiceEnabled(beanName));
+        return ((Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue() && FDEcommProperties.isServiceEnabled(beanName));
     }
 
     public static boolean isMealBundleCartonLinkEnabled() {
@@ -4868,8 +4884,9 @@ public class FDStoreProperties {
     }
 
     public static boolean shouldShowDeliveryFeeForCheckoutPageCosCustomer() {
-    	 return (Boolean.valueOf(get(PROP_CHECKOUT_PAGE_COS_CUSTOMER_DISPLAY_DELIVERY_FEE_HEADER))).booleanValue();
+        return (Boolean.valueOf(get(PROP_CHECKOUT_PAGE_COS_CUSTOMER_DISPLAY_DELIVERY_FEE_HEADER))).booleanValue();
     }
+
     public static int getUserCartSaveInterval() {
         return Integer.parseInt(get(PROP_USER_CART_SAVE_INTERVAL));
     }
@@ -4883,14 +4900,14 @@ public class FDStoreProperties {
     }
 
     public static String getPropHomepageRedesignCurrentCosUserContainerContentKey() {
-		return get(PROP_HOMEPAGE_REDESIGN_CURRENTCOS_USER_CONTAINER_CONTENT_KEY);
-	}
+        return get(PROP_HOMEPAGE_REDESIGN_CURRENTCOS_USER_CONTAINER_CONTENT_KEY);
+    }
 
     public static String getPropHomepageRedesignNewCosUserContainerContentKey() {
-		return get(PROP_HOMEPAGE_REDESIGN_NEWCOS_USER_CONTAINER_CONTENT_KEY);
-	}
+        return get(PROP_HOMEPAGE_REDESIGN_NEWCOS_USER_CONTAINER_CONTENT_KEY);
+    }
 
-	public static int getHomepageRedesignProductLimitMax() {
+    public static int getHomepageRedesignProductLimitMax() {
         return Integer.parseInt(get(PROP_HOMEPAGE_REDESIGN_MODULE_PRODUCT_LIMIT_MAX));
     }
 
@@ -4942,58 +4959,57 @@ public class FDStoreProperties {
         return (Boolean.valueOf(get(PROP_EXTRA_LOG_FOR_LOGIN_FAILS_ENABLED))).booleanValue();
     }
 
-    public static boolean isQSTopItemsPerfOptimizationEnabled(){
-    	return (Boolean.valueOf(get(PROP_QS_TOP_ITEMS_PERF_OPT_ENABLED))).booleanValue();
+    public static boolean isQSTopItemsPerfOptimizationEnabled() {
+        return (Boolean.valueOf(get(PROP_QS_TOP_ITEMS_PERF_OPT_ENABLED))).booleanValue();
     }
 
-    public static boolean isZipCheckOverLayEnabled(){
-    	return (Boolean.valueOf(get(PROP_ZIP_CHECK_OVER_LAY_ENABLED))).booleanValue();
+    public static boolean isZipCheckOverLayEnabled() {
+        return (Boolean.valueOf(get(PROP_ZIP_CHECK_OVER_LAY_ENABLED))).booleanValue();
     }
 
-	public static boolean isObsoleteMergeCartPageEnabled() {
-    	return (Boolean.valueOf(get(PROP_OBSOLETE_MERGECARTPAGE_ENABLED))).booleanValue();
-	}
+    public static boolean isObsoleteMergeCartPageEnabled() {
+        return (Boolean.valueOf(get(PROP_OBSOLETE_MERGECARTPAGE_ENABLED))).booleanValue();
+    }
 
-	public static String getClusterName() {
-		return get(PROP_CLUSTER_NAME);
-	}
+    public static String getClusterName() {
+        return get(PROP_CLUSTER_NAME);
+    }
 
-	public static String getNodeName() {
-		return get(PROP_NODE_NAME);
-	}
+    public static String getNodeName() {
+        return get(PROP_NODE_NAME);
+    }
 
-	public static boolean isProductCacheOptimizationEnabled(){
+    public static boolean isProductCacheOptimizationEnabled() {
         return (Boolean.valueOf(get(PROP_PRODUCT_CACHE_OPTIMIZATION_ENABLED))).booleanValue();
-	}
+    }
 
-	public static String getRequestSchemeForRedirectUrl(){
-		return get(PROP_REQUEST_SCHEME_FOR_REDIRECT_URL);
-	}
+    public static String getRequestSchemeForRedirectUrl() {
+        return get(PROP_REQUEST_SCHEME_FOR_REDIRECT_URL);
+    }
 
-	public static boolean isPaymentVerificationEnabled() {
-		return (Boolean.valueOf(get(PROP_PAYMENT_VERIFICATION_ENABLED))).booleanValue();
-	}
+    public static boolean isPaymentVerificationEnabled() {
+        return (Boolean.valueOf(get(PROP_PAYMENT_VERIFICATION_ENABLED))).booleanValue();
+    }
 
-	public static boolean isDfpEnabled() {
-		return (Boolean.valueOf(get(PROP_DFP_ENABLED))).booleanValue();
-	}
+    public static boolean isDfpEnabled() {
+        return (Boolean.valueOf(get(PROP_DFP_ENABLED))).booleanValue();
+    }
 
-	public static String getDfpId() {
-		return get(PROP_DFP_ID);
-	}
+    public static String getDfpId() {
+        return get(PROP_DFP_ID);
+    }
 
+    public static boolean isTLSSHAEnabledForPaymentGateway() {
+        return (Boolean.valueOf(get(PAYMENT_TLSSHA_ENABLED))).booleanValue();
+    }
 
-	public static boolean isTLSSHAEnabledForPaymentGateway() {
-		return (Boolean.valueOf(get(PAYMENT_TLSSHA_ENABLED))).booleanValue();
-	}
+    public static boolean isRefreshZoneInfoEnabled() {
+        return (Boolean.valueOf(get(PROP_REFRESHZONE_ENABLED))).booleanValue();
+    }
 
-	public static boolean isRefreshZoneInfoEnabled() {
-		return (Boolean.valueOf(get(PROP_REFRESHZONE_ENABLED))).booleanValue();
-	}
-
-	public static boolean isGlobalSF2_0PropertyEnabled() {
-		return (Boolean.valueOf(get(GLOBAL_SF2_0_ENABLED))).booleanValue();
-		}
+    public static boolean isGlobalSF2_0PropertyEnabled() {
+        return (Boolean.valueOf(get(GLOBAL_SF2_0_ENABLED))).booleanValue();
+    }
 
     public static boolean isDebitSwitchNoticeEnabled() {
         return (Boolean.valueOf(get(PROP_DEBIT_SWITCH_NOTICE_ENABLED))).booleanValue();
@@ -5003,138 +5019,138 @@ public class FDStoreProperties {
         return (Boolean.valueOf(get(PROP_LOG_AKAMAI_HEADER_ENABLED))).booleanValue();
     }
 
+    public static int getFdcTransitionLookAheadDays() {
+        return Integer.parseInt(get(PROP_FDC_TRANSITION_LOOK_AHEAD_DAYS));
+    }
 
-	 public static int getFdcTransitionLookAheadDays() {
-			return Integer.parseInt(get(PROP_FDC_TRANSITION_LOOK_AHEAD_DAYS));
-		}
+    public static String getDefaultCustomerServiceContact() {
+        return get(CUSTOMER_SERVICE_CONTACT);
+    }
 
+    public static String getChefsTableCustomerServiceContact() {
+        return get(CHEFSTABLE_CONTACT_NUMBER);
+    }
 
-		public static String getDefaultCustomerServiceContact(){
-			return get(CUSTOMER_SERVICE_CONTACT);
-		}
-		public static String getChefsTableCustomerServiceContact(){
-			return get(CHEFSTABLE_CONTACT_NUMBER);
-		}
-		public static String getFoodKickCustomerServiceContact(){
-			return get(FOODKICK_SERVICE_CONTACT);
-		}
-		public static String getPennsylvaniaCustomerServiceContact(){
-			return get(PENNSYLVANIA_SERVICE_CONTACT);
-		}
+    public static String getFoodKickCustomerServiceContact() {
+        return get(FOODKICK_SERVICE_CONTACT);
+    }
 
-		//For SAP to get the Price of the Product as zero as it does not accept the Price to be zero we send as Free
-		public static boolean getEnableFreeProduct(){
-			return (Boolean.valueOf(get(PROP_ENABLE_FREE_PRODUCT))).booleanValue();
-		}
-		
-		/**
-		 * Website toggle to determine if we have turned on the feature for both website and mobile api <BR>
-		 * to pull nutrition information from the same soy template.
-		 * @return defaults to off, overide by an entry enable.website.mobile.same.nutrition.soy in fdstore.properties
-		 */
-		public static boolean getEnableWebsiteMobileSameNutritionSoy() {			
-			return (Boolean.valueOf(get(PROP_ENABLE_WEBSITE_MOBILE_SAME_NUTRITION_SOY))).booleanValue();
-		}
-		
+    public static String getPennsylvaniaCustomerServiceContact() {
+        return get(PENNSYLVANIA_SERVICE_CONTACT);
+    }
 
-		public static boolean getEnableFDXDistinctAvailability() {			
-			return (Boolean.valueOf(get(PROP_ENABLE_FDX_DISTINCT_AVAILABILITY))).booleanValue();
-		}
-		
-		public static boolean isRepeatWarmupEnabled() {			
-			return (Boolean.valueOf(get(PROP_ENABLE_REPEAT_WARMUP))).booleanValue();
-		}		
-	public static long getDefaultAuthCodeExpiration() {
-		return Long.parseLong(get(DEFAULT_CODE_EXPIRATION));
-	}
+    // For SAP to get the Price of the Product as zero as it does not accept the Price to be zero we send as Free
+    public static boolean getEnableFreeProduct() {
+        return (Boolean.valueOf(get(PROP_ENABLE_FREE_PRODUCT))).booleanValue();
+    }
 
-	public static long getDefaultAccessTokenExpiration() {
-		return Long.parseLong(get(DEFAULT_TOKEN_EXPIRATION));
-	}
+    /**
+     * Website toggle to determine if we have turned on the feature for both website and mobile api <BR>
+     * to pull nutrition information from the same soy template.
+     * 
+     * @return defaults to off, overide by an entry enable.website.mobile.same.nutrition.soy in fdstore.properties
+     */
+    public static boolean getEnableWebsiteMobileSameNutritionSoy() {
+        return (Boolean.valueOf(get(PROP_ENABLE_WEBSITE_MOBILE_SAME_NUTRITION_SOY))).booleanValue();
+    }
 
-	public static long getDefaultRefreshTokenExpiration() {
-		return Long.parseLong(get(DEFAULT_REFRESH_TOKEN_EXPIRATION));
-	}
+    public static boolean getEnableFDXDistinctAvailability() {
+        return (Boolean.valueOf(get(PROP_ENABLE_FDX_DISTINCT_AVAILABILITY))).booleanValue();
+    }
 
-	public static String getOAuth2ClientIds() {
-		return get(OAUTH2_CLIENT_IDS);
-	}
+    public static boolean isRepeatWarmupEnabled() {
+        return (Boolean.valueOf(get(PROP_ENABLE_REPEAT_WARMUP))).booleanValue();
+    }
 
-	public static String getOAuth2ClientSecrets() {
-		return get(OAUTH2_CLIENT_SECRETS);
-	}
+    public static long getDefaultAuthCodeExpiration() {
+        return Long.parseLong(get(DEFAULT_CODE_EXPIRATION));
+    }
 
-	public static String getOAuth2ClientRedirectUris(String clientId) {
-		return get(OAUTH2_CLIENT_REDIRECT_URIS + "." + clientId);
-	}
+    public static long getDefaultAccessTokenExpiration() {
+        return Long.parseLong(get(DEFAULT_TOKEN_EXPIRATION));
+    }
 
+    public static long getDefaultRefreshTokenExpiration() {
+        return Long.parseLong(get(DEFAULT_REFRESH_TOKEN_EXPIRATION));
+    }
 
-	public static boolean isNewProductsForFdcUsingFdEnabled(){
-		return (Boolean.valueOf(get(PROP_FDC_NEW_BACKIN_USE_FD_ENABLED))).booleanValue();
-	}
+    public static String getOAuth2ClientIds() {
+        return get(OAUTH2_CLIENT_IDS);
+    }
 
-	public static int getInConditionLimit() {
-		return Integer.parseInt(get(DATABASE_IN_CONDITION_LIMIT));
-	}
-	
-	public static boolean isDlvPassFreeTrialOptinFeatureEnabled(){
-		return (Boolean.valueOf(get(PROP_FD_DP_FREE_TRIAL_OPTIN_FEATURE_ENABLED))).booleanValue();
-	}
-	
-	public static boolean isPartialJoinOptimizerEnabled() {
-		return (Boolean.valueOf(get(PROP_DB_PARTIAL_JOIN_OPTIMIZER_ENABLED))).booleanValue();
-	}
+    public static String getOAuth2ClientSecrets() {
+        return get(OAUTH2_CLIENT_SECRETS);
+    }
 
-	public static String getFDHomeCriteoPriorityKeys() {
-		return get(FD_PRIORITY_SEARCH_KEYS);
-	}
+    public static String getOAuth2ClientRedirectUris(String clientId) {
+        return get(OAUTH2_CLIENT_REDIRECT_URIS + "." + clientId);
+    }
 
-	public static int getFDHomeCriteoMaxDisplayProducts() {
-		return Integer.parseInt(get(FD_HOME_CRITEO_MAX_DISPLAY));
-	}
+    public static boolean isNewProductsForFdcUsingFdEnabled() {
+        return (Boolean.valueOf(get(PROP_FDC_NEW_BACKIN_USE_FD_ENABLED))).booleanValue();
+    }
 
-	public static int getFDHomeCriteoServerCacheRefresh() {
-		return Integer.parseInt(get(FD_HOME_CRITEO_CACHE_REFRESH_MIN));
-	}
+    public static int getInConditionLimit() {
+        return Integer.parseInt(get(DATABASE_IN_CONDITION_LIMIT));
+    }
 
-	public static boolean isFdcFirstOrderEmailMsgEnabled() {
-		return (Boolean.valueOf(get(PROP_IS_FDC_FIRST_ORDER_EMAIL_MSG_ENABLED))).booleanValue();
-	}
+    public static boolean isDlvPassFreeTrialOptinFeatureEnabled() {
+        return (Boolean.valueOf(get(PROP_FD_DP_FREE_TRIAL_OPTIN_FEATURE_ENABLED))).booleanValue();
+    }
 
-	//appdev 6760 new mat view tunable via sub table.
-	public static boolean isNewProdMatViewV2Enabled() {
-		return (Boolean.valueOf(get(FDSTORE_DB_NEW_PRODUCTS_MATERIALIZEDVIEW_V2_ENABLED))).booleanValue();
-	}
+    public static boolean isPartialJoinOptimizerEnabled() {
+        return (Boolean.valueOf(get(PROP_DB_PARTIAL_JOIN_OPTIMIZER_ENABLED))).booleanValue();
+    }
 
+    public static String getFDHomeCriteoPriorityKeys() {
+        return get(FD_PRIORITY_SEARCH_KEYS);
+    }
 
-	public static int getMinimumItemsCountInCarousel() {
+    public static int getFDHomeCriteoMaxDisplayProducts() {
+        return Integer.parseInt(get(FD_HOME_CRITEO_MAX_DISPLAY));
+    }
+
+    public static int getFDHomeCriteoServerCacheRefresh() {
+        return Integer.parseInt(get(FD_HOME_CRITEO_CACHE_REFRESH_MIN));
+    }
+
+    public static boolean isFdcFirstOrderEmailMsgEnabled() {
+        return (Boolean.valueOf(get(PROP_IS_FDC_FIRST_ORDER_EMAIL_MSG_ENABLED))).booleanValue();
+    }
+
+    // appdev 6760 new mat view tunable via sub table.
+    public static boolean isNewProdMatViewV2Enabled() {
+        return (Boolean.valueOf(get(FDSTORE_DB_NEW_PRODUCTS_MATERIALIZEDVIEW_V2_ENABLED))).booleanValue();
+    }
+
+    public static int getMinimumItemsCountInCarousel() {
         return Integer.parseInt(get(PROP_CAROUSEL_MIN_ITEMS));
-	}
-	
-	private static String getValueFromProperty(String property, int i) {
-		if (property.contains(",")) {
-			String[] keys = property.split(",");
-			if (i >= keys.length) {
-				return keys[0];
-			} else {
-				return keys[i];
-			}
-		} else {
-			return property;
-		}
-      }
-	
-	public static boolean isDlvPassStandAloneCheckoutEnabled(){
-		return (Boolean.valueOf(get(PROP_FD_DP_STANDALONE_CHECKOUT_ENABLED))).booleanValue();
-	}
-	
-	public static String getNewProductsPageCarouselContainerContentKey() {
-		return get(PROP_NEW_PRODUCTS_PAGE_CAROUSEL_CONTAINER_CONTENT_KEY);
-	}
+    }
 
-	public static boolean isNewProductsPageCarouselEnabled() {
-		return (Boolean.valueOf(get(PROP_NEW_PRODUCTS_PAGE_CAROUSEL_ENABLED))).booleanValue();
-	}
+    private static String getValueFromProperty(String property, int i) {
+        if (property.contains(",")) {
+            String[] keys = property.split(",");
+            if (i >= keys.length) {
+                return keys[0];
+            } else {
+                return keys[i];
+            }
+        } else {
+            return property;
+        }
+    }
+
+    public static boolean isDlvPassStandAloneCheckoutEnabled() {
+        return (Boolean.valueOf(get(PROP_FD_DP_STANDALONE_CHECKOUT_ENABLED))).booleanValue();
+    }
+
+    public static String getNewProductsPageCarouselContainerContentKey() {
+        return get(PROP_NEW_PRODUCTS_PAGE_CAROUSEL_CONTAINER_CONTENT_KEY);
+    }
+
+    public static boolean isNewProductsPageCarouselEnabled() {
+        return (Boolean.valueOf(get(PROP_NEW_PRODUCTS_PAGE_CAROUSEL_ENABLED))).booleanValue();
+    }
 
     public static boolean isFreshDealsPageNewProductsCarouselEnabled() {
         return (Boolean.valueOf(get(PROP_FRESH_DEALS_PAGE_NEW_PRODUCTS_CAROUSEL_ENABLED))).booleanValue();
@@ -5155,18 +5171,20 @@ public class FDStoreProperties {
     public static boolean isReorderPageNewProductsCarouselRandomizeProductOrderEnabled() {
         return (Boolean.valueOf(get(PROP_REORDER_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED))).booleanValue();
     }
-    
-	public static boolean isInformOrderModifyEnabled() {
-		return (Boolean.valueOf(get(PROP_INFORM_ORDERMODIFY_ENABLED))).booleanValue();
-	}
-	public static int getInformOrderModifyViewCountLimit() {
-		return Integer.parseInt(get(PROP_INFORM_ORDERMODIFY_VIEWLIMIT));
-	}
-	public static String getInformOrderModifyMediaPath() {
-		return get(PROP_INFORM_ORDERMODIFY_MEDIAPATH);
-	}
-	
-	public static String getMasterpassExcMessage() {
-		 return get(MASTERPASS_EXCEPTION_MESSAGE);
-	}
+
+    public static boolean isInformOrderModifyEnabled() {
+        return (Boolean.valueOf(get(PROP_INFORM_ORDERMODIFY_ENABLED))).booleanValue();
+    }
+
+    public static int getInformOrderModifyViewCountLimit() {
+        return Integer.parseInt(get(PROP_INFORM_ORDERMODIFY_VIEWLIMIT));
+    }
+
+    public static String getInformOrderModifyMediaPath() {
+        return get(PROP_INFORM_ORDERMODIFY_MEDIAPATH);
+    }
+
+    public static String getMasterpassExcMessage() {
+        return get(MASTERPASS_EXCEPTION_MESSAGE);
+    }
 }

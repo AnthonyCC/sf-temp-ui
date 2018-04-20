@@ -5,7 +5,7 @@ var FreshDirect = FreshDirect || {};
   var $ = fd.libs.$;
   var WIDGET = fd.modules.common.widget;
   var DISPATCHER = fd.common.dispatcher;
-  var MAXTERMS = 25; // TODO configurable
+  var MAXTERMS = fd.multisearch.limit || 25;
 
   var searchInput = Object.create(WIDGET,{
     signal:{
@@ -100,7 +100,7 @@ var FreshDirect = FreshDirect || {};
 
 // initialize based on query parameters
 (function (fd) {
-  var DEFAULTLIST = [
+  var DEFAULTLIST = fd.multisearch.defaultList ? fd.multisearch.defaultList.split(',') : [
     'eggs',
     'milk',
     'pizza',
@@ -114,11 +114,13 @@ var FreshDirect = FreshDirect || {};
   ];
 
   setTimeout(function () {
-    var q = fd.utils.getParameterByName('q').split(',').filter(function (kw) { return kw; }).map(fd.utils.escapeHtml);
+    var q = fd.utils.getParameterByName('q').split(',').filter(function (kw) { return kw; });
 
     if (q.length === 0) {
       q = DEFAULTLIST;
     }
+
+    q = q.filter(function (kw) { return kw; }).map(function (kw) { return kw.trim(); }).map(fd.utils.escapeHtml);
 
     fd.modules.multisearch.searchInput.render({
       terms: q
