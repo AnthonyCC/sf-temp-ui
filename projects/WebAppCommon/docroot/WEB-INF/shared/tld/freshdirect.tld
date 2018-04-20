@@ -5757,12 +5757,12 @@
 		<tagclass>com.freshdirect.webapp.taglib.validation.OptionalParameterValidatorTag</tagclass>
 		<info></info>
 		<attribute>
-			<name>parameters</name>
+			<name>parameter</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>parameterTypes</name>
+			<name>parameterType</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>

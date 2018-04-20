@@ -18,9 +18,9 @@
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
 
 <fd:RequiredParameterValidator parameters="id"/>
-<% String paramTypes = Integer.class.getSimpleName() + "," + Integer.class.getSimpleName();%>
 
-<fd:OptionalParameterValidator parameters="pageSize,activePage" parameterTypes="<%=paramTypes%>"/>
+<fd:OptionalParameterValidator parameter="pageSize" parameterType="<%=Integer.class.getSimpleName()%>"/>
+<fd:OptionalParameterValidator parameter="activePage" parameterType="<%=Integer.class.getSimpleName()%>"/>
 
 <fd:CheckLoginStatus id="user" guestAllowed='true' recognizedAllowed='true' />
 <fd:CheckDraftContextTag/>
