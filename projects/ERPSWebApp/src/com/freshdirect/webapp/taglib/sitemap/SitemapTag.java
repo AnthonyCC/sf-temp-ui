@@ -18,7 +18,6 @@ import com.freshdirect.fdstore.sitemap.SitemapData;
 import com.freshdirect.fdstore.sitemap.SitemapDataFactory;
 import com.freshdirect.fdstore.sitemap.SitemapHome;
 import com.freshdirect.fdstore.sitemap.SitemapSB;
-import com.freshdirect.fdstore.sitemap.SitemapSBImple;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.service.FDECommerceService;
 
