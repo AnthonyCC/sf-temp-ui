@@ -704,7 +704,7 @@ public class CategoryModel extends ProductContainer {
 	//** ContentFactory.getProductByName() is the main user..
 	public ProductModel getProductByName(String productId) {
 		for ( ProductModel pm : getProducts() ) {
-			if (pm.getContentName().equals(productId)) {
+			if (pm != null && pm.getContentName().equals(productId)) {
 				return pm;
 			}
 		}
