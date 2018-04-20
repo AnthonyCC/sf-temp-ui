@@ -43,6 +43,7 @@ public class WarmupMonitorFilter extends AbstractFilter {
 	                    }
 	                } else {
 	                    ((HttpServletResponse) response).sendRedirect(WARMUP_PAGE_PATH);
+	                    return;
 	                    //return; //If we dont return it will continue to execute FilterChain which might cause exception
 	                }
 	            }
