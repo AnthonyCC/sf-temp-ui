@@ -18,6 +18,10 @@
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
 
 <fd:RequiredParameterValidator parameters="id"/>
+<% String paramTypes = Integer.class.getSimpleName() + "," + Integer.class.getSimpleName();%>
+
+<fd:OptionalParameterValidator parameters="pageSize,activePage" parameterTypes="<%=paramTypes%>"/>
+
 <fd:CheckLoginStatus id="user" guestAllowed='true' recognizedAllowed='true' />
 <fd:CheckDraftContextTag/>
 <fd:SearchRedesignRedirector user="<%=user%>" pageType="<%=FilteringFlowType.PRES_PICKS%>"/>
