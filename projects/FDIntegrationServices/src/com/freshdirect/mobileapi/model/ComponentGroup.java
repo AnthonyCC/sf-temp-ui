@@ -45,7 +45,7 @@ public class ComponentGroup {
             if (varOpts != null) {
                 for (FDVariationOption varOpt : varOpts) {
                     String optSkuCode = varOpt.getSkuCode();
-                    if (optSkuCode != null) {
+                    if (optSkuCode != null && !optSkuCode.isEmpty()) {
                         try {
                             ProductModel pm = ContentFactory.getInstance().getProduct(optSkuCode);
                             if (!pm.isUnavailable()) {
