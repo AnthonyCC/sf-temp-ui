@@ -86,6 +86,8 @@ public class VariationOption {
             }
         } catch (FDSkuNotFoundException e) {
             unAvailable = true;
+        } catch (AssertionError ex){
+        	unAvailable = true;
         }
         return unAvailable;
     }

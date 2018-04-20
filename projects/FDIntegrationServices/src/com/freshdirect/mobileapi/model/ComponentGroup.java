@@ -54,6 +54,9 @@ public class ComponentGroup {
                         } catch (FDSkuNotFoundException e) {
                             LOG.warn("Could not get product with sku:" + optSkuCode + "::desc="
                                     + varOpt.getDescription(), e);
+                        } catch (AssertionError ex){
+                        	LOG.warn("Could not get product with sku:" + optSkuCode + "::desc="
+                                    + varOpt.getDescription(), ex);
                         }
                     }
                 }
