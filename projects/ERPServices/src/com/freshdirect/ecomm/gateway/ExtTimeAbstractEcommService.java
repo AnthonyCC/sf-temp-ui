@@ -69,14 +69,14 @@ public abstract class ExtTimeAbstractEcommService {
 		requestFactory.setConnectTimeout(FDEcommProperties.getEcomServiceConnectionTimeout() * 1000);
 		restTemplate.setRequestFactory(requestFactory);
 		
-		try {
+		/*try {
 		    IdleConnectionMonitorThread staleMonitor = new IdleConnectionMonitorThread(cManager);
 		    staleMonitor.start();
 			staleMonitor.join(1000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+			}*/
 
 	}
 
