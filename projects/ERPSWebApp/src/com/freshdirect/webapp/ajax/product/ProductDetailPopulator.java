@@ -8,6 +8,7 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -681,6 +682,18 @@ public class ProductDetailPopulator {
      */
     public static void populateProductData(ProductData item, FDUserI user, ProductModel productModel, SkuModel sku, FDProduct fdProduct, PriceCalculator priceCalculator,
             FDProductSelectionI orderLine, boolean useFavBurst, boolean usePrimaryHome) {
+        populateSimpleProductData(item, productModel, sku, usePrimaryHome);
+        populateAvailable(item, user, productModel);
+        populateRatings(item, user, productModel, sku.getSkuCode());
+        populateBursts(item, user, productModel, priceCalculator, useFavBurst);
+        populateQuantity(item, user, productModel, orderLine);
+        populateSalesUnits(item, fdProduct, orderLine);
+        populateScores(item, user, productModel);
+        populateLineData(item, orderLine, fdProduct, productModel, sku);
+        populateAvailabilityMessages(item, productModel, fdProduct, sku);
+    }
+    
+    private static void populateSimpleProductData(ProductData item, ProductModel productModel, SkuModel sku, boolean usePrimaryHome) {
         item.setCatId(usePrimaryHome ? productModel.getParentNode().getContentKey().getId() : productModel.getCategory().getContentName());
         item.setDepartmentId(
                 usePrimaryHome ? productModel.getParentNode().getParentNode().getContentKey().getId() : productModel.getCategory().getDepartment().getContentKey().getId());
@@ -690,14 +703,6 @@ public class ProductDetailPopulator {
         item.setDiscontinued(productModel.isDiscontinued());
         item.setOutOfSeason(productModel.isOutOfSeason());
         item.setNewProduct(productModel.isNew());
-
-        populateAvailable(item, user, productModel);
-        populateRatings(item, user, productModel, sku.getSkuCode());
-        populateBursts(item, user, productModel, priceCalculator, useFavBurst);
-        populateQuantity(item, user, productModel, fdProduct, orderLine);
-        populateScores(item, user, productModel);
-        populateLineData(item, orderLine, fdProduct, productModel, sku);
-        populateAvailabilityMessages(item, productModel, fdProduct, sku);
     }
 
     private static void populateAvailable(ProductData item, FDUserI user, ProductModel productModel) {
@@ -1055,8 +1060,7 @@ public class ProductDetailPopulator {
         return min;
     }
 
-    private static void populateQuantity(ProductData item, FDUserI user, ProductModel productModel, FDProduct fdProduct, FDProductSelectionI orderLine) {
-
+    private static void populateSalesUnits(ProductData item, FDProduct fdProduct, FDProductSelectionI orderLine) {
         // Sales units
         List<SalesUnit> sus = new ArrayList<SalesUnit>();
         String selectedSu = null;
@@ -1078,7 +1082,9 @@ public class ProductDetailPopulator {
             sus.add(sue);
         }
         item.setSalesUnit(sus);
+    }
 
+    private static void populateQuantity(ProductData item, FDUserI user, ProductModel productModel, FDProductSelectionI orderLine) {
         // Numeric quantity
         Quantity quantity = new Quantity();
         quantity.setqMin(productModel.getQuantityMinimum());
@@ -1091,7 +1097,6 @@ public class ProductDetailPopulator {
         FDCartModel cart = user.getShoppingCart();
         item.setMaxProductSampleQuantityReached(cart.isMaxProductSampleQuantityReached(productModel.getContentName()) || cart.isMaxSampleReached());
         item.setInCartAmount(cart.getTotalQuantity(productModel, false));
-
     }
 
     private static void populateScores(ProductData item, FDUserI user, ProductModel productModel) {
@@ -1726,7 +1731,23 @@ public class ProductDetailPopulator {
             } catch (FDResourceException exc) {
                 LOG.debug("Pricing and ERPS parts of " + product.getContentKey() + " are not populated due to missing resource", exc);
             } catch (FDSkuNotFoundException exc) {
-                LOG.debug("Pricing and ERPS parts of " + product.getContentKey() + " are not populated due to missing ERPS data", exc);
+                if (FDStoreProperties.getPreviewMode()) {
+                    LOG.debug("Populating partial product data for preview (always available) for " + product.getContentKey() + ", as ERPS data is missing.");
+                    
+                    populateSimpleProductData(data, product, sku, true);
+                    populateRatings(data, user, product, sku.getSkuCode());
+                    populateBursts(data, user, product, priceCalculator, true);
+                    populateScores(data, user, product);
+                    populateQuantity(data, user, product, null);
+
+                    // Minimal set of properties for preview mode, that makes the product look like available without breaking the page
+                    data.setAvailable(true);
+                    data.setAvailableQty(0);
+                    data.setSalesUnit(Collections.<SalesUnit>emptyList());
+                    data.setSalesUnitDescrPDP("");
+                } else {
+                    LOG.debug("Pricing and ERPS parts of " + product.getContentKey() + " are not populated due to missing ERPS data", exc);
+                }
             }
 
             // Populate transient-data
