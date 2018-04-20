@@ -100,7 +100,7 @@ public class CarouselService {
     private List<ProductData> filterUnavailableProducts(List<ProductData> products) {
         List<ProductData> availableProducts = new ArrayList<ProductData>();
         for (ProductData product : products) {
-            if (product.isAvailable() && !product.isDiscontinued()) {
+            if (product.isAvailable()) {
                 availableProducts.add(product);
             }
         }
