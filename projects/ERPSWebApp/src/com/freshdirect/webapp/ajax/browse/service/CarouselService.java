@@ -83,14 +83,28 @@ public class CarouselService {
 
         if (newProductsCategory != null) {
             List<ProductModel> products = newProductsCategory.getAllChildProductsAsList();
-            if (products != null && products.size() >= FDStoreProperties.getMinimumItemsCountInCarousel()) {
+            if (products != null) {
                 if (isRandomizeProductOrderEnabled) {
                     Collections.shuffle(products);
                 }
             carousel = createCarouselData(null, NEW_PRODUCTS_CAROUSEL_NAME, products, user, null, null);
             }
-
         }
-        return carousel;
+
+        if (carousel != null) {
+            carousel.setProducts(filterUnavailableProducts(carousel.getProducts()));
+        }
+        return carousel.getProducts().size() >= FDStoreProperties.getMinimumItemsCountInCarousel() ? carousel : null;
     }
+
+    private List<ProductData> filterUnavailableProducts(List<ProductData> products) {
+        List<ProductData> availableProducts = new ArrayList<ProductData>();
+        for (ProductData product : products) {
+            if (product.isAvailable() && !product.isDiscontinued()) {
+                availableProducts.add(product);
+            }
+        }
+        return availableProducts;
+    }
+
 }
