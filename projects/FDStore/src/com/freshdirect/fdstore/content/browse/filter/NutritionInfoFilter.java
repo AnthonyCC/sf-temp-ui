@@ -8,6 +8,7 @@ import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.content.nutrition.NutritionValueEnum;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.storeapi.content.AbstractProductItemFilter;
 import com.freshdirect.storeapi.content.FilteringProductItem;
@@ -47,7 +48,7 @@ public abstract class NutritionInfoFilter extends AbstractProductItemFilter {
 	}
 	
 	@Override
-	public boolean apply(FilteringProductItem productItem) throws FDResourceException {
+	public boolean apply(FilteringProductItem productItem) {
 
 		if (productItem == null || productItem.getProductModel() == null || claimCode == null || productItem.getProductModel().isUnavailable()) {
 			return false;
@@ -67,7 +68,11 @@ public abstract class NutritionInfoFilter extends AbstractProductItemFilter {
 				}
 			}
         } catch (FDResourceException e) {
-            LOGGER.error("Failed to obtain fdProduct for product " + productItem.getProductModel().getContentName(), e);
+            if (FDStoreProperties.getPreviewMode()) {
+                LOGGER.debug("No fdProduct found for product " + productItem.getProductModel().getContentName());
+            } else {
+                LOGGER.error("Failed to obtain fdProduct for product " + productItem.getProductModel().getContentName(), e);
+            }
             return false;
         }
 
