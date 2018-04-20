@@ -64,14 +64,10 @@ public class CartLineItem {
         ProductModel prodNode = null;
         try {
             prodNode = ContentFactory.getInstance().getProduct(skuCode);
-        } catch (FDSkuNotFoundException e) {
+        } catch (Exception e) {
             LOGGER.warn("SKU not found", e);
             //TODO: Revisit exception handling strategy
             throw new RuntimeException("SKU not found", e);
-        } catch (AssertionError ex) {
-            LOGGER.warn("Error getting product", ex);
-            //TODO: Revisit exception handling strategy
-            throw new RuntimeException("Error getting product", ex);
         }
         //Supplement user selected variations with defaulted variations to build complete variations map.
         Map<String, String> completeVariations = buildSelectedVariations(product.getVariations(), userSelectVariations);

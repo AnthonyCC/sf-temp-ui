@@ -51,12 +51,9 @@ public class ComponentGroup {
                             if (!pm.isUnavailable()) {
                                 productList.add(Product.wrap(pm, user, cartLine, ctx));
                             }
-                        } catch (FDSkuNotFoundException e) {
+                        } catch (Exception e) {
                             LOG.warn("Could not get product with sku:" + optSkuCode + "::desc="
                                     + varOpt.getDescription(), e);
-                        } catch (AssertionError ex){
-                        	LOG.warn("Could not get product with sku:" + optSkuCode + "::desc="
-                                    + varOpt.getDescription(), ex);
                         }
                     }
                 }
