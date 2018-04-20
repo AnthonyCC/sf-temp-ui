@@ -118,38 +118,40 @@
 		</div>
 	</tmpl:put>
 
-	<%
-	    String moduleContainerId = FDStoreProperties.getNewProductsPageCarouselContainerContentKey();
-		pageContext.setAttribute("moduleContainerId", moduleContainerId);
-		boolean isModuleEnabled = FDStoreProperties.isNewProductsPageCarouselEnabled();
-		pageContext.setAttribute("isModuleEnabled", isModuleEnabled);
-	%>
+	<tmpl:put name='tabs' direct='true'>
+		<div id="listsearch" class="NOMOBWEB">
+			<soy:render template="srch.listSearch"
+				data="${browsePotato.searchParams}" />
+		</div>
+		<section class="page-type NOMOBWEB">
+			<soy:render template="browse.pageType"
+				data="${browsePotato.searchParams}" />
+		</section>
 
-	<c:choose>
-		<c:when test="${browsePotato.searchParams.pageType == 'NEWPRODUCTS'}">
-			<c:choose>
-				<c:when test="${isModuleEnabled}">
-					<tmpl:put name='new products recommender' direct='true'>
-						<div class="new-products-carousel-module">
-							<potato:modulehandling name="newProductsModule"
-								moduleContainerId="${moduleContainerId}" />
-							<soy:render template="common.contentModules"
-								data="${newProductsModule}" />
-						</div>
-					</tmpl:put>
-				</c:when>
-			</c:choose>
-		</c:when>
-		<c:otherwise>
-			<tmpl:put name='tabs' direct='true'>
-				<div id="listsearch" class="NOMOBWEB">
-					<soy:render template="srch.listSearch"
-						data="${browsePotato.searchParams}" />
-				</div>
-				<section class="page-type NOMOBWEB">
-					<soy:render template="browse.pageType"
-						data="${browsePotato.searchParams}" />
-				</section>
+		<c:choose>
+			<c:when test="${browsePotato.searchParams.pageType == 'NEWPRODUCTS'}">
+
+				<%
+				    String moduleContainerId = FDStoreProperties.getNewProductsPageCarouselContainerContentKey();
+					pageContext.setAttribute("moduleContainerId", moduleContainerId);
+					boolean isModuleEnabled = FDStoreProperties.isNewProductsPageCarouselEnabled();
+					pageContext.setAttribute("isModuleEnabled", isModuleEnabled);
+				%>
+
+				<c:choose>
+					<c:when test="${isModuleEnabled}">
+						<tmpl:put name='new products recommender' direct='true'>
+							<div class="new-products-carousel-module">
+								<potato:modulehandling name="newProductsModule"
+									moduleContainerId="${moduleContainerId}" />
+								<soy:render template="common.contentModules"
+									data="${newProductsModule}" />
+							</div>
+						</tmpl:put>
+					</c:when>
+				</c:choose>
+			</c:when>
+			<c:otherwise>
 				<section class="srch-ddpp">
 					<%-- this does the featured items --%>
 					<%
@@ -183,37 +185,39 @@
 					    }
 					%>
 				</section>
-				<c:choose>
-					<c:when
-						test="${browsePotato.searchParams.pageType == 'STAFF_PICKS'}">
-						<%-- DEBUG: this should switch to new type --%>
-						<%--do nothing --%>
-					</c:when>
-					<c:otherwise>
-						<section class="ddpp-oas NOMOBWEB">
-							<div class="oas-cnt PPSuperBuy" id="oas_PPSuperBuy">
-								<script type="text/javascript">
+			</c:otherwise>
+		</c:choose>
+
+
+
+		<c:choose>
+			<c:when test="${browsePotato.searchParams.pageType == 'STAFF_PICKS'}">
+				<%-- DEBUG: this should switch to new type --%>
+				<%--do nothing --%>
+			</c:when>
+			<c:otherwise>
+				<section class="ddpp-oas NOMOBWEB">
+					<div class="oas-cnt PPSuperBuy" id="oas_PPSuperBuy">
+						<script type="text/javascript">
 			        OAS_AD('PPSuperBuy');
 			    </script>
-							</div>
-						</section>
-					</c:otherwise>
-				</c:choose>
-				<nav class="tabs NOMOBWEB" role="tablist">
-					<soy:render template="srch.searchTabs"
-						data="${browsePotato.searchParams}" />
-				</nav>
-				<section class="itemcount NOMOBWEB">
-					<soy:render template="srch.searchSuggestions"
-						data="${browsePotato.searchParams}" />
+					</div>
 				</section>
-				<div class="search-input NOMOBWEB">
-					<soy:render template="srch.searchParams"
-						data="${browsePotato.searchParams}" />
-				</div>
-			</tmpl:put>
-		</c:otherwise>
-	</c:choose>
+			</c:otherwise>
+		</c:choose>
+		<nav class="tabs NOMOBWEB" role="tablist">
+			<soy:render template="srch.searchTabs"
+				data="${browsePotato.searchParams}" />
+		</nav>
+		<section class="itemcount NOMOBWEB">
+			<soy:render template="srch.searchSuggestions"
+				data="${browsePotato.searchParams}" />
+		</section>
+		<div class="search-input NOMOBWEB">
+			<soy:render template="srch.searchParams"
+				data="${browsePotato.searchParams}" />
+		</div>
+	</tmpl:put>
 
 	<tmpl:put name='leftnav' direct='true'>
 		<div id="leftnav">
