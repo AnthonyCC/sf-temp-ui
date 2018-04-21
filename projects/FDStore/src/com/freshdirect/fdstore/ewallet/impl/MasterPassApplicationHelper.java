@@ -73,7 +73,7 @@ public class MasterPassApplicationHelper {
 	 * 
 	 * @throws JAXBException
 	 */
-	public static String printXML(Object xmlClass) throws JAXBException {
+	public static String printXML(Object xmlClass) {
 
 			try {
 				JAXBContext jaxbContext = JAXBContext.newInstance(xmlClass.getClass());
@@ -83,7 +83,7 @@ public class MasterPassApplicationHelper {
 				return xml;
 				
 			} catch (JAXBException e) {
-				throw e;
+				throw new MasterPassServiceRuntimeException(e);
 			}
 	}
 	
