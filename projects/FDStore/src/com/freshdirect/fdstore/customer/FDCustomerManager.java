@@ -1664,23 +1664,6 @@ public class FDCustomerManager {
 		}
 	}
 
-	public static List<FDOrderI> getOrders(List<String> saleIds) throws FDResourceException {
-		lookupManagerHome();
-
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.getOrders(saleIds);
-
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			LOGGER.debug("RemoteException: ", re);
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-	}
-
 	public static ErpSaleModel getErpSaleModel(String saleId) throws FDResourceException {
 		lookupManagerHome();
 

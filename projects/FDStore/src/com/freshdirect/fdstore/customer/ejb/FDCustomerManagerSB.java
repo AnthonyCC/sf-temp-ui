@@ -353,8 +353,6 @@ public interface FDCustomerManagerSB  extends EJBObject{
 
 	public FDOrderI getOrder(FDIdentity identity, String saleId) throws FDResourceException, RemoteException;
 
-	public List<FDOrderI> getOrders(List<String> saleIds) throws FDResourceException, RemoteException;
-
     public FDOrderI getOrderForCRM(String saleId) throws FDResourceException, RemoteException;
 
     public FDOrderI getOrder(String saleId) throws FDResourceException, RemoteException;

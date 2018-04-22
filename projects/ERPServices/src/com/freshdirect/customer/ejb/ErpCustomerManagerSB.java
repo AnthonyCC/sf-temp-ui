@@ -154,11 +154,6 @@ public interface ErpCustomerManagerSB extends EJBObject {
     public ErpSaleModel getOrder(PrimaryKey erpSalePk) throws RemoteException;
     
     /**
-	 * Get multiple sales
-	 */
-	public List<ErpSaleModel> getOrders(List<PrimaryKey> erpSalePks) throws RemoteException;
-    
-    /**
      * Get lightweight info about a customer's orders.
      *
      * @param erpCustomerPk primary key of ErpCustomer
