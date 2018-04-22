@@ -20,6 +20,5 @@ public interface IEwallet {
 	
 	EwalletResponseData standardCheckout(EwalletRequestData ewalletRequestData) throws Exception;
 	EwalletResponseData preStandardCheckout(EwalletRequestData ewalletRequestData) throws Exception;
-	EwalletResponseData expressCheckoutWithoutPrecheckout(EwalletRequestData ewalletRequestData) throws Exception;
 	
 }

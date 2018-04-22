@@ -195,41 +195,4 @@ public class EwalletMobileRequestProcessor {
 	}
 	
 	
-	/**
-	 * @param ewalletRequestData
-	 * @return
-	 * @throws Exception
-	 */
-	public EwalletResponseData expressCheckoutWithoutPrecheckout(EwalletRequestData ewalletRequestData) throws Exception{
-		EwalletResponseData ewalletResponseData = new EwalletResponseData();
-		IEwallet ewallet = null;
-		if(ewalletRequestData != null){
-			EwalletServiceFactory ewalletServiceFactory = new EwalletServiceFactory();
-			ewallet = ewalletServiceFactory.getEwalletService(ewalletRequestData);
-			
-			if(ewallet!=null){
-				ewalletResponseData = ewallet.expressCheckoutWithoutPrecheckout(ewalletRequestData);
-			}
-		}
-		return ewalletResponseData;
-	}
-	
-	/**
-	 * @param ewalletRequestData
-	 * @return
-	 * @throws Exception
-	 */
-	public EwalletResponseData expressCheckout(EwalletRequestData ewalletRequestData) throws Exception{
-		EwalletResponseData ewalletResponseData = new EwalletResponseData();
-		IEwallet ewallet = null;
-		if(ewalletRequestData != null){
-			EwalletServiceFactory ewalletServiceFactory = new EwalletServiceFactory();
-			ewallet = ewalletServiceFactory.getEwalletService(ewalletRequestData);
-			
-			if(ewallet!=null){
-				ewalletResponseData = ewallet.expressCheckout(ewalletRequestData);
-			}
-		}
-		return ewalletResponseData;
-	}
 }

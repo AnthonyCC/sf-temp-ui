@@ -423,26 +423,6 @@ public interface IECommerceService {
 	
     public void sendModifyOrderRequest(String saleId, String parentOrderId, Double tip, String reservationId,String firstName,String lastName,String deliveryInstructions,String serviceType, 
 			String unattendedInstr,String orderMobileNumber,String erpOrderId,boolean containsAlcohol) throws RemoteException;
-
-    
-
-	/*EwalletResponseData getToken(EwalletRequestData ewalletRequestData) throws RemoteException;
-	EwalletResponseData checkout(EwalletRequestData ewalletRequestData) throws RemoteException;
-	EwalletResponseData expressCheckout(EwalletRequestData ewalletRequestData) throws RemoteException;
-	EwalletResponseData connect(EwalletRequestData ewalletRequestData) throws RemoteException;
-	EwalletResponseData getAllPayMethodInEwallet(EwalletRequestData ewalletRequestData) throws RemoteException;
-	EwalletResponseData connectComplete(EwalletRequestData ewalletRequestData) throws RemoteException;
-	EwalletResponseData disconnect(EwalletRequestData ewalletRequestData) throws RemoteException;
-	
-	//Batch
-	EwalletResponseData postbackTrxns(EwalletRequestData req) throws RemoteException;
-	
-	//Standard checkout
-	EwalletResponseData standardCheckout(EwalletRequestData ewalletRequestData) throws RemoteException;
-	EwalletResponseData preStandardCheckout(EwalletRequestData ewalletRequestData) throws RemoteException;
-	EwalletResponseData expressCheckoutWithoutPrecheckout(EwalletRequestData ewalletRequestData) throws RemoteException;
-	//PayPal
-	EwalletResponseData addPayPalWallet(EwalletRequestData ewalletRequestData) throws RemoteException;*/
     
     public Ticket createTicket(Ticket ticket) throws RemoteException;
     

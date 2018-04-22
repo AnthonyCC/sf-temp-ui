@@ -4,7 +4,6 @@ import java.rmi.RemoteException;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.freshdirect.ecomm.gateway.AbstractEcommService;
-import com.freshdirect.ecommerce.data.attributes.FlatAttributeCollection;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.ecommerce.data.fdstore.EwalletData;
@@ -13,9 +12,6 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.ecomm.converter.EwalletConverter;
 import com.freshdirect.fdstore.ewallet.EwalletRequestData;
 import com.freshdirect.fdstore.ewallet.EwalletResponseData;
-import com.freshdirect.payment.service.AbstractService;
-import com.freshdirect.payment.service.FDECommerceService;
-import com.freshdirect.payment.service.IECommerceService;
 
 public class EwalletService  extends AbstractEcommService implements EwalletServiceI {
 	
@@ -29,10 +25,10 @@ public class EwalletService  extends AbstractEcommService implements EwalletServ
 	private static final String POST_BACK_TRANX = "/ewallet/postbackTrxns";
 	private static final String STD_CHECKOUT = "/ewallet/standardCheckout";
 	private static final String PRE_STD_CHECKOUT = "/ewallet/preStandardCheckout";
-	private static final String EXP_CHECKOUT_NO_PRECHECK = "/ewallet/expCheckoutnoPrecheckout";
 	private static final String ADD_PAYPAL_WALLET = "/ewallet/addPayPalWallet";
 	
 	private static EwalletServiceI INSTANCE;
+	
 	
 	public static EwalletServiceI getInstance() {
 		if (INSTANCE == null)
@@ -228,29 +224,6 @@ public class EwalletService  extends AbstractEcommService implements EwalletServ
 				String inputJson;
 				inputJson = buildRequest(request);
 				response = postDataTypeMap(inputJson,getFdCommerceEndPoint(PRE_STD_CHECKOUT),new TypeReference<Response<EwalletResponseData>>() {});
-				if(!response.getResponseCode().equals("OK"))
-					throw new FDResourceException(response.getMessage());
-					
-			} catch (FDResourceException e) {
-				throw new RemoteException(e.getMessage());
-			}catch (FDEcommServiceException e) {
-				throw new RemoteException(e.getMessage());
-			}
-			
-			return response.getData();
-	}
-
-	@Override
-	public EwalletResponseData expressCheckoutWithoutPrecheckout(
-			EwalletRequestData ewalletRequestData) throws RemoteException {
-		
-		Response<EwalletResponseData> response = null;
-		EwalletResponseData result = null;
-		Request<EwalletRequestData> request = new Request<EwalletRequestData>();
-			try {
-				String inputJson;
-				inputJson = buildRequest(request);
-				response = postDataTypeMap(inputJson,getFdCommerceEndPoint(EXP_CHECKOUT_NO_PRECHECK),new TypeReference<Response<EwalletResponseData>>() {});
 				if(!response.getResponseCode().equals("OK"))
 					throw new FDResourceException(response.getMessage());
 					

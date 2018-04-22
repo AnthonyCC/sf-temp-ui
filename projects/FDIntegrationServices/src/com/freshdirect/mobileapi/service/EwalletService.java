@@ -563,54 +563,6 @@ public class EwalletService {
 	}
 	
 	/**
-	 * @param ewalletRequest
-	 * @param user
-	 * @return
-	 * @throws FDResourceException
-	 */
-	public EwalletResponse expressCheckout(final EwalletRequest ewalletRequest,SessionUser user, HttpServletRequest request) throws FDResourceException{
-	
-		EwalletResponse ewalletResponse = null;
-		String ewalletStatus = checkEWalletStatus(ewalletRequest.geteWalletType());
-		if(ewalletStatus.equalsIgnoreCase(EWALLET_STATUS_ON)){
-			
-			EwalletRequestData requestData = createExpCheckoutEwalletReqData(ewalletRequest,user.getFDSessionUser(),request);
-			
-			requestData.seteWalletType(ewalletRequest.geteWalletType());
-			requestData.setDebitCardSwitch(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user.getFDSessionUser()));
-			EwalletMobileRequestProcessor mobileRequestProcessor = new EwalletMobileRequestProcessor();
-			try{
-				EwalletResponseData ewalletResponseData = null;
-				if (ewalletRequest.getTransCode().equals(EXPRESSCHECKOUT_TRASCODE_EXP)) {
-					ewalletResponseData = mobileRequestProcessor.expressCheckoutWithoutPrecheckout(requestData);
-				}else if(ewalletRequest.getTransCode().equals(EXPRESSCHECKOUT_TRASCODE_PEX)){
-					// 
-					List<ErpPaymentMethodI> paymentMethods = FDCustomerFactory.getErpCustomer(user.getFDSessionUser().getIdentity()).getPaymentMethods();
-					if(paymentMethods != null){
-						ErpPaymentMethodI paymentMethod = getEWalletPaymentMethod(paymentMethods,ewalletRequest.geteWalletType());
-						PaymentData paymentData  = createPaymentData(paymentMethod);
-						requestData.setPaymentData(paymentData);
-						ewalletResponseData = mobileRequestProcessor.expressCheckout(requestData);
-					}
-				}
-				ewalletResponse = mapExpCheckoutResponseData(ewalletResponseData);
-				ewalletResponse.seteWalletStatus(ewalletStatus);
-			}catch(Exception exception){
-				ewalletResponse = new EwalletResponse();
-				ewalletResponse.addErrorMessage("Exception while calling PreCheckout Service for "+ewalletRequest.geteWalletType() +" EWallet Provider", exception.getMessage());
-				exception.printStackTrace();
-				LOGGER.error("Error while calling Checkout Service", exception);
-			}
-			
-		}else{
-			ewalletResponse = new EwalletResponse();
-			ewalletResponse.seteWalletStatus(ewalletStatus);
-			ewalletResponse.addErrorMessage("EWALLET_STATUS_OFF", ewalletRequest.geteWalletType()+" is disabled");
-		}
-		return ewalletResponse;
-	}
-	
-	/**
 	 * @param payment
 	 * @return
 	 */

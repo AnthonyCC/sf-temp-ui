@@ -400,29 +400,7 @@ public class EwalletServiceFactory {
 			}
 			return resp;
 		}
-
-		@Override
-		public EwalletResponseData expressCheckoutWithoutPrecheckout(EwalletRequestData ewalletRequestData) {
-			EwalletResponseData resp = null;
-			try {
-				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)) {
-					resp = EwalletService.getInstance().expressCheckoutWithoutPrecheckout(ewalletRequestData);
-				} else {
-					EwalletServiceSB remote = remoteHome.create();
-					resp = remote.expressCheckoutWithoutPrecheckout(ewalletRequestData);
-				}
-			} catch (CreateException e) {
-				throw new MasterpassRuntimeException(e);
-			} catch (RemoteException e) {
-				throw new MasterpassRuntimeException(e);
-			}
-
-			if (resp == null) {
-				resp = new EwalletResponseData();
-			}
-			return resp;
-		}
-
+		
 		@Override
 		public EwalletResponseData addPayPalWallet(EwalletRequestData ewalletRequestData) throws Exception {
 			EwalletResponseData resp = null;
@@ -731,28 +709,6 @@ public class EwalletServiceFactory {
 		}
 
 		@Override
-		public EwalletResponseData expressCheckoutWithoutPrecheckout(EwalletRequestData ewalletRequestData) {
-			EwalletResponseData resp = null;
-			try {
-				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletServiceSB)) {
-					resp = EwalletService.getInstance().expressCheckoutWithoutPrecheckout(ewalletRequestData);
-				} else {
-					MasterpassServiceSB remote = remoteHome.create();
-					resp = remote.expressCheckoutWithoutPrecheckout(ewalletRequestData);
-				}
-			} catch (CreateException e) {
-				throw new MasterpassRuntimeException(e);
-			} catch (RemoteException e) {
-				throw new MasterpassRuntimeException(e);
-			}
-
-			if (resp == null) {
-				resp = new EwalletResponseData();
-			}
-			return resp;
-		}
-
-		@Override
 		public EwalletResponseData addPayPalWallet(EwalletRequestData ewalletRequestData) throws Exception {
 			return null;
 		}
@@ -860,11 +816,7 @@ public class EwalletServiceFactory {
 			return null;
 		}
 
-		@Override
-		public EwalletResponseData expressCheckoutWithoutPrecheckout(EwalletRequestData ewalletRequestData)
-				throws Exception {
-			return null;
-		}
+	
 
 		@Override
 		public EwalletResponseData addPayPalWallet(EwalletRequestData ewalletRequestData) throws Exception {
