@@ -299,8 +299,9 @@ public class MasterpassData {
 	 * @param configFile
 	 */
 	public MasterpassData(String configFile){
+		if (configFile == null || configFile.isEmpty())
+			configFile = FDStoreProperties.getMasterpassEnvironment();
 		
-		configFile = FDStoreProperties.getMasterpassEnvironment();
 		Properties props = loadProperties(configFile);
 		
 		this.callbackDomain = props.getProperty("callbackdomain");
