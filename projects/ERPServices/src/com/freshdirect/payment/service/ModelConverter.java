@@ -851,8 +851,8 @@ public class ModelConverter {
 		List<ErpSalesUnitData> displaySalesUnitDatas = createErpSalesUnitDataList(model.getDisplaySalesUnits());
 		List<ErpPlantMaterialData> erpPlantMaterialDatas = createErpPlantMaterialDataList(model.getMaterialPlants());
 		List<ErpMaterialSalesAreaData> erpMaterialSalesAreaDatas = createErpMaterialSalesAreaDataList(model.getMaterialSalesAreas());
-		
-		data.setId(model.getId());
+		// http://jira.freshdirect.com/browse/SF17-72
+		//data.setId(model.getId());
 		data.setBaseUnit(model.getBaseUnit());
 		data.setUPC(model.getUPC());
 		data.setDescription(model.getDescription());
@@ -950,7 +950,8 @@ public class ModelConverter {
 			model.setDenominator(salesUnit.getDenominator());
 			model.setDescription(salesUnit.getDescription());
 			model.setDisplayInd(salesUnit.isDisplayInd());
-			model.setId(salesUnit.getId());
+			// http://jira.freshdirect.com/browse/SF17-72
+			//model.setId(salesUnit.getId());
 			model.setNumerator(salesUnit.getNumerator());
 			model.setUnitPriceDenominator(salesUnit.getUnitPriceDenominator());
 			model.setUnitPriceDescription(salesUnit.getUnitPriceDescription());
@@ -1044,7 +1045,8 @@ public class ModelConverter {
 		ErpMaterialSalesAreaData data = new  ErpMaterialSalesAreaData();
 		data.setDayPartSelling(erpMaterialSalesAreaModel.getDayPartSelling());
 		data.setDistChannel(erpMaterialSalesAreaModel.getDistChannel());
-		data.setId(erpMaterialSalesAreaModel.getId());
+		// http://jira.freshdirect.com/browse/SF17-72
+		//data.setId(erpMaterialSalesAreaModel.getId());
 		data.setPickingPlantId(erpMaterialSalesAreaModel.getPickingPlantId());
 		data.setSalesOrg(erpMaterialSalesAreaModel.getSalesOrg());
 		data.setSkuCode(erpMaterialSalesAreaModel.getSkuCode());
@@ -1081,7 +1083,8 @@ public class ModelConverter {
 		data.setBlockedDays(getDayOfWeekSetData(erpPlantMaterialModel.getBlockedDays()));
 		data.setDays_in_house(erpPlantMaterialModel.getDays_in_house());
 		data.setHideOutOfStock(erpPlantMaterialModel.isHideOutOfStock());
-		data.setId(erpPlantMaterialModel.getId());
+		// http://jira.freshdirect.com/browse/SF17-72
+		// data.setId(erpPlantMaterialModel.getId());
 		data.setKosherProduction(erpPlantMaterialModel.isKosherProduction());
 		data.setLeadTime(erpPlantMaterialModel.getLeadTime());
 		data.setNumberOfDaysFresh(erpPlantMaterialModel.getNumberOfDaysFresh());
@@ -1121,7 +1124,8 @@ public class ModelConverter {
 		data.setDenominator(erpSalesUnitModel.getDenominator());
 		data.setDescription(erpSalesUnitModel.getDescription());
 		data.setDisplayInd(erpSalesUnitModel.isDisplayInd());
-		data.setId(erpSalesUnitModel.getId());
+		// http://jira.freshdirect.com/browse/SF17-72
+		//data.setId(erpSalesUnitModel.getId());
 		data.setNumerator(erpSalesUnitModel.getNumerator());
 		data.setUnitPriceDenominator(erpSalesUnitModel.getUnitPriceDenominator());
 		data.setUnitPriceDescription(erpSalesUnitModel.getUnitPriceDescription());
@@ -1142,7 +1146,8 @@ public class ModelConverter {
 			ErpMaterialPriceModel erpMaterialPriceModel) {
 		ErpMaterialPriceData data = new ErpMaterialPriceData();
 		data.setDistChannel(erpMaterialPriceModel.getDistChannel());
-		data.setId(erpMaterialPriceModel.getId());
+		// http://jira.freshdirect.com/browse/SF17-72
+		// data.setId(erpMaterialPriceModel.getId());
 		data.setPrice(erpMaterialPriceModel.getPrice());
 		data.setPricingUnit(erpMaterialPriceModel.getPricingUnit());
 		data.setPromoPrice(erpMaterialPriceModel.getPromoPrice());

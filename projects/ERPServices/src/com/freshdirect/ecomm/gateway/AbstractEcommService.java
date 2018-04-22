@@ -276,6 +276,22 @@ public abstract class AbstractEcommService {
 		} 
 	}
 
+	protected <T> T httpPostData( String url, String inputJson, Class<T> clazz, Object[] params) throws FDResourceException {
+		
+		try {
+			RestTemplate restTemplate = getRestTemplate();	
+			HttpEntity<String> entity = getEntity(inputJson);
+			
+			ResponseEntity<T> response = restTemplate.postForEntity(url, entity, clazz, params);
+			return response.getBody();
+		} catch (RestClientException e) {
+			LOGGER.info(e.getMessage());
+			LOGGER.info("api url:"+url);
+			throw new FDResourceException(e, "API connection failure");
+		} 
+	}
+
+
 	protected RestTemplate getRestTemplate() {
 		return restTemplate;
 	}
