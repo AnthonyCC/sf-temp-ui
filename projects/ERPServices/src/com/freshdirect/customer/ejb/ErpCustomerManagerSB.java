@@ -292,8 +292,6 @@ public interface ErpCustomerManagerSB extends EJBObject {
 	
 	public ErpSaleModel getLastNonCOSOrder(String customerID,	EnumSaleType saleType, List<EnumPaymentMethodType> pymtMethodTypes) throws ErpSaleNotFoundException, RemoteException;
     
-    public void cutOffSale(String saleId) throws ErpSaleNotFoundException, RemoteException;
-    
     public void sendCreateOrderToSAP(String erpCustomerID, String saleID,EnumSaleType saleType, CustomerRatingI rating) throws RemoteException, ErpSaleNotFoundException;
 
 	public void assignAutoCaseToComplaint(PrimaryKey complaintPk, PrimaryKey autoCasePK) throws RemoteException;

@@ -4126,7 +4126,15 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			for (String saleId : saleIds) {
 				keys.add(new PrimaryKey(saleId));
 			}
-			List<ErpSaleModel> saleModels = sb.getOrders(keys);
+			List<ErpSaleModel> saleModels = null;
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("getOrders_Api")){
+
+	    		OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
+	    		saleModels =  service.getOrders(saleIds);
+	    	
+			}else{
+				saleModels = sb.getOrders(keys);
+			}
 
 			LOGGER.debug(new String("ordernums: " + saleIds));
 
@@ -5795,9 +5803,17 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 		try {
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
-			ErpSaleModel saleModel = sb.getLastNonCOSOrder(customerID, saleType, saleStatus,
+			ErpSaleModel saleModel = null;
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("getLastNonCosOrderByPymtType_Api")){
+	    		OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
+	    		saleModel = service.getLastNonCOSOrder(customerID, saleType, saleStatus,
+						EnumPaymentMethodType.CREDITCARD);
+	    	}else{
+	    		saleModel = sb.getLastNonCOSOrder(customerID, saleType, saleStatus,
 					EnumPaymentMethodType.CREDITCARD);
+	    	}
 			return new FDOrderAdapter(saleModel);
+	    	
 
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
@@ -5810,12 +5826,19 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throws FDResourceException, ErpSaleNotFoundException {
 
 		try {
+			ErpSaleModel saleModel = null;
 			List<EnumPaymentMethodType> paymentMethodTypes = new ArrayList<EnumPaymentMethodType>();
 			paymentMethodTypes.add(EnumPaymentMethodType.CREDITCARD);
 			paymentMethodTypes.add(EnumPaymentMethodType.PAYPAL);
 			paymentMethodTypes.add(EnumPaymentMethodType.ECHECK);
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
-			ErpSaleModel saleModel = sb.getLastNonCOSOrder(customerID, saleType, saleStatus, paymentMethodTypes);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("getLastNonCosOrderByPymtTypes_Api")){
+	    		OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
+	    		saleModel = service.getLastNonCOSOrder(customerID, saleType, saleStatus,
+	    				paymentMethodTypes);
+	    	}else{
+	    		saleModel = sb.getLastNonCOSOrder(customerID, saleType, saleStatus, paymentMethodTypes);
+	    	}
 			return new FDOrderAdapter(saleModel);
 
 		} catch (CreateException ce) {

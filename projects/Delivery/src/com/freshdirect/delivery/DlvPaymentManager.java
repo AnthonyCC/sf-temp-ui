@@ -11,11 +11,12 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.customer.DlvSaleInfo;
 import com.freshdirect.customer.ErpDeliveryInfoModel;
-import com.freshdirect.customer.ErpOrderHistory;
 import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
+import com.freshdirect.ecomm.gateway.OrderResourceApiClient;
+import com.freshdirect.ecomm.gateway.OrderResourceApiClientI;
 import com.freshdirect.ecomm.gateway.OrderServiceApiClient;
 import com.freshdirect.ecomm.gateway.OrderServiceApiClientI;
 import com.freshdirect.ecomm.gateway.PaymentGatewayService;
@@ -132,8 +133,13 @@ public class DlvPaymentManager {
 	
 	public synchronized ErpDeliveryInfoModel getDeliveryInfo(String orderNumber) throws FDResourceException, ErpSaleNotFoundException {
 		try{
-			ErpCustomerManagerSB sb = this.getErpCustomerManagerSB();
-			return sb.getDeliveryInfo(orderNumber);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("getDeliveryInfo_Api")){
+	    		OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
+	    		return service.getDeliveryInfo(orderNumber);
+	    	}else{
+				ErpCustomerManagerSB sb = this.getErpCustomerManagerSB();
+				return sb.getDeliveryInfo(orderNumber);
+	    	}
 		}catch(RemoteException re){
 			throw new FDResourceException(re, "Cannot talk to SB");
 		}

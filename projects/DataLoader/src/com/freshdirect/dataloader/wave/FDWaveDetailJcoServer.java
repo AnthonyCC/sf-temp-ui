@@ -20,6 +20,9 @@ import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
 import com.freshdirect.dataloader.response.FDJcoServerResult;
 import com.freshdirect.dataloader.sap.jco.server.FDSapFunctionHandler;
 import com.freshdirect.dataloader.sap.jco.server.FdSapServer;
+import com.freshdirect.ecomm.gateway.OrderResourceApiClient;
+import com.freshdirect.ecomm.gateway.OrderResourceApiClientI;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.sap.conn.jco.JCo;
 import com.sap.conn.jco.JCoCustomRepository;
 import com.sap.conn.jco.JCoFunction;
@@ -193,7 +196,12 @@ public class FDWaveDetailJcoServer extends FdSapServer
 
 			for (String saleId : waveEntries.keySet())
 			{ 
+				if(FDStoreProperties.isSF2_0_AndServiceEnabled("updateWaveInfo_Api")){
+		    		OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
+		    		service.updateWaveInfo(saleId, waveEntries.get(saleId));
+		    	}else{
 				sb.updateWaveInfo(saleId, waveEntries.get(saleId));
+		    	}
 			}
 		}
 		finally {

@@ -190,7 +190,7 @@ private static OrderResourceApiClient INSTANCE;
 	
 	@Override
 	public void updateWaveInfo(String saleId, ErpShippingInfo shippingInfo)
-			throws RemoteException, FinderException, FDResourceException {
+			throws RemoteException, FinderException {
 		
 		try{
 		Response<String> response = null;
@@ -201,7 +201,7 @@ private static OrderResourceApiClient INSTANCE;
 		String inputJson = buildRequest(request);
 		response = httpPostData(getFdCommerceEndPoint(UPDATE_WAVE_INFO_API), inputJson, Response.class, new Object[]{saleId});
 		if(!response.getResponseCode().equals("OK"))
-			throw new FDResourceException(response.getMessage());
+			throw new RemoteException(response.getMessage());
 		}catch(Exception e){
 			LOGGER.info(e);
 			LOGGER.info("Exception converting {} to ListOfObjects ");

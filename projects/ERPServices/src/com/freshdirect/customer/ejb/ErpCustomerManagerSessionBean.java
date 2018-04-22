@@ -3081,24 +3081,6 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 
-		public void cutOffSale(String saleId) throws ErpSaleNotFoundException {
-			try {
-				ErpSaleEB saleEB = getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
-				ErpSaleModel saleModel=(ErpSaleModel) saleEB.getModel();
-				saleModel.cutoff();
-			} catch (RemoteException re) {
-				LOGGER.warn(re);
-				throw new EJBException(re);
-			} catch (FinderException fe) {
-				LOGGER.warn(fe);
-				throw new ErpSaleNotFoundException(fe);
-			}
-			catch (ErpTransactionException e) {
-				LOGGER.warn(e);
-				throw new EJBException(e);
-			}
-		}
-
 		public void sendCreateOrderToSAP(String erpCustomerID, String saleID, EnumSaleType saleType, CustomerRatingI rating) throws ErpSaleNotFoundException {
 		    sendCreateOrderToSAPImpl(erpCustomerID, saleID, saleType, rating);
 		}
