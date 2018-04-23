@@ -82,7 +82,8 @@ public class FDEcommProperties {
 	public static final String SmartStoreServiceConfigurationSB = "smartstore.ejb.SmartStoreServiceConfigurationSB";
 	public static final String PaymentGatewaySB ="payment.ejb.PaymentGatewaySB";
 	public static final String FDListManagerSB = "fdstore.lists.ejb.FDListManagerSB";
-	public static final String EwalletServiceSB = "ewallet.ejb.EwalletServiceSB";
+	public static final String PayPalServiceSB = "ewallet.ejb.PayPalServiceSB";
+	public static final String MasterpassServiceSB = "ewallet.ejb.MasterpassServiceSB";
 	public static final String CoremetricsCdfServiceSB = "coremetrics.service.CoremetricsCdfServiceSB";
 	public static final String CrmManagerSB = "crm.ejb.CrmManagerSB";
 	public final static  String FDPromotionManagerNewSB = "fdstore.ejb.FDPromotionNewManagerSB";//story SF17-88
@@ -166,7 +167,8 @@ public class FDEcommProperties {
         defaults.put(PaymentGatewaySB, FALSE);
         defaults.put(FDListManagerSB, FALSE);
         defaults.put(EwalletNotifyStatusSB, FALSE);
-        defaults.put(EwalletServiceSB, FALSE);
+        defaults.put(PayPalServiceSB, FALSE);
+        defaults.put(MasterpassServiceSB, FALSE);
         defaults.put(CoremetricsCdfServiceSB, FALSE);
         defaults.put(CrmManagerSB, FALSE);
         defaults.put(FDPromotionManagerNewSB, FALSE);

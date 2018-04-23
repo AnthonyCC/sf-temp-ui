@@ -69,6 +69,7 @@ public class EwalletService  extends AbstractEcommService implements EwalletServ
 		Request<EwalletRequestData> request = new Request<EwalletRequestData>();
 			try {
 				String inputJson;
+				request.setData(ewalletRequestData);
 				inputJson = buildRequest(request);
 				response = postDataTypeMap(inputJson,getFdCommerceEndPoint(CHECKOUT),new TypeReference<Response<EwalletResponseData>>() {});
 				if(!response.getResponseCode().equals("OK"))
@@ -106,6 +107,7 @@ public class EwalletService  extends AbstractEcommService implements EwalletServ
 		Request<EwalletRequestData> request = new Request<EwalletRequestData>();
 			try {
 				String inputJson;
+				request.setData(ewalletRequestData);
 				inputJson = buildRequest(request);
 				response = postDataTypeMap(inputJson,getFdCommerceEndPoint(ALL_PAYMETHOD),new TypeReference<Response<EwalletResponseData>>() {});
 				if(!response.getResponseCode().equals("OK"))
@@ -128,8 +130,8 @@ public class EwalletService  extends AbstractEcommService implements EwalletServ
 		EwalletResponseData result = null;
 		Request<EwalletRequestData> request = new Request<EwalletRequestData>();
 			try {
-				String inputJson;
-				inputJson = buildRequest(request);
+				request.setData(ewalletRequestData);
+				String inputJson = buildRequest(request);
 				response = postDataTypeMap(inputJson,getFdCommerceEndPoint(CONNECT_COMPLETE),new TypeReference<Response<EwalletResponseData>>() {});
 				if(!response.getResponseCode().equals("OK"))
 					throw new FDResourceException(response.getMessage());
@@ -151,9 +153,8 @@ public class EwalletService  extends AbstractEcommService implements EwalletServ
 		EwalletResponseData result = null;
 		Request<EwalletData> request = new Request<EwalletData>();
 		try {
-				String inputJson;
 				request.setData(EwalletConverter.buildEwalletData(ewalletRequestData));
-				inputJson = buildRequest(request);
+				String inputJson = buildRequest(request);
 				response = postDataTypeMap(inputJson,getFdCommerceEndPoint(DISCONNECT),new TypeReference<Response<EwalletResponseData>>() {});
 				if(!response.getResponseCode().equals("OK"))
 					throw new FDResourceException(response.getMessage());
@@ -172,11 +173,10 @@ public class EwalletService  extends AbstractEcommService implements EwalletServ
 			throws RemoteException {
 		
 		Response<EwalletResponseData> response = null;
-		EwalletResponseData result = null;
 		Request<EwalletRequestData> request = new Request<EwalletRequestData>();
 			try {
-				String inputJson;
-				inputJson = buildRequest(request);
+				request.setData(req);
+				String inputJson = buildRequest(request);
 				response = postDataTypeMap(inputJson,getFdCommerceEndPoint(POST_BACK_TRANX),new TypeReference<Response<EwalletResponseData>>() {});
 				if(!response.getResponseCode().equals("OK"))
 					throw new FDResourceException(response.getMessage());
@@ -195,11 +195,10 @@ public class EwalletService  extends AbstractEcommService implements EwalletServ
 			EwalletRequestData ewalletRequestData) throws RemoteException {
 		
 		Response<EwalletResponseData> response = null;
-		EwalletResponseData result = null;
 		Request<EwalletRequestData> request = new Request<EwalletRequestData>();
 			try {
-				String inputJson;
-				inputJson = buildRequest(request);
+				request.setData(ewalletRequestData);
+				String inputJson = buildRequest(request);
 				response = postDataTypeMap(inputJson,getFdCommerceEndPoint(STD_CHECKOUT),new TypeReference<Response<EwalletResponseData>>() {});
 				if(!response.getResponseCode().equals("OK"))
 					throw new FDResourceException(response.getMessage());
@@ -218,18 +217,17 @@ public class EwalletService  extends AbstractEcommService implements EwalletServ
 			EwalletRequestData ewalletRequestData) throws RemoteException {
 		
 		Response<EwalletResponseData> response = null;
-		EwalletResponseData result = null;
 		Request<EwalletRequestData> request = new Request<EwalletRequestData>();
 			try {
-				String inputJson;
-				inputJson = buildRequest(request);
+				request.setData(ewalletRequestData);
+				String inputJson = buildRequest(request);
 				response = postDataTypeMap(inputJson,getFdCommerceEndPoint(PRE_STD_CHECKOUT),new TypeReference<Response<EwalletResponseData>>() {});
 				if(!response.getResponseCode().equals("OK"))
 					throw new FDResourceException(response.getMessage());
 					
 			} catch (FDResourceException e) {
 				throw new RemoteException(e.getMessage());
-			}catch (FDEcommServiceException e) {
+			} catch (FDEcommServiceException e) {
 				throw new RemoteException(e.getMessage());
 			}
 			

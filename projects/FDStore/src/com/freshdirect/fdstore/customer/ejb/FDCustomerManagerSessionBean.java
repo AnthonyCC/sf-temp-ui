@@ -1563,9 +1563,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	public void addPaymentMethod(FDActionInfo info, ErpPaymentMethodI paymentMethod, boolean paymentechEnabled)
 			throws FDResourceException, ErpPaymentMethodException {
 		try {
-
-			ErpCustomerEB erpCustomerEB = checkPaymentMethodModification(info, paymentMethod);
-
 			Gateway gateway = null;
 
 			if (paymentechEnabled && FDStoreProperties.isPaymentVerificationEnabled()
@@ -1628,6 +1625,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					throw new ErpPaymentMethodException(e.getMessage());
 				}
 			}
+			ErpCustomerEB erpCustomerEB = this.getErpCustomerHome()
+					.findByPrimaryKey(new PrimaryKey(info.getIdentity().getErpCustomerPK()));
 
 			erpCustomerEB.addPaymentMethod(paymentMethod);
 
@@ -1643,10 +1642,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(re);
 		} catch (FinderException ce) {
 			throw new FDResourceException(ce);
-		} catch (CreateException ex) {
-			deleteProfile(paymentMethod);
-			throw new FDResourceException(ex);
-		}
+		} 
 	}
 
 	public ErpAuthorizationModel verifyCard(FDActionInfo info, ErpPaymentMethodI paymentMethod,
@@ -1813,7 +1809,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	public void updatePaymentMethod(FDActionInfo info, ErpPaymentMethodI paymentMethod)
 			throws FDResourceException, ErpPaymentMethodException {
 		try {
-			ErpCustomerEB erpCustomerEB = checkPaymentMethodModification(info, paymentMethod);
+			ErpCustomerEB erpCustomerEB = this.getErpCustomerHome()
+					.findByPrimaryKey(new PrimaryKey(info.getIdentity().getErpCustomerPK()));
 
 			if (EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())) {
 				ErpPaymentMethodModel _payment = (ErpPaymentMethodModel) paymentMethod;
@@ -1873,48 +1870,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(ex);
 		} catch (FinderException ex) {
 			throw new FDResourceException(ex);
-		} catch (CreateException ex) {
-			throw new FDResourceException(ex);
 		}
 
-	}
-
-	private ErpCustomerEB checkPaymentMethodModification(FDActionInfo info, ErpPaymentMethodI paymentMethod)
-			throws FinderException, RemoteException, CreateException, ErpPaymentMethodException {
-		ErpCustomerEB erpCustomerEB = this.getErpCustomerHome()
-				.findByPrimaryKey(new PrimaryKey(info.getIdentity().getErpCustomerPK()));
-
-		//
-		// DO FRAUD CHECK
-		//
-		// Removing the duplicate payment method check. we dont require this as
-		// the new gateway supports adding the same payment method for multiple
-		// accounts.
-		/*
-		 * ErpFraudPreventionSB fraudSB = getErpFraudHome().create(); boolean
-		 * foundFraud =
-		 * fraudSB.checkDuplicatePaymentMethodFraud(info.getIdentity().
-		 * getErpCustomerPK(), paymentMethod); if (foundFraud) {
-		 * this.getSessionContext().setRollbackOnly(); throw new
-		 * ErpDuplicatePaymentMethodException("Duplicate account information.");
-		 * }
-		 */
-
-		//
-		// Check external negative file for E-Checks, Credit Cards will alway
-		// return APPROVED
-		//
-		/*
-		 * boolean foundFraud = false; try { PaymentFraudManager
-		 * paymentFraudManager = new PaymentFraudManager(); if
-		 * (!paymentFraudManager.verifyAccountExternal(paymentMethod)) {
-		 * foundFraud = true; } } catch (ErpTransactionException e) { foundFraud
-		 * = false; // if there's an exception (can't communication with
-		 * external source) --> allow user to add payment method } if
-		 * (foundFraud) { this.getSessionContext().setRollbackOnly(); throw new
-		 * ErpPaymentMethodException("Account is not valid"); }
-		 */
-		return erpCustomerEB;
 	}
 
 	/**
