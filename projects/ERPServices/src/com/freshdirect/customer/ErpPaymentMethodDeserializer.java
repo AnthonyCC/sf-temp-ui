@@ -11,25 +11,24 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
-public class ErpPaymentMethodDeserializer extends JsonDeserializer<ErpPaymentMethodI>{
+public class ErpPaymentMethodDeserializer extends JsonDeserializer<ErpPaymentMethodI> {
 
 	@Override
 	public ErpPaymentMethodI deserialize(JsonParser jp, DeserializationContext context)
 			throws IOException, JsonProcessingException {
 		ObjectMapper mapper = (ObjectMapper) jp.getCodec();
-        ObjectNode root = (ObjectNode) mapper.readTree(jp);
-        JsonNode paymentMethodNode = root.get("paymentMethodType");
-        if (paymentMethodNode != null ) {
-        	JsonNode paymentMethodNameNode = paymentMethodNode.get("name");
-        	EnumPaymentMethodType paymentMethodType = EnumPaymentMethodType.getEnum(paymentMethodNameNode.asText());
-        	if ( paymentMethodType== EnumPaymentMethodType.PAYPAL) {
-        		return mapper.convertValue(root, ErpPayPalCardModel.class);
-        	} 
-        }
-        return mapper.convertValue(root, ErpPaymentMethodModel.class);
-        
+		ObjectNode root = (ObjectNode) mapper.readTree(jp);
+		JsonNode paymentMethodNode = root.get("paymentMethodType");
+		if (paymentMethodNode != null) {
+			String paymentMethodTypeString = paymentMethodNode.get("name") == null ? paymentMethodNode.asText()
+					: paymentMethodNode.get("name").asText();
+			EnumPaymentMethodType paymentMethodType = EnumPaymentMethodType.getEnum(paymentMethodTypeString);
+			if (paymentMethodType == EnumPaymentMethodType.PAYPAL) {
+				return mapper.convertValue(root, ErpPayPalCardModel.class);
+			}
+		}
+		return mapper.convertValue(root, ErpPaymentMethodModel.class);
+
 	}
 
-   
 }
-
