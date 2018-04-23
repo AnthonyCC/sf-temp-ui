@@ -55,8 +55,8 @@
 					<input id="state" type="hidden" value="${param.state }" />
 				</div>
 				<div class="description">
-					<fd:IncludeMedia name="/media/ouath/vendor_premission_details.ftl">
-						<h2 class="header"><strong class="app-name">StorePower</strong> will use the info below under its privacy policy:</h2>
+					<fd:IncludeMedia name="/media/ouath/<%=clientId %>_vendor_premission_details.ftl">
+						<h2 class="header"><strong class="app-name"><%=clientId %></strong> will use the info below under its privacy policy:</h2>
 						<ul>
 							<li>Read User Info</li>
 							<li>Update Shopping Cart</li>
