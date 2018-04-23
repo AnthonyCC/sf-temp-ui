@@ -80,7 +80,11 @@ if (product != null) {
 }
 
 Map availOptSkuMap = new HashMap();
-    
+
+if (prodSkus == null){
+   throw new FDNotFoundException("Product SKUs was null after data collection.");
+}
+
 boolean hasSingleSku = (prodSkus.size() == 1);
 
 if (hasSingleSku) {
