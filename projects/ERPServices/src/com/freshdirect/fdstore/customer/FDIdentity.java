@@ -1,5 +1,8 @@
 package com.freshdirect.fdstore.customer;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class FDIdentity implements java.io.Serializable {
     
 	private static final long	serialVersionUID	= -2907395079408342601L;
@@ -8,7 +11,8 @@ public class FDIdentity implements java.io.Serializable {
 	private final String fdCustomerPK;
 	private boolean active;
     
-	public FDIdentity(String erpCustomerPK, String fdCustomerPK) {
+	@JsonCreator
+	public FDIdentity(@JsonProperty("erpCustomerPK") String erpCustomerPK, @JsonProperty("fdCustomerPK") String fdCustomerPK) {
 		this.erpCustomerPK = erpCustomerPK;
 		this.fdCustomerPK = fdCustomerPK;
 	}
