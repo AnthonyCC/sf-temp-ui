@@ -78,33 +78,37 @@ public class CarouselService {
 
         CarouselData carousel = null;
 
+        List<ProductModel> products = collectNewProducts();
+        if (products.size() >= FDStoreProperties.getMinimumItemsCountInCarousel()) {
+            if (isRandomizeProductOrderEnabled) {
+                Collections.shuffle(products);
+            }
+            carousel = createCarouselData(null, NEW_PRODUCTS_CAROUSEL_NAME, products, user, null, null);
+        }
+
+        return carousel;
+    }
+
+    private List<ProductModel> collectNewProducts() {
         CategoryModel newProductsCategory = ((CategoryModel) ContentFactory.getInstance()
                 .getContentNodeByKey(ContentKeyFactory.get(FDStoreProperties.getNewProductsCarouselSourceCategoryContentKey())));
 
+        List<ProductModel> filteredProducts = new ArrayList<ProductModel>();
         if (newProductsCategory != null) {
-            List<ProductModel> products = newProductsCategory.getAllChildProductsAsList();
-            if (products != null) {
-                if (isRandomizeProductOrderEnabled) {
-                    Collections.shuffle(products);
-                }
-            carousel = createCarouselData(null, NEW_PRODUCTS_CAROUSEL_NAME, products, user, null, null);
-            }
+            filteredProducts = filterProducts(newProductsCategory.getAllChildProductsAsList());
         }
 
-        if (carousel != null) {
-            carousel.setProducts(filterUnavailableProducts(carousel.getProducts()));
-        }
-        return carousel.getProducts().size() >= FDStoreProperties.getMinimumItemsCountInCarousel() ? carousel : null;
+        return filteredProducts;
     }
 
-    private List<ProductData> filterUnavailableProducts(List<ProductData> products) {
-        List<ProductData> availableProducts = new ArrayList<ProductData>();
-        for (ProductData product : products) {
-            if (product.isAvailable()) {
-                availableProducts.add(product);
+    private List<ProductModel> filterProducts(List<ProductModel> products) {
+        List<ProductModel> filteredProducts = new ArrayList<ProductModel>();
+        for (ProductModel product : products) {
+            if (!product.isUnavailable()) {
+                filteredProducts.add(product);
             }
         }
-        return availableProducts;
+        return filteredProducts;
     }
 
 }
