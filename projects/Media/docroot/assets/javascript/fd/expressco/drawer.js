@@ -31,6 +31,9 @@ var FreshDirect = FreshDirect || {};
     activate: {
       value: function (id) {
         if ($('[data-drawer-id="'+id+'"][data-drawer-locked]').size() === 0) {
+          if($('[data-drawer-columns="1"]').length > 0){
+       		  $('[data-drawer-columns="1"]').css("max-width", "none");
+       	  }
           $(document.body).attr('data-drawer-active', id);
           DISPATCHER.signal(id + '-drawer-on-open');
           if (fd.mobWeb) {
@@ -53,7 +56,10 @@ var FreshDirect = FreshDirect || {};
       value: function (config) {
         var active = $(document.body).attr('data-drawer-active');
         config = config || {};
-
+        
+        if($('[data-drawer-columns="1"]').length > 0){
+    		$('[data-drawer-columns="1"]').css("max-width", "500px");
+  	  	}
         if (active) {
           try {
             $('[data-drawer-id="'+active+'"]').focus();
