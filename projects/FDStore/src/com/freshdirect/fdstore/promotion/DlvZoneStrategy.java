@@ -1,6 +1,7 @@
 package com.freshdirect.fdstore.promotion;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -29,6 +30,7 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 	private EnumDeliveryOption dlvDayType;
 	private Map<Integer, PromotionDlvDay> dlvDayRedemtions;
 	private EnumPromoFDXTierType fdxTierType;
+	private List<String> travelZones;
 	
 	public String getDlvDays() {
 		return dlvDays;
@@ -103,10 +105,13 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 						}
 						if(e && null !=dlvTimeSlots && !dlvTimeSlots.isEmpty()){
 							List<PromotionDlvTimeSlot> dlvTimeSlotList = dlvTimeSlots.get(day);
-							if(null != dlvTimeSlotList) {								
+							if(null != dlvTimeSlotList) {
                                 if (isWindowSteeringPromotionApplicable(promotionCode, dlvDayType, context.getShoppingCart().getTransactionSource())
                                         && (!(dlvTimeSlot.isPremiumSlot() && promotionCode.startsWith("WS_")) || FDStoreProperties.allowDiscountsOnPremiumSlots())
-                                        && checkDlvTimeSlots(dlvTimeSlot, dlvTimeSlotList, null, context.getUser(), true))
+                                        && checkDlvTimeSlots(dlvTimeSlot, dlvTimeSlotList, null, context.getUser(), true)
+                                        		&& isLessthanCapcityUtilization(dlvTimeSlot, 0, promotionCode)
+                                        		&& isWithinCutOffExpTime(dlvTimeSlot)
+                                        		&& isTravelZonePresent(dlvTimeSlot.getTravelZone()) )
 									return ALLOW;
 								else{
 									context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_TIMESLOT_SELECTED.getErrorCode());
@@ -208,16 +213,32 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 							}
 						}
 				} else {
-					if(promoDlvTimeSlot.getDlvTimeStart() != null && promoDlvTimeSlot.getDlvTimeEnd() != null){
-						TimeOfDay promoDlvSlotStartTime = new TimeOfDay(promoDlvTimeSlot.getDlvTimeStart());									
+					if (null != promoDlvTimeSlot.getForWindowTime() && "Y".equalsIgnoreCase(promoDlvTimeSlot.getForWindowTime())
+							&& promoDlvTimeSlot.getDlvTimeStart() != null && promoDlvTimeSlot.getDlvTimeEnd() != null) {
+						/* APPDEV-7118 WS Promo when selected Time-Exact ex: 1pm to 2pm */
+						TimeOfDay promoDlvSlotStartTime = new TimeOfDay(promoDlvTimeSlot.getDlvTimeStart());
 						TimeOfDay promoDlvSlotEndTime = new TimeOfDay(promoDlvTimeSlot.getDlvTimeEnd());
-						if((dlvStartTimeOfDay.equals(promoDlvSlotStartTime) || dlvStartTimeOfDay.after(promoDlvSlotStartTime)) && 
-								(dlvEndTimeOfDay.before(promoDlvSlotEndTime) || dlvEndTimeOfDay.equals(promoDlvSlotEndTime))
-								&& checkDlvDayTypeEligibility(dlvTimeslotModel.isPremiumSlot(), user.getShoppingCart().getTransactionSource(),user)){
+						if (dlvStartTimeOfDay.equals(promoDlvSlotStartTime)
+								&&  dlvEndTimeOfDay.equals(promoDlvSlotEndTime)
+								&& checkDlvDayTypeEligibility(dlvTimeslotModel.isPremiumSlot(),
+										user.getShoppingCart().getTransactionSource(), user)) {
 							isOK = true;
 							break;
 						}
-					}
+					} else if (promoDlvTimeSlot.getDlvTimeStart() != null && promoDlvTimeSlot.getDlvTimeEnd() != null) {
+						/* APPDEV-7118 WS Promo when selected Time-Range ex: 8am to 2pm */
+						TimeOfDay promoDlvSlotStartTime = new TimeOfDay(promoDlvTimeSlot.getDlvTimeStart());
+						TimeOfDay promoDlvSlotEndTime = new TimeOfDay(promoDlvTimeSlot.getDlvTimeEnd());
+						if ((dlvStartTimeOfDay.equals(promoDlvSlotStartTime)
+								|| dlvStartTimeOfDay.after(promoDlvSlotStartTime))
+								&& (dlvEndTimeOfDay.before(promoDlvSlotEndTime)
+										|| dlvEndTimeOfDay.equals(promoDlvSlotEndTime))
+										&& checkDlvDayTypeEligibility(dlvTimeslotModel.isPremiumSlot(),
+												user.getShoppingCart().getTransactionSource(), user)) {
+							isOK = true;
+							break;
+						}
+					} 
 				}
 			}
 		}
@@ -296,7 +317,11 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 	private boolean checkDayMaxRedemtions(FDTimeslot ts, String promotionCode) {
 		if(null != dlvDayRedemtions && !dlvDayRedemtions.isEmpty()){
 			PromotionDlvDay dlvDay = dlvDayRedemtions.get(ts.getDayOfWeek());
-			if(dlvDay != null) {
+			if(dlvDay != null ) {
+				if(0.0 != dlvDay.getCapacityUtilization()){
+						/* APPDEV-7118 we are handling this case in a seperate method --> isLessthanCapcityUtilization() */
+						return true;
+				}
 				int redeemCnt = PromotionFactory.getInstance().getRedemptions(promotionCode, ts.getDeliveryDate());
 				if(redeemCnt < dlvDay.getRedeemCnt()) {
 					return true;	
@@ -381,5 +406,76 @@ public class DlvZoneStrategy implements PromotionStrategyI {
                 && EnumDeliveryOption.REGULAR.equals(deliveryDayType)
                 && EnumTransactionSource.STANDING_ORDER.equals(transactionSource));
     }
+
+	public List<String> getTravelZones() {
+		return travelZones;
+	}
+
+	public void setTravelZones(List<String> travelZones) {
+		this.travelZones = travelZones;
+	}
+	
+	public boolean isLessthanCapcityUtilization(FDTimeslot ts, double promoCapacityUtil, String promotionCode) {
+		int key = ts.getDayOfWeek();
+		int tsCapaUtili = ts.getCapacityUtilizationPercentage();
+		if (!dlvDayRedemtions.isEmpty()) {
+			/* converting from % to integer */
+			int capacityUtil = (int) (dlvDayRedemtions.get(key).getCapacityUtilization() * 100);
+			if (tsCapaUtili < capacityUtil || capacityUtil== 0) {
+				return true;
+			}
+		} else {
+			int capcity =0;
+			if(null != promotionCode){
+				PromotionI promoModel =  PromotionFactory.getInstance().getPromotion(promotionCode);
+				/* converting from % to integer , this  promoCode will be called only from evaluate() */
+				capcity = (int) (promoModel.getCapcityUtilization() * 100);
+			} else {
+				/* converting from % to integer */
+				capcity = (int) (promoCapacityUtil * 100);
+			}
+			if (tsCapaUtili < capcity || capcity==0) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+	
+	//
+	public boolean isWithinCutOffExpTime(FDTimeslot ts){
+		int key = ts.getDayOfWeek();
+		List<PromotionDlvTimeSlot> dlvTimeslotList = dlvTimeSlots.get(key);
+		String frWinTime = dlvTimeslotList.get(0) != null ? dlvTimeslotList.get(0).getForWindowTime():null;
+		/* if case is R [Range of timeslots], not doing un-necessary validation for every timeslot cutOffTime */
+		if(null == frWinTime || frWinTime.equalsIgnoreCase("R")){
+			return true;
+		}
+		
+		Date tsCutOff = ts.getOriginalCutoffDateTime();
+		final long ONE_MIN_INMILLIS=60000;
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(tsCutOff);
+		long t= cal.getTimeInMillis();
+		Integer cutOffExpTime = dlvTimeslotList.get(0).getCutOffExpTime();		
+		
+		Date afterRemovingExpTime = new Date( t - (cutOffExpTime * ONE_MIN_INMILLIS ) );
+		Date now = new Date();
+		
+		if(now.before(afterRemovingExpTime)){
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public boolean isTravelZonePresent(String travelZoneId) {
+		if (travelZones == null || travelZones.isEmpty() || travelZones.contains("all") || travelZones.contains("ALL"))
+			return true;
+		if (travelZoneId != null)
+			return (travelZones.contains(travelZoneId) );
+		return false;
+	}
+	
 }
  

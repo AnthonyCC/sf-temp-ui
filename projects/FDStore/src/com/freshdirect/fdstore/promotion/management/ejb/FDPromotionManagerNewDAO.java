@@ -573,6 +573,7 @@ public class FDPromotionManagerNewDAO {
 		promotion.setRollingExpDayFrom1stOrder("Y".equalsIgnoreCase(rs.getString("ROLLING_FROM_FIRST_ORDER"))?true:false);
 		promotion.setSapConditionType(rs.getString("SAP_CONDITION_TYPE"));
 		promotion.setRafPromoCode(rs.getString("RAF_PROMO_CODE"));
+		promotion.setCapacityUtilization(rs.getInt("CAPACITY_UTILIZATION"));
 		
 		return promotion;
 	}
@@ -1908,15 +1909,15 @@ public class FDPromotionManagerNewDAO {
 	}
 	
 	
-	private final static String LOAD_PROMO_DLV_ZONE_STRATEGY = "select id, promotion_id, DLV_DAYS, DLV_ZONE"
+	private final static String LOAD_PROMO_DLV_ZONE_STRATEGY = "select id, promotion_id, DLV_DAYS, DLV_ZONE, TRAVEL_ZONE"
 		+ " from cust.PROMO_DLV_ZONE_STRATEGY plzs "
 		+ "where plzs.promotion_id = ?";
 	
-	private final static String LOAD_PROMO_TIME_SLOTS = "select id, PROMO_DLV_ZONE_ID, DAY_ID, START_TIME, END_TIME, DLV_WINDOWTYPE"
+	private final static String LOAD_PROMO_TIME_SLOTS = "select id, PROMO_DLV_ZONE_ID, DAY_ID, START_TIME, END_TIME, DLV_WINDOWTYPE, FOR_WINDOW_TIME, CUT_OFF_EXP_TIME"
 		+ " from cust.PROMO_DLV_TIMESLOT pdt "
 		+ "where pdt.PROMO_DLV_ZONE_ID = ?";
 	
-	private final static String LOAD_PROMO_DAY_REDEMTIONS = "select id, PROMO_DLV_ZONE_ID, DAY_ID, REDEEM_CNT as DAYREDEEM_CNT"
+	private final static String LOAD_PROMO_DAY_REDEMTIONS = "select id, PROMO_DLV_ZONE_ID, DAY_ID, REDEEM_CNT as DAYREDEEM_CNT, CAPACITY_UTILIZATION"
 		+ " from cust.PROMO_DLV_DAY pdt "
 		+ " where pdt.PROMO_DLV_ZONE_ID = ?";		
 	
@@ -1943,6 +1944,10 @@ public class FDPromotionManagerNewDAO {
 				Array array = rs.getArray(4);
 				String[] zoneCodes = (String[]) array.getArray();
 				dlvZoneStrategyModel.setDlvZones(zoneCodes);
+				
+				Array arrayTravelZoneCodes = rs.getArray(5);
+				String[] dlvZoneCodes = arrayTravelZoneCodes != null ?  (String[]) arrayTravelZoneCodes.getArray() : null;
+				dlvZoneStrategyModel.setTravelZones(dlvZoneCodes!= null ?Arrays.asList(dlvZoneCodes) : null);
 
 				ps1 = conn.prepareStatement(LOAD_PROMO_TIME_SLOTS);
 				ps1.setString(1, dlvZoneStrategyModel.getId());
@@ -1959,6 +1964,8 @@ public class FDPromotionManagerNewDAO {
 					Array windowArray = rs1.getArray("DLV_WINDOWTYPE");
 					String[] windowTypes = windowArray != null ? (String[]) windowArray.getArray() : null;
 					timeSlotModel.setWindowTypes(windowTypes);
+					timeSlotModel.setForWindowTime(rs1.getString("FOR_WINDOW_TIME"));
+					timeSlotModel.setCutOffExpTime(rs.getInt("CUT_OFF_EXP_TIME"));
 					timeSlotList.add(timeSlotModel);
 				}
 				dlvZoneStrategyModel.setDlvTimeSlots(timeSlotList);
@@ -1973,6 +1980,7 @@ public class FDPromotionManagerNewDAO {
 					dayModel.setPromoDlvZoneId(dlvZoneStrategyModel.getId());
 					dayModel.setDayId(rs2.getInt("DAY_ID"));
 					dayModel.setRedeemCount(rs2.getInt("DAYREDEEM_CNT"));
+					dayModel.setCapcityUtilization(rs2.getDouble("CAPACITY_UTILIZATION"));
 					dayList.add(dayModel);
 				}
 				dlvZoneStrategyModel.setDlvDayRedemtions(dayList);

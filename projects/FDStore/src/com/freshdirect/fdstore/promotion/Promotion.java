@@ -52,6 +52,8 @@ public class Promotion extends ModelSupport implements PromotionI {
 	
 	private EnumOfferType offerType;
 	
+	private double capcityUtilization;
+	
 	private final static Comparator<PromotionStrategyI> PRECEDENCE_COMPARATOR = new Comparator<PromotionStrategyI>() {
 		public int compare(PromotionStrategyI o1, PromotionStrategyI o2) {			
 			int p1 = o1.getPrecedence();
@@ -514,7 +516,14 @@ public class Promotion extends ModelSupport implements PromotionI {
 		this.offerType = offerType;
 	}
 
+	public double getCapcityUtilization() {
+		return capcityUtilization;
+	}
 
+	public void setCapcityUtilization(double capcityUtilization) {
+		this.capcityUtilization = capcityUtilization;
+	}
+	
 	public void setPromotionType(EnumPromotionType promotionType) {
 		this.promotionType = promotionType;
 	}
@@ -559,6 +568,5 @@ public class Promotion extends ModelSupport implements PromotionI {
 		this.excludeSkusFromSubTotal = excludeSkusFromSubTotal;
 	}
 	 
-	
 
 }

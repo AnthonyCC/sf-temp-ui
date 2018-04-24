@@ -10,6 +10,8 @@ public class FDPromoDlvTimeSlotModel extends ModelSupport {
 	private String dlvTimeEnd;
 	private String radius;
 	private String[] windowTypes;
+	private String forWindowTime;
+	private Integer cutOffExpTime;
 	
 	public String getPromoDlvZoneId() {
 		return promoDlvZoneId;
@@ -54,6 +56,18 @@ public class FDPromoDlvTimeSlotModel extends ModelSupport {
 		}
 		return super.toString();
 		
+	}
+	public String getForWindowTime() {
+		return forWindowTime;
+	}
+	public Integer getCutOffExpTime() {
+		return cutOffExpTime;
+	}
+	public void setForWindowTime(String forWindowTime) {
+		this.forWindowTime = forWindowTime;
+	}
+	public void setCutOffExpTime(Integer cutOffExpTime) {
+		this.cutOffExpTime = cutOffExpTime;
 	}
 	
 	

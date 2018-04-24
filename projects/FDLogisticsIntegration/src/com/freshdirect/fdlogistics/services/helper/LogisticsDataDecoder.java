@@ -179,7 +179,7 @@ public class LogisticsDataDecoder {
 				timeslot.isSoldOut(), timeslot.isDepot(), timeslot.isSameDaySlot(), timeslot.isFdxSlot(),
 				timeslot.getTotalAvailable(), timeslot.getBaseAvailable(), timeslot.getChefsTableAvailble(), timeslot.isRadius(), timeslot.getTravelZone(), 
 				timeslot.getModX(), timeslot.getModY(), timeslot.getAdditionalDistance(), EnumRegionServiceType.getEnum(timeslot.getRegionServiceType()),
-				timeslot.getSoFirstDeliveryDate(),timeslot.getOriginalCutoffDateTime());
+				timeslot.getSoFirstDeliveryDate(),timeslot.getOriginalCutoffDateTime(), timeslot.getCapacityUtilizationPercentage());
 		return t;
 	}
 	

@@ -69,4 +69,6 @@ public interface PromotionI extends Serializable {
 	public String getRedemptionCode();
 	
 	public void setStrategiesList(List<PromotionStrategyI> strategies);
+	
+	public double getCapcityUtilization();
 }

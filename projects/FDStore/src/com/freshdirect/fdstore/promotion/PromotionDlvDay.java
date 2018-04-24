@@ -9,11 +9,13 @@ public class PromotionDlvDay extends ModelSupport {
 
 	private Integer dayId;
 	private Integer redeemCnt;
+	private double capacityUtilization;
 	
-	public PromotionDlvDay(Integer dayId, Integer redeemCnt) {
+	public PromotionDlvDay(Integer dayId, Integer redeemCnt, double capacityUtilization) {
 		super();
 		this.dayId = dayId;
 		this.redeemCnt = redeemCnt;
+		this.capacityUtilization = capacityUtilization;
 	}
 	
 	public PromotionDlvDay() {
@@ -34,6 +36,14 @@ public class PromotionDlvDay extends ModelSupport {
 
 	public void setRedeemCnt(Integer redeemCnt) {
 		this.redeemCnt = redeemCnt;
+	}
+
+	public double getCapacityUtilization() {
+		return capacityUtilization;
+	}
+
+	public void setCapacityUtilization(double capacityUtilization) {
+		this.capacityUtilization = capacityUtilization;
 	}
 	
 }

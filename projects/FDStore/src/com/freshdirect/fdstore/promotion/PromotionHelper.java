@@ -88,6 +88,7 @@ public class PromotionHelper {
 					String promoId = it.next();
 					Promotion p = (Promotion) PromotionFactory.getInstance().getPromotion(promoId);
 					if(p !=  null && p.getOfferType() != null && p.getOfferType().equals(EnumOfferType.WINDOW_STEERING)){
+						
 						/*APPDEV-2850 - combinable offers. every offer will have zonestrategy attached if it is set on promotion. So just get the first applicator */
 						//PromotionApplicatorI app = p.getApplicator();
 						PromotionApplicatorI app = null;
@@ -95,7 +96,13 @@ public class PromotionHelper {
 							app = (PromotionApplicatorI) p.getApplicatorList().get(0);
 						DlvZoneStrategy zoneStrategy = app != null ? app.getDlvZoneStrategy() : null;
 						if(zoneStrategy != null && zoneStrategy.isZonePresent(timeSlot.getZoneCode()) 
-								&& zoneStrategy.isTimeSlotEligible(timeSlot, tsWindowMap, user, promoId)){
+								/* WS -enhanced targeting APPDEV-7118 Start----->*/
+								&& zoneStrategy.isTimeSlotEligible(timeSlot, tsWindowMap, user, promoId)
+								&& zoneStrategy.isLessthanCapcityUtilization(timeSlot, p.getCapcityUtilization(), null)
+									&& zoneStrategy.isWithinCutOffExpTime(timeSlot)
+									&& zoneStrategy.isTravelZonePresent(timeSlot.getTravelZone())
+									/*<----- APPDEV-7118 End  */){
+														
 							double promoAmt = p.getHeaderDiscountTotal();
 							boolean isWaiveCharge = p.isWaiveCharge();
 							if(isWaiveCharge){
