@@ -487,6 +487,11 @@ ul.products .description-skin{
   margin: 0 3px 0 4px;
 }
 
+.container.srch .new.products.recommender [data-component="carousel"] ul li.portrait-item{
+  width: 167px;
+  margin: 0 3px 0 4px;
+}
+
 /* end of one carousel cases */
 
 .container.srch .carousel-header h2,
