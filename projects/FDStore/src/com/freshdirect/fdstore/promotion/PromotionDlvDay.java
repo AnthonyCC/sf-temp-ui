@@ -16,6 +16,11 @@ public class PromotionDlvDay extends ModelSupport {
 		this.redeemCnt = redeemCnt;
 	}
 	
+	public PromotionDlvDay() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
 	public Integer getDayId() {
 		return dayId;
 	}

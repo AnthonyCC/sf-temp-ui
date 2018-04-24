@@ -2,20 +2,27 @@ package com.freshdirect.fdstore.promotion;
 
 import java.util.Date;
 
+
 public class DateRangeStrategy implements PromotionStrategyI {
 
-	private final Date startDate;
-	private final Date expirationDate;
+	private Date startDate;
+	private Date expirationDate;
 
 	/**
 	 * @param expirationDate can be null
 	 */
+	
 	public DateRangeStrategy(Date startDate, Date expirationDate) {
 		if (startDate == null) {
 			throw new IllegalArgumentException("startDate cannot be null");
 		}
 		this.startDate = startDate;
 		this.expirationDate = expirationDate;
+	}
+
+	public DateRangeStrategy() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 
 	public Date getExpirationDate() {

@@ -264,6 +264,18 @@ public class CartStrategy extends DCPDLineItemStrategy implements PromotionStrat
 		}
 		return allowORdeny;
 	}
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public void setCombinationSku(Set<String> combinationSku) {
+		this.combinationSku = combinationSku;
+	}
+
+	public void setMinDcpdTotalPromoData(FDMinDCPDTotalPromoData minDcpdTotalPromoData) {
+		this.minDcpdTotalPromoData = minDcpdTotalPromoData;
+	}
+
 	@Override
 	public String toString() {
 		return "CartItemStrategy [contentKeys="

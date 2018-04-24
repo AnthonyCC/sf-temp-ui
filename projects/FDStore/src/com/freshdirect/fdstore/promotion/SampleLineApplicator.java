@@ -26,8 +26,8 @@ public class SampleLineApplicator implements PromotionApplicatorI {
 
 	private final static Category LOGGER = LoggerFactory.getInstance(SampleStrategy.class);
 
-	private final ProductReference sampleProduct;
-	private final double minSubtotal;
+	private ProductReference sampleProduct;
+	private double minSubtotal;
 	private DlvZoneStrategy zoneStrategy;
 
 	private CartStrategy cartStrategy;
@@ -35,6 +35,11 @@ public class SampleLineApplicator implements PromotionApplicatorI {
 	public SampleLineApplicator(ProductReference sampleProduct, double minSubtotal) {
 		this.sampleProduct = sampleProduct;
 		this.minSubtotal = minSubtotal;
+	}
+
+	public SampleLineApplicator() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 
 	public ProductModel getSampleProduct() {
@@ -142,6 +147,18 @@ public class SampleLineApplicator implements PromotionApplicatorI {
 	@Override
 	public CartStrategy getCartStrategy() {
 		return this.cartStrategy;
+	}
+
+	public DlvZoneStrategy getZoneStrategy() {
+		return zoneStrategy;
+	}
+
+	public void setSampleProduct(ProductReference sampleProduct) {
+		this.sampleProduct = sampleProduct;
+	}
+
+	public void setMinSubtotal(double minSubtotal) {
+		this.minSubtotal = minSubtotal;
 	}
 
 }

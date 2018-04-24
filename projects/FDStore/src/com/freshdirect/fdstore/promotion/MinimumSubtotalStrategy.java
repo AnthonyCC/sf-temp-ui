@@ -9,6 +9,11 @@ public class MinimumSubtotalStrategy implements PromotionStrategyI {
 		this.minSubtotal = minSubtotal;
 	}
 	
+	public MinimumSubtotalStrategy() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
 	@Override
 	public int getPrecedence() {
 		return 0;
@@ -26,5 +31,13 @@ public class MinimumSubtotalStrategy implements PromotionStrategyI {
 	@Override
 	public boolean isStoreRequired() {
 		return false;
+	}
+
+	public double getMinSubtotal() {
+		return minSubtotal;
+	}
+
+	public void setMinSubtotal(double minSubtotal) {
+		this.minSubtotal = minSubtotal;
 	}
 }

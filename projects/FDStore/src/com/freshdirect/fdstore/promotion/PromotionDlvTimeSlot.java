@@ -21,6 +21,11 @@ public class PromotionDlvTimeSlot extends ModelSupport {
 		this.windowTypes = windowTypes;
 	}
 	
+	public PromotionDlvTimeSlot() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
 	public Integer getDayId() {
 		return dayId;
 	}

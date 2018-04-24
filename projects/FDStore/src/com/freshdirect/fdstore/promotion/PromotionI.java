@@ -67,4 +67,6 @@ public interface PromotionI extends Serializable {
 	public double getLineItemDiscountPercentage();
 	
 	public String getRedemptionCode();
+	
+	public void setStrategiesList(List<PromotionStrategyI> strategies);
 }

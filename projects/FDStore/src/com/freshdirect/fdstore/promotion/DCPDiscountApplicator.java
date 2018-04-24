@@ -14,7 +14,7 @@ import com.freshdirect.storeapi.content.ContentNodeModelUtil;
  */
 public class DCPDiscountApplicator  implements PromotionApplicatorI {
 	Set contentKeys = new HashSet();
-	private final DCPDiscountRule discountRule;
+	private DCPDiscountRule discountRule;
 	
 	/**
 	 * @param percentOff between 0 and 1
@@ -24,6 +24,11 @@ public class DCPDiscountApplicator  implements PromotionApplicatorI {
 		this.discountRule = rule;
 	}
 	
+	public DCPDiscountApplicator() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
 	public void addContent(String type, String id){
 		Object refKey = ContentNodeModelUtil.getAliasCategoryRef(type, id);
 		if(FDStoreProperties.isDCPDAliasHandlingEnabled() && refKey != null){
@@ -82,5 +87,17 @@ public class DCPDiscountApplicator  implements PromotionApplicatorI {
 	public CartStrategy getCartStrategy() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public Set getContentKeys() {
+		return contentKeys;
+	}
+
+	public void setContentKeys(Set contentKeys) {
+		this.contentKeys = contentKeys;
+	}
+
+	public void setDiscountRule(DCPDiscountRule discountRule) {
+		this.discountRule = discountRule;
 	}
 }

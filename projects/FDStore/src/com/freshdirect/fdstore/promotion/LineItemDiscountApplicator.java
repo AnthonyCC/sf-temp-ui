@@ -43,6 +43,11 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 		this.minSubTotal=minAmount;
 	}
 	
+	public LineItemDiscountApplicator() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
 	public double getMinSubtotal() {
 		return this.minSubTotal;
 	}
@@ -382,5 +387,33 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 	@Override
 	public CartStrategy getCartStrategy() {
 		return this.cartStrategy;
+	}
+
+	public double getMinSubTotal() {
+		return minSubTotal;
+	}
+
+	public void setMinSubTotal(double minSubTotal) {
+		this.minSubTotal = minSubTotal;
+	}
+
+	public double getMaxPercentageDiscount() {
+		return maxPercentageDiscount;
+	}
+
+	public void setMaxPercentageDiscount(double maxPercentageDiscount) {
+		this.maxPercentageDiscount = maxPercentageDiscount;
+	}
+
+	public List getLineItemStrategies() {
+		return lineItemStrategies;
+	}
+
+	public void setLineItemStrategies(List lineItemStrategies) {
+		this.lineItemStrategies = lineItemStrategies;
+	}
+
+	public DlvZoneStrategy getZoneStrategy() {
+		return zoneStrategy;
 	}
 }

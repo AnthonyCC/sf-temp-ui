@@ -113,6 +113,8 @@ import com.metaparadigm.jsonrpc.Serializer;
 import com.metaparadigm.jsonrpc.SerializerState;
 import com.metaparadigm.jsonrpc.UnmarshallException;
 
+import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
+
 public class FDPromotionJSONSerializer extends AbstractSerializer {
 	private static final long serialVersionUID = 4602538095592746033L;
 
@@ -279,7 +281,7 @@ public class FDPromotionJSONSerializer extends AbstractSerializer {
 				if (getSetter(klass, prop, m.getReturnType()) != null) {
 					props.put(prop, m);
 				} else {
-					LOGGER.warn("[collectProperties] Prop '" + prop + "' skipped, no setter");
+					LOGGER.warn(klass+" [collectProperties] Prop '" + prop + "' skipped, no setter");
 				}
 			} else if (m.getName().startsWith("is")) {
 				// boolean type
@@ -287,7 +289,7 @@ public class FDPromotionJSONSerializer extends AbstractSerializer {
 				if (getSetter(klass, prop, m.getReturnType()) != null) {
 					props.put(prop, m);
 				} else {
-					LOGGER.warn("[collectProperties] Prop '" + prop + "' skipped, no setter");
+					LOGGER.warn(klass+" [collectProperties] Prop '" + prop + "' skipped, no setter");
 				}
 			}
 		}
@@ -558,8 +560,19 @@ public class FDPromotionJSONSerializer extends AbstractSerializer {
 					silentInvoke(obj, setter, valami);
 				} else if (Map.class.isAssignableFrom(valueType)) {
 					ParameterizedType rt = (ParameterizedType) getter.getGenericReturnType();
-					final Class<?> keyType = (Class<?>) rt.getActualTypeArguments()[0];
-					final Class<?> valType = (Class<?>) rt.getActualTypeArguments()[1];
+					Class<?> keyType = null;
+					Class<?> valType = null;
+					try {
+						keyType = (Class<?>) rt.getActualTypeArguments()[0];
+						if(rt.getActualTypeArguments()[1] instanceof ParameterizedTypeImpl){
+							valType =((ParameterizedTypeImpl)rt.getActualTypeArguments()[1]).getRawType();
+						}else{
+							valType = (Class<?>) rt.getActualTypeArguments()[1];
+						}
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					
 					// Map map = (Map) valueType.newInstance();
 					Map map;
@@ -590,6 +603,8 @@ public class FDPromotionJSONSerializer extends AbstractSerializer {
 		} catch (InstantiationException e) {
 			LOGGER.error("restoreObject", e);
 		} catch (IllegalAccessException e) {
+			LOGGER.error("restoreObject", e);
+		} catch (ClassCastException e){
 			LOGGER.error("restoreObject", e);
 		}
 		

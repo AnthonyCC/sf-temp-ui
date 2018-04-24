@@ -7,8 +7,8 @@ import com.freshdirect.customer.EnumChargeType;
  */
 public class WaiveChargeApplicator implements PromotionApplicatorI {
 
-	private final EnumChargeType chargeType;
-	private final double minSubtotal;
+	private EnumChargeType chargeType;
+	private double minSubtotal;
 	private DlvZoneStrategy zoneStrategy;
 	private boolean fuelSurcharge;
 	private CartStrategy cartStrategy;
@@ -29,6 +29,10 @@ public class WaiveChargeApplicator implements PromotionApplicatorI {
 		this.fuelSurcharge = fuelSurcharge;
 	}
 
+	public WaiveChargeApplicator() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 	public boolean apply(String promotionCode, PromotionContextI context) {
 		//If delivery zone strategy is applicable please evaluate before applying the promotion.
 		int e = zoneStrategy != null ? zoneStrategy.evaluate(promotionCode, context) : PromotionStrategyI.ALLOW;
@@ -68,6 +72,21 @@ public class WaiveChargeApplicator implements PromotionApplicatorI {
 	@Override
 	public CartStrategy getCartStrategy() {
 		return this.cartStrategy;
+	}
+	public boolean isFuelSurcharge() {
+		return fuelSurcharge;
+	}
+	public void setFuelSurcharge(boolean fuelSurcharge) {
+		this.fuelSurcharge = fuelSurcharge;
+	}
+	public DlvZoneStrategy getZoneStrategy() {
+		return zoneStrategy;
+	}
+	public void setChargeType(EnumChargeType chargeType) {
+		this.chargeType = chargeType;
+	}
+	public void setMinSubtotal(double minSubtotal) {
+		this.minSubtotal = minSubtotal;
 	}
 
 }

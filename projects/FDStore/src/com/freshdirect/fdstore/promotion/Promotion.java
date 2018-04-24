@@ -25,17 +25,17 @@ public class Promotion extends ModelSupport implements PromotionI {
 	
 	private static final long	serialVersionUID	= -4069961539775362219L;
 
-	private final EnumPromotionType promotionType;
+	private EnumPromotionType promotionType;
 
-	private final String promotionCode;
+	private String promotionCode;
 
-	private final String description;
+	private String description;
 
-	private final String name;
+	private String name;
 
-	private final List<PromotionStrategyI> strategies = new ArrayList<PromotionStrategyI>();
+	private List<PromotionStrategyI> strategies = new ArrayList<PromotionStrategyI>();
 	
-	private final List<PromotionApplicatorI> applicators = new ArrayList<PromotionApplicatorI>();
+	private List<PromotionApplicatorI> applicators = new ArrayList<PromotionApplicatorI>();
 
 	private PromotionApplicatorI applicator;
 	
@@ -73,6 +73,12 @@ public class Promotion extends ModelSupport implements PromotionI {
 	}
 	
 		
+	public Promotion() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+
 	private Set<String> convertToSkus(String value){
 		StringTokenizer tokens = new StringTokenizer(value);
 		Set<String> returnSet = new HashSet<String>();
@@ -234,6 +240,10 @@ public class Promotion extends ModelSupport implements PromotionI {
 
 	public Collection<PromotionStrategyI> getStrategies() {
 		return Collections.unmodifiableCollection(this.strategies);
+	}
+	
+	public List<PromotionStrategyI> getStrategiesList() {
+		return this.strategies;
 	}
 	
 	public PromotionStrategyI getStrategy(Class<?> strategyClass) {
@@ -503,6 +513,52 @@ public class Promotion extends ModelSupport implements PromotionI {
 	public void setOfferType(EnumOfferType offerType) {
 		this.offerType = offerType;
 	}
+
+
+	public void setPromotionType(EnumPromotionType promotionType) {
+		this.promotionType = promotionType;
+	}
+
+
+	public void setPromotionCode(String promotionCode) {
+		this.promotionCode = promotionCode;
+	}
+
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+
+	public void setStrategiesList(List<PromotionStrategyI> strategies) {
+		this.strategies = strategies;
+	}
+
+
+	public void setApplicatorList(List<PromotionApplicatorI> applicators) {
+		this.applicators = applicators;
+	}
+
+
+	public void setApplicator(PromotionApplicatorI applicator) {
+		this.applicator = applicator;
+	}
+
+
+	public void setLastModified(Timestamp lastModified) {
+		this.lastModified = lastModified;
+	}
+
+
+	public void setExcludeSkusFromSubTotal(Set<String> excludeSkusFromSubTotal) {
+		this.excludeSkusFromSubTotal = excludeSkusFromSubTotal;
+	}
 	 
+	
 
 }
