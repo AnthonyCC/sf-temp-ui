@@ -1060,6 +1060,8 @@ public class FDStoreProperties {
     private static final String PROP_FRESH_DEALS_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED = "fdstore.freshdealspage.newproductscarousel.randomizeproductorder.enabled";
     private static final String PROP_REORDER_PAGE_NEW_PRODUCTS_CAROUSEL_ENABLED = "fdstore.reorderpage.newproductscarousel.enabled";
     private static final String PROP_REORDER_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED = "fdstore.reorderpage.newproductscarousel.randomizeproductorder.enabled";
+
+    private static final String MASTERPASS_EXCEPTION_MESSAGE = "masterpass.exception.message";
  	static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_INIT_CTX_FACTORY, "weblogic.jndi.WLInitialContextFactory");
@@ -2031,6 +2033,8 @@ public class FDStoreProperties {
         defaults.put(PROP_INFORM_ORDERMODIFY_ENABLED, "false");
         defaults.put(PROP_INFORM_ORDERMODIFY_MEDIAPATH, "");
         defaults.put(PROP_INFORM_ORDERMODIFY_VIEWLIMIT, "5");
+        defaults.put(MASTERPASS_EXCEPTION_MESSAGE, "Connection problem.  Please choose a different wallet.");
+
 		
         refresh();
     }
@@ -5178,4 +5182,8 @@ public class FDStoreProperties {
 	public static String getInformOrderModifyMediaPath() {
 		return get(PROP_INFORM_ORDERMODIFY_MEDIAPATH);
 	}
+
+	 public static String getMasterpassExcMessage() {
+	        return get(MASTERPASS_EXCEPTION_MESSAGE);
+	    }
 }
