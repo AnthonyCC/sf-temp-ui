@@ -126,13 +126,13 @@
   background: url(/media_stat/images/close.png) no-repeat;
   background-size: 100%;
 }
-.qs-hidehelp .qs-popup-help-icon, .qs-hidehelp .help-icon {
+.qs-hidehelp .qs-popup-help-icon, .qs-hidehelp .help-icon, .help-icon {
   display: none;
 }
-.qs-hasclose .qs-popup-close-icon, .qs-hasclose .close-icon {
+.qs-hasclose .qs-popup-close-icon, .qs-hasclose .close-icon, .close-icon {
   display: block;
 }
-.qs-hasclose .qs-popup-help-icon, .qs-hasclose .help-icon {
+.qs-hasclose .qs-popup-help-icon, .qs-hasclose .help-icon, .help-icon {
   right: 40px;
 }
 .qs-popup-content {
