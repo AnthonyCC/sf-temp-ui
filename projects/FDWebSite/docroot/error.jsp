@@ -16,7 +16,7 @@
 
 	//Very dirty way of logging broken pipe and connnection reset without refactoring exception handling.
 	public void logError(HttpServletRequest request, FDSessionUser user, String errorCode, String errorMessage){
-		if (FDExceptionUtil.isTextContainsIgnoreCase(errorMessage, "JspException") && (FDExceptionUtil.isTextContainsIgnoreCase(errorMessage, "Broken pipe") || FDExceptionUtil.isTextContainsIgnoreCase(errorMessage,"Connection reset"))){
+		if (FDExceptionUtil.isConnectionResetOrBrokenPipe(errorMessage)){
 		    log500(request,user,"FDWEBERROR-04", errorMessage);
 		}
 		else{

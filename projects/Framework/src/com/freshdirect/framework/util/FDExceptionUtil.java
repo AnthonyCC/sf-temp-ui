@@ -1,6 +1,5 @@
 package com.freshdirect.framework.util;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 
 public class FDExceptionUtil {
@@ -19,7 +18,15 @@ public class FDExceptionUtil {
 		return strBuf.toString();
 	}
 
-    public static boolean isTextContainsIgnoreCase(String errorText, String expression) {
-        return StringUtils.containsIgnoreCase(errorText, expression);
+    public static boolean isConnectionResetOrBrokenPipe(String exceptionText) {
+        boolean relatedException = false;
+
+        if (exceptionText != null) {
+            String upperExceptionText = exceptionText.toUpperCase();
+            relatedException = upperExceptionText.contains("JSPEXCEPTION") && (upperExceptionText.contains("BROKEN PIPE") || upperExceptionText.contains("CONNECTION RESET"));
+        }
+
+        return relatedException;
+
     }
 }
