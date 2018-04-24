@@ -23,6 +23,9 @@ body.oauth-body br+br {
 	text-align: left;
 	padding-bottom: 20px;
 }
+.oauth-body .app-name {
+	text-transform: capitalize;
+}
 .oauth-body h2 {
 	font-weight: normal;
 	font-size: 15px;

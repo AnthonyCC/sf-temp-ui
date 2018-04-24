@@ -69,7 +69,7 @@ public abstract class AbstractEcommService {
 		requestFactory.setConnectTimeout(FDStoreProperties.getLogisticsConnectionTimeout() * 1000);
 		restTemplate.setRequestFactory(requestFactory);
 		
-		try {
+		/*try {
 		    IdleConnectionMonitorThread staleMonitor = new IdleConnectionMonitorThread(cManager);
 		    staleMonitor.start();
 			staleMonitor.join(1000);
@@ -77,7 +77,7 @@ public abstract class AbstractEcommService {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
+*/
 	}
 	
 

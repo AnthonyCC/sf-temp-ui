@@ -95,29 +95,35 @@ if ("KOSHER".equalsIgnoreCase(attrib)) {
     %>
      <fd:RequiredParameterValidator parameters="catId,prodId"/>
      <% prod =  cf.getProductByName(catId,prodId);
-        prodImg = prod.getCategoryImage();
-        dept = prod.getDepartment();
-        deptName = dept.getFullName();
-        MediaI deptIzeMedia = prod.getMedia(attrib);
-        pathToMedia = deptIzeMedia.getPath();
-        if (deptIzeMedia instanceof TitledMedia) {
-                title = ((TitledMedia)deptIzeMedia).getMediaTitle();
-        } else {
-                cat = (CategoryModel)cf.getContentNode(catId);
-                catName = cat.getFullName();
-                if ("FDDEF_FRENCHING".equalsIgnoreCase(attrib)) {
-                        title = "About Frenching";
-                } else if ("FDDEF_RIPENESS".equalsIgnoreCase(attrib)) {
-                        title = "About Ripeness: " + catName;
-                } else {
-                        if ("SALES_UNIT_DESCRIPTION".equalsIgnoreCase(attrib)) {
-                                title = deptName + " - How Much to Buy";
-                        } else if ("FDDEF_GRADE".equalsIgnoreCase(attrib)) {
-                                title = deptName + " - About "+ catName +" Grades";
-                        } else if ("PRODUCT_ABOUT".equalsIgnoreCase(attrib)) {
-                                title = deptName + " - About this " + deptName.toLowerCase() + " product";
-                        }
-                }
+     
+        if (prod != null){
+	        prodImg = prod.getCategoryImage();
+	        dept = prod.getDepartment();
+	        deptName = dept.getFullName();
+	        MediaI deptIzeMedia = prod.getMedia(attrib);
+	        pathToMedia = deptIzeMedia.getPath();
+	        if (deptIzeMedia instanceof TitledMedia) {
+	                title = ((TitledMedia)deptIzeMedia).getMediaTitle();
+	        } else {
+	                cat = (CategoryModel)cf.getContentNode(catId);
+	                catName = cat.getFullName();
+	                if ("FDDEF_FRENCHING".equalsIgnoreCase(attrib)) {
+	                        title = "About Frenching";
+	                } else if ("FDDEF_RIPENESS".equalsIgnoreCase(attrib)) {
+	                        title = "About Ripeness: " + catName;
+	                } else {
+	                        if ("SALES_UNIT_DESCRIPTION".equalsIgnoreCase(attrib)) {
+	                                title = deptName + " - How Much to Buy";
+	                        } else if ("FDDEF_GRADE".equalsIgnoreCase(attrib)) {
+	                                title = deptName + " - About "+ catName +" Grades";
+	                        } else if ("PRODUCT_ABOUT".equalsIgnoreCase(attrib)) {
+	                                title = deptName + " - About this " + deptName.toLowerCase() + " product";
+	                        }
+	                }
+	        }
+        }
+        else{
+            throw new FDNotFoundException("Product not found in /shared/popup.jsp with parameters: categoryId=" + catId +" productId=" + prodId );
         }
 }
 

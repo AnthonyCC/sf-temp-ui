@@ -1,4 +1,5 @@
 <%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
+<%@ page import="com.freshdirect.customer.EnumSaleType"%>
 <%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
 <%@ page import="com.freshdirect.webapp.util.JspMethods" %>
 <%@ taglib uri='template' prefix='tmpl' %>
@@ -80,7 +81,7 @@
 
   <div id='successpage'>
       <div class="container">
-      	<% if(FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && order.containsDlvPassOnly()){ %>
+      	<% if(FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && order.getOrderType().equals(EnumSaleType.SUBSCRIPTION)){ %>
 	  		<div class="dpn-content">
 	        	<%@ include file="/includes/deliverypasssuccess.jsp" %>
 	        </div>

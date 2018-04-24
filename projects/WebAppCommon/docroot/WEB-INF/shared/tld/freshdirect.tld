@@ -5780,6 +5780,23 @@
 		</attribute>
 		<bodycontent>empty</bodycontent>	
 	</tag>
+	
+	<tag>
+		<name>OptionalParameterValidator</name>
+		<tagclass>com.freshdirect.webapp.taglib.validation.OptionalParameterValidatorTag</tagclass>
+		<info></info>
+		<attribute>
+			<name>parameter</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>parameterType</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<bodycontent>empty</bodycontent>	
+	</tag>
 
 	<tag-file>
        <name>SEOMetaTag</name>

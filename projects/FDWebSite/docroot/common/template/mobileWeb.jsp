@@ -184,6 +184,7 @@
 	    			<!-- end : tabs -->
 	  			</section>
 				<section class="main">
+            <tmpl:get name='mobileSubMenu'/>
 					
 				    <nav class="leftnav" style="display: none;">
 				      <!-- start : leftnav -->

@@ -929,6 +929,9 @@ public class CheckoutController extends BaseController {
         return model;
     }
     
+    public ActionResult performAvailabilityCheck(SessionUser user, HttpSession session) throws FDException {
+    	return performAvailabilityCheck(user,session,false);
+    }
     
     /**
      * @param user
@@ -936,7 +939,7 @@ public class CheckoutController extends BaseController {
      * @return
      * @throws FDException
      */
-    public ActionResult performAvailabilityCheck(SessionUser user, HttpSession session) throws FDException {
+    public ActionResult performAvailabilityCheck(SessionUser user, HttpSession session, boolean isDlvPassOnlyCart) throws FDException {
 
         /*
          * DUP: FDWebSite/docroot/checkout/step_2_check.jsp
@@ -945,7 +948,7 @@ public class CheckoutController extends BaseController {
          * WHY: The following logic was duplicate because it was specified in a JSP file.
          * WHAT: The duplicated code determines calls a method on model to perform availability check
          */
-        boolean isProductFullyAvailable = user.getShoppingCart().isCartFullyAvailable(user);
+        boolean isProductFullyAvailable = !isDlvPassOnlyCart ? user.getShoppingCart().isCartFullyAvailable(user): true;
 
         Checkout checkout = new Checkout(user);
 
@@ -973,8 +976,8 @@ public class CheckoutController extends BaseController {
         	}
         }
         else{
-        	if(subTotal != null && subTotal > (user!=null&&user.getShoppingCart()!=null&&user.getShoppingCart().getDeliveryReservation()!=null?
-        											user.getShoppingCart().getDeliveryReservation().getMinOrderAmt():0)) {
+        	if(isDlvPassOnlyCart ||(subTotal != null && subTotal > (user!=null&&user.getShoppingCart()!=null&&user.getShoppingCart().getDeliveryReservation()!=null?
+        											user.getShoppingCart().getDeliveryReservation().getMinOrderAmt():0))) {
 				callAvalaraForTax(user);
         	}
         }
@@ -1534,33 +1537,72 @@ public class CheckoutController extends BaseController {
 //           user.getUserContext().getStoreContext().getEStoreId().equals(EnumEStoreId.FD) && user.isChefsTable()){
 //        	TimeslotService.defaultService().applyPreReservedDeliveryTimeslot(request.getSession());
 //        }
+        
+        /*
+         * code refactored as part of DP17-122 to allow DeliveryPass only orders
+         * 
+         * */
+        boolean isDlvPassCartOnlyNotAllowed= false;//Cart contains DeliveryPass and allowed , or no deliverypass in the cart
+        boolean isDlvPassCartOnly = user.getFDSessionUser().getShoppingCart().containsDlvPassOnly();
+        		
+        		if(!FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && isDlvPassCartOnly){
+        			isDlvPassCartOnlyNotAllowed = true;
+        			message.addErrorMessage("error_dlv_pass_only", SystemMessageList.MSG_CONTAINS_DLV_PASS_ONLY);
+        			//dlvValidationResult.getActionResult().addError(new ActionError("error_dlv_pass_only", SystemMessageList.MSG_CONTAINS_DLV_PASS_ONLY));        			
+                    message.setStatus(Message.STATUS_FAILED);
+                    setResponseMessage(model, message, user);
+                    return model;
+        		}
 
-        if (user != null && user.getShoppingCart() != null && user.getShoppingCart().getDeliveryReservation() != null
+        /*if (user != null && user.getShoppingCart() != null && user.getShoppingCart().getDeliveryReservation() != null
                 && fdUser.getShoppingCart().getPaymentMethod() != null
-                && (UserValidationUtil.validateContainsDlvPassOnly(request, dlvValidationResult.getActionResult()) != true)) {
+                && (UserValidationUtil.validateContainsDlvPassOnly(request, dlvValidationResult.getActionResult()) != true))*/
+        	
+        if (user != null && user.getShoppingCart() != null && !isDlvPassCartOnlyNotAllowed
+                && fdUser.getShoppingCart().getPaymentMethod() != null) {
             // Reservation Validity
-            boolean reservationValid = checkout.checkReservationExpiry(user);
-            if (reservationValid) {
-                if (user.getShoppingCart().containsAlcohol()) {
-                    // Call Address And Alcohol Check
-                    message = checkout.checkAddressForAlcoholAndAgeVerification(message, user, request);
-                    if (isSuccess(message.getStatus())) {
-                        // Timeslot Alcohol Check
-                        message = checkout.alcoholTimeSlotCheck(message, user, isWebRequest);
-                    }
-                }
-                // Fraud Address Check
-                if (isSuccess(message.getStatus()) && user.getShoppingCart().getDeliveryAddress() != null){
-                    EnumRestrictedAddressReason reason = FDDeliveryManager.getInstance().checkAddressForRestrictions( user.getShoppingCart().getDeliveryAddress() );
-            		if ( !EnumRestrictedAddressReason.NONE.equals( reason ) ) {
-            			message.addErrorMessage("Unable to place order contact customer service");
+            
+            if (!isDlvPassCartOnly) {
+            	if(user.getShoppingCart().getDeliveryReservation() != null){
+            		boolean reservationValid = checkout.checkReservationExpiry(user);
+            		if(reservationValid){
+		                if (user.getShoppingCart().containsAlcohol()) {
+		                    // Call Address And Alcohol Check
+		                    message = checkout.checkAddressForAlcoholAndAgeVerification(message, user, request);
+		                    if (isSuccess(message.getStatus())) {
+		                        // Timeslot Alcohol Check
+		                        message = checkout.alcoholTimeSlotCheck(message, user, isWebRequest);
+		                    }
+		                }
+		                // Fraud Address Check
+		                if (isSuccess(message.getStatus()) && user.getShoppingCart().getDeliveryAddress() != null){
+		                    EnumRestrictedAddressReason reason = FDDeliveryManager.getInstance().checkAddressForRestrictions( user.getShoppingCart().getDeliveryAddress() );
+		            		if ( !EnumRestrictedAddressReason.NONE.equals( reason ) ) {
+		            			message.addErrorMessage("Unable to place order contact customer service");
+		                        message.setStatus(Message.STATUS_FAILED);
+		                    }
+		                }
+            		} else{
+            			message.addErrorMessage("invalid_reservation", SystemMessageList.MSG_CHECKOUT_EXPIRED_RESERVATION);
+                        message.setStatus(Message.STATUS_FAILED);
+            		}
+            	} else {
+            		EnumEStoreId eStore = (user.getUserContext() != null && user.getUserContext().getStoreContext() != null) ? user.getUserContext().getStoreContext().getEStoreId()
+                            : EnumEStoreId.FD;
+                    if (EnumEStoreId.FDX.equals(eStore)) {
+                        message.addErrorMessage("Please select your delivery time");
+                        message.setStatus(Message.STATUS_FAILED);
+                    } else {
+                        message.addErrorMessage("There is an issue with the delivery time, please select another one");
                         message.setStatus(Message.STATUS_FAILED);
                     }
-                }
+            	}
+           }
+//              else {   
                 // Atp Check
                 if (isSuccess(message.getStatus())) {
                 	user.setFromLogin("Checkout");
-                    ActionResult availabliltyResult = this.performAvailabilityCheck(user, request.getSession());
+                    ActionResult availabliltyResult = this.performAvailabilityCheck(user, request.getSession(),isDlvPassCartOnly);
                     if (!availabliltyResult.isSuccess()) {
                     	if(availabliltyResult.getFirstError().getDescription().equals(AvailabilityService.REASON_MAX_PASSES) ||
                     	   availabliltyResult.getFirstError().getDescription().equals(AvailabilityService.REASON_PASS_EXISTS))
@@ -1592,7 +1634,9 @@ public class CheckoutController extends BaseController {
                     	{
                     		message = checkout.fillAtpErrorDetail(message, request);
                     	}
-                    } else {
+                    } 
+                    
+                    else {
                         // message = checkout.submitEx((SubmitOrderExResult)message, user, request);
                         FDCartModel cartModel = fdUser.getShoppingCart();
                         ResultBundle submitResult = checkout.submitOrder();
@@ -1626,11 +1670,9 @@ public class CheckoutController extends BaseController {
 
                     }
                 }
-            } else {
-                // Reservation expired.
-                message.addErrorMessage("invalid_reservation", SystemMessageList.MSG_CHECKOUT_EXPIRED_RESERVATION);
-                message.setStatus(Message.STATUS_FAILED);
-            }
+            
+            
+        
 
         } else {
             // cart not set up for checkout.

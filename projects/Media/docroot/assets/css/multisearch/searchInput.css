@@ -26,6 +26,10 @@
   overflow: hidden;
 }
 
+[data-ismobweb="true"] .multisearch-input .inputholder {
+  height: 27px;
+}
+
 .multisearch-input .inputholder > input {
   border: 1px solid #dce6be;
   border-radius: 3px;
