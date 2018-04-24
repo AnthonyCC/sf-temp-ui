@@ -74,7 +74,7 @@ public class CarouselService {
 		return carousel;
 	}
 
-    public CarouselData createNewProductsCarousel(FDUserI user, boolean isRandomizeProductOrderEnabled) {
+    public CarouselData createNewProductsCarousel(FDUserI user, boolean isRandomizeProductOrderEnabled, boolean isNameUpperCase) {
 
         CarouselData carousel = null;
 
@@ -83,7 +83,9 @@ public class CarouselService {
             if (isRandomizeProductOrderEnabled) {
                 Collections.shuffle(products);
             }
-            carousel = createCarouselData(null, NEW_PRODUCTS_CAROUSEL_NAME, products, user, null, null);
+
+            String carouselName = isNameUpperCase ? NEW_PRODUCTS_CAROUSEL_NAME.toUpperCase() : NEW_PRODUCTS_CAROUSEL_NAME;
+            carousel = createCarouselData(null, carouselName, products, user, null, null);
         }
 
         return carousel;
