@@ -125,7 +125,7 @@ if(user != null) {
 							%>
 							<button id="topInputFindButton_fdx" class="locabar-search cssbutton fdxgreen cssbutton-flat"><span class="offscreen">search</span></button>
 						
-							<% if (false) { %><div><a href="/multisearch.jsp">try our new beta search</a></div><% } %>
+							<% if (user != null && user.isFDLabsCustomer()) { %><div><a href="/multisearch.jsp">try our new beta search</a></div><% } %>
 						</form>
 					</div>
 

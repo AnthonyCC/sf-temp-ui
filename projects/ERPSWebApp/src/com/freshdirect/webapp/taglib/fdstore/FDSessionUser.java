@@ -843,6 +843,11 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     public boolean isChefsTable() throws FDResourceException {
         return this.user.isChefsTable();
     }
+    
+    @Override
+    public boolean isFDLabsCustomer() throws FDResourceException {
+        return this.user.isFDLabsCustomer();
+    }
 
     @Override
     public String getChefsTableInduction() throws FDResourceException {

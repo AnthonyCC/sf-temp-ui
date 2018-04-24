@@ -213,6 +213,8 @@ public interface FDUserI extends java.io.Serializable {
     public void setReservation(FDReservation reservation);
 
     public boolean isChefsTable() throws FDResourceException;
+    
+    public boolean isFDLabsCustomer() throws FDResourceException;
 
     public String getChefsTableInduction() throws FDResourceException;
 
