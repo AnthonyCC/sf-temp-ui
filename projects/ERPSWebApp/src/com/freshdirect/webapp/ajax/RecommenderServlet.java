@@ -9,7 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.webapp.ajax.browse.service.CarouselService;
 import com.freshdirect.webapp.ajax.product.data.BasicProductData;
 import com.freshdirect.webapp.ajax.recommendation.RecommendationRequestObject;
 import com.freshdirect.webapp.ajax.viewcart.data.RecommendationTab;
@@ -31,12 +33,33 @@ public class RecommenderServlet extends BaseJsonServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
         RecommendationRequestObject requestData = parseRequestData(request, RecommendationRequestObject.class, true);
         try {
-            RecommendationTab recommendationTab = ViewCartCarouselService.getDefaultService().getRecommendationTab(request, user, requestData);
+            RecommendationTab recommendationTab = null;
+            
+            final boolean isNewProductsCarousel = CarouselService.NEW_PRODUCTS_CAROUSEL_VIRTUAL_SITE_FEATURE.equals(requestData.getFeature());
+            if (isNewProductsCarousel) {
+                recommendationTab = createNewProductsCarouselRecommendationTab(user, requestData);
+            } else {
+                recommendationTab = ViewCartCarouselService.getDefaultService().getRecommendationTab(request, user, requestData);
+            }
+
             Map<String, Object> result = createRecommenderResult(recommendationTab);
             writeResponseData(response, result);
         } catch (FDResourceException e) {
             returnHttpError(500, "Cannot collect recommendations. site feature:" + requestData.getFeature(), e);
         }
+    }
+
+    private RecommendationTab createNewProductsCarouselRecommendationTab(FDUserI user, RecommendationRequestObject requestData) {
+        final boolean isNewProductsCarouselEnabled = FDStoreProperties.isReorderPageNewProductsCarouselEnabled();
+        RecommendationTab recommendationTab = null;
+        if (isNewProductsCarouselEnabled) {
+            final boolean isRandomizeProductOrderEnabled = FDStoreProperties.isReorderPageNewProductsCarouselRandomizeProductOrderEnabled();
+            recommendationTab = new RecommendationTab(CarouselService.NEW_PRODUCTS_CAROUSEL_NAME, requestData.getFeature());
+            recommendationTab.setCarouselData(
+                    CarouselService.defaultService().createNewProductsCarousel(user, isRandomizeProductOrderEnabled, false));
+            recommendationTab.getCarouselData().setCmEventSource("Reorder");
+        }
+        return recommendationTab;
     }
 
     public static Map<String, Object> createRecommenderResult(RecommendationTab recommendationTab) {

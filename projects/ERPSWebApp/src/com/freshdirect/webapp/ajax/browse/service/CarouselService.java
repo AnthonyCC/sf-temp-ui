@@ -24,7 +24,9 @@ public class CarouselService {
 
     private static final CarouselService INSTANCE = new CarouselService();
 
-    private static final String NEW_PRODUCTS_CAROUSEL_NAME = "New Products";
+    public static final String NEW_PRODUCTS_CAROUSEL_NAME = "New Products";
+
+    public static final String NEW_PRODUCTS_CAROUSEL_VIRTUAL_SITE_FEATURE = "NEW_PRODUCTS";
 
 	private CarouselService() {
 	}

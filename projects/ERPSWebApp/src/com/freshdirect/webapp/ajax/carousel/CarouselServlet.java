@@ -41,7 +41,6 @@ public class CarouselServlet extends BaseJsonServlet {
 
 	private static final long serialVersionUID = 7146728571778380697L;
 	private static final Logger LOGGER = LoggerFactory.getInstance(CarouselServlet.class);
-    private static final String NEW_PRODUCTS_CAROUSEL_NAME = "New Products";
 
 	@Override
 	// For OAuth2 token endpoint, GET is disabled
@@ -240,10 +239,12 @@ public class CarouselServlet extends BaseJsonServlet {
 
             final boolean isNewProductsCarouselEnabled = FDStoreProperties.isReorderPageNewProductsCarouselEnabled();
             if (isNewProductsCarouselEnabled) {
-                RecommendationTab recommendationTab = new RecommendationTab(NEW_PRODUCTS_CAROUSEL_NAME, null);
-                recommendationTab.setCarouselData(CarouselService.defaultService().createNewProductsCarousel(sessionUser,
-                        FDStoreProperties.isReorderPageNewProductsCarouselRandomizeProductOrderEnabled(), false));
-                carousels.getRecommendationTabs().add(0, recommendationTab);
+                final boolean isRandomizeProductOrderEnabled = FDStoreProperties.isReorderPageNewProductsCarouselRandomizeProductOrderEnabled();
+                CarouselData carouselData = CarouselService.defaultService().createNewProductsCarousel(sessionUser, isRandomizeProductOrderEnabled, false);
+                if (carouselData != null) {
+                    RecommendationTab recommendationTab = new RecommendationTab(CarouselService.NEW_PRODUCTS_CAROUSEL_NAME, CarouselService.NEW_PRODUCTS_CAROUSEL_VIRTUAL_SITE_FEATURE);
+                    carousels.getRecommendationTabs().add(0, recommendationTab);
+                }
             }
 
 			boolean isFirstTab = true;
