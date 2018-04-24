@@ -10,7 +10,10 @@
 
 [data-component="drawer"][data-drawer-columns="1"] li{
 	list-style: none;
-	padding: 0px 85px;
+	padding: 0 85px;
+}
+[data-component="drawer"][data-drawer-columns="1"] li.active{
+	padding: 0;
 }
 [data-component="drawer"][data-drawer-columns="1"] .drawer-content > ul{
 	padding: 0;

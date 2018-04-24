@@ -64,7 +64,7 @@ public class CartLineItem {
         ProductModel prodNode = null;
         try {
             prodNode = ContentFactory.getInstance().getProduct(skuCode);
-        } catch (FDSkuNotFoundException e) {
+        } catch (Exception e) {
             LOGGER.warn("SKU not found", e);
             //TODO: Revisit exception handling strategy
             throw new RuntimeException("SKU not found", e);

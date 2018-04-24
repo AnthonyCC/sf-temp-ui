@@ -1,11 +1,23 @@
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%@ taglib uri='freshdirect' prefix='fd'%>
 <%@ taglib uri='template' prefix='tmpl'%>
+<%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
+<%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
+<%@ page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
 
 <fd:CheckLoginStatus id="user" guestAllowed='true' recognizedAllowed='true' />
 
-<tmpl:insert template='/common/template/browse_template.jsp'>
+<%
+			String template = "/common/template/browse_template.jsp";
+
+			boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user)
+					&& JspMethods.isMobile(request.getHeader("User-Agent"));
+			if (mobWeb) {
+				template = "/common/template/mobileWeb.jsp"; //mobWeb template
+			}
+%>
+<tmpl:insert template='<%=template%>'>
 
 	<tmpl:put name='soypackage' direct='true'>
     <soy:import packageName="common"/>
@@ -17,7 +29,13 @@
 	</tmpl:put>
 
   <tmpl:put name="seoMetaTag" direct="true">
-    <fd:SEOMetaTag title="Search for multiple keywords"></fd:SEOMetaTag>
+    <fd:SEOMetaTag title="Search for multiple products"></fd:SEOMetaTag>
+  </tmpl:put>
+
+	<tmpl:put name='mobileSubMenu' direct='true'>
+    <div class="refine-btn-cont">
+      <button class="cssbutton green transparent modify-list-btn">Modify <span class="offscreen">list</span></button>
+    </div>
   </tmpl:put>
 
 	<tmpl:put name='leftnav' direct='true'>
@@ -26,7 +44,7 @@
   </tmpl:put>
 
   <tmpl:put name='content' direct='true'>
-    <h1>Multi-search</h1>
+    <h2>Type in a list of products and we will find them for you</h2>
     <div id="multisearch-results" class="contentModules">
     </div>
   </tmpl:put>

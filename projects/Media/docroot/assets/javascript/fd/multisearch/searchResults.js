@@ -40,10 +40,9 @@ var FreshDirect = FreshDirect || {};
             el.remove();
           });
 
-          searchListEl.innerHTML = searchListEl.innerHTML +
-            added.reduce(function (p, c) {
+          searchListEl.innerHTML = added.reduce(function (p, c) {
               return p + '<li data-searchresult="'+c+'">Loading search results for "'+c+'"...</li>';
-            }, '');
+            }, '') + searchListEl.innerHTML;
         }
 
         // call search API with newly added terms
@@ -51,7 +50,10 @@ var FreshDirect = FreshDirect || {};
           DISPATCHER.signal('server',{
             url: '/api/filter',
             data: {
-              data: JSON.stringify({searchParams: term})
+              data: JSON.stringify({
+                searchParams: term,
+                pageSize: 12
+              })
             },
             spinner: {
               timeout: 500,

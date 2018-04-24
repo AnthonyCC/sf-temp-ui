@@ -313,6 +313,11 @@ var FreshDirect = FreshDirect || {};
         scLeft = $(window).scrollLeft(),
         scTop = $(window).scrollTop(),
         positions = {}, wwidth;
+    
+    if (!transactionalPopup.popup.$el.is(':visible')) {
+    	//fallback to alignTo element if transactional popup is not visible (like when using the keyboard)
+    	trPopupBox = transactionalPopup.popup.$alignTo && transactionalPopup.popup.$alignTo[0].getBoundingClientRect();
+    }
 
     if (relatedBox && relatedBox.width !== 0) {
       trPopupBox = {

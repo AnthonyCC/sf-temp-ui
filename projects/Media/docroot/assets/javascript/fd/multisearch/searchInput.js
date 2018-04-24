@@ -5,7 +5,7 @@ var FreshDirect = FreshDirect || {};
   var $ = fd.libs.$;
   var WIDGET = fd.modules.common.widget;
   var DISPATCHER = fd.common.dispatcher;
-  var MAXTERMS = 10; // TODO configurable
+  var MAXTERMS = 25; // TODO configurable
 
   var searchInput = Object.create(WIDGET,{
     signal:{
@@ -38,7 +38,7 @@ var FreshDirect = FreshDirect || {};
 
         if (term && this.terms.length < MAXTERMS) {
           if (idx === -1) {
-            this.terms.push(fd.utils.escapeHtml(term));
+            this.terms.unshift(fd.utils.escapeHtml(term));
 
             this.termsChanged();
           }
@@ -77,6 +77,7 @@ var FreshDirect = FreshDirect || {};
       value:function(data){
         data = data || {};
         data.terms = data.terms || this.terms;
+        data.maxItems = MAXTERMS;
 
         if (this.terms !== data.terms) {
           this.terms = data.terms;
@@ -103,7 +104,7 @@ var FreshDirect = FreshDirect || {};
     'eggs',
     'milk',
     'pizza',
-    'yoghurt',
+    'yogurt',
     'butter',
     'carrots',
     'garlic',
@@ -139,3 +140,22 @@ var FreshDirect = FreshDirect || {};
     };
   }
 }(FreshDirect));
+
+// mobweb submen menu init
+(function (fd) {
+  var el = document.querySelector('.refine-btn-cont .modify-list-btn');
+
+  if (el) {
+    el.addEventListener('click', function (e) {
+      var leftnav = document.querySelector('.leftnav');
+
+      if (leftnav.style.display === 'none') {
+        leftnav.style.display = 'block';
+      } else {
+        leftnav.style.display = 'none';
+      }
+    });
+  }
+}(FreshDirect));
+
+

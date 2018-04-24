@@ -72,7 +72,7 @@ public class GoogleAnalyticsReportingService {
                 break;
 
             default:
-                domain = FDStoreProperties.getGoogleAnlayticsDomain();
+                domain = "freshdirect.com";
                 trackingId = FDStoreProperties.getGoogleAnalyticsKey();
                 break;
         }

@@ -41,8 +41,6 @@ public class EwalletPaymentServlet extends BaseJsonServlet {
 
 	private final static Category LOGGER = LoggerFactory
 			.getInstance(EwalletPaymentServlet.class);
-	private static final String EWALLET_SESSION_ATTRIBUTE_NAME="EWALLET_CARD_TYPE";
-	private static final String MP_EWALLET_CARD="MP_CARD";
 
 	private static final long serialVersionUID = -6000498208914127773L;
 
@@ -70,7 +68,6 @@ public class EwalletPaymentServlet extends BaseJsonServlet {
 	private void process(HttpServletRequest request,
 			HttpServletResponse response, FDUserI user)
 			throws HttpErrorResponse {
-
 		try {
 			
 			LOGGER.debug("Inside EwalletPaymentServlet - process()");
@@ -201,7 +198,6 @@ public class EwalletPaymentServlet extends BaseJsonServlet {
 			if(eWalletSubmitResponse.getSubmitForm().isSuccess()){
 				eWalletResponseMap.put("eWalletResponseData", ewalletResponseData);
 				request.getSession().removeAttribute(EwalletConstants.EWALLET_ERROR_CODE);
-				request.getSession().setAttribute(EWALLET_SESSION_ATTRIBUTE_NAME, MP_EWALLET_CARD);
 			}else{
 				if(ewalletRequestData.geteWalletAction() != null && ewalletRequestData.geteWalletAction().equals(EwalletConstants.EWALLET_MP_STANDARD_CHECKOUT_DATA)){
 					response.sendRedirect("/expressco/checkout.jsp");

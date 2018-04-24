@@ -1,6 +1,7 @@
 package com.freshdirect.payment;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.affiliate.ErpAffiliate;
@@ -73,15 +74,17 @@ public abstract class PaymentStrategy implements Serializable {
 
 
 		
-		public double addDeduction(double deduction) {			
-			double diff = MathUtil.roundDecimalCeiling(this.getAmount());
-			if (diff <= 0) {
-				return deduction;
-			}
+		public double addDeduction(double deduction) {	
+			DecimalFormat df2 = new DecimalFormat(".##");
+			double deductionValue = Double.parseDouble(df2.format(deduction));
 			
-			double appliedAmount = Math.min(deduction, diff);
-			this.deductionAmount = this.deductionAmount + appliedAmount;
-			return MathUtil.roundDecimalCeiling(deduction - appliedAmount);
+			double diff =  Double.parseDouble(df2.format(this.getAmount()));
+			if (diff <= 0) {
+				return deductionValue;
+			}
+			double appliedAmount = Double.parseDouble(df2.format(Math.min(deductionValue, diff)));
+			this.deductionAmount = Double.parseDouble(df2.format(this.deductionAmount + appliedAmount));
+			return MathUtil.roundDecimalCeiling(deductionValue - appliedAmount);
 		}
 
 		public void addGCPayment(double payment) {			
