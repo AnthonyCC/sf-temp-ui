@@ -14,6 +14,16 @@
 <%!
 	Logger LOGGER = LoggerFactory.getInstance("error.jsp");
 
+	//Very dirty way of logging broken pipe and connnection reset without refactoring exception handling.
+	public void logError(HttpServletRequest request, FDSessionUser user, String errorCode, String errorMessage){
+		if (FDExceptionUtil.isTextContainsIgnoreCase(errorMessage, "JspException") && (FDExceptionUtil.isTextContainsIgnoreCase(errorMessage, "Broken pipe") || FDExceptionUtil.isTextContainsIgnoreCase(errorMessage,"Connection reset"))){
+		    log500(request,user,"FDWEBERROR-04", errorMessage);
+		}
+		else{
+		    log500(request,user,errorCode,errorMessage);
+		}
+	}
+
 	public void log500(HttpServletRequest request, FDSessionUser user, String errorCode, String errorMessage){
 		try {
 			LOGGER.warn(errorCode + " for "
@@ -47,14 +57,14 @@ try {
     String primaryErrorMessage = AjaxErrorHandlingService.defaultService().getPrimaryErrorMessage(message);
     String secondaryErrorMessage = AjaxErrorHandlingService.defaultService().getSecondaryErrorMessage(message);
     
-    log500(request, user, "FDWEBERROR-01", message);
+    logError(request, user, "FDWEBERROR-01", message);
 %>
   {"error": {"primary": "<%= primaryErrorMessage%>", "secondary": "<%= secondaryErrorMessage%>"}}
 <%
   } else {
     // standard JSP errors
     response.setStatus(500);
-    log500(request, user, "FDWEBERROR-02", FDExceptionUtil.getRootCauseStackTrace(exception));
+    logError(request, user, "FDWEBERROR-02", FDExceptionUtil.getRootCauseStackTrace(exception));
         
  %>
  

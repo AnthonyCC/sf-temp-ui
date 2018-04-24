@@ -1,5 +1,6 @@
 package com.freshdirect.framework.util;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 
 public class FDExceptionUtil {
@@ -17,4 +18,8 @@ public class FDExceptionUtil {
 		}
 		return strBuf.toString();
 	}
+
+    public static boolean isTextContainsIgnoreCase(String errorText, String expression) {
+        return StringUtils.containsIgnoreCase(errorText, expression);
+    }
 }
