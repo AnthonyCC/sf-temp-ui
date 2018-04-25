@@ -1466,7 +1466,7 @@ public class FDPromotionNewDAO {
 				Integer dayId = rs.getInt("DAY_ID");
 				Array windowArray = rs.getArray("DLV_WINDOWTYPE");
 				String[] windowType = windowArray != null ? (String[]) windowArray.getArray() : null;
-				PromotionDlvTimeSlot dlvTimeSlot = new PromotionDlvTimeSlot(dayId,rs.getString("START_TIME"),rs.getString("END_TIME"), windowType,rs.getString("FOR_WINDOW_TIME"),rs.getInt("CUT_OFF_EXP_TIME"));
+				PromotionDlvTimeSlot dlvTimeSlot = new PromotionDlvTimeSlot(dayId,rs.getString("START_TIME"),rs.getString("END_TIME"), windowType,rs.getString("RANGE_EXACT"),rs.getInt("CUT_OFF_EXP_TIME"));
 				List<PromotionDlvTimeSlot> dlvTimeSlotList = dlvTimeSlots.get(dayId);
 				if(null == dlvTimeSlotList){
 					dlvTimeSlotList = new ArrayList<PromotionDlvTimeSlot>();

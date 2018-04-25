@@ -1913,7 +1913,7 @@ public class FDPromotionManagerNewDAO {
 		+ " from cust.PROMO_DLV_ZONE_STRATEGY plzs "
 		+ "where plzs.promotion_id = ?";
 	
-	private final static String LOAD_PROMO_TIME_SLOTS = "select id, PROMO_DLV_ZONE_ID, DAY_ID, START_TIME, END_TIME, DLV_WINDOWTYPE, FOR_WINDOW_TIME, CUT_OFF_EXP_TIME"
+	private final static String LOAD_PROMO_TIME_SLOTS = "select id, PROMO_DLV_ZONE_ID, DAY_ID, START_TIME, END_TIME, DLV_WINDOWTYPE, RANGE_EXACT, CUT_OFF_EXP_TIME"
 		+ " from cust.PROMO_DLV_TIMESLOT pdt "
 		+ "where pdt.PROMO_DLV_ZONE_ID = ?";
 	
@@ -1964,7 +1964,7 @@ public class FDPromotionManagerNewDAO {
 					Array windowArray = rs1.getArray("DLV_WINDOWTYPE");
 					String[] windowTypes = windowArray != null ? (String[]) windowArray.getArray() : null;
 					timeSlotModel.setWindowTypes(windowTypes);
-					timeSlotModel.setForWindowTime(rs1.getString("FOR_WINDOW_TIME"));
+					timeSlotModel.setForWindowTime(rs1.getString("RANGE_EXACT"));
 					timeSlotModel.setCutOffExpTime(rs.getInt("CUT_OFF_EXP_TIME"));
 					timeSlotList.add(timeSlotModel);
 				}

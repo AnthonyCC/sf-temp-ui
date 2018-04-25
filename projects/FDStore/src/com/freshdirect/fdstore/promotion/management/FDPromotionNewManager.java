@@ -596,9 +596,9 @@ public class FDPromotionNewManager {
 		}
 	}
 
-	public static List<PromotionI> getModifiedOnlyPromos(Date lastModified) throws FDResourceException {
+	public static List<PromotionI> getModifiedOnlyPromos(Date lastModified) throws FDResourceException {	
+		lookupManagerHome();
 		
-
 		try {
 			FDPromotionManagerNewSB sb = managerHome.create();
 			return sb.getModifiedOnlyPromos(lastModified);
