@@ -200,35 +200,6 @@ public class EwalletServiceFactory {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * com.freshdirect.fdstore.ewallet.IEwallet#connect(com.freshdirect.fdstore.
-		 * ewallet.EwalletRequestData)
-		 */
-		@Override
-		public EwalletResponseData connect(EwalletRequestData ewalletRequestData) throws Exception {
-			EwalletResponseData resp = null;
-			try {
-				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.MasterpassServiceSB)) {
-					resp = EwalletService.getInstance().connect(ewalletRequestData);
-				} else {
-					MasterpassServiceSB remote = remoteHome.create();
-					resp = remote.connect(ewalletRequestData);
-				}
-			} catch (CreateException e) {
-				throw new MasterpassRuntimeException(e);
-			} catch (RemoteException e) {
-				throw new MasterpassRuntimeException(e);
-			}
-
-			if (resp == null) {
-				resp = new EwalletResponseData();
-			}
-			return resp;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
 		 * @see com.freshdirect.fdstore.ewallet.IEwallet#getAllPayMethodInEwallet(com.
 		 * freshdirect.fdstore.ewallet.EwalletRequestData)
 		 */
@@ -445,10 +416,6 @@ public class EwalletServiceFactory {
 			return null;
 		}
 
-		@Override
-		public EwalletResponseData connect(EwalletRequestData ewalletRequestData) throws Exception {
-			return null;
-		}
 
 		@Override
 		public EwalletResponseData getAllPayMethodInEwallet(EwalletRequestData ewalletRequestData) throws Exception {

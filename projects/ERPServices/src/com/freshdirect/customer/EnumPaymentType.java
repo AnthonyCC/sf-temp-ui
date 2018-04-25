@@ -33,7 +33,7 @@ public class EnumPaymentType extends Enum {
 	}
 
 	@JsonCreator
-	public static EnumPaymentType getEnum(@JsonProperty("name") String name) {
+	public static EnumPaymentType getEnum(String name) {
 		return (EnumPaymentType) getEnum(EnumPaymentType.class, name);
 	}
 

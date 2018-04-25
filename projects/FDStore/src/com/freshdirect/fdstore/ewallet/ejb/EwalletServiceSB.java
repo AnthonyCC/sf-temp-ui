@@ -22,8 +22,6 @@ public interface EwalletServiceSB extends EJBObject {
 	@Deprecated
 	EwalletResponseData expressCheckout(EwalletRequestData ewalletRequestData) throws RemoteException;
 	@Deprecated
-	EwalletResponseData connect(EwalletRequestData ewalletRequestData) throws RemoteException;
-	@Deprecated
 	EwalletResponseData getAllPayMethodInEwallet(EwalletRequestData ewalletRequestData) throws RemoteException;
 	@Deprecated
 	EwalletResponseData connectComplete(EwalletRequestData ewalletRequestData) throws RemoteException;

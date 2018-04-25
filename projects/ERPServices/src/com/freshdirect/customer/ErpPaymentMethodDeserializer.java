@@ -26,6 +26,9 @@ public class ErpPaymentMethodDeserializer extends JsonDeserializer<ErpPaymentMet
 			if (paymentMethodType == EnumPaymentMethodType.PAYPAL) {
 				return mapper.convertValue(root, ErpPayPalCardModel.class);
 			}
+			if (paymentMethodType == EnumPaymentMethodType.CREDITCARD) {
+				return mapper.convertValue(root, ErpCreditCardModel.class);
+			}
 		}
 		return mapper.convertValue(root, ErpPaymentMethodModel.class);
 
