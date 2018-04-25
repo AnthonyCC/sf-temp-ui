@@ -37,6 +37,7 @@ import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.EnumPaymentResponse;
 import com.freshdirect.customer.EnumPaymentType;
+import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
@@ -253,10 +254,12 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 							}
 							
 							//Capture the authorizations.
+							if(EnumSaleStatus.CAPTURE_PENDING.equals(saleEB.getStatus()))
 							try{
 								PaymentManagerSB paymentManager = (PaymentManagerSB) this.getPaymentManagerHome().create();
 								List<ErpAuthorizationModel> auths=saleEB.getAuthorizations();
 								paymentManager.captureAuthorizations(saleId, auths);
+								saleEB.forcePaymentStatus();
 								DlvPassManagerSB dlvPass = this.getDlvPassManagerHome().create();
 								dlvPass.updateDeliveryPassActivation(saleId);
 

@@ -1118,6 +1118,20 @@ public class FDUser extends ModelSupport implements FDUserI {
             return customer.getProfile().isChefsTable();
         }
     }
+    
+    @Override
+    public boolean isFDLabsCustomer() throws FDResourceException {
+        if (this.identity == null) {
+            return false;
+        }
+        FDCustomerModel customer = this.getFDCustomer();
+        if (customer == null || customer.getProfile() == null) {
+            return false;
+        } else {
+            return customer.getProfile().isFDLabsCustomer();
+        }
+    }
+    
 
     @Override
     public boolean isVoucherHolder() throws FDResourceException {

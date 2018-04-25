@@ -45,6 +45,10 @@ public class ProfileModel extends ModelSupport {
 	public boolean isOASTest() {
 		return "true".equalsIgnoreCase(getAttribute("OAS_TEST"));
 	}
+	
+	public boolean isFDLabsCustomer() {
+		return "true".equalsIgnoreCase(getAttribute("FD_LABS"));
+	}
 
 	public String getCustomerMetalType() {
 		String metalValue = getAttribute("MetalCategory");

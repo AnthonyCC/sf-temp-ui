@@ -78,19 +78,37 @@ public class CarouselService {
 
         CarouselData carousel = null;
 
+        List<ProductModel> products = collectNewProducts();
+        if (products.size() >= FDStoreProperties.getMinimumItemsCountInCarousel()) {
+            if (isRandomizeProductOrderEnabled) {
+                Collections.shuffle(products);
+            }
+            carousel = createCarouselData(null, NEW_PRODUCTS_CAROUSEL_NAME, products, user, null, null);
+        }
+
+        return carousel;
+    }
+
+    private List<ProductModel> collectNewProducts() {
         CategoryModel newProductsCategory = ((CategoryModel) ContentFactory.getInstance()
                 .getContentNodeByKey(ContentKeyFactory.get(FDStoreProperties.getNewProductsCarouselSourceCategoryContentKey())));
 
+        List<ProductModel> filteredProducts = new ArrayList<ProductModel>();
         if (newProductsCategory != null) {
-            List<ProductModel> products = newProductsCategory.getAllChildProductsAsList();
-            if (products != null && products.size() >= FDStoreProperties.getMinimumItemsCountInCarousel()) {
-                if (isRandomizeProductOrderEnabled) {
-                    Collections.shuffle(products);
-                }
-            carousel = createCarouselData(null, NEW_PRODUCTS_CAROUSEL_NAME, products, user, null, null);
-            }
-
+            filteredProducts = filterProducts(newProductsCategory.getAllChildProductsAsList());
         }
-        return carousel;
+
+        return filteredProducts;
     }
+
+    private List<ProductModel> filterProducts(List<ProductModel> products) {
+        List<ProductModel> filteredProducts = new ArrayList<ProductModel>();
+        for (ProductModel product : products) {
+            if (!product.isUnavailable()) {
+                filteredProducts.add(product);
+            }
+        }
+        return filteredProducts;
+    }
+
 }

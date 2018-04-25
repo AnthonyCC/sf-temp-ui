@@ -7,6 +7,10 @@
   margin-top: 27px;
 }
 
+.new-products-carousel-module .contentModules .content-module.product-carousel .content-header {
+	margin-top: 0px;
+}
+
 .contentModules > div:first-child .module-group+.content-header,
 .contentModules > div:first-child.editorial-module .content-header,
 .contentModules > div:first-child .module-header+.content-header {
