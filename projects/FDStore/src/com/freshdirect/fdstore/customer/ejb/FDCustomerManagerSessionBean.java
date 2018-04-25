@@ -5804,17 +5804,38 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 * @return String sale id
 	 * @throws FDResourceException
 	 *             if an error occured while accessing remote resources
+	 * @throws FDPaymentInadequateException 
+	 * @throws InvalidCardException 
+	 * @throws ErpTransactionException 
 	 */
 	public String placeSubscriptionOrder(FDActionInfo info, ErpCreateOrderModel createOrder,
 			Set<String> usedPromotionCodes, String rsvId, boolean sendEmail, CustomerRatingI cra,
 			CrmAgentRole agentRole, EnumDlvPassStatus status)
-			throws FDResourceException, ErpFraudException, DeliveryPassException {
+			throws FDResourceException, ErpFraudException, DeliveryPassException, FDPaymentInadequateException, InvalidCardException, ErpTransactionException {
 
 		FDIdentity identity = info.getIdentity();
 		PrimaryKey pk = null;
 		try {
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
 			String customerPk = identity.getErpCustomerPK();
+			
+			
+			// Check if payment received is enough to process GC only orders.
+			if (createOrder.getSelectedGiftCards() != null && createOrder.getSelectedGiftCards().size() > 0) {
+				// Generate Applied gift cards info.
+				GiftCardApplicationStrategy strategy = new GiftCardApplicationStrategy(createOrder, null);
+				strategy.generateAppliedGiftCardsInfo();
+				if (strategy.getRemainingBalance() > 0 && createOrder.getPaymentMethod().isGiftCard()) {
+					// No CC or EC available on the account. Balance to be paid
+					// by other mode of payment
+					throw new FDPaymentInadequateException(
+							"Payment indequate. Please provide a different mode of payment.");
+				}
+				createOrder.setAppliedGiftcards(strategy.getAppGiftCardInfo());
+				createOrder.setBufferAmt(strategy.getPerishableBufferAmount());
+			}
+			
+			
 			pk = sb.placeOrder(new PrimaryKey(customerPk), createOrder, usedPromotionCodes, cra, agentRole, null,
 					EnumSaleType.SUBSCRIPTION);
 			LOGGER.debug("In Place order getDeliveryPassCount " + createOrder.getDeliveryPassCount());
@@ -5833,6 +5854,21 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.PLACE_SUBS_ORDER);
 			rec.setChangeOrderId(pk.getId());
 			this.logActivity(rec);
+			
+			if (null != createOrder.getSelectedGiftCards() && createOrder.getSelectedGiftCards().size() > 0) {
+				// Verify status of gift cards being applied on this order.
+				List<ErpGiftCardModel> verifiedList = verifyStatusAndBalance(createOrder.getSelectedGiftCards(), false);
+				List badGiftCards = ErpGiftCardUtil.checkForBadGiftcards(verifiedList);
+				if (badGiftCards.size() > 0) {
+					throw new InvalidCardException("Certificate Invalid");
+				}
+				// Initiate pre authorization.
+				GiftCardManagerSB gcSB = this.getGiftCardGManagerHome().create();
+				gcSB.initiatePreAuthorization(pk.getId());
+				gcSB.preAuthorizeSales(pk.getId());
+
+			}
+			
 			if (sendEmail) {
 				FDOrderI order = getOrder(pk.getId());
 				FDCustomerInfo fdInfo = this.getCustomerInfo(identity);
