@@ -24,6 +24,7 @@ import org.apache.log4j.Logger;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.ERPSessionBeanSupport;
 import com.freshdirect.common.customer.EnumCardType;
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.EnumTransactionType;
 import com.freshdirect.customer.ErpAbstractOrderModel;
@@ -881,11 +882,12 @@ public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
 			}			
 			ErpSaleEB saleEB = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
 			ErpAbstractOrderModel order = saleEB.getCurrentOrder();
+			ErpSaleModel sale = (ErpSaleModel)saleEB.getModel();
 			long currentTime = System.currentTimeMillis();
 			long difference = order.getDeliveryInfo().getDeliveryStartTime().getTime() - currentTime;
 			difference = difference / (1000 * 60 * 60);
 
-			if (difference > AUTH_HOURS) {
+			if (!EnumSaleType.SUBSCRIPTION.equals(sale.getType()) && difference > AUTH_HOURS) {
 				return errorList;
 			}			
 			//ErpCustomerEB customerEB = this.getErpCustomerHome().findByPrimaryKey(new PrimaryKey(saleEB.getCustomerPk()));

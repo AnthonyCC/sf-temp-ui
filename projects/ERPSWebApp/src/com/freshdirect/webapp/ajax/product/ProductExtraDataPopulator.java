@@ -176,7 +176,7 @@ public class ProductExtraDataPopulator {
         populateFreshTips(data, product);
         populateHowToCookItFolders(data, product);
         populateDonenessGuides(data, product);
-        populateCheeseData(data, departmentFullName);
+        populateCheeseData(data, departmentNode.getContentName());
         populatePartiallyFrozenBakeryHack(data, product, departmentFullName);
         populateProductMedias(data, product, user, false);
         populatePageTitle(data, product);

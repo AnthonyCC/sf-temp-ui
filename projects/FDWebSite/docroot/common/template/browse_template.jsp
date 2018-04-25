@@ -50,16 +50,16 @@
 
 	<section class="container <tmpl:get name='containerExtraClass'/>">
 
-		<section class="new products recommender">
-			<!-- start : new products recommender -->
-			<tmpl:get name='new products recommender' />
-			<!-- end : new products recommender -->
-		</section>
-
 		<section class="deptnav">
 			<!-- start : deptnav -->
 			<tmpl:get name='deptnav' />
 			<!-- end : deptnav -->
+		</section>
+
+		<section class="new products recommender">
+			<!-- start : new products recommender -->
+			<tmpl:get name='new products recommender' />
+			<!-- end : new products recommender -->
 		</section>
 
 		<section class="tabs">

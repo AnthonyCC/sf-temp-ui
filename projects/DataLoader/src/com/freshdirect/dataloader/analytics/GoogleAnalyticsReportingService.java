@@ -74,6 +74,7 @@ public class GoogleAnalyticsReportingService {
             default:
                 domain = "freshdirect.com";
                 trackingId = FDStoreProperties.getGoogleAnalyticsKey();
+                LOGGER.info("Google Analytics - missing eStoreId during assembling invoice GA event - order#=" + order.getErpSalesId());
                 break;
         }
 

@@ -43,6 +43,8 @@ public class EwalletPaymentServlet extends BaseJsonServlet {
 			.getInstance(EwalletPaymentServlet.class);
 
 	private static final long serialVersionUID = -6000498208914127773L;
+	private static final String EWALLET_SESSION_ATTRIBUTE_NAME="EWALLET_CARD_TYPE";
+	private static final String MP_EWALLET_CARD="MP_CARD";
 
 	@Override
 	protected void doGet(HttpServletRequest request,
@@ -141,6 +143,7 @@ public class EwalletPaymentServlet extends BaseJsonServlet {
     				// Check for Error response from EWallet Vendor
     				if( checkWalletErrorResponse(ewalletRequestData,response)){
     					response.sendRedirect("/expressco/checkout.jsp");
+
     				}
     				break;
     			}
@@ -197,7 +200,8 @@ public class EwalletPaymentServlet extends BaseJsonServlet {
 			Map<String, Object> eWalletResponseMap = new HashMap<String, Object>();
 			if(eWalletSubmitResponse.getSubmitForm().isSuccess()){
 				eWalletResponseMap.put("eWalletResponseData", ewalletResponseData);
-				request.getSession().removeAttribute(EwalletConstants.EWALLET_ERROR_CODE);
+			//	request.getSession().removeAttribute(EwalletConstants.EWALLET_ERROR_CODE);
+
 			}else{
 				if(ewalletRequestData.geteWalletAction() != null && ewalletRequestData.geteWalletAction().equals(EwalletConstants.EWALLET_MP_STANDARD_CHECKOUT_DATA)){
 					response.sendRedirect("/expressco/checkout.jsp");
@@ -215,6 +219,7 @@ public class EwalletPaymentServlet extends BaseJsonServlet {
 			
 			LOGGER.debug("Exit EwalletPaymentServlet - process()");
 		} catch (final Exception e) {
+			request.getSession().removeAttribute(EWALLET_SESSION_ATTRIBUTE_NAME);
 			returnHttpError(500, "Error while submit EWallet response to user "+ user.getUserId(), e);
 		}
 	}
@@ -316,6 +321,7 @@ public class EwalletPaymentServlet extends BaseJsonServlet {
 			if (ewalletResponseData.getPaymentMethod() != null && ewalletResponseData.getPaymentMethod().getPK() != null)
 				request.getSession().setAttribute("WALLET_CARD_ID",""+ewalletResponseData.getPaymentMethod().getPK().getId());
 			user.getShoppingCart().setPaymentMethod(ewalletResponseData.getPaymentMethod());
+			request.getSession().setAttribute(EWALLET_SESSION_ATTRIBUTE_NAME, MP_EWALLET_CARD);
 			request.getRequestDispatcher(ewalletResponseData.getRedirectUrl()).forward(request, response);
 		}
 	}
