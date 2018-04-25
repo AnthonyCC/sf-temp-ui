@@ -241,7 +241,7 @@ public class CarouselServlet extends BaseJsonServlet {
             final boolean isNewProductsCarouselEnabled = FDStoreProperties.isReorderPageNewProductsCarouselEnabled();
             if (isNewProductsCarouselEnabled) {
                 final boolean isRandomizeProductOrderEnabled = FDStoreProperties.isReorderPageNewProductsCarouselRandomizeProductOrderEnabled();
-                CarouselData carouselData = CarouselService.defaultService().createNewProductsCarousel(sessionUser, isRandomizeProductOrderEnabled, CarouselNameCase.LOWER);
+                CarouselData carouselData = CarouselService.defaultService().createNewProductsCarousel(sessionUser, isRandomizeProductOrderEnabled, CarouselNameCase.NOT_MODIFIED);
                 if (carouselData != null) {
                     RecommendationTab recommendationTab = new RecommendationTab(CarouselService.NEW_PRODUCTS_CAROUSEL_NAME, CarouselService.NEW_PRODUCTS_CAROUSEL_VIRTUAL_SITE_FEATURE);
                     carousels.getRecommendationTabs().add(0, recommendationTab);

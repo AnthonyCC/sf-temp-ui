@@ -57,7 +57,7 @@ public class RecommenderServlet extends BaseJsonServlet {
             final boolean isRandomizeProductOrderEnabled = FDStoreProperties.isReorderPageNewProductsCarouselRandomizeProductOrderEnabled();
             recommendationTab = new RecommendationTab(CarouselService.NEW_PRODUCTS_CAROUSEL_NAME, requestData.getFeature());
             recommendationTab.setCarouselData(
-                    CarouselService.defaultService().createNewProductsCarousel(user, isRandomizeProductOrderEnabled, CarouselNameCase.LOWER));
+                    CarouselService.defaultService().createNewProductsCarousel(user, isRandomizeProductOrderEnabled, CarouselNameCase.NOT_MODIFIED));
             recommendationTab.getCarouselData().setCmEventSource("Reorder");
         }
         return recommendationTab;
