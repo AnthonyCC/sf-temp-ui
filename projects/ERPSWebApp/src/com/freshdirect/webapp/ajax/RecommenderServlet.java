@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.webapp.ajax.browse.data.CarouselNameCase;
 import com.freshdirect.webapp.ajax.browse.service.CarouselService;
 import com.freshdirect.webapp.ajax.product.data.BasicProductData;
 import com.freshdirect.webapp.ajax.recommendation.RecommendationRequestObject;
@@ -56,7 +57,7 @@ public class RecommenderServlet extends BaseJsonServlet {
             final boolean isRandomizeProductOrderEnabled = FDStoreProperties.isReorderPageNewProductsCarouselRandomizeProductOrderEnabled();
             recommendationTab = new RecommendationTab(CarouselService.NEW_PRODUCTS_CAROUSEL_NAME, requestData.getFeature());
             recommendationTab.setCarouselData(
-                    CarouselService.defaultService().createNewProductsCarousel(user, isRandomizeProductOrderEnabled, false));
+                    CarouselService.defaultService().createNewProductsCarousel(user, isRandomizeProductOrderEnabled, CarouselNameCase.LOWER));
             recommendationTab.getCarouselData().setCmEventSource("Reorder");
         }
         return recommendationTab;
