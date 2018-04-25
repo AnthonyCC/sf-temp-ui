@@ -32,6 +32,8 @@ public class Promotion extends ModelSupport implements PromotionI {
 	private String description;
 
 	private String name;
+	
+	private String eStoreId;
 
 	private List<PromotionStrategyI> strategies = new ArrayList<PromotionStrategyI>();
 	
@@ -566,6 +568,16 @@ public class Promotion extends ModelSupport implements PromotionI {
 
 	public void setExcludeSkusFromSubTotal(Set<String> excludeSkusFromSubTotal) {
 		this.excludeSkusFromSubTotal = excludeSkusFromSubTotal;
+	}
+
+
+	public String geteStoreId() {
+		return eStoreId;
+	}
+
+
+	public void seteStoreId(String eStoreId) {
+		this.eStoreId = eStoreId;
 	}
 	 
 

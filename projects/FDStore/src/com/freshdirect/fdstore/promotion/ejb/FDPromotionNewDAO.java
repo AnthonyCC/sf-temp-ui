@@ -186,6 +186,7 @@ public class FDPromotionNewDAO {
 			if(!rs.wasNull() && redeemCnt > 0)
 				promo.addStrategy(new MaxRedemptionStrategy(redeemCnt));
 			promo.setCapcityUtilization(rs.getDouble("CAPACITY_UTILIZATION"));
+			promo.seteStoreId(rs.getString("E_STORE"));
 			if("X".equalsIgnoreCase(rs.getString("RULE_BASED"))) {
 				promo.addStrategy(new RuleBasedPromotionStrategy());
 			}
@@ -468,6 +469,7 @@ public class FDPromotionNewDAO {
 		
 		promo.setCapcityUtilization(rs.getDouble("CAPACITY_UTILIZATION"));
 		
+		promo.seteStoreId(rs.getString("E_STORE"));
 		
 	//	String rafPromoCode=rs.getString("RAF_PROMO_CODE");
 		

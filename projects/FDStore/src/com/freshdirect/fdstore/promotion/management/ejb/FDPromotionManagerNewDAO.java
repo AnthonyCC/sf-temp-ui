@@ -574,7 +574,7 @@ public class FDPromotionManagerNewDAO {
 		promotion.setSapConditionType(rs.getString("SAP_CONDITION_TYPE"));
 		promotion.setRafPromoCode(rs.getString("RAF_PROMO_CODE"));
 		promotion.setCapacityUtilization(rs.getInt("CAPACITY_UTILIZATION"));
-		
+		promotion.seteStoreId(rs.getString("E_STORE"));
 		return promotion;
 	}
 
