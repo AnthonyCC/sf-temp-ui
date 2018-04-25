@@ -4,6 +4,7 @@ var FreshDirect = FreshDirect || {};
 (function(fd) {
 	"use strict";
 	var $ = fd.libs.$;
+	var POPUPWIDGET = fd.modules.common.popupWidget;
 
 	function pushToDataLayer(dataObj) {
 		if (fd.utils.hasOwnNestedProperty('dataLayer')) {
@@ -50,7 +51,7 @@ var FreshDirect = FreshDirect || {};
 		}
 	};
 
-	var ordermodify = Object.create(fd.modules.common.popupWidget, {
+	var ordermodify = Object.create(POPUPWIDGET, {
 		KEY: { value: 'inform.ordermodify' },
 		APIPATH: { value: '/api/informational' },
 		ACTIONS: { value: ordermodify_ACTIONS },
@@ -139,7 +140,7 @@ var FreshDirect = FreshDirect || {};
 			value: function() {
 				if (fd.utils.isDeveloper()) { console.log( this.KEY, 'adding event listeners' ); }
 				/* bind "don't show again" checkbox to maximize */
-				$(document).on('click', '#'+this.popupId+' [data-inform-fn-maximize]', this.maximize.bind(this));
+				$(document).on('change', '#'+this.popupId+' [data-inform-fn-maximize]', this.maximize.bind(this));
 				$(document).on('click', '#'+this.popupId+' .close', this.close.bind(this));
 				$(document).on('click', '#'+this.popupId+' [data-conditional-navigate-uri]', this.conditionalNavigate.bind(this));
 
