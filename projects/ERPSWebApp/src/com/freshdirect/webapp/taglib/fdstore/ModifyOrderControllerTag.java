@@ -209,10 +209,10 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 
 		} else { 
 			if ( CANCEL_MODIFY_ACTION.equalsIgnoreCase(this.action) ) {
-			LOGGER.debug("GET + cancelModify");
-			// we got a GET, not a POST, but that's fine.. :)
-			this.cancelModifyOrder(request, results);
-			actionPerformed = true;
+				LOGGER.debug("GET + cancelModify");
+				// we got a GET, not a POST, but that's fine.. :)
+				this.cancelModifyOrder(request, results);
+				actionPerformed = true;
 			} else if ( MODIFY_ACTION.equalsIgnoreCase(this.action) ) {
 				this.modifyOrder(request, results);
 				actionPerformed = true;
@@ -421,6 +421,17 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			FDCustomerManager.releaseModificationLock(currentOrderId);
 		}catch(Exception e){
 			LOGGER.info("Unable to release the in_modify lock for orderId"+currentOrderId);
+		}
+		
+		/* save FDCustomerEStore model before restore cart, which invalidates and reloads */
+        try {
+        	if (currentUser != null && currentUser.getIdentity() != null && currentUser.getIdentity().getErpCustomerPK() != null) {
+            	LOGGER.debug("Updating FDCustomerEStore (custId:"+currentUser.getIdentity().getErpCustomerPK()+")");
+				FDCustomerManager.updateFDCustomerEStoreInfo(currentUser.getFDCustomer().getCustomerEStoreModel(), currentUser.getFDCustomer().getId());	
+        	}
+		} catch (FDResourceException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 		
 		FDCustomerManager.clearModifyCartlines(currentOrderId);
