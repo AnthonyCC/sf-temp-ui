@@ -52,3 +52,8 @@
 .inform-ghost.centerpopupoverlay {
 	display: block; /* fix display */
 }
+
+#informOrderModify.mm-page .qs-popup-content {
+	width: auto;
+	height: 100%;
+}
