@@ -415,6 +415,10 @@
 		<from>^/v/([0-9]+)/(.*)/checkout/getselectedeliverydaddress/</from>
 		<to last="true">/checkout.do?action=getselecteddeliveryaddress&amp;ver=$1</to>
 	</rule>
+   <rule>
+        <from>^/v/([0-9]+)/(.*)/checkout/isDeliveryAddressUnattended/</from>
+        <to last="true">/checkout.do?action=isDeliveryAddressUnattended&amp;ver=$1</to>
+    </rule>
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/checkout/getpmverifystatus/</from>
 		<to last="true">/checkout.do?action=getpmverifystatus&amp;ver=$1</to>

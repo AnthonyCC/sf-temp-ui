@@ -483,6 +483,11 @@ function loadStuff() {
   	$("#header").val('');
   	$("#payload").val('');
 
+  } else if(loaddata == "IsDeliveryAddressUnattended") {
+    $("#url").val("/saptest12@freshdirect.com/checkout/isdeliveryaddressunattended/");
+    $("#header").val('');
+    $("#payload").val('{ "zipcode" : "07016", "address1" : "16 LINCOLN AVE E", "apartment" : "3", "city" : "Cranford", "state" : "NJ"}');
+
   } else if (loaddata == "VerifyAge") {  	
   	$("#url").val("/saptest12@freshdirect.com/alcohol/verifyage/");
   	$("#header").val('');
@@ -1678,6 +1683,7 @@ function doStuff() {
   <option value="GetSelectedDeliveryAddress">CHECKOUT - Get Selected Delivery Address</option>
   <option value="GetPaymentMethodVerifyStatus">CHECKOUT - Get Payment Method Verificaton Status(CVV)</option>
   <option value="AcceptDeliveryPassTermsAndConditionsReturnTimeslots">CHECKOUT - Accept DeliveryPass TermsAndConditions</option>
+  <option value="IsDeliveryAddressUnattended">CHECKOUT - Is Delivery Address Unattended</option>
 
   <option value=""> ========== SEARCH ========== </option>
   <option value="Search">SEARCH - Basic</option>
