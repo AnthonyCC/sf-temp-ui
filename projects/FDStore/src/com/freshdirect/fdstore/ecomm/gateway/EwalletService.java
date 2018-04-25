@@ -18,7 +18,6 @@ public class EwalletService  extends AbstractEcommService implements EwalletServ
 	private static final String GET_TOKEN = "/ewallet/getToken";
 	private static final String CHECKOUT = "/ewallet/checkout";
 	private static final String EXP_CHECKOUT = "/ewallet/expressCheckout";
-	private static final String CONNECT = "/ewallet/connect";
 	private static final String ALL_PAYMETHOD = "/ewallet/allPayMethod";
 	private static final String CONNECT_COMPLETE = "/ewallet/connectComplete";
 	private static final String DISCONNECT = "/ewallet/disconnect";

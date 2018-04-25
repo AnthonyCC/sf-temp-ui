@@ -24,7 +24,8 @@ public class FDIdentity implements java.io.Serializable {
 	public String getErpCustomerPK() {
 		return this.erpCustomerPK;
 	}
-    
+	
+	@JsonProperty("fdCustomerPK")
 	public String getFDCustomerPK() {
 		return this.fdCustomerPK;
 	}
