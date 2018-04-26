@@ -446,7 +446,9 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 	public boolean isWithinCutOffExpTime(FDTimeslot ts){
 		int key = ts.getDayOfWeek();
 		List<PromotionDlvTimeSlot> dlvTimeslotList = dlvTimeSlots.get(key);
-		if(null==dlvTimeslotList|| dlvTimeslotList.isEmpty()) return false;
+		/*if no time frame for Exact/Range at promo level is defined, its only trough 'Promo' tab in backOffice.
+		 *  So, every timeslot on that day is eligible for WSPromo*/
+		if(null==dlvTimeslotList) return true; 
 		String frWinTime = dlvTimeslotList != null ? dlvTimeslotList.get(0).getForWindowTime():null;
 		/* if case is R [Range of timeslots], not doing un-necessary validation for every timeslot cutOffTime */
 		if(null == frWinTime || frWinTime.equalsIgnoreCase("R")){
