@@ -39,9 +39,9 @@ var dataLayer = window.dataLayer || [];
       category: product.catId,
       variant: product.variantId || 'default variant',
       list: fd.gtm.getListForProduct(null, listData),
-      dimension6: product.newProduct,
+      dimension3: ""+product.newProduct,
       sku: product.skuCode,
-      dimension3: ""+product.available
+      dimension6: ""+product.available
     };
 
     if (idx) {
@@ -191,9 +191,9 @@ var dataLayer = window.dataLayer || [];
                 brand: productData.brand,
                 category: productData.category,
                 variant: productData.variant,
-                dimension6: productData.newProduct,
+                dimension3: ""+productData.newProduct,
                 sku: productData.sku,
-                dimension3: ""+true,
+                dimension6: ""+true,
                 position: fd.gtm.getPositionForProductId(productData.id),
                 quantity: qty > 0 ? qty : -qty
               }]
@@ -338,9 +338,9 @@ var dataLayer = window.dataLayer || [];
                   brand: productData.brand,
                   category: productData.category,
                   variant: productData.variant,
-                  dimension6: productData.newProduct,
+                  dimension3: ""+productData.newProduct,
                   sku: productData.sku,
-                  dimension3: ""+true,
+                  dimension6: ""+true,
                   quantity: parseInt(productData.quantity, 10) || 0 // quantity should be an integer
                 };
               }),
@@ -380,9 +380,9 @@ var dataLayer = window.dataLayer || [];
                   brand: productData.brand,
                   category: productData.category,
                   variant: productData.variant,
-                  dimension6: productData.newProduct,
+                  dimension3: ""+productData.newProduct,
                   sku: productData.sku,
-                  dimension3: ""+true,
+                  dimension6: ""+true,
                   quantity: parseInt(productData.quantity, 10) || 0 // quantity should be an integer
                 };
               })
@@ -642,9 +642,9 @@ var dataLayer = window.dataLayer || [];
           brand: productData.brand,
           category: productData.categoryId,
           variant: productData.variant !== 'null' ? productData.variant : "default variant",
-          dimension6: productData.new_product,
+          dimension3: ""+productData.new_product,
           sku: productData.skuCode,
-          dimension3: ""+productData.in_stock,
+          dimension6: ""+productData.in_stock,
           position: parseInt(productData.position, 10) || 0,
           list: productData.list
         };
@@ -1297,9 +1297,9 @@ var dataLayer = window.dataLayer || [];
             brand: productData.brand,
             category: productData.categoryId,
             variant: productData.variant !== 'null' ? productData.variant : "default variant",
-            dimension6: productData.new_product,
+            dimension3: ""+productData.new_product,
             sku: productData.skuCode,
-            dimension3: ""+productData.in_stock,
+            dimension6: ""+productData.in_stock,
             position: parseInt(productData.position, 10) || 0
           }]
         }
