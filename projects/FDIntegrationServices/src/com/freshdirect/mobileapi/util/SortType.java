@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.freshdirect.mobileapi.util;
 
 import com.freshdirect.storeapi.content.SortOptionModel;
@@ -25,12 +22,13 @@ public enum SortType {
     YOURFAVES("yourFaves"),
     CUSTFAVES("custFaves"),
     CUSTOMER_RATING("cxpr");
-    String fdSortValue;
-    
-    
-    SortType(String sortValue){
+
+    private String fdSortValue;
+
+    private SortType(String sortValue) {
         fdSortValue = sortValue;
     }
+
     public static SortType valueFromString(String str) {
         SortType result = RELEVANCY;
         if (RELEVANCY.toString().equalsIgnoreCase(str)) {
@@ -63,10 +61,12 @@ public enum SortType {
             result = DOLLAR_DISCOUNT;
         } else if (SUSTAINABILITY_RATING.toString().equalsIgnoreCase(str)) {
             result = SUSTAINABILITY_RATING;
+        } else if (CUSTFAVES.toString().equalsIgnoreCase(str)) {
+            result = CUSTFAVES;
         }
         return result;
     }
-    
+
     public static SortType sortValueStringToSortType(String minSortType){
     	SortType result = RELEVANCY;
     	
@@ -100,6 +100,8 @@ public enum SortType {
             result = DOLLAR_DISCOUNT;
         } else if (SUSTAINABILITY_RATING.getSortValue().equalsIgnoreCase(minSortType)) {
             result = SUSTAINABILITY_RATING;
+        } else if (CUSTFAVES.getSortValue().equalsIgnoreCase(minSortType)) {
+            result = CUSTFAVES;
         }
     	return result;
     }

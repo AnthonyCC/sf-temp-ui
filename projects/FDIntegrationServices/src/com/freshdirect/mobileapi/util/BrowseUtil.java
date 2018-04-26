@@ -1807,14 +1807,15 @@ public class BrowseUtil {
         	case SALE:
         		element = SortStrategyElement.PRODUCTS_BY_SALE;
         		break;
-
         	case EXPERT_RATING:
         		element = SortStrategyElement.PRODUCTS_BY_RATING;
         		break;
-
         	case SUSTAINABILITY_RATING:
         		element = SortStrategyElement.PRODUCTS_BY_SEAFOOD_SUSTAINABILITY;
         		break;
+            case CUSTFAVES:
+                element = SortStrategyElement.PRODUCTS_BY_CUSTOMER_POPULARITY;
+                break;
 			default:
 				element = SortStrategyElement.NO_SORT;
 				break;
