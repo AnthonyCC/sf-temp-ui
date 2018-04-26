@@ -6,79 +6,35 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.ejb.FinderException;
-
-import com.freshdirect.crm.CrmAgentInfo;
-import com.freshdirect.crm.CrmAgentList;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.crm.CrmAuthInfo;
 import com.freshdirect.crm.CrmAuthSearchCriteria;
 import com.freshdirect.crm.CrmAuthenticationException;
 import com.freshdirect.crm.CrmAuthorizationException;
-import com.freshdirect.crm.CrmCaseAction;
-import com.freshdirect.crm.CrmCaseInfo;
-import com.freshdirect.crm.CrmCaseModel;
 import com.freshdirect.crm.CrmCaseOperation;
-import com.freshdirect.crm.CrmCaseTemplate;
 import com.freshdirect.crm.CrmCustomerHeaderInfo;
 import com.freshdirect.crm.CrmLateIssueModel;
-import com.freshdirect.crm.CrmQueueInfo;
 import com.freshdirect.crm.CrmStatus;
 import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.CustomerCreditModel;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumCannedTextCategory;
 import com.freshdirect.customer.ErpCannedText;
-import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpTruckInfo;
 import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.core.PrimaryKey;
 
 public interface CrmManagerServiceI {
-
-	public PrimaryKey createAgent(CrmAgentModel agent, PrimaryKey userPk) throws FDResourceException, CrmAuthorizationException, ErpDuplicateUserIdException, RemoteException;
-
-	public void updateAgent(CrmAgentModel agent, PrimaryKey userPk) throws FDResourceException, CrmAuthorizationException, RemoteException;
-
-	public CrmAgentModel getAgentByPk(String agentPk) throws FDResourceException, FinderException, RemoteException;
-
-	public CrmAgentList getAllAgents() throws FDResourceException, RemoteException;
-
-	public List<CrmCaseModel> findCases(CrmCaseTemplate template) throws FDResourceException, RemoteException;
-
-	public CrmCaseModel getCaseByPk(String casePk) throws FDResourceException, RemoteException;
-
-	public CrmAgentModel loginAgent(String username, String password) throws FDResourceException, CrmAuthenticationException, RemoteException;
-
-	public boolean lockCase(PrimaryKey agentPK, PrimaryKey casePK) throws FDResourceException, RemoteException;
-	
-	public void unlockCase(PrimaryKey casePK) throws FDResourceException, RemoteException;
-    
-	public boolean closeAutoCase(PrimaryKey casePK) throws FDResourceException, RemoteException;
-
-	public PrimaryKey createCase(CrmCaseModel caseModel) throws FDResourceException, RemoteException,CrmAuthorizationException;
-    
+	        
 	public PrimaryKey createSystemCase(CrmSystemCaseInfo caseInfo) throws FDResourceException, RemoteException;
 
 	public PrimaryKey createSystemCaseInSingleTx(CrmSystemCaseInfo caseInfo) throws FDResourceException, RemoteException;
-    
-	public void updateCase(CrmCaseInfo caseInfo, CrmCaseAction action, PrimaryKey agentPk) throws FDResourceException, CrmAuthorizationException, RemoteException;
-    
-	public List<CrmQueueInfo> getQueueOverview() throws FDResourceException, RemoteException;
-
-	public List<CrmAgentInfo> getCSROverview() throws FDResourceException, RemoteException;
-    
+            
     public List<CrmCaseOperation> getOperations() throws FDResourceException, RemoteException;
-    
-	public void downloadCases(PrimaryKey agentPK, String queue, String subject, int numberToDownload) throws FDResourceException, RemoteException;
-	
-	public CrmStatus getSessionStatus(PrimaryKey agentPK) throws FDResourceException, RemoteException;
-	
-	public void saveSessionStatus(CrmStatus status) throws FDResourceException, RemoteException;
-	
+    			
 	public PrimaryKey createLateIssue(CrmLateIssueModel lateIssue) throws FDResourceException,RemoteException;
 	
 	public void updateLateIssue(CrmLateIssueModel lateIssue) throws FinderException,FDResourceException,RemoteException;

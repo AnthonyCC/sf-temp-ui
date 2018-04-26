@@ -37,47 +37,119 @@ import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.customer.CustomerCreditModel;
 import com.freshdirect.framework.core.PrimaryKey;
-
+/**
+ *@deprecated This method is moved to backoffice project.
+ * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+ */
+@Deprecated 
 public interface CrmManagerSB extends EJBObject {
-
+	/**
+	 *@deprecated This method is moved to backoffice project.
+	 * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+	 */
+	@Deprecated 
 	public PrimaryKey createAgent(CrmAgentModel agent, PrimaryKey userPk) throws FDResourceException, CrmAuthorizationException, ErpDuplicateUserIdException, RemoteException;
-
+	/**
+	 *@deprecated This method is moved to backoffice project.
+	 * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+	 */
+	@Deprecated 
 	public void updateAgent(CrmAgentModel agent, PrimaryKey userPk) throws FDResourceException, CrmAuthorizationException, RemoteException;
-
+	/**
+	 *@deprecated This method is moved to backoffice project.
+	 * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+	 */
+	@Deprecated 
 	public CrmAgentModel getAgentByPk(String agentPk) throws FDResourceException, FinderException, RemoteException;
-
+	/**
+	 *@deprecated This method is moved to backoffice project.
+	 * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+	 */
+	@Deprecated 
 	public CrmAgentList getAllAgents() throws FDResourceException, RemoteException;
-
+	/**
+	 *@deprecated This method is moved to backoffice project.
+	 * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+	 */
+	@Deprecated 
 	public List<CrmCaseModel> findCases(CrmCaseTemplate template) throws FDResourceException, RemoteException;
-
+	/**
+	 *@deprecated This method is moved to backoffice project.
+	 * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+	 */
+	@Deprecated 
 	public CrmCaseModel getCaseByPk(String casePk) throws FDResourceException, RemoteException;
-
+	/**
+	 *@deprecated This method is moved to backoffice project.
+	 * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+	 */
+	@Deprecated 
 	public CrmAgentModel loginAgent(String username, String password) throws FDResourceException, CrmAuthenticationException, RemoteException;
-
+	/**
+	 *@deprecated This method is moved to backoffice project.
+	 * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+	 */
+	@Deprecated 
 	public boolean lockCase(PrimaryKey agentPK, PrimaryKey casePK) throws FDResourceException, RemoteException;
-	
+	/**
+	 *@deprecated This method is moved to backoffice project.
+	 * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+	 */
+	@Deprecated 
 	public void unlockCase(PrimaryKey casePK) throws FDResourceException, RemoteException;
-    
+	/**
+	 *@deprecated This method is moved to backoffice project.
+	 * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+	 */
+	@Deprecated 
 	public boolean closeAutoCase(PrimaryKey casePK) throws FDResourceException, RemoteException;
-
+	/**
+	 *@deprecated This method is moved to backoffice project.
+	 * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+	 */
+	@Deprecated 
 	public PrimaryKey createCase(CrmCaseModel caseModel) throws FDResourceException, RemoteException,CrmAuthorizationException;
-    
+    // need to check whether it needs to be migrated to SF 2.0
 	public PrimaryKey createSystemCase(CrmSystemCaseInfo caseInfo) throws FDResourceException, RemoteException;
-
+    // need to check whether it needs to be migrated to SF 2.0
 	public PrimaryKey createSystemCaseInSingleTx(CrmSystemCaseInfo caseInfo) throws FDResourceException, RemoteException;
-    
+	/**
+	 *@deprecated This method is moved to backoffice project.
+	 * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+	 */
+	@Deprecated 
 	public void updateCase(CrmCaseInfo caseInfo, CrmCaseAction action, PrimaryKey agentPk) throws FDResourceException, CrmAuthorizationException, RemoteException;
-    
+	/**
+	 *@deprecated This method is moved to backoffice project.
+	 * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+	 */
+	@Deprecated 
 	public List<CrmQueueInfo> getQueueOverview() throws FDResourceException, RemoteException;
-
+	/**
+	 *@deprecated This method is moved to backoffice project.
+	 * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+	 */
+	@Deprecated 
 	public List<CrmAgentInfo> getCSROverview() throws FDResourceException, RemoteException;
-    
+    // need to check whether it needs to be migrated to SF 2.0
     public List<CrmCaseOperation> getOperations() throws FDResourceException, RemoteException;
-    
+    /**
+     *@deprecated This method is moved to backoffice project.
+     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+     */
+    @Deprecated 
 	public void downloadCases(PrimaryKey agentPK, String queue, String subject, int numberToDownload) throws FDResourceException, RemoteException;
-	
+    /**
+     *@deprecated This method is moved to backoffice project.
+     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+     */
+    @Deprecated 
 	public CrmStatus getSessionStatus(PrimaryKey agentPK) throws FDResourceException, RemoteException;
-	
+    /**
+     *@deprecated This method is moved to backoffice project.
+     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+     */
+    @Deprecated 
 	public void saveSessionStatus(CrmStatus status) throws FDResourceException, RemoteException;
 	
 	public PrimaryKey createLateIssue(CrmLateIssueModel lateIssue) throws FDResourceException,RemoteException;

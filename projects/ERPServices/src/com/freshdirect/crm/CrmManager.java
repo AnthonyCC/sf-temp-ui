@@ -64,11 +64,7 @@ public class CrmManager {
 
 		private CrmAgentList populateAgentsCache(){
 			try {
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-					return CrmManagerService.getInstance().getAllAgents();
-				}else{
 					return CrmManager.getInstance().getCrmManagerSB().getAllAgents();
-				}
 			} catch (RemoteException e) {
 				LOGGER.info("Cannot talk to CrmManagerSB");
 			} catch(FDResourceException fe){
@@ -82,11 +78,7 @@ public class CrmManager {
 
 		protected List<CrmQueueInfo> load() {
 			try {
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-					return CrmManagerService.getInstance().getQueueOverview();
-				}else{
 					return getCrmManagerSB().getQueueOverview();
-				}
 			} catch (RemoteException ex) {
 				throw new FDRuntimeException(ex);
 			} catch (FDResourceException ex) {
@@ -127,11 +119,7 @@ public class CrmManager {
 	public PrimaryKey createAgent(CrmAgentModel agent, PrimaryKey userPk)
 		throws FDResourceException, CrmAuthorizationException, ErpDuplicateUserIdException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				return CrmManagerService.getInstance().createAgent(agent, userPk);
-			}else{
 				return this.getCrmManagerSB().createAgent(agent, userPk);
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to CrmManagerSB");
 		}
@@ -139,11 +127,7 @@ public class CrmManager {
 
 	public void updateAgent(CrmAgentModel agent, PrimaryKey userPk) throws FDResourceException, CrmAuthorizationException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				 CrmManagerService.getInstance().updateAgent(agent, userPk);
-			}else{
 				this.getCrmManagerSB().updateAgent(agent, userPk);
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to CrmManagerSB");
 		}
@@ -151,12 +135,8 @@ public class CrmManager {
 
 	public CrmAgentModel getAgentByPk(String agentPk) throws FDResourceException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				return CrmManagerService.getInstance().getAgentByPk(agentPk);
-			}else{
 				return this.getCrmManagerSB().getAgentByPk(agentPk);
 				
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to CrmManagerSB");
 		} catch (FinderException e) {
@@ -202,11 +182,7 @@ public class CrmManager {
 	
 	public List<CrmCaseModel> findCases(CrmCaseTemplate template) throws FDResourceException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				return CrmManagerService.getInstance().findCases(template);
-			}else{
 				return this.getCrmManagerSB().findCases(template);
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e);
 		}
@@ -218,11 +194,7 @@ public class CrmManager {
 
 	public List<CrmAgentInfo> getCSROverview() throws FDResourceException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				return CrmManagerService.getInstance().getCSROverview();
-			}else{
 				return this.getCrmManagerSB().getCSROverview();
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e);
 		}
@@ -241,11 +213,7 @@ public class CrmManager {
 
 	public CrmCaseModel getCaseByPk(String casePk) throws FDResourceException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				return CrmManagerService.getInstance().getCaseByPk(casePk);
-			}else{
 			return this.getCrmManagerSB().getCaseByPk(casePk);
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to CrmManagerSB");
 		}
@@ -253,11 +221,7 @@ public class CrmManager {
 
 	public CrmAgentModel loginAgent(String username, String password) throws CrmAuthenticationException, FDResourceException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				return CrmManagerService.getInstance().loginAgent(username, password);
-			}else{
 				return this.getCrmManagerSB().loginAgent(username, password);
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to CrmManagerSB");
 		}
@@ -265,11 +229,7 @@ public class CrmManager {
 
 	public PrimaryKey createCase(CrmCaseModel caseModel) throws FDResourceException,CrmAuthorizationException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				return CrmManagerService.getInstance().createCase(caseModel);
-			}else{
 				return this.getCrmManagerSB().createCase(caseModel);
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to CrmManagerSB");
 		}
@@ -290,11 +250,7 @@ public class CrmManager {
 	public void updateCase(CrmCaseInfo caseInfo, CrmCaseAction caseAction, PrimaryKey agentPk)
 		throws FDResourceException, CrmAuthorizationException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				 CrmManagerService.getInstance().updateCase(caseInfo, caseAction, agentPk);
-			}else{
 				this.getCrmManagerSB().updateCase(caseInfo, caseAction, agentPk);
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to CrmManagerSB");
 		}
@@ -302,11 +258,7 @@ public class CrmManager {
 
 	public boolean lockCase(PrimaryKey agentPK, PrimaryKey casePK) throws FDResourceException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				return CrmManagerService.getInstance().lockCase(agentPK, casePK);
-			}else{
 				return this.getCrmManagerSB().lockCase(agentPK, casePK);
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to CrmManagerSB");
 		}
@@ -314,11 +266,7 @@ public class CrmManager {
 
 	public void unlockCase(PrimaryKey casePK) throws FDResourceException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				 CrmManagerService.getInstance().unlockCase(casePK);
-			}else{
 				this.getCrmManagerSB().unlockCase(casePK);
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to CrmManagerSB");
 		}
@@ -326,11 +274,7 @@ public class CrmManager {
 
 	public boolean closeAutoCase(PrimaryKey casePK) throws FDResourceException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				return CrmManagerService.getInstance().closeAutoCase(casePK);
-			}else{
 				return this.getCrmManagerSB().closeAutoCase(casePK);
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to CrmManagerSB");
 		}
@@ -339,11 +283,7 @@ public class CrmManager {
 
 	public void downloadCases(PrimaryKey agentPK, String queue, String subject, int numberToDownload) throws FDResourceException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				CrmManagerService.getInstance().downloadCases(agentPK, queue, subject, numberToDownload);
-			}else{
 				this.getCrmManagerSB().downloadCases(agentPK, queue, subject, numberToDownload);
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to CrmManagerSB");
 		}
@@ -367,11 +307,7 @@ public class CrmManager {
 	
 	public void saveSessionStatus(CrmStatus status) throws FDResourceException{
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				 CrmManagerService.getInstance().saveSessionStatus(status);
-			}else{
 				this.getCrmManagerSB().saveSessionStatus(status);
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to CrmManagerSB");
 		}
@@ -379,11 +315,7 @@ public class CrmManager {
 	
 	public CrmStatus getSessionStatus(PrimaryKey agentPK) throws FDResourceException{
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				return CrmManagerService.getInstance().getSessionStatus(agentPK);
-			}else{
 				return this.getCrmManagerSB().getSessionStatus(agentPK);
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to CrmManagerSB");
 		}
