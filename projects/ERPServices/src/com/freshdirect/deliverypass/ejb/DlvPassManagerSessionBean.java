@@ -32,6 +32,7 @@ import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.deliverypass.DeliveryPassType;
 import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
@@ -79,7 +80,8 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 			 */
 			Map<Comparable, Serializable> statusMap = getAllStatusMap(model.getCustomerId());
 			if(statusMap != null && statusMap.size() > 0){
-				if(Integer.parseInt(statusMap.get("UsablePassCount").toString()) >=3){//make it read from property file.
+				if(Integer.parseInt(statusMap.get("UsablePassCount").toString()) >=FDStoreProperties
+						.getMaxDlvPassPurchaseLimit()){//make it read from property file.
 					//HAs a pending delivery pass in the system.
 					throw new DeliveryPassException("We're sorry. The order cannot be submitted since this account has reached the DeliveryPass limit.",model.getCustomerId());
 				}
