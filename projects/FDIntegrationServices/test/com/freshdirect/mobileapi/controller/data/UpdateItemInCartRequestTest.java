@@ -18,7 +18,7 @@ public class UpdateItemInCartRequestTest extends MessageTest {
             assertEquals("bgril", request.getProductConfiguration().getCategoryId());
             assertEquals("MEA0004675", request.getProductConfiguration().getSkuCode());
             assertEquals(1.0f, request.getProductConfiguration().getQuantity());
-            assertEquals("E04", request.getProductConfiguration().getSalesUnit());
+            assertEquals("E04", request.getProductConfiguration().getSalesUnit().getName());
             assertEquals(2, request.getProductConfiguration().getOptions().size());
             assertEquals("N", request.getProductConfiguration().getOptions().get("C_MT_BF_MAR"));
             assertEquals("VP", request.getProductConfiguration().getOptions().get("C_MT_BF_PAK"));

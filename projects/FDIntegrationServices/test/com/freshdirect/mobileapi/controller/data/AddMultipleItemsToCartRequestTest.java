@@ -23,7 +23,7 @@ public class AddMultipleItemsToCartRequestTest extends MessageTest {
         assertEquals("bgril", pc.getProduct().getCategoryId());
         assertEquals("MEA0004676", pc.getSkuCode());
         assertEquals(2.0f, pc.getQuantity());
-        assertEquals("E02", pc.getSalesUnit());
+        assertEquals("E02", pc.getSalesUnit().getName());
         assertEquals(2, pc.getOptions().size());
         assertEquals("N", pc.getOptions().get("C_MT_BF_MAR"));
         assertEquals("ST", pc.getOptions().get("C_MT_BF_PAK"));
