@@ -3,14 +3,12 @@ package com.freshdirect.mobileapi.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
+import org.junit.Test;
 
-import org.apache.log4j.Logger;
+public class FilterUtilTest {
 
-
-public class FilterUtilTest extends TestCase{
-    public static final Logger logger = Logger.getLogger(FilterUtilTest.class);
-    
+    @Test
     public void testFilter(){
         List<String> names = new ArrayList<String>();
         names.add("John");
@@ -21,18 +19,16 @@ public class FilterUtilTest extends TestCase{
         filterUtil.addFilter(new ThreeLettersNameFilterCondition());
         
         List<String> filteredNames = filterUtil.filter();
-        assertEquals(1, filteredNames.size());
+        Assert.assertEquals(1, filteredNames.size());
         
         filterUtil.removeAllConditions();
         filterUtil.addFilter(new FelipeNameFilterCondition());
         for(String name : filterUtil.filter()){
-            assertEquals(true, "Felipe".equals(name));
+            Assert.assertEquals(true, "Felipe".equals(name));
         }
     }
     /**
      * Filters any name that has three letters length
-     * @author fgarcia
-     *
      */
     class ThreeLettersNameFilterCondition implements Filter<String>{
 
@@ -49,8 +45,6 @@ public class FilterUtilTest extends TestCase{
     
     /**
      * Filters any name that
-     * @author fgarcia
-     *
      */
     class FelipeNameFilterCondition implements Filter<String>{
 
