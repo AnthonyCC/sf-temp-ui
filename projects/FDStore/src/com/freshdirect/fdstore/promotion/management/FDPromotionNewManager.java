@@ -30,16 +30,31 @@ import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.management.ejb.FDPromotionManagerNewHome;
 import com.freshdirect.fdstore.promotion.management.ejb.FDPromotionManagerNewSB;
+import com.freshdirect.fdstore.util.json.FDPromotionJSONSerializer;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.metaparadigm.jsonrpc.JSONSerializer;
+import com.metaparadigm.jsonrpc.MarshallException;
+import com.metaparadigm.jsonrpc.UnmarshallException;
 
 public class FDPromotionNewManager {
 
 	private static Category LOGGER = LoggerFactory.getInstance(FDPromotionNewManager.class);
 
 	private static FDPromotionManagerNewHome managerHome = null;
+	
+	private static JSONSerializer ser = new JSONSerializer();
+	static {
+		try {
+			ser.registerDefaultSerializers();
+			ser.registerSerializer(FDPromotionJSONSerializer.getInstance());
+		} catch (Exception e) {
+			
+		}
+	}
 
+	@Deprecated
 	public static PrimaryKey createPromotion(FDPromotionNewModel promotion) throws FDResourceException,
 			FDDuplicatePromoFieldException, FDPromoTypeNotFoundException, FDPromoCustNotFoundException {
 		lookupManagerHome();
@@ -68,6 +83,7 @@ public class FDPromotionNewManager {
 		}
 	}
 
+	@Deprecated
 	public static List<FDPromotionNewModel> getPromotions() throws FDResourceException {
 		lookupManagerHome();
 
@@ -243,6 +259,7 @@ public class FDPromotionNewManager {
 
 	}
 
+	@Deprecated
 	public static void createPromotions(List<FDPromotionNewModel> promotions) throws FDResourceException,
 			FDDuplicatePromoFieldException, FDPromoTypeNotFoundException, FDPromoCustNotFoundException {
 		lookupManagerHome();
@@ -315,6 +332,7 @@ public class FDPromotionNewManager {
 		}
 	}
 
+	@Deprecated
 	public static boolean isPromotionNameUsed(String promoName) throws FDResourceException {
 		
 
@@ -645,7 +663,20 @@ public class FDPromotionNewManager {
 
 		try {
 			FDPromotionManagerNewSB sb = managerHome.create();
-			return sb.getAllAutomaticPromotions();
+			List<PromotionI> promotions = sb.getAllAutomaticPromotions();;
+			try {
+				System.out.println(ser.toJSON(promotions));
+				List<PromotionI> promotions1 =(List<PromotionI>)ser.fromJSON(ser.toJSON(promotions));
+				System.out.println("Hi");
+			} catch (MarshallException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+			catch (UnmarshallException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return promotions;
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");

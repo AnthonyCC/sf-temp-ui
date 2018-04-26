@@ -339,7 +339,7 @@ public class ModelConverter {
 				deliveryPassTypeData.getProfileValue(),
 				deliveryPassTypeData.isAutoRenewDP(),
 				deliveryPassTypeData.isFreeTrialDP(),
-				deliveryPassTypeData.isFreeTrialDP(),
+				deliveryPassTypeData.isFreeTrialRestricted(),
 				deliveryPassTypeData.getAutoRenewalSKU());
 	}
 

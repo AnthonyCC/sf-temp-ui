@@ -127,7 +127,7 @@ public class SampleLineApplicator implements PromotionApplicatorI {
 		return this.minSubtotal;
 	}
 
-	public void setZoneStrategy(DlvZoneStrategy zoneStrategy) {
+	public void setDlvZoneStrategy(DlvZoneStrategy zoneStrategy) {
 		this.zoneStrategy = zoneStrategy;
 	}
 

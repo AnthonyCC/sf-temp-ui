@@ -97,7 +97,7 @@ public class FDPromotionNewDAO {
 	private final static String getAllAutomaticPromotions = "SELECT * FROM CUST.PROMOTION_NEW p where p.status STATUSES and " +
 	 							"(p.expiration_date > (sysdate-7) or p.expiration_date is null) and p.redemption_code is null " +
 	 							//"order by p.modify_date desc";
-	 							"and (p.REFERRAL_PROMO = 'N' or p.REFERRAL_PROMO is null) order by p.modify_date desc";
+	 							"and code not like 'WS_%' and (p.REFERRAL_PROMO = 'N' or p.REFERRAL_PROMO is null) order by p.modify_date desc";
 	public static List<PromotionI> loadAllAutomaticPromotions(Connection conn) throws SQLException {
 		final String query = getAllAutomaticPromotions.replace("STATUSES", getStatusReplacementString());
 		LOGGER.debug("Query is "+query);
@@ -761,7 +761,7 @@ public class FDPromotionNewDAO {
 			if(dlvZoneStrategy.getDlvDayType()!=null || (null !=dlvZoneStrategy.getDlvDates() && !dlvZoneStrategy.getDlvDates().isEmpty()) || null != dlvZoneStrategy.getDlvZoneId()){			
 				for (Iterator<PromotionApplicatorI> i = promo.getApplicatorList().iterator(); i.hasNext();) {
 					PromotionApplicatorI _applicator = i.next();
-					_applicator.setZoneStrategy(dlvZoneStrategy);
+					_applicator.setDlvZoneStrategy(dlvZoneStrategy);
 				}
 			}
 		}
@@ -1220,11 +1220,11 @@ public class FDPromotionNewDAO {
 	private static void populateCustomerStrategy(ResultSet rs, CustomerStrategy strategy) throws SQLException {
 		String cohorts = rs.getString("COHORT");
 		if(cohorts != null && cohorts.length() > 0){
-			strategy.setCohorts(cohorts);
+			strategy.setCohortNames(cohorts);
 		}
 		String dpTypes = rs.getString("DP_TYPES");
 		if(dpTypes != null && dpTypes.length() > 0){
-			strategy.setDpTypes(dpTypes);
+			strategy.setDpTypesNames(dpTypes);
 		}
 		String status = rs.getString("dp_status");
 		if(status != null){
@@ -1240,13 +1240,13 @@ public class FDPromotionNewDAO {
 			}
 		}
 		int orderStartRange = rs.getInt("order_range_start");
-		strategy.setOrderStartRange(orderStartRange);
+		strategy.setOrderRangeStart(orderStartRange);
 		int orderEndRange = rs.getInt("order_range_end");
-		strategy.setOrderEndRange(orderEndRange);
+		strategy.setOrderRangeEnd(orderEndRange);
 		
 		String paymentTypes = rs.getString("payment_type");
 		if(paymentTypes != null && paymentTypes.length() > 0)
-			strategy.setPaymentTypes(paymentTypes);
+			strategy.setPaymentTypeNames(paymentTypes);
 		
 		int priorEcheckUse = rs.getInt("prior_echeck_use");
 		strategy.setPriorEcheckUse(priorEcheckUse);

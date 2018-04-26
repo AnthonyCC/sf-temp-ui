@@ -23,10 +23,14 @@ import com.freshdirect.fdstore.FDResourceException;
 
 import com.freshdirect.fdstore.ecomm.gateway.customconverters.promotion.PromotionDTOConverter;
 import com.freshdirect.fdstore.promotion.EnumPromotionStatus;
+import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.management.FDPromoChangeModel;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewModel;
+import com.freshdirect.fdstore.util.json.FDPromotionJSONSerializer;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.metaparadigm.jsonrpc.JSONSerializer;
+import com.metaparadigm.jsonrpc.UnmarshallException;
 
 public class FDPromotionManagerService extends AbstractEcommService implements FDPromotionManagerServiceI {
 	private final static Category LOGGER = LoggerFactory.getInstance(FDPromotionManagerService.class);
@@ -48,6 +52,15 @@ public class FDPromotionManagerService extends AbstractEcommService implements F
 		return INSTANCE;
 	}
 
+	private static JSONSerializer ser = new JSONSerializer();
+	static {
+		try {
+			ser.registerDefaultSerializers();
+			ser.registerSerializer(FDPromotionJSONSerializer.getInstance());
+		} catch (Exception e) {
+			
+		}
+	}
 	@Override
 	public FDPromotionNewData getPromotionNewDataByPK(String pK) throws FDResourceException {
 
@@ -1309,6 +1322,16 @@ public class FDPromotionManagerService extends AbstractEcommService implements F
 
 		return;
 
+	}
+	
+	public List<PromotionI> getAllAutomaticPromotions() throws FDResourceException{		
+		try {
+			Response<String> response = httpGetDataTypeMap(getFdCommerceEndPoint("promotionmanagement/allautomaticpromotions/" ), new TypeReference<Response<String>>(){});		
+			List<PromotionI> promotions =(List<PromotionI>)ser.fromJSON(response.getData());
+			return promotions;
+		} catch (UnmarshallException e) {
+			throw new FDResourceException(e, "failure with getAllAutomaticPromotions:  ");
+		}
 	}
 
 	public static void main(String[] args) {

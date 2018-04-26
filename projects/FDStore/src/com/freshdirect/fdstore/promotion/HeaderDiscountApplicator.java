@@ -102,7 +102,7 @@ public class HeaderDiscountApplicator implements PromotionApplicatorI {
 		return this.discountRule;
 	}
 
-	public void setZoneStrategy(DlvZoneStrategy zoneStrategy) {
+	public void setDlvZoneStrategy(DlvZoneStrategy zoneStrategy) {
 		this.zoneStrategy = zoneStrategy;
 	}
 
@@ -117,10 +117,6 @@ public class HeaderDiscountApplicator implements PromotionApplicatorI {
 
 	public void setCartStrategy(CartStrategy cartStrategy) {
 		this.cartStrategy = cartStrategy;
-	}
-
-	public DlvZoneStrategy getZoneStrategy() {
-		return zoneStrategy;
 	}
 
 	public void setDiscountRule(HeaderDiscountRule discountRule) {

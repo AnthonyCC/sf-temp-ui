@@ -57,7 +57,7 @@ public class ExtendDeliveryPassApplicator implements PromotionApplicatorI {
 	public int getExtendDays() {
 		return extendDays;
 	}
-	public void setZoneStrategy(DlvZoneStrategy zoneStrategy) {
+	public void setDlvZoneStrategy(DlvZoneStrategy zoneStrategy) {
 		this.zoneStrategy = zoneStrategy;
 	}
 

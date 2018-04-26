@@ -395,7 +395,7 @@ public class Promotion extends ModelSupport implements PromotionI {
 		return ((HeaderDiscountRule) discountRules.get(0)).getMinSubtotal();
 	}
 	
-	public Timestamp getModifyDate() {
+	public Timestamp getLastModified() {
 		return lastModified;
 	}
 

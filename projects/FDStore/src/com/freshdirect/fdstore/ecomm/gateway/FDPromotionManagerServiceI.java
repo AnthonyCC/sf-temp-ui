@@ -9,6 +9,7 @@ import java.util.Map;
 import com.freshdirect.ecommerce.data.promotion.management.FDPromotionNewData;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.promotion.EnumPromotionStatus;
+import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.management.FDPromoChangeModel;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewModel;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -68,6 +69,6 @@ public interface FDPromotionManagerServiceI {
 public 	boolean publishPromotion(FDPromotionNewModel promotion) throws FDResourceException;
 public List<FDPromoChangeModel> loadPromoAuditChanges(String promotionId) throws FDResourceException;
 public void storeChangeLogEntries(String promoPk, List<FDPromoChangeModel> changes) throws FDResourceException;
-
+public List<PromotionI> getAllAutomaticPromotions() throws FDResourceException;
 
 }

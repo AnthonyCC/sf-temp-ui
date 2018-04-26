@@ -56,4 +56,12 @@ public class DateRangeStrategy implements PromotionStrategyI {
 	public boolean isStoreRequired() {
 		return false;
 	}
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public void setExpirationDate(Date expirationDate) {
+		this.expirationDate = expirationDate;
+	}
 }

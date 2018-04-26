@@ -274,7 +274,7 @@ public class CustomerStrategy implements PromotionStrategyI {
 	}
 
 
-	public void setCohorts(String cohortNames) {
+	public void setCohortNames(String cohortNames) {
 		this.cohorts = convertToCohorts(cohortNames);
 
 	}
@@ -333,12 +333,12 @@ public class CustomerStrategy implements PromotionStrategyI {
 		return buf.toString();
 	}
 	
-	public void setOrderStartRange(int orderRangeStart) {
+	public void setOrderRangeStart(int orderRangeStart) {
 		this.orderRangeStart = orderRangeStart;
 	}
 
 
-	public void setOrderEndRange(int orderRangeEnd) {
+	public void setOrderRangeEnd(int orderRangeEnd) {
 		this.orderRangeEnd = orderRangeEnd;
 	}
 
@@ -358,7 +358,7 @@ public class CustomerStrategy implements PromotionStrategyI {
 	}
 
 
-	public void setPaymentTypes(String paymentTypes) {
+	public void setPaymentTypeNames(String paymentTypes) {
 		this.paymentTypes = convertToPaymentTypes(paymentTypes);
 	}
 
@@ -419,7 +419,7 @@ public class CustomerStrategy implements PromotionStrategyI {
 	}
 	
 	
-	public void setDpTypes(String dpTypes) {
+	public void setDpTypesNames(String dpTypes) {
 		this.dpTypes = convertToCohorts(dpTypes);
 
 	}
@@ -453,5 +453,17 @@ public class CustomerStrategy implements PromotionStrategyI {
 	public void setOrderRangeDeliveryTypes(
 			List<EnumDeliveryType> orderRangeDeliveryTypes) {
 		this.orderRangeDeliveryTypes = orderRangeDeliveryTypes;
+	}
+
+	public void setCohorts(Set<String> cohorts) {
+		this.cohorts = cohorts;
+	}
+
+	public void setDpTypes(Set<String> dpTypes) {
+		this.dpTypes = dpTypes;
+	}
+
+	public void setPaymentTypes(Set<EnumCardType> paymentTypes) {
+		this.paymentTypes = paymentTypes;
 	}
 }

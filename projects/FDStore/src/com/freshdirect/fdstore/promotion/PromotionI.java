@@ -34,7 +34,7 @@ public interface PromotionI extends Serializable {
 	
 	public EnumPromotionType getPromotionType();
 	
-	public Timestamp getModifyDate();
+	public Timestamp getLastModified();
 	//The following methods were added as part of Category Discount Implementation.
 	public boolean isRedemption();
 	

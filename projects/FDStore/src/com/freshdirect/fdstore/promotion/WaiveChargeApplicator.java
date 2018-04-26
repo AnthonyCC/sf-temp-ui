@@ -58,7 +58,7 @@ public class WaiveChargeApplicator implements PromotionApplicatorI {
 		return true;
 	}
 
-	public void setZoneStrategy(DlvZoneStrategy zoneStrategy) {
+	public void setDlvZoneStrategy(DlvZoneStrategy zoneStrategy) {
 		this.zoneStrategy = zoneStrategy;
 	}
 

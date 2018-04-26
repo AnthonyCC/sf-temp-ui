@@ -68,7 +68,7 @@ public class SignupDiscountApplicator implements PromotionApplicatorI {
 		return "SignupDiscountApplicator[" + this.discountRules + "]";
 	}
 
-	public void setZoneStrategy(DlvZoneStrategy zoneStrategy) {
+	public void setDlvZoneStrategy(DlvZoneStrategy zoneStrategy) {
 		//default implementatio since this applicator is obsolete.
 	}
 	

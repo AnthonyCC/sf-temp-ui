@@ -50,7 +50,7 @@ public class ProductSampleApplicator implements PromotionApplicatorI {
 	}
 
 	@Override
-	public void setZoneStrategy(DlvZoneStrategy zoneStrategy) {
+	public void setDlvZoneStrategy(DlvZoneStrategy zoneStrategy) {
 		this.zoneStrategy = zoneStrategy;		
 	}
 

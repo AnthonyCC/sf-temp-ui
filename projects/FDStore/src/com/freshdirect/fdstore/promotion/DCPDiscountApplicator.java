@@ -69,7 +69,7 @@ public class DCPDiscountApplicator  implements PromotionApplicatorI {
 		return this.discountRule;
 	}
 	
-	public void setZoneStrategy(DlvZoneStrategy zoneStrategy) {
+	public void setDlvZoneStrategy(DlvZoneStrategy zoneStrategy) {
 		//default implementatio since this applicator is obsolete.
 	}
 	

@@ -179,6 +179,46 @@ public class DCPDLineItemStrategy implements LineItemStrategyI {
 	public boolean isStoreRequired() {
 		return true;
 	}
+
+	public Set<ContentKey> getRawContentKeys() {
+		return rawContentKeys;
+	}
+
+	public void setRawContentKeys(Set<ContentKey> rawContentKeys) {
+		this.rawContentKeys = rawContentKeys;
+	}
+
+	public Boolean getExcludeSkus() {
+		return excludeSkus;
+	}
+
+	public void setExcludeSkus(Boolean excludeSkus) {
+		this.excludeSkus = excludeSkus;
+	}
+
+	public Boolean getExcludeBrands() {
+		return excludeBrands;
+	}
+
+	public void setExcludeBrands(Boolean excludeBrands) {
+		this.excludeBrands = excludeBrands;
+	}
+
+	public Boolean getLoopEnabled() {
+		return loopEnabled;
+	}
+
+	public void setLoopEnabled(Boolean loopEnabled) {
+		this.loopEnabled = loopEnabled;
+	}
+
+	public void setSkus(Set<String> skus) {
+		this.skus = skus;
+	}
+
+	public void setBrands(Set<String> brands) {
+		this.brands = brands;
+	}
 }
 
 

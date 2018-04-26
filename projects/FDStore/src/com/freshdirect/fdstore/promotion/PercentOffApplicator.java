@@ -64,7 +64,7 @@ public class PercentOffApplicator implements PromotionApplicatorI {
 		return context.applyHeaderDiscount(promo, amount);
 	}
 	
-	public void setZoneStrategy(DlvZoneStrategy zoneStrategy) {
+	public void setDlvZoneStrategy(DlvZoneStrategy zoneStrategy) {
 		this.zoneStrategy = zoneStrategy;
 	}
 
