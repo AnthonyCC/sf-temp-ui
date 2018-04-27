@@ -70,7 +70,7 @@
   cursor: pointer;
 }
 
-.multisearch-input > ul {
+.multisearch-input > ul.termlist {
   margin: 10px 0 0;
   padding: 10px 6px;
   background: #fffffa;
@@ -81,7 +81,7 @@
   list-style-type: none;
 }
 
-.multisearch-input > ul > li {
+.multisearch-input > ul.termlist > li {
   line-height: 25px;
   font-size: 12px;
   display: block;
@@ -89,12 +89,45 @@
   padding: 0 25px 0 5px;
   margin-top: 3px;
   border-radius: 3px;
-  background: #4fa157;
-  color: #fff;
+  background: transparent;
+  color: inherit;
   font-weight: bold;
 }
 
-.multisearch-input > ul > .title {
+.multisearch-input > ul.termlist > li[data-enabled] {
+  background: #4fa157;
+  color: #fff;
+}
+
+.multisearch-input > ul.termlist > li > label {
+  display: inline-block;
+  line-height: 21px;
+  cursor: pointer;
+}
+
+.multisearch-input > ul.termlist > li > label:before {
+  display: inline-block;
+  content: '';
+  height: 15px;
+  width: 15px;
+  border: 1px solid #dce6be;
+  background: #f0f5e1;
+  vertical-align: middle;
+  margin-right: 5px;
+  text-align: center;
+  color: black;
+  font-size: 1.5em;
+}
+
+.multisearch-input > ul.termlist > li > input:focus ~ label:before {
+  outline: 2px solid #4fa157;
+}
+
+.multisearch-input > ul.termlist > li > input:checked ~ label:before {
+  content: "✓";
+}
+
+.multisearch-input > ul.termlist > .title {
   background: transparent;
   color: inherit;
   margin-top: 0;
@@ -102,7 +135,7 @@
   padding: 0;
 }
 
-.multisearch-input > ul > li > button {
+.multisearch-input > ul.termlist > li > button {
   position: absolute;
   right: 0;
   top: 0;
@@ -115,10 +148,13 @@
   border: none;
   font-weight: bold;
   text-indent: -999px;
+}
+
+.multisearch-input > ul.termlist > li[data-enabled] > button {
   color: #fff;
 }
 
-.multisearch-input > ul > li > button::after {
+.multisearch-input > ul.termlist > li > button::after {
   content: '❌';
   position: absolute;
   top: 0;

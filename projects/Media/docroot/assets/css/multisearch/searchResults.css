@@ -9,6 +9,10 @@
   height: 28px;
 }
 
+.multisearch-results [data-component="multisearch-list"] .content-header button.disable {
+  margin-right: 1em;
+}
+
 .multisearch-results [data-component="multisearch-list"] .content-header a.viewall {
   text-transform: uppercase;
 }

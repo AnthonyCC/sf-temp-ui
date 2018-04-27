@@ -14,10 +14,16 @@
     </div>
   </form>
   {/if}
-  <ul>
+  <ul class="termlist">
     <li class="title">Current products</li>
   {foreach $term in $terms}
-    <li data-searchterm="{$term}">{$term} <button class="remove">remove {$term}</button></li>
+    <li data-searchterm="{$term.name}" {if $term.enabled}data-enabled="true"{/if}>
+      <input class="offscreen" type="checkbox" id="ms_term_{$term.slug}" name="ms_terms" value="{$term.name}" {if $term.enabled}checked{/if}/>
+      <label for="ms_term_{$term.slug}">
+        <span>{$term.name}</span>
+      </label>
+      <button class="remove">remove {$term.name}</button>
+    </li>
   {/foreach}
   </ul>
 </div>

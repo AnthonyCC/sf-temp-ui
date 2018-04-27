@@ -404,6 +404,16 @@ var FreshDirect = FreshDirect || {};
       .replace(/'/g, "&#039;");
   };
 
+  // slugify - make a string "title-safe"
+  utils.slugify = function (text) {
+    return text.toString().toLowerCase()
+      .replace(/\s+/g, '-')      // spaces to -
+      .replace(/[^\w\-]+/g, '')  // remove non-word chars
+      .replace(/\-\-+/g, '-')    // multiple - to single -
+      .replace(/^-+/, '')        // trim - from start
+      .replace(/-+$/, '');       // trim - from end
+  };
+
   // register utils under FreshDirect.modules.common.utils
   utils.register("modules.common", "utils", utils, fd);
 
