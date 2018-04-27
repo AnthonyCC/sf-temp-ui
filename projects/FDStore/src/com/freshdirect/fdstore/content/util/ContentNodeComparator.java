@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.content.nutrition.EnumKosherSymbolValue;
 import com.freshdirect.content.nutrition.ErpNutritionType;
 import com.freshdirect.fdstore.FDKosherInfo;
@@ -18,6 +19,7 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.sort.CustomerPopularityComparator;
 import com.freshdirect.fdstore.content.sort.PopularityComparator;
 import com.freshdirect.fdstore.content.sort.SaleComparator;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.storeapi.content.CategoryModel;
 import com.freshdirect.storeapi.content.ContentNodeModel;
@@ -37,7 +39,7 @@ public class ContentNodeComparator implements Comparator<ContentNodeModel> {
     private Comparator<ContentNodeModel> saleComparator;
     private Comparator<ContentNodeModel> customerPopularityComparator;
 
-    public ContentNodeComparator(List<SortStrategyElement> strategy) {
+    public ContentNodeComparator(FDUserI user, List<SortStrategyElement> strategy) {
         this.strategy = strategy;
 
         for (SortStrategyElement e : strategy) {
@@ -50,7 +52,9 @@ public class ContentNodeComparator implements Comparator<ContentNodeModel> {
             }
 
             if (e.getSortType() == SortStrategyElement.PRODUCTS_BY_CUSTOMER_POPULARITY && customerPopularityComparator == null) {
-                customerPopularityComparator = new CustomerPopularityComparator();
+                String userId = (user != null && user.getIdentity() != null) ? user.getIdentity().getErpCustomerPK() : null;
+                PricingContext pricingContext = (user != null && user.getUserContext() != null) ? user.getUserContext().getPricingContext() : null;
+                customerPopularityComparator = new CustomerPopularityComparator(userId, pricingContext);
             }
 
         }

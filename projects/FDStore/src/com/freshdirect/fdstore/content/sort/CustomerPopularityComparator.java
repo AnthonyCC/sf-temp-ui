@@ -2,6 +2,7 @@ package com.freshdirect.fdstore.content.sort;
 
 import java.util.Comparator;
 
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.smartstore.sorting.ScriptedContentNodeComparator;
 import com.freshdirect.storeapi.content.ComparatorChain;
 import com.freshdirect.storeapi.content.ContentNodeModel;
@@ -10,8 +11,12 @@ import com.freshdirect.storeapi.content.SkuModel;
 
 public class CustomerPopularityComparator implements Comparator<ContentNodeModel> {
 
-    private ComparatorChain<ProductModel> comparator = ComparatorChain.create(ScriptedContentNodeComparator.createUserComparator(null, null))
-            .chain(ScriptedContentNodeComparator.createGlobalComparator(null, null));
+    private ComparatorChain<ProductModel> comparator;
+
+    public CustomerPopularityComparator(String userId, PricingContext pricingContext) {
+        this.comparator = ComparatorChain.create(ScriptedContentNodeComparator.createUserComparator(userId, pricingContext))
+                .chain(ScriptedContentNodeComparator.createGlobalComparator(null, null));
+    }
 
     @Override
     public int compare(ContentNodeModel o1, ContentNodeModel o2) {

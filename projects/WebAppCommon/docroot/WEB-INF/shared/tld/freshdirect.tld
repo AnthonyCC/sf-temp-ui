@@ -4127,6 +4127,11 @@
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+    	<attribute>
+    		<name>user</name>
+    		<required>false</required>
+    		<rtexprvalue>true</rtexprvalue>
+    	</attribute>
 	</tag>
 	
 		<!-- ============ [APPREQ-122] Product Impression Presentation Tag Support ============ -->
