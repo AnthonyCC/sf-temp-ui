@@ -760,11 +760,6 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     }
 
     @Override
-    public String getOrderTotalForChefsTableEligibility() throws FDResourceException {
-        return this.user.getOrderTotalForChefsTableEligibility();
-    }
-
-    @Override
     public String getOrderCountRemainingForChefsTableEligibility() throws FDResourceException {
         return this.user.getOrderCountRemainingForChefsTableEligibility();
     }

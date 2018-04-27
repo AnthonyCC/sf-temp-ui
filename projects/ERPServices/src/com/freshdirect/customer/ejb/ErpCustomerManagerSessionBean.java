@@ -3144,27 +3144,6 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			return strategy.getPerishableBufferAmount();
 		}
 
-		public List<DlvSaleInfo> getLastOrderForAddress(AddressModel address)  {
-			Connection conn = null;
-			try {
-				conn = this.getConnection();
-				return ErpSaleInfoDAO.getLastOrderForAddress(conn, address);
-			} catch (SQLException e) {
-				LOGGER.debug("SQLException: ", e);
-				throw new EJBException(e);
-			} finally {
-				try {
-					if (conn != null) {
-						conn.close();
-					}
-				} catch (SQLException e) {
-					LOGGER.warn("SQLException while cleaning: ", e);
-				}
-			}
-		}
-
-
-
 		public List<ErpSaleInfo> getNSMOrdersForGC()  {
 			Connection conn = null;
 			try {

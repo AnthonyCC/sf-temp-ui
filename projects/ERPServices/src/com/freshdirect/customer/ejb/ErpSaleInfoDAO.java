@@ -830,31 +830,6 @@ public class ErpSaleInfoDAO {
         }
 	}
 	
-	private static final String LAST_ORD_SEARCH_QUERY =
-		"select s.id,s.customer_id, s.stop_sequence, s.status, di.first_name, di.last_name, di.address1, di.apartment, di.zip "
-			+ "from cust.sale s, cust.salesaction sa, cust.deliveryinfo di "
-			+ "where s.id=sa.sale_id and sa.id=di.salesaction_id and s.status<>'CAN' "
-			+ "and sa.action_type in ('STL') and sa.action_date=(select max(action_date) from cust.salesaction where sale_id=s.id and action_type in ('STL')) "
-			+ "and upper(di.address1) like upper(?) and upper(di.apartment) = UPPER(?) and di.zip = ? and s.type='REG'";
-
-	public static List<DlvSaleInfo> getLastOrderForAddress(Connection conn, AddressModel address) throws SQLException {
-        PreparedStatement ps = null; 
-        ResultSet rs = null;
-
-        try {
-			ps = conn.prepareStatement(LAST_ORD_SEARCH_QUERY);
-	//		ps.setDate(1, new java.sql.Date(date.getTime()));
-			ps.setString(1, "%" + address.getAddress1());
-			ps.setString(2, address.getApartment());
-			ps.setString(3, address.getZipCode());
-	
-			return collectDlvSaleInfo(ps);
-        } finally {
-            DaoUtil.closePreserveException(rs,ps);
-        }
-
-	}
-	
 	private static final String GC_NSM_ORD_SEARCH_QUERY =
 		"select s.id,s.customer_id,s.status,sa.action_date,NVL(E_STORE,'FreshDirect') E_STORE "
 			+ "from cust.sale s, cust.salesaction sa "

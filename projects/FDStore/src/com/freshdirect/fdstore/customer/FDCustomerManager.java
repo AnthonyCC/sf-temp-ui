@@ -1696,32 +1696,6 @@ public class FDCustomerManager {
 		return erpSaleModels;
 	}
 
-	/**
-	 *
-	 * @param erpSaleInfos
-	 */
-	public static double getOrderTotalForChefsTableEligibility(Collection<ErpSaleModel> erpSaleModels) {
-		Calendar beginCal = Calendar.getInstance();
-		beginCal.set(Calendar.DAY_OF_MONTH, 1);
-		Calendar endCal = Calendar.getInstance();
-		beginCal.add(Calendar.MONTH, -2);
-		double orderTotal = 0.0;
-		Date beginDate = beginCal.getTime();
-		Date endDate = endCal.getTime();
-		for (Iterator<ErpSaleModel> i = erpSaleModels.iterator(); i.hasNext();) {
-			ErpSaleModel saleModel = i.next();
-			Date createDate = saleModel.getCreateDate();
-			if (createDate.after(beginDate) && createDate.before(endDate) &&
-				!saleModel.getType().equals(EnumSaleType.SUBSCRIPTION) &&
-				!saleModel.getStatus().equals(EnumSaleStatus.CANCELED) &&
-				!saleModel.getDeliveryType().equals(EnumDeliveryType.CORPORATE)) {
-				orderTotal += saleModel.getSubTotal();
-			}
-		}
-		return new BigDecimal(orderTotal).setScale(0,BigDecimal.ROUND_FLOOR).doubleValue();
-
-	}
-
 	private static ErpOrderHistory getErpOrderHistoryInfo(FDIdentity identity) throws FDResourceException {
 
 		if (identity == null) {
@@ -1758,11 +1732,6 @@ public class FDCustomerManager {
 	public static int getOrderCountForChefsTableEligibility(FDIdentity identity) throws FDResourceException {
 		ErpOrderHistory history = getErpOrderHistoryInfo(identity);
 		return history.getOrderCountForChefsTableEligibility();
-	}
-
-	public static double getOrderTotalForChefsTableEligibility(FDIdentity identity) throws FDResourceException {
-		Collection<ErpSaleModel> erpSaleModels = getErpSaleModels(identity);
-		return getOrderTotalForChefsTableEligibility(erpSaleModels);
 	}
 
 	public static ErpPromotionHistory getPromoHistoryInfo(FDIdentity identity) throws FDResourceException {

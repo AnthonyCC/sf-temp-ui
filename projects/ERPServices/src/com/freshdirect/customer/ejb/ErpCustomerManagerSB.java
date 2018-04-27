@@ -297,8 +297,6 @@ public interface ErpCustomerManagerSB extends EJBObject {
     
     public void sendCreateDonationOrderToSAP(String erpCustomerID, String saleID, EnumSaleType saleType, CustomerRatingI rating) throws RemoteException, ErpSaleNotFoundException, ErpTransactionException;
     
-    public List<DlvSaleInfo> getLastOrderForAddress(AddressModel address)  throws RemoteException;
-    
     public String getSapCustomerId(String erpCustomerPk) throws RemoteException;
 
     public List<ErpSaleInfo> getNSMOrdersForGC()  throws RemoteException;

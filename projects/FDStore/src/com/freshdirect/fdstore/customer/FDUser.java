@@ -820,13 +820,6 @@ public class FDUser extends ModelSupport implements FDUserI {
     }
 
     @Override
-    public String getOrderTotalForChefsTableEligibility() throws FDResourceException {
-        OrderHistoryI orderHistory = getOrderHistory();
-
-        return NumberFormat.getCurrencyInstance(Locale.US).format(orderHistory.getOrderSubTotalForChefsTableEligibility());
-    }
-
-    @Override
     public String getOrderCountRemainingForChefsTableEligibility() throws FDResourceException {
         ChoiceFormat fmt = new ChoiceFormat("1#one |2#two |3#three | 4#four | 5#five");
 
