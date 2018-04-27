@@ -24,7 +24,7 @@
 				<div class="dpn-success-text-table-line"><div class="dpn-success-text-table-left"><%= orderDP.getOrderLine(0).getDescription() %></div><div class="dpn-success-text-table-right"><%= JspMethods.formatPrice(orderDP.getOrderLine(0).getPrice()) %></div></div>
 				<div class="dpn-success-text-table-line"><div class="dpn-success-text-table-left">Total Tax</div><div class="dpn-success-text-table-right"><%= JspMethods.formatPrice(orderDP.getTaxValue()) %></div></div>
 				<% if(orderDP.getTotalDiscountValue() > 0){ %>
-				<div class="dpn-success-text-table-line"><div class="dpn-success-text-table-left">Promo Code: </div><div class="dpn-success-text-table-right">-<%= JspMethods.formatPrice(orderDP.getTotalDiscountValue()) %></div></div>
+				<div class="dpn-success-text-table-line"><div class="dpn-success-text-table-left"><%= orderDP.getDiscountDescription() %> </div><div class="dpn-success-text-table-right">-<%= JspMethods.formatPrice(orderDP.getTotalDiscountValue()) %></div></div>
 				<% } %>
 				<div class="dpn-success-text-table-line-total"><div class="dpn-success-text-table-left">Total</div><div class="dpn-success-text-table-right"><%= JspMethods.formatPrice(orderDP.getTotal()) %></div></div>
 			</div>
