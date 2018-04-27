@@ -6,6 +6,7 @@
  * @param? selected
  * @param? cmEventSource
  * @param? showCustRated
+ * @param? isNewProductsCarouselLoaded
  */
 {template .tabbedCarousel}
 {let $siteFeature}
@@ -15,10 +16,14 @@
     {case 'fdfav'}FAVORITES_QS
     {case 'expert'}EXPRATED_QS
     {case 'custrating'}CUSTRATED_QS
+    {case 'newproducts'}NEW_PRODUCTS
   {/switch}
 {/let}
 <div id="tabbedCarousel" class="tabbed-carousel" data-component="tabbedRecommender" data-cmeventsource="{if $cmEventSource }{$cmEventSource}{else}qs_tabbedRecommender{/if}" data-apiendpoint="/api/qs/ymal">
   <ul class="tabs clearfix" role="tablist">
+    {if $isNewProductsCarouselLoaded}
+    	<li role="tab" tabindex="0" data-component="tabitem" {if $selected and $selected=='newproducts'}class="selected" aria-selected="true"{/if} data-tabname="newproducts" data-sitefeature="NEW_PRODUCTS">new products</li>
+    {/if}
     {if $hasYourFavoritesRecommendation}
       <li role="tab" tabindex="0" data-component="tabitem" {if $selected and $selected=='yourfav'}class="selected" aria-selected="true"{/if} data-tabname="yourfav" data-sitefeature="DYF">your favorites</li>
     {/if}

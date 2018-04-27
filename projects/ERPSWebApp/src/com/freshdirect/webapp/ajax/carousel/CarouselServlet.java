@@ -1,6 +1,7 @@
 package com.freshdirect.webapp.ajax.carousel;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -85,28 +86,49 @@ public class CarouselServlet extends BaseJsonServlet {
 		String currentNodeKey = request.getParameter("currentNodeKey");
 		String siteFeature = request.getParameter("siteFeature");
 		String cmEventSource = request.getParameter("cmEventSource");
-		boolean sendVariant = request.getParameter("sendVariant") != null
-				? Boolean.parseBoolean(request.getParameter("sendVariant"))
-				: false;
+        boolean sendVariant = request.getParameter("sendVariant") != null ? Boolean.parseBoolean(request.getParameter("sendVariant")) : false;
 		List<ProductModel> products = new ArrayList<ProductModel>();
 		Recommendations results = null;
+
+        boolean isNewProductsCarouselLoaded = false;
+
 		try {
 
 			int maxItems = request.getParameter("maxItems") != null ? Integer.parseInt(request.getParameter("maxItems"))
 					: 0;
-			FDStoreRecommender recommender = FDStoreRecommender.getInstance();
+            final boolean isNewProductsCarouselEnabled = FDStoreProperties.isCartConfirmPageNewProductsCarouselEnabled();
+            final boolean isDealsCarousel = "deals".equals(request.getParameter("type"));
 
-			ContentNodeModel currentNode = null;
-			if (currentNodeKey != null && currentNodeKey.length() != 0) {
-				currentNode = ContentFactory.getInstance().getContentNodeByKey(ContentKeyFactory.get(currentNodeKey));
-			}
+            if (isDealsCarousel && isNewProductsCarouselEnabled) {
+                final boolean isRandomizeProductOrderEnabled = FDStoreProperties.isCartConfirmPageNewProductsCarouselRandomizeProductOrderEnabled();
 
-			results = recommender.getRecommendations(EnumSiteFeature.getEnum(siteFeature), sessionUser,
-					ProductRecommenderUtil.createSessionInput(session, sessionUser, maxItems, currentNode, null));
+                products = CarouselService.defaultService().collectNewProducts();
+                if (products.size() >= FDStoreProperties.getMinimumItemsCountInCarousel()) {
+                    isNewProductsCarouselLoaded = true;
+                    siteFeature = CarouselService.NEW_PRODUCTS_CAROUSEL_VIRTUAL_SITE_FEATURE;
+                    if (isRandomizeProductOrderEnabled) {
+                        Collections.shuffle(products);
+                    }
+                }
 
-			ProductRecommenderUtil.persistToSession(session, results);
+            }
 
-			products = results.getAllProducts();
+            if (!isNewProductsCarouselLoaded) {
+                FDStoreRecommender recommender = FDStoreRecommender.getInstance();
+
+                ContentNodeModel currentNode = null;
+                if (currentNodeKey != null && currentNodeKey.length() != 0) {
+                    currentNode = ContentFactory.getInstance().getContentNodeByKey(ContentKeyFactory.get(currentNodeKey));
+                }
+
+                results = recommender.getRecommendations(EnumSiteFeature.getEnum(siteFeature), sessionUser,
+                        ProductRecommenderUtil.createSessionInput(session, sessionUser, maxItems, currentNode, null));
+
+                ProductRecommenderUtil.persistToSession(session, results);
+
+                products = results.getAllProducts();
+            }
+
 
 			if (products.size() > maxItems) {
 				products = products.subList(0, maxItems);
@@ -127,6 +149,8 @@ public class CarouselServlet extends BaseJsonServlet {
 		if (cmEventSource != null) {
 			((Map<String, Object>) dataMap).put("cmEventSource", cmEventSource);
 		}
+
+        ((Map<String, Object>) dataMap).put("isNewProductsCarouselLoaded", isNewProductsCarouselLoaded);
 		return dataMap;
 	}
 

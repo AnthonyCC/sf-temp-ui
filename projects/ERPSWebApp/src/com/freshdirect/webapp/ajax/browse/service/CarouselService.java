@@ -94,7 +94,7 @@ public class CarouselService {
         return carousel;
     }
 
-    private List<ProductModel> collectNewProducts() {
+    public List<ProductModel> collectNewProducts() {
         CategoryModel newProductsCategory = ((CategoryModel) ContentFactory.getInstance()
                 .getContentNodeByKey(ContentKeyFactory.get(FDStoreProperties.getNewProductsCarouselSourceCategoryContentKey())));
 

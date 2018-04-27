@@ -1060,8 +1060,11 @@ public class FDStoreProperties {
     private static final String PROP_FRESH_DEALS_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED = "fdstore.freshdealspage.newproductscarousel.randomizeproductorder.enabled";
     private static final String PROP_REORDER_PAGE_NEW_PRODUCTS_CAROUSEL_ENABLED = "fdstore.reorderpage.newproductscarousel.enabled";
     private static final String PROP_REORDER_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED = "fdstore.reorderpage.newproductscarousel.randomizeproductorder.enabled";
+    private static final String PROP_CART_CONFIRM_PAGE_NEW_PRODUCTS_CAROUSEL_ENABLED = "fdstore.cartconfirmpage.newproductscarousel.enabled";
+    private static final String PROP_CART_CONFIRM_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED = "fdstore.cartconfirmpage.newproductscarousel.randomizeproductorder.enabled";
+	
+	    private static final String MASTERPASS_EXCEPTION_MESSAGE = "masterpass.exception.message"; 
 
-    private static final String MASTERPASS_EXCEPTION_MESSAGE = "masterpass.exception.message";
  	static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_INIT_CTX_FACTORY, "weblogic.jndi.WLInitialContextFactory");
@@ -2035,6 +2038,8 @@ public class FDStoreProperties {
         defaults.put(PROP_INFORM_ORDERMODIFY_VIEWLIMIT, "5");
         defaults.put(MASTERPASS_EXCEPTION_MESSAGE, "Connection problem.  Please choose a different wallet.");
 
+        defaults.put(PROP_CART_CONFIRM_PAGE_NEW_PRODUCTS_CAROUSEL_ENABLED, "true");
+        defaults.put(PROP_CART_CONFIRM_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED, "false");
 		
         refresh();
     }
@@ -5183,7 +5188,15 @@ public class FDStoreProperties {
 		return get(PROP_INFORM_ORDERMODIFY_MEDIAPATH);
 	}
 
-	 public static String getMasterpassExcMessage() {
+public static String getMasterpassExcMessage() {
 	        return get(MASTERPASS_EXCEPTION_MESSAGE);
 	    }
+
+    public static boolean isCartConfirmPageNewProductsCarouselEnabled() {
+        return (Boolean.valueOf(get(PROP_CART_CONFIRM_PAGE_NEW_PRODUCTS_CAROUSEL_ENABLED))).booleanValue();
+    }
+
+    public static boolean isCartConfirmPageNewProductsCarouselRandomizeProductOrderEnabled() {
+        return (Boolean.valueOf(get(PROP_CART_CONFIRM_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED))).booleanValue();
+    }
 }

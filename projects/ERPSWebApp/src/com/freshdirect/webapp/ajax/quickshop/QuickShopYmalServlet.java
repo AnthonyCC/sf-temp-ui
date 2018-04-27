@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
@@ -43,6 +44,7 @@ import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.storeapi.content.SkuModel;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.RecommenderServlet;
+import com.freshdirect.webapp.ajax.browse.service.CarouselService;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 import com.freshdirect.webapp.ajax.recommendation.RecommendationRequestObject;
 import com.freshdirect.webapp.taglib.fdstore.GetPeakProduceTag;
@@ -123,11 +125,15 @@ public class QuickShopYmalServlet extends BaseJsonServlet{
 				items = doTheCrazyQuickshopRecommendations( user, session, deptId, maxItems, listContent);
 				title = getTheCrazyQuickshopTitle( deptId );
 
-			} else {
+            } else if (CarouselService.NEW_PRODUCTS_CAROUSEL_VIRTUAL_SITE_FEATURE.equals(siteFeature)) {
+                
+                items = collectNewProducts(user);
+                
+            } else {
 
-				// Regular recommendations based on a siteFeature
-				items = doRecommend( user, session, getSiteFeature(siteFeature), maxItems, listContent, null );
-			}
+                // Regular recommendations based on a siteFeature
+                items = doRecommend(user, session, getSiteFeature(siteFeature), maxItems, listContent, null);
+            }
 
 
 			if ( items.isEmpty() ) {
@@ -143,7 +149,25 @@ public class QuickShopYmalServlet extends BaseJsonServlet{
 
 	}
 
-	private static EnumSiteFeature getSiteFeature( String sfName ) throws HttpErrorResponse {
+    private List<QuickShopLineItem> collectNewProducts(FDUserI user) throws FDResourceException {
+        List<ProductModel> newProducts = CarouselService.defaultService().collectNewProducts();
+        
+        final boolean isNewProductsCarouselRandomizationEnabled = FDStoreProperties.isCartConfirmPageNewProductsCarouselRandomizeProductOrderEnabled();
+        if (isNewProductsCarouselRandomizationEnabled) {
+            Collections.shuffle(newProducts);
+        }
+        
+        List<QuickShopLineItem> items = new ArrayList<QuickShopLineItem>();
+        for (ProductModel product : newProducts) {
+            QuickShopLineItem newItem = com.freshdirect.webapp.ajax.reorder.QuickShopHelper.createItemFromProduct(product, null, user, false);
+            if (null != newItem) {
+                items.add(newItem);
+            }
+        }
+        return items;
+    }
+
+    private static EnumSiteFeature getSiteFeature(String sfName) throws HttpErrorResponse {
 		EnumSiteFeature siteFeat = EnumSiteFeature.getEnum(sfName);
 		if (siteFeat == null) {
 			returnHttpError(400, "Missing or invalid site feature ID " + sfName);
