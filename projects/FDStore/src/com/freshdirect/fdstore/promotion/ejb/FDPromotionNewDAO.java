@@ -97,7 +97,7 @@ public class FDPromotionNewDAO {
 	private final static String getAllAutomaticPromotions = "SELECT * FROM CUST.PROMOTION_NEW p where p.status STATUSES and " +
 	 							"(p.expiration_date > (sysdate-7) or p.expiration_date is null) and p.redemption_code is null " +
 	 							//"order by p.modify_date desc";
-	 							"and code not like 'WS_%' and (p.REFERRAL_PROMO = 'N' or p.REFERRAL_PROMO is null) order by p.modify_date desc";
+	 							"and (p.REFERRAL_PROMO = 'N' or p.REFERRAL_PROMO is null) order by p.modify_date desc";
 	public static List<PromotionI> loadAllAutomaticPromotions(Connection conn) throws SQLException {
 		final String query = getAllAutomaticPromotions.replace("STATUSES", getStatusReplacementString());
 		LOGGER.debug("Query is "+query);

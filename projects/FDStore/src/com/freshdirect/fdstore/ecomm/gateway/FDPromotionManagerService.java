@@ -38,7 +38,8 @@ public class FDPromotionManagerService extends AbstractEcommService implements F
 	private static FDPromotionManagerService INSTANCE = null;
 	// this dateformat matches the one in
 	// com.freshdirect.ecommerce.web.api.rest.promotion.FDPromotionManagerController
-	final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+	final DateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");
+	final DateFormat dateTimeFormat =new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 	private final String SLASH = "/";
 
 	/**
@@ -191,7 +192,7 @@ public class FDPromotionManagerService extends AbstractEcommService implements F
 	public List<FDPromotionNewModel> getModifiedOnlyPromotions(Date modifiedDate) throws FDResourceException {
 
 		Response<List<FDPromotionNewData>> response;
-		String dateStr = dateFormat.format(modifiedDate);
+		String dateStr = dateTimeFormat.format(modifiedDate);
 
 		// looks like this:
 		// fdcommerceapi/fd/v1/promotionmanagement/modifiedpromotionsbydate/yyyy-MM-dd'T'HH:mm:ss.SSSZ
@@ -357,10 +358,7 @@ public class FDPromotionManagerService extends AbstractEcommService implements F
 	@Override
 	public String getRedemptionPromotionId(String redemptionCode) throws FDResourceException {
 
-		Response<String> response;
-
-		// looks like this:
-		// fdcommerceapi/fd/v1/promotionmanagement/redemptioncount/10297467312/yyyy-MM-dd'T'HH:mm:ss.SSSZ
+		Response<String> response;	
 
 		LOGGER.debug("getRedemptionPromotionId "
 				+ getFdCommerceEndPoint("promotionmanagement/redemptionpromotionid/" + redemptionCode));
@@ -1331,6 +1329,16 @@ public class FDPromotionManagerService extends AbstractEcommService implements F
 			return promotions;
 		} catch (UnmarshallException e) {
 			throw new FDResourceException(e, "failure with getAllAutomaticPromotions:  ");
+		}
+	}
+	
+	public PromotionI getPromotionForRT(String promoCode) throws FDResourceException{
+		try {
+			Response<String> response = httpGetDataTypeMap(getFdCommerceEndPoint("promotionmanagement/promoforrt/"+promoCode ), new TypeReference<Response<String>>(){});		
+			PromotionI promotion =(PromotionI)ser.fromJSON(response.getData());
+			return promotion;
+		} catch (UnmarshallException e) {
+			throw new FDResourceException(e, "failure with getPromotionForRT:  ");
 		}
 	}
 
