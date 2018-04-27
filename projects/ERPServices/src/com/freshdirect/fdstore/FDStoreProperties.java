@@ -1698,7 +1698,7 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.standingorder3_0", "GLOBAL:ENABLED,false;");
         defaults.put("feature.rollout.browseaggregatedcategories1_0", "GLOBAL:ENABLED,false;");
         defaults.put("feature.rollout.debitCardSwitch", "GLOBAL:ENABLED,true;");
-        defaults.put("feature.rollout.modOrderConfirmPageRedesign", "GLOBAL:ENABLED,true;");
+        defaults.put("feature.rollout.modOrderConfirmPageRedesign", "GLOBAL:ENABLED,false;");
 
         defaults.put(PROP_MEDIA_RENDER_UTILS_REALLY_CLOSE, "true");
         defaults.put(PROP_MEDIA_RENDER_UTILS_SOURCE_ENCODING, "ISO-8859-1");

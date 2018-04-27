@@ -30,7 +30,8 @@
 		int sessionUserLevel = jsUser.getLevel();
 		FDSessionUser sessionUser = (FDSessionUser) jsUser;
 		boolean hideZipCheckPopup = (!FDStoreProperties.isZipCheckOverLayEnabled() || (jsUser.getLevel() != FDSessionUser.GUEST || jsUser.isZipCheckPopupUsed() || sessionUser.isZipPopupSeenInSession()));
-
+		FDIdentity identity = jsUser.getIdentity();
+		
 		if (!hideZipCheckPopup){
 			sessionUser.setZipPopupSeenInSession(true);
 		}
@@ -42,16 +43,20 @@
 		fd.user = {};
 		fd.user.recognized = <%= sessionUserLevel == FDUserI.RECOGNIZED %>;
 		fd.user.guest = <%= sessionUserLevel == FDUserI.GUEST %>;
-		fd.mobWeb = <%= FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, jsUser) && JspMethods.isMobile(request.getHeader("User-Agent")) %>;
+		
 		fd.user.isZipPopupUsed = <%= hideZipCheckPopup %>;
 		fd.user.zipCode = '<%= zipCode %>';
 		fd.user.cohortName = '<%= cohortName %>';
-		fd.user.sessionId = '<%=session.getId()%>';
+		fd.user.sessionId = '<%= session.getId() %>';
 		fd.user.isCorporateUser = <%= sessionUser.isCorporateUser() %>;
 		<% if (jsMasqueradeContext != null) { %>
 			fd.user.masquerade = true;
 		<% } %>;
-
+		fd.user.userId = '<%= jsUser.getUserId() %>';
+		fd.user.fdId = '<%= (identity!=null) ? identity.getFDCustomerPK() : "" %>';
+		fd.user.erpId = '<%= (identity!=null) ? identity.getErpCustomerPK() : "" %>';
+		
+		fd.mobWeb = <%= FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, jsUser) && JspMethods.isMobile(request.getHeader("User-Agent")) %>;
 		
 		<%
 			/* update inform.ordermodify  */

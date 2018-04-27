@@ -13,6 +13,7 @@ public class OrderInfoData {
     private double itemCount;
     private List<Section> cartSections;
     private boolean containsWineSection;
+    private boolean canModify;/* can order be modified? */
 
     public String getOrderId() {
         return orderId;
@@ -69,5 +70,13 @@ public class OrderInfoData {
     public void setContainsWineSection(boolean containsWineSection) {
         this.containsWineSection = containsWineSection;
     }
+
+	public boolean isCanModify() {
+		return canModify;
+	}
+
+	public void setCanModify(boolean canModify) {
+		this.canModify = canModify;
+	}
 
 }

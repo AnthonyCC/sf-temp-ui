@@ -133,13 +133,13 @@
       </div>
     </div>
     <div class="drawer__item__section">
-      <p class='section__title'>Phone{if not $mobWeb} Number{/if}</p>
+      <p class='section__title phone'>Phone{if not $mobWeb} Number{/if}</p>
       <div class='section__body'>
         <p><span class="phone {$phone_type ? $phone_type : ''}" title="{$phone ? $phone : 'none provided'}">{$phone ? $phone : 'none provided'}</span></p>
       </div>
     </div>
     <div class="drawer__item__section">
-      <p class='section__title'>Instructions</p>
+      <p class='section__title instructions'>Instructions</p>
       <div class='section__body'>
         <p title="{$instructions?$instructions : 'none provided'}">{$instructions?$instructions : 'none provided'}</p>
       </div>
@@ -214,7 +214,7 @@
       </div>
     </div></label>
     <div class="drawer__item__section">
-      <p class='section__title'>Delivery Instructions:</p>
+      <p class='section__title instructions'>Delivery Instructions:</p>
       <div class='section__body'>
         <p title="{$instructions? $instructions : 'none provided'}">{$instructions? $instructions : 'none provided'}</p>
       </div>
@@ -279,13 +279,13 @@
       </div>
     </div>
     <div class="drawer__item__section">
-      <p class='section__title'>Phone{if not $mobWeb} Number{/if}</p>
+      <p class='section__title phone'>Phone{if not $mobWeb} Number{/if}</p>
       <div class='section__body'>
         <p><span class="phone {$phone_type ? $phone_type : ''}" title="{$phone ? $phone : 'none provided'}">{$phone ? $phone : 'none provided'}</span></p>
       </div>
     </div>
     <div class="drawer__item__section">
-      <p class='section__title'>Instructions</p>
+      <p class='section__title instructions'>Instructions</p>
       <div class='section__body'>
         <p title="{$instructions?$instructions: 'none provided'}">{$instructions?$instructions: 'none provided'}</p>
       </div>
@@ -339,7 +339,7 @@
     </div></label>
     {if $instructions}
     <div class="drawer__item__section">
-      <p class='section__title'>Delivery Instructions:</p>
+      <p class='section__title instructions'>Delivery Instructions:</p>
       <div class='section__body'>
         <p>{$instructions}</p>
       </div>
