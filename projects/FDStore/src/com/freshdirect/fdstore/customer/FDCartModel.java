@@ -2260,5 +2260,9 @@ public class FDCartModel extends ModelSupport implements FDCartI {
         }
         return sumQuantity;
     }
+    
+    public boolean isDlvPassStandAloneCheckoutAllowed(){
+    	return !(this instanceof FDModifyCartModel) && FDStoreProperties.isDlvPassStandAloneCheckoutEnabled();
+    }
 
 }

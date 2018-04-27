@@ -23,6 +23,7 @@ import com.freshdirect.fdstore.coremetrics.builder.PageViewTagModelBuilder.Custo
 import com.freshdirect.fdstore.coremetrics.tagmodel.PageViewTagModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
+import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.FDUserUtil;
 import com.freshdirect.fdstore.deliverypass.DeliveryPassSubscriptionUtil;
@@ -161,7 +162,8 @@ public class CheckoutService {
 		FDCartModel cart = user.getShoppingCart();
 //		AvalaraContext avalaraContext = new AvalaraContext(cart);
 		boolean isAtpCheckRequired = true;
-		if(FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && cart.containsDlvPassOnly()){
+	//	if(FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && cart.containsDlvPassOnly()){
+		if(cart.isDlvPassStandAloneCheckoutAllowed() && cart.containsDlvPassOnly()){
 			isAtpCheckRequired = false;
 			cart.setDeliveryAddress(DeliveryPassSubscriptionUtil.setDeliveryPassDeliveryAddress(user.getSelectedServiceType()));
 			FDReservation rsrv=DeliveryPassSubscriptionUtil.setFDReservation(user.getIdentity().getErpCustomerPK(),cart.getDeliveryAddress().getId());

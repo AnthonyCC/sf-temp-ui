@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartModel;
+import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.deliverypass.DeliveryPassSubscriptionUtil;
 import com.freshdirect.fdstore.services.tax.AvalaraContext;
@@ -40,7 +41,9 @@ public class DrawerService {
 
 	private List<DrawerData> loadDrawers(FDUserI user) {
 		List<DrawerData> drawers = new ArrayList<DrawerData>();
-		if(FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && user.getShoppingCart().containsDlvPassOnly()){
+		
+		//if(FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && user.getShoppingCart().containsDlvPassOnly()){
+		if(user.getShoppingCart().isDlvPassStandAloneCheckoutAllowed() && user.getShoppingCart().containsDlvPassOnly()){
 			drawers.add(loadPaymentDrawer());
 			// Changes as part of APPBUG-5583 - Set dummy address in the cart when the user does not have any for DeliveryPass only purchase flow
 			FDCartModel cart = user.getShoppingCart();

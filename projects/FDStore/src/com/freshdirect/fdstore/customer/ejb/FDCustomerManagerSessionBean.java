@@ -5786,7 +5786,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 */
 	public String placeSubscriptionOrder(FDActionInfo info, ErpCreateOrderModel createOrder,
 			Set<String> usedPromotionCodes, String rsvId, boolean sendEmail, CustomerRatingI cra,
-			CrmAgentRole agentRole, EnumDlvPassStatus status)
+			CrmAgentRole agentRole, EnumDlvPassStatus status,boolean isRealTimeAuthNeeded)
 			throws FDResourceException, ErpFraudException, DeliveryPassException, FDPaymentInadequateException, InvalidCardException, ErpTransactionException {
 
 		FDIdentity identity = info.getIdentity();
@@ -5844,6 +5844,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				gcSB.preAuthorizeSales(pk.getId());
 
 			}
+			if(null !=createOrder.getPaymentMethod() && !EnumPaymentMethodType.GIFTCARD.equals(createOrder.getPaymentMethod().getPaymentMethodType())){
+				if(isRealTimeAuthNeeded){
+					authorizeSale(info.getIdentity().getErpCustomerPK().toString(), pk.getId(), EnumSaleType.SUBSCRIPTION, cra);
+				}
+			} else {
+				ErpCustomerManagerSB erpCMsb = this.getErpCustomerManagerHome().create();
+				erpCMsb.sendCreateOrderToSAP(info.getIdentity().getErpCustomerPK().toString(), pk.getId(), EnumSaleType.SUBSCRIPTION, cra);
+			}
 			
 			if (sendEmail) {
 				FDOrderI order = getOrder(pk.getId());
@@ -5866,6 +5874,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		} catch (RemoteException re) {
 			System.out.println(re);
 			throw new FDResourceException(re);
+		}catch (ErpSaleNotFoundException e) {
+			 LOGGER.warn("Unable to locate Order ", e);
+			throw new FDResourceException(e);
 		}
 	}
 
