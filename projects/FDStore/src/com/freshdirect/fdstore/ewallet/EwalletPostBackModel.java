@@ -245,7 +245,7 @@ public class EwalletPostBackModel implements Serializable {
 	 * @param transactionStatus the transactionStatus to set
 	 */
 	public void setTransactionStatusValue(int status) {
-		if (status != 0 || status != 1) {
+		if (status != 0 && status != 1) {
 			throw new AssertionError("Postback request cannot have transaction status other than Success or Failure");
 		}
 		this.status = status;
@@ -302,8 +302,19 @@ public class EwalletPostBackModel implements Serializable {
 	
 	
 	//Introduced for Storefront 2.0
-	public void setTransactionStatus(String[] transactionStatus) {
+	public void setAllowedTransactionStatus(String[] transactionStatus) {
 		this.transactionStatus = transactionStatus;
+	}
+
+	public void setTransactionStatus(String status) {
+		if (this.transactionStatus != null ) {
+			for (int i = 0; i < this.transactionStatus.length; i ++) {
+				if (this.transactionStatus[i].equals(status)) {
+					this.status = i;
+					return;
+				}
+			}
+		}
 	}
 	
 	@Override

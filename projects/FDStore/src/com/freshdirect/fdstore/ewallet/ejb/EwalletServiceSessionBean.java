@@ -55,20 +55,6 @@ public class EwalletServiceSessionBean extends SessionBeanSupport {
 		}
 	}
 	
-	public EwalletResponseData getAllPayMethodInEwallet(EwalletRequestData ewalletRequestData) throws RemoteException {
-		try {
-			return new EwalletServiceFactory().getVendorService(ewalletRequestData).getAllPayMethodInEwallet(ewalletRequestData);
-		} catch (Exception e) {
-			throw new RemoteException("Exception occurred during postback to " + ewalletRequestData.geteWalletType(), e);
-		}
-	}
-	public EwalletResponseData connectComplete(EwalletRequestData ewalletRequestData) throws RemoteException {
-		try {
-			return new EwalletServiceFactory().getVendorService(ewalletRequestData).connectComplete(ewalletRequestData);
-		} catch (Exception e) {
-			throw new RemoteException("Exception occurred during postback to " + ewalletRequestData.geteWalletType(), e);
-		}
-	}
 	public EwalletResponseData disconnect(EwalletRequestData ewalletRequestData) throws RemoteException {
 		try {
 			return new EwalletServiceFactory().getVendorService(ewalletRequestData).disconnect(ewalletRequestData);

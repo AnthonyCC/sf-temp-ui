@@ -1185,11 +1185,7 @@
 		<from>^/v/([0-9]+)/ewalletstatus/(.*)</from>
 		<to last="true">/ewallet.do?action=getEWalletStatus&amp;ver=$1</to>
 	</rule>
-	
-	<rule>
-		<from>^/v/([0-9]+)/ewalletprecheckout/(.*)</from>
-		<to last="true">/ewalletprecheckout.do?action=ewalletPrecheckout&amp;ver=$1</to>
-	</rule>			
+			
 	<rule>
 		<from>^/v/([0-9]+)/ewalletexpresscheckout/(.*)</from>
 		<to last="true">/ewalletexpresscheckout.do?action=ewalletExpresscheckout&amp;ver=$1</to>
