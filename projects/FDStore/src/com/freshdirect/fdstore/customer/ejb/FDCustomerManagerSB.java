@@ -627,8 +627,6 @@ public interface FDCustomerManagerSB  extends EJBObject{
 
 	public void setHasAutoRenewDP(String customerPK, EnumTransactionSource source, String initiator,boolean autoRenew)throws FDResourceException, RemoteException;
 
-	public FDOrderI getLastNonCOSOrderUsingCC(String customerID,EnumSaleType saleType, EnumSaleStatus saleStatus) throws FDResourceException, RemoteException,ErpSaleNotFoundException;
-
 	public FDOrderI getLastNonCOSOrder(String customerID,EnumSaleType saleType, EnumSaleStatus saleStatus) throws FDResourceException, RemoteException,ErpSaleNotFoundException;
 	
 	public FDOrderI getLastNonCOSOrder(String customerID,EnumSaleType saleType) throws FDResourceException, RemoteException,ErpSaleNotFoundException;

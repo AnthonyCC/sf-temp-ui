@@ -5723,30 +5723,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	public FDOrderI getLastNonCOSOrderUsingCC(String customerID, EnumSaleType saleType, EnumSaleStatus saleStatus)
-			throws FDResourceException, ErpSaleNotFoundException {
-
-		try {
-			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
-			ErpSaleModel saleModel = null;
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("getLastNonCosOrderByPymtType_Api")){
-	    		OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
-	    		saleModel = service.getLastNonCOSOrder(customerID, saleType, saleStatus,
-						EnumPaymentMethodType.CREDITCARD);
-	    	}else{
-	    		saleModel = sb.getLastNonCOSOrder(customerID, saleType, saleStatus,
-					EnumPaymentMethodType.CREDITCARD);
-	    	}
-			return new FDOrderAdapter(saleModel);
-	    	
-
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce);
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		}
-	}
-
 	public FDOrderI getLastNonCOSOrder(String customerID, EnumSaleType saleType, EnumSaleStatus saleStatus)
 			throws FDResourceException, ErpSaleNotFoundException {
 

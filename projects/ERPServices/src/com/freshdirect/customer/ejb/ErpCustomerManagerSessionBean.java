@@ -3232,26 +3232,6 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 
-	public boolean updateSalesShippingInfo(Map<String, ErpShippingInfo> erpShippingMap)
-			throws ErpTransactionException {
-		Connection conn = null;
-
-		try {
-			conn = this.getConnection();
-			return ErpSaleInfoDAO.updateSalesShippingInfo(conn, erpShippingMap);
-		} catch (SQLException se) {
-			throw new ErpTransactionException(se);
-		} finally {
-			try {
-				if (conn != null && !conn.isClosed()) {
-					conn.close();
-				}
-			} catch (SQLException se) {
-				LOGGER.warn("SQLException while cleaning up", se);
-			}
-		}
-	}
-
 	private boolean isCustomerActive(String erpCustomerId) {
 		Connection conn = null;
 		try {
