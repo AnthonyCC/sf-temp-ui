@@ -615,11 +615,16 @@ public class FDPromotionNewManager {
 	}
 
 	public static List<PromotionI> getModifiedOnlyPromos(Date lastModified) throws FDResourceException {	
-		lookupManagerHome();
+		
 		
 		try {
-			FDPromotionManagerNewSB sb = managerHome.create();
-			return sb.getModifiedOnlyPromos(lastModified);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
+				return FDPromotionManagerService.getInstance().getModifiedOnlyPromos(lastModified);				
+			} else {
+				lookupManagerHome();
+				FDPromotionManagerNewSB sb = managerHome.create();
+				return sb.getModifiedOnlyPromos(lastModified);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -659,24 +664,17 @@ public class FDPromotionNewManager {
 	}
 
 	public static List<PromotionI> getAllAutomaticPromotions() throws FDResourceException {
-		lookupManagerHome();
-
+		
 		try {
-			FDPromotionManagerNewSB sb = managerHome.create();
-			List<PromotionI> promotions = sb.getAllAutomaticPromotions();;
-			try {
-				System.out.println(ser.toJSON(promotions));
-				List<PromotionI> promotions1 =(List<PromotionI>)ser.fromJSON(ser.toJSON(promotions));
-				System.out.println("Hi");
-			} catch (MarshallException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} 
-			catch (UnmarshallException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
+				return FDPromotionManagerService.getInstance().getAllAutomaticPromotions();
+
+			}else{
+				lookupManagerHome();
+				FDPromotionManagerNewSB sb = managerHome.create();
+				List<PromotionI> promotions = sb.getAllAutomaticPromotions();			
+				return promotions;
 			}
-			return promotions;
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -688,11 +686,17 @@ public class FDPromotionNewManager {
 	}
 
 	public static PromotionI getPromotionForRT(String promoId) throws FDResourceException {
-		lookupManagerHome();
+	
 
 		try {
-			FDPromotionManagerNewSB sb = managerHome.create();
-			return sb.getPromotionForRT(promoId);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
+				return FDPromotionManagerService.getInstance().getPromotionForRT(promoId);
+
+			} else{
+				lookupManagerHome();
+				FDPromotionManagerNewSB sb = managerHome.create();
+				return sb.getPromotionForRT(promoId);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -760,13 +764,13 @@ public class FDPromotionNewManager {
 	}
 
 	public static Integer getRedemptionCount(String promoId, Date requestedDate) throws FDResourceException {
-		lookupManagerHome();
+		
 
 		try {
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
 				return FDPromotionManagerService.getInstance().getRedemptionCount(promoId, requestedDate);
 			} else {
-
+				lookupManagerHome();
 				FDPromotionManagerNewSB sb = managerHome.create();
 				return sb.getRedemptionCount(promoId, requestedDate);
 			}
@@ -780,13 +784,13 @@ public class FDPromotionNewManager {
 	}
 
 	public static String getRedemptionPromotionId(String redemptionCode) throws FDResourceException {
-		lookupManagerHome();
+		
 
 		try {
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
 				return FDPromotionManagerService.getInstance().getRedemptionPromotionId(redemptionCode);
 			} else {
-
+				lookupManagerHome();
 				FDPromotionManagerNewSB sb = managerHome.create();
 				return sb.getRedemptionPromotionId(redemptionCode);
 			}
@@ -917,16 +921,15 @@ public class FDPromotionNewManager {
 		}
 	}
 
-	public static String getRedemptionCode(String tsaPromoCode) throws FDResourceException {
-		lookupManagerHome();
+	public static String getRedemptionCode(String tsaPromoCode) throws FDResourceException {		
 
 		try {
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
 				return FDPromotionManagerService.getInstance().getRedemptionCode(tsaPromoCode);
 			} else {
-			
-			FDPromotionManagerNewSB sb = managerHome.create();
-			return sb.getRedemptionCode(tsaPromoCode);
+				lookupManagerHome();
+				FDPromotionManagerNewSB sb = managerHome.create();
+				return sb.getRedemptionCode(tsaPromoCode);
 			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -1179,12 +1182,16 @@ public class FDPromotionNewManager {
 		}
 	}
 
-	public static List<PromotionI> getReferralPromotions(String customerId, EnumEStoreId storeid) throws FDResourceException {
-		lookupManagerHome();
+	public static List<PromotionI> getReferralPromotions(String customerId, EnumEStoreId storeid) throws FDResourceException {	
 
 		try {
-			FDPromotionManagerNewSB sb = managerHome.create();
-			return sb.getReferralPromotions(customerId, storeid);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
+				return FDPromotionManagerService.getInstance().getReferralPromotions(customerId,storeid);				
+			}else{
+				lookupManagerHome();
+				FDPromotionManagerNewSB sb = managerHome.create();
+				return sb.getReferralPromotions(customerId, storeid);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");

@@ -1,12 +1,14 @@
 package com.freshdirect.fdstore.ecomm.gateway;
 
 
+import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.ecommerce.data.promotion.management.FDPromotionNewData;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.promotion.EnumPromotionStatus;
 import com.freshdirect.fdstore.promotion.PromotionI;
@@ -66,9 +68,11 @@ public interface FDPromotionManagerServiceI {
 	public PrimaryKey createPromotionBatch(FDPromotionNewModel promotion) throws FDResourceException;
 	public List<FDPromotionNewModel> getBatchPromotions(String batchId) throws FDResourceException;
 	//public boolean publishPromotion(FDPromotionNewModel promotion) throws FDResourceException;
-public 	boolean publishPromotion(FDPromotionNewModel promotion) throws FDResourceException;
-public List<FDPromoChangeModel> loadPromoAuditChanges(String promotionId) throws FDResourceException;
-public void storeChangeLogEntries(String promoPk, List<FDPromoChangeModel> changes) throws FDResourceException;
-public List<PromotionI> getAllAutomaticPromotions() throws FDResourceException;
-
+	public 	boolean publishPromotion(FDPromotionNewModel promotion) throws FDResourceException;
+	public List<FDPromoChangeModel> loadPromoAuditChanges(String promotionId) throws FDResourceException;
+	public void storeChangeLogEntries(String promoPk, List<FDPromoChangeModel> changes) throws FDResourceException;
+	public List<PromotionI> getAllAutomaticPromotions() throws FDResourceException;
+	public List<PromotionI> getModifiedOnlyPromos(Date lastModified) throws FDResourceException;
+	public List<PromotionI> getReferralPromotions(String customerId, EnumEStoreId storeid) throws FDResourceException ;
+	public PromotionI getPromotionForRT(String promoCode) throws FDResourceException;
 }

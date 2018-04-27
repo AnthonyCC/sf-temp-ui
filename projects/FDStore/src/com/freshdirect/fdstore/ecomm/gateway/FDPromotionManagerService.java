@@ -1,5 +1,6 @@
 package com.freshdirect.fdstore.ecomm.gateway;
 
+import java.rmi.RemoteException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.ecommerce.data.promotion.management.DowLimit;
 import com.freshdirect.ecommerce.data.promotion.management.FDPromoChangeData;
 import com.freshdirect.ecommerce.data.promotion.management.FDPromotionNewData;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDEcommServiceException;
 import com.freshdirect.fdstore.FDResourceException;
 
@@ -39,7 +41,7 @@ public class FDPromotionManagerService extends AbstractEcommService implements F
 	// this dateformat matches the one in
 	// com.freshdirect.ecommerce.web.api.rest.promotion.FDPromotionManagerController
 	final DateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");
-	final DateFormat dateTimeFormat =new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+	final DateFormat dateTimeFormat =new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 	private final String SLASH = "/";
 
 	/**
@@ -1342,6 +1344,28 @@ public class FDPromotionManagerService extends AbstractEcommService implements F
 		}
 	}
 
+	public List<PromotionI> getModifiedOnlyPromos(Date lastModified) throws FDResourceException {
+		try {
+			String dateStr = dateTimeFormat.format(lastModified);
+			Response<String> response = httpGetDataTypeMap(getFdCommerceEndPoint("promotionmanagement/modifiedpromosbydate/"+dateStr), new TypeReference<Response<String>>(){});		
+			List<PromotionI> promotions =(List<PromotionI>)ser.fromJSON(response.getData());
+			return promotions;
+		} catch (UnmarshallException e) {
+			throw new FDResourceException(e, "failure with getModifiedOnlyPromos:  ");
+		}
+	}
+	
+	public List<PromotionI> getReferralPromotions(String customerId, EnumEStoreId storeid) throws FDResourceException {
+		
+		try {
+			Response<String> response = httpGetDataTypeMap(getFdCommerceEndPoint("promotionmanagement/referralpromotions/"+customerId+SLASH+(null!=storeid?storeid.getContentId():EnumEStoreId.FD.getContentId())), new TypeReference<Response<String>>(){});		
+			List<PromotionI> promotions =(List<PromotionI>)ser.fromJSON(response.getData());
+			return promotions;
+		} catch (UnmarshallException e) {
+			throw new FDResourceException(e, "failure with getReferralPromotions:  ");
+		}
+	}
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
