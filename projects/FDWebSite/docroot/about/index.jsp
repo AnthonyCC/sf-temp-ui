@@ -3,7 +3,7 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 
-<fd:CheckLoginStatus />
+<fd:CheckLoginStatus id="user" />
 
 <%
 	String siteAccessPage = request.getParameter("siteAccessPage"); 
@@ -30,7 +30,9 @@
 		<%@ include file="/includes/i_about_preamble.jspf"%>
 	<% }else{
 		/* forward over to new about us home */
-		if (!"/site_access/site_access.jsp".equals(jspTemplate)) { %><jsp:forward page="/department.jsp?deptId=about"/><% }
+		String aboutUsUrl = "/browse.jsp?id=about"; /* RES users */
+		if (user != null && user.isCorporateUser()) { aboutUsUrl = "/browse.jsp?id=cos_about_us"; } /* COS users */
+		if (!"/site_access/site_access.jsp".equals(jspTemplate)) { %><jsp:forward page="<%= aboutUsUrl %>"/><% }
 		
 		if(siteAccessPage==null || !siteAccessPage.equalsIgnoreCase("aboutus")){ %>
 			<% if ( request.getParameter("lang") != null) { %>
