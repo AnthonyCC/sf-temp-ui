@@ -534,13 +534,8 @@ public class LoginController extends BaseController  implements SystemMessageLis
 	            		MessageFormat.format(SystemMessageList.MSG_VOUCHER_REDEMPTION_FDX_NOT_ALLOWED,
 	            		new Object[] { UserUtil.getCustomerServiceContact(request)}));
 			} else {
-				List<String> providers = ExternalAccountManager.getConnectedProvidersByUserId(username);
-				if(providers!=null && providers.size()!=0){
-					responseMessage = Message.createFailureMessage(MessageFormat.format(MSG_SOCIAL_SOCIALONLY_ACCOUNT_SIGNIN, providers));
-				} else {
 				responseMessage = getErrorMessage(ERR_AUTHENTICATION,
 						MessageCodes.MSG_AUTHENTICATION_FAILED);
-				}
 			}
 			request.getSession().setAttribute(SessionName.APPLICATION,null);
 		}catch(IllegalStateException e){
