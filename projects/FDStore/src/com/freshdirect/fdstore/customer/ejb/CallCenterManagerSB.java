@@ -78,8 +78,6 @@ public interface CallCenterManagerSB extends EJBObject {
 		
 	public void approveReturn(String saleId, ErpReturnOrderModel returnOrder) throws FDResourceException, ErpTransactionException, RemoteException;
 	
-	public void scheduleRedelivery(String saleId, ErpRedeliveryModel redeliveryModel) throws FDResourceException, ErpTransactionException, RemoteException;
-    
     public void changeRedeliveryToReturn(String saleId) throws FDResourceException, ErpTransactionException, ErpSaleNotFoundException, RemoteException;
     
     public List getHolidayMeals(FDIdentity identity) throws FDResourceException, RemoteException;
