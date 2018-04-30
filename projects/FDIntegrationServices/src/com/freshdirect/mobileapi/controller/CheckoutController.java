@@ -31,6 +31,7 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
@@ -1544,8 +1545,8 @@ public class CheckoutController extends BaseController {
          * */
         boolean isDlvPassCartOnlyNotAllowed= false;//Cart contains DeliveryPass and allowed , or no deliverypass in the cart
         boolean isDlvPassCartOnly = user.getFDSessionUser().getShoppingCart().containsDlvPassOnly();
-        		
-        		if(!FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && isDlvPassCartOnly){
+        if(!user.getFDSessionUser().getShoppingCart().isDlvPassStandAloneCheckoutAllowed() && isDlvPassCartOnly){	
+       // 		if(!FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && isDlvPassCartOnly){
         			isDlvPassCartOnlyNotAllowed = true;
         			message.addErrorMessage("error_dlv_pass_only", SystemMessageList.MSG_CONTAINS_DLV_PASS_ONLY);
         			//dlvValidationResult.getActionResult().addError(new ActionError("error_dlv_pass_only", SystemMessageList.MSG_CONTAINS_DLV_PASS_ONLY));        			

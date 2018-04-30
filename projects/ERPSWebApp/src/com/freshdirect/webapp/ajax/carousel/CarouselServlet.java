@@ -26,6 +26,7 @@ import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.DataPotatoField;
 import com.freshdirect.webapp.ajax.browse.data.BrowseData.CarouselDataCointainer;
 import com.freshdirect.webapp.ajax.browse.data.CarouselData;
+import com.freshdirect.webapp.ajax.browse.data.CarouselNameCase;
 import com.freshdirect.webapp.ajax.browse.service.CarouselService;
 import com.freshdirect.webapp.ajax.reorder.QuickShopHelper;
 import com.freshdirect.webapp.ajax.reorder.service.QuickShopCarouselService;
@@ -74,14 +75,13 @@ public class CarouselServlet extends BaseJsonServlet {
 		} else if (type.equals("ymal") || type.equals("deals")) {
 			Map<String, ?> dataMap = getProductCarousel(request, session, sessionUser);
 			writeResponseData(response, dataMap);
-
-		} else {
+        } else {
 			LOGGER.error("unsupported carousel type " + type);
 			writeResponseData(response, null);
 		}
 	}
 
-	private Map<String, ?> getProductCarousel(HttpServletRequest request, HttpSession session,
+    private Map<String, ?> getProductCarousel(HttpServletRequest request, HttpSession session,
 			FDSessionUser sessionUser) {
 		String currentNodeKey = request.getParameter("currentNodeKey");
 		String siteFeature = request.getParameter("siteFeature");
@@ -156,8 +156,9 @@ public class CarouselServlet extends BaseJsonServlet {
 
         final boolean isNewProductsCarouselEnabled = FDStoreProperties.isFreshDealsPageNewProductsCarouselEnabled();
         if (isNewProductsCarouselEnabled) {
-            carouselData.setCarousel1(CarouselService.defaultService().createNewProductsCarousel(sessionUser,
-                    FDStoreProperties.isFreshDealsPageNewProductsCarouselRandomizeProductOrderEnabled()));
+            carouselData.setCarousel1(
+                    CarouselService.defaultService().createNewProductsCarousel(sessionUser, FDStoreProperties.isFreshDealsPageNewProductsCarouselRandomizeProductOrderEnabled(),
+                            CarouselNameCase.UPPER));
         }
 
 		try {
@@ -242,7 +243,7 @@ public class CarouselServlet extends BaseJsonServlet {
             if (isNewProductsCarouselEnabled) {
                 RecommendationTab recommendationTab = new RecommendationTab(NEW_PRODUCTS_CAROUSEL_NAME, null);
                 recommendationTab.setCarouselData(CarouselService.defaultService().createNewProductsCarousel(sessionUser,
-                        FDStoreProperties.isReorderPageNewProductsCarouselRandomizeProductOrderEnabled()));
+                        FDStoreProperties.isReorderPageNewProductsCarouselRandomizeProductOrderEnabled(), CarouselNameCase.NOT_MODIFIED));
                 carousels.getRecommendationTabs().add(0, recommendationTab);
             }
 

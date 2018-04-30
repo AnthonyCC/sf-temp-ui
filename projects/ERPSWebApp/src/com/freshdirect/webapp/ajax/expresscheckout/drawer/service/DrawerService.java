@@ -6,7 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.customer.FDCartModel;
+import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.deliverypass.DeliveryPassSubscriptionUtil;
+import com.freshdirect.fdstore.services.tax.AvalaraContext;
 import com.freshdirect.webapp.ajax.expresscheckout.coremetrics.service.CoremetricsService;
 import com.freshdirect.webapp.ajax.expresscheckout.data.DrawerData;
 
@@ -37,8 +41,20 @@ public class DrawerService {
 
 	private List<DrawerData> loadDrawers(FDUserI user) {
 		List<DrawerData> drawers = new ArrayList<DrawerData>();
-		if(FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && user.getShoppingCart().containsDlvPassOnly()){
+		
+		//if(FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && user.getShoppingCart().containsDlvPassOnly()){
+		if(user.getShoppingCart().isDlvPassStandAloneCheckoutAllowed() && user.getShoppingCart().containsDlvPassOnly()){
 			drawers.add(loadPaymentDrawer());
+			// Changes as part of APPBUG-5583 - Set dummy address in the cart when the user does not have any for DeliveryPass only purchase flow
+			FDCartModel cart = user.getShoppingCart();
+			if(null == cart.getDeliveryAddress()){
+				cart.setDeliveryAddress(DeliveryPassSubscriptionUtil.setDeliveryPassDeliveryAddress(user.getSelectedServiceType()));
+			}
+			if(FDStoreProperties.getAvalaraTaxEnabled()){
+				AvalaraContext context = new AvalaraContext(cart);
+				context.setCommit(false);
+				cart.getAvalaraTaxValue(context);
+			}
 		} else {
 			drawers.add(loadDeliveryAddressDrawer(user));
 			drawers.add(loadTimeslotDrawer(user));

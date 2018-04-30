@@ -19,6 +19,7 @@ import javax.naming.NamingException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.EnumAccountActivityType;
@@ -523,6 +524,20 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 			this.captureAuthorization(saleId, auth);
 		}
 	}
+	
+	private GatewayType getGatewayType(ErpPaymentMethodI pm) {
+		String profileId = pm.getProfileID();
+		if (StringUtil.isEmpty(profileId) && !EnumCardType.PAYPAL.equals(pm.getCardType())) {
+			return GatewayType.CYBERSOURCE;
+		} else {
+			EnumCardType type = pm.getCardType();
+			if (type != EnumCardType.PAYPAL) {
+				return GatewayType.PAYMENTECH;
+			} else {
+				return GatewayType.PAYPAL;
+			}
+		}
+	}
 
 	private ErpCaptureModel captureAuthorization(String saleId, ErpAuthorizationModel auth) throws ErpTransactionException {
 
@@ -538,7 +553,9 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 				int captureCount = (captures != null) ? captures.size() : 0;
 				orderNumber = saleId + "X" + captureCount;
 			}
-			PaymentGatewayContext context = new PaymentGatewayContext(StringUtil.isEmpty(paymentMethod.getProfileID())?GatewayType.CYBERSOURCE:GatewayType.PAYMENTECH, null);
+		//	PaymentGatewayContext context = new PaymentGatewayContext(StringUtil.isEmpty(paymentMethod.getProfileID())?GatewayType.CYBERSOURCE:GatewayType.PAYMENTECH, null);
+			//APPBUG-5587 Allowing gateways for Delivery Pass orders based on the user payment method
+			PaymentGatewayContext context = new PaymentGatewayContext(getGatewayType(paymentMethod),null);
 			Gateway gateway = GatewayFactory.getGateway(context);
 			capture=gateway.capture(auth, paymentMethod, auth.getAmount(),  auth.getTax(), orderNumber);
 			 if(PayPalCaptureResponse.Processor.SETTLEMENT_DECLINED.getResponseCode().equals(capture.getSettlementResponseCode())

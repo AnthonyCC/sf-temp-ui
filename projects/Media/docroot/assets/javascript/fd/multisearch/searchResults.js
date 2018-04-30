@@ -26,6 +26,11 @@ var FreshDirect = FreshDirect || {};
         data = data || {};
         data.terms = data.terms || this.terms;
 
+        // only lowercase keywords are enabled
+        data.terms = data.terms.filter(function (term) {
+          return term === term.toLowerCase();
+        });
+
         var searchListEl = document.querySelector('[data-component="multisearch-list"]'),
             added = data.terms.filter(function (term) { return this.terms.indexOf(term) === -1;}.bind(this)),
             removed = this.terms.filter(function (term) { return data.terms.indexOf(term) === -1;});
@@ -90,6 +95,13 @@ var FreshDirect = FreshDirect || {};
     }
   });
   searchResult.listen();
+
+  $(document).on('click', '[data-component="multisearch-results"] button.disable', function (e) {
+    var el = e.target,
+        term = el.getAttribute('data-searchterm');
+
+    DISPATCHER.signal('removeSearchTerm', {term: term});
+  });
 
   fd.modules.common.utils.register("modules.multisearch", "searchResultList", searchResultList, fd);
   fd.modules.common.utils.register("modules.multisearch", "searchResult", searchResult, fd);

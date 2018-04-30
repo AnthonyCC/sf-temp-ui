@@ -63,6 +63,15 @@
   background-color: #82817a;
 }
 
+.srch .carousel [data-component="carousel"] ul.pager,
+.browse .carousels [data-component="carousel"] ul.pager {
+ 	display: none;
+}
+
+.srch .new-products-carousel-module .carousel [data-component="carousel"] ul.pager {
+	display: inline-block; 
+}
+
 [data-component="carousel-prev"],
 [data-component="carousel-next"],
 [data-component="carousel-view-all"] {

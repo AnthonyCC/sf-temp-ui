@@ -461,7 +461,8 @@ public class SubmitOrderAction extends WebActionSupport {
 		1.Set the default address in the cart
 		2.Set the dummy timeslot/reservation in the cart
 		 */
-		if(FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && cart.containsDlvPassOnly()){
+		//if(!(cart instanceof FDModifyCartModel) &&( FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && cart.containsDlvPassOnly())){
+		if(cart.isDlvPassStandAloneCheckoutAllowed() && cart.containsDlvPassOnly()){
 			try{
 				cart.setDeliveryAddress(DeliveryPassSubscriptionUtil.setDeliveryPassDeliveryAddress(user.getSelectedServiceType()));
 				FDReservation rsrv=DeliveryPassSubscriptionUtil.setFDReservation(user.getIdentity().getErpCustomerPK(),cart.getDeliveryAddress().getId());
@@ -668,10 +669,11 @@ public class SubmitOrderAction extends WebActionSupport {
 					When the property is enabled and cart contains only deliverypass
 					- Place the subscription order else Place the regular order
 				*/
-				if (FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && cart.containsDlvPassOnly()) {
+				if (cart.isDlvPassStandAloneCheckoutAllowed() && cart.containsDlvPassOnly()) {
 					orderNumber = FDCustomerManager.placeSubscriptionOrder(
 							info, cart, appliedPromos, sendEmail, cra,
-							EnumDlvPassStatus.PENDING);
+							EnumDlvPassStatus.PENDING,true);
+					
 				} else {
 					orderNumber = FDCustomerManager.placeOrder(info, cart,
 							appliedPromos, sendEmail, cra, status,

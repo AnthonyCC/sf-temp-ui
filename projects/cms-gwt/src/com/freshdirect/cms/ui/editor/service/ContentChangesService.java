@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -253,6 +254,9 @@ public class ContentChangesService {
 
             Set<ContentChangeSetEntity> changeSetEntities = prevTimestamp != null ? contentChangeControlService.queryChangeSetEntities(null, null, prevTimestamp, timestamp)
                     : Collections.<ContentChangeSetEntity> emptySet();
+
+            filterForFDXContentChanges(changeSetEntities);
+
             List<GwtChangeSet> result = toGwtChangeSetList(changeSetEntities, query);
 
             LOGGER.info("returning " + result.size() + " changeset" + ", query:" + query);
@@ -501,6 +505,27 @@ public class ContentChangesService {
         List<FeedPublishMessage> filteredMessages = feedPublishService.filterMessagesByLevel(publish.getMessages(), severity);
 
         return filteredMessages.size();
+    }
+
+    private void filterForFDXContentChanges(Set<ContentChangeSetEntity> changeSetEntities) {
+        Iterator<ContentChangeSetEntity> contentChangeSetIter = changeSetEntities.iterator();
+        while (contentChangeSetIter.hasNext()) {
+
+            ContentChangeSetEntity changeSetEntity = contentChangeSetIter.next();
+            Iterator<ContentChangeEntity> changeSetIter = changeSetEntity.getChanges().iterator();
+
+            while (changeSetIter.hasNext()) {
+                ContentChangeEntity contentChangeEntity = changeSetIter.next();
+                if (!feedPublishService.isFeedRelatedChange(contentChangeEntity.getContentType().name())) {
+                    changeSetIter.remove();
+                }
+            }
+
+            if (changeSetEntity.getChanges().isEmpty()) {
+                contentChangeSetIter.remove();
+            }
+
+        }
     }
 
     /**

@@ -3,6 +3,7 @@
 <%@ taglib uri='template' prefix='tmpl'%>
 <%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
 <%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties'%>
 <%@ page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
 
@@ -50,6 +51,13 @@
   </tmpl:put>
   
 	<tmpl:put name='extraJsModules'>
+    <script>
+      var FreshDirect = window.FreshDirect || {};
+      FreshDirect.multisearch = FreshDirect.multisearch || {};
+
+      FreshDirect.multisearch.limit = +'<%= FDStoreProperties.getMultiSearchLimit() %>';
+      FreshDirect.multisearch.defaultList = '<%= FDStoreProperties.getMultiSearchDefaultList() %>';
+    </script>
     <jwr:script src="/multisearch.js" useRandomParam="false" />
 	</tmpl:put>
 </tmpl:insert>
