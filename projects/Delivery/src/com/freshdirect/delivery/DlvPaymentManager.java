@@ -189,16 +189,7 @@ public class DlvPaymentManager {
 			throw new FDResourceException(te, "Order is not in right status to add RETURN");
 		}
 	}
-	
-	public synchronized List getRedeliveries(Date date) throws FDResourceException {
-		try{
-			ErpCustomerManagerSB sb = this.getErpCustomerManagerSB();
-			return sb.getRedeliveries(date);
-		}catch(RemoteException re){
-			throw new FDResourceException(re, "Cannot talk to SB");
-		}
-	}
-	
+
 	public synchronized List getOrdersForDateAndAddress(Date date, String address, String zipcode) throws FDResourceException {
 		try{
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerSB();

@@ -612,19 +612,6 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public void scheduleRedelivery(String saleId, ErpRedeliveryModel redeliveryModel)
-		throws FDResourceException,
-		ErpTransactionException {
-		try {
-			ErpCustomerManagerSB customerManagerSB = this.getErpCustomerManagerHome().create();
-			customerManagerSB.scheduleRedelivery(saleId, redeliveryModel);
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce, "Error Creating CustomerManagerSessionBean");
-		} catch (RemoteException re) {
-			throw new FDResourceException(re, "Error talking to CustomerManagerSessionBean");
-		}
-	}
-
 	public void changeRedeliveryToReturn(String saleId)
 		throws FDResourceException,
 		ErpTransactionException,

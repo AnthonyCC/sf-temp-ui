@@ -1303,25 +1303,6 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public List<RedeliverySaleInfo> getRedeliveries(Date date) {
-		Connection conn = null;
-		try {
-			conn = this.getConnection();
-			return ErpSaleInfoDAO.getRedeliveries(conn, date);
-		} catch (SQLException se) {
-			throw new EJBException(se);
-		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-					conn = null;
-				}
-			} catch (SQLException se) {
-				LOGGER.warn("SQLException while cleaning up", se);
-			}
-		}
-	}
-
 	public ErpDeliveryInfoModel getDeliveryInfo(String saleId) throws ErpSaleNotFoundException {
 		try {
 			ErpSaleEB eb = getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
@@ -2527,37 +2508,6 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			throw new EJBException(e);
 		} catch (RemoteException e) {
 			throw new EJBException(e);
-		}
-	}
-
-	public List<FDConfiguredProduct> getEveryItemEverOrdered(PrimaryKey erpCustomerPK) {
-		Connection conn = null;
-		try {
-			conn = this.getConnection();
-			return ErpSaleInfoDAO.getEveryItemEverOrdered(conn, erpCustomerPK.getId());
-		} catch (SQLException ex) {
-			throw new EJBException(ex);
-		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException ex) {
-					LOGGER.warn("Unable to close connection", ex);
-				}
-			}
-		}
-	}
-
-	public void scheduleRedelivery(String saleId, ErpRedeliveryModel redeliveryModel) throws ErpTransactionException {
-		try {
-			ErpSaleEB eb = getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
-			eb.addRedelivery(redeliveryModel);
-		} catch (FinderException fe) {
-			LOGGER.warn("FinderException cannot find sale for id: " + saleId, fe);
-			throw new EJBException(fe);
-		} catch (RemoteException re) {
-			LOGGER.warn("RemoteException while trying to talk to ErpSaleEntityBean", re);
-			throw new EJBException(re);
 		}
 	}
 

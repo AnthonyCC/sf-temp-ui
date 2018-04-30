@@ -221,14 +221,8 @@ public interface ErpCustomerManagerSB extends EJBObject {
     
     public void markAsRedelivery(String saleId) throws ErpTransactionException, ErpSaleNotFoundException, RemoteException;
     
-    public void scheduleRedelivery(String saleId, ErpRedeliveryModel redeliveryModel) throws ErpTransactionException, RemoteException;
-    
-    public List<RedeliverySaleInfo> getRedeliveries(Date date) throws RemoteException;
-    
     public ErpComplaintInfoModel getComplaintInfo(String saleId, String complaintId) throws RemoteException;
-    
-    public List<FDConfiguredProduct> getEveryItemEverOrdered(PrimaryKey erpCustomerPK) throws RemoteException;
-    
+     
 	public void reverseCustomerCredit(String saleId, String complaintId) throws ErpTransactionException, RemoteException;
 
 	public List<DlvSaleInfo> getOrdersForDateAndAddress(Date date, String address, String zipcode) throws RemoteException;
