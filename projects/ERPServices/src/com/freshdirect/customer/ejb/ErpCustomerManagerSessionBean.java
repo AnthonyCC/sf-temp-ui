@@ -1214,36 +1214,6 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 
 	}
 
-	public void addAdjustment(ErpAdjustmentModel adjustmentModel) throws ErpTransactionException {
-		try {
-			String saleId = adjustmentModel.getReferenceNumber();
-
-			LOGGER.info("Add adjustment - start. saleId=" + saleId);
-
-			ErpSaleEB eb = getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
-			eb.addAdjustment(adjustmentModel);
-			String customerId = eb.getCustomerPk().getId();
-
-			CrmSystemCaseInfo info =
-				new CrmSystemCaseInfo(
-					new PrimaryKey(customerId),
-					new PrimaryKey(saleId),
-					CrmCaseSubject.getEnum(CrmCaseSubject.CODE_PAYMENT_ERROR),
-					"Following sale failed to Settle " + saleId);
-
-			new ErpCreateCaseCommand(LOCATOR, info).execute();
-
-			LOGGER.info("Add adjustment - done. saleId=" + saleId);
-
-		} catch (FinderException e) {
-			LOGGER.debug(e);
-			throw new EJBException("No sale found for the given saleId", e);
-		} catch (RemoteException e) {
-			LOGGER.debug(e);
-			throw new EJBException("Cannot talk to the beans", e);
-		}
-	}
-
 	public void markAsReturn(String saleId, boolean fullReturn, boolean alcoholOnly)
 		throws ErpTransactionException, ErpSaleNotFoundException {
 		try {
@@ -1289,20 +1259,6 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		logAlertActivity(customerPk, EnumAccountActivityType.PLACE_ALERT, note, EnumTransactionSource.SYSTEM);
 	}
 
-	public void markAsRedelivery(String saleId) throws ErpTransactionException, ErpSaleNotFoundException {
-		try {
-			ErpSaleEB eb = getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
-			eb.markAsRedelivery();
-			this.createCaseForSale(saleId, "redelivery", "Nobody was home to take delivery");
-		} catch (FinderException fe) {
-			LOGGER.warn("Cannot find sale for saleId", fe);
-			throw new EJBException("No sale found for given saleId: " + saleId, fe);
-		} catch (RemoteException re) {
-			LOGGER.warn("RemoteException: ", re);
-			throw new EJBException("Exception while talking to Sale", re);
-		}
-	}
-
 	public ErpDeliveryInfoModel getDeliveryInfo(String saleId) throws ErpSaleNotFoundException {
 		try {
 			ErpSaleEB eb = getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
@@ -1317,21 +1273,6 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			LOGGER.warn(re);
 			throw new EJBException(re);
 		}
-
-	}
-
-	public void createCaseForSale(String saleId, String reason) throws ErpSaleNotFoundException {
-		String details = null;
-
-		if ("redelivery".equalsIgnoreCase(reason)) {
-			details = "Nobody was home to take delivery";
-		} else if ("refused_order".equalsIgnoreCase(reason)) {
-			details = "Customer Refused Order";
-		} else {
-			throw new EJBException("Unknown case type " + reason);
-		}
-
-		this.createCaseForSale(saleId, reason, details);
 
 	}
 

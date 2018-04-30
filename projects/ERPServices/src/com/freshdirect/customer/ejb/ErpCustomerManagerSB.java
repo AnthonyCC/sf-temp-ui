@@ -199,10 +199,6 @@ public interface ErpCustomerManagerSB extends EJBObject {
 
 	public String addSettlement(ErpSettlementModel model, String saleId, String authId) throws ErpTransactionException, RemoteException;
     
-    public void addAdjustment(ErpAdjustmentModel adjustmentModel) throws ErpTransactionException, RemoteException;
-    
-    public void createCaseForSale(String saleId, String reason) throws ErpSaleNotFoundException, RemoteException;
-    
     public ErpDeliveryInfoModel getDeliveryInfo(String saleId) throws ErpSaleNotFoundException, RemoteException;
     
     public void processSaleReturn(String saleId, ErpReturnOrderModel returnOrder) throws ErpTransactionException, RemoteException;
@@ -218,9 +214,7 @@ public interface ErpCustomerManagerSB extends EJBObject {
     public void markAsReturn(String saleId, boolean fullReturn, boolean alcoholOnly) throws ErpTransactionException, ErpSaleNotFoundException, RemoteException;
     
     public void approveReturn(String saleId, ErpReturnOrderModel returnOrder) throws ErpTransactionException, RemoteException;
-    
-    public void markAsRedelivery(String saleId) throws ErpTransactionException, ErpSaleNotFoundException, RemoteException;
-    
+     
     public ErpComplaintInfoModel getComplaintInfo(String saleId, String complaintId) throws RemoteException;
      
 	public void reverseCustomerCredit(String saleId, String complaintId) throws ErpTransactionException, RemoteException;

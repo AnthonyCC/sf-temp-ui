@@ -19,17 +19,11 @@ import com.freshdirect.ecomm.gateway.OrderResourceApiClient;
 import com.freshdirect.ecomm.gateway.OrderResourceApiClientI;
 import com.freshdirect.ecomm.gateway.OrderServiceApiClient;
 import com.freshdirect.ecomm.gateway.OrderServiceApiClientI;
-import com.freshdirect.ecomm.gateway.PaymentGatewayService;
-import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.PaymentManager;
-import com.freshdirect.payment.command.DeliveryConfirmation;
-import com.freshdirect.payment.command.PaymentCommandI;
-import com.freshdirect.payment.command.Redelivery;
-import com.freshdirect.payment.command.RefusedOrder;
 import com.freshdirect.payment.ejb.PaymentGatewayHome;
 import com.freshdirect.payment.ejb.PaymentGatewaySB;
 
@@ -56,43 +50,6 @@ public class DlvPaymentManager {
 			}
 		}
 		return instance;
-	}
-	
-	public synchronized void updateSaleDlvStatus(List delivered, List redelivery, List refused) throws FDResourceException {		
-		try{
-			PaymentGatewaySB sb = this.getPaymentGatewaySB();
-			String saleId = null;
-			PaymentCommandI command = null;
-			
-			for(int i = 0, size = delivered.size(); i < size; i++){
-				saleId = (String)delivered.get(i);
-				command = new DeliveryConfirmation(saleId);
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentGatewaySB)){
-					PaymentGatewayService.getInstance().updateSaleDlvStatus(command);
-				}
-				else{
-					sb.updateSaleDlvStatus(command);
-				}
-				
-			}
-			
-			for(int i = 0, size = redelivery.size(); i < size; i++){
-				saleId = (String)redelivery.get(i);
-				command = new Redelivery(saleId);
-				sb.updateSaleDlvStatus(command);
-			}
-			
-			for(int i = 0, size = refused.size(); i < size; i++){
-				DlvReturnRecord returnRec = (DlvReturnRecord)refused.get(i);
-				command = new RefusedOrder(returnRec.getSaleId(), returnRec.isFullReturn(), returnRec.isAlocholReturn());
-				sb.updateSaleDlvStatus(command);
-			}
-					
-		}catch(RemoteException re){
-			LOGGER.warn("RemoteException: ", re);
-			throw new FDResourceException(re, "Cannot talk to SB");
-		}
-		
 	}
 	
 	public synchronized List getOrdersByTruckNumber(String truckNumber, Date deliveryDate) throws FDResourceException {
@@ -159,15 +116,6 @@ public class DlvPaymentManager {
 		}
 	}
 	
-	public synchronized void createCaseForSale(String orderNumber, String reason) throws FDResourceException, ErpSaleNotFoundException {
-		try{
-			ErpCustomerManagerSB sb = this.getErpCustomerManagerSB();
-			sb.createCaseForSale(orderNumber, reason);
-		}catch(RemoteException re){
-			throw new FDResourceException(re, "Cannot talk to SB");
-		}
-	}
-	
 	public synchronized void addReturn(String orderNumber, boolean fullReturn, boolean alcoholOnly) throws FDResourceException, ErpSaleNotFoundException {
 		try{
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerSB();
@@ -179,17 +127,6 @@ public class DlvPaymentManager {
 		}
 	}
 	
-	public synchronized void addRedelivery(String orderNumber) throws FDResourceException, ErpSaleNotFoundException{
-		try{
-			ErpCustomerManagerSB sb = this.getErpCustomerManagerSB();
-			sb.markAsRedelivery(orderNumber);
-		}catch(RemoteException re){
-			throw new FDResourceException(re, "Cannot talk to SB");
-		}catch(ErpTransactionException te){
-			throw new FDResourceException(te, "Order is not in right status to add RETURN");
-		}
-	}
-
 	public synchronized List getOrdersForDateAndAddress(Date date, String address, String zipcode) throws FDResourceException {
 		try{
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerSB();
