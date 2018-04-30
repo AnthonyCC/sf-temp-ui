@@ -44,76 +44,77 @@
 		<jwr:script src="/expressco.js" useRandomParam="false" />
 
 		<script>
-			(function () {
-			if(FreshDirect.expressco.data.redirectUrl){
-				FreshDirect.common.dispatcher.signal('redirectUrl', FreshDirect.expressco.data.redirectUrl);
-			}
-			}());
+			(function (fd) {
+				if(fd.expressco && fd.expressco.data && fd.expressco.data.redirectUrl){
+					fd.common.dispatcher.signal('redirectUrl', fd.expressco.data.redirectUrl);
+				}
+			}(FreshDirect));
 		</script>
+		<% if (isMod56) { %>
+			<script type="text/javascript">
 
-		<script type="text/javascript">
-
-			$jq(document).ready(function() {
-				/* init ordermodifystatus with orderId */
-				FreshDirect.components.ordermodifystatus.init('${param['orderId']}');
-				/* start polling in the background */
-				FreshDirect.components.ordermodifystatus.startPolling();
-			});
+				$jq(document).ready(function() {
+					/* init ordermodifystatus with orderId */
+					FreshDirect.components.ordermodifystatus.init('${param['orderId']}');
+					/* start polling in the background */
+					FreshDirect.components.ordermodifystatus.startPolling();
+				});
 
 
-			$jq('.csPhoneNumber:first').each(function(i,e) {
-				$jq(e).text( ($jq(e).text().match(/[0-9\-]{14}/)||[''])[0] );
-				$jq(e).parent().show();
-			});
+				$jq('.csPhoneNumber:first').each(function(i,e) {
+					$jq(e).text( ($jq(e).text().match(/[0-9\-]{14}/)||[''])[0] );
+					$jq(e).parent().show();
+				});
 
-			$jq('.mod56 .orderconfirmed-title').html((<%=_modifyOrderMode%>) ? 'Changes Saved' : 'Order Confirmed');
+				$jq('.mod56 .orderconfirmed-title').html((<%=_modifyOrderMode%>) ? 'Changes Saved' : 'Order Confirmed');
 
-			$jq('.mod56 #cartcontent').on('cartData', function(e, data) {
-				if ((data.modifyCartData.cutoffTime || '') !== '') {
-					$jq('.modify-order-before-label').show();
-					$jq('.modify-order-before-value').html(data.modifyCartData.cutoffTime);
-				}
-			});
+				$jq('.mod56 #cartcontent').on('cartData', function(e, data) {
+					if ((data.modifyCartData.cutoffTime || '') !== '') {
+						$jq('.modify-order-before-label').show();
+						$jq('.modify-order-before-value').html(data.modifyCartData.cutoffTime);
+					}
+				});
 
-			FreshDirect.GTMDATAS = {
-				modify_order_btn: {
-					SUCCESS : {'event': 'modify-click','eventCategory': 'modify','eventAction': 'enter modify mode','eventLabel': 'order confirmation modify'},
-					ERROR: {'event': 'modify-click','eventCategory': 'modify','eventAction': 'error','eventLabel': 'order confirmation modify error'}
-				},
-				delivery_info_edit_btn: {
-					SUCCESS : {'event': 'modify-click', 'eventCategory': 'modify', 'eventAction': 'enter modify mode', 'eventLabel': 'order confirmation modify edit delivery'},
-					'ERROR': {'event': 'modify-click','eventCategory': 'modify','eventAction': 'error','eventLabel': 'order confirmation modify edit delivery error'}
-				},
-				cart_details_edit_btn: {
-					SUCCESS : {'event': 'modify-click', 'eventCategory': 'modify', 'eventAction': 'enter modify mode', 'eventLabel': 'order confirmation modify edit cart'},
-					'ERROR': {'event': 'modify-click','eventCategory': 'modify','eventAction': 'error','eventLabel': 'order confirmation modify edit cart error'}
-				}
-			};
-			$jq('.mod56 [data-gtm-click]').on('click', function(e) {
-				var $e = $jq(e.currentTarget);
-				if ($e.attr('data-gtm-click-error') !== undefined) {
-					e.preventDefault();
-					dataLayer.push(fd.GTMDATAS[$e.attr('id')].ERROR || {});
-					
-					//show overlay
-					FreshDirect.components.ordermodifystatus.open($e);
+				FreshDirect.GTMDATAS = {
+					modify_order_btn: {
+						SUCCESS : {'event': 'modify-click','eventCategory': 'modify','eventAction': 'enter modify mode','eventLabel': 'order confirmation modify'},
+						ERROR: {'event': 'modify-click','eventCategory': 'modify','eventAction': 'error','eventLabel': 'order confirmation modify error'}
+					},
+					delivery_info_edit_btn: {
+						SUCCESS : {'event': 'modify-click', 'eventCategory': 'modify', 'eventAction': 'enter modify mode', 'eventLabel': 'order confirmation modify edit delivery'},
+						'ERROR': {'event': 'modify-click','eventCategory': 'modify','eventAction': 'error','eventLabel': 'order confirmation modify edit delivery error'}
+					},
+					cart_details_edit_btn: {
+						SUCCESS : {'event': 'modify-click', 'eventCategory': 'modify', 'eventAction': 'enter modify mode', 'eventLabel': 'order confirmation modify edit cart'},
+						'ERROR': {'event': 'modify-click','eventCategory': 'modify','eventAction': 'error','eventLabel': 'order confirmation modify edit cart error'}
+					}
+				};
+				$jq('.mod56 [data-gtm-click]').on('click', function(e) {
+					var $e = $jq(e.currentTarget);
+					if ($e.attr('data-gtm-click-error') !== undefined) {
+						e.preventDefault();
+						dataLayer.push(fd.GTMDATAS[$e.attr('id')].ERROR || {});
+						
+						//show overlay
+						FreshDirect.components.ordermodifystatus.open($e);
 
-					return false;
-				} else {
-					dataLayer.push(fd.GTMDATAS[$e.attr('id')].SUCCESS || {});
-				}
-			});
-			$jq('#delivery_info_edit_btn').on('click', function(e) {
-				if ($jq(e.currentTarget).attr('data-gtm-click-error')===undefined) {
-					window.location = '/your_account/modify_order.jsp?orderId=${param['orderId']}&action=modify&successPage=%2Fexpressco%2Fcheckout.jsp';
-				}
-			});
-			$jq('#cart_details_edit_btn').on('click', function(e) {
-				if ($jq(e.currentTarget).attr('data-gtm-click-error')===undefined) {
-					window.location = '/your_account/modify_order.jsp?orderId=${param['orderId']}&action=modify&successPage=%2Fexpressco%2Fcheckout.jsp%23checkoutcontentheader';
-				}
-			});
-		</script>
+						return false;
+					} else {
+						dataLayer.push(fd.GTMDATAS[$e.attr('id')].SUCCESS || {});
+					}
+				});
+				$jq('#delivery_info_edit_btn').on('click', function(e) {
+					if ($jq(e.currentTarget).attr('data-gtm-click-error')===undefined) {
+						window.location = '/your_account/modify_order.jsp?orderId=${param['orderId']}&action=modify&successPage=%2Fexpressco%2Fcheckout.jsp';
+					}
+				});
+				$jq('#cart_details_edit_btn').on('click', function(e) {
+					if ($jq(e.currentTarget).attr('data-gtm-click-error')===undefined) {
+						window.location = '/your_account/modify_order.jsp?orderId=${param['orderId']}&action=modify&successPage=%2Fexpressco%2Fcheckout.jsp%23checkoutcontentheader';
+					}
+				});
+			</script>
+		<% } %>
 	</tmpl:put>
 
 	<tmpl:put name="globalnav">
