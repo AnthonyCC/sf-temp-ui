@@ -13,6 +13,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.FDUserUtil;
 import com.freshdirect.fdstore.deliverypass.DeliveryPassSubscriptionUtil;
@@ -50,7 +51,8 @@ public class UserValidationUtil {
 		FDCartModel cart = user.getShoppingCart();
 		//Changes as part of standalone deliverypass purchase (DP17-122)
 		//if(cart.containsDlvPassOnly())
-		if(!FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && cart.containsDlvPassOnly()){
+		//if(!FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && cart.containsDlvPassOnly()){
+		if (!cart.isDlvPassStandAloneCheckoutAllowed() && cart.containsDlvPassOnly()) {
 			result.addError(new ActionError("error_dlv_pass_only", SystemMessageList.MSG_CONTAINS_DLV_PASS_ONLY));
 			return true;
 		}

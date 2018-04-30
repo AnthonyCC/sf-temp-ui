@@ -14,6 +14,7 @@ import com.freshdirect.storeapi.content.CategoryModel;
 import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.ajax.browse.data.CarouselData;
+import com.freshdirect.webapp.ajax.browse.data.CarouselNameCase;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.util.FDURLUtil;
@@ -74,7 +75,7 @@ public class CarouselService {
 		return carousel;
 	}
 
-    public CarouselData createNewProductsCarousel(FDUserI user, boolean isRandomizeProductOrderEnabled) {
+    public CarouselData createNewProductsCarousel(FDUserI user, boolean isRandomizeProductOrderEnabled, CarouselNameCase carouselNameCase) {
 
         CarouselData carousel = null;
 
@@ -83,7 +84,9 @@ public class CarouselService {
             if (isRandomizeProductOrderEnabled) {
                 Collections.shuffle(products);
             }
-            carousel = createCarouselData(null, NEW_PRODUCTS_CAROUSEL_NAME, products, user, null, null);
+
+            String carouselName = (carouselNameCase == CarouselNameCase.UPPER) ? NEW_PRODUCTS_CAROUSEL_NAME.toUpperCase() : NEW_PRODUCTS_CAROUSEL_NAME;
+            carousel = createCarouselData(null, carouselName, products, user, null, null);
         }
 
         return carousel;

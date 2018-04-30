@@ -650,7 +650,8 @@ public interface FDCustomerManagerSB  extends EJBObject{
 		                      boolean sendEmail,
 		                      CustomerRatingI cra,
 		                      CrmAgentRole agentRole,
-		                      EnumDlvPassStatus status
+		                      EnumDlvPassStatus status,
+		                      boolean isRealTimeAuthNeeded
 		                    ) throws FDResourceException,
 		                             ErpFraudException,
 		                             //ReservationException,

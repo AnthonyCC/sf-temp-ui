@@ -3308,11 +3308,23 @@ public class FDCustomerManager {
 	}
 
 	public static String placeSubscriptionOrder( FDActionInfo info,
+			 FDCartModel cart,
+			 Set<String> appliedPromos,
+			 boolean sendEmail,
+			 CustomerRatingI cra,
+			 EnumDlvPassStatus status ) throws FDResourceException,
+      						  				   ErpFraudException,
+      						  				   //ReservationException,
+      						  				   DeliveryPassException,
+      						  				   FDPaymentInadequateException{
+		return placeSubscriptionOrder (info,cart,appliedPromos,sendEmail,cra,status,false);
+	}
+	public static String placeSubscriptionOrder( FDActionInfo info,
 			 									 FDCartModel cart,
 			 									 Set<String> appliedPromos,
 			 									 boolean sendEmail,
 			 									 CustomerRatingI cra,
-			 									 EnumDlvPassStatus status ) throws FDResourceException,
+			 									 EnumDlvPassStatus status, boolean isRealTimeAuthNeeded ) throws FDResourceException,
 			                               						  				   ErpFraudException,
 			                               						  				   //ReservationException,
 			                               						  				   DeliveryPassException,
@@ -3339,9 +3351,12 @@ public class FDCustomerManager {
 				                                 sendEmail,
 				                                 cra,
 				                                 info.getAgent() == null ? null : info.getAgent().getRole(),
-				                                 status
+				                                 status, isRealTimeAuthNeeded
 				                               );
-				sb.authorizeSale(info.getIdentity().getErpCustomerPK().toString(), orderId, EnumSaleType.SUBSCRIPTION, cra);
+				if(!isRealTimeAuthNeeded && null !=createOrder.getPaymentMethod() && !EnumPaymentMethodType.GIFTCARD.equals(createOrder.getPaymentMethod().getPaymentMethodType())){
+					sb.authorizeSale(info.getIdentity().getErpCustomerPK().toString(), orderId, EnumSaleType.SUBSCRIPTION, cra);
+				}
+				
 
 			//invalidate quickshop past orders cache
             CmsServiceLocator.ehCacheUtil().removeFromCache(CmsCaches.QS_PAST_ORDERS_CACHE.cacheName, info.getIdentity().getErpCustomerPK());

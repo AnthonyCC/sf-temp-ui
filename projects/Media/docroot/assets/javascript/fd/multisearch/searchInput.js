@@ -5,7 +5,8 @@ var FreshDirect = FreshDirect || {};
   var $ = fd.libs.$;
   var WIDGET = fd.modules.common.widget;
   var DISPATCHER = fd.common.dispatcher;
-  var MAXTERMS = 25; // TODO configurable
+  var SIGNALTARGET = fd.common.signalTarget;
+  var MAXTERMS = fd.multisearch.limit || 25;
 
   var searchInput = Object.create(WIDGET,{
     signal:{
@@ -34,7 +35,9 @@ var FreshDirect = FreshDirect || {};
     },
     addTerm:{
       value: function (term) {
-        var idx = this.terms.indexOf(term);
+        term = term.toLowerCase();
+
+        var idx = this.terms.map(function (t) { return t.toLowerCase(); }).indexOf(term);
 
         if (term && this.terms.length < MAXTERMS) {
           if (idx === -1) {
@@ -45,11 +48,36 @@ var FreshDirect = FreshDirect || {};
         }
       }
     },
+    toggleTermEH:{
+      value: function (e) {
+        var el = e.target,
+            term = el.value,
+            checked = el.checked;
+
+        this.toggleTerm(term, !checked);
+      }
+    },
+    toggleTerm:{
+      value: function (term, disable) {
+        var tterms = this.terms.map(function (t) { return t.toLowerCase(); }),
+            idx = tterms.indexOf(term.toLowerCase());
+
+        if (idx > -1) {
+          if (disable) {
+            this.terms[idx] = term.toUpperCase();
+          } else {
+            this.terms[idx] = term.toLowerCase();
+          }
+        }
+
+        this.termsChanged();
+      }
+    },
     removeTerm:{
       value: function (e) {
         var termEl = $(e.currentTarget).parent(),
             term = termEl.attr('data-searchterm'),
-            idx = this.terms.indexOf(term);
+            idx = this.terms.map(function (t) { return t.toLowerCase(); }).indexOf(term);
 
         if (idx > -1) {
           this.terms.splice(idx, 1);
@@ -84,23 +112,46 @@ var FreshDirect = FreshDirect || {};
           this.termsChanged(data.dontpush);
         }
 
+        data.terms = data.terms.map(function (term) {
+          var t = {};
+
+          t.name = term.toLowerCase();
+          t.slug = fd.utils.slugify(term);
+          t.enabled = term[0].toLowerCase() === term[0];
+
+          return t;
+        });
+
         WIDGET.render.call(this, data);
         FreshDirect.components.autoComplete.init(this.placeholder+' input');
-        $('[data-component="multisearch-input"] input').val("");
+        $('[data-component="multisearch-input"] input.searchinput').val("");
       }
     }
   });
   searchInput.listen();
 
+  var removeTerm = Object.create(SIGNALTARGET,{
+    signal:{
+      value:'removeSearchTerm'
+    },
+    callback:{
+      value:function(data) {
+        searchInput.toggleTerm(data.term, true);
+      }
+    }
+  });
+  removeTerm.listen();
+
   $(document).on('submit', '[data-component="multisearch-input"] form', searchInput.handleSubmit.bind(searchInput));
   $(document).on('click', '[data-component="multisearch-input"] button.remove', searchInput.removeTerm.bind(searchInput));
+  $(document).on('change', '[data-component="multisearch-input"] .termlist input', searchInput.toggleTermEH.bind(searchInput));
 
   fd.modules.common.utils.register("modules.multisearch", "searchInput", searchInput, fd);
 }(FreshDirect));
 
 // initialize based on query parameters
 (function (fd) {
-  var DEFAULTLIST = [
+  var DEFAULTLIST = fd.multisearch.defaultList ? fd.multisearch.defaultList.split(',') : [
     'eggs',
     'milk',
     'pizza',
@@ -114,11 +165,13 @@ var FreshDirect = FreshDirect || {};
   ];
 
   setTimeout(function () {
-    var q = fd.utils.getParameterByName('q').split(',').filter(function (kw) { return kw; }).map(fd.utils.escapeHtml);
+    var q = fd.utils.getParameterByName('q').split(',').filter(function (kw) { return kw; });
 
     if (q.length === 0) {
       q = DEFAULTLIST;
     }
+
+    q = q.filter(function (kw) { return kw; }).map(function (kw) { return kw.trim(); }).map(fd.utils.escapeHtml);
 
     fd.modules.multisearch.searchInput.render({
       terms: q

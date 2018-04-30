@@ -16,6 +16,7 @@ import org.apache.log4j.Category;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDPromotionEligibility;
 import com.freshdirect.fdstore.customer.adapter.PromoVariantHelper;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -132,8 +133,8 @@ public class FDPromotionVisitor {
          
          //Get All Automatic Promo codes.  Evaluate them.
          Collection<PromotionI> promotions = PromotionFactory.getInstance().getAllAutomaticPromotions();
-         if(!context.getShoppingCart().containsDlvPassOnly()){
-         for (PromotionI autopromotion : promotions) {
+         if(!context.getShoppingCart().isDlvPassStandAloneCheckoutAllowed() || (context.getShoppingCart().isDlvPassStandAloneCheckoutAllowed() && !context.getShoppingCart().containsDlvPassOnly())){
+        	 for (PromotionI autopromotion : promotions) {
                String promoCode = autopromotion.getPromotionCode();               
                boolean e = autopromotion.evaluate(context);
                eligibilities.setEligibility(promoCode, e);

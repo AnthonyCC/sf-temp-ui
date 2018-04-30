@@ -27,6 +27,7 @@ import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDModifyCartLineI;
+import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
@@ -81,7 +82,8 @@ public class AvailabilityService {
 		}
 		if (cart.containsUnlimitedPass())
 			//if (cart.containsDlvPassOnly()) Changes as part of standalone deliverypass purchase (DP17-122)  
-			if(!FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && cart.containsDlvPassOnly()){
+			//if((cart instanceof FDModifyCartModel || !FDStoreProperties.isDlvPassStandAloneCheckoutEnabled()) && cart.containsDlvPassOnly()){
+				if(!cart.isDlvPassStandAloneCheckoutAllowed() && cart.containsDlvPassOnly()){
 				errorMessage = "Your cart contains only delivery pass item(s).";
 			} else if (!user.isOrderMinimumMet()
 					&& user.getMasqueradeContext() == null) {
@@ -159,7 +161,7 @@ public class AvailabilityService {
 		When the cart contains only deliverypass 
 			- disable the cart validation for DP when the property is enabled
 			- enable the DP only cart validation when the property is disabled */
-		if (!FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && cart.containsDlvPassOnly()) {
+		if (!cart.isDlvPassStandAloneCheckoutAllowed() && cart.containsDlvPassOnly()) {
 			warningType = DELIVERY_PASS_ONLY;
 		} else if (cart.containsDonationProductsOnly()) {
 			warningType = DONATION_PRODUCTS_ONLY;
