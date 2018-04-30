@@ -670,10 +670,6 @@ public interface FDCustomerManagerSB  extends EJBObject{
           ErpAddressVerificationException,
           RemoteException;
 
-
-	public void addAndReconcileInvoice(String saleId, ErpInvoiceModel invoice, ErpShippingInfo shippingInfo)
-	throws ErpTransactionException, RemoteException;
-
 	public void authorizeSale(String erpCustomerID, String saleID, EnumSaleType type,CustomerRatingI cra) throws FDResourceException, ErpSaleNotFoundException, RemoteException;
 	public  Object[] getAutoRenewalInfo()throws FDResourceException, RemoteException;
 

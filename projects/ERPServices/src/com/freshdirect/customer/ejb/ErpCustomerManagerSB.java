@@ -174,9 +174,7 @@ public interface ErpCustomerManagerSB extends EJBObject {
     public void addAndReconcileInvoice(String saleId, ErpInvoiceModel invoice, ErpShippingInfo shippingInfo) throws ErpTransactionException, RemoteException;
     
     public void reconcileSale(String saleId, Boolean isShorted) throws ErpTransactionException, RemoteException;
-    
-    public void cutoff(String pk) throws RemoteException;
-    
+     
     public Collection<ModelI> getFailedAuthorizationSales() throws RemoteException;
     
     public PrimaryKey addComplaint(ErpComplaintModel complaint, String saleId, boolean autoApproveAuthorized, Double limit ) throws ErpComplaintException, RemoteException;
@@ -197,8 +195,6 @@ public interface ErpCustomerManagerSB extends EJBObject {
 
 	public boolean isOnAlert(PrimaryKey pk, String alertType) throws RemoteException;
 
-	public String addSettlement(ErpSettlementModel model, String saleId, String authId) throws ErpTransactionException, RemoteException;
-    
     public ErpDeliveryInfoModel getDeliveryInfo(String saleId) throws ErpSaleNotFoundException, RemoteException;
     
     public void processSaleReturn(String saleId, ErpReturnOrderModel returnOrder) throws ErpTransactionException, RemoteException;

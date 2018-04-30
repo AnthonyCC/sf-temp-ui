@@ -5978,19 +5978,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			 */
 	}
 
-	public void addAndReconcileInvoice(String saleId, ErpInvoiceModel invoice, ErpShippingInfo shippingInfo)
-			throws ErpTransactionException {
-
-		try {
-			this.getErpCustomerManagerHome().create().addAndReconcileInvoice(saleId, invoice, shippingInfo);
-		} catch (ErpTransactionException e) {
-			throw e;
-		} catch (Exception e) {
-			LOGGER.warn("Unexpected Exception while trying to process invoice for order#: " + saleId, e);
-			throw new EJBException("Unexpected Exception while trying to process invoice for order#: " + saleId, e);
-		}
-	}
-
 	public void authorizeSale(String erpCustomerID, String saleID, EnumSaleType type, CustomerRatingI cra)
 			throws FDResourceException, ErpSaleNotFoundException {
 
