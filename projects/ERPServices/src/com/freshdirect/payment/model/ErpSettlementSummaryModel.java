@@ -15,9 +15,11 @@ import com.freshdirect.framework.core.*;
 
 public class ErpSettlementSummaryModel extends ModelSupport{
 	
-	private List summaryDetails = new ArrayList(); //list of detail records
-	private List invoices = new ArrayList(); //list of invoices
-	private List settlementTrxns = new ArrayList(); //list of transactions
+	private static final long serialVersionUID = 689911209863086288L;
+	
+	private List<ErpSummaryDetailModel> summaryDetails = new ArrayList<ErpSummaryDetailModel>(); //list of detail records
+	private List<ErpSettlementInvoiceModel> invoices = new ArrayList<ErpSettlementInvoiceModel>(); //list of invoices
+	private List<ErpSettlementTransactionModel> settlementTrxns = new ArrayList<ErpSettlementTransactionModel>(); //list of transactions
 	
 	private Date processPeriodStart = null;
 	private Date processPeriodEnd = null;
@@ -167,7 +169,7 @@ public class ErpSettlementSummaryModel extends ModelSupport{
 	public List<ErpSummaryDetailModel> getSummaryDetails(){
 		return this.summaryDetails;
 	}
-	public void setSummaryDetails(List summaryDetails){
+	public void setSummaryDetails(List<ErpSummaryDetailModel> summaryDetails){
 		this.summaryDetails = summaryDetails;
 	}
 	
@@ -178,7 +180,7 @@ public class ErpSettlementSummaryModel extends ModelSupport{
 	public List<ErpSettlementInvoiceModel> getInvoices(){
 		return this.invoices;
 	}
-	public void setInvoices(List invoices){
+	public void setInvoices(List<ErpSettlementInvoiceModel> invoices){
 		this.invoices = invoices;
 	}
 	public void addInvoice(ErpSettlementInvoiceModel invoice){
@@ -245,7 +247,7 @@ public class ErpSettlementSummaryModel extends ModelSupport{
 		return settlementTrxns;
 	}
 
-	public void setSettlementTrxns(List settlementTrxns) {
+	public void setSettlementTrxns(List<ErpSettlementTransactionModel> settlementTrxns) {
 		this.settlementTrxns = settlementTrxns;
 	}
 	
