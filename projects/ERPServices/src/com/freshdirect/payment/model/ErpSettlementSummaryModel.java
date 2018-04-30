@@ -268,4 +268,10 @@ public class ErpSettlementSummaryModel extends ModelSupport{
 	public String toString() {
 		return super.toString() + " " + System.identityHashCode(this); 
 	}
+	
+	public void setId(String id) {
+		if (id != null) {
+			super.setId(id);
+		}
+	}
 }
