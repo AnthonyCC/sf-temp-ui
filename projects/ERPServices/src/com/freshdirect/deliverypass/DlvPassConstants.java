@@ -28,5 +28,11 @@ public class DlvPassConstants {
 	public final static String AUTORENEW_PYMT_METHOD_INVALID="Default payment method invalid";
 	public final static String AUTORENEW_PYMT_METHOD_UNKNOWN="Default payment method unknown";
 	public final static String AUTORENEW_PYMT_METHOD_CC_EXPIRED="Credit card selected is expired.";
+	
+	public  static final String REASON_NOT_ELIGIBLE = "reasonNotEligible";
+	public  static final String REASON_TOO_MANY_PASSES = "Too many DeliveryPasses added";
+	public  static final String REASON_PASS_EXISTS = "Account contains an active or pending DeliveryPass.<br>Please see the Your Account section for more information";
+	public  static final String REASON_MAX_PASSES = "Account already has the maximum number of allowable DeliveryPasses.";
+	public  static final String REASON_PROMOTIONAL_PASS = "Not currently eligible for DeliveryPasses. Please contact Customer Service at {0}. ";
 
 }
