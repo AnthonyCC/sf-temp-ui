@@ -214,11 +214,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String SAVE_ACTIVE_BINS = "bin/storebins";
 	private static final String ERP_BATCH_PROCESS_API = "erp/batch/";
 	private static final String ERP_RECENT_BATCHES_API = "erp/recentBatches";
-	
-	private static final String EWALLET_LOAD_TRAN_MAX = "ewalletNotify/maxDays";
-	private static final String EWALLET_POST_TRANS = "ewalletNotify/postTrxnsToEwallet";
-	
-	
+		
 	private static final String ZONE_INFO_MASTER = "zoneInfo/master";
 	private static final String ALL_ZONE_INFO_MASTER = "zoneInfo/allzoneinfoMaster";
 	private static final String LOAD_ZONE_ID = "zoneInfo/findzoneid";
@@ -4355,37 +4351,6 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		return erpPaymentMethod;
 	}
 	
-	
-	@Override
-	public void postTrxnsToEwallet() throws RemoteException {
-		Response<String> response = new Response<String>(); 
-	
-			try {
-				response = httpGetData(getFdCommerceEndPoint(EWALLET_POST_TRANS), Response.class);
-			
-				if(!response.getResponseCode().equals("OK"))
-					throw new RemoteException(response.getMessage());
-			} catch (FDResourceException e) {
-				LOGGER.error(e.getMessage());
-				throw new RemoteException(response.getMessage());
-			}
-				
-	}
-	@Override
-	public void loadTrxnsForPostBack(int maxDays) throws RemoteException {
-		Response<String> response = new Response<String>(); 
-		try {
-			response = httpGetData(getFdCommerceEndPoint(EWALLET_LOAD_TRAN_MAX)+"/"+maxDays, Response.class);
-		
-			if(!response.getResponseCode().equals("OK"))
-				throw new RemoteException(response.getMessage());
-		} catch (FDResourceException e) {
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		
-		}
-		
-	}
 	@Override
 	public HLBrandProductAdResponse getHLadproductToHomeByFDPriority(
 			HLBrandProductAdRequest hLBrandProductAdRequest) throws RemoteException {

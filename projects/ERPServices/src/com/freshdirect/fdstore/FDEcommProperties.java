@@ -77,7 +77,6 @@ public class FDEcommProperties {
 	public final static String RestrictedPaymentMethodSB = "fraud.ejb.RestrictedPaymentMethodSB";
 	public static final String ErpNutritionSB = "nutrition.ejb.ErpNutritionSB";
 	public static final String ErpComplaintManagerSB = "customer.ejb.ErpComplaintManagerSB";
-	public static final String EwalletNotifyStatusSB = "ewallet.ejb.EwalletNotifyStatusSB";
 	public static final String DlvPassManagerSB = "deliverypass.ejb.DlvPassManagerSB";
 	public static final String SmartStoreServiceConfigurationSB = "smartstore.ejb.SmartStoreServiceConfigurationSB";
 	public static final String PaymentGatewaySB ="payment.ejb.PaymentGatewaySB";
@@ -166,7 +165,6 @@ public class FDEcommProperties {
         defaults.put(SmartStoreServiceConfigurationSB, FALSE);
         defaults.put(PaymentGatewaySB, FALSE);
         defaults.put(FDListManagerSB, FALSE);
-        defaults.put(EwalletNotifyStatusSB, FALSE);
         defaults.put(PayPalServiceSB, FALSE);
         defaults.put(MasterpassServiceSB, FALSE);
         defaults.put(CoremetricsCdfServiceSB, FALSE);
