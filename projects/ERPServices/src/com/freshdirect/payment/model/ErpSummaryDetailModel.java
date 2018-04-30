@@ -1,5 +1,7 @@
 package com.freshdirect.payment.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.freshdirect.framework.core.*;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
@@ -27,7 +29,8 @@ public class ErpSummaryDetailModel extends ModelSupport {
 	/**
 	 * Constructor
 	 */
-	public ErpSummaryDetailModel(EnumSummaryDetailType type){
+	@JsonCreator
+	public ErpSummaryDetailModel(@JsonProperty("summaryDatailType") EnumSummaryDetailType type){
 		super();
 		this.summaryDetailType = type;
 	}
@@ -91,6 +94,12 @@ public class ErpSummaryDetailModel extends ModelSupport {
 
 	public void setPmType(EnumPaymentMethodType pmType) {
 		this.pmType = pmType;
+	}
+	
+	public void setId(String id) {
+		if (id != null) {
+			super.setId(id);
+		}
 	}
 	
 	public boolean equals(Object obj){
