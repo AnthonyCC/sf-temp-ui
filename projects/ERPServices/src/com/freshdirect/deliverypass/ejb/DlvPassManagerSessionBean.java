@@ -87,7 +87,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 					throw new DeliveryPassException("We're sorry. The order cannot be submitted since this account has reached the DeliveryPass limit.",model.getCustomerId());
 				} else if (Integer.parseInt(statusMap.get("autoRenewUsableDPCount").toString()) > 0 && statusMap.get("AutoRenewDPType").toString().equals(model.getType())){						
 					throw new DeliveryPassException("You already have a DeliveryPass scheduled to automatically renew.",model.getCustomerId());
-				} else if((Boolean) statusMap.get("reasonNotEligible")) {
+				} else if(null !=statusMap.get("reasonNotEligible") && "true".equals(statusMap.get("reasonNotEligible"))) {
 					throw new DeliveryPassException("Not currently eligible for DeliveryPass. Please contact Customer Service at {0}",model.getCustomerId());
 				}
 			}
