@@ -10,7 +10,7 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
 
-<fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
+<fd:CheckLoginStatus id="userDP"guestAllowed="false" recognizedAllowed="false" />
 <fd:GetOrder id='orderDP' saleId='<%=(String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER)%>'>
 <div class="dpn">
 	<div class="dpn-success-container">
@@ -24,7 +24,12 @@
 				<div class="dpn-success-text-table-line"><div class="dpn-success-text-table-left"><%= orderDP.getOrderLine(0).getDescription() %></div><div class="dpn-success-text-table-right"><%= JspMethods.formatPrice(orderDP.getOrderLine(0).getPrice()) %></div></div>
 				<div class="dpn-success-text-table-line"><div class="dpn-success-text-table-left">Total Tax</div><div class="dpn-success-text-table-right"><%= JspMethods.formatPrice(orderDP.getTaxValue()) %></div></div>
 				<% if(orderDP.getTotalDiscountValue() > 0){ %>
-				<div class="dpn-success-text-table-line"><div class="dpn-success-text-table-left"><%= orderDP.getDiscountDescription() %> </div><div class="dpn-success-text-table-right">-<%= JspMethods.formatPrice(orderDP.getTotalDiscountValue()) %></div></div>
+				<div class="dpn-success-text-table-line"><div class="dpn-success-text-table-left"><%= orderDP.getDiscountDescription() %> </div><div class="dpn-success-text-table-right"><%= JspMethods.formatPriceWithNegativeSign(orderDP.getTotalDiscountValue()) %></div></div>
+				<% } %>
+				<% if(orderDP.getTotalAppliedGCAmount() > 0){ %>
+				<div class="dpn-success-text-table-line"><div class="dpn-success-text-table-left">Gift Card Amount to Be Applied</div><div class="dpn-success-text-table-right"><%= JspMethods.formatPrice(orderDP.getTotalAppliedGCAmount()) %></div></div>
+				<div class="dpn-success-text-table-line"><div class="dpn-success-text-table-left">Remaining Gift Card Balance</div><div class="dpn-success-text-table-right"><%= JspMethods.formatPriceWithNegativeSign(userDP.getGiftcardsTotalBalance()) %></div></div>
+				<div class="dpn-success-text-table-line"><div class="dpn-success-text-table-left">Amount to Be Charged to Your Account</div><div class="dpn-success-text-table-right"><%= JspMethods.formatPrice(orderDP.getTotal() - orderDP.getTotalAppliedGCAmount()) %></div></div>
 				<% } %>
 				<div class="dpn-success-text-table-line-total"><div class="dpn-success-text-table-left">Total</div><div class="dpn-success-text-table-right"><%= JspMethods.formatPrice(orderDP.getTotal()) %></div></div>
 			</div>
