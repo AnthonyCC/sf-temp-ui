@@ -40,6 +40,8 @@ public class ErpSettlementSummaryModel extends ModelSupport{
 	private String isLocked = "";
 	private String status = "";
 	
+	private PrimaryKey pk;
+	
 	/**
 	 * no argument Constructor
 	 */
@@ -265,6 +267,12 @@ public class ErpSettlementSummaryModel extends ModelSupport{
 		this.status = status;
 	}
 
+	@Override 
+	public void setPK(PrimaryKey pk) {
+		if (pk != null) {
+			this.pk = pk;
+		}
+	}
 	public String toString() {
 		return super.toString() + " " + System.identityHashCode(this); 
 	}
