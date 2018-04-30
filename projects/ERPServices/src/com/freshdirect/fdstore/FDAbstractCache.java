@@ -30,7 +30,6 @@ public abstract class FDAbstractCache<K,V> {
 		this.refreshDelay = refreshDelay;
 		
 		refresher = new RefreshThread(this.getClass().getName());
-		refresher.setDaemon(true);
 		refresher.start();
 		try{
 			this.serviceLocator = new ServiceLocator(FDStoreProperties.getInitialContext());
@@ -69,6 +68,7 @@ public abstract class FDAbstractCache<K,V> {
 	private final class RefreshThread extends Thread {
 	        public RefreshThread(String name) {
     	            super(name);
+    	            this.setDaemon(true);
                 }
 	        
 		@Override
