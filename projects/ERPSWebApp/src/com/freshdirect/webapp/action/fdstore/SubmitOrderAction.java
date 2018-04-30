@@ -464,7 +464,9 @@ public class SubmitOrderAction extends WebActionSupport {
 		//if(!(cart instanceof FDModifyCartModel) &&( FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && cart.containsDlvPassOnly())){
 		if(cart.isDlvPassStandAloneCheckoutAllowed() && cart.containsDlvPassOnly()){
 			try{
+				if(null == cart.getDeliveryAddress()){
 				cart.setDeliveryAddress(DeliveryPassSubscriptionUtil.setDeliveryPassDeliveryAddress(user.getSelectedServiceType()));
+				}
 				FDReservation rsrv=DeliveryPassSubscriptionUtil.setFDReservation(user.getIdentity().getErpCustomerPK(),cart.getDeliveryAddress().getId());
 				cart.setDeliveryReservation(rsrv);
 				cart.setZoneInfo(DeliveryPassSubscriptionUtil.getZoneInfo(cart.getDeliveryAddress()));

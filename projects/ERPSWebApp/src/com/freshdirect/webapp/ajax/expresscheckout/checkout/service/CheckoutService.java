@@ -165,7 +165,9 @@ public class CheckoutService {
 	//	if(FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && cart.containsDlvPassOnly()){
 		if(cart.isDlvPassStandAloneCheckoutAllowed() && cart.containsDlvPassOnly()){
 			isAtpCheckRequired = false;
+			if(null == cart.getDeliveryAddress()){
 			cart.setDeliveryAddress(DeliveryPassSubscriptionUtil.setDeliveryPassDeliveryAddress(user.getSelectedServiceType()));
+			}
 			FDReservation rsrv=DeliveryPassSubscriptionUtil.setFDReservation(user.getIdentity().getErpCustomerPK(),cart.getDeliveryAddress().getId());
 			cart.setDeliveryReservation(rsrv);
 			cart.setZoneInfo(DeliveryPassSubscriptionUtil.getZoneInfo(cart.getDeliveryAddress()));

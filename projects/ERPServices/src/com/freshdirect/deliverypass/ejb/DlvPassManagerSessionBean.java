@@ -31,6 +31,7 @@ import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.deliverypass.DeliveryPassType;
 import com.freshdirect.deliverypass.DlvPassConstants;
+import com.freshdirect.deliverypass.EnumDlvPassProfileType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -84,6 +85,10 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 						.getMaxDlvPassPurchaseLimit()){//make it read from property file.
 					//HAs a pending delivery pass in the system.
 					throw new DeliveryPassException("We're sorry. The order cannot be submitted since this account has reached the DeliveryPass limit.",model.getCustomerId());
+				} else if (Integer.parseInt(statusMap.get("autoRenewUsableDPCount").toString()) > 0 && statusMap.get("AutoRenewDPType").toString().equals(model.getType())){						
+					throw new DeliveryPassException("You already have a DeliveryPass scheduled to automatically renew.",model.getCustomerId());
+				} else if((Boolean) statusMap.get("reasonNotEligible")) {
+					throw new DeliveryPassException("Not currently eligible for DeliveryPass. Please contact Customer Service at {0}",model.getCustomerId());
 				}
 			}
 
@@ -775,6 +780,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 		allStatusMap.put(DlvPassConstants.AUTORENEW_USABLE_PASS_COUNT, "0");
 		allStatusMap.put(DlvPassConstants.AUTORENEW_DP_TYPE,null);
 		allStatusMap.put(DlvPassConstants.AUTORENEW_DP_PRICE,new Double(0));
+		allStatusMap.put(DlvPassConstants.REASON_NOT_ELIGIBLE, Boolean.FALSE);
 		try {
 			conn = getConnection();
 			List<DeliveryPassModel> dlvPasses = DeliveryPassDAO.getDeliveryPasses(conn, customerPk);
@@ -796,6 +802,9 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 							}
 							if(model.getType().isFreeTrialRestricted() && !EnumDlvPassStatus.ORDER_CANCELLED.equals(model.getStatus())) {
 								allStatusMap.put(DlvPassConstants.IS_FREE_TRIAL_RESTRICTED, Boolean.TRUE);
+							}
+							if (EnumDlvPassProfileType.NOT_ELIGIBLE.equals(model.getType().getProfileValue())){
+								allStatusMap.put(DlvPassConstants.REASON_NOT_ELIGIBLE, Boolean.TRUE);
 							}
 						}
 					}
