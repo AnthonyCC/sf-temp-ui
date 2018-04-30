@@ -99,7 +99,7 @@ boolean showCaptchaInPayment = CaptchaUtil.isExcessiveAttempt(FDStoreProperties.
   </tmpl:put>
 
   <tmpl:put name='content' direct='true'>
-    <div id="expresscheckout" <% if(FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && user.getShoppingCart().containsDlvPassOnly()){ %> class="deliverypasscheckout" <% } %>>
+    <div id="expresscheckout" <% if(user.getShoppingCart().isDlvPassStandAloneCheckoutAllowed() && user.getShoppingCart().containsDlvPassOnly()){ %> class="deliverypasscheckout" <% } %>>
       <div class="container">
 
       	<div id="cartheader_co">

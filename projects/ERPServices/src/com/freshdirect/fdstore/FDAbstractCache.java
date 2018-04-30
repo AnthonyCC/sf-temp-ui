@@ -68,6 +68,7 @@ public abstract class FDAbstractCache<K,V> {
 	private final class RefreshThread extends Thread {
 	        public RefreshThread(String name) {
     	            super(name);
+    	            this.setDaemon(true);
                 }
 	        
 		@Override
