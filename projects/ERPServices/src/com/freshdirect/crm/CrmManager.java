@@ -324,11 +324,7 @@ public class CrmManager {
 
 	public PrimaryKey createLateIssue(CrmLateIssueModel lateIssue) throws FDResourceException, RemoteException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				return CrmManagerService.getInstance().createLateIssue(lateIssue);
-			}else{
 				return this.getCrmManagerSB().createLateIssue(lateIssue);
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to CrmLateIssuerSB");
 		}
@@ -336,11 +332,7 @@ public class CrmManager {
 
 	public void updateLateIssue(CrmLateIssueModel lateIssue) throws FDResourceException,FinderException, RemoteException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				 CrmManagerService.getInstance().updateLateIssue(lateIssue);
-			}else{
 				this.getCrmManagerSB().updateLateIssue(lateIssue);
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to CrmLateIssuerSB");
 		}
@@ -348,11 +340,7 @@ public class CrmManager {
 	
 	public CrmLateIssueModel getLateIssueById(String id) throws FDResourceException, RemoteException, FinderException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				return CrmManagerService.getInstance().getLateIssueById(id);
-			}else{
 			   return this.getCrmManagerSB().getLateIssueById(id);
-			}
 			} catch (RemoteException e) {
 				throw new FDResourceException(e, "Exception getting Late Issue by ID");
 			}
@@ -360,11 +348,7 @@ public class CrmManager {
 	
 	public Collection<CrmLateIssueModel> getLateIssuesByDate(Date date) throws FDResourceException   {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				return CrmManagerService.getInstance().getLateIssuesByDate(date);
-			}else{
 			   return this.getCrmManagerSB().getLateIssuesByDate(date);
-			}
 			} catch (RemoteException e) {
 				throw new FDResourceException(e, "Excepption getting late issue by Date");
 			}
@@ -372,11 +356,7 @@ public class CrmManager {
 	
 	public Collection<CrmLateIssueModel> getLateIssuesByRouteAndDate(String route, Date date) throws FDResourceException   {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				return CrmManagerService.getInstance().getLateIssuesByRouteAndDate(route, date);
-			}else{
 			   return this.getCrmManagerSB().getLateIssuesByRouteAndDate(route,date);
-			}
 			} catch (RemoteException e) {
 				throw new FDResourceException(e, "Exception getting late issue by date & route");
 			}
@@ -384,11 +364,7 @@ public class CrmManager {
 	
 	public List<ErpTruckInfo> getTruckNumbersForDate(Date dlvDate) throws FDResourceException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				return CrmManagerService.getInstance().getTruckNumbersForDate(dlvDate);
-			}else{
 			   return this.getCrmManagerSB().getTruckNumbersForDate(dlvDate);
-			}
 			} catch (RemoteException e) {
 				throw new FDResourceException(e, "Exception getting late issue by date & route");
 			}
@@ -396,14 +372,9 @@ public class CrmManager {
 	}
 	
 	public CrmLateIssueModel getRecentLateIssueForOrder(String orderId) throws FDResourceException {
-			try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				return orderId==null ? null 
-						:CrmManagerService.getInstance().getRecentLateIssueForOrder(orderId);
-			}else{		
+			try {	
 			return orderId==null ? null 
 				: this.getCrmManagerSB().getRecentLateIssueForOrder(orderId);
-			}
 		}catch (RemoteException e) {
 			throw new FDResourceException(e, "Exception getting recentlate issue for order id: "+orderId);
 		}
@@ -411,11 +382,7 @@ public class CrmManager {
 
 	public CrmCustomerHeaderInfo getCustomerHeaderInfo(String customerId) throws FDResourceException {
 		try{
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				return CrmManagerService.getInstance().getCustomerHeaderInfo(customerId);
-			}else{
 			return this.getCrmManagerSB().getCustomerHeaderInfo(customerId);
-			}
 		}catch (RemoteException e) {
 			e.printStackTrace();
 			throw new FDResourceException(e, "Exception getting customer Header info for customer id: "+customerId);
@@ -429,11 +396,7 @@ public class CrmManager {
 								String reasonCode, 
 								String saleId) throws FDResourceException, CrmAuthorizationException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				 CrmManagerService.getInstance().incrDeliveryCount(model, agentModel, delta, note, reasonCode, saleId);
-			}else{
 				this.getCrmManagerSB().incrDeliveryCount(model, agentModel, delta, note, reasonCode, saleId);
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while incrementing delivery count.");
 		}
@@ -446,12 +409,7 @@ public class CrmManager {
 									String reasonCode, 
 									String saleId) throws FDResourceException, CrmAuthorizationException{
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				 CrmManagerService.getInstance().incrExpirationPeriod(model, agentModel, noOfDays, note, reasonCode, saleId);
-						
-			}else{
 				this.getCrmManagerSB().incrExpirationPeriod(model, agentModel, noOfDays, note, reasonCode, saleId);
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while incrementing expiration period.");
 		}
@@ -463,11 +421,7 @@ public class CrmManager {
 								String reasonCode, 
 								String saleId) throws FDResourceException{
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				 CrmManagerService.getInstance().cancelDeliveryPass(model, agentModel, note, reasonCode, saleId);
-			}else{
 			this.getCrmManagerSB().cancelDeliveryPass(model, agentModel, note, reasonCode, saleId);
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while cancelling delivery pass.");
 		}
@@ -475,11 +429,7 @@ public class CrmManager {
 
 	public void reactivateDeliveryPass(DeliveryPassModel model) throws FDResourceException{
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				 CrmManagerService.getInstance().reactivateDeliveryPass(model);
-			}else{
 				this.getCrmManagerSB().reactivateDeliveryPass(model);
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while cancelling delivery pass.");
 		}
@@ -487,11 +437,7 @@ public class CrmManager {
 
 	public String lookupAccount(String accountNum) throws FDResourceException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				return CrmManagerService.getInstance().lookupAccount(accountNum);
-			}else{
 				return this.getCrmManagerSB().lookupAccount(accountNum);
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while performing Account Lookup.");
 		}
@@ -499,11 +445,7 @@ public class CrmManager {
 	
 	public List<String> lookupOrders(String accountNum) throws FDResourceException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				return CrmManagerService.getInstance().lookupOrders(accountNum);
-			}else{
 				return this.getCrmManagerSB().lookupOrders(accountNum);
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while performing Order Lookup.");
 		}
@@ -524,11 +466,7 @@ public class CrmManager {
 	
 	public void logViewAccount(CrmAgentModel agent, String customerID)throws FDResourceException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				 CrmManagerService.getInstance().logViewAccount(agent, customerID);
-			}else{
 				this.getCrmManagerSB().logViewAccount(agent, customerID);
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while log view account activity.");
 		}
@@ -536,11 +474,7 @@ public class CrmManager {
 	
 	public void logViewAccount(CrmAgentModel agent, String customerID,EnumAccountActivityType activityType, String maskedAcctNumber)throws FDResourceException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				 CrmManagerService.getInstance().logViewAccount(agent, customerID, activityType, maskedAcctNumber);
-			}else{
 				this.getCrmManagerSB().logViewAccount(agent, customerID, activityType, maskedAcctNumber);
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while log view account activity.");
 		}
@@ -548,11 +482,7 @@ public class CrmManager {
 	
 	public ErpCannedText createCannedText(ErpCannedText cannedText) throws FDResourceException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				return CrmManagerService.getInstance().createCannedText(cannedText);
-			}else{
 				return this.getCrmManagerSB().createCannedText(cannedText);
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while creating canned text.");
 		}		
@@ -560,11 +490,7 @@ public class CrmManager {
 
 	public void updateCannedText(ErpCannedText cannedText, String id) throws FDResourceException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				 CrmManagerService.getInstance().updateCannedText(cannedText, id);
-			}else{
 				this.getCrmManagerSB().updateCannedText(cannedText, id);
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while updating canned text.");
 		}		
@@ -572,11 +498,7 @@ public class CrmManager {
 	
 	public void deleteCannedText(String id) throws FDResourceException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				 CrmManagerService.getInstance().deleteCannedText(id);
-			}else{
 				this.getCrmManagerSB().deleteCannedText(id);
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while deleting canned text.");
 		}		
@@ -584,35 +506,15 @@ public class CrmManager {
 	
 	public ErpCannedText getCannedTextById(String id) throws FDResourceException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				return CrmManagerService.getInstance().getCannedTextById(id);
-			}else{
 				return this.getCrmManagerSB().getCannedTextById(id);
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while getting canned text.");
 		}		
 	}
 
-	public Collection<ErpCannedText> getAllCannedTextInCategory(EnumCannedTextCategory category) throws FDResourceException {
-		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				return CrmManagerService.getInstance().getAllCannedTextInCategory(category);
-			}else{
-				return this.getCrmManagerSB().getAllCannedTextInCategory(category);
-			}
-		} catch (RemoteException e) {
-			throw new FDResourceException(e, "Error in CrmManagerSB while getting all canned text in category.");
-		}		
-	}
-
 	public Collection<ErpCannedText> getAllCannedText() throws FDResourceException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				return CrmManagerService.getInstance().getAllCannedText();
-			}else{
 				return this.getCrmManagerSB().getAllCannedText();
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while getting all canned text.");
 		}		
@@ -621,11 +523,7 @@ public class CrmManager {
 	public Map<String,Set<EnumComplaintDlvIssueType>> getDeliveryIssueTypes(String customerId) throws FDResourceException {
 		try {
 			Map<String,Set<String>> m = null;
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				 m = CrmManagerService.getInstance().getComplaintDeliveryIssueTypes(customerId);
-			}else{
 				 m = this.getCrmManagerSB().getComplaintDeliveryIssueTypes(customerId);
-			}
 			Map<String,Set<EnumComplaintDlvIssueType>> t_m = new HashMap<String,Set<EnumComplaintDlvIssueType>>();
 
 			// transform 
@@ -645,11 +543,7 @@ public class CrmManager {
 	
 	public String getLastDeliveredOrder(String customerId) throws FDResourceException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				 return  CrmManagerService.getInstance().getLastDeliveredOrder(customerId);
-			}else{
 				return this.getCrmManagerSB().getLastDeliveredOrder(customerId);
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while getting first delivered sale.");
 		}
@@ -657,11 +551,7 @@ public class CrmManager {
 	
 	public CrmAgentModel getAgentByLdapId(String agentLdapId) throws FDResourceException,CrmAuthenticationException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				return CrmManagerService.getInstance().getAgentByLdapId(agentLdapId);
-			}else{
 				return this.getCrmManagerSB().getAgentByLdapId(agentLdapId);
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while getting first delivered sale.");
 		}
@@ -672,11 +562,7 @@ public class CrmManager {
 	}
 	public List<CrmAuthInfo> getAuthorizations(CrmAgentRole role,CrmAuthSearchCriteria filter) throws FDResourceException{
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				 return  CrmManagerService.getInstance().getAuthorizations(role, filter);
-			}else{
 				return this.getCrmManagerSB().getAuthorizations(role, filter);
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while getting authorizations.");
 		}
@@ -684,11 +570,7 @@ public class CrmManager {
 	
 	public CustomerCreditModel getOrderForLateCredit(String saleId, String autoId) throws FDResourceException {
 		try {	
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				 return  CrmManagerService.getInstance().getOrderForLateCredit(saleId, autoId);
-			}else{
 				return this.getCrmManagerSB().getOrderForLateCredit(saleId,autoId);
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while getting getOrderForLateCredit.");
 		}
@@ -696,11 +578,7 @@ public class CrmManager {
 	
 	public boolean isCaseCreatedForOrderLateDelivery(String saleId) throws FDResourceException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				 return  CrmManagerService.getInstance().isCaseCreatedForOrderLateDelivery(saleId);
-			}else{
 				return this.getCrmManagerSB().isCaseCreatedForOrderLateDelivery(saleId);
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while getting isOrderCreditedForLateDelivery.");
 		}
@@ -708,11 +586,7 @@ public class CrmManager {
 	
 	public boolean isOrderCreditedForLateDelivery(String saleId) throws FDResourceException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				 return  CrmManagerService.getInstance().isOrderCreditedForLateDelivery(saleId);
-			}else{
 				return this.getCrmManagerSB().isOrderCreditedForLateDelivery(saleId);
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while getting isOrderCreditedForLateDelivery.");
 		}
@@ -720,11 +594,7 @@ public class CrmManager {
 	
 	public DeliveryPassModel getDeliveryPassInfo(String dlvPassId) throws FDResourceException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				 return  CrmManagerService.getInstance().getDeliveryPassInfoById(dlvPassId);
-			}else{
 				return this.getCrmManagerSB().getDeliveryPassInfoById(dlvPassId);
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while getting getDeliveryPassInfo.");
 		}
@@ -732,11 +602,7 @@ public class CrmManager {
 	
 	public void updateAutoLateCredit(String autoId, String orderId) throws FDResourceException {		
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				   CrmManagerService.getInstance().updateAutoLateCredit(autoId, orderId);
-			}else{
 				this.getCrmManagerSB().updateAutoLateCredit(autoId, orderId);
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while getting updateAutoLateCredit.");
 		}
@@ -744,11 +610,7 @@ public class CrmManager {
 	
 	public DeliveryPassModel getActiveDP(String custId) throws FDResourceException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				 return  CrmManagerService.getInstance().getActiveDP(custId);
-			}else{
 				return this.getCrmManagerSB().getActiveDP(custId);
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while getting getActiveDP.");
 		}
@@ -756,11 +618,7 @@ public class CrmManager {
 	
 	public void updateLateCreditsRejected(String autoId, String agent) throws FDResourceException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				   CrmManagerService.getInstance().updateLateCreditsRejected(autoId, agent);
-			}else{
 				this.getCrmManagerSB().updateLateCreditsRejected(autoId, agent);
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while getting getActiveDP.");
 		}
@@ -768,11 +626,7 @@ public class CrmManager {
 	
 	public boolean isDlvPassAlreadyExtended(String orderId, String customerId) throws FDResourceException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				  return  CrmManagerService.getInstance().isDlvPassAlreadyExtended(orderId, customerId);
-			}else{
 				return this.getCrmManagerSB().isDlvPassAlreadyExtended(orderId, customerId);
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while getting getActiveDP.");
 		}
@@ -780,11 +634,7 @@ public class CrmManager {
 	
 	public boolean isCRMRestrictionEnabled() throws FDResourceException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				  return  CrmManagerService.getInstance().isCRMRestrictionEnabled();
-			}else{
 				return this.getCrmManagerSB().isCRMRestrictionEnabled();
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB for isCrmRestrictionEnabled().");
 		}
@@ -798,12 +648,8 @@ public class CrmManager {
 			if(ldapId.toLowerCase().indexOf("crmqa")!=-1) return false;
 			else {
 				String allowedUsers = null;
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-					allowedUsers=  CrmManagerService.getInstance().getAllowedUsers();
-				}else{
 					 allowedUsers=this.getCrmManagerSB().getAllowedUsers();
 					
-				}
 				if("ALL".equals(allowedUsers)) return false;
 				else  {
 					return allowedUsers.toLowerCase().indexOf(ldapId.toLowerCase())!=-1?false:true;
