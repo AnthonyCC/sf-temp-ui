@@ -163,7 +163,9 @@ public class SinglePageCheckoutFacade {
         if (StandingOrderHelper.isSO3StandingOrder(user)) {
             result.setTimeslot(timeslotService.loadCartTimeslot(user, user.getSoTemplateCart()));
         } else {
-            result.setTimeslot(timeslotService.loadCartTimeslot(user, user.getShoppingCart()));
+        	if(!(user.getShoppingCart().isDlvPassStandAloneCheckoutAllowed() && user.getShoppingCart().containsDlvPassOnly())){
+        		result.setTimeslot(timeslotService.loadCartTimeslot(user, user.getShoppingCart()));
+        	}
         }
         if (!StandingOrderHelper.isSO3StandingOrder(user)) {
             result.setRestriction(CheckoutService.defaultService().preCheckOrder(user));

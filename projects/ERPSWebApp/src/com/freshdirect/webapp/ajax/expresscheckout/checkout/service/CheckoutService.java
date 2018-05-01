@@ -173,6 +173,7 @@ public class CheckoutService {
 			cart.setZoneInfo(DeliveryPassSubscriptionUtil.getZoneInfo(cart.getDeliveryAddress()));
 	        cart.setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(user.getUserContext()));
 	        cart.setEStoreId(user.getUserContext().getStoreContext().getEStoreId());
+	        atpFailureData = applyAtpCheck(user);
 		}else{
 			restriction = preCheckOrder(user);
 	        if (checkAtpCheckEligibleByRestrictions(restriction)) {

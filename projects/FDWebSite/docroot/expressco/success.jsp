@@ -33,12 +33,12 @@
     <jwr:script src="/expressco.js" useRandomParam="false" />
     
     <script>
-      (function () {
-        if(FreshDirect.expressco.data.redirectUrl){
-          FreshDirect.common.dispatcher.signal('redirectUrl', FreshDirect.expressco.data.redirectUrl);
-        }
-      }());
-    </script>
+		(function (fd) {
+			if(fd.expressco && fd.expressco.data && fd.expressco.data.redirectUrl){
+				fd.common.dispatcher.signal('redirectUrl', fd.expressco.data.redirectUrl);
+			}
+		}(FreshDirect));
+	</script>
     
   </tmpl:put>
 

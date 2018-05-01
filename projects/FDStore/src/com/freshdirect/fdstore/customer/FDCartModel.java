@@ -1119,7 +1119,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	 */
 	@Override
     public Map<String,FDAvailabilityInfo> getUnavailabilityMap() {
-		if(this.deliveryReservation == null){
+		if(this.deliveryReservation == null || this.deliveryReservation.getTimeslot()== null || this.deliveryReservation.getStartTime() == null || deliveryReservation.getEndTime() ==null){
 			return Collections.<String,FDAvailabilityInfo>emptyMap();
 		}
 
