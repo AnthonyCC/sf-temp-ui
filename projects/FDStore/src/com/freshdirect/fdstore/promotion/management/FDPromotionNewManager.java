@@ -1,8 +1,6 @@
 package com.freshdirect.fdstore.promotion.management;
 
 import java.rmi.RemoteException;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -23,7 +21,6 @@ import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ecomm.gateway.FDPromotionManagerService;
-import com.freshdirect.fdstore.ecomm.gateway.FDPromotionManagerServiceI;
 import com.freshdirect.fdstore.promotion.EnumPromotionStatus;
 import com.freshdirect.fdstore.promotion.FDPromotionNewModelFactory;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
@@ -35,8 +32,6 @@ import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.metaparadigm.jsonrpc.JSONSerializer;
-import com.metaparadigm.jsonrpc.MarshallException;
-import com.metaparadigm.jsonrpc.UnmarshallException;
 
 public class FDPromotionNewManager {
 
@@ -44,7 +39,7 @@ public class FDPromotionNewManager {
 
 	private static FDPromotionManagerNewHome managerHome = null;
 	
-	private static JSONSerializer ser = new JSONSerializer();
+	/*private static JSONSerializer ser = new JSONSerializer();
 	static {
 		try {
 			ser.registerDefaultSerializers();
@@ -52,28 +47,22 @@ public class FDPromotionNewManager {
 		} catch (Exception e) {
 			
 		}
-	}
+	}*/
 
-	@Deprecated
+	
 	public static PrimaryKey createPromotion(FDPromotionNewModel promotion) throws FDResourceException,
 			FDDuplicatePromoFieldException, FDPromoTypeNotFoundException, FDPromoCustNotFoundException {
 		lookupManagerHome();
 
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
-				PrimaryKey pk =FDPromotionManagerService.getInstance().createPromotion(promotion);
-				FDPromotionNewModelFactory.getInstance().forceRefresh();
-				return pk;
-			} else {
+			FDPromotionManagerNewSB sb = managerHome.create();
+			PrimaryKey pk = sb.createPromotion(promotion);
 
-				FDPromotionManagerNewSB sb = managerHome.create();
-				PrimaryKey pk = sb.createPromotion(promotion);
-
-				// this forces a refresh of the promotions cache
-				// FDPromotionFactory.getInstance().forceRefresh();
-				FDPromotionNewModelFactory.getInstance().forceRefresh();
-				return pk;
-			}
+			// this forces a refresh of the promotions cache
+			// FDPromotionFactory.getInstance().forceRefresh();
+			FDPromotionNewModelFactory.getInstance().forceRefresh();
+			return pk;
+			
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -83,18 +72,12 @@ public class FDPromotionNewManager {
 		}
 	}
 
-	@Deprecated
 	public static List<FDPromotionNewModel> getPromotions() throws FDResourceException {
 		lookupManagerHome();
 
-		try {
-			
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
-				return FDPromotionManagerService.getInstance().getPromotions();
-			} else {
+		try {			
 			FDPromotionManagerNewSB sb = managerHome.create();
 			return sb.getPromotions();
-			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -107,16 +90,10 @@ public class FDPromotionNewManager {
 
 	public static List<FDPromotionNewModel> getPromotionsByYear(Integer modifiedYear) throws FDResourceException {
 		
-
-		try {
-			
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
-				return FDPromotionManagerService.getInstance().getPromotionsByYear(modifiedYear);
-			} else {
-			lookupManagerHome();
+		lookupManagerHome();
+		try {						
 			FDPromotionManagerNewSB sb = managerHome.create();
-			return sb.getPromotionsByYear(modifiedYear);
-			}
+			return sb.getPromotionsByYear(modifiedYear);			
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -128,17 +105,10 @@ public class FDPromotionNewManager {
 	}
 
 	public static List<FDPromotionNewModel> getModifiedOnlyPromotions(Date lastModified) throws FDResourceException {
-
-		try {
-
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
-				return FDPromotionManagerService.getInstance().getModifiedOnlyPromotions(lastModified);
-			} else {
-				lookupManagerHome();
-
-				FDPromotionManagerNewSB sb = managerHome.create();
-				return sb.getModifiedOnlyPromotions(lastModified);
-			}
+		lookupManagerHome();
+		try {			
+			FDPromotionManagerNewSB sb = managerHome.create();
+			return sb.getModifiedOnlyPromotions(lastModified);			
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -153,13 +123,8 @@ public class FDPromotionNewManager {
 		lookupManagerHome();
 
 		try {
-
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
-				return FDPromotionManagerService.getInstance().getPromotionByPK(promotionId);
-			} else {
-				FDPromotionManagerNewSB sb = managerHome.create();
-				return sb.getPromotion(promotionId);
-			}
+			FDPromotionManagerNewSB sb = managerHome.create();
+			return sb.getPromotion(promotionId);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -173,19 +138,10 @@ public class FDPromotionNewManager {
 
 
 	public static FDPromotionNewModel getPromotionByPk(String pk) throws FDResourceException {
-	
-		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
-				// REST call
-				 return FDPromotionManagerService.getInstance().getPromotionByPK(pk);
-				
-			} else {
-				lookupManagerHome();
-				FDPromotionManagerNewSB sb = managerHome.create();
-				return sb.getPromotionByPk(pk);
-		
-			}
-
+		lookupManagerHome();
+		try {			
+			FDPromotionManagerNewSB sb = managerHome.create();
+			return sb.getPromotionByPk(pk);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -234,15 +190,10 @@ public class FDPromotionNewManager {
 			FDDuplicatePromoFieldException, FDPromoTypeNotFoundException, FDPromoCustNotFoundException {
 		lookupManagerHome();
 
-		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
-				// REST call
-				 FDPromotionManagerService.getInstance().storePromotion(promotion, saveLog);
-				
-			} else {
+		try {			
 			FDPromotionManagerNewSB sb = managerHome.create();
 			sb.storePromotion(promotion, saveLog);
-			}
+			
 			// this forces a refresh of the promotions cache
 			// FDPromotionFactory.getInstance().forceRefresh();
 			FDPromotionNewModelFactory.getInstance().forceRefresh();
@@ -259,21 +210,16 @@ public class FDPromotionNewManager {
 
 	}
 
-	@Deprecated
+	
 	public static void createPromotions(List<FDPromotionNewModel> promotions) throws FDResourceException,
 			FDDuplicatePromoFieldException, FDPromoTypeNotFoundException, FDPromoCustNotFoundException {
 		lookupManagerHome();
 
 		try {
 			
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
-				// REST call
-				 FDPromotionManagerService.getInstance().createPromotions(promotions );
-				
-			} else {
+			
 			FDPromotionManagerNewSB sb = managerHome.create();
 			sb.createPromotions(promotions);
-			}
 			// this forces a refresh of the promotions cache
 			// FDPromotionFactory.getInstance().forceRefresh();
 			FDPromotionNewModelFactory.getInstance().forceRefresh();
@@ -290,18 +236,10 @@ public class FDPromotionNewManager {
 
 	public static List<FDPromotionNewModel> loadPublishablePromotions() throws FDResourceException, FinderException {
 		
-
+		lookupManagerHome();
 		try {
-			
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
-				// REST call
-				 return  FDPromotionManagerService.getInstance().getPublishablePromos();
-				
-			} else {
-				lookupManagerHome();
 			FDPromotionManagerNewSB sb = managerHome.create();
 			return sb.getPublishablePromos();
-			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -314,15 +252,10 @@ public class FDPromotionNewManager {
 
 	public static boolean isPromotionCodeUsed(String promoCode) throws FDResourceException {
 	
-
+		lookupManagerHome();
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
-				return FDPromotionManagerService.getInstance().isPromotionCodeUsed(promoCode);
-			} else {
-				lookupManagerHome();
-				FDPromotionManagerNewSB sb = managerHome.create();
-				return sb.isPromotionCodeUsed(promoCode);
-			}
+			FDPromotionManagerNewSB sb = managerHome.create();
+			return sb.isPromotionCodeUsed(promoCode);			
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -332,19 +265,13 @@ public class FDPromotionNewManager {
 		}
 	}
 
-	@Deprecated
+	
 	public static boolean isPromotionNameUsed(String promoName) throws FDResourceException {
 		
-
+		lookupManagerHome();
 		try {
-
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
-				return FDPromotionManagerService.getInstance().isPromotionNameUsed(promoName);
-			} else {
-				lookupManagerHome();
-				FDPromotionManagerNewSB sb = managerHome.create();
-				return sb.isPromotionNameUsed(promoName);
-			}
+			FDPromotionManagerNewSB sb = managerHome.create();
+			return sb.isPromotionNameUsed(promoName);	
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -357,13 +284,9 @@ public class FDPromotionNewManager {
 	public static String findPromotion(String promoCode) throws FDResourceException {
 		lookupManagerHome();
 
-		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
-				return FDPromotionManagerService.getInstance().findpromotionIDbyPromoCode(promoCode);
-			} else {
-				FDPromotionManagerNewSB sb = managerHome.create();
-				return sb.findPromotion(promoCode);
-			}
+		try {		
+			FDPromotionManagerNewSB sb = managerHome.create();
+			return sb.findPromotion(promoCode);			
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -374,16 +297,11 @@ public class FDPromotionNewManager {
 	}
 
 	public static boolean publishPromotion(FDPromotionNewModel promo) throws FDResourceException {
-		
+		lookupManagerHome();
 
-		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
-				return FDPromotionManagerService.getInstance().publishPromotion(promo);
-			} else {
-				lookupManagerHome();
+		try {				
 			FDPromotionManagerNewSB sb = managerHome.create();
 			return sb.publishPromotion(promo);
-			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -395,16 +313,10 @@ public class FDPromotionNewManager {
 
 	public static boolean cancelPromotion(FDPromotionNewModel promo) throws FDResourceException {
 	
-
+		lookupManagerHome();
 		try {
-			
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
-				return FDPromotionManagerService.getInstance().cancelPromotion(promo);
-			} else {
-				lookupManagerHome();
 			FDPromotionManagerNewSB sb = managerHome.create();
 			return sb.cancelPromotion(promo);
-			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -415,19 +327,13 @@ public class FDPromotionNewManager {
 	}
 
 	public static boolean fixPromoStatusAfterPublish(Collection<String> codes) throws FDResourceException {
-	
+		lookupManagerHome();
 
-		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
-				return FDPromotionManagerService.getInstance().fixPromotionStatusAfterPublish(codes);
-			} else {
-				lookupManagerHome();
-				FDPromotionManagerNewSB sb = managerHome.create();
-				boolean val = sb.fixPromoStatusAfterPublish(codes);
-
-				// FDPromotionNewModelFactory.getInstance().forceRefresh();
-				return val;
-			}
+		try {			
+			FDPromotionManagerNewSB sb = managerHome.create();
+			boolean val = sb.fixPromoStatusAfterPublish(codes);
+			// FDPromotionNewModelFactory.getInstance().forceRefresh();
+			return val;			
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -459,14 +365,9 @@ public class FDPromotionNewManager {
 			throws FDResourceException, FinderException {
 		lookupManagerHome();
 
-		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
-				return FDPromotionManagerService.getInstance().loadPromoAuditChanges(promotionId);
-			} else {
-		
+		try {			
 			FDPromotionManagerNewSB sb = managerHome.create();
 			return sb.getPromoAuditChanges(promotionId);
-			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -505,12 +406,6 @@ public class FDPromotionNewManager {
 
 		try {
 			
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
-				PrimaryKey pk = FDPromotionManagerService.getInstance().createPromotionBasic(promotion);
-				FDPromotionNewModelFactory.getInstance().forceRefresh();
-				return pk;
-			} else {
-
 			FDPromotionManagerNewSB sb = managerHome.create();
 			PrimaryKey pk = sb.createPromotionBasic(promotion);
 			
@@ -518,7 +413,6 @@ public class FDPromotionNewManager {
 			// FDPromotionFactory.getInstance().forceRefresh();
 			FDPromotionNewModelFactory.getInstance().forceRefresh();
 			return pk;
-			}
 			
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -533,15 +427,10 @@ public class FDPromotionNewManager {
 			FDDuplicatePromoFieldException, FDPromoTypeNotFoundException, FDPromoCustNotFoundException {
 		lookupManagerHome();
 
-		try {
+		try {			
 			
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
-				FDPromotionManagerService.getInstance().storePromotionBasic(promotion);
-				
-			} else {
 			FDPromotionManagerNewSB sb = managerHome.create();
 			sb.storePromotionBasic(promotion);
-			}
 			// this forces a refresh of the promotions cache
 			// FDPromotionFactory.getInstance().forceRefresh();
 			FDPromotionNewModelFactory.getInstance().forceRefresh();
@@ -561,15 +450,10 @@ public class FDPromotionNewManager {
 			FDDuplicatePromoFieldException, FDPromoTypeNotFoundException, FDPromoCustNotFoundException {
 		lookupManagerHome();
 
-		try {
-			
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
-				FDPromotionManagerService.getInstance().storePromotionOfferInfo(promotion);
-				
-			} else {
+		try {			
+		
 			FDPromotionManagerNewSB sb = managerHome.create();
 			sb.storePromotionOfferInfo(promotion);
-			}
 			// this forces a refresh of the promotions cache
 			// FDPromotionFactory.getInstance().forceRefresh();
 			FDPromotionNewModelFactory.getInstance().forceRefresh();
@@ -587,18 +471,12 @@ public class FDPromotionNewManager {
 
 	public static void storePromotionCartInfo(FDPromotionNewModel promotion) throws FDResourceException,
 			FDDuplicatePromoFieldException, FDPromoTypeNotFoundException, FDPromoCustNotFoundException {
-
+		lookupManagerHome();
 
 		try {
-			
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
-				FDPromotionManagerService.getInstance().storePromotionCartInfo(promotion);
-				
-			} else {
-			lookupManagerHome();
+		
 			FDPromotionManagerNewSB sb = managerHome.create();
 			sb.storePromotionCartInfo(promotion);
-			}
 			// this forces a refresh of the promotions cache
 			// FDPromotionFactory.getInstance().forceRefresh();
 			FDPromotionNewModelFactory.getInstance().forceRefresh();
@@ -639,15 +517,9 @@ public class FDPromotionNewManager {
 			FDDuplicatePromoFieldException, FDPromoTypeNotFoundException, FDPromoCustNotFoundException {
 		lookupManagerHome();
 
-		try {
-			
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
-				FDPromotionManagerService.getInstance().storePromotionPaymentInfo(promotion);
-				
-			} else {
+		try {			
 			FDPromotionManagerNewSB sb = managerHome.create();
 			sb.storePromotionPaymentInfo(promotion);
-			}
 			// this forces a refresh of the promotions cache
 			// FDPromotionFactory.getInstance().forceRefresh();
 			FDPromotionNewModelFactory.getInstance().forceRefresh();
@@ -708,18 +580,11 @@ public class FDPromotionNewManager {
 
 	public static void storePromotionDlvZoneInfo(FDPromotionNewModel promotion) throws FDResourceException,
 			FDDuplicatePromoFieldException, FDPromoTypeNotFoundException, FDPromoCustNotFoundException {
-	
+		lookupManagerHome();
 
 		try {
-			
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
-				FDPromotionManagerService.getInstance().storePromotionDlvZoneInfo(promotion);
-				
-			} else {
-				lookupManagerHome();
 			FDPromotionManagerNewSB sb = managerHome.create();
 			sb.storePromotionDlvZoneInfo(promotion);
-			}
 			// this forces a refresh of the promotions cache
 			// FDPromotionFactory.getInstance().forceRefresh();
 			FDPromotionNewModelFactory.getInstance().forceRefresh();
@@ -741,13 +606,8 @@ public class FDPromotionNewManager {
 
 		try {
 			
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
-				FDPromotionManagerService.getInstance().storePromotionCustReqInfo(promotion);
-				return;
-			} else {
 			FDPromotionManagerNewSB sb = managerHome.create();
 			sb.storePromotionCustReqInfo(promotion);
-			}
 			// this forces a refresh of the promotions cache
 			// FDPromotionFactory.getInstance().forceRefresh();
 			FDPromotionNewModelFactory.getInstance().forceRefresh();
@@ -807,13 +667,8 @@ public class FDPromotionNewManager {
 		lookupManagerHome();
 
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
-				return FDPromotionManagerService.getInstance().isRedemptionCodeExists(redemptionCode);
-			} else {
-
-				FDPromotionManagerNewSB sb = managerHome.create();
-				return sb.isRedemptionCodeExists(redemptionCode);
-			}
+			FDPromotionManagerNewSB sb = managerHome.create();
+			return sb.isRedemptionCodeExists(redemptionCode);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -826,14 +681,9 @@ public class FDPromotionNewManager {
 	public static boolean isRedemptionCodeExists(String redemptionCode, String promotionId) throws FDResourceException {
 		lookupManagerHome();
 
-		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
-				return FDPromotionManagerService.getInstance().isRedemptionCodeExists(redemptionCode, promotionId);
-			} else {
-
-				FDPromotionManagerNewSB sb = managerHome.create();
-				return sb.isRedemptionCodeExists(redemptionCode, promotionId);
-			}
+		try {			
+			FDPromotionManagerNewSB sb = managerHome.create();
+			return sb.isRedemptionCodeExists(redemptionCode, promotionId);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -847,13 +697,8 @@ public class FDPromotionNewManager {
 		lookupManagerHome();
 
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
-				return FDPromotionManagerService.getInstance().isRafPromoCodeExists(rafPromoCode);
-			} else {
-
-				FDPromotionManagerNewSB sb = managerHome.create();
-				return sb.isRafPromoCodeExists(rafPromoCode);
-			}
+			FDPromotionManagerNewSB sb = managerHome.create();
+			return sb.isRafPromoCodeExists(rafPromoCode);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -867,13 +712,8 @@ public class FDPromotionNewManager {
 		lookupManagerHome();
 
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
-				return FDPromotionManagerService.getInstance().isRafPromoCodeExists(rafPromoCode, promotionId);
-			} else {
-
-				FDPromotionManagerNewSB sb = managerHome.create();
-				return sb.isRafPromoCodeExists(rafPromoCode, promotionId);
-			}
+			FDPromotionManagerNewSB sb = managerHome.create();
+			return sb.isRafPromoCodeExists(rafPromoCode, promotionId);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -887,12 +727,8 @@ public class FDPromotionNewManager {
 		lookupManagerHome();
 
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
-				return FDPromotionManagerService.getInstance().isTSAPromoCodeExists(tsaPromoCode);
-			} else {
 			FDPromotionManagerNewSB sb = managerHome.create();
 			return sb.isTSAPromoCodeExists(tsaPromoCode);
-			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -905,13 +741,9 @@ public class FDPromotionNewManager {
 	public static boolean isTSAPromoCodeExists(String tsaPromoCode, String promotionId) throws FDResourceException {
 		lookupManagerHome();
 
-		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
-				return FDPromotionManagerService.getInstance().isTSAPromoCodeExists(tsaPromoCode, promotionId);
-			} else {
+		try {			
 			FDPromotionManagerNewSB sb = managerHome.create();
 			return sb.isTSAPromoCodeExists(tsaPromoCode, promotionId);
-			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -944,15 +776,9 @@ public class FDPromotionNewManager {
 			throws FDResourceException {
 		lookupManagerHome();
 
-		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
-				FDPromotionManagerService.getInstance().storePromotionStatus( promotion,  status);
-				
-			} else {
-			
+		try {			
 			FDPromotionManagerNewSB sb = managerHome.create();
 			sb.storePromotionStatus(promotion, status);
-			}
 			if (refresh) {
 				FDPromotionNewModelFactory.getInstance().forceRefresh();
 			}
@@ -968,18 +794,11 @@ public class FDPromotionNewManager {
 	}
 
 	public static void storePromotionHoldStatus(FDPromotionNewModel promotion) throws FDResourceException {
-		
+		lookupManagerHome();
 
 		try {
-			
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
-				FDPromotionManagerService.getInstance().storePromotionHoldStatus(promotion);
-				
-			} else {
-				lookupManagerHome();
 			FDPromotionManagerNewSB sb = managerHome.create();
 			sb.storePromotionHoldStatus(promotion);
-			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -992,26 +811,20 @@ public class FDPromotionNewManager {
 	public static void storeAssignedCustomers(FDPromotionNewModel promotion, String assignedCustomerUserIds)
 			throws FDResourceException, FDPromoCustNotFoundException {
 		
-
+		lookupManagerHome();
 		try {
-			List<String> assignedCustomerUserIdsList=new ArrayList<String>();
-
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
-				FDPromotionManagerService.getInstance().storeAssignedCustomers(promotion, assignedCustomerUserIds);
-				assignedCustomerUserIdsList = FDPromotionManagerService.getInstance().loadAssignedCustomerUserIds(promotion.getId());
-				
-			} else {
-				lookupManagerHome();
-				FDPromotionManagerNewSB sb = managerHome.create();
-				sb.storeAssignedCustomers(promotion, assignedCustomerUserIds);
+			List<String> assignedCustomerUserIdsList=new ArrayList<String>();		
 			
-				assignedCustomerUserIdsList = sb.loadAssignedCustomerUserIds(promotion.getId());
+			FDPromotionManagerNewSB sb = managerHome.create();
+			sb.storeAssignedCustomers(promotion, assignedCustomerUserIds);
+		
+			assignedCustomerUserIdsList = sb.loadAssignedCustomerUserIds(promotion.getId());
+		
+			if (assignedCustomerUserIdsList != null && assignedCustomerUserIdsList.size() > 0) {
+				promotion.setAssignedCustomerUserIds(StringUtil.encodeString(assignedCustomerUserIdsList));
+			} else {
+				promotion.setAssignedCustomerUserIds("");
 			}
-				if (assignedCustomerUserIdsList != null && assignedCustomerUserIdsList.size() > 0) {
-					promotion.setAssignedCustomerUserIds(StringUtil.encodeString(assignedCustomerUserIdsList));
-				} else {
-					promotion.setAssignedCustomerUserIds("");
-				}
 
 			
 		} catch (CreateException ce) {
@@ -1027,16 +840,9 @@ public class FDPromotionNewManager {
 			throws FDResourceException {
 		lookupManagerHome();
 
-		try {
-			  
-			 if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
-					FDPromotionManagerService.getInstance().storeChangeLogEntries(promoPk, changes);
-	
-				} else {
+		try {			
 			FDPromotionManagerNewSB sb = managerHome.create();
-
 			sb.storeChangeLogEntries(promoPk, changes);
-				}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -1049,14 +855,9 @@ public class FDPromotionNewManager {
 	public static boolean lookupPromotion(String promotionCode) throws FDResourceException {
 		lookupManagerHome();
 
-		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
-				return FDPromotionManagerService.getInstance().lookupPromotion( promotionCode) ;
-			} else {
-			
+		try {			
 			FDPromotionManagerNewSB sb = managerHome.create();
 			return sb.lookupPromotion(promotionCode);
-			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -1087,15 +888,9 @@ public class FDPromotionNewManager {
 	public static void setDOWLimit(int dayofweek, double limit) throws FDResourceException {
 		lookupManagerHome();
 
-		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
-				 FDPromotionManagerService.getInstance(). setDOWLimit(dayofweek, limit);
-				
-			} else {
-
+		try {			
 			FDPromotionManagerNewSB sb = managerHome.create();
 			sb.setDOWLimit(dayofweek, limit);
-			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -1110,15 +905,8 @@ public class FDPromotionNewManager {
 		lookupManagerHome();
 
 		try {
-			
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
-				 return	 FDPromotionManagerService.getInstance().  getDOWLimits();
-				
-			} else {
-
 			FDPromotionManagerNewSB sb = managerHome.create();
 			return sb.getDOWLimits();
-			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -1135,13 +923,9 @@ public class FDPromotionNewManager {
 	public static boolean isCustomerInAssignedList(String userId, String promotionId) throws FDResourceException {
 		lookupManagerHome();
 
-		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
-				return FDPromotionManagerService.getInstance().isCustomerInAssignedList(userId, promotionId) ;
-			} else {
+		try {			
 			FDPromotionManagerNewSB sb = managerHome.create();
 			return sb.isCustomerInAssignedList(userId, promotionId);
-			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -1215,16 +999,10 @@ public class FDPromotionNewManager {
 
 	public static String createPromotionBatch(FDPromotionNewModel promotion) throws FDResourceException {
 		
-
-		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
-				PrimaryKey pk  =FDPromotionManagerService.getInstance().createPromotionBatch(promotion) ;
-				return pk.getId();
-			} else {
-			lookupManagerHome();
+		lookupManagerHome();
+		try {						
 			FDPromotionManagerNewSB sb = managerHome.create();
 			return sb.createPromotionBatch(promotion);
-			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -1235,16 +1013,10 @@ public class FDPromotionNewManager {
 	}
 
 	public static List<FDPromotionNewModel> getBatchPromotions(String batchId) throws FDResourceException {
-
-		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDPromotionManagerNewSB)) {
-				return FDPromotionManagerService.getInstance().getBatchPromotions(batchId);
-
-			} else {
-				lookupManagerHome();
-				FDPromotionManagerNewSB sb = managerHome.create();
-				return sb.getBatchPromotions(batchId);
-			}
+		lookupManagerHome();
+		try {			
+			FDPromotionManagerNewSB sb = managerHome.create();
+			return sb.getBatchPromotions(batchId);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");

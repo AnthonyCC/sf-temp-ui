@@ -18,14 +18,14 @@ import com.freshdirect.framework.core.PrimaryKey;
 public interface FDPromotionManagerServiceI {
 	
 	
-	public FDPromotionNewData getPromotionNewDataByPK(String pK) throws FDResourceException;
+//	public FDPromotionNewData getPromotionNewDataByPK(String pK) throws FDResourceException;
 /**
  * retrieves the promoID by promocode.<BR> note, this method can return a null.
  * @param promoCode
  * @return
  * @throws FDResourceException
  */
-	public String findpromotionIDbyPromoCode(String promoCode) throws FDResourceException;
+	/*public String findpromotionIDbyPromoCode(String promoCode) throws FDResourceException;
 	public String deletePromotionByPromoID(String promoID) throws FDResourceException;
 	public Boolean isPromotionCodeUsed(String promoCode) throws FDResourceException;
 	public Boolean isPromotionNameUsed(String promoName) throws FDResourceException;
@@ -70,9 +70,12 @@ public interface FDPromotionManagerServiceI {
 	//public boolean publishPromotion(FDPromotionNewModel promotion) throws FDResourceException;
 	public 	boolean publishPromotion(FDPromotionNewModel promotion) throws FDResourceException;
 	public List<FDPromoChangeModel> loadPromoAuditChanges(String promotionId) throws FDResourceException;
-	public void storeChangeLogEntries(String promoPk, List<FDPromoChangeModel> changes) throws FDResourceException;
+	public void storeChangeLogEntries(String promoPk, List<FDPromoChangeModel> changes) throws FDResourceException;*/
 	public List<PromotionI> getAllAutomaticPromotions() throws FDResourceException;
 	public List<PromotionI> getModifiedOnlyPromos(Date lastModified) throws FDResourceException;
 	public List<PromotionI> getReferralPromotions(String customerId, EnumEStoreId storeid) throws FDResourceException ;
 	public PromotionI getPromotionForRT(String promoCode) throws FDResourceException;
+	public int getRedemptionCount(String promoID, Date date) throws FDResourceException;
+	public String getRedemptionPromotionId(String redemptionCode) throws FDResourceException;	
+	public String getRedemptionCode(String tsaCode) throws FDResourceException;
 }
