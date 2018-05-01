@@ -229,7 +229,7 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 
 	public boolean checkDlvDates(FDReservation dlvReservation) {
 		boolean isOK = false;
-		if(null != dlvReservation){
+		if(null != dlvReservation && null !=dlvReservation.getTimeslot()){
 			
 			Date dlvSlotBaseDate = DateUtil.truncate(dlvReservation.getTimeslot().getDeliveryDate());
 			//Calendar cal =Calendar.getInstance();

@@ -62,9 +62,12 @@ public class AvailabilityService {
 
 	public boolean checkCartAtpAvailability(final FDUserI user)
 			throws FDResourceException {
-		FDCartModel cart = FDCustomerManager.checkAvailability(
-				user.getIdentity(), user.getShoppingCart(),
-				DEFAULT_ATP_RESTRICTION_TIMEOUT,ATP_CHECKOUT);
+		FDCartModel cart = user.getShoppingCart();
+		if(!(user.getShoppingCart().isDlvPassStandAloneCheckoutAllowed() && user.getShoppingCart().containsDlvPassOnly())){//No ATP required for DP alone carts
+			cart = FDCustomerManager.checkAvailability(
+					user.getIdentity(), user.getShoppingCart(),
+					DEFAULT_ATP_RESTRICTION_TIMEOUT,ATP_CHECKOUT);
+		}
 		System.out.println("WOW");
 		performDeliveryPassAvailabilityCheck(user);
 		user.updateUserState();
@@ -80,7 +83,7 @@ public class AvailabilityService {
 			isEbt = EnumPaymentMethodType.EBT.equals(cart.getPaymentMethod()
 					.getPaymentMethodType());
 		}
-		if (cart.containsUnlimitedPass())
+		if (cart.containsUnlimitedPass() && !(cart.isDlvPassStandAloneCheckoutAllowed() && cart.containsDlvPassOnly()))
 			//if (cart.containsDlvPassOnly()) Changes as part of standalone deliverypass purchase (DP17-122)  
 			//if((cart instanceof FDModifyCartModel || !FDStoreProperties.isDlvPassStandAloneCheckoutEnabled()) && cart.containsDlvPassOnly()){
 				if(!cart.isDlvPassStandAloneCheckoutAllowed() && cart.containsDlvPassOnly()){
@@ -266,7 +269,7 @@ public class AvailabilityService {
 		refreshCartAndUser(user, cart);
 	}
 
-	private void performDeliveryPassAvailabilityCheck(FDUserI user)
+	public void performDeliveryPassAvailabilityCheck(FDUserI user)
 			throws FDResourceException {
 
 		FDCartModel cart = user.getShoppingCart();
