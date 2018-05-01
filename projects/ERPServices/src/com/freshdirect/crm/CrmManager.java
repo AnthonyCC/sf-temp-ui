@@ -511,6 +511,14 @@ public class CrmManager {
 			throw new FDResourceException(e, "Error in CrmManagerSB while getting canned text.");
 		}		
 	}
+	
+	public Collection<ErpCannedText> getAllCannedTextInCategory(EnumCannedTextCategory category) throws FDResourceException {
+		try {
+				return this.getCrmManagerSB().getAllCannedTextInCategory(category);
+		} catch (RemoteException e) {
+			throw new FDResourceException(e, "Error in CrmManagerSB while getting all canned text in category.");
+		}		
+	}
 
 	public Collection<ErpCannedText> getAllCannedText() throws FDResourceException {
 		try {

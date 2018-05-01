@@ -292,10 +292,10 @@ public interface CrmManagerSB extends EJBObject {
     @Deprecated 
 	public ErpCannedText getCannedTextById(String id) throws FDResourceException, RemoteException;
     /**
-     * This method is moved to backoffice project.
+     *@deprecated This method is moved to backoffice project.
      * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
      */
-   
+    @Deprecated 
 	public Collection<ErpCannedText> getAllCannedTextInCategory(EnumCannedTextCategory category) throws FDResourceException, RemoteException;
     /**
      *@deprecated This method is moved to backoffice project.
@@ -381,10 +381,6 @@ public interface CrmManagerSB extends EJBObject {
      */
     @Deprecated
 	public String getAllowedUsers() throws FDResourceException, RemoteException;
-    /**
-     *@deprecated This method is moved to backoffice project.
-     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
-     */
-    @Deprecated
+
 	public boolean isCRMRestrictionEnabled() throws FDResourceException, RemoteException;
 }
