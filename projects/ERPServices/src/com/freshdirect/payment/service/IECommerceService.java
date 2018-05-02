@@ -21,7 +21,12 @@ import com.freshdirect.content.attributes.FlatAttributeCollection;
 import com.freshdirect.content.nutrition.ErpNutritionModel;
 import com.freshdirect.content.nutrition.panel.NutritionPanel;
 import com.freshdirect.customer.EnumExternalLoginSource;
+import com.freshdirect.customer.EnumPaymentResponse;
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpActivityRecord;
+import com.freshdirect.customer.ErpAddressVerificationException;
+import com.freshdirect.customer.ErpAuthorizationException;
+import com.freshdirect.customer.ErpAuthorizationModel;
 import com.freshdirect.customer.ErpComplaintReason;
 import com.freshdirect.customer.ErpCustEWalletModel;
 import com.freshdirect.customer.ErpCustomerCreditModel;
@@ -30,6 +35,7 @@ import com.freshdirect.customer.ErpGrpPriceModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.customer.ErpRestrictedAvailabilityModel;
+import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.delivery.AddressAndRestrictedAdressData;
@@ -564,4 +570,11 @@ public interface IECommerceService {
 
 	public void generateSitemap() throws RemoteException;
 	
+	public List<ErpAuthorizationModel> authorizeSaleRealtime(String saleId, EnumSaleType saleType) throws ErpAuthorizationException, ErpAddressVerificationException, RemoteException;
+	
+	public EnumPaymentResponse authorizeSale(String saleId, boolean force) throws RemoteException;
+	
+	public void captureAuthorizations(String saleId, List<ErpAuthorizationModel> auths) throws RemoteException;
+
+	public boolean isValidVaultToken(String token, String customerId) throws RemoteException;
 }

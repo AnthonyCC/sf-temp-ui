@@ -465,29 +465,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
 		DeliveryPassException,
 		FDPaymentInadequateException,
 		RemoteException;
-
-    /**
-     * Charge an order (modify & send msg to SAP).
-     *
-     * @param identity the customer's identity reference
-     * @throws FDResourceException if an error occured while accessing remote resources
-     */
-    public void chargeOrder(
-		FDIdentity identity,
-		String saleId,
-		ErpPaymentMethodI paymentMethod,
-		boolean sendEmail,
-		CustomerRatingI cra,
-		CrmAgentModel agent,
-		double additionalCharge)
-		throws FDResourceException,
-		ErpFraudException,
-		ErpAuthorizationException,
-		ErpTransactionException,
-		FDPaymentInadequateException,
-		ErpAddressVerificationException,
-		RemoteException;
-
+    
     /**
      * Adds a complaint to the user's list of complaints and begins the associated credit issuing process
      *

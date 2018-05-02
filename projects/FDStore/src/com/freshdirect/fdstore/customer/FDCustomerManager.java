@@ -2785,45 +2785,6 @@ public class FDCustomerManager {
 		}
 	}
 
-	public static void chargeOrder(
-			FDActionInfo info,
-			String saleId,
-			ErpPaymentMethodI paymentMethod,
-			boolean sendEmail,
-			CustomerRatingI cra,
-			double additionalCharge)
-			throws FDResourceException, ErpTransactionException, ErpFraudException, ErpAuthorizationException,ErpAddressVerificationException,
-			FDPaymentInadequateException
-			{
-
-			lookupManagerHome();
-			try {
-				if (!orderBelongsToUser(info.getIdentity(), saleId)) {
-					throw new FDResourceException("Order not found in current user's order history.");
-				}
-
-				FDCustomerManagerSB sb = managerHome.create();
-				sb.chargeOrder(
-					info.getIdentity(),
-					saleId,
-					paymentMethod,
-					sendEmail,
-					cra,
-					info.getAgent(),
-					additionalCharge);
-
-			} catch (CreateException ce) {
-				invalidateManagerHome();
-				throw new FDResourceException(ce, "Error creating session bean");
-			} catch (RemoteException re) {
-				invalidateManagerHome();
-				Exception ex=(Exception)re.getCause();
-				if(ex instanceof ErpAddressVerificationException) throw (ErpAddressVerificationException)ex;
-				throw new FDResourceException(re, "Error talking to session bean");
-			}
-
-		}
-
 	public static boolean isECheckRestricted(FDIdentity identity) throws FDResourceException {
 		lookupManagerHome();
 		try {

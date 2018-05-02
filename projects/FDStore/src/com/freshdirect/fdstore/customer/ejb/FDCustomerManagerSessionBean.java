@@ -134,6 +134,7 @@ import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -257,6 +258,7 @@ import com.freshdirect.payment.gateway.GatewayType;
 import com.freshdirect.payment.gateway.Request;
 import com.freshdirect.payment.gateway.Response;
 import com.freshdirect.payment.gateway.impl.GatewayFactory;
+import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.referral.extole.RafUtil;
 import com.freshdirect.referral.extole.model.FDRafTransModel;
 import com.freshdirect.sap.command.SapCartonInfoForSale;
@@ -276,6 +278,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	private final static Logger LOGGER = LoggerFactory.getInstance(FDCustomerManagerSessionBean.class);
 
+	private static Map<String, ErpSaleModel> orderCache = new HashMap<String, ErpSaleModel>();
 	public RegistrationResult register(FDActionInfo info, ErpCustomerModel erpCustomer, FDCustomerModel fdCustomer,
 			String cookie, boolean pickupOnly, boolean eligibleForPromotion, FDSurveyResponse survey,
 			EnumServiceType serviceType) throws FDResourceException, ErpDuplicateUserIdException {
@@ -2512,8 +2515,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 			}
 			// AUTH sale in CYBER SOURCE
-			PaymentManagerSB paymentManager = this.getPaymentManagerHome().create();
-			paymentManager.authorizeSaleRealtime(pk.getId());
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentManagerSB)) {
+				FDECommerceService.getInstance().authorizeSaleRealtime(pk.getId(), null);
+			} else {
+				PaymentManagerSB paymentManager = this.getPaymentManagerHome().create();
+				paymentManager.authorizeSaleRealtime(pk.getId());
+			}
 
 			ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.PLACE_ORDER);
 			rec.setChangeOrderId(pk.getId());
@@ -3300,12 +3307,26 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			PaymentManagerSB paymentManager = this.getPaymentManagerHome().create();
 			if (EnumSaleStatus.AUTHORIZATION_FAILED.equals(fdOrder.getOrderStatus())) {
 
-				if (EnumTransactionSource.WEBSITE.equals(order.getTransactionSource()))
-					paymentManager.authorizeSaleRealtime(saleId);
-				else
-					paymentManager.authorizeSale(saleId, true);
+				if (EnumTransactionSource.WEBSITE.equals(order.getTransactionSource())) {
+					if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentManagerSB)) {
+						FDECommerceService.getInstance().authorizeSaleRealtime(saleId, null);
+					} else {
+						paymentManager.authorizeSaleRealtime(saleId);
+					}
+				}
+				else {
+					if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentManagerSB)) {
+						FDECommerceService.getInstance().authorizeSale(saleId, true);
+					} else {
+						paymentManager.authorizeSale(saleId, true);
+					}
+				}
 			} else {
-				paymentManager.authorizeSaleRealtime(saleId);
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentManagerSB)) {
+					FDECommerceService.getInstance().authorizeSaleRealtime(saleId, null);
+				} else {
+					paymentManager.authorizeSaleRealtime(saleId);
+				}
 			}
 
 			ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.MODIFY_ORDER);
@@ -3641,96 +3662,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	/**
-	 * charge an order (modify & send msg to SAP) due to Insufficent funds.
-	 *
-	 * @param identity
-	 *            the customer's identity reference
-	 * @throws FDResourceException
-	 *             if an error occured while accessing remote resources
-	 */
-	public void chargeOrder(FDIdentity identity, String saleId, ErpPaymentMethodI paymentMethod, boolean sendEmail,
-			CustomerRatingI cra, CrmAgentModel agent, double additionalCharge) throws FDResourceException,
-			ErpTransactionException, ErpFraudException, ErpAuthorizationException, ErpAddressVerificationException {
-
-		try {
-			FDOrderAdapter fdOrder = (FDOrderAdapter) getOrder(identity, saleId);
-			ErpSaleModel sale = fdOrder.getSale();
-			EnumSaleStatus status = sale.getStatus();
-
-			if (!EnumSaleStatus.SETTLEMENT_FAILED.equals(status) && !EnumSaleStatus.PAYMENT_PENDING.equals(status)) {
-				throw new ErpTransactionException(
-						"This order cannot be charged because payment is not pending or settlement did not fail.");
-			}
-
-			ErpCustomerManagerSB custManager = this.getErpCustomerManagerHome().create();
-
-			PaymentManagerSB paymentManager = this.getPaymentManagerHome().create();
-
-			// void all previous captures WITHOUT being in an explicit
-			// transaction
-			if (EnumSaleStatus.PAYMENT_PENDING.equals(status)) {
-				paymentManager.voidCapturesNoTrans(saleId);
-			}
-
-			ErpPaymentMethodModel oldPaymentMethod = (ErpPaymentMethodModel) sale.getCurrentOrder().getPaymentMethod();
-
-			ErpModifyOrderModel modifyOrder = new ErpModifyOrderModel();
-			// want to add a NEW modify order with new payment method, so we
-			// need to set all primary keys to null
-			modifyOrder.set(sale.getCurrentOrder(), true);
-			modifyOrder.setPaymentMethod(paymentMethod);
-			modifyOrder.setTransactionDate(new Date());
-			modifyOrder.setTransactionInitiator(agent.getUserId());
-			modifyOrder.setTransactionSource(EnumTransactionSource.CUSTOMER_REP);
-
-			// this changes the payment information for the order
-			custManager.modifyOrder(saleId, modifyOrder, sale.getUsedPromotionCodes(), cra, agent.getRole(), false);
-
-			if (additionalCharge > 0) {
-				// create a charge invoice sales action
-				custManager.addChargeInvoice(saleId, additionalCharge);
-			}
-
-			// authorize the sale with new payment method
-			List<ErpAuthorizationModel> auths = paymentManager.authorizeSaleRealtime(saleId);
-			// capture the sale authorization
-			paymentManager.captureAuthorizations(saleId, auths);
-
-			// create a case only if the payment method used to re charge order
-			// is not the payment method that failed
-			if (!oldPaymentMethod.getPK().equals((ErpPaymentMethodModel) paymentMethod)) {
-				CrmSystemCaseInfo caseInfo = this.buildBadAccountReviewCase(sale.getCustomerPk().getId(), saleId);
-				custManager.createCase(caseInfo, false);
-			}
-
-			if (sendEmail) {
-				FDCustomerInfo fdInfo = this.getCustomerInfo(identity);
-				int orderCount = getValidOrderCount(identity);
-				fdInfo.setNumberOfOrders(orderCount);
-				// get order again with new payment method
-				fdOrder = (FDOrderAdapter) getOrder(identity, saleId);
-				this.doEmail(FDEmailFactory.getInstance().createChargeOrderEmail(fdInfo, fdOrder, additionalCharge));
-			}
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce);
-		} catch (RemoteException re) {
-			Exception ex = (Exception) re.getCause();
-			if (ex instanceof ErpAddressVerificationException)
-				throw (ErpAddressVerificationException) ex;
-
-			throw new FDResourceException(re);
-		}
-	}
-
-	private CrmSystemCaseInfo buildBadAccountReviewCase(String customerPK, String saleId) {
-		CrmCaseSubject subject = CrmCaseSubject.getEnum(CrmCaseSubject.CODE_BAD_ACCOUNT_REVIEW);
-		String summary = "Order # " + saleId
-				+ " has been re-charged after initial settlement failure.  Please review and possibly remove from Bad Accounts and Customer Alert.";
-		PrimaryKey salePK = saleId != null ? new PrimaryKey(saleId) : null;
-		return new CrmSystemCaseInfo(new PrimaryKey(customerPK), salePK, subject, summary);
-	}
-
+	
 	/**
 	 * Adds a complaint to the user's list of complaints and begins the
 	 * associated credit issuing process
@@ -4056,14 +3988,20 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	public FDOrderI getOrder(String saleId) throws FDResourceException {
 		try {
 			ErpSaleModel saleModel = null;
+			if (orderCache.containsKey(saleId)) {
+				saleModel = orderCache.get(saleId);
+				if (saleModel != null)
+					return new FDOrderAdapter(saleModel, false);
+			} 
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled("getOrder_Api")){
 	    		OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
 	    		saleModel =  service.getOrder(saleId);
 	    	}else{
-			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
-				saleModel = sb.getOrder(new PrimaryKey(saleId));
-	    	}
-
+	    		ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
+	    		saleModel = sb.getOrder(new PrimaryKey(saleId));
+				
+			}
+			orderCache.put(saleId, saleModel);
 			LOGGER.debug(new String("ordernum: " + saleId + "   rsrvID: "
 					+ saleModel.getRecentOrderTransaction().getDeliveryInfo().getDeliveryReservationId()));
 
@@ -4661,8 +4599,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	public void authorizeSale(String salesId) throws FDResourceException {
 
 		try {
-			PaymentManagerSB sb = this.getPaymentManagerHome().create();
-			EnumPaymentResponse response = sb.authorizeSale(salesId, false);
+			EnumPaymentResponse response = null;
+			
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentManagerSB)) {
+				response = FDECommerceService.getInstance().authorizeSale(salesId, false);
+			} else {
+				PaymentManagerSB sb = this.getPaymentManagerHome().create();
+				response = sb.authorizeSale(salesId, false);
+			}
 
 			if (!EnumPaymentResponse.APPROVED.equals(response) && !EnumPaymentResponse.ERROR.equals(response)) {
 				sendAuthFailedEmail(salesId);
@@ -4677,9 +4621,15 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	public void authorizeSale(String salesId, boolean force) throws FDResourceException {
 
 		try {
-			PaymentManagerSB sb = this.getPaymentManagerHome().create();
-			EnumPaymentResponse response = sb.authorizeSale(salesId, force);
-
+			EnumPaymentResponse response = null;
+			
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentManagerSB)) {
+				response = FDECommerceService.getInstance().authorizeSale(salesId, false);
+			} else {
+				PaymentManagerSB sb = this.getPaymentManagerHome().create();
+				response = sb.authorizeSale(salesId, false);
+			}
+			
 			if (!EnumPaymentResponse.APPROVED.equals(response) && !EnumPaymentResponse.ERROR.equals(response)) {
 				sendAuthFailedEmail(salesId);
 			}
@@ -5986,9 +5936,15 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			return;
 		} else if (EnumSaleType.SUBSCRIPTION.equals(type)) {
 			try {
-				PaymentManagerSB sb = this.getPaymentManagerHome().create();
-				EnumPaymentResponse response = sb.authorizeSale(saleID, false);
-
+				EnumPaymentResponse response = null;
+				
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentManagerSB)) {
+					response = FDECommerceService.getInstance().authorizeSale(saleID, false);
+				} else {
+					PaymentManagerSB sb = this.getPaymentManagerHome().create();
+					response = sb.authorizeSale(saleID, false);
+				}
+				
 				if (!EnumPaymentResponse.APPROVED.equals(response) && !EnumPaymentResponse.ERROR.equals(response)) {
 					sendARAuthFailedEmail(saleID);// Should we send email?
 
@@ -6753,8 +6709,13 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				close(conn);
 			}
 			// AUTH sale in CYBER SOURCE
-			PaymentManagerSB paymentManager = this.getPaymentManagerHome().create();
-			List auths = paymentManager.authorizeSaleRealtime(pk.getId(), EnumSaleType.DONATION);
+			List auths = null;
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentManagerSB)) {
+				auths = FDECommerceService.getInstance().authorizeSaleRealtime(pk.getId(), EnumSaleType.DONATION);
+			} else {
+				PaymentManagerSB paymentManager = this.getPaymentManagerHome().create();
+				auths = paymentManager.authorizeSaleRealtime(pk.getId(), EnumSaleType.DONATION);
+			}
 			if (auths != null || auths.size() > 0) {
 
 				// Only when it has a valid auth.
