@@ -2037,10 +2037,24 @@ public class ModelConverter {
 				data.setValueFor(entry.getKey(),val);
 			}
 		}	
+
 		if(nutritionModelData.getInfo()!=null){
 			for (ErpNutritionInfoTypeAttrWrapper  wrrapper : nutritionModelData.getInfo()){
+				if(wrrapper.getAttributeData().getValue()!=null){
+					if(wrrapper.getAttributeData().getType().isMultiValued()){
+						for(Object nInfoAttrdata:(List) wrrapper.getAttributeData().getValue()){
+							NutritionInfoAttributeData nIAData = wrrapper.getAttributeData();
+							ErpNutritionInfoType nutType= buildErpNutritionInfoType(nIAData.getType());
+							String value = getValueType(nInfoAttrdata);
+
+							NutritionInfoAttribute nutAttr = new NutritionInfoAttribute(nutType, nIAData.getPriority(), getValueForCode(nutType,value));
+							data.addNutritionAttribute(nutAttr);	
+						}
+					
+					}
+					data.addNutritionAttribute(buildNutritionAttribute(wrrapper.getAttributeData()));
+				}
 				
-				data.addNutritionAttribute(buildNutritionAttribute(wrrapper.getAttributeData()));
 			}
 		}	
 		return data;
@@ -2059,19 +2073,28 @@ public class ModelConverter {
 		   if(obj==null)
 			   return null;
 		  String code =  getCode(obj);
+		  value = getValueForCode(nutType,code);
+         
+		return value;
+	}
+	
+	private static Object getValueForCode(ErpNutritionInfoType nutType,String code) {
+		   Object value = null;
+		   if(code==null)
+			   return null;
 		 if (nutType.equals(ErpNutritionInfoType.CLAIM)) {
-             value = EnumClaimValue.getValueForCode(code);
-         } else if (nutType.equals(ErpNutritionInfoType.KOSHER_SYMBOL)) {
-             value = EnumKosherSymbolValue.getValueForCode(code);
-         } else if (nutType.equals(ErpNutritionInfoType.KOSHER_TYPE)) {
-             value =  EnumKosherTypeValue.getValueForCode(code);
-         } else if (nutType.equals(ErpNutritionInfoType.ALLERGEN)) {
-             value = EnumAllergenValue.getValueForCode(code);
-         } else if (nutType.equals(ErpNutritionInfoType.ORGANIC)) {
-             value = EnumOrganicValue.getValueForCode(code);
-         } else {
-             value = code;
-         }
+          value = EnumClaimValue.getValueForCode(code);
+      } else if (nutType.equals(ErpNutritionInfoType.KOSHER_SYMBOL)) {
+          value = EnumKosherSymbolValue.getValueForCode(code);
+      } else if (nutType.equals(ErpNutritionInfoType.KOSHER_TYPE)) {
+          value =  EnumKosherTypeValue.getValueForCode(code);
+      } else if (nutType.equals(ErpNutritionInfoType.ALLERGEN)) {
+          value = EnumAllergenValue.getValueForCode(code);
+      } else if (nutType.equals(ErpNutritionInfoType.ORGANIC)) {
+          value = EnumOrganicValue.getValueForCode(code);
+      } else {
+          value = code;
+      }
 		return value;
 	}
 	private static String getCode(Object objData){
@@ -2101,6 +2124,46 @@ public class ModelConverter {
 				if(keyData.equalsIgnoreCase("Code"))
 					code = (String)objDataMap.get(keyData);
 			}
+		}else if(objData instanceof  String){
+			code = (String)objData;
+			}
+		
+		return code;
+		
+	}
+	
+	private static String getValueType(Object objData){
+		String code=null;
+		List objDataTemp = null;
+		Map objDataMap=null;
+		if(objData instanceof  ArrayList){
+			objDataTemp = (ArrayList)objData;
+			objDataMap = (Map)objDataTemp.get(0);
+			Set keys = objDataMap.keySet();
+			for(Object key:keys){
+				String keyData=(String)key;
+				if(keyData.equalsIgnoreCase("value")){
+					Map coded = (Map)objDataMap.get(keyData);
+					for(Object valueKey:coded.keySet()){
+						String valuekeyData=(String)valueKey;
+						if(valuekeyData.equalsIgnoreCase("Code"))
+							code = (String)coded.get(valuekeyData);
+					}
+				}
+			}
+		}else if(objData instanceof  Map){
+			objDataMap =(Map) objData;
+			Set keys = objDataMap.keySet();
+			for(Object key:keys){
+				String keyData=(String)key;
+				if(keyData.equalsIgnoreCase("value")){
+					Map coded = (Map)objDataMap.get(keyData);
+					for(Object valueKey:coded.keySet()){
+						String valuekeyData=(String)valueKey;
+						if(valuekeyData.equalsIgnoreCase("Code"))
+							code = (String)coded.get(valuekeyData);
+					}
+				}}
 		}else if(objData instanceof  String){
 			code = (String)objData;
 			}
