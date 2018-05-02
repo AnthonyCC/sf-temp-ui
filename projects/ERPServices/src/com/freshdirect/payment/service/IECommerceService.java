@@ -569,11 +569,7 @@ public interface IECommerceService {
 	public void updatePPSettlementTransStatus(String settlementTransId) throws RemoteException;
 
 	public void generateSitemap() throws RemoteException;
-	
-	public List<ErpAuthorizationModel> authorizeSaleRealtime(String saleId, EnumSaleType saleType) throws ErpAuthorizationException, ErpAddressVerificationException, RemoteException;
-	
-	public EnumPaymentResponse authorizeSale(String saleId, boolean force) throws RemoteException;
-	
+		
 	public void captureAuthorizations(String saleId, List<ErpAuthorizationModel> auths) throws RemoteException;
 
 	public boolean isValidVaultToken(String token, String customerId) throws RemoteException;

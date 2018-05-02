@@ -449,8 +449,6 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String ENQUEUE_EMAIL = "mailer/enqueue";
 	private static final String SITEMAP_GENERATE = "sitemap/generate";
 	
-	private static final String AUTHORIZE_SALE_REALTIME = "paymentManager/authorizeSaleRealtime";
-	private static final String AUTHORIZE_SALE = "paymentManager/authorizeSale";
 	private static final String CAPTURE_AUTHORIZATIONS = "paymentManager/captureAuthorizations";
 
 	public static IECommerceService getInstance() {
@@ -4568,51 +4566,6 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		}
 	}
 	
-	@Override
-	public List<ErpAuthorizationModel> authorizeSaleRealtime(String saleId, EnumSaleType saleType)
-			throws ErpAuthorizationException, ErpAddressVerificationException, RemoteException {
-		Request<EnumSaleType> request = new Request<EnumSaleType>();
-		request.setData(saleType);
-		String inputJson;
-		try {
-			inputJson = buildRequest(request);
-			Response<List<ErpAuthorizationModel>> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(AUTHORIZE_SALE_REALTIME) + "/" + saleId, new TypeReference<Response<List<ErpAuthorizationModel>>>() {});
-
-			if (!response.getResponseCode().equals("OK")) {
-
-				if (response.getError().containsKey("ErpAddressVerificationException")) {
-					throw new ErpAddressVerificationException();
-				} else if (response.getError().containsKey("ErpAuthorizationException")) {
-					throw new ErpAuthorizationException();
-				} else {
-					throw new FDResourceException();
-				}
-			}
-			return response.getData();
-		} catch (Exception e) {
-			LOGGER.error(e);
-			throw new RemoteException(e.getMessage());
-		}
-	}
-	
-	@Override
-	public EnumPaymentResponse authorizeSale(String saleId, boolean force) throws RemoteException {
-		Request<String> request = new Request<String>();
-		request.setData(saleId);
-		String inputJson;
-		try {
-			inputJson = buildRequest(request);
-			Response<EnumPaymentResponse> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(AUTHORIZE_SALE) + "/" + saleId, new TypeReference<EnumPaymentResponse>() {});
-			if (!response.getResponseCode().equals("OK")) {
-				throw new FDResourceException(response.getMessage());
-			}
-			
-			return response.getData();
-		} catch (Exception e) {
-			LOGGER.error(e);
-			throw new RemoteException(e.getMessage());
-		}
-	}
 	@Override
 	public void captureAuthorizations(String saleId, List<ErpAuthorizationModel> auths) throws RemoteException {
 		Request<String> request = new Request<String>();

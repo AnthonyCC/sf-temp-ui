@@ -2515,12 +2515,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 			}
 			// AUTH sale in CYBER SOURCE
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentManagerSB)) {
-				FDECommerceService.getInstance().authorizeSaleRealtime(pk.getId(), null);
-			} else {
-				PaymentManagerSB paymentManager = this.getPaymentManagerHome().create();
-				paymentManager.authorizeSaleRealtime(pk.getId());
-			}
+			
+			PaymentManagerSB paymentManager = this.getPaymentManagerHome().create();
+			paymentManager.authorizeSaleRealtime(pk.getId());
+			
 
 			ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.PLACE_ORDER);
 			rec.setChangeOrderId(pk.getId());
@@ -3308,25 +3306,16 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			if (EnumSaleStatus.AUTHORIZATION_FAILED.equals(fdOrder.getOrderStatus())) {
 
 				if (EnumTransactionSource.WEBSITE.equals(order.getTransactionSource())) {
-					if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentManagerSB)) {
-						FDECommerceService.getInstance().authorizeSaleRealtime(saleId, null);
-					} else {
-						paymentManager.authorizeSaleRealtime(saleId);
-					}
+					paymentManager.authorizeSaleRealtime(saleId);
+					
 				}
 				else {
-					if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentManagerSB)) {
-						FDECommerceService.getInstance().authorizeSale(saleId, true);
-					} else {
-						paymentManager.authorizeSale(saleId, true);
-					}
+					paymentManager.authorizeSale(saleId, true);
+					
 				}
 			} else {
-				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentManagerSB)) {
-					FDECommerceService.getInstance().authorizeSaleRealtime(saleId, null);
-				} else {
-					paymentManager.authorizeSaleRealtime(saleId);
-				}
+				paymentManager.authorizeSaleRealtime(saleId);
+				
 			}
 
 			ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.MODIFY_ORDER);
@@ -4601,13 +4590,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		try {
 			EnumPaymentResponse response = null;
 			
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentManagerSB)) {
-				response = FDECommerceService.getInstance().authorizeSale(salesId, false);
-			} else {
-				PaymentManagerSB sb = this.getPaymentManagerHome().create();
-				response = sb.authorizeSale(salesId, false);
-			}
-
+			PaymentManagerSB sb = this.getPaymentManagerHome().create();
+			response = sb.authorizeSale(salesId, false);
+			
 			if (!EnumPaymentResponse.APPROVED.equals(response) && !EnumPaymentResponse.ERROR.equals(response)) {
 				sendAuthFailedEmail(salesId);
 			}
@@ -4623,12 +4608,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		try {
 			EnumPaymentResponse response = null;
 			
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentManagerSB)) {
-				response = FDECommerceService.getInstance().authorizeSale(salesId, false);
-			} else {
-				PaymentManagerSB sb = this.getPaymentManagerHome().create();
-				response = sb.authorizeSale(salesId, false);
-			}
+			PaymentManagerSB sb = this.getPaymentManagerHome().create();
+			response = sb.authorizeSale(salesId, false);
 			
 			if (!EnumPaymentResponse.APPROVED.equals(response) && !EnumPaymentResponse.ERROR.equals(response)) {
 				sendAuthFailedEmail(salesId);
@@ -5938,12 +5919,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			try {
 				EnumPaymentResponse response = null;
 				
-				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentManagerSB)) {
-					response = FDECommerceService.getInstance().authorizeSale(saleID, false);
-				} else {
-					PaymentManagerSB sb = this.getPaymentManagerHome().create();
-					response = sb.authorizeSale(saleID, false);
-				}
+				PaymentManagerSB sb = this.getPaymentManagerHome().create();
+				response = sb.authorizeSale(saleID, false);
 				
 				if (!EnumPaymentResponse.APPROVED.equals(response) && !EnumPaymentResponse.ERROR.equals(response)) {
 					sendARAuthFailedEmail(saleID);// Should we send email?
@@ -6710,12 +6687,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			}
 			// AUTH sale in CYBER SOURCE
 			List auths = null;
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentManagerSB)) {
-				auths = FDECommerceService.getInstance().authorizeSaleRealtime(pk.getId(), EnumSaleType.DONATION);
-			} else {
-				PaymentManagerSB paymentManager = this.getPaymentManagerHome().create();
-				auths = paymentManager.authorizeSaleRealtime(pk.getId(), EnumSaleType.DONATION);
-			}
+
+			PaymentManagerSB paymentManager = this.getPaymentManagerHome().create();
+			auths = paymentManager.authorizeSaleRealtime(pk.getId(), EnumSaleType.DONATION);
+			
 			if (auths != null || auths.size() > 0) {
 
 				// Only when it has a valid auth.
