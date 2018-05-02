@@ -143,64 +143,6 @@ public class EwalletServiceFactory {
 		 * (non-Javadoc)
 		 * 
 		 * @see
-		 * com.freshdirect.fdstore.ewallet.IEwallet#checkout(com.freshdirect.fdstore.
-		 * ewallet.EwalletRequestData)
-		 */
-		@Override
-		public EwalletResponseData checkout(EwalletRequestData ewalletRequestData) {
-			EwalletResponseData resp = null;
-			try {
-				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.MasterpassServiceSB)) {
-					resp = EwalletService.getInstance().checkout(ewalletRequestData);
-				} else {
-					MasterpassServiceSB remote = remoteHome.create();
-					resp = remote.checkout(ewalletRequestData);
-				}
-			} catch (CreateException e) {
-				throw new MasterpassRuntimeException(e);
-			} catch (RemoteException e) {
-				throw new MasterpassRuntimeException(e);
-			}
-
-			if (resp == null) {
-				resp = new EwalletResponseData();
-			}
-			return resp;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * com.freshdirect.fdstore.ewallet.IEwallet#expressCheckout(com.freshdirect.
-		 * fdstore.ewallet.EwalletRequestData)
-		 */
-		@Override
-		public EwalletResponseData expressCheckout(EwalletRequestData ewalletRequestData) {
-			EwalletResponseData resp = null;
-			try {
-				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.MasterpassServiceSB)) {
-					resp = EwalletService.getInstance().expressCheckout(ewalletRequestData);
-				} else {
-					MasterpassServiceSB remote = remoteHome.create();
-					resp = remote.expressCheckout(ewalletRequestData);
-				}
-			} catch (CreateException e) {
-				throw new MasterpassRuntimeException(e);
-			} catch (RemoteException e) {
-				throw new MasterpassRuntimeException(e);
-			}
-
-			if (resp == null) {
-				resp = new EwalletResponseData();
-			}
-			return resp;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
 		 * com.freshdirect.fdstore.ewallet.IEwallet#disconnect(com.freshdirect.fdstore.
 		 * ewallet.EwalletRequestData)
 		 */
@@ -348,17 +290,6 @@ public class EwalletServiceFactory {
 		public EwalletResponseData postbackTrxns(EwalletRequestData ewalletRequestData) throws Exception {
 			return null;
 		}
-
-		@Override
-		public EwalletResponseData checkout(EwalletRequestData ewalletRequestData) throws Exception {
-			return null;
-		}
-
-		@Override
-		public EwalletResponseData expressCheckout(EwalletRequestData ewalletRequestData) throws Exception {
-			return null;
-		}
-
 		@Override
 		public EwalletResponseData disconnect(EwalletRequestData ewalletRequestData) {
 			EwalletResponseData resp = null;

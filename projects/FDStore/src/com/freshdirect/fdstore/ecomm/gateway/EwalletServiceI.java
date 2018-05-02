@@ -10,8 +10,6 @@ public interface EwalletServiceI {
 
 	
 	EwalletResponseData getToken(EwalletRequestData ewalletRequestData) throws RemoteException;
-	EwalletResponseData checkout(EwalletRequestData ewalletRequestData) throws RemoteException;
-	EwalletResponseData expressCheckout(EwalletRequestData ewalletRequestData) throws RemoteException;
 	EwalletResponseData disconnect(EwalletRequestData ewalletRequestData) throws RemoteException;
 	
 	//Batch

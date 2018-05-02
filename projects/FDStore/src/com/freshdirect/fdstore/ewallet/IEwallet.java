@@ -7,8 +7,6 @@ package com.freshdirect.fdstore.ewallet;
 public interface IEwallet {
 
 	EwalletResponseData getToken(EwalletRequestData ewalletRequestData) throws Exception;
-	EwalletResponseData checkout(EwalletRequestData ewalletRequestData) throws Exception;
-	EwalletResponseData expressCheckout(EwalletRequestData ewalletRequestData) throws Exception;
 	EwalletResponseData disconnect(EwalletRequestData ewalletRequestData) throws Exception;
 	EwalletResponseData addPayPalWallet(EwalletRequestData ewalletRequestData) throws Exception;
 	interface NotificationService {

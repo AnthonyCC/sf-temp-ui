@@ -16,8 +16,6 @@ import com.freshdirect.fdstore.ewallet.EwalletResponseData;
 public class EwalletService  extends AbstractEcommService implements EwalletServiceI {
 	
 	private static final String GET_TOKEN = "/ewallet/getToken";
-	private static final String CHECKOUT = "/ewallet/checkout";
-	private static final String EXP_CHECKOUT = "/ewallet/expressCheckout";
 	private static final String DISCONNECT = "/ewallet/disconnect";
 	private static final String POST_BACK_TRANX = "/ewallet/postbackTrxns";
 	private static final String STD_CHECKOUT = "/ewallet/standardCheckout";
@@ -59,41 +57,10 @@ public class EwalletService  extends AbstractEcommService implements EwalletServ
 	}
 
 	@Override
-	public EwalletResponseData checkout(EwalletRequestData ewalletRequestData)
-			throws RemoteException {
-		
-		Response<EwalletResponseData> response = null;
-		Request<EwalletRequestData> request = new Request<EwalletRequestData>();
-			try {
-				String inputJson;
-				request.setData(ewalletRequestData);
-				inputJson = buildRequest(request);
-				response = postDataTypeMap(inputJson,getFdCommerceEndPoint(CHECKOUT),new TypeReference<Response<EwalletResponseData>>() {});
-				if(!response.getResponseCode().equals("OK"))
-					throw new FDResourceException(response.getMessage());
-					
-			} catch (FDResourceException e) {
-				throw new RemoteException(e.getMessage());
-			}catch (FDEcommServiceException e) {
-				throw new RemoteException(e.getMessage());
-			}
-			
-			return response.getData();
-	}
-
-	@Override
-	public EwalletResponseData expressCheckout(
-			EwalletRequestData ewalletRequestData) throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public EwalletResponseData disconnect(EwalletRequestData ewalletRequestData)
 			throws RemoteException {
 		
 		Response<EwalletResponseData> response = null;
-		EwalletResponseData result = null;
 		Request<EwalletData> request = new Request<EwalletData>();
 		try {
 				request.setData(EwalletConverter.buildEwalletData(ewalletRequestData));
@@ -182,7 +149,6 @@ public class EwalletService  extends AbstractEcommService implements EwalletServ
 			EwalletRequestData ewalletRequestData) throws RemoteException {
 		
 		Response<EwalletResponseData> response = null;
-		EwalletResponseData result = null;
 		Request<EwalletData> request = new Request<EwalletData>();
 			try {
 				String inputJson;

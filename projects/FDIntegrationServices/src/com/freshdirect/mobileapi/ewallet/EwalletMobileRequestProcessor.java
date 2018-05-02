@@ -155,23 +155,6 @@ public class EwalletMobileRequestProcessor {
 		}
 		return ewalletResponseData;
 	}
-	/**
-	 * @param ewalletRequestData
-	 * @return
-	 * @throws Exception
-	 */
-	public EwalletResponseData checkoutData(EwalletRequestData ewalletRequestData) throws Exception{
-		EwalletResponseData ewalletResponseData = new EwalletResponseData();
-		IEwallet ewallet = null;
-		if(ewalletRequestData != null){
-			EwalletServiceFactory ewalletServiceFactory = new EwalletServiceFactory();
-			ewallet = ewalletServiceFactory.getEwalletService(ewalletRequestData);
-			
-			if(ewallet!=null){
-				ewalletResponseData = ewallet.checkout(ewalletRequestData);
-			}
-		}
-		return ewalletResponseData;
-	}
+	
 	
 }
