@@ -15,7 +15,6 @@ import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.content.nutrition.ErpNutritionType;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.browse.sorter.ProductItemSorterFactory;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
@@ -164,13 +163,15 @@ public class BrowseDataBuilderFactory {
 				LOG.error("recommendation failed", e);
 			}
 
-			CarouselData carouselData = createCarouselData(null, superDepartmentModel.getSdFeaturedRecommenderTitle(), recommendedItems, user, EnumEventSource.SDFR, variant);
+            CarouselData carouselData = CarouselService.defaultService().createCarouselDataWithMinProductLimit(null, superDepartmentModel.getSdFeaturedRecommenderTitle(),
+                    recommendedItems, user, EnumEventSource.SDFR, variant);
 		    if (carouselData != null) {
 		        data.getCarousels().setCarousel1(carouselData);
 		    }
 
 			recommendedItems = ProductRecommenderUtil.getSuperDepartmentMerchantRecommenderProducts(superDepartmentModel);
-			carouselData = createCarouselData(null, superDepartmentModel.getSdMerchantRecommenderTitle(), recommendedItems, user, EnumEventSource.SDFR, null);
+            carouselData = CarouselService.defaultService().createCarouselDataWithMinProductLimit(null, superDepartmentModel.getSdMerchantRecommenderTitle(), recommendedItems,
+                    user, EnumEventSource.SDFR, null);
             if (carouselData != null) {
                 data.getCarousels().setCarousel2(carouselData);
             }
@@ -273,7 +274,8 @@ public class BrowseDataBuilderFactory {
             }
 
             final List<ProductModel> merchantRecommenderProducts = ProductRecommenderUtil.getMerchantRecommenderProducts(department);
-            carouselData = createCarouselData(null, department.getMerchantRecommenderTitle(), merchantRecommenderProducts, user, EnumEventSource.DMR, null);
+            carouselData = CarouselService.defaultService().createCarouselDataWithMinProductLimit(null, department.getMerchantRecommenderTitle(), merchantRecommenderProducts, user,
+                    EnumEventSource.DMR, null);
             if (carouselData != null) {
                 data.getCarousels().setCarousel2(carouselData);
             }
@@ -346,7 +348,8 @@ public class BrowseDataBuilderFactory {
                         Recommendations recommendations = ProductRecommenderUtil.getBrowseCategoryListingPageRecommendations(user, cat);
                         List<ProductModel> products = recommendations.getAllProducts();
                         if (products.size() > 0 && !cat.isDisableCategoryYmalRecommender()) {
-                            data.getCarousels().setCarousel1(createCarouselData(null, "You May Also Like", products, user, EnumEventSource.CSR, recommendations.getVariant()));
+                            data.getCarousels().setCarousel1(CarouselService.defaultService().createCarouselDataWithMinProductLimit(null, "You May Also Like", products, user,
+                                    EnumEventSource.CSR, recommendations.getVariant()));
                         }
                     } catch (FDResourceException e) {
                         LOG.error("recommendation failed", e);
@@ -738,22 +741,6 @@ public class BrowseDataBuilderFactory {
         }
     }
 
-    private CarouselData createCarouselData(String carouselId, String carouselName, List<ProductModel> items, FDUserI user, EnumEventSource eventSource,
-            Variant variant) {
-        CarouselData carousel = null;
-
-        if (items != null) {
-            if (items.size() >= FDStoreProperties.getMinimumItemsCountInCarousel()) {
-                carousel = CarouselService.defaultService().createCarouselData(carouselId, carouselName, items, user, eventSource != null ? eventSource.getName() : null,
-                        variant != null ? variant.getId() : null);
-                LOG.debug("Carousel '" + carouselName + "' was populated with (" + items.size() + " items");
-            } else {
-                LOG.debug("Carousel '" + carouselName + "' was not populated, too few items (" + items.size() + ")");
-            }
-        }
-        return carousel;
-    }
-
     private CarouselData populateProductContainerFeaturedRecommender(FDUserI user, ProductContainer container, EnumEventSource eventSource) {
         CarouselData carouselData = null;
         try {
@@ -761,7 +748,8 @@ public class BrowseDataBuilderFactory {
             List<ProductModel> recommendedItems = ProductRecommenderUtil.getFeaturedRecommenderProducts(container, user, null, out);
 
             final Variant variant = out.isSet() ? out.getValue() : null;
-            carouselData = createCarouselData(null, container.getFeaturedRecommenderTitle(), recommendedItems, user, eventSource, variant);
+            carouselData = CarouselService.defaultService().createCarouselDataWithMinProductLimit(null, container.getFeaturedRecommenderTitle(), recommendedItems, user,
+                    eventSource, variant);
         } catch (FDResourceException e) {
             LOG.error("recommendation failed", e);
         }
@@ -943,7 +931,8 @@ public class BrowseDataBuilderFactory {
 				Recommendations recommendations = ProductRecommenderUtil.getBrowseProductListingPageRecommendations(user, shownProductKeysForRecommender);
 				List<ProductModel> products = recommendations.getAllProducts();
 
-				CarouselData carouselData = createCarouselData(null, "You Might Also Like", products, user, null, recommendations.getVariant());
+                CarouselData carouselData = CarouselService.defaultService().createCarouselDataWithMinProductLimit(null, "You Might Also Like", products, user, null,
+                        recommendations.getVariant());
 				if (carouselData != null) {
 				    browseData.getCarousels().setCarousel1(carouselData);
 				}
@@ -962,7 +951,8 @@ public class BrowseDataBuilderFactory {
 			}
 			if (categoryModel != null) {
                 final List<ProductModel> merchantRecommenderProducts = ProductRecommenderUtil.getMerchantRecommenderProducts(categoryModel);
-                CarouselData carouselData = createCarouselData(null, categoryModel.getCatMerchantRecommenderTitle(), merchantRecommenderProducts, user, EnumEventSource.CMR, null);
+                CarouselData carouselData = CarouselService.defaultService().createCarouselDataWithMinProductLimit(null, categoryModel.getCatMerchantRecommenderTitle(),
+                        merchantRecommenderProducts, user, EnumEventSource.CMR, null);
                 if (carouselData != null) {
                     browseData.getCarousels().setCarousel2(carouselData);
                 } else {

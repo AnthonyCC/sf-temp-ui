@@ -249,40 +249,37 @@ public class CarouselServlet extends BaseJsonServlet {
 		return carousels;
 	}
 
-	private ViewCartCarouselData getQuickShopCarousel(HttpServletRequest request, FDSessionUser sessionUser) {
-		ViewCartCarouselData carousels = null;
-		try {
+    private ViewCartCarouselData getQuickShopCarousel(HttpServletRequest request, FDSessionUser sessionUser) {
+        ViewCartCarouselData carousels = null;
 
-			SessionInput input = QuickShopCarouselService.defaultService().createSessionInput(sessionUser, request);
-			carousels = QuickShopCarouselService.defaultService().populateTabsRecommendations(request, sessionUser,
-					input);
-			carousels.getRecommendationTabs().add(0,
-					new RecommendationTab(
-							QuickShopCrazyQuickshopRecommendationService.defaultService()
-									.getTheCrazyQuickshopTitle(null),
-							QuickShopCrazyQuickshopRecommendationService.QUICKSHOP_VIRTUAL_SITE_FEATURE));
+        try {
+            SessionInput input = QuickShopCarouselService.defaultService().createSessionInput(sessionUser, request);
+            carousels = QuickShopCarouselService.defaultService().populateTabsRecommendations(request, sessionUser, input);
+            carousels.getRecommendationTabs().add(0, new RecommendationTab(QuickShopCrazyQuickshopRecommendationService.defaultService().getTheCrazyQuickshopTitle(null),
+                    QuickShopCrazyQuickshopRecommendationService.QUICKSHOP_VIRTUAL_SITE_FEATURE));
 
             final boolean isNewProductsCarouselEnabled = FDStoreProperties.isReorderPageNewProductsCarouselEnabled();
             if (isNewProductsCarouselEnabled) {
                 final boolean isRandomizeProductOrderEnabled = FDStoreProperties.isReorderPageNewProductsCarouselRandomizeProductOrderEnabled();
                 CarouselData carouselData = CarouselService.defaultService().createNewProductsCarousel(sessionUser, isRandomizeProductOrderEnabled, CarouselNameCase.NOT_MODIFIED);
                 if (carouselData != null) {
-                    RecommendationTab recommendationTab = new RecommendationTab(CarouselService.NEW_PRODUCTS_CAROUSEL_NAME, CarouselService.NEW_PRODUCTS_CAROUSEL_VIRTUAL_SITE_FEATURE);
+                    RecommendationTab recommendationTab = new RecommendationTab(CarouselService.NEW_PRODUCTS_CAROUSEL_NAME,
+                            CarouselService.NEW_PRODUCTS_CAROUSEL_VIRTUAL_SITE_FEATURE);
                     carousels.getRecommendationTabs().add(0, recommendationTab);
                 }
             }
 
-			boolean isFirstTab = true;
-			for (RecommendationTab tab : carousels.getRecommendationTabs()) {
-				tab.setSelected(isFirstTab);
-				isFirstTab = false;
-			}
+            boolean isFirstTab = true;
+            for (RecommendationTab tab : carousels.getRecommendationTabs()) {
+                tab.setSelected(isFirstTab);
+                isFirstTab = false;
+            }
 
-		} catch (Exception e) {
-			LOGGER.error("recommendation failed", e);
-		}
-		return carousels;
-	}
+        } catch (FDResourceException e) {
+            LOGGER.error("recommendation failed", e);
+        }
+        return carousels;
+    }
 
 	@Override
 	protected boolean synchronizeOnUser() {
