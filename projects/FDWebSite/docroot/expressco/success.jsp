@@ -14,6 +14,7 @@
   request.setAttribute("sitePage", "www.freshdirect.com/expressco/checkout/");
   request.setAttribute("listPos", "SystemMessage"); // TODO
   
+  boolean isDp2018 = false;
   boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, userCOSuccess) && JspMethods.isMobile(request.getHeader("User-Agent"));
   String pageTemplate = "/expressco/includes/ec_template.jsp";
   if (mobWeb) {
@@ -77,11 +78,14 @@
 				<fd:CmConversionEvent order="<%=order%>" orderModified="true"/>
 			<% } %>
 		</script>
-	
-
+				<% 
+					isDp2018 = (FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && order.getOrderType().equals(EnumSaleType.SUBSCRIPTION));
+				%>
+	</fd:GetOrder>
+  <% } %>
   <div id='successpage'>
       <div class="container">
-      	<% if(FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && order.getOrderType().equals(EnumSaleType.SUBSCRIPTION)){ %>
+      	<% if(isDp2018){ %>
 	  		<div class="dpn-content">
 	        	<%@ include file="/includes/deliverypasssuccess.jsp" %>
 	        </div>
@@ -123,7 +127,6 @@
     </script>
 
   </div>
-  </fd:GetOrder>
-  <% } %>
+  
   </tmpl:put>
 </tmpl:insert>
