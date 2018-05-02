@@ -37,9 +37,15 @@ public class SitemapTag extends SimpleTagSupport {
                 LOGGER.debug("Generate sitemap");
                 Context initialContext = null;
                 try {
+                	LOGGER.info("SitemapProperty :" +FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SitemapSB));
                 	if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SitemapSB)){
+                		LOGGER.debug("Generating sitemap from services");
+                		LOGGER.info("Generating sitemap from services");
             			FDECommerceService.getInstance().generateSitemap();
                 	}else{
+                		LOGGER.debug("Generating sitemap from EJB");
+                		LOGGER.info("Generating sitemap from EJB");
+
                    initialContext = ErpServicesProperties.getInitialContext();
                     SitemapHome managerHome = (SitemapHome) initialContext.lookup(SitemapHome.JNDI_HOME);
                     SitemapSB sb = managerHome.create();
