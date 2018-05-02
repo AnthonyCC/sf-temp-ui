@@ -12,7 +12,5 @@ public interface CrmManagerServiceI {
 	public PrimaryKey createSystemCase(CrmSystemCaseInfo caseInfo) throws FDResourceException, RemoteException;
 
 	public PrimaryKey createSystemCaseInSingleTx(CrmSystemCaseInfo caseInfo) throws FDResourceException, RemoteException;
-            
-    public List<CrmCaseOperation> getOperations() throws FDResourceException, RemoteException;
-    																								
+                																								
 }

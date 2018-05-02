@@ -100,11 +100,7 @@ public class CrmManager {
 				CrmManagerHome home =
 					(CrmManagerHome) manager.serviceLocator.getRemoteHome("freshdirect.crm.Manager");
 				CrmManagerSB sb = home.create();
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-					manager.setOperations(CrmManagerService.getInstance().getOperations());
-				}else{
 					manager.setOperations(sb.getOperations());
-				}
 			} catch (NamingException e) {
 				throw new FDResourceException(e);
 			} catch (CreateException e) {

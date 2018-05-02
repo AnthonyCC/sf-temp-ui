@@ -131,8 +131,12 @@ public interface CrmManagerSB extends EJBObject {
 	 */
 	@Deprecated 
 	public List<CrmAgentInfo> getCSROverview() throws FDResourceException, RemoteException;
-    // need to check whether it needs to be migrated to SF 2.0
-    public List<CrmCaseOperation> getOperations() throws FDResourceException, RemoteException;
+	/**
+	 *@deprecated This method is moved to backoffice project.
+	 * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+	 */
+	@Deprecated
+	public List<CrmCaseOperation> getOperations() throws FDResourceException, RemoteException;
     /**
      *@deprecated This method is moved to backoffice project.
      * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
