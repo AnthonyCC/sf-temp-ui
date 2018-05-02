@@ -49,6 +49,13 @@ public class CarouselService {
         return createCarouselData(id, name, items, user, cmEventSource, variantId, FDStoreProperties.getMinimumItemsCountInCarousel());
     }
 
+    public CarouselData createCarouselDataWithMinAndMaxProductLimit(String id, String name, List<ProductModel> items, FDUserI user, EnumEventSource eventSource, Variant variant) {
+        String cmEventSource = eventSource != null ? eventSource.getName() : null;
+        String variantId = variant != null ? variant.getId() : null;
+        return createCarouselData(id, name, items, user, cmEventSource, variantId, FDStoreProperties.getMinimumItemsCountInCarousel(),
+                FDStoreProperties.getMaximumItemsCountInCarousel());
+    }
+
     public CarouselData createCarouselData(String id, String name, List<ProductModel> products, FDUserI user, String cmEventSource, String variantId) {
         return createCarouselData(id, name, products, user, cmEventSource, variantId, 1, products.size());
     }
@@ -108,14 +115,12 @@ public class CarouselService {
         CarouselData carousel = null;
 
         List<ProductModel> products = collectNewProducts();
-        if (products.size() >= FDStoreProperties.getMinimumItemsCountInCarousel()) {
-            if (isRandomizeProductOrderEnabled) {
-                Collections.shuffle(products);
-            }
-
-            String carouselName = (carouselNameCase == CarouselNameCase.UPPER) ? NEW_PRODUCTS_CAROUSEL_NAME.toUpperCase() : NEW_PRODUCTS_CAROUSEL_NAME;
-            carousel = createCarouselDataWithMinProductLimit(null, carouselName, products, user, null, null);
+        if (isRandomizeProductOrderEnabled) {
+            Collections.shuffle(products);
         }
+
+        String carouselName = (carouselNameCase == CarouselNameCase.UPPER) ? NEW_PRODUCTS_CAROUSEL_NAME.toUpperCase() : NEW_PRODUCTS_CAROUSEL_NAME;
+        carousel = createCarouselDataWithMinAndMaxProductLimit(null, carouselName, products, user, null, null);
 
         return carousel;
     }
@@ -126,13 +131,13 @@ public class CarouselService {
 
         List<ProductModel> filteredProducts = new ArrayList<ProductModel>();
         if (newProductsCategory != null) {
-            filteredProducts = filterProducts(newProductsCategory.getAllChildProductsAsList());
+            filteredProducts = filterAvailableProducts(newProductsCategory.getAllChildProductsAsList());
         }
 
         return filteredProducts;
     }
 
-    private List<ProductModel> filterProducts(List<ProductModel> products) {
+    private List<ProductModel> filterAvailableProducts(List<ProductModel> products) {
         List<ProductModel> filteredProducts = new ArrayList<ProductModel>();
         for (ProductModel product : products) {
             if (!product.isUnavailable()) {

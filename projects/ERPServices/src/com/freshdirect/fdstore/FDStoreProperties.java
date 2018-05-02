@@ -1044,6 +1044,7 @@ public class FDStoreProperties {
     public final static String FDSTORE_DB_NEW_PRODUCTS_MATERIALIZEDVIEW_V2_ENABLED = "fdstore.db.new.products.materializedview.v2.enabled";
 
     private static final String PROP_CAROUSEL_MIN_ITEMS = "fdstore.carousel.minimum.items";
+    private static final String PROP_CAROUSEL_MAX_ITEMS = "fdstore.carousel.maximum.items";
 
     private static final String PROP_NEW_PRODUCTS_PAGE_CAROUSEL_ENABLED = "fdstore.newproductspage.carousel.enabled";
     private static final String PROP_NEW_PRODUCTS_PAGE_CAROUSEL_CONTAINER_CONTENT_KEY = "fdstore.newproductspage.carousel.contentkey";
@@ -2020,6 +2021,7 @@ public class FDStoreProperties {
         defaults.put(FDSTORE_DB_NEW_PRODUCTS_MATERIALIZEDVIEW_V2_ENABLED, "false");
 
         defaults.put(PROP_CAROUSEL_MIN_ITEMS, "4");
+        defaults.put(PROP_CAROUSEL_MAX_ITEMS, "20");
 
         defaults.put(PROP_IS_FDC_FIRST_ORDER_EMAIL_MSG_ENABLED, "false");
 
@@ -5131,6 +5133,10 @@ public class FDStoreProperties {
 
     public static int getMinimumItemsCountInCarousel() {
         return Integer.parseInt(get(PROP_CAROUSEL_MIN_ITEMS));
+    }
+
+    public static int getMaximumItemsCountInCarousel() {
+        return Integer.parseInt(get(PROP_CAROUSEL_MAX_ITEMS));
     }
 
     private static String getValueFromProperty(String property, int i) {
