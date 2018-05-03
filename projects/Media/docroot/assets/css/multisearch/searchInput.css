@@ -151,4 +151,9 @@
   text-indent: 0;
   line-height: 25px;
   cursor: pointer;
+  color: black;
+}
+
+.multisearch-input > ul.termlist > li[data-enabled] > button::after {
+  color: white;
 }
