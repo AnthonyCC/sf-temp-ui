@@ -198,10 +198,15 @@ public class WineFilter implements Serializable, Cloneable {
 	private Collection<ContentKey> getProductKeysForDomainValue(WineFilterValue value) {
 		if (value.getWineFilterValueType() == EnumWineFilterValueType.CMS)
 			return ContentFactory.getInstance().getWineProductKeysByDomainValue((DomainValue) value);
-		else if (value.getWineFilterValueType() == EnumWineFilterValueType.PRICE)
-			return WineFilterPriceIndex.getInstance().get().get(pricingContext).get((EnumWinePrice) value);
+        else if (value.getWineFilterValueType() == EnumWineFilterValueType.PRICE) {
+            if (WineFilterPriceIndex.getInstance().get().get(pricingContext) != null) {
+                return WineFilterPriceIndex.getInstance().get().get(pricingContext).get(value);
+            } else {
+                return new HashSet<ContentKey>();
+            }
+        }
 		else if (value.getWineFilterValueType() == EnumWineFilterValueType.RATING)
-			return WineFilterRatingIndex.getInstance().get().get((EnumWineRating) value);
+			return WineFilterRatingIndex.getInstance().get().get(value);
 		else
 			throw new IllegalArgumentException("unknown type of wine filter value: " + value.getWineFilterValueType().name());
 	}
