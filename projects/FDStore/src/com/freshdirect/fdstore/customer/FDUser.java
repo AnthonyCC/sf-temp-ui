@@ -326,6 +326,8 @@ public class FDUser extends ModelSupport implements FDUserI {
     
     private Collection<FDStandingOrder> activeSO3s = new ArrayList<FDStandingOrder>();
 
+    private String multiSearchList;
+    
 	public Date getTcAcknowledgeDate() {
         return tcAcknowledgeDate;
     }
@@ -4039,4 +4041,14 @@ public class FDUser extends ModelSupport implements FDUserI {
 			this.cachedFDCustomer.getCustomerEStoreModel().setInformOrderModifyViewCount(eStore, informOrderModify);
 		}
 	}
+
+    @Override
+    public String getMultiSearchList() {
+        return multiSearchList;
+    }
+
+    @Override
+    public void setMultiSearchList(String searchTermList) {
+        multiSearchList = searchTermList;
+    }
 }

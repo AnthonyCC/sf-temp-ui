@@ -2516,4 +2516,14 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public void setShowingInformOrderModify(boolean showInformOrderModify) {
 		this.showInformOrderModify = showInformOrderModify;
 	}
+
+    @Override
+    public String getMultiSearchList() {
+        return user.getMultiSearchList();
+    }
+
+    @Override
+    public void setMultiSearchList(String searchTermList) {
+        user.setMultiSearchList(searchTermList);
+    }
 }

@@ -61,3 +61,5 @@
     <jwr:script src="/multisearch.js" useRandomParam="false" />
 	</tmpl:put>
 </tmpl:insert>
+
+<div><h1><%= "MULTI_SEARCH_LIST: " + user.getMultiSearchList() %></h1></div>

@@ -782,4 +782,6 @@ public interface FDUserI extends java.io.Serializable {
 	public int getInformOrderModifyViewCount(EnumEStoreId eStore);
 	public int getInformOrderModifyViewCount(EnumEStoreId eStore, boolean increment);
 
+    public String getMultiSearchList();
+    public void setMultiSearchList(String searchTermList);
 }
