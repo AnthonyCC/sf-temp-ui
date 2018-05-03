@@ -1651,6 +1651,9 @@ public class CheckoutController extends BaseController {
                         propogateSetSessionValues(request.getSession(), submitResult);
                         if (submitResult.getActionResult().isSuccess()) {
                             message.setStatus(Message.STATUS_SUCCESS);
+                           if(isDlvPassCartOnly){
+                            fdUser.updateDlvPassInfo();
+                            }
                             com.freshdirect.mobileapi.controller.data.response.Order orderReceipt = new com.freshdirect.mobileapi.controller.data.response.Order();
                             String orderId = (String) request.getSession().getAttribute(SessionName.RECENT_ORDER_NUMBER);
                             if (orderId == null && cartModel.getPaymentMethod() == null) {
