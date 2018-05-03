@@ -101,7 +101,7 @@ var FreshDirect = FreshDirect || {};
 					this.endPolling();
 				} else if (this.pollingCount < this.POLLING_LIMIT) {
 					/* start again */
-					that.pollingHandle = setTimeout(this.pollingFunc, this.POLLING_INTERVAL);
+					this.pollingHandle = setTimeout(this.pollingFunc, this.POLLING_INTERVAL);
 					this.pollingCount++;
 				}
 			}
