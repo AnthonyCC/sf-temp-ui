@@ -18,7 +18,7 @@
     <li class="title">Current products</li>
   {foreach $term in $terms}
     <li data-searchterm="{$term.name}" {if $term.enabled}data-enabled="true"{/if}>
-      <input class="offscreen" type="checkbox" id="ms_term_{$term.slug}" name="ms_terms" value="{$term.name}" {if $term.enabled}checked{/if}/>
+      <input type="checkbox" id="ms_term_{$term.slug}" name="ms_terms" value="{$term.name}" {if $term.enabled}checked{/if}/>
       <label for="ms_term_{$term.slug}">
         <span>{$term.name}</span>
       </label>

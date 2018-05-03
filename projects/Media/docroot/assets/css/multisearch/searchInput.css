@@ -105,34 +105,18 @@
   cursor: pointer;
 }
 
-.multisearch-input > ul.termlist > li > label:before {
-  display: inline-block;
-  content: '';
-  height: 15px;
-  width: 15px;
-  border: 1px solid #dce6be;
-  background: #f0f5e1;
-  vertical-align: middle;
-  margin-right: 5px;
-  text-align: center;
-  color: black;
-  font-size: 1.5em;
-}
-
-.multisearch-input > ul.termlist > li > input:focus ~ label:before {
-  outline: 2px solid #4fa157;
-}
-
-.multisearch-input > ul.termlist > li > input:checked ~ label:before {
-  content: "✓";
-}
-
 .multisearch-input > ul.termlist > .title {
   background: transparent;
   color: inherit;
   margin-top: 0;
   text-transform: uppercase;
   padding: 0;
+}
+
+.multisearch-input > ul.termlist > li > input {
+  vertical-align: middle;
+  max-height: 25px;
+  max-width: 25px;
 }
 
 .multisearch-input > ul.termlist > li > button {
@@ -155,7 +139,8 @@
 }
 
 .multisearch-input > ul.termlist > li > button::after {
-  content: '❌';
+  content: '\e60b';
+  font-family: 'freshdirect_icons';
   position: absolute;
   top: 0;
   left: 0;

@@ -123,7 +123,7 @@ var FreshDirect = FreshDirect || {};
         });
 
         WIDGET.render.call(this, data);
-        FreshDirect.components.autoComplete.init(this.placeholder+' input');
+        FreshDirect.components.autoComplete.init(this.placeholder+' input.searchinput');
         $('[data-component="multisearch-input"] input.searchinput').val("");
       }
     }
