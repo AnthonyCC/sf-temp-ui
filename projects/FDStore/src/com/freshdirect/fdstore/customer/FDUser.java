@@ -4044,7 +4044,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 
     @Override
     public String getMultiSearchList() {
-        return multiSearchList;
+        return multiSearchList == null ? "" : multiSearchList;
     }
 
     @Override
