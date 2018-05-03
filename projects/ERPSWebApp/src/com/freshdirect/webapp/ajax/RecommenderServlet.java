@@ -3,6 +3,7 @@ package com.freshdirect.webapp.ajax;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.webapp.ajax.browse.data.CarouselNameCase;
+import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.ajax.browse.service.CarouselService;
 import com.freshdirect.webapp.ajax.product.data.BasicProductData;
 import com.freshdirect.webapp.ajax.recommendation.RecommendationRequestObject;
@@ -51,13 +52,12 @@ public class RecommenderServlet extends BaseJsonServlet {
     }
 
     private RecommendationTab createNewProductsCarouselRecommendationTab(FDUserI user, RecommendationRequestObject requestData) {
-        final boolean isNewProductsCarouselEnabled = FDStoreProperties.isReorderPageNewProductsCarouselEnabled();
         RecommendationTab recommendationTab = null;
-        if (isNewProductsCarouselEnabled) {
-            final boolean isRandomizeProductOrderEnabled = FDStoreProperties.isReorderPageNewProductsCarouselRandomizeProductOrderEnabled();
+        if (FDStoreProperties.isReorderPageNewProductsCarouselEnabled()) {
             recommendationTab = new RecommendationTab(CarouselService.NEW_PRODUCTS_CAROUSEL_NAME, requestData.getFeature());
+            List<ProductModel> newProducts = CarouselService.defaultService().collectNewProducts(FDStoreProperties.isReorderPageNewProductsCarouselRandomizeProductOrderEnabled());
             recommendationTab.setCarouselData(
-                    CarouselService.defaultService().createNewProductsCarousel(user, isRandomizeProductOrderEnabled, CarouselNameCase.NOT_MODIFIED));
+                    CarouselService.defaultService().createCarouselDataWithMinProductLimit(null, CarouselService.NEW_PRODUCTS_CAROUSEL_NAME, newProducts, user, null, null));
             recommendationTab.getCarouselData().setCmEventSource("Reorder");
         }
         return recommendationTab;

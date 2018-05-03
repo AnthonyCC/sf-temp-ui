@@ -126,9 +126,7 @@ public class QuickShopYmalServlet extends BaseJsonServlet{
 				title = getTheCrazyQuickshopTitle( deptId );
 
             } else if (CarouselService.NEW_PRODUCTS_CAROUSEL_VIRTUAL_SITE_FEATURE.equals(siteFeature)) {
-                
                 items = collectNewProducts(user);
-                
             } else {
 
                 // Regular recommendations based on a siteFeature
@@ -150,12 +148,7 @@ public class QuickShopYmalServlet extends BaseJsonServlet{
 	}
 
     private List<QuickShopLineItem> collectNewProducts(FDUserI user) throws FDResourceException {
-        List<ProductModel> newProducts = CarouselService.defaultService().collectNewProducts();
-        
-        final boolean isNewProductsCarouselRandomizationEnabled = FDStoreProperties.isCartConfirmPageNewProductsCarouselRandomizeProductOrderEnabled();
-        if (isNewProductsCarouselRandomizationEnabled) {
-            Collections.shuffle(newProducts);
-        }
+        List<ProductModel> newProducts = CarouselService.defaultService().collectNewProducts(FDStoreProperties.isCartConfirmPageNewProductsCarouselRandomizeProductOrderEnabled());
         
         List<QuickShopLineItem> items = new ArrayList<QuickShopLineItem>();
         for (ProductModel product : newProducts) {

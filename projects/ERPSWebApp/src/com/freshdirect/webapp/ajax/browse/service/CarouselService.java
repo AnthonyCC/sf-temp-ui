@@ -16,7 +16,6 @@ import com.freshdirect.storeapi.content.CategoryModel;
 import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.ajax.browse.data.CarouselData;
-import com.freshdirect.webapp.ajax.browse.data.CarouselNameCase;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.util.FDURLUtil;
@@ -49,19 +48,8 @@ public class CarouselService {
         return createCarouselData(id, name, items, user, cmEventSource, variantId, FDStoreProperties.getMinimumItemsCountInCarousel());
     }
 
-    public CarouselData createCarouselDataWithMinAndMaxProductLimit(String id, String name, List<ProductModel> items, FDUserI user, EnumEventSource eventSource, Variant variant) {
-        String cmEventSource = eventSource != null ? eventSource.getName() : null;
-        String variantId = variant != null ? variant.getId() : null;
-        return createCarouselData(id, name, items, user, cmEventSource, variantId, FDStoreProperties.getMinimumItemsCountInCarousel(),
-                FDStoreProperties.getMaximumItemsCountInCarousel());
-    }
-
     public CarouselData createCarouselData(String id, String name, List<ProductModel> products, FDUserI user, String cmEventSource, String variantId) {
-        return createCarouselData(id, name, products, user, cmEventSource, variantId, 1, products.size());
-    }
-
-    public CarouselData createCarouselData(String id, String name, List<ProductModel> products, FDUserI user, String cmEventSource, String variantId, int minProductLimit) {
-        return createCarouselData(id, name, products, user, cmEventSource, variantId, minProductLimit, products.size());
+        return createCarouselData(id, name, products, user, cmEventSource, variantId, 1);
     }
 
     /**
@@ -74,13 +62,11 @@ public class CarouselService {
      * @param cmEventSource
      * @param variantId
      * @param minProductLimit
-     * @param maxProductLimit
      * @return
      */
-    public CarouselData createCarouselData(String id, String name, List<ProductModel> products, FDUserI user, String cmEventSource, String variantId, int minProductLimit,
-            int maxProductLimit) {
+    public CarouselData createCarouselData(String id, String name, List<ProductModel> products, FDUserI user, String cmEventSource, String variantId, int minProductLimit) {
         CarouselData carousel = null;
-        List<ProductData> productDatas = createCarouselProductData(user, products, variantId, maxProductLimit);
+        List<ProductData> productDatas = createCarouselProductData(user, products, variantId);
         if (minProductLimit <= productDatas.size()) {
             carousel = new CarouselData();
             carousel.setId(id);
@@ -91,7 +77,7 @@ public class CarouselService {
         return carousel;
     }
 
-    private List<ProductData> createCarouselProductData(FDUserI user, List<ProductModel> products, String variantId, int maxProductLimit) {
+    private List<ProductData> createCarouselProductData(FDUserI user, List<ProductModel> products, String variantId) {
         List<ProductData> productDatas = new ArrayList<ProductData>();
         for (ProductModel product : products) {
                 try {
@@ -103,35 +89,26 @@ public class CarouselService {
                 } catch (Exception e) {
                     LOGGER.error("failed to create ProductData", e);
                 }
-            if (productDatas.size() == maxProductLimit) {
-                break;
-            }
         }
         return productDatas;
     }
 
-    public CarouselData createNewProductsCarousel(FDUserI user, boolean isRandomizeProductOrderEnabled, CarouselNameCase carouselNameCase) {
-
-        CarouselData carousel = null;
-
-        List<ProductModel> products = collectNewProducts();
-        if (isRandomizeProductOrderEnabled) {
-            Collections.shuffle(products);
-        }
-
-        String carouselName = (carouselNameCase == CarouselNameCase.UPPER) ? NEW_PRODUCTS_CAROUSEL_NAME.toUpperCase() : NEW_PRODUCTS_CAROUSEL_NAME;
-        carousel = createCarouselDataWithMinAndMaxProductLimit(null, carouselName, products, user, null, null);
-
-        return carousel;
-    }
-
-    public List<ProductModel> collectNewProducts() {
+    public List<ProductModel> collectNewProducts(boolean isRandomizeProductOrderEnabled) {
         CategoryModel newProductsCategory = ((CategoryModel) ContentFactory.getInstance()
                 .getContentNodeByKey(ContentKeyFactory.get(FDStoreProperties.getNewProductsCarouselSourceCategoryContentKey())));
 
         List<ProductModel> filteredProducts = new ArrayList<ProductModel>();
         if (newProductsCategory != null) {
             filteredProducts = filterAvailableProducts(newProductsCategory.getAllChildProductsAsList());
+        }
+
+        int maximumItemsCountInCarousel = FDStoreProperties.getMaximumItemsCountInNewProductCarousel();
+        if (filteredProducts.size() > maximumItemsCountInCarousel) {
+            filteredProducts = filteredProducts.subList(0, maximumItemsCountInCarousel);
+        }
+
+        if (isRandomizeProductOrderEnabled) {
+            Collections.shuffle(filteredProducts);
         }
 
         return filteredProducts;

@@ -1044,7 +1044,6 @@ public class FDStoreProperties {
     public final static String FDSTORE_DB_NEW_PRODUCTS_MATERIALIZEDVIEW_V2_ENABLED = "fdstore.db.new.products.materializedview.v2.enabled";
 
     private static final String PROP_CAROUSEL_MIN_ITEMS = "fdstore.carousel.minimum.items";
-    private static final String PROP_CAROUSEL_MAX_ITEMS = "fdstore.carousel.maximum.items";
 
     private static final String PROP_NEW_PRODUCTS_PAGE_CAROUSEL_ENABLED = "fdstore.newproductspage.carousel.enabled";
     private static final String PROP_NEW_PRODUCTS_PAGE_CAROUSEL_CONTAINER_CONTENT_KEY = "fdstore.newproductspage.carousel.contentkey";
@@ -1056,6 +1055,8 @@ public class FDStoreProperties {
     private static final String PROP_INFORM_ORDERMODIFY_ENABLED = "fdstore.inform.ordermodify.enabled";
     private static final String PROP_INFORM_ORDERMODIFY_VIEWLIMIT = "fdstore.inform.ordermodify.viewCountLimit";
     private static final String PROP_INFORM_ORDERMODIFY_MEDIAPATH = "fdstore.inform.ordermodify.mediaPath";
+
+    private static final String PROP_NEW_PRODUCTS_CAROUSEL_MAX_ITEMS = "fdstore.newproductscarousel.maximum.items";
     private static final String PROP_NEW_PRODUCTS_CAROUSEL_SOURCE_CATEGORY_CONTENT_KEY = "fdstore.newproductscarousel.sourcecategory.contentkey";
     private static final String PROP_FRESH_DEALS_PAGE_NEW_PRODUCTS_CAROUSEL_ENABLED = "fdstore.freshdealspage.newproductscarousel.enabled";
     private static final String PROP_FRESH_DEALS_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED = "fdstore.freshdealspage.newproductscarousel.randomizeproductorder.enabled";
@@ -2021,7 +2022,6 @@ public class FDStoreProperties {
         defaults.put(FDSTORE_DB_NEW_PRODUCTS_MATERIALIZEDVIEW_V2_ENABLED, "false");
 
         defaults.put(PROP_CAROUSEL_MIN_ITEMS, "4");
-        defaults.put(PROP_CAROUSEL_MAX_ITEMS, "20");
 
         defaults.put(PROP_IS_FDC_FIRST_ORDER_EMAIL_MSG_ENABLED, "false");
 
@@ -2030,6 +2030,7 @@ public class FDStoreProperties {
         defaults.put(PROP_NEW_PRODUCTS_PAGE_CAROUSEL_ENABLED, "true");
         defaults.put(PROP_NEW_PRODUCTS_PAGE_CAROUSEL_CONTAINER_CONTENT_KEY, "ModuleContainer:new_prod");
 
+        defaults.put(PROP_NEW_PRODUCTS_CAROUSEL_MAX_ITEMS, "20");
         defaults.put(PROP_NEW_PRODUCTS_CAROUSEL_SOURCE_CATEGORY_CONTENT_KEY, "Category:newproduct_demo");
         defaults.put(PROP_FRESH_DEALS_PAGE_NEW_PRODUCTS_CAROUSEL_ENABLED, "true");
         defaults.put(PROP_FRESH_DEALS_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED, "true");
@@ -5135,10 +5136,6 @@ public class FDStoreProperties {
         return Integer.parseInt(get(PROP_CAROUSEL_MIN_ITEMS));
     }
 
-    public static int getMaximumItemsCountInCarousel() {
-        return Integer.parseInt(get(PROP_CAROUSEL_MAX_ITEMS));
-    }
-
     private static String getValueFromProperty(String property, int i) {
         if (property.contains(",")) {
             String[] keys = property.split(",");
@@ -5154,6 +5151,10 @@ public class FDStoreProperties {
 
     public static boolean isDlvPassStandAloneCheckoutEnabled() {
         return (Boolean.valueOf(get(PROP_FD_DP_STANDALONE_CHECKOUT_ENABLED))).booleanValue();
+    }
+
+    public static int getMaximumItemsCountInNewProductCarousel() {
+        return Integer.parseInt(get(PROP_NEW_PRODUCTS_CAROUSEL_MAX_ITEMS));
     }
 
     public static String getNewProductsPageCarouselContainerContentKey() {
