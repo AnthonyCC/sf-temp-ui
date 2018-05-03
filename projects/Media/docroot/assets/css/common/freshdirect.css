@@ -891,12 +891,19 @@ section.main .leftnav .backbutton {
   text-align: center;
 }
 
+section.tabs .tabcontent .msback {
+  text-align: center;
+  float: right;
+}
+
+section.tabs .tabcontent a.back,
 section.main .leftnav button.back {
   color: #693;
   background: #fff;
   border: 1px solid #693;
 }
 
+section.tabs .ltabcontent a.back:hover,
 section.main .leftnav button.back:hover {
   background: #eee;
 }
