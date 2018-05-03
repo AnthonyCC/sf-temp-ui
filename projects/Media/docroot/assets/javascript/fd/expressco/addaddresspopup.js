@@ -143,13 +143,13 @@ var FreshDirect = FreshDirect || {};
     $form.attr('data-showaltphone', null);
   });
 
-  // backup delivery
-  $(document).on('change', '#' + addaddresspopup.popupId + ' .backup_delivery input[name="bd_auth"]', function (e) {
+  // backup delivery radio buttons focus state for accessibility
+  $(document).on('change focus', '#' + addaddresspopup.popupId + ' .backup_delivery input[name="bd_auth"]', function (e) {
     var $el = $(e.currentTarget),
         val = $el.val(),
         $parent = $el.closest('.backup_delivery');
 
-    $parent.attr('bd-selected', val);
+    $parent.attr('bd-selected', (val==='none')?'':val);
   });
 
   fd.modules.common.utils.register("expressco", "addaddresspopup", addaddresspopup, fd);

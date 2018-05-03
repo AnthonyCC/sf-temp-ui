@@ -140,12 +140,19 @@ div[bd-id] {
   margin: 0 2px 0 0;
 }
 
+/*  bug fix for keyboard issue, accessibility radio buttons of delivery backup */ 
 #addaddress_home .backup_delivery [bd-id="none"] {
-  display: none;
+/* display: none; */ 
+   position: absolute;
+   overflow: hidden;
+   clip: rect(0 0 0 0);
 }
 
 #addaddress_home .backup_delivery[bd-selected] [bd-id="none"] {
   display: block;
+  position: relative;
+  overflow: visible;
+  clip: auto
 }
 
 #addaddress_home .backup_delivery[bd-selected="none"] [bd-id="none"] {
