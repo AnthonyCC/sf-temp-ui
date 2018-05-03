@@ -289,3 +289,25 @@
 .popupcontentoverlay.customize-overlay{
 	opacity: 0.5;
 }
+/* accessibility change for add to list button */
+#customizePopup .buttons .cssbutton.addtolist:focus{
+   text-decoration: underline;
+    color: #5fb069;
+    box-shadow:none;
+}
+
+/*
+#customizePopup input[type="checkbox"]{
+	background-color:#fefefe;
+    box-shadow: 0 0 0 1px #d4d4d4; 
+}
+#customizePopup input[type="checkbox"]:focus{
+	background-color: #fefefe;
+	box-shadow: 0 0 0 1px #ffffff, 0 0 0 3px #4fa157;
+	border:none;
+}
+#customizePopup input[type="checkbox"]:hover{
+	border:none;
+	box-shadow: 0 0 0 1px #ffffff, 0 0 0 3px #4fa157;
+}
+*/
