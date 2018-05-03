@@ -62,10 +62,16 @@ var FreshDirect = FreshDirect || {};
           		if ($jq('#orders').length) { $(document).trigger("orders-change"); }
           	  }     
             }
-        }
-	});
+	       },
+	        handleClick: {
+	            value: function(e) { /* label -> span accessibility change for duplicate labels*/
+	                $('#'+$(e.currentTarget).find('[data-for]').attr('data-for')).trigger('click');
+	            }
+	        }
+	    });
 
 	breadcrumbs.listen();
 	$(document).on('keyup',breadcrumbs.placeholder+' li',breadcrumbs.handleKeyup.bind(breadcrumbs));
+	$(document).on('click',breadcrumbs.placeholder+' li',breadcrumbs.handleClick.bind(breadcrumbs));
 	fd.modules.common.utils.register("quickshop.common", "breadcrumbs", breadcrumbs, fd);
 }(FreshDirect));

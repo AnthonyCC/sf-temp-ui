@@ -6,7 +6,7 @@
 {template .breadcrumbs}
 {foreach $dataItem in $data}
 {if $dataItem}
-<li><label tabindex="0" for="{$dataItem.filteringUrlValue}"><span class="offscreen">delete</span>{$dataItem.name}<span class="offscreen">filter</span></label></li>
+<li><span tabindex="0" aria-label="remove {$dataItem.name} filter" data-for="{$dataItem.filteringUrlValue}">{$dataItem.name}</span></li>
 {/if}
 {/foreach}
 {/template}
