@@ -43,13 +43,13 @@ public class CarouselService {
 	}
 
     public CarouselData createCarouselDataWithMinProductLimit(String id, String name, List<ProductModel> items, FDUserI user, EnumEventSource eventSource, Variant variant) {
-        String cmEventSource = eventSource != null ? eventSource.getName() : null;
+        String eventSourceName = eventSource != null ? eventSource.getName() : null;
         String variantId = variant != null ? variant.getId() : null;
-        return createCarouselData(id, name, items, user, cmEventSource, variantId, FDStoreProperties.getMinimumItemsCountInCarousel());
+        return createCarouselData(id, name, items, user, eventSourceName, variantId, FDStoreProperties.getMinimumItemsCountInCarousel());
     }
 
-    public CarouselData createCarouselData(String id, String name, List<ProductModel> products, FDUserI user, String cmEventSource, String variantId) {
-        return createCarouselData(id, name, products, user, cmEventSource, variantId, 1);
+    public CarouselData createCarouselData(String id, String name, List<ProductModel> products, FDUserI user, String eventSource, String variantId) {
+        return createCarouselData(id, name, products, user, eventSource, variantId, 1);
     }
 
     /**
