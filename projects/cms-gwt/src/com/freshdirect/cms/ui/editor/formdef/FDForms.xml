@@ -2473,6 +2473,7 @@
 						    <CmsField><attribute>openHTML</attribute></CmsField>
 						    <CmsField><attribute>iconList</attribute></CmsField>
 						    <CmsField><attribute>productListRowMax</attribute></CmsField>
+						    <CmsField><attribute>productMaxLimit</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<CmsSection>

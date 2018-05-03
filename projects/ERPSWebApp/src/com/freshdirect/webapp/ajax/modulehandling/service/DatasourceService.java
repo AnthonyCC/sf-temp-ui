@@ -11,9 +11,11 @@ import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentTypes;
 import com.freshdirect.fdstore.FDNotFoundException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
+import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.storeapi.ContentNodeI;
 import com.freshdirect.storeapi.application.CmsManager;
@@ -266,7 +268,9 @@ public class DatasourceService {
 
         // LIMIT PRODUCTS
         if (!showAllProducts) {
-            products = ModuleContentService.getDefaultService().limitProductList(products);
+            Integer maxLimit = NVL.apply(ContentNodeUtil.getIntegerAttribute(module, ContentTypes.Module.productMaxLimit.getName()),
+                    FDStoreProperties.getHomepageRedesignProductLimitMax());
+            products = ModuleContentService.getDefaultService().limitProductList(products, maxLimit);
         }
 
         // LIMIT PRODUCTS ADDITIONALY IF PRODUCT LIST IS ENABLED
