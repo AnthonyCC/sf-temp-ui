@@ -58,7 +58,7 @@ var FreshDirect = FreshDirect || {};
 		},
 		open: {
 			value: function ($callBackElem) {
-				if (this.pollingOrderId === null) { return; } /* required */
+				if (this.pollingOrderId === null || this.pollingOrderId === undefined) { return; } /* required */
 
 				this.$callbackElem = $callBackElem || null;
 
@@ -77,7 +77,7 @@ var FreshDirect = FreshDirect || {};
 		},
 		pollingFunc: {
 			value: function() {
-				if (this.pollingOrderId === null) { return;	}
+				if (this.pollingOrderId === null || this.pollingOrderId === undefined) { return; }
 
 				if (this.pollingCount < this.POLLING_LIMIT) {
 					var that = this;
@@ -114,17 +114,20 @@ var FreshDirect = FreshDirect || {};
 		},
 		startPolling: { /* resets polling status */
 			value: function () {
-				if (this.pollingOrderId === null) { return;	}
+				var that = this;
+				if (that === window) { that = FreshDirect.components.ordermodifystatus; }
 				
-				this.refreshBody({ body: '<div class="spinner"></div><div>Bringing up your order! Please wait...</div><div><button class="cssbutton green transparent close">Cancel</button></div>' });
+				if (that.pollingOrderId === null || that.pollingOrderId === undefined || that === window) { return; }
+				
+				that.refreshBody({ body: '<div class="spinner"></div><div>Bringing up your order! Please wait...</div><div><button class="cssbutton green transparent close">Cancel</button></div>' });
 
-				this.pollingCount = 0;
+				that.pollingCount = 0;
 
-				if (!this.polling) {
-					setTimeout((this.pollingFunc).bind(this), this.POLLING_STARTDELAY);
+				if (!that.polling) {
+					setTimeout((that.pollingFunc).bind(that), that.POLLING_STARTDELAY);
 				}
 
-				this.polling = true;
+				that.polling = true;
 			}
 		},
 		endPolling: {
