@@ -784,8 +784,6 @@ public interface FDCustomerManagerSB  extends EJBObject{
 			SQLException,
 			RemoteException;
 
-	public ErpAuthorizationModel verify(FDActionInfo info,ErpPaymentMethodI paymentMethod) throws FDResourceException,ErpAuthorizationException, RemoteException;
-
 	public String recordReferral(String customerId, String referralId, String customerEmail) throws FDResourceException, RemoteException;
 
 	public String dupeEmailAddress(String email) throws FDResourceException, RemoteException;

@@ -31,8 +31,6 @@ public interface PaymentManagerSB extends EJBObject {
 	@Deprecated
 	public List<ErpAuthorizationModel> authorizeSaleRealtime(String saleId,EnumSaleType saleType) throws ErpAuthorizationException, ErpAddressVerificationException, RemoteException;
 	@Deprecated
-	public ErpAuthorizationModel verify(String merchant,ErpPaymentMethodI paymentMethod)throws ErpTransactionException, RemoteException;
-	@Deprecated
 	public boolean isValidVaultToken(String token, String customerId)throws RemoteException;
 
 }

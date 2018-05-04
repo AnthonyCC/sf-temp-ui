@@ -4303,28 +4303,6 @@ public class FDCustomerManager {
 
 		}
 
-	public static ErpAuthorizationModel verify(FDActionInfo info, ErpPaymentMethodI paymentMethod) throws ErpTransactionException, FDResourceException,ErpAuthorizationException {
-
-		final String ECHECK_VERIFY_UNAVAIL_MSG="This feature is not available for E-Checks";
-
-		if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
-			throw new ErpTransactionException(ECHECK_VERIFY_UNAVAIL_MSG);
-		}
-		try{
-			lookupManagerHome();
-			FDCustomerManagerSB sb = managerHome.create();
-			ErpAuthorizationModel auth=sb.verify(info, paymentMethod);
-			return auth;
-		}catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to bean");
-		}
-	}
-
-
 	public static void logMassCancelActivity(ErpActivityRecord record) {
 		ActivityLogHome home = getActivityLogHome();
 		try {

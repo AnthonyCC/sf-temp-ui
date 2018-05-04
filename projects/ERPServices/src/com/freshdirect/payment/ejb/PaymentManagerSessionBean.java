@@ -719,13 +719,6 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public ErpAuthorizationModel verify(String merchant,ErpPaymentMethodI paymentMethod) throws ErpTransactionException {
-		PaymentManager pm= new PaymentManager();
-		ErpAuthorizationModel auth=null;
-		auth=pm.verify(merchant,paymentMethod);
-		return auth;
-	}
-
 	public boolean isValidVaultToken(String token, String customerId)throws RemoteException{
 		PaymentManager pm= new PaymentManager();
 		return pm.isValidVaultToken(token,customerId);

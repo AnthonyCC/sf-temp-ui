@@ -7127,50 +7127,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(ex);
 		}
 	}
-
-	public ErpAuthorizationModel verify(FDActionInfo action, ErpPaymentMethodI paymentMethod)
-			throws FDResourceException, ErpAuthorizationException {
-		PaymentManagerSB sb = null;
-		ErpAuthorizationModel auth = null;
-		try {
-			sb = this.getPaymentManagerHome().create();
-			try {
-				auth = sb.verify(
-						ErpAffiliate.getPrimaryAffiliate(action.geteStore()).getMerchant(paymentMethod.getCardType()),
-						paymentMethod);
-				logCardVerificationActivity(action, paymentMethod, auth, "");
-			} catch (ErpTransactionException te) {
-				logCardVerificationActivity(action, paymentMethod, null, te.toString());
-			}
-			if (auth != null && !EnumTransactionSource.CUSTOMER_REP.equals(action.getSource())) {
-				FDCustomerEB fdCustomerEB = getFdCustomerHome().findByErpCustomerId(paymentMethod.getCustomerId());
-				if (!auth.isApproved() || !auth.hasAvsMatched()) {
-					int count = fdCustomerEB.incrementPymtVerifyAttempts();
-					auth.setVerifyFailCount(count);
-					if (count >= FDStoreProperties.getPaymentMethodVerificationLimit()) {
-						action.setNote(new StringBuilder("Reached limit of ")
-								.append(FDStoreProperties.getPaymentMethodVerificationLimit())
-								.append(" unsuccessful credit card verifications.").toString());
-						this.setActive(action, false);
-						// throw new ErpAuthorizationException("Your account has
-						// been locked.");
-					}
-				} else {
-					fdCustomerEB.resetPymtVerifyAttempts();
-				}
-			}
-			return auth;
-
-		} catch (FinderException fe) {
-			throw new FDResourceException(fe);
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce);
-		}
-
-	}
-
+	
 	/**
 	 * Adds auth failures to cusotmer activity log.
 	 */
