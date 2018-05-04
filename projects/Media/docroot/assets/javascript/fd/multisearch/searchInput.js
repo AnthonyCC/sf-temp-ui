@@ -95,7 +95,7 @@ var FreshDirect = FreshDirect || {};
         if (!dontpush) {
           // set new url
           var pathname = window.location.pathname;
-          window.history.pushState({terms: this.terms}, "search: "+this.terms.join(', '), pathname + "?q=" + this.terms.join(','));
+          window.history.pushState({terms: this.terms}, "search: "+this.terms.join(', '), pathname + "?q=" + this.terms.map(function (t) { return encodeURIComponent(t); }).join(','));
         }
 
         try {
@@ -109,7 +109,7 @@ var FreshDirect = FreshDirect || {};
                 'Content-Type': 'application/json'
               },
               body: JSON.stringify({
-                searchTermList: this.terms.join(',')
+                searchTermList: this.terms.map(function (t) { return encodeURIComponent(t); }).join(',')
               })
             }
           ).catch(function (e) {
@@ -187,7 +187,10 @@ var FreshDirect = FreshDirect || {};
 
   setTimeout(function () {
     var q = fd.utils.getParameterByName('q'),
-        terms = (q || FreshDirect.multisearch.list || "").split(',').filter(function (kw) { return kw; });
+        terms = (q || FreshDirect.multisearch.list || "")
+          .split(',')
+          .filter(function (kw) { return kw; })
+          .map(function (t) { return decodeURIComponent(t); });
 
     if (terms.length === 0) {
       terms = DEFAULTLIST;
