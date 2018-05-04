@@ -449,7 +449,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String ENQUEUE_EMAIL = "mailer/enqueue";
 	private static final String SITEMAP_GENERATE = "sitemap/generate";
 	
-	private static final String CAPTURE_AUTHORIZATIONS = "paymentManager/captureAuthorizations";
+	private static final String CHECK_TOKEN_VALID = "paymentManager/isValidVaultToken";
 
 	public static IECommerceService getInstance() {
 		if (INSTANCE == null)
@@ -4567,33 +4567,13 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	}
 	
 	@Override
-	public void captureAuthorizations(String saleId, List<ErpAuthorizationModel> auths) throws RemoteException {
-		Request<String> request = new Request<String>();
-		request.setData(saleId);
-		String inputJson;
-		try {
-			inputJson = buildRequest(request);
-			Response<EnumPaymentResponse> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(CAPTURE_AUTHORIZATIONS)+"/" + saleId, new TypeReference<Void>() {});
-			if (!response.getResponseCode().equals("OK")) {
-
-				if (response.getError().containsKey("ErpTransactionException")) {
-					throw new ErpTransactionException();
-				}
-			}
-		} catch (Exception e) {
-			LOGGER.error(e);
-			throw new RemoteException(e.getMessage());
-		}
-	}
-	
-	@Override
 	public boolean isValidVaultToken(String token, String customerId) throws RemoteException {
 		Request<String> request = new Request<String>();
-		request.setData(customerId);
+		request.setData(token);
 		String inputJson;
 		try {
 			inputJson = buildRequest(request);
-			Response<Boolean> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(CAPTURE_AUTHORIZATIONS)+"/" + customerId, new TypeReference<Boolean>() {});
+			Response<Boolean> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(CHECK_TOKEN_VALID)+"/" + customerId, new TypeReference<Response<Boolean>>() {});
 			if (!response.getResponseCode().equals("OK")) {
 				return true;
 			}

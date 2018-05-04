@@ -257,12 +257,10 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 							if(EnumSaleStatus.CAPTURE_PENDING.equals(saleEB.getStatus()))
 							try{
 								List<ErpAuthorizationModel> auths=saleEB.getAuthorizations();
-								if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentManagerSB)) {
-									FDECommerceService.getInstance().captureAuthorizations(saleId, auths);
-								} else {
-									PaymentManagerSB paymentManager = this.getPaymentManagerHome().create();
-									paymentManager.captureAuthorizations(saleId, auths);
-								}
+
+								PaymentManagerSB paymentManager = this.getPaymentManagerHome().create();
+								paymentManager.captureAuthorizations(saleId, auths);
+								
 								saleEB.forcePaymentStatus();
 								DlvPassManagerSB dlvPass = this.getDlvPassManagerHome().create();
 								dlvPass.updateDeliveryPassActivation(saleId);

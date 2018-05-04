@@ -5038,11 +5038,16 @@ public class FDCustomerManager {
 		 * @throws FDResourceException
 		 */
 		public static boolean isValidVaultToken(String token, String customerId) throws FDResourceException {
-			lookupManagerHome();
+			
 			boolean isValid=false;
 			try {
-				FDCustomerManagerSB sb = managerHome.create();
-				isValid =sb.isValidVaultToken(token,customerId);
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentManagerSB)) {
+					isValid = FDECommerceService.getInstance().isValidVaultToken(token, customerId);
+				} else {
+					lookupManagerHome();
+					FDCustomerManagerSB sb = managerHome.create();
+					isValid =sb.isValidVaultToken(token,customerId);
+				}
 
 			} catch (CreateException ce) {
 				invalidateManagerHome();
