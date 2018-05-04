@@ -281,7 +281,7 @@ public class FDPromotionJSONSerializer extends AbstractSerializer {
 				if (getSetter(klass, prop, m.getReturnType()) != null) {
 					props.put(prop, m);
 				} else {
-					LOGGER.warn(klass+" [collectProperties] Prop '" + prop + "' skipped, no setter");
+					LOGGER.debug(klass+" [collectProperties] Prop '" + prop + "' skipped, no setter");
 				}
 			} else if (m.getName().startsWith("is")) {
 				// boolean type
@@ -289,7 +289,7 @@ public class FDPromotionJSONSerializer extends AbstractSerializer {
 				if (getSetter(klass, prop, m.getReturnType()) != null) {
 					props.put(prop, m);
 				} else {
-					LOGGER.warn(klass+" [collectProperties] Prop '" + prop + "' skipped, no setter");
+					LOGGER.debug(klass+" [collectProperties] Prop '" + prop + "' skipped, no setter");
 				}
 			}
 		}
@@ -535,7 +535,7 @@ public class FDPromotionJSONSerializer extends AbstractSerializer {
 					} else {
 						// Value is in not expected format, skip ...
 						// System.err.println("BANG[1] rhs:" + rhs.getClass().getName() + "/ valueType: " + valueType);
-						// LOGGER.warn("Unexpected rhs:" + rhs.getClass().getName() + "/ valueType: " + valueType));
+						// LOGGER.debug("Unexpected rhs:" + rhs.getClass().getName() + "/ valueType: " + valueType));
 						continue;
 					}
 				} else if (Iterable.class.isAssignableFrom(valueType)) {
