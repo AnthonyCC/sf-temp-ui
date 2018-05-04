@@ -57,9 +57,11 @@
 
       FreshDirect.multisearch.limit = +'<%= FDStoreProperties.getMultiSearchLimit() %>';
       FreshDirect.multisearch.defaultList = '<%= FDStoreProperties.getMultiSearchDefaultList() %>';
+      FreshDirect.multisearch.list = '<%= user.getMultiSearchList() %>';
+      if (FreshDirect.multisearch.list === 'null') {
+        FreshDirect.multisearch.list = "";
+      }
     </script>
     <jwr:script src="/multisearch.js" useRandomParam="false" />
 	</tmpl:put>
 </tmpl:insert>
-
-<div><h1><%= "MULTI_SEARCH_LIST: " + user.getMultiSearchList() %></h1></div>

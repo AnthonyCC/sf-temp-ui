@@ -98,6 +98,27 @@ var FreshDirect = FreshDirect || {};
           window.history.pushState({terms: this.terms}, "search: "+this.terms.join(', '), pathname + "?q=" + this.terms.join(','));
         }
 
+        try {
+          // save list to user
+          fetch(
+            '/api/multisearch',
+            {
+              method: 'POST',
+              credentials: 'same-origin',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                searchTermList: this.terms.join(',')
+              })
+            }
+          ).catch(function (e) {
+            console.warn('[error during saving search term list]', e);
+          });
+        } catch (e) {
+          console.warn('[error during saving search term list]', e);
+        }
+
         this.render();
       }
     },
@@ -165,16 +186,17 @@ var FreshDirect = FreshDirect || {};
   ];
 
   setTimeout(function () {
-    var q = fd.utils.getParameterByName('q').split(',').filter(function (kw) { return kw; });
+    var q = fd.utils.getParameterByName('q'),
+        terms = (q || FreshDirect.multisearch.list || "").split(',').filter(function (kw) { return kw; });
 
-    if (q.length === 0) {
-      q = DEFAULTLIST;
+    if (terms.length === 0) {
+      terms = DEFAULTLIST;
     }
 
-    q = q.filter(function (kw) { return kw; }).map(function (kw) { return kw.trim(); }).map(fd.utils.escapeHtml);
+    terms = terms.filter(function (kw) { return kw; }).map(function (kw) { return kw.trim(); }).map(fd.utils.escapeHtml);
 
     fd.modules.multisearch.searchInput.render({
-      terms: q
+      terms: terms
     });
   }, 10);
 }(FreshDirect));
