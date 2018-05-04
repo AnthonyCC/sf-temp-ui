@@ -311,15 +311,20 @@ public class EwalletPaymentServlet extends BaseJsonServlet {
 	 * @throws ServletException
 	 */
 	private void postStandardCheckoutData(EwalletResponseData ewalletResponseData, HttpServletRequest request, HttpServletResponse response, FDUserI user) throws IOException, ServletException{
-		if(ewalletResponseData != null && ewalletResponseData.getValidationResult()!=null){
-			if(ewalletResponseData.getValidationResult().getErrors()!=null && !ewalletResponseData.getValidationResult().getErrors().isEmpty()){
+		if (ewalletResponseData != null && ewalletResponseData.getValidationResult() != null
+				&& ewalletResponseData.getValidationResult().getErrors() != null
+				&& ewalletResponseData.getValidationResult().getErrors().isEmpty()) {
 				return;
-			}
-		}else{
-			request.getSession().setAttribute(EwalletConstants.MASTERPASS_TRANSACTIONID, ewalletResponseData.getTransactionId());
-			request.setAttribute(EwalletConstants.MASTERPASS_REQ_ATTR_ACTION_COMPLETED, EwalletConstants.MP_REQ_ATTR_ACTION_COMPLETED_VALUE);
-			if (ewalletResponseData.getPaymentMethod() != null && ewalletResponseData.getPaymentMethod().getPK() != null)
-				request.getSession().setAttribute("WALLET_CARD_ID",""+ewalletResponseData.getPaymentMethod().getPK().getId());
+			
+		} else {
+			request.getSession().setAttribute(EwalletConstants.MASTERPASS_TRANSACTIONID,
+					ewalletResponseData.getTransactionId());
+			request.setAttribute(EwalletConstants.MASTERPASS_REQ_ATTR_ACTION_COMPLETED,
+					EwalletConstants.MP_REQ_ATTR_ACTION_COMPLETED_VALUE);
+			if (ewalletResponseData.getPaymentMethod() != null
+					&& ewalletResponseData.getPaymentMethod().getPK() != null)
+				request.getSession().setAttribute("WALLET_CARD_ID",
+						"" + ewalletResponseData.getPaymentMethod().getPK().getId());
 			user.getShoppingCart().setPaymentMethod(ewalletResponseData.getPaymentMethod());
 			request.getSession().setAttribute(EWALLET_SESSION_ATTRIBUTE_NAME, MP_EWALLET_CARD);
 			request.getRequestDispatcher(ewalletResponseData.getRedirectUrl()).forward(request, response);
