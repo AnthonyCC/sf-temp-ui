@@ -77,14 +77,15 @@ var FreshDirect = FreshDirect || {};
 		},
 		pollingFunc: {
 			value: function() {
-				if (this.pollingOrderId === null || this.pollingOrderId === undefined) { return; }
+				var that = this;
+				if (that === window) { that = FreshDirect.components.ordermodifystatus; }
 
-				if (this.pollingCount < this.POLLING_LIMIT) {
-					var that = this;
+				if (that.pollingOrderId === null || that.pollingOrderId === undefined || that === window) { return; }
 
-					$.get('/api/orderinfo', { 'orderId': that.pollingOrderId }, this.pollingFuncSuccess.bind(this)).fail(this.pollingFuncError.bind(this));
+				if (that.pollingCount < that.POLLING_LIMIT) {
+					$.get('/api/orderinfo', { 'orderId': that.pollingOrderId }, that.pollingFuncSuccess.bind(that)).fail(that.pollingFuncError.bind(that));
 				} else {
-					this.pollingFuncError();
+					that.pollingFuncError();
 				}
 			}
 		},
