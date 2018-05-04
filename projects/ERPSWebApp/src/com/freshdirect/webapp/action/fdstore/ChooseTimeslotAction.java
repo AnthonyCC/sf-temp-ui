@@ -166,8 +166,14 @@ public class ChooseTimeslotAction extends WebActionSupport {
 						
 						LOGGER.info(">>CANCEL STANDARD RESERVATION IN CART AND KEEP THE ONE TIME RESERVATION "+advRsv);
 							} else {
+								//ADDED below code for modify address issue
+								if ((TimeslotLogic.isAddressChange(dlvRsv.getAddress(), erpAddress, addressId, dlvRsv.getAddressId()))) {
+                                    actionResult.addError(new ActionError("deliveryTime", "You must select a delivery timeslot. Please select one from below or contact Us for help."));
+                                    return actionResult;
+                                }
+								
 								if (dlvRsv == null || !deliveryTimeSlotId.equals(dlvRsv.getTimeslotId()) || (TimeslotLogic.isAddressChange(dlvRsv.getAddress(), erpAddress, addressId, dlvRsv.getAddressId()))) {
-						// new reservation or different timeslot selected
+						        // new reservation or different timeslot selected
 									if (dlvRsv != null && !(cart instanceof FDModifyCartModel) && EnumReservationType.STANDARD_RESERVATION.equals(dlvRsv.getReservationType())) {
 										// release prev reservation, unless it's a
 										// modify order
