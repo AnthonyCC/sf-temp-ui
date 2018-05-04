@@ -69,17 +69,24 @@ public class FDPromotionManagerService extends AbstractEcommService implements F
 	public int getRedemptionCount(String promoID, Date date) throws FDResourceException {
 
 		Response<Integer> response;
-		String dateStr = dateFormat.format(date);
+		String dateStr = (null !=date? dateFormat.format(date): null);
 
 		// looks like this:
 		// fdcommerceapi/fd/v1/promotionmanagement/redemptioncount/10297467312/yyyy-MM-dd'T'HH:mm:ss.SSSZ
 
 		LOGGER.debug("getRedemptionCount "
 				+ getFdCommerceEndPoint("promotionmanagement/redemptioncount/" + promoID + SLASH + dateStr));
-		response = httpGetDataTypeMap(
+		if(null !=dateStr){
+			response = httpGetDataTypeMap(
 				getFdCommerceEndPoint("promotionmanagement/redemptioncount/" + promoID + SLASH + dateStr),
 				new TypeReference<Response<Integer>>() {
 				});
+		}else{
+			response = httpGetDataTypeMap(
+					getFdCommerceEndPoint("promotionmanagement/redemptioncountbypromocode/" + promoID ),
+					new TypeReference<Response<Integer>>() {
+					});
+		}
 		if (!response.getResponseCode().equals("OK")) {
 			LOGGER.error(response.getMessage());
 			throw new FDResourceException("Webservice Failed, unable to getRedemptionCount: " + response.getMessage()
