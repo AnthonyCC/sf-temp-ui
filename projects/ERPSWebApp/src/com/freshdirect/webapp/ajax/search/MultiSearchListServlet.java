@@ -6,8 +6,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.google.common.collect.ImmutableMap;
@@ -17,8 +17,6 @@ public class MultiSearchListServlet extends BaseJsonServlet {
     private static final long serialVersionUID = -7266513625234467962L;
     
     private static final String PARAM_NAME = "searchTermList";
-    
-    private static final ObjectReader READER = new ObjectMapper().readerFor(Map.class);
     
     @Override
     protected boolean synchronizeOnUser() {
@@ -33,7 +31,8 @@ public class MultiSearchListServlet extends BaseJsonServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
         try {
-            user.setMultiSearchList(READER.<Map<String, String>>readValue(request.getReader()).get(PARAM_NAME));
+            Map<String, String> requestBody = new ObjectMapper().<Map<String, String>>readValue(request.getReader(), new TypeReference<Map<String,String>>(){});
+            user.setMultiSearchList(requestBody.get(PARAM_NAME));
             saveUser(user);
         } catch (IOException e) {
             returnHttpError(400, "Cannot read JSON", e);  // 400 Bad Request
