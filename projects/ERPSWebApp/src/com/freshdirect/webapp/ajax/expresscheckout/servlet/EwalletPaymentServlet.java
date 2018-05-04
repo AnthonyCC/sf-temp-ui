@@ -311,12 +311,13 @@ public class EwalletPaymentServlet extends BaseJsonServlet {
 	 * @throws ServletException
 	 */
 	private void postStandardCheckoutData(EwalletResponseData ewalletResponseData, HttpServletRequest request, HttpServletResponse response, FDUserI user) throws IOException, ServletException{
-		if (ewalletResponseData != null && ewalletResponseData.getValidationResult() != null
-				&& ewalletResponseData.getValidationResult().getErrors() != null
-				&& ewalletResponseData.getValidationResult().getErrors().isEmpty()) {
-				return;
-			
-		} else {
+		if (ewalletResponseData == null) 
+			return;
+
+		// if getValidationResult is null or no error
+		if (ewalletResponseData.getValidationResult() == null
+				|| ewalletResponseData.getValidationResult().getErrors() == null
+				|| ewalletResponseData.getValidationResult().getErrors().isEmpty()) {
 			request.getSession().setAttribute(EwalletConstants.MASTERPASS_TRANSACTIONID,
 					ewalletResponseData.getTransactionId());
 			request.setAttribute(EwalletConstants.MASTERPASS_REQ_ATTR_ACTION_COMPLETED,
