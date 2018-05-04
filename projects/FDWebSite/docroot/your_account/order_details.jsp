@@ -195,7 +195,7 @@ if(orderId==null){
 		    
 		<%-- RE-ORDER BUTTON --%>
 		<% if (user.getMasqueradeContext() != null && EnumSaleType.REGULAR.equals(cart.getOrderType())) { %>
-			<button type="button" name="Reorder" onclick="FreshDirect.components.reorderPopup.openPopup(<%= orderId %>)" class="cssbutton medium green transparent">Re-Order</button>
+			<button type="button" name="Reorder" onclick="FreshDirect.components.reorderPopup.openPopup(<%= orderId %>)" class="cssbutton medium purple nontransparent">Reorder</button>
 		<% } %>
 		
 		<%-- SHOP FROM ORDER BUTTON --%>
