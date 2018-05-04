@@ -22,6 +22,11 @@ public class MultiSearchListServlet extends BaseJsonServlet {
     protected boolean synchronizeOnUser() {
         return true;
     }
+    
+    @Override
+    protected int getRequiredUserLevel() {
+        return FDUserI.GUEST;
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
