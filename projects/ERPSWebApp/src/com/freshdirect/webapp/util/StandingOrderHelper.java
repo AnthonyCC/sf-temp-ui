@@ -1424,6 +1424,7 @@ private static String convert(Date time) {
 					LOGGER.debug("indside evaluteEditSoAddressID(), action by user: "
 							+ user.getIdentity().getErpCustomerPK() + ", " + "deleting timeslots for  SO3 template: "
 							+ soValidtemplate.getId() + " ,addressId: " + soValidtemplate.getAddressId());
+					soValidtemplate.setAddressId(null);							/* SUPPORT-10686 */
 					soValidtemplate.setStartTime(null);
 					soValidtemplate.setEndTime(null);
 					soValidtemplate.setNextDeliveryDate(null);
