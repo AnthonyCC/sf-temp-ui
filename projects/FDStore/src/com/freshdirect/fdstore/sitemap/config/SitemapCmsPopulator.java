@@ -13,7 +13,6 @@ import org.apache.log4j.Category;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.fdstore.FDCachedFactory;
-import com.freshdirect.fdstore.FDMaterialSalesArea;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
@@ -153,27 +152,34 @@ public class SitemapCmsPopulator {
     
     @SuppressWarnings("unchecked")
 	private boolean isSKUUnavailableWithTestStatus(ContentNodeI productNode) {
-    	boolean skuMatch = false;
-    	
-    	List<ContentKey> skus = (ArrayList<ContentKey>) productNode.getAttributeValue("skus");
-   	   	
-        if (skus != null) {
-    		for (ContentKey contentKey : skus) {
-					FDProductInfo fdProductInfo;
-					try {
-						fdProductInfo = FDCachedFactory.getProductInfo(contentKey.getId());						
-						skuMatch = fdProductInfo.isTestInAnyArea();
-					} catch (FDResourceException e) {
-						// Sku not found in ERPS. Can happen as cms skus are easily created for preview purposes.
-						LOGGER.warn("SKU not found during Sitemap generation: "+contentKey.getId());
-					} catch (FDSkuNotFoundException e) {
-						// Sku not found in ERPS. Can happen as cms skus are easily created for preview purposes.
-						LOGGER.warn("SKU not found during Sitemap generation: "+contentKey.getId());
-					}															                		
-			}
-		}
-        
-        return skuMatch;
+        boolean removeFromSitemap = false;
+
+        if (FDContentTypes.PRODUCT.equals(productNode.getKey().getType())) {
+
+            List<ContentKey> skus = (ArrayList<ContentKey>) productNode.getAttributeValue("skus");
+
+            if (skus != null) {
+                for (ContentKey contentKey : skus) {
+                    FDProductInfo fdProductInfo;
+                    try {
+                        fdProductInfo = FDCachedFactory.getProductInfo(contentKey.getId());
+                        removeFromSitemap = fdProductInfo.isTestInAnyArea();
+                    } catch (FDResourceException e) {
+                        // Sku not found in ERPS. Can happen as cms skus are easily created for preview purposes.
+                        removeFromSitemap = true;
+                        LOGGER.warn("Exception happened during Sitemap generation, skipping product: " + productNode.getKey().getId() + " with SKU: " + contentKey.getId());
+                    } catch (FDSkuNotFoundException e) {
+                        // Sku not found in ERPS. Can happen as cms skus are easily created for preview purposes.
+                        removeFromSitemap = true;
+                        LOGGER.warn("SKU not found during Sitemap generation, skipping product: " + productNode.getKey().getId() + " with SKU: " + contentKey.getId());
+                    }
+                }
+            } else {
+                removeFromSitemap = true;
+            }
+        }
+
+        return removeFromSitemap;
     }
 
 }
