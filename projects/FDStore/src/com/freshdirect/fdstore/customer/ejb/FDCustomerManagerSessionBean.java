@@ -276,7 +276,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	private final static Logger LOGGER = LoggerFactory.getInstance(FDCustomerManagerSessionBean.class);
 
-	private static Map<String, ErpSaleModel> orderCache = new HashMap<String, ErpSaleModel>();
 	public RegistrationResult register(FDActionInfo info, ErpCustomerModel erpCustomer, FDCustomerModel fdCustomer,
 			String cookie, boolean pickupOnly, boolean eligibleForPromotion, FDSurveyResponse survey,
 			EnumServiceType serviceType) throws FDResourceException, ErpDuplicateUserIdException {
@@ -3960,15 +3959,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	public FDOrderI getOrder(String saleId) throws FDResourceException {
 		try {
-			ErpSaleModel saleModel = null;
-			if (orderCache.containsKey(saleId)) {
-				saleModel = orderCache.get(saleId);
-				if (saleModel != null)
-					return new FDOrderAdapter(saleModel, false);
-			} 
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
-			saleModel = sb.getOrder(new PrimaryKey(saleId));
-			orderCache.put(saleId, saleModel);
+			ErpSaleModel saleModel = sb.getOrder(new PrimaryKey(saleId));
 			LOGGER.debug(new String("ordernum: " + saleId + "   rsrvID: "
 					+ saleModel.getRecentOrderTransaction().getDeliveryInfo().getDeliveryReservationId()));
 
