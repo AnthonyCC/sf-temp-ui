@@ -166,36 +166,41 @@ public class ChooseTimeslotAction extends WebActionSupport {
 						
 						LOGGER.info(">>CANCEL STANDARD RESERVATION IN CART AND KEEP THE ONE TIME RESERVATION "+advRsv);
 							} else {
-								//ADDED below code for modify address issue
-								/*if ((TimeslotLogic.isAddressChange(dlvRsv.getAddress(), erpAddress, addressId, dlvRsv.getAddressId()))) {
-                                    actionResult.addError(new ActionError("deliveryTime", "You must select a delivery timeslot. Please select one from below or contact Us for help."));
-                                    return actionResult;
-                                }*/
 								
-								if (dlvRsv == null || !deliveryTimeSlotId.equals(dlvRsv.getTimeslotId()) || (TimeslotLogic.isAddressChange(dlvRsv.getAddress(), erpAddress, addressId, dlvRsv.getAddressId()))) {
-						        // new reservation or different timeslot selected
-									if (dlvRsv != null && !(cart instanceof FDModifyCartModel) && EnumReservationType.STANDARD_RESERVATION.equals(dlvRsv.getReservationType())) {
-										// release prev reservation, unless it's a
-										// modify order
-							String prevResrvId = dlvRsv.getPK().getId();
-							try {
-								LOGGER.debug("releasing previous reservation of id=" + prevResrvId);
-								FDDeliveryManager.getInstance().releaseReservation(prevResrvId,erpAddress, event, true);
-							} catch (FDResourceException fdre) {
-								LOGGER.warn("Error releasing reservation", fdre);
+								
+								if (dlvRsv == null || !deliveryTimeSlotId.equals(dlvRsv.getTimeslotId()) || 
+										(TimeslotLogic.isAddressChange(dlvRsv.getAddress(), erpAddress, addressId, dlvRsv.getAddressId()))) {
+							        // new reservation or different timeslot selected
+									if (dlvRsv != null && !(cart instanceof FDModifyCartModel) && 
+											EnumReservationType.STANDARD_RESERVATION.equals(dlvRsv.getReservationType())) {
+											// release prev reservation, unless it's a
+											// modify order
+										String prevResrvId = dlvRsv.getPK().getId();
+										try {
+											LOGGER.debug("releasing previous reservation of id=" + prevResrvId);
+											FDDeliveryManager.getInstance().releaseReservation(prevResrvId,erpAddress, event, true);
+										} catch (FDResourceException fdre) {
+											LOGGER.warn("Error releasing reservation", fdre);
+										}
+									}
+						
+									if(user.getSteeringSlotIds().contains(timeSlot.getId())){
+										hasSteeringDiscount = true;
+									}
+									// reserve the new slot
+									LOGGER.debug("Attempting to reserve timeslot, with CT = " + chefsTable);
+									
+									//ADDED below code for modify address issue order in wrong zone
+									if (TimeslotLogic.isAddressChange(dlvRsv.getAddress(), erpAddress, addressId, dlvRsv.getAddressId()) && (deliveryTimeSlotId.equals(dlvRsv.getTimeslotId()))) {
+									   actionResult.addError(new ActionError("deliveryTime", "You must select a delivery timeslot. Please select one from below or contact Us for help."));
+	                                    return actionResult;
+										
+	                                }
+									
+									reserveTimeslot(user, timeSlot, erpAddress, chefsTable, isForced, hasSteeringDiscount, event, session);
+								
 							}
 						}
-						
-						if(user.getSteeringSlotIds().contains(timeSlot.getId())){
-							hasSteeringDiscount = true;
-						}
-						// reserve the new slot
-						LOGGER.debug("Attempting to reserve timeslot, with CT = " + chefsTable);
-						
-						reserveTimeslot(user, timeSlot, erpAddress, chefsTable, isForced, hasSteeringDiscount, event, session);
-						
-					}
-					}
 					
 					call_zoneswitch_logic( previousZone, cart, user, erpAddress, session);
 					
