@@ -694,8 +694,11 @@ public class FDUser extends ModelSupport implements FDUserI {
         this.clearPromoErrorCodes();
         this.getShoppingCart().setDlvPassExtn(null);
         this.getShoppingCart().setDlvPromotionApplied(false);
+        this.getShoppingCart().setDeliveryPassCount();
         if ((this.getShoppingCart().getDeliveryPassCount() > 0) || (this.isDlvPassActive()) || (this.applyFreeTrailOptinBasedDP())) {
         	this.getShoppingCart().setDlvPassApplied(true);
+        }else {
+        	this.getShoppingCart().setDlvPassApplied(false);
         }
 
         // evaluate special dlv charge override
