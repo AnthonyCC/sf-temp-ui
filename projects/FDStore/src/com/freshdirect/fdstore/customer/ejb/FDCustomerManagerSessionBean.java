@@ -122,8 +122,6 @@ import com.freshdirect.deliverypass.DlvPassUsageLine;
 import com.freshdirect.deliverypass.EnumDlvPassExtendReason;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerSB;
-import com.freshdirect.ecomm.gateway.OrderResourceApiClient;
-import com.freshdirect.ecomm.gateway.OrderResourceApiClientI;
 import com.freshdirect.erp.ejb.ATPFailureDAO;
 import com.freshdirect.erp.model.ATPFailureInfo;
 import com.freshdirect.erp.model.ErpInventoryModel;
@@ -2912,15 +2910,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			if (EnumPaymentMethodType.PAYPAL.equals(order.getPaymentMethod().getPaymentMethodType())
 					&& order.getPaymentMethod().getCardType().equals(EnumCardType.PAYPAL)
 					&& EnumSaleStatus.MODIFIED_CANCELED.equals(order.getOrderStatus())) {
-				
-				ErpSaleModel _order = null;
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled("getOrder_Api")){
-		    		OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
-		    		_order =  service.getOrder(saleId);
-		    	}else{
-		    		_order = sb.getOrder(new PrimaryKey(saleId));
-		    	}
-				reversePPAuths(_order);
+				reversePPAuths(sb.getOrder(new PrimaryKey(saleId)));
 			} // END :: APPDEV-5657
 
 			// End:: Add FDX SMSfor order Cancelled
@@ -3942,14 +3932,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	public FDOrderI getOrderForCRM(String saleId) throws FDResourceException {
 		try {
-			ErpSaleModel saleModel =null;
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("getOrder_Api")){
-	    		OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
-	    		saleModel =  service.getOrder(saleId);
-	    	}else{
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
-				saleModel = sb.getOrder(new PrimaryKey(saleId));
-	    	}
+			ErpSaleModel saleModel = sb.getOrder(new PrimaryKey(saleId));
 			if (saleModel != null && saleModel.geteStoreId() != null
 					&& saleModel.geteStoreId().equals(EnumEStoreId.FDX)) {
 				LOGGER.info("Fetching trip and stop from logistics for fdx order " + saleId);
@@ -3976,20 +3960,13 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	public FDOrderI getOrder(String saleId) throws FDResourceException {
 		try {
-			ErpSaleModel saleModel = null;
 			if (orderCache.containsKey(saleId)) {
 				saleModel = orderCache.get(saleId);
 				if (saleModel != null)
 					return new FDOrderAdapter(saleModel, false);
 			} 
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("getOrder_Api")){
-	    		OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
-	    		saleModel =  service.getOrder(saleId);
-	    	}else{
-	    		ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
-	    		saleModel = sb.getOrder(new PrimaryKey(saleId));
-				
-			}
+			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
+			ErpSaleModel saleModel = sb.getOrder(new PrimaryKey(saleId));
 			orderCache.put(saleId, saleModel);
 			LOGGER.debug(new String("ordernum: " + saleId + "   rsrvID: "
 					+ saleModel.getRecentOrderTransaction().getDeliveryInfo().getDeliveryReservationId()));
@@ -4005,14 +3982,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	public ErpSaleModel getErpSaleModel(String saleId) throws FDResourceException {
 		try {
-			
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("getOrder_Api")){
-	    		OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
-	    		return service.getOrder(saleId);
-	    	}else{
 				ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
 				return sb.getOrder(new PrimaryKey(saleId));
-	    	}
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
@@ -5658,19 +5629,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throws FDResourceException, ErpSaleNotFoundException {
 
 		try {
-			ErpSaleModel saleModel = null;
 			List<EnumPaymentMethodType> paymentMethodTypes = new ArrayList<EnumPaymentMethodType>();
 			paymentMethodTypes.add(EnumPaymentMethodType.CREDITCARD);
 			paymentMethodTypes.add(EnumPaymentMethodType.PAYPAL);
 			paymentMethodTypes.add(EnumPaymentMethodType.ECHECK);
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("getLastNonCosOrderByPymtTypes_Api")){
-	    		OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
-	    		saleModel = service.getLastNonCOSOrder(customerID, saleType, saleStatus,
-	    				paymentMethodTypes);
-	    	}else{
-	    		saleModel = sb.getLastNonCOSOrder(customerID, saleType, saleStatus, paymentMethodTypes);
-	    	}
+			ErpSaleModel saleModel = sb.getLastNonCOSOrder(customerID, saleType, saleStatus, paymentMethodTypes);
 			return new FDOrderAdapter(saleModel);
 
 		} catch (CreateException ce) {
