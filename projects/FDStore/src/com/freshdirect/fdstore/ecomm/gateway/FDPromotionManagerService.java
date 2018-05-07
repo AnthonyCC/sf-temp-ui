@@ -153,7 +153,10 @@ public class FDPromotionManagerService extends AbstractEcommService implements F
 	public List<PromotionI> getAllAutomaticPromotions() throws FDResourceException{		
 		try {
 			Response<String> response = httpGetDataTypeMap(getFdCommerceEndPoint("promotionmanagement/allautomaticpromotions/" ), new TypeReference<Response<String>>(){});		
-			List<PromotionI> promotions =(List<PromotionI>)ser.fromJSON(response.getData());
+			List<PromotionI> promotions =null;
+			if(null !=response.getData()){
+				promotions =(List<PromotionI>)ser.fromJSON(response.getData());
+			}
 			return promotions;
 		} catch (UnmarshallException e) {
 			throw new FDResourceException(e, "failure with getAllAutomaticPromotions:  ");
@@ -163,7 +166,10 @@ public class FDPromotionManagerService extends AbstractEcommService implements F
 	public PromotionI getPromotionForRT(String promoCode) throws FDResourceException{
 		try {
 			Response<String> response = httpGetDataTypeMap(getFdCommerceEndPoint("promotionmanagement/promoforrt/"+promoCode ), new TypeReference<Response<String>>(){});		
-			PromotionI promotion =(PromotionI)ser.fromJSON(response.getData());
+			PromotionI promotion = null;
+			if(null !=response.getData()){
+				promotion =(PromotionI)ser.fromJSON(response.getData());
+			}
 			return promotion;
 		} catch (UnmarshallException e) {
 			throw new FDResourceException(e, "failure with getPromotionForRT:  ");
@@ -174,7 +180,10 @@ public class FDPromotionManagerService extends AbstractEcommService implements F
 		try {
 			String dateStr = dateTimeFormat.format(lastModified);
 			Response<String> response = httpGetDataTypeMap(getFdCommerceEndPoint("promotionmanagement/modifiedpromosbydate/"+dateStr), new TypeReference<Response<String>>(){});		
-			List<PromotionI> promotions =(List<PromotionI>)ser.fromJSON(response.getData());
+			List<PromotionI> promotions =null;
+			if(null !=response.getData()){
+				promotions = (List<PromotionI>)ser.fromJSON(response.getData());
+			}
 			return promotions;
 		} catch (UnmarshallException e) {
 			throw new FDResourceException(e, "failure with getModifiedOnlyPromos:  ");
@@ -185,7 +194,10 @@ public class FDPromotionManagerService extends AbstractEcommService implements F
 		
 		try {
 			Response<String> response = httpGetDataTypeMap(getFdCommerceEndPoint("promotionmanagement/referralpromotions/"+customerId+SLASH+(null!=storeid?storeid.getContentId():EnumEStoreId.FD.getContentId())), new TypeReference<Response<String>>(){});		
-			List<PromotionI> promotions =(List<PromotionI>)ser.fromJSON(response.getData());
+			List<PromotionI> promotions = null;
+			if(null !=response.getData()){
+				promotions = (List<PromotionI>)ser.fromJSON(response.getData());
+			}
 			return promotions;
 		} catch (UnmarshallException e) {
 			throw new FDResourceException(e, "failure with getReferralPromotions:  ");
