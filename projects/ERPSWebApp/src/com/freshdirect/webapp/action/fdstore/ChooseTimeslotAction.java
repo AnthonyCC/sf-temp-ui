@@ -191,7 +191,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 									LOGGER.debug("Attempting to reserve timeslot, with CT = " + chefsTable);
 									
 									//ADDED below code for modify address issue order in wrong zone
-									if (TimeslotLogic.isAddressChange(dlvRsv.getAddress(), erpAddress, addressId, dlvRsv.getAddressId()) && (deliveryTimeSlotId.equals(dlvRsv.getTimeslotId()))) {
+									if ((cart instanceof FDModifyCartModel) && TimeslotLogic.isAddressChange(dlvRsv.getAddress(), erpAddress, addressId, dlvRsv.getAddressId()) && (deliveryTimeSlotId.equals(dlvRsv.getTimeslotId()))) {
 									   actionResult.addError(new ActionError("deliveryTime", "You must select a delivery timeslot. Please select one from below or contact Us for help."));
 	                                    return actionResult;
 										
