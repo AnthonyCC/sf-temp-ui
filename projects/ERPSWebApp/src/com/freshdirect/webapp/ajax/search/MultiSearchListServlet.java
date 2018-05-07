@@ -38,7 +38,9 @@ public class MultiSearchListServlet extends BaseJsonServlet {
         try {
             Map<String, String> requestBody = new ObjectMapper().<Map<String, String>>readValue(request.getReader(), new TypeReference<Map<String,String>>(){});
             user.setMultiSearchList(requestBody.get(PARAM_NAME));
-            saveUser(user);
+            if (user.getLevel() != FDUserI.GUEST) {
+                saveUser(user);
+            }
         } catch (IOException e) {
             returnHttpError(400, "Cannot read JSON", e);  // 400 Bad Request
         }
