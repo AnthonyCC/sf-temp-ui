@@ -4581,7 +4581,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			EnumPaymentResponse response = null;
 			
 			PaymentManagerSB sb = this.getPaymentManagerHome().create();
-			response = sb.authorizeSale(salesId, false);
+			response = sb.authorizeSale(salesId, force);
 			
 			if (!EnumPaymentResponse.APPROVED.equals(response) && !EnumPaymentResponse.ERROR.equals(response)) {
 				sendAuthFailedEmail(salesId);
