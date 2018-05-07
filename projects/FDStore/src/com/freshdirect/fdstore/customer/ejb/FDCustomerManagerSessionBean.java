@@ -3960,13 +3960,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	public FDOrderI getOrder(String saleId) throws FDResourceException {
 		try {
+			ErpSaleModel saleModel = null;
 			if (orderCache.containsKey(saleId)) {
 				saleModel = orderCache.get(saleId);
 				if (saleModel != null)
 					return new FDOrderAdapter(saleModel, false);
 			} 
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
-			ErpSaleModel saleModel = sb.getOrder(new PrimaryKey(saleId));
+			saleModel = sb.getOrder(new PrimaryKey(saleId));
 			orderCache.put(saleId, saleModel);
 			LOGGER.debug(new String("ordernum: " + saleId + "   rsrvID: "
 					+ saleModel.getRecentOrderTransaction().getDeliveryInfo().getDeliveryReservationId()));
