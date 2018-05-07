@@ -28,9 +28,6 @@ import com.freshdirect.customer.ErpCannedText;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpTruckInfo;
 import com.freshdirect.deliverypass.DeliveryPassModel;
-import com.freshdirect.ecomm.gateway.CrmManagerService;
-import com.freshdirect.ecomm.gateway.CrmManagerServiceI;
-import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -233,11 +230,7 @@ public class CrmManager {
 
 	public PrimaryKey createSystemCase(CrmSystemCaseInfo caseInfo) throws FDResourceException, RemoteException {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
-				return CrmManagerService.getInstance().createSystemCase(caseInfo);
-			}else{
 				return this.getCrmManagerSB().createSystemCase(caseInfo);
-			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to CrmManagerSB");
 		}
