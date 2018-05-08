@@ -332,6 +332,17 @@ if (isUnavailable) {
 				.append(TABLEVEL+"			<div class=\"tsPremiumPropC\" id=\""+htmlSlotTsId+"_msgC\">\n")
 				.append(TABLEVEL+"				<div><font class=\"tsPremiumC\">"+slot.getPremiumAmountFmt()+"</font></div>\n")
 				.append(TABLEVEL+"			</div>");
+} else if (isWindowsSteering) {
+	stringBuffer.append(TABLEVEL+"			<div class=\"tsDiscountPropE\" id=\""+htmlSlotTsId+"_msgE\">")
+				.append(TABLEVEL+"				<div>")
+						.append((isEcoFriendly) ? htmlEcoFriendlyIcon : htmlClearImageIcon) /* default, clear; ecofriendly pair */
+						.append("<div><font class=\"tsDiscountE\">Save&nbsp;$"+CCFormatter.formatQuantity(slot.getSteeringDiscount())+"</font></div>")
+					.append("</div>\n")
+				.append(TABLEVEL+"			</div>")
+				.append(TABLEVEL+"			<div class=\"tsDiscountPropC\" id=\""+htmlSlotTsId+"_msgC\">\n")
+				.append(TABLEVEL+"			"+((isEcoFriendly) ? htmlEcoFriendlyIcon : htmlClearImageIcon))
+				.append(TABLEVEL+"				<div><font class=\"tsDiscountC\">Save&nbsp;$"+CCFormatter.formatQuantity(slot.getSteeringDiscount())+"</font></div>\n")
+				.append(TABLEVEL+"			</div>");
 } else if(isFdxFee) {
 	stringBuffer.append(TABLEVEL+"<div class=\"tsPremiumPropE\" id=\""+htmlSlotTsId+"_msgE\">")
 				.append(TABLEVEL+"				<div>")
@@ -353,17 +364,6 @@ if (isUnavailable) {
 					stringBuffer.append("<font class=\"tsReservationE\">Reserved</font>")
 				.append("</div>\n")
 				.append(TABLEVEL+"			</div>\n");
-} else if (isWindowsSteering) {
-	stringBuffer.append(TABLEVEL+"			<div class=\"tsDiscountPropE\" id=\""+htmlSlotTsId+"_msgE\">")
-				.append(TABLEVEL+"				<div>")
-						.append((isEcoFriendly) ? htmlEcoFriendlyIcon : htmlClearImageIcon) /* default, clear; ecofriendly pair */
-						.append("<div><font class=\"tsDiscountE\">Save&nbsp;$"+CCFormatter.formatQuantity(slot.getSteeringDiscount())+"</font></div>")
-					.append("</div>\n")
-				.append(TABLEVEL+"			</div>")
-				.append(TABLEVEL+"			<div class=\"tsDiscountPropC\" id=\""+htmlSlotTsId+"_msgC\">\n")
-				.append(TABLEVEL+"			"+((isEcoFriendly) ? htmlEcoFriendlyIcon : htmlClearImageIcon))
-				.append(TABLEVEL+"				<div><font class=\"tsDiscountC\">Save&nbsp;$"+CCFormatter.formatQuantity(slot.getSteeringDiscount())+"</font></div>\n")
-				.append(TABLEVEL+"			</div>");
 } else if(isEarlyAm){
 	stringBuffer.append(TABLEVEL+"			<div class=\"tsEarlyAmPropE\" id=\""+htmlSlotTsId+"_msgE\">\n")
 				.append(TABLEVEL+"				<div>")
