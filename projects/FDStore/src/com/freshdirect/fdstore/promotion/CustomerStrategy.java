@@ -264,7 +264,7 @@ public class CustomerStrategy implements PromotionStrategyI {
 		return convertToPaymentTypeNames(this.paymentTypes);
 	}
 
-	public Set getPaymentTypes() {
+	public Set<EnumCardType> getPaymentTypes() {
 		return this.paymentTypes;
 	}
 

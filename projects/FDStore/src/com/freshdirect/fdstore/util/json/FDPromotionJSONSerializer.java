@@ -576,7 +576,8 @@ public class FDPromotionJSONSerializer extends AbstractSerializer {
 					
 					if(null !=rt){
 						Class classRt =(Class) rt.getActualTypeArguments()[0];
-						if(org.apache.commons.lang.enums.Enum.class.equals(classRt.getSuperclass()) || org.apache.commons.lang.enums.Enum.class.equals(classRt)){
+						if(org.apache.commons.lang.enums.Enum.class.equals(classRt.getSuperclass()) || org.apache.commons.lang.enums.Enum.class.equals(classRt) ||
+								org.apache.commons.lang.enums.ValuedEnum.class.equals(classRt.getSuperclass()) || org.apache.commons.lang.enums.ValuedEnum.class.equals(classRt)){
 							try {
 								for (Object o : coll) {
 									Field decl = classRt.getField(o.toString());
