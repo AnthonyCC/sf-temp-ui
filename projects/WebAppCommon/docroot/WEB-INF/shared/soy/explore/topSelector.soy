@@ -10,7 +10,7 @@
   {foreach $el in $list}
     {if $el.deptPhoto}
     <li class="explore__top-selector-element">
-      <a href="/explore.jsp?{if $currentDep}sdep={$currentDep}&dep={$el.id}{else}dep={$el.id}{/if}" class="explore__top-selector-button {if $selected and $selected == $el.id}selected{/if}" data-dept="{$el.id}">
+      <a href="/explore.jsp?{if $currentDep}sdep={$currentDep}&dep={$el.id}{else}dep={$el.id}{/if}" data-component="explore-department-button" class="explore__top-selector-button {if $selected and $selected == $el.id}selected{/if}" data-dept="{$el.id}">
         <img class="explore__top-image" src="{$el.deptPhoto}" />
         <span class="explore__top-name">{$el.name}</span>
       </a>
