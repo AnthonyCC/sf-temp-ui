@@ -21,7 +21,12 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.Register;
 
 import org.apache.log4j.*;
-
+/**
+ *@deprecated Please use the GiftCardController and GiftCardManagerServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */ 
 public class GCGatewaySessionBean extends GatewaySessionBeanSupport {
 	
 	private static Category LOGGER = LoggerFactory.getInstance( GCGatewaySessionBean.class );
