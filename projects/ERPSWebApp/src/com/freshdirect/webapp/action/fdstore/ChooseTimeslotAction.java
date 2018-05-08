@@ -192,7 +192,8 @@ public class ChooseTimeslotAction extends WebActionSupport {
 									
 									//ADDED below code for modify address issue order in wrong zone
 									if ((cart instanceof FDModifyCartModel) && TimeslotLogic.isAddressChange(dlvRsv.getAddress(), erpAddress, addressId, dlvRsv.getAddressId()) && (deliveryTimeSlotId.equals(dlvRsv.getTimeslotId()))) {
-									   actionResult.addError(new ActionError("deliveryTime", "You must select a delivery timeslot. Please select one from below or contact Us for help."));
+										LOGGER.warn("ORDWRNGRT: During order modification, address changed but timeslot is same, for order: "+((FDModifyCartModel)cart).getOriginalOrder().getErpSalesId());
+									    actionResult.addError(new ActionError("deliveryTime", "You must select a delivery timeslot. Please select one from below or contact Us for help."));
 	                                    return actionResult;
 										
 	                                }
