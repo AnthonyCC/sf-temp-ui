@@ -60,15 +60,17 @@ public class CaptureCronRunner {
 			SaleCronHome home = (SaleCronHome) ctx.lookup("freshdirect.dataloader.SaleCron");
 
 			SaleCronSB sb = home.create();
-			//First post auth sales for gift cards.
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SaleCronSB)){
+			// First post auth sales for gift cards.
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SaleCronSBPostAuthSales)) {
 				SaleCronService.getInstance().postAuthSales(captureTimeout);
-				SaleCronService.getInstance().captureSales(captureTimeout);
-				
+			} else {
+				sb.postAuthSales(captureTimeout);
 			}
-			else{
-			sb.postAuthSales(captureTimeout);
-			sb.captureSales(captureTimeout);
+			// Then capture sales
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SaleCronSB)) {
+				SaleCronService.getInstance().captureSales(captureTimeout);
+			} else {
+				sb.captureSales(captureTimeout);
 			}
 			LOGGER.info("CaptureCron finished");
 		} catch (Exception e) {

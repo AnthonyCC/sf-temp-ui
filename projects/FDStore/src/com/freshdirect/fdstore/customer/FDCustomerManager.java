@@ -4328,17 +4328,7 @@ public class FDCustomerManager {
 	}
 
 	public static void authorizeSale(String salesId) throws FDResourceException {
-		lookupManagerHome();
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			 sb.authorizeSale(salesId);
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
+		authorizeSale(salesId, false);
 	}
 
 	/* APPDEV-1888 */

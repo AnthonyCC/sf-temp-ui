@@ -66,15 +66,19 @@ public class SaleCronRunner {
 			int affected ;
 			List<Date> dates;
 			SaleCronSB sb = home.create();
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SaleCronSB)){
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SaleCronSBCancelAuthorizationFailed)) {
 				SaleCronService.getInstance().cancelAuthorizationFailed();
+			} else {
+				sb.cancelAuthorizationFailed();
+			}
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SaleCronSB)) {
+
 				dates = SaleCronService.getInstance().queryCutoffReportDeliveryDates();
 				affected = SaleCronService.getInstance().cutoffSales();
-			}
-			else{
-				sb.cancelAuthorizationFailed();
+			} else {
+
 				dates = sb.queryCutoffReportDeliveryDates();
-				 affected = sb.cutoffSales();
+				affected = sb.cutoffSales();
 			}
 			
 			if (affected > 0 && "true".equalsIgnoreCase(ErpServicesProperties.getSendCutoffEmail())) {
@@ -85,22 +89,28 @@ public class SaleCronRunner {
 					CallCenterServices.emailCutoffTimeReport(cal.getTime());
 					}
 			}
-			
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SaleCronSB)){
+			//First clear pending reverse auth for cancelled orders.
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SaleCronSBReverseAuthorizeSales)){
 				SaleCronService.getInstance().reverseAuthorizeSales(authTimeout);
-				SaleCronService.getInstance().preAuthorizeSales(authTimeout);
-				SaleCronService.getInstance().authorizeSales(authTimeout);
-			}
-			else{
-				//First clear pending reverse auth for cancelled orders.
+			}else {
 				sb.reverseAuthorizeSales(authTimeout);
-				//Second Pre auth gift card.
-				sb.preAuthorizeSales(authTimeout);
-				//Third perform CC authorization.
-				sb.authorizeSales(authTimeout);
+				
 			}
-			// remved the following task, create a new cron job for it.
-			//sb.captureSales(captureTimeout); 
+			//Second Pre auth gift card.
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SaleCronSBPreAuthorizeSales)){
+				SaleCronService.getInstance().preAuthorizeSales(authTimeout);
+			}else {
+				sb.preAuthorizeSales(authTimeout);
+				
+			}
+			//Third perform CC authorization.
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SaleCronSB)){
+				SaleCronService.getInstance().authorizeSales(authTimeout);
+			}else {
+				sb.authorizeSales(authTimeout);
+				
+			}
+
 
 		} catch (Exception e) {
 			StringWriter sw = new StringWriter();
