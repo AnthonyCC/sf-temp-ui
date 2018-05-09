@@ -69,9 +69,7 @@ public class MailMessageListener extends MessageDrivenBeanSupport implements Mai
 			LOGGER.error("JMSException occured while reading command, throwing RuntimeException", ex);
 			throw new RuntimeException("JMSException occured while reading command: " + ex.getMessage());
 		}
-		LOGGER.info( "Recipient: " + mailTo
-				+ "\nSender: " + mailFrom
-				+ "\nTitle: " + mailTitle);
+		LOGGER.info( "Begin-Recipient: " + mailTo + "\nSender: " + mailFrom 	+ "\nTitle: " + mailTitle);
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug( "Recipient: " + mailTo
 				+ "\nSender: " + mailFrom
@@ -99,7 +97,7 @@ public class MailMessageListener extends MessageDrivenBeanSupport implements Mai
 			throw new RuntimeException("Unable to send message: " + ex.getMessage());
 		}
 
-		LOGGER.debug("message sent");
+		LOGGER.info( "End-Recipient: " + mailTo + "\nSender: " + mailFrom 	+ "\nTitle: " + mailTitle);
 		}else if(msg instanceof ObjectMessage){
 			boolean gc = false;
 			boolean iphone = false;
@@ -126,7 +124,7 @@ public class MailMessageListener extends MessageDrivenBeanSupport implements Mai
 				mailBody = processFtl(parameters, gc, iphone);
 				ErpMailSender mailer = new ErpMailSender();
 				mailer.sendMail(mailFrom, mailTo, mailCc, mailTitle, mailBody, isHtml, personalLabel);
-				LOGGER.debug("message sent");
+				LOGGER.info( "EndObjectMessage-Recipient: " + mailTo + "\nSender: " + mailFrom 	+ "\nTitle: " + mailTitle);
 			} catch (JMSException e) {
 				LOGGER.error("JMSException trying to send email", e);
 			} catch(TemplateException te){
