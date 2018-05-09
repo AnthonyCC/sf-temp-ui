@@ -299,12 +299,12 @@ public class DeliveryAddressService {
             if (addresses.size() < 2) {
                 disableDeleteActionOnAddresses(addresses);
             }
-//            if (selectedDeliveryAddressId == null && !addresses.isEmpty()) {
-//                addressSelectionErrors.addAll(selectDeliveryAddressMethod(addresses.get(0).getId(), "", "selectDeliveryAddressMethod", session, user));
-//                if (addressSelectionErrors.isEmpty()) {
-//                    addresses.get(0).setSelected(true);
-//                }
-//            }
+            if (selectedDeliveryAddressId == null && !addresses.isEmpty()) {
+                addressSelectionErrors.addAll(selectDeliveryAddressMethod(addresses.get(0).getId(), "", "selectDeliveryAddressMethod", session, user));
+                if (addressSelectionErrors.isEmpty()) {
+                    //addresses.get(0).setSelected(true);
+                }
+            }
 
             if (user.isPickupUser()) {
                 final ErpCustomerInfoModel customerInfoModel = null == customerInfo ? FDCustomerFactory.getErpCustomerInfo(user.getIdentity()): customerInfo;
