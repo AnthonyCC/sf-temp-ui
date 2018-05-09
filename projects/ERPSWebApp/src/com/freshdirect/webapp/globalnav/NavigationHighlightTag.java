@@ -113,8 +113,8 @@ public class NavigationHighlightTag extends SimpleTagSupport {
 						thisDept = thisObj.getParentNode().getContentName();
 					} else if (thisDeptObj!= null && !"".equals(sdRelation = checkSuperDepartmentRelation(thisDeptObj, relatedDepartmentIds))) {
 						thisDept = sdRelation;
-					} else {
-						thisDept = thisDeptObj.getContentName();
+                    } else if (thisDeptObj != null) {
+                        thisDept = thisDeptObj.getContentName();
 					}
 				} else if (deptId != null) {
 					if ("kosher_temp".equalsIgnoreCase(deptId)){
