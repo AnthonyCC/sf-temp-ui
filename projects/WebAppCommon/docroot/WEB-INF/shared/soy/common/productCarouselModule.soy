@@ -24,9 +24,13 @@
     		{/call}
       </div>
   	</div>
-	{if $data.adHomePageBeacon and $data.adHomePageBeacon != ''}
-		<img alt="" src="{$data.adHomePageBeacon}" style="display: none;" />
+
+	{if $data.adHomePageBeacon and length($data.adHomePageBeacon)}
+   	 {foreach $beacon in $data.adHomePageBeacon}
+        	<img alt="" src="{$beacon}" style="display: none;" />
+    	{/foreach}
 	{/if}
+
   </div>
 {/if}
 {/template}

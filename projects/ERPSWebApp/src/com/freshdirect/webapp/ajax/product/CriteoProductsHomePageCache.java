@@ -19,6 +19,7 @@ public class CriteoProductsHomePageCache {
 
 	private static final Category LOGGER = LoggerFactory.getInstance(CriteoProductsHomePageCache.class);	
 	private ConcurrentHashMap<String, List<HLBrandProductAdInfo>> cacheCriteoMap = new ConcurrentHashMap<String, List<HLBrandProductAdInfo>>();
+	private ConcurrentHashMap<String, String> pageBeaconMap = new ConcurrentHashMap<String, String>();
 	private  ArrayList<HLBrandProductAdInfo> hlba = new ArrayList<HLBrandProductAdInfo>();
 	
 	private final static Object lock = new Object();
@@ -77,7 +78,7 @@ public class CriteoProductsHomePageCache {
 			HLBrandProductAdRequest hLBrandProductAdRequest = new HLBrandProductAdRequest();
 			HLBrandProductAdResponse response = null;
 			List<String> keys = CriteoProductsUtil.getFDSearchPriorityKeyWords();
-			int  maxCount = FDStoreProperties.getFDHomeCriteoMaxDisplayProducts();
+			int counter=0;
 
 			if (!keys.isEmpty() && keys.size() != 0) {
 				for (String key : keys) {
@@ -92,6 +93,8 @@ public class CriteoProductsHomePageCache {
 
 						if (null != response && null != response.getSearchProductAd()) {
 								cacheCriteoMap.put(key, response.getSearchProductAd());
+								pageBeaconMap.put(key, response.getPageBeacon());
+								counter =counter + response.getSearchProductAd().size();
 						}
 					} catch (FDResourceException e) {
 						LOGGER.debug("Exception occured while making call to Criteo search-Api: " + e);
@@ -101,16 +104,17 @@ public class CriteoProductsHomePageCache {
 			//setting HasMap to ArrayList here
 			int i=0;
 			int j=0;
-			boolean hasValues= false;
-		if (!keys.isEmpty() && keys.size() != 0) {
-			while (i < maxCount && j < maxCount && i >= j) {
-				boolean found = false;
+		if (!keys.isEmpty() && keys.size() != 0 && counter != 0) {
+			boolean found = false;
+			while (counter >=  i++) {
 				for (String key : keys) {
 					if (null != cacheCriteoMap.get(key) && !cacheCriteoMap.get(key).isEmpty()
-							&& cacheCriteoMap.get(key).size() >= (j + 1) && (i < maxCount) ) {
-						hlba.add(cacheCriteoMap.get(key).get(j));
+							&& cacheCriteoMap.get(key).size() >= (j + 1) ) {
+						HLBrandProductAdInfo hlBrandProduct = cacheCriteoMap.get(key).get(j);
+						String pageBeacon = pageBeaconMap.get(key);
+						hlBrandProduct.setPageBeacon(pageBeacon);
+						hlba.add(hlBrandProduct);
 						found = true;
-						hasValues = true;
 						i++;
 					}
 				}
@@ -120,17 +124,7 @@ public class CriteoProductsHomePageCache {
 				j++;
 			}
 		}
-		// to satisfy maxCount property we are duplicating 
-		if(hasValues && !hlba.isEmpty() && (hlba.size()<maxCount) ) {
-			i= hlba.size();
-			j=0;
-			while ( i < maxCount) {
-				hlba.add(hlba.get(j));//System.out.println(list.get(i));
-				i++;	
-				j++;
-			}
-		}
-		
+
 		return hlba;	/* this is the final list which we are saving in server cache*/
 	
 	}

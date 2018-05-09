@@ -2010,7 +2010,7 @@ public class FDStoreProperties {
 
         defaults.put(PROP_DB_PARTIAL_JOIN_OPTIMIZER_ENABLED, "true");
 
-        defaults.put(FD_PRIORITY_SEARCH_KEYS, "BUTTER,EGG,MILK,YOGURT");
+        defaults.put(FD_PRIORITY_SEARCH_KEYS, "");
         defaults.put(FD_HOME_CRITEO_MAX_DISPLAY, "12");
 
         defaults.put(FD_HOME_CRITEO_CACHE_REFRESH_MIN, "30");
