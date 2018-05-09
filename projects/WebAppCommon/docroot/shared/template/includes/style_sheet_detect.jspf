@@ -11,14 +11,6 @@
   <%-- global css files, header, footer, etc. --%>
   <jwr:style src="/global.css" media="all" />
 
-  <%-- IE + IE6 fixes --%>
-  <!--[if IE]>
-  <fd:css href="/assets/css/common/footer.ie.css" media="all" />
-  <![endif]-->
-  <!--[if lte IE 6]>
-  <fd:css href="/assets/css/common/globalnav.ie6.css" media="all" />
-  <![endif]-->
-
   <%-- old css files --%>
   <jwr:style src="/oldglobal.css" media="all" />
 

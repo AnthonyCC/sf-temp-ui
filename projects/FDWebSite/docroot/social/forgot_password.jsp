@@ -27,16 +27,6 @@
 
 <fd:css href="/assets/css/social_login.css" />
 
-  <!--[if IE]>
-  <link rel="stylesheet" type="text/css" href="/assets/css/common/footer.ie.css?buildver=5b224e7e-1f1b-4429-902f-7dee6d79d5aa">
-  <![endif]-->
-  <!--[if lte IE 6]>
-  <link rel="stylesheet" type="text/css" href="/assets/css/common/globalnav.ie6.css?buildver=5b224e7e-1f1b-4429-902f-7dee6d79d5aa">
-  <![endif]-->
-
-
-
-
 </head>
 
 <body>

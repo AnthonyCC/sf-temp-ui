@@ -2,7 +2,7 @@
 <%@page import="com.freshdirect.fdstore.FDStoreProperties"
 		import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil"
 		import="com.freshdirect.webapp.taglib.fdstore.BrowserInfo" %>
-<% if (FDStoreProperties.isSocialButtonsEnabled() && !new BrowserInfo(request).isIE6()) {
+<% if (FDStoreProperties.isSocialButtonsEnabled()) {
 	final String BASE = FDStoreProperties.getHostUrl();
 	final String url = BASE + "/product.jsp?catId=" + productNode.getCategory().getContentName() + "&productId=" + productNode.getContentName();
 	final String img = BASE + productNode.getZoomImage().getPath();

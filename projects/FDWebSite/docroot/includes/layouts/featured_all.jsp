@@ -81,9 +81,6 @@ final int W_FEATURED_PADDING = 14;
     ContentNodeModel aliasNode = null;
     ContentNodeModel prodParent = null;
     Comparator priceComp = new ProductModel.PriceComparator();
-
-	BrowserInfo browserInfo = new BrowserInfo((HttpServletRequest) pageContext.getRequest());
-	boolean supportsPNG = !(browserInfo.isInternetExplorer() && browserInfo.getVersionNumber() < 8.0);
 	
 	boolean hideFi = false;
 	if (currentFolder instanceof CategoryModel)
@@ -357,7 +354,7 @@ final int W_FEATURED_PADDING = 14;
 				
 				col1.append("<div style=\"position: absolute; top: 0px; left: 0px\">\n");
                 
-				String burstImage = deal > 0 ? "/media_stat/images/deals/brst_sm_" + deal + (supportsPNG ? ".png" : ".gif") : prodLabel.isDisplayFave()? "/media_stat/images/bursts/brst_sm_fave"+(supportsPNG ? ".png" : ".gif"):prodLabel.isDisplayNew() ? "/media_stat/images/bursts/brst_sm_new"+(supportsPNG ? ".png" : ".gif"):clearImage;
+				String burstImage = deal > 0 ? "/media_stat/images/deals/brst_sm_" + deal + ".png" : prodLabel.isDisplayFave()? "/media_stat/images/bursts/brst_sm_fave.png" :prodLabel.isDisplayNew() ? "/media_stat/images/bursts/brst_sm_new.png":clearImage;
 
 				col1.append("<img name=\"" + burstImgName + "\" src=\"" + burstImage + "\" width=\"35px\" height=\"35px\" style=\"border: 0; " + ( deal > 0 ? "" : "display: none;" ) + "\">");                
                 
@@ -463,7 +460,7 @@ final int W_FEATURED_PADDING = 14;
 
 				ProductLabeling prdLbl = new ProductLabeling(user, product);
 				
-				String burstUrl = deal > 0 ? "/media_stat/images/deals/brst_sm_" + deal + (supportsPNG ? ".png" : ".gif") : prdLbl.isDisplayFave()? "/media_stat/images/bursts/brst_sm_fave"+(supportsPNG ? ".png" : ".gif"):prdLbl.isDisplayNew() ? "/media_stat/images/bursts/brst_sm_new"+(supportsPNG ? ".png" : ".gif"): clearImage;
+				String burstUrl = deal > 0 ? "/media_stat/images/deals/brst_sm_" + deal + ".png" : prdLbl.isDisplayFave()? "/media_stat/images/bursts/brst_sm_fave.png":prdLbl.isDisplayNew() ? "/media_stat/images/bursts/brst_sm_new.png": clearImage;
 
 				appendColumn.append( "swapImageAndBurst(\"" + imgName + "\",\"" + ((Image)product.getCategoryImage()).getPath() + "\"," + imgS + ",\"" + 
 						(deal > 0) + "\",\"" + burstImgName  + "\",\"" + burstUrl + "\"" + ", 80, 80)" );

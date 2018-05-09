@@ -133,7 +133,6 @@ if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDU
 					</a>
 				</div>
 			<% } else { %>
-				<% if (!new BrowserInfo(request).isIE6()) { %>
 					<div class="addthis_toolbox addthis_default_style left" style="width: 270px; padding-top: 8px; float: left;">
 						<a class="addthis_button_facebook_like" fb:like:href="http://www.facebook.com/FreshDirect" fb:like:layout="button_count" fb:like:width="95" fb:like:height="25"></a>
 						<a class="addthis_button_twitter_follow_native" tf:screen_name="freshdirect" tf:width="80px" tf:show-screen-name="false" tf:show-count="false"></a>
@@ -173,9 +172,6 @@ if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDU
 							});
 						}
 					</script>
-				<% } else { %>
-					<div class="left" style="width: 270px; height: 20px; margin: 0px; padding: 0px;"></div>
-				<% } %>
 			<% } %>
 			<div style="float:left; width:1px; height:40px; margin: 0px 12px 0px 0px" class="dotted_separator_v"></div>
 			<div style="float:left">

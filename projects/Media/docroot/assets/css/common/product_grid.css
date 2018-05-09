@@ -50,13 +50,6 @@
 	vertical-align: bottom;
 	display: inline-block;
 }
-.ie6 .grid-item-image a {
-	display: block;
-	width: expression(this.clientWidth > this.parentNode.clientWidth ? this.parentNode.clientWidth + "px" : this.clientWidth + "px");
-}
-.ie6 .grid-item-image img {
-	width: 100%;
-}
 
 .grid-item-image .burst-new,
 .grid-item-image .burst-fave,

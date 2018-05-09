@@ -281,18 +281,6 @@ public class ProductImageTag extends BodyTagSupport {
             browserInfo = new BrowserInfo((HttpServletRequest) pageContext.getRequest());
         }
 
-        final boolean needsOpacityWorkaround = browserInfo.isInternetExplorer() &&
-            (browserInfo.getVersionNumber() < 7.0);
-
-        // IE workaround
-        if ((this.opacity == 1) && needsOpacityWorkaround) {
-            this.opacity = 0.999;
-        }
-
-        final boolean supportsPNG = !((opacity < 1) &&
-            browserInfo.isInternetExplorer() &&
-            (browserInfo.getVersionNumber() < 7.0));
-
         // not disabled, has action and not in cart (savings) -> add link
         final boolean shouldGenerateAction = !this.disabled &&
             (this.action != null) && !this.isInCart;
@@ -476,7 +464,7 @@ public class ProductImageTag extends BodyTagSupport {
 
         if (displayBurst) {
             try {
-				appendBurst(buf, pl, supportsPNG, shouldGenerateAction);
+				appendBurst(buf, pl, shouldGenerateAction);
 			} catch (FDResourceException e) {
 			}
         }
@@ -672,7 +660,7 @@ public class ProductImageTag extends BodyTagSupport {
      * @throws FDResourceException 
      */
     private void appendBurst(StringBuilder buf, ProductLabeling pl,
-        final boolean supportsPNG, final boolean shouldGenerateAction) throws FDResourceException {
+        final boolean shouldGenerateAction) throws FDResourceException {
         // burst image
         String burstImageStyle = "border: 0;";
 
@@ -735,42 +723,42 @@ public class ProductImageTag extends BodyTagSupport {
             // No opacity needed since burst image is already faded
             iSrc = ((this.prefix != null) ? this.prefix : "") +
                 "/media_stat/images/bursts/in_cart" +
-                (supportsPNG ? ".png" : ".gif");
+                ".png";
             iAlt = "IN CART";
             iStyle = "border: 0;";
 
         } else if (deal > 0) {
             iSrc = ((this.prefix != null) ? this.prefix : "") +
                 "/media_stat/images/deals/brst_" + iSizeToken + "_" + deal +
-                (supportsPNG ? ".png" : ".gif");
+                ".png";
             iAlt = "SAVE";
             iStyle = burstImageStyle;
 
         } else if (pl.isDisplayFave()) {
             iSrc = ((this.prefix != null) ? this.prefix : "") +
                 "/media_stat/images/bursts/brst_" + iSizeToken + "_fave" +
-                (supportsPNG ? ".png" : ".gif");
+                ".png";
             iAlt = "FAVE";
             iStyle = burstImageStyle;
 
         } else if (pl.isDisplayNew() && !this.isNewProductPage) {
             iSrc = ((this.prefix != null) ? this.prefix : "") +
                 "/media_stat/images/bursts/brst_" + iSizeToken + "_new" +
-                (supportsPNG ? ".png" : ".gif");
+                ".png";
             iAlt = "NEW";
             iStyle = burstImageStyle;
 
         } else if (pl.isDisplayBackinStock()) {
             iSrc = ((this.prefix != null) ? this.prefix : "") +
                 "/media_stat/images/bursts/brst_" + iSizeToken + "_bis" +
-                (supportsPNG ? ".png" : ".gif");
+                ".png";
             iAlt = "BACK";
             iStyle = burstImageStyle;
 
         } else if (pl.isDisplayGoingOutOfStock()) {
             iSrc = ((this.prefix != null) ? this.prefix : "") +
                 "/media_stat/images/bursts/brst_" + iSizeToken + "_goos" +
-                (supportsPNG ? ".png" : ".gif");
+                ".png";
             iAlt = "GOING OUT OF STOCK";
             iStyle = burstImageStyle;
 
