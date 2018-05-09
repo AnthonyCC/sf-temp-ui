@@ -790,7 +790,7 @@ public class BrowseUtil {
 
     private static Category buildCategoryData(FDUserI user, CategoryModel model, boolean isExtraResponse) {
         Category category = null;
-        if (model != null && (!NavigationUtil.isCategoryHiddenInContext(user, model) || !isExtraResponse)) {
+        if (model != null && !NavigationUtil.isCategoryHiddenInContext(user, model)) {
             category = Category.wrap(model);
             if (model.getSubcategories() != null && !model.getSubcategories().isEmpty()) {
                 for (CategoryModel subcat : model.getSubcategories()) {
