@@ -698,7 +698,7 @@ public abstract class BaseController extends AbstractController implements Messa
         responseMessage.setOrderCount(history.getValidOrderCount());
         responseMessage.setFdxOrderCount(history.getValidOrderCount(EnumEStoreId.FDX));
         responseMessage.setFdUserId(user.getPrimaryKey());
-        responseMessage.setErpCustomerPK(user.getFDSessionUser().getFDCustomer().getErpCustomerPK());
+        responseMessage.setErpCustomerPK(getSessionUserId(user));
 
         // DOOR3 FD-iPad FDIP-474
         //Note: The field is inapproformatLoginMessagepriately named. It is not referring to whether or not the user is on the FD mailing
