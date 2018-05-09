@@ -102,8 +102,8 @@ public class CarouselServlet extends BaseJsonServlet {
             }
         }
 
-        try {
-            if (!isNewProductsCarouselLoaded) {
+        if (!isNewProductsCarouselLoaded) {
+            try {
                 FDStoreRecommender recommender = FDStoreRecommender.getInstance();
 
                 ContentNodeModel currentNode = null;
@@ -117,16 +117,14 @@ public class CarouselServlet extends BaseJsonServlet {
                 ProductRecommenderUtil.persistToSession(session, results);
 
                 products = results.getAllProducts();
+                if (products.size() > maxItems) {
+                    products = products.subList(0, maxItems);
+                }
+
+            } catch (FDResourceException e) {
+                LOGGER.warn("Failed to get recommendations for siteFeature:" + siteFeature, e);
             }
-
-
-			if (products.size() > maxItems) {
-				products = products.subList(0, maxItems);
-			}
-
-		} catch (FDResourceException e) {
-			LOGGER.warn("Failed to get recommendations for siteFeature:" + siteFeature, e);
-		}
+        }
 
 		Map<String, ?> dataMap = null;
 
