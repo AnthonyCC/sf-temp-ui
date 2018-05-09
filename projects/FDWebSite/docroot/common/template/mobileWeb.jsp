@@ -97,6 +97,7 @@
     <jwr:style src="/mobileweb.css" media="all" /><%-- mobileweb should be last, for overriding --%>
 
     <tmpl:get name="extraCss" />
+    <tmpl:get name="customCss" />
     <tmpl:get name="extraJs" />
     <tmpl:get name='nutritionCss'/>
 	<% if (isModifyOrder) { %>
@@ -263,6 +264,7 @@
 
 	<jwr:script src="/mobileweb.js" useRandomParam="false" />
     <tmpl:get name="extraJsFooter" />
+    <tmpl:get name="customJsBottom" />
 
 	<% if(fdTcAgree!=null&&!fdTcAgree.booleanValue()){ %>
 		<script>
