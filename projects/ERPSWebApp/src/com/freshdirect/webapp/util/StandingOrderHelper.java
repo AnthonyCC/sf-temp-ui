@@ -1356,7 +1356,7 @@ private static String convert(Date time) {
 		try {
 			for (FDStandingOrder soValidtemplate : allSOlist) {
 				if (deliveryAddressId != null && deliveryAddressId.equals(soValidtemplate.getAddressId())) {
-					LOGGER.debug("indside evaluteSoAddressId(), action by user: "+user.getIdentity().getErpCustomerPK()+", "
+					LOGGER.info("indside evaluteSoAddressId(), action by user: "+user.getIdentity().getErpCustomerPK()+", "
 							+ "deleting addressId: "+soValidtemplate.getAddressId()+", for SO3 template: "+soValidtemplate.getId());
 					soValidtemplate.setAddressId(null);
 					soValidtemplate.setStartTime(null);
@@ -1385,7 +1385,7 @@ private static String convert(Date time) {
 				(currentStandingOrder.getNextDeliveryDate() != null || currentStandingOrder.getOldAddressId() == null) ) {
 			
 			currentStandingOrder.setOldAddressId(currentStandingOrder.getAddressId());
-			LOGGER.debug("user selected addressID from UI: " + deliveryAddressId + " . initial addressID: "+ currentStandingOrder.getOldAddressId());
+			LOGGER.info("user selected addressID from UI: " + deliveryAddressId + " . initial addressID: "+ currentStandingOrder.getOldAddressId());
 		}
 		if(user != null && currentStandingOrder != null){
 			canBeSaved = currentStandingOrder.getOldAddressId() != null	&& currentStandingOrder.getOldAddressId().equals(deliveryAddressId);
@@ -1395,7 +1395,7 @@ private static String convert(Date time) {
 			currentStandingOrder.setNextDeliveryDate(so.getNextDeliveryDate());
 			currentStandingOrder.setStartTime(so.getStartTime());
 			currentStandingOrder.setEndTime(so.getEndTime());
-			LOGGER.debug("restoring address timeslot for customer:"+user.getIdentity().getErpCustomerPK()+ " StandingOrder ID: "+ currentStandingOrder.getId());
+			LOGGER.info("restoring address timeslot for customer:"+user.getIdentity().getErpCustomerPK()+ " StandingOrder ID: "+ currentStandingOrder.getId());
 			canBeSaved = false;
 			}
 		else {
@@ -1405,9 +1405,9 @@ private static String convert(Date time) {
 			canBeSaved = false;
 			if(!"".equalsIgnoreCase(currentStandingOrder.getId()) 
 					&& null != currentStandingOrder.getId()){
-				LOGGER.debug("customer:"+user.getIdentity().getErpCustomerPK()+ " trying to modify address for StandingOrder ID: "+ currentStandingOrder.getId());
+				LOGGER.info("customer:"+user.getIdentity().getErpCustomerPK()+ " trying to modify address for StandingOrder ID: "+ currentStandingOrder.getId());
 			} else{
-				LOGGER.debug("customer:"+user.getIdentity().getErpCustomerPK()+ " is creating new SO");
+				LOGGER.info("customer:"+user.getIdentity().getErpCustomerPK()+ " is creating new SO");
 				
 			}
 		}
@@ -1421,7 +1421,7 @@ private static String convert(Date time) {
 		try {
 			for (FDStandingOrder soValidtemplate : SOList) {
 				if (deliveryAddressId != null && deliveryAddressId.equals(soValidtemplate.getAddressId())) {
-					LOGGER.debug("indside evaluteEditSoAddressID(), action by user: "
+					LOGGER.info("indside evaluteEditSoAddressID(), action by user: "
 							+ user.getIdentity().getErpCustomerPK() + ", " + "deleting timeslots for  SO3 template: "
 							+ soValidtemplate.getId() + " ,addressId: " + soValidtemplate.getAddressId());
 					soValidtemplate.setAddressId(null);							/* SUPPORT-10686 */
@@ -1450,7 +1450,7 @@ private static String convert(Date time) {
 				for (FDStandingOrder soValidtemplate : allSOlist) {
 					if (paymentId != null && paymentId.equals(soValidtemplate.getPaymentMethodId()) || currentSO) {
 						currentSO = false;
-						LOGGER.debug("indside evaluteSOPaymentId(), action by user: "+user.getIdentity().getErpCustomerPK()+", "
+						LOGGER.info("indside evaluteSOPaymentId(), action by user: "+user.getIdentity().getErpCustomerPK()+", "
 								+ "deleting paymentID: "+soValidtemplate.getPaymentMethodId()+", for SO3 template: "+soValidtemplate.getId());
 						soValidtemplate.setPaymentMethodId(null);
 						soValidtemplate.setLastError(ErrorCode.PAYMENT_DEL.name(), ErrorCode.PAYMENT_DEL.getErrorHeader(), ErrorCode.PAYMENT_DEL.getErrorDetail(null));
@@ -1480,7 +1480,7 @@ private static String convert(Date time) {
 				so.setStartTime(null);
 				so.setEndTime(null);
 				so.setZone(null);
-				LOGGER.debug("SO id: " + so.getId()+" timeslots has been nullified. "
+				LOGGER.info("SO id: " + so.getId()+" timeslots has been nullified. "
 						+ "New zone: "+so.getZoneNew()+" for new address: "+user.getCurrentStandingOrder().getDeliveryAddress()+"."
 								+ " Old address: " + user.getSoTemplateCart().getDeliveryAddress());
 
@@ -1499,7 +1499,7 @@ private static String convert(Date time) {
 							.saveStandingOrderToLogistics(so.getId(), so.getTimeSlotId(),
 									Integer.toString(so.getReservedDayOfweek()), so.getUser().getHistoricOrderSize(),
 									so.getCustomerId(), address, so.getUser().isNewSO3Enabled());
-					LOGGER.debug("SaveStandingOrderToLogistics() status: " + update.getStatus()
+					LOGGER.info("SaveStandingOrderToLogistics() status: " + update.getStatus()
 							+ ", for SO id:" + so.getId() + ",zone_id: "+so.getZoneNew()+" ,address: " + address);
 				} catch (FDAuthenticationException e) {
 					e.printStackTrace();
@@ -1516,7 +1516,7 @@ private static String convert(Date time) {
 			String identity = so.getCustomerId();
 			try {
 				zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(newAddress, new Date(), null, EnumRegionServiceType.CORPORATE, identity);
-				LOGGER.debug("getZoneInfoFromLogistics(), customerID: "+identity+", ZONE_CODE is:: " + zoneInfo.getZoneCode()+" , for address: " + newAddress);
+				LOGGER.info("getZoneInfoFromLogistics(), customerID: "+identity+", ZONE_CODE is:: " + zoneInfo.getZoneCode()+" , for address: " + newAddress);
 			} catch (FDInvalidAddressException e) {
 				e.printStackTrace();
 			}
