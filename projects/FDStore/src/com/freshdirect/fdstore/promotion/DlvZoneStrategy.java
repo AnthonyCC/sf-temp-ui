@@ -110,7 +110,7 @@ public class DlvZoneStrategy implements PromotionStrategyI {
                                         && (!(dlvTimeSlot.isPremiumSlot() && promotionCode.startsWith("WS_")) || FDStoreProperties.allowDiscountsOnPremiumSlots())
                                         && checkDlvTimeSlots(dlvTimeSlot, dlvTimeSlotList, null, context.getUser(), true)
                                         		&& isLessthanCapcityUtilization(dlvTimeSlot, 0, promotionCode)
-                                        		&& isWithinCutOffExpTime(dlvTimeSlot)
+                                        		&& isWithinCutOffExpTime(dlvTimeSlot,null, promotionCode )
                                         		&& isTravelZonePresent(dlvTimeSlot.getTravelZone()) )
 									return ALLOW;
 								else{
@@ -443,7 +443,12 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 	}
 	
 	//
-	public boolean isWithinCutOffExpTime(FDTimeslot ts){
+	public boolean isWithinCutOffExpTime(FDTimeslot ts, String estore, String promotionCode){
+		if(null != promotionCode){
+			Promotion p = (Promotion) PromotionFactory.getInstance().getPromotion(promotionCode);
+			estore = p.geteStoreId();
+		} 
+		
 		int key = ts.getDayOfWeek();
 		List<PromotionDlvTimeSlot> dlvTimeslotList = dlvTimeSlots.get(key);
 		/*if no time frame for Exact/Range at promo level is defined, its only trough 'Promo' tab in backOffice.
@@ -454,8 +459,12 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 		if(null == frWinTime || frWinTime.equalsIgnoreCase("R")){
 			return true;
 		}
-		
-		Date tsCutOff = ts.getOriginalCutoffDateTime();
+		Date tsCutOff;
+		if(null != estore && estore.equalsIgnoreCase("FDX")){
+			 tsCutOff = ts.getCutoffDateTime();
+		} else{
+			tsCutOff = ts.getOriginalCutoffDateTime();
+		}
 		final long ONE_MIN_INMILLIS=60000;
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(tsCutOff);

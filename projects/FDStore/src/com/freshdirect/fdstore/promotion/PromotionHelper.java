@@ -99,10 +99,9 @@ public class PromotionHelper {
 								/* WS -enhanced targeting APPDEV-7118 Start----->*/
 								&& zoneStrategy.isTimeSlotEligible(timeSlot, tsWindowMap, user, promoId)
 								&& zoneStrategy.isLessthanCapcityUtilization(timeSlot, p.getCapcityUtilization(), null)
-									&& zoneStrategy.isWithinCutOffExpTime(timeSlot)
+									&& zoneStrategy.isWithinCutOffExpTime(timeSlot,p.geteStoreId(),null)
 									&& zoneStrategy.isTravelZonePresent(timeSlot.getTravelZone())
 									/*<----- APPDEV-7118 End  */){
-														
 							double promoAmt = p.getHeaderDiscountTotal();
 							boolean isWaiveCharge = p.isWaiveCharge();
 							if(isWaiveCharge){
