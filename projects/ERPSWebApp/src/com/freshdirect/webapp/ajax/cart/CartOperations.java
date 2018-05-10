@@ -201,7 +201,9 @@ public class CartOperations {
                 cartLine.setEStoreId(user.getUserContext().getStoreContext().getEStoreId());
                 // cartLine.setPlantId(user.getUserContext().getFulfillmentContext().getPlantId());
 
-                cartLinesToAdd.add(cartLine);
+                if (!cartLinesToAdd.contains(cartLine)) {
+                    cartLinesToAdd.add(cartLine);
+                }
 
                 // [APPDEV-4558]
                 if (!isExternalRequest && CmContextUtility.isCoremetricsAvailable(user)) {
@@ -226,7 +228,9 @@ public class CartOperations {
             }
 
             // add collected cartlines to cart
-            cart.addOrderLines(cartLinesToAdd);
+            for (FDCartLineI cartLineToAdd : cartLinesToAdd) {
+                cart.addOrderLineIfNotExists(cartLineToAdd);
+            }
 
             // log multiple add to cart events
             logAddToCart(user, cartLinesToAdd, evtSrc, serverName);
@@ -836,7 +840,14 @@ public class CartOperations {
         // MAIN PROCESSING
         // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-        FDCartLineI theCartLine = processSimple(prodNode, product, quantity, salesUnit, null, variantId, user.getUserContext(), null, item.getConfiguration());
+        FDCartLineI theCartLine = cart.getGroupingOrderline(prodNode, product, salesUnit);
+        if (theCartLine == null) {
+            theCartLine = processSimple(prodNode, product, quantity, salesUnit, null, variantId, user.getUserContext(), null, item.getConfiguration());
+            responseItem.setInCartAmount(calculateInCartAmount(prodNode, cartLinesToAdd, cart, quantity));
+        } else {
+            responseItem.setInCartAmount(calculateInCartAmount(prodNode, cartLinesToAdd, cart, quantity));
+            theCartLine.setQuantity(theCartLine.getQuantity() + quantity);
+        }
 
         if (theCartLine == null) {
             responseItem.setStatus(Status.ERROR);
@@ -909,7 +920,6 @@ public class CartOperations {
             responseItem.setMessage("Product not found: " + e.getMessage());
         }
 
-        responseItem.setInCartAmount(calculateInCartAmount(prodNode, cartLinesToAdd, cart, quantity));
         responseItem.setCartlineId(theCartLine.getRandomId());
 
         if (responseItem.getMessage() == null) {

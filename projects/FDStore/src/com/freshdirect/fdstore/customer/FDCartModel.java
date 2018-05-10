@@ -53,8 +53,10 @@ import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDGroup;
+import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ZonePriceListing;
@@ -456,7 +458,12 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		*/
 	//}
 
-
+    public void addOrderLineIfNotExists(FDCartLineI orderLine) {
+        FDCartLineI orderLineById = getOrderLineById(orderLine.getRandomId());
+        if (orderLineById == null) {
+            addOrderLine(orderLine);
+        }
+    }
 
 	public void addOrderLine(FDCartLineI orderLine) {
 		checkLimitPlus(1);
@@ -464,7 +471,6 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		this.recentOrderLines.clear();
 		this.recentOrderLines.add(orderLine);
 		this.clearAvailability();
-
 	}
 
 	public void addOrderLines(Collection<FDCartLineI> cartLines) {
@@ -714,6 +720,19 @@ public class FDCartModel extends ModelSupport implements FDCartI {
             }
         }
         return isUpdated;
+    }
+
+    public FDCartLineI getGroupingOrderline(ProductModel productModel, FDProduct product, FDSalesUnit salesUnit) {
+        FDCartLineI groupOrderline = null;
+        if ("EA".equalsIgnoreCase(salesUnit.getBaseUnit()) && (product.isPricedByEa() || product.isPricedByLb())) {
+            for (FDCartLineI orderLine : orderLines) {
+                if (orderLine.getProductName().equals(productModel.getContentName()) && orderLine.getSalesUnit().equals(salesUnit.getName())) {
+                    groupOrderline = orderLine;
+                    break;
+                }
+            }
+        }
+        return groupOrderline;
     }
 
 	/**
@@ -1702,7 +1721,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		setDeliveryPassCount(count);
 	}
 
-	public boolean containsDlvPassOnly(){
+	@Override
+    public boolean containsDlvPassOnly(){
 		if(getDeliveryPassCount() > 0 && getDeliveryPassCount() == this.getOrderLines().size()){
 			//Cart contains only delivery pass.
 			return true;
