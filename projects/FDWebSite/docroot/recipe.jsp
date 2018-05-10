@@ -62,11 +62,11 @@ if (!recipe.isAvailable()) {
 }
 
 if (variant == null) {
-	throw new IllegalArgumentException("No variant found");
+	throw new FDNotFoundException("No variant found");
 }
 
 if (!variant.isAvailable()) {
-	throw new IllegalArgumentException("Recipe variant unavailable");
+	throw new FDNotFoundException("Recipe variant unavailable");
 }
 
 
