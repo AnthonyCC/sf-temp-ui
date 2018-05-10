@@ -89,6 +89,7 @@ import com.freshdirect.deliverypass.DlvPassUsageInfo;
 import com.freshdirect.deliverypass.DlvPassUsageLine;
 import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
+import com.freshdirect.ecomm.gateway.GiftCardManagerService;
 import com.freshdirect.ecomm.gateway.OrderServiceApiClient;
 import com.freshdirect.ecomm.gateway.OrderServiceApiClientI;
 import com.freshdirect.ecommerce.data.survey.FDIdentityData;
@@ -3604,8 +3605,12 @@ public class FDCustomerManager {
 			throws FDResourceException {
 		lookupManagerHome();
 		try {
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.GiftCardManagerSB)){
+			return GiftCardManagerService.getInstance().verifyStatusAndBalance(model, reloadBalance);
+			}else{
 			FDCustomerManagerSB sb = managerHome.create();
 			return sb.verifyStatusAndBalance(model, reloadBalance);
+			}
 
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -3620,8 +3625,12 @@ public class FDCustomerManager {
 			throws FDResourceException {
 		lookupManagerHome();
 		try {
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.GiftCardManagerSB)){
+				return GiftCardManagerService.getInstance().getGiftCardRecepientsForCustomer(identity.getErpCustomerPK());
+			}else{
 			FDCustomerManagerSB sb = managerHome.create();
 			return sb.getGiftCardRecepientsForCustomer(identity);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -3635,8 +3644,12 @@ public class FDCustomerManager {
 			throws FDResourceException {
 		lookupManagerHome();
 		try {
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.GiftCardManagerSB)){
+				return GiftCardManagerService.getInstance().getGiftCardRecepientsForOrders(saleIds);
+			}else {
 			FDCustomerManagerSB sb = managerHome.create();
 			return sb.getGiftCardRecepientsForOrders(saleIds);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -3650,8 +3663,12 @@ public class FDCustomerManager {
 			throws FDResourceException {
 		lookupManagerHome();
 		try {
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.GiftCardManagerSB)){
+			return GiftCardManagerService.getInstance().getGiftCardOrdersForCustomer(identity.getErpCustomerPK());
+			}else{
 			FDCustomerManagerSB sb = managerHome.create();
 			return sb.getGiftCardOrdersForCustomer(identity);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -3775,8 +3792,12 @@ public class FDCustomerManager {
 			String certNum) throws FDResourceException {
 		lookupManagerHome();
 		try {
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.GiftCardManagerSB)){
+			return GiftCardManagerService.getInstance().getGiftCardRedeemedOrders(identity.getErpCustomerPK(), certNum);
+			}else{
 			FDCustomerManagerSB sb = managerHome.create();
 			return sb.getGiftCardRedemedOrders(identity, certNum);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -3790,8 +3811,12 @@ public class FDCustomerManager {
 			throws FDResourceException {
 		lookupManagerHome();
 		try {
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.GiftCardManagerSB)){
+			return GiftCardManagerService.getInstance().getGiftCardRedeemedOrders( certNum);
+			}else{
 			FDCustomerManagerSB sb = managerHome.create();
 			return sb.getGiftCardRedemedOrders(certNum);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -3806,8 +3831,12 @@ public class FDCustomerManager {
 		// TODO Auto-generated method stub
 		lookupManagerHome();
 		try {
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.GiftCardManagerSB)){
+			return GiftCardManagerService.getInstance().getAllDeletedGiftCard(identity.getErpCustomerPK());
+			}else {
 			FDCustomerManagerSB sb = managerHome.create();
 			return sb.getDeletedGiftCardForCustomer(identity);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -3827,8 +3856,12 @@ public class FDCustomerManager {
 			throws FDResourceException {
 		lookupManagerHome();
 		try {
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.GiftCardManagerSB)){
+			return GiftCardManagerService.getInstance().getGiftCardRecepientsForOrder(saleId);
+			}else{
 			FDCustomerManagerSB sb = managerHome.create();
 			return sb.getGiftCardRecepientsForOrder(saleId);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -3842,10 +3875,12 @@ public class FDCustomerManager {
 			throws FDResourceException {
 
 		try {
-
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.GiftCardManagerSB)){
+				return GiftCardManagerService.getInstance().validateAndGetGiftCardBalance(givexNum);
+			}else{
 			FDCustomerManagerSB sb = managerHome.create();
 			return sb.validateAndGetGiftCardBalance(givexNum);
-
+			}
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		} catch (CreateException ce) {
@@ -3857,9 +3892,13 @@ public class FDCustomerManager {
 			String fromGivexNum, String toGivexNum, double amount)
 			throws FDResourceException {
 		try {
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.GiftCardManagerSB)){
+				GiftCardManagerService.getInstance().transferGiftCardBalance(identity.getErpCustomerPK(), fromGivexNum, toGivexNum,amount);
+			}else{
 			FDCustomerManagerSB sb = managerHome.create();
 			sb.transferGiftCardBalance(identity, fromGivexNum, toGivexNum,
 					amount);
+			}
 
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
@@ -3956,8 +3995,13 @@ public class FDCustomerManager {
 			String certNum) throws FDResourceException {
 		lookupManagerHome();
 		try {
+			
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.GiftCardManagerSB)){
+			return GiftCardManagerService.getInstance().loadGiftCardRecipentByCertNum(certNum);
+			}else{
 			FDCustomerManagerSB sb = managerHome.create();
 			return sb.GetGiftCardRecipentByCertNum(certNum);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
