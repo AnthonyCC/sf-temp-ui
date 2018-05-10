@@ -39,10 +39,7 @@ public class LocatorUtil {
     		try {
     			//used mocked ip address parameter (for testing) if exists
 		    	String ip = NVL.apply(request.getParameter(IP_LOCATOR_MOCKED_IP_ADDRESS), RequestUtil.getClientIp(request)); 
-		    	
-		    	if(FDStoreProperties.isLoggingAkamaiEdgescapgeHeaderInfoEnabled()){
-		    		logAkamaiEdgescapeHeaderInfo(request);
-		    	}
+		    			    	
 	    		IpLocatorData ipLocatorData = IpLocatorClient.getInstance().getData(ip);
 	    		
 	    		IpLocatorEventDTO ipLocatorEventDTO = new IpLocatorEventDTO();
@@ -54,6 +51,13 @@ public class LocatorUtil {
 	    		ipLocatorEventDTO.setUserAgent(requestClassifier.getUserAgent());
 	    		ipLocatorEventDTO.setUaHashPercent(requestClassifier.getHashPercent());
 	    		ipLocatorEventDTO.setIplocRolloutPercent(100);
+	    		
+	    		String akamaiEdgeHeader = request.getHeader("X-Akamai-Edgescape");
+	    		LOGGER.info("MELISSADATAIP:"+ ip + "=" + ipLocatorData.getZipCode() + " AkamaiEdgescapeHeader: "+akamaiEdgeHeader);
+	    		
+	    		if(FDStoreProperties.isLoggingAkamaiEdgescapgeHeaderInfoEnabled()){
+		    		logAkamaiEdgescapeHeaderInfo(akamaiEdgeHeader, ipLocatorData);
+		    	}
 	    		
                 user = createUser(session, response, ipLocatorData, ipLocatorEventDTO);
 
@@ -67,10 +71,8 @@ public class LocatorUtil {
    		return user;
     }
 
-	private static void logAkamaiEdgescapeHeaderInfo(HttpServletRequest request) {
-		try {
-			String akamaiEdgeHeader = request.getHeader("X-Akamai-Edgescape");
-			LOGGER.info("Akamai Edgescape Header: "+akamaiEdgeHeader);				
+	private static void logAkamaiEdgescapeHeaderInfo(String akamaiEdgeHeader, IpLocatorData ipLocatorData) {
+		try {							
 			if(akamaiEdgeHeader !=null && akamaiEdgeHeader.length() >0){
 				String[] attributes = akamaiEdgeHeader.split("\\s*,\\s*");
 				if(null !=attributes){
