@@ -24,3 +24,11 @@
 [data-ismobweb="true"] .content-module.product-carousel [data-component="carousel"] ul[data-component="carousel-list"] li {
   width: 50%;
 }
+
+#multisearch-tutorial {
+  display: none;
+}
+
+#multisearch-tutorial.show {
+  display: block;
+}

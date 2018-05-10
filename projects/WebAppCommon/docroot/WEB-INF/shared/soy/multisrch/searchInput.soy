@@ -14,9 +14,10 @@
     </div>
   </form>
   {/if}
+  {if length($terms)}
   <ul class="termlist">
-    <li class="title">Current products</li>
   {foreach $term in $terms}
+    <li class="title">Current products</li>
     <li data-searchterm="{$term.name}" {if $term.enabled}data-enabled="true"{/if}>
       <input type="checkbox" id="ms_term_{$term.slug}" name="ms_terms" value="{$term.name}" {if $term.enabled}checked{/if}/>
       <label for="ms_term_{$term.slug}">
@@ -26,5 +27,6 @@
     </li>
   {/foreach}
   </ul>
+  {/if}
 </div>
 {/template}

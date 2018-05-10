@@ -144,6 +144,7 @@ var FreshDirect = FreshDirect || {};
         });
 
         WIDGET.render.call(this, data);
+
         FreshDirect.components.autoComplete.init(this.placeholder+' input.searchinput');
         $('[data-component="multisearch-input"] input.searchinput').val("");
       }
@@ -172,18 +173,9 @@ var FreshDirect = FreshDirect || {};
 
 // initialize based on query parameters
 (function (fd) {
-  var DEFAULTLIST = fd.multisearch.defaultList ? fd.multisearch.defaultList.split(',') : [
-    'eggs',
-    'milk',
-    'pizza',
-    'yogurt',
-    'butter',
-    'carrots',
-    'garlic',
-    'bread',
-    'onion',
-    'chicken'
-  ];
+  /* DEFAULTLIST is not used currently, but we can display it somewhere
+  var DEFAULTLIST = fd.multisearch.defaultList ? fd.multisearch.defaultList.split(',') : [];
+  */
 
   setTimeout(function () {
     var q = fd.utils.getParameterByName('q'),
@@ -193,7 +185,7 @@ var FreshDirect = FreshDirect || {};
           .map(function (t) { return decodeURIComponent(t); });
 
     if (terms.length === 0) {
-      terms = DEFAULTLIST;
+      terms = [];
     }
 
     terms = terms.filter(function (kw) { return kw; }).map(function (kw) { return kw.trim(); }).map(fd.utils.escapeHtml);

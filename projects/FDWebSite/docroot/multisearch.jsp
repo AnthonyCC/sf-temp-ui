@@ -48,6 +48,9 @@
     <h2>Type in a list of products and we will find them for you</h2>
     <div id="multisearch-results" class="contentModules">
     </div>
+    <div id="multisearch-tutorial">
+      <fd:IncludeMedia name="/media/editorial/site_pages/informational/multisearch.html" />
+    </div>
   </tmpl:put>
   
 	<tmpl:put name='extraJsModules'>
