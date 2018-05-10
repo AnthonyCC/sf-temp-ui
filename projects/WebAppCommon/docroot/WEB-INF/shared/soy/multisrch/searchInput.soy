@@ -18,6 +18,7 @@
   <ul class="termlist">
   {foreach $term in $terms}
     <li class="title">Current products</li>
+    <li class="headers"><span class="checkbox-header">Active</span><span class="x-header">Remove</span></li>
     <li data-searchterm="{$term.name}" {if $term.enabled}data-enabled="true"{/if}>
       <input type="checkbox" id="ms_term_{$term.slug}" name="ms_terms" value="{$term.name}" {if $term.enabled}checked{/if}/>
       <label for="ms_term_{$term.slug}">

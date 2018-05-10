@@ -94,6 +94,21 @@
   font-weight: bold;
 }
 
+.multisearch-input > ul.termlist > li.headers {
+  font-size: 9px;
+  padding: 0;
+  line-height: 1.4em;
+  overflow: hidden;
+}
+
+.multisearch-input > ul.termlist > li.headers > .checkbox-header {
+  float: left;
+}
+
+.multisearch-input > ul.termlist > li.headers > .x-header {
+  float: right;
+}
+
 .multisearch-input > ul.termlist > li[data-enabled] {
   background: #4fa157;
   color: #fff;
