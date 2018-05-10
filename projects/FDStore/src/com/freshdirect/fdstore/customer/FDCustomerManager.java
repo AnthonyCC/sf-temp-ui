@@ -128,6 +128,7 @@ import com.freshdirect.fdstore.referral.EnumReferralStatus;
 import com.freshdirect.fdstore.referral.FDReferralManager;
 import com.freshdirect.fdstore.referral.ReferralProgramInvitaionModel;
 import com.freshdirect.fdstore.request.FDProductRequest;
+import com.freshdirect.fdstore.sms.shortsubstitute.ShortSubstituteResponse;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.fdstore.util.IgnoreCaseString;
@@ -5451,6 +5452,23 @@ public class FDCustomerManager {
 				LOGGER.error("Error updating FDCustomerEStoreModel for custId:" + custId + " "+ e);
 				invalidateManagerHome();
 				throw new FDResourceException(e, "Error creating session bean");
+			}
+		}
+		
+		public static ShortSubstituteResponse getShortSubstituteOrders(List<String> orderList) throws FDResourceException {
+			lookupManagerHome();
+
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getShortSubstituteOrders(orderList);
+
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				LOGGER.debug("RemoteException: ", re);
+				throw new FDResourceException(re, "Error talking to session bean");
 			}
 		}
 }

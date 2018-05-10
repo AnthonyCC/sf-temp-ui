@@ -194,6 +194,7 @@ import com.freshdirect.fdstore.promotion.ejb.FDPromotionNewDAO;
 import com.freshdirect.fdstore.referral.ejb.FDReferAFriendDAO;
 import com.freshdirect.fdstore.request.FDProductRequest;
 import com.freshdirect.fdstore.request.FDProductRequestDAO;
+import com.freshdirect.fdstore.sms.shortsubstitute.ShortSubstituteResponse;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
 import com.freshdirect.fdstore.temails.TEmailConstants;
 import com.freshdirect.fdstore.temails.TEmailsUtil;
@@ -8623,4 +8624,37 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
         }
 
     }
+	
+	
+	public ShortSubstituteResponse getShortSubstituteOrders(List<String> orderList) throws FDResourceException, RemoteException{
+		Connection conn = null;
+		try {
+			StringBuffer orders = GenerteOrderWithCommaSeparate(orderList);
+			conn = getConnection();
+			return FDCustomerOrderInfoDAO.getShortSubstituteOrders(orders, conn);
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle, "Some problem in getting Pending deliveries from database");
+		} finally {
+			close(conn);
+		}
+	}
+
+	public StringBuffer GenerteOrderWithCommaSeparate(List<String> orderList) {
+		StringBuffer orders =new StringBuffer();
+		orders.append("(");
+		if(orderList != null && orderList.size() > 0) {							
+			int intCount = 0;
+			for(String orderId : orderList) {
+				orders.append("'").append(orderId).append("'");
+				intCount++;
+				if(intCount % 1000 != 0 && intCount != orderList.size()) {
+					orders.append(",");
+				} else if(intCount % 1000 == 0 && intCount != orderList.size()) {
+					orders.append(")");
+				}
+			}
+			orders.append(")");
+		}
+		return orders;
+	}
 }
