@@ -28,7 +28,7 @@ public class AudienceStrategy implements PromotionStrategyI {
 		// TODO Auto-generated constructor stub
 	}
 
-	public boolean isMaxUsagePerCustomer() { return this.maxUsagePerCust; } 
+	public boolean isMaxUsagePerCust() { return this.maxUsagePerCust; } 
 	public int getRollingExpirationDays() { return this.rollingExpirationDays; } 
 	
 	@Override
@@ -83,10 +83,6 @@ public class AudienceStrategy implements PromotionStrategyI {
 	@Override
 	public boolean isStoreRequired() {
 		return false;
-	}
-
-	public boolean isMaxUsagePerCust() {
-		return maxUsagePerCust;
 	}
 
 	public void setMaxUsagePerCust(boolean maxUsagePerCust) {

@@ -20,6 +20,7 @@ import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.storeapi.content.ProductReference;
+import com.freshdirect.storeapi.content.ProductReferenceImpl;
 import com.freshdirect.storeapi.content.SkuModel;
 
 public class SampleLineApplicator implements PromotionApplicatorI {
@@ -27,6 +28,8 @@ public class SampleLineApplicator implements PromotionApplicatorI {
 	private final static Category LOGGER = LoggerFactory.getInstance(SampleStrategy.class);
 
 	private ProductReference sampleProduct;
+	private String categoryId;
+	private String productId;
 	private double minSubtotal;
 	private DlvZoneStrategy zoneStrategy;
 
@@ -35,21 +38,22 @@ public class SampleLineApplicator implements PromotionApplicatorI {
 	public SampleLineApplicator(ProductReference sampleProduct, double minSubtotal) {
 		this.sampleProduct = sampleProduct;
 		this.minSubtotal = minSubtotal;
+		this.categoryId = null !=sampleProduct?sampleProduct.getCategoryId():null;
+		this.productId = null !=sampleProduct?sampleProduct.getProductId():null;
 	}
-
+	
 	public SampleLineApplicator() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
 	public ProductModel getSampleProduct() {
+		if(null ==sampleProduct){
+			sampleProduct = new ProductReferenceImpl(categoryId,productId);
+		}
 		return this.sampleProduct.lookupProductModel();
 	}
 	
-	public ProductReference getProductReference() {
-	    return this.sampleProduct;
-	}
-
 	public boolean apply(String promotionCode, PromotionContextI context) {
 		//If delivery zone strategy is applicable please evaluate before applying the promotion.
 		int e = zoneStrategy != null ? zoneStrategy.evaluate(promotionCode, context) : PromotionStrategyI.ALLOW;
@@ -153,12 +157,24 @@ public class SampleLineApplicator implements PromotionApplicatorI {
 		return zoneStrategy;
 	}
 
-	public void setSampleProduct(ProductReference sampleProduct) {
-		this.sampleProduct = sampleProduct;
-	}
-
 	public void setMinSubtotal(double minSubtotal) {
 		this.minSubtotal = minSubtotal;
+	}
+
+	public String getCategoryId() {
+		return categoryId;
+	}
+
+	public String getProductId() {
+		return productId;
+	}
+
+	public void setCategoryId(String categoryId) {
+		this.categoryId = categoryId;
+	}
+
+	public void setProductId(String productId) {
+		this.productId = productId;
 	}
 
 }
