@@ -68,10 +68,12 @@ public class HowToCookItUtil {
 	public static String getProductDomainValue(List<DomainValue> domainValues,
 			String domainId, String defaultDomainValue) {
 		for (DomainValue dmv : domainValues) {
-			ContentKey dom = dmv.getDomainContentKey();
-			if (domainId.equals(dom.getId())) {
-				return dmv.getValue();
-			}
+            if (dmv.getParentNode() != null) {
+    			ContentKey dom = dmv.getDomainContentKey();
+    			if (domainId.equals(dom.getId())) {
+    				return dmv.getValue();
+    			}
+		    }
 		}
 		return defaultDomainValue;
 	}
