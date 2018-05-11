@@ -228,6 +228,9 @@
   font-size: 20px;
   line-height: 1em;
 }
+.mod56 .edit-btn {/* hidden here, show css in success.soy */
+  display: none;
+}
 .mod56 .edit-btn, .mod56 .view-btn {
   float: right;
   min-width: 120px;

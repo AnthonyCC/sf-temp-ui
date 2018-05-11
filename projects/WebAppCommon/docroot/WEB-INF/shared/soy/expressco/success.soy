@@ -202,7 +202,7 @@
 			{param totalLabel: $receipt.totalLabel /}
 			{param total: $receipt.total /}
 			{param saveAmount: $receipt.saveAmount /}
-			{param orderModifiable: true /}/* go ahead and just always do it */
+			{param showModifyAndReceiptButton: ($soActivate)?false:true /}
 			{param deliveryPassTrialActivated: false /}/* always pass false here, trial done separately */
 		{/call}
 		{if $hasSettledOrder and $deliveryType == 'H'}<div class="raf-success"><a target="_blank" href="//refer.freshdirect.com/orderconfirmpage2525"><img src="/media/images/promotions/raf/RAF2525_orderconfirmpage_new.png" alt="Refer-A-Friend" /></a></div>{/if}
@@ -251,21 +251,26 @@
 * @param totalLabel Label of Subtotal
 * @param total Value of Subtotal
 * @--param? deliveryPassTrialActivated
-* @param orderModifiable
+* @param showModifyAndReceiptButton
 */
 {template .receiptBoxMod56 autoescape="false"}
 <div class="orderbox">
 	<div class="modify-order-before-label" style="display: none">Modify Order before:</div>
 	<div class="modify-order-before-value"></div>
 
-	{if $orderModifiable}
+	{if $showModifyAndReceiptButton}
+		{literal}
+			<style>/* also show edit buttons */
+				.mod56 .edit-btn { display: block; }
+			</style>
+		{/literal}
 		<div class="successmodifyorderbutton-cont">
 			<button id="modify_order_btn" class="cssbutton orange large modify-order-btn" data-gtm-source="order confirmation" onclick="location.href='/your_account/modify_order.jsp?orderId={$orderId}&amp;action=modify'" data-gtm-click data-gtm-click-error>Modify Order</button>
 		</div>
+		<div class="successreceiptbutton-cont">
+			<button class="cssbutton green transparent large view-receipt-btn" data-gtm-source="order confirmation" onclick="location.href='/your_account/order_details.jsp?orderId={$orderId}'">View Receipt</button>
+		</div>
 	{/if}
-	<div class="successreceiptbutton-cont">
-		<button class="cssbutton green transparent large view-receipt-btn" data-gtm-source="order confirmation" onclick="location.href='/your_account/order_details.jsp?orderId={$orderId}'">View Receipt</button>
-	</div>
 
 	<p class="estimated"><span class="totalLabel">{$totalLabel}</span>&nbsp;<span class="totalAmount">{$total}</p>
 

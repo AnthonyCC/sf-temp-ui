@@ -61,7 +61,7 @@
 				});
 
 
-				$jq('.csPhoneNumber:first').each(function(i,e) {
+				$jq('.csPhoneNumber').each(function(i,e) {
 					$jq(e).text( ($jq(e).text().match(/[0-9\-]{14}/)||[''])[0] );
 					$jq(e).parent().show();
 				});
@@ -82,11 +82,11 @@
 					},
 					delivery_info_edit_btn: {
 						SUCCESS : {'event': 'modify-click', 'eventCategory': 'modify', 'eventAction': 'enter modify mode', 'eventLabel': 'order confirmation modify edit delivery'},
-						'ERROR': {'event': 'modify-click','eventCategory': 'modify','eventAction': 'error','eventLabel': 'order confirmation modify edit delivery error'}
+						ERROR: {'event': 'modify-click','eventCategory': 'modify','eventAction': 'error','eventLabel': 'order confirmation modify edit delivery error'}
 					},
 					cart_details_edit_btn: {
 						SUCCESS : {'event': 'modify-click', 'eventCategory': 'modify', 'eventAction': 'enter modify mode', 'eventLabel': 'order confirmation modify edit cart'},
-						'ERROR': {'event': 'modify-click','eventCategory': 'modify','eventAction': 'error','eventLabel': 'order confirmation modify edit cart error'}
+						ERROR: {'event': 'modify-click','eventCategory': 'modify','eventAction': 'error','eventLabel': 'order confirmation modify edit cart error'}
 					}
 				};
 				$jq('.mod56 [data-gtm-click]').on('click', function(e) {
@@ -110,7 +110,7 @@
 				});
 				$jq('#cart_details_edit_btn').on('click', function(e) {
 					if ($jq(e.currentTarget).attr('data-gtm-click-error')===undefined) {
-						window.location = '/your_account/modify_order.jsp?orderId=${param['orderId']}&action=modify&successPage=%2Fexpressco%2Fcheckout.jsp%23checkoutcontentheader';
+						window.location = '/your_account/modify_order.jsp?orderId=${param['orderId']}&action=modify&successPage=%2Fexpressco%2Fview_cart.jsp%23cartcontent';
 					}
 				});
 			</script>
@@ -178,13 +178,19 @@
 		<% if (_ordNum != null) { %>
 			<fd:GetOrder id='order' saleId='<%=_ordNum%>'>
 				<script type="text/javascript">
-					<fd:CmShop9 order="<%=order%>"/>
-					<fd:CmOrder order="<%=order%>"/>
-					<fd:CmRegistration force="true"/>
-					<fd:CmConversionEvent eventId="became_a_customer"/>
-					<% if(_modifyOrderMode){ %>
-						<fd:CmConversionEvent order="<%=order%>" orderModified="true"/>
-					<% } %>
+					try {
+						<fd:CmShop9 order="<%=order%>"/>
+						<fd:CmOrder order="<%=order%>"/>
+						<fd:CmRegistration force="true"/>
+						<fd:CmConversionEvent eventId="became_a_customer"/>
+						<% if(_modifyOrderMode){ %>
+							<fd:CmConversionEvent order="<%=order%>" orderModified="true"/>
+						<% } %>
+					} catch (e) {
+						if (FreshDirect.utils.isDeveloper()) {
+							console.log(e);
+						}
+					}
 				</script>
 				<% 
 					isDp2018 = (FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && order.getOrderType().equals(EnumSaleType.SUBSCRIPTION));
@@ -227,7 +233,7 @@
 							</div>
 							
 							<div class="subsection delivery-info-payment-method">
-								<div class="delivery-info-payment-method-label">PAYMENT METHODS</div>
+								<div class="delivery-info-payment-method-label">PAYMENT METHOD</div>
 								<div data-drawer-default-content="payment">
 									<soy:render template="expressco.paymentmethodpreviewNew" data="${singlePageCheckoutSuccessPotato.payment}" />
 								</div>
