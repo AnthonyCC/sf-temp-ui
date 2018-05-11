@@ -117,7 +117,8 @@
   color: #fff;
 }
 
-.multisearch-input > ul.termlist > li > label {
+.multisearch-input > ul.termlist > li > label,
+.multisearch-input > ul.suggestions > li > label {
   display: inline-block;
   line-height: 21px;
   cursor: pointer;
