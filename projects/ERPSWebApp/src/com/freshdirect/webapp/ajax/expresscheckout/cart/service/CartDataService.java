@@ -261,7 +261,7 @@ public class CartDataService {
         Date cutoffTime = null;
         Date weekFromOrderDate = null;
         
-        if (null != loadedCart && !(loadedCart instanceof FDModifyCartModel)) {
+        if (null != loadedCart && !(loadedCart instanceof FDModifyCartModel) && !(mCart.isDlvPassStandAloneCheckoutAllowed() && mCart.containsDlvPassOnly())) {
         	//set the cutoff time so we can use it on receipt
         	if (loadedCart.getDeliveryReservation() != null) {
         		cutoffTime = loadedCart.getDeliveryReservation().getCutoffTime();
