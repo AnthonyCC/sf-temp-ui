@@ -300,8 +300,8 @@ public class DeliveryAddressService {
                 disableDeleteActionOnAddresses(addresses);
             }
             if (selectedDeliveryAddressId == null && !addresses.isEmpty()) {
-            	LOGGER.warn("ORDWRNGRT: During order , selected address is empty in cart for userId: "
-						+ user.getCustomerInfoModel().getId());
+            	LOGGER.warn("ORDWRNGRT: During order , selected address is empty in cart for userId: " 
+            					+ (user.getCustomerInfoModel() != null ? user.getCustomerInfoModel().getId() : user.getCookie()) );
 				// commented code to fix order in wrong route during deletion of
 				// address
 				/*
