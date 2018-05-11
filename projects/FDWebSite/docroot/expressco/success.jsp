@@ -192,9 +192,11 @@
 			</fd:GetOrder>
 		<% } %>
 		<% if (isDp2018) { %><%-- DP2018 redesign --%>
-	  		<div class="dpn-content">
-	        	<%@ include file="/includes/deliverypasssuccess.jsp" %>
-	        </div>
+      <div class="dpn-content">
+        <%@ include file="/includes/deliverypasssuccess.jsp" %>
+      </div>
+      <%-- we need this to report checkout success to GTM/GA --%>
+      <div style="display:none;" id="cartcontent" data-ec-linetemplate="expressco.successlines" data-drawer-disabled data-ec-request-uri="/api/expresscheckout/cartdata?orderId=${param['orderId']}"></div>
 		<% } else if (isMod56) { %><%-- MOD-56 redesign --%>
 			<div id='successpage' class="mod56"><%-- class to allow css override --%>
 				<div class="container">
