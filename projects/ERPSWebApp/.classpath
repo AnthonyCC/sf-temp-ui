@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="var" path="TOMCAT_HOME/lib/servlet-api.jar"/>
-	<classpathentry kind="var" path="TOMCAT_HOME/lib/jsp-api.jar"/>
-	<classpathentry kind="var" path="TOMCAT_HOME/lib/jasper-el.jar"/>
-	<classpathentry kind="var" path="TOMCAT_HOME/lib/jasper.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/FDClient.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/wlthint3client.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/poi-3.5-FINAL-20090928.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/httpclient-4.5.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/httpcore-4.4.1.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/httpmime-4.5.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/slf4j-api-1.7.13.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-web-4.0.1.RELEASE.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-webmvc-4.0.1.RELEASE.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-aop-4.0.1.RELEASE.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-beans-4.0.1.RELEASE.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-context-4.0.1.RELEASE.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-context-support-4.0.1.RELEASE.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-core-4.0.1.RELEASE.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/junit-4.10.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/org.apache.oltu.oauth2.authzserver-1.0.2.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/closure-compiler-v20131014.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/guice-3.0.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/guava-15.0.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/icu4j-4_8_1_1.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/javax.inject.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/guice-assistedinject-3.0.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/guice-multibindings-3.0.jar"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="var" path="TOMCAT_HOME/lib/servlet-api.jar"/>
+	<classpathentry exported="true" kind="var" path="TOMCAT_HOME/lib/jsp-api.jar"/>
+	<classpathentry exported="true" kind="var" path="TOMCAT_HOME/lib/jasper-el.jar"/>
+	<classpathentry exported="true" kind="var" path="TOMCAT_HOME/lib/jasper.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/FDClient.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/wlthint3client.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/poi-3.5-FINAL-20090928.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/httpclient-4.5.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/httpcore-4.4.1.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/httpmime-4.5.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/slf4j-api-1.7.13.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/spring-web-4.0.1.RELEASE.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/spring-webmvc-4.0.1.RELEASE.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/spring-aop-4.0.1.RELEASE.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/spring-beans-4.0.1.RELEASE.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/spring-context-4.0.1.RELEASE.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/spring-context-support-4.0.1.RELEASE.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/spring-core-4.0.1.RELEASE.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/junit-4.10.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/org.apache.oltu.oauth2.authzserver-1.0.2.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/closure-compiler-v20131014.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/guice-3.0.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/guava-15.0.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/icu4j-4_8_1_1.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/javax.inject.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/guice-assistedinject-3.0.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/guice-multibindings-3.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

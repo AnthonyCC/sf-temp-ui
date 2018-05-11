@@ -156,8 +156,6 @@ public interface FDUserI extends java.io.Serializable {
 
     public int getOrderCountForChefsTableEligibility() throws FDResourceException;
 
-    public String getOrderTotalForChefsTableEligibility() throws FDResourceException;
-
     public String getOrderCountRemainingForChefsTableEligibility() throws FDResourceException;
 
     public String getOrderTotalRemainingForChefsTableEligibility() throws FDResourceException;
@@ -784,4 +782,6 @@ public interface FDUserI extends java.io.Serializable {
 	public int getInformOrderModifyViewCount(EnumEStoreId eStore);
 	public int getInformOrderModifyViewCount(EnumEStoreId eStore, boolean increment);
 
+    public String getMultiSearchList();
+    public void setMultiSearchList(String searchTermList);
 }

@@ -31,7 +31,6 @@ import org.apache.log4j.Category;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumPaymentResponse;
 import com.freshdirect.customer.EnumPaymentType;
-import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpAddressVerificationException;
@@ -80,7 +79,6 @@ import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.util.NVL;
-import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -109,7 +107,6 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 	private final String NEW_AUTHORIZATION		= "new_authorization";
 	private final String NEW_AUTHORIZATION_FAILED_SETTLEMENT = "new_payment_for_failed_settlement";
 	private final String REDELIVERY_ACTION		= "redelivery";
-	private final String CHARGE_ORDER_ACTION	= "charge_order";
 	private final String AUTO_RENEW_AUTH	= "auto_renew_auth";
 	private final String PLACE_AUTO_RENEW_ORDER	= "place_auto_renew_order";
 	private static final String EWALLET_SESSION_ATTRIBUTE_NAME="EWALLET_CARD_TYPE";
@@ -189,9 +186,6 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 				setSuccessPage(successPage.toString());
 			}else if ( REDELIVERY_ACTION.equals(this.action)){
 				this.redeliverOrder(request, results);
-				actionPerformed = true;
-			} else if ( CHARGE_ORDER_ACTION.equalsIgnoreCase(this.action) ) {
-				this.chargeOrder(request, results);
 				actionPerformed = true;
 			} else if ( AUTO_RENEW_AUTH.equalsIgnoreCase(this.action) ) {
 				this.auto_renew_auth(request, results);
@@ -1056,76 +1050,6 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			results.addError(new ActionError("technical_difficulty", "We're currently experiencing technical difficulties. Please try again later."));
 		}
 
-	}
-
-	protected void chargeOrder(HttpServletRequest request, ActionResult results) throws JspException {
-		HttpSession session = request.getSession();
-		
-
-		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
-		if(!EnumTransactionSource.CUSTOMER_REP.equals(user.getApplication())) {
-			throw new JspException("This action can only be performed in CRM");
-		}
-		if (user.getLevel() < FDUserI.SIGNED_IN) {
-			throw new JspException("No customer was found for the requested action.");
-		}
-		//
-		// Select new payment and resubmit order
-		//
-		
-		String paymentId = NVL.apply(request.getParameter("payment_id"), "").trim();
-		boolean waiveFee = request.getParameter("waive") != null;
-		String additionalCharge = NVL.apply(request.getParameter("additional_charge"), "").trim();
-		
-		if("".equals(paymentId)){
-			results.addError(new ActionError("no_payment_selected", "Please select a payment option below."));
-		}
-		
-		
-		try {
-			
-			ErpPaymentMethodI paymentMethod = FDCustomerManager.getPaymentMethod(user.getIdentity(), paymentId);
-			if(paymentMethod == null) {
-				results.addError(new ActionError("no_payment_selected", "No payment method found for selected ID."));
-			}
-			
-			if ( results.isSuccess() ) {
-	        	CustomerRatingAdaptor cra = new CustomerRatingAdaptor(user.getFDCustomer().getProfile(),user.isCorporateUser(),user.getAdjustedValidOrderCount());
-	        	double addCharge = !waiveFee && !"".equals(additionalCharge) ? Double.parseDouble(additionalCharge) : 0;
-	        	FDCustomerManager.chargeOrder(AccountActivityUtil.getActionInfo(session), orderId, paymentMethod, true, cra, addCharge);
-	        	CrmSession.invalidateCachedOrder(session);
-
-			}
-		} catch (ErpFraudException ex) {
-			LOGGER.warn("Possible fraud occured", ex);
-			results.addError(new ActionError("order_status", "Possible fraud occured. "+ex.getFraudReason().getDescription()));
-
-		} catch (ErpAuthorizationException ex) {
-			LOGGER.warn("Authorization failed", ex);
-			results.addError(new ActionError("order_status", "Authorization failed."));
-	
-		} catch (FDPaymentInadequateException ex) {
-			LOGGER.error("Payment Inadequate to process the ReAuthorization", ex);
-			results.addError(new ActionError("payment_inadequate", SystemMessageList.MSG_PAYMENT_INADEQUATE));
-
-		} catch (ErpTransactionException ex) {
-			LOGGER.error("Current sale status incompatible with requested action", ex);
-			results.addError(new ActionError("order_status", "This current order status does not permit the requested action."));
-
-		} catch (FDResourceException ex) {
-			LOGGER.error("FDResourceException while attempting to perform reauthorization.", ex);
-			results.addError(new ActionError("technical_difficulty", "We're currently experiencing technical difficulties. Please try again later."));
-		}
-		 catch (ErpAddressVerificationException ex) {
-				LOGGER.error("FDResourceException while attempting to perform reauthorization.", ex);
-				
-				String message =ex.getMessage();
-				if(message!=null)
-				    message=message.replace("9999",user.getCustomerServiceContact());
-				LOGGER.debug("ex.getMessage() :"+message);
-				results.addError(new ActionError("technical_difficulty", message));
-			}
-		
 	}
 	private static FDReservation getFDReservation(String customerID, String addressID) {
 		Date expirationDT = new Date(System.currentTimeMillis() + 1000);

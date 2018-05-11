@@ -69,9 +69,7 @@ public class MailMessageListener extends MessageDrivenBeanSupport implements Mai
 			LOGGER.error("JMSException occured while reading command, throwing RuntimeException", ex);
 			throw new RuntimeException("JMSException occured while reading command: " + ex.getMessage());
 		}
-		LOGGER.info( "Recipient: " + mailTo
-				+ "\nSender: " + mailFrom
-				+ "\nTitle: " + mailTitle);
+		LOGGER.info( "Begin-Recipient: MailTo: " + mailTo + " Sender: " + mailFrom 	+ " Title: " + mailTitle);
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug( "Recipient: " + mailTo
 				+ "\nSender: " + mailFrom
@@ -87,7 +85,7 @@ public class MailMessageListener extends MessageDrivenBeanSupport implements Mai
 			mailBody = new XSLTransformer().transform(mailBodyXml, xslPath);
 		} catch (TransformerException ex) {
 			// silently consume it, no point in throwing it back to the queue
-			LOGGER.error("XSL transformation failed, consuming message", ex);
+			LOGGER.error("MAILPREPERROR: MailTo: " + mailTo + " Sender: " + mailFrom 	+ " Title: " + mailTitle + ":\n", ex);
 			return;
 		}
 
@@ -95,12 +93,12 @@ public class MailMessageListener extends MessageDrivenBeanSupport implements Mai
 			ErpMailSender mailer = new ErpMailSender();
 			mailer.sendMail(mailFrom, mailTo, mailCc, mailBcc, mailTitle, mailBody, isHtml, personalLabel);
 		} catch (MessagingException ex) {
-			LOGGER.error("Unable to send message, throwing RuntimeException", ex);
+			LOGGER.error("MAILSENDERROR: MailTo: " + mailTo + " Sender: " + mailFrom 	+ " Title: " + mailTitle + ":\n", ex);
 			throw new RuntimeException("Unable to send message: " + ex.getMessage());
 		}
 
-		LOGGER.debug("message sent");
-		}else if(msg instanceof ObjectMessage){
+		LOGGER.info( "End-Recipient: MailTo: " + mailTo + " Sender: " + mailFrom 	+ " Title: " + mailTitle);
+		} else if(msg instanceof ObjectMessage){
 			boolean gc = false;
 			boolean iphone = false;
 			try {
@@ -126,7 +124,7 @@ public class MailMessageListener extends MessageDrivenBeanSupport implements Mai
 				mailBody = processFtl(parameters, gc, iphone);
 				ErpMailSender mailer = new ErpMailSender();
 				mailer.sendMail(mailFrom, mailTo, mailCc, mailTitle, mailBody, isHtml, personalLabel);
-				LOGGER.debug("message sent");
+				LOGGER.info( "EndObjectMessage-Recipient: MailTo: " + mailTo + " Sender: " + mailFrom 	+ " Title: " + mailTitle);
 			} catch (JMSException e) {
 				LOGGER.error("JMSException trying to send email", e);
 			} catch(TemplateException te){

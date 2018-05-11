@@ -303,6 +303,10 @@ public class ContentFactory {
                 productModel = category.getProductByName(prodName);
             }
         }
+        else if (prodName != null) {
+            productModel = (ProductModel) getContentNode(ContentType.Product, prodName);
+        }
+
         return productModel;
     }
 

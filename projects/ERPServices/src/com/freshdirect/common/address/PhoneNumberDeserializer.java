@@ -20,9 +20,8 @@ public class PhoneNumberDeserializer extends JsonDeserializer<PhoneNumber> {
 		JsonNode phoneNode = root.get("phone");
 		JsonNode extensionNode = root.get("extension");
 		JsonNode typeNode = root.get("type");
-		return new PhoneNumber(phoneNode != null && !phoneNode.isNull() ? phoneNode.asText() : "",
-				extensionNode != null && !extensionNode.isNull() ? extensionNode.asText() : "",
-				typeNode != null && !typeNode.isNull()? typeNode.asText() : "");
+		return new PhoneNumber(phoneNode != null ? phoneNode.asText() : "",
+				extensionNode != null ? extensionNode.asText() : "", typeNode != null ? typeNode.asText() : "");
 
 	}
 

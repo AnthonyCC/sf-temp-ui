@@ -17,6 +17,7 @@ import java.util.Map;
 import org.apache.commons.lang.enums.ValuedEnum;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
@@ -80,7 +81,8 @@ public class EnumCardType extends ValuedEnum {
 		return (EnumCardType) getEnum(EnumCardType.class, code);
 	}
 
-	public static EnumCardType getEnum(int id) {
+	@JsonCreator
+	public static EnumCardType getEnum(@JsonProperty("value") int id) {
 		return (EnumCardType) getEnum(EnumCardType.class, id);
 	}
 

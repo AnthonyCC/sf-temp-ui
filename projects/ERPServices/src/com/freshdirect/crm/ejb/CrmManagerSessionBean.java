@@ -74,7 +74,11 @@ import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 
-
+/**
+ *@deprecated This class methods are moved to backoffice project.
+ * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+ */
+@Deprecated
 public class CrmManagerSessionBean extends SessionBeanSupport {
 	private static final long serialVersionUID = 6027777576711960489L;
 
@@ -87,6 +91,10 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         return "com.freshdirect.crm.ejb.CrmManagerHome";
     }
     
+    /**
+     *@deprecated This method is moved to backoffice project.
+     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+     */
     public PrimaryKey createAgent(CrmAgentModel agent, PrimaryKey userPk) throws FDResourceException, CrmAuthorizationException, ErpDuplicateUserIdException {
         try{
             CrmAgentHome home = this.getCrmAgentHome();
@@ -109,6 +117,10 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         }*/
     }
     
+    /**
+     *@deprecated This method is moved to backoffice project.
+     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+     */
     public void updateAgent(CrmAgentModel agent, PrimaryKey userPk) throws CrmAuthorizationException, FDResourceException {
         try{
             CrmAgentHome home = this.getCrmAgentHome();
@@ -126,6 +138,10 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         }
     }
     
+    /**
+     *@deprecated This method is moved to backoffice project.
+     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+     */
     public CrmAgentModel getAgentByPk(String agentPk) throws FDResourceException, FinderException{
         try{
             CrmAgentEB agentEB = this.getCrmAgentHome().findByPrimaryKey(new PrimaryKey(agentPk));
@@ -135,6 +151,10 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         }
     }
     
+    /**
+     *@deprecated This method is moved to backoffice project.
+     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+     */
     public CrmAgentList getAllAgents() throws FDResourceException {
         try{
             Collection<CrmAgentEB> agentEB = this.getCrmAgentHome().findAll();
@@ -150,6 +170,10 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         }
     }
     
+    /**
+     *@deprecated This method is moved to backoffice project.
+     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+     */
     public List<CrmCaseModel> findCases(CrmCaseTemplate template) throws FDResourceException {
         Connection conn = null;
         try{
@@ -167,6 +191,10 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         }
     }
     
+    /**
+     *@deprecated This method is moved to backoffice project.
+     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+     */
     public List<CrmQueueInfo> getQueueOverview() throws FDResourceException {
         Connection conn = null;
         try {
@@ -184,6 +212,10 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         }
     }
     
+    /**
+     *@deprecated This method is moved to backoffice project.
+     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+     */
     public List<CrmAgentInfo> getCSROverview() throws FDResourceException {
         Connection conn = null;
         try {
@@ -201,6 +233,10 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         }
     }
     
+    /**
+     *@deprecated This method is moved to backoffice project.
+     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+     */
     public CrmCaseModel getCaseByPk(String casePk) throws FDResourceException {
         try{
             CrmCaseEB caseEB = this.getCrmCaseHome().findByPrimaryKey(new PrimaryKey(casePk));
@@ -212,6 +248,10 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         }
     }
     
+    /**
+     *@deprecated This method is moved to backoffice project.
+     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+     */
     public CrmAgentModel loginAgent(String userId, String password) throws FDResourceException, CrmAuthenticationException {
         try{
             CrmAgentEB agentEB = this.getCrmAgentHome().findByUserIdAndPassword(userId, password);
@@ -228,6 +268,10 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         }
     }
     
+    /**
+     *@deprecated This method is moved to backoffice project.
+     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+     */
     public PrimaryKey createCase(CrmCaseModel caseModel) throws FDResourceException,CrmAuthorizationException {
         try{
         	 CrmAgentHome home = this.getCrmAgentHome();
@@ -247,6 +291,10 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         }
     }
     
+    /**
+     *@deprecated This method is moved to backoffice project.
+     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+     */
     public PrimaryKey createSystemCase(CrmSystemCaseInfo caseInfo) throws FDResourceException {
         try{
         	CrmCaseModel caseModel = this.getSystemCase(caseInfo);
@@ -258,6 +306,10 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         }
     }
     
+    /**
+     *@deprecated This method is moved to backoffice project.
+     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+     */
     public PrimaryKey createSystemCaseInSingleTx(CrmSystemCaseInfo caseInfo) throws FDResourceException {
         try {
             CrmCaseModel caseModel = this.getSystemCase(caseInfo);
@@ -269,6 +321,10 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         }
     }
     
+    /**
+     *@deprecated This method is moved to backoffice project.
+     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+     */
 	private CrmAgentModel getSystemUser() throws FDResourceException {
 		try {
 			if (this.systemUser == null) {
@@ -281,6 +337,10 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 	
+	  /**
+     *@deprecated This method is moved to backoffice project.
+     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+     */
 	private CrmCaseModel getSystemCase(CrmSystemCaseInfo caseInfo) throws FDResourceException {
 		CrmCaseModel cm = new CrmCaseModel();
 		
@@ -308,6 +368,10 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 		return cm;
 	}
     
+	  /**
+     *@deprecated This method is moved to backoffice project.
+     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+     */
     public void updateCase(CrmCaseInfo caseInfo, CrmCaseAction caseAction, PrimaryKey agentPk) throws FDResourceException, CrmAuthorizationException {
         try {
             CrmCaseEB caseEB = getCrmCaseHome().findByPrimaryKey(caseInfo.getPK());
@@ -387,6 +451,10 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         }
     }
     
+    /**
+     *@deprecated This method is moved to backoffice project.
+     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+     */
     private CrmCaseOperation actionAllowed(String agentRole, String caseSubject, String caseState, String actionType) throws CrmAuthorizationException, FDResourceException {
     	Connection conn = null;
         try {
@@ -413,6 +481,10 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
     }
     
     
+    /**
+     *@deprecated This method is moved to backoffice project.
+     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+     */
     public boolean lockCase(PrimaryKey agentPK, PrimaryKey casePK) throws FDResourceException {
 		Connection conn = null;
 		try {
@@ -436,6 +508,10 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 		}
     }
     
+    /**
+     *@deprecated This method is moved to backoffice project.
+     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+     */
     public void unlockCase(PrimaryKey casePK) throws FDResourceException {
 		Connection conn = null;
 		try {
@@ -454,6 +530,10 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 		}
     }
     
+    /**
+     *@deprecated This method is moved to backoffice project.
+     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+     */
     public boolean closeAutoCase(PrimaryKey casePK) throws FDResourceException {
 		Connection conn = null;
 		try {
@@ -471,7 +551,11 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 			}
 		}
     }
-
+    
+    /**
+     *@deprecated This method is moved to backoffice project.
+     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+     */
     public List<CrmCaseOperation> getOperations() throws FDResourceException {
         Connection conn = null;
         try {
@@ -489,6 +573,10 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         }
     }
     
+    /**
+     *@deprecated This method is moved to backoffice project.
+     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+     */
 	public void downloadCases(PrimaryKey agentPK, String queue, String subject, int numberToDownload) throws FDResourceException {
 		Connection conn = null;
 		try{
@@ -509,6 +597,10 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 	
+	/**
+     *@deprecated This method is moved to backoffice project.
+     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+     */
 	public CrmStatus getSessionStatus(PrimaryKey agentPK) throws FDResourceException{
 		Connection conn = null;
 		try{
@@ -530,6 +622,10 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 	
+	/**
+     *@deprecated This method is moved to backoffice project.
+     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+     */
 	public void saveSessionStatus(CrmStatus status) throws FDResourceException{
 		Connection conn = null;
 		try{
@@ -554,6 +650,10 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
+	/**
+     *@deprecated This method is moved to backoffice project.
+     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+     */
 	public CrmCustomerHeaderInfo getCustomerHeaderInfo(String customerId) throws FDResourceException {
 		Connection conn = null;
 		try{
@@ -571,7 +671,11 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
-    
+	
+	/**
+     *@deprecated This method is moved to backoffice project.
+     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+     */
     private CrmAgentHome getCrmAgentHome() {
         try {
             return (CrmAgentHome) LOCATOR.getRemoteHome("java:comp/env/ejb/CrmAgent");
@@ -580,6 +684,10 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         }
     }
     
+    /**
+     *@deprecated This method is moved to backoffice project.
+     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+     */
     private CrmCaseHome getCrmCaseHome() {
         try {
             return (CrmCaseHome) LOCATOR.getRemoteHome("java:comp/env/ejb/CrmCase");
@@ -588,6 +696,10 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         }
     }
     
+    /**
+     *@deprecated This method is moved to backoffice project.
+     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+     */
 	private ErpCustomerManagerHome getErpCustomerManagerHome() {
 		try {
 			return (ErpCustomerManagerHome) LOCATOR.getRemoteHome("freshdirect.erp.CustomerManager");
@@ -596,6 +708,10 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 	
+	/**
+     *@deprecated This method is moved to backoffice project.
+     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+     */
     private DlvPassManagerHome getDlvPassManagerHome() {
         try {
             return (DlvPassManagerHome) LOCATOR.getRemoteHome("java:comp/env/ejb/DlvPassManager");
@@ -603,6 +719,11 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
             throw new EJBException(e);
         }
     }
+    
+    /**
+     *@deprecated This method is moved to backoffice project.
+     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+     */
 	private ErpCustomerHome getErpCustomerHome() {
 		try {
 			return (ErpCustomerHome) LOCATOR.getRemoteHome("freshdirect.erp.Customer");
@@ -611,7 +732,10 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 	
-    
+	/**
+     *@deprecated This method is moved to backoffice project.
+     * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+     */
     public PrimaryKey  createLateIssue(CrmLateIssueModel lateIssue) throws FDResourceException {
 		Connection conn = null;
 		try {

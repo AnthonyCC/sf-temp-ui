@@ -45,18 +45,16 @@ public class ShortSubstituteOrdersServlet extends HttpServlet {
 	protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws HttpErrorResponse {
 		try {
 			
-			
+			LOG.debug("Inside ShortSubstituteOrdersServlet - processRequest() Start");
 			final ActionDataRequest actionDataRequest = BaseJsonServlet.parseRequestData(request, ActionDataRequest.class);
-			LOG.info("Inside ShortSubstituteOrdersServlet - request for order size: "+ actionDataRequest.getOrderList()!=null?actionDataRequest.getOrderList():"empty orderlist");
-			ShortSubstituteResponse shortSubstituteResponsdata =FDCustomerManager.getShortSubstituteOrders(actionDataRequest.getOrderList());
-			writeResponseData(response, shortSubstituteResponsdata);
-			LOG.info("Inside ShortSubstituteOrdersServlet - response for order size "+shortSubstituteResponsdata.getShortSubstituteData().size());
+			ShortSubstituteResponse shotSubstituteResponsdata =FDCustomerManager.getShortSubstituteOrders(actionDataRequest.getOrderList());
+			writeResponseData(response, shotSubstituteResponsdata);
+			LOG.debug("Inside ShortSubstituteOrdersServlet - processRequest() End"+actionDataRequest);
         } catch (FDResourceException exception) {
-        	LOG.info("Failed to in Exception",exception); 
         	returnHttpError(500, exception.getMessage(), exception);
 		}  catch (Exception e) {
-			LOG.info("Failed to in Exception",e); 
-			returnHttpError(500,"Failed to get data for the request");
+			LOG.error("Failed to in Exception ", e);
+			returnHttpError(500,"Failed to get data for the request  .");
 		}
 	}
 	public final static <T> T parseRequestData( HttpServletRequest request, Class<T> typeClass ) throws HttpErrorResponse {

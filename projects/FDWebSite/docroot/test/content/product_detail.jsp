@@ -14,9 +14,9 @@
 <fd:CheckDraftContextTag/>
 
 <%-- get all the product data needed for display --%>
-<potato:product name="productPotato" extraName="productExtraPotato" productId='${param.productId}' categoryId='${param.catId}' variantId='${param.variantId}' grpId='${param.grpId}' version='${param.version}' />
-<potato:browse name="browsePotato" pdp="true" nodeId='${param.catId}'/>
-<fd:ProductGroup id='productNode' categoryId='${param.catId}' productId='${param.productId}' >
+<potato:product name="productPotato" extraName="productExtraPotato" productId='<%=request.getParameter("productId")%>' categoryId='<%=request.getParameter("catId")%>' variantId='<%=request.getParameter("variantId")%>' grpId='<%=request.getParameter("grpId")%>' version='<%=request.getParameter("version")%>' />
+<potato:browse name="browsePotato" pdp="true" nodeId='<%=request.getParameter("catId")%>'/>
+<fd:ProductGroup id='productNode' categoryId='<%=request.getParameter("catId")%>' productId='<%=request.getParameter("productId")%>' >
 
 <%
 boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));

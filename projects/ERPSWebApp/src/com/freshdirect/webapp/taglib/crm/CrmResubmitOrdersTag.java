@@ -16,16 +16,10 @@ import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.fdstore.CallCenterServices;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
-import com.freshdirect.fdstore.customer.FDCustomerFactory;
-import com.freshdirect.fdstore.customer.FDCustomerManager;
-import com.freshdirect.fdstore.customer.FDCustomerModel;
-import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.customer.FDOrderI;
-import com.freshdirect.fdstore.customer.FDUser;
-import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.webapp.crm.CrmMasqueradeUtil;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
 
 public class CrmResubmitOrdersTag extends AbstractControllerTag {
@@ -44,24 +38,7 @@ public class CrmResubmitOrdersTag extends AbstractControllerTag {
 			actionResult.addError(new ActionError("submitted", "There were "+saleIds.length+" orders marked for resubmittal."));
 			for (idIdx = 0; idIdx < saleIds.length; idIdx++) {
 				try {
-					FDOrderI order = FDCustomerManager.getOrderForCRM(saleIds[idIdx]);
-					String erpCustomerId = order.getCustomerId();
-					FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomerFromErpId(erpCustomerId);
-					FDIdentity fdIdentity = new FDIdentity(erpCustomerId, fdCustomer.getPK().getId());
-					
-					FDUser user = FDCustomerManager.recognize(fdIdentity);
-					//THis change was made as part of PERF-22.
-					//BEGIN
-					/*
-					 * Actually you don't have to make call to user.getAdjustedValidOrderCount() which will
-					 * actually invoke FDCUstomerManager.getOrderHistoryInfo() to load all the order history
-					 * info which is unnecessary and expensive. So replaced it with FDCustomerManager.getValidOrderCount().
-					 * No need of adjusted valid order count here as it always going to be valid order count here.
-					 */
-					//CustomerRatingAdaptor cra = new CustomerRatingAdaptor(fdCustomer.getProfile(),user.isCorporateUser(),user.getAdjustedValidOrderCount());
-					CustomerRatingAdaptor cra = new CustomerRatingAdaptor(fdCustomer.getProfile(),user.isCorporateUser(),FDCustomerManager.getValidOrderCount(fdIdentity));
-					//END
-					CallCenterServices.resubmitOrder(saleIds[idIdx],cra,order.getOrderType());
+					CrmMasqueradeUtil.resubmitOrder(saleIds[idIdx]);
 					actionResult.addError(new ActionError("submitted_"+idIdx, "Order id: "+saleIds[idIdx]+" was resubmitted."));
 				} catch (FDResourceException ex) {
 					LOGGER.warn("Caught FDResoureException in CrmResubmitOrdersTag.performAction() ",ex);

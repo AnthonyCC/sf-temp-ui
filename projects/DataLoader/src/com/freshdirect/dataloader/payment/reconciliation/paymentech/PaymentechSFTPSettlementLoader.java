@@ -35,7 +35,7 @@ import com.freshdirect.sap.ejb.SapException;
 
 public class PaymentechSFTPSettlementLoader {
 	
-	private static final Category LOGGER = LoggerFactory.getInstance(PaymentechSettlementLoader.class);
+	private static final Category LOGGER = LoggerFactory.getInstance(PaymentechSFTPSettlementLoader.class);
 	private static final SimpleDateFormat SF = new SimpleDateFormat("yyyy_MM_dd_HH_mm");
 	// donot remove spaces as these message strings are padded with spaces to 96
 	//										            1         2         3         4         5         6         7         8         9

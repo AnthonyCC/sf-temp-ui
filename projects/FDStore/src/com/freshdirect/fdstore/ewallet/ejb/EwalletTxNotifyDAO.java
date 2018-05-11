@@ -272,7 +272,7 @@ public class EwalletTxNotifyDAO {
 				pbItem.setSalesActionId(salesActionId);
 				pbItem.setOrderId(nonGALTrxnsRS.getString("order_id"));
 				pbItem.setTransactionId(nonGALTrxnsRS.getString("transaction_id"));
-				pbItem.setTransactionStatus(getTrxnStatus(nonGALTrxnsRS.getString("status")));
+				pbItem.setTransactionStatusValue(getTrxnStatus(nonGALTrxnsRS.getString("status")));
 				nonGALTrxnMap.put(salesActionId, pbItem);
 			}
 		}
@@ -459,13 +459,12 @@ public class EwalletTxNotifyDAO {
 		pbItem.setExpressCheckoutIndicator(false);
 	}
 	
-	private boolean getTrxnStatus(String orderStatus) {
-		boolean success = true;
+	private int getTrxnStatus(String orderStatus) {
 		if (orderStatus.equalsIgnoreCase(EnumSaleStatus.AUTHORIZATION_FAILED.getStatusCode()) ||
 				orderStatus.equalsIgnoreCase(EnumSaleStatus.SETTLEMENT_FAILED.getStatusCode())) {
-			return !success;
+			return 0;
 		} else if (orderStatus.equalsIgnoreCase(EnumSaleStatus.SETTLED.getStatusCode())) {
-			return success;
+			return 1;
 		} else {
 			throw new AssertionError("Status of TxNofiy in DB is incorrect " + orderStatus);
 		}

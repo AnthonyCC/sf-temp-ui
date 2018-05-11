@@ -14,6 +14,12 @@ public class SkuLimitStrategy implements LineItemStrategyI {
 	}
 
 	
+	public SkuLimitStrategy() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+
 	public SkuLimitStrategy(int skuLimit) { 
 		this.skuLimit=skuLimit;
 	}
@@ -32,6 +38,16 @@ public class SkuLimitStrategy implements LineItemStrategyI {
 	@Override
 	public boolean isStoreRequired() {
 		return false;
+	}
+
+
+	public int getSkuLimit() {
+		return skuLimit;
+	}
+
+
+	public void setSkuLimit(int skuLimit) {
+		this.skuLimit = skuLimit;
 	}
 }
 

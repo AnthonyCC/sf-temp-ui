@@ -112,6 +112,8 @@ public class FDPromotionNewModel extends ModelSupport {
 	private String DcpdMinSubtotal;
 	private String sapConditionType;
 	private String rafPromoCode;
+	private double capacityUtilization;
+	private String eStoreId;
 
 	private int publishes = 0;
 	
@@ -1302,6 +1304,22 @@ public class FDPromotionNewModel extends ModelSupport {
 	 */
 	public void setSapConditionType(String sapConditionType) {
 		this.sapConditionType = sapConditionType;
+	}
+
+	public double getCapacityUtilization() {
+		return capacityUtilization;
+	}
+
+	public void setCapacityUtilization(double capacityUtilization) {
+		this.capacityUtilization = capacityUtilization;
+	}
+
+	public String geteStoreId() {
+		return eStoreId;
+	}
+
+	public void seteStoreId(String eStoreId) {
+		this.eStoreId = eStoreId;
 	}
 	
 	

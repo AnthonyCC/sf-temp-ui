@@ -18,6 +18,17 @@ var FreshDirect = FreshDirect || {};
     };
   }
 
+  // back button for multi-search results
+  function msBack() {
+    var tabcontent = $('.search-input .tabcontent'),
+        msback = tabcontent.find('.msback');
+
+    if (!msback.length && document.referrer.indexOf('multisearch') > -1) {
+      msback = $('<div class="msback"><a href="'+document.referrer+'" class="cssbutton back white icon-arrow-left2-before">Back</a></div>');
+      tabcontent.append(msback);
+    }
+  }
+
   function pauseAllTransactionalPopupsTillContentChange(){
     fd.common.transactionalPopup && fd.common.transactionalPopup.close();
     $('.browseContent').addClass('no-transactional');
@@ -112,6 +123,7 @@ var FreshDirect = FreshDirect || {};
   }
 
   function reload(){
+    msBack();
   }
 
   if (window.history && window.history.pushState) {

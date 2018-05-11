@@ -2987,7 +2987,7 @@
 			<zipfileset src="${thirdparty.home}/commons-lang-2.3.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/commons-logging-1.1.1.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/commons-collections-3.1.jar" excludes="META-INF/*"/>
-			<zipfileset src="${thirdparty.home}/commons-httpclient-2.0.2.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/commons-httpclient-3.1.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/commons-net-1.0.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/logistics-data-0.0.1-SNAPSHOT.jar" excludes="META-INF/*"/>
 

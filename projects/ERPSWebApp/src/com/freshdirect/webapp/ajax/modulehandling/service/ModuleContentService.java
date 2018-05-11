@@ -38,7 +38,6 @@ import com.freshdirect.webapp.ajax.filtering.InvalidFilteringArgumentException;
 import com.freshdirect.webapp.ajax.filtering.NavigationUtil;
 import com.freshdirect.webapp.ajax.modulehandling.data.IconData;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
-import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.util.MediaUtils;
 import com.freshdirect.webapp.util.ProductRecommenderUtil;
 
@@ -59,7 +58,7 @@ public class ModuleContentService {
     public List<ProductData> generateBrowseProductData(CmsFilteringNavigator nav, FDUserI user) throws FDResourceException, InvalidFilteringArgumentException, FDNotFoundException {
 
         List<ProductData> products = new ArrayList<ProductData>();
-        final CmsFilteringFlowResult result = CmsFilteringFlow.getInstance().doFlow(nav, (FDSessionUser) user);
+        final CmsFilteringFlowResult result = CmsFilteringFlow.getInstance().doFlow(nav, user);
 
         SectionDataCointainer sectionDataContainer = result.getBrowseDataPrototype().getSections();
         List<SectionData> sections = sectionDataContainer.getSections();
@@ -69,10 +68,9 @@ public class ModuleContentService {
         return products;
     }
 
-    public List<ProductData> limitProductList(List<ProductData> products) {
-        int homepageRedesignProductLimitMax = FDStoreProperties.getHomepageRedesignProductLimitMax();
-        if (products.size() > homepageRedesignProductLimitMax) {
-            products = products.subList(0, homepageRedesignProductLimitMax);
+    public List<ProductData> limitProductList(List<ProductData> products, int maxLimit) {
+        if (products.size() > maxLimit) {
+            products = products.subList(0, maxLimit);
         }
         return products;
     }
@@ -114,7 +112,7 @@ public class ModuleContentService {
             nav.setAll(true);
             nav.setActivePage(0);
 
-            final CmsFilteringFlowResult result = CmsFilteringFlow.getInstance().doFlow(nav, (FDSessionUser) user);
+            final CmsFilteringFlowResult result = CmsFilteringFlow.getInstance().doFlow(nav, user);
             sectionDataContainer = result.getBrowseDataPrototype().getSections();
         }
 

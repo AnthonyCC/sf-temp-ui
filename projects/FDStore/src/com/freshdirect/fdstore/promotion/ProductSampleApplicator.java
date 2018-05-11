@@ -10,14 +10,19 @@ public class ProductSampleApplicator implements PromotionApplicatorI {
 	
     private static final long serialVersionUID = -4228761928725008569L;
 
-	private final ProductReference sampleProduct;
-	private final double minSubtotal;
+	private ProductReference sampleProduct;
+	private double minSubtotal;
 	private DlvZoneStrategy zoneStrategy;
 	private CartStrategy cartStrategy;
 	
 	public ProductSampleApplicator(ProductReference sampleProduct, double minSubtotal){
 		this.sampleProduct = sampleProduct;
 		this.minSubtotal = minSubtotal;
+	}
+
+	public ProductSampleApplicator() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -45,7 +50,7 @@ public class ProductSampleApplicator implements PromotionApplicatorI {
 	}
 
 	@Override
-	public void setZoneStrategy(DlvZoneStrategy zoneStrategy) {
+	public void setDlvZoneStrategy(DlvZoneStrategy zoneStrategy) {
 		this.zoneStrategy = zoneStrategy;		
 	}
 
@@ -70,6 +75,22 @@ public class ProductSampleApplicator implements PromotionApplicatorI {
 	@Override
 	public CartStrategy getCartStrategy() {
 		return this.cartStrategy;
+	}
+
+	public double getMinSubtotal() {
+		return minSubtotal;
+	}
+
+	public void setMinSubtotal(double minSubtotal) {
+		this.minSubtotal = minSubtotal;
+	}
+
+	public DlvZoneStrategy getZoneStrategy() {
+		return zoneStrategy;
+	}
+
+	public void setSampleProduct(ProductReference sampleProduct) {
+		this.sampleProduct = sampleProduct;
 	}
 
 }

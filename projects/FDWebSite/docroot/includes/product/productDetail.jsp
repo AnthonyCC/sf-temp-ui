@@ -22,9 +22,9 @@
 
 <fd:CheckLoginStatus id="user" guestAllowed='true' recognizedAllowed='true' />
 
-<potato:merchant productId='${param.productId}' categoryId='${param.catId}' upSellName="evenBetter" crossSellName="xsell"/>
-<potato:images images="imagePotato" productId='${param.productId}' categoryId='${param.catId}'/>
-<potato:annotations annotations="annotations" productId='${param.productId}' categoryId='${param.catId}'/>
+<potato:merchant productId='<%=request.getParameter("productId")%>' categoryId='<%=request.getParameter("categoryId")%>' upSellName="evenBetter" crossSellName="xsell"/>
+<potato:images images="imagePotato" productId='<%=request.getParameter("productId")%>' categoryId='<%=request.getParameter("catId")%>'/>
+<potato:annotations annotations="annotations" productId='<%=request.getParameter("productId")%>' categoryId='<%=request.getParameter("catId")%>'/>
 
 <%
 	ProductModel productNode = ContentFactory.getInstance().getProduct(request.getParameter("catId"), request.getParameter("productId"));

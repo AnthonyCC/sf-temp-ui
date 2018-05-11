@@ -2234,6 +2234,7 @@ public final class ContentTypes {
         public static final Attribute sourceNode = linkOneOf(Brand, Category, Department).toName("sourceNode")
             .build();
         public static final Attribute randomizeProductOrder = booleanAttribute("randomizeProductOrder").build();
+        public static final Attribute productMaxLimit = stringEnum("productMaxLimit").withValues("12", "20").build();
     }
 
     public static final class Image {

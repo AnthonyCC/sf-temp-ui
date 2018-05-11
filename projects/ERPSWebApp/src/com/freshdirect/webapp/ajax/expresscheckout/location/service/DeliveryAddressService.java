@@ -300,11 +300,17 @@ public class DeliveryAddressService {
                 disableDeleteActionOnAddresses(addresses);
             }
             if (selectedDeliveryAddressId == null && !addresses.isEmpty()) {
-                addressSelectionErrors.addAll(selectDeliveryAddressMethod(addresses.get(0).getId(), "", "selectDeliveryAddressMethod", session, user));
-                if (addressSelectionErrors.isEmpty()) {
-                    addresses.get(0).setSelected(true);
-                }
-            }
+            	LOGGER.warn("ORDWRNGRT: During order , selected address is empty in cart for userId: " 
+            					+ (user.getCustomerInfoModel() != null ? user.getCustomerInfoModel().getId() : user.getCookie()) );
+				// commented code to fix order in wrong route during deletion of
+				// address
+				/*
+				 * addressSelectionErrors.addAll(selectDeliveryAddressMethod(
+				 * addresses.get(0).getId(), "", "selectDeliveryAddressMethod",
+				 * session, user)); if (addressSelectionErrors.isEmpty()) {
+				 * addresses.get(0).setSelected(true); }
+				 */
+            	}
 
             if (user.isPickupUser()) {
                 final ErpCustomerInfoModel customerInfoModel = null == customerInfo ? FDCustomerFactory.getErpCustomerInfo(user.getIdentity()): customerInfo;

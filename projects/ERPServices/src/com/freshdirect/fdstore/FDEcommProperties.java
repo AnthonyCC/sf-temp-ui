@@ -77,19 +77,21 @@ public class FDEcommProperties {
 	public final static String RestrictedPaymentMethodSB = "fraud.ejb.RestrictedPaymentMethodSB";
 	public static final String ErpNutritionSB = "nutrition.ejb.ErpNutritionSB";
 	public static final String ErpComplaintManagerSB = "customer.ejb.ErpComplaintManagerSB";
-	public static final String EwalletNotifyStatusSB = "ewallet.ejb.EwalletNotifyStatusSB";
 	public static final String DlvPassManagerSB = "deliverypass.ejb.DlvPassManagerSB";
 	public static final String SmartStoreServiceConfigurationSB = "smartstore.ejb.SmartStoreServiceConfigurationSB";
 	public static final String PaymentGatewaySB ="payment.ejb.PaymentGatewaySB";
 	public static final String FDListManagerSB = "fdstore.lists.ejb.FDListManagerSB";
-	public static final String EwalletServiceSB = "ewallet.ejb.EwalletServiceSB";
+	public static final String PayPalServiceSB = "ewallet.ejb.PayPalServiceSB";
+	public static final String MasterpassServiceSB = "ewallet.ejb.MasterpassServiceSB";
 	public static final String CoremetricsCdfServiceSB = "coremetrics.service.CoremetricsCdfServiceSB";
 	public static final String CrmManagerSB = "crm.ejb.CrmManagerSB";
 	public final static  String FDPromotionManagerNewSB = "fdstore.ejb.FDPromotionNewManagerSB";//story SF17-88
 	public final static  String FDSFGatewayStatsLogging = "fdstore.promotion.FDSFGatewayStatsLogging";//introduced with story SF17-88
 	public static final String CallCenterManagerSB = "com.freshdirect.fdstore.customer.CallCenterManagerSB"; 
 	public static final String PaymentSB = "com.freshdirect.payment.PaymentSB";
+	public static final String PaymentManagerSB = "com.freshdirect.payment.PaymentManagerSB";
 	public static final String PaypalReconciliationSB = "payment.gateway.ewallet.impl.PaypalReconciliationSB";
+	public static final String SitemapSB = "fdstore.sitemap.SitemapSB";
 	
 	public static final String ProductFeedSB = "com.freshdirect.fdstore.content.productfeed.ProductFeedSB";
 	public static final String TEmailInfoSB = "com.freshdirect.fdstore.temails";
@@ -164,13 +166,14 @@ public class FDEcommProperties {
         defaults.put(SmartStoreServiceConfigurationSB, FALSE);
         defaults.put(PaymentGatewaySB, FALSE);
         defaults.put(FDListManagerSB, FALSE);
-        defaults.put(EwalletNotifyStatusSB, FALSE);
-        defaults.put(EwalletServiceSB, FALSE);
+        defaults.put(PayPalServiceSB, FALSE);
+        defaults.put(MasterpassServiceSB, FALSE);
         defaults.put(CoremetricsCdfServiceSB, FALSE);
         defaults.put(CrmManagerSB, FALSE);
         defaults.put(FDPromotionManagerNewSB, FALSE);
         defaults.put(CallCenterManagerSB, FALSE);
         defaults.put(PaymentSB, FALSE);
+        defaults.put(PaymentManagerSB, FALSE);
         defaults.put(TEmailInfoSB, FALSE);
         defaults.put(ProfileCreatorSB, FALSE);
         defaults.put(FDStandingOrderSB, FALSE);

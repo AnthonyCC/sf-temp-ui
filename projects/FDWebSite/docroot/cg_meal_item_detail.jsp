@@ -79,8 +79,12 @@ if (product != null) {
     prodSkus          = new ArrayList(variant.getDistinctSkus());
 }
 
+if (prodSkus == null){
+    throw new FDNotFoundException("Product SKUs was null after data collection.");
+}
+
 Map availOptSkuMap = new HashMap();
-    
+
 boolean hasSingleSku = (prodSkus.size() == 1);
 
 if (hasSingleSku) {

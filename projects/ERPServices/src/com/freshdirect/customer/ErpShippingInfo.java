@@ -3,6 +3,7 @@ package com.freshdirect.customer;
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ErpShippingInfo implements Serializable {
 
@@ -30,12 +31,12 @@ public class ErpShippingInfo implements Serializable {
 
 	@JsonCreator
 	public ErpShippingInfo(
-		String waveNumber,
-		String truckNumber,
-		String stopSequence,
-		int regularCartons,
-		int freezerCartons,
-		int alcoholCartons) {
+		@JsonProperty("waveNumber") String waveNumber,
+		@JsonProperty("truckNumber") String truckNumber,
+		@JsonProperty("stopSequence")String stopSequence,
+		@JsonProperty("regularCartons")int regularCartons,
+		@JsonProperty("freezerCartons")int freezerCartons,
+		@JsonProperty("alcoholCartons")int alcoholCartons) {
 		this.truckNumber = truckNumber;
 		this.stopSequence = stopSequence;
 		this.regularCartons = regularCartons;

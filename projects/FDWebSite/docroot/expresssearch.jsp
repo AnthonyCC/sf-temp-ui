@@ -45,10 +45,12 @@
   </tmpl:put>
 
   <tmpl:put name='content' direct='true'>
+    <h2>Type in a list of products and we will find them for you</h2>
+    <div id="multisearch-results" class="contentModules">
+    </div>
     <div id="multisearch-tutorial">
       <fd:IncludeMedia name="/media/editorial/site_pages/informational/multisearch.html" />
     </div>
-    <div id="multisearch-results" class="contentModules"></div>
   </tmpl:put>
   
 	<tmpl:put name='extraJsModules'>
@@ -57,7 +59,6 @@
       FreshDirect.multisearch = FreshDirect.multisearch || {};
 
       FreshDirect.multisearch.limit = +'<%= FDStoreProperties.getMultiSearchLimit() %>';
-      FreshDirect.multisearch.productPerCarousel = +'<%= FDStoreProperties.getMultiSearchProductPerCarousel() %>';
       FreshDirect.multisearch.defaultList = '<%= FDStoreProperties.getMultiSearchDefaultList() %>';
       FreshDirect.multisearch.list = '<%= user.getMultiSearchList() %>';
       if (FreshDirect.multisearch.list === 'null') {

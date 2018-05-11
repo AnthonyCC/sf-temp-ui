@@ -58,7 +58,7 @@ var FreshDirect = FreshDirect || {};
 		},
 		open: {
 			value: function ($callBackElem) {
-				if (this.pollingOrderId === null || this.pollingOrderId === undefined || this.pollingOrderId === '') { return; } /* required */
+				if (this.pollingOrderId === null || this.pollingOrderId === undefined) { return; } /* required */
 
 				this.$callbackElem = $callBackElem || null;
 
@@ -80,7 +80,7 @@ var FreshDirect = FreshDirect || {};
 				var that = this;
 				if (that === window) { that = FreshDirect.components.ordermodifystatus; }
 
-				if (that.pollingOrderId === null || that.pollingOrderId === undefined || that.pollingOrderId === '' || that === window) { return; }
+				if (that.pollingOrderId === null || that.pollingOrderId === undefined || that === window) { return; }
 
 				if (that.pollingCount < that.POLLING_LIMIT) {
 					$.get('/api/orderinfo', { 'orderId': that.pollingOrderId }, that.pollingFuncSuccess.bind(that)).fail(that.pollingFuncError.bind(that));
@@ -91,7 +91,7 @@ var FreshDirect = FreshDirect || {};
 		},
 		pollingFuncSuccess: {
 			value: function(data) {
-				if (fd.utils.hasOwnNestedProperty('order.canModify', data) && data.order.canModify) {
+				if (data.order.canModify) {
 					/* remove blocking attribute */
 					$('[data-gtm-click-error]').attr('data-gtm-click-error', null);
 					if (this.$callbackElem) {
@@ -118,7 +118,7 @@ var FreshDirect = FreshDirect || {};
 				var that = this;
 				if (that === window) { that = FreshDirect.components.ordermodifystatus; }
 				
-				if (that.pollingOrderId === null || that.pollingOrderId === undefined || that.pollingOrderId === '' || that === window) { return; }
+				if (that.pollingOrderId === null || that.pollingOrderId === undefined || that === window) { return; }
 				
 				that.refreshBody({ body: '<div class="spinner"></div><div>Bringing up your order! Please wait...</div><div><button class="cssbutton green transparent close">Cancel</button></div>' });
 

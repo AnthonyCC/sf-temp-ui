@@ -37,13 +37,19 @@ import com.freshdirect.common.pricing.EnumTaxationType;
 import com.freshdirect.common.pricing.MunicipalityInfo;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.customer.EnumExternalLoginSource;
+import com.freshdirect.customer.EnumPaymentResponse;
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpActivityRecord;
+import com.freshdirect.customer.ErpAddressVerificationException;
+import com.freshdirect.customer.ErpAuthorizationException;
+import com.freshdirect.customer.ErpAuthorizationModel;
 import com.freshdirect.customer.ErpCustEWalletModel;
 import com.freshdirect.customer.ErpEWalletModel;
 import com.freshdirect.customer.ErpGrpPriceModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.customer.ErpRestrictedAvailabilityModel;
+import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.ecomm.gateway.AbstractEcommService;
 import com.freshdirect.ecomm.gateway.CustomResponseDeserializer;
@@ -214,11 +220,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String SAVE_ACTIVE_BINS = "bin/storebins";
 	private static final String ERP_BATCH_PROCESS_API = "erp/batch/";
 	private static final String ERP_RECENT_BATCHES_API = "erp/recentBatches";
-	
-	private static final String EWALLET_LOAD_TRAN_MAX = "ewalletNotify/maxDays";
-	private static final String EWALLET_POST_TRANS = "ewalletNotify/postTrxnsToEwallet";
-	
-	
+		
 	private static final String ZONE_INFO_MASTER = "zoneInfo/master";
 	private static final String ALL_ZONE_INFO_MASTER = "zoneInfo/allzoneinfoMaster";
 	private static final String LOAD_ZONE_ID = "zoneInfo/findzoneid";
@@ -445,6 +447,9 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String GET_PAYPAL_TRANSACTIONS = "paypalReconciliation/tx";
 	
 	private static final String ENQUEUE_EMAIL = "mailer/enqueue";
+	private static final String SITEMAP_GENERATE = "sitemap/generate";
+	
+	private static final String CHECK_TOKEN_VALID = "paymentManager/isValidVaultToken";
 
 	public static IECommerceService getInstance() {
 		if (INSTANCE == null)
@@ -4354,37 +4359,6 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		return erpPaymentMethod;
 	}
 	
-	
-	@Override
-	public void postTrxnsToEwallet() throws RemoteException {
-		Response<String> response = new Response<String>(); 
-	
-			try {
-				response = httpGetData(getFdCommerceEndPoint(EWALLET_POST_TRANS), Response.class);
-			
-				if(!response.getResponseCode().equals("OK"))
-					throw new RemoteException(response.getMessage());
-			} catch (FDResourceException e) {
-				LOGGER.error(e.getMessage());
-				throw new RemoteException(response.getMessage());
-			}
-				
-	}
-	@Override
-	public void loadTrxnsForPostBack(int maxDays) throws RemoteException {
-		Response<String> response = new Response<String>(); 
-		try {
-			response = httpGetData(getFdCommerceEndPoint(EWALLET_LOAD_TRAN_MAX)+"/"+maxDays, Response.class);
-		
-			if(!response.getResponseCode().equals("OK"))
-				throw new RemoteException(response.getMessage());
-		} catch (FDResourceException e) {
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		
-		}
-		
-	}
 	@Override
 	public HLBrandProductAdResponse getHLadproductToHomeByFDPriority(
 			HLBrandProductAdRequest hLBrandProductAdRequest) throws RemoteException {
@@ -4574,6 +4548,40 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			LOGGER.error(e);
 			throw new RemoteException(e.getMessage());
 		} 
+	}
+	@Override
+	public void generateSitemap() throws RemoteException {
+		try {
+			Response<String> response = this.httpGetDataTypeMap(getFdCommerceEndPoint(SITEMAP_GENERATE),
+					new TypeReference<Response<Boolean>>() {});
+			if (!response.getResponseCode().equals("OK")) {
+				throw new FDResourceException(response.getMessage());
+			}
+			if (!response.getData().equals("success")) {
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+	}
+	
+	@Override
+	public boolean isValidVaultToken(String token, String customerId) throws RemoteException {
+		Request<String> request = new Request<String>();
+		request.setData(token);
+		String inputJson;
+		try {
+			inputJson = buildRequest(request);
+			Response<Boolean> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(CHECK_TOKEN_VALID)+"/" + customerId, new TypeReference<Response<Boolean>>() {});
+			if (!response.getResponseCode().equals("OK")) {
+				return true;
+			}
+			return response.getData();
+		} catch (Exception e) {
+			LOGGER.error(e);
+			throw new RemoteException(e.getMessage());
+		}
 	}
 
 }

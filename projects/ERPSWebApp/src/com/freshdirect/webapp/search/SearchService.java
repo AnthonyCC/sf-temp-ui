@@ -172,9 +172,9 @@ public class SearchService {
         	LOGGER.warn("FDBOTSEARCH01 for " + user.getCookie() + ":" + searchTerm + ":" + requestUrl + ":" + referer );
         }
         if(searchTerm != null && searchTerm.trim().length() > 0){
-			// if isUnbxdSearchEnabled is false, get search product & receipts from Lucene service 
+			// if isUnbxdSearchEnabled = false && searchRecipe = true, get search product & receipts from Lucene service 
 			// else if isUnbxdSearchEnabled = true && searchRecipe = true, search the recipes from Lucene
-        	// 
+        	// else if isUnbxdSearchEnabled = true && searchRecipe = false, do not call Lucene service at all
 			searchResults = isUnbxdSearchEnabled
 					? (searchRecipe ? StoreServiceLocator.contentSearch().searchRecipes(searchTerm) : searchResults)
 					: StoreServiceLocator.contentSearch().searchProducts(searchTerm);

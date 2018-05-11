@@ -193,9 +193,9 @@ if(orderId==null){
 			<button onclick="window.print()" class="cssbutton medium green transparent" title="Click here to print invoice for this order">Print</button>
 		<% } %>
 		    
-		<%-- RE-ORDER BUTTON - disabled for now - 20180406 - batchley --%>
-		<% if (false && user.getMasqueradeContext() != null && EnumSaleType.REGULAR.equals(cart.getOrderType())) { %>
-			<button type="button" name="Reorder" onclick="FreshDirect.components.reorderPopup.openPopup(<%= orderId %>)" class="cssbutton medium purple nontransparent">Re-Order</button>
+		<%-- RE-ORDER BUTTON --%>
+		<% if (user.getMasqueradeContext() != null && EnumSaleType.REGULAR.equals(cart.getOrderType())) { %>
+			<button type="button" name="Reorder" onclick="FreshDirect.components.reorderPopup.openPopup(<%= orderId %>)" class="cssbutton medium purple transparent">Reorder</button>
 		<% } %>
 		
 		<%-- SHOP FROM ORDER BUTTON --%>

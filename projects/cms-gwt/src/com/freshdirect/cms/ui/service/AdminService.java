@@ -1,6 +1,7 @@
 package com.freshdirect.cms.ui.service;
 
 import com.freshdirect.cms.ui.model.AdminProcStatus;
+import com.freshdirect.cms.ui.model.publish.PublishType;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -11,5 +12,5 @@ public interface AdminService extends RemoteService {
 
     public AdminProcStatus getBuildIndexStatus();
 
-    public AdminProcStatus abortStuckPublishFlows();
+    public AdminProcStatus abortStuckPublishFlows(PublishType type);
 }

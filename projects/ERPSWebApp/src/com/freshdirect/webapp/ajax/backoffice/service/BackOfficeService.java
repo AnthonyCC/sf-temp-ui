@@ -21,11 +21,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Category;
-import org.json.JSONObject;
 
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.DYFUtil;
@@ -55,6 +53,7 @@ import com.freshdirect.webapp.ajax.backoffice.data.OverriddenVariantsResponse;
 import com.freshdirect.webapp.ajax.backoffice.data.ProductModelResponse;
 import com.freshdirect.webapp.ajax.backoffice.data.SkuModelResponse;
 import com.freshdirect.webapp.ajax.backoffice.data.VariantResponse;
+import com.freshdirect.webapp.crm.CrmMasqueradeUtil;
 
 
 public class BackOfficeService {
@@ -159,32 +158,60 @@ public class BackOfficeService {
             	String reSendInvoiceMailStatus = reSendInvoiceMail(orderIdDetails); 
             	result.setReSendInvoiceMailStatus(reSendInvoiceMailStatus);
             	break;
+            case GET_RESUBMIT_ORDER:
+            	result.setResubmitOrderStatus(resubmitOrder(getActionData(actionDataRequest, "orderID")));            	
+            	break;
+            case GET_RESUBMIT_CUSTOMER:
+            	result.setResubmitCustomerStatus(resubmitCustomer(getActionData(actionDataRequest, "customerID")));            	
+            	break;            	
             default:
                 break;
         }
         return result;
     }
-
-    private String reSendInvoiceMail(String orderId) {
-    	String reSendInvoiceMailStatus = null;
-		boolean ReSendEmailConfirmation=false;
+    
+    private String resubmitOrder(String orderId) {
+		String status = "N";
 		try {
-			 ReSendEmailConfirmation= FDCustomerManager.reSendInvoiceEmail(orderId);
-			 			
-			 if(ReSendEmailConfirmation)
-			 {
-				 reSendInvoiceMailStatus = "Y";
-			 }
-			 else
-			 {
-				 reSendInvoiceMailStatus = "N";
-			 }
-				
-			} catch (Exception e) {
+			CrmMasqueradeUtil.resubmitOrder(orderId);
+			status = "Y";
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		
+
+		return status;
+	}
+    
+    private String resubmitCustomer(String customerId) {
+    	String status = "N";
+		try {
+			CrmMasqueradeUtil.resubmitCustomer(customerId);
+			status = "Y";
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return status;
+	}
+
+	private String reSendInvoiceMail(String orderId) {
+		String reSendInvoiceMailStatus = null;
+		boolean ReSendEmailConfirmation = false;
+		try {
+			ReSendEmailConfirmation = FDCustomerManager.reSendInvoiceEmail(orderId);
+
+			if (ReSendEmailConfirmation) {
+				reSendInvoiceMailStatus = "Y";
+			} else {
+				reSendInvoiceMailStatus = "N";
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		return reSendInvoiceMailStatus;
-	
+
 	}
 
 	private static final String PATH = "/test/freemarker_testing/all_info.jsp?sku2url=true&sku=";

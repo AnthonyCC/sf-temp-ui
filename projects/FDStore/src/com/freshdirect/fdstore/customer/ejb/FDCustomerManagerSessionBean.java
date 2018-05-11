@@ -122,8 +122,6 @@ import com.freshdirect.deliverypass.DlvPassUsageLine;
 import com.freshdirect.deliverypass.EnumDlvPassExtendReason;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerSB;
-import com.freshdirect.ecomm.gateway.OrderResourceApiClient;
-import com.freshdirect.ecomm.gateway.OrderResourceApiClientI;
 import com.freshdirect.erp.ejb.ATPFailureDAO;
 import com.freshdirect.erp.model.ATPFailureInfo;
 import com.freshdirect.erp.model.ErpInventoryModel;
@@ -134,6 +132,7 @@ import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -195,6 +194,7 @@ import com.freshdirect.fdstore.promotion.ejb.FDPromotionNewDAO;
 import com.freshdirect.fdstore.referral.ejb.FDReferAFriendDAO;
 import com.freshdirect.fdstore.request.FDProductRequest;
 import com.freshdirect.fdstore.request.FDProductRequestDAO;
+import com.freshdirect.fdstore.sms.shortsubstitute.ShortSubstituteResponse;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
 import com.freshdirect.fdstore.temails.TEmailConstants;
 import com.freshdirect.fdstore.temails.TEmailsUtil;
@@ -257,6 +257,7 @@ import com.freshdirect.payment.gateway.GatewayType;
 import com.freshdirect.payment.gateway.Request;
 import com.freshdirect.payment.gateway.Response;
 import com.freshdirect.payment.gateway.impl.GatewayFactory;
+import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.referral.extole.RafUtil;
 import com.freshdirect.referral.extole.model.FDRafTransModel;
 import com.freshdirect.sap.command.SapCartonInfoForSale;
@@ -1563,9 +1564,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	public void addPaymentMethod(FDActionInfo info, ErpPaymentMethodI paymentMethod, boolean paymentechEnabled)
 			throws FDResourceException, ErpPaymentMethodException {
 		try {
-
-			ErpCustomerEB erpCustomerEB = checkPaymentMethodModification(info, paymentMethod);
-
 			Gateway gateway = null;
 
 			if (paymentechEnabled && FDStoreProperties.isPaymentVerificationEnabled()
@@ -1628,6 +1626,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					throw new ErpPaymentMethodException(e.getMessage());
 				}
 			}
+			ErpCustomerEB erpCustomerEB = this.getErpCustomerHome()
+					.findByPrimaryKey(new PrimaryKey(info.getIdentity().getErpCustomerPK()));
 
 			erpCustomerEB.addPaymentMethod(paymentMethod);
 
@@ -1643,10 +1643,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(re);
 		} catch (FinderException ce) {
 			throw new FDResourceException(ce);
-		} catch (CreateException ex) {
-			deleteProfile(paymentMethod);
-			throw new FDResourceException(ex);
-		}
+		} 
 	}
 
 	public ErpAuthorizationModel verifyCard(FDActionInfo info, ErpPaymentMethodI paymentMethod,
@@ -1813,7 +1810,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	public void updatePaymentMethod(FDActionInfo info, ErpPaymentMethodI paymentMethod)
 			throws FDResourceException, ErpPaymentMethodException {
 		try {
-			ErpCustomerEB erpCustomerEB = checkPaymentMethodModification(info, paymentMethod);
+			ErpCustomerEB erpCustomerEB = this.getErpCustomerHome()
+					.findByPrimaryKey(new PrimaryKey(info.getIdentity().getErpCustomerPK()));
 
 			if (EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())) {
 				ErpPaymentMethodModel _payment = (ErpPaymentMethodModel) paymentMethod;
@@ -1873,48 +1871,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(ex);
 		} catch (FinderException ex) {
 			throw new FDResourceException(ex);
-		} catch (CreateException ex) {
-			throw new FDResourceException(ex);
 		}
 
-	}
-
-	private ErpCustomerEB checkPaymentMethodModification(FDActionInfo info, ErpPaymentMethodI paymentMethod)
-			throws FinderException, RemoteException, CreateException, ErpPaymentMethodException {
-		ErpCustomerEB erpCustomerEB = this.getErpCustomerHome()
-				.findByPrimaryKey(new PrimaryKey(info.getIdentity().getErpCustomerPK()));
-
-		//
-		// DO FRAUD CHECK
-		//
-		// Removing the duplicate payment method check. we dont require this as
-		// the new gateway supports adding the same payment method for multiple
-		// accounts.
-		/*
-		 * ErpFraudPreventionSB fraudSB = getErpFraudHome().create(); boolean
-		 * foundFraud =
-		 * fraudSB.checkDuplicatePaymentMethodFraud(info.getIdentity().
-		 * getErpCustomerPK(), paymentMethod); if (foundFraud) {
-		 * this.getSessionContext().setRollbackOnly(); throw new
-		 * ErpDuplicatePaymentMethodException("Duplicate account information.");
-		 * }
-		 */
-
-		//
-		// Check external negative file for E-Checks, Credit Cards will alway
-		// return APPROVED
-		//
-		/*
-		 * boolean foundFraud = false; try { PaymentFraudManager
-		 * paymentFraudManager = new PaymentFraudManager(); if
-		 * (!paymentFraudManager.verifyAccountExternal(paymentMethod)) {
-		 * foundFraud = true; } } catch (ErpTransactionException e) { foundFraud
-		 * = false; // if there's an exception (can't communication with
-		 * external source) --> allow user to add payment method } if
-		 * (foundFraud) { this.getSessionContext().setRollbackOnly(); throw new
-		 * ErpPaymentMethodException("Account is not valid"); }
-		 */
-		return erpCustomerEB;
 	}
 
 	/**
@@ -2555,8 +2513,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 			}
 			// AUTH sale in CYBER SOURCE
+			
 			PaymentManagerSB paymentManager = this.getPaymentManagerHome().create();
 			paymentManager.authorizeSaleRealtime(pk.getId());
+			
 
 			ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.PLACE_ORDER);
 			rec.setChangeOrderId(pk.getId());
@@ -2950,15 +2910,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			if (EnumPaymentMethodType.PAYPAL.equals(order.getPaymentMethod().getPaymentMethodType())
 					&& order.getPaymentMethod().getCardType().equals(EnumCardType.PAYPAL)
 					&& EnumSaleStatus.MODIFIED_CANCELED.equals(order.getOrderStatus())) {
-				
-				ErpSaleModel _order = null;
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled("getOrder_Api")){
-		    		OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
-		    		_order =  service.getOrder(saleId);
-		    	}else{
-		    		_order = sb.getOrder(new PrimaryKey(saleId));
-		    	}
-				reversePPAuths(_order);
+				reversePPAuths(sb.getOrder(new PrimaryKey(saleId)));
 			} // END :: APPDEV-5657
 
 			// End:: Add FDX SMSfor order Cancelled
@@ -3343,12 +3295,17 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			PaymentManagerSB paymentManager = this.getPaymentManagerHome().create();
 			if (EnumSaleStatus.AUTHORIZATION_FAILED.equals(fdOrder.getOrderStatus())) {
 
-				if (EnumTransactionSource.WEBSITE.equals(order.getTransactionSource()))
+				if (EnumTransactionSource.WEBSITE.equals(order.getTransactionSource())) {
 					paymentManager.authorizeSaleRealtime(saleId);
-				else
+					
+				}
+				else {
 					paymentManager.authorizeSale(saleId, true);
+					
+				}
 			} else {
 				paymentManager.authorizeSaleRealtime(saleId);
+				
 			}
 
 			ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.MODIFY_ORDER);
@@ -3684,96 +3641,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	/**
-	 * charge an order (modify & send msg to SAP) due to Insufficent funds.
-	 *
-	 * @param identity
-	 *            the customer's identity reference
-	 * @throws FDResourceException
-	 *             if an error occured while accessing remote resources
-	 */
-	public void chargeOrder(FDIdentity identity, String saleId, ErpPaymentMethodI paymentMethod, boolean sendEmail,
-			CustomerRatingI cra, CrmAgentModel agent, double additionalCharge) throws FDResourceException,
-			ErpTransactionException, ErpFraudException, ErpAuthorizationException, ErpAddressVerificationException {
-
-		try {
-			FDOrderAdapter fdOrder = (FDOrderAdapter) getOrder(identity, saleId);
-			ErpSaleModel sale = fdOrder.getSale();
-			EnumSaleStatus status = sale.getStatus();
-
-			if (!EnumSaleStatus.SETTLEMENT_FAILED.equals(status) && !EnumSaleStatus.PAYMENT_PENDING.equals(status)) {
-				throw new ErpTransactionException(
-						"This order cannot be charged because payment is not pending or settlement did not fail.");
-			}
-
-			ErpCustomerManagerSB custManager = this.getErpCustomerManagerHome().create();
-
-			PaymentManagerSB paymentManager = this.getPaymentManagerHome().create();
-
-			// void all previous captures WITHOUT being in an explicit
-			// transaction
-			if (EnumSaleStatus.PAYMENT_PENDING.equals(status)) {
-				paymentManager.voidCapturesNoTrans(saleId);
-			}
-
-			ErpPaymentMethodModel oldPaymentMethod = (ErpPaymentMethodModel) sale.getCurrentOrder().getPaymentMethod();
-
-			ErpModifyOrderModel modifyOrder = new ErpModifyOrderModel();
-			// want to add a NEW modify order with new payment method, so we
-			// need to set all primary keys to null
-			modifyOrder.set(sale.getCurrentOrder(), true);
-			modifyOrder.setPaymentMethod(paymentMethod);
-			modifyOrder.setTransactionDate(new Date());
-			modifyOrder.setTransactionInitiator(agent.getUserId());
-			modifyOrder.setTransactionSource(EnumTransactionSource.CUSTOMER_REP);
-
-			// this changes the payment information for the order
-			custManager.modifyOrder(saleId, modifyOrder, sale.getUsedPromotionCodes(), cra, agent.getRole(), false);
-
-			if (additionalCharge > 0) {
-				// create a charge invoice sales action
-				custManager.addChargeInvoice(saleId, additionalCharge);
-			}
-
-			// authorize the sale with new payment method
-			List<ErpAuthorizationModel> auths = paymentManager.authorizeSaleRealtime(saleId);
-			// capture the sale authorization
-			paymentManager.captureAuthorizations(saleId, auths);
-
-			// create a case only if the payment method used to re charge order
-			// is not the payment method that failed
-			if (!oldPaymentMethod.getPK().equals((ErpPaymentMethodModel) paymentMethod)) {
-				CrmSystemCaseInfo caseInfo = this.buildBadAccountReviewCase(sale.getCustomerPk().getId(), saleId);
-				custManager.createCase(caseInfo, false);
-			}
-
-			if (sendEmail) {
-				FDCustomerInfo fdInfo = this.getCustomerInfo(identity);
-				int orderCount = getValidOrderCount(identity);
-				fdInfo.setNumberOfOrders(orderCount);
-				// get order again with new payment method
-				fdOrder = (FDOrderAdapter) getOrder(identity, saleId);
-				this.doEmail(FDEmailFactory.getInstance().createChargeOrderEmail(fdInfo, fdOrder, additionalCharge));
-			}
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce);
-		} catch (RemoteException re) {
-			Exception ex = (Exception) re.getCause();
-			if (ex instanceof ErpAddressVerificationException)
-				throw (ErpAddressVerificationException) ex;
-
-			throw new FDResourceException(re);
-		}
-	}
-
-	private CrmSystemCaseInfo buildBadAccountReviewCase(String customerPK, String saleId) {
-		CrmCaseSubject subject = CrmCaseSubject.getEnum(CrmCaseSubject.CODE_BAD_ACCOUNT_REVIEW);
-		String summary = "Order # " + saleId
-				+ " has been re-charged after initial settlement failure.  Please review and possibly remove from Bad Accounts and Customer Alert.";
-		PrimaryKey salePK = saleId != null ? new PrimaryKey(saleId) : null;
-		return new CrmSystemCaseInfo(new PrimaryKey(customerPK), salePK, subject, summary);
-	}
-
+	
 	/**
 	 * Adds a complaint to the user's list of complaints and begins the
 	 * associated credit issuing process
@@ -4064,14 +3932,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	public FDOrderI getOrderForCRM(String saleId) throws FDResourceException {
 		try {
-			ErpSaleModel saleModel =null;
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("getOrder_Api")){
-	    		OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
-	    		saleModel =  service.getOrder(saleId);
-	    	}else{
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
-				saleModel = sb.getOrder(new PrimaryKey(saleId));
-	    	}
+			ErpSaleModel saleModel = sb.getOrder(new PrimaryKey(saleId));
 			if (saleModel != null && saleModel.geteStoreId() != null
 					&& saleModel.geteStoreId().equals(EnumEStoreId.FDX)) {
 				LOGGER.info("Fetching trip and stop from logistics for fdx order " + saleId);
@@ -4098,15 +3960,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	public FDOrderI getOrder(String saleId) throws FDResourceException {
 		try {
-			ErpSaleModel saleModel = null;
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("getOrder_Api")){
-	    		OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
-	    		saleModel =  service.getOrder(saleId);
-	    	}else{
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
-				saleModel = sb.getOrder(new PrimaryKey(saleId));
-	    	}
-
+			ErpSaleModel saleModel = sb.getOrder(new PrimaryKey(saleId));
 			LOGGER.debug(new String("ordernum: " + saleId + "   rsrvID: "
 					+ saleModel.getRecentOrderTransaction().getDeliveryInfo().getDeliveryReservationId()));
 
@@ -4119,40 +3974,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	public List<FDOrderI> getOrders(List<String> saleIds) throws FDResourceException, RemoteException {
-		try {
-			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
-			List<PrimaryKey> keys = new ArrayList<PrimaryKey>();
-			for (String saleId : saleIds) {
-				keys.add(new PrimaryKey(saleId));
-			}
-			List<ErpSaleModel> saleModels = sb.getOrders(keys);
-
-			LOGGER.debug(new String("ordernums: " + saleIds));
-
-			List<FDOrderI> adapters = new ArrayList<FDOrderI>();
-			for (ErpSaleModel model : saleModels) {
-				adapters.add(new FDOrderAdapter(model));
-			}
-			return adapters;
-
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce);
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		}
-	}
-
 	public ErpSaleModel getErpSaleModel(String saleId) throws FDResourceException {
 		try {
-			
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("getOrder_Api")){
-	    		OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
-	    		return service.getOrder(saleId);
-	    	}else{
 				ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
 				return sb.getOrder(new PrimaryKey(saleId));
-	    	}
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
@@ -4728,9 +4553,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	public void authorizeSale(String salesId) throws FDResourceException {
 
 		try {
+			EnumPaymentResponse response = null;
+			
 			PaymentManagerSB sb = this.getPaymentManagerHome().create();
-			EnumPaymentResponse response = sb.authorizeSale(salesId, false);
-
+			response = sb.authorizeSale(salesId, false);
+			
 			if (!EnumPaymentResponse.APPROVED.equals(response) && !EnumPaymentResponse.ERROR.equals(response)) {
 				sendAuthFailedEmail(salesId);
 			}
@@ -4744,9 +4571,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	public void authorizeSale(String salesId, boolean force) throws FDResourceException {
 
 		try {
+			EnumPaymentResponse response = null;
+			
 			PaymentManagerSB sb = this.getPaymentManagerHome().create();
-			EnumPaymentResponse response = sb.authorizeSale(salesId, force);
-
+			response = sb.authorizeSale(salesId, force);
+			
 			if (!EnumPaymentResponse.APPROVED.equals(response) && !EnumPaymentResponse.ERROR.equals(response)) {
 				sendAuthFailedEmail(salesId);
 			}
@@ -5790,22 +5619,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	public FDOrderI getLastNonCOSOrderUsingCC(String customerID, EnumSaleType saleType, EnumSaleStatus saleStatus)
-			throws FDResourceException, ErpSaleNotFoundException {
-
-		try {
-			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
-			ErpSaleModel saleModel = sb.getLastNonCOSOrder(customerID, saleType, saleStatus,
-					EnumPaymentMethodType.CREDITCARD);
-			return new FDOrderAdapter(saleModel);
-
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce);
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		}
-	}
-
 	public FDOrderI getLastNonCOSOrder(String customerID, EnumSaleType saleType, EnumSaleStatus saleStatus)
 			throws FDResourceException, ErpSaleNotFoundException {
 
@@ -6054,19 +5867,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			 */
 	}
 
-	public void addAndReconcileInvoice(String saleId, ErpInvoiceModel invoice, ErpShippingInfo shippingInfo)
-			throws ErpTransactionException {
-
-		try {
-			this.getErpCustomerManagerHome().create().addAndReconcileInvoice(saleId, invoice, shippingInfo);
-		} catch (ErpTransactionException e) {
-			throw e;
-		} catch (Exception e) {
-			LOGGER.warn("Unexpected Exception while trying to process invoice for order#: " + saleId, e);
-			throw new EJBException("Unexpected Exception while trying to process invoice for order#: " + saleId, e);
-		}
-	}
-
 	public void authorizeSale(String erpCustomerID, String saleID, EnumSaleType type, CustomerRatingI cra)
 			throws FDResourceException, ErpSaleNotFoundException {
 
@@ -6075,9 +5875,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			return;
 		} else if (EnumSaleType.SUBSCRIPTION.equals(type)) {
 			try {
+				EnumPaymentResponse response = null;
+				
 				PaymentManagerSB sb = this.getPaymentManagerHome().create();
-				EnumPaymentResponse response = sb.authorizeSale(saleID, false);
-
+				response = sb.authorizeSale(saleID, false);
+				
 				if (!EnumPaymentResponse.APPROVED.equals(response) && !EnumPaymentResponse.ERROR.equals(response)) {
 					sendARAuthFailedEmail(saleID);// Should we send email?
 
@@ -6842,8 +6644,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				close(conn);
 			}
 			// AUTH sale in CYBER SOURCE
+			List auths = null;
+
 			PaymentManagerSB paymentManager = this.getPaymentManagerHome().create();
-			List auths = paymentManager.authorizeSaleRealtime(pk.getId(), EnumSaleType.DONATION);
+			auths = paymentManager.authorizeSaleRealtime(pk.getId(), EnumSaleType.DONATION);
+			
 			if (auths != null || auths.size() > 0) {
 
 				// Only when it has a valid auth.
@@ -7280,50 +7085,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(ex);
 		}
 	}
-
-	public ErpAuthorizationModel verify(FDActionInfo action, ErpPaymentMethodI paymentMethod)
-			throws FDResourceException, ErpAuthorizationException {
-		PaymentManagerSB sb = null;
-		ErpAuthorizationModel auth = null;
-		try {
-			sb = this.getPaymentManagerHome().create();
-			try {
-				auth = sb.verify(
-						ErpAffiliate.getPrimaryAffiliate(action.geteStore()).getMerchant(paymentMethod.getCardType()),
-						paymentMethod);
-				logCardVerificationActivity(action, paymentMethod, auth, "");
-			} catch (ErpTransactionException te) {
-				logCardVerificationActivity(action, paymentMethod, null, te.toString());
-			}
-			if (auth != null && !EnumTransactionSource.CUSTOMER_REP.equals(action.getSource())) {
-				FDCustomerEB fdCustomerEB = getFdCustomerHome().findByErpCustomerId(paymentMethod.getCustomerId());
-				if (!auth.isApproved() || !auth.hasAvsMatched()) {
-					int count = fdCustomerEB.incrementPymtVerifyAttempts();
-					auth.setVerifyFailCount(count);
-					if (count >= FDStoreProperties.getPaymentMethodVerificationLimit()) {
-						action.setNote(new StringBuilder("Reached limit of ")
-								.append(FDStoreProperties.getPaymentMethodVerificationLimit())
-								.append(" unsuccessful credit card verifications.").toString());
-						this.setActive(action, false);
-						// throw new ErpAuthorizationException("Your account has
-						// been locked.");
-					}
-				} else {
-					fdCustomerEB.resetPymtVerifyAttempts();
-				}
-			}
-			return auth;
-
-		} catch (FinderException fe) {
-			throw new FDResourceException(fe);
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce);
-		}
-
-	}
-
+	
 	/**
 	 * Adds auth failures to cusotmer activity log.
 	 */
@@ -8862,4 +8624,37 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
         }
 
     }
+	
+	
+	public ShortSubstituteResponse getShortSubstituteOrders(List<String> orderList) throws FDResourceException, RemoteException{
+		Connection conn = null;
+		try {
+			StringBuffer orders = GenerteOrderWithCommaSeparate(orderList);
+			conn = getConnection();
+			return FDCustomerOrderInfoDAO.getShortSubstituteOrders(orders, conn);
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle, "Some problem in getting Pending deliveries from database");
+		} finally {
+			close(conn);
+		}
+	}
+
+	public StringBuffer GenerteOrderWithCommaSeparate(List<String> orderList) {
+		StringBuffer orders =new StringBuffer();
+		orders.append("(");
+		if(orderList != null && orderList.size() > 0) {							
+			int intCount = 0;
+			for(String orderId : orderList) {
+				orders.append("'").append(orderId).append("'");
+				intCount++;
+				if(intCount % 1000 != 0 && intCount != orderList.size()) {
+					orders.append(",");
+				} else if(intCount % 1000 == 0 && intCount != orderList.size()) {
+					orders.append(")");
+				}
+			}
+			orders.append(")");
+		}
+		return orders;
+	}
 }

@@ -492,26 +492,6 @@ public class CallCenterServices {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
-
-	public static void scheduleRedelivery(FDIdentity identity, String saleId, ErpRedeliveryModel redeliveryModel)
-		throws FDResourceException, ErpTransactionException {
-		if (callCenterHome == null) {
-			lookupManagerHome();
-		}
-		try {
-			if (!FDCustomerManager.orderBelongsToUser(identity, saleId)) {
-				throw new FDResourceException("Order not found in current user's order history.");
-			}
-			CallCenterManagerSB sb = callCenterHome.create();
-			sb.scheduleRedelivery(saleId, redeliveryModel);
-		} catch (CreateException ce) {
-			callCenterHome = null;
-			throw new FDResourceException(ce, "Error creating CallCenterManager session bean");
-		} catch (RemoteException re) {
-			callCenterHome = null;
-			throw new FDResourceException(re, "Error talking to CallCenterManager session bean");
-		}
-	}
 	
 	public static List getOrdersByStatus(EnumSaleStatus status) throws FDResourceException {
 		String[] s = {status.getStatusCode()};

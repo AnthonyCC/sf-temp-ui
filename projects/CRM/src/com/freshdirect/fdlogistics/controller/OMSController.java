@@ -458,23 +458,6 @@ public class OMSController extends BaseController  {
 		return result;
 	}
 	
-
-	@RequestMapping(value = "/delivery/redelivery/{orderId}", method = RequestMethod.POST)
-	public @ResponseBody
-	Result redeliveryOrder(@PathVariable("companycode") String companycode, @PathVariable("orderId") String orderId) {
-		LOGGER.debug("Going to create a Redelivery");
-		
-		try {
-			LOGGER.debug("Going to create a Redelivery");
-			DlvPaymentManager.getInstance().addRedelivery(orderId);
-		} catch (FDResourceException e) {
-			return Result.createFailureMessage("action failed");
-		} catch (ErpSaleNotFoundException e) {
-			return Result.createFailureMessage("action failed");
-		}
-		return Result.createSuccessMessage("orders refused successfully");
-	}
-
 	@RequestMapping(value = "/etaw", method = RequestMethod.POST)
 	public @ResponseBody
 	Result sendOrdersETAW(@RequestBody OrdersETAWList orders) {

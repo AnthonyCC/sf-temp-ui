@@ -2826,6 +2826,11 @@
 				<EnumValue value="2" label="2"/>
 				<EnumValue value="3" label="3"/>
 			</EnumDef>
+                        <EnumDef type="S" name="productMaxLimit"  label="Product Maximum Limit">
+                                <EnumValue value="1" label="1"/>
+                                <EnumValue value="2" label="2"/>
+                                <EnumValue value="3" label="3"/>
+                        </EnumDef>
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="imageGrid" label="Image Grid" cardinality="Many">

@@ -25,7 +25,7 @@ public class ReceiptService {
 
 	public ReceiptData populateReceiptData(final FDOrderI order, String requestURI, final FDUserI user) throws FDResourceException {
 		final ReceiptData receiptData = new ReceiptData();
-		receiptBoxService.populateOrderTotalToBox(receiptData, order);
+		receiptBoxService.populateOrderTotalToBox(receiptData, order, user);
 		receiptBoxService.populateSaveAmountBox(receiptData, order);
 		
 		final List<CartSubTotalFieldData> receiptLines = new ArrayList<CartSubTotalFieldData>();

@@ -1,28 +1,24 @@
 package com.freshdirect.mobileapi.controller.data;
 
-import org.apache.log4j.Logger;
+import org.junit.Assert;
+import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.mobileapi.controller.data.request.SearchQuery;
 
 public class SearchQueryRequestTest extends MessageTest {
-    public static final Logger logger = Logger.getLogger(SearchQueryRequestTest.class);
 
+    @Test
     public void testParser() throws Exception {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            SearchQuery request = mapper.readValue(getFileContentAsStream("SearchQuery.json"), SearchQuery.class);
-            assertEquals("apples", request.getQuery());
-            assertEquals("brandId", request.getBrand());
-            assertEquals(new Integer(1), request.getPage());
-            assertEquals(new Integer(25), request.getMax());
-            assertEquals("categoryId", request.getCategory());
-            assertEquals("departmentId", request.getDepartment());
-            assertEquals("relevancy", request.getSortBy());
-        } catch (Exception e) {
-            logger.debug(e.getMessage(), e);
-            e.printStackTrace();
-        }
+        ObjectMapper mapper = new ObjectMapper();
+        SearchQuery request = mapper.readValue(getFileContentAsStream("SearchQuery.json"), SearchQuery.class);
+        Assert.assertEquals("apples", request.getQuery());
+        Assert.assertEquals("brandId", request.getBrand());
+        Assert.assertEquals(Integer.valueOf(1), request.getPage());
+        Assert.assertEquals(Integer.valueOf(25), request.getMax());
+        Assert.assertEquals("categoryId", request.getCategory());
+        Assert.assertEquals("departmentId", request.getDepartment());
+        Assert.assertEquals("relevancy", request.getSortBy());
     }
 
 }

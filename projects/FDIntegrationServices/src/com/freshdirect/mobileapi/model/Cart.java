@@ -882,7 +882,7 @@ public class Cart {
         
         ErpPaymentMethodI paymentMethod = cart.getPaymentMethod();
         boolean isEBTPayment = (null!=paymentMethod && EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType()));
-        if(!isEBTPayment && !cart.containsDlvPassOnly()){
+       	if(!isEBTPayment){
 	        //Delivery Charge
             if (cartDetail.isDlvPassApplied()) {
 

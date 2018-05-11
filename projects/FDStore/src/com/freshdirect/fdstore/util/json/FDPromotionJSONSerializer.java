@@ -113,6 +113,8 @@ import com.metaparadigm.jsonrpc.Serializer;
 import com.metaparadigm.jsonrpc.SerializerState;
 import com.metaparadigm.jsonrpc.UnmarshallException;
 
+import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
+
 public class FDPromotionJSONSerializer extends AbstractSerializer {
 	private static final long serialVersionUID = 4602538095592746033L;
 
@@ -279,7 +281,7 @@ public class FDPromotionJSONSerializer extends AbstractSerializer {
 				if (getSetter(klass, prop, m.getReturnType()) != null) {
 					props.put(prop, m);
 				} else {
-					LOGGER.warn("[collectProperties] Prop '" + prop + "' skipped, no setter");
+					LOGGER.debug(klass+" [collectProperties] Prop '" + prop + "' skipped, no setter");
 				}
 			} else if (m.getName().startsWith("is")) {
 				// boolean type
@@ -287,7 +289,7 @@ public class FDPromotionJSONSerializer extends AbstractSerializer {
 				if (getSetter(klass, prop, m.getReturnType()) != null) {
 					props.put(prop, m);
 				} else {
-					LOGGER.warn("[collectProperties] Prop '" + prop + "' skipped, no setter");
+					LOGGER.debug(klass+" [collectProperties] Prop '" + prop + "' skipped, no setter");
 				}
 			}
 		}
@@ -533,7 +535,7 @@ public class FDPromotionJSONSerializer extends AbstractSerializer {
 					} else {
 						// Value is in not expected format, skip ...
 						// System.err.println("BANG[1] rhs:" + rhs.getClass().getName() + "/ valueType: " + valueType);
-						// LOGGER.warn("Unexpected rhs:" + rhs.getClass().getName() + "/ valueType: " + valueType));
+						// LOGGER.debug("Unexpected rhs:" + rhs.getClass().getName() + "/ valueType: " + valueType));
 						continue;
 					}
 				} else if (Iterable.class.isAssignableFrom(valueType)) {
@@ -543,23 +545,79 @@ public class FDPromotionJSONSerializer extends AbstractSerializer {
 					
 					Collection coll = (Collection) rhs;
 					Collection valami;
+					ParameterizedType rt =null;
+					if(getter.getGenericReturnType() instanceof ParameterizedTypeImpl){
+						try {
+							rt = (ParameterizedType) getter.getGenericReturnType();
+						} catch (Exception e1) {
+							LOGGER.error("Exception in getter.getGenericReturnType():", e1);
+						}
+					}
 					if (List.class.equals(valueType)) {
-						valami = new ArrayList();
+						if(null == rt){
+							valami = new ArrayList();
+						}else{
+							valami = createListOfType((Class<?>)rt.getActualTypeArguments()[0]);
+						}
 					} else if (Set.class.equals(valueType)) {
-						valami = new HashSet();
+						if(null == rt){
+							valami = new HashSet();
+						}else{
+							valami = createSetOfType((Class<?>)rt.getActualTypeArguments()[0]);
+						}
 					} else {
 						valami = (Collection) valueType.newInstance();
 					}
 
-					for (Object o : coll) {
+					
+					/*for (Object o : coll) {
 						valami.add(deserializeRightHandSize(o));
+					}*/
+					
+					if(null !=rt){
+						Class classRt =(Class) rt.getActualTypeArguments()[0];
+						if(org.apache.commons.lang.enums.Enum.class.equals(classRt.getSuperclass()) || org.apache.commons.lang.enums.Enum.class.equals(classRt) ||
+								org.apache.commons.lang.enums.ValuedEnum.class.equals(classRt.getSuperclass()) || org.apache.commons.lang.enums.ValuedEnum.class.equals(classRt)){
+							try {
+								for (Object o : coll) {
+									Field decl = classRt.getField(o.toString());
+									Object fld = decl.get(valueType);
+									valami.add(fld);
+								}
+							} catch (SecurityException e) {
+								LOGGER.error("SecurityException:", e);
+							} catch (IllegalArgumentException e) {
+								LOGGER.error("IllegalArgumentException:", e);
+							} catch (NoSuchFieldException e) {
+								LOGGER.error("NoSuchFieldException:", e);
+							}
+						}else{
+							for (Object o : coll) {
+								valami.add(deserializeRightHandSize(o));
+							}	
+						}
+					}else{
+						for (Object o : coll) {
+							valami.add(deserializeRightHandSize(o));
+						}
 					}
-
+					
 					silentInvoke(obj, setter, valami);
 				} else if (Map.class.isAssignableFrom(valueType)) {
 					ParameterizedType rt = (ParameterizedType) getter.getGenericReturnType();
-					final Class<?> keyType = (Class<?>) rt.getActualTypeArguments()[0];
-					final Class<?> valType = (Class<?>) rt.getActualTypeArguments()[1];
+					Class<?> keyType = null;
+					Class<?> valType = null;
+					try {
+						keyType = (Class<?>) rt.getActualTypeArguments()[0];
+						if(rt.getActualTypeArguments()[1] instanceof ParameterizedTypeImpl){
+							valType =((ParameterizedTypeImpl)rt.getActualTypeArguments()[1]).getRawType();
+						}else{
+							valType = (Class<?>) rt.getActualTypeArguments()[1];
+						}
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					
 					// Map map = (Map) valueType.newInstance();
 					Map map;
@@ -590,6 +648,8 @@ public class FDPromotionJSONSerializer extends AbstractSerializer {
 		} catch (InstantiationException e) {
 			LOGGER.error("restoreObject", e);
 		} catch (IllegalAccessException e) {
+			LOGGER.error("restoreObject", e);
+		} catch (ClassCastException e){
 			LOGGER.error("restoreObject", e);
 		}
 		
@@ -664,5 +724,13 @@ public class FDPromotionJSONSerializer extends AbstractSerializer {
 		LOGGER.warn("Failed to decode value '" + rhs + "' with type " + valueType.getName());
 		
 		return null;
+	}
+	
+	public static <T> Set<T> createSetOfType(Class<T> type) {
+	    return new HashSet<T>();
+	}
+	
+	public static <T> List<T> createListOfType(Class<T> type) {
+	    return new ArrayList<T>();
 	}
 }

@@ -1353,6 +1353,9 @@ a.portrait-item-header-name:link {
 .cssBurst.going, .cssBurst.going span  {
 	background-color: #060;  /* green */
 }
+.portrait-item.unavailable .cssBurst { /* hide bursts on unavail products */
+	display: none;
+}
 .pdp-atc #pdp-atc-addtolist:focus{
 	text-decoration: underline;
 	color: #5fb069 !important;

@@ -12,9 +12,9 @@ import com.freshdirect.fdstore.customer.ExtendDPDiscountModel;
  */
 public class ExtendDeliveryPassApplicator implements PromotionApplicatorI {
 
-	private final int extendDays;
+	private int extendDays;
 	private DlvZoneStrategy zoneStrategy;
-	private final double minSubtotal;
+	private double minSubtotal;
 	private CartStrategy cartStrategy;
 
 	/**
@@ -23,6 +23,12 @@ public class ExtendDeliveryPassApplicator implements PromotionApplicatorI {
 	public ExtendDeliveryPassApplicator(int extendDays, double minSubtotal) {
 		this.extendDays = extendDays;
 		this.minSubtotal = minSubtotal;
+	}
+
+
+	public ExtendDeliveryPassApplicator() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 
 
@@ -51,7 +57,7 @@ public class ExtendDeliveryPassApplicator implements PromotionApplicatorI {
 	public int getExtendDays() {
 		return extendDays;
 	}
-	public void setZoneStrategy(DlvZoneStrategy zoneStrategy) {
+	public void setDlvZoneStrategy(DlvZoneStrategy zoneStrategy) {
 		this.zoneStrategy = zoneStrategy;
 	}
 
@@ -73,5 +79,20 @@ public class ExtendDeliveryPassApplicator implements PromotionApplicatorI {
 	@Override
 	public CartStrategy getCartStrategy() {
 		return this.cartStrategy;
+	}
+
+
+	public DlvZoneStrategy getZoneStrategy() {
+		return zoneStrategy;
+	}
+
+
+	public void setExtendDays(int extendDays) {
+		this.extendDays = extendDays;
+	}
+
+
+	public void setMinSubtotal(double minSubtotal) {
+		this.minSubtotal = minSubtotal;
 	}
 }

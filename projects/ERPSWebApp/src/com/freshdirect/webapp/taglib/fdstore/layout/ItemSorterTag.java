@@ -11,23 +11,28 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.content.util.ContentNodeComparator;
 import com.freshdirect.fdstore.content.util.SortStrategyElement;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.TagSupport;
 import com.freshdirect.storeapi.content.ContentNodeModel;
 import com.freshdirect.storeapi.content.PrioritizedI;
 import com.freshdirect.storeapi.content.ProductModelImpl;
 
-/**@author ekracoff*/
 public class ItemSorterTag extends TagSupport {
 
 	private static final long	serialVersionUID	= -3605786436110056555L;
 
-	private static Category LOGGER = LoggerFactory.getInstance(ItemSorterTag.class);
+    private static final Category LOGGER = LoggerFactory.getInstance(ItemSorterTag.class);
 
+    private FDUserI user;
 	private List<ContentNodeModel> nodes;
 	private List<SortStrategyElement> strategy;
 
-	public void setNodes(List<ContentNodeModel> nodes) {
+    public void setUser(FDUserI user) {
+        this.user = user;
+    }
+
+    public void setNodes(List<ContentNodeModel> nodes) {
 		this.nodes = nodes;
 	}
 
@@ -35,17 +40,11 @@ public class ItemSorterTag extends TagSupport {
 		this.strategy = strategy;
 	}
 
-	public int doStartTag() throws JspException {
-
-		//LOGGER.info(">>>Sorting " + nodes.size() + " items by " + strategy.size() + " attributes");
-		long t = System.currentTimeMillis();
-		
+	@Override
+    public int doStartTag() throws JspException {
 		if (strategy.isEmpty() || strategy.get(0).getSortType() != SortStrategyElement.NO_SORT)
-			Collections.sort(nodes, new ContentNodeComparator(strategy));
+            Collections.sort(nodes, new ContentNodeComparator(user, strategy));
 
-		t = System.currentTimeMillis() - t;
-		//LOGGER.info(">>>Sorting completed in " + t + " milliseconds." );
-		
 		String debug = pageContext.getRequest().getParameter("debug");
 		if ("dumpSortResult".equals(debug)) {
 		    JspWriter out = pageContext.getOut();

@@ -326,6 +326,8 @@ public class FDUser extends ModelSupport implements FDUserI {
     
     private Collection<FDStandingOrder> activeSO3s = new ArrayList<FDStandingOrder>();
 
+    private String multiSearchList;
+    
 	public Date getTcAcknowledgeDate() {
         return tcAcknowledgeDate;
     }
@@ -692,8 +694,11 @@ public class FDUser extends ModelSupport implements FDUserI {
         this.clearPromoErrorCodes();
         this.getShoppingCart().setDlvPassExtn(null);
         this.getShoppingCart().setDlvPromotionApplied(false);
+        this.getShoppingCart().setDeliveryPassCount();
         if ((this.getShoppingCart().getDeliveryPassCount() > 0) || (this.isDlvPassActive()) || (this.applyFreeTrailOptinBasedDP())) {
         	this.getShoppingCart().setDlvPassApplied(true);
+        }else {
+        	this.getShoppingCart().setDlvPassApplied(false);
         }
 
         // evaluate special dlv charge override
@@ -817,13 +822,6 @@ public class FDUser extends ModelSupport implements FDUserI {
     public int getOrderCountForChefsTableEligibility() throws FDResourceException {
         OrderHistoryI orderHistory = getOrderHistory();
         return orderHistory.getOrderCountForChefsTableEligibility();
-    }
-
-    @Override
-    public String getOrderTotalForChefsTableEligibility() throws FDResourceException {
-        OrderHistoryI orderHistory = getOrderHistory();
-
-        return NumberFormat.getCurrencyInstance(Locale.US).format(orderHistory.getOrderSubTotalForChefsTableEligibility());
     }
 
     @Override
@@ -4046,4 +4044,14 @@ public class FDUser extends ModelSupport implements FDUserI {
 			this.cachedFDCustomer.getCustomerEStoreModel().setInformOrderModifyViewCount(eStore, informOrderModify);
 		}
 	}
+
+    @Override
+    public String getMultiSearchList() {
+        return multiSearchList == null ? "" : multiSearchList;
+    }
+
+    @Override
+    public void setMultiSearchList(String searchTermList) {
+        multiSearchList = searchTermList;
+    }
 }

@@ -40,7 +40,7 @@ import com.freshdirect.sap.ejb.SapException;
 public class SettlementFileProcessor {
 
 	private static final Category LOGGER = LoggerFactory
-			.getInstance(PaymentechSettlementLoader.class);
+			.getInstance(SettlementFileProcessor.class);
 	private static final String[] VALID_PDE_TOKENS = { "HPDE0017", "RPDE0017S", "HPDE0018",
 			"RPDE0018S", "RPDE0018D", "HPDE0020", "RPDE0022" };
 

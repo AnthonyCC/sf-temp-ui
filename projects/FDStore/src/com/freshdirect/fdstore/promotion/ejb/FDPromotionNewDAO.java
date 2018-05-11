@@ -185,7 +185,8 @@ public class FDPromotionNewDAO {
 			int redeemCnt = rs.getInt("REDEEM_CNT");
 			if(!rs.wasNull() && redeemCnt > 0)
 				promo.addStrategy(new MaxRedemptionStrategy(redeemCnt));
-			
+			promo.setCapcityUtilization(rs.getDouble("CAPACITY_UTILIZATION"));
+			promo.seteStoreId(rs.getString("E_STORE"));
 			if("X".equalsIgnoreCase(rs.getString("RULE_BASED"))) {
 				promo.addStrategy(new RuleBasedPromotionStrategy());
 			}
@@ -466,6 +467,9 @@ public class FDPromotionNewDAO {
 		
 		String rafPromoCode=rs.getString("RAF_PROMO_CODE");
 		
+		promo.setCapcityUtilization(rs.getDouble("CAPACITY_UTILIZATION"));
+		
+		promo.seteStoreId(rs.getString("E_STORE"));
 		
 	//	String rafPromoCode=rs.getString("RAF_PROMO_CODE");
 		
@@ -757,7 +761,7 @@ public class FDPromotionNewDAO {
 			if(dlvZoneStrategy.getDlvDayType()!=null || (null !=dlvZoneStrategy.getDlvDates() && !dlvZoneStrategy.getDlvDates().isEmpty()) || null != dlvZoneStrategy.getDlvZoneId()){			
 				for (Iterator<PromotionApplicatorI> i = promo.getApplicatorList().iterator(); i.hasNext();) {
 					PromotionApplicatorI _applicator = i.next();
-					_applicator.setZoneStrategy(dlvZoneStrategy);
+					_applicator.setDlvZoneStrategy(dlvZoneStrategy);
 				}
 			}
 		}
@@ -1216,11 +1220,11 @@ public class FDPromotionNewDAO {
 	private static void populateCustomerStrategy(ResultSet rs, CustomerStrategy strategy) throws SQLException {
 		String cohorts = rs.getString("COHORT");
 		if(cohorts != null && cohorts.length() > 0){
-			strategy.setCohorts(cohorts);
+			strategy.setCohortNames(cohorts);
 		}
 		String dpTypes = rs.getString("DP_TYPES");
 		if(dpTypes != null && dpTypes.length() > 0){
-			strategy.setDpTypes(dpTypes);
+			strategy.setDpTypesNames(dpTypes);
 		}
 		String status = rs.getString("dp_status");
 		if(status != null){
@@ -1236,13 +1240,13 @@ public class FDPromotionNewDAO {
 			}
 		}
 		int orderStartRange = rs.getInt("order_range_start");
-		strategy.setOrderStartRange(orderStartRange);
+		strategy.setOrderRangeStart(orderStartRange);
 		int orderEndRange = rs.getInt("order_range_end");
-		strategy.setOrderEndRange(orderEndRange);
+		strategy.setOrderRangeEnd(orderEndRange);
 		
 		String paymentTypes = rs.getString("payment_type");
 		if(paymentTypes != null && paymentTypes.length() > 0)
-			strategy.setPaymentTypes(paymentTypes);
+			strategy.setPaymentTypeNames(paymentTypes);
 		
 		int priorEcheckUse = rs.getInt("prior_echeck_use");
 		strategy.setPriorEcheckUse(priorEcheckUse);
@@ -1447,7 +1451,12 @@ public class FDPromotionNewDAO {
 			dlvZoneStrategy.setDlvDays(rs.getString("DLV_DAYS"));
 			Array array = rs.getArray(4);
 			String[] zoneCodes = (String[])array.getArray();
-			dlvZoneStrategy.setDlvZones(Arrays.asList(zoneCodes));;			
+			dlvZoneStrategy.setDlvZones(Arrays.asList(zoneCodes));;		
+			
+			Array arrayTravelZoneCodes = rs.getArray(5);
+			String[] dlvZoneCodes = arrayTravelZoneCodes != null ?  (String[]) arrayTravelZoneCodes.getArray() : null;
+			dlvZoneStrategy.setTravelZones(dlvZoneCodes!= null ?Arrays.asList(dlvZoneCodes) : null);
+			
 		}
 		rs.close();
 		ps.close();
@@ -1459,7 +1468,7 @@ public class FDPromotionNewDAO {
 				Integer dayId = rs.getInt("DAY_ID");
 				Array windowArray = rs.getArray("DLV_WINDOWTYPE");
 				String[] windowType = windowArray != null ? (String[]) windowArray.getArray() : null;
-				PromotionDlvTimeSlot dlvTimeSlot = new PromotionDlvTimeSlot(dayId,rs.getString("START_TIME"),rs.getString("END_TIME"), windowType);
+				PromotionDlvTimeSlot dlvTimeSlot = new PromotionDlvTimeSlot(dayId,rs.getString("START_TIME"),rs.getString("END_TIME"), windowType,rs.getString("RANGE_EXACT"),rs.getInt("CUT_OFF_EXP_TIME"));
 				List<PromotionDlvTimeSlot> dlvTimeSlotList = dlvTimeSlots.get(dayId);
 				if(null == dlvTimeSlotList){
 					dlvTimeSlotList = new ArrayList<PromotionDlvTimeSlot>();
@@ -1474,7 +1483,7 @@ public class FDPromotionNewDAO {
 			ps.setString(1, dlvZoneStrategy.getDlvZoneId());
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				PromotionDlvDay dlvDay = new PromotionDlvDay(rs.getInt("DAY_ID"), rs.getInt("REDEEM_CNT"));
+				PromotionDlvDay dlvDay = new PromotionDlvDay(rs.getInt("DAY_ID"), rs.getInt("REDEEM_CNT"),rs.getDouble("CAPACITY_UTILIZATION"));
 				if(!dlvDays.containsKey(dlvDay.getDayId())){
 					dlvDays.put(dlvDay.getDayId(), dlvDay);
 				}			

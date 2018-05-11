@@ -32,7 +32,10 @@
 		<script>
 			$jq(document).ready(function() {
 	          	$jq.ajax('/api/carousel?type=deals&siteFeature=DEALS_QS&maxItems=15&cmEventSource=cc_tabbedRecommender').then(function(data) {
-	          		if (data) {
+	          		if(data && data.isNewProductsCarouselLoaded) {
+	          			data.selected = 'newproducts';
+	          			$jq('.pdp-cc .cc-tabbedCarousel').html(common.tabbedCarousel(data));
+	          		} else if (data) {
 	          			data.selected = 'deals';
 	          			$jq('.pdp-cc .cc-tabbedCarousel').html(common.tabbedCarousel(data));
 	          		}
@@ -41,3 +44,10 @@
         </script>
 	</div>
 </div>
+
+
+
+
+	          	
+	          		
+	          		

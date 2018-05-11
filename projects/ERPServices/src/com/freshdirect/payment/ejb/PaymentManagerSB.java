@@ -13,20 +13,24 @@ import com.freshdirect.customer.ErpAuthorizationModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpTransactionException;
 
+/**
+ * 
+ * @deprecated
+ *
+ */
 public interface PaymentManagerSB extends EJBObject {
 	
+	@Deprecated
 	public List<ErpAuthorizationModel> authorizeSaleRealtime(String saleId) throws ErpAuthorizationException, ErpAddressVerificationException, RemoteException;
-	
+	@Deprecated
 	public EnumPaymentResponse authorizeSale(String saleId, boolean force) throws RemoteException;
-	
+	@Deprecated
 	public void voidCapturesNoTrans(String saleId) throws ErpTransactionException, RemoteException;
-	
+	@Deprecated
 	public void captureAuthorizations(String saleId, List<ErpAuthorizationModel> auths) throws ErpTransactionException, RemoteException;
-	
+	@Deprecated
 	public List<ErpAuthorizationModel> authorizeSaleRealtime(String saleId,EnumSaleType saleType) throws ErpAuthorizationException, ErpAddressVerificationException, RemoteException;
-	
-	public ErpAuthorizationModel verify(String merchant,ErpPaymentMethodI paymentMethod)throws ErpTransactionException, RemoteException;
-	
+	@Deprecated
 	public boolean isValidVaultToken(String token, String customerId)throws RemoteException;
 
 }

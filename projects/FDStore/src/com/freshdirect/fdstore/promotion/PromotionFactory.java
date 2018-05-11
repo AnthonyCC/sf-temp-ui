@@ -77,7 +77,7 @@ public class PromotionFactory {
 			List<PromotionI> promoList = FDPromotionNewManager.getAllAutomaticPromotions();
 			Date now = new Date();
 			for ( PromotionI promo : promoList ) {
-				Date promoModifyDate = promo.getModifyDate();
+				Date promoModifyDate = promo.getLastModified();
 				if(this.maxLastModified == null || (this.maxLastModified.before(promoModifyDate) && !promoModifyDate.after(now))){
 					this.maxLastModified = new Date(promoModifyDate.getTime());
 				}
@@ -103,7 +103,7 @@ public class PromotionFactory {
 		if(promoList.size() > 0){
 			Date now = new Date();
 			for ( PromotionI promo : promoList ) {
-				Date promoModifyDate = promo.getModifyDate();
+				Date promoModifyDate = promo.getLastModified();
 				if(this.maxLastModified == null  || (this.maxLastModified.before(promoModifyDate) && !promoModifyDate.after(now))){
 					this.maxLastModified = new Date(promoModifyDate.getTime());
 				}

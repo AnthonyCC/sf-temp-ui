@@ -56,7 +56,7 @@ public class FDProductPromotionFactory {
 	};
 	
 	//Uncommented the code as part of APPDEV-5988 Staff Picks Dynamic Id
-	private ExpiringReference< Map<ZoneInfo,List<FDProductPromotionInfo>>>  productsAssortmentPromotion = new ExpiringReference< Map<ZoneInfo,List<FDProductPromotionInfo>>> (1 * 60 * 1000) {
+	private ExpiringReference< Map<ZoneInfo,List<FDProductPromotionInfo>>>  productsAssortmentPromotion = new ExpiringReference< Map<ZoneInfo,List<FDProductPromotionInfo>>> (5 * 60 * 1000) {
 		protected Map<ZoneInfo, List<FDProductPromotionInfo>> load() {
 			try {
 				LOGGER.info("REFRESHING PRODUCTS ASSORTMENT PROMOTION FOR ANY NEW PROMOTIONS FROM LAST MODIFIED TIME "+productsAssortmentLastPublished);				

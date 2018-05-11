@@ -37,11 +37,11 @@
 <fd:CheckDraftContextTag/>
 <fd:PDPRedirector user="<%=user %>" />
 
-<potato:product name="productPotato" extraName="productExtraPotato" productId='${param.productId}' categoryId='${param.catId}' variantId='${param.variantId}' grpId='${param.grpId}' version='${param.version}' />
-<potato:browse name="browsePotato" pdp="true" nodeId='${param.catId}'/>
+<potato:product name="productPotato" extraName="productExtraPotato" productId='<%=request.getParameter("productId")%>' categoryId='<%=request.getParameter("catId")%>' variantId='<%=request.getParameter("variantId")%>' grpId='<%=request.getParameter("grpId")%>' version='<%=request.getParameter("version")%>' />
+<potato:browse name="browsePotato" pdp="true" nodeId='<%=request.getParameter("catId")%>'/>
 
 	
-<fd:ProductGroup id='productNode' categoryId='${param.catId}' productId='${param.productId}' >
+<fd:ProductGroup id='productNode' categoryId='<%=request.getParameter("catId")%>' productId='<%=request.getParameter("productId")%>' >
 
 <%
 boolean isWine = EnumTemplateType.WINE.equals( productNode.getTemplateType() );

@@ -10,6 +10,7 @@ public class ReceiptData {
 	private String totalLabel;
 	private String saveAmount;
 	private List<CartSubTotalFieldData> receiptLines;
+	private boolean isEstimatedTotal;
 
 	public String getTotal() {
 		return total;
@@ -39,6 +40,14 @@ public class ReceiptData {
 
 	public void setReceiptLines(List<CartSubTotalFieldData> receiptLines) {
 		this.receiptLines = receiptLines;
+	}
+
+	public boolean isEstimatedTotal() {
+		return isEstimatedTotal;
+	}
+
+	public void setEstimatedTotal(boolean isEstimatedTotal) {
+		this.isEstimatedTotal = isEstimatedTotal;
 	}
 
 }

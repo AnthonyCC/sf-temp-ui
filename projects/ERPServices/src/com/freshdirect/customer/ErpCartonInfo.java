@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ErpCartonInfo implements Serializable {
 
@@ -66,10 +67,10 @@ public class ErpCartonInfo implements Serializable {
 	
 	@JsonCreator
 	public ErpCartonInfo(
-		String orderNumber,
-		String sapNumber,
-		String cartonNumber,
-		String cartonType
+		@JsonProperty("orderNumber") String orderNumber,
+		@JsonProperty("sapNumber") String sapNumber,
+		@JsonProperty("cartonNumber") String cartonNumber,
+		@JsonProperty("cartonType") String cartonType
 		) {
 		this.orderNumber = orderNumber;
 		this.sapNumber = sapNumber;

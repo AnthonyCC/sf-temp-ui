@@ -164,7 +164,7 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
     }
 
     public AvailabilityI getAvailability() {
-        if (FDStoreProperties.isDeveloperDisableAvailabilityLookup()) {
+        if (FDStoreProperties.isDeveloperDisableAvailabilityLookup() || FDStoreProperties.getPreviewMode()) {
             return DUMMY_AVAILABLE;
         }
         try {

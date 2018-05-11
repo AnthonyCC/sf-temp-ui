@@ -22,6 +22,11 @@ public class HeaderDiscountRule implements Serializable {
 		this.dollarList = dollarList;
 	}
 
+	public HeaderDiscountRule() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
 	public double getMinSubtotal() {
 		return minSubtotal;
 	}
@@ -32,6 +37,18 @@ public class HeaderDiscountRule implements Serializable {
 	
 	public List<FDPromoDollarDiscount> getDollarList() {
 		return dollarList;
+	}
+
+	public void setMinSubtotal(double minSubtotal) {
+		this.minSubtotal = minSubtotal;
+	}
+
+	public void setMaxAmount(double maxAmount) {
+		this.maxAmount = maxAmount;
+	}
+
+	public void setDollarList(List<FDPromoDollarDiscount> dollarList) {
+		this.dollarList = dollarList;
 	}
 
 	public String toString() {

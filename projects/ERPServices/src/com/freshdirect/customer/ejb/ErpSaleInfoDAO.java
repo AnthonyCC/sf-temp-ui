@@ -477,99 +477,6 @@ public class ErpSaleInfoDAO {
         }
     }
 
-	private static final String redeliveryQuery =
-		"select old.customer_id,old.id, new.status, old.truck_number, old.stop_sequence, old.first_name || ' ' || old.last_name as name, "
-			+ "old.address1 || ' ' || old.apartment as address, new.starttime, new.endtime "
-			+ "from "
-			+ "(select s.customer_id,s.id, s.truck_number, s.stop_sequence, di.first_name, di.last_name, di.address1, di.apartment "
-			+ "from cust.sale s, cust.salesaction sa, cust.deliveryinfo di "
-			+ "where s.id=sa.sale_id and sa.id=di.salesaction_id  and sa.action_type in ('CRO','MOD') "
-			+ "and sa.action_date=(select max(action_date) from cust.salesaction where action_type in ('CRO','MOD') and sale_id=s.id) "
-			+ "and trunc(di.starttime) = trunc(?-1)) old, "
-			+ "(select s.id, s.status, di.starttime, di.endtime "
-			+ "from cust.sale s, cust.salesaction sa, cust.deliveryinfo di "
-			+ "where s.id=sa.sale_id and sa.id=di.salesaction_id and sa.action_type='RED' and s.status='RED' "
-			+ "and sa.action_date=(select max(action_date) from cust.salesaction where action_type='RED' and sale_id=s.id) "
-			+ "and trunc(di.starttime) = trunc(?)) new "
-			+ "where new.id=old.id order by truck_number, stop_sequence ";
-
-	public static List<RedeliverySaleInfo> getRedeliveries(Connection conn, java.util.Date date) throws SQLException {
-        PreparedStatement ps = null; 
-        ResultSet rs = null;
-
-        try {
-	
-			ps = conn.prepareStatement(redeliveryQuery);
-			ps.setDate(1, new java.sql.Date(date.getTime()));
-			ps.setDate(2, new java.sql.Date(date.getTime()));
-			rs = ps.executeQuery();
-			List<RedeliverySaleInfo> saleInfos = new ArrayList<RedeliverySaleInfo>();
-			RedeliverySaleInfo saleInfo = null;
-			while (rs.next()) {
-				saleInfo =
-					new RedeliverySaleInfo(
-						rs.getString("ID"),
-						rs.getString("CUSTOMER_ID"),
-						EnumSaleStatus.getSaleStatus(rs.getString("STATUS")),
-						rs.getString("TRUCK_NUMBER"),
-						rs.getString("STOP_SEQUENCE"),
-						rs.getString("NAME"),
-						rs.getString("ADDRESS"),
-						rs.getTimestamp("STARTTIME"),
-						rs.getTimestamp("ENDTIME"));
-				saleInfos.add(saleInfo);
-			}
-	
-			return saleInfos;
-        } finally {
-            DaoUtil.closePreserveException(rs,ps);
-        }
-	}
-
-	private static final String everyItemOrderedQuery =
-		"select ol.sku_code, ol.sales_unit, quantity as quantity, ol.configuration, sa.action_date "
-			+ "from cust.sale s, cust.salesaction sa, cust.orderline ol "
-			+ "where s.id=sa.sale_id and sa.id=ol.salesaction_id and sa.action_type in ('CRO','MOD') "
-			+ "and sa.action_date=(select max(action_date) from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD')) "
-			+ "and s.customer_id=? "
-			+ "and NVL(ol.promotion_type,0)<>"
-			+ EnumDiscountType.SAMPLE.getId()
-			+ " and NVL(ol.delivery_grp, 0) = 0 ";
-
-	public static List<FDConfiguredProduct> getEveryItemEverOrdered(Connection conn, String erpCustomerId) throws SQLException {
-        PreparedStatement ps = null; 
-        ResultSet rs = null;
-
-        try {
-			ps = conn.prepareStatement(everyItemOrderedQuery);
-			ps.setString(1, erpCustomerId);
-			rs = ps.executeQuery();
-			List<FDConfiguredProduct> products = new ArrayList<FDConfiguredProduct>();
-			FDConfiguredProductFactory factory = FDConfiguredProductFactory.getInstance();
-			
-			while (rs.next()) {
-				try {
-					FDConfiguredProduct prod = factory.getConfiguration(
-						rs.getString("SKU_CODE"),
-						rs.getDouble("QUANTITY"),
-						rs.getString("SALES_UNIT"),
-						ErpOrderLineUtil.convertStringToHashMap(rs.getString("CONFIGURATION")));
-					
-					products.add(prod);
-				} catch (FDResourceException e) {
-					LOGGER.warn("Unable to create a configured product", e);
-				} catch (FDSkuNotFoundException e) {
-					LOGGER.warn("Unable to create a configured product", e);
-				}
-			}
-	
-			return products;
-        } finally {
-            DaoUtil.closePreserveException(rs,ps);
-        }
-
-	}
-	
 	// get order number for a customer except cancelled orders.
 	private static final String validOrderCountQuery = "select count(*) from cust.sale where customer_id =? and status <>'CAN'";
 	
@@ -828,31 +735,6 @@ public class ErpSaleInfoDAO {
         } finally {
             DaoUtil.closePreserveException(rs,ps);
         }
-	}
-	
-	private static final String LAST_ORD_SEARCH_QUERY =
-		"select s.id,s.customer_id, s.stop_sequence, s.status, di.first_name, di.last_name, di.address1, di.apartment, di.zip "
-			+ "from cust.sale s, cust.salesaction sa, cust.deliveryinfo di "
-			+ "where s.id=sa.sale_id and sa.id=di.salesaction_id and s.status<>'CAN' "
-			+ "and sa.action_type in ('STL') and sa.action_date=(select max(action_date) from cust.salesaction where sale_id=s.id and action_type in ('STL')) "
-			+ "and upper(di.address1) like upper(?) and upper(di.apartment) = UPPER(?) and di.zip = ? and s.type='REG'";
-
-	public static List<DlvSaleInfo> getLastOrderForAddress(Connection conn, AddressModel address) throws SQLException {
-        PreparedStatement ps = null; 
-        ResultSet rs = null;
-
-        try {
-			ps = conn.prepareStatement(LAST_ORD_SEARCH_QUERY);
-	//		ps.setDate(1, new java.sql.Date(date.getTime()));
-			ps.setString(1, "%" + address.getAddress1());
-			ps.setString(2, address.getApartment());
-			ps.setString(3, address.getZipCode());
-	
-			return collectDlvSaleInfo(ps);
-        } finally {
-            DaoUtil.closePreserveException(rs,ps);
-        }
-
 	}
 	
 	private static final String GC_NSM_ORD_SEARCH_QUERY =

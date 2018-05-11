@@ -572,10 +572,13 @@
 	float: left;
 }
 .standing-orders-3 a.standing-orders-3-so-settings-help{
-	float: right;
+	float: left;
 	padding: 0 15px 0 0;
 	font-size: 13px;
 	color: #FFFFFF;
+}
+.accessibileStdgodr{
+	float:right;
 }
 .standing-orders-3 a.standing-orders-3-so-settings-help:hover{
 	color: #FFFFFF;
@@ -1323,7 +1326,7 @@
 	width: 22px;
 	height: 22px;
     background: #FFFFFF;
-    float: right;
+    float: left;
 }
 .standing-orders-3-so-settings-square-line-1{
     background: #996699;
@@ -1645,4 +1648,7 @@
 	border-radius: 0px;
 	-webkit-border-radius: 0px;
 	-moz-border-radius: 0px;
+}
+a.standing-orders-3-so-settings-square-settings{
+	display:inline-block;
 }

@@ -3,18 +3,18 @@
  * @param? list category list
  */
 {template .categoryList autoescape="false"}
-<nav class="explore__category-list-cont" data-component="explore-category-list">
-	<ul>
-	{foreach $el in $list}
-		{if $el.image}
-			<li class="explore__category-list-element">
-				<a href="/browse.jsp?id={$el.id}" class="explore__category-list-link" data-dept="{$el.id}">
-					<div class="explore__category-list-image-cont"><img class="explore__category-list-image" src="{$el.image}" /></div>
-					<div class="explore__category-list-name-cont"><span class="explore__category-list-name">{$el.name}</span></div>
-				</a>
-			</li>
-		{/if}
-	{/foreach}
-	</ul>
+<nav class="explore__category-list" data-component="explore-category-list">
+  <ul>
+  {foreach $el in $list}
+    {if $el.image}
+    <li class="explore__category-list-element">
+      <a href="/browse.jsp?id={$el.id}" class="explore__category-list-link" data-dept="{$el.id}">
+        <img class="explore__category-list-image" src="{$el.image}" />
+        <div class="explore__category-list-name"><span>{$el.name}</span></div>
+      </a>
+    </li>
+    {/if}
+  {/foreach}
+  </ul>
 </nav>
 {/template}

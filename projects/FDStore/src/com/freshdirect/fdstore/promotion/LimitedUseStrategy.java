@@ -2,10 +2,16 @@ package com.freshdirect.fdstore.promotion;
 
 public class LimitedUseStrategy implements PromotionStrategyI {
 
-	private final int maxUsage; //is per customer
+	private int maxUsage; //is per customer
 	
 	public LimitedUseStrategy(int maxUsage) {
 		this.maxUsage = maxUsage;
+	}
+
+
+	public LimitedUseStrategy() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 
 
@@ -40,5 +46,10 @@ public class LimitedUseStrategy implements PromotionStrategyI {
 	@Override
 	public boolean isStoreRequired() {
 		return false;
+	}
+
+
+	public void setMaxUsage(int maxUsage) {
+		this.maxUsage = maxUsage;
 	}
 }

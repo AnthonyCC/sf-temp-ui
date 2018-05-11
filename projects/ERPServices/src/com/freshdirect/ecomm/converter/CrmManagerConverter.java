@@ -303,7 +303,7 @@ public class CrmManagerConverter {
 
 	public static CrmAgentModelData buildCrmAgentModelData(CrmAgentModel agent) {
 		CrmAgentModelData crmAgentData = new CrmAgentModelData();
-		if(agent.getId() != null)
+		if(agent!=null && agent.getId() != null) {
 		crmAgentData.setId(agent.getId());
 		crmAgentData.setActive(agent.isActive());
 		crmAgentData.setAgentCaseQueues(buildCrmCaseQueuesData(agent.getAgentQueues()));
@@ -318,6 +318,7 @@ public class CrmManagerConverter {
 		if(agent.getRole() != null)
 		crmAgentData.setRoleCode(agent.getRole().getCode());
 		crmAgentData.setUserId(agent.getUserId());
+		}
 		return crmAgentData;
 		
 	}
