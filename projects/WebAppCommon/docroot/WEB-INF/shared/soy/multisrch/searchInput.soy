@@ -1,6 +1,7 @@
 {namespace multisrch}
 /**
  * @param? terms
+ * @param? suggestions
  * @param? maxItems
  */
 {template .searchInput autoescape="false"}
@@ -14,11 +15,11 @@
     </div>
   </form>
   {/if}
-  {if length($terms)}
+  {if $terms and length($terms)}
   <ul class="termlist">
-  {foreach $term in $terms}
     <li class="title">Current products</li>
     <li class="headers"><span class="checkbox-header">Active</span><span class="x-header">Remove</span></li>
+    {foreach $term in $terms}
     <li data-searchterm="{$term.name}" {if $term.enabled}data-enabled="true"{/if}>
       <input type="checkbox" id="ms_term_{$term.slug}" name="ms_terms" value="{$term.name}" {if $term.enabled}checked{/if}/>
       <label for="ms_term_{$term.slug}">
@@ -26,7 +27,20 @@
       </label>
       <button class="remove">remove {$term.name}</button>
     </li>
-  {/foreach}
+    {/foreach}
+  </ul>
+  {/if}
+  {if $suggestions and length($suggestions)}
+  <ul class="suggestions">
+    <li class="title">Suggestions</li>
+    {foreach $suggestion in $suggestions}
+    <li data-searchterm="{$suggestion}">
+      <input type="checkbox" id="ms_suggestion_{$suggestion}" name="ms_suggestions" value="{$suggestion}"/>
+      <label for="ms_term_{$suggestion}">
+        <span>{$suggestion}</span>
+      </label>
+    </li>
+    {/foreach}
   </ul>
   {/if}
 </div>

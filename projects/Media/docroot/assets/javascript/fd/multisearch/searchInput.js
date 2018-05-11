@@ -22,6 +22,10 @@ var FreshDirect = FreshDirect || {};
       value:[],
       writable: true
     },
+    suggestions:{
+      value:[],
+      writable: true
+    },
     handleSubmit:{
       value: function (e) {
         e.preventDefault();
@@ -143,6 +147,12 @@ var FreshDirect = FreshDirect || {};
           return t;
         });
 
+        data.suggestions = data.suggestions || this.suggestions.map(function (s) { return s.toLowerCase(); });
+        this.suggestions = data.suggestions;
+
+        var lterms = this.terms.map(function (t) { return t.toLowerCase(); });
+        data.suggestions = data.suggestions.filter(function (sug) { return lterms.indexOf(sug) === -1; });
+
         WIDGET.render.call(this, data);
 
         FreshDirect.components.autoComplete.init(this.placeholder+' input.searchinput');
@@ -167,15 +177,20 @@ var FreshDirect = FreshDirect || {};
   $(document).on('submit', '[data-component="multisearch-input"] form', searchInput.handleSubmit.bind(searchInput));
   $(document).on('click', '[data-component="multisearch-input"] button.remove', searchInput.removeTerm.bind(searchInput));
   $(document).on('change', '[data-component="multisearch-input"] .termlist input', searchInput.toggleTermEH.bind(searchInput));
+  $(document).on('change', '[data-component="multisearch-input"] .suggestions input', function (e) {
+    var sug = e.currentTarget.value;
+
+    if (sug) {
+      searchInput.addTerm(sug);
+    }
+  });
 
   fd.modules.common.utils.register("modules.multisearch", "searchInput", searchInput, fd);
 }(FreshDirect));
 
 // initialize based on query parameters
 (function (fd) {
-  /* DEFAULTLIST is not used currently, but we can display it somewhere
-  var DEFAULTLIST = fd.multisearch.defaultList ? fd.multisearch.defaultList.split(',') : [];
-  */
+  var SUGGESTIONS = fd.multisearch.defaultList ? fd.multisearch.defaultList.split(',') : [];
 
   setTimeout(function () {
     var q = fd.utils.getParameterByName('q'),
@@ -191,6 +206,7 @@ var FreshDirect = FreshDirect || {};
     terms = terms.filter(function (kw) { return kw; }).map(function (kw) { return kw.trim(); }).map(fd.utils.escapeHtml);
 
     fd.modules.multisearch.searchInput.render({
+      suggestions: SUGGESTIONS,
       terms: terms
     });
   }, 10);

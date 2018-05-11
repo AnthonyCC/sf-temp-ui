@@ -30,7 +30,7 @@
 	</tmpl:put>
 
   <tmpl:put name="seoMetaTag" direct="true">
-    <fd:SEOMetaTag title="Search for multiple products"></fd:SEOMetaTag>
+    <fd:SEOMetaTag title="Search for multiple products" pageId="express_search"></fd:SEOMetaTag>
   </tmpl:put>
 
 	<tmpl:put name='mobileSubMenu' direct='true'>

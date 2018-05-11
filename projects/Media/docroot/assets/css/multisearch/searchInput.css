@@ -70,7 +70,8 @@
   cursor: pointer;
 }
 
-.multisearch-input > ul.termlist {
+.multisearch-input > ul.termlist,
+.multisearch-input > ul.suggestions {
   margin: 10px 0 0;
   padding: 10px 6px;
   background: #fffffa;
@@ -81,7 +82,8 @@
   list-style-type: none;
 }
 
-.multisearch-input > ul.termlist > li {
+.multisearch-input > ul.termlist > li,
+.multisearch-input > ul.suggestions > li {
   line-height: 25px;
   font-size: 12px;
   display: block;
@@ -94,7 +96,8 @@
   font-weight: bold;
 }
 
-.multisearch-input > ul.termlist > li.headers {
+.multisearch-input > ul.termlist > li.headers,
+.multisearch-input > ul.suggestions > li.headers {
   font-size: 9px;
   padding: 0;
   line-height: 1.4em;
@@ -120,7 +123,8 @@
   cursor: pointer;
 }
 
-.multisearch-input > ul.termlist > .title {
+.multisearch-input > ul.termlist > .title,
+.multisearch-input > ul.suggestions > .title {
   background: transparent;
   color: inherit;
   margin-top: 0;
@@ -128,7 +132,8 @@
   padding: 0;
 }
 
-.multisearch-input > ul.termlist > li > input {
+.multisearch-input > ul.termlist > li > input,
+.multisearch-input > ul.suggestions > li > input {
   vertical-align: middle;
   max-height: 25px;
   max-width: 25px;
