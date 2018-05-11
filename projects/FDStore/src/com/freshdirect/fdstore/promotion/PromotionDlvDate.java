@@ -16,6 +16,11 @@ public class PromotionDlvDate extends ModelSupport{
 		this.dlvDateEnd = dlvDateEnd;
 	}
 
+	public PromotionDlvDate() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
 	public Date getDlvDateStart() {
 		return dlvDateStart;
 	}

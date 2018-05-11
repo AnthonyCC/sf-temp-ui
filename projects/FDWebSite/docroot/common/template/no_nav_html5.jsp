@@ -1,8 +1,8 @@
-<!DOCTYPE html>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
+<!DOCTYPE html>
 <html lang="en-US" xml:lang="en-US">
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />

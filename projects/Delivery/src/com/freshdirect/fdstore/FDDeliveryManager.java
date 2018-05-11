@@ -107,6 +107,7 @@ import com.freshdirect.logistics.delivery.dto.CustomerAvgOrderSize;
 import com.freshdirect.logistics.delivery.dto.ScrubbedAddress;
 import com.freshdirect.logistics.delivery.model.DlvZoneCapacityInfo;
 import com.freshdirect.logistics.delivery.model.DlvZoneModel;
+import com.freshdirect.logistics.delivery.model.EnumAddressType;
 import com.freshdirect.logistics.delivery.model.EnumApplicationException;
 import com.freshdirect.logistics.delivery.model.EnumRegionServiceType;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
@@ -575,7 +576,19 @@ public class FDDeliveryManager {
 
 	private AddressInfoData buildAddressData(AddressInfo addressInfo) {
 		AddressInfoData data = new AddressInfoData();
-		data.setAddressType(addressInfo.getAddressType()==null?null:addressInfo.getAddressType().getName());
+		if(addressInfo==null)
+			return null;
+		String addressType = null;
+		if(addressInfo.getAddressType()!=null){
+			if(addressInfo.getAddressType().getName()!=null){
+				addressType=addressInfo.getAddressType().getName();
+			}else if(addressInfo.getAddressType().getValue()!=0){
+				addressType = EnumAddressType.getEnum(addressInfo.getAddressType().getValue()).getName();
+			}
+		}
+//		data.setAddressType(addressInfo.getAddressType()==null?null: Integer.toString(addressInfo.getAddressType().getValue()));
+		data.setAddressType(addressType);
+
 		data.setBuildingId(addressInfo.getBuildingId()==null?null:addressInfo.getBuildingId());
 		data.setCounty(addressInfo.getCounty()==null?null:addressInfo.getCounty());
 		data.setGeocodeException(addressInfo.isGeocodeException());

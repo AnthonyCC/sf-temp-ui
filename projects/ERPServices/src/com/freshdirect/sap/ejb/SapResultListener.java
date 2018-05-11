@@ -256,9 +256,11 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 							//Capture the authorizations.
 							if(EnumSaleStatus.CAPTURE_PENDING.equals(saleEB.getStatus()))
 							try{
-								PaymentManagerSB paymentManager = (PaymentManagerSB) this.getPaymentManagerHome().create();
 								List<ErpAuthorizationModel> auths=saleEB.getAuthorizations();
+
+								PaymentManagerSB paymentManager = this.getPaymentManagerHome().create();
 								paymentManager.captureAuthorizations(saleId, auths);
+								
 								saleEB.forcePaymentStatus();
 								DlvPassManagerSB dlvPass = this.getDlvPassManagerHome().create();
 								dlvPass.updateDeliveryPassActivation(saleId);

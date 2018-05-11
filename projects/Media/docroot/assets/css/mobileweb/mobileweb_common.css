@@ -3089,3 +3089,8 @@ form.dispblock-fields td { /* force the tds to block so the label and field are 
 		}
 		.refine-btn {
 		}
+/* bug fix for product display in quickshop pages */
+		.mm-page section.main .content {
+                float: right;
+                width: 100%;
+        }

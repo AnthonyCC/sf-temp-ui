@@ -1,6 +1,7 @@
 package com.freshdirect.ecomm.gateway;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.FinderException;
@@ -8,7 +9,6 @@ import javax.ejb.FinderException;
 import org.apache.log4j.Category;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.freshdirect.common.CustomMapper;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.EnumSaleStatus;
@@ -17,11 +17,12 @@ import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpCartonInfo;
 import com.freshdirect.customer.ErpDeliveryInfoModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
-import com.freshdirect.customer.ErpSaleInfo;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpShippingInfo;
+import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
+import com.freshdirect.ecommerce.data.order.OrderSearchCriteriaRequest;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -88,7 +89,10 @@ private static OrderResourceApiClient INSTANCE;
 		
 		
 		try{
-			String response =  httpGetData(getFdCommerceEndPoint(GET_ORDERS_API), String.class, new Object[]{ids});
+			Request<List<String>> request = new Request<List<String>>();
+			request.setData(ids);
+			String inputJson = buildRequest(request);
+			String response =  postData(inputJson, getFdCommerceEndPoint(GET_ORDERS_API), String.class);
 			Response<List<ErpSaleModel>> info = getMapper().readValue(response, new TypeReference<Response<List<ErpSaleModel>>>() { });
 			return parseResponse(info);	
 		}catch(Exception e){
@@ -110,9 +114,17 @@ private static OrderResourceApiClient INSTANCE;
 		
 		
 		try{
-			String response =  httpGetData(getFdCommerceEndPoint(GET_ORDERS_BY_PYMTTYPE_API), String.class, new Object[]{customerID,
-				 saleType, saleStatus,
-				 paymentType});
+			Request<OrderSearchCriteriaRequest> request = new Request<OrderSearchCriteriaRequest>();
+			OrderSearchCriteriaRequest criteria = new OrderSearchCriteriaRequest();
+			criteria.setCustomerId(customerID);
+			criteria.setSaleType(saleType.getSaleType());
+			criteria.setSaleStatus(saleStatus.getStatusCode());
+			List<String> paymentTypes = new ArrayList<String>();
+			paymentTypes.add(paymentType.getCode());
+			criteria.setPaymentTypes(paymentTypes);
+			request.setData(criteria);
+			String inputJson = buildRequest(request);
+			String response = postData(inputJson, getFdCommerceEndPoint(GET_ORDERS_BY_PYMTTYPE_API), String.class);
 			Response<ErpSaleModel> info = getMapper().readValue(response, new TypeReference<Response<ErpSaleModel>>() { });
 			return parseResponse(info);	
 		}catch(Exception e){
@@ -135,9 +147,19 @@ private static OrderResourceApiClient INSTANCE;
 		
 		
 		try{
-			String response =  httpGetData(getFdCommerceEndPoint(GET_ORDERS_BY_PYMTTYPES_API), String.class, new Object[]{customerID,
-				 saleType, saleStatus,
-				 pymtMethodTypes});
+			Request<OrderSearchCriteriaRequest> request = new Request<OrderSearchCriteriaRequest>();
+			OrderSearchCriteriaRequest criteria = new OrderSearchCriteriaRequest();
+			criteria.setCustomerId(customerID);
+			criteria.setSaleType(saleType.getSaleType());
+			criteria.setSaleStatus(saleStatus.getStatusCode());
+			List<String> paymentTypes = new ArrayList<String>();
+			for(EnumPaymentMethodType type : pymtMethodTypes){
+				paymentTypes.add(type.getCode());
+			}
+			criteria.setPaymentTypes(paymentTypes);
+			request.setData(criteria);
+			String inputJson = buildRequest(request);
+			String response = postData(inputJson, getFdCommerceEndPoint(GET_ORDERS_BY_PYMTTYPES_API), String.class);
 			Response<ErpSaleModel> info = getMapper().readValue(response, new TypeReference<Response<ErpSaleModel>>() { });
 			return parseResponse(info);	
 		}catch(Exception e){
@@ -158,7 +180,7 @@ private static OrderResourceApiClient INSTANCE;
 
 		String inputJson=null;
 		Response<String> response = null;
-		response = postData(inputJson, getFdCommerceEndPoint(CUTOFF_ORDER_API), Response.class);
+		response = httpPostData(getFdCommerceEndPoint(CUTOFF_ORDER_API), inputJson, Response.class, new Object[]{saleId});
 		if(!response.getResponseCode().equals("OK"))
 			throw new FDResourceException(response.getMessage());
 		
@@ -168,15 +190,24 @@ private static OrderResourceApiClient INSTANCE;
 	
 	@Override
 	public void updateWaveInfo(String saleId, ErpShippingInfo shippingInfo)
-			throws RemoteException, FinderException, FDResourceException {
+			throws RemoteException, FinderException {
 		
-
-		String inputJson=null;
+		try{
 		Response<String> response = null;
-		response = postData(inputJson, getFdCommerceEndPoint(UPDATE_WAVE_INFO_API), Response.class);
+		Request<ErpShippingInfo> request = new Request<ErpShippingInfo>();
+		request.setData(new ErpShippingInfo(shippingInfo.getWaveNumber(), shippingInfo.getTruckNumber(), 
+				shippingInfo.getStopSequence(), shippingInfo.getRegularCartons(), 
+				shippingInfo.getFreezerCartons(), shippingInfo.getAlcoholCartons()));
+		String inputJson = buildRequest(request);
+		response = httpPostData(getFdCommerceEndPoint(UPDATE_WAVE_INFO_API), inputJson, Response.class, new Object[]{saleId});
 		if(!response.getResponseCode().equals("OK"))
-			throw new FDResourceException(response.getMessage());
-		
+			throw new RemoteException(response.getMessage());
+		}catch(Exception e){
+			LOGGER.info(e);
+			LOGGER.info("Exception converting {} to ListOfObjects ");
+			throw new RemoteException(e.getMessage(), e);
+			
+		}
 	
 	}
 
@@ -185,11 +216,21 @@ private static OrderResourceApiClient INSTANCE;
 			throws RemoteException, FinderException, FDResourceException {
 		
 
-		String inputJson=null;
-		Response<String> response = null;
-		response = postData(inputJson, getFdCommerceEndPoint(UPDATE_CARTON_INFO_API), Response.class);
+		try{
+			Response<String> response = null;
+			Request<List<ErpCartonInfo>> request = new Request<List<ErpCartonInfo>>();
+			request.setData(cartonList);
+			String inputJson = buildRequest(request);
+			
+		response = httpPostData(inputJson, getFdCommerceEndPoint(UPDATE_CARTON_INFO_API), Response.class, new Object[]{saleId}); 
 		if(!response.getResponseCode().equals("OK"))
 			throw new FDResourceException(response.getMessage());
+		}catch(Exception e){
+			LOGGER.info(e);
+			LOGGER.info("Exception converting {} to ListOfObjects ");
+			throw new RemoteException(e.getMessage(), e);
+			
+		}
 		
 	
 	}

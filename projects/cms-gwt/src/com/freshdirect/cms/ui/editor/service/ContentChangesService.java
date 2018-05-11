@@ -255,7 +255,7 @@ public class ContentChangesService {
             Set<ContentChangeSetEntity> changeSetEntities = prevTimestamp != null ? contentChangeControlService.queryChangeSetEntities(null, null, prevTimestamp, timestamp)
                     : Collections.<ContentChangeSetEntity> emptySet();
 
-            filterForFDXContentChanges(changeSetEntities);
+            filterForFeedContentChanges(changeSetEntities);
 
             List<GwtChangeSet> result = toGwtChangeSetList(changeSetEntities, query);
 
@@ -507,7 +507,7 @@ public class ContentChangesService {
         return filteredMessages.size();
     }
 
-    private void filterForFDXContentChanges(Set<ContentChangeSetEntity> changeSetEntities) {
+    private void filterForFeedContentChanges(Set<ContentChangeSetEntity> changeSetEntities) {
         Iterator<ContentChangeSetEntity> contentChangeSetIter = changeSetEntities.iterator();
         while (contentChangeSetIter.hasNext()) {
 

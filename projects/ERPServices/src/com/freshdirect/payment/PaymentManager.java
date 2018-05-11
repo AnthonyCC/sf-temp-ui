@@ -1,12 +1,7 @@
 package com.freshdirect.payment;
 
-import javax.ejb.EJBException;
-import javax.naming.NamingException;
-
 import org.apache.log4j.Category;
 
-import com.braintreegateway.PayPalAccount;
-import com.braintreegateway.exceptions.NotFoundException;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumCardType;
@@ -33,10 +28,8 @@ import com.freshdirect.payment.ejb.PaymentGatewayContext;
 import com.freshdirect.payment.ejb.PaymentHome;
 import com.freshdirect.payment.ejb.PaymentSB;
 import com.freshdirect.payment.fraud.ejb.RestrictedPaymentMethodSessionBean;
-import com.freshdirect.payment.gateway.CreditCardType;
 import com.freshdirect.payment.gateway.Gateway;
 import com.freshdirect.payment.gateway.GatewayType;
-import com.freshdirect.payment.gateway.PaymentMethodType;
 import com.freshdirect.payment.gateway.impl.GatewayFactory;
 public class PaymentManager {
 
@@ -47,7 +40,7 @@ public class PaymentManager {
 	static {
 		try {
 			serviceLocator = new ServiceLocator(ErpServicesProperties.getInitialContext());
-		} catch (NamingException e) {
+		} catch (Exception e) {
 			LOGGER.error("PaymentManager.serviceLocator initialization exception: " + e.getMessage());
 		}
 	}	
@@ -105,14 +98,15 @@ public class PaymentManager {
 	
 	
 	public void captureAuthorization(String saleId) throws ErpTransactionException {
-		if (paymentHome == null) {
-			getPaymentHome();
-		}
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentSB)){
 				PaymentsService.getInstance().captureAuthorization(saleId);
 			}
 			else{
+				if (paymentHome == null) {
+					getPaymentHome();
+				}
 				PaymentSB paymentSB = paymentHome.create();
 				paymentSB.captureAuthorization(saleId);
 			}
@@ -123,14 +117,15 @@ public class PaymentManager {
 	}
 
 	public void deliveryConfirm(String saleId) throws ErpTransactionException {
-		if (paymentHome == null) {
-			getPaymentHome();
-		}
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentSB)){
 				PaymentsService.getInstance().deliveryConfirm(saleId);
 			}
 			else{
+				if (paymentHome == null) {
+					getPaymentHome();
+				}
 				PaymentSB paymentSB = paymentHome.create();
 				paymentSB.deliveryConfirm(saleId);
 			}
@@ -140,14 +135,15 @@ public class PaymentManager {
 	}
 	
 	public void unconfirm(String saleId) throws ErpTransactionException {
-		if (paymentHome == null) {
-			getPaymentHome();
-		}
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentSB)){
 				PaymentsService.getInstance().unconfirm(saleId);
 			}
 			else{
+				if (paymentHome == null) {
+					getPaymentHome();
+				}
 				PaymentSB paymentSB = paymentHome.create();
 				paymentSB.unconfirm(saleId);
 			}
@@ -157,14 +153,15 @@ public class PaymentManager {
 	}
 
 	public void voidCaptures(String saleId) throws ErpTransactionException {
-		if (paymentHome == null) {
-			getPaymentHome();
-		}
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentSB)){
 				PaymentsService.getInstance().voidCaptures(saleId);
 			}
 			else{
+				if (paymentHome == null) {
+					getPaymentHome();
+				}
 				PaymentSB paymentSB = paymentHome.create();
 				paymentSB.voidCaptures(saleId);
 			}
@@ -206,15 +203,13 @@ public class PaymentManager {
 		return createInstance(null);
 	}
 
-	private static void getPaymentHome() {
-		try {
-			if (serviceLocator == null) {
-				serviceLocator = new ServiceLocator(ErpServicesProperties.getInitialContext());
-			}
-			paymentHome = (PaymentHome) serviceLocator.getRemoteHome("freshdirect.payment.Payment");
-		} catch (NamingException ex) {
-			throw new EJBException(ex);
+	private static void getPaymentHome() throws Exception {
+		
+		if (serviceLocator == null) {
+			serviceLocator = new ServiceLocator(ErpServicesProperties.getInitialContext());
 		}
+		paymentHome = (PaymentHome) serviceLocator.getRemoteHome("freshdirect.payment.Payment");
+		
 	}
 	
 	private ErpAuthorizationModel authorizeECheck(

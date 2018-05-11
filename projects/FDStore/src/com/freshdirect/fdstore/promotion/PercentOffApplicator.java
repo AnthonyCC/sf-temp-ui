@@ -8,10 +8,10 @@ import com.freshdirect.common.pricing.EnumDiscountType;
  */
 public class PercentOffApplicator implements PromotionApplicatorI {
 
-	private final double minSubtotal;
-	private final double percentOff;
+	private double minSubtotal;
+	private double percentOff;
 	private DlvZoneStrategy zoneStrategy;
-	private final double maxPercentageDiscount;
+	private double maxPercentageDiscount;
 	private CartStrategy cartStrategy;
 	
 	/**
@@ -24,6 +24,11 @@ public class PercentOffApplicator implements PromotionApplicatorI {
 		this.minSubtotal = minSubtotal;
 		this.percentOff = percentOff;
 		this.maxPercentageDiscount = maxPercentageDiscount;
+	}
+
+	public PercentOffApplicator() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 
 	public double getMinSubtotal() {
@@ -59,7 +64,7 @@ public class PercentOffApplicator implements PromotionApplicatorI {
 		return context.applyHeaderDiscount(promo, amount);
 	}
 	
-	public void setZoneStrategy(DlvZoneStrategy zoneStrategy) {
+	public void setDlvZoneStrategy(DlvZoneStrategy zoneStrategy) {
 		this.zoneStrategy = zoneStrategy;
 	}
 
@@ -75,6 +80,26 @@ public class PercentOffApplicator implements PromotionApplicatorI {
 	@Override
 	public CartStrategy getCartStrategy() {
 		return this.cartStrategy;
+	}
+
+	public double getMaxPercentageDiscount() {
+		return maxPercentageDiscount;
+	}
+
+	public void setMaxPercentageDiscount(double maxPercentageDiscount) {
+		this.maxPercentageDiscount = maxPercentageDiscount;
+	}
+
+	public DlvZoneStrategy getZoneStrategy() {
+		return zoneStrategy;
+	}
+
+	public void setMinSubtotal(double minSubtotal) {
+		this.minSubtotal = minSubtotal;
+	}
+
+	public void setPercentOff(double percentOff) {
+		this.percentOff = percentOff;
 	}
 
 }

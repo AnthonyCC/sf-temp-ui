@@ -23,6 +23,22 @@ public class MaxLineItemCountStrategy implements LineItemStrategyI {
 		this.maxItemCount=maxItemCount;
 	}
 	
+	public MaxLineItemCountStrategy() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+
+	public int getMaxItemCount() {
+		return maxItemCount;
+	}
+
+
+	public void setMaxItemCount(int maxItemCount) {
+		this.maxItemCount = maxItemCount;
+	}
+
+
 	@Override
 	public int evaluate(FDCartLineI lineItem, String promotionCode, PromotionContextI context) {
 		// TODO Auto-generated method stub

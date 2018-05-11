@@ -415,6 +415,10 @@
 		<from>^/v/([0-9]+)/(.*)/checkout/getselectedeliverydaddress/</from>
 		<to last="true">/checkout.do?action=getselecteddeliveryaddress&amp;ver=$1</to>
 	</rule>
+   <rule>
+        <from>^/v/([0-9]+)/(.*)/checkout/isDeliveryAddressUnattended/</from>
+        <to last="true">/checkout.do?action=isDeliveryAddressUnattended&amp;ver=$1</to>
+    </rule>
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/checkout/getpmverifystatus/</from>
 		<to last="true">/checkout.do?action=getpmverifystatus&amp;ver=$1</to>
@@ -1181,22 +1185,10 @@
 		<from>^/v/([0-9]+)/ewalletstatus/(.*)</from>
 		<to last="true">/ewallet.do?action=getEWalletStatus&amp;ver=$1</to>
 	</rule>
-	
-	<rule>
-		<from>^/v/([0-9]+)/ewalletprecheckout/(.*)</from>
-		<to last="true">/ewalletprecheckout.do?action=ewalletPrecheckout&amp;ver=$1</to>
-	</rule>			
-	<rule>
-		<from>^/v/([0-9]+)/ewalletexpresscheckout/(.*)</from>
-		<to last="true">/ewalletexpresscheckout.do?action=ewalletExpresscheckout&amp;ver=$1</to>
-	</rule>			
+				
 		<rule>
 		<from>^/v/([0-9]+)/ewalletcheckout/(.*)</from>
 		<to last="true">/ewalletcheckout.do?action=ewalletCheckout&amp;ver=$1</to>
-	</rule>	
-	<rule>
-		<from>^/v/([0-9]+)/ewalletcheckoutdata/(.*)</from>
-		<to last="true">/ewalletcheckoutdata.do?action=ewalletCheckoutData&amp;ver=$1</to>
 	</rule>	
 	 -->	
 	 

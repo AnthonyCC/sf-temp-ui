@@ -9,11 +9,12 @@ import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.webapp.taglib.fdstore.layout.ItemSorterTag;
 
 public class ItemSorterTagWrapper extends TagWrapper implements RequestParamName {
+
+    private String id;
+
     public ItemSorterTagWrapper(SessionUser user) {
         super(new ItemSorterTag(), user.getFDSessionUser());
     }
-
-    private String id;
 
     @Override
     protected Object getResult() throws FDException {
@@ -22,6 +23,7 @@ public class ItemSorterTagWrapper extends TagWrapper implements RequestParamName
 
     public void sort(List nodes, List strategy) throws FDException {
         addExpectedRequestValues(new String[] { id, REQ_PARAM_DEBUG }, new String[] { id });
+        ((ItemSorterTag) this.wrapTarget).setUser(getUser());
         ((ItemSorterTag) this.wrapTarget).setNodes(nodes);
         ((ItemSorterTag) this.wrapTarget).setStrategy(strategy);
 

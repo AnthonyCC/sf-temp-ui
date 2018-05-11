@@ -40,41 +40,7 @@ public class EwalletServiceSessionBean extends SessionBeanSupport {
 			throw new RemoteException("Exception occurred during postback to " + ewalletRequestData.geteWalletType(), e);
 		}
 	}
-	public EwalletResponseData checkout(EwalletRequestData ewalletRequestData) throws RemoteException {
-		try {
-			return new EwalletServiceFactory().getVendorService(ewalletRequestData).checkout(ewalletRequestData);
-		} catch (Exception e) {
-			throw new RemoteException("Exception occurred during postback to " + ewalletRequestData.geteWalletType(), e);
-		}
-	}
-	public EwalletResponseData expressCheckout(EwalletRequestData ewalletRequestData) throws RemoteException {
-		try {
-			return new EwalletServiceFactory().getVendorService(ewalletRequestData).expressCheckout(ewalletRequestData);
-		} catch (Exception e) {
-			throw new RemoteException("Exception occurred during postback to " + ewalletRequestData.geteWalletType(), e);
-		}
-	}
-	public EwalletResponseData connect(EwalletRequestData ewalletRequestData) throws RemoteException {
-		try {
-			return new EwalletServiceFactory().getVendorService(ewalletRequestData).connect(ewalletRequestData);
-		} catch (Exception e) {
-			throw new RemoteException("Exception occurred during postback to " + ewalletRequestData.geteWalletType(), e);
-		}
-	}
-	public EwalletResponseData getAllPayMethodInEwallet(EwalletRequestData ewalletRequestData) throws RemoteException {
-		try {
-			return new EwalletServiceFactory().getVendorService(ewalletRequestData).getAllPayMethodInEwallet(ewalletRequestData);
-		} catch (Exception e) {
-			throw new RemoteException("Exception occurred during postback to " + ewalletRequestData.geteWalletType(), e);
-		}
-	}
-	public EwalletResponseData connectComplete(EwalletRequestData ewalletRequestData) throws RemoteException {
-		try {
-			return new EwalletServiceFactory().getVendorService(ewalletRequestData).connectComplete(ewalletRequestData);
-		} catch (Exception e) {
-			throw new RemoteException("Exception occurred during postback to " + ewalletRequestData.geteWalletType(), e);
-		}
-	}
+	
 	public EwalletResponseData disconnect(EwalletRequestData ewalletRequestData) throws RemoteException {
 		try {
 			return new EwalletServiceFactory().getVendorService(ewalletRequestData).disconnect(ewalletRequestData);
@@ -103,13 +69,6 @@ public class EwalletServiceSessionBean extends SessionBeanSupport {
 	public EwalletResponseData preStandardCheckout(EwalletRequestData ewalletRequestData) throws RemoteException {
 		try {
 			return new EwalletServiceFactory().getVendorService(ewalletRequestData).preStandardCheckout(ewalletRequestData);
-		} catch (Exception e) {
-			throw new RemoteException("Exception occurred during postback to " + ewalletRequestData.geteWalletType(), e);
-		}
-	}
-	public EwalletResponseData expressCheckoutWithoutPrecheckout(EwalletRequestData ewalletRequestData) throws RemoteException {
-		try {
-			return new EwalletServiceFactory().getVendorService(ewalletRequestData).expressCheckoutWithoutPrecheckout(ewalletRequestData);
 		} catch (Exception e) {
 			throw new RemoteException("Exception occurred during postback to " + ewalletRequestData.geteWalletType(), e);
 		}

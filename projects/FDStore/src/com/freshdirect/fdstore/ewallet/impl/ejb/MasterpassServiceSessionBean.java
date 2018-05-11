@@ -261,6 +261,9 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 				if(data.getCheckoutXML()!=null && !data.getCheckoutXML().isEmpty()){
 					// Encrypt Card Details from the Response before saving into Audit Log table
 					Checkout checkout = encryptCardData(data.getCheckout());
+					// the below logic is for the citipass that is passing additional fields ExtensionPoint and we need new MAsterPass jar to fix this issue.Till then temp fix ;)
+					if(checkout.getExtensionPoint()!=null)
+						checkout.setExtensionPoint(null);
 					data.setCheckoutXML(MasterPassApplicationHelper.xmlEscapeText(MasterPassApplicationHelper.prettyFormat(MasterPassApplicationHelper.printXML(checkout))));
 					logMPEwalletRequestResponse(data,ewalletRequestData,MASTERPASS_CHECKOUT_TXN,MASTERPASS_TXN_SUCCESS);
 					

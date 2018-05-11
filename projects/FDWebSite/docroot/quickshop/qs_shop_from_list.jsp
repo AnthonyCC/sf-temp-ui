@@ -84,11 +84,11 @@
     <tmpl:put name='listactions'>
         <div class="qs-actions">
           <c:if test="${!isQS20}">
-          <button class="qs-deletelist cssbutton transparent white icon-trash-new-before" data-alignpopup="tc-bc" data-confirm="true" data-confirm-header="Would you also like to delete this list?" 
+          <button aria-label="remove all items" class="qs-deletelist cssbutton transparent white icon-trash-new-before" data-alignpopup="tc-bc" data-confirm="true" data-confirm-header="Would you also like to delete this list?" 
             data-confirm-data="{&quot;buttons&quot;: [{&quot;id&quot;: &quot;delete&quot;, &quot;name&quot;: &quot;Delete List&quot;, &quot;class&quot;: &quot;cssbutton red&quot;},{&quot;id&quot;: &quot;keep&quot;, &quot;name&quot;: &quot;Keep List&quot;, &quot;class&quot;: &quot;cssbutton green&quot;}]}" data-confirm-button-delete="FreshDirect.quickshop.shopFromList.manageshoppinglists.deleteCurrentList" data-confirm-button-keep="FreshDirect.quickshop.shopFromList.manageshoppinglists.emptyCurrentList">Remove All Items</button>
           </c:if>
-          <c:if test="${isQS20}"><button class="qs-addtolist" data-component="ATLButton" data-ref="#productlist">add all to list</button></c:if>
-          <button class="qs-addtocart ${isQS20 ? "" : "cssbutton orange icon-cart-new-after"}" ${isQS20 ? 'data-component="ATCButton" data-ref="#productlist"' : 'data-alignpopup="tr-br" data-confirm="true" data-confirm-template="common.addalltocartconfirmpopup" data-confirm-data=\'{"container": "#productlist"}\' data-confirm-header="Add all items to cart?" data-confirm-process="FreshDirect.components.AddToCart.allConfirmProcess"'}>add all items on page</button>
+          <c:if test="${isQS20}"><button aria-label="add all to list" class="qs-addtolist" data-component="ATLButton" data-ref="#productlist">add all to list</button></c:if>
+          <button aria-label="add all items on page" class="qs-addtocart ${isQS20 ? "" : "cssbutton orange icon-cart-new-after"}" ${isQS20 ? 'data-component="ATCButton" data-ref="#productlist"' : 'data-alignpopup="tr-br" data-confirm="true" data-confirm-template="common.addalltocartconfirmpopup" data-confirm-data=\'{"container": "#productlist"}\' data-confirm-header="Add all items to cart?" data-confirm-process="FreshDirect.components.AddToCart.allConfirmProcess"'}>add all items on page</button>
         </div>
     </tmpl:put>
 

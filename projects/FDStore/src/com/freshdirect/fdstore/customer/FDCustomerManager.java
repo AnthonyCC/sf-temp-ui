@@ -128,6 +128,7 @@ import com.freshdirect.fdstore.referral.EnumReferralStatus;
 import com.freshdirect.fdstore.referral.FDReferralManager;
 import com.freshdirect.fdstore.referral.ReferralProgramInvitaionModel;
 import com.freshdirect.fdstore.request.FDProductRequest;
+import com.freshdirect.fdstore.sms.shortsubstitute.ShortSubstituteResponse;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.fdstore.util.IgnoreCaseString;
@@ -1664,23 +1665,6 @@ public class FDCustomerManager {
 		}
 	}
 
-	public static List<FDOrderI> getOrders(List<String> saleIds) throws FDResourceException {
-		lookupManagerHome();
-
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.getOrders(saleIds);
-
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			LOGGER.debug("RemoteException: ", re);
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-	}
-
 	public static ErpSaleModel getErpSaleModel(String saleId) throws FDResourceException {
 		lookupManagerHome();
 
@@ -1711,32 +1695,6 @@ public class FDCustomerManager {
 		}
 
 		return erpSaleModels;
-	}
-
-	/**
-	 *
-	 * @param erpSaleInfos
-	 */
-	public static double getOrderTotalForChefsTableEligibility(Collection<ErpSaleModel> erpSaleModels) {
-		Calendar beginCal = Calendar.getInstance();
-		beginCal.set(Calendar.DAY_OF_MONTH, 1);
-		Calendar endCal = Calendar.getInstance();
-		beginCal.add(Calendar.MONTH, -2);
-		double orderTotal = 0.0;
-		Date beginDate = beginCal.getTime();
-		Date endDate = endCal.getTime();
-		for (Iterator<ErpSaleModel> i = erpSaleModels.iterator(); i.hasNext();) {
-			ErpSaleModel saleModel = i.next();
-			Date createDate = saleModel.getCreateDate();
-			if (createDate.after(beginDate) && createDate.before(endDate) &&
-				!saleModel.getType().equals(EnumSaleType.SUBSCRIPTION) &&
-				!saleModel.getStatus().equals(EnumSaleStatus.CANCELED) &&
-				!saleModel.getDeliveryType().equals(EnumDeliveryType.CORPORATE)) {
-				orderTotal += saleModel.getSubTotal();
-			}
-		}
-		return new BigDecimal(orderTotal).setScale(0,BigDecimal.ROUND_FLOOR).doubleValue();
-
 	}
 
 	private static ErpOrderHistory getErpOrderHistoryInfo(FDIdentity identity) throws FDResourceException {
@@ -1775,11 +1733,6 @@ public class FDCustomerManager {
 	public static int getOrderCountForChefsTableEligibility(FDIdentity identity) throws FDResourceException {
 		ErpOrderHistory history = getErpOrderHistoryInfo(identity);
 		return history.getOrderCountForChefsTableEligibility();
-	}
-
-	public static double getOrderTotalForChefsTableEligibility(FDIdentity identity) throws FDResourceException {
-		Collection<ErpSaleModel> erpSaleModels = getErpSaleModels(identity);
-		return getOrderTotalForChefsTableEligibility(erpSaleModels);
 	}
 
 	public static ErpPromotionHistory getPromoHistoryInfo(FDIdentity identity) throws FDResourceException {
@@ -2833,45 +2786,6 @@ public class FDCustomerManager {
 		}
 	}
 
-	public static void chargeOrder(
-			FDActionInfo info,
-			String saleId,
-			ErpPaymentMethodI paymentMethod,
-			boolean sendEmail,
-			CustomerRatingI cra,
-			double additionalCharge)
-			throws FDResourceException, ErpTransactionException, ErpFraudException, ErpAuthorizationException,ErpAddressVerificationException,
-			FDPaymentInadequateException
-			{
-
-			lookupManagerHome();
-			try {
-				if (!orderBelongsToUser(info.getIdentity(), saleId)) {
-					throw new FDResourceException("Order not found in current user's order history.");
-				}
-
-				FDCustomerManagerSB sb = managerHome.create();
-				sb.chargeOrder(
-					info.getIdentity(),
-					saleId,
-					paymentMethod,
-					sendEmail,
-					cra,
-					info.getAgent(),
-					additionalCharge);
-
-			} catch (CreateException ce) {
-				invalidateManagerHome();
-				throw new FDResourceException(ce, "Error creating session bean");
-			} catch (RemoteException re) {
-				invalidateManagerHome();
-				Exception ex=(Exception)re.getCause();
-				if(ex instanceof ErpAddressVerificationException) throw (ErpAddressVerificationException)ex;
-				throw new FDResourceException(re, "Error talking to session bean");
-			}
-
-		}
-
 	public static boolean isECheckRestricted(FDIdentity identity) throws FDResourceException {
 		lookupManagerHome();
 		try {
@@ -3250,22 +3164,6 @@ public class FDCustomerManager {
 				}
 			}
 		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-	}
-
-	public static FDOrderI getLastNonCOSOrderUsingCC(String customerID, EnumSaleType saleType, EnumSaleStatus saleStatus) throws FDResourceException,ErpSaleNotFoundException {
-		lookupManagerHome();
-		FDCustomerManagerSB sb=null;
-		try {
-			sb = managerHome.create();
-			FDOrderI order = sb.getLastNonCOSOrderUsingCC( customerID, saleType, saleStatus );
-			return order;
-		} catch ( CreateException ce ) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
@@ -4406,28 +4304,6 @@ public class FDCustomerManager {
 
 		}
 
-	public static ErpAuthorizationModel verify(FDActionInfo info, ErpPaymentMethodI paymentMethod) throws ErpTransactionException, FDResourceException,ErpAuthorizationException {
-
-		final String ECHECK_VERIFY_UNAVAIL_MSG="This feature is not available for E-Checks";
-
-		if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
-			throw new ErpTransactionException(ECHECK_VERIFY_UNAVAIL_MSG);
-		}
-		try{
-			lookupManagerHome();
-			FDCustomerManagerSB sb = managerHome.create();
-			ErpAuthorizationModel auth=sb.verify(info, paymentMethod);
-			return auth;
-		}catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to bean");
-		}
-	}
-
-
 	public static void logMassCancelActivity(ErpActivityRecord record) {
 		ActivityLogHome home = getActivityLogHome();
 		try {
@@ -5163,11 +5039,16 @@ public class FDCustomerManager {
 		 * @throws FDResourceException
 		 */
 		public static boolean isValidVaultToken(String token, String customerId) throws FDResourceException {
-			lookupManagerHome();
+			
 			boolean isValid=false;
 			try {
-				FDCustomerManagerSB sb = managerHome.create();
-				isValid =sb.isValidVaultToken(token,customerId);
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentManagerSB)) {
+					isValid = FDECommerceService.getInstance().isValidVaultToken(token, customerId);
+				} else {
+					lookupManagerHome();
+					FDCustomerManagerSB sb = managerHome.create();
+					isValid =sb.isValidVaultToken(token,customerId);
+				}
 
 			} catch (CreateException ce) {
 				invalidateManagerHome();
@@ -5581,6 +5462,23 @@ public class FDCustomerManager {
 				LOGGER.error("Error updating FDCustomerEStoreModel for custId:" + custId + " "+ e);
 				invalidateManagerHome();
 				throw new FDResourceException(e, "Error creating session bean");
+			}
+		}
+		
+		public static ShortSubstituteResponse getShortSubstituteOrders(List<String> orderList) throws FDResourceException {
+			lookupManagerHome();
+
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getShortSubstituteOrders(orderList);
+
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				LOGGER.debug("RemoteException: ", re);
+				throw new FDResourceException(re, "Error talking to session bean");
 			}
 		}
 }

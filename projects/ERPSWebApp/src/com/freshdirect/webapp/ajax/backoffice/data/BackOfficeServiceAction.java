@@ -15,7 +15,9 @@ public enum BackOfficeServiceAction {
     GET_PRODUCT(Module.BACKOFFICE_CATELOG, "getProduct"),
     GET_LIST_SKU(Module.BACKOFFICE_CATELOG, "getListSku"),
     GET_SKU_INFO(Module.BACKOFFICE_CATELOG, "getSkuInfo"),
-    GET_RESEND_INVOICE_MAIL(Module.BACKOFFICE_CATELOG, "getResendInvoiceMail");
+    GET_RESEND_INVOICE_MAIL(Module.BACKOFFICE_CATELOG, "getResendInvoiceMail"),
+    GET_RESUBMIT_ORDER(Module.BACKOFFICE_CATELOG, "getResubmitOrder"),
+    GET_RESUBMIT_CUSTOMER(Module.BACKOFFICE_CATELOG, "getResubmitCustomer");
     
  
 

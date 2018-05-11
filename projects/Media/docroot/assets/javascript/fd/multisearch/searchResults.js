@@ -21,6 +21,16 @@ var FreshDirect = FreshDirect || {};
       value:[],
       writable: true
     },
+    displayTutorial: {
+      value: function () {
+        $('#multisearch-tutorial').addClass('show');
+      }
+    },
+    hideTutorial: {
+      value: function () {
+        $('#multisearch-tutorial').removeClass('show');
+      }
+    },
     render:{
       value:function(data){
         data = data || {};
@@ -66,6 +76,13 @@ var FreshDirect = FreshDirect || {};
             }
           });
         });
+
+        // display tutorial if there are no search terms
+        if (this.terms.length === 0) {
+          this.displayTutorial();
+        } else {
+          this.hideTutorial();
+        }
       }
     }
   });

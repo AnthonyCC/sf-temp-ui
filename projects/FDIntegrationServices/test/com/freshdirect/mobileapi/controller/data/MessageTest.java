@@ -5,9 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import junit.framework.TestCase;
-
-public class MessageTest extends TestCase {
+public class MessageTest {
 
     /**
      * Common method to handling getting file content into a string for testing.

@@ -108,7 +108,7 @@ public class CmsFilteringNavigator {
     }
     
 	public boolean isReceipeRequested() {
-		return this.getDataFilterParams().containsKey("searchReceipeRequested")
+		return FDStoreProperties.isSearchRecipeResultsEnabled() && this.getDataFilterParams().containsKey("searchReceipeRequested")
 				&& this.getDataFilterParams().get("searchReceipeRequested");
 	}
 

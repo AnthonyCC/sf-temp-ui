@@ -33,7 +33,7 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 			boolean isUnavailable, boolean isEcoFriendly, boolean isSoldOut, boolean isDepot, 
 			boolean isPremiumSlot, boolean isFdxSlot, double totalAvailable, double baseAvailable, double chefsTableAvailble,
 			boolean hasSteeringRadius, String travelZone, double minDurationForModStart, double minDurationForModification,
-			int additionalDistance, EnumRegionServiceType regionSvcType,Date  soFirstDeliveryDate, Date originalCutoffDateTime)
+			int additionalDistance, EnumRegionServiceType regionSvcType,Date  soFirstDeliveryDate, Date originalCutoffDateTime , int capacityUtilizationPercentage)
 	{
 		super();
 		this.id = id;
@@ -75,6 +75,7 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 		this.regionSvcType = regionSvcType;
 		this.soFirstDeliveryDate=soFirstDeliveryDate;
 		this.originalCutoffDateTime = originalCutoffDateTime;
+		this.capacityUtilizationPercentage = capacityUtilizationPercentage;
 	}
 
 	
@@ -144,6 +145,7 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 	private EnumDeliveryFeeTier dlvfeeTier;
 	private Date originalCutoffDateTime;
 	private FDDeliveryZoneInfo zoneInfo;
+	private int capacityUtilizationPercentage;
 
 	private static final DecimalFormat premiumAmountFmt = new DecimalFormat(
 			"#.##");
@@ -676,6 +678,14 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 
 	public void setZoneInfo(FDDeliveryZoneInfo zoneInfo) {
 		this.zoneInfo = zoneInfo;
+	}
+
+	public int getCapacityUtilizationPercentage() {
+		return capacityUtilizationPercentage;
+	}
+
+	public void setCapacityUtilizationPercentage(int capacityUtilizationPercentage) {
+		this.capacityUtilizationPercentage = capacityUtilizationPercentage;
 	}
 	
 	

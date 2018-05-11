@@ -6,13 +6,7 @@
 	"trackingCodeEx" : "deals",
 	"impressionId" : "74832939_p4",
 	"smartStoreConfiguration" : {
-	    "variant" : "c_ymal_1",
-	    "siteFeature" : "C_YMAL",
-	    "recProductIds" : "fru_apl_fji_4pk,trp_kiwi,fru_apl_gala_4pk,pr_asian,mln_hdw",
-	    "recCurrentNode" : "ban_yllw",
-	    "recYmalSource" : "ban_yllw",
-	    "recRefreshable" : "true",
-	    "recSmartSavings" : "false"
+	    "parameterBundle" : "bundle"
 	},
 	"productConfiguration" : {
 		"product" : { 

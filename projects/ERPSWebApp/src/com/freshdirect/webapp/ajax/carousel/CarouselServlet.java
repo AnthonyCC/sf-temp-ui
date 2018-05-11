@@ -15,6 +15,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
+import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
@@ -26,7 +27,6 @@ import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.DataPotatoField;
 import com.freshdirect.webapp.ajax.browse.data.BrowseData.CarouselDataCointainer;
 import com.freshdirect.webapp.ajax.browse.data.CarouselData;
-import com.freshdirect.webapp.ajax.browse.data.CarouselNameCase;
 import com.freshdirect.webapp.ajax.browse.service.CarouselService;
 import com.freshdirect.webapp.ajax.reorder.QuickShopHelper;
 import com.freshdirect.webapp.ajax.reorder.service.QuickShopCarouselService;
@@ -42,7 +42,6 @@ public class CarouselServlet extends BaseJsonServlet {
 
 	private static final long serialVersionUID = 7146728571778380697L;
 	private static final Logger LOGGER = LoggerFactory.getInstance(CarouselServlet.class);
-    private static final String NEW_PRODUCTS_CAROUSEL_NAME = "New Products";
 
 	@Override
 	// For OAuth2 token endpoint, GET is disabled
@@ -86,36 +85,46 @@ public class CarouselServlet extends BaseJsonServlet {
 		String currentNodeKey = request.getParameter("currentNodeKey");
 		String siteFeature = request.getParameter("siteFeature");
 		String cmEventSource = request.getParameter("cmEventSource");
-		boolean sendVariant = request.getParameter("sendVariant") != null
-				? Boolean.parseBoolean(request.getParameter("sendVariant"))
-				: false;
-		List<ProductModel> products = new ArrayList<ProductModel>();
+        String type = request.getParameter("type");
+        Boolean sendVariant = Boolean.parseBoolean(NVL.apply(request.getParameter("sendVariant"), "false"));
+        Integer maxItems = Integer.parseInt(NVL.apply(request.getParameter("maxItems"), "0"));
+
+        List<ProductModel> products = new ArrayList<ProductModel>();
 		Recommendations results = null;
-		try {
 
-			int maxItems = request.getParameter("maxItems") != null ? Integer.parseInt(request.getParameter("maxItems"))
-					: 0;
-			FDStoreRecommender recommender = FDStoreRecommender.getInstance();
+        boolean isNewProductsCarouselLoaded = false;
 
-			ContentNodeModel currentNode = null;
-			if (currentNodeKey != null && currentNodeKey.length() != 0) {
-				currentNode = ContentFactory.getInstance().getContentNodeByKey(ContentKeyFactory.get(currentNodeKey));
-			}
+        if ("deals".equals(type) && FDStoreProperties.isCartConfirmPageNewProductsCarouselEnabled()) {
+            products = CarouselService.defaultService().collectNewProducts(FDStoreProperties.isCartConfirmPageNewProductsCarouselRandomizeProductOrderEnabled());
+            if (products.size() >= FDStoreProperties.getMinimumItemsCountInCarousel()) {
+                isNewProductsCarouselLoaded = true;
+                siteFeature = CarouselService.NEW_PRODUCTS_CAROUSEL_VIRTUAL_SITE_FEATURE;
+            }
+        }
 
-			results = recommender.getRecommendations(EnumSiteFeature.getEnum(siteFeature), sessionUser,
-					ProductRecommenderUtil.createSessionInput(session, sessionUser, maxItems, currentNode, null));
+        if (!isNewProductsCarouselLoaded) {
+            try {
+                FDStoreRecommender recommender = FDStoreRecommender.getInstance();
 
-			ProductRecommenderUtil.persistToSession(session, results);
+                ContentNodeModel currentNode = null;
+                if (currentNodeKey != null && currentNodeKey.length() != 0) {
+                    currentNode = ContentFactory.getInstance().getContentNodeByKey(ContentKeyFactory.get(currentNodeKey));
+                }
 
-			products = results.getAllProducts();
+                results = recommender.getRecommendations(EnumSiteFeature.getEnum(siteFeature), sessionUser,
+                        ProductRecommenderUtil.createSessionInput(session, sessionUser, maxItems, currentNode, null));
 
-			if (products.size() > maxItems) {
-				products = products.subList(0, maxItems);
-			}
+                ProductRecommenderUtil.persistToSession(session, results);
 
-		} catch (FDResourceException e) {
-			LOGGER.warn("Failed to get recommendations for siteFeature:" + siteFeature, e);
-		}
+                products = results.getAllProducts();
+                if (products.size() > maxItems) {
+                    products = products.subList(0, maxItems);
+                }
+
+            } catch (FDResourceException e) {
+                LOGGER.warn("Failed to get recommendations for siteFeature:" + siteFeature, e);
+            }
+        }
 
 		Map<String, ?> dataMap = null;
 
@@ -128,6 +137,8 @@ public class CarouselServlet extends BaseJsonServlet {
 		if (cmEventSource != null) {
 			((Map<String, Object>) dataMap).put("cmEventSource", cmEventSource);
 		}
+
+        ((Map<String, Object>) dataMap).put("isNewProductsCarouselLoaded", isNewProductsCarouselLoaded);
 		return dataMap;
 	}
 
@@ -154,11 +165,11 @@ public class CarouselServlet extends BaseJsonServlet {
 	private CarouselDataCointainer getPresPickCarousel(FDSessionUser sessionUser) {
 		CarouselDataCointainer carouselData = new CarouselDataCointainer();
 
-        final boolean isNewProductsCarouselEnabled = FDStoreProperties.isFreshDealsPageNewProductsCarouselEnabled();
-        if (isNewProductsCarouselEnabled) {
-            carouselData.setCarousel1(
-                    CarouselService.defaultService().createNewProductsCarousel(sessionUser, FDStoreProperties.isFreshDealsPageNewProductsCarouselRandomizeProductOrderEnabled(),
-                            CarouselNameCase.UPPER));
+        if (FDStoreProperties.isFreshDealsPageNewProductsCarouselEnabled()) {
+            List<ProductModel> newProducts = CarouselService.defaultService()
+                    .collectNewProducts(FDStoreProperties.isFreshDealsPageNewProductsCarouselRandomizeProductOrderEnabled());
+            carouselData.setCarousel1(CarouselService.defaultService().createCarouselDataWithMinProductLimit(null, CarouselService.NEW_PRODUCTS_CAROUSEL_NAME.toUpperCase(),
+                    newProducts, sessionUser, null, null));
         }
 
 		try {
@@ -226,38 +237,38 @@ public class CarouselServlet extends BaseJsonServlet {
 		return carousels;
 	}
 
-	private ViewCartCarouselData getQuickShopCarousel(HttpServletRequest request, FDSessionUser sessionUser) {
-		ViewCartCarouselData carousels = null;
-		try {
+    private ViewCartCarouselData getQuickShopCarousel(HttpServletRequest request, FDSessionUser sessionUser) {
+        ViewCartCarouselData carousels = null;
 
-			SessionInput input = QuickShopCarouselService.defaultService().createSessionInput(sessionUser, request);
-			carousels = QuickShopCarouselService.defaultService().populateTabsRecommendations(request, sessionUser,
-					input);
-			carousels.getRecommendationTabs().add(0,
-					new RecommendationTab(
-							QuickShopCrazyQuickshopRecommendationService.defaultService()
-									.getTheCrazyQuickshopTitle(null),
-							QuickShopCrazyQuickshopRecommendationService.QUICKSHOP_VIRTUAL_SITE_FEATURE));
+        try {
+            SessionInput input = QuickShopCarouselService.defaultService().createSessionInput(sessionUser, request);
+            carousels = QuickShopCarouselService.defaultService().populateTabsRecommendations(request, sessionUser, input);
+            carousels.getRecommendationTabs().add(0, new RecommendationTab(QuickShopCrazyQuickshopRecommendationService.defaultService().getTheCrazyQuickshopTitle(null),
+                    QuickShopCrazyQuickshopRecommendationService.QUICKSHOP_VIRTUAL_SITE_FEATURE));
 
-            final boolean isNewProductsCarouselEnabled = FDStoreProperties.isReorderPageNewProductsCarouselEnabled();
-            if (isNewProductsCarouselEnabled) {
-                RecommendationTab recommendationTab = new RecommendationTab(NEW_PRODUCTS_CAROUSEL_NAME, null);
-                recommendationTab.setCarouselData(CarouselService.defaultService().createNewProductsCarousel(sessionUser,
-                        FDStoreProperties.isReorderPageNewProductsCarouselRandomizeProductOrderEnabled(), CarouselNameCase.NOT_MODIFIED));
-                carousels.getRecommendationTabs().add(0, recommendationTab);
+            if (FDStoreProperties.isReorderPageNewProductsCarouselEnabled()) {
+                List<ProductModel> newProducts = CarouselService.defaultService()
+                        .collectNewProducts(FDStoreProperties.isReorderPageNewProductsCarouselRandomizeProductOrderEnabled());
+                CarouselData carouselData = CarouselService.defaultService().createCarouselDataWithMinProductLimit(null, CarouselService.NEW_PRODUCTS_CAROUSEL_NAME,
+                        newProducts, sessionUser, null, null);
+                if (carouselData != null) {
+                    RecommendationTab recommendationTab = new RecommendationTab(CarouselService.NEW_PRODUCTS_CAROUSEL_NAME,
+                            CarouselService.NEW_PRODUCTS_CAROUSEL_VIRTUAL_SITE_FEATURE);
+                    carousels.getRecommendationTabs().add(0, recommendationTab);
+                }
             }
 
-			boolean isFirstTab = true;
-			for (RecommendationTab tab : carousels.getRecommendationTabs()) {
-				tab.setSelected(isFirstTab);
-				isFirstTab = false;
-			}
+            boolean isFirstTab = true;
+            for (RecommendationTab tab : carousels.getRecommendationTabs()) {
+                tab.setSelected(isFirstTab);
+                isFirstTab = false;
+            }
 
-		} catch (Exception e) {
-			LOGGER.error("recommendation failed", e);
-		}
-		return carousels;
-	}
+        } catch (FDResourceException e) {
+            LOGGER.error("recommendation failed", e);
+        }
+        return carousels;
+    }
 
 	@Override
 	protected boolean synchronizeOnUser() {

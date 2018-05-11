@@ -197,7 +197,7 @@ public abstract class AbstractEcommService {
 			LOGGER.info("api url:" + url);
 			throw new FDResourceException(e, "Json Parsing failure");
 		} catch (JsonMappingException e) {
-			LOGGER.info(e.getMessage());
+			LOGGER.error(e.getMessage());
 			LOGGER.info("api url:" + url);
 			throw new FDResourceException(e, "Json Mapping failure");
 		} catch (IOException e) {
@@ -275,6 +275,22 @@ public abstract class AbstractEcommService {
 			throw new FDResourceException(e, "API connection failure");
 		} 
 	}
+
+	protected <T> T httpPostData( String url, String inputJson, Class<T> clazz, Object[] params) throws FDResourceException {
+		
+		try {
+			RestTemplate restTemplate = getRestTemplate();	
+			HttpEntity<String> entity = getEntity(inputJson);
+			
+			ResponseEntity<T> response = restTemplate.postForEntity(url, entity, clazz, params);
+			return response.getBody();
+		} catch (RestClientException e) {
+			LOGGER.info(e.getMessage());
+			LOGGER.info("api url:"+url);
+			throw new FDResourceException(e, "API connection failure");
+		} 
+	}
+
 
 	protected RestTemplate getRestTemplate() {
 		return restTemplate;

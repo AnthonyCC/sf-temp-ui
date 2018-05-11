@@ -905,6 +905,7 @@
 	color: #333;
 	font-size: 11px;
 	min-width: 240px;
+	overflow: hidden;
 }
 
 #locabar_modify_order_trigger #locabar_orders .locabar-modify-order-dropdown{

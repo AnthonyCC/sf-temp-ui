@@ -1,0 +1,65 @@
+.explore__category-list > ul {
+  list-style-type: none;
+  margin: none;
+  text-align: center;
+}
+
+.explore__category-list-element {
+  width: 20%;
+  box-sizing: border-box;
+  padding: 10px;
+  display: inline-block;
+  position: relative;
+}
+
+.explore__category-list-link {
+  display: block;
+}
+
+.explore__category-list-image {
+  max-width: 100%;
+  max-height: 100%;
+  transition: filter .4s ease;
+}
+
+.explore__category-list-name {
+  text-align: center;
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+}
+
+.explore__category-list-name::before {
+  content: "";
+  display: inline-block;
+  vertical-align: middle;
+  height: 100%;
+}
+
+.explore__category-list-name > span {
+  display: inline-block;
+  vertical-align: middle;
+  color: #fff;
+  background: #888;
+  padding: .2em;
+  opacity: 0;
+  transition: opacity .1s ease;
+}
+
+.explore__category-list-link:hover .explore__category-list-name > span,
+.explore__category-list-link:focus .explore__category-list-name > span,
+.explore__category-list-link:active .explore__category-list-name > span {
+  opacity: 1;
+}
+
+.explore__category-list-link:hover .explore__category-list-image,
+.explore__category-list-link:focus .explore__category-list-image,
+.explore__category-list-link:active .explore__category-list-image {
+  filter: brightness(50%);
+}

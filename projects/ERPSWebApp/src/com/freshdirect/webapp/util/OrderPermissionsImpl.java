@@ -5,6 +5,7 @@ import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDOrderI;
+import com.freshdirect.sap.SapProperties;
 
 
 public class OrderPermissionsImpl implements OrderPermissionsI {
@@ -58,7 +59,7 @@ public class OrderPermissionsImpl implements OrderPermissionsI {
 	}
 	
 	public boolean allowModifyOrder(){
-		if(!this.makeGoodOrder){
+		if(!this.makeGoodOrder && !SapProperties.isBlackhole()){
 			if ( EnumSaleStatus.SUBMITTED.equals(status) || EnumSaleStatus.AUTHORIZED.equals(status) 
 					|| EnumSaleStatus.AVS_EXCEPTION.equals(status)
 					|| EnumSaleStatus.AUTHORIZATION_FAILED.equals(status)) {

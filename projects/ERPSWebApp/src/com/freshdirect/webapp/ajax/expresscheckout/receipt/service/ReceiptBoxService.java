@@ -14,8 +14,9 @@ import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.fdstore.promotion.EnumPromotionType;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
+import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.payment.EnumPaymentMethodType;
-import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartSubTotalFieldData;
 import com.freshdirect.webapp.ajax.expresscheckout.receipt.data.ReceiptData;
 import com.freshdirect.webapp.util.JspMethods;
@@ -47,6 +48,8 @@ public class ReceiptBoxService {
     private static final String REMOVE_GIFT_CARD_URL_PARAMETER = "?action=removeGiftCard";
     private static final String ORDER_TOTAL_TEXT = "ORDER TOTAL";
     private static final String ORDER_ESTIMATED_TOTAL_TEXT = "ESTIMATED TOTAL";
+    private static final String ORDER_TOTAL_TEXT_MOD56 = "Order Total";
+    private static final String ORDER_ESTIMATED_TOTAL_TEXT_MOD56 = "Est. Order Total";
     private static final String CREDITS_TEXT = "Credit Applied";
     private static final String CREDITS_ID = "credits";
     private static final String DISCOUNT_ID = "discount";
@@ -253,15 +256,27 @@ public class ReceiptBoxService {
         }
     }
 
-    public void populateOrderTotalToBox(ReceiptData receiptData, FDOrderI order) {
+    public void populateOrderTotalToBox(ReceiptData receiptData, FDOrderI order, FDUserI user) {
         final String totalValue = JspMethods.formatPrice(order.getTotal());
-
-        if (order.isEstimatedPrice()) {
-            receiptData.setTotalLabel(ORDER_ESTIMATED_TOTAL_TEXT);
-            receiptData.setTotal(totalValue + ESTIMATED_PRICE_MARK);
-        } else {
-            receiptData.setTotalLabel(ORDER_TOTAL_TEXT);
+        if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.modOrderConfirmPageRedesign, user)) {
+            if (order.isEstimatedPrice()) {
+            	receiptData.setEstimatedTotal(true);
+                receiptData.setTotalLabel(ORDER_ESTIMATED_TOTAL_TEXT_MOD56 + ESTIMATED_PRICE_MARK);
+            } else {
+            	receiptData.setEstimatedTotal(false);
+                receiptData.setTotalLabel(ORDER_TOTAL_TEXT_MOD56);
+            }
             receiptData.setTotal(totalValue);
+        } else {
+            if (order.isEstimatedPrice()) {
+            	receiptData.setEstimatedTotal(true);
+                receiptData.setTotalLabel(ORDER_ESTIMATED_TOTAL_TEXT);
+                receiptData.setTotal(totalValue + ESTIMATED_PRICE_MARK);
+            } else {
+            	receiptData.setEstimatedTotal(false);
+                receiptData.setTotalLabel(ORDER_TOTAL_TEXT);
+                receiptData.setTotal(totalValue);
+            }
         }
     }
 

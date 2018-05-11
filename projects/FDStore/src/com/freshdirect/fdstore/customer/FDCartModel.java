@@ -531,6 +531,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	@Override
     public void removeOrderLine(int index) {
 		this.orderLines.remove(index);
+		//this.handleDeliveryPass();
 		this.recentOrderLines.clear();
 		this.clearAvailability();
 
@@ -1661,15 +1662,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		if(EnumEStoreId.FDX.equals(getEStoreId()))
 			return;
 
-		int count = 0;
-		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
-			FDCartLineI line = i.next();
-			if(line.lookupFDProduct().isDeliveryPass()){
-				count++;
-			}
-
-		}
-		setDeliveryPassCount(count);
+		setDeliveryPassCount();
 		if (this.getChargeAmount(EnumChargeType.DELIVERY) == 0.0) {
 			//If there is no applicable delivery charge then return;
 			return;
@@ -1695,6 +1688,18 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 			}
 			this.setDlvPassApplied(false);
 		}
+	}
+
+	public void setDeliveryPassCount() {
+		int count = 0;
+		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
+			FDCartLineI line = i.next();
+			if(line.lookupFDProduct().isDeliveryPass()){
+				count++;
+			}
+
+		}
+		setDeliveryPassCount(count);
 	}
 
 	public boolean containsDlvPassOnly(){

@@ -7,10 +7,15 @@ import java.util.Map;
 import org.apache.commons.lang.enums.Enum;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public class EnumPaymentType extends Enum {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8152734574417324914L;
 	public static final EnumPaymentType REGULAR = new EnumPaymentType("R", "Regular");
 	public static final EnumPaymentType ON_FD_ACCOUNT = new EnumPaymentType("X", "On FD Account");
 	public static final EnumPaymentType MAKE_GOOD = new EnumPaymentType("M", "Make good");

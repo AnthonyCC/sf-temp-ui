@@ -21,7 +21,12 @@ import com.freshdirect.content.attributes.FlatAttributeCollection;
 import com.freshdirect.content.nutrition.ErpNutritionModel;
 import com.freshdirect.content.nutrition.panel.NutritionPanel;
 import com.freshdirect.customer.EnumExternalLoginSource;
+import com.freshdirect.customer.EnumPaymentResponse;
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpActivityRecord;
+import com.freshdirect.customer.ErpAddressVerificationException;
+import com.freshdirect.customer.ErpAuthorizationException;
+import com.freshdirect.customer.ErpAuthorizationModel;
 import com.freshdirect.customer.ErpComplaintReason;
 import com.freshdirect.customer.ErpCustEWalletModel;
 import com.freshdirect.customer.ErpCustomerCreditModel;
@@ -30,6 +35,7 @@ import com.freshdirect.customer.ErpGrpPriceModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.customer.ErpRestrictedAvailabilityModel;
+import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.delivery.AddressAndRestrictedAdressData;
@@ -423,26 +429,6 @@ public interface IECommerceService {
 	
     public void sendModifyOrderRequest(String saleId, String parentOrderId, Double tip, String reservationId,String firstName,String lastName,String deliveryInstructions,String serviceType, 
 			String unattendedInstr,String orderMobileNumber,String erpOrderId,boolean containsAlcohol) throws RemoteException;
-
-    
-
-	/*EwalletResponseData getToken(EwalletRequestData ewalletRequestData) throws RemoteException;
-	EwalletResponseData checkout(EwalletRequestData ewalletRequestData) throws RemoteException;
-	EwalletResponseData expressCheckout(EwalletRequestData ewalletRequestData) throws RemoteException;
-	EwalletResponseData connect(EwalletRequestData ewalletRequestData) throws RemoteException;
-	EwalletResponseData getAllPayMethodInEwallet(EwalletRequestData ewalletRequestData) throws RemoteException;
-	EwalletResponseData connectComplete(EwalletRequestData ewalletRequestData) throws RemoteException;
-	EwalletResponseData disconnect(EwalletRequestData ewalletRequestData) throws RemoteException;
-	
-	//Batch
-	EwalletResponseData postbackTrxns(EwalletRequestData req) throws RemoteException;
-	
-	//Standard checkout
-	EwalletResponseData standardCheckout(EwalletRequestData ewalletRequestData) throws RemoteException;
-	EwalletResponseData preStandardCheckout(EwalletRequestData ewalletRequestData) throws RemoteException;
-	EwalletResponseData expressCheckoutWithoutPrecheckout(EwalletRequestData ewalletRequestData) throws RemoteException;
-	//PayPal
-	EwalletResponseData addPayPalWallet(EwalletRequestData ewalletRequestData) throws RemoteException;*/
     
     public Ticket createTicket(Ticket ticket) throws RemoteException;
     
@@ -556,10 +542,6 @@ public interface IECommerceService {
 
 	public ErpPaymentMethodI findPaymentMethodByAccountInfo(RestrictedPaymentMethodModel restrictedPaymentMethod) throws RemoteException;
 
-	public void postTrxnsToEwallet() throws RemoteException;
-
-	public void loadTrxnsForPostBack(int maxDays) throws RemoteException;
-
 	public HLBrandProductAdResponse getHLadproductToHomeByFDPriority(HLBrandProductAdRequest hLBrandProductAdRequest) throws RemoteException;
 
 	public HLBrandProductAdResponse getPdpAdProduct(HLBrandProductAdRequest hLBrandProductAdRequest) throws RemoteException;
@@ -585,5 +567,8 @@ public interface IECommerceService {
 	public List<ErpSettlementSummaryModel> getPPTrxns(List<String> ppStlmntIds) throws RemoteException;
 	
 	public void updatePPSettlementTransStatus(String settlementTransId) throws RemoteException;
-	
+
+	public void generateSitemap() throws RemoteException;
+
+	public boolean isValidVaultToken(String token, String customerId) throws RemoteException;
 }

@@ -15,6 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +36,8 @@ import com.freshdirect.fdstore.customer.FDOrderSearchCriteria;
 import com.freshdirect.fdstore.customer.PendingOrder;
 import com.freshdirect.fdstore.customer.SilverPopupDetails;
 import com.freshdirect.fdstore.customer.UnsettledOrdersInfo;
+import com.freshdirect.fdstore.sms.shortsubstitute.ShortSubstituteResponse;
+import com.freshdirect.fdstore.sms.shortsubstitute.ShortSubstituteData;
 import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.NVL;
@@ -504,6 +507,57 @@ class FDCustomerOrderInfoDAO {
 			return details;
 		} finally {
 			DaoUtil.close(rs,statement);
+		}
+	}
+	
+	private static final String GET_SHORT_SUBSTITUTE_ORDERS_SQL = "SELECT S.ID AS ORDER_ID, I.SHIP_STAT  FROM CUST.SALE S, CUST.SALESACTION SA, CUST.INVOICELINE I WHERE S.ID=SA.SALE_ID AND I.SALESACTION_ID=SA.ID AND I.SHIP_STAT" +
+																	" IS NOT NULL AND SA.ACTION_TYPE='INV' AND S.ID IN ";
+			
+	public static ShortSubstituteResponse getShortSubstituteOrders(StringBuffer orders, Connection conn) throws SQLException {
+		ResultSet rs =null;
+		Statement statement = null;
+		
+		ShortSubstituteResponse shortSubstituteResponse=new ShortSubstituteResponse();
+		Map<String, ShortSubstituteData> shortSubOrderMap=new HashMap<String, ShortSubstituteData>();
+		try {
+			StringBuffer selectQ = new StringBuffer(GET_SHORT_SUBSTITUTE_ORDERS_SQL);
+			selectQ.append(orders);
+			statement = conn.createStatement();
+			rs = statement.executeQuery(selectQ.toString());
+			ShortSubstituteData shotSubstituteData=null;
+			while (rs.next()) {
+				String orderId = rs.getString("order_id");
+				String shortAndSubstitute= rs.getString("SHIP_STAT");
+				
+				if (shortSubOrderMap.containsKey(orderId)) {
+					shotSubstituteData = shortSubOrderMap.get(orderId);
+					setShortSubstitute(shotSubstituteData, shortAndSubstitute,orderId);
+
+				} else {
+					shotSubstituteData = new ShortSubstituteData();
+					setShortSubstitute(shotSubstituteData, shortAndSubstitute,orderId);
+					shortSubOrderMap.put(orderId, shotSubstituteData);
+				}
+			}
+			if(!shortSubOrderMap.isEmpty()) {
+				shortSubstituteResponse.setShortSubstituteMap(shortSubOrderMap);
+				shortSubstituteResponse.setShortSubstituteData(new ArrayList<ShortSubstituteData>(shortSubOrderMap.values()));
+			}
+			return shortSubstituteResponse ;
+		} finally {
+			DaoUtil.close(rs,statement);
+		}
+	}
+
+	public static void setShortSubstitute(
+			ShortSubstituteData shotSubstituteData, String shortAndSubstitute,
+			String orderId) {
+		shotSubstituteData.setOrderId(orderId);
+		if ("SS".equalsIgnoreCase(shortAndSubstitute)) {
+			shotSubstituteData.setSubstituteItem(shortAndSubstitute);
+		}
+		if ("SH".equalsIgnoreCase(shortAndSubstitute)) {
+			shotSubstituteData.setShortItem(shortAndSubstitute);
 		}
 	}
 }

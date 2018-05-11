@@ -1,0 +1,57 @@
+.explore__top-selector > ul {
+  list-style-type: none;
+  margin: none;
+  text-align: center;
+}
+
+.explore__top-selector > ul > li {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.explore__top-selector-button {
+  display: inline-block;
+  width: 88px;
+  overflow: hidden;
+  margin: 5px; 
+}
+
+.explore__top-image {
+  display: block;
+  width: 82px;
+  height: 82px;
+  border-radius: 45px;
+  border: 3px solid transparent;
+  overflow: hidden;
+  opacity: .6;
+}
+
+.explore__top-selector-button:hover .explore__top-image,
+.explore__top-selector-button:focus .explore__top-image,
+.explore__top-selector-button:active .explore__top-image {
+  border-color: #6aaa6d;
+  opacity: 1;
+}
+
+.explore__top-selector-button.selected .explore__top-image {
+  border-color: #e77630;
+  opacity: 1;
+}
+
+.explore__top-name {
+  display: block;
+  text-transform: uppercase;
+  color: #aaa;
+  text-decoration: none;
+  font-size: 11px;
+  margin-top: 5px;
+  font-weight: bold;
+}
+
+.explore__top-selector-button.selected .explore__top-name,
+.explore__top-selector-button:hover .explore__top-name,
+.explore__top-selector-button:focus .explore__top-name,
+.explore__top-selector-button:active .explore__top-name {
+  color: #6aaa6d;
+}
+

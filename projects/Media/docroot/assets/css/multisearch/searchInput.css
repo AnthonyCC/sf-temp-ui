@@ -70,7 +70,8 @@
   cursor: pointer;
 }
 
-.multisearch-input > ul.termlist {
+.multisearch-input > ul.termlist,
+.multisearch-input > ul.suggestions {
   margin: 10px 0 0;
   padding: 10px 6px;
   background: #fffffa;
@@ -81,7 +82,8 @@
   list-style-type: none;
 }
 
-.multisearch-input > ul.termlist > li {
+.multisearch-input > ul.termlist > li,
+.multisearch-input > ul.suggestions > li {
   line-height: 25px;
   font-size: 12px;
   display: block;
@@ -94,45 +96,48 @@
   font-weight: bold;
 }
 
+.multisearch-input > ul.termlist > li.headers,
+.multisearch-input > ul.suggestions > li.headers {
+  font-size: 9px;
+  padding: 0;
+  line-height: 1.4em;
+  overflow: hidden;
+}
+
+.multisearch-input > ul.termlist > li.headers > .checkbox-header {
+  float: left;
+}
+
+.multisearch-input > ul.termlist > li.headers > .x-header {
+  float: right;
+}
+
 .multisearch-input > ul.termlist > li[data-enabled] {
   background: #4fa157;
   color: #fff;
 }
 
-.multisearch-input > ul.termlist > li > label {
+.multisearch-input > ul.termlist > li > label,
+.multisearch-input > ul.suggestions > li > label {
   display: inline-block;
   line-height: 21px;
   cursor: pointer;
 }
 
-.multisearch-input > ul.termlist > li > label:before {
-  display: inline-block;
-  content: '';
-  height: 15px;
-  width: 15px;
-  border: 1px solid #dce6be;
-  background: #f0f5e1;
-  vertical-align: middle;
-  margin-right: 5px;
-  text-align: center;
-  color: black;
-  font-size: 1.5em;
-}
-
-.multisearch-input > ul.termlist > li > input:focus ~ label:before {
-  outline: 2px solid #4fa157;
-}
-
-.multisearch-input > ul.termlist > li > input:checked ~ label:before {
-  content: "✓";
-}
-
-.multisearch-input > ul.termlist > .title {
+.multisearch-input > ul.termlist > .title,
+.multisearch-input > ul.suggestions > .title {
   background: transparent;
   color: inherit;
   margin-top: 0;
   text-transform: uppercase;
   padding: 0;
+}
+
+.multisearch-input > ul.termlist > li > input,
+.multisearch-input > ul.suggestions > li > input {
+  vertical-align: middle;
+  max-height: 25px;
+  max-width: 25px;
 }
 
 .multisearch-input > ul.termlist > li > button {
@@ -155,7 +160,8 @@
 }
 
 .multisearch-input > ul.termlist > li > button::after {
-  content: '❌';
+  content: '\e60b';
+  font-family: 'freshdirect_icons';
   position: absolute;
   top: 0;
   left: 0;
@@ -166,4 +172,9 @@
   text-indent: 0;
   line-height: 25px;
   cursor: pointer;
+  color: black;
+}
+
+.multisearch-input > ul.termlist > li[data-enabled] > button::after {
+  color: white;
 }

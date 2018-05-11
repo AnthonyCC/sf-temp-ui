@@ -399,6 +399,8 @@ function parseTipTotal(data) {
 					}
 				}
 				
+				$(this.placeholder).trigger('cartData', data);
+				
 				data.tipAmountsStr = data.tipAmounts.join(",");
 				data.mobWeb = fd.mobWeb;
 				/* need to change between templates based on data param */

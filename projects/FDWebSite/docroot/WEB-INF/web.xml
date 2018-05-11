@@ -354,6 +354,15 @@
 		<url-pattern>/api/filter</url-pattern>
 	</servlet-mapping>
 
+    <servlet>
+        <servlet-name>MultiSearchListServlet</servlet-name>
+        <servlet-class>com.freshdirect.webapp.ajax.search.MultiSearchListServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>MultiSearchListServlet</servlet-name>
+        <url-pattern>/api/multisearch</url-pattern>
+    </servlet-mapping>
+
 	<servlet>
 		<servlet-name>LoginServlet</servlet-name>
 		<servlet-class>com.freshdirect.webapp.ajax.login.LoginServlet</servlet-class>

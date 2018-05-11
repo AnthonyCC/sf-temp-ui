@@ -339,7 +339,7 @@ public class ModelConverter {
 				deliveryPassTypeData.getProfileValue(),
 				deliveryPassTypeData.isAutoRenewDP(),
 				deliveryPassTypeData.isFreeTrialDP(),
-				deliveryPassTypeData.isFreeTrialDP(),
+				deliveryPassTypeData.isFreeTrialRestricted(),
 				deliveryPassTypeData.getAutoRenewalSKU());
 	}
 
@@ -851,8 +851,8 @@ public class ModelConverter {
 		List<ErpSalesUnitData> displaySalesUnitDatas = createErpSalesUnitDataList(model.getDisplaySalesUnits());
 		List<ErpPlantMaterialData> erpPlantMaterialDatas = createErpPlantMaterialDataList(model.getMaterialPlants());
 		List<ErpMaterialSalesAreaData> erpMaterialSalesAreaDatas = createErpMaterialSalesAreaDataList(model.getMaterialSalesAreas());
-		
-		data.setId(model.getId());
+		// http://jira.freshdirect.com/browse/SF17-72
+		//data.setId(model.getId());
 		data.setBaseUnit(model.getBaseUnit());
 		data.setUPC(model.getUPC());
 		data.setDescription(model.getDescription());
@@ -950,7 +950,8 @@ public class ModelConverter {
 			model.setDenominator(salesUnit.getDenominator());
 			model.setDescription(salesUnit.getDescription());
 			model.setDisplayInd(salesUnit.isDisplayInd());
-			model.setId(salesUnit.getId());
+			// http://jira.freshdirect.com/browse/SF17-72
+			//model.setId(salesUnit.getId());
 			model.setNumerator(salesUnit.getNumerator());
 			model.setUnitPriceDenominator(salesUnit.getUnitPriceDenominator());
 			model.setUnitPriceDescription(salesUnit.getUnitPriceDescription());
@@ -1044,7 +1045,8 @@ public class ModelConverter {
 		ErpMaterialSalesAreaData data = new  ErpMaterialSalesAreaData();
 		data.setDayPartSelling(erpMaterialSalesAreaModel.getDayPartSelling());
 		data.setDistChannel(erpMaterialSalesAreaModel.getDistChannel());
-		data.setId(erpMaterialSalesAreaModel.getId());
+		// http://jira.freshdirect.com/browse/SF17-72
+		//data.setId(erpMaterialSalesAreaModel.getId());
 		data.setPickingPlantId(erpMaterialSalesAreaModel.getPickingPlantId());
 		data.setSalesOrg(erpMaterialSalesAreaModel.getSalesOrg());
 		data.setSkuCode(erpMaterialSalesAreaModel.getSkuCode());
@@ -1081,7 +1083,8 @@ public class ModelConverter {
 		data.setBlockedDays(getDayOfWeekSetData(erpPlantMaterialModel.getBlockedDays()));
 		data.setDays_in_house(erpPlantMaterialModel.getDays_in_house());
 		data.setHideOutOfStock(erpPlantMaterialModel.isHideOutOfStock());
-		data.setId(erpPlantMaterialModel.getId());
+		// http://jira.freshdirect.com/browse/SF17-72
+		// data.setId(erpPlantMaterialModel.getId());
 		data.setKosherProduction(erpPlantMaterialModel.isKosherProduction());
 		data.setLeadTime(erpPlantMaterialModel.getLeadTime());
 		data.setNumberOfDaysFresh(erpPlantMaterialModel.getNumberOfDaysFresh());
@@ -1121,7 +1124,8 @@ public class ModelConverter {
 		data.setDenominator(erpSalesUnitModel.getDenominator());
 		data.setDescription(erpSalesUnitModel.getDescription());
 		data.setDisplayInd(erpSalesUnitModel.isDisplayInd());
-		data.setId(erpSalesUnitModel.getId());
+		// http://jira.freshdirect.com/browse/SF17-72
+		//data.setId(erpSalesUnitModel.getId());
 		data.setNumerator(erpSalesUnitModel.getNumerator());
 		data.setUnitPriceDenominator(erpSalesUnitModel.getUnitPriceDenominator());
 		data.setUnitPriceDescription(erpSalesUnitModel.getUnitPriceDescription());
@@ -1142,7 +1146,8 @@ public class ModelConverter {
 			ErpMaterialPriceModel erpMaterialPriceModel) {
 		ErpMaterialPriceData data = new ErpMaterialPriceData();
 		data.setDistChannel(erpMaterialPriceModel.getDistChannel());
-		data.setId(erpMaterialPriceModel.getId());
+		// http://jira.freshdirect.com/browse/SF17-72
+		// data.setId(erpMaterialPriceModel.getId());
 		data.setPrice(erpMaterialPriceModel.getPrice());
 		data.setPricingUnit(erpMaterialPriceModel.getPricingUnit());
 		data.setPromoPrice(erpMaterialPriceModel.getPromoPrice());
@@ -2032,10 +2037,24 @@ public class ModelConverter {
 				data.setValueFor(entry.getKey(),val);
 			}
 		}	
+
 		if(nutritionModelData.getInfo()!=null){
 			for (ErpNutritionInfoTypeAttrWrapper  wrrapper : nutritionModelData.getInfo()){
+				if(wrrapper.getAttributeData().getValue()!=null){
+					if(wrrapper.getAttributeData().getType().isMultiValued()){
+						for(Object nInfoAttrdata:(List) wrrapper.getAttributeData().getValue()){
+							NutritionInfoAttributeData nIAData = wrrapper.getAttributeData();
+							ErpNutritionInfoType nutType= buildErpNutritionInfoType(nIAData.getType());
+							String value = getValueType(nInfoAttrdata);
+
+							NutritionInfoAttribute nutAttr = new NutritionInfoAttribute(nutType, nIAData.getPriority(), getValueForCode(nutType,value));
+							data.addNutritionAttribute(nutAttr);	
+						}
+					
+					}
+					data.addNutritionAttribute(buildNutritionAttribute(wrrapper.getAttributeData()));
+				}
 				
-				data.addNutritionAttribute(buildNutritionAttribute(wrrapper.getAttributeData()));
 			}
 		}	
 		return data;
@@ -2054,19 +2073,28 @@ public class ModelConverter {
 		   if(obj==null)
 			   return null;
 		  String code =  getCode(obj);
+		  value = getValueForCode(nutType,code);
+         
+		return value;
+	}
+	
+	private static Object getValueForCode(ErpNutritionInfoType nutType,String code) {
+		   Object value = null;
+		   if(code==null)
+			   return null;
 		 if (nutType.equals(ErpNutritionInfoType.CLAIM)) {
-             value = EnumClaimValue.getValueForCode(code);
-         } else if (nutType.equals(ErpNutritionInfoType.KOSHER_SYMBOL)) {
-             value = EnumKosherSymbolValue.getValueForCode(code);
-         } else if (nutType.equals(ErpNutritionInfoType.KOSHER_TYPE)) {
-             value =  EnumKosherTypeValue.getValueForCode(code);
-         } else if (nutType.equals(ErpNutritionInfoType.ALLERGEN)) {
-             value = EnumAllergenValue.getValueForCode(code);
-         } else if (nutType.equals(ErpNutritionInfoType.ORGANIC)) {
-             value = EnumOrganicValue.getValueForCode(code);
-         } else {
-             value = code;
-         }
+          value = EnumClaimValue.getValueForCode(code);
+      } else if (nutType.equals(ErpNutritionInfoType.KOSHER_SYMBOL)) {
+          value = EnumKosherSymbolValue.getValueForCode(code);
+      } else if (nutType.equals(ErpNutritionInfoType.KOSHER_TYPE)) {
+          value =  EnumKosherTypeValue.getValueForCode(code);
+      } else if (nutType.equals(ErpNutritionInfoType.ALLERGEN)) {
+          value = EnumAllergenValue.getValueForCode(code);
+      } else if (nutType.equals(ErpNutritionInfoType.ORGANIC)) {
+          value = EnumOrganicValue.getValueForCode(code);
+      } else {
+          value = code;
+      }
 		return value;
 	}
 	private static String getCode(Object objData){
@@ -2096,6 +2124,46 @@ public class ModelConverter {
 				if(keyData.equalsIgnoreCase("Code"))
 					code = (String)objDataMap.get(keyData);
 			}
+		}else if(objData instanceof  String){
+			code = (String)objData;
+			}
+		
+		return code;
+		
+	}
+	
+	private static String getValueType(Object objData){
+		String code=null;
+		List objDataTemp = null;
+		Map objDataMap=null;
+		if(objData instanceof  ArrayList){
+			objDataTemp = (ArrayList)objData;
+			objDataMap = (Map)objDataTemp.get(0);
+			Set keys = objDataMap.keySet();
+			for(Object key:keys){
+				String keyData=(String)key;
+				if(keyData.equalsIgnoreCase("value")){
+					Map coded = (Map)objDataMap.get(keyData);
+					for(Object valueKey:coded.keySet()){
+						String valuekeyData=(String)valueKey;
+						if(valuekeyData.equalsIgnoreCase("Code"))
+							code = (String)coded.get(valuekeyData);
+					}
+				}
+			}
+		}else if(objData instanceof  Map){
+			objDataMap =(Map) objData;
+			Set keys = objDataMap.keySet();
+			for(Object key:keys){
+				String keyData=(String)key;
+				if(keyData.equalsIgnoreCase("value")){
+					Map coded = (Map)objDataMap.get(keyData);
+					for(Object valueKey:coded.keySet()){
+						String valuekeyData=(String)valueKey;
+						if(valuekeyData.equalsIgnoreCase("Code"))
+							code = (String)coded.get(valuekeyData);
+					}
+				}}
 		}else if(objData instanceof  String){
 			code = (String)objData;
 			}

@@ -3,10 +3,15 @@ package com.freshdirect.fdstore.promotion;
 
 public class MaxRedemptionStrategy implements PromotionStrategyI {
 	
-	private final int maxRedemptions;
+	private int maxRedemptions;
 	
 	public MaxRedemptionStrategy(int maxRedemptions){
 		this.maxRedemptions = maxRedemptions;
+	}
+
+	public MaxRedemptionStrategy() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -48,5 +53,9 @@ public class MaxRedemptionStrategy implements PromotionStrategyI {
 	@Override
 	public boolean isStoreRequired() {
 		return false;
+	}
+
+	public void setMaxRedemptions(int maxRedemptions) {
+		this.maxRedemptions = maxRedemptions;
 	}
 }

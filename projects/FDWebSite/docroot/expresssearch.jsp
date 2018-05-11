@@ -30,7 +30,7 @@
 	</tmpl:put>
 
   <tmpl:put name="seoMetaTag" direct="true">
-    <fd:SEOMetaTag title="Search for multiple products"></fd:SEOMetaTag>
+    <fd:SEOMetaTag title="Search for multiple products" pageId="express_search"></fd:SEOMetaTag>
   </tmpl:put>
 
 	<tmpl:put name='mobileSubMenu' direct='true'>
@@ -48,6 +48,9 @@
     <h2>Type in a list of products and we will find them for you</h2>
     <div id="multisearch-results" class="contentModules">
     </div>
+    <div id="multisearch-tutorial">
+      <fd:IncludeMedia name="/media/editorial/site_pages/informational/multisearch.html" />
+    </div>
   </tmpl:put>
   
 	<tmpl:put name='extraJsModules'>
@@ -57,6 +60,10 @@
 
       FreshDirect.multisearch.limit = +'<%= FDStoreProperties.getMultiSearchLimit() %>';
       FreshDirect.multisearch.defaultList = '<%= FDStoreProperties.getMultiSearchDefaultList() %>';
+      FreshDirect.multisearch.list = '<%= user.getMultiSearchList() %>';
+      if (FreshDirect.multisearch.list === 'null') {
+        FreshDirect.multisearch.list = "";
+      }
     </script>
     <jwr:script src="/multisearch.js" useRandomParam="false" />
 	</tmpl:put>

@@ -92,20 +92,20 @@ public class DeliveryPassService {
 	}
 
 	private List<ProductModel> collectDeliveryPassProducts(FDUserI user) {
-		CategoryModel category = (CategoryModel) ContentFactory.getInstance().getContentNode(ContentType.Category, "gro_gear_dlvpass");
-		List<ProductModel> availableProducts = new ArrayList<ProductModel>();
+        CategoryModel category = (CategoryModel) ContentFactory.getInstance().getContentNode(ContentType.Category, "gro_gear_dlvpass");
+        List<ProductModel> availableProducts = new ArrayList<ProductModel>();
 
-		for (ProductModel product : ContentFactory.getInstance().getProducts(category)) {
-			if (product.isFullyAvailable() && !product.isDiscontinued()) {
-				if (product.getSku(FDStoreProperties.getTwoMonthTrailDPSku()) != null) {
-					if (!user.getDlvPassInfo().isFreeTrialRestricted() && (!user.isDlvPassActive() || user.isDlvPassExpired()) && user.getShoppingCart().getDeliveryPassCount() == 0 && user.getDlvPassInfo().getDaysSinceDPExpiry() == 0) {
-						availableProducts.add(product);
-					}
-				} else {
-					availableProducts.add(product);
-				}
-			}
-		}
+        for (ProductModel product : ContentFactory.getInstance().getProducts(category)) {
+            if (product.isFullyAvailable() && !product.isDiscontinued()) {
+                if (product.getSku(FDStoreProperties.getTwoMonthTrailDPSku()) != null) {
+                    if (!user.getDlvPassInfo().isFreeTrialRestricted() && (!user.isDlvPassActive() || user.isDlvPassExpired()) && user.getShoppingCart().getDeliveryPassCount() == 0 && user.getDlvPassInfo().getDaysSinceDPExpiry() == 0) {
+                        availableProducts.add(product);
+                    }
+                } else if(!product.getContentKey().getId().equalsIgnoreCase(FDStoreProperties.getOneMonthDPSku())){
+                    availableProducts.add(product);
+                }
+            }
+        }
 
 		Collections.sort(availableProducts, Collections.reverseOrder(ProductModel.GENERIC_PRICE_COMPARATOR));
 		return availableProducts;

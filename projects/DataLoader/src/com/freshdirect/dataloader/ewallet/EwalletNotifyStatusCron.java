@@ -48,17 +48,14 @@ public class EwalletNotifyStatusCron {
 			}
 		}
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletNotifyStatusSB)){
-				FDECommerceService.getInstance().loadTrxnsForPostBack(maxDays);
-				FDECommerceService.getInstance().postTrxnsToEwallet();
-			}else{
+			
 			Context ctx=getInitialContext();
 			EwalletNotifyStatusHome ewalletHome=(EwalletNotifyStatusHome)ctx.lookup( "freshdirect.fdstore.EWalletNotify" ) ;
 			EwalletNotifyStatusSB sb = ewalletHome.create();
 
 			sb.loadTrxnsForPostBack(maxDays);
 			sb.postTrxnsToEwallet();
-			}
+			
 
 		} catch (RemoteException e) {
 			LOGGER.error("Exception while Postback ", e.getCause());

@@ -27,6 +27,8 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationAdapter;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.util.Assert;
 
 import com.freshdirect.cms.cache.CacheEvictors;
@@ -547,12 +549,12 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public Optional<ContentChangeSetEntity> updateContent(LinkedHashMap<ContentKey, Map<Attribute, Object>> payload, ContentUpdateContext context) {
+    public Optional<ContentChangeSetEntity> updateContent(final LinkedHashMap<ContentKey, Map<Attribute, Object>> payload, final ContentUpdateContext context) {
         Assert.notNull(payload, "Content payload cannot be null");
         Assert.notNull(context, "Update context must be provided");
 
         // collect keys of new content nodes
-        Set<ContentKey> newKeys = collectKeysCreatedInPayload(payload);
+        final Set<ContentKey> newKeys = collectKeysCreatedInPayload(payload);
 
         // fetch original values for creating change records
         final Map<ContentKey, Map<Attribute, Object>> originalValues = loadOriginalValues(payload);
@@ -578,15 +580,17 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
             }
         }
 
-        // -- post update phase --
-
         // track changes
         Optional<ContentChangeSetEntity> changes = recordChanges(newKeys, originalValues, payload, context);
 
-        // post-save operations
-        updateContentKeysCache(newKeys);
-        evictParentKeysCache(payload.keySet(), originalChildKeys);
-        evicAttributeCache(payload.keySet());
+        // -- post update phase --
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
+            public void afterCommit() {
+                updateContentKeysCache(newKeys);
+                evictParentKeysCache(payload.keySet(), originalChildKeys);
+                evicAttributeCache(payload.keySet());
+            }
+        });
 
         return changes;
     }

@@ -93,6 +93,7 @@ import com.freshdirect.fdstore.customer.UnsettledOrdersInfo;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.iplocator.IpLocatorEventDTO;
 import com.freshdirect.fdstore.request.FDProductRequest;
+import com.freshdirect.fdstore.sms.shortsubstitute.ShortSubstituteResponse;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.fdstore.util.IgnoreCaseString;
@@ -353,8 +354,6 @@ public interface FDCustomerManagerSB  extends EJBObject{
 
 	public FDOrderI getOrder(FDIdentity identity, String saleId) throws FDResourceException, RemoteException;
 
-	public List<FDOrderI> getOrders(List<String> saleIds) throws FDResourceException, RemoteException;
-
     public FDOrderI getOrderForCRM(String saleId) throws FDResourceException, RemoteException;
 
     public FDOrderI getOrder(String saleId) throws FDResourceException, RemoteException;
@@ -467,29 +466,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
 		DeliveryPassException,
 		FDPaymentInadequateException,
 		RemoteException;
-
-    /**
-     * Charge an order (modify & send msg to SAP).
-     *
-     * @param identity the customer's identity reference
-     * @throws FDResourceException if an error occured while accessing remote resources
-     */
-    public void chargeOrder(
-		FDIdentity identity,
-		String saleId,
-		ErpPaymentMethodI paymentMethod,
-		boolean sendEmail,
-		CustomerRatingI cra,
-		CrmAgentModel agent,
-		double additionalCharge)
-		throws FDResourceException,
-		ErpFraudException,
-		ErpAuthorizationException,
-		ErpTransactionException,
-		FDPaymentInadequateException,
-		ErpAddressVerificationException,
-		RemoteException;
-
+    
     /**
      * Adds a complaint to the user's list of complaints and begins the associated credit issuing process
      *
@@ -629,8 +606,6 @@ public interface FDCustomerManagerSB  extends EJBObject{
 
 	public void setHasAutoRenewDP(String customerPK, EnumTransactionSource source, String initiator,boolean autoRenew)throws FDResourceException, RemoteException;
 
-	public FDOrderI getLastNonCOSOrderUsingCC(String customerID,EnumSaleType saleType, EnumSaleStatus saleStatus) throws FDResourceException, RemoteException,ErpSaleNotFoundException;
-
 	public FDOrderI getLastNonCOSOrder(String customerID,EnumSaleType saleType, EnumSaleStatus saleStatus) throws FDResourceException, RemoteException,ErpSaleNotFoundException;
 	
 	public FDOrderI getLastNonCOSOrder(String customerID,EnumSaleType saleType) throws FDResourceException, RemoteException,ErpSaleNotFoundException;
@@ -673,10 +648,6 @@ public interface FDCustomerManagerSB  extends EJBObject{
           ErpAuthorizationException,
           ErpAddressVerificationException,
           RemoteException;
-
-
-	public void addAndReconcileInvoice(String saleId, ErpInvoiceModel invoice, ErpShippingInfo shippingInfo)
-	throws ErpTransactionException, RemoteException;
 
 	public void authorizeSale(String erpCustomerID, String saleID, EnumSaleType type,CustomerRatingI cra) throws FDResourceException, ErpSaleNotFoundException, RemoteException;
 	public  Object[] getAutoRenewalInfo()throws FDResourceException, RemoteException;
@@ -813,8 +784,6 @@ public interface FDCustomerManagerSB  extends EJBObject{
 			FDPaymentInadequateException,
 			SQLException,
 			RemoteException;
-
-	public ErpAuthorizationModel verify(FDActionInfo info,ErpPaymentMethodI paymentMethod) throws FDResourceException,ErpAuthorizationException, RemoteException;
 
 	public String recordReferral(String customerId, String referralId, String customerEmail) throws FDResourceException, RemoteException;
 
@@ -989,5 +958,8 @@ public interface FDCustomerManagerSB  extends EJBObject{
 	public boolean hasCustomerDpFreeTrialOptin(String custId) throws FDResourceException, RemoteException;
 	
 	public void updateFDCustomerEStoreInfo(FDCustomerEStoreModel fdCustomerEStoreModel, String custId) throws FDResourceException, RemoteException;
+	
+	public ShortSubstituteResponse getShortSubstituteOrders(List<String> orderList) throws FDResourceException, RemoteException;
+	
 }
 

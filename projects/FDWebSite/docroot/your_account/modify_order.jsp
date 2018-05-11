@@ -44,7 +44,10 @@
 		}
 	}
 	/* pass this param to bypass the success redirect (i.e. for initializing a modify via ajax) where you don't need the success page to load */
-	String successPage = (request.getParameter("noSuccess") != null) ? "noSuccess" : "/view_cart.jsp";
+	String successPage = (request.getParameter("noSuccess") != null) ? "noSuccess" : "/view_cart.jsp?fail";
+	if (request.getParameter("successPage") != null) {
+		successPage = request.getParameter("successPage");
+	}
 %>
 <fd:ModifyOrderController orderId="<%= orderId %>" result="result" successPage='<%= successPage %>'>
 <tmpl:insert template='<%= pageTemplate %>'>

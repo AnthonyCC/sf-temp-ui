@@ -2,6 +2,8 @@ package com.freshdirect.fdstore.customer;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumNotificationType;
@@ -34,8 +36,15 @@ public class FDActionInfo implements Serializable {
 	public FDActionInfo( EnumEStoreId eStore,EnumTransactionSource source, FDIdentity identity, String initiator, String note, CrmAgentModel agent, String fdUserId) {
 		this(eStore, source, identity, initiator, note, agent, null,fdUserId );
 	}
-	
-	public FDActionInfo( EnumEStoreId eStore,EnumTransactionSource source, FDIdentity identity, String initiator, String note, CrmAgentModel agent, EnumAccountActivityType type, String fdUserId) {
+	@JsonCreator
+	public FDActionInfo( @JsonProperty("eStore") EnumEStoreId eStore, 
+			@JsonProperty("source") EnumTransactionSource source, 
+			@JsonProperty("identity") FDIdentity identity, 
+			@JsonProperty("initiator") String initiator,
+			@JsonProperty("note") String note, 
+			@JsonProperty("agent") CrmAgentModel agent, 
+			@JsonProperty("type") EnumAccountActivityType type,
+			@JsonProperty("fdUserId") String fdUserId) {
 		this.identity = identity;
 		this.source = source;
 		this.initiator = initiator;

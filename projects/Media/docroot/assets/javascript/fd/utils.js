@@ -241,6 +241,7 @@ var FreshDirect = FreshDirect || {};
     window.console = {
       log: function () {},
       debug: function () {},
+      warn: function () {},
       error: function () {}
     };
   }

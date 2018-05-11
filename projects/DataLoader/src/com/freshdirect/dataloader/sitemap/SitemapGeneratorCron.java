@@ -6,9 +6,12 @@ import javax.naming.NamingException;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.fdstore.FDEcommProperties;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.sitemap.SitemapHome;
 import com.freshdirect.fdstore.sitemap.SitemapSB;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.payment.service.FDECommerceService;
 
 public class SitemapGeneratorCron {
 
@@ -18,10 +21,14 @@ public class SitemapGeneratorCron {
         Context ctx = null;
         try {
             LOGGER.info("SitemapGeneratorCron Started.");
+            if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SitemapSB)){
+			FDECommerceService.getInstance().generateSitemap();
+            }else{
             ctx = ErpServicesProperties.getInitialContext();
             SitemapHome managerHome = (SitemapHome) ctx.lookup(SitemapHome.JNDI_HOME);
             SitemapSB sb = managerHome.create();
             sb.generateSitemap();
+            }
         } catch (Exception e) {
             LOGGER.error("SitemapGeneratorCron failed with Exception...", e);
         } finally {

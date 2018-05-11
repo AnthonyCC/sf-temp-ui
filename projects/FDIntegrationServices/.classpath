@@ -2,28 +2,22 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ERPSWebApp"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/oscache-2.4.1.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/freemarker-2.3.15.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/javawebparts-filter-1.2.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-beans-4.0.1.RELEASE.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-context-4.0.1.RELEASE.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-core-4.0.1.RELEASE.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-web-4.0.1.RELEASE.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-webmvc-4.0.1.RELEASE.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/logistics-data-0.0.1-SNAPSHOT.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-context-support-4.0.1.RELEASE.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/log4j.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/commons-lang3-3.4.jar"/>
-    <classpathentry kind="var" path="TOMCAT_HOME/lib/servlet-api.jar"/>
-	<classpathentry kind="var" path="TOMCAT_HOME/lib/jsp-api.jar"/>
-	<classpathentry kind="var" path="TOMCAT_HOME/lib/jasper-el.jar"/>
-	<classpathentry kind="var" path="TOMCAT_HOME/lib/jasper.jar"/>
-	<classpathentry kind="var" path="TOMCAT_HOME/lib/el-api.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/FDClient.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/httpcore-4.4.1.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/commons-beanutils-1.6.1.jar"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/ERPSWebApp"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/oscache-2.4.1.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/freemarker-2.3.15.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/javawebparts-filter-1.2.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/spring-beans-4.0.1.RELEASE.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/spring-context-4.0.1.RELEASE.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/spring-core-4.0.1.RELEASE.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/spring-web-4.0.1.RELEASE.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/spring-webmvc-4.0.1.RELEASE.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/logistics-data-0.0.1-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/spring-context-support-4.0.1.RELEASE.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/log4j.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/commons-lang3-3.4.jar"/>
+	<classpathentry exported="true" kind="var" path="TOMCAT_HOME/lib/el-api.jar"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/commons-beanutils-1.7.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

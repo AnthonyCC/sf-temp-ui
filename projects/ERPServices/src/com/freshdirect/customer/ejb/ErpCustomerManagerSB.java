@@ -75,7 +75,7 @@ import com.freshdirect.payment.EnumPaymentMethodType;
  *
  */
 
-
+@Deprecated
 public interface ErpCustomerManagerSB extends EJBObject {
     
     /**
@@ -154,11 +154,6 @@ public interface ErpCustomerManagerSB extends EJBObject {
     public ErpSaleModel getOrder(PrimaryKey erpSalePk) throws RemoteException;
     
     /**
-	 * Get multiple sales
-	 */
-	public List<ErpSaleModel> getOrders(List<PrimaryKey> erpSalePks) throws RemoteException;
-    
-    /**
      * Get lightweight info about a customer's orders.
      *
      * @param erpCustomerPk primary key of ErpCustomer
@@ -179,9 +174,7 @@ public interface ErpCustomerManagerSB extends EJBObject {
     public void addAndReconcileInvoice(String saleId, ErpInvoiceModel invoice, ErpShippingInfo shippingInfo) throws ErpTransactionException, RemoteException;
     
     public void reconcileSale(String saleId, Boolean isShorted) throws ErpTransactionException, RemoteException;
-    
-    public void cutoff(String pk) throws RemoteException;
-    
+     
     public Collection<ModelI> getFailedAuthorizationSales() throws RemoteException;
     
     public PrimaryKey addComplaint(ErpComplaintModel complaint, String saleId, boolean autoApproveAuthorized, Double limit ) throws ErpComplaintException, RemoteException;
@@ -202,12 +195,6 @@ public interface ErpCustomerManagerSB extends EJBObject {
 
 	public boolean isOnAlert(PrimaryKey pk, String alertType) throws RemoteException;
 
-	public String addSettlement(ErpSettlementModel model, String saleId, String authId) throws ErpTransactionException, RemoteException;
-    
-    public void addAdjustment(ErpAdjustmentModel adjustmentModel) throws ErpTransactionException, RemoteException;
-    
-    public void createCaseForSale(String saleId, String reason) throws ErpSaleNotFoundException, RemoteException;
-    
     public ErpDeliveryInfoModel getDeliveryInfo(String saleId) throws ErpSaleNotFoundException, RemoteException;
     
     public void processSaleReturn(String saleId, ErpReturnOrderModel returnOrder) throws ErpTransactionException, RemoteException;
@@ -223,17 +210,9 @@ public interface ErpCustomerManagerSB extends EJBObject {
     public void markAsReturn(String saleId, boolean fullReturn, boolean alcoholOnly) throws ErpTransactionException, ErpSaleNotFoundException, RemoteException;
     
     public void approveReturn(String saleId, ErpReturnOrderModel returnOrder) throws ErpTransactionException, RemoteException;
-    
-    public void markAsRedelivery(String saleId) throws ErpTransactionException, ErpSaleNotFoundException, RemoteException;
-    
-    public void scheduleRedelivery(String saleId, ErpRedeliveryModel redeliveryModel) throws ErpTransactionException, RemoteException;
-    
-    public List<RedeliverySaleInfo> getRedeliveries(Date date) throws RemoteException;
-    
+     
     public ErpComplaintInfoModel getComplaintInfo(String saleId, String complaintId) throws RemoteException;
-    
-    public List<FDConfiguredProduct> getEveryItemEverOrdered(PrimaryKey erpCustomerPK) throws RemoteException;
-    
+     
 	public void reverseCustomerCredit(String saleId, String complaintId) throws ErpTransactionException, RemoteException;
 
 	public List<DlvSaleInfo> getOrdersForDateAndAddress(Date date, String address, String zipcode) throws RemoteException;
@@ -292,8 +271,6 @@ public interface ErpCustomerManagerSB extends EJBObject {
 	
 	public ErpSaleModel getLastNonCOSOrder(String customerID,	EnumSaleType saleType, List<EnumPaymentMethodType> pymtMethodTypes) throws ErpSaleNotFoundException, RemoteException;
     
-    public void cutOffSale(String saleId) throws ErpSaleNotFoundException, RemoteException;
-    
     public void sendCreateOrderToSAP(String erpCustomerID, String saleID,EnumSaleType saleType, CustomerRatingI rating) throws RemoteException, ErpSaleNotFoundException;
 
 	public void assignAutoCaseToComplaint(PrimaryKey complaintPk, PrimaryKey autoCasePK) throws RemoteException;
@@ -304,15 +281,11 @@ public interface ErpCustomerManagerSB extends EJBObject {
     
     public void sendCreateDonationOrderToSAP(String erpCustomerID, String saleID, EnumSaleType saleType, CustomerRatingI rating) throws RemoteException, ErpSaleNotFoundException, ErpTransactionException;
     
-    public List<DlvSaleInfo> getLastOrderForAddress(AddressModel address)  throws RemoteException;
-    
     public String getSapCustomerId(String erpCustomerPk) throws RemoteException;
 
     public List<ErpSaleInfo> getNSMOrdersForGC()  throws RemoteException;
     public String getLastOrderID(PrimaryKey erpCustomerPk, EnumEStoreId eStore) throws RemoteException;
-    
-    public boolean updateSalesShippingInfo(Map<String,ErpShippingInfo> erpShippingMap) throws ErpTransactionException ,RemoteException;
-    
+
     public List<ErpCustomerCreditModel> getCustomerCreditsByErpCustId(String erpCustomerId) throws RemoteException;
     
 }

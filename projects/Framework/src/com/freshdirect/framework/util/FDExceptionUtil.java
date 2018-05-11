@@ -17,4 +17,16 @@ public class FDExceptionUtil {
 		}
 		return strBuf.toString();
 	}
+
+    public static boolean isConnectionResetOrBrokenPipe(String exceptionText) {
+        boolean relatedException = false;
+
+        if (exceptionText != null) {
+            String upperExceptionText = exceptionText.toUpperCase();
+            relatedException = upperExceptionText.contains("JSPEXCEPTION") && (upperExceptionText.contains("BROKEN PIPE") || upperExceptionText.contains("CONNECTION RESET"));
+        }
+
+        return relatedException;
+
+    }
 }

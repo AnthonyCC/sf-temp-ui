@@ -11,6 +11,7 @@ import javax.servlet.jsp.tagext.VariableInfo;
 import com.freshdirect.fdstore.CallCenterServices;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.webapp.crm.CrmMasqueradeUtil;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
 
 public class CrmResubmitCustControllerTag extends AbstractControllerTag {
@@ -30,13 +31,13 @@ public class CrmResubmitCustControllerTag extends AbstractControllerTag {
 			String custId=null;
 			try {	
 				if(this.customerId != null){
-					this.resubmitCustomer(this.customerId.trim());
+					CrmMasqueradeUtil.resubmitCustomer(this.customerId.trim());
 				}else{
 					String[] ids = request.getParameterValues("customerId");					
 					for(int i = 0; i < ids.length; i++) {
 						custId = ids[i];
 						if(custId != null){
-							this.resubmitCustomer(custId.trim());
+							CrmMasqueradeUtil.resubmitCustomer(custId.trim());
 						}
 					}
 				}
@@ -49,10 +50,7 @@ public class CrmResubmitCustControllerTag extends AbstractControllerTag {
 		return true;
 	}
 		
-	private void resubmitCustomer(String customerId) throws FDResourceException {
-		CallCenterServices.resubmitCustomer(customerId);
-	}
-	
+		
 	protected boolean performGetAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
 		if(this.customerId == null){
 			try{

@@ -62,6 +62,7 @@ import com.freshdirect.mobileapi.controller.data.response.DynamicAvailabilityErr
 import com.freshdirect.mobileapi.controller.data.response.HasCartDetailField;
 import com.freshdirect.mobileapi.controller.data.response.PaymentMethods;
 import com.freshdirect.mobileapi.controller.data.response.PaymentResponse;
+import com.freshdirect.mobileapi.controller.data.response.UnattendedDeliveryAddressResponse;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
 import com.freshdirect.mobileapi.model.Cart;
@@ -94,6 +95,7 @@ import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
+import com.freshdirect.webapp.taglib.fdstore.UnattendedDeliveryTag;
 import com.freshdirect.webapp.taglib.fdstore.UserValidationUtil;
 import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventFactory;
 import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventI;
@@ -108,6 +110,8 @@ public class CheckoutController extends BaseController {
     private static final Category LOGGER = LoggerFactory.getInstance(CheckoutController.class);
 
     private static final String PARAM_SLOT_ID = "slotId";
+    private final static String DIR_ERROR_KEY = "ERR_DARKSTORE_RECONCILIATION";
+    private final static String DEVICE_ID = "deviceId";
     private final static String ACTION_GET_REMOVE_UNAVAILABLE_ITEMS = "removeunavailableitems";
     private final static String ACTION_GET_ATP_ERROR_DETAIL = "getatperrordetail";
     private final static String ACTION_INIT_CHECKOUT = "initcheckout";
@@ -142,8 +146,7 @@ public class CheckoutController extends BaseController {
     private final static String ACTION_GET_SPECIAL_RESTRICTED_DETAIL = "getsplrestricteditemdetail";
     private final static String ACTION_SUBMIT_ORDER_FDX ="submitOrderEx";
     private final static String ACTION_SET_ORDER_MOBILE_NUMBER_FDX ="setordermobilenumberfdx";
-    private final static String DIR_ERROR_KEY="ERR_DARKSTORE_RECONCILIATION";
-    private final static String DEVICE_ID="deviceId";
+    private static final String ACTION_DELIVERY_ADDRESS_UNATTENDED = "isDeliveryAddressUnattended";
     
     private AvalaraContext avalaraContext;
 
@@ -267,6 +270,10 @@ public class CheckoutController extends BaseController {
 	        } else if(ACTION_SET_ORDER_MOBILE_NUMBER_FDX.equals(action)){
 	        	OrderMobileNumberRequest requestMessage = parseRequestObject(request, response, OrderMobileNumberRequest.class);
 	            model = setOrderMobileNumberEx(model, user, request, requestMessage.getMobile_number());
+            } else if (ACTION_DELIVERY_ADDRESS_UNATTENDED.equals(action)) {
+                DeliveryAddressRequest requestMessage = parseRequestObject(request, response, DeliveryAddressRequest.class);
+                Message responseMessage = isDeliveryAddressUnattended(user, requestMessage, request);
+                setResponseMessage(model, responseMessage, user);
 	        }
     	}else{
     		Message responseMessage = new Message();
@@ -1644,6 +1651,9 @@ public class CheckoutController extends BaseController {
                         propogateSetSessionValues(request.getSession(), submitResult);
                         if (submitResult.getActionResult().isSuccess()) {
                             message.setStatus(Message.STATUS_SUCCESS);
+                           if(isDlvPassCartOnly){
+                            fdUser.updateDlvPassInfo();
+                            }
                             com.freshdirect.mobileapi.controller.data.response.Order orderReceipt = new com.freshdirect.mobileapi.controller.data.response.Order();
                             String orderId = (String) request.getSession().getAttribute(SessionName.RECENT_ORDER_NUMBER);
                             if (orderId == null && cartModel.getPaymentMethod() == null) {
@@ -1728,5 +1738,30 @@ public class CheckoutController extends BaseController {
                 EventLoggerService.getInstance().log(orderEvent);
             }
         }
+    }
+
+    private Message isDeliveryAddressUnattended(SessionUser user, DeliveryAddressRequest address, HttpServletRequest request) {
+        Message responseMessage = null;
+        ActionResult result = DeliveryAddressValidatorUtil.validateUnattendeDeliveryAddress(address);
+        if (result.isSuccess()) {
+            UnattendedDeliveryAddressResponse unattendedResponse = new UnattendedDeliveryAddressResponse();
+            unattendedResponse.setUnattendedDelivery(UnattendedDeliveryTag.checkUnattendedDelivery(createErpAddressModel(address)));
+            unattendedResponse.setStatus(Message.STATUS_SUCCESS);
+            responseMessage = unattendedResponse;
+        } else {
+            responseMessage = getErrorMessage(result, request);
+        }
+        return responseMessage;
+    }
+
+    private ErpAddressModel createErpAddressModel(DeliveryAddressRequest address) {
+        ErpAddressModel addressModel = new ErpAddressModel();
+        addressModel.setAddress1(address.getAddress1());
+        addressModel.setAddress2(address.getAddress2());
+        addressModel.setCity(address.getCity());
+        addressModel.setZipCode(address.getZipcode());
+        addressModel.setState(address.getState());
+        addressModel.setApartment(address.getApartment());
+        return addressModel;
     }
 }

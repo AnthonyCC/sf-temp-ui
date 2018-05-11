@@ -898,32 +898,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	/**
-	 * Get multiple sales
-	 */
-	public List<ErpSaleModel> getOrders(List<PrimaryKey> erpSalePks) {
-		try {
-
-			if(erpSalePks.isEmpty()){
-				return new ArrayList<ErpSaleModel>();
-			}
-			Collection<ErpSaleEB> saleEBs = getErpSaleHome().findMultipleByPrimaryKeys(erpSalePks);
-
-			List<ErpSaleModel> models = new ArrayList<ErpSaleModel>();
-			for(ErpSaleEB eb: saleEBs){
-				models.add((ErpSaleModel)eb.getModel());
-			}
-			return models;
-
-		} catch (FinderException ex) {
-			LOGGER.warn("FinderException: ", ex);
-			throw new EJBException(ex);
-		} catch (RemoteException ex) {
-			LOGGER.warn("RemoteException: ", ex);
-			throw new EJBException(ex);
-		}
-	}
-
+	
 	/**
 	 * Get lightweight info about a customer's orders.
 	 *
@@ -1171,104 +1146,6 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		LOGGER.debug("Finished method reconcileSale for sale id " + saleId);
 	}
 
-	public void cutoff(String saleId) {
-		try {
-
-			LOGGER.info("Cutoff - start. saleId=" + saleId);
-
-			ErpSaleEB eb = getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
-			eb.cutoff();
-
-			LOGGER.info("Cutoff - done. saleId=" + saleId);
-
-		} catch (FinderException fe) {
-			LOGGER.warn(fe);
-			throw new EJBException(fe);
-		} catch (RemoteException re) {
-			LOGGER.warn(re);
-			throw new EJBException(re);
-		} catch (ErpTransactionException te) {
-			LOGGER.warn(te);
-			throw new EJBException(te);
-		}
-	}
-
-	public String addSettlement(ErpSettlementModel model, String saleId, String authId) {
-		try {
-
-			LOGGER.info("Add settlement - start. saleId=" + saleId + " authId=" + authId);
-
-			ErpSaleEB eb = getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
-			ErpInvoiceModel invoice = eb.getInvoice();
-			String invoiceNumber = invoice.getInvoiceNumber();
-			/*
-			//just a sanity check that this settlement is for an authorization we actually did
-			//for this sale
-			List authorizations = eb.getApprovedAuthorizations();
-			boolean valid = true;
-
-			 for(Iterator i = authorizations.iterator(); i.hasNext(); ){
-				ErpAuthorizationModel auth = (ErpAuthorizationModel) i.next();
-				if(auth.getApprovalCode().equals(authId)){
-					valid = true;
-				}
-			}
-			if(!valid){
-				throw new EJBException("This settlement is not for this sale");
-			}
-			*/
-			ErpAbstractOrderModel order = eb.getFirstOrderTransaction();
-			if(null != order && null !=order.getRafTransModel()){
-				model.setRafTransModel(RafUtil.getApproveTransModel());
-			}
-			eb.addSettlement(model);
-
-			LOGGER.info("Add settlement - done. saleId=" + saleId + " authId=" + authId);
-
-			return invoiceNumber;
-		} catch (FinderException fe) {
-			LOGGER.debug(fe);
-			throw new EJBException("Cannot find Sale for id: " + saleId);
-		} catch (RemoteException re) {
-			LOGGER.debug(re);
-			throw new EJBException("Error talking to sale entity bean");
-		} catch (ErpTransactionException te) {
-			LOGGER.debug(te);
-			throw new EJBException("Error while performing this transaction ", te);
-		}
-
-	}
-
-	public void addAdjustment(ErpAdjustmentModel adjustmentModel) throws ErpTransactionException {
-		try {
-			String saleId = adjustmentModel.getReferenceNumber();
-
-			LOGGER.info("Add adjustment - start. saleId=" + saleId);
-
-			ErpSaleEB eb = getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
-			eb.addAdjustment(adjustmentModel);
-			String customerId = eb.getCustomerPk().getId();
-
-			CrmSystemCaseInfo info =
-				new CrmSystemCaseInfo(
-					new PrimaryKey(customerId),
-					new PrimaryKey(saleId),
-					CrmCaseSubject.getEnum(CrmCaseSubject.CODE_PAYMENT_ERROR),
-					"Following sale failed to Settle " + saleId);
-
-			new ErpCreateCaseCommand(LOCATOR, info).execute();
-
-			LOGGER.info("Add adjustment - done. saleId=" + saleId);
-
-		} catch (FinderException e) {
-			LOGGER.debug(e);
-			throw new EJBException("No sale found for the given saleId", e);
-		} catch (RemoteException e) {
-			LOGGER.debug(e);
-			throw new EJBException("Cannot talk to the beans", e);
-		}
-	}
-
 	public void markAsReturn(String saleId, boolean fullReturn, boolean alcoholOnly)
 		throws ErpTransactionException, ErpSaleNotFoundException {
 		try {
@@ -1314,39 +1191,6 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		logAlertActivity(customerPk, EnumAccountActivityType.PLACE_ALERT, note, EnumTransactionSource.SYSTEM);
 	}
 
-	public void markAsRedelivery(String saleId) throws ErpTransactionException, ErpSaleNotFoundException {
-		try {
-			ErpSaleEB eb = getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
-			eb.markAsRedelivery();
-			this.createCaseForSale(saleId, "redelivery", "Nobody was home to take delivery");
-		} catch (FinderException fe) {
-			LOGGER.warn("Cannot find sale for saleId", fe);
-			throw new EJBException("No sale found for given saleId: " + saleId, fe);
-		} catch (RemoteException re) {
-			LOGGER.warn("RemoteException: ", re);
-			throw new EJBException("Exception while talking to Sale", re);
-		}
-	}
-
-	public List<RedeliverySaleInfo> getRedeliveries(Date date) {
-		Connection conn = null;
-		try {
-			conn = this.getConnection();
-			return ErpSaleInfoDAO.getRedeliveries(conn, date);
-		} catch (SQLException se) {
-			throw new EJBException(se);
-		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-					conn = null;
-				}
-			} catch (SQLException se) {
-				LOGGER.warn("SQLException while cleaning up", se);
-			}
-		}
-	}
-
 	public ErpDeliveryInfoModel getDeliveryInfo(String saleId) throws ErpSaleNotFoundException {
 		try {
 			ErpSaleEB eb = getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
@@ -1361,21 +1205,6 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			LOGGER.warn(re);
 			throw new EJBException(re);
 		}
-
-	}
-
-	public void createCaseForSale(String saleId, String reason) throws ErpSaleNotFoundException {
-		String details = null;
-
-		if ("redelivery".equalsIgnoreCase(reason)) {
-			details = "Nobody was home to take delivery";
-		} else if ("refused_order".equalsIgnoreCase(reason)) {
-			details = "Customer Refused Order";
-		} else {
-			throw new EJBException("Unknown case type " + reason);
-		}
-
-		this.createCaseForSale(saleId, reason, details);
 
 	}
 
@@ -2555,37 +2384,6 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public List<FDConfiguredProduct> getEveryItemEverOrdered(PrimaryKey erpCustomerPK) {
-		Connection conn = null;
-		try {
-			conn = this.getConnection();
-			return ErpSaleInfoDAO.getEveryItemEverOrdered(conn, erpCustomerPK.getId());
-		} catch (SQLException ex) {
-			throw new EJBException(ex);
-		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException ex) {
-					LOGGER.warn("Unable to close connection", ex);
-				}
-			}
-		}
-	}
-
-	public void scheduleRedelivery(String saleId, ErpRedeliveryModel redeliveryModel) throws ErpTransactionException {
-		try {
-			ErpSaleEB eb = getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
-			eb.addRedelivery(redeliveryModel);
-		} catch (FinderException fe) {
-			LOGGER.warn("FinderException cannot find sale for id: " + saleId, fe);
-			throw new EJBException(fe);
-		} catch (RemoteException re) {
-			LOGGER.warn("RemoteException while trying to talk to ErpSaleEntityBean", re);
-			throw new EJBException(re);
-		}
-	}
-
 	private SapGatewayHome getSapGatewayHome() {
 		try {
 			return (SapGatewayHome) LOCATOR.getRemoteHome("java:comp/env/ejb/SapGateway");
@@ -3081,24 +2879,6 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 
-		public void cutOffSale(String saleId) throws ErpSaleNotFoundException {
-			try {
-				ErpSaleEB saleEB = getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
-				ErpSaleModel saleModel=(ErpSaleModel) saleEB.getModel();
-				saleModel.cutoff();
-			} catch (RemoteException re) {
-				LOGGER.warn(re);
-				throw new EJBException(re);
-			} catch (FinderException fe) {
-				LOGGER.warn(fe);
-				throw new ErpSaleNotFoundException(fe);
-			}
-			catch (ErpTransactionException e) {
-				LOGGER.warn(e);
-				throw new EJBException(e);
-			}
-		}
-
 		public void sendCreateOrderToSAP(String erpCustomerID, String saleID, EnumSaleType saleType, CustomerRatingI rating) throws ErpSaleNotFoundException {
 		    sendCreateOrderToSAPImpl(erpCustomerID, saleID, saleType, rating);
 		}
@@ -3187,27 +2967,6 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			return strategy.getPerishableBufferAmount();
 		}
 
-		public List<DlvSaleInfo> getLastOrderForAddress(AddressModel address)  {
-			Connection conn = null;
-			try {
-				conn = this.getConnection();
-				return ErpSaleInfoDAO.getLastOrderForAddress(conn, address);
-			} catch (SQLException e) {
-				LOGGER.debug("SQLException: ", e);
-				throw new EJBException(e);
-			} finally {
-				try {
-					if (conn != null) {
-						conn.close();
-					}
-				} catch (SQLException e) {
-					LOGGER.warn("SQLException while cleaning: ", e);
-				}
-			}
-		}
-
-
-
 		public List<ErpSaleInfo> getNSMOrdersForGC()  {
 			Connection conn = null;
 			try {
@@ -3274,26 +3033,6 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				}
 			}
 		}
-
-	public boolean updateSalesShippingInfo(Map<String, ErpShippingInfo> erpShippingMap)
-			throws ErpTransactionException {
-		Connection conn = null;
-
-		try {
-			conn = this.getConnection();
-			return ErpSaleInfoDAO.updateSalesShippingInfo(conn, erpShippingMap);
-		} catch (SQLException se) {
-			throw new ErpTransactionException(se);
-		} finally {
-			try {
-				if (conn != null && !conn.isClosed()) {
-					conn.close();
-				}
-			} catch (SQLException se) {
-				LOGGER.warn("SQLException while cleaning up", se);
-			}
-		}
-	}
 
 	private boolean isCustomerActive(String erpCustomerId) {
 		Connection conn = null;

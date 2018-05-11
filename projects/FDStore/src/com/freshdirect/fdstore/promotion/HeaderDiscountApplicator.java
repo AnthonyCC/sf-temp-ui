@@ -14,7 +14,11 @@ import com.freshdirect.fdstore.promotion.management.FDPromoDollarDiscount;
 
 public class HeaderDiscountApplicator implements PromotionApplicatorI {
 
-	private final HeaderDiscountRule discountRule;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private HeaderDiscountRule discountRule;
 	private DlvZoneStrategy zoneStrategy;
 	private CartStrategy cartStrategy;
 	/**
@@ -22,6 +26,11 @@ public class HeaderDiscountApplicator implements PromotionApplicatorI {
 	 */
 	public HeaderDiscountApplicator(HeaderDiscountRule discountRule) {
 		this.discountRule = discountRule;
+	}
+
+	public HeaderDiscountApplicator() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 
 	public boolean apply(String promoCode, PromotionContextI context) {
@@ -93,7 +102,7 @@ public class HeaderDiscountApplicator implements PromotionApplicatorI {
 		return this.discountRule;
 	}
 
-	public void setZoneStrategy(DlvZoneStrategy zoneStrategy) {
+	public void setDlvZoneStrategy(DlvZoneStrategy zoneStrategy) {
 		this.zoneStrategy = zoneStrategy;
 	}
 
@@ -108,6 +117,10 @@ public class HeaderDiscountApplicator implements PromotionApplicatorI {
 
 	public void setCartStrategy(CartStrategy cartStrategy) {
 		this.cartStrategy = cartStrategy;
+	}
+
+	public void setDiscountRule(HeaderDiscountRule discountRule) {
+		this.discountRule = discountRule;
 	}
 
 	public String toString() {

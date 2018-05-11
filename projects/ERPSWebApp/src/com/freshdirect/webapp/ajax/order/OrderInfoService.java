@@ -14,9 +14,13 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
+import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.ErpComplaintModel;
 import com.freshdirect.fdstore.FDProduct;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -28,7 +32,10 @@ import com.freshdirect.webapp.ajax.expresscheckout.cart.service.CartDataService;
 import com.freshdirect.webapp.ajax.expresscheckout.service.FDCartModelService;
 import com.freshdirect.webapp.ajax.product.ProductPotatoService;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
+import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
+import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.util.JspMethods;
+import com.freshdirect.webapp.util.OrderPermissionsImpl;
 
 public class OrderInfoService {
 
@@ -47,6 +54,16 @@ public class OrderInfoService {
 
     public OrderInfoData populateOrderData(HttpSession session, FDUserI user, FDOrderI order) {
         OrderInfoData orderData = new OrderInfoData();
+
+        /* order modifiable? */
+		OrderPermissionsImpl orderPerms = new OrderPermissionsImpl(
+			order.getOrderStatus(),
+			(String) session.getAttribute(SessionName.APPLICATION), 
+			EnumPaymentType.MAKE_GOOD.equals(order.getPaymentMethod().getPaymentType()), 
+			order.hasCreditIssued()
+		);
+        orderData.setCanModify(orderPerms.allowModifyOrder());
+        
         orderData.setOrderId(order.getErpSalesId());
         List<FDCartLineI> cartLines = order.getOrderLines();
         Map<SectionInfo, List<CartData.Item>> sectionMap = new HashMap<SectionInfo, List<CartData.Item>>();

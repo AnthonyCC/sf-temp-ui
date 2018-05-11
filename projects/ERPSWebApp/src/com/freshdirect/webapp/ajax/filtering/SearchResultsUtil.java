@@ -216,12 +216,18 @@ public static SearchResults getHLBrandProductAdProducts(SearchResults searchResu
 		List<FilteringSortingItem<ProductModel>> items = new ArrayList<FilteringSortingItem<ProductModel>>();
         Map<ContentKey, Map<String, Date>> newProducts = ContentFactory.getInstance().getNewProducts();
 		ZoneInfo zone=user.getUserContext().getPricingContext().getZoneInfo();
-		
+        System.out.println("newProducts initial value====================");
+        System.out.println("newProducts  initial value===================="+newProducts!=null?newProducts.size():0 );
+ 
+
 		String productNewnessKey="";
 		if(zone!=null) {
 			
 			productNewnessKey=new StringBuilder(5).append(zone.getSalesOrg()).append(zone.getDistributionChanel()).toString();
 		}
+		
+        System.out.println("productNewnessKey===================="+productNewnessKey);
+		
         for (Entry<ContentKey, Map<String, Date>> entry : newProducts.entrySet()) {
 			Map<String,Date> newProductsBySalesArea=entry.getValue();
 			if(newProductsBySalesArea.containsKey(productNewnessKey))
@@ -229,8 +235,12 @@ public static SearchResults getHLBrandProductAdProducts(SearchResults searchResu
                         .putSortingValue(EnumSortingValue.NEWNESS,
                         DateUtil.diffInDays(now, entry.getValue().get(productNewnessKey))));
 		}
+        System.out.println("items after first for loop========***************************============");
+        System.out.println("items after first for loop===================="+items!=null?items.size():0);
 		
 		newProducts = ContentFactory.getInstance().getBackInStockProducts();
+        System.out.println("newProducts========***************************============");
+        System.out.println("newProducts===================="+newProducts!=null?newProducts.size():0);
 		
         for (Entry<ContentKey, Map<String, Date>> entry : newProducts.entrySet()) {
 			Map<String,Date> newProductsBySalesArea=entry.getValue();
@@ -238,6 +248,9 @@ public static SearchResults getHLBrandProductAdProducts(SearchResults searchResu
                 items.add(new FilteringSortingItem<ProductModel>((ProductModel) ContentFactory.getInstance().getContentNodeByKey(entry.getKey()))
                         .putSortingValue(EnumSortingValue.NEWNESS, DateUtil.diffInDays(now, entry.getValue().get(productNewnessKey))));
 		}
+        System.out.println("items after second for loop========***************************============");
+        System.out.println("items after second for loop===================="+items!=null?items.size():0);
+
 		
 		CategoryModel featuredCategory = null;
 			// lookup category for featured new products and brands

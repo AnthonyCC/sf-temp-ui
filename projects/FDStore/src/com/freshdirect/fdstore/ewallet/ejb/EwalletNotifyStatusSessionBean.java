@@ -189,7 +189,7 @@ public class EwalletNotifyStatusSessionBean extends SessionBeanSupport {
     		return resp;
     	}
     	
-    	IEwallet.NotificationService notificaionSrvc = new EwalletServiceFactory().getEwalletNotificationService(req);
+    	IEwallet.NotificationService notificaionSrvc = new EwalletServiceFactory().getVendorNotificationService(req);
     	
     	try {
     		resp = notificaionSrvc.postbackTrxns(req);

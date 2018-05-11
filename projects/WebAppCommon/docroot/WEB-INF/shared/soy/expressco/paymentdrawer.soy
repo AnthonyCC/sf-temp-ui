@@ -494,9 +494,9 @@
 	  <div class="drawer__previewitem__section">
 	    <div class='section__body'>
 	  {if $eWalletID != '2' and ($accountNumber or $expiration or $bankAccountType)}
-		      {if $accountNumber}<p>Ending: {$accountNumber} </p>{/if}
-		      {if $expiration}<p>Exp: {$expiration}</p>{/if}
-		      {if $abaRouteNumber}<p>Routing: {$abaRouteNumber}</p>{/if}
+		      {if $accountNumber}<p class="accountNumber">Ending: {$accountNumber} </p>{/if}
+		      {if $expiration}<p class="expiration">Exp: {$expiration}</p>{/if}
+		      {if $abaRouteNumber}<p class="abaRouteNumber">Routing: {$abaRouteNumber}</p>{/if}
 
 	  {elseif $eWalletID == '2'}
 			{if $nameOnCard}<p>{$nameOnCard}</p>{/if}

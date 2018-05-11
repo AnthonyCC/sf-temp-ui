@@ -253,10 +253,21 @@ public class CartDataService {
         }
     }
 
-    private ModifyCartData isModifyOrderMode(HttpSession session) {
+    private ModifyCartData isModifyOrderMode(HttpSession session, FDCartI loadedCart) {
         FDUserI mUser = (FDUserI) session.getAttribute(SessionName.USER);
         FDCartModel mCart = null !=mUser ? mUser.getShoppingCart() : null;
         ModifyCartData modifyCartData = new ModifyCartData();
+        Calendar cal = Calendar.getInstance();
+        Date cutoffTime = null;
+        Date weekFromOrderDate = null;
+        
+        if (null != loadedCart && !(loadedCart instanceof FDModifyCartModel)) {
+        	//set the cutoff time so we can use it on receipt
+        	if (loadedCart.getDeliveryReservation() != null) {
+        		cutoffTime = loadedCart.getDeliveryReservation().getCutoffTime();
+        	}
+        }
+        
         if (null !=mCart && mCart instanceof FDModifyCartModel) {
             modifyCartData.setModifyOrderEnabled(true);
             FDModifyCartModel modifyCart = (FDModifyCartModel) mCart;
@@ -271,24 +282,26 @@ public class CartDataService {
                 LOG.error("eRROR while retreiving order details order id" + orderId);
             }
             mCart.setTransactionSource(null);
-            Calendar cal = Calendar.getInstance();
+            
             cal.setTime(modifyCart.getOriginalOrder().getDatePlaced());
-            cal.add(Calendar.DAY_OF_MONTH, 8);
-            Date weekFromOrderDate = cal.getTime();
-
-            Date cutoffTime = modifyCart.getOriginalOrder().getDeliveryReservation().getCutoffTime();
-
+            cutoffTime = modifyCart.getOriginalOrder().getDeliveryReservation().getCutoffTime();
+        }
+        
+        //bump a week
+        cal.add(Calendar.DAY_OF_MONTH, 8);
+        weekFromOrderDate = cal.getTime();
+        modifyCartData.setOneWeekLater(printDate(weekFromOrderDate));
+        
+        if (cutoffTime != null) {
             cutoffTime = ShoppingCartUtil.getCutoffByContext(cutoffTime, mUser);
-
             //check if cutoff is more than a week out, changing format if needed
             if ( cutoffTime.after(weekFromOrderDate) ) {
            	 	modifyCartData.setCutoffTime(new SimpleDateFormat("M/d, ha").format(cutoffTime));
             } else {
             	 modifyCartData.setCutoffTime(new SimpleDateFormat("EEEEE, ha").format(cutoffTime));
             }
-           
-            modifyCartData.setOneWeekLater(printDate(weekFromOrderDate));
         }
+        
         return modifyCartData;
     }
 
@@ -465,7 +478,7 @@ public class CartDataService {
     }
 
     private void populateCartOrderData(FDUserI user, HttpServletRequest request, String userId, FDCartI cart, CartData cartData, Set<Integer> recentIds, boolean hasSession) throws HttpErrorResponse {
-        try {
+    	try {
             Map<Integer, String> dcpdCartlineMessage = new HashMap<Integer, String>();
             Map<String, FDMinDCPDTotalPromoData> dcpdMinPromo = user.getPromotionEligibility().getMinDCPDTotalPromos();
             List<String> usedDcpdDiscounts = new ArrayList<String>();
@@ -578,7 +591,7 @@ public class CartDataService {
             if (hasSession) {
             cartData.setBillingReferenceInfo(populateBillingReferenceInfo(session, user));
             checkCartCleanUpAction(request, cartData);
-            cartData.setModifyCartData(isModifyOrderMode(session));
+            cartData.setModifyCartData(isModifyOrderMode(session, cart));/* pass in cart, it may not be in user */
             cartData.setModifyOrder(cartData.getModifyCartData().isModifyOrderEnabled());
             cartData.setErrorMessage(null);
             }

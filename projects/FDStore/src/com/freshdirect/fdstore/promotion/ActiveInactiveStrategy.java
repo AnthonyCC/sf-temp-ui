@@ -2,10 +2,15 @@ package com.freshdirect.fdstore.promotion;
 
 public class ActiveInactiveStrategy implements PromotionStrategyI {
 	
-	private final boolean active;
+	private boolean active;
 	
 	public ActiveInactiveStrategy(boolean active){
 		this.active = active;
+	}
+
+	public ActiveInactiveStrategy() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -30,5 +35,9 @@ public class ActiveInactiveStrategy implements PromotionStrategyI {
 	@Override
 	public boolean isStoreRequired() {
 		return false;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 }

@@ -1122,3 +1122,22 @@ a.pdp-accordion-recipes-item {
     padding-top: 7px;
     outline: none;
 }
+/* Fix for extra wide overflow of select box in Pdp page */
+.pdp .span-8 select {
+    max-width: calc( 100% - 32px);
+}
+/* accessibility change for checkbox in pdp customize 
+.pdp .skucontrol-variations input[type="checkbox"]{
+	background-color:#fefefe;
+	
+}
+.pdp .skucontrol-variations input[type="checkbox"]:focus{
+	background-color: #fefefe;
+	box-shadow: 0 0 0 1px #ffffff, 0 0 0 3px #4fa157;
+	border:none;
+}
+.pdp .skucontrol-variations input[type="checkbox"]:hover{
+	border:none;
+	box-shadow: 0 0 0 1px #ffffff, 0 0 0 3px #4fa157;
+}
+*/

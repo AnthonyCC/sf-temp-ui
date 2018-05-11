@@ -45,8 +45,8 @@
 
     <tmpl:put name='listactions'>
         <div class="qs-actions">
-            <button class="qs-addtolist" data-component="ATLButton" data-ref="#productlist">add all to list</button>
-            <button class="qs-addtocart" data-component="ATCButton" data-ref="#productlist">add all items on page</button>
+            <button class="qs-addtolist" aria-label="add all to list" data-component="ATLButton" data-ref="#productlist">add all to list</button>
+            <button class="qs-addtocart" aria-label="add all items on page" data-component="ATCButton" data-ref="#productlist">add all items on page</button>
         </div>
     </tmpl:put>
 

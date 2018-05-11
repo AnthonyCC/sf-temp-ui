@@ -12,12 +12,14 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.sitemap.SitemapData;
 import com.freshdirect.fdstore.sitemap.SitemapDataFactory;
 import com.freshdirect.fdstore.sitemap.SitemapHome;
 import com.freshdirect.fdstore.sitemap.SitemapSB;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.payment.service.FDECommerceService;
 
 public class SitemapTag extends SimpleTagSupport {
 
@@ -35,10 +37,20 @@ public class SitemapTag extends SimpleTagSupport {
                 LOGGER.debug("Generate sitemap");
                 Context initialContext = null;
                 try {
-                    initialContext = ErpServicesProperties.getInitialContext();
+                	LOGGER.info("SitemapProperty :" +FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SitemapSB));
+                	if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SitemapSB)){
+                		LOGGER.debug("Generating sitemap from services");
+                		LOGGER.info("Generating sitemap from services");
+            			FDECommerceService.getInstance().generateSitemap();
+                	}else{
+                		LOGGER.debug("Generating sitemap from EJB");
+                		LOGGER.info("Generating sitemap from EJB");
+
+                   initialContext = ErpServicesProperties.getInitialContext();
                     SitemapHome managerHome = (SitemapHome) initialContext.lookup(SitemapHome.JNDI_HOME);
                     SitemapSB sb = managerHome.create();
                     sb.generateSitemap();
+                	}
                     ctx.setAttribute("siteMapGenerated", true);
                     LOGGER.debug("Generated sitemap successfully");
                 } catch (Exception e) {

@@ -22,6 +22,10 @@ var FreshDirect = FreshDirect || {};
       value:[],
       writable: true
     },
+    suggestions:{
+      value:[],
+      writable: true
+    },
     handleSubmit:{
       value: function (e) {
         e.preventDefault();
@@ -95,7 +99,28 @@ var FreshDirect = FreshDirect || {};
         if (!dontpush) {
           // set new url
           var pathname = window.location.pathname;
-          window.history.pushState({terms: this.terms}, "search: "+this.terms.join(', '), pathname + "?q=" + this.terms.join(','));
+          window.history.pushState({terms: this.terms}, "search: "+this.terms.join(', '), pathname + "?q=" + this.terms.map(function (t) { return encodeURIComponent(t); }).join(','));
+        }
+
+        try {
+          // save list to user
+          fetch(
+            '/api/multisearch',
+            {
+              method: 'POST',
+              credentials: 'same-origin',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                searchTermList: this.terms.map(function (t) { return encodeURIComponent(t); }).join(',')
+              })
+            }
+          ).catch(function (e) {
+            console.warn('[error during saving search term list]', e);
+          });
+        } catch (e) {
+          console.warn('[error during saving search term list]', e);
         }
 
         this.render();
@@ -122,8 +147,15 @@ var FreshDirect = FreshDirect || {};
           return t;
         });
 
+        data.suggestions = data.suggestions || this.suggestions.map(function (s) { return s.toLowerCase(); });
+        this.suggestions = data.suggestions;
+
+        var lterms = this.terms.map(function (t) { return t.toLowerCase(); });
+        data.suggestions = data.suggestions.filter(function (sug) { return lterms.indexOf(sug) === -1; });
+
         WIDGET.render.call(this, data);
-        FreshDirect.components.autoComplete.init(this.placeholder+' input');
+
+        FreshDirect.components.autoComplete.init(this.placeholder+' input.searchinput');
         $('[data-component="multisearch-input"] input.searchinput').val("");
       }
     }
@@ -145,36 +177,37 @@ var FreshDirect = FreshDirect || {};
   $(document).on('submit', '[data-component="multisearch-input"] form', searchInput.handleSubmit.bind(searchInput));
   $(document).on('click', '[data-component="multisearch-input"] button.remove', searchInput.removeTerm.bind(searchInput));
   $(document).on('change', '[data-component="multisearch-input"] .termlist input', searchInput.toggleTermEH.bind(searchInput));
+  $(document).on('change', '[data-component="multisearch-input"] .suggestions input', function (e) {
+    var sug = e.currentTarget.value;
+
+    if (sug) {
+      searchInput.addTerm(sug);
+    }
+  });
 
   fd.modules.common.utils.register("modules.multisearch", "searchInput", searchInput, fd);
 }(FreshDirect));
 
 // initialize based on query parameters
 (function (fd) {
-  var DEFAULTLIST = fd.multisearch.defaultList ? fd.multisearch.defaultList.split(',') : [
-    'eggs',
-    'milk',
-    'pizza',
-    'yogurt',
-    'butter',
-    'carrots',
-    'garlic',
-    'bread',
-    'onion',
-    'chicken'
-  ];
+  var SUGGESTIONS = fd.multisearch.defaultList ? fd.multisearch.defaultList.split(',') : [];
 
   setTimeout(function () {
-    var q = fd.utils.getParameterByName('q').split(',').filter(function (kw) { return kw; });
+    var q = fd.utils.getParameterByName('q'),
+        terms = (q || FreshDirect.multisearch.list || "")
+          .split(',')
+          .filter(function (kw) { return kw; })
+          .map(function (t) { return decodeURIComponent(t); });
 
-    if (q.length === 0) {
-      q = DEFAULTLIST;
+    if (terms.length === 0) {
+      terms = [];
     }
 
-    q = q.filter(function (kw) { return kw; }).map(function (kw) { return kw.trim(); }).map(fd.utils.escapeHtml);
+    terms = terms.filter(function (kw) { return kw; }).map(function (kw) { return kw.trim(); }).map(fd.utils.escapeHtml);
 
     fd.modules.multisearch.searchInput.render({
-      terms: q
+      suggestions: SUGGESTIONS,
+      terms: terms
     });
   }, 10);
 }(FreshDirect));

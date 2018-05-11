@@ -27,17 +27,24 @@ import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpPaymentMethodI;
+import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.fdstore.CallCenterServices;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
+import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartonDetail;
 import com.freshdirect.fdstore.customer.FDCartonInfo;
+import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDOrderI;
+import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
 import com.freshdirect.fdstore.payments.util.PaymentMethodUtil;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
@@ -414,4 +421,21 @@ public class CrmMasqueradeUtil {
             LOGGER.debug("Carton Number " + cartLine.getCartonNumber() + " has been assigned to cart line (R_ID: " + cartLine.getRandomId() + ")");
         }
     }
+    
+    public static void resubmitOrder(String saleId) throws FDResourceException, FDAuthenticationException, ErpTransactionException {
+    	
+    	FDOrderI order = FDCustomerManager.getOrderForCRM(saleId);
+		String erpCustomerId = order.getCustomerId();
+		FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomerFromErpId(erpCustomerId);
+		FDIdentity fdIdentity = new FDIdentity(erpCustomerId, fdCustomer.getPK().getId());
+		
+		FDUser user = FDCustomerManager.recognize(fdIdentity);
+		
+		CustomerRatingAdaptor cra = new CustomerRatingAdaptor(fdCustomer.getProfile(),user.isCorporateUser(),FDCustomerManager.getValidOrderCount(fdIdentity));
+		CallCenterServices.resubmitOrder(saleId, cra, order.getOrderType());
+    }
+    
+    public static void resubmitCustomer(String customerId) throws FDResourceException {
+		CallCenterServices.resubmitCustomer(customerId);
+	}
 }
