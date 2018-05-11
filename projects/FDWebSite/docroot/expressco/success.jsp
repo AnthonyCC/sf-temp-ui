@@ -210,10 +210,7 @@
 					<soy:render template="expressco.successpageMod56" data="${singlePageCheckoutSuccessPotato.successPageData}" />
 					<%-- right col --%>
 					<div class="rightCol">
-
-						<div class="section standingorder-info">
-							<soy:render template="expressco.standingorderInfoMod56" data="${singlePageCheckoutSuccessPotato.successPageData}" />
-						</div>
+						<soy:render template="expressco.standingorderInfoMod56" data="${singlePageCheckoutSuccessPotato.successPageData}" />
 
 						<div class="section delivery-info">
 							<div class="colHeader delivery-info-header"><h2>Delivery Info</h2><button id="delivery_info_edit_btn" class="cssbutton green edit-btn" data-gtm-click data-gtm-click-error>Edit<span class="offscreen"> Delivery Info</span></button></div>

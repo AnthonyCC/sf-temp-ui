@@ -205,7 +205,9 @@
 			{param showModifyAndReceiptButton: ($soActivate)?false:true /}
 			{param deliveryPassTrialActivated: false /}/* always pass false here, trial done separately */
 		{/call}
-		{if $hasSettledOrder and $deliveryType == 'H'}<div class="raf-success"><a target="_blank" href="//refer.freshdirect.com/orderconfirmpage2525"><img src="/media/images/promotions/raf/RAF2525_orderconfirmpage_new.png" alt="Refer-A-Friend" /></a></div>{/if}
+		{if $hasSettledOrder and $deliveryType == 'H'}
+			<div class="raf-success"><a target="_blank" href="//refer.freshdirect.com/orderconfirmpage2525"><img src="/media/images/promotions/raf/RAF2525_orderconfirmpage_new.png" alt="Refer-A-Friend" /></a></div>
+		{/if}
 	{/if}
 </div>
 {/template}
@@ -222,23 +224,25 @@
 */
 {template .standingorderInfoMod56 autoescape="false"}
 	{if $soActivate}
-		<div class="colHeader standingorder-info-header"><h2>Standing Order Summary</h2><a id="standingorder_info_view_btn" class="so-success-details-button cssbutton cssbutton-flat purple nontransparent view-btn" href="/quickshop/standing_orders.jsp?soid={$soId}#soid_{$soId}">View Details<span class="offscreen"> of Standing Order {$soName}</span></a></div>
-		
-		<div class="subsection">
-			<div class="standingorder-info-name-label info-label">NAME</div>
-			<div class="success-soinfo-name">{$soName}</div>
-		</div>
-		<div class="subsection">
-			<div class="standingorder-info-first-delivery-label info-label">FIRST DELIVERY</div>
-			<div class="success-soinfo-date">{$soDeliveryTime}</div>
-		</div>
-		<div class="subsection">
-			<div class="standingorder-info-frequency-label info-label">FREQUENCY</div>
-			<div class="success-soinfo-freq">{$soFrequency} {$soDeliveryDay}</div>
-		</div>
-		<div class="subsection">
-			<div class="standingorder-info-est-total-label info-label">ESTIMATED TOTAL</div>
-			<div class="success-soinfo-total">${$soEstimatedTotal}</div>
+		<div class="section standingorder-info">
+			<div class="colHeader standingorder-info-header"><h2>Standing Order Summary</h2><a id="standingorder_info_view_btn" class="so-success-details-button cssbutton cssbutton-flat purple nontransparent view-btn" href="/quickshop/standing_orders.jsp?soid={$soId}#soid_{$soId}">View Details<span class="offscreen"> of Standing Order {$soName}</span></a></div>
+			
+			<div class="subsection">
+				<div class="standingorder-info-name-label info-label">NAME</div>
+				<div class="success-soinfo-name">{$soName}</div>
+			</div>
+			<div class="subsection">
+				<div class="standingorder-info-first-delivery-label info-label">FIRST DELIVERY</div>
+				<div class="success-soinfo-date">{$soDeliveryTime}</div>
+			</div>
+			<div class="subsection">
+				<div class="standingorder-info-frequency-label info-label">FREQUENCY</div>
+				<div class="success-soinfo-freq">{$soFrequency} {$soDeliveryDay}</div>
+			</div>
+			<div class="subsection">
+				<div class="standingorder-info-est-total-label info-label">ESTIMATED TOTAL</div>
+				<div class="success-soinfo-total">${$soEstimatedTotal}</div>
+			</div>
 		</div>
 	{/if}
 {/template}
