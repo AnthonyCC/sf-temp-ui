@@ -23,7 +23,8 @@ public class FDExceptionUtil {
 
         if (exceptionText != null) {
             String upperExceptionText = exceptionText.toUpperCase();
-            relatedException = upperExceptionText.contains("JSPEXCEPTION") && (upperExceptionText.contains("BROKEN PIPE") || upperExceptionText.contains("CONNECTION RESET"));
+            relatedException = (upperExceptionText.contains("JSPEXCEPTION") || upperExceptionText.contains("SOCKETEXCEPTION"))
+                    && (upperExceptionText.contains("BROKEN PIPE") || upperExceptionText.contains("CONNECTION RESET"));
         }
 
         return relatedException;
