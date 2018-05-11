@@ -292,10 +292,13 @@ public class CartDataService {
         weekFromOrderDate = cal.getTime();
         modifyCartData.setOneWeekLater(printDate(weekFromOrderDate));
         
+        cal.add(Calendar.DAY_OF_MONTH, -1); /* 7 days */
+        Date weekFromOrderDateCutoffCheck = cal.getTime();
+        
         if (cutoffTime != null) {
             cutoffTime = ShoppingCartUtil.getCutoffByContext(cutoffTime, mUser);
             //check if cutoff is more than a week out, changing format if needed
-            if ( cutoffTime.after(weekFromOrderDate) ) {
+            if ( cutoffTime.after(weekFromOrderDateCutoffCheck) ) {
            	 	modifyCartData.setCutoffTime(new SimpleDateFormat("M/d, ha").format(cutoffTime));
             } else {
             	 modifyCartData.setCutoffTime(new SimpleDateFormat("EEEEE, ha").format(cutoffTime));
