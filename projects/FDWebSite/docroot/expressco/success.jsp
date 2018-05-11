@@ -52,7 +52,6 @@
 		</script>
 		<% if (isMod56) { %>
 			<script type="text/javascript">
-
 				$jq(document).ready(function() {
 					/* init ordermodifystatus with orderId */
 					FreshDirect.components.ordermodifystatus.init('${param['orderId']}');
@@ -66,7 +65,7 @@
 					$jq(e).parent().show();
 				});
 
-				$jq('.mod56 .orderconfirmed-title').html((<%=_modifyOrderMode%>) ? 'Changes Saved' : 'Order Confirmed');
+				$jq('.mod56 .orderconfirmed-title').html((<%=_modifyOrderMode%> && '${param['soId']}' === '') ? 'Changes Saved' : 'Order Confirmed');
 
 				$jq('.mod56 #cartcontent').on('cartData', function(e, data) {
 					if ((data.modifyCartData.cutoffTime || '') !== '') {
