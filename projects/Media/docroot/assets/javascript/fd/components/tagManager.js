@@ -753,7 +753,7 @@ var dataLayer = window.dataLayer || [];
     } else if ($('ul.breadcrumbs li').length) {
       location = 'cat_' + safeName($('ul.breadcrumbs li').last().text());
     } else if (searchParams) {
-      location = 'search_' + searchParams.replace(/\s+/g, '+');
+      location = 'search_' + searchParams.toLowerCase().trim().replace(/\s+/g, '+');
     } else if ($('ul.qs-tabs li .selected').length) {
       location = 'reorder_' + safeName($('ul.qs-tabs li .selected').text());
     } else {
@@ -844,7 +844,7 @@ var dataLayer = window.dataLayer || [];
       productE.attr('data-list-title', title);
     }
 
-    return [channel, location, title].filter(function (e) { return e; }).join('-');
+    return [channel, location, title].filter(function (e) { return e; }).join('-').toLowerCase();
   };
 
   fd.gtm.getListForProductId = function (id, config) {
