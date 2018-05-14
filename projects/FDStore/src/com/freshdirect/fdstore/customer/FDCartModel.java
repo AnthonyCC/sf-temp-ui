@@ -722,7 +722,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
         return isUpdated;
     }
 
-    public FDCartLineI getGroupingOrderline(ProductModel productModel, FDProduct product, FDSalesUnit salesUnit) {
+    public FDCartLineI findGroupingOrderline(ProductModel productModel, FDProduct product, FDSalesUnit salesUnit) {
         FDCartLineI groupOrderline = null;
         if ("EA".equalsIgnoreCase(salesUnit.getBaseUnit()) && (product.isPricedByEa() || product.isPricedByLb())) {
             for (FDCartLineI orderLine : orderLines) {

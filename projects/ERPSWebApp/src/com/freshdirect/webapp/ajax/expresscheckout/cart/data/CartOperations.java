@@ -19,6 +19,7 @@ import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.coremetrics.builder.AbstractShopTagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
 import com.freshdirect.fdstore.coremetrics.extradata.CoremetricsExtraData;
@@ -113,6 +114,18 @@ public class CartOperations {
             return;
         }
 
+        FDProduct fdProduct = cartLine.lookupFDProduct();
+        if (fdProduct == null) {
+            LOG.error("Failed to get fdproduct for " + cartLine.getCategoryName() + " / " + cartLine.getProductName() + ", skipping.");
+            return;
+        }
+
+        FDSalesUnit salesUnit = fdProduct.getSalesUnit(cartLine.getSalesUnit());
+        if (salesUnit == null) {
+            LOG.error("Failed to get salesunit for " + cartLine.getCategoryName() + " / " + cartLine.getProductName() + ", skipping.");
+            return;
+        }
+
         synchronized (cart) {
 
             // ====================
@@ -190,12 +203,16 @@ public class CartOperations {
 
                     // add a new orderline for rest of the difference, if any
                     if (deltaQty > 0) {
-
-                        FDCartLineI newLine = cartLine.createCopy();
-                        // newLine.setPricingContext( new PricingContext( user.getPricingZoneId() ) );
-                        newLine.setUserContext(user.getUserContext());
-                        newLine.setQuantity(deltaQty);
-                        saveNewCartline(user, newLine, deltaQty, ((FDModifyCartModel) cart).getOriginalOrder().getSale().getId());
+                        FDCartLineI newLine = cart.findGroupingOrderline(product, fdProduct, salesUnit);
+                        if (newLine == null) {
+                            newLine = cartLine.createCopy();
+                            // newLine.setPricingContext( new PricingContext( user.getPricingZoneId() ) );
+                            newLine.setUserContext(user.getUserContext());
+                            newLine.setQuantity(deltaQty);
+                            saveNewCartline(user, newLine, deltaQty, ((FDModifyCartModel) cart).getOriginalOrder().getSale().getId());
+                        } else {
+                            newLine.setQuantity(newLine.getQuantity() + deltaQty);
+                        }
 
                         try {
                             OrderLineUtil.cleanup(newLine);
@@ -207,7 +224,7 @@ public class CartOperations {
                             return;
                         }
 
-                        cart.addOrderLine(newLine);
+                        cart.addOrderLineIfNotExists(newLine);
                         logAddToCart(user, newLine, product, serverName);
                     }
                 }

@@ -840,7 +840,7 @@ public class CartOperations {
         // MAIN PROCESSING
         // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-        FDCartLineI theCartLine = cart.getGroupingOrderline(prodNode, product, salesUnit);
+        FDCartLineI theCartLine = cart.findGroupingOrderline(prodNode, product, salesUnit);
         if (theCartLine == null) {
             theCartLine = processSimple(prodNode, product, quantity, salesUnit, null, variantId, user.getUserContext(), null, item.getConfiguration());
             responseItem.setInCartAmount(calculateInCartAmount(prodNode, cartLinesToAdd, cart, quantity));
