@@ -1,18 +1,24 @@
 package com.freshdirect.ecomm.gateway;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Category;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.freshdirect.common.CustomMapper;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpSaleInfo;
 import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.ecomm.converter.GiftCardModelDataConverter;
 import com.freshdirect.ecomm.converter.SapGatewayConverter;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
+import com.freshdirect.ecommerce.data.giftcard.ErpGCDlvInformationHolderData;
 import com.freshdirect.ecommerce.data.giftcard.GiftCardData;
+import com.freshdirect.ecommerce.data.order.ErpSaleInfoData;
 import com.freshdirect.ecommerce.data.sap.ErpGiftCardData;
 import com.freshdirect.fdstore.FDEcommServiceException;
 import com.freshdirect.fdstore.FDResourceException;
@@ -41,6 +47,7 @@ public class GiftCardManagerService extends AbstractEcommService implements Gift
 	private static final String GIFTCARD_ORDER_RECEPIENTS_BY_SALEID = "giftcard/order/recipients/saleId/";
 	private static final String GIFTCARD_VALIDATE_AND_BALANCE = "giftcard/validateAndBalance";
 	private static final String GIFTCARD_RECEPIENTS_BY_CERTNUM = "giftcard/recipient/load/certNum/";
+	private static final String GIFTCARD_BALANCE_TRANSFER = "giftcard//balance/transfer/customerId/";
 
 		
 	public static GiftCardManagerServiceI getInstance() {
@@ -83,15 +90,17 @@ public class GiftCardManagerService extends AbstractEcommService implements Gift
 	@Override
 	public List getGiftCardRecepientsForCustomer(String customerId)
 			throws RemoteException, FDResourceException {
-		Response<List<ErpGCDlvInformationHolder>> response = new Response<List<ErpGCDlvInformationHolder>>();
+		Response<List<ErpGCDlvInformationHolderData>> response = new Response<List<ErpGCDlvInformationHolderData>>();
 		try {
-			response = httpGetDataTypeMap(getFdCommerceEndPoint(GIFTCARD_RECEPIENTS_FOR_CUSTOMER+customerId), new TypeReference<Response<List<ErpGCDlvInformationHolder>>>() {});
+			response = httpGetDataTypeMap(getFdCommerceEndPoint(GIFTCARD_RECEPIENTS_FOR_CUSTOMER+customerId), new TypeReference<Response<List<ErpGCDlvInformationHolderData>>>() {});
 		} catch (FDResourceException e) {
 			
 			throw new RemoteException(response.getMessage());
 		}
 		if(!response.getResponseCode().equals("OK"))
 			throw new RemoteException(response.getMessage());
+		List recipientsList = GiftCardModelDataConverter.getErpGCDlvInformationHolder(response.getData());
+		
 		return response.getData();
 	}
 
@@ -196,16 +205,16 @@ public class GiftCardManagerService extends AbstractEcommService implements Gift
 	@Override
 	public List getGiftCardOrdersForCustomer(String erpCustomerPK)
 			throws RemoteException, FDResourceException {
-		Response<List> response = new Response<List>();
+		Response<List<ErpSaleInfoData>> response = new Response<List<ErpSaleInfoData>>();
 		try {
-			response = httpGetDataTypeMap(getFdCommerceEndPoint(GIFTCARD_ORDERS_FOR_CUSTOMER+erpCustomerPK), new TypeReference<Response<List>>() {});
+			response = httpGetDataTypeMap(getFdCommerceEndPoint(GIFTCARD_ORDERS_FOR_CUSTOMER+erpCustomerPK), new TypeReference<Response<List<ErpSaleInfoData>>>() {});
 		} catch (FDResourceException e) {
 			
 			throw new RemoteException(response.getMessage());
 		}
 		if(!response.getResponseCode().equals("OK"))
 			throw new RemoteException(response.getMessage());
-		return response.getData();
+		return CustomMapper.map(parseResponse(response));
 	}
 
 
@@ -213,16 +222,16 @@ public class GiftCardManagerService extends AbstractEcommService implements Gift
 	@Override
 	public Object getGiftCardRedeemedOrders(String erpCustomerPK, String certNum)
 			throws RemoteException, FDResourceException {
-		Response<ErpSaleInfo> response = new Response<ErpSaleInfo>();
+		Response<List<ErpSaleInfoData>> response = new Response<List<ErpSaleInfoData>>();
 		try {
-			response = httpGetDataTypeMap(getFdCommerceEndPoint(GIFTCARD_ORDERS_REDEEMED_ORDERS_BYCUSTOMER+erpCustomerPK+"/certNum/"+certNum), new TypeReference<Response<ErpSaleInfo>>() {});
+			response = httpGetDataTypeMap(getFdCommerceEndPoint(GIFTCARD_ORDERS_REDEEMED_ORDERS_BYCUSTOMER+erpCustomerPK+"/certNum/"+certNum), new TypeReference<Response<List<ErpSaleInfoData>>>() {});
 		} catch (FDResourceException e) {
 			
 			throw new RemoteException(response.getMessage());
 		}
 		if(!response.getResponseCode().equals("OK"))
 			throw new RemoteException(response.getMessage());
-		return response.getData();
+		return CustomMapper.map(parseResponse(response));
 	}
 
 
@@ -230,16 +239,16 @@ public class GiftCardManagerService extends AbstractEcommService implements Gift
 	@Override
 	public Object getGiftCardRedeemedOrders(String certNum)
 			throws RemoteException, FDResourceException {
-		Response<ErpSaleInfo> response = new Response<ErpSaleInfo>();
+		Response<List<ErpSaleInfoData>> response = new Response<List<ErpSaleInfoData>>();
 		try {
-			response = httpGetDataTypeMap(getFdCommerceEndPoint(GIFTCARD_ORDERS_REDEEMED_ORDERS_BYCERTNUM+certNum), new TypeReference<Response<ErpSaleInfo>>() {});
+			response = httpGetDataTypeMap(getFdCommerceEndPoint(GIFTCARD_ORDERS_REDEEMED_ORDERS_BYCERTNUM+certNum), new TypeReference<Response<List<ErpSaleInfoData>>>() {});
 		} catch (FDResourceException e) {
 			
 			throw new RemoteException(response.getMessage());
 		}
 		if(!response.getResponseCode().equals("OK"))
 			throw new RemoteException(response.getMessage());
-		return response.getData();
+		return CustomMapper.map(parseResponse(response));
 	}
 
 
@@ -247,16 +256,20 @@ public class GiftCardManagerService extends AbstractEcommService implements Gift
 	@Override
 	public List getAllDeletedGiftCard(String erpCustomerPK)
 			throws RemoteException, FDResourceException {
-		Response<List> response = new Response<List>();
+		Response<List<ErpGiftCardData>> response = new Response<List<ErpGiftCardData>>();
 		try {
-			response = httpGetDataTypeMap(getFdCommerceEndPoint(GIFTCARD_DELETED_BY_CUSTOMERID+erpCustomerPK), new TypeReference<Response<List>>() {});
+			response = httpGetDataTypeMap(getFdCommerceEndPoint(GIFTCARD_DELETED_BY_CUSTOMERID+erpCustomerPK), new TypeReference<Response<List<ErpGiftCardData>>>() {});
 		} catch (FDResourceException e) {
 			
 			throw new RemoteException(response.getMessage());
 		}
 		if(!response.getResponseCode().equals("OK"))
 			throw new RemoteException(response.getMessage());
-		return response.getData();
+		List<ErpGiftCardModel> modelList = new ArrayList();
+		for(ErpGiftCardData item:response.getData()){
+			modelList.add((ErpGiftCardModel)SapGatewayConverter.buildPaymentMethodModel(item));
+		}
+		return modelList;
 	}
 
 
@@ -273,16 +286,17 @@ public class GiftCardManagerService extends AbstractEcommService implements Gift
 	@Override
 	public List getGiftCardRecepientsForOrder(String saleId)
 			throws RemoteException, FDResourceException {
-		Response<List> response = new Response<List>();
+		Response<List<ErpGCDlvInformationHolderData>> response = new Response<List<ErpGCDlvInformationHolderData>>();
 		try {
-			response = httpGetDataTypeMap(getFdCommerceEndPoint(GIFTCARD_ORDER_RECEPIENTS_BY_SALEID+saleId), new TypeReference<Response<List>>() {});
+			response = httpGetDataTypeMap(getFdCommerceEndPoint(GIFTCARD_ORDER_RECEPIENTS_BY_SALEID+saleId), new TypeReference<Response<List<ErpGCDlvInformationHolderData>>>() {});
 		} catch (FDResourceException e) {
 			
 			throw new RemoteException(response.getMessage());
 		}
 		if(!response.getResponseCode().equals("OK"))
 			throw new RemoteException(response.getMessage());
-		return response.getData();
+		List recipientsList = GiftCardModelDataConverter.getErpGCDlvInformationHolder(response.getData());
+		return recipientsList;
 	}
 
 
@@ -315,6 +329,7 @@ public class GiftCardManagerService extends AbstractEcommService implements Gift
 	public void transferGiftCardBalance(String customerid,String fromGivexNum, String toGivexNum,
 			double amount) throws RemoteException {
 		try{
+			System.out.println("asdf");
 		Request<GiftCardData> request = new Request<GiftCardData>();
 		GiftCardData giftCardData = new GiftCardData();
 		giftCardData.setFromGivexNum(fromGivexNum);
@@ -323,7 +338,7 @@ public class GiftCardManagerService extends AbstractEcommService implements Gift
 		request.setData(giftCardData);
 		String inputJson = buildRequest(request);
 		Response<ErpGiftCardData> response = null;
-		response =  this.postDataTypeMap(inputJson, getFdCommerceEndPoint(GIFTCARD_VALIDATE_AND_BALANCE), new TypeReference<Response<GiftCardData>>() {});
+		response =  this.postDataTypeMap(inputJson, getFdCommerceEndPoint(GIFTCARD_BALANCE_TRANSFER+customerid), new TypeReference<Response<GiftCardData>>() {});
 		if(!response.getResponseCode().equals("OK")){
 			throw new FDResourceException(response.getMessage());
 		}
@@ -354,12 +369,20 @@ public class GiftCardManagerService extends AbstractEcommService implements Gift
 		Request<List<String>> request = new Request<List<String>>();
 		request.setData(saleIds);
 		String inputJson = buildRequest(request);
-		Response<Map> response = null;
-		response =  this.postDataTypeMap(inputJson, getFdCommerceEndPoint(GIFTCARD_RECEPIENTS_FOR_ORDERS), new TypeReference<Response<Map>>() {});
+		Response<Map<String,List<ErpGCDlvInformationHolderData>>> response = null;
+		response =  this.postDataTypeMap(inputJson, getFdCommerceEndPoint(GIFTCARD_RECEPIENTS_FOR_ORDERS), new TypeReference<Response<Map<String,List<ErpGCDlvInformationHolderData>>>>() {});
 		if(!response.getResponseCode().equals("OK")){
 			throw new FDResourceException(response.getMessage());
 		}
-		return response.getData();
+		Map<String,List<ErpGCDlvInformationHolderData>> map = new HashMap();
+		Map<String,List<ErpGCDlvInformationHolderData>> responsemap =(Map<String,List<ErpGCDlvInformationHolderData>>)  response.getData();
+		 for(Object key:responsemap.keySet()){
+			 String keyy = (String)key;
+			 map.put(keyy, GiftCardModelDataConverter.getErpGCDlvInformationHolder(responsemap.get(keyy)));
+    			
+    		}
+		
+		return map;
 	} catch (FDEcommServiceException e) {
 		LOGGER.error(e.getMessage());
 		throw new RemoteException(e.getMessage());
@@ -374,16 +397,17 @@ public class GiftCardManagerService extends AbstractEcommService implements Gift
 	@Override
 	public ErpGCDlvInformationHolder loadGiftCardRecipentByCertNum(
 			String certNum) throws RemoteException {
-		Response<ErpGCDlvInformationHolder> response = new Response<ErpGCDlvInformationHolder>();
+		Response<ErpGCDlvInformationHolderData> response = new Response<ErpGCDlvInformationHolderData>();
 		try {
-			response = httpGetDataTypeMap(getFdCommerceEndPoint(GIFTCARD_RECEPIENTS_BY_CERTNUM+certNum), new TypeReference<Response<ErpGCDlvInformationHolder>>() {});
+			response = httpGetDataTypeMap(getFdCommerceEndPoint(GIFTCARD_RECEPIENTS_BY_CERTNUM+certNum), new TypeReference<Response<ErpGCDlvInformationHolderData>>() {});
 		} catch (FDResourceException e) {
 			
 			throw new RemoteException(response.getMessage());
 		}
 		if(!response.getResponseCode().equals("OK"))
 			throw new RemoteException(response.getMessage());
-		return response.getData();
+		ErpGCDlvInformationHolder holder = GiftCardModelDataConverter.buildErpGCDlvInformationHolder(response.getData());
+		return holder;
 	}
 
 
