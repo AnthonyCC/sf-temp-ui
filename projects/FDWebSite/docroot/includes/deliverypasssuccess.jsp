@@ -10,7 +10,7 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
 
-<fd:CheckLoginStatus id="userDP"guestAllowed="false" recognizedAllowed="false" />
+<fd:CheckLoginStatus id="userDP" guestAllowed="false" recognizedAllowed="false" />
 <fd:GetOrder id='orderDP' saleId='<%=(String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER)%>'>
 <div class="dpn">
 	<div class="dpn-success-container">
