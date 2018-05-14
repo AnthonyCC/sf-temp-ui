@@ -6,6 +6,13 @@
 		border-color: rgba(0,0,0,.1);
 	}
 
+/* mobile safari fix*/
+@media screen and (max-device-width: 480px){
+	body{
+		-webkit-text-size-adjust: 100%;
+	}
+}
+
 body {
 	font-family: Verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
 	font-size: 14px;
