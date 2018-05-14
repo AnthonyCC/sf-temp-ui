@@ -47,8 +47,8 @@ public class ShortSubstituteOrdersServlet extends HttpServlet {
 			
 			LOG.debug("Inside ShortSubstituteOrdersServlet - processRequest() Start");
 			final ActionDataRequest actionDataRequest = BaseJsonServlet.parseRequestData(request, ActionDataRequest.class);
-			ShortSubstituteResponse shotSubstituteResponsdata =FDCustomerManager.getShortSubstituteOrders(actionDataRequest.getOrderList());
-			writeResponseData(response, shotSubstituteResponsdata);
+			ShortSubstituteResponse shortSubstituteResponsdata =FDCustomerManager.getShortSubstituteOrders(actionDataRequest.getOrderList());
+			writeResponseData(response, shortSubstituteResponsdata);
 			LOG.debug("Inside ShortSubstituteOrdersServlet - processRequest() End"+actionDataRequest);
         } catch (FDResourceException exception) {
         	returnHttpError(500, exception.getMessage(), exception);
