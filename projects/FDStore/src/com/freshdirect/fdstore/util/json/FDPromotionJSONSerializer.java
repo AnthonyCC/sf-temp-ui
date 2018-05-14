@@ -633,7 +633,9 @@ public class FDPromotionJSONSerializer extends AbstractSerializer {
 						
 						Object tKey = getDeserializedValue(key, keyType);
 						Object tVal = deserializeRightHandSize(val);
-						
+						if (Set.class.equals(valType) && null !=tVal && tVal instanceof List){
+							tVal = new HashSet((List)tVal);
+						}
 						map.put(tKey, tVal);
 					}
 					
