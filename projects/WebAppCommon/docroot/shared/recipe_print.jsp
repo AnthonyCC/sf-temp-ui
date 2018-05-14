@@ -34,7 +34,7 @@ if (recipe == null) {
 	throw new IllegalArgumentException("No recipe found");
 }
 if (variant == null) {
-	throw new IllegalArgumentException("No variant found");
+	throw new FDNotFoundException("No variant found");
 }
 
 if (!variant.isAvailable()) {

@@ -524,23 +524,22 @@ class FDCustomerOrderInfoDAO {
 			selectQ.append(orders);
 			statement = conn.createStatement();
 			rs = statement.executeQuery(selectQ.toString());
-			ShortSubstituteData shotSubstituteData=null;
+			ShortSubstituteData shortSubstituteData=null;
 			while (rs.next()) {
 				String orderId = rs.getString("order_id");
 				String shortAndSubstitute= rs.getString("SHIP_STAT");
 				
 				if (shortSubOrderMap.containsKey(orderId)) {
-					shotSubstituteData = shortSubOrderMap.get(orderId);
-					setShortSubstitute(shotSubstituteData, shortAndSubstitute,orderId);
+					shortSubstituteData = shortSubOrderMap.get(orderId);
+					setShortSubstitute(shortSubstituteData, shortAndSubstitute,orderId);
 
 				} else {
-					shotSubstituteData = new ShortSubstituteData();
-					setShortSubstitute(shotSubstituteData, shortAndSubstitute,orderId);
-					shortSubOrderMap.put(orderId, shotSubstituteData);
+					shortSubstituteData = new ShortSubstituteData();
+					setShortSubstitute(shortSubstituteData, shortAndSubstitute,orderId);
+					shortSubOrderMap.put(orderId, shortSubstituteData);
 				}
 			}
 			if(!shortSubOrderMap.isEmpty()) {
-				shortSubstituteResponse.setShortSubstituteMap(shortSubOrderMap);
 				shortSubstituteResponse.setShortSubstituteData(new ArrayList<ShortSubstituteData>(shortSubOrderMap.values()));
 			}
 			return shortSubstituteResponse ;
@@ -553,7 +552,7 @@ class FDCustomerOrderInfoDAO {
 			ShortSubstituteData shotSubstituteData, String shortAndSubstitute,
 			String orderId) {
 		shotSubstituteData.setOrderId(orderId);
-		if ("SS".equalsIgnoreCase(shortAndSubstitute)) {
+		if ("SB".equalsIgnoreCase(shortAndSubstitute)) {
 			shotSubstituteData.setSubstituteItem(shortAndSubstitute);
 		}
 		if ("SH".equalsIgnoreCase(shortAndSubstitute)) {

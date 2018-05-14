@@ -19,6 +19,9 @@
 		if (FDExceptionUtil.isConnectionResetOrBrokenPipe(errorMessage)){
 		    log500(request,user,"FDWEBERROR-04", errorMessage);
 		}
+		else if (FDExceptionUtil.isCheckoutPaymentError(errorMessage)){
+		    log500(request,user,"FDWEBERROR-05", errorMessage);
+		}
 		else{
 		    log500(request,user,errorCode,errorMessage);
 		}
