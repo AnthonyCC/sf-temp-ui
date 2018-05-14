@@ -646,6 +646,14 @@
 		<servlet-name>StandingorderCronServlet</servlet-name>
 		<url-pattern>/standigorder_cron</url-pattern>
 	</servlet-mapping>
+	<servlet>
+	<servlet-name>ShortSubstituteOrdersServlet</servlet-name>
+		<servlet-class>com.fresdirect.fdstore.shortsuborders.service.ShortSubstituteOrdersServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ShortSubstituteOrdersServlet</servlet-name>
+		<url-pattern>/api/shortSubstituteOrders</url-pattern>
+	</servlet-mapping>
 	
 	<servlet>
 		<servlet-name>DeliveryPassOneClickServlet</servlet-name>
