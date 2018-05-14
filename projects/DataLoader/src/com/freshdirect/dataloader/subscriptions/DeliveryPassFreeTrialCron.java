@@ -201,7 +201,7 @@ public class DeliveryPassFreeTrialCron {
 			return exists?_pymtMethod:null;
 		else {
 			for (ErpPaymentMethodI temp : matchedPymtMethods) {
-				if(temp.getCardType().equals(EnumCardType.PAYPAL) || temp.getCardType().equals(EnumCardType.ECP) || temp.getCardType().equals(EnumCardType.GCP) || !isExpiredCC(temp)) {
+				if(temp.getCardType().equals(EnumCardType.PAYPAL) || temp.getCardType().equals(EnumCardType.ECP) || temp.getCardType().equals(EnumCardType.GCP) || temp.getCardType().equals(EnumCardType.EBT) || !isExpiredCC(temp)) {
 					return temp;
 				}
 			}
@@ -273,7 +273,7 @@ public class DeliveryPassFreeTrialCron {
 			if(!paymentMethodList.isEmpty()){
 					
 				for (ErpPaymentMethodI erpPaymentMethodI : paymentMethodList) {
-					if(!erpPaymentMethodI.getCardType().equals(EnumCardType.PAYPAL) && !erpPaymentMethodI.getCardType().equals(EnumCardType.ECP) && !erpPaymentMethodI.getCardType().equals(EnumCardType.GCP) && isExpiredCC(erpPaymentMethodI)) {
+					if(!erpPaymentMethodI.getCardType().equals(EnumCardType.PAYPAL) && !erpPaymentMethodI.getCardType().equals(EnumCardType.ECP) && !erpPaymentMethodI.getCardType().equals(EnumCardType.GCP) && !erpPaymentMethodI.getCardType().equals(EnumCardType.EBT) && isExpiredCC(erpPaymentMethodI)) {
 						continue;
 					} else{
 						pymtMethod = erpPaymentMethodI;
@@ -294,7 +294,7 @@ public class DeliveryPassFreeTrialCron {
 		}
 		
 		if(pymtMethod!=null && address != null) {
-			if(!pymtMethod.getCardType().equals(EnumCardType.PAYPAL) && !pymtMethod.getCardType().equals(EnumCardType.ECP) && !pymtMethod.getCardType().equals(EnumCardType.GCP) && isExpiredCC(pymtMethod)) {
+			if(!pymtMethod.getCardType().equals(EnumCardType.PAYPAL) && !pymtMethod.getCardType().equals(EnumCardType.ECP) && !pymtMethod.getCardType().equals(EnumCardType.GCP) && !pymtMethod.getCardType().equals(EnumCardType.EBT) && isExpiredCC(pymtMethod)) {
 				LOGGER.warn("Free-trial deliveryPass order payment method is expired for customer :"+erpCustomerID);
 				/*createCase(erpCustomerID,CrmCaseSubject.CODE_AUTO_BILL_PAYMENT_MISSING,DlvPassConstants.AUTORENEW_PYMT_METHOD_CC_EXPIRED);
 				FDCustomerInfo customerInfo=FDCustomerManager.getCustomerInfo(identity);
