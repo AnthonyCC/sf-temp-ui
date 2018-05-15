@@ -59,6 +59,7 @@ public class FDEcommProperties {
     public final static String ErpEWalletSB = "erp.ejb.ErpEWalletSB";
     public final static String FDSurveySB = "survey.ejb.FDSurveySB";
     public final static String ExternalAccountManagerSB = "accounts.external.ExternalAccountManagerSB";
+    public final static String FDCouponManagerSB = "fdstore.ecoupon.FDCouponManagerSB";
     public final static String FDGrpInfoSB = "grp.ejb.FDGrpInfoSB";
     public final static String FDZoneInfoSB = "zone.ejb.FDZoneInfoSB";
     public final static String ScoreFactorSB = "smartstore.ejb.ScoreFactorSB";

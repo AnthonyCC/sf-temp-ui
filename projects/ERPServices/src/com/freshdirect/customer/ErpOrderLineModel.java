@@ -598,6 +598,13 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 		return affiliateCode;
 	}
 	
+	@Override
+	public void setId(String id) {
+		if (id != null) {
+			super.setId(id);
+		}
+	}
+	
 }
 	
 

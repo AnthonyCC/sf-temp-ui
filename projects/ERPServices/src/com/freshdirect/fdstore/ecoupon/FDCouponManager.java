@@ -11,6 +11,7 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ecoupon.model.CouponCart;
@@ -72,7 +73,7 @@ public class FDCouponManager {
 	public static List<FDCouponInfo> getActiveCoupons() throws FDResourceException{
 		
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.ecoupon.FDCouponManagerSB")) {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCouponManagerSB)) {
 				return FDECommerceService.getInstance().getActiveCoupons();
 			} else {
 				lookupManagerHome();
@@ -91,7 +92,7 @@ public class FDCouponManager {
 	public static List<FDCouponInfo> getActiveCoupons(Date lastModified) throws FDResourceException{
 		
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.ecoupon.FDCouponManagerSB")) {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCouponManagerSB)) {
 				return FDECommerceService.getInstance().getActiveCoupons(lastModified);
 			} else {
 				lookupManagerHome();

@@ -28,7 +28,10 @@ import org.springframework.web.client.RestClientException;
 import weblogic.auddi.util.Logger;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumCardType;
@@ -3669,11 +3672,10 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	public void loadAndSaveCoupons(FDCouponActivityContext context) throws RemoteException {
 		try {
 			Request<FDCouponActivityContextData> request = new Request<FDCouponActivityContextData>();
-//			request.setData(context);
 			request.setData(getMapper().convertValue(context, FDCouponActivityContextData.class));
 			String inputJson = buildRequest(request);
 
-			Response<Object> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(ECOUPON_LOAD_SAVE), new TypeReference<Response<Object>>() {});
+			Response<Void> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(ECOUPON_LOAD_SAVE), new TypeReference<Response<Void>>() {});
 			if (!response.getResponseCode().equals("OK")) {
 				throw new FDResourceException(response.getMessage());
 			}
@@ -3768,13 +3770,14 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	public Map<String, FDCouponEligibleInfo> evaluateCartAndCoupons(CouponCart couponCart, FDCouponActivityContext context) throws RemoteException {
 		Response<Object> response = null;
 		try {
-			Request<CartCouponData> request = new Request<CartCouponData>();
-			CartCouponData cartCouponData = ModelConverter.convertCartCouponData(couponCart, context);
-			cartCouponData.setContext(getMapper().convertValue(context, FDCouponActivityContextData.class));
-			request.setData(cartCouponData);
+			Request<ObjectNode> request = new Request<ObjectNode>();
+			ObjectNode rootNode = getMapper().createObjectNode();
+			rootNode.put("couponCart", getMapper().convertValue(couponCart, JsonNode.class));
+			rootNode.put("context", getMapper().convertValue(context, JsonNode.class));
+			request.setData(rootNode);
 			String inputJson = buildRequest(request);
 
-			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(ECOUPON_EVALUATE), new TypeReference<Response<Object>>() {});
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(ECOUPON_EVALUATE), new TypeReference<Response<Map<String, FDCouponEligibleInfo>>>() {});
 			if (!response.getResponseCode().equals("OK")) {
 				throw new FDResourceException(response.getMessage());
 			}
@@ -3785,7 +3788,6 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
-		// TODO
 		return null;
 	}
 

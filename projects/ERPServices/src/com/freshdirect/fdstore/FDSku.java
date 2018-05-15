@@ -2,6 +2,9 @@ package com.freshdirect.fdstore;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Lightweight class representing a SKU code / version pair.
  * 
@@ -21,7 +24,8 @@ public class FDSku implements Serializable {
     	this(sku.getSkuCode(), sku.getVersion()); 
     }
 
-	public FDSku(String skuCode, int version) {
+	@JsonCreator
+	public FDSku(@JsonProperty("skuCode") String skuCode, @JsonProperty("version") int version) {
 		this.skuCode = skuCode;
 		this.version = version;
 	}
