@@ -32,6 +32,7 @@
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
 
 <fd:RequiredParameterValidator parameters="productId"/>
+<fd:OptionalParameterValidator parameter="version" parameterType="<%=Integer.class.getSimpleName()%>"/>
 
 <fd:CheckLoginStatus id="user"/>
 <fd:CheckDraftContextTag/>
