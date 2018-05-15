@@ -263,7 +263,7 @@ public class CartDataService {
         
         if (null != loadedCart && !(loadedCart instanceof FDModifyCartModel)) {
         	//set the cutoff time so we can use it on receipt
-        	if (loadedCart.getDeliveryReservation() != null) {
+        	if (loadedCart.getDeliveryReservation() != null && loadedCart.getDeliveryReservation().getTimeslot() !=null) {
         		cutoffTime = loadedCart.getDeliveryReservation().getCutoffTime();
         	}
         }
