@@ -3,6 +3,7 @@ package com.freshdirect.ecomm.gateway;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.ejb.FinderException;
 
@@ -10,20 +11,25 @@ import org.apache.log4j.Category;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.freshdirect.crm.CrmAgentModel;
+import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpCartonInfo;
+import com.freshdirect.customer.ErpCreateOrderModel;
 import com.freshdirect.customer.ErpDeliveryInfoModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpShippingInfo;
+import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.ecommerce.data.order.OrderSearchCriteriaRequest;
+import com.freshdirect.fdstore.FDEcommServiceException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.EnumPaymentMethodType;
@@ -46,6 +52,7 @@ private static OrderResourceApiClient INSTANCE;
 	private static final String UPDATE_CARTON_INFO_API = 	"orders/{id}/cartonInfo";
 	private static final String GET_DELIVERYINFO_API = 	"orders/{id}/getDeliveryInfo";
 	private static final String RESUBMIT_GC_ORDERS_API = 	"orders/resubmitNsmGcOrders";
+	private static final String CREATE_GC_ORDER_API = 	"orders/gc/create";
 	
 	
 	public static OrderResourceApiClient getInstance() {
@@ -269,5 +276,27 @@ private static OrderResourceApiClient INSTANCE;
 			throws RemoteException {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public String placeGiftCardOrder(FDActionInfo info,
+			ErpCreateOrderModel createOrder, Set<String> appliedPromos,
+			String id, boolean sendEmail, CustomerRatingI cra,
+			CrmAgentRole crmAgentRole, EnumDlvPassStatus status,
+			boolean isBulkOrder) throws RemoteException {
+
+		try {
+			Request<CreateOrderRequest> request = new Request<CreateOrderRequest>();
+			CreateOrderRequest createOrderPayload = new CreateOrderRequest(info, createOrder, appliedPromos, id, sendEmail, cra, crmAgentRole, status, isBulkOrder);
+			request.setData(createOrderPayload);
+			Response<String> response = null;
+			String inputJson = buildRequest(request);
+			response = httpPostData(getFdCommerceEndPoint(CREATE_GC_ORDER_API), inputJson, Response.class, null);
+			return parseResponse(response);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RemoteException(e.getMessage(), e);
+		}
+		
 	}
 }

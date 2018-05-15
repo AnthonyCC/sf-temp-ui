@@ -1,6 +1,5 @@
 package com.freshdirect.fdstore.customer;
 
-import java.math.BigDecimal;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -10,7 +9,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -37,7 +35,6 @@ import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.DlvSaleInfo;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumChargeType;
-import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumSaleStatus;
@@ -90,6 +87,8 @@ import com.freshdirect.deliverypass.DlvPassUsageLine;
 import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.ecomm.gateway.GiftCardManagerService;
+import com.freshdirect.ecomm.gateway.OrderResourceApiClient;
+import com.freshdirect.ecomm.gateway.OrderResourceApiClientI;
 import com.freshdirect.ecomm.gateway.OrderServiceApiClient;
 import com.freshdirect.ecomm.gateway.OrderServiceApiClientI;
 import com.freshdirect.ecommerce.data.survey.FDIdentityData;
@@ -3306,13 +3305,25 @@ public class FDCustomerManager {
 			createOrder.setCharges(new ArrayList<ErpChargeLineModel>());
 
 			/*  -- */
+			
+			
 			FDCustomerManagerSB sb = managerHome.create();
+
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("placeGiftCardOrder_Api")){
+	    		OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
+	    		orderId =  service.placeGiftCardOrder(info, createOrder,
+						appliedPromos, cart.getDeliveryReservation().getPK()
+						.getId(), sendEmail, cra,
+				info.getAgent() == null ? null : info.getAgent().getRole(),
+				status, isBulkOrder);
+	    	}else{
 
 			orderId = sb.placeGiftCardOrder(info, createOrder,
 					appliedPromos, cart.getDeliveryReservation().getPK()
 							.getId(), sendEmail, cra,
 					info.getAgent() == null ? null : info.getAgent().getRole(),
 					status, isBulkOrder);
+	    	}
 
 			//invalidate quickshop past orders cache
             CmsServiceLocator.ehCacheUtil().removeFromCache(CmsCaches.QS_PAST_ORDERS_CACHE.cacheName, info.getIdentity().getErpCustomerPK());
@@ -4374,7 +4385,7 @@ public class FDCustomerManager {
 
 	public static void authorizeSale(String salesId) throws FDResourceException {
 		authorizeSale(salesId, false);
-	}
+		}
 
 	/* APPDEV-1888 */
 	public static String recordReferral(String customerId, String referralId, String customerEmail) throws FDResourceException {
@@ -5513,6 +5524,6 @@ public class FDCustomerManager {
 				invalidateManagerHome();
 				LOGGER.debug("RemoteException: ", re);
 				throw new FDResourceException(re, "Error talking to session bean");
-			}
+}
 		}
 }
