@@ -57,9 +57,6 @@ import com.freshdirect.giftcard.ejb.GCGatewaySB;
 import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
 import com.freshdirect.giftcard.ejb.GiftCardManagerSB;
 import com.freshdirect.payment.command.Capture;
-import com.freshdirect.payment.command.PaymentCommandI;
-import com.freshdirect.payment.ejb.PaymentGatewayHome;
-import com.freshdirect.payment.ejb.PaymentGatewaySB;
 import com.freshdirect.payment.ejb.PaymentHome;
 import com.freshdirect.payment.ejb.PaymentSB;
 import com.freshdirect.sap.SapEBTOrderSettlementInfo;
@@ -842,7 +839,6 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		long startTime = System.currentTimeMillis();
 
 		PaymentSB psb = null;
-		PaymentCommandI command = null;
 		
 		psb = this.getPaymentSB();
 		
@@ -1061,19 +1057,6 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	private PaymentGatewaySB getPaymentGatewaySB() {
-		try {
-			PaymentGatewayHome home = (PaymentGatewayHome)LOCATOR.getRemoteHome(DlvProperties.getPaymentGatewayHome());
-			return home.create();
-		} catch (NamingException e) {
-			throw new EJBException(e);
-		}catch (CreateException e){
-			throw new EJBException(e);
-		}catch(RemoteException e){
-			throw new EJBException(e);
-		}
-	}
-	
 	private GCGatewaySB getGCGatewaySB() {
 		try {
 			GCGatewayHome home = (GCGatewayHome)LOCATOR.getRemoteHome("freshdirect.giftcard.Gateway");
@@ -1247,12 +1230,9 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			PaymentSB psb = this.getPaymentSB();
 			utx = this.getSessionContext().getUserTransaction();
 			utx.begin();
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentSB)){
-				PaymentsService.getInstance().captureAuthEBTSale(saleId);
-			}
-			else{
-				psb.captureAuthEBTSale(saleId);
-			}
+			
+			psb.captureAuthEBTSale(saleId);
+			
 			LOGGER.info("*******do capture transaction for order:"+saleId);
 			utx.commit();
 		} catch (Exception e) {

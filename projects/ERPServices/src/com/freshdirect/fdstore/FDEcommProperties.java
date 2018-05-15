@@ -79,7 +79,6 @@ public class FDEcommProperties {
 	public static final String ErpComplaintManagerSB = "customer.ejb.ErpComplaintManagerSB";
 	public static final String DlvPassManagerSB = "deliverypass.ejb.DlvPassManagerSB";
 	public static final String SmartStoreServiceConfigurationSB = "smartstore.ejb.SmartStoreServiceConfigurationSB";
-	public static final String PaymentGatewaySB ="payment.ejb.PaymentGatewaySB";
 	public static final String FDListManagerSB = "fdstore.lists.ejb.FDListManagerSB";
 	public static final String PayPalServiceSB = "ewallet.ejb.PayPalServiceSB";
 	public static final String MasterpassServiceSB = "ewallet.ejb.MasterpassServiceSB";
@@ -172,7 +171,6 @@ public class FDEcommProperties {
         defaults.put(ErpComplaintManagerSB,FALSE);
         defaults.put(DlvPassManagerSB, FALSE);
         defaults.put(SmartStoreServiceConfigurationSB, FALSE);
-        defaults.put(PaymentGatewaySB, FALSE);
         defaults.put(FDListManagerSB, FALSE);
         defaults.put(PayPalServiceSB, FALSE);
         defaults.put(MasterpassServiceSB, FALSE);

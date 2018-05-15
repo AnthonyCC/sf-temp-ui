@@ -24,8 +24,6 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.PaymentManager;
-import com.freshdirect.payment.ejb.PaymentGatewayHome;
-import com.freshdirect.payment.ejb.PaymentGatewaySB;
 
 public class DlvPaymentManager {
 	
@@ -70,15 +68,6 @@ public class DlvPaymentManager {
 		}	
 	}
 
-	public synchronized void deliveryConfirm(String orderNumber) throws FDResourceException {
-		try{
-			PaymentManager paymentManager = new PaymentManager();
-			paymentManager.deliveryConfirm(orderNumber);
-		}catch(ErpTransactionException te){
-			throw new FDResourceException(te, "Sale is not in the right state to be confirmed");
-		}
-	} 
-	
 	public synchronized void captureAuthorization(String orderNumber) throws FDResourceException {
 		try{
 			PaymentManager paymentManager = new PaymentManager();
@@ -134,31 +123,8 @@ public class DlvPaymentManager {
 		}catch(RemoteException e){
 			throw new FDResourceException(e, "Cannot talk to SB");
 		}
-	}
-	
-	public synchronized void unconfirmOrder(String saleId) throws FDResourceException {
-		try{
-			PaymentManager paymentManager = new PaymentManager();
-			paymentManager.unconfirm(saleId);
-		}catch(ErpTransactionException te){
-			throw new FDResourceException(te, te.getMessage());
-		}
-	}
-			
-	
-	private PaymentGatewaySB getPaymentGatewaySB() throws FDResourceException {
-		try {
-			PaymentGatewayHome home = (PaymentGatewayHome)serviceLocator.getRemoteHome(DlvProperties.getPaymentGatewayHome());
-			return home.create(); 
-		} catch (NamingException e) {
-			throw new FDResourceException(e);
-		}catch (CreateException e){
-			throw new FDResourceException(e);
-		}catch(RemoteException e){
-			throw new FDResourceException(e);
-		}
-	}
-	
+	}	
+
 	private ErpCustomerManagerSB getErpCustomerManagerSB() throws FDResourceException {
 		try {
 			ErpCustomerManagerHome home = (ErpCustomerManagerHome)serviceLocator.getRemoteHome(DlvProperties.getCustomerManagerHome());

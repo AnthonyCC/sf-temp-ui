@@ -116,49 +116,12 @@ public class PaymentManager {
 		}
 	}
 
-	public void deliveryConfirm(String saleId) throws ErpTransactionException {
-		
-		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentSB)){
-				PaymentsService.getInstance().deliveryConfirm(saleId);
-			}
-			else{
-				if (paymentHome == null) {
-					getPaymentHome();
-				}
-				PaymentSB paymentSB = paymentHome.create();
-				paymentSB.deliveryConfirm(saleId);
-			}
-		} catch (Exception e) {
-			throw new ErpTransactionException(e.getMessage());
-		}
-	}
-	
-	public void unconfirm(String saleId) throws ErpTransactionException {
-		
-		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentSB)){
-				PaymentsService.getInstance().unconfirm(saleId);
-			}
-			else{
-				if (paymentHome == null) {
-					getPaymentHome();
-				}
-				PaymentSB paymentSB = paymentHome.create();
-				paymentSB.unconfirm(saleId);
-			}
-		} catch (Exception e) {
-			throw new ErpTransactionException(e.getMessage());
-		}
-	}
-
 	public void voidCaptures(String saleId) throws ErpTransactionException {
 		
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentSB)){
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentSB)) {
 				PaymentsService.getInstance().voidCaptures(saleId);
-			}
-			else{
+			} else {
 				if (paymentHome == null) {
 					getPaymentHome();
 				}
