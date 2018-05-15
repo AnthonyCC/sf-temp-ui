@@ -13,11 +13,23 @@
 <%@ page import='com.freshdirect.storeapi.application.*'%>
 <%@ page import='java.net.URLEncoder'%>
 <%@ page import="java.util.Collection"%>
+<%@ page import="com.freshdirect.fdstore.FDNotFoundException"%>
 
 <fd:CheckLoginStatus />
 <%
-RecipeCategory recipeCategory = (RecipeCategory) PopulatorUtil.getContentNode(request.getParameter("catId"));
-RecipeSubcategory recipeSubCat = (RecipeSubcategory) PopulatorUtil.getContentNode(request.getParameter("subCatId"));
+ContentNodeModel catModel = PopulatorUtil.getContentNode(request.getParameter("catId"));
+ContentNodeModel subCatModel = PopulatorUtil.getContentNode(request.getParameter("subCatId"));
+
+if (!(catModel instanceof RecipeCategory)){
+    throw new FDNotFoundException("CategoryId was not a RecipeCategory");
+}
+
+if (!(subCatModel instanceof RecipeSubcategory)){
+    throw new FDNotFoundException("SubCategoryId was not a RecipeSubCategory");
+}
+
+RecipeCategory recipeCategory = (RecipeCategory) catModel;
+RecipeSubcategory recipeSubCat = (RecipeSubcategory) subCatModel;
 
 // go get first subcat if subcat was null
 if (recipeSubCat==null) {
