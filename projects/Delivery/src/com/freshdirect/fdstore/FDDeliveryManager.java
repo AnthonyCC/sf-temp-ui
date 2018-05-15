@@ -138,30 +138,30 @@ public class FDDeliveryManager {
 
 	/** cache zipCode -> FDDeliveryServiceSelectionResult */
 	private static TimedLruCache<String, FDDeliveryServiceSelectionResult> zipCheckCache = new TimedLruCache<String, FDDeliveryServiceSelectionResult>(
-			200, 60 * 60 * 1000);
+			2000, 60 * 60 * 1000);
 
 	/** 1 hr cache state -> List of state county */
 
 	private static TimedLruCache<String, Set<StateCounty>> countiesByState = new TimedLruCache<String, Set<StateCounty>>(
-			50, 60 * 60 * 1000);
+			800, 60 * 60 * 1000);
 
 	/**
 	 * 1 hr cache zoneCode -> List of cutoff-times for next day
 	 * (FDZoneCutoffInfo)
 	 */
 	private static TimedLruCache<String, List<FDZoneCutoffInfo>> zoneCutoffCache = new TimedLruCache<String, List<FDZoneCutoffInfo>>(
-			200, 60 * 60 * 1000);
+			500, 60 * 60 * 1000);
 
 	/**
 	 * 5 min cache zoneCode -> remaining Capacity for next day
 	 * (DlvZoneCapacityInfo)
 	 */
 	private static TimedLruCache<String, DlvZoneCapacityInfo> zoneCapacityCache = new TimedLruCache<String, DlvZoneCapacityInfo>(
-			200, 5 * 60 * 1000);
+			500, 5 * 60 * 1000);
 
 	/* 5 hr delivery zip codes cache */
 	private static TimedLruCache<EnumServiceType, List<FDDeliveryZipInfo>> zipCodesCache = new TimedLruCache<EnumServiceType, List<FDDeliveryZipInfo>>(
-			100, 5 * 60 * 60 * 1000);
+			2000, 5 * 60 * 60 * 1000);
 
 	/* 5 hr delivery eta cache */
 	private static TimedLruCache<String, FDDeliveryETAModel> deliveryETACache = new TimedLruCache<String, FDDeliveryETAModel>(
@@ -169,15 +169,15 @@ public class FDDeliveryManager {
 
 	/* 5 hr cutoff times cache */
 	private static TimedLruCache<Date, List<Date>> cutoffTimesCache = new TimedLruCache<Date, List<Date>>(
-			100, 5 * 60 * 60 * 1000);
+			200, 5 * 60 * 60 * 1000);
 
 	/* State County by Zip cache */
 	private static TimedLruCache<String, StateCounty> stateCountyByZip = new TimedLruCache<String, StateCounty>(
-			100, 60 * 60 * 60 * 1000);
+			2000, 60 * 60 * 60 * 1000);
 	
 	/* OPT-44 State county and EBT by Zip cache */
 	private static TimedLruCache<String, ZipCodeAttributes> zipCodeAttributes = new TimedLruCache<String, ZipCodeAttributes>(
-			100, 60 * 60 * 60 * 1000);	
+			2000, 60 * 60 * 60 * 1000);	
 
 	private DlvRestrictionsList dlvRestrictions = null;
 	private long REFRESH_PERIOD = 1000 * 60 * 5; // 5 minutes
