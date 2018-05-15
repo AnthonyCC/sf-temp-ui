@@ -21,6 +21,9 @@
 <%@ taglib uri="unbxd" prefix='unbxd'%>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c'%>
 
+<fd:OptionalParameterValidator parameter="pageSize" parameterType="<%=Integer.class.getSimpleName()%>"/>
+<fd:OptionalParameterValidator parameter="activePage" parameterType="<%=Integer.class.getSimpleName()%>"/>
+
 <fd:CheckLoginStatus id="user" guestAllowed='true'
 	recognizedAllowed='true' />
 
