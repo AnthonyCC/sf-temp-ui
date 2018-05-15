@@ -102,6 +102,11 @@
 						dataLayer.push(fd.GTMDATAS[$e.attr('id')].SUCCESS || {});
 					}
 				});
+				$jq('#modify_order_btn').on('click', function(e) {
+					if ($jq(e.currentTarget).attr('data-gtm-click-error')===undefined) {
+						window.location = '/your_account/modify_order.jsp?orderId=${param['orderId']}&action=modify';
+					}
+				});
 				$jq('#delivery_info_edit_btn').on('click', function(e) {
 					if ($jq(e.currentTarget).attr('data-gtm-click-error')===undefined) {
 						window.location = '/your_account/modify_order.jsp?orderId=${param['orderId']}&action=modify&successPage=%2Fexpressco%2Fcheckout.jsp';
