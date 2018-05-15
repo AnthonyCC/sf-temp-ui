@@ -23,12 +23,9 @@ import com.freshdirect.common.pricing.util.GroupScaleUtil;
 import com.freshdirect.customer.ErpCouponDiscountLineModel;
 import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
 import com.freshdirect.fdstore.FDGroup;
-import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.logistics.delivery.model.EnumZipCheckResponses;
-import com.freshdirect.storeapi.content.ProductModel;
 
 /**
  *
@@ -230,20 +227,6 @@ public class FDModifyCartModel extends FDCartModel {
 		return originalOrderCoupons;
 	}
 	
-    @Override
-    public FDCartLineI findGroupingOrderline(ProductModel productModel, FDProduct product, FDSalesUnit salesUnit) {
-        FDCartLineI groupOrderline = null;
-        if ("EA".equalsIgnoreCase(salesUnit.getBaseUnit()) && (product.isPricedByEa() || product.isPricedByLb())) {
-            for (FDCartLineI orderLine : orderLines) {
-                if (!(orderLine instanceof FDModifyCartLineI) && orderLine.getProductName().equals(productModel.getContentName()) && orderLine.getSalesUnit().equals(salesUnit.getName())) {
-                    groupOrderline = orderLine;
-                    break;
-                }
-            }
-        }
-        return groupOrderline;
-    }
-
 	/*public  void calculateScaleQuantity() {
 		//String key=null;
 		Map<FDSku,Double> scaleQuantityMap=new HashMap<FDSku, Double>();

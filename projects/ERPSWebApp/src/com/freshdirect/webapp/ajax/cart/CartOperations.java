@@ -229,7 +229,7 @@ public class CartOperations {
 
             // add collected cartlines to cart
             for (FDCartLineI cartLineToAdd : cartLinesToAdd) {
-                cart.addOrderLineIfNotExists(cartLineToAdd);
+                cart.addOrUpdateOrderLine(cartLineToAdd);
             }
 
             // log multiple add to cart events
@@ -840,7 +840,15 @@ public class CartOperations {
         // MAIN PROCESSING
         // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-        FDCartLineI theCartLine = cart.findGroupingOrderline(prodNode, product, salesUnit);
+        FDCartLineI theCartLine = null;
+
+        if (isProductGroupable(product, salesUnit)) {
+            theCartLine = findGroupingOrderline(cartLinesToAdd, prodNode, salesUnit);
+            if (theCartLine == null) {
+                theCartLine = findGroupingOrderline(cart.getOrderLines(), prodNode, salesUnit);
+            }
+        }
+
         if (theCartLine == null) {
             theCartLine = processSimple(prodNode, product, quantity, salesUnit, null, variantId, user.getUserContext(), null, item.getConfiguration());
             responseItem.setInCartAmount(calculateInCartAmount(prodNode, cartLinesToAdd, cart, quantity));
@@ -1175,6 +1183,22 @@ public class CartOperations {
                 }
             }
         }
+    }
+
+    public static FDCartLineI findGroupingOrderline(List<FDCartLineI> orderLines, ProductModel productModel, FDSalesUnit salesUnit) {
+        FDCartLineI groupOrderline = null;
+        for (FDCartLineI orderLine : orderLines) {
+            if (!(orderLine instanceof FDModifyCartLineI) && orderLine.getProductName().equals(productModel.getContentName())
+                    && orderLine.getSalesUnit().equals(salesUnit.getName())) {
+                groupOrderline = orderLine;
+                break;
+            }
+        }
+        return groupOrderline;
+    }
+
+    public static boolean isProductGroupable(FDProduct product, FDSalesUnit salesUnit) {
+        return "EA".equalsIgnoreCase(salesUnit.getBaseUnit()) && (product.isPricedByEa() || product.isPricedByLb());
     }
 
 }

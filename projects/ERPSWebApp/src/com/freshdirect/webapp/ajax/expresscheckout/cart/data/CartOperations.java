@@ -203,7 +203,10 @@ public class CartOperations {
 
                     // add a new orderline for rest of the difference, if any
                     if (deltaQty > 0) {
-                        FDCartLineI newLine = cart.findGroupingOrderline(product, fdProduct, salesUnit);
+                        FDCartLineI newLine = null;
+                        if (com.freshdirect.webapp.ajax.cart.CartOperations.isProductGroupable(fdProduct, salesUnit)) {
+                            newLine = com.freshdirect.webapp.ajax.cart.CartOperations.findGroupingOrderline(cart.getOrderLines(), product, salesUnit);
+                        }
                         if (newLine == null) {
                             newLine = cartLine.createCopy();
                             // newLine.setPricingContext( new PricingContext( user.getPricingZoneId() ) );
@@ -224,7 +227,7 @@ public class CartOperations {
                             return;
                         }
 
-                        cart.addOrderLineIfNotExists(newLine);
+                        cart.addOrUpdateOrderLine(newLine);
                         logAddToCart(user, newLine, product, serverName);
                     }
                 }

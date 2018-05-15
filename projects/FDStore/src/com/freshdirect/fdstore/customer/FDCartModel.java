@@ -53,10 +53,8 @@ import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDGroup;
-import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
-import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ZonePriceListing;
@@ -458,16 +456,23 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		*/
 	//}
 
-    public void addOrderLineIfNotExists(FDCartLineI orderLine) {
-        FDCartLineI orderLineById = getOrderLineById(orderLine.getRandomId());
-        if (orderLineById == null) {
+    public void addOrUpdateOrderLine(FDCartLineI orderLine) {
+        int idx = this.getOrderLineIndex(orderLine.getRandomId());
+        if (idx == -1) {
             addOrderLine(orderLine);
+        } else {
+            removeOrderLine(idx);
+            addOrderLine(idx, orderLine);
         }
     }
 
-	public void addOrderLine(FDCartLineI orderLine) {
+    public void addOrderLine(FDCartLineI orderLine) {
+        addOrderLine(orderLines.size(), orderLine);
+    }
+
+    public void addOrderLine(int index, FDCartLineI orderLine) {
 		checkLimitPlus(1);
-		this.orderLines.add(orderLine);
+        this.orderLines.add(index, orderLine);
 		this.recentOrderLines.clear();
 		this.recentOrderLines.add(orderLine);
 		this.clearAvailability();
@@ -720,19 +725,6 @@ public class FDCartModel extends ModelSupport implements FDCartI {
             }
         }
         return isUpdated;
-    }
-
-    public FDCartLineI findGroupingOrderline(ProductModel productModel, FDProduct product, FDSalesUnit salesUnit) {
-        FDCartLineI groupOrderline = null;
-        if ("EA".equalsIgnoreCase(salesUnit.getBaseUnit()) && (product.isPricedByEa() || product.isPricedByLb())) {
-            for (FDCartLineI orderLine : orderLines) {
-                if (orderLine.getProductName().equals(productModel.getContentName()) && orderLine.getSalesUnit().equals(salesUnit.getName())) {
-                    groupOrderline = orderLine;
-                    break;
-                }
-            }
-        }
-        return groupOrderline;
     }
 
 	/**
