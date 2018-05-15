@@ -323,10 +323,7 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 	public DeliveryServices getDeliveryServices(Address address) throws FDLogisticsServiceException {
 
 		String inputJson = buildRequest(address);
-		LOGGER.info(">>>>>>>>>>>>>>>>>> " + inputJson);
 		DeliveryServices response =  getData(inputJson, getEndPoint(GET_SERVICETYPES_BYADDRESS), DeliveryServices.class);
-		System.out.println(""+response.toString());
-		LOGGER.info(">>>>>>>>>>>>>>>>>> " + response);
 		return response;
 	
 		
@@ -400,8 +397,8 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 	
 	@Override
 	public DeliveryZones getZone(DeliveryZoneRequest request) throws FDLogisticsServiceException {
-		
-       String inputJson = buildRequest(request);
+
+		String inputJson = buildRequest(request);
 		DeliveryZones response =  getData(inputJson, getEndPoint(GET_ZONEINFO), DeliveryZones.class);
 		return response;
 	}
@@ -429,9 +426,7 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 		String inputJson = buildRequest(request);
 		LOGGER.info(inputJson);
 		DeliveryReservations response =  getData(inputJson, getEndPoint(RESERVATION_GET_API), DeliveryReservations.class);
-		LOGGER.info(response);
-		return response;
-		
+		return response;	
 	
 	}
 
@@ -439,9 +434,7 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 	public Result reservesoTemplate(
 			SOReserveTimeslotRequest request) throws FDLogisticsServiceException {
 		String inputJson = buildRequest(request);
-		LOGGER.info(inputJson);
 		Result response =  getData(inputJson, getEndPoint(RESERVE_SOTEMPLATE_API), Result.class);
-		LOGGER.info(inputJson);
 		return response;
 	}
 	
@@ -466,7 +459,6 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 	@Override
 	public DeliveryReservations reserveTimeslot(ReserveTimeslotRequest request) throws FDLogisticsServiceException {
 		String inputJson = buildRequest(request);
-		LOGGER.info(inputJson);
 		DeliveryReservations response =  getData(inputJson, getEndPoint(RESERVE_TIMESLOT_API), DeliveryReservations.class);
 		return response;
 	}
@@ -515,11 +507,8 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 	public DeliveryTimeslots getTimeslots(TimeslotRequest request) throws FDLogisticsServiceException {
 		
 		String inputJson = buildRequest(request);
-		LOGGER.info("order in wrong zone tetsing" +inputJson);
 		DeliveryTimeslots response =  getData(inputJson, getEndPoint(GET_TIMESLOT_API), DeliveryTimeslots.class);
-		LOGGER.info("order in wrong zone tetsing"+response);
 		return response;
-		
 	}
 
 	@Override
