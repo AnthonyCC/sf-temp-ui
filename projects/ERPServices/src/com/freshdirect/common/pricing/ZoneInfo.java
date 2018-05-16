@@ -34,7 +34,7 @@ public final class ZoneInfo implements java.io.Serializable, Comparable<ZoneInfo
 	@JsonCreator
 	public ZoneInfo(@JsonProperty("zoneId") String zoneId, @JsonProperty("salesOrg") String salesOrg,
 			@JsonProperty("distributionChanel") String distributionChanel,
-			@JsonProperty("pricingIndicator") PricingIndicator pricingIndicator, @JsonProperty("parent") ZoneInfo parent) {
+			@JsonProperty("pricingIndicator") PricingIndicator pricingIndicator, @JsonProperty("parentZone") ZoneInfo parent) {
 		this.zoneId = zoneId;
 		this.salesOrg = salesOrg;
 		this.distributionChanel = distributionChanel;
