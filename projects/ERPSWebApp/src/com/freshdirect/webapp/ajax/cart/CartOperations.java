@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 import com.freshdirect.affiliate.ExternalAgency;
 import com.freshdirect.common.context.MasqueradeContext;
 import com.freshdirect.common.context.UserContext;
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.customer.EnumATCContext;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpClientCode;
@@ -27,8 +28,10 @@ import com.freshdirect.event.FDEditCartEvent;
 import com.freshdirect.event.FDRemoveCartEvent;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfiguration;
+import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDProduct;
+import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSku;
@@ -62,8 +65,11 @@ import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
+import com.freshdirect.storeapi.content.CategoryModel;
 import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.DepartmentModel;
 import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.webapp.ajax.ICoremetricsResponse;
 import com.freshdirect.webapp.ajax.analytics.service.GoogleAnalyticsDataService;
 import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartCouponResponse;
@@ -247,7 +253,7 @@ public class CartOperations {
 
     }
 
-    private static void populateCoremetricsShopTag(AddToCartResponseData responseData, FDCartLineI cartLine, CoremetricsExtraData coremetricsExtraData) {
+    public static void populateCoremetricsShopTag(ICoremetricsResponse responseData, FDCartLineI cartLine, CoremetricsExtraData coremetricsExtraData) {
         // COREMETRICS SHOP5
         try {
 
@@ -352,6 +358,18 @@ public class CartOperations {
             return;
         }
 
+        FDProduct fdProduct = cartLine.lookupFDProduct();
+        if (fdProduct == null) {
+            LOG.error("Failed to get fdproduct for " + cartLine.getCategoryName() + " / " + cartLine.getProductName() + ", skipping.");
+            return;
+        }
+
+        FDSalesUnit salesUnit = fdProduct.getSalesUnit(cartLine.getSalesUnit());
+        if (salesUnit == null) {
+            LOG.error("Failed to get salesunit for " + cartLine.getCategoryName() + " / " + cartLine.getProductName() + ", skipping.");
+            return;
+        }
+
         synchronized (cart) {
 
             // ====================
@@ -393,7 +411,11 @@ public class CartOperations {
                 // Normal cart
 
                 cartLine.setQuantity(newQ);
-                logEditCart(user, cartLine, product, serverName);
+                if (null == user.getMasqueradeContext() && (cart instanceof FDModifyCartModel)) {
+                    cartLine.setOrderId(((FDModifyCartModel) cart).getOriginalOrder().getSale().getId());
+                    updateModifiedCartlineQuantity(cartLine);
+                }
+                logEditCart(user, cartLine, serverName);
 
             } else {
                 // Modify order cart
@@ -408,7 +430,7 @@ public class CartOperations {
                 } else if (deltaQty < 0) {
                     // need to remove some
                     cartLine.setQuantity(newQ);
-                    logEditCart(user, cartLine, product, serverName);
+                    logEditCart(user, cartLine, serverName);
 
                 } else {
                     // deltaQty > 0, see how much can we add to this orderline
@@ -419,16 +441,25 @@ public class CartOperations {
                     if (origDiff > 0) {
                         double addToLine = Math.min(origDiff, deltaQty);
                         cartLine.setQuantity(oldQ + addToLine);
-                        logEditCart(user, cartLine, product, serverName);
+                        logEditCart(user, cartLine, serverName);
                         deltaQty -= addToLine;
                     }
 
                     // add a new orderline for rest of the difference, if any
                     if (deltaQty > 0) {
-
-                        FDCartLineI newLine = cartLine.createCopy();
-                        newLine.setUserContext(user.getUserContext());
-                        newLine.setQuantity(deltaQty);
+                        FDCartLineI newLine = null;
+                        if (com.freshdirect.webapp.ajax.cart.CartOperations.isProductGroupable(fdProduct, salesUnit)) {
+                            newLine = com.freshdirect.webapp.ajax.cart.CartOperations.findGroupingOrderline(cart.getOrderLines(), product, salesUnit);
+                        }
+                        if (newLine == null) {
+                            newLine = cartLine.createCopy();
+                            // newLine.setPricingContext( new PricingContext( user.getPricingZoneId() ) );
+                            newLine.setUserContext(user.getUserContext());
+                            newLine.setQuantity(deltaQty);
+                            saveNewCartline(user, newLine, deltaQty, ((FDModifyCartModel) cart).getOriginalOrder().getSale().getId());
+                        } else {
+                            newLine.setQuantity(newLine.getQuantity() + deltaQty);
+                        }
 
                         try {
                             OrderLineUtil.cleanup(newLine);
@@ -440,13 +471,33 @@ public class CartOperations {
                             return;
                         }
 
-                        cart.addOrderLine(newLine);
-                        logAddToCart(user, newLine, product, serverName);
+                        cart.addOrUpdateOrderLine(newLine);
+                        logAddToCart(user, newLine, serverName);
                     }
                 }
             }
 
             saveUserAndCart(user, cart);
+        }
+    }
+
+    private static void updateModifiedCartlineQuantity(FDCartLineI cartLine) {
+        synchronized (cartLine) {
+            try {
+                FDCustomerManager.updateModifiedCartlineQuantity(cartLine);
+            } catch (FDResourceException e) {
+                LOG.error("could not save Modified", e);
+            }
+        }
+    }
+
+    private static void removeModifiedCartline(FDCartLineI cartLine) {
+        synchronized (cartLine) {
+            try {
+                FDCustomerManager.removeModifiedCartline(cartLine);
+            } catch (FDResourceException e) {
+                LOG.error("could not save Modified", e);
+            }
         }
     }
 
@@ -471,12 +522,6 @@ public class CartOperations {
         }
 
         // Fetch additional data
-        ProductModel product = cartLine.lookupProduct();
-        if (product == null) {
-            LOG.error("Failed to get product node for " + cartLine.getCategoryName() + " / " + cartLine.getProductName() + ", skipping.");
-            return;
-        }
-
         FDProduct fdProduct = cartLine.lookupFDProduct();
         if (fdProduct == null) {
             LOG.error("Failed to get fdproduct for " + cartLine.getCategoryName() + " / " + cartLine.getProductName() + ", skipping.");
@@ -497,7 +542,7 @@ public class CartOperations {
                 }
 
                 cartLine.setSalesUnit(newSalesUnit);
-                logEditCart(user, cartLine, product, serverName);
+                logEditCart(user, cartLine, serverName);
 
                 saveUserAndCart(user, cart);
             }
@@ -520,18 +565,15 @@ public class CartOperations {
             return;
         }
 
-        // Fetch additional data
-        ProductModel product = cartLine.lookupProduct();
-        if (product == null) {
-            LOG.error("Failed to get product node for " + cartLine.getCategoryName() + " / " + cartLine.getProductName() + ", skipping.");
-            return;
-        }
-
         synchronized (cart) {
+
+            if (cartLine instanceof FDCartLineModel) {
+                removeModifiedCartline(cartLine);
+            }
 
             cart.removeOrderLine(cartLine);
 
-            logRemoveFromCart(user, cartLine, product, serverName);
+            logRemoveFromCart(user, cartLine, serverName);
 
             saveUserAndCart(user, cart);
         }
@@ -569,40 +611,41 @@ public class CartOperations {
         }
     }
 
-    private static void logEditCart(FDUserI user, FDCartLineI cartLine, ProductModel product, String serverName) {
+    private static void logEditCart(FDUserI user, FDCartLineI cartLine, String serverName) {
         FDCartLineEvent event = new FDEditCartEvent();
         event.setEventType(FDEventFactory.FD_MODIFY_CART_EVENT);
-        logCartEvent(event, user, cartLine, product, EnumEventSource.CART, serverName);
+        logCartEvent(event, user, cartLine, EnumEventSource.CART, serverName);
     }
 
-    private static void logAddToCart(FDUserI user, FDCartLineI cartLine, ProductModel product, String serverName) {
+    private static void logAddToCart(FDUserI user, FDCartLineI cartLine, String serverName) {
         FDCartLineEvent event = new FDAddToCartEvent();
         event.setEventType(FDEventFactory.FD_ADD_TO_CART_EVENT);
-        logCartEvent(event, user, cartLine, product, EnumEventSource.CART, serverName);
+        logCartEvent(event, user, cartLine, EnumEventSource.CART, serverName);
     }
 
     private static void logAddToCart(FDUserI user, List<FDCartLineI> cartLines, EnumEventSource eventSource, String serverName) {
         for (FDCartLineI cartLine : cartLines) {
             FDCartLineEvent event = new FDAddToCartEvent();
             event.setEventType(FDEventFactory.FD_ADD_TO_CART_EVENT);
-            ProductModel product = cartLine.lookupProduct();
-            logCartEvent(event, user, cartLine, product, eventSource, serverName);
+            logCartEvent(event, user, cartLine, eventSource, serverName);
         }
     }
 
-    private static void logRemoveFromCart(FDUserI user, FDCartLineI cartLine, ProductModel product, String serverName) {
+    private static void logRemoveFromCart(FDUserI user, FDCartLineI cartLine, String serverName) {
         FDCartLineEvent event = new FDRemoveCartEvent();
         event.setEventType(FDEventFactory.FD_REMOVE_CART_EVENT);
-        logCartEvent(event, user, cartLine, product, EnumEventSource.CART, serverName);
+        logCartEvent(event, user, cartLine, EnumEventSource.CART, serverName);
     }
 
-    private static void logCartEvent(FDCartLineEvent event, FDUserI user, FDCartLineI cartLine, ProductModel product, EnumEventSource eventSource, String serverName) {
+    private static void logCartEvent(FDCartLineEvent event, FDUserI user, FDCartLineI cartLine, EnumEventSource eventSource, String serverName) {
         try {
 
             FDIdentity identity = user.getIdentity();
             if (identity != null) {
                 event.setCustomerId(identity.getErpCustomerPK());
             }
+
+            ProductModel productModel = cartLine.lookupProduct();
 
             event.setServer(serverName);
             event.setCookie(user.getCookie());
@@ -614,9 +657,17 @@ public class CartOperations {
             event.setApplication(src != null ? src.getCode() : EnumTransactionSource.WEBSITE.getCode());
 
             event.setCartlineId(cartLine.getCartlineId());
-            event.setDepartment(product.getDepartment().getContentName());
-            event.setCategoryId(cartLine.getCategoryName());
-            event.setProductId(cartLine.getProductName());
+            if (productModel != null) {
+                DepartmentModel departmentModel = productModel.getDepartment();
+                if (departmentModel != null) {
+                    event.setDepartment(departmentModel.getContentKey().id);
+                }
+                CategoryModel categoryModel = productModel.getCategory();
+                if (categoryModel != null) {
+                    event.setCategoryId(categoryModel.getContentKey().id);
+                }
+                event.setProductId(productModel.getContentKey().id);
+            }
             event.setSkuCode(cartLine.getSkuCode());
             event.setQuantity(String.valueOf(cartLine.getQuantity()));
             event.setSalesUnit(cartLine.getSalesUnit());
@@ -636,7 +687,11 @@ public class CartOperations {
             }
 
             EventLogger.getInstance().logEvent(event);
-
+            if (FDEventFactory.FD_MODIFY_CART_EVENT.equals(event.getEventType())) {
+                if (!user.getSoCartLineMessagesMap().containsKey(cartLine.getCartlineId()) && user.getCurrentStandingOrder() != null
+                        && "Y".equalsIgnoreCase(user.getCurrentStandingOrder().getActivate()))
+                    user.getSoCartLineMessagesMap().put(cartLine.getCustomerListLineId(), "ModifiedItem");
+            }
         } catch (Exception e) {
             LOG.error("Error while logging cart event", e);
         }
@@ -1199,6 +1254,32 @@ public class CartOperations {
 
     public static boolean isProductGroupable(FDProduct product, FDSalesUnit salesUnit) {
         return "EA".equalsIgnoreCase(salesUnit.getBaseUnit()) && (product.isPricedByEa() || product.isPricedByLb());
+    }
+
+    public static List<FDCartLineI> removeUnavailableCartLines(final FDCartModel cart, final FDUserI fdUser) {
+        final ZoneInfo zoneInfo = fdUser.getUserContext().getPricingContext().getZoneInfo();
+
+        final List<FDCartLineI> unavailableCartLines = new ArrayList<FDCartLineI>();
+        for (FDCartLineI cartLine : cart.getOrderLines()) {
+            try {
+                FDProductInfo productInfo = FDCachedFactory.getProductInfo(cartLine.getSkuCode());
+                if (!productInfo.isAvailable(zoneInfo.getSalesOrg(), zoneInfo.getDistributionChanel())) {
+                    unavailableCartLines.add(cartLine);
+                }
+            } catch (FDException e) {
+                LOG.error("Error raised while looking up fdProductInfo for cart line with SKU " + cartLine.getSkuCode(), e);
+                unavailableCartLines.add(cartLine);
+            }
+        }
+
+        if (!unavailableCartLines.isEmpty()) {
+            final String serverName = fdUser.getServerName();
+            for (FDCartLineI cartLine : unavailableCartLines) {
+                CartOperations.removeCartLine(fdUser, cart, cartLine, serverName);
+                LOG.debug("REMOVED cartLine: " + cartLine.getCartlineId() + "; SKU: " + cartLine.getSkuCode() + "; Customer: " + fdUser.getIdentity());
+            }
+        }
+        return unavailableCartLines;
     }
 
 }
