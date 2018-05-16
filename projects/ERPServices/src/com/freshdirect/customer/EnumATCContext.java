@@ -5,8 +5,13 @@ import java.util.Map;
 
 import org.apache.commons.lang.enums.Enum;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class EnumATCContext extends Enum {
 
+
+	private static final long serialVersionUID = -4561538076783443292L;
 	public final static EnumATCContext DDPP			= new EnumATCContext("DDPP", "DDPP Page");
 	public final static EnumATCContext SEARCH		= new EnumATCContext("SRCH", "Search Page");
 	public final static EnumATCContext ECOUPON		= new EnumATCContext("ECOU", "Ecoupon Circular Page");
@@ -27,7 +32,8 @@ public class EnumATCContext extends Enum {
 		return this.description;
 	}
 
-	public static EnumATCContext getEnum(String name) {
+	@JsonCreator
+	public static EnumATCContext getEnum(@JsonProperty("name") String name) {
 		return (EnumATCContext) getEnum(EnumATCContext.class, name);
 	}
 
