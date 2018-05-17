@@ -95,7 +95,7 @@ if (sortedColl==null) sortedColl = Collections.<CategoryModel>emptyList();
 %>
     <logic:iterate id='contentRef' collection="<%=favorites%>" type="com.freshdirect.storeapi.content.ProductModel">
 <% 
-        ProductModel product = ProductPricingFactory.getInstance().getPricingAdapter(contentRef, user.getPricingContext()); //(ProductModel)contentFactory.getProduct(contentRef.getCategoryId(),contentRef.getProductId());
+        ProductModel product = ProductPricingFactory.getInstance().getPricingAdapter(contentRef);
         if (product.isDiscontinued() || product.isUnavailable()) continue;
         ContentNodeModel prodParent = product.getParentNode(); 
         List<SkuModel> skus = product.getSkus(); 

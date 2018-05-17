@@ -11,7 +11,7 @@
 	}
 
     List favorites = currentFolder instanceof ProductContainer ? ((ProductContainer) currentFolder).getFeaturedProducts() : Collections.EMPTY_LIST;
-    favorites = ProductPricingFactory.getInstance().getPricingAdapter((List<ProductModel>)favorites, user.getPricingContext());
+    favorites = ProductPricingFactory.getInstance().getPricingAdapter((List<ProductModel>)favorites);
 
     // List validFavorites = new ArrayList();
     List favHTMLPieces = new ArrayList();

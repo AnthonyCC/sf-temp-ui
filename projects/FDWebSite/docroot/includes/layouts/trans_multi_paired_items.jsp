@@ -175,7 +175,7 @@ for(Iterator collIter = sortedColl.iterator();collIter.hasNext() ;) {
                     but I suspect that creative will want to display unavailable items...hope I'm wrong. (RG)  */
       }
       prodsAvailable++;
-      sortedList.add(ProductPricingFactory.getInstance().getPricingAdapter(((ProductModel)currItem) ,user.getPricingContext()));
+      sortedList.add(ProductPricingFactory.getInstance().getPricingAdapter(((ProductModel)currItem)));
     }
 }  
 int itemsToDisplay = sortedList.size();

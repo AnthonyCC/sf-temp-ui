@@ -52,7 +52,7 @@ private static Category  LOGGER = LoggerFactory.getInstance("group.jsp");
 	if("".equals(pCatId))
 		pCatId = catId;
 	ProductModel pm = ContentFactory.getInstance().getProductByName( pCatId, request.getParameter("productId") );
-	ProductModel displayProduct = ProductPricingFactory.getInstance().getPricingAdapter(pm, user.getPricingContext());
+	ProductModel displayProduct = ProductPricingFactory.getInstance().getPricingAdapter(pm);
 	request.setAttribute("sitePage", "www.freshdirect.com/group.jsp");
 	request.setAttribute("listPos", "LittleRandy,SystemMessage,ProductNote,SideCartBottom");
 	
