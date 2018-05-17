@@ -329,7 +329,6 @@ public class GiftCardManagerService extends AbstractEcommService implements Gift
 	public void transferGiftCardBalance(String customerid,String fromGivexNum, String toGivexNum,
 			double amount) throws RemoteException {
 		try{
-			System.out.println("asdf");
 		Request<GiftCardData> request = new Request<GiftCardData>();
 		GiftCardData giftCardData = new GiftCardData();
 		giftCardData.setFromGivexNum(fromGivexNum);
