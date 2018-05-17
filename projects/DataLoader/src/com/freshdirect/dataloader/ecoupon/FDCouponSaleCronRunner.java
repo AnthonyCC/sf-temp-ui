@@ -20,6 +20,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.analytics.CouponActivityLogListener;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ecoupon.FDCouponManagerHome;
@@ -46,7 +47,7 @@ public class FDCouponSaleCronRunner {
 		Context ctx = null;
 		
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.ecoupon.FDCouponManagerSB")) {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCouponManagerSB)) {
 				IECommerceService fdECommerceService = FDECommerceService.getInstance();
 				// Cancel Pending coupon transactions
 				fdECommerceService.postCancelPendingCouponTransactions();

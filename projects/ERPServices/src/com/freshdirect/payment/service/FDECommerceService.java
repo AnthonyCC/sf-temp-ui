@@ -409,14 +409,8 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String ECOUPON_WALLET = "ecoupon/couponwallet";
 	private static final String ECOUPON_CLIP_COUPON = "ecoupon/clipcoupon/";
 	private static final String ECOUPON_EVALUATE = "ecoupon/evaluate";
-	private static final String ECOUPON_SEARCH_COUPONS = "ecoupon/searchcoupons/";
-	private static final String ECOUPON_SUBMIT_PENDING = "ecoupon/post/submitpendingcoupontrans";
 	private static final String ECOUPON_CANCEL_PENDING = "ecoupon/post/cancelpendingcoupontrans";
-	private static final String ECOUPON_CONFIRM_PENDING = "ecoupon/post/confirmpendingcoupontrans";
 	private static final String ECOUPON_COUPON_ORDER = "ecoupon/post/couponorder";
-	private static final String ECOUPON_MAX_VERSION = "ecoupon/maxcouponversion";
-	private static final String ECOUPON_COUPON_HISTORY = "ecoupon/couponhistory/";
-	private static final String ECOUPON_GET_CONFIRM_PENDING = "ecoupon/get/confirmpendingcoupontran/";
 	private static final String ECOUPON_COUPON_TRANS = "ecoupon/coupontransaction";
 	private static final String ECOUPON_CONF_PENDING = "ecoupon/confirmpendingcoupontrans/";
 	private static final String ECOUPON_CONFM_PENDING = "ecoupon/confirmpendingcouponsales";
@@ -3768,7 +3762,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 
 	@Override
 	public Map<String, FDCouponEligibleInfo> evaluateCartAndCoupons(CouponCart couponCart, FDCouponActivityContext context) throws RemoteException {
-		Response<Object> response = null;
+		Response<Map<String, FDCouponEligibleInfo>> response = null;
 		try {
 			Request<ObjectNode> request = new Request<ObjectNode>();
 			ObjectNode rootNode = getMapper().createObjectNode();
@@ -3788,63 +3782,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
-		return null;
-	}
-
-	@Override
-	public List<FDCouponInfo> loadCoupons(FDCouponActivityContext couponActivityContext) throws RemoteException {
-		/*List<FDCouponInfo> fdCouponInfos = null;
-		try {
-			Request<FDCouponActivityContextData> request = new Request<FDCouponActivityContextData>();
-			request.setData(getMapper().convertValue(couponActivityContext, FDCouponActivityContextData.class));
-			String inputJson = buildRequest(request);
-
-			Response<List<FDCouponInfoData>> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(LINK_7), new TypeReference<Response<List<FDCouponInfoData>>>() {});
-			fdCouponInfos = new ArrayList<FDCouponInfo>();
-			for (FDCouponInfoData fdCouponInfoData : response.getData()) {
-				fdCouponInfos.add(getMapper().convertValue(fdCouponInfoData, FDCouponInfo.class));
-			}
-			if (!response.getResponseCode().equals("OK")) {
-				throw new FDResourceException(response.getMessage());
-			}
-		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		} catch (FDResourceException e) {
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}
-		return fdCouponInfos;*/
-		return null;
-	}
-
-	@Override
-	public List<FDCouponInfo> getCouponsForCRMSearch(String searchTerm) throws RemoteException {
-		Response<List<FDCouponInfo>> response = null;
-		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ECOUPON_SEARCH_COUPONS + searchTerm), new TypeReference<Response<List<FDCouponInfo>>>() {});
-			if(!response.getResponseCode().equals("OK")) {
-				throw new FDResourceException(response.getMessage());
-			}
-		} catch (FDResourceException e) {
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}
 		return response.getData();
-	}
-
-	@Override
-	public void postSubmitPendingCouponTransactions() throws RemoteException {
-		Response<Object> response = null;
-		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ECOUPON_SUBMIT_PENDING), new TypeReference<Response<Object>>() {});
-			if(!response.getResponseCode().equals("OK")) {
-				throw new FDResourceException(response.getMessage());
-			}
-		} catch (FDResourceException e) {
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}
 	}
 
 	@Override
@@ -3862,28 +3800,17 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	}
 
 	@Override
-	public void postConfirmPendingCouponTransactions() throws RemoteException {
-		Response<Object> response = null;
-		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ECOUPON_CONFIRM_PENDING), new TypeReference<Response<Object>>() {});
-			if(!response.getResponseCode().equals("OK")) {
-				throw new FDResourceException(response.getMessage());
-			}
-		} catch (FDResourceException e) {
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}
-	}
-
-	@Override
 	public void postCouponOrder(ErpCouponTransactionModel couponTransModel, FDCouponActivityContext context) throws RemoteException {
-		Response<Object> response = null;
+		Response<Void> response = null;
 		try {
-			Request<CouponOrderData> request = new Request<CouponOrderData>();
-			request.setData(ModelConverter.convertCouponOrderData(couponTransModel, context));
+			Request<ObjectNode> request = new Request<ObjectNode>();
+			ObjectNode rootNode = getMapper().createObjectNode();
+			rootNode.put("couponTransModel", getMapper().convertValue(couponTransModel, JsonNode.class));
+			rootNode.put("context", getMapper().convertValue(context, JsonNode.class));
+			request.setData(rootNode);
 			String inputJson = buildRequest(request);
 
-			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(ECOUPON_COUPON_ORDER), new TypeReference<Response<Object>>() {});
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(ECOUPON_COUPON_ORDER), new TypeReference<Response<Void>>() {});
 			if (!response.getResponseCode().equals("OK")) {
 				throw new FDResourceException(response.getMessage());
 			}
@@ -3894,51 +3821,6 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
-	}
-
-	@Override
-	public int getMaxCouponsVersion() throws RemoteException {
-		Response<Integer> response = null;
-		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ECOUPON_MAX_VERSION), new TypeReference<Response<Integer>>() {});
-			if(!response.getResponseCode().equals("OK")) {
-				throw new FDResourceException(response.getMessage());
-			}
-		} catch (FDResourceException e) {
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}
-		return response.getData();
-	}
-
-	@Override
-	public List<FDCustomerCouponHistoryInfo> getCustomersCouponHistoryInfo(String customerId) throws RemoteException {
-		Response<List<FDCustomerCouponHistoryInfo>> response = null;
-		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ECOUPON_COUPON_HISTORY + customerId), new TypeReference<Response<List<FDCustomerCouponHistoryInfo>>>() {});
-			if(!response.getResponseCode().equals("OK")) {
-				throw new FDResourceException(response.getMessage());
-			}
-		} catch (FDResourceException e) {
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}
-		return response.getData();
-	}
-
-	@Override
-	public ErpCouponTransactionModel getConfirmPendingCouponTransaction(String saleId) throws RemoteException {
-		Response<ErpCouponTransactionModel> response = null;
-		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ECOUPON_GET_CONFIRM_PENDING + saleId), new TypeReference<Response<ErpCouponTransactionModel>>() {});
-			if(!response.getResponseCode().equals("OK")) {
-				throw new FDResourceException(response.getMessage());
-			}
-		} catch (FDResourceException e) {
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}
-		return response.getData();
 	}
 
 	@Override

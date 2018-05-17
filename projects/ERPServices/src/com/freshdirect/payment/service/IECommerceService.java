@@ -488,23 +488,9 @@ public interface IECommerceService {
 	
 	public Map<String, FDCouponEligibleInfo> evaluateCartAndCoupons(CouponCart couponCart, FDCouponActivityContext context) throws RemoteException;
 
-	public List<FDCouponInfo> loadCoupons(FDCouponActivityContext couponActivityContext) throws RemoteException;
-	
-	public List<FDCouponInfo> getCouponsForCRMSearch(String searchTerm) throws RemoteException;
-	
-	public void postSubmitPendingCouponTransactions() throws RemoteException;
-	
 	public void postCancelPendingCouponTransactions() throws RemoteException;
-	
-	public void postConfirmPendingCouponTransactions() throws RemoteException;
-	
+		
 	public void postCouponOrder(ErpCouponTransactionModel couponTransModel, FDCouponActivityContext context) throws RemoteException;
-	
-	public int getMaxCouponsVersion() throws RemoteException;
-	
-	public List<FDCustomerCouponHistoryInfo> getCustomersCouponHistoryInfo(String customerId) throws RemoteException;
-	
-	public ErpCouponTransactionModel getConfirmPendingCouponTransaction(String saleId) throws RemoteException;
 	
 	public void updateCouponTransaction(ErpCouponTransactionModel transModel) throws RemoteException;
 	
