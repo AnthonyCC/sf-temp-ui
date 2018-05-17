@@ -13,8 +13,6 @@ import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.fdstore.content.FilteringFlow;
 import com.freshdirect.fdstore.content.GenericFilterDecorator;
 import com.freshdirect.fdstore.content.GenericFilteringMenuBuilder;
-import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.util.FilteringNavigator;
 import com.freshdirect.storeapi.content.ContentFactory;
@@ -33,17 +31,15 @@ import com.freshdirect.webapp.ajax.reorder.service.QuickShopSortingService;
 public class QuickShopFilterImpl extends FilteringFlow<QuickShopLineItemWrapper> {
 
 	private FilteringNavigator nav;
-	private FDUserI user;
 	private List<FilteringSortingItem<QuickShopLineItemWrapper>> unfilteredItems;
 	private Set<FilteringValue> filters;
 	private List<String> activeReplacements;
 	private EnumQuickShopTab tabType;
 	private QuickShopListRequestObject requestData;
 
-	public QuickShopFilterImpl(FilteringNavigator nav, FDUserI user, Set<FilteringValue> filters, List<FilteringSortingItem<QuickShopLineItemWrapper>> items, List<String> activeReplacements,
+    public QuickShopFilterImpl(FilteringNavigator nav, Set<FilteringValue> filters, List<FilteringSortingItem<QuickShopLineItemWrapper>> items, List<String> activeReplacements,
 			EnumQuickShopTab tabType, QuickShopListRequestObject requestData) {
 		this.nav = nav;
-		this.user = user;
 		this.filters = filters;
 		this.unfilteredItems = new ArrayList<FilteringSortingItem<QuickShopLineItemWrapper>>(items);
 		this.activeReplacements = activeReplacements;
@@ -61,15 +57,6 @@ public class QuickShopFilterImpl extends FilteringFlow<QuickShopLineItemWrapper>
 
 	public EnumQuickShopTab getTabType() {
 		return tabType;
-	}
-
-	public String getUserId() {
-		if (user != null) {
-			FDIdentity identity = user.getIdentity();
-			if (identity != null)
-				return identity.getErpCustomerPK();
-		}
-		return null;
 	}
 
 	public void setFilters(Set<FilteringValue> filters) {
@@ -90,7 +77,7 @@ public class QuickShopFilterImpl extends FilteringFlow<QuickShopLineItemWrapper>
 
 	@Override
 	protected Comparator<FilteringSortingItem<QuickShopLineItemWrapper>> createComparator(List<FilteringSortingItem<QuickShopLineItemWrapper>> items) {
-        return QuickShopComparatorUtil.createQuickShopItemComparator(items, user.getUserContext().getPricingContext(), nav);
+        return QuickShopComparatorUtil.createQuickShopItemComparator(items, nav);
 	}
 
 	@Override

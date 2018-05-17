@@ -1623,7 +1623,7 @@ public class CmsFilteringFlow {
 
 					for(ProductModel product : interestingProducts) {
 						if(!uniqueProducts.contains(product.getContentKey())) {
-							product = ProductPricingFactory.getInstance().getPricingAdapter( product, user.getUserContext().getPricingContext());
+                            product = ProductPricingFactory.getInstance().getPricingAdapter(product);
 							productData = new ProductData(product);
 							try {
 								ProductDetailPopulator.populateBrowseProductData(productData, user, nav, false);

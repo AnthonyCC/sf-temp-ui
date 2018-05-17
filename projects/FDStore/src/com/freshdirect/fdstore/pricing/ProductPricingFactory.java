@@ -3,49 +3,39 @@ package com.freshdirect.fdstore.pricing;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Category;
-
-import com.freshdirect.common.pricing.PricingContext;
-import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.storeapi.content.ProductModel;
 
-/**
- * @version $Revision:18$
- * @author $Author:Robert Gayle$
- */
 public class ProductPricingFactory {
 
-	final static Category LOGGER = LoggerFactory.getInstance(ProductPricingFactory.class);
+    private static final ProductPricingFactory INSTANCE = new ProductPricingFactory();
 
-	private static ProductPricingFactory instance = new ProductPricingFactory();
-
-	protected ProductPricingFactory() {
+    private ProductPricingFactory() {
 	}
 	
 	public static ProductPricingFactory getInstance() {
-		return instance;
+		return INSTANCE;
 	}
 
-	public ProductModelPricingAdapter getPricingAdapter(ProductModel pm, PricingContext pCtx){
-		if (pm == null) {
+    public ProductModelPricingAdapter getPricingAdapter(ProductModel product) {
+		if (product == null) {
 			return null;
 			
-		} else if(pm instanceof ProductModelPricingAdapter) {
-			return (ProductModelPricingAdapter)pm;
+		} else if(product instanceof ProductModelPricingAdapter) {
+			return (ProductModelPricingAdapter)product;
 		} else {
-			return new ProductModelPricingAdapter(pm);
+			return new ProductModelPricingAdapter(product);
 		}
 	}
 
-	public List<ProductModel> getPricingAdapter(List<ProductModel> list, PricingContext pCtx) {
-		if (list == null) {
+    public List<ProductModel> getPricingAdapter(List<ProductModel> products) {
+		if (products == null) {
 			return null;
 		}
-		List<ProductModel> res = new ArrayList<ProductModel>(list.size());
-		for (ProductModel p : list) {
-			res.add(getPricingAdapter(p,pCtx));
+		List<ProductModel> pricingAdapters = new ArrayList<ProductModel>(products.size());
+		for (ProductModel product : products) {
+            pricingAdapters.add(getPricingAdapter(product));
 		}
-		return res;
+		return pricingAdapters;
 	}
 
 

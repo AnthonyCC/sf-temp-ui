@@ -3,7 +3,6 @@ package com.freshdirect.webapp.ajax.quickshop;
 import java.util.Comparator;
 import java.util.List;
 
-import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.fdstore.util.FilteringNavigator;
 import com.freshdirect.storeapi.content.ComparatorChain;
@@ -15,7 +14,8 @@ import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
 
 public class QuickShopComparatorUtil {
 	
-	public static Comparator<FilteringSortingItem<QuickShopLineItemWrapper>> createQuickShopItemComparator(List<FilteringSortingItem<QuickShopLineItemWrapper>> items, PricingContext pricingContext, FilteringNavigator nav) {
+    public static Comparator<FilteringSortingItem<QuickShopLineItemWrapper>> createQuickShopItemComparator(List<FilteringSortingItem<QuickShopLineItemWrapper>> items,
+            FilteringNavigator nav) {
 		
 		QuickShopSortType sortBy = (QuickShopSortType) nav.getSortBy();
 		if(sortBy==null){
@@ -26,7 +26,7 @@ public class QuickShopComparatorUtil {
 		ComparatorChain<FilteringSortingItem<QuickShopLineItemWrapper>> comparator;
 		switch (sortBy) {
 			case BY_SALE:
-				collectSaleInfo(items, pricingContext);
+                collectSaleInfo(items);
 				comparator = ComparatorChain.create(new SortValueComparator<QuickShopLineItemWrapper>(EnumSortingValue.DEAL));
 				if (!ascending)
 					comparator = ComparatorChain.reverseOrder(comparator);
@@ -65,24 +65,12 @@ public class QuickShopComparatorUtil {
 		return comparator;
 	}
 	
-	public static void collectSaleInfo(List<FilteringSortingItem<QuickShopLineItemWrapper>> items, PricingContext context) {
-		
+    public static void collectSaleInfo(List<FilteringSortingItem<QuickShopLineItemWrapper>> items) {
 		for (FilteringSortingItem<QuickShopLineItemWrapper> item : items) {
-			
 			if(item.getNode().getItem().isAvailable()){
-				
-				ProductModel p;
 				String actualSku = item.getNode().getItem().getSkuCode();
-				
-				if (context != null){
-					p = ProductPricingFactory.getInstance().getPricingAdapter(item.getModel().getProduct(), context);				
-				}
-				else{
-					p = item.getModel().getProduct();				
-				}
-				
+                ProductModel p = ProductPricingFactory.getInstance().getPricingAdapter(item.getModel().getProduct());
 				item.putSortingValue(EnumSortingValue.DEAL, p.getPriceCalculator(actualSku).getHighestDealPercentage());
-				
 			}else{ //put to the end of the list if unavailable
 				item.putSortingValue(EnumSortingValue.DEAL, -1);
 			}

@@ -64,7 +64,7 @@ public class QuickShopFilterImpl extends FilteringFlow<QuickShopLineItemWrapper>
 
 	@Override
 	protected Comparator<FilteringSortingItem<QuickShopLineItemWrapper>> createComparator(List<FilteringSortingItem<QuickShopLineItemWrapper>> items) {
-		return QuickShopComparatorUtil.createQuickShopItemComparator(items, user.getPricingContext(), nav);
+        return QuickShopComparatorUtil.createQuickShopItemComparator(items, nav);
 	}
 
 	@Override

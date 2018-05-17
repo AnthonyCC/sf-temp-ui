@@ -6,15 +6,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.apache.log4j.Logger;
-
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.fdstore.pricing.SkuModelPricingAdapter;
-import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.storeapi.content.CategoryModel;
 import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.storeapi.content.ContentNodeModel;
@@ -29,9 +26,6 @@ public class ItemGrabber {
 
 	private static final long	serialVersionUID	= -8310578679108946007L;
 
-	@SuppressWarnings( "unused" )
-	private static Logger LOGGER = LoggerFactory.getInstance( ItemGrabber.class );
-	
 	private boolean ignoreShowChildren = false;
 	private ContentNodeModel rootNode = null;
 	private boolean returnHiddenFolders = false;
@@ -168,7 +162,7 @@ public class ItemGrabber {
 				} else {
 					//Convert to ProductModelPricingAdapter for Zone Pricing
 					if(!isDDPPCat || !product.getDefaultSku().isUnavailable()){
-						this.workSet.add(ProductPricingFactory.getInstance().getPricingAdapter(product ,pricingCtx) );
+                        this.workSet.add(ProductPricingFactory.getInstance().getPricingAdapter(product));
 					}
 				}
 				rtnValue=true;
@@ -237,7 +231,7 @@ public class ItemGrabber {
 
             if ((this.filterDiscontinued || this.filterUnavailable) && this.skuList.size() > 0) {
 		// make sure FDProductInfos are cached
-		FDCachedFactory.getProductInfos( (String[])this.skuList.toArray( new String[0] ) );
+		FDCachedFactory.getProductInfos( this.skuList.toArray( new String[0] ) );
 
                 // remove discontinued products from workSet
                 for (ListIterator<ContentNodeModel> i = this.workSet.listIterator(); i.hasNext();) {

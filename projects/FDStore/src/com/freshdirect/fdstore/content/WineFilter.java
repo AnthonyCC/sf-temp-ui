@@ -175,13 +175,13 @@ public class WineFilter implements Serializable, Cloneable {
 			if (available != null) {
 				if (available) {
 					ProductModel p = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(key);
-					p = ProductPricingFactory.getInstance().getPricingAdapter(p, pricingContext);
+                    p = ProductPricingFactory.getInstance().getPricingAdapter(p);
 					if (p != null)
 						products.add(p);
 				}
 			} else {
 				ProductModel p = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(key);
-				p = ProductPricingFactory.getInstance().getPricingAdapter(p, pricingContext);
+                p = ProductPricingFactory.getInstance().getPricingAdapter(p);
 				if (p != null) {
 					available = p.isFullyAvailable();
 					availabilityCache.get().put(key, available);

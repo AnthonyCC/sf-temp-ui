@@ -852,7 +852,7 @@ public class ProductExtraDataPopulator {
         SkuModel skuModel = null;
         ProductModel productModelToWorkWith = productModel;
         if (!(productModel instanceof ProductModelPricingAdapter)) {
-            productModelToWorkWith = ProductPricingFactory.getInstance().getPricingAdapter(productModel, user.getUserContext().getPricingContext());
+            productModelToWorkWith = ProductPricingFactory.getInstance().getPricingAdapter(productModel);
         }
 
         if (skuModel == null) {

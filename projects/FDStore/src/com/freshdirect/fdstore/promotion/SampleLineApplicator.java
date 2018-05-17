@@ -5,7 +5,6 @@ import org.apache.log4j.Category;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
-import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
@@ -54,7 +53,8 @@ public class SampleLineApplicator implements PromotionApplicatorI {
 		return this.sampleProduct.lookupProductModel();
 	}
 	
-	public boolean apply(String promotionCode, PromotionContextI context) {
+	@Override
+    public boolean apply(String promotionCode, PromotionContextI context) {
 		//If delivery zone strategy is applicable please evaluate before applying the promotion.
 		int e = zoneStrategy != null ? zoneStrategy.evaluate(promotionCode, context) : PromotionStrategyI.ALLOW;
 		if(e == PromotionStrategyI.DENY) return false;
@@ -82,7 +82,7 @@ public class SampleLineApplicator implements PromotionApplicatorI {
 	private FDCartLineI createSampleLine(String promotionCode, UserContext userCtx) throws FDResourceException {
 		ProductModel product = null;	
 		try{
-			product = ProductPricingFactory.getInstance().getPricingAdapter(this.sampleProduct.lookupProductModel(),userCtx.getPricingContext());	
+            product = ProductPricingFactory.getInstance().getPricingAdapter(this.sampleProduct.lookupProductModel());
 
 		}catch(Exception ex){
 			// This is to handle when a invalid category id or product id is set to the sampe promo. 
@@ -131,15 +131,18 @@ public class SampleLineApplicator implements PromotionApplicatorI {
 		return this.minSubtotal;
 	}
 
-	public void setDlvZoneStrategy(DlvZoneStrategy zoneStrategy) {
+	@Override
+    public void setDlvZoneStrategy(DlvZoneStrategy zoneStrategy) {
 		this.zoneStrategy = zoneStrategy;
 	}
 
-	public DlvZoneStrategy getDlvZoneStrategy() {
+	@Override
+    public DlvZoneStrategy getDlvZoneStrategy() {
 		return this.zoneStrategy;
 	}
 	
-	public String toString() {
+	@Override
+    public String toString() {
 		return "SampleLineApplicator[" + this.sampleProduct + " min $" + this.minSubtotal + "]";
 	}
 
