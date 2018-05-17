@@ -3101,3 +3101,13 @@ form.dispblock-fields td { /* force the tds to block so the label and field are 
                 float: right;
                 width: 100%;
         }
+        
+/*accessibility fix for header and footer focus states for links and buttons*/
+
+        .navbar-header *:focus,.storemedia *:focus,.socialmedia *:focus{
+             outline: #fefefe 2px solid;
+        }
+
+        .anchors *:focus,.navbar-header input:focus {
+              outline: none;
+        }
