@@ -330,5 +330,55 @@ public abstract class AbstractEcommService {
 	public String getFdCommerceEndPoint(String path) {
 		return FDStoreProperties.getFdCommerceApiUrl() + FDCOMMERCE_API_CONTEXT + path;
 	}
+	
+	public <T> T postData(String inputJson, String url, Class<T> clazz,
+			Object[] params) throws FDResourceException {
+
+		try {
+
+			long starttime = System.currentTimeMillis();
+
+			HttpEntity<String> entity = getEntity(inputJson);
+
+			RestTemplate restTemplate = getRestTemplate();
+
+			ResponseEntity<T> response = restTemplate.postForEntity(url,
+					entity, clazz, params);
+
+			long endTime = System.currentTimeMillis() - starttime;
+
+			if (FDStoreProperties
+					.isSF2_0_AndServiceEnabled(FDEcommProperties.FDSFGatewayStatsLogging)) {
+
+				StackTraceElement[] stackTraceElements = Thread.currentThread()
+						.getStackTrace();
+
+				StackTraceElement stackElem = stackTraceElements[stackTraceElements.length
+
+						- (stackTraceElements.length - 2)];
+
+				LOGGER.info(String.format(
+						"classname: %s, method: %s elapsed time: %s ms",
+						stackElem.getClassName(),
+
+						stackElem.getMethodName(), endTime));
+
+			}
+
+			return response.getBody();
+
+		} catch (RestClientException e) {
+
+			LOGGER.info(e.getMessage());
+
+			LOGGER.info("api url:" + url);
+
+			LOGGER.info("input json:" + inputJson);
+
+			throw new FDResourceException("EComm API connection failure");
+
+		}
+
+	}
 
 }

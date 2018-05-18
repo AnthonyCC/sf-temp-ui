@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.rmi.RemoteException;
-import java.sql.Connection;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -40,19 +39,13 @@ import com.freshdirect.common.pricing.EnumTaxationType;
 import com.freshdirect.common.pricing.MunicipalityInfo;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.customer.EnumExternalLoginSource;
-import com.freshdirect.customer.EnumPaymentResponse;
-import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpActivityRecord;
-import com.freshdirect.customer.ErpAddressVerificationException;
-import com.freshdirect.customer.ErpAuthorizationException;
-import com.freshdirect.customer.ErpAuthorizationModel;
 import com.freshdirect.customer.ErpCustEWalletModel;
 import com.freshdirect.customer.ErpEWalletModel;
 import com.freshdirect.customer.ErpGrpPriceModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.customer.ErpRestrictedAvailabilityModel;
-import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.ecomm.gateway.AbstractEcommService;
 import com.freshdirect.ecomm.gateway.CustomResponseDeserializer;
@@ -118,6 +111,7 @@ import com.freshdirect.ecommerce.data.mail.EmailData;
 import com.freshdirect.ecommerce.data.payment.BINData;
 import com.freshdirect.ecommerce.data.payment.ErpPaymentMethodData;
 import com.freshdirect.ecommerce.data.payment.FDGatewayActivityLogModelData;
+import com.freshdirect.ecommerce.data.payment.RestrictedPaymentMethodCriteriaData;
 import com.freshdirect.ecommerce.data.payment.RestrictedPaymentMethodData;
 import com.freshdirect.ecommerce.data.routing.SubmitOrderRequestData;
 import com.freshdirect.ecommerce.data.rules.RuleData;
@@ -3955,7 +3949,6 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			Request<EmailData> request = new Request<EmailData>();
 			request.setData(ModelConverter.buildEmailData(email));
 			String inputJson = buildRequest(request);
-
 			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(ENQUEUE_EMAIL), new TypeReference<Response<String>>() {
 			});
 			if (!response.getResponseCode().equals("OK")) {
@@ -4079,30 +4072,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		}
 		return model;
 	}
-	@Override
-	public List<RestrictedPaymentMethodModel> findRestrictedPaymentMethods(
-			RestrictedPaymentMethodCriteria criteria) throws RemoteException {
-		Response<List<RestrictedPaymentMethodData>> response = null;
-		Request<RestrictedPaymentMethodCriteria> request = new Request<RestrictedPaymentMethodCriteria>();
-		List<RestrictedPaymentMethodModel> models = new ArrayList<RestrictedPaymentMethodModel>();
-		String inputJson;
-			try {
-				request.setData(criteria);
-				inputJson = buildRequest(request);
-				response = postDataTypeMap(inputJson,getFdCommerceEndPoint(FIND_FRAUD_ENTRY_BY_CRITERIA),new TypeReference<Response<List<RestrictedPaymentMethodData>>>() {});
-				if(!response.getResponseCode().equals("OK"))
-					throw new FDResourceException(response.getMessage());		
-				for (RestrictedPaymentMethodData restrictedPaymentMethodData : response.getData()) {
-					RestrictedPaymentMethodModel model = ModelConverter.buildRestrictedPaymentMethodModel(restrictedPaymentMethodData);
-					models.add(model);
-				}
-			} catch (FDEcommServiceException e) {
-				throw new RemoteException(e.getMessage());
-			}catch (FDResourceException e) {
-				throw new RemoteException(e.getMessage());
-			}
-			return models;
-	}
+	
 	@Override
 	public void storeRestrictedPaymentMethod(
 			RestrictedPaymentMethodModel restrictedPaymentMethod) throws RemoteException {
@@ -4436,6 +4406,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	@Override
 	public void generateSitemap() throws RemoteException {
 		try {
+			LOGGER.info("Sitemap generation calling SF2.0 Servies");
 			Response<String> response = this.httpGetDataTypeMap(getFdCommerceEndPoint(SITEMAP_GENERATE),
 					new TypeReference<Response<Boolean>>() {});
 			if (!response.getResponseCode().equals("OK")) {
@@ -4444,6 +4415,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			if (!response.getData().equals("success")) {
 				throw new FDResourceException(response.getMessage());
 			}
+			LOGGER.info("Sitemap generation calling SF2.0 Servies End ");
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
@@ -4468,4 +4440,60 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		}
 	}
 
+	private RestrictedPaymentMethodCriteriaData getCriteriaData(RestrictedPaymentMethodCriteria criteria ) {
+
+        
+
+        if(criteria==null) {
+
+                        return null;
+
+}
+
+        RestrictedPaymentMethodCriteriaData data=new RestrictedPaymentMethodCriteriaData();
+
+        data.setAbaRouteNumber(criteria.getAbaRouteNumber());
+
+        data.setAccountNumber(criteria.getAccountNumber());
+
+        data.setBankAccountType(criteria.getBankAccountType()!=null?criteria.getBankAccountType().getName():null);
+
+        data.setCreateDate(criteria.getCreateDate());
+
+        data.setCustomerID(criteria.getCustomerID());
+
+        data.setFirstName(criteria.getFirstName());
+
+        data.setLastName(criteria.getLastName());
+
+        data.setReason(criteria.getReason()!=null?criteria.getReason().getName():null);
+
+        data.setStatus(criteria.getStatus()!=null?criteria.getStatus().getName():null);
+
+        return data;
+	}
+	public List<RestrictedPaymentMethodModel> findRestrictedPaymentMethods(
+            RestrictedPaymentMethodCriteria criteria) throws RemoteException {
+        Response<List<RestrictedPaymentMethodData>> response = null;
+        Request<RestrictedPaymentMethodCriteria> request = new Request<RestrictedPaymentMethodCriteria>();
+        List<RestrictedPaymentMethodModel> models = new ArrayList<RestrictedPaymentMethodModel>();
+        String inputJson;
+            try {
+                request.setData(criteria);
+                inputJson = buildRequest(request);
+                response = postDataTypeMap(inputJson,getFdCommerceEndPoint(FIND_FRAUD_ENTRY_BY_CRITERIA),new TypeReference<Response<List<RestrictedPaymentMethodData>>>() {});
+                if(!response.getResponseCode().equals("OK"))
+                    throw new FDResourceException(response.getMessage());        
+                for (RestrictedPaymentMethodData restrictedPaymentMethodData : response.getData()) {
+                    RestrictedPaymentMethodModel model = ModelConverter.buildRestrictedPaymentMethodModel(restrictedPaymentMethodData);
+                    models.add(model);
+                }
+            } catch (FDEcommServiceException e) {
+                throw new RemoteException(e.getMessage());
+            }catch (FDResourceException e) {
+                throw new RemoteException(e.getMessage());
+            }
+            return models;
+    }
+	
 }
