@@ -492,8 +492,6 @@ public interface IECommerceService {
 		
 	public void postCouponOrder(ErpCouponTransactionModel couponTransModel, FDCouponActivityContext context) throws RemoteException;
 	
-	public void updateCouponTransaction(ErpCouponTransactionModel transModel) throws RemoteException;
-	
 	public void postConfirmPendingCouponTransactions(String saleId) throws RemoteException;
 	
 	public List<String> getConfirmPendingCouponSales() throws RemoteException;

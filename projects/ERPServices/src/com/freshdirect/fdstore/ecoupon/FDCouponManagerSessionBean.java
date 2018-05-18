@@ -495,19 +495,6 @@ public class FDCouponManagerSessionBean extends ERPSessionBeanSupport {
 		}
 	}
 	
-	public void updateCouponTransaction(ErpCouponTransactionModel transModel) throws FDResourceException{
-		Connection conn =null;
-		try {
-			conn = getConnection();
-			FDCouponTransactionDAO.updateCouponTransaction(conn,transModel);
-		} catch (SQLException e) {
-			LOGGER.info("Exception in updateCouponTransaction(): "+e);
-			throw new FDResourceException(e);
-		} finally {
-            close(conn);
-		}
-	}
-	
 	public List<String> getSubmitPendingCouponSales() throws FDResourceException {
 		Connection conn =null;
 		List<String> couponSales= null;

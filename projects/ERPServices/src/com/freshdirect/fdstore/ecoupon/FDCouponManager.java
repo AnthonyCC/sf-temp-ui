@@ -234,25 +234,6 @@ public class FDCouponManager {
 		}
 	}
 	
-	public static void updateCouponTransaction(ErpCouponTransactionModel transModel) throws FDResourceException{
-		
-		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCouponManagerSB)) {
-				FDECommerceService.getInstance().updateCouponTransaction(transModel);
-			} else {
-				lookupManagerHome();
-				FDCouponManagerSB sb = managerHome.create();
-				sb.updateCouponTransaction(transModel);
-			}
-		} catch (RemoteException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		}
-	}
-	
 	public static void postConfirmPendingCouponTransactions(String saleId) throws FDResourceException{
 		
 		try {

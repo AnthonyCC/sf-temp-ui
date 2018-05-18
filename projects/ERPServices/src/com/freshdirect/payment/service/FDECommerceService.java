@@ -405,7 +405,6 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String ECOUPON_EVALUATE = "ecoupon/evaluate";
 	private static final String ECOUPON_CANCEL_PENDING = "ecoupon/post/cancelpendingcoupontrans";
 	private static final String ECOUPON_COUPON_ORDER = "ecoupon/post/couponorder";
-	private static final String ECOUPON_COUPON_TRANS = "ecoupon/coupontransaction";
 	private static final String ECOUPON_CONF_PENDING = "ecoupon/confirmpendingcoupontrans/";
 	private static final String ECOUPON_CONFM_PENDING = "ecoupon/confirmpendingcouponsales";
 	private static final String ECOUPON_SUB_PENDING = "ecoupon/submitpendingcouponsales";
@@ -3805,27 +3804,6 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			String inputJson = buildRequest(request);
 
 			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(ECOUPON_COUPON_ORDER), new TypeReference<Response<Void>>() {});
-			if (!response.getResponseCode().equals("OK")) {
-				throw new FDResourceException(response.getMessage());
-			}
-		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		} catch (FDResourceException e) {
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}
-	}
-
-	@Override
-	public void updateCouponTransaction(ErpCouponTransactionModel transModel) throws RemoteException {
-		Response<Object> response = null;
-		try {
-			Request<ErpCouponTransactionModelData> request = new Request<ErpCouponTransactionModelData>();
-			request.setData(ModelConverter.buildErpCouponTransactionModel(transModel));
-			String inputJson = buildRequest(request);
-
-			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(ECOUPON_COUPON_TRANS), new TypeReference<Response<Object>>() {});
 			if (!response.getResponseCode().equals("OK")) {
 				throw new FDResourceException(response.getMessage());
 			}
