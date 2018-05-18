@@ -790,7 +790,7 @@ public class BrowseUtil {
 
     private static Category buildCategoryData(FDUserI user, CategoryModel model, boolean isExtraResponse) {
         Category category = null;
-        if (model != null && (!NavigationUtil.isCategoryHiddenInContext(user, model) || !(user.getUserContext().getStoreContext().getEStoreId() == EnumEStoreId.FDX))) {
+        if (model != null && (!NavigationUtil.isCategoryHiddenInContext(user, model) || !isStoreFDX(user))) {
         category = Category.wrap(model);
             if (model.getSubcategories() != null && !model.getSubcategories().isEmpty()) {
                 for (CategoryModel subcat : model.getSubcategories()) {
@@ -802,6 +802,14 @@ public class BrowseUtil {
             }
         }
         return category;
+    }
+    
+    private static boolean isStoreFDX(FDUserI user){
+        if(null!=user && null!=user.getUserContext() && null!=user.getUserContext().getStoreContext() && user.getUserContext().getStoreContext().getEStoreId() == EnumEStoreId.FDX){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     private static List<CategoryModel> getNormalSectionCategories(List<CategoryModel> allCategories, List<CategorySectionModel> categorySections) {
