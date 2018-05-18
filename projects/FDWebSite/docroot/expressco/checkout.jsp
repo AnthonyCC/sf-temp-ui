@@ -6,6 +6,8 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName" %>
 <%@ page import="com.freshdirect.webapp.util.JspMethods" %>
 <%@ page import="com.freshdirect.webapp.util.CaptchaUtil" %>
+<%@ page import="com.freshdirect.fdstore.customer.FDCartModel" %>
+<%@ page import="com.freshdirect.fdstore.customer.FDModifyCartModel" %>
 <%@ page import="java.util.*" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -21,9 +23,11 @@
 <fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" redirectPage="/login/login.jsp?successPage=/expressco/checkout.jsp" />
 <%
 MasqueradeContext masqueradeContext = user.getMasqueradeContext();
+
 Map<String,String> checkoutHeaderMap = new HashMap<String,String>();
 checkoutHeaderMap.put("phoneNumber", user.getCustomerServiceContact());
-checkoutHeaderMap.put("label", "Checkout");
+checkoutHeaderMap.put("label", ((user.getShoppingCart() instanceof FDModifyCartModel) ? "Review<span class=\"NOMOBWEB\"> Changes</span>" : "Checkout"));
+
 boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
 String pageTemplate = "/expressco/includes/ec_template.jsp";
 if (mobWeb) {
@@ -80,6 +84,7 @@ boolean showCaptchaInPayment = CaptchaUtil.isExcessiveAttempt(FDStoreProperties.
 	</div>
   	<% } %>
   	<%-- MASQUERADE HEADER ENDS HERE --%>
+  	<%-- mobWeb header in /common/template/includes/checkoutnav_mobileWeb.jspf --%>
   	<soy:render template="expressco.checkoutheader" data="<%=checkoutHeaderMap %>" injectAdditonalData="false" />
   </tmpl:put>
 

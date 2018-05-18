@@ -1,14 +1,18 @@
-.BRD-popup-container {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	z-index: 20000;
+#MBRDPopup1.fixedpopup {
+	display: block;
+}
+.fixedpopup.BRD-popup-container {
+	/* position: fixed; */
+	/* top: 0; */
+	/* left: 0; */
+	/* width: 100%; */
+	/* height: auto; */
+	/* z-index: 20000; */
+	/* display: block; */
 }
 
 .BRD-popup-container:before {
-	content: '';
+	/* content: ''; */
 	display: block;
 	position: absolute;
 	top: 0;
@@ -23,85 +27,97 @@
 
 .BRD-popup-container .qs-popup {
 	display: block;
-	position: relative;
-	width: 950px;
-	margin: 50px auto;
-	border-radius: 10px;
-	border-color: #75a5d6;
-	overflow: hidden;
+	/* position: relative; */
+	/* width: 950px; */
+	/* margin: 0 auto; */
+	/* overflow: hidden; */
+	/* box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.5); */
+	border: none;
 }
 
 #MBRDPopup1 .qs-popup {
-	top: 50%;
-	width: 600px;
-	height: 120px;
-	margin-top: -60px;
+	/* top: 50%; */
+	/* width: 400px; */
+	/* margin-top: -60px; */
+	/* max-width: 100%; */
+	/* box-sizing: border-box; */
 }
 
-.BRD-popup-container .qs-popup-header {
-	background: #75a5d6;
-	color: #fff;
+.fixedpopup.BRD-popup-container .qs-popup-header {
+	background: #f7f7f7;
+	color: #333;
 	text-shadow: none;
+	font-size: 22px;
+	font-weight: bold;
+	font-style: normal;
+	font-stretch: normal;
+	line-height: normal;
+	letter-spacing: normal;
+	text-align: left;
+	line-height: 27px;
+	padding-bottom: 20px;
 }
 
 
 #MBRDPopup1 .qs-popup-content {
 	text-align: center;
 	padding-top: 30px;
+	background-color: #fff;
 }
 
 .BRD-popup-container button {
-	display: inline-block;
-	background: #e48e25;
-	color: #fff;
-	font-weight: bold;
-	border: 1px solid #dc851a;
-	border-bottom: 1px solid #dc851a;
-	border-radius: 3px;
-	cursor: pointer;
-	text-shadow: 1px 1px #a16b23;
-	margin: 0 4px;
-	padding: 0 4px;
+	/* display: inline-block; */
+	/* background: #e48e25; */
+	/* color: #fff; */
+	/* font-weight: bold; */
+	/* border: 1px solid #dc851a; */
+	/* border-bottom: 1px solid #dc851a; */
+	/* border-radius: 3px; */
+	/* cursor: pointer; */
+	/* text-shadow: 1px 1px #a16b23; */
+	/* margin: 0 4px; */
+	/* padding: 0 4px; */
 }
 
 #MBRDPopup1 .MBRD-neworder,
 #MBRDPopup1 .MBRD-modify {
-	width: 180px;
-	height: 30px;
-	line-height: 25px;
-	font-size: 12px;
+	width: 95%;
+	/* height: 30px; */
+	/* line-height: 25px; */
+	/* font-size: 12px; */
+	margin: 0 0 20px 0;
 }
 
 #MBRDPopup2 .MBRD-cancel,
 #MBRDPopup2 .MBRD-modify {
-	height: 30px;
-	line-height: 25px;
-	font-size: 12px;
+	/* height: 30px; */
+	/* line-height: 25px; */
+	/* font-size: 12px; */
 }
 
 #MBRDPopup1 .MBRD-neworder,
 #MBRDPopup2 .MBRD-cancel {
-	background: #999967;
-	border-color: #7e7e66;
-	text-shadow: 1px 1px #5C5C53;
+	/* background: #999967; */
+	/* border-color: #7e7e66; */
+	/* text-shadow: 1px 1px #5C5C53; */
 }
 
 .BRD-popup-container .MBRD-close {
-	position: absolute;
-	right: 5px;
-	top: 5px;
-	background: url(/media_stat/images/buttons/round_x.png) transparent center center no-repeat;
-	border: none;
-	width: 20px;
-	height: 20px;
-	overflow: hidden;
-	text-indent: 20px;
+	/* position: absolute; */
+	/* right: 5px; */
+	/* top: 5px; */
+	/* background: url(/media_stat/images/buttons/round_x.png) transparent center center no-repeat; */
+	/* border: none; */
+	/* width: 20px; */
+	/* height: 20px; */
+	/* overflow: hidden; */
+	/* text-indent: 20px; */
 }
 
 .BRD-popup-container .MBRD-order {
 	background: #e8e8e8;
 	padding: 10px;
-	margin: -25px -15px 20px -20px;
+	/* margin: -25px -15px 20px -20px; */
 	font-weight: bold;
 	font-size: 14px;
 }
@@ -118,15 +134,22 @@
 
 .BRD-popup-container .itemlist-item {
 	border: none;
+	height: 210px;
+	overflow-y: auto;
+}
+#MBRDPendingdata .itemlist-item {
+	height: auto;
 }
 
 #MBRDCartdata {
-	max-height: 180px;
+	max-height: 210px;
 	overflow-y: auto;
 	overflow-x: hidden;
 	margin: 0 0 20px 0;
 	border: 1px solid lightgray;
 	position: relative;
+	/* padding: 10px 0; */
+	/* padding-right: 20px; */
 }
 
 #MBRDCartdata>div {
@@ -150,7 +173,7 @@
 	display: inline-block;
 	vertical-align: top;
 	margin: 0;
-	padding: 10px;
+	/* padding: 10px; */
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	-ms-box-sizing: border-box;
@@ -165,15 +188,13 @@
 	margin: 0 1em;
 }
 #MBRDCartdata input {
-	display: inline-block;
-	vertical-align: middle;
 	cursor: pointer;
 }
 #MBRDCartdata .itemlist-item-header {
 	margin: 0px;
 	display: inline-block;
-	width: 180px;
-	vertical-align: middle;
+	width: 100%;
+	vertical-align: top;
 }
 #MBRDCartdata .itemlist-item-header-name {
 	font-size: 10px;
@@ -185,7 +206,7 @@
 }
 
 #MBRDPendingdata {
-	max-height: 180px;
+	/* max-height: 210px; */
 	overflow-y: auto;
 	overflow-x: hidden;
 }
@@ -206,8 +227,25 @@
 	display: none;
 }
 
-#MBRDPendingdata .itemlist-item-productimage_wrapper {
-	width: 50px;
+#MBRDPopup2 .itemlist-item-productimage_wrapper {
+	width: 150px;
+	height: 150px;
+	position: relative;
+	max-width: calc(100% - 2em);
+	max-height: 100%;
+}
+#MBRDPopup2 .itemlist-item-productimage {
+	position: absolute;
+}
+#MBRDPopup2 .itemlist-item-productimage_wrapper img {
+	max-width: 100%;
+	max-height: 100%;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: auto;
+	margin: auto;
+	pointer-events: none;
 }
 #MBRDPendingdata .itemlist-item-details {
 	list-style: none;
@@ -215,19 +253,57 @@
 	padding: 0;
 }
 #MBRDPendingdata .itemlist-item-header {
-	margin-top: 10px;
-	margin-left: 60px;
+	/* margin-top: 10px; */
+	/* margin-left: 60px; */
 }
 
 #MBRDPopup2 .MBRD-selectbuttons {
 	margin: 15px 0 10px;
 }
 .MBRD-selectbuttons button {
-	font-weight: normal;
-	padding: 2px 5px;
+	/* font-weight: normal; */
+	/* padding: 2px 5px; */
 }
 .MBRD-buttons {
 	text-align: right;
 }
-
-
+#ModifyBRDContainer .popupcontentoverlay {
+	opacity: 0.8;
+}
+[data-ismobweb="true"] #MBRDPopup1 {
+	margin: 20px;
+	height: 270px;
+	width: calc(100% - 40px);
+}
+#MBRDPopup2.fixedpopup.BRD-popup-container {
+	display: block;
+}
+#MBRDPopup2 ul {
+	list-style: none;
+}
+#MBRDPopup2 #MBRDOrder {
+	float: right;
+}
+[data-ismobweb="true"] #MBRDCartdata .col {
+	padding-left: 0;
+	width: 50%;
+}
+[data-ismobweb="true"] #MBRDCartdata>div:before {
+	width: 50%;
+	left: 50%;
+}
+[data-ismobweb="true"] .BRD-popup-container .itemlist-item,
+[data-ismobweb="true"] #MBRDCartdata {
+	height: 230px;
+	max-height: 230px;
+	overflow-y: scroll;
+}
+[data-ismobweb="true"] #MBRDPendingdata .itemlist-item {
+	height: 149px;
+}
+[data-ismobweb="true"] #MBRDPopup2 .qs-popup-content {
+	height: calc(100% - 110px);
+}
+#MBRDPendingdata .itemlist-item-productimage_wrapper {
+	margin: 0 1em;
+}

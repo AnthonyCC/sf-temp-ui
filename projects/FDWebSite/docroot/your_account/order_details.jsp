@@ -39,6 +39,7 @@ if(orderId==null){
 <%--   <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Order Details</tmpl:put> --%>
 	<tmpl:put name='extraCss' direct='true'>
 		<jwr:style src="/your_account.css" media="all" />
+		<link rel="stylesheet" type="text/css" media="all" href="/assets/css/expressco/cartcontent.css" media="all" />
 	</tmpl:put>
 	<tmpl:put name='printdata' direct='true'>order_details</tmpl:put>
     <tmpl:put name='content' direct='true'>
