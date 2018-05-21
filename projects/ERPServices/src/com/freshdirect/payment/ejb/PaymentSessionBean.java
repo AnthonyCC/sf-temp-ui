@@ -431,6 +431,72 @@ public class PaymentSessionBean extends SessionBeanSupport{
 		return settlement;
 	}
 	
+	public void deliveryConfirm(String saleId) throws ErpTransactionException {
+		UserTransaction utx = null;
+		if(this.erpSaleHome == null){
+			this.lookupErpSaleHome();
+		}
+		try{
+			LOGGER.info("change the Status to CPG - start. saleId="+saleId);
+			utx = this.getSessionContext().getUserTransaction();
+			utx.begin();
+			ErpSaleEB eb = erpSaleHome.findByPrimaryKey(new PrimaryKey(saleId));
+			ErpDeliveryConfirmModel deliveryConfirmModel = new ErpDeliveryConfirmModel();
+			ErpSaleModel sale=(ErpSaleModel)eb.getModel();
+			if(sale.hasCouponDiscounts()){
+				ErpCouponTransactionModel transModel = new ErpCouponTransactionModel();
+				transModel.setTranStatus(EnumCouponTransactionStatus.PENDING);
+				transModel.setTranType(EnumCouponTransactionType.CONFIRM_ORDER);
+				Date date =new Date();
+				transModel.setCreateTime(date);
+				transModel.setTranTime(date);
+				deliveryConfirmModel.setCouponTransModel(transModel);
+			}
+			eb.addDeliveryConfirm(deliveryConfirmModel);
+			utx.commit();
+			LOGGER.info("change the Status to CPG - done. saleId="+saleId);
+			
+		}catch(Exception e){
+			LOGGER.warn(e);
+			try{
+				utx.rollback();
+			}catch(SystemException se){
+				LOGGER.warn("Error rolling back transaction", se);
+			}
+			throw new EJBException(e);
+		}
+	}
+
+	public void unconfirm(String saleId) throws ErpTransactionException {
+		UserTransaction utx = null;
+		if(this.erpSaleHome == null){
+			this.lookupErpSaleHome();
+		}
+		try{
+			LOGGER.info("unconfirm: change the Status from CPG to ENR - start. saleId="+saleId);
+			utx = this.getSessionContext().getUserTransaction();
+			utx.begin();
+			ErpSaleEB eb = erpSaleHome.findByPrimaryKey(new PrimaryKey(saleId));
+			eb.markAsEnroute();
+			utx.commit();
+			LOGGER.info("unconfirm: change the Status from CPG to ENR - done. saleId="+saleId);
+			ErpCouponTransactionModel couponTransModel =FDCouponManager.getConfirmPendingCouponTransaction(saleId);
+			if(null !=couponTransModel){
+				couponTransModel.setTranTime(new Date());
+				couponTransModel.setTranStatus(EnumCouponTransactionStatus.CANCEL);
+				FDCouponManager.updateCouponTransaction(couponTransModel);
+			}
+		}catch(Exception e){
+			LOGGER.warn(e);
+			try{
+				utx.rollback();
+			}catch(SystemException se){
+				LOGGER.warn("Error rolling back transaction", se);
+			}
+			throw new EJBException(e);
+		}
+	}
+
 	public void voidCaptures(String saleId) throws ErpTransactionException {
 		List captures = null;
 		Date captureDate = null;
@@ -795,7 +861,7 @@ public class PaymentSessionBean extends SessionBeanSupport{
 		}
 			
 	}
-
+	
 	private GatewayType getGatewayType(ErpPaymentMethodI pm) {
 		String profileId = pm.getProfileID();
 		if (StringUtil.isEmpty(profileId) && !EnumCardType.PAYPAL.equals(pm.getCardType())) {

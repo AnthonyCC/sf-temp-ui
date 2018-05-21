@@ -68,6 +68,15 @@ public class DlvPaymentManager {
 		}	
 	}
 
+	public synchronized void deliveryConfirm(String orderNumber) throws FDResourceException {
+		try{
+			PaymentManager paymentManager = new PaymentManager();
+			paymentManager.deliveryConfirm(orderNumber);
+		}catch(ErpTransactionException te){
+			throw new FDResourceException(te, "Sale is not in the right state to be confirmed");
+		}
+	} 
+	
 	public synchronized void captureAuthorization(String orderNumber) throws FDResourceException {
 		try{
 			PaymentManager paymentManager = new PaymentManager();
@@ -123,8 +132,17 @@ public class DlvPaymentManager {
 		}catch(RemoteException e){
 			throw new FDResourceException(e, "Cannot talk to SB");
 		}
-	}	
-
+	}
+	
+	public synchronized void unconfirmOrder(String saleId) throws FDResourceException {
+		try{
+			PaymentManager paymentManager = new PaymentManager();
+			paymentManager.unconfirm(saleId);
+		}catch(ErpTransactionException te){
+			throw new FDResourceException(te, te.getMessage());
+		}
+	}
+			
 	private ErpCustomerManagerSB getErpCustomerManagerSB() throws FDResourceException {
 		try {
 			ErpCustomerManagerHome home = (ErpCustomerManagerHome)serviceLocator.getRemoteHome(DlvProperties.getCustomerManagerHome());

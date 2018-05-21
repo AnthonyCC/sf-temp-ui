@@ -234,6 +234,39 @@ public class FDCouponManager {
 		}
 	}
 	
+	public static ErpCouponTransactionModel getConfirmPendingCouponTransaction(String saleId) throws FDResourceException{
+		
+		try {
+			lookupManagerHome();
+			FDCouponManagerSB sb = managerHome.create();
+			return sb.getConfirmPendingCouponTransaction(saleId);
+			
+		} catch (RemoteException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		} catch (CreateException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		}
+	}
+	
+	public static void updateCouponTransaction(ErpCouponTransactionModel transModel) throws FDResourceException{
+		
+		try {
+			
+			lookupManagerHome();
+			FDCouponManagerSB sb = managerHome.create();
+			sb.updateCouponTransaction(transModel);
+			
+		} catch (RemoteException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		} catch (CreateException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		}
+	}
+	
 	public static void postConfirmPendingCouponTransactions(String saleId) throws FDResourceException{
 		
 		try {

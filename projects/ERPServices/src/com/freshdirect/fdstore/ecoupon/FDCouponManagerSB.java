@@ -47,6 +47,10 @@ public interface FDCouponManagerSB extends EJBObject{
 	@Deprecated
 	public void postCouponOrder(ErpCouponTransactionModel couponTransModel, FDCouponActivityContext context) throws FDResourceException,RemoteException;
 	@Deprecated
+	public ErpCouponTransactionModel getConfirmPendingCouponTransaction(String saleId) throws FDResourceException,RemoteException;
+	@Deprecated
+	public void updateCouponTransaction(ErpCouponTransactionModel transModel) throws FDResourceException,RemoteException;
+	@Deprecated
 	public void postConfirmPendingCouponTransactions(String saleId) throws FDResourceException,RemoteException;
 	@Deprecated
 	public List<String> getConfirmPendingCouponSales() throws FDResourceException, RemoteException;

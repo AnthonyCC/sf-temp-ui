@@ -495,6 +495,33 @@ public class FDCouponManagerSessionBean extends ERPSessionBeanSupport {
 		}
 	}
 	
+	public ErpCouponTransactionModel getConfirmPendingCouponTransaction(String saleId) throws FDResourceException{
+		Connection conn =null;
+		try {
+			conn = getConnection();
+			return FDCouponTransactionDAO.getConfirmPendingCouponTransaction(conn,saleId);
+		} catch (SQLException e) {
+			LOGGER.info("Exception in getCustomersCouponHistoryInfo(): "+e);
+			throw new FDResourceException(e);
+		} finally {
+            close(conn);
+		}
+	}
+	
+	
+	public void updateCouponTransaction(ErpCouponTransactionModel transModel) throws FDResourceException{
+		Connection conn =null;
+		try {
+			conn = getConnection();
+			FDCouponTransactionDAO.updateCouponTransaction(conn,transModel);
+		} catch (SQLException e) {
+			LOGGER.info("Exception in updateCouponTransaction(): "+e);
+			throw new FDResourceException(e);
+		} finally {
+            close(conn);
+		}
+	}
+	
 	public List<String> getSubmitPendingCouponSales() throws FDResourceException {
 		Connection conn =null;
 		List<String> couponSales= null;

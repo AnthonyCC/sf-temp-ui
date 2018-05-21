@@ -116,6 +116,36 @@ public class PaymentManager {
 		}
 	}
 
+	public void deliveryConfirm(String saleId) throws ErpTransactionException {
+		
+		try {
+
+			if (paymentHome == null) {
+				getPaymentHome();
+			}
+			PaymentSB paymentSB = paymentHome.create();
+			paymentSB.deliveryConfirm(saleId);
+			
+		} catch (Exception e) {
+			throw new ErpTransactionException(e.getMessage());
+		}
+	}
+	
+	public void unconfirm(String saleId) throws ErpTransactionException {
+		
+		try {
+			
+			if (paymentHome == null) {
+				getPaymentHome();
+			}
+			PaymentSB paymentSB = paymentHome.create();
+			paymentSB.unconfirm(saleId);
+			
+		} catch (Exception e) {
+			throw new ErpTransactionException(e.getMessage());
+		}
+	}
+
 	public void voidCaptures(String saleId) throws ErpTransactionException {
 		
 		try {
