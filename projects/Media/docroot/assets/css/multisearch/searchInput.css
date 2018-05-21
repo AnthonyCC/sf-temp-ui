@@ -24,6 +24,7 @@
   position: relative;
   height: 23px;
   overflow: hidden;
+  margin-bottom: 5px;
 }
 
 [data-ismobweb="true"] .multisearch-input .inputholder {
@@ -44,21 +45,21 @@
   bottom: 0;
   right: 3px;
   margin: auto;
-  height: 17px;
-  width: 17px;
+  height: 16px;
+  width: 31px;
   line-height: 17px;
   border: 0;
   border-radius: 3px;
   background: #4fa157;
   color: #fff;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: bold;
   text-indent: -999px;
   overflow: hidden;
 }
 
 .multisearch-input .inputholder > button::after {
-  content: '➕';
+  content: 'Add';
   display: block;
   text-indent: 0;
   position: absolute;
@@ -72,7 +73,7 @@
 
 .multisearch-input > ul.termlist,
 .multisearch-input > ul.suggestions {
-  margin: 10px 0 0;
+  margin: 20px 0 10px 0;
   padding: 10px 6px;
   background: #fffffa;
   border: 1px solid #dce6be;
@@ -177,4 +178,7 @@
 
 .multisearch-input > ul.termlist > li[data-enabled] > button::after {
   color: white;
+}
+.multisearch-input .searchinput-note {
+	padding-left: 3px;
 }
