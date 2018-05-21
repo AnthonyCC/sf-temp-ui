@@ -219,6 +219,14 @@
 		<div class="search-input NOMOBWEB">
 			<soy:render template="srch.searchParams"
 				data="${browsePotato.searchParams}" />
+			<script>
+				$jq(document).on('ready', function() {
+					if ((document.referrer).indexOf('expresssearch.jsp') !== -1) {
+						$jq('<button class="right cssbutton green transparent icon-arrow-left2-before">Back to Express Search</button>').insertBefore('.srch .search-input');
+						$jq('.srch .tabs .itemcount').css({'max-width': '500px'});
+					}
+				});
+			</script>
 		</div>
 	</tmpl:put>
 
