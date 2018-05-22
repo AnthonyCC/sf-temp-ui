@@ -10,7 +10,7 @@
 	<xsl:template match="fdemail">
 		<html lang="en-US" xml:lang="en-US">
 			<head>
-				<title>Thank You for Purchasing a DeliveryPass <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime" /></xsl:call-template></title>
+				<title>Thank You for Purchasing a DeliveryPass® <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime" /></xsl:call-template></title>
 				<link rel="stylesheet" href="https://www.freshdirect.com/assets/css/emails.css"/>
 			</head>
 			<body bgcolor="#FFFFFF">
@@ -42,7 +42,7 @@
 										
 										<p style="margin: 10px 0 0 0;">Order as often as you like and never be charged a delivery fee*, enjoy loads of great giveaways, deals, and exclusive benefits.</p>
 										
-										<p style="margin: 10px 0 0 0;">To manage your DeliveryPass membership, visit our <a href="https://www.freshdirect.com/your_account/delivery_pass.jsp"> DeliveryPass® account settings</a> page.</p>
+										<p style="margin: 10px 0 0 0;">To manage your DeliveryPass® membership, visit our <a href="https://www.freshdirect.com/your_account/delivery_pass.jsp"> DeliveryPass® account settings</a> page.</p>
 										
 										<p style="margin: 10px 0 0 0;">For more information, please visit our  <a href="https://www.freshdirect.com/media/editorial/picks/deliverypass/dp_terms_only.html"> terms and conditions</a>.</p>
 										<br/>
@@ -50,7 +50,7 @@
 										<p><b>Happy shopping and saving!</b><br/>
 											
 											
-											Your FreshDirect DeliveryPass Team</p>
+											Your FreshDirect DeliveryPass® Team</p>
 										
 										<p style="margin: 10px 0 0 0;">*Midweek DeliveryPass® subscribers pay zero delivery fees on orders delivered Tuesday-Thursday only.</p>
 										<xsl:if test="order/deliveryType = 'H' and customer/numberOfOrders &gt; 1">
