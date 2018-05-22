@@ -14,6 +14,8 @@ import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
 import com.freshdirect.framework.util.ExpiringReference;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.ProductModel;
 
 public class CriteoProductsHomePageCache {
 
@@ -113,7 +115,16 @@ public class CriteoProductsHomePageCache {
 						HLBrandProductAdInfo hlBrandProduct = cacheCriteoMap.get(key).get(j);
 						String pageBeacon = pageBeaconMap.get(key);
 						hlBrandProduct.setPageBeacon(pageBeacon);
-						hlba.add(hlBrandProduct);
+//						hlba.add(hlBrandProduct);
+						ProductModel productModel =null;
+						try{
+							productModel = ContentFactory.getInstance().getProduct(hlBrandProduct.getProductSKU());
+						}catch(Exception e){
+							LOGGER.info("SKu not found for Hooklogic product: "+hlBrandProduct.getProductSKU());
+						}
+						if (null != productModel && !productModel.isUnavailable()) {
+							hlba.add(hlBrandProduct);
+						}
 						found = true;
 						i++;
 					}
