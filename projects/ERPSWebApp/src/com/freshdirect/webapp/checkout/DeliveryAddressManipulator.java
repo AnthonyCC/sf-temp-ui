@@ -93,7 +93,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			LOGGER.debug("setRegularDeliveryAddress :" + addressId);
 		}
 		FDCartModel cart = user.getShoppingCart();
-		if (user.getSelectedServiceType() == EnumServiceType.HOME && (user.isDlvPassActive() || cart.getDeliveryPassCount() > 0 || (user.applyFreeTrailOptinBasedDP())) && !(cart.isDlvPromotionApplied())) {
+		if (user.getSelectedServiceType() == EnumServiceType.HOME && (user.isDlvPassActive() || cart.isDlvPassApplicableByCartLines() || (user.applyFreeTrailOptinBasedDP())) && !(cart.isDlvPromotionApplied())) {
 			cart.setDlvPassApplied(true);
 		}
 
@@ -124,7 +124,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		}
 
 		FDCartModel cart = user.getShoppingCart();
-		if ( user.getSelectedServiceType() == EnumServiceType.HOME && ( user.isDlvPassActive() || cart.getDeliveryPassCount() > 0 || (user.applyFreeTrailOptinBasedDP())) && !( cart.isDlvPromotionApplied() ) ) {
+		if ( user.getSelectedServiceType() == EnumServiceType.HOME && ( user.isDlvPassActive() || cart.isDlvPassApplicableByCartLines() || (user.applyFreeTrailOptinBasedDP())) && !( cart.isDlvPromotionApplied() ) ) {
 			cart.setDlvPassApplied( true );
 		}
 

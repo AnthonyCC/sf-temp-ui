@@ -1051,6 +1051,7 @@ public class FDStoreProperties {
     public final static String PROP_IS_FDC_FIRST_ORDER_EMAIL_MSG_ENABLED = "fdstore.fdc.firstorderemailmsg.enabled";
 
     public final static String PROP_FD_DP_STANDALONE_CHECKOUT_ENABLED = "fdstore.deliverypass.standalone.checkout.enabled";
+    public final static String PROP_FD_DP_MIDWEEK_ENABLED ="fdstore.deliverypass.midweekpass.enabled";
 
     private static final String PROP_INFORM_ORDERMODIFY_ENABLED = "fdstore.inform.ordermodify.enabled";
     private static final String PROP_INFORM_ORDERMODIFY_VIEWLIMIT = "fdstore.inform.ordermodify.viewCountLimit";
@@ -1065,7 +1066,8 @@ public class FDStoreProperties {
     private static final String PROP_CART_CONFIRM_PAGE_NEW_PRODUCTS_CAROUSEL_ENABLED = "fdstore.cartconfirmpage.newproductscarousel.enabled";
     private static final String PROP_CART_CONFIRM_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED = "fdstore.cartconfirmpage.newproductscarousel.randomizeproductorder.enabled";
 	
-	    private static final String MASTERPASS_EXCEPTION_MESSAGE = "masterpass.exception.message"; 
+	private static final String MASTERPASS_EXCEPTION_MESSAGE = "masterpass.exception.message";
+	private static final String PROP_MIN_AMOUNT_SAVED_DP_ACCOUNTS_PAGE="fdstore.minimum.amount.saved.dpaccountpage"; 
 
  	static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -2026,6 +2028,7 @@ public class FDStoreProperties {
         defaults.put(PROP_IS_FDC_FIRST_ORDER_EMAIL_MSG_ENABLED, "false");
 
         defaults.put(PROP_FD_DP_STANDALONE_CHECKOUT_ENABLED, "false");
+        defaults.put(PROP_FD_DP_MIDWEEK_ENABLED, "false");
 
         defaults.put(PROP_NEW_PRODUCTS_PAGE_CAROUSEL_ENABLED, "false");
         defaults.put(PROP_NEW_PRODUCTS_PAGE_CAROUSEL_CONTAINER_CONTENT_KEY, "ModuleContainer:new_prod");
@@ -2043,6 +2046,7 @@ public class FDStoreProperties {
 
         defaults.put(PROP_CART_CONFIRM_PAGE_NEW_PRODUCTS_CAROUSEL_ENABLED, "false");
         defaults.put(PROP_CART_CONFIRM_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED, "false");
+        defaults.put(PROP_MIN_AMOUNT_SAVED_DP_ACCOUNTS_PAGE, "14.00");
 		
         refresh();
     }
@@ -5153,6 +5157,9 @@ public class FDStoreProperties {
         return (Boolean.valueOf(get(PROP_FD_DP_STANDALONE_CHECKOUT_ENABLED))).booleanValue();
     }
 
+    public static boolean isMidWeekDlvPassEnabled() {
+        return (Boolean.valueOf(get(PROP_FD_DP_MIDWEEK_ENABLED))).booleanValue();
+    }
     public static int getMaximumItemsCountInNewProductCarousel() {
         return Integer.parseInt(get(PROP_NEW_PRODUCTS_CAROUSEL_MAX_ITEMS));
     }
@@ -5206,4 +5213,8 @@ public static String getMasterpassExcMessage() {
     public static boolean isCartConfirmPageNewProductsCarouselRandomizeProductOrderEnabled() {
         return (Boolean.valueOf(get(PROP_CART_CONFIRM_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED))).booleanValue();
     }
+    
+    public static double getMinimumAmountSavedDpAccPage() {
+        return Double.parseDouble(get(PROP_MIN_AMOUNT_SAVED_DP_ACCOUNTS_PAGE));
+    }   
 }

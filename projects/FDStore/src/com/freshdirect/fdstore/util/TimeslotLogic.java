@@ -209,6 +209,7 @@ public class TimeslotLogic {
 								_ts.setPromoDeliveryFee(0);//Free Delivery.
 							}
 						}
+						_ts.setMidWeekDlvPassApplicable(user.isMidWeekDlvPassApplicable(_ts.getDeliveryDate()));
 					}
 
 			

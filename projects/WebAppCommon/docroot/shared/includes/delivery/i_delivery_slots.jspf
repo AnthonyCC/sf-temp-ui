@@ -256,14 +256,18 @@ if (timeslots.size() > 0) {
 			}
 		}
 	}
-
+	String midweekDeliveryPass = user.hasMidWeekDlvPass() ? "midweekdp":"";
 	stringBuffer.append("				<td class=\"ts_d\" valign=\"top\">\n")
-				.append("					<div id=\"ts_d"+dayIndex+"_hC\" class=\"tsHeaderC\" >\n")
+				.append("					<div id=\"ts_d"+dayIndex+"_hC\" class=\"tsHeaderC " + midweekDeliveryPass + "\" >\n")
 				.append("						<a href=\"#\" onclick=\"return false;\" class=\"accessibleOutlineFF\"  aria-label=\""+TimeslotPageUtil.formatDayNameExp(day)+". "+((user.getCurrentStandingOrder())!=null?"": TimeslotPageUtil.formatDeliveryDateNew(day) )+"  "+((timeslots.getTimeslotsForDate(day).size()==0)? "sorry! no delivery timeslots available" : " has "  +timeslots.getTimeslotsForDate(day).size()+  " timeslots, Press ENTER key to view timeslots")+"  \"><table cellspacing=\"0\" cellpadding=\"0\" width=\"100%\">\n")
 				.append("							<tr>\n")
-				.append("								<td align=\"center\" colspan=\"3\">\n")
-				.append("									<div class=\"tsDayNameC\"><b>"+TimeslotPageUtil.formatDayName(day)+"</b></div>\n");
+				.append("								<td align=\"center\" colspan=\"3\">\n");
 	
+	if (user.isMidWeekDlvPassApplicable(day)) {
+        stringBuffer.append("                                <div class=\"tsDayDeliveryPass\"><img src=\"/media/editorial/site_pages/deliverypass/images/group.svg\" alt=\"Delivery Pass\"></div>\n");
+    }
+    
+	stringBuffer.append("                                    <div class=\"tsDayNameC\"><b>"+TimeslotPageUtil.formatDayName(day)+"</b></div>\n");
 	
 	
 	if (!__genericTsTable) {
@@ -274,12 +278,15 @@ if (timeslots.size() > 0) {
 				.append("							</tr>\n")
 				.append("						</table></a>\n")
 				.append("					</div>\n")
-				.append("					<div id=\"ts_d"+dayIndex+"_hE\" class=\"tsHeaderE\" style=\"display: none;\">\n")
+				.append("					<div id=\"ts_d"+dayIndex+"_hE\" class=\"tsHeaderE " + midweekDeliveryPass + "\" style=\"display: none;\">\n")
 				.append("						<a href=\"#\" onclick=\"return false;\" class=\"accessibleOutlineFF\" aria-label=\""+TimeslotPageUtil.formatDayNameExp(day)+". "+((user.getCurrentStandingOrder())!=null?"": TimeslotPageUtil.formatDeliveryDateNew(day) )+" "+((timeslots.getTimeslotsForDate(day).size()==0)? "sorry! no delivery timeslots available" : " has "  +timeslots.getTimeslotsForDate(day).size()+  " timeslots ")+" \"><table cellspacing=\"0\" cellpadding=\"0\" width=\"100%\">\n")
 				.append("							<tr>\n")
 				.append("								<td align=\"center\" colspan=\"3\" valign=\"middle\">\n")
-				.append("									<div class=\"tsHeadE\" id=\"ts_d"+dayIndex+"_hE_content\" style=\"display: none;\">\n")
-				.append("										<div class=\"tsDayNameE\"><b>"+TimeslotPageUtil.formatDayNameExp(day)+"</b></div>\n");
+				.append("									<div class=\"tsHeadE\" id=\"ts_d"+dayIndex+"_hE_content\" style=\"display: none;\">\n");
+	if (user.isMidWeekDlvPassApplicable(day)) {
+        stringBuffer.append("                                <div class=\"tsDayDeliveryPass\"><img src=\"/media/editorial/site_pages/deliverypass/images/group-2.svg\" alt=\"Delivery Pass\"></div>\n");
+    }
+	stringBuffer.append("										<div class=\"tsDayNameE\"><b>"+TimeslotPageUtil.formatDayNameExp(day)+"</b></div>\n");
 	
 	// hide date
 	if (!__genericTsTable) {

@@ -85,12 +85,20 @@ table.tsHeaderC, .tsHeaderC {
 	padding-top: 0px;
 }
 
+table.tsHeaderC.midweekdp, .tsHeaderC.midweekdp {
+	height: 70px;
+	background-position-y: bottom;
+}
+
 .tsHeaderC td {
 	border:0px solid #ccc;
 	height:56px;
 	width: 107px;
 	background-color:#FBFBFB;
 	padding-top:0px;
+}
+.tsHeaderC.midweekdp td{
+	height: 70px;
 }
 
 table.tsHeaderE, .tsHeaderE {
@@ -99,6 +107,12 @@ table.tsHeaderE, .tsHeaderE {
 	width: 100%;
 	background-color: #579d5b;
 	padding-top: 0px;
+}
+
+table.tsHeaderE.midweekdp, .tsHeaderE.midweekdp {
+	height: 80px;
+	margin-top: -5px;
+	padding-top: 5px;
 }
 
 td.footer_container {

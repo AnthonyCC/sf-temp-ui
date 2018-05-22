@@ -1680,7 +1680,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		}//otherwise
 		if(getDeliveryPassCount() > 0 ) {
 			//Cart contains delivery pass. So Waive delivery fee.
-			if(!this.isChargeWaived(EnumChargeType.DELIVERY)){
+			if(isDlvPassApplicableByCartLines() && !this.isChargeWaived(EnumChargeType.DELIVERY)){
 				//If not already waived. The charge is already waived because
 				//of a delivery promotion in which case promotion takes the
 				//precedence.
@@ -1688,6 +1688,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 				this.setDlvPassApplied(true);
 				Calendar cal = Calendar.getInstance();
 				this.setDlvPassPremiumAllowedTC(cal.getTime().after(FDStoreProperties.getDlvPassNewTCDate()));
+			}else {
+				this.setDlvPassApplied(false);
 			}
 
 		}else{
@@ -2282,4 +2284,30 @@ public class FDCartModel extends ModelSupport implements FDCartI {
     	return !(this instanceof FDModifyCartModel) && FDStoreProperties.isDlvPassStandAloneCheckoutEnabled();
     }
 
+    public boolean isDlvPassApplicableByCartLines(){
+    	boolean isDlvPassApplicable = false;
+    	if(getDeliveryPassCount() > 0){
+    		isDlvPassApplicable = true;
+    		if(FDStoreProperties.isMidWeekDlvPassEnabled() && null!=this.getDeliveryReservation() && null!=this.getDeliveryReservation().getTimeslot()){
+		    	for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
+					FDCartLineI line = i.next();
+					if(line.lookupFDProduct().isDeliveryPass()){
+						DeliveryPassType dlvPassType = DeliveryPassType.getEnum(line.lookupFDProduct().getSkuCode());
+						if(null !=dlvPassType){
+							if(null ==dlvPassType.getEligibleDlvDays() || dlvPassType.getEligibleDlvDays().isEmpty() || dlvPassType.getEligibleDlvDays().size()>=7){//Full-week pass
+								isDlvPassApplicable=true;
+								break;
+							}else if (dlvPassType.getEligibleDlvDays().contains(this.getDeliveryReservation().getTimeslot().getDayOfWeek())){//Mid-week pass
+									isDlvPassApplicable=true;
+									break;
+							}else {
+								isDlvPassApplicable = false;
+							}
+						}
+					}			
+				}
+    		}
+    	}
+    	return isDlvPassApplicable;
+    }
 }

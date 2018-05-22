@@ -182,6 +182,10 @@ public class CartSubTotalBoxService {
         	deliveryPassPopupNeeded=false;
         }
         
+        if(user.isDlvPassTimeslotNotMatched()){
+        	deliveryPassPopupNeeded=false;
+        }
+        
         boolean isTaxableItemInCart = false;
         for (FDCartLineI lineItem : cart.getOrderLines()) {
             if (lineItem.getTaxRate() > epsilon) {

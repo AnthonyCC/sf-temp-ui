@@ -774,4 +774,8 @@ public class SessionUser {
 	public boolean isDPFreeTrialOptInEligible(){
 		return sessionUser.isDPFreeTrialOptInEligible();		
 	}
+	
+	public boolean isDlvPassTimeslotNotMatched(){
+		return sessionUser.isDlvPassTimeslotNotMatched();		
+	}
 }

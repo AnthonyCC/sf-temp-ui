@@ -340,7 +340,8 @@ public class ModelConverter {
 				deliveryPassTypeData.isAutoRenewDP(),
 				deliveryPassTypeData.isFreeTrialDP(),
 				deliveryPassTypeData.isFreeTrialRestricted(),
-				deliveryPassTypeData.getAutoRenewalSKU());
+				deliveryPassTypeData.getAutoRenewalSKU(),
+				null);
 	}
 
 	public static List buildCrmCaseSubjectList(List data) {

@@ -1905,7 +1905,8 @@ li.cleanli .gen-arrow {
 		    display: inline-block;
 		    font-size: 14px;
 		}
-		[data-ec-page] .mm-page #checkout-cart-header .st_val_checkout-cart-header-deliveryfee {
+		[data-ec-page] .mm-page #checkout-cart-header .st_val_checkout-cart-header-deliveryfee,
+		[data-ec-page] .mm-page #checkout-cart-header .st_val_checkout-cart-header-deliveryfee-no-action{
 		    padding-top: 0;
     		font-size: 14px;
     		padding-left: 0;
