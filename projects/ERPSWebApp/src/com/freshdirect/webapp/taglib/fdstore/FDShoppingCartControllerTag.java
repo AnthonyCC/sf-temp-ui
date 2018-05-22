@@ -1342,7 +1342,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
         if (theCartLine == null) {
             theCartLine = processSimple(suffix, prodNode, product, quantity, salesUnit, origCartLineId, variantId, userContext, originalGrp);
         } else {
-            theCartLine.setQuantity(theCartLine.getQuantity() + quantity);
+            theCartLine.setQuantity(quantity);
         }
 
         if (theCartLine != null) {
