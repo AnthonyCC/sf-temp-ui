@@ -239,7 +239,6 @@
 .mod56 .orderbox {
   border: none;
   padding: 25px 40px 40px 40px;
-  margin-bottom: 20px;
 }
 .mod56 .footer__findout {
   display: none;
@@ -298,8 +297,7 @@
 .mod56 .delivery-info-address .instructions:before {
   content: 'SPECIAL ';
 }
-.mod56 .delivery-info-address .instructions,
-.mod56 [data-drawer-default-content="address"] .drawer__itemright .section__title {
+.mod56 .delivery-info-address .instructions {
   text-transform: uppercase;
 }
 .mod56 .drawer__item__title {
@@ -330,18 +328,13 @@
 .mod56 .subsection {
   margin-bottom: 15px;
 }
-.mod56 .successmodifyorderbutton-cont button {
-  margin-bottom: 10px;
-}
 .mod56 .successmodifyorderbutton-cont button, .mod56 .view-receipt-btn {
+  margin-bottom: 10px;
   width: 100%;
-  margin-top: 0;
 }
 .mod56 .orderbox .estimated {
   font-size: 20px;
   color: #444;
-  margin-top: 30px;
-  margin-bottom: 20px;
 }
 .mod56 .totalLabel {
   font-weight: normal;
@@ -387,8 +380,7 @@
 .mod56 .delivery-info-payment-method-label,
 .mod56 .info-label,
 .mod56 .delivery-info-address .instructions,
-.mod56 #cartcontent .cartsection .cartsection__title,
-.mod56 [data-drawer-default-content="address"] .drawer__itemright .section__title {
+.mod56 #cartcontent .cartsection .cartsection__title {
   font-size: 12px;
   font-weight: bold;
   font-style: normal;
@@ -401,16 +393,6 @@
 .mod56 .standingorder-info {
 	font-size: 16px;
 	color: #333;
-}
-.mod56 [data-drawer-default-content="address"] .drawer__itemright .section__body p {
-  font-size: 16px;
-}
-.mod56 .orderbox .save-amount {
-  padding: 0;
-  margin-bottom: 20px;
-}
-.mod56 .raf-success {
-  margin: 0;
 }
 
 #orderModifyStatus .qs-popup-header {height: 0;min-height: 0;padding: 0;}

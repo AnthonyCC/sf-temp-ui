@@ -7,10 +7,9 @@
  * @param? eventSource coremetrics eventsource
  */
 {template .modifyBRDPopup2}
-<div id="MBRDPopup2" class="fixedpopup BRD-popup-container">
-	<div class="fixedPopupHelper"></div>
-	<div class="fixedPopupContent BRD-popup">
-		<h2 class="qs-popup-header"><span>You are modifying a pending order.</span><button class="MBRD-close create-order-atc close-icon close">close</button></h2>
+<div id="MBRDPopup2" class="BRD-popup-container">
+	<div class="BRD-popup qs-popup">
+		<h2 class="qs-popup-header"><span>You are modifying a pending order.</span><button class="MBRD-close create-order-atc">close</button></h2>
 		<div class="qs-popup-content" {if $eventSource}data-cmeventsource="{$eventSource}"{/if}>
 			<p class="MBRD-order">
 				<label for="MBRDOrder">Choose which order to modify:</label>
@@ -19,7 +18,6 @@
 						<option value="{$order.erpSalesId}">{$order.erpSalesId} - {$order.formattedDeliveryTime}</option>
 					{/foreach}
 				</select>
-				<br style="clear: both">
 			</p>
 
 			<h3>Add {if length($pendingItems) > 1}these items{else}this item{/if} to your pending order</h3>
@@ -42,8 +40,8 @@
 				<h3>You have other items in your cart - You can add them to your pending order.</h3>
 				<p>Choose items you want to add to your order. Select them all, or individually.</p>
 				<p class="MBRD-selectbuttons">
-					<button class="cssbutton orange transparent small MBRD-selectall">Select All</button>
-					<button class="cssbutton orange transparent small MBRD-deselectall">Deselect All</button>
+					<button class="MBRD-selectall">Select All</button>
+					<button class="MBRD-deselectall">Deselect All</button>
 				</p>
 
 				<div id="MBRDCartdata">
@@ -63,11 +61,10 @@
 				</div>
 			{/if}
 			<p class="MBRD-buttons">
-				<button class="cssbutton green transparent small MBRD-cancel create-order-atc">Cancel</button>
-				<button class="cssbutton orange small MBRD-modify modify-order-btn" data-gtm-source="atc" data-ref="#MBRDPopup2">Modify Order</button>
+				<button class="MBRD-cancel create-order-atc">Cancel</button>
+				<button class="MBRD-modify modify-order-btn" data-gtm-source="atc" data-ref="#MBRDPopup2">Modify Order</button>
 			</p>
 		</div>
 	</div>
 </div>
-<div class="popupcontentoverlay MBRD2-close close"></div>
 {/template}

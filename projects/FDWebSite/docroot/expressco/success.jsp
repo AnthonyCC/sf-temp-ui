@@ -217,7 +217,7 @@
 						<soy:render template="expressco.standingorderInfoMod56" data="${singlePageCheckoutSuccessPotato.successPageData}" />
 
 						<div class="section delivery-info">
-							<div class="colHeader delivery-info-header"><h2>Delivery Info</h2><button id="delivery_info_edit_btn" class="cssbutton small green edit-btn" data-gtm-click data-gtm-click-error>Edit<span class="offscreen"> Delivery Info</span></button></div>
+							<div class="colHeader delivery-info-header"><h2>Delivery Info</h2><button id="delivery_info_edit_btn" class="cssbutton green edit-btn" data-gtm-click data-gtm-click-error>Edit<span class="offscreen"> Delivery Info</span></button></div>
 							
 							<div class="subsection delivery-info-delivery-window">
 								<div class="delivery-info-delivery-window-label">DELIVERY WINDOW</div>
@@ -243,7 +243,7 @@
 						
 						<div class="section cart-details">
 							<%-- cart content --%>
-							<div class="colHeader cart-details-header"><h2>Cart Details</h2><button id="cart_details_edit_btn" class="cssbutton small green edit-btn" data-gtm-click data-gtm-click-error>Edit<span class="offscreen"> Cart Details</span></button></div>
+							<div class="colHeader cart-details-header"><h2>Cart Details</h2><button id="cart_details_edit_btn" class="cssbutton green edit-btn" data-gtm-click data-gtm-click-error>Edit<span class="offscreen"> Cart Details</span></button></div>
 							<div id="cartcontent" data-ec-linetemplate="expressco.successlines" data-drawer-disabled data-ec-request-uri="/api/expresscheckout/cartdata?orderId=${param['orderId']}"></div>
 						</div>
 					</div>

@@ -11,7 +11,7 @@
 	{/if}
 	<div class="itemlist-item-productimage_wrapper">
 		<div class="itemlist-item-burst_wrapper">
-			<a href="{$item.productPageUrl}"><img src="{if $item.productDetailImage}{$item.productDetailImage}{else}{$item.productImage}{/if}" alt="{$item.productName}" class="itemlist-item-productimage"></a>
+			<a href="{$item.productPageUrl}"><img src="{$item.productImage}" alt="{$item.productName}" class="itemlist-item-productimage"></a>
 			{call common.bursts}{param badge:$item.badge /}{param deal:$item.deal /}{param usq:$item.usq /}{/call}
 		</div>
 	</div>

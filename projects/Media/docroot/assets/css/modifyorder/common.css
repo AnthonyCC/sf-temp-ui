@@ -1,9 +1,7 @@
 .cancel-modify-confirm-popup#confirmpopup {
 	position: fixed !important;
 	background: #fff;
-	width: 400px;
-	max-width: 100%;
-	box-sizing: border-box;
+	margin: 15px;
 }
 .cancel-modify-confirm-popup .qs-popup-content {
 	padding: 30px 40px;
@@ -27,23 +25,24 @@
 	color: #ffffff;
     background-color: #f68139;
 }
-.modify-order-bar .cssbutton.cancel-changes-link {
+.modify-order-bar .cancel-changes-link {
+	font-size: 14px;
 	font-weight: bold;
+	color: #ffffff;
 	text-shadow: 1px 1px 0 rgba(200, 92, 25, 0.5);
 }
-.modify-order-bar .cssbutton.cancel-changes-link {
-	border: 1px solid #fff;
-}
-.modify-order-bar .cssbutton.save-changes-btn {
-	border: solid 1px #e45e0b;
-	color: #e45e0b;
-	text-shadow: none;
-}
-#location-modify-order-message .location-modify-order-btn-cont {
+#location-modify-order-message .location-modify-order-cancel {
 	padding-left: 30px;
+	margin-top: -1px;
 }
 #location-modify-order-bar {
 	padding: 15px 0;
+}
+#location-modify-order-bar .location-modify-order-cancel {
+	padding: 10px 15px 0 0;
+}
+.modify-order-bar .location-modify-order-cancel span {
+	border-bottom: solid 1px #ffffff;
 }
 
 #location-modify-order-message {
@@ -73,64 +72,4 @@
 }
 #location-modify-order-message ~ .locabar-right-sections #locabar_messages_trigger {
 	display: none; /* hide during modify */
-}
-#locationbar-sticky-wrapper .locabar-user-section[data-signedin="true"],
-#locationbar-sticky-wrapper .locabar-popupcart-section,
-#locationbar-sticky-wrapper .locabar-right-sections .locabar-section {
-	background-color: transparent !important;
-	color: #fff !important;
-	border: none;
-}
-#locationbar-sticky-wrapper .disableCart .locabar-user-section[data-signedin="true"],
-#locationbar-sticky-wrapper .locabar-user-section[data-signedin="true"]:hover,
-#locationbar-sticky-wrapper .disableCart .locabar-popupcart-section,
-#locationbar-sticky-wrapper .locabar-popupcart-section:hover,
-#locationbar-sticky-wrapper .locabar-right-sections .locabar-section:hover {
-	background-color: #e77630 !important;
-}
-#locationbar-sticky-wrapper .disableCart .locabar-popupcart-section {
-	border-left-color: #F68139;
-	border-left-width: 1px;
-	border-left-style: solid;
-}
-#locationbar-sticky-wrapper .locabar-right-sections .locabar-section {
-	height: 41px;
-}
-#locationbar-sticky-wrapper .locabar_triggers_menuitem a {
-	color: #fff;
-}
-#locationbar-sticky-wrapper .locabar-circle-cont {
-	color: #f68139;
-	background-color: #fff;
-	border: 2px solid #f68139;
-}
-#locationbar-sticky-wrapper .locabar-cart {
-	background-image: url(/media/layout/nav/globalnav/fdx/locabar-cart-white.svg);
-}
-#locationbar-sticky-wrapper .locabar-section .section-warning-small {
-	background-image: url(/media/layout/nav/globalnav/fdx/locabar-warning-white.svg);
-}
-#locationbar-sticky-wrapper .locabar-arrow:after {
-	border-bottom: 2px solid #fff;
-	border-right: 2px solid #fff;
-}
-/* mobweb overrides */
-.mm-page .modify-order-bar .cssbutton.save-changes-btn {
-	margin: 0 13px;
-}
-.mm-page #location-modify-order-bar {
-	font-size: 16px;
-	line-height: 16px;
-}
-.mm-page .location-modify-order-message {
-	float: left;
-	text-align:left;
-	padding-left: 15px;
-}
-.mm-page .location-modify-order-btn-cont {
-	float: right;
-	line-height: 30px;
-}
-.mm-page #location-modify-order-bar {
-	padding: 7px 0;
 }
