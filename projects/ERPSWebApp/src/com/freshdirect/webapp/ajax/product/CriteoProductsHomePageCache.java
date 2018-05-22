@@ -93,11 +93,24 @@ public class CriteoProductsHomePageCache {
 						}
 						response = FDBrandProductsAdManager.getHLadproductToHomeByFDPriority(hLBrandProductAdRequest);
 
-						if (null != response && null != response.getSearchProductAd()) {
-								cacheCriteoMap.put(key, response.getSearchProductAd());
-								pageBeaconMap.put(key, response.getPageBeacon());
-								counter =counter + response.getSearchProductAd().size();
+					if (null != response && null != response.getSearchProductAd()) {
+						List<HLBrandProductAdInfo> respList = response.getSearchProductAd();
+						List<HLBrandProductAdInfo> avaiProductFDList= new ArrayList<HLBrandProductAdInfo>();
+						for (HLBrandProductAdInfo resp : respList) {
+							ProductModel productModel = null;
+							try {
+								productModel = ContentFactory.getInstance().getProduct(resp.getProductSKU());
+							} catch (Exception e) {
+								LOGGER.info("SKu not found for Hooklogic product: " + resp.getProductSKU());
+							}
+							if (null != productModel && !productModel.isUnavailable()) {
+								avaiProductFDList.add(resp);
+							}
 						}
+						cacheCriteoMap.put(key, avaiProductFDList);
+						pageBeaconMap.put(key, response.getPageBeacon());
+						counter = counter + avaiProductFDList.size();
+					}
 					} catch (FDResourceException e) {
 						LOGGER.debug("Exception occured while making call to Criteo search-Api: " + e);
 					}
@@ -115,16 +128,7 @@ public class CriteoProductsHomePageCache {
 						HLBrandProductAdInfo hlBrandProduct = cacheCriteoMap.get(key).get(j);
 						String pageBeacon = pageBeaconMap.get(key);
 						hlBrandProduct.setPageBeacon(pageBeacon);
-//						hlba.add(hlBrandProduct);
-						ProductModel productModel =null;
-						try{
-							productModel = ContentFactory.getInstance().getProduct(hlBrandProduct.getProductSKU());
-						}catch(Exception e){
-							LOGGER.info("SKu not found for Hooklogic product: "+hlBrandProduct.getProductSKU());
-						}
-						if (null != productModel && !productModel.isUnavailable()) {
-							hlba.add(hlBrandProduct);
-						}
+						hlba.add(hlBrandProduct);
 						found = true;
 						i++;
 					}
