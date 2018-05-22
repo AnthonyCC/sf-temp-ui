@@ -9,10 +9,8 @@
 
 package com.freshdirect.customer;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import com.freshdirect.framework.core.*;
 import com.freshdirect.sms.EnumSMSAlertStatus;
@@ -28,6 +26,7 @@ import com.freshdirect.fdstore.customer.FDIdentity;
  */
 public class ErpCustomerInfoModel extends ModelSupport {
 
+	private static final long serialVersionUID = 9156189087842548162L;
 	private String title;
 	private String firstName;
 	private String middleName;
@@ -489,4 +488,10 @@ public class ErpCustomerInfoModel extends ModelSupport {
 		this.identity = identity;
 	}
 
+	@Override
+	public void setId(String id) {
+		if (id != null) {
+			super.setId(id);
+		}
+	}
 }

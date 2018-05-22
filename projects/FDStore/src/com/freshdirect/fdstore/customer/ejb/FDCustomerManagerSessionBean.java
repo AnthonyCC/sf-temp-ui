@@ -7550,7 +7550,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	public String getOASQueryString(EnumServiceType serviceType, String depotCode, String zipCode, String county) {
+	private String getOASQueryString(EnumServiceType serviceType, String depotCode, String zipCode, String county) {
 		QueryStringBuilder queryString = new QueryStringBuilder();
 		String metalRating = "";
 		int vip = 0;
