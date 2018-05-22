@@ -1,3 +1,4 @@
+<%@page import="utils.system"%>
 <%@ page import='java.util.*'  %>
 <%@ page import="java.net.URLEncoder"%>
 <%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
@@ -8,6 +9,7 @@
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page buffer="16kb" %>
 <%
 	response.addHeader("Pragma", "no-cache");
@@ -104,7 +106,16 @@ request.setAttribute("listPos", "CategoryNote,SiteAccess,DeliveryFees");
 			<title>FreshDirect</title>
 	
 			<%-- <%@ include file="/common/template/includes/metatags.jspf" %> --%>
-			<tmpl:get name="seoMetaTag"/>
+			
+			<%
+			Enumeration<String> attributeNames = pageContext.getAttributeNamesInScope(2);
+ 			while (attributeNames.hasMoreElements()){
+ 				if (attributeNames.nextElement().equals("template-stack")){	%> 
+				    <tmpl:get name="seoMetaTag"/>
+				<%}
+			}
+			%>
+			
 			<meta name="msvalidate.01" content="2E163086C8383686A98EE1B694357FE7" />
 	
 			<%@ include file="/common/template/includes/i_javascripts.jspf" %>
