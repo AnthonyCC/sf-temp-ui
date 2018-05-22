@@ -106,6 +106,14 @@ public class CriteoProductsHomePageCache {
 							if (null != productModel && !productModel.isUnavailable()) {
 								avaiProductFDList.add(resp);
 							}
+						}if(!avaiProductFDList.isEmpty() && avaiProductFDList.size() < 5){
+							int i= avaiProductFDList.size();
+							int j=0;
+							while ( i < 5) {
+								avaiProductFDList.add(avaiProductFDList.get(j));
+								i++;	
+								j++;
+							}
 						}
 						cacheCriteoMap.put(key, avaiProductFDList);
 						pageBeaconMap.put(key, response.getPageBeacon());
