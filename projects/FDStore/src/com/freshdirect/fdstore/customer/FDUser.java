@@ -3971,11 +3971,12 @@ public class FDUser extends ModelSupport implements FDUserI {
 	@Override
 	public boolean getDpFreeTrialOptin() {
 
-		try {
+		/*try {
 			this.cachedFDCustomer = this.getFDCustomer();
 		} catch (FDResourceException e) {
 			LOGGER.warn("Error in getDpFreeTrialOptin() " + e);
-		}
+		}*/
+		
 		if (this.cachedFDCustomer != null && this.cachedFDCustomer.getCustomerEStoreModel() != null) {
 
 			return this.cachedFDCustomer.getCustomerEStoreModel().getDpFreeTrialOptin();
