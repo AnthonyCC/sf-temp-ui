@@ -2526,4 +2526,22 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     public void setMultiSearchList(String searchTermList) {
         user.setMultiSearchList(searchTermList);
     }
+
+	@Override
+	public ErpPaymentMethodI getDefaultPaymentMethod() throws FDResourceException {
+		return user.getDefaultPaymentMethod();
+	}
+
+	@Override
+	public boolean isDlvPassTimeslotNotMatched() {
+		return this.user.isDlvPassTimeslotNotMatched();
+	}
+
+	public boolean isMidWeekDlvPassApplicable(Date dayOfWeek) {
+		return this.user.isMidWeekDlvPassApplicable(dayOfWeek);
+    }
+
+	public boolean hasMidWeekDlvPass() {
+		return this.user.hasMidWeekDlvPass();
+	}
 }

@@ -172,7 +172,6 @@ public class EwalletPostBackModel implements Serializable {
 		this.postBackSuccess = postBackSuccess;
 	}
 
-	private Object extension = null; //Do not use
 	/**
 	 * @return the transactionId
 	 */
@@ -287,19 +286,6 @@ public class EwalletPostBackModel implements Serializable {
 	public void setExpressCheckoutIndicator(boolean expressCheckoutIndicator) {
 		this.expressCheckoutIndicator = expressCheckoutIndicator;
 	}
-	/**
-	 * @return the extension
-	 */
-	public Object getExtension() {
-		return extension;
-	}
-	/**
-	 * @param extension the extension to set
-	 */
-	public void setExtension(Object extension) {
-		this.extension = extension;
-	}
-	
 	
 	//Introduced for Storefront 2.0
 	public void setAllowedTransactionStatus(String[] transactionStatus) {
@@ -329,7 +315,6 @@ public class EwalletPostBackModel implements Serializable {
 				"Trxn status : " + getTransactionStatus() + ", " +
 				"approval or auth code : " + getApprovalCode() + ", " +
 				"precheckout trxn id " + getPreCheckoutTransactionId() + ", " +
-				"Express Checkout Indicator : " + isExpressCheckoutIndicator() + ", " +
-				" Extension : " + getExtension();
+				"Express Checkout Indicator : " + isExpressCheckoutIndicator();
 	}
 }

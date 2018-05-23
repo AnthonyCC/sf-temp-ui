@@ -154,6 +154,7 @@ public interface SystemMessageList {
 	// SORI MESSGAES
 	public final static String MSG_PROMOTION_APPLIED_VARY1 = "PLEASE NOTE: You are currently eligible for multiple promotional offers which cannot be combined. <BR>When you check out, we will automatically choose the offer that gives you the greatest discount";
 	public final static String MSG_PROMOTION_APPLIED_VARY2 = "PLEASE NOTE: You are currently eligible for multiple promotional offers which cannot be combined. We have applied the offer which gives you greater discount.";
+	public final static String MSG_DLV_PASS_OPTIN_ERROR = "Sorry, there is a problem in your Delivery Pass Opt in/out, Please contact customer service at {0}";
 	//Gift cards
 	public final static String MSG_PAYMENT_INADEQUATE = "Payment Inadequate. Please provide a different mode of payment.";
 	public final static String MSG_IDENTIFY_RECIPIENT = "Unable to identify which recipient to change.";

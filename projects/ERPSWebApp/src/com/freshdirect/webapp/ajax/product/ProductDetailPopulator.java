@@ -220,7 +220,7 @@ public class ProductDetailPopulator {
 
         if (!(product instanceof ProductModelPricingAdapter)) {
             // wrap it into a pricing adapter if naked
-            product = ProductPricingFactory.getInstance().getPricingAdapter(product, user.getUserContext().getPricingContext());
+            product = ProductPricingFactory.getInstance().getPricingAdapter(product);
         }
 
         // Create response data object
@@ -298,7 +298,7 @@ public class ProductDetailPopulator {
 
         if (!(product instanceof ProductModelPricingAdapter)) {
             // wrap it into a pricing adapter if naked
-            product = ProductPricingFactory.getInstance().getPricingAdapter(product, user.getUserContext().getPricingContext());
+            product = ProductPricingFactory.getInstance().getPricingAdapter(product);
         }
 
         FDProductInfo productInfo = sku.getProductInfo();
@@ -373,7 +373,7 @@ public class ProductDetailPopulator {
 
         if (!(product instanceof ProductModelPricingAdapter)) {
             // wrap it into a pricing adapter if naked
-            product = ProductPricingFactory.getInstance().getPricingAdapter(product, user.getUserContext().getPricingContext());
+            product = ProductPricingFactory.getInstance().getPricingAdapter(product);
         }
 
         if (enableProductIncomplete && PopulatorUtil.isProductIncomplete(product) && !PopulatorUtil.isNodeArchived(product)) {
@@ -398,7 +398,7 @@ public class ProductDetailPopulator {
 
         if (!(product instanceof ProductModelPricingAdapter)) {
             // wrap it into a pricing adapter if naked
-            product = ProductPricingFactory.getInstance().getPricingAdapter(product, user.getUserContext().getPricingContext());
+            product = ProductPricingFactory.getInstance().getPricingAdapter(product);
         }
 
         if (enableProductIncomplete && PopulatorUtil.isProductIncomplete(product) && !PopulatorUtil.isNodeArchived(product)) {
@@ -436,7 +436,7 @@ public class ProductDetailPopulator {
 
         if (!(product instanceof ProductModelPricingAdapter)) {
             // wrap it into a pricing adapter if naked
-            product = ProductPricingFactory.getInstance().getPricingAdapter(product, user.getUserContext().getPricingContext());
+            product = ProductPricingFactory.getInstance().getPricingAdapter(product);
         }
 
         if (enableProductIncomplete && PopulatorUtil.isProductIncomplete(product) && !PopulatorUtil.isNodeArchived(product)) {
@@ -1700,7 +1700,7 @@ public class ProductDetailPopulator {
 
         if (!(product instanceof ProductModelPricingAdapter)) {
             // wrap it into a pricing adapter if naked
-            product = ProductPricingFactory.getInstance().getPricingAdapter(product, user.getUserContext().getPricingContext());
+            product = ProductPricingFactory.getInstance().getPricingAdapter(product);
         }
 
         PriceCalculator priceCalculator = product.getPriceCalculator();

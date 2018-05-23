@@ -9,7 +9,7 @@
 	<strong>Sort:</strong>
 	<div class="sorter-element_list" data-component="sorter">
 	{foreach $sortElement in $data}
-		<button aria-label="sort products by" data-sortid="{$sortElement.sortId}" data-direction="{$sortElement.orderAsc}" class="sorter-element {print $sortElement.selected==true ? 'selected' : ''}"><span>{$sortElement.name}</span></button>
+		<button aria-label="sort products by {$sortElement.name}" data-sortid="{$sortElement.sortId}" data-direction="{$sortElement.orderAsc}" class="sorter-element {print $sortElement.selected==true ? 'selected' : ''}"><span>{$sortElement.name}</span></button>
 	{/foreach}
 	<div>
 </div>

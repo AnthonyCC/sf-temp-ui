@@ -2,6 +2,8 @@ package com.freshdirect.fdstore.ecoupon.model;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.customer.EnumTransactionSource;
 
@@ -14,8 +16,9 @@ public class FDCouponActivityContext implements Serializable{
 	private String initiator="SYSTEM";//default
 	private CrmAgentModel agent;
 	
-	public FDCouponActivityContext(EnumTransactionSource src, String initiator,
-			CrmAgentModel agent) {
+	@JsonCreator
+	public FDCouponActivityContext(@JsonProperty("src") EnumTransactionSource src,
+			@JsonProperty("initiator") String initiator, @JsonProperty("agent") CrmAgentModel agent) {
 		super();
 		this.src = src;
 		this.initiator = initiator;

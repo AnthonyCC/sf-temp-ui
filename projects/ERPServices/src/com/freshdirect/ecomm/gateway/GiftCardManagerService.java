@@ -75,6 +75,18 @@ public class GiftCardManagerService extends AbstractEcommService implements Gift
 		return null;
 	}
 
+
+
+	@Override
+	public void resendGiftCard(String saleId, List recepientList,
+			EnumTransactionSource source) throws RemoteException,
+			FDResourceException {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
 	@Override
 	public List getGiftCardRecepientsForCustomer(String customerId)
 			throws RemoteException, FDResourceException {
@@ -89,8 +101,20 @@ public class GiftCardManagerService extends AbstractEcommService implements Gift
 			throw new RemoteException(response.getMessage());
 		List recipientsList = GiftCardModelDataConverter.getErpGCDlvInformationHolder(response.getData());
 		
-		return recipientsList;
+		return response.getData();
 	}
+
+
+
+	@Override
+	public ErpGiftCardModel validate(String givexNum)
+			throws InvalidCardException, CardInUseException, RemoteException,
+			CardOnHoldException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
 
 	@Override
 	public List verifyStatusAndBalance(List giftcards, boolean reloadBalance)

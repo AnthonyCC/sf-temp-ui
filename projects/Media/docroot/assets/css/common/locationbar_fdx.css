@@ -14,6 +14,7 @@
 		max-height: 42px; /* fix height for browse pages */
 		margin-top: 0px;
 		font-family: Verdana;
+		min-width: 970px;
 	}
 	#sidecartbuttons {
 		display: none;
@@ -244,6 +245,7 @@
 		position: relative;
 		padding: 10px 0;
 		margin-top: 0;
+		min-width: 970px;
 	}
 	.globalnav_top .topnavitem {
         /*float: right; */
@@ -507,7 +509,7 @@
 	height: 20px;
 	width: 18px;
 	background-repeat: no-repeat;
-    position: relative;
+	position: relative;
 }
 .locabar-user {
 	display: inline-block;

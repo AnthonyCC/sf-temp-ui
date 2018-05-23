@@ -222,6 +222,7 @@ button.dpn-footer-login-button{
 }
 .dpn-success-text-table-left{
 	display: inline-block;
+	max-width: 325px;
 }
 .dpn-success-text-table-right{
 	float: right;
@@ -421,4 +422,231 @@ button.dpn-footer-login-button{
     max-width: 420px;
 	font-family: Verdana;
     font-size: 18px;
+}
+
+.dp-container .switch {
+	position: relative;
+	display: inline-block;
+	width: 44px;
+	height: 24px;
+	vertical-align: top;
+}
+
+.dp-container .spinner {
+	display: none;
+	position: absolute;
+	border: 4px solid #f3f3f3;
+	border-top: 4px solid #458b4c;
+	border-radius: 50%;
+	box-sizing: border-box;
+	width: 25px;
+	height: 25px;
+	animation: spin 2s linear infinite;
+	margin: 0;
+	top: -17px;
+    left: 25px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.dp-container .switch input {display:none;}
+
+.dp-container .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  border-radius: 34px;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.dp-container .slider:before {
+	position: absolute;
+  	content: "";
+	height: 22px;
+    width: 22px;
+    left: 1px;
+    bottom: 1px;
+	background-color: white;
+	border-radius: 50%;
+	-webkit-transition: .4s;
+	transition: .4s;
+}
+
+.dp-container input:checked + .slider {
+  background-color: #4fa157;
+}
+
+.dp-container input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+.dp-container input:checked + .slider:before {
+  -webkit-transform: translateX(20px);
+  -ms-transform: translateX(20px);
+  transform: translateX(20px);
+}
+.dp-container{
+    font-family: Verdana;
+    font-size: 14px;
+}
+.dp-page-header{
+    font-size: 18px;
+    font-weight: bold;
+    text-align: left;
+    padding: 0 0 8px;
+    margin: 0 0 30px;
+    border-bottom: 1px solid #f68139;
+}
+.dp-content{
+    max-width: 555px;
+    text-align: left;
+}
+.dp-benefits{
+	float: left;
+}
+.dp-header{
+	font-size: 16px;
+    font-weight: bold;
+    text-align: left;
+    padding: 0 0 24px;
+}
+.dp-plan .dp-header{
+	text-align: center;
+	padding: 0 0 8px;
+}
+.dp-benefits-list-item{
+	clear: both;
+	padding: 0 0 23px;
+}
+.dp-benefits-list-icon{
+	float: left;
+}
+.dp-benefits-list-text{
+	font-size: 14px;
+	padding: 0 0 0 53px;
+	max-width: 320px;
+}
+.dp-plan{
+	float: right;
+}
+.dp-plan-name{
+	font-size: 23px;
+    font-weight: bold;
+    max-width: 180px;
+    text-align: center;
+    color: #ffffff;
+    background-color: #444444;
+    padding: 21px 0;
+    border-radius: 6px;
+}
+.dp-plan-data{
+	padding: 24px 0;
+}
+.dp-plan-activated{
+	float: left;
+    padding: 0 36px 0 0;
+}
+.dp-plan-activate-header{
+	font-weight: bold;
+}
+.dp-plan-activate-text{
+	font-size: 20px;
+    font-weight: bold;
+    color: #458d4e;
+}
+.dp-renew-text-bold,
+.dp-expire-text-bold{
+	font-weight: bold;
+}
+.dp-renew{
+	border-top: 1px solid #e5e5e5;
+    padding: 24px 0;
+}
+.dp-payment{
+	border-top: 1px solid #e5e5e5;
+	border-bottom: 1px solid #e5e5e5;
+    padding: 24px 0;
+    margin: 0 0 24px;
+}
+.dp-renew-date .dp-expire-date-text,
+.dp-renew-date .dp-expire-text-bold,
+.dp-renew-date.dp-dispay-renew-date .dp-renew-date-text,
+.dp-renew-date.dp-dispay-renew-date .dp-renew-text-bold{
+	display: inline;
+}
+.dp-renew-date .dp-renew-date-text,
+.dp-renew-date .dp-renew-text-bold,
+.dp-renew-date.dp-dispay-renew-date .dp-expire-date-text,
+.dp-renew-date.dp-dispay-renew-date .dp-expire-text-bold,
+.dp-container .dp-autorenew-error-text{
+	display: none;
+}
+.dp-container .dp-display-autorenew-loading .spinner,
+.dp-container .dp-display-autorenew-error .dp-autorenew-error-text{
+	display: inline-block;
+}
+.dp-autorenew-error{
+	display: inline-block;
+	position: relative;
+    padding: 0 0 0 20px;
+}
+.dp-container .dp-autorenew-error-text{
+	font-size: 14px;
+	padding: 3px 0 0;
+}
+.dp-auto-renew{
+	padding: 18px 0;
+}
+.dp-auto-renew-text{
+	display: inline-block;
+	font-size: 16px;
+    font-weight: bold;
+    padding: 2px 12px 0 0;
+    vertical-align: top;
+}
+.dp-renew-text{
+	clear: both;
+	padding: 16px 0 0;
+}
+.dp-payment-data{
+
+}
+.dp-payment-img{
+	display: inline-block;
+	padding-right: 20px;
+}
+.dp-payment-img img{
+	max-height: 30px;
+}
+.dp-payment-text{
+	display: inline-block;
+	padding: 3px 0 0;
+	vertical-align: top;
+}
+.dp-learn-more{
+
+}
+.mm-page .dp-container{
+	margin: 0 20px;
+}
+.mm-page .dp-page-header{
+	border: 0;
+}
+.mm-page .dp-plan{
+	float: none;
+	margin: 0 0 30px;
+}
+.mm-page .dp-plan-name{
+	margin: auto;
+}
+.mm-page .dp-benefits{
+	
+}
+.dp-payment-method-cc{
+
 }

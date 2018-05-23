@@ -40,9 +40,6 @@ if (request.getHeader("User-Agent").indexOf("Mac") > -1) {
 }
 %>
 	<fd:css href="/assets/css/wine.css"/>
-	<!--[if lte IE 7]>
-	<fd:css href="/assets/css/wine-ie.css"/>
-	<![endif]-->
 </head>
 <body>
 <%
@@ -56,17 +53,7 @@ if (request.getHeader("User-Agent").indexOf("Mac") > -1) {
 		<th>Family</th>
 		<th>Browser</th>
 	</tr>
-	<tr>
-		<td class="<%= bi.isInternetExplorer() ? "enabled" : "disabled" %>">Internet Explorer:</td>
-		<% if (bi.isInternetExplorer()) { %>
-		<td>
-			<span class="<%= bi.isIE6() ? "enabled2" : "disabled2" %>">IE6 or older</span>
-			<span class="<%= !bi.isIE6() ? "enabled2" : "disabled2" %>">Newer</span>
-		</td>
-		<% } else { %>
-		<td>&nbsp;</td>
-		<% } %>
-	</tr>
+	
 	<tr>
 		<td class="<%= bi.isFirefox() ? "enabled" : "disabled" %>">Mozilla Firefox:</td>
 		<td><%= bi.isFirefox() ? bi.getVersion() : "&nbsp;" %></td>

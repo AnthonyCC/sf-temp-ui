@@ -1,22 +1,36 @@
 package com.freshdirect.webapp.ajax.expresscheckout.deliverypass.servlet;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import org.apache.log4j.Logger;
 
+import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.customer.FDActionInfo;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.template.TemplateException;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.expresscheckout.deliverypass.data.DeliveryPassData;
 import com.freshdirect.webapp.ajax.expresscheckout.deliverypass.service.DeliveryPassService;
+import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
+import com.freshdirect.webapp.taglib.crm.CrmSession;
+import com.freshdirect.crm.CrmAgentModel;
+import com.freshdirect.customer.EnumTransactionSource;
 
 public class DeliveryPassServlet extends BaseJsonServlet {
 
 	private static final long serialVersionUID = -6503107227290115125L;
-
+	private static final Logger LOG = LoggerFactory.getInstance(DeliveryPassServlet.class);
+	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
 		try {
@@ -33,6 +47,42 @@ public class DeliveryPassServlet extends BaseJsonServlet {
 		}
 	}
 
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response, FDUserI user)
+			throws HttpErrorResponse {
+		Map<String, Object> responseData = new HashMap<String, Object>();
+		String actionName = request.getParameter("action");
+		try {
+			if (actionName.equalsIgnoreCase("FLIP_AUTORENEW_ON") || actionName.equalsIgnoreCase("FLIP_AUTORENEW_OFF")) {
+				HttpSession session = request.getSession();
+				CrmAgentModel agentModel = CrmSession.getCurrentAgent(session);
+				EnumTransactionSource source = EnumTransactionSource.WEBSITE;
+				String initiator = "CUSTOMER";
+				if (agentModel != null) {
+					source = EnumTransactionSource.CUSTOMER_REP;
+					initiator = agentModel.getUserId();
+				}
+				String customerID = user.getIdentity().getErpCustomerPK();
+				boolean autoRenew = false;
+				if (actionName.equalsIgnoreCase("FLIP_AUTORENEW_ON")) {
+					autoRenew = true;
+				}
+				try {
+					FDCustomerManager.setHasAutoRenewDP(customerID, source, initiator, autoRenew);
+				} catch (FDResourceException e) {
+					LOG.error("Failed to Select Auto renew on/off", e);
+				}
+			} else {
+				responseData.put("STATUS", "ERROR");
+				responseData.put("MESSAGE", "No actionName when toggling the Auto Renewal button");
+			}
+		} catch (Exception e) {
+			LOG.warn("Expection when toggling Auto Renewal.", e);
+			returnHttpError(500, "No ActionName in the Auto Renewal DeliveryPass Settings page");
+		}
+
+	}
+	
 	@Override
 	protected boolean synchronizeOnUser() {
 		return false;

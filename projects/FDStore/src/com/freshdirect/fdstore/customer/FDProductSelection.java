@@ -8,8 +8,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
-
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.affiliate.ExternalAgency;
 import com.freshdirect.common.context.UserContext;
@@ -19,7 +17,6 @@ import com.freshdirect.common.pricing.EnumTaxationType;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.Price;
 import com.freshdirect.common.pricing.Pricing;
-import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.PricingEngine;
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.EnumSaleStatus;
@@ -46,9 +43,7 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ZonePriceModel;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.framework.util.MathUtil;
-import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.storeapi.content.BrandModel;
-import com.freshdirect.storeapi.content.CategoryModel;
 import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.storeapi.content.ProductReference;
@@ -60,7 +55,6 @@ import com.freshdirect.storeapi.util.ProductInfoUtil;
 public class FDProductSelection implements FDProductSelectionI {
 
 	private static final long	serialVersionUID	= 4143825923906335052L;
-	private static final Logger LOGGER = LoggerFactory.getInstance(FDProductSelection.class);
 	
 	protected final static NumberFormat CURRENCY_FORMATTER = NumberFormat.getCurrencyInstance(Locale.US);
 	protected final static DecimalFormat QUANTITY_FORMATTER = new DecimalFormat("0.##");
@@ -129,24 +123,29 @@ public class FDProductSelection implements FDProductSelectionI {
 	// CONFIGURATION
 	//
 
-	public FDSku getSku() {
+	@Override
+    public FDSku getSku() {
 		return this.orderLine.getSku();
 	}
 
-	public void setSku(FDSku sku) {
+	@Override
+    public void setSku(FDSku sku) {
 		this.orderLine.setSku(sku);
 		this.fireConfigurationChange();
 	}
 
-	public ProductReference getProductRef() {
+	@Override
+    public ProductReference getProductRef() {
 		return this.productRef;
 	}
 
-	public FDConfigurableI getConfiguration() {
+	@Override
+    public FDConfigurableI getConfiguration() {
 		return this.orderLine.getConfiguration();
 	}
 
-	public void setConfiguration(FDConfigurableI configuration) {
+	@Override
+    public void setConfiguration(FDConfigurableI configuration) {
 		this.orderLine.setConfiguration(new FDConfiguration(configuration));
 		this.fireConfigurationChange();
 	}
@@ -155,45 +154,55 @@ public class FDProductSelection implements FDProductSelectionI {
 	// CONFIGURATION CONVENIENCE METHODS
 	//
 
-	public String getSkuCode() {
+	@Override
+    public String getSkuCode() {
 		return this.getSku().getSkuCode();
 	}
 
-	public int getVersion() {
+	@Override
+    public int getVersion() {
 		return this.getSku().getVersion();
 	}
 
-	public String getCategoryName() {
+	@Override
+    public String getCategoryName() {
 		return this.getProductRef().getCategoryId();
 	}
 
-	public String getProductName() {
+	@Override
+    public String getProductName() {
 		return this.getProductRef().getProductId();
 	}
 
-	public double getQuantity() {
+	@Override
+    public double getQuantity() {
 		return this.orderLine.getQuantity();
 	}
 
-	public final void setQuantity(double quantity) {
+	@Override
+    public final void setQuantity(double quantity) {
 		this.setConfiguration(
 			new FDConfiguration(quantity, this.getConfiguration().getSalesUnit(), this.getConfiguration().getOptions()));
 	}
 
-	public String getSalesUnit() {
+	@Override
+    public String getSalesUnit() {
 		return this.orderLine.getSalesUnit();
 	}
 
-	public final void setSalesUnit(String salesUnit) {
+	@Override
+    public final void setSalesUnit(String salesUnit) {
 		this.setConfiguration(
 			new FDConfiguration(this.getConfiguration().getQuantity(), salesUnit, this.getConfiguration().getOptions()));
 	}
 
-	public Map<String,String> getOptions() {
+	@Override
+    public Map<String,String> getOptions() {
 		return this.orderLine.getOptions();
 	}
 
-	public final void setOptions(Map<String,String> options) {
+	@Override
+    public final void setOptions(Map<String,String> options) {
 		this.setConfiguration(
 			new FDConfiguration(this.getConfiguration().getQuantity(), this.getConfiguration().getSalesUnit(), options));
 	}
@@ -202,27 +211,33 @@ public class FDProductSelection implements FDProductSelectionI {
 	// DESCRIPTIONS
 	//
 
-	public String getDescription() {
+	@Override
+    public String getDescription() {
 		return this.orderLine.getDescription();
 	}
 
-	public void setDescription(String desc) {
+	@Override
+    public void setDescription(String desc) {
 		this.orderLine.setDescription(desc);
 	}
 
-	public String getDepartmentDesc() {
+	@Override
+    public String getDepartmentDesc() {
 		return this.orderLine.getDepartmentDesc();
 	}
 
-	public void setDepartmentDesc(String deptDesc) {
+	@Override
+    public void setDepartmentDesc(String deptDesc) {
 		this.orderLine.setDepartmentDesc(deptDesc);
 	}
 
-	public String getConfigurationDesc() {
+	@Override
+    public String getConfigurationDesc() {
 		return this.orderLine.getConfigurationDesc();
 	}
 
-	public void setConfigurationDesc(String configDesc) {
+	@Override
+    public void setConfigurationDesc(String configDesc) {
 		this.orderLine.setConfigurationDesc(configDesc);
 	}
 
@@ -238,7 +253,8 @@ public class FDProductSelection implements FDProductSelectionI {
 		return this.dirty;
 	}
 
-	public void refreshConfiguration() throws FDResourceException, FDInvalidConfigurationException {
+	@Override
+    public void refreshConfiguration() throws FDResourceException, FDInvalidConfigurationException {
 		if (this.dirty) {
 
 			FDProduct fdProduct = this.lookupFDProduct();
@@ -284,17 +300,18 @@ public class FDProductSelection implements FDProductSelectionI {
 	// CONVENIENCE
 	//
 
-	public ProductModel lookupProduct() {
+	@Override
+    public ProductModel lookupProduct() {
 		// In CRM no product models are expected
 		if (this.productRef == null || ProductReferenceImpl.NULL_REF.equals(productRef)) {
 			return null;
 		}
 		
-	    return ProductPricingFactory.getInstance().getPricingAdapter(this.productRef.lookupProductModel(),
-                getUserContext().getPricingContext() != null ? getUserContext().getPricingContext() : PricingContext.DEFAULT);
+        return ProductPricingFactory.getInstance().getPricingAdapter(this.productRef.lookupProductModel());
 	}
 
-	public FDProduct lookupFDProduct() {
+	@Override
+    public FDProduct lookupFDProduct() {
 		try {
 			return FDCachedFactory.getProduct(this.orderLine.getSku());
 		} catch (FDSkuNotFoundException e) {
@@ -304,7 +321,8 @@ public class FDProductSelection implements FDProductSelectionI {
 		}
 	}
 
-	public FDProductInfo lookupFDProductInfo() {
+	@Override
+    public FDProductInfo lookupFDProductInfo() {
 		try {
 			return FDCachedFactory.getProductInfo(this.getSkuCode());
 		} catch (FDSkuNotFoundException e) {
@@ -379,7 +397,8 @@ public class FDProductSelection implements FDProductSelectionI {
 		return this.price.getCouponDiscountValue();
 	}
 	
-	public String getUnitPrice() {
+	@Override
+    public String getUnitPrice() {
 		// dirty requirement so got to do this
 		Price discountP=null;
 		double disAmount=this.price.getBasePrice();
@@ -437,7 +456,8 @@ public class FDProductSelection implements FDProductSelectionI {
 		return this.orderLine.getCouponDiscount();
 	}
 	
-	public double getConfiguredPrice() {
+	@Override
+    public double getConfiguredPrice() {
 		return this.price.getConfiguredPrice();
 	}
 
@@ -445,23 +465,28 @@ public class FDProductSelection implements FDProductSelectionI {
 	// CONVENIENCE
 	//
 
-	public boolean isAlcohol() {
+	@Override
+    public boolean isAlcohol() {
 		return this.orderLine.isAlcohol();
 	}
 	
-	public boolean isWine() {
+	@Override
+    public boolean isWine() {
 		return this.orderLine.isWine();
 	}
 
-	public boolean isBeer() {
+	@Override
+    public boolean isBeer() {
 		return this.orderLine.isBeer();
 	}
 
-	public boolean isPerishable() {
+	@Override
+    public boolean isPerishable() {
 		return this.orderLine.isPerishable();
 	}
 
-	public boolean isKosher() {
+	@Override
+    public boolean isKosher() {
 		try {
 			FDProduct pr = lookupFDProduct();
 			FDProductInfo prodInfo = this.lookupFDProductInfo();
@@ -472,7 +497,8 @@ public class FDProductSelection implements FDProductSelectionI {
 		}
 	}
 
-	public boolean isPlatter() {
+	@Override
+    public boolean isPlatter() {
 		try {
 			FDProduct fdProduct = this.lookupFDProduct();
 			FDProductInfo prodInfo = this.lookupFDProductInfo();
@@ -483,17 +509,20 @@ public class FDProductSelection implements FDProductSelectionI {
 		}
 	}
 
-	public boolean isSoldBySalesUnits() {
+	@Override
+    public boolean isSoldBySalesUnits() {
 		ProductModel productNode = this.lookupProduct();
 		return productNode == null ? false : productNode.isSoldBySalesUnits();
 	}
 
-	public boolean isPricedByLb() {
+	@Override
+    public boolean isPricedByLb() {
 		FDProduct fdProduct = this.lookupFDProduct();
 		return fdProduct.isPricedByLb();
 	}
 
-	public boolean isSoldByLb() {
+	@Override
+    public boolean isSoldByLb() {
 		FDProduct fdProduct = this.lookupFDProduct();
 		return fdProduct.isSoldByLb();
 	}
@@ -526,7 +555,8 @@ public class FDProductSelection implements FDProductSelectionI {
 	// FORMATTING, DISPLAY
 	// 
 
-	public String getSalesUnitDescription() {
+	@Override
+    public String getSalesUnitDescription() {
 		return "LB".equalsIgnoreCase(this.getSalesUnit()) ? "lb" : "";
 	}
 
@@ -547,7 +577,8 @@ public class FDProductSelection implements FDProductSelectionI {
 		return this.isSoldBySalesUnits() ? this.lookupFDSalesUnit().getDescriptionUnit() : "";
 	}
 
-	public String getDisplayQuantity() {
+	@Override
+    public String getDisplayQuantity() {
 		StringBuffer qty = new StringBuffer();
 		if (this.isSoldBySalesUnits()) {
 			FDSalesUnit unit = this.lookupFDSalesUnit();
@@ -560,7 +591,8 @@ public class FDProductSelection implements FDProductSelectionI {
 		return qty.toString();
 	}
 
-	public String getLabel() {
+	@Override
+    public String getLabel() {
 		ProductModel prod = this.lookupProduct();
 		String quantText = prod == null ? null : prod.getQuantityTextSecondary();
 		if (quantText != null) {
@@ -572,7 +604,8 @@ public class FDProductSelection implements FDProductSelectionI {
 		return this.isSoldByLb() ? "lb" : "";
 	}
 
-	public ErpAffiliate getAffiliate() {
+	@Override
+    public ErpAffiliate getAffiliate() {
 		return this.lookupFDProduct().getAffiliate(this.orderLine.getUserContext().getStoreContext().getEStoreId());
 	}
 
@@ -611,19 +644,23 @@ public class FDProductSelection implements FDProductSelectionI {
 		return this.orderLine.getDiscount();
 	}
 
-	public SaleStatisticsI getStatistics() {
+	@Override
+    public SaleStatisticsI getStatistics() {
 		return this.statistics;
 	}
 	
-	public void setStatistics(SaleStatisticsI stats){
+	@Override
+    public void setStatistics(SaleStatisticsI stats){
 		this.statistics = stats;
 	}
 
-	public String getCustomerListLineId() {
+	@Override
+    public String getCustomerListLineId() {
 		return customerListLineId;
 	}
 
-	public void setCustomerListLineId(String customerListLineId) {
+	@Override
+    public void setCustomerListLineId(String customerListLineId) {
 		this.customerListLineId = customerListLineId;
 	}
 	
@@ -631,51 +668,63 @@ public class FDProductSelection implements FDProductSelectionI {
 		this.invalidConfig = invalidConfig;
 	}
 	
-	public boolean isInvalidConfig(){
+	@Override
+    public boolean isInvalidConfig(){
 		return invalidConfig;
 	}
 	
-	public String getRecipeSourceId() {
+	@Override
+    public String getRecipeSourceId() {
 		return this.orderLine.getRecipeSourceId();
 	}
 	
-	public void setRecipeSourceId(String recipeSourceId) {
+	@Override
+    public void setRecipeSourceId(String recipeSourceId) {
 		this.orderLine.setRecipeSourceId(recipeSourceId);
 	}
 	
-	public String getYmalCategoryId() {
+	@Override
+    public String getYmalCategoryId() {
 		return this.orderLine.getYmalCategoryId();
 	}
 	
-	public void setYmalCategoryId(String ymalCategoryId) {
+	@Override
+    public void setYmalCategoryId(String ymalCategoryId) {
 		this.orderLine.setYmalCategoryId(ymalCategoryId);
 	}
 	
-	public String getYmalSetId() {
+	@Override
+    public String getYmalSetId() {
 		return this.orderLine.getYmalSetId();
 	}
 	
-	public void setYmalSetId(String ymalSetId) {
+	@Override
+    public void setYmalSetId(String ymalSetId) {
 		this.orderLine.setYmalSetId(ymalSetId);
 	}
 	
-	public String getOriginatingProductId() {
+	@Override
+    public String getOriginatingProductId() {
 		return this.orderLine.getOriginatingProductId();
 	}
 	
-	public void setOriginatingProductId(String originatingProductId) {
+	@Override
+    public void setOriginatingProductId(String originatingProductId) {
 		this.orderLine.setOriginatingProductId(originatingProductId);
 	}
 	
-	public boolean isRequestNotification() {
+	@Override
+    public boolean isRequestNotification() {
 		return orderLine.isRequestNotification();
 	}
 	
-	public void setRequestNotification(boolean requestNotification) {
+	@Override
+    public void setRequestNotification(boolean requestNotification) {
 		this.orderLine.setRequestNotification(requestNotification);
 	}
 
-	public EnumOrderLineRating getProduceRating() {
+	@Override
+    public EnumOrderLineRating getProduceRating() {
 		return orderLine.getProduceRating();
 	}
 
@@ -687,11 +736,13 @@ public class FDProductSelection implements FDProductSelectionI {
 		this.orderLine.setDiscountAmount(discountAmount);
 	}
 	
-	public void setFDGroup(FDGroup group) {
+	@Override
+    public void setFDGroup(FDGroup group) {
         this.orderLine.setFDGroup(group);
 	}
 	
-	 public FDGroup getFDGroup() {
+	 @Override
+    public FDGroup getFDGroup() {
 		 FDGroup group = this.orderLine.getFDGroup();
 			if(group == null) {//If not in the line item level check sku level.
 				FDProductInfo _p=this.lookupFDProductInfo();
@@ -712,28 +763,34 @@ public class FDProductSelection implements FDProductSelectionI {
 		this.orderLine.setDiscountFlag(discountApplied);
 	}
 
-	public double getFixedPrice() {
+	@Override
+    public double getFixedPrice() {
 		return this.fixedPrice;
 	}
 
-	public void setFixedPrice(double price) {
+	@Override
+    public void setFixedPrice(double price) {
 		this.fixedPrice=price;
 	}
 	
-	public UserContext getUserContext() {
+	@Override
+    public UserContext getUserContext() {
 		return orderLine.getUserContext();
 	}
 	
-	public void setUserContext(UserContext uCtx) {
+	@Override
+    public void setUserContext(UserContext uCtx) {
 		this.orderLine.setUserContext(uCtx);
 		this.orderLine.setPlantID(getPickingPlantId());
 	}
 	
-	public List<ErpClientCode> getClientCodes() {
+	@Override
+    public List<ErpClientCode> getClientCodes() {
 		return this.orderLine.getClientCodes();
 	}
 	
-	public boolean hasBrandName(Set<String> brandNames) {
+	@Override
+    public boolean hasBrandName(Set<String> brandNames) {
 			ProductModel pm = ContentFactory.getInstance().getProductByName(this.getCategoryName(), this.getProductName());
 			if(pm != null && pm.getBrands() != null) {
 				for ( BrandModel brand : pm.getBrands() ) {
@@ -745,16 +802,19 @@ public class FDProductSelection implements FDProductSelectionI {
 		return false;
 	}
 	
-	public void setGroupQuantity(double quantity){
+	@Override
+    public void setGroupQuantity(double quantity){
 		this.orderLine.setGroupQuantity(quantity);
 		this.fireConfigurationChange();
 	}
 	
-	public double getGroupQuantity(){
+	@Override
+    public double getGroupQuantity(){
 		return this.orderLine.getGroupQuantity();
 	}
 	
-	public double getGroupScaleSavings() {
+	@Override
+    public double getGroupScaleSavings() {
 		double savings = 0.0;
 		try {
 				FDGroup group = this.getFDGroup();
@@ -773,39 +833,47 @@ public class FDProductSelection implements FDProductSelectionI {
 		return orderLine.getSustainabilityRating();
 	}
 	
-	public double getBasePrice() {
+	@Override
+    public double getBasePrice() {
 		if(this.price == null) {
 			return 0.0;
 		}
 		return this.price.getBasePrice();
 	}
 	
-	public String getUpc(){
+	@Override
+    public String getUpc(){
 		FDProductInfo prodInfo =lookupFDProductInfo();
 		return null !=prodInfo?prodInfo.getUpc():"";
 	}
 
-	public Date getDeliveryStartDate() {
+	@Override
+    public Date getDeliveryStartDate() {
 		return deliveryStartDate;
 	}
 
-	public void setDeliveryStartDate(Date deliveryStartDate) {
+	@Override
+    public void setDeliveryStartDate(Date deliveryStartDate) {
 		this.deliveryStartDate = deliveryStartDate;
 	}
 
-	public String getOrderId() {
+	@Override
+    public String getOrderId() {
 		return orderId;
 	}
 
-	public void setOrderId(String orderId) {
+	@Override
+    public void setOrderId(String orderId) {
 		this.orderId = orderId;
 	}
 	
-	public EnumSaleStatus getSaleStatus() {
+	@Override
+    public EnumSaleStatus getSaleStatus() {
 		return saleStatus;
 	}
 
-	public void setSaleStatus(EnumSaleStatus saleStatus) {
+	@Override
+    public void setSaleStatus(EnumSaleStatus saleStatus) {
 		this.saleStatus = saleStatus;
 	}
 	
@@ -813,7 +881,8 @@ public class FDProductSelection implements FDProductSelectionI {
 		this.orderLine.setOrderLineId(orderLineId);
 	}
 	
-	public String getOrderLineId(){
+	@Override
+    public String getOrderLineId(){
 		return this.orderLine.getOrderLineId();
 	}
 

@@ -70,7 +70,7 @@
 				<td>
 				<% 
                   //Convert this to Product Pricing Adapter model for zone pricing.
-                  ProductModel pm = ProductPricingFactory.getInstance().getPricingAdapter(peakProduce.getProductModel(), p_user.getPricingContext());
+                  ProductModel pm = ProductPricingFactory.getInstance().getPricingAdapter(peakProduce.getProductModel());
 				  String prodNameAttribute = JspMethods.getProductNameToUse(peakProduce);
 				  DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,pm.getParentNode().getContentName(),pm,prodNameAttribute,true);
 				  int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
@@ -88,7 +88,7 @@
 				<td>
 				<% 
 					String prodNameAttribute = JspMethods.getProductNameToUse(peakProduce);
-					ProductModel pm = ProductPricingFactory.getInstance().getPricingAdapter(peakProduce.getProductModel(), p_user.getPricingContext());
+					ProductModel pm = ProductPricingFactory.getInstance().getPricingAdapter(peakProduce.getProductModel());
 					ProductImpression pi = new ProductImpression(pm);
 					DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,pm.getParentNode().getContentName(),pm,prodNameAttribute,true);
 					int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;

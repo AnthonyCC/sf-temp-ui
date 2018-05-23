@@ -24,8 +24,6 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.PaymentManager;
-import com.freshdirect.payment.ejb.PaymentGatewayHome;
-import com.freshdirect.payment.ejb.PaymentGatewaySB;
 
 public class DlvPaymentManager {
 	
@@ -145,20 +143,6 @@ public class DlvPaymentManager {
 		}
 	}
 			
-	
-	private PaymentGatewaySB getPaymentGatewaySB() throws FDResourceException {
-		try {
-			PaymentGatewayHome home = (PaymentGatewayHome)serviceLocator.getRemoteHome(DlvProperties.getPaymentGatewayHome());
-			return home.create(); 
-		} catch (NamingException e) {
-			throw new FDResourceException(e);
-		}catch (CreateException e){
-			throw new FDResourceException(e);
-		}catch(RemoteException e){
-			throw new FDResourceException(e);
-		}
-	}
-	
 	private ErpCustomerManagerSB getErpCustomerManagerSB() throws FDResourceException {
 		try {
 			ErpCustomerManagerHome home = (ErpCustomerManagerHome)serviceLocator.getRemoteHome(DlvProperties.getCustomerManagerHome());

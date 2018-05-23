@@ -41,7 +41,7 @@ import com.freshdirect.storeapi.content.YmalSet;
 import com.freshdirect.storeapi.content.YmalSetSource;
 
 public class ProductModelPricingAdapter implements ProductModel, Serializable,
-		Cloneable, PrioritizedI {
+        Cloneable, PrioritizedI {
 
 	private static final long serialVersionUID = -6112229358347075169L;
 

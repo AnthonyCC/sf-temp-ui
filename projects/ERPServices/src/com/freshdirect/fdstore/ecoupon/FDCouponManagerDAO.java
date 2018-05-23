@@ -316,57 +316,6 @@ public class FDCouponManagerDAO {
 		return couponInfo;
 	}
 	
-	public static List<FDCouponInfo> getCouponsForCRMSearch(Connection conn, String searchTerm) throws SQLException {  	
-			String QUERY = "SELECT * FROM CUST.FDCOUPON FC, CUST.FDCOUPON_REQ_UPC UPC,CUST.FDCOUPON_HISTORY CH WHERE FC.ID=UPC.FDCOUPON_ID AND FC.VERSION=(SELECT MAX(VERSION) FROM CUST.FDCOUPON_HISTORY) AND " +
-					" CH.VERSION=(select min(fc1.version) from cust.fdcoupon fc1 where FC1.COUPON_ID=FC.COUPON_ID)" +
-							" AND  EXISTS(SELECT 1 from CUST.FDCOUPON_REQ_UPC UPC where UPC.FDCOUPON_ID=fc.id) and (lower(short_desc) like (?) or coupon_id = ? ";		       
-			List<FDCouponInfo> coupons= new ArrayList<FDCouponInfo>();
-			if(FDCouponProperties.isCouponCacheDaysLimitEnabled()){
-				int days = FDCouponProperties.getCouponCacheDaysLimit();
-				QUERY = "SELECT * FROM CUST.FDCOUPON FC,CUST.FDCOUPON_REQ_UPC UPC,CUST.FDCOUPON_HISTORY CH WHERE FC.ID=UPC.FDCOUPON_ID AND FC.VERSION=(SELECT MAX(FC1.VERSION) FROM CUST.FDCOUPON FC1,CUST.FDCOUPON_HISTORY CH1 WHERE FC1.COUPON_ID=FC.COUPON_ID"+
-						" AND FC1.VERSION=CH1.VERSION AND CH1.DATE_CREATED >(SYSDATE-"+days+")) AND  EXISTS(SELECT 1 from CUST.FDCOUPON_REQ_UPC UPC where UPC.FDCOUPON_ID=fc.id) and  CH.VERSION=(select min(fc2.version) from cust.fdcoupon fc2 where FC2.COUPON_ID=FC.COUPON_ID) and (lower(short_desc) like (?) or coupon_id = ? ";
-			}
-			PreparedStatement ps = null;
-			boolean coupon_value = false;
-			double value = 0;
-			try {
-				value = Double.parseDouble(searchTerm);
-				QUERY = QUERY + "or value = ?)";
-				coupon_value = true;
-			} catch (NumberFormatException e) {
-				QUERY = QUERY + ")";
-			}
-			
-			ps = conn.prepareStatement(QUERY);			
-			ps.setString(1, "%" + searchTerm.toLowerCase() + "%");
-			ps.setString(2, searchTerm);
-			if(coupon_value) {
-				ps.setDouble(3, value);
-			}
-			ResultSet rs = ps.executeQuery();
-			loadCouponsFromResultSet(coupons, rs);
-			rs.close();
-			ps.close();
-			
-			return coupons;
-	}
-	
-	public static int getMaxCouponsVersion(Connection conn) throws SQLException {  	
-		String QUERY = "select max(version) from CUST.FDCOUPON_HISTORY";		       
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		try {
-			ps = conn.prepareStatement(QUERY);			
-			rs = ps.executeQuery();
-			if (rs.next()) {
-				return rs.getInt(1);			
-			}
-		} finally {
-			rs.close();
-			ps.close();
-		}		
-		return 0;
-	}
 	
 	public static boolean checkIfLatestCouponsExists(Connection conn, Date lastModified) throws SQLException {  	
 		boolean latestCouponsExists = true;
@@ -390,47 +339,5 @@ public class FDCouponManagerDAO {
 		return latestCouponsExists;
 	}
 	
-	public static List<FDCustomerCouponHistoryInfo> getCustomersCouponHistoryInfo(Connection conn,String customerId) throws SQLException{
-		List<FDCustomerCouponHistoryInfo> list = new ArrayList<FDCustomerCouponHistoryInfo>();
-		String QUERY = "select cl.*,s.id as \"SALE_ID\",s.status as \"SALE_STATUS\",S.CROMOD_DATE as \"SALE_DATE\", sa.requested_date as \"DELIVERY_DATE\" from cust.couponline cl, cust.sale s,cust.orderline ol,cust.salesaction sa"
-                        + " where s.type='REG' and CL.ORDERLINE_ID=ol.id and OL.SALESACTION_ID=sa.id and sa.sale_id=s.id and SA.ACTION_DATE=S.CROMOD_DATE and S.CUSTOMER_ID=?"
-                        + " ";//and not exists(select 1 from CUST.COUPON_TRANS ct, cust.salesaction sa1 where ct.salesaction_id=sa1.id and sa1.sale_id=s.id and ct.trans_type='CANCEL_ORDER' and ct.trans_status in ('S','P'))";
-		
-		int days = FDCouponProperties.getCustomerCouponUsageHistoryDaysLimit();
-		if(days >0){
-			QUERY="select cl.*,s.id as \"SALE_ID\",s.status as \"SALE_STATUS\",S.CROMOD_DATE as \"SALE_DATE\", sa.requested_date as \"DELIVERY_DATE\" from cust.couponline cl, cust.sale s,cust.orderline ol,cust.salesaction sa"
-                    + " where s.type='REG' and CL.ORDERLINE_ID=ol.id and OL.SALESACTION_ID=sa.id and sa.sale_id=s.id and SA.ACTION_DATE=S.CROMOD_DATE and S.CUSTOMER_ID=?"
-                    + " and SA.REQUESTED_DATE > (SYSDATE-"+ days +")"
-                    + " ";//and not exists(select 1 from CUST.COUPON_TRANS ct, cust.salesaction sa1 where ct.salesaction_id=sa1.id and sa1.sale_id=s.id and ct.trans_type='CANCEL_ORDER' and ct.trans_status in ('S','P'))";
-                   
-		}
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		try {
-			ps = conn.prepareStatement(QUERY);	
-			ps.setString(1, customerId);
-			rs = ps.executeQuery();
-			while (rs.next()) {
-				FDCustomerCouponHistoryInfo info =new FDCustomerCouponHistoryInfo();
-				info.setCouponId(rs.getString("COUPON_ID"));
-				info.setCouponDesc(rs.getString("COUPON_DESC"));
-				info.setVersion(rs.getInt("VERSION"));
-				info.setDiscountAmt(rs.getDouble("DISC_AMT"));
-				info.setSaleId(rs.getString("SALE_ID"));
-				info.setSaleStatus(EnumSaleStatus.getSaleStatus(rs.getString("SALE_STATUS")));
-				info.setSaleDate(rs.getDate("SALE_DATE"));
-				info.setDeliveryDate(rs.getDate("DELIVERY_DATE"));
-				list.add(info);
-			}
-		} finally {
-			if(null !=rs){
-				rs.close();
-			}
-			if(null !=ps){
-				ps.close();
-			}
-		}	
-		return list;
-	}
 }
 

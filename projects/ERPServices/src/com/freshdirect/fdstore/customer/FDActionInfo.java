@@ -29,8 +29,6 @@ public class FDActionInfo implements Serializable {
     private EnumNotificationType taxationType;
     private EnumPaymentMethodDefaultType paymentDefaultType;
     private boolean isDebitCardSwitch;
-    private String clientIp;
-    
     
     public FDActionInfo(  EnumTransactionSource source, FDIdentity identity, String initiator, String note, CrmAgentModel agent, String fdUserId) {
 		this(EnumEStoreId.FD, source, identity, initiator, note, agent, null,fdUserId );
@@ -193,11 +191,4 @@ public class FDActionInfo implements Serializable {
 		this.isDebitCardSwitch = isDebitCardSwitch;
 	}
 	
-	public void setClientIp(String clientIp) {
-		this.clientIp=clientIp;
-	}
-	
-	public String getClientIp() {
-		return clientIp;
-	}
 }

@@ -40,6 +40,7 @@ public class FormTimeslotData {
     private boolean minOrderMet;
     private double deliveryFee;
     private double promoDeliveryFee;
+    private boolean isMidWeekDlvPassApplicable;
 	
     public String getId() {
         return id;
@@ -340,5 +341,13 @@ public class FormTimeslotData {
     public void setPromoDeliveryFee(double promoDeliveryFee) {
         this.promoDeliveryFee = promoDeliveryFee;
     }
+
+	public boolean isMidWeekDlvPassApplicable() {
+		return isMidWeekDlvPassApplicable;
+	}
+
+	public void setMidWeekDlvPassApplicable(boolean isMidWeekDlvPassApplicable) {
+		this.isMidWeekDlvPassApplicable = isMidWeekDlvPassApplicable;
+	}
 
 }

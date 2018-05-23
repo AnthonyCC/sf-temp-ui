@@ -49,15 +49,18 @@ public class EBTSettlementCronRunner {
 			SaleCronHome home = (SaleCronHome) ctx.lookup("freshdirect.dataloader.SaleCron");
 
 			SaleCronSB sb = home.create();
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SaleCronSB)){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SaleCronSBPostAuthSales)){
 				SaleCronService.getInstance().postAuthEBTSales(captureTimeout);
+			}else {
+				sb.postAuthEBTSales(captureTimeout);
+			}
+			
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SaleCronSB)) {
 				SaleCronService.getInstance().captureEBTSales(captureTimeout);
 				SaleCronService.getInstance().settleEBTSales();
-			}
-			else{
-			sb.postAuthEBTSales(captureTimeout);
-			sb.captureEBTSales(captureTimeout);
-			sb.settleEBTSales();
+			} else {
+				sb.captureEBTSales(captureTimeout);
+				sb.settleEBTSales();
 			}
 			LOGGER.info("EBTSettlementCron finished");
 		} catch (Exception e) {

@@ -1,7 +1,7 @@
 <%-- CategoryModel categoryNode: required --%>
 <%@page import="com.freshdirect.fdstore.FDStoreProperties"
 		import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil"%>
-<% if (FDStoreProperties.isSocialButtonsEnabled() && !new BrowserInfo(request).isIE6()) {
+<% if (FDStoreProperties.isSocialButtonsEnabled()) {
 	final String BASE = FDStoreProperties.getHostUrl();
 	final String url = BASE + "/category.jsp?catId=" + categoryNode.getContentName();
 	//No Pinterest, no image

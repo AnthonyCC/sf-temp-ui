@@ -102,7 +102,7 @@ public class QSFromListFilterServlet extends QuickShopServlet {
 			
 			List<FilteringSortingItem<QuickShopLineItemWrapper>> filterItems = prepareForFiltering(items);
 			
-			QuickShopFilterImpl filter = new QuickShopFilterImpl(nav, user, filters, filterItems, QuickShopHelper.getActiveReplacements( request.getSession() ), null, null);
+            QuickShopFilterImpl filter = new QuickShopFilterImpl(nav, filters, filterItems, QuickShopHelper.getActiveReplacements(request.getSession()), null, null);
 			result = filter.doFlow(nav, filterItems);
 			
 			// post-process

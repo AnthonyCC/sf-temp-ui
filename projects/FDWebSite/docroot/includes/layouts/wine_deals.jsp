@@ -149,7 +149,7 @@ FreshDirect.Wine.addTabItem("deals", "<%= "tab_" + subcategory.getContentKey().g
 
 <%
 // sort by sale
-products = SmartSearchUtils.sortBySale(products, user.getPricingContext(), true);
+products = SmartSearchUtils.sortBySale(products, true);
 
 ProductModel product1 = products.size() > 0 ? products.get(0) : null;
 ProductModel product2 = products.size() > 1 ? products.get(1) : null;

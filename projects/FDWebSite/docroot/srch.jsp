@@ -21,6 +21,9 @@
 <%@ taglib uri="unbxd" prefix='unbxd'%>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c'%>
 
+<fd:OptionalParameterValidator parameter="pageSize" parameterType="<%=Integer.class.getSimpleName()%>"/>
+<fd:OptionalParameterValidator parameter="activePage" parameterType="<%=Integer.class.getSimpleName()%>"/>
+
 <fd:CheckLoginStatus id="user" guestAllowed='true'
 	recognizedAllowed='true' />
 
@@ -216,6 +219,14 @@
 		<div class="search-input NOMOBWEB">
 			<soy:render template="srch.searchParams"
 				data="${browsePotato.searchParams}" />
+			<script>
+				$jq(document).on('ready', function() {
+					if ((document.referrer).indexOf('expresssearch.jsp') !== -1) {
+						$jq('<button class="right cssbutton green transparent icon-arrow-left2-before">Back to Express Search</button>').insertBefore('.srch .search-input');
+						$jq('.srch .tabs .itemcount').css({'max-width': '500px'});
+					}
+				});
+			</script>
 		</div>
 	</tmpl:put>
 

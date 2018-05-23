@@ -146,6 +146,7 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 	private Date originalCutoffDateTime;
 	private FDDeliveryZoneInfo zoneInfo;
 	private int capacityUtilizationPercentage;
+	private boolean isMidWeekDlvPassApplicable;
 
 	private static final DecimalFormat premiumAmountFmt = new DecimalFormat(
 			"#.##");
@@ -686,6 +687,14 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 
 	public void setCapacityUtilizationPercentage(int capacityUtilizationPercentage) {
 		this.capacityUtilizationPercentage = capacityUtilizationPercentage;
+	}
+
+	public boolean isMidWeekDlvPassApplicable() {
+		return isMidWeekDlvPassApplicable;
+	}
+
+	public void setMidWeekDlvPassApplicable(boolean isMidWeekDlvPassApplicable) {
+		this.isMidWeekDlvPassApplicable = isMidWeekDlvPassApplicable;
 	}
 	
 	

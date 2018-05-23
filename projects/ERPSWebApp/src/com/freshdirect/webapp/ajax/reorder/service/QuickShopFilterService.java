@@ -106,7 +106,7 @@ public class QuickShopFilterService {
 		}
         QuickShopSearchService.defaultService().search(nav.getSearchTerm(), items, user, servletRequest);
 		List<FilteringSortingItem<QuickShopLineItemWrapper>> filterItems = QuickShopServlet.prepareForFiltering(items);
-		QuickShopFilterImpl filter = new QuickShopFilterImpl(nav, user, filters, filterItems, QuickShopHelper.getActiveReplacements(session), tab, requestData);
+        QuickShopFilterImpl filter = new QuickShopFilterImpl(nav, filters, filterItems, QuickShopHelper.getActiveReplacements(session), tab, requestData);
 		LOG.info("Start filtering process");
 		result = filter.doFlow(nav, filterItems);
         if (EnumQuickShopTab.PAST_ORDERS.equals(tab)) {

@@ -724,7 +724,7 @@ public class FourMinuteMealsHelper {
 		// scan prices for max price filter
 		List<ProductModelPricingAdapter> pricedProducts = new ArrayList<ProductModelPricingAdapter>( newCache.allProducts.size() );
 		for ( ProductModel p : newCache.allProducts ) {
-			pricedProducts.add( ProductPricingFactory.getInstance().getPricingAdapter( p, PricingContext.DEFAULT ) );
+            pricedProducts.add(ProductPricingFactory.getInstance().getPricingAdapter(p));
 		}
 
         double maxPrice = 0;
@@ -864,7 +864,7 @@ public class FourMinuteMealsHelper {
 		// create product pricing adapters from actual pricing context
 		List<ProductModelPricingAdapter> pricedWorkSet = new ArrayList<ProductModelPricingAdapter>( workSet.size() );
 		for ( ProductModel prod : workSet ) {
-			pricedWorkSet.add( ProductPricingFactory.getInstance().getPricingAdapter( prod , pricingContext ) );
+            pricedWorkSet.add(ProductPricingFactory.getInstance().getPricingAdapter(prod));
 		}
 
 		// filter by price

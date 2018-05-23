@@ -112,7 +112,7 @@ public class ModifyOrderHelper {
 	}
 
 	public static void handleDlvPass(FDModifyCartModel cart, FDUserI fdUser) {
-		if(fdUser.getShoppingCart().getDeliveryPassCount()>0 || fdUser.isDlvPassActive() || ( fdUser.applyFreeTrailOptinBasedDP() )){
+		if(fdUser.getShoppingCart().isDlvPassApplicableByCartLines() || fdUser.isDlvPassActive() || ( fdUser.applyFreeTrailOptinBasedDP() )){
 			cart.setDlvPassApplied(true);
 		}
 	}

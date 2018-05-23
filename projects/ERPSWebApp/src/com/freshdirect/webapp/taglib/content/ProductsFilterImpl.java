@@ -105,7 +105,7 @@ public class ProductsFilterImpl extends FilteringFlow<ProductModel> {
 	@Override
 	protected void preProcess(List<FilteringSortingItem<ProductModel>> items) {
 		for(FilteringSortingItem<ProductModel> item:items){
-			item.setNode(ProductPricingFactory.getInstance().getPricingAdapter(item.getNode(), getPricingContext()));
+            item.setNode(ProductPricingFactory.getInstance().getPricingAdapter(item.getNode()));
 		}		
 	}
 	
@@ -137,8 +137,9 @@ public class ProductsFilterImpl extends FilteringFlow<ProductModel> {
 
 	public PricingContext getPricingContext() {
 		getFDUser();
-		if (user != null)
-			return user.getPricingContext();
+        if (user != null) {
+            return user.getUserContext().getPricingContext();
+        }
 		return PricingContext.DEFAULT;
 	}
 	

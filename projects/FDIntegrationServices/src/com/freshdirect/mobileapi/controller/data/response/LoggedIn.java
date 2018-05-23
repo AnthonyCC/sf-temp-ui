@@ -48,6 +48,8 @@ public class LoggedIn extends Message {
     private List<String> providers;
     private String zipCode;
 
+    private String erpCustomerPK;
+
     public boolean isTcAcknowledge() {
 		return tcAcknowledge;
 	}
@@ -271,4 +273,12 @@ public class LoggedIn extends Message {
 	public void setIsreferralEligible(boolean isreferralEligible) {
 		this.isreferralEligible = isreferralEligible;
 	}
+
+    public String getErpCustomerPK() {
+        return erpCustomerPK;
+    }
+
+    public void setErpCustomerPK(String erpCustomerPK) {
+        this.erpCustomerPK = erpCustomerPK;
+    }
 }

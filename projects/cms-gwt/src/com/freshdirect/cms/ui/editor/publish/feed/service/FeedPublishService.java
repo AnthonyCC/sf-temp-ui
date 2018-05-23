@@ -92,7 +92,7 @@ public class FeedPublishService {
 
             publish.setStoreKey(storeKey);
             
-            LOGGER.debug("Feed publish starts for the store ======= "+(storeKey!=null?storeKey.getId():storeKey));
+            LOGGER.debug("Feed publish starts for the store ======= "+ (storeKey!=null ? storeKey.getId() : storeKey) + "-->" + propertyResolverService.getFeedPublishUri());
 
             FeedPublishMessage message = new FeedPublishMessage(FeedPublishMessageLevel.INFO, "Starting feed publish", publish.getStoreKey().id);
             feedPublishMessagingService.addMessage(publish, message);

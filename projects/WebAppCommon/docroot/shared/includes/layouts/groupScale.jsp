@@ -988,7 +988,7 @@ final int W_GROUPSCALE_TOTAL = 601;
 				txCount++; //actual, transactional List count
 				continue; //skip shown item
 			}
-			ProductModel displayProduct = ProductPricingFactory.getInstance().getPricingAdapter(sku.getProductModel(), user.getPricingContext());
+			ProductModel displayProduct = ProductPricingFactory.getInstance().getPricingAdapter(sku.getProductModel());
 			imgLinkUrl = response.encodeURL("/group.jsp?catId="+currentFolder
 				+ "&prodCatId="+displayProduct.getParentNode()
 				+ "&productId="+displayProduct.getContentName())+"&trk=trans";

@@ -55,7 +55,7 @@ import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.storeapi.application.CmsManager;
-import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartOperations;
+import com.freshdirect.webapp.ajax.cart.CartOperations;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.AddressForm;
 import com.freshdirect.webapp.taglib.fdstore.AddressUtil;
@@ -68,7 +68,9 @@ import com.freshdirect.webapp.util.StandingOrderHelper;
 
 /** keep in sync with LocationHandlerTag*/
 public class DeliveryAddressManipulator extends CheckoutManipulator {
-	private static Category		LOGGER	= LoggerFactory.getInstance( DeliveryAddressManipulator.class );
+
+    private static final Category LOGGER = LoggerFactory.getInstance(DeliveryAddressManipulator.class);
+
 	private boolean locationHandlerMode;
 
     public DeliveryAddressManipulator(HttpServletRequest request, HttpServletResponse response, ActionResult result, String actionName) {
@@ -91,7 +93,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			LOGGER.debug("setRegularDeliveryAddress :" + addressId);
 		}
 		FDCartModel cart = user.getShoppingCart();
-		if (user.getSelectedServiceType() == EnumServiceType.HOME && (user.isDlvPassActive() || cart.getDeliveryPassCount() > 0 || (user.applyFreeTrailOptinBasedDP())) && !(cart.isDlvPromotionApplied())) {
+		if (user.getSelectedServiceType() == EnumServiceType.HOME && (user.isDlvPassActive() || cart.isDlvPassApplicableByCartLines() || (user.applyFreeTrailOptinBasedDP())) && !(cart.isDlvPromotionApplied())) {
 			cart.setDlvPassApplied(true);
 		}
 
@@ -122,7 +124,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		}
 
 		FDCartModel cart = user.getShoppingCart();
-		if ( user.getSelectedServiceType() == EnumServiceType.HOME && ( user.isDlvPassActive() || cart.getDeliveryPassCount() > 0 || (user.applyFreeTrailOptinBasedDP())) && !( cart.isDlvPromotionApplied() ) ) {
+		if ( user.getSelectedServiceType() == EnumServiceType.HOME && ( user.isDlvPassActive() || cart.isDlvPassApplicableByCartLines() || (user.applyFreeTrailOptinBasedDP())) && !( cart.isDlvPromotionApplied() ) ) {
 			cart.setDlvPassApplied( true );
 		}
 

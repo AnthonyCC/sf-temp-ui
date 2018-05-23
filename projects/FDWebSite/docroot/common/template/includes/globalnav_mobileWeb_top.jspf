@@ -59,9 +59,9 @@
 				<%-- TODO: CART is hard-coded, boo --%>
 				<div class="navbar-ecomvalue">
 					<fd:GetCart id="cart">
-						<div id="locabar_popupcart_trigger" class="locabar_triggers" role="menuitem" tabindex="0">
+						<div id="locabar_popupcart_trigger" class="locabar_triggers" >
 							<div class="bold cursor-pointer locabar_triggers_menuitem">
-			          			<a href="/view_cart.jsp">
+			          			<a href="/view_cart.jsp" role="menuitem">
 									<span class="offscreen">View Cart</span>
 									<div style="display: inline-block;">
 										<div class="locabar-cart-count-cont">

@@ -43,7 +43,7 @@ public class ProductGroupTag extends AbstractGetterTag<ProductModel> {
 			throw new FDNotFoundException(ex.getMessage());
 		}
 
-        return ProductPricingFactory.getInstance().getPricingAdapter(product, null);
+        return ProductPricingFactory.getInstance().getPricingAdapter(product);
 	}
 
 	public static class TagEI extends AbstractGetterTag.TagEI {

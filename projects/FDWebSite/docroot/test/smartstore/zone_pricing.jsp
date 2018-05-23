@@ -29,7 +29,7 @@ List<ProductModel> sort(final String orderBy, final PricingContext orderZone, fi
 		if (byProduct) {
 			sorted.add(node);
 		} else {
-			sorted.add(ProductPricingFactory.getInstance().getPricingAdapter(node, orderZone));
+			sorted.add(ProductPricingFactory.getInstance().getPricingAdapter(node));
 		}
 	}
 	Collections.sort(sorted, new Comparator<ProductModel>() {
@@ -532,7 +532,7 @@ function orderLink(orderBy, orderZone, orderAscending, nextOrderBy) {
 				<%
 					for (PricingContext zone : zones) {
 						boolean isUserZone = zone.getZoneInfo().getPricingZoneId().equals(zoneId);
-						ProductModel pa = ProductPricingFactory.getInstance().getPricingAdapter(product, zone);
+						ProductModel pa = ProductPricingFactory.getInstance().getPricingAdapter(product);
 				%>
 				<td class="text12 right b-bottom<%=isUserZone ? " user-zone" : ""%>"><%=pa.isUnavailable() ? n_a : pa.getPriceFormatted(0.)%></td>
 				<td class="text12 right b-bottom<%=isUserZone ? " user-zone" : ""%>"><%=pa.isUnavailable() ? n_a : pa.getDealPercentage()%></td>

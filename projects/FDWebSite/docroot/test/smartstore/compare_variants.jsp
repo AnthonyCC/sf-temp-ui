@@ -960,7 +960,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 						while (it_ra.hasNext()) {
 							ContentNodeModel cnm = it_ra.next();
 							ProductModel pm = (ProductModel) cnm;
-							pm = ProductPricingFactory.getInstance().getPricingAdapter(pm, si.getPricingContext() != null ? si.getPricingContext() : PricingContext.DEFAULT);
+							pm = ProductPricingFactory.getInstance().getPricingAdapter(pm);
 							PriceCalculator pmCalculator = pm.getPriceCalculator();
 							String actionURL = FDURLUtil.getProductURI(pm, "preview");
 							boolean found = recsB != null && recsB.indexOf(cnm) >= 0;
@@ -1043,7 +1043,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 						while (it_rb.hasNext()) {
 							ContentNodeModel cnm = it_rb.next();
 							ProductModel pm = (ProductModel) cnm;
-							pm = ProductPricingFactory.getInstance().getPricingAdapter(pm, si2.getPricingContext() != null ? si2.getPricingContext() : PricingContext.DEFAULT);
+							pm = ProductPricingFactory.getInstance().getPricingAdapter(pm);
 							PriceCalculator pmCalculator = pm.getPriceCalculator();
 							String actionURL = FDURLUtil.getProductURI(pm, "preview");
 							Integer change = recsA != null && recsA.indexOf(cnm) >= 0 ? new Integer(recsA.indexOf(cnm) - idx) : null;

@@ -432,6 +432,14 @@ public class FDProduct extends FDSku implements AttributesI {
 		}
 	}
 
+    public boolean isPricedByEa() {
+        try {
+            return ("EA".equalsIgnoreCase((this.pricing.getZonePriceList().getZonePrice(ZonePriceListing.DEFAULT_ZONE_INFO).getMaterialPrices()[0]).getPricingUnit()));
+        } catch (NullPointerException e) {
+            return false;
+        }
+    }
+
 	public boolean hasSingleSalesUnit() {
 		return (1 == this.salesUnits.length);
 	}

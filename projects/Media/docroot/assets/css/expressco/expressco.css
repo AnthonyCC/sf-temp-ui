@@ -291,16 +291,17 @@
 #checkout-cart-header .place-order .footer__button {
 	width: 100%;
 }
-#checkout-cart-header .st_val_checkout-cart-header-deliveryfee{
-	font-weight: bold;
-    padding-top: 20px;
-    font-size: 16px;
-    max-width: 115px;
-}
 #checkout-cart-header .subtotal__row-value-container .st_val_checkout-cart-header-deliveryfee-no-action,
 #checkout-cart-header .subtotal__row-value-container .st_val_checkout-cart-header-deliveryfee-with-delivery-pass {
 	padding-top: 7px;
     text-align: center;
+}
+#checkout-cart-header .st_val_checkout-cart-header-deliveryfee,
+#checkout-cart-header .subtotal__row-value-container .st_val_checkout-cart-header-deliveryfee-no-action{
+	font-weight: bold;
+    padding-top: 20px;
+    font-size: 16px;
+    max-width: 115px;
 }
 /* delivery button*/
 #checkout-cart-header .delivery-fee .free-link {

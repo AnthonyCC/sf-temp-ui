@@ -59,6 +59,7 @@ public class FDEcommProperties {
     public final static String ErpEWalletSB = "erp.ejb.ErpEWalletSB";
     public final static String FDSurveySB = "survey.ejb.FDSurveySB";
     public final static String ExternalAccountManagerSB = "accounts.external.ExternalAccountManagerSB";
+    public final static String FDCouponManagerSB = "fdstore.ecoupon.FDCouponManagerSB";
     public final static String FDGrpInfoSB = "grp.ejb.FDGrpInfoSB";
     public final static String FDZoneInfoSB = "zone.ejb.FDZoneInfoSB";
     public final static String ScoreFactorSB = "smartstore.ejb.ScoreFactorSB";
@@ -79,7 +80,6 @@ public class FDEcommProperties {
 	public static final String ErpComplaintManagerSB = "customer.ejb.ErpComplaintManagerSB";
 	public static final String DlvPassManagerSB = "deliverypass.ejb.DlvPassManagerSB";
 	public static final String SmartStoreServiceConfigurationSB = "smartstore.ejb.SmartStoreServiceConfigurationSB";
-	public static final String PaymentGatewaySB ="payment.ejb.PaymentGatewaySB";
 	public static final String FDListManagerSB = "fdstore.lists.ejb.FDListManagerSB";
 	public static final String PayPalServiceSB = "ewallet.ejb.PayPalServiceSB";
 	public static final String MasterpassServiceSB = "ewallet.ejb.MasterpassServiceSB";
@@ -92,6 +92,8 @@ public class FDEcommProperties {
 	public static final String PaymentManagerSB = "com.freshdirect.payment.PaymentManagerSB";
 	public static final String PaypalReconciliationSB = "payment.gateway.ewallet.impl.PaypalReconciliationSB";
 	public static final String SitemapSB = "fdstore.sitemap.SitemapSB";
+	public static final String GiftCardManagerSB = "giftcard.ejb.GiftCardManagerSB";
+
 	
 	public static final String ProductFeedSB = "com.freshdirect.fdstore.content.productfeed.ProductFeedSB";
 	public static final String TEmailInfoSB = "com.freshdirect.fdstore.temails";
@@ -99,7 +101,13 @@ public class FDEcommProperties {
 	public static final String FDStandingOrderSB = "com.freshdirect.fdstore.standingorders.FDStandingOrdersSB"; 
 	public static final String StandingOrder3CronSB = "com.freshdirect.fdstore.standingorders.service.StandingOrder3CronSB";
 	public static final String FDCustomerManagerSB="com.freshdirect.customer.FDCustomerManagerSB";
-	public static final String SaleCronSB="payment.ejb.SaleCronSB";
+	public static final String SaleCronSB = "payment.ejb.SaleCronSB";
+	public static final String SaleCronSBPreAuthorizeSales = "payment.ejb.SaleCronSB.preAuthorizeSales";
+	public static final String SaleCronSBPostAuthSales = "payment.ejb.SaleCronSB.postAuthSales";
+	public static final String SaleCronSBReverseAuthorizeSales = "payment.ejb.SaleCronSB.reverseAuthorizeSales";
+	public static final String SaleCronSBCancelAuthorizationFailed = "payment.ejb.SaleCronSB.cancelAuthorizationFailed";
+	public static final String SaleCronSBAuthorizeSubscriptions = "payment.ejb.SaleCronSB.authorizeSubscriptions";
+	public static final String SaleCronSBRegisterGiftCards = "payment.ejb.SaleCronSB.registerGiftCards";
 	public static final String ErpInfoSB_WarmUp="erp.ejb.ErpInfoSB_WarmUp";
 	public static final String FDFactorySB_WarmUp ="fdstore.ejb.FDFactorySB_WarmUp";
 	private static final String PROP_ECOM_SERVICE_CONNECTION_TIMEOUT = "ecom.service.conn.timeout";
@@ -164,7 +172,6 @@ public class FDEcommProperties {
         defaults.put(ErpComplaintManagerSB,FALSE);
         defaults.put(DlvPassManagerSB, FALSE);
         defaults.put(SmartStoreServiceConfigurationSB, FALSE);
-        defaults.put(PaymentGatewaySB, FALSE);
         defaults.put(FDListManagerSB, FALSE);
         defaults.put(PayPalServiceSB, FALSE);
         defaults.put(MasterpassServiceSB, FALSE);

@@ -30,12 +30,12 @@ import com.freshdirect.storeapi.content.BrandModel;
 import com.freshdirect.storeapi.content.CategoryModel;
 import com.freshdirect.storeapi.content.CategoryNodeTree;
 import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.ContentNodeTree.TreeElement;
 import com.freshdirect.storeapi.content.FilteringSortingItem;
 import com.freshdirect.storeapi.content.ProductContainer;
 import com.freshdirect.storeapi.content.ProductFilterI;
 import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.storeapi.content.SearchResults;
-import com.freshdirect.storeapi.content.ContentNodeTree.TreeElement;
 
 public abstract class AbstractProductPagerTag extends BodyTagSupportEx implements CategoryTreeContainer {
 	private static final long serialVersionUID = 5631516839214295727L;
@@ -274,7 +274,8 @@ public abstract class AbstractProductPagerTag extends BodyTagSupportEx implement
 			brands.addAll(item.getModel().getBrands());
 	}
 
-	public void setId(String id) {
+	@Override
+    public void setId(String id) {
 		this.id = id;
 	}
 
@@ -294,12 +295,12 @@ public abstract class AbstractProductPagerTag extends BodyTagSupportEx implement
 		return productFilters;
 	}
 
-	public List<ProductModel> getProducts() {
-		if (productsUnwrap == null)
-			productsUnwrap = ProductPricingFactory.getInstance().getPricingAdapter(
-					FilteringSortingItem.unwrap(results.getProducts()), getPricingContext());
-		return productsUnwrap;
-	}
+    public List<ProductModel> getProducts() {
+        if (productsUnwrap == null) {
+            productsUnwrap = ProductPricingFactory.getInstance().getPricingAdapter(FilteringSortingItem.unwrap(results.getProducts()));
+        }
+        return productsUnwrap;
+    }
 
 	public int getNoOfProductsBeforeProductFilters() {
 		return noOfProductsBeforeProductFilters;
@@ -336,7 +337,7 @@ public abstract class AbstractProductPagerTag extends BodyTagSupportEx implement
 	public List<ProductModel> getPageProducts() {
 		if (pageProductsUnwrap == null)
 			pageProductsUnwrap = ProductPricingFactory.getInstance().getPricingAdapter(
-					FilteringSortingItem.unwrap(pageProducts), getPricingContext());
+                    FilteringSortingItem.unwrap(pageProducts));
 		return pageProductsUnwrap;
 	}
 	
@@ -357,11 +358,13 @@ public abstract class AbstractProductPagerTag extends BodyTagSupportEx implement
 		return brands;
 	}
 
-	public CategoryNodeTree getCategoryTree() {
+	@Override
+    public CategoryNodeTree getCategoryTree() {
 		return categoryTree;
 	}
 
-	public CategoryNodeTree getFilteredCategoryTree() {
+	@Override
+    public CategoryNodeTree getFilteredCategoryTree() {
 		return filteredCategoryTree;
 	}
 
@@ -398,8 +401,9 @@ public abstract class AbstractProductPagerTag extends BodyTagSupportEx implement
 
 	public PricingContext getPricingContext() {
 		FDUserI user = getFDUser();
-		if (user != null)
-			return user.getPricingContext();
+        if (user != null) {
+            return user.getUserContext().getPricingContext();
+        }
 		return PricingContext.DEFAULT;
 	}
 

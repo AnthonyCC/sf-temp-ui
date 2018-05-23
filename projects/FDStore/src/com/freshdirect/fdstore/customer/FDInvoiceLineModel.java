@@ -3,7 +3,6 @@ package com.freshdirect.fdstore.customer;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.context.UserContext;
-import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.customer.ErpInvoiceLineI;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.framework.core.ModelSupport;
@@ -16,7 +15,7 @@ import com.freshdirect.storeapi.content.SkuReference;
 public class FDInvoiceLineModel extends ModelSupport implements FDInvoiceLineI {
 
 	private static final long serialVersionUID = -4864691971873241984L;
-	private static Category LOGGER = LoggerFactory.getInstance( FDInvoiceLineModel.class );
+    private static final Category LOGGER = LoggerFactory.getInstance(FDInvoiceLineModel.class);
 	
 	private ErpInvoiceLineI invoiceLine;
 
@@ -47,7 +46,8 @@ public class FDInvoiceLineModel extends ModelSupport implements FDInvoiceLineI {
 		this.substituteProductId = (null !=substituteProduct ? substituteProduct.getContentName():"");
 	}
 
-	public UserContext getUserContext() {
+	@Override
+    public UserContext getUserContext() {
 		return userContext;
 	}
 
@@ -74,13 +74,7 @@ public class FDInvoiceLineModel extends ModelSupport implements FDInvoiceLineI {
 					return null;
 				}
 
-				return ProductPricingFactory
-						.getInstance()
-						.getPricingAdapter(
-								productRef.lookupProductModel(),
-								getUserContext().getPricingContext() != null ? getUserContext()
-										.getPricingContext()
-										: PricingContext.DEFAULT);
+                return ProductPricingFactory.getInstance().getPricingAdapter(productRef.lookupProductModel());
 			}
 		} catch (Exception e) {
 			//Ignore
@@ -89,63 +83,78 @@ public class FDInvoiceLineModel extends ModelSupport implements FDInvoiceLineI {
 		return null;
 	}
 
-	public String getSubstituteProductId() {
+	@Override
+    public String getSubstituteProductId() {
 		return substituteProductId;
 	}
 
-	public double getPrice() {
+	@Override
+    public double getPrice() {
 		return invoiceLine.getPrice();
 	}
 
-	public double getActualPrice() {
+	@Override
+    public double getActualPrice() {
 		return invoiceLine.getActualPrice();
 	}
 
-	public double getCustomizationPrice() {
+	@Override
+    public double getCustomizationPrice() {
 		return invoiceLine.getCustomizationPrice();
 	}
 
-	public double getQuantity() {
+	@Override
+    public double getQuantity() {
 		return invoiceLine.getQuantity();
 	}
 
-	public double getWeight() {
+	@Override
+    public double getWeight() {
 		return invoiceLine.getWeight();
 	}
 
-	public double getTaxValue() {
+	@Override
+    public double getTaxValue() {
 		return invoiceLine.getTaxValue();
 	}
 
-	public double getDepositValue() {
+	@Override
+    public double getDepositValue() {
 		return invoiceLine.getDepositValue();
 	}
 
-	public String getOrderLineNumber() {
+	@Override
+    public String getOrderLineNumber() {
 		return invoiceLine.getOrderLineNumber();
 	}
 
-	public String getMaterialNumber() {
+	@Override
+    public String getMaterialNumber() {
 		return invoiceLine.getMaterialNumber();
 	}
 
-	public double getActualCost() {
+	@Override
+    public double getActualCost() {
 		return invoiceLine.getActualCost();
 	}
 
-	public double getActualDiscountAmount() {
+	@Override
+    public double getActualDiscountAmount() {
 		return invoiceLine.getActualDiscountAmount();
 	}
 
-	public double getCouponDiscountAmount() {
+	@Override
+    public double getCouponDiscountAmount() {
 		return invoiceLine.getCouponDiscountAmount();
 	}
 
-	public String getSubstitutedSkuCode() {
+	@Override
+    public String getSubstitutedSkuCode() {
 		return invoiceLine.getSubstitutedSkuCode();
 	}
 
-	public String getSubSkuStatus() {
+	@Override
+    public String getSubSkuStatus() {
 		return invoiceLine.getSubSkuStatus();
 	}
 
@@ -154,7 +163,8 @@ public class FDInvoiceLineModel extends ModelSupport implements FDInvoiceLineI {
 		return substituteProductName;
 	}
 
-	public String getSubstituteProductDefaultPrice() {
+	@Override
+    public String getSubstituteProductDefaultPrice() {
 		return substituteProductDefaultPrice;
 	}
 

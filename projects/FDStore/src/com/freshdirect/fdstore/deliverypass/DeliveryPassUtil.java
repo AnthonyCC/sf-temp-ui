@@ -174,7 +174,7 @@ public class DeliveryPassUtil {
 		if (user.isDlvPassActive()) {
 			// Get the info from active pass.
 			isUnlimited = user.getDlvPassInfo().isUnlimited();
-		} else if (user.getShoppingCart().getDeliveryPassCount() > 0 || user.isDlvPassActive()
+		} else if (user.getShoppingCart().isDlvPassApplicableByCartLines() || user.isDlvPassActive()
 				|| (user.applyFreeTrailOptinBasedDP())) {
 			isUnlimited = true;
 		} else {
@@ -377,6 +377,15 @@ public class DeliveryPassUtil {
 	   }
    }
 
+   public static String getPurchaseDate(FDUserI user) {
 
+	   Date pur_date= null !=user.getDlvPassInfo()? user.getDlvPassInfo().getPurchaseDate():null;
+	   if(pur_date!=null) {
+		   return DATE_FORMATTER.format(pur_date);
+	   }
+	   else {
+		   return "";
+	   }
 
+   }
 }

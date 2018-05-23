@@ -32,8 +32,8 @@ var FreshDirect = FreshDirect || {};
       if ($popupcontent.size() === 0) {
         $popupcontent = $('[data-component="globalnav-popups"] [data-id="'+id+'"]').first();
         $popupcontent.attr({
-        	'aria-label': arialabelvalue,
-        	'aria-hidden': true
+//        	'aria-label': arialabelvalue,
+//        	'aria-hidden': true
         });
         
         if ($popupcontent.size() > 0) {

@@ -23,43 +23,45 @@ public class ModuleValidator implements Validator {
         ValidationResults validationResults = new ValidationResults();
        
         if (ContentType.Module.equals(contentKey.getType())) {
-
             String productSourceType = (String) attributesWithValues.get(ContentTypes.Module.productSourceType);
             String displayType = (String) attributesWithValues.get(ContentTypes.Module.displayType);
-
-            if (null != productSourceType && null != displayType) {
-                if (productSourceType.equals("GENERIC")) {
-                    if (displayType.equals("ICON_CAROUSEL_MODULE")) {
-                        validateIconCarouselModule(contentKey, attributesWithValues, validationResults);
-                    } else if (displayType.equals("IMAGEGRID_MODULE")) {
-                        validateImageGridModule(contentKey, attributesWithValues, validationResults);
-                    } else if (displayType.equals("OPENHTML_MODULE")) {
-                        validateOpenHtmlModule(contentKey, attributesWithValues, validationResults);
-                    } else {
-                        validationResults.addValidationResult(contentKey, "Invalid source type: use a non generic source type", ValidationResultLevel.ERROR, ModuleValidator.class);
-                    }
+            if (productSourceType.equals("GENERIC")) {
+                if (displayType.equals("ICON_CAROUSEL_MODULE")) {
+                    validateIconCarouselModule(contentKey, attributesWithValues, contentSource, validationResults);
+                } else if (displayType.equals("IMAGEGRID_MODULE")) {
+                    validateImageGridModule(contentKey, attributesWithValues, contentSource, validationResults);
+                } else if (displayType.equals("OPENHTML_MODULE")) {
+                    validateOpenHtmlModule(contentKey, attributesWithValues, contentSource, validationResults);
                 } else {
-                    if (displayType.equals("ICON_CAROUSEL_MODULE") || displayType.equals("IMAGEGRID_MODULE") || displayType.equals("OPENHTML_MODULE")) {
-                        validationResults.addValidationResult(contentKey, "Invalid source type: use GENERIC.", ValidationResultLevel.ERROR, ModuleValidator.class);
-                    } else {
-                        ContentKey moduleSourceNode = (ContentKey) attributesWithValues.get(ContentTypes.Module.sourceNode);
-                        validateSourceTypeSourceNodeMatch(contentKey, productSourceType, moduleSourceNode, validationResults);
+                    validationResults.addValidationResult(contentKey, "Invalid source type: use a non generic source type", ValidationResultLevel.ERROR, ModuleValidator.class);
+                }
+            } else {
+                if (displayType.equals("ICON_CAROUSEL_MODULE") || displayType.equals("IMAGEGRID_MODULE") || displayType.equals("OPENHTML_MODULE")) {
+                    validationResults.addValidationResult(contentKey, "Invalid source type: use GENERIC.", ValidationResultLevel.ERROR, ModuleValidator.class);
+                } else {
+                    ContentKey moduleSourceNode = (ContentKey) attributesWithValues.get(ContentTypes.Module.sourceNode);
+                    validateSourceTypeSourceNodeMatch(contentKey, productSourceType, moduleSourceNode, contentSource, validationResults);
+                    if (displayType.equals("EDITORIAL_MODULE")) {
+                        validateEditoralModuleSpecificAttributes(contentKey, attributesWithValues, contentSource, validationResults);
                     }
                 }
             }
+
         }
         return validationResults;
     }
 
-    private void validateIconCarouselModule(ContentKey contentKey, Map<Attribute, Object> attributesWithValues, ValidationResults validationResults) {
-        if (null == attributesWithValues.get(ContentTypes.Module.iconList) || ((List) attributesWithValues.get(ContentTypes.Module.iconList)).isEmpty()) {
-            validationResults.addValidationResult(contentKey, "Icon list is missing. Please add at least 1 Icon.", ValidationResultLevel.ERROR, ModuleValidator.class);
+    private void validateIconCarouselModule(ContentKey contentKey, Map<Attribute, Object> attributesWithValues, ContextualContentProvider contentSource,
+            ValidationResults validationResults) {
+        if (((List) attributesWithValues.get(ContentTypes.Module.iconList)).isEmpty()) {
+            validationResults.addValidationResult(contentKey, "Icon list is missing.", ValidationResultLevel.ERROR, ModuleValidator.class);
         }
     }
 
-    private void validateImageGridModule(ContentKey contentKey, Map<Attribute, Object> attributesWithValues, ValidationResults validationResults) {
+    private void validateImageGridModule(ContentKey contentKey, Map<Attribute, Object> attributesWithValues, ContextualContentProvider contentSource,
+            ValidationResults validationResults) {
         List<Object> imageGrids = (List) attributesWithValues.get(ContentTypes.Module.imageGrid);
-        if (null == imageGrids) {
+        if (imageGrids == null) {
             validationResults.addValidationResult(contentKey, "Image Grid list is missing.", ValidationResultLevel.ERROR, ModuleValidator.class);
         } else if (imageGrids.size() != IMAGE_GRID_SIZE) {
             validationResults.addValidationResult(contentKey, "Please add 6 Image Grids.", ValidationResultLevel.ERROR,
@@ -67,25 +69,52 @@ public class ModuleValidator implements Validator {
         }
     }
 
-    private void validateOpenHtmlModule(ContentKey contentKey, Map<Attribute, Object> attributesWithValues, ValidationResults validationResults) {
+    private void validateOpenHtmlModule(ContentKey contentKey, Map<Attribute, Object> attributesWithValues, ContextualContentProvider contentSource,
+            ValidationResults validationResults) {
         if (null == attributesWithValues.get(ContentTypes.Module.openHTML)) {
             validationResults.addValidationResult(contentKey, "Open HTML Media is missing.", ValidationResultLevel.ERROR, ModuleValidator.class);
         }
     }
 
-    private void validateSourceTypeSourceNodeMatch(ContentKey contentKey, String productSourceType, ContentKey moduleSourceNode, ValidationResults validationResults) {
+    private void validateSourceTypeSourceNodeMatch(ContentKey contentKey, String productSourceType, ContentKey moduleSourceNode, ContextualContentProvider contentSource,
+            ValidationResults validationResults) {
         if (productSourceType.equals("BROWSE")) {
-            if (null == moduleSourceNode || !moduleSourceNode.getType().equals(ContentType.Category)) {
+            if (moduleSourceNode == null || !moduleSourceNode.getType().equals(ContentType.Category)) {
                 validationResults.addValidationResult(contentKey, "Invalid source node. Please set a category.", ValidationResultLevel.ERROR, ModuleValidator.class);
             }
         } else if (productSourceType.equals("FEATURED_RECOMMENDER")) {
-            if (null == moduleSourceNode || !moduleSourceNode.getType().equals(ContentType.Department)) {
+            if (moduleSourceNode == null || !moduleSourceNode.getType().equals(ContentType.Department)) {
                 validationResults.addValidationResult(contentKey, "Invalid source node. Please set a department.", ValidationResultLevel.ERROR, ModuleValidator.class);
             }
         } else if (productSourceType.equals("BRAND_FEATURED_PRODUCTS")) {
-            if (null == moduleSourceNode || !moduleSourceNode.getType().equals(ContentType.Brand)) {
+            if (moduleSourceNode == null || !moduleSourceNode.getType().equals(ContentType.Brand)) {
                 validationResults.addValidationResult(contentKey, "Invalid source node. Please set a brand.", ValidationResultLevel.ERROR, ModuleValidator.class);
             }
+        }
+    }
+
+    private void validateEditoralModuleSpecificAttributes(ContentKey contentKey, Map<Attribute, Object> attributesWithValues, ContextualContentProvider contentSource,
+            ValidationResults validationResults) {
+        if (null == attributesWithValues.get(ContentTypes.Module.heroGraphic)) {
+            validationResults.addValidationResult(contentKey, "Hero Graphic is missing", ValidationResultLevel.ERROR, ModuleValidator.class);
+        }
+        if (null == attributesWithValues.get(ContentTypes.Module.headerGraphic)) {
+            validationResults.addValidationResult(contentKey, "Hader Graphic is missing", ValidationResultLevel.ERROR, ModuleValidator.class);
+        }
+        if (null == attributesWithValues.get(ContentTypes.Module.editorialContent)) {
+            validationResults.addValidationResult(contentKey, "Editorial Content is missing", ValidationResultLevel.ERROR, ModuleValidator.class);
+        }
+        if (null == attributesWithValues.get(ContentTypes.Module.heroTitle)) {
+            validationResults.addValidationResult(contentKey, "Hero Title is missing", ValidationResultLevel.ERROR, ModuleValidator.class);
+        }
+        if (null == attributesWithValues.get(ContentTypes.Module.heroSubtitle)) {
+            validationResults.addValidationResult(contentKey, "Hero Subtitle is missing", ValidationResultLevel.ERROR, ModuleValidator.class);
+        }
+        if (null == attributesWithValues.get(ContentTypes.Module.headerTitle)) {
+            validationResults.addValidationResult(contentKey, "Header Title is missing", ValidationResultLevel.ERROR, ModuleValidator.class);
+        }
+        if (null == attributesWithValues.get(ContentTypes.Module.headerSubtitle)) {
+            validationResults.addValidationResult(contentKey, "Header Subtitle is missing", ValidationResultLevel.ERROR, ModuleValidator.class);
         }
     }
 
