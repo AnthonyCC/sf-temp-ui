@@ -7,8 +7,12 @@ import java.util.Map;
 
 import org.apache.commons.lang.enums.Enum;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class EnumCouponTransactionType extends Enum implements Serializable {
-	
+
+	private static final long serialVersionUID = -7601243289963699647L;
 	public final static EnumCouponTransactionType					CREATE_ORDER					= new EnumCouponTransactionType( "CREATE_ORDER", "Coupons Create Order" );
 	public final static EnumCouponTransactionType					MODIFY_ORDER					= new EnumCouponTransactionType( "MODIFY_ORDER", "Coupons Modify Order" );
 	public final static EnumCouponTransactionType					CANCEL_ORDER					= new EnumCouponTransactionType( "CANCEL_ORDER", "Coupons Cancel Order" );
@@ -25,7 +29,8 @@ public class EnumCouponTransactionType extends Enum implements Serializable {
 		this.description = description;
 	}
 	
-	public static EnumCouponTransactionType getEnum(String name) {
+	@JsonCreator
+	public static EnumCouponTransactionType getEnum(@JsonProperty("name") String name) {
 		return (EnumCouponTransactionType) getEnum(EnumCouponTransactionType.class, name);
 	}
 

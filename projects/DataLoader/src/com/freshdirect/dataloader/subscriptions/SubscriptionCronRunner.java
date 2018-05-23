@@ -40,14 +40,13 @@ public class SubscriptionCronRunner {
 
 		Context ctx = null;
 		try {
-			ctx = getInitialContext();
-			SaleCronHome home = (SaleCronHome) ctx.lookup("freshdirect.dataloader.SaleCron");
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SaleCronSB)){
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SaleCronSBAuthorizeSubscriptions)) {
 				SaleCronService.getInstance().authorizeSubscriptions(authTimeout);
-			}
-			else{
-			SaleCronSB sb = home.create();
-			sb.authorizeSubscriptions(authTimeout);
+			} else {
+				ctx = getInitialContext();
+				SaleCronHome home = (SaleCronHome) ctx.lookup("freshdirect.dataloader.SaleCron");
+				SaleCronSB sb = home.create();
+				sb.authorizeSubscriptions(authTimeout);
 			}
 
 		} catch (Exception e) {

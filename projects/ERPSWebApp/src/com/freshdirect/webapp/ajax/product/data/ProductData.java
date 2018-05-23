@@ -228,6 +228,8 @@ public class ProductData extends BasicProductData implements SkuData {
      */
     private int timeToComplete = 0;
     
+    private String pageBeaconOfApi;
+    
     public ProductData() {
     	
     }
@@ -954,4 +956,12 @@ public class ProductData extends BasicProductData implements SkuData {
     public ProductModel getProductModel() {
     	return productModel;
     }
+
+	public String getPageBeaconOfApi() {
+		return pageBeaconOfApi;
+	}
+
+	public void setPageBeaconOfApi(String pageBeaconOfApi) {
+		this.pageBeaconOfApi = pageBeaconOfApi;
+	}
 }

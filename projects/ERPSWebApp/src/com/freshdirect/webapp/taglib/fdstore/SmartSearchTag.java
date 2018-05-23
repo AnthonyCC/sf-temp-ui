@@ -44,10 +44,6 @@ import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.search.SearchService;
 import com.freshdirect.webapp.util.RequestUtil;
 
-/**
- * @author zsombor, csongor
- * 
- */
 public class SmartSearchTag extends AbstractProductPagerTag {
 	private static final long serialVersionUID = 3093054384959548572L;
 
@@ -113,13 +109,14 @@ public class SmartSearchTag extends AbstractProductPagerTag {
 				comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 				break;
 			case BY_POPULARITY:
-				comparator = ComparatorChain.create(FilteringSortingItem.wrap(ScriptedContentNodeComparator.createGlobalComparator(getUserId(), getPricingContext())));
+                comparator = ComparatorChain
+                        .create(FilteringSortingItem.wrap(ScriptedContentNodeComparator.createGlobalComparator(getUserId(), getFDUser().getUserContext().getPricingContext())));
 				if (!ascending)
 					comparator = ComparatorChain.reverseOrder(comparator);
 				comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 				break;
 			case BY_SALE:
-				SmartSearchUtils.collectSaleInfo(products, getPricingContext());
+                SmartSearchUtils.collectSaleInfo(products);
 				comparator = ComparatorChain.create(new SortValueComparator<ProductModel>(EnumSortingValue.DEAL));
 				if (!ascending)
 					comparator = ComparatorChain.reverseOrder(comparator);
@@ -154,7 +151,7 @@ public class SmartSearchTag extends AbstractProductPagerTag {
 			default:
 				return null;
 		}
-		SmartSearchUtils.collectAvailabilityInfo(products, getPricingContext());
+        SmartSearchUtils.collectAvailabilityInfo(products);
 		comparator.prepend(new SortValueComparator<ProductModel>(EnumSortingValue.AVAILABILITY));
 		return comparator;
 	}
@@ -163,7 +160,7 @@ public class SmartSearchTag extends AbstractProductPagerTag {
 	protected void postProcess(SearchResults results) {
 
 		if (FDStoreProperties.isFavouritesTopNumberFilterSwitchedOn() && nav.getSortBy().equals(SearchSortType.BY_RELEVANCY)) {
-			List<FilteringSortingItem<ProductModel>> products = FilteringComparatorUtil.reOrganizeFavourites(results.getProducts(), getUserId(), getPricingContext());
+            List<FilteringSortingItem<ProductModel>> products = FilteringComparatorUtil.reOrganizeFavourites(results.getProducts(), getUserId(), getPricingContext());
 			results = new SearchResults(products, results.getRecipes(), results.getCategories(), searchTerm, ContentSearchUtil.isQuoted(searchTerm));
 		}
 

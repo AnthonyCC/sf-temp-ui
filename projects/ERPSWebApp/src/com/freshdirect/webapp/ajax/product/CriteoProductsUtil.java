@@ -49,7 +49,7 @@ public class CriteoProductsUtil
 			cretioProductsCacheList.addAll(CriteoProductsHomePageCache.getInstance().getProducts());
 		
 			productsCount = cretioProductsCacheList.size();
-			if (cretioProductsCacheList != null){
+			if (cretioProductsCacheList != null && !cretioProductsCacheList.isEmpty()){
 				addHlBrandProducts(user, adPrducts, updatedPageBeacon, cretioProductsCacheList,false);
 			}
 			int  maxCount = FDStoreProperties.getFDHomeCriteoMaxDisplayProducts();
@@ -61,14 +61,23 @@ public class CriteoProductsUtil
 					i++;	
 					j++;
 				}
+			}else if( null != adPrducts && !adPrducts.isEmpty() && (adPrducts.size() > maxCount) ){
+				adPrducts.subList(maxCount, adPrducts.size()).clear();
 			}
 			moduleData.setAdProducts(adPrducts);
-			if (productsCount == adPrducts.size()) {
-				moduleData.setAdHomePageBeacon(cretioProductsCacheList.get(0).getPageBeacon()	+ A_SHOWN_ALL);
-			} else if (productsCount > 0 && adPrducts.size() == 0) {
-				moduleData.setAdHomePageBeacon(cretioProductsCacheList.get(0).getPageBeacon()	+ A_SHOWN_NONE);
-			} else {
-				moduleData.setAdHomePageBeacon(cretioProductsCacheList.get(0).getPageBeacon() + updatedPageBeacon.toString());
+			if(!adPrducts.isEmpty()){						//APPDEV-7148
+				for (ProductData pdata : adPrducts) {
+					String pageBeaconString = pdata.getPageBeaconOfApi()+(A_SHOWN)+(pdata.getSkuCode());
+					moduleData.getAdHomePageBeacon().add(pageBeaconString);
+				}
+				
+				/*if (productsCount == adPrducts.size()) {
+					moduleData.setAdHomePageBeacon(cretioProductsCacheList.get(0).getPageBeacon()	+ A_SHOWN_ALL);
+				} else if (productsCount > 0 && adPrducts.size() == 0) {
+					moduleData.setAdHomePageBeacon(cretioProductsCacheList.get(0).getPageBeacon()	+ A_SHOWN_NONE);
+				} else {
+					moduleData.setAdHomePageBeacon(cretioProductsCacheList.get(0).getPageBeacon() + updatedPageBeacon.toString());
+				}*/
 			}
 		} catch (Exception e) {
 			LOG.warn("Exception while populating Criteo returned product: ", e);
@@ -80,6 +89,7 @@ public class CriteoProductsUtil
 		productData.setFeatured(true);
 		productData.setClickBeacon(hlBrandProductAdMetaInfo.getClickBeacon());
 		productData.setImageBeacon(hlBrandProductAdMetaInfo.getImpBeacon());
+		productData.setPageBeaconOfApi(hlBrandProductAdMetaInfo.getPageBeacon());
 		/*productData.setImageBeacon("//uat-beam.hlserve.com/beacon?fid=258&hl_qs=JPrhL9T5mOV3wMt8nUd3R1%2fnaUJD4%2b%2fQjx7QrFzy8Xgh1DPl" +
 		"Fiu6X3mUcwYc49GV9BIQ55Dq52qgUXByfVYHAkBakkF2RZ32A%2bCtBq87FY05gZbkiyAb7vbHZmOPKN7ZXhkH6KgZW%2fO33Fr7DUD2RROiEUpVZNzs" +
 		"jNijiqy1PKGEchrGwEJOazg1k9bLZX7nZyNn9ORUpN8lNfiUQ%2fxv%2bRF3RSxz%2fS8EHy8DeTbkUaOkn4MFxz%2fwjJ%2fnnYEz24hnAB%2bZEw2QZ9yKMDbCWEL" +

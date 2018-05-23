@@ -217,6 +217,7 @@ public class TimeslotService {
         timeslotData.setIsEarlyAM(slot.isEarlyAM());
         timeslotData.setDeliveryFee(slot.getDeliveryFee());
         timeslotData.setPromoDeliveryFee(slot.getPromoDeliveryFee());
+        timeslotData.setMidWeekDlvPassApplicable(slot.isMidWeekDlvPassApplicable());
         return timeslotData;
     }
 

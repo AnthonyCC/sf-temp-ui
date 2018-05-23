@@ -67,7 +67,6 @@ public class EwalletConverter {
 			model.setError(ewalletPostBackData.isError());
 			model.setErrorStr(ewalletPostBackData.getErrorStr());
 			model.setExpressCheckoutIndicator(ewalletPostBackData.isExpressCheckoutIndicator());
-			model.setExtension(ewalletPostBackData.getExtension());
 			model.setgAL(ewalletPostBackData.isgAL());
 			model.setgALId(ewalletPostBackData.getgALId());
 			model.setKey(ewalletPostBackData.getKey());
@@ -184,7 +183,6 @@ public class EwalletConverter {
 			model.setError(ewalletPostBackData.isError());
 			model.setErrorStr(ewalletPostBackData.getErrorStr());
 			model.setExpressCheckoutIndicator(ewalletPostBackData.getExpressCheckoutIndicator());
-			model.setExtension(ewalletPostBackData.getExtension());
 			model.setgAL(ewalletPostBackData.isgAL());
 			model.setgALId(ewalletPostBackData.getgALId());
 			model.setKey(ewalletPostBackData.getKey());

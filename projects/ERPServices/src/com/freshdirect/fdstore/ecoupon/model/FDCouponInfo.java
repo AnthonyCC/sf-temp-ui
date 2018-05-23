@@ -1,11 +1,10 @@
 package com.freshdirect.fdstore.ecoupon.model;
 
-import java.io.Serializable;
-import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.freshdirect.FDCouponProperties;
 import com.freshdirect.fdstore.ecoupon.EnumCouponOfferType;
 import com.freshdirect.framework.core.ModelSupport;
@@ -14,6 +13,7 @@ import com.freshdirect.framework.util.DateUtil;
 
 public class FDCouponInfo extends ModelSupport{
 
+	private static final long serialVersionUID = -762178378399009645L;
 	private int version;
 	private String couponId;
 	private String category;
@@ -28,6 +28,7 @@ public class FDCouponInfo extends ModelSupport{
 	private String imagePath;
 	private String[] tags;
 	private String startDate;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private Date expirationDate;
 	private boolean isExpired;
 	private List<FDCouponUPCInfo> requiredUpcs;	

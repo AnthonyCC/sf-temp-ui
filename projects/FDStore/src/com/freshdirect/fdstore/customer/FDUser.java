@@ -325,6 +325,9 @@ public class FDUser extends ModelSupport implements FDUserI {
     private boolean soFeatureOverlay = false;
     
     private Collection<FDStandingOrder> activeSO3s = new ArrayList<FDStandingOrder>();
+    
+    //Added as part of DP17-147
+    private boolean dlvPassTimeslotNotMatched = false;
 
     private String multiSearchList;
     
@@ -695,7 +698,7 @@ public class FDUser extends ModelSupport implements FDUserI {
         this.getShoppingCart().setDlvPassExtn(null);
         this.getShoppingCart().setDlvPromotionApplied(false);
         this.getShoppingCart().setDeliveryPassCount();
-        if ((this.getShoppingCart().getDeliveryPassCount() > 0) || (this.isDlvPassActive()) || (this.applyFreeTrailOptinBasedDP())) {
+        if (this.getShoppingCart().isDlvPassApplicableByCartLines() || (this.isDlvPassActive()) || (this.applyFreeTrailOptinBasedDP())) {
         	this.getShoppingCart().setDlvPassApplied(true);
         }else {
         	this.getShoppingCart().setDlvPassApplied(false);
@@ -1569,6 +1572,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 
     @Override
     public boolean isDlvPassActive() {
+    	dlvPassTimeslotNotMatched = false;
         if (EnumEStoreId.FDX.equals(this.getUserContext().getStoreContext().getEStoreId())) {
             return false;
         }
@@ -1583,6 +1587,16 @@ public class FDUser extends ModelSupport implements FDUserI {
              * made.
              */
             return (EnumDlvPassStatus.ACTIVE.equals(dlvPassInfo.getStatus()) || (this.isDlvPassExpiredPending() && this.getShoppingCart().isDlvPassAlreadyApplied()));
+        }
+        // Changes as part of DP17-158
+        /* When the Mid-week DP property is enabled - we will evaluate the below logic
+         * 1. Compare the user selected day of the week from the timeslot with the list of eligbile days from the Deliverypass 
+         */
+        if(FDStoreProperties.isMidWeekDlvPassEnabled() && null!=this.getShoppingCart().getDeliveryReservation() && null!=this.getShoppingCart().getDeliveryReservation().getTimeslot() && null!=dlvPassInfo.getTypePurchased().getEligibleDlvDays()){
+        		if(!(EnumDlvPassStatus.ACTIVE.equals(dlvPassInfo.getStatus()) && dlvPassInfo.getTypePurchased().getEligibleDlvDays().contains(this.getShoppingCart().getDeliveryReservation().getTimeslot().getDayOfWeek()))){
+        			dlvPassTimeslotNotMatched = true;
+        			return false;
+        		}
         }
         // Unlimited Pass.
         if (EnumDlvPassStatus.ACTIVE.equals(dlvPassInfo.getStatus())) {
@@ -3962,6 +3976,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 		} catch (FDResourceException e) {
 			LOGGER.warn("Error in getDpFreeTrialOptin() " + e);
 		}*/
+		
 		if (this.cachedFDCustomer != null && this.cachedFDCustomer.getCustomerEStoreModel() != null) {
 
 			return this.cachedFDCustomer.getCustomerEStoreModel().getDpFreeTrialOptin();
@@ -4054,4 +4069,49 @@ public class FDUser extends ModelSupport implements FDUserI {
     public void setMultiSearchList(String searchTermList) {
         multiSearchList = searchTermList;
     }
+    
+    public ErpPaymentMethodI getDefaultPaymentMethod() throws FDResourceException{        
+        if(null !=this.getFDCustomer() && null !=this.getFDCustomer().getDefaultPaymentMethodPK()){
+            String defaultPaymentMethodPk = this.getFDCustomer().getDefaultPaymentMethodPK();    
+            Collection<ErpPaymentMethodI> paymentMethods = this.getPaymentMethods();
+            if(null !=paymentMethods){
+                for(Iterator<ErpPaymentMethodI> i=paymentMethods.iterator(); i.hasNext();){
+                    ErpPaymentMethodI pmethod = i.next();
+                    if(defaultPaymentMethodPk.equals(pmethod.getPK().getId())){
+                        return pmethod;
+                    }
+                }            
+            }
+        }
+       return null;
+    }
+
+	public boolean isDlvPassTimeslotNotMatched() {
+		return dlvPassTimeslotNotMatched;
+	}
+
+	
+	public boolean isMidWeekDlvPassApplicable(Date date){
+		int dayOfWeek=DateUtil.getDayOfWeek(date);
+		if(hasMidWeekDlvPass() && getDlvPassInfo().getTypePurchased().getEligibleDlvDays().contains(dayOfWeek)){
+			return true;
+			}
+		return false;
+		}
+
+	public boolean hasMidWeekDlvPass() {
+		if (null != getDlvPassInfo()
+				&& getSelectedServiceType() == EnumServiceType.HOME
+				&& EnumDlvPassStatus.ACTIVE.equals(dlvPassInfo.getStatus())
+				&& Calendar.getInstance().getTime()
+						.before(dlvPassInfo.getExpDate()) // Active and not expired
+				&& (null != getDlvPassInfo().getTypePurchased()
+						.getEligibleDlvDays()
+						&& !getDlvPassInfo().getTypePurchased()
+								.getEligibleDlvDays().isEmpty() && (getDlvPassInfo()
+						.getTypePurchased().getEligibleDlvDays().size() < 7))) {
+			return true;
+		}
+		return false;
+	}
 }

@@ -8,11 +8,12 @@
 <div class="multisearch-input" data-component="multisearch-input">
   {if ($maxItems and length($terms) < $maxItems) or length($terms) < 10}
   <form>
-    <label for="searchinput">Add product:</label>
+    <label for="searchinput">Add Products</label>
     <div class="inputholder">
       <input id="searchinput" class="searchinput" type="text" placeholder="Search the store" data-component="autocomplete" autocomplete="off"/>
       <button class="searchbutton" type="submit">Add to search list</button>
     </div>
+    <div class="searchinput-note">add and repeat!</div>
   </form>
   {/if}
   {if $terms and length($terms)}

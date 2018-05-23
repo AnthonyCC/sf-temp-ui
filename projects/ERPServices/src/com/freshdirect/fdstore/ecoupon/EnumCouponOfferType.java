@@ -7,8 +7,12 @@ import java.util.Map;
 
 import org.apache.commons.lang.enums.Enum;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class EnumCouponOfferType extends Enum implements Serializable {
 	
+	private static final long serialVersionUID = -4513452455253462960L;
 	public final static EnumCouponOfferType					DOLLAR_OFF						= new EnumCouponOfferType( "0", "Dollars off item" );
 	public final static EnumCouponOfferType					PERCENT_OFF						= new EnumCouponOfferType( "5", "Percent off item" );
 	
@@ -17,8 +21,8 @@ public class EnumCouponOfferType extends Enum implements Serializable {
 		super(name);
 		this.description = description;
 	}
-	
-	public static EnumCouponOfferType getEnum(String name) {
+	@JsonCreator
+	public static EnumCouponOfferType getEnum(@JsonProperty("name")  String name) {
 		return (EnumCouponOfferType) getEnum(EnumCouponOfferType.class, name);
 	}
 

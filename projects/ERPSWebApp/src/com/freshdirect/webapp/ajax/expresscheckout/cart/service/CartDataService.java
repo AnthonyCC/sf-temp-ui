@@ -66,12 +66,12 @@ import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.analytics.service.GoogleAnalyticsDataService;
+import com.freshdirect.webapp.ajax.cart.CartOperations;
 import com.freshdirect.webapp.ajax.expresscheckout.availability.service.AvailabilityService;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.BillingReferenceInfo;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData.Section;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData.SectionInfo;
-import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartOperations;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartRequestData;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartSubTotalFieldData;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.ItemCount;
@@ -261,7 +261,7 @@ public class CartDataService {
         Date cutoffTime = null;
         Date weekFromOrderDate = null;
         
-        if (null != loadedCart && !(loadedCart instanceof FDModifyCartModel)) {
+        if (null != loadedCart && !(loadedCart instanceof FDModifyCartModel) && !(mCart.isDlvPassStandAloneCheckoutAllowed() && mCart.containsDlvPassOnly())) {
         	//set the cutoff time so we can use it on receipt
         	if (loadedCart.getDeliveryReservation() != null && loadedCart.getDeliveryReservation().getTimeslot() !=null) {
         		cutoffTime = loadedCart.getDeliveryReservation().getCutoffTime();

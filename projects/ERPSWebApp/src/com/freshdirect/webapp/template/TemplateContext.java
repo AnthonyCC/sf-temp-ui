@@ -169,49 +169,6 @@ public class TemplateContext extends BaseTemplateContext{
 		}
 	}
 
-	/**
-	 * Get a content node by ID.
-	 *
-	 * Special treat
-	 *
-	 * @param id encoded ID String ("ContentType:id")
-	 * @return the contentnode or null if it does not exist
-	 */
-	public ContentNodeModel getNode(String id) {
-		ContentNodeModel node = null;
-		if (id.startsWith("Product:")) {
-			int sep = id.indexOf('@');
-			if (sep!=-1) {
-				String prodId = id.substring("Product:".length(), sep);
-
-				String catId = id.substring(sep+1, id.length());
-
-				node = ContentFactory.getInstance().getProductByName(catId, prodId);
-
-				if (node == null) {
-					// not found, fallback to primary home
-					id = id.substring(0, sep);
-				} else {
-					//Return ProductModelPricingAdapter for zone pricing.
-					return ProductPricingFactory.getInstance().getPricingAdapter(((ProductModel)node), pricingContext);
-				}
-			}
-		}
-		if (node != null) {
-			return node;
-		}
-
-		//check for a product model...
-		ContentNodeModel nodePMCheck = ContentFactory.getInstance().getContentNodeByKey(ContentKeyFactory.get(id));
-		if (nodePMCheck != null && nodePMCheck instanceof ProductModel) {
-			//...product model, return back a pricing context
-			return ProductPricingFactory.getInstance().getPricingAdapter(((ProductModel)nodePMCheck), pricingContext);
-		}else{
-			//...not product model, do normal decode
-			return ContentFactory.getInstance().getContentNodeByKey(ContentKeyFactory.get(id));
-		}
-	}
-
 	/* returns a configured product impression (required for several other display tags) */
 	public ProductImpression getConfProdImpression(String id, FDSessionUser user) {
 		ContentNodeModel node = getNode(id);
@@ -514,7 +471,7 @@ public class TemplateContext extends BaseTemplateContext{
         return CmsManager.getInstance().getParentKeys(ContentKeyFactory.get(id));
     }
     
-	public ContentNodeModel getNode(String id,PricingContext pricingContext) {
+	public ContentNodeModel getNode(String id) {
 		ContentNodeModel node = null;
 		if (id.startsWith("Product:")) {
 			int sep = id.indexOf('@');
@@ -530,7 +487,7 @@ public class TemplateContext extends BaseTemplateContext{
 					id = id.substring(0, sep);
 				} else {
 					//Return ProductModelPricingAdapter for zone pricing.
-					return ProductPricingFactory.getInstance().getPricingAdapter(((ProductModel)node), pricingContext);
+                    return ProductPricingFactory.getInstance().getPricingAdapter(((ProductModel) node));
 				}
 			}
 		}
@@ -539,7 +496,7 @@ public class TemplateContext extends BaseTemplateContext{
 		ContentNodeModel nodePMCheck = ContentFactory.getInstance().getContentNodeByKey(ContentKeyFactory.get(id));
 		if (nodePMCheck != null && nodePMCheck instanceof ProductModel) {
 			//...product model, return back a pricing context
-			return ProductPricingFactory.getInstance().getPricingAdapter(((ProductModel)nodePMCheck), pricingContext);
+            return ProductPricingFactory.getInstance().getPricingAdapter(((ProductModel) nodePMCheck));
 		}else{
 			//...not product model, do normal decode
 			return ContentFactory.getInstance().getContentNodeByKey(ContentKeyFactory.get(id));
@@ -550,8 +507,7 @@ public class TemplateContext extends BaseTemplateContext{
 		Object[] obj = new Object[getPricingContexts().size()];
 		int i=0;
 		for (Iterator<PricingContext> iterator = getPricingContexts().iterator(); iterator.hasNext();) {
-			PricingContext pricingContext = iterator.next();
-			ContentNodeModel node =getNode(id, pricingContext);
+            ContentNodeModel node = getNode(id);
 			obj[i++]= node;
 		}
 		return obj;
@@ -846,7 +802,7 @@ public class TemplateContext extends BaseTemplateContext{
 			node = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(ContentKeyFactory.get(ContentType.Product, prodId));
 		}
 
-		return ProductPricingFactory.getInstance().getPricingAdapter(node, pricingContext);
+        return ProductPricingFactory.getInstance().getPricingAdapter(node);
 	}
 
 	public String getScaleDisplay(ContentNodeModel node) {

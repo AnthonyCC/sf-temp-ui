@@ -124,8 +124,6 @@ public class ErpServicesProperties {
     private final static String PROP_OCF_MAIL_FROM = "ocf.mail.from";
 
     private final static String PROP_OCF_SEND_EMAIL = "ocf.mail.send";
-    private final static String PROP_CAPTURE_CRON_QUEUE = "capture.cron.queue";
-
 
     private final static String PROP_FEE_BOUNCED_CHECK = "payment.bouncedCheck.fee";
     private final static String PROP_PERISABLE_AUTH_BUFFER = "payment.perishable.auth.buffer";
@@ -398,7 +396,6 @@ public class ErpServicesProperties {
 		defaults.put(PROP_TRAN_MAIL_FROM, "applicationdevelopment@freshdirect.com");
 
 		defaults.put(PROP_OCF_SEND_EMAIL, "true");
-		defaults.put(PROP_CAPTURE_CRON_QUEUE, "false");
 
 		defaults.put(PROP_FEE_BOUNCED_CHECK, "25.00");
 		defaults.put(PROP_PERISABLE_AUTH_BUFFER, ".25"); //25%
@@ -854,10 +851,6 @@ public class ErpServicesProperties {
 
 	public static boolean isSendOcfEmail(){
 		return Boolean.valueOf(config.getProperty(PROP_OCF_SEND_EMAIL)).booleanValue();
-	}
-
-	public static boolean isUseQueue(){
-		return Boolean.valueOf(config.getProperty(PROP_CAPTURE_CRON_QUEUE)).booleanValue();
 	}
 
 	public static boolean isUseRegisterQueue(){

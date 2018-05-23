@@ -41,7 +41,7 @@ public class PriceFilter extends AbstractRangeFilter {
 	 *
 	 * @see {@link PriceCalculator#getDefaultPriceValue()}
 	 */
-	private static double INVALID_PRICE = 0.0;
+    private static final double INVALID_PRICE = 0.0;
 	
 	@Override
 	public boolean apply(FilteringProductItem ctx) throws FDResourceException {
@@ -53,7 +53,7 @@ public class PriceFilter extends AbstractRangeFilter {
 		ProductModel product = ctx.getProductModel();
 		
 		if(user!=null && !(product instanceof ProductModelPricingAdapter)){
-			product = ProductPricingFactory.getInstance().getPricingAdapter( product, user.getPricingContext() );
+            product = ProductPricingFactory.getInstance().getPricingAdapter(product);
 		}
 		
 		try {

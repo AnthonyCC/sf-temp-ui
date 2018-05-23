@@ -4100,6 +4100,17 @@ div#mobilehomeMainDiv a {
 	color: #5fb069 !important;
 	text-decoration: underline !important;
 }
+
+/*accessibility fix for header and footer focus states for links and buttons*/
+
+.navbar-header *:focus,.storemedia *:focus,.socialmedia *:focus{
+    outline: #fefefe 2px solid;
+}
+
+.anchors *:focus,.navbar-header input:focus {
+    outline: none;
+}
+
 </style>
     
 	<%-- Keep the media include last, so it can always override any css auto-loaded --%>

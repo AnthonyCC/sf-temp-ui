@@ -75,7 +75,12 @@ import com.freshdirect.payment.GivexResponseModel;
 import com.freshdirect.payment.ejb.GivexServerGateway;
 import com.freshdirect.payment.ejb.GivexServerNewGateway;
 import com.freshdirect.payment.service.FDECommerceService;
-
+/**
+ *@deprecated Please use the GiftCardController and GiftCardManagerServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */ 
 public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
 	
 	private final static Logger LOGGER = LoggerFactory.getInstance(GiftCardManagerSessionBean.class);

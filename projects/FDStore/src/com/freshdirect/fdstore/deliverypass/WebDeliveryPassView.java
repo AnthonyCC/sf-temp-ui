@@ -57,7 +57,7 @@ public class WebDeliveryPassView {
 
 		String passName ="";
 		if(model != null){
-			return model.getType().getName()+" DeliveryPass";
+			return model.getType().getName()+" Membership";
 		}else{
 			return NO_PASS_DETAIL_INFO_TEXT;
 		}

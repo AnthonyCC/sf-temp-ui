@@ -98,10 +98,10 @@ public class ProductItemSorterFactory {
                     comparator = createSearchRelevancyComparator(user, reverseOrder);
                     break;
                 case E_COUPON_PERCENT_DISCOUNT:
-                    comparator = createPricingAdapterComparator(FilteringComparatorUtil.COUPON_PERCENT_OFF_COMPARATOR, user, reverseOrder);
+                    comparator = createPricingAdapterComparator(FilteringComparatorUtil.COUPON_PERCENT_OFF_COMPARATOR, reverseOrder);
                     break;
                 case E_COUPON_DOLLAR_DISCOUNT:
-                    comparator = createPricingAdapterComparator(FilteringComparatorUtil.COUPON_DOLLAR_OFF_COMPARATOR, user, reverseOrder);
+                    comparator = createPricingAdapterComparator(FilteringComparatorUtil.COUPON_DOLLAR_OFF_COMPARATOR, reverseOrder);
                     break;
                 case POPULARITY:
                     Comparator<FilteringProductItem> popularityInner = adapterForProductModel(ScriptedContentNodeComparator.createGlobalComparator(null, null));
@@ -160,7 +160,7 @@ public class ProductItemSorterFactory {
 		return adapterForSearchResult(comparator); //no respect for reverse order
 	}
 
-	private static Comparator<FilteringProductItem> createPricingAdapterComparator(final Comparator<ProductModel> comparator, final FDUserI user, boolean reverseOrder){
+    private static Comparator<FilteringProductItem> createPricingAdapterComparator(final Comparator<ProductModel> comparator, boolean reverseOrder) {
 		
 		Comparator<FilteringProductItem> adapterComparator =  new Comparator<FilteringProductItem>(){
 			@Override
@@ -169,11 +169,11 @@ public class ProductItemSorterFactory {
 				ProductModel p2 = o2.getProductModel();
 				
 				if(!(p1 instanceof ProductModelPricingAdapter)){
-                    p1 = ProductPricingFactory.getInstance().getPricingAdapter(p1, user.getUserContext().getPricingContext());
+                    p1 = ProductPricingFactory.getInstance().getPricingAdapter(p1);
 				}
 
 				if(!(p2 instanceof ProductModelPricingAdapter)){
-                    p2 = ProductPricingFactory.getInstance().getPricingAdapter(p2, user.getUserContext().getPricingContext());
+                    p2 = ProductPricingFactory.getInstance().getPricingAdapter(p2);
 				}
 
 				return comparator.compare(p1, p2);

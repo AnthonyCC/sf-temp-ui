@@ -280,7 +280,7 @@ public class QuickShopHelper {
 			productModel = ((ProductModelPricingAdapter)productModel).getRealProduct();
 
 			// create valid pricing adapter with valid pricing context
-			productModel = ProductPricingFactory.getInstance().getPricingAdapter( productModel, user.getPricingContext() );
+            productModel = ProductPricingFactory.getInstance().getPricingAdapter(productModel);
 		}
 
 		// Selected sku code
@@ -327,7 +327,7 @@ public class QuickShopHelper {
 		}
 
 		// Wrap the resulting item - adds filtering info
-		QuickShopLineItemWrapper wrapper = new QuickShopLineItemWrapper(item, (ProductModelPricingAdapter) productModel);
+		QuickShopLineItemWrapper wrapper = new QuickShopLineItemWrapper(item, productModel);
 		if (list != null) {
 			wrapper.setCclId(list.getId());
 			item.setListId(list.getId());
@@ -384,7 +384,7 @@ public class QuickShopHelper {
 
 		if ( !(productModel instanceof ProductModelPricingAdapter) ) {
 			// wrap it into a pricing adapter if naked
-			productModel = ProductPricingFactory.getInstance().getPricingAdapter( productModel, user.getPricingContext() );
+            productModel = ProductPricingFactory.getInstance().getPricingAdapter(productModel);
 		}
 
 		if ( skuModel == null ) {

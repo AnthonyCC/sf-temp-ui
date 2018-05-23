@@ -34,6 +34,7 @@ public class DeliveryPassType extends EnumModel {
 	private boolean isFreeTrialDP;
 	private boolean isFreeTrialRestricted;
 	private String autoRenewalSKU;
+	private List<Integer> eligibleDlvDays;
 	
 	
 	public int getDuration() {
@@ -52,7 +53,7 @@ public class DeliveryPassType extends EnumModel {
 		return profileValue;
 	}
 
-	public DeliveryPassType(String code, String name, int noOfDlvs, int duration, boolean unlimited, String profileValue, boolean isAutoRenewDP, boolean isFreeTrialDP,boolean isFreeTrialRestricted, String autoRenewalSKU ) {
+	public DeliveryPassType(String code, String name, int noOfDlvs, int duration, boolean unlimited, String profileValue, boolean isAutoRenewDP, boolean isFreeTrialDP,boolean isFreeTrialRestricted, String autoRenewalSKU, List<Integer> eligibleDlvDays) {
 		super(code, name, null);
 		this.noOfDeliveries = noOfDlvs;
 		this.duration = duration;
@@ -62,6 +63,7 @@ public class DeliveryPassType extends EnumModel {
 		this.isFreeTrialDP=isFreeTrialDP;
 		this.isFreeTrialRestricted=isFreeTrialRestricted;
 		this.autoRenewalSKU=autoRenewalSKU;
+		this.setEligibleDlvDays(eligibleDlvDays);
 	}
     
 	public static DeliveryPassType getEnum(String code) {
@@ -145,5 +147,14 @@ public class DeliveryPassType extends EnumModel {
 	public String getAutoRenewalSKU() {
 		return autoRenewalSKU;
 	}
+
+	public List<Integer> getEligibleDlvDays() {
+		return eligibleDlvDays;
+	}
+
+	public void setEligibleDlvDays(List<Integer> eligibleDlvDays) {
+		this.eligibleDlvDays = eligibleDlvDays;
+	}
+
 	
 }

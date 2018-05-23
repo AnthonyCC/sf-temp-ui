@@ -9,13 +9,24 @@ import org.apache.log4j.Category;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.freshdirect.crm.CrmAgentModel;
+import com.freshdirect.crm.CrmAgentRole;
+import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPromotionHistory;
 import com.freshdirect.ecomm.gateway.AbstractEcommService;
+import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
+import com.freshdirect.ecommerce.data.customer.DefaultPaymentMethodData;
 import com.freshdirect.ecommerce.data.customer.ProfileData;
+import com.freshdirect.ecommerce.data.ecoupon.CrmAgentModelData;
+import com.freshdirect.ecommerce.data.list.FDActionInfoData;
+import com.freshdirect.ecommerce.data.list.RenameCustomerListData;
+import com.freshdirect.fdstore.FDEcommServiceException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.ProfileModel;
+import com.freshdirect.fdstore.ecomm.converter.ListConverter;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -25,6 +36,11 @@ public class CustomersApi extends AbstractEcommService implements CustomersApiCl
 	
 	private static CustomersApiClientI INSTANCE=new CustomersApi();
 	
+	public static CustomersApiClientI getInstance() {
+		
+		return INSTANCE;
+	}
+	
 	public Collection<ErpPaymentMethodI> getPaymentMethods(String customerId) throws FDResourceException {
 		// TODO Auto-generated method stub
 		return null;
@@ -32,7 +48,7 @@ public class CustomersApi extends AbstractEcommService implements CustomersApiCl
 
 
 	@Override
-	public String isActive(String customerId) throws FDResourceException {
+	public boolean isActive(String customerId) throws FDResourceException {
 		
 			String data= httpGetData(getFdCommerceEndPoint(EndPoints.STATUS.getValue()), String.class, new Object[]{customerId});
 			String isActive="";
@@ -47,7 +63,7 @@ public class CustomersApi extends AbstractEcommService implements CustomersApiCl
 			} catch (IOException e) {
 				throw new FDResourceException(e);
 			}
-			return isActive;
+			return Boolean.getBoolean(isActive);
 		
 	}
 	
@@ -229,5 +245,88 @@ public class CustomersApi extends AbstractEcommService implements CustomersApiCl
 				throw new FDResourceException(e);
 		}
 			
+	}
+
+
+	@Override
+	public void setDefaultPaymentMethod( FDActionInfo info,
+			                             PrimaryKey paymentMethodPK, 
+			                             EnumPaymentMethodDefaultType type,
+			                             boolean isDebitCardSwitch ) throws FDResourceException, RemoteException {
+		
+		DefaultPaymentMethodData defaultpymtMethodData=new DefaultPaymentMethodData();
+		info.setPaymentDefaultType(type);
+		FDActionInfoData actionInfoData=get(info);
+		defaultpymtMethodData.setActionInfo(actionInfoData);
+		defaultpymtMethodData.setFdCustomerId(actionInfoData.getFdCustomerId());
+		defaultpymtMethodData.setDefaultType(type.getName());
+		defaultpymtMethodData.setDebitCardSwitch(isDebitCardSwitch);
+		defaultpymtMethodData.setPaymentMethodId(paymentMethodPK.getId());
+		
+		Request<DefaultPaymentMethodData> request = new Request<DefaultPaymentMethodData>();
+		Response<String> response = new Response<String>();
+		try{
+			request.setData(defaultpymtMethodData);
+			String inputJson = buildRequest(request);
+			response = postData(inputJson,getFdCommerceEndPoint(EndPoints.DEFAULT_PAYMENT_METHOD_FOR_FDCUSTOMER.getValue()),Response.class,new Object[]{defaultpymtMethodData.getFdCustomerId()});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		} catch (FDEcommServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		
+		
+		
+	}
+	
+	private FDActionInfoData get(FDActionInfo actionInfo) {
+		
+		FDActionInfoData data=new FDActionInfoData();
+		if (actionInfo.getType()!=null)
+			data.setAccountActivityType(actionInfo.getType().getCode());
+		data.setAgent(getCrmAgentModel(actionInfo.getAgent()));
+		data.setDebitCardSwitch(actionInfo.isDebitCardSwitch());
+		if(actionInfo.getIdentity()!=null) {
+			data.setErpCustomerId(actionInfo.getIdentity().getErpCustomerPK());
+			data.setFdCustomerId(actionInfo.getIdentity().getFDCustomerPK());
+		}
+		data.seteStore(actionInfo.geteStore().getContentId());
+		data.setFdUserId(actionInfo.getFdUserId());
+		data.setInitiator(actionInfo.getInitiator());
+		data.setMasqueradeAgent(actionInfo.getMasqueradeAgentTL());
+		data.setNote(actionInfo.getNote());
+		data.setPaymentMethodDefaultType(actionInfo.getPaymentDefaultType().getName());
+		data.setPR1(actionInfo.isPR1());
+		data.setSource(actionInfo.getSource().getCode());
+		if(actionInfo.getTaxationType()!=null)
+			data.setTaxationType(actionInfo.getTaxationType().getCode());
+		
+		
+		return data;
+		
+	}
+	
+private CrmAgentModelData getCrmAgentModel(CrmAgentModel agentModel) {
+		
+		if(agentModel==null) 
+			return null;
+		
+		CrmAgentModelData agent=new CrmAgentModelData();
+		agent.setUserId(agentModel.getUserId());
+		agent.setPassword(agentModel.getPassword());
+		agent.setFirstName(agentModel.getFirstName());
+		agent.setLastName(agentModel.getLastName());
+		agent.setActive(agentModel.isActive());
+		agent.setRoleCode(agentModel.getRoleCode());
+		agent.setLdapId(agentModel.getLdapId());
+		agent.setMasqueradeAllowed(agentModel.isMasqueradeAllowed());
+		agent.setCurFacilityContext(agentModel.getCurFacilityContext());
+		
+		return agent;
 	}
 }

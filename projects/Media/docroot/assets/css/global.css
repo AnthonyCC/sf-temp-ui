@@ -60,7 +60,7 @@ img { border:none }
 .bodyCopy ul    { margin: 0; padding: 0; }
 .bodyCopy ul li { list-style-position: inside; list-style-type: disc; padding-left: 15px; text-indent: -15px; padding-bottom: 4px; margin-left: 0; }
 
-.error 		    { font-size: 10px; font-family: Verdana; color : #990000; }
+.error 		    { font-size: 10px; font-family: Verdana; color : #b93d3f; }
 .search         { width:100px; font-size: 10px; font-family: Verdana, Arial, sans-serif; }
 .gbold          { color: #336600; font-weight: bold; }
 .rbold          { color: #FF0000; font-weight: bold; }
@@ -69,11 +69,11 @@ img { border:none }
 input.radio     { background : #FFFFFE; color: #000000; }
 A.list		    { line-height: 12px; }
 
-.error_title     		{ font-size: 13px; color: #CC0000; font-family: Verdana, Arial, sans-serif; font-weight: bold; }
-.error_text	     		{ font-size: 9px; color: #CC0000; font-family: Verdana, Arial, sans-serif; }
-.error_text a:link 		{color: #CC0000}
-.error_text a:visited 	{color: #CC0000}
-.error_text a:active 	{color: #CC0000}
+.error_title     		{ font-size: 13px; color: #b93d3f; font-family: Verdana, Arial, sans-serif; font-weight: bold; }
+.error_text	     		{ font-size: 9px; color: #b93d3f; font-family: Verdana, Arial, sans-serif; }
+.error_text a:link 		{ color: #b93d3f; }
+.error_text a:visited 	{ color: #b93d3f; }
+.error_text a:active 	{ color: #b93d3f; }
 
 .greybox		{ color: #333; background: #EEEEEE; font-size: 9px; font-family: Verdana, Arial, sans-serif; }
 

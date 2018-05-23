@@ -890,6 +890,8 @@ public class CartDetail {
 	
 	private boolean isDeliveryPassCartOnly;
 	
+	private boolean dlvPassTimeslotNotMatched;
+	
 	public double getTip() {
 		return tip;
 	}
@@ -964,6 +966,14 @@ public class CartDetail {
 
 	public void setDeliveryPassCartOnly(boolean isDeliveryPassCartOnly) {
 		this.isDeliveryPassCartOnly = isDeliveryPassCartOnly;
+	}
+
+	public boolean isDlvPassTimeslotNotMatched() {
+		return dlvPassTimeslotNotMatched;
+	}
+
+	public void setDlvPassTimeslotNotMatched(boolean dlvPassTimeslotNotMatched) {
+		this.dlvPassTimeslotNotMatched = dlvPassTimeslotNotMatched;
 	}
 
 }

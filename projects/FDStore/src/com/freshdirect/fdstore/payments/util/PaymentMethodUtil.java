@@ -1,8 +1,10 @@
 package com.freshdirect.fdstore.payments.util;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Category;
@@ -14,6 +16,7 @@ import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
@@ -129,5 +132,24 @@ public class PaymentMethodUtil {
 			}
 		}
 		return pmethod;
+	}
+    
+	public static String getLast4AccNumber(ErpPaymentMethodI paymentMethod) {
+		int cardLength = paymentMethod.getAccountNumLast4().length();
+		String lastFourDigits = paymentMethod.getAccountNumLast4().substring(cardLength - 4, cardLength);
+		return lastFourDigits;
+	}
+    
+	public static String getExpDateMMYYYY(ErpPaymentMethodI paymentMethod) {
+		String expDateMMYYYY = "";
+		if (null != paymentMethod && null != paymentMethod.getExpirationDate()) {
+			Date date = paymentMethod.getExpirationDate();
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(date);
+			expDateMMYYYY = " " + (cal.get(Calendar.MONTH) + 1);
+			expDateMMYYYY = expDateMMYYYY + "/";
+			expDateMMYYYY = expDateMMYYYY + cal.get(Calendar.YEAR);
+		}
+		return expDateMMYYYY;
 	}
 }

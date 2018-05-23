@@ -16,7 +16,7 @@ public class ModuleData implements Serializable {
     private List<IconData> icons;
     private List<IconData> imageGridData;
     private List<ProductData> adProducts = new ArrayList<ProductData>();
-    private String AdHomePageBeacon;
+    private List<String> AdHomePageBeacon = new ArrayList<String>();
 
 
 	private SectionDataCointainer sectionDataContainer;
@@ -70,11 +70,11 @@ public class ModuleData implements Serializable {
 		this.adProducts = adProducts;
 	}
 
-	public String getAdHomePageBeacon() {
+	public List<String> getAdHomePageBeacon() {
 		return AdHomePageBeacon;
 	}
 
-	public void setAdHomePageBeacon(String adHomePageBeacon) {
+	public void setAdHomePageBeacon(List<String> adHomePageBeacon) {
 		AdHomePageBeacon = adHomePageBeacon;
 	}
 

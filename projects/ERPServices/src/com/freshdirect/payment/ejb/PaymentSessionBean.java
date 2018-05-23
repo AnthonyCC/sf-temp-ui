@@ -76,7 +76,6 @@ public class PaymentSessionBean extends SessionBeanSupport{
 	private final static Category LOGGER = LoggerFactory.getInstance( PaymentSessionBean.class );
 
 	private transient ErpSaleHome erpSaleHome = null;
-	private transient PaymentGatewayHome gatewayHome=null;
 	private final static ServiceLocator LOCATOR = new ServiceLocator();
 		
 	/**
@@ -861,21 +860,6 @@ public class PaymentSessionBean extends SessionBeanSupport{
 			throw new EJBException(e);
 		}
 			
-	}
-	
-	private  void lookupGatewayHome() {
-		
-		Context ctx = null;
-		try {
-			ctx = new InitialContext();
-			this.gatewayHome = (PaymentGatewayHome) ctx.lookup("freshdirect.gateway.PaymentGateway");
-		} catch (NamingException ex) {
-			throw new EJBException(ex);
-		} finally {
-			try {
-				ctx.close();
-			} catch (NamingException ne) {}
-		}
 	}
 	
 	private GatewayType getGatewayType(ErpPaymentMethodI pm) {

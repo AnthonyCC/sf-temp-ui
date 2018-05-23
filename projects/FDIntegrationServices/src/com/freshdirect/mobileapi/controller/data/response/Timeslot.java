@@ -47,6 +47,8 @@ public class Timeslot implements DateFormat {
 	
 	private Boolean isEarlyAM;
 	
+	private boolean isMidWeekDlvPassApplicable; // Added for Midweek DeliveryPass
+
 	
 	public static List<Timeslot> initWithList(List<com.freshdirect.mobileapi.model.Timeslot> slots) {
         List<Timeslot> newInstances = new ArrayList<Timeslot>();
@@ -237,6 +239,14 @@ public class Timeslot implements DateFormat {
 
 	public void setPromoDeliveryFee(double promoDeliveryFee) {
 		this.promoDeliveryFee = promoDeliveryFee;
+	}
+
+	public boolean isMidWeekDlvPassApplicable() {
+		return isMidWeekDlvPassApplicable;
+	}
+
+	public void setMidWeekDlvPassApplicable(boolean isMidWeekDlvPassApplicable) {
+		this.isMidWeekDlvPassApplicable = isMidWeekDlvPassApplicable;
 	}
 
 	

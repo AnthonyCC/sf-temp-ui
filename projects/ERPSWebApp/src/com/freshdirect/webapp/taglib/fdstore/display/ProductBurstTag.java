@@ -67,8 +67,6 @@ public class ProductBurstTag extends BodyTagSupportEx {
 		if (highestDeal < FDStoreProperties.getBurstsLowerLimit() || highestDeal > FDStoreProperties.getBurstUpperLimit())
 			highestDeal = 0;
 
-		BrowserInfo browser = new BrowserInfo(request);
-		boolean supportsPng = !browser.isInternetExplorer();
 		String lgsm = large ? "lg" : "sm";
 		int size = large ? 55 : 35;
 
@@ -105,7 +103,7 @@ public class ProductBurstTag extends BodyTagSupportEx {
 
 		if (render) {
 			buf.append('.');
-			buf.append(supportsPng ? "png" : "gif");
+			buf.append("png");
 			buf.append("\" width=\"");
 			buf.append(size);
 			buf.append("\" height=\"");

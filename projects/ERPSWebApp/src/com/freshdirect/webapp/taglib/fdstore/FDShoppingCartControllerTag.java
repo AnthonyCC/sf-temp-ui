@@ -2,7 +2,6 @@ package com.freshdirect.webapp.taglib.fdstore;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -85,7 +84,7 @@ import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.storeapi.content.ContentNodeModelUtil;
 import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.storeapi.content.Recipe;
-import com.freshdirect.webapp.ajax.cart.data.AddToCartItem;
+import com.freshdirect.webapp.ajax.cart.CartOperations;
 import com.freshdirect.webapp.crm.util.MakeGoodOrderUtility;
 import com.freshdirect.webapp.util.FDEventUtil;
 import com.freshdirect.webapp.util.ItemSelectionCheckResult;
@@ -94,15 +93,12 @@ import com.freshdirect.webapp.util.RequestUtil;
 
 public class FDShoppingCartControllerTag extends BodyTagSupport implements SessionName {
 
-    public static String PARAM_ADDED_FROM_SEARCH = "addedfromsearch";
-
-    public static String PARAM_ADDED_FROM = "addedfrom";
-
+    private static final Category LOGGER = LoggerFactory.getInstance(FDShoppingCartControllerTag.class);
     private static final long serialVersionUID = -7350790143456750035L;
 
-    private static Category LOGGER = LoggerFactory.getInstance(FDShoppingCartControllerTag.class);
-
     public final static String FD_SHOPPING_CART_ACTION_STACK_ID = "__FDShoppingCart_Action_Stack";
+    public static final String PARAM_ADDED_FROM_SEARCH = "addedfromsearch";
+    public static final String PARAM_ADDED_FROM = "addedfrom";
 
     @SuppressWarnings("unchecked")
     private static Stack<String> getActionStack(PageContext pageContext) {
@@ -190,8 +186,8 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 
 
     // OrderLine credit inputs
-    private String[] orderLineId = null;
-    private String[] orderLineReason = null;
+    private String[] orderLineId;
+    private String[] orderLineReason;
 
 
     @Override
@@ -1013,7 +1009,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
     protected boolean addToCart() throws JspException {
         FDCartLineI cartLine = this.processCartLine(null);
         if (cartLine != null) {
-            cart.addOrderLine(cartLine);
+            cart.addOrUpdateOrderLine(cartLine);
             // Log that an item has been added.
             cartLine.setSource(getEventSource());
             if (!pending)
@@ -1072,7 +1068,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 
             FDCartLineI cartLine = this.processCartLine("_" + suffix, null, false, true);
             if (cartLine != null) {
-                cart.addOrderLine(cartLine);
+                cart.addOrUpdateOrderLine(cartLine);
                 cartLine.setSource(getEventSource());
                 // cartLine.setAddedFromSearch(Boolean.parseBoolean(request.getParameter(PARAM_ADDED_FROM_SEARCH)));
                 cartLine.setAddedFrom(EnumATCContext.getEnum(request.getParameter(PARAM_ADDED_FROM)));
@@ -1126,7 +1122,9 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
             if (result.isSuccess()) {
                 if (addedLines > 0) {
                     // all is well, if ends well
-                    cart.addOrderLines(cartLinesToAdd);
+                    for (FDCartLineI fdCartLineI : cartLinesToAdd) {
+                        cart.addOrUpdateOrderLine(fdCartLineI);
+                    }
                     cartLinesToAdd.clear();
                 } else {
                     String errorMsg = "ccl_actual_selection".equalsIgnoreCase(request.getParameter("source")) ? SystemMessageList.MSG_CCL_QUANTITY_REQUIRED
@@ -1331,7 +1329,20 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
                 originalGrp.setSkipProductPriceValidation(false);
         }
 
-        FDCartLineI theCartLine = processSimple(suffix, prodNode, product, quantity, salesUnit, origCartLineId, variantId, userContext, originalGrp);
+        FDCartLineI theCartLine = null;
+
+        if (CartOperations.isProductGroupable(product, salesUnit)) {
+            theCartLine = CartOperations.findGroupingOrderline(cartLinesToAdd, prodNode, salesUnit);
+            if (theCartLine == null) {
+                theCartLine = CartOperations.findGroupingOrderline(cart.getOrderLines(), prodNode, salesUnit);
+            }
+        }
+
+        if (theCartLine == null) {
+            theCartLine = processSimple(suffix, prodNode, product, quantity, salesUnit, origCartLineId, variantId, userContext, originalGrp);
+        } else {
+            theCartLine.setQuantity((originalLine == null) ? theCartLine.getQuantity() + quantity : quantity);
+        }
 
         if (theCartLine != null) {
             theCartLine.setCoremetricsPageId(request.getParameter("coremetricsPageId"));

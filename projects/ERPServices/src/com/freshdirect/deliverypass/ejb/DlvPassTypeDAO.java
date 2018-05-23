@@ -15,7 +15,7 @@ public class DlvPassTypeDAO implements EnumDAOI{
 	private static final long	serialVersionUID	= 5894229300804868385L;
 
 	public List<DeliveryPassType> loadAll(Connection conn) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement("SELECT SKU_CODE, NAME, NO_OF_DLVS, DURATION, IS_UNLIMITED,PROFILE_VAL, IS_AUTORENEW_DP, IS_FREETRIAL, RESTRICT_FREETRIAL,AUTORENEWAL_SKU_CODE FROM CUST.DLV_PASS_TYPE");
+		PreparedStatement ps = conn.prepareStatement("SELECT SKU_CODE, NAME, NO_OF_DLVS, DURATION, IS_UNLIMITED,PROFILE_VAL, IS_AUTORENEW_DP, IS_FREETRIAL, RESTRICT_FREETRIAL, AUTORENEWAL_SKU_CODE, DLV_DAYS FROM CUST.DLV_PASS_TYPE");
 		ResultSet rs = ps.executeQuery();
 
 		List<DeliveryPassType> l = new ArrayList<DeliveryPassType>();
@@ -35,7 +35,16 @@ public class DlvPassTypeDAO implements EnumDAOI{
 			if((isAutoRenewDP)&& ((autoRenewalSKU==null)||("".equals(autoRenewalSKU)))) {
 				autoRenewalSKU=skuCode;
 			}
-			l.add(new DeliveryPassType(skuCode, name, noOfDlvs, duration,unlimited, profileValue.trim(),isAutoRenewDP,isFreeTrial,restrictFreeTrial,autoRenewalSKU));
+			String dlvDays = rs.getString("DLV_DAYS");
+			List<Integer> dlvEligibleDays=new ArrayList<Integer>();
+
+			if(null!=dlvDays) {
+				String[] dlv=dlvDays.split(",");
+				for(String value:dlv){
+					dlvEligibleDays.add(Integer.parseInt(value));
+				}
+			}
+			l.add(new DeliveryPassType(skuCode, name, noOfDlvs, duration,unlimited, profileValue.trim(),isAutoRenewDP,isFreeTrial,restrictFreeTrial,autoRenewalSKU,dlvEligibleDays));
 		}
 
 		rs.close();

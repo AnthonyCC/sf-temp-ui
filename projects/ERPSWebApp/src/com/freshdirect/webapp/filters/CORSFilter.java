@@ -25,15 +25,16 @@ public class CORSFilter extends AbstractFilter {
 		HttpServletRequest request = (HttpServletRequest) req;
 
 		String origin = request.getHeader("Origin");
-		String allowedOrigins = FDStoreProperties.getCORSDomain();
-
-		if (origin != null && (allowedOrigins.equals("*") || allowedOrigins.contains(origin))) {
-			
-			response.setHeader(header_origin, origin);
-			response.setHeader(header_credentials, "true");
-			//P3P Policy workaround for IE third party integration
-			if(FDStoreProperties.isP3PPolicyEnabled()) {
-				response.setHeader(header_p3p, header_p3p_policy);
+		
+		if (origin != null) {
+			String allowedOrigins = FDStoreProperties.getCORSDomain();
+			if ((allowedOrigins.equals("*") || allowedOrigins.contains(origin))) {
+				response.setHeader(header_origin, origin);
+				response.setHeader(header_credentials, "true");
+				// P3P Policy workaround for IE third party integration
+				if (FDStoreProperties.isP3PPolicyEnabled()) {
+					response.setHeader(header_p3p, header_p3p_policy);
+				}
 			}
 		}
 

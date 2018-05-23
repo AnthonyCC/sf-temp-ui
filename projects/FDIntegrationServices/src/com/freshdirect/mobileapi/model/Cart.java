@@ -867,7 +867,7 @@ public class Cart {
 		} else if (cart instanceof FDCartModel) {
 			cartDetail.setIsDlvPassApplied(((FDCartModel) cart).isDlvPassApplied());
 
-			if (user.getSelectedServiceType() == EnumServiceType.HOME && (user.getFDSessionUser().getShoppingCart().getDeliveryPassCount() > 0
+			if (user.getSelectedServiceType() == EnumServiceType.HOME && (user.getFDSessionUser().getShoppingCart().isDlvPassApplicableByCartLines()
 					|| user.getFDSessionUser().isDlvPassActive() || user.getFDSessionUser().applyFreeTrailOptinBasedDP())){
 				cartDetail.setIsDlvPassApplied(true);
 			}
@@ -878,6 +878,11 @@ public class Cart {
         // Based on the this flag value - UI will switch between 2 checkout views ( regular checkout vs DP only checkout view)
         if (!(cart instanceof FDModifyCartModel) && (FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && cart.containsDlvPassOnly())){
         	cartDetail.setDeliveryPassCartOnly(true);
+        }
+        
+        //Added for Mid-Week DeliveryPass implementation. Based on this flag - UI will determine about showing the ( OR FREE hyperlink)
+        if (user.isDlvPassTimeslotNotMatched()){
+        	cartDetail.setDlvPassTimeslotNotMatched(true);
         }
         
         ErpPaymentMethodI paymentMethod = cart.getPaymentMethod();

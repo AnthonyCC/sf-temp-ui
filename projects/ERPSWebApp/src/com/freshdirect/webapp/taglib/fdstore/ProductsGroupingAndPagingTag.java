@@ -11,10 +11,8 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
-import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.SearchSortType;
-import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.fdstore.util.FilteringNavigator;
 import com.freshdirect.fdstore.util.NewProductsGrouping;
@@ -90,8 +88,7 @@ public class ProductsGroupingAndPagingTag extends BodyTagSupportEx {
 	public List<ProductModel> getPageProducts() {
 		if (pageProductsUnwrap == null)
 			pageProductsUnwrap = ProductPricingFactory.getInstance().getPricingAdapter(
-					FilteringSortingItem.unwrap(pageProducts),
-					getPricingContext());
+                    FilteringSortingItem.unwrap(pageProducts));
 		return pageProductsUnwrap;
 	}
 
@@ -148,13 +145,6 @@ public class ProductsGroupingAndPagingTag extends BodyTagSupportEx {
 							true,
 							VariableInfo.NESTED)};
 		}
-	}
-
-	public PricingContext getPricingContext() {
-		FDUserI user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
-		if (user != null)
-			return user.getPricingContext();
-		return PricingContext.DEFAULT;
 	}
 
 }

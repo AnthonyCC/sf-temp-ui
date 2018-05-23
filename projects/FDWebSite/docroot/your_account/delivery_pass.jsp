@@ -1,3 +1,17 @@
+<%@page import="com.freshdirect.fdstore.ewallet.EnumEwalletType"%>
+<%@ page import='java.util.*' %>
+<%@ page import='com.freshdirect.fdstore.*' %>
+<%@ page import='com.freshdirect.fdstore.customer.*' %>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@ page import='com.freshdirect.customer.*' %>
+<%@ page import='com.freshdirect.payment.*' %>
+<%@ page import='com.freshdirect.payment.fraud.*' %>
+<%@ page import='com.freshdirect.common.customer.EnumServiceType' %>
+<%@ page import='com.freshdirect.common.customer.EnumCardType'%>
+<%@ page import='com.freshdirect.common.context.MasqueradeContext' %>
+<%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
+<%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
+<%@ page import="com.freshdirect.webapp.util.JspMethods" %>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
@@ -10,363 +24,225 @@
 <%@ page import='com.freshdirect.deliverypass.DeliveryPassModel' %>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ page import='com.freshdirect.storeapi.content.ContentFactory' %>
+<%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter'%>
+<%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'%>
 <%@ page import="java.util.Calendar" %>
 <%@ page import='java.util.Date' %>
 <%@ taglib uri="template" prefix="tmpl" %>
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
+
+<fd:CheckLoginStatus id="userdp" guestAllowed="false" recognizedAllowed="false" />
+
 <%
 	//expanded page dimensions
 	final int W_YA_DELIVERY_PASS_TOTAL = 970;
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 %>
-<fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
+<%
+	boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, userdp) && JspMethods.isMobile(request.getHeader("User-Agent"));
+	String template = "/common/template/dnav.jsp";
+	if (mobWeb) {
+		template = "/common/template/mobileWeb.jsp"; //mobWeb template
+	}
+%>
 
-<tmpl:insert template='/common/template/dnav.jsp'>
+<tmpl:insert template='<%= template %>'>
 <%--     <tmpl:put name='title' direct='true'>FreshDirect - Your Account - FreshDirect DeliveryPass</tmpl:put> --%>
     <tmpl:put name="seoMetaTag" direct="true">
 		<fd:SEOMetaTag title="FreshDirect - Your Account - FreshDirect DeliveryPass" pageId="delivery_pass"></fd:SEOMetaTag>
 	</tmpl:put>
     <tmpl:put name='content' direct='true'>
-		<script type="text/javascript">
-		    	function redirectToSignup() {
-				    var form = document.forms['signup'];
-				    form.elements['action'].value='signup';
-				    form.method='POST';
-				    form.submit();
-				    return false;		    	
-		    	}
-		    	
-		    	function flipAutoRenewalOFF() {
-				    var form = document.forms['autoRenew'];
-				    form.elements['action'].value='FLIP_AUTORENEW_OFF';
-				    form.method='POST';
-				    form.submit();
-				    return false;
-		    	}
-		    	
-		    	function flipAutoRenewalON() {
-				    var form = document.forms['autoRenew'];
-				    form.elements['action'].value='FLIP_AUTORENEW_ON';
-				    form.method='POST';
-				    form.submit();
-				    return false;
-		    	}
-		</script>
-    <fd:DlvPassSignupController result="result" callCenter="false">
-		<fd:ErrorHandler result='<%=result%>' name='dlvpass_discontinued' id='errorMsg'>
-		   <%@ include file="/includes/i_error_messages.jspf" %>   
-		</fd:ErrorHandler>
-		
-    <%if(user.getDpFreeTrialOptin() && user.isDlvPassNone()) {  %>
-    
-    <table width="<%= W_YA_DELIVERY_PASS_TOTAL %>" align="center" border="0" cellpadding="0" cellspacing="0">
-			<tr>
-				<td colspan="2" class="text11">
-					<font class="title18">FreshDirect DeliveryPass</font>
-				</td>
-			</tr>
-			<tr>
-				<td colspan="2">Your membership details.
-					<br>
-					<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-					<IMG src="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="<%= W_YA_DELIVERY_PASS_TOTAL %>" HEIGHT="1" BORDER="0"><BR>
-					<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><br><br>
+<script>
+$jq( document ).ready(function() {
+	$jq(".dp-container").on("click", "[dp-learn-more]", function(){
+		pop("/shared/template/generic_popup.jsp?contentPath=/media/editorial/picks/deliverypass/dp_tc.html&windowSize=large&name=Delivery Pass Information',400,560,alt='Delivery Pass Information");
+	});
+	$jq(".dp-container").on("click", "[autorenew-learn-more]", function(){
+		pop('/about/aboutRenewal.jsp?sku=MKT9000222&amp;term=Six-Month Mid-Week');
+	});
+});
+function deliveryPassAutoRenew(item){
+	item.disabled = true;
+	if(item.checked){
+		dataString = "action=FLIP_AUTORENEW_ON";
+	} else {
+		dataString = "action=FLIP_AUTORENEW_OFF";
+	}
+	$jq(".dp-autorenew-error").addClass("dp-display-autorenew-loading").removeClass("dp-display-autorenew-error");
+	$jq.ajax({
+        url: '/api/expresscheckout/deliverypass',
+	    data: dataString,
+        type: 'POST',
+        success: function() {
+        	$jq(".dp-autorenew-error").removeClass("dp-display-autorenew-loading");
+        	if(item.checked){
+        		$jq(".dp-renew-date").addClass("dp-dispay-renew-date");
+        	} else {
+        		$jq(".dp-renew-date").removeClass("dp-dispay-renew-date");
+        	}
+        },
+        error: function() {
+        	$jq(".dp-autorenew-error").addClass("dp-display-autorenew-error").removeClass("dp-display-autorenew-loading");
+        	if(item.checked){
+         		item.checked = false;
+         	} else {
+         		item.checked = true;
+         	}
+        },
+        complete: function() {
+        	item.disabled = false;
+        }
+ 	});
+}
+</script>
+    	<% if(user.isDPFreeTrialOptInEligible()){ %>
+    		<script>window.location = "/freetrial.jsp";</script>
+    	<% } else if(!user.isDlvPassActive()){
+    		if(user.getDpFreeTrialOptin() && !user.isDlvPassExpired()){ %>
+    			<div class="dp-container">
+    				<div class="dp-page-header">DeliveryPass</div>
+    				<div class="dp-content">
+    					<p>You have opted into the DeliveryPass Free Trial on <%= user.getDpFreeTrialOptinStDate() %></p>
+    					<p>You will start receiving free deliveries on your next order.</p>
+    					<p><a href="#" dp-learn-more>Learn more about FreshDirect DeliveryPass.</a></p>
+    					<p><a href="/" class="dpn-success-start-shopping cssbutton cssbutton-flat green">Start Saving</a></p>
+    				</div>
+    			</div>
+    		<% } else {%>
+	    		<div class="dp-container">
+	    			<div class="dp-page-header">DeliveryPass</div>
+	    			<div class="dp-content">
+    					<p>You are not currently a member.</p>
+    					<p>DeliveryPass offers you a new way to save on delivery fees. Place as many orders as you'd like while your pass is active, all for a low, one-time fee for delivery.</p>
+    					<p><a href="https://www.freshdirect.com/pdp.jsp?productId=mkt_dpass_auto14mo&catId=gro_gear_dlvpass">Sign up for DeliveryPass today!</a></p>
+	    			</div>
+	    		</div>
+    		<% } %>
+    	<% } else { %>
+    		<fd:WebViewDeliveryPass id='viewContent'>
+    		<div class="dp-container">
+    			<div class="dp-page-header">DeliveryPass</div>
+    			<div class="dp-content">
+    			<div class="dp-plan">
+						<div class="dp-header">Current Plan:</div>
+						<div class="dp-plan-name"><%= viewContent.getPassName() %> </div>
+					</div>
+					<div class="dp-benefits">
+						<div class="dp-header">Your Benefits:</div>
+						<div class="dp-benefits-list-item">
+							<div class="dp-benefits-list-icon"><img style="width: 36px; height: 22px;" src="/media/editorial/site_pages/deliverypass/images/truck.svg" alt="truck"></div>
+							<div class="dp-benefits-list-text"><%= user.hasMidWeekDlvPass() ? "Order as often as you want Tuesday-Thursday and never be charged a delivery fee":"Unlimited Free Deliveries<br/>7 Days a Week" %></div>
+						</div>
+						<div class="dp-benefits-list-item">
+							<div class="dp-benefits-list-icon"><img src="/media/editorial/site_pages/deliverypass/images/alarm-clock.svg" alt="alarm clock"></div>
+							<div class="dp-benefits-list-text"><%= user.hasMidWeekDlvPass() ? "Reserve a Tuesday-Thursday delivery timeslot":"Timeslot Reservations" %></div>
+						</div>
+						<div class="dp-benefits-list-item">
+							<div class="dp-benefits-list-icon"><img style="width: 30px; height: 30px;" src="/media/editorial/site_pages/deliverypass/images/tag.svg" alt="check"></div>
+							<div class="dp-benefits-list-text">Exclusive DeliveryPass Perks</div>
+						</div>
+					</div>
 					
-				</td>
-			</tr>
-			<tr>
-				<td colspan="2" class="text13">
-					<font class="text13">You have opted into the DeliveryPass Free Trial on <%= user.getDpFreeTrialOptinStDate() %> date. You will start receiving free deliveries on your next order.</font><br><br>
-				</td>
-			</tr>
-			
-		<%} else { %>
-			<fd:WebViewDeliveryPass id='viewContent'>
-        	
-		<table width="<%= W_YA_DELIVERY_PASS_TOTAL %>" align="center" border="0" cellpadding="0" cellspacing="0">
-			<tr>
-				<td colspan="2" class="text11">
-					<font class="title18">FreshDirect DeliveryPass</font>
-				</td>
-			</tr>
-			<tr>
-				<td colspan="2">
-					<%= viewContent.getHeaderInfo() %><br>
-					<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-					<IMG src="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="<%= W_YA_DELIVERY_PASS_TOTAL %>" HEIGHT="1" BORDER="0"><BR>
-					<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><br><br>
-					
-				</td>
-			</tr>
-			<tr>
-				<td colspan="2" class="text13">
-					<font class="text13bold"><%= viewContent.getPassName() %></font>
-					<font class="text13"><%= viewContent.getDetailInfo() %></font><br><br>
-				</td>
-			</tr>
-			<tr>
-				<td colspan="2">
-					<%
-					
-					if (viewContent.getDescription() != null) { %>
-
-						<FONT CLASS="space2pix"><BR></FONT>
-
-						<fd:IncludeMedia name="<%= viewContent.getDescription().getPath() %>" />
-
-						<br>
-
-					<%} else { %>
-						DeliveryPass offers you a new way to save on delivery fees. Place as many orders as you'd like while your pass is active, all for a low, one-time fee for delivery.
-					<%}%>
-				</td>
-			</tr>
-			<%
-			EnumDlvPassStatus status = user.getDeliveryPassStatus();
-                  EnumDPAutoRenewalType arType=user.hasAutoRenewDP();
-                  if(user.getDlvPassInfo().getAutoRenewUsablePassCount()==0)  {
-				arType=EnumDPAutoRenewalType.NONE;
-                  } 
-
-			if(user.isEligibleForDeliveryPass() && (user.getUsableDeliveryPassCount()==FDStoreProperties.getMaxDlvPassPurchaseLimit()) &&(EnumDPAutoRenewalType.NONE.equals(arType))) { %>
-				<tr>
-					<td colspan="2">
-						<form name="signup" method="POST">
-						<input type="hidden" name="action" value="">
-						<b>DeliveryPass Refills </b>&nbsp;You have <%=DeliveryPassUtil.getAsText(user.getUsableDeliveryPassCount()-1)%>  DeliveryPass refills on your account. A refill will go into effect automatically when your current pass runs out. You can keep up to two refills in your account at a time. 
-						<br><br><br>
-						</form>
-					</td>
-				</tr>
-			<%} else if (user.isEligibleForDeliveryPass() && (user.getUsableDeliveryPassCount()>1)&&(EnumDPAutoRenewalType.NONE.equals(arType)) ) {%>
-				<tr>
-					<td colspan="2">
-						<form name="signup" method="POST">
-						<input type="hidden" name="action" value="">
-						<b>DeliveryPass Refills </b>&nbsp;You have <%=DeliveryPassUtil.getAsText(user.getUsableDeliveryPassCount()-1)%> DeliveryPass refill
-  on your account. Now you can purchase a refill DeliveryPass which renews automatically! Simply 
-						<A HREF="#" onClick="javascript:redirectToSignup()">purchase an additional FreshDirect DeliveryPass</A> and you'll never need to worry about running out.
-
-						<br><br><br>
-						</form>
-					</td>
-				</tr>
-			<%} else if (user.isEligibleForDeliveryPass() && (user.getUsableDeliveryPassCount()==1)&&(EnumDPAutoRenewalType.NONE.equals(arType))&& (user.getDlvPassInfo().getAutoRenewUsablePassCount()==0)) {%>
-				<tr>
-					<td colspan="2">
-						<form name="signup" method="POST">
-						<input type="hidden" name="action" value="">
-						<b>DeliveryPass Refills </b>&nbsp;You do not have any DeliveryPass refills on your account. Now you can purchase a refill DeliveryPass which renews automatically! Simply
-						<A HREF="#" onClick="javascript:redirectToSignup()">purchase an additional DeliveryPass</A> and you'll never need to worry about running out.
-
-						<br><br><br>	
-						</form>
-					</td>
-				</tr>
-                  <%}else if (user.isEligibleForDeliveryPass() && (user.getUsableDeliveryPassCount()==0)&&(EnumDPAutoRenewalType.NONE.equals(arType))) {%>
-			
-				<tr>
-					<td colspan="2">
-						<form name="signup" method="POST">
-						<input type="hidden" name="action" value="">
-						<br>
-						<A HREF="#" onClick="javascript:redirectToSignup()"><font class="text11bold">Click here</font></A> to sign up for DeliveryPass today!
-						</form>
-					</td>
-				</tr>	
-			
-                  <%}%>
-
-		      <% if(EnumDPAutoRenewalType.YES.equals(arType) || EnumDPAutoRenewalType.NO.equals(arType)) {%>
-                        <% if(user.getUsableDeliveryPassCount()>1) {%>
-				<tr>
-					<td colspan="2">
-						You have <%=DeliveryPassUtil.getAsText(user.getUsableDeliveryPassCount()-1)%> 
-						<% if(user.getUsableDeliveryPassCount()>2) {%>
-
-                                    	<b>DeliveryPass refills</b>
-						<%} else {%>
-	                                    <b>DeliveryPass refill</b>
-						<%}%> on your account. A refill will go into effect when your current membership expires.<br><br><br>
-
-						
-					</td>
-				</tr>
-				<%}%>	
-				<tr>
-					<td colspan="2">
-
+					<div class="clear"></div>
+					<div class="dp-plan-data">
+						<div class="dp-plan-activated">
+							<div class="dp-plan-activate-header">Active Since:</div>
 							
-						
-
-						<% if(EnumDPAutoRenewalType.YES.equals(arType)) {%>
-
-							<% if(user.getDlvPassInfo().getAutoRenewUsablePassCount()>0) {%>
-								<IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="<%= W_YA_DELIVERY_PASS_TOTAL %>" HEIGHT="1" BORDER="0" VSPACE="3"><br><br>	
-
-								<form name="autoRenew" method="POST">
-								<% if(!DeliveryPassUtil.getAutoRenewalDate(user).equals("")) {%>
-									<font class="text12bold">DeliveryPass Renewals</font>
-									<font class="text12"> Your membership will be renewed automatically on the day your current membership expires.
-									<A HREF="javascript:pop('/about/aboutRenewal.jsp?sku=<%=user.getDlvPassInfo().getAutoRenewDPType().getCode()%>&term=<%=user.getDlvPassInfo().getAutoRenewDPTerm()%>',400,560)">	
-										Click here to learn more about renewals.
-									</A>
-									<br><br><span class="text13bold">Your DeliveryPass membership is set to renew on <%=DeliveryPassUtil.getAutoRenewalDate(user)%>.</span>
-								<%} %>
-
-								
-									<input type="hidden" name="action" value="">
-									<A HREF="#" onClick="javascript:flipAutoRenewalOFF()"><font class="text12">Click here to turn renewal OFF.</A>
-								</form>
-								<IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="<%= W_YA_DELIVERY_PASS_TOTAL %>" HEIGHT="1" BORDER="0" VSPACE="3"><br><br>	
-                                          <%} else if (user.getUsableDeliveryPassCount()==0) {%>
-								<form name="signup" method="POST">
-									<input type="hidden" name="action" value="">
-									<br><A HREF="#" onClick="javascript:redirectToSignup()"><font class="text11bold">Click here</font></A> to sign up for FreshDirect DeliveryPass today!
-								</form>
-							<% }%>
-						<%} else {%>
-							<% if(user.getDlvPassInfo().getAutoRenewUsablePassCount()>0) {%>
-								<IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="<%= W_YA_DELIVERY_PASS_TOTAL %>" HEIGHT="1" BORDER="0" VSPACE="3">
-								<br><br>	
-
-
-								<font class="text12bold">DeliveryPass Renewals</font>
-								<font class="text12"> Your membership can be renewed automatically when your current DeliveryPass (or refill) expires.
-								<A HREF="javascript:pop('/about/aboutRenewal.jsp?sku=<%=user.getDlvPassInfo().getAutoRenewDPType().getCode()%>&term=<%=user.getDlvPassInfo().getAutoRenewDPTerm()%>&price=<%=user.getDlvPassInfo().getAutoRenewPriceAsText()%>',400,560)">								Click here to learn more about renewals.
-								</A>
-								<br /><br />
-							<table>
-								<tr>
-									<td valign="middle">
-										<% if(!DeliveryPassUtil.getExpDate(user).equals("")) { %>
-											<b>Your DeliveryPass membership will expire on <%=DeliveryPassUtil.getExpDate(user)%>.</b>
-											</td>
-											<td valign="middle">
-										<% } %>
-								
-										<form name="autoRenew" method="POST">
-											<input type="hidden" name="action" value="">
-											<a href="#" onClick="javascript:flipAutoRenewalON(); return false;" onmouseout="swapImage('DP_AR_ON_BUTTON','/media/images/buttons/DP_turnon_renewal_f1.png')" onmouseover="swapImage('DP_AR_ON_BUTTON','/media/images/buttons/DP_turnon_renewal_f2.png')" style="margin: 0 12px;"><img src="/media/images/buttons/DP_turnon_renewal_f1.png" name="DP_AR_ON_BUTTON" alt="Click here to turn renewal ON." /></a>
-										</form>
-									</td>
-								</tr>
-							</table>
-								<IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="<%= W_YA_DELIVERY_PASS_TOTAL %>" HEIGHT="1" BORDER="0" VSPACE="3"><br><br>	
-                                          <%} else if (user.getUsableDeliveryPassCount()==0){%>
-								<form name="signup" method="POST">
-									<input type="hidden" name="action" value="">
-									<br><A HREF="#" onClick="javascript:redirectToSignup()"><font class="text11bold">Click here</font></A> to sign up for FreshDirect DeliveryPass today!
-								</form>
-							<% }%>
-
-						<%}%>
-
-
-
-						</font>
-						
-						
-					  
-
-					</td>
-				</tr>	
-				<b>
-
-
-			<%}%>
- 
-			<%
-			if(viewContent.getUsageAndPurchaseInfo() != null) { 
-				String usageAndPurchText = "<span class=\"text12bold\">"+viewContent.getUsageAndPurchaseInfo();
-				
-			%>
-				<tr>
-					<td colspan="2">
-						<%	if (viewContent.getModel() != null) { %>
-							<fd:GetOrder id='dpOrder' saleId='<%= viewContent.getModel().getPurchaseOrderId() %>'>
-								<% if ("SUB".equalsIgnoreCase(dpOrder.getOrderType().getSaleType())) {
-									usageAndPurchText += ". <a href=\"/your_account/order_details.jsp?orderId="+dpOrder.getErpSalesId()+"\">Click here to view auto-renewal invoice.</a>";
-								} %>
-							</fd:GetOrder>
-						<% }
-						
-						usageAndPurchText += "</span>"; 
-						%>
-						<%= usageAndPurchText %>
-						<br /><br /><br />
-					</td>
-				</tr>	
-			<% } %>
-			
-			<%
-			if(viewContent.getId() != null) { %>
-			<tr>
-				<td colspan="2">
-
-				<fd:GetOrdersByDeliveryPass deliveryPassId='<%= viewContent.getId() %>' id='orderHistoryInfo'>
-					<% int rowCounter = 0; %>
-
-					<TABLE WIDTH="500" BORDER="0" CELLPADDING="0" CELLSPACING="0" align="center">				
-						<tr>
-							<td class="text10bold" bgcolor="#DDDDDD" WIDTH="75">Order #</td>
-							<td class="text10bold" bgcolor="#DDDDDD" WIDTH="135">&nbsp;&nbsp;&nbsp;&nbsp;Delivery Date</td>
-					                <td class="text10bold" bgcolor="#DDDDDD" WIDTH="135">Delivery Type</td>
-							<td class="text10bold" bgcolor="#DDDDDD" WIDTH="75" align="right">Order Total</td>
-							<td bgcolor="#DDDDDD"><img src="/media_stat/images/layout/clear.gif" width="40" height="1" alt="" border="0"></td>
-							<td class="text10bold" bgcolor="#DDDDDD" WIDTH="90">Order Status</td>
-						</tr>
-					<logic:iterate id="orderInfo" collection="<%= orderHistoryInfo %>" type="com.freshdirect.fdstore.customer.FDOrderInfoI">
-						<tr bgcolor="<%= (rowCounter++ % 2 == 0) ? "#FFFFFF" : "#EEEEEE" %>">
-							<td><a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>"><%= orderInfo.getErpSalesId() %></a></td>
-							<td class="text10">&nbsp;&nbsp;&nbsp;&nbsp;<%= CCFormatter.defaultFormatDate( orderInfo.getRequestedDate() ) %></td>
-					                <td class="text10"><%= orderInfo.getDeliveryType().getName() %></td>
-							<td class="text10" align=right><%= JspMethods.formatPrice( orderInfo.getTotal() ) %>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-							<td></td>
-							<td><%= orderInfo.getOrderStatus().getDisplayName() %></td>
-						</tr>	
-					</logic:iterate>
-					</TABLE ><br><br><br>
-				</fd:GetOrdersByDeliveryPass>
+							<div class="dp-plan-activate-text"><%= null != user ? DeliveryPassUtil.getPurchaseDate(user):null %> </div>
+						</div>
+						<%-- <% if(null != user && null != user.getDlvPassInfo() )%>
+						<% if(user.getDlvPassInfo().getDPSavings() > FDStoreProperties.getMinimumAmountSavedDpAccPage()) { %>
+						<div class="dp-plan-saved">
+							<div class="dp-plan-activate-header">You've Saved:</div>
+							<div class="dp-plan-activate-text"><%= null != user.getDlvPassInfo() ? user.getDlvPassInfo().getDPSavings():null %></div>
+						</div>
+						<% } %> --%>
+						<div class="clear"></div>
+					</div>
 					
-				</td>
-			</tr>	
-			<%}%>
-                  
-			
- 
-			
-			<tr>
-				<td colspan="2">
-				<IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="<%= W_YA_DELIVERY_PASS_TOTAL %>" HEIGHT="1" BORDER="0" VSPACE="3">			
-				</td>
-			</tr>	
-		</table>
-        </fd:WebViewDeliveryPass>
-        <%} %>
-</fd:DlvPassSignupController>        
-	<table width="<%= W_YA_DELIVERY_PASS_TOTAL %>" align="center" border="0" cellpadding="0" cellspacing="0">
-		<tr>
-			<td align="center" colspan="2">
-				<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="20" BORDER="0"><BR>
-<A HREF="javascript:pop('/shared/template/generic_popup.jsp?contentPath=/media/editorial/picks/deliverypass/dp_tc.html&windowSize=large&name=Delivery Pass Information',400,560,alt='')">
-				<font class="text11bold">Click here to learn more about FreshDirect DeliveryPass.</font>
-				</A>
-			</td>
-		</tr>				
-	</table>
-
-	<BR><BR><IMG src="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="<%= W_YA_DELIVERY_PASS_TOTAL %>" HEIGHT="1" BORDER="0"><BR><BR>
-	<FONT CLASS="space4pix"></FONT>
-	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= W_YA_DELIVERY_PASS_TOTAL %>">
-	<TR VALIGN="TOP">
-	<TD WIDTH="35"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="" ALIGN="LEFT">
-     CONTINUE SHOPPING
-    <BR>from <FONT CLASS="text11bold">Home Page</A></FONT><BR><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="340" HEIGHT="1" BORDER="0"></TD>
-	</TR>
-	</TABLE>
-	<BR>
+					<div class="dp-renew">
+						<div class="dp-renew-date <%= EnumDPAutoRenewalType.YES.equals(user.hasAutoRenewDP()) ? "dp-dispay-renew-date":"" %> ">
+						<span class="dp-renew-date-text">Your plan will be renewed automatically on</span><span class="dp-expire-date-text">Your plan will expire on</span> <span class="dp-renew-text-bold">
+						<%= null != user ? DeliveryPassUtil.getAutoRenewalDate(user):null%></span><span class="dp-expire-text-bold"><%= null != user ? DeliveryPassUtil.getExpDate(user):null%></span></div>
+						<div class="dp-auto-renew">
+							<div class="dp-auto-renew-text">Auto-Renewal</div>
+							<label class="switch">
+								<input type="checkbox" onchange="deliveryPassAutoRenew(this)" <%= EnumDPAutoRenewalType.YES.equals(user.hasAutoRenewDP()) ? "checked":""  %>>
+								<span class="slider"></span>
+							</label>
+							<div class="dp-autorenew-error"><div class="spinner"></div><div class="dp-autorenew-error-text error"> Something went wrong. Please try again.</div></div>
+						</div>
+						<div class="dp-renew-text">By turning off auto-renewal, you will continue on your current plan until it expires. If you wish to cancel your plan, please call <%= null != user ? user.getCustomerServiceContact():null %>.
+							<br/><a href="#" autorenew-learn-more>Learn more about auto-renewals.</a>
+						</div>
+					</div>
+					<div class="dp-payment">
+						<div class="dp-header">Payment Method:</div>
+						<% if(null != user.getDefaultPaymentMethod()){ %>
+							<div class="dp-payment-data">
+							<%if(user.getDefaultPaymentMethod().getCardType() != user.getDefaultPaymentMethod().getCardType().PAYPAL && user.getDefaultPaymentMethod().getCardType() != user.getDefaultPaymentMethod().getCardType().ECP  && user.getDefaultPaymentMethod().getCardType() != user.getDefaultPaymentMethod().getCardType().GCP ) {%>
+								 <% if (EnumCardType.AMEX.equals(user.getDefaultPaymentMethod().getCardType())){ %>
+									<div class="dp-payment-img"><img src="/media/editorial/site_pages/deliverypass/images/amex.png" alt="American Express"></div>
+								<% } else if (EnumCardType.MC.equals(user.getDefaultPaymentMethod().getCardType())){ %>
+									<div class="dp-payment-img"><img src="/media/editorial/site_pages/deliverypass/images/mastercard.png" alt="MasterCard"></div>
+								<% } else if (EnumCardType.VISA.equals(user.getDefaultPaymentMethod().getCardType())){ %>
+									<div class="dp-payment-img"><img src="/media/editorial/site_pages/deliverypass/images/visa.png" alt="Visa"></div>
+								<% } else if (EnumCardType.DISC.equals(user.getDefaultPaymentMethod().getCardType())){ %>
+									<div class="dp-payment-img"><img src="/media/editorial/site_pages/deliverypass/images/discover.png" alt="Discover"></div>
+								<% } %>
+								<div class="dp-payment-text">
+									<%=  user.getDefaultPaymentMethod().getCardType().getDisplayName() %>
+									 - Ending: <%=com.freshdirect.fdstore.payments.util.PaymentMethodUtil.getLast4AccNumber(user.getDefaultPaymentMethod()) %> 
+									 Exp: <%=  com.freshdirect.fdstore.payments.util.PaymentMethodUtil.getExpDateMMYYYY(user.getDefaultPaymentMethod()) %> 
+								 </div>
+							<%}
+							else if(null != user.getDefaultPaymentMethod() &&  user.getDefaultPaymentMethod().getCardType() == user.getDefaultPaymentMethod().getCardType().PAYPAL) {%>
+								<div class="dp-payment-img"><img src="//www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png" alt="paypal"></div>
+								<div class="dp-payment-text">
+									<%=  user.getDefaultPaymentMethod().getName() %>
+									<%= user.getDefaultPaymentMethod().getEmailID() %>
+								</div>
+							<%} 
+							else if(null != user.getDefaultPaymentMethod() &&  user.getDefaultPaymentMethod().getCardType() == user.getDefaultPaymentMethod().getCardType().ECP) {%>
+							<div class="dp-payment-text">
+								<%= user.getDefaultPaymentMethod().getBankAccountType() %>
+								<%= user.getDefaultPaymentMethod().getAbaRouteNumber() %>
+								<%=  user.getDefaultPaymentMethod().getMaskedAccountNumber() %>
+								<%=  user.getDefaultPaymentMethod().getBankName()%>
+							</div>
+							<%}
+							else if(null != user.getDefaultPaymentMethod() &&  user.getDefaultPaymentMethod().getCardType() == user.getDefaultPaymentMethod().getCardType().EBT) {%>
+							<div class="dp-payment-text">
+								<%= user.getDefaultPaymentMethod().getCardType().getDisplayName() %>
+								<%=  user.getDefaultPaymentMethod().getMaskedAccountNumber() %>
+							</div>
+							<% } %>
+							</div>
+							<div class="dp-renew-text">Your default payment method will be charged for auto-renewal.
+								<br/><%	if (viewContent.getModel() != null) { %>
+								<fd:GetOrder id="dpOrder" saleId="<%= viewContent.getModel().getPurchaseOrderId() %>">
+									<% if ("SUB".equalsIgnoreCase(dpOrder.getOrderType().getSaleType())) { %>
+										<a href="/your_account/order_details.jsp?orderId=<%= dpOrder.getErpSalesId() %>">View your most recent DeliveryPass invoice.</a>
+									<% } %>
+								</fd:GetOrder>
+								<% } %>
+							</div>
+							<% } else { %>
+							<div class="dp-payment-data">
+								<div class="dp-payment-text"><a href="/your_account/payment_information.jsp">Visit the Payment Methods page to add a payment method</a></div>
+							</div>
+						<% } %>
+					</div>
+					<div style=" text-align: center;">
+						<a class="dp-learn-more" href="#" dp-learn-more>
+							Learn more about DeliveryPass
+						</a>
+					</div>
+				</div>
+    		</div>
+    		</fd:WebViewDeliveryPass>
+    	<% } %>
     </tmpl:put>
 </tmpl:insert>
 

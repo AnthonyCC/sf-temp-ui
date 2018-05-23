@@ -72,7 +72,9 @@ public class PayPalSFTPSettlementLoader {
 		System.out.println("default:");
 		System.out.println(" java PayPalSFTPSettlementLoader true " +  SF.format(new Date()) + " false ");
 		System.out.println("***********************************************************************************");
-		
+		args = new String[2];
+		args[0] = "false";
+		args[1] = "20180416";
 		if (args.length > 0) {
 			if ("false".equalsIgnoreCase(args[0])) {
 				downloadFlag = false;

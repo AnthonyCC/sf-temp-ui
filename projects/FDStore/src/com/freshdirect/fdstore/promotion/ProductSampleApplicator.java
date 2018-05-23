@@ -5,12 +5,15 @@ import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.storeapi.content.ProductReference;
+import com.freshdirect.storeapi.content.ProductReferenceImpl;
 
 public class ProductSampleApplicator implements PromotionApplicatorI {
 	
     private static final long serialVersionUID = -4228761928725008569L;
 
 	private ProductReference sampleProduct;
+	private String categoryId;
+	private String productId;
 	private double minSubtotal;
 	private DlvZoneStrategy zoneStrategy;
 	private CartStrategy cartStrategy;
@@ -18,6 +21,8 @@ public class ProductSampleApplicator implements PromotionApplicatorI {
 	public ProductSampleApplicator(ProductReference sampleProduct, double minSubtotal){
 		this.sampleProduct = sampleProduct;
 		this.minSubtotal = minSubtotal;
+		this.categoryId = null !=sampleProduct?sampleProduct.getCategoryId():null;
+		this.productId = null !=sampleProduct?sampleProduct.getProductId():null;
 	}
 
 	public ProductSampleApplicator() {
@@ -60,10 +65,16 @@ public class ProductSampleApplicator implements PromotionApplicatorI {
 	}
 	
 	public ProductModel getSampleProduct() {
+		if(null ==sampleProduct){
+			sampleProduct = new ProductReferenceImpl(categoryId,productId);
+		}
 		return this.sampleProduct.lookupProductModel();
 	}
 	
 	public ProductReference getProductReference() {
+		if(null ==sampleProduct){
+			sampleProduct = new ProductReferenceImpl(categoryId,productId);
+		}
 	    return this.sampleProduct;
 	}
 
@@ -88,9 +99,21 @@ public class ProductSampleApplicator implements PromotionApplicatorI {
 	public DlvZoneStrategy getZoneStrategy() {
 		return zoneStrategy;
 	}
-
-	public void setSampleProduct(ProductReference sampleProduct) {
-		this.sampleProduct = sampleProduct;
+	
+	public String getCategoryId() {
+		return categoryId;
 	}
 
+	public String getProductId() {
+		return productId;
+	}
+
+	public void setCategoryId(String categoryId) {
+		this.categoryId = categoryId;
+	}
+
+	public void setProductId(String productId) {
+		this.productId = productId;
+	}
+	
 }

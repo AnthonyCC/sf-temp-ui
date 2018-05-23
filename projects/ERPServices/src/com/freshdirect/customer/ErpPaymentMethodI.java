@@ -178,5 +178,6 @@ public interface ErpPaymentMethodI extends AddressI {
 	public boolean isDebitCard();
 	public void setDebitCard(boolean isDebitCard);
 	public String getDisplayableAccountNumber();
+	public String getAccountNumLast4() ;
 }
 

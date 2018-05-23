@@ -66,9 +66,9 @@ public class SaleCronService extends AbstractEcommService implements SaleCronSer
 
 	@Override
 	public void authorizeSales(long timeout) throws RemoteException {
-		Response<String> response = new Response<String>();
+		Response<Void> response = new Response<Void>();
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(AUTHORIIZE_SALES + timeout),  new TypeReference<Response<String>>(){});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(AUTHORIIZE_SALES + "?timeout=" + timeout),  new TypeReference<Response<Void>>(){});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
@@ -118,9 +118,9 @@ public class SaleCronService extends AbstractEcommService implements SaleCronSer
 
 	@Override
 	public void captureSales(long timeout) throws RemoteException {
-		Response<String> response = new Response<String>();
+		Response<Void> response = new Response<Void>();
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(CAPTURE_SALES +timeout),  new TypeReference<Response<String>>(){});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(CAPTURE_SALES +"?timeout="+timeout),  new TypeReference<Response<Void>>(){});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
@@ -262,9 +262,9 @@ public class SaleCronService extends AbstractEcommService implements SaleCronSer
 
 	@Override
 	public void captureEBTSales(long timeout) throws RemoteException {
-		Response<String> response = new Response<String>();
+		Response<Void> response = new Response<Void>();
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(CAPTURE_EBT_SALES + timeout),  new TypeReference<Response<String>>(){});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(CAPTURE_EBT_SALES + "?timeout=" + timeout),  new TypeReference<Response<String>>(){});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
@@ -281,7 +281,7 @@ public class SaleCronService extends AbstractEcommService implements SaleCronSer
 	public void settleEBTSales() throws RemoteException {
 		Response<String> response = new Response<String>();
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(SETTLE_EBT_SALES),  new TypeReference<Response<String>>(){});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(SETTLE_EBT_SALES),  new TypeReference<Response<Void>>(){});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
@@ -292,29 +292,5 @@ public class SaleCronService extends AbstractEcommService implements SaleCronSer
 			throw new RemoteException(e.getMessage());
 		}
 	}
-
-
-	@Override
-	public void settleEBTSales(List<String> saleIds) throws FinderException,RemoteException, ErpTransactionException, SapException,
-			RemoteException {
-		Request<List<String>> request = new Request<List<String>>();
-		Response<String> response = new Response<String>();
-		try{
-			request.setData(saleIds);
-			String inputJson = buildRequest(request);
-			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(SETTLE_EBT_SALES_WITH_SALEID),new TypeReference<Response<String>>() {});
-			if(!response.getResponseCode().equals("OK")){
-				throw new FDResourceException(response.getMessage());
-			}
-		} catch (FDResourceException e){
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}
-	}
-
-	
 
 }

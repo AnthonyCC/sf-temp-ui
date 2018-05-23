@@ -57,9 +57,6 @@ import com.freshdirect.giftcard.ejb.GCGatewaySB;
 import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
 import com.freshdirect.giftcard.ejb.GiftCardManagerSB;
 import com.freshdirect.payment.command.Capture;
-import com.freshdirect.payment.command.PaymentCommandI;
-import com.freshdirect.payment.ejb.PaymentGatewayHome;
-import com.freshdirect.payment.ejb.PaymentGatewaySB;
 import com.freshdirect.payment.ejb.PaymentHome;
 import com.freshdirect.payment.ejb.PaymentSB;
 import com.freshdirect.sap.SapEBTOrderSettlementInfo;
@@ -841,15 +838,10 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		}
 		long startTime = System.currentTimeMillis();
 
-		PaymentGatewaySB sb = null;
 		PaymentSB psb = null;
-		PaymentCommandI command = null;
-		boolean useQueue = ErpServicesProperties.isUseQueue();
-		if(useQueue){
-			sb = this.getPaymentGatewaySB();
-		}else{
-			psb = this.getPaymentSB();
-		}
+		
+		psb = this.getPaymentSB();
+		
 		//LOGGER.info("********** use queue:"+ErpServicesProperties.isUseQueue());
 		for (int i = 0, size = saleIds.size(); i < size; i++) {
 
@@ -862,15 +854,10 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			try {
 				utx = this.getSessionContext().getUserTransaction();
 				utx.begin();
-				if(useQueue){
-					command = new Capture(saleIds.get(i));
-					sb.updateSaleDlvStatus(command);
-					LOGGER.info("*******sending message to capture Queue for order:"+saleIds.get(i));
-				}else{
-					psb.captureAuthorization(saleIds.get(i));
-					LOGGER.info("*******do capture transaction for order:"+saleIds.get(i));
-				}
-
+				
+				psb.captureAuthorization(saleIds.get(i));
+				LOGGER.info("*******do capture transaction for order:"+saleIds.get(i));
+				
 				utx.commit();
 			} catch (Exception e) {
 				LOGGER.warn("Exception occured during capture", e);
@@ -999,15 +986,10 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		}
 		long startTime = System.currentTimeMillis();
 
-		GCGatewaySB gsb = null;
 		GiftCardManagerSB gmb = null;
-		PaymentCommandI command = null;
-		boolean useQueue = ErpServicesProperties.isUseRegisterQueue();
-		if(useQueue){
-			gsb = this.getGCGatewaySB();
-		}else{
-			gmb = this.getGiftCardManagerSB();
-		}
+		
+		gmb = this.getGiftCardManagerSB();
+		
 		//LOGGER.info("********** use queue:"+ErpServicesProperties.isUseQueue());
 		for (Iterator<String> i = saleIds.keySet().iterator(); i.hasNext();) {
 
@@ -1022,13 +1004,10 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 				utx.begin();
 				String saleId = i.next();
 				Double subTotal = saleIds.get(saleId);
-				if(useQueue){
-					gsb.sendRegisterGiftCard(saleId, subTotal.doubleValue());
-					LOGGER.info("*******sending message to register Queue for order:"+saleIds.get(i));
-				}else{
-					gmb.registerGiftCard(saleId, subTotal.doubleValue());
-					LOGGER.info("*******do register transaction for order:"+saleIds.get(i));
-				}
+				
+				gmb.registerGiftCard(saleId, subTotal.doubleValue());
+				LOGGER.info("*******do register transaction for order:"+saleIds.get(i));
+				
 
 				utx.commit();
 			} catch (Exception e) {
@@ -1078,19 +1057,6 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	private PaymentGatewaySB getPaymentGatewaySB() {
-		try {
-			PaymentGatewayHome home = (PaymentGatewayHome)LOCATOR.getRemoteHome(DlvProperties.getPaymentGatewayHome());
-			return home.create();
-		} catch (NamingException e) {
-			throw new EJBException(e);
-		}catch (CreateException e){
-			throw new EJBException(e);
-		}catch(RemoteException e){
-			throw new EJBException(e);
-		}
-	}
-	
 	private GCGatewaySB getGCGatewaySB() {
 		try {
 			GCGatewayHome home = (GCGatewayHome)LOCATOR.getRemoteHome("freshdirect.giftcard.Gateway");
@@ -1264,12 +1230,9 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			PaymentSB psb = this.getPaymentSB();
 			utx = this.getSessionContext().getUserTransaction();
 			utx.begin();
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentSB)){
-				PaymentsService.getInstance().captureAuthEBTSale(saleId);
-			}
-			else{
-				psb.captureAuthEBTSale(saleId);
-			}
+			
+			psb.captureAuthEBTSale(saleId);
+			
 			LOGGER.info("*******do capture transaction for order:"+saleId);
 			utx.commit();
 		} catch (Exception e) {

@@ -14,15 +14,18 @@ import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.storeapi.content.SkuModel;
 
 public class SkuModelPricingAdapter extends SkuModel {
-	private PricingContext pricingCtx;
+
+    private static final long serialVersionUID = 5880715133248410377L;
+
+    private PricingContext pricingCtx;
 	private SkuModel innerSku;
 
 	public SkuModelPricingAdapter(SkuModel sku, PricingContext pCtx) {
         super(sku.getContentKey(), sku.getParentKey());
 		this.innerSku = sku;
 		this.pricingCtx = pCtx;
-
 	}
+
 	@Override
     public Object clone() {
 		return innerSku.clone();
@@ -93,7 +96,7 @@ public class SkuModelPricingAdapter extends SkuModel {
 
     @Override
     public ProductModel getProductModel() {
-    	return ProductPricingFactory.getInstance().getPricingAdapter(innerSku.getProductModel(),pricingCtx);
+        return ProductPricingFactory.getInstance().getPricingAdapter(innerSku.getProductModel());
     }
 
 	@Override

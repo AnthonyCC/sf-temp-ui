@@ -18,6 +18,9 @@ $jq(document).on('ready', function() {
 		};
 
 		$jq('#locabar_popupcart_trigger').on('mouseenter', setupPopUpCartPostion);
+		
+		//align on page load
+		setupPopUpCartPostion();
 	}
 	
 });

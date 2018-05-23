@@ -36,7 +36,6 @@ import com.freshdirect.dataloader.payment.ejb.InvoiceLoaderSB;
 import com.freshdirect.dataloader.response.FDJcoServerResult;
 import com.freshdirect.dataloader.sap.jco.server.FDSapFunctionHandler;
 import com.freshdirect.dataloader.sap.jco.server.FdSapServer;
-import com.freshdirect.dataloader.sap.jco.server.FdSapServer.TableMetaData;
 import com.freshdirect.dataloader.sap.jco.server.param.InvoiceCreditParameter;
 import com.freshdirect.dataloader.sap.jco.server.param.InvoiceEntryParameter;
 import com.freshdirect.dataloader.sap.jco.server.param.InvoiceHeaderParameter;

@@ -12,6 +12,10 @@
   position: relative;
 }
 
+[data-ismobweb="true"] .explore__category-list-element {
+  width: 50%;
+}
+
 .explore__category-list-link {
   display: block;
 }
@@ -56,6 +60,11 @@
 .explore__category-list-link:focus .explore__category-list-name > span,
 .explore__category-list-link:active .explore__category-list-name > span {
   opacity: 1;
+}
+
+[data-ismobweb="true"] .explore__category-list-name > span {
+  opacity: 1;
+  vertical-align: bottom;
 }
 
 .explore__category-list-link:hover .explore__category-list-image,

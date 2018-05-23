@@ -29,7 +29,6 @@
 	}
 %><% 	
 	String errorString = null;
-	int coupon_version = FDCouponManager.getMaxCouponsVersion();
 	CmsManager manager = CmsManager.getInstance();
 	Map<String, String> departments = new HashMap<String, String>();		
 	ContentKey storeKey = ContentFactory.getInstance().getStoreKey();
@@ -311,9 +310,7 @@ color: #000000;
 		Calendar cal = Calendar.getInstance();  
 		cal.add(Calendar.DAY_OF_MONTH, -30);
 		List<FDCouponInfo> cList = new ArrayList<FDCouponInfo>();//FDCouponManager.getActiveCoupons(cal.getTime());
-		if(!"done".equals(request.getParameter("submission"))) {
-			cList.addAll(FDCouponManager.getCouponsForCRMSearch(""));
-		}
+		
 		//cList = FDCouponFactory.getInstance().getCoupons();
 		String selectedDepartment = null;
 		String selectedCategory = null;
@@ -352,8 +349,6 @@ color: #000000;
 	                List<ProductModel> searchproducts = new ArrayList<ProductModel>();
 	                cList.addAll(getCoupons(getProductsForAllDepartments(searchproducts,departments,searchTerm)));
 				}
-				//search coupon name, search coupon ID, search coupon value, 
-				cList.addAll(FDCouponManager.getCouponsForCRMSearch(searchTerm));
 				//search brands,
 				
 				
@@ -364,10 +359,7 @@ color: #000000;
 				selectedCategory = request.getParameter("category");
 				selectedBrand = request.getParameter("brand");	
 				
-				if("-1".equals(selectedDepartment)) {
-					cList.addAll(FDCouponManager.getCouponsForCRMSearch(""));
-				}
-				else {
+				
 					//get all products for selected brand
 					ContentKey departmentKey = ContentKeyFactory.get("Department:"+selectedDepartment);
 					ContentNodeI deptContentNode = manager.getContentNode(departmentKey);
@@ -445,10 +437,8 @@ color: #000000;
 					
 						//finally get the coupons
 						cList.addAll(getCoupons(products));
+					
 					}
-					}
-			}else{
-				cList.addAll(FDCouponManager.getCouponsForCRMSearch(""));
 			}
 		}
 		

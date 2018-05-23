@@ -31,7 +31,17 @@ public class CustomMapper {
 		if(data!=null){
 			List<ErpSaleInfo> orderList = new ArrayList<ErpSaleInfo>();
 			for(ErpSaleInfoData elem : data){
-				orderList.add(new ErpSaleInfo(elem.getSaleId(), elem.getErpCustomerId(), EnumSaleStatus.getSaleStatus(elem.getStatus()), elem.getAmount(), elem.getSubTotal()
+				orderList.add(map(elem));
+			}
+			return orderList;
+		}
+		
+		return null;
+	}
+	
+	public static ErpSaleInfo map(ErpSaleInfoData elem) {
+		if(elem!=null){
+			ErpSaleInfo orderInfo =	new ErpSaleInfo(elem.getSaleId(), elem.getErpCustomerId(), EnumSaleStatus.getSaleStatus(elem.getStatus()), elem.getAmount(), elem.getSubTotal()
 						, elem.getRequestedDate(), elem.getCreateRequestedDate(), 
 						EnumTransactionSource.getTransactionSource(elem.getSource()), elem.getCreateDate(), elem.getCreateBy(), 
 						EnumTransactionSource.getTransactionSource(elem.getModSource()), elem.getModDate(), 
@@ -41,9 +51,8 @@ public class CustomMapper {
 						elem.getDlvPassId(), EnumSaleType.getSaleType(elem.getSaleType()), 
 						elem.getTruckNumber(), elem.getStopSequence(), elem.isMakeGood(), elem.getStandingOrderId(), elem.isSoHolidayMovement(), 
 						EnumEStoreId.valueOfContentId(elem.geteStore()), elem.getPlantId(), elem.getSalesOrg(), elem.getDistributionChanel(), 
-						EnumEwalletType.getEnum(elem.getEwalletType())));
-			}
-			return orderList;
+						EnumEwalletType.getEnum(elem.getEwalletType()));
+						return orderInfo;
 		}
 		
 		return null;
