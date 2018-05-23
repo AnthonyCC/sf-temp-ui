@@ -18,7 +18,8 @@
 {/template}
 
 /**
- * @param? headerData
+ * @param? phoneNumber
+ * @param? label
  */
 {template .mobilecheckoutheader autoescape="false"}
 <a href="#skip_to_content" class="skipnav">Skip to Content</a>
@@ -27,13 +28,13 @@
 	  <a href="/" class="headerlink">
 	  	<img class="header-logo" src="/media/layout/nav/globalnav/fdx/fd-logo_199.png" alt="FreshDirect homepage redirect" />
 	  </a>
-	  <span class="checkout-label">Checkout</span>
+	  <span class="checkout-label">{if $label}{$label}{else}Checkout{/if}</span>
   	</div>
   	<div class="right">
 	  	<strong>Need Help?</strong>
 	  	<br />
 	  	<span class="">
-	  		{if $headerData and $headerData.phoneNumber}{$headerData.phoneNumber}{else}1-212-796-8002{/if}
+	  		{if $phoneNumber}{$phoneNumber}{else}1-212-796-8002{/if}
 	  	</span>
   	</div>
   	<div class="clear"></div>

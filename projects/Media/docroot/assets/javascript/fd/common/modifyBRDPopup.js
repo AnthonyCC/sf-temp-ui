@@ -39,6 +39,9 @@ var FreshDirect = FreshDirect || {};
           fd.common.transactionalPopup.close();
           $(this.placeholder).find('button, a[href], input').not(':hidden').first().focus();
         } catch (e) {}
+        
+        //show ghost overlay
+        $(this.placeholder).find('.popupcontentoverlay').show();
       }
     },
 
@@ -48,6 +51,7 @@ var FreshDirect = FreshDirect || {};
     close: {
       value: function () {
         $(this.popupId).hide();
+        $(this.placeholder).find('.popupcontentoverlay').hide();
       }
     },
 
@@ -96,8 +100,10 @@ var FreshDirect = FreshDirect || {};
         // focus on open
         try {
           fd.common.transactionalPopup.close();
-          $(this.placeholder).find('button, a[href], input').not(':hidden').first().focus();
+          $(this.placeholder).find('.MBRD-modify').not(':hidden').first().focus();
         } catch (e) {}
+        //show ghost overlay
+        $(this.placeholder).find('.popupcontentoverlay').show();
       }
     },
 
@@ -107,6 +113,7 @@ var FreshDirect = FreshDirect || {};
     close: {
       value: function () {
         $(this.popupId).hide();
+        $(this.placeholder).find('.popupcontentoverlay').hide();
       }
     },
     orderInput: {
@@ -163,7 +170,9 @@ var FreshDirect = FreshDirect || {};
   // $(document).on('click', ModifyBRDPopup2.popupId + ' .MBRD-close', ModifyBRDPopup2.close.bind(ModifyBRDPopup2));
 
   $(document).on('click', ModifyBRDPopup1.popupId + ' .MBRD-close', ModifyBRDPopup1.newOrderClick.bind(ModifyBRDPopup1)); // :(
+  $(document).on('click', ModifyBRDPopup1.placeholder + ' .MBRD1-close', ModifyBRDPopup1.newOrderClick.bind(ModifyBRDPopup1)); // :(
   $(document).on('click', ModifyBRDPopup2.popupId + ' .MBRD-close', ModifyBRDPopup2.cancelClick.bind(ModifyBRDPopup2));
+  $(document).on('click', ModifyBRDPopup2.placeholder + ' .MBRD2-close', ModifyBRDPopup2.cancelClick.bind(ModifyBRDPopup2));
 
   $(document).on('click', ModifyBRDPopup1.popupId + ' .MBRD-neworder', ModifyBRDPopup1.newOrderClick.bind(ModifyBRDPopup1));
   $(document).on('click', ModifyBRDPopup1.popupId + ' .MBRD-modify', ModifyBRDPopup1.modifyClick.bind(ModifyBRDPopup1));
