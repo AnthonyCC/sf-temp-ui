@@ -50,13 +50,13 @@ public class GiftCardApplicationStrategy extends PaymentStrategy {
 
 		for (Iterator i = order.getOrderLines().iterator(); i.hasNext();) {
 			ErpOrderLineModel line = (ErpOrderLineModel) i.next();
-			if (this.usqAffiliate.equals(line.getAffiliate())) {
+			if (this.usqAffiliate.getCode().equals(line.getAffiliateCode())) {
 				if (inv != null) {
 					usqAppInfo.addInvoiceLine(inv.getInvoiceLine(line.getOrderLineNumber()));
 				} else {
 					usqAppInfo.addOrderline(line);
 				}
-			} else if (this.fdwAffiliate.equals(line.getAffiliate())) {
+			} else if (this.fdwAffiliate.getCode().equals(line.getAffiliateCode())) {
 				if (inv != null) {
 					fdwAppInfo.addInvoiceLine(inv.getInvoiceLine(line.getOrderLineNumber()));
 				} else {
