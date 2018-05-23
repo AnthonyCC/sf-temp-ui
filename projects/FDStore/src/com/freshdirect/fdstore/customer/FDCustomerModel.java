@@ -159,6 +159,9 @@ public class FDCustomerModel extends ModelSupport implements FDCustomerI {
 
 
 	public boolean isEligibleForSignupPromo() {
+		if (this.profile == null) {
+			return false;
+		}
 		String eligibleAttr = this.profile.getAttribute("signup_promo_eligible");
 		if ("deny".equalsIgnoreCase(eligibleAttr)) {
 			return false;
@@ -187,6 +190,9 @@ public class FDCustomerModel extends ModelSupport implements FDCustomerI {
 
 
 	public boolean isEligibleForDDPP() {
+		if (this.profile == null ) {
+			return false;
+		}
 		String eligibleAttr = this.profile.getAttribute("DDPP_ELIGIBLE");
 		if ("true".equalsIgnoreCase(eligibleAttr)) {
 			return true;
@@ -195,6 +201,9 @@ public class FDCustomerModel extends ModelSupport implements FDCustomerI {
 	}
 
 	public boolean isEligibleForCoupons() {
+		if (this.profile == null) {
+			return false;
+		}
 		String eligibleAttr = this.profile.getAttribute("COUPONS_ELIGIBLE");
 		if ("true".equalsIgnoreCase(eligibleAttr)) {
 			return true;
@@ -258,5 +267,12 @@ public class FDCustomerModel extends ModelSupport implements FDCustomerI {
 
 	public void setDpFreeTrialOptin(boolean dpFreeTrialOptin) {
 		this.dpFreeTrialOptin = dpFreeTrialOptin;
+	}
+	
+	@Override
+	public void setId(String id) {
+		if (id != null) {
+			super.setId(id);
+		}
 	}
 }

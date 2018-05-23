@@ -747,9 +747,7 @@ public class RegistrationAction extends WebActionSupport {
 				fdCustomer.setPasswordHint(aInfo.getPasswordHint());
 				fdCustomer.setDepotCode(user.getDepotCode());
 				fdCustomer.setDepotCode(user.getDepotCode());
-				// setting dummy valuess for testing
-			//	fdCustomer.setRafClickId("dummyClickID");
-			//	fdCustomer.setRafPromoCode("dummyPromoCode");
+
 				fdCustomer.getCustomerEStoreModel().setRafClickId((String) session.getAttribute("CLICKID"));
 				fdCustomer.getCustomerEStoreModel().setRafPromoCode((String) session.getAttribute("COUPONCODE"));
 	
