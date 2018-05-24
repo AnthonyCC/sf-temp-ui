@@ -87,7 +87,6 @@ public interface FDCartLineI extends FDProductSelectionI {
 	
 	public String getOrderedQuantity();
 	public String getDeliveredQuantity();
-	public String getDeliveredQuantity(boolean isSoldByLb, boolean isPricedByLb);
 	public String getReturnedQuantity();
 	public String getUnitsOfMeasure();
 	public String getReturnDisplayQuantity();
