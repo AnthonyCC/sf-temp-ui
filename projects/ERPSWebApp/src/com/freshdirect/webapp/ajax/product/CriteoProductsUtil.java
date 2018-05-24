@@ -65,19 +65,15 @@ public class CriteoProductsUtil
 				adPrducts.subList(maxCount, adPrducts.size()).clear();
 			}
 			moduleData.setAdProducts(adPrducts);
-			if(!adPrducts.isEmpty()){						//APPDEV-7148
+			if(!adPrducts.isEmpty()){			//APPDEV-7148
+				List<String> pageBeaconsList = new ArrayList<String>();
 				for (ProductData pdata : adPrducts) {
-					String pageBeaconString = pdata.getPageBeaconOfApi()+(A_SHOWN)+(pdata.getSkuCode());
-					moduleData.getAdHomePageBeacon().add(pageBeaconString);
+					String pageBeaconOfApi = pdata.getPageBeaconOfApi();
+					if (pageBeaconOfApi != null && !pageBeaconsList.contains(pageBeaconOfApi)) {
+						pageBeaconsList.add(pageBeaconOfApi);
+					}
 				}
-				
-				/*if (productsCount == adPrducts.size()) {
-					moduleData.setAdHomePageBeacon(cretioProductsCacheList.get(0).getPageBeacon()	+ A_SHOWN_ALL);
-				} else if (productsCount > 0 && adPrducts.size() == 0) {
-					moduleData.setAdHomePageBeacon(cretioProductsCacheList.get(0).getPageBeacon()	+ A_SHOWN_NONE);
-				} else {
-					moduleData.setAdHomePageBeacon(cretioProductsCacheList.get(0).getPageBeacon() + updatedPageBeacon.toString());
-				}*/
+				moduleData.setAdHomePageBeacon(pageBeaconsList);	/* sending pagebeacons to UI */
 			}
 		} catch (Exception e) {
 			LOG.warn("Exception while populating Criteo returned product: ", e);
