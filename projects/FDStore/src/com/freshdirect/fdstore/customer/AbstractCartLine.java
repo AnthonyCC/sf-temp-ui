@@ -214,16 +214,20 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 	// 
 
 	public String getDeliveredQuantity() {
+		return getDeliveredQuantity(this.isSoldBySalesUnits(), this.isPricedByLb());
+	}
+
+	public String getDeliveredQuantity(boolean isSoldBySalesUnits, boolean isPricedByLb) {
 		if (!this.hasInvoiceLine()) {
 			return "";
 		}
-		if (this.isSoldBySalesUnits() && this.isPricedByLb()) {
+		if (isSoldBySalesUnits && isPricedByLb) {
 			return QUANTITY_FORMATTER.format(this.getFirstInvoiceLine().getWeight());
 		} else {
 			return QUANTITY_FORMATTER.format(this.getFirstInvoiceLine().getQuantity());
 		}
 	}
-
+	
 	public String getSubstitutedQuantity() {
 		FDInvoiceLineI invLine = this.getInvoiceLine();
 		if (null!=invLine && null!= invLine.getSubstitutedSkuCode() && !"".equalsIgnoreCase(invLine.getSubstitutedSkuCode().trim())) {
