@@ -122,6 +122,8 @@
 	</tmpl:put>
 
 	<tmpl:put name='tabs' direct='true'>
+		<soy:render template="srch.noResultsNoSuggestions" data="${browsePotato.searchParams}" />
+		
 		<div id="listsearch" class="NOMOBWEB">
 			<soy:render template="srch.listSearch"
 				data="${browsePotato.searchParams}" />
@@ -208,25 +210,17 @@
 				</section>
 			</c:otherwise>
 		</c:choose>
+		<%--
 		<nav class="tabs NOMOBWEB" role="tablist">
 			<soy:render template="srch.searchTabs"
 				data="${browsePotato.searchParams}" />
 		</nav>
-		<section class="itemcount NOMOBWEB">
-			<soy:render template="srch.searchSuggestions"
-				data="${browsePotato.searchParams}" />
-		</section>
+		--%>
 		<div class="search-input NOMOBWEB">
+			<%--
 			<soy:render template="srch.searchParams"
 				data="${browsePotato.searchParams}" />
-			<script>
-				$jq(document).on('ready', function() {
-					if ((document.referrer).indexOf('expresssearch.jsp') !== -1) {
-						$jq('<button class="right cssbutton green transparent icon-arrow-left2-before back">Back to Express Search</button>').insertBefore('.srch .search-input');
-						$jq('.srch .tabs .itemcount').css({'max-width': '500px'});
-					}
-				});
-			</script>
+			--%>
 		</div>
 	</tmpl:put>
 
@@ -239,10 +233,26 @@
   <tmpl:put name='content' direct='true'>
     <div id="searchPanel" role="tabpanel" tabindex="0">
 	    <div class="oas-cnt" ad-fixed-size="true" ad-size-height="95" ad-size-width="774" id="oas_PPSearchContent">
-	     <script type="text/javascript">
-	       OAS_AD('PPSearchContent');
-	     </script>
-			</div>
+			<script type="text/javascript">
+				OAS_AD('PPSearchContent');
+			</script>
+		</div>
+		
+    	<div class="itemcount-cont">
+			<section class="itemcount">
+				<soy:render template="srch.searchSuggestions"
+					data="${browsePotato.searchParams}" />
+			</section>
+			<script>
+				$jq(document).on('ready', function() {
+					if ((document.referrer).indexOf('expresssearch.jsp') !== -1) {
+						$jq('.itemcount-cont').append('<button class="right cssbutton green transparent icon-arrow-left2-before back">Back to Express Search</button><br style="clear:both;" />');
+						$jq('.srch .itemcount').addClass('wBackButton');
+					}
+				});
+			</script>
+		</div>
+    	
 
 			<soy:render template="browse.topMedia"
 				data="${browsePotato.descriptiveContent}" />

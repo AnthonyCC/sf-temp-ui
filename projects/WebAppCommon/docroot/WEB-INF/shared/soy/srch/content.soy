@@ -54,7 +54,7 @@
 $jq(document).ready(function() {literal}{{/literal}
 	if ($jq('#searchPanel .srch-carousel').length > 0)
 		$jq.ajax('/api/carousel?type=search&productId={$sections[0].products[0].productId}').then(function(data) {literal}{{/literal}
-			var carouselData = {literal}{{/literal}carousel: data.carousel? data.carousel: data {literal}}{/literal};
+			var carouselData = {literal}{{/literal}carousel: (data && data.carousel) ? data.carousel: data {literal}}{/literal};
 			$jq('#searchPanel .srch-carousel').html(srch.carousel(carouselData));
 		{literal}}{/literal});
 {literal}}{/literal});

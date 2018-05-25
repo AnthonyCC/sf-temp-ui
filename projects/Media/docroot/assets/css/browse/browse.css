@@ -312,6 +312,7 @@ ul.products .description-skin{
 .srch #sorter,
 .browse #sorter {
   overflow: hidden;
+  clear: both;
 }
 
 .srch .sorter-element_list,
