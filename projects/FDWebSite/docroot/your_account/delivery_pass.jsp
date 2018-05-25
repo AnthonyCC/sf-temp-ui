@@ -98,8 +98,8 @@ function deliveryPassAutoRenew(item){
 </script>
     	<% if(user.isDPFreeTrialOptInEligible()){ %>
     		<script>window.location = "/freetrial.jsp";</script>
-    	<% } else if(!user.isDlvPassActive()){
-    		if(user.getDpFreeTrialOptin() && !user.isDlvPassExpired()){ %>
+    	<% } else if(!user.isDlvPassActive() && !user.isDlvPassPending()){
+    		if(user.getDpFreeTrialOptin() && user.isDlvPassNone()){ %>
     			<div class="dp-container">
     				<div class="dp-page-header">DeliveryPass</div>
     				<div class="dp-content">
