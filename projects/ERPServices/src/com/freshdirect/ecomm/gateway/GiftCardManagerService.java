@@ -101,7 +101,7 @@ public class GiftCardManagerService extends AbstractEcommService implements Gift
 			throw new RemoteException(response.getMessage());
 		List recipientsList = GiftCardModelDataConverter.getErpGCDlvInformationHolder(response.getData());
 		
-		return response.getData();
+		return recipientsList;
 	}
 
 

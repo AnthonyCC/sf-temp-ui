@@ -1592,11 +1592,19 @@ public class FDUser extends ModelSupport implements FDUserI {
         /* When the Mid-week DP property is enabled - we will evaluate the below logic
          * 1. Compare the user selected day of the week from the timeslot with the list of eligbile days from the Deliverypass 
          */
-        if(FDStoreProperties.isMidWeekDlvPassEnabled() && null!=this.getShoppingCart().getDeliveryReservation() && null!=this.getShoppingCart().getDeliveryReservation().getTimeslot() && null!=dlvPassInfo.getTypePurchased().getEligibleDlvDays()){
-        		if(!(EnumDlvPassStatus.ACTIVE.equals(dlvPassInfo.getStatus()) && dlvPassInfo.getTypePurchased().getEligibleDlvDays().contains(this.getShoppingCart().getDeliveryReservation().getTimeslot().getDayOfWeek()))){
+        if(FDStoreProperties.isMidWeekDlvPassEnabled()){
+        	if(null!=this.getShoppingCart().getDeliveryReservation() && null!=this.getShoppingCart().getDeliveryReservation().getTimeslot() && null!=dlvPassInfo.getTypePurchased().getEligibleDlvDays()){
+           		if(!(EnumDlvPassStatus.ACTIVE.equals(dlvPassInfo.getStatus()) && dlvPassInfo.getTypePurchased().getEligibleDlvDays().contains(this.getShoppingCart().getDeliveryReservation().getTimeslot().getDayOfWeek()))){
         			dlvPassTimeslotNotMatched = true;
         			return false;
-        		}
+        		} //end evaluation of standard or one-time reservation
+        	} else if(null!=this.getReservation() && null!=this.getReservation().getTimeslot() && null!=dlvPassInfo.getTypePurchased().getEligibleDlvDays()){
+           		if(!(EnumDlvPassStatus.ACTIVE.equals(dlvPassInfo.getStatus()) && dlvPassInfo.getTypePurchased().getEligibleDlvDays().contains(this.getReservation().getTimeslot().getDayOfWeek()))){
+        			dlvPassTimeslotNotMatched = true;
+        			return false;
+        		} //end evaluation of weekly recurring reservation
+        	} 
+        	
         }
         // Unlimited Pass.
         if (EnumDlvPassStatus.ACTIVE.equals(dlvPassInfo.getStatus())) {
@@ -2524,8 +2532,10 @@ public class FDUser extends ModelSupport implements FDUserI {
             //If the user does not have a reservation and does not fall under the look ahead days (as determined by overrideZoneInfo() ) - return the original fulfillment call
             return deliveryZoneInfo.getFulfillmentInfo();
         } catch (FDInvalidAddressException e) {
+        	LOGGER.error("ERROR-getFulfillmentInfo-1: Exception while populating getFulfillmentInfo for user:"+getIdentity(), e);
             e.printStackTrace();
         } catch (FDResourceException e) {
+        	LOGGER.error("ERROR-getFulfillmentInfo-2: Exception while populating getFulfillmentInfo for user:"+getIdentity(), e);
             e.printStackTrace();
         }
         return null;
@@ -3971,11 +3981,13 @@ public class FDUser extends ModelSupport implements FDUserI {
 	@Override
 	public boolean getDpFreeTrialOptin() {
 
-		/*try {
-			this.cachedFDCustomer = this.getFDCustomer();
-		} catch (FDResourceException e) {
-			LOGGER.warn("Error in getDpFreeTrialOptin() " + e);
-		}*/
+		if (null == this.cachedFDCustomer && this.identity!=null) {
+			try {
+				this.cachedFDCustomer = this.getFDCustomer();
+			} catch (FDResourceException e) {
+				LOGGER.warn("Error in getDpFreeTrialOptin() " + e);
+			}
+		}
 		
 		if (this.cachedFDCustomer != null && this.cachedFDCustomer.getCustomerEStoreModel() != null) {
 
@@ -3989,7 +4001,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	@Override
 	public void setDpFreeTrialOptin(boolean dpFreeTrialOptin) {
-		if (null == this.cachedFDCustomer) {
+		if (null == this.cachedFDCustomer && this.identity!=null) {
             try {
                 this.cachedFDCustomer = FDCustomerFactory.getFDCustomer(this.identity);
             } catch (FDResourceException e) {

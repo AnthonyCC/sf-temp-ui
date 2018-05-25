@@ -222,7 +222,7 @@
 			<script>
 				$jq(document).on('ready', function() {
 					if ((document.referrer).indexOf('expresssearch.jsp') !== -1) {
-						$jq('<button class="right cssbutton green transparent icon-arrow-left2-before">Back to Express Search</button>').insertBefore('.srch .search-input');
+						$jq('<button class="right cssbutton green transparent icon-arrow-left2-before back">Back to Express Search</button>').insertBefore('.srch .search-input');
 						$jq('.srch .tabs .itemcount').css({'max-width': '500px'});
 					}
 				});
