@@ -168,7 +168,7 @@
       <label class="normal-label"><input type="radio" class="customradio" name="bd_auth" value="unattended" {if $data.bd_auth == 'unattended'}checked{/if}/>Unattended Delivery</label>
       <div class="bd-content input-wrapper">
         <p>If your address is eligible for unattended delivery, our delivery team will leave your order in the place you designate below:</p>
-          <textarea name="bd_instructions" placeholder="Please provide a detailed description of the secure drop-off location for this property.">{if $data.bd_instructions}{$data.bd_instructions}{/if}</textarea>
+          <textarea name="bd_instructions" placeholder="Please provide a detailed description of the secure drop-off location for this property.">{if $data.bd_instructions and $data.bd_instructions != 'OK'}{$data.bd_instructions}{/if}</textarea>
       </div>
     </div>
   </div>
