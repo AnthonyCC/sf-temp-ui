@@ -1523,7 +1523,7 @@ public class ModelConverter {
 		area.setDayPartValueType(value.getDayPartValueType()!=null? EnumDayPartValueType.getEnum(value.getDayPartValueType()):null);
 		area.setPickingPlantId(value.getPickingPlantId());
 		area.setSalesAreaInfo(buildSalesAreaInfo(value.getSalesAreaInfo()));
-		area.setUnavailabilityDate(new Date(value.getUnavailabilityDate().getTime()));
+		area.setUnavailabilityDate((value.getUnavailabilityDate()!=null)?new Date(value.getUnavailabilityDate().getTime()):null);
 		area.setUnavailabilityReason(value.getUnavailabilityReason());
 		area.setUnavailabilityStatus(value.getUnavailabilityStatus());
 		return area;

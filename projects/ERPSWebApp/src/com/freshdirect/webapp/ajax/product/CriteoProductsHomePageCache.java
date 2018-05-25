@@ -21,7 +21,7 @@ public class CriteoProductsHomePageCache {
 
 	private static final Category LOGGER = LoggerFactory.getInstance(CriteoProductsHomePageCache.class);	
 	private ConcurrentHashMap<String, List<HLBrandProductAdInfo>> cacheCriteoMap = new ConcurrentHashMap<String, List<HLBrandProductAdInfo>>();
-	private ConcurrentHashMap<String, String> pageBeaconMap = new ConcurrentHashMap<String, String>();
+//	private ConcurrentHashMap<String, String> pageBeaconMap = new ConcurrentHashMap<String, String>();
 	private  ArrayList<HLBrandProductAdInfo> hlba = new ArrayList<HLBrandProductAdInfo>();
 	
 	private final static Object lock = new Object();
@@ -106,7 +106,20 @@ public class CriteoProductsHomePageCache {
 							if (null != productModel && !productModel.isUnavailable()) {
 								avaiProductFDList.add(resp);
 							}
-						}if(!avaiProductFDList.isEmpty() && avaiProductFDList.size() < 5){
+						}
+						/*  page beacon of Api call, we are setting to product level here */
+						 final String A_SHOWN="&ashown=";
+						 final StringBuffer updatedPageBeacon= new StringBuffer(A_SHOWN);
+						 //String pageBeaconString = null;
+						if (!avaiProductFDList.isEmpty()) {
+							for (HLBrandProductAdInfo pdata : avaiProductFDList) {
+								updatedPageBeacon.append(((A_SHOWN.equals(updatedPageBeacon.toString()))
+										? pdata.getProductSKU() : "," + pdata.getProductSKU()));
+							}
+							avaiProductFDList.get(0).setPageBeacon(response.getPageBeacon() + updatedPageBeacon.toString());
+						}
+						
+						if(!avaiProductFDList.isEmpty() && avaiProductFDList.size() < 5){
 							int i= avaiProductFDList.size();
 							int j=0;
 							while ( i < 5) {
@@ -116,7 +129,7 @@ public class CriteoProductsHomePageCache {
 							}
 						}
 						cacheCriteoMap.put(key, avaiProductFDList);
-						pageBeaconMap.put(key, response.getPageBeacon());
+						//pageBeaconMap.put(key, response.getPageBeacon());
 						counter = counter + avaiProductFDList.size();
 					}
 					} catch (FDResourceException e) {
@@ -134,8 +147,8 @@ public class CriteoProductsHomePageCache {
 					if (null != cacheCriteoMap.get(key) && !cacheCriteoMap.get(key).isEmpty()
 							&& cacheCriteoMap.get(key).size() >= (j + 1) ) {
 						HLBrandProductAdInfo hlBrandProduct = cacheCriteoMap.get(key).get(j);
-						String pageBeacon = pageBeaconMap.get(key);
-						hlBrandProduct.setPageBeacon(pageBeacon);
+						//String pageBeacon = pageBeaconMap.get(key);
+					//	hlBrandProduct.setPageBeacon(pageBeacon);
 						hlba.add(hlBrandProduct);
 						found = true;
 						i++;
