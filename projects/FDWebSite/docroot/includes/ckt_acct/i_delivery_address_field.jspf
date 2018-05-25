@@ -114,6 +114,8 @@ String[] checkErrorType = {"technical_difficulty", EnumUserInfoName.DLV_NOT_IN_Z
              fldServiceType = thisAddress.getServiceType();
              if (EnumUnattendedDeliveryFlag.OPT_OUT.equals(thisAddress.getUnattendedDeliveryFlag())) unattendedOptIn = false;
              fldUnattendedDeliveryInstructions = thisAddress.getUnattendedDeliveryInstructions();
+             /* remove default "OK" */
+             fldUnattendedDeliveryInstructions = (fldUnattendedDeliveryInstructions.equals("OK"))?"":fldUnattendedDeliveryInstructions;
 
 
         if (thisAddress.getAltDelivery() != null && "NEIGHBOR".equalsIgnoreCase(thisAddress.getAltDelivery().getDeliveryCode())) { 
@@ -475,7 +477,7 @@ if(request.getParameter(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode()) != nu
 				</tr>
 				<tr>
 					<td colspan="2"><span style="color: #900; font-weight: bold; font-size: 12px;">IMPORTANT:</span><br />
-						<span style="font-weight: bold; font-size: 12px;">Please designate your preferred Unattended Delivery drop location at your home.</span><br /><textarea aria-describedby="instructions_error" onkeyup="return maxLen(this, 80);" style="font-size: 12px;" rows="5" cols="70" name="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()%>" id="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()%>" <%= unattendedOptIn ? "" : " disabled" %>><%= unattendedOptIn ? fldUnattendedDeliveryInstructions : "" %></textarea>
+						<span style="font-weight: bold; font-size: 12px;">Please designate your preferred Unattended Delivery drop location at your home.</span><br /><textarea placeholder="Please provide a detailed description of the secure drop-off location for this property." aria-describedby="instructions_error" onkeyup="return maxLen(this, 80);" style="font-size: 12px;" rows="5" cols="70" name="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()%>" id="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()%>" <%= unattendedOptIn ? "" : " disabled" %>><%= unattendedOptIn ? fldUnattendedDeliveryInstructions : "" %></textarea>
 					<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()%>' id='errorMsg'><span id="instructions_error" class="text11rbold"><%=errorMsg%></span><br/></fd:ErrorHandler><br /><br /></td>
 				</tr>
 				<tr>
