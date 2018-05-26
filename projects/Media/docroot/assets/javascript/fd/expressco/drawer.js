@@ -144,7 +144,7 @@ var FreshDirect = FreshDirect || {};
   $(document).on('click', function (e) {
     var $el = $(e.target);
 
-    if ($el.closest('[data-component="drawer"],.ec-popup,.qs-popup,.popupcontentoverlay,.centerpopup-helper,#select2-soFreq2-results').size() === 0) {
+    if ($el.closest('[data-component="drawer"],.ec-popup,.qs-popup,.popupcontentoverlay,.centerpopup-helper,#select2-soFreq2-results,.ui-selectmenu-menu').size() === 0) {
       drawer.reset();
     }
   });

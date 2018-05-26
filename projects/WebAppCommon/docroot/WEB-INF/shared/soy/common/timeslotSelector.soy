@@ -12,7 +12,7 @@
 <div class="select-day" selectDay>
   <select class="customsimpleselect">
     {foreach $key in $days}
-      <option value="{$key}" {if $times[$key].selected == true} selected="selected"{/if}>{$times[$key].title}</option>
+      <option value="{$key}" {if $times[$key].selected == true} selected="selected"{/if} data-class="{if $times[$key].midWeekDlvPassApplicable == true}midweek{/if}">{$times[$key].title}</option>
     {/foreach}
   </select>
 </div>
@@ -28,6 +28,7 @@
 {/if}
 <input id="deliveryTimeslotId" name="deliveryTimeslotId" type="hidden" value="{if $selectedTimeslot}{$selectedTimeslot}{/if}">
 {if $selectedDay}
+  {if $times[$selectedDay].midWeekDlvPassApplicable == true}<div class="selected-day-midweek-dp"><img src="/media/editorial/site_pages/deliverypass/images/group-2.svg"/></div>{/if}
   <div class="select-time" selectTimeslot>
     {foreach $timeslots in $times[$selectedDay].times}
       <div>Order by {$timeslots[0]}</div>

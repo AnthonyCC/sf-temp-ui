@@ -183,13 +183,13 @@ function deliveryPassAutoRenew(item){
 							<div class="dp-payment-data">
 							<%if(user.getDefaultPaymentMethod().getCardType() != user.getDefaultPaymentMethod().getCardType().PAYPAL && user.getDefaultPaymentMethod().getCardType() != user.getDefaultPaymentMethod().getCardType().ECP  && user.getDefaultPaymentMethod().getCardType() != user.getDefaultPaymentMethod().getCardType().GCP ) {%>
 								 <% if (EnumCardType.AMEX.equals(user.getDefaultPaymentMethod().getCardType())){ %>
-									<div class="dp-payment-img"><img src="/media/editorial/site_pages/deliverypass/images/amex.png" alt="American Express"></div>
+									<div class="dp-payment-img"><img src="/media/editorial/site_pages/payment/images/amex.png" alt="American Express"></div>
 								<% } else if (EnumCardType.MC.equals(user.getDefaultPaymentMethod().getCardType())){ %>
-									<div class="dp-payment-img"><img src="/media/editorial/site_pages/deliverypass/images/mastercard.png" alt="MasterCard"></div>
+									<div class="dp-payment-img"><img src="/media/editorial/site_pages/payment/images/mastercard.png" alt="MasterCard"></div>
 								<% } else if (EnumCardType.VISA.equals(user.getDefaultPaymentMethod().getCardType())){ %>
-									<div class="dp-payment-img"><img src="/media/editorial/site_pages/deliverypass/images/visa.png" alt="Visa"></div>
+									<div class="dp-payment-img"><img src="/media/editorial/site_pages/payment/images/visa.png" alt="Visa"></div>
 								<% } else if (EnumCardType.DISC.equals(user.getDefaultPaymentMethod().getCardType())){ %>
-									<div class="dp-payment-img"><img src="/media/editorial/site_pages/deliverypass/images/discover.png" alt="Discover"></div>
+									<div class="dp-payment-img"><img src="/media/editorial/site_pages/payment/images/discover.png" alt="Discover"></div>
 								<% } %>
 								<div class="dp-payment-text">
 									<%=  user.getDefaultPaymentMethod().getCardType().getDisplayName() %>
