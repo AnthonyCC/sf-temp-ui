@@ -15,7 +15,6 @@ var FreshDirect = FreshDirect || {};
     return timeslot.dayOfWeek +', ' + monthOfYearAsString(timeslot.month-1) + ' ' + timeslot.dayOfMonth;
   }
 
-
   // times: {
   //   dayId1: {
   //     order: ['5PM', '11PM']  //told the cutoffTime position in the times array
@@ -59,6 +58,7 @@ var FreshDirect = FreshDirect || {};
       if (!times[dayId]) {
         times[dayId] = {'times':[], 'order': []};
         times[dayId].title = daySelectorTittle(timeslot);
+        times[dayId].midWeekDlvPassApplicable = timeslot.midWeekDlvPassApplicable;
       }
 
       if (data.selectedTimeslotId === e.id) {
@@ -160,7 +160,40 @@ var FreshDirect = FreshDirect || {};
           fd.modules.common.Select.selectize($ph);
           fd.modules.common.Elements.decorate($ph);
           fd.modules.common.aria.decorate();
-          $('.timeslot-selector .select-day select').focus();
+          $( function() {
+        	    $.widget( "custom.iconselectmenu", $.ui.selectmenu, {
+        	      _renderItem: function( ul, item ) {
+        	        var li = $( "<li>" ),
+        	          wrapper = $( "<div>", { text: item.label } );
+        	 
+        	        if ( item.disabled ) {
+        	          li.addClass( "ui-state-disabled" );
+        	        }
+        	        if (item.element.attr( "data-class" ).indexOf("midweek")!==-1){
+        	        	$( "<span>", {
+                 	          style: item.element.attr( "data-style" ),
+                 	          "class": "offscreen",
+                 	          "text": " free with Delivery Pass"
+                 	        })
+                 	          .appendTo( wrapper );
+        	        }
+        	        $( "<span>", {
+               	          style: item.element.attr( "data-style" ),
+               	          "class": "ui-icon " + item.element.attr( "data-class" )
+               	        })
+               	          .appendTo( wrapper );
+        	 
+        	        return li.append( wrapper ).appendTo( ul );
+        	      }
+        	    });
+        	 
+        	    $('.timeslot-selector .select-day select').iconselectmenu({
+        	    	  change: function( event, ui ) {
+        	    		  $(this).val(ui.item.value).change();
+        	    	  }
+        	    }).iconselectmenu( "menuWidget" ).addClass( "select-day-ui-menu" );
+          });
+          $('.timeslot-selector .select-day .ui-selectmenu-button').focus();
         }
       }
     }

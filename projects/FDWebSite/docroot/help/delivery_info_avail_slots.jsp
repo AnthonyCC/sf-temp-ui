@@ -57,4 +57,10 @@ final boolean abstractTimeslots = false;
       <jwr:script src="/fdmodules.js"  useRandomParam="false" />
       <jwr:script src="/fdcomponents.js"  useRandomParam="false" />
   	</tmpl:put>
+	<tmpl:put name="extraCss">
+	  <jwr:style src="/timeslots.css" media="all" />
+	</tmpl:put>
+	<tmpl:put name="extraJs">
+	  <jwr:script src="/assets/javascript/timeslots.js" useRandomParam="false" />
+	</tmpl:put>
 </tmpl:insert>

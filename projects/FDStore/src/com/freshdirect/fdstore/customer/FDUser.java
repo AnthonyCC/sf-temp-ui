@@ -26,6 +26,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.Category;
 
+import weblogic.auddi.util.Logger;
+
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.FDCouponProperties;
 import com.freshdirect.common.address.AddressModel;
@@ -1592,19 +1594,25 @@ public class FDUser extends ModelSupport implements FDUserI {
         /* When the Mid-week DP property is enabled - we will evaluate the below logic
          * 1. Compare the user selected day of the week from the timeslot with the list of eligbile days from the Deliverypass 
          */
-        if(FDStoreProperties.isMidWeekDlvPassEnabled()){
+        
+        final boolean isMidWeekEnabled = FDStoreProperties.isMidWeekDlvPassEnabled();
+        LOGGER.debug("Midweek Property " + (isMidWeekEnabled ? "" : "NOT") + " enabled");
+        if(isMidWeekEnabled){
+        	LOGGER.info("*******START******** Inside the Midweek block evaluation");
         	if(null!=this.getShoppingCart().getDeliveryReservation() && null!=this.getShoppingCart().getDeliveryReservation().getTimeslot() && null!=dlvPassInfo.getTypePurchased().getEligibleDlvDays()){
+                LOGGER.debug("Inside Midweek Standard Reservation block" + "Customer ID =" + this.getIdentity().getFDCustomerPK() + "ERP ID =" + this.getIdentity().getErpCustomerPK());
            		if(!(EnumDlvPassStatus.ACTIVE.equals(dlvPassInfo.getStatus()) && dlvPassInfo.getTypePurchased().getEligibleDlvDays().contains(this.getShoppingCart().getDeliveryReservation().getTimeslot().getDayOfWeek()))){
         			dlvPassTimeslotNotMatched = true;
         			return false;
         		} //end evaluation of standard or one-time reservation
         	} else if(null!=this.getReservation() && null!=this.getReservation().getTimeslot() && null!=dlvPassInfo.getTypePurchased().getEligibleDlvDays()){
+        		 LOGGER.debug("Inside Midweek Recurring Reservation block" + "Customer ID =" + this.getIdentity().getFDCustomerPK() + "ERP ID =" + this.getIdentity().getErpCustomerPK());
            		if(!(EnumDlvPassStatus.ACTIVE.equals(dlvPassInfo.getStatus()) && dlvPassInfo.getTypePurchased().getEligibleDlvDays().contains(this.getReservation().getTimeslot().getDayOfWeek()))){
         			dlvPassTimeslotNotMatched = true;
         			return false;
         		} //end evaluation of weekly recurring reservation
         	} 
-        	
+        	LOGGER.info("*********END Mid Week block Evaluation***********");	
         }
         // Unlimited Pass.
         if (EnumDlvPassStatus.ACTIVE.equals(dlvPassInfo.getStatus())) {
