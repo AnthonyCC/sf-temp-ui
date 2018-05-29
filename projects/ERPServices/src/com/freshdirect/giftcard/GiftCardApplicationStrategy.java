@@ -25,7 +25,7 @@ public class GiftCardApplicationStrategy extends PaymentStrategy {
 	private final ErpAffiliate fdwAffiliate;
 	
 	private final ErpInvoiceModel inv;
-	private List appGiftCardInfo = new ArrayList();
+	private List<ErpAppliedGiftCardModel> appGiftCardInfo = new ArrayList<ErpAppliedGiftCardModel>();
 	
 	public GiftCardApplicationStrategy(ErpAbstractOrderModel order, ErpInvoiceModel invoice, ErpAffiliate fd,
 			ErpAffiliate usq, ErpAffiliate fdw) {
@@ -108,9 +108,9 @@ public class GiftCardApplicationStrategy extends PaymentStrategy {
 			}
 		}
 
-		List gcPaymentMethods = order.getSelectedGiftCards();
+		List<ErpGiftCardModel> gcPaymentMethods = order.getSelectedGiftCards();
 		if(null != gcPaymentMethods) {
-			for(Iterator it = gcPaymentMethods.iterator(); it.hasNext();){
+			for(Iterator<ErpGiftCardModel> it = gcPaymentMethods.iterator(); it.hasNext();){
 				ErpPaymentMethodI giftcard = (ErpPaymentMethodI) it.next();
 				this.appGiftCardInfo.addAll(this.getAppliedList(giftcard));
 				
@@ -193,7 +193,7 @@ public class GiftCardApplicationStrategy extends PaymentStrategy {
 		}	
 	}
 
-	public List getAppGiftCardInfo() {
+	public List<ErpAppliedGiftCardModel> getAppGiftCardInfo() {
 		return appGiftCardInfo;
 	}
 

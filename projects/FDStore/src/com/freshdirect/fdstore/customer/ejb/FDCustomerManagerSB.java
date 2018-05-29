@@ -130,6 +130,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      * @return the resulting FDIdentity
      * @throws FDResourceException if an error occured using remote resources
      * @throws ErpDuplicateUserIdException if user enters an email address already in the system
+     * @deprecated
      */
 	public RegistrationResult register(
 		FDActionInfo info,
@@ -141,6 +142,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
 		FDSurveyResponse survey, EnumServiceType serviceType)
 		throws FDResourceException, ErpDuplicateUserIdException, RemoteException;
 
+	@Deprecated
 	public RegistrationResult register(
 			FDActionInfo info,
 			ErpCustomerModel erpCustomer,

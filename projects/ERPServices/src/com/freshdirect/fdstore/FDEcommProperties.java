@@ -103,12 +103,6 @@ public class FDEcommProperties {
 	public static final String FDCustomerManagerSB="com.freshdirect.customer.FDCustomerManagerSB";
 	public static final String Registration = "com.freshdirect.customer.registration";
 	public static final String SaleCronSB = "payment.ejb.SaleCronSB";
-	public static final String SaleCronSBPreAuthorizeSales = "payment.ejb.SaleCronSB.preAuthorizeSales";
-	public static final String SaleCronSBPostAuthSales = "payment.ejb.SaleCronSB.postAuthSales";
-	public static final String SaleCronSBReverseAuthorizeSales = "payment.ejb.SaleCronSB.reverseAuthorizeSales";
-	public static final String SaleCronSBCancelAuthorizationFailed = "payment.ejb.SaleCronSB.cancelAuthorizationFailed";
-	public static final String SaleCronSBAuthorizeSubscriptions = "payment.ejb.SaleCronSB.authorizeSubscriptions";
-	public static final String SaleCronSBRegisterGiftCards = "payment.ejb.SaleCronSB.registerGiftCards";
 	public static final String ErpInfoSB_WarmUp="erp.ejb.ErpInfoSB_WarmUp";
 	public static final String FDFactorySB_WarmUp ="fdstore.ejb.FDFactorySB_WarmUp";
 	private static final String PROP_ECOM_SERVICE_CONNECTION_TIMEOUT = "ecom.service.conn.timeout";

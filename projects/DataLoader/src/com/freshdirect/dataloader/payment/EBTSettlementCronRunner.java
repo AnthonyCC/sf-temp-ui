@@ -48,17 +48,16 @@ public class EBTSettlementCronRunner {
 			ctx = getInitialContext();
 			SaleCronHome home = (SaleCronHome) ctx.lookup("freshdirect.dataloader.SaleCron");
 
-			SaleCronSB sb = home.create();
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SaleCronSBPostAuthSales)){
-				SaleCronService.getInstance().postAuthEBTSales(captureTimeout);
-			}else {
-				sb.postAuthEBTSales(captureTimeout);
-			}
+			
+			
 			
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SaleCronSB)) {
+				SaleCronService.getInstance().postAuthEBTSales(captureTimeout);
 				SaleCronService.getInstance().captureEBTSales(captureTimeout);
 				SaleCronService.getInstance().settleEBTSales();
 			} else {
+				SaleCronSB sb = home.create();
+				sb.postAuthEBTSales(captureTimeout);
 				sb.captureEBTSales(captureTimeout);
 				sb.settleEBTSales();
 			}
@@ -93,27 +92,27 @@ public class EBTSettlementCronRunner {
 	
 	private static void email(Date processDate, String exceptionMsg) {
 		// TODO Auto-generated method stub
-		try {
-			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
-			String subject="EBTSettlementCron:	"+ (processDate != null ? dateFormatter.format(processDate) : " date error");
-
-			StringBuffer buff = new StringBuffer();
-
-			buff.append("<html>").append("<body>");			
-			
-			if(exceptionMsg != null) {
-				buff.append("<b>").append(exceptionMsg).append("</b>");
-			}
-			buff.append("</body>").append("</html>");
-
-			ErpMailSender mailer = new ErpMailSender();
-			mailer.sendMail(ErpServicesProperties.getCronFailureMailFrom(),
-					ErpServicesProperties.getCronFailureMailTo(),ErpServicesProperties.getCronFailureMailCC(),
-					subject, buff.toString(), true, "");
-			
-		}catch (MessagingException e) {
-			LOGGER.warn("Error Sending EBTSettlementCron report email: ", e);
-		}
-		
+//		try {
+//			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
+//			String subject="EBTSettlementCron:	"+ (processDate != null ? dateFormatter.format(processDate) : " date error");
+//
+//			StringBuffer buff = new StringBuffer();
+//
+//			buff.append("<html>").append("<body>");			
+//			
+//			if(exceptionMsg != null) {
+//				buff.append("<b>").append(exceptionMsg).append("</b>");
+//			}
+//			buff.append("</body>").append("</html>");
+//
+//			ErpMailSender mailer = new ErpMailSender();
+//			mailer.sendMail(ErpServicesProperties.getCronFailureMailFrom(),
+//					ErpServicesProperties.getCronFailureMailTo(),ErpServicesProperties.getCronFailureMailCC(),
+//					subject, buff.toString(), true, "");
+//			
+//		}catch (MessagingException e) {
+//			LOGGER.warn("Error Sending EBTSettlementCron report email: ", e);
+//		}
+//		
 	}
 }

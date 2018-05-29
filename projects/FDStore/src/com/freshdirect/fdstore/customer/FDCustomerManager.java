@@ -115,6 +115,7 @@ import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
 import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
 import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
+import com.freshdirect.fdstore.ecomm.gateway.RegistrationService;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
 import com.freshdirect.fdstore.iplocator.IpLocatorEventDTO;
@@ -212,11 +213,16 @@ public class FDCustomerManager {
 			FDSurveyResponse survey, EnumServiceType serviceType, boolean isGiftCardBuyer)
 			throws FDResourceException, ErpDuplicateUserIdException {
 
-		lookupManagerHome();
-
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.register(info, erpCustomer, fdCustomer, cookie, pickupOnly, eligibleForPromotion, survey, serviceType, isGiftCardBuyer);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.Registration)) {
+				return RegistrationService.getInstance().register(info, erpCustomer, fdCustomer, cookie, pickupOnly,
+						eligibleForPromotion, survey, serviceType, isGiftCardBuyer);
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.register(info, erpCustomer, fdCustomer, cookie, pickupOnly, eligibleForPromotion, survey,
+						serviceType, isGiftCardBuyer);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");

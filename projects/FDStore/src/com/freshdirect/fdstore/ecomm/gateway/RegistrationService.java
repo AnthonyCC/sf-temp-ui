@@ -66,6 +66,7 @@ public class RegistrationService extends AbstractEcommService implements Registr
 			ObjectNode rootNode = getMapper().createObjectNode();
 			rootNode.put("info", getMapper().convertValue(info, JsonNode.class));
 			rootNode.put("erpCustomer", getMapper().convertValue(erpCustomer, JsonNode.class));
+			rootNode.put("fdCustomer", getMapper().convertValue(fdCustomer, JsonNode.class));
 			rootNode.put("cookie", getMapper().convertValue(cookie, JsonNode.class));
 			rootNode.put("pickupOnly", getMapper().convertValue(pickupOnly, JsonNode.class));
 			rootNode.put("eligibleForPromotion", getMapper().convertValue(eligibleForPromotion, JsonNode.class));
