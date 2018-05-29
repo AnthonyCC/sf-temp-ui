@@ -15,7 +15,7 @@
   <jwr:style src="/oldglobal.css" media="all" />
 
 	<%
-	if (request.getHeader("User-Agent").indexOf("Mac") > -1) {
+	if (request.getHeader("User-Agent") != null && request.getHeader("User-Agent").indexOf("Mac") > -1) {
 		%><jwr:style src="/opt_MAC_01.css" media="all" /><%
 	}
 	%>
