@@ -3143,7 +3143,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					extendDeliveryPass(dlvpsb, dlvPass, -1, saleId, "Curtail DP by a week.",
 							EnumDlvPassExtendReason.DLV_PROMOTION_REMOVED.getName());
 				}
-			} else if ((EnumDlvPassStatus.ACTIVE.equals(status) || EnumDlvPassStatus.EXPIRED_PENDING.equals(status))
+			} else if ((EnumDlvPassStatus.ACTIVE.equals(status) || EnumDlvPassStatus.PENDING.equals(status) || EnumDlvPassStatus.EXPIRED_PENDING.equals(status))
 					&& !order.isDlvPassApplied() && fdOrder.getDeliveryPassId() != null) {
 				/*
 				 * Note: Expired pending state is valid only for BSGS pass. Then
