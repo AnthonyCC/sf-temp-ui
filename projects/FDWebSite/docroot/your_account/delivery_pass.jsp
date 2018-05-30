@@ -151,13 +151,15 @@ function deliveryPassAutoRenew(item){
 							
 							<div class="dp-plan-activate-text"><%= null != user ? DeliveryPassUtil.getPurchaseDate(user):null %> </div>
 						</div>
-						<%-- <% if(null != user && null != user.getDlvPassInfo() )%>
-						<% if(user.getDlvPassInfo().getDPSavings() > FDStoreProperties.getMinimumAmountSavedDpAccPage()) { %>
+						 <% if( FDStoreProperties.isAmountSavedDpAccPageEnabled()) { 
+						 if(user.getDlvPassInfo().getDPSavings() > 0) { %> 
 						<div class="dp-plan-saved">
 							<div class="dp-plan-activate-header">You've Saved:</div>
-							<div class="dp-plan-activate-text"><%= null != user.getDlvPassInfo() ? user.getDlvPassInfo().getDPSavings():null %></div>
+							<div class="dp-plan-activate-text"><%=user.getDlvPassInfo().getDPSavings() %></div>
 						</div>
-						<% } %> --%>
+						 <% } 
+						 }%> 
+						
 						<div class="clear"></div>
 					</div>
 					
