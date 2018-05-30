@@ -11,6 +11,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -1620,7 +1621,7 @@ public class ProductDetailPopulator {
     }
 
     private static Map<FDVariationOption, ProductModel> collectAvailableVariations(FDVariation fdVar, ContentFactory contentFactory) {
-        Map<FDVariationOption, ProductModel> availableProductModels = new HashMap<FDVariationOption, ProductModel>();
+        Map<FDVariationOption, ProductModel> availableProductModels = new LinkedHashMap<FDVariationOption, ProductModel>();
         FDVariationOption[] varOpts = fdVar.getVariationOptions();
         for (FDVariationOption varOpt : varOpts) {
             String optSkuCode = varOpt.getSkuCode();
