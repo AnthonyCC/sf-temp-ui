@@ -590,8 +590,6 @@ public class FDCustomerManager {
 	}
 
 	public static FDIdentity login(String userId) throws FDAuthenticationException, FDResourceException {
-		lookupManagerHome();
-
 		try {
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerIdentity)) {
 				return CustomerIdentityService.getInstance().login(userId, null);
