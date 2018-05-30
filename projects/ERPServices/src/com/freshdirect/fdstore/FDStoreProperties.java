@@ -1067,7 +1067,7 @@ public class FDStoreProperties {
     private static final String PROP_CART_CONFIRM_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED = "fdstore.cartconfirmpage.newproductscarousel.randomizeproductorder.enabled";
 	
 	private static final String MASTERPASS_EXCEPTION_MESSAGE = "masterpass.exception.message";
-	private static final String PROP_MIN_AMOUNT_SAVED_DP_ACCOUNTS_PAGE="fdstore.minimum.amount.saved.dpaccountpage"; 
+	private static final String PROP_AMOUNT_SAVED_DP_ACCOUNTS_PAGE_ENABLED="fdstore.amount.saved.dpaccountpage.enabled"; 
 
  	static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -1077,7 +1077,7 @@ public class FDStoreProperties {
         defaults.put(PROP_CRM_CASE_LIST_LENGTH, "100");
         defaults.put(PROP_CRM_CASE_HISTORY_LIST_LENGTH, "25");
         defaults.put(PROP_CRM_DISABLE_TIME_WINDOW_CHECK, "false");
-        defaults.put(PROP_FDSTORE_WEB_CAREERLINK, "http://jobs-freshdirect.icims.com");
+		defaults.put(PROP_FDSTORE_WEB_CAREERLINK, "http://jobs-freshdirect.icims.com");
         defaults.put(PROP_FDFACTORY_HOME, "freshdirect.fdstore.Factory");
         defaults.put(PROP_SAPGATEWAY_HOME, "freshdirect.sap.Gateway");
         defaults.put(PROP_KANAGATEWAY_HOME, "freshdirect.kana.Gateway");
@@ -2046,7 +2046,7 @@ public class FDStoreProperties {
 
         defaults.put(PROP_CART_CONFIRM_PAGE_NEW_PRODUCTS_CAROUSEL_ENABLED, "false");
         defaults.put(PROP_CART_CONFIRM_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED, "false");
-        defaults.put(PROP_MIN_AMOUNT_SAVED_DP_ACCOUNTS_PAGE, "14.00");
+        defaults.put(PROP_AMOUNT_SAVED_DP_ACCOUNTS_PAGE_ENABLED, "false");
 		
         refresh();
     }
@@ -5202,7 +5202,7 @@ public class FDStoreProperties {
 		return get(PROP_INFORM_ORDERMODIFY_MEDIAPATH);
 	}
 
-public static String getMasterpassExcMessage() {
+	public static String getMasterpassExcMessage() {
 	        return get(MASTERPASS_EXCEPTION_MESSAGE);
 	    }
 
@@ -5214,7 +5214,7 @@ public static String getMasterpassExcMessage() {
         return (Boolean.valueOf(get(PROP_CART_CONFIRM_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED))).booleanValue();
     }
     
-    public static double getMinimumAmountSavedDpAccPage() {
-        return Double.parseDouble(get(PROP_MIN_AMOUNT_SAVED_DP_ACCOUNTS_PAGE));
-    }   
+    public static boolean isAmountSavedDpAccPageEnabled() {
+        return (Boolean.valueOf(get(PROP_AMOUNT_SAVED_DP_ACCOUNTS_PAGE_ENABLED))).booleanValue();
+    }
 }
