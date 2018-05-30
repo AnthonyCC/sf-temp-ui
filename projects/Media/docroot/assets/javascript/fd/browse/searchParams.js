@@ -23,6 +23,9 @@ var FreshDirect = FreshDirect || {};
     serialize: {
       value: function () {
         var searchParams = $(this.placeholder+' input.searchinput').val();
+        if (!searchParams) {
+        	searchParams = $('input.searchinput:first').val()
+        }
 
         return { searchParams: searchParams };
       }

@@ -216,12 +216,12 @@
 				data="${browsePotato.searchParams}" />
 		</nav>
 		--%>
+		<%--
 		<div class="search-input NOMOBWEB">
-			<%--
 			<soy:render template="srch.searchParams"
 				data="${browsePotato.searchParams}" />
-			--%>
 		</div>
+		--%>
 	</tmpl:put>
 
 	<tmpl:put name='leftnav' direct='true'>
