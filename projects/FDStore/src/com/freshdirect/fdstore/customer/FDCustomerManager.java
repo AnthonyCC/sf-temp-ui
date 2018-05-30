@@ -115,6 +115,7 @@ import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
 import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
 import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
+import com.freshdirect.fdstore.ecomm.gateway.CustomerIdentityService;
 import com.freshdirect.fdstore.ecomm.gateway.RegistrationService;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
@@ -570,12 +571,15 @@ public class FDCustomerManager {
 	 * @throws FDResourceException if an error occured using remote resources
 	 */
 	public static FDIdentity login(String userId, String password) throws FDAuthenticationException, FDResourceException {
-		lookupManagerHome();
-
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.login(userId, password);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerIdentity)) {
+				return CustomerIdentityService.getInstance().login(userId, password);
+			} else {
+				lookupManagerHome();
 
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.login(userId, password);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -589,9 +593,13 @@ public class FDCustomerManager {
 		lookupManagerHome();
 
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.login(userId);
-
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerIdentity)) {
+				return CustomerIdentityService.getInstance().login(userId, null);
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.login(userId);
+			}
 		} catch (CreateException ce) {
 			ce.printStackTrace();
 			invalidateManagerHome();

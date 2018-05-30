@@ -1,44 +1,25 @@
 package com.freshdirect.fdstore.ecomm.gateway;
 
-import java.io.IOException;
 import java.rmi.RemoteException;
-import java.util.Collection;
 
 import org.apache.log4j.Category;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.freshdirect.common.customer.EnumServiceType;
-import com.freshdirect.crm.CrmAgentModel;
-import com.freshdirect.crm.CrmAgentRole;
-import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
-import com.freshdirect.customer.ErpPaymentMethodI;
-import com.freshdirect.customer.ErpPromotionHistory;
 import com.freshdirect.ecomm.gateway.AbstractEcommService;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
-import com.freshdirect.ecommerce.data.customer.DefaultPaymentMethodData;
-import com.freshdirect.ecommerce.data.customer.ProfileData;
-import com.freshdirect.ecommerce.data.ecoupon.CrmAgentModelData;
-import com.freshdirect.ecommerce.data.list.FDActionInfoData;
-import com.freshdirect.ecommerce.data.list.RenameCustomerListData;
 import com.freshdirect.fdstore.FDEcommServiceException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
-import com.freshdirect.fdstore.customer.ProfileModel;
 import com.freshdirect.fdstore.customer.RegistrationResult;
-import com.freshdirect.fdstore.ecomm.converter.ListConverter;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
-import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.payment.service.FDECommerceService;
-import com.freshdirect.payment.service.IECommerceService;
 
 public class RegistrationService extends AbstractEcommService implements RegistrationServiceI {
 

@@ -1,22 +1,15 @@
 package com.freshdirect.fdstore.ecomm.gateway;
 
 import java.rmi.RemoteException;
-import java.util.Collection;
 
 import com.freshdirect.common.customer.EnumServiceType;
-import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
-import com.freshdirect.customer.ErpPaymentMethodI;
-import com.freshdirect.customer.ErpPromotionHistory;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
-import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.customer.ProfileModel;
 import com.freshdirect.fdstore.customer.RegistrationResult;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
-import com.freshdirect.framework.core.PrimaryKey;
 
 public interface RegistrationServiceI {
 

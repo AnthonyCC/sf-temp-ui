@@ -188,6 +188,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      */
     @Deprecated
     public FDIdentity login(String userId, String password) throws FDAuthenticationException, FDResourceException, RemoteException;
+    @Deprecated
     public FDIdentity login(String userId) throws FDAuthenticationException, FDResourceException, RemoteException;
 
     @Deprecated
