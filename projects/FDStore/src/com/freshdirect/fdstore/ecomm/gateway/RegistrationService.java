@@ -78,10 +78,11 @@ public class RegistrationService extends AbstractEcommService implements Registr
 			String inputJson = buildRequest(request);
 
 			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(REGISTER), new TypeReference<Response<RegistrationResult>>() {});
-			if (response.getError().containsKey("ErpDuplicateUserIdException")) {
-				throw new ErpDuplicateUserIdException(response.getError().get("ErpDuplicateUserIdException").toString());
-			}
+			
 			if (!response.getResponseCode().equals("OK")) {
+				if ("ErpDuplicateUserIdException".equals(response.getMessage())) {
+					throw new ErpDuplicateUserIdException();
+				}
 				throw new FDResourceException(response.getMessage());
 			}
 			return response.getData();
