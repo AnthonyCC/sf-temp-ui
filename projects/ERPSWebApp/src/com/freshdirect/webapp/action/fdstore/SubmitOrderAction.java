@@ -644,6 +644,7 @@ public class SubmitOrderAction extends WebActionSupport {
 				FDActionInfo info=AccountActivityUtil.getActionInfo(session, "Order Modified");
 				info.setSource(transactionSource);
 				info.setTaxationType(!"".equals(taxationType)?EnumNotificationType.getNotificationType(taxationType):null);
+				validateAndReconcilePickingPlantId(user, cart);
 				FDCustomerManager.modifyOrder(
 					info,
 					modCart,
@@ -677,6 +678,7 @@ public class SubmitOrderAction extends WebActionSupport {
 							EnumDlvPassStatus.PENDING,true);
 					
 				} else {
+					validateAndReconcilePickingPlantId(user, cart);
 					orderNumber = FDCustomerManager.placeOrder(info, cart,
 							appliedPromos, sendEmail, cra, status,
 							isFriendReferred, fdcOrderCount);
@@ -952,6 +954,22 @@ public class SubmitOrderAction extends WebActionSupport {
 
 		return this.getResult().isSuccess() ? "SUCCESS" : "ERROR";		
 
+	}
+
+	private void validateAndReconcilePickingPlantId(final FDSessionUser user, final FDCartModel cart) {
+		if(null !=cart && null !=cart.getOrderLines() && null !=cart.getDeliveryPlantInfo() && null!=user){
+			for (FDCartLineI cartLine : cart.getOrderLines()) {
+				try {
+					String pickingPlantId = null !=cartLine.lookupFDProductInfo() ? cartLine.lookupFDProductInfo().getPickingPlantId(cart.getDeliveryPlantInfo().getSalesOrg(), cart.getDeliveryPlantInfo().getDistChannel()):null;
+					if(null != cartLine.getPlantId() && null !=pickingPlantId && !pickingPlantId.equalsIgnoreCase(cartLine.getPlantId())){
+						LOGGER.warn("PickingPlant mismatch for customer: "+user.getIdentity()+" Sku: "+cartLine.getSkuCode()+" Quantity:"+ cartLine.getQuantity()+". Cart has "+cartLine.getPlantId()+", actual is:"+pickingPlantId);
+						cartLine.setPlantId(pickingPlantId);
+					}
+				} catch (Exception e) {
+					LOGGER.warn("Error in validateAndReconcilePickingPlantId method, for customer:"+user.getIdentity(), e);
+				}
+			}
+		}
 	}
 
 	private String formatPhoneMsg(String pattern) {
