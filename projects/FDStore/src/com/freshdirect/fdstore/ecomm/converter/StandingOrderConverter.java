@@ -9,6 +9,7 @@ import java.util.Map;
 
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpOrderLineModel;
+import com.freshdirect.ecomm.converter.FDActionInfoConverter;
 import com.freshdirect.ecommerce.data.customer.ErpActivityRecordData;
 import com.freshdirect.ecommerce.data.ecoupon.FDConfigurationData;
 import com.freshdirect.ecommerce.data.ecoupon.FDSkuData;
@@ -139,7 +140,7 @@ public class StandingOrderConverter {
 
 	public static StandingOrderModifyData buildStandingOrdermodifyData(FDActionInfo info, FDStandingOrder so , String saleId) throws FDResourceException {
 		StandingOrderModifyData soModiftData = new StandingOrderModifyData();
-		soModiftData.setInfo(ListConverter.buildActionInfoData(info));
+		soModiftData.setInfo(FDActionInfoConverter.buildActionInfoData(info));
 		soModiftData.setSaleId(saleId);
 		soModiftData.setSo(buildStandingOrderData(so));
 		return soModiftData;
@@ -322,7 +323,7 @@ public class StandingOrderConverter {
 	public static DeleteSOData buildDeleteSOData(FDActionInfo info,FDStandingOrder so, String deleteDate) throws FDResourceException {
 		DeleteSOData deleteSoData = new DeleteSOData();
 		deleteSoData.setDeleteDate(deleteDate);
-		deleteSoData.setInfo(ListConverter.buildActionInfoData(info));
+		deleteSoData.setInfo(FDActionInfoConverter.buildActionInfoData(info));
 		deleteSoData.setSo(buildStandingOrderData(so));
 		return deleteSoData;
 	}

@@ -24,6 +24,7 @@ import com.freshdirect.customer.ErpReturnOrderModel;
 import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.VSReasonCodes;
+import com.freshdirect.ecomm.converter.CustomerRatingConverter;
 import com.freshdirect.ecomm.gateway.AbstractEcommService;
 import com.freshdirect.ecomm.gateway.ErpComplaintManagerService;
 import com.freshdirect.ecommerce.data.common.Request;
@@ -294,7 +295,7 @@ private static final String DO_GENERIC_SEARCH = "callcenter/genericSearch/search
 		Request<CustomerRatingAdapterData> request = new Request<CustomerRatingAdapterData>();
 		Response<String> response = new Response<String>();
 		try{
-			request.setData(CallCenterConverter.buildCustomerRatingData(cra));
+			request.setData(CustomerRatingConverter.buildCustomerRatingData(cra));
 			String inputJson = buildRequest(request);
 			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(RESUBMIT_ORDER+saleId+"/saleType/"+saleType.getSaleType()),new TypeReference<Response<String>>() {});
 			if(!response.getResponseCode().equals("OK")){
