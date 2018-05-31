@@ -6,10 +6,18 @@ rem Assume the drive where the script is run holds the source code
 set JUNCROOTDRIVE=%CD:~0,2%
 
 rem The root folder holding our source code
-set JUNCROOTSRC=%JUNCROOTDRIVE%\FreshDirect\sf2_0\repo
+set JUNCROOTSRC=%JUNCROOTDRIVE%\Storefront_2_0
 
 rem The root folder holding our '\media' folder
 set JUNCROOTMEDIA=%JUNCROOTDRIVE%\FreshDirect\content
+
+rmdir %JUNCROOTSRC%\projects\FDWebSite\docroot\WEB-INF\shared	
+rmdir %JUNCROOTSRC%\projects\FDWebSite\docroot\shared			
+rmdir %JUNCROOTSRC%\projects\FDWebSite\docroot\assets			
+rmdir %JUNCROOTSRC%\projects\FDWebSite\docroot\ccassets			
+rmdir %JUNCROOTSRC%\projects\FDWebSite\docroot\media_stat		
+rmdir %JUNCROOTSRC%\projects\FDWebSite\docroot\WEB-INF\tags	
+
 
 rem Media common DAM store
 MKLINK /D /J  %JUNCROOTSRC%\projects\Media\docroot\media				%JUNCROOTMEDIA%\media
