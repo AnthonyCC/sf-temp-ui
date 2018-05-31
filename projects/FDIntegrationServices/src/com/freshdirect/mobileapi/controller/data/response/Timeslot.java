@@ -82,6 +82,8 @@ public class Timeslot implements DateFormat {
         
         this.deliveryFee = slot.getDeliveryFee();
         this.promoDeliveryFee = slot.getPromoDeliveryFee();
+        
+        this.isMidWeekDlvPassApplicable =slot.getMidWeekPassApplicable();
     
     }
 

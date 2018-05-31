@@ -134,4 +134,8 @@ public class Timeslot {
 		return slot.getPromoDeliveryFee();
 	}
 	
+	public boolean getMidWeekPassApplicable() {
+		return slot.isMidWeekDlvPassApplicable();
+	}
+	
 }
