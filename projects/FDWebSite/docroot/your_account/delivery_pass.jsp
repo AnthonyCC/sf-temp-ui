@@ -155,7 +155,7 @@ function deliveryPassAutoRenew(item){
 						 if(user.getDlvPassInfo().getDPSavings() > 0) { %> 
 						<div class="dp-plan-saved">
 							<div class="dp-plan-activate-header">You've Saved:</div>
-							<div class="dp-plan-activate-text"><%=user.getDlvPassInfo().getDPSavings() %></div>
+							<div class="dp-plan-activate-text">$<%=user.getDlvPassInfo().getDPSavings() %></div>
 						</div>
 						 <% } 
 						 }%> 
