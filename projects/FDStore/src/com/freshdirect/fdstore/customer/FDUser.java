@@ -3990,7 +3990,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 				LOGGER.warn("Error in getDpFreeTrialOptin() " + e);
 			}
 		}
-		
+
 		if (this.cachedFDCustomer != null && this.cachedFDCustomer.getCustomerEStoreModel() != null) {
 
 			return this.cachedFDCustomer.getCustomerEStoreModel().getDpFreeTrialOptin();
@@ -4116,9 +4116,6 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public boolean hasMidWeekDlvPass() {
 		if (null != getDlvPassInfo()
 				&& getSelectedServiceType() == EnumServiceType.HOME
-				&& EnumDlvPassStatus.ACTIVE.equals(dlvPassInfo.getStatus())
-				&& Calendar.getInstance().getTime()
-						.before(dlvPassInfo.getExpDate()) // Active and not expired
 				&& (null != getDlvPassInfo().getTypePurchased()
 						.getEligibleDlvDays()
 						&& !getDlvPassInfo().getTypePurchased()
