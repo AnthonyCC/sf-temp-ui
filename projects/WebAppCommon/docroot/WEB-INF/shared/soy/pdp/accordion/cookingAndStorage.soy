@@ -47,7 +47,6 @@
 	{param ratingLabel:$webRating.ratingLabel /}
 	{param ratings:$webRating.ratings /}
 {/call}
-{if $webRating.compareByLabel and $webRating.linkParams}<div><a href="/rating_ranking.jsp?{$webRating.linkParams}">{$webRating.compareByLabel}</a></div>{/if}
 {call .webRatingText}
 	{param textRatings:$webRating.textRatings /}
 {/call}
