@@ -67,7 +67,11 @@ public class AccountActivityUtil implements SessionName {
 			eStore=currentUser.getUserContext().getStoreContext().getEStoreId();
 		
 		}
-
+		
+		if(currentUser!=null && currentUser.getUser()!=null && currentUser.getUser().getMasqueradeContext()!=null ) {
+            FDActionInfo.setMasqueradeAgentTL(currentUser.getUser().getMasqueradeContext().getAgentId());
+        }
+		
 		FDActionInfo info = new FDActionInfo(eStore,src, identity, initiator, note, agent, (currentUser!=null)?currentUser.getPrimaryKey():null);
 		info.setDebitCardSwitch(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, currentUser));
 
