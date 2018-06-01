@@ -114,6 +114,7 @@ public class ListConverter {
 			return null;
 		if(data.getReturnType().equals(FDCustomerProductList.class.getSimpleName())){
 			FDCustomerList fdCustomerList = createListByType(EnumCustomerListType.getEnum(data.getListType()));
+			if(data.getCreateDate() != null)
 			fdCustomerList.setCreateDate(data.getCreateDate());
 			if(data.getCustomerId() != null)
 			fdCustomerList.setCustomerPk(new PrimaryKey(data.getCustomerId()));
@@ -247,7 +248,9 @@ public class ListConverter {
 		customerListData.setName(fdCustomerList.getName());
 		customerListData.setRecipeId(fdCustomerList.getRecipeId());
 		customerListData.setRecipeName(fdCustomerList.getRecipeName());
-		if(fdCustomerList instanceof FDCustomerProductList){
+		if(null!=fdCustomerList.getType())
+		customerListData.setListType(fdCustomerList.getType().getName());
+		/*if(fdCustomerList instanceof FDCustomerProductList){
 			customerListData.setReturnType(FDCustomerProductList.class.getSimpleName());
 			if(fdCustomerList instanceof FDCustomerCreatedList){
 				customerListData.setListType(EnumCustomerListType.CC_LIST.getName());
@@ -258,14 +261,16 @@ public class ListConverter {
 					customerListData.setListType(EnumCustomerListType.SO.getName());
 				}
 			}
-		}
-		else if(fdCustomerList instanceof FDCustomerRecipeList){
+		}*/
+		if(fdCustomerList instanceof FDCustomerRecipeList){
 			customerListData.setReturnType(FDCustomerRecipeList.class.getSimpleName());
-			customerListData.setListType(EnumCustomerListType.RECIPE_LIST.getName());
+//			customerListData.setListType(EnumCustomerListType.RECIPE_LIST.getName());
 		}
 		else if (fdCustomerList instanceof FDCustomerListInfo){
 			customerListData.setReturnType(FDCustomerListInfo.class.getSimpleName());
-			customerListData.setListType(EnumCustomerListType.CC_LIST.getName());
+//			customerListData.setListType(EnumCustomerListType.CC_LIST.getName());
+		}else if(fdCustomerList instanceof FDCustomerProductList){
+			customerListData.setReturnType(FDCustomerProductList.class.getSimpleName());
 		}
 		return customerListData;
 	}

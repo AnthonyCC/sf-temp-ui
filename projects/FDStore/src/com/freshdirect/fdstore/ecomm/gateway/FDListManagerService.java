@@ -263,6 +263,7 @@ public class FDListManagerService extends ExtTimeAbstractEcommService implements
 			throws FDResourceException, RemoteException {
 		Request<CustomerListRequest> request = new Request<CustomerListRequest>();
 		Response<FDCustomerListData> response = new Response<FDCustomerListData>();
+		FDCustomerList list = null;
 		try{
 			request.setData(ListConverter.buildCustomerListRequest( identity, type,  listName, null));
 			String inputJson = buildRequest(request);
@@ -270,6 +271,7 @@ public class FDListManagerService extends ExtTimeAbstractEcommService implements
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
+			list = ListConverter.buildFDCustomerList(response.getData());
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
@@ -277,7 +279,7 @@ public class FDListManagerService extends ExtTimeAbstractEcommService implements
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
-		return ListConverter.buildFDCustomerList(response.getData());
+		return list;
 	}
 
 	@Override
