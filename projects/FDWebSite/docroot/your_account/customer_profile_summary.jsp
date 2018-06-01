@@ -135,12 +135,12 @@ response.setHeader("Cache-Control", "no-cache");
 </style>
 <!-- * start the actual summary info * -->
 
-	<table cellpadding="0" cellspacing="0" border="0" width="100%">
+	<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
 	<tr>
 	<!-- left column -->
 		<td class="col39per padLR10px vTop">
 			<!-- profile image / edit profile link -->
-            <table class="col100per noBorder">
+            <table role="presentation" class="col100per noBorder">
 				<tr>
 				<%if(!"".equals(profileImagePath)){%>
 					<td class="rb_image" style="padding-right:5px;">
@@ -151,7 +151,7 @@ response.setHeader("Cache-Control", "no-cache");
 				<%if("".equals(profileImagePath)){%><tr><td colspan="2" style="padding-bottom:10px;"><img height="1" width="1" alt="" src="/media_stat/images/layout/clear.gif"/></td></tr><%}%>
 			</table>
 			<!-- NAME profile - customer info -->
-				<table class="col100per noBorder tLeft">
+				<table role="presentation" class="col100per noBorder tLeft">
 				<tr>
 					<td>
             <h1><%=user.getFirstName()+"'s Profile"%></h1>
@@ -182,13 +182,13 @@ response.setHeader("Cache-Control", "no-cache");
 
 			<!-- CHEF'S TABLE member -->
             <% if(user.isChefsTable()) { %>
-	        <table class="col100per noBorder tLeft">
+	        <table role="presentation" class="col100per noBorder tLeft">
 	         <tr><td width="15" style="padding-top:12px;"><img src="/media_stat/images/template/youraccount/ct_star.gif" alt="" width="15" height="15"></td><td class="t11px bolded" style="padding-top:12px;">CHEF'S TABLE MEMBER</td></tr>
 	        </table>
 	        <% } %>
 
 			<!-- OAS ad -->
-						<table cellpadding="0" cellspacing="0" border="0">
+						<table role="presentation" cellpadding="0" cellspacing="0" border="0">
 							<tr><td colspan="3" style="padding-top:12px;"><img height="1" width="1" alt="" src="/media_stat/images/layout/clear.gif"/></td></tr>
 							<tr valign="top">
 								<td><img height="6" width="6" alt="" src="/media_stat/images/layout/top_left_curve.gif"/></td>
@@ -224,7 +224,7 @@ response.setHeader("Cache-Control", "no-cache");
 	<!-- end center column -->
 	<!-- right column -->
 		<td class="padL20px vTop tLeft t11px">
-		    <table id="profileSwitcher">
+		    <table role="presentation" id="profileSwitcher">
 		    	<tr class="t11px bolded tLeft">
 			<%
 			boolean needServiceType = false;
@@ -243,7 +243,7 @@ response.setHeader("Cache-Control", "no-cache");
 		    	</tr>
 		    </table>
 		    <img width="120" height="10" alt="" src="/media_stat/images/layout/clear.gif"/>
-			<table cellpadding="0" cellspacing="0" border="0" width="100%">
+			<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
 
 			<!-- header row -->
 
@@ -277,7 +277,7 @@ response.setHeader("Cache-Control", "no-cache");
 <br><br>
 <IMG src="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="<%= W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL %>" HEIGHT="1" BORDER="0"><BR>
 <FONT CLASS="space4pix"><BR><BR></FONT>
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL %>">
+<TABLE role="presentation" BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL %>">
 <tr VALIGN="TOP">
 <TD WIDTH="35"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="" ALIGN="LEFT">
 CONTINUE SHOPPING

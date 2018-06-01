@@ -80,7 +80,7 @@ String pageURI = request.getRequestURI();
 		%>
 		<%@ include file="/common/template/includes/globalnav.jspf" %> 
     <center class="text10">
-		<table width="<%=W_NO_NAV_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
+		<table role="presentation" width="<%=W_NO_NAV_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
 			<tr valign="TOP">
 				<td align="center">
 					<img src="/media_stat/images/layout/clear.gif" alt="" height="15" width="<%=W_NO_NAV_TOTAL%>"><br />

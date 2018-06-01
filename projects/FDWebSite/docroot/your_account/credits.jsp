@@ -157,7 +157,7 @@ request.setAttribute("listPos", "HPLeftTop");
 <%
 	List<ErpCustomerCreditModel> mimList = FDReferralManager.getUserCredits(customerIdentity.getErpCustomerPK());
 %>
-<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
 	<tr>
 		<td class="t20px bolded">
 			FreshDirect Account Credits <br/> <span class="t11px" style="font-weight:normal;">Please review your orders. To check the status of an order, click on the order number.</span>
@@ -190,7 +190,7 @@ request.setAttribute("listPos", "HPLeftTop");
 <br><br>
 <IMG src="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="<%= W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL %>" HEIGHT="1" BORDER="0"><BR>
 <FONT CLASS="space4pix"><BR><BR></FONT>
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL %>">
+<TABLE role="presentation" BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL %>">
 <tr VALIGN="TOP">
 <TD WIDTH="35"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="" ALIGN="LEFT">
 CONTINUE SHOPPING

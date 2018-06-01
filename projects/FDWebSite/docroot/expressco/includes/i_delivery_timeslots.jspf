@@ -96,7 +96,7 @@ if(StandingOrderHelper.isSO3StandingOrder(user) && "Y".equals(user.getCurrentSta
 <%}%>
 
 <!-- ~~~~~~~~~~~~~~~~~~~~~~ START TIMESLOT GRID ~~~~~~~~~~~~~~~~~~~~~~ -->
-<table CELLSPACING="0" CELLPADDING="0" id="tsContainer" align="center" width="100%">
+<table role="presentation" CELLSPACING="0" CELLPADDING="0" id="tsContainer" align="center" width="100%">
 	
 	<% String gridMediaIncludePath = ""; %>
 	<logic:iterate id="timeslots" collection="<%=timeslotList%>" type="com.freshdirect.fdstore.util.FDTimeslotUtil" indexId="idx">
@@ -195,10 +195,10 @@ if(StandingOrderHelper.isSO3StandingOrder(user) && "Y".equals(user.getCurrentSta
 	<tr><td>
 		<!-- ~~~~~~~~~~~~~~~~~~~~~~ LEGEND DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ -->
 		<% if(FDStoreProperties.isNewFDTimeslotGridEnabled()) { %>
-			<table cellpadding="0" cellspacing="0" width="100%" border="0" id="legendCheckout">
+			<table role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0" id="legendCheckout">
 				<tr>
 					<td>
-						<table cellpadding="0" cellspacing="0" width="100%">
+						<table role="presentation" cellpadding="0" cellspacing="0" width="100%">
 							<tr>
 								<% if(soFirstNextText != null){ %>
 									<td valign="middle" align="left">
@@ -213,7 +213,7 @@ if(StandingOrderHelper.isSO3StandingOrder(user) && "Y".equals(user.getCurrentSta
 									</td>
 								<% } %>
 								<td valign="middle" align="right">
-							 	<table>
+							 	<table role="presentation">
 									<tr>
 										<%if(deliveryModel.getEcoFriendlyCount() > 0){%>
 											<td class="timeslots_legend_ecofriendly">

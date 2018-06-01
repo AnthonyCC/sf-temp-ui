@@ -60,7 +60,7 @@ final int W_SIGNUP_TOTAL = 970;
 	<%@ include file="/includes/i_error_messages.jspf" %>	
 </fd:ErrorHandler>
 
-<table width="<%=W_SIGNUP_TOTAL%>" border="0" cellspacing="0" cellpadding="0">
+<table role="presentation" width="<%=W_SIGNUP_TOTAL%>" border="0" cellspacing="0" cellpadding="0">
 <tr>
 	<td width="<%=W_SIGNUP_TOTAL%>" class="text13">
 <%
@@ -96,7 +96,7 @@ final int W_SIGNUP_TOTAL = 970;
 		<% if (FDStoreProperties.isGiftCardEnabled()) { %>
 			<br /><br />
 			<b>Looking for Gift Cards?</b><br />
-			<a href="<%=FDStoreProperties.getGiftCardLandingUrl()%>">Click here</a>.
+			<a href="<%=FDStoreProperties.getGiftCardLandingUrl()%>">Click here<span class="offscreen">for more details about gift cards</span></a>.
 		<% } %>
 	</td>
 </tr>

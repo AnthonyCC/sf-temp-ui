@@ -36,14 +36,14 @@ final int W_YA_CANCEL_ORDER_CONFIRM = 970;
 </script>
 
 <%-- error message handling here --%>
-<TABLE WIDTH="<%= W_YA_CANCEL_ORDER_CONFIRM %>" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+<TABLE role="presentation" WIDTH="<%= W_YA_CANCEL_ORDER_CONFIRM %>" BORDER="0" CELLPADDING="0" CELLSPACING="0">
 <TR><TD class="text11">
 <font class="title18"><% if (cancelCartOrOrder.getStandingOrderName() != null){ %><%= cancelCartOrOrder.getStandingOrderName() %>, <%= cancelCartOrOrder.getSODeliveryDate() %> Delivery, <% } %>Order # <%= orderId %> Cancelled</font><br>
 <FONT CLASS="space4pix"><BR></FONT></td>
 </tr></table>
 <IMG src="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="<%= W_YA_CANCEL_ORDER_CONFIRM %>" HEIGHT="1" BORDER="0" HSPACE="0" VSPACE="0"><BR>
 <BR>
-<TABLE WIDTH="<%= W_YA_CANCEL_ORDER_CONFIRM %>" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+<TABLE role="presentation" WIDTH="<%= W_YA_CANCEL_ORDER_CONFIRM %>" BORDER="0" CELLPADDING="0" CELLSPACING="0">
 <TR><TD class="text11">
 <b>Your order has been cancelled. You will not receive a delivery and your account will not be charged.</b>
 <BR>
@@ -96,7 +96,7 @@ Your feedback will help us serve you better. Please let us know how you'd like t
 -->
 <BR>
 <IMG src="/media_stat/images/layout/cccccc.gif" ALT="" WIDTH="<%= W_YA_CANCEL_ORDER_CONFIRM %>" HEIGHT="1" BORDER="0" HSPACE="0" VSPACE="8"><BR>
-<TABLE CELLPADDING="0" CELLSPACING="0" border="0" WIDTH="<%= W_YA_CANCEL_ORDER_CONFIRM %>">
+<TABLE role="presentation" CELLPADDING="0" CELLSPACING="0" border="0" WIDTH="<%= W_YA_CANCEL_ORDER_CONFIRM %>">
 	<TR VALIGN="MIDDLE">
     <TD WIDTH="35"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="" ALIGN="LEFT">
     CONTINUE SHOPPING
@@ -104,7 +104,7 @@ Your feedback will help us serve you better. Please let us know how you'd like t
 	</TR>
 </TABLE><BR>
 <br>
-<table>
+<table role="presentation">
 	<tr>
 		<td><b>Having Problems?</b><br>
 			<%@ include file="/includes/i_footer_account.jspf" %>

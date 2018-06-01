@@ -72,14 +72,14 @@ final int W_DELIVERY_INFO_NAV_TOTAL = 970;
 	boolean isCorporate = user.getSelectedServiceType().equals(EnumServiceType.CORPORATE);
 %>
 <center class="text10">
-	<table width="<%=W_DELIVERY_INFO_NAV_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
+	<table role="presentation" width="<%=W_DELIVERY_INFO_NAV_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
 		<tr>
 			<td width="<%=W_DELIVERY_INFO_NAV_TOTAL%>" colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"></td>
 		</tr>
 		<tr valign="top">
 			<td width="219" style="padding: 5px 5px 10px 5px;" class="text9_lh12"><a href="/help/delivery_info.jsp"><img src="/media_stat/images/template/help/delivery_info_deptnav.gif" width="219" height="26" border="0" alt="DELIVERY INFO"></a></td>
 			<td width="<%=W_DELIVERY_INFO_NAV_TOTAL-219%>">
-				<table border="0" cellpadding="0" cellspacing="0">
+				<table role="presentation" border="0" cellpadding="0" cellspacing="0">
 					<tr>
 						<% for ( int colIndex = 0; colIndex < maxCols; colIndex++ ) { %>
 							<td class="onePxTall" rowspan="maxRows"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>

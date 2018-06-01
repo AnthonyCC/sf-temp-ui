@@ -137,7 +137,7 @@ response.setHeader("Cache-Control", "no-cache");
 
 <% List<ManageInvitesModel> mimList = FDReferralManager.getManageInvites(customerIdentity.getErpCustomerPK()); %>
 
-<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
 	<tr>
 		<td class="t20px bolded">
 			View Referrals
@@ -188,7 +188,7 @@ response.setHeader("Cache-Control", "no-cache");
 <br><br>
 <IMG src="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="<%= W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL %>" HEIGHT="1" BORDER="0"><BR>
 <FONT CLASS="space4pix"><BR><BR></FONT>
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL %>">
+<TABLE role="presentation" BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL %>">
 <tr VALIGN="TOP">
 <td WIDTH="35"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="" ALIGN="LEFT">
 CONTINUE SHOPPING<BR>

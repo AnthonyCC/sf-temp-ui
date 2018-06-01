@@ -25,7 +25,7 @@ final int W_YA_REMINDER_SERVICE = 970;
 FDIdentity identity  = user.getIdentity();
 ErpCustomerInfoModel custInfo = FDCustomerFactory.getErpCustomerInfo(identity);%>
 <fd:ReminderEmailController actionName="updateReminder" result="result" customerInfo="<%=custInfo%>">
-  <table width="<%= W_YA_REMINDER_SERVICE %>" align="center" border="0" cellpadding="0" cellspacing="0">
+  <table role="presentation" width="<%= W_YA_REMINDER_SERVICE %>" align="center" border="0" cellpadding="0" cellspacing="0">
 		<form name="reminder_signup" method="POST">
 			<tr>
 				<td colspan="2" class="text11">
