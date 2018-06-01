@@ -3,7 +3,7 @@ package com.freshdirect.fdstore.ecomm.converter;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.freshdirect.ecommerce.data.referral.FDUserData;
+import com.freshdirect.ecommerce.data.customer.FDUserData;
 import com.freshdirect.ecommerce.data.referral.ManageInvitesData;
 import com.freshdirect.ecommerce.data.referral.ReferralCampaignData;
 import com.freshdirect.ecommerce.data.referral.ReferralChannelData;

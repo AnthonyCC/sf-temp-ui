@@ -4,21 +4,16 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 
-import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpCustomerCreditModel;
-import com.freshdirect.ecommerce.data.referral.FDReferralReportLineData;
-import com.freshdirect.ecommerce.data.referral.FDUserData;
 import com.freshdirect.ecommerce.data.referral.ManageInvitesData;
 import com.freshdirect.ecommerce.data.referral.ReferralCampaignData;
 import com.freshdirect.ecommerce.data.referral.ReferralChannelData;
 import com.freshdirect.ecommerce.data.referral.ReferralHistoryData;
 import com.freshdirect.ecommerce.data.referral.ReferralIniviteData;
-import com.freshdirect.ecommerce.data.referral.ReferralObjectiveData;
 import com.freshdirect.ecommerce.data.referral.ReferralPartnerData;
 import com.freshdirect.ecommerce.data.referral.ReferralProgramData;
 import com.freshdirect.ecommerce.data.referral.ReferralProgramInvitationData;
 import com.freshdirect.ecommerce.data.referral.ReferralPromotionData;
-import com.freshdirect.ecommerce.data.referral.ReferralSearchCriteriaData;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 

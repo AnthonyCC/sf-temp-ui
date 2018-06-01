@@ -2444,6 +2444,13 @@ public class FDUser extends ModelSupport implements FDUserI {
 
     @Override
     public UserContext getUserContext() {
+    	return getUserContext(true, true);
+    }
+
+    public UserContext getUserContext(boolean override) {
+    	return getUserContext(override, false);
+    }
+    public UserContext getUserContext(boolean override, boolean setCurrentUserContext) {
     	ErpAddressModel address = null;
         try {
 
@@ -2455,43 +2462,6 @@ public class FDUser extends ModelSupport implements FDUserI {
 
                 userContext.setFdIdentity(getIdentity()); // TODO maybe FDIdentity should be removed from FDUser
                 userContext.setCustSapId(getCustSapId()); // Avalara needs customer's SAP Id.
-                
-                if (this.getAddress() != null && this.getAddress().isCustomerAnonymousAddress()) {
-                    address = new ErpAddressModel(this.getAddress());
-                } else if (identity != null) {
-                    try {
-						address = getFulfillmentAddress(identity, storeContext.getEStoreId());
-					} catch (Exception e) {
-						LOGGER.error("ERROR-USERCONTEXT-1: Exception while populating usercontext for user:"+getIdentity(), e);
-					}
-                } 
-                if (null == address && this.getAddress() != null) {
-                    address = new ErpAddressModel(this.getAddress());
-                }
-
-                userContext = setFulfillmentAndPricingContext(userContext, address, true);
-                ContentFactory.getInstance().setCurrentUserContext(userContext);
-            }
-        } catch (Exception e) {
-        	LOGGER.error("ERROR-USERCONTEXT-1: Exception while populating usercontext for user:"+getIdentity(), e);
-            throw new FDRuntimeException(e, e.getMessage());
-        }
-
-        return userContext;
-    }
-
-    public UserContext getUserContext(boolean override) {
-        try {
-
-            if (userContext == null) {
-                userContext = new UserContext();
-
-                StoreContext storeContext = StoreContext.createStoreContext(EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId())));
-                userContext.setStoreContext(storeContext); // TODO this should be changed once FDX_CMS is merged!!! also check StoreContext.createDefault()
-
-                userContext.setFdIdentity(getIdentity()); // TODO maybe FDIdentity should be removed from FDUser
-                userContext.setCustSapId(getCustSapId()); // Avalara needs customer's SAP Id.
-                ErpAddressModel address = null;
                 if (this.getAddress() != null && this.getAddress().isCustomerAnonymousAddress()) {
                     address = new ErpAddressModel(this.getAddress());
                 } else if (identity != null) {
@@ -2506,6 +2476,9 @@ public class FDUser extends ModelSupport implements FDUserI {
                 }
 
                 userContext = setFulfillmentAndPricingContext(userContext, address, override);
+				if (setCurrentUserContext) {
+					ContentFactory.getInstance().setCurrentUserContext(userContext);
+				}
             }
         } catch (Exception e) {
         	LOGGER.error("ERROR-USERCONTEXT-4: Exception while populating usercontext for user:"+getIdentity(), e);

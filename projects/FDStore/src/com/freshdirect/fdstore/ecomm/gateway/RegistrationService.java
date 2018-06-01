@@ -45,15 +45,15 @@ public class RegistrationService extends AbstractEcommService implements Registr
 		try {
 			Request<ObjectNode> request = new Request<ObjectNode>();
 			ObjectNode rootNode = getMapper().createObjectNode();
-			rootNode.put("info", getMapper().convertValue(info, JsonNode.class));
-			rootNode.put("erpCustomer", getMapper().convertValue(erpCustomer, JsonNode.class));
-			rootNode.put("fdCustomer", getMapper().convertValue(fdCustomer, JsonNode.class));
-			rootNode.put("cookie", getMapper().convertValue(cookie, JsonNode.class));
-			rootNode.put("pickupOnly", getMapper().convertValue(pickupOnly, JsonNode.class));
-			rootNode.put("eligibleForPromotion", getMapper().convertValue(eligibleForPromotion, JsonNode.class));
-			rootNode.put("survey", getMapper().convertValue(survey, JsonNode.class));
-			rootNode.put("serviceType", getMapper().convertValue(serviceType, JsonNode.class));
-			rootNode.put("isGiftCardBuyer", getMapper().convertValue(isGiftCardBuyer, JsonNode.class));
+			rootNode.set("info", getMapper().convertValue(info, JsonNode.class));
+			rootNode.set("erpCustomer", getMapper().convertValue(erpCustomer, JsonNode.class));
+			rootNode.set("fdCustomer", getMapper().convertValue(fdCustomer, JsonNode.class));
+			rootNode.set("cookie", getMapper().convertValue(cookie, JsonNode.class));
+			rootNode.set("pickupOnly", getMapper().convertValue(pickupOnly, JsonNode.class));
+			rootNode.set("eligibleForPromotion", getMapper().convertValue(eligibleForPromotion, JsonNode.class));
+			rootNode.set("survey", getMapper().convertValue(survey, JsonNode.class));
+			rootNode.set("serviceType", getMapper().convertValue(serviceType, JsonNode.class));
+			rootNode.set("isGiftCardBuyer", getMapper().convertValue(isGiftCardBuyer, JsonNode.class));
 			
 			request.setData(rootNode);
 			String inputJson = buildRequest(request);
