@@ -6,13 +6,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.ecommerce.data.customer.FDUserData;
 import com.freshdirect.fdstore.customer.ExternalCampaign;
 import com.freshdirect.fdstore.customer.SavedRecipientModel;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
 
-public class RecognizeResponse implements Serializable {
+public class RecognizedUserData implements Serializable {
 
 	private static final long serialVersionUID = 8232352098448470220L;
 	
@@ -26,7 +27,9 @@ public class RecognizeResponse implements Serializable {
 	
 	private List<SavedRecipientModel> receipts;
 	
-	public RecognizeResponse() {
+	private List<ErpOrderLineModel> orderLines;
+	
+	public RecognizedUserData() {
 		
 	}
 
@@ -68,6 +71,14 @@ public class RecognizeResponse implements Serializable {
 
 	public void setReceipts(List<SavedRecipientModel> receipts) {
 		this.receipts = receipts;
+	}
+
+	public List<ErpOrderLineModel> getOrderLines() {
+		return orderLines;
+	}
+
+	public void setOrderLines(List<ErpOrderLineModel> orderLines) {
+		this.orderLines = orderLines;
 	}
 	
 }
