@@ -132,11 +132,11 @@ function deliveryPassAutoRenew(item){
 						<div class="dp-header">Your Benefits:</div>
 						<div class="dp-benefits-list-item">
 							<div class="dp-benefits-list-icon"><img style="width: 36px; height: 22px;" src="/media/editorial/site_pages/deliverypass/images/truck.svg" alt="truck"></div>
-							<div class="dp-benefits-list-text"><%= user.hasMidWeekDlvPass() ? "Order as often as you want Tuesday-Thursday and never be charged a delivery fee":"Unlimited Free Deliveries<br/>7 Days a Week" %></div>
+							<div class="dp-benefits-list-text"><%= (user.getDlvPassInfo()!=null && user.getDlvPassInfo().isMidweekPass()) ? "Order as often as you want Tuesday-Thursday and never be charged a delivery fee":"Unlimited Free Deliveries<br/>7 Days a Week" %></div>
 						</div>
 						<div class="dp-benefits-list-item">
 							<div class="dp-benefits-list-icon"><img src="/media/editorial/site_pages/deliverypass/images/alarm-clock.svg" alt="alarm clock"></div>
-							<div class="dp-benefits-list-text"><%= user.hasMidWeekDlvPass() ? "Reserve a Tuesday-Thursday delivery timeslot":"Timeslot Reservations" %></div>
+							<div class="dp-benefits-list-text"><%= (user.getDlvPassInfo()!=null && user.getDlvPassInfo().isMidweekPass()) ? "Reserve a Tuesday-Thursday delivery timeslot":"Timeslot Reservations" %></div>
 						</div>
 						<div class="dp-benefits-list-item">
 							<div class="dp-benefits-list-icon"><img style="width: 30px; height: 30px;" src="/media/editorial/site_pages/deliverypass/images/tag.svg" alt="check"></div>

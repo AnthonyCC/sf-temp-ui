@@ -162,6 +162,12 @@ public class FDUserDlvPassInfo implements Serializable{
 	public void setPurchaseDate(Date purchaseDate) {
 		this.purchaseDate = purchaseDate;
 	}
+	
+	//For DeliveryPass Settings Page for Mid Week
+	public boolean isMidweekPass() {
+		return (null != getTypePurchased().getEligibleDlvDays() && !getTypePurchased().getEligibleDlvDays().isEmpty()
+				&& getTypePurchased().getEligibleDlvDays().size() < 7);
+	}
 
 	
 }
