@@ -127,7 +127,7 @@
 			'eventLabel': 'x out'
 		});
 	});
-	$jq(".overlay-dialog-new .dpn").on("click", "[dpfreetrial-terms]", function(){
+	$jq(".dpn").on("click", "[dpfreetrial-terms]", function(){
 		pop("/shared/template/generic_popup.jsp?contentPath=/media/editorial/picks/deliverypass/dp_tc.html&windowSize=large&name=Delivery Pass Information',400,560,alt='Delivery Pass Information");
 	});
 	$jq(".overlay-dialog-new .dpn").on("click", "[dpfreetrial-close-popup]", function(){
