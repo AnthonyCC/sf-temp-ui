@@ -1,0 +1,103 @@
+.explore__department-list-cont {
+  margin-bottom: 20px;
+}
+.explore__department-list-cont [data-component="carousel"] ul li.explore__department-list-element {
+  display: inline-block;
+  width: 135px;
+}
+@media screen and (max-width: 393px) {
+  [data-ismobweb="true"] .explore__department-list-cont [data-component="carousel"] ul li.explore__department-list-element {
+    width: 100%;
+  }
+}
+@media screen and (min-width: 394px) and (max-width: 538px) {
+  [data-ismobweb="true"] .explore__department-list-cont [data-component="carousel"] ul li.explore__department-list-element {
+    width: 50%;
+  }
+}
+li.explore__department-list-element + li.explore__department-list-element {
+  margin-left: 10px;
+}
+.explore__department-list-cont [data-component="carousel"] {
+  padding: 0 57px;
+}
+.explore__department-list-cont [data-component="carousel"] ul.pager {
+  display: none;
+}
+.explore__department-list-cont [data-component="carousel-mask"] {
+  margin: 0;
+}
+.explore__department-list-cont [data-component="carousel-prev"],
+.explore__department-list-cont [data-component="carousel"].first [data-component="carousel-prev"]:hover,
+.explore__department-list-cont [data-component="carousel-next"],
+.explore__department-list-cont [data-component="carousel"].last [data-component="carousel-next"]:hover {
+  background: url(/media_stat/carousel/explore_arrow.png) no-repeat !important;
+}
+.explore__department-list-cont [data-component="carousel-prev"]:hover,
+.explore__department-list-cont [data-component="carousel-next"]:hover {
+  background: url(/media_stat/carousel/explore_arrow_on.png) no-repeat;
+}
+.explore__department-list-cont [data-component="carousel-prev"],
+.explore__department-list-cont [data-component="carousel-next"] {
+  width: 37px;
+  height: 70px;
+}
+.explore__department-list-element .explore__department-list-image {
+  height: 100%;
+  width: 100%;
+  border: 15px solid transparent;
+  border-radius: 360px;
+  box-sizing: border-box;
+}
+.explore__department-list-image-cont {
+  display: inline-block;
+  overflow: hidden;
+  width: 135px;
+  height: 135px;
+  box-sizing: border-box;
+}
+.explore__department-list-image {
+  display: block;
+  width: 110px;
+  height: 110px;
+}
+.explore__department-list-element:hover .explore__department-list-image,
+.explore__department-list-element:focus .explore__department-list-image,
+.explore__department-list-element:active .explore__department-list-image {
+  border: none;
+}
+.explore__department-list-element.selected .explore__department-list-image,
+.explore__department-list-element.selected:hover .explore__department-list-image,
+.explore__department-list-element.selected:focus .explore__department-list-image,
+.explore__department-list-element.selected:active .explore__department-list-image {
+  border: 5px solid #e77630;
+}
+.explore__department-list-name-cont {
+  font-size: 13px;
+  font-family: Montserrat;
+  font-weight: 700;
+  display: block;
+}
+.explore__department-list-element.selected .explore__department-list-name-cont,
+.explore__department-list-element:hover .explore__department-list-name-cont,
+.explore__department-list-element:focus .explore__department-list-name-cont,
+.explore__department-list-element:active .explore__department-list-name-cont {
+  font-size: 15px;
+}
+.explore__department-list-element .explore__department-list-name-cont {
+  line-height: 28px;
+}
+.explore__department-list-name {
+  display: inline-block;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: inherit;
+  color: #666;
+}
+.explore__department-list-element.selected .explore__department-list-name,
+.explore__department-list-element.selected .explore__department-list-name,
+.explore__department-list-element:hover .explore__department-list-name,
+.explore__department-list-element:focus .explore__department-list-name,
+.explore__department-list-element:active .explore__department-list-name {
+  color: #679C41;
+}

@@ -1,0 +1,18 @@
+{namespace explore}
+/**
+ * @param? list superdepartment list
+ * @param? superdeptId selected superdepartment id
+ */
+{template .superdepartmentList autoescape="false"}
+	<nav class="explore__superdepartment-list-cont" data-component="explore-superdepartment-list">
+		<ul>
+			{foreach $el in $list}
+				<li class="explore__superdepartment-list-element{if $superdeptId and $superdeptId == $el.id} selected{/if}">
+					<a href="/explore.jsp?sdep={$el.id}" data-component="explore-superdepartment-selector" class="explore__superdepartment-list-name-cont" data-superdept="{$el.id}">
+						<span class="explore__superdepartment-list-name">{$el.name}</span>
+					</a>
+				</li>
+			{/foreach}
+		</ul>
+	</nav>
+{/template}
