@@ -13,6 +13,8 @@ public interface CustomerIdentityServiceI {
 	public FDIdentity login(String userId, String password)
 			throws FDAuthenticationException, FDResourceException, RemoteException;
 
+	public FDUser recognize(String cookie, EnumEStoreId eStoreId) throws FDAuthenticationException, FDResourceException, RemoteException;
+	
 	public FDUser recognize(FDIdentity identity, EnumEStoreId eStoreId, final boolean lazy,
 			boolean populateDeliveryPlantInfo) throws FDAuthenticationException, FDResourceException, RemoteException;
 

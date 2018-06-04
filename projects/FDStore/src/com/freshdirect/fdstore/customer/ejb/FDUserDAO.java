@@ -198,11 +198,15 @@ public class FDUserDAO {
      *
      * @throws SQLException
      */
-    private static void loadCart(Connection conn, FDUser user, final boolean lazy) throws SQLException {
-        FDCartModel cart = new FDCartModel();
-
+    public static void loadCart(Connection conn, FDUser user, final boolean lazy) throws SQLException {
+       
         List<ErpOrderLineModel> loadCartLines = FDCartLineDAO.loadCartLines(conn, user.getPK(), user.getUserContext().getStoreContext().getEStoreId());
-        cart.addOrderLines(convertToCartLines(loadCartLines, lazy));
+        loadCart(user, loadCartLines, lazy);
+    }
+    public static void loadCart(FDUser user, List<ErpOrderLineModel> loadCartLines, final boolean lazy) {
+    	FDCartModel cart = new FDCartModel();
+
+    	cart.addOrderLines(convertToCartLines(loadCartLines, lazy));
 
         cart.setEStoreId(user.getUserContext().getStoreContext().getEStoreId());
         ErpDeliveryPlantInfoModel delPlantInfo = new ErpDeliveryPlantInfoModel();
@@ -216,7 +220,6 @@ public class FDUserDAO {
 
         user.setShoppingCart(cart);
     }
-
     private static List<FDCartLineI> convertToCartLines(List<ErpOrderLineModel> erplines, final boolean lazy) {
 
         List<FDCartLineI> cartlines = new ArrayList<FDCartLineI>();

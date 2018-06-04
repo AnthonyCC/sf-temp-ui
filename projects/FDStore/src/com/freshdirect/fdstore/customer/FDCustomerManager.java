@@ -304,13 +304,16 @@ public class FDCustomerManager {
 	}
 
 	public static FDUser recognize(String cookie, EnumEStoreId eStoreId) throws FDAuthenticationException, FDResourceException {
-		lookupManagerHome();
+		FDUser user = null;
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			FDUser user = sb.recognize(cookie,eStoreId);
-
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerIdentity)) {
+				user = CustomerIdentityService.getInstance().recognize(cookie, eStoreId);
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				user = sb.recognize(cookie, eStoreId);
+			}
 			populateShoppingCart(user, true, true);
-
 			return user;
 
 		} catch (CreateException ce) {
