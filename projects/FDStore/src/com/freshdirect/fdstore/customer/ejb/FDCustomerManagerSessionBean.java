@@ -8624,7 +8624,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	public ShortSubstituteResponse getShortSubstituteOrders(List<String> orderList) throws FDResourceException, RemoteException{
 		Connection conn = null;
 		try {
-			StringBuffer orders = GenerteOrderWithCommaSeparate(orderList);
+			StringBuffer orders = generteOrderWithCommaSeparate(orderList);
 			conn = getConnection();
 			return FDCustomerOrderInfoDAO.getShortSubstituteOrders(orders, conn);
 		} catch (SQLException sqle) {
@@ -8634,7 +8634,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	public StringBuffer GenerteOrderWithCommaSeparate(List<String> orderList) {
+	public StringBuffer generteOrderWithCommaSeparate(List<String> orderList) {
 		StringBuffer orders =new StringBuffer();
 		orders.append("(");
 		if(orderList != null && orderList.size() > 0) {							
