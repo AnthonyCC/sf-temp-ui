@@ -154,7 +154,7 @@ public class SaleCronService extends AbstractEcommService implements SaleCronSer
 	public void registerGiftCards(long timeout) throws RemoteException {
 		Response<String> response = new Response<String>();
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(REGISTER_GIFT_CARDS +"?timeout="+timeout),  new TypeReference<Response<String>>(){});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(REGISTER_GIFT_CARDS +timeout),  new TypeReference<Response<String>>(){});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
