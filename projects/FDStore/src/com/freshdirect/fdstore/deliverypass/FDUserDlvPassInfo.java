@@ -117,7 +117,8 @@ public class FDUserDlvPassInfo implements Serializable{
 	}
 	
 	public String getAutoRenewDPTerm() {
-		
+		if (autoRenewDPType == null) return null;
+			
 		String name=autoRenewDPType.getName();
 		
 		if(name.indexOf(DlvPassConstants.UNLIMITED)!=-1) {
