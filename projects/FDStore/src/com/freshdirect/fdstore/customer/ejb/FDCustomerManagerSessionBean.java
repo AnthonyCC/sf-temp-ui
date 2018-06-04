@@ -1426,14 +1426,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	private String getFDUserCustomerServiceContact(FDIdentity identity, boolean isChefsTable)
+	private String getFDUserCustomerServiceContact(String customerId, boolean isChefsTable)
 			throws FDResourceException, FDAuthenticationException {
 		Connection conn = null;
 		FDUser user = null;
 		try {
 			conn = getConnection();
 
-			user = FDUserDAO.getFDUserZipCode(conn, identity);
+			user = FDUserDAO.getFDUserZipCode(conn, customerId);
 
 			if (user == null) {
 				throw new FDAuthenticationException("Unrecognized user");
@@ -1476,7 +1476,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 			fdInfo.setDepotCode(fdCustomer.getDepotCode());
 			fdInfo.setChefsTable(isChefsTable);
-			fdInfo.setCustomerServiceContact(getFDUserCustomerServiceContact(identity, isChefsTable));
+			fdInfo.setCustomerServiceContact(getFDUserCustomerServiceContact(fdCustomer.getId(), isChefsTable));
 
 			/* APPDEV-2114 */
 			fdInfo.setGoGreen(erpCustomerInfo.isGoGreen());
