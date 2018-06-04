@@ -234,8 +234,6 @@ public class FDCustomerManager {
 	}
 
 	public static FDUser createNewUser(String zipCode, EnumServiceType serviceType, EnumEStoreId eStoreId) throws FDResourceException {
-		
-
 		try {
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.Registration)) {
 				return RegistrationService.getInstance().createNewUser(zipCode, serviceType, eStoreId);
@@ -255,7 +253,6 @@ public class FDCustomerManager {
 	}
 
 	public static FDUser createNewUser(AddressModel address, EnumServiceType serviceType, EnumEStoreId eStoreId) throws FDResourceException {
-		lookupManagerHome();
 
 		try {
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.Registration)) {
