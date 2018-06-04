@@ -5,9 +5,11 @@ import java.rmi.RemoteException;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
+import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.RegistrationResult;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
 
@@ -33,5 +35,7 @@ public interface RegistrationServiceI {
 			String cookie, boolean pickupOnly, boolean eligibleForPromotion, FDSurveyResponse survey,
 			EnumServiceType serviceType, boolean isGiftCardBuyer)
 			throws FDResourceException, ErpDuplicateUserIdException, RemoteException;
+	
+	public FDUser createNewUser(String zipCode, EnumServiceType serviceType, EnumEStoreId eStoreId) throws FDResourceException, RemoteException;
 
 }

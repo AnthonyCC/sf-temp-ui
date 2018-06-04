@@ -247,11 +247,6 @@ public class FDUserDAO {
         return user;
     }
 
-    public static FDUser createUser(Connection conn, AddressModel address, EnumServiceType serviceType, EnumEStoreId eStoreId) throws SQLException {
-        FDUser user = createUser(conn, newCookieId(), address.getAddress1(), address.getApartment(), address.getZipCode(), null, serviceType, eStoreId);
-        return user;
-    }
-
     private static final String LOAD_FROM_IDENTITY_QUERY = "SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, NVL(fde.ZIPCODE,fdu.ZIPCODE) ZIPCODE, fdu.DEPOT_CODE, NVL(FDE.SERVICE_TYPE, fdu.SERVICE_TYPE) SERVICE_TYPE,fdu.HPLETTER_VISITED, fdu.CAMPAIGN_VIEWED, fdu.GLOBALNAVTUT_VIEWED,fdu.ZIP_POPUP_USED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, "
             + "erpc.active, ci.receive_news,fdu.last_ref_prog_id, fdu.ref_prog_invt_id, fdu.ref_trk_key_dtls, fdu.COHORT_ID, fdu.ZP_SERVICE_TYPE "
             + ",fdc.referer_customer_id, fdu.default_list_id, ci.fd_tc_agree, fdee.raf_click_id,fdee.raf_promo_code, erpc.SAP_ID, erpc.USER_ID "

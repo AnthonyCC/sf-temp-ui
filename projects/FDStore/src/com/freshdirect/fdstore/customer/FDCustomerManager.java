@@ -234,11 +234,16 @@ public class FDCustomerManager {
 	}
 
 	public static FDUser createNewUser(String zipCode, EnumServiceType serviceType, EnumEStoreId eStoreId) throws FDResourceException {
-		lookupManagerHome();
+		
 
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.createNewUser(zipCode, serviceType, eStoreId);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.Registration)) {
+				return RegistrationService.getInstance().createNewUser(zipCode, serviceType, eStoreId);
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.createNewUser(zipCode, serviceType, eStoreId);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -253,8 +258,13 @@ public class FDCustomerManager {
 		lookupManagerHome();
 
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.createNewUser(address, serviceType, eStoreId);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.Registration)) {
+				return RegistrationService.getInstance().createNewUser(address != null? address.getZipCode() : null, serviceType, eStoreId);
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.createNewUser(address, serviceType, eStoreId);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -370,15 +380,22 @@ public class FDCustomerManager {
 	public static FDUser recognize(FDIdentity identity, EnumTransactionSource source, EnumEStoreId eStoreId,
 			MasqueradeContext ctx, boolean updateUserState, boolean populateShoppingCart)
 			throws FDAuthenticationException, FDResourceException {
-		lookupManagerHome();
+		
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			FDUser user = sb.recognize(identity, eStoreId, false, false);
+			FDUser user = null;
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerIdentity)) {
+				user = CustomerIdentityService.getInstance().recognize(identity, eStoreId, false, false);
+			} else {
 
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				user = sb.recognize(identity, eStoreId, false, false);
+			}
 			user.setApplication(source);
 			user.setMasqueradeContext(ctx);
 
-			if(user.isVoucherHolder() && EnumEStoreId.FDX.equals( user.getUserContext().getStoreContext().getEStoreId() )){
+			if (user.isVoucherHolder()
+					&& EnumEStoreId.FDX.equals(user.getUserContext().getStoreContext().getEStoreId())) {
 				throw new FDAuthenticationException("voucherredemption");
 			}
 			if (populateShoppingCart) {
