@@ -1332,7 +1332,8 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 
         FDCartLineI theCartLine = null;
 
-        if (CartOperations.isProductGroupable(product, salesUnit)) {
+        //TODO:[APPDEV-7238]-Temp fix for the issue with '0' quantity add/update. 
+        if (quantity >0 && CartOperations.isProductGroupable(product, salesUnit)) {
             theCartLine = CartOperations.findGroupingOrderline(cartLinesToAdd, prodNode, salesUnit);
             if (theCartLine == null) {
                 theCartLine = CartOperations.findGroupingOrderline(cart.getOrderLines(), prodNode, salesUnit);
