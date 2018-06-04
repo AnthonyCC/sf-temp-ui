@@ -1930,7 +1930,7 @@ public class FDStoreProperties {
         defaults.put(PROP_PLANT1310_PRICE_INDICATOR, "BASE");
         defaults.put(PROP_PLANTWDC_PRICE_INDICATOR, "BASE");
 
-        defaults.put(PROP_SF_2_0_ENABLED, "false");
+        defaults.put(PROP_SF_2_0_ENABLED, "true");
         defaults.put(PROP_MAT_SALESORG__EXPORT_PICKPLANT_VALIDATION_ENABLED, "true");
         defaults.put(PROP_EXTRA_LOG_FOR_LOGIN_FAILS_ENABLED, "false");
         defaults.put(PROP_MEALBUNDLE_CARTONVIEW_ENABLED, "true");
@@ -1944,7 +1944,7 @@ public class FDStoreProperties {
         defaults.put(PROP_DFP_ENABLED, "false");
         defaults.put(PROP_DFP_ID, "1072054678");
 
-        defaults.put(PROP_CLUSTER_NAME, "localhost");
+        defaults.put(PROP_CLUSTER_NAME, "locallhost");
         defaults.put(PROP_NODE_NAME, "localhost");
 
         defaults.put(PROP_PRODUCT_CACHE_OPTIMIZATION_ENABLED, "true");
@@ -2047,11 +2047,27 @@ public class FDStoreProperties {
         defaults.put(PROP_CART_CONFIRM_PAGE_NEW_PRODUCTS_CAROUSEL_ENABLED, "false");
         defaults.put(PROP_CART_CONFIRM_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED, "false");
         defaults.put(PROP_AMOUNT_SAVED_DP_ACCOUNTS_PAGE_ENABLED, "false");
+        
+        try {
+     		String hostName=java.net.InetAddress.getLocalHost().getCanonicalHostName();
+     		if(hostName!=null && hostName.indexOf(".")!=-1) {
+     			nodeName=hostName.substring(0, hostName.indexOf("."));
+     		} else {
+     			nodeName="";
+     		}
+     			
+     		
+     	} catch(Exception e) {
+     		LOGGER.info("Failed to set nodeName",e);
+     	}        
 		
         refresh();
     }
 
+	private static String nodeName;
+
     private FDStoreProperties() {
+    	 
     }
 
     private static void refresh() {
@@ -4989,7 +5005,8 @@ public class FDStoreProperties {
     }
 
     public static String getNodeName() {
-        return get(PROP_NODE_NAME);
+       // return get(PROP_NODE_NAME);
+    	return nodeName;
     }
 
     public static boolean isProductCacheOptimizationEnabled() {
