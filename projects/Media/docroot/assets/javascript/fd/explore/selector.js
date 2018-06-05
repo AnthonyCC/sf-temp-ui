@@ -9,6 +9,9 @@ var FreshDirect = FreshDirect || {};
 	var DISPATCHER = fd.common.dispatcher;
 
 	var exploreSelector = Object.create(WIDGET,{
+		OTHER_SUPERDEPTID: {
+			value: 'other'
+		},
 		getCategoryList:{
 			value: function(deptId, superdeptId) {
 				var dep = this.getDepartment(deptId, superdeptId);
@@ -19,13 +22,13 @@ var FreshDirect = FreshDirect || {};
 		getSuperdepartmentList: {/* excludes superdepts with no depts */
 			value: function() {
 				var expdata = fd.explore && fd.explore.data && fd.explore.data.abstractDepartments;
-				return [].concat( expdata.filter(function(d, includeEmpty) { return d.departments && d.departments.length; }) );
+				return [].concat( expdata.filter(function(d) { return d.departments && d.departments.length; }) );
 			}
 		},
 		getSuperdepartment: {
 			value: function(superdeptId) {
 				var expdata = fd.explore && fd.explore.data && fd.explore.data.abstractDepartments;
-				return expdata.filter(function(d) { return d.id.toLowerCase() === superdeptId; })[0];
+				return (expdata) ? expdata.filter(function(d) { return d.id.toLowerCase() === superdeptId; })[0] : [];
 			}
 		},
 		getDepartmentList: {
@@ -33,14 +36,14 @@ var FreshDirect = FreshDirect || {};
 				var expdata = fd.explore && fd.explore.data && fd.explore.data.abstractDepartments;
 				var deptList = [];
 
-				if (superdeptId) {
+				if (expdata && superdeptId) {
 					var node = this.getSuperdepartment(superdeptId);
 					if (node && node.departments) {
 						return deptList.concat( node.departments );
 					}
 				}
 
-				return deptList.concat( expdata.filter(function(d) { return !d.departments; }) );
+				return deptList.concat( expdata.filter(function(d) { return !d.departments && (d.categories && d.categories.length); }) );
 				
 			}
 		},
@@ -48,7 +51,7 @@ var FreshDirect = FreshDirect || {};
 			value: function(deptId, superdeptId) {
 				var expdata = fd.explore && fd.explore.data && fd.explore.data.abstractDepartments;
 				var node = null;
-				if (deptId) {
+				if (expdata && deptId) {
 					if (superdeptId) {
 						node = this.getDepartmentList(superdeptId).filter(function (d) { return d.id.toLowerCase() === deptId.toLowerCase(); })[0];
 					} else {
@@ -94,6 +97,33 @@ var FreshDirect = FreshDirect || {};
 				
 				fd.components.carousel.changePage($carousel, null, scrollToPage);
 			}
+		},
+		moveTopLevelDeptsIntoOtherSuperDept:{
+			value: function() {
+				var expdata = fd.explore && fd.explore.data && fd.explore.data.abstractDepartments;
+				if (expdata) {
+					//existing data
+					var superdeptList = fd.modules.explore.selector.getSuperdepartmentList();
+					var superdeptDeptIdList = superdeptList.reduce(function(a,c,i,d) {
+						c.departments.forEach(function(item) { a.push( item.id ); });
+						return a;
+					}, []);
+					var deptList = fd.modules.explore.selector.getDepartmentList();
+					
+					deptList = [].concat( deptList.filter(function(d) { return superdeptDeptIdList.indexOf(d.id) === -1; }) );
+
+					//create "Other"
+					var otherSuperDept = {
+						id: this.OTHER_SUPERDEPTID,
+						name: 'OTHER',
+						departments: deptList
+					};
+					//put in superdept
+					superdeptList.push(otherSuperDept);
+					//put superdepts only back
+					fd.explore.data.abstractDepartments = superdeptList;
+				}
+			}
 		}
 	});
 	exploreSelector.listen();
@@ -125,6 +155,9 @@ var FreshDirect = FreshDirect || {};
 		superdeptList = [], deptList = [], catList = [];
 
 	if (expdata) {
+		/* rearrange data rather than coding around it. comment out this line to remove 'OTHER' */
+		fd.modules.explore.selector.moveTopLevelDeptsIntoOtherSuperDept();
+
 		//verify sdep
 		superdeptList = fd.modules.explore.selector.getSuperdepartmentList();
 		if (superdeptList.length) {
@@ -132,6 +165,9 @@ var FreshDirect = FreshDirect || {};
 			if ((!depId && !sdepId) && !sdep && superdeptList.length) {
 				//fallback to first
 				sdep = superdeptList[0];
+			} else if ((depId && !sdepId) && !sdep && superdeptList.length) {
+				//go to "other"
+				sdep = fd.modules.explore.selector.getSuperdepartment(fd.modules.explore.selector.OTHER_SUPERDEPTID);
 			}
 			if (sdep) {
 				if (sdep.id !== sdepId) {
@@ -144,9 +180,6 @@ var FreshDirect = FreshDirect || {};
 		//verify dep
 		dep = fd.modules.explore.selector.getDepartment(depId, sdepId);
 		deptList = fd.modules.explore.selector.getDepartmentList(sdepId);
-		if ((depId && !sdepId) && !deptList.length) {
-			deptList.push(dep); //dept not in a superdept
-		}
 		if (deptList.length) {
 			if (!dep && deptList.length) {
 				//fallback to first
