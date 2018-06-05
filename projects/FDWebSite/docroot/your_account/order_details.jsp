@@ -30,6 +30,10 @@ final int W_YA_ORDER_DETAILS_3C_COLUMN = 268;
 if(orderId==null){
 	orderId = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
 }
+
+if (orderId == null){
+    throw new FDNotFoundException("No orderId was provided");
+}
 %>
 <fd:ModifyOrderController orderId="<%= orderId %>" result="result" successPage='<%= "/your_account/order_details.jsp?orderId=" + orderId %>'>
 <tmpl:insert template='/common/template/dnav.jsp'>
