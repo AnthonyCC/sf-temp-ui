@@ -648,7 +648,7 @@ if (allPickupDepots != null) {
 										<%-- If the user has the ability to reserve and non-Home selected, modify Reserve Link --%>
 										<div class="section-line"><a href="<%= temp_delivery_link %>" fd-login-required>View Timeslots</a></div>
 									<% } else if ("DeliveryPass".equals(str) ) { %>
-										<% if (EnumServiceType.HOME.toString().equals(foundSelectedAddressType) ) { /* only if home is selected */ %>
+										<% if (EnumServiceType.HOME.equals(user_locationbar_fdx.getSelectedServiceType())) {%>
 											<div class="section-line"><a href="<%= folderMap.get(str)%>" fd-login-required><%= str %></a></div>								
 										<% } %>
 									<% } else { %>
