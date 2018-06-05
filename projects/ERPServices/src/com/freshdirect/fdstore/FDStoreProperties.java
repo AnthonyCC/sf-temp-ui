@@ -2008,7 +2008,7 @@ public class FDStoreProperties {
         defaults.put(PROP_FDC_NEW_BACKIN_USE_FD_ENABLED, "false");
 
         defaults.put(DATABASE_IN_CONDITION_LIMIT, "50");
-        defaults.put(PROP_FD_DP_FREE_TRIAL_OPTIN_FEATURE_ENABLED, "false");
+        defaults.put(PROP_FD_DP_FREE_TRIAL_OPTIN_FEATURE_ENABLED, "true");
 
         defaults.put(PROP_DB_PARTIAL_JOIN_OPTIMIZER_ENABLED, "true");
 
@@ -2028,7 +2028,7 @@ public class FDStoreProperties {
         defaults.put(PROP_IS_FDC_FIRST_ORDER_EMAIL_MSG_ENABLED, "false");
 
         defaults.put(PROP_FD_DP_STANDALONE_CHECKOUT_ENABLED, "false");
-        defaults.put(PROP_FD_DP_MIDWEEK_ENABLED, "false");
+        defaults.put(PROP_FD_DP_MIDWEEK_ENABLED, "true");
 
         defaults.put(PROP_NEW_PRODUCTS_PAGE_CAROUSEL_ENABLED, "false");
         defaults.put(PROP_NEW_PRODUCTS_PAGE_CAROUSEL_CONTAINER_CONTENT_KEY, "ModuleContainer:new_prod");
