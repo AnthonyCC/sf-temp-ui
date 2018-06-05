@@ -170,6 +170,9 @@ public class FDSurveyFactory {
 		return surveyKeyData;
 	}
 	private FDSurvey buildFdSurvey(FDSurveyData surveyData) {
+		if (surveyData == null) {
+			return null;
+		}
 		SurveyKey surveykey = new SurveyKey(EnumSurveyType.getEnum(surveyData.getKey().surveyType), EnumServiceType.getEnum(surveyData.getKey().getUserType()));
 		FDSurvey fdSurvey = new FDSurvey(surveykey, surveyData.isOrderSurvey(), surveyData.getAcceptableCoverage());
 		buildSurveyQuestionData(surveyData, fdSurvey);
