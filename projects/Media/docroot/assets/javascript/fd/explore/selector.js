@@ -129,7 +129,7 @@ var FreshDirect = FreshDirect || {};
 		superdeptList = fd.modules.explore.selector.getSuperdepartmentList();
 		if (superdeptList.length) {
 			sdep = fd.modules.explore.selector.getSuperdepartment(sdepId);
-			if (!sdep && superdeptList.length) {
+			if ((!depId && !sdepId) && !sdep && superdeptList.length) {
 				//fallback to first
 				sdep = superdeptList[0];
 			}
@@ -144,6 +144,9 @@ var FreshDirect = FreshDirect || {};
 		//verify dep
 		dep = fd.modules.explore.selector.getDepartment(depId, sdepId);
 		deptList = fd.modules.explore.selector.getDepartmentList(sdepId);
+		if ((depId && !sdepId) && !deptList.length) {
+			deptList.push(dep); //dept not in a superdept
+		}
 		if (deptList.length) {
 			if (!dep && deptList.length) {
 				//fallback to first
@@ -161,16 +164,16 @@ var FreshDirect = FreshDirect || {};
 		if (superdeptList.length) {
 			DISPATCHER.signal('exploreSuperdepartmentList', {
 				list: superdeptList,
-				superdeptId: sdep.id || null,
-				deptId: dep.id || null
+				superdeptId: (sdep && sdep.id) || null,
+				deptId: (dep && dep.id) || null
 			});
 		}
 
 		if (deptList.length) {
 			DISPATCHER.signal('exploreDepartmentList', {
 				list: deptList,
-				superdeptId: sdep.id || null,
-				deptId: dep.id || null
+				superdeptId: (sdep && sdep.id) || null,
+				deptId: (dep && dep.id) || null
 			});
 		}
 
