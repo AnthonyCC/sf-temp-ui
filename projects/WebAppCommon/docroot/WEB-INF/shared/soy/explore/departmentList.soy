@@ -1,0 +1,31 @@
+{namespace explore}
+
+/**
+ * @param? list department list
+ * @param? deptId selected department id
+ * @param? superdeptId selected superdepartment id
+ */
+{template .departmentList autoescape="false"}
+<nav class="explore__department-list-cont" data-component="explore-department-list">
+	<div data-component="carousel" class="first" product-count="{length($list)}">
+		<div data-component="carousel-mask" class="">
+			<ul data-component="carousel-list" data-carousel-page="0">
+				{foreach $el in $list}
+					{if $el.deptPhoto}
+						<li class="explore__department-list-element{if $deptId and $deptId == $el.id} selected{/if}"{if index($el) or index($el) == 0} data-position="{index($el)+1}"{/if}>
+							<a href="/explore.jsp?dep={$el.id}{if $superdeptId}&sdep={$superdeptId}{/if}" data-component="explore-department-selector" class="explore__department-list-image-cont" data-dept="{$el.id}" {if $superdeptId}data-superdept="{$superdeptId}"{/if}>
+								<img class="explore__department-list-image" src="{$el.deptPhoto}" />
+							</a>
+							<a href="/explore.jsp?dep={$el.id}{if $superdeptId}&sdep={$superdeptId}{/if}" data-component="explore-department-selector" class="explore__department-list-name-cont" data-dept="{$el.id}" {if $superdeptId}data-superdept="{$superdeptId}"{/if}>
+								<span class="explore__department-list-name">{$el.name}</span>
+							</a>
+						</li>
+					{/if}
+				{/foreach}
+			</ul>
+		</div>
+		<button data-component="carousel-prev" data-carousel-nav="prev">previous</button>
+		<button data-component="carousel-next" data-carousel-nav="next">next</button>
+	</div>
+</nav>
+{/template}

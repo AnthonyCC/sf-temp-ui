@@ -10,6 +10,7 @@
 
 .timeslot-selector .select-day select,
 .timeslot-selector .select-day .ui-selectmenu-button {
+  background: none;
   background-color: #4fa157;
   border: 1px solid #4fa157;
   border-radius: 3px;
@@ -26,6 +27,9 @@
   appearance: none;
   width: 100%;
 }
+.timeslot-selector .select-day .ui-selectmenu-button span.ui-icon{
+	background: none;
+}
 .timeslot-selector .select-day .ui-selectmenu-button:focus{
 
 }
@@ -35,6 +39,7 @@
 	display: inline;
 }
 .ui-selectmenu-menu .select-day-ui-menu .ui-menu-item{
+	background: none;
 	background-color: #4fa157;
 	padding: 6px 10px;
 	color: #fff;

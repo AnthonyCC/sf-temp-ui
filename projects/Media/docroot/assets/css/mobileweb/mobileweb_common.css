@@ -650,7 +650,7 @@ li.cleanli .gen-arrow {
 		margin: 6px auto;
 	}
 	#MBRDPopup1 .qs-popup-content {
-		padding-top: 15px;
+		/* padding-top: 15px; */
 	}
 	#MBRDPopup2.BRD-popup-container .qs-popup {
 		width: 95%;
@@ -3098,7 +3098,7 @@ form.dispblock-fields td { /* force the tds to block so the label and field are 
 		.refine-btn {
 		}
 /* bug fix for product display in quickshop pages */
-		.mm-page section.main .content {
+		.mm-page section.main .content, .mm-page .srch section.main .content {
                 float: right;
                 width: 100%;
         }

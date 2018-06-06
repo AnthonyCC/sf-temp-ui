@@ -71,7 +71,7 @@ final int W_YA_DELIVERY_INFO_CHKSLOTS = 970;
 			<%@ include file="/help/delivery_info_nav.jspf" %>
 		</div>
 		
-<table style="width: <%= (mobWeb) ? "100%" : W_YA_DELIVERY_INFO_CHKSLOTS+"px" %>;" cellpadding="0" cellspacing="0" border="0">
+<table role="presentation" style="width: <%= (mobWeb) ? "100%" : W_YA_DELIVERY_INFO_CHKSLOTS+"px" %>;" cellpadding="0" cellspacing="0" border="0">
 <tr><td colspan="2" class="title16"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="18"><br>Check Available Delivery TimeSlots<br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"></td></tr>
 <tr><td colspan="2" class="text12">Enter your address to see available timeslots for your neighborhood.</td></tr>
 <tr><td colspan="2" class="text12"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="24"><br><b>Enter Delivery Address</b><img src="/media_stat/images/layout/clear.gif" alt="" width="80" height="1"><span class="text11">* Required Information</span><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"></td></tr>
@@ -88,7 +88,7 @@ final int W_YA_DELIVERY_INFO_CHKSLOTS = 970;
 	</td>
 	<td class="text12">
 	<fieldset><legend class="offscreen">service type:</legend>
-		<table>
+		<table role="presentation">
 			<tr>
 				<td>
 					<input <%=EnumServiceType.HOME.equals(serviceType)? "checked" : ""%> type="radio" class="text11" id="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>_fld1" name="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>" required="true" value="<%=EnumServiceType.HOME.getName()%>">

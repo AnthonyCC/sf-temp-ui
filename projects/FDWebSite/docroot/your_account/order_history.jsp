@@ -94,7 +94,7 @@ if (user.isEligibleForClientCodes()) {
 			String errorMsg= "We were unable to deliver your order (#"+firstOrderInfo.getErpSalesId()+") scheduled for between "+deliveryTime+" on "+dateFormatter.format( firstOrderInfo.getRequestedDate() )+". Please contact us as soon as possible at "+user.getCustomerServiceContact()+" to reschedule delivery.";
 			ActionResult result = new ActionResult();
 %>
-<TABLE WIDTH="<%= (mobWeb)? "100%" : W_YA_ORDER_HISTORY_TOTAL %>" ALIGN="CENTER" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+<TABLE role="presentation" WIDTH="<%= (mobWeb)? "100%" : W_YA_ORDER_HISTORY_TOTAL %>" ALIGN="CENTER" BORDER="0" CELLPADDING="0" CELLSPACING="0">
 	<tr>
 		<td><%@ include file="/includes/i_error_messages.jspf"%></td>
 	</tr>
@@ -120,7 +120,7 @@ if (user.isEligibleForClientCodes()) {
 	String ccrFirstIso = isoDateFormat.format(ccrCal.getTime());
 %>
 <div style="width: <%= (mobWeb)? "100%" : (W_YA_ORDER_HISTORY_TOTAL + "px") %>; text-align: right; overflow: hidden;">
-<table border="0" cellspacing="0" cellpadding="0" style="text-align: left; float: right;">
+<table role="presentation" border="0" cellspacing="0" cellpadding="0" style="text-align: left; float: right;">
 	<tr>
 		<td class="text11" style="text-align: right; vertical-align: middle; font-weight: bold;">
 		Export client codes for all orders delivered from&nbsp;&nbsp;
@@ -139,7 +139,7 @@ if (user.isEligibleForClientCodes()) {
 <!-- client codes end -->
 <% } %>
 <br>
-<TABLE WIDTH="<%= (mobWeb)? "100%" : W_YA_ORDER_HISTORY_TOTAL %>" ALIGN="CENTER" BORDER="0" CELLPADDING="2" CELLSPACING="0" class="order_history_table">
+<TABLE role="presentation" WIDTH="<%= (mobWeb)? "100%" : W_YA_ORDER_HISTORY_TOTAL %>" ALIGN="CENTER" BORDER="0" CELLPADDING="2" CELLSPACING="0" class="order_history_table">
 	<tr>
 		<th scope="col" class="text10bold order_history_table_id_header" bgcolor="#DDDDDD" <%= (mobWeb)? "" : "WIDTH='125'" %>>Order #</th>
 		<th scope="col" class="text10bold order_history_table_date_header" bgcolor="#DDDDDD" <%= (mobWeb)? "" : "WIDTH='175'" %>><%= (mobWeb)? "" : "&nbsp;&nbsp;&nbsp;&nbsp;" %>Delivery<%= (mobWeb)? "" : " Date" %></th>
@@ -226,7 +226,7 @@ for (FDOrderInfoI orderInfo : orderHistoryInfo) {
 <br class="NOMOBWEB">
 <IMG class="NOMOBWEB" src="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="<%= (mobWeb)? "100%" : W_YA_ORDER_HISTORY_TOTAL %>" HEIGHT="1" BORDER="0"><BR class="NOMOBWEB">
 <FONT CLASS="space4pix NOMOBWEB"><BR><BR></FONT>
-<TABLE class="NOMOBWEB" BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= (mobWeb)? "100%" : W_YA_ORDER_HISTORY_TOTAL %>">
+<TABLE role="presentation" class="NOMOBWEB" BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= (mobWeb)? "100%" : W_YA_ORDER_HISTORY_TOTAL %>">
 	<tr VALIGN="TOP">
 		<td WIDTH="35"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="" ALIGN="LEFT">
           CONTINUE SHOPPING<BR>

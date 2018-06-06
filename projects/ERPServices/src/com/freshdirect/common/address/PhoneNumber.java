@@ -1,8 +1,12 @@
 package com.freshdirect.common.address;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.freshdirect.framework.util.NVL;
 
 public class PhoneNumber implements java.io.Serializable {
+
+	private static final long serialVersionUID = 6908178364470599251L;
 	private final String phone;
 	private final String extension;
 	private final String type;
@@ -15,7 +19,8 @@ public class PhoneNumber implements java.io.Serializable {
 		this(phone, extension, "");
 	}
 	
-	public PhoneNumber(String phone, String extension, String type) {
+	@JsonCreator
+	public PhoneNumber(@JsonProperty("phone") String phone, @JsonProperty("extension") String extension, @JsonProperty("type") String type) {
 		this.phone = retainDigits(NVL.apply(phone, ""));
 		this.extension = this.phone.length() == 0 ? null : extension;
 		this.type = type;

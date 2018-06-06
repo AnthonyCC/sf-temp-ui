@@ -56,10 +56,10 @@ final int W_GIFTCARD_DONATION_TOTAL = 300;
 		%>
 		<%@ include file="/gift_card/purchase/includes/i_fetch_giftcard_info_from_cms.jspf" %>
 		
-		<table border="0" cellspacing="0" cellpadding="0" width="<%=W_GIFTCARD_LANDING_TOTAL%>">
+		<table role="presentation" border="0" cellspacing="0" cellpadding="0" width="<%=W_GIFTCARD_LANDING_TOTAL%>">
 			<tr>
 				<td valign="top">
-					<table border="0" cellspacing="0" cellpadding="2" width="<%= (FDStoreProperties.isGiftCardDonationEnabled() && donationOrgList != null && donationOrgList.size() > 0) ? W_GIFTCARD_OPTIONS_TOTAL : W_GIFTCARD_LANDING_TOTAL %>">
+					<table role="presentation" border="0" cellspacing="0" cellpadding="2" width="<%= (FDStoreProperties.isGiftCardDonationEnabled() && donationOrgList != null && donationOrgList.size() > 0) ? W_GIFTCARD_OPTIONS_TOTAL : W_GIFTCARD_LANDING_TOTAL %>">
 						<tr>
 							<td align="left">
 								<fd:IncludeMedia name="/media/editorial/giftcards/media_includes/landing_header.html" />
@@ -88,7 +88,7 @@ final int W_GIFTCARD_DONATION_TOTAL = 300;
 				</td>
 				<td>&nbsp;&nbsp;</td>
 				<td valign="top">
-					<table border="0" cellspacing="0" cellpadding="2" width="<%=W_GIFTCARD_DONATION_TOTAL%>" >
+					<table role="presentation" border="0" cellspacing="0" cellpadding="2" width="<%=W_GIFTCARD_DONATION_TOTAL%>" >
 						<tr>
 							<td align="left">
 								<fd:IncludeMedia name="/media/editorial/giftcards/media_includes/landing_donation_header.html" />
@@ -101,7 +101,7 @@ final int W_GIFTCARD_DONATION_TOTAL = 300;
 							<td>
 								<form fdform class="top-margin10 dispblock-fields" fdform-displayerrorafter name="giftcard_donation_form" id="giftcard_donation_form" method="get" action="add_donation_giftcard.jsp">	
 									<div style="overflow-y:scroll;overflow-x:hidden;height:300px;border:1px solid #cccccc;padding-top: 10px;">			
-									<table border="0" cellspacing="0" cellpadding="2" width="278" >
+									<table role="presentation" border="0" cellspacing="0" cellpadding="2" width="278" >
 										<logic:iterate id="donId" collection="<%= donationOrgList %>" type="com.freshdirect.storeapi.content.DonationOrganization">
 											<tr>
 												<td width="15" valign="top">

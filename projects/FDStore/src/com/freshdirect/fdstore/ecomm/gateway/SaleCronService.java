@@ -27,7 +27,7 @@ public class SaleCronService extends AbstractEcommService implements SaleCronSer
 
 	private static final String AUTHORIIZE_SALES = "saleCron/authorize";
 
-	private static final String AUTHORIIZE_SUBSCRIPTIONS = "saleCron/subscription/authorize";
+	private static final String AUTHORIIZE_SUBSCRIPTIONS = "saleCron/subscription/authorize?timeout=";
 
 	private static final String CUT_OFF_SALES = "saleCron/cutoff";
 
@@ -35,17 +35,17 @@ public class SaleCronService extends AbstractEcommService implements SaleCronSer
 
 	private static final String CANCEL_AUTHORIZATION_FAILED = "saleCron/failedAuthorization/cancel";
 
-	private static final String REGISTER_GIFT_CARDS = "saleCron/giftCard/register";
+	private static final String REGISTER_GIFT_CARDS = "saleCron/giftCard/register?timeout=";
 
-	private static final String PREAUTHORIZE_SALES = "saleCron/preAuthorize";
+	private static final String PREAUTHORIZE_SALES = "saleCron/preAuthorize?timeout=";
 
-	private static final String REVERSE_AUTHORIZE_SALES = "saleCron/reverseAuthorize";
+	private static final String REVERSE_AUTHORIZE_SALES = "saleCron/reverseAuthorize?timeout=";
 
-	private static final String POST_AUTH_SALES = "saleCron/postAuth";
+	private static final String POST_AUTH_SALES = "saleCron/postAuth?timeout=";
 
 	private static final String CUTT_OFF_REPORT_DELIVERY_DATES = "saleCron/dlvDates/cutOff";
 
-	private static final String POST_AUTH_EBT_SALES = "saleCron/EBT/postAuth";
+	private static final String POST_AUTH_EBT_SALES = "saleCron/EBT/postAuth?timeout=";
 
 	private static final String CAPTURE_EBT_SALES = "saleCron/capture/EBT";
 

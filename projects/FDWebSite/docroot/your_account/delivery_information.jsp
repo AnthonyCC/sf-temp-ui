@@ -28,7 +28,7 @@ final int W_YA_DELIVERY_INFORMATION = 970;
 	session.removeAttribute(SessionName.REMOVED_RESERVATION);
 %>
 	<br>
-  <table width="<%= W_YA_DELIVERY_INFORMATION %>" align="center" border="1" cellpadding="0" cellspacing="0">
+  <table role="presentation" width="<%= W_YA_DELIVERY_INFORMATION %>" align="center" border="1" cellpadding="0" cellspacing="0">
 		<tr align="center">
 			<td>
 				<br><b>YOUR DELIVERY RESERVATION HAS BEEN CLEARED</b><br>
@@ -40,7 +40,7 @@ final int W_YA_DELIVERY_INFORMATION = 970;
 	<br>
 <%}%>
 <form method="post">
-  <TABLE WIDTH="<%= W_YA_DELIVERY_INFORMATION %>" ALIGN="CENTER" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+  <TABLE role="presentation" WIDTH="<%= W_YA_DELIVERY_INFORMATION %>" ALIGN="CENTER" BORDER="0" CELLPADDING="0" CELLSPACING="0">
 <TR><TD class="text11">
 <font class="title18">Delivery Addresses</font><br>
 Update your delivery address information.<br></td>
@@ -53,7 +53,7 @@ Update your delivery address information.<br></td>
 
 <IMG src="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="<%= W_YA_DELIVERY_INFORMATION %>" HEIGHT="1" BORDER="0"><BR>
 <FONT CLASS="space4pix"><BR><BR></FONT>
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= W_YA_DELIVERY_INFORMATION %>">
+<TABLE role="presentation" BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= W_YA_DELIVERY_INFORMATION %>">
 <TR VALIGN="TOP">
 <TD WIDTH="35"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="" ALIGN="LEFT">
 CONTINUE SHOPPING

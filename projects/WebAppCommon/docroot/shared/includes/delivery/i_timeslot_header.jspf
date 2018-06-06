@@ -17,7 +17,7 @@ if(timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)|| timeSlotCtx.equals(Ti
 		<td colspan="3" class="text12">
 			<%
 			String timeMsg = java.text.MessageFormat.format( "{0,choice,1#one hour|1<{0,number,integer} hours}", new Object[] { new Integer(FDStoreProperties.getPreReserveHours()) });
-			if(hasPreReserved) {
+			if(hasPreReserved && user.getReservation() != null) {
 			%>
 				You can use this page to update or cancel your reservation. Please note that <b>your reservation will expire at
 				<%= CCFormatter.formatDeliveryTime(user.getReservation().getExpirationDateTime()) %> on <%= CCFormatter.formatDayName(user.getReservation().getExpirationDateTime()) %></b>, 

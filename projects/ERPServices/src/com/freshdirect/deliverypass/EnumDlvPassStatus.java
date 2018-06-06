@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.enums.Enum;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 /**
 *
 * @author  skrishnasamy
@@ -39,7 +42,8 @@ public class EnumDlvPassStatus  extends Enum {
 		return displayName;
 	}
 
-	public static EnumDlvPassStatus getEnum(String name) {
+	@JsonCreator
+	public static EnumDlvPassStatus getEnum(@JsonProperty("name") String name) {
 		return (EnumDlvPassStatus) getEnum(EnumDlvPassStatus.class, name);
 	}
 

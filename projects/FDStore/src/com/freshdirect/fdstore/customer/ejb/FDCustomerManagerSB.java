@@ -130,6 +130,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      * @return the resulting FDIdentity
      * @throws FDResourceException if an error occured using remote resources
      * @throws ErpDuplicateUserIdException if user enters an email address already in the system
+     * @deprecated
      */
 	public RegistrationResult register(
 		FDActionInfo info,
@@ -141,6 +142,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
 		FDSurveyResponse survey, EnumServiceType serviceType)
 		throws FDResourceException, ErpDuplicateUserIdException, RemoteException;
 
+	@Deprecated
 	public RegistrationResult register(
 			FDActionInfo info,
 			ErpCustomerModel erpCustomer,
@@ -151,10 +153,11 @@ public interface FDCustomerManagerSB  extends EJBObject{
 			FDSurveyResponse survey, EnumServiceType serviceType, boolean isGiftCardBuyer)
 			throws FDResourceException, ErpDuplicateUserIdException, RemoteException;
 
+	@Deprecated
     public FDUser createNewUser(String zipCode, EnumServiceType serviceType, EnumEStoreId eStoreId) throws FDResourceException, RemoteException;
-
+	@Deprecated
     public FDUser createNewUser(AddressModel address, EnumServiceType serviceType, EnumEStoreId eStoreId) throws FDResourceException, RemoteException;
-
+	@Deprecated
     public FDUser createNewDepotUser(String depotCode, EnumServiceType serviceType, EnumEStoreId eStoreId) throws FDResourceException, RemoteException;
 
     public void createAddress(ErpAddressModel addressModel, String customerId) throws FDResourceException, RemoteException;
@@ -186,6 +189,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      */
     @Deprecated
     public FDIdentity login(String userId, String password) throws FDAuthenticationException, FDResourceException, RemoteException;
+    @Deprecated
     public FDIdentity login(String userId) throws FDAuthenticationException, FDResourceException, RemoteException;
 
     @Deprecated

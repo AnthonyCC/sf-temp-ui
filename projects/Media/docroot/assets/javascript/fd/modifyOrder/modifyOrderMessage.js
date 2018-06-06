@@ -18,20 +18,23 @@ var FreshDirect = FreshDirect || {};
 	function displayModifyingOrderMobile(time, dayOfWeek) {
 			if (!time || !dayOfWeek)
 				return;
-			var popupConfig = {"buttons":[{"id":"accept","class":"large cssbutton orange","name":"Cancel Changes"},{"id":"deny","class":"large cssbutton green transparent","name":"Nevermind"}]};
+			var popupConfig = {"buttons":[{"id":"accept","class":"large cssbutton orange","name":"Exit Modifying Order"},{"id":"deny","class":"large cssbutton green transparent","name":"Nevermind"}]};
 
-			var msg = '<div id="location-modify-order-bar" class="modify-order-bar" style="font-size: 14px;line-height: 16px;">'+
-			'<div class="location-modify-order-message" style="float: left; text-align:left; padding-left: 15px;"><strong class="modify-delivery-label">Modifying Order: </strong><div class="modify-delivery-time"><span>' + dayOfWeek + ' </span><span style="text-transform: uppercase;">' + time + '</span></div></div>'+
+			var msg = '<div id="location-modify-order-bar" class="modify-order-bar">'+
+				'<div class="location-modify-order-message"><strong class="modify-delivery-label">Modifying Order: </strong><div class="modify-delivery-time"><span>' + dayOfWeek + ' </span><span class="text-uppercase">' + time + '</span></div></div>'+
 			
-			'<div class="location-modify-order-cancel" style="float: right">'+
-			'<span><a class="cancel-changes-link" href="javascript:void(0);" role="alertdialog" '+
-			'data-alignpopupfunction="modifyOrderAlign" '+
-			'data-confirm-data=\''+ JSON.stringify(popupConfig)+'\' '+
-			'data-confirm-button-accept="FreshDirect.components.modifyOrderMessage.cancelChanges" '+
-			'data-confirm-class="cancel-modify-confirm-popup" '+
-			'data-hide-background="true" '+
-			'data-confirm data-confirm-message="Are you sure you want to <br> cancel all changes?" data-confirm-template="common.confirmpopup" class="">Cancel Changes</a></span></div>'+
-			'<div style="clear:both"></div>'+
+				'<div class="location-modify-order-btn-cont">'+
+					'<span><a class="cssbutton small orange cancel-changes-link" href="javascript:void(0);" role="alertdialog" '+
+						'data-alignpopupfunction="modifyOrderAlign" '+
+						'data-confirm-data=\''+ JSON.stringify(popupConfig)+'\' '+
+						'data-confirm-button-accept="FreshDirect.components.modifyOrderMessage.cancelChanges" '+
+						'data-confirm-button-deny="FreshDirect.components.modifyOrderMessage.keepModifyMode" '+
+						'data-confirm-class="cancel-modify-confirm-popup" '+
+						'data-hide-background="true" '+
+						'data-confirm data-confirm-message="Are you sure? Exiting will cancel all unsaved changes to your order." data-confirm-template="common.confirmpopup" class="">Exit</a></span>'+
+					'<a class="cssbutton small orange transparent save-changes-btn" href="/expressco/checkout.jsp">Save</a>'+
+				'</div>'+
+				'<div style="clear:both"></div>'+
 			'</div>';
 			
 			if ($('#location-modify-order-message').length !== 0){
@@ -103,5 +106,18 @@ var FreshDirect = FreshDirect || {};
 		}
 		$(document).trigger('modifyOrderMessage-loaded').off('modifyOrderMessage-loaded');
 	}
+
+	function saveChanges() {
+		if (fd.gtm && fd.gtm.updateDataLayer) {
+			fd.gtm.updateDataLayer({
+				'event': 'savechanges-click',
+				'eventCategory': 'modify',
+				'eventAction': 'save changes',
+				'eventLabel': 'active'
+			});
+		}
+	}
+	
+	$(document).on('click', '.modify-order-bar .save-changes-btn', saveChanges);
 	
 }(FreshDirect));

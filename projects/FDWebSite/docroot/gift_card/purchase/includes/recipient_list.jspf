@@ -32,7 +32,7 @@ FDRecipientList recipList = giftUser.getRecipientList();
  	if(recipients != null && !recipients.isEmpty()) {
 		if (isConfirm) {
 			//we're on payment info page
-		%><table width="<%=W_RECIPENT_LIST_TOTAL%>" cellspacing="0" cellpadding="0" border="0" valign="middle">
+		%><table role="presentation" width="<%=W_RECIPENT_LIST_TOTAL%>" cellspacing="0" cellpadding="0" border="0" valign="middle">
 			<tr>
 				<td><span class="title18">Review Your Recipient List</span><br /><br />
 					<span class="text10">Check the names and amounts of your gifts below.</span>
@@ -43,7 +43,7 @@ FDRecipientList recipList = giftUser.getRecipientList();
 		}else{
 			//we're on gift & recipient options page
 		%>
-		<table width="<%=W_RECIPENT_LIST_TOTAL%>" cellspacing="0" cellpadding="0" border="0" valign="middle">
+		<table role="presentation" width="<%=W_RECIPENT_LIST_TOTAL%>" cellspacing="0" cellpadding="0" border="0" valign="middle">
 			<tr>
 				<td><span class="title18">Recipient List</span><br /><br />
 					Check the names and amounts for your giftcards below. <strong>Click the link by the recipient names to see how their Email Gift Card will appear in their Inbox!</strong> If you need to make changes, you may alter the amount here or click the Edit link to change personal info.
@@ -89,7 +89,7 @@ FDRecipientList recipList = giftUser.getRecipientList();
 
 		</table>
 
-		<table width="623" cellspacing="0" cellpadding="0" border="0" valign="middle">
+		<table role="presentation" width="623" cellspacing="0" cellpadding="0" border="0" valign="middle">
 			<tr>
 				<td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
 			</tr>

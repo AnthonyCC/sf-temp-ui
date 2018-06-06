@@ -1426,14 +1426,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	private String getFDUserCustomerServiceContact(FDIdentity identity, boolean isChefsTable)
+	private String getFDUserCustomerServiceContact(String customerId, boolean isChefsTable)
 			throws FDResourceException, FDAuthenticationException {
 		Connection conn = null;
 		FDUser user = null;
 		try {
 			conn = getConnection();
 
-			user = FDUserDAO.getFDUserZipCode(conn, identity);
+			user = FDUserDAO.getFDUserZipCode(conn, customerId);
 
 			if (user == null) {
 				throw new FDAuthenticationException("Unrecognized user");
@@ -1476,7 +1476,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 			fdInfo.setDepotCode(fdCustomer.getDepotCode());
 			fdInfo.setChefsTable(isChefsTable);
-			fdInfo.setCustomerServiceContact(getFDUserCustomerServiceContact(identity, isChefsTable));
+			fdInfo.setCustomerServiceContact(getFDUserCustomerServiceContact(fdCustomer.getId(), isChefsTable));
 
 			/* APPDEV-2114 */
 			fdInfo.setGoGreen(erpCustomerInfo.isGoGreen());
@@ -7550,7 +7550,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	public String getOASQueryString(EnumServiceType serviceType, String depotCode, String zipCode, String county) {
+	private String getOASQueryString(EnumServiceType serviceType, String depotCode, String zipCode, String county) {
 		QueryStringBuilder queryString = new QueryStringBuilder();
 		String metalRating = "";
 		int vip = 0;
@@ -8624,7 +8624,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	public ShortSubstituteResponse getShortSubstituteOrders(List<String> orderList) throws FDResourceException, RemoteException{
 		Connection conn = null;
 		try {
-			StringBuffer orders = GenerteOrderWithCommaSeparate(orderList);
+			StringBuffer orders = generteOrderWithCommaSeparate(orderList);
 			conn = getConnection();
 			return FDCustomerOrderInfoDAO.getShortSubstituteOrders(orders, conn);
 		} catch (SQLException sqle) {
@@ -8634,7 +8634,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	public StringBuffer GenerteOrderWithCommaSeparate(List<String> orderList) {
+	public StringBuffer generteOrderWithCommaSeparate(List<String> orderList) {
 		StringBuffer orders =new StringBuffer();
 		orders.append("(");
 		if(orderList != null && orderList.size() > 0) {							

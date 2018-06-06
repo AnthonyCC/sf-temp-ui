@@ -149,7 +149,7 @@ if (request.getParameter("fldMessage") !=null) {
 <%@ include file="/gift_card/purchase/includes/i_fetch_giftcard_info_from_cms.jspf" %>
 
 
-<table border="0" cellspacing="0" cellpadding="0" width="<%=W_ADD_GIFTCARD_FIELDS_TABLE%>" valign="middle" class="gcTable">
+<table role="presentation" border="0" cellspacing="0" cellpadding="0" width="<%=W_ADD_GIFTCARD_FIELDS_TABLE%>" valign="middle" class="gcTable">
 	<fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'>
     <tr>
         <td colspan="4"><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler> <fd:ErrorHandler result='<%=result%>' name='duplicate_user_address' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></td>
@@ -196,7 +196,7 @@ if (request.getParameter("fldMessage") !=null) {
 			</span>
     	</td>
     	<td colspan="2"><fieldset><legend class="offscreen">Delivery Method</legend>
-			<table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
 				<tr>
 					<td width="15">
 						<input type="radio"   class="text11" name="<%= EnumUserInfoName.DLV_METHOD.getCode() %>" id="<%= EnumUserInfoName.DLV_METHOD.getCode() %>Email" value="<%=value1%>" <%= value1Selected %> onclick="$('gcRecipientEmail').disabled=false; $('recipEmailStar').innerHTML='*';" />
@@ -223,7 +223,7 @@ if (request.getParameter("fldMessage") !=null) {
 	<tr>
 		<td align="right" class="text12"><span <fd:ErrorHandler result="<%=result%>" name="fldAmount">class="text11rbold"</fd:ErrorHandler>><label for="fldAmount">*&nbsp;Amount&nbsp;$</label></td>
     	<td colspan="2">
-			<table>
+			<table role="presentation">
 				<tr>
 					<td width="65">
 						<select   class="customsimpleselect text9" name="fldAmount" id="fldAmount" onChange="($('fldAmount').value!='OTHER')?$('fldAltAmount').value=$('fldAmount').value:$('fldAltAmount').value='<%=fldAltAmount%>';$('fldAltAmount').disabled=($('fldAmount').value=='OTHER')?false:true;">
@@ -267,7 +267,7 @@ if (request.getParameter("fldMessage") !=null) {
 <br/>
 <br/>
 
-<table border="0" cellspacing="0" cellpadding="0" width="<%=W_ADD_GIFTCARD_FIELDS_TOTAL%>">
+<table role="presentation" border="0" cellspacing="0" cellpadding="0" width="<%=W_ADD_GIFTCARD_FIELDS_TOTAL%>">
     <tr valign="top">
         <td align="center" <%=W_ADD_GIFTCARD_FIELDS_TOTAL%>" class="text10bold">
 			We deliver only to portions of New York, New Jersey and Connecticut.
@@ -285,7 +285,7 @@ if (request.getParameter("fldMessage") !=null) {
 
 <img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /><br />
 
-<table border="0" cellspacing="0" cellpadding="0" width="<%=W_ADD_GIFTCARD_FIELDS_TOTAL%>">
+<table role="presentation" border="0" cellspacing="0" cellpadding="0" width="<%=W_ADD_GIFTCARD_FIELDS_TOTAL%>">
 	<tr>
 		<td width="<%=W_ADD_GIFTCARD_FIELDS_TOTAL%>" align="right">
 			<button class="cssbutton transparent green small" name="gcPreview" onclick="window['<%=gcDisplayId%>'].emailPreview(); return false;" />PREVIEW</button>
@@ -294,7 +294,7 @@ if (request.getParameter("fldMessage") !=null) {
 	</tr>
 </table>
 
-<table border="0" cellspacing="1" cellpadding="0" width="<%=W_ADD_GIFTCARD_FIELDS_TOTAL%>">
+<table role="presentation" border="0" cellspacing="1" cellpadding="0" width="<%=W_ADD_GIFTCARD_FIELDS_TOTAL%>">
 <tr valign="MIDDLE">
     <td><img src="/media_stat/images/layout/clear.gif" alt="" width="105" height="1" border="0"></td>
 </tr>

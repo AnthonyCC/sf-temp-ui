@@ -69,16 +69,9 @@ public class TEmailInfoService extends AbstractEcommService implements TEmailInf
 					FDCustomerInfo customerInfo = (FDCustomerInfo) input.get(key);
 					FDCustomerInfoData customerInfoData = buildFDcustomerInfoData(customerInfo);
 					response.put(key, customerInfoData);
+				} else {
+					response.put(key, input.get(key));
 				}
-				else if(TEmailConstants.EMAIL_TYPE.equals(key) || "oasQuery".equals(key)){
-					 String type =  (String) input.get(key);
-					 response.put(key, type);
-				}
-				/*else if (TEmailConstants.ORDER_INP_KEY.equals(key)){
-					FDOrderI order = (FDOrderI) input.get(key);
-					
-				}*/
-				
 		}
 		return response;
 	}

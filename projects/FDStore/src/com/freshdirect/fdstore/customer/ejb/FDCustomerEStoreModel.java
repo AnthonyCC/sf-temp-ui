@@ -341,4 +341,11 @@ public class FDCustomerEStoreModel extends ModelSupport{
 		
 		this.informOrderModifyViewCount.put(eStore, informOrderModify);
 	}
+	
+	@Override
+	public void setId(String id) {
+		if (id != null) {
+			super.setId(id);
+		}
+	}
 }

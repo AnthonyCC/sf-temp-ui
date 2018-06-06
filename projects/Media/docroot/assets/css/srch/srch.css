@@ -328,3 +328,62 @@
 [data-pagetype="STAFF_PICKS"] .srch .ddpp {
 	padding-top: 10px;
 }
+
+.srch .itemcount-cont {
+  margin-bottom: 4px;
+}
+.mm-page .srch .itemcount-cont {
+  background-color: #fff;
+  padding: 0.5em;
+}
+
+.srch .search-hits-descrip {
+	font-family: Verdana;
+	font-size: 30px;
+	font-weight: normal;
+	font-style: normal;
+	font-stretch: normal;
+	line-height: normal;
+	letter-spacing: normal;
+	text-align: left;
+	color: #666666;
+}
+.srch .search-term {
+  font-weight: bold;
+}
+.srch .search-suggestion-cont, .srch .search-suggestion-cont>div {
+  display: inline-block;
+}
+.srch .search-suggestion-cont, .srch .search-suggestion-dym {
+  font-size: 16px;
+	color: #666666;
+}
+.srch .search-suggestion-dym {
+  margin-bottom: 10px;
+}
+/* no results */
+.srch .search-noresults-no-suggestions {
+  display: none;
+  padding: 1em 20px;
+  margin: 1em 0;
+  font-size: 22px;
+  color: #666666;
+}
+.srch.emptymenu .search-noresults-no-suggestions {
+  display: block;
+}
+
+.mm-page .srch .search-noresults-no-suggestions {
+  background-color: #fff;
+  padding: 0.5em;
+  margin: 0.5em 0;
+}
+.srch .itemcount.wBackButton  {
+  max-width: calc(100% - 250px);
+  float: left;
+}
+.mm-page .srch .itemcount.wBackButton  {
+  max-width: 100%;
+  float: none;
+  margin-bottom: 10px;
+}

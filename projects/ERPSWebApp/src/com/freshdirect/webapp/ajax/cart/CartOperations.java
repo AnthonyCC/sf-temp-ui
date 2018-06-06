@@ -1253,7 +1253,8 @@ public class CartOperations {
     }
 
     public static boolean isProductGroupable(FDProduct product, FDSalesUnit salesUnit) {
-        return "EA".equalsIgnoreCase(salesUnit.getBaseUnit()) && (product.isPricedByEa() || product.isPricedByLb());
+        return (product.getVariations() == null || product.getVariations().length == 0) && "EA".equalsIgnoreCase(salesUnit.getBaseUnit())
+                && (product.isPricedByEa() || product.isPricedByLb());
     }
 
     public static List<FDCartLineI> removeUnavailableCartLines(final FDCartModel cart, final FDUserI fdUser) {

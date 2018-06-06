@@ -27,7 +27,7 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 			If this is a New York address, may we suggest our Pickup Window in Long Island City?</span>
 			</div><br />
 			<img src="/media_stat/images/layout/cccccc.gif" alt="" width="390" height="1" border="0"><br /><br />
-			<table  class="accessibilitySpacing" border="0" cellspacing="0" cellpadding="4" width="100%" class="accessibilitySpacing">
+			<table  role="presentation" class="accessibilitySpacing" border="0" cellspacing="0" cellpadding="4" width="100%">
 				<tr>
 					<th width="130" align="right"><label for="address1">Street Address 1:</label></th>
 					<td><input name="address1" id="address1" class="gcCheckAddress-address1" value="" /></td>
@@ -115,7 +115,7 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 				String infoMsg = SystemMessageList.MSG_GC_ADD_RECIP_SUCCESS;
 			%>
 					
-				<table width="100%" cellspacing="0" cellpadding="0" border="0">
+				<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
 				<tr>
 					<td rowspan="5" width="20"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
 					<td rowspan="2"><img src="/media_stat/images/template/system_msgs/FF9900_tp_lft_crnr.gif" alt="" width="18" height="5" border="0"></td>
@@ -150,7 +150,7 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 				}
 			%>
 
-			<table width="<%=W_ADD_GIFTCARD_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
+			<table role="presentation" width="<%=W_ADD_GIFTCARD_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
 				<tr>
 					<td class="text11" width="<%=W_ADD_GIFTCARD_TOTAL-99%>">
 						<span class="title18">Enter Gift Card Info</span><br />
@@ -196,7 +196,7 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 		<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /><br />
 		<img src="/media_stat/images/layout/ff9900.gif" alt="" width="<%=W_ADD_GIFTCARD_TOTAL%>" height="1" border="0" /><br />
 		<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /><br />
-		<table width="<%=W_ADD_GIFTCARD_TOTAL%>" cellspacing="0" cellpadding="0" border="0" valign="middle">
+		<table role="presentation" width="<%=W_ADD_GIFTCARD_TOTAL%>" cellspacing="0" cellpadding="0" border="0" valign="middle">
 			<tr>
 				<td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
 			</tr>

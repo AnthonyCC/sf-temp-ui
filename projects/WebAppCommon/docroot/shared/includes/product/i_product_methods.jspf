@@ -60,18 +60,6 @@ public String getProdPageRatings(ProductModel _productNode,
 				rtnString.append("</font>");
 			}
 		}
-		//add the Compare by link and Laabel
-		if (webProductRating.getCompareByLabel() != null
-				&& webProductRating.getLinkParams() != null) {
-			rtnString.append("<br><a href=\"");
-			rtnString.append(_response.encodeURL("/rating_ranking.jsp?"
-					+ webProductRating.getLinkParams()));
-			rtnString.append("\">");
-			// get the label for this comparison folder.
-			rtnString.append(webProductRating.getCompareByLabel());
-			rtnString.append("</a><br>");
-		}
-
 		//add the text ratings
 		if (textRatings.size() > 0) {
 			rtnString

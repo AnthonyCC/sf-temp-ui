@@ -211,14 +211,14 @@ request.setAttribute("listPos", "SystemMessage,CategoryNote");
 		</div>
 		<div class="pNavLoginButton primaryLink logout"><a href="#" class="green transparent cssbutton-flat">Logout</a></div>
 	<% } else { %>
-		<table width="<%= W_YA_MANAGE_TOTAL %>" border="0" cellspacing="0" cellpadding="0">
+		<table role="presentation" width="<%= W_YA_MANAGE_TOTAL %>" border="0" cellspacing="0" cellpadding="0">
 			<tr>
 				<td width="<%= W_YA_MAIN %>" valign="top" >
 					<!-- ct user logo -->
-					<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0">
 						<tr><td valign="top" class="text13">
 							<% if(user.isChefsTable()) { %>
-								<table align="left" border="0" cellspacing="0" cellpadding="0">
+								<table role="presentation" align="left" border="0" cellspacing="0" cellpadding="0">
 									<tr valign="top">
 										<td><img src="/media_stat/images/template/checkout/loy_ctcard_top.gif" alt="Chef's Table Member Card"/></td>
 									</tr>
@@ -348,14 +348,14 @@ request.setAttribute("listPos", "SystemMessage,CategoryNote");
 				<td valign="top" width="<%= W_YA_CT %>" class="NOMOBWEB">
 					<!-- ct user logo -->
 					<% if(!user.isChefsTable() && user.isOkayToDisplayCTEligibility() && !user.hasQualifiedForCT()) { %>
-						<table align="center" border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_CT %>">
+						<table role="presentation" align="center" border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_CT %>">
 							<tr valign="top">
 								<td valign="top" class="text13">
 								<td><img src="/media_stat/images/chefs_table/ct_almost_hdr.gif"/><br><br></td>
 							</tr>
 						</table>
 		
-						<table align="center" border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_CT %>">
+						<table role="presentation" align="center" border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_CT %>">
 							<tr valign="top">
 								<td valign="top" class="text13">We enroll new members in our Chef's Table rewards program every month. 
 								<br><br><font class="text13bold">
@@ -379,7 +379,7 @@ request.setAttribute("listPos", "SystemMessage,CategoryNote");
 						<br>
 					<% }
 					if (user.isChefsTable() || (user.isOkayToDisplayCTEligibility() && !user.hasQualifiedForCT())) { %>
-						<table align="center" border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_CT %>">
+						<table role="presentation" align="center" border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_CT %>">
 						<tr valign="top">
 							<td valign="top" class="text13">
 							<% if(!user.isChefsTable() && user.isOkayToDisplayCTEligibility()) { %>
@@ -391,7 +391,7 @@ request.setAttribute("listPos", "SystemMessage,CategoryNote");
 						</tr>
 						</table>
 					<% }else{ %>
-						<table align="center" border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_CT %>">
+						<table role="presentation" align="center" border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_CT %>">
 						<tr valign="top">
 							<td valign="top" class="text13">
 						<fd:IncludeMedia name="/media/editorial/site_pages/account/right_all.html" />

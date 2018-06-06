@@ -16,7 +16,7 @@
 
 if (request.getRequestURI().toLowerCase().indexOf("your_account/") != -1) {
 %>
-	<table cellpadding="0" cellspacing="0" border="0">
+	<table role="presentation" cellpadding="0" cellspacing="0" border="0">
 		<tr valign="middle">
 			<% Map<String, String> folderMap=new LinkedHashMap<String, String>(); %>
 			<%@ include file="/shared/template/includes/i_youraccount_links.jspf"%>
@@ -32,7 +32,7 @@ if (request.getRequestURI().toLowerCase().indexOf("your_account/") != -1) {
 		    		</a>
 			</td>
 			<td>
-				<table cellpadding="0" cellspacing="0" border="0">
+				<table role="presentation" cellpadding="0" cellspacing="0" border="0">
 						<% for ( int rowIndex = 0; rowIndex < maxRows; rowIndex++ ) { %>
 						<tr>
 							<%
@@ -69,7 +69,7 @@ if (request.getRequestURI().toLowerCase().indexOf("your_account/") != -1) {
 	</table>
 <% } else if (request.getRequestURI().toLowerCase().indexOf("help/") != -1) { %>
 	<!-- help nav hard coded here -->
-	<table cellpadding="0" cellspacing="0" border="0">
+	<table role="presentation" cellpadding="0" cellspacing="0" border="0">
 	    <tr>
 		    <!-- <td valign="middle"><a href="/help/index.jsp"><img src="/media_stat/images/template/help/help_deptnav.gif"  border="0" alt="HELP"></a></td> -->
 		    <td valign="middle"  style="width: 36%"><a class="Container_Top_help" href="/help/index.jsp">HELP</a></td>
@@ -108,7 +108,7 @@ if (request.getRequestURI().toLowerCase().indexOf("your_account/") != -1) {
 	<oscache:cache key='<%= "deptNav_"+request.getQueryString() %>' time='600'>
 		<% try { %>
 			<fd:DeptNav id='department' categoryList='folderList' categoryId='<%= catId_deptNav %>' deptId='<%= deptId_deptNav %>'>
-				<table cellpadding="0" cellspacing="0" border="0">
+				<table role="presentation" cellpadding="0" cellspacing="0" border="0">
 					<tr valign="middle">
 						<%
 							Image titleImg = department.getTitleImage();
@@ -120,7 +120,7 @@ if (request.getRequestURI().toLowerCase().indexOf("your_account/") != -1) {
 						<%-- <td><a href="<%= response.encodeURL("/department.jsp?deptId=" + department+"&trk=dnav") %>"><img src="<%= titleImg.getPath() %>" border="0" width="<%= titleImg.getWidth() %>" height="<%= titleImg.getHeight() %>"><span class="about_us_text">About us</span></a></td> --%>
 						<td><a href="<%= response.encodeURL("/department.jsp?deptId=" + department+"&trk=dnav") %>"><div class="aboutUsText"><%= department.getFullName() %></div></a></td>
 						<td>
-							<table cellpadding="0" cellspacing="0" border="0">
+							<table role="presentation" cellpadding="0" cellspacing="0" border="0">
 								<% for ( int rowIndex = 0; rowIndex < maxRows; rowIndex++ ) { %>
 								<tr>
 									<%

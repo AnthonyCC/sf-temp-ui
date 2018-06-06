@@ -24,14 +24,19 @@ import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
+import com.freshdirect.ecomm.converter.CustomerRatingConverter;
+import com.freshdirect.ecomm.converter.ErpFraudPreventionConverter;
+import com.freshdirect.ecomm.converter.FDActionInfoConverter;
+import com.freshdirect.ecomm.converter.SapGatewayConverter;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
+import com.freshdirect.ecommerce.data.order.CreateOrderRequestData;
 import com.freshdirect.ecommerce.data.order.OrderSearchCriteriaRequest;
-import com.freshdirect.fdstore.FDEcommServiceException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.logistics.fdx.controller.data.request.CreateOrderRequest;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
 public class OrderResourceApiClient extends AbstractEcommService implements
@@ -285,13 +290,23 @@ private static OrderResourceApiClient INSTANCE;
 			CrmAgentRole crmAgentRole, EnumDlvPassStatus status,
 			boolean isBulkOrder) throws RemoteException {
 
-		try {
-			Request<CreateOrderRequest> request = new Request<CreateOrderRequest>();
-			CreateOrderRequest createOrderPayload = new CreateOrderRequest(info, createOrder, appliedPromos, id, sendEmail, cra, crmAgentRole, status, isBulkOrder);
-			request.setData(createOrderPayload);
+		Request<CreateOrderRequestData> request = new Request<CreateOrderRequestData>();
+		
+		try{
+			request.setData(
+					new CreateOrderRequestData(
+							FDActionInfoConverter.buildActionInfoData(info), 
+							SapGatewayConverter.buildOrderData(createOrder), 
+							appliedPromos, 
+							id, 
+							sendEmail, 
+							CustomerRatingConverter.buildCustomerRatingData(cra), 
+							ErpFraudPreventionConverter.buildCrmAgentRoleData(crmAgentRole), 
+							(status!=null)?status.getName():null, 
+							isBulkOrder));
 			Response<String> response = null;
 			String inputJson = buildRequest(request);
-			response = httpPostData(getFdCommerceEndPoint(CREATE_GC_ORDER_API), inputJson, Response.class, null);
+			response = httpPostData(getFdCommerceEndPoint(CREATE_GC_ORDER_API), inputJson, Response.class, new Object[]{});
 			return parseResponse(response);
 		} catch (Exception e) {
 			e.printStackTrace();

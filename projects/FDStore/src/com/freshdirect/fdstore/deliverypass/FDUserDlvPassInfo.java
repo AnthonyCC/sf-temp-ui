@@ -5,11 +5,15 @@ import java.text.NumberFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.freshdirect.deliverypass.DeliveryPassType;
 import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 
 public class FDUserDlvPassInfo implements Serializable{
+
+	private static final long serialVersionUID = 6459935633407980835L;
+	
 	private EnumDlvPassStatus status;
 	private DeliveryPassType type;
 	private Date expDate;
@@ -27,7 +31,15 @@ public class FDUserDlvPassInfo implements Serializable{
 	private double dPSavings;
 	private Date purchaseDate;
 	
-	public FDUserDlvPassInfo(EnumDlvPassStatus status, DeliveryPassType type, Date expDate, String originalOrderId, int remCnt, int usedCount,int usablePassCount, boolean isFreeTrialRestricted,int autoRenewUsablePassCount, DeliveryPassType autoRenewDPType, double autoRenewPrice, Date purchaseDate) {
+	public FDUserDlvPassInfo(@JsonProperty("status") EnumDlvPassStatus status,
+			@JsonProperty("typePurchased") DeliveryPassType type, @JsonProperty("expDate") Date expDate,
+			@JsonProperty("originalOrderId") String originalOrderId, @JsonProperty("remainingCount") int remCnt,
+			@JsonProperty("usedCount") int usedCount, @JsonProperty("usablePassCount") int usablePassCount,
+			@JsonProperty("freeTrialRestricted") boolean isFreeTrialRestricted,
+			@JsonProperty("autoRenewUsablePassCount") int autoRenewUsablePassCount,
+			@JsonProperty("autoRenewDPType") DeliveryPassType autoRenewDPType,
+			@JsonProperty("autoRenewPrice") double autoRenewPrice,
+			@JsonProperty("purchaseDate") Date purchaseDate) {
 		super();
 		this.status = status;
 		this.type = type;
@@ -117,7 +129,8 @@ public class FDUserDlvPassInfo implements Serializable{
 	}
 	
 	public String getAutoRenewDPTerm() {
-		
+		if (autoRenewDPType == null) return null;
+
 		String name=autoRenewDPType.getName();
 		
 		if(name.indexOf(DlvPassConstants.UNLIMITED)!=-1) {
@@ -126,11 +139,11 @@ public class FDUserDlvPassInfo implements Serializable{
 			return DeliveryPassUtil.getAsText(months)+" months";
 			//return name.substring(0,name.indexOf(DlvPassConstants.UNLIMITED)).trim().toLowerCase();
 			
-		}
-		else {
+		} else {
 			return name;
 		}
 	}
+
 	public void setDaysSinceDPExpiry(int _daysSinceDPExpiry) {
 		this.daysSinceDPExpiry=_daysSinceDPExpiry;
 	}
@@ -161,6 +174,12 @@ public class FDUserDlvPassInfo implements Serializable{
 
 	public void setPurchaseDate(Date purchaseDate) {
 		this.purchaseDate = purchaseDate;
+	}
+	
+	//For DeliveryPass Settings Page for Mid Week
+	public boolean isMidweekPass() {
+		return (null != getTypePurchased() && null != getTypePurchased().getEligibleDlvDays() && !getTypePurchased().getEligibleDlvDays().isEmpty()
+				&& getTypePurchased().getEligibleDlvDays().size() < 7);
 	}
 
 	

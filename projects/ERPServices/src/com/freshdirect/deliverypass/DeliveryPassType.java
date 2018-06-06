@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.freshdirect.deliverypass.ejb.DlvPassTypeDAO;
 import com.freshdirect.enums.EnumModel;
 
@@ -53,19 +54,25 @@ public class DeliveryPassType extends EnumModel {
 		return profileValue;
 	}
 
-	public DeliveryPassType(String code, String name, int noOfDlvs, int duration, boolean unlimited, String profileValue, boolean isAutoRenewDP, boolean isFreeTrialDP,boolean isFreeTrialRestricted, String autoRenewalSKU, List<Integer> eligibleDlvDays) {
+	public DeliveryPassType(@JsonProperty("code") String code, @JsonProperty("name") String name,
+			@JsonProperty("noOfDeliveries") int noOfDlvs, @JsonProperty("duration") int duration,
+			@JsonProperty("unlimited") boolean unlimited, @JsonProperty("profileValue") String profileValue,
+			@JsonProperty("autoRenewDP") boolean isAutoRenewDP, @JsonProperty("freeTrialDP") boolean isFreeTrialDP,
+			@JsonProperty("freeTrialRestricted") boolean isFreeTrialRestricted,
+			@JsonProperty("autoRenewalSKU") String autoRenewalSKU,
+			@JsonProperty("eligibleDlvDays") List<Integer> eligibleDlvDays) {
 		super(code, name, null);
 		this.noOfDeliveries = noOfDlvs;
 		this.duration = duration;
 		this.unlimited = unlimited;
-		this.profileValue=profileValue;
-		this.isAutoRenewDP=isAutoRenewDP;
-		this.isFreeTrialDP=isFreeTrialDP;
-		this.isFreeTrialRestricted=isFreeTrialRestricted;
-		this.autoRenewalSKU=autoRenewalSKU;
+		this.profileValue = profileValue;
+		this.isAutoRenewDP = isAutoRenewDP;
+		this.isFreeTrialDP = isFreeTrialDP;
+		this.isFreeTrialRestricted = isFreeTrialRestricted;
+		this.autoRenewalSKU = autoRenewalSKU;
 		this.setEligibleDlvDays(eligibleDlvDays);
 	}
-    
+
 	public static DeliveryPassType getEnum(String code) {
 		loadEnums();
 		return enums.get(code);

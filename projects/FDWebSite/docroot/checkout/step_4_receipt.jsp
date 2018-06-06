@@ -55,6 +55,10 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 		boolean _modifyOrderMode = false;
 		String _ordNum = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
 
+		if (_ordNum == null){
+		    throw new FDNotFoundException("No order number was provided.");
+		}
+		
 		if(session.getAttribute("MODIFIED" + _ordNum) != null && session.getAttribute("MODIFIED" + _ordNum).equals(_ordNum)) {
 			_modifyOrderMode = true;
 		}

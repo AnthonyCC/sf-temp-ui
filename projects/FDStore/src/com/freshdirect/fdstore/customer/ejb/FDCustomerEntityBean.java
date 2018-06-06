@@ -92,8 +92,7 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		model.setDepotCode(this.depotCode);
 		model.setPasswordRequestExpiration(this.passwordRequestExpiration);
 		model.setCustomerEStoreModel((FDCustomerEStoreModel)this.customerEStore.getModel());
-//		model.setRafClickId(this.rafClickId);
-//		model.setRafPromoCode(this.rafPromoCode);
+
 		model.setCustomerSmsPreferenceModel((FDCustomerEStoreModel)this.customerSmsPreferences.getModel());
 		model.setDefaultPaymentType(this.defaultPaymentMethodType);
 		return model;

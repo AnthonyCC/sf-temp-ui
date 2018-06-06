@@ -33,7 +33,7 @@ final int W_YA_GIFTCARDS = 970;
 			<input type="hidden" id="gcSaleId" value="" />
 			<input type="hidden" id="gcCertNum" value="" />
 			<input type="hidden" id="gcType" value="" />
-			<table class="accessibilitySpacing" border="0" cellspacing="0" cellpadding="4" width="100%">
+			<table role="presentation" class="accessibilitySpacing" border="0" cellspacing="0" cellpadding="4" width="100%">
 				<tr>
 					<td width="130" align="right"><label for="gcResendRecipName">Recipient Name:</label></td>
 					<td><input id="gcResendRecipName" value="" /></td>
@@ -65,7 +65,7 @@ final int W_YA_GIFTCARDS = 970;
     boolean showAllReceived = (request.getParameter("showAllReceived") != null && request.getParameter("showAllReceived").equals("true")) ? true :false;
     boolean showAllPurchased = (request.getParameter("showAllPurchased") != null && request.getParameter("showAllPurchased").equals("true")) ? true :false;
 %>
-		<table border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_GIFTCARDS %>">
+		<table role="presentation" border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_GIFTCARDS %>">
 			<tr valign="top">
 				<td>
                     <span class="topHeader">Gift Cards</span>
@@ -110,7 +110,7 @@ final int W_YA_GIFTCARDS = 970;
 			</fd:ErrorHandler>            
             
         <form method="post">
-		<table border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_GIFTCARDS %>">
+		<table role="presentation" border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_GIFTCARDS %>">
 			<tr valign="middle">
 				<td style="height: 25px;" align="center">
 					<!-- <img src="/media_stat/images/giftcards/your_account/card_enter.gif" width="400" height="21" alt="Have a New Gift card? Enter the Code Here" /> -->
@@ -129,7 +129,7 @@ final int W_YA_GIFTCARDS = 970;
 		</fd:GiftCardController>
 		<fd:GetGiftCardReceived id='giftcards'>
 
-		<table border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_GIFTCARDS %>">
+		<table role="presentation" border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_GIFTCARDS %>">
 			<tr>
 				<td>
 					<span class="sideHeader">Gift Cards You Have Received</span><!-- <img src="/media_stat/images/giftcards/your_account/" width="" height="" alt="Gift Cards" /> --><br />
@@ -188,7 +188,7 @@ final int W_YA_GIFTCARDS = 970;
     </fd:GetGiftCardReceived>
 		<br /><br />
     <fd:GetGiftCardPurchased id="recipients">
-		<table border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_GIFTCARDS %>">
+		<table role="presentation" border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_GIFTCARDS %>">
 			<tr>
 				<td>
 					<span class="sideHeader">Purchased Gift Cards</span><!-- <img src="/media_stat/images/giftcards/your_account/" width="" height="" alt="Gift Cards" /> --><br />
@@ -269,7 +269,7 @@ final int W_YA_GIFTCARDS = 970;
 
 		
 		<img src="/media_stat/images/layout/ff9933.gif" alt="" width="<%= W_YA_GIFTCARDS %>" height="1" border="0"><br /><br />
-		<table border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_GIFTCARDS %>">
+		<table role="presentation" border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_GIFTCARDS %>">
 			<tr valign="top">
 				<td width="35"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="" align="left">
 				continue shopping<br />from <b>Home Page</b></a><br />

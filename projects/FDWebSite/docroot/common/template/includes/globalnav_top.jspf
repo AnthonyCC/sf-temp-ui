@@ -154,7 +154,7 @@ if(user != null) {
     {
         String searchParams = request.getParameter("searchParams")!=null ? request.getParameter("searchParams") : "";
 %>
-                            <input type="text" id="topSearchField" placeholder="Search" data-component="autocomplete" class="search" name="searchParams" value="<%= StringEscapeUtils.escapeHtml(searchParams) %>">
+                            <input type="text" id="topSearchField" placeholder="Search" data-component="autocomplete" class="searchinput search" name="searchParams" value="<%= StringEscapeUtils.escapeHtml(searchParams) %>">
 <%
 }
 %>

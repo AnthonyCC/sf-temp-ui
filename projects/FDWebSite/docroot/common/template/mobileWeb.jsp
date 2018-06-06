@@ -70,6 +70,8 @@
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 
   	<tmpl:get name='facebookmeta'/>
+  	
+  	
 
     <jwr:style src="/grid.css" media="all" />
     <jwr:style src="/oldglobal.css" media="all" />
@@ -125,6 +127,7 @@
 <!--[if lt IE 9]><body class="ie8" data-ismobweb="true" <%= (isCheckout) ? "data-ec-page=" : "data-not-ec=" %>"<tmpl:get name="ecpage" />" data-printdata="<tmpl:get name='printdata'/>" data-cmeventsource="<tmpl:get name='cmeventsource'/>" data-pagetype="<tmpl:get name='pageType'/>" <% if (isReorder) {%> data-feature-quickshop="${isQS20 ? "2_0" : "2_2"}"<% } %>><![endif]-->
 <!--[if gt IE 8]><body data-ismobweb="true" <%= (isCheckout) ? "data-ec-page=" : "data-not-ec=" %>"<tmpl:get name="ecpage" />" data-printdata="<tmpl:get name='printdata'/>" data-cmeventsource="<tmpl:get name='cmeventsource'/>" data-pagetype="<tmpl:get name='pageType'/>" <% if (isReorder) {%> data-feature-quickshop="${isQS20 ? "2_0" : "2_2"}"<% } %>><![endif]-->
 <!--[if !IE]><!--><body data-ismobweb="true" <%= (isCheckout) ? "data-ec-page=" : "data-not-ec=" %>"<tmpl:get name="ecpage" />" data-printdata="<tmpl:get name='printdata'/>" data-cmeventsource="<tmpl:get name='cmeventsource'/>" data-pagetype="<tmpl:get name='pageType'/>" <% if (isReorder) {%> data-feature-quickshop="${isQS20 ? "2_0" : "2_2"}"<% } %>><!--<![endif]-->
+	
     <div class="container-fluid" id="page-content"><!-- body cont s -->
 
 		<!-- top nav s -->
@@ -136,7 +139,7 @@
 		<%} %>
 		<!-- top nav e -->
 		
-			<div id="content" autoscroll="true"><!-- content starts here-->
+			<div id="content" autoscroll="true" class="<tmpl:get name='containerExtraClass'/>"><!-- content starts here-->
 				<!-- popcart s -->
 					<%-- PLACEHOLDER(S) FOR NOW --%>
 				<!-- popcart e -->
@@ -261,7 +264,7 @@
 
     <tmpl:get name="jsmodules" />
 	<tmpl:get name='extraJsModules'/>
-
+	
 	<jwr:script src="/mobileweb.js" useRandomParam="false" />
     <tmpl:get name="extraJsFooter" />
     <tmpl:get name="customJsBottom" />

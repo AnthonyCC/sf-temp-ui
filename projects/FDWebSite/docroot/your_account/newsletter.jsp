@@ -21,7 +21,7 @@ final int W_YA_NEWSLETTER_TOTAL = 970;
 FDIdentity identity  = user.getIdentity();
 ErpCustomerInfoModel custInfo = FDCustomerFactory.getErpCustomerInfo(identity);%>
 <fd:NewsLetterController actionName="updateOptinNewsletter" result="result" customerInfo="<%=custInfo%>">
-		<table width="<%= W_YA_NEWSLETTER_TOTAL %>" align="center" border="0" cellpadding="0" cellspacing="0">
+		<table role="presentation" width="<%= W_YA_NEWSLETTER_TOTAL %>" align="center" border="0" cellpadding="0" cellspacing="0">
 		<form name="reminder_signup" method="POST">
 			<tr>
 				<td colspan="2" class="text12" valign="top">

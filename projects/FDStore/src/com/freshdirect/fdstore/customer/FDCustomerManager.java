@@ -115,6 +115,8 @@ import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
 import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
 import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
+import com.freshdirect.fdstore.ecomm.gateway.CustomerIdentityService;
+import com.freshdirect.fdstore.ecomm.gateway.RegistrationService;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
 import com.freshdirect.fdstore.iplocator.IpLocatorEventDTO;
@@ -212,11 +214,16 @@ public class FDCustomerManager {
 			FDSurveyResponse survey, EnumServiceType serviceType, boolean isGiftCardBuyer)
 			throws FDResourceException, ErpDuplicateUserIdException {
 
-		lookupManagerHome();
-
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.register(info, erpCustomer, fdCustomer, cookie, pickupOnly, eligibleForPromotion, survey, serviceType, isGiftCardBuyer);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.Registration)) {
+				return RegistrationService.getInstance().register(info, erpCustomer, fdCustomer, cookie, pickupOnly,
+						eligibleForPromotion, survey, serviceType, isGiftCardBuyer);
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.register(info, erpCustomer, fdCustomer, cookie, pickupOnly, eligibleForPromotion, survey,
+						serviceType, isGiftCardBuyer);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -227,11 +234,14 @@ public class FDCustomerManager {
 	}
 
 	public static FDUser createNewUser(String zipCode, EnumServiceType serviceType, EnumEStoreId eStoreId) throws FDResourceException {
-		lookupManagerHome();
-
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.createNewUser(zipCode, serviceType, eStoreId);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.Registration)) {
+				return RegistrationService.getInstance().createNewUser(zipCode, serviceType, eStoreId);
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.createNewUser(zipCode, serviceType, eStoreId);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -243,11 +253,15 @@ public class FDCustomerManager {
 	}
 
 	public static FDUser createNewUser(AddressModel address, EnumServiceType serviceType, EnumEStoreId eStoreId) throws FDResourceException {
-		lookupManagerHome();
 
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.createNewUser(address, serviceType, eStoreId);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.Registration)) {
+				return RegistrationService.getInstance().createNewUser(address != null? address.getZipCode() : null, serviceType, eStoreId);
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.createNewUser(address, serviceType, eStoreId);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -290,13 +304,16 @@ public class FDCustomerManager {
 	}
 
 	public static FDUser recognize(String cookie, EnumEStoreId eStoreId) throws FDAuthenticationException, FDResourceException {
-		lookupManagerHome();
+		FDUser user = null;
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			FDUser user = sb.recognize(cookie,eStoreId);
-
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerIdentity)) {
+				user = CustomerIdentityService.getInstance().recognize(cookie, eStoreId);
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				user = sb.recognize(cookie, eStoreId);
+			}
 			populateShoppingCart(user, true, true);
-
 			return user;
 
 		} catch (CreateException ce) {
@@ -363,15 +380,22 @@ public class FDCustomerManager {
 	public static FDUser recognize(FDIdentity identity, EnumTransactionSource source, EnumEStoreId eStoreId,
 			MasqueradeContext ctx, boolean updateUserState, boolean populateShoppingCart)
 			throws FDAuthenticationException, FDResourceException {
-		lookupManagerHome();
+		
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			FDUser user = sb.recognize(identity, eStoreId, false, false);
+			FDUser user = null;
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerIdentity)) {
+				user = CustomerIdentityService.getInstance().recognize(identity, eStoreId, false, false);
+			} else {
 
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				user = sb.recognize(identity, eStoreId, false, false);
+			}
 			user.setApplication(source);
 			user.setMasqueradeContext(ctx);
 
-			if(user.isVoucherHolder() && EnumEStoreId.FDX.equals( user.getUserContext().getStoreContext().getEStoreId() )){
+			if (user.isVoucherHolder()
+					&& EnumEStoreId.FDX.equals(user.getUserContext().getStoreContext().getEStoreId())) {
 				throw new FDAuthenticationException("voucherredemption");
 			}
 			if (populateShoppingCart) {
@@ -564,12 +588,15 @@ public class FDCustomerManager {
 	 * @throws FDResourceException if an error occured using remote resources
 	 */
 	public static FDIdentity login(String userId, String password) throws FDAuthenticationException, FDResourceException {
-		lookupManagerHome();
-
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.login(userId, password);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerIdentity)) {
+				return CustomerIdentityService.getInstance().login(userId, password);
+			} else {
+				lookupManagerHome();
 
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.login(userId, password);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -580,12 +607,14 @@ public class FDCustomerManager {
 	}
 
 	public static FDIdentity login(String userId) throws FDAuthenticationException, FDResourceException {
-		lookupManagerHome();
-
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.login(userId);
-
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerIdentity)) {
+				return CustomerIdentityService.getInstance().login(userId, null);
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.login(userId);
+			}
 		} catch (CreateException ce) {
 			ce.printStackTrace();
 			invalidateManagerHome();

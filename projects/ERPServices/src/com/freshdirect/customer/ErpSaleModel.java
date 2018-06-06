@@ -704,6 +704,8 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		}
 		if(cbr >= cbk){
 			status = EnumSaleStatus.SETTLED;
+		} else {
+			LOGGER.info("CHARGEBACK_REVERSAL: Order number " + this.getId() + ",ChargeBack value is : " + cbk + ", ChargeBack reversal value is : " + cbr + ", Difference is : "+ (cbk-cbr) );
 		}
 	}
 
