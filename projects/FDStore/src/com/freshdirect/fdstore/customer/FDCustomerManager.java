@@ -115,6 +115,7 @@ import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
 import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
 import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
+import com.freshdirect.fdstore.ecomm.gateway.CustomerAddressService;
 import com.freshdirect.fdstore.ecomm.gateway.CustomerIdentityService;
 import com.freshdirect.fdstore.ecomm.gateway.RegistrationService;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
@@ -478,31 +479,33 @@ public class FDCustomerManager {
 			return;
 			*/
     	if(identity != null){
-    		lookupManagerHome();
-    		try{
-    			FDCustomerManagerSB sb = managerHome.create();
+    		
     			ErpAddressModel address = null;
     			try {
-    				if(partentOrderId!=null)
-    					address = sb.assumeDeliveryAddress(identity, partentOrderId, null);
-    				else
-    					address = sb.assumeDeliveryAddress(identity, null, user);
-    			}catch(Exception e) {}
+					if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerAddress)) {
+						address = CustomerAddressService.getInstance().assumeDeliveryAddress(identity, partentOrderId);
+					} else {
+						lookupManagerHome();
+						FDCustomerManagerSB sb = managerHome.create();
+						if (partentOrderId != null)
+							address = sb.assumeDeliveryAddress(identity, partentOrderId, null);
+						else
+							address = sb.assumeDeliveryAddress(identity, null, user);
+					}
+    			}catch (CreateException ce) {
+        			invalidateManagerHome();
+        			throw new FDResourceException(ce, "Error creating session bean");
+        		} catch (RemoteException re) {
+        			invalidateManagerHome();
+        			throw new FDResourceException(re, "Error talking to session bean");
+        		}
 
     			if(address != null && user.getShoppingCart() != null){
    					user.getShoppingCart().setDeliveryAddress(address);
    					if(userCtx)user.resetUserContext();
    					user.getShoppingCart().setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(user));
-
-
     			}
-    		} catch (CreateException ce) {
-    			invalidateManagerHome();
-    			throw new FDResourceException(ce, "Error creating session bean");
-    		} catch (RemoteException re) {
-    			invalidateManagerHome();
-    			throw new FDResourceException(re, "Error talking to session bean");
-    		}
+    		
 		}
 	}
 
@@ -5021,12 +5024,17 @@ public class FDCustomerManager {
 	
 	public static String getParentOrderAddressId(String parentOrderId) throws FDResourceException {
 
-		lookupManagerHome();
-		String parentOrderAddressId=null;
+		
+		String parentOrderAddressId = null;
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			LOGGER.debug("IN FD Customer Manager Parent id is "+parentOrderId);
-			parentOrderAddressId =sb.getParentOrderAddressId(parentOrderId);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerAddress)) {
+				parentOrderAddressId = CustomerAddressService.getInstance().getParentOrderAddressId(parentOrderId);
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				LOGGER.debug("IN FD Customer Manager Parent id is " + parentOrderId);
+				parentOrderAddressId = sb.getParentOrderAddressId(parentOrderId);
+			}
 
 		} catch (CreateException ce) {
 			invalidateManagerHome();

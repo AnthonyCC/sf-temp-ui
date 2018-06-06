@@ -161,19 +161,20 @@ public interface FDCustomerManagerSB  extends EJBObject{
     public FDUser createNewDepotUser(String depotCode, EnumServiceType serviceType, EnumEStoreId eStoreId) throws FDResourceException, RemoteException;
 
     public void createAddress(ErpAddressModel addressModel, String customerId) throws FDResourceException, RemoteException;
-
+    @Deprecated
     public FDUser recognize(FDIdentity identity) throws FDAuthenticationException, FDResourceException, RemoteException;
-
+    @Deprecated
     public FDUser recognize(FDIdentity identity, EnumEStoreId eStoreId) throws FDAuthenticationException, FDResourceException, RemoteException;
-
+    @Deprecated
     public FDUser recognize(FDIdentity identity, EnumEStoreId eStoreId, final boolean lazy) throws FDAuthenticationException, FDResourceException, RemoteException;
-
+    @Deprecated
     public FDUser recognize(FDIdentity identity, EnumEStoreId eStoreId, final boolean lazy, boolean populateDeliveryPlantInfo) throws FDAuthenticationException, FDResourceException, RemoteException;
 
+    @Deprecated
     public FDUser recognize(String cookie, EnumEStoreId eStoreId) throws FDAuthenticationException, FDResourceException, RemoteException;
-
+    @Deprecated
     public FDUser recognizeByEmail(String email, EnumEStoreId eStoreId) throws FDAuthenticationException, FDResourceException, RemoteException;
-
+    @Deprecated
     public ErpAddressModel assumeDeliveryAddress(FDIdentity identity, String lastOrderId, FDUser user) throws FDResourceException, RemoteException;
 
     /**
@@ -858,7 +859,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
 	public void setFdxSmsPreferences(FDCustomerEStoreModel customerSmsPreferenceModel, String erpCustomerPk)throws FDResourceException, RemoteException;
 	public boolean setAcknowledge(FDIdentity identity, boolean acknowledge,String ackType)throws FDResourceException, RemoteException;
 	public boolean setRAFClickIDPromoCode(FDIdentity identity, String rafclickid, String rafpromocode, EnumEStoreId eStoreId) throws FDResourceException, RemoteException;
-		
+	@Deprecated
 	public String getParentOrderAddressId(String parentOrderAddressId)throws FDResourceException, RemoteException;
 
 	public boolean getAddonOrderCount(String orderId)throws FDResourceException, RemoteException;

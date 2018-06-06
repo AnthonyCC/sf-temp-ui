@@ -193,11 +193,11 @@ public abstract class AbstractEcommService {
 			response = restTemplate.postForEntity(new URI(url), entity, String.class);
 			responseOfTypestring = getMapper().readValue(response.getBody(), type);
 		} catch (JsonParseException e) {
-			LOGGER.info(e.getMessage());
+			LOGGER.info("Json Parsing failure", e);
 			LOGGER.info("api url:" + url);
 			throw new FDResourceException(e, "Json Parsing failure");
 		} catch (JsonMappingException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Json Mapping failure", e);
 			LOGGER.info("api url:" + url);
 			throw new FDResourceException(e, "Json Mapping failure");
 		} catch (IOException e) {
