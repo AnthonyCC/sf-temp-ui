@@ -3184,7 +3184,11 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	@Override
 	public void sendCancelOrderRequest(String saleId) throws RemoteException {
 		try {
-			this.postDataTypeMap(null, getFdCommerceEndPoint(CANCEL_ORDER_REQUEST+"?saleid="+saleId),  new TypeReference<Response<Object>>() {});
+			Response<String> response = this.postDataTypeMap(null, getFdCommerceEndPoint(CANCEL_ORDER_REQUEST+"?saleId="+saleId),  new TypeReference<Response<Object>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
@@ -3202,7 +3206,10 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		try {
 			request.setData(submitOrderRequestData);
 			String inputJson = buildRequest(request);
-			this.postDataTypeMap(inputJson, getFdCommerceEndPoint(MODIFY_ORDER_REQUEST),  new TypeReference<Response<Object>>() {});
+			Response<String> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(MODIFY_ORDER_REQUEST),  new TypeReference<Response<Object>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
@@ -3215,8 +3222,11 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	@Override
 	public void sendReservationUpdateRequest(String  reservationId, ContactAddressModel address, String sapOrderNumber) throws RemoteException {
 		try {
-			buildRequest(address);
-			this.postDataTypeMap(null, getFdCommerceEndPoint(RESERVATION_UPDATE+"?reservationid="+reservationId+"&sapordernumber="+sapOrderNumber),  new TypeReference<Response<Object>>() {});
+			String addressString = buildRequest(address);
+			Response<String> response = this.postDataTypeMap(addressString, getFdCommerceEndPoint(RESERVATION_UPDATE+"?reservationId="+reservationId+"&sapOrderNumber="+sapOrderNumber),  new TypeReference<Response<String>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
@@ -3237,7 +3247,10 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		try {
 			request.setData(submitOrderRequestData);
 			String inputJson = buildRequest(request);
-			this.postDataTypeMap(inputJson, getFdCommerceEndPoint(SUBMIT_ORDER_REQUEST),  new TypeReference<Response<Object>>() {});
+			Response<String> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(SUBMIT_ORDER_REQUEST),  new TypeReference<Response<Object>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
