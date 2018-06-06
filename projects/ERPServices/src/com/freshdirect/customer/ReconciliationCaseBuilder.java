@@ -40,8 +40,10 @@ public class ReconciliationCaseBuilder {
 			this.details.append("<BR>");
 		}
 	}
-
 	public List<CrmSystemCaseInfo> getCases() {
+		return getCases(null);
+	}
+	public List<CrmSystemCaseInfo> getCases(CrmCaseSubject subject) {
 		if (this.shortedAmount <= (this.order.getSubTotal() * ErpServicesProperties.getCaseShortshipPercentage())) {
 			return Collections.<CrmSystemCaseInfo>emptyList();
 		}
@@ -49,11 +51,12 @@ public class ReconciliationCaseBuilder {
 		List<CrmSystemCaseInfo> cases = new ArrayList<CrmSystemCaseInfo>();
 
 		if (this.details.length() > 0) {
+			subject = subject == null ? CrmCaseSubject.getEnum(CrmCaseSubject.CODE_SHORTOUTITEM) : subject;
 			CrmSystemCaseInfo info =
 				new CrmSystemCaseInfo(
 					customerPk,
 					this.salePk,
-					CrmCaseSubject.getEnum(CrmCaseSubject.CODE_SHORTOUTITEM), // Modified to change OIQ-005(Became Obsolete) to OUT-007
+					subject, // Modified to change OIQ-005(Became Obsolete) to OUT-007
 					"order #" + this.salePk.getId() + " was shortshipped");
 			
 			if(this.details.length()>4000)
