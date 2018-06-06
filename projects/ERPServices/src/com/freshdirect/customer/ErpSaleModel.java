@@ -1980,4 +1980,12 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 
 		status = EnumSaleStatus.SETTLEMENT_FAILED;
 	}
+	
+	
+	//only used for sf2.0
+	//DONT USE
+	public void _addAuthorization(ErpAuthorizationModel auth) throws ErpTransactionException {
+		transactions.add(auth);
+	}
+
 }
