@@ -198,11 +198,15 @@ public class FDUserDAO {
      *
      * @throws SQLException
      */
-    private static void loadCart(Connection conn, FDUser user, final boolean lazy) throws SQLException {
-        FDCartModel cart = new FDCartModel();
-
+    public static void loadCart(Connection conn, FDUser user, final boolean lazy) throws SQLException {
+       
         List<ErpOrderLineModel> loadCartLines = FDCartLineDAO.loadCartLines(conn, user.getPK(), user.getUserContext().getStoreContext().getEStoreId());
-        cart.addOrderLines(convertToCartLines(loadCartLines, lazy));
+        loadCart(user, loadCartLines, lazy);
+    }
+    public static void loadCart(FDUser user, List<ErpOrderLineModel> loadCartLines, final boolean lazy) {
+    	FDCartModel cart = new FDCartModel();
+
+    	cart.addOrderLines(convertToCartLines(loadCartLines, lazy));
 
         cart.setEStoreId(user.getUserContext().getStoreContext().getEStoreId());
         ErpDeliveryPlantInfoModel delPlantInfo = new ErpDeliveryPlantInfoModel();
@@ -216,7 +220,6 @@ public class FDUserDAO {
 
         user.setShoppingCart(cart);
     }
-
     private static List<FDCartLineI> convertToCartLines(List<ErpOrderLineModel> erplines, final boolean lazy) {
 
         List<FDCartLineI> cartlines = new ArrayList<FDCartLineI>();
@@ -247,11 +250,6 @@ public class FDUserDAO {
         return user;
     }
 
-    public static FDUser createUser(Connection conn, AddressModel address, EnumServiceType serviceType, EnumEStoreId eStoreId) throws SQLException {
-        FDUser user = createUser(conn, newCookieId(), address.getAddress1(), address.getApartment(), address.getZipCode(), null, serviceType, eStoreId);
-        return user;
-    }
-
     private static final String LOAD_FROM_IDENTITY_QUERY = "SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, NVL(fde.ZIPCODE,fdu.ZIPCODE) ZIPCODE, fdu.DEPOT_CODE, NVL(FDE.SERVICE_TYPE, fdu.SERVICE_TYPE) SERVICE_TYPE,fdu.HPLETTER_VISITED, fdu.CAMPAIGN_VIEWED, fdu.GLOBALNAVTUT_VIEWED,fdu.ZIP_POPUP_USED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, "
             + "erpc.active, ci.receive_news,fdu.last_ref_prog_id, fdu.ref_prog_invt_id, fdu.ref_trk_key_dtls, fdu.COHORT_ID, fdu.ZP_SERVICE_TYPE "
             + ",fdc.referer_customer_id, fdu.default_list_id, ci.fd_tc_agree, fdee.raf_click_id,fdee.raf_promo_code, erpc.SAP_ID, erpc.USER_ID "
@@ -259,7 +257,7 @@ public class FDUserDAO {
             + "WHERE fdu.FDCUSTOMER_ID=fdc.id and fdee.FDCUSTOMER_ID(+)=fdc.id and fdc.ERP_CUSTOMER_ID=erpc.ID and erpc.id=? " + "AND erpc.id = ci.customer_id AND  fdu.id= FDE.FDUSER_ID(+) and FDE.E_STORE(+)=? and FDEE.E_STORE(+)=?";
 
 
-    public static FDUser getFDUserZipCode(Connection conn, FDIdentity identity) throws SQLException {
+    public static FDUser getFDUserZipCode(Connection conn, String customerId) throws SQLException {
 
         String query = "SELECT fdu.ADDRESS1, NVL(fde.ZIPCODE,fdu.ZIPCODE) ZIPCODE FROM CUST.FDUSER fdu, CUST.FDUSER_ESTORE fde WHERE fdu.FDCUSTOMER_ID=? AND  fdu.id= FDE.FDUSER_ID(+)";
 		PreparedStatement ps = null;
@@ -267,7 +265,7 @@ public class FDUserDAO {
 		FDUser user = null;
         try {
 	        ps = conn.prepareStatement(query);
-	        ps.setString(1, identity.getFDCustomerPK());
+	        ps.setString(1, customerId);
 	        rs = ps.executeQuery();
 	        if (rs.next()) {
 	            user = new FDUser();

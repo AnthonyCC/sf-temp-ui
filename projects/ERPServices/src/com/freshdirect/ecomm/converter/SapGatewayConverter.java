@@ -306,6 +306,7 @@ public class SapGatewayConverter {
 	public  static ErpAbstractOrderModelData buildOrderData(ErpAbstractOrderModel abstractModel) {
 		ErpAbstractOrderModelData abstractOrderModelData = new ErpAbstractOrderModelData();
 		if(abstractModel != null){
+		abstractOrderModelData.setTransactionSource(abstractModel.getTransactionSource().getCode());
 		abstractOrderModelData.setOrderLines(buildOrderLineData(abstractModel.getOrderLines()));
 		abstractOrderModelData.setRequestedDate(abstractModel.getRequestedDate());
 		abstractOrderModelData.setDiscounts(buildDiscountData(abstractModel.getDiscounts()));
@@ -336,6 +337,7 @@ public class SapGatewayConverter {
 		abstractOrderModelData.setSelectedGiftCards(buildSelectedGiftCardData(abstractModel.getSelectedGiftCards()));
 		abstractOrderModelData.setAppliedGiftcards(buildAppliedGiftCardData(abstractModel.getAppliedGiftcards()));
 		abstractOrderModelData.setRecipientsList(buildRecepientsListData(abstractModel.getRecipientsList()));
+		abstractOrderModelData.setCustomerId(abstractModel.getCustomerId());
 		}
 		
 		return  abstractOrderModelData;
@@ -473,27 +475,31 @@ public class SapGatewayConverter {
 	}
 	private static List<ErpGiftCardData> buildSelectedGiftCardData(List<ErpGiftCardModel> selectedGiftCards) {
 		List<ErpGiftCardData> erpGiftCardDataList = new ArrayList<ErpGiftCardData>();
-		for (ErpGiftCardModel erpGiftCardModel : selectedGiftCards) {
-			ErpGiftCardData erpGiftCardData = (ErpGiftCardData) buildPaymentMethodData(erpGiftCardModel);
-			erpGiftCardData.setBalance(erpGiftCardData.getBalance());
-			erpGiftCardData.setOriginalAmount(erpGiftCardData.getOriginalAmount());
-			erpGiftCardData.setPurchaseSaleId(erpGiftCardData.getPurchaseSaleId());
-			erpGiftCardData.setPurchaseDate(erpGiftCardData.getPurchaseDate());
-			erpGiftCardDataList.add(erpGiftCardData);
+		if(selectedGiftCards!=null){
+			for (ErpGiftCardModel erpGiftCardModel : selectedGiftCards) {
+				ErpGiftCardData erpGiftCardData = (ErpGiftCardData) buildPaymentMethodData(erpGiftCardModel);
+				erpGiftCardData.setBalance(erpGiftCardData.getBalance());
+				erpGiftCardData.setOriginalAmount(erpGiftCardData.getOriginalAmount());
+				erpGiftCardData.setPurchaseSaleId(erpGiftCardData.getPurchaseSaleId());
+				erpGiftCardData.setPurchaseDate(erpGiftCardData.getPurchaseDate());
+				erpGiftCardDataList.add(erpGiftCardData);
+			}
 		}
 		return erpGiftCardDataList;
 	}
 
 	private static List<ErpAppliedGiftCardData> buildAppliedGiftCardData(List<ErpAppliedGiftCardModel> appliedGiftcards) {
 		List<ErpAppliedGiftCardData> giftCardListData = new ArrayList<ErpAppliedGiftCardData>();
-		for (ErpAppliedGiftCardModel erpAppliedGiftCard : appliedGiftcards) {
-			ErpAppliedGiftCardData erpAppliedGiftCardData = new ErpAppliedGiftCardData();
-			erpAppliedGiftCardData.setAccountNumber(erpAppliedGiftCard.getAccountNumber());
-			erpAppliedGiftCardData.setAffiliate(buildErpAffiliateData(erpAppliedGiftCard.getAffiliate()));
-			erpAppliedGiftCardData.setAmount(erpAppliedGiftCard.getAmount());
-			erpAppliedGiftCardData.setCertificateNum(erpAppliedGiftCard.getCertificateNum());
-			erpAppliedGiftCardData.setId(erpAppliedGiftCard.getId());
-			giftCardListData.add(erpAppliedGiftCardData);
+		if(appliedGiftcards!=null){
+			for (ErpAppliedGiftCardModel erpAppliedGiftCard : appliedGiftcards) {
+				ErpAppliedGiftCardData erpAppliedGiftCardData = new ErpAppliedGiftCardData();
+				erpAppliedGiftCardData.setAccountNumber(erpAppliedGiftCard.getAccountNumber());
+				erpAppliedGiftCardData.setAffiliate(buildErpAffiliateData(erpAppliedGiftCard.getAffiliate()));
+				erpAppliedGiftCardData.setAmount(erpAppliedGiftCard.getAmount());
+				erpAppliedGiftCardData.setCertificateNum(erpAppliedGiftCard.getCertificateNum());
+				erpAppliedGiftCardData.setId(erpAppliedGiftCard.getId());
+				giftCardListData.add(erpAppliedGiftCardData);
+			}
 		}
 		return giftCardListData;
 	}
@@ -615,6 +621,19 @@ public class SapGatewayConverter {
 		erpAddressData.setWebServiceType(erpAddressModel.getWebServiceType().getName());
 		erpAddressData.setEbtAccepted(erpAddressModel.isEbtAccepted());
 		erpAddressData.setScrubbedStreet(erpAddressModel.getScrubbedStreet());
+		erpAddressData.setFirstName(erpAddressModel.getFirstName());
+		erpAddressData.setLastName(erpAddressModel.getLastName());
+		erpAddressData.setPhone(buildPhoneNumberData(erpAddressModel.getPhone()));
+		erpAddressData.setAddress1(erpAddressModel.getAddress1());
+		erpAddressData.setAddress2(erpAddressModel.getAddress2());
+		erpAddressData.setApartment(erpAddressModel.getApartment());
+		erpAddressData.setCity(erpAddressModel.getCity());
+		erpAddressData.setState(erpAddressModel.getState());
+		erpAddressData.setZipCode(erpAddressModel.getZipCode());
+		erpAddressData.setServiceType(erpAddressModel.getServiceType().getName());
+		erpAddressData.setCompanyName(erpAddressModel.getCompanyName());
+		erpAddressData.setAddressInfoData(buildAddressInfoData(erpAddressModel.getAddressInfo()));
+		
 	}
 
 	private static CatalogKeyData buildCatalogKeyData(CatalogKey catalogKey) {

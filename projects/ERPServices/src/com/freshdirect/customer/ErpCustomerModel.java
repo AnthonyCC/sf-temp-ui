@@ -27,13 +27,13 @@ public class ErpCustomerModel extends ModelSupport implements ErpCustomerI {
 	 * @associates <{ErpAddressModel}>
 	 * @label ship to
 	 */
-	private LocalObjectList shipToAddress = new LocalObjectList();
+	private LocalObjectList<ErpAddressModel> shipToAddress = new LocalObjectList<ErpAddressModel>();
 
 	private LocalObjectList paymentMethodList = new LocalObjectList();
 
-	private LocalObjectList customerCredits = new LocalObjectList();
+	private LocalObjectList<ErpCustomerCreditModel> customerCredits = new LocalObjectList<ErpCustomerCreditModel>();
 
-	private LocalObjectList customerAlerts = new LocalObjectList();
+	private LocalObjectList<ErpCustomerAlertModel> customerAlerts = new LocalObjectList<ErpCustomerAlertModel>();
 
 	private ErpCustomerInfoModel customerInfo;
 	
@@ -213,5 +213,12 @@ public class ErpCustomerModel extends ModelSupport implements ErpCustomerI {
 	}
 	public void setSapBillToAddress(ContactAddressModel sapBillToAddress) {
 		this.sapBillToAddress = sapBillToAddress;
+	}
+	
+	@Override
+	public void setId(String id) {
+		if (id != null) {
+			super.setId(id);
+		}
 	}
 }

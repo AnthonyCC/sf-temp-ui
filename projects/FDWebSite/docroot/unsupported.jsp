@@ -20,7 +20,7 @@ final int W_UNSUPPORTED_TOTAL = 765;
                    : request.getHeader("Referer");
 %>
 
-<table width="<%=W_UNSUPPORTED_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
+<table role="presentation" width="<%=W_UNSUPPORTED_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
 <tr>
 <td colspan="2">
 	<fd:IncludeMedia name="/media/editorial/site_pages/lists/unsupported.html">

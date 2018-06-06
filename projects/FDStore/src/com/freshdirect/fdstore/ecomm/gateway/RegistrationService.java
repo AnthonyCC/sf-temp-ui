@@ -8,10 +8,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.freshdirect.common.customer.EnumServiceType;
-import com.freshdirect.customer.EnumFraudReason;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
-import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.ecomm.gateway.AbstractEcommService;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
@@ -31,9 +29,9 @@ public class RegistrationService extends AbstractEcommService implements Registr
 
 	private final static Category LOGGER = LoggerFactory.getInstance(RegistrationService.class);
 
-	private static final String REGISTER = "registration/register";
+	private static final String REGISTER = "/registration/register";
 
-	private static final String CREATENEWUSER = "registration/createNewUser";
+	private static final String CREATENEWUSER = "/registration/createNewUser";
 	
 	private static RegistrationService INSTANCE;
 
@@ -48,9 +46,8 @@ public class RegistrationService extends AbstractEcommService implements Registr
 	public RegistrationResult register(FDActionInfo info, ErpCustomerModel erpCustomer, FDCustomerModel fdCustomer,
 			String cookie, boolean pickupOnly, boolean eligibleForPromotion, FDSurveyResponse survey,
 			EnumServiceType serviceType, boolean isGiftCardBuyer)
-			throws FDResourceException, ErpDuplicateUserIdException, ErpFraudException, RemoteException {
+			throws FDResourceException, ErpDuplicateUserIdException, RemoteException {
 		Response<RegistrationResult> response = null;
-		String inputJson = null;
 		try {
 			Request<ObjectNode> request = new Request<ObjectNode>();
 			ObjectNode rootNode = getMapper().createObjectNode();
@@ -65,7 +62,7 @@ public class RegistrationService extends AbstractEcommService implements Registr
 			rootNode.set("isGiftCardBuyer", getMapper().convertValue(isGiftCardBuyer, JsonNode.class));
 
 			request.setData(rootNode);
-			inputJson = buildRequest(request);
+			String inputJson = buildRequest(request);
 
 			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(REGISTER),
 					new TypeReference<Response<RegistrationResult>>() {
@@ -73,18 +70,16 @@ public class RegistrationService extends AbstractEcommService implements Registr
 
 			if (!response.getResponseCode().equals("OK")) {
 				if ("ErpDuplicateUserIdException".equals(response.getMessage())) {
-					throw new ErpDuplicateUserIdException(erpCustomer!=null?erpCustomer.getUserId():"");
-				}
-				if ("ErpFraudException".equals(response.getMessage())) {
-					throw new ErpFraudException(EnumFraudReason.getEnum(
-							response.getError() != null ? response.getError().get("ErpFraudException").toString()
-									: null));
+					throw new ErpDuplicateUserIdException();
 				}
 				throw new FDResourceException(response.getMessage());
 			}
 			return response.getData();
 		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in RegistrationService: ", e);
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -93,7 +88,6 @@ public class RegistrationService extends AbstractEcommService implements Registr
 	public FDUser createNewUser(String zipCode, EnumServiceType serviceType, EnumEStoreId eStoreId)
 			throws FDResourceException, RemoteException {
 		Response<FDUserData> response = null;
-		String inputJson = null;
 		try {
 			Request<ObjectNode> request = new Request<ObjectNode>();
 			ObjectNode rootNode = getMapper().createObjectNode();
@@ -102,7 +96,7 @@ public class RegistrationService extends AbstractEcommService implements Registr
 			rootNode.set("eStoreId", getMapper().convertValue(eStoreId, JsonNode.class));;
 
 			request.setData(rootNode);
-			inputJson = buildRequest(request);
+			String inputJson = buildRequest(request);
 
 			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(CREATENEWUSER),
 					new TypeReference<Response<FDUserData>>() {
@@ -115,19 +109,12 @@ public class RegistrationService extends AbstractEcommService implements Registr
 			FDUser user = new FDUser(new PrimaryKey(userData.getPK()));
 	        user.setCookie(userData.getCookie());
 	        user.setZipCode(userData.getZipCode());
-	        
-	        if (user.getAddress() != null) {
-	        	user.getAddress().setCity(userData.getCity());
-	        	user.getAddress().setState(userData.getState());
-	        	user.setEbtAccepted(userData.isEbtAccepted());
-	        }
-	        
 			return user;
 		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in RegistrationService: ", e);
+			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		} catch (FDResourceException e) {
-			LOGGER.error("Error in RegistrationService: data=" + (inputJson == null ? "" : inputJson), e);
+			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
 	}

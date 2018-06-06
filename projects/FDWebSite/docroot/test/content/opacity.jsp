@@ -33,7 +33,7 @@ BrowserInfo bi = new BrowserInfo(request);
 	</style>
 	<fd:javascript src="/assets/javascript/common_javascript.js"/>
 <%
-if (request.getHeader("User-Agent").indexOf("Mac") > -1) {
+if (request.getHeader("User-Agent") != null && request.getHeader("User-Agent").indexOf("Mac") > -1) {
 %>	<fd:css href="/assets/css/mac_ie.css"/><%
 } else {
 %>	<fd:css href="/assets/css/pc_ie.css"/><%

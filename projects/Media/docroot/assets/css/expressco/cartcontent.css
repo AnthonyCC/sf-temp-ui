@@ -412,7 +412,7 @@
 }
 
 .cartsection-wine{
-	border-top:1px solid #e0e3d0;
+	border-top: 1px solid #979797;
 }
 
 .cartsection-wine .cartsection__title{
@@ -456,7 +456,7 @@ p.cartsection__tax{
 }
 
 .cartsection__totalwrapper{
-	border-top:1px solid #e0e3d0;
+	border-top: 1px solid #979797;
 	padding: 10px 0 15px 0;
 }
 .cartsection__totalwrapper.right{
@@ -1579,21 +1579,24 @@ label[for="dontupdatecartlines"] {
 .etipping-addtip-text{
   font-size:14px;
   padding-right:90px;
-  }
- 
- #questions {
- 	margin-bottom: 20px;
- }
- .questions__left,
- button[data-component="update-cart"] {
- 	display: none;
- }
- .questions__right {
- 	width: 100%;
- }
- #cartcontent .promotions{
- 	background-color: #f4f4f3;
-    border-top: 2px solid #dcdcdc;
-    border-bottom: 2px solid #dcdcdc;
-    padding-left: 20px;
- }
+}
+
+#questions {
+  margin-bottom: 20px;
+}
+.questions__left,
+button[data-component="update-cart"] {
+  display: none;
+}
+.questions__right {
+  width: 100%;
+}
+#cartcontent .promotions{
+  background-color: #f4f4f3;
+  border-top: 2px solid #dcdcdc;
+  border-bottom: 2px solid #dcdcdc;
+  padding-left: 20px;
+}
+#cartcontent .cartsection-wine {
+  border-top: none;
+}

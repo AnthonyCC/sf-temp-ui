@@ -30,7 +30,7 @@ FDSessionUser sessionuser = (FDSessionUser)session.getAttribute(SessionName.USER
     if(sessionuser.isGCSignupError()) {
        
 %>    
-<table width="100%" cellspacing="0" cellpadding="0" border="0">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
     <td rowspan="5" width="20"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
     <td rowspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_tp_lft_crnr.gif" alt="" width="18" height="5" border="0"></td>
@@ -75,7 +75,7 @@ sessionuser.setGCSignupError(false);
 if(sessionuser.isAddressVerificationError()) {
        
 %>    
-<table width="100%" cellspacing="0" cellpadding="0" border="0">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
     <td rowspan="5" width="20"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
     <td rowspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_tp_lft_crnr.gif" alt="" width="18" height="5" border="0"></td>
@@ -135,7 +135,7 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 
 
 	<form fdform class="top-margin10 dispblock-fields" fdform-displayerrorafter method="post" style="padding: 0px; margin: 0px;">
-	<table width="<%=W_GC_ADD_CREDITCARD_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
+	<table role="presentation" width="<%=W_GC_ADD_CREDITCARD_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
 		<tr>
 			<td class="title18" WIDTH="<%=W_GC_ADD_CREDITCARD_TOTAL%>">
 				ADD CREDIT CARD<br />
@@ -149,7 +149,7 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 	<IMG src="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="<%=W_GC_ADD_CREDITCARD_TOTAL-2%>" HEIGHT="1" BORDER="0"><BR>
 	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="<%=W_GC_ADD_CREDITCARD_TOTAL%>">
+	<TABLE role="presentation" BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="<%=W_GC_ADD_CREDITCARD_TOTAL%>">
 	<TR VALIGN="TOP">
 	<TD WIDTH="<%=W_GC_ADD_CREDITCARD_TOTAL%>" ALIGN="RIGHT">
 	<a class="cssbutton green transparent small" href="<%=success_page%>">CANCEL</a>

@@ -107,7 +107,7 @@ final int W_CREDITCARD_SELECT_CARD = 270;
 				} %>
 				<fieldset>
 					<legend class="offscreen">Choose card</legend>
-					<table border="0" cellpadding="0" cellspacing="0" width="<%= W_CREDITCARD_SELECT_TOTAL %>">
+					<table role="presentation" border="0" cellpadding="0" cellspacing="0" width="<%= W_CREDITCARD_SELECT_TOTAL %>">
 						<tr valign="top">
 						<%
 							itemCounter=0;

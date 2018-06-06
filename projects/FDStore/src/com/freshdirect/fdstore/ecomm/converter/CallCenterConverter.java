@@ -14,7 +14,6 @@ import com.freshdirect.crm.CrmClick2CallTimeModel;
 import com.freshdirect.crm.CrmOrderStatusReportLine;
 import com.freshdirect.crm.CrmSettlementProblemReportLine;
 import com.freshdirect.crm.CrmVSCampaignModel;
-import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.EnumComplaintStatus;
 import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumSaleStatus;
@@ -30,6 +29,7 @@ import com.freshdirect.delivery.restriction.EnumDlvRestrictionCriterion;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionType;
 import com.freshdirect.delivery.restriction.RestrictionI;
+import com.freshdirect.ecomm.converter.FDActionInfoConverter;
 import com.freshdirect.ecomm.converter.SapGatewayConverter;
 import com.freshdirect.ecommerce.data.customer.CancelReservationData;
 import com.freshdirect.ecommerce.data.customer.CreditSummaryData;
@@ -38,7 +38,6 @@ import com.freshdirect.ecommerce.data.customer.CrmClick2CallTimeData;
 import com.freshdirect.ecommerce.data.customer.CrmOrderStatusReportLineData;
 import com.freshdirect.ecommerce.data.customer.CrmSettlementProblemReportLineData;
 import com.freshdirect.ecommerce.data.customer.CrmVSCampaignData;
-import com.freshdirect.ecommerce.data.customer.CustomerRatingAdapterData;
 import com.freshdirect.ecommerce.data.customer.ErpRedeliveryData;
 import com.freshdirect.ecommerce.data.customer.ErpReturnOrderData;
 import com.freshdirect.ecommerce.data.customer.FDAuthInfoData;
@@ -59,12 +58,10 @@ import com.freshdirect.ecommerce.data.customer.SettlementProblemReportData;
 import com.freshdirect.ecommerce.data.delivery.AlcoholRestrictionData;
 import com.freshdirect.ecommerce.data.delivery.RestrictedAddressModelData;
 import com.freshdirect.ecommerce.data.delivery.RestrictionData;
-import com.freshdirect.ecommerce.data.dlv.ProfileData;
 import com.freshdirect.ecommerce.data.ecoupon.DiscountData;
 import com.freshdirect.ecommerce.data.sap.ErpChargeLineData;
 import com.freshdirect.ecommerce.data.sap.ErpInvoiceLineData;
 import com.freshdirect.ecommerce.data.survey.FDIdentityData;
-import com.freshdirect.fdlogistics.model.EnumRestrictedAddressReason;
 import com.freshdirect.fdstore.content.meal.EnumMealItemType;
 import com.freshdirect.fdstore.content.meal.EnumMealStatus;
 import com.freshdirect.fdstore.content.meal.MealItemModel;
@@ -80,8 +77,6 @@ import com.freshdirect.fdstore.customer.FDCustomerReservationInfo;
 import com.freshdirect.fdstore.customer.FDCutoffTimeInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.MakeGoodOrderInfo;
-import com.freshdirect.fdstore.customer.ProfileModel;
-import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
 import com.freshdirect.fdstore.ecomm.gateway.FDStoreModelConverter;
 import com.freshdirect.framework.util.GenericSearchCriteria;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
@@ -272,21 +267,6 @@ public class CallCenterConverter {
 		resubmitPaymentData.setErpChargeLineModel(buildChargeLineModelData((List<ErpChargeLineModel>) charges));
 		resubmitPaymentData.setPaymentMethod(SapGatewayConverter.buildPaymentMethodData(payment));
 		return resubmitPaymentData;
-	}
-
-	public static CustomerRatingAdapterData buildCustomerRatingData(CustomerRatingI cra) {
-		CustomerRatingAdapterData customerRatingData = new CustomerRatingAdapterData();
-		CustomerRatingAdaptor ratingAdaptor = (CustomerRatingAdaptor) cra;
-		customerRatingData.setCosCustomer(ratingAdaptor.isCosCustomer());
-		customerRatingData.setProfile(buildProfileData(ratingAdaptor.getProfile()));
-		customerRatingData.setValidOrderCount(ratingAdaptor.getValidOrderCount());
-		return customerRatingData;
-	}
-
-	private static ProfileData buildProfileData(ProfileModel profile) {
-		ProfileData profileData = new ProfileData();
-		profileData.setId(profile.getId());
-		return profileData;
 	}
 
 	public static ErpRedeliveryData buildErpRedeliveryData(ErpRedeliveryModel redeliveryModel) {
@@ -522,7 +502,7 @@ public class CallCenterConverter {
 	public static ReturnOrderData buildReturnOrderData(FDActionInfo info,
 			List returnOrders) {
 		ReturnOrderData returnOrder = new ReturnOrderData();
-		returnOrder.setInfo(ListConverter.buildActionInfoData(info));
+		returnOrder.setInfo(FDActionInfoConverter.buildActionInfoData(info));
 		returnOrder.setReturnOrders(buildFDCustomerOrderInfoDataList(returnOrders));
 		return returnOrder;
 	}

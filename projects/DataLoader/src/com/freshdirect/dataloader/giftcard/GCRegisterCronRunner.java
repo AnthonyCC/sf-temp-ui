@@ -61,10 +61,9 @@ public class GCRegisterCronRunner {
 			ctx = getInitialContext();
 			SaleCronHome home = (SaleCronHome) ctx.lookup("freshdirect.dataloader.SaleCron");
 			SaleCronSB sb = home.create();
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SaleCronSBRegisterGiftCards)){
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SaleCronSB)) {
 				SaleCronService.getInstance().registerGiftCards(registerTimeout);
-			}
-			else{
+			} else {
 				sb.registerGiftCards(registerTimeout);
 			}
 			LOGGER.info("GCRegisterCron finished");

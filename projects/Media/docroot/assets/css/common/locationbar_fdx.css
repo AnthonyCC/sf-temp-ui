@@ -152,8 +152,9 @@
 	#popupcart .footer .save-amount{
 	    float: right;
 	    padding-right: 50px;
-	    font-size: small;
+	    font-size: 13px;
 	    color: #DF0000;
+	    padding-top: 0;
 	}
 
 	[data-component="subtotal"], .subtotal {
@@ -297,16 +298,16 @@
 	#topSearchField:focus {
 		border: 1px solid #4fa157;
 	}
-	::-webkit-input-placeholder {
+	#topSearchField::-webkit-input-placeholder {
 	    color:#333;
 	}
-	:-moz-placeholder {
+	#topSearchField:-moz-placeholder {
 	    color:#333;
 	}
-	::-moz-placeholder {
+	#topSearchField::-moz-placeholder {
 	    color:#333;
 	}
-	:-ms-input-placeholder {
+	#topSearchField:-ms-input-placeholder {
 	    color:#333;
 	}
 

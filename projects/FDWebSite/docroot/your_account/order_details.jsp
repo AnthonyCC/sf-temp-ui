@@ -30,6 +30,10 @@ final int W_YA_ORDER_DETAILS_3C_COLUMN = 268;
 if(orderId==null){
 	orderId = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
 }
+
+if (orderId == null){
+    throw new FDNotFoundException("No orderId was provided");
+}
 %>
 <fd:ModifyOrderController orderId="<%= orderId %>" result="result" successPage='<%= "/your_account/order_details.jsp?orderId=" + orderId %>'>
 <tmpl:insert template='/common/template/dnav.jsp'>
@@ -39,6 +43,7 @@ if(orderId==null){
 <%--   <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Order Details</tmpl:put> --%>
 	<tmpl:put name='extraCss' direct='true'>
 		<jwr:style src="/your_account.css" media="all" />
+		<link rel="stylesheet" type="text/css" media="all" href="/assets/css/expressco/cartcontent.css" media="all" />
 	</tmpl:put>
 	<tmpl:put name='printdata' direct='true'>order_details</tmpl:put>
     <tmpl:put name='content' direct='true'>

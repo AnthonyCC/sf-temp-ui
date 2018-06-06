@@ -558,5 +558,8 @@ class FDCustomerOrderInfoDAO {
 		if ("SH".equalsIgnoreCase(shortAndSubstitute)) {
 			shotSubstituteData.setShortItem(shortAndSubstitute);
 		}
+		if ("SS".equalsIgnoreCase(shortAndSubstitute)) {
+			shotSubstituteData.setShortAndSubstituteItem(shortAndSubstitute);
+		}
 	}
 }

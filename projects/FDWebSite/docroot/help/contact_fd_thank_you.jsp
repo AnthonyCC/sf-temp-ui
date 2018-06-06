@@ -49,7 +49,7 @@ if ("true".equalsIgnoreCase(overlay)) {
    	
     <tmpl:put name='content' direct='true'>
 	<br>
-	<table border="0" cellspacing="0" cellpadding="2" style="width: <%= (mobWeb) ? "100%" : "675px" %>">
+	<table role="presentation" border="0" cellspacing="0" cellpadding="2" style="width: <%= (mobWeb) ? "100%" : "675px" %>">
 	    <tr valign="TOP">
 			<td style="width: <%= (mobWeb) ? "100%" : "675px" %>" align="center" class="text13">
 			<div style="font-size: 28px; font-face:Arial,Verdana,Helvetica; color: #FF9933; margin-bottom: 6px;"><b>THANK YOU!</b></div>
@@ -59,7 +59,7 @@ if ("true".equalsIgnoreCase(overlay)) {
 			 		 As a reminder, we are here:<br><br>
 			 
 			  <div align="center">
-                            <table>							
+                            <table role="presentation">							
 							<% for (int i=0; i<csHours.size(); i++ ) {
 									FDCSContactHours csHour = (FDCSContactHours) csHours.get(i);
 							%>

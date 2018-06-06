@@ -21,7 +21,7 @@
  */
 {template .carousels autoescape="false"}
   {if $carousel1 or $carousel2}
-    <table class="{if $carousel1}hasCarousel1{else}noCarousel1{/if} {if $carousel2}hasCarousel2{else}noCarousel2{/if}">
+    <table role="presentation" class="{if $carousel1}hasCarousel1{else}noCarousel1{/if} {if $carousel2}hasCarousel2{else}noCarousel2{/if}">
       <tr class="header">
         <td class="c1">
           <div>

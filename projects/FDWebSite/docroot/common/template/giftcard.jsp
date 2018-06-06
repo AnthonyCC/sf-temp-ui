@@ -86,7 +86,7 @@ final int W_GIFTCARD_TOTAL = 970;
 	%>
 	<%@ include file="/common/template/includes/i_giftcard_nav.jspf" %> 
 
-	<table width="<%=W_GIFTCARD_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
+	<table role="presentation" width="<%=W_GIFTCARD_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
 		<tr>
 			<td width="<%=W_GIFTCARD_TOTAL%>" valign="top" bgcolor="#<%=color%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_GIFTCARD_TOTAL%>" height="1" border="0"></td>
 		</tr>

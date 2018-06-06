@@ -109,7 +109,9 @@
     		<script>
     			FreshDirect.modules.common.utils.createCookie('viewtype', 'grid');
     		</script>
-    		<div id="shoppinglists" class=""></div>
+<!--   duplicate values of ID ACCESSIBILITY  -->
+
+<!--     		<div id="shoppinglists" class=""></div> -->
     	<% } %>
     	<div id="productlist" class="" data-cmeventsource="qs_customerLists"></div>
     	<div id="productlistHeader" class=""></div>

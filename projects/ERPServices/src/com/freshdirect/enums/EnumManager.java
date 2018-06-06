@@ -31,7 +31,7 @@ public class EnumManager {
 			try {
 				setInstance(new EnumManager(new ServiceLocator(ErpServicesProperties.getInitialContext())));
 			} catch (NamingException e) {
-				LOGGER.error(e);
+				LOGGER.error("Error occured in EnumManager.getInstance", e);
 				throw new EJBException(e);
 			}
 		}

@@ -66,17 +66,13 @@ public class SaleCronRunner {
 			int affected ;
 			List<Date> dates;
 			SaleCronSB sb = home.create();
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SaleCronSBCancelAuthorizationFailed)) {
-				SaleCronService.getInstance().cancelAuthorizationFailed();
-			} else {
-				sb.cancelAuthorizationFailed();
-			}
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SaleCronSB)) {
-
+				SaleCronService.getInstance().cancelAuthorizationFailed();
 				dates = SaleCronService.getInstance().queryCutoffReportDeliveryDates();
 				affected = SaleCronService.getInstance().cutoffSales();
 			} else {
-
+				
+				sb.cancelAuthorizationFailed();
 				dates = sb.queryCutoffReportDeliveryDates();
 				affected = sb.cutoffSales();
 			}
@@ -90,27 +86,18 @@ public class SaleCronRunner {
 					}
 			}
 			//First clear pending reverse auth for cancelled orders.
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SaleCronSBReverseAuthorizeSales)){
-				SaleCronService.getInstance().reverseAuthorizeSales(authTimeout);
-			}else {
-				sb.reverseAuthorizeSales(authTimeout);
-				
-			}
 			//Second Pre auth gift card.
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SaleCronSBPreAuthorizeSales)){
-				SaleCronService.getInstance().preAuthorizeSales(authTimeout);
-			}else {
-				sb.preAuthorizeSales(authTimeout);
-				
-			}
 			//Third perform CC authorization.
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SaleCronSB)){
+				SaleCronService.getInstance().reverseAuthorizeSales(authTimeout);
+				SaleCronService.getInstance().preAuthorizeSales(authTimeout);
 				SaleCronService.getInstance().authorizeSales(authTimeout);
 			}else {
+				sb.reverseAuthorizeSales(authTimeout);
+				sb.preAuthorizeSales(authTimeout);
 				sb.authorizeSales(authTimeout);
 				
 			}
-
 
 		} catch (Exception e) {
 			StringWriter sw = new StringWriter();

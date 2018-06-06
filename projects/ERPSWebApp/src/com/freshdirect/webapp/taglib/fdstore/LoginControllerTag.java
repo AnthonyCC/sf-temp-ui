@@ -50,7 +50,17 @@ public class LoginControllerTag extends AbstractControllerTag {
         Integer fdLoginAttempt = session.getAttribute(SessionName.LOGIN_ATTEMPT) != null ? (Integer) session.getAttribute(SessionName.LOGIN_ATTEMPT) : Integer.valueOf(0);
 		
 		boolean isCaptchaSuccess = CaptchaUtil.validateCaptcha(request.getParameter("g-recaptcha-response"), request.getRemoteAddr(), CaptchaType.SIGN_IN, session, SessionName.LOGIN_ATTEMPT, FDStoreProperties.getMaxInvalidLoginAttempt());
-			
+
+        if (request.getParameter(EnumUserInfoName.USER_ID.getCode()) == null) {
+            actionResult.addError(new ActionError(EnumUserInfoName.USER_ID.getCode(), SystemMessageList.MSG_REQUIRED));
+            return true;
+        }
+
+        if (request.getParameter(EnumUserInfoName.PASSWORD.getCode()) == null) {
+            actionResult.addError(new ActionError(EnumUserInfoName.PASSWORD.getCode(), SystemMessageList.MSG_REQUIRED));
+            return true;
+        }
+
 		String userId = request.getParameter(EnumUserInfoName.USER_ID.getCode()).trim();
 		String password = request.getParameter(EnumUserInfoName.PASSWORD.getCode()).trim();
 		HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();

@@ -1067,7 +1067,7 @@ public class FDStoreProperties {
     private static final String PROP_CART_CONFIRM_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED = "fdstore.cartconfirmpage.newproductscarousel.randomizeproductorder.enabled";
 	
 	private static final String MASTERPASS_EXCEPTION_MESSAGE = "masterpass.exception.message";
-	private static final String PROP_MIN_AMOUNT_SAVED_DP_ACCOUNTS_PAGE="fdstore.minimum.amount.saved.dpaccountpage"; 
+	private static final String PROP_AMOUNT_SAVED_DP_ACCOUNTS_PAGE_ENABLED="fdstore.amount.saved.dpaccountpage.enabled"; 
 
  	static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -1077,7 +1077,7 @@ public class FDStoreProperties {
         defaults.put(PROP_CRM_CASE_LIST_LENGTH, "100");
         defaults.put(PROP_CRM_CASE_HISTORY_LIST_LENGTH, "25");
         defaults.put(PROP_CRM_DISABLE_TIME_WINDOW_CHECK, "false");
-        defaults.put(PROP_FDSTORE_WEB_CAREERLINK, "http://jobs-freshdirect.icims.com");
+		defaults.put(PROP_FDSTORE_WEB_CAREERLINK, "http://jobs-freshdirect.icims.com");
         defaults.put(PROP_FDFACTORY_HOME, "freshdirect.fdstore.Factory");
         defaults.put(PROP_SAPGATEWAY_HOME, "freshdirect.sap.Gateway");
         defaults.put(PROP_KANAGATEWAY_HOME, "freshdirect.kana.Gateway");
@@ -1930,7 +1930,7 @@ public class FDStoreProperties {
         defaults.put(PROP_PLANT1310_PRICE_INDICATOR, "BASE");
         defaults.put(PROP_PLANTWDC_PRICE_INDICATOR, "BASE");
 
-        defaults.put(PROP_SF_2_0_ENABLED, "false");
+        defaults.put(PROP_SF_2_0_ENABLED, "true");
         defaults.put(PROP_MAT_SALESORG__EXPORT_PICKPLANT_VALIDATION_ENABLED, "true");
         defaults.put(PROP_EXTRA_LOG_FOR_LOGIN_FAILS_ENABLED, "false");
         defaults.put(PROP_MEALBUNDLE_CARTONVIEW_ENABLED, "true");
@@ -1944,7 +1944,7 @@ public class FDStoreProperties {
         defaults.put(PROP_DFP_ENABLED, "false");
         defaults.put(PROP_DFP_ID, "1072054678");
 
-        defaults.put(PROP_CLUSTER_NAME, "localhost");
+        defaults.put(PROP_CLUSTER_NAME, "locallhost");
         defaults.put(PROP_NODE_NAME, "localhost");
 
         defaults.put(PROP_PRODUCT_CACHE_OPTIMIZATION_ENABLED, "true");
@@ -2009,7 +2009,7 @@ public class FDStoreProperties {
         defaults.put(PROP_FDC_NEW_BACKIN_USE_FD_ENABLED, "false");
 
         defaults.put(DATABASE_IN_CONDITION_LIMIT, "50");
-        defaults.put(PROP_FD_DP_FREE_TRIAL_OPTIN_FEATURE_ENABLED, "false");
+        defaults.put(PROP_FD_DP_FREE_TRIAL_OPTIN_FEATURE_ENABLED, "true");
 
         defaults.put(PROP_DB_PARTIAL_JOIN_OPTIMIZER_ENABLED, "true");
 
@@ -2029,7 +2029,7 @@ public class FDStoreProperties {
         defaults.put(PROP_IS_FDC_FIRST_ORDER_EMAIL_MSG_ENABLED, "false");
 
         defaults.put(PROP_FD_DP_STANDALONE_CHECKOUT_ENABLED, "false");
-        defaults.put(PROP_FD_DP_MIDWEEK_ENABLED, "false");
+        defaults.put(PROP_FD_DP_MIDWEEK_ENABLED, "true");
 
         defaults.put(PROP_NEW_PRODUCTS_PAGE_CAROUSEL_ENABLED, "false");
         defaults.put(PROP_NEW_PRODUCTS_PAGE_CAROUSEL_CONTAINER_CONTENT_KEY, "ModuleContainer:new_prod");
@@ -2047,12 +2047,28 @@ public class FDStoreProperties {
 
         defaults.put(PROP_CART_CONFIRM_PAGE_NEW_PRODUCTS_CAROUSEL_ENABLED, "false");
         defaults.put(PROP_CART_CONFIRM_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED, "false");
-        defaults.put(PROP_MIN_AMOUNT_SAVED_DP_ACCOUNTS_PAGE, "14.00");
+        defaults.put(PROP_AMOUNT_SAVED_DP_ACCOUNTS_PAGE_ENABLED, "false");
+        
+        try {
+     		String hostName=java.net.InetAddress.getLocalHost().getCanonicalHostName();
+     		if(hostName!=null && hostName.indexOf(".")!=-1) {
+     			nodeName=hostName.substring(0, hostName.indexOf("."));
+     		} else {
+     			nodeName="";
+     		}
+     			
+     		
+     	} catch(Exception e) {
+     		LOGGER.info("Failed to set nodeName",e);
+     	}        
 		
         refresh();
     }
 
+	private static String nodeName;
+
     private FDStoreProperties() {
+    	 
     }
 
     private static void refresh() {
@@ -4990,7 +5006,8 @@ public class FDStoreProperties {
     }
 
     public static String getNodeName() {
-        return get(PROP_NODE_NAME);
+       // return get(PROP_NODE_NAME);
+    	return nodeName;
     }
 
     public static boolean isProductCacheOptimizationEnabled() {
@@ -5193,7 +5210,7 @@ public class FDStoreProperties {
         return (Boolean.valueOf(get(PROP_REORDER_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED))).booleanValue();
     }
 
-public static String getMasterpassExcMessage() {
+	public static String getMasterpassExcMessage() {
 	        return get(MASTERPASS_EXCEPTION_MESSAGE);
 	    }
 
@@ -5205,7 +5222,7 @@ public static String getMasterpassExcMessage() {
         return (Boolean.valueOf(get(PROP_CART_CONFIRM_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED))).booleanValue();
     }
     
-    public static double getMinimumAmountSavedDpAccPage() {
-        return Double.parseDouble(get(PROP_MIN_AMOUNT_SAVED_DP_ACCOUNTS_PAGE));
-    }   
+    public static boolean isAmountSavedDpAccPageEnabled() {
+        return (Boolean.valueOf(get(PROP_AMOUNT_SAVED_DP_ACCOUNTS_PAGE_ENABLED))).booleanValue();
+    }
 }

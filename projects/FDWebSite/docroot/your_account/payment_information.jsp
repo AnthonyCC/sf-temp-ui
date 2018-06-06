@@ -96,7 +96,7 @@
 		%>
 
 		<!-- error message handling here -->
-		<table width="<%= W_YA_PAYMENT_INFO_TOTAL %>" border="0" cellpadding="0" cellspacing="0">
+		<table role="presentation" width="<%= W_YA_PAYMENT_INFO_TOTAL %>" border="0" cellpadding="0" cellspacing="0">
 			<tr>
 				<td width="<%= W_YA_PAYMENT_INFO_TOTAL %>" class="text11">
 					<span class="title18">Payment Options</span><br /><span class="space2pix"><br /></span>
@@ -133,7 +133,7 @@
 
 		       		<fd:GetStandingOrderHelpInfo id="helpSoInfo">
 		              <script type="text/javascript">var helpSoInfo=<%=helpSoInfo%>;</script>
-		              <table width="<%= W_YA_PAYMENT_INFO_TOTAL %>" border="0" cellspacing="0" cellpadding="0">
+		              <table role="presentation" width="<%= W_YA_PAYMENT_INFO_TOTAL %>" border="0" cellspacing="0" cellpadding="0">
 		              	<tr><td class="acc-payment-methods-title-header">ADD NEW PAYMENT METHOD</td></tr>
 		              	<tr><td colspan="9"><img src="/media_stat/images/layout/999966.gif" alt="" width="970" height="1" border="0" vspace="3"></td></tr>
 		              	<tr align="middle">
@@ -179,7 +179,7 @@
 						%>
 						<% if (isPayPalWalletEnabled) {%>
 							<br />
-							<table id="pp_wallet_cards" width="<%= W_YA_PAYMENT_INFO_TOTAL %>"  border="0" cellspacing="0" cellpadding="0">
+							<table role="presentation" id="pp_wallet_cards" width="<%= W_YA_PAYMENT_INFO_TOTAL %>"  border="0" cellspacing="0" cellpadding="0">
 								<% if (paymentsPP!=null && paymentsPP.size() > 0){
 									for(ErpPaymentMethodI paymentM1 : paymentsPP) {
 										if(paymentM1 != null && paymentM1.geteWalletID()!= null && paymentM1.geteWalletID().equals(""+EnumEwalletType.PP.getValue())){
@@ -232,7 +232,7 @@
 							</table>
 						<% } %>
 		              <br />
-		              <table width="<%= W_YA_PAYMENT_INFO_TOTAL %>" border="0" cellspacing="0" cellpadding="0">
+		              <table role="presentation" width="<%= W_YA_PAYMENT_INFO_TOTAL %>" border="0" cellspacing="0" cellpadding="0">
 		              <% if (isCheckEligible && !isECheckRestricted) { %>
 		              	 <script>
 		               		$jq('#add-new-payment-method-checking-acc-disabled-master').css("display","none");
@@ -263,7 +263,7 @@
 		              <% } %>
 					</table>
 					<br />
-		              <table width="<%= W_YA_PAYMENT_INFO_TOTAL %>" border="0" cellspacing="0" cellpadding="0">
+		              <table role="presentation" width="<%= W_YA_PAYMENT_INFO_TOTAL %>" border="0" cellspacing="0" cellpadding="0">
 		              <tr valign="top">
 		                  <td><!-- <img src="/media_stat/images/navigation/credit_card_details.gif"
 				WIDTH="152" HEIGHT="15" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;<br /> -->
@@ -285,7 +285,7 @@
 		              </table>
 		              <br />
 		              <% if(user.isEbtAccepted()|| hasEBT){ %>
-		              <table width="<%= W_YA_PAYMENT_INFO_TOTAL %>" border="0" cellspacing="0" cellpadding="0">
+		              <table role="presentation" width="<%= W_YA_PAYMENT_INFO_TOTAL %>" border="0" cellspacing="0" cellpadding="0">
 		              <tr valign="top">
 		                  <td><img src="/media_stat/images/navigation/ebt_card_details.gif" WIDTH="119" HEIGHT="11" border="0" alt="EBT CARD DETAILS">&nbsp;&nbsp;&nbsp;<br />
 		                  <IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>" HEIGHT="1" BORDER="0" VSPACE="3"><br />
@@ -308,7 +308,7 @@
 		              <br />
 		              <IMG src="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>" HEIGHT="1" BORDER="0"><br />
 		              <FONT CLASS="space4pix"><br /><br /></FONT>
-		              <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>">
+		              <TABLE role="presentation" BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>">
 		              <TR VALIGN="TOP">
 		              <TD WIDTH="35"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="" ALIGN="LEFT">
                        CONTINUE SHOPPING

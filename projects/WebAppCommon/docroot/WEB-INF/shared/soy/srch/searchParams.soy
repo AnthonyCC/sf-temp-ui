@@ -31,33 +31,45 @@
  * @param? listSearchParams
  */
 {template .searchSuggestions autoescape="false"}
-    {if $tabs and length($tabs) > 0}
-      <div class="top-marg left-marg">
-        {foreach $tab in $tabs}
-          {if $tab.active}
-            {call .searchDescription}
-              {param hits:$tab.hits /}
-              {param itemType:$tab.type /}
-              {param searchTerm:$searchTerm /}
-              {param searchParams:$searchParams /}
-            {/call}
-          {/if}
-        {/foreach}
-      </div>
-    {/if}
-    {if $suggestions and length($suggestions) > 0}
-  <div class="left-marg">
-    Did you mean {foreach $term in $suggestions}
-      {if $listSearchParams}
-      	<a href="/srch.jsp?searchParams={$term}&listSearchParams={$listSearchParams}">{$term}</a>
-      {else}
-      	<a href="/srch.jsp?searchParams={$term}">{$term}</a>
-      {/if}
-      {if index($term) < length($suggestions) - 2}, {/if}
-      {if index($term) == length($suggestions) - 2} or {/if}
-    {/foreach}?
-  </div>
-  {/if}
+	{if $tabs and length($tabs) > 0}
+		<span class="search-suggestion-cont top-marg left-marg">
+			{foreach $tab in $tabs}
+				{if $tab.active}
+				{call .searchDescription}
+					{param hits:$tab.hits /}
+					{param itemType:$tab.type /}
+					{param searchTerm:$searchTerm /}
+					{param searchParams:$searchParams /}
+				{/call}
+				{/if}
+			{/foreach}
+			{if $suggestions and length($suggestions) > 0}
+				, showing products for "<span class="search-term">{$suggestions[0]}</span>".
+			{/if}
+		</span>
+	{/if}
+	{if $suggestions and length($suggestions) > 0}
+		<div class="search-suggestion-dym left-marg">
+			Did you mean{sp}
+			{foreach $term in $suggestions}
+				{if $listSearchParams}
+					<a href="/srch.jsp?searchParams={$term}&listSearchParams={$listSearchParams}">{$term}</a>
+				{else}
+					<a href="/srch.jsp?searchParams={$term}">{$term}</a>
+				{/if}
+				{if index($term) < length($suggestions) - 2}, {/if}
+				{if index($term) == length($suggestions) - 2} or {/if}
+			{/foreach}?
+		</div>
+		{foreach $tab in $tabs}
+			{if $tab.active}
+				{call .hitsDescriptor}
+					{param hits:$tab.hits /}
+					{param text:$suggestions[0] /}
+				{/call}
+			{/if}
+		{/foreach}
+	{/if}
 {/template}
 
 
@@ -70,30 +82,23 @@
 {template .searchDescription autoescape="false"}
 
 {if $searchParams and $searchTerm}
-  <b>0</b> {$itemType} found for <b>{$searchParams}</b>{sp}|{sp}
-  {call .hitsDescriptor}
-    {param hits:$hits /}
-    {param itemType:$itemType /}
-    {param text:$searchTerm /}
-  {/call}
+  <div class="search-noresults">No {$itemType} found for "<span class="search-term">{$searchParams}</span>"</div>
 {/if}
 
 {if $searchParams and not $searchTerm}
   {call .hitsDescriptor}
     {param hits:$hits /}
-    {param itemType:$itemType /}
     {param text:$searchParams /}
   {/call}
 {/if}
 {/template}
 
 /**
-* @param? itemType
 * @param? hits
 * @param? text
 */
 {template .hitsDescriptor}
-Showing <b>{$hits}</b> {$hits > 1 ? $itemType + 's' : $itemType} found for <b>{$text}</b>
+<div class="search-hits-descrip">"<span class="search-term">{$text}</span>" (<span class="search-term-hits">{$hits}</span>)</div>
 {/template}
 
 /**
@@ -103,7 +108,9 @@ Showing <b>{$hits}</b> {$hits > 1 ? $itemType + 's' : $itemType} found for <b>{$
   {if $pageType == 'NEWPRODUCTS'}
     <h1 class="orange-title">New Products</h1>
   {elseif $pageType == 'SEARCH'}
-    <h1 class="orange-title">Search Results</h1>
+    /* NO TITLE - APPDEV-7229
+     *<h1 class="orange-title">Search Results</h1>
+     */
   {elseif $pageType == 'PRES_PICKS' or $pageType == 'STAFF_PICKS'}
     <div class="oas-cnt PPHeader" id="oas_PPHeader">
       <script type="text/javascript">
@@ -161,4 +168,13 @@ Showing <b>{$hits}</b> {$hits > 1 ? $itemType + 's' : $itemType} found for <b>{$
     </div>
   </div>
 {/if}
+{/template}
+
+/**
+ * @param? searchParams
+ */
+{template .noResultsNoSuggestions}
+	{if $searchParams}
+		<div class="search-noresults-no-suggestions">No results found for "<span class="search-term">{$searchParams}</span>". Please check the spelling of the words you entered or try a more general term.</div>
+	{/if}
 {/template}

@@ -25,6 +25,12 @@ import com.freshdirect.mail.EnumTranEmailType;
  * @version $Revision$
  * @author $Author$
  */
+/**
+ *@deprecated Please use the SapLoaderController and SAPLoaderServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public interface TEmailInfoSB extends EJBObject {
 
 	/**
@@ -32,14 +38,32 @@ public interface TEmailInfoSB extends EJBObject {
 	 *
 	 * @throws FDResourceException if an error occured using remote resources
 	 */
+	/**
+	 *@deprecated Please use the SapLoaderController and SAPLoaderServiceI in Storefront2.0 project.
+	 * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+	 *
+	 *
+	 */
 	public void sendEmail(EnumTranEmailType tranType,Map input) throws FDResourceException, RemoteException;
 
     //public FDIdentity getRandomCustomerIdentity() throws FDResourceException, RemoteException;
-	
+	/**
+	 *@deprecated This class methods are moved to backoffice project.
+	 * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+	 */
+	@Deprecated
 	public int sendFailedTransactions(int timeout) throws RemoteException;
-	
+	/**
+	 *@deprecated This class methods are moved to backoffice project.
+	 * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+	 */
+	@Deprecated
 	public List getFailedTransactionList(int max_count,boolean isMailContentReqd) throws RemoteException;
-	
+	/**
+	 *@deprecated This class methods are moved to backoffice project.
+	 * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+	 */
+	@Deprecated
 	public Map getFailedTransactionStats() throws RemoteException;
 
 }

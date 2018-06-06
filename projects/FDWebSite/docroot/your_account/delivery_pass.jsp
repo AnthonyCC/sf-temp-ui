@@ -132,11 +132,11 @@ function deliveryPassAutoRenew(item){
 						<div class="dp-header">Your Benefits:</div>
 						<div class="dp-benefits-list-item">
 							<div class="dp-benefits-list-icon"><img style="width: 36px; height: 22px;" src="/media/editorial/site_pages/deliverypass/images/truck.svg" alt="truck"></div>
-							<div class="dp-benefits-list-text"><%= user.hasMidWeekDlvPass() ? "Order as often as you want Tuesday-Thursday and never be charged a delivery fee":"Unlimited Free Deliveries<br/>7 Days a Week" %></div>
+							<div class="dp-benefits-list-text"><%= (user.getDlvPassInfo()!=null && user.getDlvPassInfo().isMidweekPass()) ? "Order as often as you want Tuesday-Thursday and never be charged a delivery fee":"Unlimited Free Deliveries<br/>7 Days a Week" %></div>
 						</div>
 						<div class="dp-benefits-list-item">
 							<div class="dp-benefits-list-icon"><img src="/media/editorial/site_pages/deliverypass/images/alarm-clock.svg" alt="alarm clock"></div>
-							<div class="dp-benefits-list-text"><%= user.hasMidWeekDlvPass() ? "Reserve a Tuesday-Thursday delivery timeslot":"Timeslot Reservations" %></div>
+							<div class="dp-benefits-list-text"><%= (user.getDlvPassInfo()!=null && user.getDlvPassInfo().isMidweekPass()) ? "Reserve a Tuesday-Thursday delivery timeslot":"Timeslot Reservations" %></div>
 						</div>
 						<div class="dp-benefits-list-item">
 							<div class="dp-benefits-list-icon"><img style="width: 30px; height: 30px;" src="/media/editorial/site_pages/deliverypass/images/tag.svg" alt="check"></div>
@@ -151,13 +151,15 @@ function deliveryPassAutoRenew(item){
 							
 							<div class="dp-plan-activate-text"><%= null != user ? DeliveryPassUtil.getPurchaseDate(user):null %> </div>
 						</div>
-						<%-- <% if(null != user && null != user.getDlvPassInfo() )%>
-						<% if(user.getDlvPassInfo().getDPSavings() > FDStoreProperties.getMinimumAmountSavedDpAccPage()) { %>
+						 <% if( FDStoreProperties.isAmountSavedDpAccPageEnabled()) { 
+						 if(user.getDlvPassInfo().getDPSavings() > 0) { %> 
 						<div class="dp-plan-saved">
 							<div class="dp-plan-activate-header">You've Saved:</div>
-							<div class="dp-plan-activate-text"><%= null != user.getDlvPassInfo() ? user.getDlvPassInfo().getDPSavings():null %></div>
+							<div class="dp-plan-activate-text">$<%=user.getDlvPassInfo().getDPSavings() %></div>
 						</div>
-						<% } %> --%>
+						 <% } 
+						 }%> 
+						
 						<div class="clear"></div>
 					</div>
 					

@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
-import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.ecomm.gateway.AbstractEcommService;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
@@ -18,7 +17,6 @@ import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDEcommServiceException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
-import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDRecipientList;
 import com.freshdirect.fdstore.customer.FDUser;
@@ -26,18 +24,15 @@ import com.freshdirect.fdstore.customer.ejb.FDUserDAO;
 import com.freshdirect.fdstore.ecomm.model.RecognizedUserData;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.ContentFactory;
 
 public class CustomerIdentityService extends AbstractEcommService implements CustomerIdentityServiceI {
 
-	private final static Category LOGGER = LoggerFactory.getInstance(CustomerIdentityService.class);
+	private final static Category LOGGER = LoggerFactory.getInstance(RegistrationService.class);
 
-	private static final String LOGIN = "customerIdentity/login";
+	private static final String LOGIN = "/customerIdentity/login";
 
-	private static final String RECOGNIZE = "customerIdentity/recognize";
+	private static final String RECOGNIZE = "/customerIdentity/recognize";
 
-	private static final String GET_FDCUSTOMER = "customerIdentity/getFDCustomer";
-	private static final String GET_ERPCUSTOMER = "customerIdentity/getErpCustomer";
 	private static CustomerIdentityServiceI INSTANCE;
 
 	public static CustomerIdentityServiceI getInstance() {
@@ -75,10 +70,10 @@ public class CustomerIdentityService extends AbstractEcommService implements Cus
 			}
 			return response.getData();
 		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in CustomerIdentityService: userId=" + userId, e);
+			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		} catch (FDResourceException e) {
-			LOGGER.error("Error in CustomerIdentityService: userId=" + userId, e);
+			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -110,21 +105,15 @@ public class CustomerIdentityService extends AbstractEcommService implements Cus
 			FDUser user = loadFromRecognizedUserData(recognizedUserData, false, true);
 			return user;
 		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in CustomerIdentityService: cookie=" + cookie, e);
+			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		} catch (FDResourceException e) {
-			LOGGER.error("Error in CustomerIdentityService: cookie=" + cookie, e);
+			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
 
 	}
 
-	@Override
-	public FDUser recognize(FDIdentity identity)
-			throws FDAuthenticationException, FDResourceException, RemoteException {
-		return recognize(identity, null, false, true);
-	}
-	
 	@Override
 	public FDUser recognize(FDIdentity identity, EnumEStoreId eStoreId, boolean lazy, boolean populateDeliveryPlantInfo)
 			throws FDAuthenticationException, FDResourceException, RemoteException {
@@ -152,49 +141,14 @@ public class CustomerIdentityService extends AbstractEcommService implements Cus
 			FDUser user = loadFromRecognizedUserData(recognizedUserData, lazy, populateDeliveryPlantInfo);
 			return user;
 		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in CustomerIdentityService: identity=" + identity, e);
+			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		} catch (FDResourceException e) {
-			LOGGER.error("Error in CustomerIdentityService: identity=" + identity, e);
+			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
 	}
 
-	@Override
-	public FDCustomerModel getFDCustomer(String fdCustomerId, String erpCustomerId) throws FDResourceException {
-		Response<FDCustomerModel> response = null;
-		
-		String eStoreId = ContentFactory.getInstance().getStoreKey().getId();
-		String query = "?eStoreId=" + eStoreId;
-		if (fdCustomerId != null) {
-			query += "&fdCustomerId=" + fdCustomerId;
-		} else if (erpCustomerId != null) {
-			query += "&erpCustomerId=" + erpCustomerId;
-		}
-		response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_FDCUSTOMER + query),
-				new TypeReference<Response<FDCustomerModel>>() {
-				});
-		if (!response.getResponseCode().equals("OK")) {
-			LOGGER.error("Error in CustomerIdentityService.getFDCustomer: fdCustomerId=" + fdCustomerId
-					+ ", erpCustomerId=" + erpCustomerId);
-			throw new FDResourceException(response.getMessage());
-		}
-		return response.getData();
-	}
-	
-	
-	@Override
-	public ErpCustomerModel getErpCustomer(String erpCustomerId) throws FDResourceException {
-		Response<ErpCustomerModel> response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_ERPCUSTOMER + "/" + erpCustomerId),
-				new TypeReference<Response<ErpCustomerModel>>() {
-				});
-		if (!response.getResponseCode().equals("OK")) {
-			LOGGER.error("Error in CustomerIdentityService.getErpCustomer: erpCustomerId=" + erpCustomerId);
-			throw new FDResourceException(response.getMessage());
-		}
-		return response.getData();
-	}
-	
 	private FDUser loadFromFDUserData(FDUserData data, boolean populateUserContext) {
 		FDUser user = null;
 		if (data != null) {
@@ -202,12 +156,6 @@ public class CustomerIdentityService extends AbstractEcommService implements Cus
 			user = new FDUser(pk);
 			user.setCookie(data.getCookie());
 			user.setZipCode(data.getZipCode(), populateUserContext);
-			// setAddressbyZipCode logic 
-			if (user.getAddress() != null) {
-	        	user.getAddress().setCity(data.getCity());
-	        	user.getAddress().setState(data.getState());
-	        	user.setEbtAccepted(data.isEbtAccepted());
-	        }
 			user.setDepotCode(data.getDepotCode());
 			user.setSelectedServiceType(EnumServiceType.getEnum(data.getSelectedServiceType()));
 			user.setLastRefTrackingCode(data.getLastRefTrackingCode());
@@ -275,4 +223,5 @@ public class CustomerIdentityService extends AbstractEcommService implements Cus
 		user.setDlvPassInfo(recognizedUserData.getDlvPassInfo());
 		return user;
 	}
+
 }

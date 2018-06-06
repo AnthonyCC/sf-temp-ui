@@ -40,7 +40,7 @@ public class SubscriptionCronRunner {
 
 		Context ctx = null;
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SaleCronSBAuthorizeSubscriptions)) {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SaleCronSB)) {
 				SaleCronService.getInstance().authorizeSubscriptions(authTimeout);
 			} else {
 				ctx = getInitialContext();

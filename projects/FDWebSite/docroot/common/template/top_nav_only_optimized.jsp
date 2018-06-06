@@ -64,7 +64,7 @@
 		<%@ include file="/common/template/includes/globalnav_optimized.jspf" %>
 
 	<center class="text10">
-		<table width="<%=W_TOP_NAV_ONLY_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
+		<table role="presentation" width="<%=W_TOP_NAV_ONLY_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
 			<tr>
 				<td class="fivePxTall" width="<%=W_TOP_NAV_ONLY_TOTAL%>" valign="top" colspan="5"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"></td>
 			</tr>

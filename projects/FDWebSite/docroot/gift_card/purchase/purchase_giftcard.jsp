@@ -37,7 +37,7 @@ Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
     if(sessionuser.isGCSignupError()) {
 
 %>
-<table width="100%" cellspacing="0" cellpadding="0" border="0">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
     <td rowspan="5" width="20"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
     <td rowspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_tp_lft_crnr.gif" alt="" width="18" height="5" border="0"></td>
@@ -96,7 +96,7 @@ sessionuser.setGcFraudReason("");
 if(sessionuser.isAddressVerificationError()) {
 
 %>
-<table width="100%" cellspacing="0" cellpadding="0" border="0">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
     <td rowspan="5" width="20"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
     <td rowspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_tp_lft_crnr.gif" alt="" width="18" height="5" border="0"></td>
@@ -214,7 +214,7 @@ UserUtil.initializeGiftCart(user);
 %>
 	<BR>
 <form method="post" id="form1" name="order_form">
-<table width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
+<table role="presentation" width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
 	<tr>
 		<td class="text11" width="<%=W_PURCHASE_GIFTCARD_TOTAL-339%>">
 			<span class="title18">Purchase Gift Cards</span><br />
@@ -268,7 +268,7 @@ boolean isCheckEligible = false;
 
 
 <fieldset><legend class="offscreen">&nbsp;Purchase&nbsp;Type:</legend>
-<table width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" border="0" cellpadding="0" cellspacing="0" class="text11">
+<table role="presentation" width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" border="0" cellpadding="0" cellspacing="0" class="text11">
     <%
     	String serviceType = request.getParameter("serviceType");
     	String value1 = "personal";
@@ -313,7 +313,7 @@ boolean isCheckEligible = false;
 </div>
 
 
-	<table width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" border="0" cellspacing="0" cellpadding="0">
+	<table role="presentation" width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" border="0" cellspacing="0" cellpadding="0">
 		<tr valign="top">
 			<td width="<%=W_PURCHASE_GIFTCARD_TOTAL%>"><span class="title18">Choose Credit Card</span><br />
 					<img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" height="1" border="0" vspace="3"><br />
@@ -344,7 +344,7 @@ boolean isCheckEligible = false;
 		<br />
 		<img src="/media_stat/images/layout/ff9933.gif" alt="" width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" height="1" border="0"><br />
 		<font class="space4pix"><br /><br /></font>
-		<table border="0" cellspacing="0" cellpadding="2" width="<%=W_PURCHASE_GIFTCARD_TOTAL%>">
+		<table role="presentation" border="0" cellspacing="0" cellpadding="2" width="<%=W_PURCHASE_GIFTCARD_TOTAL%>">
 		<tr valign="top">
 			<td width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" align="right">
 			<BUTTON  name="submit_bot" id="submit_bot" class="cssbutton small orange">SUBMIT ORDER</BUTTON>

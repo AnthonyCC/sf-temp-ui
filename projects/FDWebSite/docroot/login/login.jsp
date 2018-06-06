@@ -60,7 +60,7 @@ String templateId = request.getParameter("template");
 		</script>
 	<%}%>
 	
-	<table border="0" cellspacing="0" cellpadding="0" width="<%=(mobWeb || isOAuthPage)?"100%":W_LOGIN_TOTAL%>" align="center">
+	<table role="presentation" border="0" cellspacing="0" cellpadding="0" width="<%=(mobWeb || isOAuthPage)?"100%":W_LOGIN_TOTAL%>" align="center">
 		<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="20" alt=""></td></tr>
 		
 		<tr>

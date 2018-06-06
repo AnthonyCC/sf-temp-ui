@@ -3,8 +3,7 @@ package com.freshdirect.fdstore.ecomm.converter;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.freshdirect.ecommerce.data.referral.FDReferralReportLineData;
-import com.freshdirect.ecommerce.data.referral.FDUserData;
+import com.freshdirect.ecommerce.data.customer.FDUserData;
 import com.freshdirect.ecommerce.data.referral.ManageInvitesData;
 import com.freshdirect.ecommerce.data.referral.ReferralCampaignData;
 import com.freshdirect.ecommerce.data.referral.ReferralChannelData;
@@ -15,11 +14,10 @@ import com.freshdirect.ecommerce.data.referral.ReferralPartnerData;
 import com.freshdirect.ecommerce.data.referral.ReferralProgramData;
 import com.freshdirect.ecommerce.data.referral.ReferralProgramInvitationData;
 import com.freshdirect.ecommerce.data.referral.ReferralPromotionData;
-import com.freshdirect.ecommerce.data.referral.ReferralSearchCriteriaData;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.referral.EnumReferralProgramStatus;
 import com.freshdirect.fdstore.referral.EnumReferralStatus;
-import com.freshdirect.fdstore.referral.FDReferralReportLine;
 import com.freshdirect.fdstore.referral.ManageInvitesModel;
 import com.freshdirect.fdstore.referral.ReferralCampaign;
 import com.freshdirect.fdstore.referral.ReferralChannel;
@@ -29,7 +27,6 @@ import com.freshdirect.fdstore.referral.ReferralPartner;
 import com.freshdirect.fdstore.referral.ReferralProgram;
 import com.freshdirect.fdstore.referral.ReferralProgramInvitaionModel;
 import com.freshdirect.fdstore.referral.ReferralPromotionModel;
-import com.freshdirect.fdstore.referral.ReferralSearchCriteria;
 import com.freshdirect.framework.core.PrimaryKey;
 
 public class ReferralConverter {
@@ -256,20 +253,25 @@ public class ReferralConverter {
 		ReferralIniviteData data = new ReferralIniviteData();
 		FDUserData fdUserData = new FDUserData();
 		fdUserData.setErpCustomerId(user.getIdentity().getErpCustomerPK());
+		try {
+			fdUserData.setReferrerEligible(user.isReferrerEligible());
+		} catch(FDResourceException exception) {
+			
+		}
 		data.setFdUserData(fdUserData);
 		ReferralProgramInvitationData programInvitationData = new ReferralProgramInvitationData();
-		if(referral.getReferralCreatedDate() != null)
-		programInvitationData.setReferralCreatedDate(referral.getReferralCreatedDate().getTime());
-		if(referral.getReferralModifiedDate() != null)
-		programInvitationData.setReferralModifiedDate(referral.getReferralModifiedDate().getTime());
+		if (referral.getReferralCreatedDate() != null)
+			programInvitationData.setReferralCreatedDate(referral.getReferralCreatedDate().getTime());
+		if (referral.getReferralModifiedDate() != null)
+			programInvitationData.setReferralModifiedDate(referral.getReferralModifiedDate().getTime());
 		programInvitationData.setReferralName(referral.getReferralName());
 		programInvitationData.setReferralProgramId(referral.getReferralProgramId());
 		programInvitationData.setReferrelEmailAddress(referral.getReferrelEmailAddress());
 		programInvitationData.setReferrerCustomerId(referral.getReferrerCustomerId());
 		programInvitationData.setReferrerFirstName(referral.getReferrerFirstName());
 		programInvitationData.setReferrerLastName(referral.getReferrerLastName());
-		if(referral.getStatus() != null)
-		programInvitationData.setStatus(referral.getStatus().getName());
+		if (referral.getStatus() != null)
+			programInvitationData.setStatus(referral.getStatus().getName());
 		data.setProgramInvitationData(programInvitationData);
 		return data;
 	}

@@ -137,7 +137,7 @@ if(user != null) {
                         String searchParams = request.getParameter("searchParams")!=null ? request.getParameter("searchParams") : "";
                     %>
                         <!--  div class="x-yui-skin-sam" style="padding: 0; margin: 0;" -->
-                            <input type="text" id="topSearchField"  class="search" name="searchParams" value="<%= StringEscapeUtils.escapeHtml(searchParams) %>">
+                            <input type="text" id="topSearchField"  class="searchinput search" name="searchParams" value="<%= StringEscapeUtils.escapeHtml(searchParams) %>">
                             <% if (FDStoreProperties.isSearchGlobalnavAutocompleteEnabled()) { %><div id="topSearchTerms" class="termsStyle" style="position: absolute; background-color: white"></div><% } %>
                         <!-- /div -->
                     <% } %>

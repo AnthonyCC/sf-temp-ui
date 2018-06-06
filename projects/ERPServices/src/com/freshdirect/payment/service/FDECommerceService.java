@@ -3759,8 +3759,8 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		try {
 			Request<ObjectNode> request = new Request<ObjectNode>();
 			ObjectNode rootNode = getMapper().createObjectNode();
-			rootNode.put("couponCart", getMapper().convertValue(couponCart, JsonNode.class));
-			rootNode.put("context", getMapper().convertValue(context, JsonNode.class));
+			rootNode.set("couponCart", getMapper().convertValue(couponCart, JsonNode.class));
+			rootNode.set("context", getMapper().convertValue(context, JsonNode.class));
 			request.setData(rootNode);
 			String inputJson = buildRequest(request);
 
@@ -3798,8 +3798,8 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		try {
 			Request<ObjectNode> request = new Request<ObjectNode>();
 			ObjectNode rootNode = getMapper().createObjectNode();
-			rootNode.put("couponTransModel", getMapper().convertValue(couponTransModel, JsonNode.class));
-			rootNode.put("context", getMapper().convertValue(context, JsonNode.class));
+			rootNode.set("couponTransModel", getMapper().convertValue(couponTransModel, JsonNode.class));
+			rootNode.set("context", getMapper().convertValue(context, JsonNode.class));
 			request.setData(rootNode);
 			String inputJson = buildRequest(request);
 

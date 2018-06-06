@@ -73,7 +73,7 @@ li.explore__department-list-element + li.explore__department-list-element {
   border: 5px solid #e77630;
 }
 .explore__department-list-name-cont {
-  font-size: 12px;
+  font-size: 13px;
   font-family: Montserrat;
   font-weight: 700;
   display: block;
@@ -82,10 +82,10 @@ li.explore__department-list-element + li.explore__department-list-element {
 .explore__department-list-element:hover .explore__department-list-name-cont,
 .explore__department-list-element:focus .explore__department-list-name-cont,
 .explore__department-list-element:active .explore__department-list-name-cont {
-  font-size: 14px;
+  font-size: 15px;
 }
 .explore__department-list-element .explore__department-list-name-cont {
-  line-height: 25px;
+  line-height: 28px;
 }
 .explore__department-list-name {
   display: inline-block;

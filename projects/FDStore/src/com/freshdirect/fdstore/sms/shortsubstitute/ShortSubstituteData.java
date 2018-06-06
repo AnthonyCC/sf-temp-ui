@@ -6,10 +6,12 @@ public class ShortSubstituteData implements Serializable{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	//private static final long serialVersionUID = 1L;
 	private String orderId;
 	private String substituteItem;
 	private String shortItem;
+	private String shortAndSubstituteItem;
+	
 	
 	
 	public String getOrderId() {
@@ -34,6 +36,14 @@ public class ShortSubstituteData implements Serializable{
 
 	public void setShortItem(String shortItem) {
 		this.shortItem = shortItem;
+	}
+
+	public String getShortAndSubstituteItem() {
+		return shortAndSubstituteItem;
+	}
+
+	public void setShortAndSubstituteItem(String shortAndSubstituteItem) {
+		this.shortAndSubstituteItem = shortAndSubstituteItem;
 	}
 
 
