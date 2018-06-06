@@ -1167,52 +1167,6 @@ public class RegistrationAction extends WebActionSupport {
 
 	}
 	
-	/*
-	 * 'addDeliverayAddress' is to add delivery info, including first name/last name, to user's profile
-	 * copy logic from executeEx()
-	 */
-	public String addDeliverayAddress() throws FDResourceException {   
-			
-			HttpServletRequest request = this.getWebActionContext().getRequest();
-			HttpSession session = this.getWebActionContext().getSession();
-			
-			FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);			
-			EnumServiceType serviceType = user.getSelectedServiceType();
-			AddressModel address = user.getAddress();
-			
-			// address info
-			AddressInfo addInfo = new AddressInfo(request);
-			// contact info: first name, last name, phone #, etc.
-			ContactInfo cInfo = new ContactInfo(request);	
-			
-			ErpCustomerInfoModel customerInfo = new ErpCustomerInfoModel();    
-			cInfo.decorateCustomerInfo(customerInfo);  // populate ErpCustomerInfoModel object
-						
-			ErpAddressModel erpAddress = null;
-			if(address != null && address.getAddress1() != null && address.getAddress1().length() > 0) {
-				erpAddress = new ErpAddressModel(address);
-				erpAddress.setFirstName(customerInfo.getFirstName());
-				erpAddress.setLastName(customerInfo.getLastName());
-				erpAddress.setPhone(customerInfo.getHomePhone());			
-				if("true".equals(request.getParameter("LITESIGNUP"))) {
-					if(user.getSelectedServiceType().getName().equals(EnumServiceType.CORPORATE.getName())) {
-						erpAddress.setPhone(new PhoneNumber(NVL.apply(request.getParameter("busphone"), "").trim()));
-					}
-				}
-				erpAddress.setAddressInfo(address.getAddressInfo());
-				erpAddress.setServiceType(serviceType);
-				//erpCustomer.addShipToAddress(erpAddress);
-				if(serviceType.getName().equals(EnumServiceType.CORPORATE.getName())) {
-					erpAddress.setCompanyName(addInfo.getCompanyName());
-				}				
-			} 
-
-			// to add delivery info, including first name/last name, to user's profile
-			FDCustomerManager.createAddress(erpAddress, user.getIdentity().getErpCustomerPK());
-
-			return SUCCESS;
-		}
-	
 	public String validateLiteSignup() {
 		HttpServletRequest request = this.getWebActionContext().getRequest();
 		ActionResult actionResult = this.getResult();
