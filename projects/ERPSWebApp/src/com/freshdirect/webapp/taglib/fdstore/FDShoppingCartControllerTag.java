@@ -1332,86 +1332,87 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 
         FDCartLineI theCartLine = null;
 
-        //TODO:[APPDEV-7238]-Temp fix for the issue with '0' quantity add/update. 
-        if (quantity >0 && CartOperations.isProductGroupable(product, salesUnit)) {
-            theCartLine = CartOperations.findGroupingOrderline(cartLinesToAdd, prodNode, salesUnit);
+        if (result.isSuccess()) {
+            if (CartOperations.isProductGroupable(product, salesUnit)) {
+                theCartLine = CartOperations.findGroupingOrderline(cartLinesToAdd, prodNode, salesUnit);
+                if (theCartLine == null) {
+                    theCartLine = CartOperations.findGroupingOrderline(cart.getOrderLines(), prodNode, salesUnit);
+                }
+            }
+
             if (theCartLine == null) {
-                theCartLine = CartOperations.findGroupingOrderline(cart.getOrderLines(), prodNode, salesUnit);
-            }
-        }
-
-        if (theCartLine == null) {
-            theCartLine = processSimple(suffix, prodNode, product, quantity, salesUnit, origCartLineId, variantId, userContext, originalGrp);
-        } else {
-            theCartLine.setQuantity((originalLine == null) ? theCartLine.getQuantity() + quantity : quantity);
-        }
-
-        if (theCartLine != null) {
-            theCartLine.setCoremetricsPageId(request.getParameter("coremetricsPageId"));
-            theCartLine.setCoremetricsPageContentHierarchy(request.getParameter("coremetricsPageContentHierarchy"));
-            theCartLine.setCoremetricsVirtualCategory(request.getParameter("coremetricsVirtualCategory"));
-            theCartLine.setAddedFrom(request.getParameter("addedFrom") != null && !request.getParameter("addedFrom").isEmpty() ? EnumATCContext.getEnum(request
-                    .getParameter("addedFrom")) : null);
-            theCartLine.setSavingsId(request.getParameter("savingsId") != null && !request.getParameter("savingsId").isEmpty() ? request.getParameter("savingsId") : null);
-
-        }
-
-        // recipe source tracking
-        String recipeId;
-        if (originalLine != null) {
-            recipeId = originalLine.getRecipeSourceId();
-        } else {
-            final String paramRecipeId = "recipeId" + suffix;
-            recipeId = request.getParameter(paramRecipeId);
-        }
-        if (recipeId != null) {
-            Recipe recipe = (Recipe) ContentFactory.getInstance().getContentNode(recipeId);
-            if (recipe != null && theCartLine != null) {
-                theCartLine.setRecipeSourceId(recipeId);
-                boolean requestNotification = request.getParameter("requestNotification") != null;
-                theCartLine.setRequestNotification(requestNotification);
-            }
-        }
-        // Get the original discount applied flag if available
-        boolean discountApplied = false;
-        if (originalLine != null) {
-            discountApplied = originalLine.isDiscountFlag();
-        }
-
-        if (theCartLine != null) {
-            String catId = request.getParameter("catId");
-            String sfx = request.getParameter("ymal_box") != null ? "" : suffix != null ? suffix : "";
-            String ymalSetId = request.getParameter("ymalSetId" + sfx);
-            String originatingProductId = request.getParameter("originatingProductId" + sfx);
-
-            theCartLine.setYmalCategoryId(catId);
-            theCartLine.setYmalSetId(ymalSetId);
-            theCartLine.setOriginatingProductId(originatingProductId);
-            theCartLine.setOrderLineId(originalOrderLineId);
-
-            // record 'deals' status
-            if (suffix != null) {
-                request.setAttribute("atc_suffix", suffix);
-            }
-
-            if (originalLine != null) {
-                // First get the savingsId(already determined for promotion eligibility) if available else get variant id.
-                String savingsId = originalLine.getSavingsId();
-                if (savingsId == null)
-                    savingsId = originalLine.getVariantId();
-                theCartLine.setSavingsId(savingsId);
+                theCartLine = processSimple(suffix, prodNode, product, quantity, salesUnit, origCartLineId, variantId, userContext, originalGrp);
             } else {
-                // for any new recommended line
-                theCartLine.setSavingsId(variantId);
+                theCartLine.setQuantity((originalLine == null) ? theCartLine.getQuantity() + quantity : quantity);
             }
 
-            theCartLine.setDiscountFlag(discountApplied);
-            // theCartLine.setEStoreId(user.getUserContext().getStoreContext().getEStoreId());
-            // theCartLine.setPlantId(user.getUserContext().getFulfillmentContext().getPlantId());
+            if (theCartLine != null) {
+                theCartLine.setCoremetricsPageId(request.getParameter("coremetricsPageId"));
+                theCartLine.setCoremetricsPageContentHierarchy(request.getParameter("coremetricsPageContentHierarchy"));
+                theCartLine.setCoremetricsVirtualCategory(request.getParameter("coremetricsVirtualCategory"));
+                theCartLine.setAddedFrom(request.getParameter("addedFrom") != null && !request.getParameter("addedFrom").isEmpty()
+                        ? EnumATCContext.getEnum(request.getParameter("addedFrom")) : null);
+                theCartLine.setSavingsId(request.getParameter("savingsId") != null && !request.getParameter("savingsId").isEmpty() ? request.getParameter("savingsId") : null);
 
-            String cartonNumber = request.getParameter("cartonNumber");
-            if (cartonNumber != null) {
-                theCartLine.setCartonNumber(cartonNumber);
+            }
+
+            // recipe source tracking
+            String recipeId;
+            if (originalLine != null) {
+                recipeId = originalLine.getRecipeSourceId();
+            } else {
+                final String paramRecipeId = "recipeId" + suffix;
+                recipeId = request.getParameter(paramRecipeId);
+            }
+            if (recipeId != null) {
+                Recipe recipe = (Recipe) ContentFactory.getInstance().getContentNode(recipeId);
+                if (recipe != null && theCartLine != null) {
+                    theCartLine.setRecipeSourceId(recipeId);
+                    boolean requestNotification = request.getParameter("requestNotification") != null;
+                    theCartLine.setRequestNotification(requestNotification);
+                }
+            }
+            // Get the original discount applied flag if available
+            boolean discountApplied = false;
+            if (originalLine != null) {
+                discountApplied = originalLine.isDiscountFlag();
+            }
+
+            if (theCartLine != null) {
+                String catId = request.getParameter("catId");
+                String sfx = request.getParameter("ymal_box") != null ? "" : suffix != null ? suffix : "";
+                String ymalSetId = request.getParameter("ymalSetId" + sfx);
+                String originatingProductId = request.getParameter("originatingProductId" + sfx);
+
+                theCartLine.setYmalCategoryId(catId);
+                theCartLine.setYmalSetId(ymalSetId);
+                theCartLine.setOriginatingProductId(originatingProductId);
+                theCartLine.setOrderLineId(originalOrderLineId);
+
+                // record 'deals' status
+                if (suffix != null) {
+                    request.setAttribute("atc_suffix", suffix);
+                }
+
+                if (originalLine != null) {
+                    // First get the savingsId(already determined for promotion eligibility) if available else get variant id.
+                    String savingsId = originalLine.getSavingsId();
+                    if (savingsId == null)
+                        savingsId = originalLine.getVariantId();
+                    theCartLine.setSavingsId(savingsId);
+                } else {
+                    // for any new recommended line
+                    theCartLine.setSavingsId(variantId);
+                }
+
+                theCartLine.setDiscountFlag(discountApplied);
+                // theCartLine.setEStoreId(user.getUserContext().getStoreContext().getEStoreId());
+                // theCartLine.setPlantId(user.getUserContext().getFulfillmentContext().getPlantId());
+
+                String cartonNumber = request.getParameter("cartonNumber");
+                if (cartonNumber != null) {
+                    theCartLine.setCartonNumber(cartonNumber);
+                }
             }
         }
         return theCartLine;
