@@ -948,11 +948,14 @@ public class FDCustomerManager {
 	 * throws FDResourceException if an error occurs while using the remote interface
 	 */
 	public static void setDefaultShipToAddressPK(FDIdentity identity, String shipToAddressPK) throws FDResourceException {
-		lookupManagerHome();
-
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			sb.setDefaultShipToAddressPK(identity, shipToAddressPK);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerAddress)) {
+				CustomerAddressService.getInstance().setDefaultShippingAddressPK(identity, shipToAddressPK);
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				sb.setDefaultShipToAddressPK(identity, shipToAddressPK);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -970,11 +973,14 @@ public class FDCustomerManager {
 	 * throws FDResourceException if an error occurs while using the remote interface
 	 */
 	public static String getDefaultShipToAddressPK(FDIdentity identity) throws FDResourceException {
-		lookupManagerHome();
-
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.getDefaultShipToAddressPK(identity);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerAddress)) {
+				return CustomerAddressService.getInstance().getDefaultShipToAddressPK(identity);
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getDefaultShipToAddressPK(identity);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -1023,6 +1029,7 @@ public class FDCustomerManager {
 	 * @param FDIdentity for customer
 	 * @return String default Depot location id
 	 * @throws FDResourceException if there are problems in accessing remote objects
+	 * @deprecated
 	 */
 
 	public static String getDefaultDepotLocationPK(FDIdentity identity) throws FDResourceException {
@@ -1047,6 +1054,7 @@ public class FDCustomerManager {
 	 * @param FDIdentity for customer
 	 * @param String depot location id to set
 	 * @throws FDResourceException if there are problems in accessing remote objects
+	 * @deprecated
 	 */
 
 	public static void setDefaultDepotLocationPK(FDIdentity identity, String locationId) throws FDResourceException {
@@ -1336,12 +1344,17 @@ public class FDCustomerManager {
 	 * @throws FDResourceException if an error occured using remote resources
 	 */
 	public static Collection<ErpAddressModel> getShipToAddresses(FDIdentity identity) throws FDResourceException {
-		lookupManagerHome();
+		
 
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-
-			return sb.getShipToAddresses(identity);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerAddress)) {
+				return CustomerAddressService.getInstance().getShippingAddresses(identity);
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getShipToAddresses(identity);
+			}
+			
 
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -1371,15 +1384,16 @@ public class FDCustomerManager {
 	 * @throws FDResourceException if an error occured using remote resources
 	 */
 	public static boolean addShipToAddress(FDActionInfo info, boolean checkUniqueness, ErpAddressModel address)
-	throws FDResourceException, ErpDuplicateAddressException {
-
-		lookupManagerHome();
-
+	throws FDResourceException, ErpDuplicateAddressException {		
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			boolean result =   sb.addShipToAddress(info, checkUniqueness, address);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerAddress)) {
+				return CustomerAddressService.getInstance().addShippingAddress(info, checkUniqueness, address);
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.addShipToAddress(info, checkUniqueness, address);
+			}
 
-			return result;
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -1395,17 +1409,19 @@ public class FDCustomerManager {
 	 * @param identity the customer's identity reference
 	 * @param address ErpAddressModel to update
 	 *
-	 * @throws FDResourceException if an error occured using remote resources
+	 * @throws FDResourceException if an error occurred using remote resources
 	 */
 	public static boolean updateShipToAddress(FDActionInfo info, boolean checkUniqueness, ErpAddressModel address)
-	throws FDResourceException, ErpDuplicateAddressException {
-
-		lookupManagerHome();
-
+			throws FDResourceException, ErpDuplicateAddressException {
+		boolean result = false;
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			boolean result =  sb.updateShipToAddress(info, checkUniqueness, address);
-
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerAddress)) {
+				result = CustomerAddressService.getInstance().updateShippingAddress(info, checkUniqueness, address);
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				result = sb.updateShipToAddress(info, checkUniqueness, address);
+			}
 			FDDeliveryManager.getInstance().sendShippingAddress(address);
 
 			return result;
@@ -1424,15 +1440,17 @@ public class FDCustomerManager {
 	 * @param identity the customer's identity reference
 	 * @param address ErpAddressModel to remove
 	 *
-	 * @throws FDResourceException if an error occured using remote resources
+	 * @throws FDResourceException if an error occurred using remote resources
 	 */
 	public static void removeShipToAddress(FDActionInfo info, ErpAddressModel address) throws FDResourceException {
-		lookupManagerHome();
-
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			sb.removeShipToAddress(info, address.getPK());
-
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerAddress)) {
+				CustomerAddressService.getInstance().removeShippingAddress(info, address.getPK());
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				sb.removeShipToAddress(info, address.getPK());
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -3562,12 +3580,15 @@ public class FDCustomerManager {
 	 * @throws FDResourceException
 	 */
 	public static ErpAddressModel getAddress( FDIdentity identity, String id ) throws FDResourceException {
-		lookupManagerHome();
+		
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-
-			return sb.getAddress( identity, id );
-
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerAddress)) {
+				return CustomerAddressService.getInstance().getAddress(identity, id);
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getAddress( identity, id );
+			}
 		} catch ( CreateException ce ) {
 			invalidateManagerHome();
 			throw new FDResourceException( ce, "Error creating session bean" );

@@ -279,6 +279,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      * @return collection of ErpAddresModel objects
      *
      * @throws FDResourceException if an error occured using remote resources
+     * @deprecated
      */
     public Collection<ErpAddressModel> getShipToAddresses(FDIdentity identity) throws FDResourceException, RemoteException;
 
@@ -290,6 +291,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      * @param address ErpAddressModel to add
      *
      * @throws FDResourceException if an error occured using remote resources
+     * @deprecated
      */
     public boolean addShipToAddress(FDActionInfo info, boolean checkUniqueness, ErpAddressModel address) throws FDResourceException, ErpDuplicateAddressException, RemoteException;
 
@@ -300,6 +302,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      * @param address ErpAddressModel to update
      *
      * @throws FDResourceException if an error occured usong remote resources
+     * @deprecated
      */
     public boolean updateShipToAddress(FDActionInfo info, boolean checkUniqueness, ErpAddressModel address) throws FDResourceException, ErpDuplicateAddressException, RemoteException;
 
@@ -310,6 +313,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      * @param pk PrimayKey of the address to remove
      *
      * @throws FDResourceException if an error occured using remote resources
+     * @deprecated
      */
     public void removeShipToAddress(FDActionInfo info, PrimaryKey pk) throws FDResourceException, RemoteException;
 
@@ -318,6 +322,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      *
      *@Param identity the customer's Identity
      *@param PK Primary Key of the Ship To Address
+     *@deprecated
      **/
     public void setDefaultShipToAddressPK(FDIdentity identity, String shipToAddressPK) throws FDResourceException,RemoteException;
 
@@ -325,6 +330,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      *Get the default Ship To address PK on the customer
      *
      *@Param identity the customer's Identity
+     *@deprecated
      **/
     public String getDefaultShipToAddressPK(FDIdentity identity) throws FDResourceException,RemoteException;
 
@@ -528,9 +534,9 @@ public interface FDCustomerManagerSB  extends EJBObject{
     public void removeProfileAttribute(FDIdentity identity, String key, FDActionInfo info) throws RemoteException, FDResourceException;
 
     public void setSignupPromotionEligibility(FDActionInfo info, boolean eligible) throws FDResourceException, RemoteException;
-
+    @Deprecated
     public String getDefaultDepotLocationPK(FDIdentity identity) throws FDResourceException, RemoteException;
-
+    @Deprecated
     public void setDefaultDepotLocationPK(FDIdentity identity, String locationId) throws FDResourceException, RemoteException;
 
     public String getDepotCode(FDIdentity identity) throws FDResourceException, RemoteException;
@@ -675,6 +681,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
 
     public void storeProductRequest(List<FDProductRequest> productRequest) throws RemoteException, FDResourceException;
 
+    @Deprecated
     public ErpAddressModel getAddress(FDIdentity identity,String id) throws FDResourceException, RemoteException;
 
 
