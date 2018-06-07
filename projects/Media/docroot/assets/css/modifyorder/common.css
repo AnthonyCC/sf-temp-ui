@@ -4,6 +4,10 @@
 	width: 400px;
 	max-width: 100%;
 	box-sizing: border-box;
+	margin: 20px;
+}
+[data-ismobweb="true"] #confirmpopup {
+	width: calc(100% - 40px);
 }
 .cancel-modify-confirm-popup .qs-popup-content {
 	padding: 30px 40px;
