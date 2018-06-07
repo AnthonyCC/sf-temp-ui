@@ -27,4 +27,8 @@ public enum Permit {
         }
         return false;
     }
+    
+    public static boolean valueOf(Permit p) {
+        return p == ALLOW;
+    }
 }
