@@ -60,6 +60,13 @@ public interface OrderResourceApiClientI {
 			String id, boolean sendEmail, CustomerRatingI cra,
 			CrmAgentRole crmAgentRole, EnumDlvPassStatus status,
 			boolean isBulkOrder) throws RemoteException;
+
+
+	String placeSubscriptionOrder(FDActionInfo info,
+			ErpCreateOrderModel createOrder, Set<String> appliedPromos,
+			String id, boolean sendEmail, CustomerRatingI cra,
+			CrmAgentRole crmAgentRole, EnumDlvPassStatus status,
+			boolean isRealTimeAuthNeeded) throws RemoteException;
 	
 	//public List<ErpSaleInfo> getNSMOrdersForGC()  throws RemoteException;
 			

@@ -314,4 +314,37 @@ private static OrderResourceApiClient INSTANCE;
 		}
 		
 	}
+
+	@Override
+	public String placeSubscriptionOrder(FDActionInfo info,
+			ErpCreateOrderModel createOrder, Set<String> appliedPromos,
+			String id, boolean sendEmail, CustomerRatingI cra,
+			CrmAgentRole crmAgentRole, EnumDlvPassStatus status,
+			boolean isRealTimeAuthNeeded) throws RemoteException {
+
+		Request<CreateOrderRequestData> request = new Request<CreateOrderRequestData>();
+		
+		try{
+			request.setData(
+					new CreateOrderRequestData(
+							FDActionInfoConverter.buildActionInfoData(info), 
+							SapGatewayConverter.buildOrderData(createOrder), 
+							appliedPromos, 
+							id, 
+							sendEmail, 
+							CustomerRatingConverter.buildCustomerRatingData(cra), 
+							ErpFraudPreventionConverter.buildCrmAgentRoleData(crmAgentRole), 
+							(status!=null)?status.getName():null, 
+							false));
+			
+			Response<String> response = null;
+			String inputJson = buildRequest(request);
+			response = httpPostData(getFdCommerceEndPoint(CREATE_GC_ORDER_API), inputJson, Response.class, new Object[]{});
+			return parseResponse(response);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RemoteException(e.getMessage(), e);
+		}
+		
+	}
 }

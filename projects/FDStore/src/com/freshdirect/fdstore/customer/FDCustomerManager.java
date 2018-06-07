@@ -3280,6 +3280,18 @@ public class FDCustomerManager {
 
 			FDCustomerManagerSB sb = managerHome.create();
 
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("placeSubscriptionOrder_Api")){
+	    		OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
+	    		orderId =  service.placeSubscriptionOrder( info,
+						  createOrder,
+                          appliedPromos,
+                          cart.getDeliveryReservation().getPK().getId(),
+                          sendEmail,
+                          cra,
+                          info.getAgent() == null ? null : info.getAgent().getRole(),
+                          status, isRealTimeAuthNeeded
+                        );
+	    	}else{
 				orderId=sb.placeSubscriptionOrder( info,
 				 								  createOrder,
 				                                 appliedPromos,
@@ -3289,6 +3301,8 @@ public class FDCustomerManager {
 				                                 info.getAgent() == null ? null : info.getAgent().getRole(),
 				                                 status, isRealTimeAuthNeeded
 				                               );
+	    	}
+			
 				if(!isRealTimeAuthNeeded && null !=createOrder.getPaymentMethod() && !EnumPaymentMethodType.GIFTCARD.equals(createOrder.getPaymentMethod().getPaymentMethodType())){
 					sb.authorizeSale(info.getIdentity().getErpCustomerPK().toString(), orderId, EnumSaleType.SUBSCRIPTION, cra);
 				}

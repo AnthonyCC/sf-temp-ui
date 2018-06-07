@@ -658,7 +658,7 @@ public class SapGatewayConverter {
 			  zoneInfoData.setParent(buildZoneInfoData(pricingZone.getParentZone()));
 			  zoneInfoData.setSalesOrg( pricingZone.getSalesOrg());
 			  zoneInfoData.setZoneId(pricingZone.getPricingZoneId());
-			  zoneInfoData.setPricingIndicator(com.freshdirect.ecommerce.data.erp.pricing.ZoneInfoData.PricingIndicator.valueOf(pricingZone.getPricingIndicator().getValue()));
+			  zoneInfoData.setPricingIndicator(pricingZone.getPricingIndicator().getValue());
 			  zoneInfoData.setParent(buildZoneInfoData(pricingZone.getParentZone()));
 						
 			}
@@ -1542,7 +1542,7 @@ public class SapGatewayConverter {
 			  zoneInfo  = new ZoneInfo(pricingZone.getZoneId(), 
 					  pricingZone.getSalesOrg(), 
 					  pricingZone.getDistributionChanel(),
-					PricingIndicator.valueOf(pricingZone.getPricingIndicator().getValue()),
+					PricingIndicator.valueOf(pricingZone.getPricingIndicator()),
 					buildZoneInfo(pricingZone.getParent())
 					);
 		}
