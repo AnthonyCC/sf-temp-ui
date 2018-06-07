@@ -658,7 +658,7 @@ public class SapGatewayConverter {
 			  zoneInfoData.setParent(buildZoneInfoData(pricingZone.getParentZone()));
 			  zoneInfoData.setSalesOrg( pricingZone.getSalesOrg());
 			  zoneInfoData.setZoneId(pricingZone.getPricingZoneId());
-			  zoneInfoData.setPricingIndicator(pricingZone.getPricingIndicator().getValue());
+			  zoneInfoData.setPricingIndicator(pricingZone.getPricingIndicator().name());
 			  zoneInfoData.setParent(buildZoneInfoData(pricingZone.getParentZone()));
 						
 			}
