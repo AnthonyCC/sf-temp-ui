@@ -224,7 +224,7 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 	public double getQuantity() {
 		return this.configuration.getQuantity();
 	}
-
+	@JsonIgnore
 	public Map<String,String> getOptions() {
 		return this.configuration.getOptions();
 	}
