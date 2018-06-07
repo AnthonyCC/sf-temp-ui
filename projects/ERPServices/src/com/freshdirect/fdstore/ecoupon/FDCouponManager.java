@@ -218,13 +218,11 @@ public class FDCouponManager {
 	public static void postCouponOrder(ErpCouponTransactionModel couponTransModel,FDCouponActivityContext couponActivityContext) throws FDResourceException{
 		
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCouponManagerSB)) {
-				FDECommerceService.getInstance().postCouponOrder(couponTransModel, couponActivityContext);
-			} else {
-				lookupManagerHome();
-				FDCouponManagerSB sb = managerHome.create();
-				sb.postCouponOrder(couponTransModel, couponActivityContext);
-			}
+			
+			lookupManagerHome();
+			FDCouponManagerSB sb = managerHome.create();
+			sb.postCouponOrder(couponTransModel, couponActivityContext);
+			
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");

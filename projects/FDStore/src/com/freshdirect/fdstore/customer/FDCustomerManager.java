@@ -467,14 +467,18 @@ public class FDCustomerManager {
     			ErpAddressModel address = null;
     			try {
 					if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerAddress)) {
-						address = CustomerAddressService.getInstance().assumeDeliveryAddress(identity, partentOrderId);
+						try {
+							address = CustomerAddressService.getInstance().assumeDeliveryAddress(identity, partentOrderId);
+						}catch(Exception e) {}
 					} else {
 						lookupManagerHome();
 						FDCustomerManagerSB sb = managerHome.create();
-						if (partentOrderId != null)
-							address = sb.assumeDeliveryAddress(identity, partentOrderId, null);
-						else
-							address = sb.assumeDeliveryAddress(identity, null, user);
+						try {
+							if (partentOrderId != null)
+								address = sb.assumeDeliveryAddress(identity, partentOrderId, null);
+							else
+								address = sb.assumeDeliveryAddress(identity, null, user);
+						}catch(Exception e) {}
 					}
     			}catch (CreateException ce) {
         			invalidateManagerHome();

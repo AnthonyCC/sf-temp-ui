@@ -404,7 +404,6 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String ECOUPON_CLIP_COUPON = "ecoupon/clipcoupon/";
 	private static final String ECOUPON_EVALUATE = "ecoupon/evaluate";
 	private static final String ECOUPON_CANCEL_PENDING = "ecoupon/post/cancelpendingcoupontrans";
-	private static final String ECOUPON_COUPON_ORDER = "ecoupon/post/couponorder";
 	private static final String ECOUPON_CONF_PENDING = "ecoupon/confirmpendingcoupontrans/";
 	private static final String ECOUPON_CONFM_PENDING = "ecoupon/confirmpendingcouponsales";
 	private static final String ECOUPON_SUB_PENDING = "ecoupon/submitpendingcouponsales";
@@ -3804,31 +3803,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			throw new RemoteException(e.getMessage());
 		}
 	}
-
-	@Override
-	public void postCouponOrder(ErpCouponTransactionModel couponTransModel, FDCouponActivityContext context) throws RemoteException {
-		Response<Void> response = null;
-		try {
-			Request<ObjectNode> request = new Request<ObjectNode>();
-			ObjectNode rootNode = getMapper().createObjectNode();
-			rootNode.set("couponTransModel", getMapper().convertValue(couponTransModel, JsonNode.class));
-			rootNode.set("context", getMapper().convertValue(context, JsonNode.class));
-			request.setData(rootNode);
-			String inputJson = buildRequest(request);
-
-			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(ECOUPON_COUPON_ORDER), new TypeReference<Response<Void>>() {});
-			if (!response.getResponseCode().equals("OK")) {
-				throw new FDResourceException(response.getMessage());
-			}
-		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		} catch (FDResourceException e) {
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}
-	}
-
+	
 	@Override
 	public void postConfirmPendingCouponTransactions(String saleId) throws RemoteException {
 		Response<Object> response = null;
