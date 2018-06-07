@@ -7,11 +7,18 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.freshdirect.common.pricing.CharacteristicValuePrice;
+import com.freshdirect.common.pricing.MaterialPrice;
+import com.freshdirect.common.pricing.Pricing;
+import com.freshdirect.common.pricing.SalesUnitRatio;
 import com.freshdirect.content.attributes.AttributeCollection;
 import com.freshdirect.content.attributes.EnumAttributeName;
 import com.freshdirect.fdstore.FDProduct;
+import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
+import com.freshdirect.fdstore.ZonePriceListing;
+import com.freshdirect.fdstore.ZonePriceModel;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartItem;
 
 public class CartOperationsTest {
@@ -259,9 +266,72 @@ public class CartOperationsTest {
         Assert.assertNull("Unexpected error message", result);
     }
 
+    @Test
+    public void groupProductWhenProductDoNotHaveConfigurationVariationsIsNull() {
+        FDProduct product = prepareTestProduct(null, preparePricing("EA"));
+        boolean result = CartOperations.isProductGroupable(product, prepareSalesUnit("EA"));
+        Assert.assertTrue(result);
+    }
+
+    @Test
+    public void groupProductWhenProductDoNotHaveConfigurationVariationsIsEmpty() {
+        FDProduct product = prepareTestProduct(new FDVariation[] {}, preparePricing("EA"));
+        boolean result = CartOperations.isProductGroupable(product, prepareSalesUnit("EA"));
+        Assert.assertTrue(result);
+    }
+
+    @Test
+    public void doNotGroupProductWhenProductHasConfigurationVariationsExists() {
+        FDVariation variation = FDVariationFactory.createRequiredVariation("requiredVariation", Arrays.asList("option1"));
+        FDProduct product = prepareTestProduct(new FDVariation[] { variation }, preparePricing("EA"));
+        boolean result = CartOperations.isProductGroupable(product, prepareSalesUnit("EA"));
+        Assert.assertFalse(result);
+    }
+
+    @Test
+    public void groupProductWhenProductSoldByEAPricedByEA() {
+        FDProduct product = prepareTestProduct(new FDVariation[] {}, preparePricing("EA"));
+        boolean result = CartOperations.isProductGroupable(product, prepareSalesUnit("EA"));
+        Assert.assertTrue(result);
+    }
+
+    @Test
+    public void groupProductWhenProductSoldByEAPricedByLB() {
+        FDProduct product = prepareTestProduct(new FDVariation[] {}, preparePricing("LB"));
+        boolean result = CartOperations.isProductGroupable(product, prepareSalesUnit("EA"));
+        Assert.assertTrue(result);
+    }
+
+    @Test
+    public void doNotGroupProductWhenProductSoldByLBPricedByLB() {
+        FDProduct product = prepareTestProduct(new FDVariation[] {}, preparePricing("LB"));
+        boolean result = CartOperations.isProductGroupable(product, prepareSalesUnit("LB"));
+        Assert.assertFalse(result);
+    }
+
+    @Test
+    public void doNotGroupProductWhenProductSoldByPricedByEA() {
+        FDProduct product = prepareTestProduct(new FDVariation[] {}, preparePricing("EA"));
+        boolean result = CartOperations.isProductGroupable(product, prepareSalesUnit("LB"));
+        Assert.assertFalse(result);
+    }
+
+    private Pricing preparePricing(String pricingUnit) {
+        ZonePriceListing listing = new ZonePriceListing();
+        listing.addZonePrice(new ZonePriceModel(ZonePriceListing.DEFAULT_ZONE_INFO, new MaterialPrice[] { new MaterialPrice(0, pricingUnit, 0) }));
+        return new Pricing(listing, new CharacteristicValuePrice[0], new SalesUnitRatio[0], false);
+    }
+
+    private FDSalesUnit prepareSalesUnit(String name) {
+        return new FDSalesUnit(null, name, "description", 0, 0, "baseUnit");
+    }
+
     private FDProduct prepareTestProduct(FDVariation variations[]) {
-        FDProduct testFDProduct = new FDProduct("TST00001", 1, null, null, variations, null, null, null, null, null, null);
-        return testFDProduct;
+        return prepareTestProduct(variations, null);
+    }
+
+    private FDProduct prepareTestProduct(FDVariation variations[], Pricing pricing) {
+        return new FDProduct("TST00001", 1, null, null, variations, null, pricing, null, null, null, null);
     }
 
     private static class FDVariationFactory {
