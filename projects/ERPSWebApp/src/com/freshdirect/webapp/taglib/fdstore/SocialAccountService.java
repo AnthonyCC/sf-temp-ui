@@ -185,8 +185,7 @@ public class SocialAccountService implements AccountService {
                             if (preSuccessPage != null) {
                                 session.removeAttribute(SessionName.PREV_SUCCESS_PAGE);
                                 // if preSuccessPage contains query parameter and has requireDecode=true, encode it
-                                if ((preSuccessPage.contains("?") && preSuccessPage.contains("requireDecode=false"))
-                                        || (preSuccessPage.contains("?") && preSuccessPage.contains("="))) {
+                                if (preSuccessPage.contains("?") && preSuccessPage.contains("requireDecode=false")) {
                                 	return newURL + "/social/success.jsp?successPage=" + preSuccessPage.substring(1, preSuccessPage.indexOf("?")) + FDURLUtil.safeURLEncode(preSuccessPage.substring(preSuccessPage.indexOf("?")));
                                 }
                                 return newURL + "/social/success.jsp?successPage=" + preSuccessPage.substring(1, preSuccessPage.length());
@@ -342,8 +341,7 @@ public class SocialAccountService implements AccountService {
                             session.setAttribute(SessionName.SOCIAL_LOGIN_PROVIDER, providerName);
                             if (preSuccessPage != null) {
                                 session.removeAttribute(SessionName.PREV_SUCCESS_PAGE);
-                                if ((preSuccessPage.contains("?") && preSuccessPage.contains("requireDecode=false"))
-                                        || (preSuccessPage.contains("?") && preSuccessPage.contains("="))) {
+                                if (preSuccessPage.contains("?") && preSuccessPage.contains("requireDecode=false")) {
                                 	return newURL + "/social/success.jsp?successPage=" + preSuccessPage.substring(1, preSuccessPage.indexOf("?")) + FDURLUtil.safeURLEncode(preSuccessPage.substring(preSuccessPage.indexOf("?")));
                                 }
                                 return newURL + "/social/success.jsp?successPage=" + preSuccessPage.substring(1, preSuccessPage.length());

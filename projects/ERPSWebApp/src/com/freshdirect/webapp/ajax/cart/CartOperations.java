@@ -448,8 +448,8 @@ public class CartOperations {
                     // add a new orderline for rest of the difference, if any
                     if (deltaQty > 0) {
                         FDCartLineI newLine = null;
-                        if (com.freshdirect.webapp.ajax.cart.CartOperations.isProductGroupable(fdProduct, salesUnit)) {
-                            newLine = com.freshdirect.webapp.ajax.cart.CartOperations.findGroupingOrderline(cart.getOrderLines(), product, salesUnit);
+                        if (isProductGroupable(fdProduct, salesUnit)) {
+                            newLine = findGroupingOrderline(cart.getOrderLines(), product, salesUnit);
                         }
                         if (newLine == null) {
                             newLine = cartLine.createCopy();
@@ -1253,7 +1253,7 @@ public class CartOperations {
     }
 
     public static boolean isProductGroupable(FDProduct product, FDSalesUnit salesUnit) {
-        return (product.getVariations() == null || product.getVariations().length == 0) && "EA".equalsIgnoreCase(salesUnit.getBaseUnit())
+        return (product.getVariations() == null || product.getVariations().length == 0) && "EA".equalsIgnoreCase(salesUnit.getName())
                 && (product.isPricedByEa() || product.isPricedByLb());
     }
 
