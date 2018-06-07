@@ -1042,9 +1042,9 @@ public class ProductDetailPopulator {
             item.setFreeSamplePromoProduct(isFree);
         } else if (useFavBurst && isYourFave) {
             item.setBadge("fav");
-        } else if (isGoingOutOfStock) {
+        } /*else if (isGoingOutOfStock) {
             item.setBadge("going");
-        } else if (isNew) {
+        }*/ else if (isNew) {
             item.setBadge("new");
         } else if (isBackInStock) {
             item.setBadge("back");
