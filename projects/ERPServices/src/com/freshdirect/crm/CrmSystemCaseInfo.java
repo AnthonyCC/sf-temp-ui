@@ -44,8 +44,8 @@ public class CrmSystemCaseInfo implements Serializable {
 		this.summary = summary;
 		
 		//default values
-		this.origin = CrmCaseOrigin.getEnum(CrmCaseOrigin.CODE_SYS);
-		this.state = CrmCaseState.getEnum(CrmCaseState.CODE_OPEN);
+		this.origin = origin;
+		this.state = state;
 	}
 	
 	
