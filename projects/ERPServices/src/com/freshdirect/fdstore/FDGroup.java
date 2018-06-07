@@ -2,6 +2,8 @@ package com.freshdirect.fdstore;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class FDGroup implements Serializable {
 
 	private static final long	serialVersionUID	= -5832100527957081984L;
@@ -16,8 +18,8 @@ public class FDGroup implements Serializable {
     	this(group.getGroupId(), group.getVersion()); 
     }
 
-	public FDGroup(String groupId, int version) {
-		if(groupId == null)
+	public FDGroup(@JsonProperty("groupId") String groupId, @JsonProperty("version") int version) {
+		if (groupId == null)
 			throw new IllegalArgumentException("Group ID cannot be null");
 		this.groupId = groupId;
 		this.version = version;
