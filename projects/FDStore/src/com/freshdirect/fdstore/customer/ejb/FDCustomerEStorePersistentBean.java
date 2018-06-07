@@ -146,14 +146,13 @@ public class FDCustomerEStorePersistentBean extends DependentPersistentBeanSuppo
 		PreparedStatement ps = null;
 		try {
 			ps = conn.prepareStatement(
-					"UPDATE CUST.FDCUSTOMER_ESTORE SET DEFAULT_SHIPTO=?, DEFAULT_PAYMENT=?, DEFAULT_DEPOT_LOC=?, DP_FREE_TRIAL_OPTIN=?, INFORM_ORDERMODIFY=? WHERE FDCUSTOMER_ID=? AND E_STORE=?");
+					"UPDATE CUST.FDCUSTOMER_ESTORE SET DEFAULT_SHIPTO=?, DEFAULT_PAYMENT=?, DEFAULT_DEPOT_LOC=?, INFORM_ORDERMODIFY=? WHERE FDCUSTOMER_ID=? AND E_STORE=?");
 			ps.setString(1, model.getDefaultShipToAddressPK());
 			ps.setString(2, model.getDefaultPaymentMethodPK());
 			ps.setString(3, model.getDefaultDepotLocationPK());
-			ps.setString(4, model.getDpFreeTrialOptin() ? "Y":"N");
-			ps.setInt(5, model.getInformOrderModifyViewCount(eStoreId, false));
-			ps.setString(6, this.getParentPK().getId());
-			ps.setString(7, eStoreId.getContentId());
+			ps.setInt(4, model.getInformOrderModifyViewCount(eStoreId, false));
+			ps.setString(5, this.getParentPK().getId());
+			ps.setString(6, eStoreId.getContentId());
 			
 			if (ps.executeUpdate() < 1) {
 				create(conn);
