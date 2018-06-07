@@ -265,7 +265,7 @@
 		margin: 5px 0 0 0px;
 	}
 	.container.globalnav_top.hasFDX {
-		padding: 10px 0px 15px 0px;
+		padding: 5px 0 10px 0;
 	}
 	.container.globalnav_top.hasFDX.inReorder {
 		padding: 10px 0px 0 0px;
@@ -1623,7 +1623,7 @@ option.address-icon {
 	-webkit-transition: all 0.2s ease-in-out !important;
 	-moz-transition: all 0.2s ease-in-out !important;
 	transition: all 0.2s ease-in-out !important;
-	background: transparen !importantt;
+	background: transparen !important;
 	left: 0 !important;
 	padding-bottom: 1rem !important;
 	padding-left: 1.5rem !important;
@@ -1664,10 +1664,9 @@ option.address-icon {
 	text-decoration: underline !important;
 }
 /******css changes**********/
-{noformat}
 #nodeliver-form > div {
 	width: auto;
-    //vertical-align: top;
+    /*vertical-align: top;*/
 }
 
 #nodeliver-form label{
@@ -1998,7 +1997,7 @@ option.address-icon {
 	#locationbar {
     	background-color: #efefef;
     	border-top: 2px solid #efefef;
-	}
+ }
 	.locabar_addresses-reservation-existing-time, .locabar_addresses-reservation-none {
 	    padding: 10px;
 	}
@@ -2065,4 +2064,38 @@ option.address-icon {
 }
 .modify .gnav-footer [data-sffooter="gift_card"] {
 	display: none;
+}
+
+.modify-order-bar .locabar-right-sections,
+.modify-order-bar .locabar-right-sections .locabar-section {
+	border-top: none;
+}
+.modify-order-bar .locabar-right-sections .locabar-section {
+	color: #ffffff !important;
+	background-color: transparent !important;
+	border-left-color: #F68139 !important;
+}
+.disableCart.modify-order-bar .locabar-right-sections .locabar-section {
+	background-color: #e77630 !important;
+}
+.disableCart.modify-order-bar .locabar-right-sections {
+	border-bottom: none;
+}
+.modify-order-bar .locabar-cart {
+	background-image: url(/media/layout/nav/globalnav/fdx/locabar-cart-white.svg);
+}
+.modify-order-bar .locabar-section .section-warning-small {
+	background-image: url(/media/layout/nav/globalnav/fdx/locabar-warning-white.svg);
+}
+.modify-order-bar .locabar-circle-cont {
+	color: #f68139;
+	background-color: #fff;
+	border: 2px solid #f68139;
+}
+.modify-order-bar .locabar_triggers_menuitem a {
+	color: #fff;
+}
+.modify-order-bar .locabar-arrow:after {
+	border-bottom: 2px solid #fff;
+	border-right: 2px solid #fff;
 }

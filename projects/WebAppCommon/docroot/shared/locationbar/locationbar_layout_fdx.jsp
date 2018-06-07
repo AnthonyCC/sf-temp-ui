@@ -32,7 +32,7 @@
 <% } else {  %>
 	<tmpl:get name="topwarningbar" />
 	
-	<div id="locationbar" class="<%= (uri.contains("/checkout/") || uri.contains("view_cart.jsp") || uri.contains("merge_cart.jsp") || uri.contains("/gift_card/")) ? "disableCart" : "" %>">
+	<div id="locationbar" class="<%= (uri.contains("/checkout/") || uri.contains("view_cart.jsp") || uri.contains("merge_cart.jsp") || uri.contains("/gift_card/")) ? "disableCart" : "" %><%= (isModifyingOrder) ? " modify-order-bar" : "" %>">
 		<% if (!mobWeb_locationbar_layout_fdx && isModifyingOrder && modifyingOrder != null) { %>
 			<%@ include file="/shared/template/includes/i_modifyorderbar.jspf" %>
 			
