@@ -27,6 +27,12 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  * @version $Revision$
  * @author $Author$
  */
+/**
+ *@deprecated Please do the changes in RoutingGatewayService and RoutingGatewayServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public class ErpRoutingGatewaySessionBean extends GatewaySessionBeanSupport {
 
 	private static Category LOGGER = LoggerFactory.getInstance(ErpRoutingGatewaySessionBean.class);
