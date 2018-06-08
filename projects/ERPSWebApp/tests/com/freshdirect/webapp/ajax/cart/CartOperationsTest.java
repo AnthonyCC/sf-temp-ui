@@ -267,28 +267,6 @@ public class CartOperationsTest {
     }
 
     @Test
-    public void groupProductWhenProductDoNotHaveConfigurationVariationsIsNull() {
-        FDProduct product = prepareTestProduct(null, preparePricing("EA"));
-        boolean result = CartOperations.isProductGroupable(product, prepareSalesUnit("EA"));
-        Assert.assertTrue(result);
-    }
-
-    @Test
-    public void groupProductWhenProductDoNotHaveConfigurationVariationsIsEmpty() {
-        FDProduct product = prepareTestProduct(new FDVariation[] {}, preparePricing("EA"));
-        boolean result = CartOperations.isProductGroupable(product, prepareSalesUnit("EA"));
-        Assert.assertTrue(result);
-    }
-
-    @Test
-    public void doNotGroupProductWhenProductHasConfigurationVariationsExists() {
-        FDVariation variation = FDVariationFactory.createRequiredVariation("requiredVariation", Arrays.asList("option1"));
-        FDProduct product = prepareTestProduct(new FDVariation[] { variation }, preparePricing("EA"));
-        boolean result = CartOperations.isProductGroupable(product, prepareSalesUnit("EA"));
-        Assert.assertFalse(result);
-    }
-
-    @Test
     public void groupProductWhenProductSoldByEAPricedByEA() {
         FDProduct product = prepareTestProduct(new FDVariation[] {}, preparePricing("EA"));
         boolean result = CartOperations.isProductGroupable(product, prepareSalesUnit("EA"));
@@ -313,6 +291,19 @@ public class CartOperationsTest {
     public void doNotGroupProductWhenProductSoldByPricedByEA() {
         FDProduct product = prepareTestProduct(new FDVariation[] {}, preparePricing("EA"));
         boolean result = CartOperations.isProductGroupable(product, prepareSalesUnit("LB"));
+        Assert.assertFalse(result);
+    }
+
+    @Test
+    public void doNotGroupProductWhenProductIsNull() {
+        boolean result = CartOperations.isProductGroupable(null, prepareSalesUnit("LB"));
+        Assert.assertFalse(result);
+    }
+
+    @Test
+    public void doNotGroupProductWhenSalesUnitIsNull() {
+        FDProduct product = prepareTestProduct(new FDVariation[] {}, preparePricing("EA"));
+        boolean result = CartOperations.isProductGroupable(product, null);
         Assert.assertFalse(result);
     }
 

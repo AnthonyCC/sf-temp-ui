@@ -449,7 +449,7 @@ public class CartOperations {
                     if (deltaQty > 0) {
                         FDCartLineI newLine = null;
                         if (isProductGroupable(fdProduct, salesUnit)) {
-                            newLine = findGroupingOrderline(cart.getOrderLines(), product, salesUnit);
+                            newLine = findGroupingOrderline(cart.getOrderLines(), cartLine.getProductName(), cartLine.getConfiguration().getOptions(), cartLine.getSalesUnit());
                         }
                         if (newLine == null) {
                             newLine = cartLine.createCopy();
@@ -898,9 +898,9 @@ public class CartOperations {
         FDCartLineI theCartLine = null;
 
         if (isProductGroupable(product, salesUnit)) {
-            theCartLine = findGroupingOrderline(cartLinesToAdd, prodNode, salesUnit);
+            theCartLine = findGroupingOrderline(cartLinesToAdd, prodNode.getContentName(), item.getConfiguration(), salesUnit.getName());
             if (theCartLine == null) {
-                theCartLine = findGroupingOrderline(cart.getOrderLines(), prodNode, salesUnit);
+                theCartLine = findGroupingOrderline(cart.getOrderLines(), prodNode.getContentName(), item.getConfiguration(), salesUnit.getName());
             }
         }
 
@@ -1240,11 +1240,11 @@ public class CartOperations {
         }
     }
 
-    public static FDCartLineI findGroupingOrderline(List<FDCartLineI> orderLines, ProductModel productModel, FDSalesUnit salesUnit) {
+    public static FDCartLineI findGroupingOrderline(List<FDCartLineI> orderLines, String productName, Map<String, String> configurations, String salesUnit) {
         FDCartLineI groupOrderline = null;
         for (FDCartLineI orderLine : orderLines) {
-            if (!(orderLine instanceof FDModifyCartLineI) && orderLine.getProductName().equals(productModel.getContentName())
-                    && orderLine.getSalesUnit().equals(salesUnit.getName())) {
+            if (!(orderLine instanceof FDModifyCartLineI) && orderLine.getProductName().equals(productName)
+                    && orderLine.getSalesUnit().equals(salesUnit) && orderLine.getConfiguration().getOptions().equals(configurations)) {
                 groupOrderline = orderLine;
                 break;
             }
@@ -1253,8 +1253,7 @@ public class CartOperations {
     }
 
     public static boolean isProductGroupable(FDProduct product, FDSalesUnit salesUnit) {
-        return (product.getVariations() == null || product.getVariations().length == 0) && "EA".equalsIgnoreCase(salesUnit.getName())
-                && (product.isPricedByEa() || product.isPricedByLb());
+        return salesUnit != null && "EA".equalsIgnoreCase(salesUnit.getName()) && (product != null && (product.isPricedByEa() || product.isPricedByLb()));
     }
 
     public static List<FDCartLineI> removeUnavailableCartLines(final FDCartModel cart, final FDUserI fdUser) {
