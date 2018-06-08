@@ -412,17 +412,17 @@ if (allPickupDepots != null) {
 								</div>
 							</div>
 							<div style="display: inline-block; margin-right: 30px;" >
-								<div class="text13"><label for="newziptext">Change your Zip Code.</label></div>
-								<span id="newzip"><input type="text" id="newziptext" class="newziptext placeholder" placeholder="Enter zip code" maxlength="5" onkeydown="goButtonFocusAlert(event);" aria-describedby="zip_error"><button id="newzipgo"  class="newzipgo cssbutton orange orange-imp cssbutton-flat newzipgoAlert">Change</button></span>
-								<span class="error-msg" id="zip_error" aria-live="assertive">Incomplete zip code</span>
+								<div class="text13"><label for="newziptextmsg">Change your Zip Code.</label></div>
+								<span id="newzipmsg"><input type="text" id="newziptextmsg" class="newziptext placeholder" placeholder="Enter zip code" maxlength="5" onkeydown="goButtonFocusAlert(event);" aria-describedby="zip_error"><button id="newzipgomsg"  class="newzipgo cssbutton orange orange-imp cssbutton-flat newzipgoAlert">Change</button></span>
+								<span class="error-msg" id="zip_errormsg" aria-live="assertive">Incomplete zip code</span>
 							</div>
 							<div class="nodeliver-form" style="display: inline-block;" >
 								<% if (user_locationbar_fdx != null && !user_locationbar_fdx.isFutureZoneNotificationEmailSentForCurrentAddress()) { %>
 									<form class="n">
-										<div style="display: inline-block; max-width: 350px;" class="text13"><label for="location-email" class="n">Notify me when service comes to my area.</label></div>
+										<div style="display: inline-block; max-width: 350px;" class="text13"><label for="location-emailmsg" class="n">Notify me when service comes to my area.</label></div>
 										<div>
-											<input type="text" id="location-email" class="location-email-text placeholder" placeholder="Enter your e-mail" aria-describedby="email_error" /><button id="location-submit"  class="cssbutton fdxgreen cssbutton-flat">Send</button>
-											<span class="error-msg" id="email_error" aria-live="assertive">E-mail address is invalid</span>
+											<input type="text" id="location-emailmsg" class="location-email-text placeholder" placeholder="Enter your e-mail" aria-describedby="email_error" /><button id="location-submitmsg"  class="cssbutton fdxgreen cssbutton-flat">Send</button>
+											<span class="error-msg" id="email_errormsg" aria-live="assertive">E-mail address is invalid</span>
 										</div>
 									</form>
 								<% } %>
@@ -674,11 +674,11 @@ if (allPickupDepots != null) {
 			<div id="locabar_popupcart_trigger" class="locabar_triggers" role="menuitem" tabindex="0">
 				<div class="bold cursor-pointer locabar_triggers_menuitem">
           			<a href="/view_cart.jsp" tabindex="-1" nofocus>
-						<span class="offscreen">ViewCart menu</span>
+						<span class="offscreen">ViewCart</span>
 						<div style="display: inline-block;">
 							<div class="locabar-cart-count-cont">
 								<div class="locabar-cart"></div>
-								<div class="locabar-circle-cont locabar-popupcart-count"> 0</div>
+								<div class="locabar-circle-cont locabar-popupcart-count"> 0<span class="offscreen">items</span></div>
 							</div>
 						</div>
 						<div style="display: inline-block;">
@@ -719,11 +719,11 @@ if (allPickupDepots != null) {
 							</div>
 							<div class="footer-buttons">
 								<span class="close"></span><br />
-								<a class="cart cssbutton cssbutton-flat" href="/view_cart.jsp">View Cart</a>
+								<a class="cart cssbutton cssbutton-flat" aria-label="go to view cart page" href="/view_cart.jsp">View Cart</a>
 								<%
 									FDCartModel locationbarFdxCart = user_locationbar_fdx.getShoppingCart();
 								%>
-								<a class="checkout cssbutton orange cssbutton-flat" href="/checkout/view_cart.jsp" fd-login-required><%= (locationbarFdxCart instanceof FDModifyCartModel) ? "Review Changes" : "Checkout" %></a>
+								<a class="checkout cssbutton orange cssbutton-flat" aria-label="<%= (locationbarFdxCart instanceof FDModifyCartModel) ? "go to Review Changes page" : "go to Checkout page" %>" href="/checkout/view_cart.jsp" fd-login-required><%= (locationbarFdxCart instanceof FDModifyCartModel) ? "Review Changes" : "Checkout" %></a>
 							</div>
 			    		</div>
 					</fd:GetCart>

@@ -674,7 +674,7 @@ SESSIONSTORAGE:
 				e.preventDefault();
 			}
 		});
-
+/*
 		$(".newzipgo").keydown(function(e){
 
 			var text_length=$(this).parent().find("input").val().length;
@@ -684,9 +684,6 @@ SESSIONSTORAGE:
 				if(text_length<5 && text_length>=1){
 						$(this).parent().next().css("visibility","visible");
 						$(this).parent().find("input").addClass("input-error");
-					/*	$('.locabar_addresses-anon-deliverable-item-icon-clock .avlTimeFocus').blur();
-						$(".locabar_addresses-anon-deliverable-item-icon-truck a").blur();
-						$(this).parent().find("input").focus();*/
 						$(this).focus();
 						//console.log($(this));
 						setTimeout(function(){
@@ -701,7 +698,7 @@ SESSIONSTORAGE:
 				e.preventDefault();
 			}
 		});
-
+	*/	
 		$(".location-email-text").keydown(function(e){
 
 			var email_text=$(this).val();
@@ -731,7 +728,7 @@ SESSIONSTORAGE:
 		  	//e.preventDefault();
 
 		});
-
+/*
 		$("#location-submit.fdxgreen").keydown(function(e){
 
 			var email_text=$(this).parent().find('input').val();
@@ -758,7 +755,7 @@ SESSIONSTORAGE:
 		  	//e.preventDefault();
 
 		});
-
+*/
     function addMessage(id, isAlert, alertOpts) {
       return $('body').messages('add', id, isAlert, alertOpts);
     }

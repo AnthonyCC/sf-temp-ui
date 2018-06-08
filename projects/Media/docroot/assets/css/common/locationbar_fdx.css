@@ -2065,7 +2065,6 @@ option.address-icon {
 .modify .gnav-footer [data-sffooter="gift_card"] {
 	display: none;
 }
-
 .modify-order-bar .locabar-right-sections,
 .modify-order-bar .locabar-right-sections .locabar-section {
 	border-top: none;
@@ -2098,4 +2097,26 @@ option.address-icon {
 .modify-order-bar .locabar-arrow:after {
 	border-bottom: 2px solid #fff;
 	border-right: 2px solid #fff;
+}
+#location-submitmsg {
+    width: 88px;
+    height: 46px;
+    margin-top: 7px;
+    font-size: 13px;
+}
+#nodeliver-form #location-submitmsg {
+    margin-top: 5px;
+}
+#nodeliver-form #newzipmsg {
+    margin-top: 5px;
+}
+#newzipmsg {
+    display: inline-block;
+}
+
+#nodeliver-form #newzipmsg{
+    width: 100%;
+}
+.alerts #newzipmsg {
+    vertical-align: top;
 }
