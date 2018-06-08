@@ -267,18 +267,7 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 				user.refreshFdCustomer();
 			}
 
-				/*
-				 * if ( user.isDepotUser() ) { if (
-				 * user.isEligibleForSignupPromotion() ) { if (
-				 * FDCustomerManager.checkBillToAddressFraud( info, paymentMethod )
-				 * ) {
-				 *
-				 * session.setAttribute( SessionName.SIGNUP_WARNING,
-				 * MessageFormat.format( SystemMessageList.MSG_NOT_UNIQUE_INFO, new
-				 * Object[] { user.getCustomerServiceContact() } ) );
-				 *
-				 * } } }
-				 */
+				
 
 				FDSessionUser currentUser = (FDSessionUser) user;
 			currentUser.setPostPromoConflictEnabled( true );

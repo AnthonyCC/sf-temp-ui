@@ -1800,7 +1800,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 *            ErpPaymentMethodI to update
 	 *
 	 * @throws FDResourceException
-	 *             if an error occured using remote resources
+	 *             if an error occurred using remote resources
 	 */
 	public void updatePaymentMethod(FDActionInfo info, ErpPaymentMethodI paymentMethod)
 			throws FDResourceException, ErpPaymentMethodException {
@@ -8509,26 +8509,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	/*
 	 *@deprecated
 	 * Please use the CustomerController and CustomerAccountServiceI in Storefront2.0 project.
-	 * It maps to CustomerAccountServiceI.setDefaultPaymentMethod(DefaultPaymentMethodData defaultPaymentMethodData);
-	 * 
-	 */
-	@Deprecated
-	public void updateFDCustomerDefaultPaymentMethodType(FDIdentity identity, EnumPaymentMethodDefaultType type,
-			String defaultPaymentMethodpk) throws FDResourceException {
-		try {
-			FDCustomerEB eb = getFdCustomerHome().findByPrimaryKey(new PrimaryKey(identity.getFDCustomerPK()));
-			eb.setDefaultPaymentMethodType(type);
-			eb.setDefaultPaymentMethodPK(defaultPaymentMethodpk);
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		} catch (FinderException ce) {
-			throw new FDResourceException(ce);
-		}
-	}
-
-	/*
-	 *@deprecated
-	 * Please use the CustomerController and CustomerAccountServiceI in Storefront2.0 project.
 	 * It maps to CustomerAccountServiceI.getPaymentMethodDefaultTypeForFDCustomerId()
 	 * 
 	 */
@@ -8547,8 +8527,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	/*
 	 *@deprecated
-	 * Please use the CustomerController and CustomerAccountServiceI in Storefront2.0 project.
-	 * It maps to CustomerAccountServiceI.resetDefaultPaymentMethodAndDefaultTypeForFDCustomerId()
+	 * Please use the CustomerPaymentController and CustomerPaymentServiceI in Storefront2.0 project.
+	 * It maps to CustomerPaymentServiceI.resetDefaultPaymentValueType()
 	 * 
 	 */
 	@Deprecated

@@ -220,9 +220,10 @@ public interface FDCustomerManagerSB  extends EJBObject{
      * @param paymentMethod ErpPaymentMethodI to add
      *
      * @throws FDResourceException if an error occured using remote resources
+     * @deprecated
      */
     public void addPaymentMethod(FDActionInfo info, ErpPaymentMethodI paymentMethod, boolean paymentechEnabled) throws FDResourceException, RemoteException, ErpPaymentMethodException;
-
+    @Deprecated
     public void setDefaultPaymentMethod(FDActionInfo info, PrimaryKey paymentMethodPK, EnumPaymentMethodDefaultType type, boolean isDebitCardSwitch) throws FDResourceException,RemoteException;
 
     /****
@@ -241,6 +242,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      * @param paymentMethod ErpPaymentMethodI to update
      *
      * @throws FDResourceException if an error occured using remote resources
+     * @deprecated
      */
     public void updatePaymentMethod(FDActionInfo info, ErpPaymentMethodI paymentMethod) throws FDResourceException, RemoteException,  ErpPaymentMethodException;
 
@@ -252,9 +254,11 @@ public interface FDCustomerManagerSB  extends EJBObject{
      * @param pk PrimaryKey of the paymentMethod to remove
      *
      * throws FDResourceException if an error occured using remote resources
+     * @deprecated
      */
     public void removePaymentMethod(FDActionInfo info, ErpPaymentMethodI paymentMethod) throws FDResourceException, RemoteException;
 
+    @Deprecated
 	public boolean checkBillToAddressFraud(FDActionInfo info, ErpPaymentMethodI paymentMethod) throws FDResourceException, RemoteException;
 
     /**
@@ -907,8 +911,8 @@ public interface FDCustomerManagerSB  extends EJBObject{
 
 	/*
 	 *@deprecated
-	 * Please use the CustomerController and CustomerAccountServiceI in Storefront2.0 project.
-	 * It maps to resetDefaultPaymentMethodAndDefaultTypeForFDCustomerId()
+	 * Please use the CustomerPaymentController and CustomerPaymentServiceI in Storefront2.0 project.
+	 * It maps to getpaymentMethodDefaultType()
 	 * 
 	 */
 	@Deprecated
@@ -952,13 +956,13 @@ public interface FDCustomerManagerSB  extends EJBObject{
 
 	/*
 	 *@deprecated
-	 * Please use the CustomerController and CustomerAccountServiceI in Storefront2.0 project.
-	 * It maps to resetDefaultPaymentMethodAndDefaultTypeForFDCustomerId()
+	 * Please use the CustomerPaymentController and CustomerPaymentService in Storefront2.0 project.
+	 * It maps to resetDefaultPaymentValueType()
 	 * 
 	 */
 	@Deprecated
 	public int resetDefaultPaymentValueType(String custId) throws FDResourceException, RemoteException;
-
+	@Deprecated
 	public ErpAuthorizationModel verifyCard(FDActionInfo info, ErpPaymentMethodI paymentMethod, boolean paymentechEnabled) throws FDResourceException, RemoteException, ErpPaymentMethodException;
 
 	public void setDpFreeTrialOptin(boolean dpFreeTrialOptin, String custId, FDActionInfo info) throws FDResourceException,RemoteException;

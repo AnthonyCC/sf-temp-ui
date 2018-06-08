@@ -103,6 +103,7 @@ public class FDEcommProperties {
 	public static final String FDCustomerManagerSB="com.freshdirect.customer.FDCustomerManagerSB";
 	public static final String FDCustomerIdentity = "com.freshdirect.customer.identity";
 	public static final String FDCustomerAddress = "com.freshdirect.customer.address";
+	public static final String FDCustomerPayment = "com.freshdirect.customer.payment";
 	public static final String Registration = "com.freshdirect.customer.registration";
 	public static final String SaleCronSB = "payment.ejb.SaleCronSB";
 	public static final String ErpInfoSB_WarmUp="erp.ejb.ErpInfoSB_WarmUp";

@@ -31,7 +31,7 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 	private static final String SET_DEFAULT_SHIPPING_ADDRESS = "/customerAddress/defaultShippingAddress";
 	private static final String ADD_SHIPPING_ADDRESS = "/customerAddress/shippingAddress/add";
 	private static final String UPDATE_SHIPPING_ADDRESS = "/customerAddress/shippingAddress/update";
-	private static final String DELETE_SHIPPING_ADDRESS = "/customerAddress/shippingAddress/delete";
+	private static final String REMOVE_SHIPPING_ADDRESS = "/customerAddress/shippingAddress/remove";
 	
 	private static CustomerAddressServiceI INSTANCE;
 
@@ -205,7 +205,7 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 			request.setData(rootNode);
 			String inputJson = buildRequest(request);
 
-			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(DELETE_SHIPPING_ADDRESS),
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(REMOVE_SHIPPING_ADDRESS),
 					new TypeReference<Response<Void>>() {
 					});
 
