@@ -4,7 +4,7 @@
  * @param data some data
  */
 {template .departments}
-<fieldset><legend class="offscreen">filter products by departments</legend><li class="departments-list-all_dept">
+<li class="departments-list-all_dept">
 	{let $deptSelected}
 		{foreach $dataItem in $data}
 			{if $dataItem.selected}
@@ -25,5 +25,4 @@
 </li>
 {/if}
 {/foreach}
-</fieldset>
 {/template}

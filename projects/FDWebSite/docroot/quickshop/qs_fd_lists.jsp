@@ -33,7 +33,7 @@
         <div id="departments" class="">
 			<div class="departments">
 				<div class="departments-header qs-menu-header" data-listsize="">DEPARTMENTS <span class="counter"></span></div>
-				<ul class="checkboxlist departments-list"></ul>
+				<fieldset><legend class="offscreen">filter products by departments</legend><ul class="checkboxlist departments-list"></ul></fieldset>
 			</div>
         </div>
         <div id="preferences" class=""></div>

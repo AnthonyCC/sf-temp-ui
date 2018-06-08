@@ -37,14 +37,14 @@
  * @param? pastOrdersGroupedByYear orders grouped by year (for popup)
  */
 {template .ordersQS22}
-   <fieldset><legend class="offscreen">filter products by past orders</legend>
+   
   {let $limit: 20 /}
   {foreach $item in $firstMenuItems}
     {call quickshop.orderMenuItem}
       {param item: $item /}
     {/call}
   {/foreach}
-  </fieldset>
+
   {if $pastOrdersGroupedByYear and length($pastOrdersGroupedByYear)}
     <button class="seemore" aria-haspopup="true" data-alignpopup="tr-tl" data-alignpopupfunction="moreordersalign"><span>See More Orders</span></button>
     <div class="moreorders">
