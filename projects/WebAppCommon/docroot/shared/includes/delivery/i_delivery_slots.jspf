@@ -336,7 +336,7 @@ if (timeslots.size() > 0) {
 			/* generate empty cutoffs */
 			stringBuffer.append("						<tr id=\""+"co_d"+dayIndex+"_ts"+slotIndex+"_tr"+"\" class=\"cutoff_tr\""+((slotIndex!=0)?" style=\"display: none;\"":"")+">\n")
 						.append("							<td class=\"cutoff\">\n")
-						.append("								<div class=\"cutoffDispChild\" id=\"co_d"+dayIndex+"_ts"+slotIndex+"\" style=\"display: none;\">\n")
+						.append("								<div class=\"cutoffDispChild\" id=\"co_d"+dayIndex+"_ts"+slotIndex+"_outer\" style=\"display: none;\">\n")
 						.append("									<div id=\"co_d"+dayIndex+"_ts"+slotIndex+"\">&nbsp;</div>\n")
 						.append("								</div>\n")
 						.append("							</td>\n")
@@ -382,7 +382,7 @@ if (timeslots.size() > 0) {
 			/* generate empty cutoffs */
 			stringBuffer.append("						<tr id=\""+"co_d"+dayIndex+"_ts"+slotIndex+"_tr"+"\" class=\"cutoff_tr\""+((slotIndex!=0)?" style=\"display: none;\"":"")+">\n")
 						.append("							<td class=\"cutoff\">\n")
-						.append("								<div class=\"cutoffDispChild\" id=\"co_d"+dayIndex+"_ts"+slotIndex+"\" style=\"display: none;\">\n")
+						.append("								<div class=\"cutoffDispChild\" id=\"co_d"+dayIndex+"_ts"+slotIndex+"_outer\" style=\"display: none;\">\n")
 						.append("									<div id=\"co_d"+dayIndex+"_ts"+slotIndex+"\">&nbsp;</div>\n")
 						.append("								</div>\n")
 						.append("							</td>\n")
@@ -470,7 +470,7 @@ if (timeslots.size() > 0) {
 			/* generate empty cutoffs */
 			stringBuffer.append("						<tr id=\""+"co_d"+dayIndex+"_ts"+slotIndex+"_tr"+"\" class=\"cutoff_tr\""+((slotIndex!=0)?" style=\"display: none;\"":"")+">\n")
 						.append("							<td class=\"cutoff\">\n")
-						.append("								<div class=\"cutoffDispChild\" id=\"co_d"+dayIndex+"_ts"+slotIndex+"\" style=\"display: none;\">\n")
+						.append("								<div class=\"cutoffDispChild\" id=\"co_d"+dayIndex+"_ts"+slotIndex+"_outer\" style=\"display: none;\">\n")
 						.append("									<div id=\"co_d"+dayIndex+"_ts"+slotIndex+"\">&nbsp;</div>\n")
 						.append("								</div>\n")
 						.append("							</td>\n")
@@ -514,7 +514,7 @@ if (timeslots.size() > 0) {
 			/* generate empty cutoffs */
 			stringBuffer.append("						<tr id=\""+"co_d"+dayIndex+"_ts"+slotIndex+"_tr"+"\" class=\"cutoff_tr\""+((slotIndex!=0)?" style=\"display: none;\"":"")+">\n")
 						.append("							<td class=\"cutoff\">\n")
-						.append("								<div class=\"cutoffDispChild\" id=\"co_d"+dayIndex+"_ts"+slotIndex+"\" style=\"display: none;\">\n")
+						.append("								<div class=\"cutoffDispChild\" id=\"co_d"+dayIndex+"_ts"+slotIndex+"_outer\" style=\"display: none;\">\n")
 						.append("									<div id=\"co_d"+dayIndex+"_ts"+slotIndex+"\">&nbsp;</div>\n")
 						.append("								</div>\n")
 						.append("							</td>\n")
