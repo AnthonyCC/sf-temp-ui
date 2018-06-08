@@ -285,25 +285,18 @@ public class CmsPermissionManager {
             }
         }
 
-        // ORPHAN
-        if (rootKeys.size() == 0) {
-            return input.permitForOther;
-        }
+        // <1> SINGLE-ROOT MATCH
+        if (rootKeys.size() == 1 && OTHER_ROOT_KEYS.contains(rootKeys.iterator().next())) {
+            final ContentKey theOnlyKey = rootKeys.iterator().next();
 
-        // OTHER-ROOT
-        if (OTHER_ROOT_KEYS.containsAll(rootKeys)) {
-            boolean allowed = false;
-            for (ContentKey key : rootKeys) {
-                if (RootContentKey.RECIPES.contentKey.equals(key)) {
-                    // recipes are actually members of FD store
-                    allowed |= Permit.valueOf(input.permitForFD);
-                } else if (RootContentKey.SHARED_RESOURCES.contentKey.equals(key)) {
-                    allowed |= Permit.valueOf(input.permitForAnyStore);
-                } else {
-                    allowed |= Permit.valueOf(input.permitForOther);
-                }
+            if (RootContentKey.RECIPES.contentKey.equals(theOnlyKey)) {
+                // recipes are actually members of FD store
+                return input.permitForFD;
+            } else if (RootContentKey.SHARED_RESOURCES.contentKey.equals(theOnlyKey)) {
+                return input.permitForAnyStore;
+            } else {
+                return input.permitForOther;
             }
-            return Permit.valueOf(allowed);
         }
 
         // <2> SELF-REFERENCE MATCH
@@ -317,6 +310,12 @@ public class CmsPermissionManager {
                 /// LOGGER.debug("<2> " + nodeKey + " => " + result.get(nodeKey));
                 return Permit.REJECT;
             }
+        }
+
+        // <3> ORPHAN TEST
+        if (rootKeys.size() == 0) {
+            /// LOGGER.debug("<3> " + nodeKey + " => SKIPPED");
+            return input.permitForOther;
         }
 
         // <4> STORE MEMBERSHIP
