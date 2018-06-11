@@ -552,14 +552,11 @@ class FDCustomerOrderInfoDAO {
 			ShortSubstituteData shotSubstituteData, String shortAndSubstitute,
 			String orderId) {
 		shotSubstituteData.setOrderId(orderId);
-		if ("SB".equalsIgnoreCase(shortAndSubstitute)) {
-			shotSubstituteData.setSubstituteItem(shortAndSubstitute);
+		if ("SB".equalsIgnoreCase(shortAndSubstitute)||"SS".equalsIgnoreCase(shortAndSubstitute)) {
+			shotSubstituteData.setShortAndSubstituteItem(shortAndSubstitute);
 		}
 		if ("SH".equalsIgnoreCase(shortAndSubstitute)) {
 			shotSubstituteData.setShortItem(shortAndSubstitute);
-		}
-		if ("SS".equalsIgnoreCase(shortAndSubstitute)) {
-			shotSubstituteData.setShortAndSubstituteItem(shortAndSubstitute);
 		}
 	}
 }
