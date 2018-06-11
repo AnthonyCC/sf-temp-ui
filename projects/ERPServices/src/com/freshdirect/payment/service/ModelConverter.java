@@ -1842,6 +1842,8 @@ public class ModelConverter {
 			model.setcDate(userCreditData.getcDate());
 			model.setDepartment(userCreditData.getDepartment());
 			model.setSaleId(userCreditData.getSaleId());
+			if(userCreditData.geteStore()!=null)
+			model.seteStore(userCreditData.geteStore());
 			creditModelList.add(model);
 		}
 		return creditModelList;
