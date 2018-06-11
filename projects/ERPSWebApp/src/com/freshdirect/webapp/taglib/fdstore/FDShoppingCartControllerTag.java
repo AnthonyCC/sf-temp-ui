@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.SortedSet;
 import java.util.Stack;
 import java.util.TreeSet;
@@ -1329,18 +1330,20 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
                 originalGrp.setSkipProductPriceValidation(false);
         }
 
+        Map<String, String> configurations = collectConfigurations(suffix, product);
+
         FDCartLineI theCartLine = null;
 
         if (result.isSuccess()) {
             if (CartOperations.isProductGroupable(product, salesUnit)) {
-                theCartLine = CartOperations.findGroupingOrderline(cartLinesToAdd, prodNode, salesUnit);
+                theCartLine = CartOperations.findGroupingOrderline(cartLinesToAdd, prodNode.getContentName(), configurations, salesUnit.getName());
                 if (theCartLine == null) {
-                    theCartLine = CartOperations.findGroupingOrderline(cart.getOrderLines(), prodNode, salesUnit);
+                    theCartLine = CartOperations.findGroupingOrderline(cart.getOrderLines(), prodNode.getContentName(), configurations, salesUnit.getName());
                 }
             }
 
             if (theCartLine == null) {
-                theCartLine = processSimple(suffix, prodNode, product, quantity, salesUnit, origCartLineId, variantId, userContext, originalGrp);
+                theCartLine = processSimple(configurations, prodNode, product, quantity, salesUnit, origCartLineId, variantId, userContext, originalGrp);
             } else {
                 theCartLine.setQuantity((originalLine == null) ? theCartLine.getQuantity() + quantity : quantity);
             }
@@ -1428,14 +1431,59 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
         return maximumQuantity;
     }
 
-    private FDCartLineI processSimple(String suffix, ProductModel prodNode, FDProduct product, double quantity, FDSalesUnit salesUnit, String origCartLineId, String variantId,
-            UserContext userCtx, FDGroup group) {
+    private FDCartLineI processSimple(Map<String, String> variations, ProductModel prodNode, FDProduct product, double quantity, FDSalesUnit salesUnit, String origCartLineId,
+            String variantId, UserContext userCtx, FDGroup group) {
 
+        // make the order line and add it to the cart
         //
-        // walk through the variations to see what's been set and try to build a
-        // variation map
-        //
-        HashMap<String, String> varMap = new HashMap<String, String>();
+        FDCartLineModel cartLine = null;
+        if (origCartLineId == null || origCartLineId.length() == 0) {
+            /*
+             * This condition is true whenever there is a new item added to the cart.
+             */
+            cartLine = new FDCartLineModel(new FDSku(product), prodNode, new FDConfiguration(quantity, salesUnit.getName(), variations), variantId, userCtx);
+        } else {
+            /*
+             * When an existing item in the cart is modified, reuse the same cartlineId instead of generating a new one.
+             */
+            List<ErpClientCode> clientCodes = Collections.emptyList();
+            cartLine = new FDCartLineModel(new FDSku(product), prodNode, new FDConfiguration(quantity, salesUnit.getName(), variations), origCartLineId, null, false, variantId,
+                    userCtx, clientCodes);
+            // Any group info from original cartline is moved to new cartline on modify.
+            cartLine.setFDGroup(group);
+        }
+        try {
+            if (request.getParameter("externalAgency") != null && !request.getParameter("externalAgency").isEmpty()) {
+                cartLine.setExternalAgency(ExternalAgency.safeValueOf(request.getParameter("externalAgency")));
+            } else {
+                cartLine.setExternalAgency(null);
+            }
+            if (request.getParameter("externalGroup") != null && !request.getParameter("externalGroup").isEmpty()) {
+                cartLine.setExternalGroup(request.getParameter("externalGroup"));
+            } else {
+                cartLine.setExternalGroup(null);
+            }
+            if (request.getParameter("externalSource") != null && !request.getParameter("externalSource").isEmpty()) {
+                cartLine.setExternalSource(request.getParameter("externalSource"));
+            } else {
+                cartLine.setExternalSource(null);
+            }
+        } catch (Throwable e) {
+            LOGGER.info("These values are not set as expected for the incomming request");
+            /*
+             * cartLine.setExternalAgency(null); cartLine.setExternalGroup(null); cartLine.setExternalSource(null);
+             */
+        }
+
+        return cartLine;
+    }
+
+    //
+    // walk through the variations to see what's been set and try to build a
+    // variation map
+    //
+    private Map<String, String> collectConfigurations(String suffix, FDProduct product) {
+        Map<String, String> varMap = new HashMap<String, String>();
         FDVariation[] variations = product.getVariations();
         for (int i = 0; i < variations.length; i++) {
             FDVariation variation = variations[i];
@@ -1484,53 +1532,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
                 result.addError(new ActionError(variation.getName() + suffix, "Please select " + variation.getDescription()));
             }
         }
-
-        if (!result.isSuccess()) {
-            return null;
-        }
-        //
-        // make the order line and add it to the cart
-        //
-        FDCartLineModel cartLine = null;
-        if (origCartLineId == null || origCartLineId.length() == 0) {
-            /*
-             * This condition is true whenever there is a new item added to the cart.
-             */
-            cartLine = new FDCartLineModel(new FDSku(product), prodNode, new FDConfiguration(quantity, salesUnit.getName(), varMap), variantId, userCtx);
-        } else {
-            /*
-             * When an existing item in the cart is modified, reuse the same cartlineId instead of generating a new one.
-             */
-            List<ErpClientCode> clientCodes = Collections.emptyList();
-            cartLine = new FDCartLineModel(new FDSku(product), prodNode, new FDConfiguration(quantity, salesUnit.getName(), varMap), origCartLineId, null, false, variantId,
-                    userCtx, clientCodes);
-            // Any group info from original cartline is moved to new cartline on modify.
-            cartLine.setFDGroup(group);
-        }
-        try {
-            if (request.getParameter("externalAgency") != null && !request.getParameter("externalAgency").isEmpty()) {
-                cartLine.setExternalAgency(ExternalAgency.safeValueOf(request.getParameter("externalAgency")));
-            } else {
-                cartLine.setExternalAgency(null);
-            }
-            if (request.getParameter("externalGroup") != null && !request.getParameter("externalGroup").isEmpty()) {
-                cartLine.setExternalGroup(request.getParameter("externalGroup"));
-            } else {
-                cartLine.setExternalGroup(null);
-            }
-            if (request.getParameter("externalSource") != null && !request.getParameter("externalSource").isEmpty()) {
-                cartLine.setExternalSource(request.getParameter("externalSource"));
-            } else {
-                cartLine.setExternalSource(null);
-            }
-        } catch (Throwable e) {
-            LOGGER.info("These values are not set as expected for the incomming request");
-            /*
-             * cartLine.setExternalAgency(null); cartLine.setExternalGroup(null); cartLine.setExternalSource(null);
-             */
-        }
-
-        return cartLine;
+        return varMap;
     }
 
     /**
@@ -1769,9 +1771,22 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 
                                     // add a new orderline for rest of the difference, if any
                                     if (deltaQty > 0) {
+                                        FDCartLineI newLine = null;
+                                        FDProduct fdProduct = orderLine.lookupFDProduct();
+                                        FDSalesUnit salesUnit = fdProduct.getSalesUnit(orderLine.getSalesUnit());
+                                        if (CartOperations.isProductGroupable(fdProduct, salesUnit)) {
+                                            newLine = CartOperations.findGroupingOrderline(cart.getOrderLines(), orderLine.getProductName(),
+                                                    orderLine.getConfiguration().getOptions(), orderLine.getSalesUnit());
+                                        }
+                                        if (newLine == null) {
+                                            newLine = orderLine.createCopy();
+                                            newLine.setUserContext(user.getUserContext());
+                                            newLine.setQuantity(deltaQty);
+                                            i.add(newLine);
+                                        } else {
+                                            newLine.setQuantity(newLine.getQuantity() + deltaQty);
+                                        }
 
-                                        FDCartLineI newLine = orderLine.createCopy();
-                                        newLine.setUserContext(user.getUserContext());
                                         try {
                                             OrderLineUtil.cleanup(newLine);
                                         } catch (FDInvalidConfigurationException e) {
@@ -1783,8 +1798,6 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
                                             // APPDEV-3050
                                             throw new JspException(e.getMessage());
                                         }
-                                        newLine.setQuantity(deltaQty);
-                                        i.add(newLine);
                                         // Log a addToCart event.
                                         FDEventUtil.logAddToCartEvent(newLine, request);
                                     }

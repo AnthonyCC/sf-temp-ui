@@ -300,7 +300,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 
     @Override
     public boolean isGoingOutOfStock() {
-        boolean isToBeDiscontinuedSoon;
+    	boolean isToBeDiscontinuedSoon;
         try {
             FDProductInfo productInfo = FDCachedFactory.getProductInfo(getDefaultSkuCode());
             ZoneInfo zone = getUserContext().getPricingContext().getZoneInfo();

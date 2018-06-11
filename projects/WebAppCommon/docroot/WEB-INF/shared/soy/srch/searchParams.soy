@@ -174,7 +174,7 @@
  * @param? searchParams
  */
 {template .noResultsNoSuggestions}
-	{if $searchParams}
+	{if isNonnull($searchParams)}
 		<div class="search-noresults-no-suggestions">No results found for "<span class="search-term">{$searchParams}</span>". Please check the spelling of the words you entered or try a more general term.</div>
 	{/if}
 {/template}
