@@ -959,7 +959,7 @@ public class Cart {
                 PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
                 if(!cart.containsDlvPassOnly()){
                 cartDetail.addDiscount(new com.freshdirect.mobileapi.controller.data.response.CartDetail.Discount(promotion
-                        .getPromotionCode(), redemptionCode, DiscountType.PROMO, discount.getAmount(), true, promotion.getDescription()));
+                        .getPromotionCode(), promotion.getRedemptionCode(), DiscountType.PROMO, discount.getAmount(), true, promotion.getDescription()));
                 }
             }
         }
