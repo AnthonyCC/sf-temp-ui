@@ -2310,4 +2310,16 @@ public class FDCartModel extends ModelSupport implements FDCartI {
     	}
     	return isDlvPassApplicable;
     }
+
+	@Override
+	public boolean isChargeWaivedByDlvPass(EnumChargeType chargeType) {
+		boolean isWaivedByDlvPass = false;
+		if(isChargeWaived(chargeType)) {
+			ErpChargeLineModel charge = this.getCharge(chargeType);
+			String promoCode = charge.getDiscount().getPromotionCode();
+			isWaivedByDlvPass = promoCode != null && promoCode.equals(DlvPassConstants.PROMO_CODE);
+		}
+		return isWaivedByDlvPass;
+	}
+	
 }

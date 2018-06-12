@@ -50,6 +50,7 @@ public interface FDCartI extends java.io.Serializable {
 	public boolean isPhoneChargeTaxable();
 
 	public boolean isChargeWaived(EnumChargeType chargeType);
+	public boolean isChargeWaivedByDlvPass(EnumChargeType chargeType);
 
 	public double getCustomerCreditsValue();
 

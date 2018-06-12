@@ -1552,4 +1552,10 @@ public class FDStandingOrderAdapter  implements FDOrderI{
 		return false;
 	}
 
+	@Override
+	public boolean isChargeWaivedByDlvPass(EnumChargeType chargeType) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

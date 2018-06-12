@@ -30,6 +30,7 @@ import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.dataloader.subscriptions.DeliveryPassFreeTrialCron;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.deliverypass.DlvPassConstants;
@@ -55,6 +56,7 @@ import com.freshdirect.fdstore.customer.FDUserUtil;
 import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
+import com.freshdirect.fdstore.deliverypass.DeliveryPassFreeTrialUtil;
 import com.freshdirect.fdstore.deliverypass.DeliveryPassSubscriptionUtil;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.fdstore.lists.FDCustomerRecipeList;
@@ -658,7 +660,16 @@ public class SubmitOrderAction extends WebActionSupport {
 				modifying = true;
 	            //The previous recommendations of the current user need to be removed.
 	            session.removeAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);
-				
+	            
+	          //Added for DP17-102 BACKEND FREE TRIAL: Create customers free trial subscription order along with customers next order
+				try {
+                    if(user.applyFreeTrailOptinBasedDP()){
+                        DeliveryPassFreeTrialUtil.placeDpSubscriptionOrder(user.getIdentity().getErpCustomerPK(), FDStoreProperties.getTwoMonthTrailDPSku());
+                    }
+                } catch (Exception e) {
+                    LOGGER.warn("Exception while creating Free-trial DP Order along with regular order",e);
+                }
+							
 			} else {
 				// new order -> place it
 				FDActionInfo info=AccountActivityUtil.getActionInfo(session, "Order Created");
@@ -683,6 +694,15 @@ public class SubmitOrderAction extends WebActionSupport {
 							appliedPromos, sendEmail, cra, status,
 							isFriendReferred, fdcOrderCount);
 				}
+				
+				//Added for DP17-102 BACKEND FREE TRIAL: Create customers free trial subscription order along with customers next order
+				try {
+                    if(user.applyFreeTrailOptinBasedDP()){
+                    	DeliveryPassFreeTrialUtil.placeDpSubscriptionOrder(user.getIdentity().getErpCustomerPK(), FDStoreProperties.getTwoMonthTrailDPSku());
+                    }
+                } catch (Exception e) {
+                    LOGGER.warn("Exception while creating Free-trial DP Order along with regular order",e);
+                }
 				
 			    //[APPDEV-4574]-Auto optin for emails, if its customer's first order.
 				if(isFirstOrder){
