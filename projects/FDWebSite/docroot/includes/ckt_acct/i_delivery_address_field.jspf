@@ -115,7 +115,7 @@ String[] checkErrorType = {"technical_difficulty", EnumUserInfoName.DLV_NOT_IN_Z
              if (EnumUnattendedDeliveryFlag.OPT_OUT.equals(thisAddress.getUnattendedDeliveryFlag())) unattendedOptIn = false;
              fldUnattendedDeliveryInstructions = thisAddress.getUnattendedDeliveryInstructions();
              /* remove default "OK" */
-             fldUnattendedDeliveryInstructions = (fldUnattendedDeliveryInstructions.equals("OK"))?"":fldUnattendedDeliveryInstructions;
+             fldUnattendedDeliveryInstructions = ("OK".equals(fldUnattendedDeliveryInstructions))?"":fldUnattendedDeliveryInstructions;
 
 
         if (thisAddress.getAltDelivery() != null && "NEIGHBOR".equalsIgnoreCase(thisAddress.getAltDelivery().getDeliveryCode())) { 
