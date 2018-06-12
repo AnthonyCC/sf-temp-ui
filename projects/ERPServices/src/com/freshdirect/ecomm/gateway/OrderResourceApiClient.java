@@ -58,7 +58,7 @@ private static OrderResourceApiClient INSTANCE;
 	private static final String GET_DELIVERYINFO_API = 	"orders/{id}/getDeliveryInfo";
 	private static final String RESUBMIT_GC_ORDERS_API = 	"orders/resubmitNsmGcOrders";
 	private static final String CREATE_GC_ORDER_API = 	"orders/gc/create";
-	
+	private static final String CREATE_SUB_ORDER_API = 	"orders/sub/create";
 	
 	public static OrderResourceApiClient getInstance() {
 		if (INSTANCE == null)
@@ -325,21 +325,24 @@ private static OrderResourceApiClient INSTANCE;
 		Request<CreateOrderRequestData> request = new Request<CreateOrderRequestData>();
 		
 		try{
-			request.setData(
-					new CreateOrderRequestData(
-							FDActionInfoConverter.buildActionInfoData(info), 
-							SapGatewayConverter.buildOrderData(createOrder), 
-							appliedPromos, 
-							id, 
-							sendEmail, 
-							CustomerRatingConverter.buildCustomerRatingData(cra), 
-							ErpFraudPreventionConverter.buildCrmAgentRoleData(crmAgentRole), 
-							(status!=null)?status.getName():null, 
-							false));
+			
+			CreateOrderRequestData data = new CreateOrderRequestData();
+			data.setInfo(FDActionInfoConverter.buildActionInfoData(info));
+			data.setModel(SapGatewayConverter.buildOrderData(createOrder));
+			data.setAppliedPromos(appliedPromos);
+			data.setId(id);
+			data.setSendMail(sendEmail);
+			data.setCra(CustomerRatingConverter.buildCustomerRatingData(cra));
+			data.setAgentRole(ErpFraudPreventionConverter.buildCrmAgentRoleData(crmAgentRole));
+			data.setDeliveryPassStatus((status!=null)?status.getName():null);
+			data.setRealTimeAuthNeeded(isRealTimeAuthNeeded);
+			
+			
+			request.setData(data);
 			
 			Response<String> response = null;
 			String inputJson = buildRequest(request);
-			response = httpPostData(getFdCommerceEndPoint(CREATE_GC_ORDER_API), inputJson, Response.class, new Object[]{});
+			response = httpPostData(getFdCommerceEndPoint(CREATE_SUB_ORDER_API), inputJson, Response.class, new Object[]{});
 			return parseResponse(response);
 		} catch (Exception e) {
 			e.printStackTrace();
