@@ -682,12 +682,11 @@ public class FDCustomerManager {
 	 * @throws FDResourceException if an error occured using remote resources
 	 */
 	public static Collection<ErpPaymentMethodI> getPaymentMethods(FDIdentity identity) throws FDResourceException {
-		lookupManagerHome();
-
 		try {
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerPayment)) {
 				return CustomerPaymentService.getInstance().getPaymentMethods(identity);
 			}
+			lookupManagerHome();
 			FDCustomerManagerSB sb = managerHome.create();
 			return sb.getPaymentMethods(identity);
 

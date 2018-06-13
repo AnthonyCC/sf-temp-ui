@@ -468,23 +468,26 @@ public class ModelConverter {
 
 	public static List<FDProductPromotionInfo> buildFDProductPromotionInfo(
 			List<FDProductPromotionInfoData> value) {
-		 List<FDProductPromotionInfo> data = new ArrayList();
+		 List<FDProductPromotionInfo> data = new ArrayList<FDProductPromotionInfo>();
 		 for(FDProductPromotionInfoData obj:value){
 			 SalesAreaInfo sAinfo = buildSalesAreaInfo(obj);
 			 FDProductPromotionInfo model = new FDProductPromotionInfo();
+			 model.setId(obj.getId());
+			 model.setVersion(obj.getVersion());
+			 model.setZoneId(obj.getZoneId());
+			 model.setSkuCode(obj.getSkuCode());
+			 model.setMatNumber(obj.getMatNumber());
+			 model.setPriority(obj.getPriority());
+			 model.setFeatured(obj.isFeatured());
+			 model.setFeaturedHeader(obj.getFeaturedHeader());
+			 model.setType(obj.getType());
 			 model.setErpCategory(obj.getErpCategory());
 			 model.setErpCatPosition(obj.getErpCatPosition());
 			 model.setErpDeptId(obj.getErpDeptId());
 			 model.setErpPromtoionId(obj.getErpPromtoionId());
-			 model.setFeaturedHeader(obj.getFeaturedHeader());
-			 model.setId(obj.getId());
-			 model.setMatNumber(obj.getMatNumber());
-			 model.setPriority(obj.getPriority());
+			 
 			 model.setSalesArea(sAinfo);
-			 model.setSkuCode(obj.getSkuCode());
-			 model.setType(obj.getType());
-			 model.setVersion(obj.getVersion());
-			 model.setZoneId(obj.getZoneId());
+			 
 			 data.add(model);
 		 }
 		return data;
@@ -499,7 +502,7 @@ public class ModelConverter {
 	public static ErpProductPromotionPreviewInfo buildErpProductPromotionPreviewInfo(
 			ErpProductPromotionPreviewInfoData data) {
     	ErpProductPromotionPreviewInfo response = new ErpProductPromotionPreviewInfo();
-    	Map<String,ErpProductInfoModel> prodInfoMod = new HashMap();
+    	Map<String,ErpProductInfoModel> prodInfoMod = new HashMap<String,ErpProductInfoModel>();
     	for(String key: data.getErpProductInfoMap().keySet()){
     		prodInfoMod.put(key, buildProdInfoMod(data.getErpProductInfoMap().get(key)));}
     	response.setErpProductInfoMap(prodInfoMod);
