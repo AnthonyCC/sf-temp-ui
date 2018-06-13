@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -936,7 +937,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				conn = getConnection();
 				result = FDCustomerOrderInfoDAO.getActiveDeliveryPassSavings(conn, customerPk, dlvPass.getPK().getId());
 				close(conn);
-				savings = Double.parseDouble(result);
+				try {
+					savings = Double.parseDouble(result);
+					savings = (Math.round( savings * 100.0 ) / 100.0);
+				} catch (NumberFormatException e) {
+					LOGGER.warn("Exception while parsing the DP saving amount:",e);
+				}
 				dlvPassInfo.setDPSavings(savings);
 			}
 		} else {
