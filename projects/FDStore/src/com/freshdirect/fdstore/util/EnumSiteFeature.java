@@ -200,7 +200,7 @@ public class EnumSiteFeature implements Serializable, Comparable<EnumSiteFeature
 		feature = staticEnum.get(name);
 		
 		if (feature == null) {
-			LOGGER.error("Failed to find site feature with name '" + name + "', store: " + CmsManager.getInstance().getSingleStoreKey());
+			//LOGGER.error("Failed to find site feature with name '" + name + "', store: " + CmsManager.getInstance().getSingleStoreKey());
 
 			return EnumSiteFeature.NIL;
 		} else {
