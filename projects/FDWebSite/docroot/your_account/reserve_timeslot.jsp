@@ -106,6 +106,10 @@ if (mobWeb) {
     			<% if (!mobWeb) { %>
   					<div class="tsWrapper">
   						<%@ include file="/shared/includes/delivery/i_delivery_timeslots.jspf"%>
+						<script>window.FreshDirect = window.FreshDirect || {};
+								window.FreshDirect.gtm = window.FreshDirect.gtm || {};
+								window.FreshDirect.gtm.afterPageView = window.FreshDirect.gtm.afterPageView || [];
+								window.FreshDirect.gtm.afterPageView.push({ timeslotOpened:{ action: 'timeslot-pageview', pageName:'Reserve Timeslots'} });</script>
   					</div>
     			<%} else {%>
       				<div class="timeslot-selector reserve-timeslot"></div>

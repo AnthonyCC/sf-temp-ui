@@ -52,6 +52,19 @@ var dataLayer = window.dataLayer || [];
   };
 
   fd.gtm.productTransform = productTransform;
+  
+  fd.gtm.timeslots = function(action, pageName) {
+      var unavts = fd.gtm.isUnavailableTimeslotPresent() ? 'yes' : 'no';
+
+      dataLayer.push({
+        event: 'timeslot-unavailable',
+        eventCategory: 'timeslot',
+        eventAction: action,
+        page_name: pageName,
+        unavailable_timeslot_present: unavts,
+        eventLabel: unavts
+      });
+  }
 
   var safeName = function (text) {
     return text.toString().toLowerCase()
@@ -252,18 +265,11 @@ var dataLayer = window.dataLayer || [];
         ecommerce: cosData
       });
     },
-    timeslotOpened: function () {
+    timeslotOpened: function (data) {
+    	var action = data && data.action || 'timeslot-checkout-modal';
+    	var pageName = data && data.pageName || 'Available Delivery Timeslots - Modal';
       setTimeout(function () {
-        var unavts = fd.gtm.isUnavailableTimeslotPresent() ? 'yes' : 'no';
-
-        dataLayer.push({
-          event: 'timeslot-unavailable',
-          eventCategory: 'timeslot',
-          eventAction: 'timeslot-checkout-modal',
-          page_name: 'Available Delivery Timeslots - Modal',
-          unavailable_timeslot_present: unavts,
-          eventLabel: unavts
-        });
+    	  fd.gtm.timeslots(action, pageName)
       }, 10);
     },
     topNavClick: function (data) {
@@ -873,6 +879,7 @@ var dataLayer = window.dataLayer || [];
   var browseData = fd.browse && fd.browse.data;
   var productData = fd.pdp && fd.pdp.data;
   var productExtraData = fd.pdp && fd.pdp.extraData;
+  var afterPageView = fd.gtm && fd.gtm.afterPageView;
 
   if (gtmData) {
     fd.gtm.updateDataLayer(gtmData);
@@ -936,6 +943,13 @@ var dataLayer = window.dataLayer || [];
     fd.gtm.reportImpressionsEl(el);
   });
 
+  // since we don't know, when the pageView is fired, we wait for 100ms to report pending updates
+  setTimeout(function(){
+	  while(afterPageView && afterPageView.length) {
+		  var update = afterPageView.shift();
+		  fd.gtm.updateDataLayer(update);
+	  }	  
+  },100);
 }(FreshDirect));
 
 // listen for gtm related data
