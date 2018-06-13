@@ -564,9 +564,7 @@
 	{/if}
 	{if $replacement}
 		<div class="portrait-item-replacement">
-			{if $useReplacement}
-				<button class="cssbutton green transparent">We Recommend</button>
-			{else}
+			{if not $useReplacement}
 				We Recommend: <button class="cssbutton green transparent" data-component="item-replacement" data-replacement="{$useReplacement}" data-replacement-id="{$itemId}">{$replacement.productName}</button>
 			{/if}
 		</div>
