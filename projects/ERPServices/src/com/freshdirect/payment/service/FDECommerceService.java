@@ -1051,22 +1051,24 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			e.printStackTrace();
 		}
 	}
+
 	@Override
 	public boolean isSocialLoginOnlyUser(String customer_id) {
 		Response<Boolean> response = null;
 		try {
 			response = httpGetDataTypeMap(
-					getFdCommerceEndPoint("account/external/checksocialloginuser?customerId="+customer_id),new TypeReference<Response<Boolean>>() {
+					getFdCommerceEndPoint("account/external/checksocialloginuser?customerId=" + customer_id),
+					new TypeReference<Response<Boolean>>() {
 					});
 			if (!response.getResponseCode().equals("OK"))
 				throw new FDResourceException(response.getMessage());
 
+			return response.getData();
 		} catch (FDResourceException e) {
-			e.printStackTrace();
 			LOGGER.error(e.getMessage());
 		}
-		return response.getData();
-	
+		return false;
+
 	}
 	@Override
 	public List<String> getConnectedProvidersByUserId(String userId) {

@@ -805,12 +805,16 @@ public interface FDCustomerManagerSB  extends EJBObject{
 
 	public String dupeEmailAddress(String email) throws FDResourceException, RemoteException;
 
+	@Deprecated
 	public void storeMobilePreferences(String fdcustomerId, String mobileNumber, String textOffers, String textDelivery, String orderNotices, String orderExceptions, String offers, String partnerMessages, EnumEStoreId eStoreId) throws FDResourceException, RemoteException;
 
+	@Deprecated
 	public void storeGoGreenPreferences(String customerId, String goGreen) throws FDResourceException, RemoteException;
+	@Deprecated
 	public String loadGoGreenPreference(String customerId) throws FDResourceException, RemoteException;
-
+	@Deprecated
 	public void storeMobilePreferencesNoThanks(String customerId) throws FDResourceException, RemoteException;
+	@Deprecated
 	public void storeSmsPreferencesNoThanks(String fdCustomerId, EnumEStoreId eStoreId) throws FDResourceException, RemoteException;
 
 	public void storeAllMobilePreferences(String customerId, String fdCustomerId, String mobileNumber, String textOffers, String textDelivery, String goGreen, String phone, String ext, boolean isCorpUser,EnumEStoreId eStoreId) throws FDResourceException, RemoteException;
@@ -847,7 +851,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
 
 	public CustomerAvgOrderSize getHistoricOrderSize(String customerId) throws FDResourceException, RemoteException;
 	public FDUser getFDUserWithCart(FDIdentity identity, EnumEStoreId eStoreId) throws FDAuthenticationException, FDResourceException, RemoteException;
-
+	@Deprecated
 	public void storeSmsPrefereceFlag(String fdCustomerId, String flag, EnumEStoreId eStoreId) throws FDResourceException, RemoteException;
 
 	//4125 coremetrics
@@ -878,7 +882,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
 
 	public boolean iPhoneCaptureEmail(String email, String zipCode,
 			String serviceType)throws FDResourceException, RemoteException;
-
+	@Deprecated
 	public void storeEmailPreferenceFlag(String fdCustomerId, String flag, EnumEStoreId eStoreId) throws FDResourceException, RemoteException;
 
 	public boolean isValidVaultToken(String token, String customerId)throws FDResourceException, RemoteException;

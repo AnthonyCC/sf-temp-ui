@@ -48,7 +48,7 @@ public class FDEcommProperties {
     public final static String SAPZoneInfoLoaderSB = "sap.ejb.SAPZoneInfoLoaderSB";
     public final static String BatchManagerSB = "erp.ejb.BatchManagerSB";
     public final static String AttributeFacadeSB = "attributes.ejb.AttributeFacadeSB";
-    public final static String ErpProductPromotionInfoSB = "erp.ejb.ErpProductPromotionInfoSB";
+	public final static String ErpProductPromotionInfoSB = "erp.ejb.ErpProductPromotionInfoSB";
     public final static String ErpZoneInfoSB = "erp.ejb.ErpZoneInfoSB";
     public final static String RecommendationEventLoggerSB = "event.ejb.RecommendationEventLoggerSB";
     public final static String EventLoggerSB = "event.ejb.EventLoggerSB";
@@ -104,6 +104,7 @@ public class FDEcommProperties {
 	public static final String FDCustomerIdentity = "com.freshdirect.customer.identity";
 	public static final String FDCustomerAddress = "com.freshdirect.customer.address";
 	public static final String FDCustomerPayment = "com.freshdirect.customer.payment";
+	public static final String FDCustomerPreference = "com.freshdirect.customer.preference";
 	public static final String Registration = "com.freshdirect.customer.registration";
 	public static final String SaleCronSB = "payment.ejb.SaleCronSB";
 	public static final String ErpInfoSB_WarmUp="erp.ejb.ErpInfoSB_WarmUp";
