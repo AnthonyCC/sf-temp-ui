@@ -17,7 +17,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class CustomerPreferenceService extends AbstractEcommService implements CustomerPreferenceServiceI {
 
-	private final static Category LOGGER = LoggerFactory.getInstance(CustomerAddressService.class);
+	private final static Category LOGGER = LoggerFactory.getInstance(CustomerPreferenceService.class);
 
 	private static final String GET_GO_GREEN = "/customerPreference/goGreen";
 	private static final String STORE_GO_GREEN = "/customerPreference/goGreen";

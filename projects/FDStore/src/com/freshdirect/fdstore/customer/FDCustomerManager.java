@@ -115,6 +115,7 @@ import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
 import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.ecomm.gateway.CustomerAddressService;
+import com.freshdirect.fdstore.ecomm.gateway.CustomerGiftCardService;
 import com.freshdirect.fdstore.ecomm.gateway.CustomerIdentityService;
 import com.freshdirect.fdstore.ecomm.gateway.CustomerPaymentService;
 import com.freshdirect.fdstore.ecomm.gateway.CustomerPreferenceService;
@@ -1514,110 +1515,6 @@ public class FDCustomerManager {
 			sb.storeCohortName(user);
 
 		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-	}
-
-	/**
-	 * Store Saved Recipient List for gc purchase for the user
-	 * This list is saved for the customer but no gift cards have been purchased as yet for these recipients.
-	 * @param user
-	 * @throws FDResourceException
-	 */
-	public static void storeSavedRecipients(FDUser user, List<SavedRecipientModel> recipientList) throws FDResourceException {
-		lookupManagerHome();
-
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			sb.storeSavedRecipients(user, recipientList);
-
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-	}
-
-	/**
-	 * Store Saved Recipient for gc purchase for the user
-	 * This recipient is saved for the customer but no gift cards have been purchased as yet for this recipient.
-	 * @param user
-	 * @throws FDResourceException
-	 */
-	public static void storeSavedRecipient(FDUser user, SavedRecipientModel model) throws FDResourceException {
-		lookupManagerHome();
-
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			sb.storeSavedRecipient(user, model);
-
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-	}
-
-	public static void updateSavedRecipient(FDUser user, SavedRecipientModel model) throws FDResourceException {
-		lookupManagerHome();
-
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			sb.updateSavedRecipient(user, model);
-
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-	}
-
-	public static void deleteSavedRecipients(FDUser user) throws FDResourceException {
-		lookupManagerHome();
-
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			sb.deleteSavedRecipients(user);
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-	}
-
-	public static void deleteSavedRecipient(String savedRecipientId) throws FDResourceException {
-		lookupManagerHome();
-
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			sb.deleteSavedRecipient(savedRecipientId);
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-	}
-
-	public static List<SavedRecipientModel> loadSavedRecipients(FDUser user) throws FDResourceException {
-		lookupManagerHome();
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.loadSavedRecipients(user);
-		}catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
@@ -3761,10 +3658,14 @@ public class FDCustomerManager {
 	public static ErpGCDlvInformationHolder getRecipientDlvInfo(
 			FDIdentity identity, String saleId, String certificationNum)
 			throws FDResourceException {
-		lookupManagerHome();
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.getRecipientDlvInfo(identity, saleId, certificationNum);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerGiftCard)) {
+				return CustomerGiftCardService.getInstance().getRecipientDlvInfo(identity, saleId, certificationNum);
+			}else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getRecipientDlvInfo(identity, saleId, certificationNum);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -3782,25 +3683,6 @@ public class FDCustomerManager {
 			FDCustomerManagerSB sb = managerHome.create();
 			return sb.resendEmail(saleId, certificationNum, resendEmailId,
 					recipName, personalMsg, source);
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-	}
-
-	public static boolean resendEmail(String saleId, String certificationNum,
-			String resendEmailId, String recipName, String personalMsg,
-			boolean toPurchaser, boolean toLastRecipient,
-			EnumTransactionSource source) throws FDResourceException {
-		lookupManagerHome();
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.resendEmail(saleId, certificationNum, resendEmailId,
-					recipName, personalMsg, toPurchaser, toLastRecipient,
-					source);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -3984,21 +3866,6 @@ public class FDCustomerManager {
 			throw new FDResourceException(re);
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
-		}
-	}
-
-	public static String[] sendGiftCardCancellationEmail(String saleId,
-			String certNum, boolean toRecipient, boolean toPurchaser,
-			boolean newRecipient, String newRecipientEmail)
-			throws FDResourceException {
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.sendGiftCardCancellationEmail(saleId, certNum,
-					toRecipient, toPurchaser, newRecipient, newRecipientEmail);
-		} catch (RemoteException e) {
-			throw new FDResourceException(e);
-		} catch (CreateException e) {
-			throw new FDResourceException(e);
 		}
 	}
 

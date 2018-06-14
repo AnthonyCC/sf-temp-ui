@@ -22,7 +22,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class CustomerPaymentService extends AbstractEcommService implements CustomerPaymentServiceI {
 
-	private final static Category LOGGER = LoggerFactory.getInstance(CustomerAddressService.class);
+	private final static Category LOGGER = LoggerFactory.getInstance(CustomerPaymentService.class);
 
 	private static final String GET_PAYMENT_METHODS = "/customerPayment/paymentMethods";
 	private static final String ADD_PAYMENT_METHOD = "/customerPayment/paymentMethod/add";

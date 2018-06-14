@@ -350,9 +350,9 @@ public interface FDCustomerManagerSB  extends EJBObject{
 
     // [APPREQ-369] store Cohort ID that belongs to user
     public void storeCohortName(FDUser user) throws FDResourceException, RemoteException;
-
+    @Deprecated
     public void storeSavedRecipients(FDUser user, List<SavedRecipientModel> recipientList) throws FDResourceException, RemoteException;
-
+    @Deprecated
     public void storeSavedRecipient(FDUser user, SavedRecipientModel srm) throws FDResourceException, RemoteException;
 
     public void updateSavedRecipient(FDUser user, SavedRecipientModel srm) throws FDResourceException, RemoteException;
@@ -711,9 +711,9 @@ public interface FDCustomerManagerSB  extends EJBObject{
     public List getGiftCardRecepientsForCustomer(FDIdentity identity) throws FDResourceException, RemoteException;
 
     public ErpGCDlvInformationHolder getRecipientDlvInfo(FDIdentity identity, String saleId, String certificationNum) throws FDResourceException, RemoteException;
-
+    @Deprecated
     public boolean resendEmail(String saleId, String certificationNum, String resendEmailId, String recipName, String personMsg, EnumTransactionSource source) throws FDResourceException, RemoteException;
-
+    @Deprecated
     public boolean resendEmail(String saleId, String certificationNum, String resendEmailId, String recipName, String personMsg, boolean toPurchaser, boolean toLastRecipient, EnumTransactionSource source) throws FDResourceException, RemoteException;
 
     public double getOutStandingBalance(ErpAbstractOrderModel order) throws FDResourceException, RemoteException;
@@ -738,6 +738,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
 
     public void transferGiftCardBalance(FDIdentity identity,String fromGivexNum,String toGivexNum,double amount) throws FDResourceException, RemoteException;
 
+    @Deprecated
     public String[] sendGiftCardCancellationEmail(String saleId, String certNum, boolean toRecipient, boolean toPurchaser, boolean newRecipient, String newRecipientEmail) throws RemoteException, FDResourceException;
 
     public String placeDonationOrder( FDActionInfo info,
