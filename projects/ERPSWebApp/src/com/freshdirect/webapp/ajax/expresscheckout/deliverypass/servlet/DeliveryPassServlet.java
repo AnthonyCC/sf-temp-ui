@@ -7,7 +7,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import org.apache.log4j.Logger;
 
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
@@ -23,6 +22,9 @@ import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.expresscheckout.deliverypass.data.DeliveryPassData;
 import com.freshdirect.webapp.ajax.expresscheckout.deliverypass.service.DeliveryPassService;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
+import com.freshdirect.webapp.taglib.crm.CrmSession;
+import com.freshdirect.crm.CrmAgentModel;
+import com.freshdirect.customer.EnumTransactionSource;
 
 public class DeliveryPassServlet extends BaseJsonServlet {
 
@@ -44,44 +46,8 @@ public class DeliveryPassServlet extends BaseJsonServlet {
 			returnHttpError(500, "Failed to render Terms & Conditions HTML media for Delivery Pass.", e);
 		}
 	}
-	
-  
-	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
-		Map<String, Object> responseData= new HashMap<String, Object>();
-		try {
-			if (null != user && null != user.getIdentity()) {
-				boolean autoRenewDpON = Boolean.parseBoolean(request.getParameter("FLIP_AUTORENEW_OFF"));
-				FDIdentity identity = user.getIdentity();
-				if (null != user.getDlvPassInfo() && EnumDlvPassStatus.ACTIVE.equals(user.getDlvPassInfo().getStatus())) {
-					String dpType = user.getDlvPassInfo().getAutoRenewDPType().getCode().toString();
-					if (null != dpType) {
-						try {
-							FDActionInfo info = AccountActivityUtil.getActionInfo(request.getSession(), "DeliveryPass auto-renew Opt-in");
-							FDCustomerManager.updateDpOptinDetails(autoRenewDpON, identity.getFDCustomerPK(), dpType, info, info.geteStore());
-							responseData.put("STATUS", "SUCCESS");
-						} catch (FDResourceException e) {
-							LOG.warn("Expection while opting-in for DP.", e);
-							returnHttpError(500, "Failed to save Opt-in for DP");
-						}
-					}
-				}else { // DP is not active
-					responseData.put("STATUS", "ERROR");
-					responseData.put("MESSAGE", "You dont have a Active DeliveryPass.");
-					responseData.put("ERRORTYPE", "ineligible");
-				}
-			} else {
-				responseData.put("STATUS", "ERROR");
-				responseData.put("MESSAGE", "Opt in changes are not committed, please refresh the page and do sign-in");
-				responseData.put("ERRORTYPE", "session timeout");
-			}
-			writeResponseData(response, responseData);
-		} catch (Exception e) {
-			returnHttpError(500, "Failed to render Terms & Conditions HTML media for Delivery Pass.", e);
-		}
-	}
 
-/*	@Override
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response, FDUserI user)
 			throws HttpErrorResponse {
 		Map<String, Object> responseData = new HashMap<String, Object>();
@@ -116,7 +82,7 @@ public class DeliveryPassServlet extends BaseJsonServlet {
 		}
 
 	}
-	*/
+	
 	@Override
 	protected boolean synchronizeOnUser() {
 		return false;
