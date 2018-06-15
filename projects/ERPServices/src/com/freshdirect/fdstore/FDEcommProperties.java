@@ -93,7 +93,7 @@ public class FDEcommProperties {
 	public static final String PaypalReconciliationSB = "payment.gateway.ewallet.impl.PaypalReconciliationSB";
 	public static final String SitemapSB = "fdstore.sitemap.SitemapSB";
 	public static final String GiftCardManagerSB = "giftcard.ejb.GiftCardManagerSB";
-
+	public final static String PostSettlementNotifySB ="payment.ejb.PostSettlementNotifySB";
 	
 	public static final String ProductFeedSB = "com.freshdirect.fdstore.content.productfeed.ProductFeedSB";
 	public static final String TEmailInfoSB = "com.freshdirect.fdstore.temails";
