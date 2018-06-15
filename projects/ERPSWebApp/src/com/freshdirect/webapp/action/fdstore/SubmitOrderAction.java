@@ -1,6 +1,7 @@
 package com.freshdirect.webapp.action.fdstore;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -723,8 +724,7 @@ public class SubmitOrderAction extends WebActionSupport {
 					StandingOrderUtil.createStandingOrder(session, cart, standingOrder, orderNumber);
 				}
 			}
-
-			
+System.out.println("ddddddddddddd");
 			//update or create everyItemEverOrdered Customer List
 			try{
 				updateEIEO(user, cart, modifying);
@@ -1027,7 +1027,6 @@ public class SubmitOrderAction extends WebActionSupport {
 	 */
 	private void updateEIEO(FDSessionUser user, FDCartModel cart, boolean modifying) throws FDResourceException {
 		FDCustomerShoppingList everyItemList = (FDCustomerShoppingList) FDListManager.getCustomerList(user.getIdentity(), EnumCustomerListType.SHOPPING_LIST, FDCustomerShoppingList.EVERY_ITEM_LIST);
-		
 		if(everyItemList == null){
 			LOGGER.debug("Customer has no Reorder List -- creating one");
 			everyItemList = FDListManager.generateEveryItemEverOrdered(user.getIdentity());

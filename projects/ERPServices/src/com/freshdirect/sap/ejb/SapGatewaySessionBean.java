@@ -103,14 +103,15 @@ public class SapGatewaySessionBean extends GatewaySessionBeanSupport {
 		}
 	}
 	public void sendCreateSalesOrder(SapOrderI order,EnumSaleType saleType) {
-		LOGGER.info("Sending sales order create request " + (order != null ? order.getWebOrderNumber() : "NULL"));
+		LOGGER.info("Sending sales order crssseate request " + (order != null ? order.getWebOrderNumber() : "NULL"));
+		System.out.println("asdf");
 		if (SapProperties.isBlackhole()) {
 			//This method will check the local inventory stored in ERPS.INVENTORY to do real time ATP check when SAP is down
 			//(APPDEV-3034) Enhancement Storefront to do local inventory check when SAP blackhole is enabled 
 			if(FDStoreProperties.isCheckLocalInventoryEnabled())
 				commitLocalInventory(order);
 			LOGGER.debug("Message blackholed.");
-			return;
+			//return;
 		}
 		this.enqueue(new SapCreateSalesOrder(order,saleType));
 	}
@@ -142,6 +143,7 @@ public class SapGatewaySessionBean extends GatewaySessionBeanSupport {
 		if (SapProperties.isBlackhole()) {
 			//This method will check the local inventory stored in ERPS.INVENTORY to do real time ATP check when SAP is down
 			//(APPDEV-3034) Enhancement Storefront to do local inventory check when SAP blackhole is enabled
+			System.out.println("asdfsdf");
 			if(FDStoreProperties.isCheckLocalInventoryEnabled())
 				commitLocalInventory(order);
 			LOGGER.debug("Message blackholed.");

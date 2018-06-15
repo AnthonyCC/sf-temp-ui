@@ -6132,7 +6132,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(ce);
 		}
 	}
-
+	// Mark this out of SB JJ
 	public List<ErpGiftCardModel> verifyStatusAndBalance(List<ErpGiftCardModel> giftcards, boolean reloadBalance)
 			throws FDResourceException {
 		try {
@@ -6147,7 +6147,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(ce);
 		}
 	}
-
+	// Mark this out of SB JJ
 	public ErpGiftCardModel verifyStatusAndBalance(ErpGiftCardModel giftcard, boolean reloadBalance)
 			throws FDResourceException {
 		try {
@@ -6163,7 +6163,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(ce);
 		}
 	}
-
+// Mark this out of SB JJ
 	public List getGiftCardRecepientsForCustomer(FDIdentity identity) throws FDResourceException {
 		try {
 
@@ -6178,7 +6178,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(ce);
 		}
 	}
-
+	// Mark this out of SB JJ
 	public Map getGiftCardRecepientsForOrders(List saleIds) throws FDResourceException {
 		try {
 
@@ -6391,7 +6391,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(re, "Cannot talk to MailerGatewayBean");
 		}
 	}
-
+	// Mark this out of SB JJ
 	public List getGiftCardOrdersForCustomer(FDIdentity identity) throws FDResourceException {
 
 		try {
@@ -6408,7 +6408,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 
 	}
-
+	// Mark this out of SB JJ
 	public Object getGiftCardRedemedOrders(FDIdentity identity, String certNum) throws FDResourceException {
 		try {
 
@@ -6424,7 +6424,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 
 	}
-
+	// Mark this out of SB JJ
 	public Object getGiftCardRedemedOrders(String certNum) throws FDResourceException {
 		try {
 
@@ -6440,7 +6440,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 
 	}
-
+	// Mark this out of SB JJ
 	public List getDeletedGiftCardForCustomer(FDIdentity identity) throws FDResourceException {
 		try {
 
@@ -6456,7 +6456,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 
 	}
-
+	// Mark this out of SB JJ
 	public List getGiftCardRecepientsForOrder(String saleId) throws FDResourceException {
 		try {
 
@@ -6471,7 +6471,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(ce);
 		}
 	}
-
+	// Mark this out of SB JJ
 	public ErpGiftCardModel validateAndGetGiftCardBalance(String givexNum) throws FDResourceException {
 
 		try {
@@ -6487,7 +6487,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(ice);
 		}
 	}
-
+	// Mark this out of SB JJ
 	public void transferGiftCardBalance(FDIdentity identity, String fromGivexNum, String toGivexNum, double amount)
 			throws FDResourceException {
 		try {
@@ -6703,7 +6703,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(re);
 		}
 	}
-
+	// Mark this out of SB JJ
 	public ErpGCDlvInformationHolder GetGiftCardRecipentByCertNum(String certNum) throws FDResourceException {
 		try {
 

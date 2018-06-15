@@ -1032,7 +1032,7 @@ public class ProductDetailPopulator {
         boolean isGoingOutOfStock = product.isGoingOutOfStock();
         ProductReference prodRef = new ProductReferenceImpl(product);
         boolean isFree = user.isProductSample(prodRef);
-
+     
         /* compare against prop limits */
         // determine what to display
         if ((FDStoreProperties.getBurstsLowerLimit() <= deal) && (FDStoreProperties.getBurstUpperLimit() >= deal)) {
