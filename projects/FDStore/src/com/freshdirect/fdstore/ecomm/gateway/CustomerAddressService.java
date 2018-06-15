@@ -32,7 +32,7 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 	private static final String ADD_SHIPPING_ADDRESS = "customerAddress/shippingAddress/add";
 	private static final String UPDATE_SHIPPING_ADDRESS = "customerAddress/shippingAddress/update";
 	private static final String REMOVE_SHIPPING_ADDRESS = "customerAddress/shippingAddress/remove";
-	
+
 	private static CustomerAddressServiceI INSTANCE;
 
 	public static CustomerAddressServiceI getInstance() {
@@ -60,7 +60,7 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
-				
+
 				throw new FDResourceException(response.getMessage());
 			}
 			return response.getData();
@@ -70,18 +70,21 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 		}
 	}
 
-	@Override 
+	@Override
 	public String getParentOrderAddressId(String parentOrderAddressId) throws FDResourceException {
 		Response<String> response = null;
-	
-		response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_PARENT_ORDER_ADDRESS_ID + "/" + parentOrderAddressId),  new TypeReference<Response<String>>(){});
-		if(!response.getResponseCode().equals("OK")){
+
+		response = this.httpGetDataTypeMap(
+				getFdCommerceEndPoint(GET_PARENT_ORDER_ADDRESS_ID + "/" + parentOrderAddressId),
+				new TypeReference<Response<String>>() {
+				});
+		if (!response.getResponseCode().equals("OK")) {
 			throw new FDResourceException(response.getMessage());
 		}
 		return response.getData();
-		
+
 	}
-	
+
 	@Override
 	public ErpAddressModel getAddress(FDIdentity identity, String addressId)
 			throws FDResourceException, RemoteException {
@@ -100,19 +103,18 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
-				
+
 				throw new FDResourceException(response.getMessage());
 			}
 			return response.getData();
 		} catch (FDEcommServiceException e) {
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
-		} 
+		}
 	}
 
 	@Override
-	public List<ErpAddressModel> getShippingAddresses(FDIdentity identity)
-			throws FDResourceException, RemoteException {
+	public List<ErpAddressModel> getShippingAddresses(FDIdentity identity) throws FDResourceException, RemoteException {
 		Response<List<ErpAddressModel>> response = null;
 		try {
 			Request<ObjectNode> request = new Request<ObjectNode>();
@@ -127,14 +129,14 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
-				
+
 				throw new FDResourceException(response.getMessage());
 			}
 			return response.getData();
 		} catch (FDEcommServiceException e) {
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
-		} 
+		}
 	}
 
 	@Override
@@ -215,21 +217,23 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 		} catch (FDEcommServiceException e) {
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
-		} 
-		
+		}
+
 	}
 
 	@Override
 	public String getDefaultShipToAddressPK(FDIdentity identity) throws FDResourceException {
 		Response<String> response = null;
-		response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_DEFAULT_SHIPPING_ADDRESS + "/" + identity.getFDCustomerPK()),  new TypeReference<Response<String>>(){});
-			
+		response = this.httpGetDataTypeMap(
+				getFdCommerceEndPoint(GET_DEFAULT_SHIPPING_ADDRESS + "/" + identity.getFDCustomerPK()),
+				new TypeReference<Response<String>>() {
+				});
+
 		if (!response.getResponseCode().equals("OK")) {
 			throw new FDResourceException(response.getMessage());
 		}
 		return response.getData();
-		
-		
+
 	}
 
 	@Override
@@ -255,9 +259,8 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 		} catch (FDEcommServiceException e) {
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
-		} 
-		
+		}
+
 	}
 
-	
 }

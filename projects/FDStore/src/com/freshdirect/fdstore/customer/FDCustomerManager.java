@@ -3568,12 +3568,16 @@ public class FDCustomerManager {
 	 * @throws FDResourceException
 	 *             if an error occured using remote resources
 	 */
-	public static FDGiftCardInfoList getGiftCards(FDIdentity identity)
-			throws FDResourceException {
-		lookupManagerHome();
+	public static FDGiftCardInfoList getGiftCards(FDIdentity identity) throws FDResourceException {
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return new FDGiftCardInfoList(sb.getGiftCards(identity));
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerGiftCard)) {
+				return new FDGiftCardInfoList(CustomerGiftCardService.getInstance().getGiftCards(identity));
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+
+				return new FDGiftCardInfoList(sb.getGiftCards(identity));
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -3985,9 +3989,13 @@ public class FDCustomerManager {
 	public static void resubmitGCOrders() {
 
 		try {
-			lookupManagerHome();
-			FDCustomerManagerSB sb = managerHome.create();
-			sb.resubmitGCOrders();
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerGiftCard)) {
+				CustomerGiftCardService.getInstance().resubmitGCOrders();
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				sb.resubmitGCOrders();
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			// throw new FDResourceException(ce, "Error creating session bean");

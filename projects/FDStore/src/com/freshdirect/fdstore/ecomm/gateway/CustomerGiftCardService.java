@@ -8,11 +8,7 @@ import org.apache.log4j.Category;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.EnumTransactionSource;
-import com.freshdirect.customer.ErpAddressModel;
-import com.freshdirect.customer.ErpPaymentMethodException;
-import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.ecomm.gateway.AbstractEcommService;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
@@ -35,6 +31,8 @@ public class CustomerGiftCardService extends AbstractEcommService implements Cus
 	private static final String GET_RECIPIENT_DLV_INFO = "customerGiftCard/getRecipientDlvInfo";
 	private static final String RESEND_EMAIL = "customerGiftCard/resendEmail";
 	private static final String APPLY_GIFT_CARD = "customerGiftCard/apply";
+	private static final String GET_GIFT_CARDS = "customerGiftCard/getGiftCards";
+	private static final String RESUBMIT_ORDERS = "customerGiftCard/resubmitOrders";
 	private static CustomerGiftCardServiceI INSTANCE;
 
 	public static CustomerGiftCardServiceI getInstance() {
@@ -148,6 +146,40 @@ public class CustomerGiftCardService extends AbstractEcommService implements Cus
 		} catch (FDEcommServiceException e) {
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	@Override
+	public List<ErpGiftCardModel> getGiftCards(FDIdentity identity) throws FDResourceException, RemoteException {
+		Response<List<ErpGiftCardModel>> response = null;
+		try {
+			Request<ObjectNode> request = new Request<ObjectNode>();
+			ObjectNode rootNode = getMapper().createObjectNode();
+			rootNode.set("identity", getMapper().convertValue(identity, JsonNode.class));
+			request.setData(rootNode);
+			String inputJson = buildRequest(request);
+
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(GET_GIFT_CARDS),
+					new TypeReference<Response<List<ErpGiftCardModel>>>() {
+					});
+
+			if (!response.getResponseCode().equals("OK")) {
+				throw new FDResourceException(response.getMessage());
+			}
+			return response.getData();
+		} catch (FDEcommServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	@Override
+	public void resubmitGCOrders() throws RemoteException, FDResourceException {
+		Response<Void> response = this.httpGetDataTypeMap(getFdCommerceEndPoint(RESUBMIT_ORDERS),
+				new TypeReference<Response<Void>>() {
+				});
+		if (!response.getResponseCode().equals("OK")) {
+			throw new FDResourceException(response.getMessage());
 		}
 	}
 

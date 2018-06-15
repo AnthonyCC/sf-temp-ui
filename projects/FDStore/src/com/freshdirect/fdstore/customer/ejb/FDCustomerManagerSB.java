@@ -702,6 +702,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      *
      * @return collection of ErpPaymentMethodModel objects
      * @throws FDResourceException if an error occured using remote resources
+     * @deprecated
      */
     public Collection<ErpGiftCardModel> getGiftCards(FDIdentity identity) throws FDResourceException, RemoteException;
 
@@ -762,6 +763,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
 
     public void saveDonationOptIn(String custId, String saleId, boolean optIn)throws RemoteException,FDResourceException ;
 
+    @Deprecated
     public void resubmitGCOrders() throws RemoteException, FDResourceException;
 
     public List<String> getTopFaqs() throws FDResourceException, RemoteException;

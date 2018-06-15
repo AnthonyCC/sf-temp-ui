@@ -32,4 +32,17 @@ public interface CustomerGiftCardServiceI {
 			throws ServiceUnavailableException, InvalidCardException, CardInUseException, CardOnHoldException,
 			FDResourceException, RemoteException;
 
+	/**
+	 * Get all the Gift cards of the customer.
+	 *
+	 * @param identity
+	 *            the customer's identity reference
+	 *
+	 * @return collection of ErpPaymentMethodModel objects
+	 * @throws FDResourceException
+	 *             if an error occurred using remote resources
+	 */
+	public List<ErpGiftCardModel> getGiftCards(FDIdentity identity) throws FDResourceException, RemoteException;
+
+	public void resubmitGCOrders() throws RemoteException, FDResourceException;
 }
