@@ -121,7 +121,7 @@ function loadStuff() {
   } else if(loaddata == "Login") {  	
   	$("#url").val("/saptest12@freshdirect.com/login/");
   	$("#header").val('');
-  	$("#payload").val('{ "username" : "sunny4u4@yahoo.com", "password" : "Password01" }');
+  	$("#payload").val('{ "username" : "bogus@freshdirect.com", "password" : "test" }');
 
   } else if(loaddata == "LoginWeb") {  	
   	$("#url").val("/saptest12@freshdirect.com/login/");

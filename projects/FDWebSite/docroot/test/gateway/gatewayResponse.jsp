@@ -39,8 +39,7 @@
 <%
 PaymentMethod pm=null;
 	//if (!"".equals(pId)) {
-	//	Paymentech g=new Paymentech();
-	Gateway g = GatewayFactory.getGateway(GatewayType.PAYMENTECH);
+		Paymentech g=new Paymentech();
 		Request _request=null;
 		Response _response=null;
 		if("getProfile".equals(action)) {
@@ -73,7 +72,7 @@ PaymentMethod pm=null;
                 billinginfo.setTransactionID(orderID);
                 billinginfo.setAmount(Double.parseDouble(amount));
                 _request.setBillingInfo(billinginfo);
-                _response=g.authorize(_request);// neet to implement
+                _response=g.authorize(_request);
 			}
 				
 		} else if("authorizeEC".equals(action)) {
@@ -92,7 +91,7 @@ PaymentMethod pm=null;
 			billinginfo.setTransactionID(orderID);
 			billinginfo.setAmount(Double.parseDouble(amount));
 			_request.setBillingInfo(billinginfo);
-			_response=g.authorize(_request);// neet to implement
+			_response=g.authorize(_request);
 			}
 		}else  if("cashback".equals(action)) {
 			CreditCard cc=PaymentMethodFactory.getCreditCard();
@@ -110,7 +109,7 @@ PaymentMethod pm=null;
                 billinginfo.setTransactionID(orderID);
                 billinginfo.setAmount(Double.parseDouble(amount));
                 _request.setBillingInfo(billinginfo);
-                _response=g.issueCashback(_request);// neet to implement
+                _response=g.issueCashback(_request);
 			}
 				
 		}
@@ -193,7 +192,7 @@ PaymentMethod pm=null;
 			_request.setBillingInfo(billinginfo);
 			if("verifyCC".equals(action)) {
 			        billinginfo.setTransactionID(orderId);
-				_response=g.verify(_request);// neet to implement
+				_response=g.verify(_request);
 			} else {
 				if(!"".equals(profileID))
 					_response=g.updateProfile(_request);
@@ -216,7 +215,7 @@ PaymentMethod pm=null;
                 billinginfo.setAmount(Double.parseDouble(amount));
                 billinginfo.setTransactionRef(txRefNum);
                 _request.setBillingInfo(billinginfo);
-                _response=g.capture(_request);// neet to implement
+                _response=g.capture(_request);
 			
 				
 		}else  if("voidCapture".equals(action)||"reverseAuthorize".equals(action)) {
@@ -238,9 +237,9 @@ PaymentMethod pm=null;
             billinginfo.setAmount(Double.parseDouble(amount));
             _request.setBillingInfo(billinginfo);
             if("voidCapture".equals(action))
-               _response=g.voidCapture(_request);// neet to implement
+               _response=g.voidCapture(_request);
             else 
-            	_response=g.reverseAuthorize(_request);// neet to implement
+            	_response=g.reverseAuthorize(_request);
 			
 	} else if("verifyEC".equals(action)) {
 			_request=RequestFactory.getRequest(TransactionType.ACH_VERIFY);
@@ -266,7 +265,7 @@ PaymentMethod pm=null;
 			BillingInfo billinginfo=BillingInfoFactory.getBillingInfo(Merchant.FRESHDIRECT,ec);
 			billinginfo.setTransactionID(orderId);
 			_request.setBillingInfo(billinginfo);
-			_response=g.verify(_request);// neet to implement
+			_response=g.verify(_request);
 			
 		}
 	      

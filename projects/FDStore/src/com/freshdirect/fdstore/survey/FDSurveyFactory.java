@@ -2,10 +2,7 @@ package com.freshdirect.fdstore.survey;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -259,27 +256,7 @@ public class FDSurveyFactory {
 		else{
 			 fdSurveyResponse = new FDSurveyResponse(fdIdentity, surveykey);
 		}
-		
 		fdSurveyResponse.setAnswers(responseData.getAnswers());
-		/*
-		Map answersData = responseData.getAnswers();
-		final Map<String,String[]> answers = new HashMap();
-		for (Object keydata : answersData.keySet()) {
-			String key =(String) keydata;
-			List arrData =(List) answersData.get(keydata);
-			String[] values =  new String[arrData.size()];
-			int i=0;
-			for(Object val:arrData){
-				String valString = (String)val;
-				fdSurveyResponse.addAnswer(key, valString);
-				values[i]=(String)valString;
-				i++;
-			}
-
-			fdSurveyResponse.addAnswer(key, values);
-		}
-*/
-		
 		return fdSurveyResponse;
     	}
     	return null;

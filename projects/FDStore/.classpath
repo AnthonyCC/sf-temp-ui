@@ -17,7 +17,7 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/braintree-java-2.53.0.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/fdcommerce-data.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/sitemapgen4j-1.0.6.jar" sourcepath="FD_LIBS/thirdparty/sitemapgen4j-1.0.6-src.zip"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/storeapi"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/StoreAPI"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-context-4.0.1.RELEASE.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-aop-4.0.1.RELEASE.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/aopalliance-1.0.jar"/>

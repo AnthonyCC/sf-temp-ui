@@ -57,7 +57,7 @@ public class PDPRedirector extends BodyTagSupport {
 			cm_vc_queryParam = "&cm_vc=" + request.getParameter("cm_vc");  
 		}
 
-		if ( true/* JJ isPDP*/ ) {
+		if ( isPDP ) {
 			if ( OLD_PRODUCT_PAGE.equalsIgnoreCase( originalUrl ) ) {
 				// redirect to new pdp page from old product page
 				String categoryId = request.getParameter( "catId" );

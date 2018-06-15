@@ -1661,7 +1661,7 @@ public class FDStoreProperties {
         defaults.put(PROP_IP_LOCATOR_EVENT_LOG_ENABLED, "true");
         defaults.put(PROP_HOST_URL, "http://www.freshdirect.com");
         defaults.put(PROP_SOCIAL_BUTTONS_ENABLED, "true");
-        defaults.put(CHECK_LOCAL_INVENTORY_ENABLED, "true");
+        defaults.put(CHECK_LOCAL_INVENTORY_ENABLED, "false");
         defaults.put(PROP_FDCOUPONMGR_HOME, "freshdirect.fdstore.CouponManager");
 
         defaults.put(PROP_EH_CACHE_ENABLED, "true");

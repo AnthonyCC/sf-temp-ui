@@ -33,7 +33,7 @@ public class SitemapService {
 
     public List<File> generateSitemap(SitemapConfiguration config) throws MalformedURLException {
         List<File> files = new ArrayList<File>();
-        File baseDir = new File("c:/var/tmp/sitemap"/*config.getDirectoryPath()*/);
+        File baseDir = new File(config.getDirectoryPath());
         if (!baseDir.exists()){
             baseDir.mkdir();
         }

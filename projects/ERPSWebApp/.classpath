@@ -18,7 +18,7 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/logistics-data-0.0.1-SNAPSHOT.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/gson-1.7.1.jar"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/ERPServices"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/storeapi"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/StoreAPI"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/servlet-api.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/slf4j-api-1.7.13.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/junit-4.10.jar"/>

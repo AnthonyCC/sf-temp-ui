@@ -270,7 +270,6 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 							}
 						}
 					}
-
 					if (EnumSaleType.GIFTCARD.equals(saleType)) {
 						saleEB.cutoff();
 						addInvoice(saleEB, saleId, ((SapCreateSalesOrder) command).getInvoiceNumber());
@@ -334,6 +333,7 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 																 * string
 																 * "routing.ejb.ErpRoutingGatewaySB"
 																 */
+
 							FDECommerceService.getInstance().sendReservationUpdateRequest(
 									saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId(),
 									saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress(),
