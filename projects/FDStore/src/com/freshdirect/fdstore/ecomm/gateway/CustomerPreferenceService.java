@@ -19,12 +19,12 @@ public class CustomerPreferenceService extends AbstractEcommService implements C
 
 	private final static Category LOGGER = LoggerFactory.getInstance(CustomerPreferenceService.class);
 
-	private static final String GET_GO_GREEN = "/customerPreference/goGreen";
-	private static final String STORE_GO_GREEN = "/customerPreference/goGreen";
+	private static final String GET_GO_GREEN = "customerPreference/goGreen";
+	private static final String STORE_GO_GREEN = "customerPreference/goGreen";
 
-	private static final String STORE_MOBILE = "/customerPreference/mobile";
-	private static final String STORE_EMAIL = "/customerPreference/email";
-	private static final String STORE_SMS = "/customerPreference/sms";
+	private static final String STORE_MOBILE = "customerPreference/mobile";
+	private static final String STORE_EMAIL = "customerPreference/email";
+	private static final String STORE_SMS = "customerPreference/sms";
 	private static CustomerPreferenceServiceI INSTANCE;
 
 	public static CustomerPreferenceServiceI getInstance() {

@@ -692,6 +692,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
 	public void assignAutoCaseToComplaint(PrimaryKey complaintPk, PrimaryKey autoCasePK) throws RemoteException, FDResourceException;
 
     //For Gift Cards
+	@Deprecated
     public ErpGiftCardModel applyGiftCard(FDIdentity identity, String givexNum, FDActionInfo info) throws ServiceUnavailableException, InvalidCardException, CardInUseException, CardOnHoldException, FDResourceException, RemoteException;
 
     /**

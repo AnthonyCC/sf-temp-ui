@@ -23,15 +23,15 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 
 	private final static Category LOGGER = LoggerFactory.getInstance(CustomerAddressService.class);
 
-	private static final String ASSUME_DELIVERY_ADDRESS = "/customerAddress/assumeDeliveryAddress";
-	private static final String GET_PARENT_ORDER_ADDRESS_ID = "/customerAddress/parentOrderAddressId";
-	private static final String GET_ADDRESS = "/customerAddress/address";
-	private static final String GET_SHIPPING_ADDRESSES = "/customerAddress/shippingAddresses";
-	private static final String GET_DEFAULT_SHIPPING_ADDRESS = "/customerAddress/defaultShippingAddress";
-	private static final String SET_DEFAULT_SHIPPING_ADDRESS = "/customerAddress/defaultShippingAddress";
-	private static final String ADD_SHIPPING_ADDRESS = "/customerAddress/shippingAddress/add";
-	private static final String UPDATE_SHIPPING_ADDRESS = "/customerAddress/shippingAddress/update";
-	private static final String REMOVE_SHIPPING_ADDRESS = "/customerAddress/shippingAddress/remove";
+	private static final String ASSUME_DELIVERY_ADDRESS = "customerAddress/assumeDeliveryAddress";
+	private static final String GET_PARENT_ORDER_ADDRESS_ID = "customerAddress/parentOrderAddressId";
+	private static final String GET_ADDRESS = "customerAddress/address";
+	private static final String GET_SHIPPING_ADDRESSES = "customerAddress/shippingAddresses";
+	private static final String GET_DEFAULT_SHIPPING_ADDRESS = "customerAddress/defaultShippingAddress";
+	private static final String SET_DEFAULT_SHIPPING_ADDRESS = "customerAddress/defaultShippingAddress";
+	private static final String ADD_SHIPPING_ADDRESS = "customerAddress/shippingAddress/add";
+	private static final String UPDATE_SHIPPING_ADDRESS = "customerAddress/shippingAddress/update";
+	private static final String REMOVE_SHIPPING_ADDRESS = "customerAddress/shippingAddress/remove";
 	
 	private static CustomerAddressServiceI INSTANCE;
 

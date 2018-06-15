@@ -3532,10 +3532,16 @@ public class FDCustomerManager {
 			String givexNum, FDActionInfo info)
 			throws ServiceUnavailableException, InvalidCardException,
 			CardInUseException, CardOnHoldException, FDResourceException {
-		lookupManagerHome();
+		
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.applyGiftCard(identity, givexNum, info);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerGiftCard)) {
+				return CustomerGiftCardService.getInstance().applyGiftCard(identity, givexNum, info);
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.applyGiftCard(identity, givexNum, info);
+			}
+			
 
 		} catch (InvalidCardException ie) {
 			invalidateManagerHome();
@@ -3661,7 +3667,7 @@ public class FDCustomerManager {
 		try {
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerGiftCard)) {
 				return CustomerGiftCardService.getInstance().getRecipientDlvInfo(identity, saleId, certificationNum);
-			}else {
+			} else {
 				lookupManagerHome();
 				FDCustomerManagerSB sb = managerHome.create();
 				return sb.getRecipientDlvInfo(identity, saleId, certificationNum);
@@ -3678,11 +3684,14 @@ public class FDCustomerManager {
 	public static boolean resendEmail(String saleId, String certificationNum,
 			String resendEmailId, String recipName, String personalMsg,
 			EnumTransactionSource source) throws FDResourceException {
-		lookupManagerHome();
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.resendEmail(saleId, certificationNum, resendEmailId,
-					recipName, personalMsg, source);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerGiftCard)) {
+				return CustomerGiftCardService.getInstance().resendEmail(saleId, certificationNum, resendEmailId, recipName, personalMsg, source);
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.resendEmail(saleId, certificationNum, resendEmailId, recipName, personalMsg, source);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");

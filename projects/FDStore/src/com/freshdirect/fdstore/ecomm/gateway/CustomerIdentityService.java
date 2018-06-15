@@ -29,9 +29,9 @@ public class CustomerIdentityService extends AbstractEcommService implements Cus
 
 	private final static Category LOGGER = LoggerFactory.getInstance(RegistrationService.class);
 
-	private static final String LOGIN = "/customerIdentity/login";
+	private static final String LOGIN = "customerIdentity/login";
 
-	private static final String RECOGNIZE = "/customerIdentity/recognize";
+	private static final String RECOGNIZE = "customerIdentity/recognize";
 
 	private static CustomerIdentityServiceI INSTANCE;
 

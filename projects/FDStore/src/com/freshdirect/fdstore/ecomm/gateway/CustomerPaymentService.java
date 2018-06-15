@@ -24,13 +24,13 @@ public class CustomerPaymentService extends AbstractEcommService implements Cust
 
 	private final static Category LOGGER = LoggerFactory.getInstance(CustomerPaymentService.class);
 
-	private static final String GET_PAYMENT_METHODS = "/customerPayment/paymentMethods";
-	private static final String ADD_PAYMENT_METHOD = "/customerPayment/paymentMethod/add";
-	private static final String UPDATE_PAYMENT_METHOD = "/customerPayment/paymentMethod/update";
-	private static final String REMOVE_PAYMENT_METHOD = "/customerPayment/paymentMethod/remove";
-	private static final String GET_DEFAULT_PAYMENT_METHOD_PK = "/customerPayment/defaultPaymentMethodPK";
-	private static final String SET_DEFAULT_PAYMENT_METHOD_PK = "/customerPayment/defaultPaymentMethod";
-	private static final String RESET_DEFAULT_PAYMENT_METHOD_TYPE = "/customerPayment/defaultPaymentMethodType/reset";
+	private static final String GET_PAYMENT_METHODS = "customerPayment/paymentMethods";
+	private static final String ADD_PAYMENT_METHOD = "customerPayment/paymentMethod/add";
+	private static final String UPDATE_PAYMENT_METHOD = "customerPayment/paymentMethod/update";
+	private static final String REMOVE_PAYMENT_METHOD = "customerPayment/paymentMethod/remove";
+	private static final String GET_DEFAULT_PAYMENT_METHOD_PK = "customerPayment/defaultPaymentMethodPK";
+	private static final String SET_DEFAULT_PAYMENT_METHOD_PK = "customerPayment/defaultPaymentMethod";
+	private static final String RESET_DEFAULT_PAYMENT_METHOD_TYPE = "customerPayment/defaultPaymentMethodType/reset";
 	private static CustomerPaymentServiceI INSTANCE;
 
 	public static CustomerPaymentServiceI getInstance() {
