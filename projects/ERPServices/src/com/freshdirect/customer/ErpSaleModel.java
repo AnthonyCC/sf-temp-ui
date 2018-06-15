@@ -691,15 +691,13 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		transactions.add(cbkReversal);
 		double cbk = 0.0;
 		double cbr = 0.0;
-		for (ErpTransactionModel o : transactions) {
-			if(o instanceof ErpChargebackModel){
+		for (ErpTransactionModel o : transactions) {			
+			if(o instanceof ErpChargebackReversalModel){
+				//	cbr = MathUtil.roundDecimal(cbr + ((ErpChargebackReversalModel)o).getAmount());
+				cbr = MathUtil.roundDecimalCeiling(cbr + ((ErpChargebackReversalModel)o).getAmount());
+ 			} else if (o instanceof ErpChargebackModel){
 				//cbk = MathUtil.roundDecimal(cbk + ((ErpChargebackModel)o).getAmount());
 				cbk = MathUtil.roundDecimalCeiling(cbk + ((ErpChargebackModel)o).getAmount());
-			}
-
-			if(o instanceof ErpChargebackReversalModel){
-			//	cbr = MathUtil.roundDecimal(cbr + ((ErpChargebackReversalModel)o).getAmount());
-				cbr = MathUtil.roundDecimalCeiling(cbr + ((ErpChargebackReversalModel)o).getAmount());
 			}
 		}
 		if(cbr >= cbk){
