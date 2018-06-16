@@ -24,6 +24,7 @@
 <%@ page import="com.freshdirect.fdstore.customer.FDUserUtil" %>
 <%@ page import="com.freshdirect.fdstore.customer.FDModifyCartModel" %>
 <%@ page import="com.freshdirect.fdstore.customer.adapter.FDOrderAdapter" %>
+<%@ page import="java.net.URLEncoder" %>
 <%@ taglib prefix="fd" uri="freshdirect" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -67,11 +68,10 @@ if (allCorporateAddresses != null) {
 if (allPickupDepots != null) {
 	addressesIncludingPickupCount += allPickupDepots.size();
 }
+String standingOrder_uri = request.getRequestURI();
+boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") != -1) ? true : false;
 %>
 
-<!-- Adding Skip to Navigation : Start-->
-	<a href="#skip_to_content" class="skipnav">Skip to Content</a>
-<!-- Adding Skip to Navigation : End-->
 
 <tmpl:insert template="/shared/locationbar/locationbar_layout_fdx.jsp">
 	
@@ -115,30 +115,6 @@ if (allPickupDepots != null) {
 			</div>
 		</tmpl:put>
 	<% } %>
-	
-	<tmpl:put name="modify_order">
-		<div class="locabar-section locabar-modify-order-section" style="display: none;">
-			<div id="locabar_modify_order_trigger" class="locabar_triggers" tabindex="0" aria-haspopup="true" role="menuitem">
-				<div class="cursor-pointer">
-					<div class="section-modify-order-img" id="locabar-modify-order-open">
-						<div id="locabar-modify-order-count" class="">0</div>
-					</div>
-					<div class="locabar-modify-order-container">
-						<div class="locabar-modify-order-container-message"></div>
-						<div class="locabar-modify-order-container-label"><div class="locabar-modify-order-container-header">Modify Order</div><div class="locabar-arrow"></div></div>
-					</div>
-				</div>
-				<div id="locabar_orders" class="posAbs">
-					<div class="ui-arrow-buffer"></div>
-					<div class="ui-arrow ui-top"></div>
-					<div class="section-header">
-						<comp:modifyOrderBar user="<%= user_locationbar_fdx %>" modifyOrderAlert="false" htmlId="test_modifyorderalert" />
-					</div>
-				</div>
-			</div>
-		</div>
-	</tmpl:put>
-	
 <%-- messages icon --%>
 	<tmpl:put name="messages"><div class="locabar-section locabar-messages-section" style="display: none;">
 			<div id="locabar_messages_trigger" class="cursor-pointer locabar_triggers" tabindex="0">
@@ -549,11 +525,11 @@ if (allPickupDepots != null) {
 				FreshDirect.locabar.hasFdxServices = <%=hasFdxServices %>;
 				FreshDirect.locabar.selectedAddress = {
 					type: '<%= foundSelectedAddressType %>',
-					address: '<%= LocationHandlerTag.formatAddressTextWithZip(selectedAddress) %>'
+					address: decodeURIComponent('<%= URLEncoder.encode(LocationHandlerTag.formatAddressTextWithZip(selectedAddress)) %>')
 				};
 				FreshDirect.locabar.reservation = { address: null, time: null };
 				<% if (userReservervationAddressModel != null) { %>
-					FreshDirect.locabar.reservation.address = '<%= LocationHandlerTag.formatAddressTextWithZip(userReservervationAddressModel) %>';
+					FreshDirect.locabar.reservation.address = decodeURIComponent('<%= URLEncoder.encode(LocationHandlerTag.formatAddressTextWithZip(userReservervationAddressModel)) %>');
 					FreshDirect.locabar.reservation.time = '<%= (reservationDate+" @ "+reservationTime).toUpperCase() %>';
 				<% } %>
 				FreshDirect.locabar.zipcode = '<%= user_locationbar_fdx.getZipCode() %>';
@@ -739,10 +715,7 @@ if (allPickupDepots != null) {
 
 <%-- SO ALERTS --%>
 
-	<%
-	  String standingOrder_uri = request.getRequestURI();
-	  boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") != -1) ? true : false;
-	  
+	<%	  
 	  if(user_locationbar_fdx.isNewSO3Enabled() && !isStandingOrders) {
 		Map<String,Object> errorSOAlert = new HashMap<String,Object>();
 		HashMap<String,Object> soData = StandingOrderHelper.getAllSoData(user_locationbar_fdx, false, false) ;
@@ -776,15 +749,6 @@ if (allPickupDepots != null) {
 		</div>
 	</tmpl:put>
   <% } %>
-<%-- MODIFY ORDER ALERTS --%>
-	<% if(!isStandingOrders){ %>
-	<tmpl:put name="modify_order_alerts">
-		<div id="modifyorderalert" class="alerts invisible" data-type="modifyorderalert">
-			<comp:modifyOrderBar user="<%= user_locationbar_fdx %>" modifyOrderAlert="true" htmlId="test_modifyorderalert" />
-		</div>
-	</tmpl:put>
-	<% } %>
-	
 </tmpl:insert>
 
 

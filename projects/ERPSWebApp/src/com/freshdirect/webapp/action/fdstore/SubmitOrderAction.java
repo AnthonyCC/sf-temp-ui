@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -48,6 +50,7 @@ import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerCreditUtil;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDModifyCartLineI;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
@@ -479,37 +482,37 @@ public class SubmitOrderAction extends WebActionSupport {
 			} 
 		} else {
 		 	// potential double-submission, how else would the user end up here...
-		if (cart.getDeliveryAddress()==null || reservation==null || reservation.getStartTime()==null || reservation.getEndTime()==null || cart.getPaymentMethod()==null ) {
-			return SUCCESS;
-		}
-
-		if (!UserValidationUtil.validateOrderMinimum(session, this.getResult())) {
-			return ERROR;
-		}
-		
-		if(cart.containsAlcohol() && !cart.isAgeVerified()){
-			return ERROR;
-		}
-		
-		if(!cart.getZoneInfo().getZoneId().equals(reservation.getZoneId())) {
-			LOGGER.warn( "Invalid reservation : zone id-s do not match!" + "reservation zone-id : " +reservation.getZoneId()+ " cart zone-id : "+ cart.getZoneInfo().getZoneId()+ " cust id: "+reservation.getCustomerId());
-			this.addError("invalid_reservation", SystemMessageList.MSG_CHECKOUT_MISMATCHED_RESERVATION);
-			return ERROR;
-		}
-		Date cutoffTime = reservation.getCutoffTime();
-		
-		//update cutoff time based on context. fdx order will have different cutoff time from reservation cutoff
-		cutoffTime = ShoppingCartUtil.getCutoffByContext(cutoffTime, user);
-		
-		boolean pastCutoff = new Date().after(cutoffTime);
-		
-		if (pastCutoff) {
-			this.addError( "invalid_reservation", MessageFormat.format(
-				SystemMessageList.MSG_CHECKOUT_PAST_CUTOFF, new Object[] { cutoffTime }
-			));
-			return ERROR;
+			if (cart.getDeliveryAddress()==null || reservation==null || reservation.getStartTime()==null || reservation.getEndTime()==null || cart.getPaymentMethod()==null ) {
+				return SUCCESS;
 			}
-		}	
+	
+			if (!UserValidationUtil.validateOrderMinimum(session, this.getResult())) {
+				return ERROR;
+			}
+			
+			if(cart.containsAlcohol() && !cart.isAgeVerified()){
+				return ERROR;
+			}
+			
+			if(!cart.getZoneInfo().getZoneId().equals(reservation.getZoneId())) {
+				LOGGER.warn( "Invalid reservation : zone id-s do not match!" + "reservation zone-id : " +reservation.getZoneId()+ " cart zone-id : "+ cart.getZoneInfo().getZoneId()+ " cust id: "+reservation.getCustomerId());
+				this.addError("invalid_reservation", SystemMessageList.MSG_CHECKOUT_MISMATCHED_RESERVATION);
+				return ERROR;
+			}
+			Date cutoffTime = reservation.getCutoffTime();
+			
+			//update cutoff time based on context. fdx order will have different cutoff time from reservation cutoff
+			cutoffTime = ShoppingCartUtil.getCutoffByContext(cutoffTime, user);
+			
+			boolean pastCutoff = new Date().after(cutoffTime);
+			
+			if (pastCutoff) {
+				this.addError( "invalid_reservation", MessageFormat.format(
+					SystemMessageList.MSG_CHECKOUT_PAST_CUTOFF, new Object[] { cutoffTime }
+				));
+				return ERROR;
+			}
+		}
 		
 		if(!cart.getPaymentMethod().isGiftCard()) {	
 			// set the default credit card to the one that is in the cart if Card does not belong to EWallet
@@ -572,10 +575,9 @@ public class SubmitOrderAction extends WebActionSupport {
 		user.invalidateOrderHistoryCache();
 
 		// recalculate promotion
-		user.updateUserState();		
-
-		// recalculate credit since promotion is reapplied order amonuts might have changed
+		user.updateUserState();
 		
+		// recalculate credit since promotion is re-applied order amounts might have changed
 		FDCustomerCreditUtil.applyCustomerCredit(cart,user.getIdentity());
 		
 		FDUser fdUser = user.getUser();
@@ -670,6 +672,16 @@ public class SubmitOrderAction extends WebActionSupport {
                     LOGGER.warn("Exception while creating Free-trial DP Order along with regular order",e);
                 }
 							
+	    		//update newly added cartline ids
+	            Set<Integer> recentIds = new TreeSet<Integer>();
+	            for (FDCartLineI rc : modCart.getOrderLines()) {
+	            	if ( !(rc instanceof FDModifyCartLineI) ) {
+		                recentIds.add(Integer.valueOf(rc.getCartlineId()));
+	            	}
+	            }
+	    		user.setRecentCartlineIdsSet(orderNumber, recentIds);
+
+				
 			} else {
 				// new order -> place it
 				FDActionInfo info=AccountActivityUtil.getActionInfo(session, "Order Created");

@@ -1,0 +1,253 @@
+#pendingOrderBarWrapper {
+	height: 60px; /* same as margin-top */
+	overflow: hidden;
+	box-sizing: border-box;
+}
+#pendingOrderBarWrapper.sticky-fixed-wrapper + #toptoolbar {
+	margin-top: 60px; /* same as height */
+}
+[data-ismobweb="true"] #pendingOrderBarWrapper {
+	height: 50px; /* same as margin-top */
+	overflow: hidden;
+}
+[data-ismobweb="true"] #pendingOrderBarWrapper.sticky-fixed-wrapper + .mobweb-topnav {
+	margin-top: 50px; /* same as height */
+}
+.pendingOrderBar-cont {
+	text-align: center;
+	padding: 12px 0;
+	font-size: 16px;
+	background-color: #666;
+	color: #fff;
+	height: 100%;
+}
+[data-ismobweb="true"] .pendingOrderBar-cont {
+	text-align: left;
+	padding: 5px 0;
+	color: #fff;
+	font-size: 14px;
+	line-height: 1.36;
+	position: relative;
+}
+[data-ismobweb="true"] .pendingOrderBar-label {
+	margin-left: 12px;
+}
+[data-ismobweb="true"] .pendingOrderBar-label:after {
+	content: ':';
+}
+.pendingOrderBar-label {
+	font-weight: bold;
+}
+.pendingOrderBar-label:after {
+	content: ': ';
+}
+.pendingOrderBar-value {
+	margin-right: 12px;
+}
+[data-ismobweb="true"] .pendingOrderBar-value {
+	margin-left: 12px;
+	display: block;
+}
+[data-ismobweb="true"] .pendingOrderBar-value > a {
+	color: #fff;
+	text-decoration: underline;
+}
+.pendingOrderBar-value-dow {
+}
+.pendingOrderBar-value-dow:after {
+	content: ', '
+}
+.pendingOrderBar-value-time {
+}
+.cssbutton.pendingOrderBar-viewall-btn {
+
+}
+[data-ismobweb="true"] .cssbutton.pendingOrderBar-viewall-btn,
+[data-ismobweb="true"] .cssbutton.pendingOrderBar-modifyorder-btn {
+	position: absolute;
+	top: 11px;
+	left: auto;
+	right: 12px;
+	padding: 5px;
+	width: 110px;
+}
+.cssbutton.pendingOrderBar-seedetails-btn {
+
+}
+.cssbutton.pendingOrderBar-modifyorder-btn {
+
+}
+.cssbutton.pendingOrderBar-seedetails-btn + .cssbutton.pendingOrderBar-modifyorder-btn {
+	margin-left: 10px;
+}
+.pendingOrderBar-overlay-cont {
+	/* don't style here, content gets cloned into the overlay */
+}
+.pendingOrderBar-overlay-order {
+	background-color: #fff;
+	width: 420px;
+}
+[data-ismobweb="true"] .pendingOrderBar-overlay-order {
+	width: 100%;
+}
+.pendingOrderBar-overlay-order + .pendingOrderBar-overlay-order {
+	margin-top:20px
+}
+.pendingOrderBar-overlay-order-status-cont {
+	font-size: 14px;
+	font-weight: normal;
+	font-style: normal;
+	font-stretch: normal;
+	line-height: normal;
+	letter-spacing: normal;
+	color: #555555;
+	text-transform: uppercase;
+	border-bottom: solid 2px rgba(204, 204, 204, 0.5);
+	position: relative;
+}
+.pendingOrderBar-overlay-order-status-icon {
+	position: absolute;
+	top: calc(50% - 11px);
+	left: 20px;
+}
+.pendingOrderBar-overlay-order-status-value {
+	display: inline-block;
+	margin: 12px 20px 12px 52px;
+}
+.pendingOrderBar-overlay-order-detail-cont {
+	vertical-align: top;
+	padding: 20px;
+}
+.pendingOrderBar-overlay-order-detail-left {
+	display: inline-block;
+	width: calc(100% - 150px);
+}
+[data-ismobweb="true"] .pendingOrderBar-overlay-order-detail-left {
+	display: block;
+	width: 100%;
+}
+.pendingOrderBar-overlay-order-detail-date {
+	font-size: 18px;
+	font-weight: bold;
+	font-style: normal;
+	font-stretch: normal;
+	line-height: normal;
+	letter-spacing: normal;
+	color: #555555;
+	margin-bottom: 3px;
+}
+.pendingOrderBar-overlay-order-detail-time {
+	font-size: 18px;
+	font-weight: normal;
+	font-style: normal;
+	font-stretch: normal;
+	line-height: normal;
+	letter-spacing: normal;
+	color: #333333;
+}
+[data-ismobweb="true"] .pendingOrderBar-overlay-order-detail-date,
+[data-ismobweb="true"] .pendingOrderBar-overlay-order-detail-time {
+	line-height: 1.44;
+	color: #333333;
+}
+.pendingOrderBar-overlay-order-detail-ordnum-cont {
+	font-size: 16px;
+	font-weight: normal;
+	font-style: normal;
+	font-stretch: normal;
+	line-height: normal;
+	letter-spacing: normal;
+	color: #333333;
+	margin-top: 22px;
+}
+[data-ismobweb="true"] .pendingOrderBar-overlay-order-detail-ordnum-cont {
+	margin-top: 11px;
+}
+.pendingOrderBar-overlay-order-detail-ordnum-label,
+.pendingOrderBar-overlay-order-detail-ordnum-value {
+	display: inline-block;
+}
+.pendingOrderBar-overlay-order-detail-ordnum-label:after {
+	content: ':';
+}
+.pendingOrderBar-overlay-order-detail-right {
+	width: 145px;
+	float: right;
+}
+[data-ismobweb="true"] .pendingOrderBar-overlay-order-detail-right {
+	display: block;
+	width: 100%;
+	float: none;
+	margin-top: 25px;
+}
+.pendingOrderBar-overlay-order-detail-modifyorder-btn,
+.pendingOrderBar-overlay-order-detail-seedetails-btn {
+	width: 145px !important;
+}
+@media screen and (width: 320px) {
+	[data-ismobweb="true"] 
+	.pendingOrderBar-overlay-order-detail-modifyorder-btn,
+	.pendingOrderBar-overlay-order-detail-seedetails-btn {
+		padding: 15px 10px !important;
+	}
+	[data-ismobweb="true"] .pendingOrderBar-overlay-order-detail-seedetails-btn {
+		width: 122px !important;
+	}
+}
+@media screen and (min-width: 321px) {
+	[data-ismobweb="true"] .cssbutton.pendingOrderBar-overlay-order-detail-seedetails-btn {
+		width: 132px !important;
+	}
+	[data-ismobweb="true"] .cssbutton.pendingOrderBar-overlay-order-detail-modifyorder-btn {
+		width: auto !important;
+	}
+}
+.pendingOrderBar-overlay-order-detail-modifyorder-btn {
+	margin-bottom: 12px !important;
+}
+[data-ismobweb="true"] .pendingOrderBar-overlay-order-detail-modifyorder-btn {
+	float: right;
+}
+.pendingOrderBar-overlay-order-detail-seedetails-btn:after {
+
+}
+.pendingOrderBar-overlay-footer {
+	text-align: center;
+	padding: 20px 0 10px 0;
+	font-size: 16px;
+	font-weight: normal;
+	font-style: normal;
+	font-stretch: normal;
+	line-height: normal;
+	letter-spacing: normal;
+	text-align: center;
+	color: #408244;
+}
+
+[data-ismobweb="true"] .pendingOrderBar-overlay-footer {
+	padding: 20px 0 30px 0;
+}
+
+#pendingOrderOverlay .fixedPopupContent {
+	background-color: #f7f7f7;
+	box-shadow: 0 5px 30px 0 rgba(0, 0, 0, 0.3);
+}
+#pendingOrderOverlay .qs-popup-header {
+	font-size: 24px;
+	font-weight: bold;
+	font-style: normal;
+	font-stretch: normal;
+	line-height: normal;
+	letter-spacing: 0.5px;
+	color: #444444;
+	padding: 23px 30px 0;
+}
+[data-ismobweb="true"] #pendingOrderOverlay .qs-popup-header {
+	padding: 21px 20px;
+}
+#pendingOrderOverlay .qs-popup-content {
+	padding: 25px 30px;
+}
+[data-ismobweb="true"] #pendingOrderOverlay .qs-popup-content {
+	padding: 0;
+}

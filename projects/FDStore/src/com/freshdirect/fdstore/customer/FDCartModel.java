@@ -729,6 +729,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 
 	/**
 	 *  Return the recently ordered line items.
+	 *  - in modify returns the recently added line item (not all new items)
 	 *
 	 *  @return an unmodifiable list of FDCartLineModel objects.
 	 */

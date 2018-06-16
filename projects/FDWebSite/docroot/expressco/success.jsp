@@ -184,7 +184,7 @@
 				<script type="text/javascript">
 					var cmFired = false, cmRetry = 60, cmRetryDelay = 500; /* retry for 30 secs */
 					function fireCm() {
-						if (!cmFired && cmRetry) {
+						if (!cmFired && cmRetry>0) {
 							try {
 								if (FreshDirect.utils.isDeveloper()) {
 									console.log('Trying CM calls');

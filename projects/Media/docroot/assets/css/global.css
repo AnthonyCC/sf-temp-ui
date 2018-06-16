@@ -3514,3 +3514,10 @@ section.main .leftnav .menuBox label input:focus + span > span{
  text-decoration:underline;
 }
 
+.sticky-fixed-wrapper {
+	position: fixed;
+	top: 0;
+	width: 100%;
+	z-index: 10000;
+	background-color: #fff;
+}

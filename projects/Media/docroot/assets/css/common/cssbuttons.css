@@ -482,3 +482,7 @@ button.addtolist.cssbutton.cssbutton-flat.purpleborder:hover{
     color: #5fb069 !important;
     text-decoration: underline !important;
 }
+
+a.cssbutton.whiteborder, .cssbutton.whiteborder {
+  border: 1px solid #fff;
+}

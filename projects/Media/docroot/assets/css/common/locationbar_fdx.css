@@ -979,7 +979,7 @@
 }
 #modifyorderalert table.modify-order-alert-table td.modify-order-alert-table-name .modify-order-alert-table-name-text{
 	word-wrap: break-word;
-    width: 300px;;
+    width: 300px;
 }
 #modifyorderalert table.modify-order-alert-table td.modify-order-alert-table-delails{
 	text-align: center;
@@ -2119,4 +2119,9 @@ option.address-icon {
 }
 .alerts #newzipmsg {
     vertical-align: top;
+}.modify-order-bar #locabar_user_trigger > a,
+.modify-order-bar #locabar_user_trigger > a:active,
+.modify-order-bar #locabar_user_trigger > a:focus,
+.modify-order-bar #locabar_user_trigger > a:visited {
+	color: #fff;
 }

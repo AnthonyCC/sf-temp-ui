@@ -127,8 +127,16 @@
       		($state? $state + ' ' : '') + 
       		($zip? $zip + ' ' : '')
       	  /}
+      	{let $addresslineHTML: 
+      		($street_address ? '<span class="address-street_address">' + $street_address + '</span> ' : '') + 
+	      	($apartment ? '<span class="address-apartment"><span class="address-apartment-label">Apt. </span>' + $apartment + '</span> ': '') + 
+	      	($street_address2 ? '<span class="address-street_address2">' + $street_address2 + '</span> ' : '') + 
+      		($city ? '<span class="address-city">' + $city + '</span>, ' : '') + 
+      		($state ? '<span class="address-state">' + $state + '</span> ' : '') + 
+      		($zip ? '<span class="address-zip">' + $zip + '</span> ' : '')
+      	  /}
 		<p title="{$addressline}">
-			{$addressline}
+			{$addresslineHTML}
 		</p>
       </div>
     </div>
@@ -271,10 +279,26 @@
     <p class='drawer__item__title' title="{$addressTitle}">{$addressTitle}</p>
       <div class="drawer__item__section">
       <div class='section__body'>
-      	{let $addressLine: ($street_address ? $street_address : '') +  ' ' + ($floor ? $floor : '')+($room ? $room : '')+ ' ' +($apartment?' Apt. ' + $apartment + ' ' :'') +
-  		($street_address2? $street_address2:'')+($city ? $city : '')+', '+($state ? $state : '')+' ' +($zip ? $zip : '') /}
+      	{let $addressLine:
+      		($street_address ? $street_address : '') +  ' ' + 
+      		($floor ? $floor : '')+($room ? $room : '')+ ' ' +($apartment?' Apt. ' + $apartment + ' ' :'') +
+  			($street_address2? $street_address2:'') + 
+  			($city ? $city : '') +', ' + 
+  			($state ? $state : '') + ' ' +
+  			($zip ? $zip : '')
+  		 /}
+      	{let $addresslineHTML:
+      		($street_address ? '<span class="address-street_address">' + $street_address + '</span> ' : '') + 
+      		(($floor or $room or $apartment) ? '<span class="address-apartment">' : '') + 
+      			($floor ? $floor : '') + ($room ? $room : '') + ' ' + ($apartment?' Apt. ' + $apartment + ' ' :'') +
+      		(($floor or $room or $apartment) ? '</span>' : '') + 
+  			($street_address2 ? '<span class="address-street_address2">' + $street_address2 + '</span> ' : '') + 
+      		($city ? '<span class="address-city">' + $city + '</span>, ' : '') + 
+      		($state ? '<span class="address-state">' + $state + '</span> ' : '') + 
+      		($zip ? '<span class="address-zip">' + $zip + '</span> ' : '')
+  		 /}
   		<p title="{$addressLine}">
-  			{$addressLine}
+  			{$addresslineHTML}
   		</p>
       </div>
     </div>

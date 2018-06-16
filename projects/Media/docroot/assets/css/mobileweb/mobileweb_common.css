@@ -665,7 +665,7 @@ li.cleanli .gen-arrow {
 		width: auto;
 	}
 	#MBRDPopup2.BRD-popup-container .MBRD-order {
-		margin: -5px -15px 10px -20px;
+		/* margin: -5px -15px 10px -20px; */
 	}
 	#MBRDPopup2.BRD-popup-container .qs-popup {
 		width: 90%;
@@ -673,8 +673,8 @@ li.cleanli .gen-arrow {
 	    margin: 5%;
 	}
 	#MBRDPopup2 .qs-popup-content {
-		height: 75%;
-		overflow: auto;
+		/* height: 75%; */
+		overflow: visible;
 	}
 /* help/FAQ */
 	.pager.faqsearch .pager-content {

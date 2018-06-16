@@ -75,4 +75,13 @@
 		} %>
 		<br class="clear" />
 </div>
+<%-- TEMP FIX to collapse "empty" container without touching messaging above --%>
+<script>
+	(function (fd) {
+		var $=fd.libs.$;
+		if ($('#welcome-section-container').text().trim() === '') {
+			$('#welcome-section-container').remove();
+		}
+	}(FreshDirect));
+</script>
 <%}%>

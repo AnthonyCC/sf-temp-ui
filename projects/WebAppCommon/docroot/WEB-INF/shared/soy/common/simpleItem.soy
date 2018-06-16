@@ -3,26 +3,40 @@
 /**
  * @param item definition of an item
  * @param? type type of an item
+ * @param? headertext optional text to display before product details
  */
 {template .simpleItem autoescape="false"}
 <li class="itemlist-item itemlist-item-simple" data-component="product" {if $item.itemId}data-productid="{$item.itemId}"{/if}>
 	{if $type=='simpleToggle'}
 		<input type="checkbox" aria-label="{$item.productName}" data-component="productToggle" checked="checked" />
 	{/if}
-	<div class="itemlist-item-productimage_wrapper">
-		<div class="itemlist-item-burst_wrapper">
-			<a href="{$item.productPageUrl}"><img src="{if $item.productDetailImage}{$item.productDetailImage}{else}{$item.productImage}{/if}" alt="{$item.productName}" class="itemlist-item-productimage"></a>
-			{call common.bursts}{param badge:$item.badge /}{param deal:$item.deal /}{param usq:$item.usq /}{/call}
+	{if $type=='simpleBRD'}<div class="itemlist-item-productimage_wrapper-cont">{/if}
+		<div class="itemlist-item-productimage_wrapper">
+			<div class="itemlist-item-burst_wrapper">
+				<a href="{$item.productPageUrl}"><img src="{if $item.productDetailImage}{$item.productDetailImage}{else}{$item.productImage}{/if}" alt="{$item.productName}" class="itemlist-item-productimage"></a>
+				{call common.bursts}{param badge:$item.badge /}{param deal:$item.deal /}{param usq:$item.usq /}{/call}
+			</div>
 		</div>
-	</div>
+	{if $type=='simpleBRD'}</div>{/if}
 	<div class="itemlist-item-header">
-		<a href="{$item.productPageUrl}" class="itemlist-item-header-name">{$item.productName}</a>
+		{if $type=='simpleBRD' and $headertext}<div class="itemlist-item-header-text">{$headertext}</div>{/if}
+
+		{if $type=='simpleBRD'}
+			{$item.productName}
+		{else}
+			<a href="{$item.productPageUrl}" class="itemlist-item-header-name">{$item.productName}</a>
+		{/if}
 		<ul class="itemlist-item-details">
-			<li>Quantity: <strong>{$item.quantity.quantity}</strong></li>
-			{if $item.configDescr}<li>Options: <strong>{$item.configDescr}</strong></li>{/if}
-			<li>Est. Price: <strong>{$item.configuredPrice}</strong></li>
+			<li class="itemlist-item-details-quantity">Quantity: {$item.quantity.quantity}</li>
+			{if $item.configDescr}<li class="itemlist-item-details-configDescr">{$item.configDescr}</li>{/if}
+			{if $type=='simpleBRD'}
+				<li class="itemlist-item-details-configuredPrice"><strong>{call common.formatDecimalPrice}{param price:$item.configuredPrice /}{/call}</strong> (Est. Price)</li>
+			{else}
+				<li>Est. Price: <strong>{$item.configuredPrice}</strong></li>
+			{/if}
 		</ul>
 	</div>
+	/* controls data required for ATC to work */
 	<div class="itemlist-item-controls">
 		<div class="itemlist-item-controls-subtotal">
 		{foreach $salesUnit in $item.salesUnit}{if $salesUnit.selected}
@@ -39,9 +53,9 @@
 			{param atcItemId:$item.itemId /}
 			{param isAlcoholic:$item.alcoholic /}
 			{param originalLineId:$item.originalLineId /}
-      {param externalAgency:$item.externalAgency /}
-      {param externalGroup:$item.externalGroup /}
-      {param externalSource:$item.externalSource /}
+	{param externalAgency:$item.externalAgency /}
+	{param externalGroup:$item.externalGroup /}
+	{param externalSource:$item.externalSource /}
 		{/call}
 	</div>
 </li>

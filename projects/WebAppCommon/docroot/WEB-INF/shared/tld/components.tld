@@ -18,8 +18,8 @@
 	 	<path>/WEB-INF/shared/tags/home/welcomeMessage.tag</path>
 	</tag-file>
 	<tag-file>
-	 	<name>modifyOrderBar</name>
-	 	<path>/WEB-INF/shared/tags/home/modifyOrderBar.tag</path>
+	 	<name>pendingOrderBar</name>
+	 	<path>/WEB-INF/shared/tags/home/pendingOrderBar.tag</path>
 	</tag-file>
 	<tag-file>
 	 	<name>OASFeature</name>

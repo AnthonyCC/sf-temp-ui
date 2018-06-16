@@ -376,7 +376,7 @@
 	{else}
 		{let $isETipEnabled: ($eTippingEnabled) or (not $displayCheckout) /}
 		<div class='cartsection {if $isETipEnabled}eTippingEnabled{/if}'>
-		<div class='cartsection__totalwrapper subtotal-box-1'>
+			<div class='cartsection__totalwrapper subtotal-box-1'>
 				<div id="subtotalbox1" class="subtotalboxes">
 					{if $subTotalBox and $subTotalBox.subTotalBox}
 						{call .subTotalBox}
@@ -403,8 +403,9 @@
 						{param displayCheckout: $displayCheckout /}
 					{/call}
 				{/if}
+			</div>
+			{if $isETipEnabled}<br class="clearfix" />{/if}
 		</div>
-	  </div>
 	{/if}
 	{call .footer}
 		{param buttonText: 'Place Order' /}
@@ -622,10 +623,9 @@
  * @param? renderSubTotal1
  */
 {template .cartsection autoescape="false"}
-	/* HACK OVERRIDE (yes, there are a lot of those lately) for when this is the success page */
 	{let $cartlineTypeRevised: ($cartlineType == 'CHECKOUT_SUCCESS')? 'CHECKOUT' : $cartlineType /}
 
-	<div class='cartsection {if $info.wine}cartsection-wine{/if} {if ($eTippingEnabled and $cartlineType == 'CHECKOUT') or (not $displayCheckout and $cartlineType != 'CHECKOUT_SUCCESS')}eTippingEnabled{/if}' {if $info.recipe}data-recipe-section="{$title}"{/if}>
+	<div class='cartsection {if $info.wine}cartsection-wine{/if}{if $info.justAdded} cartsection-justadded{/if} {if ($eTippingEnabled and $cartlineType == 'CHECKOUT') or (not $displayCheckout and $cartlineType != 'CHECKOUT_SUCCESS')}eTippingEnabled{/if}' {if $info.recipe}data-recipe-section="{$title}"{/if}>
 		<h2 class='cartsection__title'>
 			{if $info.recipe}
 				Recipe: <span class="cartsection__title-noweight">{$title}</span>
@@ -638,7 +638,6 @@
 				</span>
 			{/if}
 		</h2>
-		
 		{foreach $cartline in $cartLines}
 			{delcall expressco.cartline data="$cartline" variant="$cartlineTypeRevised"}
 				{param populateDCPDPromoDiscount: $populateDCPDPromoDiscount /}
@@ -649,61 +648,59 @@
 				{param deliveryBegins: $deliveryBegins /}
 			{/delcall}
 		{/foreach}
-
-		
 	</div>/* end div.cartsection.cartsection-wine */
+
 	{if $info.subTotal}
-       		{let $cartlineType: (not $displayCheckout and $cartlineType != 'CHECKOUT_SUCCESS')? 'CHECKOUT' : $cartlineType /}
-			{let $isETipEnabled: ($eTippingEnabled and $cartlineType == 'CHECKOUT') or (not $displayCheckout and $cartlineType != 'CHECKOUT_SUCCESS') /}
-			{if $eTippingEnabled and $cartlineType == 'CHECKOUT' }
-				{if $numOfSections > 1 and $containsWineSection}
-					<div class='cartsection {if $info.wine}cartsection-wine{/if} {if $isETipEnabled}eTippingEnabled{/if}'>
+		{let $cartlineType: (not $displayCheckout and $cartlineType != 'CHECKOUT_SUCCESS')? 'CHECKOUT' : $cartlineType /}
+		{let $isETipEnabled: ($eTippingEnabled and $cartlineType == 'CHECKOUT') or (not $displayCheckout and $cartlineType != 'CHECKOUT_SUCCESS') /}
+		{if $eTippingEnabled and $cartlineType == 'CHECKOUT' }
+			{if $numOfSections > 1 and $containsWineSection}
+				<div class='cartsection {if $info.wine}cartsection-wine{/if} {if $isETipEnabled}eTippingEnabled{/if}'>
 					<div class="cartsection__totalwrapper {if $isETipEnabled}eTippingEnabled{/if}">
 						<p class='cartsection__total'>
-							{if $info.subTotalText}{$info.subTotalText}{else}Subtotal{/if}: {$info.subTotal} {if $info.hasEstimatedPrice}*{/if}
+							<span class="strl_text">{if $info.subTotalText}{$info.subTotalText}{else}Subtotal{/if}</span><span class="subtotal__rowcell-mid">{$info.subTotal}</span> <div class="cartline-legend cartline-box"><div class="cartline-legendwrapper"><div class="legend-item">{if $info.hasEstimatedPrice}*{/if}</div></div></div>
 						</p>
 						<p class='cartsection__tax'>Tax: {$info.taxTotal}</p>
 					</div>
-					</div>
-				{/if}
-				{if $renderSubTotal1}
+				</div>
+			{/if}
+			{if $renderSubTotal1}
 				<div class='cartsection {if $isETipEnabled}eTippingEnabled{/if}'>
-				{if $isLastSection or $numOfSections == 1}
-				<div class='cartsection__totalwrapper {if not $mobWeb}right{/if}'>
-						<div id="subtotalbox1" class="subtotalboxes">
-							{if $subTotalBox and $subTotalBox.subTotalBox}
-								{call .subTotalBox}
-									{param cartlineType: $cartlineType /}
-									{param subTotalBox: $subTotalBox.subTotalBox /}
-									{param userRecognized: $userRecognized /}
-									{param userCorporate: $userCorporate /}
-									{param eTippingEnabled: $eTippingEnabled /}
-									{param avalaraEnabled: $avalaraEnabled /}
-									{param totalWithoutTax: $totalWithoutTax /}
-									{param displayCheckout: $displayCheckout /}
+					{if $isLastSection or $numOfSections == 1}
+						<div class='cartsection__totalwrapper {if not $mobWeb}right{/if}'>
+							<div id="subtotalbox1" class="subtotalboxes">
+								{if $subTotalBox and $subTotalBox.subTotalBox}
+									{call .subTotalBox}
+										{param cartlineType: $cartlineType /}
+										{param subTotalBox: $subTotalBox.subTotalBox /}
+										{param userRecognized: $userRecognized /}
+										{param userCorporate: $userCorporate /}
+										{param eTippingEnabled: $eTippingEnabled /}
+										{param avalaraEnabled: $avalaraEnabled /}
+										{param totalWithoutTax: $totalWithoutTax /}
+										{param displayCheckout: $displayCheckout /}
+										{param etipTotal: $etipTotal /}
+									{/call}
+								{/if}
+							</div>
+							{if $displayCheckout}
+								{call .etip}
+									{param customTip: $customTip /}
+									{param isEBTused: $isEBTused /}
 									{param etipTotal: $etipTotal /}
+									{param tipAmounts: $tipAmounts /}
+									{param tipApplied: $tipApplied /}
+									{param tipAppliedTick: $tipAppliedTick /}
+									{param displayCheckout: $displayCheckout /}
 								{/call}
 							{/if}
 						</div>
-						{if $displayCheckout}
-							{call .etip}
-								{param customTip: $customTip /}
-								{param isEBTused: $isEBTused /}
-								{param etipTotal: $etipTotal /}
-								{param tipAmounts: $tipAmounts /}
-								{param tipApplied: $tipApplied /}
-								{param tipAppliedTick: $tipAppliedTick /}
-								{param displayCheckout: $displayCheckout /}
-							{/call}
-						{/if}
-					
+					{/if}/* end {if $isLastSection or $numOfSections == 1} */
 				</div>
-				{/if}/* end {if $isLastSection or $numOfSections == 1} */
-			  </div>
-			  {/if}
-			{else}
-				/* only show subtotal if there's also wines */
-				{if ($isLastSection and $info.wine) or $containsWineSection}
+			{/if}
+		{else}
+			/* only show subtotal if there's also wines */
+			{if ($isLastSection and $info.wine) or $containsWineSection}
 				<div class='cartsection {if $info.wine}cartsection-wine{/if} {if $isETipEnabled}eTippingEnabled{/if}'>
 					<div class='cartsection__totalwrapper'>
 						<p class='cartsection__total'>
@@ -716,9 +713,8 @@
 								{/if}
 							{else}
 								Subtotal
-							{/if}</span> <span class="subtotal__rowcell-mid">{$info.subTotal} {if $info.hasEstimatedPrice}*</span>{/if}
+							{/if}</span><span class="subtotal__rowcell-mid">{$info.subTotal} <div class="cartline-legend cartline-box"><div class="cartline-legendwrapper"><div class="legend-item">{if $info.hasEstimatedPrice}*{/if}</div></div></div></span>
 						</p>
-							
 						{if $avalaraEnabled}
 							{if $cartlineType == 'CHECKOUT'}
 								<p class='cartsection__tax'><span class="strl_text">Tax</span> <span class="subtotal__rowcell-mid">{$info.taxTotal}</span></p>
@@ -727,13 +723,11 @@
 							<p class='cartsection__tax'><span class="strl_text">Tax</span> <span class="subtotal__rowcell-mid">{$info.taxTotal}</span></p>
 						{/if}
 					</div>/* end cartsection__totalwrapper */
-				  </div>
-			    </div>
-				{/if} /* if ($isLastSection and $info.wine) or $containsWineSection */
+				</div>
+			{/if} /* if ($isLastSection and $info.wine) or $containsWineSection */
 				
-			{/if}/* end if/else $eTippingEnabled and $cartlineType == 'CHECKOUT' */
-		{/if}
-		
+		{/if}/* end if/else $eTippingEnabled and $cartlineType == 'CHECKOUT' */
+	{/if}
 {/template}
 
 /**
@@ -770,7 +764,7 @@
  * @param? so3ItemStatus 
  */
 {deltemplate expressco.cartline autoescape="false" variant="'YOUR_CART'"}
-	<div class='cartsection__cartline' data-component='cartline' data-cartlineid='{$id}'>
+	<div class='cartsection__cartline' data-cartline-variant="YOUR_CART" data-component='cartline' data-cartlineid='{$id}'>
 		<div class='cartline-imageholder cartline-box'>
 			<a id="cartline_link_img_{$id}" class='cartline-link' href='/product_modify.jsp?cartLine={$id}&trk=cart'>
 				<img class='cartline-image' src='{if $image}{$image}{else}/media/images/temp/soon_80x80.gif{/if}' alt="{$descrAlt}" />
@@ -855,7 +849,7 @@
 					<p class='cartline-price-value cartline-price-value-free'>FREE</p>
 				{else}
 					<p class='cartline-price-value' aria-live='polite'>{$price}</p>
-					{if $unitPrice}<p class='cartline-unitprice'>({$unitPrice}/{$unitScale})</p>{/if}
+					{if $unitPrice}<p class='cartline-unitprice'>{$unitPrice}/{$unitScale}</p>{/if}
 				{/if}
 			</div>
 		</div>
@@ -913,10 +907,11 @@
  * @param? mealBundle
  * @param? productId
  * @param? categoryId
+ * @param? recent added in this checkout (new modify items)
  */
 {deltemplate expressco.cartline autoescape="false" variant="'CHECKOUT'"}
 	{let $noModifyLinks: true /}/* remove linking */
-	<div class='cartsection__cartline' data-component='cartline' data-cartlineid='{$id}'>
+	<div class='cartsection__cartline' data-cartline-variant="CHECKOUT" data-component='cartline' data-cartlineid='{$id}'>
 		<div class='cartline-imageholder cartline-box'>
 			{if $noModifyLinks}
 				<img class='cartline-image' src='{if $image}{$image}{else}/media/images/temp/soon_80x80.gif{/if}' alt="{$descrAlt}" />
@@ -990,7 +985,7 @@
 					<p class='cartline-price-value cartline-price-value-free'>FREE</p>
 				{else}
 					<p class='cartline-price-value' aria-live='polite'>{$price}</p>
-					{if $unitPrice}<p class='cartline-unitprice'>({$unitPrice}/{$unitScale})</p>{/if}
+					{if $unitPrice}<p class='cartline-unitprice'>{$unitPrice}/{$unitScale}</p>{/if}
 				{/if}
 			</div>
 		</div>
@@ -1262,7 +1257,7 @@
 					{/if} /*end if $box.id == 'freefood' */
 				</div><!--end div.subtotal__rowcell-left.rowcell-colon-right -->
 				{if $withContainer} <div class="subtotal__row-value-container">{/if}
-				<div class='subtotal__rowcell-mid {$box.id=='youSaved'? '': 'rowcell-text-right'}  st_val st_val_{$box.id}'>
+				<div class='subtotal__rowcell-mid st_val st_val_{$box.id}'>
 					{if $box.id == 'deliveryfee' and ($deliveryUsed == 0) and not $box.other.deliveryPassPopupNeeded}
 						{if $eTippingEnabled and $cartlineTypeRevised == 'CHECKOUT'}
 							{call .dfToolTip /}
@@ -1320,7 +1315,7 @@
 							{/if} /*end if $box.id == 'freefood' */
 						</div>
 	
-						<div class='subtotal__rowcell-mid rowcell-text-right st_val st_val_{$box.id}'>
+						<div class='subtotal__rowcell-mid st_val st_val_{$box.id}'>
 							{if $box.id == 'deliveryfee' and ($deliveryUsed == 0) and not $box.other.deliveryPassPopupNeeded}
 								<div class="rowcontent-free-with-pass">
 									{$box.value}
@@ -1554,7 +1549,7 @@
 				</div>
 				<span class="strl_text">Order Total</span>
 			</div>
-			<div class="subtotal__rowcell-mid rowcell-text-right st_val ">{$estTotal}{if $estTotalLegend }<sup class="superscript">{{$estTotalLegend}}</sup>{/if}</div>
+			<div class="subtotal__rowcell-mid st_val ">{$estTotal}{if $estTotalLegend }<sup class="superscript">{{$estTotalLegend}}</sup>{/if}</div>
 			<div class="subtotal__rowcell-right"></div>
 		</div>
 	</div>

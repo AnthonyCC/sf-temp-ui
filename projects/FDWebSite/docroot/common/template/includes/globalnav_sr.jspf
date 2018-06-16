@@ -9,6 +9,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy"%>
 <%@ taglib uri="fd-data-potatoes" prefix="potato"%>
+<%@ taglib uri="/WEB-INF/shared/tld/components.tld" prefix='comp' %>
 <%
 	boolean useFdxGlobalNav = FDStoreProperties.isFdxLocationbarEnabled();
 	Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
@@ -26,13 +27,20 @@
 <!-- TOP TOOLBAR -->
 
 <script>
-	FreshDirect = FreshDirect || {};
-	FreshDirect.locabar = FreshDirect.locabar || {};
-	FreshDirect.locabar.isFdx = <%= useFdxGlobalNav %>;
 	$jq.fn.messages = function( method ) {};
 </script>
 
+<!-- Adding Skip to Navigation : Start-->
+	<a href="#skip_to_content" class="skipnav" style="">Skip to Content</a>
+<!-- Adding Skip to Navigation : End-->
+
 <% if (useFdxGlobalNav) { %>
+
+	<% if (uri.indexOf("/standing_orders.jsp") == -1) { %>
+		<%-- PENDING ORDER BAR AND OVERLAY CONTENT --%>
+		<comp:pendingOrderBar user="<%= user %>" />
+	<% } %>
+		
 	<div id="toptoolbar">
 		<jsp:include page="/shared/locationbar/locationbar_fdx.jsp" />
 		<jsp:include page="/shared/messages/messages_fdx.jsp" />
