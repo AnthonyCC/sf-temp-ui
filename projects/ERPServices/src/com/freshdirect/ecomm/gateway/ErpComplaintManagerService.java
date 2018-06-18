@@ -34,7 +34,6 @@ public class ErpComplaintManagerService extends AbstractEcommService implements 
 	private static final String GET_COMPLAINT_REASONS = "complaint/reason/excludeCartonReq/";
 	private static final String GET_COMPLAINT_CODES = "complaint/code";
 	private static final String REJECT_MAKE_GOOD_COMPLAINT = "complaint/reject/makeGoodSaleId/";
-	private static final String GET_REASON_BY_COMPCODE = "complaint/reason/cCode/";
 	private static final String GET_PENDING_COMPLAINTS = "complaint/pending";
 
 	@Override
@@ -113,22 +112,4 @@ public class ErpComplaintManagerService extends AbstractEcommService implements 
 		}
 	}
 
-	@Override
-	public ErpComplaintReason getReasonByCompCode(String cCode)
-			throws RemoteException {
-		Response<ErpComplaintReasonData> response = null;
-		try {
-			response = httpGetDataTypeMap(
-					getFdCommerceEndPoint(GET_REASON_BY_COMPCODE + cCode),
-					new TypeReference<Response<ErpComplaintReasonData>>() {
-					});
-			if (!response.getResponseCode().equals("OK"))
-				throw new FDResourceException(response.getMessage());
-
-		} catch (FDResourceException e) {
-			e.printStackTrace();
-			LOGGER.error(e.getMessage());
-		}
-		return ModelConverter.buildErpComplaintReason(response.getData());
-	}
 }

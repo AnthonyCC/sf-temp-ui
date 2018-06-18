@@ -966,13 +966,8 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
-				return CallCenterManagerService.getInstance().saveVSCampaignInfo(model);
-			}
-			else {
 				CallCenterManagerSB sb = callCenterHome.create();
 				return sb.saveVSCampaignInfo(model);
-			}
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating bean");
@@ -988,13 +983,8 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
-				return CallCenterManagerService.getInstance().getVoiceShotLog(date);
-			}
-			else {
 				CallCenterManagerSB sb = callCenterHome.create();
 				return sb.getVoiceShotLog(date);
-			}
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating bean");
@@ -1009,13 +999,8 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
-				return CallCenterManagerService.getInstance().getVoiceShotCallDetails(id, lateId);
-			}
-			else {
 				CallCenterManagerSB sb = callCenterHome.create();
 				return sb.getVoiceShotCallDetails(id, lateId);
-			}
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating bean");
@@ -1030,13 +1015,8 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
-				return CallCenterManagerService.getInstance().getVSRedialList(id, lateId);
-			}
-			else {
 				CallCenterManagerSB sb = callCenterHome.create();
 				return sb.getVSRedialList(id, lateId);
-			}
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating bean");
@@ -1051,13 +1031,8 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
-				return CallCenterManagerService.getInstance().saveVSRedialInfo(model);
-			}
-			else {
 				CallCenterManagerSB sb = callCenterHome.create();
 				return sb.saveVSRedialInfo(model);
-			}
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating bean");
@@ -1072,13 +1047,8 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
-				 CallCenterManagerService.getInstance().addNewCampaign(model);
-			}
-			else {
 				CallCenterManagerSB sb = callCenterHome.create();
 				sb.addNewCampaign(model);
-			}
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating bean");
@@ -1093,13 +1063,8 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
-				return CallCenterManagerService.getInstance().getCampaignDetails(id);
-			}
-			else {
 				CallCenterManagerSB sb = callCenterHome.create();
 				return sb.getCampaignDetails(id);
-			}
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating bean");
@@ -1114,13 +1079,8 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
-				 CallCenterManagerService.getInstance().updateCampaign(model);
-			}
-			else {
 				CallCenterManagerSB sb = callCenterHome.create();
 				sb.updateCampaign(model);
-			}
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating bean");
@@ -1135,13 +1095,8 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
-				 CallCenterManagerService.getInstance().deleteCampaign(id);
-			}
-			else {
 				CallCenterManagerSB sb = callCenterHome.create();
 				sb.deleteCampaign(id);
-			}
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating bean");
@@ -1156,13 +1111,8 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
-				return CallCenterManagerService.getInstance().getVSMsgForOrderPage(orderId);
-			}
-			else {
 				CallCenterManagerSB sb = callCenterHome.create();
 				return sb.getVSMsgForOrderPage(orderId);
-			}
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating bean");
@@ -1177,13 +1127,8 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
-				return CallCenterManagerService.getInstance().getVSReasonCodes();
-			}
-			else {
 				CallCenterManagerSB sb = callCenterHome.create();
 				return sb.getVSReasonCodes();
-			}
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating bean");
@@ -1198,13 +1143,8 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
-				return CallCenterManagerService.getInstance().getSoundFileMessage(campaignId);
-			}
-			else {
 				CallCenterManagerSB sb = callCenterHome.create();
 				return sb.getSoundFileMessage(campaignId);
-			}
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating bean");
@@ -1219,13 +1159,8 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
-				return CallCenterManagerService.getInstance().getAutoLateDeliveryCredits();
-			}
-			else {
 				CallCenterManagerSB sb = callCenterHome.create();
 				return sb.getAutoLateDeliveryCredits();
-			}
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating bean");
@@ -1240,13 +1175,8 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
-				return CallCenterManagerService.getInstance().getAutoLateDeliveryOrders(id);
-			}
-			else {
 				CallCenterManagerSB sb = callCenterHome.create();
 				return sb.getAutoLateDeliveryOrders(id);
-			}
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating bean");
@@ -1261,13 +1191,8 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
-				return CallCenterManagerService.getInstance().getAutoLateDlvPassOrders(id);
-			}
-			else {
 				CallCenterManagerSB sb = callCenterHome.create();
 				return sb.getAutoLateDlvPassOrders(id);
-			}
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating bean");
@@ -1282,13 +1207,8 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
-				return CallCenterManagerService.getInstance().getReasonByCompCode(cCode);
-			}
-			else {
 				CallCenterManagerSB sb = callCenterHome.create();
 				return sb.getReasonByCompCode(cCode);
-			}
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -1324,13 +1244,8 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
-				 CallCenterManagerService.getInstance().reverseAuthOrder(saleId);
-			}
-			else {
 			CallCenterManagerSB sb = callCenterHome.create();
 			 sb.reverseAuthOrder(saleId);
-			}
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -1366,13 +1281,8 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
-				return CallCenterManagerService.getInstance().getReverseAuthOrders(date);
-			}
-			else {
 				CallCenterManagerSB sb = callCenterHome.create();
 				return sb.getReverseAuthOrders(date);
-			}
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating bean");
@@ -1387,13 +1297,8 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
-				return CallCenterManagerService.getInstance().getOrdersForVoidCapture(date);
-			}
-			else {
 				CallCenterManagerSB sb = callCenterHome.create();
 				return sb.getOrdersForVoidCapture(date);
-			}
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating bean");
