@@ -9,6 +9,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.ecomm.gateway.AbstractEcommService;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
@@ -33,6 +34,9 @@ public class CustomerGiftCardService extends AbstractEcommService implements Cus
 	private static final String APPLY_GIFT_CARD = "customerGiftCard/apply";
 	private static final String GET_GIFT_CARDS = "customerGiftCard/getGiftCards";
 	private static final String RESUBMIT_ORDERS = "customerGiftCard/resubmitOrders";
+	private static final String GET_OUTSTANDING_BALANCE = "customerGiftCard/getOutstandingBalance";
+	private static final String SAVE_DONATION_OPT_IN = "customerGiftCard/saveDonationOptIn";
+
 	private static CustomerGiftCardServiceI INSTANCE;
 
 	public static CustomerGiftCardServiceI getInstance() {
@@ -52,7 +56,7 @@ public class CustomerGiftCardService extends AbstractEcommService implements Cus
 			rootNode.set("identity", getMapper().convertValue(identity, JsonNode.class));
 			rootNode.put("saleId", saleId);
 			rootNode.put("certificationNum", certificationNum);
-			
+
 			request.setData(rootNode);
 			String inputJson = buildRequest(request);
 
@@ -61,7 +65,7 @@ public class CustomerGiftCardService extends AbstractEcommService implements Cus
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
-				
+
 				throw new FDResourceException(response.getMessage());
 			}
 			return response.getData();
@@ -78,14 +82,14 @@ public class CustomerGiftCardService extends AbstractEcommService implements Cus
 		try {
 			Request<ObjectNode> request = new Request<ObjectNode>();
 			ObjectNode rootNode = getMapper().createObjectNode();
-			
+
 			rootNode.put("saleId", saleId);
 			rootNode.put("certificationNum", certificationNum);
 			rootNode.put("resendEmailId", resendEmailId);
 			rootNode.put("recipName", recipName);
 			rootNode.put("personMsg", personMsg);
 			rootNode.set("source", getMapper().convertValue(source, JsonNode.class));
-			
+
 			request.setData(rootNode);
 			String inputJson = buildRequest(request);
 
@@ -94,7 +98,7 @@ public class CustomerGiftCardService extends AbstractEcommService implements Cus
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
-				
+
 				throw new FDResourceException(response.getMessage());
 			}
 			return response.getData();
@@ -112,11 +116,11 @@ public class CustomerGiftCardService extends AbstractEcommService implements Cus
 		try {
 			Request<ObjectNode> request = new Request<ObjectNode>();
 			ObjectNode rootNode = getMapper().createObjectNode();
-			
+
 			rootNode.set("identity", getMapper().convertValue(identity, JsonNode.class));
 			rootNode.put("givexNum", givexNum);
 			rootNode.set("info", getMapper().convertValue(info, JsonNode.class));
-			
+
 			request.setData(rootNode);
 			String inputJson = buildRequest(request);
 
@@ -125,21 +129,21 @@ public class CustomerGiftCardService extends AbstractEcommService implements Cus
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
-				if("InvalidCardException".equals(response.getMessage())) {
+				if ("InvalidCardException".equals(response.getMessage())) {
 					throw new InvalidCardException();
 				}
-				if("ServiceUnavailableException".equals(response.getMessage())) {
+				if ("ServiceUnavailableException".equals(response.getMessage())) {
 					throw new ServiceUnavailableException();
 				}
-				if("CardOnHoldException".equals(response.getMessage())) {
+				if ("CardOnHoldException".equals(response.getMessage())) {
 					throw new CardOnHoldException();
 				}
-				if("CardInUseException".equals(response.getMessage())) {
+				if ("CardInUseException".equals(response.getMessage())) {
 					CardInUseException cie = new CardInUseException();
 					cie.setCardOwner(response.getError().get("cardOwner").toString());
 					throw cie;
 				}
-				
+
 				throw new FDResourceException(response.getMessage());
 			}
 			return response.getData();
@@ -181,6 +185,58 @@ public class CustomerGiftCardService extends AbstractEcommService implements Cus
 		if (!response.getResponseCode().equals("OK")) {
 			throw new FDResourceException(response.getMessage());
 		}
+	}
+
+	@Override
+	public double getOutstandingBalance(ErpAbstractOrderModel order, boolean isModifyOrderModel) throws FDResourceException, RemoteException {
+		Response<Double> response = null;
+		try {
+			Request<ObjectNode> request = new Request<ObjectNode>();
+			ObjectNode rootNode = getMapper().createObjectNode();
+			rootNode.put("order",  getMapper().convertValue(order, JsonNode.class));
+			rootNode.put("isModifyOrderModel", isModifyOrderModel);
+			request.setData(rootNode);
+			String inputJson = buildRequest(request);
+
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(GET_OUTSTANDING_BALANCE),
+					new TypeReference<Response<List<ErpGiftCardModel>>>() {
+					});
+
+			if (!response.getResponseCode().equals("OK")) {
+				throw new FDResourceException(response.getMessage());
+			}
+			return response.getData();
+		} catch (FDEcommServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	@Override
+	public void saveDonationOptIn(String custId, String saleId, boolean optIn)
+			throws RemoteException, FDResourceException {
+		Response<Void> response = null;
+		try {
+			Request<ObjectNode> request = new Request<ObjectNode>();
+			ObjectNode rootNode = getMapper().createObjectNode();
+			rootNode.put("custId", custId);
+			rootNode.put("saleId", saleId);
+			rootNode.put("optIn", optIn);
+			request.setData(rootNode);
+			String inputJson = buildRequest(request);
+
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(SAVE_DONATION_OPT_IN),
+					new TypeReference<Response<Void>>() {
+					});
+
+			if (!response.getResponseCode().equals("OK")) {
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDEcommServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+
 	}
 
 }

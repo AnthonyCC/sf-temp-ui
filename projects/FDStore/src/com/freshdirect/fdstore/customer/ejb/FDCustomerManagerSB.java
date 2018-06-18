@@ -717,7 +717,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
     public boolean resendEmail(String saleId, String certificationNum, String resendEmailId, String recipName, String personMsg, EnumTransactionSource source) throws FDResourceException, RemoteException;
     @Deprecated
     public boolean resendEmail(String saleId, String certificationNum, String resendEmailId, String recipName, String personMsg, boolean toPurchaser, boolean toLastRecipient, EnumTransactionSource source) throws FDResourceException, RemoteException;
-
+    @Deprecated
     public double getOutStandingBalance(ErpAbstractOrderModel order) throws FDResourceException, RemoteException;
 
     public EnumIPhoneCaptureType iPhoneCaptureEmail(String emailId, EnumTransactionSource source) throws FDResourceException, RemoteException;
@@ -761,6 +761,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
 
     public ErpGCDlvInformationHolder GetGiftCardRecipentByCertNum(String certNum) throws RemoteException,FDResourceException ;
 
+    @Deprecated
     public void saveDonationOptIn(String custId, String saleId, boolean optIn)throws RemoteException,FDResourceException ;
 
     @Deprecated

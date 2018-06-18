@@ -3705,19 +3705,24 @@ public class FDCustomerManager {
 		}
 	}
 
-	public static double getOutStandingBalance(FDCartModel cart)
-			throws FDResourceException {
-		lookupManagerHome();
+	public static double getOutStandingBalance(FDCartModel cart) throws FDResourceException {
 		try {
+
 			ErpAbstractOrderModel order = null;
+			boolean isModifyOrderModel = false;
 			if (cart instanceof FDModifyCartModel) {
 				order = FDOrderTranslator.getErpCreateOrderModel(cart);
+				isModifyOrderModel = true;
 			} else {
 				order = FDOrderTranslator.getErpModifyOrderModel(cart);
 			}
-
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.getOutStandingBalance(order);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerGiftCard)) {
+				return CustomerGiftCardService.getInstance().getOutstandingBalance(order, isModifyOrderModel);
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getOutStandingBalance(order);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -3971,12 +3976,16 @@ public class FDCustomerManager {
 		}
 	}
 
-	public static void saveDonationOptIn(String custId, String saleId,
-			boolean optIn) throws FDResourceException {
-		lookupManagerHome();
+	public static void saveDonationOptIn(String custId, String saleId, boolean optIn) throws FDResourceException {
+
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			sb.saveDonationOptIn(custId, saleId, optIn);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerGiftCard)) {
+				CustomerGiftCardService.getInstance().saveDonationOptIn(custId, saleId, optIn);
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				sb.saveDonationOptIn(custId, saleId, optIn);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");

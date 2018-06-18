@@ -567,4 +567,10 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
 		}
 		return false;
 	}
+	
+	@Override
+	public void setId(String id) {
+		if (id != null)
+			super.setId(id);
+	}
 }

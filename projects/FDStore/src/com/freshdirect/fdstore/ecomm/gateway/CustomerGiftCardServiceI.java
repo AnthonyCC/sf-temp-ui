@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpPaymentMethodException;
 import com.freshdirect.customer.ErpPaymentMethodI;
@@ -45,4 +46,10 @@ public interface CustomerGiftCardServiceI {
 	public List<ErpGiftCardModel> getGiftCards(FDIdentity identity) throws FDResourceException, RemoteException;
 
 	public void resubmitGCOrders() throws RemoteException, FDResourceException;
+
+	public double getOutstandingBalance(ErpAbstractOrderModel order, boolean isModifyOrderModel) throws FDResourceException, RemoteException;
+
+	public void saveDonationOptIn(String custId, String saleId, boolean optIn)
+			throws RemoteException, FDResourceException;
+
 }

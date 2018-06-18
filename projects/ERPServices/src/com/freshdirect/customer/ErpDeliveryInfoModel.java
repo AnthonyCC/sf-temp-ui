@@ -12,6 +12,10 @@ import com.freshdirect.framework.core.ModelSupport;
  * @stereotype fd-model 
  */
 public class ErpDeliveryInfoModel extends ModelSupport {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3000283236041863594L;
 	private String deliveryReservationId;
     private Date deliveryStartTime;
     private Date deliveryEndTime;
@@ -88,5 +92,10 @@ public class ErpDeliveryInfoModel extends ModelSupport {
 	}
 	public void setServiceType(EnumServiceType serviceType) {
 		this.serviceType = serviceType;
+	}
+	@Override
+	public void setId( String id) {
+		if (id != null) 
+			super.setId(id);
 	}
 }
