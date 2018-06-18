@@ -729,6 +729,8 @@ var dataLayer = window.dataLayer || [];
       channel = 'rec_atp';
     } else if (isHookLogic) {
       channel = 'rec_criteo';
+    } else if (el && $(el).closest('#multisearch-results').length) {
+      channel = 'search_express';
     } else if (productData && productData.variantId) {
       channel = 'rec_' + productData.variantId;
     } else if ($(el).closest('.transactional-related-item').length || $(el).parent().hasClass('relatedItem')) {
@@ -762,6 +764,8 @@ var dataLayer = window.dataLayer || [];
       location = 'search_' + searchParams.toLowerCase().trim().replace(/\s+/g, '+');
     } else if ($('ul.qs-tabs li .selected').length) {
       location = 'reorder_' + safeName($('ul.qs-tabs li .selected').text());
+    } else if (window.location.pathname.indexOf('/expresssearch.jsp') > -1 && el && $(el).closest('[data-searchresult]').length ) {
+      location = 'expresssearch_' + safeName($(el).closest('[data-searchresult]').attr('data-searchresult'));
     } else {
       location = pageType.toLowerCase();
     }
@@ -840,9 +844,9 @@ var dataLayer = window.dataLayer || [];
       title = productE.attr('data-list-title');
     }
 
-    channel = channel || (config.channel ? 'channel_' + config.channel : fd.gtm.getListChannel(el, config));
-    location = location || (config.location ? 'loc_' + config.location : fd.gtm.getListLocation(el));
-    title = title || (config.title ? 'title_' + config.title : fd.gtm.getListCarousel(el));
+    channel = channel || (config.channel ? 'channel_' + config.channel : fd.gtm.getListChannel(productE, config));
+    location = location || (config.location ? 'loc_' + config.location : fd.gtm.getListLocation(productE));
+    title = title || (config.title ? 'title_' + config.title : fd.gtm.getListCarousel(productE));
 
     if (productE) {
       productE.attr('data-list-channel', channel);

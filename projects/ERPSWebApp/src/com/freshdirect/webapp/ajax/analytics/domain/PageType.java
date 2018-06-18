@@ -44,6 +44,7 @@ public enum PageType {
     JULY_4(""),
     DELIVERYPASS("/freetrial.jsp","/browse.jsp?id=gro_gear_dlvpass"),
     WGD("/browse.jsp?id=wgd_summer_central","/browse.jsp?id=wgd_summer_central_nc"),
+    EXPRESS_SEARCH("/expresssearch.jsp"),
     NOT_RECOGNIZED("");
 
     private List<String> urls;

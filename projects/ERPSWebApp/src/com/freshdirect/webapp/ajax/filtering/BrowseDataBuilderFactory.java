@@ -979,7 +979,9 @@ public class BrowseDataBuilderFactory {
             case SEARCH: {
                 CarouselTypeContainer carouselType = new CarouselTypeContainer();
                 carouselType.addAttribute("type", CarouselType.SEARCH.getType());
-                carouselType.addAttribute("productId", data.getSectionContexts().get(0).getProductItems().get(0).getProductModel().getContentKey().getId());
+                if (data.getSectionContexts().get(0).getProductItems().size() > 0) {
+                	carouselType.addAttribute("productId", data.getSectionContexts().get(0).getProductItems().get(0).getProductModel().getContentKey().getId());
+                }
                 data.setCarouselType(carouselType);
             }
                 break;
