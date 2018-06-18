@@ -20,6 +20,7 @@ import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.delivery.ReservationException;
+import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.fdlogistics.model.FDDeliveryDepotModel;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDDeliveryManager;
@@ -597,8 +598,8 @@ public class SinglePageCheckoutFacade {
     }
 
     private SuccessPageData loadSuccessPageData(final FDOrderI order, final String requestURI, final FDUserI user) throws FDResourceException {
-    	boolean freeTrialOptinBasedDPApplied = order.isChargeWaived(EnumChargeType.DELIVERY) &&  user.applyFreeTrailOptinBasedDP();
-
+    	boolean freeTrialOptinBasedDPApplied = order.isChargeWaivedByDlvPass(EnumChargeType.DELIVERY) && null ==order.getDeliveryPassId();
+    	
         SuccessPageData successPageData = new SuccessPageData();
         successPageData.setHeader(contentFactoryService.getExpressCheckoutReceiptHeader(user));
         successPageData.setRightBlock(contentFactoryService.getExpressCheckoutReceiptEditorial(user));
