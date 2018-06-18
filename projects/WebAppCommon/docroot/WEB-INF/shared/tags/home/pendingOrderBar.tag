@@ -29,18 +29,18 @@ attribute name="modifyOrderAlert" required="false" rtexprvalue="true" type="java
 			boolean isMobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
 			
 			int pendingOrderCount = 0;
-			List<FDOrderInfoI> validPendingOrders = new ArrayList<FDOrderInfoI>();
-			validPendingOrders.addAll(user.getPendingOrders());
 			
-			/* SO orders */
-			Map<String, String> soUpcomingDelivery = new HashMap<String,String>();
-
 			/* if there is any order in 'NEW' status, clear the order history to make the order modifiable */
 			if (user.isAnyNewOrder()){
 				user.invalidateOrderHistoryCache();
 				user.setAnyNewOrder(false);
 			}
 			
+			List<FDOrderInfoI> validPendingOrders = new ArrayList<FDOrderInfoI>();
+			validPendingOrders.addAll(user.getPendingOrders());
+			
+			/* SO orders */
+			Map<String, String> soUpcomingDelivery = new HashMap<String,String>();
 
 			/* Only for FD */
 			if (user.getUserContext() != null && EnumEStoreId.FD.equals(user.getUserContext().getStoreContext().getEStoreId())) {

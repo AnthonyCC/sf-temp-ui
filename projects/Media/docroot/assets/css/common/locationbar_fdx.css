@@ -1623,7 +1623,7 @@ option.address-icon {
 	-webkit-transition: all 0.2s ease-in-out !important;
 	-moz-transition: all 0.2s ease-in-out !important;
 	transition: all 0.2s ease-in-out !important;
-	background: transparen !important;
+	background: transparent !important;
 	left: 0 !important;
 	padding-bottom: 1rem !important;
 	padding-left: 1.5rem !important;
@@ -1631,7 +1631,7 @@ option.address-icon {
 	padding-top: 1rem !important;
 	position: absolute !important;
 	top: -4.2rem !important;
-	z-index: 1000 !important;
+	z-index: 100001 !important;
 	color: #458b4c !important;
 	background-color: #ffffff !important;
     border: 1px solid #4fa157 !important;

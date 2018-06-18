@@ -3518,6 +3518,6 @@ section.main .leftnav .menuBox label input:focus + span > span{
 	position: fixed;
 	top: 0;
 	width: 100%;
-	z-index: 10000;
+	z-index: 2000;
 	background-color: #fff;
 }
