@@ -45,8 +45,6 @@ public interface CallCenterManagerServiceI {
 	public void changeRedeliveryToReturn(String saleId)
 			throws FDResourceException, ErpTransactionException, ErpSaleNotFoundException, RemoteException;
 
-	public List getHolidayMeals(FDIdentity identity) throws FDResourceException, RemoteException;
-
 	public <E> List locateCompanyCustomers(GenericSearchCriteria criteria) throws FDResourceException, RemoteException;
 
 	public List orderSummarySearch(GenericSearchCriteria criteria) throws FDResourceException, RemoteException;
@@ -56,11 +54,7 @@ public interface CallCenterManagerServiceI {
 
 	public List getCutoffTimeForDate(Date date) throws FDResourceException, RemoteException;
 
-	public List getCutoffTimeReport(java.util.Date day) throws FDResourceException, RemoteException;
-
 	public void emailCutoffTimeReport(java.util.Date day) throws FDResourceException, RemoteException;
-
-	public List getLateDeliveryReport(java.util.Date date) throws FDResourceException, RemoteException;
 
 	public <E> List doGenericSearch(GenericSearchCriteria criteria) throws FDResourceException, RemoteException;
 

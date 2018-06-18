@@ -255,13 +255,8 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
-				return CallCenterManagerService.getInstance().getLateDeliveryReport(date);
-			}
-			else {
 				CallCenterManagerSB sb = callCenterHome.create();
 				return sb.getLateDeliveryReport(date);
-			}
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -518,14 +513,8 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
-				return CallCenterManagerService.getInstance().getHolidayMeals(identity);
-			}
-			else {
 			CallCenterManagerSB sb = callCenterHome.create();
 			return sb.getHolidayMeals(identity);
-			}
-
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -600,13 +589,8 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
-				return CallCenterManagerService.getInstance().getCutoffTimeReport(day);
-			}
-			else {
 				CallCenterManagerSB sb = callCenterHome.create();
 				return sb.getCutoffTimeReport(day);
-			}
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating session bean");
