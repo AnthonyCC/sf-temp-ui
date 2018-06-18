@@ -18,7 +18,12 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.storeapi.application.CmsManager;
 import com.freshdirect.storeapi.multistore.MultiStoreContext;
 import com.freshdirect.storeapi.multistore.MultiStoreContextUtil;
-
+/**
+ *@deprecated Please use the SitemapController and SitemapServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public class SitemapSessionBean extends SessionBeanSupport {
 
     private static final long serialVersionUID = -5471311777331918763L;
