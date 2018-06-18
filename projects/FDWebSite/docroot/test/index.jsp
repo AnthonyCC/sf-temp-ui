@@ -1013,6 +1013,12 @@
         <div class="link"><a href="/test/google_analytics/index.jsp">/test/inform/ordermodify.jsp</a></div>
         <div class="pageDesc">Informational: Order Modify data and functionality.</div>
     </div>
+    
+    <div class="tag carousel">
+        <div class="pageName"><span>Carousel</span></div>
+        <div class="link"><a href="/test/carousel/index.jsp">/test/carousel/index.jsp</a></div>
+        <div class="pageDesc">Help to test Carousel</div>
+    </div>
 
 	<hr />
 </div>
