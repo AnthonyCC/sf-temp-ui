@@ -61,11 +61,8 @@ private static final String RESUBMIT_PAYMENT = "callcenter/resubmitPayment/saleI
 private static final String RESUBMIT_ORDER = "callcenter/resubmitOrder/saleId/";
 private static final String RESUBMIT_CUSTOMER = "callcenter/resubmitCustomer/customerId/";
 private static final String SCHEDULE_REDELIVERY = "callcenter/scheduleRedelivery/saleId/";
-private static final String CHANGE_REDELIVERY_TO_RETURN = "callcenter/redelivery/return/change/saleId/";
 private static final String LOCATE_COMPANY_CUSTOMERS = "callcenter/companyCustomer/locate/searchType/";
 private static final String ORDER_SUMMARY_SEARCH = "callcenter/orderSummary/search/searchType/";
-private static final String SAVE_HOLIDAY_MEAL = "callcenter/holidayMeal/save/customerId/";
-private static final String GET_CUTTOFF_TIME_FOR_DATE = "callcenter/cuttOffTime/date/";
 private static final String EMAIL_CUTTOFF_TIME_REPORT = "callcenter/cuttOffTime/report/email/date/";
 private static final String SAVE_TOP_FAQs = "callcenter/topFaqs/save";
 private static final String ADD_NEW_IVR_CALL_LOG = "callcenter/callLog/IVR/add";
@@ -183,22 +180,6 @@ private static final String DO_GENERIC_SEARCH = "callcenter/genericSearch/search
 		}
 	}
 
-
-	@Override
-	public void changeRedeliveryToReturn(String saleId)throws FDResourceException, ErpTransactionException,
-			ErpSaleNotFoundException, RemoteException {
-		Response<String> response = new Response<String>();
-		try{
-			response = postDataTypeMap(null,getFdCommerceEndPoint(CHANGE_REDELIVERY_TO_RETURN + saleId),new TypeReference<Response<String>>() {});
-			if(!response.getResponseCode().equals("OK")){
-				throw new FDResourceException(response.getMessage());
-			}
-		} catch (FDResourceException e){
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		} 
-	}
-
 	@Override
 	public <E> List locateCompanyCustomers(GenericSearchCriteria criteria)
 			throws FDResourceException, RemoteException {
@@ -241,47 +222,6 @@ private static final String DO_GENERIC_SEARCH = "callcenter/genericSearch/search
 			throw new RemoteException(e.getMessage());
 		}
 		return DlvRestrictionModelConverter.buildDlvRestrictionListResponse(response.getData());
-	}
-
-
-	@Override
-	public MealModel saveHolidayMeal(FDIdentity identity, String agent,MealModel meal) throws FDResourceException, RemoteException {
-		Request<MealData> request = new Request<MealData>();
-		Response<MealData> response = new Response<MealData>();
-		try{
-			request.setData(CallCenterConverter.buildMealData(meal));
-			String inputJson = buildRequest(request);
-			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(SAVE_HOLIDAY_MEAL+identity.getErpCustomerPK()+"/agent/"+agent),new TypeReference<Response<MealData>>() {});
-			if(!response.getResponseCode().equals("OK")){
-				throw new FDResourceException(response.getMessage());
-			}
-		} catch (FDResourceException e){
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}
-		return CallCenterConverter.buildMealModel(response.getData());
-	}
-
-	@Override
-	public List getCutoffTimeForDate(Date date) throws FDResourceException,RemoteException {
-		Response<List<Long>> response = new Response<List<Long>>();
-		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_CUTTOFF_TIME_FOR_DATE +date.getTime()),  new TypeReference<Response<List<Long>>>(){});
-			if(!response.getResponseCode().equals("OK")){
-				throw new FDResourceException(response.getMessage());
-			}
-		} catch (FDRuntimeException e){
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}
-		List<java.sql.Timestamp> cuttOffTime = new ArrayList<java.sql.Timestamp>();
-		for (Long timestamp : response.getData()) {
-			cuttOffTime.add(new java.sql.Timestamp(timestamp));
-		}
-		return cuttOffTime;
 	}
 
 	@Override

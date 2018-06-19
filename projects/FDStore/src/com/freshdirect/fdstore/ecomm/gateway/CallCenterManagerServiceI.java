@@ -42,17 +42,9 @@ public interface CallCenterManagerServiceI {
 	public void scheduleRedelivery(String saleId, ErpRedeliveryModel redeliveryModel)
 			throws FDResourceException, ErpTransactionException, RemoteException;
 
-	public void changeRedeliveryToReturn(String saleId)
-			throws FDResourceException, ErpTransactionException, ErpSaleNotFoundException, RemoteException;
-
 	public <E> List locateCompanyCustomers(GenericSearchCriteria criteria) throws FDResourceException, RemoteException;
 
 	public List orderSummarySearch(GenericSearchCriteria criteria) throws FDResourceException, RemoteException;
-
-	public MealModel saveHolidayMeal(FDIdentity identity, String agent, MealModel meal)
-			throws FDResourceException, RemoteException;
-
-	public List getCutoffTimeForDate(Date date) throws FDResourceException, RemoteException;
 
 	public void emailCutoffTimeReport(java.util.Date day) throws FDResourceException, RemoteException;
 

@@ -395,14 +395,8 @@ public class CallCenterServices {
 			if (!FDCustomerManager.orderBelongsToUser(identity, saleId)) {
 				throw new FDResourceException("Order not found in current user's order history.");
 			}
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
-				 CallCenterManagerService.getInstance().changeRedeliveryToReturn(saleId);
-			}
-			else {
 			CallCenterManagerSB sb = callCenterHome.create();
 			sb.changeRedeliveryToReturn(saleId);
-			}
-
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -529,14 +523,8 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
-				return CallCenterManagerService.getInstance().saveHolidayMeal(identity, agent, meal);
-			}
-			else {
 			CallCenterManagerSB sb = callCenterHome.create();
 			return sb.saveHolidayMeal(identity, agent, meal);
-			}
-
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -568,13 +556,8 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
-				return CallCenterManagerService.getInstance().getCutoffTimeForDate(date);
-			}
-			else {
 				CallCenterManagerSB sb = callCenterHome.create();
 				return sb.getCutoffTimeForDate(date);
-			}
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating session bean");

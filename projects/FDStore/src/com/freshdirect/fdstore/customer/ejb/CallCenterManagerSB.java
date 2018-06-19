@@ -129,7 +129,8 @@ public interface CallCenterManagerSB extends EJBObject {
 	 */
 	@Deprecated	
 	public void approveReturn(String saleId, ErpReturnOrderModel returnOrder) throws FDResourceException, ErpTransactionException, RemoteException;
-	//not used anywhere 
+	//not used anywhere
+	@Deprecated	
     public void changeRedeliveryToReturn(String saleId) throws FDResourceException, ErpTransactionException, ErpSaleNotFoundException, RemoteException;
 	/**
 	 *@deprecated This method is moved to backoffice project.
@@ -148,6 +149,7 @@ public interface CallCenterManagerSB extends EJBObject {
 	 */
     public List orderSummarySearch(GenericSearchCriteria criteria) throws FDResourceException, RemoteException;
 	//not used anywhere
+    @Deprecated
     public MealModel saveHolidayMeal(FDIdentity identity, String agent, MealModel meal) throws FDResourceException, RemoteException;
 	/**
 	 *@deprecated This method is moved to backoffice project.
@@ -162,6 +164,7 @@ public interface CallCenterManagerSB extends EJBObject {
 	@Deprecated	
 	public void reverseCustomerCredit(String saleId, String complaintId) throws FDResourceException, ErpTransactionException, ErpComplaintException , RemoteException;
 	//not used anywhere
+	@Deprecated
 	public List getCutoffTimeForDate(Date date) throws FDResourceException, RemoteException;
 	/**
 	 *@deprecated This method is moved to backoffice project.
