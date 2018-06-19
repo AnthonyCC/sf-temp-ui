@@ -51,9 +51,7 @@ PostSettlementNotificationProcessor	 {
 		if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PostSettlementNotifySB)) {
 			Collection<String> pendingNotifications = PostSettlementNotifyService.getInstance().findByStatusAndType(EnumSaleStatus.PENDING, EnumNotificationType.AVALARA);
 			List<String> salesNotCommitted = PostSettlementNotifyService.getInstance().commitToAvalara(pendingNotifications);
-			System.out.println(" list "+salesNotCommitted);
 		}else{
-				
 			PostSettlementNotifySB postSettlementNotify = lookupPostSettlementNotifyHome().create();		
 			Collection<String> pendingNotifications = postSettlementNotify.findByStatusAndType(EnumSaleStatus.PENDING, EnumNotificationType.AVALARA);
 			List<String> salesNotCommitted = postSettlementNotify.commitToAvalara(pendingNotifications);		
