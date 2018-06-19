@@ -409,11 +409,13 @@ public class SapGatewayConverter {
 			chargeLineData.setDiscount(buildDiscountData(erpChargeLine.getDiscount()));
 			chargeLineData.setId(erpChargeLine.getId());
 			chargeLineData.setReasonCode(erpChargeLine.getReasonCode());
-			if(erpChargeLine.getTaxationType() != null)
-			chargeLineData.setTaxationType(erpChargeLine.getTaxationType().getName());
+			if(erpChargeLine.getTaxationType() != null){
+				chargeLineData.setTaxationType(erpChargeLine.getTaxationType().getName());
+			}
 			chargeLineData.setTaxRate(erpChargeLine.getTaxRate());
-			if(erpChargeLine.getTaxationType() != null)
-			chargeLineData.setType(erpChargeLine.getType().getName());
+			if(erpChargeLine.getType() != null){
+				chargeLineData.setType(erpChargeLine.getType().getName());
+			}
 			erpChargeLineDataList.add(chargeLineData);
 		}
 		return erpChargeLineDataList;
@@ -541,8 +543,9 @@ public class SapGatewayConverter {
 		if(discount != null){
 			 discountData = new DiscountData();
 			discountData.setAmount(discount.getAmount());
-			if(discount.getDiscountType() != null)
-			discountData.setDiscountType(String.valueOf(discount.getDiscountType().getId()));
+			if(discount.getDiscountType() != null){
+				discountData.setDiscountType(String.valueOf(discount.getDiscountType().getId()));
+			}
 			discountData.setPromotionCode(discount.getPromotionCode());
 			discountData.setMaxPercentageDiscount(discount.getMaxPercentageDiscount());
 			discountData.setPromotionDescription(discount.getPromotionDescription());
