@@ -28,20 +28,25 @@
 				{if length($pendingItems) > 1}
 					/* multi item, no details */
 					<div class="itemlist-item-multi">Add {length($pendingItems)} Items to Order? </div>
-				{else}
-					/* only single item, but leaving loop for now */
-					<ul class="col">
-						{foreach $pendingItem in $pendingItems}
-							{call common.simpleItem}
-								{param item:$pendingItem /}
-								{param type:'simpleBRD'/}
-								{param headertext: (index($pendingItem) == 0) ? 'Add Item to Order' : '' /}
-							{/call}
-							{if length($pendingItems) > 1 and index($pendingItem) == ceiling(length($pendingItems)/2)-1}
-								</ul><ul class="col">
-							{/if}
-						{/foreach}
-					</ul>
+
+					<div style="display: none;">/* hide display, but still do it, it's required for ATC */
+				{/if}
+
+				<ul class="col">
+					{foreach $pendingItem in $pendingItems}
+						{call common.simpleItem}
+							{param item:$pendingItem /}
+							{param type:'simpleBRD'/}
+							{param headertext: (index($pendingItem) == 0) ? 'Add Item to Order' : '' /}
+						{/call}
+						{if length($pendingItems) > 1 and index($pendingItem) == ceiling(length($pendingItems)/2)-1}
+							</ul><ul class="col">
+						{/if}
+					{/foreach}
+				</ul>
+				
+				{if length($pendingItems) > 1}
+					</div>
 				{/if}
 			</div>
 
