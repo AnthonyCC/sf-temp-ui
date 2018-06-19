@@ -199,7 +199,7 @@ public class CustomerGiftCardService extends AbstractEcommService implements Cus
 			String inputJson = buildRequest(request);
 
 			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(GET_OUTSTANDING_BALANCE),
-					new TypeReference<Response<List<ErpGiftCardModel>>>() {
+					new TypeReference<Response<Double>>() {
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
