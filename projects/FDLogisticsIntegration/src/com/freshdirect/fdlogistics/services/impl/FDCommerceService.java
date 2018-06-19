@@ -491,6 +491,8 @@ public BatchModel getBatch(int versionID) throws FDResourceException{
 			
 //			Response<FDReservationData> response =	httpGetDataTypeMap(inputJson,getFdCommerceEndPoint(DLV_MANAGER_RESERVE_TIME), );
 			FDReservationData data = response.getData();
+			if(data==null)
+				throw new FDResourceException("Technical issue, please try again");
 			DlvManagerDecoder.setMapper(getMapper());
 			fdReservation = DlvManagerDecoder.converter(data);
 			
