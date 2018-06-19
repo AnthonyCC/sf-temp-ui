@@ -3521,3 +3521,8 @@ section.main .leftnav .menuBox label input:focus + span > span{
 	z-index: 2000;
 	background-color: #fff;
 }
+/* bug fix for the overlapping content in browse, search and reorder pages */
+
+div#quickshop,.container.browse section.main,section.container.srch section.main{
+	min-width:970px;
+}
