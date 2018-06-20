@@ -2,7 +2,6 @@ package com.freshdirect.fdstore.ecomm.gateway;
 
 import java.rmi.RemoteException;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -13,21 +12,14 @@ import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpComplaintReason;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpRedeliveryModel;
-import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpTransactionException;
-import com.freshdirect.customer.VSReasonCodes;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.content.meal.MealModel;
-import com.freshdirect.fdstore.customer.FDCustomerOrderInfo;
-import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.framework.util.GenericSearchCriteria;
 
 public interface CallCenterManagerServiceI {
 
 	public Map<String, List<ErpComplaintReason>> getComplaintReasons(boolean excludeCartonReq)
 			throws FDResourceException, RemoteException;
-
-	public Map<String, String> getComplaintCodes() throws FDResourceException, RemoteException;
 
 	public void rejectMakegoodComplaint(String makegood_sale_id) throws FDResourceException, RemoteException;
 

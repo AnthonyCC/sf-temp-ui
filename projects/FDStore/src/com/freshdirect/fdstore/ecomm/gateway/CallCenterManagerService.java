@@ -11,28 +11,22 @@ import org.apache.log4j.Category;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.freshdirect.crm.CallLogModel;
-import com.freshdirect.crm.CrmVSCampaignModel;
 import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.EnumPaymentResponse;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpComplaintReason;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpRedeliveryModel;
-import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpTransactionException;
-import com.freshdirect.customer.VSReasonCodes;
 import com.freshdirect.ecomm.converter.CustomerRatingConverter;
 import com.freshdirect.ecomm.gateway.AbstractEcommService;
 import com.freshdirect.ecomm.gateway.ErpComplaintManagerService;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
-import com.freshdirect.ecommerce.data.customer.CrmVSCampaignData;
 import com.freshdirect.ecommerce.data.customer.CustomerRatingAdapterData;
 import com.freshdirect.ecommerce.data.customer.ErpRedeliveryData;
 import com.freshdirect.ecommerce.data.customer.FDCustomerOrderInfoData;
 import com.freshdirect.ecommerce.data.customer.FDCustomerReservationInfoData;
-import com.freshdirect.ecommerce.data.customer.FDCutoffTimeInfoData;
-import com.freshdirect.ecommerce.data.customer.MealData;
 import com.freshdirect.ecommerce.data.customer.ResubmitPaymentData;
 import com.freshdirect.ecommerce.data.delivery.AlcoholRestrictionData;
 import com.freshdirect.ecommerce.data.delivery.RestrictedAddressModelData;
@@ -40,12 +34,7 @@ import com.freshdirect.ecommerce.data.delivery.RestrictionData;
 import com.freshdirect.fdstore.FDEcommServiceException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
-import com.freshdirect.fdstore.content.meal.MealModel;
-import com.freshdirect.fdstore.customer.CustomerCreditModel;
 import com.freshdirect.fdstore.customer.FDBrokenAccountInfo;
-import com.freshdirect.fdstore.customer.FDCustomerOrderInfo;
-import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.customer.LateDlvReportLine;
 import com.freshdirect.fdstore.ecomm.converter.CallCenterConverter;
 import com.freshdirect.framework.util.EnumSearchType;
 import com.freshdirect.framework.util.GenericSearchCriteria;
@@ -85,13 +74,6 @@ private static final String DO_GENERIC_SEARCH = "callcenter/genericSearch/search
 			RemoteException {
 		return ErpComplaintManagerService.getInstance().getReasons(excludeCartonReq);
 	}
-
-
-	@Override
-	public Map<String, String> getComplaintCodes() throws FDResourceException,RemoteException {
-		return ErpComplaintManagerService.getInstance().getComplaintCodes();
-	}
-
 
 	@Override
 	public void rejectMakegoodComplaint(String makegood_sale_id)throws FDResourceException, RemoteException {

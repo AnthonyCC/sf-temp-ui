@@ -50,9 +50,10 @@ public interface CallCenterManagerSB extends EJBObject {
 	 */
 	public Map<String, List<ErpComplaintReason>> getComplaintReasons(boolean excludeCartonReq) throws FDResourceException, RemoteException;
 	/**
-	 *@deprecated This method is moved to Storefront2.0 project.
-	 * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+	 *@deprecated This method is moved to backoffice project.
+	 * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
 	 */
+	@Deprecated
 	public Map<String,String> getComplaintCodes() throws FDResourceException, RemoteException;
 	/**
 	 *@deprecated This method is moved to Storefront2.0 project.
