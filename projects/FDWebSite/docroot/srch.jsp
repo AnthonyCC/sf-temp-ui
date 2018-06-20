@@ -289,15 +289,6 @@
 						    if (!mobWeb) {
 						%>
 						<div class="srch-carousel"></div>
-						<script>
-                        $jq(document).ready(function() {
-                            if ($jq('#searchPanel .srch-carousel').length > 0) {
-                                $jq.ajax('/api/carousel?type=search&productId=${browsePotato.sections.sections[0].products[0].productId}').then(function(data) {
-                                    $jq('#searchPanel .srch-carousel').html(srch.carouselWrapper(data.carousels));
-                                });
-                            }
-                        });
-                        </script>
 
 						<div class="browse-sections-bottom transactional">
 							<soy:render template="srch.bottomContent"
@@ -355,18 +346,7 @@
 	<tmpl:put name='bottom' direct='true'>
 		<c:choose>
 			<c:when test="${browsePotato.searchParams.pageType == 'PRES_PICKS'}">
-				<div class="srch-carousel pres-picks-carousel">
-					<script>
-                   $jq(document).ready(function() {
-                       if ($jq('.pres-picks-carousel').length > 0) {
-                           $jq.ajax('/api/carousel?type=pres-picks').then(function(data) {
-                               $jq('.pres-picks-carousel').html(srch.carouselWrapper(data.carousels));
-                           });
-                       }
-                   });
-               </script>
-
-				</div>
+				<div class="srch-carousel pres-picks-carousel"/>
 			</c:when>
 			<c:when
 				test="${browsePotato.searchParams.pageType != 'SEARCH'}">
