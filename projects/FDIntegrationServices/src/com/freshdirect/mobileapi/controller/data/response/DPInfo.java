@@ -33,6 +33,7 @@ public class DPInfo extends Message {
 //	private int autoRenewUsablePassCount;
 //	private double autoRenewPrice;
 	private String defaultPaymentMethodPK;
+	private Boolean isMidweekPass;
 	
 	public String getDeliveryPassStatus() {
 		return deliveryPassStatus;
@@ -155,5 +156,11 @@ public class DPInfo extends Message {
 	}
 	public void setAutoRenewalDate(String autoRenewalDate) {
 		this.autoRenewalDate = autoRenewalDate;
+	}
+	public Boolean getIsMidweekPass() {
+		return isMidweekPass;
+	}
+	public void setIsMidweekPass(Boolean isMidweekPass) {
+		this.isMidweekPass = isMidweekPass;
 	}
 }

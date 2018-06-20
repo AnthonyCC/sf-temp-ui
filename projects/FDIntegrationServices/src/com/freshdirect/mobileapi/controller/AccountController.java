@@ -306,6 +306,7 @@ public class AccountController extends BaseController implements Comparator <Ord
 	    	responseMessage.setdPSavings(dpmodel.getDPSavings());
 	    	responseMessage.setDefaultPaymentMethodPK(user.getFDSessionUser()!=null&&user.getFDSessionUser().getFDCustomer()!=null?
 	    												user.getFDSessionUser().getFDCustomer().getDefaultPaymentMethodPK():null);
+	    	responseMessage.setIsMidweekPass(user.getFDSessionUser().hasMidWeekDlvPass());
 	        setResponseMessage(model, responseMessage, user);
     	}else
     	{
