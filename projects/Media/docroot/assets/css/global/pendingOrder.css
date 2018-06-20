@@ -1,14 +1,10 @@
 #pendingOrderBarWrapper {
-	height: 60px; /* same as margin-top */
+	height: 50px; /* same as margin-top */
 	overflow: hidden;
 	box-sizing: border-box;
 }
 #pendingOrderBarWrapper.sticky-fixed-wrapper + #toptoolbar {
-	margin-top: 60px; /* same as height */
-}
-[data-ismobweb="true"] #pendingOrderBarWrapper {
-	height: 50px; /* same as margin-top */
-	overflow: hidden;
+	margin-top: 50px; /* same as height */
 }
 [data-ismobweb="true"] #pendingOrderBarWrapper.sticky-fixed-wrapper + .mobweb-topnav {
 	margin-top: 50px; /* same as height */

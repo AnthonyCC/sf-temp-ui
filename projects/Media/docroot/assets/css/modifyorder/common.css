@@ -29,7 +29,8 @@
 }
 .modify-order-bar {
 	color: #ffffff;
-    background-color: #f68139;
+	background-color: #f68139;
+	height: 50px;
 }
 .modify-order-bar .cssbutton.cancel-changes-link {
 	font-weight: bold;
@@ -37,11 +38,14 @@
 }
 .modify-order-bar .cssbutton.cancel-changes-link {
 	border: 1px solid #fff;
+	font-size: 14px;
 }
 .modify-order-bar .cssbutton.save-changes-btn {
-	border: solid 1px #e45e0b;
+	border: solid 1px #fff;
 	color: #e45e0b;
 	text-shadow: none;
+	font-size: 14px;
+	margin-left: 5px;
 }
 #location-modify-order-message .location-modify-order-btn-cont {
 	padding-left: 30px;
@@ -52,7 +56,7 @@
 
 #location-modify-order-message {
     line-height: 46px;
-    font-size: 18px;
+    font-size: 16px;
     border-bottom: solid 1px #dddddd;
     text-shadow: 1px 1px 0 #c85c19;
     top: -3px;
@@ -72,7 +76,7 @@
 
 #locationbar-sticky-wrapper .locabar-right-sections {
 	position: fixed;
-	top: 1px;
+	top: 5px;
 	height: 42px;
 }
 #location-modify-order-message ~ .locabar-right-sections #locabar_messages_trigger {
@@ -123,7 +127,7 @@
 	margin: 0 13px;
 }
 [data-ismobweb="true"]  #location-modify-order-bar {
-	font-size: 16px;
+	font-size: 14px;
 	line-height: 16px;
 }
 [data-ismobweb="true"]  .location-modify-order-message {
@@ -136,7 +140,7 @@
 	line-height: 30px;
 }
 [data-ismobweb="true"]  #location-modify-order-bar {
-	padding: 7px 0;
+	padding: 17px 0 0 0;
 }
 #locationbar-sticky-wrapper #locabar_user_trigger > a,
 #locationbar-sticky-wrapper #locabar_user_trigger > a:active,

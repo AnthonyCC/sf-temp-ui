@@ -103,10 +103,10 @@ attribute name="modifyOrderAlert" required="false" rtexprvalue="true" type="java
 						<% if (validPendingOrders.size() == 1) { %>
 							<span class="pendingOrderBar-label">Your Delivery</span>
 							<span class="pendingOrderBar-value"><%= (isMobWeb) ? "<a href=\"/your_account/order_details.jsp?orderId="+ orderId +"\" class=\"\">" : "" %><span class="pendingOrderBar-value-dow"><%= orderDOW %></span><span class="pendingOrderBar-value-time"><%= orderTime %></span><%= (isMobWeb) ? "</a>" : "" %></span>
-							<a href="/your_account/order_details.jsp?orderId=<%= orderId %>" class="cssbutton transparent whiteborder pendingOrderBar-seedetails-btn NOMOBWEB">See Details<span class="offscreen"> of order number <%= orderName %></span></a>
-							<a href="/your_account/modify_order.jsp?orderId=<%= orderId %>&action=modify" class="cssbutton orange pendingOrderBar-modifyorder-btn">Modify<span class="NOMOBWEB"> Order</span></a>
+							<a href="/your_account/order_details.jsp?orderId=<%= orderId %>" class="cssbutton transparent whiteborder small pendingOrderBar-seedetails-btn NOMOBWEB">See Details<span class="offscreen"> of order number <%= orderName %></span></a>
+							<a href="/your_account/modify_order.jsp?orderId=<%= orderId %>&action=modify" class="cssbutton orange small pendingOrderBar-modifyorder-btn">Modify<span class="NOMOBWEB"> Order</span></a>
 						<% } else { %>
-							<span class="pendingOrderBar-label">Your Deliveries</span><span class="pendingOrderBar-value"><%= validPendingOrders.size() %> Upcoming Orders</span><button class="cssbutton orange pendingOrderBar-viewall-btn">View All</button>
+							<span class="pendingOrderBar-label">Your Deliveries</span><span class="pendingOrderBar-value"><%= validPendingOrders.size() %> Upcoming Orders</span><button class="cssbutton orange small pendingOrderBar-viewall-btn">View All</button>
 						<% } %>
 					</div>
 				</div>
