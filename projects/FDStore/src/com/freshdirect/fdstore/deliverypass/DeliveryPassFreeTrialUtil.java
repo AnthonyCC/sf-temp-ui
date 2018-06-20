@@ -42,6 +42,7 @@ import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDProduct;
@@ -159,7 +160,7 @@ public class DeliveryPassFreeTrialUtil {
 			return null;
 		}
 	}
-	public static String placeDpSubscriptionOrder(String erpCustomerID, String arSKU) throws FDResourceException {
+	public static String placeDpSubscriptionOrder(String erpCustomerID, String arSKU, EnumEStoreId estore) throws FDResourceException {
 
 		FDIdentity identity=null;
 		FDActionInfo actionInfo=null;
@@ -167,7 +168,7 @@ public class DeliveryPassFreeTrialUtil {
 		FDOrderI lastOrder=null;
 		FDUser user=null;
 		CustomerRatingAdaptor cra=null;
-		lastOrder=getLastNonCOSOrder(erpCustomerID);
+		lastOrder=getLastNonCOSOrder(erpCustomerID, estore);
 		String orderID="";
 		ErpAddressModel address = null;		
 		try {
@@ -372,10 +373,10 @@ public class DeliveryPassFreeTrialUtil {
 		return zInfo;
 	}
 	
-	private static FDOrderI getLastNonCOSOrder(String erpCustomerID) throws FDResourceException {
+	private static FDOrderI getLastNonCOSOrder(String erpCustomerID, EnumEStoreId estore) throws FDResourceException {
 
 		try {
-			return FDCustomerManager.getLastNonCOSOrder(erpCustomerID, EnumSaleType.REGULAR);
+			return FDCustomerManager.getLastNonCOSOrder(erpCustomerID, EnumSaleType.REGULAR, estore);
 		} catch (FDResourceException e) {
 			LOGGER.warn("Unable to find payment method for deliveryPass order for customer :"+erpCustomerID);
 			StringWriter sw = new StringWriter();
