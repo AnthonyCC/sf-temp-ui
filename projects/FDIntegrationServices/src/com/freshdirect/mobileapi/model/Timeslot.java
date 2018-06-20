@@ -37,7 +37,6 @@ public class Timeslot {
         Timeslot newInstance = new Timeslot();
         newInstance.slot = slot;
         if(CmsManager.getInstance().getEStoreEnum().equals(EnumEStoreId.FDX) && user.getFDSessionUser().isDlvPassActive()){
-        	newInstance.setDeliveryFee(0);
         	newInstance.setPromoDeliveryFee(0);
         }
         newInstance.chefTableUser = chefTableUser;
