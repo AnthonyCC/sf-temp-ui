@@ -37,13 +37,13 @@ public enum PageType {
     RECIPE_CATEGORY("/recipe_cat.jsp"),
     RECIPE_SUBCATEGORY("/recipe_subcat.jsp"),
     RECIPE_PAGE("/recipe.jsp"),
-    ABOUT_US("/browse_special.jsp?id=about_overview","/browse.jsp?id=about_ebt"),
+    ABOUT_US("/browse_special.jsp?id=about_overview","/browse_special.jsp?id=about_ebt"),
     SALE("/browse.jsp?id=wgd_deals"),
     TOP_RATED("/browse.jsp?id=top_rated"),
     LOCAL("/browse.jsp?id=local"),
     JULY_4(""),
-    DELIVERYPASS("/freetrial.jsp","/browse.jsp?id=gro_gear_dlvpass"),
-    WGD("/browse.jsp?id=wgd_summer_central","/browse.jsp?id=wgd_summer_central_nc"),
+    DELIVERYPASS("/freetrial.jsp","/browse_special.jsp?id=gro_gear_dlvpass"),
+    WGD("/browse_special.jsp?id=wgd_summer_central","/browse_special.jsp?id=wgd_summer_central_nc"),
     EXPRESS_SEARCH("/expresssearch.jsp"),
     NOT_RECOGNIZED("");
 
