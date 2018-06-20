@@ -1737,7 +1737,25 @@ public class FDCustomerManager {
 			createOrder.setTransactionInitiator(info.getAgent() == null ? null : info.getAgent().getUserId());
 
 			FDCustomerManagerSB sb = managerHome.create();
-			String orderId =
+			
+			String orderId;
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("placeGiftCardOrder_Api")){
+	    		OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
+	    		orderId =  service.placeOrder(
+						info,
+						createOrder,
+						appliedPromos,
+						cart.getDeliveryReservation().getPK().getId(),
+						sendEmail,
+						cra,
+						info.getAgent() == null ? null : info.getAgent().getRole(),
+						status,
+						isFriendReferred,
+						fdcOrderCount
+					);
+	    	}else{
+
+			orderId =
 				sb.placeOrder(
 					info,
 					createOrder,
@@ -1750,6 +1768,7 @@ public class FDCustomerManager {
 					isFriendReferred,
 					fdcOrderCount
 				);
+	    	}
 
 			LOGGER.info(">>> Reservation "+cart.getDeliveryReservation().getPK().getId()+" "+" Order "+ orderId);
 
@@ -3944,11 +3963,21 @@ public class FDCustomerManager {
 			createOrder.setCharges(new ArrayList<ErpChargeLineModel>());
 			FDCustomerManagerSB sb = managerHome.create();
 
+			
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("placeDonationOrder_Api")){
+	    		OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
+	    		orderId =  service.placeDonationOrder(info, createOrder,
+						appliedPromos, cart.getDeliveryReservation().getPK()
+						.getId(), sendEmail, cra,
+				info.getAgent() == null ? null : info.getAgent().getRole(),
+				status, isOptIn);
+			}else{
 			orderId = sb.placeDonationOrder(info, createOrder,
 					appliedPromos, cart.getDeliveryReservation().getPK()
 							.getId(), sendEmail, cra,
 					info.getAgent() == null ? null : info.getAgent().getRole(),
 					status, isOptIn);
+			}
 			// sb.authorizeSale(info.getIdentity().getErpCustomerPK().toString(),
 			// orderId, EnumSaleType.GIFTCARD, cra);
 
@@ -5549,6 +5578,6 @@ public class FDCustomerManager {
 				LOGGER.error("Error at delivery pass free trial in fdcustomer "+ e);
 				invalidateManagerHome();
 				throw new FDResourceException(e, "Error creating session bean");
-			}
+}
 		}
 }
