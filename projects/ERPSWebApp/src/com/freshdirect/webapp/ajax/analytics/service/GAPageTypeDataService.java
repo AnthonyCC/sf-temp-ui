@@ -87,7 +87,7 @@ public class GAPageTypeDataService {
     }
 
     private String getSearchUrl(String pageType) {
-        String gaParameter = "";
+        String gaParameter = "?pageType=search";
         if (pageType != null) {
             gaParameter = "?pageType=" + pageType;
         }
