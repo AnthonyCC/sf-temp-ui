@@ -1943,4 +1943,10 @@ public class FDOrderAdapter implements FDOrderI {
 		}
 		return isWaivedByDlvPass;
 	}
+
+	@Override
+	public int getDeliveryPassCount() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

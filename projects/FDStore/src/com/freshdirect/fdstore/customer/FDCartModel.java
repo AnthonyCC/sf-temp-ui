@@ -22,6 +22,8 @@ import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.context.UserContext;
+import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.common.customer.EnumWebServiceType;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.common.pricing.EnumTaxationType;
@@ -32,6 +34,7 @@ import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.common.pricing.util.GroupScaleUtil;
 import com.freshdirect.customer.EnumChargeType;
+import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumNotificationType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
@@ -316,8 +319,6 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	}*/
 
 	public boolean isDlvPassApplied() {
-		if(EnumEStoreId.FDX.equals(getEStoreId()))
-			return false;
 		return dlvPassApplied;
 	}
 
@@ -1671,9 +1672,6 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	}
 
 	public void handleDeliveryPass() {
-		if(EnumEStoreId.FDX.equals(getEStoreId()))
-			return;
-
 		setDeliveryPassCount();
 		if (this.getChargeAmount(EnumChargeType.DELIVERY) == 0.0) {
 			//If there is no applicable delivery charge then return;
@@ -1750,8 +1748,6 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	}
 
 	public boolean containsUnlimitedPass(){
-		if(EnumEStoreId.FDX.equals(getEStoreId()))
-			return false;
 		boolean contains = false;
 		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
 			FDCartLineI line = i.next();
@@ -2323,4 +2319,49 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		return isWaivedByDlvPass;
 	}
 	
+
+    public EnumDeliveryType getDeliveryType(){
+        EnumDeliveryType deliveryType = null;
+        if (this.getDeliveryAddress()  instanceof ErpDepotAddressModel) {
+            ErpDepotAddressModel depotAddress = (ErpDepotAddressModel)this.getDeliveryAddress();
+//          deliveryInfo.setDepotLocationId(depotAddress.getLocationId());
+            if (depotAddress.isPickup()) {
+                deliveryType = EnumDeliveryType.PICKUP;
+            }else{
+                deliveryType = EnumDeliveryType.DEPOT;
+            }
+        } else {
+            ErpAddressModel address = this.getDeliveryAddress();
+            if (address != null) {
+                
+                if (EnumServiceType.WEB.equals(address.getServiceType())) {
+                    EnumWebServiceType webServiceType = address
+                            .getWebServiceType();
+                    deliveryType = EnumDeliveryType.getDeliveryType(webServiceType.getName());
+                } else { 
+    
+                    if (EnumEStoreId.FDX.equals(this.getEStoreId())) {
+                        deliveryType = EnumDeliveryType.FDX;
+                    } else if (EnumServiceType.CORPORATE.equals(address
+                            .getServiceType())) {
+                        deliveryType = EnumDeliveryType.CORPORATE;
+                        
+                    } else {
+                        if (EnumServiceType.WEB
+                                .equals(address.getServiceType())) {
+                            EnumWebServiceType webServiceType = address
+                                    .getWebServiceType();
+                            deliveryType = EnumDeliveryType.getDeliveryType(webServiceType.getName());
+                        } else if (EnumServiceType.CORPORATE.equals(address
+                                .getServiceType())) {
+                            deliveryType = EnumDeliveryType.CORPORATE;
+                        } else {
+                            deliveryType = EnumDeliveryType.HOME;
+                        }
+                    }
+                }
+            }
+        }
+        return deliveryType;
+    }
 }

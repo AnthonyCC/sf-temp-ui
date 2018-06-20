@@ -332,8 +332,8 @@ public class FDCustomerManager {
 		//The method was changed as part of task PERF-22.
 		return recognize(identity, null, null,null);
 	}
-	public static FDUser recognize(FDIdentity identity, boolean updateUserState ) throws FDAuthenticationException, FDResourceException {
-		return recognize(identity, null, null,null, updateUserState, true);
+	public static FDUser recognize(FDIdentity identity, boolean updateUserState, EnumEStoreId eStoreId ) throws FDAuthenticationException, FDResourceException {
+		return recognize(identity, null, eStoreId,null, updateUserState, true);
 	}
 
 	public static FDUser recognize(FDIdentity identity, MasqueradeContext ctx) throws FDAuthenticationException, FDResourceException {
@@ -2863,7 +2863,7 @@ public class FDCustomerManager {
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
 			FDIdentity identity = user.getIdentity();
-			List<DeliveryPassModel> dlvPasses = sb.getDeliveryPasses(identity);
+			List<DeliveryPassModel> dlvPasses = sb.getDeliveryPasses(identity, user.getUserContext().getStoreContext().getEStoreId());
 			if(dlvPasses == null || ((dlvPasses!=null) && dlvPasses.size() == 0)){
 				//Return Empty map.
 				return dlvPassesInfo;
@@ -2931,7 +2931,7 @@ public class FDCustomerManager {
 		lookupManagerHome();
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
-			return sb.getDeliveryPassInfo(user);
+			return sb.getDeliveryPassInfo(user, user.getUserContext().getStoreContext().getEStoreId());
 		} catch (CreateException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
@@ -3121,12 +3121,12 @@ public class FDCustomerManager {
 		}
 	}
 
-	public static FDOrderI getLastNonCOSOrder(String customerID, EnumSaleType saleType, EnumSaleStatus saleStatus) throws FDResourceException,ErpSaleNotFoundException {
+	public static FDOrderI getLastNonCOSOrder(String customerID, EnumSaleType saleType, EnumSaleStatus saleStatus, EnumEStoreId eStore) throws FDResourceException,ErpSaleNotFoundException {
 		lookupManagerHome();
 		FDCustomerManagerSB sb=null;
 		try {
 			sb = managerHome.create();
-			FDOrderI order = sb.getLastNonCOSOrder( customerID, saleType, saleStatus );
+			FDOrderI order = sb.getLastNonCOSOrder( customerID, saleType, saleStatus, eStore );
 			return order;
 		} catch ( CreateException ce ) {
 			invalidateManagerHome();
@@ -3138,12 +3138,12 @@ public class FDCustomerManager {
 	}
 	
 	
-	public static FDOrderI getLastNonCOSOrder(String customerID, EnumSaleType saleType) throws FDResourceException,ErpSaleNotFoundException {
+	public static FDOrderI getLastNonCOSOrder(String customerID, EnumSaleType saleType, EnumEStoreId eStore) throws FDResourceException,ErpSaleNotFoundException {
 		lookupManagerHome();
 		FDCustomerManagerSB sb=null;
 		try {
 			sb = managerHome.create();
-			FDOrderI order = sb.getLastNonCOSOrder( customerID, saleType );
+			FDOrderI order = sb.getLastNonCOSOrder( customerID, saleType, eStore );
 			return order;
 		} catch ( CreateException ce ) {
 			invalidateManagerHome();
@@ -3358,12 +3358,12 @@ public class FDCustomerManager {
 	}
 
 
-	public static Object[] getAutoRenewalInfo() throws FDResourceException {
+	public static Object[] getAutoRenewalInfo(EnumEStoreId eStore) throws FDResourceException {
 		Object[] autoRenewInfo = null;
 		lookupManagerHome();
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
-			autoRenewInfo = sb.getAutoRenewalInfo();
+			autoRenewInfo = sb.getAutoRenewalInfo(eStore);
 			return autoRenewInfo;
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -5522,5 +5522,21 @@ public class FDCustomerManager {
 				LOGGER.debug("RemoteException: ", re);
 				throw new FDResourceException(re, "Error talking to session bean");
 }
+		}
+		
+		public static void updateDpOptinDetails(boolean isAutoRenewDp, String custId, String dpType, FDActionInfo info, EnumEStoreId eStore) throws FDResourceException{
+			lookupManagerHome();
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				sb.updateDpOptinDetails(isAutoRenewDp, custId, dpType, info, eStore);
+			}catch (RemoteException e) {
+				LOGGER.error("Error at delivery pass free trial in fdcustomer "+ e);
+				invalidateManagerHome();
+				throw new FDResourceException(e, "Error creating session bean");
+			} catch (CreateException e) {
+				LOGGER.error("Error at delivery pass free trial in fdcustomer "+ e);
+				invalidateManagerHome();
+				throw new FDResourceException(e, "Error creating session bean");
+			}
 		}
 }

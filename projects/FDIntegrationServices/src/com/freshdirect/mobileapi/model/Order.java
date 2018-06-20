@@ -90,7 +90,7 @@ public class Order {
         return tagWrapper.cancelOrder(orderId);
     }
 
-    public com.freshdirect.mobileapi.controller.data.response.Order getOrderDetail(SessionUser user) throws FDException {
+    public com.freshdirect.mobileapi.controller.data.response.Order getOrderDetail(SessionUser user, boolean dlvPassCart) throws FDException {
         /*
          * DUP: FDWebSite/docroot/your_account/order_details.jsp
          * DUP: FDWebSite/docroot/your_account/i_order_detail_delivery_payment.jspf

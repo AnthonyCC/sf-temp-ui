@@ -2849,9 +2849,9 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		/**
 		 * Get a specific sale.
 		 */
-		public ErpSaleModel getLastNonCOSOrder(String customerID,	EnumSaleType saleType, EnumSaleStatus saleStatus, List<EnumPaymentMethodType> pymtMethodTypes) throws ErpSaleNotFoundException {
+		public ErpSaleModel getLastNonCOSOrder(String customerID,	EnumSaleType saleType, EnumSaleStatus saleStatus, List<EnumPaymentMethodType> pymtMethodTypes, EnumEStoreId eStore ) throws ErpSaleNotFoundException {
 			try {
-				ErpSaleEB saleEB = getErpSaleHome().findByCriteria(customerID,saleType, saleStatus,pymtMethodTypes);
+				ErpSaleEB saleEB = getErpSaleHome().findByCriteria(customerID,saleType, saleStatus,pymtMethodTypes, eStore);
 
 				return (ErpSaleModel) saleEB.getModel();
 
@@ -2864,9 +2864,9 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 		
-		public ErpSaleModel getLastNonCOSOrder(String customerID,	EnumSaleType saleType, List<EnumPaymentMethodType> pymtMethodTypes) throws ErpSaleNotFoundException {
+		public ErpSaleModel getLastNonCOSOrder(String customerID,	EnumSaleType saleType, List<EnumPaymentMethodType> pymtMethodTypes, EnumEStoreId eStore) throws ErpSaleNotFoundException {
 			try {
-				ErpSaleEB saleEB = getErpSaleHome().findByCriteria(customerID,saleType,pymtMethodTypes);
+				ErpSaleEB saleEB = getErpSaleHome().findByCriteria(customerID,saleType,pymtMethodTypes, eStore);
 
 				return (ErpSaleModel) saleEB.getModel();
 

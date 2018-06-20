@@ -103,7 +103,7 @@ public class FDCustomerEStorePersistentBean extends DependentPersistentBeanSuppo
 		ResultSet rs = null;
 		try {
 			ps = conn.prepareStatement(
-					"SELECT DEFAULT_SHIPTO, DEFAULT_PAYMENT, DEFAULT_DEPOT_LOC,TC_AGREE,EMAIL_OPTIN,RAF_CLICK_ID,RAF_PROMO_CODE,DP_FREE_TRIAL_OPTIN,INFORM_ORDERMODIFY FROM CUST.FDCUSTOMER_ESTORE WHERE FDCUSTOMER_ID=? AND E_STORE=?");
+					"SELECT DEFAULT_SHIPTO, DEFAULT_PAYMENT, DEFAULT_DEPOT_LOC,TC_AGREE,EMAIL_OPTIN,RAF_CLICK_ID,RAF_PROMO_CODE,DP_FREE_TRIAL_OPTIN,INFORM_ORDERMODIFY, AUTORENEW_DP_TYPE , HAS_AUTORENEW_DP  FROM CUST.FDCUSTOMER_ESTORE WHERE FDCUSTOMER_ID=? AND E_STORE=?");
 			ps.setString(1, this.getParentPK().getId());
 			ps.setString(2, eStoreId.getContentId());
 			rs = ps.executeQuery();
@@ -119,6 +119,8 @@ public class FDCustomerEStorePersistentBean extends DependentPersistentBeanSuppo
 				model.setRafPromoCode(rs.getString("RAF_PROMO_CODE"));
 				model.setDpFreeTrialOptin("Y".equalsIgnoreCase(rs.getString("DP_FREE_TRIAL_OPTIN")) ? true : false);
 				model.setInformOrderModifyViewCount(eStoreId, rs.getInt("INFORM_ORDERMODIFY"));
+				model.setAutoRenewDpType(rs.getString("AUTORENEW_DP_TYPE"));
+				model.setHasAutoRenewDP(rs.getString("HAS_AUTORENEW_DP"));
 				
 				if (EnumEStoreId.FDX.equals(eStoreId)) {
 					model.setFdxEmailOptIn("X".equalsIgnoreCase(rs.getString("EMAIL_OPTIN")) ? true : false);

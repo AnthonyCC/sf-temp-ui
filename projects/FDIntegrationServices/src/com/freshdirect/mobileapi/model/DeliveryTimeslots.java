@@ -97,11 +97,11 @@ public class DeliveryTimeslots {
             return isUserChefTable;
         }
 
-        public Timeslot findTimeslotById(String timeslotId) {
+        public Timeslot findTimeslotById(String timeslotId,  SessionUser user) {
             Timeslot timeslot = null;
             if (timeslotId != null) {
                 for (TimeslotList timeslotList : this.timeslotList) {
-                    timeslot = timeslotList.findTimeslotById(timeslotId, this.isUserChefTable);
+                    timeslot = timeslotList.findTimeslotById(timeslotId, this.isUserChefTable, user);
                     if (timeslot != null) {
                         break;
                     }

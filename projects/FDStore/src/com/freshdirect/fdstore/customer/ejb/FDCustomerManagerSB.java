@@ -595,7 +595,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
 
 	public List<URLRewriteRule> loadRewriteRules() throws FDResourceException, RemoteException;
 
-	public List<DeliveryPassModel> getDeliveryPasses(FDIdentity identity) throws RemoteException;
+	public List<DeliveryPassModel> getDeliveryPasses(FDIdentity identity, EnumEStoreId estore) throws RemoteException;
 
 	public Map<String, DlvPassUsageInfo> getDlvPassesUsageInfo(FDIdentity identity) throws RemoteException;
 
@@ -603,7 +603,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
 
 	public ErpOrderHistory getOrdersByDlvPassId(FDIdentity identity, String dlvPassId) throws RemoteException;
 
-	public FDUserDlvPassInfo getDeliveryPassInfo(FDUserI user) throws FDResourceException, RemoteException;
+	public FDUserDlvPassInfo getDeliveryPassInfo(FDUserI user, EnumEStoreId estore) throws FDResourceException, RemoteException;
 
 	public List<DlvPassUsageLine> getRecentOrdersByDlvPassId(FDIdentity identity, String dlvPassId, int noOfDaysOld) throws FDResourceException, RemoteException;
 
@@ -621,9 +621,9 @@ public interface FDCustomerManagerSB  extends EJBObject{
 
 	public void setHasAutoRenewDP(String customerPK, EnumTransactionSource source, String initiator,boolean autoRenew)throws FDResourceException, RemoteException;
 
-	public FDOrderI getLastNonCOSOrder(String customerID,EnumSaleType saleType, EnumSaleStatus saleStatus) throws FDResourceException, RemoteException,ErpSaleNotFoundException;
+	public FDOrderI getLastNonCOSOrder(String customerID,EnumSaleType saleType, EnumSaleStatus saleStatus, EnumEStoreId eStore) throws FDResourceException, RemoteException,ErpSaleNotFoundException;
 	
-	public FDOrderI getLastNonCOSOrder(String customerID,EnumSaleType saleType) throws FDResourceException, RemoteException,ErpSaleNotFoundException;
+	public FDOrderI getLastNonCOSOrder(String customerID,EnumSaleType saleType, EnumEStoreId eStore) throws FDResourceException, RemoteException,ErpSaleNotFoundException;
 
 	/**
      * Place an order (send msg to SAP, persist order).
@@ -665,7 +665,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
           RemoteException;
 
 	public void authorizeSale(String erpCustomerID, String saleID, EnumSaleType type,CustomerRatingI cra) throws FDResourceException, ErpSaleNotFoundException, RemoteException;
-	public  Object[] getAutoRenewalInfo()throws FDResourceException, RemoteException;
+	public  Object[] getAutoRenewalInfo(EnumEStoreId eStore)throws FDResourceException, RemoteException;
 
 	public boolean isOrderBelongsToUser(FDIdentity identity, String saleId) throws RemoteException, FDResourceException;
 	/**
@@ -986,5 +986,6 @@ public interface FDCustomerManagerSB  extends EJBObject{
 	
 	public ShortSubstituteResponse getShortSubstituteOrders(List<String> orderList) throws FDResourceException, RemoteException;
 	
+	public void updateDpOptinDetails(boolean isAutoRenewDp, String custId, String dpType, FDActionInfo info, EnumEStoreId eStore) throws FDResourceException,RemoteException;
 }
 

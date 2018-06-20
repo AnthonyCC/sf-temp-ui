@@ -119,6 +119,7 @@ import com.freshdirect.logistics.delivery.model.FulfillmentInfo;
 import com.freshdirect.logistics.delivery.model.SalesArea;
 import com.freshdirect.smartstore.fdstore.CohortSelector;
 import com.freshdirect.smartstore.fdstore.DatabaseScoreFactorProvider;
+import com.freshdirect.storeapi.application.CmsManager;
 import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.storeapi.content.ProductReference;
@@ -154,6 +155,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     private FDCartModel soTemplateCart = new FDCartModel();
     // Creating a dummy cart for gift card processing.
     private FDCartModel dummyCart = new FDCartModel();
+    private FDCartModel dlvPassCart = new FDCartModel();
     private FDRecipientList recipientList;
     private FDBulkRecipientList bulkRecipientList;
 
@@ -1573,9 +1575,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     @Override
     public boolean isDlvPassActive() {
     	dlvPassTimeslotNotMatched = false;
-        if (EnumEStoreId.FDX.equals(this.getUserContext().getStoreContext().getEStoreId())) {
-            return false;
-        }
+       
         if (dlvPassInfo == null) {
             return false;
         }
@@ -1586,16 +1586,18 @@ public class FDUser extends ModelSupport implements FDUserI {
              * modifies the order still the BSGS pass should be applied even if the status is expired pending. Thats why this.getShoppingCart().isDlvPassAlreadyApplied() check is
              * made.
              */
-            return (EnumDlvPassStatus.ACTIVE.equals(dlvPassInfo.getStatus()) || (this.isDlvPassExpiredPending() && this.getShoppingCart().isDlvPassAlreadyApplied()));
+        	
+        	return isDlvPassContextMatched() && (EnumDlvPassStatus.ACTIVE.equals(dlvPassInfo.getStatus()) || (this.isDlvPassExpiredPending() && this.getShoppingCart().isDlvPassAlreadyApplied()));
+        	
         }
         // Changes as part of DP17-158
         /* When the Mid-week DP property is enabled - we will evaluate the below logic
          * 1. Compare the user selected day of the week from the timeslot with the list of eligbile days from the Deliverypass 
          */
 				
-        if(FDStoreProperties.isMidWeekDlvPassEnabled() && null != getDlvPassInfo().getTypePurchased()
+        if(FDStoreProperties.isMidWeekDlvPassEnabled() && null != getDlvPassInfo() && null != getDlvPassInfo().getTypePurchased() && null != getDlvPassInfo().getTypePurchased()
 				.getEligibleDlvDays() && !getDlvPassInfo().getTypePurchased().getEligibleDlvDays().isEmpty() && (getDlvPassInfo().getTypePurchased().getEligibleDlvDays().size() < 7)){
-        	if(null!=this.getShoppingCart().getDeliveryReservation() && null!=this.getShoppingCart().getDeliveryReservation().getTimeslot() && null!=dlvPassInfo.getTypePurchased().getEligibleDlvDays()){
+        	if(null!=this.getShoppingCart() && null!=this.getShoppingCart().getDeliveryReservation() && null!=this.getShoppingCart().getDeliveryReservation().getTimeslot() && null!=dlvPassInfo.getTypePurchased().getEligibleDlvDays()){
            		if(EnumDlvPassStatus.ACTIVE.equals(dlvPassInfo.getStatus()) && !(dlvPassInfo.getTypePurchased().getEligibleDlvDays().contains(this.getShoppingCart().getDeliveryReservation().getTimeslot().getDayOfWeek()))){
         			dlvPassTimeslotNotMatched = true;
         			return false;
@@ -1609,7 +1611,7 @@ public class FDUser extends ModelSupport implements FDUserI {
         	
         }
         // Unlimited Pass.
-        if (EnumDlvPassStatus.ACTIVE.equals(dlvPassInfo.getStatus())) {
+        if (isDlvPassContextMatched() && EnumDlvPassStatus.ACTIVE.equals(dlvPassInfo.getStatus())) {
             Date today = new Date();
             return today.before(dlvPassInfo.getExpDate());
         } else {
@@ -1620,7 +1622,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 
     @Override
     public boolean isDlvPassExpired() {
-        if (dlvPassInfo == null) {
+        if (dlvPassInfo == null ) {
             return false;
         }
         if (!dlvPassInfo.isUnlimited()) {
@@ -1642,7 +1644,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 
     @Override
     public boolean isDlvPassPending() {
-        if (dlvPassInfo == null) {
+        if (dlvPassInfo == null ) {
             return false;
         }
         return EnumDlvPassStatus.PENDING.equals(dlvPassInfo.getStatus());
@@ -1722,11 +1724,27 @@ public class FDUser extends ModelSupport implements FDUserI {
 
     @Override
     public boolean isEligibleForDeliveryPass() throws FDResourceException {
-        EnumDlvPassProfileType profileType = getEligibleDeliveryPass();
-        if (profileType.equals(EnumDlvPassProfileType.NOT_ELIGIBLE))
+    	EnumDlvPassProfileType profileType = getEligibleDeliveryPass();
+        if (profileType.equals(EnumDlvPassProfileType.NOT_ELIGIBLE)){
             return false;
+        }
+        else{        
+	    	EnumEStoreId eStore = CmsManager.getInstance().getEStoreEnum();
+	    	if(null !=eStore && EnumEStoreId.FDX.equals(eStore) && FDStoreProperties.isDlvPassFDXEnabled()){
+	    		Date firstOrderDate = getFirstOrderDateByStore(eStore);
+		        if(firstOrderDate!=null){
+	        		Calendar cal = Calendar.getInstance();
+		        	cal.setTime(firstOrderDate);
+		        	cal.add(Calendar.DATE, FDStoreProperties.getFDXDPFirstOrderEligibilityDays());
+		        	firstOrderDate = cal.getTime();
+		        	if(firstOrderDate.before(new Date())){
+		        		return true;
+		        	}
+	        	}
+		        return false;  //No first order, Not eligible to buy FK DP. 
+	        }
+        }
         return true;
-
     }
 
     @Override
@@ -1941,7 +1959,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 
     public EnumDPAutoRenewalType hasAutoRenewDP() throws FDResourceException {
         if (this.identity != null) {
-            String customerPK = identity.getErpCustomerPK();
+            String customerPK = identity.getFDCustomerPK();
 
             return FDCustomerManager.hasAutoRenewDP(customerPK);
         }
@@ -2247,6 +2265,16 @@ public class FDUser extends ModelSupport implements FDUserI {
     @Override
     public void setGiftCart(FDCartModel dcart) {
         this.dummyCart = dcart;
+    }
+    
+    @Override
+    public FDCartModel getDlvPassCart() {
+        return this.dlvPassCart;
+    }
+
+    @Override
+    public void setDlvPassCart(FDCartModel dlvpasscart) {
+        this.dlvPassCart = dlvpasscart;
     }
 
     @Override
@@ -4100,5 +4128,21 @@ public class FDUser extends ModelSupport implements FDUserI {
 			return true;
 		}
 		return false;
+	}
+
+	public boolean isDlvPassContextMatched(){
+		boolean isDlvPassContextMatched = true;
+		if(null !=dlvPassInfo){
+				/*if(null !=dlvPassInfo.getTypePurchased().geteStoreIds() && !dlvPassInfo.getTypePurchased().geteStoreIds().contains(this.getUserContext().getStoreContext().getEStoreId())
+						|| (null != this.getShoppingCart().getDeliveryAddress() && null != dlvPassInfo.getTypePurchased().getDeliveryTypes() && !dlvPassInfo.getTypePurchased().getDeliveryTypes().contains(this.getShoppingCart().getDeliveryType()))){
+							isDlvPassContextMatched = false;
+				}*/
+				if(null != this.getShoppingCart() && null != this.getShoppingCart().getDeliveryAddress() && null != dlvPassInfo.getTypePurchased()
+						&& null != dlvPassInfo.getTypePurchased().getDeliveryTypes() && !dlvPassInfo.getTypePurchased().getDeliveryTypes().contains(this.getShoppingCart().getDeliveryType())){
+							isDlvPassContextMatched = false;
+				}
+		}
+		
+		return isDlvPassContextMatched;
 	}
 }

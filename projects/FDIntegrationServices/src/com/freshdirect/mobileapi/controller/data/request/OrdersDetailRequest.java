@@ -13,5 +13,15 @@ public class OrdersDetailRequest {
 		this.orders = orders;
 	}
 	
+	boolean dlvPassCart;
+
+	public boolean isDlvPassCart() {
+		return dlvPassCart;
+	}
+
+	public void setDlvPassCart(boolean dlvPassCart) {
+		this.dlvPassCart = dlvPassCart;
+	}
+	
 
 }

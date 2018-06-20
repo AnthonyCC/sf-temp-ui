@@ -250,6 +250,27 @@ public class DeliveryPassUtil {
 		return pricePaid;
 
    }
+   
+   public static double getPricePaid(String purchaseOrderId)throws FDResourceException {
+
+	   //Get the Tax Rate and original retail price of the delivery pass purchased from the orderlines.
+	   double taxRate = 0.0;
+	   double retailPrice = 0.0;
+	   FDOrderI order = FDCustomerManager.getOrder(purchaseOrderId);
+	   List orderLines = order.getOrderLines();
+		for (Iterator it = orderLines.iterator(); it.hasNext();) {
+			FDCartLineI cartLine = (FDCartLineI) it.next();
+			if(cartLine.lookupFDProduct().isDeliveryPass()){
+				taxRate = cartLine.getTaxRate();
+				retailPrice = cartLine.getPrice();
+				break;
+			}
+		}
+		double taxPaid = taxRate * retailPrice;
+		double pricePaid = retailPrice + taxPaid;
+		return pricePaid;
+
+   }
 
    public static double calculateRefund(DeliveryPassInfo passInfo) throws FDResourceException{
 	   //Refund formula

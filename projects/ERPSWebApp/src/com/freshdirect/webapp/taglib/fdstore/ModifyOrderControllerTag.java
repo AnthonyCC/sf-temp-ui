@@ -936,7 +936,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		        	ErpAddressModel address= FDCustomerManager.getLastOrderAddress(user.getIdentity());
 					String arSKU = FDCustomerManager.getAutoRenewSKU(currentUser.getIdentity().getErpCustomerPK());
 					if (arSKU != null){
-						this.orderId = DeliveryPassRenewalCron.placeOrder(AccountActivityUtil.getActionInfo(session),cra, arSKU, paymentMethod, address,user.getUserContext());
+						this.orderId = DeliveryPassRenewalCron.placeOrder(AccountActivityUtil.getActionInfo(session),cra, arSKU, paymentMethod, address,user.getUserContext(),false);
 					}else{
 						throw new DeliveryPassException("Customer has no valid auto_renew DP. ",currentUser.getIdentity().getErpCustomerPK());
 					

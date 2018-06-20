@@ -54,8 +54,10 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 	private static final String EWALLET_SESSION_ATTRIBUTE_NAME="EWALLET_CARD_TYPE";
 	private static final String MP_EWALLET_CARD="MP_CARD";
 
+	private boolean dlvPassCart;
     public PaymentMethodManipulator(HttpServletRequest request, HttpServletResponse response, ActionResult result, String actionName) {
         super(request, response, result, actionName);
+        this.dlvPassCart = null !=request.getParameter("dlvPassCart") && "true".equalsIgnoreCase(request.getParameter("dlvPassCart")) ? true: false;
 	}
 
 	public void setPaymentMethod() throws FDResourceException {
@@ -63,10 +65,10 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		String paymentId = request.getParameter( "paymentMethodList" );
 		String billingRef = request.getParameter( "billingRef" );
 		String isAccountLevel = request.getParameter( "isAccountLevel" );
-		setPaymentMethod(paymentId, billingRef, request, session, result, actionName, isAccountLevel);
+		setPaymentMethod(paymentId, billingRef, request, session, result, actionName, isAccountLevel, dlvPassCart);
 	}
 
-	public static void setPaymentMethod(String paymentId, String billingRef, HttpServletRequest request, HttpSession session, ActionResult result, String actionName, String isAccountLevel) throws FDResourceException {
+	public static void setPaymentMethod(String paymentId, String billingRef, HttpServletRequest request, HttpSession session, ActionResult result, String actionName, String isAccountLevel, boolean dlvPassCart) throws FDResourceException {
 		FDUserI user = (FDUserI) session.getAttribute( SessionName.USER );
 		boolean makeGoodOrder = false;
 		boolean addOnOrder = false;
@@ -86,16 +88,17 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 			referencedOrder = user.getMasqueradeContext().getParentOrderId();
 			addOnOrder = true;
 		}
-		setPaymentMethod( request, session, (FDUserI) session.getAttribute( SessionName.USER ), result, actionName, paymentId, billingRef, makeGoodOrder, addOnOrder, referencedOrder, isAccountLevel );
+		setPaymentMethod( request, session, (FDUserI) session.getAttribute( SessionName.USER ), result, actionName, paymentId, billingRef, makeGoodOrder, addOnOrder, referencedOrder, isAccountLevel, dlvPassCart);
 	}
 
 	private void setNoPaymentMethod( HttpServletRequest request, ActionResult result ) throws FDResourceException {
-		FDCartModel cart = getCart();
+		FDUserI user = getUser();
+		FDCartModel cart = getCart(user, actionName, dlvPassCart);;
 		String billingRef = request.getParameter( "billingRef" );
 		boolean makeGoodOrder = false;
 		String referencedOrder = "";
 		String app = (String) session.getAttribute( SessionName.APPLICATION );
-		FDUserI user = getUser();
+//		FDUserI user = getUser();
 
 		if ( "CALLCENTER".equalsIgnoreCase( app ) ) {
 			makeGoodOrder = request.getParameter( "makeGoodOrder" ) != null;
@@ -122,12 +125,12 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		paymentMethod.setPaymentType(makeGoodOrderEnabled ? EnumPaymentType.MAKE_GOOD : EnumPaymentType.REGULAR);
 		paymentMethod.setReferencedOrder( referencedOrder );
 		cart.setPaymentMethod( paymentMethod );
-		setCart(cart, user, actionName, session);
+		setCart(cart, user, actionName, session, false);
 		user.setPostPromoConflictEnabled(true);
 		user.updateUserState();
 	}
 
-	private static void setPaymentMethod( HttpServletRequest request, HttpSession session, FDUserI user, ActionResult result, String actionName, String paymentId, String billingRef, boolean makeGoodOrder, boolean addOnOrder, String referencedOrder, String isAccountLevel ) throws FDResourceException {
+	private static void setPaymentMethod( HttpServletRequest request, HttpSession session, FDUserI user, ActionResult result, String actionName, String paymentId, String billingRef, boolean makeGoodOrder, boolean addOnOrder, String referencedOrder, String isAccountLevel, boolean dlvPassCart ) throws FDResourceException {
 		//
 		// check for a valid payment ID
 		//
@@ -194,7 +197,7 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 			}
 		}
 
-		FDCartModel cart = getCart(user, actionName);
+		FDCartModel cart = getCart(user, actionName, dlvPassCart);
 		// EPT payment is not allowed for Standing order
 		if(!StandingOrderHelper.isSO3StandingOrder(user)){
 			if(FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), user)){
@@ -231,7 +234,7 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 
 			paymentMethod.setReferencedOrder( referencedOrder );
 			cart.setPaymentMethod( paymentMethod );
-				setCart(cart, user, actionName, session);
+				setCart(cart, user, actionName, session, dlvPassCart);
 
 			//
 				// set default payment method and check for unique billing address,
@@ -334,11 +337,12 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
             if( payMethods.size() ==1 ) {
                 paymentId = payMethods.get(0).getPK().getId();
             }
+            boolean dlvPassCart = null !=request.getParameter("dlvPassCart") && "true".equalsIgnoreCase(request.getParameter("dlvPassCart")) ? true: false;
             if(paymentId != null) {
-                setPaymentMethod(request, session, user, result, actionName, paymentId, request.getParameter("billingRef"), false, false,"", "N");
+            	setPaymentMethod(request, session, user, result, actionName, paymentId, request.getParameter("billingRef"), false, false,"", "N", dlvPassCart);
             }
             if ( result.isSuccess() ) {
-                applyCustomerCredits(actionName, user, session);
+                applyCustomerCredits(actionName, user, session, dlvPassCart);
             }
         }
 
@@ -449,17 +453,17 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 	 * @throws FDResourceException
 	 */
 	public void applyCustomerCredits() throws FDResourceException {
-		applyCustomerCredits(getActionName(), getUser(), getSession());
+		applyCustomerCredits(getActionName(), getUser(), getSession(),isDlvPassCart());
 	}
 
-	public static void applyCustomerCredits(String actionName, FDUserI user, HttpSession session) throws FDResourceException {
+	public static void applyCustomerCredits(String actionName, FDUserI user, HttpSession session,boolean dlvPassCart) throws FDResourceException {
 		if (actionName.equalsIgnoreCase("rh_onestep_submitDonationOrder") || actionName.equalsIgnoreCase("rh_submitDonationOrder")) {
 			// Store credits should not be applied for Robin Hood.
 			return;
 		}
-		FDCartModel cart = getCart(user, actionName);
+		FDCartModel cart = getCart(user, actionName, dlvPassCart);
 		FDCustomerCreditUtil.applyCustomerCredit(cart, user.getIdentity());
-		setCart(cart, user, actionName, session);
+		setCart(cart, user, actionName, session, dlvPassCart);
 	}
 
 	/**
@@ -546,4 +550,12 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
     		}
     	}
     }
+
+	public boolean isDlvPassCart() {
+		return dlvPassCart;
+	}
+
+	public void setDlvPassCart(boolean dlvPassCart) {
+		this.dlvPassCart = dlvPassCart;
+	}
 }

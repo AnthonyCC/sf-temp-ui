@@ -108,6 +108,7 @@ import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDComplaintInfo;
 import com.freshdirect.fdstore.customer.FDComplaintReportCriteria;
 import com.freshdirect.fdstore.customer.FDCreditSummary;
+import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDCustomerOrderInfo;
 import com.freshdirect.fdstore.customer.FDCutoffTimeInfo;
@@ -539,7 +540,10 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		}
 		DeliveryPassModel model = (DeliveryPassModel) dpasses.get(0);
 		model.setStatus(EnumDlvPassStatus.PASS_RETURNED);
-		dlvPassManagerSB.cancel(model);
+		
+		FDOrderI order = FDCustomerManager.getOrder(saleId);
+		String fdCustomerIdFromErpId = FDCustomerFactory.getFDCustomerIdFromErpId(order.getCustomerId());
+		dlvPassManagerSB.cancel(model, order.getEStoreId(), fdCustomerIdFromErpId);
 		// Create a activity log to track the delivery credits.
 		ErpActivityRecord activityRecord = createActivity(EnumAccountActivityType.CANCEL_DLV_PASS, "SYSTEM",
 				DlvPassConstants.CANCEL_NOTE, model, saleId, EnumDlvPassExtendReason.OTHER.getName());

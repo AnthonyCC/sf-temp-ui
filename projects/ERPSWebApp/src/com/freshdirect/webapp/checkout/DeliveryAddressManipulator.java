@@ -986,7 +986,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 	 */
 	private static void setDeliveryAddress(FDUserI user, HttpSession session, String actionName, ErpAddressModel address, FDDeliveryZoneInfo zoneInfo, String locationId, boolean setServiceType)
 			throws FDResourceException {
-		FDCartModel cart = getCart(user, actionName);
+		FDCartModel cart = getCart(user, actionName, false);
 		setDeliveryAddressInternal(user, session, cart, address, zoneInfo, setServiceType);
 
 		if (address instanceof ErpDepotAddressModel) {

@@ -39,11 +39,11 @@ public class TimeslotList {
     /**
      * @return
      */
-    public List<Timeslot> getTimeslots(boolean isChefTableUser) {
+    public List<Timeslot> getTimeslots(boolean isChefTableUser, SessionUser user ) {
         List<Timeslot> timeSlots = new ArrayList<Timeslot>();
         for (List<FDTimeslot> slots : (Collection<List<FDTimeslot>>) target.getTimeslots()) {
             for (FDTimeslot slot : slots) {
-                Timeslot timeslotModel = Timeslot.wrap(slot, isChefTableUser);
+                Timeslot timeslotModel = Timeslot.wrap(slot, isChefTableUser, user);
                 boolean isChefTableTimeslot = timeslotModel.isChefsTable();
                 if (!isChefTableTimeslot || (isChefTableTimeslot && isChefTableUser)) {
                     timeSlots.add(timeslotModel);
@@ -68,9 +68,9 @@ public class TimeslotList {
         return target.hasCapacity();
     }
 
-    public Timeslot findTimeslotById(String timeslotId, boolean includeChefTable) {
+    public Timeslot findTimeslotById(String timeslotId, boolean includeChefTable, SessionUser user) {
         Timeslot foundTimeslot = null;
-        List<Timeslot> timeslots = getTimeslots(includeChefTable);
+        List<Timeslot> timeslots = getTimeslots(includeChefTable, user);
         for (Timeslot timeslot : timeslots) {
             if (timeslot.getTimeslotId().equals(timeslotId)) {
                 foundTimeslot = timeslot;

@@ -115,7 +115,12 @@ function deliveryPassAutoRenew(item){
 	    			<div class="dp-content">
     					<p>You are not currently a member.</p>
     					<p>DeliveryPass offers you a new way to save on delivery fees. Place as many orders as you'd like while your pass is active, all for a low, one-time fee for delivery.</p>
-    					<p><a href="https://www.freshdirect.com/pdp.jsp?productId=mkt_dpass_auto14mo&catId=gro_gear_dlvpass">Sign up for DeliveryPass today!</a></p>
+    					<% EnumEStoreId storeid = ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId();
+    					if(storeid.equals(EnumEStoreId.FDX)){ %>
+    						<p><a href="/pdp.jsp?productId=mkt_fk_dpss_onemonth&catId=sale_promo">Sign up for DeliveryPass today!</a></p>
+    					<% }else{ %>
+    						<p><a href="/pdp.jsp?productId=mkt_dpass_auto14mo&catId=gro_gear_dlvpass">Sign up for DeliveryPass today!</a></p>
+    					<% } %>
 	    			</div>
 	    		</div>
     		<% } %>

@@ -1363,6 +1363,16 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     public void setGiftCart(FDCartModel dcart) {
         this.user.setGiftCart(dcart);
     }
+    
+    @Override
+    public FDCartModel getDlvPassCart() {
+        return this.user.getDlvPassCart();
+    }
+    
+    @Override
+    public void setDlvPassCart(FDCartModel dlvpasscart) {
+        this.user.setDlvPassCart(dlvpasscart);
+    }
 
     @Override
     public double getGiftcardBalance() {

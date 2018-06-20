@@ -15,8 +15,10 @@ public class FDUserDlvPassInfo implements Serializable{
 	private static final long serialVersionUID = 6459935633407980835L;
 	
 	private EnumDlvPassStatus status;
+	private String description;
 	private DeliveryPassType type;
 	private Date expDate;
+	private double amount;
 	private String originalOrderId;
 	private int remainingCount;
 	private int usedCount;
@@ -32,7 +34,10 @@ public class FDUserDlvPassInfo implements Serializable{
 	private Date purchaseDate;
 	
 	public FDUserDlvPassInfo(@JsonProperty("status") EnumDlvPassStatus status,
-			@JsonProperty("typePurchased") DeliveryPassType type, @JsonProperty("expDate") Date expDate,
+			@JsonProperty("typePurchased") DeliveryPassType type, 
+			@JsonProperty("description") String description,
+			@JsonProperty("expDate") Date expDate,
+			@JsonProperty("amount") Double amount,
 			@JsonProperty("originalOrderId") String originalOrderId, @JsonProperty("remainingCount") int remCnt,
 			@JsonProperty("usedCount") int usedCount, @JsonProperty("usablePassCount") int usablePassCount,
 			@JsonProperty("freeTrialRestricted") boolean isFreeTrialRestricted,
@@ -43,7 +48,9 @@ public class FDUserDlvPassInfo implements Serializable{
 		super();
 		this.status = status;
 		this.type = type;
+		this.description = description;
 		this.expDate = expDate;
+		this.amount = amount;
 		this.originalOrderId = originalOrderId;
 		this.remainingCount = remCnt;
 		this.usedCount = usedCount;
@@ -67,6 +74,14 @@ public class FDUserDlvPassInfo implements Serializable{
 		return expDate;
 	}
 
+
+	public double getAmount() {
+		return amount;
+	}
+
+	public void setAmount(double amount) {
+		this.amount = amount;
+	}
 
 	public boolean isUnlimited() {
 		if(type != null) {
@@ -180,6 +195,14 @@ public class FDUserDlvPassInfo implements Serializable{
 	public boolean isMidweekPass() {
 		return (null != getTypePurchased() && null != getTypePurchased().getEligibleDlvDays() && !getTypePurchased().getEligibleDlvDays().isEmpty()
 				&& getTypePurchased().getEligibleDlvDays().size() < 7);
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	

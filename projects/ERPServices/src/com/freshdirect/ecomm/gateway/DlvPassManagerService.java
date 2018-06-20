@@ -19,6 +19,7 @@ import com.freshdirect.ecommerce.data.dlvpass.DeliveryPassData;
 import com.freshdirect.ecommerce.data.dlvpass.DeliveryPassDataWrapper;
 import com.freshdirect.ecommerce.data.dlvpass.DlvPassAutoRenewData;
 import com.freshdirect.ecommerce.data.dlvpass.DlvPassStatusMapData;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDEcommServiceException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -65,7 +66,7 @@ public class DlvPassManagerService extends AbstractEcommService implements DlvPa
 	}
 
 	@Override
-	public String create(DeliveryPassModel model) throws RemoteException, DeliveryPassException {
+	public String create(DeliveryPassModel model, EnumEStoreId eStore, String fdPk) throws RemoteException, DeliveryPassException {
 		Response<String> response = null;
 		
 		Request<DeliveryPassData> request = new Request<DeliveryPassData>();
@@ -131,7 +132,7 @@ public class DlvPassManagerService extends AbstractEcommService implements DlvPa
 	
 	
 	@Override
-	public String modify(String purchaseOrderId, DeliveryPassModel model) throws RemoteException, DeliveryPassException {
+	public String modify(String purchaseOrderId, DeliveryPassModel model, EnumEStoreId eStore, String fdPk) throws RemoteException, DeliveryPassException {
 		Response<String> response = null;
 		
 		Request<DeliveryPassData> request = new Request<DeliveryPassData>();
@@ -154,7 +155,7 @@ public class DlvPassManagerService extends AbstractEcommService implements DlvPa
 	}
 	
 	@Override
-	public void cancel(DeliveryPassModel model) throws RemoteException {
+	public void cancel(DeliveryPassModel model, EnumEStoreId eStore, String fdPk) throws RemoteException {
 		Response response = null;
 		
 		Request<DeliveryPassData> request = new Request<DeliveryPassData>();
@@ -326,7 +327,7 @@ public class DlvPassManagerService extends AbstractEcommService implements DlvPa
 	}
 	
 	@Override
-	public void remove(DeliveryPassModel model) throws RemoteException {
+	public void remove(DeliveryPassModel model, EnumEStoreId eStore, String fdPk) throws RemoteException {
 		Response response = null;
 		Request<DeliveryPassData> request = new Request<DeliveryPassData>();
 		String inputJson;

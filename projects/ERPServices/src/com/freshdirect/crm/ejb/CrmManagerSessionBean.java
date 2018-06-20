@@ -65,6 +65,7 @@ import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerSB;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.customer.CustomerCreditModel;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -991,7 +992,7 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 			model.setStatus(EnumDlvPassStatus.CANCELLED);
 					
 			model.setExpirationDate(new Date());
-			dlvPassManagerSB.cancel(model);
+			dlvPassManagerSB.cancel(model,null,null);
 			if(model.getType().isAutoRenewDP()) {
 				ErpCustomerEB erpCustomer = this.getErpCustomerHome().findByPrimaryKey(new PrimaryKey(model.getCustomerId()));
 				ErpCustomerInfoModel custInfo=erpCustomer.getCustomerInfo();
@@ -999,14 +1000,14 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 						List<DeliveryPassModel> autoRenewPasses=dlvPassManagerSB.getUsableAutoRenewPasses(model.getCustomerId());
 						if(autoRenewPasses.size()==0) {
 						
-							custInfo.setHasAutoRenewDP("N");
+				/*			custInfo.setHasAutoRenewDP("N");
 							erpCustomer.setCustomerInfo(custInfo);
 							ErpActivityRecord rec = new ErpActivityRecord();
 							rec.setActivityType(EnumAccountActivityType.AUTORENEW_DP_FLAG_OFF);
 							rec.setCustomerId(model.getCustomerId());
 							rec.setSource(EnumTransactionSource.SYSTEM);
 							rec.setInitiator(agentmodel.getUserId());
-							logActivity(rec);
+							logActivity(rec);*/
 						}
 				}
 			}
@@ -1558,10 +1559,10 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 	
-	public DeliveryPassModel getActiveDP(String custId) throws FDResourceException,RemoteException {
+	public DeliveryPassModel getActiveDP(String custId, EnumEStoreId estore) throws FDResourceException,RemoteException {
 		try{
 		DlvPassManagerSB sb = this.getDlvPassManagerHome().create();		
-		List dps = sb.getDeliveryPasses(custId);
+		List dps = sb.getDeliveryPasses(custId, estore);
 		Iterator iter = dps.iterator();
 		while(iter.hasNext()) {
 			DeliveryPassModel dp = (DeliveryPassModel) iter.next();

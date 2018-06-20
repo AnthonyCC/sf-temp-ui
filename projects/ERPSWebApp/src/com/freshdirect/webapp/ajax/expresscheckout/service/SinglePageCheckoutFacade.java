@@ -486,7 +486,7 @@ public class SinglePageCheckoutFacade {
                 String paymentId = cart.getPaymentMethod().getPK().getId();
                 ErpPaymentMethodI paymentMethod = PaymentMethodUtil.getPaymentMethod(paymentId, user.getPaymentMethods());
                 if (paymentMethod != null) {
-                    PaymentMethodManipulator.setPaymentMethod(paymentId, null, request, session, actionResult, PageAction.SELECT_PAYMENT_METHOD.actionName, "N");
+                    PaymentMethodManipulator.setPaymentMethod(paymentId, null, request, session, actionResult, PageAction.SELECT_PAYMENT_METHOD.actionName, "N", false);
                 } else {
                     session.setAttribute(SessionName.CART_PAYMENT_SELECTION_DISABLED, Boolean.TRUE);
                 }

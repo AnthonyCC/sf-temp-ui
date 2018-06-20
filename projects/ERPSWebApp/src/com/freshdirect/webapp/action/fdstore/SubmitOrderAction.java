@@ -109,6 +109,7 @@ public class SubmitOrderAction extends WebActionSupport {
 	private String addGcPage = "/gift_card/purchase/add_giftcard.jsp";
 	private String addGcDonPage = "/gift_card/purchase/landing.jsp";
 	private String crmAddBulkGcPage = "/gift_card/purchase/add_bulk_giftcard.jsp";
+	private boolean dlvPassCart;
 	
 	public void setCcdProblemPage(String ccdProblemPage){
 		this.ccdProblemPage = ccdProblemPage;
@@ -453,7 +454,7 @@ public class SubmitOrderAction extends WebActionSupport {
 		final HttpServletRequest request = this.getWebActionContext().getRequest();
 
 		final FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
-		final FDCartModel cart = user.getShoppingCart();
+		final FDCartModel cart = UserUtil.getCart(user, "", isDlvPassCart());
 		final FDReservation reservation = cart.getDeliveryReservation();
 
 		final EnumCheckoutMode mode = user.getCheckoutMode();
@@ -665,8 +666,8 @@ public class SubmitOrderAction extends WebActionSupport {
 	            
 	          //Added for DP17-102 BACKEND FREE TRIAL: Create customers free trial subscription order along with customers next order
 				try {
-                    if(user.applyFreeTrailOptinBasedDP()){
-                        DeliveryPassFreeTrialUtil.placeDpSubscriptionOrder(user.getIdentity().getErpCustomerPK(), FDStoreProperties.getTwoMonthTrailDPSku());
+                    if(user.applyFreeTrailOptinBasedDP() && EnumEStoreId.FD.equals(eStore)){
+                        DeliveryPassFreeTrialUtil.placeDpSubscriptionOrder(user.getIdentity().getErpCustomerPK(), FDStoreProperties.getTwoMonthTrailDPSku(),eStore);
                     }
                 } catch (Exception e) {
                     LOGGER.warn("Exception while creating Free-trial DP Order along with regular order",e);
@@ -709,8 +710,8 @@ public class SubmitOrderAction extends WebActionSupport {
 				
 				//Added for DP17-102 BACKEND FREE TRIAL: Create customers free trial subscription order along with customers next order
 				try {
-                    if(user.applyFreeTrailOptinBasedDP()){
-                    	DeliveryPassFreeTrialUtil.placeDpSubscriptionOrder(user.getIdentity().getErpCustomerPK(), FDStoreProperties.getTwoMonthTrailDPSku());
+                    if(user.applyFreeTrailOptinBasedDP() && EnumEStoreId.FD.equals(eStore)){
+                    	DeliveryPassFreeTrialUtil.placeDpSubscriptionOrder(user.getIdentity().getErpCustomerPK(), FDStoreProperties.getTwoMonthTrailDPSku(),eStore);
                     }
                 } catch (Exception e) {
                     LOGGER.warn("Exception while creating Free-trial DP Order along with regular order",e);
@@ -752,7 +753,7 @@ public class SubmitOrderAction extends WebActionSupport {
 			
 			/*APPDEV-1888 - record if the referral promo is not applied due to unique FN+LN+Zipcode rule.*/
 			if(user.isReferralPromotionFraud()) {
-				FDReferralManager.storeFailedAttempt(user.getUserId(),"", user.getShoppingCart().getDeliveryAddress().getZipCode(),user.getFirstName(),user.getLastName(), "","Checkout FNLNZipCode Fraud");
+				FDReferralManager.storeFailedAttempt(user.getUserId(),"", cart.getDeliveryAddress().getZipCode(),user.getFirstName(),user.getLastName(), "","Checkout FNLNZipCode Fraud");
 			}
 			
 			
@@ -768,15 +769,25 @@ public class SubmitOrderAction extends WebActionSupport {
 				
 			} else {
 				// Clear the cart from the session by replacing it with a new cart
-				user.setShoppingCart( new FDCartModel() );
-				user.getShoppingCart().setDeliveryAddress(cart.getDeliveryAddress());
-				user.getShoppingCart().setDeliveryPlantInfo(cart.getDeliveryPlantInfo());
-				user.getShoppingCart().setZoneInfo(cart.getZoneInfo());
-				FDCustomerManager.updateZoneInfo(user); // added as part of APPDEV 6272 FDC Transition
-				user.getShoppingCart().setEStoreId(cart.getEStoreId());
-				// user.updateSurcharges();
-				user.getShoppingCart().updateSurcharges(new FDRulesContextImpl(user));
-
+				if(dlvPassCart){
+					user.setDlvPassCart( new FDCartModel() );
+					user.getDlvPassCart().setDeliveryAddress(cart.getDeliveryAddress());
+					user.getDlvPassCart().setDeliveryPlantInfo(cart.getDeliveryPlantInfo());
+					user.getDlvPassCart().setZoneInfo(cart.getZoneInfo());
+					FDCustomerManager.updateZoneInfo(user); // added as part of APPDEV 6272 FDC Transition
+					user.getDlvPassCart().setEStoreId(cart.getEStoreId());
+					// user.updateSurcharges();
+					user.getDlvPassCart().updateSurcharges(new FDRulesContextImpl(user));
+				}else{
+					user.setShoppingCart( new FDCartModel() );
+					user.getShoppingCart().setDeliveryAddress(cart.getDeliveryAddress());
+					user.getShoppingCart().setDeliveryPlantInfo(cart.getDeliveryPlantInfo());
+					user.getShoppingCart().setZoneInfo(cart.getZoneInfo());
+					FDCustomerManager.updateZoneInfo(user); // added as part of APPDEV 6272 FDC Transition
+					user.getShoppingCart().setEStoreId(cart.getEStoreId());
+					// user.updateSurcharges();
+					user.getShoppingCart().updateSurcharges(new FDRulesContextImpl(user));
+				}	
 			}
 			if(user.getRedeemedPromotion() != null){
 				// This forceRefresh is for redemption count on the promo to be reloaded once 
@@ -1272,5 +1283,13 @@ public class SubmitOrderAction extends WebActionSupport {
 		} 	
 		return this.getResult().isSuccess() ? "SUCCESS" : "ERROR";		
 	
+	}
+
+	public boolean isDlvPassCart() {
+		return dlvPassCart;
+	}
+
+	public void setDlvPassCart(boolean dlvPassCart) {
+		this.dlvPassCart = dlvPassCart;
 	}
 }

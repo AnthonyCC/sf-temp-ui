@@ -42,6 +42,7 @@ import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDProduct;
@@ -115,7 +116,7 @@ public class DeliveryPassFreeTrialCron {
 						"DeliveryPassFreeTrialCron : " + custIds.size() + " customers eligible for FreeTrial.");
 				for (String erpCustomerID : custIds ) {
 					try {
-						String orderId = DeliveryPassFreeTrialUtil.placeDpSubscriptionOrder(erpCustomerID, arSKU);
+						String orderId = DeliveryPassFreeTrialUtil.placeDpSubscriptionOrder(erpCustomerID, arSKU, EnumEStoreId.FD);
 						System.out.println("order placed" +orderId);
 					} catch (FDResourceException e) {
 						StringWriter sw = new StringWriter();

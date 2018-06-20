@@ -99,6 +99,8 @@ public interface FDCartI extends java.io.Serializable {
 	 * @return total price of order in USD, with promotions, taxes, etc
 	 */
 	public double getTotal();
+	
+	public int getDeliveryPassCount();
 
 	public String getCustomerServiceMessage();
 

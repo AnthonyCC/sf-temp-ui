@@ -1558,4 +1558,10 @@ public class FDStandingOrderAdapter  implements FDOrderI{
 		return false;
 	}
 
+	@Override
+	public int getDeliveryPassCount() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

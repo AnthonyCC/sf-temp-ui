@@ -81,6 +81,7 @@ import com.freshdirect.webapp.util.LocatorUtil;
 import com.freshdirect.webapp.util.RequestUtil;
 import com.freshdirect.webapp.util.RobotRecognizer;
 import com.freshdirect.webapp.util.RobotUtil;
+import com.freshdirect.webapp.util.StandingOrderHelper;
 import com.freshdirect.webapp.util.StoreContextUtil;
 
 public class UserUtil {
@@ -645,7 +646,8 @@ public class UserUtil {
             if(currentUser == null || (loginCookie != null && !loginCookie.equals(currentUser.getCookie()))){
     			// Pass updateUserState as currentUser != null.
     			// If currentUser == null, createSessionUser will be called later which will invoke updateUserState.
-            	FDUser loginUser = FDCustomerManager.recognize(identity, currentUser != null);
+            	
+            	FDUser loginUser = FDCustomerManager.recognize(identity, currentUser != null, CmsManager.getInstance().getEStoreEnum());
 
             	// LOGGER.info("loginUser is " + loginUser.getFirstName() + " Level = " + loginUser.getLevel());
             	// FDX-1873 - Show timeslots for anonymous address
@@ -941,4 +943,28 @@ public class UserUtil {
 
 	}
 
+	public static FDCartModel getCart(FDUserI user, String actionName, boolean dlvPassCart) {
+		
+		if (null !=actionName && actionName.indexOf("gc_") != -1) {
+			return user.getGiftCart();
+		} else if (null !=actionName && actionName.indexOf("rh_") != -1) {
+			return user.getDonationCart();
+		}else if(StandingOrderHelper.isSO3StandingOrder(user)){
+			try {
+				if(null!=user.getCurrentStandingOrder().getAddressId()){
+				user.getSoTemplateCart().setDeliveryAddress(user.getCurrentStandingOrder().getDeliveryAddress());
+				}
+			} catch (FDResourceException e) {
+				e.printStackTrace();
+			}
+			return user.getSoTemplateCart();
+		} else if(dlvPassCart){
+			if(user.getShoppingCart()!=null){
+				user.getDlvPassCart().setDeliveryAddress(user.getShoppingCart().getDeliveryAddress());
+			}
+			return user.getDlvPassCart();
+		}
+		return user.getShoppingCart();
+	}
+	
 }
