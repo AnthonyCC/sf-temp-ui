@@ -75,6 +75,8 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 	
 	private ErpSettlementSummaryModel settlementSummary;
 	
+	private boolean initWithPayPal = false;
+	
 	public PaymentechFINParserClient(SettlementBuilderI builder, ReconciliationSB reconciliationSB) {
 		super(builder, reconciliationSB);
 	}
@@ -82,6 +84,7 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 	public PaymentechFINParserClient(SettlementBuilderI builder, ReconciliationSB reconciliationSB, PayPalReconciliationSB ppReconcSB, List<String> settlementIds) {
 		super(builder, reconciliationSB, ppReconcSB);
 		this.settlementIds = settlementIds;
+		this.initWithPayPal = true;
 	}
 	
 	public PaymentechFINParserClient(SettlementBuilderI builder, ReconciliationSB reconciliationSB, Date desiredDate) {
@@ -89,10 +92,6 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 		this.ppDesiredDate = desiredDate;
 	}
 	
-	public PaymentechFINParserClient(SettlementBuilderI builder, ReconciliationSB reconciliationSB, PayPalReconciliationSB ppReconcSB, Date desiredDate) {
-		super(builder, reconciliationSB, ppReconcSB);
-		this.ppDesiredDate = desiredDate;
-	}
 	
 	public void process(DFRStart start) {
 		this.settlementSummary = new ErpSettlementSummaryModel();
@@ -255,7 +254,7 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 		
 		try {
 			if (DataLoaderProperties.isPayPalSettlementEnabled()) {
-				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaypalReconciliationSB)) {
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaypalReconciliationSB) && this.initWithPayPal) {
 					List ppSettlementInfos = processPPSettlements(settlementIds);
 					if (ppSettlementInfos != null)
 						appendPPSettlements(ppSettlementInfos);
