@@ -489,6 +489,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      * @param String the PK of the sale to which the complaint is to be added
      * @throws FDResourceException if an error occured while accessing remote resources
      * @throws ErpComplaintException if order was not in proper state to accept complaints
+     * @deprecated
      */
     public PrimaryKey addComplaint(ErpComplaintModel complaint, String saleId,String erpCustomerId,String fdCustomerId, boolean autoApproveAuthorized, Double limit  ) throws FDResourceException, ErpComplaintException, RemoteException;
 

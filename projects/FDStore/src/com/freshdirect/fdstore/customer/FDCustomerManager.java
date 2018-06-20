@@ -115,6 +115,7 @@ import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
 import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.ecomm.gateway.CustomerAddressService;
+import com.freshdirect.fdstore.ecomm.gateway.CustomerComplaintService;
 import com.freshdirect.fdstore.ecomm.gateway.CustomerGiftCardService;
 import com.freshdirect.fdstore.ecomm.gateway.CustomerIdentityService;
 import com.freshdirect.fdstore.ecomm.gateway.CustomerPaymentService;
@@ -1953,15 +1954,26 @@ public class FDCustomerManager {
 	 * @param String the PK of the sale to which the complaint is to be added
 	 * @throws ErpComplaintException if order was not in proper state to accept complaints
 	 */
-	public static PrimaryKey addComplaint(ErpComplaintModel complaint, String saleId,FDIdentity identity, boolean autoApproveAuthorized, Double limit ) throws FDResourceException, ErpComplaintException {
-		lookupManagerHome();
+	public static PrimaryKey addComplaint(ErpComplaintModel complaint, String saleId, FDIdentity identity,
+			boolean autoApproveAuthorized, Double limit) throws FDResourceException, ErpComplaintException {
+
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
+			PrimaryKey complaintPk;
 			//
 			// add the complaint to the sale
 			//
-			PrimaryKey complaintPk = sb.addComplaint(complaint, saleId,identity.getErpCustomerPK(),identity.getFDCustomerPK(),autoApproveAuthorized, limit);
-			LOGGER.info("Complaint Id:"+complaintPk);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerComplaint)) {
+				complaintPk = new PrimaryKey(CustomerComplaintService.getInstance().addComplaint(complaint, saleId,
+						identity.getErpCustomerPK(), identity.getFDCustomerPK(), autoApproveAuthorized, limit));
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+
+				complaintPk = sb.addComplaint(complaint, saleId, identity.getErpCustomerPK(),
+						identity.getFDCustomerPK(), autoApproveAuthorized, limit);
+			}
+
+			LOGGER.info("Complaint Id:" + complaintPk);
 			return complaintPk;
 		} catch (CreateException ce) {
 			invalidateManagerHome();

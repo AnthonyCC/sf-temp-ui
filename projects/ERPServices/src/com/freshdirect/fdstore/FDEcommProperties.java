@@ -106,6 +106,7 @@ public class FDEcommProperties {
 	public static final String FDCustomerPayment = "com.freshdirect.customer.payment";
 	public static final String FDCustomerPreference = "com.freshdirect.customer.preference";
 	public static final String FDCustomerGiftCard = "com.freshdirect.customer.giftCard";
+	public static final String FDCustomerComplaint = "com.freshdirect.customer.complaint";
 	public static final String Registration = "com.freshdirect.customer.registration";
 	public static final String SaleCronSB = "payment.ejb.SaleCronSB";
 	public static final String ErpInfoSB_WarmUp="erp.ejb.ErpInfoSB_WarmUp";

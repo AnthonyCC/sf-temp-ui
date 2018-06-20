@@ -153,11 +153,11 @@ public class ErpComplaintModel extends ModelSupport {
 		return getAmountForMethod(EnumComplaintLineMethod.CASH_BACK);
 	}
 	
-	public List getCashBackComplaintLines() {
+	public List<ErpComplaintLineModel> getCashBackComplaintLines() {
 		
-		List lines = new ArrayList();
-		for(Iterator i = this.complaintLines.iterator(); i.hasNext(); ) {
-			ErpComplaintLineModel line = (ErpComplaintLineModel)i.next();
+		List<ErpComplaintLineModel> lines = new ArrayList<ErpComplaintLineModel>();
+		for(Iterator<ErpComplaintLineModel> i = this.complaintLines.iterator(); i.hasNext(); ) {
+			ErpComplaintLineModel line = i.next();
 			if(EnumComplaintLineMethod.CASH_BACK.equals(line.getMethod())) {
 				lines.add(line);
 			}
