@@ -1595,7 +1595,7 @@ public class FDUser extends ModelSupport implements FDUserI {
          * 1. Compare the user selected day of the week from the timeslot with the list of eligbile days from the Deliverypass 
          */
 				
-        if(FDStoreProperties.isMidWeekDlvPassEnabled() && null != getDlvPassInfo() && null != getDlvPassInfo().getTypePurchased() && null != getDlvPassInfo().getTypePurchased()
+        if(null != getDlvPassInfo() && null != getDlvPassInfo().getTypePurchased() && null != getDlvPassInfo().getTypePurchased()
 				.getEligibleDlvDays() && !getDlvPassInfo().getTypePurchased().getEligibleDlvDays().isEmpty() && (getDlvPassInfo().getTypePurchased().getEligibleDlvDays().size() < 7)){
         	if(null!=this.getShoppingCart() && null!=this.getShoppingCart().getDeliveryReservation() && null!=this.getShoppingCart().getDeliveryReservation().getTimeslot() && null!=dlvPassInfo.getTypePurchased().getEligibleDlvDays()){
            		if(EnumDlvPassStatus.ACTIVE.equals(dlvPassInfo.getStatus()) && !(dlvPassInfo.getTypePurchased().getEligibleDlvDays().contains(this.getShoppingCart().getDeliveryReservation().getTimeslot().getDayOfWeek()))){

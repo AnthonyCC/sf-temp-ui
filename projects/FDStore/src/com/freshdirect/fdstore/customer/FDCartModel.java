@@ -2285,7 +2285,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
     	boolean isDlvPassApplicable = false;
     	if(getDeliveryPassCount() > 0){
     		isDlvPassApplicable = true;
-    		if(FDStoreProperties.isMidWeekDlvPassEnabled() && null!=this.getDeliveryReservation() && null!=this.getDeliveryReservation().getTimeslot()){
+    		if(null!=this.getDeliveryReservation() && null!=this.getDeliveryReservation().getTimeslot()){
 		    	for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
 					FDCartLineI line = i.next();
 					if(line.lookupFDProduct().isDeliveryPass()){
