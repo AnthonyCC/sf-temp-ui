@@ -21,6 +21,8 @@ if (mobWeb) {
 		request.setAttribute("sitePage", oasSitePage.replace("www.freshdirect.com/", "www.freshdirect.com/mobileweb/")); //change for OAS
 	}
 }
+
+FDSessionUser sessionUser = (FDSessionUser) session.getAttribute(SessionName.USER);
 %>
 
 <tmpl:insert template='<%=template %>'>
@@ -57,6 +59,7 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 			</td>
 		</tr>
 	</table>
+	<input id="hash" name="hash" type="hidden" value="<%= sessionUser.getAddCcUuid() %>" />
 	
 	<%@ include file="/includes/ckt_acct/i_creditcard_fields.jspf" %>
 	<br><br>
