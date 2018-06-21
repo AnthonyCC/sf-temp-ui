@@ -54,6 +54,9 @@
 	String preSuccessPage = (String)request.getParameter("preSuccessPage");
 	if(preSuccessPage != null && preSuccessPage.length()>0 )
 		session.setAttribute(SessionName.PREV_SUCCESS_PAGE, preSuccessPage);
+    else if (session.getAttribute(SessionName.PREV_SUCCESS_PAGE) == null && request.getParameter("successPage") != null) {
+        session.setAttribute(SessionName.PREV_SUCCESS_PAGE, request.getParameter("successPage"));
+    }
 
 	String template = "/common/template/no_nav_html5.jsp";
 
