@@ -58,7 +58,7 @@
   </div>
   <div class="input-wrapper">
   	<label for="addaddress_home_street_address2">Street Address Line 2
-    	<input name="street_address2" id="addaddress_home_street_address2" placeholder="Street Address Line 2" value="{if $data.street_address2}{$data.street_address2}{/if}" />
+    	<input name="street_address2" id="addaddress_home_street_address2" maxlength="55" placeholder="Street Address Line 2" value="{if $data.street_address2}{$data.street_address2}{/if}" />
     </label>
     <span fdform-error-for="street_address2"></span>
   </div>
@@ -221,7 +221,7 @@
   </div>
   <div class="input-wrapper">
   	<label for="addaddress_office_street_address2">Street Address Line 2 
-    	<input name="street_address2" placeholder="Street Address Line 2" value="{if $data.street_address2}{$data.street_address2}{/if}" />
+    	<input name="street_address2" maxlength="55" placeholder="Street Address Line 2" value="{if $data.street_address2}{$data.street_address2}{/if}" />
     </label>
   </div>
   <div class="input-wrapper">
