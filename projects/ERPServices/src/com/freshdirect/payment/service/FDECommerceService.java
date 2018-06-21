@@ -177,7 +177,10 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.logistics.delivery.model.DeliveryException;
 import com.freshdirect.logistics.delivery.model.OrderContext;
+import com.freshdirect.logistics.delivery.model.ReservationException;
+import com.freshdirect.logistics.delivery.model.ReservationUnavailableException;
 import com.freshdirect.logistics.delivery.model.SiteAnnouncement;
+import com.freshdirect.logistics.delivery.model.SystemMessageList;
 import com.freshdirect.logistics.fdstore.StateCounty;
 import com.freshdirect.logistics.fdstore.ZipCodeAttributes;
 import com.freshdirect.payment.BINInfo;
@@ -1865,7 +1868,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	@Override
 	public void commitReservation(String rsvId, String customerId,
 			OrderContext context, ContactAddressModel address, boolean pr1,
-			TimeslotEvent event) throws FDResourceException {
+			TimeslotEvent event) throws FDResourceException, ReservationException {
 		Request<ReservationParam> request = new Request<ReservationParam>();
 		OrderContextData orderData = getMapper().convertValue(context, OrderContextData.class);
 		ContactAddressData contactAddressData = getMapper().convertValue(address, ContactAddressData.class);
@@ -1884,8 +1887,12 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		try {			
 			inputJson = buildRequest(request);
 			Response<Void> response = this.postData(inputJson, getFdCommerceEndPoint(DLV_MANAGER_COMMIT_RESERVATION), Response.class);
-			if(!response.getResponseCode().equals("OK")){
-				throw new FDResourceException(response.getMessage());
+			
+			if (!response.getResponseCode().equals("OK")) {
+				if(response.getRequestIdentifier()!=null&&response.getRequestIdentifier().equals("ReservationUnavailableException"))
+					throw new ReservationUnavailableException(SystemMessageList.DELIVERY_SLOT_RSVERROR);
+				if(response.getRequestIdentifier()!=null&&response.getRequestIdentifier().equals("ReservationException"))
+					throw new ReservationException(SystemMessageList.DELIVERY_SLOT_RSVERROR);
 			}
 		} catch (FDEcommServiceException e) {
 			throw new FDResourceException(e);
@@ -1897,7 +1904,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		
 	@Override
 	public void recommitReservation(String rsvId, String customerId,
-			OrderContext context, ContactAddressModel address, boolean pr1) throws FDResourceException {
+			OrderContext context, ContactAddressModel address, boolean pr1) throws FDResourceException, ReservationException {
 		Request<ReservationParam> request = new Request<ReservationParam>();
 		OrderContextData orderData = getMapper().convertValue(context, OrderContextData.class);
 		ContactAddressData contactAddressData = getMapper().convertValue(address, ContactAddressData.class);
@@ -1914,8 +1921,11 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		try {
 			inputJson = buildRequest(request);
 			Response<Void> response = this.postData(inputJson, getFdCommerceEndPoint(DLV_MANAGER_RECOMMIT_RESERVATION), Response.class);
-			if(!response.getResponseCode().equals("OK")){
-				throw new FDResourceException(response.getMessage());
+			if (!response.getResponseCode().equals("OK")) {
+				if(response.getRequestIdentifier()!=null&&response.getRequestIdentifier().equals("ReservationUnavailableException"))
+					throw new ReservationUnavailableException(SystemMessageList.DELIVERY_SLOT_RSVERROR);
+				if(response.getRequestIdentifier()!=null&&response.getRequestIdentifier().equals("ReservationException"))
+					throw new ReservationException(SystemMessageList.DELIVERY_SLOT_RSVERROR);
 			}
 		} catch (FDEcommServiceException e) {
 			throw new FDResourceException(e);

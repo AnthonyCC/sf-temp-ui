@@ -15,6 +15,8 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.logistics.delivery.dto.Customer;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
+import com.freshdirect.logistics.delivery.model.ReservationException;
+import com.freshdirect.logistics.delivery.model.ReservationUnavailableException;
 
 public interface ICommerceService {
 
@@ -46,7 +48,7 @@ public interface ICommerceService {
 			EnumReservationType type, Customer customer, boolean chefsTable,
 			String ctDeliveryProfile, boolean isForced, TimeslotEvent event,
 			boolean hasSteeringDiscount, String deliveryFeeTier)
-			throws FDResourceException;
+			throws FDResourceException, ReservationUnavailableException, ReservationException;
 	
 
 } 

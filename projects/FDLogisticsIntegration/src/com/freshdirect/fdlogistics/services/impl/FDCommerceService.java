@@ -33,7 +33,10 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.logistics.delivery.dto.Customer;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
+import com.freshdirect.logistics.delivery.model.ReservationException;
+import com.freshdirect.logistics.delivery.model.SystemMessageList;
 //import com.freshdirect.cms.ContentKey;
+import com.freshdirect.logistics.delivery.model.ReservationUnavailableException;
 
 
 public class FDCommerceService extends AbstractLogisticsService implements ICommerceService{
@@ -471,7 +474,7 @@ public BatchModel getBatch(int versionID) throws FDResourceException{
 	public FDReservation reserveTimeslot(String timeslotId, String customerId,
 			EnumReservationType type, Customer customer, boolean chefsTable,
 			String ctDeliveryProfile, boolean isForced, TimeslotEvent event,
-			boolean hasSteeringDiscount, String deliveryFeeTier) throws FDResourceException {
+			boolean hasSteeringDiscount, String deliveryFeeTier) throws FDResourceException, ReservationException {
 
 		Request<ReserveTimeParam> request = new Request<ReserveTimeParam>();
 		FDReservation fdReservation = null;
@@ -490,9 +493,16 @@ public BatchModel getBatch(int versionID) throws FDResourceException{
 				
 			
 //			Response<FDReservationData> response =	httpGetDataTypeMap(inputJson,getFdCommerceEndPoint(DLV_MANAGER_RESERVE_TIME), );
+			if (!response.getResponseCode().equals("OK")) {
+				if(response.getRequestIdentifier()!=null&&response.getRequestIdentifier().equals("ReservationUnavailableException"))
+					throw new ReservationUnavailableException(SystemMessageList.DELIVERY_SLOT_RSVERROR);
+				if(response.getRequestIdentifier()!=null&&response.getRequestIdentifier().equals("ReservationException"))
+					throw new ReservationException(SystemMessageList.DELIVERY_SLOT_RSVERROR);
+			}
+			
 			FDReservationData data = response.getData();
 			if(data==null)
-				throw new FDResourceException("Technical issue, please try again");
+				throw new FDResourceException("Technical Issue, please try again");
 			DlvManagerDecoder.setMapper(getMapper());
 			fdReservation = DlvManagerDecoder.converter(data);
 			
