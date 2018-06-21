@@ -60,6 +60,9 @@ private static OrderResourceApiClient INSTANCE;
 	private static final String CREATE_SUB_ORDER_API = 	"orders/sub/create";
 	
 	private static final String CREATE_DON_ORDER_API = 	"orders/don/create";
+	private static final String CREATE_REG_ORDER_API = 	"orders/reg/create";
+	private static final String MODIFY_REG_ORDER_API = 	"orders/reg/modify";
+	
 	public static OrderResourceApiClient getInstance() {
 		if (INSTANCE == null)
 			INSTANCE = new OrderResourceApiClient();
@@ -418,7 +421,7 @@ private static OrderResourceApiClient INSTANCE;
 			
 			Response<String> response = null;
 			String inputJson = buildRequest(request);
-			response = httpPostData(getFdCommerceEndPoint(CREATE_DON_ORDER_API), inputJson, Response.class, new Object[]{});
+			response = httpPostData(getFdCommerceEndPoint(CREATE_REG_ORDER_API), inputJson, Response.class, new Object[]{});
 			return parseResponse(response);
 		} catch (Exception e) {
 			e.printStackTrace();
