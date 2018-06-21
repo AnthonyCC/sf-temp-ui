@@ -7,6 +7,7 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import javax.servlet.http.*;
 import javax.servlet.jsp.*;
@@ -20,6 +21,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationError;
 import com.freshdirect.webapp.util.CaptchaUtil;
+import com.freshdirect.webapp.util.RequestUtil;
 
 import org.apache.log4j.*;
 
@@ -55,12 +57,54 @@ public class PaymentMethodControllerTag extends com.freshdirect.framework.webapp
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
         HttpSession session = pageContext.getSession();
         ActionResult actionResult = new ActionResult();
-        boolean isAddOrEditCard = false;
+        boolean isAddOrEditCard = false; 
+        
+        /* set UUID */
+        if ( "GET".equalsIgnoreCase(request.getMethod()) && 
+        	(
+        		request.getRequestURI().indexOf("/your_account/add_creditcard.jsp") != -1 || 
+        		request.getRequestURI().indexOf("/your_account/edit_creditcard.jsp") != -1
+        	)
+        ) {
+        	FDSessionUser user = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
+        	user.setAddCcUuid(UUID.randomUUID().toString());
+        }
+        
         if (("POST".equalsIgnoreCase(request.getMethod()))) {
             user = (FDUserI) session.getAttribute(SessionName.USER);
             
 
 			try {
+				/* verify UUID */
+	            if(actionName.equalsIgnoreCase("addPaymentMethod") || actionName.equalsIgnoreCase("editPaymentMethod")) {
+	            	FDSessionUser sessionUser = (FDSessionUser) user;
+	            	String hash = RequestUtil.getRequestParameter(request, "hash");
+	            	ErpPaymentMethodI paymentMethod = null;
+	            	
+	            	if(actionName.equalsIgnoreCase("addPaymentMethod")) {
+	            		paymentMethod = PaymentMethodUtil.processForm(request, actionResult, user.getIdentity());
+	            	}
+	            	if(actionName.equalsIgnoreCase("editPaymentMethod")) {
+	            		paymentMethod = PaymentMethodUtil.processEditForm(request, actionResult, user.getIdentity());
+	            	}
+	            	
+	            	
+	            	if (paymentMethod != null &&
+	            		(
+	            			paymentMethod.getPaymentMethodType() == EnumPaymentMethodType.CREDITCARD ||
+	            			paymentMethod.getPaymentMethodType() == EnumPaymentMethodType.DEBITCARD
+	            		)
+	            	) {
+						isAddOrEditCard = true;
+					}
+					/* limit to cc/debit */
+	            	if (isAddOrEditCard && hash == null || "".equals(hash) || sessionUser == null || !hash.equals(sessionUser.getAddCcUuid())) {
+	            		//"fail" silently
+	                    pageContext.setAttribute(this.result, actionResult);
+	            		return EVAL_BODY_BUFFERED;
+	            	}
+	            }
+	            
 	            if(actionName.equalsIgnoreCase("addPaymentMethod")) {
 	            	if (!checkCaptcha(request, actionResult)) {
 	            		return EVAL_BODY_BUFFERED;

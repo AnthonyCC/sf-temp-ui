@@ -44,6 +44,7 @@ if("true".equals(request.getParameter("gc"))) {
 }
 boolean proceedThruCheckout=false;
 
+FDSessionUser sessionUser = (FDSessionUser) session.getAttribute(SessionName.USER);
 %>
 
 <fd:PaymentMethodController actionName='editPaymentMethod' result='result' successPage='<%=successRedirect%>'>
@@ -75,6 +76,7 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 </tr>
 </table>
 
+	<input id="hash" name="hash" type="hidden" value="<%= sessionUser.getAddCcUuid() %>" />
 <%@ include file="/includes/ckt_acct/i_edit_creditcard_fields.jspf"%>
 <br><br>
 
