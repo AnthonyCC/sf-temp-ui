@@ -155,6 +155,8 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     private String 	pdUserId;
 
     private Set<ContentKey> checkoutUnavailableProductKeys; // set of items which failed the ATP test
+    
+    private String addCcUuid;
 
 	public void setLastCOSSurveySuccess(boolean lastCOSSurveySuccess) {
         this.lastCOSSurveySuccess = lastCOSSurveySuccess;
@@ -2572,5 +2574,11 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
 	public boolean hasMidWeekDlvPass() {
 		return this.user.hasMidWeekDlvPass();
+	}
+	public String getAddCcUuid() {
+		return addCcUuid;
+	}
+	public void setAddCcUuid(String addCcUuid) {
+		this.addCcUuid = addCcUuid;
 	}
 }
