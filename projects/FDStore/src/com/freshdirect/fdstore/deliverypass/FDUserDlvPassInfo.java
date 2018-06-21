@@ -18,7 +18,7 @@ public class FDUserDlvPassInfo implements Serializable{
 	private String description;
 	private DeliveryPassType type;
 	private Date expDate;
-	private double amount;
+	private Double amount;
 	private String originalOrderId;
 	private int remainingCount;
 	private int usedCount;
