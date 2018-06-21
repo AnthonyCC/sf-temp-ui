@@ -837,11 +837,11 @@ public interface FDCustomerManagerSB  extends EJBObject{
 	public void storeDPTCAgreeDate(FDActionInfo info, String customerId, Date dpTcAgreeDate) throws FDResourceException, RemoteException;
 
 	public List<CustomerCreditModel> getCustomerReprotedLates() throws FDResourceException, RemoteException;
-
+	@Deprecated
 	public List<CustomerCreditModel> getDriverReportedLates() throws FDResourceException, RemoteException;
-
+	@Deprecated
 	public List<CustomerCreditModel> getScanReportedLates() throws FDResourceException, RemoteException;
-
+	@Deprecated
 	public void storeLists(Set cmList) throws FDResourceException, RemoteException;
 
 	public List<FDCartonInfo> getCartonDetailsForSale(FDOrderI order) throws FDResourceException, RemoteException;
