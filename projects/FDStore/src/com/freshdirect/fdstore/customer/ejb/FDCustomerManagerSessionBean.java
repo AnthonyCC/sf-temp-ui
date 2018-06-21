@@ -8659,10 +8659,19 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		try {
 			conn = getConnection();
 			ErpCustomerDAO.updateDpAutoRenewOptinDetails(conn, isAutoRenewDp, custId, dpType, eStore);
-			if(null != info){
-				if(isAutoRenewDp)	this.logActivity(info.createActivity(EnumAccountActivityType.AUTORENEW_DP_FLAG_ON));
-				else this.logActivity(info.createActivity(EnumAccountActivityType.AUTORENEW_DP_FLAG_OFF));
-			} 
+			if (null != info) {
+				if (EnumEStoreId.FDX.equals(eStore)) {
+					if (isAutoRenewDp)
+						this.logActivity(info.createActivity(EnumAccountActivityType.AUTORENEW_DP_FLAG_ON_FDX));
+					else
+						this.logActivity(info.createActivity(EnumAccountActivityType.AUTORENEW_DP_FLAG_OFF_FDX));
+				} else {
+					if (isAutoRenewDp)
+						this.logActivity(info.createActivity(EnumAccountActivityType.AUTORENEW_DP_FLAG_ON));
+					else
+						this.logActivity(info.createActivity(EnumAccountActivityType.AUTORENEW_DP_FLAG_OFF));
+				}
+			}
 			}catch (SQLException sqle) {
 			throw new FDResourceException(sqle, "Some problem in updating  dpFreeTrialOptin value.");
 		} finally {
