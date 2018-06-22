@@ -79,6 +79,8 @@
 <script>
 	(function (fd) {
 		var $=fd.libs.$;
+		/* remove left text first (already hidden with APPDEV-4788) */
+		$('#welcome-section-container>.text-left').remove();
 		if ($('#welcome-section-container').text().trim() === '') {
 			$('#welcome-section-container').remove();
 		}
