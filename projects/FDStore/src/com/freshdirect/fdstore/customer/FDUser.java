@@ -700,7 +700,7 @@ public class FDUser extends ModelSupport implements FDUserI {
         this.getShoppingCart().setDlvPassExtn(null);
         this.getShoppingCart().setDlvPromotionApplied(false);
         this.getShoppingCart().setDeliveryPassCount();
-        if (this.getShoppingCart().isDlvPassApplicableByCartLines() || (this.isDlvPassActive()) || (this.applyFreeTrailOptinBasedDP())) {
+        if (this.getShoppingCart().isDlvPassApplicableByCartLines() || (this.isDlvPassActive()) || (this.applyFreeTrailOptinBasedDP()) ||checkExpDlvPassForOrderMod() ) {
         	this.getShoppingCart().setDlvPassApplied(true);
         }else {
         	this.getShoppingCart().setDlvPassApplied(false);
@@ -1694,15 +1694,19 @@ public class FDUser extends ModelSupport implements FDUserI {
 
     @Override
     public void performDlvPassStatusCheck() throws FDResourceException {
+    	boolean isDlvPassApplied = false;
         if (this.isDlvPassActive()) {
             if (!(this.getShoppingCart().isChargeWaived(EnumChargeType.DELIVERY))) {
                 // If delivery promotion was applied, do not reapply the waiving of dlv charge.
                 this.getShoppingCart().setChargeWaived(EnumChargeType.DELIVERY, true, DlvPassConstants.PROMO_CODE, this.isWaiveDPFuelSurCharge(false));
                 this.getShoppingCart().setDlvPassApplied(true);
+                isDlvPassApplied= true;
             }
-        } else if ((this.getShoppingCart() instanceof FDModifyCartModel) && (this.getDlvPassInfo().isUnlimited())) {
+        } else if ((this.getShoppingCart() instanceof FDModifyCartModel) && (this.getDlvPassInfo().isUnlimited()) && checkExpDlvPassForOrderMod()) {
+        	this.getShoppingCart().setChargeWaived(EnumChargeType.DELIVERY, true, DlvPassConstants.PROMO_CODE, this.isWaiveDPFuelSurCharge(false));
+            this.getShoppingCart().setDlvPassApplied(true);
 
-            String dpId = ((FDModifyCartModel) this.getShoppingCart()).getOriginalOrder().getDeliveryPassId();
+           /* String dpId = ((FDModifyCartModel) this.getShoppingCart()).getOriginalOrder().getDeliveryPassId();
             if (dpId != null && !dpId.equals("")) {
                 List passes = FDCustomerManager.getDeliveryPassesByStatus(this.getIdentity(), EnumDlvPassStatus.ACTIVE);
                 DeliveryPassModel dlvPass = null;
@@ -1718,7 +1722,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 
                     }
                 }
-            }
+            }*/
         }
     }
 
@@ -4141,6 +4145,55 @@ public class FDUser extends ModelSupport implements FDUserI {
 						&& null != dlvPassInfo.getTypePurchased().getDeliveryTypes() && !dlvPassInfo.getTypePurchased().getDeliveryTypes().contains(this.getShoppingCart().getDeliveryType())){
 							isDlvPassContextMatched = false;
 				}
+		}
+		
+		return isDlvPassContextMatched;
+	}
+	
+	//To check/honour the expired deliverypass during order modification, if the original order has the deliverypass applied.
+	public boolean checkExpDlvPassForOrderMod(){
+		boolean canDlvPassBeApplied = false;
+	
+		try {
+			if ((this.getShoppingCart() instanceof FDModifyCartModel) && (this.getDlvPassInfo().isUnlimited())) {
+
+			    String dpId = ((FDModifyCartModel) this.getShoppingCart()).getOriginalOrder().getDeliveryPassId();
+			    if (dpId != null && !dpId.equals("")) {
+			        List passes = FDCustomerManager.getDeliveryPassesByStatus(this.getIdentity(), EnumDlvPassStatus.ACTIVE);
+			        DeliveryPassModel dlvPass = null;
+			        Date today = new Date();
+			        for (int i = 0; i < passes.size(); i++) {
+			            dlvPass = (DeliveryPassModel) passes.get(i);
+
+			            if (today.after(dlvPass.getExpirationDate()) && EnumDlvPassStatus.ACTIVE.equals(dlvPass.getStatus()) && dlvPass.getId().equals(dpId) && isDlvPassContextMatched(dlvPass)) {
+			            	canDlvPassBeApplied = true; 
+			            	this.getShoppingCart().setDlvPassPremiumAllowedTC(dlvPass.getPurchaseDate().after(FDStoreProperties.getDlvPassNewTCDate()));
+			            	break;
+			            }
+			        }
+			    }
+			}
+		} catch (Exception e) {
+			LOGGER.warn("Exception in checkExpDlvPassForOrderMod()",e);
+		}
+		return canDlvPassBeApplied;
+	}
+	
+	public boolean isDlvPassContextMatched(DeliveryPassModel dlvPass){
+		boolean isDlvPassContextMatched = true;
+		if(null !=dlvPass){//'Delivery Type' specific pass check.				
+			if(null != this.getShoppingCart() && null != this.getShoppingCart().getDeliveryAddress() && null != dlvPass.getType()
+					&& null != dlvPass.getType().getDeliveryTypes() && !dlvPass.getType().getDeliveryTypes().contains(this.getShoppingCart().getDeliveryType())){
+						isDlvPassContextMatched = false;
+			}
+			if(isDlvPassContextMatched){ //'Delivery Day' specific pass check.
+				if(null!=this.getShoppingCart() && null!=this.getShoppingCart().getDeliveryReservation() && null!=this.getShoppingCart().getDeliveryReservation().getTimeslot() && null!=dlvPass.getType().getEligibleDlvDays() && !dlvPass.getType().getEligibleDlvDays().isEmpty()){
+					if(!(dlvPass.getType().getEligibleDlvDays().contains(this.getShoppingCart().getDeliveryReservation().getTimeslot().getDayOfWeek()))){
+						isDlvPassContextMatched = false;
+					}
+				}
+						
+			}
 		}
 		
 		return isDlvPassContextMatched;
