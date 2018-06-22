@@ -1694,13 +1694,11 @@ public class FDUser extends ModelSupport implements FDUserI {
 
     @Override
     public void performDlvPassStatusCheck() throws FDResourceException {
-    	boolean isDlvPassApplied = false;
         if (this.isDlvPassActive()) {
             if (!(this.getShoppingCart().isChargeWaived(EnumChargeType.DELIVERY))) {
                 // If delivery promotion was applied, do not reapply the waiving of dlv charge.
                 this.getShoppingCart().setChargeWaived(EnumChargeType.DELIVERY, true, DlvPassConstants.PROMO_CODE, this.isWaiveDPFuelSurCharge(false));
                 this.getShoppingCart().setDlvPassApplied(true);
-                isDlvPassApplied= true;
             }
         } else if ((this.getShoppingCart() instanceof FDModifyCartModel) && (this.getDlvPassInfo().isUnlimited()) && checkExpDlvPassForOrderMod()) {
         	this.getShoppingCart().setChargeWaived(EnumChargeType.DELIVERY, true, DlvPassConstants.PROMO_CODE, this.isWaiveDPFuelSurCharge(false));
