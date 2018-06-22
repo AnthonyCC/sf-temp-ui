@@ -141,14 +141,9 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
-				return CallCenterManagerService.getInstance().locateCompanyCustomers(criteria);
-			}
-			else {
+
 			CallCenterManagerSB sb = callCenterHome.create();
 			return sb.locateCompanyCustomers(criteria);
-			}
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -163,13 +158,8 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
-				 return CallCenterManagerService.getInstance().orderSummarySearch(criteria);
-			}
-			else {
 			CallCenterManagerSB sb = callCenterHome.create();
 			return sb.orderSummarySearch(criteria);
-			}
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -480,14 +470,8 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
-				 return CallCenterManagerService.getInstance().resubmitPayment(saleId, payment, charges);
-			}
-			else {
 			CallCenterManagerSB sb = callCenterHome.create();
 			return sb.resubmitPayment(saleId, payment, charges);
-			}
-
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -690,13 +674,8 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
-				 return CallCenterManagerService.getInstance().doGenericSearch(criteria);
-			}
-			else {
 			CallCenterManagerSB sb = callCenterHome.create();
 			return sb.doGenericSearch(criteria);
-			}
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating session bean");
