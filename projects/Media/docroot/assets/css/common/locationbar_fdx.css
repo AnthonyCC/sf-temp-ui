@@ -251,11 +251,11 @@
 	.globalnav_top .topnavitem {
         /*float: right; */
 		margin: 9px 0 0 0px;
-		font-family: Verdana;
-		font-size: 14px;
-		font-weight: normal;
-		color: #5c7440;
-	}
+        font-family: Verdana;
+        font-size: 14px;
+        font-weight: normal;
+        color: #5c7440;
+ }
 	.globalnav_top .nav {
 		bottom: initial;
 		position: relative;
@@ -1630,12 +1630,12 @@ option.address-icon {
 	padding-right: 1.5rem !important;
 	padding-top: 1rem !important;
 	position: absolute !important;
-	top: -4.2rem !important;
+	top: -10rem !important;
 	z-index: 100001 !important;
 	color: #458b4c !important;
 	background-color: #ffffff !important;
-    border: 1px solid #4fa157 !important;
-    padding: 13px 20px !important;
+	border: 1px solid #4fa157 !important;
+	padding: 13px 20px !important;
 }
 
 .skipnav:focus {
