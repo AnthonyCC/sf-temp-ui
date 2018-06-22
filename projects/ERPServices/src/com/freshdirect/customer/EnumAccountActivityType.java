@@ -75,10 +75,10 @@ public class EnumAccountActivityType implements java.io.Serializable {
 	public final static EnumAccountActivityType		MASS_RETURN							= new EnumAccountActivityType( "Mass Return", "Mass Return" );
 
 	public final static EnumAccountActivityType		FLIP_AUTORENEW_DP_FLAG				= new EnumAccountActivityType( "Flip AutoRenew", "Flip AutoRenew DP Flag" );
-	public final static EnumAccountActivityType		AUTORENEW_DP_FLAG_ON				= new EnumAccountActivityType( "DP AR ON", "FD- AutoRenew DP flag turned ON" );
-	public final static EnumAccountActivityType		AUTORENEW_DP_FLAG_OFF				= new EnumAccountActivityType( "DP AR OFF", "FD- AutoRenew DP flag turned OFF" );
-	public final static EnumAccountActivityType		AUTORENEW_DP_FLAG_ON_FDX		= new EnumAccountActivityType( "DP AR ON", "FDX - AutoRenew DP flag turned ON" );
-	public final static EnumAccountActivityType		AUTORENEW_DP_FLAG_OFF_FDX		= new EnumAccountActivityType( "DP AR OFF", "FDX - AutoRenew DP flag turned OFF" );
+	public final static EnumAccountActivityType		AUTORENEW_DP_FLAG_ON				= new EnumAccountActivityType( "DP AR ON FD", "FD- AutoRenew DP flag turned ON" );
+	public final static EnumAccountActivityType		AUTORENEW_DP_FLAG_OFF				= new EnumAccountActivityType( "DP AR OFF FD", "FD- AutoRenew DP flag turned OFF" );
+	public final static EnumAccountActivityType		AUTORENEW_DP_FLAG_ON_FDX		= new EnumAccountActivityType( "DP AR ON FDX", "FDX - AutoRenew DP flag turned ON" );
+	public final static EnumAccountActivityType		AUTORENEW_DP_FLAG_OFF_FDX		= new EnumAccountActivityType( "DP AR OFF FDX", "FDX - AutoRenew DP flag turned OFF" );
 	public final static EnumAccountActivityType		VIEW_CC_ECHECK						= new EnumAccountActivityType( "View CC/ECHECK", "View cc/echeck account number" );
 	public final static EnumAccountActivityType		VIEW_CC								= new EnumAccountActivityType( "View CC", "View CC Details" );
 	public final static EnumAccountActivityType		VIEW_ECHECK							= new EnumAccountActivityType( "View ECHECK", "View eCheck Details" );
