@@ -106,10 +106,6 @@ if (mobWeb) {
     			<% if (!mobWeb) { %>
   					<div class="tsWrapper">
   						<%@ include file="/shared/includes/delivery/i_delivery_timeslots.jspf"%>
-						<script>window.FreshDirect = window.FreshDirect || {};
-								window.FreshDirect.gtm = window.FreshDirect.gtm || {};
-								window.FreshDirect.gtm.afterPageView = window.FreshDirect.gtm.afterPageView || [];
-								window.FreshDirect.gtm.afterPageView.push({ timeslotOpened:{ action: 'timeslot-pageview', pageName:'Reserve Timeslots'} });</script>
   					</div>
     			<%} else {%>
       				<div class="timeslot-selector reserve-timeslot"></div>
@@ -153,13 +149,13 @@ if (mobWeb) {
 			</form>
 		</fd:ReserveTimeslotController>
 
-		<script type="text/javascript">
+		<script>
 			var FreshDirect = FreshDirect || {};
 			FreshDirect._page_options = {rsvType: { RECURRING: 'WRR', ONETIME: 'OTR' }};
-			changeMe($('reservationType_field2'));
+			changeMe($jq('#reservationType_field2'));
 		</script>
 		<% if (mobWeb) { %>
-			<script type="text/javascript">
+			<script>
 				var getTimeslots = function () {
 					$jq('#timeslot_selector_select').hide();
 					if (FreshDirect && FreshDirect.common && FreshDirect.common.dispatcher) {
