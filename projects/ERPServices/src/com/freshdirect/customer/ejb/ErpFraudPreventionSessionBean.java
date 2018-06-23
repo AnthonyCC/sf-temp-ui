@@ -32,12 +32,12 @@ import com.freshdirect.customer.EnumTransactionType;
 import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerModel;
-import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
@@ -652,6 +652,27 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 			return ;
 		}
 		//TODO: Any checks required or not like 3 day limit etc. 
+		
+	}
+	
+	public boolean isRegistrationForIPRestricted(String ip) {
+		
+		if(StringUtil.isEmpty(ip)) {
+			return false;
+		}
+		
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			int count= dao.getRegistrationsForIP(conn, ip);
+			return count>=FDStoreProperties.getAccountCreationLimitPerIP();
+	} catch (SQLException ex) {
+			LOGGER.error("SQLException occurred", ex);
+			throw new EJBException(ex.getMessage());
+		}finally{
+			close(conn);
+		}
+		
 		
 	}
 	

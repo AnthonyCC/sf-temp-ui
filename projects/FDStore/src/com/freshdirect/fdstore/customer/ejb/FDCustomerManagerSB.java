@@ -140,7 +140,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
 		boolean pickupOnly,
 		boolean eligibleForPromotion,
 		FDSurveyResponse survey, EnumServiceType serviceType)
-		throws FDResourceException, ErpDuplicateUserIdException, RemoteException;
+		throws FDResourceException, ErpDuplicateUserIdException,ErpFraudException, RemoteException;
 
 	@Deprecated
 	public RegistrationResult register(
@@ -151,7 +151,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
 			boolean pickupOnly,
 			boolean eligibleForPromotion,
 			FDSurveyResponse survey, EnumServiceType serviceType, boolean isGiftCardBuyer)
-			throws FDResourceException, ErpDuplicateUserIdException, RemoteException;
+			throws FDResourceException, ErpDuplicateUserIdException,ErpFraudException, RemoteException;
 
 	@Deprecated
     public FDUser createNewUser(String zipCode, EnumServiceType serviceType, EnumEStoreId eStoreId) throws FDResourceException, RemoteException;
@@ -223,6 +223,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      * @deprecated
      */
     public void addPaymentMethod(FDActionInfo info, ErpPaymentMethodI paymentMethod, boolean paymentechEnabled) throws FDResourceException, RemoteException, ErpPaymentMethodException;
+    
     @Deprecated
     public void setDefaultPaymentMethod(FDActionInfo info, PrimaryKey paymentMethodPK, EnumPaymentMethodDefaultType type, boolean isDebitCardSwitch) throws FDResourceException,RemoteException;
 
