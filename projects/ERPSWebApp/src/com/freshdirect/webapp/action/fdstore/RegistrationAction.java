@@ -20,6 +20,7 @@ import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDuplicatePaymentMethodException;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
+import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpPaymentMethodException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
@@ -222,6 +223,10 @@ public class RegistrationAction extends WebActionSupport {
 				} catch (ErpDuplicateUserIdException de) {
 					LOGGER.warn("User registration failed due to duplicate id", de);
 					actionResult.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(), SystemMessageList.MSG_UNIQUE_USERNAME));
+				} catch(ErpFraudException fe) {
+					LOGGER.warn("User registration failed due to fraud", fe);
+					actionResult.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(), fe.getFraudReason().getDescription()));
+					
 				}
 
 			}
@@ -1147,7 +1152,7 @@ public class RegistrationAction extends WebActionSupport {
 		ErpCustomerModel erpCustomer,
 		FDSurveyResponse survey,
 		EnumServiceType serviceType) throws ErpDuplicateUserIdException,ErpDuplicatePaymentMethodException,
-		ErpPaymentMethodException,FDResourceException {
+		ErpPaymentMethodException,FDResourceException,ErpFraudException {
 		
 		LOGGER.debug("RegistrationAction: In doRegistration");
 
