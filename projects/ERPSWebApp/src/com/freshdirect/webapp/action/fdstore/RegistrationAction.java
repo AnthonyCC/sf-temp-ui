@@ -840,6 +840,7 @@ public class RegistrationAction extends WebActionSupport {
 				}catch (ErpFraudException fe) {
 					LOGGER.warn("User registration failed due to ", fe);
 					actionResult.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(), fe.getFraudReason().getDescription()));
+					return ERROR;
 				}
 	
 			}
