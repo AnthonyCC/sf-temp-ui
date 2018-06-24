@@ -15,13 +15,11 @@ import com.freshdirect.ecomm.gateway.AbstractEcommService;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.ecommerce.data.customer.ErpActivityRecordData;
-import com.freshdirect.ecommerce.data.list.FDCustomerListData;
 import com.freshdirect.ecommerce.data.standingorders.DeleteSOData;
 import com.freshdirect.ecommerce.data.standingorders.FDStandingOrderAltDeliveryDateData;
 import com.freshdirect.ecommerce.data.standingorders.FDStandingOrderData;
 import com.freshdirect.ecommerce.data.standingorders.FDStandingOrderInfoListData;
 import com.freshdirect.ecommerce.data.standingorders.ResultData;
-import com.freshdirect.ecommerce.data.standingorders.StandingOrderErrorData;
 import com.freshdirect.ecommerce.data.standingorders.StandingOrderModifyData;
 import com.freshdirect.ecommerce.data.survey.FDIdentityData;
 import com.freshdirect.fdstore.FDEcommServiceException;
@@ -32,12 +30,9 @@ import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ecomm.converter.StandingOrderConverter;
-import com.freshdirect.fdstore.lists.FDCustomerList;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderAltDeliveryDate;
-import com.freshdirect.fdstore.standingorders.FDStandingOrderFilterCriteria;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderInfoList;
-import com.freshdirect.fdstore.standingorders.FDStandingOrderSkuResultInfo;
 import com.freshdirect.fdstore.standingorders.SOResult.Result;
 import com.freshdirect.fdstore.standingorders.UnavDetailsReportingBean;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -645,4 +640,5 @@ public class FDStandingOrdersService extends AbstractEcommService implements FDS
 		return StandingOrderConverter.buildStandingOrderList(response.getData());
 	}
 
+			
 }
