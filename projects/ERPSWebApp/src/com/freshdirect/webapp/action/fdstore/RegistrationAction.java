@@ -837,6 +837,9 @@ public class RegistrationAction extends WebActionSupport {
 				} catch (ErpDuplicateUserIdException de) {
 					LOGGER.warn("User registration failed due to duplicate id", de);
 					actionResult.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(), SystemMessageList.MSG_UNIQUE_USERNAME));
+				}catch (ErpFraudException fe) {
+					LOGGER.warn("User registration failed due to ", fe);
+					actionResult.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(), fe.getFraudReason().getDescription()));
 				}
 	
 			}
