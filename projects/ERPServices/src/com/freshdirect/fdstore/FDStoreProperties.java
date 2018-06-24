@@ -1074,6 +1074,7 @@ public class FDStoreProperties {
 	private static final String PROP_AMOUNT_SAVED_DP_ACCOUNTS_PAGE_ENABLED="fdstore.amount.saved.dpaccountpage.enabled"; 
 	
 	private static final String ACCOUNT_CREATION_LIMIT_PER_IP="fdstore.ip.account.limit";
+	private static final String WHITELISTED_IP_LIST="fdstore.allowed.ip.list";
 
  	static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -5264,5 +5265,10 @@ public class FDStoreProperties {
     public static int getAccountCreationLimitPerIP() {
 		 return Integer.parseInt(get(ACCOUNT_CREATION_LIMIT_PER_IP));
 
+    }
+    
+    public static final String getWhitelistedIPs() {
+    	
+    	return FDEcommProperties.get(WHITELISTED_IP_LIST);
     }
 }

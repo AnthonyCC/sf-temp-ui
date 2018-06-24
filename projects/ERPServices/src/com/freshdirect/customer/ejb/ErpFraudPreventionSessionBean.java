@@ -659,6 +659,8 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 		
 		if(StringUtil.isEmpty(ip)) {
 			return false;
+		} else if (FDStoreProperties.getWhitelistedIPs().indexOf(ip)!=-1) {
+			return false;
 		}
 		
 		Connection conn = null;
