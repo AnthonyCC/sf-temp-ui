@@ -24,7 +24,8 @@
 	
 	if (ERROR_LIST != null && ERROR_LIST.size() > 0 && EnumUserInfoName.getUserInfoName(ERROR_LIST.get(0).toString()) != null) {
 %>
-			<table role="presentation" border="0" cellspacing="0" cellpadding="0">
+			<table border="0" cellspacing="0" cellpadding="0">
+			<caption class="offscreen"><%= errorMsg %></caption>
 <%
 		for (String fieldType : ERROR_LIST) {
 			if(result.getError(fieldType) != null && EnumUserInfoName.getUserInfoName(fieldType) != null) {
