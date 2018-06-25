@@ -10,6 +10,10 @@ public class ModifiedOrder extends Cart {
     private DeliveryAddress deliveryAddress;
     private Date reservationTime;
     private String reservationTimeRange;
+    private int viewCount = -1; 
+	private int viewCountLimit = -1; 
+	private String media = ""; 
+	private boolean showingOrderModifyOverlay = false;
 
     public Date getModificationCutoffTimeMs() {
         return modificationCutoffTime;
@@ -74,6 +78,38 @@ public class ModifiedOrder extends Cart {
 
 	public void setReservationTimeRange(String reservationTimeRange) {
 		this.reservationTimeRange = reservationTimeRange;
+	}
+
+	public int getViewCount() {
+		return viewCount;
+	}
+
+	public void setViewCount(int viewCount) {
+		this.viewCount = viewCount;
+	}
+
+	public int getViewCountLimit() {
+		return viewCountLimit;
+	}
+
+	public void setViewCountLimit(int viewCountLimit) {
+		this.viewCountLimit = viewCountLimit;
+	}
+
+	public String getMedia() {
+		return media;
+	}
+
+	public void setMedia(String media) {
+		this.media = media;
+	}
+
+	public boolean isShow() {
+		return showingOrderModifyOverlay;
+	}
+
+	public void setShow(boolean show) {
+		this.showingOrderModifyOverlay = show;
 	}
 
 }

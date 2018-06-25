@@ -512,9 +512,11 @@ public abstract class BaseController extends AbstractController implements Messa
      * @param action
      * @param user
      * @return
+     * @throws com.freshdirect.framework.template.TemplateException 
+     * @throws IOException 
      */
     protected abstract ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model,
-            String action, SessionUser user) throws JsonException, FDException, ServiceException, NoSessionException;
+            String action, SessionUser user) throws JsonException, FDException, ServiceException, NoSessionException, IOException, com.freshdirect.framework.template.TemplateException;
 
     protected void createUserSession(User user, String source, HttpServletRequest request, HttpServletResponse response) throws FDResourceException {
         //Order is important here as "UserUtil.createSessionUser" will refer to the code set in the previous step

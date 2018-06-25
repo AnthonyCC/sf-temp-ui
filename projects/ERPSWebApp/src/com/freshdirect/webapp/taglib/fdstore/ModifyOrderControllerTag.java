@@ -117,6 +117,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 	private String orderId;
 	private String result;
 	private String successPage;
+	private boolean isMobileRequest = false;
 
 	public void setAction(String s) {
 		this.action = s;
@@ -162,17 +163,17 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 					
 					//but only if the order id being cancelled is the one being modified
 					if (this.orderId.equalsIgnoreCase(modOrderId)) {
-						this.cancelModifyOrder(request, results);
+						this.cancelModifyOrder(request, results, isMobileRequest);
 					}
 				}
 				
 				this.cancelOrder(request, results);
 				actionPerformed = true;
 			} else if ( MODIFY_ACTION.equalsIgnoreCase(this.action) ) {
-				this.modifyOrder(request, results);
+				this.modifyOrder(request, results, isMobileRequest);
 				actionPerformed = true;
 			} else if ( CANCEL_MODIFY_ACTION.equalsIgnoreCase(this.action) ) {
-				this.cancelModifyOrder(request, results);
+				this.cancelModifyOrder(request, results, isMobileRequest);
 				actionPerformed = true;
 			} else if ( NEW_AUTHORIZATION.equalsIgnoreCase(this.action) ) {
 				this.doNewAuthorization(request, results);
@@ -216,10 +217,10 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			if ( CANCEL_MODIFY_ACTION.equalsIgnoreCase(this.action) ) {
 				LOGGER.debug("GET + cancelModify");
 				// we got a GET, not a POST, but that's fine.. :)
-				this.cancelModifyOrder(request, results);
+				this.cancelModifyOrder(request, results, isMobileRequest);
 				actionPerformed = true;
 			} else if ( MODIFY_ACTION.equalsIgnoreCase(this.action) ) {
-				this.modifyOrder(request, results);
+				this.modifyOrder(request, results, isMobileRequest);
 				actionPerformed = true;
 				
 				// Remove the EWallet Payment MEthod ID from session
@@ -389,7 +390,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		
 	}
 
-	protected void modifyOrder(HttpServletRequest request, ActionResult results) throws JspException {
+	protected void modifyOrder(HttpServletRequest request, ActionResult results, boolean isMobilerequest) throws JspException {
 		HttpSession session = request.getSession();
 		
 		String mergePendingStr = request.getParameter("mergePending");
@@ -403,12 +404,14 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		// Modify order: load the shopping cart with the old items
 		//
 		try {
-			modifyOrder(request, currentUser, orderId, session, null, EnumCheckoutMode.NORMAL, mergePernding, results);
+			modifyOrder(request, currentUser, orderId, session, null, EnumCheckoutMode.NORMAL, mergePernding, results, isMobilerequest);
 
 			//set user as having seen the overlay and used it (in case of login step)
 			currentUser.setSuspendShowPendingOrderOverlay(true);
 			//set inform ordermodify flag
-			currentUser.setShowingInformOrderModify(true);
+			if(!isMobilerequest){
+				currentUser.setShowingInformOrderModify(true);
+			}
 		}catch (FDException ex) {
 			LOGGER.warn("Unable to create modify cart", ex);
 			throw new JspException(ex.getMessage());
@@ -416,7 +419,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 	}
 
 	
-	protected static void doCancelModifyOrder(HttpSession session, FDSessionUser currentUser) throws FDAuthenticationException, FDResourceException {
+	protected static void doCancelModifyOrder(HttpSession session, FDSessionUser currentUser, boolean isMobileRequest) throws FDAuthenticationException, FDResourceException {
 		
 		String currentOrderId = null;
 		try{
@@ -449,12 +452,14 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		//reset user to see pendingOrder overlay again since they didn't check out
 		currentUser.setSuspendShowPendingOrderOverlay(false);
 		//clear inform ordermodify flag
-		currentUser.setShowingInformOrderModify(false);
+		if(!isMobileRequest){
+			currentUser.setShowingInformOrderModify(false);
+		}
 	}
 
 
 	public static FDModifyCartModel modifyOrder(HttpServletRequest request, FDSessionUser currentUser, String orderId, HttpSession session,
-			FDStandingOrder currentStandingOrder, EnumCheckoutMode checkOutMode, boolean mergePending, ActionResult results)
+			FDStandingOrder currentStandingOrder, EnumCheckoutMode checkOutMode, boolean mergePending, ActionResult results, boolean isMobileRequest)
 					throws FDResourceException, FDInvalidConfigurationException{
 
 		if (currentUser != null && currentUser.getShoppingCart() instanceof FDModifyCartModel ) {
@@ -462,7 +467,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			LOGGER.warn("An order is already opened for modification, cancel it first");
 			
 			try {
-				doCancelModifyOrder(session, currentUser);
+				doCancelModifyOrder(session, currentUser, isMobileRequest);
 			} catch (FDAuthenticationException e) {
 				// it is unlikely to happen but report it anyway
 				LOGGER.error(e);
@@ -604,7 +609,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 	}
 
 
-	protected void cancelModifyOrder(HttpServletRequest request, ActionResult results) throws JspException {
+	protected void cancelModifyOrder(HttpServletRequest request, ActionResult results, boolean isMobileRequest) throws JspException {
 		HttpSession session = request.getSession();
 
 		FDSessionUser currentUser = (FDSessionUser) session.getAttribute(SessionName.USER);
@@ -617,7 +622,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 
 
 		try {
-			doCancelModifyOrder(session, currentUser);
+			doCancelModifyOrder(session, currentUser, isMobileRequest);
 		} catch (FDResourceException ex) {
 			LOGGER.warn("Error accessing resources", ex);
 			throw new JspException(ex.getMessage());
@@ -1069,6 +1074,12 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 				EnumReservationType.STANDARD_RESERVATION, customerID, addressID,false, null,20,null,false,null,null);
 		return reservation;
 		
+	}
+	public boolean isMobileRequest() {
+		return isMobileRequest;
+	}
+	public void setMobileRequest(boolean isMobileRequest) {
+		this.isMobileRequest = isMobileRequest;
 	}
 	
 } // ModifyOrderControllerTag

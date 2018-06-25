@@ -672,6 +672,11 @@ function loadStuff() {
   	$("#url").val("/saptest12@freshdirect.com/order/2153089071/modify");
   	$("#header").val('');
   	$("#payload").val('');
+  	
+  }  else if (loaddata == "SetOverlayFalse") {
+  	$("#url").val("/saptest12@freshdirect.com/order/setoverlayfalse");
+  	$("#header").val('');
+  	$("#payload").val('');
 
   }  else if (loaddata == "CheckModify") {
   	$("#url").val("/saptest12@freshdirect.com/order/checkmodify");
@@ -1772,6 +1777,7 @@ function doStuff() {
   <option value="CancelExistingOrder">ORDERS - Cancel Existing Order</option>
   <option value="GetModifiableOrders">ORDERS - Get Modifiable Orders</option>
   <option value="ModifyOrder">ORDERS - Modify Order</option>
+  <option value="SetOverlayFalse">ORDERS - Set Overlay False</option>
   <option value="CheckModify">ORDERS - Check Modify</option>
   <option value="CancelOrderModify">ORDERS - Cancel Order Modify</option>
 

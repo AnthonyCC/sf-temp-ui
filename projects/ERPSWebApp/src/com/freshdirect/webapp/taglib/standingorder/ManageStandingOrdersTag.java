@@ -168,7 +168,7 @@ public class ManageStandingOrdersTag extends AbstractGetterTag {
 			
 			} else {
 				cart = ModifyOrderControllerTag.modifyOrder((HttpServletRequest) pageContext.getRequest(), user, orderId,
-						request.getSession(), so, EnumCheckoutMode.MODIFY_SO_MSOI, false, result);
+						request.getSession(), so, EnumCheckoutMode.MODIFY_SO_MSOI, false, result, false);
 				skusAndQuantities=getSkusAndQuantities(cart);
 				cart.clearOrderLines();
 			}	
