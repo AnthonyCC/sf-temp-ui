@@ -68,7 +68,7 @@ public class LoginServlet extends HttpServlet {
 						
 				 }
 				loginResponse.setSuccess(true);
-				request.getSession().setAttribute("fdLoginAttempt", Integer.valueOf(0));
+				request.getSession().setAttribute(SessionName.LOGIN_ATTEMPT, Integer.valueOf(0));
 			} else {
 				Iterator<ActionError> actions = actionResult.getErrors()
 						.iterator();
@@ -85,9 +85,7 @@ public class LoginServlet extends HttpServlet {
 					}
 				}
 				
-				Integer fdLoginAttempt = request.getSession().getAttribute("fdLoginAttempt") != null ? (Integer) request.getSession().getAttribute("fdLoginAttempt") : Integer.valueOf(0);
-				fdLoginAttempt++;
-				request.getSession().setAttribute("fdLoginAttempt", fdLoginAttempt);
+				int fdLoginAttempt = CaptchaUtil.increaseAttempt(request, SessionName.LOGIN_ATTEMPT);
 				if(fdLoginAttempt >= FDStoreProperties.getMaxInvalidLoginAttempt()){
 					//Should be the redirecting key to login page.
 					loginResponse.setMessage("CaptchaRedirect");

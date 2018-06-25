@@ -24,6 +24,7 @@ import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpPaymentMethodException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
+import com.freshdirect.enums.CaptchaType;
 import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
@@ -64,6 +65,7 @@ import com.freshdirect.webapp.taglib.fdstore.SocialGateway;
 import com.freshdirect.webapp.taglib.fdstore.SocialProvider;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.util.AccountUtil;
+import com.freshdirect.webapp.util.CaptchaUtil;
 
 public class RegistrationAction extends WebActionSupport {
 
@@ -130,7 +132,11 @@ public class RegistrationAction extends WebActionSupport {
 		aInfo.validate(actionResult);
 		addInfo.validate(actionResult);
 		cInfo.validate(actionResult, serviceType);
-
+		// validate captcha if it's enabled
+		boolean isCaptchaSuccess = CaptchaUtil.validateCaptcha(request.getParameter("g-recaptcha-response"), request.getRemoteAddr(), CaptchaType.SIGN_UP, session, SessionName.SIGNUP_ATTEMPT, FDStoreProperties.getMaxInvalidSignUpAttempt());
+		if (!isCaptchaSuccess) {
+			actionResult.addError(new ActionError("captcha", SystemMessageList.MSG_INVALID_CAPTCHA));
+		}
 		if (!actionResult.isSuccess() /*&& !ALLOW_ALL*/) {
 			return ERROR;
 		}
@@ -148,6 +154,8 @@ public class RegistrationAction extends WebActionSupport {
 		
 		boolean addressValid = validator.validateAddress(actionResult);
 		if (!actionResult.isSuccess()  /*&& !ALLOW_ALL*/) {
+			CaptchaUtil.increaseAttempt(request, SessionName.SIGNUP_ATTEMPT);
+			
 			return ERROR;
 		}
 
@@ -280,11 +288,15 @@ public class RegistrationAction extends WebActionSupport {
 			if (actionResult.isSuccess()) {
 				user.setJustSignedUp(true);
 				session.setAttribute("regSuccess", true);
+				CaptchaUtil.resetAttempt(request, SessionName.SIGNUP_ATTEMPT);
+			} else {
+				CaptchaUtil.increaseAttempt(request, SessionName.SIGNUP_ATTEMPT);
 			}
 			
 			//Set the
 			return SUCCESS;
 		} else {
+			CaptchaUtil.increaseAttempt(request, SessionName.SIGNUP_ATTEMPT);
 			// Delivery Address check failed
 			return ERROR;
 		}
@@ -614,7 +626,11 @@ public class RegistrationAction extends WebActionSupport {
 
 		EnumServiceType serviceType = addInfo.getAddressType();
 		
-		
+		// validate captcha if it's enabled
+		boolean isCaptchaSuccess = CaptchaUtil.validateCaptcha(request.getParameter("g-recaptcha-response"), request.getRemoteAddr(), CaptchaType.SIGN_UP, session, SessionName.SIGNUP_ATTEMPT, FDStoreProperties.getMaxInvalidSignUpAttempt());
+		if (!isCaptchaSuccess) {
+			actionResult.addError(new ActionError("captcha", SystemMessageList.MSG_INVALID_CAPTCHA));
+		}
 		if(session.getAttribute("CLICKID") != null ) {
 			
 			if("Enter your first name".equals(cInfo.firstName)) {
@@ -634,6 +650,7 @@ public class RegistrationAction extends WebActionSupport {
 	
 		if (!actionResult.isSuccess() && !ALLOW_ALL) {
 			LOGGER.info("ActionResult not succeed");
+			CaptchaUtil.increaseAttempt(request, SessionName.SIGNUP_ATTEMPT);
 			
 			 for(ActionError error : actionResult.getErrors()) {
 				 LOGGER.error(error.getDescription()); }
@@ -655,6 +672,7 @@ public class RegistrationAction extends WebActionSupport {
 				FDReferralManager.storeFailedAttempt(customerInfo.getEmail(),"", user.getAddress().getZipCode(),customerInfo.getFirstName(),customerInfo.getLastName(), (String) session.getAttribute("CLICKID"),"FNLNZipCode Match");
 				actionResult.addError(new ActionError(EnumUserInfoName.REPEAT_EMAIL.getCode(),"You already have an account and are ineligible for this referral offer. Please log in to start shopping or call Customer Service for assistance."));
 				session.setAttribute("MSG_FOR_LOGIN_PAGE", "You already have an account and are ineligible for this referral offer. Please log in to start shopping or call Customer Service for assistance.");
+				CaptchaUtil.increaseAttempt(request, SessionName.SIGNUP_ATTEMPT);
 				return ERROR;
 			}
 		}
@@ -844,7 +862,9 @@ public class RegistrationAction extends WebActionSupport {
 				}
 	
 			}
-		
+		if (actionResult.isFailure()) {
+			CaptchaUtil.increaseAttempt(request, SessionName.SIGNUP_ATTEMPT);
+		}
 		return SUCCESS;
 		
 	}

@@ -1,6 +1,7 @@
 <%@page import="com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag"%>
 <%@ page import="java.net.*,java.util.HashMap"%>
 <%@ page import="com.freshdirect.framework.util.NVL"%>
+<%@ page import="com.freshdirect.enums.CaptchaType" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI"%>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
@@ -13,8 +14,10 @@
 <%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
 <%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
+<%@ page import='com.freshdirect.webapp.util.CaptchaUtil' %>
 <%@ taglib uri="freshdirect" prefix="fd"%>
 <%@ taglib uri="template" prefix="tmpl" %>
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr"%>
 
 <fd:CheckLoginStatus />
 
@@ -64,6 +67,11 @@
 		template = "/common/template/mobileWeb.jsp"; //mobWeb template
 		request.setAttribute("sitePage", "www.freshdirect.com/mobileweb/social/signup_lite.jsp"); //change for OAS
 	}
+	
+	//Captcha.
+	boolean showCaptcha = CaptchaUtil.isExcessiveAttempt(FDStoreProperties.getMaxInvalidSignUpAttempt(), session, SessionName.SIGNUP_ATTEMPT);
+	String publicKey= FDStoreProperties.getRecaptchaPublicKey(CaptchaType.SIGN_UP);
+	    
 %>
 
 <tmpl:insert template='<%=template%>'>
@@ -108,7 +116,10 @@
 				$jq('#signupbtn').attr('disabled', true);
 				// on keyup we will check every time the form is valid or not
 				$jq('#litesignup').bind('change keyup', function() {
-				    if($jq(this).validate().checkForm()) { // form is valid
+					
+					var isCaptchaValid = !fd.components.captchaWidget || fd.components.captchaWidget.isValid();
+					  
+				    if($jq(this).validate().checkForm() && isCaptchaValid) { // form is valid
 		        		$jq('#signupbtn').removeClass('button_disabled').attr('disabled', false);
 		        		$jq('.show-password').show();
 		    		} else { // form is invalid
@@ -336,6 +347,28 @@
 										</td>
 										<!-- Added for Password Strength Display -->
 									</tr>
+									<% if (showCaptcha) { %>
+									<jwr:script src="/assets/javascript/fd/captcha/captchaWidget.js" useRandomParam="false" />
+										<tr id="sign-up-g-recaptcha-container">
+										<td>&nbsp;</td>
+											<td align="center">
+												<div id="sign-up-g-recaptcha" class="g-recaptcha"></div>
+											</td>
+											
+										</tr>
+										<script type="text/javascript">
+										  FreshDirect.components.captchaWidget.init('<%=publicKey%>', function() {
+											  fd.components.captchaWidget.render('sign-up-g-recaptcha', function() {
+										    		$jq('#litesignup').trigger('change');
+												}, function () {
+													$jq('#sign-up-g-recaptcha-container').hide();
+												}, function () {
+													$jq('#litesignup').trigger('change');
+												});
+										  });
+										 
+										</script>
+									<% } %>
 									<tr>
 										<td></td>
 										<td style="padding-top: 15px;" align="center">

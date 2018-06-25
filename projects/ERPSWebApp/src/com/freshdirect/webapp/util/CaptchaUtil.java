@@ -1,5 +1,6 @@
 package com.freshdirect.webapp.util;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -10,6 +11,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.enums.CaptchaType;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 /*
  * @author: Nakkeeran Annamalai
@@ -62,5 +64,14 @@ public class CaptchaUtil {
 		}
 		return isCaptchaSuccess;
 	}
-
+	
+	public static int increaseAttempt(HttpServletRequest request, String name) {
+		Integer fdLoginAttempt = request.getSession().getAttribute(name) != null ? (Integer) request.getSession().getAttribute(name) : Integer.valueOf(0);
+		fdLoginAttempt++;
+		request.getSession().setAttribute(name, fdLoginAttempt);
+		return fdLoginAttempt;
+	}
+	public static void resetAttempt(HttpServletRequest request, String name) {
+		request.getSession().setAttribute(name, 0);
+	}
 }

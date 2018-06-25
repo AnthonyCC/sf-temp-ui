@@ -36,6 +36,7 @@ import com.freshdirect.webapp.action.HttpContext;
 import com.freshdirect.webapp.action.fdstore.RegistrationAction;
 import com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag;
 import com.freshdirect.webapp.util.AccountUtil;
+import com.freshdirect.webapp.util.CaptchaUtil;
 import com.freshdirect.webapp.util.StoreContextUtil;
 
 public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.BodyTagSupport {
@@ -481,6 +482,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
                         }
 
                     } else {
+                    	CaptchaUtil.increaseAttempt(request, SessionName.SIGNUP_ATTEMPT);
                         session.setAttribute(SessionName.SIGNUP_SUCCESS, false);
                     }
 

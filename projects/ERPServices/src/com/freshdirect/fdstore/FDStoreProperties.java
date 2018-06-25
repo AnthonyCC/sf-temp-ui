@@ -775,6 +775,9 @@ public class FDStoreProperties {
     // Max Invalid Login counts for Recaptcha
     private final static String PROP_MAX_INVALID_LOGIN_ATTEMPT = "fdstore.max.invalid.login.count";
 
+    // Max Invalid Login counts for Recaptcha
+    private final static String PROP_MAX_INVALID_SIGN_UP_ATTEMPT = "fdstore.max.invalid.sign.up.count";
+    
     // Max Invalid Payment counts for Recaptcha
     private final static String PROP_MAX_INVALID_PAYMENT_ATTEMPT = "fdstore.max.invalid.payment.count";
 
@@ -1782,8 +1785,8 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.akamaiimageconvertor", "GLOBAL:ENABLED,false;");
 
         // Default reCaptcha Public & Private krys
-        defaults.put(PROP_RECAPTCHA_PUBLIC_KEY, "6LdQn0YUAAAAALfZUrX-x4IeOmdUkkUrwMwZdhsd");
-        defaults.put(PROP_RECAPTCHA_PRIVATE_KEY, "6LdQn0YUAAAAAB3iHC6AzFH_Sd5k9z0uAwfvPUkZ");
+        defaults.put(PROP_RECAPTCHA_PUBLIC_KEY, "6LdQn0YUAAAAALfZUrX-x4IeOmdUkkUrwMwZdhsd,6LcYYFAUAAAAAOWJFZgnZnVNNXr31rebRjsnoSA0,6LdeqGAUAAAAADpe35SKvHw9VMqGzI_E7Pg5UEQu");
+        defaults.put(PROP_RECAPTCHA_PRIVATE_KEY, "6LdQn0YUAAAAAB3iHC6AzFH_Sd5k9z0uAwfvPUkZ,6LcYYFAUAAAAAOWJFZgnZnVNNXr31rebRjsnoSA0,6LdeqGAUAAAAAM0srqZegq4Rr9-s-nnzCvQFckTO");
         defaults.put(PROP_MAX_INVALID_LOGIN_ATTEMPT, "5");
         defaults.put(PROP_MAX_INVALID_PAYMENT_ATTEMPT, "5");
         defaults.put(PROP_TIP_RANGE_CONFIG, "0,25,0.5;");
@@ -4405,13 +4408,13 @@ public class FDStoreProperties {
 
     // Recaptcha getter methods
     public static String getRecaptchaPublicKey(CaptchaType type) {
-        String key = StringUtils.defaultIfEmpty(get(PROP_RECAPTCHA_PUBLIC_KEY), "6LdQn0YUAAAAALfZUrX-x4IeOmdUkkUrwMwZdhsd,6LcYYFAUAAAAAOWJFZgnZnVNNXr31rebRjsnoSA0");
+        String key = StringUtils.defaultIfEmpty(get(PROP_RECAPTCHA_PUBLIC_KEY), "6LdQn0YUAAAAALfZUrX-x4IeOmdUkkUrwMwZdhsd,6LcYYFAUAAAAAOWJFZgnZnVNNXr31rebRjsnoSA0,6LdeqGAUAAAAADpe35SKvHw9VMqGzI_E7Pg5UEQu");
         return getValueFromProperty(key, type.getValue());
 
     }
 
     public static String getRecaptchaPrivateKey(CaptchaType type) {
-        String key = StringUtils.defaultIfEmpty(get(PROP_RECAPTCHA_PRIVATE_KEY), "6LdQn0YUAAAAAB3iHC6AzFH_Sd5k9z0uAwfvPUkZ,6LcYYFAUAAAAAOWJFZgnZnVNNXr31rebRjsnoSA0");
+        String key = StringUtils.defaultIfEmpty(get(PROP_RECAPTCHA_PRIVATE_KEY), "6LdQn0YUAAAAAB3iHC6AzFH_Sd5k9z0uAwfvPUkZ,6LcYYFAUAAAAAOWJFZgnZnVNNXr31rebRjsnoSA0,6LdeqGAUAAAAAM0srqZegq4Rr9-s-nnzCvQFckTO");
         return getValueFromProperty(key, type.getValue());
     }
 
@@ -4422,7 +4425,13 @@ public class FDStoreProperties {
             return 5;
         }
     }
-
+    public static int getMaxInvalidSignUpAttempt() {
+        try {
+            return Integer.parseInt(get(PROP_MAX_INVALID_SIGN_UP_ATTEMPT));
+        } catch (Exception e) {
+            return 5;
+        }
+    }
     public static int getMaxInvalidPaymentAttempt() {
         try {
             return Integer.parseInt(get(PROP_MAX_INVALID_PAYMENT_ATTEMPT));
