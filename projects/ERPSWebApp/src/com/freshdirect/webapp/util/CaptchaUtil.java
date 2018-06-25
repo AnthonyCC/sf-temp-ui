@@ -29,10 +29,7 @@ public class CaptchaUtil {
 	}
 
 	public static boolean validateCaptcha(String captchaToken, String remoteIp, CaptchaType captchaType, HttpSession session, String sessionName, int maxAttemptAllowed) {
-		if (!isExcessiveAttempt(maxAttemptAllowed, session, sessionName)) {
-			return true;
-		}
-		// captcha widget is not loaded
+		// captcha widget is not loaded or the validation is not needed
 		if (captchaToken == null) {
 			return true;
 		}

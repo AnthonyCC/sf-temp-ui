@@ -23,6 +23,7 @@ import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpInvalidPasswordException;
+import com.freshdirect.enums.CaptchaType;
 import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdlogistics.model.FDReservation;
@@ -77,6 +78,7 @@ import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.taglib.fdstore.UserUtil;
+import com.freshdirect.webapp.util.CaptchaUtil;
 import com.freshdirect.webapp.util.LocatorUtil;
 
 public class LoginController extends BaseController  implements SystemMessageList {
@@ -421,7 +423,11 @@ public class LoginController extends BaseController  implements SystemMessageLis
 		SessionUser user = null;
 
 		try {
-
+			boolean isCaptchaSuccess = CaptchaUtil.validateCaptcha(requestMessage.getCaptchaToken(), request.getRemoteAddr(), CaptchaType.SIGN_IN,request.getSession(), SessionName.LOGIN_ATTEMPT, FDStoreProperties.getMaxInvalidLoginAttempt());
+			if (!isCaptchaSuccess) {
+				responseMessage = getErrorMessage("captcha", SystemMessageList.MSG_INVALID_CAPTCHA);
+				return responseMessage;
+			}
 			// Log in user and store in session
 			/*createUserSession(User.login(username, password), source, request,
 					response);*/
@@ -579,6 +585,11 @@ public class LoginController extends BaseController  implements SystemMessageLis
             }
             responseMessage.setConfiguration(getConfiguration(user));
         }
+		if (responseMessage.getErrors() != null && responseMessage.getErrors().size() != 0) {
+			CaptchaUtil.increaseAttempt(request, SessionName.LOGIN_ATTEMPT);
+		} else {
+			CaptchaUtil.resetAttempt(request, SessionName.LOGIN_ATTEMPT);
+		}
         return responseMessage;
     }
 
