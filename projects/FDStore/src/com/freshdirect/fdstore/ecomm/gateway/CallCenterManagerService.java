@@ -8,7 +8,6 @@ import java.util.Map;
 import org.apache.log4j.Category;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.freshdirect.crm.CallLogModel;
 import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpComplaintReason;
@@ -36,7 +35,6 @@ private static final String RESUBMIT_CUSTOMER = "callcenter/resubmitCustomer/cus
 private static final String SCHEDULE_REDELIVERY = "callcenter/scheduleRedelivery/saleId/";
 private static final String EMAIL_CUTTOFF_TIME_REPORT = "callcenter/cuttOffTime/report/email/date/";
 private static final String SAVE_TOP_FAQs = "callcenter/topFaqs/save";
-private static final String ADD_NEW_IVR_CALL_LOG = "callcenter/callLog/IVR/add";
 private static final String VOID_CAPTURE_ORDER = "callcenter/voidCaptureOrder/saleId/";
 
 	private static CallCenterManagerService INSTANCE;
@@ -142,23 +140,6 @@ private static final String VOID_CAPTURE_ORDER = "callcenter/voidCaptureOrder/sa
 			request.setData(faqIds);
 			String inputJson = buildRequest(request);
 			 postDataTypeMap(inputJson,getFdCommerceEndPoint(SAVE_TOP_FAQs),new TypeReference<Response<String>>() {});
-		} catch (FDResourceException e){
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}
-	}
-
-	@Override
-	public void addNewIVRCallLog(CallLogModel callLogModel)
-			throws FDResourceException, RemoteException {
-		Request<CallLogModel> request = new Request<CallLogModel>();
-		try{
-			request.setData(callLogModel);
-			String inputJson = buildRequest(request);
-			postDataTypeMap(inputJson,getFdCommerceEndPoint(ADD_NEW_IVR_CALL_LOG),new TypeReference<Response<String>>() {});
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());

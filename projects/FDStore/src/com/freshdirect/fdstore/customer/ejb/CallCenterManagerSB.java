@@ -393,10 +393,8 @@ public interface CallCenterManagerSB extends EJBObject {
 	 */
 	@Deprecated
 	public ErpComplaintReason getReasonByCompCode(String cCode) throws FDResourceException, RemoteException;
-	/**
-	 *@deprecated This method is moved to Storefront2.0 project.
-	 * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
-	 */
+	//not used anywhere
+	@Deprecated
 	public void addNewIVRCallLog(CallLogModel callLogModel) throws FDResourceException, RemoteException;
 	/**
 	 *@deprecated This method is moved to backoffice project.

@@ -4,7 +4,6 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 
-import com.freshdirect.crm.CallLogModel;
 import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpComplaintReason;
@@ -29,8 +28,6 @@ public interface CallCenterManagerServiceI {
 	public void emailCutoffTimeReport(java.util.Date day) throws FDResourceException, RemoteException;
 
 	public void saveTopFaqs(List faqIds) throws FDResourceException, RemoteException;
-
-	public void addNewIVRCallLog(CallLogModel callLogModel) throws FDResourceException, RemoteException;
 
 	public void voidCaptureOrder(String saleId) throws RemoteException, FDResourceException, ErpTransactionException;
 
