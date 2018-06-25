@@ -24,7 +24,7 @@ var FreshDirect = FreshDirect || {};
 				'<div class="location-modify-order-message"><strong class="modify-delivery-label">Modifying Order: </strong><div class="modify-delivery-time"><span>' + dayOfWeek + ' </span><span class="text-uppercase">' + time + '</span></div></div>'+
 			
 				'<div class="location-modify-order-btn-cont">'+
-					'<span><a class="cssbutton small orange cancel-changes-link" href="javascript:void(0);" role="alertdialog" '+
+					'<span><a class="cssbutton small orange cancel-changes-link" aria-label="exit modify order mode" href="javascript:void(0);" role="alertdialog" '+
 						'data-alignpopupfunction="modifyOrderAlign" '+
 						'data-confirm-data=\''+ JSON.stringify(popupConfig)+'\' '+
 						'data-confirm-button-accept="FreshDirect.components.modifyOrderMessage.cancelChanges" '+

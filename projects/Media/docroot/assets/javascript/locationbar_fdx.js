@@ -299,7 +299,7 @@ $jq('.locabar_triggers').on('keyup', function(event) {
 		
 	else if (curId == 'locabar_addresses_trigger' && ($jq(event.target).attr('id') === 'newziptextmsg' || $jq(event.target).attr('id') === 'newziptext' ||  $jq(event.target).attr('id') === 'newzipgomsg' || $jq(event.target).attr('id') === 'newzipgo' || $jq(event.target).attr('id') === 'locabar_addresses' || $jq(event.target).attr('id') === 'location-email'|| $jq(event.target).attr('id') === 'location-submit')) {
 		//do nothing
-		$this.addClass('hover')
+		$this.addClass('hover');
 	}
 	
 		
