@@ -277,7 +277,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	public RegistrationResult register(FDActionInfo info, ErpCustomerModel erpCustomer, FDCustomerModel fdCustomer,
 			String cookie, boolean pickupOnly, boolean eligibleForPromotion, FDSurveyResponse survey,
-			EnumServiceType serviceType) throws FDResourceException, ErpDuplicateUserIdException {
+			EnumServiceType serviceType) throws FDResourceException, ErpDuplicateUserIdException,ErpFraudException {
 
 		return register(info, erpCustomer, fdCustomer, cookie, pickupOnly, eligibleForPromotion, survey, serviceType,
 				false);
@@ -419,7 +419,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	public RegistrationResult register(FDActionInfo fdActionInfo, ErpCustomerModel erpCustomer,
 			FDCustomerModel fdCustomer, String cookie, boolean pickupOnly, boolean eligibleForPromotion,
 			FDSurveyResponse survey, EnumServiceType serviceType, boolean isGiftCardBuyer)
-			throws FDResourceException, ErpDuplicateUserIdException {
+			throws FDResourceException, ErpDuplicateUserIdException,ErpFraudException {
 
 		// System.out.println("FDCustomerManagerSessionBean: In register");
 		Connection conn = null;
@@ -431,6 +431,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			ErpFraudPreventionSB fraudSB = getErpFraudHome().create();
 			Set<EnumFraudReason> fraudResults = null;
 			if (!isGiftCardBuyer) {
+				
+				boolean isRegistrationRestricted=fraudSB.isRegistrationForIPRestricted(fdActionInfo.getClientIp());
+				if(isRegistrationRestricted) {
+					LOGGER.warn("FDSECU:: Registration fraud tripped for [ IP:: "+fdActionInfo.getClientIp()+", cookie="+cookie+" ,user_id="+erpCustomer.getUserId()+" ]");
+					throw new ErpFraudException(EnumFraudReason.TOO_MANY_ACCOUNTS_CREATED_FROM_IP);
+				}
 				fraudResults = fraudSB.checkRegistrationFraud(erpCustomer);
 			}
 			// System.out.println("FDCustomerManagerSessionBean: Fraud check

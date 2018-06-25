@@ -56,6 +56,8 @@ public class AccountActivityUtil implements SessionName {
 		}else {
 			src = EnumTransactionSource.WEBSITE;
 			agent = null;
+			
+			
 			initiator = "CUSTOMER";
 		}
 		
@@ -75,6 +77,9 @@ public class AccountActivityUtil implements SessionName {
 		FDActionInfo info = new FDActionInfo(eStore,src, identity, initiator, note, agent, (currentUser!=null)?currentUser.getPrimaryKey():null);
 		info.setDebitCardSwitch(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, currentUser));
 
+		if(currentUser!=null) {
+			info.setClientIp(currentUser.getClientIp());
+		}
 		return info;
 	}
 	

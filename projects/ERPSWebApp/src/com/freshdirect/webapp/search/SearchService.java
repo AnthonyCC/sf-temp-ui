@@ -90,7 +90,7 @@ public class SearchService {
             }
 
         } else {
-            result = new UnbxdSearchResult(searchTerm, Collections.<String> emptyList(), searchResult.getResponse().getProducts());
+            result = new UnbxdSearchResult(null, Collections.<String> emptyList(), searchResult.getResponse().getProducts());
         }
 
         return result;

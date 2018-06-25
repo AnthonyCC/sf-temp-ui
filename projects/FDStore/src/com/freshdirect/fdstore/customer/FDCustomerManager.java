@@ -203,7 +203,7 @@ public class FDCustomerManager {
 		boolean pickupOnly,
 		boolean eligibleForPromotion,
 		FDSurveyResponse survey, EnumServiceType serviceType)
-		throws FDResourceException, ErpDuplicateUserIdException {
+		throws FDResourceException, ErpDuplicateUserIdException,ErpFraudException {
 
 		return register( info, erpCustomer, fdCustomer, cookie, pickupOnly, eligibleForPromotion, survey, serviceType, false);
 	}
@@ -216,7 +216,7 @@ public class FDCustomerManager {
 			boolean pickupOnly,
 			boolean eligibleForPromotion,
 			FDSurveyResponse survey, EnumServiceType serviceType, boolean isGiftCardBuyer)
-			throws FDResourceException, ErpDuplicateUserIdException {
+			throws FDResourceException  , ErpDuplicateUserIdException,ErpFraudException {
 
 		try {
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.Registration)) {
