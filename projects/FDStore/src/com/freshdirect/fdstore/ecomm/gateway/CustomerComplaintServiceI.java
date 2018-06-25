@@ -1,12 +1,11 @@
 package com.freshdirect.fdstore.ecomm.gateway;
 
 import java.rmi.RemoteException;
-import java.util.List;
 
 import com.freshdirect.customer.ErpComplaintException;
 import com.freshdirect.customer.ErpComplaintModel;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.customer.selfcredit.PendingSelfComplaintResponse;
+import com.freshdirect.framework.core.PrimaryKey;
 
 public interface CustomerComplaintServiceI {
 
@@ -23,15 +22,8 @@ public interface CustomerComplaintServiceI {
 	 * @throws ErpComplaintException
 	 *             if order was not in proper state to accept complaints
 	 */
-	public String addComplaint(ErpComplaintModel complaint, String saleId, String erpCustomerId, String fdCustomerId,
-			boolean autoApproveAuthorized, Double limit)
+	public String addComplaint(ErpComplaintModel complaint, String saleId, String erpCustomerId,
+			String fdCustomerId, boolean autoApproveAuthorized, Double limit)
 			throws FDResourceException, ErpComplaintException, RemoteException;
-
-	public List<String> autoApproveCredit() throws FDResourceException, ErpComplaintException, RemoteException;
-
-	public void approveComplaint(String complaintId, boolean isApproved, String csrId, boolean sendMail, Double limit)
-			throws FDResourceException, ErpComplaintException, RemoteException;
-
-	public PendingSelfComplaintResponse getPendingSelfIssuedComplaints() throws RemoteException;
 
 }

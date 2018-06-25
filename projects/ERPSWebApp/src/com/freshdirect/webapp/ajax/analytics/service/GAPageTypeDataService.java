@@ -14,7 +14,7 @@ import com.freshdirect.webapp.ajax.analytics.domain.PageType;
 
 public class GAPageTypeDataService {
 
-    private static final List<String> SPECIAL_BROWSE_IDS = Arrays.asList("wgd_deals", "top_rated", "wgd_summer_central", "about_overview", "local", "meals_kits_meals");
+    private static final List<String> SPECIAL_BROWSE_IDS = Arrays.asList("gro_gear_dlvpass", "about_ebt", "wgd_summer_central_nc", "wgd_deals", "top_rated", "wgd_summer_central", "about_overview", "local", "meals_kits_meals");
 
     private static final GAPageTypeDataService INSTANCE = new GAPageTypeDataService();
 
@@ -87,7 +87,7 @@ public class GAPageTypeDataService {
     }
 
     private String getSearchUrl(String pageType) {
-        String gaParameter = "";
+        String gaParameter = "?pageType=search";
         if (pageType != null) {
             gaParameter = "?pageType=" + pageType;
         }

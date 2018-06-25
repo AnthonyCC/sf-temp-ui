@@ -3,6 +3,11 @@
 <%
 	boolean inMobWebTemplateOptimized = (request.getAttribute("inMobWebTemplateOptimized") != null && ("true").equalsIgnoreCase(request.getAttribute("inMobWebTemplateOptimized").toString())) ? true : false;
 %>
+<% if (!inMobWebTemplateOptimized) { /* don't use in optimized, required js isn't included */ %>
+	<!-- pendingorderbar s -->
+		<comp:pendingOrderBar user="<%= user %>" />
+	<!-- pendingorderbar e -->
+<% } %>
 <div class="mobweb-topnav">
 	<div class="locationbar" style="display: none;">
 		<%@ include file="/shared/locationbar/locationbar_fdx.jsp" %>

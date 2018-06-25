@@ -47,6 +47,7 @@ import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.crm.CrmDepartment;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumComplaintDlvIssueType;
+import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.EnumZoneServiceType;
@@ -331,17 +332,28 @@ public class ModelConverter {
 
 	private static DeliveryPassType buildDeliveryPassType(
 			DeliveryPassTypeData deliveryPassTypeData) {
-		return new DeliveryPassType(deliveryPassTypeData.getCode(),
-				deliveryPassTypeData.getName(),
-				deliveryPassTypeData.getNoOfDeliveries(),
-				deliveryPassTypeData.getDuration(),
-				deliveryPassTypeData.isUnlimited(),
-				deliveryPassTypeData.getProfileValue(),
-				deliveryPassTypeData.isAutoRenewDP(),
-				deliveryPassTypeData.isFreeTrialDP(),
-				deliveryPassTypeData.isFreeTrialRestricted(),
-				deliveryPassTypeData.getAutoRenewalSKU(),
-				null);
+		
+		List<EnumDeliveryType> deliveryTypes = null;
+		List<EnumEStoreId> eStoreIds = null;
+		if (deliveryPassTypeData.getDeliveryTypes() != null) {
+			deliveryTypes = new ArrayList<EnumDeliveryType>();
+			for (String deliveryType : deliveryPassTypeData.getDeliveryTypes()) {
+				deliveryTypes.add(EnumDeliveryType.getDeliveryType(deliveryType));
+			}
+		}
+
+		if (deliveryPassTypeData.getEStoreIds() != null) {
+			eStoreIds = new ArrayList<EnumEStoreId>();
+			for (String eStoreId : deliveryPassTypeData.getEStoreIds()) {
+				eStoreIds.add(EnumEStoreId.valueOfContentId(eStoreId));
+			}
+		}
+		return new DeliveryPassType(deliveryPassTypeData.getCode(), deliveryPassTypeData.getName(),
+				deliveryPassTypeData.getNoOfDeliveries(), deliveryPassTypeData.getDuration(),
+				deliveryPassTypeData.isUnlimited(), deliveryPassTypeData.getProfileValue(),
+				deliveryPassTypeData.isAutoRenewDP(), deliveryPassTypeData.isFreeTrialDP(),
+				deliveryPassTypeData.isFreeTrialRestricted(), deliveryPassTypeData.getAutoRenewalSKU(),
+				deliveryPassTypeData.getEligibleDlvDays(), deliveryTypes, eStoreIds);
 	}
 
 	public static List buildCrmCaseSubjectList(List data) {
@@ -468,23 +480,26 @@ public class ModelConverter {
 
 	public static List<FDProductPromotionInfo> buildFDProductPromotionInfo(
 			List<FDProductPromotionInfoData> value) {
-		 List<FDProductPromotionInfo> data = new ArrayList();
+		 List<FDProductPromotionInfo> data = new ArrayList<FDProductPromotionInfo>();
 		 for(FDProductPromotionInfoData obj:value){
 			 SalesAreaInfo sAinfo = buildSalesAreaInfo(obj);
 			 FDProductPromotionInfo model = new FDProductPromotionInfo();
+			 model.setId(obj.getId());
+			 model.setVersion(obj.getVersion());
+			 model.setZoneId(obj.getZoneId());
+			 model.setSkuCode(obj.getSkuCode());
+			 model.setMatNumber(obj.getMatNumber());
+			 model.setPriority(obj.getPriority());
+			 model.setFeatured(obj.isFeatured());
+			 model.setFeaturedHeader(obj.getFeaturedHeader());
+			 model.setType(obj.getType());
 			 model.setErpCategory(obj.getErpCategory());
 			 model.setErpCatPosition(obj.getErpCatPosition());
 			 model.setErpDeptId(obj.getErpDeptId());
 			 model.setErpPromtoionId(obj.getErpPromtoionId());
-			 model.setFeaturedHeader(obj.getFeaturedHeader());
-			 model.setId(obj.getId());
-			 model.setMatNumber(obj.getMatNumber());
-			 model.setPriority(obj.getPriority());
+			 
 			 model.setSalesArea(sAinfo);
-			 model.setSkuCode(obj.getSkuCode());
-			 model.setType(obj.getType());
-			 model.setVersion(obj.getVersion());
-			 model.setZoneId(obj.getZoneId());
+			 
 			 data.add(model);
 		 }
 		return data;
@@ -499,7 +514,7 @@ public class ModelConverter {
 	public static ErpProductPromotionPreviewInfo buildErpProductPromotionPreviewInfo(
 			ErpProductPromotionPreviewInfoData data) {
     	ErpProductPromotionPreviewInfo response = new ErpProductPromotionPreviewInfo();
-    	Map<String,ErpProductInfoModel> prodInfoMod = new HashMap();
+    	Map<String,ErpProductInfoModel> prodInfoMod = new HashMap<String,ErpProductInfoModel>();
     	for(String key: data.getErpProductInfoMap().keySet()){
     		prodInfoMod.put(key, buildProdInfoMod(data.getErpProductInfoMap().get(key)));}
     	response.setErpProductInfoMap(prodInfoMod);
@@ -1842,6 +1857,8 @@ public class ModelConverter {
 			model.setcDate(userCreditData.getcDate());
 			model.setDepartment(userCreditData.getDepartment());
 			model.setSaleId(userCreditData.getSaleId());
+			if(userCreditData.geteStore()!=null)
+			model.seteStore(userCreditData.geteStore());
 			creditModelList.add(model);
 		}
 		return creditModelList;
@@ -2377,6 +2394,20 @@ public class ModelConverter {
 			data.setNoOfDeliveries(type.getNoOfDeliveries());
 			data.setProfileValue(type.getProfileValue());
 			data.setUnlimited(type.isUnlimited());
+			if (type.getDeliveryTypes() != null) {
+				List<String> deliveryTypes = new ArrayList<String>();
+				for (EnumDeliveryType deliveryType : type.getDeliveryTypes()) {
+					deliveryTypes.add(deliveryType.getCode());
+				}
+				data.setDeliveryTypes(deliveryTypes);
+			}
+			if (type.geteStoreIds() != null) {
+				List<String> eStoreIds = new ArrayList<String>();
+				for (EnumEStoreId eStoreId : type.geteStoreIds()) {
+					eStoreIds.add(eStoreId.getContentId());
+				}
+				data.setEStoreIds(eStoreIds);
+			}
 			return data;
 		}
 		return null;

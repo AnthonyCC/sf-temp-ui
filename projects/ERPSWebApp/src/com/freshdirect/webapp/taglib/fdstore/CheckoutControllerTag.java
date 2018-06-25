@@ -82,6 +82,8 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 	private final String ebtUnavailableItemsPage	= "/checkout/step_3_unavail.jsp";
 	private final String ebtCRMUnavailableItemsPage	= "/checkout/checkout_EBT_unavail.jsp";
 	
+	public boolean dlvPassCart;
+	
 	public String getPaymentId() {			
 		FDCartModel cart = getCart();
 		String pId = null;
@@ -157,7 +159,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 		final String app = (String)pageContext.getSession().getAttribute( SessionName.APPLICATION );
 		final boolean isNotCallCenter = !"CALLCENTER".equals( app );
 		final FDSessionUser currentUser = (FDSessionUser) getUser();
-		FDCartModel cart = currentUser.getShoppingCart();
+		FDCartModel cart = UserUtil.getCart(currentUser, "", isDlvPassCart());
 		
 		TimeslotEvent event = new TimeslotEvent((currentUser.getApplication()!=null)?currentUser.getApplication().getCode():"",
 				(cart!=null)?cart.isDlvPassApplied():false, (cart!=null)?cart.getDeliverySurcharge():0.00,
@@ -179,7 +181,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 					if ( !makeGoodOrder ) {
 						// Set the selected gift carts for processing.
 					    if (null != currentUser.getGiftCardList()) {
-						    currentUser.getShoppingCart().setSelectedGiftCards(currentUser.getGiftCardList().getSelectedGiftcards());
+						    cart.setSelectedGiftCards(currentUser.getGiftCardList().getSelectedGiftcards());
 					    }
 					}
 				}
@@ -241,7 +243,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				request.setAttribute("TAXATION_TYPE", pageContext.getSession().getAttribute("TAXATION_TYPE"));
 				pageContext.getSession().removeAttribute("TAXATION_TYPE");
 				
-				String outcome = performSubmitOrder(result);
+				String outcome = performSubmitOrder(result, dlvPassCart);
 
 				MasqueradeContext masqueradeContext = currentUser.getMasqueradeContext();
 				String masqueradeMakeGoodOrderId = masqueradeContext==null ? null : masqueradeContext.getMakeGoodFromOrderId();
@@ -303,7 +305,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				performGiftCardAction(request, result, action);
 
 				if ( result.isSuccess() ) {
-					String outcome = performSubmitOrder(result);
+					String outcome = performSubmitOrder(result, dlvPassCart);
 					saveCart = true;
 
 					if ( result.getError( "address_verification_failed" ) != null ) {
@@ -320,7 +322,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
                 PaymentMethodManipulator m = new PaymentMethodManipulator(request, response, result, action);
 				m.performSetPaymentMethod();
 				
-				if ( result.isSuccess() ) {
+				if ( result.isSuccess() && !isDlvPassCart() ) {
 					UserValidationUtil.validateOrderMinimum( session, result );
 					checkEBTRestrictedLineItems(cart, isNotCallCenter);
 					if ( currentUser.isPromotionAddressMismatch() && isNotCallCenter ) {
@@ -345,7 +347,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				if ( outcome.equals( Action.ERROR ) ) {
 					return true; 
 				}
-				if ( result.isSuccess() ) {
+				if ( result.isSuccess() && !isDlvPassCart()) {
 					UserValidationUtil.validateOrderMinimum( session, result );
 					checkEBTRestrictedLineItems(cart, isNotCallCenter);					
 				}
@@ -366,7 +368,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 
 			} else if ( "setPaymentAndSubmit".equalsIgnoreCase( action ) ) {
 				if ( UserValidationUtil.validateOrderMinimum( session, result ) ) {
-					String outcome = performSetPaymentAndSubmit( request, result );
+					String outcome = performSetPaymentAndSubmit( request, result, dlvPassCart );
 					saveCart = true;
 					if ( outcome.equals( Action.NONE ) ) {
 						return false; // SKIP_BODY
@@ -626,13 +628,13 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 
 
 
-	protected String performSetPaymentAndSubmit( HttpServletRequest request, ActionResult result ) throws Exception {
+	protected String performSetPaymentAndSubmit( HttpServletRequest request, ActionResult result, boolean dlvPassCart ) throws Exception {
         final HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
         PaymentMethodManipulator m = new PaymentMethodManipulator(request, response, result, getActionName());
 		m.setPaymentMethod();
 		
 		if ( result.isSuccess() ) {
-			return performSubmitOrder(result);
+			return performSubmitOrder(result, dlvPassCart);
 		}
 		return Action.ERROR;
 	}
@@ -643,12 +645,12 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 		configureAction(action, result, pageContext.getSession(), (HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse());
 		}
 
-	protected String performSubmitOrder(ActionResult result) throws Exception {
-		return performSubmitOrder(getUser(), getActionName(), result, pageContext.getSession(), (HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse(), authCutoffPage, ccdProblemPage, ccdAddCardPage, gcFraudPage);
+	protected String performSubmitOrder(ActionResult result, boolean dlvPassCart) throws Exception {
+		return performSubmitOrder(getUser(), getActionName(), result, pageContext.getSession(), (HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse(), authCutoffPage, ccdProblemPage, ccdAddCardPage, gcFraudPage, dlvPassCart);
 		}
 
 	
-	public static String performSubmitOrder(FDUserI user, String actionName, ActionResult result, HttpSession session, HttpServletRequest request, HttpServletResponse response, String authCutoffPage, String ccdProblemPage, String ccdAddCardPage, String gcFraudPage) throws Exception {
+	public static String performSubmitOrder(FDUserI user, String actionName, ActionResult result, HttpSession session, HttpServletRequest request, HttpServletResponse response, String authCutoffPage, String ccdProblemPage, String ccdAddCardPage, String gcFraudPage, boolean dlvPassCart) throws Exception {
 		SubmitOrderAction soa = new SubmitOrderAction();
 		configureAction( soa, result, session, request, response);
 		soa.setAuthCutoffPage( authCutoffPage );
@@ -656,6 +658,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 		soa.setCcdAddCardPage( ccdAddCardPage );
 		soa.setGCFraudPage( gcFraudPage );
 		soa.setStandingOrder( user.getCurrentStandingOrder() );
+		soa.setDlvPassCart(dlvPassCart);
 
 		if ( actionName.equals( "gc_submitGiftCardOrder" ) || ( actionName.equals( "gc_submitGiftCardBulkOrder" ) ) ) {
 			if ( actionName.equals( "gc_submitGiftCardBulkOrder" ) ) {
@@ -692,12 +695,13 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 
 
 	private FDCartModel getCart() {
-		if ( this.getActionName().indexOf( "gc_" ) != -1 ) {
+		/*if ( this.getActionName().indexOf( "gc_" ) != -1 ) {
 			return this.getUser().getGiftCart();
 		} else if ( this.getActionName().indexOf( "rh_" ) != -1 ) {
 			return this.getUser().getDonationCart();
 		}
-		return this.getUser().getShoppingCart();
+		return this.getUser().getShoppingCart();*/
+		return UserUtil.getCart(this.getUser(), this.getActionName(), false);
 	}
 
 	private FDUserI getUser() {
@@ -717,6 +721,15 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 
 	public static class TagEI extends AbstractControllerTag.TagEI {
 		// default impl
+	}
+
+
+	public boolean isDlvPassCart() {
+		return dlvPassCart;
+	}
+
+	public void setDlvPassCart(boolean dlvPassCart) {
+		this.dlvPassCart = dlvPassCart;
 	}
 
 }

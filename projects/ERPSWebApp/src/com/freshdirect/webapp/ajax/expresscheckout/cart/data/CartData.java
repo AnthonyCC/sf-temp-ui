@@ -449,8 +449,17 @@ public class CartData extends AbstractCoremetricsResponse {
         private String taxTotal;        
         private String subTotalText;
         private boolean hasEstimatedPrice;
+        private boolean isJustAdded = false;
 
-        @Override
+        public boolean isJustAdded() {
+			return isJustAdded;
+		}
+
+		public void setJustAdded(boolean isJustAdded) {
+			this.isJustAdded = isJustAdded;
+		}
+
+		@Override
         public int hashCode() {
             final int prime = 31;
             int result = 1;

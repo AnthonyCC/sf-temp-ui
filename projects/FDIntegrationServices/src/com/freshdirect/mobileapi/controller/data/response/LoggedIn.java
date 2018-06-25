@@ -49,8 +49,20 @@ public class LoggedIn extends Message {
     private String zipCode;
 
     private String erpCustomerPK;
+    
+    private boolean purchaseDlvPassEligible;
+    private boolean fdxdpenabled;
+    private List<String> dpskulist;
 
-    public boolean isTcAcknowledge() {
+    /*public boolean isDeliveryPassEligible() {
+		return purchaseDlvPassEligible;
+	}
+
+	public void setPurchaseDeliveryPassEligible(boolean isDeliveryPassEligible) {
+		this.purchaseDlvPassEligible = isDeliveryPassEligible;
+	}*/
+
+	public boolean isTcAcknowledge() {
 		return tcAcknowledge;
 	}
 
@@ -281,4 +293,28 @@ public class LoggedIn extends Message {
     public void setErpCustomerPK(String erpCustomerPK) {
         this.erpCustomerPK = erpCustomerPK;
     }
+
+	public boolean isPurchaseDlvPassEligible() {
+		return purchaseDlvPassEligible;
+	}
+
+	public void setPurchaseDlvPassEligible(boolean purchaseDlvPassEligible) {
+		this.purchaseDlvPassEligible = purchaseDlvPassEligible;
+	}
+
+	public List<String> getDpskulist() {
+		return dpskulist;
+	}
+
+	public void setDpskulist(List<String> dpskulist) {
+		this.dpskulist = dpskulist;
+	}
+
+	public boolean isFdxDpEnabled() {
+		return fdxdpenabled;
+	}
+
+	public void setFdxDpEnabled(boolean fdxdpenabled) {
+		this.fdxdpenabled = fdxdpenabled;
+	}
 }

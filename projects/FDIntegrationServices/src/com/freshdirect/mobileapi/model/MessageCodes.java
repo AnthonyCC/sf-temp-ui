@@ -19,6 +19,8 @@ public interface MessageCodes {
     public static final String ERR_NO_PAYMENT_METHOD_MSG = "Sorry, you do not have a payment method associated with your account. Please visit our website to add payment information.";
 
     public static final String ERR_SESSION_EXPIRED = "ERR_SESSION_EXPIRED";
+    
+    public static final String ERR_NO_DP_FOUND = "ERR_NO_DP_FOUND";
 
     public static final String WARN_SESSION_REMOVED = "WARN_SESSION_REMOVED";
 

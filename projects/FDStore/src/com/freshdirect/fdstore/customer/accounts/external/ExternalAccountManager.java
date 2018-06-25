@@ -240,13 +240,13 @@ public class ExternalAccountManager{
 	
 	
 	public static boolean isSocialLoginOnlyUser(String customer_id) throws FDResourceException {
-		lookupManagerHome();
 		try {
 			boolean isSocialLoginOnlyUser = false;
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ExternalAccountManagerSB)) {
 				IECommerceService service = FDECommerceService.getInstance();
 				isSocialLoginOnlyUser = service.isSocialLoginOnlyUser(customer_id);
 			} else {
+				lookupManagerHome();
 				ExternalAccountManagerSB sb = externalLoginManagerHome.create();
 			    isSocialLoginOnlyUser =  sb.isSocialLoginOnlyUser(customer_id);
 			}

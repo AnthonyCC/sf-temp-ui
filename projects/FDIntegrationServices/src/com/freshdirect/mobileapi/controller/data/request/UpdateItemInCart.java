@@ -11,6 +11,8 @@ public class UpdateItemInCart extends Message {
     
     // Some products have "terms/conditions" associated. this value indicates that they agreed to t/c.
     private String agreeToTerms;
+    
+    private boolean dlvPassCart;
 
     public String getAgreeToTerms() {
         return agreeToTerms;
@@ -45,6 +47,12 @@ public class UpdateItemInCart extends Message {
 	public void setQuickBuy(boolean quickBuy) {
 		this.quickBuy = quickBuy;
 	}
-        
 
+	public boolean isDlvPassCart() {
+		return dlvPassCart;
+	}
+
+	public void setDlvPassCart(boolean dlvPassCart) {
+		this.dlvPassCart = dlvPassCart;
+	}
 }

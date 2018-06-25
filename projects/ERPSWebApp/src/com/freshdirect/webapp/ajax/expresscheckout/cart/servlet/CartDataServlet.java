@@ -89,7 +89,7 @@ public class CartDataServlet extends BaseJsonServlet {
 				boolean shouldFetch = request.getParameter("fetch") != null && request.getParameter("fetch").equals("true");
 				if ((isOAuth ||shouldFetch) && user!= null && user.getIdentity() != null) {
 					try {
-						FDUser recognizedUser = FDCustomerManager.recognize(user.getIdentity(), false);
+						FDUser recognizedUser = FDCustomerManager.recognize(user.getIdentity(), false, null);
 						user.setShoppingCart(recognizedUser.getShoppingCart());
 					} catch (FDAuthenticationException e) {
 						LOG.error("Failed to recognize user", e);

@@ -29,13 +29,9 @@ public interface GiftCardManagerServiceI {
 	public void registerGiftCard(String saleId, double amount) throws FDResourceException, ErpTransactionException, RemoteException;
 	
 	public List loadRecipentsForOrder(String saleId) throws RemoteException;	
-	
-	public void resendGiftCard(String saleId,List recepientList,EnumTransactionSource source) throws RemoteException, FDResourceException;
-	
+		
 	public List getGiftCardRecepientsForCustomer(String customerId) throws RemoteException,FDResourceException;
-	
-	public ErpGiftCardModel validate(String givexNum) throws InvalidCardException, CardInUseException, RemoteException, CardOnHoldException;
-	
+		
 	public List verifyStatusAndBalance(List giftcards, boolean reloadBalance ) throws RemoteException;
 	
 	public ErpGiftCardModel verifyStatusAndBalance(ErpGiftCardModel giftcard, boolean reloadBalance) throws  RemoteException;

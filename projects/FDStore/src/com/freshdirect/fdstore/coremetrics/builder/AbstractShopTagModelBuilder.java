@@ -137,7 +137,7 @@ public abstract class AbstractShopTagModelBuilder {
         int currentAttributeIndex = 8;
         // Up to 4 items maximum
         String[] contentHierarchy = cartLine.getCoremetricsPageContentHierarchy() == null ? null : cartLine.getCoremetricsPageContentHierarchy().split("-_-");
-        if (contentHierarchy != null) {
+		if (contentHierarchy != null && contentHierarchy.length != 0) {
             if (variantId != null && !"".equals(variantId)) {
                 attributesMap.put(currentAttributeIndex++, contentHierarchy[0]);
                 attributesMap.put(currentAttributeIndex++, variantId);
@@ -189,4 +189,5 @@ public abstract class AbstractShopTagModelBuilder {
     public void setCoremetricsExtraData(CoremetricsExtraData coremetricsExtraData) {
         this.coremetricsExtraData = coremetricsExtraData;
     }
+
 }

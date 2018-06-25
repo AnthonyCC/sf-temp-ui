@@ -108,26 +108,7 @@ public class FDStandingOrdersService extends AbstractEcommService implements FDS
 
 		return INSTANCE;
 	}
-	@Override
-	public FDStandingOrder createStandingOrder(FDCustomerList list)throws FDResourceException, RemoteException {
-		Request<FDCustomerListData> request = new Request<FDCustomerListData>();
-		Response<FDStandingOrderData> response = new Response<FDStandingOrderData>();
-		try{
-			request.setData(StandingOrderConverter.buildFDCustomerListData(list));
-			String inputJson = buildRequest(request);
-			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(CREATE_STANDING_ORDER),new TypeReference<Response<FDStandingOrderData>>() {});
-			if(!response.getResponseCode().equals("OK")){
-				throw new FDResourceException(response.getMessage());
-			}
-		} catch (FDResourceException e){
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}
-		return StandingOrderConverter.buildStandingOrder(response.getData());
-	}
+	
 
 	@Override
 	public Collection<FDStandingOrder> loadActiveStandingOrders(boolean isNewSo)
@@ -258,50 +239,6 @@ public class FDStandingOrdersService extends AbstractEcommService implements FDS
 	}
 
 	@Override
-	public FDStandingOrderInfoList getActiveStandingOrdersCustInfo(
-			FDStandingOrderFilterCriteria filter) throws FDResourceException,
-			RemoteException {
-		Request<FDStandingOrderFilterCriteria> request = new Request<FDStandingOrderFilterCriteria>();
-		Response<FDStandingOrderInfoListData> response = new Response<FDStandingOrderInfoListData>();
-		try{
-			request.setData(filter);
-			String inputJson = buildRequest(request);
-			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(GET_ACTIVE_SO_CUST_INFO),new TypeReference<Response<FDStandingOrderInfoListData>>() {});
-			if(!response.getResponseCode().equals("OK")){
-				throw new FDResourceException(response.getMessage());
-			}
-		} catch (FDResourceException e){
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}
-		return StandingOrderConverter.buildFdStandingOrderInfoList(response.getData());
-	}
-
-	@Override
-	public void clearStandingOrderErrors(String[] soIDs, String agentId)
-			throws FDResourceException, RemoteException {
-		Request<StandingOrderErrorData> request = new Request<StandingOrderErrorData>();
-		Response<String> response = new Response<String>();
-		try{
-			request.setData(StandingOrderConverter.buildStandingOrderErrorData(soIDs,agentId));
-			String inputJson = buildRequest(request);
-			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(CLEAR_SO_ERRORS),new TypeReference<Response<String>>() {});
-			if(!response.getResponseCode().equals("OK")){
-				throw new FDResourceException(response.getMessage());
-			}
-		} catch (FDResourceException e){
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}
-	}
-
-	@Override
 	public FDStandingOrderInfoList getFailedStandingOrdersCustInfo()
 			throws FDResourceException, RemoteException {
 		Response<FDStandingOrderInfoListData> response = new Response<FDStandingOrderInfoListData>();
@@ -331,103 +268,6 @@ public class FDStandingOrdersService extends AbstractEcommService implements FDS
 			throw new RemoteException(e.getMessage());
 		}
 		return StandingOrderConverter.buildFdStandingOrderInfoList(response.getData());
-	}
-
-	@Override
-	public Map<Date, Date> getStandingOrdersAlternateDeliveryDates()
-			throws FDResourceException, RemoteException {
-		Response<Map<Long, Long>> response = new Response<Map<Long, Long>>();
-		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_SO_ALT_DELIVERY_DATES),  new TypeReference<Response<Map<Long, Long>>>(){});
-			if(!response.getResponseCode().equals("OK")){
-				throw new FDResourceException(response.getMessage());
-			}
-		} catch (FDRuntimeException e){
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}
-		return StandingOrderConverter.buildMapOfDate(response.getData());
-	}
-
-	@Override
-	public List<FDStandingOrderAltDeliveryDate> getStandingOrderAltDeliveryDates()
-			throws FDResourceException, RemoteException {
-		Response<List<FDStandingOrderAltDeliveryDateData>> response = new Response<List<FDStandingOrderAltDeliveryDateData>>();
-		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_SO_DATES),  new TypeReference<Response<List<FDStandingOrderAltDeliveryDateData>>>(){});
-			if(!response.getResponseCode().equals("OK")){
-				throw new FDResourceException(response.getMessage());
-			}
-		} catch (FDRuntimeException e){
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}
-		return StandingOrderConverter.buildfdstandinOrderAltDlvDateList(response.getData());
-	}
-
-	@Override
-	public void addStandingOrderAltDeliveryDate(FDStandingOrderAltDeliveryDate altDeliveryDate)
-			throws FDResourceException, RemoteException {
-		Request<FDStandingOrderAltDeliveryDateData> request = new Request<FDStandingOrderAltDeliveryDateData>();
-		Response<String> response = new Response<String>();
-		try{
-			request.setData(StandingOrderConverter.buildStandingOrderAltDlvDateData(altDeliveryDate));
-			String inputJson = buildRequest(request);
-			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(ADD_SO_ALT_DLV_DATE),new TypeReference<Response<String>>() {});
-			if(!response.getResponseCode().equals("OK")){
-				throw new FDResourceException(response.getMessage());
-			}
-		} catch (FDResourceException e){
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}
-	}
-
-	@Override
-	public void updateStandingOrderAltDeliveryDate(
-			FDStandingOrderAltDeliveryDate altDeliveryDate)
-			throws FDResourceException, RemoteException {
-		Request<FDStandingOrderAltDeliveryDateData> request = new Request<FDStandingOrderAltDeliveryDateData>();
-		Response<String> response = new Response<String>();
-		try{
-			request.setData(StandingOrderConverter.buildStandingOrderAltDlvDateData(altDeliveryDate));
-			String inputJson = buildRequest(request);
-			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(UPDATE_SO_ALT_DLV_DATE),new TypeReference<Response<String>>() {});
-			if(!response.getResponseCode().equals("OK")){
-				throw new FDResourceException(response.getMessage());
-			}
-		} catch (FDResourceException e){
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}
-	}
-
-	@Override
-	public void deleteStandingOrderAltDeliveryDate(
-			FDStandingOrderAltDeliveryDate altDeliveryDate)
-			throws FDResourceException, RemoteException {
-		Request<FDStandingOrderAltDeliveryDateData> request = new Request<FDStandingOrderAltDeliveryDateData>();
-		Response<String> response = new Response<String>();
-		try{
-			request.setData(StandingOrderConverter.buildStandingOrderAltDlvDateData(altDeliveryDate));
-			String inputJson = buildRequest(request);
-			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(DELETE_SO_ALT_DLV_DATE),new TypeReference<Response<String>>() {});
-			if(!response.getResponseCode().equals("OK")){
-				throw new FDResourceException(response.getMessage());
-			}
-		} catch (FDResourceException e){
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}
 	}
 
 	@Override
@@ -563,133 +403,6 @@ public class FDStandingOrdersService extends AbstractEcommService implements FDS
 	}
 
 	@Override
-	public FDStandingOrderAltDeliveryDate getStandingOrderAltDeliveryDateById(
-			String id) throws FDResourceException, RemoteException {
-		Response<FDStandingOrderAltDeliveryDateData> response = new Response<FDStandingOrderAltDeliveryDateData>();
-		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_SO_ALT_DLV_DATE_BY_ID+id),  new TypeReference<Response<FDStandingOrderAltDeliveryDateData>>(){});
-			if(!response.getResponseCode().equals("OK")){
-				throw new FDResourceException(response.getMessage());
-			}
-		} catch (FDRuntimeException e){
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}
-		return StandingOrderConverter.buildStandingOrderAltdeliveryDate(response.getData());
-	}
-
-	@Override
-	public void deleteStandingOrderAltDeliveryDateById(String[] altIds)throws FDResourceException, RemoteException {
-		Request<String[]> request = new Request<String[]>();
-		Response<String> response = new Response<String>();
-		try{
-			request.setData(altIds);
-			String inputJson = buildRequest(request);
-			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(DELETE_SO_ALT_DLV_DATE_BY_ID),new TypeReference<Response<String>>() {});
-			if(!response.getResponseCode().equals("OK")){
-				throw new FDResourceException(response.getMessage());
-			}
-		} catch (FDResourceException e){
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}
-	}
-
-	@Override
-	public void addStandingOrderAltDeliveryDates(List<FDStandingOrderAltDeliveryDate> altDeliveryDates)
-			throws FDResourceException, RemoteException {
-		Request<List<FDStandingOrderAltDeliveryDateData>> request = new Request<List<FDStandingOrderAltDeliveryDateData>>();
-		Response<String> response = new Response<String>();
-		try{
-			request.setData(StandingOrderConverter.buildfdstandinOrderAltDlvDateDataList(altDeliveryDates));
-			String inputJson = buildRequest(request);
-			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(ADD_SO_ORDERS_ALT_DLV_DATE),new TypeReference<Response<String>>() {});
-			if(!response.getResponseCode().equals("OK")){
-				throw new FDResourceException(response.getMessage());
-			}
-		} catch (FDResourceException e){
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}
-	}
-
-	@Override
-	public boolean checkIfAlreadyExists(FDStandingOrderAltDeliveryDate altDate)
-			throws FDResourceException, RemoteException {
-		Request<FDStandingOrderAltDeliveryDateData> request = new Request<FDStandingOrderAltDeliveryDateData>();
-		Response<Boolean> response = new Response<Boolean>();
-		try{
-			request.setData(StandingOrderConverter.buildStandingOrderAltDlvDateData(altDate));
-			String inputJson = buildRequest(request);
-			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(CHECK_IF_EXISTS),new TypeReference<Response<Boolean>>() {});
-			if(!response.getResponseCode().equals("OK")){
-				throw new FDResourceException(response.getMessage());
-			}
-		} catch (FDResourceException e){
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}
-		return response.getData();
-	}
-
-	@Override
-	public boolean isValidSoId(String soId) throws FDResourceException,
-			RemoteException {
-		Response<Boolean> response = new Response<Boolean>();
-		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(IS_VALID_SO+soId+"/isValid"),  new TypeReference<Response<Boolean>>(){});
-			if(!response.getResponseCode().equals("OK")){
-				throw new FDResourceException(response.getMessage());
-			}
-		} catch (FDRuntimeException e){
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}
-		return response.getData();
-	}
-
-	@Override
-	public FDStandingOrderSkuResultInfo replaceSkuCode(String existingSku,
-			String replacementSku,String userId) throws FDResourceException, RemoteException {
-		Response<FDStandingOrderSkuResultInfo> response = new Response<FDStandingOrderSkuResultInfo>();
-		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(REPLACE_SKU_CODE + userId +"/skuReplace/existingSku/"+existingSku+"/replacementSku/"+replacementSku),  new TypeReference<Response<FDStandingOrderSkuResultInfo>>(){});
-			if(!response.getResponseCode().equals("OK")){
-				throw new FDResourceException(response.getMessage());
-			}
-		} catch (FDRuntimeException e){
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}
-		return response.getData();
-	}
-
-	@Override
-	public FDStandingOrderSkuResultInfo validateSkuCode(String existingSku,
-			String replacementSku) throws FDResourceException, RemoteException {
-		Response<FDStandingOrderSkuResultInfo> response = new Response<FDStandingOrderSkuResultInfo>();
-		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(VALIDATE_SKU_CODE+existingSku+"/replacementSku/"+replacementSku),  new TypeReference<Response<FDStandingOrderSkuResultInfo>>(){});
-			if(!response.getResponseCode().equals("OK")){
-				throw new FDResourceException(response.getMessage());
-			}
-		} catch (FDRuntimeException e){
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}
-		return response.getData();
-	}
-
-	@Override
 	public void persistUnavailableDetailsToDB(List<Result> resultsList) throws FDResourceException, RemoteException {
 		Request<List<ResultData>> request = new Request<List<ResultData>>();
 		Response<String> response = new Response<String>();
@@ -723,30 +436,6 @@ public class FDStandingOrdersService extends AbstractEcommService implements FDS
 			throw new RemoteException(e.getMessage());
 		}
 		return response.getData();
-	}
-
-	@Override
-	public Collection<FDStandingOrder> getStandingOrderDetails(
-			Collection<FDStandingOrder> fdStandingOrders)
-			throws FDResourceException, FDInvalidConfigurationException,
-			RemoteException {
-		Request<Collection<FDStandingOrderData>> request = new Request<Collection<FDStandingOrderData>>();
-		Response<Collection<FDStandingOrderData>> response = new Response<Collection<FDStandingOrderData>>();
-		try{
-			request.setData(StandingOrderConverter.buildStandingOrderDataList(fdStandingOrders));
-			String inputJson = buildRequest(request);
-			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(GET_SO_DETAILS),new TypeReference<Response<Collection<FDStandingOrderData>>>() {});
-			if(!response.getResponseCode().equals("OK")){
-				throw new FDResourceException(response.getMessage());
-			}
-		} catch (FDResourceException e){
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}
-		return StandingOrderConverter.buildStandingOrderList(response.getData());
 	}
 
 	@Override
@@ -859,22 +548,6 @@ public class FDStandingOrdersService extends AbstractEcommService implements FDS
 			throw new RemoteException(e.getMessage());
 		}
 		return StandingOrderConverter.buildStandingOrderList(response.getData());
-	}
-
-	@Override
-	public FDStandingOrder loadSOCron(PrimaryKey pk)
-			throws FDResourceException, RemoteException {
-		Response<FDStandingOrderData> response = new Response<FDStandingOrderData>();
-		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(LOAD_SO_CRON +pk.getId()),  new TypeReference<Response<FDStandingOrderData>>(){});
-			if(!response.getResponseCode().equals("OK")){
-				throw new FDResourceException(response.getMessage());
-			}
-		} catch (FDRuntimeException e){
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}
-		return StandingOrderConverter.buildStandingOrder(response.getData());
 	}
 
 	@Override

@@ -2527,17 +2527,15 @@ var fdTSDisplayPreInitializeFuncs = window['fdTSDisplayPreInitializeFuncs'] || [
 		}
 	}
 	function changeMe(checkboxElem){
-		
-		if(checkboxElem.getValue()==FreshDirect._page_options.rsvType.ONETIME){
-			document.getElementById("reservationType_field2").value=FreshDirect._page_options.rsvType.RECURRING;
-			document.getElementById("reservationType_field2").checked=true;
+		var $checkboxElem = $jq(checkboxElem);
+		if($checkboxElem.val() === FreshDirect._page_options.rsvType.ONETIME){
+			$jq("#reservationType_field2").val(FreshDirect._page_options.rsvType.RECURRING);
+			$jq("#reservationType_field2").attr('checked', true);
+		} else if($checkboxElem.val() === FreshDirect._page_options.rsvType.RECURRING || checkboxElem.getValue() === null){
+			$jq("#reservationType_field2").val(FreshDirect._page_options.rsvType.ONETIME);
+			$jq("#reservationType_field2").attr('checked', false);
 		}
-		else if(checkboxElem.getValue()==FreshDirect._page_options.rsvType.RECURRING || checkboxElem.getValue()== null){
-			document.getElementById("reservationType_field2").value=FreshDirect._page_options.rsvType.ONETIME;
-			document.getElementById("reservationType_field2").checked=false;
-		  }
-	}
-	
+	}	
 	
 	$jq(document).on('keydown', '.tsWrapper input[type="button"]', function (e) {
         if (e.keyCode == 13) {

@@ -2,12 +2,15 @@
 <%@tag import="com.freshdirect.webapp.util.StandingOrderHelper"
 	import="com.freshdirect.fdstore.promotion.SignupDiscountRule"
 	import="com.freshdirect.fdstore.customer.FDUserI"
-	import="java.util.*"
+	import="java.util.ArrayList"
+	import="java.util.List"
 	import="com.freshdirect.fdstore.customer.FDOrderInfoI"
 	import="java.text.SimpleDateFormat"
 	import="com.freshdirect.fdlogistics.model.FDTimeslot"
+	import="java.util.Date"
 	import="com.freshdirect.framework.util.DateUtil"
 	import="com.freshdirect.fdstore.content.util.DeliveryDateComparator"
+	import="java.util.Collection"
 	import="com.freshdirect.fdstore.standingorders.*"
 	import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"
 	import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"
@@ -62,13 +65,10 @@ attribute name="modifyOrderAlert" required="false" rtexprvalue="true" type="java
 						String orderDate = "";
 						String orderTime = "";
 						String orderId = "";
-						boolean isSoOrder = false;
 						for (FDOrderInfoI item : validPendingOrders) {
-							isSoOrder = false;
 							orderName = item.getErpSalesId();
 							if (soUpcomingDelivery.containsKey(item.getErpSalesId())) {
 								orderName = soUpcomingDelivery.get(item.getErpSalesId());
-								isSoOrder = true;
 							}
 							orderDOW = new SimpleDateFormat("EEEEE").format(item.getRequestedDate());
 							orderDate = new SimpleDateFormat("EEEEE, MMM d").format(item.getRequestedDate());
@@ -77,7 +77,7 @@ attribute name="modifyOrderAlert" required="false" rtexprvalue="true" type="java
 					%>
 						<div class="pendingOrderBar-overlay-order">
 							<div class="pendingOrderBar-overlay-order-status-cont status-<%= item.getOrderStatus().getStatusCode() %>">
-								<div class="pendingOrderBar-overlay-order-status-icon"><img src="/media_stat/images/pendingOrder/status_<%= item.getOrderStatus().getStatusCode() %>.svg" alt=""></div>
+								<div class="pendingOrderBar-overlay-order-status-icon"><img src="/media_stat/images/pendingOrder/status_<%= item.getOrderStatus().getStatusCode() %>.svg"></div>
 								<div class="pendingOrderBar-overlay-order-status-value"><%= item.getOrderStatus().getDisplayName() %></div>
 							</div>
 							<div class="pendingOrderBar-overlay-order-detail-cont">
@@ -85,12 +85,12 @@ attribute name="modifyOrderAlert" required="false" rtexprvalue="true" type="java
 									<div class="pendingOrderBar-overlay-order-detail-date"><%= orderDate %></div>
 									<div class="pendingOrderBar-overlay-order-detail-time"><%= orderTime %></div>
 									<div class="pendingOrderBar-overlay-order-detail-ordnum-cont">
-										<div class="pendingOrderBar-overlay-order-detail-ordnum-label <%= (isSoOrder) ? "label-SO" : "" %>"><%= (isSoOrder) ? "" : "Order#" %></div>
-										<div class="pendingOrderBar-overlay-order-detail-ordnum-value"><%= orderName %></div>
+										<div class="pendingOrderBar-overlay-order-detail-ordnum-label">Order#</div>
+										<div class="pendingOrderBar-overlay-order-detail-ordnum-value"><%= orderId %></div>
 									</div>
 								</div>
 								<div class="pendingOrderBar-overlay-order-detail-right">
-									<a href="/your_account/modify_order.jsp?orderId=<%= orderId %>&action=modify" class="cssbutton orange<%= (isMobWeb) ? " large" : "" %> modify-order-btn pendingOrderBar-overlay-order-detail-modifyorder-btn" data-gtm-source="banner">Modify&nbsp;Order<span class="offscreen">of <%= orderDate %>, <%= orderTime %> with order# <%= orderId %></span></a>
+									<a href="/your_account/modify_order.jsp?orderId=<%= orderId %>&action=modify" class="cssbutton orange<%= (isMobWeb) ? " large" : "" %> pendingOrderBar-overlay-order-detail-modifyorder-btn" data-gtm-source="banner">Modify&nbsp;Order</a>
 									<a href="/your_account/order_details.jsp?orderId=<%= orderId %>" class="cssbutton green transparent<%= (isMobWeb) ? " large" : "" %> pendingOrderBar-overlay-order-detail-seedetails-btn" data-gtm-source="banner"><span class="NOMOBWEB">See&nbsp;</span>Details<span class="offscreen"> of order number <%= orderName %></span></a>
 								</div>
 							</div>
@@ -103,10 +103,10 @@ attribute name="modifyOrderAlert" required="false" rtexprvalue="true" type="java
 						<% if (validPendingOrders.size() == 1) { %>
 							<span class="pendingOrderBar-label">Your Delivery</span>
 							<span class="pendingOrderBar-value"><%= (isMobWeb) ? "<a href=\"/your_account/order_details.jsp?orderId="+ orderId +"\" class=\"\">" : "" %><span class="pendingOrderBar-value-dow"><%= orderDOW %></span><span class="pendingOrderBar-value-time"><%= orderTime %></span><%= (isMobWeb) ? "</a>" : "" %></span>
-							<a href="/your_account/order_details.jsp?orderId=<%= orderId %>" class="cssbutton transparent whiteborder small pendingOrderBar-seedetails-btn NOMOBWEB">See Details<span class="offscreen"> of order number <%= orderName %></span></a><!--
-							--><a href="/your_account/modify_order.jsp?orderId=<%= orderId %>&action=modify" class="cssbutton orange small modify-order-btn pendingOrderBar-modifyorder-btn" data-gtm-source="banner">Modify<span class="NOMOBWEB"> Order</span></a>
+							<a href="/your_account/order_details.jsp?orderId=<%= orderId %>" class="cssbutton transparent whiteborder small pendingOrderBar-seedetails-btn NOMOBWEB">See Details<span class="offscreen"> of order number <%= orderName %></span></a>
+							<a href="/your_account/modify_order.jsp?orderId=<%= orderId %>&action=modify" class="cssbutton orange small pendingOrderBar-modifyorder-btn">Modify<span class="NOMOBWEB"> Order</span></a>
 						<% } else { %>
-							<span class="pendingOrderBar-label">Your Deliveries</span><span class="pendingOrderBar-value"><%= validPendingOrders.size() %> Upcoming Orders</span><button class="cssbutton orange small pendingOrderBar-viewall-btn">View All<span class="offscreen">your <%= validPendingOrders.size() %> Upcoming Orders</span></button>
+							<span class="pendingOrderBar-label">Your Deliveries</span><span class="pendingOrderBar-value"><%= validPendingOrders.size() %> Upcoming Orders</span><button class="cssbutton orange small pendingOrderBar-viewall-btn">View All</button>
 						<% } %>
 					</div>
 				</div>

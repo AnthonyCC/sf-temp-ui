@@ -17,12 +17,15 @@ import java.util.Map;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.deliverypass.DeliveryPassType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SequenceGenerator;
+import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
@@ -109,13 +112,20 @@ public class DeliveryPassDAO {
 	}
 
 	private final static String GET_DELIVERY_PASSES = "SELECT ID, CUSTOMER_ID, TYPE, DESCRIPTION, PURCHASE_DATE, AMOUNT, PURCHASE_ORDER_ID, TOTAL_NUM_DLVS, REM_NUM_DLVS, ORG_EXP_DATE, EXP_DATE, USAGE_CNT, NUM_OF_CREDITS, STATUS from CUST.DELIVERY_PASS where CUSTOMER_ID = ? ORDER BY PURCHASE_DATE DESC";
+	
+	private final static String GET_DELIVERY_PASS_BY_CUST_AND_ESTORE=" SELECT ID, CUSTOMER_ID, TYPE, DESCRIPTION, PURCHASE_DATE, AMOUNT, PURCHASE_ORDER_ID, TOTAL_NUM_DLVS, REM_NUM_DLVS, ORG_EXP_DATE, EXP_DATE, USAGE_CNT, NUM_OF_CREDITS, STATUS from CUST.DELIVERY_PASS dp, cust.DLV_PASS_TYPE DPT "+
+				"where CUSTOMER_ID =? AND DPT.SKU_CODE=DP.TYPE and (DPT.E_STORES is null or DPT.E_STORES LIKE '%?%') ORDER BY PURCHASE_DATE DESC";
 
-	public static List<DeliveryPassModel> getDeliveryPasses(Connection conn, String customerPk) throws SQLException {
+	public static List<DeliveryPassModel> getDeliveryPasses(Connection conn, String customerPk, EnumEStoreId eStoreId) throws SQLException {
 		List<DeliveryPassModel> deliveryPasses = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
+		String query = null;
 		try{
-			ps = conn.prepareStatement(GET_DELIVERY_PASSES);
+			
+			query = GET_DELIVERY_PASS_BY_CUST_AND_ESTORE.replace("%?%", "%"+(null != eStoreId ? eStoreId.getContentId() : EnumEStoreId.FD.getContentId())+"%");
+
+			ps = conn.prepareStatement(query);
 			ps.setString(1, customerPk);
 			rs = ps.executeQuery();
 			while(rs.next()){
@@ -410,7 +420,22 @@ public class DeliveryPassDAO {
 															 "                  and status IN ('ACT','RTU','PEN') and trunc(exp_date)>trunc(sysdate-1) "+
 															 "                 ) "+
 															 " and not exists ( select 1 from cust.case where customer_id=ci.customer_id and case_subject='DPQ-009' and case_state<>'CLSD')";
-	public static Object[] getAutoRenewalInfo(Connection conn) throws SQLException{
+	
+	/* DlvPass Query to fetch records based on FDCUSTOMER_ESTORE table, only if this property is True [ isDlvPassFDXEnabled() ] */
+	private final static String GET_AUTORENEWAL_INFO_BY_ESTORE_QUERY = "select ci.customer_id,fdc.autorenew_dp_type from cust.customerinfo ci, cust.customer c, cust.fdcustomer fd, cust.fdcustomer_estore fdc  where "+
+			 "ci.customer_id=c.id and c.ACTIVE='1' and fd.erp_customer_id=c.id and fdc.fdcustomer_id=fd.id and fdc.HAS_AUTORENEW_DP='Y' and fdc.e_store=? and "+
+			 " exists ( select 1 from cust.delivery_pass dp where dp.customer_id=ci.customer_id "+
+			 "          and status IN ('ACT','RTU') and trunc(exp_date)<=trunc(sysdate-1) and dp.TYPE IN "+
+			 "          (select sku_code from cust.dlv_pass_type where is_autorenew_dp='Y' and e_stores =?) "+
+			 "        )"+
+			 " and not exists ( select 1 from cust.delivery_pass dp where dp.customer_id=ci.customer_id "+
+			 "                  and status IN ('ACT','RTU','PEN') and trunc(exp_date)>trunc(sysdate-1) and dp.TYPE IN "+
+			 "          (select sku_code from cust.dlv_pass_type where e_stores =?) "+
+			 "                 ) "+
+			 " and not exists ( select 1 from cust.case where customer_id=ci.customer_id and case_subject=? and case_state<>'CLSD')";
+	
+	
+	public static Object[] getAutoRenewalInfo(Connection conn , EnumEStoreId eStore) throws SQLException{
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		Object[] autoRenewalInfo=new Object[2];
@@ -418,33 +443,60 @@ public class DeliveryPassDAO {
 		List<String> autoRenewalSKU=new ArrayList<String>(10);
 		autoRenewalInfo[0]=customer;
 		autoRenewalInfo[1]=autoRenewalSKU;
-
+		
 		try{
-			ps = conn.prepareStatement(GET_AUTORENEWAL_INFO_QUERY);
-			rs = ps.executeQuery();
-			String defaultRenewalSKU=FDStoreProperties.getDefaultRenewalDP();
+//			if (FDStoreProperties.isDlvPassFDXEnabled()) {
+				/* FOOD-373 */
+				String eStoreId = eStore.getContentId().toString();
+				String defaultRenewalSKU = null;
+				String caseSubject = null;
+				if (EnumEStoreId.FDX.getContentId().equalsIgnoreCase(eStoreId)) {
+					defaultRenewalSKU = FDStoreProperties.getDefaultRenewalDPforFDX();
+					caseSubject = CrmCaseSubject.CODE_AUTO_BILL_PAYMENT_MISSING_FK;
+				} else {
+					defaultRenewalSKU = FDStoreProperties.getDefaultRenewalDPforFD();
+					caseSubject = CrmCaseSubject.CODE_AUTO_BILL_PAYMENT_MISSING;
+				}
+				ps = conn.prepareStatement(GET_AUTORENEWAL_INFO_BY_ESTORE_QUERY);
+				ps.setString(1, eStoreId);
+				ps.setString(2, eStoreId);
+				ps.setString(3, eStoreId);
+				ps.setString(4, caseSubject);
+				rs = ps.executeQuery();
 
-			while (rs.next()) {
-				customer.add(rs.getString(1));
-				if((rs.getString(2)!=null)&& !("".equals(rs.getString(2)))) {
-					autoRenewalSKU.add(rs.getString(2));
+				LOGGER.info("DeliveryPass Auto renew job running, property: isDlvPassFDXEnabled() -> "+true+" ,EStore ID: "+eStore.getContentId().toString()+
+						" , default renewal SKU: "+defaultRenewalSKU);
+				while (rs.next()) {
+					customer.add(rs.getString(1));
+					if ((rs.getString(2) != null) && !("".equals(rs.getString(2)))) {
+						autoRenewalSKU.add(rs.getString(2));
+					} else {
+						autoRenewalSKU.add(defaultRenewalSKU);
+					}
 				}
-				else {
-					autoRenewalSKU.add(defaultRenewalSKU);
+			/*} else {
+				ps = conn.prepareStatement(GET_AUTORENEWAL_INFO_QUERY);
+				rs = ps.executeQuery();
+
+				String defaultRenewalSKU = FDStoreProperties.getDefaultRenewalDPforFD();
+				LOGGER.info("DeliveryPass Auto renew job running, property: isDlvPassFDXEnabled() -> "+false+ " , renewal SKU: "+defaultRenewalSKU);
+				while (rs.next()) {
+					customer.add(rs.getString(1));
+					if ((rs.getString(2) != null) && !("".equals(rs.getString(2)))) {
+						autoRenewalSKU.add(rs.getString(2));
+					} else {
+						autoRenewalSKU.add(defaultRenewalSKU);
+					}
 				}
-			}
+			}*/
 			return autoRenewalInfo;
 		}catch(SQLException sexp){
 			throw sexp;
 		}
 		finally{
-			if(rs != null)
-				rs.close();
-			if(ps != null)
-				ps.close();
+			DaoUtil.close(rs);
+			DaoUtil.close(ps);
 		}
-
-
 	}
 
 
@@ -553,16 +605,17 @@ public class DeliveryPassDAO {
 	" as \"Order Status\", to_char(sa.requested_date,'MM-DD-YYYY') as \"Delivery Date\""+
 	"             from cust.customer c, cust.customerinfo ci, CUST.DELIVERY_PASS dp, cust.sale s, cust.salesaction sa where DP.STATUS='PEN'"+
 	" and s.id=DP.PURCHASE_ORDER_ID and s.customer_id=DP.CUSTOMER_ID and c.id=CI.CUSTOMER_ID and s.customer_id=c.id"+
-	" and s.cromod_date=sa.action_date and sa.action_type in ('CRO','MOD') and s.id=sa.sale_id "+
+	" and s.cromod_date=sa.action_date and sa.action_type in ('CRO','MOD') and s.id=sa.sale_id  and s.e_store=? "+
 	" and SA.REQUESTED_DATE<trunc(sysdate) order by SA.REQUESTED_DATE, INITCAP(CI.LAST_NAME) ||','||INITCAP(CI.FIRST_NAME)";
 
-	public static List<List<String>> getPendingPasses(Connection conn) throws SQLException {
+	public static List<List<String>> getPendingPasses(Connection conn, EnumEStoreId eStore) throws SQLException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		List<List<String>> customers=new ArrayList<List<String>>(50);
 		List<String> custInfo=new ArrayList<String>(4);
 		try{
 			ps = conn.prepareStatement(GET_PENDING_DP);
+			ps.setString(1, eStore.getContentId().toString());
 			rs = ps.executeQuery();
 			while(rs.next()) {
 				custInfo.add(rs.getString(1));

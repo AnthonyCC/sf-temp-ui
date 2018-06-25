@@ -9,14 +9,19 @@ package com.freshdirect.deliverypass;
 */
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.commons.lang.StringUtils;
+
+import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.deliverypass.ejb.DlvPassTypeDAO;
 import com.freshdirect.enums.EnumModel;
+import com.freshdirect.fdstore.EnumEStoreId;
 
 /**
  * @author skrishnasamy
@@ -36,12 +41,14 @@ public class DeliveryPassType extends EnumModel {
 	private boolean isFreeTrialRestricted;
 	private String autoRenewalSKU;
 	private List<Integer> eligibleDlvDays;
+	private List<EnumDeliveryType> deliveryTypes;
+	private List<EnumEStoreId> eStoreIds;
 	
 	
 	public int getDuration() {
 		return duration;
 	}
-
+	
 	public boolean isUnlimited() {
 		return unlimited;
 	}
@@ -60,7 +67,9 @@ public class DeliveryPassType extends EnumModel {
 			@JsonProperty("autoRenewDP") boolean isAutoRenewDP, @JsonProperty("freeTrialDP") boolean isFreeTrialDP,
 			@JsonProperty("freeTrialRestricted") boolean isFreeTrialRestricted,
 			@JsonProperty("autoRenewalSKU") String autoRenewalSKU,
-			@JsonProperty("eligibleDlvDays") List<Integer> eligibleDlvDays) {
+			@JsonProperty("eligibleDlvDays") List<Integer> eligibleDlvDays,
+			@JsonProperty("deliveryTypes") List<EnumDeliveryType> deliveryTypes,
+			@JsonProperty("eStoreIds") List<EnumEStoreId> eStoreIds) {
 		super(code, name, null);
 		this.noOfDeliveries = noOfDlvs;
 		this.duration = duration;
@@ -71,6 +80,8 @@ public class DeliveryPassType extends EnumModel {
 		this.isFreeTrialRestricted = isFreeTrialRestricted;
 		this.autoRenewalSKU = autoRenewalSKU;
 		this.setEligibleDlvDays(eligibleDlvDays);
+		this.deliveryTypes = deliveryTypes;
+		this.eStoreIds = eStoreIds;
 	}
 
 	public static DeliveryPassType getEnum(String code) {
@@ -163,5 +174,21 @@ public class DeliveryPassType extends EnumModel {
 		this.eligibleDlvDays = eligibleDlvDays;
 	}
 
+
+	public List<EnumDeliveryType> getDeliveryTypes() {
+		return deliveryTypes;
+	}
+
+	public void setDeliveryTypes(List<EnumDeliveryType> deliveryTypes) {
+		this.deliveryTypes = deliveryTypes;
+	}
+
+	public List<EnumEStoreId> geteStoreIds() {
+		return eStoreIds;
+	}
+
+	public void seteStoreIds(List<EnumEStoreId> eStoreIds) {
+		this.eStoreIds = eStoreIds;
+	}
 	
 }

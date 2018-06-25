@@ -141,7 +141,7 @@ public class AddToCartServlet extends BaseJsonServlet {
     	boolean isOAuthRequest = isOAuthEnabled() && isOAuthTokenInHeader(request);
     	if (isOAuthRequest){
     		try {
-				user = FDCustomerManager.recognize(user.getIdentity(), false);
+				user = FDCustomerManager.recognize(user.getIdentity(), false, null);
 			} catch (FDAuthenticationException e) {
 				returnHttpError(500);
 	            return;

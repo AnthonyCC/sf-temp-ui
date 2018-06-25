@@ -1,7 +1,12 @@
 package com.freshdirect.delivery.routing.ejb;
 
 
-
+/**
+ *@deprecated Please do the changes RoutingLoadListener in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

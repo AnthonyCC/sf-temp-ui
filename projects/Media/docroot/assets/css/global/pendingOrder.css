@@ -11,11 +11,11 @@
 }
 .pendingOrderBar-cont {
 	text-align: center;
+	padding: 12px 0;
 	font-size: 16px;
 	background-color: #666;
 	color: #fff;
-	height: 50px;
-	line-height: 46px;
+	height: 100%;
 }
 [data-ismobweb="true"] .pendingOrderBar-cont {
 	text-align: left;
@@ -116,7 +116,7 @@
 }
 .pendingOrderBar-overlay-order-detail-left {
 	display: inline-block;
-	width: calc(100% - 170px);
+	width: calc(100% - 150px);
 }
 [data-ismobweb="true"] .pendingOrderBar-overlay-order-detail-left {
 	display: block;
@@ -155,7 +155,6 @@
 	letter-spacing: normal;
 	color: #333333;
 	margin-top: 22px;
-	word-break: break-word;
 }
 [data-ismobweb="true"] .pendingOrderBar-overlay-order-detail-ordnum-cont {
 	margin-top: 11px;
@@ -164,17 +163,8 @@
 .pendingOrderBar-overlay-order-detail-ordnum-value {
 	display: inline-block;
 }
-.pendingOrderBar-overlay-order-detail-ordnum-value {
-	text-transform: capitalize;
-}
 .pendingOrderBar-overlay-order-detail-ordnum-label:after {
 	content: ':';
-}
-.pendingOrderBar-overlay-order-detail-ordnum-label.label-SO {
-	display: none;
-}
-.pendingOrderBar-overlay-order-detail-ordnum-label.label-SO:after {
-	content: '';
 }
 .pendingOrderBar-overlay-order-detail-right {
 	width: 145px;

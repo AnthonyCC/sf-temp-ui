@@ -86,11 +86,11 @@ public class SearchService {
                 searchResult = unbxdService.searchProducts(suggestedTerm, searchProperties);
                 result = new UnbxdSearchResult(suggestedTerm, suggestions, searchResult.getResponse().getProducts());
             } else {
-                result = new UnbxdSearchResult(null, suggestions, searchResult.getResponse().getProducts());
+                result = new UnbxdSearchResult(searchTerm, suggestions, searchResult.getResponse().getProducts());
             }
 
         } else {
-            result = new UnbxdSearchResult(null, Collections.<String> emptyList(), searchResult.getResponse().getProducts());
+            result = new UnbxdSearchResult(searchTerm, Collections.<String> emptyList(), searchResult.getResponse().getProducts());
         }
 
         return result;

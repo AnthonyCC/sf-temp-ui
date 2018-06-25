@@ -42,6 +42,7 @@ import com.freshdirect.fdstore.customer.SavedRecipientModel;
 import com.freshdirect.fdstore.iplocator.IpLocatorEventDTO;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SequenceGenerator;
+import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.SqlUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;

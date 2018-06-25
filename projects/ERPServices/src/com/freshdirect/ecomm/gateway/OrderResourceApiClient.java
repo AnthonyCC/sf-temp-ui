@@ -36,7 +36,6 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.logistics.fdx.controller.data.request.CreateOrderRequest;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
 public class OrderResourceApiClient extends AbstractEcommService implements
@@ -58,8 +57,9 @@ private static OrderResourceApiClient INSTANCE;
 	private static final String GET_DELIVERYINFO_API = 	"orders/{id}/getDeliveryInfo";
 	private static final String RESUBMIT_GC_ORDERS_API = 	"orders/resubmitNsmGcOrders";
 	private static final String CREATE_GC_ORDER_API = 	"orders/gc/create";
+	private static final String CREATE_SUB_ORDER_API = 	"orders/sub/create";
 	
-	
+	private static final String CREATE_DON_ORDER_API = 	"orders/don/create";
 	public static OrderResourceApiClient getInstance() {
 		if (INSTANCE == null)
 			INSTANCE = new OrderResourceApiClient();
@@ -312,6 +312,120 @@ private static OrderResourceApiClient INSTANCE;
 			e.printStackTrace();
 			throw new RemoteException(e.getMessage(), e);
 		}
+		
+	}
+
+	@Override
+	public String placeSubscriptionOrder(FDActionInfo info,
+			ErpCreateOrderModel createOrder, Set<String> appliedPromos,
+			String id, boolean sendEmail, CustomerRatingI cra,
+			CrmAgentRole crmAgentRole, EnumDlvPassStatus status,
+			boolean isRealTimeAuthNeeded) throws RemoteException {
+
+		Request<CreateOrderRequestData> request = new Request<CreateOrderRequestData>();
+		
+		try{
+			
+			CreateOrderRequestData data = new CreateOrderRequestData();
+			data.setInfo(FDActionInfoConverter.buildActionInfoData(info));
+			data.setModel(SapGatewayConverter.buildOrderData(createOrder));
+			data.setAppliedPromos(appliedPromos);
+			data.setId(id);
+			data.setSendMail(sendEmail);
+			data.setCra(CustomerRatingConverter.buildCustomerRatingData(cra));
+			data.setAgentRole(ErpFraudPreventionConverter.buildCrmAgentRoleData(crmAgentRole));
+			data.setDeliveryPassStatus((status!=null)?status.getName():null);
+			data.setRealTimeAuthNeeded(isRealTimeAuthNeeded);
+			
+			
+			request.setData(data);
+			
+			Response<String> response = null;
+			String inputJson = buildRequest(request);
+			response = httpPostData(getFdCommerceEndPoint(CREATE_SUB_ORDER_API), inputJson, Response.class, new Object[]{});
+			return parseResponse(response);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RemoteException(e.getMessage(), e);
+		}
+		
+	}
+
+	@Override
+	public String placeDonationOrder(FDActionInfo info,
+			ErpCreateOrderModel createOrder, Set<String> appliedPromos,
+			String id, boolean sendEmail, CustomerRatingI cra,
+			CrmAgentRole crmAgentRole, EnumDlvPassStatus status, boolean isOptIn) throws RemoteException {
+
+
+		Request<CreateOrderRequestData> request = new Request<CreateOrderRequestData>();
+		
+		try{
+			
+			CreateOrderRequestData data = new CreateOrderRequestData();
+			data.setInfo(FDActionInfoConverter.buildActionInfoData(info));
+			data.setModel(SapGatewayConverter.buildOrderData(createOrder));
+			data.setAppliedPromos(appliedPromos);
+			data.setId(id);
+			data.setSendMail(sendEmail);
+			data.setCra(CustomerRatingConverter.buildCustomerRatingData(cra));
+			data.setAgentRole(ErpFraudPreventionConverter.buildCrmAgentRoleData(crmAgentRole));
+			data.setDeliveryPassStatus((status!=null)?status.getName():null);
+			data.setOptIn(isOptIn);
+			
+			
+			request.setData(data);
+			
+			Response<String> response = null;
+			String inputJson = buildRequest(request);
+			response = httpPostData(getFdCommerceEndPoint(CREATE_DON_ORDER_API), inputJson, Response.class, new Object[]{});
+			return parseResponse(response);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RemoteException(e.getMessage(), e);
+		}
+		
+	
+		
+	}
+
+	@Override
+	public String placeOrder(FDActionInfo info,
+			ErpCreateOrderModel createOrder, Set<String> appliedPromos,
+			String id, boolean sendEmail, CustomerRatingI cra,
+			CrmAgentRole crmAgentRole, EnumDlvPassStatus status,
+			boolean isFriendReferred, int fdcOrderCount) throws RemoteException {
+
+
+		Request<CreateOrderRequestData> request = new Request<CreateOrderRequestData>();
+		
+		try{
+			
+			CreateOrderRequestData data = new CreateOrderRequestData();
+			data.setInfo(FDActionInfoConverter.buildActionInfoData(info));
+			data.setModel(SapGatewayConverter.buildOrderData(createOrder));
+			data.setAppliedPromos(appliedPromos);
+			data.setId(id);
+			data.setSendMail(sendEmail);
+			data.setCra(CustomerRatingConverter.buildCustomerRatingData(cra));
+			data.setAgentRole(ErpFraudPreventionConverter.buildCrmAgentRoleData(crmAgentRole));
+			data.setDeliveryPassStatus((status!=null)?status.getName():null);
+			data.setFriendReferred(isFriendReferred);
+			data.setFdcOrderCount(fdcOrderCount);
+			
+			
+			request.setData(data);
+			
+			Response<String> response = null;
+			String inputJson = buildRequest(request);
+			response = httpPostData(getFdCommerceEndPoint(CREATE_DON_ORDER_API), inputJson, Response.class, new Object[]{});
+			return parseResponse(response);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RemoteException(e.getMessage(), e);
+		}
+		
+	
 		
 	}
 }

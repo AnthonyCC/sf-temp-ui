@@ -6,6 +6,9 @@ import java.util.Map;
 
 import org.apache.commons.lang.enums.ValuedEnum;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class EnumBankAccountType extends ValuedEnum {
 
 	public final static EnumBankAccountType PERSONAL_CHECKING = new EnumBankAccountType("C", "Checking Account", 0);
@@ -23,7 +26,8 @@ public class EnumBankAccountType extends ValuedEnum {
 		return (EnumBankAccountType) getEnum(EnumBankAccountType.class, code);
 	}
 
-	public static EnumBankAccountType getEnum(int id) {
+	@JsonCreator
+	public static EnumBankAccountType getEnum(@JsonProperty("value") int id) {
 		return (EnumBankAccountType) getEnum(EnumBankAccountType.class, id);
 	}
 

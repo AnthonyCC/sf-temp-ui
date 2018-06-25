@@ -2,12 +2,14 @@ package com.freshdirect.customer;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.BasicAddressI;
 import com.freshdirect.common.address.BasicContactAddressI;
 import com.freshdirect.common.address.ContactAddressAdapter;
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.address.PhoneNumber;
+import com.freshdirect.common.address.PhoneNumberDeserializer;
 import com.freshdirect.common.customer.EnumWebServiceType;
 import com.freshdirect.framework.util.StringUtil;
 
@@ -31,9 +33,9 @@ public class ErpAddressModel extends ContactAddressModel {
 	private String altLastName;
 
 	private String altApartment;
-
+	@JsonDeserialize(using = PhoneNumberDeserializer.class)
 	private PhoneNumber altPhone;
-
+	@JsonDeserialize(using = PhoneNumberDeserializer.class)
 	private PhoneNumber altContactPhone;
 
 	private EnumUnattendedDeliveryFlag unattendedDeliveryFlag;

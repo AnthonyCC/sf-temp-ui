@@ -878,6 +878,11 @@ function parseTipTotal(data) {
 					value = {subTotalBox:value};
 				
 				this.render(value);
+				//fix duplicate ids
+                var $elem = $('#tt_optionalToolTip:first');
+                var newId = $elem.attr('id')+'_new';
+                $elem.attr('id', newId);
+                $elem.parent().attr('aria-describedby', newId);
 				template_cleanup();
 			}
 		}

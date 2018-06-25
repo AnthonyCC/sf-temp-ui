@@ -300,7 +300,9 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 
     @Override
     public boolean isGoingOutOfStock() {
-    	boolean isToBeDiscontinuedSoon;
+    	return false; //disable display
+    	
+        /*boolean isToBeDiscontinuedSoon;
         try {
             FDProductInfo productInfo = FDCachedFactory.getProductInfo(getDefaultSkuCode());
             ZoneInfo zone = getUserContext().getPricingContext().getZoneInfo();
@@ -311,7 +313,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
         } catch (FDResourceException e) {
             isToBeDiscontinuedSoon = false;
         }
-        return isToBeDiscontinuedSoon;
+        return isToBeDiscontinuedSoon;*/
     }
 
 	@Override

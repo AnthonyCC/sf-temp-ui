@@ -11,7 +11,7 @@ import com.freshdirect.framework.core.PrimaryKey;
 
 public interface CustomerAddressServiceI {
 
-	public ErpAddressModel assumeDeliveryAddress(FDIdentity identity, String lastOrderId, String eStore)
+	public ErpAddressModel assumeDeliveryAddress(FDIdentity identity, String lastOrderId)
 			throws FDResourceException, RemoteException;
 
 	public String getParentOrderAddressId(String parentOrderAddressId) throws FDResourceException;
@@ -29,8 +29,8 @@ public interface CustomerAddressServiceI {
 
 	public void removeShippingAddress(FDActionInfo info, PrimaryKey pk) throws FDResourceException, RemoteException;
 
-	public String getDefaultShipToAddressPK(FDIdentity identity, String eStore) throws FDResourceException;
+	public String getDefaultShipToAddressPK(FDIdentity identity) throws FDResourceException;
 
-	public void setDefaultShippingAddressPK(FDIdentity identity, String shipToAddressPK, String eStore) throws FDResourceException,RemoteException;
+	public void setDefaultShippingAddressPK(FDIdentity identity, String shipToAddressPK) throws FDResourceException,RemoteException;
 	
 }

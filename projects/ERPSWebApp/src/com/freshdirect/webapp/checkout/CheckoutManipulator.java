@@ -14,6 +14,7 @@ import com.freshdirect.webapp.action.HttpContext;
 import com.freshdirect.webapp.action.HttpContextAware;
 import com.freshdirect.webapp.action.ResultAware;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 import com.freshdirect.webapp.util.StandingOrderHelper;
 
 public abstract class CheckoutManipulator {
@@ -22,6 +23,7 @@ public abstract class CheckoutManipulator {
 	HttpServletResponse	response;
 	ActionResult		result;
 	String 				actionName;
+//	boolean dlvPassCart;
 	
     public CheckoutManipulator(HttpServletRequest request, HttpServletResponse response, ActionResult result, String actionName) {
         this.request = request;
@@ -29,7 +31,12 @@ public abstract class CheckoutManipulator {
         this.response = response;
 		this.result = result != null ? result : new ActionResult();
 		this.actionName = actionName;
+//		this.dlvPassCart = null !=request.getParameter("dlvPassCart") && "true".equalsIgnoreCase(request.getParameter("dlvPassCart")) ? true: false;
 	}
+
+	/*public boolean isDlvPassCart() {
+		return dlvPassCart;
+	}*/
 
 	public HttpServletRequest getRequest() {
 		return request;
@@ -74,24 +81,27 @@ public abstract class CheckoutManipulator {
 
 
 	protected void setCart( FDCartModel cart ) {
-		setCart(cart, getUser(), getActionName(), session);
+		setCart(cart, getUser(), getActionName(), session, false);
 	}
 	
-	protected static void setCart(FDCartModel cart, FDUserI user, String actionName, HttpSession session) {
+	protected static void setCart(FDCartModel cart, FDUserI user, String actionName, HttpSession session, boolean dlvPassCart) {
 		if ( actionName.indexOf( "gc_" ) != -1 ) {
 			user.setGiftCart( cart );
 		} else if ( actionName.indexOf( "rh_" ) != -1 ) {
 			user.setDonationCart( cart );
 		} else if(StandingOrderHelper.isSO3StandingOrder(user)){
 				user.setSoTemplateCart(cart);
+		} else if (dlvPassCart){
+			user.setDlvPassCart(cart);
 		}else {
 			user.setShoppingCart( cart );
 		}
 		session.setAttribute( SessionName.USER, user );
 	}
 
-	protected static FDCartModel getCart(FDUserI user, String actionName) {
-		if (actionName.indexOf("gc_") != -1) {
+	protected static FDCartModel getCart(FDUserI user, String actionName, boolean dlvPassCart) {
+		return UserUtil.getCart(user, actionName, dlvPassCart);
+		/*if (actionName.indexOf("gc_") != -1) {
 			return user.getGiftCart();
 		} else if (actionName.indexOf("rh_") != -1) {
 			return user.getDonationCart();
@@ -104,12 +114,14 @@ public abstract class CheckoutManipulator {
 				e.printStackTrace();
 			}
 			return user.getSoTemplateCart();
+		} else if(dlvPassCart){
+			return user.getDlvPassCart();
 		}
-		return user.getShoppingCart();
+		return user.getShoppingCart();*/
 	}
 	
 	protected FDCartModel getCart() {
-		return getCart(getUser(), getActionName());
+		return getCart(getUser(), getActionName(), false);
 	}
 
 

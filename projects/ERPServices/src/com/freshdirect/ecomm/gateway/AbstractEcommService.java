@@ -32,6 +32,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.freshdirect.customer.ErpPaymentMethodDeserializer;
+import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDEcommServiceException;
@@ -46,8 +49,16 @@ public abstract class AbstractEcommService {
 	private static final RestTemplate restTemplate;
 	private static final Category LOGGER = LoggerFactory.getInstance(AbstractEcommService.class);
 
-	static {
+	private static final ObjectMapper MAPPER;
 
+	static {
+		MAPPER = new ObjectMapper()
+				.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ"))
+				.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false).registerModule(
+						new SimpleModule().addDeserializer(ErpPaymentMethodI.class, new ErpPaymentMethodDeserializer()));
+				MAPPER.getFactory()
+				.configure(Feature.ESCAPE_NON_ASCII, true);
+				
 		List<HttpMessageConverter<?>> converters = new ArrayList<HttpMessageConverter<?>>();
 		converters.add(new ByteArrayHttpMessageConverter());
 		converters.add(new StringHttpMessageConverter());
@@ -68,6 +79,7 @@ public abstract class AbstractEcommService {
 		requestFactory.setReadTimeout(FDStoreProperties.getLogisticsConnectionReadTimeout() * 1000);
 		requestFactory.setConnectTimeout(FDStoreProperties.getLogisticsConnectionTimeout() * 1000);
 		restTemplate.setRequestFactory(requestFactory);
+		
 		
 		/*try {
 		    IdleConnectionMonitorThread staleMonitor = new IdleConnectionMonitorThread(cManager);
@@ -193,11 +205,11 @@ public abstract class AbstractEcommService {
 			response = restTemplate.postForEntity(new URI(url), entity, String.class);
 			responseOfTypestring = getMapper().readValue(response.getBody(), type);
 		} catch (JsonParseException e) {
-			LOGGER.info(e.getMessage());
+			LOGGER.info("Json Parsing failure", e);
 			LOGGER.info("api url:" + url);
 			throw new FDResourceException(e, "Json Parsing failure");
 		} catch (JsonMappingException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Json Mapping failure", e);
 			LOGGER.info("api url:" + url);
 			throw new FDResourceException(e, "Json Mapping failure");
 		} catch (IOException e) {
@@ -303,11 +315,7 @@ public abstract class AbstractEcommService {
 	}
 
 	public static ObjectMapper getMapper() {
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ"));
-		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-		mapper.getFactory().configure(Feature.ESCAPE_NON_ASCII, true);
-		return mapper;
+		return MAPPER;
 	}
 
 	protected HttpEntity<String> getEntity(String inputJson) {

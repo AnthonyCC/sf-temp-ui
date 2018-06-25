@@ -25,6 +25,7 @@ import javax.naming.NamingException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.customer.ErpCustomerInfoModel;
+import com.freshdirect.customer.ejb.ErpCustomerDAO;
 import com.freshdirect.customer.ejb.ErpCustomerEB;
 import com.freshdirect.customer.ejb.ErpCustomerHome;
 import com.freshdirect.deliverypass.DeliveryPassException;
@@ -33,10 +34,13 @@ import com.freshdirect.deliverypass.DeliveryPassType;
 import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.deliverypass.EnumDlvPassProfileType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
+import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -71,7 +75,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 	 * @param model
 	 * @return
 	 */
-	public String create(DeliveryPassModel model) throws DeliveryPassException{
+	public String create(DeliveryPassModel model, EnumEStoreId eStore, String fdPk) throws DeliveryPassException{
 		Connection conn = null;
 		PrimaryKey pk = null;
 		try {
@@ -79,7 +83,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 			 * Make sure there is no active/pending/ready to use delivery pass more than the permissable limit..
 			 *
 			 */
-			Map<Comparable, Serializable> statusMap = getAllStatusMap(model.getCustomerId());
+			Map<Comparable, Serializable> statusMap = getAllStatusMap(model.getCustomerId(), eStore);
 			if(statusMap != null && statusMap.size() > 0){
 				if(Integer.parseInt(statusMap.get("UsablePassCount").toString()) >=FDStoreProperties
 						.getMaxDlvPassPurchaseLimit()){//make it read from property file.
@@ -91,13 +95,17 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 					throw new DeliveryPassException("Not currently eligible for DeliveryPass. Please contact Customer Service at {0}",model.getCustomerId());
 				}
 			}
-
-			if(model.getType().isAutoRenewDP()) {
-				ErpCustomerEB eb = this.getErpCustomerHome().findByPrimaryKey(new PrimaryKey(model.getCustomerId()));
-				ErpCustomerInfoModel info = eb.getCustomerInfo();
-				info.setHasAutoRenewDP("Y");
-				info.setAutoRenewDPSKU(model.getType().getAutoRenewalSKU());
-				eb.setCustomerInfo(info);
+			
+			if(model.getType().isAutoRenewDP() && null != fdPk) {
+				try {
+					conn = getConnection();
+					String code = model.getType().getAutoRenewalSKU();
+					ErpCustomerDAO.updateDpAutoRenewOptinDetails(conn,  true, fdPk, code,  eStore);
+				}catch (Exception e){
+					LOGGER.warn("something went wrong in DlvPassMSb create(), for fd cust id: "+fdPk, e);
+				}finally{
+					DaoUtil.close(conn);
+				}
 			}
 			conn = getConnection();
 			pk = DeliveryPassDAO.create(conn, model);
@@ -107,19 +115,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 		} catch (DeliveryPassException de) {
 			this.getSessionContext().setRollbackOnly();
 			throw de;
-		} catch (RemoteException e) {
-			throw new EJBException(e);
-		} catch (FinderException e) {
-			throw new EJBException(e);
-		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				LOGGER.warn("SQLException while closing conn in cleanup", e);
-			}
-		}
+		} finally {DaoUtil.close(conn);}
 		return pk.getId();
 	}
 
@@ -344,7 +340,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 	 * @throws DeliveryPassException
 	 */
 	public String modify(String purchaseOrderId,
-			DeliveryPassModel newPass) throws DeliveryPassException {
+			DeliveryPassModel newPass, EnumEStoreId eStore, String fdPk) throws DeliveryPassException {
 		Connection conn = null;
 		PrimaryKey pk = null;
 		try {
@@ -365,22 +361,25 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 					.get(0);
 			// Remove the existing delivery pass from the system.
 			DeliveryPassDAO.remove(conn, dlvPassInfo.getPK());
-			if(dlvPassInfo.getType().isAutoRenewDP()) {
-				ErpCustomerEB eb = this.getErpCustomerHome().findByPrimaryKey(new PrimaryKey(dlvPassInfo.getCustomerId()));
-				ErpCustomerInfoModel info = eb.getCustomerInfo();
-				info.setHasAutoRenewDP(null);
-				info.setAutoRenewDPSKU(null);
-				eb.setCustomerInfo(info);
+			if(dlvPassInfo.getType().isAutoRenewDP() && null != fdPk) {
+				try {
+					if(null == conn) conn = getConnection();
+					ErpCustomerDAO.updateDpAutoRenewOptinDetails(conn,  false, fdPk, null,  eStore);
+				}catch (Exception e){
+					LOGGER.warn("something went wrong in DlvPassMSb modify(), for fd cust id: "+fdPk, e);
+				}
 			}
 
 			// Create the new delivery pass in the system.
 			pk = DeliveryPassDAO.create(conn, newPass);
-			if(newPass.getType().isAutoRenewDP()) {
-				ErpCustomerEB eb = this.getErpCustomerHome().findByPrimaryKey(new PrimaryKey(dlvPassInfo.getCustomerId()));
-				ErpCustomerInfoModel info = eb.getCustomerInfo();
-				info.setHasAutoRenewDP("Y");
-				info.setAutoRenewDPSKU(newPass.getType().getAutoRenewalSKU());
-				eb.setCustomerInfo(info);
+			if(newPass.getType().isAutoRenewDP() && null != fdPk) {
+				try {
+					if(null == conn) conn = getConnection();
+					String skuCode = newPass.getType().getAutoRenewalSKU();
+					ErpCustomerDAO.updateDpAutoRenewOptinDetails(conn,  true, fdPk, skuCode,  eStore);
+				}catch (Exception e){
+					LOGGER.warn("something went wrong in DlvPassMSb-> modify(), for fd cust id: "+fdPk, e);
+				}
 			}
 
 		} catch (SQLException e) {
@@ -389,19 +388,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 		} catch (DeliveryPassException de) {
 			this.getSessionContext().setRollbackOnly();
 			throw de;
-		} catch (RemoteException e) {
-			throw new EJBException(e);
-		} catch (FinderException e) {
-			throw new EJBException(e);
-		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				LOGGER.warn("SQLException while closing conn in cleanup", e);
-			}
-		}
+		} finally {DaoUtil.close(conn);}
 		return pk.getId();
 	}
 
@@ -413,18 +400,19 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 	 * @param DeliveryPassModel
 	 * @throws DeliveryPassException
 	 */
-	public void remove(DeliveryPassModel model) {
+	public void remove(DeliveryPassModel model,  EnumEStoreId eStore, String fdPk) {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			// Remove the existing delivery pass from the system.
 			DeliveryPassDAO.remove(conn, model.getPK());
-			ErpCustomerEB eb = this.getErpCustomerHome().findByPrimaryKey(new PrimaryKey(model.getCustomerId()));
-			ErpCustomerInfoModel info = eb.getCustomerInfo();
-			if(model.getType().isAutoRenewDP()) {
-				info.setHasAutoRenewDP(null);
-				info.setAutoRenewDPSKU(null);
-				eb.setCustomerInfo(info);
+			if(model.getType().isAutoRenewDP() && null != fdPk) {
+				try {
+					ErpCustomerDAO.updateDpAutoRenewOptinDetails(conn,  false, fdPk, null,  eStore);
+				}catch (Exception e){
+					LOGGER.warn("something went wrong in DlvPassMSb remove(), for fd cust id: "+fdPk, e);
+				}
+		
 			}
 		} catch (SQLException e) {
 			LOGGER.warn("SQLException while removing the delivery pass.", e);
@@ -432,15 +420,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 		} catch (Exception exp) {
 			LOGGER.warn("Unknown error while removing the delivery pass.", exp);
 			throw new EJBException(exp);
-		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				LOGGER.warn("SQLException while closing conn in cleanup", e);
-			}
-		}
+		} finally {DaoUtil.close(conn);}
 	}
 
 	/**
@@ -449,19 +429,18 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 	 *
 	 * @param deliveryPassId
 	 */
-	public void cancel(DeliveryPassModel dlvPassModel) {
+	public void cancel(DeliveryPassModel dlvPassModel,  EnumEStoreId eStore, String fdPk) {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			// Update the delivery pass status to Cancelled/Order Cancelled.
 			DeliveryPassDAO.update(conn, dlvPassModel,false);
-			if(dlvPassModel.getType().isAutoRenewDP()) {
-
-				ErpCustomerEB eb = this.getErpCustomerHome().findByPrimaryKey(new PrimaryKey(dlvPassModel.getCustomerId()));
-				ErpCustomerInfoModel info = eb.getCustomerInfo();
-				info.setHasAutoRenewDP(null);
-				info.setAutoRenewDPSKU(null);
-				eb.setCustomerInfo(info);
+			if(dlvPassModel.getType().isAutoRenewDP() && null !=fdPk) {
+				try {
+					ErpCustomerDAO.updateDpAutoRenewOptinDetails(conn,  false, fdPk, null ,  eStore);
+				}catch (Exception e){
+					LOGGER.warn("something went wrong in DlvPassMSb cancel(), for fd cust id: "+fdPk, e);
+				}
 			}
 
 		} catch (SQLException e) {
@@ -470,15 +449,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 		} catch (Exception exp) {
 			LOGGER.warn( "Unknown error while cancelling the delivery pass.", exp );
 			throw new EJBException(exp);
-		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				LOGGER.warn("SQLException while closing conn in cleanup", e);
-			}
-		}
+		} finally {DaoUtil.close(conn);}
 	}
 
 	/**
@@ -649,12 +620,12 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 	 * @return List - returns null if no delivery passes available for this
 	 *         customer.
 	 */
-	public List<DeliveryPassModel> getDeliveryPasses(String customerPk) {
+	public List<DeliveryPassModel> getDeliveryPasses(String customerPk, EnumEStoreId estore) {
 		Connection conn = null;
 		List<DeliveryPassModel> deliveryPasses = null;
 		try {
 			conn = getConnection();
-			deliveryPasses = DeliveryPassDAO.getDeliveryPasses(conn, customerPk);
+			deliveryPasses = DeliveryPassDAO.getDeliveryPasses(conn, customerPk, estore);
 		} catch (SQLException e) {
 			LOGGER.warn("SQLException while retreiving the delivery passes.", e);
 			throw new EJBException(e);
@@ -770,7 +741,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 		return deliveryPasses;
 	}
 
-	public Map<Comparable, Serializable> getAllStatusMap(String customerPk){
+	public Map<Comparable, Serializable> getAllStatusMap(String customerPk, EnumEStoreId estore){
 		Connection conn = null;
 		Map<Comparable, Serializable> allStatusMap = new HashMap<Comparable, Serializable>();
 		int usablePassCount=0;
@@ -783,7 +754,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 		allStatusMap.put(DlvPassConstants.REASON_NOT_ELIGIBLE, Boolean.FALSE);
 		try {
 			conn = getConnection();
-			List<DeliveryPassModel> dlvPasses = DeliveryPassDAO.getDeliveryPasses(conn, customerPk);
+			List<DeliveryPassModel> dlvPasses = DeliveryPassDAO.getDeliveryPasses(conn, customerPk, estore);
 			if(dlvPasses != null && dlvPasses.size() > 0){
 				EnumDlvPassStatus dlvPassStatus = null;
 				String dlvPassId = "";
@@ -984,23 +955,17 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 			}
 		   return autoRenewPasses;
 	   }
-	   public  Object[] getAutoRenewalInfo() {
+	   public  Object[] getAutoRenewalInfo(EnumEStoreId eStore) {
 			Connection conn = null;
 			try {
 				conn = getConnection();
-				return DeliveryPassDAO.getAutoRenewalInfo(conn);
+				return DeliveryPassDAO.getAutoRenewalInfo(conn, eStore);
 			} catch (Exception e) {
 				LOGGER.warn("Exception during getAutoRenewalInfo()",e);
 				throw new EJBException(e);
 			}
 			finally {
-				try {
-					if (conn != null) {
-						conn.close();
-					}
-				} catch (SQLException e) {
-					LOGGER.warn("SQLException while closing conn in cleanup", e);
-				}
+				DaoUtil.close(conn);
 			}
 
 
@@ -1057,12 +1022,12 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 			}
 	    }
 
-	    public List<List<String>> getPendingPasses() {
+	    public List<List<String>> getPendingPasses(EnumEStoreId eStore) {
 
 	    	Connection conn = null;
 			try {
 				conn = getConnection();
-				 return DeliveryPassDAO.getPendingPasses(conn);
+				 return DeliveryPassDAO.getPendingPasses(conn, eStore);
 
 
 			} catch (Exception e) {
@@ -1070,13 +1035,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 				throw new EJBException(e);
 			}
 			finally {
-				try {
-					if (conn != null) {
-						conn.close();
-					}
-				} catch (SQLException e) {
-					LOGGER.warn("SQLException while closing conn in cleanup during getPendingPasses() call", e);
-				}
+				DaoUtil.close(conn);
 
 			}
 	    }

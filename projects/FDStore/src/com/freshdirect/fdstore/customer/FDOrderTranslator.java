@@ -163,7 +163,13 @@ public class FDOrderTranslator {
 				deliveryInfo.setDeliveryCutoffTime(cutOffTime.getTime());
 			}
 			
+			deliveryInfo.setDeliveryType(cart.getDeliveryType());
 			if (cart.getDeliveryAddress() instanceof ErpDepotAddressModel) {
+				ErpDepotAddressModel depotAddress = (ErpDepotAddressModel) cart.getDeliveryAddress();
+				deliveryInfo.setDepotLocationId(depotAddress.getLocationId());
+			}
+			
+			/*if (cart.getDeliveryAddress() instanceof ErpDepotAddressModel) {
 				ErpDepotAddressModel depotAddress = (ErpDepotAddressModel) cart.getDeliveryAddress();
 				deliveryInfo.setDepotLocationId(depotAddress.getLocationId());
 				if (depotAddress.isPickup()) {
@@ -205,7 +211,7 @@ public class FDOrderTranslator {
 					}
 				}
 			}
-		}
+		}*/
 			FDDeliveryZoneInfo zoneInfo = cart.getZoneInfo();
 			if (zoneInfo != null) { //this may be null in express checkout flow
 				deliveryInfo.setDeliveryZone(zoneInfo.getZoneCode());

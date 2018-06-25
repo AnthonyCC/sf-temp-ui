@@ -691,15 +691,13 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		transactions.add(cbkReversal);
 		double cbk = 0.0;
 		double cbr = 0.0;
-		for (ErpTransactionModel o : transactions) {
-			if(o instanceof ErpChargebackModel){
+		for (ErpTransactionModel o : transactions) {			
+			if(o instanceof ErpChargebackReversalModel){
+				//	cbr = MathUtil.roundDecimal(cbr + ((ErpChargebackReversalModel)o).getAmount());
+				cbr = MathUtil.roundDecimalCeiling(cbr + ((ErpChargebackReversalModel)o).getAmount());
+ 			} else if (o instanceof ErpChargebackModel){
 				//cbk = MathUtil.roundDecimal(cbk + ((ErpChargebackModel)o).getAmount());
 				cbk = MathUtil.roundDecimalCeiling(cbk + ((ErpChargebackModel)o).getAmount());
-			}
-
-			if(o instanceof ErpChargebackReversalModel){
-			//	cbr = MathUtil.roundDecimal(cbr + ((ErpChargebackReversalModel)o).getAmount());
-				cbr = MathUtil.roundDecimalCeiling(cbr + ((ErpChargebackReversalModel)o).getAmount());
 			}
 		}
 		if(cbr >= cbk){
@@ -1980,4 +1978,12 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 
 		status = EnumSaleStatus.SETTLEMENT_FAILED;
 	}
+	
+	
+	//only used for sf2.0
+	//DONT USE
+	public void _addAuthorization(ErpAuthorizationModel auth) throws ErpTransactionException {
+		transactions.add(auth);
+	}
+
 }

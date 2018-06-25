@@ -8,10 +8,7 @@ import org.apache.log4j.Category;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.freshdirect.customer.EnumFraudReason;
 import com.freshdirect.customer.EnumPaymentMethodDefaultType;
-import com.freshdirect.customer.ErpCustomerCreditModel;
-import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpPaymentMethodException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.ecomm.gateway.AbstractEcommService;
@@ -25,10 +22,9 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class CustomerPaymentService extends AbstractEcommService implements CustomerPaymentServiceI {
 
-	private static final Category LOGGER = LoggerFactory.getInstance(CustomerPaymentService.class);
+	private final static Category LOGGER = LoggerFactory.getInstance(CustomerPaymentService.class);
 
 	private static final String GET_PAYMENT_METHODS = "customerPayment/paymentMethods";
-	private static final String GET_CREDITS_BY_ERP_CUST_ID = "customerPayment/creditsByErpCustId";
 	private static final String ADD_PAYMENT_METHOD = "customerPayment/paymentMethod/add";
 	private static final String UPDATE_PAYMENT_METHOD = "customerPayment/paymentMethod/update";
 	private static final String REMOVE_PAYMENT_METHOD = "customerPayment/paymentMethod/remove";
@@ -60,7 +56,7 @@ public class CustomerPaymentService extends AbstractEcommService implements Cust
 
 	@Override
 	public void addPaymentMethod(FDActionInfo info, ErpPaymentMethodI paymentMethod, boolean paymentechEnabled,
-			boolean isDebitCardSwitch) throws FDResourceException, RemoteException, ErpPaymentMethodException, ErpFraudException {
+			boolean isDebitCardSwitch) throws FDResourceException, RemoteException, ErpPaymentMethodException {
 		Response<Void> response = null;
 		try {
 			Request<ObjectNode> request = new Request<ObjectNode>();
@@ -78,7 +74,6 @@ public class CustomerPaymentService extends AbstractEcommService implements Cust
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
-				LOGGER.error("Error in CustomerPaymentService: inputJson=" + inputJson);
 				if ("ErpPaymentMethodException".equals(response.getMessage())) {
 					if (response.getError() != null && response.getError().get("ErpPaymentMethodException") != null) {
 						throw new ErpPaymentMethodException(
@@ -87,15 +82,10 @@ public class CustomerPaymentService extends AbstractEcommService implements Cust
 						throw new ErpPaymentMethodException();
 					}
 				}
-				if ("ErpFraudException".equals(response.getMessage())) {
-					
-					throw new ErpFraudException(EnumFraudReason.DEACTIVATED_ACCOUNT);
-					
-				}
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in CustomerPaymentService: ", e);
+			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
 
@@ -129,7 +119,6 @@ public class CustomerPaymentService extends AbstractEcommService implements Cust
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
-				LOGGER.error("Error in CustomerPaymentService: inputJson=" + inputJson);
 				if ("ErpPaymentMethodException".equals(response.getMessage())) {
 					if (response.getError() != null && response.getError().get("ErpPaymentMethodException") != null) {
 						throw new ErpPaymentMethodException(
@@ -141,7 +130,7 @@ public class CustomerPaymentService extends AbstractEcommService implements Cust
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in CustomerPaymentService: ", e);
+			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -175,11 +164,10 @@ public class CustomerPaymentService extends AbstractEcommService implements Cust
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
-				LOGGER.error("Error in CustomerPaymentService: inputJson=" + inputJson);
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in CustomerPaymentService: ", e);
+			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -192,7 +180,6 @@ public class CustomerPaymentService extends AbstractEcommService implements Cust
 				});
 
 		if (!response.getResponseCode().equals("OK")) {
-			LOGGER.error("Error in CustomerPaymentService: fdCustomerId=" + fdCustomerId);
 			throw new FDResourceException(response.getMessage());
 		}
 		return response.getData();
@@ -218,11 +205,10 @@ public class CustomerPaymentService extends AbstractEcommService implements Cust
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
-				LOGGER.error("Error in CustomerPaymentService: inputJson=" + inputJson);
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in CustomerPaymentService: ", e);
+			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -235,28 +221,8 @@ public class CustomerPaymentService extends AbstractEcommService implements Cust
 				});
 
 		if (!response.getResponseCode().equals("OK")) {
-			LOGGER.error("Error in CustomerPaymentService: fdCustomerId=" + fdCustomerId);
 			throw new FDResourceException(response.getMessage());
 		}
 		return response.getData();
-	}
-
-	@Override
-	public List<ErpCustomerCreditModel> getCustomerCreditsByErpCustId(String erpCustomerId) throws RemoteException {
-		try {
-			Response<List<ErpCustomerCreditModel>> response = this.httpGetDataTypeMap(
-					getFdCommerceEndPoint(GET_CREDITS_BY_ERP_CUST_ID + "/" + erpCustomerId),
-					new TypeReference<Response<List<ErpCustomerCreditModel>>>() {
-					});
-
-			if (!response.getResponseCode().equals("OK")) {
-				LOGGER.error("Error in CustomerPaymentService: erpCustomerId=" + erpCustomerId);
-				throw new RemoteException(response.getMessage());
-			}
-			return response.getData();
-		} catch (Exception e) {
-			LOGGER.error("Error in CustomerPaymentService: erpCustomerId=" + erpCustomerId, e);
-			throw new RemoteException();
-		}
 	}
 }

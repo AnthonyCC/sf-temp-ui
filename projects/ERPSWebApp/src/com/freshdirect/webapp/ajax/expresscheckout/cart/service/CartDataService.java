@@ -171,7 +171,11 @@ public class CartDataService {
         FDOrderI order = FDCustomerManager.getOrder(user.getIdentity(), orderId);
         CartData cartData = new CartData();
         synchronized (order) {
-            populateOrderData(user, request, userId, order, cartData);
+
+            // Fetch recent cartline ids
+            Set<Integer> recentIds = (Set<Integer>) ((FDSessionUser) user).getRecentCartlineIdsSet(orderId);
+            
+            populateOrderData(user, request, userId, order, cartData, recentIds);
         }
         GoogleAnalyticsDataService.defaultService().populateCheckoutSuccessGAData(cartData, order, request.getSession());
 
@@ -391,9 +395,10 @@ public class CartDataService {
     private CartData.Item populateCartDataItemByCartLine(FDUserI user, FDCartLineI cartLine, FDCartI cart, Set<Integer> recentIds) {
         CartData.Item item = new CartData.Item();
         int randomId = cartLine.getRandomId();
+        int cartlineId = Integer.valueOf(cartLine.getCartlineId());
         item.setId(randomId);
         item.setRecent(recentIds.contains(randomId));
-        item.setNewItem((cart instanceof FDModifyCartModel) && !(cartLine instanceof FDModifyCartLineI));
+        item.setNewItem(((cart instanceof FDModifyCartModel) && !(cartLine instanceof FDModifyCartLineI)) || recentIds.contains(cartlineId));
         item.setPrice(JspMethods.formatPrice(cartLine.getPrice()));
         item.setDescr(cartLine.getDescription());
         item.setDescrAlt(cartLine.getDescription());
@@ -500,6 +505,7 @@ public class CartDataService {
             final ErpComplaintModel complaintModel = (ErpComplaintModel) session.getAttribute("fd.cc.makegoodComplaint"); // == SessionName.MAKEGOOD_COMPLAINT
 
             int sessionUserLevel = 0;
+            
             for (FDCartLineI cartLine : cartLines) {
                 ProductModel productNode = cartLine.lookupProduct();
                 if (productNode == null) {
@@ -512,15 +518,28 @@ public class CartDataService {
                     continue;
                 }
                 String sectionInfoKey;
+
+                int cartlineId = Integer.valueOf(cartLine.getCartlineId());
+                
                 if (cartLine.isWine()) {
                     isWineInCart = true;
-                    sectionInfoKey = "wineSectionKey";
+                    
+                    if (recentIds.contains(cartlineId)) {
+                    	sectionInfoKey = "justAddedWineSectionKey"; //generic
+                    } else {
+                    	sectionInfoKey = "wineSectionKey";
+                    }
                 } else {
-                    sectionInfoKey = cartLine.getDepartmentDesc();
+                    if (recentIds.contains(cartlineId)) {
+                    	sectionInfoKey = "justAdded"; //generic
+                    } else {
+                        sectionInfoKey = cartLine.getDepartmentDesc();
+                    }
                     if (cartLine.isEstimatedPrice()) {
                         hasEstimatedPriceItemInCart = true;
                     }
                 }
+                
                 SectionInfo sectionInfo = sectionInfos.get(sectionInfoKey);
                 if (sectionInfo == null) {
                     sectionInfo = new SectionInfo();
@@ -530,16 +549,20 @@ public class CartDataService {
                     }
                     sectionInfo.setWine(cartLine.isWine());
                     if (sectionInfo.isWine()) {
-                        sectionInfo.setSubTotal(JspMethods.formatPrice(FDCartModelService.defaultService().getSubTotalOnlyWineAndSpirit(cart)));
-                        sectionInfo.setTaxTotal(JspMethods.formatPrice(FDCartModelService.defaultService().getTaxValueOnlyWineAndSpirit(cart)));
                         cartData.setContainsWineSection(true);
                     }
                     sectionInfos.put(sectionInfoKey, sectionInfo);
                 }
-                sectionInfo.setSectionTitle(sectionInfoKey);
+                if (sectionInfoKey.startsWith("justAdded")) {
+                	sectionInfo.setSectionTitle("Just Added"+"<span class=\"sectionInfoKey\">"+sectionInfoKey+"</span>"); //actual title, must be unique for sort
+                	sectionInfo.setJustAdded(true); //set for sort comparator
+                } else {
+                	sectionInfo.setSectionTitle(sectionInfoKey);
+                }
                 sectionInfo.setExternalGroup(cartLine.getExternalGroup());
                 sectionInfo.setRecipe(sectionInfoKey.contains("Recipe"));
                 sectionInfo.setHasEstimatedPrice(sectionInfo.isHasEstimatedPrice() || cartLine.isEstimatedPrice());
+                
                 List<CartData.Item> sectionList = loadDepartmentSectionList(sectionMap, sectionInfo);
                 loadSectionHeaderImage(sectionHeaderImgMap, productNode, sectionInfoKey);
                 CartData.Item item = populateCartDataItem(cartLine, fdProduct, itemCount, cart, recentIds, productNode, user);
@@ -554,10 +577,60 @@ public class CartDataService {
                     dcpdCartlineMessage.put(item.getId(), dcpdMessage);
                 }
             }
+            
             cartData.setPopulateDCPDPromoDiscount(dcpdCartlineMessage);
             List<CartData.Section> sections = populateCartDataSections(sectionMap, sectionHeaderImgMap);
+            
+            //separate out just added section(s) now that they're populated
+            List<CartData.Section> justAddedSections = new ArrayList<CartData.Section>();
+            for (Iterator<CartData.Section> iter = sections.listIterator(); iter.hasNext(); ) {
+            	CartData.Section curSection = iter.next();
+                if (curSection.getInfo().isJustAdded()) {
+                	justAddedSections.add(curSection);
+                    iter.remove();
+                }
+            }
+            
+            //sort
             Collections.sort(sections, CartData.CART_DATA_SECTION_COMPARATOR_CHAIN_BY_WINE_FREE_SAMPLE_EXTERNAL_GROUP_TITLE);
+            
+            //re-insert just added sections in the appropriate places
+            for (CartData.Section curJustAddedSection : justAddedSections) {
+            	if (!curJustAddedSection.getInfo().isWine()) {
+            		//non-wine is always first
+            		sections.add(0, curJustAddedSection);
+            	} else {
+            		//find first wine section and insert before it
+            		int wineSectionIndex = -1;
+            		int curIndex = 0;
+            		for (CartData.Section curSection : sections) {
+            			if (curSection.getInfo().isWine()) {
+            				wineSectionIndex = curIndex;
+            				break;
+            			}
+            			curIndex++;
+            		}
+            		if (wineSectionIndex >= 0) { //found, insert there
+            			sections.add(wineSectionIndex, curJustAddedSection);
+            		} else { //not found, add at the end
+            			sections.add(curJustAddedSection);
+            		}
+            	}
+            }
+            
+            //populate only last wine section with subtotal info
+            if (cartData.isContainsWineSection()) {
+            	//assume it's the last section
+                int sectionsSize = sections.size();
+                if (sectionsSize > 0 && sections.get(sectionsSize-1).getInfo().isWine()) {
+            		sections.get(sectionsSize-1).getInfo().setSubTotal(JspMethods.formatPrice(FDCartModelService.defaultService().getSubTotalOnlyWineAndSpirit(cart)));
+            		sections.get(sectionsSize-1).getInfo().setTaxTotal(JspMethods.formatPrice(FDCartModelService.defaultService().getTaxValueOnlyWineAndSpirit(cart)));
+            	}
+            }            
+            
+            //save
             cartData.setCartSections(sections);
+            
             removeRecipePrefixFromSectionTitles(sections);
             cartData.setItemCount(itemCount.getValue());
             cartData.setSubTotal(JspMethods.formatPrice(cart.getSubTotal()));
@@ -744,6 +817,9 @@ public class CartDataService {
     private void populateOrderData(FDUserI user, HttpServletRequest request, String userId, FDCartI cart, CartData cartData) throws HttpErrorResponse {
         populateCartOrderData(user, request, userId, cart, cartData, Collections.<Integer> emptySet(), true);
     }
+    private void populateOrderData(FDUserI user, HttpServletRequest request, String userId, FDCartI cart, CartData cartData, Set<Integer> recentIds) throws HttpErrorResponse {
+        populateCartOrderData(user, request, userId, cart, cartData, recentIds, true);
+    }
 
     private SortedSet<Integer> populateRecentIds(FDCartModel cart) {
         SortedSet<Integer> recentIds = new TreeSet<Integer>();
@@ -815,20 +891,17 @@ public class CartDataService {
     }
 
     public void populateSubTotalBoxForNonAlcoholSections(FDCartI cart, List<CartData.Section> sections, boolean hasEstimatedPriceItemInCart, String subTotalText) {
-        int sectionSize = sections.size();
-        if (sectionSize > 0) {
-            Section lastSection = sections.get(sectionSize - 1);
-            if (lastSection.getInfo().isWine()) {
-                if (sectionSize > 1) {
-                    Section lastNonAlcoholicSection = sections.get(sectionSize - 2);
-                    SectionInfo sectionInfo = lastNonAlcoholicSection.getInfo();
-                    decorateSubTotalWithoutWineAndSpirit(cart, sections, sectionInfo, hasEstimatedPriceItemInCart, subTotalText);
-                }
-            } else {
-                SectionInfo sectionInfo = lastSection.getInfo();
-                decorateSubTotalWithoutWineAndSpirit(cart, sections, sectionInfo, hasEstimatedPriceItemInCart, subTotalText);
-            }
-        }
+    	//find last non-wine section and decorate it
+    	int nonWineSection = -1;
+    	for (CartData.Section curSection : sections) {
+    		if (curSection.getInfo().isWine()) {
+    			break;
+    		}
+    		nonWineSection++;
+    	}
+    	if (nonWineSection >= 0) {
+        	decorateSubTotalWithoutWineAndSpirit(cart, sections, sections.get(nonWineSection).getInfo(), hasEstimatedPriceItemInCart, subTotalText);
+    	}
     }
 
     private void decorateSubTotalWithoutWineAndSpirit(FDCartI cart, List<CartData.Section> sections, SectionInfo sectionInfo, boolean hasEstimatedPriceItemInCart,

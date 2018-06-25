@@ -133,8 +133,11 @@ var FreshDirect = FreshDirect || {};
         },
         saveToNew: {
           value: function (changes) {
-            var listName = $('#'+this.popupId).find('#addtolist-newList').val()
-                validator = this.validName(listName,$.makeArray($('#addtolist-selectList option')).map(function(e){
+               //fix for duplicate IDs
+        	  var findNewListId = (this.popupId === 'addtolistpopup') ? 'addtolist-newList1' : 'addtolist-newList' ;
+              var findSelectListId = (this.popupId === 'addtolistpopup') ? 'addtolist-selectList1' : 'addtolist-selectList' ;
+              var listName = $('#'+this.popupId).find('#'+findNewListId).val()
+                validator = this.validName(listName,$.makeArray($('#'+findSelectListId+' option')).map(function(e){
                   return e.innerHTML;
                 }));
 

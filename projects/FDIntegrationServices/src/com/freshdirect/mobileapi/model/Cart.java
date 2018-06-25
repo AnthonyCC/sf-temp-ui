@@ -100,6 +100,7 @@ import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.fdstore.FDShoppingCartControllerTag;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
+import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventFactory;
 import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventI;
 import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventType;
@@ -208,7 +209,7 @@ public class Cart {
     }
 
     //Friendly
-    FDCartModel getCart() {
+    public FDCartModel getCart() {
         return ((FDCartModel) cart);
     }
 
@@ -275,14 +276,14 @@ public class Cart {
      * @return
      * @throws FDException
      */
-    public ResultBundle removeItemFromCart(String cartLineId, RequestData requestData, SessionUser user) throws FDException {
+    public ResultBundle removeItemFromCart(String cartLineId, RequestData requestData, SessionUser user, boolean dlvPassCart) throws FDException {
         FDShoppingCartControllerTagWrapper wrapper = new FDShoppingCartControllerTagWrapper(user);
         CartEvent cartEvent = new CartEvent(CartEvent.FD_REMOVE_CART_EVENT);
         cartEvent.setRequestData(requestData);
-        ResultBundle result = wrapper.removeItemFromCart(cartLineId, cartEvent);//
+        ResultBundle result = wrapper.removeItemFromCart(cartLineId, cartEvent, dlvPassCart);//
 
         //Updating internal wrapped cart explicitly even though it should already be set since we're passing around user object reference
-        user.updateShoppingCart(this);
+        user.updateShoppingCart(this, dlvPassCart);
 
         return result;
     }
@@ -295,7 +296,7 @@ public class Cart {
      * @throws FDException
      * @throws ServiceException
      */
-    public ResultBundle addItemToCart(AddItemToCart addItemToCart, RequestData requestData, SessionUser user, HttpServletRequest request) throws FDException,
+    public ResultBundle addItemToCart(AddItemToCart addItemToCart, RequestData requestData, SessionUser user, HttpServletRequest request, boolean dlvPassCart) throws FDException,
             ServiceException {
         FDShoppingCartControllerTagWrapper wrapper = new FDShoppingCartControllerTagWrapper(user);
         CartEvent cartEvent = new CartEvent(CartEvent.FD_ADD_TO_CART_EVENT);
@@ -313,10 +314,10 @@ public class Cart {
             productConfiguration.setSalesUnit(new SalesUnit(product.getAutoConfiguredSalesUnit()));
         }
 
-        ResultBundle result = wrapper.addItemToCart(addItemToCart, cartEvent);
+        ResultBundle result = wrapper.addItemToCart(addItemToCart, cartEvent, dlvPassCart);
 
         //Updating internal wrapped cart explicitly even though it should already be set since we're passing around user object reference
-        user.updateShoppingCart(this);
+        user.updateShoppingCart(this, dlvPassCart);
 
         List<FDCartLineI> recentItems = ((FDCartModel) cart).getRecentOrderLines();
         List<String> recentItemIds = new ArrayList<String>();
@@ -329,7 +330,7 @@ public class Cart {
         return result;
     }
 
-    public ResultBundle addMultipleItemsToCart(AddMultipleItemsToCart multipleItemsToCart, RequestData requestData, SessionUser user, HttpServletRequest request)
+    public ResultBundle addMultipleItemsToCart(AddMultipleItemsToCart multipleItemsToCart, RequestData requestData, SessionUser user, HttpServletRequest request, boolean dlvPassCart)
             throws FDException {
         FDShoppingCartControllerTagWrapper wrapper = new FDShoppingCartControllerTagWrapper(user);
 
@@ -339,10 +340,10 @@ public class Cart {
         cartEvent.setTrackingCode(multipleItemsToCart.getTrackingCode());
         cartEvent.setTrackingCodeEx(multipleItemsToCart.getTrackingCodeEx());
         cartEvent.setImpressionId(multipleItemsToCart.getImpressionId());
-        ResultBundle result = wrapper.addMultipleItemsToCart(multipleItemsToCart, cartEvent);
+        ResultBundle result = wrapper.addMultipleItemsToCart(multipleItemsToCart, cartEvent, dlvPassCart);
 
         //Updating internal wrapped cart explicitly even though it should already be set since we're passing around user object reference
-        user.updateShoppingCart(this);
+        user.updateShoppingCart(this, dlvPassCart);
 
         List<FDCartLineI> recentItems = ((FDCartModel) cart).getRecentOrderLines();
         List<String> recentItemIds = new ArrayList<String>();
@@ -361,52 +362,52 @@ public class Cart {
      * @return
      * @throws FDException
      */
-    public ResultBundle updateItemInCart(UpdateItemInCart updateItemInCart, RequestData requestData, SessionUser user) throws FDException {
+    public ResultBundle updateItemInCart(UpdateItemInCart updateItemInCart, RequestData requestData, SessionUser user, boolean dlvPassCart) throws FDException {
         FDShoppingCartControllerTagWrapper wrapper = new FDShoppingCartControllerTagWrapper(user);
         CartEvent cartEvent = new CartEvent(CartEvent.FD_MODIFY_CART_EVENT);
         cartEvent.setRequestData(requestData);
         ResultBundle result = wrapper.updateItemInCart(updateItemInCart, cartEvent, getOrderLineById(Integer.parseInt(updateItemInCart
-                .getCartLineId())));
+                .getCartLineId())), dlvPassCart);
 
         //Updating internal wrapped cart explicitly even though it should already be set since we're passing around user object reference
-        user.updateShoppingCart(this);
+        user.updateShoppingCart(this, dlvPassCart);
         return result;
     }
 
-    public ResultBundle removeRedemptionCode(String id, SessionUser user) throws FDException {
+    public ResultBundle removeRedemptionCode(String id, SessionUser user, boolean dlvPassCart) throws FDException {
         RedemptionCodeControllerTagWrapper wrapper = new RedemptionCodeControllerTagWrapper(user);
-        ResultBundle result = wrapper.removeRedemptionCode(id);
+        ResultBundle result = wrapper.removeRedemptionCode(id, dlvPassCart);
 
         //Updating internal wrapped cart explicitly even though it should already be set since we're passing around user object reference
-        user.updateShoppingCart(this);
+        user.updateShoppingCart(this, dlvPassCart);
         return result;
     }
 
-    public ResultBundle applyRedemptionCode(String id, SessionUser user) throws FDException {
+    public ResultBundle applyRedemptionCode(String id, SessionUser user, boolean dlvPassCart) throws FDException {
         RedemptionCodeControllerTagWrapper wrapper = new RedemptionCodeControllerTagWrapper(user);
-        ResultBundle result = wrapper.applyRedemptionCode(id);
+        ResultBundle result = wrapper.applyRedemptionCode(id, dlvPassCart);
 
         //Updating internal wrapped cart explicitly even though it should already be set since we're passing around user object reference
-        user.updateShoppingCart(this);
+        user.updateShoppingCart(this, dlvPassCart);
         return result;
     }
 
-    public ResultBundle applycode(String id, SessionUser user) throws FDException {
+    public ResultBundle applycode(String id, SessionUser user, boolean dlvPassCart) throws FDException {
         RedemptionCodeControllerTagWrapper wrapper = new RedemptionCodeControllerTagWrapper(user);
-        ResultBundle result = wrapper.applyCode(id);
+        ResultBundle result = wrapper.applyCode(id, dlvPassCart);
 
         //Updating internal wrapped cart explicitly even though it should already be set since we're passing around user object reference
-        user.updateShoppingCart(this);
+        user.updateShoppingCart(this, dlvPassCart);
         return result;
     }
 
-    public ResultBundle removeMultipleItemsFromCart(MultipleRequest removeItemRequest, RequestData requestData, SessionUser user)
+    public ResultBundle removeMultipleItemsFromCart(MultipleRequest removeItemRequest, RequestData requestData, SessionUser user, boolean dlvPassCart)
             throws FDException {
         FDShoppingCartControllerTagWrapper wrapper = new FDShoppingCartControllerTagWrapper(user);
         CartEvent cartEvent = new CartEvent(CartEvent.FD_REMOVE_CART_EVENT);
         cartEvent.setRequestData(requestData);
 
-        ResultBundle result = wrapper.removeMultipleItemsFromCart(removeItemRequest.getIds(), cartEvent);
+        ResultBundle result = wrapper.removeMultipleItemsFromCart(removeItemRequest.getIds(), cartEvent, dlvPassCart);
         return result;
     }
 
@@ -495,7 +496,7 @@ public class Cart {
         return cart.getTotal();
     }
 
-    public Order getCurrentOrderDetails(SessionUser user, EnumCouponContext ctx) throws FDException {
+    public Order getCurrentOrderDetails(SessionUser user, EnumCouponContext ctx, boolean dlvPassCart) throws FDException {
         /*
          * DUP: FDWebSite/docroot/checkout/includes/i_checkout_receipt.jspf
          * LAST UPDATED ON: 10/01/2009
@@ -570,20 +571,21 @@ public class Cart {
         }
 
         //Cart detail here...
-        checkoutDetail.setCartDetail(getCartDetail(user, ctx));
+        checkoutDetail.setCartDetail(getCartDetail(user, ctx, false, dlvPassCart));
         return checkoutDetail;
     }
 
     public CartDetail getCartDetail(SessionUser user, EnumCouponContext ctx) throws FDException {
 
-        return getCartDetail(user, this.cart, ctx, false);
+        return getCartDetail(user, this.cart, ctx, false, false);
     }
 
 
-    public CartDetail getCartDetail(SessionUser user, EnumCouponContext ctx, boolean isQuickBuy) throws FDException {
+    public CartDetail getCartDetail(SessionUser user, EnumCouponContext ctx, boolean isQuickBuy, boolean dlvPassCart) throws FDException {
 
-        return getCartDetail(user, this.cart, ctx, isQuickBuy);
+        return getCartDetail(user, this.cart, ctx, isQuickBuy, dlvPassCart);
     }
+    
     /**
      * TODO: this shouldn't return an object that's of response package.
      * @param user
@@ -591,13 +593,18 @@ public class Cart {
      * @throws FDException
      * @throws ModelException
      */
-    private CartDetail getCartDetail(SessionUser user, FDCartI cart, EnumCouponContext ctx, boolean isQuickBuy) throws FDException {
+    private CartDetail getCartDetail(SessionUser user, FDCartI cart, EnumCouponContext ctx, boolean isQuickBuy, boolean dlvPassCart) throws FDException {
         FDShoppingCartControllerTagWrapper wrapper = new FDShoppingCartControllerTagWrapper(user);
         wrapper.addRequestValue(SessionName.PARAM_EVALUATE_COUPONS, true);
+        
+        if(dlvPassCart){
+        	cart = UserUtil.getCart(user.getFDSessionUser(), "", true);
+        }
+        
         if(EnumCouponContext.CHECKOUT.equals(ctx)){
         	((FDShoppingCartControllerTag)wrapper.getWrapTarget()).setFilterCoupons(true);
         }
-        wrapper.refreshDeliveryPass();
+        wrapper.refreshDeliveryPass(dlvPassCart);
         /*
          * DUP: FDWebSite/docroot/shared/includes/chk_acct/i_step_4_cart_details.jspf
          * LAST UPDATED ON: 10/1/2009
@@ -867,7 +874,7 @@ public class Cart {
 		} else if (cart instanceof FDCartModel) {
 			cartDetail.setIsDlvPassApplied(((FDCartModel) cart).isDlvPassApplied());
 
-			if (user.getSelectedServiceType() == EnumServiceType.HOME && (user.getFDSessionUser().getShoppingCart().isDlvPassApplicableByCartLines()
+			if (user.getSelectedServiceType() == EnumServiceType.HOME && (((FDCartModel) cart).isDlvPassApplicableByCartLines()
 					|| user.getFDSessionUser().isDlvPassActive() || user.getFDSessionUser().applyFreeTrailOptinBasedDP())){
 				cartDetail.setIsDlvPassApplied(true);
 			}
@@ -959,7 +966,7 @@ public class Cart {
                 PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
                 if(!cart.containsDlvPassOnly()){
                 cartDetail.addDiscount(new com.freshdirect.mobileapi.controller.data.response.CartDetail.Discount(promotion
-                        .getPromotionCode(), redemptionCode, DiscountType.PROMO, discount.getAmount(), true, promotion.getDescription()));
+                        .getPromotionCode(), promotion.getRedemptionCode(), DiscountType.PROMO, discount.getAmount(), true, promotion.getDescription()));
                 }
             }
         }
@@ -1133,7 +1140,7 @@ public class Cart {
 
         if(cart.getPaymentMethod() == null) {
         	if(user.getFDSessionUser()!=null && user.getFDSessionUser().getIdentity()!=null) {
-        		cartDetail.setPaymentMethodId(new Checkout(user).getPreselectedPaymethodMethodId());
+        		cartDetail.setPaymentMethodId(new Checkout(user).getPreselectedPaymethodMethodId(Cart.wrap((FDCartModel)cart)));
         	}
         }
 
@@ -1148,7 +1155,7 @@ public class Cart {
     	if(cart.getPaymentMethod() != null && cart.getPaymentMethod().getPK() != null) {
     		cartDetail.setPaymentMethodId(cart.getPaymentMethod().getPK().getId());
     	}
-    	if(cart.getDeliveryReservation() != null) {
+    	if(cart.getDeliveryReservation() != null && cart.getDeliveryReservation().getTimeslot() != null) {
     		cartDetail.setReservationId(cart.getDeliveryReservation().getId());
     		cartDetail.setTimeslotId(cart.getDeliveryReservation().getTimeslotId());
     	}
@@ -1268,12 +1275,12 @@ public class Cart {
         return true;
     }
 
-	public void applycredit(SessionUser user) throws FDResourceException {
-		if(user.getFDSessionUser()!=null && user.getFDSessionUser().getShoppingCart()!=null && user.getFDSessionUser().getIdentity()!=null){
-		FDCustomerCreditUtil.applyCustomerCredit(user.getFDSessionUser().getShoppingCart(), user.getFDSessionUser().getIdentity());
+	public void applycredit(SessionUser user, boolean dlvPassCart, Cart cart) throws FDResourceException {
+		if(user.getFDSessionUser()!=null && cart!=null && user.getFDSessionUser().getIdentity()!=null){
+		FDCustomerCreditUtil.applyCustomerCredit(cart.getCart(), user.getFDSessionUser().getIdentity());
 		}
         //Updating internal wrapped cart explicitly even though it should already be set since we're passing around user object reference
-        user.updateShoppingCart(this);
+        user.updateShoppingCart(this, dlvPassCart);
 	}
 
 	public double getAvalaraTax(AvalaraContext avalaraContext){

@@ -6,6 +6,7 @@ Disallow: /checkout/
 Disallow: /expressco/
 Disallow: /your_account/
 Disallow: /login/
+Disallow: /social/social_login_success.jsp
 Disallow: /view_cart.jsp
 Disallow: /cart_confirm.jsp
 Disallow: /group.jsp
@@ -26,6 +27,7 @@ Disallow: /checkout/
 Disallow: /expressco/
 Disallow: /your_account/
 Disallow: /login/
+Disallow: /social/social_login_success.jsp
 Disallow: /view_cart.jsp
 Disallow: /cart_confirm.jsp
 Disallow: /group.jsp
@@ -46,6 +48,7 @@ Disallow: /checkout/
 Disallow: /expressco/
 Disallow: /your_account/
 Disallow: /login/
+Disallow: /social/social_login_success.jsp
 Disallow: /view_cart.jsp
 Disallow: /cart_confirm.jsp
 Disallow: /group.jsp

@@ -155,7 +155,8 @@ public class FDStoreProperties {
     private static final String CRM_CREDIT_ISSUE_BCC = "fdstore.callCenter.creditIssue.bcc";
     private final static String DLV_PASS_PROMOTION_PREFIX = "fdstore.dlvPassPromotionPrefix";
     private final static String DLV_PASS_MAX_PURCHASE_LIMIT = "fdstore.dlvPass.maxPurchaseLimit";
-    private final static String DLV_PASS_AUTORENEWAL_DEFAULT = "fdstore.dlvPass.defautRenewalSKU";
+    private final static String DLV_PASS_AUTORENEWAL_DEFAULT_FD = "fdstore.dlvPass.defautRenewalSKU";
+    private final static String DLV_PASS_AUTORENEWAL_DEFAULT_FDX = "fdstore.dlvPass.defautRenewalSkuFDX";
 
     // SmartStore
     private final static String DYF_STRATEGY_CACHE_ENTRIES = "fdstore.strategy.cache.entries";
@@ -524,6 +525,7 @@ public class FDStoreProperties {
     private static final String PROP_ONE_YEAR_DELIVERY_PASS_SKU = "fdstore.oneyear.dp.sku";
     private static final String PROP_SIX_MONTH_DELIVERY_PASS_SKU = "fdstore.sixmonth.dp.sku";
     private static final String PROP_ONE_MONTH_DELIVERY_PASS_SKU = "fdstore.onemonth.dp.sku";
+    private static final String PROP_FDX_DELIVERY_PASS_SKU = "fdstore.fdx.dp.sku";
 
     // APPDEV-1850 build versioning of JavaScript/CSS files
     private static final String BUILDVER_ENABLE = "fdstore.buildver.enable";
@@ -1052,6 +1054,8 @@ public class FDStoreProperties {
 
     public final static String PROP_FD_DP_STANDALONE_CHECKOUT_ENABLED = "fdstore.deliverypass.standalone.checkout.enabled";
     public final static String PROP_FD_DP_MIDWEEK_ENABLED ="fdstore.deliverypass.midweekpass.enabled";
+    public final static String PROP_FDX_DP_ENABLED = "fdxstore.deliverypass.enabled";
+    public final static String PROP_FDX_DP_FIRST_ORDER_ELIGIBILITY_DAYS = "fdxstore.dp.first.order.eligibility.days";
 
     private static final String PROP_INFORM_ORDERMODIFY_ENABLED = "fdstore.inform.ordermodify.enabled";
     private static final String PROP_INFORM_ORDERMODIFY_VIEWLIMIT = "fdstore.inform.ordermodify.viewCountLimit";
@@ -1224,7 +1228,8 @@ public class FDStoreProperties {
         defaults.put(UNLIMITED_PROFILE_POSFIX, "Unlimited");
         defaults.put(UNLIMITED_PROMOTIONAL_PROFILE, "Unlimited");
         defaults.put(UNLIMITED_AMAZON_PRIME_PROFILE, "Unlimited");
-        defaults.put(DLV_PASS_AUTORENEWAL_DEFAULT, "MKT0072630");
+        defaults.put(DLV_PASS_AUTORENEWAL_DEFAULT_FD, "MKT0072630");
+        defaults.put(DLV_PASS_AUTORENEWAL_DEFAULT_FDX, "MKT9000223");
 
         defaults.put(DLV_PASS_PROMOTION_PREFIX, "FDDELIVERS");
         defaults.put(DLV_PASS_MAX_PURCHASE_LIMIT, "1");
@@ -1524,6 +1529,7 @@ public class FDStoreProperties {
         defaults.put(PROP_ONE_YEAR_DELIVERY_PASS_SKU, "mkt_dpass_auto14mo");
         defaults.put(PROP_SIX_MONTH_DELIVERY_PASS_SKU, "mkt_dpss_6m_autrnwl");
         defaults.put(PROP_ONE_MONTH_DELIVERY_PASS_SKU, "mkt_dpss_onemonth");
+        defaults.put(PROP_FDX_DELIVERY_PASS_SKU, "mkt_fk_dpss_onemonth");
 
         defaults.put(BUILDVER_ENABLE, "true");
 
@@ -2030,6 +2036,8 @@ public class FDStoreProperties {
 
         defaults.put(PROP_FD_DP_STANDALONE_CHECKOUT_ENABLED, "false");
         defaults.put(PROP_FD_DP_MIDWEEK_ENABLED, "true");
+        defaults.put(PROP_FDX_DP_ENABLED, "false");
+        defaults.put(PROP_FDX_DP_FIRST_ORDER_ELIGIBILITY_DAYS, "30");
 
         defaults.put(PROP_NEW_PRODUCTS_PAGE_CAROUSEL_ENABLED, "false");
         defaults.put(PROP_NEW_PRODUCTS_PAGE_CAROUSEL_CONTAINER_CONTENT_KEY, "ModuleContainer:new_prod");
@@ -2699,10 +2707,14 @@ public class FDStoreProperties {
         return get(MRKTING_ADMIN_URL);
     }
 
-    public static String getDefaultRenewalDP() {
-        return get(DLV_PASS_AUTORENEWAL_DEFAULT);
+    public static String getDefaultRenewalDPforFD() {
+        return get(DLV_PASS_AUTORENEWAL_DEFAULT_FD);
     }
 
+    public static String getDefaultRenewalDPforFDX() {
+        return get(DLV_PASS_AUTORENEWAL_DEFAULT_FDX);
+    }
+    
     @Deprecated
     public static boolean IsProduceRatingEnabled() {
         // return Boolean.valueOf(get(PRODUCE_RATING_ENABLED)).booleanValue();
@@ -3615,6 +3627,10 @@ public class FDStoreProperties {
 
     public static String getOneMonthDPSku() {
         return get(PROP_ONE_MONTH_DELIVERY_PASS_SKU);
+    }
+    
+    public static String getFDXDPSku() {
+        return get(PROP_FDX_DELIVERY_PASS_SKU);
     }
 
     public static boolean isPaymentMethodVerificationEnabled() {
@@ -5173,6 +5189,14 @@ public class FDStoreProperties {
 
     public static boolean isDlvPassStandAloneCheckoutEnabled() {
         return (Boolean.valueOf(get(PROP_FD_DP_STANDALONE_CHECKOUT_ENABLED))).booleanValue();
+    }
+    
+    public static boolean isDlvPassFDXEnabled() {
+        return (Boolean.valueOf(get(PROP_FDX_DP_ENABLED))).booleanValue();
+    }
+    
+    public static int getFDXDPFirstOrderEligibilityDays() {
+        return Integer.parseInt(get(PROP_FDX_DP_FIRST_ORDER_ELIGIBILITY_DAYS));
     }
 
     public static boolean isMidWeekDlvPassEnabled() {

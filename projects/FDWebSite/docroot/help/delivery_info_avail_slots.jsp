@@ -47,8 +47,11 @@ final boolean abstractTimeslots = false;
 			<%@ include file="/shared/includes/delivery/i_address_finder.jspf"%>
 
 			<%//Render the timeslots %>
-			<%@ include file="/shared/includes/delivery/i_delivery_timeslots.jspf"%>
-			
+			<%@ include file="/shared/includes/delivery/i_delivery_timeslots.jspf"%>			
+			<script>window.FreshDirect = window.FreshDirect || {};
+					window.FreshDirect.gtm = window.FreshDirect.gtm || {};
+					window.FreshDirect.gtm.afterPageView = window.FreshDirect.gtm.afterPageView || [];
+					window.FreshDirect.gtm.afterPageView.push({ timeslotOpened:{ action: 'timeslot-pageview', pageName:'Reserve Timeslots'} });</script>
 			
 		</tmpl:put>
 		

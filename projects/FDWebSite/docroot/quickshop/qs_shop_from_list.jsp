@@ -69,7 +69,7 @@
       <div id="departments" class="${isQS20 ? "" : "qs-menu-margin"}">
         <div class="departments ${isQS20 ? "" : "rounded-box"}">
           <div class="departments-header qs-menu-header" data-listsize="">Departments <span class="counter"></span></div>
-          <ul class="checkboxlist departments-list"></ul>
+          <fieldset><legend class="offscreen">filter products by departments</legend><ul class="checkboxlist departments-list"></ul></fieldset>
         </div>
       </div>
       <div id="preferences" class="${isQS20 ? "" : "qs-menu-margin"}"></div>

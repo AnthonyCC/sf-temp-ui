@@ -6,8 +6,6 @@ import java.util.List;
 
 import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.ErpAddressModel;
-import com.freshdirect.customer.ErpCustomerCreditModel;
-import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpPaymentMethodException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.fdstore.FDResourceException;
@@ -20,7 +18,7 @@ public interface CustomerPaymentServiceI {
 	public List<ErpPaymentMethodI> getPaymentMethods(FDIdentity identity) throws FDResourceException, RemoteException;
 
 	public void addPaymentMethod(FDActionInfo info, ErpPaymentMethodI paymentMethod, boolean paymentechEnabled,
-			boolean isDebitCardSwitch) throws FDResourceException, RemoteException, ErpPaymentMethodException, ErpFraudException;
+			boolean isDebitCardSwitch) throws FDResourceException, RemoteException, ErpPaymentMethodException;
 
 	/**
 	 * update a payment method for the customer
@@ -55,7 +53,5 @@ public interface CustomerPaymentServiceI {
 	public void setDefaultPaymentMethod(FDActionInfo info, String paymentMethodPK, EnumPaymentMethodDefaultType type, boolean isDebitCardSwitch) throws FDResourceException,RemoteException;
 
 	public int resetDefaultPaymentValueType(String fdCustomerId) throws FDResourceException, RemoteException;
-
-	public List<ErpCustomerCreditModel> getCustomerCreditsByErpCustId(String erpCustomerId) throws RemoteException;
 
 }

@@ -903,6 +903,18 @@
 		<to last="true">/account.do?action=dpFreeTrial&amp;ver=$1</to>
 	</rule>
 	
+	<!--  DeliveryPass Info -->
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/account/deliverypass/getdpinfo/</from>
+		<to last="true">/account.do?action=getDpInfo&amp;ver=$1</to>
+	</rule>
+
+	<!--  DeliveryPass Auto Renew -->
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/account/deliverypass/dpautorenew$</from>
+		<to last="true">/account.do?action=dpAutoRenew&amp;ver=$1</to>
+	</rule>
+	
 	<!-- Delivery Pass Accept Terms and Conditions -->
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/account/dpacceptterms/</from>

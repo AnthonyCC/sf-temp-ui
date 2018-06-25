@@ -16,9 +16,18 @@
 	width: 180px;
 }
 
+.qs-popup-content #addtolist-selectList1 {
+	width: 180px;
+}
+
 .qs-popup-content #addtolist-newList {
   width: 150px;
 }
+
+.qs-popup-content #addtolist-newList1 {
+  width: 150px;
+}
+
 
 .qs-popup.manageshoppinglists {
   width: auto;

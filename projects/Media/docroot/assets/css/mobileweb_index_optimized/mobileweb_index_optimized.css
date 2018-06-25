@@ -81,10 +81,15 @@ body {
 	margin: 0;
 	-webkit-font-smoothing: subpixel-antialiased
 }
-/* high color contrast color for links with reference to style guide */
+
 a,a:link {
-	color: #408244
+	color: #458b4c
 }
+
+a:visited {
+	color: #458b4c
+}
+
 a:active,a:focus,a:hover {
 	color: #5fb069;
 	text-decoration: underline
@@ -3482,13 +3487,13 @@ footer .storemedia img {
 
 footer .basicHits {
 	margin: 20px;
-	color: #408244;
+	color: #458b4c;
 	font-size: 10px;
 	text-align: center
 }
 
 footer .basicHits a {
-	color: #408244;
+	color: #458b4c;
 	padding: 10px 0;
 	outline: 0
 }
@@ -4011,7 +4016,7 @@ div#mobilehomeMainDiv a {
 	position: absolute !important;
 	top: -1000px !important;
 	z-index: 1000 !important;
-	color: #408244 !important;
+	color: #458b4c !important;
 	background-color: #ffffff !important;
     border: 1px solid #4fa157 !important;
     padding: 13px 20px !important;
@@ -4051,10 +4056,4 @@ div#mobilehomeMainDiv a {
 
 .anchors *:focus,.navbar-header input:focus {
     outline: none;
-}
-.basicHits.assistivetext{
-	font-size:14px;
-}
-.assistivetext{
-	font-size:14px;
 }

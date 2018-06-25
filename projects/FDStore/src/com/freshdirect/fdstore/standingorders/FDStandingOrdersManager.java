@@ -103,14 +103,9 @@ public class FDStandingOrdersManager {
 	
 	public FDStandingOrder createStandingOrder(FDCustomerList list) throws FDResourceException {
 		lookupManagerHome();
-		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDStandingOrderSB)){
-				return FDStandingOrdersService.getInstance().createStandingOrder(list);
-			}
-			else{
-				FDStandingOrdersSB sb = soHome.create();
-				return sb.createStandingOrder(list);
-			}
+		try {			
+			FDStandingOrdersSB sb = soHome.create();
+			return sb.createStandingOrder(list);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -580,15 +575,9 @@ public class FDStandingOrdersManager {
 
 	public Object getActiveStandingOrdersCustInfo(FDStandingOrderFilterCriteria filter) throws FDResourceException {
 		lookupManagerHome();
-		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDStandingOrderSB)){
-				return FDStandingOrdersService.getInstance().getActiveStandingOrdersCustInfo(filter);
-			}
-			else{
-			FDStandingOrdersSB sb = soHome.create();
-			
+		try {			
+			FDStandingOrdersSB sb = soHome.create();			
 			return sb.getActiveStandingOrdersCustInfo(filter);
-			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -601,13 +590,8 @@ public class FDStandingOrdersManager {
 	public void clearStandingOrderErrors(String[] soIDs,String agentId) throws FDResourceException {
 		lookupManagerHome();
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDStandingOrderSB)){
-				 FDStandingOrdersService.getInstance().clearStandingOrderErrors(soIDs, agentId);
-			}
-			else{
-				FDStandingOrdersSB sb = soHome.create();			
-				sb.clearStandingOrderErrors(soIDs,agentId);
-			}
+			FDStandingOrdersSB sb = soHome.create();			
+			sb.clearStandingOrderErrors(soIDs,agentId);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -659,15 +643,9 @@ public class FDStandingOrdersManager {
 	
 	public Map<Date,Date> getStandingOrdersAlternateDeliveryDates() throws FDResourceException {
 		lookupManagerHome();
-		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDStandingOrderSB)){
-				return FDStandingOrdersService.getInstance().getStandingOrdersAlternateDeliveryDates();
-			}
-			else{
-			FDStandingOrdersSB sb = soHome.create();
-			
+		try {			
+			FDStandingOrdersSB sb = soHome.create();			
 			return sb.getStandingOrdersAlternateDeliveryDates();
-			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -679,15 +657,9 @@ public class FDStandingOrdersManager {
 
 	public List<FDStandingOrderAltDeliveryDate> getStandingOrderAltDeliveryDates() throws FDResourceException {
 		lookupManagerHome();
-		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDStandingOrderSB)){
-				return FDStandingOrdersService.getInstance().getStandingOrderAltDeliveryDates();
-			}
-			else{
+		try {			
 			FDStandingOrdersSB sb = soHome.create();
-			
 			return sb.getStandingOrderAltDeliveryDates();
-			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -719,14 +691,9 @@ public class FDStandingOrdersManager {
 	
 	public void addStandingOrderAltDeliveryDate(FDStandingOrderAltDeliveryDate altDeliveryDate) throws FDResourceException {
 		lookupManagerHome();
-		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDStandingOrderSB)){
-				 FDStandingOrdersService.getInstance().addStandingOrderAltDeliveryDate(altDeliveryDate);
-			}
-			else{
+		try {			
 			FDStandingOrdersSB sb = soHome.create();			
 			sb.addStandingOrderAltDeliveryDate(altDeliveryDate);
-			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -739,13 +706,8 @@ public class FDStandingOrdersManager {
 	public void updateStandingOrderAltDeliveryDate(FDStandingOrderAltDeliveryDate altDeliveryDate) throws FDResourceException {
 		lookupManagerHome();
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDStandingOrderSB)){
-				 FDStandingOrdersService.getInstance().updateStandingOrderAltDeliveryDate(altDeliveryDate);
-			}
-			else{
 			FDStandingOrdersSB sb = soHome.create();			
 			sb.updateStandingOrderAltDeliveryDate(altDeliveryDate);
-			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -758,13 +720,8 @@ public class FDStandingOrdersManager {
 	public void deleteStandingOrderAltDeliveryDate(FDStandingOrderAltDeliveryDate altDeliveryDate) throws FDResourceException {
 		lookupManagerHome();
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDStandingOrderSB)){
-				 FDStandingOrdersService.getInstance().deleteStandingOrderAltDeliveryDate(altDeliveryDate);
-			}
-			else{
 			FDStandingOrdersSB sb = soHome.create();			
 			sb.deleteStandingOrderAltDeliveryDate(altDeliveryDate);
-			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -776,14 +733,9 @@ public class FDStandingOrdersManager {
 	
 	public void deleteStandingOrderAltDeliveryDateById(String[] altIds) throws FDResourceException {
 		lookupManagerHome();
-		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDStandingOrderSB)){
-				  FDStandingOrdersService.getInstance().deleteStandingOrderAltDeliveryDateById(altIds);
-			}
-			else{
+		try {			
 			FDStandingOrdersSB sb = soHome.create();			
 			sb.deleteStandingOrderAltDeliveryDateById(altIds);
-			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -989,13 +941,8 @@ public class FDStandingOrdersManager {
 	public FDStandingOrderAltDeliveryDate getStandingOrderAltDeliveryDateById(String id) throws FDResourceException{
 		lookupManagerHome();
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDStandingOrderSB)){
-				 return FDStandingOrdersService.getInstance().getStandingOrderAltDeliveryDateById(id);
-			}
-			else{
 			FDStandingOrdersSB sb = soHome.create();			
 			return sb.getStandingOrderAltDeliveryDateById(id);
-			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -1007,14 +954,9 @@ public class FDStandingOrdersManager {
 	
 	public void addStandingOrderAltDeliveryDates(List<FDStandingOrderAltDeliveryDate> altDeliveryDates) throws FDResourceException {
 		lookupManagerHome();
-		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDStandingOrderSB)){
-				  FDStandingOrdersService.getInstance().addStandingOrderAltDeliveryDates(altDeliveryDates);
-			}
-			else{
+		try {			
 			FDStandingOrdersSB sb = soHome.create();			
 			sb.addStandingOrderAltDeliveryDates(altDeliveryDates);
-			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -1026,14 +968,9 @@ public class FDStandingOrdersManager {
 	
 	public boolean checkIfAlreadyExists(FDStandingOrderAltDeliveryDate altDate) throws FDResourceException{
 		lookupManagerHome();
-		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDStandingOrderSB)){
-				 return FDStandingOrdersService.getInstance().checkIfAlreadyExists(altDate);
-			}
-			else{
+		try {			
 			FDStandingOrdersSB sb = soHome.create();			
 			return sb.checkIfAlreadyExists(altDate);
-			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -1046,13 +983,8 @@ public class FDStandingOrdersManager {
 	public boolean isValidSoId(String soId) throws FDResourceException{
 		lookupManagerHome();
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDStandingOrderSB)){
-				 return FDStandingOrdersService.getInstance().isValidSoId(soId);
-			}
-			else{
 			FDStandingOrdersSB sb = soHome.create();			
 			return sb.isValidSoId(soId);
-			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -1065,13 +997,8 @@ public class FDStandingOrdersManager {
 	public FDStandingOrderSkuResultInfo validateSkuCode(String sourceSku, String destinationSku) throws FDResourceException{
 		lookupManagerHome();
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDStandingOrderSB)){
-				 return FDStandingOrdersService.getInstance().validateSkuCode(sourceSku, destinationSku);
-			}
-			else{
 			FDStandingOrdersSB sb = soHome.create();			
 			return sb.validateSkuCode(sourceSku, destinationSku);
-			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -1085,13 +1012,8 @@ public class FDStandingOrdersManager {
 			String destinationSku, String userId) throws FDResourceException {
 		lookupManagerHome();
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDStandingOrderSB)){
-				 return FDStandingOrdersService.getInstance().replaceSkuCode(sourceSku, destinationSku,userId);
-			}
-			else{
 			FDStandingOrdersSB sb = soHome.create();	
 			return sb.replaceSkuCode(sourceSku, destinationSku);
-			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -1207,14 +1129,8 @@ public class FDStandingOrdersManager {
 		try {
 			FDStandingOrdersSB sb = soHome.create();
 			Collection<FDStandingOrder> standingOrders=new ArrayList<FDStandingOrder>();
-			standingOrders.add(so);
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDStandingOrderSB)){
-				 standingOrders =  FDStandingOrdersService.getInstance().getStandingOrderDetails(standingOrders);
-			}
-			else{
-			standingOrders=sb.getStandingOrderDetails(standingOrders);
-			}
-			
+			standingOrders.add(so);			
+			standingOrders=sb.getStandingOrderDetails(standingOrders);			
 			return  (FDStandingOrder) new ArrayList<FDStandingOrder>(standingOrders).get(0);
 			
 		} catch (CreateException ce) {

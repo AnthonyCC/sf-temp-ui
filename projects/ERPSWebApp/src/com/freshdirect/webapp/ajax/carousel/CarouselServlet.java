@@ -1,6 +1,7 @@
 package com.freshdirect.webapp.ajax.carousel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +29,6 @@ import com.freshdirect.webapp.ajax.DataPotatoField;
 import com.freshdirect.webapp.ajax.browse.data.BrowseData.CarouselDataCointainer;
 import com.freshdirect.webapp.ajax.browse.data.CarouselData;
 import com.freshdirect.webapp.ajax.browse.service.CarouselService;
-import com.freshdirect.webapp.ajax.reorder.QuickShopHelper;
 import com.freshdirect.webapp.ajax.reorder.service.QuickShopCarouselService;
 import com.freshdirect.webapp.ajax.reorder.service.QuickShopCrazyQuickshopRecommendationService;
 import com.freshdirect.webapp.ajax.viewcart.data.RecommendationTab;
@@ -45,40 +45,56 @@ public class CarouselServlet extends BaseJsonServlet {
 
 	@Override
 	// For OAuth2 token endpoint, GET is disabled
-	protected void doGet(HttpServletRequest request, HttpServletResponse response, FDUserI u) throws HttpErrorResponse {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
 
-		String type = request.getParameter("type");
-		HttpSession session = request.getSession();
-		FDSessionUser sessionUser = (FDSessionUser) QuickShopHelper.getUserFromSession(session);
+        String type = request.getParameter("type");
+        CarouselType carouselType = CarouselType.fromString(type);
 
-		if (type == null || type.isEmpty()) {
-			ViewCartCarouselData carousels = getQuickShopCarousel(request, sessionUser);
-			writeResponseData(response, carousels);
+        HttpSession session = request.getSession();
+        FDSessionUser sessionUser = (FDSessionUser) user;
 
-		} else if (type.equals("checkout")) {
-			ViewCartCarouselData carousels = getCheckoutCarousel(request, sessionUser);
-			writeResponseData(response, carousels);
+        Object carousel = null;
 
-		} else if (type.equals("cart")) {
-			ViewCartCarouselData carousels = getViewCartCarousel(request, sessionUser);
-			writeResponseData(response, carousels);
+        switch (carouselType) {
+            case QUICKSHOP:
+                carousel = getQuickShopCarousel(request, sessionUser);
+                break;
 
-		} else if (type.equals("pres-picks")) {
-			CarouselDataCointainer carouselData = getPresPickCarousel(sessionUser);
-			writeResponseData(response, carouselData);
+            case CHECKOUT:
+                carousel = getCheckoutCarousel(request, sessionUser);
+                break;
 
-		} else if (type.equals("search")) {
-			CarouselData carouselData = getSearchCarousel(request, sessionUser);
-			writeResponseData(response, carouselData);
+            case CART:
+                carousel = getViewCartCarousel(request, sessionUser);
+                break;
 
-		} else if (type.equals("ymal") || type.equals("deals")) {
-			Map<String, ?> dataMap = getProductCarousel(request, session, sessionUser);
-			writeResponseData(response, dataMap);
-        } else {
-			LOGGER.error("unsupported carousel type " + type);
-			writeResponseData(response, null);
-		}
-	}
+            case PRESIDENT_PICKS: {
+                Map<String, Object> carousels = new HashMap<String, Object>();
+                carousels.put("carousels", getPresPickCarousel(sessionUser));
+                carousel = carousels;
+            }
+                break;
+
+            case SEARCH: {
+                Map<String, Object> carousels = new HashMap<String, Object>();
+                carousels.put("carousels", getSearchCarousel(request, sessionUser));
+                carousel = carousels;
+            }
+                break;
+
+            case YMAL:
+                // Fall-through
+            case DEALS:
+                carousel = getProductCarousel(request, session, sessionUser);
+                break;
+
+            default:
+                LOGGER.error("unsupported carousel type " + type);
+                break;
+        }
+
+        writeResponseData(response, carousel);
+    }
 
     private Map<String, ?> getProductCarousel(HttpServletRequest request, HttpSession session,
 			FDSessionUser sessionUser) {
@@ -142,16 +158,17 @@ public class CarouselServlet extends BaseJsonServlet {
 		return dataMap;
 	}
 
-	private CarouselData getSearchCarousel(HttpServletRequest request, FDSessionUser sessionUser) {
-		String productId = request.getParameter("productId");
-		CarouselData carouselData = null;
-		try {
+    private CarouselDataCointainer getSearchCarousel(HttpServletRequest request, FDSessionUser sessionUser) {
+        CarouselDataCointainer carouselData = new CarouselDataCointainer();
+        String productId = request.getParameter("productId");
+
+        try {
 			if (null != sessionUser) {
 				Recommendations recommendations = ProductRecommenderUtil.getSearchPageRecommendations(sessionUser,
 						productId);
 				if (recommendations != null && recommendations.getAllProducts().size() > 0) {
-					carouselData = CarouselService.defaultService().createCarouselData(null, "You Might Also Like",
-							recommendations.getAllProducts(), sessionUser, "", recommendations.getVariant().getId());
+                    carouselData.setCarousel1(CarouselService.defaultService().createCarouselData(null, "You Might Also Like", recommendations.getAllProducts(), sessionUser, "",
+                            recommendations.getVariant().getId()));
 
 				}
 			}

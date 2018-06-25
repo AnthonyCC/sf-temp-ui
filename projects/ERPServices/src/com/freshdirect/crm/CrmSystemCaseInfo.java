@@ -34,16 +34,18 @@ public class CrmSystemCaseInfo implements Serializable {
 	public CrmSystemCaseInfo(PrimaryKey customerPK, CrmCaseSubject subject, String summary){
 		this(customerPK, null, subject, summary);
 	}
-	
 	public CrmSystemCaseInfo(PrimaryKey customerPK, PrimaryKey salePK, CrmCaseSubject subject, String summary){
+		this(customerPK, salePK, subject, summary, CrmCaseOrigin.getEnum(CrmCaseOrigin.CODE_SYS), CrmCaseState.getEnum(CrmCaseState.CODE_OPEN));
+	}
+	public CrmSystemCaseInfo(PrimaryKey customerPK, PrimaryKey salePK, CrmCaseSubject subject, String summary, CrmCaseOrigin origin, CrmCaseState state){
 		this.customerPK = customerPK;
 		this.salePK = salePK;
 		this.subject = subject;
 		this.summary = summary;
 		
 		//default values
-		this.origin = CrmCaseOrigin.getEnum(CrmCaseOrigin.CODE_SYS);
-		this.state = CrmCaseState.getEnum(CrmCaseState.CODE_OPEN);
+		this.origin = origin;
+		this.state = state;
 	}
 	
 	

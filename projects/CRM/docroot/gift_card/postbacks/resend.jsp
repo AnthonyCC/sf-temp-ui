@@ -74,7 +74,7 @@
             	json.put("returnMsg", "<b<span style=\"color: #f00;\">Please select atleast one to send gift card email.</span></b>");
             	
             }else{
-				boolean success = GiftCardUtil.resendEmail(request, saleId, certNum, resendEmailId, recipName, persMessage,toPurchaser,toLastRecipient);
+				boolean success = GiftCardUtil.resendEmail(request, saleId, certNum, resendEmailId, recipName, persMessage);
 		        
 		        if(success) {
 				    //if we return anything, it will de displayed in the overlay (can be html)
@@ -89,32 +89,6 @@
 		<%
 	}
 	
-	if(isSendCancellationEmail){
-		String saleId = request.getParameter("gcSaleId");
-		String certNum = request.getParameter("gcCertNum");
-		String givexNum = request.getParameter("gcGivexNum");
-		boolean isOrigRecp = "true".equals((String)request.getParameter("origRecp"))?true:false;
-		boolean isSelf =	 "true".equals((String)request.getParameter("self"))?true:false;
-		boolean isnewRecipient = "true".equals((String)request.getParameter("newRecipient"))?true:false;
-		String newRecipientAddr = request.getParameter("newRecipientAddr");	
-		boolean success= true;
-		String[] emailAddrs = GiftCardUtil.sendGiftCardCancellationEmail(request,saleId,certNum,isOrigRecp,isSelf,isnewRecipient,newRecipientAddr);
-		 JSONObject json = new JSONObject();
-			if(null != emailAddrs && emailAddrs.length > 0) {
-			    //if we return anything, it will de displayed in the overlay (can be html)
-	            json.put("returnMsg", "<b><span style=\"color: #f00;\">Gift Card Cancellation mails sent successfully.</span></b>");
-			    json.put("opStatus","ok");
-			    json.put("gcCertNum",certNum);
-			    json.put("origRecpEmail",emailAddrs[0]);
-			    json.put("selfEmail",emailAddrs[1]);
-			    json.put("newRecpEmail",emailAddrs[2]);
-			    
-	        } else {
-	            json.put("returnMsg", "<b><span style=\"color: #f00;\">Unable to process your request. Please cancel the Gift Card, then try again.</span></b>");
-	            json.put("opStatus","error");
-	        }
-			%>  <%=json.toString()%>
-			<%
-	}
+	
 
 %>

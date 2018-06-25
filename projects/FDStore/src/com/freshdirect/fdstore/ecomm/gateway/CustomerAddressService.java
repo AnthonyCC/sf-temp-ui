@@ -21,7 +21,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class CustomerAddressService extends AbstractEcommService implements CustomerAddressServiceI {
 
-	private static final Category LOGGER = LoggerFactory.getInstance(CustomerAddressService.class);
+	private final static Category LOGGER = LoggerFactory.getInstance(CustomerAddressService.class);
 
 	private static final String ASSUME_DELIVERY_ADDRESS = "customerAddress/assumeDeliveryAddress";
 	private static final String GET_PARENT_ORDER_ADDRESS_ID = "customerAddress/parentOrderAddressId";
@@ -43,7 +43,7 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 	}
 
 	@Override
-	public ErpAddressModel assumeDeliveryAddress(FDIdentity identity, String lastOrderId, String eStore)
+	public ErpAddressModel assumeDeliveryAddress(FDIdentity identity, String lastOrderId)
 			throws FDResourceException, RemoteException {
 		Response<ErpAddressModel> response = null;
 		try {
@@ -51,7 +51,6 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 			ObjectNode rootNode = getMapper().createObjectNode();
 			rootNode.set("identity", getMapper().convertValue(identity, JsonNode.class));
 			rootNode.put("lastOrderId", lastOrderId);
-			rootNode.put("eStore", eStore);
 
 			request.setData(rootNode);
 			String inputJson = buildRequest(request);
@@ -61,14 +60,12 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
-				LOGGER.info("Info in CustomerAddressService.assumeDeliveryAddress: inputJson=" + inputJson
-						+ ", response=" + response);
+
 				throw new FDResourceException(response.getMessage());
 			}
 			return response.getData();
 		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in CustomerAddressService.assumeDeliveryAddress: identity=" + identity
-					+ ", lastOrderId=" + lastOrderId, e);
+			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -82,8 +79,6 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 				new TypeReference<Response<String>>() {
 				});
 		if (!response.getResponseCode().equals("OK")) {
-			LOGGER.error("Error in CustomerAddressService.getParentOrderAddressId: parentOrderAddressId="
-					+ parentOrderAddressId);
 			throw new FDResourceException(response.getMessage());
 		}
 		return response.getData();
@@ -108,14 +103,12 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
-				LOGGER.error(
-						"Error in CustomerAddressService.getAddress: data=" + inputJson + ", response=" + response);
+
 				throw new FDResourceException(response.getMessage());
 			}
 			return response.getData();
 		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in CustomerAddressService.getAddress: identity=" + identity + ", addressId" + addressId,
-					e);
+			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -136,13 +129,12 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
-				LOGGER.error("Error in CustomerAddressService.getShippingAddresses: data=" + inputJson + ", response="
-						+ response);
+
 				throw new FDResourceException(response.getMessage());
 			}
 			return response.getData();
 		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in CustomerAddressService.getShippingAddresses: identity=" + identity, e);
+			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -166,12 +158,11 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
-				LOGGER.error("Error in CustomerAddressService.addShippingAddress: data=" + inputJson);
 				throw new FDResourceException(response.getMessage());
 			}
 			return response.getData();
 		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in CustomerAddressService.addShippingAddress: ", e);
+			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -195,13 +186,11 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
-				LOGGER.error("Error in CustomerAddressService.updateShippingAddress: data=" + inputJson + ", response="
-						+ response);
 				throw new FDResourceException(response.getMessage());
 			}
 			return response.getData();
 		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in CustomerAddressService.updateShippingAddress: ", e);
+			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -223,28 +212,24 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
-				LOGGER.error("Error in CustomerAddressService.removeShippingAddress: data=" + inputJson + ", response="
-						+ response);
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in CustomerAddressService.removeShippingAddress: info=" + info + ", pk=" + pk, e);
+			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
 
 	}
 
 	@Override
-	public String getDefaultShipToAddressPK(FDIdentity identity, String eStore) throws FDResourceException {
+	public String getDefaultShipToAddressPK(FDIdentity identity) throws FDResourceException {
 		Response<String> response = null;
 		response = this.httpGetDataTypeMap(
-				getFdCommerceEndPoint(GET_DEFAULT_SHIPPING_ADDRESS + "/" + identity.getFDCustomerPK()) + "/" + eStore,
+				getFdCommerceEndPoint(GET_DEFAULT_SHIPPING_ADDRESS + "/" + identity.getFDCustomerPK()),
 				new TypeReference<Response<String>>() {
 				});
 
 		if (!response.getResponseCode().equals("OK")) {
-			LOGGER.error("Error in CustomerAddressService.getDefaultShipToAddressPK: identity=" + identity
-					+ ", response=" + response);
 			throw new FDResourceException(response.getMessage());
 		}
 		return response.getData();
@@ -252,7 +237,7 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 	}
 
 	@Override
-	public void setDefaultShippingAddressPK(FDIdentity identity, String shipToAddressPK, String eStore)
+	public void setDefaultShippingAddressPK(FDIdentity identity, String shipToAddressPK)
 			throws FDResourceException, RemoteException {
 		Response<Void> response = null;
 		try {
@@ -260,8 +245,7 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 			ObjectNode rootNode = getMapper().createObjectNode();
 			rootNode.put("customerId", identity.getFDCustomerPK());
 			rootNode.put("shippingAddressPK", shipToAddressPK);
-			rootNode.put("eStore", eStore);
-			
+
 			request.setData(rootNode);
 			String inputJson = buildRequest(request);
 
@@ -270,13 +254,10 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
-				LOGGER.error("Error in CustomerAddressService.setDefaultShippingAddressPK: inputJson=" + inputJson
-						+ ", response=" + response);
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in CustomerAddressService.setDefaultShippingAddressPK: identity=" + identity
-					+ ", shipToAddressPK=" + shipToAddressPK, e);
+			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
 

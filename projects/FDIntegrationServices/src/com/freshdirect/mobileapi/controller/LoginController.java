@@ -2,6 +2,8 @@ package com.freshdirect.mobileapi.controller;
 
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -588,6 +590,11 @@ public class LoginController extends BaseController  implements SystemMessageLis
         boolean deliveryAddr = setDeliveryAddress(user);
         responseMessage.setAnonymousAddressSetFromAcc(deliveryAddr);
         responseMessage.setIsreferralEligible(user.getFDSessionUser().isReferralProgramAvailable());
+        responseMessage.setFdxDpEnabled(FDStoreProperties.isDlvPassFDXEnabled());
+        responseMessage.setPurchaseDlvPassEligible(user.getFDSessionUser().isEligibleForDeliveryPass());
+        if(responseMessage.isPurchaseDlvPassEligible()){
+        	responseMessage.setDpskulist(new ArrayList<String>(Arrays.asList((FDStoreProperties.getFDXDPSku()).split(","))));
+        }
         return responseMessage;
     }
 

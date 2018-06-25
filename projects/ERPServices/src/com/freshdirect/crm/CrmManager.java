@@ -28,6 +28,7 @@ import com.freshdirect.customer.ErpCannedText;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpTruckInfo;
 import com.freshdirect.deliverypass.DeliveryPassModel;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -605,9 +606,9 @@ public class CrmManager {
 		}
 	}
 	
-	public DeliveryPassModel getActiveDP(String custId) throws FDResourceException {
+	public DeliveryPassModel getActiveDP(String custId, EnumEStoreId estore) throws FDResourceException {
 		try {
-				return this.getCrmManagerSB().getActiveDP(custId);
+				return this.getCrmManagerSB().getActiveDP(custId, estore);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while getting getActiveDP.");
 		}

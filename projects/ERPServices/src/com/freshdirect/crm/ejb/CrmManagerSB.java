@@ -34,6 +34,7 @@ import com.freshdirect.customer.ErpCannedText;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpTruckInfo;
 import com.freshdirect.deliverypass.DeliveryPassModel;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.customer.CustomerCreditModel;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -366,7 +367,7 @@ public interface CrmManagerSB extends EJBObject {
      * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
      */
     @Deprecated
-	public DeliveryPassModel getActiveDP(String custId) throws FDResourceException, RemoteException;
+	public DeliveryPassModel getActiveDP(String custId, EnumEStoreId estore) throws FDResourceException, RemoteException;
     /**
      *@deprecated This method is moved to backoffice project.
      * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk

@@ -111,7 +111,7 @@
 	});
 
 	//$document.on('click', '#newzipgo', sendZip);
-	$document.on('click', '#newzipgo',function(e){
+	$document.on('click', '#newzipgo,#newzipgomsg',function(e){
 		var text_length=$(this).parent().find("input").val().length;		
 		console.log(text_length);
 		if(text_length<5 && text_length>=1){					
@@ -153,9 +153,14 @@
 			e.preventDefault();
 		}
 	});
-	$document.on('keydown', '#location-email', function (e) {
+//	$document.on('keydown', '#location-email', function (e) {
+//		if (e.keyCode === 13) {
+//			$('#location-submit').click();
+//		}
+//	}); 
+	$document.on('keydown', '#location-emailmsg', function (e) {
 		if (e.keyCode === 13) {
-			$('#location-submit').click();
+			$('#location-submitmsg').trigger('click');
 		}
 	}); 
 	$document.on('keydown', '#location-submit', function (e) {
@@ -201,10 +206,13 @@
 		e.preventDefault();
 	});
 	
-	$document.on('click','#location-submit',function(e){
-		var email = $('#location-email,.location-email-text').map(function() {
-			return $(this).val() || null;
-		}).toArray().join(',');
+	$document.on('click','#location-submit,#location-submitmsg',function(e){
+		var email = '';
+        if ($(e.currentTarget).attr('id') === 'location-submit') {
+            email = $('#location-email').val();
+        } else if ($(e.currentTarget).attr('id') === 'location-submitmsg') {
+            email = $('#location-emailmsg').val();
+        }
 
 		var $form = $('.nodeliver-form form'),
 			pattern=/^[a-zA-Z0-9._-]+@([a-zA-Z0-9-_]+\.)+[a-zA-Z]{2,}$/;

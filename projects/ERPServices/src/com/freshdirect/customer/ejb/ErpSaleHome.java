@@ -12,6 +12,7 @@ import javax.ejb.FinderException;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpCreateOrderModel;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
@@ -39,8 +40,8 @@ public interface ErpSaleHome extends EJBHome {
 	
 	public ErpSaleEB findByCriteria(String customerID, EnumSaleType saleType, EnumSaleStatus saleStatus, EnumPaymentMethodType pymtMethodType) throws FinderException, RemoteException;
 	
-	public ErpSaleEB findByCriteria(String customerID,	EnumSaleType saleType, EnumSaleStatus saleStatus, List<EnumPaymentMethodType> pymtMethodTypes) throws FinderException, RemoteException;
+	public ErpSaleEB findByCriteria(String customerID,	EnumSaleType saleType, EnumSaleStatus saleStatus, List<EnumPaymentMethodType> pymtMethodTypes , EnumEStoreId eStore) throws FinderException, RemoteException;
 	
-	public ErpSaleEB findByCriteria(String customerID,	EnumSaleType saleType, List<EnumPaymentMethodType> pymtMethodTypes) throws FinderException, RemoteException;
+	public ErpSaleEB findByCriteria(String customerID,	EnumSaleType saleType, List<EnumPaymentMethodType> pymtMethodTypes, EnumEStoreId eStore) throws FinderException, RemoteException;
 	
 }

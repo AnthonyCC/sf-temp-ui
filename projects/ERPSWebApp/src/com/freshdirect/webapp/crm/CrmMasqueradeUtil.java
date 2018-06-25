@@ -225,7 +225,12 @@ public class CrmMasqueradeUtil {
 			} else if ("product_promos".equalsIgnoreCase(params.destination)) {
 				redirectUri = "/agent/ppicks_email_products.jsp";
 			} else if ("dp_search_results".equalsIgnoreCase(params.destination)) {
-				redirectUri = "/srch.jsp?pageType=search&searchParams=delivery+pass";
+				if (null != user && null != user.getUserContext() && null != user.getUserContext().getStoreContext()
+						&& EnumEStoreId.FDX.equals(user.getUserContext().getStoreContext().getEStoreId())) {
+					redirectUri = "/pdp.jsp?productId=mkt_fk_dpss_onemonth&catId=sale_promo";
+				} else {
+					redirectUri = "/srch.jsp?pageType=search&searchParams=delivery+pass";
+				}
 			} else if ("addon".equalsIgnoreCase(params.destination)) {
 				redirectUri = "/";
 			}

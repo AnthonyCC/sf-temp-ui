@@ -110,8 +110,8 @@ if ( displayCutoffMessage ) {
 
 	/* CUTOFF TABLE CELL */
 	stringBuffer.append(TABLEVEL+"	<td class=\"cutoff\">\n")
-				.append(TABLEVEL+"		<div class=\"cutoffDispChild\" id=\""+htmlSlotCoId+"\" style=\"display: none;\">\n")
-				.append(TABLEVEL+"			<div>" + inner + "</div>\n")
+				.append(TABLEVEL+"		<div class=\"cutoffDispChild\" id=\""+htmlSlotCoId+"_inner\" style=\"display: none;\">\n")
+				.append(TABLEVEL+"			<div id=\""+htmlSlotCoId+"\">" + inner + "</div>\n")
 				.append(TABLEVEL+"		</div>\n")
 				.append(TABLEVEL+"	</td>\n");
 
@@ -129,7 +129,7 @@ if ( displayCutoffMessage ) {
 	}
 }else{
 	stringBuffer.append(TABLEVEL+"	<td class=\"cutoff\">\n")
-				.append(TABLEVEL+"		<div class=\"cutoffDispChild\" id=\""+htmlSlotCoId+"\" style=\"display: none;\">\n")
+				.append(TABLEVEL+"		<div class=\"cutoffDispChild\" id=\""+htmlSlotCoId+"_inner\" style=\"display: none;\">\n")
 				.append(TABLEVEL+"			<div id=\""+htmlSlotCoId+"\">&nbsp;</div>\n")
 				.append(TABLEVEL+"		</div>\n")
 				.append(TABLEVEL+"	</td>\n");

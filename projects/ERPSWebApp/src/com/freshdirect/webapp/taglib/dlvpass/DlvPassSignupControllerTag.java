@@ -23,18 +23,22 @@ import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.deliverypass.DeliveryPassType;
 import com.freshdirect.deliverypass.EnumDlvPassProfileType;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
+import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
@@ -161,12 +165,21 @@ public class DlvPassSignupControllerTag extends AbstractControllerTag {
 				if(actionName.equalsIgnoreCase("FLIP_AUTORENEW_ON")) {
 					autoRenew=true;
 				}
-				FDCustomerManager.setHasAutoRenewDP(customerID, source, initiator,autoRenew);
-			}
+				//FDCustomerManager.setHasAutoRenewDP(customerID, source, initiator,autoRenew);
+				try {
+					String fdPk=currentUser.getIdentity().getFDCustomerPK();
+						FDActionInfo info = AccountActivityUtil.getActionInfo(request.getSession(), "DeliveryPass auto-renew Opt-in");
+						String dpType = currentUser.getDlvPassInfo().getAutoRenewDPType().getAutoRenewalSKU();
+						FDCustomerManager.updateDpOptinDetails(autoRenew, fdPk, dpType, info, info.geteStore());
+					} catch (Exception e) {
+						LOGGER.error("Not able to opt in/out DeliverPass.");
+						actionResult.addError(new ActionError("dlvpass_optin_error", SystemMessageList.MSG_PASS_DISCONTINUED));
+					}
+				}
 		}
 		catch (Exception ex) {
-			LOGGER.error("Error occurred while redirecting to Delivery Pass Signup page.");
-			actionResult.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_TECHNICAL_ERROR));
+			LOGGER.error("Error occurred while opting in/out Delivery Pass.");
+			actionResult.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_DLV_PASS_OPTIN_ERROR));
 		} 
  		return true;
 	}

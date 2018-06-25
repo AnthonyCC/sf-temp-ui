@@ -418,6 +418,10 @@ public interface FDUserI extends java.io.Serializable {
     public FDCartModel getGiftCart();
 
     public void setGiftCart(FDCartModel dcart);
+    
+    public FDCartModel getDlvPassCart();
+
+    public void setDlvPassCart(FDCartModel dcart);
 
     public FDRecipientList getRecipientList();
 

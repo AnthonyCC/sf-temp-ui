@@ -1,6 +1,8 @@
 package com.freshdirect.mobileapi.controller;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -12,12 +14,14 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bea.common.security.xacml.context.Response;
 import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDActionNotAllowedException;
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
@@ -472,7 +476,11 @@ public class RegistrationController extends BaseController implements SystemMess
 			responseMessage.setStatus(Message.STATUS_SUCCESS);
 			
 			((ExternalAccountLoginResponse) responseMessage).setLoggedInSuccess(true);
-			
+			((ExternalAccountLoginResponse) responseMessage).setFdxdpenabled(FDStoreProperties.isDlvPassFDXEnabled());
+			((ExternalAccountLoginResponse) responseMessage).setPurchaseDlvPassEligible(user.getFDSessionUser().isEligibleForDeliveryPass());
+			if(((ExternalAccountLoginResponse) responseMessage).isPurchaseDlvPassEligible()){
+				((ExternalAccountLoginResponse) responseMessage).setDpskulist(new ArrayList<String>(Arrays.asList((FDStoreProperties.getFDXDPSku()).split(","))));
+	        }
 			responseMessage.setSuccessMessage("User registered and successfully logged in");
 			
 			resetMobileSessionData(request);
@@ -524,6 +532,11 @@ public class RegistrationController extends BaseController implements SystemMess
 		responseMessage.setTotalOrderCount(user.getTotalOrderCount());
 		responseMessage.setTcAcknowledge(user.getTcAcknowledge());
         responseMessage.setZipCode(user.getZipCode());
+        responseMessage.setFdxDpEnabled(FDStoreProperties.isDlvPassFDXEnabled());
+        responseMessage.setPurchaseDlvPassEligible(user.getFDSessionUser().isEligibleForDeliveryPass());
+        if(responseMessage.isPurchaseDlvPassEligible()){
+        	responseMessage.setDpskulist(new ArrayList<String>(Arrays.asList((FDStoreProperties.getFDXDPSku()).split(","))));
+        }
 		
 		return responseMessage;
 	}
