@@ -26,6 +26,7 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.util.DaoUtil;
+import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
@@ -41,7 +42,7 @@ public class DeliveryPassDAO {
 		super();
 	}
 
-	private final static String CREATE_DELIVERY_PASS = "INSERT INTO CUST.DELIVERY_PASS(ID, CUSTOMER_ID, TYPE, DESCRIPTION, PURCHASE_DATE, AMOUNT, PURCHASE_ORDER_ID, TOTAL_NUM_DLVS, REM_NUM_DLVS, ORG_EXP_DATE, EXP_DATE, USAGE_CNT, STATUS) values (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	private final static String CREATE_DELIVERY_PASS = "INSERT INTO CUST.DELIVERY_PASS(ID, CUSTOMER_ID, TYPE, DESCRIPTION, PURCHASE_DATE, AMOUNT, PURCHASE_ORDER_ID, TOTAL_NUM_DLVS, REM_NUM_DLVS, ORG_EXP_DATE, EXP_DATE, USAGE_CNT, STATUS, ACTIVATION_DATE) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	public static PrimaryKey create(Connection conn, DeliveryPassModel model) throws SQLException {
 		PreparedStatement ps = null;
@@ -72,6 +73,13 @@ public class DeliveryPassDAO {
 			}
 			ps.setInt(12, model.getUsageCount());
 			ps.setString(13, model.getStatus().getName());
+			
+			if (EnumDlvPassStatus.ACTIVE.equals(model.getStatus())) {
+				setTimestamp(ps,14, model.getActivationDate());
+			} else {
+				setTimestamp(ps, 14, null);
+			}
+			
 			if (ps.executeUpdate() != 1) {
 				LOGGER.error("Error creating delivery pass.");
 				throw new SQLException("Row not created");
@@ -86,7 +94,7 @@ public class DeliveryPassDAO {
 		return new PrimaryKey(id);
 	}
 
-	private final static String GET_DELIVERY_PASS_INFO = "SELECT ID, CUSTOMER_ID, TYPE, DESCRIPTION, PURCHASE_DATE, AMOUNT, PURCHASE_ORDER_ID, TOTAL_NUM_DLVS, REM_NUM_DLVS, ORG_EXP_DATE, EXP_DATE, USAGE_CNT, NUM_OF_CREDITS, STATUS from CUST.DELIVERY_PASS where ID = ?";
+	private final static String GET_DELIVERY_PASS_INFO = "SELECT ID, CUSTOMER_ID, TYPE, DESCRIPTION, PURCHASE_DATE, AMOUNT, PURCHASE_ORDER_ID, TOTAL_NUM_DLVS, REM_NUM_DLVS, ORG_EXP_DATE, EXP_DATE, USAGE_CNT, NUM_OF_CREDITS, STATUS, ACTIVATION_DATE from CUST.DELIVERY_PASS where ID = ?";
 
 	public static DeliveryPassModel getDeliveryPassInfo(Connection conn, PrimaryKey pk) throws SQLException {
 		DeliveryPassModel deliveryPassInfo = null;
@@ -111,9 +119,9 @@ public class DeliveryPassDAO {
 		return deliveryPassInfo;
 	}
 
-	private final static String GET_DELIVERY_PASSES = "SELECT ID, CUSTOMER_ID, TYPE, DESCRIPTION, PURCHASE_DATE, AMOUNT, PURCHASE_ORDER_ID, TOTAL_NUM_DLVS, REM_NUM_DLVS, ORG_EXP_DATE, EXP_DATE, USAGE_CNT, NUM_OF_CREDITS, STATUS from CUST.DELIVERY_PASS where CUSTOMER_ID = ? ORDER BY PURCHASE_DATE DESC";
+	private final static String GET_DELIVERY_PASSES = "SELECT ID, CUSTOMER_ID, TYPE, DESCRIPTION, PURCHASE_DATE, AMOUNT, PURCHASE_ORDER_ID, TOTAL_NUM_DLVS, REM_NUM_DLVS, ORG_EXP_DATE, EXP_DATE, USAGE_CNT, NUM_OF_CREDITS, STATUS, ACTIVATION_DATE from CUST.DELIVERY_PASS where CUSTOMER_ID = ? ORDER BY PURCHASE_DATE DESC";
 	
-	private final static String GET_DELIVERY_PASS_BY_CUST_AND_ESTORE=" SELECT ID, CUSTOMER_ID, TYPE, DESCRIPTION, PURCHASE_DATE, AMOUNT, PURCHASE_ORDER_ID, TOTAL_NUM_DLVS, REM_NUM_DLVS, ORG_EXP_DATE, EXP_DATE, USAGE_CNT, NUM_OF_CREDITS, STATUS from CUST.DELIVERY_PASS dp, cust.DLV_PASS_TYPE DPT "+
+	private final static String GET_DELIVERY_PASS_BY_CUST_AND_ESTORE=" SELECT ID, CUSTOMER_ID, TYPE, DESCRIPTION, PURCHASE_DATE, AMOUNT, PURCHASE_ORDER_ID, TOTAL_NUM_DLVS, REM_NUM_DLVS, ORG_EXP_DATE, EXP_DATE, USAGE_CNT, NUM_OF_CREDITS, STATUS, ACTIVATION_DATE from CUST.DELIVERY_PASS dp, cust.DLV_PASS_TYPE DPT "+
 				"where CUSTOMER_ID =? AND DPT.SKU_CODE=DP.TYPE and (DPT.E_STORES is null or DPT.E_STORES LIKE '%?%') ORDER BY PURCHASE_DATE DESC";
 
 	public static List<DeliveryPassModel> getDeliveryPasses(Connection conn, String customerPk, EnumEStoreId eStoreId) throws SQLException {
@@ -146,7 +154,7 @@ public class DeliveryPassDAO {
 		return deliveryPasses;
 	}
 
-	private final static String GET_DELIVERY_PASSES_BY_STATUS = "SELECT ID, CUSTOMER_ID, TYPE, DESCRIPTION, PURCHASE_DATE, AMOUNT, PURCHASE_ORDER_ID, TOTAL_NUM_DLVS, REM_NUM_DLVS, ORG_EXP_DATE, EXP_DATE, USAGE_CNT, NUM_OF_CREDITS, STATUS from CUST.DELIVERY_PASS where CUSTOMER_ID = ? and STATUS = ? ORDER BY PURCHASE_DATE DESC";
+	private final static String GET_DELIVERY_PASSES_BY_STATUS = "SELECT ID, CUSTOMER_ID, TYPE, DESCRIPTION, PURCHASE_DATE, AMOUNT, PURCHASE_ORDER_ID, TOTAL_NUM_DLVS, REM_NUM_DLVS, ORG_EXP_DATE, EXP_DATE, USAGE_CNT, NUM_OF_CREDITS, STATUS, ACTIVATION_DATE from CUST.DELIVERY_PASS where CUSTOMER_ID = ? and STATUS = ? ORDER BY PURCHASE_DATE DESC";
 
 
 
@@ -201,16 +209,16 @@ public class DeliveryPassDAO {
 		}
 		return statusCount;
 	}
-	private final static String UPDATE_DLV_PASS = "UPDATE CUST.DELIVERY_PASS SET REM_NUM_DLVS = ?, EXP_DATE = ?, USAGE_CNT = ?, STATUS = ?, NUM_OF_CREDITS = ? where ID = ?";
+	private final static String UPDATE_DLV_PASS = "UPDATE CUST.DELIVERY_PASS SET REM_NUM_DLVS = ?, EXP_DATE = ?, USAGE_CNT = ?, STATUS = ?, NUM_OF_CREDITS = ?, ACTIVATION_DATE =? where ID = ?";
 
-	private final static String UPDATE_DLV_PASS_1 = "UPDATE CUST.DELIVERY_PASS SET REM_NUM_DLVS = ?, EXP_DATE = ?, ORG_EXP_DATE = ?, USAGE_CNT = ?, STATUS = ?, NUM_OF_CREDITS = ? where ID = ?";
+	private final static String UPDATE_DLV_PASS_1 = "UPDATE CUST.DELIVERY_PASS SET REM_NUM_DLVS = ?, EXP_DATE = ?, ORG_EXP_DATE = ?, USAGE_CNT = ?, STATUS = ?, NUM_OF_CREDITS = ?, ACTIVATION_DATE =?  where ID = ?";
 
 
 	public static boolean update(Connection conn, DeliveryPassModel model, boolean setOrigExpDate) throws SQLException {
 		boolean retValue = true;
 		PreparedStatement ps = null;
 		try{
-
+			
 			if(setOrigExpDate) {
 				ps = conn.prepareStatement(UPDATE_DLV_PASS_1);
 				ps.setInt(1, model.getRemainingDlvs());
@@ -219,7 +227,14 @@ public class DeliveryPassDAO {
 				ps.setInt(4, model.getUsageCount());
 				ps.setString(5, model.getStatus().getName());
 				ps.setInt(6, model.getNoOfCredits());
-				ps.setString(7, model.getPK().getId());
+				if(EnumDlvPassStatus.ACTIVE.equals(model.getStatus())) {
+					setTimestamp(ps,7,model.getActivationDate());
+				} else {
+					setTimestamp(ps,7,null);
+				}
+				
+				ps.setString(8, model.getPK().getId());
+				
 
 			}
 			else {
@@ -230,7 +245,13 @@ public class DeliveryPassDAO {
 				ps.setInt(3, model.getUsageCount());
 				ps.setString(4, model.getStatus().getName());
 				ps.setInt(5, model.getNoOfCredits());
-				ps.setString(6, model.getPK().getId());
+				if(EnumDlvPassStatus.ACTIVE.equals(model.getStatus()))	{
+					setTimestamp(ps,6,model.getActivationDate());
+				}
+				 else {
+						setTimestamp(ps,6,null);
+					}
+				ps.setString(7, model.getPK().getId());
 			}
 			if (ps.executeUpdate() <= 0) {
 				LOGGER.error("Error updating delivery pass.");
@@ -277,7 +298,7 @@ public class DeliveryPassDAO {
 		}
 		return retValue;
 	}
-	private final static String GET_DELIVERY_PASSES_BY_ORDERID = "SELECT ID, CUSTOMER_ID, TYPE, DESCRIPTION, PURCHASE_DATE, AMOUNT, PURCHASE_ORDER_ID, TOTAL_NUM_DLVS, REM_NUM_DLVS, ORG_EXP_DATE, EXP_DATE, USAGE_CNT, NUM_OF_CREDITS, STATUS from CUST.DELIVERY_PASS where PURCHASE_ORDER_ID = ?";
+	private final static String GET_DELIVERY_PASSES_BY_ORDERID = "SELECT ID, CUSTOMER_ID, TYPE, DESCRIPTION, PURCHASE_DATE, AMOUNT, PURCHASE_ORDER_ID, TOTAL_NUM_DLVS, REM_NUM_DLVS, ORG_EXP_DATE, EXP_DATE, USAGE_CNT, NUM_OF_CREDITS, STATUS, ACTIVATION_DATE from CUST.DELIVERY_PASS where PURCHASE_ORDER_ID = ?";
 	/**
 	 * This method returns list of deliveryPasses that was purchased during a specific order id.
 	 * @param conn
@@ -353,9 +374,10 @@ public class DeliveryPassDAO {
 		int usageCnt = rs.getInt("USAGE_CNT");
 		int noOfCredits = rs.getInt("NUM_OF_CREDITS");
 		EnumDlvPassStatus status = EnumDlvPassStatus.getEnum(rs.getString("STATUS"));
+		Date activationDate = rs.getTimestamp("ACTIVATION_DATE");
 
 		return new DeliveryPassModel(pk, customerId, type, description, purchaseOrderId,
-				purchaseDt, amount, totalNoOfDlvs, remNoOfDlvs, orgExpDate, expDate, usageCnt, noOfCredits, status);
+				purchaseDt, amount, totalNoOfDlvs, remNoOfDlvs, orgExpDate, expDate, usageCnt, noOfCredits, status, activationDate);
 	}
 
 	private final static String HAS_PURCHASED_PASS_QUERY = "SELECT * FROM CUST.DELIVERY_PASS WHERE CUSTOMER_ID=? AND STATUS IN ('ACT','PEN','RTU','CAN','STF')";

@@ -216,7 +216,7 @@ public class RegistrationAction extends WebActionSupport {
 					user.updateUserState();
 					user.setTcAcknowledge(true);
 					//Set the Default Delivery pass status.
-					FDUserDlvPassInfo dlvpassInfo = new FDUserDlvPassInfo(EnumDlvPassStatus.NONE, null, null, null, 0.0, null,0,0,0,false,0,null,0,null);
+					FDUserDlvPassInfo dlvpassInfo = new FDUserDlvPassInfo(EnumDlvPassStatus.NONE, null, null, null, 0.0, null,0,0,0,false,0,null,0,null,null);
 					user.getUser().setDlvPassInfo(dlvpassInfo);
 					user.getUser().setAssignedCustomerParams(FDCustomerManager.getAssignedCustomerParams(user.getUser()));
 					session.setAttribute(SessionName.USER, user);
@@ -776,7 +776,7 @@ public class RegistrationAction extends WebActionSupport {
 						user.setZPServiceType(serviceType);
 					user.updateUserState();
 					//Set the Default Delivery pass status.
-					FDUserDlvPassInfo dlvpassInfo = new FDUserDlvPassInfo(EnumDlvPassStatus.NONE, null, null, null, 0.0, null,0,0,0,false,0,null,0,null);
+					FDUserDlvPassInfo dlvpassInfo = new FDUserDlvPassInfo(EnumDlvPassStatus.NONE, null, null, null, 0.0, null,0,0,0,false,0,null,0,null,null);
 					user.getUser().setDlvPassInfo(dlvpassInfo);
 					user.getUser().setAssignedCustomerParams(FDCustomerManager.getAssignedCustomerParams(user.getUser()));
 					//APPDEV-4381 : leagal terms

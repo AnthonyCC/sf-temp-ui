@@ -900,6 +900,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					// Activate the Ready To Use pass.
 					sb.activateReadyToUsePass(model);
 					dlvPassStatus = EnumDlvPassStatus.ACTIVE;
+					Date activationDate = DateUtil.getCurrentTime();
+					model.setActivationDate(activationDate);
 				} // -added for DP1.1
 					// Get the pass type and expiration date if unlimited.
 				type = model.getType();
@@ -925,7 +927,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			}
 			dlvPassInfo = new FDUserDlvPassInfo(dlvPassStatus, type, description, expDate, amount, originalOrderId, remDlvs, usedDlvs,
 					usablePassCount, isFreeTrialRestricted, autoRenewUsablePassCount, autoRenewDPType,
-					autoRenewDPPrice.doubleValue(), (model == null) ? null : model.getPurchaseDate());
+					autoRenewDPPrice.doubleValue(), (model == null) ? null : model.getPurchaseDate(),(model == null) ? null : model.getActivationDate());
 			if (!EnumDlvPassStatus.NONE.equals(dlvPassStatus) && (type.isUnlimited())
 					&& (EnumDlvPassStatus.CANCELLED.equals(dlvPassStatus)
 							|| EnumDlvPassStatus.EXPIRED.equals(dlvPassStatus))) {
@@ -961,7 +963,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			// Identity will be null when he/she is a anonymous user. Create
 			// a default info object.
 			dlvPassInfo = new FDUserDlvPassInfo(EnumDlvPassStatus.NONE, null, null, null, 0.0, null, 0, 0, 0, false, 0, null, 0,
-					null);
+					null,null);
 			dlvPassInfo.setDPSavings(0.0);
 		}
 		return dlvPassInfo;
@@ -5731,6 +5733,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 						createOrder);
 				if(status != null && hasCustomerDpFreeTrialOptin(identity.getFDCustomerPK())) {
 					newPass.setStatus(status);
+					if(newPass.getStatus().equals(EnumDlvPassStatus.ACTIVE)) {
+						Date activationDate = DateUtil.getCurrentTime();
+						newPass.setActivationDate(activationDate);
+					}
 				}
 
 				DlvPassManagerSB dlvpsb = this.getDlvPassManagerHome().create();

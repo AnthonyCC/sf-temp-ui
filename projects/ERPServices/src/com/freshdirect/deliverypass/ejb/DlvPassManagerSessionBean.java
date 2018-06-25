@@ -862,11 +862,13 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 		try {
 			conn = getConnection();
 			dlvPass.setStatus(EnumDlvPassStatus.ACTIVE);
+			Date activationDate = DateUtil.getCurrentTime();
+			dlvPass.setActivationDate(activationDate);
 			if(dlvPass.getType().isUnlimited()&& dlvPass.getOrgExpirationDate()==null) {
 				Date expiryDate=getExpirationDate(dlvPass.getType());
 				dlvPass.setOrgExpirationDate(expiryDate);
 				dlvPass.setExpirationDate(expiryDate);
-
+			
 			}
 			DeliveryPassDAO.update(conn, dlvPass,true);
 		} catch (SQLException e) {
