@@ -96,6 +96,8 @@ import com.freshdirect.framework.mail.EmailI;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.logistics.delivery.model.DeliveryException;
 import com.freshdirect.logistics.delivery.model.OrderContext;
+import com.freshdirect.logistics.delivery.model.ReservationException;
+import com.freshdirect.logistics.delivery.model.ReservationUnavailableException;
 import com.freshdirect.logistics.delivery.model.SiteAnnouncement;
 import com.freshdirect.logistics.fdstore.StateCounty;
 import com.freshdirect.logistics.fdstore.ZipCodeAttributes;
@@ -262,10 +264,10 @@ public interface IECommerceService {
 
 	public void commitReservation(String rsvId, String customerId,
 			OrderContext context, ContactAddressModel address, boolean pr1,
-			TimeslotEvent event) throws FDResourceException;
+			TimeslotEvent event) throws FDResourceException, ReservationUnavailableException, ReservationException;
 
 	public void recommitReservation(String rsvId, String customerId,
-			OrderContext context, ContactAddressModel address, boolean pr1) throws FDResourceException;
+			OrderContext context, ContactAddressModel address, boolean pr1) throws FDResourceException, ReservationUnavailableException, ReservationException;
 
 	public Map<String, DeliveryException> getCartonScanInfo() throws FDResourceException;
 
@@ -476,8 +478,6 @@ public interface IECommerceService {
 	public Map<String, FDCouponEligibleInfo> evaluateCartAndCoupons(CouponCart couponCart, FDCouponActivityContext context) throws RemoteException;
 
 	public void postCancelPendingCouponTransactions() throws RemoteException;
-		
-	public void postCouponOrder(ErpCouponTransactionModel couponTransModel, FDCouponActivityContext context) throws RemoteException;
 	
 	public void postConfirmPendingCouponTransactions(String saleId) throws RemoteException;
 	

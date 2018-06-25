@@ -98,6 +98,10 @@ if (mobWeb) {
 		<%//Finds the address & render the timeslots %>
     <% if (!mobWeb) { %>
 			<%@ include file="/shared/includes/delivery/i_delivery_timeslots.jspf"%>
+			<script>window.FreshDirect = window.FreshDirect || {};
+					window.FreshDirect.gtm = window.FreshDirect.gtm || {};
+					window.FreshDirect.gtm.afterPageView = window.FreshDirect.gtm.afterPageView || [];
+					window.FreshDirect.gtm.afterPageView.push({ timeslotOpened:{ action: 'timeslot-pageview', pageName:'View Timeslots'} });</script>
     <%} else {%>
       <div class="timeslot-selector delivery-info-timeslot"></div>
       <% }%>

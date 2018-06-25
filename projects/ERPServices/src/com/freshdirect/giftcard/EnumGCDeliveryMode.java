@@ -6,6 +6,9 @@ import java.util.Map;
 
 import org.apache.commons.lang.enums.Enum;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class EnumGCDeliveryMode extends Enum {
 
 	public static final EnumGCDeliveryMode EMAIL = new EnumGCDeliveryMode("E", "Email");
@@ -22,7 +25,8 @@ public class EnumGCDeliveryMode extends Enum {
 		return this.description;
 	}
 
-	public static EnumGCDeliveryMode getEnum(String name) {
+	@JsonCreator
+	public static EnumGCDeliveryMode getEnum(@JsonProperty("name") String name) {
 		return (EnumGCDeliveryMode) getEnum(EnumGCDeliveryMode.class, name);
 	}
 

@@ -56,36 +56,39 @@ public class StandingOrderConverter {
 	}
 
 	public static FDStandingOrder buildStandingOrder(FDStandingOrderData so) {
-		FDStandingOrder standingOrderModel = new FDStandingOrder();
-		standingOrderModel.setActivate(so.getActivate());
-		standingOrderModel.setAddressId(so.getAddressId());
-		standingOrderModel.setAlcoholAgreement(so.isAlcoholAgreement());
-		standingOrderModel.setAltDeliveryInfo(buildStandingOrderAltdeliveryDate(so.getAltDeliveryInfo()));
-		standingOrderModel.setCustomerEmail(so.getCustomerEmail());
-		standingOrderModel.setCustomerId(so.getCustomerId());
-		standingOrderModel.setCustomerIdentity(buildFdIdentity(so.getCustomerIdentity()));
-		standingOrderModel.setCustomerListId(so.getCustomerListId());
-		standingOrderModel.setCustomerListName(so.getCustomerListName());
-		standingOrderModel.setDefault(so.isDefault());
-		standingOrderModel.setDeleted(so.isDeleted());
-		if(so.getDeleteDate() != null)
-		standingOrderModel.setDeleteDate(new Date(so.getDeleteDate()));
-		if(so.getEndTime() != null)
-		standingOrderModel.setEndTime(new Date(so.getEndTime()));
-		standingOrderModel.setFrequency(so.getFrequency());
-		standingOrderModel.setId(so.getId());
-		standingOrderModel.setLastError(so.getLastError(), so.getErrorHeader(), so.getErrorDetail());
-		standingOrderModel.setNewSo(so.isNewSo());
-		if(so.getNextDeliveryDate() != null)
-		standingOrderModel.setNextDeliveryDate(new Date(so.getNextDeliveryDate()));
-		standingOrderModel.setPaymentMethodId(so.getPaymentMethodId());
-		if(so.getPreviousDeliveryDate() != null)
-		standingOrderModel.setPreviousDeliveryDate(new Date(so.getPreviousDeliveryDate()));
-		standingOrderModel.setReminderOverlayForNewSo(so.isReminderOverlayForNewSo());
-		if(so.getStartTime() != null)
-		standingOrderModel.setStartTime(new Date(so.getStartTime()));
-		standingOrderModel.setTipAmount(so.getTipAmount());
-		return standingOrderModel;
+		if(null !=so){
+			FDStandingOrder standingOrderModel = new FDStandingOrder();
+			standingOrderModel.setActivate(so.getActivate());
+			standingOrderModel.setAddressId(so.getAddressId());
+			standingOrderModel.setAlcoholAgreement(so.isAlcoholAgreement());
+			standingOrderModel.setAltDeliveryInfo(buildStandingOrderAltdeliveryDate(so.getAltDeliveryInfo()));
+			standingOrderModel.setCustomerEmail(so.getCustomerEmail());
+			standingOrderModel.setCustomerId(so.getCustomerId());
+			standingOrderModel.setCustomerIdentity(buildFdIdentity(so.getCustomerIdentity()));
+			standingOrderModel.setCustomerListId(so.getCustomerListId());
+			standingOrderModel.setCustomerListName(so.getCustomerListName());
+			standingOrderModel.setDefault(so.isDefault());
+			standingOrderModel.setDeleted(so.isDeleted());
+			if(so.getDeleteDate() != null)
+			standingOrderModel.setDeleteDate(new Date(so.getDeleteDate()));
+			if(so.getEndTime() != null)
+			standingOrderModel.setEndTime(new Date(so.getEndTime()));
+			standingOrderModel.setFrequency(so.getFrequency());
+			standingOrderModel.setId(so.getId());
+			standingOrderModel.setLastError(so.getLastError(), so.getErrorHeader(), so.getErrorDetail());
+			standingOrderModel.setNewSo(so.isNewSo());
+			if(so.getNextDeliveryDate() != null)
+			standingOrderModel.setNextDeliveryDate(new Date(so.getNextDeliveryDate()));
+			standingOrderModel.setPaymentMethodId(so.getPaymentMethodId());
+			if(so.getPreviousDeliveryDate() != null)
+			standingOrderModel.setPreviousDeliveryDate(new Date(so.getPreviousDeliveryDate()));
+			standingOrderModel.setReminderOverlayForNewSo(so.isReminderOverlayForNewSo());
+			if(so.getStartTime() != null)
+			standingOrderModel.setStartTime(new Date(so.getStartTime()));
+			standingOrderModel.setTipAmount(so.getTipAmount());
+			return standingOrderModel;
+			}
+		return null;
 	}
 	
 	

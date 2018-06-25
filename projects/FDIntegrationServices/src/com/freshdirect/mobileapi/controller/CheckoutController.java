@@ -47,13 +47,15 @@ import com.freshdirect.mobileapi.controller.data.EnumResponseAdditional;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.OrderMobileNumberRequest;
 import com.freshdirect.mobileapi.controller.data.SubmitOrderExResult;
-import com.freshdirect.mobileapi.controller.data.SubmitOrderRequest;
 import com.freshdirect.mobileapi.controller.data.request.DeliveryAddressRequest;
 import com.freshdirect.mobileapi.controller.data.request.DeliveryAddressSelection;
 import com.freshdirect.mobileapi.controller.data.request.DeliverySlotReservation;
+import com.freshdirect.mobileapi.controller.data.request.DlvPassRequest;
 import com.freshdirect.mobileapi.controller.data.request.Login;
 import com.freshdirect.mobileapi.controller.data.request.PaymentMethodRequest;
 import com.freshdirect.mobileapi.controller.data.request.PaymentMethodSelection;
+import com.freshdirect.mobileapi.controller.data.request.SubmitOrderExRequest;
+import com.freshdirect.mobileapi.controller.data.request.SubmitOrderRequest;
 import com.freshdirect.mobileapi.controller.data.response.CVVResponse;
 import com.freshdirect.mobileapi.controller.data.response.CartDetail;
 import com.freshdirect.mobileapi.controller.data.response.DeliveryAddresses;
@@ -89,6 +91,7 @@ import com.freshdirect.storeapi.content.CMSPageRequest;
 import com.freshdirect.webapp.ajax.cart.CartOperations;
 import com.freshdirect.webapp.ajax.expresscheckout.availability.service.AvailabilityService;
 import com.freshdirect.webapp.ajax.product.data.ProductPotatoData;
+import com.freshdirect.webapp.checkout.CheckoutManipulator;
 import com.freshdirect.webapp.cos.util.CosFeatureUtil;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
@@ -96,6 +99,7 @@ import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.taglib.fdstore.UnattendedDeliveryTag;
+import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 import com.freshdirect.webapp.taglib.fdstore.UserValidationUtil;
 import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventFactory;
 import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventI;
@@ -112,6 +116,7 @@ public class CheckoutController extends BaseController {
     private static final String PARAM_SLOT_ID = "slotId";
     private final static String DIR_ERROR_KEY = "ERR_DARKSTORE_RECONCILIATION";
     private final static String DEVICE_ID = "deviceId";
+    private final static String DLV_PASS_CART = "dlvPassCart";
     private final static String ACTION_GET_REMOVE_UNAVAILABLE_ITEMS = "removeunavailableitems";
     private final static String ACTION_GET_ATP_ERROR_DETAIL = "getatperrordetail";
     private final static String ACTION_INIT_CHECKOUT = "initcheckout";
@@ -170,8 +175,13 @@ public class CheckoutController extends BaseController {
 	                model = getDeliveryAddresses(model, user);
 	                //model = applycredit(model, requestMessage, user, request);
 	            }
-	        } else if(ACTION_GET_CONSOLIDATED_CART.equals(action)) {       	
-	                model = applycredit(model, user, request);           
+	        } else if(ACTION_GET_CONSOLIDATED_CART.equals(action)) {   
+	        	boolean dlvPassCart = false;
+	        	if(getPostData(request, response)!=null && getPostData(request, response).contains(DLV_PASS_CART)) {
+	        		DlvPassRequest requestMessage = parseRequestObject(request, response, DlvPassRequest.class);
+	        		dlvPassCart = requestMessage.isDlvPassCart();
+	        	}
+	            model = applycredit(model, user, request, dlvPassCart);           
 	        }
 	        else if (ACTION_GET_DELIVERY_ADDRESSES.equals(action)) {
 	            model = getDeliveryAddresses(model, user);
@@ -201,7 +211,12 @@ public class CheckoutController extends BaseController {
 	                model = reserveTimeslotEx(model, user, slotId, request);
 	            }
 	        } else if (ACTION_GET_PAYMENT_METHODS.equals(action)) {
-	            Message responseMessage = getPaymentMethods(user);
+	        	boolean dlvPassCart = false;
+	        	if(getPostData(request, response)!=null && getPostData(request, response).contains(DLV_PASS_CART)) {
+	        		DlvPassRequest requestMessage = parseRequestObject(request, response, DlvPassRequest.class);
+	        		dlvPassCart = requestMessage.isDlvPassCart();
+	        	}
+	            Message responseMessage = getPaymentMethods(user, dlvPassCart);
 	            setResponseMessage(model, responseMessage, user);
 	        } else if (ACTION_SET_PAYMENT_METHOD.equals(action)) {
 	            PaymentMethodSelection requestMessage = parseRequestObject(request, response, PaymentMethodSelection.class);
@@ -210,17 +225,32 @@ public class CheckoutController extends BaseController {
 	            PaymentMethodSelection requestMessage = parseRequestObject(request, response, PaymentMethodSelection.class);
 	            model = setPaymentMethodEx(model, user, requestMessage, request);
 	        } else if (ACTION_ORDER_DETAIL.equals(action)) {
+	        	boolean dlvPassCart = false;
+	        	if(getPostData(request, response)!=null && getPostData(request, response).contains(DLV_PASS_CART)) {
+	        		DlvPassRequest requestMessage = parseRequestObject(request, response, DlvPassRequest.class);
+	        		dlvPassCart = requestMessage.isDlvPassCart();
+	        	}
 	            //Check Order Info Currently being ordered.
-	            model = reviewOrder(model, user, request, EnumCouponContext.VIEWCART);
+	            model = reviewOrder(model, user, request, EnumCouponContext.VIEWCART, dlvPassCart);
 	        } else if (ACTION_REVIEW_ORDER_DETAIL.equals(action)) {
-	            //Review order. What's being order, where it's going, how it's being paid for, etc.
-	            model = reviewOrder(model, user, request, EnumCouponContext.CHECKOUT);
+	        	boolean dlvPassCart = false;
+	        	if(getPostData(request, response)!=null && getPostData(request, response).contains(DLV_PASS_CART)) {
+	        		DlvPassRequest requestMessage = parseRequestObject(request, response, DlvPassRequest.class);
+	        		dlvPassCart = requestMessage.isDlvPassCart();
+	        	}
+	        	//Review order. What's being order, where it's going, how it's being paid for, etc.
+	            model = reviewOrder(model, user, request, EnumCouponContext.CHECKOUT, dlvPassCart);
 	        } else if (ACTION_SUBMIT_ORDER.equals(action)) {
+	        	boolean dlvPassCart = false;
+	        	if(getPostData(request, response)!=null && getPostData(request, response).contains(DLV_PASS_CART)) {
+	        		DlvPassRequest requestMessage = parseRequestObject(request, response, DlvPassRequest.class);
+	        		dlvPassCart = requestMessage.isDlvPassCart();
+	        	}
 	        	if(getPostData(request, response)!=null && getPostData(request, response).contains(DEVICE_ID)) {
 	        	SubmitOrderRequest requestMessage = parseRequestObject(request, response, SubmitOrderRequest.class);
-	            model = submitOrder(model, user, request,requestMessage);
+	            model = submitOrder(model, user, request,requestMessage, dlvPassCart);
 	        	} else {
-	        		model = submitOrder(model, user, request);
+	        		model = submitOrder(model, user, request, dlvPassCart);
 	        	}
 	        } else if (ACTION_GET_ATP_ERROR_DETAIL.equals(action)) {
 	            model = getAtpErrorDetail(model, user, request);
@@ -245,10 +275,10 @@ public class CheckoutController extends BaseController {
 	            model = editPaymentMethod(model, user, requestMessage, request, response);
 	        }else if (ACTION_DELETE_PAYMENT_METHOD.equals(action)) {
 	        	PaymentMethodRequest requestMessage = parseRequestObject(request, response, PaymentMethodRequest.class);
-	            model = deletePaymentMethod(model, user, requestMessage, request);
+	            model = deletePaymentMethod(model, user, requestMessage, request, requestMessage.isDlvPassCart());
 	        }else if (ACTION_DELETE_PAYMENT_METHOD_EX.equals(action)) {
 	        	PaymentMethodRequest requestMessage = parseRequestObject(request, response, PaymentMethodRequest.class);
-	            model = deletePaymentMethodEx(model, user, requestMessage, request);
+	            model = deletePaymentMethodEx(model, user, requestMessage, request, requestMessage.isDlvPassCart());
 	        }else if (ACTION_DELETE_DELIVERY_ADDRESS.equals(action)) {
 	        	DeliveryAddressRequest requestMessage = parseRequestObject(request, response, DeliveryAddressRequest.class);
 	            model = deleteDeliveryAddress(model, user, requestMessage, request);
@@ -266,7 +296,12 @@ public class CheckoutController extends BaseController {
 	        }  else if (ACTION_GET_SPECIAL_RESTRICTED_DETAIL.equals(action)) {
 	            model = getSpecialRestrictedItemDetail(model, user, request);
 	        } else if(ACTION_SUBMIT_ORDER_FDX.equals(action)){
-	        	model = submitOrderFDX(model,user,request);
+	        	if(getPostData(request, response)!=null && getPostData(request, response).contains(DLV_PASS_CART)) {
+	        		SubmitOrderExRequest requestMessage = parseRequestObject(request, response, SubmitOrderExRequest.class);
+	        		model = submitOrderFDX(model,user,request, requestMessage.isDlvPassCart());
+	        	}else{
+	        		model = submitOrderFDX(model,user,request, false);
+	        	}
 	        } else if(ACTION_SET_ORDER_MOBILE_NUMBER_FDX.equals(action)){
 	        	OrderMobileNumberRequest requestMessage = parseRequestObject(request, response, OrderMobileNumberRequest.class);
 	            model = setOrderMobileNumberEx(model, user, request, requestMessage.getMobile_number());
@@ -289,13 +324,13 @@ public class CheckoutController extends BaseController {
     	return user!=null ? true:false;
     }
 
-    private ModelAndView applycredit(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDResourceException, JsonException {
+    private ModelAndView applycredit(ModelAndView model, SessionUser user, HttpServletRequest request, boolean dlvPassCart) throws FDResourceException, JsonException {
    	 	
     	Message responseMessage = new Message();
-    	Cart cart = user.getShoppingCart();
+    	Cart cart = Cart.wrap(UserUtil.getCart(user.getFDSessionUser(), "", dlvPassCart));
 		if (cart != null) {
 			try{
-			cart.applycredit(user);
+			cart.applycredit(user, dlvPassCart, cart);
 			} catch(Exception e) {
 				responseMessage .setSuccessMessage("Exception when applying store credit");
 				return model;
@@ -421,33 +456,33 @@ public class CheckoutController extends BaseController {
      * @throws FDException
      * @throws JsonException
      */
-    private ModelAndView reviewOrder(ModelAndView model, SessionUser user, HttpServletRequest request, EnumCouponContext ctx) throws FDException, JsonException, NoSessionException {
+    private ModelAndView reviewOrder(ModelAndView model, SessionUser user, HttpServletRequest request, EnumCouponContext ctx, boolean dlvPassCart) throws FDException, JsonException, NoSessionException {
         final boolean isWebRequest = isExtraResponseRequested(request);
 
         Checkout checkout = new Checkout(user);
-        Message responseMessage = checkout.getCurrentOrderDetails(ctx);
-
-        if (isWebRequest) {
-            if (!user.isLoggedIn()){
-                throw new NoSessionException("No session");
-            }
-
-            ActionResult result = new ActionResult();
-            UserValidationUtil.validateOrderMinimum(request.getSession(), result);
-            responseMessage.addErrorMessages(result.getErrors(), user);
-        }
         
-        Cart cart = user.getShoppingCart();
+        // call cart, calculate tax, apply store credit
+        Cart cart = Cart.wrap(UserUtil.getCart(user.getFDSessionUser(), "", dlvPassCart));
         if(EnumCouponContext.CHECKOUT.equals(ctx)){
         	user.setRefreshCouponWalletRequired(true);
         	user.setCouponEvaluationRequired(true);
         }
-
         final FDSessionUser fdSessionUser = user.getFDSessionUser();
-
         if((EnumCouponContext.VIEWCART.equals(ctx) || EnumCouponContext.CHECKOUT.equals(ctx)) && FDStoreProperties.getAvalaraTaxEnabled()){
-        	AvalaraContext avalaraContext =  new AvalaraContext(fdSessionUser.getShoppingCart());
+        	AvalaraContext avalaraContext =  new AvalaraContext(cart.getCart());
         	cart.getAvalaraTax(avalaraContext);
+        }
+        if (cart != null) {
+			cart.applycredit(user, dlvPassCart, cart);
+		}
+        
+        Message responseMessage = checkout.getCurrentOrderDetails(ctx, dlvPassCart);
+
+        // order minimum
+        if(!dlvPassCart){
+        	ActionResult result = new ActionResult();
+        	UserValidationUtil.validateOrderMinimum(request.getSession(), result);
+        	responseMessage.addErrorMessages(result.getErrors(), user);
         }
 
         // FKMobileWeb: fix cartDetails field, add product potatos
@@ -460,20 +495,10 @@ public class CheckoutController extends BaseController {
         										, SystemMessageList.MSG_COUPONS_SYSTEM_NOT_AVAILABLE);
         }
 
-        if(fdSessionUser.getShoppingCart().getExpCouponDeliveryDate()!=null){
+        if(cart.getExpCouponDeliveryDate()!=null){
         	responseMessage.addWarningMessage(MessageCodes.WARNING_COUPONS_EXP_DELIVERY_DATE
 					, MessageCodes.MSG_COUPONS_EXP_DELIVERY_DATE);
         }
-        if (cart != null) {
-			try{
-			cart.applycredit(user);
-			} catch(Exception e) {
-				responseMessage .setSuccessMessage("Exception when applying store credit");
-				return model;
-			}
-		} else {
-			responseMessage.addErrorMessage("CART IS EMPTY");
-		}
         setResponseMessage(model, responseMessage, user);
         return model;
     }
@@ -548,7 +573,7 @@ public class CheckoutController extends BaseController {
             TimeSlotCalculationResult timeSlotResult = deliveryAddress.getDeliveryTimeslot(user, false,isCheckoutAuthenticated(request));
 
             com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots slotResponse = new com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots(
-                    timeSlotResult);
+                    timeSlotResult, user);
             slotResponse.getCheckoutHeader().setHeader(user.getShoppingCart());
             responseMessage = slotResponse;
             responseMessage.setSuccessMessage("Order delivery Address have been set successfully.");
@@ -593,7 +618,7 @@ public class CheckoutController extends BaseController {
 	            TimeSlotCalculationResult timeSlotResult = deliveryAddress.getDeliveryTimeslot(user, false, isCheckoutAuthenticated(request));
 	            
 	            com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots slotResponse = new com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots(
-	                    timeSlotResult);
+	                    timeSlotResult, user);
 	            slotResponse.getCheckoutHeader().setHeader(user.getShoppingCart());
 	
 	            if (isExtraResponseRequested(request)) {
@@ -723,7 +748,7 @@ public class CheckoutController extends BaseController {
      * @throws FDException
      * @throws JsonException
      */
-    private ModelAndView submitOrder(ModelAndView model, SessionUser user, HttpServletRequest request, SubmitOrderRequest requestMessage)  throws FDException, JsonException {
+    private ModelAndView submitOrder(ModelAndView model, SessionUser user, HttpServletRequest request, SubmitOrderRequest requestMessage, boolean dlvPassCart)  throws FDException, JsonException {
         Checkout checkout = new Checkout(user);
         Message responseMessage = null;
 
@@ -731,8 +756,8 @@ public class CheckoutController extends BaseController {
         boolean checkResult = checkForDeviceId(user,requestMessage,errors); // Check Device ID ; Required only when PayPal wallet is used.
         if(checkResult){ 
 	        callAvalaraForTax(user);
-	        FDCartModel cartModel = user.getFDSessionUser().getShoppingCart();
-	        ResultBundle resultBundle = checkout.submitOrder();
+	        FDCartModel cartModel = UserUtil.getCart(user.getFDSessionUser(), "", dlvPassCart);
+	        ResultBundle resultBundle = checkout.submitOrder(dlvPassCart);
 	        ActionResult result = resultBundle.getActionResult();
 	        propogateSetSessionValues(request.getSession(), resultBundle);
 
@@ -750,7 +775,7 @@ public class CheckoutController extends BaseController {
 	            
 	            Order order = user.getOrder(orderId);
 	            if(null !=order){
-		            orderReceipt = order.getOrderDetail(user);
+		            orderReceipt = order.getOrderDetail(user, dlvPassCart);
 		            createAndSendUnbxdAnalyticsEvent(user.getFDSessionUser(), request, cartModel.getOrderLines());
 	            }
 	            
@@ -786,13 +811,13 @@ public class CheckoutController extends BaseController {
      * @throws FDException
      * @throws JsonException
      */
-    private ModelAndView submitOrder(ModelAndView model, SessionUser user, HttpServletRequest request)  throws FDException, JsonException {
+    private ModelAndView submitOrder(ModelAndView model, SessionUser user, HttpServletRequest request, boolean dlvPassCart)  throws FDException, JsonException {
         Checkout checkout = new Checkout(user);
         Message responseMessage = null;
 
 	        callAvalaraForTax(user);
-	        FDCartModel cartModel = user.getFDSessionUser().getShoppingCart();
-	        ResultBundle resultBundle = checkout.submitOrder();
+	        FDCartModel cartModel = UserUtil.getCart(user.getFDSessionUser(), "", dlvPassCart);
+	        ResultBundle resultBundle = checkout.submitOrder(dlvPassCart);
 	        ActionResult result = resultBundle.getActionResult();
 	        propogateSetSessionValues(request.getSession(), resultBundle);
 
@@ -810,7 +835,7 @@ public class CheckoutController extends BaseController {
 	            
 	            Order order = user.getOrder(orderId);
 	            if(null !=order){
-		            orderReceipt = order.getOrderDetail(user);
+		            orderReceipt = order.getOrderDetail(user, dlvPassCart);
 		            createAndSendUnbxdAnalyticsEvent(user.getFDSessionUser(), request, cartModel.getOrderLines());
 	            }
 	            
@@ -1017,7 +1042,7 @@ public class CheckoutController extends BaseController {
             HttpServletRequest request) throws FDException, JsonException {
 
         Checkout checkout = new Checkout(user);
-        ResultBundle resultBundle = checkout.setPaymentMethod(reqestMessage.getPaymentMethodId(), reqestMessage.getBillingRef(), reqestMessage.getIsAccountLevel());
+        ResultBundle resultBundle = checkout.setPaymentMethod(reqestMessage.getPaymentMethodId(), reqestMessage.getBillingRef(), reqestMessage.getIsAccountLevel(), reqestMessage.isDlvPassCart());
 
         ActionResult result = resultBundle.getActionResult();
 
@@ -1046,7 +1071,7 @@ public class CheckoutController extends BaseController {
     private ModelAndView setPaymentMethodEx(ModelAndView model, SessionUser user, PaymentMethodSelection reqestMessage,
             HttpServletRequest request) throws FDException, JsonException {
         Checkout checkout = new Checkout(user);
-        ResultBundle resultBundle = checkout.setPaymentMethodEx(reqestMessage.getPaymentMethodId(), reqestMessage.getBillingRef(), reqestMessage.getIsAccountLevel());
+        ResultBundle resultBundle = checkout.setPaymentMethodEx(reqestMessage.getPaymentMethodId(), reqestMessage.getBillingRef(), reqestMessage.getIsAccountLevel(), reqestMessage.isDlvPassCart());
 
         ActionResult result = resultBundle.getActionResult();
 
@@ -1055,7 +1080,7 @@ public class CheckoutController extends BaseController {
         Message responseMessage = null;
         if (result.isSuccess()) {
             if (isResponseAdditionalEnable(request, EnumResponseAdditional.INCLUDE_PAYMENT)) {
-                responseMessage = getPaymentMethods(user);
+                responseMessage = getPaymentMethods(user, reqestMessage.isDlvPassCart());
             } else {
                 responseMessage = Message.createSuccessMessage("Payment method set successfully.");
             }
@@ -1189,9 +1214,9 @@ public class CheckoutController extends BaseController {
     }
     
     private ModelAndView deletePaymentMethod(ModelAndView model, SessionUser user, PaymentMethodRequest reqestMessage,
-            HttpServletRequest request) throws FDException, JsonException {
+            HttpServletRequest request, boolean dlvPassCart) throws FDException, JsonException {
         Checkout checkout = new Checkout(user);
-        ResultBundle resultBundle = checkout.deletePaymentMethod(reqestMessage.getPaymentMethodId());
+        ResultBundle resultBundle = checkout.deletePaymentMethod(reqestMessage.getPaymentMethodId(), dlvPassCart);
         if(user!=null && user.getFDSessionUser()!=null && user.getFDSessionUser().getShoppingCart()!=null && 
         		user.getFDSessionUser().getShoppingCart().getPaymentMethod()!= null &&
         		user.getFDSessionUser().getShoppingCart().getPaymentMethod().getPK()!= null &&
@@ -1214,9 +1239,9 @@ public class CheckoutController extends BaseController {
     }
     
     private ModelAndView deletePaymentMethodEx(ModelAndView model, SessionUser user, PaymentMethodRequest reqestMessage,
-            HttpServletRequest request) throws FDException, JsonException {
+            HttpServletRequest request, boolean dlvPassCart) throws FDException, JsonException {
         Checkout checkout = new Checkout(user);
-        ResultBundle resultBundle = checkout.deletePaymentMethodEx(reqestMessage.getPaymentMethodId());
+        ResultBundle resultBundle = checkout.deletePaymentMethodEx(reqestMessage.getPaymentMethodId(), dlvPassCart);
         if(user!=null && user.getFDSessionUser()!=null && user.getFDSessionUser().getShoppingCart()!=null && 
         		user.getFDSessionUser().getShoppingCart().getPaymentMethod()!= null &&
         		user.getFDSessionUser().getShoppingCart().getPaymentMethod().getPK()!= null &&
@@ -1338,7 +1363,7 @@ public class CheckoutController extends BaseController {
      * @throws FDException
      * @throws JsonException
      */
-    private Message getPaymentMethods(SessionUser user) throws FDException, JsonException {
+    private Message getPaymentMethods(SessionUser user, boolean dlvPassCart) throws FDException, JsonException {
 		// Discard Masterpass Wallet Cards from list -- For Standard Checkout Feature
 		List<ErpPaymentMethodI> paymentMethods = discardEwalletCards(user.getPaymentMethods(),"MP");
 		List<PaymentMethod> ewallet = user.getEwallet(paymentMethods);
@@ -1350,6 +1375,8 @@ public class CheckoutController extends BaseController {
         boolean isCheckEligible = user.isCheckEligible();
         boolean isEcheckRestricted = user.isEcheckRestricted();
         boolean isEbtAccepted = user.isEbtAccepted();
+        
+        Cart cart = Cart.wrap(UserUtil.getCart(user.getFDSessionUser(), "", dlvPassCart));
 
         PaymentMethods responseMessage = new PaymentMethods(isCheckEligible, isEcheckRestricted, isEbtAccepted, creditCards,electronicChecks,ebtCards,ewallet);
 
@@ -1367,11 +1394,11 @@ public class CheckoutController extends BaseController {
         	
         }*/
         else {
-        	responseMessage.setSelectedId(new Checkout(user).getPreselectedPaymethodMethodId());
+        	responseMessage.setSelectedId(new Checkout(user).getPreselectedPaymethodMethodId(cart));
         	responseMessage.setDefaultId(user.getFDSessionUser().getFDCustomer().getDefaultPaymentMethodPK());
         	responseMessage.setDefaultType(user.getFDSessionUser().getFDCustomer().getDefaultPaymentType());
         }
-        responseMessage.getCheckoutHeader().setHeader(user.getShoppingCart());
+        responseMessage.getCheckoutHeader().setHeader(cart);
         responseMessage.setSuccessMessage("Payment methods fetched successfully.");
         return responseMessage;
     }
@@ -1439,7 +1466,7 @@ public class CheckoutController extends BaseController {
                     DeliveryAddress deliveryAddress = DeliveryAddress.wrap(user.getShoppingCart().getDeliveryAddress());
                     TimeSlotCalculationResult timeSlotResult = deliveryAddress.getDeliveryTimeslot(user, false, isCheckoutAuthenticated(request));
                     com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots slotResponse = new com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots(
-                            timeSlotResult);
+                            timeSlotResult, user);
                     slotResponse.getCheckoutHeader().setHeader(user.getShoppingCart());
                     CMSPageRequest pageRequest = new CMSPageRequest();
                     pageRequest.setPlantId(BrowseUtil.getPlantId(user));
@@ -1520,22 +1547,23 @@ public class CheckoutController extends BaseController {
      * @throws FDException
      * @throws JsonException
      */
-    private ModelAndView submitOrderFDX(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException, JsonException {
+    private ModelAndView submitOrderFDX(ModelAndView model, SessionUser user, HttpServletRequest request, boolean dlvPassCart) throws FDException, JsonException {
         final boolean isWebRequest = isExtraResponseRequested(request);
         final Checkout checkout = new Checkout(user);
         SubmitOrderExResult message = new SubmitOrderExResult();
         final FDUserI fdUser = user.getFDSessionUser();
+        FDCartModel cart = UserUtil.getCart(user.getFDSessionUser(), "", dlvPassCart);
 
         if (isWebRequest) {
             removeInvalidLines(fdUser, request.getServerName());
         }
 
         if (null != fdUser.getGiftCardList()) {
-            fdUser.getShoppingCart().setSelectedGiftCards(fdUser.getGiftCardList().getSelectedGiftcards());
+        	cart.setSelectedGiftCards(fdUser.getGiftCardList().getSelectedGiftcards());
         }
 
-        if (fdUser.getShoppingCart().getPaymentMethod() == null) {
-            checkout.setPaymentMethodEx(checkout.getPreselectedPaymethodMethodId(), "","N");
+        if (cart.getPaymentMethod() == null) {
+            checkout.setPaymentMethodEx(checkout.getPreselectedPaymethodMethodId(Cart.wrap(cart)), "","N", dlvPassCart);
         }
 
         ResultBundle dlvValidationResult = new ResultBundle();
@@ -1551,8 +1579,8 @@ public class CheckoutController extends BaseController {
          * 
          * */
         boolean isDlvPassCartOnlyNotAllowed= false;//Cart contains DeliveryPass and allowed , or no deliverypass in the cart
-        boolean isDlvPassCartOnly = user.getFDSessionUser().getShoppingCart().containsDlvPassOnly();
-        if(!user.getFDSessionUser().getShoppingCart().isDlvPassStandAloneCheckoutAllowed() && isDlvPassCartOnly){	
+        boolean isDlvPassCartOnly = cart.containsDlvPassOnly();
+        if(!cart.isDlvPassStandAloneCheckoutAllowed() && isDlvPassCartOnly){	
        // 		if(!FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && isDlvPassCartOnly){
         			isDlvPassCartOnlyNotAllowed = true;
         			message.addErrorMessage("error_dlv_pass_only", SystemMessageList.MSG_CONTAINS_DLV_PASS_ONLY);
@@ -1562,19 +1590,19 @@ public class CheckoutController extends BaseController {
                     return model;
         		}
 
-        /*if (user != null && user.getShoppingCart() != null && user.getShoppingCart().getDeliveryReservation() != null
-                && fdUser.getShoppingCart().getPaymentMethod() != null
+        /*if (user != null && cart != null && cart.getDeliveryReservation() != null
+                && cart.getPaymentMethod() != null
                 && (UserValidationUtil.validateContainsDlvPassOnly(request, dlvValidationResult.getActionResult()) != true))*/
         	
-        if (user != null && user.getShoppingCart() != null && !isDlvPassCartOnlyNotAllowed
-                && fdUser.getShoppingCart().getPaymentMethod() != null) {
+        if (cart != null && !isDlvPassCartOnlyNotAllowed
+                && cart.getPaymentMethod() != null) {
             // Reservation Validity
             
             if (!isDlvPassCartOnly) {
-            	if(user.getShoppingCart().getDeliveryReservation() != null){
+            	if(cart.getDeliveryReservation() != null){
             		boolean reservationValid = checkout.checkReservationExpiry(user);
             		if(reservationValid){
-		                if (user.getShoppingCart().containsAlcohol()) {
+		                if (cart.containsAlcohol()) {
 		                    // Call Address And Alcohol Check
 		                    message = checkout.checkAddressForAlcoholAndAgeVerification(message, user, request);
 		                    if (isSuccess(message.getStatus())) {
@@ -1583,8 +1611,8 @@ public class CheckoutController extends BaseController {
 		                    }
 		                }
 		                // Fraud Address Check
-		                if (isSuccess(message.getStatus()) && user.getShoppingCart().getDeliveryAddress() != null){
-		                    EnumRestrictedAddressReason reason = FDDeliveryManager.getInstance().checkAddressForRestrictions( user.getShoppingCart().getDeliveryAddress() );
+		                if (isSuccess(message.getStatus()) && cart.getDeliveryAddress() != null){
+		                    EnumRestrictedAddressReason reason = FDDeliveryManager.getInstance().checkAddressForRestrictions( cart.getDeliveryAddress() );
 		            		if ( !EnumRestrictedAddressReason.NONE.equals( reason ) ) {
 		            			message.addErrorMessage("Unable to place order contact customer service");
 		                        message.setStatus(Message.STATUS_FAILED);
@@ -1646,8 +1674,8 @@ public class CheckoutController extends BaseController {
                     
                     else {
                         // message = checkout.submitEx((SubmitOrderExResult)message, user, request);
-                        FDCartModel cartModel = fdUser.getShoppingCart();
-                        ResultBundle submitResult = checkout.submitOrder();
+                        //FDCartModel cartModel = cart;
+                        ResultBundle submitResult = checkout.submitOrder(dlvPassCart);
                         propogateSetSessionValues(request.getSession(), submitResult);
                         if (submitResult.getActionResult().isSuccess()) {
                             message.setStatus(Message.STATUS_SUCCESS);
@@ -1656,13 +1684,13 @@ public class CheckoutController extends BaseController {
                             }
                             com.freshdirect.mobileapi.controller.data.response.Order orderReceipt = new com.freshdirect.mobileapi.controller.data.response.Order();
                             String orderId = (String) request.getSession().getAttribute(SessionName.RECENT_ORDER_NUMBER);
-                            if (orderId == null && cartModel.getPaymentMethod() == null) {
+                            if (orderId == null && cart.getPaymentMethod() == null) {
                                 message.addErrorMessage("Payment method not selected");
                                 message.setStatus(Message.STATUS_FAILED);
                             } else {
                                 com.freshdirect.mobileapi.model.Order order = user.getOrder(orderId);
                                 if (null != order) {
-                                    orderReceipt = order.getOrderDetail(user);
+                                    orderReceipt = order.getOrderDetail(user, dlvPassCart);
                                     if (isWebRequest) {
                                         ProductPotatoUtil.populateCartDetailWithPotatoes(fdUser, orderReceipt.getCartDetail());
                                     }
@@ -1671,7 +1699,7 @@ public class CheckoutController extends BaseController {
                                 message.wrap(orderReceipt);
 
                                 message.addDebugMessage("Order has been submitted successfully.");
-                                createAndSendUnbxdAnalyticsEvent(fdUser, request, cartModel.getOrderLines());
+                                createAndSendUnbxdAnalyticsEvent(fdUser, request, cart.getOrderLines());
                             }
                         } else {
                             message.setStatus(Message.STATUS_FAILED);
@@ -1689,9 +1717,9 @@ public class CheckoutController extends BaseController {
             // cart not set up for checkout.
             if (user == null) {
                 message.addErrorMessage("Error processing checkout - User");
-            } else if (user.getShoppingCart() == null) {
+            } else if (cart == null) {
                 message.addErrorMessage("Error processing checkout - Cart");
-            } else if (user.getShoppingCart().getDeliveryReservation() == null) {
+            } else if (cart.getDeliveryReservation() == null) {
                 EnumEStoreId eStore = (user.getUserContext() != null && user.getUserContext().getStoreContext() != null) ? user.getUserContext().getStoreContext().getEStoreId()
                         : EnumEStoreId.FD;
                 if (EnumEStoreId.FDX.equals(eStore)) {
@@ -1699,7 +1727,7 @@ public class CheckoutController extends BaseController {
                 } else {
                     message.addErrorMessage("There is an issue with the delivery time, please select another one");
                 }
-            } else if (fdUser.getShoppingCart().getPaymentMethod() == null) {
+            } else if (cart.getPaymentMethod() == null) {
                 message.addErrorMessage("Error processing checkout - Payment Method");
             } else if (dlvValidationResult.getActionResult().getError("error_dlv_pass_only") != null
                     && dlvValidationResult.getActionResult().getError("error_dlv_pass_only").getDescription() != null
@@ -1709,7 +1737,6 @@ public class CheckoutController extends BaseController {
             message.setStatus(Message.STATUS_FAILED);
 
         }
-
         setResponseMessage(model, message, user);
         return model;
     }

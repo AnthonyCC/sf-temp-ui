@@ -19,13 +19,7 @@
 		%><jwr:style src="/opt_MAC_01.css" media="all" /><%
 	}
 	%>
-	<!--[if lte IE 6]>
-	<jwr:style src="/opt_IE_LT7_02.css" media="all" />
-	<![endif]--> 
 	<jwr:style src="/opt_04.css" media="all" />
-	<!--[if lte IE 7]>
-	<jwr:style src="/opt_IE_LT8_02.css" media="all" />
-	<![endif]-->
 	
 	<% if (layoutTypeCSS == EnumLayoutType.PRESIDENTS_PICKS.getId() || layoutTypeCSS == EnumLayoutType.PRODUCTS_ASSORTMENTS.getId()) { %>
     <%-- TODO: create a jawr bundle, don't use if --%>

@@ -17,8 +17,10 @@ import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumTaxationType;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.customer.ErpCouponDiscountLineModel;
+import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.model.ErpInventoryModel;
+import com.freshdirect.fdstore.FDProduct;
 
 public interface SapOrderLineI extends Serializable {
 
@@ -144,5 +146,12 @@ public interface SapOrderLineI extends Serializable {
 	public EnumTaxationType getTaxationType();
 	
 	public String getPickingPlantId();
+	
+	// Implemented only for StoreFront 2.0 Implementation.
+	public String getAffiliateCode();
+	
+	public ErpOrderLineModel getOrderLine();
+	
+	public FDProduct getFdProduct();
 
 }

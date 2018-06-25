@@ -861,10 +861,6 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
         ErpCustomerInfoModel cim = null;
         cim = FDCustomerFactory.getErpCustomerInfo(identity);
 
-        ErpCustomerModel customer = FDCustomerFactory.getErpCustomer(getIdentity());
-        FDCustomerModel FDCustomerModel = FDCustomerFactory.getFDCustomer(getIdentity());
-        FDCustomerEStoreModel customerSmsPreferenceModel = FDCustomerModel.getCustomerSmsPreferenceModel();
-
         cim.setEmailPreferenceLevel(receive_emailLevel);
 
         LOGGER.debug("Updating customer email level preference");

@@ -24,6 +24,7 @@ import com.freshdirect.mobileapi.controller.data.request.AddItemToCart;
 import com.freshdirect.mobileapi.controller.data.request.AddMultipleItemsToCart;
 import com.freshdirect.mobileapi.controller.data.request.SmartStoreConfiguration;
 import com.freshdirect.mobileapi.controller.data.request.UpdateItemInCart;
+import com.freshdirect.mobileapi.model.Cart;
 import com.freshdirect.mobileapi.model.CartEvent;
 import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
@@ -50,7 +51,7 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
      * @return
      * @throws FDException
      */
-    public ResultBundle updateItemInCart(UpdateItemInCart updateItemInCart, CartEvent cartEvent, FDCartLineI cartLine) throws FDException {
+    public ResultBundle updateItemInCart(UpdateItemInCart updateItemInCart, CartEvent cartEvent, FDCartLineI cartLine, boolean dlvPassCart) throws FDException {
         setCartEventLoggingSetsAndGets(cartEvent);
         addExpectedRequestValues(new String[] { REQ_PARAM_YMAL_BOX, REQ_PARAM_YMAL_SET_ID, REQ_PARAM_YMAL_ORIG_PROD_ID,
                 REQ_PARAM_YMAL_ORIG_ORDER_LINE_ID, REQ_PARAM_ATC_SUFFIX, REQ_PARAM_VARIANT, REQ_PARAM_CONSENTED, REQ_PARAM_AGREE_TO_TERMS,
@@ -143,16 +144,18 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
         }
 
         ((FDShoppingCartControllerTag) getWrapTarget()).setAction(ACTION_UPDATE_ITEM_IN_CART);
+        ((FDShoppingCartControllerTag) getWrapTarget()).setDlvPassCart(dlvPassCart);
         setMethodMode(true);
         return new ResultBundle(executeTagLogic(), this);
 
     }
 
-    public ResultBundle refreshDeliveryPass() throws FDException {
+    public ResultBundle refreshDeliveryPass(boolean dlvPassCart) throws FDException {
         addExpectedRequestValues(new String[] { REQ_PARAM_CUSTOMER_CREATED_LIST_ID, REQ_PARAM_REMOVE, REQ_PARAM_REMOVE_RECIPE,SessionName.PARAM_EVALUATE_COUPONS, REQ_PARAM_CARTLINE },
                 new String[] { REQ_PARAM_CART_CLEANUP_REMOVED_STUFF_FLAG, REQ_PARAM_CARTLINE }); //gets,sets
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION }, new String[] { SESSION_PARAM_USER, SESSION_PARAM_SKUS_ADDED }); //gets,sets
         ((FDShoppingCartControllerTag) getWrapTarget()).setAction(null);
+        ((FDShoppingCartControllerTag) getWrapTarget()).setDlvPassCart(dlvPassCart);
         return new ResultBundle(executeTagLogic(), this);
     }
 
@@ -161,7 +164,7 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
      * @return
      * @throws FDException
      */
-    public ResultBundle removeItemFromCart(String cartLineId, CartEvent cartEvent) throws FDException {
+    public ResultBundle removeItemFromCart(String cartLineId, CartEvent cartEvent, boolean dlvPassCart) throws FDException {
         setCartEventLoggingSetsAndGets(cartEvent);
         addExpectedRequestValues(new String[] { REQ_PARAM_CUSTOMER_CREATED_LIST_ID, SessionName.PARAM_EVALUATE_COUPONS,REQ_PARAM_CM_PAGEID,REQ_PARAM_CM_PAGECONTENT_HIERARCHY,REQ_PARAM_CM_VIRTUAL_CATEGORY, REQ_PARAM_CARTLINE  },
                 new String[] { REQ_PARAM_CART_CLEANUP_REMOVED_STUFF_FLAG, REQ_PARAM_CARTLINE }); //gets,sets
@@ -176,7 +179,7 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
         // As long as a parameter w/ key "remove" exists in the request w/ a non-null value, 
         // it's enough to trick the tag controller.
         addRequestValue(ACTION_REMOVE_FROM_CART, "some-not-null-value");
-
+        ((FDShoppingCartControllerTag) getWrapTarget()).setDlvPassCart(dlvPassCart);
         return new ResultBundle(executeTagLogic(), this);
     }
 
@@ -186,7 +189,7 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
      * @return
      * @throws FDException
      */
-    public ResultBundle addItemToCart(AddItemToCart addItemToCart, CartEvent cartEvent) throws FDException {
+    public ResultBundle addItemToCart(AddItemToCart addItemToCart, CartEvent cartEvent, boolean dlvPassCart) throws FDException {
 
         setCartEventLoggingSetsAndGets(cartEvent);
 
@@ -304,6 +307,7 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
         }
 
         ((FDShoppingCartControllerTag) getWrapTarget()).setAction(ACTION_ADD_TO_CART);
+        ((FDShoppingCartControllerTag) getWrapTarget()).setDlvPassCart(dlvPassCart);
         setMethodMode(true);
         return new ResultBundle(executeTagLogic(), this);
     }
@@ -336,7 +340,7 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
      * @return
      * @throws FDException
      */
-    public ResultBundle addMultipleItemsToCart(AddMultipleItemsToCart multipleItemsToCart, CartEvent cartEvent) throws FDException {
+    public ResultBundle addMultipleItemsToCart(AddMultipleItemsToCart multipleItemsToCart, CartEvent cartEvent, boolean dlvPassCart) throws FDException {
         addExpectedRequestValues(new String[] { REQ_PARAM_REMOVE, REQ_PARAM_REMOVE_RECIPE, REQ_PARAM_CART_CLEANUP_REMOVED_STUFF_FLAG,
                 REQ_PARAM_CATEGORY_ID, REQ_PARAM_YMAL_BOX, REQ_PARAM_IMPRESSESION_ID, REQ_PARAM_ATC_SUFFIX,
                 REQ_PARAM_CUSTOMER_CREATED_LIST_ID, REQ_PARAM_CARTONNUMBER, SessionName.PARAM_ADDED_FROM_SEARCH,SessionName.PARAM_ADDED_FROM,SessionName.PARAM_EVALUATE_COUPONS,REQ_PARAM_CM_PAGEID,REQ_PARAM_CM_PAGECONTENT_HIERARCHY,REQ_PARAM_CM_VIRTUAL_CATEGORY,
@@ -464,6 +468,7 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
 
         setMethodMode(true);
         ((FDShoppingCartControllerTag) getWrapTarget()).setAction(ACTION_ADD_MULTIPLE_TO_CART);
+        ((FDShoppingCartControllerTag) getWrapTarget()).setDlvPassCart(dlvPassCart);
         return new ResultBundle(executeTagLogic(), this);
     }
 
@@ -474,12 +479,12 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
      * @return
      * @throws FDException
      */
-    public ResultBundle removeMultipleItemsFromCart(List<String> cartLineIds, CartEvent cartEvent) throws FDException {
+    public ResultBundle removeMultipleItemsFromCart(List<String> cartLineIds, CartEvent cartEvent, boolean dlvPassCart) throws FDException {
     	
     	addExpectedRequestValues(new String[] { REQ_PARAM_CARTLINE } , new String[] {REQ_PARAM_CARTLINE} );
         ActionResult actionResult = new ActionResult();
         for (String cartLineId : cartLineIds) {
-            ResultBundle rmResult = this.removeItemFromCart(cartLineId, cartEvent);
+            ResultBundle rmResult = this.removeItemFromCart(cartLineId, cartEvent, dlvPassCart);
 
             for (Object error : rmResult.getActionResult().getErrors()) {
                 actionResult.addError((ActionError) error);

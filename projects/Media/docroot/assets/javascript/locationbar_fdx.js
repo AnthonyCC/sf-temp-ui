@@ -297,7 +297,7 @@ $jq('.locabar_triggers').on('keyup', function(event) {
 			$this.trigger('click');
 		}
 		
-	else if (curId == 'locabar_addresses_trigger' && ($jq(event.target).attr('id') === 'newziptext' || $jq(event.target).attr('id') === 'newzipgo' || $jq(event.target).attr('id') === 'locabar_addresses' || $jq(event.target).attr('id') === 'location-email'|| $jq(event.target).attr('id') === 'location-submit')) {
+	else if (curId == 'locabar_addresses_trigger' && ($jq(event.target).attr('id') === 'newziptextmsg' || $jq(event.target).attr('id') === 'newziptext' ||  $jq(event.target).attr('id') === 'newzipgomsg' || $jq(event.target).attr('id') === 'newzipgo' || $jq(event.target).attr('id') === 'locabar_addresses' || $jq(event.target).attr('id') === 'location-email'|| $jq(event.target).attr('id') === 'location-submit')) {
 		//do nothing
 		$this.addClass('hover')
 	}
@@ -867,8 +867,8 @@ $jq("#newziptext").keydown(function(e){
 			$jq("#newziptext")[0].setSelectionRange($jq(".newziptext").val().length,$jq(".newziptext").val().length);
 					
 			$jq("#newziptext").addClass("input-error");
-			$jq("#locabar_addresses").css("visibility","visible");
-			$jq("#locabar_addresses").css("opacity","1");
+//			$jq("#locabar_addresses").css("visibility","visible");
+//			$jq("#locabar_addresses").css("opacity","1");
 		}		
 		e.preventDefault();
 	}
@@ -938,7 +938,7 @@ $jq("#location-email").keydown(function(e){
   	//e.preventDefault();
 
 });
-
+/*
 $jq("#location-submit.fdxgreen").keydown(function(e){
 	
 	var email_text=$jq(this).parent().find('input').val();
@@ -965,7 +965,7 @@ $jq("#location-submit.fdxgreen").keydown(function(e){
   	//e.preventDefault();
 
 });
-
+*/
 /* fdx promo */
 	function open_fdx_promo() {
 		$jq('#locationbar_fdx_promo>.visWrapper').show();

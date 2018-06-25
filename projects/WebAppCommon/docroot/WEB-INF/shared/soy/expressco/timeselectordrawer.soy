@@ -143,11 +143,11 @@
 	{else}
 		<div class="time-slot successtimeslot drawer__itemright" timeslot-id="{$id ? $id : ''}">
 		  <div class="drawer__item__title">
-		    {$dayOfWeek ? $dayOfWeek : ''}, {$month ? $month : ''}/{$dayOfMonth ? $dayOfMonth : ''}
+		    <span class="timeslot-dayOfWeek">{$dayOfWeek ? $dayOfWeek : ''}</span><span class="timeslot-dayOfWeek-timePeriod-sep">, </span><span class="timeslot-timePeriod">{$timePeriod ? $timePeriod : ''}</span>
 		  </div>
 		  <div class="successtimeslot_time drawer__item__section">
 		    <div class="section__body">
-		    	{$timePeriod ? $timePeriod : ''}
+		    	<span class="timeslot-month">{$month ? $month : ''}</span><span class="timeslot-month-dayOfMonth-sep">/</span><span class="timeslot-dayOfMonth">{$dayOfMonth ? $dayOfMonth : ''}</span>
 		    </div>
 		  </div>
 		</div>

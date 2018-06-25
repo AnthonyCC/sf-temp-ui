@@ -47,6 +47,8 @@ public class FDCustomerEStoreModel extends ModelSupport{
 	private String rafClickId;
     private String rafPromoCode;
     private Boolean dpFreeTrailOptin = false;
+    private String hasAutoRenewDP;
+    private String autoRenewDpType;
 
     private Map<EnumEStoreId, Integer> informOrderModifyViewCount = new HashMap<EnumEStoreId, Integer>();
 	 
@@ -347,5 +349,21 @@ public class FDCustomerEStoreModel extends ModelSupport{
 		if (id != null) {
 			super.setId(id);
 		}
+	}
+
+	public String getHasAutoRenewDP() {
+		return hasAutoRenewDP;
+	}
+
+	public String getAutoRenewDpType() {
+		return autoRenewDpType;
+	}
+
+	public void setHasAutoRenewDP(String hasAutoRenewDP) {
+		this.hasAutoRenewDP = hasAutoRenewDP;
+	}
+
+	public void setAutoRenewDpType(String autoRenewDpType) {
+		this.autoRenewDpType = autoRenewDpType;
 	}
 }

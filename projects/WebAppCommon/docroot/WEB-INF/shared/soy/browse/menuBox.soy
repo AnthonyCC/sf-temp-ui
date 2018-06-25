@@ -9,7 +9,9 @@
     {if $menuBox.displayType == 'SIMPLE'}
       {if $menuBox.name}<h3>{$menuBox.name}</h3>{/if}
       {if $menuBox.items and length($menuBox.items) > 0}
-      <ul><fieldset><legend><span class="offscreen">
+      <fieldset>
+      <legend>
+      <span class="offscreen">
       {if $menuBox.boxType == 'FILTER'}filter products by {$menuBox.name}
       {else}
       {if $menuBox.boxType == 'SUPERDEPARTMENT'}filter products by department
@@ -17,7 +19,9 @@
       filter products by category
       {/if}
       {/if}
-      </span></legend>
+      </span>
+      </legend>
+      <ul>
       {foreach $item in $menuBox.items}
         {if $item.urlParameter}
           {call .menuItem}
@@ -32,7 +36,8 @@
         	{/if}
         {/if}
       {/foreach}
-      </fieldset></ul>
+     </ul>
+    </fieldset>
      {/if} 
     {elseif $menuBox.displayType == 'POPUP'}
       {if $menuBox.name}<h3>{$menuBox.name}</h3>{/if}      
@@ -105,7 +110,9 @@
   {let $mod: ($l >= $limit * $maxcols ? $l % $maxcols : 0) /}
   {for $col in range(0, $maxcols)}
     {if $col * $n + $mod < $l}
-      <ul><fieldset><legend><span class="offscreen">
+      <fieldset>
+      <legend>
+      <span class="offscreen">
       {if $menuBox.boxType == 'FILTER'}filter products by {$menuBox.name}
       {else}
       {if $menuBox.boxType == 'SUPERDEPARTMENT'}filter products by department
@@ -113,7 +120,9 @@
       filter products by category
       {/if}
       {/if}
-      </span></legend>
+      </span>
+      </legend>
+      <ul>
       {for $i in range($col * $n + ($col < $mod ? $col : $mod), ($col + 1) * $n + ($col+1 < $mod ? $col+1 : $mod ))}
         {if $l > $i}
           {delcall browse.layoutBody variant="$bodyVariant"} 
@@ -122,7 +131,8 @@
           {/delcall}
         {/if}
       {/for}
-     </fieldset> </ul>
+      </ul>
+     </fieldset>
     {/if}
   {/for}
 {/template}
@@ -163,7 +173,10 @@
 * @param menuBox list of menuitems
 */
 {template .popupLayout autoescape="false"}
-  <ul><fieldset><legend><span class="offscreen">
+ 
+   <fieldset>
+      <legend>
+      <span class="offscreen">
       {if $menuBox.boxType == 'FILTER'}filter products by {$menuBox.name}
       {else}
       {if $menuBox.boxType == 'SUPERDEPARTMENT'}filter products by department
@@ -171,7 +184,9 @@
       filter products by category
       {/if}
       {/if}
-      </span></legend>
+      </span>
+      </legend> 
+   <ul>
   {foreach $item in $menuBox.items}
     {if $item.name != 'marker'}
       {if $item.urlParameter}
@@ -183,7 +198,12 @@
         <li><h3 class="section-big">{$item.name}</h3></li>
       {/if}
     {else}
-     </fieldset> </ul><ul><fieldset><legend><span class="offscreen">
+      </ul>
+      </fieldset>
+
+     <fieldset>
+     <legend>
+     <span class="offscreen">
       {if $menuBox.boxType == 'FILTER'}filter products by {$menuBox.name}
       {else}
       {if $menuBox.boxType == 'SUPERDEPARTMENT'}filter products by department
@@ -191,10 +211,13 @@
       filter products by category
       {/if}
       {/if}
-      </span></legend>
+      </span>
+      </legend>
+       <ul>
     {/if}
   {/foreach}
- </fieldset> </ul>
+  </ul>
+ </fieldset>
 {/template}
 
 /**

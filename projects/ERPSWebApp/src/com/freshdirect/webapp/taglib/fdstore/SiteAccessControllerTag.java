@@ -551,82 +551,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 							doRedirect(failedAddresspage);
 						}
 					}
-				}
-				else if ("addDeliveryAddress".equalsIgnoreCase(action)) { 
-					
-					
-					/*
-					 * 'addDeliveryAddress' is to add delivery address to user's profile.
-					 *  It's part of checking out.
-					 * 
-					 *  'addDeliveryAddress' uses the similar logic as 'signupSocialDlvAddr', 
-					 *  which was required part of account creation.
-					 */		
-					
-					
-					// retrieve parameters from request
-					String companyname = NVL.apply(request.getParameter(EnumUserInfoName.DLV_COMPANY_NAME.getCode()), "").trim();					
-					String firstname = NVL.apply(request.getParameter(EnumUserInfoName.DLV_FIRST_NAME.getCode()), "").trim();
-					String lastname = NVL.apply(request.getParameter(EnumUserInfoName.DLV_LAST_NAME.getCode()), "").trim();
-					String streetaddr = NVL.apply(request.getParameter(EnumUserInfoName.DLV_ADDRESS_1.getCode()), "").trim();
-					String suite = NVL.apply(request.getParameter(EnumUserInfoName.DLV_APARTMENT.getCode()), "").trim();
-					String zipcode = NVL.apply(request.getParameter(EnumUserInfoName.DLV_ZIPCODE.getCode()), "").trim();
-					String city = NVL.apply(request.getParameter(EnumUserInfoName.DLV_CITY.getCode()), "").trim();
-					String state = NVL.apply(request.getParameter(EnumUserInfoName.DLV_STATE.getCode()), "").trim();
-					String busphone = NVL.apply(request.getParameter(EnumUserInfoName.DLV_WORK_PHONE.getCode()), "").trim();
-					String mobilephno = NVL.apply(request.getParameter(EnumUserInfoName.DLV_HOME_PHONE.getCode()), "").trim();
-					String email = NVL.apply(request.getParameter(EnumUserInfoName.EMAIL.getCode()), "").trim();
-					
-					System.out.println("companyname:"+companyname);
-					System.out.println("firstname:"+firstname);
-					System.out.println("lastname:"+lastname);
-					System.out.println("streetaddr:"+streetaddr);
-					System.out.println("suite:"+suite);
-					System.out.println("zipcode:"+zipcode);
-					System.out.println("city:"+city);
-					System.out.println("state:"+state);
-					System.out.println("busphone:"+busphone);
-					System.out.println("mobilephno:"+mobilephno);
-					System.out.println("email:"+email);
-
-					
-					// Validate parts of delivery address										
-					FDDeliveryServiceSelectionResult serviceResult = validateSocialDlvAddr(request, result);
-										
-					if(serviceResult!=null)
-						setRequestedServiceTypeDlvStatus(serviceResult.getServiceStatus(this.serviceType));
-					
-					
-					if (result.isSuccess()) {
-										
-							EnumDeliveryStatus dlvStatus = serviceResult.getServiceStatus(this.serviceType);				
-							if (EnumDeliveryStatus.DELIVER.equals(dlvStatus)) {
-							
-								addDeliveryAddress(result);								
-
-							} else{						
-
-								String failedAddresspage = "/social/FailedAddrPage.jsp?successPage=index.jsp&referrer_page=slite&" +
-										"serviceType=" + this.serviceType +  
-										"&companyname="+ companyname +
-										"&firstname="+ firstname +
-										"&lastname="+ lastname +
-										"&streetaddr="+ streetaddr +
-										"&suite="+ suite +
-										"&zipcode="+ zipcode +
-										"&city="+ city +
-										"&state="+ state +
-										"&busphone="+ busphone +
-										"&mobilephno="+ mobilephno +
-										"&email="+ email;
-								
-								// Show do not deliver page
-								request.getSession().setAttribute("SocialDlvAddrFail", "true");   
-								
-								doRedirect(failedAddresspage);
-							}
-					}
-				}				
+				}		
 			} catch (FDResourceException re) {
 				LOGGER.warn("FDResourceException occured", re);
 				result.addError(true, "technicalDifficulty", SystemMessageList.MSG_TECHNICAL_ERROR);
@@ -723,48 +648,6 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 			result.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_TECHNICAL_ERROR));
 		}
 	}
-		
-	private void addDeliveryAddress(ActionResult result) {
-				
-		HttpSession session = this.pageContext.getSession();
-		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-		HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
-		HttpContext ctx = new HttpContext( session, request, response);
-		
-		int regType = AccountUtil.HOME_USER;
-		if(EnumServiceType.CORPORATE.getName().equals(this.serviceType)) {
-			regType = AccountUtil.CORP_USER;
-		}
-		
-		// Set address to SessionUser
-		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);	
-		user.setAddress(this.address);
-		user.setSelectedServiceType(serviceType);
-		user.setZPServiceType(serviceType);
-
-		//Store updated SessionUser
-		CookieMonster.storeCookie(user, response);
-		session.setAttribute(SessionName.USER, user);							
-		
-
-		// Invoke RegistrationAction to add delivery address to the user
-		RegistrationAction ra = new RegistrationAction(regType);
-		ra.setHttpContext(ctx);
-		ra.setResult(result);
-		
-		try {
-			String res = ra.addDeliverayAddress();
-			
-			if((Action.SUCCESS).equals(res)) {				
-				// attribute "DELIVERYADDRESS_COMPLETE" will be used in 'DeliveryAddress.jsp' to return control to main window
-				session.setAttribute("DELIVERYADDRESS_COMPLETE", "true"); 				
-			}
-			
-		} catch (Exception ex) {
-			LOGGER.error("Error performing action addDeliveryAddress", ex);
-			result.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_TECHNICAL_ERROR));
-		}
-	}	
 	
 	private boolean validEmail(String email, ActionResult result) {		
 		

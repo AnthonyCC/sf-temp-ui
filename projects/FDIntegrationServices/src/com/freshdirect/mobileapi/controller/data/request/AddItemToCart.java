@@ -24,6 +24,8 @@ public class AddItemToCart extends Message {
     private ProductConfiguration productConfiguration = new ProductConfiguration();
     
     private boolean quickBuy; //to denote add to cart from the quickshop
+    
+    private boolean dlvPassCart;
 
     public ProductConfiguration getProductConfiguration() {
         return productConfiguration;
@@ -95,6 +97,14 @@ public class AddItemToCart extends Message {
 
 	public void setQuickBuy(boolean quickBuy) {
 		this.quickBuy = quickBuy;
+	}
+
+	public boolean isDlvPassCart() {
+		return dlvPassCart;
+	}
+
+	public void setDlvPassCart(boolean dlvPassCart) {
+		this.dlvPassCart = dlvPassCart;
 	}
 
 }

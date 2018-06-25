@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.freshdirect.webapp.ajax.analytics.data.GoogleAnalyticsData;
 import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
@@ -127,6 +128,24 @@ public class BrowseData implements Serializable {
 		
 	}	
 	
+    public static class CarouselTypeContainer implements Serializable {
+        private static final long serialVersionUID = -1355425455491477559L;
+        private Map<String, String> attributes = new HashMap<String, String>();
+
+        @JsonAnyGetter
+        public Map<String, String> getAttributes() {
+            return attributes;
+        }
+
+        public void setAttributes(Map<String, String> attributes) {
+            this.attributes = attributes;
+        }
+
+        public void addAttribute(String key, String value) {
+            this.attributes.put(key, value);
+        }
+    }
+
 	public static class DescriptiveDataCointainer implements Serializable, DescriptiveDataI {
 		
 		private static final long serialVersionUID = 4991670021932771599L;
@@ -680,6 +699,7 @@ public class BrowseData implements Serializable {
 	private HLBrandAdProducts adProducts = new HLBrandAdProducts();
 	private String productId;
     private String topMedia;
+    private CarouselTypeContainer carouselType;
 
     private GoogleAnalyticsData googleAnalyticsData;
 	
@@ -764,5 +784,14 @@ public class BrowseData implements Serializable {
 	public void setProductId(String productId) {
 		this.productId = productId;
 	}
+
+    public CarouselTypeContainer getCarouselType() {
+        return carouselType;
+    }
+
+    public void setCarouselType(CarouselTypeContainer carouselType) {
+        this.carouselType = carouselType;
+    }
+
 
 }

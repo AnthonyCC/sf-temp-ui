@@ -11,12 +11,11 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class StandingOrdersServiceManager {
 	
-	private final static Category LOGGER = LoggerFactory.getInstance(FDStandingOrdersManager.class);
+	private final static Category LOGGER = LoggerFactory.getInstance(StandingOrdersServiceManager.class);
 
 	private static StandingOrdersServiceHome soHome = null;
 	

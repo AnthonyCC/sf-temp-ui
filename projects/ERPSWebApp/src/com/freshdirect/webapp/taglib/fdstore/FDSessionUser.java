@@ -185,6 +185,25 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	
 	private boolean showInformOrderModify = false;
 	
+	private Map<String, Set<Integer>> recentCartlineIdsMap = new HashMap<String, Set<Integer>>();
+	
+	/* map setter/getter */
+	public Map<String, Set<Integer>> getRecentCartlineIdsMap() {
+		return recentCartlineIdsMap;
+	}
+	public void setRecentCartlineIdsMap(Map<String, Set<Integer>> recentCartlineIdsMap) {
+		this.recentCartlineIdsMap = recentCartlineIdsMap;
+	}
+	/* set setter/getter */
+	public Set<Integer> getRecentCartlineIdsSet(String orderId) {
+		return (Set<Integer>) ((this.recentCartlineIdsMap.containsKey(orderId)) ? this.recentCartlineIdsMap.get(orderId) : Collections.<Integer> emptySet());
+	}
+	public void setRecentCartlineIdsSet(String orderId, Set<Integer> recentCartlineIdsSet) {
+		if (orderId != null) {
+			this.recentCartlineIdsMap.put(orderId, recentCartlineIdsSet);
+		}
+	}
+
 	@Override
     public boolean isSoContainerOpen() {
         return isSoContainerOpen;
@@ -1345,6 +1364,16 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     @Override
     public void setGiftCart(FDCartModel dcart) {
         this.user.setGiftCart(dcart);
+    }
+    
+    @Override
+    public FDCartModel getDlvPassCart() {
+        return this.user.getDlvPassCart();
+    }
+    
+    @Override
+    public void setDlvPassCart(FDCartModel dlvpasscart) {
+        this.user.setDlvPassCart(dlvpasscart);
     }
 
     @Override

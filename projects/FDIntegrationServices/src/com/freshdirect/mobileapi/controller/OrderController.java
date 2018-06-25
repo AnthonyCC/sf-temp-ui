@@ -27,6 +27,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.ProductConfiguration;
+import com.freshdirect.mobileapi.controller.data.request.DlvPassRequest;
 import com.freshdirect.mobileapi.controller.data.request.OrdersDetailRequest;
 import com.freshdirect.mobileapi.controller.data.request.SearchQuery;
 import com.freshdirect.mobileapi.controller.data.request.SimpleRequest;
@@ -88,6 +89,7 @@ public class OrderController extends BaseController {
     private static final String ACTION_GET_QUICK_SHOP_EVERYITEMEVERORDEREDEX = "geteveryitemeverorderedEX";
     private static final String ACTION_GET_ORDERS = "getExistingOrders";
     private static final String ACTION_CHECK_MODIFY = "checkmodify";
+    private final static String DLV_PASS_CART = "dlvPassCart";
     
     /* (non-Javadoc)
      * @see com.freshdirect.mobileapi.controller.BaseController#processRequest(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, org.springframework.web.servlet.ModelAndView, java.lang.String, com.freshdirect.mobileapi.model.SessionUser)
@@ -103,11 +105,16 @@ public class OrderController extends BaseController {
                 SimpleRequest requestMessage = parseRequestObject(request, response, SimpleRequest.class);
                 orderId = requestMessage.getId();
             }
-            responseMessage = getOrderDetail(user, orderId, request);
+            boolean dlvPassCart = false;
+        	if(getPostData(request, response)!=null && getPostData(request, response).contains(DLV_PASS_CART)) {
+        		DlvPassRequest requestMessage = parseRequestObject(request, response, DlvPassRequest.class);
+        		dlvPassCart = requestMessage.isDlvPassCart();
+        	}
+            responseMessage = getOrderDetail(user, orderId, request, dlvPassCart);
         } else if(ACTION_GET_ORDERS.equals(action)){
         	OrdersDetailRequest requestMessage = parseRequestObject(request, response, OrdersDetailRequest.class);
         	List<String> orderIds = requestMessage.getOrders();
-        	responseMessage = getDetailsForOrders(user, orderIds, request);
+        	responseMessage = getDetailsForOrders(user, orderIds, request, requestMessage.isDlvPassCart());
         }else if (ACTION_GET_QUICK_SHOP_ORDER_LIST.equals(action)) {
             responseMessage = getQuickshopOrders(user, request, response);
         } else if (ACTION_CANCEL_ORDER.equals(action)) {
@@ -123,7 +130,12 @@ public class OrderController extends BaseController {
                 SimpleRequest requestMessage = parseRequestObject(request, response, SimpleRequest.class);
                 orderId = requestMessage.getId();
             }
-            responseMessage = loadOrder(user, orderId, request);
+            boolean dlvPassCart = false;
+        	if(getPostData(request, response)!=null && getPostData(request, response).contains(DLV_PASS_CART)) {
+        		DlvPassRequest requestMessage = parseRequestObject(request, response, DlvPassRequest.class);
+        		dlvPassCart = requestMessage.isDlvPassCart();
+        	}
+            responseMessage = loadOrder(user, orderId, request, dlvPassCart);
         }  else if(ACTION_CHECK_MODIFY.equals(action)){
         	OrdersDetailRequest requestMessage = parseRequestObject(request, response, OrdersDetailRequest.class);
         	List<String> orderIds = requestMessage.getOrders();
@@ -283,9 +295,9 @@ public class OrderController extends BaseController {
         return responseMessage;
     }
 
-    private Message loadOrder(SessionUser user, String orderId, HttpServletRequest request) throws FDException,
+    private Message loadOrder(SessionUser user, String orderId, HttpServletRequest request, boolean dlvPassCart) throws FDException,
             JsonException {
-    	com.freshdirect.mobileapi.controller.data.response.Order order = user.getOrder(orderId).getOrderDetail(user);
+    	com.freshdirect.mobileapi.controller.data.response.Order order = user.getOrder(orderId).getOrderDetail(user, dlvPassCart);
         if (isExtraResponseRequested(request)) {
             ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), order.getCartDetail());
         }
@@ -327,9 +339,9 @@ public class OrderController extends BaseController {
         return responseMessage;
     }
 
-    private Message getOrderDetail(SessionUser user, String orderId, HttpServletRequest request) throws FDException, JsonException {
+    private Message getOrderDetail(SessionUser user, String orderId, HttpServletRequest request, boolean dlvPassCart) throws FDException, JsonException {
         Order order = user.getOrder(orderId);
-        com.freshdirect.mobileapi.controller.data.response.Order orderDetail = order.getOrderDetail(user);
+        com.freshdirect.mobileapi.controller.data.response.Order orderDetail = order.getOrderDetail(user, dlvPassCart);
         if (isExtraResponseRequested(request)) {
             ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), orderDetail.getCartDetail());
         }
@@ -588,7 +600,7 @@ public class OrderController extends BaseController {
     	return quickShop;
     }
 
-    private Message getDetailsForOrders(SessionUser user, List<String> orderIds, HttpServletRequest request) throws FDException, JsonException{
+    private Message getDetailsForOrders(SessionUser user, List<String> orderIds, HttpServletRequest request, boolean dlvPassCart) throws FDException, JsonException{
     	
     	//Response Object with list of orders
     	Orders orders = new Orders();
@@ -599,7 +611,7 @@ public class OrderController extends BaseController {
     		 Order order = user.getOrder(orderId);
     		//wrap each order and add to orders list in response object
     		 try {
-				final com.freshdirect.mobileapi.controller.data.response.Order orderDetail = order.getOrderDetail(user);
+				final com.freshdirect.mobileapi.controller.data.response.Order orderDetail = order.getOrderDetail(user, dlvPassCart);
                 orders.addOrder(orderDetail,orderId);
                 if (isWebRequest) {
                     ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), orderDetail.getCartDetail());

@@ -48,6 +48,7 @@ import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDEcommProperties;
@@ -84,6 +85,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.logistics.delivery.model.EnumZipCheckResponses;
 import com.freshdirect.mail.ErpMailSender;
+import com.freshdirect.storeapi.application.CmsManager;
 import com.freshdirect.storeapi.configuration.StoreAPIConfig;
 import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.storeapi.content.ProductModel;
@@ -104,25 +106,39 @@ public class DeliveryPassRenewalCron {
 		List arCustomers=new ArrayList(10);
 		List arSKUs=new ArrayList(10);
 		Context ctx=null;
+		LOGGER.info("DeliveryPassRenewalCron:: in Main(), started Cron"); 
+		EnumEStoreId eStore = EnumEStoreId.FD;//Default		
+		 
 		try {
 			initializeSpringContext();
 			ctx = getInitialContext();
-			
-			autoRenewInfo=getAutoRenewalInfo();
+			eStore = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
+			LOGGER.info("DeliveryPassRenewalCron:: got eStore:: "+eStore.getContentId());
+			LOGGER.info("DeliveryPassRenewalCron:: getAutoRenewalInfo()  Start--->>> "); 
+			autoRenewInfo=getAutoRenewalInfo(eStore);
+			LOGGER.info("DeliveryPassRenewalCron:: getAutoRenewalInfo() ----<<<End "); 
 			if(autoRenewInfo!=null) {
 				arCustomers=(List)autoRenewInfo[0];
 				arSKUs=(List)autoRenewInfo[1];
 				String erpCustomerID="";
 				String arSKU="";
-				LOGGER.info("DeliveryPassRenewalCron : "+arCustomers.size()+" customers eligible for auto-renewal.");
+				if(EnumEStoreId.FDX.getContentId().toString().equalsIgnoreCase(eStore.getContentId().toString())){
+					arSKU = FDStoreProperties.getDefaultRenewalDPforFDX();
+					LOGGER.info(" got arSKU for FoodKick : : "+arSKU);
+				}else{
+					arSKU = FDStoreProperties.getDefaultRenewalDPforFD();
+					LOGGER.info(" get arSku for FreshDirect:: "+arSKU);
+				}
+				LOGGER.info("DeliveryPassRenewalCron Started. "+arCustomers.size()+" customers eligible for auto-renewal on Estore: "+eStore.getContentId());
 				for(int i=0;i<arCustomers.size();i++) {
 					erpCustomerID=arCustomers.get(i).toString();
-					arSKU="MKT0072630";
-					if(arSKUs.get(i)!=null) {
-						arSKU=arSKUs.get(i).toString();
+					if(arSKUs.get(i) == null) {
+						arSKUs.set(i , arSKU);
 					}
 					try {
-						placeOrder(erpCustomerID,arSKU);
+						LOGGER.info("Going to place Order for Customer::: "+erpCustomerID+"  on Store ::-> "+eStore);
+						placeOrder(erpCustomerID, arSKUs.get(i).toString(), eStore);
+						LOGGER.info(" out from PlaceOrder() :::::::::::::: :::::::::::::");
 					} catch (FDResourceException e) {
 						StringWriter sw = new StringWriter();
 						e.printStackTrace(new PrintWriter(sw));	
@@ -133,13 +149,14 @@ public class DeliveryPassRenewalCron {
 						email(erpCustomerID,sw.toString());
 					}
 				}
+				LOGGER.info("DeliveryPassRenewalCron Ended for Estore:  "+eStore.getContentId());
 			}
 
 		} catch (NamingException e) {
-			LOGGER.error("Error running DeliveryPassRenewalCron :",e);
+			LOGGER.error("Error on E-Store: "+eStore.getContentId()+" while running DeliveryPassRenewalCron :",e);
 			email("ALL",e.toString());
 		}  finally {
-			emailPendingPassReport();
+			emailPendingPassReport(eStore);
 			try {
 				if (ctx != null) {
 					ctx.close();
@@ -151,7 +168,7 @@ public class DeliveryPassRenewalCron {
 		}
 	}
 
-	public static String placeOrder(FDActionInfo actionInfo, CustomerRatingAdaptor cra, String arSKU, ErpPaymentMethodI pymtMethod, ErpAddressModel dlvAddress, UserContext userCtx) {
+	public static String placeOrder(FDActionInfo actionInfo, CustomerRatingAdaptor cra, String arSKU, ErpPaymentMethodI pymtMethod, ErpAddressModel dlvAddress, UserContext userCtx,boolean sendEmail) {
 		String orderID = null;
 		FDCartModel cart=null;
 		try {
@@ -162,7 +179,7 @@ public class DeliveryPassRenewalCron {
 			cart.getAvalaraTaxValue(context);
 			actionInfo.setTaxationType(EnumNotificationType.AVALARA);
 			}
-			orderID = FDCustomerManager.placeSubscriptionOrder(actionInfo, cart, null, false, cra, null);
+			orderID = FDCustomerManager.placeSubscriptionOrder(actionInfo, cart, null, sendEmail, cra, null);
 		}  catch (FDResourceException e) {
 			LOGGER.warn(e);
 			email(actionInfo.getIdentity().getErpCustomerPK(),e.toString());
@@ -214,7 +231,7 @@ public class DeliveryPassRenewalCron {
 			return null;
 		}
 	}
-	private static String placeOrder(String erpCustomerID, String arSKU) throws FDResourceException {
+	private static String placeOrder(String erpCustomerID, String arSKU, EnumEStoreId eStore) throws FDResourceException {
 
 		FDIdentity identity=null;
 		FDActionInfo actionInfo=null;
@@ -222,7 +239,7 @@ public class DeliveryPassRenewalCron {
 		FDOrderI lastOrder=null;
 		FDUser user=null;
 		CustomerRatingAdaptor cra=null;
-		lastOrder=getLastNonCOSOrder(erpCustomerID);
+		lastOrder=getLastNonCOSOrder(erpCustomerID, eStore);
 		String orderID="";
 		if(lastOrder!=null) {
 			try {
@@ -231,7 +248,7 @@ public class DeliveryPassRenewalCron {
 				user=FDCustomerManager.getFDUser(identity);
 				actionInfo.setIdentity(user.getIdentity());
 			} catch (FDAuthenticationException ae) {
-				LOGGER.warn("Unable to place deliveryPass autoRenewal order for customer :"+erpCustomerID);
+				LOGGER.warn("Unable to place deliveryPass autoRenewal order for customer :"+erpCustomerID+" on E-Store: "+eStore.getContentId());
 				StringWriter sw = new StringWriter();
 				ae.printStackTrace(new PrintWriter(sw));	
 				email(erpCustomerID,sw.getBuffer().toString());
@@ -250,26 +267,34 @@ public class DeliveryPassRenewalCron {
 					pymtMethod = getPaymentMethod(user.getFDCustomer().getDefaultPaymentMethodPK(), user.getPaymentMethods()) ;
 				}
 			}else{
-			pymtMethod=getMatchedPaymentMethod(lastOrder.getPaymentMethod(),getPaymentMethods(user.getIdentity()));
+			pymtMethod=getMatchedPaymentMethod(lastOrder.getPaymentMethod(),getPaymentMethods(user.getIdentity(),eStore));
 			}
 			
 			if(pymtMethod!=null) {
 				if(!pymtMethod.getCardType().equals(EnumCardType.PAYPAL) && !pymtMethod.getCardType().equals(EnumCardType.ECP) && isExpiredCC(pymtMethod)) {
-					LOGGER.warn("Autorenewal order payment method is expired for customer :"+erpCustomerID);
-					createCase(erpCustomerID,CrmCaseSubject.CODE_AUTO_BILL_PAYMENT_MISSING,DlvPassConstants.AUTORENEW_PYMT_METHOD_CC_EXPIRED);
+					LOGGER.warn("Autorenewal order payment method is expired for customer :"+erpCustomerID+" on E-Store: "+eStore.getContentId());
 					FDCustomerInfo customerInfo=FDCustomerManager.getCustomerInfo(identity);
-					XMLEmailI email =FDEmailFactory.getInstance().createAutoRenewDPCCExpiredEmail(customerInfo);
+					XMLEmailI email;
 					 		
+					if(EnumEStoreId.FDX.getContentId().equalsIgnoreCase(eStore.getContentId())){
+						createCase(erpCustomerID,CrmCaseSubject.CODE_AUTO_BILL_PAYMENT_MISSING_FK,DlvPassConstants.AUTORENEW_PYMT_METHOD_CC_EXPIRED);
+					}else{
+						createCase(erpCustomerID,CrmCaseSubject.CODE_AUTO_BILL_PAYMENT_MISSING,DlvPassConstants.AUTORENEW_PYMT_METHOD_CC_EXPIRED);
+					}
+					email =FDEmailFactory.getInstance().createAutoRenewDPCCExpiredEmail(customerInfo, eStore);
+					
 					FDCustomerManager.sendEmail(email);
 				} else {
 					try {
 						
 						cra=new CustomerRatingAdaptor(user.getFDCustomer().getProfile(),user.isCorporateUser(),user.getAdjustedValidOrderCount());
-						orderID=placeOrder(actionInfo,cra,arSKU,pymtMethod,lastOrder.getDeliveryAddress(),user.getUserContext());
+						
+						boolean sendEmail = (EnumEStoreId.FDX.getContentId().equalsIgnoreCase(eStore.getContentId()));
+						orderID=placeOrder(actionInfo,cra,arSKU,pymtMethod,lastOrder.getDeliveryAddress(),user.getUserContext(),sendEmail);
 
 					}
 					catch(FDResourceException fe) {
-						LOGGER.warn("Unable to place deliveryPass autoRenewal order for customer :"+erpCustomerID);
+						LOGGER.warn("Unable to place deliveryPass autoRenewal order for customer :"+erpCustomerID+" on E-Store: "+eStore.getContentId());
 						StringWriter sw = new StringWriter();
 						fe.printStackTrace(new PrintWriter(sw));	
 						email(erpCustomerID,sw.getBuffer().toString());
@@ -277,8 +302,12 @@ public class DeliveryPassRenewalCron {
 				}
 				
 			} else {
-				LOGGER.warn("Unable to find payment method for autoRenewal order for customer :"+erpCustomerID);
-				createCase(erpCustomerID,CrmCaseSubject.CODE_AUTO_BILL_PAYMENT_MISSING,DlvPassConstants.AUTORENEW_PYMT_METHOD_UNKNOWN);
+				LOGGER.warn("Unable to find payment method for autoRenewal order for customer :"+erpCustomerID+" on E-Store: "+eStore.getContentId());
+				if(EnumEStoreId.FDX.getContentId().equalsIgnoreCase(eStore.getContentId())){
+					createCase(erpCustomerID,CrmCaseSubject.CODE_AUTO_BILL_PAYMENT_MISSING_FK,DlvPassConstants.AUTORENEW_PYMT_METHOD_UNKNOWN);
+				}else{
+					createCase(erpCustomerID,CrmCaseSubject.CODE_AUTO_BILL_PAYMENT_MISSING,DlvPassConstants.AUTORENEW_PYMT_METHOD_UNKNOWN);
+				}
 			}
 		}
 		return orderID;
@@ -393,10 +422,10 @@ public class DeliveryPassRenewalCron {
 	
 	
 
-	private static Object[] getAutoRenewalInfo() {
+	private static Object[] getAutoRenewalInfo(EnumEStoreId eStore) {
 
 		try {
-			return FDCustomerManager.getAutoRenewalInfo();
+			return FDCustomerManager.getAutoRenewalInfo(eStore);
 		}
 		catch(FDResourceException fe) {
 			LOGGER.error("Error running DeliveryPassRenewalCron :",fe);
@@ -417,32 +446,41 @@ public class DeliveryPassRenewalCron {
 
 	}
 
-	private static FDOrderI getLastNonCOSOrder(String erpCustomerID) throws FDResourceException {
+	private static FDOrderI getLastNonCOSOrder(String erpCustomerID, EnumEStoreId eStore) throws FDResourceException {
 
 		try {
-			return FDCustomerManager.getLastNonCOSOrder(erpCustomerID, EnumSaleType.REGULAR, EnumSaleStatus.SETTLED);
+			return FDCustomerManager.getLastNonCOSOrder(erpCustomerID, EnumSaleType.REGULAR, EnumSaleStatus.SETTLED, eStore);
 		} catch (FDResourceException e) {
-			LOGGER.warn("Unable to find payment method for autoRenewal order for customer :"+erpCustomerID);
+			LOGGER.warn("Unable to find payment method for autoRenewal order for customer :"+erpCustomerID+" on E-Store: "+eStore.getContentId());
 			StringWriter sw = new StringWriter();
 			e.printStackTrace(new PrintWriter(sw));	
 			email(erpCustomerID,sw.toString());
 			return null;
 		}
 		catch (ErpSaleNotFoundException e) {
-			LOGGER.info("Unable to find a home/pickup order using credit card for customer: "+erpCustomerID);
-			createCase(erpCustomerID,CrmCaseSubject.CODE_AUTO_BILL_PAYMENT_MISSING,DlvPassConstants.AUTORENEW_PYMT_METHOD_UNKNOWN);
+			LOGGER.info("Unable to find a home/pickup order using credit card for customer: "+erpCustomerID+" on E-Store: "+eStore.getContentId());
+			if(EnumEStoreId.FDX.getContentId().equalsIgnoreCase(eStore.getContentId())){
+				createCase(erpCustomerID,CrmCaseSubject.CODE_AUTO_BILL_PAYMENT_MISSING_FK,DlvPassConstants.AUTORENEW_PYMT_METHOD_UNKNOWN);
+			}else{
+				createCase(erpCustomerID,CrmCaseSubject.CODE_AUTO_BILL_PAYMENT_MISSING,DlvPassConstants.AUTORENEW_PYMT_METHOD_UNKNOWN);
+			}
+			
 			return null;
 		}
 	}
 
-	private static Collection<ErpPaymentMethodI> getPaymentMethods(FDIdentity identity) throws FDResourceException {
+	private static Collection<ErpPaymentMethodI> getPaymentMethods(FDIdentity identity, EnumEStoreId eStore) throws FDResourceException {
 
 		try {
 			return FDCustomerManager.getPaymentMethods(identity);
 		} catch (FDResourceException e) {
 			String customerID=identity.getErpCustomerPK();
-			LOGGER.warn("Unable to find payment method for autoRenewal order for customer :"+customerID);
-			createCase(customerID,CrmCaseSubject.CODE_AUTO_BILL_PAYMENT_MISSING,DlvPassConstants.AUTORENEW_PYMT_METHOD_UNKNOWN);
+			LOGGER.warn("Unable to find payment method for autoRenewal order for customer :"+customerID+" on E-Store: "+eStore.getContentId());
+			if(EnumEStoreId.FDX.getContentId().equalsIgnoreCase(eStore.getContentId())){
+				createCase(customerID,CrmCaseSubject.CODE_AUTO_BILL_PAYMENT_MISSING_FK,DlvPassConstants.AUTORENEW_PYMT_METHOD_UNKNOWN);
+			}else{
+				createCase(customerID,CrmCaseSubject.CODE_AUTO_BILL_PAYMENT_MISSING,DlvPassConstants.AUTORENEW_PYMT_METHOD_UNKNOWN);
+			}
 			return null;
 		}
 	}
@@ -465,8 +503,11 @@ public class DeliveryPassRenewalCron {
 	public static void email(String customerID, String exceptionMsg) {
 
 		try {
+			EnumEStoreId eStore =EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));	
+			String eStoreId = eStore != null ? eStore.getContentId():null;
+			
 			Date now = DateUtil.truncate(new Date());
-			String subject="Unable to autorenew deliverypass  for customer id :	"+customerID;
+			String subject="Unable to autorenew deliverypass  for customer id :	"+customerID+" on E-Store: "+eStoreId;
 			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
 			StringBuffer buff = new StringBuffer();
 			String br = "\n";
@@ -492,7 +533,7 @@ public class DeliveryPassRenewalCron {
 		
 	}
 	
-	private static void emailPendingPassReport()
+	private static void emailPendingPassReport(EnumEStoreId eStore)
 	{
 		Calendar cal = Calendar.getInstance();
 		//cal.add(Calendar.DATE, 1);
@@ -502,27 +543,29 @@ public class DeliveryPassRenewalCron {
 		{
 			
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.DlvPassManagerSB)){
-				pendingPasses = DlvPassManagerService.getInstance().getPendingPasses();
+				pendingPasses = DlvPassManagerService.getInstance().getPendingPasses();		
+																										/* in Legacy we updated the DB Queries based on E_Store, ,
+				 																														* but in SF 2.0 it needs to be " Implimented " */
 			}else{
 				ctx = getInitialContext();
 				DlvPassManagerSB dlvPassManagerSB = null;
 				DlvPassManagerHome dph =(DlvPassManagerHome) ctx.lookup("freshdirect.erp.DlvPassManager");
 				dlvPassManagerSB = dph.create();
-				pendingPasses =dlvPassManagerSB.getPendingPasses();
+				pendingPasses =dlvPassManagerSB.getPendingPasses(eStore);
 			}
 			
 			if(pendingPasses.size()>0)
-				email( cal.getTime(),pendingPasses);
+				email( cal.getTime(),pendingPasses, eStore);
 		}
 		catch(NamingException e)
 		{   
-			email(cal.getTime(),e);
+			email(cal.getTime(), e, eStore);
 		}  catch (RemoteException e) {
 			
-			email(cal.getTime(),e);
+			email(cal.getTime(), e, eStore);
 		} catch (CreateException e) {
 			
-			email(cal.getTime(),e);
+			email(cal.getTime(), e, eStore);
 		}
 		finally {
 			try {
@@ -539,11 +582,11 @@ public class DeliveryPassRenewalCron {
 		}
 	}
 	
-	private static void email(Date processDate, Exception e) {
+	private static void email(Date processDate, Exception e, EnumEStoreId eStore) {
 		// TODO Auto-generated method stub
 		try {
 			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
-			String subject="Pending DeliveryPass Report	for "+ (processDate != null ? dateFormatter.format(Calendar.getInstance()) : " date error");
+			String subject="Pending DeliveryPass Report	[ E-Store: "+eStore.getContentId().toString()+"] for "+ (processDate != null ? dateFormatter.format(Calendar.getInstance()) : " date error");
 
 			StringBuffer buff = new StringBuffer();
 
@@ -565,11 +608,13 @@ public class DeliveryPassRenewalCron {
 		}
 		
 	}
-	private static void email(Date processDate, List<List<String>> info) {
+	private static void email(Date processDate, List<List<String>> info, EnumEStoreId eStore) {
 		// TODO Auto-generated method stub
 		try {
 			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
-			String subject="Pending DeliveryPass Report	for"+ (processDate != null ? dateFormatter.format(processDate) : " date error");
+			String eStoreID = eStore.getContentId().toString();
+			if(eStoreID.equals(EnumEStoreId.FDX.getContentId())) eStoreID = "FoodKick";
+			String subject="Pending DeliveryPass Report for : "+eStoreID+" ,  for "+ (processDate != null ? dateFormatter.format(processDate) : " date error ");
 
 			StringBuffer buff = new StringBuffer();
 

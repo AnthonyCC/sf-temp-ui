@@ -31,27 +31,16 @@ import com.freshdirect.delivery.restriction.EnumDlvRestrictionType;
 import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.ecomm.converter.FDActionInfoConverter;
 import com.freshdirect.ecomm.converter.SapGatewayConverter;
-import com.freshdirect.ecommerce.data.customer.CancelReservationData;
 import com.freshdirect.ecommerce.data.customer.CreditSummaryData;
-import com.freshdirect.ecommerce.data.customer.CrmClick2CallData;
-import com.freshdirect.ecommerce.data.customer.CrmClick2CallTimeData;
 import com.freshdirect.ecommerce.data.customer.CrmOrderStatusReportLineData;
 import com.freshdirect.ecommerce.data.customer.CrmSettlementProblemReportLineData;
-import com.freshdirect.ecommerce.data.customer.CrmVSCampaignData;
 import com.freshdirect.ecommerce.data.customer.ErpRedeliveryData;
 import com.freshdirect.ecommerce.data.customer.ErpReturnOrderData;
-import com.freshdirect.ecommerce.data.customer.FDAuthInfoData;
-import com.freshdirect.ecommerce.data.customer.FDAuthInfoSearchCriteriaData;
 import com.freshdirect.ecommerce.data.customer.FDComplaintInfoData;
 import com.freshdirect.ecommerce.data.customer.FDCustomerOrderInfoData;
 import com.freshdirect.ecommerce.data.customer.FDCustomerReservationInfoData;
-import com.freshdirect.ecommerce.data.customer.FDCutoffTimeInfoData;
 import com.freshdirect.ecommerce.data.customer.ItemData;
-import com.freshdirect.ecommerce.data.customer.MakeGoodOrderInfoData;
-import com.freshdirect.ecommerce.data.customer.MealData;
-import com.freshdirect.ecommerce.data.customer.MealItemData;
 import com.freshdirect.ecommerce.data.customer.ResubmitPaymentData;
-import com.freshdirect.ecommerce.data.customer.ReturnOrderData;
 import com.freshdirect.ecommerce.data.customer.RouteStopReportData;
 import com.freshdirect.ecommerce.data.customer.SettlementBatchInfoData;
 import com.freshdirect.ecommerce.data.customer.SettlementProblemReportData;
@@ -62,25 +51,14 @@ import com.freshdirect.ecommerce.data.ecoupon.DiscountData;
 import com.freshdirect.ecommerce.data.sap.ErpChargeLineData;
 import com.freshdirect.ecommerce.data.sap.ErpInvoiceLineData;
 import com.freshdirect.ecommerce.data.survey.FDIdentityData;
-import com.freshdirect.fdstore.content.meal.EnumMealItemType;
-import com.freshdirect.fdstore.content.meal.EnumMealStatus;
-import com.freshdirect.fdstore.content.meal.MealItemModel;
-import com.freshdirect.fdstore.content.meal.MealModel;
-import com.freshdirect.fdstore.customer.FDActionInfo;
-import com.freshdirect.fdstore.customer.FDAuthInfo;
-import com.freshdirect.fdstore.customer.FDAuthInfoSearchCriteria;
 import com.freshdirect.fdstore.customer.FDComplaintInfo;
 import com.freshdirect.fdstore.customer.FDCreditSummary;
 import com.freshdirect.fdstore.customer.FDCreditSummary.Item;
 import com.freshdirect.fdstore.customer.FDCustomerOrderInfo;
 import com.freshdirect.fdstore.customer.FDCustomerReservationInfo;
-import com.freshdirect.fdstore.customer.FDCutoffTimeInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.customer.MakeGoodOrderInfo;
 import com.freshdirect.fdstore.ecomm.gateway.FDStoreModelConverter;
-import com.freshdirect.framework.util.GenericSearchCriteria;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
-import com.freshdirect.payment.EnumBankAccountType;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.SettlementBatchInfo;
 
@@ -280,58 +258,6 @@ public class CallCenterConverter {
 		return erpRedeliveryData;
 	}
 
-	public static MealData buildMealData(MealModel mealModel) {
-		MealData mealData = new MealData();
-		mealData.setDelivery(mealModel.getDelivery());
-		mealData.setId(mealModel.getId());
-		mealData.setItems(buildMealItemData(mealModel.getItems()));
-		mealData.setName(mealModel.getName());
-		mealData.setPrice(mealModel.getPrice());
-		if(mealModel.getStatus()!= null)
-		mealData.setStatus(mealModel.getStatus().getTypeName());
-		return mealData;
-	}
-	
-	private static List<MealItemData> buildMealItemData(List<MealItemModel> items) {
-		List<MealItemData> mealItemList = new  ArrayList<MealItemData>();
-		for (MealItemModel mealItemModel : items) {
-			MealItemData mealItemData = new MealItemData();
-			mealItemData.setId(mealItemModel.getId());
-			mealItemData.setName(mealItemModel.getName());
-			mealItemData.setQuantity(mealItemModel.getQuantity());
-			if(mealItemModel.getType() != null)
-			mealItemData.setType(mealItemModel.getType().getTypeName());
-			mealItemData.setUnitPrice(mealItemModel.getUnitPrice());
-			mealItemList.add(mealItemData);
-		}
-		return mealItemList;
-	}
-
-	public static MealModel buildMealModel(MealData data) {
-		MealModel mealModel = new MealModel();
-		mealModel.setDelivery(data.getDelivery());
-		mealModel.setId(data.getId());
-		mealModel.setItems(buildMealItemModel(data.getItems()));
-		mealModel.setName(data.getName());
-		mealModel.setPrice(data.getPrice());
-		mealModel.setStatus(EnumMealStatus.getType(data.getStatus()));
-		return mealModel;
-	}
-	private static List buildMealItemModel(List<MealItemData> items) {
-		List mealItemList = new  ArrayList();
-		for (MealItemData mealItemData : items) {
-			MealItemModel mealItem = new MealItemModel();
-			if(mealItemData.getId() != null)
-			mealItem.setId(mealItemData.getId());
-			mealItem.setName(mealItemData.getName());
-			mealItem.setQuantity(mealItemData.getQuantity());
-			mealItem.setType(EnumMealItemType.getType(mealItemData.getType()));
-			mealItem.setUnitPrice(mealItemData.getUnitPrice());
-			mealItemList.add(mealItem);
-		}
-		return mealItemList;
-	}
-
 	public static List buildCreditSummaryList(List<CreditSummaryData> data) {
 		List<FDCreditSummary> creditSummaryList = new ArrayList<FDCreditSummary>();
 		for (CreditSummaryData fdCreditSummary : data) {
@@ -362,16 +288,6 @@ public class CallCenterConverter {
 			creditSummary.addItem(itemData);
 		}
 		return creditSummary;
-	}
-
-	public static List buildCutOffTimeInfo(List<FDCutoffTimeInfoData> data) {
-		List<FDCutoffTimeInfo> cutOffTimeList = new ArrayList<FDCutoffTimeInfo>();
-		for (FDCutoffTimeInfoData fdCutoffTimeInfo : data) {
-			FDCutoffTimeInfo cutoffTimeInfoData = new FDCutoffTimeInfo(EnumSaleStatus.getSaleStatus(fdCutoffTimeInfo.getStatus()), fdCutoffTimeInfo.getCutoffTime(), fdCutoffTimeInfo.getOrderCount());
-			cutOffTimeList.add(cutoffTimeInfoData);
-			
-		}
-		return cutOffTimeList;
 	}
 
 	public static RouteStopReportData buildRouteStopReportData(Date date,
@@ -422,91 +338,7 @@ public class CallCenterConverter {
 		settlementReportData.setTransactionTypes(transactionTypes);
 		return settlementReportData;
 	}
-
-	public static List buildAuthInfo(List<FDAuthInfoData> data) {
-		List authInfoDataList = new ArrayList();
-		for (FDAuthInfoData fdAuthInfoData : data) {
-			FDAuthInfo authInfo = new FDAuthInfo(fdAuthInfoData.getSaleId());
-			authInfo.setAbaRouteNumber(fdAuthInfoData.getAbaRouteNumber());
-			authInfo.setAuthAmount(fdAuthInfoData.getAuthAmount());
-			authInfo.setAuthCode(fdAuthInfoData.getAuthCode());
-			authInfo.setAuthDescription(fdAuthInfoData.getAuthDescription());
-			if(fdAuthInfoData.getBankAccountType()!= null)
-			authInfo.setBankAccountType(EnumBankAccountType.getEnum(fdAuthInfoData.getBankAccountType()));
-			authInfo.setCardType(fdAuthInfoData.getCardType());
-			authInfo.setCCLastFourNum(fdAuthInfoData.getCcLastFourNum());
-			authInfo.setDeliveryDate(new java.sql.Date(fdAuthInfoData.getDeliveryDate()));
-			authInfo.seteStore(fdAuthInfoData.geteStore());
-			authInfo.setFacility(fdAuthInfoData.getFacility());
-			authInfo.setFirstName(fdAuthInfoData.getFirstName());
-			authInfo.setLastName(fdAuthInfoData.getLastName());
-			authInfo.setNameOnCard(fdAuthInfoData.getNameOnCard());
-			if(fdAuthInfoData.getOrderType() != null)
-			authInfo.setOrderType(fdAuthInfoData.getOrderType());
-			if(fdAuthInfoData.getPaymentMethodType()!= null)
-			authInfo.setPaymentMethodType(EnumPaymentMethodType.getEnum(fdAuthInfoData.getPaymentMethodType()));
-			if(fdAuthInfoData.getSaleStatus()!= null)
-			authInfo.setSaleStatus(EnumSaleStatus.getSaleStatus(fdAuthInfoData.getSaleStatus()));
-			authInfo.setTransactionDateTime(new java.sql.Date(fdAuthInfoData.getTxDateTime()));
-			authInfoDataList.add(authInfo);
-		}
-		return authInfoDataList;
-	}
-
-	public static FDAuthInfoSearchCriteriaData buildAUthInfoSearchCriteriaData(
-			FDAuthInfoSearchCriteria criteria) {
-		FDAuthInfoSearchCriteriaData authInfoSearchCriteriaData = new FDAuthInfoSearchCriteriaData();
-		authInfoSearchCriteriaData.setAbaRouteNumber(criteria.getAbaRouteNumber());
-		if(criteria.getBankAccountType() != null)
-		authInfoSearchCriteriaData.setBankAccountType(criteria.getBankAccountType().getName());
-		if(criteria.getCardType() != null)
-		authInfoSearchCriteriaData.setCardType(criteria.getCardType().getName());
-		authInfoSearchCriteriaData.setCcKnownNum(criteria.getCCKnownNum());
-		authInfoSearchCriteriaData.setChargedAmount(criteria.getChargedAmount());
-		if(criteria.getPaymentMethodType()!= null)
-		authInfoSearchCriteriaData.setPaymentMethodType(criteria.getPaymentMethodType().getName());
-		authInfoSearchCriteriaData.setTransDate(criteria.getTransDate());
-		authInfoSearchCriteriaData.setTransMonth(criteria.getTransMonth());
-		authInfoSearchCriteriaData.setTransYear(criteria.getTransYear());
-		return authInfoSearchCriteriaData;
-		
-	}
-
-	public static List buildMakeGoodOrder(List<MakeGoodOrderInfoData> data) {
-		List<MakeGoodOrderInfo> makeGoodOrderDataList = new ArrayList<MakeGoodOrderInfo>();
-		for (MakeGoodOrderInfoData makeGoodOrderInfo : data) {
-			MakeGoodOrderInfo makeGoodOrderInfoModel = new MakeGoodOrderInfo(makeGoodOrderInfo.getSaleId());
-			makeGoodOrderInfoModel.setAmount(makeGoodOrderInfo.getAmount());
-			makeGoodOrderInfoModel.setDeliveryDate(new java.sql.Date(makeGoodOrderInfo.getDeliveryDate()));
-			makeGoodOrderInfoModel.setFirstName(makeGoodOrderInfo.getFirstName());
-			makeGoodOrderInfoModel.setLastName(makeGoodOrderInfo.getLastName());
-			makeGoodOrderInfoModel.setOrderPlacedDate(new java.sql.Date(makeGoodOrderInfo.getOrderPlacedDate()));
-			makeGoodOrderInfoModel.setRoute(makeGoodOrderInfo.getRoute());
-			if(makeGoodOrderInfo.getSaleStatus() != null)
-			makeGoodOrderInfoModel.setSaleStatus(EnumSaleStatus.getSaleStatus(makeGoodOrderInfo.getSaleStatus()));
-			makeGoodOrderInfoModel.setStop(makeGoodOrderInfo.getStop());
-			makeGoodOrderDataList.add(makeGoodOrderInfoModel);
-		}
-		return makeGoodOrderDataList;
-	}
-
-	public static CancelReservationData buildCancelReservationData(GenericSearchCriteria resvCriteria, String initiator, String notes) {
-		CancelReservationData cancelReservationData = new CancelReservationData();
-		cancelReservationData.setInitiator(initiator);
-		cancelReservationData.setNotes(notes);
-		cancelReservationData.setResvCriteria(resvCriteria.getSearchType().getName());
-		cancelReservationData.setCriteriaMap(resvCriteria.getCriteriaMap());
-		return cancelReservationData;
-	}
-
-	public static ReturnOrderData buildReturnOrderData(FDActionInfo info,
-			List returnOrders) {
-		ReturnOrderData returnOrder = new ReturnOrderData();
-		returnOrder.setInfo(FDActionInfoConverter.buildActionInfoData(info));
-		returnOrder.setReturnOrders(buildFDCustomerOrderInfoDataList(returnOrders));
-		return returnOrder;
-	}
-
+	
 	private static List<FDCustomerOrderInfoData> buildFDCustomerOrderInfoDataList(List<FDCustomerOrderInfo> returnOrders) {
 		List<FDCustomerOrderInfoData> orderInfo = new ArrayList<FDCustomerOrderInfoData>();
 		for (FDCustomerOrderInfo  fdCustomerOrderInfo: returnOrders) {
@@ -582,124 +414,6 @@ public class CallCenterConverter {
 			 customerOrderInfoList.add(buildFDCustomerOrderInfoData(fdCustomerOrderInfoData));
 		}
 		return customerOrderInfoList;
-	}
-
-	public static CrmClick2CallData buildClick2CallData(CrmClick2CallModel click2CallModel) {
-		CrmClick2CallData callModelData = new CrmClick2CallData();
-		callModelData.setCroModDate(click2CallModel.getCroModDate());
-		callModelData.setDays(buildClick2CallTimeModel(click2CallModel.getDays()));
-		callModelData.setDeliveryZones(click2CallModel.getDeliveryZones());
-		callModelData.setEligibleCustomers(click2CallModel.getEligibleCustomers());
-		callModelData.setId(click2CallModel.getId());
-		callModelData.setNextDayTimeSlot(click2CallModel.isNextDayTimeSlot());
-		callModelData.setStatus(click2CallModel.isStatus());
-		callModelData.setUserId(click2CallModel.getUserId());
-		return callModelData;
-	}
-	
-	private static CrmClick2CallTimeData[] buildClick2CallTimeModel(CrmClick2CallTimeModel[] days) {
-		CrmClick2CallTimeData[] click2Calldata = new CrmClick2CallTimeData[7];
-		for (CrmClick2CallTimeModel crmClick2CallTime : days) {
-			int i = 0;
-			CrmClick2CallTimeData data = new CrmClick2CallTimeData();
-			data.setClick2CallId(crmClick2CallTime.getClick2CallId());
-			data.setDayName(crmClick2CallTime.getDayName());
-			data.setEndTime(crmClick2CallTime.getEndTime());
-			data.setId(crmClick2CallTime.getId());
-			data.setShow(crmClick2CallTime.isShow());
-			data.setStartTime(crmClick2CallTime.getStartTime());
-			click2Calldata[i++] = data;
-		}
-		return click2Calldata;
-	}
-
-	public static List<CrmVSCampaignModel> buildCrmVSCampaignModelList(
-			List<CrmVSCampaignData> data) {
-		List<CrmVSCampaignModel> modelList = new ArrayList<CrmVSCampaignModel>();
-		for (CrmVSCampaignData crmVSCampaignData : data) {
-			modelList.add(buildCrmVSCampaignModel(crmVSCampaignData));
-		}
-		return modelList;
-	}
-
-
-	public static CrmVSCampaignModel buildCrmVSCampaignModel(
-			CrmVSCampaignData data) {
-		CrmVSCampaignModel campaignModel = new CrmVSCampaignModel();
-		campaignModel.setAddByDate(data.getAddByDate());
-		campaignModel.setAddByUser(data.getAddByUser());
-		campaignModel.setCallId(data.getCallId());
-		campaignModel.setCampaignId(data.getCampaignId());
-		campaignModel.setCampaignMenuId(data.getCampaignMenuId());
-		campaignModel.setCampaignName(data.getCampaignName());
-		campaignModel.setChangeByDate(data.getChangeByDate());
-		campaignModel.setChangeByUser(data.getChangeByUser());
-		campaignModel.setCustomerId(data.getCustomerId());
-		campaignModel.setDelay(data.getDelay());
-		campaignModel.setDelayMinutes(data.getDelayMinutes());
-		campaignModel.setDeliveredCallsAM(data.getDeliveredCallsAM());
-		campaignModel.setDeliveredCallsLive(data.getDeliveredCallsLive());
-		campaignModel.setEndTime(data.getEndTime());
-		campaignModel.setLateIssueId(data.getLateIssueId());
-		campaignModel.setManual(data.isManual());
-		campaignModel.setPhonenumber(data.getPhonenumber());
-		campaignModel.setReasonId(data.getReasonId());
-		campaignModel.setRedial(data.getRedial());
-		campaignModel.setRoute(data.getRoute());
-		campaignModel.setSaleId(data.getSaleId());
-		campaignModel.setScheduledCalls(data.getScheduledCalls());
-		campaignModel.setSoundfileName(data.getSoundfileName());
-		campaignModel.setSoundFileText(data.getSoundFileText());
-		campaignModel.setStartTime(data.getStartTime());
-		campaignModel.setStatus(data.getStatus());
-		campaignModel.setStopSequence(data.getStopSequence());
-		campaignModel.setUndeliveredCalls(data.getUndeliveredCalls());
-		campaignModel.setUpdatable(data.isUpdatable());
-		campaignModel.setVsDetailsID(data.getVsDetailsID());
-		campaignModel.setPhonenumbers(data.getPhonenumbers());
-		campaignModel.setRouteList(data.getRouteList());
-		if(data.getId() != null)
-		campaignModel.setId(data.getId());
-		return campaignModel;
-	}
-
-	public static CrmVSCampaignData buildCrmVSCampaignData(CrmVSCampaignModel model) {
-		CrmVSCampaignData campaign = new CrmVSCampaignData();
-		campaign.setAddByDate(model.getAddByDate());
-		campaign.setAddByUser(model.getAddByUser());
-		campaign.setCallId(model.getCallId());
-		campaign.setCampaignId(model.getCampaignId());
-		campaign.setCampaignMenuId(model.getCampaignMenuId());
-		campaign.setCampaignName(model.getCampaignName());
-		campaign.setChangeByDate(model.getChangeByDate());
-		campaign.setChangeByUser(model.getChangeByUser());
-		campaign.setCustomerId(model.getCustomerId());
-		campaign.setDelay(model.getDelay());
-		campaign.setDelayMinutes(model.getDelayMinutes());
-		campaign.setDeliveredCallsAM(model.getDeliveredCallsAM());
-		campaign.setDeliveredCallsLive(model.getDeliveredCallsLive());
-		campaign.setEndTime(model.getEndTime());
-		campaign.setCampaignId(model.getId());
-		campaign.setLateIssueId(model.getLateIssueId());
-		campaign.setManual(model.getManual());
-		campaign.setPhonenumber(model.getPhonenumber());
-		campaign.setReasonId(model.getReasonId());
-		campaign.setRedial(model.getRedial());
-		campaign.setRoute(model.getRoute());
-		campaign.setSaleId(model.getSaleId());
-		campaign.setScheduledCalls(model.getScheduledCalls());
-		campaign.setSoundfileName(model.getSoundfileName());
-		campaign.setSoundFileText(model.getSoundFileText());
-		campaign.setStartTime(model.getStartTime());
-		campaign.setStatus(model.getStatus());
-		campaign.setStopSequence(model.getStopSequence());
-		campaign.setUndeliveredCalls(model.getUndeliveredCalls());
-		campaign.setUpdatable(model.isUpdatable());
-		campaign.setVsDetailsID(model.getVsDetailsID());
-		campaign.setPhonenumbers(model.getPhonenumbers());
-		campaign.setRouteList(model.getRouteList());
-		campaign.setId(model.getId());
-		return campaign;
 	}
 
 	public static List buildServiceGenericModel(List data) {
@@ -779,16 +493,5 @@ public class CallCenterConverter {
 		
 		
 	}
-
-	public static List buildMealModelList(List<MealData> data) {
-		List list = new ArrayList();
-		for (MealData mealData : data) {
-			list.add(buildMealModel(mealData));
-		}
-		
-		return list;
-	}
-
-	
 
 }

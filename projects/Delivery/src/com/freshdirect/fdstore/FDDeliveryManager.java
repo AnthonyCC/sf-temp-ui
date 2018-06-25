@@ -116,6 +116,7 @@ import com.freshdirect.logistics.delivery.model.ExceptionAddress;
 import com.freshdirect.logistics.delivery.model.FulfillmentInfo;
 import com.freshdirect.logistics.delivery.model.GeoLocation;
 import com.freshdirect.logistics.delivery.model.OrderContext;
+import com.freshdirect.logistics.delivery.model.ReservationUnavailableException;
 import com.freshdirect.logistics.delivery.model.RouteStopInfo;
 import com.freshdirect.logistics.delivery.model.ShippingDetail;
 import com.freshdirect.logistics.delivery.model.TimeslotContext;
@@ -949,7 +950,13 @@ public class FDDeliveryManager {
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.DlvManagerSB)){
-				return LogisticsServiceLocator.getInstance().getCommerceService().reserveTimeslot(timeslotId, customerId, type, customer, chefsTable, ctDeliveryProfile, isForced, event, hasSteeringDiscount, deliveryFeeTier);
+				try {
+					return LogisticsServiceLocator.getInstance().getCommerceService().reserveTimeslot(timeslotId, customerId, type, customer, chefsTable, ctDeliveryProfile, isForced, event, hasSteeringDiscount, deliveryFeeTier);
+				} catch (ReservationUnavailableException e) {
+					throw new ReservationException(e.getMessage());
+				} catch (com.freshdirect.logistics.delivery.model.ReservationException e) {
+					throw new ReservationException(e.getMessage());
+				}
 			}
 			else{
 			return sb.reserveTimeslot(timeslotId, customerId, type, customer,
@@ -1006,9 +1013,15 @@ public class FDDeliveryManager {
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.DlvManagerSB)){
-				FDECommerceService.getInstance().commitReservation(rsvId, customerId,
-						context, address, pr1,
-						event);
+				try {
+					FDECommerceService.getInstance().commitReservation(rsvId, customerId,
+							context, address, pr1,
+							event);
+				} catch (ReservationUnavailableException e) {
+					throw new ReservationException(e.getMessage());
+				} catch (com.freshdirect.logistics.delivery.model.ReservationException e) {
+					throw new ReservationException(e.getMessage());
+				}
 			}else{
 			sb.commitReservation(rsvId, customerId, context, address, pr1,
 					event);
@@ -1910,7 +1923,13 @@ public class FDDeliveryManager {
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.DlvManagerSB)){
-				FDECommerceService.getInstance().recommitReservation(rsvId, customerId,context, address, pr1);
+				try {
+					FDECommerceService.getInstance().recommitReservation(rsvId, customerId,context, address, pr1);
+				} catch (ReservationUnavailableException e) {
+					throw new ReservationException(e.getMessage());
+				} catch (com.freshdirect.logistics.delivery.model.ReservationException e) {
+					throw new ReservationException(e.getMessage());
+				}
 			}else{
 				sb.recommitReservation(rsvId, customerId, context, address, pr1);
 			}

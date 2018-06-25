@@ -29,6 +29,7 @@ import com.freshdirect.crm.ejb.CriteriaBuilder;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.customer.FDCustomerOrderInfo;
 import com.freshdirect.fdstore.customer.FDCustomerSearchCriteria;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -371,9 +372,9 @@ class FDCustomerOrderInfoDAO {
 		+ " where DP.ID=? and DP.PURCHASE_ORDER_ID=s.id"
 		+ " and s.id=sa.sale_id and S.CROMOD_DATE=SA.ACTION_DATE and SA.ACTION_TYPE in ('CRO','MOD')  and cl.type(+)='DLV' and CL.SALESACTION_ID(+)=sa.id)) as SAVINGS from CUST.CHARGELINE CL, cust.salesaction sa, cust.sale s"
 		+" where cl.type='DLV' and CL.SALESACTION_ID=sa.id and s.DLV_PASS_ID= ? and s.status<>'CAN' and s.id=sa.sale_id and sa.ACTION_TYPE in ('CRO','MOD') and"
-		+" s.CROMOD_DATE=sa.action_date and s.customer_id =? group by s.CUSTOMER_ID";
+		+" s.CROMOD_DATE=sa.action_date and s.customer_id =? and s.E_STORE=? group by s.CUSTOMER_ID";
 		
-	public static String getActiveDeliveryPassSavings(Connection conn, String customerPK,String dpNumber) throws SQLException {
+	public static String getActiveDeliveryPassSavings(Connection conn, String customerPK,String dpNumber,EnumEStoreId eStoreId) throws SQLException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
@@ -383,6 +384,7 @@ class FDCustomerOrderInfoDAO {
 			ps.setString(1, dpNumber);
 			ps.setString(2, dpNumber);
 			ps.setString(3, customerPK);
+			ps.setString(4, eStoreId.getContentId());
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				savings = rs.getString("SAVINGS");

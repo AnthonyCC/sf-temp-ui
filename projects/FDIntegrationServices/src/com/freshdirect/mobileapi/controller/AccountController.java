@@ -1,5 +1,6 @@
 package com.freshdirect.mobileapi.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
@@ -17,23 +18,32 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.ErpCustomerCreditModel;
+import com.freshdirect.deliverypass.DeliveryPassModel;
+import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCustomerCreditHistoryModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
+import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.referral.FDReferralManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.EnumResponseAdditional;
 import com.freshdirect.mobileapi.controller.data.Message;
+import com.freshdirect.mobileapi.controller.data.request.AddItemToCart;
 import com.freshdirect.mobileapi.controller.data.request.AddProfileRequest;
+import com.freshdirect.mobileapi.controller.data.request.AutoRenewDp;
+import com.freshdirect.mobileapi.controller.data.request.DlvPassRequest;
 import com.freshdirect.mobileapi.controller.data.request.ReserveTimeslot;
 import com.freshdirect.mobileapi.controller.data.request.SearchQuery;
 import com.freshdirect.mobileapi.controller.data.request.Timezone;
 import com.freshdirect.mobileapi.controller.data.response.CreditHistory;
+import com.freshdirect.mobileapi.controller.data.response.DPInfo;
 import com.freshdirect.mobileapi.controller.data.response.DeliveryAddresses;
 import com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots;
 import com.freshdirect.mobileapi.controller.data.response.OrderHistory;
@@ -51,6 +61,7 @@ import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.ListPaginator;
 import com.freshdirect.mobileapi.util.ProductPotatoUtil;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
+import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.util.JspMethods;
 
 public class AccountController extends BaseController implements Comparator <Order>{
@@ -69,6 +80,9 @@ public class AccountController extends BaseController implements Comparator <Ord
     private static final String ACTION_ACCEPT_DP_TERMSANDCONDITIONS = "acceptDeliveryPassTermsAndConditions";
     private static final String ACTION_ADD_PROFILE = "addProfile";
     private static final String ACTION_DP_FREE_TRIAL="dpFreeTrial";
+	private static final String ACTION_DP_GET_INFO="getDpInfo";
+    private static final String ACTION_DP_AUTO_RENEW="dpAutoRenew";
+    private final static String DLV_PASS_CART = "dlvPassCart";
 
     @Override
     protected ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model, String action,
@@ -102,9 +116,19 @@ public class AccountController extends BaseController implements Comparator <Ord
 	            ReserveTimeslot requestMessage = parseRequestObject(request, response, ReserveTimeslot.class);
 	            model = makeReservation(model, user, addressId, defaultReservationType(requestMessage), request);
 	        } else if (ACTION_GET_ORDER_HISTORY.equals(action)) {
-	            model = getOrderHistory(model, user, request, response);
+	        	boolean dlvPassCart = false;
+	        	if(getPostData(request, response)!=null && getPostData(request, response).contains(DLV_PASS_CART)) {
+	        		DlvPassRequest requestMessage = parseRequestObject(request, response, DlvPassRequest.class);
+	        		dlvPassCart = requestMessage.isDlvPassCart();
+	        	}
+	            model = getOrderHistory(model, user, request, response, dlvPassCart);
 	        } else if (ACTION_GET_CREDITED_ORDER_HISTORY.equals(action)) {
-	            model = getCreditedOrderHistory(model, user, request, response);
+	        	boolean dlvPassCart = false;
+	        	if(getPostData(request, response)!=null && getPostData(request, response).contains(DLV_PASS_CART)) {
+	        		DlvPassRequest requestMessage = parseRequestObject(request, response, DlvPassRequest.class);
+	        		dlvPassCart = requestMessage.isDlvPassCart();
+	        	}
+	            model = getCreditedOrderHistory(model, user, request, response, dlvPassCart);
 	        } else if (ACTION_GET_CREDIT_HISTORY.equals(action)) {
 	            model = getCreditHistory(model, user, request, response);
 	        } else if (ACTION_ACCEPT_DP_TERMSANDCONDITIONS.equals(action)) {
@@ -145,6 +169,11 @@ public class AccountController extends BaseController implements Comparator <Ord
 		            responseMessage =  getErrorMessage(DPFREETRIAL_OPTIN_FAILED, MSG_DPFREETRIAL_OPTIN_DISABLED_ERROR);
 		            setResponseMessage(model, responseMessage, user);
 				}
+			} else if(ACTION_DP_GET_INFO.equals(action)){
+				 model = getDpInfo(model, user, request, response);
+			} else if(ACTION_DP_AUTO_RENEW.equals(action)){		
+				 AutoRenewDp reqestMessage = parseRequestObject(request, response, AutoRenewDp.class);
+				setAutoRenewal(request, response, model, user, reqestMessage);
 			}
         }else{
     		Message responseMessage = new Message();
@@ -155,11 +184,46 @@ public class AccountController extends BaseController implements Comparator <Ord
         return model;
     }
 
+	/**
+	 * @param request
+	 * @param model
+	 * @param user
+	 * @throws JsonException
+	 */
+	public void setAutoRenewal(HttpServletRequest request,  HttpServletResponse response, ModelAndView model, SessionUser user, AutoRenewDp reqestMessage) throws JsonException {
+		if (null !=user.getFDSessionUser().getIdentity()) {
+			boolean autoRenewDpON = Boolean.parseBoolean(reqestMessage.getAutoRenewFlag());
+			FDSessionUser fdSessionUser = user.getFDSessionUser();
+			 String fdPK = fdSessionUser.getIdentity().getFDCustomerPK();
+			if (null != fdSessionUser.getDlvPassInfo() && EnumDlvPassStatus.ACTIVE.equals(fdSessionUser.getDlvPassInfo().getStatus())) {
+				String dpType = fdSessionUser.getDlvPassInfo().getAutoRenewDPType().getAutoRenewalSKU();
+				if (null != dpType) {
+					try {
+						FDActionInfo info = AccountActivityUtil.getActionInfo(request.getSession(), "DeliveryPass auto-renew Opt-in");
+						FDCustomerManager.updateDpOptinDetails(autoRenewDpON, fdPK, dpType, info, info.geteStore());
+						LOGGER.info("DeliveryPass Optin flag set to: "+autoRenewDpON+", by User: "+fdPK+" , for E-Store: "+info.geteStore().getContentId());
+						setResponseMessage(model, Message.createSuccessMessage(MSG_DPFREETRIAL_OPTIN_SUCCESS), user);
+					} catch (FDResourceException e) {
+						Message responseMessage = new Message();
+						responseMessage.setStatus(Message.STATUS_FAILED);
+				        responseMessage =  getErrorMessage(DPFREETRIAL_OPTIN_FAILED, "something went wrong");
+				        setResponseMessage(model, responseMessage, user);
+					}
+				}
+			}else { // DP is not active
+				Message responseMessage = new Message();
+				 responseMessage.setStatus(Message.STATUS_FAILED);
+		         responseMessage =  getErrorMessage(DPFREETRIAL_OPTIN_FAILED, MSG_DPFREETRIAL_OPTIN_DISABLED_ERROR);
+		         setResponseMessage(model, responseMessage, user);
+			}
+		} 
+	}
+
     public boolean UserExists(SessionUser user){
     	return user!=null ? true:false;
     }
 
-    private ModelAndView getOrderHistory(ModelAndView model, SessionUser user, HttpServletRequest request, HttpServletResponse response) throws FDException, JsonException {
+    private ModelAndView getOrderHistory(ModelAndView model, SessionUser user, HttpServletRequest request, HttpServletResponse response, boolean dlvPassCart) throws FDException, JsonException {
 
         List<OrderInfo> orderInfos = user.getCompleteOrderHistory();
 
@@ -182,7 +246,7 @@ public class AccountController extends BaseController implements Comparator <Ord
         	java.util.Collections.sort(orders, new AccountController());
         	String firstOrder = orders.get(0).getId();
         	com.freshdirect.mobileapi.model.Order order = user.getOrder(firstOrder);
-        	final com.freshdirect.mobileapi.controller.data.response.Order orderDetail = order.getOrderDetail(user);
+        	final com.freshdirect.mobileapi.controller.data.response.Order orderDetail = order.getOrderDetail(user, dlvPassCart);
             if (isExtraResponseRequested(request)) {
                 ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), orderDetail.getCartDetail());
             }
@@ -221,8 +285,40 @@ public class AccountController extends BaseController implements Comparator <Ord
         setResponseMessage(model, responseMessage, user);
         return model;
     }
+    
+    private ModelAndView getDpInfo(ModelAndView model, SessionUser user, HttpServletRequest request, HttpServletResponse response) throws FDException, JsonException {
+    	if(user.getFDSessionUser()!=null && user.getFDSessionUser().isDlvPassPending()){
+            user.getFDSessionUser().updateDlvPassInfo();
+        }
+    	FDUserDlvPassInfo dpmodel = user.getFDSessionUser().getDlvPassInfo();
+    	SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+    	if(dpmodel!=null&&!dpmodel.getStatus().equals(EnumDlvPassStatus.NONE)){
+	    	DPInfo responseMessage = new DPInfo();
+	    	responseMessage.setDeliveryPassStatus(user.getFDSessionUser().getDeliveryPassStatus());
+	    	responseMessage.setName(dpmodel.getTypePurchased().getName());
+	    	responseMessage.setDescription(dpmodel.getDescription());
+	    	responseMessage.setPurchaseDate(sdf.format(dpmodel.getPurchaseDate()));
+	    	responseMessage.setExpDate(sdf.format(dpmodel.getExpDate()));
+	    	responseMessage.setHasAutoRenewDP(user.getFDSessionUser().hasAutoRenewDP().getValue());
+	    	responseMessage.setAutoRenewalDate(DeliveryPassUtil.getAutoRenewalDate(user.getFDSessionUser()));
+	    	responseMessage.setPricePaid(dpmodel.getAmount());
+			responseMessage.setOriginalOrderId(dpmodel.getOriginalOrderId());
+	    	responseMessage.setdPSavings(dpmodel.getDPSavings());
+	    	responseMessage.setDefaultPaymentMethodPK(user.getFDSessionUser()!=null&&user.getFDSessionUser().getFDCustomer()!=null?
+	    												user.getFDSessionUser().getFDCustomer().getDefaultPaymentMethodPK():null);
+	    	responseMessage.setIsMidweekPass(user.getFDSessionUser().hasMidWeekDlvPass());
+	        setResponseMessage(model, responseMessage, user);
+    	}else
+    	{
+    		Message responseMessage = new Message();
+            responseMessage.setStatus(Message.STATUS_FAILED);
+            responseMessage =  getErrorMessage(ERR_NO_DP_FOUND, "No Delivery Pass found for user");
+            setResponseMessage(model, responseMessage, user);
+    	}
+        return model;
+    }
 
- private ModelAndView getCreditedOrderHistory(ModelAndView model, SessionUser user, HttpServletRequest request, HttpServletResponse response) throws FDException, JsonException {
+ private ModelAndView getCreditedOrderHistory(ModelAndView model, SessionUser user, HttpServletRequest request, HttpServletResponse response, boolean dlvPassCart) throws FDException, JsonException {
 
         List<OrderInfo> orderInfos = user.getCompleteOrderHistory();
         List<OrderInfo> creditedorderInfos = new ArrayList<OrderInfo>();
@@ -257,7 +353,7 @@ public class AccountController extends BaseController implements Comparator <Ord
         	java.util.Collections.sort(orders, new AccountController());
         	String firstOrder = orders.get(0).getId();
         	com.freshdirect.mobileapi.model.Order order = user.getOrder(firstOrder);
-        	final com.freshdirect.mobileapi.controller.data.response.Order orderDetail = order.getOrderDetail(user);
+        	final com.freshdirect.mobileapi.controller.data.response.Order orderDetail = order.getOrderDetail(user, dlvPassCart);
             if (isExtraResponseRequested(request)) {
                 ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), orderDetail.getCartDetail());
             }
@@ -375,7 +471,7 @@ public class AccountController extends BaseController implements Comparator <Ord
             return model;
     	} else if(addressId == null) {
     		// Temp fix for null address ids for iphone apps 2.2 and earlier
-    		DeliveryTimeslots deliveryTimeslots = new DeliveryTimeslots(null);//getDeliveryTimeslots(user, addressId);
+    		DeliveryTimeslots deliveryTimeslots = new DeliveryTimeslots(null, user);//getDeliveryTimeslots(user, addressId);
             ReservationTimeslots responseMessage = new ReservationTimeslots(new DeliveryAddresses(), deliveryTimeslots, user);
             responseMessage.addWarningMessage("No address found for user");
             setResponseMessage(model, responseMessage, user);
@@ -416,14 +512,14 @@ public class AccountController extends BaseController implements Comparator <Ord
         if (anonymousAddress != null) {
         	LOGGER.info("getDeliveryTimeslotByTimezone[anonymousAddress]: " + anonymousAddress.getStreet1() + ":" + anonymousAddress.getPostalCode() );
         	TimeSlotCalculationResult timeSlotResult = anonymousAddress.getDeliveryTimeslot(user, false);
-            DeliveryTimeslots deliveryTimeslots = new DeliveryTimeslots(timeSlotResult);
+            DeliveryTimeslots deliveryTimeslots = new DeliveryTimeslots(timeSlotResult, user);
             ReservationTimeslots responseMessage = new ReservationTimeslots(new DeliveryAddresses(), deliveryTimeslots, user);
             responseMessage.setSuccessMessage("Delivery timeslots have been retrieved successfully.");
             setResponseMessage(model, responseMessage, user);
             return model;
     	} else if(addressId == null) {
     		// Temp fix for null address ids for iphone apps 2.2 and earlier
-    		DeliveryTimeslots deliveryTimeslots = new DeliveryTimeslots(null);//getDeliveryTimeslots(user, addressId);
+    		DeliveryTimeslots deliveryTimeslots = new DeliveryTimeslots(null, user);//getDeliveryTimeslots(user, addressId);
             ReservationTimeslots responseMessage = new ReservationTimeslots(new DeliveryAddresses(), deliveryTimeslots, user);
             responseMessage.addWarningMessage("No address found for user");
             setResponseMessage(model, responseMessage, user);
@@ -463,7 +559,7 @@ public class AccountController extends BaseController implements Comparator <Ord
 
     private DeliveryTimeslots getDeliveryTimeslots(SessionUser user, String addressId) throws FDException, JsonException {
         TimeSlotCalculationResult timeSlotResult = getTimeSlotCalculationResult(user, addressId);
-        DeliveryTimeslots deliveryTimeslots = new DeliveryTimeslots(timeSlotResult);
+        DeliveryTimeslots deliveryTimeslots = new DeliveryTimeslots(timeSlotResult, user);
 
         if ("true".equalsIgnoreCase(FDStoreProperties.get(FDStoreProperties.PROP_EDT_EST_TIMESLOT_CONVERSION_ENABLED))) {// this is for FDX only.
             List<com.freshdirect.mobileapi.controller.data.response.Timeslot> tslist2 = new ArrayList<com.freshdirect.mobileapi.controller.data.response.Timeslot>();
@@ -488,7 +584,7 @@ public class AccountController extends BaseController implements Comparator <Ord
 				deliveryAddresses.setPreSelectedId(addressId);
 			}
 			TimeSlotCalculationResult timeSlotResult = getTimeSlotCalculationResult(user, addressId);
-			DeliveryTimeslots deliveryTimeslots = new DeliveryTimeslots(timeSlotResult);
+			DeliveryTimeslots deliveryTimeslots = new DeliveryTimeslots(timeSlotResult, user);
 	
 			ReservationTimeslots responseMessage = new ReservationTimeslots(deliveryAddresses, deliveryTimeslots, user);
 			if(user!=null && user.getReservation()!=null && user.getReservation().getExpirationDateTime()!=null ){
@@ -497,7 +593,7 @@ public class AccountController extends BaseController implements Comparator <Ord
 			responseMessage.setSuccessMessage("Delivery timeslots have been retrieved successfully.");
 			setResponseMessage(model, responseMessage, user);
 		}else{
-			DeliveryTimeslots deliveryTimeslots = new DeliveryTimeslots(null);
+			DeliveryTimeslots deliveryTimeslots = new DeliveryTimeslots(null, user);
             ReservationTimeslots responseMessage = new ReservationTimeslots(new DeliveryAddresses(), deliveryTimeslots, user);
             responseMessage.addWarningMessage("No identity found for user");
             setResponseMessage(model, responseMessage, user);

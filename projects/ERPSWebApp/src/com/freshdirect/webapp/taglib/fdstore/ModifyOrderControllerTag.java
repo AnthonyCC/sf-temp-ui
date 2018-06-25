@@ -140,6 +140,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		ActionResult results = new ActionResult();
 		
 		HttpSession session = request.getSession();
+		FDSessionUser currentUser = (FDSessionUser) session.getAttribute(SessionName.USER);
 		
 		boolean actionPerformed = false;
 
@@ -155,6 +156,16 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			// Check action attribute
 			//
 			if ( CANCEL_ACTION.equalsIgnoreCase(this.action) ) {
+				//if user is in modify order mode, cancel that first
+				if (currentUser != null && currentUser.getShoppingCart() instanceof FDModifyCartModel) {
+					String modOrderId = ((FDModifyCartModel)currentUser.getShoppingCart()).getOriginalOrder().getSale().getId();
+					
+					//but only if the order id being cancelled is the one being modified
+					if (this.orderId.equalsIgnoreCase(modOrderId)) {
+						this.cancelModifyOrder(request, results);
+					}
+				}
+				
 				this.cancelOrder(request, results);
 				actionPerformed = true;
 			} else if ( MODIFY_ACTION.equalsIgnoreCase(this.action) ) {
@@ -925,7 +936,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		        	ErpAddressModel address= FDCustomerManager.getLastOrderAddress(user.getIdentity());
 					String arSKU = FDCustomerManager.getAutoRenewSKU(currentUser.getIdentity().getErpCustomerPK());
 					if (arSKU != null){
-						this.orderId = DeliveryPassRenewalCron.placeOrder(AccountActivityUtil.getActionInfo(session),cra, arSKU, paymentMethod, address,user.getUserContext());
+						this.orderId = DeliveryPassRenewalCron.placeOrder(AccountActivityUtil.getActionInfo(session),cra, arSKU, paymentMethod, address,user.getUserContext(),false);
 					}else{
 						throw new DeliveryPassException("Customer has no valid auto_renew DP. ",currentUser.getIdentity().getErpCustomerPK());
 					

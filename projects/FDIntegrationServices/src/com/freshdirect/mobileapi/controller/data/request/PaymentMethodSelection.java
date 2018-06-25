@@ -7,6 +7,7 @@ public class PaymentMethodSelection extends Message {
     private String paymentMethodId;
     private String billingRef;
     private String isAccountLevel;
+    private boolean dlvPassCart;
 
     public String getBillingRef() {
         return billingRef;
@@ -32,4 +33,11 @@ public class PaymentMethodSelection extends Message {
         this.isAccountLevel = isAccountLevel;
     }
 
+	public boolean isDlvPassCart() {
+		return dlvPassCart;
+	}
+
+	public void setDlvPassCart(boolean dlvPassCart) {
+		this.dlvPassCart = dlvPassCart;
+	}
 }

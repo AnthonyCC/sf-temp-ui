@@ -1932,4 +1932,21 @@ public class FDOrderAdapter implements FDOrderI {
 		}
 		return deliveryPassOnly;
 	}
+
+	@Override
+	public boolean isChargeWaivedByDlvPass(EnumChargeType chargeType) {
+		boolean isWaivedByDlvPass = false;
+		if(isChargeWaived(chargeType)) {
+			ErpChargeLineModel charge = erpOrder.getCharge(chargeType);
+			String promoCode = charge.getDiscount().getPromotionCode();
+			isWaivedByDlvPass = promoCode != null && promoCode.equals(DlvPassConstants.PROMO_CODE);
+		}
+		return isWaivedByDlvPass;
+	}
+
+	@Override
+	public int getDeliveryPassCount() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

@@ -131,5 +131,9 @@ public class ErpComplaintLineModel extends ModelSupport {
 		}
 		return (isValid);
 	}
-
+	@Override
+	public void setId(String id) {
+		if (id != null)
+			super.setId(id);
+	}
 }

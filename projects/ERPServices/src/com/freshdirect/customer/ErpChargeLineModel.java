@@ -10,7 +10,11 @@ import com.freshdirect.framework.core.ModelSupport;
  */
 public class ErpChargeLineModel extends ModelSupport {
 
-    private EnumChargeType type	= null;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -6350791457594897087L;
+	private EnumChargeType type	= null;
     private String reasonCode	= null;
     private double amount;
     private Discount discount;
@@ -106,5 +110,9 @@ public class ErpChargeLineModel extends ModelSupport {
 	public void setTaxationType(EnumTaxationType taxationType) {
 		this.taxationType = taxationType;
 	}
-
+	@Override
+	public void setId( String id) {
+		if (id != null) 
+			super.setId(id);
+	}
 }

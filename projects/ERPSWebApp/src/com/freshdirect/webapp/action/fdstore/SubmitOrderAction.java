@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +32,7 @@ import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.dataloader.subscriptions.DeliveryPassFreeTrialCron;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.deliverypass.DlvPassConstants;
@@ -47,6 +50,7 @@ import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerCreditUtil;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDModifyCartLineI;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
@@ -55,6 +59,7 @@ import com.freshdirect.fdstore.customer.FDUserUtil;
 import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
+import com.freshdirect.fdstore.deliverypass.DeliveryPassFreeTrialUtil;
 import com.freshdirect.fdstore.deliverypass.DeliveryPassSubscriptionUtil;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.fdstore.lists.FDCustomerRecipeList;
@@ -104,6 +109,7 @@ public class SubmitOrderAction extends WebActionSupport {
 	private String addGcPage = "/gift_card/purchase/add_giftcard.jsp";
 	private String addGcDonPage = "/gift_card/purchase/landing.jsp";
 	private String crmAddBulkGcPage = "/gift_card/purchase/add_bulk_giftcard.jsp";
+	private boolean dlvPassCart;
 	
 	public void setCcdProblemPage(String ccdProblemPage){
 		this.ccdProblemPage = ccdProblemPage;
@@ -448,7 +454,7 @@ public class SubmitOrderAction extends WebActionSupport {
 		final HttpServletRequest request = this.getWebActionContext().getRequest();
 
 		final FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
-		final FDCartModel cart = user.getShoppingCart();
+		final FDCartModel cart = UserUtil.getCart(user, "", isDlvPassCart());
 		final FDReservation reservation = cart.getDeliveryReservation();
 
 		final EnumCheckoutMode mode = user.getCheckoutMode();
@@ -477,37 +483,37 @@ public class SubmitOrderAction extends WebActionSupport {
 			} 
 		} else {
 		 	// potential double-submission, how else would the user end up here...
-		if (cart.getDeliveryAddress()==null || reservation==null || reservation.getStartTime()==null || reservation.getEndTime()==null || cart.getPaymentMethod()==null ) {
-			return SUCCESS;
-		}
-
-		if (!UserValidationUtil.validateOrderMinimum(session, this.getResult())) {
-			return ERROR;
-		}
-		
-		if(cart.containsAlcohol() && !cart.isAgeVerified()){
-			return ERROR;
-		}
-		
-		if(!cart.getZoneInfo().getZoneId().equals(reservation.getZoneId())) {
-			LOGGER.warn( "Invalid reservation : zone id-s do not match!" + "reservation zone-id : " +reservation.getZoneId()+ " cart zone-id : "+ cart.getZoneInfo().getZoneId()+ " cust id: "+reservation.getCustomerId());
-			this.addError("invalid_reservation", SystemMessageList.MSG_CHECKOUT_MISMATCHED_RESERVATION);
-			return ERROR;
-		}
-		Date cutoffTime = reservation.getCutoffTime();
-		
-		//update cutoff time based on context. fdx order will have different cutoff time from reservation cutoff
-		cutoffTime = ShoppingCartUtil.getCutoffByContext(cutoffTime, user);
-		
-		boolean pastCutoff = new Date().after(cutoffTime);
-		
-		if (pastCutoff) {
-			this.addError( "invalid_reservation", MessageFormat.format(
-				SystemMessageList.MSG_CHECKOUT_PAST_CUTOFF, new Object[] { cutoffTime }
-			));
-			return ERROR;
+			if (cart.getDeliveryAddress()==null || reservation==null || reservation.getStartTime()==null || reservation.getEndTime()==null || cart.getPaymentMethod()==null ) {
+				return SUCCESS;
 			}
-		}	
+	
+			if (!UserValidationUtil.validateOrderMinimum(session, this.getResult())) {
+				return ERROR;
+			}
+			
+			if(cart.containsAlcohol() && !cart.isAgeVerified()){
+				return ERROR;
+			}
+			
+			if(!cart.getZoneInfo().getZoneId().equals(reservation.getZoneId())) {
+				LOGGER.warn( "Invalid reservation : zone id-s do not match!" + "reservation zone-id : " +reservation.getZoneId()+ " cart zone-id : "+ cart.getZoneInfo().getZoneId()+ " cust id: "+reservation.getCustomerId());
+				this.addError("invalid_reservation", SystemMessageList.MSG_CHECKOUT_MISMATCHED_RESERVATION);
+				return ERROR;
+			}
+			Date cutoffTime = reservation.getCutoffTime();
+			
+			//update cutoff time based on context. fdx order will have different cutoff time from reservation cutoff
+			cutoffTime = ShoppingCartUtil.getCutoffByContext(cutoffTime, user);
+			
+			boolean pastCutoff = new Date().after(cutoffTime);
+			
+			if (pastCutoff) {
+				this.addError( "invalid_reservation", MessageFormat.format(
+					SystemMessageList.MSG_CHECKOUT_PAST_CUTOFF, new Object[] { cutoffTime }
+				));
+				return ERROR;
+			}
+		}
 		
 		if(!cart.getPaymentMethod().isGiftCard()) {	
 			// set the default credit card to the one that is in the cart if Card does not belong to EWallet
@@ -570,10 +576,9 @@ public class SubmitOrderAction extends WebActionSupport {
 		user.invalidateOrderHistoryCache();
 
 		// recalculate promotion
-		user.updateUserState();		
-
-		// recalculate credit since promotion is reapplied order amonuts might have changed
+		user.updateUserState();
 		
+		// recalculate credit since promotion is re-applied order amounts might have changed
 		FDCustomerCreditUtil.applyCustomerCredit(cart,user.getIdentity());
 		
 		FDUser fdUser = user.getUser();
@@ -658,6 +663,25 @@ public class SubmitOrderAction extends WebActionSupport {
 				modifying = true;
 	            //The previous recommendations of the current user need to be removed.
 	            session.removeAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);
+	            
+	          //Added for DP17-102 BACKEND FREE TRIAL: Create customers free trial subscription order along with customers next order
+				try {
+                    if(user.applyFreeTrailOptinBasedDP() && EnumEStoreId.FD.equals(eStore)){
+                        DeliveryPassFreeTrialUtil.placeDpSubscriptionOrder(user.getIdentity().getErpCustomerPK(), FDStoreProperties.getTwoMonthTrailDPSku(),eStore);
+                    }
+                } catch (Exception e) {
+                    LOGGER.warn("Exception while creating Free-trial DP Order along with regular order",e);
+                }
+							
+	    		//update newly added cartline ids
+	            Set<Integer> recentIds = new TreeSet<Integer>();
+	            for (FDCartLineI rc : modCart.getOrderLines()) {
+	            	if ( !(rc instanceof FDModifyCartLineI) ) {
+		                recentIds.add(Integer.valueOf(rc.getCartlineId()));
+	            	}
+	            }
+	    		user.setRecentCartlineIdsSet(orderNumber, recentIds);
+
 				
 			} else {
 				// new order -> place it
@@ -683,6 +707,15 @@ public class SubmitOrderAction extends WebActionSupport {
 							appliedPromos, sendEmail, cra, status,
 							isFriendReferred, fdcOrderCount);
 				}
+				
+				//Added for DP17-102 BACKEND FREE TRIAL: Create customers free trial subscription order along with customers next order
+				try {
+                    if(user.applyFreeTrailOptinBasedDP() && EnumEStoreId.FD.equals(eStore)){
+                    	DeliveryPassFreeTrialUtil.placeDpSubscriptionOrder(user.getIdentity().getErpCustomerPK(), FDStoreProperties.getTwoMonthTrailDPSku(),eStore);
+                    }
+                } catch (Exception e) {
+                    LOGGER.warn("Exception while creating Free-trial DP Order along with regular order",e);
+                }
 				
 			    //[APPDEV-4574]-Auto optin for emails, if its customer's first order.
 				if(isFirstOrder){
@@ -720,7 +753,7 @@ public class SubmitOrderAction extends WebActionSupport {
 			
 			/*APPDEV-1888 - record if the referral promo is not applied due to unique FN+LN+Zipcode rule.*/
 			if(user.isReferralPromotionFraud()) {
-				FDReferralManager.storeFailedAttempt(user.getUserId(),"", user.getShoppingCart().getDeliveryAddress().getZipCode(),user.getFirstName(),user.getLastName(), "","Checkout FNLNZipCode Fraud");
+				FDReferralManager.storeFailedAttempt(user.getUserId(),"", cart.getDeliveryAddress().getZipCode(),user.getFirstName(),user.getLastName(), "","Checkout FNLNZipCode Fraud");
 			}
 			
 			
@@ -736,15 +769,25 @@ public class SubmitOrderAction extends WebActionSupport {
 				
 			} else {
 				// Clear the cart from the session by replacing it with a new cart
-				user.setShoppingCart( new FDCartModel() );
-				user.getShoppingCart().setDeliveryAddress(cart.getDeliveryAddress());
-				user.getShoppingCart().setDeliveryPlantInfo(cart.getDeliveryPlantInfo());
-				user.getShoppingCart().setZoneInfo(cart.getZoneInfo());
-				FDCustomerManager.updateZoneInfo(user); // added as part of APPDEV 6272 FDC Transition
-				user.getShoppingCart().setEStoreId(cart.getEStoreId());
-				// user.updateSurcharges();
-				user.getShoppingCart().updateSurcharges(new FDRulesContextImpl(user));
-
+				if(dlvPassCart){
+					user.setDlvPassCart( new FDCartModel() );
+					user.getDlvPassCart().setDeliveryAddress(cart.getDeliveryAddress());
+					user.getDlvPassCart().setDeliveryPlantInfo(cart.getDeliveryPlantInfo());
+					user.getDlvPassCart().setZoneInfo(cart.getZoneInfo());
+					FDCustomerManager.updateZoneInfo(user); // added as part of APPDEV 6272 FDC Transition
+					user.getDlvPassCart().setEStoreId(cart.getEStoreId());
+					// user.updateSurcharges();
+					user.getDlvPassCart().updateSurcharges(new FDRulesContextImpl(user));
+				}else{
+					user.setShoppingCart( new FDCartModel() );
+					user.getShoppingCart().setDeliveryAddress(cart.getDeliveryAddress());
+					user.getShoppingCart().setDeliveryPlantInfo(cart.getDeliveryPlantInfo());
+					user.getShoppingCart().setZoneInfo(cart.getZoneInfo());
+					FDCustomerManager.updateZoneInfo(user); // added as part of APPDEV 6272 FDC Transition
+					user.getShoppingCart().setEStoreId(cart.getEStoreId());
+					// user.updateSurcharges();
+					user.getShoppingCart().updateSurcharges(new FDRulesContextImpl(user));
+				}	
 			}
 			if(user.getRedeemedPromotion() != null){
 				// This forceRefresh is for redemption count on the promo to be reloaded once 
@@ -1240,5 +1283,13 @@ public class SubmitOrderAction extends WebActionSupport {
 		} 	
 		return this.getResult().isSuccess() ? "SUCCESS" : "ERROR";		
 	
+	}
+
+	public boolean isDlvPassCart() {
+		return dlvPassCart;
+	}
+
+	public void setDlvPassCart(boolean dlvPassCart) {
+		this.dlvPassCart = dlvPassCart;
 	}
 }

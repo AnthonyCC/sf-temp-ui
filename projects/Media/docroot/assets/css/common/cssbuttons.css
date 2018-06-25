@@ -60,7 +60,7 @@ a.cssbutton.small,
 button.cssbutton.small,
 .cssbutton.small {
   font-size: 12px;
-  padding: 7px 12px;
+  padding: 7px 14px;
 }
 
 a.cssbutton.wide,
@@ -481,4 +481,8 @@ a.cssbutton.flat {
 button.addtolist.cssbutton.cssbutton-flat.purpleborder:hover{
     color: #5fb069 !important;
     text-decoration: underline !important;
+}
+
+a.cssbutton.whiteborder, .cssbutton.whiteborder {
+  border: 1px solid #fff;
 }

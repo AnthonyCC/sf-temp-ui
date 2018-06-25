@@ -17,6 +17,4 @@ public interface ErpComplaintManagerServiceI {
 
 	public void rejectMakegoodComplaint(String makegood_sale_id) throws RemoteException;
 	 
-	public ErpComplaintReason getReasonByCompCode(String cCode) throws RemoteException;
-
 }

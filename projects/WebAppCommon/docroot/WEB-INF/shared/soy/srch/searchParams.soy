@@ -36,7 +36,7 @@
 			{foreach $tab in $tabs}
 				{if $tab.active}
 				{call .searchDescription}
-					{param hits:$tab.hits /}
+					{param hits:$tab.filteredHits /}
 					{param itemType:$tab.type /}
 					{param searchTerm:$searchTerm /}
 					{param searchParams:$searchParams /}

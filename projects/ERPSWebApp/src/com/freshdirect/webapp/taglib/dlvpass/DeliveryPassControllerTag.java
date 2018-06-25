@@ -17,6 +17,7 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.framework.webapp.ActionError;
@@ -147,8 +148,8 @@ public class DeliveryPassControllerTag extends AbstractControllerTag {
 	}
 	
 	private void sendEmail(FDCustomerInfo customer, String saleId, int creditCount, EnumDlvPassProfileType dlvPassProfile) throws FDResourceException {
-		
-		FDCustomerManager.doEmail(FDEmailFactory.getInstance().createDPCreditEmail(customer, saleId, creditCount,dlvPassProfile.getName()));
+		FDOrderI order = FDCustomerManager.getOrder(saleId);
+		FDCustomerManager.doEmail(FDEmailFactory.getInstance().createDPCreditEmail(customer, saleId, creditCount,dlvPassProfile.getName(), order.getEStoreId()));
 	}
 
 	public static class TagEI extends AbstractControllerTag.TagEI {

@@ -10,17 +10,18 @@ import javax.ejb.EJBObject;
 import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
+import com.freshdirect.fdstore.EnumEStoreId;
 
 public interface DlvPassManagerSB extends EJBObject {
-	public String create(DeliveryPassModel model) throws RemoteException, DeliveryPassException;
+	public String create(DeliveryPassModel model, EnumEStoreId eStore, String fdPk) throws RemoteException, DeliveryPassException;
 
 	public void apply(DeliveryPassModel model) throws DeliveryPassException, RemoteException;
 
 	public void revoke(DeliveryPassModel model)throws RemoteException;
 
-	public String modify(String purchaseOrderId, DeliveryPassModel newPass) throws DeliveryPassException, RemoteException;
+	public String modify(String purchaseOrderId, DeliveryPassModel newPass, EnumEStoreId eStore, String fdPk) throws DeliveryPassException, RemoteException;
 
-	public void cancel(DeliveryPassModel dlvPassModel) throws RemoteException;
+	public void cancel(DeliveryPassModel dlvPassModel, EnumEStoreId eStore, String fdPk) throws RemoteException;
 
 	public void reactivate(DeliveryPassModel dlvPassModel)throws RemoteException;
 
@@ -28,7 +29,7 @@ public interface DlvPassManagerSB extends EJBObject {
 
 	public void extendExpirationPeriod(DeliveryPassModel dlvPassModel, int noOfdays)  throws RemoteException;
 
-	public List<DeliveryPassModel> getDeliveryPasses(String customerPk) throws RemoteException;
+	public List<DeliveryPassModel> getDeliveryPasses(String customerPk, EnumEStoreId estore) throws RemoteException;
 
 	public List<DeliveryPassModel> getDlvPassesByStatus(String customerPk, EnumDlvPassStatus status) throws RemoteException;
 
@@ -38,9 +39,9 @@ public interface DlvPassManagerSB extends EJBObject {
 
 	public void applyNew(DeliveryPassModel model) throws RemoteException;
 
-	public void remove(DeliveryPassModel model) throws RemoteException;
+	public void remove(DeliveryPassModel model, EnumEStoreId eStore, String fdPk) throws RemoteException;
 
-	public Map<Comparable, Serializable> getAllStatusMap(String customerPk) throws RemoteException;
+	public Map<Comparable, Serializable> getAllStatusMap(String customerPk, EnumEStoreId estore) throws RemoteException;
 
 	public void updatePrice(DeliveryPassModel dlvPassModel, double newPrice) throws RemoteException;
 
@@ -52,13 +53,13 @@ public interface DlvPassManagerSB extends EJBObject {
 
 	public List<DeliveryPassModel> getUsableAutoRenewPasses(String customerPK )throws RemoteException;
 
-	public  Object[] getAutoRenewalInfo()throws RemoteException;
+	public  Object[] getAutoRenewalInfo(EnumEStoreId eStore)throws RemoteException;
 
 	public int getDaysSinceDPExpiry(String customerID) throws RemoteException;
 
 	public int getDaysToDPExpiry(String customerID, String activeDPID)throws RemoteException;
 
-	public List<List<String>> getPendingPasses()throws RemoteException;
+	public List<List<String>> getPendingPasses(EnumEStoreId eStore)throws RemoteException;
 
 	public List<String> getAllCustIdsOfFreeTrialSubsOrder() throws RemoteException;
 	

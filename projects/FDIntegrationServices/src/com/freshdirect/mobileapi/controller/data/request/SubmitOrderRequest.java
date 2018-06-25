@@ -1,4 +1,6 @@
-package com.freshdirect.mobileapi.controller.data;
+package com.freshdirect.mobileapi.controller.data.request;
+
+import com.freshdirect.mobileapi.controller.data.Message;
 
 /**
  * @author Aniwesh Vatsal

@@ -26,6 +26,10 @@
 	<%-- add default inform.ordermodify --%>
 	fd.inform.ordermodify = fd.inform.ordermodify || { fire: false };
 	
+	<%-- define locabar --%>
+	fd.locabar = FreshDirect.locabar || {};
+	fd.locabar.isFdx = <%= FDStoreProperties.isFdxLocationbarEnabled() %>;
+	
 	<% if (jsUser != null) {
 		int sessionUserLevel = jsUser.getLevel();
 		FDSessionUser sessionUser = (FDSessionUser) jsUser;

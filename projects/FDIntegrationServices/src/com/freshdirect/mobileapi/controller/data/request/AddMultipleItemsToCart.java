@@ -19,6 +19,8 @@ public class AddMultipleItemsToCart extends Message {
     private SmartStoreConfiguration smartStoreConfiguration = new SmartStoreConfiguration();
     
     private boolean quickBuy; //to denote add to cart from the quickshop
+    
+    private boolean dlvPassCart;
 
     public List<ProductConfiguration> getProductsConfiguration() {
         return productsConfiguration;
@@ -74,6 +76,14 @@ public class AddMultipleItemsToCart extends Message {
 
 	public void setQuickBuy(boolean quickBuy) {
 		this.quickBuy = quickBuy;
+	}
+
+	public boolean isDlvPassCart() {
+		return dlvPassCart;
+	}
+
+	public void setDlvPassCart(boolean dlvPassCart) {
+		this.dlvPassCart = dlvPassCart;
 	}
 
 }

@@ -14,6 +14,7 @@ import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCartI;
+import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
 import com.freshdirect.fdstore.giftcard.FDGiftCardModel;
@@ -40,6 +41,15 @@ public class RedemptionCodeControllerTag extends AbstractControllerTag {
 	
 	private final int GC_RETRY_COUNT = 4;
 	private final int GC_RETRY_WARNING_COUNT = 3;
+	private boolean dlvPassCart;
+
+	public boolean isDlvPassCart() {
+		return dlvPassCart;
+	}
+
+	public void setDlvPassCart(boolean dlvPassCart) {
+		this.dlvPassCart = dlvPassCart;
+	}
 
 	protected boolean performGetAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
 		String action = request.getParameter("action");
@@ -61,7 +71,8 @@ public class RedemptionCodeControllerTag extends AbstractControllerTag {
 								 * Then its a delivery promotion. So reset the isDlvPromoApplied flag
 								 * since the redemption code is removed.
 								 */
-								user.getShoppingCart().setDlvPromotionApplied(false);
+								FDCartModel cart = UserUtil.getCart(user, "", isDlvPassCart());
+								cart.setDlvPromotionApplied(false);
 							}
 						}
 					}
@@ -187,7 +198,7 @@ public class RedemptionCodeControllerTag extends AbstractControllerTag {
 				}
 				user.setRedeemedPromotion(promotion);
 				//Get the header discount if any applied to the cart before the updateUserState call.
-				FDCartI cart = user.getShoppingCart();
+				FDCartI cart = UserUtil.getCart(user, "", isDlvPassCart());
 				List prevdiscounts = new ArrayList(cart.getDiscounts());
 				user.updateUserState();
 				String promoCode = promotion.getPromotionCode();
@@ -242,7 +253,7 @@ public class RedemptionCodeControllerTag extends AbstractControllerTag {
 								new Object[] { user
 										.getCustomerServiceContact() }));
 						actionResult.addError(true, "redemption_error", MessageFormat.format(SystemMessageList.MSG_REDEMPTION_NOT_ELIGIBLE,params));
-					}else if (user.getShoppingCart().getSubTotal() < promotion.getMinSubtotal()) {
+					}else if (UserUtil.getCart(user, "", isDlvPassCart()).getSubTotal() < promotion.getMinSubtotal()) {
 						Object[] params1 = new Object[] { new Double(promotion.getMinSubtotal())};
 						actionResult.addError(
 							true,
@@ -360,7 +371,7 @@ public class RedemptionCodeControllerTag extends AbstractControllerTag {
 				}
 				user.setRedeemedPromotion(promotion);
 				//Get the header discount if any applied to the cart before the updateUserState call.
-				FDCartI cart = user.getShoppingCart();
+				FDCartI cart = UserUtil.getCart(user, "", isDlvPassCart());
 				List prevdiscounts = new ArrayList(cart.getDiscounts());
 				user.updateUserState();
 				String promoCode = promotion.getPromotionCode();
@@ -416,7 +427,7 @@ public class RedemptionCodeControllerTag extends AbstractControllerTag {
 								new Object[] { user
 										.getCustomerServiceContact() }));
 						actionResult.addError(true, "redemption_error", MessageFormat.format(SystemMessageList.MSG_REDEMPTION_NOT_ELIGIBLE,params));
-					}else if (user.getShoppingCart().getSubTotal() < promotion.getMinSubtotal()) {
+					}else if (UserUtil.getCart(user, "", isDlvPassCart()).getSubTotal() < promotion.getMinSubtotal()) {
 						Object[] params1 = new Object[] { new Double(promotion.getMinSubtotal())};
 						actionResult.addError(
 							true,

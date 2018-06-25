@@ -36,6 +36,7 @@ public class PaymentMethodRequest extends Message {
 	private String csv;
 	private String billingCtry;
 	private String captchaToken;
+	private boolean dlvPassCart;
 	
 	public String getBillingCtry() {
 		return billingCtry;
@@ -170,6 +171,10 @@ public class PaymentMethodRequest extends Message {
 	public void setCaptchaToken(String captchaToken) {
 		this.captchaToken = captchaToken;
 	}
-	
-
+	public boolean isDlvPassCart() {
+		return dlvPassCart;
+	}
+	public void setDlvPassCart(boolean dlvPassCart) {
+		this.dlvPassCart = dlvPassCart;
+	}
 }

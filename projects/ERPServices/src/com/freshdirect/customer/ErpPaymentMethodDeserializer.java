@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.freshdirect.giftcard.ErpGiftCardModel;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
 public class ErpPaymentMethodDeserializer extends JsonDeserializer<ErpPaymentMethodI> {
@@ -28,6 +29,15 @@ public class ErpPaymentMethodDeserializer extends JsonDeserializer<ErpPaymentMet
 			}
 			if (paymentMethodType == EnumPaymentMethodType.CREDITCARD) {
 				return mapper.convertValue(root, ErpCreditCardModel.class);
+			}
+			if (paymentMethodType == EnumPaymentMethodType.ECHECK) {
+				return mapper.convertValue(root, ErpECheckModel.class);
+			}
+			if (paymentMethodType == EnumPaymentMethodType.EBT) {
+				return mapper.convertValue(root, ErpEbtCardModel.class);
+			}
+			if (paymentMethodType == EnumPaymentMethodType.GIFTCARD) {
+				return mapper.convertValue(root, ErpGiftCardModel.class);
 			}
 		}
 		return mapper.convertValue(root, ErpPaymentMethodModel.class);

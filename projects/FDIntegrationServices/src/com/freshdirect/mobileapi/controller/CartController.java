@@ -13,6 +13,7 @@ import com.freshdirect.FDCouponProperties;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
+import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -20,6 +21,8 @@ import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.request.AddItemToCart;
 import com.freshdirect.mobileapi.controller.data.request.AddMultipleItemsToCart;
 import com.freshdirect.mobileapi.controller.data.request.MultipleRequest;
+import com.freshdirect.mobileapi.controller.data.request.DlvPassRequest;
+import com.freshdirect.mobileapi.controller.data.request.RemoveItemInCart;
 import com.freshdirect.mobileapi.controller.data.request.SimpleRequest;
 import com.freshdirect.mobileapi.controller.data.request.UpdateItemInCart;
 import com.freshdirect.mobileapi.controller.data.response.CartDetail;
@@ -38,6 +41,7 @@ import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.webapp.ajax.expresscheckout.timeslot.service.TimeslotService;
 import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
+import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 
 import freemarker.template.TemplateException;
 
@@ -62,6 +66,7 @@ public class CartController extends BaseController {
     private static final String ACTION_VIEW_CARTLINE = "viewitem";
     private static final String ACTION_SET_TIP = "settip";
     private static final String ACTION_SAVE_CART = "save";
+    private final static String DLV_PASS_CART = "dlvPassCart";
     
     @Override
     protected boolean validateCart() {
@@ -84,6 +89,11 @@ public class CartController extends BaseController {
 	            AddItemToCart reqestMessage = parseRequestObject(request, response, AddItemToCart.class);
 	            model = addItemInCart(model, user, reqestMessage, request);
 	        } else if (ACTION_REMOVE_ITEM_FROM_CART.equals(action) || ACTION_REMOVE_ALL_ITEMS_FROM_CART.equals(action)) {
+	        	boolean dlvPassCart = false;
+	        	if(getPostData(request, response)!=null && getPostData(request, response).contains(DLV_PASS_CART)) {
+	        		RemoveItemInCart requestMessage = parseRequestObject(request, response, RemoveItemInCart.class);
+	        		dlvPassCart = requestMessage.isDlvPassCart();
+	        	}
 	            String cartLineId = null;
 	            boolean isRemoveAll = false;
 	            if (ACTION_REMOVE_ALL_ITEMS_FROM_CART.equals(action)) {
@@ -96,45 +106,64 @@ public class CartController extends BaseController {
 	                }
 	                isRemoveAll = false;
 	            }
-	            model = removeItemInCart(model, user, cartLineId, isRemoveAll, request);
+	            model = removeItemInCart(model, user, cartLineId, isRemoveAll, request, dlvPassCart);
 	        } else if (ACTION_UPDATE_ITEM_IN_CART.equals(action)) {
 	            UpdateItemInCart reqestMessage = parseRequestObject(request, response, UpdateItemInCart.class);
 	            model = updateItemInCart(model, user, reqestMessage, request);
 	        } else if (ACTION_GET_CART_DETAIL.equals(action)) {
-	            model = getCartDetail(model, user, request);
+	        	boolean dlvPassCart = false;
+	        	if(getPostData(request, response)!=null && getPostData(request, response).contains(DLV_PASS_CART)) {
+	        		DlvPassRequest requestMessage = parseRequestObject(request, response, DlvPassRequest.class);
+	        		dlvPassCart = requestMessage.isDlvPassCart();
+	        	}
+	            model = getCartDetail(model, user, request, dlvPassCart);
 	        } else if (ACTION_APPLY_PROMO.equals(action)) {
+	        	boolean dlvPassCart = false;
+	        	if(getPostData(request, response)!=null && getPostData(request, response).contains(DLV_PASS_CART)) {
+	        		DlvPassRequest requestMessage = parseRequestObject(request, response, DlvPassRequest.class);
+	        		dlvPassCart = requestMessage.isDlvPassCart();
+	        	}
 	            String promoId = request.getParameter(PARAM_PROMO_ID);
 	            if (promoId != null) {
-	                model = applyPromoCode(model, user, promoId, request);
+	                model = applyPromoCode(model, user, promoId, request, dlvPassCart);
 	            } else {
 	                SimpleRequest reqestMessage = parseRequestObject(request, response, SimpleRequest.class);
-	                model = applyPromoCode(model, user, reqestMessage, request);
+	                model = applyPromoCode(model, user, reqestMessage, request, dlvPassCart);
 	            }
 	        } else if(ACTION_APPLY_CODE.equals(action)){
+	        	boolean dlvPassCart = false;
+	        	if(getPostData(request, response)!=null && getPostData(request, response).contains(DLV_PASS_CART)) {
+	        		DlvPassRequest requestMessage = parseRequestObject(request, response, DlvPassRequest.class);
+	        		dlvPassCart = requestMessage.isDlvPassCart();
+	        	}
 	            String promoId = request.getParameter(PARAM_PROMO_ID);
 	            if (promoId != null) {
 	            	if(isValidPromoId(user, promoId)){
-	            		model = applyPromoCode(model, user, promoId, request);
+	            		model = applyPromoCode(model, user, promoId, request, dlvPassCart);
 	            	} else {
-	            		model = applyCode(model, user, promoId, request);
+	            		model = applyCode(model, user, promoId, request, dlvPassCart);
 	            	}
 	                
 	            } else {
 	                SimpleRequest reqestMessage = parseRequestObject(request, response, SimpleRequest.class);
 	                if(isValidPromoId(user, reqestMessage.getId())){
-	                	model = applyPromoCode(model, user, reqestMessage, request);
+	                	model = applyPromoCode(model, user, reqestMessage, request, dlvPassCart);
 	                } else {
-	                	model = applyCode(model, user, reqestMessage, request);
+	                	model = applyCode(model, user, reqestMessage, request, dlvPassCart);
 	                }
 	            }      	
 	        }else if (ACTION_REMOVE_PROMO.equals(action)) {
-	        
+	        	boolean dlvPassCart = false;
+	        	if(getPostData(request, response)!=null && getPostData(request, response).contains(DLV_PASS_CART)) {
+	        		DlvPassRequest requestMessage = parseRequestObject(request, response, DlvPassRequest.class);
+	        		dlvPassCart = requestMessage.isDlvPassCart();
+	        	}
 	            String promoId = request.getParameter(PARAM_PROMO_ID);
 	            if (promoId != null) {
-	                model = removePromoCode(model, user, promoId, request);
+	                model = removePromoCode(model, user, promoId, request, dlvPassCart);
 	            } else {
 	                SimpleRequest reqestMessage = parseRequestObject(request, response, SimpleRequest.class);
-	                model = removePromoCode(model, user, reqestMessage, request);
+	                model = removePromoCode(model, user, reqestMessage, request, dlvPassCart);
 	            }
 	        } else if (ACTION_REMOVE_ALCOHOL.equals(action)) {
 	            model = removeAlcohol(model, user, request);
@@ -222,18 +251,23 @@ public class CartController extends BaseController {
 
     }
 
-    private ModelAndView getCartDetail(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException, JsonException {
+    private ModelAndView getCartDetail(ModelAndView model, SessionUser user, HttpServletRequest request, boolean dlvPassCart) throws FDException, JsonException {
     	TimeslotService.defaultService().applyPreReservedDeliveryTimeslot(request.getSession());
         
-        Cart cart = user.getShoppingCart();
+    	Cart cart = Cart.wrap(UserUtil.getCart(user.getFDSessionUser(), "", dlvPassCart));
+    	
         if(ContentFactory.getInstance().getCurrentUserContext().getPricingContext() == null && user != null){
         	if(null == user.getUserContext()){
         		user.getFDSessionUser().getUser().resetUserContext();
         	}
         	user.setUserContext();
     	}
+        
+        if(user.getFDSessionUser()!=null && user.getFDSessionUser().isDlvPassPending()){
+            user.getFDSessionUser().updateDlvPassInfo();
+        }
        
-        CartDetail cartDetail = cart.getCartDetail(user, EnumCouponContext.VIEWCART);
+        CartDetail cartDetail = cart.getCartDetail(user, EnumCouponContext.VIEWCART, false, dlvPassCart);
         com.freshdirect.mobileapi.controller.data.response.Cart responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
         responseMessage.setSuccessMessage("Cart detail has been retrieved successfully.");
         responseMessage.setCartDetail(cartDetail);
@@ -275,7 +309,14 @@ public class CartController extends BaseController {
         if (isZipCheck(user, request)) {
             responseMessage = getErrorMessage(ERR_ZIP_REQUIRED, ERR_ZIP_REQUIRED_MSG);
         } else {
-            Cart cart = user.getShoppingCart();
+        	
+        	Cart cart = Cart.wrap(UserUtil.getCart(user.getFDSessionUser(), "", reqestMessage.isDlvPassCart()));
+        	if(reqestMessage.isDlvPassCart()){
+        		// clear delivery pass cart before adding new dp to the cart
+        		UserUtil.getCart(user.getFDSessionUser(), "", reqestMessage.isDlvPassCart()).clearOrderLines();
+        		cart = Cart.wrap(UserUtil.getCart(user.getFDSessionUser(), "", reqestMessage.isDlvPassCart()));
+        	}
+        	
             Product product = Product.getProduct(reqestMessage.getProductConfiguration().getProductId(), reqestMessage.getProductConfiguration().getCategoryId(), null, user);
             if (product != null) {
                 if (!user.isHealthWarningAcknowledged() && product.isAlcoholProduct()) {
@@ -283,14 +324,14 @@ public class CartController extends BaseController {
                     responseMessage.setStatus(Message.STATUS_FAILED);
                     responseMessage.addErrorMessage(ERR_HEALTH_WARNING, MobileApiProperties.getMediaPath() + MobileApiProperties.getAlcoholHealthWarningMediaPath());
                 } else {
-                    ResultBundle resultBundle = cart.addItemToCart(reqestMessage, qetRequestData(request), user, request);
+                    ResultBundle resultBundle = cart.addItemToCart(reqestMessage, qetRequestData(request), user, request, reqestMessage.isDlvPassCart());
                     ActionResult result = resultBundle.getActionResult();
                     propogateSetSessionValues(request.getSession(), resultBundle);
 
                     if (result.isSuccess()) {
                         List<String> recentItems = (List<String>) resultBundle.getExtraData(Cart.RECENT_ITEMS);
-
-                        CartDetail cartDetail = cart.getCartDetail(user, null, reqestMessage.isQuickBuy());
+                        
+                        CartDetail cartDetail = cart.getCartDetail(user, null, reqestMessage.isQuickBuy(), reqestMessage.isDlvPassCart());
                         responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
                         ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setCartDetail(cartDetail);
                         ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setRecentlyAddedItems(recentItems);
@@ -324,7 +365,7 @@ public class CartController extends BaseController {
     }
 
     private ModelAndView removeItemInCart(ModelAndView model, SessionUser user, String cartLineId, boolean isRemoveAll,
-            HttpServletRequest request) throws FDException, JsonException {
+            HttpServletRequest request, boolean dlvPassCart) throws FDException, JsonException {
         //Only difference between "remove an item" vs. "remove all" is the parameter of "Cart Line ID" being passed in.
         //If no "Cart Line ID" is passed in, then it's executed as "remove all" request.
         String successMessage = null;
@@ -335,13 +376,14 @@ public class CartController extends BaseController {
         }
         Message responseMessage = null;
 
-        Cart cart = user.getShoppingCart();
-        ResultBundle resultBundle = cart.removeItemFromCart(cartLineId, qetRequestData(request), user);
+        Cart cart = Cart.wrap(UserUtil.getCart(user.getFDSessionUser(), "", dlvPassCart));
+        
+        ResultBundle resultBundle = cart.removeItemFromCart(cartLineId, qetRequestData(request), user, dlvPassCart);
         ActionResult result = resultBundle.getActionResult();
         propogateSetSessionValues(request.getSession(), resultBundle);
 
         if (result.isSuccess()) {
-            CartDetail cartDetail = cart.getCartDetail(user, null);
+            CartDetail cartDetail = cart.getCartDetail(user, null, false, dlvPassCart);
             responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
             ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setCartDetail(cartDetail);
             
@@ -361,11 +403,13 @@ public class CartController extends BaseController {
     private ModelAndView updateItemInCart(ModelAndView model, SessionUser user, UpdateItemInCart reqestMessage, HttpServletRequest request)
             throws FDException, JsonException {
         Message responseMessage = null;
-        Cart cart = user.getShoppingCart();
-        ResultBundle resultBundle = cart.updateItemInCart(reqestMessage, qetRequestData(request), user);
+        
+        Cart cart = Cart.wrap(UserUtil.getCart(user.getFDSessionUser(), "", reqestMessage.isDlvPassCart()));
+        
+        ResultBundle resultBundle = cart.updateItemInCart(reqestMessage, qetRequestData(request), user, reqestMessage.isDlvPassCart());
         ActionResult result = resultBundle.getActionResult();
         propogateSetSessionValues(request.getSession(), resultBundle);
-        CartDetail cartDetail = cart.getCartDetail(user, null);
+        CartDetail cartDetail = cart.getCartDetail(user, null, false, reqestMessage.isDlvPassCart());
         responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
         ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setCartDetail(cartDetail);
         boolean checkLoginStatusEnable = isExtraResponseRequested(request);
@@ -391,15 +435,17 @@ public class CartController extends BaseController {
         return model;
     }
 
-    private ModelAndView removePromoCode(ModelAndView model, SessionUser user, SimpleRequest reqestMessage, HttpServletRequest request)
+    private ModelAndView removePromoCode(ModelAndView model, SessionUser user, SimpleRequest reqestMessage, HttpServletRequest request, boolean dlvPassCart)
             throws FDException, JsonException {
-        return removePromoCode(model, user, reqestMessage.getId(), request);
+        return removePromoCode(model, user, reqestMessage.getId(), request, dlvPassCart);
     }
 
-    private ModelAndView removePromoCode(ModelAndView model, SessionUser user, String promoId, HttpServletRequest request)
+    private ModelAndView removePromoCode(ModelAndView model, SessionUser user, String promoId, HttpServletRequest request, boolean dlvPassCart)
             throws FDException, JsonException {
-        Cart cart = user.getShoppingCart();
-        ResultBundle resultBundle = cart.removeRedemptionCode(promoId, user);
+    	
+    	Cart cart = Cart.wrap(UserUtil.getCart(user.getFDSessionUser(), "", dlvPassCart));
+    	
+        ResultBundle resultBundle = cart.removeRedemptionCode(promoId, user, dlvPassCart);
 
         ActionResult result = resultBundle.getActionResult();
         propogateSetSessionValues(request.getSession(), resultBundle);
@@ -414,20 +460,22 @@ public class CartController extends BaseController {
         return model;
     }
 
-    private ModelAndView applyPromoCode(ModelAndView model, SessionUser user, SimpleRequest reqestMessage, HttpServletRequest request)
+    private ModelAndView applyPromoCode(ModelAndView model, SessionUser user, SimpleRequest reqestMessage, HttpServletRequest request, boolean dlvPassCart)
             throws FDException, JsonException {
-        return applyPromoCode(model, user, reqestMessage.getId(), request);
+        return applyPromoCode(model, user, reqestMessage.getId(), request, dlvPassCart);
     }
     
-    private ModelAndView applyCode(ModelAndView model, SessionUser user, SimpleRequest reqestMessage, HttpServletRequest request)
+    private ModelAndView applyCode(ModelAndView model, SessionUser user, SimpleRequest reqestMessage, HttpServletRequest request, boolean dlvPassCart)
             throws FDException, JsonException {
-        return applyCode(model, user, reqestMessage.getId(), request);
+        return applyCode(model, user, reqestMessage.getId(), request, dlvPassCart);
     }
     
-    private ModelAndView applyPromoCode(ModelAndView model, SessionUser user, String promoId, HttpServletRequest request)
+    private ModelAndView applyPromoCode(ModelAndView model, SessionUser user, String promoId, HttpServletRequest request, boolean dlvPassCart)
             throws FDException, JsonException {
-        Cart cart = user.getShoppingCart();
-        ResultBundle resultBundle = cart.applyRedemptionCode(promoId, user);
+    	
+    	Cart cart = Cart.wrap(UserUtil.getCart(user.getFDSessionUser(), "", dlvPassCart));
+    	
+        ResultBundle resultBundle = cart.applyRedemptionCode(promoId, user, dlvPassCart);
 
         ActionResult result = resultBundle.getActionResult();
         propogateSetSessionValues(request.getSession(), resultBundle);
@@ -460,10 +508,12 @@ public class CartController extends BaseController {
         return model;
     }
     
-    private ModelAndView applyCode(ModelAndView model, SessionUser user, String givexNum, HttpServletRequest request)
+    private ModelAndView applyCode(ModelAndView model, SessionUser user, String givexNum, HttpServletRequest request, boolean dlvPassCart)
             throws FDException, JsonException {
-        Cart cart = user.getShoppingCart();
-        ResultBundle resultBundle = cart.applycode(givexNum, user);
+    	
+    	Cart cart = Cart.wrap(UserUtil.getCart(user.getFDSessionUser(), "", dlvPassCart));
+    	
+        ResultBundle resultBundle = cart.applycode(givexNum, user, dlvPassCart);
 
         ActionResult result = resultBundle.getActionResult();
         propogateSetSessionValues(request.getSession(), resultBundle);
@@ -486,15 +536,15 @@ public class CartController extends BaseController {
             HttpServletRequest request) throws FDException, JsonException {
         Message responseMessage = null;
 
-        Cart cart = user.getShoppingCart();
+        Cart cart = Cart.wrap(UserUtil.getCart(user.getFDSessionUser(), "", reqestMessage.isDlvPassCart()));
 
-        ResultBundle resultBundle = cart.addMultipleItemsToCart(reqestMessage, qetRequestData(request), user, request);
+        ResultBundle resultBundle = cart.addMultipleItemsToCart(reqestMessage, qetRequestData(request), user, request, reqestMessage.isDlvPassCart());
         ActionResult result = resultBundle.getActionResult();
 
         if (result.isSuccess()) {
             List<String> recentItems = (List<String>) resultBundle.getExtraData(Cart.RECENT_ITEMS);
 
-            CartDetail cartDetail = cart.getCartDetail(user, null, reqestMessage.isQuickBuy());
+            CartDetail cartDetail = cart.getCartDetail(user, null, reqestMessage.isQuickBuy(), reqestMessage.isDlvPassCart());
             responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
             ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setCartDetail(cartDetail);
             ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setRecentlyAddedItems(recentItems);
@@ -519,10 +569,10 @@ public class CartController extends BaseController {
 
         Cart cart = user.getShoppingCart();
 
-        ResultBundle resultBundle = cart.removeMultipleItemsFromCart(requestMessage, qetRequestData(request), user);
+        ResultBundle resultBundle = cart.removeMultipleItemsFromCart(requestMessage, qetRequestData(request), user, requestMessage.isDlvPassCart());
         ActionResult result = resultBundle.getActionResult();
 
-        CartDetail cartDetail = cart.getCartDetail(user, null);
+        CartDetail cartDetail = cart.getCartDetail(user, null, false, requestMessage.isDlvPassCart());
         responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
         ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setCartDetail(cartDetail);
         boolean checkLoginStatusEnable = isExtraResponseRequested(request);

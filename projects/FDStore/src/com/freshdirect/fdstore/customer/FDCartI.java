@@ -50,6 +50,7 @@ public interface FDCartI extends java.io.Serializable {
 	public boolean isPhoneChargeTaxable();
 
 	public boolean isChargeWaived(EnumChargeType chargeType);
+	public boolean isChargeWaivedByDlvPass(EnumChargeType chargeType);
 
 	public double getCustomerCreditsValue();
 
@@ -98,6 +99,8 @@ public interface FDCartI extends java.io.Serializable {
 	 * @return total price of order in USD, with promotions, taxes, etc
 	 */
 	public double getTotal();
+	
+	public int getDeliveryPassCount();
 
 	public String getCustomerServiceMessage();
 

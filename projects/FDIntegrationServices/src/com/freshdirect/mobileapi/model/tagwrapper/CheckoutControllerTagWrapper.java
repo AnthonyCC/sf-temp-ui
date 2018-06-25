@@ -9,6 +9,7 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
@@ -22,6 +23,7 @@ import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.webapp.taglib.fdstore.CheckoutControllerTag;
 import com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName;
+import com.freshdirect.webapp.taglib.fdstore.FDShoppingCartControllerTag;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SiteAccessControllerTag;
 
@@ -79,7 +81,7 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         this.sessionUser = sessionUser;
     }
 
-    public ResultBundle submitOrder() throws FDException {
+    public ResultBundle submitOrder(boolean dlvPassCart) throws FDException {
         addExpectedSessionValues(new String[] { SESSION_PARAM_PROCESSING_ORDER, SESSION_PARAM_MAKEGOOD_COMPLAINT,
                 SESSION_PARAM_APPLICATION, SESSION_PARAM_MAKE_GOOD_ORDER, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_CUSTOMER_SERVICE_REP,
                 SESSION_PARAM_RECENT_ORDER_NUMBER, SessionName.PENDING_CONVERSION_ORDER_MODIFIED_MODELS, SessionName.PENDING_HELP_EMAIL_EVENT, SessionName.PENDING_SHOP_9_MODELS,TAXATION_TYPE_SESSION, SessionName.PAYPAL_DEVICE_ID, BYPASS_CART_VALIDATION }, new String[] { SESSION_PARAM_PROCESSING_ORDER, SESSION_PARAM_USER,
@@ -94,6 +96,7 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         ((HttpSessionWrapper)this.pageContext.getSession()).addExpectedSets(new String[]{"BYPASS_CART_VALIDATION"});
         this.pageContext.getSession().setAttribute("BYPASS_CART_VALIDATION", "YES");
         setMethodMode(true);       
+        ((CheckoutControllerTag) getWrapTarget()).setDlvPassCart(dlvPassCart);
         ResultBundle result = new ResultBundle(executeTagLogic(), this);
 
         //Tag Lib set some values in session that we need. Get them. 
@@ -131,7 +134,7 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         return result;
     }
 
-    public ResultBundle setPaymentMethod(String paymentMethodId, String billingReference, String isAccountLevel) throws FDException {
+    public ResultBundle setPaymentMethod(String paymentMethodId, String billingReference, String isAccountLevel, boolean dlvPassCart) throws FDException {
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT,SESSION_PARAM_PYMT_VERIFYFLD, SESSION_PARAM_MAKE_GOOD_ORDER, TAXATION_TYPE_SESSION, SessionName.PAYPAL_DEVICE_ID  },
                 new String[] { SESSION_PARAM_USER, SESSION_PARAM_PYMT_VERIFYFLD, SESSION_PARAM_MAKE_GOOD_ORDER, TAXATION_TYPE_SESSION, SessionName.PAYPAL_DEVICE_ID  }); //gets,sets
         addExpectedRequestValues(new String[] { REQ_PARAM_CHEF_TABLE, REQ_PARAM_PAYMENT_METHOD_ID, REQ_PARAM_BILLING_REF,
@@ -140,6 +143,8 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         addRequestValue(REQ_PARAM_PAYMENT_METHOD_ID, paymentMethodId);
         addRequestValue(REQ_PARAM_BILLING_REF, billingReference);
         addRequestValue(REQ_PARAM_IS_ACCOUNT_LEVEL, isAccountLevel);
+        addRequestValue(REQ_PARAM_IS_DLV_PASS_CART, dlvPassCart);
+        ((CheckoutControllerTag) getWrapTarget()).setDlvPassCart(dlvPassCart);
         getWrapTarget().setActionName(ACTION_SET_PAYMENT_METHOD);
         setMethodMode(true);
         
@@ -257,7 +262,8 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         addRequestValue(REQ_PARAM_IS_PAYMENT_METHOD_GIFT_CARD, "false");
         addRequestValue(REQ_PARAM_IS_PAYMENT_METHOD_DONATION, "false");
         addRequestValue(REQ_PARAM_CAPTCHA_TOKEN, paymentMethod.getCaptchaToken());
-
+        addRequestValue(REQ_PARAM_IS_DLV_PASS_CART, paymentMethod.isDlvPassCart());
+        ((CheckoutControllerTag) getWrapTarget()).setDlvPassCart(paymentMethod.isDlvPassCart());
         getWrapTarget().setActionName(ACTION_ADD_PAYMENT_METHOD);
         setMethodMode(true);
         
@@ -296,7 +302,8 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         addRequestValue(REQ_PARAM_IS_PAYMENT_METHOD_GIFT_CARD, "false");
         addRequestValue(REQ_PARAM_IS_PAYMENT_METHOD_DONATION, "false");
         addRequestValue(REQ_PARAM_CAPTCHA_TOKEN, paymentMethod.getCaptchaToken());
-
+        addRequestValue(REQ_PARAM_IS_DLV_PASS_CART, paymentMethod.isDlvPassCart());
+        ((CheckoutControllerTag) getWrapTarget()).setDlvPassCart(paymentMethod.isDlvPassCart());
         getWrapTarget().setActionName(ACTION_ADD_PAYMENT_METHOD);
         setMethodMode(true);
         ActionResult actionResult = executeTagLogic();
@@ -350,6 +357,8 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         addRequestValue(REQ_PARAM_BILLING_REF, paymentMethod.getBillingRef());
         addRequestValue(REQ_PARAM_BIL_COUNTRY, paymentMethod.getBillingCtry());
         addRequestValue(REQ_PARAM_CAPTCHA_TOKEN, paymentMethod.getCaptchaToken());
+        addRequestValue(REQ_PARAM_IS_DLV_PASS_CART, paymentMethod.isDlvPassCart());
+        ((CheckoutControllerTag) getWrapTarget()).setDlvPassCart(paymentMethod.isDlvPassCart());
 
         getWrapTarget().setActionName(ACTION_ADD_SET_PAYMENT_METHOD);
         setMethodMode(true);        
@@ -406,27 +415,33 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         addRequestValue(REQ_PARAM_EDIT_PAYMENT_ID, paymentMethod.getPaymentMethodId());
         addRequestValue(REQ_PARAM_BIL_COUNTRY, paymentMethod.getBillingCtry());
         addRequestValue(REQ_PARAM_CAPTCHA_TOKEN, paymentMethod.getCaptchaToken());
+        addRequestValue(REQ_PARAM_IS_DLV_PASS_CART, paymentMethod.isDlvPassCart());
+        ((CheckoutControllerTag) getWrapTarget()).setDlvPassCart(paymentMethod.isDlvPassCart());
         
         getWrapTarget().setActionName(ACTION_EDIT_PAYMENT_METHOD);
         setMethodMode(true);
         return new ResultBundle(executeTagLogic(), this);
     }
 
-    public ResultBundle deletePaymentMethod(String paymentMethodId) throws FDException {
+    public ResultBundle deletePaymentMethod(String paymentMethodId, boolean dlvPassCart) throws FDException {
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_MAKE_GOOD_ORDER, TAXATION_TYPE_SESSION , SessionName.PAYPAL_DEVICE_ID },
                 new String[] { SESSION_PARAM_USER, SESSION_PARAM_MAKE_GOOD_ORDER, TAXATION_TYPE_SESSION , SessionName.PAYPAL_DEVICE_ID }); //gets,sets
         addExpectedRequestValues(new String[] { REQ_PARAM_DELETE_PAYMENT_ID, TAXATION_TYPE}, new String[] {TAXATION_TYPE});//gets,sets
         addRequestValue(REQ_PARAM_DELETE_PAYMENT_ID, paymentMethodId);
+        addRequestValue(REQ_PARAM_IS_DLV_PASS_CART, dlvPassCart);
+        ((CheckoutControllerTag) getWrapTarget()).setDlvPassCart(dlvPassCart);
         getWrapTarget().setActionName(ACTION_DELETE_PAYMENT_METHOD);
         setMethodMode(true);
         return new ResultBundle(executeTagLogic(), this);
     }
 
-    public ResultBundle deletePaymentMethodEx(String paymentMethodId) throws FDException {
+    public ResultBundle deletePaymentMethodEx(String paymentMethodId, boolean dlvPassCart) throws FDException {
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_MAKE_GOOD_ORDER, TAXATION_TYPE_SESSION , SessionName.PAYPAL_DEVICE_ID },
                 new String[] { SESSION_PARAM_USER, SESSION_PARAM_MAKE_GOOD_ORDER, TAXATION_TYPE_SESSION, SessionName.PAYPAL_DEVICE_ID  }); //gets,sets
         addExpectedRequestValues(new String[] { REQ_PARAM_DELETE_PAYMENT_ID, TAXATION_TYPE}, new String[] {TAXATION_TYPE});//gets,sets
         addRequestValue(REQ_PARAM_DELETE_PAYMENT_ID, paymentMethodId);
+        addRequestValue(REQ_PARAM_IS_DLV_PASS_CART, dlvPassCart);
+        ((CheckoutControllerTag) getWrapTarget()).setDlvPassCart(dlvPassCart);
         getWrapTarget().setActionName(ACTION_DELETE_PAYMENT_METHOD);
         setMethodMode(true);
         ActionResult actionResult = executeTagLogic();

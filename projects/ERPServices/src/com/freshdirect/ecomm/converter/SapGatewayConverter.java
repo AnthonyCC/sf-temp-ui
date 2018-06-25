@@ -409,11 +409,13 @@ public class SapGatewayConverter {
 			chargeLineData.setDiscount(buildDiscountData(erpChargeLine.getDiscount()));
 			chargeLineData.setId(erpChargeLine.getId());
 			chargeLineData.setReasonCode(erpChargeLine.getReasonCode());
-			if(erpChargeLine.getTaxationType() != null)
-			chargeLineData.setTaxationType(erpChargeLine.getTaxationType().getName());
+			if(erpChargeLine.getTaxationType() != null){
+				chargeLineData.setTaxationType(erpChargeLine.getTaxationType().getName());
+			}
 			chargeLineData.setTaxRate(erpChargeLine.getTaxRate());
-			if(erpChargeLine.getTaxationType() != null)
-			chargeLineData.setType(erpChargeLine.getType().getName());
+			if(erpChargeLine.getType() != null){
+				chargeLineData.setType(erpChargeLine.getType().getName());
+			}
 			erpChargeLineDataList.add(chargeLineData);
 		}
 		return erpChargeLineDataList;
@@ -541,8 +543,9 @@ public class SapGatewayConverter {
 		if(discount != null){
 			 discountData = new DiscountData();
 			discountData.setAmount(discount.getAmount());
-			if(discount.getDiscountType() != null)
-			discountData.setDiscountType(String.valueOf(discount.getDiscountType().getId()));
+			if(discount.getDiscountType() != null){
+				discountData.setDiscountType(String.valueOf(discount.getDiscountType().getId()));
+			}
 			discountData.setPromotionCode(discount.getPromotionCode());
 			discountData.setMaxPercentageDiscount(discount.getMaxPercentageDiscount());
 			discountData.setPromotionDescription(discount.getPromotionDescription());
@@ -658,7 +661,7 @@ public class SapGatewayConverter {
 			  zoneInfoData.setParent(buildZoneInfoData(pricingZone.getParentZone()));
 			  zoneInfoData.setSalesOrg( pricingZone.getSalesOrg());
 			  zoneInfoData.setZoneId(pricingZone.getPricingZoneId());
-			  zoneInfoData.setPricingIndicator(com.freshdirect.ecommerce.data.erp.pricing.ZoneInfoData.PricingIndicator.valueOf(pricingZone.getPricingIndicator().getValue()));
+			  zoneInfoData.setPricingIndicator(pricingZone.getPricingIndicator().name());
 			  zoneInfoData.setParent(buildZoneInfoData(pricingZone.getParentZone()));
 						
 			}
@@ -1542,7 +1545,7 @@ public class SapGatewayConverter {
 			  zoneInfo  = new ZoneInfo(pricingZone.getZoneId(), 
 					  pricingZone.getSalesOrg(), 
 					  pricingZone.getDistributionChanel(),
-					PricingIndicator.valueOf(pricingZone.getPricingIndicator().getValue()),
+					PricingIndicator.valueOf(pricingZone.getPricingIndicator()),
 					buildZoneInfo(pricingZone.getParent())
 					);
 		}

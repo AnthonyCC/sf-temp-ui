@@ -62,7 +62,7 @@
         <div id="departments" class="qs-menu-margin">
           <div class="departments rounded-box">
             <div class="departments-header qs-menu-header" data-listsize="">Departments <span class="counter"></span></div>
-            <ul class="checkboxlist departments-list"></ul>
+            <fieldset><legend class="offscreen">filter products by departments</legend><ul class="checkboxlist departments-list"></ul></fieldset>
           </div>
         </div>
         <div id="preferences" class="qs-menu-margin"></div>

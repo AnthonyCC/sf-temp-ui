@@ -96,7 +96,7 @@ public class ReceiptBoxService {
     }
     
     public void populateDeliveryChargeToBox(List<CartSubTotalFieldData> receiptBox, FDOrderI order, FDUserI user) {
-    	boolean freeTrialOptinBasedDPApplied = order.isChargeWaived(EnumChargeType.DELIVERY) &&  user.applyFreeTrailOptinBasedDP();
+    	boolean freeTrialOptinBasedDPApplied = order.isChargeWaivedByDlvPass(EnumChargeType.DELIVERY) && null ==order.getDeliveryPassId();
     	
         if (order.isDlvPassApplied() || freeTrialOptinBasedDPApplied) {
             CartSubTotalFieldData data = new CartSubTotalFieldData();

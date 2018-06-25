@@ -119,12 +119,12 @@ public class PaymentService {
         String billingRef = null; // TODO: needed? CORPORATE with zero payment
         // method.
         HttpSession session = request.getSession();
-        PaymentMethodManipulator.setPaymentMethod(paymentId, billingRef, request, session, result, actionName, ((paymentSaveAsDefault)?"Y":"N"));
+        PaymentMethodManipulator.setPaymentMethod(paymentId, billingRef, request, session, result, actionName, ((paymentSaveAsDefault)?"Y":"N"), false);
         for (ActionError error : result.getErrors()) {
             validationErrors.add(new ValidationError(error.getType(), error.getDescription()));
         }
         if (validationErrors.isEmpty()) {
-            PaymentMethodManipulator.applyCustomerCredits("selectPaymentMethod", (FDUserI) session.getAttribute(SessionName.USER), request.getSession());
+            PaymentMethodManipulator.applyCustomerCredits("selectPaymentMethod", (FDUserI) session.getAttribute(SessionName.USER), request.getSession(), false);
             session.removeAttribute(SessionName.CART_PAYMENT_SELECTION_DISABLED);
         }
         return validationErrors;

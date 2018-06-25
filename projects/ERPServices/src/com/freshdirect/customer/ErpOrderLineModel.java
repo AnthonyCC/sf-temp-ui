@@ -35,7 +35,7 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
     private String orderLineId;
     
     private String affiliateCode;
-
+    private ErpAffiliate affiliate;
     private FDSku sku;
     private FDConfiguration configuration;
     
@@ -201,11 +201,15 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 
 	@JsonIgnore
 	public ErpAffiliate getAffiliate() {
+		if (affiliate != null) {
+			return affiliate;
+		}
 		ErpAffiliate affiliate = ErpAffiliate.getEnum(this.affiliateCode);
 		return affiliate == null ? ErpAffiliate.getEnum(ErpAffiliate.CODE_FD) : affiliate;
 	}
 
 	public void setAffiliate(ErpAffiliate affiliate) {
+		this.affiliate = affiliate;
 		this.affiliateCode = affiliate == null ? null : affiliate.getCode();
 	}
 
@@ -224,7 +228,7 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 	public double getQuantity() {
 		return this.configuration.getQuantity();
 	}
-
+	@JsonIgnore
 	public Map<String,String> getOptions() {
 		return this.configuration.getOptions();
 	}

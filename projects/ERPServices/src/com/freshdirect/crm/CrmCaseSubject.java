@@ -50,6 +50,8 @@ public class CrmCaseSubject extends EnumModel implements TerminableI {
 
 	public static final String CODE_AUTO_BILL_PAYMENT_MISSING="DPQ-009";
 	
+	public static final String CODE_AUTO_BILL_PAYMENT_MISSING_FK="DPQ-010";
+	
 	public static final String CODE_FIRST_ORDER_FOR_PICK_UP_USED_GC="ASQ-104";
 	
 	public static final String CODE_FIRST_ORDER_OVER_MAX_USED_GC="ASQ-105";

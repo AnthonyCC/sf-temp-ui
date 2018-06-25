@@ -177,7 +177,10 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.logistics.delivery.model.DeliveryException;
 import com.freshdirect.logistics.delivery.model.OrderContext;
+import com.freshdirect.logistics.delivery.model.ReservationException;
+import com.freshdirect.logistics.delivery.model.ReservationUnavailableException;
 import com.freshdirect.logistics.delivery.model.SiteAnnouncement;
+import com.freshdirect.logistics.delivery.model.SystemMessageList;
 import com.freshdirect.logistics.fdstore.StateCounty;
 import com.freshdirect.logistics.fdstore.ZipCodeAttributes;
 import com.freshdirect.payment.BINInfo;
@@ -404,7 +407,6 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String ECOUPON_CLIP_COUPON = "ecoupon/clipcoupon/";
 	private static final String ECOUPON_EVALUATE = "ecoupon/evaluate";
 	private static final String ECOUPON_CANCEL_PENDING = "ecoupon/post/cancelpendingcoupontrans";
-	private static final String ECOUPON_COUPON_ORDER = "ecoupon/post/couponorder";
 	private static final String ECOUPON_CONF_PENDING = "ecoupon/confirmpendingcoupontrans/";
 	private static final String ECOUPON_CONFM_PENDING = "ecoupon/confirmpendingcouponsales";
 	private static final String ECOUPON_SUB_PENDING = "ecoupon/submitpendingcouponsales";
@@ -499,144 +501,157 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			throw new FDResourceException(e, "Unable to process the request.");
 		}
 	}
+
 	@Override
-	public Map<ZoneInfo, List<FDProductPromotionInfo>> getAllProductsByType(
-			String ppType) throws FDResourceException {
-	
-			Response<List<ZoneInfoDataWrapper>> response;
-			try {
-				
-				response = httpGetDataTypeMap(getFdCommerceEndPoint(PRODUCT_BY_PROMO_TYPE+ppType), new TypeReference<Response<List<ZoneInfoDataWrapper>>>() {});
-				if(!response.getResponseCode().equals("OK"))
-					throw new FDResourceException(response.getMessage());
-				
-					Map<ZoneInfo, List<FDProductPromotionInfo>> data = new HashMap();
-					for(ZoneInfoDataWrapper wrapper: response.getData()){
-						ZoneInfo key = ModelConverter.buildZoneInfo(wrapper.getKey());
-						List<FDProductPromotionInfo> value = ModelConverter.buildFDProductPromotionInfo(wrapper.getValue());
-						data.put(key,value);
-					}
-					return data;
-			} catch (FDResourceException e) {
-				LOGGER.error(e.getMessage());
-				throw new FDResourceException(e, "Unable to process the request.");
+	public Map<ZoneInfo, List<FDProductPromotionInfo>> getAllProductsByType(String ppType) throws FDResourceException {
+
+		Response<List<ZoneInfoDataWrapper>> response;
+		try {
+
+			response = httpGetDataTypeMap(getFdCommerceEndPoint(PRODUCT_BY_PROMO_TYPE + ppType),
+					new TypeReference<Response<List<ZoneInfoDataWrapper>>>() {
+					});
+			if (!response.getResponseCode().equals("OK"))
+				throw new FDResourceException(response.getMessage());
+
+			Map<ZoneInfo, List<FDProductPromotionInfo>> data = new HashMap<ZoneInfo, List<FDProductPromotionInfo>>();
+			for (ZoneInfoDataWrapper wrapper : response.getData()) {
+				ZoneInfo key = ModelConverter.buildZoneInfo(wrapper.getKey());
+				List<FDProductPromotionInfo> value = ModelConverter.buildFDProductPromotionInfo(wrapper.getValue());
+				data.put(key, value);
 			}
+			return data;
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new FDResourceException(e, "Unable to process the request.");
 		}
+	}
+
 	@Override
-	public Map<ZoneInfo, List<FDProductPromotionInfo>> getAllProductsByType(
-			String ppType, Date lastPublished) throws FDResourceException {
-	
-			Response<List<ZoneInfoDataWrapper>> response;
-			try {
-				long date1 = 0;
-				if(lastPublished!=null){
-				date1 = lastPublished.getTime(); 
+	public Map<ZoneInfo, List<FDProductPromotionInfo>> getAllProductsByType(String ppType, Date lastPublished)
+			throws FDResourceException {
+
+		Response<List<ZoneInfoDataWrapper>> response;
+		try {
+			long date1 = 0;
+			if (lastPublished != null) {
+				date1 = lastPublished.getTime();
+			}
+			response = httpGetDataTypeMap(
+					getFdCommerceEndPoint(PRODUCT_BY_PROMO_TYPE + ppType + "/lastPublishDate/" + date1),
+					new TypeReference<Response<List<ZoneInfoDataWrapper>>>() {
+					});
+			if (!response.getResponseCode().equals("OK"))
+				throw new FDResourceException(response.getMessage());
+
+			Map<ZoneInfo, List<FDProductPromotionInfo>> data = new HashMap<ZoneInfo, List<FDProductPromotionInfo>>();
+			for (ZoneInfoDataWrapper wrapper : response.getData()) {
+				ZoneInfo key = ModelConverter.buildZoneInfo(wrapper.getKey());
+				List<FDProductPromotionInfo> value = ModelConverter.buildFDProductPromotionInfo(wrapper.getValue());
+				data.put(key, value);
+			}
+			return data;
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new FDResourceException(e, "Unable to process the request.");
+		}
+	}
+
+	@Override
+	public Map<String, Map<ZoneInfo, List<FDProductPromotionInfo>>> getAllPromotionsByType(String ppType,
+			Date lastPublished) throws FDResourceException {
+
+		Response<Map<String, List<ZoneInfoDataWrapper>>> response;
+		try {
+			long date1 = 0;
+			if (lastPublished != null) {
+				date1 = lastPublished.getTime();
+			}
+
+			response = httpGetDataTypeMap(
+					getFdCommerceEndPoint(PROMOTION_BY_TYPE + ppType + "/lastPublishDate/" + date1),
+					new TypeReference<Response<Map<String, List<ZoneInfoDataWrapper>>>>() {
+					});
+			if (!response.getResponseCode().equals("OK"))
+				throw new FDResourceException(response.getMessage());
+
+			Map<String, Map<ZoneInfo, List<FDProductPromotionInfo>>> data = new HashMap<String, Map<ZoneInfo, List<FDProductPromotionInfo>>>();
+			for (String key : response.getData().keySet()) {
+
+				Map<ZoneInfo, List<FDProductPromotionInfo>> zoneData = new HashMap<ZoneInfo, List<FDProductPromotionInfo>>();
+				for (ZoneInfoDataWrapper wrapper : response.getData().get(key)) {
+					ZoneInfo zoneInfo = ModelConverter.buildZoneInfo(wrapper.getKey());
+					List<FDProductPromotionInfo> value = ModelConverter.buildFDProductPromotionInfo(wrapper.getValue());
+					zoneData.put(zoneInfo, value);
 				}
-				response = httpGetDataTypeMap(getFdCommerceEndPoint(PRODUCT_BY_PROMO_TYPE+ppType+"/lastPublishDate/"+date1), new TypeReference<Response<List<ZoneInfoDataWrapper>>>() {});
-				if(!response.getResponseCode().equals("OK"))
-					throw new FDResourceException(response.getMessage());
-				
-					Map<ZoneInfo, List<FDProductPromotionInfo>> data = new HashMap();
-					for(ZoneInfoDataWrapper wrapper: response.getData()){
-						ZoneInfo key = ModelConverter.buildZoneInfo(wrapper.getKey());
-						List<FDProductPromotionInfo> value = ModelConverter.buildFDProductPromotionInfo(wrapper.getValue());
-						data.put(key,value);
-					}
-					return data;
-			} catch (FDResourceException e) {
-				LOGGER.error(e.getMessage());
-				throw new FDResourceException(e, "Unable to process the request.");
+				data.put(key, zoneData);
 			}
+			return data;
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new FDResourceException(e, "Unable to process the request.");
 		}
-	
-	
+	}
+
 	@Override
-	public Map<String, Map<ZoneInfo, List<FDProductPromotionInfo>>> getAllPromotionsByType(
-			String ppType, Date lastPublished) throws FDResourceException {
-	
-			Response<Map<String, List<ZoneInfoDataWrapper>>> response;
-			try {
-				new SimpleDateFormat("yyyy-MM-dd");
-				long date1 = 0;
-				if(lastPublished!=null){
-				date1 = lastPublished.getTime(); 
-				}
-				
-				response = httpGetDataTypeMap(getFdCommerceEndPoint(PROMOTION_BY_TYPE+ppType+"/lastPublishDate/"+date1), new TypeReference<Response<Map<String, List<ZoneInfoDataWrapper>>>>() {});
-				if(!response.getResponseCode().equals("OK"))
-					throw new FDResourceException(response.getMessage());
-				
-				Map<String, Map<ZoneInfo, List<FDProductPromotionInfo>>> data = new HashMap();
-				for(String key:response.getData().keySet() ){
-					
-					Map<ZoneInfo, List<FDProductPromotionInfo>> zoneData = new HashMap();
-					for(ZoneInfoDataWrapper wrapper: response.getData().get(key)){
-						ZoneInfo zoneInfo = ModelConverter.buildZoneInfo(wrapper.getKey());
-						List<FDProductPromotionInfo> value = ModelConverter.buildFDProductPromotionInfo(wrapper.getValue());
-						zoneData.put(zoneInfo,value);
-					}
-					data.put(key, zoneData);
-				}
-					return data;
-			} catch (FDResourceException e) {
-				LOGGER.error(e.getMessage());
-				throw new FDResourceException(e, "Unable to process the request.");
-			}
+	public List<FDProductPromotionInfo> getProductsByZoneAndType(String ppType, String zoneId)
+			throws FDResourceException {
+
+		Response<List<FDProductPromotionInfoData>> response;
+		try {
+
+			response = httpGetDataTypeMap(getFdCommerceEndPoint(PRODUCT_BY_PROMO_TYPE + ppType + "/zoneId/" + zoneId),
+					new TypeReference<Response<List<FDProductPromotionInfoData>>>() {
+					});
+			if (!response.getResponseCode().equals("OK"))
+				throw new FDResourceException(response.getMessage());
+
+			List<FDProductPromotionInfo> data = new ArrayList<FDProductPromotionInfo>();
+			data = ModelConverter.buildFDProductPromotionInfo(response.getData());
+			return data;
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new FDResourceException(e, "Unable to process the request.");
 		}
-	
+	}
+
 	@Override
-	public List<FDProductPromotionInfo> getProductsByZoneAndType(
-			String ppType, String zoneId) throws FDResourceException {
-	
-			Response<List<FDProductPromotionInfoData>> response;
-			try {
-				
-				response = httpGetDataTypeMap(getFdCommerceEndPoint(PRODUCT_BY_PROMO_TYPE+ppType+"/zoneId/"+zoneId), new TypeReference<Response<List<FDProductPromotionInfoData>>>() {});
-				if(!response.getResponseCode().equals("OK"))
-					throw new FDResourceException(response.getMessage());
-				
-				List<FDProductPromotionInfo> data = new ArrayList();
-				data = ModelConverter.buildFDProductPromotionInfo(response.getData());
-				return data;
-			} catch (FDResourceException e) {
-				LOGGER.error(e.getMessage());
-				throw new FDResourceException(e, "Unable to process the request.");
-			}
-		}
-	
-	@Override
-	public ErpProductPromotionPreviewInfo getProductPromotionPreviewInfo(
-			String ppPreviewId) throws FDResourceException {
-		// TODO Auto-generated method stub 
-		
+	public ErpProductPromotionPreviewInfo getProductPromotionPreviewInfo(String ppPreviewId)
+			throws FDResourceException {
+
 		Response<ErpProductPromotionPreviewInfoData> response;
 		try {
-			
-			response = httpGetDataTypeMap(getFdCommerceEndPoint(PROMOTION_PREVIEW+"promPreview/"+ppPreviewId), new TypeReference<Response<ErpProductPromotionPreviewInfoData>>() {});
-			if(!response.getResponseCode().equals("OK"))
+
+			response = httpGetDataTypeMap(getFdCommerceEndPoint(PROMOTION_PREVIEW + "promPreview/" + ppPreviewId),
+					new TypeReference<Response<ErpProductPromotionPreviewInfoData>>() {
+					});
+			if (!response.getResponseCode().equals("OK"))
 				throw new FDResourceException(response.getMessage());
-			
-			ErpProductPromotionPreviewInfo data ;
+
+			ErpProductPromotionPreviewInfo data;
 			data = ModelConverter.buildErpProductPromotionPreviewInfo(response.getData());
 			return data;
 		} catch (FDResourceException e) {
 			LOGGER.error(e.getMessage());
 			throw new FDResourceException(e, "Unable to process the request.");
 		}
-	
+
 	}
+
 	@Override
-	public NavigableMap<Long, BINInfo> getActiveBINs()
-			throws FDResourceException {
+	public NavigableMap<Long, BINInfo> getActiveBINs() throws FDResourceException {
 		Response<NavigableMap<Long, BINData>> response;
-	
-			response = httpGetDataTypeMap(getFdCommerceEndPoint(GET_ACTIVE_BINS), new TypeReference<Response<NavigableMap<Long, BINData>>>() {});
-			if(!response.getResponseCode().equals("OK"))
-				throw new FDResourceException(response.getMessage());
-				
-				return buildBinInfoModel(response.getData());
-	
-		}
+
+		response = httpGetDataTypeMap(getFdCommerceEndPoint(GET_ACTIVE_BINS),
+				new TypeReference<Response<NavigableMap<Long, BINData>>>() {
+				});
+		if (!response.getResponseCode().equals("OK"))
+			throw new FDResourceException(response.getMessage());
+
+		return buildBinInfoModel(response.getData());
+
+	}
+
 	@Override
 	public void saveBINInfo(List<List<BINInfo>> binInfos)
 			throws FDResourceException {Request<List<List<BINData>>> request = new Request<List<List<BINData>>>();
@@ -1039,22 +1054,24 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			e.printStackTrace();
 		}
 	}
+
 	@Override
 	public boolean isSocialLoginOnlyUser(String customer_id) {
 		Response<Boolean> response = null;
 		try {
 			response = httpGetDataTypeMap(
-					getFdCommerceEndPoint("account/external/checksocialloginuser?customerId="+customer_id),new TypeReference<Response<Boolean>>() {
+					getFdCommerceEndPoint("account/external/checksocialloginuser?customerId=" + customer_id),
+					new TypeReference<Response<Boolean>>() {
 					});
 			if (!response.getResponseCode().equals("OK"))
 				throw new FDResourceException(response.getMessage());
 
+			return response.getData();
 		} catch (FDResourceException e) {
-			e.printStackTrace();
 			LOGGER.error(e.getMessage());
 		}
-		return response.getData();
-	
+		return false;
+
 	}
 	@Override
 	public List<String> getConnectedProvidersByUserId(String userId) {
@@ -1851,7 +1868,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	@Override
 	public void commitReservation(String rsvId, String customerId,
 			OrderContext context, ContactAddressModel address, boolean pr1,
-			TimeslotEvent event) throws FDResourceException {
+			TimeslotEvent event) throws FDResourceException, ReservationException {
 		Request<ReservationParam> request = new Request<ReservationParam>();
 		OrderContextData orderData = getMapper().convertValue(context, OrderContextData.class);
 		ContactAddressData contactAddressData = getMapper().convertValue(address, ContactAddressData.class);
@@ -1870,8 +1887,12 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		try {			
 			inputJson = buildRequest(request);
 			Response<Void> response = this.postData(inputJson, getFdCommerceEndPoint(DLV_MANAGER_COMMIT_RESERVATION), Response.class);
-			if(!response.getResponseCode().equals("OK")){
-				throw new FDResourceException(response.getMessage());
+			
+			if (!response.getResponseCode().equals("OK")) {
+				if(response.getRequestIdentifier()!=null&&response.getRequestIdentifier().equals("ReservationUnavailableException"))
+					throw new ReservationUnavailableException(SystemMessageList.DELIVERY_SLOT_RSVERROR);
+				if(response.getRequestIdentifier()!=null&&response.getRequestIdentifier().equals("ReservationException"))
+					throw new ReservationException(SystemMessageList.DELIVERY_SLOT_RSVERROR);
 			}
 		} catch (FDEcommServiceException e) {
 			throw new FDResourceException(e);
@@ -1883,7 +1904,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		
 	@Override
 	public void recommitReservation(String rsvId, String customerId,
-			OrderContext context, ContactAddressModel address, boolean pr1) throws FDResourceException {
+			OrderContext context, ContactAddressModel address, boolean pr1) throws FDResourceException, ReservationException {
 		Request<ReservationParam> request = new Request<ReservationParam>();
 		OrderContextData orderData = getMapper().convertValue(context, OrderContextData.class);
 		ContactAddressData contactAddressData = getMapper().convertValue(address, ContactAddressData.class);
@@ -1900,8 +1921,11 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		try {
 			inputJson = buildRequest(request);
 			Response<Void> response = this.postData(inputJson, getFdCommerceEndPoint(DLV_MANAGER_RECOMMIT_RESERVATION), Response.class);
-			if(!response.getResponseCode().equals("OK")){
-				throw new FDResourceException(response.getMessage());
+			if (!response.getResponseCode().equals("OK")) {
+				if(response.getRequestIdentifier()!=null&&response.getRequestIdentifier().equals("ReservationUnavailableException"))
+					throw new ReservationUnavailableException(SystemMessageList.DELIVERY_SLOT_RSVERROR);
+				if(response.getRequestIdentifier()!=null&&response.getRequestIdentifier().equals("ReservationException"))
+					throw new ReservationException(SystemMessageList.DELIVERY_SLOT_RSVERROR);
 			}
 		} catch (FDEcommServiceException e) {
 			throw new FDResourceException(e);
@@ -3184,7 +3208,11 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	@Override
 	public void sendCancelOrderRequest(String saleId) throws RemoteException {
 		try {
-			this.postDataTypeMap(null, getFdCommerceEndPoint(CANCEL_ORDER_REQUEST+"?saleid="+saleId),  new TypeReference<Response<Object>>() {});
+			Response<String> response = this.postDataTypeMap(null, getFdCommerceEndPoint(CANCEL_ORDER_REQUEST+"?saleId="+saleId),  new TypeReference<Response<Object>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
@@ -3202,7 +3230,10 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		try {
 			request.setData(submitOrderRequestData);
 			String inputJson = buildRequest(request);
-			this.postDataTypeMap(inputJson, getFdCommerceEndPoint(MODIFY_ORDER_REQUEST),  new TypeReference<Response<Object>>() {});
+			Response<String> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(MODIFY_ORDER_REQUEST),  new TypeReference<Response<Object>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
@@ -3215,8 +3246,11 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	@Override
 	public void sendReservationUpdateRequest(String  reservationId, ContactAddressModel address, String sapOrderNumber) throws RemoteException {
 		try {
-			buildRequest(address);
-			this.postDataTypeMap(null, getFdCommerceEndPoint(RESERVATION_UPDATE+"?reservationid="+reservationId+"&sapordernumber="+sapOrderNumber),  new TypeReference<Response<Object>>() {});
+			String addressString = buildRequest(address);
+			Response<String> response = this.postDataTypeMap(addressString, getFdCommerceEndPoint(RESERVATION_UPDATE+"?reservationId="+reservationId+"&sapOrderNumber="+sapOrderNumber),  new TypeReference<Response<String>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
@@ -3237,7 +3271,10 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		try {
 			request.setData(submitOrderRequestData);
 			String inputJson = buildRequest(request);
-			this.postDataTypeMap(inputJson, getFdCommerceEndPoint(SUBMIT_ORDER_REQUEST),  new TypeReference<Response<Object>>() {});
+			Response<String> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(SUBMIT_ORDER_REQUEST),  new TypeReference<Response<Object>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
@@ -3483,7 +3520,6 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		Integer data  = response.getData();
 		batchNumber = data.intValue();
 		} catch (FDResourceException e) {
-			// TODO Auto-generated catch block
 			throw new RemoteException(e.getMessage());
 		}
 		return batchNumber;
@@ -3791,31 +3827,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			throw new RemoteException(e.getMessage());
 		}
 	}
-
-	@Override
-	public void postCouponOrder(ErpCouponTransactionModel couponTransModel, FDCouponActivityContext context) throws RemoteException {
-		Response<Void> response = null;
-		try {
-			Request<ObjectNode> request = new Request<ObjectNode>();
-			ObjectNode rootNode = getMapper().createObjectNode();
-			rootNode.set("couponTransModel", getMapper().convertValue(couponTransModel, JsonNode.class));
-			rootNode.set("context", getMapper().convertValue(context, JsonNode.class));
-			request.setData(rootNode);
-			String inputJson = buildRequest(request);
-
-			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(ECOUPON_COUPON_ORDER), new TypeReference<Response<Void>>() {});
-			if (!response.getResponseCode().equals("OK")) {
-				throw new FDResourceException(response.getMessage());
-			}
-		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		} catch (FDResourceException e) {
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}
-	}
-
+	
 	@Override
 	public void postConfirmPendingCouponTransactions(String saleId) throws RemoteException {
 		Response<Object> response = null;

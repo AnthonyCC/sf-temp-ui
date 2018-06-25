@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.TimeslotList;
 import com.freshdirect.mobileapi.model.DeliveryTimeslots.TimeSlotCalculationResult;
 
@@ -76,11 +77,11 @@ public class DeliveryTimeslots extends CheckoutResponse {
     /**
      * @param result
      */
-    public DeliveryTimeslots(TimeSlotCalculationResult result) {
+    public DeliveryTimeslots(TimeSlotCalculationResult result, SessionUser user) {
         List<TimeslotList> slotLists = result!=null?result.getTimeslotList():null;
         if(slotLists!=null){
 	        for (TimeslotList slotList : slotLists) {
-	            timeSlots.addAll(Timeslot.initWithList(slotList.getTimeslots(result.isUserChefTable())));
+	            timeSlots.addAll(Timeslot.initWithList(slotList.getTimeslots(result.isUserChefTable(), user)));
 	        }
         }
         List<String> restrictionMessages = result!=null?result.getMessages():null;

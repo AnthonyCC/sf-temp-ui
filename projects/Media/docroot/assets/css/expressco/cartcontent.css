@@ -2,7 +2,8 @@
   padding-left: 20px;
 }
 
-.cartsection__cartline .cartline-box{
+.cartsection__cartline .cartline-box,
+.cartsection__totalwrapper .cartline-box {
   display:inline-block;
   box-sizing:border-box;
   line-height:70px;
@@ -16,6 +17,10 @@
   font-weight: bold;
 }
 
+.cartsection-justadded .new {
+  visibility: hidden;
+}
+
 .cartsection__cartline .cartline-imageholder{
   width:70px;
   height:70px;
@@ -26,8 +31,8 @@
 }
 
 .cartline-imageholder .cartline-image{
-  max-width: 60px;
-  max-height: 60px;
+  max-width: 62px;
+  max-height: 62px;
 }
 
 .cartsection__cartline .cartline-title{
@@ -37,7 +42,7 @@
 }
 
 #cartcontent .cartsection__cartline .cartline-title{
-  width:500px;
+  width: 510px;
 }
 
 .cartsection__cartline .cartline-delete{
@@ -51,7 +56,7 @@
 }
 
 .cartline-quantity-bigger.cartline-quantity{
-  font-size:15px;
+  font-size: 14px;
 }
 
 .cartline-quantity .qtyinput{
@@ -117,10 +122,14 @@
 }
 
 .cartsection__cartline .cartline-price-value{
-  font-size:13px;
-  font-weight:bold;
-  color:#333;
+  font-size: 14px;
+  color: #444;
   margin:0;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.21;
+  letter-spacing: 0.2px;
 }
 
 .cartsection__cartline .cartline-price-value.cartline-price-value-free {
@@ -129,17 +138,27 @@
 }
 
 .cartsection__cartline .cartline-unitprice{
-  font-size:12px;
-  color:#888;
   margin:0;
+  font-family: Verdana;
+  font-size: 12px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.42;
+  letter-spacing: 0.2px;
+  text-align: right;
+  color: #444444;
 }
 
 .cartsection__cartline .cartline-titleholder{
-  line-height:1.2;
+  line-height: 1.21;
   font-size:14px;
+  letter-spacing: 0.3px;
+  color: #444444;
 }
 
-.cartsection__cartline .cartline-legend{
+.cartsection__cartline .cartline-legend,
+.cartsection__totalwrapper .cartline-legend {
   width:40px;
   text-align:center;
 }
@@ -154,6 +173,9 @@
 
 .cartline-legend .cartline-legendwrapper{
   line-height:normal;
+  /* margin-top:20px; */
+}
+[data-component="cartline"] .cartline-legend .cartline-legendwrapper{
   margin-top:20px;
 }
 
@@ -163,6 +185,14 @@
 
 .cartline-titleholder .cartline-descriptor{
   margin:0.5em 0;
+  font-size: 14px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.29;
+  letter-spacing: 0.2px;
+  color: #333333;
+  margin: 0;
 }
 
 .cartline-discount .red{
@@ -196,15 +226,26 @@
 }
 
 .cartsection .cartsection__title{
-  color: #333;
-  font-size: 14px;
-  font-weight: normal;
   margin: 0 0;
+  font-size: 12px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: 0.1px;
+  text-align: left;
+  color: #444444;
+}
+
+.cartsection .cartsection__title .sectionInfoKey {
+	visibility:hidden;
 }
 
 #cartcontent .cartsection .cartsection__title{
 /*   margin-left: 0; */
-    position:relative;
+  position:relative;
+  text-transform: uppercase;
+  margin-bottom: 15px;
 }
 
 .cartsection .cartsection__title [data-component="removeRecipeButton"] {
@@ -361,6 +402,7 @@
 .subtotal__rowcell-mid,
 .subtotal__rowcell-right{
   display:inline-block;
+  font-weight: bold;
 }
 
 .subtotal__rowcell-left{
@@ -415,29 +457,44 @@
 	border-top: 1px solid #979797;
 }
 
-.cartsection-wine .cartsection__title{
+.cartsection-wine .cartsection__title {
 	visibility:hidden;
 }
 
 .cartsection-wine .cartsection__total:before{
-	content:'FD Wines & Spirits ';
+	content:'FD Wines & Spirits - ';
 }
 
 .cartsection-wine .cartsection__title:before{
 	content:'FD Wines & Spirits';
 	visibility:visible;
 }
+.cartsection-wine.cartsection-justadded .cartsection__title:before {
+  content:'FD Wines & Spirits\AJust Added';
+  white-space: pre;
+}
 
-.cartsection__total{
+.cartsection__total {
 	font-size:14px;
-	color:#333;
-	font-weight:bold;
+	color: #444;
 	text-align:right;
 	margin:0;
-	padding-right: 20px;
+	/* padding-right: 40px; */
+	font-weight: normal;
+	font-style: normal;
+	font-stretch: normal;
+	line-height: 1;
+	letter-spacing: normal;
+	display: inline-block;
+}
+.cartsection__total .strl_text:after {
+  padding-right: 0.5em;
+}
+.cartsection__total .strl_text:after {
+  content: ':';
 }
 .cartsection__tax{
-	padding-right: 20px;
+	padding-right: 40px;
 }
 
 .cartsection__tax{
@@ -458,9 +515,11 @@ p.cartsection__tax{
 .cartsection__totalwrapper{
 	border-top: 1px solid #979797;
 	padding: 10px 0 15px 0;
+	text-align: right;
 }
 .cartsection__totalwrapper.right{
 	padding-top: 30px;
+	border-top: none;
 }
 .cartheader{
   padding:20px 0;
@@ -1213,7 +1272,7 @@ label[for="dontupdatecartlines"] {
 /*#subtotalbox2 .rowcell-text-right{*/
  .total .rowcell-text-right{
 	text-align: right;
-    min-width: 70px;
+	min-width: 70px;
 }
 /*#subtotalbox2 .st_val .rowcontent-free-with-pass{*/
 .total .rowcontent-free-with-pass{
@@ -1241,8 +1300,8 @@ label[for="dontupdatecartlines"] {
 .eTippingEnabled #subtotalbox2 .subtotal__rowcell-left.st_label_ssOrderTotal{
 	text-align: left;
 	display: inline-block;
-    line-height: 40px;
-    width: 100px;
+	line-height: 40px;
+	width: 100px;
 }
 .eTippingEnabled #subtotalbox2 #st_label_youSaved, .eTippingEnabled #subtotalbox2 .subtotal__rowcell-mid.st_val_youSaved{
 	display:inline;
@@ -1257,7 +1316,7 @@ label[for="dontupdatecartlines"] {
 .eTippingEnabled .cartsection__totalwrapper .subtotal__rowcell-left,
 .eTippingEnabled .subtotalbox2 .subtotal__rowcell-left {
 	min-width: auto;
-	width: 130px;
+	width: 135px;
 	margin-right: 20px;
 	margin-bottom: 4px;
 	line-height: 21px;
@@ -1265,8 +1324,9 @@ label[for="dontupdatecartlines"] {
 }
 
 .eTippingEnabled .cartsection__totalwrapper .optionaltip.subtotal__rowcell-left {
-    min-width: 130px;
-	display: table;
+    min-width: 135px;
+    display: table;
+    font-size: 13px;
 }
 .eTippingEnabled form .subtotal__rowcell-left{
 	float:left;
@@ -1334,7 +1394,7 @@ label[for="dontupdatecartlines"] {
 .eTippingEnabled .subtotal__rowcell-left,
 .eTippingEnabled .subtotal__rowcell-mid,
 .eTippingEnabled .subtotal__rowcell-right{
-  font-size:16px;
+  /* font-size:16px; */
 }
 
 [fdform="etip"] [fdform-error] {
@@ -1356,6 +1416,7 @@ label[for="dontupdatecartlines"] {
 
 .eTippingEnabled .tipDropdown, .eTippingEnabled .tipApply, .eTippingEnabled .tipApplied, .eTippingEnabled .tipTextBox{
 	width: 129px;
+	width: 100%;
 	box-sizing: border-box;
 }
 .eTippingEnabled .tipDropdown,
@@ -1402,16 +1463,19 @@ label[for="dontupdatecartlines"] {
 	white-space: pre;
 	content: " ";
 }
-.eTippingEnabled .cartsection__total,
+.eTippingEnabled .cartsection__total {
+  font-weight: normal;
+}
 .eTippingEnabled .cartsection__tax{
-  font-size:16px;
-  font-weight:normal;
+  font-size: 14px;
+  font-weight: normal;
 }
 .cartcontent .eTippingEnabled .cartsection__tax{
 	text-align: right;
 }
 .cartcontent .eTippingEnabled .cartsection__tax[fdform-container="etip"]{
 	text-align: left;
+	padding-right: 20px;
 }
 .eTippingEnabled .rowcontent-free-with-pass{
 	margin-left:0;
@@ -1432,7 +1496,7 @@ label[for="dontupdatecartlines"] {
 	margin-bottom:10px;
 }
 .eTippingEnabled .strl_text{
-	font-size: 14px;
+	/* font-size: 14px; */
 }
 
 .eTippingEnabled .orderSummary .subtotal__rowcell-mid{
@@ -1521,6 +1585,7 @@ label[for="dontupdatecartlines"] {
 	background-color: #9d9d9d;
 	cursor:pointer;
 }
+
 #expresscheckout #cartcontent:before{
 	width: 100%;
 }
@@ -1599,4 +1664,7 @@ button[data-component="update-cart"] {
 }
 #cartcontent .cartsection-wine {
   border-top: none;
+}
+.cartsection__totalwrapper .subtotalboxes {
+  text-align: left;
 }

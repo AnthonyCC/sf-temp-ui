@@ -72,7 +72,6 @@ public class FDCouponManagerDAO {
         
 	public static void storeCoupons(Connection conn, List<FDCouponInfo> coupons) throws SQLException{
 		PreparedStatement ps =null;
-		PreparedStatement ps1 =null;
 		Date currentTime =new Date();
 		
 		int version =createHistoryData(conn,new Timestamp(currentTime.getTime()));		
@@ -213,10 +212,6 @@ public class FDCouponManagerDAO {
 									+ " ORDER BY FC.COUPON_ID");
 					if (FDCouponProperties.isCouponCacheDaysLimitEnabled()) {
 						int days = FDCouponProperties.getCouponCacheDaysLimit();
-						/*ps = conn.prepareStatement(
-								"SELECT * FROM  CUST.FDCOUPON FC, CUST.FDCOUPON_REQ_UPC UPC, CUST.FDCOUPON_HISTORY CH2 WHERE  FC.ID=UPC.FDCOUPON_ID AND FC.VERSION=(SELECT MAX(FC1.VERSION) FROM CUST.FDCOUPON FC1,CUST.FDCOUPON_HISTORY CH WHERE FC1.COUPON_ID=FC.COUPON_ID"
-										+ " AND FC1.VERSION=CH.VERSION AND CH.DATE_CREATED >(SYSDATE-" + days
-										+ ")) AND CH2.VERSION=(select min(fc2.version) from cust.fdcoupon fc2 where FC2.COUPON_ID=FC.COUPON_ID) ORDER BY FC.COUPON_ID");*/
 						ps = conn.prepareStatement(
 						" SELECT (select  date_created FROM  cust.FDCOUPON_HISTORY where version=A.min_version) as date_created, fdc.*, upc.* FROM "+
 						" (SELECT c.coupon_id, max(version) max_version, (select min(version) from cust.fdcoupon where coupon_id=c.coupon_id) as min_version FROM (select version v from cust.fdcoupon_history ch where  CH.DATE_CREATED > (SYSDATE-" + days+")) h, "+

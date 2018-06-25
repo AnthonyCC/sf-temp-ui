@@ -415,4 +415,11 @@ public abstract class ErpPaymentMethodModel extends ModelSupport implements ErpP
 	public void setIsValidCardForDefault(boolean isValidCardForDefault){
 		this.isValidCardForDefault = isValidCardForDefault;
 	}
+
+	@Override
+	public void setId(String id) {
+		if (id != null) {
+			super.setId(id);
+		}
+	}
 }

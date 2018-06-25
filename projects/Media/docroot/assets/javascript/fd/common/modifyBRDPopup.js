@@ -9,6 +9,22 @@ var FreshDirect = FreshDirect || {};
   var WIDGET = fd.modules.common.widget;
   var DISPATCHER = fd.common.dispatcher;
 
+  /* ATC result page reload, only listen when needed */
+  var ModifyBRDPopupAtcSuccess = Object.create(fd.common.signalTarget, {
+    signal: {
+      value: 'atcResult'
+    },
+    callback: {
+      value: function (data) {
+        data.forEach(function (atcItemInfo) {
+          if (atcItemInfo.status === 'SUCCESS') {
+            window.location.reload();
+          }
+        });
+      }
+    }
+  });
+
   var ModifyBRDPopup1 = Object.create(WIDGET, {
     signal: {
       value: 'pendingPopupData'
@@ -137,6 +153,9 @@ var FreshDirect = FreshDirect || {};
         var items = fd.modules.common.productSerialize(e.target);
         var orderId = $(this.orderInput).val();
 
+        //listen for reload
+        ModifyBRDPopupAtcSuccess.listen();
+        
         fd.components.AddToCart.triggerATC(items,{orderId:orderId}, $(this.placeholder), this.data.eventSource, (this.data.mobWeb) ? true : this.data.ignoreRedirect);
         this.close();
       }
@@ -182,7 +201,6 @@ var FreshDirect = FreshDirect || {};
 
   $(document).on('click', ModifyBRDPopup2.popupId + ' .MBRD-selectall', ModifyBRDPopup2.selectAllClick.bind(ModifyBRDPopup2));
   $(document).on('click', ModifyBRDPopup2.popupId + ' .MBRD-deselectall', ModifyBRDPopup2.deSelectAllClick.bind(ModifyBRDPopup2));
-
 
 }(FreshDirect));
 

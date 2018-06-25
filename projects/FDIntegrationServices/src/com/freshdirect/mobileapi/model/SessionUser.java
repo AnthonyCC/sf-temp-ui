@@ -182,6 +182,10 @@ public class SessionUser {
     public Cart getShoppingCart() {
         return Cart.wrap(sessionUser.getShoppingCart());
     }
+    
+    public Cart getDlvPassCart() {
+        return Cart.wrap(sessionUser.getDlvPassCart());
+    }
 
     /**
      * @return
@@ -270,7 +274,7 @@ public class SessionUser {
     public Timeslot getReservationTimeslot() {
         Timeslot timeslot = null;
         if (sessionUser.getReservation() != null) {
-            timeslot = Timeslot.wrap(sessionUser.getReservation().getTimeslot(), isChefsTable());
+            timeslot = Timeslot.wrap(sessionUser.getReservation().getTimeslot(), isChefsTable(), SessionUser.wrap(sessionUser));
         }
         return timeslot;
 
@@ -282,6 +286,12 @@ public class SessionUser {
 
     public void updateShoppingCart(Cart cart) {
         cart.updateWrappedCart(this.sessionUser.getShoppingCart());
+    }
+    
+    public void updateShoppingCart(Cart cart, boolean dlvPassCart) {
+    	if(!dlvPassCart){
+    		cart.updateWrappedCart(this.sessionUser.getShoppingCart());
+    	}
     }
 
     /**

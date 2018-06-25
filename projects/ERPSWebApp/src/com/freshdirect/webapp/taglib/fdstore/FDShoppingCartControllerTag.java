@@ -49,9 +49,11 @@ import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
 import com.freshdirect.fdstore.customer.FDActionInfo;
+import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -177,6 +179,8 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
     private boolean pending;
 
     private boolean filterCoupons;
+    
+    private boolean dlvPassCart;
 
     /**
      * Cartlines already processed, BUT not yet added to the cart.
@@ -208,7 +212,15 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
         this.source = source;
     }
 
-    /**
+    public boolean isDlvPassCart() {
+		return dlvPassCart;
+	}
+
+	public void setDlvPassCart(boolean dlvPassCart) {
+		this.dlvPassCart = dlvPassCart;
+	}
+
+	/**
      * Return the source of the event, that is, the part of the site the shopping cart action was made on. If not known, default to "Browse".
      * 
      * @return the source of the event.
@@ -286,7 +298,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
             this.cart = user.getMergePendCart();
             this.cart.clearOrderLines();
         } else {
-            this.cart = user.getShoppingCart();
+        	this.cart = UserUtil.getCart(user, "", isDlvPassCart());
         }
         if (cart == null) {
             // user doesn't have a cart, this is a bug, as login or site_access
@@ -698,8 +710,6 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
     }
 
     public static void handleDeliveryPass(FDUserI user, FDCartModel cart) throws JspException {
-        if (EnumEStoreId.FDX.equals(user.getUserContext().getStoreContext().getEStoreId()))
-            return;
         cart.handleDeliveryPass();
         if (user.getSelectedServiceType() == EnumServiceType.HOME) {
             /*

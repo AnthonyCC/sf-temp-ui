@@ -90,9 +90,9 @@ public class Checkout {
         return result;
     }
 
-    public ResultBundle submitOrder() throws FDException {
+    public ResultBundle submitOrder(boolean dlvPassCart) throws FDException {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
-        ResultBundle result = tagWrapper.submitOrder();
+        ResultBundle result = tagWrapper.submitOrder(dlvPassCart);
 
         if (result.getActionResult() == null) {
             ActionResult actionResult = new ActionResult();
@@ -103,14 +103,14 @@ public class Checkout {
         return result;
     }
 
-    public ResultBundle setPaymentMethod(String paymentMethodId, String billingReference, String isAccountLevel) throws FDException {
+    public ResultBundle setPaymentMethod(String paymentMethodId, String billingReference, String isAccountLevel, boolean dlvPassCart) throws FDException {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
-        return tagWrapper.setPaymentMethod(paymentMethodId, billingReference, isAccountLevel);
+        return tagWrapper.setPaymentMethod(paymentMethodId, billingReference, isAccountLevel, dlvPassCart);
     }
 
-    public ResultBundle setPaymentMethodEx(String paymentMethodId, String billingReference, String isAccountLevel) throws FDException {
+    public ResultBundle setPaymentMethodEx(String paymentMethodId, String billingReference, String isAccountLevel, boolean dlvPassCart) throws FDException {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
-        ResultBundle result = tagWrapper.setPaymentMethod(paymentMethodId, billingReference, isAccountLevel);
+        ResultBundle result = tagWrapper.setPaymentMethod(paymentMethodId, billingReference, isAccountLevel, dlvPassCart);
         // if we have orderMinimum not met we are going to remove it and pass the result
         boolean isCustomAdded = false;
         ActionResult customActionResult = new ActionResult();
@@ -188,15 +188,15 @@ public class Checkout {
         return result;
     }
 
-    public ResultBundle deletePaymentMethod(String paymentMethodId) throws FDException {
+    public ResultBundle deletePaymentMethod(String paymentMethodId, boolean dlvPassCart) throws FDException {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
-        ResultBundle result = tagWrapper.deletePaymentMethod(paymentMethodId);
+        ResultBundle result = tagWrapper.deletePaymentMethod(paymentMethodId, dlvPassCart);
         return result;
     }
 
-    public ResultBundle deletePaymentMethodEx(String paymentMethodId) throws FDException {
+    public ResultBundle deletePaymentMethodEx(String paymentMethodId, boolean dlvPassCart) throws FDException {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
-        ResultBundle result = tagWrapper.deletePaymentMethodEx(paymentMethodId);
+        ResultBundle result = tagWrapper.deletePaymentMethodEx(paymentMethodId, dlvPassCart);
         // Creating new ActionResult with deliveryMinimum and age verification Errors removed if any.
         boolean isCustomAdded = false;
         ActionResult customActionResult = new ActionResult();
@@ -280,13 +280,11 @@ public class Checkout {
         return result;
     }
 
-    public String getPreselectedPaymethodMethodId() {
+    public String getPreselectedPaymethodMethodId(Cart cart) {
         String preselectedPaymethodMethodId = null;
 
-        Cart shoppingCart = sessionUser.getShoppingCart();
-        FDCartI cart = shoppingCart.getCart();
-        if ((null != cart.getPaymentMethod())) {
-            preselectedPaymethodMethodId = ((ErpPaymentMethodModel) cart.getPaymentMethod()).getPK().getId();
+        if ((null != cart.getCart().getPaymentMethod())) {
+            preselectedPaymethodMethodId = ((ErpPaymentMethodModel) cart.getCart().getPaymentMethod()).getPK().getId();
         }
         if (preselectedPaymethodMethodId == null) {
             try {
@@ -298,7 +296,7 @@ public class Checkout {
         return preselectedPaymethodMethodId;
     }
 
-    public String getPreselectedTimeslotId(TimeSlotCalculationResult timeSlotResult) throws FDResourceException {
+    public String getPreselectedTimeslotId(TimeSlotCalculationResult timeSlotResult, SessionUser user) throws FDResourceException {
         Timeslot foundTimeslot = null;
         String selectedTimeslotId = null;
         String deliveryTimeslotId = null;
@@ -312,9 +310,9 @@ public class Checkout {
             reservationTimeslotId = sessionUser.getReservationTimeslot().getTimeslotId();
         }
 
-        foundTimeslot = timeSlotResult.findTimeslotById(deliveryTimeslotId);
+        foundTimeslot = timeSlotResult.findTimeslotById(deliveryTimeslotId, user);
         if (foundTimeslot == null) {
-            foundTimeslot = timeSlotResult.findTimeslotById(reservationTimeslotId);
+            foundTimeslot = timeSlotResult.findTimeslotById(reservationTimeslotId, user);
         }
         if (foundTimeslot != null) {
             selectedTimeslotId = foundTimeslot.getTimeslotId();
@@ -477,12 +475,16 @@ public class Checkout {
         return sessionUser.getFDSessionUser().getUser();
     }
 
-    public Order getCurrentOrderDetails(EnumCouponContext ctx) throws FDException {
-        return sessionUser.getShoppingCart().getCurrentOrderDetails(sessionUser, ctx);
+    public Order getCurrentOrderDetails(EnumCouponContext ctx, boolean dlvPassCart) throws FDException {
+    	if(!dlvPassCart){
+    		return sessionUser.getShoppingCart().getCurrentOrderDetails(sessionUser, ctx, dlvPassCart);
+    	}else{
+    		return sessionUser.getDlvPassCart().getCurrentOrderDetails(sessionUser, ctx, dlvPassCart);
+    	}
     }
 
-    public OrderReceipt getOrderReceipt(String orderNumber) throws FDException, IllegalAccessException, InvocationTargetException {
-        Order order = getCurrentOrderDetails(EnumCouponContext.VIEWORDER);
+    public OrderReceipt getOrderReceipt(String orderNumber, boolean dlvPassCart) throws FDException, IllegalAccessException, InvocationTargetException {
+        Order order = getCurrentOrderDetails(EnumCouponContext.VIEWORDER, dlvPassCart);
         OrderReceipt orderReceipt = new OrderReceipt();
         BeanUtils.copyProperties(orderReceipt, order);
         orderReceipt.setOrderNumber(orderNumber);
@@ -726,8 +728,8 @@ public class Checkout {
      * @return
      * @throws FDException
      */
-    public SubmitOrderExResult submitEx(SubmitOrderExResult message, SessionUser user, HttpServletRequest request) throws FDException {
-        ResultBundle submitResult = this.submitOrder();
+    public SubmitOrderExResult submitEx(SubmitOrderExResult message, SessionUser user, HttpServletRequest request, boolean dlvPassCart) throws FDException {
+        ResultBundle submitResult = this.submitOrder(dlvPassCart);
 
         if (submitResult.getActionResult().isSuccess()) {
             message.setStatus(Message.STATUS_SUCCESS);
@@ -735,7 +737,7 @@ public class Checkout {
             String orderId = (String) request.getSession().getAttribute(SessionName.RECENT_ORDER_NUMBER);
             com.freshdirect.mobileapi.model.Order order = user.getOrder(orderId);
             if (null != order) {
-                orderReceipt = order.getOrderDetail(user);
+                orderReceipt = order.getOrderDetail(user, dlvPassCart);
             }
             message.wrap(orderReceipt);
             message.addDebugMessage("Order has been submitted successfully.");

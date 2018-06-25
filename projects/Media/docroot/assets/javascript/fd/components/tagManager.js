@@ -52,6 +52,19 @@ var dataLayer = window.dataLayer || [];
   };
 
   fd.gtm.productTransform = productTransform;
+  
+  fd.gtm.timeslots = function(action, pageName) {
+      var unavts = fd.gtm.isUnavailableTimeslotPresent() ? 'yes' : 'no';
+
+      dataLayer.push({
+        event: 'timeslot-unavailable',
+        eventCategory: 'timeslot',
+        eventAction: action,
+        page_name: pageName,
+        unavailable_timeslot_present: unavts,
+        eventLabel: unavts
+      });
+  }
 
   var safeName = function (text) {
     return text.toString().toLowerCase()
@@ -252,18 +265,11 @@ var dataLayer = window.dataLayer || [];
         ecommerce: cosData
       });
     },
-    timeslotOpened: function () {
+    timeslotOpened: function (data) {
+    	var action = data && data.action || 'timeslot-checkout-modal';
+    	var pageName = data && data.pageName || 'Available Delivery Timeslots - Modal';
       setTimeout(function () {
-        var unavts = fd.gtm.isUnavailableTimeslotPresent() ? 'yes' : 'no';
-
-        dataLayer.push({
-          event: 'timeslot-unavailable',
-          eventCategory: 'timeslot',
-          eventAction: 'timeslot-checkout-modal',
-          page_name: 'Available Delivery Timeslots - Modal',
-          unavailable_timeslot_present: unavts,
-          eventLabel: unavts
-        });
+    	  fd.gtm.timeslots(action, pageName)
       }, 10);
     },
     topNavClick: function (data) {
@@ -715,6 +721,8 @@ var dataLayer = window.dataLayer || [];
       channel = 'rec_atp';
     } else if (isHookLogic) {
       channel = 'rec_criteo';
+    } else if (el && $(el).closest('#multisearch-results').length) {
+      channel = 'search_express';
     } else if (productData && productData.variantId) {
       channel = 'rec_' + productData.variantId;
     } else if ($(el).closest('.transactional-related-item').length || $(el).parent().hasClass('relatedItem')) {
@@ -748,6 +756,8 @@ var dataLayer = window.dataLayer || [];
       location = 'search_' + searchParams.toLowerCase().trim().replace(/\s+/g, '+');
     } else if ($('ul.qs-tabs li .selected').length) {
       location = 'reorder_' + safeName($('ul.qs-tabs li .selected').text());
+    } else if (window.location.pathname.indexOf('/expresssearch.jsp') > -1 && el && $(el).closest('[data-searchresult]').length ) {
+      location = 'expresssearch_' + safeName($(el).closest('[data-searchresult]').attr('data-searchresult'));
     } else {
       location = pageType.toLowerCase();
     }
@@ -826,9 +836,9 @@ var dataLayer = window.dataLayer || [];
       title = productE.attr('data-list-title');
     }
 
-    channel = channel || (config.channel ? 'channel_' + config.channel : fd.gtm.getListChannel(el, config));
-    location = location || (config.location ? 'loc_' + config.location : fd.gtm.getListLocation(el));
-    title = title || (config.title ? 'title_' + config.title : fd.gtm.getListCarousel(el));
+    channel = channel || (config.channel ? 'channel_' + config.channel : fd.gtm.getListChannel(productE, config));
+    location = location || (config.location ? 'loc_' + config.location : fd.gtm.getListLocation(productE));
+    title = title || (config.title ? 'title_' + config.title : fd.gtm.getListCarousel(productE));
 
     if (productE) {
       productE.attr('data-list-channel', channel);
@@ -865,6 +875,7 @@ var dataLayer = window.dataLayer || [];
   var browseData = fd.browse && fd.browse.data;
   var productData = fd.pdp && fd.pdp.data;
   var productExtraData = fd.pdp && fd.pdp.extraData;
+  var afterPageView = fd.gtm && fd.gtm.afterPageView;
 
   if (gtmData) {
     fd.gtm.updateDataLayer(gtmData);
@@ -928,6 +939,13 @@ var dataLayer = window.dataLayer || [];
     fd.gtm.reportImpressionsEl(el);
   });
 
+  // since we don't know, when the pageView is fired, we wait for 100ms to report pending updates
+  setTimeout(function(){
+	  while(afterPageView && afterPageView.length) {
+		  var update = afterPageView.shift();
+		  fd.gtm.updateDataLayer(update);
+	  }	  
+  },100);
 }(FreshDirect));
 
 // listen for gtm related data

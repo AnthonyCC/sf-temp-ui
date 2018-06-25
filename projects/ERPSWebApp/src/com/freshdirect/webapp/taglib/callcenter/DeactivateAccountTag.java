@@ -67,6 +67,7 @@ public class DeactivateAccountTag extends com.freshdirect.framework.webapp.BodyT
 						FDCustomerManager.setActive(action, false);
 						if (EnumDPAutoRenewalType.YES.equals(FDCustomerManager.hasAutoRenewDP(action.getIdentity().getErpCustomerPK()))) {
 							FDCustomerManager.setHasAutoRenewDP(action.getIdentity().getErpCustomerPK(), action.getSource(), action.getInitiator(), false);
+							FDCustomerManager.updateDpOptinDetails(false, action.getIdentity().getFDCustomerPK(), null, action, action.geteStore());
 						}
 
 					} else if ( "activate".equalsIgnoreCase(this.action) ) {

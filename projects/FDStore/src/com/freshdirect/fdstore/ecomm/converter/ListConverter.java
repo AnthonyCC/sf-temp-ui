@@ -399,7 +399,7 @@ public class ListConverter {
 				zoneInfoData.getZoneId(),
 				zoneInfoData.getSalesOrg(),
 				zoneInfoData.getDistributionChanel(),
-				ZoneInfo.PricingIndicator.valueOf(zoneInfoData.getPricingIndicator().name()),
+				ZoneInfo.PricingIndicator.valueOf(zoneInfoData.getPricingIndicator()),
 				buildPricingZone(zoneInfoData.getParent()));
 		}
 		return zoneInfo;

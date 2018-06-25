@@ -149,13 +149,13 @@ if (mobWeb) {
 			</form>
 		</fd:ReserveTimeslotController>
 
-		<script type="text/javascript">
+		<script>
 			var FreshDirect = FreshDirect || {};
 			FreshDirect._page_options = {rsvType: { RECURRING: 'WRR', ONETIME: 'OTR' }};
-			changeMe($('reservationType_field2'));
+			changeMe($jq('#reservationType_field2'));
 		</script>
 		<% if (mobWeb) { %>
-			<script type="text/javascript">
+			<script>
 				var getTimeslots = function () {
 					$jq('#timeslot_selector_select').hide();
 					if (FreshDirect && FreshDirect.common && FreshDirect.common.dispatcher) {

@@ -29,7 +29,8 @@
 <% if (inMobWebTemplate && mobWeb_locationbar_layout_fdx) { %>
 	<%-- for now, output nothing... except address since it sets the JS for locabar --%>
 	<tmpl:get name="zip_address" />
-<% } else {  %>
+<% } else {  %>	
+	
 	<tmpl:get name="topwarningbar" />
 	
 	<div id="locationbar" class="<%= (uri.contains("/checkout/") || uri.contains("view_cart.jsp") || uri.contains("merge_cart.jsp") || uri.contains("/gift_card/")) ? "disableCart" : "" %><%= (isModifyingOrder) ? " modify-order-bar" : "" %>">
@@ -46,7 +47,7 @@
 		<%} %>
 		<%-- fright sections --%>
 		<div class="locabar-right-sections" role="menubar">
-			<tmpl:get name="modify_order" /><tmpl:get name="messages" />
+			<tmpl:get name="messages" />
 			<% if (!isModifyingOrder){ %>
 			<tmpl:get name="zip_address" />
 			<% } %>
@@ -61,7 +62,6 @@
 		<tmpl:get name="error_so_alerts" />
 		<tmpl:get name="min_so_alerts" />
 		<tmpl:get name="activate_so_alerts" />
-		<tmpl:get name="modify_order_alerts" />	
 		<tmpl:get name="test_alerts" />	
 	</div>
 	<div id="unrecognized" class="invisible" data-type="sitemessage">

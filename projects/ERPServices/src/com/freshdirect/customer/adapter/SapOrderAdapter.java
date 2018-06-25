@@ -589,6 +589,21 @@ public class SapOrderAdapter implements SapOrderI {
 		public String getPickingPlantId() {
 			return orderLine.getPlantID();
 		}
+
+		@Override
+		public String getAffiliateCode() {
+			return orderLine.getAffiliateCode();
+		}
+
+		@Override
+		public ErpOrderLineModel getOrderLine() {
+			return orderLine;
+		}
+
+		@Override
+		public FDProduct getFdProduct() {
+			return fdProduct;
+		}
 	}
 
 	@Override
