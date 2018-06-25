@@ -9,6 +9,7 @@ import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
+import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.FDResourceException;
@@ -21,13 +22,9 @@ import com.freshdirect.fdstore.survey.FDSurveyResponse;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
-import com.freshdirect.payment.EnumPaymentMethodType;
-import com.freshdirect.webapp.action.fdstore.RegistrationAction.AccountInfo;
-import com.freshdirect.webapp.action.fdstore.RegistrationAction.ContactInfo;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
-import com.freshdirect.webapp.taglib.fdstore.PaymentMethodName;
 import com.freshdirect.webapp.taglib.fdstore.PaymentMethodUtil;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
@@ -165,7 +162,7 @@ public class RegisterDonationBuyerAction extends RegistrationAction {
 			FDCustomerModel fdCustomer,
 			ErpCustomerModel erpCustomer,
 			FDSurveyResponse survey,
-			EnumServiceType serviceType) throws ErpDuplicateUserIdException, FDResourceException {
+			EnumServiceType serviceType) throws ErpDuplicateUserIdException, FDResourceException, ErpFraudException  {
 
 			HttpSession session = this.getWebActionContext().getSession();
 			FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);

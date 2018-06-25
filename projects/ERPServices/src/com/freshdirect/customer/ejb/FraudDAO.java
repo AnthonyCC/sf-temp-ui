@@ -25,6 +25,9 @@ import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.framework.util.DaoUtil;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
@@ -312,5 +315,31 @@ public class FraudDAO implements java.io.Serializable {
 		}
 		return (count);
 	}
-
+	
+	private final static String GET_LATEST_REGISTRATIONS_FOR_IP="SELECT COUNT (1) FROM MIS.IPLOCATOR_EVENT_LOG ipl,cust.fduser fdu,cust.fdcustomer fdc,cust.customer c "+
+		                                                        " WHERE IPL.FDUSER_ID = fdu.id AND IPL.INSERT_TIMESTAMP > (SYSDATE - 1/2) AND FDU.FDCUSTOMER_ID = fdc.id AND FDC.ERP_CUSTOMER_ID = c.id AND ipl.ip = ? "+
+		                                                        " AND EXISTS (SELECT 1 FROM CUST.ACTIVITY_LOG al WHERE AL.CUSTOMER_ID = c.id AND AL.TIMESTAMP > (SYSDATE - 1/2) AND AL.ACTIVITY_ID = 'Create Acct')";
+	
+	
+	public int getRegistrationsForIP(Connection conn, String ip) throws SQLException {
+		if(StringUtil.isEmpty(ip)) {
+				return 0;
+		}
+		PreparedStatement ps = conn.prepareStatement(GET_LATEST_REGISTRATIONS_FOR_IP);
+		ResultSet rs = null;
+		int count=0;
+		try {
+			ps.setString(1, ip);
+			
+			rs=ps.executeQuery();
+			if(rs.next()) {
+				count=rs.getInt(1);
+			}
+			
+		} finally {
+			DaoUtil.close(rs,ps);
+		}
+		return count;
+	
+	}
 }

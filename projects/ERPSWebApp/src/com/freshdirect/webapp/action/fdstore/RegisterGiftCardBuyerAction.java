@@ -10,6 +10,7 @@ import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
+import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.FDResourceException;
@@ -169,7 +170,7 @@ public class RegisterGiftCardBuyerAction extends RegistrationAction {
 			FDCustomerModel fdCustomer,
 			ErpCustomerModel erpCustomer,
 			FDSurveyResponse survey,
-			EnumServiceType serviceType) throws ErpDuplicateUserIdException, FDResourceException {
+			EnumServiceType serviceType) throws ErpDuplicateUserIdException, FDResourceException, ErpFraudException {
 
 			HttpSession session = this.getWebActionContext().getSession();
 			FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);

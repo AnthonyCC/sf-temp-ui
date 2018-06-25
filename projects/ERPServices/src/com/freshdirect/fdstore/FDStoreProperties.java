@@ -1072,6 +1072,9 @@ public class FDStoreProperties {
 	
 	private static final String MASTERPASS_EXCEPTION_MESSAGE = "masterpass.exception.message";
 	private static final String PROP_AMOUNT_SAVED_DP_ACCOUNTS_PAGE_ENABLED="fdstore.amount.saved.dpaccountpage.enabled"; 
+	
+	private static final String ACCOUNT_CREATION_LIMIT_PER_IP="fdstore.ip.account.limit";
+	private static final String WHITELISTED_IP_LIST="fdstore.allowed.ip.list";
 
  	static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -2056,6 +2059,7 @@ public class FDStoreProperties {
         defaults.put(PROP_CART_CONFIRM_PAGE_NEW_PRODUCTS_CAROUSEL_ENABLED, "false");
         defaults.put(PROP_CART_CONFIRM_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED, "false");
         defaults.put(PROP_AMOUNT_SAVED_DP_ACCOUNTS_PAGE_ENABLED, "false");
+        defaults.put(ACCOUNT_CREATION_LIMIT_PER_IP,"10");
         
         try {
      		String hostName=java.net.InetAddress.getLocalHost().getCanonicalHostName();
@@ -5248,5 +5252,14 @@ public class FDStoreProperties {
     
     public static boolean isAmountSavedDpAccPageEnabled() {
         return (Boolean.valueOf(get(PROP_AMOUNT_SAVED_DP_ACCOUNTS_PAGE_ENABLED))).booleanValue();
+    }
+    public static int getAccountCreationLimitPerIP() {
+		 return Integer.parseInt(get(ACCOUNT_CREATION_LIMIT_PER_IP));
+
+    }
+    
+    public static final String getWhitelistedIPs() {
+    	
+    	return FDEcommProperties.get(WHITELISTED_IP_LIST);
     }
 }
