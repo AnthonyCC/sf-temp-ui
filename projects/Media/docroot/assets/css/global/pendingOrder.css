@@ -11,7 +11,7 @@
 }
 .pendingOrderBar-cont {
 	text-align: center;
-	padding: 12px 0;
+	/* padding: 12px 0 0 0; */
 	font-size: 16px;
 	background-color: #666;
 	color: #fff;
@@ -116,7 +116,7 @@
 }
 .pendingOrderBar-overlay-order-detail-left {
 	display: inline-block;
-	width: calc(100% - 150px);
+	width: calc(100% - 170px);
 }
 [data-ismobweb="true"] .pendingOrderBar-overlay-order-detail-left {
 	display: block;
@@ -155,6 +155,7 @@
 	letter-spacing: normal;
 	color: #333333;
 	margin-top: 22px;
+	word-break: break-word;
 }
 [data-ismobweb="true"] .pendingOrderBar-overlay-order-detail-ordnum-cont {
 	margin-top: 11px;
@@ -162,6 +163,9 @@
 .pendingOrderBar-overlay-order-detail-ordnum-label,
 .pendingOrderBar-overlay-order-detail-ordnum-value {
 	display: inline-block;
+}
+.pendingOrderBar-overlay-order-detail-ordnum-value {
+	text-transform: capitalize;
 }
 .pendingOrderBar-overlay-order-detail-ordnum-label:after {
 	content: ':';
