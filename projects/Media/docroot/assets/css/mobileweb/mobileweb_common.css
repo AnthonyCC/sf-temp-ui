@@ -329,8 +329,9 @@ footer .basicHits {
 	font-size: 10px;
 	text-align: center;
 }
+/* high contrast color for links with reference to style guide */
 footer .basicHits a {
-	color: #458b4c;
+	color: #408244;
 	padding: 10px 0;
 	outline: none;
 }
@@ -3111,4 +3112,10 @@ form.dispblock-fields td { /* force the tds to block so the label and field are 
 
         .anchors *:focus,.navbar-header input:focus {
               outline: none;
+        }
+        .basicHits.assistivetext{
+	          font-size:14px;
+        }
+        .assistivetext{
+	          font-size:14px;
         }
