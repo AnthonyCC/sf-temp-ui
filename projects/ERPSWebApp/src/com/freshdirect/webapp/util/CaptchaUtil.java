@@ -25,7 +25,7 @@ public class CaptchaUtil {
 	public static boolean isExcessiveAttempt(int maxAttemptAllowed, HttpSession session, String sessionName) {
 		int currentAttempt = session.getAttribute(sessionName) != null ? (Integer) session.getAttribute(sessionName)
 				: Integer.valueOf(0);
-		return maxAttemptAllowed != 0 && currentAttempt >= maxAttemptAllowed;
+		return maxAttemptAllowed != 0 && currentAttempt >= (maxAttemptAllowed -1);
 	}
 
 	public static boolean validateCaptcha(String captchaToken, String remoteIp, CaptchaType captchaType, HttpSession session, String sessionName, int maxAttemptAllowed) {
