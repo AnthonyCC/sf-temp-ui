@@ -88,7 +88,7 @@ attribute name="modifyOrderAlert" required="false" rtexprvalue="true" type="java
 									<div class="pendingOrderBar-overlay-order-detail-date"><%= orderDate %></div>
 									<div class="pendingOrderBar-overlay-order-detail-time"><%= orderTime %></div>
 									<div class="pendingOrderBar-overlay-order-detail-ordnum-cont">
-										<div class="pendingOrderBar-overlay-order-detail-ordnum-label"><%= (isSoOrder) ? "" : "Order#" %></div>
+										<div class="pendingOrderBar-overlay-order-detail-ordnum-label <%= (isSoOrder) ? "label-SO" : "" %>"><%= (isSoOrder) ? "" : "Order#" %></div>
 										<div class="pendingOrderBar-overlay-order-detail-ordnum-value"><%= orderName %></div>
 									</div>
 								</div>

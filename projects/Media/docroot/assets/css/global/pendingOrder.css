@@ -11,7 +11,7 @@
 }
 .pendingOrderBar-cont {
 	text-align: center;
-	/* padding: 12px 0 0 0; */
+	padding: 12px 0 0 0;
 	font-size: 16px;
 	background-color: #666;
 	color: #fff;
@@ -169,6 +169,12 @@
 }
 .pendingOrderBar-overlay-order-detail-ordnum-label:after {
 	content: ':';
+}
+.pendingOrderBar-overlay-order-detail-ordnum-label.label-SO {
+	display: none;
+}
+.pendingOrderBar-overlay-order-detail-ordnum-label.label-SO:after {
+	content: '';
 }
 .pendingOrderBar-overlay-order-detail-right {
 	width: 145px;
