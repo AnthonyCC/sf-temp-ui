@@ -68,10 +68,13 @@ attribute name="modifyOrderAlert" required="false" rtexprvalue="true" type="java
 						String orderDate = "";
 						String orderTime = "";
 						String orderId = "";
+						boolean isSoOrder = false;
 						for (FDOrderInfoI item : validPendingOrders) {
+							isSoOrder = false;
 							orderName = item.getErpSalesId();
 							if (soUpcomingDelivery.containsKey(item.getErpSalesId())) {
 								orderName = soUpcomingDelivery.get(item.getErpSalesId());
+								isSoOrder = true;
 							}
 							orderDOW = new SimpleDateFormat("EEEEE").format(item.getRequestedDate());
 							orderDate = new SimpleDateFormat("EEEEE, MMM d").format(item.getRequestedDate());
@@ -88,8 +91,8 @@ attribute name="modifyOrderAlert" required="false" rtexprvalue="true" type="java
 									<div class="pendingOrderBar-overlay-order-detail-date"><%= orderDate %></div>
 									<div class="pendingOrderBar-overlay-order-detail-time"><%= orderTime %></div>
 									<div class="pendingOrderBar-overlay-order-detail-ordnum-cont">
-										<div class="pendingOrderBar-overlay-order-detail-ordnum-label">Order#</div>
-										<div class="pendingOrderBar-overlay-order-detail-ordnum-value"><%= orderId %></div>
+										<div class="pendingOrderBar-overlay-order-detail-ordnum-label <%= (isSoOrder) ? "label-SO" : "" %>"><%= (isSoOrder) ? "" : "Order#" %></div>
+										<div class="pendingOrderBar-overlay-order-detail-ordnum-value"><%= orderName %></div>
 									</div>
 								</div>
 								<div class="pendingOrderBar-overlay-order-detail-right">
@@ -106,8 +109,8 @@ attribute name="modifyOrderAlert" required="false" rtexprvalue="true" type="java
 						<% if (validPendingOrders.size() == 1) { %>
 							<span class="pendingOrderBar-label">Your Delivery</span>
 							<span class="pendingOrderBar-value"><%= (isMobWeb) ? "<a href=\"/your_account/order_details.jsp?orderId="+ orderId +"\" class=\"\">" : "" %><span class="pendingOrderBar-value-dow"><%= orderDOW %></span><span class="pendingOrderBar-value-time"><%= orderTime %></span><%= (isMobWeb) ? "</a>" : "" %></span>
-							<a href="/your_account/order_details.jsp?orderId=<%= orderId %>" class="cssbutton transparent whiteborder small pendingOrderBar-seedetails-btn NOMOBWEB">See Details<span class="offscreen"> of order number <%= orderName %></span></a>
-							<a href="/your_account/modify_order.jsp?orderId=<%= orderId %>&action=modify" class="cssbutton orange small pendingOrderBar-modifyorder-btn">Modify<span class="NOMOBWEB"> Order</span></a>
+							<a href="/your_account/order_details.jsp?orderId=<%= orderId %>" class="cssbutton transparent whiteborder small pendingOrderBar-seedetails-btn NOMOBWEB">See Details<span class="offscreen"> of order number <%= orderName %></span></a><!--
+							--><a href="/your_account/modify_order.jsp?orderId=<%= orderId %>&action=modify" class="cssbutton orange small pendingOrderBar-modifyorder-btn">Modify<span class="NOMOBWEB"> Order</span></a>
 						<% } else { %>
 							<span class="pendingOrderBar-label">Your Deliveries</span><span class="pendingOrderBar-value"><%= validPendingOrders.size() %> Upcoming Orders</span><button class="cssbutton orange small pendingOrderBar-viewall-btn">View All</button>
 						<% } %>
