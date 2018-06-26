@@ -54,7 +54,8 @@ public class GatewayAdapter {
 		Random randomGenerator = new Random();
 		String saleId="";
 		if(null==paymentMethod.getCustomerId()) {
-			saleId=new StringBuilder("0000").append(randomGenerator.nextInt(10000)).append("X").append(randomGenerator.nextInt(10000)).toString();	
+			throw new IllegalArgumentException("Invalid Request");
+			//saleId=new StringBuilder("0000").append(randomGenerator.nextInt(10000)).append("X").append(randomGenerator.nextInt(10000)).toString();	
 		} else {
 			saleId=new StringBuilder(paymentMethod.getCustomerId()).append("X").append(randomGenerator.nextInt(10000)).toString();
 		}
