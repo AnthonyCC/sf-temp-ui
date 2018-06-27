@@ -1598,8 +1598,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			}
 			
 			String customerId=paymentMethod.getCustomerId()!=null?paymentMethod.getCustomerId():info.getIdentity().getErpCustomerPK();
-			boolean isInactive=isCustomerActive(new PrimaryKey(customerId));
-			if(isInactive) {
+			boolean active=isCustomerActive(new PrimaryKey(customerId));
+			if(!active) {
 				LOGGER.warn("FDSECU_P04:: Attempt to add payment method from a deactivated account. [ IP:: "+info.getClientIp()+", fdUserId="+info.getFdUserId()+", customerId="+customerId+" ]");
 				throw new ErpFraudException(EnumFraudReason.DEACTIVATED_ACCOUNT);
 			}
