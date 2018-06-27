@@ -64,6 +64,7 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SocialGateway;
 import com.freshdirect.webapp.taglib.fdstore.SocialProvider;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
+import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 
 public class RegistrationController extends BaseController implements SystemMessageList {
 
@@ -219,7 +220,7 @@ public class RegistrationController extends BaseController implements SystemMess
 		
 	    final boolean isWebRequest = isExtraResponseRequested(request);
 
-		
+	    UserUtil.touchUser(request, user.getFDSessionUser());
 		RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());		
 		RegisterMessage registerMessage = new RegisterMessage();
 		registerMessage.setFirstName(requestMessage.getFirstName());
