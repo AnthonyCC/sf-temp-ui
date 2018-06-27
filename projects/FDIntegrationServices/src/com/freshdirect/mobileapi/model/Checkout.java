@@ -141,8 +141,9 @@ public class Checkout {
         return tagWrapper.addPaymentMethod(paymentMethod);
     }
 
-    public ResultBundle addPaymentMethodEx(PaymentMethodRequest paymentMethod) throws FDException {
+    public ResultBundle addPaymentMethodEx(PaymentMethodRequest paymentMethod, Object attempt) throws FDException {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
+        tagWrapper.addSessionValue(SessionName.PAYMENT_ATTEMPT, attempt);
         ResultBundle result = tagWrapper.addPaymentMethodEx(paymentMethod);
         // Creating new ActionResult with deliveryMinimum and age verification Errors removed if any.
         boolean isCustomAdded = false;

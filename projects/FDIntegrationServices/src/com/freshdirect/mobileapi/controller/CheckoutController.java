@@ -107,6 +107,7 @@ import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventType;
 import com.freshdirect.webapp.unbxdanalytics.event.LocationInfo;
 import com.freshdirect.webapp.unbxdanalytics.service.EventLoggerService;
 import com.freshdirect.webapp.unbxdanalytics.visitor.Visitor;
+import com.freshdirect.webapp.util.CaptchaUtil;
 import com.freshdirect.webapp.util.RequestUtil;
 
 public class CheckoutController extends BaseController {
@@ -1103,7 +1104,7 @@ public class CheckoutController extends BaseController {
     private ModelAndView addPaymentMethodEx(ModelAndView model, SessionUser user, PaymentMethodRequest reqestMessage,
             HttpServletRequest request, HttpServletResponse response) throws FDException, JsonException {
         Checkout checkout = new Checkout(user);
-        ResultBundle resultBundle = checkout.addPaymentMethodEx(reqestMessage);
+        ResultBundle resultBundle = checkout.addPaymentMethodEx(reqestMessage, request.getSession().getAttribute(SessionName.PAYMENT_ATTEMPT));
         
         ActionResult result = resultBundle.getActionResult();
         
@@ -1114,6 +1115,8 @@ public class CheckoutController extends BaseController {
             responseMessage = Message.createSuccessMessage("Payment method added successfully.");
         } else {
             responseMessage = getErrorMessage(result, request);
+            responseMessage.setShowCaptcha(CaptchaUtil.isExcessiveAttempt(FDStoreProperties.getMaxInvalidPaymentAttempt(),
+					request.getSession(), SessionName.PAYMENT_ATTEMPT));
         }
         responseMessage.addWarningMessages(result.getWarnings());
         verifyPaymentMethodFailure(request, response, user, responseMessage);
@@ -1129,12 +1132,14 @@ public class CheckoutController extends BaseController {
         ActionResult result = resultBundle.getActionResult();
         
         propogateSetSessionValues(request.getSession(), resultBundle);
-                
+        
         Message responseMessage = null;
         if (result.isSuccess()) {
             responseMessage = Message.createSuccessMessage("Payment method added successfully.");
         } else {
             responseMessage = getErrorMessage(result, request);
+            responseMessage.setShowCaptcha(CaptchaUtil.isExcessiveAttempt(FDStoreProperties.getMaxInvalidPaymentAttempt(),
+					request.getSession(), SessionName.PAYMENT_ATTEMPT));
         }
         responseMessage.addWarningMessages(result.getWarnings());
         verifyPaymentMethodFailure(request, response, user, responseMessage);
@@ -1181,6 +1186,8 @@ public class CheckoutController extends BaseController {
             responseMessage = Message.createSuccessMessage("Payment method added successfully.");
         } else {
             responseMessage = getErrorMessage(result, request);
+            responseMessage.setShowCaptcha(CaptchaUtil.isExcessiveAttempt(FDStoreProperties.getMaxInvalidPaymentAttempt(),
+					request.getSession(), SessionName.PAYMENT_ATTEMPT));
         }
         responseMessage.addWarningMessages(result.getWarnings());
         verifyPaymentMethodFailure(request, response, user, responseMessage);
@@ -1204,6 +1211,8 @@ public class CheckoutController extends BaseController {
             responseMessage = Message.createSuccessMessage("Payment method updated successfully.");
         } else {
             responseMessage = getErrorMessage(result, request);
+            responseMessage.setShowCaptcha(CaptchaUtil.isExcessiveAttempt(FDStoreProperties.getMaxInvalidPaymentAttempt(),
+					request.getSession(), SessionName.PAYMENT_ATTEMPT));
         }
         responseMessage.addWarningMessages(result.getWarnings()); 
         verifyPaymentMethodFailure(request, response, user, responseMessage);

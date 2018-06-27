@@ -550,6 +550,14 @@ public class LoginController extends BaseController  implements SystemMessageLis
 			responseMessage = getErrorMessage("SESSION_INVALID_EXCEPTION","USER session is invalid");
 			request.getSession().setAttribute(SessionName.APPLICATION,null);
 		}
+		
+		if (responseMessage.getErrors() == null || responseMessage.getErrors().size() == 0) {
+			CaptchaUtil.resetAttempt(request, SessionName.LOGIN_ATTEMPT);
+		} else {
+			CaptchaUtil.increaseAttempt(request, SessionName.LOGIN_ATTEMPT);
+			responseMessage.setShowCaptcha(CaptchaUtil.isExcessiveAttempt(FDStoreProperties.getMaxInvalidLoginAttempt(),
+					request.getSession(), SessionName.LOGIN_ATTEMPT));
+		}
 		return responseMessage;
 	}
 

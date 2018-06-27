@@ -262,6 +262,8 @@ public class RegistrationController extends BaseController implements SystemMess
 				responseMessage = getErrorMessage(result, request);
 				setResponseMessage(model, responseMessage, user);
 				CaptchaUtil.increaseAttempt(request, SessionName.SIGNUP_ATTEMPT);
+				responseMessage.setShowCaptcha(CaptchaUtil.isExcessiveAttempt(FDStoreProperties.getMaxInvalidSignUpAttempt(),
+						request.getSession(), SessionName.SIGNUP_ATTEMPT));
 				return model;
 			}
 		}	
@@ -350,7 +352,13 @@ public class RegistrationController extends BaseController implements SystemMess
 			} else {
 			responseMessage = Message.createFailureMessage("Account already exists with this Email address. "+requestMessage.getEmail());	
 			}
+		}
+		if (responseMessage.getErrors() == null || responseMessage.getErrors().size() == 0) {
+			CaptchaUtil.resetAttempt(request, SessionName.SIGNUP_ATTEMPT);
+		} else {
 			CaptchaUtil.increaseAttempt(request, SessionName.SIGNUP_ATTEMPT);
+			responseMessage.setShowCaptcha(CaptchaUtil.isExcessiveAttempt(FDStoreProperties.getMaxInvalidSignUpAttempt(),
+					request.getSession(), SessionName.SIGNUP_ATTEMPT));
 		}
 		setResponseMessage(model, responseMessage, user);
 		return model;

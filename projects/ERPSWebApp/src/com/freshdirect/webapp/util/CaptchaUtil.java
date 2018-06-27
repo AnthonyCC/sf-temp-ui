@@ -25,7 +25,7 @@ public class CaptchaUtil {
 	public static boolean isExcessiveAttempt(int maxAttemptAllowed, HttpSession session, String sessionName) {
 		int currentAttempt = session.getAttribute(sessionName) != null ? (Integer) session.getAttribute(sessionName)
 				: Integer.valueOf(0);
-		return maxAttemptAllowed != 0 && currentAttempt >= (maxAttemptAllowed -1);
+		return maxAttemptAllowed != 0 && currentAttempt >= maxAttemptAllowed;
 	}
 
 	public static boolean validateCaptcha(String captchaToken, String remoteIp, CaptchaType captchaType, HttpSession session, String sessionName, int maxAttemptAllowed) {
@@ -63,12 +63,20 @@ public class CaptchaUtil {
 	}
 	
 	public static int increaseAttempt(HttpServletRequest request, String name) {
-		Integer fdLoginAttempt = request.getSession().getAttribute(name) != null ? (Integer) request.getSession().getAttribute(name) : Integer.valueOf(0);
+		return increaseAttempt(request.getSession(), name);
+	}
+	
+	public static int increaseAttempt(HttpSession session, String name) {
+		Integer fdLoginAttempt = session.getAttribute(name) != null ? (Integer) session.getAttribute(name) : Integer.valueOf(0);
 		fdLoginAttempt++;
-		request.getSession().setAttribute(name, fdLoginAttempt);
+		session.setAttribute(name, fdLoginAttempt);
 		return fdLoginAttempt;
 	}
 	public static void resetAttempt(HttpServletRequest request, String name) {
-		request.getSession().setAttribute(name, 0);
+		resetAttempt(request.getSession(), name);
+	}
+	
+	public static void resetAttempt(HttpSession session, String name) {
+		session.setAttribute(name, 0);
 	}
 }
