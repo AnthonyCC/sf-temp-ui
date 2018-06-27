@@ -8604,9 +8604,15 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	public List<String> getAllCustIdsOfFreeTrialSubsOrder() throws FDResourceException, RemoteException ,CreateException{
-		DlvPassManagerSB dlvpsb = this.getDlvPassManagerHome().create();
-		return dlvpsb.getAllCustIdsOfFreeTrialSubsOrder();
+	public List<String> getAllCustIdsOfFreeTrialSubsOrder() throws FDResourceException{
+		try {
+			DlvPassManagerSB dlvpsb = this.getDlvPassManagerHome().create();
+			return dlvpsb.getAllCustIdsOfFreeTrialSubsOrder();
+		} catch (RemoteException e) {
+			throw new FDResourceException(e, "Some problem in getAllCustIdsOfFreeTrialSubsOrder");
+		} catch (CreateException e) {
+			throw new FDResourceException(e, "Some problem in getAllCustIdsOfFreeTrialSubsOrder");
+		}
 	}
 
 	public boolean hasCustomerDpFreeTrialOptin(String custId) throws FDResourceException {
