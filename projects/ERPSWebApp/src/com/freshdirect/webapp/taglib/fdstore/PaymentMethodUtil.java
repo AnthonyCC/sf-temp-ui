@@ -8,6 +8,7 @@
  */
 package com.freshdirect.webapp.taglib.fdstore;
 
+import java.text.MessageFormat;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -26,7 +27,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.EnumAccountActivityType;
-import com.freshdirect.customer.EnumPaymentMethodDefaultType;
+import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpPaymentMethodException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
@@ -37,7 +38,6 @@ import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.payments.util.PaymentMethodDefaultComparator;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
@@ -108,6 +108,10 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
         		result.addError(true,PaymentMethodName.CSV,SystemMessageList.MSG_CVV_INCORRECT);
         	else result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_INVALID_ACCOUNT_NUMBER));
 			
+        }catch (ErpFraudException ex) {
+        	result.addError(new ActionError("deactivated_Account", MessageFormat.format(SystemMessageList.MSG_DEACTIVATED,new Object[] { UserUtil.getCustomerServiceContact(request) })));
+       	
+        	//request.getSession().invalidate();
         }
                 
     }

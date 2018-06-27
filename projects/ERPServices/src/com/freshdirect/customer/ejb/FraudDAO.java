@@ -342,4 +342,25 @@ public class FraudDAO implements java.io.Serializable {
 		return count;
 	
 	}
+	
+	private final static String GET_CARD_VERIFICATION_RATE_FOR_CUSTOMER="select count(1) from MIS.GATEWAY_ACTIVITY_LOG gal where GAL.TRANSACTION_TYPE='CC_VERIFY' and GAL.TRANSACTION_TIME>SYSDATE-1/(24) AND GAL.CUSTOMER_ID=?";
+	
+	public int getCardVerificationRateForCustomer(Connection conn,String customerId) throws SQLException {
+		
+		PreparedStatement ps = conn.prepareStatement(GET_CARD_VERIFICATION_RATE_FOR_CUSTOMER);
+		ResultSet rs = null;
+		int count=0;
+		try {
+			ps.setString(1, customerId);
+			
+			rs=ps.executeQuery();
+			if(rs.next()) {
+				count=rs.getInt(1);
+			}
+			
+		} finally {
+			DaoUtil.close(rs,ps);
+		}
+		return count;
+	}
 }

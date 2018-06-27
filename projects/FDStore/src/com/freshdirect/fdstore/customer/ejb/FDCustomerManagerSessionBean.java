@@ -7,7 +7,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -422,6 +421,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throws FDResourceException, ErpDuplicateUserIdException,ErpFraudException {
 
 		// System.out.println("FDCustomerManagerSessionBean: In register");
+		LOGGER.warn("FDSECU_R01:: Registration from [ IP:: "+fdActionInfo.getClientIp()+", cookie="+cookie+" ,user_id="+erpCustomer.getUserId()+" ]");
 		Connection conn = null;
 
 		try {
@@ -1577,8 +1577,40 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 *             if an error occured using remote resources
 	 */
 	public void addPaymentMethod(FDActionInfo info, ErpPaymentMethodI paymentMethod, boolean paymentechEnabled)
-			throws FDResourceException, ErpPaymentMethodException {
+			throws FDResourceException, ErpPaymentMethodException,ErpFraudException {
 		try {
+			
+			
+			if(StringUtil.isEmpty(paymentMethod.getCustomerId())) {
+				
+				LOGGER.warn("FDSECU_P01:: Attempt to add payment method without customerId set.[ IP:: "+info.getClientIp()+", fdUserId="+info.getFdUserId()+" ]");
+				new IllegalArgumentException("CustomerId is not set.");
+			}
+			
+			if(info.getIdentity()==null) {
+				
+				LOGGER.warn("FDSECU_P02:: Attempt to add payment method without FDIdentity set. [ IP:: "+info.getClientIp()+", fdUserId="+info.getFdUserId()+" ]");
+				new IllegalArgumentException("FDIdentity is not set.");
+			} else if(StringUtil.isEmpty(info.getIdentity().getErpCustomerPK())) {
+				
+				LOGGER.warn("FDSECU_P03:: Attempt to add payment method with invalid FDIdentity. [ IP:: "+info.getClientIp()+", fdUserId="+info.getFdUserId()+" ]");
+				new IllegalArgumentException("FDIdentity is invalid.");
+			}
+			
+			String customerId=paymentMethod.getCustomerId()!=null?paymentMethod.getCustomerId():info.getIdentity().getErpCustomerPK();
+			boolean isInactive=isCustomerActive(new PrimaryKey(customerId));
+			if(isInactive) {
+				LOGGER.warn("FDSECU_P04:: Attempt to add payment method from a deactivated account. [ IP:: "+info.getClientIp()+", fdUserId="+info.getFdUserId()+", customerId="+customerId+" ]");
+				throw new ErpFraudException(EnumFraudReason.DEACTIVATED_ACCOUNT);
+			}
+			ErpFraudPreventionSB fraudSB = getErpFraudHome().create();
+			boolean isBreached=fraudSB.isCardVerificationRateLimitBreached(customerId);
+			if(isBreached) {
+				LOGGER.warn("FDSECU_P05:: "+EnumFraudReason.CARD_VERIFICATION_RATE_LIMIT.getDescription() +"[ IP:: "+info.getClientIp()+", fdUserId="+info.getFdUserId()+", customerId="+customerId+" ]");
+				info.setNote(EnumFraudReason.CARD_VERIFICATION_RATE_LIMIT.getDescription());
+				setActive(info,false);
+				throw new ErpFraudException(EnumFraudReason.CARD_VERIFICATION_RATE_LIMIT);
+			}
 			Gateway gateway = null;
 
 			if (paymentechEnabled && FDStoreProperties.isPaymentVerificationEnabled()
@@ -1658,6 +1690,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(re);
 		} catch (FinderException ce) {
 			throw new FDResourceException(ce);
+		} catch (CreateException e1) {
+			throw new FDResourceException(e1);
 		} 
 	}
 

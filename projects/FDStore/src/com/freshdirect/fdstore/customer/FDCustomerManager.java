@@ -886,7 +886,7 @@ public class FDCustomerManager {
 	 *             if an error occured using remote resources
 	 */
 	public static void addPaymentMethod(FDActionInfo info, ErpPaymentMethodI paymentMethod, boolean paymentechEnabled,
-			boolean isDebitCardSwitch) throws FDResourceException, ErpPaymentMethodException {
+			boolean isDebitCardSwitch) throws FDResourceException, ErpPaymentMethodException, ErpFraudException {
 		try {
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerPayment)) {
 				CustomerPaymentService.getInstance().addPaymentMethod(info, paymentMethod, paymentechEnabled, isDebitCardSwitch);

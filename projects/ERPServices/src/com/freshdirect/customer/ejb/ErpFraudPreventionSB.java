@@ -56,5 +56,7 @@ public interface ErpFraudPreventionSB extends EJBObject {
 	 public void postCheckDonationFraud(PrimaryKey salePk, PrimaryKey erpCustomerPk, ErpAbstractOrderModel order, CrmAgentRole agentRole) throws RemoteException;
 	
 	public boolean isRegistrationForIPRestricted(String ip)throws RemoteException;
+	
+	public boolean isCardVerificationRateLimitBreached(String customerId)throws RemoteException;
 
 }

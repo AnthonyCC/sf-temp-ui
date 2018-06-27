@@ -1078,6 +1078,7 @@ public class FDStoreProperties {
 	
 	private static final String ACCOUNT_CREATION_LIMIT_PER_IP="fdstore.ip.account.limit";
 	private static final String WHITELISTED_IP_LIST="fdstore.allowed.ip.list";
+	private static final String CARD_VERIFICATION_RATE_LIMIT="fdstore.payment.verification.rate.limit";
 
  	static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -2062,6 +2063,7 @@ public class FDStoreProperties {
         defaults.put(PROP_CART_CONFIRM_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED, "false");
         defaults.put(PROP_AMOUNT_SAVED_DP_ACCOUNTS_PAGE_ENABLED, "false");
         defaults.put(ACCOUNT_CREATION_LIMIT_PER_IP,"10");
+        defaults.put(CARD_VERIFICATION_RATE_LIMIT,"10");
         
         try {
      		String hostName=java.net.InetAddress.getLocalHost().getCanonicalHostName();
@@ -5280,4 +5282,9 @@ public class FDStoreProperties {
     	
     	return FDEcommProperties.get(WHITELISTED_IP_LIST);
     }
+    
+    public static int getCardVerificationRateLimit() {
+		 return Integer.parseInt(get(CARD_VERIFICATION_RATE_LIMIT));
+
+   }
 }

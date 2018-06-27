@@ -659,7 +659,7 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 		
 		if(StringUtil.isEmpty(ip)) {
 			return false;
-		} else if (FDStoreProperties.getWhitelistedIPs().indexOf(ip)!=-1) {
+		}else if (FDStoreProperties.getWhitelistedIPs().indexOf(ip)!=-1) {
 			return false;
 		}
 		
@@ -668,6 +668,26 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 			conn = getConnection();
 			int count= dao.getRegistrationsForIP(conn, ip);
 			return count>=FDStoreProperties.getAccountCreationLimitPerIP();
+	} catch (SQLException ex) {
+			LOGGER.error("SQLException occurred", ex);
+			throw new EJBException(ex.getMessage());
+		}finally{
+			close(conn);
+		}
+		
+		
+	}
+	
+public boolean isCardVerificationRateLimitBreached(String customerId) {
+		
+		if(StringUtil.isEmpty(customerId)) {
+			return true;
+		}
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			int count= dao.getCardVerificationRateForCustomer(conn, customerId);
+			return count>=1;//FDStoreProperties.getCardVerificationRateLimit();
 	} catch (SQLException ex) {
 			LOGGER.error("SQLException occurred", ex);
 			throw new EJBException(ex.getMessage());
