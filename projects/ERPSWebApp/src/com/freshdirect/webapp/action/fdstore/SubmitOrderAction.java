@@ -674,10 +674,10 @@ public class SubmitOrderAction extends WebActionSupport {
                 }
 							
 	    		//update newly added cartline ids
-	            Set<Integer> recentIds = new TreeSet<Integer>();
+	            Set<Long> recentIds = new TreeSet<Long>();
 	            for (FDCartLineI rc : modCart.getOrderLines()) {
 	            	if ( !(rc instanceof FDModifyCartLineI) ) {
-		                recentIds.add(Integer.valueOf(rc.getCartlineId()));
+		                recentIds.add(Long.valueOf(rc.getCartlineId()));
 	            	}
 	            }
 	    		user.setRecentCartlineIdsSet(orderNumber, recentIds);

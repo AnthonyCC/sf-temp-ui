@@ -88,7 +88,7 @@ public class RestrictionService {
                 continue;
             }
             CartData.Item item = CartDataService.defaultService().populateCartDataItem(cartLine, fdProduct, new ItemCount(), user.getShoppingCart(),
-                    Collections.<Integer> emptySet(), productNode, user);
+                    Collections.<Long> emptySet(), productNode, user);
             populatedCartLines.add(item);
         }
         return populatedCartLines;

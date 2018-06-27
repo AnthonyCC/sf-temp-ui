@@ -120,7 +120,7 @@ public class OrderInfoService {
             sectionInfo.setHasEstimatedPrice(sectionInfo.isHasEstimatedPrice() || cartLine.isEstimatedPrice());
             List<CartData.Item> sectionList = CartDataService.defaultService().loadDepartmentSectionList(sectionMap, sectionInfo);
             CartDataService.defaultService().loadSectionHeaderImage(sectionHeaderImgMap, productNode, sectionInfoKey);
-            CartData.Item item = CartDataService.defaultService().populateCartDataItem(cartLine, fdProduct, itemCount, order, Collections.<Integer> emptySet(), productNode, user);
+            CartData.Item item = CartDataService.defaultService().populateCartDataItem(cartLine, fdProduct, itemCount, order, Collections.<Long> emptySet(), productNode, user);
 
             if (isMakeGoodMode) {
                 CartDataService.defaultService().populateCartDataItemWithMakeGoodAttributes(item, cartLine, complaintModel);

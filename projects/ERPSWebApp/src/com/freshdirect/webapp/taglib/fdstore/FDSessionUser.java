@@ -185,20 +185,20 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	
 	private boolean showInformOrderModify = false;
 	
-	private Map<String, Set<Integer>> recentCartlineIdsMap = new HashMap<String, Set<Integer>>();
+	private Map<String, Set<Long>> recentCartlineIdsMap = new HashMap<String, Set<Long>>();
 	
 	/* map setter/getter */
-	public Map<String, Set<Integer>> getRecentCartlineIdsMap() {
+	public Map<String, Set<Long>> getRecentCartlineIdsMap() {
 		return recentCartlineIdsMap;
 	}
-	public void setRecentCartlineIdsMap(Map<String, Set<Integer>> recentCartlineIdsMap) {
+	public void setRecentCartlineIdsMap(Map<String, Set<Long>> recentCartlineIdsMap) {
 		this.recentCartlineIdsMap = recentCartlineIdsMap;
 	}
 	/* set setter/getter */
-	public Set<Integer> getRecentCartlineIdsSet(String orderId) {
-		return (Set<Integer>) ((this.recentCartlineIdsMap.containsKey(orderId)) ? this.recentCartlineIdsMap.get(orderId) : Collections.<Integer> emptySet());
+	public Set<Long> getRecentCartlineIdsSet(String orderId) {
+		return (Set<Long>) ((this.recentCartlineIdsMap.containsKey(orderId)) ? this.recentCartlineIdsMap.get(orderId) : Collections.<Long> emptySet());
 	}
-	public void setRecentCartlineIdsSet(String orderId, Set<Integer> recentCartlineIdsSet) {
+	public void setRecentCartlineIdsSet(String orderId, Set<Long> recentCartlineIdsSet) {
 		if (orderId != null) {
 			this.recentCartlineIdsMap.put(orderId, recentCartlineIdsSet);
 		}
