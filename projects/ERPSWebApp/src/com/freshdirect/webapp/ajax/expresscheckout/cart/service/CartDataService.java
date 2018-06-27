@@ -397,7 +397,7 @@ public class CartDataService {
         int randomId = cartLine.getRandomId();
         long cartlineId = Long.valueOf(cartLine.getCartlineId());
         item.setId(randomId);
-        item.setRecent(recentIds.contains(randomId));
+        item.setRecent(recentIds.contains(Long.valueOf(randomId)));
         item.setNewItem(((cart instanceof FDModifyCartModel) && !(cartLine instanceof FDModifyCartLineI)) || recentIds.contains(cartlineId));
         item.setPrice(JspMethods.formatPrice(cartLine.getPrice()));
         item.setDescr(cartLine.getDescription());

@@ -1501,6 +1501,7 @@ li.cleanli .gen-arrow {
 	}
 	.mm-page #quickshop{
 		width: auto;
+		min-width: 100%;
 	}
 	.mm-page #quickshop .header{
 		display: none;
