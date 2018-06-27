@@ -173,7 +173,7 @@ public class CartDataService {
         synchronized (order) {
 
             // Fetch recent cartline ids
-            Set<Integer> recentIds = (Set<Integer>) ((FDSessionUser) user).getRecentCartlineIdsSet(orderId);
+            Set<Long> recentIds = (Set<Long>) ((FDSessionUser) user).getRecentCartlineIdsSet(orderId);
             
             populateOrderData(user, request, userId, order, cartData, recentIds);
         }
@@ -366,7 +366,7 @@ public class CartDataService {
         
         }
 
-    public CartData.Item populateCartDataItem(FDCartLineI cartLine, FDProduct fdProduct, ItemCount itemCount, FDCartI cart, Set<Integer> recentIds, ProductModel productNode,
+    public CartData.Item populateCartDataItem(FDCartLineI cartLine, FDProduct fdProduct, ItemCount itemCount, FDCartI cart, Set<Long> recentIds, ProductModel productNode,
             FDUserI user) {
 
         CartData.Item item = populateCartDataItemByCartLine(user, cartLine, cart, recentIds);
@@ -392,10 +392,10 @@ public class CartDataService {
                 || MealkitService.defaultService().isProductModelLayoutTypeMealkit(productModel);
     }
 
-    private CartData.Item populateCartDataItemByCartLine(FDUserI user, FDCartLineI cartLine, FDCartI cart, Set<Integer> recentIds) {
+    private CartData.Item populateCartDataItemByCartLine(FDUserI user, FDCartLineI cartLine, FDCartI cart, Set<Long> recentIds) {
         CartData.Item item = new CartData.Item();
         int randomId = cartLine.getRandomId();
-        int cartlineId = Integer.valueOf(cartLine.getCartlineId());
+        long cartlineId = Long.valueOf(cartLine.getCartlineId());
         item.setId(randomId);
         item.setRecent(recentIds.contains(randomId));
         item.setNewItem(((cart instanceof FDModifyCartModel) && !(cartLine instanceof FDModifyCartLineI)) || recentIds.contains(cartlineId));
@@ -485,7 +485,7 @@ public class CartDataService {
         return sections;
     }
 
-    private void populateCartOrderData(FDUserI user, HttpServletRequest request, String userId, FDCartI cart, CartData cartData, Set<Integer> recentIds, boolean hasSession) throws HttpErrorResponse {
+    private void populateCartOrderData(FDUserI user, HttpServletRequest request, String userId, FDCartI cart, CartData cartData, Set<Long> recentIds, boolean hasSession) throws HttpErrorResponse {
     	try {
             Map<Integer, String> dcpdCartlineMessage = new HashMap<Integer, String>();
             Map<String, FDMinDCPDTotalPromoData> dcpdMinPromo = user.getPromotionEligibility().getMinDCPDTotalPromos();
@@ -519,7 +519,7 @@ public class CartDataService {
                 }
                 String sectionInfoKey;
 
-                int cartlineId = Integer.valueOf(cartLine.getCartlineId());
+                long cartlineId = Long.valueOf(cartLine.getCartlineId());
                 
                 if (cartLine.isWine()) {
                     isWineInCart = true;
@@ -815,16 +815,16 @@ public class CartDataService {
     }
 
     private void populateOrderData(FDUserI user, HttpServletRequest request, String userId, FDCartI cart, CartData cartData) throws HttpErrorResponse {
-        populateCartOrderData(user, request, userId, cart, cartData, Collections.<Integer> emptySet(), true);
+        populateCartOrderData(user, request, userId, cart, cartData, Collections.<Long> emptySet(), true);
     }
-    private void populateOrderData(FDUserI user, HttpServletRequest request, String userId, FDCartI cart, CartData cartData, Set<Integer> recentIds) throws HttpErrorResponse {
+    private void populateOrderData(FDUserI user, HttpServletRequest request, String userId, FDCartI cart, CartData cartData, Set<Long> recentIds) throws HttpErrorResponse {
         populateCartOrderData(user, request, userId, cart, cartData, recentIds, true);
     }
 
-    private SortedSet<Integer> populateRecentIds(FDCartModel cart) {
-        SortedSet<Integer> recentIds = new TreeSet<Integer>();
+    private SortedSet<Long> populateRecentIds(FDCartModel cart) {
+        SortedSet<Long> recentIds = new TreeSet<Long>();
         for (FDCartLineI rc : cart.getRecentOrderLines()) {
-            recentIds.add(Integer.valueOf(rc.getRandomId()));
+            recentIds.add(Long.valueOf(rc.getRandomId()));
         }
         return recentIds;
     }
