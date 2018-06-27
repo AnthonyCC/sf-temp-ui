@@ -687,7 +687,7 @@ public boolean isCardVerificationRateLimitBreached(String customerId) {
 		try {
 			conn = getConnection();
 			int count= dao.getCardVerificationRateForCustomer(conn, customerId);
-			return count>=1;//FDStoreProperties.getCardVerificationRateLimit();
+			return count>=FDStoreProperties.getCardVerificationRateLimit();
 	} catch (SQLException ex) {
 			LOGGER.error("SQLException occurred", ex);
 			throw new EJBException(ex.getMessage());
