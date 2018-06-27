@@ -1,5 +1,6 @@
 package com.freshdirect.fdstore.customer;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.fdstore.FDResourceException;
 
@@ -35,7 +36,7 @@ public class FDCustomerInfo implements java.io.Serializable {
     private boolean goGreen;
     private int fdcOrderCount = -1;
 	
-	public FDCustomerInfo(String firstName, String lastName){
+	public FDCustomerInfo(@JsonProperty("firstName") String firstName,@JsonProperty("lastName") String lastName){
 		this.firstName = firstName;
 		this.lastName = lastName;
 	}
