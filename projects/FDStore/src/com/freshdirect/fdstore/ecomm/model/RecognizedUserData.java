@@ -6,9 +6,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.ecommerce.data.customer.FDUserData;
 import com.freshdirect.fdstore.customer.ExternalCampaign;
+import com.freshdirect.fdstore.customer.FDRecipientList;
 import com.freshdirect.fdstore.customer.SavedRecipientModel;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
@@ -26,8 +28,10 @@ public class RecognizedUserData implements Serializable {
 	private FDUserDlvPassInfo dlvPassInfo;
 	
 	private List<SavedRecipientModel> receipts;
-	
+	private FDRecipientList receipentList;
 	private List<ErpOrderLineModel> orderLines;
+	
+	private AddressModel address;
 	
 	public RecognizedUserData() {
 		
@@ -79,6 +83,22 @@ public class RecognizedUserData implements Serializable {
 
 	public void setOrderLines(List<ErpOrderLineModel> orderLines) {
 		this.orderLines = orderLines;
+	}
+
+	public AddressModel getAddress() {
+		return address;
+	}
+
+	public void setAddress(AddressModel address) {
+		this.address = address;
+	}
+
+	public FDRecipientList getReceipentList() {
+		return receipentList;
+	}
+
+	public void setReceipentList(FDRecipientList receipentList) {
+		this.receipentList = receipentList;
 	}
 	
 }
