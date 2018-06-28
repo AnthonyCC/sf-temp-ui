@@ -347,7 +347,8 @@ var dataLayer = window.dataLayer || [];
                   dimension3: ""+productData.newProduct,
                   sku: productData.sku,
                   dimension6: ""+true,
-                  quantity: parseInt(productData.quantity, 10) || 0 // quantity should be an integer
+                  quantity: parseInt(productData.quantity, 10) || 0, // quantity should be an integer
+                  configuredPrice: productData.configuredPrice
                 };
               }),
               delivery_type: getDeliveryType(coData.deliveryType),
@@ -389,7 +390,8 @@ var dataLayer = window.dataLayer || [];
                   dimension3: ""+productData.newProduct,
                   sku: productData.sku,
                   dimension6: ""+true,
-                  quantity: parseInt(productData.quantity, 10) || 0 // quantity should be an integer
+                  quantity: parseInt(productData.quantity, 10) || 0, // quantity should be an integer
+                  configuredPrice: productData.configuredPrice
                 };
               })
             }
