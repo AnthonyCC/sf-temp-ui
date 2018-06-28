@@ -486,8 +486,8 @@
 						</script>				
 					<% }
 				} %>
-		</fd:SiteAccessController> 
-	<%@ include file="/common/template/includes/i_gtm_datalayer.jsp" %>
+			<%@ include file="/common/template/includes/i_gtm_datalayer.jsp" %>
+		</fd:SiteAccessController>
 	</tmpl:put>
 	<tmpl:put name='jsmodules' direct='true'><%@ include file="/common/template/includes/i_jsmodules.jspf" %></tmpl:put>
 		

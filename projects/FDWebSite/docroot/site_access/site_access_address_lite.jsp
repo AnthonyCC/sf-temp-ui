@@ -6,7 +6,7 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName" %>
 
 <%@ taglib uri="freshdirect" prefix="fd" %>
-
+<fd:SiteAccessController action="checkByAddress" successPage="/index.jsp" moreInfoPage="" failureHomePage="/site_access/delivery.jsp" failureCorporatePage="/survey/cos_site_access_survey.jsp" result="result">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en-US" xml:lang="en-US">
@@ -26,7 +26,7 @@
 <body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="0" topmargin="0" style="overflow: hidden">
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>
 
-<fd:SiteAccessController action="checkByAddress" successPage="/index.jsp" moreInfoPage="" failureHomePage="/site_access/delivery.jsp" failureCorporatePage="/survey/cos_site_access_survey.jsp" result="result">
+
 	<%
 		if(session.getAttribute("LITESIGNUP_COMPLETE") != null) {
 			//phew finally complete
@@ -197,7 +197,7 @@
 		</div>
 	</center>
 	<% } } %>
-</fd:SiteAccessController>
+
 <script>
 
 	function resizeFrame() {
@@ -222,3 +222,4 @@
 </script>
 </body>
 </html>
+</fd:SiteAccessController>

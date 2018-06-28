@@ -93,6 +93,7 @@ public class ForgotPasswordControllerTag extends BodyTagSupport {
 				LOGGER.debug("Attempting to do isLinkExpired");
 				if (this.isLinkExpired(email, link)) {
 					this.doRedirect(URI_LINK_EXPIRED);
+					return SKIP_BODY;
 				}
 				// APPDEV-4409 : The below code is set to bypass the hint question page and direct to 
 				// password change page. 
@@ -105,7 +106,10 @@ public class ForgotPasswordControllerTag extends BodyTagSupport {
 				//
 				// Email link to user
 				//
-				this.performSendUrl(result, request);
+				if (this.performSendUrl(result, request)) {
+					//skip content if redirecting
+					return SKIP_BODY;
+				}
 
 			} else if (passStep.equals("checkHint")) {
 				//
@@ -113,6 +117,7 @@ public class ForgotPasswordControllerTag extends BodyTagSupport {
 				//
 				if (isLinkExpired(email, link)) {
 					this.doRedirect(URI_LINK_EXPIRED);
+					return SKIP_BODY;
 				} else {
 					performCheckHint(result, request);
 				}
@@ -216,7 +221,7 @@ public class ForgotPasswordControllerTag extends BodyTagSupport {
 		}
 	}
 
-	private void performSendUrl(ActionResult result, HttpServletRequest request) {
+	private boolean performSendUrl(ActionResult result, HttpServletRequest request) {
 		getFormData(request);
 		validateInput(result);
 		if (result.isSuccess()) {
@@ -232,17 +237,16 @@ public class ForgotPasswordControllerTag extends BodyTagSupport {
 				FDCustomerManager.sendPasswordEmail(email, altEmail != null);
 				LOGGER.debug("Success, redirecting to: " + successPage);
 				this.doRedirect(newURL+this.successPage);
-
+				return true;
 			} catch (FDResourceException ex) {
 				result.addError(new ActionError("invalid_email", MSG_INVALID_EMAIL));
 				LOGGER.warn("Failed to locate customer", ex);
-
 			} catch (PasswordNotExpiredException pe) {
 				result.addError(new ActionError("email_not_expired", MSG_EMAIL_NOT_EXPIRED));
 				LOGGER.warn("Link has not Expired yet", pe);
 			}
-
 		}
+		return false;
 	}
 
 	private void getFormData(HttpServletRequest request) {

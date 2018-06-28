@@ -20,7 +20,9 @@
 	
 	
 	String failurePage = "/registration/invite_signup.jsp?successPage="+ URLEncoder.encode(successPage)+"&ol=na&serviceType="+serviceType;	
-%>	
+%><fd:CheckLoginStatus guestAllowed='true' />
+<fd:RegistrationController actionName='registerEx' successPage='<%= successPage %>' fraudPage='<%= failurePage %>' result='result'>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en-US" xml:lang="en-US">
@@ -34,10 +36,7 @@
 </head>
 <body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="0" topmargin="0">
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>
-
 <%CmRegistrationTag.setRegistrationLocation(session,"referee"); %>
-<fd:CheckLoginStatus guestAllowed='true' />
-	<fd:RegistrationController actionName='registerEx' successPage='<%= successPage %>' fraudPage='<%= failurePage %>' result='result'>
 	<%
 		String email = (String) session.getAttribute("REFERRAL_EMAIL");
 		String repeat_email = NVL.apply(request.getParameter(EnumUserInfoName.REPEAT_EMAIL.getCode()), "");
@@ -140,7 +139,7 @@
 	</div>
 	</div>
 	<% } } %>
-	</fd:RegistrationController>
 	
 </body>
 </html>
+</fd:RegistrationController>

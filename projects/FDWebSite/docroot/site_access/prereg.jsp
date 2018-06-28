@@ -14,7 +14,8 @@ if (user.isNotServiceable()) {
 }
 boolean isBestCellars = request.getServerName().toLowerCase().indexOf("bestcellars") > -1;
 boolean emailSent = request.getParameter("email") != null && "sent".equalsIgnoreCase(request.getParameter("email"));
-%>	
+%>
+<fd:SiteAccessController action='doPrereg' successPage='<%= successPage %>' result='result' serviceType='<%=serviceType%>'>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en-US" xml:lang="en-US">
@@ -32,7 +33,7 @@ boolean emailSent = request.getParameter("email") != null && "sent".equalsIgnore
 </head>
 <body bgcolor="white" text="#333333" class="text11" marginwidth="0" marginheight="20" leftmargin="0" topmargin="20">
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>
-<fd:SiteAccessController action='doPrereg' successPage='<%= successPage %>' result='result' serviceType='<%=serviceType%>'>
+
 
 <%!
     java.text.SimpleDateFormat dFormat = new java.text.SimpleDateFormat("MMMMMMMM d");
@@ -132,8 +133,7 @@ boolean emailSent = request.getParameter("email") != null && "sent".equalsIgnore
 <br><br>
 </form>
 </div>
-</fd:SiteAccessController>
+
 </body>
 </html>
-
-
+</fd:SiteAccessController>

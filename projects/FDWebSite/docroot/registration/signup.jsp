@@ -107,4 +107,3 @@ final int W_SIGNUP_TOTAL = 970;
 </tmpl:put>
 </tmpl:insert>
 </fd:RegistrationController>
-

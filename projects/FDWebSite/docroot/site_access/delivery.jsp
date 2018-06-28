@@ -28,6 +28,7 @@
 <%!
     java.text.SimpleDateFormat dFormat = new java.text.SimpleDateFormat("MMMMMMMM d");
 %>
+<fd:SiteAccessController action='saveEmail' successPage='<%= successPage %>' result='result' serviceType='<%=serviceType%>'>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en-US" xml:lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
@@ -44,7 +45,6 @@
 <body>
 	<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 	
-	<fd:SiteAccessController action='saveEmail' successPage='<%= successPage %>' result='result' serviceType='<%=serviceType%>'>
 		<%-- put error msgs in to a string first, so it's easier to read --%>
 		<%
 			String errMsgs = "";
@@ -77,9 +77,7 @@
 			});
 		</script>
 		<fd:IncludeMedia name="/media/editorial/site_access/zipfail/delivery.html" />
-	</fd:SiteAccessController>
 
 </body>
 </html>
-
-
+</fd:SiteAccessController>

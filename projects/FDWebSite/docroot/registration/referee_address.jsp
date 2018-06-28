@@ -25,6 +25,7 @@
 		action = "doNothing";
 	}
 %>
+<fd:SiteAccessController action='checkByAddress' successPage='<%= successPage %>' moreInfoPage='<%= moreInfoPage %>' failureHomePage='<%= failurePage %>' failureCorporatePage='<%= failureCorporatePage %>' result='result'>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en-US" xml:lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
@@ -39,8 +40,7 @@
 	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body>
-	<%@ include file="/shared/template/includes/i_body_start.jspf" %>
-	<fd:SiteAccessController action='checkByAddress' successPage='<%= successPage %>' moreInfoPage='<%= moreInfoPage %>' failureHomePage='<%= failurePage %>' failureCorporatePage='<%= failureCorporatePage %>' result='result'>
+	<%@ include file="/shared/template/includes/i_body_start.jspf" %>	
 		<% if(session.getAttribute("DISPLAY") != null || "doNothing".equals(action)) { %>
 			<% if(!FDStoreProperties.isExtoleRafEnabled()) { %>
 				<jsp:include page="/registration/referee_signup2.jsp" flush="false"/> 
@@ -138,7 +138,6 @@
 				<% if (result.hasError(EnumUserInfoName.DLV_ADDRESS_SUGGEST.getCode())) { %><%@ include file="/shared/includes/messages/i_error_suggested_address.jspf" %><% } %></div>
 			<fd:IncludeMedia name="/media/editorial/site_access/zipfail/site_access_address.html" />
 		<% } %>
-	</fd:SiteAccessController>
 </body>
 </html>
-
+</fd:SiteAccessController>

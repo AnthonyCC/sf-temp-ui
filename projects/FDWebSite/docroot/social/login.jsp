@@ -227,7 +227,5 @@
 
 			</div>
 			<!-- container ends here -->
-</fd:LoginController>
 </center>
-
-
+</fd:LoginController>
