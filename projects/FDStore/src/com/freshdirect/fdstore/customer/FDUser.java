@@ -4038,7 +4038,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	
 	@Override
 	public boolean isDPFreeTrialOptInEligible(){
-		return FDStoreProperties.isDlvPassFreeTrialOptinFeatureEnabled() && !this.getDpFreeTrialOptin() && ((null == this.getDlvPassInfo() || this.isDlvPassNone()) && !this.getDlvPassInfo().isFreeTrialRestricted());
+		return FDStoreProperties.isDlvPassFreeTrialOptinFeatureEnabled() && !this.getDpFreeTrialOptin() && (null == this.getDlvPassInfo() || (this.isDlvPassNone() && !this.getDlvPassInfo().isFreeTrialRestricted()));
 	}
 
 	@Override
