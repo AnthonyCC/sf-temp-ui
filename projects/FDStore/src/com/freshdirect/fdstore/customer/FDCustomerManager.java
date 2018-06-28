@@ -1740,7 +1740,7 @@ public class FDCustomerManager {
 			FDCustomerManagerSB sb = managerHome.create();
 			
 			String orderId;
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("placeGiftCardOrder_Api")){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("placeOrder_Api")){
 	    		OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
 	    		orderId =  service.placeOrder(
 						info,
