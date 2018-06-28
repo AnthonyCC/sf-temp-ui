@@ -14,7 +14,7 @@
       <div class="editorial-content {if $moduleData.moduleTitle} no-padding-top{/if}" tabindex="0">
         <div class="left-side">
         {if $moduleData.editorialContainer.heroGraphic}
-          <img src="{$moduleData.editorialContainer.heroGraphic}" role="presentation" alt="">
+          <img {if $moduleData and $moduleData.lazyloadImages}class="lazyload" data-{/if}src="{$moduleData.editorialContainer.heroGraphic}" role="presentation" alt="">
           {if $moduleData.editorialContainer.heroTitle or $moduleData.editorialContainer.heroSubtitle}
             <div class="hero-image-description">
               {if $moduleData.editorialContainer.heroTitle}
@@ -33,7 +33,7 @@
             <div class="header-title">
             {if $moduleData.editorialContainer.headerGraphic}
               <div class="header-graphic">
-                <img src="{$moduleData.editorialContainer.headerGraphic}" alt="{$moduleData.editorialContainer.headerTitle}">
+                <img {if $moduleData and $moduleData.lazyloadImages}class="lazyload" data-{/if}src="{$moduleData.editorialContainer.headerGraphic}" alt="{$moduleData.editorialContainer.headerTitle}">
               </div>
             {/if}
             {if $moduleData.editorialContainer.headerTitle}

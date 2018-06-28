@@ -357,7 +357,7 @@
 	<div class="portrait-item-productimage_wrapper {$extraClass ? $extraClass + '-image_wrapper' : ''}">
 
 		<div class="portrait-item-burst_wrapper">
-        {if $itemIndex and $itemIndex > 4}
+        {if ($itemIndex and $itemIndex > 4) or ($moduleData and $moduleData.lazyloadImages)}
                 <img class="portrait-item-productimage lazyload" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{$productImage}" alt="" {if not $discontinued}data-product-url="{$productPageUrl}"{/if}>
         {else}
 		<img src="{$productImage}" alt="" class="portrait-item-productimage" {if not $discontinued}data-product-url="{$productPageUrl}"{/if}>

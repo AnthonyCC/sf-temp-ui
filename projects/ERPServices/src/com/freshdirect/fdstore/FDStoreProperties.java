@@ -1080,6 +1080,8 @@ public class FDStoreProperties {
 	private static final String WHITELISTED_IP_LIST="fdstore.allowed.ip.list";
 	private static final String CARD_VERIFICATION_RATE_LIMIT="fdstore.payment.verification.rate.limit";
 
+	private static final String PROP_LAZYLOADING_MODULES_ENABLED="fdstore.lazyloading.modules.enabled"; 
+
  	static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_INIT_CTX_FACTORY, "weblogic.jndi.WLInitialContextFactory");
@@ -2064,6 +2066,8 @@ public class FDStoreProperties {
         defaults.put(PROP_AMOUNT_SAVED_DP_ACCOUNTS_PAGE_ENABLED, "false");
         defaults.put(ACCOUNT_CREATION_LIMIT_PER_IP,"10");
         defaults.put(CARD_VERIFICATION_RATE_LIMIT,"10");
+        
+        defaults.put(PROP_LAZYLOADING_MODULES_ENABLED, "false");
         
         try {
      		String hostName=java.net.InetAddress.getLocalHost().getCanonicalHostName();
@@ -5287,4 +5291,8 @@ public class FDStoreProperties {
 		 return Integer.parseInt(get(CARD_VERIFICATION_RATE_LIMIT));
 
    }
+    
+	public static boolean isLazyloadingModulesEnabled() {
+		return (Boolean.valueOf(get(PROP_LAZYLOADING_MODULES_ENABLED))).booleanValue();
+	}
 }
