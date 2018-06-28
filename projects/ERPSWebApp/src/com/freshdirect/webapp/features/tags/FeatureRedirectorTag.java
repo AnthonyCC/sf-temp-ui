@@ -53,7 +53,7 @@ public class FeatureRedirectorTag extends BodyTagSupport {
 //			redirectUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + redirectUrl;
 			response.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);
 			response.setHeader("Location", redirectUrl);
-			result = SKIP_PAGE;
+			result = SKIP_BODY;
 		}
 		return result;
 	}

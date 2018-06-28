@@ -232,6 +232,12 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			}
 		}
 
+		//do this before (possibly) returning
+		if ( !PLACE_AUTO_RENEW_ORDER.equalsIgnoreCase(this.action) && request.getRequestURI().indexOf("place_auto_renew_order")<0 )
+			this.setOrderActivityPermissions(results);
+
+		pageContext.setAttribute(result, results);
+		
 		//
 		// redirect to success page if an action was successfully performed
 		// and a success page was defined
@@ -243,6 +249,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 				response.sendRedirect(response.encodeRedirectURL(successPage));
 				JspWriter writer = pageContext.getOut();
 				writer.close();
+				return SKIP_BODY;
 			} catch (IOException ioe) {
 				throw new JspException(ioe.getMessage());
 			}
@@ -251,14 +258,11 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			try {
 				JspWriter writer = pageContext.getOut();
 				writer.close();
+				return SKIP_BODY;
 			} catch (IOException ioe) {
 				throw new JspException(ioe.getMessage());
 			}
 		}
-		if ( !PLACE_AUTO_RENEW_ORDER.equalsIgnoreCase(this.action) && request.getRequestURI().indexOf("place_auto_renew_order")<0 )
-			this.setOrderActivityPermissions(results);
-
-		pageContext.setAttribute(result, results);
 		return EVAL_BODY_BUFFERED;
 
 	} // method doStartTag
