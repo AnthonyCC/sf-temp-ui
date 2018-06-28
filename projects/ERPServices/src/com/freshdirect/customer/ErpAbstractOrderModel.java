@@ -280,6 +280,8 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
 	public double getAmount() {
         double amount = 0.0;
 
+        System.out.println(this.getId()+ " "+this.getCustomerId()+ " ");
+        
         // add up orderline prices
         for (Iterator<ErpOrderLineModel> i=this.orderLines.iterator(); i.hasNext(); ) {
         	double price = ((ErpOrderLineModel)i.next()).getPrice();
