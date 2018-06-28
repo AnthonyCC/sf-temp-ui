@@ -255,8 +255,16 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 	public String getDepartmentDesc() { return departmentDesc; }
 	public void setDepartmentDesc(String departmentDesc){ this.departmentDesc = departmentDesc; }
 
-    public double getPrice(){ return price; }
+    public double getPrice(){ 
+    	
+    	System.out.println(this.hashCode() + " "+ price);
+    	return price; }
     public void setPrice(double price){ 
+    	StackTraceElement[] elements = Thread.currentThread().getStackTrace();
+    	for(StackTraceElement e: elements){
+    		System.out.println(e.toString());
+    	}
+    	System.out.println(this.hashCode() + " "+ price);
     	this.price = price; 
     }
     public void setUnscaledPrice(double price) {
