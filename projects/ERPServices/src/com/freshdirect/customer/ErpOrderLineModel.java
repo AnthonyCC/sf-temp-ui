@@ -608,6 +608,46 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 			super.setId(id);
 		}
 	}
+
+	@Override
+	public String toString() {
+		return "ErpOrderLineModel [orderLineNumber=" + orderLineNumber
+				+ ", orderLineId=" + orderLineId + ", affiliateCode="
+				+ affiliateCode + ", affiliate=" + affiliate + ", sku=" + sku
+				+ ", configuration=" + configuration + ", discount=" + discount
+				+ ", materialNumber=" + materialNumber + ", description="
+				+ description + ", configurationDesc=" + configurationDesc
+				+ ", departmentDesc=" + departmentDesc + ", price=" + price
+				+ ", unscaledPrice=" + unscaledPrice + ", perishable="
+				+ perishable + ", taxRate=" + taxRate + ", taxCode=" + taxCode
+				+ ", depositValue=" + depositValue + ", alcohol=" + alcohol
+				+ ", wine=" + wine + ", beer=" + beer + ", source=" + source
+				+ ", recipeSourceId=" + recipeSourceId + ", cartLineId="
+				+ cartLineId + ", requestNotification=" + requestNotification
+				+ ", deliveryPass=" + deliveryPass + ", discountAmount="
+				+ discountAmount + ", isDiscountApplied=" + isDiscountApplied
+				+ ", produceRating=" + produceRating + ", group=" + group
+				+ ", grpQuantity=" + grpQuantity + ", sustainabilityRating="
+				+ sustainabilityRating + ", addedFromSearch=" + addedFromSearch
+				+ ", addedFrom=" + addedFrom + ", upc=" + upc
+				+ ", couponDiscount=" + couponDiscount + ", taxationType="
+				+ taxationType + ", coremetricsPageId=" + coremetricsPageId
+				+ ", coremetricsPageContentHierarchy="
+				+ coremetricsPageContentHierarchy
+				+ ", coremetricsVirtualCategory=" + coremetricsVirtualCategory
+				+ ", externalAgency=" + externalAgency + ", externalSource="
+				+ externalSource + ", externalGroup=" + externalGroup
+				+ ", salesOrg=" + salesOrg + ", distChannel=" + distChannel
+				+ ", eStoreId=" + eStoreId + ", plantID=" + plantID
+				+ ", scaleQuantity=" + scaleQuantity + ", materialGroup="
+				+ materialGroup + ", ymalCategoryId=" + ymalCategoryId
+				+ ", ymalSetId=" + ymalSetId + ", originatingProductId="
+				+ originatingProductId + ", variantId=" + variantId
+				+ ", basePrice=" + basePrice + ", basePriceUnit="
+				+ basePriceUnit + ", savingsId=" + savingsId + ", userCtx="
+				+ userCtx + ", pricingZoneId=" + pricingZoneId
+				+ ", clientCodes=" + clientCodes + this.hashCode()+ "]";
+	}
 	
 }
 	

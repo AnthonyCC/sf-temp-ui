@@ -587,4 +587,28 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
 		if (id != null)
 			super.setId(id);
 	}
+
+	@Override
+	public String toString() {
+		return "ErpAbstractOrderModel [orderLines=" + orderLines
+				+ ", requestedDate=" + requestedDate + ", discount=" + discount
+				+ ", pricingDate=" + pricingDate + ", paymentMethod="
+				+ paymentMethod + ", subTotal=" + subTotal + ", tax=" + tax
+				+ ", customerServiceMessage=" + customerServiceMessage
+				+ ", marketingMessage=" + marketingMessage + ", glCode="
+				+ glCode + ", taxationType=" + taxationType
+				+ ", deliveryPassCount=" + deliveryPassCount
+				+ ", dlvPassApplied=" + dlvPassApplied
+				+ ", dlvPromotionApplied=" + dlvPromotionApplied
+				+ ", bufferAmt=" + bufferAmt + ", appliedCredits="
+				+ appliedCredits + ", deliveryInfo=" + deliveryInfo
+				+ ", charges=" + charges + ", discounts=" + discounts
+				+ ", dlvPassExtendDays=" + dlvPassExtendDays
+				+ ", currentDlvPassExtendDays=" + currentDlvPassExtendDays
+				+ ", couponTransModel=" + couponTransModel + ", rafTransModel="
+				+ rafTransModel + ", eStoreId=" + eStoreId
+				+ ", selectedGiftCards=" + selectedGiftCards
+				+ ", appliedGiftcards=" + appliedGiftcards
+				+ ", recipientsList=" + recipientsList + this.hashCode() + "]";
+	}
 }
