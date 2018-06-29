@@ -33,6 +33,7 @@ public class PaymentMethodControllerTag extends com.freshdirect.framework.webapp
     private String actionName 		= "addPaymentMethod";
     private String successPage;
     private String result;
+    private static final String DEACTIVATED_ACCOUNT_ERROR_TYPE="deactivated_Account";
 
     public void setSuccessPage(String sp) {
         if (sp.length()>0 ){
@@ -209,7 +210,7 @@ public class PaymentMethodControllerTag extends com.freshdirect.framework.webapp
                     throw new JspException("Error redirecting "+ioe.getMessage());
                 }
             }
-            if("deactivated_Account".equals( actionResult.getError("deactivated_Account").getType()))  {
+            if(actionResult.isFailure() && (!actionResult.getErrors().isEmpty()) && (actionResult.getError(DEACTIVATED_ACCOUNT_ERROR_TYPE)!=null) && DEACTIVATED_ACCOUNT_ERROR_TYPE.equals( actionResult.getError(DEACTIVATED_ACCOUNT_ERROR_TYPE).getType()))  {
             	HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
                 try {
                     response.sendRedirect(response.encodeRedirectURL("/logout.jsp"));
