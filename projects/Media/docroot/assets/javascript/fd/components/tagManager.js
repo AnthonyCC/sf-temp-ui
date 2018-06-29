@@ -127,7 +127,8 @@ var dataLayer = window.dataLayer || [];
           delivery_type: getDeliveryType(custData.deliveryType),
           cohort: custData.cohort || 'unknown',
           default_payment_type: custData.defaultPaymentType || '',
-          hasActiveSO3s: custData.hasActiveSO3s || ''
+          hasActiveSO3s: custData.hasActiveSO3s || '',
+          storefrontVersion: custData.storefrontVersion || ''
         },
         // variables for "old" tags
         'user-customer-type': getDeliveryType(custData.deliveryType),

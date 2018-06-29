@@ -3,7 +3,8 @@ var FreshDirect = FreshDirect || {};
 (function(fd) {
 	function addVars() {/* APPDEV-7239 */
 		BOOMR.addVar({
-			"FDUserID": (fd.user && fd.user.fdId) ? fd.user.fdId : '',
+			"FDUserID": (fd.user && fd.user.userId) ? fd.user.userId : '',
+			"FDCustomerID": (fd.user && fd.user.fdId) ? fd.user.fdId : '',
 			"ERPCustomerID": (fd.user && fd.user.erpId) ? fd.user.erpId : ''
 		});
 	}
