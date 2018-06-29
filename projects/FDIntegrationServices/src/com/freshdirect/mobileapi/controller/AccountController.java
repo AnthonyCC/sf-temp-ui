@@ -326,7 +326,18 @@ public class AccountController extends BaseController implements Comparator <Ord
     
     private ModelAndView getDpList(ModelAndView model, SessionUser user, HttpServletRequest request, HttpServletResponse response) throws FDException, JsonException {
     		Message responseMessage = new Message();
-    		if(CmsManager.getInstance().getEStoreEnum()!=null && CmsManager.getInstance().getEStoreEnum().equals(EnumEStoreId.FDX)){
+    		if(isExtraResponseRequested(request)){
+    			List<String> productidlist = Arrays.asList((FDStoreProperties.getFDXDPSku()).split(","));
+				List<com.freshdirect.mobileapi.model.Product> dpproductList = new ArrayList<com.freshdirect.mobileapi.model.Product>();
+    			for (String productid : productidlist) {
+    				try {
+						dpproductList.add(com.freshdirect.mobileapi.model.Product.getProduct(productid, "xxx", null, user));
+					} catch (ServiceException e) {
+						LOGGER.debug("Error fetching data for product(" + productid + "): " + e.getMessage());
+					}
+				}
+    			responseMessage.setDpProductlist(dpproductList);
+    		}else if(CmsManager.getInstance().getEStoreEnum()!=null && CmsManager.getInstance().getEStoreEnum().equals(EnumEStoreId.FDX)){
     			responseMessage.setDpskulist(new ArrayList<String>(Arrays.asList((FDStoreProperties.getFDXDPSku()).split(","))));
     		}else{
     			responseMessage.setDpskulist(new ArrayList<String>(Arrays.asList((FDStoreProperties.getFDDPSku()).split(","))));
