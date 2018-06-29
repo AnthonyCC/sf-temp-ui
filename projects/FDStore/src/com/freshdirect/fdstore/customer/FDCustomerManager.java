@@ -141,7 +141,6 @@ import com.freshdirect.fdstore.survey.FDSurveyResponse;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.fdstore.util.IgnoreCaseString;
 import com.freshdirect.framework.core.PrimaryKey;
-import com.freshdirect.framework.mail.FTLEmailI;
 import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
@@ -1525,9 +1524,13 @@ public class FDCustomerManager {
 		lookupManagerHome();
 
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			sb.storeCohortName(user);
-
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
+				CustomerInfoService.getInstance().storeCohortName(user.getPK().getId(), user.getCohortName());
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				sb.storeCohortName(user);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -2458,10 +2461,14 @@ public class FDCustomerManager {
 	}
 
 	public static boolean isPasswordRequestExpired(String emailAddress, String passReq) throws FDResourceException {
-		lookupManagerHome();
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.isPasswordRequestExpired(emailAddress, passReq);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
+				return CustomerInfoService.getInstance().isPasswordRequestExpired(emailAddress, passReq);
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.isPasswordRequestExpired(emailAddress, passReq);
+			}
 
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -2473,16 +2480,20 @@ public class FDCustomerManager {
 	}
 
 	public static void changePassword(FDActionInfo info, String emailAddress, String password)
-		throws FDResourceException, ErpInvalidPasswordException {
-		lookupManagerHome();
+			throws FDResourceException, ErpInvalidPasswordException {
 		try {
 			//
 			// Check for valid password length
 			//
 			if (password.length() < 6)
 				throw new ErpInvalidPasswordException("Please enter a password that is at least six characters long.");
-			FDCustomerManagerSB sb = managerHome.create();
-			sb.changePassword(info, emailAddress, password);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
+				CustomerInfoService.getInstance().changePassword(info, emailAddress, password);
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				sb.changePassword(info, emailAddress, password);
+			}
 
 		} catch (CreateException ce) {
 			invalidateManagerHome();

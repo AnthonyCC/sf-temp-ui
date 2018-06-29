@@ -352,6 +352,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
     public void storeUser(FDUser user) throws FDResourceException, RemoteException;
 
     // [APPREQ-369] store Cohort ID that belongs to user
+    @Deprecated
     public void storeCohortName(FDUser user) throws FDResourceException, RemoteException;
     @Deprecated
     public void storeSavedRecipients(FDUser user, List<SavedRecipientModel> recipientList) throws FDResourceException, RemoteException;
@@ -532,9 +533,8 @@ public interface FDCustomerManagerSB  extends EJBObject{
     @Deprecated
     public boolean isCorrectPasswordHint(String emailAddress, String hint) throws FDResourceException, ErpFraudException, RemoteException;
     @Deprecated
-
     public boolean isPasswordRequestExpired(String emailAddress, String passReq) throws FDResourceException, RemoteException;
-
+    @Deprecated
     public void changePassword(FDActionInfo info, String emailAddress, String password) throws FDResourceException, RemoteException;
 
     public void setProfileAttribute(FDIdentity identity, String key, String value, FDActionInfo info) throws RemoteException, FDResourceException;

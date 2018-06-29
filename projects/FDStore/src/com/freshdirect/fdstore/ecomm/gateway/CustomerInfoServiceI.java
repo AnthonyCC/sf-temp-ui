@@ -33,4 +33,11 @@ public interface CustomerInfoServiceI {
 	 *             if an error occurred using remote resources
 	 */
 	public void storeUser(FDUser user) throws FDResourceException, RemoteException;
+	
+	public void storeCohortName(String userId, String cohortName) throws FDResourceException, RemoteException;
+	
+	public boolean isPasswordRequestExpired(String emailAddress, String passReq) throws FDResourceException, RemoteException;
+	
+	public void changePassword(FDActionInfo info, String emailAddress, String password) throws FDResourceException, RemoteException;
+	
 }
