@@ -28,7 +28,7 @@ public class RecognizedUserData implements Serializable {
 	private FDUserDlvPassInfo dlvPassInfo;
 	
 	private List<SavedRecipientModel> receipts;
-	private FDRecipientList receipentList;
+	private FDRecipientList recipientList;
 	private List<ErpOrderLineModel> orderLines;
 	
 	private AddressModel address;
@@ -93,12 +93,12 @@ public class RecognizedUserData implements Serializable {
 		this.address = address;
 	}
 
-	public FDRecipientList getReceipentList() {
-		return receipentList;
+	public FDRecipientList getRecipentList() {
+		return recipientList;
 	}
 
-	public void setReceipentList(FDRecipientList receipentList) {
-		this.receipentList = receipentList;
+	public void setRecipientList(FDRecipientList recipientList) {
+		this.recipientList = recipientList;
 	}
 	
 }

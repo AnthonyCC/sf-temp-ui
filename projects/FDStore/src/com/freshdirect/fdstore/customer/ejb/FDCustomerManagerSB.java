@@ -195,11 +195,12 @@ public interface FDCustomerManagerSB  extends EJBObject{
 
     @Deprecated
     /*
-     * SF2.0 end point /customers?userId=<your user-id>. Refer CustomersApiClientI.EndPoints.CUSTOMER_ID_FOR_USER
+     * SF2.0 end point /customerInfo/getCustomerId
      */
     public PrimaryKey getCustomerId(String userId) throws FDResourceException, RemoteException;
-
+    @Deprecated
     public FDCustomerInfo getCustomerInfo(FDIdentity identity) throws FDResourceException, RemoteException;
+    @Deprecated
     public FDCustomerInfo getSOCustomerInfo(FDIdentity identity) throws FDResourceException, RemoteException;
 
     /**
@@ -271,7 +272,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      * throws FDResourceException if an error occured using remote resources
      */
     public boolean updateCustomerInfo(FDActionInfo info, ErpCustomerInfoModel customerInfo) throws FDResourceException, RemoteException;
-
+    @Deprecated
     public void updateUserId(FDActionInfo info, String userId) throws FDResourceException, ErpDuplicateUserIdException, RemoteException;
 
     public void updatePasswordHint(FDIdentity identity, String passwordHint) throws FDResourceException, RemoteException;
@@ -346,6 +347,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      * @param user the customer's user object
      *
      * @throws FDResourceException if an error occured using remote resources
+     * @deprecated
      */
     public void storeUser(FDUser user) throws FDResourceException, RemoteException;
 
