@@ -55,10 +55,7 @@ public interface CallCenterManagerSB extends EJBObject {
 	 */
 	@Deprecated
 	public Map<String,String> getComplaintCodes() throws FDResourceException, RemoteException;
-	/**
-	 *@deprecated This method is moved to Storefront2.0 project.
-	 * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
-	 */
+	//not used
 	@Deprecated
 	public void rejectMakegoodComplaint(String makegood_sale_id) throws FDResourceException, RemoteException; 
 	/**

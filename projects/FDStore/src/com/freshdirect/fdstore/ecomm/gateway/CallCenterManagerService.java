@@ -35,7 +35,6 @@ private static final String RESUBMIT_CUSTOMER = "callcenter/resubmitCustomer/cus
 private static final String SCHEDULE_REDELIVERY = "callcenter/scheduleRedelivery/saleId/";
 private static final String EMAIL_CUTTOFF_TIME_REPORT = "callcenter/cuttOffTime/report/email/date/";
 private static final String SAVE_TOP_FAQs = "callcenter/topFaqs/save";
-private static final String VOID_CAPTURE_ORDER = "callcenter/voidCaptureOrder/saleId/";
 
 	private static CallCenterManagerService INSTANCE;
 	
@@ -52,11 +51,6 @@ private static final String VOID_CAPTURE_ORDER = "callcenter/voidCaptureOrder/sa
 	public Map<String, List<ErpComplaintReason>> getComplaintReasons(boolean excludeCartonReq) throws FDResourceException,
 			RemoteException {
 		return ErpComplaintManagerService.getInstance().getReasons(excludeCartonReq);
-	}
-
-	@Override
-	public void rejectMakegoodComplaint(String makegood_sale_id)throws FDResourceException, RemoteException {
-		ErpComplaintManagerService.getInstance().rejectMakegoodComplaint(makegood_sale_id);
 	}
 
 	@Override
@@ -148,17 +142,5 @@ private static final String VOID_CAPTURE_ORDER = "callcenter/voidCaptureOrder/sa
 			throw new RemoteException(e.getMessage());
 		}
 	}
-
-	@Override
-	public void voidCaptureOrder(String saleId) throws RemoteException,
-			FDResourceException, ErpTransactionException {
-		try {
-			 this.httpGetDataTypeMap(getFdCommerceEndPoint(VOID_CAPTURE_ORDER+saleId),  new TypeReference<Response<String>>(){});
-		} catch (FDRuntimeException e){
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}
-	}
-	
 
 }

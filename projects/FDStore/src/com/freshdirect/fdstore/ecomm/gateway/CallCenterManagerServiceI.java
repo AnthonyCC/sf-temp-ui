@@ -15,8 +15,6 @@ public interface CallCenterManagerServiceI {
 	public Map<String, List<ErpComplaintReason>> getComplaintReasons(boolean excludeCartonReq)
 			throws FDResourceException, RemoteException;
 
-	public void rejectMakegoodComplaint(String makegood_sale_id) throws FDResourceException, RemoteException;
-
 	public void resubmitOrder(String saleId, CustomerRatingI cra, EnumSaleType saleType)
 			throws RemoteException, FDResourceException, ErpTransactionException;
 
@@ -28,7 +26,5 @@ public interface CallCenterManagerServiceI {
 	public void emailCutoffTimeReport(java.util.Date day) throws FDResourceException, RemoteException;
 
 	public void saveTopFaqs(List faqIds) throws FDResourceException, RemoteException;
-
-	public void voidCaptureOrder(String saleId) throws RemoteException, FDResourceException, ErpTransactionException;
 
 }
