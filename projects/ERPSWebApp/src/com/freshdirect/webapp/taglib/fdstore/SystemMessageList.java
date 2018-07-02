@@ -39,12 +39,12 @@ public interface SystemMessageList {
 	public final static String MSG_UNRECOGNIZE_ADDRESS_POSSIBLE_MATCHES	= "Sorry, we're unable to recognize this address. Did you mean to enter one of the following instead?";
 	public final static String MSG_ZIP_CODE								= "Sorry, we're unable to recognize this zip code. Please make sure it's entered correctly.";
 	public final static String MSG_DEPOT_CODE							= "Sorry, we're unable to recognize this code.  Please make sure it's entered correctly.";
-	public final static String MSG_DONT_DELIVER_TO_ADDRESS 				= "We're sorry; FreshDirect does not deliver to this address.  To see where we deliver, <a href=\"javascript:popup('/help/delivery_zones.jsp','large')\">click here</a>.";
+	public final static String MSG_DONT_DELIVER_TO_ADDRESS 				= "We're sorry; FreshDirect does not deliver to this address.  To see where we deliver, <a href=\"javascript:fd.components.zipCheckPopup.openZipCheckPopup()\">click here</a>.";
 	public final static String MSG_CANT_GEOCODE 						= "We''re sorry! You cannot continue at this time because your address isn''t set up in our system. We''re working to enter it as quickly as possible. Please call us toll free at {0} and we''ll inform you when the problem is corrected.<br><br>Meanwhile, feel free to continue browsing our site. We''ll store everything in your cart until you''re able to check out.";
 	public final static String MSG_CANT_GEOCODE_EXTRA 					= "We''re sorry, but we''re unable to process this address. For assistance, please call our Customer Service Team at {0}";
 	public final static String MSG_CANT_GEOCODE_ZIP_CHECK				= "We''re sorry! Your address isn''t set up in our system. We''re working to enter it as quickly as possible. Please call us toll free at {0} and we''ll inform you when the problem is corrected.";
-	public final static String MSG_RESTRICTED_ADDRESS 					= "We're sorry; FreshDirect does not deliver to this address because it is a commercial building. Unfortunately we are only able to make deliveries to residential buildings. You may enter another address <a href=\"/checkout/step_1_enter.jsp\">here</a> or choose the Pickup option below. To see where we deliver, <a href=\"javascript:popup('/help/delivery_zones.jsp','large')\">click here</a>.";
-	public final static String MSG_RESTRICTED_ADDRESS_LOCATION_BAR		= "We're sorry; FreshDirect does not deliver to this address because it is a commercial building. Unfortunately we are only able to make deliveries to residential buildings. Please select another address or choose a Pickup option. To see where we deliver, <a href=\"javascript:popup('/help/delivery_zones.jsp','large')\">click here</a>.";
+	public final static String MSG_RESTRICTED_ADDRESS 					= "We're sorry; FreshDirect does not deliver to this address because it is a commercial building. Unfortunately we are only able to make deliveries to residential buildings. You may enter another address <a href=\"/checkout/step_1_enter.jsp\">here</a> or choose the Pickup option below. To see where we deliver, <a href=\"javascript:fd.components.zipCheckPopup.openZipCheckPopup()\">click here</a>.";
+	public final static String MSG_RESTRICTED_ADDRESS_LOCATION_BAR		= "We're sorry; FreshDirect does not deliver to this address because it is a commercial building. Unfortunately we are only able to make deliveries to residential buildings. Please select another address or choose a Pickup option. To see where we deliver, <a href=\"javascript:fd.components.zipCheckPopup.openZipCheckPopup()\">click here</a>.";
 	public final static String MSG_CORP_ADDR_OUT_OF_ZONE				= "We're sorry; FreshDirect does not offer Corporate Office Service delivery at this location.";
 	
 
@@ -234,7 +234,7 @@ public interface SystemMessageList {
     public final static String MSG_ADDRESS_APT_WRONG = "We're sorry, but the address has an invalid Apt. number.<br>Please update the address or add new Apt. number.";
     public final static String MSG_ADDRESS_APT_REQ = "We're sorry, an Apt. number is required for this address. Please add an Apt. number or update the address.";
 	public final static String MSG_APARTMENT_INVALID_MISSING	= "An Apt/Suite # is missing/invalid for this address.";
-	public final static String MSG_DONT_DELIVER_TO_ADDRESS_SS 	= "We're sorry, but you must have an address in one of our <a href=\"javascript:popup('/help/delivery_zones.jsp','large')\">delivery zones</a>. Please update your address or enter a new address.";
+	public final static String MSG_DONT_DELIVER_TO_ADDRESS_SS 	= "We're sorry, but you must have an address in one of our <a href=\"javascript:fd.components.zipCheckPopup.openZipCheckPopup()\">delivery zones</a>. Please update your address or enter a new address.";
 	
 	//PayPal
 	public final static String MSG_PAYPAL_AUTH_FAIL_ERR="PayPal Buyer Revoked Pre-Approved Payment Authorization. Please select a different payment method for this order and contact your card issuer for clarification.";	

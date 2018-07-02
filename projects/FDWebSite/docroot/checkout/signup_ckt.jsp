@@ -105,7 +105,7 @@ for (Iterator erItr = aerrs.iterator();erItr.hasNext();) {
 					Sign up now to continue checkout and start getting better food at a better price. 
 				<% } %>
 			<% } else { %>
-				Sign up now to continue checkout and start getting better food at a better price. Please note that your area is not within our <a href="javascript:popup('/help/delivery_zones.jsp','large')">current delivery zones</a>, so you will only be able to place an order for pickup.
+				Sign up now to continue checkout and start getting better food at a better price. Please note that your area is not within our <a href="javascript:fd.components.zipCheckPopup.openZipCheckPopup()">current delivery zones</a>, so you will only be able to place an order for pickup.
 			<% } %>
 			<br><br>
 			<b>Already have a password?</b><br>

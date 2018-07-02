@@ -79,7 +79,7 @@ if (request.getRequestURI().toLowerCase().indexOf("your_account/") == -1) {
 			%>
 			<tr>
 				<td class="text11orbold">
-					Depot customers please note: FreshDirect may not offer delivery to your home address at this time. To see where we deliver, please <a href="javascript:popup('/help/delivery_zones.jsp','large')">click here</a>.   
+					Depot customers please note: FreshDirect may not offer delivery to your home address at this time. To see where we deliver, please <a href="javascript:fd.components.zipCheckPopup.openZipCheckPopup()">click here</a>.   
 				</td>
 			</tr>   
 			<%

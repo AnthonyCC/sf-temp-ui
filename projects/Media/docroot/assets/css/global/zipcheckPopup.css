@@ -47,6 +47,14 @@
   font-size: 14px;
 }
 
+#zipCheckPopup .zipcheck.zipcheck-found h1{
+  text-align: center;
+}
+
+#zipCheckPopup .zipcheck.zipcheck-found button{
+  margin: 10px 0;
+}
+
 #zipCheckPopup .zipcheck .address-type label {
   display: inline-block;
 }

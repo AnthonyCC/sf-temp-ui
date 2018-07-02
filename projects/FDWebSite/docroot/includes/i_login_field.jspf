@@ -405,10 +405,10 @@
 					
 				<% }else{ %>
 					<font class="text13bold new_cust">New Customer?</font><br class="new_cust"/>
-						<a href="javascript:popup('/help/delivery_zones.jsp','large')" class="text13 new_cust">See if we deliver to your area</a><% } %>
+						<a href="javascript:fd.components.zipCheckPopup.openZipCheckPopup()" class="text13 new_cust">See if we deliver to your area</a><% } %>
 			<%} else { %>        
 				<font class="text13bold new_cust">New Customer?</font><br class="new_cust" />
-				<a href="javascript:popup('/help/delivery_zones.jsp','large')" class="text13 new_cust">See if we deliver to your area</a><% } %>
+				<a href="javascript:fd.components.zipCheckPopup.openZipCheckPopup()" class="text13 new_cust">See if we deliver to your area</a><% } %>
 		
 	<br><br>
 </fd:LoginController>

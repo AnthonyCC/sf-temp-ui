@@ -27,7 +27,16 @@ var FreshDirect = FreshDirect || {};
       $('.spinner-overlay').addClass('active');
     },
     success: function () {
-      DISPATCHER.signal('zipCheckSuccess', data);
+      if(typeof FreshDirect.zipCheck !== 'undefined' && FreshDirect.zipCheck == true){
+    	  FreshDirect.components.zipCheckPopup.refresh({data: data, zipcheckFound: true});
+    	  FreshDirect.zipCheck = false;
+    	  $('.zipcheck').off();
+    	  $('.zipcheck').on('click', '[zip-check-shop]', function() {
+    		  DISPATCHER.signal('zipCheckSuccess', data);
+    	  });
+      } else {
+    	  DISPATCHER.signal('zipCheckSuccess', data);
+      }
     },
     failure: function () {
       if (FreshDirect.components.zipCheckPopup) {

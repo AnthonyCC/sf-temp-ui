@@ -221,7 +221,7 @@ while (e.hasMoreElements()) {
 	    <td class="text12"  valign="top">
 	            <font class="title18">Choose Delivery Address (Step 1 of 4)</font><br/>
 					<%if(user.isPickupOnly() ){%>
-	        <b>Please Note: </b>Your home address is not in a FreshDirect <a href="javascript:popup('/help/delivery_zones.jsp','large');">delivery zone</a>.
+	        <b>Please Note: </b>Your home address is not in a FreshDirect <a href="javascript:fd.components.zipCheckPopup.openZipCheckPopup()">delivery zone</a>.
 	        Please select one of our pickup locations to place an order.
 					<%}else if(!user.isDepotUser()){%>
 	        Please choose a delivery address for this order.

@@ -250,7 +250,7 @@ if(user.isDepotUser()){
 	<td width="<%=W_REGISTRATION_SIGNUP_TOTAL%>">
 		<img src="/media_stat/images/template/depot/home_address.gif" width="96" height="9" alt="" border="0" />&nbsp;&nbsp;&nbsp;<font class="text9">* Required information</font><br />
 		<img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_REGISTRATION_SIGNUP_TOTAL%>" height="1" border="0" vspace="3" /><br />
-		If your home address is within a FreshDirect <a href="javascript:popup('/help/delivery_zones.jsp','large')">delivery zone</a>, you can also get deliveries there.<br />
+		If your home address is within a FreshDirect <a href="javascript:fd.components.zipCheckPopup.openZipCheckPopup()">delivery zone</a>, you can also get deliveries there.<br />
 		<% if ("bnl".equalsIgnoreCase(user.getDepotCode())) {%>
 			<b>If you reside on the Brookhaven Labs Campus, please call FreshDirect at <%=user.getCustomerServiceContact()%> to assist you in registering your address.</b><br />
 		<% } %>

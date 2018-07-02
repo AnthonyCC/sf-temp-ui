@@ -86,7 +86,7 @@ final int W_SIGNUP_TOTAL = 970;
 					Sign up now and start getting better food at a better price. No credit card information is required until you place an order.
 				<% } %>
 			<% } else { %>
-				Sign up now and start getting better food at a better price. No credit card information is required until you place an order. Please note that your area is not within our <a href="javascript:popup('/help/delivery_zones.jsp','large')">current delivery zones</a>, so you will only be able to place an order for pickup.
+				Sign up now and start getting better food at a better price. No credit card information is required until you place an order. Please note that your area is not within our <a href="javascript:fd.components.zipCheckPopup.openZipCheckPopup()">current delivery zones</a>, so you will only be able to place an order for pickup.
 			<% } %>
 			<br /><br />
 			<b>Already have a password?</b><br />
