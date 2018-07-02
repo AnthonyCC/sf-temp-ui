@@ -53,10 +53,21 @@ public class AccountActivityUtil implements SessionName {
 	            src = EnumTransactionSource.FOODKICK_WEBSITE;
 	            agent = null;
 	            initiator = "CUSTOMER";
-		}else {
+		} else if (app != null
+                && app.equalsIgnoreCase(EnumTransactionSource.FDX_IPHONE
+                        .getCode())) {
+            src = EnumTransactionSource.FDX_IPHONE;
+            agent = null;
+            initiator = "CUSTOMER";
+		} else if (app != null
+				&& app.equalsIgnoreCase(EnumTransactionSource.ANDROID_PHONE
+						.getCode())) {
+			src = EnumTransactionSource.ANDROID_PHONE;
+			agent = null;
+			initiator = "CUSTOMER";
+		}  	else {
 			src = EnumTransactionSource.WEBSITE;
 			agent = null;
-			
 			
 			initiator = "CUSTOMER";
 		}
