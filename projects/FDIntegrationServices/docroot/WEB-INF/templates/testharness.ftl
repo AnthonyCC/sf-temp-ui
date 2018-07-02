@@ -616,11 +616,6 @@ function loadStuff() {
   	$("#url").val("/saptest12@freshdirect.com/account/deliverypass/getdpinfo/");
   	$("#header").val('');
   	$("#payload").val("");
-  	
- } else if (loaddata == "DpList") {
-  	$("#url").val("/saptest12@freshdirect.com/account/deliverypass/getdplist/");
-  	$("#header").val('');
-  	$("#payload").val("");
 
   	} else if (loaddata == "DpAutoRenew") {
   	$("#url").val("/saptest12@freshdirect.com/account/deliverypass/dpautorenew");
@@ -1855,8 +1850,7 @@ function doStuff() {
   <option value="AddProfile">ACCOUNT - Add Profile</option>
   <option value="DpFreeTrialOptin">ACCOUNT - Set DeliveryPass Free Trial</option>
   <option value="DpInfo">ACCOUNT - Get DeliveryPass Info</option>
-  <option value="DpList">ACCOUNT - Get DeliveryPass List</option>
-  <option value="DpAutoRenew">ACCOUNT - Set DeliveryPass Auto Renew</option>
+<option value="DpAutoRenew">ACCOUNT - Set DeliveryPass Auto Renew</option>
 
   <option value=""> ========== MISC ========== </option>
   <option value="EmailCapture">Email Capture</option>

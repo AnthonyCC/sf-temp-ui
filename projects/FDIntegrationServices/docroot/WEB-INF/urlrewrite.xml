@@ -914,12 +914,6 @@
 		<from>^/v/([0-9]+)/(.*)/account/deliverypass/getdpinfo/</from>
 		<to last="true">/account.do?action=getDpInfo&amp;ver=$1</to>
 	</rule>
-	
-	<!--  DeliveryPass List -->
-	<rule>
-		<from>^/v/([0-9]+)/(.*)/account/deliverypass/getdplist/</from>
-		<to last="true">/account.do?action=getDpList&amp;ver=$1</to>
-	</rule>
 
 	<!--  DeliveryPass Auto Renew -->
 	<rule>

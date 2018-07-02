@@ -526,7 +526,6 @@ public class FDStoreProperties {
     private static final String PROP_SIX_MONTH_DELIVERY_PASS_SKU = "fdstore.sixmonth.dp.sku";
     private static final String PROP_ONE_MONTH_DELIVERY_PASS_SKU = "fdstore.onemonth.dp.sku";
     private static final String PROP_FDX_DELIVERY_PASS_SKU = "fdstore.fdx.dp.sku";
-    private static final String PROP_FD_DELIVERY_PASS_SKU = "fdstore.fd.dp.sku";
 
     // APPDEV-1850 build versioning of JavaScript/CSS files
     private static final String BUILDVER_ENABLE = "fdstore.buildver.enable";
@@ -1540,7 +1539,6 @@ public class FDStoreProperties {
         defaults.put(PROP_SIX_MONTH_DELIVERY_PASS_SKU, "mkt_dpss_6m_autrnwl");
         defaults.put(PROP_ONE_MONTH_DELIVERY_PASS_SKU, "mkt_dpss_onemonth");
         defaults.put(PROP_FDX_DELIVERY_PASS_SKU, "mkt_fk_dpss_onemonth");
-        defaults.put(PROP_FD_DELIVERY_PASS_SKU, "");
 
         defaults.put(BUILDVER_ENABLE, "true");
 
@@ -3645,10 +3643,6 @@ public class FDStoreProperties {
     
     public static String getFDXDPSku() {
         return get(PROP_FDX_DELIVERY_PASS_SKU);
-    }
-    
-    public static String getFDDPSku() {
-        return get(PROP_FD_DELIVERY_PASS_SKU);
     }
 
     public static boolean isPaymentMethodVerificationEnabled() {

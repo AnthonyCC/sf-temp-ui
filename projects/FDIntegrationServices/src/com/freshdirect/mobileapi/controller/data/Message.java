@@ -1,10 +1,8 @@
 package com.freshdirect.mobileapi.controller.data;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -201,25 +199,5 @@ public class Message implements DateFormat, Cloneable {
 	}
 
 	private boolean showCaptcha;
-	
-	private List<String> dpskulist;
-	
-	public List<String> getDpskulist() {
-		return dpskulist;
-	}
-
-	public void setDpskulist(List<String> dpskulist) {
-		this.dpskulist = dpskulist;
-	}
-	
-	List<com.freshdirect.mobileapi.model.Product> dpproductList;
-	
-	public List<com.freshdirect.mobileapi.model.Product> getDpProductlist() {
-		return dpproductList;
-	}
-
-	public void setDpProductlist(List<com.freshdirect.mobileapi.model.Product> dpproductList) {
-		this.dpproductList = dpproductList;
-	}
     
 }
