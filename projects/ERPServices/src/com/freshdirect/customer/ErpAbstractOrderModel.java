@@ -280,15 +280,11 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
 	public double getAmount() {
         double amount = 0.0;
 
-        System.out.println(this.getId()+ " "+this.getCustomerId()+ " ");
-        
         // add up orderline prices
         for (Iterator<ErpOrderLineModel> i=this.orderLines.iterator(); i.hasNext(); ) {
         	double price = ((ErpOrderLineModel)i.next()).getPrice();
-        	System.out.println("price" + price);
 			amount += price;
         }
-        System.out.println("amount" + amount);
 
         // subtract credits
         if (this.appliedCredits!=null) {
@@ -296,8 +292,6 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
 				amount -= i.next().getAmount();
 	        }
         }
-        
-        System.out.println("amount" + amount);
         
         if (this.discounts != null && this.discounts.size() > 0) {
         	for (Iterator<ErpDiscountLineModel> iter = this.discounts.iterator(); iter.hasNext();) {
@@ -307,24 +301,16 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
         } else if(this.discount != null){  // this is to be backward compatible
 			amount -= this.discount.getAmount();
 		}
-        
-        System.out.println("amount" + amount);
 
         // add charges (with their discounts applied)
         for (Iterator<ErpChargeLineModel> i=this.charges.iterator(); i.hasNext(); ) {
         	amount += i.next().getTotalAmount();
         }
-        
-        System.out.println("amount" + amount);
 
         // add tax
 		amount += this.tax;
 		
-		System.out.println("amount" + amount);
-		
 		amount += this.getDepositValue();
-		
-		System.out.println("amount" + amount);
 
         return MathUtil.roundDecimal(amount);
 	}
@@ -586,29 +572,5 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
 	public void setId(String id) {
 		if (id != null)
 			super.setId(id);
-	}
-
-	@Override
-	public String toString() {
-		return "ErpAbstractOrderModel [orderLines=" + orderLines
-				+ ", requestedDate=" + requestedDate + ", discount=" + discount
-				+ ", pricingDate=" + pricingDate + ", paymentMethod="
-				+ paymentMethod + ", subTotal=" + subTotal + ", tax=" + tax
-				+ ", customerServiceMessage=" + customerServiceMessage
-				+ ", marketingMessage=" + marketingMessage + ", glCode="
-				+ glCode + ", taxationType=" + taxationType
-				+ ", deliveryPassCount=" + deliveryPassCount
-				+ ", dlvPassApplied=" + dlvPassApplied
-				+ ", dlvPromotionApplied=" + dlvPromotionApplied
-				+ ", bufferAmt=" + bufferAmt + ", appliedCredits="
-				+ appliedCredits + ", deliveryInfo=" + deliveryInfo
-				+ ", charges=" + charges + ", discounts=" + discounts
-				+ ", dlvPassExtendDays=" + dlvPassExtendDays
-				+ ", currentDlvPassExtendDays=" + currentDlvPassExtendDays
-				+ ", couponTransModel=" + couponTransModel + ", rafTransModel="
-				+ rafTransModel + ", eStoreId=" + eStoreId
-				+ ", selectedGiftCards=" + selectedGiftCards
-				+ ", appliedGiftcards=" + appliedGiftcards
-				+ ", recipientsList=" + recipientsList + this.hashCode() + "]";
 	}
 }

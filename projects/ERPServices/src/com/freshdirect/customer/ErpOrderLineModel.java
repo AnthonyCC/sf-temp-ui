@@ -255,16 +255,8 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 	public String getDepartmentDesc() { return departmentDesc; }
 	public void setDepartmentDesc(String departmentDesc){ this.departmentDesc = departmentDesc; }
 
-    public double getPrice(){ 
-    	
-    	System.out.println(this.hashCode() + " "+ price);
-    	return price; }
+    public double getPrice(){ return price; }
     public void setPrice(double price){ 
-    	StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-    	for(StackTraceElement e: elements){
-    		System.out.println(e.toString());
-    	}
-    	System.out.println(this.hashCode() + " "+ price);
     	this.price = price; 
     }
     public void setUnscaledPrice(double price) {
@@ -615,46 +607,6 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 		if (id != null) {
 			super.setId(id);
 		}
-	}
-
-	@Override
-	public String toString() {
-		return "ErpOrderLineModel [orderLineNumber=" + orderLineNumber
-				+ ", orderLineId=" + orderLineId + ", affiliateCode="
-				+ affiliateCode + ", affiliate=" + affiliate + ", sku=" + sku
-				+ ", configuration=" + configuration + ", discount=" + discount
-				+ ", materialNumber=" + materialNumber + ", description="
-				+ description + ", configurationDesc=" + configurationDesc
-				+ ", departmentDesc=" + departmentDesc + ", price=" + price
-				+ ", unscaledPrice=" + unscaledPrice + ", perishable="
-				+ perishable + ", taxRate=" + taxRate + ", taxCode=" + taxCode
-				+ ", depositValue=" + depositValue + ", alcohol=" + alcohol
-				+ ", wine=" + wine + ", beer=" + beer + ", source=" + source
-				+ ", recipeSourceId=" + recipeSourceId + ", cartLineId="
-				+ cartLineId + ", requestNotification=" + requestNotification
-				+ ", deliveryPass=" + deliveryPass + ", discountAmount="
-				+ discountAmount + ", isDiscountApplied=" + isDiscountApplied
-				+ ", produceRating=" + produceRating + ", group=" + group
-				+ ", grpQuantity=" + grpQuantity + ", sustainabilityRating="
-				+ sustainabilityRating + ", addedFromSearch=" + addedFromSearch
-				+ ", addedFrom=" + addedFrom + ", upc=" + upc
-				+ ", couponDiscount=" + couponDiscount + ", taxationType="
-				+ taxationType + ", coremetricsPageId=" + coremetricsPageId
-				+ ", coremetricsPageContentHierarchy="
-				+ coremetricsPageContentHierarchy
-				+ ", coremetricsVirtualCategory=" + coremetricsVirtualCategory
-				+ ", externalAgency=" + externalAgency + ", externalSource="
-				+ externalSource + ", externalGroup=" + externalGroup
-				+ ", salesOrg=" + salesOrg + ", distChannel=" + distChannel
-				+ ", eStoreId=" + eStoreId + ", plantID=" + plantID
-				+ ", scaleQuantity=" + scaleQuantity + ", materialGroup="
-				+ materialGroup + ", ymalCategoryId=" + ymalCategoryId
-				+ ", ymalSetId=" + ymalSetId + ", originatingProductId="
-				+ originatingProductId + ", variantId=" + variantId
-				+ ", basePrice=" + basePrice + ", basePriceUnit="
-				+ basePriceUnit + ", savingsId=" + savingsId + ", userCtx="
-				+ userCtx + ", pricingZoneId=" + pricingZoneId
-				+ ", clientCodes=" + clientCodes + this.hashCode()+ "]";
 	}
 	
 }
