@@ -57,6 +57,7 @@
 			fd.user.masquerade = true;
 		<% } %>;
 		fd.user.userId = '<%= jsUser.getUserId() %>';
+		fd.user.fdUserPK = '<%= jsUser.getPrimaryKey() %>';
 		fd.user.fdId = '<%= (identity!=null) ? identity.getFDCustomerPK() : "" %>';
 		fd.user.erpId = '<%= (identity!=null) ? identity.getErpCustomerPK() : "" %>';
 		
