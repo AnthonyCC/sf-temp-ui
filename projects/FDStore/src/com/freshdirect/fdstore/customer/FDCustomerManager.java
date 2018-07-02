@@ -1890,20 +1890,54 @@ public class FDCustomerManager {
 			FDCustomerManagerSB sb = managerHome.create();
 //			EnumSaleType type = cart.getOriginalOrder().getOrderType();
 			if (EnumSaleType.REGULAR.equals(type)){
-				sb.modifyOrder(
-					info,
-					saleId,
-					order,
-					appliedPromos,
-					cart.getOriginalReservationId(),
-					sendEmail,
-					cra,
-					info.getAgent() == null ? null : info.getAgent().getRole(),
-					status,
-					hasCouponDiscounts,
-					fdcOrderCount
-				);
+				
+				if(FDStoreProperties.isSF2_0_AndServiceEnabled("modifyOrder_Api")){
+					OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
+		    		service.modifyOrder(
+							info,
+							saleId,
+							order,
+							appliedPromos,
+							cart.getOriginalReservationId(),
+							sendEmail,
+							cra,
+							info.getAgent() == null ? null : info.getAgent().getRole(),
+							status,
+							hasCouponDiscounts,
+							fdcOrderCount
+						);
+					
+				}else{
+					sb.modifyOrder(
+						info,
+						saleId,
+						order,
+						appliedPromos,
+						cart.getOriginalReservationId(),
+						sendEmail,
+						cra,
+						info.getAgent() == null ? null : info.getAgent().getRole(),
+						status,
+						hasCouponDiscounts,
+						fdcOrderCount
+					);
+				}
 			}else if (EnumSaleType.SUBSCRIPTION.equals(type)){
+				if(FDStoreProperties.isSF2_0_AndServiceEnabled("modifyAutoRenewOrder_Api")){
+					OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
+		    		service.modifyAutoRenewOrder(
+							info,
+							saleId,
+							order,
+							appliedPromos,
+							cart.getOriginalReservationId(),
+							sendEmail,
+							cra,
+							info.getAgent() == null ? null : info.getAgent().getRole(),
+							status
+						);
+					
+				}else{
 				sb.modifyAutoRenewOrder(
 					info,
 					saleId,
@@ -1915,6 +1949,7 @@ public class FDCustomerManager {
 					info.getAgent() == null ? null : info.getAgent().getRole(),
 					status
 				);
+				}
 				sb.authorizeSale(info.getIdentity().getErpCustomerPK().toString(), saleId, type, cra);
 			}
 
