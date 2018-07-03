@@ -85,6 +85,8 @@ import com.freshdirect.deliverypass.DlvPassUsageInfo;
 import com.freshdirect.deliverypass.DlvPassUsageLine;
 import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
+import com.freshdirect.ecomm.gateway.DlvPassManagerService;
+import com.freshdirect.ecomm.gateway.DlvPassManagerServiceI;
 import com.freshdirect.ecomm.gateway.GiftCardManagerService;
 import com.freshdirect.ecomm.gateway.OrderResourceApiClient;
 import com.freshdirect.ecomm.gateway.OrderResourceApiClientI;
@@ -3087,8 +3089,12 @@ public class FDCustomerManager {
 
 		lookupManagerHome();
 		try {
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.DlvPassManagerSB)){
+				return DlvPassManagerService.getInstance().hasPurchasedPass(customerPK);
+			}else{
 			FDCustomerManagerSB sb = managerHome.create();
 			return sb.hasPurchasedPass(customerPK);
+			}
 
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -3476,8 +3482,14 @@ public class FDCustomerManager {
 		Object[] autoRenewInfo = null;
 		lookupManagerHome();
 		try {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.DlvPassManagerSB)) {
+				autoRenewInfo = DlvPassManagerService.getInstance().getAutoRenewalInfo(eStore);
+			}else{	
+			
 			FDCustomerManagerSB sb = managerHome.create();
 			autoRenewInfo = sb.getAutoRenewalInfo(eStore);
+			}
+			
 			return autoRenewInfo;
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -5579,8 +5591,14 @@ public class FDCustomerManager {
 		public static  List<String> getAllCustIdsOfFreeTrialSubsOrder() throws FDResourceException{
 			lookupManagerHome();
 			try {
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getAllCustIdsOfFreeTrialSubsOrder();
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.DlvPassManagerSB)) {
+					return DlvPassManagerService.getInstance().getAllCustIdsOfFreeTrialSubsOrder();
+				}else{
+					FDCustomerManagerSB sb = managerHome.create();
+					return sb.getAllCustIdsOfFreeTrialSubsOrder();
+				}
+				
+				
 			}catch (RemoteException e) {
 				LOGGER.error("Error at delivery pass free trial in fdcustomer "+ e);
 				invalidateManagerHome();

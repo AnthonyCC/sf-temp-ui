@@ -51,10 +51,11 @@ public class DlvPassManagerService extends AbstractEcommService implements DlvPa
 	private static final String REVOKE_DLV_PASS_USING_ACTIVEPASS = "dlvpass/revokeusingactivepass";
 	private static final String DLV_PASS_HAS_PURCHASED = "dlvpass/haspurchasedpass/";
 	private static final String GET_USABLE__AUTORENEW_DLV_PASS = "dlvpass/getusableautorenewpasses/";
-	private static final String GET_AUTO_RENEWAL_INFO = "dlvpass/getautorenewalinfo";
+	private static final String GET_AUTO_RENEWAL_INFO = "dlvpass/getautorenewalinfo/";
 	private static final String GET_DAYS_SINCE_DLV_PASS_EXPIRY = "dlvpass/getdayssincedpexpiry/";
 	private static final String GET_DAYS_TO_EXPIRY_DLV_PASS = "dlvpass/getdaystodpexpiry/";
-	private static final String GET_PENDING_PASSES= "dlvpass/getpendingpasses";
+	private static final String GET_PENDING_PASSES= "dlvpass/getpendingpasses/";
+	private static final String GET_ALL_CUSTID_OF_FREE_TS_ORDERS = "dlvpass/getAllCustIdsOfFreeTSOrder";
 	
 
 	
@@ -164,7 +165,7 @@ public class DlvPassManagerService extends AbstractEcommService implements DlvPa
 			DeliveryPassData data = ModelConverter.buildDeliveryPassData(model);
 			request.setData(data);
 			inputJson = buildRequest(request);
-			response = postData(inputJson,getFdCommerceEndPoint(CANCEL_DLV_PASS), Response.class);
+			response = postData(inputJson,getFdCommerceEndPoint(CANCEL_DLV_PASS+"/eStore/"+eStore.getContentId()+"/fdPk/"+fdPk), Response.class);
 			if(!response.getResponseCode().equals("OK"))
 				throw new RemoteException(response.getMessage());	
 		} catch (FDEcommServiceException e) {
@@ -460,11 +461,11 @@ public class DlvPassManagerService extends AbstractEcommService implements DlvPa
 	}
 	
 	@Override
-	public Object[] getAutoRenewalInfo() throws RemoteException {
+	public Object[] getAutoRenewalInfo(EnumEStoreId eStore) throws RemoteException {
 		Response<DlvPassAutoRenewData> response = null;
 		try {
 			response = httpGetDataTypeMap(
-					getFdCommerceEndPoint(GET_AUTO_RENEWAL_INFO),new TypeReference<Response<DlvPassAutoRenewData>>() {
+					getFdCommerceEndPoint(GET_AUTO_RENEWAL_INFO+eStore.getContentId()),new TypeReference<Response<DlvPassAutoRenewData>>() {
 					});
 			if (!response.getResponseCode().equals("OK"))
 				throw new FDResourceException(response.getMessage());
@@ -508,11 +509,11 @@ public class DlvPassManagerService extends AbstractEcommService implements DlvPa
 	}
 	
 	@Override
-	public List<List<String>> getPendingPasses() throws RemoteException {
+	public List<List<String>> getPendingPasses(EnumEStoreId eStore) throws RemoteException {
 		Response<List<List<String>>> response = null;
 		try {
 			response = httpGetDataTypeMap(
-					getFdCommerceEndPoint(GET_PENDING_PASSES),new TypeReference<Response<List<List<String>>>>() {
+					getFdCommerceEndPoint(GET_PENDING_PASSES+eStore.getContentId()),new TypeReference<Response<List<List<String>>>>() {
 					});
 			if (!response.getResponseCode().equals("OK"))
 				throw new FDResourceException(response.getMessage());
@@ -521,6 +522,30 @@ public class DlvPassManagerService extends AbstractEcommService implements DlvPa
 			throw new RemoteException(e.getMessage());
 		}
 		return response.getData();
+	}
+
+	@Override
+	public List<String> getAllCustIdsOfFreeTrialSubsOrder()
+			throws RemoteException {
+		Response<List<String>> response = null;
+		try {
+			response = httpGetDataTypeMap(
+					getFdCommerceEndPoint(GET_ALL_CUSTID_OF_FREE_TS_ORDERS),new TypeReference<Response<List<String>>>() {
+					});
+			if (!response.getResponseCode().equals("OK"))
+				throw new FDResourceException(response.getMessage());
+
+		} catch (FDResourceException e) {
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+
+	@Override
+	public void updateDeliveryPassActivation(String saleId)
+			throws RemoteException {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }
