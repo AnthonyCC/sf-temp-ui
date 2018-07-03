@@ -44,9 +44,6 @@ public class ModuleValidator implements Validator {
                     } else {
                         ContentKey moduleSourceNode = (ContentKey) attributesWithValues.get(ContentTypes.Module.sourceNode);
                         validateSourceTypeSourceNodeMatch(contentKey, productSourceType, moduleSourceNode, validationResults);
-                        if (displayType.equals("EDITORIAL_MODULE")) {
-                            validateEditoralModuleSpecificAttributes(contentKey, attributesWithValues, validationResults);
-                        }
                     }
                 }
             }
@@ -89,30 +86,6 @@ public class ModuleValidator implements Validator {
             if (null == moduleSourceNode || !moduleSourceNode.getType().equals(ContentType.Brand)) {
                 validationResults.addValidationResult(contentKey, "Invalid source node. Please set a brand.", ValidationResultLevel.ERROR, ModuleValidator.class);
             }
-        }
-    }
-
-    private void validateEditoralModuleSpecificAttributes(ContentKey contentKey, Map<Attribute, Object> attributesWithValues, ValidationResults validationResults) {
-        if (null == attributesWithValues.get(ContentTypes.Module.heroGraphic)) {
-            validationResults.addValidationResult(contentKey, "Hero Graphic is missing", ValidationResultLevel.ERROR, ModuleValidator.class);
-        }
-        if (null == attributesWithValues.get(ContentTypes.Module.headerGraphic)) {
-            validationResults.addValidationResult(contentKey, "Hader Graphic is missing", ValidationResultLevel.ERROR, ModuleValidator.class);
-        }
-        if (null == attributesWithValues.get(ContentTypes.Module.editorialContent)) {
-            validationResults.addValidationResult(contentKey, "Editorial Content is missing", ValidationResultLevel.ERROR, ModuleValidator.class);
-        }
-        if (null == attributesWithValues.get(ContentTypes.Module.heroTitle)) {
-            validationResults.addValidationResult(contentKey, "Hero Title is missing", ValidationResultLevel.ERROR, ModuleValidator.class);
-        }
-        if (null == attributesWithValues.get(ContentTypes.Module.heroSubtitle)) {
-            validationResults.addValidationResult(contentKey, "Hero Subtitle is missing", ValidationResultLevel.ERROR, ModuleValidator.class);
-        }
-        if (null == attributesWithValues.get(ContentTypes.Module.headerTitle)) {
-            validationResults.addValidationResult(contentKey, "Header Title is missing", ValidationResultLevel.ERROR, ModuleValidator.class);
-        }
-        if (null == attributesWithValues.get(ContentTypes.Module.headerSubtitle)) {
-            validationResults.addValidationResult(contentKey, "Header Subtitle is missing", ValidationResultLevel.ERROR, ModuleValidator.class);
         }
     }
 
