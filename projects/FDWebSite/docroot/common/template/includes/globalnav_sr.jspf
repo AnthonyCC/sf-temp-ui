@@ -106,7 +106,7 @@ if(user != null) {
 
 <!-- GLOBALNAV TOP -->
 	<div class="container globalnav_top<%= (onCartPage) ? " disableCart" : "" %><%= (useFdxGlobalNav) ? " hasFDX" : "" %><%= (inReorder) ? " inReorder" : "" %>">
-
+		<% if (user != null && user.isFDLabsCustomer()) { %><div class="FDL-beta-search"><a href="/expresssearch.jsp">try our new (beta) search</a></div><% } %>
 		<% if (useFdxGlobalNav) { %>
 
 			<div class="nav<%= " "+hasEcouponsClass %>">
@@ -138,7 +138,7 @@ if(user != null) {
 							%>
 							<button id="topInputFindButton_fdx" class="locabar-search cssbutton fdxgreen cssbutton-flat"><span class="offscreen">search</span></button>
 						
-							<% if (user != null && user.isFDLabsCustomer()) { %><div><a href="/expresssearch.jsp">try our new express search</a></div><% } %>
+							
 						</form>
 					</div>
 

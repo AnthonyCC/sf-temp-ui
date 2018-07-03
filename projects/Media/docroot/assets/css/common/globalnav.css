@@ -95,10 +95,6 @@ body{
   height: 28px;
 }
 
-.globalnav_top .nav .searchform label {
-   /*   display: none; */
-}
-
 .globalnav_top .nav .searchform .searchinput {
   white-space:nowrap;
 }
@@ -1224,4 +1220,12 @@ table[data-component="footer-cont"] {
 
 .container.global.hasFDX {
   margin-bottom:5px;
+}
+
+.FDL-beta-search {
+  margin-left: 203px;
+  font-size: 12px;
+}
+.globalnav_top .topnavitem {
+  margin-top: 0;
 }
