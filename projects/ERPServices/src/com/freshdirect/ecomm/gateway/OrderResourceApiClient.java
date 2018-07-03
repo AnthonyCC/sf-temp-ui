@@ -66,6 +66,8 @@ private static OrderResourceApiClient INSTANCE;
 	private static final String CREATE_REG_ORDER_API = 	"orders/reg/create";
 	private static final String MODIFY_REG_ORDER_API = 	"orders/reg/modify";
 	
+	private static final String MODIFY_AUTORENEW_ORDER_API = 	"orders/sub/modify";
+	
 	public static OrderResourceApiClient getInstance() {
 		if (INSTANCE == null)
 			INSTANCE = new OrderResourceApiClient();
@@ -475,7 +477,32 @@ private static OrderResourceApiClient INSTANCE;
 			String originalReservationId, boolean sendEmail,
 			CustomerRatingI cra, CrmAgentRole crmAgentRole,
 			EnumDlvPassStatus status) {
-		// TODO Auto-generated method stub
+		
+
+		
+
+
+
+		Request<ModifyOrderRequestData> request = new Request<ModifyOrderRequestData>();
+		
+		try{
+			
+			ModifyOrderRequestData data = new ModifyOrderRequestData(FDActionInfoConverter.buildActionInfoData(info), saleId, SapGatewayConverter.buildOrderData(order), 
+					appliedPromos, originalReservationId, sendEmail, CustomerRatingConverter.buildCustomerRatingData(cra), ErpFraudPreventionConverter.buildCrmAgentRoleData(crmAgentRole), (status!=null)?status.getName():null);
+			request.setData(data);
+			
+			Response<String> response = null;
+			String inputJson = buildRequest(request);
+			response = httpPostData(getFdCommerceEndPoint(MODIFY_AUTORENEW_ORDER_API), inputJson, Response.class, new Object[]{});
+			parseResponse(response);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	
+		
+	
+	
 		
 	}
 }
