@@ -6,22 +6,25 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 
-import com.freshdirect.common.pricing.CharacteristicValuePrice;
-import com.freshdirect.common.pricing.MaterialPrice;
-import com.freshdirect.common.pricing.Pricing;
-import com.freshdirect.common.pricing.SalesUnitRatio;
 import com.freshdirect.content.attributes.AttributeCollection;
 import com.freshdirect.content.attributes.EnumAttributeName;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
-import com.freshdirect.fdstore.ZonePriceListing;
-import com.freshdirect.fdstore.ZonePriceModel;
+import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartItem;
 
+@RunWith(MockitoJUnitRunner.class)
 public class CartOperationsTest {
+
+    @Mock
+    private ProductModel productModel;
 
     @Test
     public void testValidateConfigurationWithNullInput() {
@@ -267,50 +270,44 @@ public class CartOperationsTest {
     }
 
     @Test
-    public void groupProductWhenProductSoldByEAPricedByEA() {
-        FDProduct product = prepareTestProduct(new FDVariation[] {}, preparePricing("EA"));
-        boolean result = CartOperations.isProductGroupable(product, prepareSalesUnit("EA"));
+    public void groupProductWhenProductDoesNotSoldSoldBySalesUnitAndPricedByEA() {
+        Mockito.when(productModel.isSoldBySalesUnits()).thenReturn(false);
+        boolean result = CartOperations.isProductGroupable(productModel, prepareSalesUnit("EA"));
         Assert.assertTrue(result);
     }
 
     @Test
-    public void groupProductWhenProductSoldByEAPricedByLB() {
-        FDProduct product = prepareTestProduct(new FDVariation[] {}, preparePricing("LB"));
-        boolean result = CartOperations.isProductGroupable(product, prepareSalesUnit("EA"));
+    public void groupProductWhenProductDoesNotSoldSoldBySalesUnitAndPricedByCS() {
+        Mockito.when(productModel.isSoldBySalesUnits()).thenReturn(false);
+        boolean result = CartOperations.isProductGroupable(productModel, prepareSalesUnit("CS"));
         Assert.assertTrue(result);
     }
 
     @Test
-    public void doNotGroupProductWhenProductSoldByLBPricedByLB() {
-        FDProduct product = prepareTestProduct(new FDVariation[] {}, preparePricing("LB"));
-        boolean result = CartOperations.isProductGroupable(product, prepareSalesUnit("LB"));
+    public void groupProductWhenProductDoesNotSoldSoldBySalesUnitAndPricedByPAK() {
+        Mockito.when(productModel.isSoldBySalesUnits()).thenReturn(false);
+        boolean result = CartOperations.isProductGroupable(productModel, prepareSalesUnit("PAK"));
+        Assert.assertTrue(result);
+    }
+
+    @Test
+    public void doNotGroupProductWhenProductSoldBySalesUnits() {
+        Mockito.when(productModel.isSoldBySalesUnits()).thenReturn(true);
+        boolean result = CartOperations.isProductGroupable(productModel, prepareSalesUnit("EA"));
         Assert.assertFalse(result);
     }
 
     @Test
-    public void doNotGroupProductWhenProductSoldByPricedByEA() {
-        FDProduct product = prepareTestProduct(new FDVariation[] {}, preparePricing("EA"));
-        boolean result = CartOperations.isProductGroupable(product, prepareSalesUnit("LB"));
-        Assert.assertFalse(result);
-    }
-
-    @Test
-    public void doNotGroupProductWhenProductIsNull() {
-        boolean result = CartOperations.isProductGroupable(null, prepareSalesUnit("LB"));
+    public void doNotGroupProductWhenProductSoldByLB() {
+        Mockito.when(productModel.isSoldBySalesUnits()).thenReturn(false);
+        boolean result = CartOperations.isProductGroupable(productModel, prepareSalesUnit("LB"));
         Assert.assertFalse(result);
     }
 
     @Test
     public void doNotGroupProductWhenSalesUnitIsNull() {
-        FDProduct product = prepareTestProduct(new FDVariation[] {}, preparePricing("EA"));
-        boolean result = CartOperations.isProductGroupable(product, null);
+        boolean result = CartOperations.isProductGroupable(productModel, null);
         Assert.assertFalse(result);
-    }
-
-    private Pricing preparePricing(String pricingUnit) {
-        ZonePriceListing listing = new ZonePriceListing();
-        listing.addZonePrice(new ZonePriceModel(ZonePriceListing.DEFAULT_ZONE_INFO, new MaterialPrice[] { new MaterialPrice(0, pricingUnit, 0) }));
-        return new Pricing(listing, new CharacteristicValuePrice[0], new SalesUnitRatio[0], false);
     }
 
     private FDSalesUnit prepareSalesUnit(String name) {
@@ -318,11 +315,7 @@ public class CartOperationsTest {
     }
 
     private FDProduct prepareTestProduct(FDVariation variations[]) {
-        return prepareTestProduct(variations, null);
-    }
-
-    private FDProduct prepareTestProduct(FDVariation variations[], Pricing pricing) {
-        return new FDProduct("TST00001", 1, null, null, variations, null, pricing, null, null, null, null);
+        return new FDProduct("TST00001", 1, null, null, variations, null, null, null, null, null, null);
     }
 
     private static class FDVariationFactory {

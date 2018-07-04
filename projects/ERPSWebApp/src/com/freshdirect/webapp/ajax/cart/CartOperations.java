@@ -448,7 +448,7 @@ public class CartOperations {
                     // add a new orderline for rest of the difference, if any
                     if (deltaQty > 0) {
                         FDCartLineI newLine = null;
-                        if (isProductGroupable(fdProduct, salesUnit)) {
+                        if (isProductGroupable(product, salesUnit)) {
                             newLine = findGroupingOrderline(cart.getOrderLines(), cartLine.getProductName(), cartLine.getConfiguration().getOptions(), cartLine.getSalesUnit());
                         }
                         if (newLine == null) {
@@ -897,7 +897,7 @@ public class CartOperations {
 
         FDCartLineI theCartLine = null;
 
-        if (isProductGroupable(product, salesUnit)) {
+        if (isProductGroupable(prodNode, salesUnit)) {
             theCartLine = findGroupingOrderline(cartLinesToAdd, prodNode.getContentName(), item.getConfiguration(), salesUnit.getName());
             if (theCartLine == null) {
                 theCartLine = findGroupingOrderline(cart.getOrderLines(), prodNode.getContentName(), item.getConfiguration(), salesUnit.getName());
@@ -1252,8 +1252,8 @@ public class CartOperations {
         return groupOrderline;
     }
 
-    public static boolean isProductGroupable(FDProduct product, FDSalesUnit salesUnit) {
-        return salesUnit != null && "EA".equalsIgnoreCase(salesUnit.getName()) && (product != null && (product.isPricedByEa() || product.isPricedByLb()));
+    public static boolean isProductGroupable(ProductModel product, FDSalesUnit salesUnit) {
+        return product != null && salesUnit != null && !product.isSoldBySalesUnits() && !"LB".equalsIgnoreCase(salesUnit.getName());
     }
 
     public static List<FDCartLineI> removeUnavailableCartLines(final FDCartModel cart, final FDUserI fdUser) {

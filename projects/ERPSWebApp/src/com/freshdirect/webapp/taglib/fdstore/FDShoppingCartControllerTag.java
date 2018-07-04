@@ -35,7 +35,6 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpClientCode;
 import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
-import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDDeliveryManager;
@@ -48,11 +47,9 @@ import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
 import com.freshdirect.fdstore.customer.FDActionInfo;
-import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -1346,7 +1343,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
         FDCartLineI theCartLine = null;
 
         if (result.isSuccess()) {
-            if (CartOperations.isProductGroupable(product, salesUnit)) {
+            if (CartOperations.isProductGroupable(prodNode, salesUnit)) {
                 theCartLine = CartOperations.findGroupingOrderline(cartLinesToAdd, prodNode.getContentName(), configurations, salesUnit.getName());
                 if (theCartLine == null) {
                     theCartLine = CartOperations.findGroupingOrderline(cart.getOrderLines(), prodNode.getContentName(), configurations, salesUnit.getName());
@@ -1785,7 +1782,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
                                         FDCartLineI newLine = null;
                                         FDProduct fdProduct = orderLine.lookupFDProduct();
                                         FDSalesUnit salesUnit = fdProduct.getSalesUnit(orderLine.getSalesUnit());
-                                        if (CartOperations.isProductGroupable(fdProduct, salesUnit)) {
+                                        if (CartOperations.isProductGroupable(prodNode, salesUnit)) {
                                             newLine = CartOperations.findGroupingOrderline(cart.getOrderLines(), orderLine.getProductName(),
                                                     orderLine.getConfiguration().getOptions(), orderLine.getSalesUnit());
                                         }
