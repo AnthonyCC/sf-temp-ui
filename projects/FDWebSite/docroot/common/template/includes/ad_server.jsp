@@ -53,14 +53,13 @@
 	if (FDStoreProperties.isAdServerEnabled() || FDStoreProperties.isDfpEnabled()) {
 
 %><fd:SmartSavingsUpdate justCheckSavingVariantId="true"></fd:SmartSavingsUpdate><%
-
-		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
+    FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 
 		QueryStringBuilder queryString = new QueryStringBuilder();
 		if (user != null) {
 
 		    XmlContentMetadataService metadataService = CmsServiceLocator.xmlContentMetadataService();
-            String storeVersion = metadataService != null ? metadataService.calculatePublishId().toString() : null;
+    String storeVersion = metadataService != null ? metadataService.calculatePublishId().toString() : null;
 
 			String metalRating = "";
 			int vip = 0;
@@ -315,167 +314,175 @@
 
 			}
 
-			//Building up the values required for Delivery Pass Ads.
-			if (user.isEligibleForDeliveryPass()) {
-				queryString.addParam("dpnever", user.isDlvPassNone() ? "T" : "F");
-				String profileVal = user.getDlvPassProfileValue();
+            List<String> marketingKeys = new ArrayList<String>();
+            marketingKeys.add("MKT_FD_Camp1");
+            marketingKeys.add("MKT_FD_Camp2");
+            marketingKeys.add("MKT_FD_Camp3");
+            marketingKeys.add("MKT_FK_Camp1");
+            marketingKeys.add("MKT_FK_Camp2");
+            marketingKeys.add("MKT_FK_Camp3");
+            marketingKeys.add("MKT_COS_Camp1");
+            marketingKeys.add("MKT_COS_Camp2");
+            marketingKeys.add("MKT_COS_Camp3");
 
-				queryString.addParam("dpas", profileVal);
+            if (profile != null) {
+                for (String attributeKey : profile.getMarketingAttributeKeys()) {
+                    if (!marketingKeys.contains(attributeKey)) {
+                        marketingKeys.add(attributeKey);
+                    }
+                }
+            }
 
-				String dprem = null;
-				String dpused = null;
-				String dpar = "n";
-				boolean expired = false;
-				EnumDlvPassStatus status = user.getDeliveryPassStatus();
-				EnumDPAutoRenewalType dparType = user.hasAutoRenewDP();
-				if ((EnumDPAutoRenewalType.YES.equals(dparType))
-						&& (user.getDlvPassInfo()
-								.getAutoRenewUsablePassCount() > 0)) {
-					dpar = "y";
-				}
-				queryString.addParam("dpar", dpar);
-				if (DeliveryPassUtil.isEligibleStatus(status)
-						&& (user.isDlvPassExpired() == false)) {
-					//Eligible to Buy. But not purchased.
-					dprem = "n";
-					dpused = "n";
-				} else {
-					//Delivery pass purchased. Account Exists.
-					dprem = String.valueOf(user.getDlvPassInfo()
-							.getRemainingCount());
-					dpused = String.valueOf(user.getDlvPassInfo()
-							.getUsedCount());
-				}
+            for (String key : marketingKeys) {
+                queryString.addParam(key, (profile != null) ? NVL.apply(profile.getAttribute(key), "") : "");
+            }
 
-				if (user.getEligibleDeliveryPass() == EnumDlvPassProfileType.BSGS) {
-					//If BSGS pass then pass the remaining count.
-					queryString.addParam("dpr", dprem);
-				} else {
-					//If UNLIMITED pass then pass the used count if not expired.
-					if (user.isDlvPassExpired()) {
-						int days = user.getDlvPassInfo()
-								.getDaysSinceDPExpiry()
-								* -1;
+            //Building up the values required for Delivery Pass Ads.
+            if (user.isEligibleForDeliveryPass()) {
+                queryString.addParam("dpnever", user.isDlvPassNone() ? "T" : "F");
+                String profileVal = user.getDlvPassProfileValue();
 
-						queryString.addParam("expd", days);
-					} else if ((user.getDlvPassInfo() != null)
-							&& user.getDlvPassInfo().isUnlimited() == false) {
-						//If BSGS pass then pass the remaining count.
-						dprem = String.valueOf(user.getDlvPassInfo()
-								.getRemainingCount());
-						queryString.addParam("dpr", dprem);
+                queryString.addParam("dpas", profileVal);
 
-					} else if (user.getUsableDeliveryPassCount() > 0) {
-						//Not Purchased yet or Purchased not expired.
-						//int days=DateUtil.getDiffInDays(user.getDlvPassInfo().getExpDate(), new Date());
-						int days = user.getDlvPassInfo()
-								.getDaysToDPExpiry();
-						queryString.addParam("dpu", dpused).addParam(
-								"expd", days);
-					} else {
-						queryString.addParam("dpu", dpused);
-					}
-				}
-				if( user.getDlvPassInfo() != null && 
-					user.getDlvPassInfo().getTypePurchased() != null ) {	 
-					queryString.addParam("dp", user.getDlvPassInfo().getTypePurchased().getCode());	 
-				}
-			}
+                String dprem = null;
+                String dpused = null;
+                String dpar = "n";
+                boolean expired = false;
+                EnumDlvPassStatus status = user.getDeliveryPassStatus();
+                EnumDPAutoRenewalType dparType = user.hasAutoRenewDP();
+                if ((EnumDPAutoRenewalType.YES.equals(dparType)) && (user.getDlvPassInfo().getAutoRenewUsablePassCount() > 0)) {
+                    dpar = "y";
+                }
+                queryString.addParam("dpar", dpar);
+                if (DeliveryPassUtil.isEligibleStatus(status) && (user.isDlvPassExpired() == false)) {
+                    //Eligible to Buy. But not purchased.
+                    dprem = "n";
+                    dpused = "n";
+                } else {
+                    //Delivery pass purchased. Account Exists.
+                    dprem = String.valueOf(user.getDlvPassInfo().getRemainingCount());
+                    dpused = String.valueOf(user.getDlvPassInfo().getUsedCount());
+                }
 
-			if(user.getDefaultState()!=null){
-				queryString.addParam("state", user.getDefaultState());
-			}
-			if(user.isEbtAccepted()){
-				queryString.addParam("ebt_accepted", "true");
-			}
+                if (user.getEligibleDeliveryPass() == EnumDlvPassProfileType.BSGS) {
+                    //If BSGS pass then pass the remaining count.
+                    queryString.addParam("dpr", dprem);
+                } else {
+                    //If UNLIMITED pass then pass the used count if not expired.
+                    if (user.isDlvPassExpired()) {
+                        int days = user.getDlvPassInfo().getDaysSinceDPExpiry() * -1;
 
-			// record cohort ID
-			queryString.addParam("cohort", user.getCohortName());
-		} else { //! user == null
-			if (request.getAttribute("RefProgId") != null) {
-				queryString.addParam("ref_prog_id", NVL.apply(
-					(String) request.getAttribute("RefProgId"), ""));
-			}
-		}
+                        queryString.addParam("expd", days);
+                    } else if ((user.getDlvPassInfo() != null) && user.getDlvPassInfo().isUnlimited() == false) {
+                        //If BSGS pass then pass the remaining count.
+                        dprem = String.valueOf(user.getDlvPassInfo().getRemainingCount());
+                        queryString.addParam("dpr", dprem);
 
-		// record search terms
-		if (request.getParameter("searchParams") != null) {
-			queryString.addParam("searchParams", URLEncoder.encode(request.getParameter("searchParams"), "UTF-8"));
-		}
-		if(FDStoreProperties.isZonePricingAdEnabled()){
-			queryString.addParam("zonelevel","true");
-			if(null !=user){
-			String zoneId = FDZoneInfoManager.findZoneId((null!=user.getSelectedServiceType()?user.getSelectedServiceType().getName():null), user.getZipCode());
-			if(zoneId.equalsIgnoreCase(ZonePriceListing.MASTER_DEFAULT_ZONE)){
-				queryString.addParam("mzid",zoneId);
+                    } else if (user.getUsableDeliveryPassCount() > 0) {
+                        //Not Purchased yet or Purchased not expired.
+                        //int days=DateUtil.getDiffInDays(user.getDlvPassInfo().getExpDate(), new Date());
+                        int days = user.getDlvPassInfo().getDaysToDPExpiry();
+                        queryString.addParam("dpu", dpused).addParam("expd", days);
+                    } else {
+                        queryString.addParam("dpu", dpused);
+                    }
+                }
+                if (user.getDlvPassInfo() != null && user.getDlvPassInfo().getTypePurchased() != null) {
+                    queryString.addParam("dp", user.getDlvPassInfo().getTypePurchased().getCode());
+                }
+            }
 
-			}else if(zoneId.equalsIgnoreCase(ZonePriceListing.RESIDENTIAL_DEFAULT_ZONE)||zoneId.equalsIgnoreCase(ZonePriceListing.CORPORATE_DEFAULT_ZONE)){
-				queryString.addParam("szid",zoneId);
-				queryString.addParam("mzid",ZonePriceListing.MASTER_DEFAULT_ZONE);
-			}else{
-				queryString.addParam("zid",zoneId);
-				zoneId = FDZoneInfoManager.findZoneId((null!=user.getSelectedServiceType()?user.getSelectedServiceType().getName():null),null);
-				queryString.addParam("szid",zoneId);
-				queryString.addParam("mzid",ZonePriceListing.MASTER_DEFAULT_ZONE);
-			}
-			}
-		}
-		if (request.getParameter("TSAPROMO") != null) {
-			queryString.addParam("TSAPROMO",request.getParameter("TSAPROMO"));
-		}else if (
-				("/about/index.jsp".equalsIgnoreCase(request.getRequestURI()) || "/site_access/site_access.jsp".equalsIgnoreCase(request.getRequestURI())) &&
-				request.getParameter("successPage") != null
-			) {
-			//check if TSAPROMO is coming from a targeted page that is NOT siteaccess, and we're on siteaccess
-			String sp = URLDecoder.decode(request.getParameter("successPage").toString(), "UTF-8");
-			if (sp.indexOf("TSAPROMO") != -1) {
-				String pairs[] = sp.replace("?", "&").split("&");
+            if (user.getDefaultState() != null) {
+                queryString.addParam("state", user.getDefaultState());
+            }
+            if (user.isEbtAccepted()) {
+                queryString.addParam("ebt_accepted", "true");
+            }
 
-			    for (String pair : pairs) {
-					 String name = null;
-					 String value = null;
-					 int pos = pair.indexOf("=");
-					 if (pos == -1) {
-						continue; //not a valid key=val pair, ignore
-					 } else {
-						try {
-							name = URLDecoder.decode(pair.substring(0, pos), "UTF-8");
-							value = URLDecoder.decode(pair.substring(pos+1, pair.length()), "UTF-8");
-						} catch (UnsupportedEncodingException e) {
-							// Not really possible, throw unchecked
-						    throw new IllegalStateException("ad_server.jsp: No UTF-8");
-						}
-					}
-					if ("TSAPROMO".equalsIgnoreCase(name) && value != null) {
-						queryString.addParam("TSAPROMO", value);
-						break; //found, we're done
-					}
-			    }
-			}
-		}
-		if(request.getParameter("apc") != null) {
-			queryString.addParam("apc", request.getParameter("apc"));
-		}
-		//APPDEV-2500 - add subtotal to oas query string
-		if(user != null) {
-			queryString.addParam("sub", user.getShoppingCart().getSubTotal() + "");
-		}
+            // record cohort ID
+            queryString.addParam("cohort", user.getCohortName());
+        } else { //! user == null
+            if (request.getAttribute("RefProgId") != null) {
+                queryString.addParam("ref_prog_id", NVL.apply((String) request.getAttribute("RefProgId"), ""));
+            }
+        }
 
-		if (user != null) {
-			queryString.addParam("mobWeb", (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"))) + "");
-		}
-		
-		//Sending RAF promo code to OAS, to target different ads based on the promo code.
-		if(request.getParameter("raf_promo_code")!= null){
-			queryString.addParam("raf_promo_code", request.getParameter("raf_promo_code"));
-		}
+        // record search terms
+        if (request.getParameter("searchParams") != null) {
+            queryString.addParam("searchParams", URLEncoder.encode(request.getParameter("searchParams"), "UTF-8"));
+        }
+        if (FDStoreProperties.isZonePricingAdEnabled()) {
+            queryString.addParam("zonelevel", "true");
+            if (null != user) {
+                String zoneId = FDZoneInfoManager.findZoneId((null != user.getSelectedServiceType() ? user.getSelectedServiceType().getName() : null), user.getZipCode());
+                if (zoneId.equalsIgnoreCase(ZonePriceListing.MASTER_DEFAULT_ZONE)) {
+                    queryString.addParam("mzid", zoneId);
 
-		String sitePage = request.getAttribute("sitePage") == null ? "www.freshdirect.com"
-				: (String) request.getAttribute("sitePage");
-		String listPos = request.getAttribute("listPos") == null ? "SystemMessage"
-				: (String) request.getAttribute("listPos");
+                } else if (zoneId.equalsIgnoreCase(ZonePriceListing.RESIDENTIAL_DEFAULT_ZONE) || zoneId.equalsIgnoreCase(ZonePriceListing.CORPORATE_DEFAULT_ZONE)) {
+                    queryString.addParam("szid", zoneId);
+                    queryString.addParam("mzid", ZonePriceListing.MASTER_DEFAULT_ZONE);
+                } else {
+                    queryString.addParam("zid", zoneId);
+                    zoneId = FDZoneInfoManager.findZoneId((null != user.getSelectedServiceType() ? user.getSelectedServiceType().getName() : null), null);
+                    queryString.addParam("szid", zoneId);
+                    queryString.addParam("mzid", ZonePriceListing.MASTER_DEFAULT_ZONE);
+                }
+            }
+        }
+        if (request.getParameter("TSAPROMO") != null) {
+            queryString.addParam("TSAPROMO", request.getParameter("TSAPROMO"));
+        } else if (("/about/index.jsp".equalsIgnoreCase(request.getRequestURI()) || "/site_access/site_access.jsp".equalsIgnoreCase(request.getRequestURI()))
+                && request.getParameter("successPage") != null) {
+            //check if TSAPROMO is coming from a targeted page that is NOT siteaccess, and we're on siteaccess
+            String sp = URLDecoder.decode(request.getParameter("successPage").toString(), "UTF-8");
+            if (sp.indexOf("TSAPROMO") != -1) {
+                String pairs[] = sp.replace("?", "&").split("&");
 
-		String[] listPosArray = listPos.split(",");%>
+                for (String pair : pairs) {
+                    String name = null;
+                    String value = null;
+                    int pos = pair.indexOf("=");
+                    if (pos == -1) {
+                        continue; //not a valid key=val pair, ignore
+                    } else {
+                        try {
+                            name = URLDecoder.decode(pair.substring(0, pos), "UTF-8");
+                            value = URLDecoder.decode(pair.substring(pos + 1, pair.length()), "UTF-8");
+                        } catch (UnsupportedEncodingException e) {
+                            // Not really possible, throw unchecked
+                            throw new IllegalStateException("ad_server.jsp: No UTF-8");
+                        }
+                    }
+                    if ("TSAPROMO".equalsIgnoreCase(name) && value != null) {
+                        queryString.addParam("TSAPROMO", value);
+                        break; //found, we're done
+                    }
+                }
+            }
+        }
+        if (request.getParameter("apc") != null) {
+            queryString.addParam("apc", request.getParameter("apc"));
+        }
+        //APPDEV-2500 - add subtotal to oas query string
+        if (user != null) {
+            queryString.addParam("sub", user.getShoppingCart().getSubTotal() + "");
+        }
+
+        if (user != null) {
+            queryString.addParam("mobWeb",
+                    (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"))) + "");
+        }
+
+        //Sending RAF promo code to OAS, to target different ads based on the promo code.
+        if (request.getParameter("raf_promo_code") != null) {
+            queryString.addParam("raf_promo_code", request.getParameter("raf_promo_code"));
+        }
+
+        String sitePage = request.getAttribute("sitePage") == null ? "www.freshdirect.com" : (String) request.getAttribute("sitePage");
+        String listPos = request.getAttribute("listPos") == null ? "SystemMessage" : (String) request.getAttribute("listPos");
+
+        String[] listPosArray = listPos.split(",");
+%>
 
 
 <%
