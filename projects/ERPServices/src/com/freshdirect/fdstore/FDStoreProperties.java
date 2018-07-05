@@ -1082,6 +1082,7 @@ public class FDStoreProperties {
 	private static final String CARD_VERIFICATION_RATE_LIMIT="fdstore.payment.verification.rate.limit";
 
 	private static final String PROP_LAZYLOADING_MODULES_ENABLED="fdstore.lazyloading.modules.enabled"; 
+	private static final String PROP_REFRESH_LOOKBACK_SECS_PRODUCTINFO = "fdstore.refresh.lookbackSecs.productInfo";
 
  	static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -1174,6 +1175,7 @@ public class FDStoreProperties {
         defaults.put(PROP_RESTRICTED_PAYMENT_METHOD_HOME, "freshdirect.payment.RestrictedPaymentMethod");
 
         defaults.put(PROP_REFRESHSECS_PRODUCTINFO, "600");
+        defaults.put(PROP_REFRESH_LOOKBACK_SECS_PRODUCTINFO, "1800");
         defaults.put(PROP_REFRESHSECS_GROUPSCALE, "600");
         defaults.put(PROP_REFRESHSECS_UPCPRODUCTINFO, "900");
         defaults.put(PROP_REFRESHSECS_ZONE, "600");
@@ -4926,7 +4928,7 @@ public class FDStoreProperties {
     }
 
     public static boolean isSF2_0_AndServiceEnabled(String beanName) {
-        return ((Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue() && FDEcommProperties.isServiceEnabled(beanName));
+		return ((Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue() && FDEcommProperties.isServiceEnabled(beanName));
     }
 
     public static boolean isMealBundleCartonLinkEnabled() {
@@ -5301,4 +5303,9 @@ public class FDStoreProperties {
 	public static boolean isLazyloadingModulesEnabled() {
 		return (Boolean.valueOf(get(PROP_LAZYLOADING_MODULES_ENABLED))).booleanValue();
 	}
+	
+	public static int getRefreshLookbackSecsProductInfo() {
+        return Integer.parseInt(get(PROP_REFRESH_LOOKBACK_SECS_PRODUCTINFO));
+    }
+	
 }

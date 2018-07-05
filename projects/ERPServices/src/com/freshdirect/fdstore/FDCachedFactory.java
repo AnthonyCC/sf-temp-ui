@@ -88,7 +88,7 @@ public class FDCachedFactory {
 		protected void refresh(long lastUpdatedTimeStamp) throws Exception {
 			try {
 				// Add extra 120 seconds to guarantee no missing updates
-				long onceInTime = lastUpdatedTimeStamp - (120 * 1000);
+				long onceInTime = lastUpdatedTimeStamp - (FDStoreProperties.getRefreshLookbackSecsProductInfo() * 1000);
 
 				LOGGER.debug("******* calling FDFactory.getModifiedSkuCodes(" + onceInTime + ");");
 				Set<String> recentlyUpdatedSkuCode = FDFactory.getModifiedSkuCodes(onceInTime);
