@@ -749,7 +749,7 @@ public class SubmitOrderAction extends WebActionSupport {
 			
 			// SmartStore
 			//  record customer and variant for the particular order
-			FDCustomerManager.logCustomerVariants(user, orderNumber);
+//			FDCustomerManager.logCustomerVariants(user, orderNumber);
 			
 			/*APPDEV-1888 - record if the referral promo is not applied due to unique FN+LN+Zipcode rule.*/
 			if(user.isReferralPromotionFraud()) {
