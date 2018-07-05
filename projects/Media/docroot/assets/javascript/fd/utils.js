@@ -168,7 +168,7 @@ var FreshDirect = FreshDirect || {};
 
     hashes.forEach(function (h) {
       hash = h.split('=');
-      vars[hash[0]] = window.decodeURIComponent(hash[1]);
+      vars[hash[0]] = window.decodeURIComponent(encodeURIComponent(hash[1]));
     });
 
     return vars;
@@ -195,7 +195,7 @@ var FreshDirect = FreshDirect || {};
       return "";
     }
 
-    return decodeURIComponent(results[1].replace(/\+/g, " "));
+    return decodeURIComponent(encodeURIComponent(results[1]).replace(/\+/g, " "));
   };
 
 
@@ -376,7 +376,7 @@ var FreshDirect = FreshDirect || {};
     if (results == null) {
       return "";
     } else {
-      return decodeURIComponent(results[1].replace(/\+/g, " "));
+      return decodeURIComponent(encodeURIComponent(results[1]).replace(/\+/g, " "));
     }
   };
 

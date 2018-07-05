@@ -181,13 +181,6 @@ if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDU
 				<a href="/category.jsp?catId=mobile&trk=bnav" style="padding: 10px 5px 0px 5px; float: left">Our Mobile Apps</a>
 			</div>
 			<div style="float:left; width:1px; height:40px; margin: 0px 12px" class="dotted_separator_v"></div>
-			<div style="float:left">
-				<a href="/index.jsp?serviceType=CORPORATE&trk=bnav" nofocus tabindex="-1">
-          <div class="spritediv sprite-nav-at_the_office" style="float: left;">At The Office</div>
-        </a>
-				<a href="/index.jsp?serviceType=CORPORATE&trk=bnav" style="padding: 10px 5px 0px 5px; float: left">At The Office</a>
-			</div>
-			<div style="float:left; width:1px; height:40px; margin: 0px 10px" class="dotted_separator_v"></div>
 			<div style="float:right; padding: 10px 5px 0px 5px">
 				<a href="/index.jsp?serviceType=HOME">Home</a>
 				&nbsp;&nbsp;<span style="color: #999999"><b>|</b></span>
@@ -207,9 +200,10 @@ if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDU
 	</tr>
 	<tr>
 		<td class="text11" style="padding-top: 10px; text-align: center;">
-			<%@ include file="/shared/template/includes/copyright.jspf" %><br />
+			
 			
 			<fd:IncludeMedia name="/media/layout/nav/globalnav/footer/after_copyright_footer.ftl">
+		
 				<img src="/media_stat/images/layout/clear.gif" width="1" height="6" alt="" /><br />
 				<a href="/help/privacy_policy.jsp">Privacy Policy</a>
 				&nbsp;<span style="color: #999999">|</span>
@@ -217,6 +211,11 @@ if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDU
 				&nbsp;<span style="color: #999999">|</span>
 				&nbsp;<a href="/help/platform_agreement.jsp">Platform Terms of Use</a>
 			</fd:IncludeMedia>
+		</td>
+	</tr>
+	<tr>
+		<td class="text11" style="padding-top: 10px; text-align: center;">
+				<%@ include file="/shared/template/includes/copyright.jspf" %>
 		</td>
 	</tr>
 </table>

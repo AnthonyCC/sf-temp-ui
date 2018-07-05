@@ -41,8 +41,8 @@
 			<div id="location-tabs">
 				<div class="locabar-spacer"></div>
 				<tmpl:get name="tab_fd" />
-				<tmpl:get name="tab_fdx" />
 				<tmpl:get name="tab_cos" />
+				<tmpl:get name="tab_fdx" />
 			</div>
 		<%} %>
 		<%-- fright sections --%>

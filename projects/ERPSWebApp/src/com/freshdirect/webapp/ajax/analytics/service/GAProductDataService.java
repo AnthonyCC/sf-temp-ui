@@ -2,10 +2,9 @@ package com.freshdirect.webapp.ajax.analytics.service;
 
 import org.apache.log4j.Logger;
 
-
 import com.freshdirect.fdstore.customer.FDCartLineI;
-import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.ajax.analytics.data.GAProductData;
 
 public class GAProductDataService {
@@ -37,6 +36,12 @@ public class GAProductDataService {
         data.setNewProduct(Boolean.toString(product.isNew()));
         data.setSku(product.getDefaultSkuCode());
         data.setQuantity(roundQuantity(quantity));
+        String salesUnit = cartLine.getSalesUnit();
+        if (salesUnit == null || "ea".equalsIgnoreCase(salesUnit)) {
+            data.setConfiguredPrice(data.getPrice());
+        } else {
+            data.setConfiguredPrice(Double.toString(cartLine.getConfiguredPrice()));
+        }
         return data;
     }
 

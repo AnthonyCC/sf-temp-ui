@@ -113,7 +113,7 @@ public class RegisterGiftCardBuyerAction extends RegistrationAction {
 						user.isLoggedIn(true);
 						user.updateUserState();
 						//Set the Default Delivery pass status.
-						FDUserDlvPassInfo dlvpassInfo = new FDUserDlvPassInfo(EnumDlvPassStatus.NONE, null, null, null, 0.0, null,0,0,0,false,0,null,0,null);
+						FDUserDlvPassInfo dlvpassInfo = new FDUserDlvPassInfo(EnumDlvPassStatus.NONE, null, null, null, 0.0, null,0,0,0,false,0,null,0,null,null);
 						user.getUser().setDlvPassInfo(dlvpassInfo);
 						session.setAttribute(SessionName.USER, user);
 					}

@@ -28,9 +28,8 @@ font: 13px verdana;
 line-height: 26px;
 text-decoration: none;
 }
-
-a:link { color: #458b4c;  text-decoration: none; }
-a:visited { color: #458b4c ; text-decoration: none; }
+/* high color contrast for links with reference to style guide(ux) */ 
+a:link { color: #408244;  text-decoration: none; }
 a:hover, a:active, a:focus { color: #5fb069;  text-decoration: underline; }
 a.lNavTableItemSelected { font-family: Verdana; color: #669933 ; font-weight: bold; }
 
@@ -3525,4 +3524,7 @@ section.main .leftnav .menuBox label input:focus + span > span{
 
 div#quickshop,.container.browse section.main,section.container.srch section.main{
 	min-width:970px;
+}
+.assistivetext{
+	font-size:14px;
 }

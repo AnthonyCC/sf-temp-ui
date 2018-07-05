@@ -13,6 +13,7 @@ public class GAProductData {
     private String newProduct;
     private String sku;
     private double quantity;
+    private String configuredPrice;
 
     public String getName() {
         return name;
@@ -94,5 +95,12 @@ public class GAProductData {
         this.quantity = quantity;
     }
 
+    public String getConfiguredPrice() {
+        return configuredPrice;
+    }
+
+    public void setConfiguredPrice(String configuredPrice) {
+        this.configuredPrice = configuredPrice;
+    }
 
 }

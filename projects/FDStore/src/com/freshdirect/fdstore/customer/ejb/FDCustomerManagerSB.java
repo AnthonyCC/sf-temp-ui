@@ -195,11 +195,12 @@ public interface FDCustomerManagerSB  extends EJBObject{
 
     @Deprecated
     /*
-     * SF2.0 end point /customers?userId=<your user-id>. Refer CustomersApiClientI.EndPoints.CUSTOMER_ID_FOR_USER
+     * SF2.0 end point /customerInfo/getCustomerId
      */
     public PrimaryKey getCustomerId(String userId) throws FDResourceException, RemoteException;
-
+    @Deprecated
     public FDCustomerInfo getCustomerInfo(FDIdentity identity) throws FDResourceException, RemoteException;
+    @Deprecated
     public FDCustomerInfo getSOCustomerInfo(FDIdentity identity) throws FDResourceException, RemoteException;
 
     /**
@@ -271,7 +272,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      * throws FDResourceException if an error occured using remote resources
      */
     public boolean updateCustomerInfo(FDActionInfo info, ErpCustomerInfoModel customerInfo) throws FDResourceException, RemoteException;
-
+    @Deprecated
     public void updateUserId(FDActionInfo info, String userId) throws FDResourceException, ErpDuplicateUserIdException, RemoteException;
 
     public void updatePasswordHint(FDIdentity identity, String passwordHint) throws FDResourceException, RemoteException;
@@ -346,10 +347,12 @@ public interface FDCustomerManagerSB  extends EJBObject{
      * @param user the customer's user object
      *
      * @throws FDResourceException if an error occured using remote resources
+     * @deprecated
      */
     public void storeUser(FDUser user) throws FDResourceException, RemoteException;
 
     // [APPREQ-369] store Cohort ID that belongs to user
+    @Deprecated
     public void storeCohortName(FDUser user) throws FDResourceException, RemoteException;
     @Deprecated
     public void storeSavedRecipients(FDUser user, List<SavedRecipientModel> recipientList) throws FDResourceException, RemoteException;
@@ -522,17 +525,16 @@ public interface FDCustomerManagerSB  extends EJBObject{
     public List<FDCustomerOrderInfo> locateOrders(FDOrderSearchCriteria criteria) throws FDResourceException, RemoteException;
 
     public void setActive(FDActionInfo info, boolean active) throws RemoteException, FDResourceException;
-
+    @Deprecated
     public void doEmail(XMLEmailI email) throws RemoteException, FDResourceException;
 
+    @Deprecated
     public boolean sendPasswordEmail(String emailAddress, boolean tAltEmail) throws RemoteException, FDResourceException, PasswordNotExpiredException ;
-
     @Deprecated
     public boolean isCorrectPasswordHint(String emailAddress, String hint) throws FDResourceException, ErpFraudException, RemoteException;
     @Deprecated
-
     public boolean isPasswordRequestExpired(String emailAddress, String passReq) throws FDResourceException, RemoteException;
-
+    @Deprecated
     public void changePassword(FDActionInfo info, String emailAddress, String password) throws FDResourceException, RemoteException;
 
     public void setProfileAttribute(FDIdentity identity, String key, String value, FDActionInfo info) throws RemoteException, FDResourceException;
@@ -554,9 +556,9 @@ public interface FDCustomerManagerSB  extends EJBObject{
 	public Map<String, Integer> getProductPopularity() throws FDResourceException, RemoteException;
 
 //	public List loadPromotions() throws FDResourceException, RemoteException;
-
+	@Deprecated
 	public List<String> getReminderListForToday() throws FDResourceException, RemoteException;
-
+	@Deprecated
 	public void sendReminderEmail(PrimaryKey custPk) throws FDResourceException, RemoteException;
 
 	public void authorizeSale(String salesId)throws FDResourceException, RemoteException;
@@ -586,7 +588,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
 	public List<String> loadProfileAttributeNameCategories()	throws FDResourceException, RemoteException;
 
 	public void setAlert(FDActionInfo info, ErpCustomerAlertModel customerAlert, boolean isOnAlert) throws RemoteException;
-
+	@Deprecated
 	public boolean isOnAlert(PrimaryKey pk, String alertType) throws RemoteException;
 
 	public boolean isOnAlert(PrimaryKey pk)  throws RemoteException;
@@ -721,7 +723,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
     public boolean resendEmail(String saleId, String certificationNum, String resendEmailId, String recipName, String personMsg, boolean toPurchaser, boolean toLastRecipient, EnumTransactionSource source) throws FDResourceException, RemoteException;
     @Deprecated
     public double getOutStandingBalance(ErpAbstractOrderModel order) throws FDResourceException, RemoteException;
-
+    @Deprecated
     public EnumIPhoneCaptureType iPhoneCaptureEmail(String emailId, EnumTransactionSource source) throws FDResourceException, RemoteException;
 
     public void doEmail(FTLEmailI email) throws RemoteException, FDResourceException;
@@ -785,6 +787,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
 	public void createCounter( String customerId, String counterId, int initialValue ) throws FDResourceException, RemoteException;
 	public void updateCounter( String customerId, String counterId, int newValue ) throws FDResourceException, RemoteException;
 	public Integer getCounter( String customerId, String counterId ) throws FDResourceException, RemoteException;
+	@Deprecated
 	public void sendSettlementFailedEmail(String saleID) throws FDResourceException, RemoteException;
 
 	public void bulkModifyOrder(
@@ -809,7 +812,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
 			RemoteException;
 
 	public String recordReferral(String customerId, String referralId, String customerEmail) throws FDResourceException, RemoteException;
-
+	@Deprecated
 	public String dupeEmailAddress(String email) throws FDResourceException, RemoteException;
 
 	@Deprecated
@@ -838,11 +841,11 @@ public interface FDCustomerManagerSB  extends EJBObject{
 	public void storeDPTCAgreeDate(FDActionInfo info, String customerId, Date dpTcAgreeDate) throws FDResourceException, RemoteException;
 
 	public List<CustomerCreditModel> getCustomerReprotedLates() throws FDResourceException, RemoteException;
-
+	@Deprecated
 	public List<CustomerCreditModel> getDriverReportedLates() throws FDResourceException, RemoteException;
-
+	@Deprecated
 	public List<CustomerCreditModel> getScanReportedLates() throws FDResourceException, RemoteException;
-
+	@Deprecated
 	public void storeLists(Set cmList) throws FDResourceException, RemoteException;
 
 	public List<FDCartonInfo> getCartonDetailsForSale(FDOrderI order) throws FDResourceException, RemoteException;
@@ -886,7 +889,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
 
 	public boolean getAddonOrderCount(String orderId)throws FDResourceException, RemoteException;
 	public boolean reSendInvoiceEmail(String orderId)throws FDResourceException, RemoteException;
-
+	@Deprecated
 	public boolean iPhoneCaptureEmail(String email, String zipCode,
 			String serviceType)throws FDResourceException, RemoteException;
 	@Deprecated

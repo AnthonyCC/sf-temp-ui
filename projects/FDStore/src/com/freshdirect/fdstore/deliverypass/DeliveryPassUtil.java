@@ -79,7 +79,7 @@ public class DeliveryPassUtil {
 					expDate = DateUtil.addDays(cal.getTime(), type.getDuration());
 
 				}
-				model = new DeliveryPassModel(null, customerPk, type, description, purchaseOrderId, purchaseDate, amount, totalNoofDlvs, totalNoofDlvs, expDate, 0, EnumDlvPassStatus.PENDING);
+				model = new DeliveryPassModel(null, customerPk, type, description, purchaseOrderId, purchaseDate, amount, totalNoofDlvs, totalNoofDlvs, expDate, 0, EnumDlvPassStatus.PENDING,null);
 				break;
 			}
 		}

@@ -38,6 +38,14 @@ public class GACustomerDataService {
 	        customer.setModifyMode((user.getShoppingCart() instanceof FDModifyCartModel));
 	        customer.setHasActiveSO3s((user.getActiveSO3s().size()>0)?"T":"F");
 	        
+	        /* to differentiate weblogic(1) vs tomcat(2) */
+	        String storeVersion = System.getProperty("catalina.base");
+	        if (storeVersion!= null && storeVersion.trim().length() > 0) {
+	        	customer.setStorefrontVersion("2");
+	        } else {
+	        	customer.setStorefrontVersion("1");
+	        }
+	        
 	        String paymentType = "";
 	        if(null != user.getIdentity()){
 		        try {

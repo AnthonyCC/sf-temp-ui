@@ -3082,7 +3082,9 @@ public class FDUser extends ModelSupport implements FDUserI {
         try {
         	EnumEStoreId estoreId = ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId();
             referralFlag = getOrderHistory().hasSettledOrders(estoreId);
-            LOGGER.debug("Getting ref display for :" + this.getIdentity().getErpCustomerPK() + "-and flag is:" + referralFlag);
+            if (this.getIdentity() != null) {
+                LOGGER.debug("Getting ref display for :" + this.getIdentity().getErpCustomerPK() + "-and flag is:" + referralFlag);
+            }            
         } catch (FDResourceException e) {
             LOGGER.error("Exception getting totalCredit", e);
         }
@@ -4039,7 +4041,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	
 	@Override
 	public boolean isDPFreeTrialOptInEligible(){
-		return FDStoreProperties.isDlvPassFreeTrialOptinFeatureEnabled() && !this.getDpFreeTrialOptin() && (null == this.getDlvPassInfo() || !this.getDlvPassInfo().isFreeTrialRestricted());
+		return FDStoreProperties.isDlvPassFreeTrialOptinFeatureEnabled() && !this.getDpFreeTrialOptin() && (null == this.getDlvPassInfo() || (this.isDlvPassNone() && !this.getDlvPassInfo().isFreeTrialRestricted()));
 	}
 
 	@Override

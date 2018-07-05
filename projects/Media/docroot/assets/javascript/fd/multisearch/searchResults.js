@@ -117,15 +117,15 @@ var FreshDirect = FreshDirect || {};
     var el = e.target,
         term = el.getAttribute('data-searchterm');
     
-    if (fd.gtm && fd.gtm.updateDataLayer) {
-      //analytics
-      fd.gtm.updateDataLayer({
-        'event': 'expresssearch-click',
-        'eventCategory': 'express search',
-        'eventAction': 'done',
-        'eventLabel': term.toLowerCase().trim().replace(/\s+/g, '+')
-      });
-    }
+
+	if (fd.utils.hasOwnNestedProperty('dataLayer')) {
+		dataLayer.push({
+		    'event': 'expresssearch-click',
+		    'eventCategory': 'express search',
+		    'eventAction': 'done',
+		    'eventLabel': term.toLowerCase().trim().replace(/\s+/g, '+')
+		});
+	}
 
     DISPATCHER.signal('removeSearchTerm', {term: term});
   });

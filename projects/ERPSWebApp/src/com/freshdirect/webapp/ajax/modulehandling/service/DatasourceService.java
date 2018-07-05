@@ -141,6 +141,8 @@ public class DatasourceService {
         config.setHideProductPrice(ContentNodeUtil.getBooleanAttribute(module, "hideProductPrice"));
         config.setUseViewAllPopup(ContentNodeUtil.getBooleanAttribute(module, "useViewAllPopup"));
         config.setShowViewAllOverlayOnImages(ContentNodeUtil.getBooleanAttribute(module, "showViewAllOverlayOnImages"));
+        
+        config.setLazyloadImages(FDStoreProperties.isLazyloadingModulesEnabled());
 
         String viewAllUrl = ContentNodeUtil.getStringAttribute(module, "viewAllButtonLink");
 

@@ -33,9 +33,10 @@ var FreshDirect = FreshDirect || {};
 		var $el = $('[data-component="multisearch-input"] input'),
 			term = $el.val();
 		
-		if (fd.gtm && fd.gtm.updateDataLayer) {
-			//analytics
-			fd.gtm.updateDataLayer({
+
+
+		if (fd.utils.hasOwnNestedProperty('dataLayer')) {
+			dataLayer.push({
 				'event': 'expresssearch-click',
 				'eventCategory': 'express search',
 				'eventAction': 'text search',
@@ -84,9 +85,9 @@ var FreshDirect = FreshDirect || {};
 			this.terms[idx] = term.toLowerCase();
 		  }
 
-		  if (fd.gtm && fd.gtm.updateDataLayer) {
-				//analytics
-				fd.gtm.updateDataLayer({
+
+			if (fd.utils.hasOwnNestedProperty('dataLayer')) {
+				dataLayer.push({
 					'event': 'expresssearch-click',
 					'eventCategory': 'express search',
 					'eventAction': (disable) ? 'deactivate' : 'activate',
@@ -109,9 +110,9 @@ var FreshDirect = FreshDirect || {};
 		  this.terms.splice(idx, 1);
 		}
 		
-		if (fd.gtm && fd.gtm.updateDataLayer) {
-			//analytics
-			fd.gtm.updateDataLayer({
+
+		if (fd.utils.hasOwnNestedProperty('dataLayer')) {
+			dataLayer.push({
 				'event': 'expresssearch-click',
 				'eventCategory': 'express search',
 				'eventAction': 'remove term',
@@ -213,9 +214,9 @@ var FreshDirect = FreshDirect || {};
 	var sug = e.currentTarget.value;
 
 	if (sug) {
-		if (fd.gtm && fd.gtm.updateDataLayer) {
-			//analytics
-			fd.gtm.updateDataLayer({
+
+		if (fd.utils.hasOwnNestedProperty('dataLayer')) {
+			dataLayer.push({
 				'event': 'expresssearch-click',
 				'eventCategory': 'express search',
 				'eventAction': 'suggestion',

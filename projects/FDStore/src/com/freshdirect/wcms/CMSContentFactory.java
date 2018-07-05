@@ -80,60 +80,26 @@ public class CMSContentFactory {
     public static void evictPageCache() {
         instance = null;
     }
-
-	/*
-	public class PageLoaderTask extends TimerTask{
-
-		@Override
-		public void run() {
-			try{
-				instance.cacheAllPages();
-			} catch (Exception e){
-				LOG.error(e);
-			}
-		}
-	}
-	*/
-
+	
 	public void cacheAllPages(){
 	    CMSPageRequest pageRequest = new CMSPageRequest();
         pageRequest.setPlantId(ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId());
 	    cacheAllPages(pageRequest);
 	}
 
-	public void cacheAllPages(CMSPageRequest pageRequest){
+	public void cacheAllPages(CMSPageRequest pageRequest) {
 		LOG.debug("Loading all pages in cache "+ new Date());
 		List<CMSWebPageModel> pages = getCMSPageByParameters(pageRequest);
 		if(pages.size() == 0) {
-        CmsServiceLocator.ehCacheUtil().clearCache(FEED_CACHE);
+			CmsServiceLocator.ehCacheUtil().clearCache(FEED_CACHE);
 		} else {
-		for(CMSWebPageModel page: pages){
-			if(page != null){
-                    CmsServiceLocator.ehCacheUtil().putObjectToCache(FEED_CACHE, pageRequest.getCacheKey(page), page);
+			for(CMSWebPageModel page: pages){
+				if(page != null){
+	                 CmsServiceLocator.ehCacheUtil().putObjectToCache(FEED_CACHE, pageRequest.getCacheKey(page), page);
 				}
 			}
 		}
 	}
-
-	/*
-	public class PickListLoaderTask extends TimerTask {
-
-		@Override
-		public void run() {
-			LOG.debug("Loading PickList"+ new Date());
-			CMSPageRequest request = new CMSPageRequest();
-			List<CMSPickListItemModel> items = getPickListByParameter(request);
-			if(items != null){
-				for(CMSPickListItemModel pickList: items){
-					if(pickList != null){
-                        CmsServiceLocator.ehCacheUtil().putObjectToCache(FEED_CACHE, pickList.getName(), pickList);
-					}
-				}
-			}
-		}
-
-	}
-	*/
 
 	public final List<CMSPickListItemModel> getPickListByParameter(CMSPageRequest request){
 		List<CMSPickListItemModel> pickLists = new ArrayList<CMSPickListItemModel>();
@@ -159,11 +125,12 @@ public class CMSContentFactory {
 				ContentNodeI contentNode = contentNodeEntry.getValue();
 
 				CMSWebPageModel page = null;
-				if(pageRequest.isPreview() && pageRequest.getFeedId()!=null) {
+				if(pageRequest.isPreview() || pageRequest.getFeedId() != null) {
 					// if it is for preview and feed id is not null, check the id first and the get the relevant feed page
 					pageRequest.setIgnoreSchedule(true);
+					
 					if(contentNode.getKey().getId().toString().equals(pageRequest.getFeedId())) {
-					page = getCMSPage(contentNode, pageRequest);
+						page = getCMSPage(contentNode, pageRequest);
 					}
 				} else {
 					page = getCMSPage(contentNode, pageRequest);
@@ -200,7 +167,7 @@ public class CMSContentFactory {
 		}
     }
 
-	public final CMSWebPageModel getCMSPageByName(String pageName){
+	public final CMSWebPageModel getCMSPageByName(String pageName) {
         return (CMSWebPageModel) CmsServiceLocator.ehCacheUtil().getObjectFromCache(CMSContentFactory.FEED_CACHE, pageName);
 	}
 
@@ -208,6 +175,8 @@ public class CMSContentFactory {
 		CMSWebPageModel webPage = null;
 		if(contentNode != null){
 		    webPage = new CMSWebPageModel();
+		    webPage.setId(request.getFeedId());
+		    
             if (EnumEStoreId.FDX == CmsManager.getInstance().getEStoreEnum()) {
                 webPage.setTitle((String) contentNode.getAttributeValue("PAGE_TITLE_FDX"));
                 webPage.setSeoMetaDescription((String) contentNode.getAttributeValue("SEO_META_DESC_FDX"));
@@ -220,21 +189,19 @@ public class CMSContentFactory {
 			webPage.setSchedule(schedules);
 
 			boolean matchingSchedule = isSchedulesMatches(schedules, request, true);
-			if(!matchingSchedule){
-				LOG.debug("Schedule is not matching for :"+ contentNode.getKey());
+			if(!matchingSchedule && !request.isIgnoreSchedule()) {
+				//LOG.debug("Schedule is not matching for :"+ contentNode.getKey());
 				return null;
 			}
 
-			List<ContentKey> darkStoreContentkey = (List<ContentKey>) contentNode
-					.getAttributeValue("WebPageDarkStore");
+			List<ContentKey> darkStoreContentkey = (List<ContentKey>) contentNode.getAttributeValue("WebPageDarkStore");
 			ArrayList<String> darkStoreFromCMS = new ArrayList<String>();
 
 			if (darkStoreContentkey != null) {
 				for (ContentKey key : darkStoreContentkey) {
 					ContentNodeI contentnode = getContentNodeByKey(key, request);
 					if (contentnode != null)
-						darkStoreFromCMS.add(((String) (contentnode
-								.getAttributeValue("value"))));
+						darkStoreFromCMS.add(((String) (contentnode.getAttributeValue("value"))));
 				}
 			}
 

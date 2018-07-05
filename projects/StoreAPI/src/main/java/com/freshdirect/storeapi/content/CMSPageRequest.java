@@ -88,11 +88,11 @@ public class CMSPageRequest {
     }
 
     public String getCacheKey() {
-        return asCacheKey(getPageType());
+        return asCacheKey(this.getFeedId() != null && this.getFeedId().trim().length() > 0  ?  this.getFeedId() + "_" + getPageType() : getPageType());
     }
 
     public String getCacheKey(CMSWebPageModel page) {
-        return asCacheKey(page.getType());
+        return asCacheKey(page.getId() != null  && page.getId().trim().length() > 0 ?  page.getId() + "_" + page.getType() : page.getType());
     }
 
     public String asCacheKey(String key) {

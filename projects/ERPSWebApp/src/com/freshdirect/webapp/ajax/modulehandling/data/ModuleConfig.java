@@ -28,8 +28,18 @@ public class ModuleConfig implements Serializable {
     private boolean useViewAllPopup;
     private String moduleVirtualCategory;
     private boolean showViewAllOverlayOnImages;
+    
+    private boolean lazyloadImages;
 
-    private ModuleEditorialContainer editorialContainer;
+    public boolean isLazyloadImages() {
+		return lazyloadImages;
+	}
+
+	public void setLazyloadImages(boolean lazyloadImages) {
+		this.lazyloadImages = lazyloadImages;
+	}
+
+	private ModuleEditorialContainer editorialContainer;
 
     public String getCmEventSource() {
         return cmEventSource;

@@ -32,6 +32,7 @@ public class FDUserDlvPassInfo implements Serializable{
 	private int daysToDPExpiry=0;
 	private double dPSavings;
 	private Date purchaseDate;
+	private Date activationDate;
 	
 	public FDUserDlvPassInfo(@JsonProperty("status") EnumDlvPassStatus status,
 			@JsonProperty("typePurchased") DeliveryPassType type, 
@@ -44,7 +45,8 @@ public class FDUserDlvPassInfo implements Serializable{
 			@JsonProperty("autoRenewUsablePassCount") int autoRenewUsablePassCount,
 			@JsonProperty("autoRenewDPType") DeliveryPassType autoRenewDPType,
 			@JsonProperty("autoRenewPrice") double autoRenewPrice,
-			@JsonProperty("purchaseDate") Date purchaseDate) {
+			@JsonProperty("purchaseDate") Date purchaseDate,
+			@JsonProperty("activationDate") Date activationDate) {
 		super();
 		this.status = status;
 		this.type = type;
@@ -60,6 +62,7 @@ public class FDUserDlvPassInfo implements Serializable{
 		this.autoRenewDPType=autoRenewDPType;
 		this.autoRenewPrice=autoRenewPrice;
 		this.purchaseDate = purchaseDate;
+		this.activationDate = activationDate;
 	}
 
 	public int getUsablePassCount() {
@@ -203,6 +206,14 @@ public class FDUserDlvPassInfo implements Serializable{
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public Date getActivationDate() {
+		return activationDate;
+	}
+
+	public void setActivationDate(Date activationDate) {
+		this.activationDate = activationDate;
 	}
 
 	

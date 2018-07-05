@@ -20,6 +20,39 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
+<%!
+    private String getTimeslotString(Calendar startTimeCal, Calendar endTimeCal){
+        StringBuffer sb = new StringBuffer();
+        int startHour = startTimeCal.get(Calendar.HOUR_OF_DAY);
+        sb.append(startHour==12 ? "noon" : (startHour > 12 ? startHour - 12+"": startHour+""));
+        int startMin = startTimeCal.get(Calendar.MINUTE);
+        if(startMin != 0){
+            sb.append(":"+startMin);
+        }
+        int amPm = startTimeCal.get(Calendar.AM_PM);
+        if(amPm == 1){
+            sb.append(" pm");
+        }else{
+            sb.append(" am");
+        }
+        sb.append(" - ");
+        int endHour = endTimeCal.get(Calendar.HOUR_OF_DAY);
+        sb.append(endHour == 0 ? "12" : (endHour == 12 ? "noon" : (endHour > 12 ? endHour - 12+"" : endHour+"")));
+        int endMin = endTimeCal.get(Calendar.MINUTE);
+        if(endMin != 0){
+            sb.append(":"+endMin);
+        }
+        if(sb.toString().indexOf("noon") < 0){
+            amPm = endTimeCal.get(Calendar.AM_PM);
+            if(amPm == 1){
+                sb.append(" pm");
+            }else{
+                sb.append(" am");
+            }
+        }
+        return sb.toString();
+    }
+%>
 <% //expanded page dimensions
 final int W_YA_ORDER_DETAILS_TOTAL = 970;
 final int W_YA_ORDER_DETAILS_3C_GAP = 41;
@@ -328,37 +361,3 @@ if (orderId == null){
 </tmpl:put>
 </tmpl:insert>
 </fd:ModifyOrderController>
-
-<%!
-    private String getTimeslotString(Calendar startTimeCal, Calendar endTimeCal){
-        StringBuffer sb = new StringBuffer();
-        int startHour = startTimeCal.get(Calendar.HOUR_OF_DAY);
-        sb.append(startHour==12 ? "noon" : (startHour > 12 ? startHour - 12+"": startHour+""));
-        int startMin = startTimeCal.get(Calendar.MINUTE);
-        if(startMin != 0){
-            sb.append(":"+startMin);
-        }
-        int amPm = startTimeCal.get(Calendar.AM_PM);
-        if(amPm == 1){
-            sb.append(" pm");
-        }else{
-            sb.append(" am");
-        }
-        sb.append(" - ");
-        int endHour = endTimeCal.get(Calendar.HOUR_OF_DAY);
-        sb.append(endHour == 0 ? "12" : (endHour == 12 ? "noon" : (endHour > 12 ? endHour - 12+"" : endHour+"")));
-        int endMin = endTimeCal.get(Calendar.MINUTE);
-        if(endMin != 0){
-            sb.append(":"+endMin);
-        }
-        if(sb.toString().indexOf("noon") < 0){
-            amPm = endTimeCal.get(Calendar.AM_PM);
-            if(amPm == 1){
-                sb.append(" pm");
-            }else{
-                sb.append(" am");
-            }
-        }
-        return sb.toString();
-    }
-%>

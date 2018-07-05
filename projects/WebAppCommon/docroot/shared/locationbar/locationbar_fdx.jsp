@@ -139,13 +139,12 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 	</tmpl:put>
 
 
-<%-- FRESHDIRECT tab --%>
+<%-- FRESHDIRECT HOME tab --%>
 	<%-- change boolean to true to make it linked --%>
-	<tmpl:put name="tab_fd"><% if (false) { %><a href="https://www.freshdirect.com" class="locabar-tab locabar-tab-fd-cont"><span class="offscreen">Visit FreshDirect Store</span><div class="locabar-tab-fd"></div></a><% } else { %><div class="locabar-tab locabar-tab-fd-cont"><div class="locabar-tab-fd"></div></div><% } %></tmpl:put>
+	<tmpl:put name="tab_fd"><a href="/index.jsp?serviceType=HOME" class="locabar-tab locabar-tab-fd-cont <%= (!(user_locationbar_fdx.getShoppingCart() instanceof FDModifyCartModel) && (user_locationbar_fdx.isCorporateUser()) ? "notselected" : "") %>"><span class="offscreen">Visit FD Home Store</span><div class="locabar-tab-fd"></div></a></tmpl:put>
 
-
-<%-- COS tab --%>
-	<tmpl:put name="tab_cos"><!-- --><%-- PLACEHOLDER, NOT LAUNCHING 20151109 -- <a href="/index.jsp?serviceType=CORPORATE" class="locabar-tab"><div class="locabar-tab-cos"></div></a>	--%></tmpl:put>
+<%-- FRESHDIRECT COS tab --%>
+	<tmpl:put name="tab_cos"><a href="/index.jsp?serviceType=CORPORATE" class="locabar-tab locabar-tab-cos-cont <%= (!(user_locationbar_fdx.getShoppingCart() instanceof FDModifyCartModel) && !(user_locationbar_fdx.isCorporateUser()) ? "notselected" : "") %>"><span class="offscreen">Visit FD Office Store</span><div class="locabar-tab-cos"><span>Office</span></div></a></tmpl:put>
 
 <%-- ZIP/ADDRESS area --%>
 	<%
@@ -454,7 +453,7 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 					<% if (user_locationbar_fdx != null &&  user_locationbar_fdx.getLevel() != FDUserI.GUEST) { %>
 						<div class="section-header">
 							DELIVERY ADDRESSES
-							<% if (user_locationbar_fdx != null && user_locationbar_fdx.getLevel() != FDUserI.GUEST) { %><a href="/your_account/delivery_information.jsp" class="locabar_addresses-dlvadd-edit">Edit</a><% } %>
+							<% if (user_locationbar_fdx != null && user_locationbar_fdx.getLevel() != FDUserI.GUEST) { %><a href="/your_account/delivery_information.jsp" class="locabar_addresses-dlvadd-edit">Edit<span class="offscreen">delivery address</span></a><% } %>
 						</div>
 					<% } %>
 					<tmpl:get name="address" />
@@ -558,7 +557,7 @@ boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") !=
 		%><div class="locabar-section locabar-user-section" data-signedin="<%= signedIn %>">
       <div id="locabar_user_trigger" class="locabar_triggers" <% if (signedIn || recog) { %>tabindex="0"<% } %> role="menuitem" aria-haspopup="true" data-signedin="<%= signedIn %>" data-recog="<%= recog %>" data-social="<%= FDStoreProperties.isSocialLoginEnabled() %>">
 		        <% if (!signedIn) {%>
-					<a id="locabar_user_login_link" class = "changeBGClr" href="/login/login.jsp" <%if(recog) { %> tabindex="-1" <%}%> fd-login-required fd-login-nosignup fd-login-successpage="/index.jsp">
+					<a id="locabar_user_login_link" class = "changeBGClr" href="/login/login.jsp" <%if(recog) { %> tabindex="-1" <%}%> fd-login-required fd-login-nosignup fd-login-successpage-current>
 		        <% } %>
 					<div class="bold cursor-pointer">
 						<%-- <div class="locabar-user" style="display: inline-block;"></div> --%>

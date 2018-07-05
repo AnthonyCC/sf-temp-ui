@@ -127,7 +127,8 @@ var dataLayer = window.dataLayer || [];
           delivery_type: getDeliveryType(custData.deliveryType),
           cohort: custData.cohort || 'unknown',
           default_payment_type: custData.defaultPaymentType || '',
-          hasActiveSO3s: custData.hasActiveSO3s || ''
+          hasActiveSO3s: custData.hasActiveSO3s || '',
+          storefrontVersion: custData.storefrontVersion || ''
         },
         // variables for "old" tags
         'user-customer-type': getDeliveryType(custData.deliveryType),
@@ -347,7 +348,8 @@ var dataLayer = window.dataLayer || [];
                   dimension3: ""+productData.newProduct,
                   sku: productData.sku,
                   dimension6: ""+true,
-                  quantity: parseInt(productData.quantity, 10) || 0 // quantity should be an integer
+                  quantity: parseInt(productData.quantity, 10) || 0, // quantity should be an integer
+                  configuredPrice: productData.configuredPrice
                 };
               }),
               delivery_type: getDeliveryType(coData.deliveryType),
@@ -389,7 +391,8 @@ var dataLayer = window.dataLayer || [];
                   dimension3: ""+productData.newProduct,
                   sku: productData.sku,
                   dimension6: ""+true,
-                  quantity: parseInt(productData.quantity, 10) || 0 // quantity should be an integer
+                  quantity: parseInt(productData.quantity, 10) || 0, // quantity should be an integer
+                  configuredPrice: productData.configuredPrice
                 };
               })
             }

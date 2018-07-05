@@ -44,7 +44,12 @@ import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
-
+/**
+ *@deprecated Please use the DlvPassManagerController and DlvPassManagerServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public class DlvPassManagerSessionBean extends SessionBeanSupport {
 
 	private static final long	serialVersionUID	= -8374322338305804910L;
@@ -862,11 +867,13 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 		try {
 			conn = getConnection();
 			dlvPass.setStatus(EnumDlvPassStatus.ACTIVE);
+			Date activationDate = DateUtil.getCurrentTime();
+			dlvPass.setActivationDate(activationDate);
 			if(dlvPass.getType().isUnlimited()&& dlvPass.getOrgExpirationDate()==null) {
 				Date expiryDate=getExpirationDate(dlvPass.getType());
 				dlvPass.setOrgExpirationDate(expiryDate);
 				dlvPass.setExpirationDate(expiryDate);
-
+			
 			}
 			DeliveryPassDAO.update(conn, dlvPass,true);
 		} catch (SQLException e) {

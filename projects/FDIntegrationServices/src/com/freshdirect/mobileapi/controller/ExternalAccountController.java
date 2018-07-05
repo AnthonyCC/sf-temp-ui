@@ -243,6 +243,7 @@ public class ExternalAccountController extends BaseController implements SystemM
 					userLogin(userId, session, request, response);
 					responseMessage = setCurrentCartToTheUser(user, request, response);
 					((LoggedIn) responseMessage).setResultAction("SIGNEDIN");
+					((LoggedIn) responseMessage).setPurchaseDlvPassEligible(user.getFDSessionUser().isEligibleForDeliveryPass());
 					checkTermsCond(getUserFromSession(request, response),responseMessage);
 					if (context.equalsIgnoreCase("CREATE")) {
 						((LoggedIn) responseMessage)
@@ -278,6 +279,7 @@ public class ExternalAccountController extends BaseController implements SystemM
 						responseMessage = setCurrentCartToTheUser(user, request, response);
 						((LoggedIn) responseMessage)
 						.setResultMessage(MessageFormat.format(MSG_SOCIAL_EXISTING_LINK_SIGNIN, socialAccountProvider));
+						((LoggedIn) responseMessage).setPurchaseDlvPassEligible(user.getFDSessionUser().isEligibleForDeliveryPass());
 						((LoggedIn) responseMessage).setResultAction("SIGNEDIN");
 						checkTermsCond(user,responseMessage);
 					} else if (isFDAccountExist == 1){ 
@@ -305,6 +307,7 @@ public class ExternalAccountController extends BaseController implements SystemM
 						responseMessage = setCurrentCartToTheUser(user, request, response);
 						((LoggedIn) responseMessage)
 						.setResultMessage(MessageFormat.format(MSG_SOCIAL_EXISTING_LINK_SIGNIN, socialAccountProvider));
+						((LoggedIn) responseMessage).setPurchaseDlvPassEligible(user.getFDSessionUser().isEligibleForDeliveryPass());
 						((LoggedIn) responseMessage).setResultAction("SIGNEDIN");
 						checkTermsCond(user,responseMessage);
 					} else {
@@ -337,6 +340,7 @@ public class ExternalAccountController extends BaseController implements SystemM
 								responseMessage = setCurrentCartToTheUser(user,
 										request, response);
 								((LoggedIn) responseMessage).setResultMessage(MSG_SOCIAL_ACCOUNT_CREATED);
+								((LoggedIn) responseMessage).setPurchaseDlvPassEligible(user.getFDSessionUser().isEligibleForDeliveryPass());
 								((LoggedIn) responseMessage).setResultAction("SIGNEDIN");
 								checkTermsCond(user,responseMessage);
 							}

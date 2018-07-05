@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
+import com.freshdirect.enums.CaptchaType;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDActionNotAllowedException;
 import com.freshdirect.fdstore.FDException;
@@ -65,6 +66,7 @@ import com.freshdirect.webapp.taglib.fdstore.SocialGateway;
 import com.freshdirect.webapp.taglib.fdstore.SocialProvider;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.taglib.fdstore.UserUtil;
+import com.freshdirect.webapp.util.CaptchaUtil;
 
 public class RegistrationController extends BaseController implements SystemMessageList {
 
@@ -208,7 +210,21 @@ public class RegistrationController extends BaseController implements SystemMess
 			NoSessionException, JsonException {	
 		Message responseMessage = null;
 		FDIdentity userIdentity = null;
-			try{
+		// validate captcha if it's enabled
+		boolean isCaptchaSuccess = CaptchaUtil.validateCaptcha(requestMessage.getCaptchaToken(),
+				request.getRemoteAddr(), CaptchaType.SIGN_UP, request.getSession(), SessionName.SIGNUP_ATTEMPT,
+				FDStoreProperties.getMaxInvalidSignUpAttempt());
+		if (!isCaptchaSuccess) {
+				responseMessage = new Message();
+		        responseMessage.setStatus(Message.STATUS_FAILED);
+		       
+	            responseMessage.addErrorMessage("captcha", SystemMessageList.MSG_INVALID_CAPTCHA);
+		        
+	            setResponseMessage(model, responseMessage, user);
+				return model;
+			
+		}
+		try{
 				userIdentity = FDCustomerManager.login(requestMessage.getEmail());
 			} catch(Exception ex){
 				
@@ -234,6 +250,7 @@ public class RegistrationController extends BaseController implements SystemMess
 		registerMessage.setWorkPhone(requestMessage.getWorkPhone());
 		registerMessage.setRafclickid(requestMessage.getRafclickid());
 		registerMessage.setRafpromocode(requestMessage.getRafpromocode());
+		registerMessage.setCaptchaToken(requestMessage.getCaptchaToken());
 		
 		ResultBundle resultBundle = tagWrapper.register(registerMessage);	
 		
@@ -244,6 +261,9 @@ public class RegistrationController extends BaseController implements SystemMess
 				ActionResult result = resultBundle.getActionResult();
 				responseMessage = getErrorMessage(result, request);
 				setResponseMessage(model, responseMessage, user);
+				CaptchaUtil.increaseAttempt(request, SessionName.SIGNUP_ATTEMPT);
+				responseMessage.setShowCaptcha(CaptchaUtil.isExcessiveAttempt(FDStoreProperties.getMaxInvalidSignUpAttempt(),
+						request.getSession(), SessionName.SIGNUP_ATTEMPT));
 				return model;
 			}
 		}	
@@ -277,6 +297,9 @@ public class RegistrationController extends BaseController implements SystemMess
 		
         final boolean isSuccess = result.isSuccess() && result1.isSuccess();
 
+        if (isSuccess) {
+        	CaptchaUtil.resetAttempt(request, SessionName.SIGNUP_ATTEMPT);
+        }
         if (isWebRequest) {
             MessageResponse webResponse = new MessageResponse();
             if (isSuccess) {
@@ -329,6 +352,13 @@ public class RegistrationController extends BaseController implements SystemMess
 			} else {
 			responseMessage = Message.createFailureMessage("Account already exists with this Email address. "+requestMessage.getEmail());	
 			}
+		}
+		if (responseMessage.getErrors() == null || responseMessage.getErrors().size() == 0) {
+			CaptchaUtil.resetAttempt(request, SessionName.SIGNUP_ATTEMPT);
+		} else {
+			CaptchaUtil.increaseAttempt(request, SessionName.SIGNUP_ATTEMPT);
+			responseMessage.setShowCaptcha(CaptchaUtil.isExcessiveAttempt(FDStoreProperties.getMaxInvalidSignUpAttempt(),
+					request.getSession(), SessionName.SIGNUP_ATTEMPT));
 		}
 		setResponseMessage(model, responseMessage, user);
 		return model;

@@ -1,5 +1,6 @@
 package com.freshdirect.fdstore.ecomm.converter;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -33,8 +34,12 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCartLineI;
+import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
+import com.freshdirect.fdstore.customer.FDProductSelectionI;
+import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.lists.FDCustomerList;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode;
@@ -86,6 +91,15 @@ public class StandingOrderConverter {
 			if(so.getStartTime() != null)
 			standingOrderModel.setStartTime(new Date(so.getStartTime()));
 			standingOrderModel.setTipAmount(so.getTipAmount());
+			if(null != so.getListData()){
+				FDCustomerList fdStandingOrderList =ListConverter.buildFDCustomerList(so.getListData());
+				try {
+					populateSODetails(standingOrderModel,fdStandingOrderList);
+				} catch (FDResourceException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 			return standingOrderModel;
 			}
 		return null;
@@ -475,4 +489,31 @@ public class StandingOrderConverter {
 	}
 
 
+	private static void populateSODetails(FDStandingOrder so,FDCustomerList fdStandingOrderList) throws FDResourceException{
+		
+		List<FDProductSelectionI> productSelectionList = null;
+		Connection conn = null;
+		if (null != fdStandingOrderList) {			
+			productSelectionList = OrderLineUtil.getValidProductSelectionsFromCCLItems(fdStandingOrderList.getLineItems());
+			for (FDProductSelectionI fdSelection : productSelectionList) {
+				FDCartLineI cartLine = new FDCartLineModel(fdSelection);
+				if (!cartLine.isInvalidConfig()) {
+					// cartLine.refreshConfiguration();
+					if(fdSelection.getCustomerListLineId()!=null)
+					cartLine.setCustomerListLineId(fdSelection.getCustomerListLineId());
+					so.getStandingOrderCart().addOrderLine(cartLine);
+				}
+			}
+
+			if (null != productSelectionList && !productSelectionList.isEmpty()) {
+				try {
+					so.getStandingOrderCart().refreshAll(true);
+				} catch (FDInvalidConfigurationException e) {
+//					LOGGER.warn("Exception in populateSODetails() ",e);
+				}
+			}
+			
+		}
+		
+	}
 }

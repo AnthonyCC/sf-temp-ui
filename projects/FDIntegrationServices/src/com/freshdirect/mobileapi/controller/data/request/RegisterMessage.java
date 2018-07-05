@@ -19,6 +19,8 @@ public class RegisterMessage extends ZipCheck {
 	private String dlvhomephone;
 	private String rafclickid;
 	private String rafpromocode;
+	private String captchaToken;
+	
 	//private boolean partialDelivery;
 	
 	public String getRafclickid() {
@@ -96,5 +98,11 @@ public class RegisterMessage extends ZipCheck {
 		this.partialDelivery = isPartialDelivery;
 	}
 	*/
+	public String getCaptchaToken() {
+		return captchaToken;
+	}
+	public void setCaptchaToken(String captchaToken) {
+		this.captchaToken = captchaToken;
+	}
 	
 }

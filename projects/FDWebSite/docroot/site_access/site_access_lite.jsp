@@ -55,7 +55,7 @@ request.setAttribute("listPos", "CategoryNote");
 	String actionURI = "/site_access/site_access_lite.jsp?successPage="+URLEncoder.encode(successPage);
 	
 %>	
-
+<fd:SiteAccessController action='checkByZipCode' successPage='<%= successPage %>' moreInfoPage='<%= moreInfoPage %>' failureHomePage='<%= failurePage %>' result='result'>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en-US" xml:lang="en-US">
@@ -99,7 +99,7 @@ request.setAttribute("listPos", "CategoryNote");
     <jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
     
     
-	<fd:SiteAccessController action='checkByZipCode' successPage='<%= successPage %>' moreInfoPage='<%= moreInfoPage %>' failureHomePage='<%= failurePage %>' result='result'>
+	
 		 <div align="center">
 			<table valign="top" border="0" cellspacing="0" cellpadding="0" width="700">
 				<tr valign="top">
@@ -244,6 +244,6 @@ request.setAttribute("listPos", "CategoryNote");
 			</table>
 			<%@ include file="/shared/template/includes/copyright.jspf" %>
 		</div>
-	</fd:SiteAccessController>
 	</body>
 </html>
+</fd:SiteAccessController>

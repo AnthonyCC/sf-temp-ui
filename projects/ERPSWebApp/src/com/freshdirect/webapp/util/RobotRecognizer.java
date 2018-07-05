@@ -45,7 +45,7 @@ public class RobotRecognizer {
         
         for (Pattern friendlyRobotPattern : friendlyRobotPatterns) {
             if (friendlyRobotPattern.matcher(userAgent).matches()) {
-            	LOGGER.debug("friendly bot identified (matches pattern "+friendlyRobotPattern.pattern()+"): "+userAgent);
+            	LOGGER.debug("friendly-bot identified (matches pattern "+friendlyRobotPattern.pattern()+"): "+userAgent);
             	return true;
             }
         }
@@ -62,13 +62,14 @@ public class RobotRecognizer {
         	return true;
         }
         userAgent = userAgent.toLowerCase();
-
-        for (String agentName : hostileAgents) {
-            if (userAgent.startsWith(agentName)) {
+        
+        for (Pattern hostileRobotPattern : hostileAgents) {
+            if (hostileRobotPattern.matcher(userAgent).matches()) {
+            	LOGGER.debug("hostile-bot identified (matches pattern "+hostileRobotPattern.pattern()+"): "+userAgent);
             	return true;
             }
         }
-
+        
         return false;
     }
     
@@ -186,18 +187,21 @@ public class RobotRecognizer {
     }
     
         
-    private final static Set<String> hostileAgents = new HashSet<String>();
+    private final static Set<Pattern> hostileAgents = new HashSet<Pattern>();
     static {
-        hostileAgents.add("bmclient");
-        hostileAgents.add("martini");
-        hostileAgents.add("freefind.com");
-        hostileAgents.add("libwww");
-        hostileAgents.add("microsoft data access");
-        hostileAgents.add("microsoft url control");
-        hostileAgents.add("lwp");
-        hostileAgents.add("wget");
-        hostileAgents.add("php");
-        hostileAgents.add("ms front");
+    	
+    	hostileAgents.add(Pattern.compile("^.*bmclient.*$")); 
+    	hostileAgents.add(Pattern.compile("^.*martini.*$")); 
+    	hostileAgents.add(Pattern.compile("^.*freefind.com.*$")); 
+    	hostileAgents.add(Pattern.compile("^.*libwww.*$")); 
+    	hostileAgents.add(Pattern.compile("^.*microsoft data access.*$")); 
+    	hostileAgents.add(Pattern.compile("^.*microsoft url control.*$")); 
+    	hostileAgents.add(Pattern.compile("^.*lwp.*$")); 
+    	hostileAgents.add(Pattern.compile("^.*wget.*$")); 
+    	hostileAgents.add(Pattern.compile("^.*php.*$")); 
+    	hostileAgents.add(Pattern.compile("^.*ms front.*$")); 
+    	hostileAgents.add(Pattern.compile("^.*skype for business.*$")); 
+    	hostileAgents.add(Pattern.compile("^.*microsoft office.*$")); 
     }
     
     // ISTVAN 19/03/2007 for Moz5 googlebot 2.1
@@ -310,6 +314,16 @@ public class RobotRecognizer {
 
     	for(String userAgent : bAgents) {
     		RobotRecognizer.isFriendlyRobot(userAgent);
+    	}
+    	
+    	List<String> hostileAgents = new ArrayList<String>();
+    	
+    	hostileAgents.add("OC/16.0.8431.2270 (Skype for Business)");
+    	hostileAgents.add("OC/16.0.10313.20013 (Skype for Business)");
+    	hostileAgents.add("OC/16.0.10313.20013 (Skype for Business)");
+    	    	
+    	for(String userAgent : hostileAgents) {
+    		RobotRecognizer.isHostileRobot(userAgent);
     	}
     }
 

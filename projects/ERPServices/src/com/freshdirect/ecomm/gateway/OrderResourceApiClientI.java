@@ -15,6 +15,7 @@ import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpCartonInfo;
 import com.freshdirect.customer.ErpCreateOrderModel;
 import com.freshdirect.customer.ErpDeliveryInfoModel;
+import com.freshdirect.customer.ErpModifyOrderModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpSaleNotFoundException;
@@ -80,7 +81,21 @@ public interface OrderResourceApiClientI {
 			CustomerRatingI cra, CrmAgentRole crmAgentRole,
 			EnumDlvPassStatus status, boolean isFriendReferred,
 			int fdcOrderCount) throws RemoteException;
+
+
+	void modifyOrder(FDActionInfo info, String saleId,
+			ErpModifyOrderModel order, Set<String> appliedPromos,
+			String originalReservationId, boolean sendEmail,
+			CustomerRatingI cra, CrmAgentRole crmAgentRole,
+			EnumDlvPassStatus status, boolean hasCouponDiscounts,
+			int fdcOrderCount);
+
+
+	void modifyAutoRenewOrder(FDActionInfo info, String saleId,
+			ErpModifyOrderModel order, Set<String> appliedPromos,
+			String originalReservationId, boolean sendEmail,
+			CustomerRatingI cra, CrmAgentRole crmAgentRole,
+			EnumDlvPassStatus status);
 	
-	//public List<ErpSaleInfo> getNSMOrdersForGC()  throws RemoteException;
 			
 }

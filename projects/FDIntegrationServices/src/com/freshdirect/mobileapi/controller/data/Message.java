@@ -189,4 +189,15 @@ public class Message implements DateFormat, Cloneable {
     public boolean includeNullValue() {
     	return true;
     }
+    
+    public boolean isShowCaptcha() {
+		return showCaptcha || this.errors != null && this.errors.containsKey("captcha");
+	}
+
+	public void setShowCaptcha(boolean showCaptcha) {
+		this.showCaptcha = showCaptcha;
+	}
+
+	private boolean showCaptcha;
+    
 }

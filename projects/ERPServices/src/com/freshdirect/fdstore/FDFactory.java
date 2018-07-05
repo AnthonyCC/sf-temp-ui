@@ -16,6 +16,8 @@ import javax.ejb.CreateException;
 import javax.naming.Context;
 import javax.naming.NamingException;
 
+import org.apache.log4j.Logger;
+
 import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.ecomm.gateway.ErpInfoService;
@@ -29,12 +31,16 @@ import com.freshdirect.fdstore.ejb.FDFactoryHome;
 import com.freshdirect.fdstore.ejb.FDFactorySB;
 import com.freshdirect.fdstore.ejb.FDProductHelper;
 import com.freshdirect.framework.util.DayOfWeekSet;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.payment.service.IECommerceService;
+
 /**
  * Singleton class for accessing the FD-layer factory session bean.
  */
 public class FDFactory {
+
+	private static final Logger LOGGER = LoggerFactory.getInstance(FDFactory.class);
 
 	private static FDFactoryHome factoryHome = null;
 
@@ -426,7 +432,7 @@ public class FDFactory {
 
 				pinfos = sb.getProductInfos(skus);
 			}
-			
+
             if (FDStoreProperties.getPreviewMode()) {
 
             	Set foundSkus = new HashSet();
@@ -462,7 +468,7 @@ public class FDFactory {
 	/**
 	 * Get the sku codes from erps.material table that have been modified since
 	 * lastModifiedTime
-	 * 
+	 *
 	 * @param lastModified
 	 *            unix timestamp in ms
 	 * @return
@@ -474,13 +480,16 @@ public class FDFactory {
 		}
 		Set<String> skus=null;
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB_WarmUp)){
-				skus=FDFactoryService.getInstance().getModifiedSkus(lastModified);
-			}else{
-			FDFactorySB sb = factoryHome.create();
-			skus = sb.getModifiedSkus(lastModified);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB_WarmUp)) {
+				skus = FDFactoryService.getInstance().getModifiedSkus(lastModified);
+			} else {
+				FDFactorySB sb = factoryHome.create();
+				skus = sb.getModifiedSkus(lastModified);
 			}
 			return skus;
+		} catch (FDResourceException exc) {
+			LOGGER.debug("Error occurred while calling getModifiedSkus("+Long.toString(lastModified)+")", exc);
+			throw exc;
 		} catch (CreateException ce) {
 			factoryHome = null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -731,7 +740,7 @@ public class FDFactory {
 	public static Collection getProducts(FDSku[] skus) throws FDResourceException {
 		// !!! optimize this, so that it only makes one call to the session bean
 		List products = new ArrayList(skus.length);
-		
+
 		if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDFactorySB_WarmUp_BULKSKU)){
 			try {
 				products = FDFactoryService.getInstance().getProduct(skus);
@@ -747,9 +756,9 @@ public class FDFactory {
 					// not found
 				}
 			}
-			
+
 		}
-		
+
 		return products;
 	}
 

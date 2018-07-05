@@ -686,9 +686,11 @@ public class QuickShopHelper {
 			}
 		}
 
-		Collections.sort(orderDates);
-		Collections.reverse(orderDates);
-		setLastOrderFlag(result, orderDates.get(0));
+        if (orderDates.size() > 0) {
+            Collections.sort(orderDates);
+            Collections.reverse(orderDates);
+            setLastOrderFlag(result, orderDates.get(0));
+        }
 
 		return result;
 	}

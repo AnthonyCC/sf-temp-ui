@@ -1,5 +1,6 @@
 package com.freshdirect.webapp.util;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -10,6 +11,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.enums.CaptchaType;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 /*
  * @author: Nakkeeran Annamalai
@@ -27,10 +29,7 @@ public class CaptchaUtil {
 	}
 
 	public static boolean validateCaptcha(String captchaToken, String remoteIp, CaptchaType captchaType, HttpSession session, String sessionName, int maxAttemptAllowed) {
-		if (!isExcessiveAttempt(maxAttemptAllowed, session, sessionName)) {
-			return true;
-		}
-		// captcha widget is not loaded
+		// captcha widget is not loaded or the validation is not needed
 		if (captchaToken == null) {
 			return true;
 		}
@@ -62,5 +61,22 @@ public class CaptchaUtil {
 		}
 		return isCaptchaSuccess;
 	}
-
+	
+	public static int increaseAttempt(HttpServletRequest request, String name) {
+		return increaseAttempt(request.getSession(), name);
+	}
+	
+	public static int increaseAttempt(HttpSession session, String name) {
+		Integer fdLoginAttempt = session.getAttribute(name) != null ? (Integer) session.getAttribute(name) : Integer.valueOf(0);
+		fdLoginAttempt++;
+		session.setAttribute(name, fdLoginAttempt);
+		return fdLoginAttempt;
+	}
+	public static void resetAttempt(HttpServletRequest request, String name) {
+		resetAttempt(request.getSession(), name);
+	}
+	
+	public static void resetAttempt(HttpSession session, String name) {
+		session.setAttribute(name, 0);
+	}
 }

@@ -1725,7 +1725,7 @@ if ($jq) {
 			{
 				var p=a[i].split('=');
 				if (p.length != 2) continue;
-				b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
+				b[p[0]] = decodeURIComponent(encodeURIComponent(p[1]).replace(/\+/g, " "));
 			}
 			return b;
 		})(window.location.search.substr(1).split('&'))

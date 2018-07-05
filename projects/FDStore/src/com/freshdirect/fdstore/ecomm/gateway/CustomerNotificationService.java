@@ -24,7 +24,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class CustomerNotificationService extends AbstractEcommService implements CustomerNotificationServiceI {
 
-	private static final Category LOGGER = LoggerFactory.getInstance(CustomerNotificationService.class);
+	private final static Category LOGGER = LoggerFactory.getInstance(CustomerNotificationService.class);
 
 	private static final String SEND_PASSWORD_EMAIL = "customerNotification/sendPasswordEmail";
 	private static final String GET_REMINDER_LIST = "customerNotification/getReminderListForToday";
@@ -34,15 +34,9 @@ public class CustomerNotificationService extends AbstractEcommService implements
 	private static final String GET_ID_BY_EMAIL = "customerNotification/getIdByEmail";
 	private static final String IS_ON_ALERT = "customerNotification/isOnAlert";
 	private static final String DO_EMAIL = "customerNotification/doEmail";
-	private static final String RESEND_INVOICE = "customerNotification/resendInvoiceEmail";
 	
 	private static CustomerNotificationServiceI INSTANCE;
 
-	private static ObjectMapper TYPED_OBJECT_MAPPER = new ObjectMapper()
-			.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ"))
-			.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-			.setVisibility(PropertyAccessor.FIELD, Visibility.ANY)
-			.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
 	public static CustomerNotificationServiceI getInstance() {
 		if (INSTANCE == null)
 			INSTANCE = new CustomerNotificationService();
@@ -75,7 +69,7 @@ public class CustomerNotificationService extends AbstractEcommService implements
 			}
 			return response.getData();
 		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in CustomerNotificationService: ", e);
+			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -129,7 +123,7 @@ public class CustomerNotificationService extends AbstractEcommService implements
 			}
 			return response.getData();
 		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in CustomerNotificationService: ", e);
+			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -165,7 +159,7 @@ public class CustomerNotificationService extends AbstractEcommService implements
 			}
 			return response.getData();
 		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in CustomerNotificationService: ", e);
+			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -190,10 +184,9 @@ public class CustomerNotificationService extends AbstractEcommService implements
 			}
 			return response.getData();
 		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in CustomerNotificationService: ", e);
+			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		} catch (FDResourceException e) {
-			LOGGER.error("Error in CustomerNotificationService: ", e);
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -202,7 +195,13 @@ public class CustomerNotificationService extends AbstractEcommService implements
 	public void doEmail(XMLEmailI email) throws RemoteException, FDResourceException {
 		Response<Void> response = null;
 		try {
-			String inputJson = TYPED_OBJECT_MAPPER.writeValueAsString(email);
+			ObjectMapper mapper = new ObjectMapper()
+					.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ"))
+					.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+					.setVisibility(PropertyAccessor.FIELD, Visibility.ANY)
+					.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
+
+			String inputJson = mapper.writeValueAsString(email);
 
 			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(DO_EMAIL),
 					new TypeReference<Response<Void>>() {
@@ -212,35 +211,8 @@ public class CustomerNotificationService extends AbstractEcommService implements
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDResourceException e) {
-			LOGGER.error("Error in CustomerNotificationService: ", e);
 			throw new RemoteException(e.getMessage());
 		} catch (JsonProcessingException e) {
-			LOGGER.error("Error in CustomerNotificationService: ", e);
-			throw new RemoteException(e.getMessage());
-		}
-	}
-
-	@Override
-	public boolean resendInvoiceEmail(String orderId) throws FDResourceException, RemoteException {
-		Response<Boolean> response = null;
-		try {
-			Request<ObjectNode> request = new Request<ObjectNode>();
-			ObjectNode rootNode = getMapper().createObjectNode();
-			rootNode.put("orderId", orderId);
-
-			request.setData(rootNode);
-			String inputJson = buildRequest(request);
-
-			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(RESEND_INVOICE),
-					new TypeReference<Response<Boolean>>() {
-					});
-
-			if (!response.getResponseCode().equals("OK")) {
-				throw new FDResourceException(response.getMessage());
-			}
-			return true;
-		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in CustomerNotificationService: ", e);
 			throw new RemoteException(e.getMessage());
 		}
 	}
