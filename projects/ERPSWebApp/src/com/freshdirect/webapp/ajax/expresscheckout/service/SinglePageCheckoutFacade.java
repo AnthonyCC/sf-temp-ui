@@ -20,7 +20,6 @@ import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.delivery.ReservationException;
-import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.fdlogistics.model.FDDeliveryDepotModel;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDDeliveryManager;
@@ -49,7 +48,6 @@ import com.freshdirect.webapp.ajax.checkout.data.UnavailabilityData;
 import com.freshdirect.webapp.ajax.data.PageAction;
 import com.freshdirect.webapp.ajax.expresscheckout.availability.service.AvailabilityService;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData;
-import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartSubTotalFieldData;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.service.CartDataService;
 import com.freshdirect.webapp.ajax.expresscheckout.checkout.service.CheckoutService;
 import com.freshdirect.webapp.ajax.expresscheckout.content.service.ContentFactoryService;
@@ -407,7 +405,11 @@ public class SinglePageCheckoutFacade {
         result.setTextMessageAlertData(loadTextMessageAlertData(user));
         result.setSemPixelData(SemPixelService.defaultService().populateSemPixelMediaInfo(user, session, order));
        
-        result.setGoGreenShow("I".equalsIgnoreCase(GoGreenService.defaultService().loadGoGreenOption(user))?true:false);
+        if (user.getIdentity() != null) {
+            result.setGoGreenShow("I".equalsIgnoreCase(GoGreenService.defaultService().loadGoGreenOption(user)) ? true : false);
+        } else {
+            result.setGoGreenShow(false);
+        }
 
         return result;
     }
