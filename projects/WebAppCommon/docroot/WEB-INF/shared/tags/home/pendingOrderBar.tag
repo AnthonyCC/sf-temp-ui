@@ -93,7 +93,7 @@ attribute name="modifyOrderAlert" required="false" rtexprvalue="true" type="java
 									</div>
 								</div>
 								<div class="pendingOrderBar-overlay-order-detail-right">
-									<a href="/your_account/modify_order.jsp?orderId=<%= orderId %>&action=modify" class="cssbutton orange<%= (isMobWeb) ? " large" : "" %> pendingOrderBar-overlay-order-detail-modifyorder-btn" data-gtm-source="banner">Modify&nbsp;Order<span class="offscreen">of <%= orderDate %>, <%= orderTime %> with order# <%= orderId %></span></a>
+									<a href="/your_account/modify_order.jsp?orderId=<%= orderId %>&action=modify" class="cssbutton orange<%= (isMobWeb) ? " large" : "" %> modify-order-btn pendingOrderBar-overlay-order-detail-modifyorder-btn" data-gtm-source="banner">Modify&nbsp;Order<span class="offscreen">of <%= orderDate %>, <%= orderTime %> with order# <%= orderId %></span></a>
 									<a href="/your_account/order_details.jsp?orderId=<%= orderId %>" class="cssbutton green transparent<%= (isMobWeb) ? " large" : "" %> pendingOrderBar-overlay-order-detail-seedetails-btn" data-gtm-source="banner"><span class="NOMOBWEB">See&nbsp;</span>Details<span class="offscreen"> of order number <%= orderName %></span></a>
 								</div>
 							</div>
