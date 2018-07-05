@@ -5801,4 +5801,10 @@
        <name>FeaturedCategoryPreviewTag</name>
        <path>/WEB-INF/shared/tags/cmspreview/featuredcategory.tag</path>
 	</tag-file>
+
+	<tag>
+		<name>AdQueryString</name>
+		<tagclass>com.freshdirect.webapp.taglib.AdQueryStringTag</tagclass>
+		<info>This tag provides query string for 3rd party Ad service providers</info>
+	</tag>
 </taglib>
