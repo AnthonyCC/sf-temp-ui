@@ -9,7 +9,7 @@
     int layoutTypeCSS = (request.getAttribute("layoutType") == null) ? -1 : Integer.parseInt(request.getAttribute("layoutType").toString());
 
     String style_sheet_detect_uri = request.getRequestURI();
-    boolean isReorder = (style_sheet_detect_uri.indexOf("/quickshop/") != -1) ? true : false;
+    boolean style_sheet_detect_isReorder = (style_sheet_detect_uri.indexOf("/quickshop/") != -1) ? true : false;
 %><% if (FDStoreProperties.isFlushOscache()) { %><oscache:flush /><% } %>
  <%-- global css files, header, footer, etc. --%>
  <jwr:style src="/global.css" media="all" />
@@ -22,7 +22,7 @@
         %><jwr:style src="/opt_MAC_01.css" media="all" /><%
     }
     %>
-    <% if (!isReorder) { %>
+    <% if (!style_sheet_detect_isReorder) { %>
         <jwr:style src="/opt_04.css" media="all" />
     
         <% if (layoutTypeCSS == EnumLayoutType.PRESIDENTS_PICKS.getId() || layoutTypeCSS == EnumLayoutType.PRODUCTS_ASSORTMENTS.getId()) { %>
@@ -32,7 +32,7 @@
                 <jwr:style src="/assets/css/search.css" media="all" />
          <% } %>
     <% } %>
-    <% if (isReorder) { %>
+    <% if (style_sheet_detect_isReorder) { %>
        <jwr:style src="/quickshop.css" media="all" />
     <% } %>
     <jwr:style src="/accessibility.css" media="all" />
