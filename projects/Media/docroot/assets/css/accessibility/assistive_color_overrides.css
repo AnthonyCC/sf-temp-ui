@@ -1,0 +1,153 @@
+/*orange buttons high color contrast */
+.assistive-mode .cssbutton.orange:not(.transparent):not(.nontransparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder)
+{
+	background-color: #AF3D08 !important;
+	border: 1px solid #AF3D08 !important;
+}
+
+.assistive-mode .cssbutton.orange:hover:not(.transparent):not(.nontransparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder)
+{
+	background-color:#D04A0A !important;
+	border-color: #D04A0A !important;
+}
+
+.assistive-mode .cssbutton.orange:active:not(.transparent):not(.nontransparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder)
+{
+	
+	background-color: #AF3D08 !important;
+}
+
+.assistive-mode .cssbutton.orange:focus:not(.transparent):not(.nontransparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder)
+{
+	background-color:#D04A0A !important;
+	border-color: rgba(0,0,0,0.4) !important;
+	box-shadow: 0 0 1px #bbbbbb, 0 0 8px #bbbbbb !important;
+}
+
+/* purple color buttons high color contrast, purple has offset color so new rule should be applied for this
+
+.assistive-mode #quickshop .cssbutton.purple.nontransparent:not(.transparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder).not(.purple)
+{
+    background-color: #7C4884 !important;
+    border: 1px solid #7C4884 !important;
+}
+
+.assistive-mode #quickshop .cssbutton.purple.nontransparent:hover:not(.transparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder)
+{
+	background-color: #98609F !important;
+    border-color: #98609F !important;
+}
+
+.assistive-mode #quickshop .cssbutton.purple.nontransparent:active:not(.transparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder)
+{
+	
+	background-color: #7C4884 !important;
+}
+
+.assistive-mode #quickshop .cssbutton.purple.nontransparent:focus:not(.transparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder)
+{
+	background-color: #98609F !important;
+    border-color: rgba(0,0,0,0.4) !important;
+    box-shadow: 0 0 1px #bbbbbb, 0 0 8px #bbbbbb !important;
+}
+
+.assistive-mode .globalnav_top #topnavitem_reorder a {
+    color: #7C4884;
+}
+*/
+/*Green color buttons*/
+
+.assistive-mode .cssbutton.green:not(.transparent):not(.nontransparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder),
+.assistive-mode .qtyinput .quantity_minus, 
+.assistive-mode .qtyinput .quantity_plus
+{
+	
+	background-color: #096D19 !important;
+    border: 1px solid #096D19 !important;
+}
+
+.assistive-mode .hasFDX .top-nav
+{
+	
+	background-color: #096D19 !important;
+}
+.assistive-mode .cssbutton.green:hover:not(.transparent):not(.nontransparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder), 
+.assistive-mode .hasFDX .top-item-link a:hover,
+.assistive-mode .qtyinput .quantity_minus:hover, 
+.assistive-mode .qtyinput .quantity_plus:hover
+{
+    background-color: #098A1E !important;
+    border-color: #098A1E !important;
+}
+
+.assistive-mode .cssbutton.green:active:not(.transparent):not(.nontransparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder), 
+.assistive-mode .hasFDX .top-item-link a:active,
+.assistive-mode .qtyinput .quantity_minus:active, 
+.assistive-mode .qtyinput .quantity_plus:active
+{
+	background-color: #096D19 !important;
+}
+
+.assistive-mode .cssbutton.green:focus:not(.transparent):not(.nontransparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder), 
+.assistive-mode .hasFDX .top-item-link a:focus,
+.assistive-mode .qtyinput .quantity_minus:focus, 
+.assistive-mode .qtyinput .quantity_plus:focus
+{
+    background-color: #098A1E !important;
+    border-color: rgba(0,0,0,0.4) !important;
+    box-shadow: 0 0 1px #bbbbbb, 0 0 8px #bbbbbb !important;
+}
+
+.assistive-mode .hasFDX .gnav-footer
+{
+	background-color: #096D19 !important;
+    border: 1px solid #096D19 !important;
+}
+
+.assistive-mode .touched[data-component="globalnav-item"],
+.assistive-mode [data-component="globalnav-item"]:hover{
+	
+	background-color: #098A1E !important;
+}
+
+.assistive-mode .hasFDX .gnav-footer a.link:hover
+{
+    background-color: #098A1E !important;
+    border-color: #098A1E !important;
+}
+
+.assistive-mode .hasFDX .gnav-footer a.link:active
+{
+	background-color: #096D19 !important;
+}
+
+.assistive-mode .hasFDX .gnav-footer a.link:focus
+{
+	outline:none !important;
+    background-color: #098A1E !important;
+    border-color: rgba(0,0,0,0.4) !important;
+/*     box-shadow: 0 0 1px #bbbbbb, 0 0 8px #bbbbbb !important; */
+}
+
+.assistive-mode .modify-order-bar a.cssbutton.orange.cancel-changes-link {
+    border: 1px solid #fff !important;
+}
+.assistive-mode button#topInputFindButton_fdx{
+	background-color: #096D19 !important;
+    border: 1px solid #096D19 !important;
+}
+
+.assistive-mode button#topInputFindButton_fdx:hover{
+    background-color: #098A1E !important;
+    border-color: #098A1E !important;
+}
+
+.assistive-mode button#topInputFindButton_fdx:active{
+	background-color: #096D19 !important;
+}
+
+.assistive-mode button#topInputFindButton_fdx:focus{
+    background-color: #098A1E !important;
+    border-color: rgba(0,0,0,0.4) !important;
+    box-shadow: 0 0 1px #bbbbbb, 0 0 8px #bbbbbb !important;
+}

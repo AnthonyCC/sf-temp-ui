@@ -1,32 +1,40 @@
 <%--
-	this file will be included in the <head> tag
+    this file will be included in the <head> tag
 --%><%@ taglib uri='freshdirect' prefix='fd'
 %><%@ taglib uri='oscache' prefix='oscache'
 %><%@ taglib uri="http://jawr.net/tags" prefix="jwr"
 %><%@ page import="com.freshdirect.fdstore.FDStoreProperties"
 %><%@ page import='com.freshdirect.storeapi.content.EnumLayoutType'
 %><%
-	int layoutTypeCSS = (request.getAttribute("layoutType") == null) ? -1 : Integer.parseInt(request.getAttribute("layoutType").toString());
+    int layoutTypeCSS = (request.getAttribute("layoutType") == null) ? -1 : Integer.parseInt(request.getAttribute("layoutType").toString());
+
+    String style_sheet_detect_uri = request.getRequestURI();
+    boolean isReorder = (style_sheet_detect_uri.indexOf("/quickshop/") != -1) ? true : false;
 %><% if (FDStoreProperties.isFlushOscache()) { %><oscache:flush /><% } %>
-  <%-- global css files, header, footer, etc. --%>
-  <jwr:style src="/global.css" media="all" />
+ <%-- global css files, header, footer, etc. --%>
+ <jwr:style src="/global.css" media="all" />
 
-  <%-- old css files --%>
-  <jwr:style src="/oldglobal.css" media="all" />
+ <%-- old css files --%>
+ <jwr:style src="/oldglobal.css" media="all" />
 
-	<%
-	if (request.getHeader("User-Agent") != null && request.getHeader("User-Agent").indexOf("Mac") > -1) {
-		%><jwr:style src="/opt_MAC_01.css" media="all" /><%
-	}
-	%>
-	<jwr:style src="/opt_04.css" media="all" />
-	
-	<% if (layoutTypeCSS == EnumLayoutType.PRESIDENTS_PICKS.getId() || layoutTypeCSS == EnumLayoutType.PRODUCTS_ASSORTMENTS.getId()) { %>
-    <%-- TODO: create a jawr bundle, don't use if --%>
-    	<jwr:style src="/assets/css/common/grid_supplement.css" media="all" />
-    	<jwr:style src="/assets/css/common/product_grid.css" media="all" />
-    	<jwr:style src="/assets/css/search.css" media="all" />
- 	<% } %>
-	<jwr:style src="/accessibility.css" media="all" />
-	<%-- Keep the media include last, so it can always override any css auto-loaded --%>
-	<fd:IncludeMedia name="/media/editorial/site_pages/stylesheet.html" />
+    <%
+    if (request.getHeader("User-Agent") != null && request.getHeader("User-Agent").indexOf("Mac") > -1) {
+        %><jwr:style src="/opt_MAC_01.css" media="all" /><%
+    }
+    %>
+    <% if (!isReorder) { %>
+        <jwr:style src="/opt_04.css" media="all" />
+    
+        <% if (layoutTypeCSS == EnumLayoutType.PRESIDENTS_PICKS.getId() || layoutTypeCSS == EnumLayoutType.PRODUCTS_ASSORTMENTS.getId()) { %>
+        <%-- TODO: create a jawr bundle, don't use if --%>
+                <jwr:style src="/assets/css/common/grid_supplement.css" media="all" />
+                <jwr:style src="/assets/css/common/product_grid.css" media="all" />
+                <jwr:style src="/assets/css/search.css" media="all" />
+         <% } %>
+    <% } %>
+    <% if (isReorder) { %>
+       <jwr:style src="/quickshop.css" media="all" />
+    <% } %>
+    <jwr:style src="/accessibility.css" media="all" />
+    <%-- Keep the media include last, so it can always override any css auto-loaded --%>
+    <fd:IncludeMedia name="/media/editorial/site_pages/stylesheet.html" />
