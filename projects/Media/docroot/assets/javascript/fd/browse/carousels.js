@@ -91,9 +91,13 @@ var FreshDirect = FreshDirect || {};
 
 (function (fd) {
   if (window.FreshDirect.browse.data.searchParams.pageType == 'SEARCH') {
-    fd.common.dispatcher.signal('server',{
-      url:'/api/carousel?type=search&productId=' + window.FreshDirect.browse.data.sections.sections[0].products[0].productId,
-      method:'GET'
-    });
+	  try {
+		fd.common.dispatcher.signal('server',{
+		  url:'/api/carousel?type=search&productId=' + window.FreshDirect.browse.data.sections.sections[0].products[0].productId,
+		  method:'GET'
+		});  
+	  } catch (e) {
+		  /* no products, do nothing */
+	  }
   }
 }(FreshDirect));
