@@ -33,7 +33,7 @@ public class AdQueryStringTag extends SimpleTagSupport {
 
             pageContext.getOut().append(queryString);
         } catch (Exception exc) {
-            LOGGER.error("Failed to get AOS query string", exc);
+            LOGGER.error("Failed to get ad query string", exc);
             throw new JspException(exc);
         }
     }

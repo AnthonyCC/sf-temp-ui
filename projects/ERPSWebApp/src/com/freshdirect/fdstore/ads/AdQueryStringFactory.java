@@ -51,7 +51,7 @@ public class AdQueryStringFactory {
         return CCL_EXPERIENCED;
     }
 
-    public static String composeAdQueryString(final FDUserI user, final HttpServletRequest request, final boolean isMobile) throws FDResourceException, UnsupportedEncodingException {
+    private static QueryStringBuilder buildQueryString(final FDUserI user, final HttpServletRequest request, final boolean isMobile) throws FDResourceException, UnsupportedEncodingException {
         QueryStringBuilder queryString = new QueryStringBuilder();
         if (user != null) {
 
@@ -250,23 +250,23 @@ public class AdQueryStringFactory {
                     .addParam("COSSTO", ((user.getActiveSO3s().size()>0)?'T':'F'));
 
             if (cartDeptIds.size() > 0) {
-                StringBuffer cartString = new StringBuffer();
+                StringBuilder cartString = new StringBuilder();
                 for (Iterator i = cartDeptIds.iterator(); i.hasNext();) {
                     cartString.append(i.next());
                     if (i.hasNext())
                         cartString.append(':');
                 }
-                queryString.addParam("cart", cartString);
+                queryString.addParam("cart", cartString.toString());
             }
 
             if (ccListDeptIds.size() > 0) {
-                StringBuffer listString = new StringBuffer();
+                StringBuilder listString = new StringBuilder();
                 for (Iterator i = ccListDeptIds.iterator(); i.hasNext();) {
                     listString.append(i.next());
                     if (i.hasNext())
                         listString.append(':');
                 }
-                queryString.addParam("list", listString);
+                queryString.addParam("list", listString.toString());
             }
 
             queryString.addParam("lu", cclExperienceLevel(user))
@@ -475,6 +475,19 @@ public class AdQueryStringFactory {
             queryString.addParam("raf_promo_code", request.getParameter("raf_promo_code"));
         }
 
-        return queryString.toString();
+        return queryString;
     }
+
+    public static String composeAdQueryString(final FDUserI user, final HttpServletRequest request, final boolean isMobile) throws FDResourceException, UnsupportedEncodingException {
+        QueryStringBuilder builder = buildQueryString(user, request, isMobile);
+
+        return builder.toString();
+    }
+
+    public static Map<String, String> composeAdQueryParams(final FDUserI user, final HttpServletRequest request, final boolean isMobile) throws FDResourceException, UnsupportedEncodingException {
+        QueryStringBuilder builder = buildQueryString(user, request, isMobile);
+
+        return builder.toJSONObject();
+    }
+
 }

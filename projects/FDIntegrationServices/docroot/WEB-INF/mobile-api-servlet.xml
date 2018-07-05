@@ -96,13 +96,13 @@
 
 	<bean id="newProductController" class="com.freshdirect.mobileapi.controller.NewProductController"
 		parent="baseController" />
-						
+
 	<bean id="socialLoginController" class="com.freshdirect.mobileapi.controller.ExternalAccountController"
 		parent="baseController" />
-		
-    	<bean id="newBrowseController" class="com.freshdirect.mobileapi.controller.NewBrowseController"
+
+   	<bean id="newBrowseController" class="com.freshdirect.mobileapi.controller.NewBrowseController"
 		parent="baseController" />
-		
+
 	<!-- <bean id="ewalletStatusController" class="com.freshdirect.mobileapi.controller.EwalletStatusController"
 		parent="baseController" />  -->
 	
@@ -114,7 +114,10 @@
 
 	<bean id="ewalletStandardController" class="com.freshdirect.mobileapi.controller.EwalletStandardController"
 		parent="baseController" />
-				
+
+    <bean id="adController" class="com.freshdirect.mobileapi.controller.AdController"
+        parent="baseController" />
+
 	<bean id="urlMapping"
 		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="mappings">
@@ -155,6 +158,7 @@
 				<prop key="ewalletprecheckout.do">ewalletExpressController</prop>
 				<prop key="ewalletexpresscheckout.do">ewalletExpressController</prop> -->
 				<prop key="**/ewalletstdcheckout.do">ewalletStandardController</prop>
+                <prop key="**/ad.do">adController</prop>
 			</props>
 		</property>
 	</bean>
