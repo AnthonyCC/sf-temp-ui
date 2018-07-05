@@ -96,6 +96,11 @@ public interface OrderResourceApiClientI {
 			String originalReservationId, boolean sendEmail,
 			CustomerRatingI cra, CrmAgentRole crmAgentRole,
 			EnumDlvPassStatus status);
+
+
+	void cancelOrder(FDActionInfo info, String saleId,
+			boolean sendEmail, int currentDPExtendDays,
+			boolean restoreReservation);
 	
 			
 }

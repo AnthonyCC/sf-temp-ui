@@ -505,4 +505,12 @@ private static OrderResourceApiClient INSTANCE;
 	
 		
 	}
+
+	@Override
+	public void cancelOrder(FDActionInfo info, String saleId,
+			boolean sendEmail, int currentDPExtendDays,
+			boolean restoreReservation) {
+		// TODO Auto-generated method stub
+		
+	}
 }

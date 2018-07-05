@@ -1821,7 +1821,13 @@ public class FDCustomerManager {
 		try {
 			if (orderBelongsToUser(info.getIdentity(), saleId)) {
 				FDCustomerManagerSB sb = managerHome.create();
-				FDReservation reservation = sb.cancelOrder(info, saleId, sendEmail, currentDPExtendDays, restoreReservation);
+				FDReservation reservation = null;
+				if(FDStoreProperties.isSF2_0_AndServiceEnabled("cancelOrder_Api")){
+					OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
+					service.cancelOrder(info, saleId, sendEmail, currentDPExtendDays, restoreReservation);
+				}else{
+					reservation = sb.cancelOrder(info, saleId, sendEmail, currentDPExtendDays, restoreReservation);
+				}
 
 				//invalidate quickshop past orders cache
                 CmsServiceLocator.ehCacheUtil().removeFromCache(CmsCaches.QS_PAST_ORDERS_CACHE.cacheName, info.getIdentity().getErpCustomerPK());
