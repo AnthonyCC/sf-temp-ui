@@ -14,7 +14,8 @@ if (user.isNotServiceable()) {
 }
 boolean isBestCellars = request.getServerName().toLowerCase().indexOf("bestcellars") > -1;
 boolean emailSent = request.getParameter("email") != null && "sent".equalsIgnoreCase(request.getParameter("email"));
-%>	
+%>
+<fd:SiteAccessController action='doPrereg' successPage='<%= successPage %>' result='result' serviceType='<%=serviceType%>'>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en-US" xml:lang="en-US">
@@ -32,7 +33,7 @@ boolean emailSent = request.getParameter("email") != null && "sent".equalsIgnore
 </head>
 <body bgcolor="white" text="#333333" class="text11" marginwidth="0" marginheight="20" leftmargin="0" topmargin="20">
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>
-<fd:SiteAccessController action='doPrereg' successPage='<%= successPage %>' result='result' serviceType='<%=serviceType%>'>
+
 
 <%!
     java.text.SimpleDateFormat dFormat = new java.text.SimpleDateFormat("MMMMMMMM d");
@@ -112,7 +113,7 @@ boolean emailSent = request.getParameter("email") != null && "sent".equalsIgnore
 	<% } %>
 	<br>
 	<br>
-	<a href="javascript:popup('/help/delivery_zones.jsp?zipCheck=yes','large')">View our current delivery zones</a> or <a href='<%= response.encodeURL("/about/index.jsp?siteAccessPage=aboutus&successPage=/index.jsp") %>'>enter a different zip code.</a>
+	<a href="javascript:fd.components.zipCheckPopup.openZipCheckPopup()">View our current delivery zones</a> or <a href='<%= response.encodeURL("/about/index.jsp?siteAccessPage=aboutus&successPage=/index.jsp") %>'>enter a different zip code.</a>
 	<br><br><br>
 	<% if (notServiceable) { %>
 		<img src="/media_stat/images/template/site_access/zipfail_coming_to_ny.gif" width="541" height="17">	
@@ -132,8 +133,7 @@ boolean emailSent = request.getParameter("email") != null && "sent".equalsIgnore
 <br><br>
 </form>
 </div>
-</fd:SiteAccessController>
+
 </body>
 </html>
-
-
+</fd:SiteAccessController>

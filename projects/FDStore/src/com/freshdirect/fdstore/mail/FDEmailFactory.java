@@ -21,6 +21,7 @@ import java.util.Set;
 import org.apache.log4j.Category;
 import org.dom4j.Document;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.customer.EnumDeliveryType;
@@ -792,7 +793,7 @@ public class FDEmailFactory {
 
 		private String orderNumber;
 		
-		public FDOrderDeliveryIVRContactEmail(FDCustomerInfo customer, String orderNumber) {
+		public FDOrderDeliveryIVRContactEmail(@JsonProperty("customer") FDCustomerInfo customer,@JsonProperty("orderNumber") String orderNumber) {
 			super(customer);
 			this.orderNumber = orderNumber;
 		}

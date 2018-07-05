@@ -49,13 +49,13 @@
 		successPage = request.getParameter("successPage");
 	}
 %>
-<fd:ModifyOrderController orderId="<%= orderId %>" result="result" successPage='<%= successPage %>'>
 <tmpl:insert template='<%= pageTemplate %>'>
   <tmpl:put name="seoMetaTag" direct='true'>
     <fd:SEOMetaTag title="FreshDirect - Your Account - Modify Order"/>
   </tmpl:put>
 <%--   <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Modify Order</tmpl:put> --%>
     <tmpl:put name='content' direct='true'>
+	<fd:ModifyOrderController orderId="<%= orderId %>" result="result" successPage='<%= successPage %>'>
 		<table style="width: <%= (mobWeb) ? "100%" : W_YA_MODIFY_ORDER+"px" %>;" border="0" cellpadding="0" cellspacing="0">
 		<%
 			if (allowModifyOrder.booleanValue() && cartOrOrder != null) {
@@ -122,6 +122,6 @@
 			<tr><td colspan="3"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="20"><br><b>Having Problems?</b><br><%@ include file="/includes/i_footer_account.jspf" %></td></tr>
 		
 		</table>
+	</fd:ModifyOrderController>
 	</tmpl:put>
 </tmpl:insert>
-</fd:ModifyOrderController>

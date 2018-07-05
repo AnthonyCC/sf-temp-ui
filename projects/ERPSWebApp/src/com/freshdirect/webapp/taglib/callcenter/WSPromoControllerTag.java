@@ -60,7 +60,7 @@ import com.freshdirect.webapp.util.CCFormatter;
 
 public class WSPromoControllerTag extends AbstractControllerTag {
 	
-	private static Category LOGGER = LoggerFactory.getInstance(AdminToolsControllerTag.class);
+	private static Category LOGGER = LoggerFactory.getInstance(WSPromoControllerTag.class);
 	private static  final DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 	private static  final DateFormat timeFormat = new SimpleDateFormat("hh:mm a");
 	private final static String JUST_BEFORE_MIDNIGHT = "11:59:59 PM";

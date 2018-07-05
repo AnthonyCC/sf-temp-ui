@@ -202,7 +202,7 @@
 	});
 
 	$document.on('click','.delivery-popuplink',function(e){
-		popup('/help/delivery_zones.jsp','large');
+		fd.components.zipCheckPopup.openZipCheckPopup();
 		e.preventDefault();
 	});
 	

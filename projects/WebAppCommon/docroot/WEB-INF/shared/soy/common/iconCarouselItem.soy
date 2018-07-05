@@ -6,16 +6,15 @@
  * @param? itemIndex
  */
 {template .iconCarouselItem}
-<li class="portrait-item">
+<li class="portrait-item" {if $itemIndex}data-itemindex="{$itemIndex}"{/if}>
   <div class="icon-image">
     <a href="{if $item.iconLink}{$item.iconLink}{/if}" {if $moduleData}data-cm-click="
     {if $item.iconId}{$item.iconId}{/if}-_-{if $item.iconLinkText}{$item.iconLinkText}{/if}-_-
     {if $moduleData.moduleId}{$moduleData.moduleId}{else}no module ID{/if}"{/if} {if $moduleData.showViewAllOverlayOnImages}data-view-all-popup data-icon-id={$item.iconId} data-module-virtual-category="{$moduleData.moduleVirtualCategory}"{/if}>
-	{if $itemIndex > 4}
-		<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{$item.iconImage}" alt="{if $item.iconLinkText}{else}icon{/if}">
-	{else}
-		<img src="{$item.iconImage}" alt="{if $item.iconLinkText}{else}icon{/if}">
-	{/if}
+    
+
+		<img {if $moduleData and $moduleData.lazyloadImages}class="lazyload" data-{/if}src="{$item.iconImage}" alt="{if $item.iconLinkText}{else}icon{/if}" />
+
      {if not $moduleData or not $moduleData.hideProductName}
   {if $item.iconLinkText}{$item.iconLinkText}{/if}
   {/if} </a>

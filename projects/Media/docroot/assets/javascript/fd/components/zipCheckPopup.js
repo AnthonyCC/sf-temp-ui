@@ -51,6 +51,12 @@ var FreshDirect = FreshDirect || {};
         $('#'+this.overlayId).attr('data-close-cb', 'FreshDirect.components.zipCheckPopup.closeCB');
       }
     },
+    openZipCheckPopup:{
+      value: function (e) {
+    	FreshDirect.zipCheck = true;
+      	this.openPopup();
+      }
+    },
     zipchekRetry:{
       value: function () {
         this.refresh(null, common.zipcheck);

@@ -50,13 +50,13 @@
 		</script>
 		<table role="presentation">
 			<tr>
-				<td><input <%=EnumServiceType.HOME.equals(serviceType)? "checked" : ""%> id="residential_signup" type="radio" class="text11" name="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>" <%=EnumServiceType.HOME.equals(serviceType)? "required=\"true\"" : ""%> value="<%=EnumServiceType.HOME.getName()%>" onchange="showSurveys(this);" onclick="homeCorpToggle(this);"></td>
+				<td><input <%=EnumServiceType.HOME.equals(serviceType)? "checked" : ""%> id="residential_signup" aria-describedby="service_type_error" type="radio" class="text11" name="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>" <%=EnumServiceType.HOME.equals(serviceType)? "required=\"true\"" : ""%> value="<%=EnumServiceType.HOME.getName()%>" onchange="showSurveys(this);" onclick="homeCorpToggle(this);"></td>
 				<td><b><label for="residential_signup"><span class="offscreen">address type</span>Residential</label></b></td>
-				<td><input <%=EnumServiceType.CORPORATE.equals(serviceType) ? "checked" : ""%> id="commercial_signup" type="radio" class="text11" name="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>" <%=EnumServiceType.CORPORATE.equals(serviceType) ? "required=\"true\"" : ""%> value="<%=EnumServiceType.CORPORATE.getName()%>" onchange="showSurveys(this);" onclick="homeCorpToggle(this);"></td>
+				<td><input <%=EnumServiceType.CORPORATE.equals(serviceType) ? "checked" : ""%> id="commercial_signup" aria-describedby="service_type_error" type="radio" class="text11" name="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>" <%=EnumServiceType.CORPORATE.equals(serviceType) ? "required=\"true\"" : ""%> value="<%=EnumServiceType.CORPORATE.getName()%>" onchange="showSurveys(this);" onclick="homeCorpToggle(this);"></td>
 				<td><a href="javascript:popup('/cos_info.jsp','small')"><b><label for="commercial_signup"><span class="offscreen">address type</span>Commercial</label></b></a></td>
 			</tr>
 		</table>
-		<fd:ErrorHandler result="<%=result%>" name="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>" id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+		<fd:ErrorHandler result="<%=result%>" name="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>" id='errorMsg'><span id="service_type_error" class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 	</td>
 </tr>
 <tr valign="middle">
@@ -72,15 +72,15 @@
 		<label for="streetaddress_signup">*&nbsp;Street Address</label>
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ADDRESS_1.getCode()%>'></span></fd:ErrorHandler>
 	</td>
-	<td class="text12" colspan="2">&nbsp;&nbsp;<input id="streetaddress_signup" type="text" maxlength="50" class="text11" SIZE="21" name="<%= EnumUserInfoName.DLV_ADDRESS_1.getCode() %>" required="true" value="<%=fldAddress1%>">
-		<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_ADDRESS_1.getCode() %>' id ='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+	<td class="text12" colspan="2">&nbsp;&nbsp;<input id="streetaddress_signup" aria-describedby="streetaddress_signup_error" type="text" maxlength="50" class="text11" SIZE="21" name="<%= EnumUserInfoName.DLV_ADDRESS_1.getCode() %>" required="true" value="<%=fldAddress1%>">
+		<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_ADDRESS_1.getCode() %>' id ='errorMsg'><span id="streetaddress_signup_error" class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
  
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>'><span class="text11rbold"></fd:ErrorHandler>
 		&nbsp;&nbsp;<label for="aptorsuite_signup"><span id="aptText"><%= EnumServiceType.HOME.equals(serviceType) ? "Apt. #" : "Floor/Suite&nbsp;#" %></span></label>
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>'></span></fd:ErrorHandler>
-		&nbsp;&nbsp;<input id="aptorsuite_signup" type="text" maxlength="10" class="text9" SIZE="4" name="<%= EnumUserInfoName.DLV_APARTMENT.getCode() %>" value="<%=fldApartment%>"> 
+		&nbsp;&nbsp;<input id="aptorsuite_signup" aria-describedby="aptorsuite_signup_error" type="text" maxlength="10" class="text9" SIZE="4" name="<%= EnumUserInfoName.DLV_APARTMENT.getCode() %>" value="<%=fldApartment%>"> 
 	
-		<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_APARTMENT.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+		<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_APARTMENT.getCode()%>' id='errorMsg'><span id="aptorsuite_signup_error" class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 	</td>
 </tr>
 
@@ -95,7 +95,7 @@
 		<label for="city_signup">*&nbsp;City</label>
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_CITY.getCode()%>'></span></fd:ErrorHandler>
 	</td>
-	<td width="565" valign="middle" colspan="2">&nbsp;&nbsp;<input id="city_signup" type="text" class="text11" size="21" name="<%= EnumUserInfoName.DLV_CITY.getCode() %>" required="true" value="<%=fldCity%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_CITY.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td></tr>
+	<td width="565" valign="middle" colspan="2">&nbsp;&nbsp;<input id="city_signup" aria-describedby="city_signup_error" type="text" class="text11" size="21" name="<%= EnumUserInfoName.DLV_CITY.getCode() %>" required="true" value="<%=fldCity%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_CITY.getCode()%>' id='errorMsg'><span id="city_signup_error"  class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td></tr>
 <tr valign="middle">
 	<td width="120" align="right" class="text12">
 		<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_STATE.getCode() %>'><span class="text11rbold"></fd:ErrorHandler>
@@ -103,12 +103,12 @@
 		<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_STATE.getCode() %>'></span></fd:ErrorHandler>
 	</td>
 	<td colspan="2" class="text12">
-		&nbsp;&nbsp;<input id="state_signup" type="text" class="text9" name="<%= EnumUserInfoName.DLV_STATE.getCode() %>" required="true" size="3" maxlength="2" value="<%=fldState%>">
-		<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_STATE.getCode() %>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+		&nbsp;&nbsp;<input id="state_signup" aria-describedby="state_signup_error" type="text" class="text9" name="<%= EnumUserInfoName.DLV_STATE.getCode() %>" required="true" size="3" maxlength="2" value="<%=fldState%>">
+		<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_STATE.getCode() %>' id='errorMsg'><span id="state_signup_error" class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 		
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>'><span class="text11rbold"></fd:ErrorHandler>
 		<label for="zipcode_signup">&nbsp;&nbsp;*&nbsp;Zip Code</label>
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>'></span></fd:ErrorHandler>
-		&nbsp;&nbsp;<input id="zipcode_signup" type="text" class="text9" SIZE="6" maxlength="5" name="<%= EnumUserInfoName.DLV_ZIPCODE.getCode() %>" value="<%=fldZipCode%>">
-		<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_ZIPCODE.getCode() %>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+		&nbsp;&nbsp;<input id="zipcode_signup" aria-describedby="zipcode_signup_error" type="text" class="text9" SIZE="6" maxlength="5" name="<%= EnumUserInfoName.DLV_ZIPCODE.getCode() %>" value="<%=fldZipCode%>">
+		<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_ZIPCODE.getCode() %>' id='errorMsg'><span id="zipcode_signup_error" class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 </tr>

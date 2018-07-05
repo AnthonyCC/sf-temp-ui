@@ -1,6 +1,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
+<fd:CheckLoginStatus id="user" />
 <% //expanded page dimensions
 final int W_AOL_NOTE_TOTAL = 970;
 %>

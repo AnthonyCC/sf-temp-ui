@@ -21,8 +21,8 @@ public class FDReminderEmailSender {
 
 	public static void main(String[] args) {
 		try {
-			List custIds = FDCustomerManager.getReminderListForToday();
-			for (Iterator i = custIds.iterator(); i.hasNext();) {
+			List<String> custIds = FDCustomerManager.getReminderListForToday();
+			for (Iterator<String> i = custIds.iterator(); i.hasNext();) {
 				String id = (String) i.next();
 				FDCustomerManager.sendReminderEmail(id);
 			}

@@ -38,7 +38,7 @@ public class DeliveryPassOneClickServlet extends BaseJsonServlet {
 		if(FDStoreProperties.isDlvPassFreeTrialOptinFeatureEnabled()){
 			if ( null !=user && null != user.getIdentity()){
 				FDIdentity identity = user.getIdentity();
-				if(null == user.getDlvPassInfo() || EnumDlvPassStatus.NONE.equals(user.getDlvPassInfo().getStatus())) {
+				if(null == user.getDlvPassInfo() || user.isDlvPassNone()) { 
 					if (!user.getDpFreeTrialOptin()){ //Eligible
 						try {
 							FDActionInfo info=AccountActivityUtil.getActionInfo(request.getSession(), "DeliveryPass Free-Trial Opt-in");

@@ -16,7 +16,6 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
 <%@ page buffer="16kb" %>
-
 <%
 	System.out.println("*********************"+request.getRequestURI());
 
@@ -78,6 +77,7 @@
 	
 %>
 <fd:CheckLoginStatus guestAllowed='true' />
+<fd:SiteAccessController action='checkByZipCode' successPage='<%= successPage %>' moreInfoPage='<%= moreInfoPage %>' failureHomePage='<%= failurePage %>' result='result'>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en-US" xml:lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
@@ -103,7 +103,7 @@
 		%>
 		<jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
 		
-		<fd:SiteAccessController action='checkByZipCode' successPage='<%= successPage %>' moreInfoPage='<%= moreInfoPage %>' failureHomePage='<%= failurePage %>' result='result'>
+		
 				<%--
 				Put any java-related variables needed by the page into the _page_options object. 
 			--%>
@@ -196,7 +196,7 @@
 			</script>
 		
 <%-- 			<fd:IncludeMedia name="/media/editorial/site_access/referral_site_access.html" /> --%>
-			<fd:IncludeMedia name="/media/editorial/site_access/referral_extole_site_access.html" />			
-			</fd:SiteAccessController>
+			<fd:IncludeMedia name="/media/editorial/site_access/referral_extole_site_access.html" />
 	</body>
-</html>
+</html>			
+</fd:SiteAccessController>

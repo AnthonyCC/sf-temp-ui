@@ -190,7 +190,7 @@ if (typeof FreshDirect === "undefined" || !FreshDirect) {
 	  if(results == null)
 	    return "";
 	  else
-	    return decodeURIComponent(results[1].replace(/\+/g, " "));
+	    return decodeURIComponent(encodeURIComponent(results[1]).replace(/\+/g, " "));
 	};
 
 	USQLegalWarning.containsElement = function(parentElement, childElementName)

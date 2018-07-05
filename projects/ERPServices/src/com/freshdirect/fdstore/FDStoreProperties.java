@@ -775,6 +775,9 @@ public class FDStoreProperties {
     // Max Invalid Login counts for Recaptcha
     private final static String PROP_MAX_INVALID_LOGIN_ATTEMPT = "fdstore.max.invalid.login.count";
 
+    // Max Invalid Login counts for Recaptcha
+    private final static String PROP_MAX_INVALID_SIGN_UP_ATTEMPT = "fdstore.max.invalid.sign.up.count";
+    
     // Max Invalid Payment counts for Recaptcha
     private final static String PROP_MAX_INVALID_PAYMENT_ATTEMPT = "fdstore.max.invalid.payment.count";
 
@@ -1077,6 +1080,9 @@ public class FDStoreProperties {
 	private static final String WHITELISTED_IP_LIST="fdstore.allowed.ip.list";
 	private static final String CARD_VERIFICATION_RATE_LIMIT="fdstore.payment.verification.rate.limit";
 
+	private static final String PROP_LAZYLOADING_MODULES_ENABLED="fdstore.lazyloading.modules.enabled"; 
+	private static final String PROP_REFRESH_LOOKBACK_SECS_PRODUCTINFO = "fdstore.refresh.lookbackSecs.productInfo";
+
  	static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_INIT_CTX_FACTORY, "weblogic.jndi.WLInitialContextFactory");
@@ -1168,6 +1174,7 @@ public class FDStoreProperties {
         defaults.put(PROP_RESTRICTED_PAYMENT_METHOD_HOME, "freshdirect.payment.RestrictedPaymentMethod");
 
         defaults.put(PROP_REFRESHSECS_PRODUCTINFO, "600");
+        defaults.put(PROP_REFRESH_LOOKBACK_SECS_PRODUCTINFO, "1800");
         defaults.put(PROP_REFRESHSECS_GROUPSCALE, "600");
         defaults.put(PROP_REFRESHSECS_UPCPRODUCTINFO, "900");
         defaults.put(PROP_REFRESHSECS_ZONE, "600");
@@ -1783,8 +1790,8 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.akamaiimageconvertor", "GLOBAL:ENABLED,false;");
 
         // Default reCaptcha Public & Private krys
-        defaults.put(PROP_RECAPTCHA_PUBLIC_KEY, "6LdQn0YUAAAAALfZUrX-x4IeOmdUkkUrwMwZdhsd");
-        defaults.put(PROP_RECAPTCHA_PRIVATE_KEY, "6LdQn0YUAAAAAB3iHC6AzFH_Sd5k9z0uAwfvPUkZ");
+        defaults.put(PROP_RECAPTCHA_PUBLIC_KEY, "6LdQn0YUAAAAALfZUrX-x4IeOmdUkkUrwMwZdhsd,6LcYYFAUAAAAAOWJFZgnZnVNNXr31rebRjsnoSA0,6LdeqGAUAAAAADpe35SKvHw9VMqGzI_E7Pg5UEQu");
+        defaults.put(PROP_RECAPTCHA_PRIVATE_KEY, "6LdQn0YUAAAAAB3iHC6AzFH_Sd5k9z0uAwfvPUkZ,6LcYYFAUAAAAAGngTr3yIMpZbKPgBSlZhzf0uCwO,6LdeqGAUAAAAAM0srqZegq4Rr9-s-nnzCvQFckTO");
         defaults.put(PROP_MAX_INVALID_LOGIN_ATTEMPT, "5");
         defaults.put(PROP_MAX_INVALID_PAYMENT_ATTEMPT, "5");
         defaults.put(PROP_TIP_RANGE_CONFIG, "0,25,0.5;");
@@ -2062,6 +2069,8 @@ public class FDStoreProperties {
         defaults.put(PROP_AMOUNT_SAVED_DP_ACCOUNTS_PAGE_ENABLED, "false");
         defaults.put(ACCOUNT_CREATION_LIMIT_PER_IP,"10");
         defaults.put(CARD_VERIFICATION_RATE_LIMIT,"10");
+        
+        defaults.put(PROP_LAZYLOADING_MODULES_ENABLED, "false");
         
         try {
      		String hostName=java.net.InetAddress.getLocalHost().getCanonicalHostName();
@@ -4408,13 +4417,13 @@ public class FDStoreProperties {
 
     // Recaptcha getter methods
     public static String getRecaptchaPublicKey(CaptchaType type) {
-        String key = StringUtils.defaultIfEmpty(get(PROP_RECAPTCHA_PUBLIC_KEY), "6LdQn0YUAAAAALfZUrX-x4IeOmdUkkUrwMwZdhsd,6LcYYFAUAAAAAOWJFZgnZnVNNXr31rebRjsnoSA0");
+        String key = StringUtils.defaultIfEmpty(get(PROP_RECAPTCHA_PUBLIC_KEY), "6LdQn0YUAAAAALfZUrX-x4IeOmdUkkUrwMwZdhsd,6LcYYFAUAAAAAOWJFZgnZnVNNXr31rebRjsnoSA0,6LdeqGAUAAAAADpe35SKvHw9VMqGzI_E7Pg5UEQu");
         return getValueFromProperty(key, type.getValue());
 
     }
 
     public static String getRecaptchaPrivateKey(CaptchaType type) {
-        String key = StringUtils.defaultIfEmpty(get(PROP_RECAPTCHA_PRIVATE_KEY), "6LdQn0YUAAAAAB3iHC6AzFH_Sd5k9z0uAwfvPUkZ,6LcYYFAUAAAAAOWJFZgnZnVNNXr31rebRjsnoSA0");
+        String key = StringUtils.defaultIfEmpty(get(PROP_RECAPTCHA_PRIVATE_KEY), "6LdQn0YUAAAAAB3iHC6AzFH_Sd5k9z0uAwfvPUkZ,6LcYYFAUAAAAAGngTr3yIMpZbKPgBSlZhzf0uCwO,6LdeqGAUAAAAAM0srqZegq4Rr9-s-nnzCvQFckTO");
         return getValueFromProperty(key, type.getValue());
     }
 
@@ -4425,7 +4434,13 @@ public class FDStoreProperties {
             return 5;
         }
     }
-
+    public static int getMaxInvalidSignUpAttempt() {
+        try {
+            return Integer.parseInt(get(PROP_MAX_INVALID_SIGN_UP_ATTEMPT));
+        } catch (Exception e) {
+            return 5;
+        }
+    }
     public static int getMaxInvalidPaymentAttempt() {
         try {
             return Integer.parseInt(get(PROP_MAX_INVALID_PAYMENT_ATTEMPT));
@@ -4908,7 +4923,7 @@ public class FDStoreProperties {
     }
 
     public static boolean isSF2_0_AndServiceEnabled(String beanName) {
-        return ((Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue() && FDEcommProperties.isServiceEnabled(beanName));
+		return ((Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue() && FDEcommProperties.isServiceEnabled(beanName));
     }
 
     public static boolean isMealBundleCartonLinkEnabled() {
@@ -5269,4 +5284,13 @@ public class FDStoreProperties {
 		 return Integer.parseInt(get(CARD_VERIFICATION_RATE_LIMIT));
 
    }
+    
+	public static boolean isLazyloadingModulesEnabled() {
+		return (Boolean.valueOf(get(PROP_LAZYLOADING_MODULES_ENABLED))).booleanValue();
+	}
+	
+	public static int getRefreshLookbackSecsProductInfo() {
+        return Integer.parseInt(get(PROP_REFRESH_LOOKBACK_SECS_PRODUCTINFO));
+    }
+	
 }

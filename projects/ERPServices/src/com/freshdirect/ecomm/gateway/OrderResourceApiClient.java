@@ -19,6 +19,7 @@ import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpCartonInfo;
 import com.freshdirect.customer.ErpCreateOrderModel;
 import com.freshdirect.customer.ErpDeliveryInfoModel;
+import com.freshdirect.customer.ErpModifyOrderModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpSaleNotFoundException;
@@ -31,7 +32,9 @@ import com.freshdirect.ecomm.converter.SapGatewayConverter;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.ecommerce.data.order.CreateOrderRequestData;
+import com.freshdirect.ecommerce.data.order.ModifyOrderRequestData;
 import com.freshdirect.ecommerce.data.order.OrderSearchCriteriaRequest;
+import com.freshdirect.ecommerce.data.temails.SendMailData;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -60,6 +63,11 @@ private static OrderResourceApiClient INSTANCE;
 	private static final String CREATE_SUB_ORDER_API = 	"orders/sub/create";
 	
 	private static final String CREATE_DON_ORDER_API = 	"orders/don/create";
+	private static final String CREATE_REG_ORDER_API = 	"orders/reg/create";
+	private static final String MODIFY_REG_ORDER_API = 	"orders/reg/modify";
+	
+	private static final String MODIFY_AUTORENEW_ORDER_API = 	"orders/sub/modify";
+	
 	public static OrderResourceApiClient getInstance() {
 		if (INSTANCE == null)
 			INSTANCE = new OrderResourceApiClient();
@@ -418,13 +426,82 @@ private static OrderResourceApiClient INSTANCE;
 			
 			Response<String> response = null;
 			String inputJson = buildRequest(request);
-			response = httpPostData(getFdCommerceEndPoint(CREATE_DON_ORDER_API), inputJson, Response.class, new Object[]{});
+			response = httpPostData(getFdCommerceEndPoint(CREATE_REG_ORDER_API), inputJson, Response.class, new Object[]{});
 			return parseResponse(response);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RemoteException(e.getMessage(), e);
 		}
 		
+	
+		
+	}
+
+	@Override
+	public void modifyOrder(FDActionInfo info, String saleId,
+			ErpModifyOrderModel order, Set<String> appliedPromos,
+			String originalReservationId, boolean sendEmail,
+			CustomerRatingI cra, CrmAgentRole crmAgentRole,
+			EnumDlvPassStatus status, boolean hasCouponDiscounts,
+			int fdcOrderCount) {
+		
+
+
+
+		Request<ModifyOrderRequestData> request = new Request<ModifyOrderRequestData>();
+		
+		try{
+			
+			ModifyOrderRequestData data = new ModifyOrderRequestData(FDActionInfoConverter.buildActionInfoData(info), saleId, SapGatewayConverter.buildOrderData(order), 
+					appliedPromos, originalReservationId, sendEmail, CustomerRatingConverter.buildCustomerRatingData(cra), ErpFraudPreventionConverter.buildCrmAgentRoleData(crmAgentRole), (status!=null)?status.getName():null);
+			data.setHasCouponDiscounts(hasCouponDiscounts);
+			data.setFdcOrderCount(fdcOrderCount);
+			request.setData(data);
+			
+			Response<String> response = null;
+			String inputJson = buildRequest(request);
+			response = httpPostData(getFdCommerceEndPoint(MODIFY_REG_ORDER_API), inputJson, Response.class, new Object[]{});
+			parseResponse(response);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	
+		
+	
+	}
+
+	@Override
+	public void modifyAutoRenewOrder(FDActionInfo info, String saleId,
+			ErpModifyOrderModel order, Set<String> appliedPromos,
+			String originalReservationId, boolean sendEmail,
+			CustomerRatingI cra, CrmAgentRole crmAgentRole,
+			EnumDlvPassStatus status) {
+		
+
+		
+
+
+
+		Request<ModifyOrderRequestData> request = new Request<ModifyOrderRequestData>();
+		
+		try{
+			
+			ModifyOrderRequestData data = new ModifyOrderRequestData(FDActionInfoConverter.buildActionInfoData(info), saleId, SapGatewayConverter.buildOrderData(order), 
+					appliedPromos, originalReservationId, sendEmail, CustomerRatingConverter.buildCustomerRatingData(cra), ErpFraudPreventionConverter.buildCrmAgentRoleData(crmAgentRole), (status!=null)?status.getName():null);
+			request.setData(data);
+			
+			Response<String> response = null;
+			String inputJson = buildRequest(request);
+			response = httpPostData(getFdCommerceEndPoint(MODIFY_AUTORENEW_ORDER_API), inputJson, Response.class, new Object[]{});
+			parseResponse(response);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	
+		
+	
 	
 		
 	}

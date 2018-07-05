@@ -629,6 +629,12 @@
 		<to last="true">/order.do?action=modifyorder&amp;orderId=$3&amp;ver=$1</to>
 	</rule>
 	
+	<!-- Set Overlay False -->
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/order/setoverlayfalse</from>
+		<to last="true">/order.do?action=setoverlayfalse&amp;ver=$1</to>
+	</rule>
+	
 	<!-- Modify Check -->
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/order/checkmodify</from>

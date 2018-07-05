@@ -22,6 +22,15 @@ public class GACustomerData {
     
     private boolean isModifyMode = false;
     private String hasActiveSO3s; //APPDEV-7007 value is [T|F]
+    private String storefrontVersion;
+
+	public String getStorefrontVersion() {
+		return storefrontVersion;
+	}
+
+	public void setStorefrontVersion(String storefrontVersion) {
+		this.storefrontVersion = storefrontVersion;
+	}
 
 	public GACustomerData(String zipCode, String userId, String userStatus, String userType, String loginType, String chefsTable, String deliveryPass, String deliveryType,
             String cohort) {

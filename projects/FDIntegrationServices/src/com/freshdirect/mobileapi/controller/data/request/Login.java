@@ -16,6 +16,8 @@ public class Login extends Message {
     
     private String source;
     
+    private String captchaToken;
+    
     public String getUsername() {
         return username;
     }
@@ -89,5 +91,13 @@ public class Login extends Message {
 
 	public void setRafpromocode(String rafpromocode) {
 		this.rafpromocode = rafpromocode;
+	}
+
+	public String getCaptchaToken() {
+		return captchaToken;
+	}
+
+	public void setCaptchaToken(String captchaToken) {
+		this.captchaToken = captchaToken;
 	}
 }

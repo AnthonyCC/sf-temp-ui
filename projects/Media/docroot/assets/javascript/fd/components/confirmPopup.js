@@ -84,7 +84,8 @@ var FreshDirect = FreshDirect || {};
             process = data.process || $t.attr('data-confirm-process'),
             processFn = fd.modules.common.utils.discover(process),
             bt = fd.modules.common.utils.discover(template) || common.confirmpopup,
-            hideBackground = $t.attr('data-hide-background') != null;
+            hideBackground = $t.attr('data-hide-background') != null,
+            removeClass = $t.attr('data-confirm-removeclass') || '';
             
         customClass = $t.attr('data-confirm-class');
         this.$currentTrigger = $t;
@@ -100,6 +101,9 @@ var FreshDirect = FreshDirect || {};
           this.refreshBody(data, bt, data.header);
           this.popup.show($t, null);
           this.popup.clicked = true;
+        }
+        if (removeClass) {
+          confirmpopup.popup.$el.removeClass(removeClass);
         }
         if (customClass) {
         	confirmpopup.popup.$el.addClass(customClass);

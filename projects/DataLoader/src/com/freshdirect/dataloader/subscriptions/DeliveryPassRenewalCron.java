@@ -85,6 +85,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.logistics.delivery.model.EnumZipCheckResponses;
 import com.freshdirect.mail.ErpMailSender;
+import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.storeapi.application.CmsManager;
 import com.freshdirect.storeapi.configuration.StoreAPIConfig;
 import com.freshdirect.storeapi.content.ContentFactory;
@@ -266,6 +267,11 @@ public class DeliveryPassRenewalCron {
 				else{
 					pymtMethod = getPaymentMethod(user.getFDCustomer().getDefaultPaymentMethodPK(), user.getPaymentMethods()) ;
 				}
+					/* for FoodKick customers if thereDefaultPayment is PayPal.,actionInfo we should NOT Allow to renew DP Order */
+				if(eStore.equals(EnumEStoreId.FDX) && null != pymtMethod && pymtMethod.getPaymentMethodType().PAYPAL.equals(EnumPaymentMethodType.PAYPAL)) {
+						pymtMethod = null;
+				}
+				
 			}else{
 			pymtMethod=getMatchedPaymentMethod(lastOrder.getPaymentMethod(),getPaymentMethods(user.getIdentity(),eStore));
 			}
@@ -634,6 +640,7 @@ public class DeliveryPassRenewalCron {
 			mailer.sendMail(ErpServicesProperties.getDPReportMailFrom(),
 					ErpServicesProperties.getDPReportMailTo(),ErpServicesProperties.getDPReportMailCC(),
 					subject, buff.toString(), true, "");
+			LOGGER.info("DeliveryPass pending report sent to : "+ErpServicesProperties.getDPReportMailTo());
 			
 		}catch (MessagingException e) {
 			LOGGER.warn("Error Sending Sale Cron report email: ", e);

@@ -1,7 +1,10 @@
 package com.freshdirect.mobileapi.controller.data.response;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.freshdirect.enums.CaptchaType;
 import com.freshdirect.mobileapi.controller.data.Message;
 
 public class LoggedIn extends Message {
@@ -53,6 +56,8 @@ public class LoggedIn extends Message {
     private boolean purchaseDlvPassEligible;
     private boolean fdxdpenabled;
     private List<String> dpskulist;
+    
+    private Map<String, Boolean> displayedCaptchaList;
 
     /*public boolean isDeliveryPassEligible() {
 		return purchaseDlvPassEligible;
@@ -316,5 +321,22 @@ public class LoggedIn extends Message {
 
 	public void setFdxDpEnabled(boolean fdxdpenabled) {
 		this.fdxdpenabled = fdxdpenabled;
+	}
+
+	public Map<String, Boolean> getDisplayedCaptchaList() {
+		return displayedCaptchaList;
+	}
+
+	public void setDisplayedCaptchaList(Map<String, Boolean> displayedCaptchaList) {
+		this.displayedCaptchaList = displayedCaptchaList;
+	}
+	
+	public void addDisplayedCaptcha(CaptchaType type, boolean display) {
+		if (this.displayedCaptchaList == null)
+			this.displayedCaptchaList = new HashMap<String, Boolean>();
+		
+		this.displayedCaptchaList.put(type.toString(), display);
+		
+		
 	}
 }

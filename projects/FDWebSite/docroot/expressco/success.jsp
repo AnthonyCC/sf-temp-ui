@@ -124,6 +124,15 @@
 	<tmpl:put name="globalnav">
 		<% if (isMod56) { %><%-- MOD-56 redesign --%>
 			<div class="container globalnav_top mod56">
+				<%-- OAS --%>
+				<jsp:include page="/shared/template/includes/server_info.jsp" flush="false"/>
+				<jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
+				<div id="oas_SystemMessage">
+		  			<script type="text/javascript">OAS_AD('SystemMessage');</script>
+		  		</div>
+				<div id="oas_DFPSystemMessage" ad-size-width='970' ad-size-height='80' class="container">
+					<script type="text/javascript">OAS_AD('DFPSystemMessage');</script>
+				</div>
 				<div class="nav">
 					<a class="logo" href="<%= FDURLUtil.getLandingPageUrl(userCOSuccess) %>"><img src="/media/layout/nav/globalnav/fdx/logo.png" alt="FreshDirect"></a>
 

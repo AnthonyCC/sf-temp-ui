@@ -357,7 +357,7 @@
 	<div class="portrait-item-productimage_wrapper {$extraClass ? $extraClass + '-image_wrapper' : ''}">
 
 		<div class="portrait-item-burst_wrapper">
-        {if $itemIndex and $itemIndex > 4}
+        {if ($itemIndex and $itemIndex > 4) or ($moduleData and $moduleData.lazyloadImages)}
                 <img class="portrait-item-productimage lazyload" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{$productImage}" alt="" {if not $discontinued}data-product-url="{$productPageUrl}"{/if}>
         {else}
 		<img src="{$productImage}" alt="" class="portrait-item-productimage" {if not $discontinued}data-product-url="{$productPageUrl}"{/if}>
@@ -501,38 +501,50 @@
 		</div>
 	{/if}
 	<form class="atc" id="atc_form_{$catId}_{$productId}" fdform="atc_form_{$catId}_{$productId}" fdform-submit="FreshDirect.components.AddToCart.formAddToCart">
-		{call common.potatoTransactionalGridItemControls}
-			{param customizePopup:$customizePopup /}
-			{param hasTerms:$hasTerms /}
-			{param soldBySalesUnit:$soldBySalesUnit /}
-			{param salesUnit:$salesUnit /}
-			{param quantity:$quantity /}
-			{param availMatPrices:$availMatPrices /}
-			{param suRatios:$suRatios /}
-			{param grpPrices:$grpPrices /}
-			{param cvPrices:$cvPrices /}
-			{param qInc:$quantity ? $quantity.qInc : 0/}
-			{param productId:$productId /}
-			{param catId:$catId /}
-			{param variantId:$variantId /}
-			{param pageType:$pageType /}
-			{param productId:$productId /}
-			{param skuCode:$skuCode /}
-			{param configuration:$configuration /}
-			{param atcItemId:$atcItemId /}
-			{param isAlcoholic:$isAlcoholic /}
-			{param availabilityMessage:$availabilityMessage /}
-			{param productPageUrl:$productPageUrl /}
-			{param cmEventSource:$cmEventSource /}
-			{param listId:$listId /}
-			{param freeSamplePromoProduct:$freeSamplePromoProduct /}
-			{param mobWeb:$mobWeb /}
-            {param moduleData:$moduleData/}
-		{/call}
-		{call common.atcInCart}
-			{param amount:$inCartAmount /}
-			{param atcItemId:$atcItemId /}
-		{/call}
+    	{if $available}
+    		{call common.potatoTransactionalGridItemControls}
+    			{param customizePopup:$customizePopup /}
+    			{param hasTerms:$hasTerms /}
+    			{param soldBySalesUnit:$soldBySalesUnit /}
+    			{param salesUnit:$salesUnit /}
+    			{param quantity:$quantity /}
+    			{param availMatPrices:$availMatPrices /}
+    			{param suRatios:$suRatios /}
+    			{param grpPrices:$grpPrices /}
+    			{param cvPrices:$cvPrices /}
+    			{param qInc:$quantity ? $quantity.qInc : 0/}
+    			{param productId:$productId /}
+    			{param catId:$catId /}
+    			{param variantId:$variantId /}
+    			{param pageType:$pageType /}
+    			{param productId:$productId /}
+    			{param skuCode:$skuCode /}
+    			{param configuration:$configuration /}
+    			{param atcItemId:$atcItemId /}
+    			{param isAlcoholic:$isAlcoholic /}
+    			{param availabilityMessage:$availabilityMessage /}
+    			{param productPageUrl:$productPageUrl /}
+    			{param cmEventSource:$cmEventSource /}
+    			{param listId:$listId /}
+    			{param freeSamplePromoProduct:$freeSamplePromoProduct /}
+    			{param mobWeb:$mobWeb /}
+                {param moduleData:$moduleData/}
+    		{/call}
+    		{call common.atcInCart}
+    			{param amount:$inCartAmount /}
+    			{param atcItemId:$atcItemId /}
+    		{/call}
+		{else}
+  <div class="portrait-item-controls" data-component="product-controls">
+    <div class="portrait-item-controls-content">
+                       {if $availabilityMessage and not $mobWeb}
+      <div class="portrait-item-availability-message">
+        {$availabilityMessage}
+      </div>
+                       {/if}
+    </div>
+  </div>
+		{/if}
 		{if $originalLineId}
 			<input type="hidden" data-component="productData" data-productdata-name="lineId" name="lineId" value="{$originalLineId}" />
 		{/if}
@@ -564,9 +576,7 @@
 	{/if}
 	{if $replacement}
 		<div class="portrait-item-replacement">
-			{if $useReplacement}
-				<button class="cssbutton green transparent">We Recommend</button>
-			{else}
+			{if not $useReplacement}
 				We Recommend: <button class="cssbutton green transparent" data-component="item-replacement" data-replacement="{$useReplacement}" data-replacement-id="{$itemId}">{$replacement.productName}</button>
 			{/if}
 		</div>

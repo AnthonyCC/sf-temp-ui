@@ -90,10 +90,11 @@ boolean showCaptchaInPayment = CaptchaUtil.isExcessiveAttempt(FDStoreProperties.
 
   <tmpl:put name="bottomnav">
     <div class="container checkout__footer">
-        <p class="checkout__footer-rights"><%@ include file="/shared/template/includes/copyright.jspf" %></p>
+        
 		<fd:IncludeMedia name="/media/layout/nav/globalnav/footer/after_copyright_footer.ftl">
 			<p class="checkout__footer-links"><a href='/help/privacy_policy.jsp' data-ifrpopup="/help/privacy_policy.jsp?type=popup" data-ifrpopup-width="600">Privacy Policy</a> | <a href="/help/terms_of_service.jsp" data-ifrpopup="/help/terms_of_service.jsp?type=popup" data-ifrpopup-width="600">Customer Agreement</a></p>
 		</fd:IncludeMedia>
+		<p class="checkout__footer-rights"><%@ include file="/shared/template/includes/copyright.jspf" %></p>
     </div>
   </tmpl:put>
 

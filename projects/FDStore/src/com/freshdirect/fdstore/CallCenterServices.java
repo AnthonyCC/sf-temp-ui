@@ -141,14 +141,9 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
-				return CallCenterManagerService.getInstance().locateCompanyCustomers(criteria);
-			}
-			else {
+
 			CallCenterManagerSB sb = callCenterHome.create();
 			return sb.locateCompanyCustomers(criteria);
-			}
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -163,13 +158,8 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
-				 return CallCenterManagerService.getInstance().orderSummarySearch(criteria);
-			}
-			else {
 			CallCenterManagerSB sb = callCenterHome.create();
 			return sb.orderSummarySearch(criteria);
-			}
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -326,9 +316,12 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			CallCenterManagerSB sb = callCenterHome.create();
-			sb.resubmitOrder(saleId,cra,saleType);
-
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)) {
+				CallCenterManagerService.getInstance().resubmitOrder(saleId, cra, saleType);
+			} else {
+				CallCenterManagerSB sb = callCenterHome.create();
+				sb.resubmitOrder(saleId, cra, saleType);
+			}
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -480,14 +473,8 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
-				 return CallCenterManagerService.getInstance().resubmitPayment(saleId, payment, charges);
-			}
-			else {
 			CallCenterManagerSB sb = callCenterHome.create();
 			return sb.resubmitPayment(saleId, payment, charges);
-			}
-
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -690,13 +677,8 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
-				 return CallCenterManagerService.getInstance().doGenericSearch(criteria);
-			}
-			else {
 			CallCenterManagerSB sb = callCenterHome.create();
 			return sb.doGenericSearch(criteria);
-			}
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -806,13 +788,8 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
-				CallCenterManagerService.getInstance().rejectMakegoodComplaint(makegood_sale_id);
-			}
-			else {
 				CallCenterManagerSB sb = callCenterHome.create();
 				sb.rejectMakegoodComplaint(makegood_sale_id);
-			}
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -1185,13 +1162,8 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
-				 CallCenterManagerService.getInstance().addNewIVRCallLog(callLogModel);
-			}
-			else {
 				CallCenterManagerSB sb = callCenterHome.create();
 				sb.addNewIVRCallLog(callLogModel);
-			}
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -1221,14 +1193,8 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)){
-				 CallCenterManagerService.getInstance().voidCaptureOrder(saleId);
-			}
-			else {
 				CallCenterManagerSB sb = callCenterHome.create();
-				sb.voidCaptureOrder(saleId);
-				
-			}
+				sb.voidCaptureOrder(saleId);			
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating session bean");

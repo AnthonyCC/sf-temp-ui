@@ -349,3 +349,28 @@
 #quickshop [data-component="carousel"] > h2 {
   display: none;
 }
+
+#confirmpopup.qs-deletelist {
+	width: 400px;
+}
+#confirmpopup.qs-deletelist .qs-popup-content button {
+	width: 100%;
+	margin: 0;
+}
+#confirmpopup.qs-deletelist .qs-popup-header {
+	padding: 30px 50px 0 50px;
+	font-size: 18px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.44;
+  letter-spacing: normal;
+  text-align: center;
+  color: #333333;
+}
+#confirmpopup.qs-deletelist .qs-popup-content {
+	padding: 20px 50px 30px 50px;
+}
+#confirmpopup.qs-deletelist .qs-popup-content button + button {
+	margin-top: 20px;
+}

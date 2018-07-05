@@ -1,11 +1,14 @@
 package com.freshdirect.mobileapi.controller;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,6 +17,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -22,6 +26,7 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.util.FilteringNavigator;
+import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -32,6 +37,7 @@ import com.freshdirect.mobileapi.controller.data.request.OrdersDetailRequest;
 import com.freshdirect.mobileapi.controller.data.request.SearchQuery;
 import com.freshdirect.mobileapi.controller.data.request.SimpleRequest;
 import com.freshdirect.mobileapi.controller.data.response.CartDetail;
+import com.freshdirect.mobileapi.controller.data.response.DynamicAvailabilityError;
 import com.freshdirect.mobileapi.controller.data.response.FilterOption;
 import com.freshdirect.mobileapi.controller.data.response.ModifiableOrder;
 import com.freshdirect.mobileapi.controller.data.response.ModifiableOrders;
@@ -45,6 +51,7 @@ import com.freshdirect.mobileapi.controller.data.response.Timeslot;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.model.Cart;
+import com.freshdirect.mobileapi.model.Checkout;
 import com.freshdirect.mobileapi.model.Department;
 import com.freshdirect.mobileapi.model.Order;
 import com.freshdirect.mobileapi.model.OrderHistory;
@@ -71,6 +78,7 @@ import com.freshdirect.webapp.ajax.reorder.data.QuickShopListRequestObject;
 import com.freshdirect.webapp.ajax.reorder.data.QuickShopPastOrdersCustomMenu;
 import com.freshdirect.webapp.ajax.reorder.service.QuickShopFilterService;
 import com.freshdirect.webapp.taglib.fdstore.OrderUtil;
+import com.freshdirect.webapp.util.MediaUtils;
 
 public class OrderController extends BaseController {
     private static final Category LOGGER = LoggerFactory.getInstance(OrderController.class);
@@ -80,6 +88,7 @@ public class OrderController extends BaseController {
     private static final String ACTION_GET_QUICK_SHOP_ORDER_LIST = "getquickshoporders";
     private static final String ACTION_CANCEL_ORDER = "cancelorder";
     private static final String ACTION_LOAD_ORDER_TO_CART = "modifyorder";
+    private static final String ACTION_SET_OVERLAY_FALSE = "setoverlayfalse";
     private static final String ACTION_CANCEL_ORDER_MODIFY = "cancelmodify";
     private static final String ACTION_GET_MODIFIABLE_ORDER_LIST = "getmodifiableorders";
     private static final String ACTION_QUICK_SHOP = "quickshop";
@@ -96,7 +105,7 @@ public class OrderController extends BaseController {
      */
     @Override
     protected ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model, String action,
-            SessionUser user) throws FDException, ServiceException, JsonException {
+            SessionUser user) throws FDException, ServiceException, JsonException, IOException, TemplateException {
         Message responseMessage = null;
 
         if (ACTION_GET_ORDER.equals(action)) {
@@ -136,6 +145,8 @@ public class OrderController extends BaseController {
         		dlvPassCart = requestMessage.isDlvPassCart();
         	}
             responseMessage = loadOrder(user, orderId, request, dlvPassCart);
+        } else if (ACTION_SET_OVERLAY_FALSE.equals(action)) {
+            responseMessage = setOverlayFalse(user, request);
         }  else if(ACTION_CHECK_MODIFY.equals(action)){
         	OrdersDetailRequest requestMessage = parseRequestObject(request, response, OrdersDetailRequest.class);
         	List<String> orderIds = requestMessage.getOrders();
@@ -296,7 +307,7 @@ public class OrderController extends BaseController {
     }
 
     private Message loadOrder(SessionUser user, String orderId, HttpServletRequest request, boolean dlvPassCart) throws FDException,
-            JsonException {
+            JsonException, IOException, TemplateException {
     	com.freshdirect.mobileapi.controller.data.response.Order order = user.getOrder(orderId).getOrderDetail(user, dlvPassCart);
         if (isExtraResponseRequested(request)) {
             ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), order.getCartDetail());
@@ -316,12 +327,70 @@ public class OrderController extends BaseController {
             ((ModifiedOrder) responseMessage).setPaymentMethod(order.getPaymentMethod());
             ((ModifiedOrder) responseMessage).setReservationTime(order.getReservationDate());
             ((ModifiedOrder) responseMessage).setReservationTimeRange(order.getReservationTimeRange());
+            
+            // changes to view order modify overlay
+            if(user.getFDSessionUser().getMasqueradeContext()==null){
+	            int viewCountLimit = FDStoreProperties.getInformOrderModifyViewCountLimit();
+				int viewCount = user.getFDSessionUser().getInformOrderModifyViewCount(user.getUserContext().getStoreContext().getEStoreId(), true); 
+				if(viewCount == 1){
+					user.getFDSessionUser().setShowingInformOrderModify(true);
+				}
+	            if(user.getFDSessionUser().isShowingInformOrderModify() && viewCount <= viewCountLimit){
+					((ModifiedOrder) responseMessage).setViewCount(viewCount);
+					((ModifiedOrder) responseMessage).setViewCountLimit(viewCountLimit);
+					((ModifiedOrder) responseMessage).setMedia( loadMedia(FDStoreProperties.getInformOrderModifyMediaPath()) );
+	            }else{
+	            	user.getFDSessionUser().setShowingInformOrderModify(false);
+	            }
+				((ModifiedOrder) responseMessage).setShow(user.getFDSessionUser().isShowingInformOrderModify());
+            }
+			
         } else {
             responseMessage = getErrorMessage(result, request);
         }
         responseMessage.addWarningMessages(result.getWarnings());
         return responseMessage;
     }
+    
+    private Message setOverlayFalse(SessionUser user, HttpServletRequest request) throws FDException, JsonException {
+    	Message responseMessage = new Message();
+    	user.getFDSessionUser().setShowingInformOrderModify(false);
+        responseMessage.setSuccessMessage("Modify Order Overlay had been disabled");            
+        return responseMessage;
+    }
+    
+    private ModelAndView setOrderMobileNumberEx(ModelAndView model, SessionUser user, HttpServletRequest request, String orderlMobileNumber) throws FDException, JsonException {
+    	Checkout checkout = new Checkout(user);
+        ResultBundle resultBundle = checkout.setCheckoutOrderMobileNumberEx(orderlMobileNumber);
+        ActionResult result = resultBundle.getActionResult();
+        propogateSetSessionValues(request.getSession(), resultBundle);
+        Message responseMessage = new DynamicAvailabilityError();
+        if (result.isSuccess()) {       	
+            responseMessage.setSuccessMessage("Mobile Number Added at on Order level Successfully.");            
+        }else {  
+        		responseMessage = getErrorMessage(result, request);
+        }
+        setResponseMessage(model, responseMessage, user);
+        return model;
+    }
+    
+    private String loadMedia(String path) throws IOException, TemplateException {
+		return loadMedia(path, null);
+	}
+	
+	private String loadMedia(String path, Map parameters) throws IOException, TemplateException {
+		StringWriter out = new StringWriter();
+		String result = "";
+		if ( path != null && !"".equals(path.trim()) ) {
+			try {
+				MediaUtils.render(path, out, parameters, null);
+				result = out.toString();
+			} finally {
+				out.close();
+			}
+		}
+		return result;
+	}
 
     private Message cancelOrder(SessionUser user, String orderId, HttpServletRequest request) throws FDException,
             JsonException {

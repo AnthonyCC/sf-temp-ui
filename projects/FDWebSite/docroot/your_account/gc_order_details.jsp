@@ -247,5 +247,3 @@ FDRecipientList recipients = cart.getGiftCardRecipients();
 </tmpl:put>
 </tmpl:insert>
 </fd:ModifyOrderController>
-
-

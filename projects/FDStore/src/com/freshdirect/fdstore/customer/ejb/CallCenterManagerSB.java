@@ -55,10 +55,7 @@ public interface CallCenterManagerSB extends EJBObject {
 	 */
 	@Deprecated
 	public Map<String,String> getComplaintCodes() throws FDResourceException, RemoteException;
-	/**
-	 *@deprecated This method is moved to Storefront2.0 project.
-	 * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
-	 */
+	//not used
 	@Deprecated
 	public void rejectMakegoodComplaint(String makegood_sale_id) throws FDResourceException, RemoteException; 
 	/**
@@ -91,10 +88,8 @@ public interface CallCenterManagerSB extends EJBObject {
 	 */
 	@Deprecated
 	public void returnOrder(String saleId, ErpReturnOrderModel returnOrder) throws FDResourceException, ErpTransactionException, RemoteException;
-	/**
-	 *@deprecated This method is moved to Storefront2.0 project.
-	 * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
-	 */
+	//not used
+	@Deprecated
 	public EnumPaymentResponse resubmitPayment(String saleId, ErpPaymentMethodI payment, Collection charges) throws FDResourceException, ErpTransactionException, RemoteException;
 	/**
 	 *@deprecated This method is moved to Storefront2.0 project.
@@ -140,14 +135,16 @@ public interface CallCenterManagerSB extends EJBObject {
 	@Deprecated	
     public List getHolidayMeals(FDIdentity identity) throws FDResourceException, RemoteException;
 	/**
-	 *@deprecated This method is moved to Storefront2.0 project.
-	 * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+	 *@deprecated This method is moved to backoffice project.
+	 * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
 	 */
+	@Deprecated	
     public List locateCompanyCustomers(GenericSearchCriteria criteria) throws FDResourceException, RemoteException;
 	/**
-	 *@deprecated This method is moved to Storefront2.0 project.
-	 * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+	 *@deprecated This method is moved to backoffice project.
+	 * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
 	 */
+	@Deprecated	
     public List orderSummarySearch(GenericSearchCriteria criteria) throws FDResourceException, RemoteException;
 	//not used anywhere
     @Deprecated
@@ -229,9 +226,10 @@ public interface CallCenterManagerSB extends EJBObject {
 	@Deprecated
 	public List getMakeGoodOrder(Date date) throws FDResourceException, RemoteException;
 	/**
-	 *@deprecated This method is moved to Storefront2.0 project.
-	 * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+	 *@deprecated This method is moved to backoffice project.
+	 * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
 	 */
+	@Deprecated
 	public List doGenericSearch(GenericSearchCriteria criteria) throws FDResourceException, RemoteException;
 	/**
 	 *@deprecated This method is moved to backoffice project.
@@ -392,10 +390,8 @@ public interface CallCenterManagerSB extends EJBObject {
 	 */
 	@Deprecated
 	public ErpComplaintReason getReasonByCompCode(String cCode) throws FDResourceException, RemoteException;
-	/**
-	 *@deprecated This method is moved to Storefront2.0 project.
-	 * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
-	 */
+	//not used anywhere
+	@Deprecated
 	public void addNewIVRCallLog(CallLogModel callLogModel) throws FDResourceException, RemoteException;
 	/**
 	 *@deprecated This method is moved to backoffice project.

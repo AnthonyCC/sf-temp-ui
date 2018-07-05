@@ -307,12 +307,12 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
     	}
 		
 		ErpPaymentMethodI paymentMethod = PaymentMethodUtil.processForm( request, result, identity );
+		if ( result.isSuccess() ) {
+            performAddAndSetPaymentMethod(request, session, getUser(), result, paymentMethod, actionName);
+		}
 		if (paymentMethod.getPaymentMethodType() == EnumPaymentMethodType.CREDITCARD
 				|| paymentMethod.getPaymentMethodType() == EnumPaymentMethodType.DEBITCARD) {
 			checkPaymentAttempt();
-		}
-		if ( result.isSuccess() ) {
-            performAddAndSetPaymentMethod(request, session, getUser(), result, paymentMethod, actionName);
 		}
 		return Action.SUCCESS;
 	}
@@ -353,13 +353,14 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
     	}
 		ErpPaymentMethodI paymentMethod = PaymentMethodUtil.processForm( request, result, getIdentity() );
 		
-		if (paymentMethod.getPaymentMethodType() == EnumPaymentMethodType.CREDITCARD
-				|| paymentMethod.getPaymentMethodType() == EnumPaymentMethodType.DEBITCARD) {
-			checkPaymentAttempt();
-		}
+		
 		
 		if ( result.isSuccess() ) {
 			performAddPaymentMethod(paymentMethod, result, request, getUser());
+		}
+		if (paymentMethod.getPaymentMethodType() == EnumPaymentMethodType.CREDITCARD
+				|| paymentMethod.getPaymentMethodType() == EnumPaymentMethodType.DEBITCARD) {
+			checkPaymentAttempt();
 		}
 		return Action.SUCCESS;
 	}
@@ -413,14 +414,14 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
     	
         ErpPaymentMethodI paymentMethod = PaymentMethodUtil.processEditForm(request, result, getIdentity());
         
-		if (paymentMethod.getPaymentMethodType() == EnumPaymentMethodType.CREDITCARD
-				|| paymentMethod.getPaymentMethodType() == EnumPaymentMethodType.DEBITCARD) {
-			checkPaymentAttempt();
-		}
-        
         if(result.isSuccess()){
             performEditPaymentMethod(request, paymentMethod, result, getUser());
         }
+        
+        if (paymentMethod.getPaymentMethodType() == EnumPaymentMethodType.CREDITCARD
+				|| paymentMethod.getPaymentMethodType() == EnumPaymentMethodType.DEBITCARD) {
+			checkPaymentAttempt();
+		}
         return Action.SUCCESS;
     }
 
@@ -541,10 +542,9 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 	
 	private void checkPaymentAttempt() {
     	if (result.getErrors().isEmpty()) {
-    		session.setAttribute(SessionName.PAYMENT_ATTEMPT, 0);
+    		CaptchaUtil.resetAttempt(session, SessionName.PAYMENT_ATTEMPT);
     	} else {
-    		int currentAttempt = session.getAttribute(SessionName.PAYMENT_ATTEMPT) != null ? (Integer) session.getAttribute(SessionName.PAYMENT_ATTEMPT) : Integer.valueOf(0);
-    		session.setAttribute(SessionName.PAYMENT_ATTEMPT, ++currentAttempt);
+    		int currentAttempt = CaptchaUtil.increaseAttempt(session, SessionName.PAYMENT_ATTEMPT);
     		if (currentAttempt >= FDStoreProperties.getMaxInvalidPaymentAttempt()) {
     			result.addWarning(new ActionWarning("excessiveAttempt","excessiveAttempt"));
     		}

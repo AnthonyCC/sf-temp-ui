@@ -81,15 +81,10 @@ body {
 	margin: 0;
 	-webkit-font-smoothing: subpixel-antialiased
 }
-
+/* high color contrast color for links with reference to style guide */
 a,a:link {
-	color: #458b4c
+	color: #408244
 }
-
-a:visited {
-	color: #458b4c
-}
-
 a:active,a:focus,a:hover {
 	color: #5fb069;
 	text-decoration: underline
@@ -4056,4 +4051,10 @@ div#mobilehomeMainDiv a {
 
 .anchors *:focus,.navbar-header input:focus {
     outline: none;
+}
+.basicHits.assistivetext{
+	font-size:14px;
+}
+.assistivetext{
+	font-size:14px;
 }

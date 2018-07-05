@@ -36,6 +36,7 @@ import com.freshdirect.webapp.action.HttpContext;
 import com.freshdirect.webapp.action.fdstore.RegistrationAction;
 import com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag;
 import com.freshdirect.webapp.util.AccountUtil;
+import com.freshdirect.webapp.util.CaptchaUtil;
 import com.freshdirect.webapp.util.StoreContextUtil;
 
 public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.BodyTagSupport {
@@ -173,7 +174,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 					FDDeliveryServiceSelectionResult serviceResult = checkByZipCode(request, result);
 					if(serviceResult!=null)
 						setRequestedServiceTypeDlvStatus(serviceResult.getServiceStatus(this.serviceType));
-					
+										
 					/* APPDEV-1888 - Check to see if email is present and validate	 */
 					boolean isReferralRegistration = "true".equals(request.getParameter("referralRegistration"))?true:false;
 					if(isReferralRegistration) {
@@ -204,7 +205,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 					    }
 					    
                         UserUtil.newSession(request.getSession(), (HttpServletResponse) pageContext.getResponse());
-						
+												
 						if("WEB".equals(this.serviceType.getName())){
 							EnumDeliveryStatus homeDlvStatus = serviceResult.getServiceStatus(EnumServiceType.HOME);
 							
@@ -250,7 +251,8 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 									// check home delivry is available
 									if(EnumDeliveryStatus.DELIVER.equals(serviceResult.getServiceStatus(EnumServiceType.HOME))){
 										// show E No Corporate HOME delivarable Survey presented /site_access/alt_dlv_home.jsp
-										doRedirect(altDeliveryHomePage);
+
+										return doRedirect(altDeliveryHomePage);
 									}
 									else if(EnumDeliveryStatus.DONOT_DELIVER.equals(serviceResult.getServiceStatus(EnumServiceType.HOME))){
 										
@@ -338,7 +340,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 					checkByAddress(request, result, false);
 				} else if ("doPrereg".equalsIgnoreCase(action)) {
 					doPrereg(request, result);
-				} else if ("signupLite".equalsIgnoreCase(action)) { 
+				} else if ("signupLite".equalsIgnoreCase(action)) {
 					HttpSession session = this.pageContext.getSession();
 					FDDeliveryServiceSelectionResult serviceResult = checkSLiteZipCode(request, result);
 					if(serviceResult!=null)
@@ -481,6 +483,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
                         }
 
                     } else {
+                    	CaptchaUtil.increaseAttempt(request, SessionName.SIGNUP_ATTEMPT);
                         session.setAttribute(SessionName.SIGNUP_SUCCESS, false);
                     }
 

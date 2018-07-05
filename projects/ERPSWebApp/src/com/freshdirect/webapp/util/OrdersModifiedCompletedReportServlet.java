@@ -1,28 +1,21 @@
 package com.freshdirect.webapp.util;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.CallCenterServices;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCustomerOrderInfo;
-import com.freshdirect.fdstore.customer.FDCustomerReservationInfo;
-import com.freshdirect.fdstore.customer.LateDlvReportLine;
 import com.freshdirect.framework.util.EnumSearchType;
 import com.freshdirect.framework.util.GenericSearchCriteria;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.webapp.taglib.callcenter.GenericLocatorTag;
-import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 
 
 public class OrdersModifiedCompletedReportServlet extends AbstractExcelReportServlet {

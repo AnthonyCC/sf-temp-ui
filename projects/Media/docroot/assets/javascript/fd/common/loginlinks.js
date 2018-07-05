@@ -49,7 +49,7 @@ var FreshDirect = FreshDirect || {};
 
 	  };
       fd.components.ajaxPopup.open({ 
-    	  href: popupUrl + '?successPage=' + target,
+    	  href: popupUrl + '?successPage=' + encodeURIComponent(target),
     	  afterRenderCallback: renderCallback});
     }
   };

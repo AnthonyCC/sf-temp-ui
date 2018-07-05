@@ -299,7 +299,7 @@ $jq('.locabar_triggers').on('keyup', function(event) {
 		
 	else if (curId == 'locabar_addresses_trigger' && ($jq(event.target).attr('id') === 'newziptextmsg' || $jq(event.target).attr('id') === 'newziptext' ||  $jq(event.target).attr('id') === 'newzipgomsg' || $jq(event.target).attr('id') === 'newzipgo' || $jq(event.target).attr('id') === 'locabar_addresses' || $jq(event.target).attr('id') === 'location-email'|| $jq(event.target).attr('id') === 'location-submit')) {
 		//do nothing
-		$this.addClass('hover')
+		$this.addClass('hover');
 	}
 	
 		
@@ -970,13 +970,21 @@ $jq("#location-submit.fdxgreen").keydown(function(e){
 	function open_fdx_promo() {
 		$jq('#locationbar_fdx_promo>.visWrapper').show();
 		$jq('#locationbar_fdx_promo').addClass('open');
-		$jq('.locabar-tab-fd-cont').addClass('notselected');
+		if(FreshDirect.user.isCorporateUser){
+			$jq('.locabar-tab-cos-cont').addClass('notselected');
+		} else {
+			$jq('.locabar-tab-fd-cont').addClass('notselected');
+		}
 		$jq('.locabar-tab-fdx-cont').removeClass('notselected');
 	}
 	function close_fdx_promo() {
 		$jq('#locationbar_fdx_promo>.visWrapper').hide();
 		$jq('#locationbar_fdx_promo').removeClass('open');
-		$jq('.locabar-tab-fd-cont').removeClass('notselected');
+		if(FreshDirect.user.isCorporateUser){
+			$jq('.locabar-tab-cos-cont').removeClass('notselected');
+		} else {
+			$jq('.locabar-tab-fd-cont').removeClass('notselected');
+		}
 		$jq('.locabar-tab-fdx-cont').addClass('notselected');
 	}
 	
