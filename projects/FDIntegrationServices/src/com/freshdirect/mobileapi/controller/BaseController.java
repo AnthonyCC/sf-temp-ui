@@ -133,9 +133,14 @@ public abstract class BaseController extends AbstractController implements Messa
     private static final String TODAYS_PICK_BODY_PAGE_TYPE = "TodaysPickBody";
     private static final String FEED_HEAD_PAGE_TYPE = "FeedHead";
     private static final String FEED_BODY_PAGE_TYPE = "FeedBody";
-    
+
 
     public static OasService oasService = new Oas247Service();
+
+    public enum UserCleanupMode {
+        SESSION_ONLY, /* just remove user from session */
+        SESSION_AND_COOKIE  /* remove user from session AND expire user cookie */
+    }
 
     protected static Map<String, String> configParams = new HashMap<String, String>();
 
@@ -354,11 +359,11 @@ public abstract class BaseController extends AbstractController implements Messa
 					Message responseMessage = getErrorMessage(ERR_SYSTEM, printedTrace);
 	                setResponseMessage(model, responseMessage, user);
 	                try {
-		                if(MobileApiProperties.isBaseControllerLoggingEnabled()) {	                	
+		                if(MobileApiProperties.isBaseControllerLoggingEnabled()) {
 		                	LOGGER.error("FDCRITICALERROR01 for "
-		                			+ (user != null && user.getFDSessionUser() != null 
-		                					? (user.getFDSessionUser().getIdentity() != null && user.getFDSessionUser().getFDCustomer() != null 
-		                							? user.getFDSessionUser().getFDCustomer().getErpCustomerPK() : user.getFDSessionUser().getPrimaryKey() ) : "NOUSER" ) 
+		                			+ (user != null && user.getFDSessionUser() != null
+		                					? (user.getFDSessionUser().getIdentity() != null && user.getFDSessionUser().getFDCustomer() != null
+		                							? user.getFDSessionUser().getFDCustomer().getErpCustomerPK() : user.getFDSessionUser().getPrimaryKey() ) : "NOUSER" )
 		                				+ " -> "+ getRootCauseStackTrace(uncaughtException));
 		                }
 	                } catch(Exception cantHandle) {
@@ -370,9 +375,9 @@ public abstract class BaseController extends AbstractController implements Messa
 
         return model;
     }
-    
+
     private String getRootCauseStackTrace(Throwable e) {
-    	
+
     	StringBuffer strBuf = new StringBuffer();
     	String[] traces = ExceptionUtils.getRootCauseStackTrace(e);
     	if(traces != null) {
@@ -406,14 +411,14 @@ public abstract class BaseController extends AbstractController implements Messa
         }
         return isResponseEnable;
     }
-    
+
 //    protected EnumSet<EnumResponseAdditional> getAllResponseAdditionalEnables(HttpServletRequest request) {
 //    	EnumSet<EnumResponseAdditional> answer = null;
 //    	if (isExtraResponseRequested(request)) {
 //            String foodkickHeader = getExtraResponseRequests(request);
 //            answer = parseResponseAdditionalEnables(foodkickHeader);
 //        } else {
-//            answer = parseResponseAdditionalEnables("");        	
+//            answer = parseResponseAdditionalEnables("");
 //        }
 //        return answer;
 //    }
@@ -548,7 +553,7 @@ public abstract class BaseController extends AbstractController implements Messa
         request.getSession().setAttribute(SessionName.USER, sessionUser.getFDSessionUser());
     }
 
-    protected void removeUserInSession(SessionUser user, HttpServletRequest request, HttpServletResponse response) {
+    protected void removeUserInSession(SessionUser user, UserCleanupMode logoutMode, HttpServletRequest request, HttpServletResponse response) {
 
     	if(user != null) {
 	    	user.touch();
@@ -563,8 +568,11 @@ public abstract class BaseController extends AbstractController implements Messa
     	}
     	// end session
     	session.invalidate();
-    	// remove cookie
-    	CookieMonster.clearCookie(response);
+
+    	if (UserCleanupMode.SESSION_AND_COOKIE == logoutMode) {
+        	// remove cookie
+        	CookieMonster.clearCookie(response);
+    	}
     	resetMobileSessionData(request);
     }
 
@@ -663,7 +671,7 @@ public abstract class BaseController extends AbstractController implements Messa
 		configuration.setSocialLoginEnabled(FDStoreProperties.isSocialLoginEnabled());
 		configuration.setMasterPassEnabled(MobileApiProperties.isMasterpassEnabled());
 		configuration.setPayPalEnabled(MobileApiProperties.isPayPalEnabled());
-		configuration.setDCSEnabled(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, 
+		configuration.setDCSEnabled(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch,
 																				user!=null && user.getFDSessionUser()!=null ? user.getFDSessionUser().getUser() : null));
 
 		return configuration;
@@ -836,7 +844,7 @@ public abstract class BaseController extends AbstractController implements Messa
 
     protected void populatePageComponents(SessionUser user, CMSPageRequest pageRequest, PageMessageResponse pageResponse, HttpServletRequest request) throws FDException {
     	String originalPageType = pageRequest.getPageType();
-    	
+
     	if(TODAYS_PICK_HEAD_PAGE_TYPE.equals(originalPageType)) {
     		pageRequest.setPageType(TODAYS_PICK_PAGE_TYPE);
     		pageRequest.setHeadSectionIndexes();
@@ -850,8 +858,8 @@ public abstract class BaseController extends AbstractController implements Messa
     		pageRequest.setPageType(FEED_PAGE_TYPE);
     		pageRequest.setBodySectionIndexes();
     	}
-    	
-    	
+
+
         if (CAROUSEL_BANNER_PAGE_TYPE.equals(pageRequest.getPageType())) {
             final StoreModel store = ContentFactory.getInstance().getStore();
             List<CMSImageBannerModel> cmsImageBanners = new ArrayList<CMSImageBannerModel>();
@@ -869,21 +877,21 @@ public abstract class BaseController extends AbstractController implements Messa
         	List<CMSWebPageModel> pgs = getPages(user, pageRequest);
             for (CMSWebPageModel page : pgs) {
                 if (pageRequest.getPageType().equals(page.getType())) {
-                    pageResponse.setPick(page);                    
+                    pageResponse.setPick(page);
                 }
-            }        	
+            }
         } else if (FEED_PAGE_TYPE.equals(pageRequest.getPageType())){
         	List<CMSWebPageModel> pgs = getPages(user, pageRequest);
             for (CMSWebPageModel page : pgs) {
                 if (pageRequest.getPageType().equals(page.getType())) {
                     pageResponse.setPage(page);
                 }
-            }        	
+            }
         }
-        
+
         pageRequest.setPageType(originalPageType);
     }
-    
+
     protected CMSImageBannerModel convertImageBanner(ImageBanner imageBanner) {
         CMSImageBannerModel cmsImageBanner = null;
         if (imageBanner != null){
@@ -993,8 +1001,8 @@ public abstract class BaseController extends AbstractController implements Messa
 
     private List<CMSWebPageModel> getCachedPages(CMSPageRequest pageRequest) {
         List<CMSWebPageModel> pages = new ArrayList<CMSWebPageModel>();
-        List<String> webPageTypes = (pageRequest.getPageType() != null) 
-        		? Arrays.asList(pageRequest.getCacheKey()) 
+        List<String> webPageTypes = (pageRequest.getPageType() != null)
+        		? Arrays.asList(pageRequest.getCacheKey())
         		: Arrays.asList(pageRequest.asCacheKey(FEED_PAGE_TYPE), pageRequest.asCacheKey(TODAYS_PICK_PAGE_TYPE));
         for (String type : webPageTypes) {
             CMSWebPageModel cachedFeedPage = CMSContentFactory.getInstance().getCMSPageByName(type);
@@ -1003,8 +1011,8 @@ public abstract class BaseController extends AbstractController implements Messa
             }
         }
         return pages;
-    }    
-    
+    }
+
     private void addProductsToSection(SessionUser user, CMSWebPageModel page) {
         if (page != null) {
             List<CMSSectionModel> sectionWithProducts = new ArrayList<CMSSectionModel>();
@@ -1029,7 +1037,7 @@ public abstract class BaseController extends AbstractController implements Messa
                     allMustHaveProductsAreAvailable = false;
                     break;
                 }
-                
+
                 final String prodId = mustHaveProductId.substring(FDContentTypes.PRODUCT.name().length() + 1);
                 final ProductPotatoData data = ProductPotatoUtil.getProductPotato(prodId, null, user.getFDSessionUser(), false);
                 if (data == null || !data.getProductData().isAvailable()) {
@@ -1057,13 +1065,13 @@ public abstract class BaseController extends AbstractController implements Messa
         }
         return potatoes;
     }
-    
+
     protected void setContextHeaders(HttpServletRequest request,  HttpContextWrapper wrapper) {
     	wrapper.setReferer(request.getHeader(HttpHeaders.REFERER));
     	wrapper.setTrueCleintIp(request.getHeader("True-Client-IP"));
 		wrapper.setForwardedFrom(request.getHeader("X-Forwarded-For"));
 		wrapper.setAkamaiEdgescape(request.getHeader("X-Akamai-Edgescape"));
 		wrapper.setRemoteAddr(request.getRemoteAddr());
-		
+
     }
 }
