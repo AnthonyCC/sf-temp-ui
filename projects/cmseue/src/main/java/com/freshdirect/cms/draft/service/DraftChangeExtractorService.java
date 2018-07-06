@@ -174,8 +174,11 @@ public class DraftChangeExtractorService {
             }
         } else {
             List<ContentKey> keys = (List<ContentKey>) value;
-            if (keys == null || keys.isEmpty()) {
+            // LP-226 cases
+            if (keys == null) {
                 serializedValue = null;
+            } else if (keys.isEmpty()) {
+                serializedValue = DraftApplicatorService.EMPTY_LIST_TOKEN;
             } else {
                 serializedValue = JOINER.join(keys);
             }
