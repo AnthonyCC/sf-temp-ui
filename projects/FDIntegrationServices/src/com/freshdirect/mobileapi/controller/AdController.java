@@ -30,11 +30,12 @@ public class AdController extends BaseController {
 
     private static Category LOGGER = LoggerFactory.getInstance(AdController.class);
 
-    private static String ACTION_GET_AD_QUERYSTRING = "queryparams";
+    private static final String ACTION_GET_AD_QUERYSTRING = "queryparams";
 
     @Override
     protected ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model, String action, SessionUser user)
             throws JsonException, FDException, ServiceException, NoSessionException, IOException, TemplateException {
+        Message responseMessage = null;
         if (ACTION_GET_AD_QUERYSTRING.equals(action)) {
             FDUserI fdUser = user != null ? user.getFDSessionUser() : null;
 
@@ -42,20 +43,14 @@ public class AdController extends BaseController {
 
             final Map<String, String> queryParams = AdQueryStringFactory.composeAdQueryParams(fdUser, request, isMobileWebCapable);
 
-            Message responseMessage = new AdQueryStringResponse(queryParams);
+            responseMessage = new AdQueryStringResponse(queryParams);
             responseMessage.setStatus(Message.STATUS_SUCCESS);
-            setResponseMessage(model, responseMessage, user);
         } else {
-            createErrorResponseMessage(model, user, MessageCodes.ERR_SYSTEM, "Invalid or missing action.");
+            responseMessage = getErrorMessage(MessageCodes.ERR_SYSTEM, "Invalid or missing action.");
         }
 
-        return model;
-    }
+        setResponseMessage(model, responseMessage, user);
 
-    private void createErrorResponseMessage(ModelAndView modelAndView, SessionUser user, String code, String message) throws JsonException {
-        Message responseMessage = new Message();
-        responseMessage.setStatus(Message.STATUS_FAILED);
-        responseMessage =  getErrorMessage(code, message);
-        setResponseMessage(modelAndView, responseMessage, user);
+        return model;
     }
 }
