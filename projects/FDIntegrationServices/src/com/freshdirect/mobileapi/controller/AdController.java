@@ -53,4 +53,12 @@ public class AdController extends BaseController {
 
         return model;
     }
+
+    /**
+     * Grant guests to use controller actions
+     */
+    @Override
+    protected boolean validateUser() {
+        return false;
+    }
 }
