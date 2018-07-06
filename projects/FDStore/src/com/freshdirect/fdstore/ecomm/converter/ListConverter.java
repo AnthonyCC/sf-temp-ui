@@ -291,6 +291,7 @@ public class ListConverter {
 				productlistLineItem.setRecipeSourceId(customerProduct.getRecipeSourceId());
 				productlistLineItem.setSkuCode(customerProduct.getSkuCode());
 				productlistLineItem.setSojustAddedItemToCart(customerProduct.isSojustAddedItemToCart());
+				productlistLineItem.setListDetailId(customerProduct.getId());
 				fdCustomerListItemData.setProductListLineItem(productlistLineItem);
 				fdCustomerListItemData.setReturnType(FDCustomerProductListLineItem.class.getSimpleName());
 
