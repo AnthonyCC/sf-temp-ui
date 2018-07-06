@@ -330,7 +330,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param conn
 	 * @param emailInfo
 	 * @param fdCustomer
@@ -356,7 +356,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			inputHashmap.put(TEmailConstants.EMAIL_TYPE,
 					emailInfo.isHtmlEmail() ? EnumEmailType.HTML.getName() : EnumEmailType.TEXT.getName());
 			inputHashmap.put(TEmailConstants.ESTORE_ID, estoreId);
-			
+
 			inputHashmap.put(TEmailConstants.CUSTOMER_ID,fdCustomer.getErpCustomerPK());
 
 			// APPDEV-2451 - fill in OAS parameters here
@@ -431,7 +431,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			ErpFraudPreventionSB fraudSB = getErpFraudHome().create();
 			Set<EnumFraudReason> fraudResults = null;
 			if (!isGiftCardBuyer) {
-				
+
 				boolean isRegistrationRestricted=fraudSB.isRegistrationForIPRestricted(fdActionInfo.getClientIp());
 				if(isRegistrationRestricted) {
 					LOGGER.warn("FDSECU:: Registration fraud tripped for [ IP:: "+fdActionInfo.getClientIp()+", cookie="+cookie+" ,user_id="+erpCustomer.getUserId()+" ]");
@@ -1078,7 +1078,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	/**
 	 * Returns the GEO code the given address
-	 * 
+	 *
 	 * @param address
 	 * @throws FDResourceException
 	 */
@@ -1338,7 +1338,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				 * erpCustomerEB.getPK().getId()); if(fdCustomerEB!=null &&
 				 * fdCustomerEB.getPymtVerifyAttempts()>=FDStoreProperties.
 				 * getPaymentMethodVerificationLimit()) {
-				 * 
+				 *
 				 * } else { throw new FDAuthenticationException(
 				 * "Account disabled"); }
 				 */
@@ -1381,7 +1381,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				 * erpCustomerEB.getPK().getId()); if(fdCustomerEB!=null &&
 				 * fdCustomerEB.getPymtVerifyAttempts()>=FDStoreProperties.
 				 * getPaymentMethodVerificationLimit()) {
-				 * 
+				 *
 				 * } else { throw new FDAuthenticationException(
 				 * "Account disabled"); }
 				 */
@@ -1476,7 +1476,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			/*
 			 * ErpCustomerEB eb = getErpCustomerHome().findByPrimaryKey( new
 			 * PrimaryKey(erpCustomerPK));
-			 * 
+			 *
 			 * ErpCustomerInfoModel erpCustomerInfo = eb.getCustomerInfo();
 			 */
 			ErpCustomerInfoModel erpCustomerInfo = (ErpCustomerInfoModel) getErpCustomerInfoHome()
@@ -1518,7 +1518,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			/*
 			 * ErpCustomerEB eb = getErpCustomerHome().findByPrimaryKey( new
 			 * PrimaryKey(erpCustomerPK));
-			 * 
+			 *
 			 * ErpCustomerInfoModel erpCustomerInfo = eb.getCustomerInfo();
 			 */
 			ErpCustomerInfoModel erpCustomerInfo = (ErpCustomerInfoModel) getErpCustomerInfoHome()
@@ -1579,24 +1579,24 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	public void addPaymentMethod(FDActionInfo info, ErpPaymentMethodI paymentMethod, boolean paymentechEnabled)
 			throws FDResourceException, ErpPaymentMethodException,ErpFraudException {
 		try {
-			
-			
+
+
 			if(StringUtil.isEmpty(paymentMethod.getCustomerId())) {
-				
+
 				LOGGER.warn("FDSECU_P01:: Attempt to add payment method without customerId set.[ IP:: "+info.getClientIp()+", fdUserId="+info.getFdUserId()+" ]");
 				new IllegalArgumentException("CustomerId is not set.");
 			}
-			
+
 			if(info.getIdentity()==null) {
-				
+
 				LOGGER.warn("FDSECU_P02:: Attempt to add payment method without FDIdentity set. [ IP:: "+info.getClientIp()+", fdUserId="+info.getFdUserId()+" ]");
 				new IllegalArgumentException("FDIdentity is not set.");
 			} else if(StringUtil.isEmpty(info.getIdentity().getErpCustomerPK())) {
-				
+
 				LOGGER.warn("FDSECU_P03:: Attempt to add payment method with invalid FDIdentity. [ IP:: "+info.getClientIp()+", fdUserId="+info.getFdUserId()+" ]");
 				new IllegalArgumentException("FDIdentity is invalid.");
 			}
-			
+
 			String customerId=paymentMethod.getCustomerId()!=null?paymentMethod.getCustomerId():info.getIdentity().getErpCustomerPK();
 			boolean active=isCustomerActive(new PrimaryKey(customerId));
 			if(!active) {
@@ -1692,7 +1692,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(ce);
 		} catch (CreateException e1) {
 			throw new FDResourceException(e1);
-		} 
+		}
 	}
 
 	public ErpAuthorizationModel verifyCard(FDActionInfo info, ErpPaymentMethodI paymentMethod,
@@ -2173,6 +2173,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				}
 			}
 
+			if (!foundFraud) {
+				this.logActivity(info.createActivity(EnumAccountActivityType.ADD_DLV_ADDRESS));
+			}
+
 			ErpCustomerEB erpCustomerEB = this.getErpCustomerHome().findByPrimaryKey(new PrimaryKey(erpCustomerId));
 			erpCustomerEB.addShipToAddress(address);
 
@@ -2467,7 +2471,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				}
 				DeliveryPassModel dlvPass = getActiveDPForCustomer(customerPk, dlvpsb);
 				if (dlvPass.getType().isUnlimited()
-						&& EnumDeliveryType.HOME.equals(createOrder.getDeliveryInfo().getDeliveryType()) 
+						&& EnumDeliveryType.HOME.equals(createOrder.getDeliveryInfo().getDeliveryType())
 						&& null != CmsManager.getInstance().getEStoreId() && !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
 					extendDeliveryPass(dlvpsb, dlvPass, 1, pk.getId(), "Extend DP by a week.",
 							EnumDlvPassExtendReason.DLV_PROMOTION_APPLIED.getName());
@@ -2567,10 +2571,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 			}
 			// AUTH sale in CYBER SOURCE
-			
+
 			PaymentManagerSB paymentManager = this.getPaymentManagerHome().create();
 			paymentManager.authorizeSaleRealtime(pk.getId());
-			
+
 
 			ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.PLACE_ORDER);
 			rec.setChangeOrderId(pk.getId());
@@ -3056,7 +3060,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	/**
 	 * Modify an order (modify & send msg to SAP).
-	 * 
+	 *
 	 * @param identity the customer's identity reference @throws
 	 * FDResourceException if an error occured while accessing remote
 	 * resources @throws
@@ -3352,15 +3356,15 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 				if (EnumTransactionSource.WEBSITE.equals(order.getTransactionSource())) {
 					paymentManager.authorizeSaleRealtime(saleId);
-					
+
 				}
 				else {
 					paymentManager.authorizeSale(saleId, true);
-					
+
 				}
 			} else {
 				paymentManager.authorizeSaleRealtime(saleId);
-				
+
 			}
 
 			ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.MODIFY_ORDER);
@@ -3696,7 +3700,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	
+
 	/**
 	 * Adds a complaint to the user's list of complaints and begins the
 	 * associated credit issuing process
@@ -4609,10 +4613,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 		try {
 			EnumPaymentResponse response = null;
-			
+
 			PaymentManagerSB sb = this.getPaymentManagerHome().create();
 			response = sb.authorizeSale(salesId, false);
-			
+
 			if (!EnumPaymentResponse.APPROVED.equals(response) && !EnumPaymentResponse.ERROR.equals(response)) {
 				sendAuthFailedEmail(salesId);
 			}
@@ -4627,10 +4631,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 		try {
 			EnumPaymentResponse response = null;
-			
+
 			PaymentManagerSB sb = this.getPaymentManagerHome().create();
 			response = sb.authorizeSale(salesId, force);
-			
+
 			if (!EnumPaymentResponse.APPROVED.equals(response) && !EnumPaymentResponse.ERROR.equals(response)) {
 				sendAuthFailedEmail(salesId);
 			}
@@ -4714,7 +4718,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 * throws FDResourceException, ReservationException {
 	 * this.cancelReservation(identity, oldReservation, rsvType, aInfo, event);
 	 * aInfo.setNote("Make Pre-Reservation");
-	 * 
+	 *
 	 * return this.makeReservation(identity, timeslotId, rsvType, addressId,
 	 * aInfo, chefstable, event, false); }
 	 */
@@ -4729,7 +4733,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		 * geocodeAddress(address); FDTimeslot timeslot =
 		 * FDDeliveryManager.getInstance().getTimeslotsById(timeslotId,
 		 * address.getBuildingId(), false);
-		 * 
+		 *
 		 * long duration = timeslot.getCutoffDateTime().getTime() -
 		 * System.currentTimeMillis() - (FDStoreProperties.getPreReserveHours()
 		 * * DateUtil.HOUR); if (duration < 0) { duration =
@@ -5074,7 +5078,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	public void setAlert(FDActionInfo info, ErpCustomerAlertModel customerAlert, boolean isOnAlert) {
 		try {
-			ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
+			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
 			if (sb.setAlert(new PrimaryKey(info.getIdentity().getErpCustomerPK()), customerAlert, isOnAlert)) {
 				this.logActivity(info.createActivity(
 						isOnAlert ? EnumAccountActivityType.PLACE_ALERT : EnumAccountActivityType.REMOVE_ALERT));
@@ -5129,7 +5133,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	public boolean isCustomerActive(PrimaryKey pk) {
 		try {
-			ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
+			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
 			return sb.isCustomerActive(pk);
 		} catch (RemoteException ex) {
 			LOGGER.warn(ex);
@@ -5277,7 +5281,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	public List<DeliveryPassModel> getDeliveryPasses(FDIdentity identity, EnumEStoreId estore) {
 		List<DeliveryPassModel> deliveryPasses = null;
 		try {
-			DlvPassManagerSB sb = (DlvPassManagerSB) this.getDlvPassManagerHome().create();
+			DlvPassManagerSB sb = this.getDlvPassManagerHome().create();
 			deliveryPasses = sb.getDeliveryPasses(identity.getErpCustomerPK(), estore);
 		} catch (RemoteException ex) {
 			LOGGER.warn(ex);
@@ -5358,7 +5362,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	public List<DeliveryPassModel> getDeliveryPassesByStatus(FDIdentity identity, EnumDlvPassStatus status) {
 		List<DeliveryPassModel> deliveryPasses = null;
 		try {
-			DlvPassManagerSB sb = (DlvPassManagerSB) this.getDlvPassManagerHome().create();
+			DlvPassManagerSB sb = this.getDlvPassManagerHome().create();
 			deliveryPasses = sb.getDlvPassesByStatus(identity.getErpCustomerPK(), status);
 		} catch (RemoteException ex) {
 			LOGGER.warn(ex);
@@ -5565,7 +5569,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 		boolean hasPurchased = false;
 		try {
-			DlvPassManagerSB sb = (DlvPassManagerSB) this.getDlvPassManagerHome().create();
+			DlvPassManagerSB sb = this.getDlvPassManagerHome().create();
 			hasPurchased = sb.hasPurchasedPass(customerPK);
 		} catch (CreateException ex) {
 			LOGGER.warn(ex);
@@ -5579,7 +5583,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	public int getValidOrderCount(FDIdentity identity) throws FDResourceException {
 		try {
-			ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
+			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
 			return sb.getValidOrderCount(new PrimaryKey(identity.getErpCustomerPK()));
 
 		} catch (CreateException ce) {
@@ -5591,7 +5595,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	public String getLastOrderID(FDIdentity identity) throws FDResourceException {
 		try {
-			ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
+			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
 			return sb.getLastOrderID(new PrimaryKey(identity.getErpCustomerPK()));
 
 		} catch (CreateException ce) {
@@ -5608,7 +5612,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			eb = this.getFdCustomerHome().findByPrimaryKey(new PrimaryKey(customerPK));
 			FDCustomerModel model = (FDCustomerModel) eb.getModel();
 			FDCustomerEStoreModel info = model.getCustomerEStoreModel();
-					
+
 			return info.getHasAutoRenewDP();
 		} catch (RemoteException e) {
 			throw new FDResourceException(e);
@@ -5694,7 +5698,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(re);
 		}
 	}
-	
+
 	public FDOrderI getLastNonCOSOrder(String customerID, EnumSaleType saleType, EnumEStoreId eStore)
 			throws FDResourceException, ErpSaleNotFoundException {
 
@@ -5706,7 +5710,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			paymentMethodTypes.add(EnumPaymentMethodType.GIFTCARD);
 			paymentMethodTypes.add(EnumPaymentMethodType.DEBITCARD);
 			paymentMethodTypes.add(EnumPaymentMethodType.MASTERPASS);
-			
+
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
 			ErpSaleModel saleModel = sb.getLastNonCOSOrder(customerID, saleType, paymentMethodTypes, eStore);
 			return new FDOrderAdapter(saleModel);
@@ -5726,9 +5730,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 * @return String sale id
 	 * @throws FDResourceException
 	 *             if an error occured while accessing remote resources
-	 * @throws FDPaymentInadequateException 
-	 * @throws InvalidCardException 
-	 * @throws ErpTransactionException 
+	 * @throws FDPaymentInadequateException
+	 * @throws InvalidCardException
+	 * @throws ErpTransactionException
 	 */
 	public String placeSubscriptionOrder(FDActionInfo info, ErpCreateOrderModel createOrder,
 			Set<String> usedPromotionCodes, String rsvId, boolean sendEmail, CustomerRatingI cra,
@@ -5740,8 +5744,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		try {
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
 			String customerPk = identity.getErpCustomerPK();
-			
-			
+
+
 			// Check if payment received is enough to process GC only orders.
 			if (createOrder.getSelectedGiftCards() != null && createOrder.getSelectedGiftCards().size() > 0) {
 				// Generate Applied gift cards info.
@@ -5756,8 +5760,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				createOrder.setAppliedGiftcards(strategy.getAppGiftCardInfo());
 				createOrder.setBufferAmt(strategy.getPerishableBufferAmount());
 			}
-			
-			
+
+
 			pk = sb.placeOrder(new PrimaryKey(customerPk), createOrder, usedPromotionCodes, cra, agentRole, null,
 					EnumSaleType.SUBSCRIPTION);
 			LOGGER.debug("In Place order getDeliveryPassCount " + createOrder.getDeliveryPassCount());
@@ -5781,7 +5785,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.PLACE_SUBS_ORDER);
 			rec.setChangeOrderId(pk.getId());
 			this.logActivity(rec);
-			
+
 			if (null != createOrder.getSelectedGiftCards() && createOrder.getSelectedGiftCards().size() > 0) {
 				// Verify status of gift cards being applied on this order.
 				List<ErpGiftCardModel> verifiedList = verifyStatusAndBalance(createOrder.getSelectedGiftCards(), false);
@@ -5803,7 +5807,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				ErpCustomerManagerSB erpCMsb = this.getErpCustomerManagerHome().create();
 				erpCMsb.sendCreateOrderToSAP(info.getIdentity().getErpCustomerPK().toString(), pk.getId(), EnumSaleType.SUBSCRIPTION, cra);
 			}
-			
+
 			if (sendEmail) {
 				FDOrderI order = getOrder(pk.getId());
 				FDCustomerInfo fdInfo = this.getCustomerInfo(identity);
@@ -5938,10 +5942,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		} else if (EnumSaleType.SUBSCRIPTION.equals(type)) {
 			try {
 				EnumPaymentResponse response = null;
-				
+
 				PaymentManagerSB sb = this.getPaymentManagerHome().create();
 				response = sb.authorizeSale(saleID, false);
-				
+
 				if (!EnumPaymentResponse.APPROVED.equals(response) && !EnumPaymentResponse.ERROR.equals(response)) {
 					sendARAuthFailedEmail(saleID);// Should we send email?
 
@@ -6507,7 +6511,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 			// Check if this gift card is already attached to a customer
 			// account.
-			GiftCardManagerSB sb = (GiftCardManagerSB) this.getGiftCardGManagerHome().create();
+			GiftCardManagerSB sb = this.getGiftCardGManagerHome().create();
 			return sb.getAllDeletedGiftCard(identity.getErpCustomerPK());
 			// Log the activity
 		} catch (RemoteException re) {
@@ -6523,7 +6527,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 			// Check if this gift card is already attached to a customer
 			// account.
-			GiftCardManagerSB sb = (GiftCardManagerSB) this.getGiftCardGManagerHome().create();
+			GiftCardManagerSB sb = this.getGiftCardGManagerHome().create();
 			return sb.getGiftCardRecepientsForOrder(saleId);
 			// Log the activity
 		} catch (RemoteException re) {
@@ -6537,7 +6541,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 		try {
 
-			GiftCardManagerSB sb = (GiftCardManagerSB) this.getGiftCardGManagerHome().create();
+			GiftCardManagerSB sb = this.getGiftCardGManagerHome().create();
 			return sb.validateAndGetGiftCardBalance(givexNum);
 
 		} catch (RemoteException re) {
@@ -6553,7 +6557,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throws FDResourceException {
 		try {
 
-			GiftCardManagerSB sb = (GiftCardManagerSB) this.getGiftCardGManagerHome().create();
+			GiftCardManagerSB sb = this.getGiftCardGManagerHome().create();
 			sb.transferGiftCardBalance(fromGivexNum, toGivexNum, amount);
 
 			sendGiftCardBalanceTransferEmail(identity, fromGivexNum, sb);
@@ -6620,7 +6624,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		String givexNum = null;
 		LOGGER.debug("Validating and sending the giftcard cancellation emails..");
 		try {
-			GiftCardManagerSB sb = (GiftCardManagerSB) this.getGiftCardGManagerHome().create();
+			GiftCardManagerSB sb = this.getGiftCardGManagerHome().create();
 			GenericSearchCriteria criteria = new GenericSearchCriteria(
 					com.freshdirect.framework.util.EnumSearchType.GIFTCARD_SEARCH);
 			criteria.setCriteriaMap("certNum", certNum);
@@ -6710,8 +6714,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 			PaymentManagerSB paymentManager = this.getPaymentManagerHome().create();
 			auths = paymentManager.authorizeSaleRealtime(pk.getId(), EnumSaleType.DONATION);
-			
-			if (auths != null || auths.size() > 0) {
+
+			if (auths != null && auths.size() > 0) {
 
 				// Only when it has a valid auth.
 				ErpCustomerManagerSB erpCMsb = this.getErpCustomerManagerHome().create();
@@ -6755,7 +6759,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	public double getPerishableBufferAmount(ErpAbstractOrderModel order) throws FDResourceException {
 		try {
-			ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
+			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
 			return sb.getPerishableBufferAmount(order);
 
 		} catch (CreateException ce) {
@@ -6768,7 +6772,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	public ErpGCDlvInformationHolder GetGiftCardRecipentByCertNum(String certNum) throws FDResourceException {
 		try {
 
-			GiftCardManagerSB sb = (GiftCardManagerSB) this.getGiftCardGManagerHome().create();
+			GiftCardManagerSB sb = this.getGiftCardGManagerHome().create();
 			return sb.loadGiftCardRecipentByCertNum(certNum);
 			// Log the activity
 		} catch (RemoteException re) {
@@ -7147,7 +7151,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(ex);
 		}
 	}
-	
+
 	/**
 	 * Adds auth failures to cusotmer activity log.
 	 */
@@ -7922,7 +7926,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	public String getLastOrderID(FDIdentity identity, EnumEStoreId eStoreId) throws FDResourceException {
 		try {
-			ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
+			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
 			return sb.getLastOrderID(new PrimaryKey(identity.getErpCustomerPK()), eStoreId);
 
 		} catch (CreateException ce) {
@@ -7963,7 +7967,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 		return status;
 	}
-	
+
 	public String getParentOrderAddressId(String parentOrderId)throws FDResourceException{
 		LOGGER.info("getParentOrderAddressId... "+parentOrderId);
 		Connection conn = null;
@@ -8455,7 +8459,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 * public static String UPDATE_SILVER_POPUP =
 	 * "update CUST.CUSTOMER_PUSHNOTIFICATION set customer_id=?, QUALIFIER =?, UPDATE_TIMESTAMP=trunc(sysdate) where DESTINATION = ?"
 	 * ;
-	 * 
+	 *
 	 * public void updateSilverPopupDetails(SilverPopupDetails silverPopup,
 	 * Connection conn) throws FDResourceException { PreparedStatement pstmt =
 	 * null; try { pstmt = conn.prepareStatement(UPDATE_SILVER_POPUP);
@@ -8530,7 +8534,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 *@deprecated
 	 * Please use the CustomerController and CustomerAccountServiceI in Storefront2.0 project.
 	 * It maps to CustomerAccountServiceI.setPushNotificationSentTimestamp(SilverPopupDetails pushNotification);
-	 * 
+	 *
 	 */
 	@Deprecated
 	public void updateSPSuccessDetails(SilverPopupDetails silverPopup) throws FDResourceException {
@@ -8558,7 +8562,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 *@deprecated
 	 * Please use the CustomerController and CustomerAccountServiceI in Storefront2.0 project.
 	 * It maps to CustomerAccountServiceI.getCookieByFdCustomerId(String fdCustomerId);
-	 * 
+	 *
 	 */
 	@Deprecated
 	public String getCookieByFdCustomerId(String fdCustomerId) throws FDResourceException {
@@ -8577,7 +8581,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 *@deprecated
 	 * Please use the CustomerController and CustomerAccountServiceI in Storefront2.0 project.
 	 * It maps to CustomerAccountServiceI.getPaymentMethodDefaultTypeForFDCustomerId()
-	 * 
+	 *
 	 */
 	@Deprecated
 	public EnumPaymentMethodDefaultType getpaymentMethodDefaultType(String custId) throws FDResourceException {
@@ -8596,7 +8600,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 *@deprecated
 	 * Please use the CustomerPaymentController and CustomerPaymentServiceI in Storefront2.0 project.
 	 * It maps to CustomerPaymentServiceI.resetDefaultPaymentValueType()
-	 * 
+	 *
 	 */
 	@Deprecated
 	public int resetDefaultPaymentValueType(String custId) throws FDResourceException {
@@ -8660,7 +8664,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			close(conn);
 		}
 	}
-	
+
 	public void updateFDCustomerEStoreInfo(FDCustomerEStoreModel fdCustomerEStoreModel, String custId) throws FDResourceException {
         try {
             FDCustomerEB fdCustomerEB = this.getFdCustomerHome().findByPrimaryKey(new PrimaryKey(custId));
@@ -8672,8 +8676,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
         }
 
     }
-	
-	
+
+
 	public ShortSubstituteResponse getShortSubstituteOrders(List<String> orderList) throws FDResourceException, RemoteException{
 		Connection conn = null;
 		try {
@@ -8690,7 +8694,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	public StringBuffer generteOrderWithCommaSeparate(List<String> orderList) {
 		StringBuffer orders =new StringBuffer();
 		orders.append("(");
-		if(orderList != null && orderList.size() > 0) {							
+		if(orderList != null && orderList.size() > 0) {
 			int intCount = 0;
 			for(String orderId : orderList) {
 				orders.append("'").append(orderId).append("'");
@@ -8705,7 +8709,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 		return orders;
 	}
-	
+
 	public void updateDpOptinDetails(boolean isAutoRenewDp, String custId, String dpType, FDActionInfo info, EnumEStoreId eStore) throws FDResourceException {
 		Connection conn = null;
 		try {
