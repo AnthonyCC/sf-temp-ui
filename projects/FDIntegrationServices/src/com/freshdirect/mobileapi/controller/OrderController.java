@@ -332,17 +332,11 @@ public class OrderController extends BaseController {
             if(user.getFDSessionUser().getMasqueradeContext()==null){
 	            int viewCountLimit = FDStoreProperties.getInformOrderModifyViewCountLimit();
 				int viewCount = user.getFDSessionUser().getInformOrderModifyViewCount(user.getUserContext().getStoreContext().getEStoreId(), true); 
-				if(viewCount == 1){
-					user.getFDSessionUser().setShowingInformOrderModify(true);
-				}
-	            if(user.getFDSessionUser().isShowingInformOrderModify() && viewCount <= viewCountLimit){
+	            if(viewCount <= viewCountLimit){
 					((ModifiedOrder) responseMessage).setViewCount(viewCount);
 					((ModifiedOrder) responseMessage).setViewCountLimit(viewCountLimit);
 					((ModifiedOrder) responseMessage).setMedia( loadMedia(FDStoreProperties.getInformOrderModifyMediaPath()) );
-	            }else{
-	            	user.getFDSessionUser().setShowingInformOrderModify(false);
 	            }
-				((ModifiedOrder) responseMessage).setShow(user.getFDSessionUser().isShowingInformOrderModify());
             }
 			
         } else {
@@ -354,7 +348,7 @@ public class OrderController extends BaseController {
     
     private Message setOverlayFalse(SessionUser user, HttpServletRequest request) throws FDException, JsonException {
     	Message responseMessage = new Message();
-    	user.getFDSessionUser().setShowingInformOrderModify(false);
+    	user.getFDSessionUser().setInformOrderModifyViewCount(user.getUserContext().getStoreContext().getEStoreId(), FDStoreProperties.getInformOrderModifyViewCountLimit()+1);
         responseMessage.setSuccessMessage("Modify Order Overlay had been disabled");            
         return responseMessage;
     }
