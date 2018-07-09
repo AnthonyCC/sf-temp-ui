@@ -336,6 +336,9 @@ public class OrderController extends BaseController {
 					((ModifiedOrder) responseMessage).setViewCount(viewCount);
 					((ModifiedOrder) responseMessage).setViewCountLimit(viewCountLimit);
 					((ModifiedOrder) responseMessage).setMedia( loadMedia(FDStoreProperties.getInformOrderModifyMediaPath()) );
+					((ModifiedOrder) responseMessage).setShow(true);
+	            }else{
+	            	((ModifiedOrder) responseMessage).setShow(false);
 	            }
             }
 			
@@ -349,6 +352,7 @@ public class OrderController extends BaseController {
     private Message setOverlayFalse(SessionUser user, HttpServletRequest request) throws FDException, JsonException {
     	Message responseMessage = new Message();
     	user.getFDSessionUser().setInformOrderModifyViewCount(user.getUserContext().getStoreContext().getEStoreId(), FDStoreProperties.getInformOrderModifyViewCountLimit()+1);
+    	((ModifiedOrder) responseMessage).setShow(false);
         responseMessage.setSuccessMessage("Modify Order Overlay had been disabled");            
         return responseMessage;
     }
