@@ -148,9 +148,6 @@
 #locationbar-sticky-wrapper #locabar_user_trigger > a:visited {
 	color: #fff;
 }
-#location-modify-order-message .location-modify-order-btn-cont > span {
-	display: inline-block;
-}
 #location-modify-order-message .location-modify-order-btn-cont > span + span {
 	margin-left: 10px;
 }
