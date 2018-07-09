@@ -67,7 +67,7 @@ var FreshDirect = FreshDirect || {};
             data: {
               data: JSON.stringify({
                 searchParams: term,
-                pageSize: 12
+                pageSize: 20
               })
             },
             spinner: {
