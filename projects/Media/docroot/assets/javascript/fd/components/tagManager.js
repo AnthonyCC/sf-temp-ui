@@ -1265,7 +1265,7 @@ var dataLayer = window.dataLayer || [];
   function onModifyOrderClick() {
 	  $(document).on('click', '.modify-order-btn', function(e) {
 		  fd.gtm.updateDataLayer({
-			  modifyOrder: $(e.target).data('gtm-source')
+			  modifyOrder: $(e.currentTarget).data('gtm-source')
 		  });
 		  
 	  });

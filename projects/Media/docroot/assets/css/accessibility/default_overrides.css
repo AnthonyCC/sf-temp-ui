@@ -1,0 +1,18 @@
+/* accessibility focus for close buttons */
+/*removed the checkout page add payment method ,add address method trash button outline*/
+input#PP_button:focus,
+input#MP_button:focus,
+a.headerlink:focus
+{
+    outline: #5fb069 solid 2px !important;
+   
+}
+input#signupbtn:focus,input#signinbtn:focus{
+    background-color: #5fb067 !important;
+    border-color: #306238 !important;
+    box-shadow: 0 0 1px #aaaaaa, 0 0 8px #aaaaaa;
+}
+.icon-image a:focus {
+    outline: none;
+    text-decoration: underline;
+}
