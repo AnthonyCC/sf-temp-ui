@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.freshdirect.crm.ejb.CrmCaseOriginDAO;
 import com.freshdirect.enums.EnumModel;
 
@@ -30,7 +32,8 @@ public class CrmCaseOrigin extends EnumModel implements TerminableI {
 		return obsolete;
 	}
 
-	public static CrmCaseOrigin getEnum(String code) {
+	@JsonCreator
+	public static CrmCaseOrigin getEnum(@JsonProperty("code") String code) {
 		loadEnums();
 		return (CrmCaseOrigin) enums.get(code);
 	}
