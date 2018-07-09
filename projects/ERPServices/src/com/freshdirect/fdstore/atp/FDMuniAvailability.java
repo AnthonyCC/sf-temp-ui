@@ -12,6 +12,8 @@ import com.freshdirect.framework.util.DateRange;
 
 public class FDMuniAvailability implements FDAvailabilityI{
 	
+
+
 	private final FDMuniAvailabilityInfo availabilityInfo;
 	
 	public FDMuniAvailability(MunicipalityInfo muni) {
@@ -36,5 +38,7 @@ public class FDMuniAvailability implements FDAvailabilityI{
 		// TODO Auto-generated method stub
 		return -3;
 	}
-
+	public FDMuniAvailabilityInfo getAvailabilityInfo() {
+		return availabilityInfo;
+	}
 }

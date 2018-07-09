@@ -53,4 +53,16 @@ public class FDStatusAvailability implements FDAvailabilityI {
 		return  this.availability. getAvailabileQtyForDate(targetDate);
 
 	}
+
+
+	
+	// the below methos are used only for SF 2.0
+	public EnumAvailabilityStatus getStatus() {
+		return status;
+	}
+
+	public FDAvailabilityI getAvailability() {
+		return availability;
+	}
+	
 }
