@@ -391,9 +391,9 @@ function getSOData(id, action){
         		}
         		drawerSuccessConformation += '<hr class="so-drawer-success-hr" /><div class="so-drawer-success-info">Change will take effect: <span class="so-drawer-success-date">';
         		if('soItemUpdateAddress'==action && $jq(".successtimeslot").length == 0){
-        			drawerSuccessConformation += '<a href="javascript:closeDrawerSuccessOverlayDialog(true)">Select a delivery time</a></span></div><button class="so-drawer-success-ok cssbutton cssbutton-flat green nontransparent" onclick="closeDrawerSuccessOverlayDialog(true)">OK</button></div>';
+        			drawerSuccessConformation += '<a href="javascript:closeDrawerSuccessOverlayDialog(true)">Select a delivery time</a></span></div><button class="so-drawer-success-ok cssbutton cssbutton-flat green" onclick="closeDrawerSuccessOverlayDialog(true)">OK</button></div>';
         		} else {
-        			drawerSuccessConformation += data.dayOfWeek + ', ' + data.deliveryDate + ', ' + data.deliveryTime + '</span></div><button class="so-drawer-success-ok cssbutton cssbutton-flat green nontransparent" onclick="closeDrawerSuccessOverlayDialog(false)">OK</button></div>';
+        			drawerSuccessConformation += data.dayOfWeek + ', ' + data.deliveryDate + ', ' + data.deliveryTime + '</span></div><button class="so-drawer-success-ok cssbutton cssbutton-flat green" onclick="closeDrawerSuccessOverlayDialog(false)">OK</button></div>';
         		}
         		doOverlayDialogByHtmlNew(drawerSuccessConformation);
         	}

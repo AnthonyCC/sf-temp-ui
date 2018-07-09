@@ -66,7 +66,7 @@ public class FDInvoiceLineModel extends ModelSupport implements FDInvoiceLineI {
 	private ProductModel lookUpSubstitueProduct() {
 
 		try {
-			if (this.getSubstitutedSkuCode() != null) {
+			if (this.getSubstitutedSkuCode() != null && !this.getSubstitutedSkuCode().trim().isEmpty()) {
 				ProductReference productRef = new SkuReference(
 						this.getSubstitutedSkuCode());
 				if (productRef == null

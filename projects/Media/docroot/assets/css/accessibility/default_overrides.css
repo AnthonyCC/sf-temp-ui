@@ -8,8 +8,8 @@ a.headerlink:focus
    
 }
 input#signupbtn:focus,input#signinbtn:focus{
-    background-color: #5fb067 ;
-    border-color: #306238 ;
+    background-color: #5fb067 !important;
+    border-color: #306238 !important;
     box-shadow: 0 0 1px #aaaaaa, 0 0 8px #aaaaaa;
 }
 .icon-image a:focus {

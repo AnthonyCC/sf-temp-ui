@@ -1,49 +1,50 @@
 /*orange buttons high color contrast */
-.assistive-mode .cssbutton.orange:not(.transparent):not(.nontransparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder):not(.ATCHasItemsMobile)
+.assistive-mode .cssbutton.orange:not(.transparent):not(.nontransparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder)
 {
 	background-color: #AF3D08 !important;
 	border: 1px solid #AF3D08 !important;
 }
-.assistive-mode .cssbutton.orange:hover:not(.transparent):not(.nontransparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder):not(.ATCHasItemsMobile)
+
+.assistive-mode .cssbutton.orange:hover:not(.transparent):not(.nontransparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder)
 {
 	background-color:#D04A0A !important;
 	border-color: #D04A0A !important;
 }
 
-.assistive-mode .cssbutton.orange:active:not(.transparent):not(.nontransparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder):not(.ATCHasItemsMobile)
+.assistive-mode .cssbutton.orange:active:not(.transparent):not(.nontransparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder)
 {
 	
 	background-color: #AF3D08 !important;
 }
 
-.assistive-mode .cssbutton.orange:focus:not(.transparent):not(.nontransparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder):not(.ATCHasItemsMobile)
+.assistive-mode .cssbutton.orange:focus:not(.transparent):not(.nontransparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder)
 {
 	background-color:#D04A0A !important;
 	border-color: rgba(0,0,0,0.4) !important;
 	box-shadow: 0 0 1px #bbbbbb, 0 0 8px #bbbbbb !important;
 }
 
-/* purple color buttons high color contrast, purple has offset color so new rule should be applied for this */
+/* purple color buttons high color contrast, purple has offset color so new rule should be applied for this
 
-.assistive-mode .cssbutton.purple.nontransparent:not(.transparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder)
+.assistive-mode #quickshop .cssbutton.purple.nontransparent:not(.transparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder).not(.purple)
 {
     background-color: #7C4884 !important;
     border: 1px solid #7C4884 !important;
 }
 
-.assistive-mode .cssbutton.purple.nontransparent:hover:not(.transparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder)
+.assistive-mode #quickshop .cssbutton.purple.nontransparent:hover:not(.transparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder)
 {
 	background-color: #98609F !important;
     border-color: #98609F !important;
 }
 
-.assistive-mode .cssbutton.purple.nontransparent:active:not(.transparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder)
+.assistive-mode #quickshop .cssbutton.purple.nontransparent:active:not(.transparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder)
 {
 	
 	background-color: #7C4884 !important;
 }
 
-.assistive-mode .cssbutton.purple.nontransparent:focus:not(.transparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder)
+.assistive-mode #quickshop .cssbutton.purple.nontransparent:focus:not(.transparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder)
 {
 	background-color: #98609F !important;
     border-color: rgba(0,0,0,0.4) !important;
@@ -51,39 +52,9 @@
 }
 
 .assistive-mode .globalnav_top #topnavitem_reorder a {
-    color: #7C4884 !important;
+    color: #7C4884;
 }
-
-.assistive-mode #quickshop > .tabs li{
-	
-	background-color: #7C4884 !important;
-}
-
-.assistive-mode .departments.rounded-box .checkboxlist input[type="radio"]:checked + label{
-	
-	background-color: #7C4884 !important;
-}
-
-.assistive-mode .standing-orders-3-so-settings-item-name{
-	
-	background-color: #7C4884 !important;
-}
-
-.assistive-mode #quickshop .header h1{
-	
-	color: #7C4884 !important;
-}
-
-.assistive-mode .qs-header .gridlistchange button[data-active]{
-	
-	background-color: #7C4884 !important;
-}
-
-.assistive-mode .standing-orders-3-so-settings-square-line-1,
-.assistive-mode .standing-orders-3-so-settings-square-line-2{
-	background-color: #7C4884 !important;
-}
-
+*/
 /*Green color buttons*/
 
 .assistive-mode .cssbutton.green:not(.transparent):not(.nontransparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder),
@@ -95,29 +66,13 @@
     border: 1px solid #096D19 !important;
 }
 
-.assistive-mode #popupcart .qtyinput .quantity_minus, 
-.assistive-mode #popupcart .qtyinput .quantity_plus
-{
-	
-	background-color: transparent !important;
-	border: none !important;
-    
-}
-
-.assistive-mode[data-iscorporateuser="false"] .hasFDX .top-nav
+.assistive-mode .hasFDX .top-nav
 {
 	
 	background-color: #096D19 !important;
 }
-
-.assistive-mode[data-iscorporateuser="true"] .hasFDX .top-nav
-{
-	
-	background-color: #627387 !important;
-}
-
 .assistive-mode .cssbutton.green:hover:not(.transparent):not(.nontransparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder), 
-.assistive-mode[data-iscorporateuser="false"] .hasFDX .top-item-link a:hover,
+.assistive-mode .hasFDX .top-item-link a:hover,
 .assistive-mode .qtyinput .quantity_minus:hover, 
 .assistive-mode .qtyinput .quantity_plus:hover
 {
@@ -125,25 +80,16 @@
     border-color: #098A1E !important;
 }
 
-.assistive-mode[data-iscorporateuser="true"] .hasFDX .top-item-link a:hover{
-	background-color: #4B5E68 !important;
-}
-
 .assistive-mode .cssbutton.green:active:not(.transparent):not(.nontransparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder), 
-.assistive-mode[data-iscorporateuser="false"] .hasFDX .top-item-link a:active,
+.assistive-mode .hasFDX .top-item-link a:active,
 .assistive-mode .qtyinput .quantity_minus:active, 
 .assistive-mode .qtyinput .quantity_plus:active
 {
 	background-color: #096D19 !important;
 }
 
-.assistive-mode[data-iscorporateuser="true"] .hasFDX .top-item-link a:active{
-	
-	background-color: #4B5E68 !important;
-}
-
 .assistive-mode .cssbutton.green:focus:not(.transparent):not(.nontransparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder), 
-.assistive-mode[data-iscorporateuser="false"] .hasFDX .top-item-link a:focus,
+.assistive-mode .hasFDX .top-item-link a:focus,
 .assistive-mode .qtyinput .quantity_minus:focus, 
 .assistive-mode .qtyinput .quantity_plus:focus
 {
@@ -152,31 +98,16 @@
     box-shadow: 0 0 1px #bbbbbb, 0 0 8px #bbbbbb !important;
 }
 
-.assistive-mode[data-iscorporateuser="true"] .hasFDX .top-item-link a:focus{
-	background-color: #4B5E68 !important;
-	
-}
-
-.assistive-mode table.tsHeaderE,
-.assistive-mode .tsHeaderE{
-	background-color: #096D19 !important;
-}
-
 .assistive-mode .hasFDX .gnav-footer
 {
 	background-color: #096D19 !important;
-/*     border: 1px solid #096D19 !important; */
+    border: 1px solid #096D19 !important;
 }
 
-.assistive-mode[data-iscorporateuser="false"] .touched[data-component="globalnav-item"],
-.assistive-mode[data-iscorporateuser="false"] [data-component="globalnav-item"]:hover{
+.assistive-mode .touched[data-component="globalnav-item"],
+.assistive-mode [data-component="globalnav-item"]:hover{
 	
 	background-color: #098A1E !important;
-}
-.assistive-mode[data-iscorporateuser="true"] .touched[data-component="globalnav-item"],
-.assistive-mode[data-iscorporateuser="true"] [data-component="globalnav-item"]:hover{
-	
-	background-color: #4B5E68 !important;
 }
 
 .assistive-mode .hasFDX .gnav-footer a.link:hover
@@ -198,6 +129,9 @@
 /*     box-shadow: 0 0 1px #bbbbbb, 0 0 8px #bbbbbb !important; */
 }
 
+.assistive-mode .modify-order-bar a.cssbutton.orange.cancel-changes-link {
+    border: 1px solid #fff !important;
+}
 .assistive-mode button#topInputFindButton_fdx{
 	background-color: #096D19 !important;
     border: 1px solid #096D19 !important;
@@ -216,815 +150,4 @@
     background-color: #098A1E !important;
     border-color: rgba(0,0,0,0.4) !important;
     box-shadow: 0 0 1px #bbbbbb, 0 0 8px #bbbbbb !important;
-}
-
-.assistive-mode #menupopup input[type="radio"]:checked + span,
-.assistive-mode section.main .leftnav .menuBox input[type="radio"]:checked + span {
-    background-color: #096D19 !important;
-}
-.assistive-mode section.tabs .tabcontent a.back,
-.assistive-mode section.main .leftnav button.back{
-	color: #408245 !important;
-    background-color: #ffffff !important;
-    border: 1px solid #4fa157 !important;
-}
-.assistive-mode section.tabs .ltabcontent a.back:hover,
-.assistive-mode section.main .leftnav button.back:hover{
-	background-color:#eee !important;
-}
-.assistive-mode .browse-popup-content li.selected a{
-	background-color:#096D19 !important;
-	outline: none !important;
-}
-.assistive-mode #FDCustomSelect li button:focus{
-	outline:none !important;
-}
-.assistive-mode .cssbutton.white.transparent{
-	color:#333 !important;
-}
-.assistive-mode .cssbutton.white.transparent:hover{
-	color:#333 !important;
-}
-.assistive-mode .cssbutton.white.transparent:focus{
-	color:#333 !important;
-}
-
-.assistive-mode .pdp-freshness .days{
-	background-color: #096D19 !important;
-}
-
-.assistive-mode .pdp-freshness .guarfresh{
-	color:#408244 !important;
-}
-.assistive-mode .pdp .pdp-atc .subtotal{
-	color:#333 !important;
-}
-
-.assistive-mode[data-iscorporateuser="false"] .hasFDX [data-component="globalnav"] a[data-highlight="on"] {
-    background-color: #098A1E !important;
-}
-
-.assistive-mode[data-iscorporateuser="true"] .hasFDX [data-component="globalnav"] a[data-highlight="on"] {
-    background-color: #4B5E68 !important;
-}
-
-.assistive-mode[data-iscorporateuser="false"] .hasFDX [data-component="globalnav"] .bottom-nav [data-highlight="on"]{
-	  
-   background-color: #edf5ee!important;
-}
-
-.assistive-mode .selected_color {
-    background-color: #098A1E !important;
-}
-
-.assistive-mode .globalNavigation .green-skin{
-	background-color:#096D19 !important;
-}
-
-.assistive-mode .globalNavigation .item-skin-hovered,
-.assistive-mode .globalNavigation .item-skin-hover:hover{
-	background-color:#098A1E !important;
-
-}
-
-.assistive-mode input#signupbtn,
-.assistive-mode input#signinbtn,
-.assistive-mode #sulCont input[type="submit"]{
-	background-color: #096D19 !important;
-}
-
-.assistive-mode input#signupbtn:hover,
-.assistive-mode input#signinbtn:hover {
-    background-color: #098A1E !important;
-    border-color: #098A1E !important;
-}
-
-.assistive-mode .green_background{
-	background-color: #096D19 !important;
-}
-
-.assistive-mode .content-tittle-text-banner{
-	background-color:#AF3D08 !important;
-}
-
-.assistive-mode input#signupbtn:focus,
-.assistive-mode input#signinbtn:focus {
-    background-color: #098A1E !important;
-    border-color: rgba(0,0,0,0.4) !important;
-    box-shadow: 0 0 1px #bbbbbb, 0 0 8px #bbbbbb !important;
-}
-.assistive-mode #selectAddressList-menu .ui-state-focus, 
-.assistive-mode #selectAddressList-menu .locabar-check-text{
-	color: #408245 !important;
-}
-
-.assistive-mode .locabar-right-sections .locabar-section:hover,
-.assistive-mode .locabar-right-sections .locabar-section:hover > a,
-.assistive-mode .locabar-section:hover #locabar_user_trigger > a,
-.assistive-mode .locabar-section:hover #locabar_user_trigger > a:active,
-.assistive-mode .locabar-section:hover #locabar_user_trigger > a:focus,
-.assistive-mode .locabar-section:hover #locabar_user_trigger > a:visited, 
-/* .assistive-mode .locabar-right-sections .locabar-section:hover .locabar_triggers_menuitem a */
-{
-	color: #408245 !important;
-}
-
-.assistive-mode .content-module.editorial-module.product-carousel .editorial-content .learn-more button{
-	color: #b93d3f !important;
-}
-
-.assistive-mode #locabar_addresses .locabar_addresses-dlvadd-edit:hover,
-.assistive-mode #locabar_addresses .locabar_addresses-ts-info:hover,
-.assistive-mode #locabar_addresses .locabar_addresses-dlvadd-edit:focus,
-.assistive-mode #locabar_addresses .locabar_addresses-ts-info:focus{
-	 background-color: #098A1E !important;
-	 outline:none !important;
-}
-
-.assistive-mode #locabar_addresses .section-header{
-	background-color:#096D19 !important;
-}
-
-.assistive-mode .cssbutton.fdxgreen{
-	background-color:#096D19 !important;
-}
-
-.assistive-mode section.main .leftnav .menuBox input[type="radio"]:checked + span{
-	background-color:#096D19 !important;
-}
-
-/* modify order bar */
-.assistive-mode .modify-order-bar {
-	    background-color: #AF3D08 !important;	
-}
-
-
-.assistive-mode #locationbar-sticky-wrapper .disableCart .locabar-user-section[data-signedin="true"],
-.assistive-mode #locationbar-sticky-wrapper .locabar-user-section[data-signedin="true"]:hover,
-.assistive-mode #locationbar-sticky-wrapper .disableCart .locabar-popupcart-section,
-.assistive-mode #locationbar-sticky-wrapper .locabar-popupcart-section:hover,
-.assistive-mode #locationbar-sticky-wrapper .locabar-right-sections .locabar-section:hover{
-	background-color: #D04A0A !important;
-}
-
-.assistive-mode .Container_Top_YourAccount{
-	color: #AF3D08 !important;
-}
-
-.assistive-mode #locationbar-sticky-wrapper .locabar-user-section[data-signedin="true"]:focus,
-.assistive-mode #locationbar-sticky-wrapper .locabar-popupcart-section:focus,
-.assistive-mode #locationbar-sticky-wrapper .locabar-right-sections .locabar-section:focus{
-	background-color: #D04A0A !important;
-}
-
-.assistive-mode #atpfailure .lineHeaderRight{
-	   
-	    background-color: #096D19 !important;	
-}
-
-.assistive-mode #popupcart .footer .save-amount{
-	    color: #AF3D08 !important;
-}
-
-.assistive-mode #popupcart a.cart{
-	    color: #408244;
-}
-
-.assistive-mode #locationbar-sticky-wrapper .locabar-circle-cont{
-	color: #C35009 !important;
-    background-color: #ffffff !important;
-    border: 2px solid #C35009 !important;
-}
-
-.assistive-mode .content-module .module-header .module-text-banner{
-	background-color: #AF3D08 !important;
-}
-
-.assistive-mode .locabar-circle-cont{
-	   background-color: #096D19 !important;
-	   color: #fff;
-       border: 2px solid #fff;
-}
-
-.assistive-mode .orderTotal td{
-    background-color: #7C4884 !important;
-}
-
-.assistive-mode h3.menuName a{
-	color: #3C7C41 !important;
-}
-
-.assistive-mode .bottom-nav{
-	background-color: #fff !important;
-}
-
-.assistive-mode .bottom-nav .bottom-nav-items .bottom-item a:link{
-	color: #333 !important;
-}
-
-.assistive-mode .locabar-tab-cos span,
-.assistive-mode .locabar-tab-cos-cont:hover .locabar-tab-cos span,
-.assistive-mode .locabar-tab-cos-cont:focus .locabar-tab-cos span,
-.assistive-mode .locabar-tab-cos-cont.notselected .locabar-tab-cos span{
-	    color:#757575;
-}
-
-.assistive-mode .subdepartments > li > span > a:link,
-.assistive-mode .subdepartments > li > span > a:visited,
-.assistive-mode .subdepartments > li > span > a:hover,
-.assistive-mode .subdepartments > li > span > a:active{
-	color: #333 !important;
-}
-.assistive-mode .bottom-nav .bottom-nav-items .bottom-item a:focus{
-	    background-color: #edf5ee !important;
-}
-.assistive-mode .bottom-nav .bottom-nav-items .bottom-item a:hover{
-	    background-color: #edf5ee !important;
-}
-.assistive-mode .bottom-nav .bottom-nav-items .bottom-item a:visited{
-	color:#333 !important;
-}
-.assistive-mode [data-component="carousel"] ul.pager li.current span {
-    background-color:#9C9C91 !important;
-}
-.assistive-mode .portrait-item-unit-price,
-.assistive-mode .portrait-item .portrait-item-price s{
-	color:#333 !important;
-}
-.assistive-mode .cssbutton.orange.transparent:not(.nontransparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder){
-	color: #C35009 !important;
-}
-.assistive-mode .cssbutton.green.transparent:not(.nontransparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder){
-    color: #408245 !important;
-}
-.assistive-mode .cssbutton.purple:not(.nontransparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder):not([data-active]):not(.color-green),
-.assistive-mode .cssbutton.purple.transparent:not(.nontransparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder):not([data-active]):not(.color-green){
-        color: #9E5EA6 !important;
-}
-.assistive-mode #locabar_addresses{
-	background-color:#fff !important;
-}
-.assistive-mode *:not(.cssbutton).orange{
-	color: #AF3D08 !important;
-}
-.assistive-mode .unrecognized.error-message span.orange{
-	color: #AF3D08 !important;
-}
-.assistive-mode:not([data-ismobweb="true"]) .ui-state-default{
-	color:#7C4884 !important;
-}
-.assistive-mode .orderbox .estimated{
-	color:#333 !important;
-}
-.assistive-mode .locabar_addresses-anon-deliverable{
-	background-color:#fff !important;
-}
-.assistive-mode .footer__findout{
-	color:#333 !important;
-}
-.assistive-mode h2.orderid a {
-    color: #4C7B4C !important;
-}
- 
-.assistive-mode h2.orderid a:hover {
-    color: #3D7F48 !important;
-}
-.assistive-mode h2.orderid a:focus {
-    color: #3D7F48 !important;
-}
-.assistive-mode .highcontrast{
-	color:#AF3D08 !important;
-}
-.assistive-mode .faq_home_highcontrast,
-.assistive-mode .recipe_highcontrast{
-	color: #5d5f36;
-}
-.assistive-mode a.faq_home_highcontrast:hover,
-.assistive-mode a.faq_home_highcontrast:focus{
-	text-decoration:underline;
-}
-.assistive-mode a.recipe_highcontrast:hover,
-.assistive-mode a.recipe_highcontrast:focus{
-	text-decoration:underline;
-	outline:none !important;
-}
-
-.assistive-mode label.legend,
-.assistive-mode .dropdown_recipe label,
-.assistive-mode label.keyword,
-.assistive-mode .recipe_section{
-	color:#AF3D08 !important;
-}
-.assistive-mode .text9nb{
-	color:#333 !important;
-}
-.assistive-mode .dot_separator{
-	color:#666 !important;
-}
-.assistive-mode .purple-text{
-	color:#7C4884 !important;
-}
-.assistive-mode .recipe_header,
-.assistive-mode .platform-termsofuse-container h1,
-.assistive-mode .aboutUsText,
-.assistive-mode .updated-food-saftey-home-header p,
-.assistive-mode .updated-food-saftey-home-info h3{
-	color:#AF3D08 !important;
-}
-.assistive-mode .updated-food-saftey-home-info h2,
-.assistive-mode .quality-color,
-.assistive-mode .updated-fruit-storage-section-three-info h2,
-.assistive-mode .updated-cooking-and-storage-info h2{
-	color: #096D19 !important;
-}
-.assistive-mode .about-us-quality-section-blocks h2,
-.assistive-mode .quality-footer{
-	background-color: #096D19 !important;
-}
-.assistive-mode .case-sensitive,
-.assistive-mode .accordion input[type=checkbox]+ label,
-.assistive-mode .accordion input[type=checkbox]:checked ~ #article,
-.assistive-mode .accordion input[type=checkbox]:checked ~ #article1,
-.assistive-mode .accordion input[type=checkbox]:checked ~ #article2,
-.assistive-mode .optionalaccess,
-.assistive-mode div.card_controls_msg,
-.assistive-mode div.card_TOC,
-.assistive-mode .qs-list-header p,
-.assistive-mode .storefront-sms-terms{
-	color:#333 !important;
-}
-.assistive-mode .text10 .Container_Top_help{
-	color:#AF3D08 !important;
-}
-.assistive-mode .ymal_highcontrast{
-     background-color:#7C4884 !important;
-}
-.assistive-mode .highcontrast_ymal{
-	color:#7C4884 !important;
-}
-.assistive-mode #recall-show-more{
-	background-color:#AF3D08 !important;
-}
-.assistive-mode .food_safety_highcontrast{
-	color: #5d5f36;
-}
-.assistive-mode a.food_safety_highcontrast:hover,
-.assistive-mode a.food_safety_highcontrast:focus{
-	text-decoration:underline;
-	outline:none !important;
-}
-.assistive-mode .qs-content .lineitems22 .itemlist-item-header-buttons button.addtolist {
-    border: 0 !important;
-    color: #408244 !important;
-    font-weight: normal !important;
-}
-.assistive-mode .qs-content .lineitems22 .itemlist-item-header-buttons button.addtolist:hover {
-    color: #5fb069 !important;
-    background: none !important;
-    text-decoration: underline !important;
-}
-.assistive-mode .qs-content .lineitems22 .itemlist-item-header-buttons button.addtolist:focus {
-    color: #5fb069 !important;
-    background: none !important;
-    text-decoration: underline !important;
-    box-shadow: none !important;
-}
-.assistive-mode .dp-plan-activate-text{
-	color: #096D19 !important;
-}
-.assistive-mode #FDCustomSelect li button{
-	outline:none;
-}
-
-.assistive-mode .standing-orders-3 .standing-orders-3-error-place-order .standing-orders-3-error-place-order-settings{
-	    color: #5d5f36 !important;
-}
-/* orange color text */
-/* .assistive-mode .text11orbold{ */
-/* 	color:#AF3D08; */
-/* } */
-.assistive-mode #sulCont.social-singin .social-login-pass-forgot a{
-	color:#333 !important;
-}
-.assistive-mode a.standing-orders-3-so-settings-delete{
-	color: #5d5f36 !important;
-}
-.assistive-mode .updated-home-delivery h1,
-.assistive-mode .updated-freshdirect-at-office-header-one{
-	Color:#AF3D08 !important;
-}
-/*red color for errors*/
-.assistive-mode .standing-orders-3 .standing-orders-3-so-settings-error .standing-orders-3-so-settings-error-header-bold,
-.assistive-mode .standing-orders-3 .standing-orders-3-error-place-order,
-.assistive-mode #customizePopup.soShow.so-review .so-container .so-review-date-red{
-	color:#B93D3F !important;
-}
-.assistive-mode span.standing-orders-3-so-settings-square-line-1-label.offscreen{
-	color:#fff !important;
-}
-.assistive-mode button.okReviewSOButton.cssbutton.cssbutton-flat.green.nontransparent{
-	background-color: #096D19 !important;
-    border: 1px solid #096D19 !important;
-}
-.assistive-mode button.okReviewSOButton.cssbutton.cssbutton-flat.green.nontransparent:hover{
-    background-color: #098A1E !important;
-    border-color: #098A1E !important;
-}
-.assistive-mode button.okReviewSOButton.cssbutton.cssbutton-flat.green.nontransparent:focus{
-    background-color: #098A1E !important;
-    border-color: rgba(0,0,0,0.4) !important;
-    box-shadow: 0 0 1px #bbbbbb, 0 0 8px #bbbbbb !important;
-}
-.assistive-mode #customizePopup.soShow .subtotal, 
-.assistive-mode .pdp-evenbetter-soShow .pdp-evenbetter-atc .pdp-evenbetter-quantity .subtotal{
-	color:#333 !important;
-}
-.assistive-mode #customizePopup.soShow.so-review .so-container .so-review-min-details,
-.assistive-mode #customizePopup.soShow.so-review .so-container .so-review-link a,
-.assistive-mode .pdp-atc #pdp-atc-addtolist,
-.assistive-mode #customizePopup .buttons .addtolist,
-.assistive-mode .pdp .pdp-atc .subtotal a,
-.assistive-mode .dpn-footer-no a,
-.assistive-mode .mm-page .dpn-footer-no-logged a,
-.assistive-mode .mm-page .dpn-footer-no a, 
-.assistive-mode .mm-page-overlay .dpn-footer-no a, 
-.assistive-mode .mm-page .dpn-footer-no-logged a, 
-.assistive-mode .mm-page-overlay .dpn-footer-no-logged a{
-	color:#5d5f36 !important;
-}
-.assistive-mode .dpn-center-header{
-	color:#333 !important;
-}
-.assistive-mode .deliverypasspopup__header-text .deliverypasspopup__header-text-circle{
-	color:#333 !important;
-}
-
-/*delivery pass header text of green background in welcome page, success page and payment checkout page  */
-.assistive-mode .dpn-header,
-.assistive-mode .dpn-success-header,
-.assistive-mode .deliverypass-payment-header{
-    background: #098A1E !important;
-    background-image: linear-gradient(to left, #096D19, #098A1E) !important;
-}
-.assistive-mode .wallet-connected-indicator{
-	color:#333 !important;
-}
-.assistive-mode h1.customerProfile,
-.assistive-mode .question h2,
-.assistive-mode .qualityRating{
-	color:#AF3D08;
-}
-.assistive-mode .navbar,
-.assistive-mode .mm-navbar,
-.assistive-mode footer .footercontent{
-	background-color: #096D19 !important;
-}
-.assistive-mode #navMenuItems li,
-.assistive-mode .master-food-safety-container h1,
-.assistive-mode .master-food-safety-container h1 font{
-	color: #096D19 !important;
-}
-.assistive-mode .navMenuItems-topIcons{
-	background-color:#fff !important;
-}
-.assistive-mode .pNavLoginButton.createacc a{
-	background-color: #096D19 !important;
-	color:#fff;
-}
-.assistive-mode .mm-page button.addtocart.cssbutton.cssbutton-flat.orange.small:not(.transparent):not(.nontransparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder):not(.ATCHasItemsMobile):not(.customize){
-	background-color:transparent !important;
-	border: 0px !important;
-}
-/* .assistive-mode .mm-page button.customize.cssbutton.cssbutton-flat.orange.small:not(.transparent):not(.nontransparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder):not(.ATCHasItemsMobile):not(.customize){ */
-/* 	background-color:transparent !important; */
-/* 	border: 0px !important; */
-/* } */
-/* .assistive-mode[data-eventsource="BROWSE"] .mm-page #content{ */
-/* 	background-color:#F2F0EF !important; */
-/* } */
-.assistive-mode footer .basicHits{
-	color:#408244;
-}
-.assistive-mode .pNavLoginButton a{ 
-	color: #408245;
-    background-color: #ffffff;
-    border: 1px solid #4fa157;
-}
-.assistive-mode #sul_type_fields label,.assistive-mode #sul_type_fields .legend,.assistive-mode #sulCont .bottom-contents .bottom-contents-terms-text,
-.assistive-mode #sulCont .bottom-contents .bottom-contents-terms-text a{
-	color:#333;
-}
-.assistive-mode[data-ismobweb="true"] .cssbutton.orange.customize:not(.transparent):not(.nontransparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder):not(.ATCHasItemsMobile){
-	background-color: transparent !important;
-	border: 0px !important;
-}
-.assistive-mode .freshness-guarantee-container h1{
-	color:#AF3D08 !important;
-}
-.assistive-mode[data-ismobweb="true"] .timeslot-selector .select-day .ui-selectmenu-button{
-	background-color: #096D19 !important;
-    border: 1px solid #096D19 !important;
-    outline:none !important;
-}
-.assistive-mode[data-ismobweb="true"] .ui-selectmenu-menu .select-day-ui-menu .ui-menu-item{
-	background-color: #096D19 !important;
-}
-.assistive-mode[data-ismobweb="true"] .ui-selectmenu-menu .select-day-ui-menu .ui-state-focus {
-    background-color: #41a990 !important;
-}
-.assistive-mode #tsContainer .tsHeaderC a:focus table{
-	    background-color: #098A1E !important;
-	    color:#fff !important;
-}
-.assistive-mode #tsContainer .tsHeaderE a:focus,.assistive-mode #tsContainer .tsHeaderE a:hover{
-	background-color: #098A1E !important;
-}
-.assistive-mode #sulCont .social-login-green-button{
-	background-color: #096D19 !important;
-}
-.assistive-mode .portrait-item .fdCoupon_detCont,
-.assistive-mode .portrait-item a.fdCoupon_det, 
-.assistive-mode .portrait-item a.fdCoupon_det:active, 
-.assistive-mode .portrait-item a.fdCoupon_det:link, 
-.assistive-mode .portrait-item a.fdCoupon_det:visited, 
-.assistive-mode .portrait-item a.fdCoupon_det:hover
-{
-	color:#333 !important;
-}
-.assistive-mode:not([data-ismobweb="true"]) #topSearchField{
-	background-color: #fff;
-	border: 2px solid #999; 
-	height:30px !important;
-	color: #333 !important;
-}
-.assistive-mode #topSearchField:focus {
-    border: 2px solid transparent !important;
-    outline: #5fb069 solid 2px;
-}
-.assistive-mode .portrait-item.unavailable .portrait-item-header, 
-.assistive-mode .portrait-item.unavailable .portrait-item-header-name, 
-.assistive-mode .portrait-item.unavailable .portrait-item-header-configuration{
-    color: #757575 !important;
-}
-.assistive-mode .itemlist-item.unavailable .itemlist-item-header, 
-.assistive-mode .itemlist-item.unavailable .itemlist-item-header-name, 
-.assistive-mode .itemlist-item.unavailable .itemlist-item-header-configuration {
-    color: #757575 !important;
-}
-.assistive-mode .unavailable .portrait-item-burst_wrapper
-/* .assistive-mode .portrait-item.unavailable .accessibility_unavailable:after */
-{
-	opacity:0.7 !important;
-}
-
-.assistive-mode .pdp .availability-dialog .header{
-	color:#AF3D08 !important;
-}
-
-.assistive-mode .pdp .pdp-evenbetter .header{
-	color:#637387 !important;
-}
-.assistive-mode .rts-backtotop{
-	outline:none !important;
-}
-.assistive-mode .cssbutton.disabled, 
-.assistive-mode .cssbutton[disabled], 
-.assistive-mode .cssbutton.disabled:hover, 
-.assistive-mode .cssbutton[disabled]:hover, 
-.assistive-mode .cssbutton.disabled:active, 
-.assistive-mode .cssbutton[disabled]:active, 
-.assistive-mode .cssbutton.disabled:focus, 
-.assistive-mode .cssbutton[disabled]:focus{
-	color:#666 !important;
-	background: #e8e8ea !important;
-}
-.assistive-mode .pdp-evenbetter-atc button.pdp-evenbetter-addtolist.cssbutton{
- color: #408244 !important;
- border:1px solid #408244 !important;
- width:99px;
- }
- .assistive-mode .pdp-evenbetter-atc button.pdp-evenbetter-addtolist.cssbutton:hover{
- background-color:#fff !important;
- }
-.assistive-mode .pdp .availability-dialog{
-	border: 2px solid #AF3D08 !important;
-}
-.assistive-mode .pdp-cc .cc-total strong,.assistive-mode .pdp-cc .cc-total{
-	color:#333 !important;
-}
-/* .assistive-mode .storefront-catering-header h2{ */
-/* 	background-color:#637387 !important; */
-/* } */
-.assistive-mode .storefront-catering-header h2 .storefront-catering-step {
-    background-color: #4B5E68 !important;
-}
-.assistive-mode .subtotal__row .free-link,
-.assistive-mode div#st_label_fuelsurcharge a,
-.assistive-mode div#subtotalbox1 a,
-.assistive-mode div#subtotalbox2 a{
-	color: #5d5f36;
-	text-decoration:underline;
-}
-
-.assistive-mode .subtotal__row .free-link:hover,
-.assistive-mode .subtotal__row .free-link:focus,
-.assistive-mode div#st_label_fuelsurcharge a:hover,
-.assistive-mode div#st_label_fuelsurcharge a:focus,
-.assistive-mode div#subtotalbox1 a:focus,
-.assistive-mode div#subtotalbox1 a:hover,
-.assistive-mode div#subtotalbox2 a:hover,
-.assistive-mode div#subtotalbox2 a:focus
-{
-	text-decoration:underline !important;
-}
-.assistive-mode .cStat_applied{
-	color:#333 !important;
-}
-.assistive-mode .cartcoupon-message, 
-.assistive-mode .cartline-discount .red,
-.assistive-mode .row-style-saving #st_label_youSaved .strl_text,
-.assistive-mode .row-style-saving,
-.assistive-mode #checkout-cart-header .save-amount{
-	color: #B93D3F !important;
-}
-.assistive-mode .triangle-red:before{
-	border-color: transparent transparent transparent #B93D3F;
-}
-.assistive-mode .cssBurst.fav,
-.assistive-mode .cssBurst.fav span{
-	background-color:#627387 !important;
-}
-.assistive-mode [fdform][fdform-locked] *:disabled
-{
-	background: #e8e8ea !important;
-    color: #666 !important;
-}
-.assistive-mode .tsEcoFriendlyTimeC {
-   color:#6C7240 !important;
-}
-.assistive-mode #sulCont input[disabled="disabled"],
-.assistive-mode #sulCont input[disabled]{
-	background: #e8e8ea !important;
-    color: #666 !important;
-}
-.assistive-mode p.restrictionpopup__section a,.assistive-mode p.restrictionpopup__section a:focus,.assistive-mode p.restrictionpopup__section a:hover{
-	color: #5d5f36 !important;
-	text-decoration:underline;
-}
-.assistive-mode div#oas_b_FirstECheckPromo a {
-    background-color: #096D19 !important;
-    border: 1px solid #096D19 !important;
-}
-.assistive-mode div#oas_b_FirstECheckPromo a:hover{
-	background-color: #098A1E !important;
-    border-color: #098A1E !important;
-}
-.assistive-mode div#oas_b_FirstECheckPromo a:focus {
-	background-color: #098A1E !important;
-    border-color: rgba(0,0,0,0.4) !important;
-    box-shadow: 0 0 1px #bbbbbb, 0 0 8px #bbbbbb !important;
-}
-.assistive-mode [data-tooltip] .tooptip-indicator{
-	    border-top: 11px solid #096D19 !important;
-}
-.assistive-mode .order_history_table a{
-	color: #5d5f36 !important;
-}
-.assistive-mode .order_history_table a:focus{
-	color: #5d5f36 !important;
-	text-decoration:underline !important;
-	outline:none !important;
-}
-.assistive-mode .order_history_table a:hover{
-	color: #5d5f36 !important;
-	text-decoration:underline !important;
-}
-.assistive-mode .orderSummary td{
-	background-color:#fcfcfc !important;
-}
-.assistive-mode .tsDiscountE,
-.assistive-mode .tsDiscountC{
-	color:#AF3D08 !important;
-}
-.assistive-mode .unrecognized.error-message span{
-	color:#AF3D08 !important;
-}
-.assistive-mode .title18or{
-	color:#D04A0A !important;
-}
-
-.assistive-mode button#prodReq_clear{
-	color: #408245 !important;
-    border: 1px solid #4fa157 !important;
-}
-.assistive-mode .atc-info .incart-info{
-	color: #333 !important;
-}
- .assistive-mode .footer__findout a{
-   color: #5d5f36 !important;
- }
- .assistive-mode .so-timeslot-legend-first-next{
-  color: #5d5f36 !important;
- }
-  .assistive-mode .so-timeslot-legend-first-next-ball{
-  background-color: #5d5f36 !important;
- }
- .assistive-mode #legendCheckout td{
-   color: #5d5f36 !important;
- }
- .assistive-mode .standing-orders-3 #cartcontent .so-cartline-delivery-date-info{
- color: #7C4884 !important;
- }
- .assistive-mode .standing-orders-3 #cartcontent .so-cartline-delivery-date-begins{
-   background-color: #7C4884 !important;
- }
- .assistive-mode #newsoErroMessage{
-color: #B93D3F;
- }
- .assistive-mode .mod56 .contact-us a{
- color: #5d5f36 !important;
- }
- .assistive-mode .mod56 .contact-us a:focus,
- .assistive-mode .mod56 .contact-us a:hover{
- text-decoration:none;
- }
- .assistive-mode .tsWrapper .text11gbold a {
-    color: #333 !important;
-}
-.assistive-mode .selectedAddressIsHome-false{
-	color:#666 !important;
-}
-.assistive-mode .titleor14,
-.assistive-mode .locabar_addresses-reservation-existing-change,
-.assistive-mode .recipe_tab,
-.asstive-mode a.recipe_tab:visited,
-.assistive-mode a.recipe_tab{
-	color: #AF3D08 !important;
-}
-.assistive-mode .recipe_section_6699CC{
-	color:#3C78B4;
-}
-.assistive-mode a.tsCTBenefits{
-	color:#fff;
-	text-decoration:underline;
-}
-.assistive-mode a.tsCTBenefits:focus,.assistive-mode a.tsCTBenefits:hover{
-	text-decoration:none;
-}
-.assistive-mode .num{
-	color:#333 !important;
-}
-.assistive-mode input[type="text"], 
-.assistive-mode input[type="email"], 
-.assistive-mode input[type="password"],
-.assistive-mode section.main .breadcrumbs,
-.assistive-mode section.main .breadcrumbs li a,
-.assistive-mode  section.main .breadcrumbs li a:link{
-	color:#333;
-}
-.assistive-mode .nav li{
-	background-color:#098A1E;
-}
-.assistive-mode .nav li a:focus{
-	background-color:#AF3D08 !important;
-}
-.assistive-mode .nav li:hover{
-	background-color:#098A1E;
-}
-.assistive-mode a.free-link{
-	color:#333;
-	text-decoration:underline;
-}
-.assistive-mode #addpaymentmethod_masterpass a{
-	color:#333;
-	text-decoration:underline;
-}
-.assistive-mode .fdCoupon_msg{
-	color:#333;
-}
-.assistive-mode [data-boxid="automaticheaderdiscount"] .subtotal__rowcell-mid,
-.assistive-mode [data-boxid="redemptionPromo"] .subtotal__rowcell-mid,
-.assistive-mode [data-boxid="freefood"] .subtotal__rowcell-mid, 
-.assistive-mode [data-boxid="discount"] .subtotal__rowcell-mid, 
-.assistive-mode [data-boxid="redemptionfailure"] .subtotal__rowcell-mid, 
-.assistive-mode [data-boxid="giftcardbalance"] .subtotal__rowcell-mid, 
-.assistive-mode [data-boxid="credits"] .subtotal__rowcell-mid{
-	    color: #5d5f36;
-}
-.assistive-mode .fdselect .sortSelectButton{
-	background-color:#757575;
-}
-.assistive-mode .popupcontentghost > .selectButton, 
-.assistive-mode select.selected + .fdselect > .selectButton{
-	background-color:#098A1E !important;
-}
-.assistive-mode #addaddresspopup [data-show="addaddress_home"] #addaddress_home_label, 
-.assistive-mode #addaddresspopup [data-show="addaddress_office"] #addaddress_office_label,
-.assistive-mode #addpaymentmethodpopup [data-show="addpaymentmethod_creditcard"] label[for="addpaymentmethod_creditcard_selector"], 
-.assistive-mode #addpaymentmethodpopup [data-show="addpaymentmethod_bank"] label[for="addpaymentmethod_bank_selector"], 
-.assistive-mode #addpaymentmethodpopup [data-show="addpaymentmethod_ebt"] label[for="addpaymentmethod_ebt_selector"]{
-	color:#096D19;
-}
-.assistive-mode .overlay.overlay-fullscreen .overlay-container .overlay-header-helper{
-	background-color: #098A1E !important;
 }

@@ -24,10 +24,8 @@
 		<tmpl:get name="seoMetaTag"/>
         <%@ include file="/common/template/includes/i_javascripts.jspf" %>
         <jwr:script src="/qsstandingorder.js" useRandomParam="false" />
-	  	<jwr:style src="/grid.css" media="all" />
-		<jwr:style src="/global.css" media="all" />
-        <jwr:style src="/oldglobal.css" media="all" />
-        <jwr:style src="/quickshop.css" media="all" />
+	  	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf"%>
+        <%@ include file="/shared/template/includes/style_sheet_detect.jspf"%>
         <tmpl:get name="extraCss"/>
         <tmpl:get name="extraJs"/>
         <%@ include file="/shared/template/includes/i_head_end.jspf" %>

@@ -1,7 +1,6 @@
 package com.freshdirect.mobileapi.controller.data.response;
 
 import java.util.List;
-import java.util.Map;
 
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.ProductSearchResult;
@@ -26,16 +25,6 @@ public class DpSkuListResponse extends Message {
 
 	public void setDpProductlist(List<ProductSearchResult> dpproductList) {
 		this.dpproductList = dpproductList;
-	}
-	
-	private Map<String, String> productidshortnamemap;
-	
-	public Map<String, String> getProductidShortnameMap() {
-		return productidshortnamemap;
-	}
-
-	public void setProductidShortnameMap(Map<String, String> productidshortnamemap) {
-		this.productidshortnamemap = productidshortnamemap;
 	}
 	
 }
