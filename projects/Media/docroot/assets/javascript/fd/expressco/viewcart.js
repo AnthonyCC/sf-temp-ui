@@ -48,6 +48,15 @@ var FreshDirect = FreshDirect || {};
     }
   });
 
+  $(document).on('click', '[data-apply-button]', function() {
+    var $selects = $('select[data-component="complaintreason"]');
+    var $currentSelect = $(this).parent().find('select[data-component="complaintreason"]');
+
+    $selects.each(function() {
+      $(this).val($currentSelect.val());
+    });
+  });
+
   var warningMessage = Object.create(WIDGET, {
       signal: {
         value: 'viewCartHeaderMessage'

@@ -459,7 +459,7 @@ List mg_reason = ComplaintUtil.getReasonsForDepartment("Makegood");
 					<display:FDCoupon coupon="<%= curCoupon_viewcart %>" contClass="fdCoupon_cartlineViewCart"></display:FDCoupon>
 				</div>
 				<% if (makeGoodFromOrderId!=null) { %>
-					<td align="right">
+					<td align="right" data-select-reason=''>
 						<input type="hidden" name="orderlineId" value="<%= ((FDCartLineI)cartLine).getOrderLineId() %>" />
 						<select name="ol_credit_reason" class="pulldown_detail">
 							<option value="">select make good reason</option>
@@ -469,8 +469,8 @@ List mg_reason = ComplaintUtil.getReasonsForDepartment("Makegood");
 						</select>
 					</td>
 				<% } %>
-			
 			</td>
+			
             <% if(cartLine.getDiscount() != null || cartLine.getCouponDiscount() != null) { %>
 				<td width="70" align="right"><font color="#FF0000"><%= isFreeProd ? "" : "("%><%= isFreeProd ? "" : cartLine.getUnitPrice() %><%= isFreeProd ? "" : ")"%></font></td>				
 				<td width="60" align="right"><span class="text10bold"><font color="#FF0000"><%= isFreeProd ? "FREE" : JspMethods.formatPrice(cartLine.getPrice()) %></font></span></td>
