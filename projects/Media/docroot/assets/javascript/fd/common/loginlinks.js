@@ -79,8 +79,10 @@ var FreshDirect = FreshDirect || {};
       var isMouseEvent = e.x || e.clientX || e.y || e.clientY;
       
       //sort of need target here
-      var target = encodeURI($jq.QueryString["successPage"] + window.top.location.hash);
-
+      var target = $jq.QueryString["successPage"] + window.top.location.hash;
+      if (target === 'undefined' || target === '') { target = window.top.location.pathname+window.top.location.search; }
+      target = encodeURI(target);
+      
       if (isMouseEvent && fd.properties && fd.properties.isLightSignupEnabled) {
         e.preventDefault();
         if (fd.properties.isSocialLoginEnabled) {
