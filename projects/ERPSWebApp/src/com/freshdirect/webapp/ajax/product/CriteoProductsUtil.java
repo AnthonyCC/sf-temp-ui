@@ -188,7 +188,7 @@ public class CriteoProductsUtil
 					LOG.warn("Exception while populating Criteo PDP product's sku code: ", e);
 				}
 				
-				hLBrandProductAdRequest.setProductId(skuCode);
+				hLBrandProductAdRequest.setProductId(skuCode.toUpperCase());
 			}
 		} catch (Exception e) {
 			LOG.warn("Exception while populating Criteo PDP product: ", e);
