@@ -180,6 +180,7 @@ var dataLayer = window.dataLayer || [];
       var product = productTransform(productData, null, {product: productData});
 
       delete product.list;
+      delete product.position;
 
       dataLayer.push({
         ecommerce: {
@@ -196,32 +197,33 @@ var dataLayer = window.dataLayer || [];
     ATCData: function (ATCData) { // + cartLineChange
       var productData = ATCData.productData,
           qty = parseInt(productData.quantity, 10) || 0,
+          product = {
+            // id: productData.id, // #AN-162
+            id: productData.sku,
+            name: deBrand(productData.name, productData.brand),
+            price: productData.price,
+            brand: productData.brand,
+            category: productData.category,
+            variant: productData.variant,
+            dimension3: ""+productData.newProduct,
+            sku: productData.sku,
+            dimension6: ""+true,
+            quantity: qty > 0 ? qty : -qty
+          },
           addRemoveData = {
-              products: [{
-                // id: productData.id, // #AN-162
-                id: productData.sku,
-                name: deBrand(productData.name, productData.brand),
-                price: productData.price,
-                brand: productData.brand,
-                category: productData.category,
-                variant: productData.variant,
-                dimension3: ""+productData.newProduct,
-                sku: productData.sku,
-                dimension6: ""+true,
-                position: fd.gtm.getPositionForProductId(productData.id),
-                quantity: qty > 0 ? qty : -qty
-              }]
+              products: [product]
           },
           ecommerce = {},
           event = qty > 0 ? 'addToCart' : 'removeFromCart';
 
       ecommerce[qty > 0 ? 'add' : 'remove'] = addRemoveData;
 
-      // add product list if it was added from a transactional popup
+      // add product list + position only if it was added from a transactional popup
       if (qty > 0 && document.querySelector('.portrait-item[data-product-id="'+productData.id+'"]')) {
         addRemoveData.actionField = {
           list: fd.gtm.getListForProductId(productData.id)
         };
+        product.position = fd.gtm.getPositionForProductId(productData.id);
       }
 
       // send extra ATC-succes event for backward compatibility
