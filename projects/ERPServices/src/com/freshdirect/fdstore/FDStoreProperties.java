@@ -311,6 +311,7 @@ public class FDStoreProperties {
 
     // multi-search
     private static final String MULTI_SEARCH_LIMIT = "fdstore.multisearch.limit";
+    private static final String MULTI_SEARCH_PRODUCT_PER_CAROUSEL = "fdstore.multisearch.productPerCarousel";
     private static final String MULTI_SEARCH_DEFAULT_LIST = "fdstore.multisearch.defaultlist";
 
     // COOL info
@@ -1340,6 +1341,7 @@ public class FDStoreProperties {
         defaults.put(SEARCH_GLOBALNAV_AUTOCOMPLETE_ENABLE, "false");
 
         defaults.put(MULTI_SEARCH_LIMIT, "25");
+        defaults.put(MULTI_SEARCH_PRODUCT_PER_CAROUSEL, "20");
         defaults.put(MULTI_SEARCH_DEFAULT_LIST, "eggs,milk,pizza,yogurt,butter,carrots,garlic,bread,onion,chicken");
 
         defaults.put(PROP_COOLINFO_REFRESH_PERIOD, "10");
@@ -3541,6 +3543,14 @@ public class FDStoreProperties {
             return Integer.parseInt(get(MULTI_SEARCH_LIMIT));
         } catch (Exception e) {
             return 25;
+        }
+    }
+
+    public static int getMultiSearchProductPerCarousel() {
+        try {
+            return Integer.parseInt(get(MULTI_SEARCH_PRODUCT_PER_CAROUSEL));
+        } catch (Exception e) {
+            return 20;
         }
     }
 

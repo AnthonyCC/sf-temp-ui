@@ -6,6 +6,7 @@ var FreshDirect = FreshDirect || {};
   var WIDGET = fd.modules.common.widget;
   var SIGNALTARGET = fd.common.signalTarget;
   var DISPATCHER = fd.common.dispatcher;
+  var PPC = fd.multisearch && fd.multisearch.productPerCarousel || 20;
 
   var searchResultList = Object.create(WIDGET,{
     signal:{
@@ -67,7 +68,8 @@ var FreshDirect = FreshDirect || {};
             data: {
               data: JSON.stringify({
                 searchParams: term,
-                pageSize: 20
+                pageSize: PPC,
+                doNotFillPage: true
               })
             },
             spinner: {
