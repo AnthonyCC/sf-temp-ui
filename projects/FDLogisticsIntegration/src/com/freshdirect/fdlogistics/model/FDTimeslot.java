@@ -7,6 +7,8 @@ import java.util.Date;
 
 import org.apache.log4j.Logger;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.freshdirect.fdlogistics.deserializer.EnumRegionServiceTypeDeserializer;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.TimeOfDay;
@@ -138,6 +140,7 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 	private String travelZone;
 	private double minDurationForModStart;
 	private double minDurationForModification;
+	@JsonDeserialize(using = EnumRegionServiceTypeDeserializer.class)
 	private EnumRegionServiceType regionSvcType;
 	private Date soFirstDeliveryDate;
 	private double deliveryFee;
