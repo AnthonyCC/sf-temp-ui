@@ -152,6 +152,8 @@ public class CmsFilteringNavigator {
     private String productId;
     
     private boolean populateSectionsOnly;
+
+    private boolean doNotFillPage;
     
     public static CmsFilteringNavigator createInstance(HttpServletRequest request, FDUserI fdUser) throws InvalidFilteringArgumentException, FDResourceException {
     	return createInstance(request, fdUser, true);
@@ -202,6 +204,8 @@ public class CmsFilteringNavigator {
 
                     if ("pageSize".equalsIgnoreCase(param)) {
                         cmsFilteringNavigator.setPageSize(Integer.parseInt(paramValue));
+                    } else if ("doNotFillPage".equalsIgnoreCase(param)) {
+                        cmsFilteringNavigator.setDoNotFillPage(Boolean.parseBoolean(paramValue.toLowerCase()));
                     } else if ("all".equalsIgnoreCase(param)) {
                         cmsFilteringNavigator.setAll(Boolean.parseBoolean(paramValue.toLowerCase()));
                     } else if ("activePage".equalsIgnoreCase(param)) {
@@ -273,7 +277,9 @@ public class CmsFilteringNavigator {
         	pageSpecificPageSize = FDStoreProperties.getBrowsePageSize();
         }
         
-        pageSpecificPageSize = increasePageSizeToFillLayoutFully(request, fdUser, pageSpecificPageSize);
+        if (!cmsFilteringNavigator.doNotFillPage) {
+            pageSpecificPageSize = increasePageSizeToFillLayoutFully(request, fdUser, pageSpecificPageSize);
+        }
         cmsFilteringNavigator.setPageSize(pageSpecificPageSize);
 
         if ((id == null || id.equals(""))
@@ -667,4 +673,12 @@ public class CmsFilteringNavigator {
 	public void setMaxNoOfProducts(int maxNoOfProducts) {
 		this.maxNoOfProducts = maxNoOfProducts;
 	}
+
+    public boolean isDoNotFillPage() {
+        return doNotFillPage;
+    }
+
+    public void setDoNotFillPage(boolean doNotFillPage) {
+        this.doNotFillPage = doNotFillPage;
+    }
 }
