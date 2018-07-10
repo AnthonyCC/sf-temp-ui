@@ -76,10 +76,10 @@ public class RegistrationService extends AbstractEcommService implements Registr
 			}
 			return response.getData();
 		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in RegistrationService: ", e);
 			throw new RemoteException(e.getMessage());
 		} catch (FDResourceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in RegistrationService: ", e);
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -111,10 +111,10 @@ public class RegistrationService extends AbstractEcommService implements Registr
 	        user.setZipCode(userData.getZipCode());
 			return user;
 		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in RegistrationService: ", e);
 			throw new RemoteException(e.getMessage());
 		} catch (FDResourceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in RegistrationService: ", e);
 			throw new RemoteException(e.getMessage());
 		}
 	}

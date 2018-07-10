@@ -70,10 +70,10 @@ public class CustomerIdentityService extends AbstractEcommService implements Cus
 			}
 			return response.getData();
 		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in CustomerIdentityService: ", e);
 			throw new RemoteException(e.getMessage());
 		} catch (FDResourceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in CustomerIdentityService: ", e);
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -105,10 +105,10 @@ public class CustomerIdentityService extends AbstractEcommService implements Cus
 			FDUser user = loadFromRecognizedUserData(recognizedUserData, false, true);
 			return user;
 		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in CustomerIdentityService: ", e);
 			throw new RemoteException(e.getMessage());
 		} catch (FDResourceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in CustomerIdentityService: ", e);
 			throw new RemoteException(e.getMessage());
 		}
 
@@ -141,10 +141,10 @@ public class CustomerIdentityService extends AbstractEcommService implements Cus
 			FDUser user = loadFromRecognizedUserData(recognizedUserData, lazy, populateDeliveryPlantInfo);
 			return user;
 		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in CustomerIdentityService: ", e);
 			throw new RemoteException(e.getMessage());
 		} catch (FDResourceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in CustomerIdentityService: ", e);
 			throw new RemoteException(e.getMessage());
 		}
 	}

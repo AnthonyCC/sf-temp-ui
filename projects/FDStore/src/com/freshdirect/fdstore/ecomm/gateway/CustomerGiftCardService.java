@@ -70,7 +70,7 @@ public class CustomerGiftCardService extends AbstractEcommService implements Cus
 			}
 			return response.getData();
 		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in CustomerGiftCardService: ", e);
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -103,7 +103,7 @@ public class CustomerGiftCardService extends AbstractEcommService implements Cus
 			}
 			return response.getData();
 		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in CustomerGiftCardService: ", e);
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -148,7 +148,7 @@ public class CustomerGiftCardService extends AbstractEcommService implements Cus
 			}
 			return response.getData();
 		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in CustomerGiftCardService: ", e);
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -172,7 +172,7 @@ public class CustomerGiftCardService extends AbstractEcommService implements Cus
 			}
 			return response.getData();
 		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in CustomerGiftCardService: ", e);
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -207,7 +207,7 @@ public class CustomerGiftCardService extends AbstractEcommService implements Cus
 			}
 			return response.getData();
 		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in CustomerGiftCardService: ", e);
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -233,7 +233,7 @@ public class CustomerGiftCardService extends AbstractEcommService implements Cus
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in CustomerGiftCardService: ", e);
 			throw new RemoteException(e.getMessage());
 		}
 

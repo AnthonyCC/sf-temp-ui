@@ -65,7 +65,7 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 			}
 			return response.getData();
 		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in CustomerAddressService: ", e);
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -108,7 +108,7 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 			}
 			return response.getData();
 		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in CustomerAddressService: ", e);
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -134,7 +134,7 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 			}
 			return response.getData();
 		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in CustomerAddressService: ", e);
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -162,7 +162,7 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 			}
 			return response.getData();
 		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in CustomerAddressService: ", e);
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -190,7 +190,7 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 			}
 			return response.getData();
 		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in CustomerAddressService: ", e);
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -257,7 +257,7 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in CustomerAddressService: ", e);
 			throw new RemoteException(e.getMessage());
 		}
 
