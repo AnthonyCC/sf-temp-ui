@@ -103,6 +103,7 @@ import com.freshdirect.ecommerce.data.erp.coo.CountryOfOriginData;
 import com.freshdirect.ecommerce.data.erp.ewallet.ErpCustEWalletData;
 import com.freshdirect.ecommerce.data.erp.inventory.ErpInventoryData;
 import com.freshdirect.ecommerce.data.erp.inventory.ErpInventoryEntryData;
+import com.freshdirect.ecommerce.data.erp.inventory.FDAvailabilityData;
 import com.freshdirect.ecommerce.data.erp.material.AttributeCollectionData;
 import com.freshdirect.ecommerce.data.erp.material.ErpCharacteristicData;
 import com.freshdirect.ecommerce.data.erp.material.ErpCharacteristicValueData;
@@ -185,6 +186,7 @@ import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialPrice;
 import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialSalesAreaInfo;
 import com.freshdirect.erp.model.ErpProductInfoModel.ErpPlantMaterialInfo;
 import com.freshdirect.erp.model.ErpSalesUnitModel;
+import com.freshdirect.fdstore.EnumAvailabilityStatus;
 import com.freshdirect.fdstore.EnumDayPartValueType;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.EnumOrderLineRating;
@@ -209,6 +211,10 @@ import com.freshdirect.fdstore.ZonePriceInfoListing;
 import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.ZonePriceModel;
+import com.freshdirect.fdstore.atp.FDAvailabilityI;
+import com.freshdirect.fdstore.atp.FDCompositeAvailability;
+import com.freshdirect.fdstore.atp.FDStatusAvailability;
+import com.freshdirect.fdstore.atp.FDStockAvailability;
 import com.freshdirect.fdstore.ecoupon.model.CouponCart;
 import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionDetailModel;
 import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionModel;
@@ -2566,5 +2572,70 @@ public class ModelConverter {
 		return erpCustEwalletModel;
 	}
 
+	public static FDAvailabilityI buildAvailableModelFromData(
+			FDAvailabilityData fdAvailabilityData) {
+		
+		if(fdAvailabilityData.getAvailableType().equals("FDStockAvailability")){
+		return buildfDStockAvailability(fdAvailabilityData);
+		}else if(fdAvailabilityData.getAvailableType().equals("FDCompositeAvailability")){
+		return buildfDCompositeAvailability(fdAvailabilityData);
+		}else if(fdAvailabilityData.getAvailableType().equals("FDMuniAvailability")){
+			return buildFDMuniAvailability(fdAvailabilityData);
+		}else if(fdAvailabilityData.getAvailableType().equals("FDStatusAvailability")){
+			return buildFDStatusAvailability(fdAvailabilityData);
+		}else if(fdAvailabilityData.getAvailableType().equals("NullAvailability")){
+			return buildNullAvailability(fdAvailabilityData);
+		}
+		return null;
+
+	}
+	
+	public static FDAvailabilityI buildNullAvailability(FDAvailabilityData data) {
+		if(data==null)
+		return null;
+		FDAvailabilityI valuee = new FDStockAvailability(convertErpInventoryDataToModel(data.getInventory()),  data.getReqQty(),  data.getMinQty(),  data.getQtyInc());
+				
+		return valuee;
+	}
+
+	public static FDAvailabilityI buildFDStatusAvailability(FDAvailabilityData data) {
+		if(data==null)
+		return null;
+		FDAvailabilityI valuee = new FDStatusAvailability(EnumAvailabilityStatus.getEnumByStatusCode(data.getStatus()),buildAvailableModelFromData(data.getAvailability()));
+				
+		return valuee;
+	
+	}
+
+	public static FDAvailabilityI buildFDMuniAvailability(FDAvailabilityData data) {
+		if(data==null)
+		return null;
+		FDAvailabilityI valuee = new FDStockAvailability(convertErpInventoryDataToModel(data.getInventory()),  data.getReqQty(),  data.getMinQty(),  data.getQtyInc());
+				
+		return valuee;
+	
+	}
+
+	public static FDAvailabilityI buildfDCompositeAvailability(FDAvailabilityData data) {
+		if(data==null)
+		return null;
+		FDAvailabilityI valuee = null;
+		for(String key:data.getAvailabilities().keySet()){
+			Map<String,FDAvailabilityI> results = new HashMap();
+			results.put(key, buildAvailableModelFromData(data.getAvailabilities().get(key)));
+			 valuee = new FDCompositeAvailability(results);
+
+		}
+
+		return valuee;
+	}
+
+	public static FDAvailabilityI buildfDStockAvailability(FDAvailabilityData data) {
+		if(data==null)
+		return null;
+		FDAvailabilityI valuee = new FDStockAvailability(convertErpInventoryDataToModel(data.getInventory()),  data.getReqQty(),  data.getMinQty(),  data.getQtyInc());
+				
+		return valuee;
+	}
 }
 

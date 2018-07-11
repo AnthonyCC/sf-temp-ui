@@ -127,6 +127,7 @@ import com.freshdirect.fdstore.ecomm.gateway.CustomerInfoService;
 import com.freshdirect.fdstore.ecomm.gateway.CustomerNotificationService;
 import com.freshdirect.fdstore.ecomm.gateway.CustomerPaymentService;
 import com.freshdirect.fdstore.ecomm.gateway.CustomerPreferenceService;
+import com.freshdirect.fdstore.ecomm.gateway.CustomersApi;
 import com.freshdirect.fdstore.ecomm.gateway.RegistrationService;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
@@ -2230,12 +2231,15 @@ public class FDCustomerManager {
 
 			// note: FDModifyCartLineI instances skipped
 			ErpCreateOrderModel createOrder = FDOrderTranslator.getErpCreateOrderModel(cart, skipModifyLines, sameDeliveryDate);
-
+			Map<String, FDAvailabilityI> fdInvMap = null;
 			long timer = System.currentTimeMillis();
-
-			Map<String, FDAvailabilityI> fdInvMap = sb.checkAvailability(identity, createOrder, timeout, isFromLogin);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("checkAvailability_Api")){
+	    		OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
+	    		fdInvMap= service.checkAvailability(identity, createOrder, timeout, isFromLogin);
+			}else{
+			fdInvMap = sb.checkAvailability(identity, createOrder, timeout, isFromLogin);
 			timer = System.currentTimeMillis() - timer;
-
+			}
 			Map<String,FDAvailabilityI> invs = FDAvailabilityMapper.mapInventory(cart, createOrder, fdInvMap, skipModifyLines, sameDeliveryDate);
 			cart.setAvailability(new FDCompositeAvailability(invs));
 
@@ -3216,8 +3220,14 @@ public class FDCustomerManager {
 		lookupManagerHome();
 		FDCustomerManagerSB sb=null;
 		try {
-			sb = managerHome.create();
-			FDOrderI order = sb.getLastNonCOSOrder( customerID, saleType, saleStatus, eStore );
+			FDOrderI order =null;
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("nonCOSOrderByStatusStore_Api")){
+				order=CustomersApi.getInstance().getLastNonCOSOrder(customerID, saleType, saleStatus, eStore);
+			}else{
+				sb = managerHome.create();
+				order = sb.getLastNonCOSOrder( customerID, saleType, saleStatus, eStore );	
+			}
+
 			return order;
 		} catch ( CreateException ce ) {
 			invalidateManagerHome();
@@ -3232,9 +3242,15 @@ public class FDCustomerManager {
 	public static FDOrderI getLastNonCOSOrder(String customerID, EnumSaleType saleType, EnumEStoreId eStore) throws FDResourceException,ErpSaleNotFoundException {
 		lookupManagerHome();
 		FDCustomerManagerSB sb=null;
+		FDOrderI order=null;
 		try {
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("nonCOSOrderByStatusStore_Api")){
+				order=CustomersApi.getInstance().getLastNonCOSOrder(customerID, saleType, eStore );
+
+			}else {
 			sb = managerHome.create();
-			FDOrderI order = sb.getLastNonCOSOrder( customerID, saleType, eStore );
+			 order = sb.getLastNonCOSOrder( customerID, saleType, eStore );
+			}
 			return order;
 		} catch ( CreateException ce ) {
 			invalidateManagerHome();
@@ -4962,9 +4978,16 @@ public class FDCustomerManager {
 		lookupManagerHome();
 
 		try {
+			boolean result;
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("ReadyForPickOrders_Api")) {
+				result=CustomersApi.getInstance().isReadyForPick(orderNum);
+			}else {
+			
 			FDCustomerManagerSB sb = managerHome.create();
-			return sb.isReadyForPick(orderNum);
+			result= sb.isReadyForPick(orderNum);
 
+			}
+			return result;
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -5001,9 +5024,12 @@ public class FDCustomerManager {
 		lookupManagerHome();
 
 		try {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("ReleaseModificationLock_Api")) {
+			CustomersApi.getInstance().releaseModificationLock(orderId);
+			}else{
 			FDCustomerManagerSB sb = managerHome.create();
 			sb.releaseModificationLock(orderId);
-
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -5605,11 +5631,16 @@ public class FDCustomerManager {
 		
 		public static ShortSubstituteResponse getShortSubstituteOrders(List<String> orderList) throws FDResourceException {
 			lookupManagerHome();
-
+			ShortSubstituteResponse ssResponse = null;
 			try {
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled("ShortSubstituteOrders_Api")) {
+				ssResponse=CustomersApi.getInstance().getShortSubstituteOrders(orderList);
+				}else {
+				
 				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getShortSubstituteOrders(orderList);
-
+				ssResponse= sb.getShortSubstituteOrders(orderList);
+				}
+				return ssResponse;
 			} catch (CreateException ce) {
 				invalidateManagerHome();
 				throw new FDResourceException(ce, "Error creating session bean");

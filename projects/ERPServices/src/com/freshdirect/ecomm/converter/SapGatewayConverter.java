@@ -306,6 +306,7 @@ public class SapGatewayConverter {
 	public  static ErpAbstractOrderModelData buildOrderData(ErpAbstractOrderModel abstractModel) {
 		ErpAbstractOrderModelData abstractOrderModelData = new ErpAbstractOrderModelData();
 		if(abstractModel != null){
+		if(abstractModel.getTransactionSource()!=null)
 		abstractOrderModelData.setTransactionSource(abstractModel.getTransactionSource().getCode());
 		abstractOrderModelData.setOrderLines(buildOrderLineData(abstractModel.getOrderLines()));
 		abstractOrderModelData.setRequestedDate(abstractModel.getRequestedDate());
