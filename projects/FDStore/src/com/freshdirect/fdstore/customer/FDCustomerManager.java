@@ -1,5 +1,6 @@
 package com.freshdirect.fdstore.customer;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -22,6 +23,8 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.log4j.Category;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.cms.CmsServiceLocator;
 import com.freshdirect.cms.cache.CmsCaches;
 import com.freshdirect.common.address.AddressModel;
@@ -86,7 +89,6 @@ import com.freshdirect.deliverypass.DlvPassUsageLine;
 import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.ecomm.gateway.DlvPassManagerService;
-import com.freshdirect.ecomm.gateway.DlvPassManagerServiceI;
 import com.freshdirect.ecomm.gateway.GiftCardManagerService;
 import com.freshdirect.ecomm.gateway.OrderResourceApiClient;
 import com.freshdirect.ecomm.gateway.OrderResourceApiClientI;
@@ -100,6 +102,7 @@ import com.freshdirect.erp.ejb.ErpEWalletSB;
 import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdlogistics.model.FDReservation;
+import com.freshdirect.fdlogistics.services.impl.DlvManagerDecoder;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDEcommProperties;
@@ -1823,8 +1826,9 @@ public class FDCustomerManager {
 				FDCustomerManagerSB sb = managerHome.create();
 				FDReservation reservation = null;
 				if(FDStoreProperties.isSF2_0_AndServiceEnabled("cancelOrder_Api")){
-					OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
-					service.cancelOrder(info, saleId, sendEmail, currentDPExtendDays, restoreReservation);
+					OrderResourceApiClient service = OrderResourceApiClient.getInstance();
+					DlvManagerDecoder.setMapper(OrderResourceApiClient.getMapper());
+					reservation =  DlvManagerDecoder.converter(service.cancelOrder(info, saleId, sendEmail, currentDPExtendDays, restoreReservation));
 				}else{
 					reservation = sb.cancelOrder(info, saleId, sendEmail, currentDPExtendDays, restoreReservation);
 				}

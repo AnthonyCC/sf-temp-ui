@@ -21,6 +21,7 @@ import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
+import com.freshdirect.ecommerce.data.dlv.FDReservationData;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -98,9 +99,10 @@ public interface OrderResourceApiClientI {
 			EnumDlvPassStatus status);
 
 
-	void cancelOrder(FDActionInfo info, String saleId,
+	FDReservationData cancelOrder(FDActionInfo info, String saleId,
 			boolean sendEmail, int currentDPExtendDays,
 			boolean restoreReservation);
+
 	
 			
 }

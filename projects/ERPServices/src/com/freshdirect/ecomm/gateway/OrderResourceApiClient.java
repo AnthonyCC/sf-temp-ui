@@ -31,10 +31,11 @@ import com.freshdirect.ecomm.converter.FDActionInfoConverter;
 import com.freshdirect.ecomm.converter.SapGatewayConverter;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
+import com.freshdirect.ecommerce.data.dlv.FDReservationData;
+import com.freshdirect.ecommerce.data.order.CancelOrderRequestData;
 import com.freshdirect.ecommerce.data.order.CreateOrderRequestData;
 import com.freshdirect.ecommerce.data.order.ModifyOrderRequestData;
 import com.freshdirect.ecommerce.data.order.OrderSearchCriteriaRequest;
-import com.freshdirect.ecommerce.data.temails.SendMailData;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -65,7 +66,7 @@ private static OrderResourceApiClient INSTANCE;
 	private static final String CREATE_DON_ORDER_API = 	"orders/don/create";
 	private static final String CREATE_REG_ORDER_API = 	"orders/reg/create";
 	private static final String MODIFY_REG_ORDER_API = 	"orders/reg/modify";
-	
+	private static final String CANCEL_REG_ORDER_API = 	"orders/reg/cancel";
 	private static final String MODIFY_AUTORENEW_ORDER_API = 	"orders/sub/modify";
 	
 	public static OrderResourceApiClient getInstance() {
@@ -507,10 +508,30 @@ private static OrderResourceApiClient INSTANCE;
 	}
 
 	@Override
-	public void cancelOrder(FDActionInfo info, String saleId,
+	public FDReservationData cancelOrder(FDActionInfo info, String saleId,
 			boolean sendEmail, int currentDPExtendDays,
 			boolean restoreReservation) {
-		// TODO Auto-generated method stub
-		
+
+		Request<CancelOrderRequestData> request = new Request<CancelOrderRequestData>();
+
+		try {
+
+			CancelOrderRequestData data = new CancelOrderRequestData(
+					FDActionInfoConverter.buildActionInfoData(info), saleId,
+					sendEmail, currentDPExtendDays, restoreReservation);
+			request.setData(data);
+
+			String inputJson = buildRequest(request);
+			String response = postData(inputJson, getFdCommerceEndPoint(CANCEL_REG_ORDER_API), String.class);
+			Response<FDReservationData> responseWrapper = getMapper().readValue(response, new TypeReference<Response<FDReservationData>>() { });
+			
+			return parseResponse(responseWrapper);
+			
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+
 	}
 }
