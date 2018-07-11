@@ -620,11 +620,7 @@ var dataLayer = window.dataLayer || [];
     productData.list = fd.gtm.getListForProduct(productE, listData);
 
     if (!productData.position) {
-      $('[data-component="product"]').each(function (i, el) {
-        if (!productData.position && $(el).attr('data-product-id') === productE.attr('data-product-id')) {
-          productData.position = i+1;
-        }
-      });
+      productData.position = fd.gtm.getPositionForProductId(productId);
     }
 
     if (productE.hasClass('transactional-related-body')) {
@@ -869,11 +865,32 @@ var dataLayer = window.dataLayer || [];
   };
 
   fd.gtm.getPositionForProductId = function (id) {
-    var el = document.querySelector('[data-product-id="'+id+'"]'),
-        position = 1;
+    var el = $('[data-product-id="'+id+'"]').not('#transactionalPopup [data-component="product"]').first(),
+        position = 0,
+        browseContent, productList, parent, transactionalParent;
 
-    if (el && el.parentElement) {
-      position = Array.prototype.slice.call(el.parentElement.children).indexOf(el) + 1;
+    if (el.length) {
+      browseContent = $(el).closest('.browseContent');
+      productList = $(el).closest('#productlist');
+      transactionalParent = $(el).closest('.transactional');
+
+      if (browseContent.length) {
+        // browse / PLP display
+        position = $('.browseContent [data-component="product"]').not('.relatedItem [data-component="product"]').index(el) + 1;
+      } else if (productList.length) {
+        // reorder like pages
+        position = $('#productlist [data-component="product"]').not('.relatedItem [data-component="product"]').index(el) + 1;
+      } else if (transactionalParent.length) {
+        position = transactionalParent.find('[data-component="product"]').not('.relatedItem [data-component="product"]').index(el) + 1;
+      } else {
+        // etc. (carousel i.e.)
+        parent = $(el).parent();
+        position = parent.find('[data-component="product"]').not('.relatedItem [data-component="product"]').index(el) + 1;
+      }
+    }
+
+    if (position < 1) {
+      position = 1;
     }
 
     return position;
