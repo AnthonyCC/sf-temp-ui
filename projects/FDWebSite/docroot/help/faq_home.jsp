@@ -23,7 +23,8 @@
 	params.put("baseUrl", "");
 	params.put("helper", new MediaHelper()); // include helper object. It allows to include media templates into template
 
-	if (request.getParameter("page") != null) {
+	
+	if (request.getParameter("page") != null && !"".equals(request.getParameter("page"))) {
 		faqPage = request.getParameter("page");
 	}
 
