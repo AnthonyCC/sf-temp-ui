@@ -89,17 +89,9 @@
 			//=================================================================================================================================================================================================						
 			String subdomain = FDStoreProperties.getSocialOneAllSubdomain();
 			String site_post_url = FDStoreProperties.getSocialOneAllPostUrl();	
-			//String provider_key = "facebook";
 			String service = "social_login";
 			String callback_uri = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()+"/social/social_link_success.jsp";
-		
-			//String directConnectUrl = "https://" + subdomain + ".api.oneall.com/socialize/connect/direct/" + socialNetworkProvider + "/";
 			String directConnectUrl = "https://" + subdomain + site_post_url + "/socialize/connect/direct";
-			
-			// https://freshdirect.api.oneall.com/socialize/connect/direct/facebook/?service=social_login&callback_uri=http%3A%2F%2Flocalhost%3A7001%2Fsocial%2Fsocial_login_success.jsp			
-			//String forwardUrl = "https://freshdirect.api.oneall.com/socialize/connect/direct/facebook/?service=social_login&callback_uri=http%3A%2F%2Flocalhost%3A7001%2Fsocial%2Fsocial_login_success.jsp";
-			
-			String forwardUrl = directConnectUrl + "?service=" + service + "&callback_uri=" + callback_uri;  // not used
 			//=================================================================================================================================================================================================
 			
 	
