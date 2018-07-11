@@ -155,7 +155,14 @@ request.setAttribute("listPos", "HPLeftTop");
 <!-- * start the actual summary info * -->
 
 <%
-	List<ErpCustomerCreditModel> mimList = FDReferralManager.getUserCredits(customerIdentity.getErpCustomerPK());
+List<ErpCustomerCreditModel> mimList;
+if (customerIdentity != null){
+    mimList = FDReferralManager.getUserCredits(customerIdentity.getErpCustomerPK());
+}
+else {
+    mimList = new ArrayList<ErpCustomerCreditModel>();
+}
+
 %>
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
 	<tr>
