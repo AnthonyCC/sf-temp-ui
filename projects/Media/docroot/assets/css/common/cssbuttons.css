@@ -486,3 +486,23 @@ button.addtolist.cssbutton.cssbutton-flat.purpleborder:hover{
 a.cssbutton.whiteborder, .cssbutton.whiteborder {
   border: 1px solid #fff;
 }
+
+a.cssbutton.whiteborder.transparent,
+.cssbutton.whiteborder.transparent {
+  color: #ffffff;
+  background-color: transparent;
+  border: 1px solid #ffffff;
+}
+a.cssbutton.whiteborder.transparent:hover,
+.cssbutton.whiteborder.transparent:hover {
+  background-color: rgba(0,0,0,0.1);
+}
+a.cssbutton.whiteborder.transparent:active,
+.cssbutton.whiteborder.transparent:active {
+  background-color: rgba(0,0,0,0.2);
+}
+a.cssbutton.whiteborder.transparent:focus,
+.cssbutton.whiteborder.transparent:focus {
+  background-color: rgba(0,0,0,0.1);
+  box-shadow: 0 0 1px #bbbbbb, 0 0 8px #bbbbbb;
+}
