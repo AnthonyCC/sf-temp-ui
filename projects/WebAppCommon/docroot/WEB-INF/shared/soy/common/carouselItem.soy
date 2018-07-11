@@ -3,6 +3,7 @@
  * @param item some path, list of items
  * @param? itemCount the index of the item in items list - used as class
  * @param? cmEventSource optional coremetrics event source
+ * @param? abFeatures
  * @param? mobWeb
  * @param? moduleData
  * @param? itemIndex
@@ -13,6 +14,7 @@
 {call common.transactionalGridItem data="all"}
 	{param extraClass}carouselTransactionalItem{if $itemCount} item-count{$itemCount}{/if}{if $extraClass} {$extraClass}{/if}{/param}
 	{param cmEventSource:$cmEventSource /}
+	{param abFeatures:$abFeatures /}
 	{param mobWeb:$mobWeb /}
 	{param moduleData:$moduleData /}
 	{param itemIndex:$itemIndex /}
@@ -31,6 +33,7 @@
  * @param item some path, list of items
  * @param? itemCount the total length of items list - used as class
  * @param? cmEventSource optional coremetrics event source
+ * @param? abFeatures
  * @param? mobWeb
  * @param? moduleData
  * @param? itemIndex
@@ -41,6 +44,7 @@
 {call common.transactionalGridItem data="all"}
     {param extraClass}carouselTransactionalItem productSamplingItem{if $itemCount} item-count{$itemCount}{/if}{if $extraClass} {$extraClass}{/if}{/param}
 	{param cmEventSource:$cmEventSource /}
+	{param abFeatures:$abFeatures /}
 	{param mobWeb:$mobWeb /}
 	{param moduleData:$moduleData /}
 	{param itemIndex:$itemIndex /}

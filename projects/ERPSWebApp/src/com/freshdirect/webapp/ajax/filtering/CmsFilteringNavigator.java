@@ -297,8 +297,16 @@ public class CmsFilteringNavigator {
     public static int increasePageSizeToFillLayoutFully(HttpServletRequest request, FDUserI user, int pageSpecificPageSize) {
         Map<String, String> activeFeatures = FeaturesService.defaultService().getActiveFeaturesMapped(request.getCookies(), user);
         String gridlayoutversion = activeFeatures.get("gridlayoutcolumn");
+        String productCardVersion = activeFeatures.get("productCard");
         if (gridlayoutversion != null) {
             int divider = Integer.parseInt(gridlayoutversion.substring(0, 1));
+            int modulo = pageSpecificPageSize % divider;
+            if (modulo != 0) {
+                pageSpecificPageSize = pageSpecificPageSize + (divider - modulo);
+            }
+        }
+        if (productCardVersion != null) {
+            int divider = 4;
             int modulo = pageSpecificPageSize % divider;
             if (modulo != 0) {
                 pageSpecificPageSize = pageSpecificPageSize + (divider - modulo);

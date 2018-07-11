@@ -307,6 +307,12 @@
   max-height:116px;
   margin:12px 0 12px 0;
 }
+[data-feature-productcard="2018"] .qs-content .itemlist-item-productimage_wrapper{
+  width: 150px;
+  max-height: 150px;
+  margin: 5px 3px;
+  box-sizing: border-box;
+}
 
 .qs-content .itemlist-item-productimage_wrapper .expertrating{
   margin-top:12px;

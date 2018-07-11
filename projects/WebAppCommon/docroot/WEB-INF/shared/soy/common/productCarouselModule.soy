@@ -3,6 +3,8 @@
 /**
  * @param moduleData
  * @param data
+ * @param? abFeatures
+ * @param? mobWeb
  */
 {template .productCarouselModule}
 {if ($data.products and length($data.products) > 3) or ($data.adProducts and length($data.adProducts)>0)}
@@ -21,6 +23,8 @@
           		{param cmEventSource: $moduleData.cmEventSource /}
     			{param itemType:'grid' /}
   				{param extraClass:'noFeaturedHeaderBanner' /}
+					{param mobWeb:$mobWeb /}
+					{param abFeatures:$abFeatures /}
     		{/call}
       </div>
   	</div>

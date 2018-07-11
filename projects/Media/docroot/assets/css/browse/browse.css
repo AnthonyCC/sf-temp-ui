@@ -514,6 +514,11 @@ ul.products .description-skin{
   width: 139px;
   margin: 0 3px 0 4px;
 }
+[data-feature-productcard="2018"] .container.srch [data-component="carousel"] ul li.portrait-item,
+[data-feature-productcard="2018"] .container.browse .noCarousel2 [data-component="carousel"] ul li.portrait-item,
+[data-feature-productcard="2018"] .container.browse .noCarousel1 [data-component="carousel"] ul li.portrait-item {
+  width: 157px;
+}
 
 .container.srch .new.products.recommender [data-component="carousel"] ul li.portrait-item{
   width: 167px;

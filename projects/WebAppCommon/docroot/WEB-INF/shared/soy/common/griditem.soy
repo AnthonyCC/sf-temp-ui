@@ -334,7 +334,7 @@
  */
 {template .potatoTransactionalGridItem autoescape="false"}
 /* this line return must be here, or there will be tabs in output html, which cause whitespace */
-	{let $productCardVersion: $abFeatures ? ($abFeatures.productCard ? $abFeatures.productCard : '2017') : '2017' /}
+	{let $productCardVersion: $abFeatures ? ($abFeatures.productCard ? $abFeatures.productCard : '[abFeatures.productCard not set]') : '[abFeatures not set]' /}
 	{let $atcItemId: $itemId ? $itemId : 'atc_' + ($productId ? $productId : '') + '_' + ($skuCode ? $skuCode : '') + '_' +($catId ? $catId : '' ) + ($listId ? '_'+$listId : '') + ($originalLineId ? '_'+$originalLineId : '') /}
 	{let $badge: ($freeSamplePromoProduct and ($cmEventSource and (strContains($cmEventSource,'ps_caraousal') or strContains($cmEventSource,'ps_carousel'))))?'free':($badge=='free'?'':$badge) /}
 	{let $isEligibleForStandingOrders: ($soData and $soData.settingsData.soSettings and $soData.settingsData.soSettings.isEligibleForStandingOrders) ? true : false /}
@@ -351,6 +351,7 @@
 	{if $hookLogicBeaconImpression} data-hooklogic-beacon-impress="{$hookLogicBeaconImpression}"{/if}
 	{if $moduleData and $moduleData.moduleVirtualCategory}data-virtual-category="{$moduleData.moduleVirtualCategory}"{/if}
 	{if $moduleData and $moduleData.dontFocusForm} data-dontfocusform="true"{/if}
+	data-productcardversion="{$productCardVersion}"
 >
 	{if not $discontinued}
 		<a href="{$productPageUrl}{if $moduleData and $moduleData.moduleVirtualCategory}&cm_vc={$moduleData.moduleVirtualCategory}{/if}" class="portrait-item-image-link" {if $moduleData}data-cm-click="
