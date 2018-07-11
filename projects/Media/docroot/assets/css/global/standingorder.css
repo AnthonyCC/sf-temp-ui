@@ -414,6 +414,7 @@
 		display: block;
 		width: 100%;
 		margin-top: 5px;
+		box-sizing: border-box;
 	}
 	#transactionalPopup .portrait-item-so {
 		display: block;

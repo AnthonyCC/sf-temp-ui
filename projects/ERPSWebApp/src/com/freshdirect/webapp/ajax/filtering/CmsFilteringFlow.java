@@ -377,8 +377,13 @@ public class CmsFilteringFlow {
         /* skip out if hlProds passed in are invalid or empty */
         if (hlProdList == null || hlProdList.size() == 0 || prodList == null || prodList.size() == 0) { return; }
 
-        int itemsPerRow = (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn5_0, user)) ? 5 :
-            (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn4_0, user)) ? 4 : 5;
+        int itemsPerRow = (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.productCard2018, user))
+        	? 4
+        	: (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn5_0, user)) 
+	    		? 5 
+	    		: (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn4_0, user)) 
+	    			? 4 
+	    			: 5;
         int hlIndex = itemsPerRow-1;
         ProductData pd = new ProductData();
         pd.setProductId("!_SPACER_!");
