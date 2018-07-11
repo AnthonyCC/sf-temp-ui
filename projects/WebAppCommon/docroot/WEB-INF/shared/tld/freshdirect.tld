@@ -1951,38 +1951,6 @@
 		</attribute>
 	</tag>
 	<tag>
-		<name>CustomerInfo</name>
-		<tagclass>com.freshdirect.webapp.taglib.fdstore.CustomerInfoTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.fdstore.CustomerInfoTagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>actionName</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>successPage</name>
-			<required>false</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>resultName</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>erpCustomer</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>fdCustomer</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	<tag>
 		<name>GetCustomerObjs</name>
 		<tagclass>com.freshdirect.webapp.taglib.callcenter.GetCustomerObjectsTag</tagclass>
 		<teiclass>com.freshdirect.webapp.taglib.callcenter.GetCustomerObjectsTagEI</teiclass>
@@ -2542,28 +2510,6 @@
 		</attribute>
 	</tag>
 
-	<tag>
-		<name>RequestAProductTag</name>
-		<tagclass>com.freshdirect.webapp.taglib.fdstore.RequestAProductTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.fdstore.RequestAProductTag$TagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>actionName</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>successPage</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>result</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-	</tag>
 
 	<tag>
 		<name>GetServiceEmail</name>

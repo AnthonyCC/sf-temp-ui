@@ -536,7 +536,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
     public boolean isPasswordRequestExpired(String emailAddress, String passReq) throws FDResourceException, RemoteException;
     @Deprecated
     public void changePassword(FDActionInfo info, String emailAddress, String password) throws FDResourceException, RemoteException;
-
+    @Deprecated
     public void setProfileAttribute(FDIdentity identity, String key, String value, FDActionInfo info) throws RemoteException, FDResourceException;
 
     public void removeProfileAttribute(FDIdentity identity, String key, FDActionInfo info) throws RemoteException, FDResourceException;
@@ -546,9 +546,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
     public String getDefaultDepotLocationPK(FDIdentity identity) throws FDResourceException, RemoteException;
     @Deprecated
     public void setDefaultDepotLocationPK(FDIdentity identity, String locationId) throws FDResourceException, RemoteException;
-
-    public String getDepotCode(FDIdentity identity) throws FDResourceException, RemoteException;
-
+    
     public void setDepotCode(FDIdentity identity, String depotCode) throws FDResourceException, RemoteException;
 
     public String generatePasswordRequest(PrimaryKey fdCustomerPk, java.util.Date expiration) throws FDResourceException, RemoteException;
@@ -567,14 +565,11 @@ public interface FDCustomerManagerSB  extends EJBObject{
 
 	public FDCustomerCreditHistoryModel getCreditHistory(FDIdentity identity) throws FDResourceException, RemoteException;
 
+	@Deprecated
 	public FDReservation makeReservation(FDUserI user, String timeslotId, EnumReservationType rsvType, String addressId, FDActionInfo aInfo, boolean chefsTable, TimeslotEvent event, boolean isForced) throws FDResourceException, ReservationException, RemoteException;
-
-	public void updateWeeklyReservation(FDIdentity identity, FDTimeslot timeslot, String addressId, FDActionInfo aInfo) throws FDResourceException, RemoteException;
-
-	//public FDReservation changeReservation(FDIdentity identity, FDReservation oldReservation, String timeslotId, EnumReservationType rsvType, String addressId, FDActionInfo aInfo, boolean chefstable, TimeslotEvent event) throws FDResourceException, ReservationException, RemoteException;
-
+	@Deprecated
 	public void cancelReservation (FDIdentity identity, FDReservation reservation, EnumReservationType type, FDActionInfo actionInfo, TimeslotEvent event) throws FDResourceException, RemoteException;
-
+	@Deprecated
 	public void storeCustomerRequest(FDCustomerRequest cr) throws FDResourceException, RemoteException;
 
 	public boolean isECheckRestricted(FDIdentity identity)  throws FDResourceException, RemoteException;
@@ -684,9 +679,9 @@ public interface FDCustomerManagerSB  extends EJBObject{
     public void logCustomerVariant(String saleId, FDIdentity identity, String feature, String variantId) throws RemoteException, FDResourceException;
 
     public ErpAddressModel getLastOrderAddress(String lastOrderId) throws FDResourceException, RemoteException, SQLException;
-
+    @Deprecated
     public void storeProductRequest(List<FDProductRequest> productRequest,FDSurveyResponse survey) throws RemoteException, FDResourceException;
-
+    @Deprecated
     public void storeProductRequest(List<FDProductRequest> productRequest) throws RemoteException, FDResourceException;
 
     @Deprecated

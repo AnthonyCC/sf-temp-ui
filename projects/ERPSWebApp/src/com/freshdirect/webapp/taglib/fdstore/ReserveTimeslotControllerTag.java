@@ -64,17 +64,7 @@ public class ReserveTimeslotControllerTag extends AbstractControllerTag {
 				/*}*/
 				session.setAttribute(SessionName.USER, user);
 			}
-			
-			/*if("updateWeeklyReservation".equals(action)) {
-				this.populate(request);
-				this.validate(actionResult);
-				if(actionResult.isFailure()){
-					return true;
-				}
-				FDTimeslot timeslot = FDDeliveryManager.getInstance().getTimeslotsById(timeslotId, null, false);
-				FDCustomerManager.updateWeeklyReservation(user.getIdentity(), timeslot, addressId, AccountActivityUtil.getActionInfo(session));
-			}*/
-
+		
 			if ("changeReservation".equals(action)) {
 				this.populate(request);
 				this.validate(actionResult);

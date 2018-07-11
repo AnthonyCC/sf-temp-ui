@@ -4527,7 +4527,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	public String getDepotCode(FDIdentity identity) throws FDResourceException {
+	private String getDepotCode(FDIdentity identity) throws FDResourceException {
 		try {
 			FDCustomerEB eb = getFdCustomerHome().findByPrimaryKey(new PrimaryKey(identity.getFDCustomerPK()));
 			return eb.getDepotCode();
@@ -4745,11 +4745,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 		LOGGER.info("makeReservation: " + ((rsv != null) ? rsv.getId() : null));
 
-		/*
-		 * if (EnumReservationType.RECURRING_RESERVATION.equals(rsvType)) {
-		 * this.updateRecurringReservation(identity, timeslot.getBegDateTime(),
-		 * timeslot.getEndDateTime(), addressId); }
-		 */
+		
 		this.logActivity(getReservationActivityLog(rsv.getTimeslot(), aInfo,
 				EnumAccountActivityType.MAKE_PRE_RESERVATION, rsvType));
 
@@ -4772,32 +4768,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				return address;
 		}
 		return null;
-	}
-
-	public void updateWeeklyReservation(FDIdentity identity, FDTimeslot timeslot, String addressId, FDActionInfo aInfo)
-			throws FDResourceException {
-		this.updateRecurringReservation(identity, timeslot.getStartDateTime(), timeslot.getEndDateTime(), addressId);
-		this.logActivity(getReservationActivityLog(timeslot, aInfo, EnumAccountActivityType.UPDATE_WEEKLY_RESERVATION,
-				EnumReservationType.RECURRING_RESERVATION));
-	}
-
-	private void updateRecurringReservation(FDIdentity identity, Date startTime, Date endTime, String addressId)
-			throws FDResourceException {
-		ErpCustomerEB eb;
-		try {
-			eb = this.getErpCustomerHome().findByPrimaryKey(new PrimaryKey(identity.getErpCustomerPK()));
-			int dayOfWeek = startTime != null ? DateUtil.toCalendar(startTime).get(Calendar.DAY_OF_WEEK) : 0;
-			ErpCustomerInfoModel info = eb.getCustomerInfo();
-			info.setRsvDayOfWeek(dayOfWeek);
-			info.setRsvStartTime(startTime);
-			info.setRsvEndTime(endTime);
-			info.setRsvAddressId(addressId);
-			eb.setCustomerInfo(info);
-		} catch (RemoteException e) {
-			throw new FDResourceException(e);
-		} catch (FinderException e) {
-			throw new FDResourceException(e);
-		}
 	}
 
 	public void cancelReservation(FDIdentity identity, FDReservation reservation, EnumReservationType rsvType,

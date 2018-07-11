@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.freshdirect.crm.ejb.CrmCaseStateDAO;
 import com.freshdirect.enums.EnumModel;
@@ -22,12 +21,11 @@ public class CrmCaseState extends EnumModel {
 	public final static String CODE_REVIEW = "REVW";
 	public final static String CODE_APPROVED = "APVD";
 
-	public CrmCaseState(String code, String name, String description) {
+	public CrmCaseState(@JsonProperty("code") String code, @JsonProperty("name") String name, @JsonProperty("description") String description) {
 		super(code, name, description);
 	}
 
-	@JsonCreator
-	public static CrmCaseState getEnum(@JsonProperty("code") String code) {
+	public static CrmCaseState getEnum(String code) {
 		loadEnums();
 		return (CrmCaseState) enums.get(code);
 	}

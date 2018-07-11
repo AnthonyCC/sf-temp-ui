@@ -1219,11 +1219,15 @@ public class FDCustomerManager {
 		EnumReservationType rsvType,
 		FDActionInfo aInfo, TimeslotEvent event)
 		throws FDResourceException {
-		lookupManagerHome();
-
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			sb.cancelReservation(user.getIdentity(), reservation, rsvType, aInfo, event);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
+				CustomerInfoService.getInstance().cancelReservation(user.getIdentity(), reservation, aInfo,
+						event);
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				sb.cancelReservation(user.getIdentity(), reservation, rsvType, aInfo, event);
+			}
 			user.setReservation(null);
 			resetUserContext(user);
 		} catch (RemoteException e) {
@@ -1242,10 +1246,16 @@ public class FDCustomerManager {
 		String addressId,
 		FDActionInfo aInfo, boolean chefsTable, TimeslotEvent event,boolean isForced)
 		throws FDResourceException, ReservationException {
-		lookupManagerHome();
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			FDReservation rsv = sb.makeReservation(user, timeslotId, rsvType, addressId, aInfo, chefsTable, event, isForced);
+			FDReservation rsv;
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
+				rsv = CustomerInfoService.getInstance().makeReservation(user, timeslotId, rsvType, addressId, aInfo, chefsTable, event, isForced);
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				rsv = sb.makeReservation(user, timeslotId, rsvType, addressId, aInfo, chefsTable, event, isForced);
+			}
+			
 			if(user.getShoppingCart()!=null
 					&& !(user.getShoppingCart() instanceof FDModifyCartModel)
 					&& user.getShoppingCart().getDeliveryReservation() !=null
@@ -1291,43 +1301,7 @@ public class FDCustomerManager {
 			e.printStackTrace();
 		}
 	}
-
-	/*public static void updateWeeklyReservation(FDIdentity identity, FDTimeslot timeslot, String addressId, FDActionInfo aInfo) throws FDResourceException {
-		lookupManagerHome();
-		try{
-			FDCustomerManagerSB sb = managerHome.create();
-			sb.updateWeeklyReservation(identity, timeslot, addressId, aInfo);
-		}catch (RemoteException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error talking to session bean");
-		} catch (CreateException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		}
-	}*/
-
-	public static void updateRecurringReservation(
-		FDIdentity identity,
-		Date startTime,
-		Date endTime,
-		String addressId,
-		String initiator,
-		String fdUserId)
-		throws FDResourceException {
-
-		ErpCustomerInfoModel custInfo = FDCustomerFactory.getErpCustomerInfo(identity);
-		int dayOfWeek = (startTime != null ? DateUtil.toCalendar(startTime).get(Calendar.DAY_OF_WEEK) : 0);
-		custInfo.setRsvDayOfWeek(dayOfWeek);
-		custInfo.setRsvStartTime(startTime);
-		custInfo.setRsvEndTime(endTime);
-		custInfo.setRsvAddressId(addressId);
-
-		FDActionInfo aInfo = new FDActionInfo(EnumEStoreId.FD,EnumTransactionSource.WEBSITE, identity, initiator, "Updated Recurring Reservation", null,fdUserId);
-
-		updateCustomerInfo(aInfo, custInfo);
-
-	}
-
+	
 	public static FDReservation validateReservation(FDUserI user, FDReservation reservation, TimeslotEvent event) throws FDResourceException {
 		//TODO have to implement this method correctly with Depot and COS handling
 		ErpAddressModel address = getAddress(user.getIdentity(), reservation.getAddressId());
@@ -2435,11 +2409,16 @@ public class FDCustomerManager {
 		setProfileAttribute(identity, key, value, null);
 	}
 
-	public static void setProfileAttribute(FDIdentity identity, String key, String value, FDActionInfo info) throws FDResourceException {
-		lookupManagerHome();
+	public static void setProfileAttribute(FDIdentity identity, String key, String value, FDActionInfo info)
+			throws FDResourceException {
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			sb.setProfileAttribute(identity, key, value, info);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
+				CustomerInfoService.getInstance().setProfileAttribute(identity, key, value, info);
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				sb.setProfileAttribute(identity, key, value, info);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -2557,20 +2536,6 @@ public class FDCustomerManager {
 			FDCustomerManagerSB sb = managerHome.create();
 			sb.setSignupPromotionEligibility(info, eligible);
 
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-	}
-
-	public static String getDepotCode(FDIdentity identity) throws FDResourceException {
-		lookupManagerHome();
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.getDepotCode(identity);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -2765,10 +2730,16 @@ public class FDCustomerManager {
 	}
 
 	public static void createCase(CrmSystemCaseInfo caseInfo) throws FDResourceException {
-		lookupManagerHome();
+		
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			sb.createCase(caseInfo);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
+				CustomerInfoService.getInstance().createCase(caseInfo);
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				sb.createCase(caseInfo);
+			}
+			
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
@@ -2778,25 +2749,15 @@ public class FDCustomerManager {
 		}
 	}
 
-	public static FDCustomerCreditHistoryModel getCreditHistory(FDIdentity identity) throws FDResourceException {
-		lookupManagerHome();
+	public static FDCustomerCreditHistoryModel getCreditHistory(FDIdentity identity) throws FDResourceException {	
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.getCreditHistory(identity);
-		} catch (RemoteException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		}
-	}
-
-	public static void storeCustomerRequest(FDCustomerRequest req) throws FDResourceException {
-		lookupManagerHome();
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			sb.storeCustomerRequest(req);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
+				return CustomerInfoService.getInstance().getCreditHistory(identity);
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getCreditHistory(identity);
+			}
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
@@ -3511,10 +3472,15 @@ public class FDCustomerManager {
 	}
 
 	    public static void storeProductRequest(List<FDProductRequest> productRequest) throws FDResourceException {
-			lookupManagerHome();
 			try {
-				FDCustomerManagerSB sb = managerHome.create();
-				sb.storeProductRequest(productRequest);
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
+					CustomerInfoService.getInstance().storeProductRequest(productRequest);
+				} else {
+					lookupManagerHome();
+
+					FDCustomerManagerSB sb = managerHome.create();
+					sb.storeProductRequest(productRequest);
+				}
 			} catch (CreateException ce) {
 				invalidateManagerHome();
 				throw new FDResourceException(ce, "Error creating session bean");
@@ -3624,22 +3590,7 @@ public class FDCustomerManager {
 			throw new FDResourceException(se, "Error running SQL");
 		}
 	}
-
-	public static void storeProductRequest(List<FDProductRequest> productRequest,
-			FDSurveyResponse survey) throws FDResourceException {
-		lookupManagerHome();
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			sb.storeProductRequest(productRequest, survey);
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-	}
-
+	
 	/**
 	 * @return ErpAddressModel for the specified user and addressId, null if the address is not found.
 	 * @throws FDResourceException
