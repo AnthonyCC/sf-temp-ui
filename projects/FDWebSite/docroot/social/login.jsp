@@ -15,14 +15,14 @@
 <%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
 <%@ page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ page import='com.freshdirect.webapp.util.CaptchaUtil' %>
+<%@ page import='com.freshdirect.webapp.util.FDURLUtil'%>
 
 <fd:CheckLoginStatus id="user" guestAllowed='true'
 	recognizedAllowed='true' />
 <%
 	String uri = request.getRequestURI();
 	String successPage = request.getParameter("successPage");
-	if ((successPage == null) || successPage.equals("undefined")) {
-
+	if (successPage == null) {
 		successPage = "/index.jsp";
 	}
 
@@ -32,10 +32,8 @@
 
 	// determine the preSuccessPage from previous workflow
 	String preSuccessPage = (String) request.getParameter("preSuccessPage");
-	if (preSuccessPage != null && preSuccessPage.length() > 0)
+	if (preSuccessPage != null && preSuccessPage.length() > 0){
 		session.setAttribute(SessionName.PREV_SUCCESS_PAGE, preSuccessPage);
-	else if (session.getAttribute(SessionName.PREV_SUCCESS_PAGE) == null && request.getParameter("successPage") != null) {
-	    session.setAttribute(SessionName.PREV_SUCCESS_PAGE, request.getParameter("successPage"));
 	}
 	boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
 	
@@ -174,7 +172,7 @@
 
 				<div id="social_login_demo" class="social-login-social" tabindex="5">
 					<input type="hidden" id="social-login-callback-uri" 
-					value="<%=FDStoreProperties.isLocalDeployment()?"//" + request.getServerName() + ":" + request.getServerPort() + "/social/social_login_success.jsp" : "" %>" />
+					value="<%=FDStoreProperties.isLocalDeployment()?"//" + request.getServerName() + ":" + request.getServerPort() + "/social/social_login_success.jsp?successPage=" + FDURLUtil.safeURLEncode(request.getParameter("successPage")): "" %>" />
 					<script type="text/javascript">
 				    	/* The library is loaded asynchronously */
 					    var oa = document.createElement('script');
@@ -216,7 +214,7 @@
 												}
 										  } else {
 											    if (fd.components && fd.components.ifrPopup) {
-											      fd.components.ifrPopup.open({ url: '/social/signup_lite.jsp?successPage=<%=successPage%>', height: 590, width:560, opacity: .5});
+											      fd.components.ifrPopup.open({ url: '/social/signup_lite.jsp?successPage=encodeURIComponent(<%=successPage%>)', height: 590, width:560, opacity: .5});
 											    }
 										  }
 									});

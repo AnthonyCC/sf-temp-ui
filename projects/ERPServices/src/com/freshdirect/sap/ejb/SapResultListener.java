@@ -236,6 +236,8 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 							ErpAbstractOrderModel order = saleEB.getCurrentOrder();
 							if(null != order && order.getAmount() <=0){ //Free-trial DP
 								saleEB.forcePaymentStatus();
+								DlvPassManagerSB dlvPass = this.getDlvPassManagerHome().create();
+								dlvPass.updateDeliveryPassActivation(saleId);
 							}
 							/*if(null !=saleEB.getPendingGCAuthorizations() && saleEB.getPendingGCAuthorizations().size() >0 ){
 								GiftCardManagerSB giftCardSB =  getGiftCardManagerHome().create();

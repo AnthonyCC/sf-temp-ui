@@ -20,10 +20,6 @@
 		</center>
 	</div>
 	<script>
-	function close_window(){
-		window.top.location='/login/index.jsp';
-		window.top['FreshDirect'].components.ifrPopup.close();
-	}
 	$jq( document ).ready(function() {
 		FreshDirect.components.ifrPopup.reposition();
 	});

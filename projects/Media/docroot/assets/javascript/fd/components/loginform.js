@@ -94,6 +94,9 @@ var FreshDirect = FreshDirect || {};
 			
 				$(e.widget).attr('tabIndex', 4);
 			}
+
+			var currentPage = window.location.pathname + window.location.search + window.location.hash,
+		        target = fd.utils.getParameterByName('successPage') || currentPage;
 			
 			/* Initialise the asynchronous queue */
 			window._oneall = window._oneall || [];
@@ -108,7 +111,7 @@ var FreshDirect = FreshDirect || {};
 			window._oneall.push(['social_login', 'set_event', 'on_widget_loaded', onWidgetLoaded]);
 			window._oneall.push([ 'social_login', 'set_callback_uri', $('#social-login-callback-uri').val()? 
 					document.location.protocol + $('#social-login-callback-uri').val() :
-						'https://' + document.location.host + '/social/social_login_success.jsp']);
+						'https://' + document.location.host + '/social/social_login_success.jsp?successPage=' + encodeURIComponent(target)]);
 			
 			window._oneall.push([ 'social_login', 'do_render_ui', 'social_login_demo' ]);
 			

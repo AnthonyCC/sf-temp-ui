@@ -15,6 +15,7 @@
 <%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ page import='com.freshdirect.webapp.util.CaptchaUtil' %>
+<%@ page import='com.freshdirect.webapp.util.FDURLUtil'%>
 <%@ taglib uri="freshdirect" prefix="fd"%>
 <%@ taglib uri="template" prefix="tmpl" %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr"%>
@@ -55,10 +56,8 @@
       
 	// determine the preSuccessPage from previous workflow
 	String preSuccessPage = (String)request.getParameter("preSuccessPage");
-	if(preSuccessPage != null && preSuccessPage.length()>0 )
+	if(preSuccessPage != null && preSuccessPage.length()>0 ){
 		session.setAttribute(SessionName.PREV_SUCCESS_PAGE, preSuccessPage);
-    else if (session.getAttribute(SessionName.PREV_SUCCESS_PAGE) == null && request.getParameter("successPage") != null) {
-        session.setAttribute(SessionName.PREV_SUCCESS_PAGE, request.getParameter("successPage"));
     }
 
 	String template = "/common/template/no_nav_html5.jsp";
@@ -431,9 +430,9 @@
 							_oneall.push([ 'social_login', 'set_custom_css_uri', '//'+window.location.host+'/media/social_login/social_login_media.css']);
 							
 							<% if(FDStoreProperties.isLocalDeployment()){ %>
-								_oneall.push([ 'social_login', 'set_callback_uri', '<%= "http://" + request.getServerName()  + ":" + request.getServerPort() + "/social/social_login_success.jsp"%>' ]);
+								_oneall.push([ 'social_login', 'set_callback_uri', '<%= "http://" + request.getServerName()  + ":" + request.getServerPort() + "/social/social_login_success.jsp?successPage=" + FDURLUtil.safeURLEncode(request.getParameter("successPage"))%>' ]);
 							<% } else { %>
-								_oneall.push([ 'social_login', 'set_callback_uri', '<%= "https://" + request.getServerName() + "/social/social_login_success.jsp"%>' ]);
+								_oneall.push([ 'social_login', 'set_callback_uri', '<%= "https://" + request.getServerName() + "/social/social_login_success.jsp?successPage=" + FDURLUtil.safeURLEncode(request.getParameter("successPage"))%>' ]);
 							<% } %>
 							
 							_oneall.push([ 'social_login', 'set_event','on_login_redirect', my_on_login_redirect ]);
@@ -474,8 +473,7 @@
 					if (preSuccessPageFromSession == null) { %>
 						<div style="width: 500px;"><img src="/media_stat/images/navigation/spinner.gif" class="fleft" /></div>		
 						<script language="javascript">
-							//window.top.location = '/index.jsp';   // close popup and return to index page
-							window.location = '/social/AccountCreateSuccess.jsp';  // forward to this page
+							window.location = '/social/AccountCreateSuccess.jsp?successPage=' + '<%= FDURLUtil.safeURLEncode(successPage) %>';  // forward to this page
 						</script>				
 					<% } else {				
 						session.setAttribute(SessionName.PREV_SUCCESS_PAGE,null);			

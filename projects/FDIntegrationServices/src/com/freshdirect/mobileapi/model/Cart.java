@@ -597,6 +597,10 @@ public class Cart {
         FDShoppingCartControllerTagWrapper wrapper = new FDShoppingCartControllerTagWrapper(user);
         wrapper.addRequestValue(SessionName.PARAM_EVALUATE_COUPONS, true);
         
+        if(user.getFDSessionUser()!=null && user.getFDSessionUser().isDlvPassPending()){
+            user.getFDSessionUser().updateDlvPassInfo();
+        }
+        
         if(dlvPassCart){
         	cart = UserUtil.getCart(user.getFDSessionUser(), "", true);
         }

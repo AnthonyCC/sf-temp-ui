@@ -8,10 +8,19 @@
 <%@ page import="com.freshdirect.common.context.MasqueradeContext" %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
 <%@ taglib uri="fd-features" prefix="features" %>
+
 <%
 	/* create default FreshDirect object and populate with any backend data frontend might need */
 	
 	FDSessionUser jsUser = (FDSessionUser)session.getAttribute(SessionName.USER);
+
+	/* to differentiate weblogic(1) vs tomcat(2) */
+	String storeVersion = System.getProperty("catalina.base");
+	if (storeVersion!= null && storeVersion.trim().length() > 0) {
+		storeVersion = "2";
+	} else {
+		storeVersion = "1";
+	}
 %>
 <script type="text/javascript">
 (function () {
@@ -19,7 +28,9 @@
 	var fd = window.FreshDirect;
 
 	fd.features = fd.features || {};
-	fd.features.active = <fd:ToJSON object="${featuresPotato.active}" noHeaders="true"/>
+	fd.features.active = <fd:ToJSON object="${featuresPotato.active}" noHeaders="true"/>;
+
+	fd.storefrontVersion = '<%= storeVersion %>';
 	
 	<%-- define inform --%>
 	fd.inform = fd.inform || {};
@@ -59,7 +70,8 @@
 		fd.user.userId = '<%= jsUser.getUserId() %>';
 		fd.user.fdUserPK = '<%= jsUser.getPrimaryKey() %>';
 		fd.user.fdId = '<%= (identity!=null) ? identity.getFDCustomerPK() : "" %>';
-		fd.user.erpId = '<%= (identity!=null) ? identity.getErpCustomerPK() : "" %>';
+		fd.user.erpId = '<%= (identity!=null) ? identity.getErpCustomerPK() : "" %>';		
+
 		
 		fd.mobWeb = <%= FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, jsUser) && JspMethods.isMobile(request.getHeader("User-Agent")) %>;
 		
