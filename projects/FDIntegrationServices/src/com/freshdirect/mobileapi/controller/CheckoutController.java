@@ -462,6 +462,10 @@ public class CheckoutController extends BaseController {
 
         Checkout checkout = new Checkout(user);
         
+        if(user.getFDSessionUser()!=null && user.getFDSessionUser().isDlvPassPending()){
+            user.getFDSessionUser().updateDlvPassInfo();
+        }
+        
         // call cart, calculate tax, apply store credit
         Cart cart = Cart.wrap(UserUtil.getCart(user.getFDSessionUser(), "", dlvPassCart));
         if(EnumCouponContext.CHECKOUT.equals(ctx)){

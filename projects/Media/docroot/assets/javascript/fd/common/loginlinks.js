@@ -16,9 +16,8 @@ var FreshDirect = FreshDirect || {};
 				API.close();
 			}
 	  } else {
-
 		    if (fd.components && fd.components.ifrPopup) {
-		      fd.components.ifrPopup.open({ url: popupUrl + '?successPage=' + target, height: 590, width: 560, opacity: .5});
+		      fd.components.ifrPopup.open({ url: popupUrl + '?successPage=' + encodeURIComponent(target), height: 590, width: 560, opacity: .5});
 		    }
 	  }
 	};

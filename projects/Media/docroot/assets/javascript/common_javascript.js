@@ -56,7 +56,7 @@ function close_window_new_account(){
 	($jq("#social-login-green-button_begin-shopping").length > 0) ||
 	($jq("#iframepopup-body_id").contents().find("#social-login-green-button_begin-shopping").length > 0)
 	){
-		window.top.location='/login/index.jsp';
+		window.top.location=decodeURIComponent(FreshDirect.utils.getParameterByName('successPage')) || '/login/index.jsp';
 		window.top['FreshDirect'].components.ifrPopup.close();
 	}
 }
