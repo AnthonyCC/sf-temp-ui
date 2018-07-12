@@ -4965,78 +4965,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	public Map<String, ProfileAttributeName> loadProfileAttributeNames() throws FDResourceException {
-		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		try {
-			conn = this.getConnection();
-			ps = conn.prepareStatement("SELECT * FROM CUST.PROFILE_ATTR_NAME");
-			rs = ps.executeQuery();
-			Map<String, ProfileAttributeName> profileNames = new HashMap<String, ProfileAttributeName>();
-
-			while (rs.next()) {
-				ProfileAttributeName profileName = new ProfileAttributeName();
-				profileName.setName(rs.getString("NAME"));
-				profileName.setDescription(rs.getString("DESCRIPTION"));
-				profileName.setCategory(rs.getString("CATEGORY"));
-				profileName.setAttributeValueType(rs.getString("ATTR_VALUE_TYPE"));
-				profileName.setIsEditable("X".equalsIgnoreCase(rs.getString("IS_EDITABLE")));
-				profileNames.put(profileName.getName(), profileName);
-			}
-
-			return profileNames;
-		} catch (SQLException e) {
-			throw new FDResourceException(e);
-		} finally {
-			try {
-				if (rs != null) {
-					rs.close();
-				}
-				if (ps != null) {
-					ps.close();
-				}
-			} catch (SQLException e) {
-				LOGGER.warn("SQLException while cleaning: ", e);
-			}
-			close(conn);
-		}
-	}
-
-	public List<String> loadProfileAttributeNameCategories() throws FDResourceException {
-		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		try {
-			conn = this.getConnection();
-			ps = conn.prepareStatement("SELECT DISTINCT CATEGORY FROM CUST.PROFILE_ATTR_NAME WHERE IS_EDITABLE = 'X'");
-			rs = ps.executeQuery();
-			List<String> lst = new ArrayList<String>();
-
-			while (rs.next()) {
-				lst.add(rs.getString("CATEGORY"));
-			}
-
-			Collections.sort(lst);
-
-			return lst;
-		} catch (SQLException e) {
-			throw new FDResourceException(e);
-		} finally {
-			try {
-				if (rs != null) {
-					rs.close();
-				}
-				if (ps != null) {
-					ps.close();
-				}
-			} catch (SQLException e) {
-				LOGGER.warn("SQLException while cleaning: ", e);
-			}
-			close(conn);
-		}
-	}
-
 	/**
 	 * Set this customer as alert on/alert off.
 	 *
@@ -5101,7 +5029,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	public boolean isCustomerActive(PrimaryKey pk) {
+	private boolean isCustomerActive(PrimaryKey pk) {
 		try {
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
 			return sb.isCustomerActive(pk);
@@ -7747,18 +7675,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(e);
 		}
 		return cartonInfo;
-	}
-
-	public FDUserI saveExternalCampaign(FDUserI user) throws FDResourceException {
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			return FDUserDAO.saveExternalCampaign(conn, user);
-		} catch (SQLException sqle) {
-			throw new FDResourceException(sqle);
-		} finally {
-			close(conn);
-		}
 	}
 
 	private static int getAuthFailEmailTemplate(String authFailMsg) {

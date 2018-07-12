@@ -1,11 +1,14 @@
 package com.freshdirect.fdstore.ecomm.gateway;
 
 import java.rmi.RemoteException;
+import java.util.HashMap;
 import java.util.List;
 
 import com.freshdirect.crm.CrmSystemCaseInfo;
+import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.delivery.ReservationException;
+import com.freshdirect.ecommerce.data.product.ProductRequestData;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
@@ -63,9 +66,17 @@ public interface CustomerInfoServiceI {
 			FDActionInfo aInfo, boolean chefsTable, TimeslotEvent event, boolean isForced)
 			throws FDResourceException, ReservationException, RemoteException;
 
-	public void cancelReservation(FDIdentity identity, FDReservation reservation,
-			FDActionInfo actionInfo, TimeslotEvent event) throws FDResourceException, RemoteException;
-	
+	public void cancelReservation(FDIdentity identity, FDReservation reservation, FDActionInfo actionInfo,
+			TimeslotEvent event) throws FDResourceException, RemoteException;
+
 	public void storeProductRequest(List<FDProductRequest> productRequest) throws RemoteException, FDResourceException;
 
+	public ProductRequestData productRequestFetchAll() throws FDResourceException, RemoteException;
+	
+	public boolean isECheckRestricted(FDIdentity identity)  throws FDResourceException, RemoteException;
+	
+	public String getNextId(String schema, String sequence) throws FDResourceException, RemoteException;
+
+	public ErpCustomerModel getCustomerPaymentAndCredit(FDIdentity identity) throws FDResourceException, RemoteException;
+	
 }

@@ -130,7 +130,7 @@ public class SinglePageCheckoutFacade {
 
     public SinglePageCheckoutData load(final FDUserI user, HttpServletRequest request)
             throws FDResourceException, IOException, TemplateException, JspException, RedirectToPage {
-    	ErpCustomerModel customerModel = FDCustomerManager.getCustomer(user.getIdentity());
+    	ErpCustomerModel customerModel = FDCustomerManager.getCustomerPaymentAndCredit(user.getIdentity());
         FDCartI cart = populateCartDataFromParentOrder(user);
         SinglePageCheckoutData result = new SinglePageCheckoutData();
         if (StandingOrderHelper.isSO3StandingOrder(user)) {
@@ -150,7 +150,7 @@ public class SinglePageCheckoutFacade {
     	}
         result.setPayment(paymentData);
         result.setFormMetaData(FormMetaDataService.defaultService().populateFormMetaData(user));
-        result.setAddress(loadAddress(user, request.getSession(), cart, customerModel.getShipToAddresses(),customerModel.getCustomerInfo()));
+        result.setAddress(loadAddress(user, request.getSession(), cart, FDCustomerManager.getShipToAddresses(user.getIdentity())));
         if (FDStoreProperties.getAtpAvailabiltyMockEnabled()) {
             UnavailabilityData atpFailureData = UnavailabilityPopulator.createUnavailabilityData((FDSessionUser) user);
             if (!atpFailureData.getNonReplaceableLines().isEmpty() || !atpFailureData.getReplaceableLines().isEmpty() || atpFailureData.getNotMetMinAmount() != null
@@ -211,7 +211,7 @@ public class SinglePageCheckoutFacade {
                 break;
             case SELECT_DELIVERY_ADDRESS_METHOD:
                 if (validationResult != null && validationResult.getErrors().isEmpty()) {
-                	ErpCustomerModel customerModel = FDCustomerManager.getCustomer(user.getIdentity());
+                	ErpCustomerModel customerModel = FDCustomerManager.getCustomerPaymentAndCredit(user.getIdentity());
                     result.put(ADDRESS_JSON_KEY, loadAddress(user, session, cart));
                     result.put(TIMESLOT_JSON_KEY, timeslotService.loadCartTimeslot(user, cart));
                     Boolean cartPaymentSelectionDisabled = (Boolean) session.getAttribute(SessionName.CART_PAYMENT_SELECTION_DISABLED);
@@ -334,15 +334,15 @@ public class SinglePageCheckoutFacade {
 	public FormLocationData loadAddress(final FDUserI user, final HttpSession session)
 			throws FDResourceException, JspException, RedirectToPage {
 		
-		return loadAddress(user, session, populateCartDataFromParentOrder(user), null, null);
+		return loadAddress(user, session, populateCartDataFromParentOrder(user), null);
 	}
 
     public FormLocationData loadAddress(final FDUserI user, final HttpSession session, final FDCartI cart) throws FDResourceException, JspException, RedirectToPage {  	
-    	return loadAddress(user,session,cart,null, null);
+    	return loadAddress(user,session,cart,null);
     }
     
-    public FormLocationData loadAddress(final FDUserI user, final HttpSession session, final FDCartI cart, Collection<ErpAddressModel> shippingAddresses, ErpCustomerInfoModel customerInfo) throws FDResourceException, JspException, RedirectToPage {
-        List<LocationData> deliveryAddresses = deliveryAddressService.loadAddress(cart, user, session, shippingAddresses, customerInfo);
+    public FormLocationData loadAddress(final FDUserI user, final HttpSession session, final FDCartI cart, Collection<ErpAddressModel> shippingAddresses) throws FDResourceException, JspException, RedirectToPage {
+        List<LocationData> deliveryAddresses = deliveryAddressService.loadAddress(cart, user, session, shippingAddresses);
         FormLocationData formLocation = new FormLocationData();
         formLocation.setAddresses(deliveryAddresses);
         formLocation.setSelected(getSelectedAddressId(deliveryAddresses));

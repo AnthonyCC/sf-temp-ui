@@ -5,6 +5,7 @@ import java.util.Date;
 import com.freshdirect.common.address.AddressI;
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.customer.EnumCardType;
+import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.giftcard.EnumGiftCardStatus;
 import com.freshdirect.payment.EnumBankAccountType;
@@ -17,7 +18,7 @@ import com.freshdirect.payment.EnumPaymentMethodType;
  * @author     $Author$
  * @stereotype fd-interface
  */
-public interface ErpPaymentMethodI extends AddressI {
+public interface ErpPaymentMethodI extends AddressI, ModelI {
 
     public EnumPaymentMethodType getPaymentMethodType();
 

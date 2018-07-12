@@ -1901,11 +1901,6 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     }
 
     @Override
-    public void setExternalCampaign(ExternalCampaign campaign) {
-        this.user.setExternalCampaign(campaign);
-    }
-
-    @Override
     public ExternalCampaign getExternalCampaign() {
         return this.user.getExternalCampaign();
     }

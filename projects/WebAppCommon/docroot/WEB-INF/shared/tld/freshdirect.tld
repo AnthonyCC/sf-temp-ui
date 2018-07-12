@@ -4427,18 +4427,6 @@
 	</tag>
 	
 	<tag>
-		<name>ExternalCampaign</name>
-		<tagclass>com.freshdirect.webapp.taglib.fdstore.ExternalCampaignTag</tagclass>
- 		<teiclass>com.freshdirect.webapp.taglib.fdstore.ExternalCampaignTag$TagEI</teiclass>
-		<bodycontent>empty</bodycontent>
-		<attribute>
-			<name>successPage</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	
-	<tag>
 		<name>Tile</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.TileTag</tagclass>
 		<teiclass>com.freshdirect.webapp.taglib.fdstore.TileTag$TagEI</teiclass>

@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.delivery.ReservationException;
@@ -18,6 +19,7 @@ import com.freshdirect.ecomm.gateway.AbstractEcommService;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.ecommerce.data.customer.FDUserData;
+import com.freshdirect.ecommerce.data.product.ProductRequestData;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.FDEcommServiceException;
 import com.freshdirect.fdstore.FDResourceException;
@@ -57,6 +59,11 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 	private static final String MAKE_RESERVATION = "customerInfo/makeReservation";
 	private static final String CANCEL_RESERVATION = "customerInfo/cancelReservation";
 	private static final String STORE_REQUEST = "customerInfo/storeProductRequest";
+	private static final String GET_PRODUCT_REQUEST_DATA = "customerInfo/productRequestFetchAll";
+	private static final String GET_NEXT_ID = "customerInfo/getNextId";
+	private static final String IS_ECHECK_RESTRICTED = "customerInfo/isECheckRestricted";
+	private static final String GET_CUSTOMER_PAYMENT_AND_CREDIT = "customerInfo/getCustomerPaymentAndCredit";
+	
 	
 	private static CustomerInfoServiceI INSTANCE;
 
@@ -379,7 +386,7 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 	@Override
 	public void cancelReservation(FDIdentity identity, FDReservation reservation,
 			FDActionInfo actionInfo, TimeslotEvent event) throws FDResourceException, RemoteException {
-		Response<Void> response = null;
+		Response<Response<Void>> response = null;
 		try {
 			
 			Request<ObjectNode> request = new Request<ObjectNode>();
@@ -393,7 +400,7 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 			String inputJson = buildRequest(request);
 
 			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(CANCEL_RESERVATION),
-					new TypeReference<Void>() {
+					new TypeReference<Response<Void>>() {
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
@@ -415,7 +422,7 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 			String inputJson = buildRequest(request);
 
 			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(STORE_REQUEST),
-					new TypeReference<Void>() {
+					new TypeReference<Response<Void>>() {
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
@@ -425,6 +432,55 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 			LOGGER.error("Error in CustomerInfoService: ", e);
 			throw new RemoteException(e.getMessage());
 		}
+	}
+	
+
+	@Override
+	public ProductRequestData productRequestFetchAll() throws FDResourceException, RemoteException {
+		Response<ProductRequestData> response = this.httpGetDataTypeMap(
+				getFdCommerceEndPoint(GET_PRODUCT_REQUEST_DATA),
+				new TypeReference<Response<ProductRequestData>>() {
+				});
+		if (!response.getResponseCode().equals("OK")) {
+			throw new FDResourceException(response.getMessage());
+		}
+		return response.getData();
+	}
+
+	@Override
+	public boolean isECheckRestricted(FDIdentity identity) throws FDResourceException, RemoteException {
+		Response<Boolean> response = this.httpGetDataTypeMap(
+				getFdCommerceEndPoint(IS_ECHECK_RESTRICTED + "/" + identity.getErpCustomerPK()),
+				new TypeReference<Response<Boolean>>() {
+				});
+		if (!response.getResponseCode().equals("OK")) {
+			throw new FDResourceException(response.getMessage());
+		}
+		return response.getData();
+	}
+	
+	@Override
+	public String getNextId(String schema, String sequence) throws FDResourceException, RemoteException {
+		Response<String> response = this.httpGetDataTypeMap(
+				getFdCommerceEndPoint(GET_NEXT_ID + "/" + schema +"/" + sequence),
+				new TypeReference<Response<String>>() {
+				});
+		if (!response.getResponseCode().equals("OK")) {
+			throw new FDResourceException(response.getMessage());
+		}
+		return response.getData();
+	}
+	
+	@Override
+	public ErpCustomerModel getCustomerPaymentAndCredit(FDIdentity identity) throws FDResourceException, RemoteException {
+		Response<ErpCustomerModel> response = this.httpGetDataTypeMap(
+				getFdCommerceEndPoint(GET_CUSTOMER_PAYMENT_AND_CREDIT + "/" + identity.getErpCustomerPK()),
+				new TypeReference<Response<ErpCustomerModel>>() {
+				});
+		if (!response.getResponseCode().equals("OK")) {
+			throw new FDResourceException(response.getMessage());
+		}
+		return response.getData();
 	}
 	
 	private RecognizedUserData fdUserToRecognizedUserData(FDUser user) {
@@ -490,5 +546,4 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 	}
 
 	
-
 }

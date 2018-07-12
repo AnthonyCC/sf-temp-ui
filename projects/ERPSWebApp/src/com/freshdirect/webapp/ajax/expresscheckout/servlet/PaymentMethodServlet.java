@@ -60,7 +60,7 @@ public class PaymentMethodServlet extends BaseJsonServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response, FDUserI user)
 			throws HttpErrorResponse {
 		try {
-			ErpCustomerModel customerModel = FDCustomerManager.getCustomer(user.getIdentity());
+			ErpCustomerModel customerModel = FDCustomerManager.getCustomerPaymentAndCredit(user.getIdentity());
 			FormPaymentData paymentData = SinglePageCheckoutFacade.defaultFacade().loadUserPaymentMethods(user, request,
 					customerModel.getPaymentMethods(), customerModel.getCustomerCredits());
 			// remove the xxxx in account number

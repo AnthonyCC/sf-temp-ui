@@ -568,24 +568,18 @@ public interface FDCustomerManagerSB  extends EJBObject{
 	public void cancelReservation (FDIdentity identity, FDReservation reservation, EnumReservationType type, FDActionInfo actionInfo, TimeslotEvent event) throws FDResourceException, RemoteException;
 	@Deprecated
 	public void storeCustomerRequest(FDCustomerRequest cr) throws FDResourceException, RemoteException;
-
+	@Deprecated
 	public boolean isECheckRestricted(FDIdentity identity)  throws FDResourceException, RemoteException;
 
 	public boolean isReferrerRestricted(FDIdentity identity)  throws FDResourceException, RemoteException;
-
+	@Deprecated
 	public String getNextId(String schema, String sequence) throws FDResourceException, RemoteException;
-
-	public Map<String, ProfileAttributeName> loadProfileAttributeNames() throws FDResourceException, RemoteException;
-
-	public List<String> loadProfileAttributeNameCategories()	throws FDResourceException, RemoteException;
 
 	public void setAlert(FDActionInfo info, ErpCustomerAlertModel customerAlert, boolean isOnAlert) throws RemoteException;
 	@Deprecated
 	public boolean isOnAlert(PrimaryKey pk, String alertType) throws RemoteException;
 
 	public boolean isOnAlert(PrimaryKey pk)  throws RemoteException;
-
-	public boolean isCustomerActive(PrimaryKey pk) throws RemoteException;
 
 	public List<ErpCustomerAlertModel> getAlerts(PrimaryKey pk)  throws RemoteException;
 
@@ -764,9 +758,11 @@ public interface FDCustomerManagerSB  extends EJBObject{
     public void resubmitGCOrders() throws RemoteException, FDResourceException;
 
     public List<String> getTopFaqs() throws FDResourceException, RemoteException;
-
+    @Deprecated
     public List<HashMap<String, String>> productRequestFetchAllDepts() throws FDResourceException, RemoteException;
+    @Deprecated
     public List<HashMap<String, String>> productRequestFetchAllCats() throws FDResourceException, RemoteException;
+    @Deprecated
     public List<HashMap<String, String>> productRequestFetchAllMappings() throws FDResourceException, RemoteException;
 
     public CrmClick2CallModel getClick2CallInfo() throws FDResourceException, RemoteException;
@@ -843,8 +839,6 @@ public interface FDCustomerManagerSB  extends EJBObject{
 	public List<FDCartonInfo> getCartonDetailsForSale(FDOrderI order) throws FDResourceException, RemoteException;
 
 	public Map getAssignedCustomerParams(FDUser user) throws FDResourceException, RemoteException;
-
-	public FDUserI saveExternalCampaign(FDUserI user) throws FDResourceException, RemoteException;
 
 	public void logIpLocatorEvent(IpLocatorEventDTO ipLocatorEventDTO) throws FDResourceException, RemoteException;
 

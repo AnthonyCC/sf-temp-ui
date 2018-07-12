@@ -3336,11 +3336,6 @@ public class FDUser extends ModelSupport implements FDUserI {
     }
 
     @Override
-    public void setExternalCampaign(ExternalCampaign externalCampaign) {
-        this.externalCampaign = externalCampaign;
-    }
-
-    @Override
     public ExternalCampaign getExternalCampaign() {
         return externalCampaign;
     }
