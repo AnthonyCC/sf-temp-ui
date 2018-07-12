@@ -70,10 +70,10 @@ public class CustomerIdentityService extends AbstractEcommService implements Cus
 			}
 			return response.getData();
 		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in CustomerIdentityService: ", e);
+			LOGGER.error("Error in CustomerIdentityService: userId=" + userId, e);
 			throw new RemoteException(e.getMessage());
 		} catch (FDResourceException e) {
-			LOGGER.error("Error in CustomerIdentityService: ", e);
+			LOGGER.error("Error in CustomerIdentityService: userId=" + userId, e);
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -105,10 +105,10 @@ public class CustomerIdentityService extends AbstractEcommService implements Cus
 			FDUser user = loadFromRecognizedUserData(recognizedUserData, false, true);
 			return user;
 		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in CustomerIdentityService: ", e);
+			LOGGER.error("Error in CustomerIdentityService: cookie=" + cookie, e);
 			throw new RemoteException(e.getMessage());
 		} catch (FDResourceException e) {
-			LOGGER.error("Error in CustomerIdentityService: ", e);
+			LOGGER.error("Error in CustomerIdentityService: cookie=" + cookie, e);
 			throw new RemoteException(e.getMessage());
 		}
 
@@ -141,10 +141,10 @@ public class CustomerIdentityService extends AbstractEcommService implements Cus
 			FDUser user = loadFromRecognizedUserData(recognizedUserData, lazy, populateDeliveryPlantInfo);
 			return user;
 		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in CustomerIdentityService: ", e);
+			LOGGER.error("Error in CustomerIdentityService: identity=" + identity, e);
 			throw new RemoteException(e.getMessage());
 		} catch (FDResourceException e) {
-			LOGGER.error("Error in CustomerIdentityService: ", e);
+			LOGGER.error("Error in CustomerIdentityService: identity=" + identity, e);
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -156,6 +156,12 @@ public class CustomerIdentityService extends AbstractEcommService implements Cus
 			user = new FDUser(pk);
 			user.setCookie(data.getCookie());
 			user.setZipCode(data.getZipCode(), populateUserContext);
+			// setAddressbyZipCode logic 
+			if (user.getAddress() != null) {
+	        	user.getAddress().setCity(data.getCity());
+	        	user.getAddress().setState(data.getState());
+	        	user.setEbtAccepted(data.isEbtAccepted());
+	        }
 			user.setDepotCode(data.getDepotCode());
 			user.setSelectedServiceType(EnumServiceType.getEnum(data.getSelectedServiceType()));
 			user.setLastRefTrackingCode(data.getLastRefTrackingCode());
@@ -224,4 +230,5 @@ public class CustomerIdentityService extends AbstractEcommService implements Cus
 		return user;
 	}
 
+	
 }
