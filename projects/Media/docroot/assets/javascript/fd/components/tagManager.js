@@ -145,7 +145,7 @@ var dataLayer = window.dataLayer || [];
     pageType: function (pageData) {
       dataLayer.push({
         page_name: document.title,
-        page_type: pageData.pageType,
+        page_type: fd.gtm.getPageType(pageData),
         page_language: pageData.pageLanguage
       });
     },
@@ -718,11 +718,52 @@ var dataLayer = window.dataLayer || [];
     return window.google_tag_manager && window.google_tag_manager[GTMID];
   };
 
+  // pageType + special cases
+  // if two lines matches the later one wins
+  fd.gtm.PAGETYPES_PATH = {
+    "^/$": "HOMEPAGE",
+    "^/favorite.jsp": "REORDER",
+    "^/social/.*uccess.jsp": "REGISTER",
+    "^/login/": "LOGIN",
+    "^/help/": "HELP",
+    "^/gift_card/": "GIFT_CARDS"
+  };
+
+  fd.gtm.PAGETYPES_SEARCH = {
+    "id=wgd_": "WGD"
+  };
+
+  fd.gtm.getPageType = function (pageData) {
+    pageData = pageData || (fd.gtm.data && fd.gtm.data.googleAnalyticsData && fd.gtm.data.googleAnalyticsData.pageType) || {};
+
+    var pageType = pageData.pageType || 'NOT_RECOGNIZED';
+
+    // try pathname based matching
+    if (pageType.toUpperCase() === 'NOT_RECOGNIZED') {
+      Object.keys(fd.gtm.PAGETYPES_PATH).forEach(function (k) {
+        if (window.location.pathname.match(k)) {
+          pageType = fd.gtm.PAGETYPES_PATH[k];
+        }
+      });
+    }
+
+    // try query string based matching
+    if (pageType.toUpperCase() === 'NOT_RECOGNIZED') {
+      Object.keys(fd.gtm.PAGETYPES_SEARCH).forEach(function (k) {
+        if (window.location.search.match(k)) {
+          pageType = fd.gtm.PAGETYPES_SEARCH[k];
+        }
+      });
+    }
+
+    return pageType;
+  };
+
   // get list for product or product container
   fd.gtm.getListChannel = function (el, config) {
     var channel,
         urlPageType = fd.utils.getParameterByName('pageType'),
-        pageType = (fd.gtm.data && fd.gtm.data.googleAnalyticsData && fd.gtm.data.googleAnalyticsData.pageType && fd.gtm.data.googleAnalyticsData.pageType.pageType || 'unknown').toLowerCase(),
+        pageType = (fd.gtm.getPageType() || 'unknown').toLowerCase(),
         isHookLogic = (el && $(el).hasClass('isHookLogicProduct')) || (config && config.product && config.product.clickBeacon),
         productData = fd.modules.common.productSerialize(el)[0];
 
@@ -759,7 +800,7 @@ var dataLayer = window.dataLayer || [];
     var urlPageType = fd.utils.getParameterByName('pageType'),
         productId = fd.utils.getParameterByName('productId'),
         searchParams = fd.utils.getParameterByName('searchParams'),
-        pageType = fd.gtm.data && fd.gtm.data.googleAnalyticsData && fd.gtm.data.googleAnalyticsData.pageType && fd.gtm.data.googleAnalyticsData.pageType.pageType || 'unknown',
+        pageType = fd.gtm.getPageType() || 'unknown',
         location = urlPageType || pageType || '';
 
     if (window.location.pathname.indexOf('/pdp.jsp') > -1 && productId) {
