@@ -149,6 +149,8 @@
 
 /**
  * @param? products
+ * @param? abFeatures
+ * @param? mobWeb
  */
 {template .ddppWrapper autoescape="false"}
 {if $products and length($products) > 0}
@@ -159,6 +161,8 @@
         {if $product.featuredHeader}<img class="ddpp-ribbon" data-transactional-trigger="true" src="/media/images/ddpp_ribbons/{$product.featuredHeader}.png" role="presentation" alt="">{/if}
         {call common.transactionalGridItem}
           {param item:$product /}
+          {param mobWeb:$mobWeb /}
+          {param abFeatures:$abFeatures /}
         {/call}
       </div>
       {if (index($product)+1) % 4 == 0}/* start new line */
