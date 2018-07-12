@@ -4,7 +4,7 @@
  * @param items some path, list of items
  * @param itemType item variant
  * @param? title optional title string
- * @param? cmEventSource optional coremetrics event source
+ * @param? eventSource optional event source
  * @param? abFeatures
  * @param? mobWeb
  * @param? isIconCarousel
@@ -29,7 +29,7 @@
 					{delcall common.carouselItem variant="$itemType"}
 						{param item:$item /}
 						{param itemCount:length($items) /}
-						{param cmEventSource:$cmEventSource /}
+						{param eventSource:$eventSource /}
 						{param abFeatures:$abFeatures /}
 						{param mobWeb:$mobWeb /}
 						{param moduleData:$moduleData /}

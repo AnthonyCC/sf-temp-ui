@@ -51,11 +51,6 @@ public class PDPRedirector extends BodyTagSupport {
 
 		HttpServletRequest request = (HttpServletRequest)pageContext.getRequest(); 
 		String originalUrl = request.getRequestURI();
-		
-		String cm_vc_queryParam = "";
-		if (request.getParameter("cm_vc") != null) {
-			cm_vc_queryParam = "&cm_vc=" + request.getParameter("cm_vc");  
-		}
 
 		if ( isPDP ) {
 			if ( OLD_PRODUCT_PAGE.equalsIgnoreCase( originalUrl ) ) {
@@ -71,7 +66,7 @@ public class PDPRedirector extends BodyTagSupport {
 						throw new FDNotFoundException(e.getMessage());
 					}
 					if(productNode!=null){
-						redirectUrl = PDP_PAGE_URL + "?catId=" + categoryId + "&productId=" + productId + cm_vc_queryParam;						
+                        redirectUrl = PDP_PAGE_URL + "?catId=" + categoryId + "&productId=" + productId;
 					}
 				}
 				
@@ -83,7 +78,7 @@ public class PDPRedirector extends BodyTagSupport {
 				if ( productId != null && categoryId != null ) { 
 					ProductModel productNode = ContentFactory.getInstance().getProductByName( categoryId, productId );
 					if ( productNode!=null && productNode.getLayout().isGroceryLayout() ) {
-						redirectUrl = PDP_PAGE_URL + "?catId=" + categoryId + "&productId=" + productId + cm_vc_queryParam;
+                        redirectUrl = PDP_PAGE_URL + "?catId=" + categoryId + "&productId=" + productId;
 					}
 				}
 			}
@@ -102,10 +97,10 @@ public class PDPRedirector extends BodyTagSupport {
 					}
 						if ( productNode.getLayout().isGroceryLayout() ) {
 							// if grocery layout redirect to category page
-							redirectUrl = OLD_CATEGORY_PAGE + "?catId=" + categoryId + "&prodCatId=" + categoryId + "&productId=" + productId + cm_vc_queryParam;
+                        redirectUrl = OLD_CATEGORY_PAGE + "?catId=" + categoryId + "&prodCatId=" + categoryId + "&productId=" + productId;
 						} else {
 							// redirect to product page
-							redirectUrl = OLD_PRODUCT_PAGE + "?catId=" + categoryId + "&productId=" + productId + cm_vc_queryParam;
+                        redirectUrl = OLD_PRODUCT_PAGE + "?catId=" + categoryId + "&productId=" + productId;
 						}						
 					}
 				}

@@ -37,7 +37,6 @@ import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.webapp.action.Action;
 import com.freshdirect.webapp.action.HttpContext;
 import com.freshdirect.webapp.action.fdstore.RegistrationAction;
-import com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag;
 import com.freshdirect.webapp.util.AccountUtil;
 import com.freshdirect.webapp.util.FDURLUtil;
 import com.freshdirect.webapp.util.StoreContextUtil;
@@ -416,8 +415,6 @@ public class SocialAccountService implements AccountService {
                             + "\">ID #" + customerId + "</a>");
                     // new ErpLogActivityCommand(FDServiceLocator.getInstance(), rec).execute();
                     successPage = "/registration/invite_signup2.jsp";
-                    // this.setAjax(true);
-                    CmRegistrationTag.setPendingRegistrationEvent(session);
                 } catch (Exception e) {
                     LOGGER.error("Exception when trying to update FDCustomer with referral ID", e);
                 }
@@ -447,8 +444,6 @@ public class SocialAccountService implements AccountService {
                     // this.pageContext.getSession().removeAttribute("EXISTING_CUSTOMERID");
                     // this.setSuccessPage("/registration/referee_signup2.jsp");
                     successPage = "/registration/referee_signup2.jsp";
-                    // this.setAjax(true);
-                    CmRegistrationTag.setPendingRegistrationEvent(session);
                 } catch (Exception e) {
                     LOGGER.error("Exception when trying to update FDCustomer with referral ID", e);
                 }
@@ -457,7 +452,6 @@ public class SocialAccountService implements AccountService {
                     successPage = "/registration/signup_lite.jsp";
                     // this.setAjax(true);
                     pageContext.getSession().setAttribute("LITESIGNUP_COMPLETE", "true");
-                    CmRegistrationTag.setPendingRegistrationEvent(pageContext.getSession());
                 }
             }
 

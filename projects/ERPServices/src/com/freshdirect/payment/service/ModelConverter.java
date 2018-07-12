@@ -246,7 +246,6 @@ import com.freshdirect.payment.gateway.ECheck;
 import com.freshdirect.payment.gateway.GatewayType;
 import com.freshdirect.payment.gateway.PaymentMethod;
 import com.freshdirect.payment.gateway.PaymentMethodType;
-import com.freshdirect.payment.gateway.Response;
 import com.freshdirect.payment.gateway.TransactionType;
 import com.freshdirect.payment.gateway.ejb.FDGatewayActivityLogModel;
 import com.freshdirect.rules.Rule;

@@ -85,10 +85,6 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
     
     private EnumTaxationType taxationType;
     
-    private String coremetricsPageId;
-    private String coremetricsPageContentHierarchy;
-    private String coremetricsVirtualCategory;
-
     private ExternalAgency externalAgency; //e.g. Foodily
 	private String externalSource; //e.g. Recipe source
 	private String externalGroup; //e.g. Recipe name
@@ -221,15 +217,18 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 		this.sku = sku;
 	}
 
-	public String getSalesUnit() {
+	@Override
+    public String getSalesUnit() {
 		return this.configuration.getSalesUnit();
 	}
 
-	public double getQuantity() {
+	@Override
+    public double getQuantity() {
 		return this.configuration.getQuantity();
 	}
 	@JsonIgnore
-	public Map<String,String> getOptions() {
+	@Override
+    public Map<String,String> getOptions() {
 		return this.configuration.getOptions();
 	}
 
@@ -464,37 +463,12 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 		this.taxationType = taxationType;
 	}
 
-	public String getCoremetricsPageId() {
-		return coremetricsPageId;
-	}
-
-	public void setCoremetricsPageId(String coremetricsPageId) {
-		this.coremetricsPageId = coremetricsPageId;
-	}
-
-	public String getCoremetricsPageContentHierarchy() {
-		return coremetricsPageContentHierarchy;
-	}
-
-	public void setCoremetricsPageContentHierarchy(
-			String coremetricsPageContentHierarchy) {
-		this.coremetricsPageContentHierarchy = coremetricsPageContentHierarchy;
-	}
-
 	public EnumATCContext getAddedFrom() {
 		return addedFrom;
 	}
 
 	public void setAddedFrom(EnumATCContext addedFrom) {
 		this.addedFrom = addedFrom;
-	}
-
-	public String getCoremetricsVirtualCategory() {
-		return coremetricsVirtualCategory;
-	}
-
-	public void setCoremetricsVirtualCategory(String coremetricsVirtualCategory) {
-		this.coremetricsVirtualCategory = coremetricsVirtualCategory;
 	}
 
 	public String getExternalGroup() {

@@ -228,10 +228,6 @@ final int W_VIEWCART_LP = 215;
 		
 	<%-- ~~~~~~~~~~~~~~~~~~~~~~ END BOTTOM MODEULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>
 	
-	<%if ("updateQuantities".equals(actionName)) {%>
-		<fd:CmShop5 wrapIntoScriptTag="true" cart="<%=cart%>"/>	
-	<%}%>
-	
 	</fd:RedemptionCodeController>
 	</fd:FDShoppingCart>
 	

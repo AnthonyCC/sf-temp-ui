@@ -22,7 +22,7 @@
   			{foreach $item in $data.products}
   				{call common.transactionalGridItem}
   					{param extraClass:'carouselTransactionalItem' /}
-            {param cmEventSource: $moduleData.cmEventSource /}
+            {param eventSource: $moduleData.eventSource /}
             {param moduleData: $moduleData /}
   					{param item: $item /}
   					{param itemIndex: index($item) /}
@@ -33,7 +33,7 @@
   			{foreach $item in $data.adProducts}
   				{call common.transactionalGridItem}
   					{param extraClass:'carouselTransactionalItem noFeaturedHeaderBanner' /}
-						{param cmEventSource: $moduleData.cmEventSource /}
+						{param eventSource: $moduleData.eventSource /}
 						{param moduleData: $moduleData /}
   					{param item: $item /}
   					{param itemIndex: index($item) /}

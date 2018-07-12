@@ -50,7 +50,6 @@ if (redirectURL!=null) {
 	</tmpl:put>
 <%--     <tmpl:put name='title' direct='true'><%= title %></tmpl:put> --%>
     <tmpl:put name='content' direct='true'>
-    <fd:CmPageView wrapIntoScriptTag="true" currentFolder="<%=recipeDepartment%>"/>
 <oscache:cache key='<%= "deptLayout_"+request.getQueryString() %>' time='14400'>
 <% try { %>
 <%@ include file="/shared/includes/layouts/i_recipe_dept_body.jspf"%>

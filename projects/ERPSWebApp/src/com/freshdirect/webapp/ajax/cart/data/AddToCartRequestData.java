@@ -27,11 +27,6 @@ public class AddToCartRequestData implements Serializable {
 	private String variantId;
 	private String tab;
 	
-	// coremetrics extra fields
-	private String coremetricsPageContentHierarchy;
-	private String coremetricsPageId;
-	private String coremetricsVirtualCategory;
-	
 	private boolean ignoreRedirect;
 	
 	/**
@@ -91,24 +86,7 @@ public class AddToCartRequestData implements Serializable {
 	public void setSiteFeature( String siteFeature ) {
 		this.siteFeature = siteFeature;
 	}	
-	public String getCoremetricsPageContentHierarchy() {
-		return coremetricsPageContentHierarchy;
-	}	
-	public void setCoremetricsPageContentHierarchy( String coremetricsPageContentHierarchy ) {
-		this.coremetricsPageContentHierarchy = coremetricsPageContentHierarchy;
-	}	
-	public String getCoremetricsPageId() {
-		return coremetricsPageId;
-	}	
-	public void setCoremetricsPageId( String coremetricsPageId ) {
-		this.coremetricsPageId = coremetricsPageId;
-	}
-	public String getCoremetricsVirtualCategory() {
-		return coremetricsVirtualCategory;
-	}
-	public void setCoremetricsVirtualCategory(String coremetricsVirtualCategory) {
-		this.coremetricsVirtualCategory = coremetricsVirtualCategory;
-	}
+
 	public boolean isIgnoreRedirect() {
 		return ignoreRedirect;
 	}

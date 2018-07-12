@@ -6,7 +6,6 @@ var FreshDirect = FreshDirect || {};
 
   var $ = fd.libs.$;
   var WIDGET = fd.modules.common.widget;
-  var cm = fd.components.coremetrics;
 
   var sorter = Object.create(WIDGET,{
     signal:{
@@ -54,10 +53,6 @@ var FreshDirect = FreshDirect || {};
 
         clicked.data('currentdirection', clicked.data('direction'));
 
-        if (cm) {
-          cm.setEvent('sort');
-        }
-
         parent.trigger('sorter-change');
       }
     },
@@ -74,10 +69,6 @@ var FreshDirect = FreshDirect || {};
           }
         });
         dropdown.addClass('selected');
-
-        if (cm) {
-          cm.setEvent('sort');
-        }
 
         parent.trigger('sorter-change');
       }

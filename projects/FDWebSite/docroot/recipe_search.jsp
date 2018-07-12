@@ -158,8 +158,6 @@ boolean searchPerformed = false;
 	
 	unfilteredQuery = cleanedUnfilteredQuery;
 	
-	%><fd:CmPageView wrapIntoScriptTag="true" searchTerm='<%=unfilteredQuery%>' searchResultsSize='<%=recipes.size()%>'/><%
-	
 	if (recipes.isEmpty()) {
 		%>
 		<h2>No matching recipes found</h2>
@@ -250,7 +248,6 @@ boolean searchPerformed = false;
 <%
 if (!searchPerformed) {
 	%>
-	<fd:CmPageView wrapIntoScriptTag="true" searchTerm="" searchResultsSize="0"/>
 	<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><form name="recipeSearch"><td valign="top">
 	<div class="section" style="padding-bottom: 2em;">
 		<label for="keyword" class="keyword" style="font-size: 9pt; font-family:Verdana, Helvetica, sans-serif;"><b>Search for:</b></label>

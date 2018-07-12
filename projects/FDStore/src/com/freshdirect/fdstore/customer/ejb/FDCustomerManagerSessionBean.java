@@ -7865,7 +7865,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	}
 
-	// for 4125 coremetrics
 	public String getCustomersProfileValue(String customerId) throws FDResourceException {
 		Connection conn = null;
 		String profileValue = null;

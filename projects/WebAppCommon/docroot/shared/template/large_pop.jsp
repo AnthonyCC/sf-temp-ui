@@ -13,7 +13,6 @@
     <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#FF9900" text="#333333" onLoad="window.resizeTo(585,400); window.focus();" topmargin="10" marginheight="10">
-<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
 <center>
 <a name="top"></a>

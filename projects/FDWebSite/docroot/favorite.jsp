@@ -151,7 +151,6 @@
 
 	      window.FreshDirect.browse.data = <fd:ToJSON object="${browsePotato}" noHeaders="true"/>
 	      window.FreshDirect.globalnav.data = <fd:ToJSON object="${globalnav}" noHeaders="true"/>
-	      window.FreshDirect.coremetricsData = window.FreshDirect.browse.data.coremetrics;
 	      window.FreshDirect.browse.data.searchParams = window.FreshDirect.browse.data.searchParams || {};
 
 	      window.FreshDirect.browse.data.sortOptions = window.FreshDirect.browse.data.sortOptions || {};

@@ -9,15 +9,12 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.coremetrics.builder.ConversionEventTagModelBuilder;
-import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
-import com.freshdirect.webapp.taglib.coremetrics.CmConversionEventTag;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class GetStandingOrderHelpInfoTag extends AbstractGetterTag<String> {
@@ -64,26 +61,7 @@ public class GetStandingOrderHelpInfoTag extends AbstractGetterTag<String> {
 		if (queryString != null){
 			result.append("?").append(queryString);
 		}
-		result.append("',");
-
-	
-		CmConversionEventTag conversionEventTag = new CmConversionEventTag();
-		conversionEventTag.setJspContext(pageContext);
-		conversionEventTag.setOnlyFormatModel(true);
-		conversionEventTag.setEventId(ConversionEventTagModelBuilder.EVENT_SO_HELP);
-		conversionEventTag.setUrl(request.getRequestURI());
-		conversionEventTag.setFirstPhase(true);
-		String conversionEventStartJs = conversionEventTag.getTagOutput();
-		result.append("onOpen: function() { ").append(conversionEventStartJs).append(" },");
-
-		CmConversionEventTag conversionEventTag2 = new CmConversionEventTag();
-		conversionEventTag2.setJspContext(pageContext);
-		conversionEventTag2.setOnlyFormatModel(true);
-		conversionEventTag2.setEventId(ConversionEventTagModelBuilder.EVENT_SO_HELP);
-		conversionEventTag2.setUrl(request.getRequestURI());
-		String conversionEventEndJs = conversionEventTag2.getTagOutput();
-		result.append("onSubmit: function() { ").append(conversionEventEndJs).append(" }");
-		
+        result.append("'");
 		return result.append("}").toString();
 	}
 

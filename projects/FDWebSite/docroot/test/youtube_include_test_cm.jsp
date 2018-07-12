@@ -4,11 +4,8 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" lang="en-US"/>
 
 	<title>Youtube IBM Coremetrics Test Page</title>
-	<fd:CmInit/>
 	<!-- Load the swfobject library-->
 	<fd:javascript src="/assets/javascript/swfobject.js" />
-	<!-- Load the tracking js -->
-	<fd:javascript src="/assets/javascript/youtube-tracking-cm.js"/>
 	
 	<jsp:include page="/common/template/includes/youtube_video_player_cm.jsp">
 		<jsp:param name="id" value="yt1" />

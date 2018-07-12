@@ -481,7 +481,7 @@
       <p class="description">
       This is a base class for the general widget 'class'. This class can listen to a Dispatcher signal and when it notices a signal it passes the provided data to a callback.
       </p>
-      <p>NOTE: Do not use this class as a base class for your visible widgets. Use <code>FreshDirect.common.widget</code> instead which is another abstraction on top of this. SignalTarget shall be used for modules that doesn't render anything, like the <code>coremetrics</code> or the <code>server</code> module.</p>
+      <p>NOTE: Do not use this class as a base class for your visible widgets. Use <code>FreshDirect.common.widget</code> instead which is another abstraction on top of this. SignalTarget shall be used for modules that doesn't render anything, like the <code>server</code> module.</p>
       <pre class="prettyprint example">
           var widget = Object.create(fd.common.signalTarget, {
             signal: {

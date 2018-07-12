@@ -115,7 +115,7 @@ public class DeliveryPassService {
 			IOException, TemplateException {
 		DeliveryPassData data = new DeliveryPassData();
 		Map<String, Object> deliveryPassConfiguration = data.getDeliveryPass();
-		deliveryPassConfiguration.put("cmEventSource", EnumEventSource.BROWSE.getName());
+		deliveryPassConfiguration.put("eventSource", EnumEventSource.BROWSE.getName());
 		List<DeliveryPassProductData> products = populateDeliveryPassProducts(deliveryPasses, user);
 		products.add(0, getRegualDeliveryFee(user));
 		selectDeliveryPass(products, cart, user);

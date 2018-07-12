@@ -40,7 +40,6 @@ final int W_DNAV_TOTAL = 970;
 	
 </head>
 <BODY data-printdata="<tmpl:get name='printdata'/>" BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333">
-<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <%@ include file="/common/template/includes/globalnav.jspf" %> 
 <CENTER class="text10">
 <TABLE role="presentation" WIDTH="<%=W_DNAV_TOTAL%>" BORDER="0" CELLPADDING="0" CELLSPACING="0">

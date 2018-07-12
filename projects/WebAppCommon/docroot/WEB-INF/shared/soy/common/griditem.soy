@@ -52,7 +52,7 @@
 /**
  * @param item definition of an item
  * @param? extraClass extra css class for items
- * @param? cmEventSource optional coremetrics event source
+ * @param? eventSource optional coremetrics event source
  * @param? showConfig show configuration and similar things for e.g. quickshop
  * @param? mobWeb
  * @param? abFeatures
@@ -120,7 +120,7 @@
 		</div>
 		{/if}
 	{/param}
-	{param cmEventSource:$cmEventSource /}
+	{param eventSource:$eventSource /}
 	{param utPrice:$item.utPrice /}
 	{param utSalesUnit:$item.utSalesUnit /}
 	{param usq:$item.usq /}
@@ -308,7 +308,7 @@
  * @param? nutritionSortValue
  * @param? nutritionServingSizeValue
  * @param? showRatings
- * @param? cmEventSource optional coremetrics event source
+ * @param? eventSource optional coremetrics event source
  * @param? utPrice unit price
  * @param? utSalesUnit unit price sales unit
  * @param? usq should display legal information
@@ -336,9 +336,9 @@
 /* this line return must be here, or there will be tabs in output html, which cause whitespace */
 	{let $productCardVersion: $abFeatures ? ($abFeatures.productCard ? $abFeatures.productCard : '[abFeatures.productCard not set]') : '[abFeatures not set]' /}
 	{let $atcItemId: $itemId ? $itemId : 'atc_' + ($productId ? $productId : '') + '_' + ($skuCode ? $skuCode : '') + '_' +($catId ? $catId : '' ) + ($listId ? '_'+$listId : '') + ($originalLineId ? '_'+$originalLineId : '') /}
-	{let $badge: ($freeSamplePromoProduct and ($cmEventSource and (strContains($cmEventSource,'ps_caraousal') or strContains($cmEventSource,'ps_carousel'))))?'free':($badge=='free'?'':$badge) /}
+	{let $badge: ($freeSamplePromoProduct and ($eventSource and (strContains($eventSource,'ps_caraousal') or strContains($eventSource,'ps_carousel'))))?'free':($badge=='free'?'':$badge) /}
 	{let $isEligibleForStandingOrders: ($soData and $soData.settingsData.soSettings and $soData.settingsData.soSettings.isEligibleForStandingOrders) ? true : false /}
-	<li class="portrait-item {not $available or ($quantity and $freeSamplePromoProduct and $maxProductSampleQuantityReached and ($cmEventSource and (strContains($cmEventSource,'ps_caraousal') or strContains($cmEventSource,'ps_carousel')))) ? 'unavailable' : ''} {$discontinued ? 'discontinued' : ''} {$useReplacement ? 'useReplacement' : ''} {$extraClass ? $extraClass : ''}{($isEligibleForStandingOrders) ? ' portrait-item-soPreShow' : ''}{($hookLogicBeaconClick) ? ' isHookLogicProduct' :''}" id="{$productId ? $productId : ''}"
+	<li class="portrait-item {not $available or ($quantity and $freeSamplePromoProduct and $maxProductSampleQuantityReached and ($eventSource and (strContains($eventSource,'ps_caraousal') or strContains($eventSource,'ps_carousel')))) ? 'unavailable' : ''} {$discontinued ? 'discontinued' : ''} {$useReplacement ? 'useReplacement' : ''} {$extraClass ? $extraClass : ''}{($isEligibleForStandingOrders) ? ' portrait-item-soPreShow' : ''}{($hookLogicBeaconClick) ? ' isHookLogicProduct' :''}" id="{$productId ? $productId : ''}"
 	data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}"
 	data-cat-id="{$catId ? $catId : ''}" {$replacement ? 'data-replacement-id="'+$replacement.productId+'"': ''}
 	data-in-stock="{$available}"
@@ -354,9 +354,7 @@
 	data-productcardversion="{$productCardVersion}"
 >
 	{if not $discontinued}
-		<a href="{$productPageUrl}{if $moduleData and $moduleData.moduleVirtualCategory}&cm_vc={$moduleData.moduleVirtualCategory}{/if}" class="portrait-item-image-link" {if $moduleData}data-cm-click="
-		{$productId}-_-{$productName}-_-
-		{if $moduleData.moduleId}{$moduleData.moduleId}{else}no module ID{/if}"{/if}>
+		<a href="{$productPageUrl}" class="portrait-item-image-link">
 	{/if}
 	<div class="portrait-item-productimage_wrapper {$extraClass ? $extraClass + '-image_wrapper' : ''}">
 		<div class="portrait-item-burst_wrapper">
@@ -381,15 +379,13 @@
 				{if $discontinued}
 					<b>{$brandName}</b> <div class="product-name-no-brand">{$productNameNoBrand}</div>
 				{else}
-					<span class="portrait-item-header-name" {if $moduleData}data-cm-click="{$productId}-_-{$productName}-_-{if $moduleData.moduleId}{$moduleData.moduleId}{else}no module ID{/if}"{/if}><b>{$brandName}</b> <div class="product-name-no-brand">{$productNameNoBrand}</div></span>
+					<span class="portrait-item-header-name"><b>{$brandName}</b> <div class="product-name-no-brand">{$productNameNoBrand}</div></span>
 				{/if}
 			{else}
 				{if $discontinued}
 					{$productName}
 				{else}
-					<span class="portrait-item-header-name" {if $moduleData}data-cm-click="
-					{$productId}-_-{$productName}-_-
-					{if $moduleData.moduleId}{$moduleData.moduleId}{else}no module ID{/if}"{/if}>{$productName}</span>
+					<span class="portrait-item-header-name">{$productName}</span>
 				{/if}
 			{/if}
 		</div>
@@ -418,7 +414,7 @@
 		</div>
 	{/if}
 	{if not $moduleData or not $moduleData.hideProductPrice}
-		{if $freeSamplePromoProduct and ($cmEventSource and (strContains($cmEventSource,'ps_caraousal') or strContains($cmEventSource,'ps_carousel')))}
+		{if $freeSamplePromoProduct and ($eventSource and (strContains($eventSource,'ps_caraousal') or strContains($eventSource,'ps_carousel')))}
 			<div class="portrait-item-price product-sample-free">FREE</div>
 		{else}
 			{if $pricePerDefaultSalesUnit and $dispDefaultSalesUnit}
@@ -526,7 +522,7 @@
 					{param isAlcoholic:$isAlcoholic /}
 					{param availabilityMessage:$availabilityMessage /}
 					{param productPageUrl:$productPageUrl /}
-					{param cmEventSource:$cmEventSource /}
+					{param eventSource:$eventSource /}
 					{param listId:$listId /}
 					{param freeSamplePromoProduct:$freeSamplePromoProduct /}
 					{param mobWeb:$mobWeb /}
@@ -584,7 +580,7 @@
 		</div>
 	{/if}
 	{if $relatedItem and not $mobWeb}
-		<ul class="relatedItem" data-component="relateditem" data-cmeventsource="TRY">
+		<ul class="relatedItem" data-component="relateditem" data-eventSource="TRY">
 			{call common.transactionalGridItem}
 				{param item:$relatedItem /}
 				{param extraClass:$extraClass /}
@@ -635,7 +631,7 @@
  * @param isAlcoholic
  * @param? availabilityMessage
  * @param? productPageUrl
- * @param? cmEventSource optional coremetrics event source
+ * @param? eventSource optional coremetrics event source
  * @param? moduleData
  */
 {template .potatoGridItemControls autoescape="false"}
@@ -651,10 +647,10 @@
 					{param soldBySalesUnit:$soldBySalesUnit /}
 					{param salesUnit:$salesUnit /}
 					{param quantity:$quantity /}
-					{param cmEventSource:$cmEventSource /}
+					{param eventSource:$eventSource /}
 				{/call}
 			{/if}
-			<div class="portrait-item-addtocart" {if $cmEventSource}data-cmeventsource="{$cmEventSource}"{/if}>
+			<div class="portrait-item-addtocart" {if $eventSource}data-eventSource="{$eventSource}"{/if}>
 				{if $customizePopup}
 					<button class="customize cssbutton orange small" {if $hasTerms}data-bypasscustomizepopup="true" {/if}data-component="customizeButton">Add to Cart</button>
 				{else}
@@ -710,7 +706,7 @@
  * @param isAlcoholic
  * @param? availabilityMessage
  * @param? productPageUrl
- * @param? cmEventSource optional coremetrics event source
+ * @param? eventSource optional coremetrics event source
  * @param? listId list id
  * @param? freeSamplePromoProduct free sample product
  * @param? mobWeb
@@ -732,10 +728,10 @@
 					{param freeSamplePromoProduct:$freeSamplePromoProduct /}
 					{param uid: $catId+'_'+$productId /}
 					{param cssbuttons: true /}
-					{param cmEventSource:$cmEventSource /}
+					{param eventSource:$eventSource /}
 				{/call}
 			{/if}
-			<div class="portrait-item-addtocart" {if $cmEventSource}data-cmeventsource="{$cmEventSource}"{/if}>
+			<div class="portrait-item-addtocart" {if $eventSource}data-eventSource="{$eventSource}"{/if}>
 				{if $customizePopup}
 					{if $quantity and $quantity.quantity > 0}
 						<input type="hidden" data-component="quantitybox.value" data-productdata-name="quantity" data-mayempty="true" value="{$quantity.quantity}" />

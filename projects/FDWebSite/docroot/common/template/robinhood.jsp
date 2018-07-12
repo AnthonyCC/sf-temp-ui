@@ -60,7 +60,6 @@ final int W_ROBINHOOD_TOTAL = 970;
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body onload="<%= request.getAttribute("bodyOnLoad")%>" onunload="<%= request.getAttribute("bodyOnUnload")%>" >
-<%@ include file="/shared/template/includes/i_body_start.jspf" %>      
 	<center>
 	<%
 		boolean modOrder = false;

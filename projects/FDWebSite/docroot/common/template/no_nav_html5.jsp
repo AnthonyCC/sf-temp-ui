@@ -17,9 +17,8 @@
 		<tmpl:get name="extraJs" />
 		<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 	</head>
-	<!--[if lte IE 9]><body class="ie" data-cmeventsource="<tmpl:get name='cmeventsource'/>"><![endif]-->
-	<!--[if gt IE 9]><!--><body data-cmeventsource="<tmpl:get name='cmeventsource'/>"><!--<![endif]-->
-		<%@ include file="/shared/template/includes/i_body_start.jspf" %>
+	<!--[if lte IE 9]><body class="ie" data-eventsource="<tmpl:get name='eventsource'/>"><![endif]-->
+	<!--[if gt IE 9]><!--><body data-eventsource="<tmpl:get name='eventsource'/>"><!--<![endif]-->
 
 		<div id="content">
 			<!-- content starts -->

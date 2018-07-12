@@ -466,8 +466,6 @@
 <%		QueryParameterCollection qc = QueryParameterCollection.decode(request.getQueryString());
 		String uri = request.getRequestURI();
 %>
-	<fd:CmElement wrapIntoScriptTag="true" elementCategory="president_picks_sort" queryParamCollection="<%= qc %>" />
-
 
 			<div class="product-grid <%= qc.getParameterValue("view","grid")+"-view" %>">
 				<%

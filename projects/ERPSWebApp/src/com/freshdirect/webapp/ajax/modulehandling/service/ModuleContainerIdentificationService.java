@@ -1,4 +1,4 @@
-package com.freshdirect.fdstore.coremetrics.util;
+package com.freshdirect.webapp.ajax.modulehandling.service;
 
 import org.apache.log4j.Logger;
 
@@ -7,29 +7,28 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
-public class CoremetricsUtil {
+public class ModuleContainerIdentificationService {
 
-    private static final Logger LOGGER = LoggerFactory.getInstance(CoremetricsUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getInstance(ModuleContainerIdentificationService.class);
+    private static final ModuleContainerIdentificationService INSTANCE = new ModuleContainerIdentificationService();
 
-    private static final CoremetricsUtil INSTANCE = new CoremetricsUtil();
-
-    private CoremetricsUtil() {
+    private ModuleContainerIdentificationService() {
     }
 
-    public static CoremetricsUtil defaultService() {
+    public static ModuleContainerIdentificationService defaultService() {
         return INSTANCE;
     }
 
-    public String getCustomerTypeByOrderCount(FDUserI user) {
-        return (user.isCorporateUser()) ? getCorporateCustomerTypeByOrderCount(user) : getResidentalCustomerTypeByOrderCount(user);
+    public String getContainerIdByCustomerOrderCount(FDUserI user) {
+        return (user.isCorporateUser()) ? getContainerIdByCorporateCustomerOrderCount(user) : getContainerIdByResidentalCustomerOrderCount(user);
     }
 
-    public String getResidentalCustomerTypeByOrderCount(FDUserI user) {
+    public String getContainerIdByResidentalCustomerOrderCount(FDUserI user) {
         return (isUserAlreadyOrdered(user)) ? FDStoreProperties.getHomepageRedesignCurrentUserContainerContentKey()
                 : FDStoreProperties.getHomepageRedesignNewUserContainerContentKey();
     }
 
-    public String getCorporateCustomerTypeByOrderCount(FDUserI user) {
+    public String getContainerIdByCorporateCustomerOrderCount(FDUserI user) {
         return (isUserAlreadyOrdered(user)) ? FDStoreProperties.getPropHomepageRedesignCurrentCosUserContainerContentKey()
                 : FDStoreProperties.getPropHomepageRedesignNewCosUserContainerContentKey();
     }

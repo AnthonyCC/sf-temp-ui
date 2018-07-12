@@ -1357,9 +1357,6 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
             }
 
             if (theCartLine != null) {
-                theCartLine.setCoremetricsPageId(request.getParameter("coremetricsPageId"));
-                theCartLine.setCoremetricsPageContentHierarchy(request.getParameter("coremetricsPageContentHierarchy"));
-                theCartLine.setCoremetricsVirtualCategory(request.getParameter("coremetricsVirtualCategory"));
                 theCartLine.setAddedFrom(request.getParameter("addedFrom") != null && !request.getParameter("addedFrom").isEmpty()
                         ? EnumATCContext.getEnum(request.getParameter("addedFrom")) : null);
                 theCartLine.setSavingsId(request.getParameter("savingsId") != null && !request.getParameter("savingsId").isEmpty() ? request.getParameter("savingsId") : null);

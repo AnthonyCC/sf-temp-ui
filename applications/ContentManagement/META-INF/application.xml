@@ -14,9 +14,6 @@
     <ejb>DataLoaderEJB-WL.jar</ejb>
   </module>
   <module>
-    <ejb>CoremetricsService.jar</ejb>
-  </module>
-  <module>
     <web>
       <web-uri>FDWebSite.war</web-uri>
       <context-root>/</context-root>

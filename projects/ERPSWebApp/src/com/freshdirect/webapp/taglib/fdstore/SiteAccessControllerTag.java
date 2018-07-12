@@ -34,7 +34,6 @@ import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.webapp.action.Action;
 import com.freshdirect.webapp.action.HttpContext;
 import com.freshdirect.webapp.action.fdstore.RegistrationAction;
-import com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag;
 import com.freshdirect.webapp.util.AccountUtil;
 import com.freshdirect.webapp.util.CaptchaUtil;
 import com.freshdirect.webapp.util.StoreContextUtil;
@@ -606,7 +605,6 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 				if (user != null) {
 					user.setJustSignedUp(true);
 				}
-				CmRegistrationTag.setPendingRegistrationEvent(session);
 			}
 		} catch (Exception ex) {
 			LOGGER.error("Error performing action signupLite", ex);
@@ -644,7 +642,6 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 				if (user != null) {
 					user.setJustSignedUp(true);
 				}
-				CmRegistrationTag.setPendingRegistrationEvent(session);
 			}
 		} catch (Exception ex) {
 			LOGGER.error("Error performing action socialsignup", ex);

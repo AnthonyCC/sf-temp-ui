@@ -9,5 +9,5 @@
     <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
     <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
-<body><%@ include file="/shared/template/includes/i_body_start.jspf" %></body>
+<body></body>
 </html>

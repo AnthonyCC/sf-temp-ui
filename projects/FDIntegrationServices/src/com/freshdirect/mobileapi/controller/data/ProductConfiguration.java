@@ -59,14 +59,7 @@ public class ProductConfiguration {
 	
 	private String externalSource;
 	
-	//FDIP-1214 Adding coremetrics Info
-	private String cmPageId;
-	
-	private String cmPageContentHeirarchy;
-	
 	private String addedFrom;
-	
-	private String cmVirtualCategory;
 	
 	private String variantId;
 	
@@ -74,25 +67,6 @@ public class ProductConfiguration {
 	
 	private String addedFromSearch;
 	
-	
-	
-	
-
-    public String getCmPageId() {
-		return cmPageId;
-	}
-
-	public void setCmPageId(String cmPageId) {
-		this.cmPageId = cmPageId;
-	}
-
-	public String getCmPageContentHeirarchy() {
-		return cmPageContentHeirarchy;
-	}
-
-	public void setCmPageContentHeirarchy(String cmPageContentHeirarchy) {
-		this.cmPageContentHeirarchy = cmPageContentHeirarchy;
-	}
 
 	public String getAddedFrom() {
 		return addedFrom;
@@ -100,14 +74,6 @@ public class ProductConfiguration {
 
 	public void setAddedFrom(String addedFrom) {
 		this.addedFrom = addedFrom;
-	}
-
-	public String getCmVirtualCategory() {
-		return cmVirtualCategory;
-	}
-
-	public void setCmVirtualCategory(String cmVirtualCategory) {
-		this.cmVirtualCategory = cmVirtualCategory;
 	}
 
 	public String getVariantId() {

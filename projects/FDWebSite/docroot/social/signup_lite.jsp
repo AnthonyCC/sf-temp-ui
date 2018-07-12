@@ -1,4 +1,3 @@
-<%@page import="com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag"%>
 <%@ page import="java.net.*,java.util.HashMap"%>
 <%@ page import="com.freshdirect.framework.util.NVL"%>
 <%@ page import="com.freshdirect.enums.CaptchaType" %>
@@ -51,8 +50,6 @@
 	  
 	
 	String failurePage = "/social/signup_lite.jsp?successPage="+ URLEncoder.encode(successPage)+"&ol=na&serviceType="+serviceType;
-    
-	CmRegistrationTag.setRegistrationLocation(session,"signup social");
       
 	// determine the preSuccessPage from previous workflow
 	String preSuccessPage = (String)request.getParameter("preSuccessPage");

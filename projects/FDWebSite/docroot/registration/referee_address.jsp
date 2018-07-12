@@ -40,7 +40,6 @@
 	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body>
-	<%@ include file="/shared/template/includes/i_body_start.jspf" %>	
 		<% if(session.getAttribute("DISPLAY") != null || "doNothing".equals(action)) { %>
 			<% if(!FDStoreProperties.isExtoleRafEnabled()) { %>
 				<jsp:include page="/registration/referee_signup2.jsp" flush="false"/> 

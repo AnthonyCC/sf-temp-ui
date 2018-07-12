@@ -23,7 +23,6 @@
 		<tmpl:get name='customCss'/>
 </head>
 	<body>
-	<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 			<%@ include file="/common/template/includes/globalnav.jspf" %> 
     <div id="content">
       <center class="text10">

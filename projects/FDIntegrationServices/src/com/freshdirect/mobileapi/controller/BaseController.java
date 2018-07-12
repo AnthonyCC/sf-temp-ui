@@ -740,7 +740,6 @@ public abstract class BaseController extends AbstractController implements Messa
         responseMessage.setBrowseEnabled(MobileApiProperties
                 .isBrowseEnabled());
 
-        // Added during Mobile Coremetrics Implementation
         responseMessage.setSelectedServiceType(user
                 .getSelectedServiceType() != null ? user
                 .getSelectedServiceType().toString() : "");

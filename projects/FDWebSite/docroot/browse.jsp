@@ -51,7 +51,7 @@ if (mobWeb) {
 
 
 <tmpl:insert template='<%=template %>'>
-  <tmpl:put name='cmeventsource' direct='true'>BROWSE</tmpl:put>
+  <tmpl:put name='eventsource' direct='true'>BROWSE</tmpl:put>
 
   <tmpl:put name='soypackage' direct='true'>
     <soy:import packageName="browse" />
@@ -155,7 +155,6 @@ if (mobWeb) {
 
       window.FreshDirect.browse.data = <fd:ToJSON object="${browsePotato}" noHeaders="true"/>
       window.FreshDirect.globalnav.data = <fd:ToJSON object="${globalnav}" noHeaders="true"/>
-      window.FreshDirect.coremetricsData = window.FreshDirect.browse.data.coremetrics;
       window.FreshDirect.activeDraft = "${activeDraft}"
       window.FreshDirect.activeDraftDirectLink = "${activeDraftDirectLink}"
     </script>

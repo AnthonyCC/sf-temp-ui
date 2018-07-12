@@ -77,7 +77,6 @@ final int W_CHECKOUT_STEP_2_UNAVAIL_TOTAL = 970;
       window.FreshDirect.unavailability = window.FreshDirect.unavailability || {};
 
       window.FreshDirect.unavailability.data = <fd:ToJSON object="${unavailabilityPotato}" noHeaders="true"/>
-//       window.FreshDirect.coremetricsData = window.FreshDirect.unavailability.data.coremetrics; //TODO Coremetrics for ATC
  </script>
  </div>
  

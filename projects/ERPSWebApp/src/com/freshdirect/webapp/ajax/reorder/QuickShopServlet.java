@@ -2,20 +2,14 @@ package com.freshdirect.webapp.ajax.reorder;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.coremetrics.CmContext;
-import com.freshdirect.fdstore.coremetrics.tagmodel.ElementTagModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.FilteringNavigator;
-import com.freshdirect.storeapi.content.EnumQuickShopFilteringValue;
-import com.freshdirect.storeapi.content.FilteringMenuItem;
 import com.freshdirect.storeapi.content.FilteringSortingItem;
-import com.freshdirect.storeapi.content.FilteringValue;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
 import com.freshdirect.webapp.ajax.quickshop.QuickShopSortType;
@@ -120,19 +114,6 @@ public abstract class QuickShopServlet extends BaseJsonServlet {
 		return pagedItems;
 	}
 
-	public static void generateCoremetricsElementTags( QuickShopReturnValue responseData, Map<FilteringValue, Map<String, FilteringMenuItem>> menu, String categoryName ) {		
-		for ( Map<String, FilteringMenuItem> f : menu.values() ) {
-			for( FilteringMenuItem i : f.values() ) {
-				if ( i.isSelected() && !i.getFilter().equals( EnumQuickShopFilteringValue.TIME_FRAME_ALL )) {
-					ElementTagModel eTagModel = new ElementTagModel();
-					eTagModel.setElementCategory( CmContext.getContext().prefixedCategoryId( categoryName ) );
-					eTagModel.setElementId( i.getName() );
-					responseData.addCoremetrics( eTagModel.toStringList() );
-				}
-			}
-		}
-	}
-	
 	/**
 	 * Wrap items in a FilteringSortingItem for the FilteringFlow.
 	 * @param items

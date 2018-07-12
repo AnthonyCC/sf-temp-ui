@@ -1,4 +1,3 @@
-<%@page import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil"%>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ page import='com.freshdirect.storeapi.attributes.*' %>
@@ -96,7 +95,6 @@
     <fd:IncludeMedia name="/media/editorial/site_pages/stylesheet.html" />
 </head>
   <body>
-    <%@ include file="/shared/template/includes/i_body_start.jspf" %>
     <%@ include file="/common/template/includes/globalnav_optimized.jspf" %>
     <div id="content">
       <center class="text10">

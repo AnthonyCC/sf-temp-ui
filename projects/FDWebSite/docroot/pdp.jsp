@@ -115,7 +115,7 @@ if (mobWeb) {
     <link rel="canonical" href="${productPotato.productPagePrimaryHomeUrl}" />
   </tmpl:put>
 
-  <tmpl:put name='cmeventsource' direct='true'>pdp_main</tmpl:put>
+  <tmpl:put name='eventsource' direct='true'>pdp_main</tmpl:put>
 
   <tmpl:put name='soypackage' direct='true'>
     <soy:import packageName="pdp" />
@@ -193,8 +193,6 @@ if (mobWeb) {
 <% if (productNode.getSpecialLayout()==null || forceProductLayout) { %>
 	
 	<tmpl:put name='content' direct='true'>
-		<fd:CmPageView wrapIntoScriptTag="true" productModel="<%=productNode%>"/>
-		<fd:CmProductView quickbuy="false" wrapIntoScriptTag="true" productModel="<%=productNode%>"/>
 	
 		<% if(!mobWeb) {  // mobWeb doesn't show breadcrumbs %>
 	    	<div class="browse-breadcrumbs">
@@ -249,8 +247,6 @@ if (mobWeb) {
 	request.setAttribute("custCoupon", custCoupon); //set coupon in to request for includes/tags to use
 %>
 	<tmpl:put name='content' direct='true'>
-		<fd:CmPageView wrapIntoScriptTag="true" productModel="<%=productNode%>"/>
-		<fd:CmProductView quickbuy="false" wrapIntoScriptTag="true" productModel="<%=productNode%>"/>
 		<jsp:include page="<%= layoutPath %>" flush="false"/>
 		
 		<script>

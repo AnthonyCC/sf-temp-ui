@@ -84,9 +84,7 @@
 	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 	<body bgcolor="#ffffff" text="#333333" class="text11" marginwidth="0" marginheight="20" leftmargin="0" topmargin="20">		
-	<script type="text/javascript">var manual_cm_mmc="fd_acquisition-_-raf-_-signup-_-invite";</script><%--needs to be included before page view tag in i_body_start --%>
-	<%@ include file="/shared/template/includes/i_body_start.jspf" %>
-			
+	<script type="text/javascript">var manual_cm_mmc="fd_acquisition-_-raf-_-signup-_-invite";</script><%--needs to be included before page view tag in i_body_start --%>			
 		<jsp:include page="/shared/template/includes/server_info.jsp" flush="false"/>
 		<%
 			request.setAttribute("listPos", "SystemMessage,DeliveryFees");

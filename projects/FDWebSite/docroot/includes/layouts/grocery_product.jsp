@@ -387,7 +387,6 @@ if(((pageNumber -1) * itemsToDisplay) > skuCount) {
 
 <form name="groceryForm" id='grocery_form' method="POST">
 <fd:AddToCartPending id="grocery_form"/>
-<fd:CmFieldDecorator/>
 	<%
 	//If there is a specific product selected then show it above the listings here
 	//lets get the product with the product cod in the section, display this product, then the rest of the products

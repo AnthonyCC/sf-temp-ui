@@ -48,7 +48,6 @@
     </tmpl:put>
 <%-- 	<tmpl:put name='title' direct='true'>FreshDirect - What's Good</tmpl:put> --%>
 	<tmpl:put name='content' direct='true'>
-	<fd:CmPageView wrapIntoScriptTag="true" currentFolder="<%=node%>"/>
 	
 	<%
 		//--------OAS Page Variables-----------------------

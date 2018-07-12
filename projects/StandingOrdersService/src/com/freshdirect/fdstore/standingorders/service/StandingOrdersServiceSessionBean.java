@@ -20,26 +20,20 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
-import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
-import com.freshdirect.deliverypass.DeliveryPassException;
-import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.coremetrics.mobileanalytics.CreateCMRequest;
 import com.freshdirect.fdstore.customer.FDActionInfo;
-import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
-import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
+import com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderAltDeliveryDate;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.fdstore.standingorders.SOResult;
 import com.freshdirect.fdstore.standingorders.SOResult.Result;
 import com.freshdirect.fdstore.standingorders.SOResult.Status;
 import com.freshdirect.fdstore.standingorders.UnavDetailsReportingBean;
-import com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.mail.XMLEmailI;
@@ -47,7 +41,6 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
-import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.webapp.util.StandingOrderUtil;
 
 
@@ -153,7 +146,6 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		// Begin processing SO-s, and count the results
 		SOResult.ResultList resultCounter = new SOResult.ResultList();
 		LOGGER.info( "Processing " + soList.size() + " standing orders." );
-		CreateCMRequest.consecutiveTimeout = 0;
 		for ( FDStandingOrder so : soList ) {
 			Result result;
 			try {			

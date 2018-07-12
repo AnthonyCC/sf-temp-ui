@@ -15,7 +15,6 @@
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333" CLASS="text10">
-<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 
 <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="147">
 			    <TR VALIGN="TOP">

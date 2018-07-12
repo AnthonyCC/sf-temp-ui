@@ -101,14 +101,6 @@
 				if(!"".equals(productView) && !"reviews".equalsIgnoreCase(productView)) { 
 				%>
 				 <%=separatorChar%> <a class="bazaarvoice-show-reviews-link" href="product.jsp?productId=<%= request.getParameter("productId")%>&catId=<%=request.getParameter("catId")%>&product_view=reviews<% if (request.getParameter("skuCode")!=null) out.print("&skuCode="+request.getParameter("skuCode")); %>">Reviews</a>
-
-				<script>
-				  (function ($) {
-				      $(document.body).delegate(".bazaarvoice-show-reviews-link", 'click', function (e) {
-						<fd:CmElement elementCategory="reviews" productId="<%=productNode.getContentKey().getId()%>"/>
-				      });
-				  }(jQuery));
-				</script>
 				<%
 				}else{
 				%>

@@ -53,7 +53,6 @@ import com.freshdirect.webapp.action.HttpContext;
 import com.freshdirect.webapp.action.fdstore.RegistrationAction;
 import com.freshdirect.webapp.checkout.DeliveryAddressManipulator;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
-import com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag;
 import com.freshdirect.webapp.util.AccountUtil;
 
 /**
@@ -127,7 +126,6 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
                 ra.setSuccessPage(this.getSuccessPage());
 
                 ra.execute();
-                CmRegistrationTag.setPendingRegistrationEvent(session);
                 this.setSuccessPage(ra.getSuccessPage()); // reset if changed.
 
             } else if ("registerEx".equalsIgnoreCase(actionName)) {
@@ -190,7 +188,6 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 
             } else if ("changeUserID".equalsIgnoreCase(actionName)) {
                 this.performChangeUserID(request, actionResult);
-                CmRegistrationTag.setPendingRegistrationEvent(session);
 
             } else if ("changePassword".equalsIgnoreCase(actionName)) {
                 this.performChangePassword(request, actionResult);

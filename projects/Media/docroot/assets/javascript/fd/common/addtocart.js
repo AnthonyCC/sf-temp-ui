@@ -26,9 +26,9 @@ var FreshDirect = FreshDirect || {};
 
 		var productList = atcFilter(event.atcList),
 			request = { items:productList },
-      eventSource = $(document.body).data('cmeventsource');
+			eventSource = $(document.body).data('eventsource');
 
-		$.extend(request,event.ATCMeta,event.cmData);
+		$.extend(request,event.ATCMeta,event.eventSourceData);
 
     if (fd.components && fd.components.atcInfo) {
       fd.components.atcInfo.setServerMessage(request.items);
@@ -100,6 +100,13 @@ var FreshDirect = FreshDirect || {};
 		});
 	}
 
+    $(document.body).on('addToCart','[data-eventsource]',function(event){
+        if (event.eventSourceData && event.eventSourceData.eventSource) {
+          return;
+        }
+        event.eventSourceData = event.eventSourceData || {};
+        event.eventSourceData.eventSource = $(event.currentTarget).attr('data-eventsource');
+    });
 
 	var ATC_BUS = new Bacon.Bus();
 	var BASIC_ATC = ATC_BUS.filter(function(event){ return requiredValidator(event.items)}).toProperty();
@@ -143,13 +150,9 @@ var FreshDirect = FreshDirect || {};
 
 
   function triggerATC(items,meta,triggerElement,eventSource,ignoreRedirect){
-    var cmData = {};
+    var eventSourceData = {};
     if (eventSource) {
-      cmData.eventSource = eventSource;
-    }
-
-    if (items[0].moduleVirtualCategory) {
-      cmData.coremetricsVirtualCategory = items[0].moduleVirtualCategory;
+      eventSourceData.eventSource = eventSource;
     }
 
 		$(triggerElement || document.body).trigger({
@@ -157,7 +160,7 @@ var FreshDirect = FreshDirect || {};
 			atcList:items,
 			ATCMeta:(meta || {}),
 			valid:true,
-			cmData:cmData,
+			eventSourceData:eventSourceData,
       ignoreRedirect: !!ignoreRedirect
 		});
 	}

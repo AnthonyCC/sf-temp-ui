@@ -36,7 +36,6 @@ import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.storeapi.content.Recipe;
 import com.freshdirect.storeapi.content.RecipeVariant;
 import com.freshdirect.webapp.ajax.quickshop.QuickShopRedirector;
-import com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil;
 import com.freshdirect.webapp.taglib.smartstore.Impression;
 
 
@@ -499,16 +498,6 @@ public class FDURLUtil {
 	        collectedParams.put(ProductDisplayUtil.IMPRESSION_ID, params.get(ProductDisplayUtil.IMPRESSION_ID)[0]);
 	    }
 
-	    String[] cmOnsite = params.get(CmMarketingLinkUtil.ONSITE_PARAMETER_NAME);
-	    if (cmOnsite != null){
-	    	collectedParams.put(CmMarketingLinkUtil.ONSITE_PARAMETER_NAME, cmOnsite[0]);
-	    }
-
-	    String[] cmOffsite = params.get(CmMarketingLinkUtil.OFFSITE_PARAMETER_NAME);
-	    if (cmOffsite != null){
-	    	collectedParams.put(CmMarketingLinkUtil.OFFSITE_PARAMETER_NAME, cmOffsite[0]);
-	    }
-
 	    return collectedParams;
 	}
 
@@ -929,7 +918,7 @@ public class FDURLUtil {
 		String builtRedirectUrl = "";
 
 		// pick and pass fixed parameters first
-		for (final String pName : new String[]{ "cm_vc", "ppPreviewId", "redirected", "ppId" }) {
+        for (final String pName : new String[] { "ppPreviewId", "redirected", "ppId" }) {
 			final String val = req.getParameter(pName);
 			if (val != null) {
 				redirBuilder.append(ProductDisplayUtil.URL_PARAM_SEP)

@@ -32,7 +32,6 @@ boolean emailSent = request.getParameter("email") != null && "sent".equalsIgnore
     <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body bgcolor="white" text="#333333" class="text11" marginwidth="0" marginheight="20" leftmargin="0" topmargin="20">
-<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 
 
 <%!

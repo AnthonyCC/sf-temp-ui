@@ -8,14 +8,14 @@
 {if $carouselData and $carouselData.products and length($carouselData.products) != 0}
 <div class="product-sample-carousel" product-count="{length($carouselData.products)}">
 	<h2 class="product-sample-header" fd-toggle-trigger="product-sample-carousel">{if $title}{$title}{/if}</h2>
-	<div data-component="carousel" data-cmeventsource="view_cart" data-apiendpoint="/api/qs/ymal">		
+	<div data-component="carousel" data-eventsource="view_cart" data-apiendpoint="/api/qs/ymal">		
 		<div data-component="carousel-mask" class="transactional light-carousel">
 			<ul data-component="carousel-list" data-carousel-page="0">			
 				{foreach $item in $carouselData.products}
 					{delcall common.carouselItem variant="'grid'"}
 						{param item:$item /}
 						{param itemCount:length($carouselData.products) /}
-						{param cmEventSource:'ps_caraousal' /}
+						{param eventSource:'ps_caraousal' /}
 					{/delcall}
 				{/foreach}
 			</ul>

@@ -37,7 +37,7 @@ boolean forceProductLayout = true; /* force the product to just use the normal l
 
 %>
 <tmpl:insert template="<%= pageTemplate %>">
-	<tmpl:put name='cmeventsource' direct='true'>UNKNOWN</tmpl:put>
+	<tmpl:put name='eventsource' direct='true'>UNKNOWN</tmpl:put>
 	
 	<tmpl:put name='extraCss' direct='true'>
     	<jwr:style src="/quickshop.css" media="all" />

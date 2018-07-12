@@ -30,7 +30,6 @@
 <!--[if gt IE 8]><!-->
 	<body class="newproducts <tmpl:get name="noResult"/> <tmpl:get name="startPage"/> <tmpl:get name='dfgs-container-class'/>">
 	<!--<![endif]-->
-		<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 		<%@ include file="/common/template/includes/globalnav.jspf" %>
 	<div id="deptnav" class="newprod-deptnav container"><tmpl:get name='deptnav-header' /></div>
     <div id="content_top" class="content-header container">

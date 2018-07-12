@@ -751,9 +751,9 @@ public class SapGatewayConverter {
 			orderLineData.setCouponDiscount(buildErpCouponDiscountlineModelData(orderLine.getCouponDiscount()));
 			if(orderLine.getTaxationType() != null)
 			orderLineData.setTaxationType(orderLine.getTaxationType().getName());
-			orderLineData.setCoremetricsPageId(orderLine.getCoremetricsPageId());
-			orderLineData.setCoremetricsPageContentHierarchy(orderLine.getCoremetricsPageContentHierarchy());
-			orderLineData.setCoremetricsVirtualCategory(orderLine.getCoremetricsVirtualCategory());
+            orderLineData.setCoremetricsPageId(null); // all the coremetrics related fields were removed within the `coremetrics removal` project
+            orderLineData.setCoremetricsPageContentHierarchy(null); // all the coremetrics related fields were removed within the `coremetrics removal` project
+            orderLineData.setCoremetricsVirtualCategory(null); // all the coremetrics related fields were removed within the `coremetrics removal` project
 			if(orderLine.getExternalAgency() != null)
 			orderLineData.setExternalAgency(orderLine.getExternalAgency().toString());
 			orderLineData.setExternalSource(orderLine.getExternalSource());
@@ -1076,9 +1076,6 @@ public class SapGatewayConverter {
 			orderLineModel.setUpc(orderLine.getUpc());
 			orderLineModel.setCouponDiscount(buildErpCouponDiscountlineModel(orderLine.getCouponDiscount()));
 			orderLineModel.setTaxationType(EnumTaxationType.getEnum(orderLine.getTaxationType()));
-			orderLineModel.setCoremetricsPageId(orderLine.getCoremetricsPageId());
-			orderLineModel.setCoremetricsPageContentHierarchy(orderLine.getCoremetricsPageContentHierarchy());
-			orderLineModel.setCoremetricsVirtualCategory(orderLine.getCoremetricsVirtualCategory());
 			if(orderLine.getExternalAgency() != null)
 			orderLineModel.setExternalAgency(ExternalAgency.valueOf(orderLine.getExternalAgency()));
 			orderLineModel.setExternalSource(orderLine.getExternalSource());

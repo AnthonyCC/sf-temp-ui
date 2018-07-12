@@ -37,9 +37,6 @@ import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ZonePriceInfoModel;
-import com.freshdirect.fdstore.coremetrics.CmContextUtility;
-import com.freshdirect.fdstore.coremetrics.extradata.CoremetricsExtraData;
-import com.freshdirect.fdstore.coremetrics.util.CoremetricsUtil;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -979,13 +976,6 @@ public class CartDataService {
                         }
                     } else {
                         updateCartLinesByChangeType(user, cart, clines2report, serverName, cartLine, change, changeType, cartData, oldQuantity);
-                    }
-
-                    // [APPDEV-4558] check if CM reporting is enabled
-                    if (CmContextUtility.isCoremetricsAvailable(user)) {
-                        CoremetricsExtraData cmExtraData = new CoremetricsExtraData();
-                        cmExtraData.setCustomerType(CoremetricsUtil.defaultService().getCustomerTypeByOrderCount(user));
-                        CartOperations.populateCoremetricsShopTag(cartData, cartLine, cmExtraData);
                     }
                 }
         } catch (Exception e) {

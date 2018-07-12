@@ -84,7 +84,6 @@
     </tmpl:put>
 <%--     <tmpl:put name='title' direct='true'><%= title %></tmpl:put> --%>
 <tmpl:put name='content' direct='true'>
-	<fd:CmPageView wrapIntoScriptTag="true" currentFolder="<%=currentFolder%>"/>
 	<%
 		/*
 		int ttl=14400; 

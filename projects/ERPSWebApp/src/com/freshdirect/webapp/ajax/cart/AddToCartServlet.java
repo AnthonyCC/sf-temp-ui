@@ -24,9 +24,6 @@ import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.fdstore.coremetrics.CmContextUtility;
-import com.freshdirect.fdstore.coremetrics.builder.ConversionEventTagModelBuilder;
-import com.freshdirect.fdstore.coremetrics.tagmodel.ConversionEventTagModel;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -34,14 +31,12 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDOrderInfoI;
 import com.freshdirect.fdstore.customer.FDProductSelection;
-import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
-import com.freshdirect.storeapi.application.CmsManager;
 import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
@@ -56,8 +51,6 @@ import com.freshdirect.webapp.ajax.quickshop.QuickShopHelper;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
-import com.freshdirect.webapp.taglib.fdstore.SessionName;
-import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 import com.freshdirect.webapp.util.RequestUtil;
 
 public class AddToCartServlet extends BaseJsonServlet {
@@ -275,27 +268,6 @@ public class AddToCartServlet extends BaseJsonServlet {
                             ExtSource esrc = new ExtSource(item);
                             extSources.add(esrc);
                         }
-                    }
-                }
-
-                for (ExtSource esrc : extSources) {
-                    // ConversionEventTagModel model = new ConversionEventTagModel();
-
-                    ConversionEventTagModelBuilder builder = new ConversionEventTagModelBuilder();
-                    builder.setEventId(esrc.agency.name());
-                    builder.setFirstPhase(false); // --> it makes action type have set 2
-                    builder.setCategoryId("Recipe");
-
-                    // setup model
-                    ConversionEventTagModel model = builder.buildTagModel();
-                    model.getAttributesMaps().put(5, esrc.externalGroup);
-                    model.getAttributesMaps().put(8, esrc.externalSource);
-
-                    // add to response data
-                    
-    				// [APPDEV-4558]
-    				if (CmContextUtility.isCoremetricsAvailable(user)) {
-                    	responseData.addCoremetrics(model.toStringList());
                     }
                 }
 

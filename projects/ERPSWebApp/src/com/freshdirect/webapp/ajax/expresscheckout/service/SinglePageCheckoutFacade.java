@@ -51,7 +51,6 @@ import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.service.CartDataService;
 import com.freshdirect.webapp.ajax.expresscheckout.checkout.service.CheckoutService;
 import com.freshdirect.webapp.ajax.expresscheckout.content.service.ContentFactoryService;
-import com.freshdirect.webapp.ajax.expresscheckout.coremetrics.service.CoremetricsService;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormRestriction;
 import com.freshdirect.webapp.ajax.expresscheckout.data.SinglePageCheckoutData;
 import com.freshdirect.webapp.ajax.expresscheckout.data.SinglePageCheckoutSuccessData;
@@ -363,7 +362,6 @@ public class SinglePageCheckoutFacade {
         		StandingOrderHelper.evaluteSoAddressId(session, user, currentSO.getAddressId());
         	}
         }
-        formLocation.setOnOpenCoremetrics(CoremetricsService.defaultService().getCoremetricsData("address"));
         return formLocation;
     }
 
@@ -766,8 +764,6 @@ public class SinglePageCheckoutFacade {
              * formPaymentData.setMpCardPaired("Yes"); } } }
              */
         }
-
-        formPaymentData.setOnOpenCoremetrics(CoremetricsService.defaultService().getCoremetricsData("payment"));
 
         return formPaymentData;
     }

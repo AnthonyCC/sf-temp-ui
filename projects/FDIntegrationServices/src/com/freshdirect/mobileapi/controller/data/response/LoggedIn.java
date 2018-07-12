@@ -31,7 +31,6 @@ public class LoggedIn extends Message {
 
     private int fdxOrderCount;
 
-    //Added during Mobile Coremetrics Implementation
     private String selectedServiceType;
     private String cohort;
     private int totalOrderCount;

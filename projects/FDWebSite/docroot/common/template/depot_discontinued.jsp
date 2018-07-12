@@ -14,7 +14,6 @@
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body bgcolor="#FFFFFF" text="#333333" class="text10" leftmargin="0" topmargin="0">
-<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 
 	<table width="500" border="0" cellspacing="0" cellpadding="0" align="center">
 	<tr>

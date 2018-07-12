@@ -588,9 +588,6 @@ function parseTipTotal(data) {
 						$ph.attr('gogreen-status', !!ajaxData.goGreen);
 					}
 					cartcontent.render(ajaxData);
-					if(ajaxData.coremetrics) {
-						fd.common.dispatcher.signal('coremetrics', ajaxData.coremetrics);
-					}
 
 					fd.common.dispatcher.signal('cartHeader', ajaxData);
 					fd.common.dispatcher.signal('checkoutCartHeader', ajaxData);

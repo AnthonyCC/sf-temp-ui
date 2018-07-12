@@ -85,7 +85,7 @@
     			FreshDirect.modules.common.utils.createCookie('viewtype', 'grid');
     		</script>
     	<% } %>
-    	<div id="productlist" class="" data-cmeventsource="qs_topItems"></div>
+    	<div id="productlist" class="" data-eventsource="qs_topItems"></div>
     	<div id="productlistHeader" class=""></div>
     </tmpl:put>
 </tmpl:insert>

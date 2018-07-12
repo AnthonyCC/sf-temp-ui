@@ -190,36 +190,7 @@
 	<tmpl:put name='content' direct='true'>
 		<% if (_ordNum != null) { %>
 			<fd:GetOrder id='order' saleId='<%=_ordNum%>'>
-				<script type="text/javascript">
-					var cmFired = false, cmRetry = 60, cmRetryDelay = 500; /* retry for 30 secs */
-					function fireCm() {
-						if (!cmFired && cmRetry>0) {
-							try {
-								if (FreshDirect.utils.isDeveloper()) {
-									console.log('Trying CM calls');
-								}
-								<fd:CmShop9 order="<%=order%>"/>
-								<fd:CmOrder order="<%=order%>"/>
-								<fd:CmRegistration force="true"/>
-								<fd:CmConversionEvent eventId="became_a_customer"/>
-								<% if(_modifyOrderMode){ %>
-									<fd:CmConversionEvent order="<%=order%>" orderModified="true"/>
-								<% } %>
-								cmFired = true;
-							} catch (e) {
-								if (FreshDirect.utils.isDeveloper()) {
-									console.log(e);
-								}
-								cmRetry--;
-								setTimeout("fireCm()", cmRetryDelay);
-							}
-						} else {
-							cmRetry--;
-							setTimeout("fireCm()", cmRetryDelay);
-						}
-					}
-					fireCm();
-				</script>
+
 				<% 
 					isDp2018 = (FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && order.getOrderType().equals(EnumSaleType.SUBSCRIPTION));
 				%>

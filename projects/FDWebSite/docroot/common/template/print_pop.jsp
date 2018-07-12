@@ -13,7 +13,6 @@
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#FF9900" text="#333333" onLoad="window.resizeTo(650,700); window.focus();" topmargin="10" marginheight="10">
-<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <center>
 <a name="top"></a>
 <table border="0" cellpadding="0" cellspacing="0" width="600">

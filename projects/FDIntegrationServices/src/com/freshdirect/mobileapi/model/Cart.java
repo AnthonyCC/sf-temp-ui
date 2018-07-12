@@ -773,11 +773,7 @@ public class Cart {
             	productConfiguration.setExternalAgency(cartLine.getExternalAgency()!=null?cartLine.getExternalAgency():null);
             	productConfiguration.setExternalGroup(cartLine.getExternalGroup()!=null&&!cartLine.getExternalGroup().isEmpty()?cartLine.getExternalGroup():"");
             	productConfiguration.setExternalSource(cartLine.getExternalSource()!=null&&!cartLine.getExternalSource().isEmpty()?cartLine.getExternalSource():"");
-                //Adding CoreMetrics Details
-            	productConfiguration.setCmPageId(cartLine.getCoremetricsPageId()!=null && !cartLine.getCoremetricsPageId().isEmpty()?cartLine.getCoremetricsPageId():null);
-            	productConfiguration.setCmPageContentHeirarchy(cartLine.getCoremetricsPageContentHierarchy()!=null && !cartLine.getCoremetricsPageContentHierarchy().isEmpty()?cartLine.getCoremetricsPageContentHierarchy():null);
-            	productConfiguration.setCmVirtualCategory(cartLine.getCoremetricsVirtualCategory()!=null && cartLine.getCoremetricsVirtualCategory().isEmpty()?cartLine.getCoremetricsVirtualCategory():"");
-            	productConfiguration.setAddedFrom(cartLine.getAddedFrom()!=null? cartLine.getAddedFrom().getName(): "");
+                productConfiguration.setAddedFrom(cartLine.getAddedFrom() != null ? cartLine.getAddedFrom().getName() : "");
             	//productConfiguration.setAddedFromSearch(null);
             	productConfiguration.setVariantId("");
             	productConfiguration.setSavingsId(cartLine.getSavingsId()!=null && !cartLine.getSavingsId().isEmpty()?cartLine.getSavingsId():"");

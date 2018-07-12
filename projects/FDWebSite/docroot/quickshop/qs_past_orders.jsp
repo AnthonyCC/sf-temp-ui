@@ -94,7 +94,7 @@
 
     <tmpl:put name='ymal'>
       <c:if test="${isQS20}">
-        <div id="qs-ymal" data-cmeventsource="qs_ymal"></div>
+        <div id="qs-ymal" data-eventsource="qs_ymal"></div>
       </c:if>
     </tmpl:put>
 
@@ -123,5 +123,5 @@
       </c:choose>
     </tmpl:put>
 
-    <tmpl:put name='content' direct='true'><div id="productlist" class="" data-cmeventsource="qs_pastOrders"></div><div id="productlistHeader" class=""></div></tmpl:put>
+    <tmpl:put name='content' direct='true'><div id="productlist" class="" data-eventsource="qs_pastOrders"></div><div id="productlistHeader" class=""></div></tmpl:put>
 </tmpl:insert>

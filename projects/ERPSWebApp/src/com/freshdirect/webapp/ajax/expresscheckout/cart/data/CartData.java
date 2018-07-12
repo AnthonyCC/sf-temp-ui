@@ -11,7 +11,6 @@ import java.util.Map;
 import com.freshdirect.customer.ErpComplaintReason;
 import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
 import com.freshdirect.storeapi.content.ComparatorChain;
-import com.freshdirect.webapp.ajax.AbstractCoremetricsResponse;
 import com.freshdirect.webapp.ajax.analytics.data.GoogleAnalyticsData;
 import com.freshdirect.webapp.ajax.expresscheckout.csr.data.CustomerServiceRepresentativeData;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
@@ -22,7 +21,7 @@ import com.freshdirect.webapp.ajax.viewcart.data.ViewCartCarouselData;
  * 
  * @author treer
  */
-public class CartData extends AbstractCoremetricsResponse {
+public class CartData {
 
     private static final List<String> TIP_AMOUNTS = Arrays.asList("$0", "$1", "$2", "$3", "$4", "$5", "$6", "$7", "$8", "$9", "Other Amount");
 

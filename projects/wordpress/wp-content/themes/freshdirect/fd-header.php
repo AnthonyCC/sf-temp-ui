@@ -1,19 +1,5 @@
-<script type="text/javascript" src="//libs.coremetrics.com/eluminate.js"></script>
 <script type="text/javascript">
 <?php
-//defaults for test environment
-if (!defined("COREMETRICS_CLIENT_ID")){
-	define("COREMETRICS_CLIENT_ID", "60391309");
-}
-if (!defined("COREMETRICS_DATA_COLLECTION_METHOD")){
-	define("COREMETRICS_DATA_COLLECTION_METHOD", "false");
-}
-if (!defined("COREMETRICS_DATA_COLLECTION_DOMAIN")){
-	define("COREMETRICS_DATA_COLLECTION_DOMAIN", "testdata.coremetrics.com");
-}
-if (!defined("COREMETRICS_COOKIE_DOMAIN")){
-	define("COREMETRICS_COOKIE_DOMAIN", "freshdirect.com");
-}
 
 //search parameters
 $searchTermJsVar = get_search_query();
@@ -33,8 +19,6 @@ if (strlen($uri)>0){
 }
 
 ?>
-cmSetClientID("<?php echo COREMETRICS_CLIENT_ID?>", <?php echo COREMETRICS_DATA_COLLECTION_METHOD?>, "<?php echo COREMETRICS_DATA_COLLECTION_DOMAIN?>", "<?php echo COREMETRICS_COOKIE_DOMAIN?>");
-cmCreatePageviewTag("<?php echo $page?>", "blog", <?php echo $searchTermJsVar ?>, <?php echo $searchCountJsVar ?>);
 </script>
 
 <style type="text/css">

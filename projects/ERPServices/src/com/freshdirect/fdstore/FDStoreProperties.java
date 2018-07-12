@@ -609,20 +609,6 @@ public class FDStoreProperties {
     private final static String PROP_AJAX_SIGNUP_ENABLED = "fdstore.ajaxsignup.enabled";
     private final static String PROP_LIGHT_SIGNUP_ANTS_ENABLED = "fdstore.signuplight.ants.enabled";
 
-    // APPDEV-2394 Coremetrics Implementation
-    private final static String PROP_COREMETRICS_ENABLED = "fdstore.coremetrics.enabled";
-    private final static String PROP_COREMETRICS_CLIENT_ID = "fdstore.coremetrics.clientid";
-    private final static String PROP_COREMETRICS_DATA_COLLECTION_METHOD = "fdstore.coremetrics.datacollectionmethod";
-    private final static String PROP_COREMETRICS_DATA_COLLECTION_DOMAIN = "fdstore.coremetrics.datacollectiondomain";
-    private final static String PROP_COREMETRICS_COOKIE_DOMAIN = "fdstore.coremetrics.cookiedomain";
-    private final static String PROP_COREMETRICS_CATID_DIRS = "fdstore.coremetrics.catid.dirs";
-    private final static String PROP_COREMETRICS_CATID_BLOG = "fdstore.coremetrics.catid.blog";
-    private final static String PROP_COREMETRICS_CATID_OTHERPAGE = "fdstore.coremetrics.catid.otherpage";
-    private final static String PROP_COREMETRICS_FTP_URL = "fdstore.coremetrics.ftp.url";
-    private final static String PROP_COREMETRICS_FTP_PASSWORD = "fdstore.coremetrics.ftp.password";
-    private final static String PROP_COREMETRICS_FTP_SECURE = "fdstore.coremetrics.ftp.secure";
-    private final static String PROP_COREMETRICS_FTP_SFTP_PORT = "fdstore.coremetrics.ftp.sftpport";
-
     // APPDEV-2446 Bazaarvoice Implementation
     private final static String PROP_BAZAARVOICE_FTP_URL = "fdstore.bazaarvoice.ftp.url";
     private final static String PROP_BAZAARVOICE_FTP_USERNAME = "fdstore.bazaarvoice.ftp.username";
@@ -1620,20 +1606,6 @@ public class FDStoreProperties {
         defaults.put(PROP_LIGHT_SIGNUP_ENABLED, "true");
         defaults.put(PROP_AJAX_SIGNUP_ENABLED, "true");
         defaults.put(PROP_LIGHT_SIGNUP_ANTS_ENABLED, "true");
-
-        // defaults for test environment
-        defaults.put(PROP_COREMETRICS_ENABLED, "true");
-        defaults.put(PROP_COREMETRICS_CLIENT_ID, "60391309");
-        defaults.put(PROP_COREMETRICS_DATA_COLLECTION_METHOD, "false");
-        defaults.put(PROP_COREMETRICS_DATA_COLLECTION_DOMAIN, "testdata.coremetrics.com");
-        defaults.put(PROP_COREMETRICS_COOKIE_DOMAIN, "freshdirect.com");
-        defaults.put(PROP_COREMETRICS_CATID_DIRS, "help,your_account,quickshop,checkout,gift_card,robin_hood,about,survey,login,site_access,registration,wine,4mm");
-        defaults.put(PROP_COREMETRICS_CATID_BLOG, "blog");
-        defaults.put(PROP_COREMETRICS_CATID_OTHERPAGE, "other_page");
-        defaults.put(PROP_COREMETRICS_FTP_URL, "ftp.coremetrics.com");
-        defaults.put(PROP_COREMETRICS_FTP_PASSWORD, "Delivers2u!");
-        defaults.put(PROP_COREMETRICS_FTP_SECURE, "false");
-        defaults.put(PROP_COREMETRICS_FTP_SFTP_PORT, "998");
 
         defaults.put(PROP_BAZAARVOICE_FTP_USERNAME, "freshdirect");
         defaults.put(PROP_BAZAARVOICE_FTP_URL, "ftp.bazaarvoice.com");
@@ -3914,54 +3886,6 @@ public class FDStoreProperties {
 
     public static boolean isLightSignupAntsEnabled() {
         return (Boolean.valueOf(get(PROP_LIGHT_SIGNUP_ANTS_ENABLED))).booleanValue();
-    }
-
-    public static boolean isCoremetricsEnabled() {
-        return (Boolean.valueOf(get(PROP_COREMETRICS_ENABLED))).booleanValue();
-    }
-
-    public static String getCoremetricsClientId() {
-        return get(PROP_COREMETRICS_CLIENT_ID);
-    }
-
-    public static String getCoremetricsDataCollectionMethod() {
-        return get(PROP_COREMETRICS_DATA_COLLECTION_METHOD);
-    }
-
-    public static String getCoremetricsDataCollectionDomain() {
-        return get(PROP_COREMETRICS_DATA_COLLECTION_DOMAIN);
-    }
-
-    public static String getCoremetricsCookieDomain() {
-        return get(PROP_COREMETRICS_COOKIE_DOMAIN);
-    }
-
-    public static String getCoremetricsCatIdDirs() {
-        return get(PROP_COREMETRICS_CATID_DIRS);
-    }
-
-    public static String getCoremetricsCatIdBlog() {
-        return get(PROP_COREMETRICS_CATID_BLOG);
-    }
-
-    public static String getCoremetricsCatIdOtherPage() {
-        return get(PROP_COREMETRICS_CATID_OTHERPAGE);
-    }
-
-    public static String getCoremetricsFtpUrl() {
-        return get(PROP_COREMETRICS_FTP_URL);
-    }
-
-    public static String getCoremetricsFtpPassword() {
-        return get(PROP_COREMETRICS_FTP_PASSWORD);
-    }
-
-    public static boolean isCoremetricsFtpSecure() {
-        return Boolean.valueOf(get(PROP_COREMETRICS_FTP_SECURE));
-    }
-
-    public static int getCoremetricsFtpSftpPort() {
-        return Integer.parseInt(get(PROP_COREMETRICS_FTP_SFTP_PORT));
     }
 
     @Deprecated

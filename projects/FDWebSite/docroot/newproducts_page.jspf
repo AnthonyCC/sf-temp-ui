@@ -125,11 +125,6 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	</tmpl:put>
 	<tmpl:put name="content-title">New Products</tmpl:put>
 
-	<tmpl:put name="content-header">
-		<fd:CmElement wrapIntoScriptTag="true" elementCategory="new_products_filter" searchNavigator="<%= searchNav %>" />
-		<fd:CmElement wrapIntoScriptTag="true" elementCategory="new_products_sort" searchNavigator="<%= searchNav %>" />
-	</tmpl:put>
-
 	<tmpl:put name="count-header">
 		<strong><%= itemCount %> new product<%= itemCount > 1 ? "s" : "" %></strong> just added!
 	</tmpl:put>

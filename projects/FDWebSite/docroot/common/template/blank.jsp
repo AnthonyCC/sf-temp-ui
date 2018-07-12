@@ -31,7 +31,6 @@
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body bgcolor="#ffffff" link="#336600" vlink="#336600" alink="#ff9900" text="#333333" class="text10">
-<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <center>
 <!-- content lands here -->
 <tmpl:get name='content'/>

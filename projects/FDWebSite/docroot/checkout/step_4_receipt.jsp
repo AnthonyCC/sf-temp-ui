@@ -62,21 +62,7 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 		if(session.getAttribute("MODIFIED" + _ordNum) != null && session.getAttribute("MODIFIED" + _ordNum).equals(_ordNum)) {
 			_modifyOrderMode = true;
 		}
-		%>
-
-		<fd:GetOrder id='order' saleId='<%=_ordNum%>'>
-			<script type="text/javascript">
-				<fd:CmShop9 order="<%=order%>"/>
-				<fd:CmOrder order="<%=order%>"/>
-				<fd:CmRegistration force="true"/>
-				<fd:CmConversionEvent eventId="became_a_customer"/>
-				<% if(_modifyOrderMode){ %>
-					<fd:CmConversionEvent order="<%=order%>" orderModified="true"/>
-				<% } %>
-			</script>
-		</fd:GetOrder>
-		<%
-
+		
 		if (!_modifyOrderMode) {
 			FDUserI curruser = (FDUserI)session.getAttribute(SessionName.USER);
 			FDIdentity curridentity  = curruser.getIdentity();

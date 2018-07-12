@@ -54,7 +54,6 @@ String title = "FreshDirect - " + ((RecipeCategory)recipeCategory).getName();
     </tmpl:put>
 <%--    <tmpl:put name='title' direct='true'><%=title%></tmpl:put> --%>
    <tmpl:put name='content' direct='true'>
-   <fd:CmPageView wrapIntoScriptTag="true" currentFolder="<%=recipeCategory%>"/>
 <oscache:cache key='<%= "recipe_cat_"+request.getQueryString() %>' time="300">
 <% try {  %>
 <%@ include file="/shared/includes/layouts/i_recipe_cat_body.jspf"%>

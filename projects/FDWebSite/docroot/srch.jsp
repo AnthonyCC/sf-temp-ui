@@ -85,7 +85,7 @@
 </c:choose>
 
 <tmpl:insert template='<%=template%>'>
-	<tmpl:put name='cmeventsource' direct='true'>BROWSE</tmpl:put>
+	<tmpl:put name='eventsource' direct='true'>BROWSE</tmpl:put>
 
 	<tmpl:put name='soypackage' direct='true'>
 		<soy:import packageName="browse" />
@@ -332,7 +332,6 @@
 	
 			window.FreshDirect.browse.data = <fd:ToJSON object="${browsePotato}" noHeaders="true"/>
 			window.FreshDirect.globalnav.data = <fd:ToJSON object="${globalnav}" noHeaders="true"/>
-			window.FreshDirect.coremetricsData = window.FreshDirect.browse.data.coremetrics;
 			window.FreshDirect.browse.data.searchParams = window.FreshDirect.browse.data.searchParams || {};
 	
 			/* APPDEV-5920 Staff picks sort bar implementation */
@@ -353,13 +352,6 @@
 						data="${browsePotato.carousels}" />
 				</div>
 			</c:when>
-			<c:otherwise>
-				<fd:CmPageView wrapIntoScriptTag="true"
-					searchTerm="${browsePotato.searchParams.searchParams}"
-					searchResultsSize="${browsePotato.searchParams.tabs[0].hits}"
-					suggestedTerm="${browsePotato.searchParams.searchTerm}"
-					recipeSearchResultsSize="${browsePotato.searchParams.tabs[1].hits}" />
-			</c:otherwise>
 		</c:choose>
 
 		<div class="ddpp-bottom">
