@@ -424,7 +424,7 @@ public class FDStandingOrder extends ModelSupport {
 	 */
 	public FDIdentity getCustomerIdentity() throws FDResourceException {
 		if ( customerIdentity == null )
-			customerIdentity = new FDIdentity( customerId, FDCustomerFactory.getFDCustomerIdFromErpId( customerId ) );
+			customerIdentity = new FDIdentity( customerId, null/*FDCustomerFactory.getFDCustomerIdFromErpId( customerId ) */);
 		return customerIdentity;
 	}
 	
