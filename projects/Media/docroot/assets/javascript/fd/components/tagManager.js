@@ -722,9 +722,14 @@ var dataLayer = window.dataLayer || [];
   fd.gtm.getListChannel = function (el, config) {
     var channel,
         urlPageType = fd.utils.getParameterByName('pageType'),
-        pageType = fd.gtm.data && fd.gtm.data.googleAnalyticsData && fd.gtm.data.googleAnalyticsData.pageType && fd.gtm.data.googleAnalyticsData.pageType.pageType || 'unknown',
+        pageType = (fd.gtm.data && fd.gtm.data.googleAnalyticsData && fd.gtm.data.googleAnalyticsData.pageType && fd.gtm.data.googleAnalyticsData.pageType.pageType || 'unknown').toLowerCase(),
         isHookLogic = (el && $(el).hasClass('isHookLogicProduct')) || (config && config.product && config.product.clickBeacon),
         productData = fd.modules.common.productSerialize(el)[0];
+
+    // reorder changes for #AN-196
+    if (pageType === 'shopping_lists' || pageType === 'top_items' || pageType === 'past_orders') {
+      pageType = 'reorder';
+    }
 
     if (el && $(el).closest('#atpfailure').length) {
       channel = 'rec_atp';
@@ -763,21 +768,10 @@ var dataLayer = window.dataLayer || [];
       location = 'cat_' + safeName($('ul.breadcrumbs li').last().text());
     } else if (searchParams) {
       location = 'search_' + searchParams.toLowerCase().trim().replace(/\s+/g, '+');
-    } else if ($('ul.qs-tabs li .selected').length) {
-      location = 'reorder_' + safeName($('ul.qs-tabs li .selected').text());
     } else if (window.location.pathname.indexOf('/expresssearch.jsp') > -1 && el && $(el).closest('[data-searchresult]').length ) {
       location = 'expresssearch_' + safeName($(el).closest('[data-searchresult]').attr('data-searchresult'));
     } else {
       location = pageType.toLowerCase();
-    }
-
-    // reorder - strange behavior fallback
-    if (location === 'top_items') {
-      location = 'reorder_your_top_items';
-    } else if (location === 'past_orders') {
-      location = 'reorder_your_past_orders';
-    } else if (location === 'shopping_lists') {
-      location = 'reorder_your_shopping_lists';
     }
 
     // product
