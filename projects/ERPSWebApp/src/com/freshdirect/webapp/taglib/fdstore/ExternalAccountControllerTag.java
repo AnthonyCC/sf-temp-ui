@@ -11,6 +11,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.webapp.ajax.expresscheckout.service.RedirectService;
 import com.freshdirect.webapp.util.FDURLUtil;
 
 public class ExternalAccountControllerTag extends com.freshdirect.framework.webapp.BodyTagSupport implements SessionName {
@@ -33,7 +34,7 @@ public class ExternalAccountControllerTag extends com.freshdirect.framework.weba
             if ("fragment".equals(urlStyle)) {
                 redirectUrl = FDURLUtil.convertQueryToFragmentUrl(redirectUrl);
             }
-            session.setAttribute(SessionName.PREV_SUCCESS_PAGE, redirectUrl);
+            session.setAttribute(SessionName.PREV_SUCCESS_PAGE, RedirectService.defaultService().replacedRedirectUrl(redirectUrl));
         }
 
         String redirectPage = AccountServiceFactory.getService(source).login(session, request, response);
