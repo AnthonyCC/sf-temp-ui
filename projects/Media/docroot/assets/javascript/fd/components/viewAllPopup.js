@@ -12,7 +12,8 @@ var FreshDirect = FreshDirect || {};
     bodyTemplate: {
       value: function (data) {
         var spinner = '<div class="spinner"></div>';
-        return data.data.config ? common.contentModules({config: data.data.config, data: data.data.data}) : spinner;
+        var nestedData = $.extend({}, data.data, {config: data.data.config, data: data.data.data});
+        return data.data.config ? common.contentModules(nestedData) : spinner;
       }
     },
     trigger: {

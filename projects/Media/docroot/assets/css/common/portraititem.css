@@ -1470,6 +1470,9 @@ a.portrait-item-header-name:link {
   opacity: 0.8;
   box-sizing: border-box;
 }
+[data-feature-productcard="2018"] .portrait-item a.portrait-item-price-deal:link {
+	display: table;
+}
 
 [data-feature-productcard="2018"] .portrait-item-price .portrait-item-price-deal:after {
 	content: "\e876";
