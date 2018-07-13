@@ -1346,17 +1346,22 @@ var dataLayer = window.dataLayer || [];
 
   // product click
   $(document).on('click', '[data-component="product"] a[href]', function (e) {
-	if(!(e.ctrlKey || e.shiftKey || e.metaKey || e.target.target == "_blank" || e.target.target == "_top")){
-	    e.preventDefault();
-	    var target = $(e.target).closest('a').prop('href'),
-	        productData = fd.gtm.getProductData(e.target),
-	        goToProduct = function () {
-	          window.location.assign(target);
-	        };
-	
-	    // failsafe
-	    var goTimeout = setTimeout(goToProduct, 300);
-	}
+    var target = $(e.target).closest('a').prop('href'),
+        productData = fd.gtm.getProductData(e.target),
+        goToProduct = function () {
+          window.location.assign(target);
+        },
+        goTimeout = null,
+        needRedirect = false;
+
+    // redirect only for "normal" clicks
+    if(!(e.ctrlKey || e.shiftKey || e.metaKey || e.target.target === "_blank" || e.target.target === "_top")){
+      e.preventDefault();
+      needRedirect = true;
+
+      // failsafe
+      goTimeout = setTimeout(goToProduct, 300);
+    }
 
     fd.gtm.updateDataLayer({
       ecommerce: {
@@ -1381,48 +1386,49 @@ var dataLayer = window.dataLayer || [];
       }
     }, {
       event: 'productClick',
-      callback: function () {
-    	if(!(e.ctrlKey || e.shiftKey || e.metaKey || e.target.target == "_blank" || e.target.target == "_top")){
-	        if (goTimeout) {
-	          clearTimeout(goTimeout);
-	          goTimeout = null;
-	        }
-	        goToProduct();
-    	}
-      }
+      callback: needRedirect && (function () {
+        if (goTimeout) {
+          clearTimeout(goTimeout);
+          goTimeout = null;
+        }
+        goToProduct();
+      })
     });
 
   });
 
   // top nav click
   $(document).on('click', '[data-component="globalnav-menu"] a, .bottom-nav a', function (e) {
-	if(!(e.ctrlKey || e.shiftKey || e.metaKey || e.target.target == "_blank" || e.target.target == "_top")){
-		e.preventDefault();
-	    var target = $(e.target).closest('a').prop('href'),
-	        title = $(e.target).closest('a').text(),
-	        goToTarget = function () {
-	          window.location.assign(target);
-	        };
-	
-	    // failsafe
-	    var goTimeout = setTimeout(goToTarget, 300);
-	}
-	
+    var target = $(e.target).closest('a').prop('href'),
+        title = $(e.target).closest('a').text(),
+        goToTarget = function () {
+          window.location.assign(target);
+        },
+        goTimeout = null,
+        needRedirect = false;
+
+    // redirect only for "normal" clicks
+    if(!(e.ctrlKey || e.shiftKey || e.metaKey || e.target.target === "_blank" || e.target.target === "_top")){
+      e.preventDefault();
+      needRedirect = true;
+
+      // failsafe
+      goTimeout = setTimeout(goToTarget, 300);
+    }
+
     fd.gtm.updateDataLayer({
       topNavClick: {
         title: title
       }
     }, {
       event: 'top-menu-clicked',
-      callback: function () {
-    	if(!(e.ctrlKey || e.shiftKey || e.metaKey || e.target.target == "_blank" || e.target.target == "_top")){
-	        if (goTimeout) {
-	          clearTimeout(goTimeout);
-	          goTimeout = null;
-	        }
-	        goToTarget();
-    	}
-      }
+      callback: needRedirect && (function () {
+        if (goTimeout) {
+          clearTimeout(goTimeout);
+          goTimeout = null;
+        }
+        goToTarget();
+      })
     });
 
   });
