@@ -39,10 +39,6 @@ function linkTo(url){
 	parent.opener.location = redirectUrl;
 }
 </script>
-<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
-<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-<%@ include file="/shared/template/includes/ccl.jspf" %>
 <A NAME="top"></A>
 			<TABLE width="<%=tableWidth%>" CELLPADDING="0" CELLSPACING="0" BORDER="0">
 				<TR VALIGN="TOP">
@@ -94,7 +90,7 @@ function linkTo(url){
 					<TD WIDTH="15"><img src="/media/images/layout/clear.gif" width="15" height="1" alt="" border="0"></TD>
 					<TD WIDTH="<%=tableWidth-15%>" class="bodyCopy">
 						<b>Where does FreshDirect deliver?</b><br>
-						We deliver to certain neighborhoods in New York. Very soon, we'll be delivering to every address in Manhattan as well as parts of Brooklyn and Queens. To find out if FreshDirect is in your area now, <a href="javascript:fd.components.zipCheckPopup.openZipCheckPopup()">click here</a>.<br>
+						We deliver to certain neighborhoods in New York. Very soon, we'll be delivering to every address in Manhattan as well as parts of Brooklyn and Queens. To find out if FreshDirect is in your area now, <a href="javascript:popup('/help/delivery_zones.jsp','large')">click here</a>.<br>
 
 				   </TD>
 				</TR>
@@ -265,4 +261,3 @@ The number of items in a box has a direct relationship to the number of items or
 				   </TD>
 				</TR>
 			</TABLE>
-<%@ include file="/common/template/includes/i_jsmodules.jspf" %>
