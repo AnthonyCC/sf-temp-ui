@@ -39,6 +39,10 @@ function linkTo(url){
 	parent.opener.location = redirectUrl;
 }
 </script>
+<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
+<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+<%@ include file="/shared/template/includes/ccl.jspf" %>
 <A NAME="top"></A>
 			<TABLE width="<%=tableWidth%>" CELLPADDING="0" CELLSPACING="0" BORDER="0">
 				<TR VALIGN="TOP">
@@ -261,3 +265,4 @@ The number of items in a box has a direct relationship to the number of items or
 				   </TD>
 				</TR>
 			</TABLE>
+<%@ include file="/common/template/includes/i_jsmodules.jspf" %>
