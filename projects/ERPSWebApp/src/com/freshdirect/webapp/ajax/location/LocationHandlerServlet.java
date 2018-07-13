@@ -64,6 +64,9 @@ public class LocationHandlerServlet extends BaseJsonServlet {
                     case SET_ZIP_CODE:
                         validationResult = setZipCode(user, locationRequest);
                         break;
+                    case CHECK_ZIP_CODE:
+                        validationResult = checkZipCode(user, locationRequest);
+                        break;
                     case FUTURE_ZONE_NOTIFICATION:
                         validationResult = futureZoneNotification(user, locationRequest);
                         break;
@@ -119,6 +122,28 @@ public class LocationHandlerServlet extends BaseJsonServlet {
         return validationResult;
     }
 
+    private ValidationResult checkZipCode(FDUserI user, FormDataRequest locationRequest) throws FDResourceException {
+        ValidationResult validationResult = new ValidationResult();
+        ActionResult result = new ActionResult();
+        String zipCode = FormDataService.defaultService().get(locationRequest, "zipCode");
+        EnumServiceType dlvType = EnumServiceType.getEnum(FormDataService.defaultService().get(locationRequest, "addressType"));
+
+        FDDeliveryServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(zipCode, EnumEStoreId.FD);
+        Set<EnumServiceType> availableServices = serviceResult.getAvailableServices();
+
+        if (!availableServices.contains(dlvType)) {
+        	result.addError(new ActionError("FreshDirect does not deliver to the selected zip code:" + zipCode));
+        }
+        
+        if (result.isFailure()) {
+            for (ActionError error : result.getErrors()) {
+                validationResult.addError(new ValidationError(error));
+            }
+        }
+
+        return validationResult;
+    }
+    
     private ValidationResult futureZoneNotification(FDUserI user, FormDataRequest locationRequest) throws FDResourceException {
         ValidationResult validationResult = new ValidationResult();
         ActionResult result = new ActionResult();
