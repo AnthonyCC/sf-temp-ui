@@ -407,7 +407,6 @@
   margin:20px 0;
 }
 
-
 .carouselTransactionalItem-image_wrapper .portrait-item-productimage {
   /*max-height: 70px;*/
 }
@@ -685,7 +684,7 @@ a.portrait-item-header-name:link {
   z-index:21;
   overflow: hidden;
   width: auto;
-  background:white;
+  background:#fff;
   position: relative;
   display: table-cell;
   vertical-align: top;
@@ -802,7 +801,7 @@ a.portrait-item-header-name:link {
 [data-feature-productcard="2018"] #transactionalPopup .transactional-item-header {
   position: absolute;
   height: 25px;
-  left: 5px;
+  left: 25px;
   overflow: visible;
   line-height: 25px;
   z-index: 2;
@@ -1495,7 +1494,7 @@ a.portrait-item-header-name:link {
 
 [data-feature-productcard="2018"] .portrait-item-price .portrait-item-price-deal.notGrpLink {
   top: 10px;
-  right: 0;
+  right: 0px;
   height: auto;
   padding-right: 3px;
   text-align: right;
@@ -1513,4 +1512,8 @@ a.portrait-item-header-name:link {
   display: block;
   /* height: 20px; */
   box-sizing: border-box;
+}
+
+[data-feature-productcard="2018"] .transactional-related-item.carouselTransactionalItem .portrait-item-price .portrait-item-price-deal.notGrpLink {
+  top: 20px;
 }
