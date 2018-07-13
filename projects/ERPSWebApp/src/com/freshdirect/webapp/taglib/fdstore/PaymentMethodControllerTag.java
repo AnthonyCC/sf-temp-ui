@@ -210,24 +210,12 @@ public class PaymentMethodControllerTag extends com.freshdirect.framework.webapp
                     throw new JspException("Error redirecting "+ioe.getMessage());
                 }
             }
-            if("deactivated_Account".equals( actionResult.getError("deactivated_Account").getType()))  {
-            	HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
-                try {
-                    response.sendRedirect(response.encodeRedirectURL("/logout.jsp"));
-                    JspWriter writer = pageContext.getOut();
-                    writer.close();
-                    return SKIP_BODY;
-                } catch (IOException ioe) {
-                    // if there was a problem redirecting, well.. it can't get any worse :)
-                    throw new JspException("Error redirecting "+ioe.getMessage());
-                }
-            }
             if(actionResult.isFailure() && (!actionResult.getErrors().isEmpty()) && (actionResult.getError(DEACTIVATED_ACCOUNT_ERROR_TYPE)!=null) && DEACTIVATED_ACCOUNT_ERROR_TYPE.equals( actionResult.getError(DEACTIVATED_ACCOUNT_ERROR_TYPE).getType()))  {
             	HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
                 try {
                     response.sendRedirect(response.encodeRedirectURL("/logout.jsp"));
-                    JspWriter writer = pageContext.getOut();
-                    writer.close();
+                    //JspWriter writer = pageContext.getOut();
+                    //writer.close();
                     return SKIP_BODY;
                 } catch (IOException ioe) {
                     // if there was a problem redirecting, well.. it can't get any worse :)
