@@ -15,6 +15,7 @@ import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerModel;
+import com.freshdirect.customer.ErpDuplicateDisplayNameException;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpPromotionHistory;
@@ -39,6 +40,7 @@ import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ProfileModel;
+import com.freshdirect.fdstore.customer.SilverPopupDetails;
 import com.freshdirect.fdstore.ecomm.model.RecognizedUserData;
 import com.freshdirect.fdstore.iplocator.IpLocatorEventDTO;
 import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
@@ -79,7 +81,12 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 	private static final String LOAD_REWRITE_RULES = "customerInfo/loadRewriteRules";
 	private static final String GET_PERISHABLE_BUFFE_AMOUNT = "customerInfo/getPerishableBufferAmount";
 	private static final String GET_TOP_FAQS = "customerInfo/getTopFaqs";
-	
+	private static final String IS_DISPLAY_NAME_USED = "customerInfo/isDisplayNameUsed";
+	private static final String GET_SILVER_POP_UP_DETAILS = "customerInfo/getSilverPopupDetails";
+	private static final String UPDATE_SILVER_POP_UP_DETAILS = "customerInfo/updateSPSuccessDetails";
+	private static final String INSERT_SILVER_POP_UP_DETAILS = "customerInfo/insertOrUpdateSilverPopup";
+	private static final String GET_COOKIE_BY_FD_CUSTOMER_ID = "customerInfo/getCookieByFdCustomerId";
+
 	private static CustomerInfoServiceI INSTANCE;
 
 	public static CustomerInfoServiceI getInstance() {
@@ -685,11 +692,14 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 	}
 
 	@Override
-	public double getPerishableBufferAmount(ErpAbstractOrderModel order) throws RemoteException, FDResourceException {
+	public double getPerishableBufferAmount(ErpAbstractOrderModel order, boolean isModifyOrderModel) throws RemoteException, FDResourceException {
 		Response<Double> response = null;
 		try {
-			Request<ErpAbstractOrderModel> request = new Request<ErpAbstractOrderModel>();
-			request.setData(order);
+			ObjectNode rootNode = getMapper().createObjectNode();
+			rootNode.set("order", getMapper().convertValue(order, JsonNode.class));
+			rootNode.put("isModifyOrderModel", isModifyOrderModel);
+			Request<ObjectNode> request = new Request<ObjectNode>();
+			request.setData(rootNode);
 			String inputJson = buildRequest(request);
 
 			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(GET_PERISHABLE_BUFFE_AMOUNT),
@@ -714,6 +724,107 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 				});
 		if (!response.getResponseCode().equals("OK")) {
 			LOGGER.error("Error in CustomerInfoService.getTopFaqs: ");
+			throw new FDResourceException(response.getMessage());
+		}
+		return response.getData();
+	}
+
+	@Override
+	public boolean isDisplayNameUsed(String displayName, String custId)
+			throws ErpDuplicateDisplayNameException, FDResourceException,  RemoteException {
+		Response<Boolean> response = null;
+		try {
+			ObjectNode rootNode = getMapper().createObjectNode();
+			rootNode.put("displayName", displayName);
+			rootNode.put("custId", custId);
+			Request<ObjectNode> request = new Request<ObjectNode>();
+			request.setData(rootNode);
+			String inputJson = buildRequest(request);
+
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(IS_DISPLAY_NAME_USED),
+					new TypeReference<Response<Boolean>>() {
+					});
+
+			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in CustomerInfoService.isDisplayNameUsed: data=" + inputJson);
+				if ("ErpDuplicateDisplayNameException".equals(response.getMessage())) {
+					throw new ErpDuplicateDisplayNameException(
+							response.getError().get("ErpDuplicateDisplayNameException").toString());
+				}
+				throw new FDResourceException(response.getMessage());
+			}
+			return response.getData();
+		} catch (FDEcommServiceException e) {
+			LOGGER.error("Error in CustomerInfoService.isDisplayNameUsed: ", e);
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	@Override
+	public List<SilverPopupDetails> getSilverPopupDetails() throws FDResourceException, RemoteException {
+		Response<List<SilverPopupDetails>> response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_SILVER_POP_UP_DETAILS),
+				new TypeReference<Response<List<SilverPopupDetails>>>() {
+				});
+		if (!response.getResponseCode().equals("OK")) {
+			LOGGER.error("Error in CustomerInfoService.getTopFaqs: ");
+			throw new FDResourceException(response.getMessage());
+		}
+		return response.getData();
+	}
+
+	@Override
+	public void updateSPSuccessDetails(SilverPopupDetails detail) throws FDResourceException, RemoteException {
+		Response<Void> response = null;
+		try {
+			Request<SilverPopupDetails> request = new Request<SilverPopupDetails>();
+			request.setData(detail);
+			String inputJson = buildRequest(request);
+
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(UPDATE_SILVER_POP_UP_DETAILS),
+					new TypeReference<Response<Void>>() {
+					});
+
+			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in CustomerInfoService.updateSPSuccessDetails: data=" + inputJson);
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDEcommServiceException e) {
+			LOGGER.error("Error in CustomerInfoService: ", e);
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	@Override
+	public boolean insertOrUpdateSilverPopup(SilverPopupDetails silverPopupDetails)
+			throws FDResourceException, RemoteException {
+		Response<Boolean> response = null;
+		try {
+			Request<SilverPopupDetails> request = new Request<SilverPopupDetails>();
+			request.setData(silverPopupDetails);
+			String inputJson = buildRequest(request);
+
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(INSERT_SILVER_POP_UP_DETAILS),
+					new TypeReference<Response<Boolean>>() {
+					});
+
+			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in CustomerInfoService.insertOrUpdateSilverPopup: data=" + inputJson);
+				throw new FDResourceException(response.getMessage());
+			}
+			return response.getData();
+		} catch (FDEcommServiceException e) {
+			LOGGER.error("Error in CustomerInfoService: ", e);
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	@Override
+	public String getCookieByFdCustomerId(String fdCustomerId) throws FDResourceException, RemoteException {
+		Response<String> response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_COOKIE_BY_FD_CUSTOMER_ID + "/" + fdCustomerId),
+				new TypeReference<Response<String>>() {
+				});
+		if (!response.getResponseCode().equals("OK")) {
+			LOGGER.error("Error in CustomerInfoService.getCookieByFdCustomerId: fdCustomerId=" + fdCustomerId);
 			throw new FDResourceException(response.getMessage());
 		}
 		return response.getData();

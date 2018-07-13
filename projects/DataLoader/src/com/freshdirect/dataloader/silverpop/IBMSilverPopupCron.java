@@ -14,9 +14,12 @@ import javax.naming.NamingException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.fdstore.FDEcommProperties;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.SilverPopupDetails;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
+import com.freshdirect.fdstore.ecomm.gateway.CustomerInfoService;
 import com.freshdirect.fdstore.silverpopup.util.FDIBMPushNotification;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
@@ -32,16 +35,27 @@ public class IBMSilverPopupCron {
 	public static void main(String[] args) throws Exception {
 		try {
 			LOGGER.info("SilverPopupCron Started.");
-			lookupSPSHome();
-			FDCustomerManagerSB clientSB = fcHome.create();
-			List<SilverPopupDetails> result = clientSB.getSilverPopupDetails();
+			List<SilverPopupDetails> result;
+			FDCustomerManagerSB clientSB = null;
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
+				result = CustomerInfoService.getInstance().getSilverPopupDetails();
+			} else {
+				lookupSPSHome();
+				clientSB = fcHome.create();
+				result = clientSB.getSilverPopupDetails();
+			}
 			LOGGER.info("FDCustomer manager silver popup retrieved successfully " + result);
 			if (null != result && !result.isEmpty()) {
 				LOGGER.debug("Before calling IBM silverpopup ");
 				FDIBMPushNotification service = new FDIBMPushNotification();
 				for (SilverPopupDetails detail : result) {
 					if (service.execute(detail)) {
-						clientSB.updateSPSuccessDetails(detail);
+						if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
+							CustomerInfoService.getInstance().updateSPSuccessDetails(detail);
+						} else {
+							clientSB.updateSPSuccessDetails(detail);
+						}
+						
 					}
 				}
 

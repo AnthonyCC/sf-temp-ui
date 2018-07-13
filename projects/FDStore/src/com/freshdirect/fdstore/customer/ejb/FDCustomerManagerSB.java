@@ -814,7 +814,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
 	public void storeAllMobilePreferences(String customerId, String fdCustomerId, String mobileNumber, String textOffers, String textDelivery, String goGreen, String phone, String ext, boolean isCorpUser,EnumEStoreId eStoreId) throws FDResourceException, RemoteException;
 
 	public void authorizeSale(String salesId, boolean force) throws FDResourceException, RemoteException;
-
+	@Deprecated
 	public boolean isDisplayNameUsed(String displayName,String custId) throws ErpDuplicateDisplayNameException, RemoteException;
 
 	public void storeSMSWindowDisplayedFlag(String customerId) throws FDResourceException, RemoteException;
@@ -913,40 +913,15 @@ public interface FDCustomerManagerSB  extends EJBObject{
 	 */
 	@Deprecated
 	public EnumPaymentMethodDefaultType getpaymentMethodDefaultType(String custId) throws FDResourceException, RemoteException;
-
+	@Deprecated
 	public boolean insertOrUpdateSilverPopup(SilverPopupDetails silverPopupDetails) throws FDResourceException, RemoteException;
 
-	/*
-	 *@deprecated
-	 * Please use the CustomerController and CustomerAccountServiceI in Storefront2.0 project.
-	 * It maps to CustomerAccountServiceI.getPendingPushNotifications();
-	 * 
-	 */
 	@Deprecated
 	public List<SilverPopupDetails> getSilverPopupDetails() throws FDResourceException, RemoteException;
 
-	/*
-	 *@deprecated
-	 * Please use the CustomerController and CustomerAccountServiceI in Storefront2.0 project.
-	 * It maps to CustomerAccountServiceI.setPushNotificationSentTimestamp(SilverPopupDetails pushNotification);
-	 * 
-	 */
 	@Deprecated
 	public void updateSPSuccessDetails(SilverPopupDetails detail) throws FDResourceException, RemoteException;
 
-	/*
-	 *@deprecated
-	 * Please use the CustomerController and CustomerAccountServiceI in Storefront2.0 project.
-	 * It maps to CustomerAccountServiceI.getCookieByFdCustomerId(String fdCustomerId);
-	 *
-	 */
-	
-	/*
-	 *@deprecated
-	 * Please use the CustomerController and CustomerAccountServiceI in Storefront2.0 project.
-	 * It maps to CustomerAccountServiceI.getCookieByFdCustomerId(String fdCustomerId);
-	 * 
-	 */
 	@Deprecated
 	public String getCookieByFdCustomerId(String fdCustomerId) throws FDResourceException, RemoteException;
 

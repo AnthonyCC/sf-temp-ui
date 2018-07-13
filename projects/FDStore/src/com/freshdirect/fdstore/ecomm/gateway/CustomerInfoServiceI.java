@@ -7,6 +7,7 @@ import java.util.Map;
 import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpCustomerModel;
+import com.freshdirect.customer.ErpDuplicateDisplayNameException;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpPromotionHistory;
 import com.freshdirect.delivery.ReservationException;
@@ -20,6 +21,7 @@ import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.SilverPopupDetails;
 import com.freshdirect.fdstore.iplocator.IpLocatorEventDTO;
 import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
 import com.freshdirect.fdstore.request.FDProductRequest;
@@ -101,8 +103,20 @@ public interface CustomerInfoServiceI {
 
 	public List<URLRewriteRule> loadRewriteRules() throws FDResourceException, RemoteException;
 
-	public double getPerishableBufferAmount(ErpAbstractOrderModel order) throws RemoteException, FDResourceException;
+	public double getPerishableBufferAmount(ErpAbstractOrderModel order, boolean isModifyOrderModel)
+			throws RemoteException, FDResourceException;
 
 	public List<String> getTopFaqs() throws FDResourceException, RemoteException;
+
+	public boolean isDisplayNameUsed(String displayName, String custId)
+			throws ErpDuplicateDisplayNameException, FDResourceException, RemoteException;
+
+	public List<SilverPopupDetails> getSilverPopupDetails() throws FDResourceException, RemoteException;
+
+	public void updateSPSuccessDetails(SilverPopupDetails detail) throws FDResourceException, RemoteException;
+	
+	public boolean insertOrUpdateSilverPopup(SilverPopupDetails silverPopupDetails) throws FDResourceException, RemoteException;
+
+	public String getCookieByFdCustomerId(String fdCustomerId) throws FDResourceException, RemoteException;
 	
 }

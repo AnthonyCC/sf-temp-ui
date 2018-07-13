@@ -1198,12 +1198,16 @@ public class FDCustomerManager {
 		}
 	}
 
-	public static boolean isDisplayNameUsed(String displayName,String custId) throws ErpDuplicateDisplayNameException, FDResourceException {
-		lookupManagerHome();
-
+	public static boolean isDisplayNameUsed(String displayName, String custId)
+			throws ErpDuplicateDisplayNameException, FDResourceException {
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.isDisplayNameUsed(displayName,custId);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
+				return CustomerInfoService.getInstance().isDisplayNameUsed(displayName, custId);
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.isDisplayNameUsed(displayName, custId);
+			}
 
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -3933,13 +3937,15 @@ public class FDCustomerManager {
 		try {
 			
 			ErpAbstractOrderModel order = null;
+			boolean isModifyOrderModel = false;
 			if (cart instanceof FDModifyCartModel) {
 				order = FDOrderTranslator.getErpCreateOrderModel(cart);
 			} else {
+				isModifyOrderModel = true;
 				order = FDOrderTranslator.getErpModifyOrderModel(cart);
 			}
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
-				return CustomerInfoService.getInstance().getPerishableBufferAmount(order);
+				return CustomerInfoService.getInstance().getPerishableBufferAmount(order, isModifyOrderModel);
 			} else {
 				lookupManagerHome();
 				FDCustomerManagerSB sb = managerHome.create();
@@ -5276,53 +5282,44 @@ public class FDCustomerManager {
 				invalidateManagerHome();
 				throw new FDResourceException(re, "Error talking to session bean");
 			}
-		}
+	}
 
-		public static boolean insertOrUpdateSilverPopup(SilverPopupDetails silverPopupDetails) throws FDResourceException {
-			lookupManagerHome();
-
-			try {
+	public static boolean insertOrUpdateSilverPopup(SilverPopupDetails silverPopupDetails) throws FDResourceException {
+		try {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
+				return CustomerInfoService.getInstance().insertOrUpdateSilverPopup(silverPopupDetails);
+			} else {
+				lookupManagerHome();
 				FDCustomerManagerSB sb = managerHome.create();
 				return sb.insertOrUpdateSilverPopup(silverPopupDetails);
-
-			} catch (CreateException ce) {
-				invalidateManagerHome();
-				throw new FDResourceException(ce, "Error creating session bean");
-			} catch (RemoteException re) {
-				invalidateManagerHome();
-				throw new FDResourceException(re, "Error talking to session bean");
 			}
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
 		}
-
-		public static void updateSPSuccessDetails(SilverPopupDetails silverPopupDetails) throws FDResourceException {
-			lookupManagerHome();
-
-			try {
-				FDCustomerManagerSB sb = managerHome.create();
-				sb.updateSPSuccessDetails(silverPopupDetails);
-
-			} catch (CreateException ce) {
-				invalidateManagerHome();
-				throw new FDResourceException(ce, "Error creating session bean");
-			} catch (RemoteException re) {
-				invalidateManagerHome();
-				throw new FDResourceException(re, "Error talking to session bean");
-			}
-		}
+	}
 
 		public static String getCookieByFdCustomerId(String fdCustomerId) throws FDResourceException{
-			lookupManagerHome();
+			
 			try {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
+				return CustomerInfoService.getInstance().getCookieByFdCustomerId(fdCustomerId);
+			} else {
+				lookupManagerHome();
 				FDCustomerManagerSB sb = managerHome.create();
 				return sb.getCookieByFdCustomerId(fdCustomerId);
-			} catch (CreateException ce) {
-				invalidateManagerHome();
-				throw new FDResourceException(ce, "Error creating session bean");
-			} catch (RemoteException re) {
-				invalidateManagerHome();
-				throw new FDResourceException(re, "Error talking to session bean");
 			}
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
 		}
+	}
 
 
 		private static EnumPaymentMethodDefaultType getpaymentMethodDefaultType(String custId) throws FDResourceException{
