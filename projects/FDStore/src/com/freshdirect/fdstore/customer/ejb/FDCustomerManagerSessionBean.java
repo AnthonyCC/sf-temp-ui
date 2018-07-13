@@ -5311,14 +5311,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		return results;
 	}
 
-	public void storeRetentionSurvey(FDIdentity fdIdentity, String profileAttr, String profileValue,
-			CrmSystemCaseInfo caseInfo) throws RemoteException, FDResourceException {
-
-		setProfileAttribute(fdIdentity, profileAttr, profileValue, null);
-		if (caseInfo != null) {
-			createCase(caseInfo);
-		}
-	}
 
 	/**
 	 * SmartStore
@@ -7730,22 +7722,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		try {
 			conn = getConnection();
 			return FDUserDAO.loadIpLocatorEvent(conn, fdUserId);
-		} catch (SQLException sqle) {
-			throw new FDResourceException(sqle);
-		} finally {
-			close(conn);
-		}
-	}
-
-	public boolean isFeatureEnabled(String customerId, EnumSiteFeature feature) throws FDResourceException {
-		Connection conn = null;
-		try {
-			conn = getConnection();
-
-			boolean flag = FDUserDAO.isFeatureEnabled(conn, customerId, feature.getAttributeKey());
-
-			return flag;
-
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {

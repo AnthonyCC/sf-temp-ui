@@ -1,27 +1,28 @@
 package com.freshdirect.fdstore.ecomm.gateway;
 
 import java.rmi.RemoteException;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
+import com.freshdirect.customer.ErpPromotionHistory;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.ecommerce.data.product.ProductRequestData;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.URLRewriteRule;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCustomerCreditHistoryModel;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
-import com.freshdirect.fdstore.customer.FDCustomerRequest;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.customer.PasswordNotExpiredException;
+import com.freshdirect.fdstore.iplocator.IpLocatorEventDTO;
+import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
 import com.freshdirect.fdstore.request.FDProductRequest;
 import com.freshdirect.framework.core.PrimaryKey;
-import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
 
@@ -79,4 +80,23 @@ public interface CustomerInfoServiceI {
 
 	public ErpCustomerModel getCustomerPaymentAndCredit(FDIdentity identity) throws FDResourceException, RemoteException;
 	
+	public Map<String,AssignedCustomerParam> getAssignedCustomerParams(FDUser user) throws FDResourceException, RemoteException;
+	
+	public void logIpLocatorEvent(IpLocatorEventDTO ipLocatorEventDTO) throws FDResourceException, RemoteException;
+	
+	public IpLocatorEventDTO loadIpLocatorEvent (String fdUserId) throws FDResourceException, RemoteException;
+	
+	public String getCustomerMarketingPromoValue(String customerId) throws FDResourceException, RemoteException;
+	
+	public String getCustomerCounty(String customerId) throws FDResourceException, RemoteException;
+	
+    /**
+     * Get lightweight info about a customer's used promotions.
+     *
+     */
+    public ErpPromotionHistory getPromoHistoryInfo(String customerId) throws FDResourceException, RemoteException;
+    
+    public List<URLRewriteRule> loadRewriteRules() throws FDResourceException, RemoteException;
+    
+    
 }

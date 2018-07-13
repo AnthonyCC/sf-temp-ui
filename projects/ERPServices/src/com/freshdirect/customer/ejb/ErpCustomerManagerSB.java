@@ -253,6 +253,7 @@ public interface ErpCustomerManagerSB extends EJBObject {
      * @param erpCustomerPk primary key of ErpCustomer
      *
      * @return ErpPromotionHistory
+     * @deprecated
      */
     public ErpPromotionHistory getPromoHistoryInfo(PrimaryKey erpCustomerPk) throws RemoteException;
     

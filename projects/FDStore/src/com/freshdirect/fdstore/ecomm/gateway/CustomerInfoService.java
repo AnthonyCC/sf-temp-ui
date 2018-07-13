@@ -2,7 +2,9 @@ package com.freshdirect.fdstore.ecomm.gateway;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Category;
 
@@ -14,6 +16,7 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpOrderLineModel;
+import com.freshdirect.customer.ErpPromotionHistory;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.ecomm.gateway.AbstractEcommService;
 import com.freshdirect.ecommerce.data.common.Request;
@@ -24,6 +27,7 @@ import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.FDEcommServiceException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.URLRewriteRule;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCustomerCreditHistoryModel;
@@ -35,6 +39,8 @@ import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ProfileModel;
 import com.freshdirect.fdstore.ecomm.model.RecognizedUserData;
+import com.freshdirect.fdstore.iplocator.IpLocatorEventDTO;
+import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
 import com.freshdirect.fdstore.request.FDProductRequest;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -63,6 +69,13 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 	private static final String GET_NEXT_ID = "customerInfo/getNextId";
 	private static final String IS_ECHECK_RESTRICTED = "customerInfo/isECheckRestricted";
 	private static final String GET_CUSTOMER_PAYMENT_AND_CREDIT = "customerInfo/getCustomerPaymentAndCredit";
+	private static final String GET_ASSIGNED_CUSTOMER_PARAMS = "customerInfo/getAssignedCustomerParams";
+	private static final String LOG_IP_LOCATOR_EVENT = "customerInfo/logIpLocatorEvent";
+	private static final String LOAD_IP_LOCATOR_EVENt = "customerInfo/loadIpLocatorEvent";
+	private static final String GET_CUSTOMER_MARKETING_PROMO_VALUE = "customerInfo/getCustomerMarketingPromoValue";
+	private static final String GET_CUSTOMER_COUNTY = "customerInfo/getCustomerCounty";
+	private static final String GET_PROMO_HISTORY_INFO = "customerInfo/getPromoHistoryInfo";
+	private static final String LOAD_REWRITE_RULES = "customerInfo/loadRewriteRules";
 	
 	
 	private static CustomerInfoServiceI INSTANCE;
@@ -87,7 +100,7 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
-
+				LOGGER.error("Error in CustomerInfoService.storeCohortName: data=" + inputJson);
 				throw new FDResourceException(response.getMessage());
 			}
 			return new PrimaryKey(response.getData());
@@ -110,7 +123,7 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
-
+				LOGGER.error("Error in CustomerInfoService.storeCohortName: data=" + inputJson);
 				throw new FDResourceException(response.getMessage());
 			}
 			return response.getData();
@@ -133,7 +146,7 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
-
+				LOGGER.error("Error in CustomerInfoService.storeCohortName: data=" + inputJson);
 				throw new FDResourceException(response.getMessage());
 			}
 			return response.getData();
@@ -161,6 +174,7 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in CustomerInfoService.storeCohortName: data=" + inputJson);
 				if ("ErpDuplicateUserIdException".equals(response.getMessage())) {
 					throw new ErpDuplicateUserIdException(
 							response.getError().get("ErpDuplicateUserIdException").toString());
@@ -189,6 +203,7 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in CustomerInfoService.storeCohortName: data=" + inputJson);
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDEcommServiceException e) {
@@ -213,6 +228,7 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in CustomerInfoService.storeCohortName: data=" + inputJson);
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDEcommServiceException e) {
@@ -238,11 +254,12 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in CustomerInfoService.isPasswordRequestExpired: emailAddress=" + emailAddress);
 				throw new FDResourceException(response.getMessage());
 			}
 			return response.getData();
 		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in CustomerInfoService: ", e);
+			LOGGER.error("Error in CustomerInfoService.isPasswordRequestExpired: emailAddress=" + emailAddress);
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -265,10 +282,11 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in CustomerInfoService.changePassword: emailAddress=" + emailAddress);
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in CustomerInfoService: ", e);
+			LOGGER.error("Error in CustomerInfoService.changePassword: emailAddress=" + emailAddress);
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -292,6 +310,7 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in CustomerInfoService.setProfileAttribute: identity=" + identity + ", key=" + key + ", value=" + value);
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDEcommServiceException e) {
@@ -324,13 +343,12 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 	@Override
 	public FDCustomerCreditHistoryModel getCreditHistory(FDIdentity identity)
 			throws FDResourceException, RemoteException {
-		Response<List<FDCustomerCreditModel>> response = null;
-
-		response = this.httpGetDataTypeMap(
+		Response<List<FDCustomerCreditModel>> response =  this.httpGetDataTypeMap(
 				getFdCommerceEndPoint(GET_CREDIT_HISTORY + "/" + identity.getErpCustomerPK()),
 				new TypeReference<Response<List<FDCustomerCreditModel>>>() {
 				});
 		if (!response.getResponseCode().equals("OK")) {
+			LOGGER.error("Error in CustomerInfoService.getCreditHistory: identity=" + identity);
 			throw new FDResourceException(response.getMessage());
 		}
 		FDCustomerCreditHistoryModel creditHistory = new FDCustomerCreditHistoryModel(identity, response.getData());
@@ -370,6 +388,7 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in CustomerInfoService.makeReservation: data=" + inputJson);
 				if ("ReservationException".equals(response.getMessage())) {
 					throw new ReservationException(
 							response.getError().get("ReservationException").toString());
@@ -404,6 +423,7 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in CustomerInfoService.cancelReservation: data=" + inputJson);
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDEcommServiceException e) {
@@ -454,6 +474,7 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 				new TypeReference<Response<Boolean>>() {
 				});
 		if (!response.getResponseCode().equals("OK")) {
+			LOGGER.error("Error in CustomerInfoService.isECheckRestricted: identity=" + identity);
 			throw new FDResourceException(response.getMessage());
 		}
 		return response.getData();
@@ -478,11 +499,41 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 				new TypeReference<Response<ErpCustomerModel>>() {
 				});
 		if (!response.getResponseCode().equals("OK")) {
+			LOGGER.error("Error in CustomerInfoService.getCustomerPaymentAndCredit: identity=" + identity);
 			throw new FDResourceException(response.getMessage());
 		}
 		return response.getData();
 	}
 	
+	@Override
+	public Map<String, AssignedCustomerParam> getAssignedCustomerParams(FDUser user)
+			throws FDResourceException, RemoteException {
+		if (user == null || user.getIdentity() == null) {
+			return new HashMap<String, AssignedCustomerParam>();
+		}
+		Response<Map<String, AssignedCustomerParam>> response = null;
+		try {
+			Request<ObjectNode> request = new Request<ObjectNode>();
+			ObjectNode rootNode = getMapper().createObjectNode();
+			rootNode.put("customerId", user.getIdentity().getErpCustomerPK());
+			rootNode.put("userId", user.getUserId());
+			request.setData(rootNode);
+			String inputJson = buildRequest(request);
+
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(GET_ASSIGNED_CUSTOMER_PARAMS),
+					new TypeReference<Response<Map<String, AssignedCustomerParam>>>() {
+					});
+
+			if (!response.getResponseCode().equals("OK")) {
+				throw new FDResourceException(response.getMessage());
+			}
+			return response.getData();
+		} catch (FDEcommServiceException e) {
+			LOGGER.error("Error in CustomerInfoService: ", e);
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
 	private RecognizedUserData fdUserToRecognizedUserData(FDUser user) {
 		RecognizedUserData data = new RecognizedUserData();
 		FDUserData fdUserData = new FDUserData();
@@ -545,5 +596,91 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 		return erpOrderlines;
 	}
 
+	@Override
+	public void logIpLocatorEvent(IpLocatorEventDTO ipLocatorEventDTO) throws FDResourceException, RemoteException {
+		Response<Response<Void>> response = null;
+		try {
+			
+			Request<IpLocatorEventDTO> request = new Request<IpLocatorEventDTO>();
+			request.setData(ipLocatorEventDTO);
+			String inputJson = buildRequest(request);
+
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(LOG_IP_LOCATOR_EVENT),
+					new TypeReference<Response<Void>>() {
+					});
+
+			if (!response.getResponseCode().equals("OK")) {
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDEcommServiceException e) {
+			LOGGER.error("Error in CustomerInfoService: ", e);
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	@Override
+	public IpLocatorEventDTO loadIpLocatorEvent(String fdUserId) throws FDResourceException, RemoteException {
+		Response<IpLocatorEventDTO> response = this.httpGetDataTypeMap(
+				getFdCommerceEndPoint(LOAD_IP_LOCATOR_EVENt + "/" + fdUserId),
+				new TypeReference<Response<IpLocatorEventDTO>>() {
+				});
+		if (!response.getResponseCode().equals("OK")) {
+			LOGGER.error("Error in CustomerInfoService.loadIpLocatorEvent: fdUserId=" + fdUserId);
+			throw new FDResourceException(response.getMessage());
+		}
+		return response.getData();
+	}
+
+	@Override
+	public String getCustomerMarketingPromoValue(String customerId) throws FDResourceException, RemoteException {
+		Response<String> response = this.httpGetDataTypeMap(
+				getFdCommerceEndPoint(GET_CUSTOMER_MARKETING_PROMO_VALUE + "/" + customerId),
+				new TypeReference<Response<String>>() {
+				});
+		if (!response.getResponseCode().equals("OK")) {
+			LOGGER.error("Error in CustomerInfoService.getCustomerMarketingPromoValue: customerId=" + customerId);
+			throw new FDResourceException(response.getMessage());
+		}
+		return response.getData();
+	}
+
+	@Override
+	public String getCustomerCounty(String customerId) throws FDResourceException, RemoteException {
+		Response<String> response = this.httpGetDataTypeMap(
+				getFdCommerceEndPoint(GET_CUSTOMER_COUNTY + "/" + customerId),
+				new TypeReference<Response<String>>() {
+				});
+		if (!response.getResponseCode().equals("OK")) {
+			LOGGER.error("Error in CustomerInfoService.getCustomerCounty: customerId=" + customerId);
+			throw new FDResourceException(response.getMessage());
+		}
+		return response.getData();
+	}
+
+	@Override
+	public ErpPromotionHistory getPromoHistoryInfo(String customerId) throws FDResourceException, RemoteException {
+		Response<ErpPromotionHistory> response = this.httpGetDataTypeMap(
+				getFdCommerceEndPoint(GET_PROMO_HISTORY_INFO + "/" + customerId),
+				new TypeReference<Response<ErpPromotionHistory>>() {
+				});
+		if (!response.getResponseCode().equals("OK")) {
+			LOGGER.error("Error in CustomerInfoService.getPromoHistoryInfo: customerId=" + customerId);
+			throw new FDResourceException(response.getMessage());
+		}
+		return response.getData();
+	}
+
+	@Override
+	public List<URLRewriteRule> loadRewriteRules() throws FDResourceException, RemoteException {
+		Response<List<URLRewriteRule>> response = this.httpGetDataTypeMap(
+				getFdCommerceEndPoint(LOAD_REWRITE_RULES),
+				new TypeReference<Response<List<URLRewriteRule>>>() {
+				});
+		if (!response.getResponseCode().equals("OK")) {
+			LOGGER.error("Error in CustomerInfoService.loadRewriteRules: ");
+			throw new FDResourceException(response.getMessage());
+		}
+		return response.getData();
+	}
 	
 }

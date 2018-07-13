@@ -11,6 +11,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
+import com.freshdirect.fdstore.ecomm.gateway.CustomerInfoService;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.ExpiringReference;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -58,8 +59,13 @@ public class URLRewriteManager {
 
 	private List<URLRewriteRule> loadRewriteRules() {
 		try {
-			FDCustomerManagerSB sb = getFDCustomerManager();
-			return sb.loadRewriteRules();
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
+				return CustomerInfoService.getInstance().loadRewriteRules();
+			} else {
+				FDCustomerManagerSB sb = getFDCustomerManager();
+				return sb.loadRewriteRules();
+			}
+			
 		} catch (Exception e) {
 			LOGGER.error("Could not load rewrite rules due to: ", e);
 			return Collections.emptyList();

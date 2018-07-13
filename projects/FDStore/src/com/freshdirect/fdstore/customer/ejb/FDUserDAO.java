@@ -1221,25 +1221,6 @@ public class FDUserDAO {
         return ipLocatorEventDTO;
     }
 
-    private final static String PROFILE_FEATURE_CHECK_QUERY = "select p.profile_value from cust.customer c, cust.fdcustomer fdc, cust.profile p "
-            + " where c.id=? and c.id=fdc.erp_customer_id and P.CUSTOMER_ID=fdc.id " + " and P.PROFILE_NAME=?";// 'siteFeature.Paymentech'
-
-    public static boolean isFeatureEnabled(Connection conn, String customerId, String feature) throws SQLException {
-        boolean isFeatureEnabled = false;
-        PreparedStatement ps = conn.prepareStatement(PROFILE_FEATURE_CHECK_QUERY);
-        ps.setString(1, customerId);
-        ps.setString(2, feature);
-        ResultSet rs = ps.executeQuery();
-
-        if (rs.next()) {
-            isFeatureEnabled = "true".equalsIgnoreCase(rs.getString(1)) ? true : false;
-        }
-        rs.close();
-        ps.close();
-
-        return isFeatureEnabled;
-    }
-
     private static final String ORDERSIZE_ESTIMATION_QUERY = "select Ceil(Avg(tbl.NUM_REGULAR_CARTONS)) CCOUNT, "
             + "Ceil(Avg(tbl.NUM_FREEZER_CARTONS)) FCOUNT, Ceil(Avg(tbl.NUM_ALCOHOL_CARTONS)) ACOUNT "
             + "from (select NUM_REGULAR_CARTONS, NUM_FREEZER_CARTONS, NUM_ALCOHOL_CARTONS from cust.sale s "

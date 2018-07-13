@@ -388,6 +388,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      * Get lightweight info about a customer's used promotions.
      *
      * @param identity the customer's identity reference
+     * @deprecated
      */
     public ErpPromotionHistory getPromoHistoryInfo(FDIdentity identity) throws FDResourceException, RemoteException;
 
@@ -582,7 +583,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
 	public boolean isOnAlert(PrimaryKey pk)  throws RemoteException;
 
 	public List<ErpCustomerAlertModel> getAlerts(PrimaryKey pk)  throws RemoteException;
-
+	@Deprecated
 	public List<URLRewriteRule> loadRewriteRules() throws FDResourceException, RemoteException;
 
 	public List<DeliveryPassModel> getDeliveryPasses(FDIdentity identity, EnumEStoreId estore) throws RemoteException;
@@ -599,8 +600,6 @@ public interface FDCustomerManagerSB  extends EJBObject{
 
 	public Map<String, List<FDCustomerOrderInfo>> cancelOrders(FDActionInfo actionInfo, List<FDCustomerOrderInfo> customerOrders, boolean sendEmail) throws RemoteException;
 
-	public void storeRetentionSurvey(FDIdentity fdIdentity, String profileAttr
-			, String profileValue, CrmSystemCaseInfo caseInfo) throws RemoteException, FDResourceException;
 	public boolean hasPurchasedPass(String customerPK) throws RemoteException, FDResourceException ;
 
 	public int getValidOrderCount(FDIdentity identity) throws RemoteException, FDResourceException;
@@ -837,21 +836,22 @@ public interface FDCustomerManagerSB  extends EJBObject{
 	public void storeLists(Set cmList) throws FDResourceException, RemoteException;
 
 	public List<FDCartonInfo> getCartonDetailsForSale(FDOrderI order) throws FDResourceException, RemoteException;
-
+	@Deprecated
 	public Map getAssignedCustomerParams(FDUser user) throws FDResourceException, RemoteException;
-
+	@Deprecated
 	public void logIpLocatorEvent(IpLocatorEventDTO ipLocatorEventDTO) throws FDResourceException, RemoteException;
-
+	@Deprecated
 	public IpLocatorEventDTO loadIpLocatorEvent (String fdUserId) throws FDResourceException, RemoteException;
-	public boolean  isFeatureEnabled(String customerId, EnumSiteFeature feature) throws FDResourceException, RemoteException;
 
 	public CustomerAvgOrderSize getHistoricOrderSize(String customerId) throws FDResourceException, RemoteException;
+	@Deprecated
 	public FDUser getFDUserWithCart(FDIdentity identity, EnumEStoreId eStoreId) throws FDAuthenticationException, FDResourceException, RemoteException;
 	@Deprecated
 	public void storeSmsPrefereceFlag(String fdCustomerId, String flag, EnumEStoreId eStoreId) throws FDResourceException, RemoteException;
 
+	@Deprecated
     public String getCustomersProfileValue(String customerId) throws FDResourceException, RemoteException;
-
+	@Deprecated
     public String getCustomersCounty(String customerId) throws FDResourceException, RemoteException;
 
 	public List<String> getUsedReservations(String customerId) throws FDResourceException, RemoteException;
