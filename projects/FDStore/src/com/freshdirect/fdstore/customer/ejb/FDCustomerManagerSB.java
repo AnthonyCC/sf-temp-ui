@@ -819,10 +819,6 @@ public interface FDCustomerManagerSB  extends EJBObject{
 
 	public void storeSMSWindowDisplayedFlag(String customerId) throws FDResourceException, RemoteException;
 
-	/* APPDEV-2475 DP T&C */
-	public void storeDPTCViews(String customerId, int dpTcViewCount) throws FDResourceException, RemoteException;
-	public void storeDPTCAgreeDate(String customerId, Date dpTcAgreeDate) throws FDResourceException, RemoteException;
-	public void storeDPTCAgreeDate(FDActionInfo info, String customerId, Date dpTcAgreeDate) throws FDResourceException, RemoteException;
 
 	public List<CustomerCreditModel> getCustomerReprotedLates() throws FDResourceException, RemoteException;
 	@Deprecated
@@ -864,6 +860,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
 	public void releaseModificationLock(String orderId)	throws FDResourceException, RemoteException;
 
 	public void setFdxSmsPreferences(FDCustomerEStoreModel customerSmsPreferenceModel, String erpCustomerPk)throws FDResourceException, RemoteException;
+	@Deprecated
 	public boolean setAcknowledge(FDIdentity identity, boolean acknowledge,String ackType)throws FDResourceException, RemoteException;
 	public boolean setRAFClickIDPromoCode(FDIdentity identity, String rafclickid, String rafpromocode, EnumEStoreId eStoreId) throws FDResourceException, RemoteException;
 	@Deprecated

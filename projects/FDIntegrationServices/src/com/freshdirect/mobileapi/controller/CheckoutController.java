@@ -146,7 +146,6 @@ public class CheckoutController extends BaseController {
     private final static String ACTION_ALCOHOL_AGE_VERIFY = "alcoholageverify";
     private final static String ACTION_GET_SELECTED_DELIVERY_ADDRESS = "getselecteddeliveryaddress";
     private final static String ACTION_GET_PAYMENTMETHOD_VERIFY_STATUS = "getpmverifystatus";
-    private static final String ACTION_ACCEPT_DP_TERMSANDCONDITIONS = "acceptDeliveryPassTermsAndConditions";
     private final static String ACTION_REMOVE_SPECIAL_RESTRICTED_ITEMS = "removesplrestricteditems";
     private final static String ACTION_GET_SPECIAL_RESTRICTED_DETAIL = "getsplrestricteditemdetail";
     private final static String ACTION_SUBMIT_ORDER_FDX ="submitOrderEx";
@@ -289,8 +288,6 @@ public class CheckoutController extends BaseController {
 	            model = getSelectedDeliveryAddress(model, user);
 	        }else if (ACTION_GET_PAYMENTMETHOD_VERIFY_STATUS.equals(action)) {
 	            model = getCVVStatus(model, user);
-	        }  else if (ACTION_ACCEPT_DP_TERMSANDCONDITIONS.equals(action)) {
-	            model = this.acceptDeliveryPassTerms(model, user, request);
 	        }  else if (ACTION_REMOVE_SPECIAL_RESTRICTED_ITEMS.equals(action)) {
 	            model = removeSpecialRestrictedItemsFromCart(model, user, request);
 	        }  else if (ACTION_GET_SPECIAL_RESTRICTED_DETAIL.equals(action)) {
@@ -551,46 +548,7 @@ public class CheckoutController extends BaseController {
         return model;
     }
 
-    /**
-     * @param model
-     * @param user
-     * @param reqestMessage
-     * @param request
-     * @return
-     * @throws FDException
-     * @throws JsonException
-     */
-    private ModelAndView acceptDeliveryPassTerms(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException, JsonException {
-
-    	try {
-			FDCustomerManager.storeDPTCAgreeDate(AccountActivityUtil.getActionInfo(request.getSession()), user.getFDSessionUser().getIdentity().getErpCustomerPK(), new Date());
-		} catch(FDResourceException exp) {
-			//exp.printStackTrace();
-			setResponseMessage(model, Message.createFailureMessage(MSG_ACCEPT_DP_TERMSANDCONDITIONS_FAILED), user);
-			return model;
-		}
-
-        Message responseMessage = null;
-        if (user.getShoppingCart() != null && user.getShoppingCart().getDeliveryAddress() != null ) {
-
-        	DeliveryAddress deliveryAddress = DeliveryAddress.wrap(user.getShoppingCart().getDeliveryAddress());
-            TimeSlotCalculationResult timeSlotResult = deliveryAddress.getDeliveryTimeslot(user, false,isCheckoutAuthenticated(request));
-
-            com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots slotResponse = new com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots(
-                    timeSlotResult, user);
-            slotResponse.getCheckoutHeader().setHeader(user.getShoppingCart());
-            responseMessage = slotResponse;
-            responseMessage.setSuccessMessage("Order delivery Address have been set successfully.");
-
-        } else {
-
-        	setResponseMessage(model, Message.createFailureMessage(MSG_ACCEPT_DP_TERMSANDCONDITIONS_NOADDRESS), user);
-        }
-        setResponseMessage(model, responseMessage, user);
-
-        return model;
-    }
-
+   
     /**
      * @param model
      * @param user

@@ -119,4 +119,5 @@ public interface CustomerInfoServiceI {
 
 	public String getCookieByFdCustomerId(String fdCustomerId) throws FDResourceException, RemoteException;
 	
+	public boolean setAcknowledge(FDIdentity identity, boolean acknowledge,String ackType)throws FDResourceException, RemoteException;
 }

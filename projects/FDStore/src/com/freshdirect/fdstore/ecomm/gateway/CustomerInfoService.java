@@ -86,7 +86,8 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 	private static final String UPDATE_SILVER_POP_UP_DETAILS = "customerInfo/updateSPSuccessDetails";
 	private static final String INSERT_SILVER_POP_UP_DETAILS = "customerInfo/insertOrUpdateSilverPopup";
 	private static final String GET_COOKIE_BY_FD_CUSTOMER_ID = "customerInfo/getCookieByFdCustomerId";
-
+	private static final String SET_ACKNOWLEDGE = "customerInfo/setAcknowledge";
+	
 	private static CustomerInfoServiceI INSTANCE;
 
 	public static CustomerInfoServiceI getInstance() {
@@ -544,68 +545,6 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 		}
 	}
 
-	private RecognizedUserData fdUserToRecognizedUserData(FDUser user) {
-		RecognizedUserData data = new RecognizedUserData();
-		FDUserData fdUserData = new FDUserData();
-		data.setFdUserData(fdUserData);
-		fdUserData.setPK(user.getPK().getId());
-		fdUserData.setUserId(user.getId());
-		fdUserData.setCookie(user.getCookie());
-		fdUserData.setZipCode(user.getZipCode());
-		fdUserData.setDepotCode(user.getDepotCode());
-		fdUserData.setCampaignMsgViewed(user.getCampaignMsgViewed());
-		fdUserData.setCohortName(user.getCohortName());
-		fdUserData.setDefaultListId(user.getDefaultListId());
-		fdUserData.setEStoreContentId(user.getUserContext().getStoreContext().getEStoreId().getContentId());
-
-		fdUserData.setLastRefProgramId(user.getLastRefProgId());
-		fdUserData.setLastRefProgInvtId(user.getLastRefProgInvtId());
-		fdUserData.setLastRefTrackingCode(user.getLastRefTrackingCode());
-		fdUserData.setLastRefTrkDtls(user.getLastRefTrkDtls());
-
-		fdUserData.setGlobalNavTutorialSeen(user.isGlobalNavTutorialSeen());
-		fdUserData.setHomePageLetterVisited(user.isHomePageLetterVisited());
-		fdUserData.setZipCheckPopupUsed(user.isZipCheckPopupUsed());
-
-		if (user.getSelectedServiceType() != null)
-			fdUserData.setSelectedServiceType(user.getSelectedServiceType().getName());
-		if (user.getIdentity() != null) {
-			fdUserData.setFdCustomerId(user.getIdentity().getFDCustomerPK());
-			fdUserData.setErpCustomerId(user.getIdentity().getErpCustomerPK());
-		}
-		if (user.getZPServiceType() != null) {
-			fdUserData.setZPServiceType(user.getZPServiceType().getName());
-		}
-		data.setAddress(user.getAddress());
-		data.setRecipientList(user.getRecipientList());
-		try {
-			data.setOrderLines(convertToErpOrderlines(user.getShoppingCart().getOrderLines()));
-		} catch (FDResourceException e) {
-			throw new FDRuntimeException(e);
-		}
-		return data;
-	}
-
-	private static List<ErpOrderLineModel> convertToErpOrderlines(List<FDCartLineI> cartlines)
-			throws FDResourceException {
-
-		int num = 0;
-		List<ErpOrderLineModel> erpOrderlines = new ArrayList<ErpOrderLineModel>();
-		for (FDCartLineI cartline : cartlines) {
-			ErpOrderLineModel erpLines;
-			try {
-				erpLines = cartline.buildErpOrderLines(num);
-			} catch (FDInvalidConfigurationException e) {
-				LOGGER.warn("Skipping invalid cartline", e);
-				continue;
-			}
-			erpOrderlines.add(erpLines);
-			num += 1;
-		}
-
-		return erpOrderlines;
-	}
-
 	@Override
 	public void logIpLocatorEvent(IpLocatorEventDTO ipLocatorEventDTO) throws FDResourceException, RemoteException {
 		Response<Response<Void>> response = null;
@@ -828,5 +767,95 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 			throw new FDResourceException(response.getMessage());
 		}
 		return response.getData();
+	}
+
+	@Override
+	public boolean setAcknowledge(FDIdentity identity, boolean acknowledge, String ackType)
+			throws FDResourceException, RemoteException {
+		Response<Boolean> response = null;
+		try {
+			Request<ObjectNode> request = new Request<ObjectNode>();
+			ObjectNode rootNode = getMapper().createObjectNode();
+			rootNode.set("identity", getMapper().convertValue(identity, JsonNode.class));
+			rootNode.put("acknowledge", acknowledge);
+			rootNode.put("ackType", ackType);
+			request.setData(rootNode);
+			String inputJson = buildRequest(request);
+
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(SET_ACKNOWLEDGE),
+					new TypeReference<Response<Boolean>>() {
+					});
+
+			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in CustomerInfoService.setAcknowledge: data=" + inputJson);
+				throw new FDResourceException(response.getMessage());
+			}
+			return response.getData();
+		} catch (FDEcommServiceException e) {
+			LOGGER.error("Error in CustomerInfoService: ", e);
+			throw new RemoteException(e.getMessage());
+		}
+	}
+	
+	private RecognizedUserData fdUserToRecognizedUserData(FDUser user) {
+		RecognizedUserData data = new RecognizedUserData();
+		FDUserData fdUserData = new FDUserData();
+		data.setFdUserData(fdUserData);
+		fdUserData.setPK(user.getPK().getId());
+		fdUserData.setUserId(user.getId());
+		fdUserData.setCookie(user.getCookie());
+		fdUserData.setZipCode(user.getZipCode());
+		fdUserData.setDepotCode(user.getDepotCode());
+		fdUserData.setCampaignMsgViewed(user.getCampaignMsgViewed());
+		fdUserData.setCohortName(user.getCohortName());
+		fdUserData.setDefaultListId(user.getDefaultListId());
+		fdUserData.setEStoreContentId(user.getUserContext().getStoreContext().getEStoreId().getContentId());
+
+		fdUserData.setLastRefProgramId(user.getLastRefProgId());
+		fdUserData.setLastRefProgInvtId(user.getLastRefProgInvtId());
+		fdUserData.setLastRefTrackingCode(user.getLastRefTrackingCode());
+		fdUserData.setLastRefTrkDtls(user.getLastRefTrkDtls());
+
+		fdUserData.setGlobalNavTutorialSeen(user.isGlobalNavTutorialSeen());
+		fdUserData.setHomePageLetterVisited(user.isHomePageLetterVisited());
+		fdUserData.setZipCheckPopupUsed(user.isZipCheckPopupUsed());
+
+		if (user.getSelectedServiceType() != null)
+			fdUserData.setSelectedServiceType(user.getSelectedServiceType().getName());
+		if (user.getIdentity() != null) {
+			fdUserData.setFdCustomerId(user.getIdentity().getFDCustomerPK());
+			fdUserData.setErpCustomerId(user.getIdentity().getErpCustomerPK());
+		}
+		if (user.getZPServiceType() != null) {
+			fdUserData.setZPServiceType(user.getZPServiceType().getName());
+		}
+		data.setAddress(user.getAddress());
+		data.setRecipientList(user.getRecipientList());
+		try {
+			data.setOrderLines(convertToErpOrderlines(user.getShoppingCart().getOrderLines()));
+		} catch (FDResourceException e) {
+			throw new FDRuntimeException(e);
+		}
+		return data;
+	}
+
+	private static List<ErpOrderLineModel> convertToErpOrderlines(List<FDCartLineI> cartlines)
+			throws FDResourceException {
+
+		int num = 0;
+		List<ErpOrderLineModel> erpOrderlines = new ArrayList<ErpOrderLineModel>();
+		for (FDCartLineI cartline : cartlines) {
+			ErpOrderLineModel erpLines;
+			try {
+				erpLines = cartline.buildErpOrderLines(num);
+			} catch (FDInvalidConfigurationException e) {
+				LOGGER.warn("Skipping invalid cartline", e);
+				continue;
+			}
+			erpOrderlines.add(erpLines);
+			num += 1;
+		}
+
+		return erpOrderlines;
 	}
 }

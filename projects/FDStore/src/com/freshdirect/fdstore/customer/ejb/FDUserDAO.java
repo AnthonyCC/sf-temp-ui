@@ -1058,42 +1058,6 @@ public class FDUserDAO {
         }
     }
 
-    /* APPDEV-2475 DP T&C */
-    public static void storeDPTCViews(Connection conn, String customerId, int dpTcViewCount) {
-        PreparedStatement ps = null;
-        try {
-            ps = conn.prepareStatement("update CUST.CUSTOMERINFO set DP_TC_VIEWS=? where customer_id=?");
-            ps.setInt(1, dpTcViewCount);
-            ps.setString(2, customerId);
-            ps.execute();
-        } catch (Exception e) {
-            LOGGER.error("Error updating DPTCView count", e);
-        } finally {
-            try {
-                if (ps != null)
-                    ps.close();
-            } catch (Exception e1) {
-            }
-        }
-    }
-
-    public static void storeDPTCAgreeDate(Connection conn, String customerId, java.util.Date dpTcAgreeDate) {
-        PreparedStatement ps = null;
-        try {
-            ps = conn.prepareStatement("update CUST.CUSTOMERINFO set DP_TC_AGREE_DATE=? where customer_id=?");
-            ps.setTimestamp(1, new Timestamp(dpTcAgreeDate.getTime()));
-            ps.setString(2, customerId);
-            ps.execute();
-        } catch (Exception e) {
-            LOGGER.error("Error updating DP_TC_AGREE_DATE date", e);
-        } finally {
-            try {
-                if (ps != null)
-                    ps.close();
-            } catch (Exception e1) {
-            }
-        }
-    }
 
     public static FDUserI saveExternalCampaign(Connection conn, FDUserI user) {
         PreparedStatement ps = null;

@@ -7159,41 +7159,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	/* APPDEV-2475 DP T&C */
-	public void storeDPTCViews(String customerId, int dpTcViewCount) throws FDResourceException {
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			FDUserDAO.storeDPTCViews(conn, customerId, dpTcViewCount);
-		} catch (SQLException sqle) {
-			throw new FDResourceException(sqle);
-		} finally {
-			close(conn);
-		}
-	}
-
-	public void storeDPTCAgreeDate(String customerId, Date dpTcAgreeDate) throws FDResourceException {
-		storeDPTCAgreeDate(null, customerId, dpTcAgreeDate);
-	}
-
-	/* pass in info as non-null to log to activity log */
-	public void storeDPTCAgreeDate(FDActionInfo info, String customerId, Date dpTcAgreeDate)
-			throws FDResourceException {
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			FDUserDAO.storeDPTCAgreeDate(conn, customerId, dpTcAgreeDate);
-			if (info != null) {
-				this.logActivity(info.createActivity(EnumAccountActivityType.NEW_DP_TC_AGREE,
-						EnumAccountActivityType.NEW_DP_TC_AGREE.getName()));
-			}
-		} catch (SQLException sqle) {
-			throw new FDResourceException(sqle);
-		} finally {
-			close(conn);
-		}
-	}
-
 	public List<CustomerCreditModel> getCustomerReprotedLates() throws FDResourceException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;

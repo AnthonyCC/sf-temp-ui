@@ -4599,43 +4599,6 @@ public class FDCustomerManager {
 		}
 	}
 
-	/* APPDEV-2475 DP T&C */
-	public static void storeDPTCViews(String customerId, int dpTcViewCount) throws FDResourceException {
-		lookupManagerHome();
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			sb.storeDPTCViews(customerId, dpTcViewCount);
-		} catch (RemoteException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		}
-	}
-
-	public static void storeDPTCAgreeDate(String customerId, Date dpTcAgreeDate) throws FDResourceException {
-		storeDPTCAgreeDate(null, customerId, dpTcAgreeDate);
-	}
-	/* pass in info as non-null to log to activity log */
-	public static void storeDPTCAgreeDate(FDActionInfo info, String customerId, Date dpTcAgreeDate) throws FDResourceException {
-		lookupManagerHome();
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			if (info == null) {
-				sb.storeDPTCAgreeDate(customerId, dpTcAgreeDate);
-			} else {
-				sb.storeDPTCAgreeDate(info, customerId, dpTcAgreeDate);
-			}
-		} catch (RemoteException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		}
-	}
-
 	public static List<FDCartonInfo> getCartonDetails(FDOrderI order) throws FDResourceException {
 		lookupManagerHome();
 		try {
@@ -4885,12 +4848,16 @@ public class FDCustomerManager {
 
 	public static boolean updateAck(FDIdentity identity, boolean acknowledge,
 			String ackType) throws FDResourceException {
-
-		lookupManagerHome();
 		boolean status=true;
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			status =sb.setAcknowledge(identity, acknowledge,ackType);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
+				status = CustomerInfoService.getInstance().setAcknowledge(identity, acknowledge, ackType);
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				status = sb.setAcknowledge(identity, acknowledge, ackType);
+
+			}
 
 		} catch (CreateException ce) {
 			invalidateManagerHome();
