@@ -13,7 +13,11 @@ var FreshDirect = FreshDirect || {};
     id: 'zipcheck',
     submit: function (e) {
       data = zipCheck.serialize(e.form.id);
-      data.action = 'setZipCode';
+      if(typeof FreshDirect.zipCheck !== 'undefined' && FreshDirect.zipCheck == true){
+    	  data.action = 'checkZipCode';
+      } else{
+    	  data.action = 'setZipCode';
+      }
       DISPATCHER.signal('server', {
         url: '/api/locationhandler',
         method: 'POST',
@@ -32,6 +36,7 @@ var FreshDirect = FreshDirect || {};
     	  FreshDirect.zipCheck = false;
     	  $('.zipcheck').off();
     	  $('.zipcheck').on('click', '[zip-check-shop]', function() {
+    		  $('.zipcode-submit button').click();
     		  DISPATCHER.signal('zipCheckSuccess', data);
     	  });
       } else {

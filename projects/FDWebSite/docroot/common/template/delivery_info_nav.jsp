@@ -130,6 +130,7 @@ final int W_DELIVERY_INFO_NAV_TOTAL = 970;
 	</table>
 </center>
 <%@ include file="/common/template/includes/footer.jspf" %>
+<%@ include file="/common/template/includes/i_jsmodules.jspf" %>
 <tmpl:get name='jsmodules'/>
 </body>
 </html>
