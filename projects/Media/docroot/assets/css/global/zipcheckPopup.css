@@ -55,6 +55,10 @@
   margin: 10px 0;
 }
 
+#zipCheckPopup .zipcheck.zipcheck-found form{
+	display: none;
+}
+
 #zipCheckPopup .zipcheck .address-type label {
   display: inline-block;
 }

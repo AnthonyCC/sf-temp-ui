@@ -43,6 +43,7 @@ public enum PageAction {
     PAYPAL_WALLET_DISCONNECT(Module.EXPRESS_CHECKOUT, "PP_Disconnect_Wallet"),
     GET_PP_DEVICE_DATA(Module.EXPRESS_CHECKOUT, "get_pp_device_data"),
     SET_ZIP_CODE(Module.LOCATION, "setZipCode"),
+    CHECK_ZIP_CODE(Module.LOCATION, "checkZipCode"),
     FUTURE_ZONE_NOTIFICATION(Module.LOCATION, "futureZoneNotification"),
     SELECT_ADDRESS(Module.LOCATION, "selectAddress");
 
