@@ -6919,62 +6919,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		return ccs;
 	}
 
-	public void createCounter(String customerId, String counterId, int initialValue) throws FDResourceException {
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			FDCustomerCounterDAO.createCounter(conn, customerId, counterId, initialValue);
-		} catch (SQLException e) {
-			LOGGER.error("createCounter() failed with SQLException: ", e);
-		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					LOGGER.error("connection close failed with SQLException: ", e);
-				}
-			}
-		}
-	}
-
-	public void updateCounter(String customerId, String counterId, int newValue) throws FDResourceException {
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			FDCustomerCounterDAO.updateCounter(conn, customerId, counterId, newValue);
-		} catch (SQLException e) {
-			LOGGER.error("updateCounter() failed with SQLException: ", e);
-		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					LOGGER.error("connection close failed with SQLException: ", e);
-				}
-			}
-		}
-	}
-
-	public Integer getCounter(String customerId, String counterId) throws FDResourceException {
-		Connection conn = null;
-		Integer value = null;
-		try {
-			conn = getConnection();
-			value = FDCustomerCounterDAO.getCounter(conn, customerId, counterId);
-		} catch (SQLException e) {
-			LOGGER.error("getCounter() failed with SQLException: ", e);
-		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					LOGGER.error("connection close failed with SQLException: ", e);
-				}
-			}
-		}
-		return value;
-	}
-
 	public void sendSettlementFailedEmail(String saleID) throws FDResourceException {
 		try {
 			FDOrderI order = this.getOrder(saleID);

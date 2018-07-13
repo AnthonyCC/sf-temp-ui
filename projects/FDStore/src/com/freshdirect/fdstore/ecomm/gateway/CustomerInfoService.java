@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.freshdirect.crm.CrmSystemCaseInfo;
+import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
@@ -76,7 +77,8 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 	private static final String GET_CUSTOMER_COUNTY = "customerInfo/getCustomerCounty";
 	private static final String GET_PROMO_HISTORY_INFO = "customerInfo/getPromoHistoryInfo";
 	private static final String LOAD_REWRITE_RULES = "customerInfo/loadRewriteRules";
-	
+	private static final String GET_PERISHABLE_BUFFE_AMOUNT = "customerInfo/getPerishableBufferAmount";
+	private static final String GET_TOP_FAQS = "customerInfo/getTopFaqs";
 	
 	private static CustomerInfoServiceI INSTANCE;
 
@@ -310,7 +312,8 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
-				LOGGER.error("Error in CustomerInfoService.setProfileAttribute: identity=" + identity + ", key=" + key + ", value=" + value);
+				LOGGER.error("Error in CustomerInfoService.setProfileAttribute: identity=" + identity + ", key=" + key
+						+ ", value=" + value);
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDEcommServiceException e) {
@@ -318,7 +321,7 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 			throw new RemoteException(e.getMessage());
 		}
 	}
-	
+
 	@Override
 	public void createCase(CrmSystemCaseInfo caseInfo) throws RemoteException, FDResourceException {
 		Response<Void> response = null;
@@ -332,6 +335,7 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in CustomerInfoService.createCase: data=" + inputJson);
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDEcommServiceException e) {
@@ -339,11 +343,11 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 			throw new RemoteException(e.getMessage());
 		}
 	}
-	
+
 	@Override
 	public FDCustomerCreditHistoryModel getCreditHistory(FDIdentity identity)
 			throws FDResourceException, RemoteException {
-		Response<List<FDCustomerCreditModel>> response =  this.httpGetDataTypeMap(
+		Response<List<FDCustomerCreditModel>> response = this.httpGetDataTypeMap(
 				getFdCommerceEndPoint(GET_CREDIT_HISTORY + "/" + identity.getErpCustomerPK()),
 				new TypeReference<Response<List<FDCustomerCreditModel>>>() {
 				});
@@ -354,31 +358,32 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 		FDCustomerCreditHistoryModel creditHistory = new FDCustomerCreditHistoryModel(identity, response.getData());
 		return creditHistory;
 	}
-	
+
 	@Override
 	public FDReservation makeReservation(FDUserI user, String timeslotId, EnumReservationType rsvType, String addressId,
 			FDActionInfo aInfo, boolean chefsTable, TimeslotEvent event, boolean isForced)
 			throws FDResourceException, ReservationException, RemoteException {
 		Response<FDReservation> response = null;
 		try {
-			int settledOrderCount = (user != null && user.getOrderHistory() != null) ? user.getOrderHistory().getSettledOrderCount()
+			int settledOrderCount = (user != null && user.getOrderHistory() != null)
+					? user.getOrderHistory().getSettledOrderCount()
 					: 0;
-			ProfileModel profile = user!=null && user.getIdentity()!=null && user.getFDCustomer()!=null && 
-					user.getFDCustomer().getProfile()!=null? user.getFDCustomer().getProfile(): null;
+			ProfileModel profile = user != null && user.getIdentity() != null && user.getFDCustomer() != null
+					&& user.getFDCustomer().getProfile() != null ? user.getFDCustomer().getProfile() : null;
 			Request<ObjectNode> request = new Request<ObjectNode>();
 			ObjectNode rootNode = getMapper().createObjectNode();
 			rootNode.set("info", getMapper().convertValue(aInfo, JsonNode.class));
 			rootNode.set("identity", getMapper().convertValue(user.getIdentity(), JsonNode.class));
 			rootNode.set("event", getMapper().convertValue(event, JsonNode.class));
 			rootNode.set("profile", getMapper().convertValue(profile, JsonNode.class));
-			
+
 			rootNode.put("addressId", addressId);
 			rootNode.put("timeslotId", timeslotId);
 			rootNode.put("reservationTypeCode", rsvType.getName());
-			
+
 			rootNode.put("chefsTable", chefsTable);
 			rootNode.put("isForced", isForced);
-			
+
 			rootNode.put("settledOrderCount", settledOrderCount);
 			request.setData(rootNode);
 			String inputJson = buildRequest(request);
@@ -390,8 +395,7 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 			if (!response.getResponseCode().equals("OK")) {
 				LOGGER.error("Error in CustomerInfoService.makeReservation: data=" + inputJson);
 				if ("ReservationException".equals(response.getMessage())) {
-					throw new ReservationException(
-							response.getError().get("ReservationException").toString());
+					throw new ReservationException(response.getError().get("ReservationException").toString());
 				}
 				throw new FDResourceException(response.getMessage());
 			}
@@ -401,20 +405,20 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 			throw new RemoteException(e.getMessage());
 		}
 	}
-	
+
 	@Override
-	public void cancelReservation(FDIdentity identity, FDReservation reservation,
-			FDActionInfo actionInfo, TimeslotEvent event) throws FDResourceException, RemoteException {
+	public void cancelReservation(FDIdentity identity, FDReservation reservation, FDActionInfo actionInfo,
+			TimeslotEvent event) throws FDResourceException, RemoteException {
 		Response<Response<Void>> response = null;
 		try {
-			
+
 			Request<ObjectNode> request = new Request<ObjectNode>();
 			ObjectNode rootNode = getMapper().createObjectNode();
 			rootNode.set("reservation", getMapper().convertValue(reservation, JsonNode.class));
 			rootNode.set("identity", getMapper().convertValue(identity, JsonNode.class));
 			rootNode.set("actionInfo", getMapper().convertValue(actionInfo, JsonNode.class));
 			rootNode.set("event", getMapper().convertValue(event, JsonNode.class));
-			
+
 			request.setData(rootNode);
 			String inputJson = buildRequest(request);
 
@@ -431,13 +435,13 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 			throw new RemoteException(e.getMessage());
 		}
 	}
-	
+
 	@Override
 	public void storeProductRequest(List<FDProductRequest> productRequest) throws FDResourceException, RemoteException {
 		Response<Void> response = null;
 		try {
 			Request<List<FDProductRequest>> request = new Request<List<FDProductRequest>>();
-			
+
 			request.setData(productRequest);
 			String inputJson = buildRequest(request);
 
@@ -453,12 +457,10 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 			throw new RemoteException(e.getMessage());
 		}
 	}
-	
 
 	@Override
 	public ProductRequestData productRequestFetchAll() throws FDResourceException, RemoteException {
-		Response<ProductRequestData> response = this.httpGetDataTypeMap(
-				getFdCommerceEndPoint(GET_PRODUCT_REQUEST_DATA),
+		Response<ProductRequestData> response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_PRODUCT_REQUEST_DATA),
 				new TypeReference<Response<ProductRequestData>>() {
 				});
 		if (!response.getResponseCode().equals("OK")) {
@@ -479,11 +481,11 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 		}
 		return response.getData();
 	}
-	
+
 	@Override
 	public String getNextId(String schema, String sequence) throws FDResourceException, RemoteException {
 		Response<String> response = this.httpGetDataTypeMap(
-				getFdCommerceEndPoint(GET_NEXT_ID + "/" + schema +"/" + sequence),
+				getFdCommerceEndPoint(GET_NEXT_ID + "/" + schema + "/" + sequence),
 				new TypeReference<Response<String>>() {
 				});
 		if (!response.getResponseCode().equals("OK")) {
@@ -491,9 +493,10 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 		}
 		return response.getData();
 	}
-	
+
 	@Override
-	public ErpCustomerModel getCustomerPaymentAndCredit(FDIdentity identity) throws FDResourceException, RemoteException {
+	public ErpCustomerModel getCustomerPaymentAndCredit(FDIdentity identity)
+			throws FDResourceException, RemoteException {
 		Response<ErpCustomerModel> response = this.httpGetDataTypeMap(
 				getFdCommerceEndPoint(GET_CUSTOMER_PAYMENT_AND_CREDIT + "/" + identity.getErpCustomerPK()),
 				new TypeReference<Response<ErpCustomerModel>>() {
@@ -504,7 +507,7 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 		}
 		return response.getData();
 	}
-	
+
 	@Override
 	public Map<String, AssignedCustomerParam> getAssignedCustomerParams(FDUser user)
 			throws FDResourceException, RemoteException {
@@ -600,7 +603,7 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 	public void logIpLocatorEvent(IpLocatorEventDTO ipLocatorEventDTO) throws FDResourceException, RemoteException {
 		Response<Response<Void>> response = null;
 		try {
-			
+
 			Request<IpLocatorEventDTO> request = new Request<IpLocatorEventDTO>();
 			request.setData(ipLocatorEventDTO);
 			String inputJson = buildRequest(request);
@@ -647,8 +650,7 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 	@Override
 	public String getCustomerCounty(String customerId) throws FDResourceException, RemoteException {
 		Response<String> response = this.httpGetDataTypeMap(
-				getFdCommerceEndPoint(GET_CUSTOMER_COUNTY + "/" + customerId),
-				new TypeReference<Response<String>>() {
+				getFdCommerceEndPoint(GET_CUSTOMER_COUNTY + "/" + customerId), new TypeReference<Response<String>>() {
 				});
 		if (!response.getResponseCode().equals("OK")) {
 			LOGGER.error("Error in CustomerInfoService.getCustomerCounty: customerId=" + customerId);
@@ -672,8 +674,7 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 
 	@Override
 	public List<URLRewriteRule> loadRewriteRules() throws FDResourceException, RemoteException {
-		Response<List<URLRewriteRule>> response = this.httpGetDataTypeMap(
-				getFdCommerceEndPoint(LOAD_REWRITE_RULES),
+		Response<List<URLRewriteRule>> response = this.httpGetDataTypeMap(getFdCommerceEndPoint(LOAD_REWRITE_RULES),
 				new TypeReference<Response<List<URLRewriteRule>>>() {
 				});
 		if (!response.getResponseCode().equals("OK")) {
@@ -682,5 +683,39 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 		}
 		return response.getData();
 	}
-	
+
+	@Override
+	public double getPerishableBufferAmount(ErpAbstractOrderModel order) throws RemoteException, FDResourceException {
+		Response<Double> response = null;
+		try {
+			Request<ErpAbstractOrderModel> request = new Request<ErpAbstractOrderModel>();
+			request.setData(order);
+			String inputJson = buildRequest(request);
+
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(GET_PERISHABLE_BUFFE_AMOUNT),
+					new TypeReference<Response<Double>>() {
+					});
+
+			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in CustomerInfoService.getPerishableBufferAmount: data=" + inputJson);
+				throw new FDResourceException(response.getMessage());
+			}
+			return response.getData();
+		} catch (FDEcommServiceException e) {
+			LOGGER.error("Error in CustomerInfoService.getPerishableBufferAmount: ", e);
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	@Override
+	public List<String> getTopFaqs() throws FDResourceException, RemoteException {
+		Response<List<String>> response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_TOP_FAQS),
+				new TypeReference<Response<List<String>>>() {
+				});
+		if (!response.getResponseCode().equals("OK")) {
+			LOGGER.error("Error in CustomerInfoService.getTopFaqs: ");
+			throw new FDResourceException(response.getMessage());
+		}
+		return response.getData();
+	}
 }

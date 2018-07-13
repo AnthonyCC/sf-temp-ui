@@ -743,7 +743,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
           ) throws RemoteException, FDResourceException,
                    ErpFraudException,
                    ErpAuthorizationException ;
-
+    @Deprecated
     public double getPerishableBufferAmount(ErpAbstractOrderModel order) throws RemoteException, FDResourceException;
 
     public Map getGiftCardRecepientsForOrders(List saleIds) throws RemoteException, FDResourceException ;
@@ -755,7 +755,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
 
     @Deprecated
     public void resubmitGCOrders() throws RemoteException, FDResourceException;
-
+    @Deprecated
     public List<String> getTopFaqs() throws FDResourceException, RemoteException;
     @Deprecated
     public List<HashMap<String, String>> productRequestFetchAllDepts() throws FDResourceException, RemoteException;
@@ -771,9 +771,6 @@ public interface FDCustomerManagerSB  extends EJBObject{
 
 	public SortedSet<IgnoreCaseString> getOrderClientCodesForUser(FDIdentity identity) throws FDResourceException, RemoteException;
 
-	public void createCounter( String customerId, String counterId, int initialValue ) throws FDResourceException, RemoteException;
-	public void updateCounter( String customerId, String counterId, int newValue ) throws FDResourceException, RemoteException;
-	public Integer getCounter( String customerId, String counterId ) throws FDResourceException, RemoteException;
 	@Deprecated
 	public void sendSettlementFailedEmail(String saleID) throws FDResourceException, RemoteException;
 

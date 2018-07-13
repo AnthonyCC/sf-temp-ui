@@ -3930,17 +3930,21 @@ public class FDCustomerManager {
 
 	public static double getPerishableBufferAmount(FDCartModel cart)
 			throws FDResourceException {
-		lookupManagerHome();
 		try {
+			
 			ErpAbstractOrderModel order = null;
 			if (cart instanceof FDModifyCartModel) {
 				order = FDOrderTranslator.getErpCreateOrderModel(cart);
 			} else {
 				order = FDOrderTranslator.getErpModifyOrderModel(cart);
 			}
-
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.getPerishableBufferAmount(order);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
+				return CustomerInfoService.getInstance().getPerishableBufferAmount(order);
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getPerishableBufferAmount(order);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -4104,23 +4108,24 @@ public class FDCustomerManager {
 	}
 
 
-		public static List<String> getTopFaqs() throws FDResourceException {
-
+	public static List<String> getTopFaqs() throws FDResourceException {
+		try {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
+				return CustomerInfoService.getInstance().getTopFaqs();
+			} else {
 				lookupManagerHome();
-
-
-			try {
 				FDCustomerManagerSB sb = managerHome.create();
 				return sb.getTopFaqs();
-
-			} catch (CreateException ce) {
-				invalidateManagerHome();
-				throw new FDResourceException(ce, "Error creating bean");
-			} catch (RemoteException re) {
-				invalidateManagerHome();
-				throw new FDResourceException(re, "Error talking to bean");
 			}
+
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to bean");
 		}
+	}
 
 
 
@@ -4187,135 +4192,7 @@ public class FDCustomerManager {
 			throw new FDResourceException(re, "Error talking to bean");
 		}
 	}
-
-
-	public static void createCounter( String customerId, String counterId, int initialValue ) throws FDResourceException {
-		lookupManagerHome();
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-
-			sb.createCounter( customerId, counterId, initialValue );
-
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to bean");
-		}
-	}
-
-	public static void updateCounter( String customerId, String counterId, int newValue ) throws FDResourceException {
-		lookupManagerHome();
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-
-			sb.updateCounter( customerId, counterId, newValue );
-
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to bean");
-		}
-	}
-
-	public static Integer getCounter( String customerId, String counterId ) throws FDResourceException {
-		lookupManagerHome();
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-
-			return sb.getCounter( customerId, counterId );
-
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to bean");
-		}
-	}
-
-	/**
-	 * Convenience method for decrement type counters.
-	 *
-	 * @param customerId	id of the customer
-	 * @param counterId		name of the counter
-	 * @param initialValue	initial value of the counter
-	 * @return	value of the counter
-	 * @throws FDResourceException
-	 */
-	public static int decrementCounter( String customerId, String counterId, int initialValue ) throws FDResourceException {
-
-		if ( customerId == null || customerId.trim().length() == 0 ) {
-			return initialValue;
-		}
-
-		lookupManagerHome();
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-
-			Integer counter = sb.getCounter( customerId, counterId );
-
-			if ( counter == null ) {
-				sb.createCounter( customerId, counterId, initialValue );
-				counter = initialValue;
-			}
-
-			if ( counter > 0 ) {
-				sb.updateCounter( customerId, counterId, --counter );
-			}
-
-			return counter;
-
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to bean");
-		}
-	}
-
-
-
-
-	/**
-	 * Convenience method to get a counter value and create if not exits.
-	 *
-	 * @param customerId	Customer ID
-	 * @param counterId		Counter identifier string
-	 * @param initialValue	Positive integer number
-	 * @return True if counter has not reached 0 yet.
-	 * @throws FDResourceException
-	 */
-	public static boolean testCounter( String customerId, String counterId, int initialValue ) throws FDResourceException {
-		if ( customerId == null || customerId.trim().length() == 0 ) {
-			return true;
-		}
-
-		lookupManagerHome();
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-
-			Integer counter = sb.getCounter( customerId, counterId );
-
-			if ( counter == null ) {
-				sb.createCounter( customerId, counterId, initialValue );
-				counter = initialValue;
-			}
-
-			return counter > 0;
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to bean");
-		}
-
-	}
+	
 	public static void sendSettlementFailedEmail(String saleId) throws FDResourceException {
 		
 		try {
