@@ -351,7 +351,8 @@ var dataLayer = window.dataLayer || [];
                   sku: productData.sku,
                   dimension6: ""+true,
                   quantity: parseInt(productData.quantity, 10) || 0, // quantity should be an integer
-                  configuredPrice: productData.configuredPrice
+                  configuredPrice: productData.configuredPrice,
+                  lineItemTotal: productData.lineItemTotal
                 };
               }),
               delivery_type: getDeliveryType(coData.deliveryType),
