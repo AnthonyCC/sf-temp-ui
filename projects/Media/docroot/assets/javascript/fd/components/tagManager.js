@@ -600,7 +600,7 @@ var dataLayer = window.dataLayer || [];
 
   // product tile serialization
   fd.gtm.getProductData = function (productEl, listData) {
-    var productE = $(productEl).closest('[data-component="product"]'),
+    var productE = $(productEl).closest('[data-component="product"],[data-compontent="evenBetterItem"]'),
         productId = productE.attr('data-product-id'),
         productData;
 
@@ -822,7 +822,7 @@ var dataLayer = window.dataLayer || [];
 
     // product
     if (el) {
-      el = $(el).closest('[data-component="product"]');
+      el = $(el).closest('[data-component="product"],[data-component="evenBetterItem"]');
     }
 
     // module position
@@ -925,7 +925,7 @@ var dataLayer = window.dataLayer || [];
       } else {
         // etc. (carousel i.e.)
         parent = $(el).parent();
-        position = parent.find('[data-component="product"]').not('.relatedItem [data-component="product"]').index(el) + 1;
+        position = parent.find('[data-component="product"],[data-component="evenBetterItem"]').not('.relatedItem [data-component="product"]').index(el) + 1;
       }
     }
 
@@ -1350,7 +1350,7 @@ var dataLayer = window.dataLayer || [];
   }
 
   // product click
-  $(document).on('click', '[data-component="product"] a[href]', function (e) {
+  $(document).on('click', '[data-component="product"] a[href],[data-component="evenBetterItem a[href]"]', function (e) {
     var target = $(e.target).closest('a').prop('href'),
         productData = fd.gtm.getProductData(e.target),
         goToProduct = function () {
