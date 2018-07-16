@@ -41,6 +41,7 @@ public class GAProductDataService {
         } else {
             data.setConfiguredPrice(ProductModel.CURRENCY_FORMAT.format(cartLine.getConfiguredPrice()));
         }
+        data.setActualPrice(ProductModel.CURRENCY_FORMAT.format(cartLine.getActualPrice()));
         return data;
     }
 
