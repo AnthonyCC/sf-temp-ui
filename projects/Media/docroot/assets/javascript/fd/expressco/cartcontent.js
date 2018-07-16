@@ -895,7 +895,7 @@ function parseTipTotal(data) {
 				cartcontent.update();
 				/* close delivery pass popup */
 				if(fd.expressco.deliverypasspopup){
-					fd.expressco.deliverypasspopup.close();
+					$("#deliverypasspopup .ec-popup-content").html(expressco.deliverypasspopupsuccess());
 				}
 			}
 		}

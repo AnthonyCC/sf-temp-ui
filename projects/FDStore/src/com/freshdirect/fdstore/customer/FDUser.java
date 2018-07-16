@@ -700,6 +700,7 @@ public class FDUser extends ModelSupport implements FDUserI {
         this.getShoppingCart().setDlvPassExtn(null);
         this.getShoppingCart().setDlvPromotionApplied(false);
         this.getShoppingCart().setDeliveryPassCount();
+		this.getDlvPassCart().setDeliveryPassCount();
         if (this.getShoppingCart().isDlvPassApplicableByCartLines() || (this.isDlvPassActive()) || (this.applyFreeTrailOptinBasedDP()) ||checkExpDlvPassForOrderMod() ) {
         	this.getShoppingCart().setDlvPassApplied(true);
         }else {

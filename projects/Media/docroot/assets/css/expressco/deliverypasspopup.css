@@ -1,54 +1,139 @@
-.ec-popup.deliverypasspopup {
+.ec-popup.deliverypasspopup{
   position: relative;
   display: inline-block;
-  vertical-align: middle;
   text-align: left;
-/*   overflow: auto; */
-  width:780px;
-  max-width:780px;
-  box-sizing:border-box;
-  padding:60px 40px;
-  font-family:Verdana,Genava,sans-serif;
-  font-size:12px;
-  color:#333;
+  max-width: 622px;
+  background: #FFFFFF;
+  box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.35);
+  -webkit-box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.35);
+  -moz-box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.35);
+}
+.deliverypass-content{
+  margin: 50px auto 0;
+  text-align: left;
+  max-width: 622px;
+  background: #FFFFFF;
+  box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.35);
+  -webkit-box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.35);
+  -moz-box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.35);
 }
 
 .deliverypasspopup__header{
-  background-image: url(/media_stat/images/expressco/deliverypass_popup_header.png);
+  /*background-image: url(/media_stat/images/expressco/deliverypass_popup_header.png);
   background-repeat:no-repeat;
   background-position:top center;
   width:100%;
   height:97px;
   border-bottom:1px solid #e1e0de;
-  padding-bottom:30px;
+  padding-bottom:30px;*/
 }
 
-.deliverypasspopup__title{
-  font-size:22px;
-  font-weight:bold;
-  margin:60px 0 50px 0;
-  text-align:center;
+.deliverypasspopup__header{
+	padding: 40px 80px 20px;
 }
-
-.deliverypasspopup_boxes {
-  display: -ms-flexbox;
-  display: -webkit-flex;
-  display: flex;
-  flex-flow: row wrap;
+.deliverypasspopup__header-fd{
+	margin: 0 0 0 23px;
 }
-
+.deliverypasspopup__header-fd img{
+	width: 127px;
+}
+.deliverypasspopup__header-dp{
+	font-size: 48px;
+	margin: 0 0 0 23px;
+}
+.deliverypasspopup__header-dp sup{
+	font-size: 18px;
+}
+.deliverypasspopup__header-truck img{
+	padding: 0px 0 0 20px;
+	height: 46px;
+}
+.deliverypasspopup__header-text{
+	font-size: 18px;
+	text-align: center;
+	padding: 7px 0 0;
+}
+.deliverypasspopup__header-text .deliverypasspopup__header-text-circle{
+	color: #4fa157;
+	font-size: 15px;
+	vertical-align: top;
+}
+.deliverypasspopup_boxes{
+	padding: 0 0 20px 30px;
+}
+.deliverypasspopup_boxes-header{
+	font-size: 16px;
+}
+.deliverypasspopup_boxes-header-name{
+	font-size: 20px;
+	font-weight: bold;
+}
 .deliverypasspopup__option{
-  display:inline-block;
-  overflow:visible;
-  background-color:#fff;
-  border:1px solid #c7cabc;
-  margin:0 10px 40px 10px;
-  padding:10px 10px 10px 35px;
-  width:210px;
-  box-sizing:border-box;
-  vertical-align:top;
-  border-radius:5px;
+	float: left;
+    border: solid 2px #4fa157;
+    border-top: solid 4px #4fa157;
+    padding: 16px 24px;
+    width: 280px;
+    box-sizing: border-box;
 }
+.deliverypasspopup__option:nth-child(2n){
+	border-left: 0;
+}
+.deliverypasspopup__option-term{
+	font-size: 18px;
+}
+.deliverypasspopup__option-cost{
+	font-size: 14px;
+    float: left;
+    width: 125px;
+}
+.deliverypasspopup__option-cost-large{
+	font-size: 36px;
+}
+.deliverypasspopup__option-permonth{
+	font-size: 16px;
+	float: left;
+    width: 125px;
+}
+.deliverypasspopup__option button{
+	margin: 10px 0 0 13px;
+	padding: 10px 13px;
+	font-size: 14px;
+	font-family: Verdana;
+}
+
+.deliverypasspopup__option-best{
+	position: absolute;
+    margin-left: 197px;
+    margin-top: -39px;
+}
+.deliverypasspopup_success{
+	max-width: 480px;
+	padding: 30px;
+	text-align: center;
+}
+.deliverypasspopup_success-cart{
+	width: 58px;
+	margin: auto;
+	padding: 24px;
+}
+.deliverypasspopup_success-header{
+	font-size: 36px;
+	font-weight: bold;
+}
+.deliverypasspopup_success-text{
+	font-size: 18px;
+	padding: 16px 0 0;
+}
+.deliverypasspopup_success-button{
+	padding: 40px 0 10px;
+}
+.deliverypasspopup_success-button button{
+	width: 260px;
+	height: 48px;
+}
+
+
 
 body.ie .deliverypasspopup__option {
   min-height:120px;
@@ -89,27 +174,26 @@ body.ie .deliverypasspopup__option {
   margin-right: 5px;
 }
 
+
+/* FOOOOOOOOOOOOOOTER*/ 
+
+
 .deliverypasspopup__footer{
-  width:100%;
-  text-align:center;
+  font-size: 14px;
+  text-align: center;
+  padding: 30px 38px 40px;
 }
 
-.deliverypasspopup__submit{
-  width:220px;
-  height:40px;
-  font-size:14px;
+.deliverypasspopup__footer-terms{
+	margin: 8px;
 }
+
+/* FOOOOOOOOOOOOOOTER*/ 
 
 .deliverypasspopup__back{
   height:40px;
   font-size:14px;
   float:left;
-}
-
-.deliverypasspopup__terms{
-  margin-top:25px;
-  color:#666;
-  font-weight:normal;
 }
 
 .deliverypasspopup__total{
@@ -118,10 +202,6 @@ body.ie .deliverypasspopup__option {
 
 .deliverypasspopup__termspage{
   display:none;
-}
-
-.deliverypasspopup__label{
-  cursor:pointer;
 }
 
 .deliverypasspopup_product {

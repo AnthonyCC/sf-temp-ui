@@ -528,6 +528,8 @@ public class FDStoreProperties {
     private static final String PROP_ONE_MONTH_DELIVERY_PASS_SKU = "fdstore.onemonth.dp.sku";
     private static final String PROP_FDX_DELIVERY_PASS_SKU = "fdstore.fdx.dp.sku";
     private static final String PROP_FD_DELIVERY_PASS_SKU = "fdstore.fd.dp.sku";
+    private static final String PROP_MID_WEEK_SIX_MONTH_DELIVERY_PASS_SKU = "fdstore.midweek.sixmonth.dp.sku";
+
 
     // APPDEV-1850 build versioning of JavaScript/CSS files
     private static final String BUILDVER_ENABLE = "fdstore.buildver.enable";
@@ -1531,6 +1533,7 @@ public class FDStoreProperties {
         defaults.put(PROP_ONE_MONTH_DELIVERY_PASS_SKU, "mkt_dpss_onemonth");
         defaults.put(PROP_FDX_DELIVERY_PASS_SKU, "mkt_fk_dpss_onemonth");
         defaults.put(PROP_FD_DELIVERY_PASS_SKU, "");
+        defaults.put(PROP_MID_WEEK_SIX_MONTH_DELIVERY_PASS_SKU, "mkt_dpass_midweek");
 
         defaults.put(BUILDVER_ENABLE, "true");
 
@@ -5244,4 +5247,8 @@ public class FDStoreProperties {
         return Integer.parseInt(get(PROP_REFRESH_LOOKBACK_SECS_PRODUCTINFO));
     }
 	
+
+	public static String getMidWeekSixMonthDeliveryPassSku() {
+		return get(PROP_MID_WEEK_SIX_MONTH_DELIVERY_PASS_SKU);
+	}
 }

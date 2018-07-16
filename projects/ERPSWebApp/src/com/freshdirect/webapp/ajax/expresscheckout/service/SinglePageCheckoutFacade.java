@@ -78,6 +78,7 @@ import com.freshdirect.webapp.soy.SoyTemplateEngine;
 import com.freshdirect.webapp.taglib.fdstore.CheckOrderStatusTag;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 import com.freshdirect.webapp.util.StandingOrderHelper;
 
 public class SinglePageCheckoutFacade {
@@ -131,14 +132,15 @@ public class SinglePageCheckoutFacade {
     public SinglePageCheckoutData load(final FDUserI user, HttpServletRequest request)
             throws FDResourceException, IOException, TemplateException, JspException, RedirectToPage {
     	ErpCustomerModel customerModel = FDCustomerManager.getCustomerPaymentAndCredit(user.getIdentity());
-        FDCartI cart = populateCartDataFromParentOrder(user);
+    	boolean dlvPassCart = null !=request.getParameter("dlvPassCart") && "true".equalsIgnoreCase(request.getParameter("dlvPassCart")) ? true: false;
+        FDCartI cart = populateCartDataFromParentOrder(user, dlvPassCart);
         SinglePageCheckoutData result = new SinglePageCheckoutData();
         if (StandingOrderHelper.isSO3StandingOrder(user)) {
             result.setStandingOrderResponseData(StandingOrderHelper.populateResponseData(user.getCurrentStandingOrder(), false));
         }
         handleModifyCartPreSelections(user, request);
         result.setHeaderData(SinglePageCheckoutHeaderService.defaultService().populateHeader(user));
-        result.setDrawer(DrawerService.defaultService().loadDrawer(user));
+        result.setDrawer(DrawerService.defaultService().loadDrawer(user, dlvPassCart));
         FormPaymentData paymentData = loadUserPaymentMethods(user, request, customerModel.getPaymentMethods(), customerModel.getCustomerCredits());
         // remove the xxxx in account number
     	if (paymentData.getPayments() != null) {
@@ -190,7 +192,7 @@ public class SinglePageCheckoutFacade {
             LOGGER.debug("Skipped restriction check for fraud address");
         }
 
-        FDCartI cart = StandingOrderHelper.isSO3StandingOrder(user) ? user.getSoTemplateCart() : populateCartDataFromParentOrder(user);
+        FDCartI cart = StandingOrderHelper.isSO3StandingOrder(user) ? user.getSoTemplateCart() : populateCartDataFromParentOrder(user, false);
 
         HttpSession session = request.getSession();
         switch (pageAction) {
@@ -334,7 +336,7 @@ public class SinglePageCheckoutFacade {
 	public FormLocationData loadAddress(final FDUserI user, final HttpSession session)
 			throws FDResourceException, JspException, RedirectToPage {
 		
-		return loadAddress(user, session, populateCartDataFromParentOrder(user), null);
+		return loadAddress(user, session, populateCartDataFromParentOrder(user, false), null);
 	}
 
     public FormLocationData loadAddress(final FDUserI user, final HttpSession session, final FDCartI cart) throws FDResourceException, JspException, RedirectToPage {  	
@@ -395,7 +397,7 @@ public class SinglePageCheckoutFacade {
         
         FDOrderI order = isSO3Activate?new FDStandingOrderAdapter(user.getSoTemplateCart(),user.getCurrentStandingOrder()):loadOrder(orderId, user);
        
-        result.setDrawer(DrawerService.defaultService().loadDrawer(user));
+        result.setDrawer(DrawerService.defaultService().loadDrawer(user, false));
         result.setAddress(loadCartAddress(order, user));
         result.setPayment(loadCartPayment(order, user));
         result.setTimeslot(timeslotService.loadCartTimeslot(user, order));
@@ -412,7 +414,7 @@ public class SinglePageCheckoutFacade {
         return result;
     }
 
-    private FDCartI populateCartDataFromParentOrder(final FDUserI user) throws FDResourceException {
+    private FDCartI populateCartDataFromParentOrder(final FDUserI user, boolean dlvPassCart) throws FDResourceException {
         FDCartI cart = null;
         if (StandingOrderHelper.isSO3StandingOrder(user)) {
             cart = user.getSoTemplateCart();
@@ -426,7 +428,8 @@ public class SinglePageCheckoutFacade {
             user.getShoppingCart().setDeliveryAddress(deliveryAddress);
             // user.getShoppingCart().setDeliveryReservation(cart.getDeliveryReservation());
         } else {
-            cart = user.getShoppingCart();
+            //cart = user.getShoppingCart();
+        	cart = UserUtil.getCart(user, "", dlvPassCart);
         }
         return cart;
     }

@@ -51,6 +51,7 @@ import com.freshdirect.webapp.ajax.quickshop.QuickShopHelper;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
+import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 import com.freshdirect.webapp.util.RequestUtil;
 
 public class AddToCartServlet extends BaseJsonServlet {
@@ -127,6 +128,9 @@ public class AddToCartServlet extends BaseJsonServlet {
     protected boolean synchronizeOnUser() {
         return false; // synchronization is done on cart
     }
+    
+    private boolean dlvPassCart; //used for DP Plans landing page
+
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
@@ -154,6 +158,12 @@ public class AddToCartServlet extends BaseJsonServlet {
         // [APPDEV-5353] Fill in required data
         reqData.setCookies(request.getCookies());
         reqData.setRequestUrl(RequestUtil.getFullRequestUrl(request));
+        
+        boolean dlvPassCart = reqData.isDlvPassCart();
+        if(dlvPassCart){
+        	cart=UserUtil.getCart(user, "", dlvPassCart);
+        	cart.clearOrderLines();
+        }
 
         // Get event source
         EnumEventSource evtSrc = EnumEventSource.UNKNOWN;
@@ -208,7 +218,7 @@ public class AddToCartServlet extends BaseJsonServlet {
         try {
 			if (!EnumEventSource.ExternalPage.equals(evtSrc) && !EnumEventSource.FinalizingExternal.equals(evtSrc)
 					&& user.getShowPendingOrderOverlay() && user.hasPendingOrder() && reqData.getOrderId() == null
-					&& !reqData.isNewOrder()) {
+					&& !reqData.isNewOrder() && !dlvPassCart) {
 				// user has pending orders, show the popup first
 
                 returnWithModifyPopup(response, user, cart, items, reqData.getEventSource());
@@ -558,5 +568,13 @@ public class AddToCartServlet extends BaseJsonServlet {
     @Override
 	protected boolean isOAuthEnabled() {
 		return true;
+	}
+    
+	public boolean isDlvPassCart() {
+		return dlvPassCart;
+	}
+
+	public void setDlvPassCart(boolean dlvPassCart) {
+		this.dlvPassCart = dlvPassCart;
 	}
 }

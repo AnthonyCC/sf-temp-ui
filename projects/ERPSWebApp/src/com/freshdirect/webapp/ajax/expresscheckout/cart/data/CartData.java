@@ -132,6 +132,8 @@ public class CartData {
     
     private boolean sOCartLineMessages;
     
+    private boolean dlvPassCart;
+    
     
     public String getErrorMessage() {
         return errorMessage;
@@ -1227,5 +1229,13 @@ public class CartData {
     public void setGoogleAnalyticsData(GoogleAnalyticsData googleAnalyticsData) {
         this.googleAnalyticsData = googleAnalyticsData;
     }
+
+	public boolean isDlvPassCart() {
+		return dlvPassCart;
+	}
+
+	public void setDlvPassCart(boolean dlvPassCart) {
+		this.dlvPassCart = dlvPassCart;
+	}
 
 }

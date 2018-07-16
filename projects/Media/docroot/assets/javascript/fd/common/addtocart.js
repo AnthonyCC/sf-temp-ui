@@ -41,6 +41,10 @@ var FreshDirect = FreshDirect || {};
     if (event.ignoreRedirect) {
       request.ignoreRedirect = true;
     }
+    
+    if (event.dlvPassCart) {
+        request.dlvPassCart = event.dlvPassCart;
+    }
 
     $(event.target).addClass('ATCinProgress');
 
@@ -145,11 +149,11 @@ var FreshDirect = FreshDirect || {};
 	}).filter(function(event){
 		return event.items.length > 0;
 	}).onValue(function(event){
-		triggerATC(event.items,{},event.target,event.eventSource,event.ignoreRedirect);
+		triggerATC(event.items,{},event.target,event.eventSource,event.ignoreRedirect,event.dlvPassCart);
 	});
 
 
-  function triggerATC(items,meta,triggerElement,eventSource,ignoreRedirect){
+  function triggerATC(items,meta,triggerElement,eventSource,ignoreRedirect,dlvPassCart){
     var eventSourceData = {};
     if (eventSource) {
       eventSourceData.eventSource = eventSource;
@@ -161,7 +165,8 @@ var FreshDirect = FreshDirect || {};
 			ATCMeta:(meta || {}),
 			valid:true,
 			eventSourceData:eventSourceData,
-      ignoreRedirect: !!ignoreRedirect
+			ignoreRedirect: !!ignoreRedirect,
+			dlvPassCart: !!dlvPassCart
 		});
 	}
 

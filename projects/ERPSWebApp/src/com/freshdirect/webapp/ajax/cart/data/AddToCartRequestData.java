@@ -28,6 +28,7 @@ public class AddToCartRequestData implements Serializable {
 	private String tab;
 	
 	private boolean ignoreRedirect;
+	private boolean dlvPassCart;
 	
 	/**
 	 * Temporary place of request cookies
@@ -109,4 +110,10 @@ public class AddToCartRequestData implements Serializable {
     public void setRequestUrl(String requestUrl) {
         this.requestUrl = requestUrl;
     }
+	public boolean isDlvPassCart() {
+		return dlvPassCart;
+	}
+	public void setDlvPassCart(boolean dlvPassCart) {
+		this.dlvPassCart = dlvPassCart;
+	}
 }

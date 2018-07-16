@@ -57,6 +57,7 @@ import com.freshdirect.webapp.soy.SoyTemplateEngine;
 import com.freshdirect.webapp.taglib.fdstore.CheckoutControllerTag;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventFactory;
 import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventI;
 import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventType;
@@ -141,7 +142,9 @@ public class CheckoutService {
 		UnavailabilityData atpFailureData = null;
 		FormRestriction checkPlaceOrderResult = null;
 		ActionResult actionResult = new ActionResult();
-		FDCartModel cart = user.getShoppingCart();
+		boolean dlvPassCart = null !=FormDataService.defaultService().getBoolean(requestData, "isDlvPassCart") ? FormDataService.defaultService().getBoolean(requestData, "isDlvPassCart"): false;
+		FDCartModel cart = UserUtil.getCart(user, "", dlvPassCart);
+		//FDCartModel cart = user.getShoppingCart();
 //		AvalaraContext avalaraContext = new AvalaraContext(cart);
 		boolean isAtpCheckRequired = true;
 	//	if(FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && cart.containsDlvPassOnly()){
@@ -181,7 +184,7 @@ public class CheckoutService {
 			    	avalaraContext.setReturnTaxValue(cart.getAvalaraTaxValue(avalaraContext));
 					}*/
                     outcome = CheckoutControllerTag.performSubmitOrder(user, actionName, actionResult, session, request, response, CheckoutControllerTag.AUTHORIZATION_CUTOFF_PAGE,
-                            null, null, null, false);
+                            null, null, null, dlvPassCart);
                     // makegood phase
     				MasqueradeContext masqueradeContext = user.getMasqueradeContext();
     				String masqueradeMakeGoodOrderId = masqueradeContext==null ? null : masqueradeContext.getMakeGoodFromOrderId();

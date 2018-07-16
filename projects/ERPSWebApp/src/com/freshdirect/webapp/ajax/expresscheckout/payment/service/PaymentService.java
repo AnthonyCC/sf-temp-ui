@@ -119,7 +119,8 @@ public class PaymentService {
         String billingRef = null; // TODO: needed? CORPORATE with zero payment
         // method.
         HttpSession session = request.getSession();
-        PaymentMethodManipulator.setPaymentMethod(paymentId, billingRef, request, session, result, actionName, ((paymentSaveAsDefault)?"Y":"N"), false);
+        boolean dlvPassCart = null !=request.getParameter("isDlvPassCart") && "true".equalsIgnoreCase(request.getParameter("isDlvPassCart")) ? true: false;
+        PaymentMethodManipulator.setPaymentMethod(paymentId, billingRef, request, session, result, actionName, ((paymentSaveAsDefault)?"Y":"N"), dlvPassCart);
         for (ActionError error : result.getErrors()) {
             validationErrors.add(new ValidationError(error.getType(), error.getDescription()));
         }

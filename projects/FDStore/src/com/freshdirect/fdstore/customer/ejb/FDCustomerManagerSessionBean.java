@@ -905,7 +905,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				} // -added for DP1.1
 					// Get the pass type and expiration date if unlimited.
 				type = model.getType();
-				if (type.isUnlimited()) {
+				if (null!=type && type.isUnlimited()) {
 					expDate = model.getExpirationDate();
 				}
 				originalOrderId = model.getPurchaseOrderId();
@@ -928,11 +928,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			dlvPassInfo = new FDUserDlvPassInfo(dlvPassStatus, type, description, expDate, amount, originalOrderId, remDlvs, usedDlvs,
 					usablePassCount, isFreeTrialRestricted, autoRenewUsablePassCount, autoRenewDPType,
 					autoRenewDPPrice.doubleValue(), (model == null) ? null : model.getPurchaseDate(),(model == null) ? null : model.getActivationDate());
-			if (!EnumDlvPassStatus.NONE.equals(dlvPassStatus) && (type.isUnlimited())
+			if (!EnumDlvPassStatus.NONE.equals(dlvPassStatus) && (null!=type && type.isUnlimited())
 					&& (EnumDlvPassStatus.CANCELLED.equals(dlvPassStatus)
 							|| EnumDlvPassStatus.EXPIRED.equals(dlvPassStatus))) {
 				dlvPassInfo.setDaysSinceDPExpiry(sb.getDaysSinceDPExpiry(customerPk));
-			} else if (!EnumDlvPassStatus.NONE.equals(dlvPassStatus) && type.isUnlimited()) {
+			} else if (!EnumDlvPassStatus.NONE.equals(dlvPassStatus) && (null!=type && type.isUnlimited())) {
 				dlvPassInfo.setDaysToDPExpiry(sb.getDaysToDPExpiry(customerPk, model.getId()));
 			}
 

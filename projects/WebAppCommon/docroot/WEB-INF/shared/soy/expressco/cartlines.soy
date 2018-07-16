@@ -312,8 +312,10 @@
  * @param? isEBTused
  * @param? mobWeb
  * @param? modifyOrder
+ * @param? dlvPassCart
  */
 {template .checkoutlines autoescape="false"}
+	{if not $dlvPassCart}
 	<div class='cartcontent checkoutlines'>
 		{foreach $section in $cartSections}
 			{call .cartsection data="$section"}
@@ -411,7 +413,69 @@
 		{param buttonText: 'Place Order' /}
 		{param avalaraEnabled: $avalaraEnabled /}
 	{/call}
-	
+	{else}
+		<div class="promotions">
+			{call .promotions}
+				{param promotionApplied: $promotionApplied /}
+				{param deliveryPassTrialExpired: $deliveryPassTrialExpired /}
+				{param billingReferenceInfo: $billingReferenceInfo /}
+				{param userRecognized: $userRecognized /}
+				{param displayCheckout: $displayCheckout /}
+				{param dlvPassCart: $dlvPassCart /}
+			{/call}
+		</div>
+		<div class='cartcontent checkoutlines'>
+			{foreach $section in $cartSections}
+				{call .cartsection data="$section"}
+					{param cartlineType: 'CHECKOUT' /}
+					{param tipAmounts: $tipAmounts /}
+					{param tipApplied: $tipApplied /}
+					{param tipAppliedTick: $tipAppliedTick /}
+					{param subTotalBox: $subTotalBox /}
+					{param subTotal: $subTotal /}
+					{param userRecognized: $userRecognized /}
+					{param userCorporate: $userCorporate /}
+					{param etipTotal: $etipTotal /}
+					{param customTip: $customTip /}
+					{param eTippingEnabled: $eTippingEnabled /}
+					{param avalaraEnabled: $avalaraEnabled /}
+					{param displayCheckout: $displayCheckout /}
+					{param customerServiceRepresentative: $customerServiceRepresentative /}
+					{param numOfSections : length($cartSections) /}
+					{param isLastSection : isLast($section) /}
+					{param containsWineSection : $containsWineSection /}
+					{param isEBTused : $isEBTused /}
+					{param mobWeb : $mobWeb /}
+					{param renderSubTotal1: not $mobWeb /}
+					{param dlvPassCart: $dlvPassCart /}
+				{/call}
+			{/foreach}
+		</div>
+		{call .total}
+			{param cartlineType: 'CHECKOUT' /}
+			{param subTotalBox: $subTotalBox /}
+			{param additionalInfo: $additionalInfo /}
+			{param goGreen: $goGreen /}
+			{param userRecognized: $userRecognized /}
+			{param billingReferenceInfo: $billingReferenceInfo /}
+			{param promotionApplied: $promotionApplied /}
+			{param deliveryPassTrialExpired: $deliveryPassTrialExpired /}
+			{param eTippingEnabled: $eTippingEnabled /}
+			{param avalaraEnabled: $avalaraEnabled /}
+			{param displayCheckout: $displayCheckout /}
+			{param customerServiceRepresentative: $customerServiceRepresentative /}
+			{param totalWithoutTax: $totalWithoutTax /}
+			{param etipTotal: $etipTotal /}
+			{param buttonText: ($modifyOrder and $modifyOrder == true) ? 'Save Changes' : 'Place Order' /}
+			{param form: 'checkout' /}
+			{param displayCheckoutButton: $displayCheckout /}
+			{param dlvPassCart: $dlvPassCart /}
+		{/call}
+		<div class="deliverypass-payment-cancel">
+			<a href="#" data-deliverypass-payment-close>Cancel</a>
+		</div>
+		
+	{/if}
 {/template}
 
 /**
@@ -621,6 +685,7 @@
  * @param? deliveryBegins
  * @param? mobWeb
  * @param? renderSubTotal1
+ * @param? dlvPassCart
  */
 {template .cartsection autoescape="false"}
 	{let $cartlineTypeRevised: ($cartlineType == 'CHECKOUT_SUCCESS')? 'CHECKOUT' : $cartlineType /}
@@ -667,7 +732,7 @@
 			{if $renderSubTotal1}
 				<div class='cartsection {if $isETipEnabled}eTippingEnabled{/if}'>
 					{if $isLastSection or $numOfSections == 1}
-						<div class='cartsection__totalwrapper {if not $mobWeb}right{/if}'>
+						<div class='cartsection__totalwrapper {if not $mobWeb and not $dlvPassCart}right{/if}'>
 							<div id="subtotalbox1" class="subtotalboxes">
 								{if $subTotalBox and $subTotalBox.subTotalBox}
 									{call .subTotalBox}
@@ -1007,6 +1072,7 @@
  * @param? promotionApplied
  * @param? billingReferenceInfo billing reference
  * @param? displayCheckout to display checkout
+ * @param? dlvPassCart
  */
 {template .promotions autoescape="false"}
 
@@ -1030,7 +1096,7 @@
 						<div> 
 							<input type="text" class="promotion-input" id="apply-gift-card" aria-describedby="giftcard_error" name="givexNum" placeholder="Enter here" />
 							<input type="hidden" name="action" value="applyGiftCard" />
-							<button id="apply-gift-card-applybtn" disabled="disabled" class="disabled cssbutton green small">apply<span class="offscreen">new gift card</span></button>
+							<button id="apply-gift-card-applybtn" disabled="disabled" class="disabled cssbutton green {if $dlvPassCart}transparent{/if} small">apply<span class="offscreen">new gift card</span></button>
 							<span id="giftcard_error" fdform-error-for="givexNum"></span>
 						</div>
 					</form>
@@ -1118,11 +1184,12 @@
  * @param? form
  * @param? navLink
  * @param? successPage
+ * @param? dlvPassCart
  */
 {template .total autoescape="false"}
 {let $cartlineType: (not $displayCheckout)? 'CHECKOUT' : $cartlineType /}
 <div class='total {if $eTippingEnabled and $cartlineType == 'CHECKOUT'}eTippingEnabled{/if}'>
-	<div class='total__subtotal total-right right'>
+	<div class='total__subtotal total-right {if not $dlvPassCart}right{/if}'>
 		<div id="subtotalbox2" class="subtotalboxes">
 				{if $eTippingEnabled and $cartlineType == 'CHECKOUT' and $subTotalBox and $subTotalBox.estimatedTotalBox}	
 					{call .subTotalBox}
@@ -1161,7 +1228,7 @@
 					{/if}
 					{if $form}<form fdform="{$form}" action="#">{/if}
 					{if $navLink}<a href='{$navLink}'>{/if}
-					{if $buttonText}<button class="cssbutton orange footer__button icon-chevron-right-after" fd-login-required {if $successPage}fd-login-successpage="{$successPage}"{/if}>{$buttonText}</button>{/if}
+					{if $buttonText}<button class="cssbutton orange footer__button icon-chevron-right-after" fd-login-required {if $successPage}fd-login-successpage="{$successPage}"{/if}>{if not $dlvPassCart}{$buttonText}{else}Purchase Plan{/if}</button>{/if}
 					{if $navLink}</a>{/if}
 					{if $form}</form>{/if}
 				</div>

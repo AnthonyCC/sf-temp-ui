@@ -88,7 +88,8 @@ public class SinglePageCheckoutServlet extends BaseJsonServlet {
 			}
 			writeResponseData(response, null);
 		} else if (action.equals("getDrawer")) {
-			Map<String, List<DrawerData>> data = DrawerService.defaultService().loadDrawer(user);
+			boolean dlvPassCart=(null!=request.getParameter("isDlvPassCart") && "true".equalsIgnoreCase(request.getParameter("isDlvPassCart")))?true:false;
+			Map<String, List<DrawerData>> data = DrawerService.defaultService().loadDrawer(user, dlvPassCart);
 			writeResponseData(response, data);
 		} else if (action.equals("getTimeSlot")) {
 			FormTimeslotData data;

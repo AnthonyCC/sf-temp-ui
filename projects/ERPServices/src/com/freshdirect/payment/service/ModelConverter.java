@@ -358,7 +358,7 @@ public class ModelConverter {
 				deliveryPassTypeData.isUnlimited(), deliveryPassTypeData.getProfileValue(),
 				deliveryPassTypeData.isAutoRenewDP(), deliveryPassTypeData.isFreeTrialDP(),
 				deliveryPassTypeData.isFreeTrialRestricted(), deliveryPassTypeData.getAutoRenewalSKU(),
-				deliveryPassTypeData.getEligibleDlvDays(), deliveryTypes, eStoreIds);
+				deliveryPassTypeData.getEligibleDlvDays(), deliveryTypes, eStoreIds, null);
 	}
 
 	public static List buildCrmCaseSubjectList(List data) {

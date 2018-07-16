@@ -221,7 +221,7 @@ public class CartOperations {
             logAddToCart(user, cartLinesToAdd, evtSrc, serverName);
 
             // Save
-            saveUserAndCart(user, cart);
+            saveUserAndCart(user, cart, reqData.isDlvPassCart());
 
             // ecoupons status - after add to cart
             populateECouponsStatus(responseData, user, cart, cartLinesToAdd, session);
@@ -519,6 +519,9 @@ public class CartOperations {
     }
 
     public static void saveUserAndCart(FDUserI user, FDCartModel cart) {
+    	saveUserAndCart(user,cart,false);
+    }
+    public static void saveUserAndCart(FDUserI user, FDCartModel cart, boolean isDlvPassCart) {
 
         synchronized (cart) {
             try {
@@ -536,7 +539,7 @@ public class CartOperations {
                 QuickShopHelper.emptyQuickShopCaches(user.getIdentity().getErpCustomerPK());
             }
 
-            if (!(cart instanceof FDModifyCartModel)) {
+            if (!(cart instanceof FDModifyCartModel) && !isDlvPassCart) {
                 try {
                     if (user instanceof FDUser) {
                         FDCustomerManager.storeUser((FDUser) user);

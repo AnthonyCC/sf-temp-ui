@@ -547,8 +547,7 @@ public class CheckoutController extends BaseController {
         setResponseMessage(model, responseMessage, user);
         return model;
     }
-
-   
+    
     /**
      * @param model
      * @param user

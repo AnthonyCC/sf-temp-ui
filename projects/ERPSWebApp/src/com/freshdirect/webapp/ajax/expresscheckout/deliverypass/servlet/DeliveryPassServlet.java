@@ -53,7 +53,7 @@ public class DeliveryPassServlet extends BaseJsonServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
 		Map<String, Object> responseData= new HashMap<String, Object>();
 		try {
-			if (null != user && null != user.getIdentity()) {
+			if (null != user && null != user.getIdentity() && user.getLevel() == FDUserI.SIGNED_IN) {
 				String actionName = request.getParameter("action");
 				if (null != user.getDlvPassInfo() && EnumDlvPassStatus.ACTIVE.equals(user.getDlvPassInfo().getStatus())) {
 					if (actionName.equalsIgnoreCase("FLIP_AUTORENEW_ON") || actionName.equalsIgnoreCase("FLIP_AUTORENEW_OFF")) {
@@ -79,7 +79,12 @@ public class DeliveryPassServlet extends BaseJsonServlet {
 			} else {
 				responseData.put("STATUS", "ERROR");
 				responseData.put("MESSAGE", "Opt in changes are not committed, please refresh the page and do sign-in");
-				responseData.put("ERRORTYPE", "session timeout");
+				if(null != user && null != user.getIdentity() &&  user.getLevel() != FDUserI.SIGNED_IN){
+					responseData.put("ERRORTYPE", "User not logged in");
+				} else{
+					responseData.put("ERRORTYPE", "session timeout");
+				}
+				
 			}
 			writeResponseData(response, responseData);
 		} catch (Exception e) {
@@ -127,4 +132,8 @@ public class DeliveryPassServlet extends BaseJsonServlet {
 		return false;
 	}
 
+	@Override
+	protected int getRequiredUserLevel() {
+		return FDUserI.GUEST;
+	}
 }
