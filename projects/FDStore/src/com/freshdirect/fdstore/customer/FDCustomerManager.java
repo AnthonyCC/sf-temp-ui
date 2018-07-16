@@ -1,10 +1,8 @@
 package com.freshdirect.fdstore.customer;
 
-import java.io.IOException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -23,8 +21,6 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.log4j.Category;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.cms.CmsServiceLocator;
 import com.freshdirect.cms.cache.CmsCaches;
 import com.freshdirect.common.address.AddressModel;
@@ -94,6 +90,7 @@ import com.freshdirect.ecomm.gateway.OrderResourceApiClient;
 import com.freshdirect.ecomm.gateway.OrderResourceApiClientI;
 import com.freshdirect.ecomm.gateway.OrderServiceApiClient;
 import com.freshdirect.ecomm.gateway.OrderServiceApiClientI;
+import com.freshdirect.ecommerce.data.dlv.FDReservationData;
 import com.freshdirect.ecommerce.data.survey.FDIdentityData;
 import com.freshdirect.ecommerce.data.survey.FDSurveyResponseData;
 import com.freshdirect.ecommerce.data.survey.SurveyKeyData;
@@ -1810,7 +1807,11 @@ public class FDCustomerManager {
 				if(FDStoreProperties.isSF2_0_AndServiceEnabled("cancelOrder_Api")){
 					OrderResourceApiClient service = OrderResourceApiClient.getInstance();
 					DlvManagerDecoder.setMapper(OrderResourceApiClient.getMapper());
-					reservation =  DlvManagerDecoder.converter(service.cancelOrder(info, saleId, sendEmail, currentDPExtendDays, restoreReservation));
+					FDReservationData reservationData = service.cancelOrder(info, saleId, sendEmail, currentDPExtendDays, restoreReservation);
+					if(reservationData!=null){
+						reservation =  DlvManagerDecoder.converter(reservationData);
+					}
+					
 				}else{
 					reservation = sb.cancelOrder(info, saleId, sendEmail, currentDPExtendDays, restoreReservation);
 				}
