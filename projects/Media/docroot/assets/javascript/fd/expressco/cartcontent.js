@@ -896,6 +896,9 @@ function parseTipTotal(data) {
 				/* close delivery pass popup */
 				if(fd.expressco.deliverypasspopup){
 					$("#deliverypasspopup .ec-popup-content").html(expressco.deliverypasspopupsuccess());
+					if($("#deliverypasscontent").length > 0){
+						doOverlayDialogNew("/includes/deliverypasspayment.jsp");
+					}
 				}
 			}
 		}

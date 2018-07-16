@@ -137,9 +137,6 @@ var FreshDirect = FreshDirect || {};
     	} else {
     		fd.components.AddToCart.addToCart(product);
     	}
-        if($("#deliverypasscontent").length > 0){
-        	doOverlayDialogNew("/includes/deliverypasspayment.jsp");
-        }
       } else {
         deliverypasspopup.close();
       }

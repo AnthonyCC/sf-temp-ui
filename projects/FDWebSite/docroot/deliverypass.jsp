@@ -103,6 +103,7 @@
 	
 	<tmpl:put name="extraJs">
     	<fd:javascript src="/assets/javascript/timeslots.js" />
+    	<jwr:script src="/expressco.js" useRandomParam="false" />
 	</tmpl:put>
 </tmpl:insert>
 

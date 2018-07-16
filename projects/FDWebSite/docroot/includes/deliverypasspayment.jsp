@@ -1,26 +1,3 @@
-<%@ page import='com.freshdirect.fdstore.*' %>
-<%@ page import='com.freshdirect.fdstore.customer.*' %>
-<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
-<%@ page import='com.freshdirect.customer.*' %>
-<%@ page import='com.freshdirect.fdstore.deliverypass.DeliveryPassUtil' %>
-<%@ page import='com.freshdirect.deliverypass.EnumDlvPassStatus' %>
-<%@ page import='com.freshdirect.webapp.util.CCFormatter' %>
-<%@ page import='com.freshdirect.deliverypass.EnumDPAutoRenewalType' %>
-<%@ page import='com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo' %>
-<%@ page import='com.freshdirect.deliverypass.DeliveryPassModel' %>
-<%@ page import='com.freshdirect.webapp.util.JspMethods' %>
-<%@ page import="com.freshdirect.common.context.MasqueradeContext"%>
-<%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter'%>
-<%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'%>
-<%@ page import="java.util.Calendar" %>
-<%@ page import='java.util.Date' %>
-<%@ taglib uri="template" prefix="tmpl" %>
-<%@ taglib uri="logic" prefix="logic" %>
-<%@ taglib uri="freshdirect" prefix="fd" %>
-<%@ taglib uri="http://jawr.net/tags" prefix="jwr"%>
-<%@ taglib uri="fd-data-potatoes" prefix="potato"%>
-<%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy"%>
-
 <%
   Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
 %>
@@ -38,12 +15,15 @@
 		</div>
 	</div>
 </div>
-<jwr:script src="/expressco.js" useRandomParam="false" />
+
 <script>
 	$jq(document).ready(function($) {
 		fd.expressco.checkout.initSoyDrawers();
-		$(".deliverypass-payment").on('click', "[data-deliverypass-payment-close]", function(){
-			$jq(".overlay-dialog-new .ui-dialog-titlebar-close").click()
+		fd.expressco.cartcontent.listen();
+		fd.expressco.cartcontent.watchChanges();
+		fd.expressco.cartcontent.update();
+		$jq(".deliverypass-payment").on('click', "[data-deliverypass-payment-close]", function(){
+			$jq(".overlay-dialog-new .ui-dialog-titlebar-close").click();
 		});
 	});
 	if(typeof FreshDirect.deliveryPassSelectedTitle !== 'undefined'){
