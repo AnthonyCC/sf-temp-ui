@@ -111,7 +111,7 @@ if(user != null) {
 
 			<div class="nav<%= " "+hasEcouponsClass %>">
 				<% if(user.isCorporateUser()) { %>
-					<a class="logo logo-cos" href="<%= FDURLUtil.getLandingPageUrl(user)%>" ><img src="/media/images/navigation/global_nav/fd_logo_on.png" alt="FreshDirect at the Office" />At the office</a>
+					<a class="logo logo-cos" href="<%= FDURLUtil.getLandingPageUrl(user)%>" ><img src="/media/images/navigation/global_nav/fd_logo_on.png" alt="" /><span class="offscreen">welcome to Freshdirect homepage</span>At the office</a>
 				<% } else { %>
 					<a class="logo" href="<%= FDURLUtil.getLandingPageUrl(user)%>"><img src="/media/layout/nav/globalnav/fdx/logo.png" alt="FreshDirect" /></a>
 				<% } %>
@@ -186,7 +186,7 @@ if(user != null) {
 			<% if(user.isDepotUser()){ %>
 	        	<a class="logo" href="<%= FDURLUtil.getLandingPageUrl(user)%>"><img src="/media_stat/images/logos/<%=user.getDepotCode()%>_depot_logo.gif" alt="" /></a>
 	    	<% } else if(user.isCorporateUser()) { %>
-				<a class="logo logo-cos" href="<%= FDURLUtil.getLandingPageUrl(user)%>" ><img src="/media/images/navigation/global_nav/fd_logo_on.png" alt="FreshDirect at the Office" />At the office</a>
+				<a class="logo logo-cos" href="<%= FDURLUtil.getLandingPageUrl(user)%>" ><img src="/media/images/navigation/global_nav/fd_logo_on.png" alt="" /><span class="offscreen">welcome to Freshdirect homepage</span>At the office</a>
 			<% } else { %>
 				<a class="logo" href="<%= FDURLUtil.getLandingPageUrl(user)%>" ><img src="/media/images/navigation/global_nav/fd_logo_on.png" alt="FreshDirect" name="FD_LOGO" /></a>
 			<% } %>

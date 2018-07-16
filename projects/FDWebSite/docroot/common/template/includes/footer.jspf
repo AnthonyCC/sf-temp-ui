@@ -183,12 +183,12 @@ if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDU
 			<div style="float:left; width:1px; height:40px; margin: 0px 12px" class="dotted_separator_v"></div>
 			<div style="float:right; padding: 10px 5px 0px 5px">
 				<a href="/index.jsp?serviceType=HOME">Home</a>
-				&nbsp;&nbsp;<span style="color: #999999"><b>|</b></span>
+				&nbsp;&nbsp;<span style="color: #408244"><b>|</b></span>
         &nbsp;&nbsp;<a href="/your_account/manage_account.jsp" fd-login-required>Your Account</a>
 				
-				&nbsp;&nbsp;<span style="color: #999999"><b>|</b></span>
+				&nbsp;&nbsp;<span style="color: #408244"><b>|</b></span>
 				&nbsp;&nbsp;<a href="/help/index.jsp">Help/FAQ</a>
-				&nbsp;&nbsp;<span style="color: #999999"><b>|</b></span>
+				&nbsp;&nbsp;<span style="color: #408244"><b>|</b></span>
 				&nbsp;&nbsp;<a href="/help/index.jsp?trk=bnav">Contact Us</a>
 			</div>
 		</td>

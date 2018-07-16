@@ -153,12 +153,12 @@
 				<div class="footer">
 					<div class="footer-links">
 						<a href="/index.jsp?serviceType=HOME">Home</a>
-						&nbsp;&nbsp;<span style="color: #999999"><b>|</b></span>
+						&nbsp;&nbsp;<span style="color: #408244"><b>|</b></span>
 				&nbsp;&nbsp;<a href="/your_account/manage_account.jsp" fd-login-required>Your Account</a>
 						
-						&nbsp;&nbsp;<span style="color: #999999"><b>|</b></span>
+						&nbsp;&nbsp;<span style="color: #408244"><b>|</b></span>
 						&nbsp;&nbsp;<a href="/help/index.jsp">Help/FAQ</a>
-						&nbsp;&nbsp;<span style="color: #999999"><b>|</b></span>
+						&nbsp;&nbsp;<span style="color: #408244"><b>|</b></span>
 						&nbsp;&nbsp;<a href="/help/index.jsp?trk=bnav">Contact Us</a>
 					</div>
 					<div class="footer-copyright">
