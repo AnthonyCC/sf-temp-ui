@@ -1,3 +1,4 @@
+<%@ page import='com.freshdirect.fdstore.*' %>
 <%
   Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
 %>
@@ -17,15 +18,14 @@
 </div>
 
 <script>
-	$jq(document).ready(function($) {
-		fd.expressco.checkout.initSoyDrawers();
-		fd.expressco.cartcontent.listen();
-		fd.expressco.cartcontent.watchChanges();
-		fd.expressco.cartcontent.update();
-		$jq(".deliverypass-payment").on('click', "[data-deliverypass-payment-close]", function(){
-			$jq(".overlay-dialog-new .ui-dialog-titlebar-close").click();
-		});
+	fd.expressco.checkout.initSoyDrawers();
+	fd.expressco.cartcontent.listen();
+	fd.expressco.cartcontent.watchChanges();
+	fd.expressco.cartcontent.update();
+	$jq(".deliverypass-payment").on('click', "[data-deliverypass-payment-close]", function(){
+		$jq(".overlay-dialog-new .ui-dialog-titlebar-close").click();
 	});
+	window.FreshDirect.properties.isPaymentMethodVerificationEnabled = <%=FDStoreProperties.isPaymentMethodVerificationEnabled()%>
 	if(typeof FreshDirect.deliveryPassSelectedTitle !== 'undefined'){
 		$jq(".deliverypass-payment-header").html(FreshDirect.deliveryPassSelectedTitle);
 	}
@@ -35,3 +35,4 @@
 		doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'320px\' height=\'400px\' frameborder=\'0\' ></iframe>');
 	<% } %>
 </script>
+<script async src="<%= FDStoreProperties.getMasterpassLightBoxURL() %>" type="text/javascript"></script>

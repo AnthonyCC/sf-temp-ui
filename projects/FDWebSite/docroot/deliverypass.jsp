@@ -1,3 +1,4 @@
+<%@ page import="com.freshdirect.enums.CaptchaType" %>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
@@ -9,6 +10,7 @@
 <%@ page import='com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo' %>
 <%@ page import='com.freshdirect.deliverypass.DeliveryPassModel' %>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
+<%@ page import="com.freshdirect.webapp.util.CaptchaUtil" %>
 <%@ page import="com.freshdirect.common.context.MasqueradeContext"%>
 <%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter'%>
 <%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'%>
@@ -34,6 +36,8 @@
 	}
 
 	MasqueradeContext masqueradeContext = user.getMasqueradeContext();
+	
+	boolean showCaptchaInPayment = CaptchaUtil.isExcessiveAttempt(FDStoreProperties.getMaxInvalidPaymentAttempt(), session, SessionName.PAYMENT_ATTEMPT);
 %>
 <tmpl:insert template='<%= template %>'>
     <tmpl:put name="seoMetaTag" direct="true">
@@ -92,6 +96,7 @@
 			        	 	});
 		        		});
 	        		</script>
+					<script async type="text/javascript" src="https://js.braintreegateway.com/js/braintree-2.21.0.min.js"></script>
 	        	</div>
 	        </fd:WebViewDeliveryPass>
 		</fd:DlvPassSignupController>
@@ -104,6 +109,97 @@
 	<tmpl:put name="extraJs">
     	<fd:javascript src="/assets/javascript/timeslots.js" />
     	<jwr:script src="/expressco.js" useRandomParam="false" />
+	</tmpl:put>
+	<tmpl:put name="leastPrioritizeJs">
+		<jwr:script src="/assets/javascript/fd/captcha/captchaWidget.js" useRandomParam="false" />
+		
+		<script>
+			if (<%=showCaptchaInPayment%>) {
+		  		FreshDirect.components.captchaWidget.init('<%=FDStoreProperties.getRecaptchaPublicKey(CaptchaType.PAYMENT)%>');
+		  		FreshDirect.user = FreshDirect.user || {};
+		  		FreshDirect.user.showCaptchaInPayment = true;
+		  	} else {
+		  		FreshDirect.components.captchaWidget.setKey('<%=FDStoreProperties.getRecaptchaPublicKey(CaptchaType.PAYMENT)%>');
+		  	}
+			var checkout;
+			//While loading the screen get the Device ID from braintress
+			jQuery(document).ready(function($){
+				var $ = jQuery;
+				 $("#isPayPalDown").val("false");
+			       $.ajax({
+				  			url:"/api/expresscheckout/addpayment/ewalletPayment?data={\"fdform\":\"PPSTART\",\"formdata\":{\"action\":\"PP_Connecting_Start\",\"ewalletType\":\"PP\"}}",
+			          type: 'post',
+			          contentType: "application/json; charset=utf-8",
+			          dataType: "json",
+			          success: function(result){
+			        	  if(result.submitForm.success && result.submitForm.result.eWalletResponseData.token != null){
+			        		  $('#PP_ERROR').css("display", "none");
+			                  $("#isPayPalDown").val("false");
+				          	var deviceObj = "";
+				  	    	braintree.setup(result.submitForm.result.eWalletResponseData.token, "custom", {
+				 	    		  dataCollector: {
+				 	    			    paypal: true
+				 	    			  },
+				 	    		  onReady: function (integration) {
+				 	    			 checkout = integration;
+				 	    		    deviceObj = JSON.parse(integration.deviceData);
+				 	    		 $('#ppDeviceId').val(deviceObj.correlation_id);
+				 	    		  },
+				 	    		 onPaymentMethodReceived: function (payload) {
+				 	    		    $.ajax({
+				 	                      url:"/api/expresscheckout/addpayment/ewalletPayment?data={\"fdform\":\"EPP\",\"formdata\":{\"action\":\"PP_Pairing_End\",\"ewalletType\":" +
+				 	                      		"\"PP\",\"paymentMethodNonce\":\""+payload.nonce+"\",\"email\":\""+payload.details.email+"\",\"firstName\":\""+payload.details.firstName+"\"," +
+				 	                      				"\"lastName\":\""+payload.details.lastName+"\" ,\"deviceId\":\""+deviceObj.correlation_id+"\"}}",
+				 	                      type: 'post',
+				 	                      success: function(id, result){
+				 	                    	 //location.reload(true);
+				 	                    	 window.location.assign("/expressco/checkout.jsp");
+				 	                      }
+				 	    	        });
+				 	    		  },
+				 	    		  paypal: {
+				 	    		    singleUse: false,
+				 	    		    headless: true
+				 	    		  }
+				  	    	});
+			        	  }else {
+			              	$("#isPayPalDown").val("true");
+			              }
+			          },
+			        failure:function (id, result) {
+			  			$("#isPayPalDown").val("true");
+			  		},
+			  		error:function (id, result) {
+			  			$("#isPayPalDown").val("true");
+			  		},
+			  		fail:function (id, result) {
+			  			$("#isPayPalDown").val("true");
+			  		}
+				 });
+	
+			       if (document.querySelector('#PP_button') != null) {
+			           document.querySelector('#PP_button').addEventListener('click', function(event) {
+			               if (event.preventDefault) {
+			                   event.preventDefault();
+			               } else {
+			                   event.returnValue = false;
+			               }
+			               console.log("-- Connect With Paypal click handler  --");
+			               if (checkout != null) {
+			                   checkout.paypal.initAuthFlow();
+			               }
+	
+			               var isPayPalDown = $('#isPayPalDown').val();
+			               if (isPayPalDown == 'true') {
+			               	$('#PP_ERROR').css("display", "inline-block");
+			               }else{
+			               	$('#PP_ERROR').css("display", "none");
+			               }
+			           });
+			       }
+	
+			});
+		</script>
 	</tmpl:put>
 </tmpl:insert>
 
