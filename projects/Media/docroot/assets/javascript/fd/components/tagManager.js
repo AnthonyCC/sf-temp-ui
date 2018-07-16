@@ -608,10 +608,10 @@ var dataLayer = window.dataLayer || [];
       productE = $('[data-product-id="'+productId+'"]').first();
     }
 
-    productData = fd.modules.common.productSerialize(productE)[0];
+    productData = fd.modules.common.productSerialize(productE)[0] || {};
 
     productData.brand = productE.find('.portrait-item-header-name').first().find('b').text();
-    productData.name = productData.brand ? productE.find('.product-name-no-brand').first().text() : productE.find('.portrait-item-header-name').first().text();
+    productData.name = productData.brand ? productE.find('.product-name-no-brand').first().text() : productE.find('.portrait-item-header-name').first().text() || productE.find('.mealkit-products-list-item-head').first().text();
     productData.price = productE.attr('data-price');
     productData.in_stock = productE.attr('data-in-stock');
     productData.new_product = productE.attr('data-new-product');
