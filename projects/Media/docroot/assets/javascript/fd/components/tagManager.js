@@ -790,7 +790,12 @@ var dataLayer = window.dataLayer || [];
       channel = 'rec_' + mvc[mvc.length - 1];
     } else {
       channel = urlPageType.toLowerCase() || pageType.toLowerCase();
-      channel = 'category_list#ecoupon#newproducts'.indexOf(channel) > -1 ? 'browse' : channel;
+
+      // browse like pages
+      channel = 'product_list#category_list#ecoupon#newproducts'.indexOf(channel) > -1 ? 'browse' : channel;
+
+      // pres_picks / staff_picks
+      channel = 'pres_picks#staff_picks'.indexOf(channel) > -1 ? 'rec_' + channel : channel;
     }
 
     return channel ? 'channel_' + channel : '';
