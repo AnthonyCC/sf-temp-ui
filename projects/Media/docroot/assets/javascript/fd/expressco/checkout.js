@@ -8,9 +8,9 @@ var FreshDirect = FreshDirect || {};
       FORMS = fd.modules.common.forms,
       $ = fd.libs.$;
   var FORMS = fd.modules.common.forms;
-  var isDlvPassCart = false;
+  var dlvPassCart = false;
   if($('form.deliverypass_form').length > 0 && !!$('form.deliverypass_form').attr('data-dlvpasscart') == true){
-	  isDlvPassCart = true;
+	  dlvPassCart = true;
   }
 
   // checkout flow drawer enabler/disabler
@@ -128,7 +128,7 @@ var FreshDirect = FreshDirect || {};
         }
      
       formData.action = 'placeOrder';
-      formData.isDlvPassCart = isDlvPassCart;
+      formData.dlvPassCart = dlvPassCart;
       DISPATCHER.signal("server", {
         url: "/api/expresscheckout",
         method: "POST",
@@ -188,7 +188,7 @@ var FreshDirect = FreshDirect || {};
 	  var contextDeferred = jQuery.Deferred();
 	  
 	  // Load Drawer, Form metadata, and session context info for checkout
-	  $.when($.get('/api/expresscheckout?action=getDrawer&isDlvPassCart=' + isDlvPassCart), $.get('/api/expresscheckout?action=getFormMetaData'))
+	  $.when($.get('/api/expresscheckout?action=getDrawer&dlvPassCart=' + dlvPassCart), $.get('/api/expresscheckout?action=getFormMetaData'))
 	  	.done( function (v1, v2) {
 	  		window.FreshDirect = window.FreshDirect || {};
 	  		window.FreshDirect.expressco.data = window.FreshDirect.expressco.data || {};
@@ -202,7 +202,7 @@ var FreshDirect = FreshDirect || {};
 
 	  $.when(drawerDeferred, contextDeferred).then(function () {
 		  // Load payment
-		  $.get('/api/expresscheckout/payment?isDlvPassCart=' + isDlvPassCart)
+		  $.get('/api/expresscheckout/payment?dlvPassCart=' + dlvPassCart)
 			.done( function (d) {
 				FreshDirect.common.dispatcher.signal('payment', d);
 				if($(".deliverypass-payment").length > 0){
