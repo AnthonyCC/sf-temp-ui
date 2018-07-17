@@ -458,7 +458,7 @@ public class CheckoutController extends BaseController {
 
         Checkout checkout = new Checkout(user);
         
-        if(user.getFDSessionUser()!=null && user.getFDSessionUser().isDlvPassPending()){
+        if(user.getFDSessionUser()!=null){
             user.getFDSessionUser().updateDlvPassInfo();
         }
         
