@@ -11,6 +11,7 @@ import org.apache.log4j.Category;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.freshdirect.crm.CrmClick2CallModel;
 import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpAddressModel;
@@ -75,8 +76,6 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 	private static final String GET_ASSIGNED_CUSTOMER_PARAMS = "customerInfo/getAssignedCustomerParams";
 	private static final String LOG_IP_LOCATOR_EVENT = "customerInfo/logIpLocatorEvent";
 	private static final String LOAD_IP_LOCATOR_EVENt = "customerInfo/loadIpLocatorEvent";
-	private static final String GET_CUSTOMER_MARKETING_PROMO_VALUE = "customerInfo/getCustomerMarketingPromoValue";
-	private static final String GET_CUSTOMER_COUNTY = "customerInfo/getCustomerCounty";
 	private static final String GET_PROMO_HISTORY_INFO = "customerInfo/getPromoHistoryInfo";
 	private static final String LOAD_REWRITE_RULES = "customerInfo/loadRewriteRules";
 	private static final String GET_PERISHABLE_BUFFE_AMOUNT = "customerInfo/getPerishableBufferAmount";
@@ -87,6 +86,8 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 	private static final String INSERT_SILVER_POP_UP_DETAILS = "customerInfo/insertOrUpdateSilverPopup";
 	private static final String GET_COOKIE_BY_FD_CUSTOMER_ID = "customerInfo/getCookieByFdCustomerId";
 	private static final String SET_ACKNOWLEDGE = "customerInfo/setAcknowledge";
+	private static final String GET_USED_RESERVATIONS = "customerInfo/getUsedReservations";
+	private static final String GET_CLICK_CALL_INFO = "customerInfo/getClick2CallInfo";
 	
 	private static CustomerInfoServiceI INSTANCE;
 
@@ -772,6 +773,29 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 		}
 	}
 	
+	@Override
+	public List<String> getUsedReservations(String customerId) throws FDResourceException, RemoteException {
+		Response<List<String>> response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_USED_RESERVATIONS + "/" + customerId),
+				new TypeReference<Response<List<String>>>() {
+				});
+		if (!response.getResponseCode().equals("OK")) {
+			LOGGER.error("Error in CustomerInfoService.getUsedReservations: customerId=" + customerId);
+			throw new FDResourceException(response.getMessage());
+		}
+		return response.getData();
+	}
+	
+	@Override
+	public CrmClick2CallModel getClick2CallInfo() throws FDResourceException, RemoteException {
+		Response<CrmClick2CallModel> response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_CLICK_CALL_INFO),
+				new TypeReference<Response<CrmClick2CallModel>>() {
+				});
+		if (!response.getResponseCode().equals("OK")) {
+			LOGGER.error("Error in CustomerInfoService.getClick2CallInfo");
+			throw new FDResourceException(response.getMessage());
+		}
+		return response.getData();
+	}
 	private RecognizedUserData fdUserToRecognizedUserData(FDUser user) {
 		RecognizedUserData data = new RecognizedUserData();
 		FDUserData fdUserData = new FDUserData();
@@ -814,7 +838,7 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 		return data;
 	}
 
-	private static List<ErpOrderLineModel> convertToErpOrderlines(List<FDCartLineI> cartlines)
+	private List<ErpOrderLineModel> convertToErpOrderlines(List<FDCartLineI> cartlines)
 			throws FDResourceException {
 
 		int num = 0;
@@ -833,4 +857,6 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 
 		return erpOrderlines;
 	}
+
+	
 }

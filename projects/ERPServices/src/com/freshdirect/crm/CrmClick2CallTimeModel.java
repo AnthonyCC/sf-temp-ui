@@ -57,7 +57,11 @@ public class CrmClick2CallTimeModel extends ModelSupport {
 	public void setClick2CallId(String click2CallId) {
 		this.click2CallId = click2CallId;
 	}
-	
-	
+
+	@Override
+	public void setId(String id) {
+		if (id != null)
+			super.setId(id);
+	}
 
 }

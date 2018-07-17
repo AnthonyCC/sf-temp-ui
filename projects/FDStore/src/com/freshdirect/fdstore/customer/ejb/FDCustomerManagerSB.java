@@ -763,7 +763,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
     public List<HashMap<String, String>> productRequestFetchAllCats() throws FDResourceException, RemoteException;
     @Deprecated
     public List<HashMap<String, String>> productRequestFetchAllMappings() throws FDResourceException, RemoteException;
-
+    @Deprecated
     public CrmClick2CallModel getClick2CallInfo() throws FDResourceException, RemoteException;
 
 	public List<ErpClientCodeReport> findClientCodesBySale(String saleId) throws FDResourceException, RemoteException;
@@ -846,7 +846,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
     public String getCustomersProfileValue(String customerId) throws FDResourceException, RemoteException;
 	@Deprecated
     public String getCustomersCounty(String customerId) throws FDResourceException, RemoteException;
-
+	@Deprecated
 	public List<String> getUsedReservations(String customerId) throws FDResourceException, RemoteException;
 
 	public String getLastOrderID(FDIdentity identity, EnumEStoreId eStoreId)	throws FDResourceException, RemoteException;

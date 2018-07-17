@@ -532,11 +532,16 @@ public class FDCustomerManager {
 
 
 	public static List<String> getUsedReservations(String customerId) throws FDResourceException {
-		lookupManagerHome();
+		
 
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.getUsedReservations(customerId);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
+				return CustomerInfoService.getInstance().getUsedReservations(customerId);
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getUsedReservations(customerId);
+			}
 
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -4137,12 +4142,16 @@ public class FDCustomerManager {
 
 
 		public static CrmClick2CallModel getClick2CallInfo() throws FDResourceException {
-			lookupManagerHome();
-
+			
 			try {
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getClick2CallInfo();
-
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
+					return CustomerInfoService.getInstance().getClick2CallInfo();
+				} else {
+					lookupManagerHome();
+					FDCustomerManagerSB sb = managerHome.create();
+					return sb.getClick2CallInfo();
+				}
+			
 			} catch (CreateException ce) {
 				invalidateManagerHome();
 				throw new FDResourceException(ce, "Error creating bean");

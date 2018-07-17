@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 
+import com.freshdirect.crm.CrmClick2CallModel;
 import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpCustomerModel;
@@ -116,4 +117,8 @@ public interface CustomerInfoServiceI {
 	public String getCookieByFdCustomerId(String fdCustomerId) throws FDResourceException, RemoteException;
 	
 	public boolean setAcknowledge(FDIdentity identity, boolean acknowledge,String ackType)throws FDResourceException, RemoteException;
+	
+	public List<String> getUsedReservations(String customerId) throws FDResourceException, RemoteException;
+
+	public CrmClick2CallModel getClick2CallInfo() throws FDResourceException, RemoteException;
 }
