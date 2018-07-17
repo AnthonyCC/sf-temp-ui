@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.common.pricing.CharacteristicValuePrice;
@@ -48,25 +49,42 @@ import com.freshdirect.crm.CrmDepartment;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumComplaintDlvIssueType;
 import com.freshdirect.customer.EnumDeliveryType;
+import com.freshdirect.customer.EnumNotificationType;
 import com.freshdirect.customer.EnumPaymentType;
+import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.EnumTransactionType;
 import com.freshdirect.customer.EnumZoneServiceType;
+import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpActivityRecord;
+import com.freshdirect.customer.ErpCartonDetails;
+import com.freshdirect.customer.ErpCartonInfo;
+import com.freshdirect.customer.ErpComplaintModel;
 import com.freshdirect.customer.ErpComplaintReason;
+import com.freshdirect.customer.ErpCreateOrderModel;
 import com.freshdirect.customer.ErpCreditCardModel;
 import com.freshdirect.customer.ErpCustEWalletModel;
 import com.freshdirect.customer.ErpCustomerCreditModel;
+import com.freshdirect.customer.ErpCustomerEmailModel;
+import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.customer.ErpECheckModel;
 import com.freshdirect.customer.ErpEbtCardModel;
+import com.freshdirect.customer.ErpModifyOrderModel;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpPayPalCardModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
+import com.freshdirect.customer.ErpSaleModel;
+import com.freshdirect.customer.ErpShippingInfo;
+import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.customer.ErpTransactionModel;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.customer.ErpZoneRegionInfo;
 import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.deliverypass.DeliveryPassType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
+import com.freshdirect.ecomm.converter.SapGatewayConverter;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.pricing.CharacteristicValuePriceData;
 import com.freshdirect.ecommerce.data.common.pricing.PricingData;
@@ -74,6 +92,10 @@ import com.freshdirect.ecommerce.data.common.pricing.SalesUnitRatioData;
 import com.freshdirect.ecommerce.data.common.pricing.ZonePriceInfoListingData;
 import com.freshdirect.ecommerce.data.common.pricing.ZonePriceListingData;
 import com.freshdirect.ecommerce.data.customer.ErpActivityRecordData;
+import com.freshdirect.ecommerce.data.customer.ErpCartonDetailsData;
+import com.freshdirect.ecommerce.data.customer.ErpCartonInfoData;
+import com.freshdirect.ecommerce.data.customer.ErpComplaintData;
+import com.freshdirect.ecommerce.data.customer.ErpSaleData;
 import com.freshdirect.ecommerce.data.customer.complaint.ErpComplaintReasonData;
 import com.freshdirect.ecommerce.data.delivery.sms.RecievedSmsData;
 import com.freshdirect.ecommerce.data.delivery.sms.SmsOrderData;
@@ -159,6 +181,7 @@ import com.freshdirect.ecommerce.data.referral.FailedAttemptData;
 import com.freshdirect.ecommerce.data.referral.MailData;
 import com.freshdirect.ecommerce.data.referral.UserCreditData;
 import com.freshdirect.ecommerce.data.rules.RuleData;
+import com.freshdirect.ecommerce.data.sap.ErpTransactionData;
 import com.freshdirect.ecommerce.data.security.TicketData;
 import com.freshdirect.ecommerce.data.utill.DayOfWeekSetData;
 import com.freshdirect.ecommerce.data.zoneInfo.ErpMasterInfoData;
@@ -2635,6 +2658,281 @@ public class ModelConverter {
 		FDAvailabilityI valuee = new FDStockAvailability(convertErpInventoryDataToModel(data.getInventory()),  data.getReqQty(),  data.getMinQty(),  data.getQtyInc());
 				
 		return valuee;
+	}
+
+	public static ErpSaleModel buildErpSaleData(ErpSaleData data) {
+		System.out.println("Creating abstractmodel $$$$");
+		
+		PrimaryKey customerPk = new PrimaryKey(data.getCustomerPk());
+		EnumSaleStatus status = EnumSaleStatus.getSaleStatus(data.getStatus());
+		String sapOrderNumber = data.getSapOrderNumber();
+		ErpShippingInfo shippingInfo = new ErpShippingInfo(data.getShippingInfo().getWaveNumber(),
+				data.getShippingInfo().getTruckNumber(), data.getShippingInfo().getStopSequence(), 
+				data.getShippingInfo().getRegularCartons(), data.getShippingInfo().getFreezerCartons(), 
+				data.getShippingInfo().getAlcoholCartons());
+		
+		String dlvPassId = data.getDeliveryPassId();
+		String _saleType = data.getType();
+		String standingOrderId = data.getStandingOrderId();
+		EnumSaleType saleType=EnumSaleType.REGULAR;
+		if(_saleType!=null) {
+			saleType=EnumSaleType.getSaleType(_saleType);
+		}
+		String eStoreKey = data.geteStoreId();
+		
+		String in_modify = "X".equalsIgnoreCase(data.getIn_modify())?"YES":"NO";
+		Date lock_timestamp = data.getLock_timestamp();
+		EnumEStoreId eStoreId = (null ==eStoreKey||"".equals(eStoreKey))?EnumEStoreId.FD:EnumEStoreId.valueOfContentId(eStoreKey);
+		
+		boolean hasSignature = data.isHasSignature();
+		
+		
+		String soName = data.getStandingOrderName();
+		
+		// load children
+
+		List<ErpTransactionModel> txList = getTransactions(data.getTransactions());
+		
+		List<ErpComplaintModel> complaintList = getComplaints(data.getComplaints());
+
+		Set<String> usedPromotionCodes = data.getUsedPromotionCodes();
+		
+
+		List<ErpCartonInfo> cartonInfo = null; 
+		/*if(model.getCartonInfo()!=null && model.getCartonInfo().size()>0){
+			cartonInfo = model.getCartonInfo();
+		}else{*/
+			cartonInfo =buildCartonInfoList( data.getCartonInfo());
+		//}
+		 		
+		ErpSaleModel erpSaleModel = new ErpSaleModel(customerPk, status, txList, complaintList, sapOrderNumber, shippingInfo, usedPromotionCodes, 
+				cartonInfo, dlvPassId, saleType, standingOrderId, hasSignature, eStoreId, soName, in_modify, lock_timestamp);
+		erpSaleModel.setPK(new PrimaryKey(data.getCustomerPk()));
+			
+		erpSaleModel.setCartonMetrics(data.getCartonMetrics());		
+
+		return erpSaleModel;
+	}
+
+	private static List<ErpCartonInfo> buildCartonInfoList(
+			List<ErpCartonInfoData> cartonInfo) {
+		List<ErpCartonInfo> modelList = new ArrayList();
+		for(ErpCartonInfoData data:cartonInfo){
+			ErpCartonInfo model = new ErpCartonInfo(data.getOrderNumber(), data.getSapNumber(), data.getCartonNumber(), data.getCartonType());
+			model.setDetails(buildCartonDetailList(data.getDetails()));
+			modelList.add(model);
+
+		}
+		
+		return modelList;
+	}
+
+	private static List<ErpCartonDetails> buildCartonDetailList(
+			List<ErpCartonDetailsData> details) {
+		List<ErpCartonDetails> modelList = new ArrayList();
+		for(ErpCartonDetailsData data:details){
+			
+		
+			ErpCartonInfo erpCartonInfo = new ErpCartonInfo(data.getCartonInfo().getOrderNumber(), data.getCartonInfo().getSapNumber(), data.getCartonInfo().getCartonNumber(), data.getCartonInfo().getCartonType());
+			erpCartonInfo.setDetails(buildCartonDetailList(data.getCartonInfo().getDetails()));
+			
+			ErpCartonDetails model = new ErpCartonDetails(
+				erpCartonInfo,
+				data.getOrderLineNumber(),
+				data.getMaterialNumber(),
+				data.getBarcode(),
+				data.getActualQuantity(),
+				data.getNetWeight(),
+				Double.toString(data.getNetWeight())) ;
+		}
+		return modelList;
+	}
+	
+
+
+	private static List<ErpComplaintModel> getComplaints(
+			List<ErpComplaintData> complaints) {
+		List<ErpComplaintModel> models = new ArrayList();
+		for(ErpComplaintData data: complaints){
+		ErpComplaintModel complaintModel = new ErpComplaintModel();
+		complaintModel.setApprovedBy(data.getApprovedBy());
+		complaintModel.setApprovedDate(data.getApprovedDate());
+		complaintModel.setAutoCaseId(data.getAutoCaseId());
+		complaintModel.setCreateDate(data.getCreateDate());
+		complaintModel.setCreatedBy(data.getCreatedBy());
+		if(data.getCustomer_email()!=null){
+		ErpCustomerEmailModel model = new ErpCustomerEmailModel();
+		model.setCustomMessage(data.getCustomer_email().getCustomMessage());
+		model.setSignature(data.getCustomer_email().getSignature());
+		model.setMailSent(data.getCustomer_email().isMailSent());
+		complaintModel.setCustomerEmail(model);
+		}
+		}
+		return models;
+	}
+
+	private static List<ErpTransactionModel> getTransactions(List<ErpTransactionData> transactions) {
+		List<ErpTransactionModel> modelList = new ArrayList();
+
+		for (ErpTransactionData entity : transactions) {
+			EnumTransactionType txType = EnumTransactionType.getTransactionType(entity.getTransactionType());
+				try {
+					modelList.add(getTransaction(entity));
+				} catch (ErpTransactionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		return modelList;
+	}
+	
+	private static ErpTransactionModel getTransaction(ErpTransactionData entity) throws ErpTransactionException {
+		PrimaryKey ppk = new PrimaryKey(entity.getCustomerId());
+		EnumTransactionType txType = EnumTransactionType.getTransactionType(entity.getTransactionType());
+		
+
+		/*if (EnumTransactionType.PREAUTH_GIFTCARD.equals(txType)) {
+			return preAuthTransaction.getModel(entity);
+		}
+		if (EnumTransactionType.REVERSEAUTH_GIFTCARD.equals(txType)) {
+			return reverseAuthTransaction.getModel(entity);
+		}
+		if (EnumTransactionType.POSTAUTH_GIFTCARD.equals(txType)) {
+			return postAuthTransaction.getModel(entity);
+		}
+		if (EnumTransactionType.BALANCETRANSFER_GIFTCARD.equals(txType)) {
+			return balanceTransfer.getModel(entity);
+		}*/
+		if(EnumTransactionType.CREATE_ORDER.equals(txType)){
+			ErpAbstractOrderModel model = new ErpCreateOrderModel();
+			return createOrderTransaction(entity,model);
+		}
+		if (EnumTransactionType.MODIFY_ORDER.equals(txType)) {
+			ErpModifyOrderModel model = new ErpModifyOrderModel();
+			return modifyOrderTransaction(entity,model);
+		}
+		/*if (EnumTransactionType.INVOICE.equals(txType)) {
+			return invoiceTransaction.getModel(entity);
+		}
+		if (EnumTransactionType.AUTHORIZATION.equals(txType)) {
+			return authorizationTransaction.getModel(entity);
+		}
+		if (EnumTransactionType.CAPTURE.equals(txType)) {
+			return captureTransaction.getModel(entity);
+		}
+		if (EnumTransactionType.SUBMIT_FAILED.equals(txType)) {
+			return submitFailedTransaction.getModel(entity);
+		}
+		if (EnumTransactionType.REVERSAL.equals(txType)) {
+			return paymentMethodTransaction.getModel(entity, new ErpReversalModel());
+		}
+		if (EnumTransactionType.CASHBACK.equals(txType)) {
+			return cashbackTransaction.getModel(entity);
+		}
+		if (EnumTransactionType.SETTLEMENT.equals(txType)) {
+			return settlementTransaction.getModel(entity);
+		}
+		if (EnumTransactionType.CHARGEBACK.equals(txType)) {
+			return abstractChargebackTransaction.getModel(entity, new ErpChargebackModel());
+		}
+		if (EnumTransactionType.ADJUSTMENT.equals(txType)) {
+			return adjustmentTransaction.getModel(entity);
+		}
+		if (EnumTransactionType.CHARGE.equals(txType)) {
+			return chargeTransaction.getModel(entity);
+		}
+		if (EnumTransactionType.CANCEL_ORDER.equals(txType)) {
+			return cancelOrderTransaction.getModel(entity);
+		}
+		if (EnumTransactionType.RETURN_ORDER.equals(txType)) {
+			return returnOrderTransaction.getModel(entity);
+		}
+		if (EnumTransactionType.REDELIVERY.equals(txType)) {
+			return redeliveryTransaction.getModel(entity);
+		}
+		if (EnumTransactionType.VOID_CAPTURE.equals(txType)) {
+			return voidCaptureTransaction.getModel(entity);
+		}
+		if (EnumTransactionType.CHARGEBACK_REVERSAL.equals(txType)) {
+			return abstractChargebackTransaction.getModel(entity, new ErpChargebackReversalModel());
+		}
+		if (EnumTransactionType.SETTLEMENT_FAILED.equals(txType)) {
+			return abstractSettlementTransaction.getModel(entity, new ErpFailedSettlementModel());
+		}
+		if (EnumTransactionType.SETTLEMENT_CHARGE.equals(txType)) {
+			return abstractSettlementTransaction.getModel(entity, new ErpChargeSettlementModel());
+		}
+		if (EnumTransactionType.FUNDS_REDEPOSIT.equals(txType)) {
+			return abstractSettlementTransaction.getModel(entity, new ErpFundsRedepositModel());
+		}
+		if (EnumTransactionType.SETTLEMENT_CHARGE_FAILED.equals(txType)) {
+			return abstractSettlementTransaction.getModel(entity, new ErpFailedChargeSettlementModel());
+		}
+		if (EnumTransactionType.INVOICE_CHARGE.equals(txType)) {
+			return chargeInvoiceTransaction.getModel(entity);
+		}
+		if (EnumTransactionType.DELIVERY_CONFIRM.equals(txType)) {
+			return deliveryConfirmTransaction.getModel(entity);
+		}
+		if (EnumTransactionType.REGISTER_GIFTCARD.equals(txType)) {
+			return registerGCTransaction.getModel(entity);
+		}
+		if (EnumTransactionType.EMAIL_GIFTCARD.equals(txType)) {
+			return emailgiftCard.getModel(entity);
+		}
+		if (EnumTransactionType.GIFTCARD_DLV_CONFIRM.equals(txType)) {
+			return giftCardDlvConfirmation.getModel(entity);
+		}*/
+		throw new ErpTransactionException("Unknown transaction type " + txType.getCode() + " encountered in sale " + ppk);
+	
+	}
+
+	private static ErpTransactionModel modifyOrderTransaction(
+			ErpTransactionData entity, ErpModifyOrderModel model) {
+		
+		return createOrderTransaction(entity,model);
+	}
+
+	private static ErpTransactionModel createOrderTransaction(
+			ErpTransactionData entity, ErpAbstractOrderModel model) {
+
+		model.setCustomerId(entity.getCustomerId());
+		model.setId(entity.getCustomerId());
+		model.setTransactionDate(entity.getTransactionDate());
+		model.setTransactionSource(EnumTransactionSource.getTransactionSource(entity.getTransactionSource()));
+		model.setPricingDate(entity.getPricingDate());
+		model.setRequestedDate(entity.getRequestedDate());
+		model.setSubTotal(entity.getSubTotal());
+		model.setTax(entity.getTax());
+		model.setCustomerServiceMessage(entity.getCustomerServiceMessage());
+		model.setMarketingMessage(entity.getMarketingMessage());
+		model.setTransactionInitiator(entity.getTransactionInitiator());
+		model.setGlCode(entity.getGlCode());
+		model.setBufferAmt(entity.getBufferAmt());
+		String taxationType = entity.getTaxationType();
+		model.setTaxationType((null!=taxationType && !"".equals(taxationType))?EnumNotificationType.getNotificationType(taxationType):null);
+		
+		model.setOrderLines(SapGatewayConverter.buildOrderLine(entity.getOrderLines()));
+
+		// load customer info
+		model.setDeliveryInfo(SapGatewayConverter.buildDeliveryInfo(entity.getDeliveryInfo()));
+		// load payment info
+		model.setPaymentMethod(SapGatewayConverter.buildPaymentMethodModel(entity.getPaymentMethod()));
+		model.setAppliedCredits(SapGatewayConverter.buildAppliedCredits(entity.getAppliedCredits()));
+		model.setCharges(SapGatewayConverter.buildChargeLineModel(entity.getCharges()));
+
+		model.setDiscounts(SapGatewayConverter.buildDiscountDataList(entity.getDiscounts()));
+		
+//		model.setRecepientsList(SapGatewayConverter.buildRecepientsList(entity.getRecipientList()));
+//		model.setAppliedGiftcards(SapGatewayConverter.buildAppliedGiftCards(entity.get));
+		if(entity.getDiscount()!=null){
+		ErpDiscountLineModel discountLineModel = new ErpDiscountLineModel(SapGatewayConverter.buildDiscount(entity.getDiscount()));
+//		discountLineModel.setId(entity.getDiscount().getId());
+		model.addDiscount(discountLineModel);
+		}
+		model.setRafTransModel(SapGatewayConverter.buildRefTransModel(entity.getRafTransModel()));
+		
+		return model;
 	}
 }
 

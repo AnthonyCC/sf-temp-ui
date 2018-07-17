@@ -24,6 +24,7 @@ import com.freshdirect.ecomm.gateway.AbstractEcommService;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.ecommerce.data.customer.DefaultPaymentMethodData;
+import com.freshdirect.ecommerce.data.customer.ErpSaleData;
 import com.freshdirect.ecommerce.data.customer.ProfileData;
 import com.freshdirect.ecommerce.data.ecoupon.CrmAgentModelData;
 import com.freshdirect.ecommerce.data.list.FDActionInfoData;
@@ -35,10 +36,12 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.ProfileModel;
+import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.ecomm.converter.ListConverter;
 import com.freshdirect.fdstore.sms.shortsubstitute.ShortSubstituteResponse;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.payment.service.ModelConverter;
 
 public class CustomersApi extends AbstractEcommService implements CustomersApiClientI {
 
@@ -346,20 +349,20 @@ private CrmAgentModelData getCrmAgentModel(CrmAgentModel agentModel) {
 @Override
 public FDOrderI getLastNonCOSOrder(String customerID,	EnumSaleType saleType, EnumSaleStatus saleStatus, EnumEStoreId storeId)
 		throws ErpSaleNotFoundException, RemoteException {
-
 	try{
 		Request<OrderSearchCriteriaRequest> request = new Request<OrderSearchCriteriaRequest>();
 		OrderSearchCriteriaRequest criteria = new OrderSearchCriteriaRequest();
 		criteria.setCustomerId(customerID);
 		criteria.setSaleType(saleType.getSaleType());
 		criteria.setSaleStatus(saleStatus.getStatusCode());
-		List<String> paymentTypes = new ArrayList<String>();
 		criteria.setStoreId(storeId.getContentId());
 		request.setData(criteria);
 		String inputJson = buildRequest(request);
 		String response = postData(inputJson, getFdCommerceEndPoint(EndPoints.GET_ORDERS_BY_SALESTATUS_STORE_API.getValue()), String.class);
-		Response<FDOrderI> info = getMapper().readValue(response, new TypeReference<Response<FDOrderI>>() { });
-		return parseResponse(info);	
+		Response<ErpSaleData> info = getMapper().readValue(response, new TypeReference<Response<ErpSaleData>>() { });
+		ErpSaleModel saleModel =ModelConverter.buildErpSaleData(info.getData());
+		
+		return new FDOrderAdapter(saleModel);	
 	}catch(Exception e){
 		LOGGER.info(e);
 		LOGGER.info("Exception converting {} to ListOfObjects ");
@@ -381,9 +384,10 @@ public FDOrderI getLastNonCOSOrder(String customerID, EnumSaleType saleType,
 		criteria.setStoreId(eStore.getContentId());
 		request.setData(criteria);
 		String inputJson = buildRequest(request);
-		String response = postData(inputJson, getFdCommerceEndPoint(EndPoints.GET_ORDERS_BY_SALESTATUS_STORE_API.getValue()), String.class);
-		Response<FDOrderI> info = getMapper().readValue(response, new TypeReference<Response<FDOrderI>>() { });
-		return parseResponse(info);	
+		String response = postData(inputJson, getFdCommerceEndPoint(EndPoints.GET_ORDERS_BY_SALETYPE_STORE_API.getValue()), String.class);
+		Response<ErpSaleData> info = getMapper().readValue(response, new TypeReference<Response<ErpSaleData>>() { });
+		ErpSaleModel saleModel =ModelConverter.buildErpSaleData(info.getData());
+		return  new FDOrderAdapter(saleModel);	
 	}catch(Exception e){
 		LOGGER.info(e);
 		LOGGER.info("Exception converting {} to ListOfObjects ");

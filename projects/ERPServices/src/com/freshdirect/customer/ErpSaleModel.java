@@ -79,7 +79,9 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 	public void setDeliveryPassId(String deliveryPassId) {
 		this.deliveryPassId = deliveryPassId;
 	}
-
+	public ErpSaleModel(){
+		
+	}
 
 	/**
 	 *

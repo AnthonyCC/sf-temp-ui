@@ -772,7 +772,7 @@ public class SapGatewayConverter {
 			orderLineData.setBasePrice(orderLine.getBasePrice());
 			orderLineData.setBasePriceUnit(orderLine.getBasePriceUnit());
 			orderLineData.setSavingsId(orderLine.getSavingsId());
-			orderLineData.setUserCtx(buildUserContextData(orderLine.getUserContext()));
+			orderLineData.setUserContext(buildUserContextData(orderLine.getUserContext()));
 			orderLineData.setPricingZoneId(orderLine.getPricingZoneId());
 			orderLineData.setAffiliateData(buildErpAffiliateData(orderLine.getAffiliate()));
 			orderLineList.add(orderLineData);
@@ -1036,7 +1036,7 @@ public class SapGatewayConverter {
 		return abstractOrderModel;
 	}
 	
-	private static List<ErpOrderLineModel> buildOrderLine(List<ErpOrderLineModelData> orderLines) {
+	public static List<ErpOrderLineModel> buildOrderLine(List<ErpOrderLineModelData> orderLines) {
 		List<ErpOrderLineModel>  orderlineList = new ArrayList<ErpOrderLineModel>();
 		for (ErpOrderLineModelData orderLine : orderLines) {
 			ErpOrderLineModel orderLineModel = new ErpOrderLineModel();
@@ -1093,7 +1093,7 @@ public class SapGatewayConverter {
 			orderLineModel.setBasePrice(orderLine.getBasePrice());
 			orderLineModel.setBasePriceUnit(orderLine.getBasePriceUnit());
 			orderLineModel.setSavingsId(orderLine.getSavingsId());
-			orderLineModel.setUserContext(buildUserContext(orderLine.getUserCtx()));
+			orderLineModel.setUserContext(buildUserContext(orderLine.getUserContext()));
 			orderLineModel.setPricingZoneId(orderLine.getPricingZoneId());
 			orderlineList.add(orderLineModel);
 		}
@@ -1352,7 +1352,7 @@ public class SapGatewayConverter {
 		return giftCardModelList;
 	}
 
-	private static FDRafTransModel buildRefTransModel(FDRafTransData rafTransModel) {
+	public static FDRafTransModel buildRefTransModel(FDRafTransData rafTransModel) {
 		FDRafTransModel fdRafTransModel = null;
 		if(rafTransModel != null){
 		fdRafTransModel = new FDRafTransModel();
@@ -1405,7 +1405,7 @@ public class SapGatewayConverter {
 	
 	}
 
-	private static List<ErpChargeLineModel> buildChargeLineModel(List<ErpChargeLineData> charges) {
+	public static List<ErpChargeLineModel> buildChargeLineModel(List<ErpChargeLineData> charges) {
 		List<ErpChargeLineModel> chargeLineModelData = new ArrayList<ErpChargeLineModel>();
 		if(charges != null){
 		for (ErpChargeLineData erpChargeLineData : charges) {
@@ -1423,7 +1423,7 @@ public class SapGatewayConverter {
 		return chargeLineModelData;
 	}
 
-	private static Discount buildDiscount(DiscountData discountData) {
+	public static Discount buildDiscount(DiscountData discountData) {
 		Discount discount =  null;
 		if(discountData != null){
 			discount = new Discount(discountData.getPromotionCode(), EnumDiscountType.getPromotionType(Integer.parseInt(discountData.getDiscountType())), discountData.getAmount());
@@ -1434,7 +1434,7 @@ public class SapGatewayConverter {
 		return discount;
 	}
 
-	private static  ErpDeliveryInfoModel buildDeliveryInfo(ErpDeliveryInfoData deliveryInfo) {
+	public static  ErpDeliveryInfoModel buildDeliveryInfo(ErpDeliveryInfoData deliveryInfo) {
 		ErpDeliveryInfoModel deliveryInfoModel = null;
 		if(deliveryInfo != null){
 			deliveryInfoModel = new ErpDeliveryInfoModel();
@@ -1558,7 +1558,7 @@ public class SapGatewayConverter {
 		return phoneNumber;
 	}
 	
-	private static List<ErpAppliedCreditModel> buildAppliedCredits(List<ErpAppliedCreditData> appliedCredits) {
+	public static List<ErpAppliedCreditModel> buildAppliedCredits(List<ErpAppliedCreditData> appliedCredits) {
 		 List<ErpAppliedCreditModel> appliedCreditModeList = new ArrayList<ErpAppliedCreditModel>();
 		 if(appliedCredits != null){
 		for (ErpAppliedCreditData erpAppliedCreditData : appliedCredits) {
@@ -1578,7 +1578,7 @@ public class SapGatewayConverter {
 		return appliedCreditModeList;
 	}
 
-	private  static List<ErpDiscountLineModel> buildDiscountDataList(List<ErpDiscountLineData> discounts) {
+	public static List<ErpDiscountLineModel> buildDiscountDataList(List<ErpDiscountLineData> discounts) {
 		List<ErpDiscountLineModel> discountLineModelList = new ArrayList<ErpDiscountLineModel>();
 		if(discounts != null){
 		for (ErpDiscountLineData discountData : discounts) {
