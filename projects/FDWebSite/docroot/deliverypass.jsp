@@ -83,7 +83,7 @@
 	    
 	        <fd:WebViewDeliveryPass id='viewContent'>
 	        	<div class="deliverypass-content">
-	        		<div id="deliverypasscontent"></div>
+	        		<div id="deliverypasscontent" data-dlvpasscart="true"></div>
 	        		<script>
 		        		$jq( document ).ready(function() {
 		        			var notlogged = ((FreshDirect.user.recognized || FreshDirect.user.guest) ? true : false);
@@ -91,7 +91,7 @@
 			        	        url: '/api/expresscheckout/deliverypass',
 			        	        type: 'GET',
 			        	        success: function(result){
-			        	        	$jq("#deliverypasscontent").html(expressco.deliverypasspopup({data:result.deliveryPass, notloggedin:notlogged, dlvPassCart:true}));
+			        	        	$jq("#deliverypasscontent").html(expressco.deliverypasspopup({data:result.deliveryPass, notloggedin:notlogged}));
 			        	        }
 			        	 	});
 		        		});
@@ -112,7 +112,6 @@
 	</tmpl:put>
 	<tmpl:put name="leastPrioritizeJs">
 		<jwr:script src="/assets/javascript/fd/captcha/captchaWidget.js" useRandomParam="false" />
-		
 		<script>
 			if (<%=showCaptchaInPayment%>) {
 		  		FreshDirect.components.captchaWidget.init('<%=FDStoreProperties.getRecaptchaPublicKey(CaptchaType.PAYMENT)%>');

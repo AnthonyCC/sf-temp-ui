@@ -9,7 +9,7 @@ var FreshDirect = FreshDirect || {};
       $ = fd.libs.$;
   var FORMS = fd.modules.common.forms;
   var dlvPassCart = false;
-  if($('form.deliverypass_form').length > 0 && !!$('form.deliverypass_form').attr('data-dlvpasscart') == true){
+  if($('#deliverypasscontent').length > 0 && !!$('#deliverypasscontent').attr('data-dlvpasscart') == true){
 	  dlvPassCart = true;
   }
 
