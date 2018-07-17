@@ -351,7 +351,7 @@ public class CartDataService {
 
     private FDCartModel loadUserShoppingCart(HttpServletRequest request, FDUserI user, String userId) throws HttpErrorResponse {
         //FDCartModel cart = StandingOrderHelper.isSO3StandingOrder(user) ? user.getSoTemplateCart() : user.getShoppingCart();
-    	boolean dlvPassCart = null !=request.getParameter("isDlvPassCart") && "true".equalsIgnoreCase(request.getParameter("isDlvPassCart")) ? true: false;
+    	boolean dlvPassCart = null !=request.getParameter("dlvPassCart") && "true".equalsIgnoreCase(request.getParameter("dlvPassCart")) ? true: false;
         FDCartModel cart = UserUtil.getCart(user, "", dlvPassCart);
 
         if (cart == null) {
@@ -679,7 +679,7 @@ public class CartDataService {
             cartData.setSoftLimit(StandingOrderHelper.formatDecimalPrice(ErpServicesProperties.getStandingOrderSoftLimit()));
             cartData.setHardLimit(StandingOrderHelper.formatDecimalPrice(ErpServicesProperties.getStandingOrderHardLimit()));
             
-            boolean dlvPassCart = null !=request.getParameter("isDlvPassCart") && "true".equalsIgnoreCase(request.getParameter("isDlvPassCart")) ? true: false;
+            boolean dlvPassCart = null !=request.getParameter("dlvPassCart") && "true".equalsIgnoreCase(request.getParameter("dlvPassCart")) ? true: false;
             cartData.setDlvPassCart(dlvPassCart);
 
             cartData.setCouponMessage(populateCouponMessage(user, cartLines));

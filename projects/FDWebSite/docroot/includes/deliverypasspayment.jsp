@@ -12,7 +12,7 @@
 		</div>
 		<div id="expresscheckout" class="deliverypasscheckout">
 			<div id="ec-drawer"></div>
-			<div id="cartcontent" class="checkout" data-ec-linetemplate="expressco.checkoutlines" data-ec-request-uri="/api/expresscheckout/cartdata?isDlvPassCart=true" data-drawer-disabled></div>
+			<div id="cartcontent" class="checkout" data-ec-linetemplate="expressco.checkoutlines" data-ec-request-uri="/api/expresscheckout/cartdata?dlvPassCart=true" data-drawer-disabled></div>
 		</div>
 	</div>
 </div>
