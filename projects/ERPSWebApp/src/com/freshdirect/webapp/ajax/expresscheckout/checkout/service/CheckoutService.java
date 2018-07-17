@@ -142,7 +142,7 @@ public class CheckoutService {
 		UnavailabilityData atpFailureData = null;
 		FormRestriction checkPlaceOrderResult = null;
 		ActionResult actionResult = new ActionResult();
-		boolean dlvPassCart = null !=FormDataService.defaultService().getBoolean(requestData, "isDlvPassCart") ? FormDataService.defaultService().getBoolean(requestData, "isDlvPassCart"): false;
+		boolean dlvPassCart = null !=FormDataService.defaultService().getBoolean(requestData, "dlvPassCart") ? FormDataService.defaultService().getBoolean(requestData, "dlvPassCart"): false;
 		FDCartModel cart = UserUtil.getCart(user, "", dlvPassCart);
 		//FDCartModel cart = user.getShoppingCart();
 //		AvalaraContext avalaraContext = new AvalaraContext(cart);
