@@ -152,7 +152,7 @@
 				 	                      type: 'post',
 				 	                      success: function(id, result){
 				 	                    	 //location.reload(true);
-				 	                    	 window.location.assign("/expressco/checkout.jsp");
+				 	                    	 window.location.assign("/deliverypass.jsp");
 				 	                      }
 				 	    	        });
 				 	    		  },
