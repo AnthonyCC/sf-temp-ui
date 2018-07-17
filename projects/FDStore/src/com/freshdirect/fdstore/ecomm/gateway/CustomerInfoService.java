@@ -581,31 +581,6 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 	}
 
 	@Override
-	public String getCustomerMarketingPromoValue(String customerId) throws FDResourceException, RemoteException {
-		Response<String> response = this.httpGetDataTypeMap(
-				getFdCommerceEndPoint(GET_CUSTOMER_MARKETING_PROMO_VALUE + "/" + customerId),
-				new TypeReference<Response<String>>() {
-				});
-		if (!response.getResponseCode().equals("OK")) {
-			LOGGER.error("Error in CustomerInfoService.getCustomerMarketingPromoValue: customerId=" + customerId);
-			throw new FDResourceException(response.getMessage());
-		}
-		return response.getData();
-	}
-
-	@Override
-	public String getCustomerCounty(String customerId) throws FDResourceException, RemoteException {
-		Response<String> response = this.httpGetDataTypeMap(
-				getFdCommerceEndPoint(GET_CUSTOMER_COUNTY + "/" + customerId), new TypeReference<Response<String>>() {
-				});
-		if (!response.getResponseCode().equals("OK")) {
-			LOGGER.error("Error in CustomerInfoService.getCustomerCounty: customerId=" + customerId);
-			throw new FDResourceException(response.getMessage());
-		}
-		return response.getData();
-	}
-
-	@Override
 	public ErpPromotionHistory getPromoHistoryInfo(String customerId) throws FDResourceException, RemoteException {
 		Response<ErpPromotionHistory> response = this.httpGetDataTypeMap(
 				getFdCommerceEndPoint(GET_PROMO_HISTORY_INFO + "/" + customerId),

@@ -91,10 +91,6 @@ public interface CustomerInfoServiceI {
 
 	public IpLocatorEventDTO loadIpLocatorEvent(String fdUserId) throws FDResourceException, RemoteException;
 
-	public String getCustomerMarketingPromoValue(String customerId) throws FDResourceException, RemoteException;
-
-	public String getCustomerCounty(String customerId) throws FDResourceException, RemoteException;
-
 	/**
 	 * Get lightweight info about a customer's used promotions.
 	 *
