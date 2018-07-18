@@ -178,7 +178,8 @@ public class ReferralConverter {
 			model.setGetHeader(referralPromotionData.getGetHeader());
 			model.setGive_text(referralPromotionData.getGive_text());
 			model.setGiveHeader(referralPromotionData.getGiveHeader());
-			model.setId(referralPromotionData.getId());
+			if (referralPromotionData.getId() != null)
+				model.setId(referralPromotionData.getId());
 			model.setInviteEmailLegal(referralPromotionData.getInviteEmailLegal());
 			model.setInviteEmailOfferText(referralPromotionData.getInviteEmailOfferText());
 			model.setInviteEmailSubject(referralPromotionData.getInviteEmailSubject());
