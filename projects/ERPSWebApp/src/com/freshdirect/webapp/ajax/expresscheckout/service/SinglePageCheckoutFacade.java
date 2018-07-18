@@ -510,6 +510,7 @@ public class SinglePageCheckoutFacade {
     private void processGiftCards(FDUserI user, FormPaymentData formPaymentData, List customerCredits) {
         if (user.getGiftCardList() != null) {
             user.getShoppingCart().setSelectedGiftCards(user.getGiftCardList().getSelectedGiftcards());
+            user.getDlvPassCart().setSelectedGiftCards(user.getGiftCardList().getSelectedGiftcards());
         }
         try {
             // [APPDEV-2149] SO template only checkout => no order, no dlv
