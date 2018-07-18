@@ -34,12 +34,13 @@ public class FDListManager {
 
 	public static List<FDProductSelectionI> getEveryItemEverOrdered(FDIdentity identity)
 			throws FDResourceException {
-		lookupManagerHome();
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
 				return FDListManagerService.getInstance().getEveryItemEverOrdered(identity);
 			}
 			else{
+				lookupManagerHome();
 				FDListManagerSB sb = managerHome.create();
 				return sb.getEveryItemEverOrdered(identity);
 			}
@@ -61,12 +62,13 @@ public class FDListManager {
 
 	public static FDCustomerShoppingList generateEveryItemEverOrdered(
 			FDIdentity identity) throws FDResourceException {
-		lookupManagerHome();
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
 				return FDListManagerService.getInstance().generateEveryItemEverOrderedList(identity);
 			}
 			else{
+				lookupManagerHome();
 				FDListManagerSB sb = managerHome.create();
 				return sb.generateEveryItemEverOrderedList(identity);
 			}
@@ -80,12 +82,13 @@ public class FDListManager {
 	}
 	
 	public static List<FDProductSelectionI> getQsSpecificEveryItemEverOrderedList(FDIdentity identity, StoreContext storeContext) throws FDResourceException {
-		lookupManagerHome();
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
 				return FDListManagerService.getInstance().getQsSpecificEveryItemEverOrderedList(identity, storeContext);
 			}
 			else{
+				lookupManagerHome();
 				FDListManagerSB sb = managerHome.create();
 				return sb.getQsSpecificEveryItemEverOrderedList(identity, storeContext);
 			}
@@ -100,12 +103,13 @@ public class FDListManager {
 	
 	//APPDEV-4179 - Item quantities should NOT be honored in "Your Top Items" 
 	public static List<FDProductSelectionI> getQsSpecificEveryItemEverOrderedListTopItems(FDIdentity identity, StoreContext storeContext) throws FDResourceException {
-		lookupManagerHome();
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
 				return FDListManagerService.getInstance().getQsSpecificEveryItemEverOrderedListTopItems(identity, storeContext);
 			}
 			else{
+				lookupManagerHome();
 				FDListManagerSB sb = managerHome.create();
 				return sb.getQsSpecificEveryItemEverOrderedListTopItems(identity,storeContext);
 			}
@@ -121,12 +125,13 @@ public class FDListManager {
 	public static FDCustomerList getCustomerList(FDIdentity identity,
 			EnumCustomerListType type, String listName)
 			throws FDResourceException {
-		lookupManagerHome();
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
 				return FDListManagerService.getInstance().getCustomerList(identity, type, listName);
 			}
 			else{
+				lookupManagerHome();
 				FDListManagerSB sb = managerHome.create();
 				return sb.getCustomerList(identity, type, listName);
 			}
@@ -142,12 +147,13 @@ public class FDListManager {
 	public static FDCustomerList getCustomerListById(FDIdentity identity,
 			EnumCustomerListType type, String listId)
 			throws FDResourceException {
-		lookupManagerHome();
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
 				return FDListManagerService.getInstance().getCustomerListById(identity, type, listId);
 			}
 			else{
+				lookupManagerHome();
 				FDListManagerSB sb = managerHome.create();
 				return sb.getCustomerListById(identity, type, listId);
 			}
@@ -161,12 +167,13 @@ public class FDListManager {
 	}
 
 	public static FDCustomerList storeCustomerList(FDCustomerList list) throws FDResourceException {
-		lookupManagerHome();
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
 				return FDListManagerService.getInstance().storeCustomerList(list);
 			}
 			else{
+				lookupManagerHome();
 				FDListManagerSB sb = managerHome.create();
 				return sb.storeCustomerList(list);
 			}
@@ -182,12 +189,13 @@ public class FDListManager {
 
 	public static void removeCustomerListItem(FDUserI user, PrimaryKey id)
 			throws FDResourceException {
-		lookupManagerHome();
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
 				FDListManagerService.getInstance().removeCustomerListItem(user.getIdentity(), id);
 			}
 			else{
+				lookupManagerHome();
 				FDListManagerSB sb = managerHome.create();
 				sb.removeCustomerListItem(user.getIdentity(), id);
 			}
@@ -205,12 +213,13 @@ public class FDListManager {
 	// create new list
 	public static String createCustomerCreatedList(FDUserI user, String listName)
 			throws FDResourceException, FDCustomerListExistsException {
-		lookupManagerHome();
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
 				return FDListManagerService.getInstance().createCustomerCreatedList(user.getIdentity(), user.getUserContext().getStoreContext(), listName);
 			}
 			else{
+				lookupManagerHome();
 				FDListManagerSB sb = managerHome.create();
 				return sb.createCustomerCreatedList(user.getIdentity(), user.getUserContext().getStoreContext(), listName);
 			}
@@ -230,12 +239,13 @@ public class FDListManager {
 	// delete: use store with no items
 	public static void deleteCustomerCreatedList(FDUserI user, String listName)
 			throws FDResourceException {
-		lookupManagerHome();
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
 				 FDListManagerService.getInstance().deleteCustomerCreatedList(user.getIdentity(), listName, user.getUserContext().getStoreContext());
 			}
 			else{
+				lookupManagerHome();
 				FDListManagerSB sb = managerHome.create();
 				sb.deleteCustomerCreatedList(user.getIdentity(), listName, user.getUserContext().getStoreContext());
 			}
@@ -249,12 +259,13 @@ public class FDListManager {
 	}
 
 	public static void deleteShoppingList(String listId) throws FDResourceException {
-		lookupManagerHome();
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
 				 FDListManagerService.getInstance().deleteShoppingList( listId );
 			}
 			else{
+				lookupManagerHome();
 				FDListManagerSB sb = managerHome.create();
 				sb.deleteShoppingList( listId );
 			}
@@ -271,12 +282,13 @@ public class FDListManager {
 	// get all customer created lists
 	public static List<FDCustomerCreatedList> getCustomerCreatedLists(FDUserI user)
 			throws FDResourceException {
-		lookupManagerHome();
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
 				 return FDListManagerService.getInstance().getCustomerCreatedLists(user.getIdentity(), user.getUserContext().getStoreContext());
 			}
 			else{
+				lookupManagerHome();
 				FDListManagerSB sb = managerHome.create();
 				return sb.getCustomerCreatedLists(user.getIdentity(), user.getUserContext().getStoreContext());
 			}
@@ -293,12 +305,13 @@ public class FDListManager {
 	// get all customer created list infos
 	public static List<FDCustomerListInfo> getCustomerCreatedListInfos(FDUserI user)
 			throws FDResourceException {
-		lookupManagerHome();
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
 				 return FDListManagerService.getInstance().getCustomerCreatedListInfos(user.getIdentity(), user.getUserContext().getStoreContext());
 			}
 			else{
+				lookupManagerHome();
 				FDListManagerSB sb = managerHome.create();
 				return sb.getCustomerCreatedListInfos(user.getIdentity(), user.getUserContext().getStoreContext());
 			}
@@ -315,12 +328,13 @@ public class FDListManager {
 	// get all customer created list infos
 	public static List<FDCustomerListInfo> getStandingOrderListInfos(FDUserI user)
 			throws FDResourceException {
-		lookupManagerHome();
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
 				 return FDListManagerService.getInstance().getStandingOrderListInfos(user.getIdentity());
 			}
 			else{
+				lookupManagerHome();
 				FDListManagerSB sb = managerHome.create();
 				return sb.getStandingOrderListInfos(user.getIdentity());
 			}
@@ -336,12 +350,13 @@ public class FDListManager {
 	// CCL
 	public static void modifyCustomerCreatedList(FDCustomerList list)
 			throws FDResourceException {
-		lookupManagerHome();
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
 				FDListManagerService.getInstance().modifyCustomerCreatedList(list);
 			}
 			else{
+				lookupManagerHome();
 				FDListManagerSB sb = managerHome.create();
 				sb.modifyCustomerCreatedList(list);
 			}
@@ -371,12 +386,13 @@ public class FDListManager {
 	// CCL
 	public static boolean isCustomerList(FDUserI user, EnumCustomerListType type, String listName)
 			throws FDResourceException {
-		lookupManagerHome();
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
 				return FDListManagerService.getInstance().isCustomerList(user.getIdentity(), type != null ? type : EnumCustomerListType.CC_LIST, listName);
 			}
 			else{
+				lookupManagerHome();
 				FDListManagerSB sb = managerHome.create();
 				return sb.isCustomerList(user.getIdentity(), type != null ? type : EnumCustomerListType.CC_LIST, listName);
 			}
@@ -397,12 +413,13 @@ public class FDListManager {
 	public static void copyCustomerCreatedList(FDCustomerList oldList,
 			FDCustomerList newList) throws FDResourceException,
 			FDCustomerListExistsException {
-		lookupManagerHome();
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
 				 FDListManagerService.getInstance().copyCustomerCreatedList(oldList, newList);
 			}
 			else{
+				lookupManagerHome();
 				FDListManagerSB sb = managerHome.create();
 				sb.copyCustomerCreatedList(oldList, newList);
 			}
@@ -423,12 +440,13 @@ public class FDListManager {
 	// CCL
 	public static FDCustomerCreatedList getCustomerCreatedList(
 			FDIdentity identity, String ccListId) throws FDResourceException {
-		lookupManagerHome();
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
 				return FDListManagerService.getInstance().getCustomerCreatedList(identity, ccListId);
 			}
 			else{
+				lookupManagerHome();
 				FDListManagerSB sb = managerHome.create();
 				return sb.getCustomerCreatedList(identity, ccListId);
 			}
@@ -442,12 +460,13 @@ public class FDListManager {
 	}
 
 	public static String getListName( FDIdentity identity, String ccListId ) throws FDResourceException {
-		lookupManagerHome();
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
 				return FDListManagerService.getInstance().getListName( identity, ccListId );
 			}
 			else{
+				lookupManagerHome();
 				FDListManagerSB sb = managerHome.create();
 				return sb.getListName( identity, ccListId );
 			}
@@ -466,12 +485,13 @@ public class FDListManager {
 	public static void renameCustomerCreatedList(FDIdentity identity,
 			String oldName, String newName)
 			throws FDCustomerListExistsException, FDResourceException {
-		lookupManagerHome();
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
 				 FDListManagerService.getInstance().renameCustomerCreatedList(identity, oldName, newName);
 			}
 			else{
+				lookupManagerHome();
 				FDListManagerSB sb = managerHome.create();
 				sb.renameCustomerCreatedList(identity, oldName, newName);
 			}
@@ -490,12 +510,13 @@ public class FDListManager {
 	public static void renameCustomerList(FDActionInfo info, EnumCustomerListType type, 
 			String oldName, String newName)
 			throws FDCustomerListExistsException, FDResourceException {
-		lookupManagerHome();
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
 				 FDListManagerService.getInstance().renameCustomerList(info, type, oldName, newName);
 			}
 			else{
+				lookupManagerHome();
 				FDListManagerSB sb = managerHome.create();
 				sb.renameCustomerList(info, type, oldName, newName);
 			}
@@ -512,12 +533,13 @@ public class FDListManager {
 	}
 	
 	public static void renameShoppingList(String listId, String newName) throws FDResourceException {
-		lookupManagerHome();
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
 				 FDListManagerService.getInstance().renameShoppingList(listId, newName);
 			}
 			else{
+				lookupManagerHome();
 				FDListManagerSB sb = managerHome.create();
 				sb.renameShoppingList(listId, newName);
 			}
@@ -561,12 +583,13 @@ public class FDListManager {
 
 	// SmartStore
 	public static FDCustomerProductList getOrderDetails(String erpCustomerId,List<String> skus) throws FDResourceException {
-		lookupManagerHome();
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
 				 return FDListManagerService.getInstance().getOrderDetails(erpCustomerId, skus);
 			}
 			else{
+				lookupManagerHome();
 				FDListManagerSB sb = managerHome.create();
 				return sb.getOrderDetails(erpCustomerId, skus);
 			}
@@ -595,12 +618,13 @@ public class FDListManager {
 	 * @throws FDResourceException
 	 */
 	public static FDStandingOrderList getStandingOrderList(	FDIdentity identity, String soListId ) throws FDResourceException {
-		lookupManagerHome();
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
 				 return FDListManagerService.getInstance().getStandingOrderList(identity, soListId);
 			}
 			else{
+				lookupManagerHome();
 				FDListManagerSB sb = managerHome.create();
 				return sb.getStandingOrderList(identity, soListId);
 			}

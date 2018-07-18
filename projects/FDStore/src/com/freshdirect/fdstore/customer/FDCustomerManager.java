@@ -186,7 +186,7 @@ public class FDCustomerManager {
 	private static FDCustomerManagerHome managerHome = null;
 	private static ErpEWalletHome eWalletHome = null;
 	private static MailerGatewayHome mailerHome = null;
-	private static FDServiceLocator LOCATOR = FDServiceLocator.getInstance();
+	//private static FDServiceLocator LOCATOR = FDServiceLocator.getInstance();
 	FDCustomerEStoreModel customerSmsPreferenceModel=null;
 
 	/**
@@ -2382,7 +2382,7 @@ public class FDCustomerManager {
         		 service.storeSurvey(surveyDataRequest);
         	}
 			else{
-                LOCATOR.getSurveySessionBean().storeSurvey(survey);
+				FDServiceLocator.getInstance().getSurveySessionBean().storeSurvey(survey);
 			}
             } catch (RemoteException re) {
                 throw new FDResourceException(re, "Error talking to session bean");
@@ -2797,14 +2797,14 @@ public class FDCustomerManager {
 		if (managerHome != null) {
 			return;
 		}
-		managerHome = LOCATOR.getFDCustomerManagerHome();
+		managerHome = FDServiceLocator.getInstance().getFDCustomerManagerHome();
 	}
 
 	private static void lookupeWalletHome() {
 		if (eWalletHome != null) {
 			return;
 		}
-		eWalletHome = LOCATOR.getErpEWalletHome();
+		eWalletHome = FDServiceLocator.getInstance().getErpEWalletHome();
 	}
 
 
@@ -2878,14 +2878,14 @@ public class FDCustomerManager {
 	}
 
 	public static FDOrderHistory getOrdersByDlvPassId(FDIdentity identity, String dlvPassId) throws FDResourceException {
-		lookupManagerHome();
+		
 		try {
 
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled("ordersByDlvPass_Api")){
 	    		OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
 	    		return new FDOrderHistory(service.getOrdersByDlvPassId(identity.getErpCustomerPK(), dlvPassId));
 	    	}else{
-
+	    	lookupManagerHome();
 			FDCustomerManagerSB sb = managerHome.create();
 			ErpOrderHistory history = sb.getOrdersByDlvPassId(identity, dlvPassId);
 			return new FDOrderHistory(history.getErpSaleInfos());
@@ -2909,15 +2909,15 @@ public class FDCustomerManager {
 	 * @throws FDResourceException
 	 */
 	public static List<DlvPassUsageLine> getRecentOrdersByDlvPassId(FDIdentity identity, String dlvPassId, int noOfDaysOld) throws FDResourceException {
-		lookupManagerHome();
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled("orderByDlvPass_recent_Api")){
 	    		OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
 	    		return service.getRecentOrdersByDlvPassId(identity.getErpCustomerPK(), dlvPassId, noOfDaysOld);
 	    	}else{
-
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.getRecentOrdersByDlvPassId(identity, dlvPassId, noOfDaysOld);
+		    	lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getRecentOrdersByDlvPassId(identity, dlvPassId, noOfDaysOld);
 	    	}
 
 		} catch (CreateException ce) {
@@ -3029,13 +3029,14 @@ public class FDCustomerManager {
 
 	public static boolean hasPurchasedPass(String customerPK) throws FDResourceException {
 
-		lookupManagerHome();
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.DlvPassManagerSB)){
 				return DlvPassManagerService.getInstance().hasPurchasedPass(customerPK);
 			}else{
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.hasPurchasedPass(customerPK);
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.hasPurchasedPass(customerPK);
 			}
 
 		} catch (CreateException ce) {
@@ -3097,15 +3098,15 @@ public class FDCustomerManager {
 			// but i don't think this should be called then...
 			return new ErpWebOrderHistory(Collections.EMPTY_LIST);
 		}
-		lookupManagerHome();
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled("weborderHistory_Api")){
 	    		OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
 	    		return new ErpWebOrderHistory(service.getWebOrderHistory(identity.getErpCustomerPK()));
 	    	}else{
-
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.getWebOrderHistoryInfo(identity);
+	    		lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getWebOrderHistoryInfo(identity);
 	    	}
 
 		} catch (CreateException ce) {
@@ -3133,15 +3134,15 @@ public class FDCustomerManager {
 			// but i don't think this should be called then...
 			return 0;
 		}
-		lookupManagerHome();
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled("validordercount_Api")){
 	    		OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
 	    		return service.getValidOrderCount(identity.getErpCustomerPK());
 	    	}else{
-
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.getValidOrderCount(identity);
+	    		lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getValidOrderCount(identity);
 	    	}
 
 		} catch (CreateException ce) {
@@ -3184,13 +3185,14 @@ public class FDCustomerManager {
 	}
 
 	public static FDOrderI getLastNonCOSOrder(String customerID, EnumSaleType saleType, EnumSaleStatus saleStatus, EnumEStoreId eStore) throws FDResourceException,ErpSaleNotFoundException {
-		lookupManagerHome();
+		
 		FDCustomerManagerSB sb=null;
 		try {
 			FDOrderI order =null;
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled("nonCOSOrderByStatusStore_Api")){
 				order=CustomersApi.getInstance().getLastNonCOSOrder(customerID, saleType, saleStatus, eStore);
 			}else{
+				lookupManagerHome();
 				sb = managerHome.create();
 				order = sb.getLastNonCOSOrder( customerID, saleType, saleStatus, eStore );	
 			}
@@ -3207,7 +3209,7 @@ public class FDCustomerManager {
 	
 	
 	public static FDOrderI getLastNonCOSOrder(String customerID, EnumSaleType saleType, EnumEStoreId eStore) throws FDResourceException,ErpSaleNotFoundException {
-		lookupManagerHome();
+		
 		FDCustomerManagerSB sb=null;
 		FDOrderI order=null;
 		try {
@@ -3215,8 +3217,9 @@ public class FDCustomerManager {
 				order=CustomersApi.getInstance().getLastNonCOSOrder(customerID, saleType, eStore );
 
 			}else {
-			sb = managerHome.create();
-			 order = sb.getLastNonCOSOrder( customerID, saleType, eStore );
+				lookupManagerHome();
+				sb = managerHome.create();
+				order = sb.getLastNonCOSOrder( customerID, saleType, eStore );
 			}
 			return order;
 		} catch ( CreateException ce ) {
@@ -3434,14 +3437,14 @@ public class FDCustomerManager {
 
 	public static Object[] getAutoRenewalInfo(EnumEStoreId eStore) throws FDResourceException {
 		Object[] autoRenewInfo = null;
-		lookupManagerHome();
+		
 		try {
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.DlvPassManagerSB)) {
 				autoRenewInfo = DlvPassManagerService.getInstance().getAutoRenewalInfo(eStore);
 			}else{	
-			
-			FDCustomerManagerSB sb = managerHome.create();
-			autoRenewInfo = sb.getAutoRenewalInfo(eStore);
+				lookupManagerHome();	
+				FDCustomerManagerSB sb = managerHome.create();
+				autoRenewInfo = sb.getAutoRenewalInfo(eStore);
 			}
 			
 			return autoRenewInfo;
@@ -3492,15 +3495,15 @@ public class FDCustomerManager {
 
 	public static String getLastOrderId(FDIdentity identity) throws FDResourceException {
 		String lastOrderId = null;
-		lookupManagerHome();
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled("lastOrderId_Api")){
 	    		OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
 	    		return service.getLastOrderId(identity.getErpCustomerPK());
 	    	}else{
-
-			FDCustomerManagerSB customerManagerSessionBean = managerHome.create();
-			lastOrderId = customerManagerSessionBean.getLastOrderID(identity);
+	    		lookupManagerHome();
+				FDCustomerManagerSB customerManagerSessionBean = managerHome.create();
+				lastOrderId = customerManagerSessionBean.getLastOrderID(identity);
 	    	}
 		} catch (CreateException exception) {
 			invalidateManagerHome();
@@ -3515,15 +3518,15 @@ public class FDCustomerManager {
 
 	public static String getLastOrderId(FDIdentity identity, EnumEStoreId eStoreId) throws FDResourceException {
 		String lastOrderId = null;
-		lookupManagerHome();
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled("lastOrderId_Estore_Api")){
 	    		OrderServiceApiClientI service = OrderServiceApiClient.getInstance();
 	    		return service.getLastOrderId(identity.getErpCustomerPK(), eStoreId);
 	    	}else{
-
-			FDCustomerManagerSB customerManagerSessionBean = managerHome.create();
-			lastOrderId = customerManagerSessionBean.getLastOrderID(identity, eStoreId);
+	    		lookupManagerHome();
+				FDCustomerManagerSB customerManagerSessionBean = managerHome.create();
+				lastOrderId = customerManagerSessionBean.getLastOrderID(identity, eStoreId);
 	    	}
 		} catch (CreateException exception) {
 			invalidateManagerHome();
@@ -3680,13 +3683,14 @@ public class FDCustomerManager {
 
 	public static List getGiftCardRecepientsForCustomer(FDIdentity identity)
 			throws FDResourceException {
-		lookupManagerHome();
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.GiftCardManagerSB)){
 				return GiftCardManagerService.getInstance().getGiftCardRecepientsForCustomer(identity.getErpCustomerPK());
 			}else{
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.getGiftCardRecepientsForCustomer(identity);
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getGiftCardRecepientsForCustomer(identity);
 			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -3699,13 +3703,14 @@ public class FDCustomerManager {
 
 	public static Map getGiftCardRecepientsForOrders(List saleIds)
 			throws FDResourceException {
-		lookupManagerHome();
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.GiftCardManagerSB)){
 				return GiftCardManagerService.getInstance().getGiftCardRecepientsForOrders(saleIds);
 			}else {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.getGiftCardRecepientsForOrders(saleIds);
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getGiftCardRecepientsForOrders(saleIds);
 			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -3718,13 +3723,14 @@ public class FDCustomerManager {
 
 	public static List getGiftCardOrdersForCustomer(FDIdentity identity)
 			throws FDResourceException {
-		lookupManagerHome();
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.GiftCardManagerSB)){
 			return GiftCardManagerService.getInstance().getGiftCardOrdersForCustomer(identity.getErpCustomerPK());
 			}else{
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.getGiftCardOrdersForCustomer(identity);
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getGiftCardOrdersForCustomer(identity);
 			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -3821,13 +3827,14 @@ public class FDCustomerManager {
 
 	public static Object getGiftCardRedemedOrders(FDIdentity identity,
 			String certNum) throws FDResourceException {
-		lookupManagerHome();
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.GiftCardManagerSB)){
 			return GiftCardManagerService.getInstance().getGiftCardRedeemedOrders(identity.getErpCustomerPK(), certNum);
 			}else{
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.getGiftCardRedemedOrders(identity, certNum);
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getGiftCardRedemedOrders(identity, certNum);
 			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -3840,13 +3847,14 @@ public class FDCustomerManager {
 
 	public static Object getGiftCardRedemedOrders(String certNum)
 			throws FDResourceException {
-		lookupManagerHome();
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.GiftCardManagerSB)){
 			return GiftCardManagerService.getInstance().getGiftCardRedeemedOrders( certNum);
 			}else{
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.getGiftCardRedemedOrders(certNum);
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getGiftCardRedemedOrders(certNum);
 			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -3860,13 +3868,14 @@ public class FDCustomerManager {
 	public static List getDeletedGiftCardsForCustomer(FDIdentity identity)
 			throws FDResourceException {
 		// TODO Auto-generated method stub
-		lookupManagerHome();
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.GiftCardManagerSB)){
 			return GiftCardManagerService.getInstance().getAllDeletedGiftCard(identity.getErpCustomerPK());
 			}else {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.getDeletedGiftCardForCustomer(identity);
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getDeletedGiftCardForCustomer(identity);
 			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -3885,13 +3894,14 @@ public class FDCustomerManager {
 	 */
 	public static List getGiftCardRecepientsForOrder(String saleId)
 			throws FDResourceException {
-		lookupManagerHome();
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.GiftCardManagerSB)){
 			return GiftCardManagerService.getInstance().getGiftCardRecepientsForOrder(saleId);
 			}else{
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.getGiftCardRecepientsForOrder(saleId);
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getGiftCardRecepientsForOrder(saleId);
 			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -3926,9 +3936,9 @@ public class FDCustomerManager {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.GiftCardManagerSB)){
 				GiftCardManagerService.getInstance().transferGiftCardBalance(identity.getErpCustomerPK(), fromGivexNum, toGivexNum,amount);
 			}else{
-			FDCustomerManagerSB sb = managerHome.create();
-			sb.transferGiftCardBalance(identity, fromGivexNum, toGivexNum,
-					amount);
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				sb.transferGiftCardBalance(identity, fromGivexNum, toGivexNum,amount);
 			}
 
 		} catch (RemoteException re) {
@@ -4025,14 +4035,15 @@ public class FDCustomerManager {
 
 	public static ErpGCDlvInformationHolder GetGiftCardRecipentByCertNum(
 			String certNum) throws FDResourceException {
-		lookupManagerHome();
+		
 		try {
 			
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.GiftCardManagerSB)){
-			return GiftCardManagerService.getInstance().loadGiftCardRecipentByCertNum(certNum);
+				return GiftCardManagerService.getInstance().loadGiftCardRecipentByCertNum(certNum);
 			}else{
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.GetGiftCardRecipentByCertNum(certNum);
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.GetGiftCardRecipentByCertNum(certNum);
 			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -4271,11 +4282,12 @@ public class FDCustomerManager {
 		}
 
 	public static void logMassCancelActivity(ErpActivityRecord record) {
-		ActivityLogHome home = getActivityLogHome();
+		
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ActivityLogSB)){
 				FDECommerceService.getInstance().logActivity(record);
 			}else{
+				ActivityLogHome home = getActivityLogHome();
 				ActivityLogSB logSB = home.create();
 				logSB.logActivity(record);
 			}
@@ -4288,7 +4300,7 @@ public class FDCustomerManager {
 
 	private static ActivityLogHome getActivityLogHome() {
 		try {
-			return (ActivityLogHome) LOCATOR.getRemoteHome("freshdirect.customer.ActivityLog");
+			return (ActivityLogHome) FDServiceLocator.getInstance().getRemoteHome("freshdirect.customer.ActivityLog");
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}
@@ -4573,18 +4585,19 @@ public class FDCustomerManager {
 				e.printStackTrace();
 			}
 		}else {
-		new ErpLogActivityCommand(LOCATOR, record).execute();
+		new ErpLogActivityCommand(FDServiceLocator.getInstance(), record).execute();
 		}
 	}
 
 
 	public static void sendEmail(XMLEmailI email) throws FDResourceException {
-		lookupMailerGatewayHome();
-		lookupManagerHome();
+		
 		try {
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.MailerGatewaySB)) {
 				FDECommerceService.getInstance().enqueueEmail(email);
 			} else {
+				lookupMailerGatewayHome();
+				lookupManagerHome();
 				MailerGatewaySB mailer = mailerHome.create();
 				mailer.enqueueEmail(email);
 			}
@@ -4699,7 +4712,7 @@ public class FDCustomerManager {
 
 	public static FDCartModel getSavedCart(FDIdentity identity, EnumEStoreId eStoreId) throws FDAuthenticationException, FDResourceException {
 
-		lookupManagerHome();
+//		lookupManagerHome();
 		try {
 			FDUser user;
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
@@ -4770,16 +4783,16 @@ public class FDCustomerManager {
 	public static boolean isReadyForPick(String orderNum) throws FDResourceException {
 
 
-		lookupManagerHome();
+
 
 		try {
 			boolean result;
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled("ReadyForPickOrders_Api")) {
 				result=CustomersApi.getInstance().isReadyForPick(orderNum);
 			}else {
-			
-			FDCustomerManagerSB sb = managerHome.create();
-			result= sb.isReadyForPick(orderNum);
+				lookupManagerHome();			
+				FDCustomerManagerSB sb = managerHome.create();
+				result= sb.isReadyForPick(orderNum);
 
 			}
 			return result;
@@ -4816,14 +4829,15 @@ public class FDCustomerManager {
 	public static void releaseModificationLock(String orderId) throws FDResourceException {
 
 
-		lookupManagerHome();
+		
 
 		try {
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled("ReleaseModificationLock_Api")) {
-			CustomersApi.getInstance().releaseModificationLock(orderId);
+				CustomersApi.getInstance().releaseModificationLock(orderId);
 			}else{
-			FDCustomerManagerSB sb = managerHome.create();
-			sb.releaseModificationLock(orderId);
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				sb.releaseModificationLock(orderId);
 			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -5423,15 +5437,15 @@ public class FDCustomerManager {
 		}
 		
 		public static ShortSubstituteResponse getShortSubstituteOrders(List<String> orderList) throws FDResourceException {
-			lookupManagerHome();
+			
 			ShortSubstituteResponse ssResponse = null;
 			try {
 				if (FDStoreProperties.isSF2_0_AndServiceEnabled("ShortSubstituteOrders_Api")) {
 				ssResponse=CustomersApi.getInstance().getShortSubstituteOrders(orderList);
 				}else {
-				
-				FDCustomerManagerSB sb = managerHome.create();
-				ssResponse= sb.getShortSubstituteOrders(orderList);
+					lookupManagerHome();	
+					FDCustomerManagerSB sb = managerHome.create();
+					ssResponse= sb.getShortSubstituteOrders(orderList);
 				}
 				return ssResponse;
 			} catch (CreateException ce) {
