@@ -1,6 +1,6 @@
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%
-  Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
+	Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
 %>
 
 <fd:CheckLoginStatus id="userDPP" guestAllowed="true" recognizedAllowed="true" />

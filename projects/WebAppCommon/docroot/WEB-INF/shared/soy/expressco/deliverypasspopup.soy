@@ -3,17 +3,19 @@
 /**
  * @param data popup data
  * @param? notloggedin check if user logged in
- * @param? dlvPassCart
  */
 {template .deliverypasspopup autoescape="false"}
 <div>
   <div class='deliverypasspopup__header'>
   	<div class="deliverypasspopup__header-fd"><img src="/media/layout/nav/globalnav/fdx/locabar-tab-fd-green.svg" /></div>
 	<div class="deliverypasspopup__header-dp">DeliveryPass<sup>&reg;</sup><span class="deliverypasspopup__header-truck"><img src="/media/editorial/site_pages/deliverypass/images/truck.svg" alt="truck"></span></div>
-	<div class="deliverypasspopup__header-text">Unlimited Free Deliveries <span class="deliverypasspopup__header-text-circle">&#9679;</span> Timeslot Reservations Exclusive DeliveryPass Perks</div>
+	<div class="deliverypasspopup__header-text">
+		<span class="deliverypasspopup__header-text-circle deliverypasspopup-mobweb">&#9679;</span> Unlimited Free Deliveries <br class="deliverypasspopup-mobweb" />
+		<span class="deliverypasspopup__header-text-circle">&#9679;</span> Timeslot Reservations <br class="deliverypasspopup-mobweb" />
+		<span class="deliverypasspopup__header-text-circle deliverypasspopup-mobweb">&#9679;</span> Exclusive DeliveryPass Perks</div>
   </div>
   <div data-component='deliverypasspopup-page'>
-    <form class="deliverypass_form" fdform="deliverypass" action="#" data-eventsource="{$data.eventSource ? $data.eventSource : 'BROWSE'}" {if $dlvPassCart}data-dlvpasscart="{$dlvPassCart}"{/if}>
+    <form class="deliverypass_form" fdform="deliverypass" action="#" data-eventsource="{$data.eventSource ? $data.eventSource : 'BROWSE'}">
       <div class="deliverypasspopup_boxes">
       	<div class="deliverypasspopup_boxes-header"><span class="deliverypasspopup_boxes-header-name">Anytime</span> Seven Days a Week</div>
 		{if $data.products}

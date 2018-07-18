@@ -58,6 +58,9 @@
 	font-size: 15px;
 	vertical-align: top;
 }
+.deliverypasspopup-mobweb{
+	display: none;
+}
 .deliverypasspopup_boxes{
 	padding: 0 0 20px 30px;
 }
@@ -132,7 +135,10 @@
 	width: 260px;
 	height: 48px;
 }
-
+.deliverypass-payment .drawer__item-addaction .cssbutton{
+	font-size: 14px;
+	font-family: Verdana, sans-serif;
+}
 
 
 body.ie .deliverypasspopup__option {
@@ -173,8 +179,68 @@ body.ie .deliverypasspopup__option {
 .deliverypasspopup__label > .fake-radio-wrapper > .fake-radio:before {
   margin-right: 5px;
 }
-
-
+.mm-page .deliverypasspopup__header{
+	padding: 20px 20px;
+}
+.mm-page .deliverypasspopup__header-fd{
+	margin: 0;
+}
+.mm-page .deliverypasspopup__header-dp{
+	font-size: 36px;
+	margin: 0;
+}
+.mm-page .deliverypasspopup__header-dp sup{
+	font-size: 14px;
+}
+.mm-page .deliverypasspopup__header-truck img{
+	height: 40px;
+    padding: 0 0 3px 20px;
+}
+.mm-page .deliverypasspopup-mobweb{
+	display: inline;
+}
+.mm-page .deliverypasspopup__header-text{
+	font-size: 17px;
+	padding: 14px 0 0;
+}
+.mm-page .deliverypasspopup_boxes{
+	padding: 0 0 20px 20px
+}
+.mm-page .deliverypasspopup_boxes-header{
+	font-size: 14px;
+}
+.mm-page .deliverypasspopup_boxes-header-name{
+	font-size: 18px;
+}
+.mm-page .deliverypasspopup__option{
+	width: 168px;
+}
+.mm-page .deliverypasspopup__footer{
+	padding: 30px 20px 40px;
+}
+.mm-page-overlay .deliverypass-payment .drawer-content > ul li{
+	min-height: 105px;
+}
+.mm-page-overlay .deliverypass-payment .total #subtotalbox2{
+	padding: 0 0 136px;
+}
+.mm-page-overlay .deliverypass-payment #cartcontent.checkout .cart-button{
+	position: fixed;
+    bottom: 25px;
+	left: 0;
+	background: #FFFFFF;
+	width: 100%;
+	padding: 20px 0;
+	border-top: 1px solid #dcdcdc;
+}
+.mm-page-overlay .deliverypass-payment .deliverypass-payment-cancel{
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	background: #FFFFFF;
+	width: 100%;
+	padding: 0 0 12px;
+}
 /* FOOOOOOOOOOOOOOTER*/ 
 
 
