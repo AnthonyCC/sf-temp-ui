@@ -222,7 +222,7 @@ body.ie .deliverypasspopup__option {
 	min-height: 105px;
 }
 .mm-page-overlay .deliverypass-payment .total #subtotalbox2{
-	padding: 0 0 136px;
+	padding: 0px 0 125px;
 }
 .mm-page-overlay .deliverypass-payment #cartcontent.checkout .cart-button{
 	position: fixed;

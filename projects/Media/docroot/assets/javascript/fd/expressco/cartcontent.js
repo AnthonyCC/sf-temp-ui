@@ -871,6 +871,9 @@ function parseTipTotal(data) {
 		},
 		callback: {
 			value: function(value, signal){
+				if($(".deliverypass-payment").length > 0){
+					dialogWindowRealignFunc();
+				}
 				if (signal === 'subTotalBox')
 					value = {subTotalBox:value};
 				
