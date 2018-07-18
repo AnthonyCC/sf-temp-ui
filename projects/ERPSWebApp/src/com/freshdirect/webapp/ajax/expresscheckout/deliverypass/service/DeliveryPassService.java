@@ -31,6 +31,7 @@ import com.freshdirect.webapp.ajax.expresscheckout.deliverypass.data.DeliveryPas
 import com.freshdirect.webapp.ajax.expresscheckout.deliverypass.data.DeliveryPassProductData;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
+import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 import com.freshdirect.webapp.util.JspMethods;
 import com.freshdirect.webapp.util.MediaUtils;
 
@@ -123,6 +124,7 @@ public class DeliveryPassService {
 		selectDeliveryPass(products, cart, user);
 		deliveryPassConfiguration.put("products", products);
 		deliveryPassConfiguration.put("termsAndConditions", loadTermsAndConditions());
+		deliveryPassConfiguration.put("customerContact", populateCustomerServiceContact(user));
 		return data;
 	}
 
@@ -190,4 +192,8 @@ public class DeliveryPassService {
 	private String calculateSaving(int month, double actualTotalPrice, double oneMonthTotalPrice) {
 		return "Save $" + Math.round(month * oneMonthTotalPrice - actualTotalPrice);
 	}
+	
+	private String populateCustomerServiceContact(FDUserI user) {
+        return UserUtil.getCustomerServiceContact(user);
+    }
 }
