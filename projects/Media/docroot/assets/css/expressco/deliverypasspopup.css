@@ -17,17 +17,6 @@
   -webkit-box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.35);
   -moz-box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.35);
 }
-
-.deliverypasspopup__header{
-  /*background-image: url(/media_stat/images/expressco/deliverypass_popup_header.png);
-  background-repeat:no-repeat;
-  background-position:top center;
-  width:100%;
-  height:97px;
-  border-bottom:1px solid #e1e0de;
-  padding-bottom:30px;*/
-}
-
 .deliverypasspopup__header{
 	padding: 40px 80px 20px;
 }
@@ -73,6 +62,7 @@
 }
 .deliverypasspopup__option{
 	float: left;
+	position: relative;
     border: solid 2px #4fa157;
     border-top: solid 4px #4fa157;
     padding: 16px 24px;
@@ -104,11 +94,35 @@
 	font-size: 14px;
 	font-family: Verdana;
 }
-
-.deliverypasspopup__option-best{
+.deliverypasspopup__option-best-cont{
 	position: absolute;
-    margin-left: 197px;
-    margin-top: -39px;
+    top: 5px;
+    right: 0;
+}
+.deliverypasspopup__option-best{
+	width: 57px;
+	height: 32px;
+	position: relative;
+	padding: 4px 5px 0;
+	box-sizing: border-box;
+	background: #b93d3f;
+	color: #FFFFFF;
+	text-align: right;
+	font-size: 10px;
+	line-height: 1.2;
+	font-weight: bold;
+	text-transform: uppercase;
+}
+.deliverypasspopup__option-best:after {
+	content: "";
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	width: 0;
+	height: 0;
+	border-left: 12px solid white;
+	border-top: 16px solid transparent;
+	border-bottom: 16px solid transparent;
 }
 .deliverypasspopup_success{
 	max-width: 480px;
@@ -139,45 +153,27 @@
 	font-size: 14px;
 	font-family: Verdana, sans-serif;
 }
-
-
 body.ie .deliverypasspopup__option {
   min-height:120px;
 }
-
 .deliverypasspopup__option span.saving {
   font-weight: bold;
   color: red;
 }
-
 .deliverypasspopup__option .save{
   color:#fe0100;
   font-weight:bold;
 }
-
 .deliverypasspopup__option-title,
 .deliverypasspopup__option-desc{
   margin:0;
 }
-
 .deliverypasspopup__option-title{
   font-size:15px;
   font-weight:bold;
 }
-
 .deliverypasspopup__option-desc{
   font-size:11px;
-}
-
-.deliverypasspopup__label > .fake-radio-wrapper,
-.deliverypasspopup__radio,
-.ec-popup [fdform] .deliverypasspopup__radio{
-  margin-left:-25px;
-  float:left;
-}
-
-.deliverypasspopup__label > .fake-radio-wrapper > .fake-radio:before {
-  margin-right: 5px;
 }
 .mm-page .deliverypasspopup__header{
 	padding: 20px 20px;
@@ -241,35 +237,15 @@ body.ie .deliverypasspopup__option {
 	width: 100%;
 	padding: 0 0 12px;
 }
-/* FOOOOOOOOOOOOOOTER*/ 
-
-
+#deliverypasspopup.mm-page .ec-popup-close-icon{
+	top: -35px;
+	right: 5px;
+}
 .deliverypasspopup__footer{
   font-size: 14px;
   text-align: center;
   padding: 30px 38px 40px;
 }
-
 .deliverypasspopup__footer-terms{
 	margin: 8px;
-}
-
-/* FOOOOOOOOOOOOOOTER*/ 
-
-.deliverypasspopup__back{
-  height:40px;
-  font-size:14px;
-  float:left;
-}
-
-.deliverypasspopup__total{
-  font-weight:normal;
-}
-
-.deliverypasspopup__termspage{
-  display:none;
-}
-
-.deliverypasspopup_product {
-  display: none;
 }

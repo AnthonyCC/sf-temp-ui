@@ -68,7 +68,8 @@
  */
 {template .deliveryoption autoescape="false"}
 	<div class="deliverypasspopup__option" data-component="deliverypasspopup-option" for="{$id}">
-		<div class="deliverypasspopup__option-term">{if $title}{$title}{/if}</div>{if strContains($title, '1 Year')}<div class="deliverypasspopup__option-best"><img src="/media/editorial/site_pages/deliverypass/images/best-deal.png" /></div>{/if}
+		{if strContains($title, '1 Year')}<div class="deliverypasspopup__option-best-cont"><div class="deliverypasspopup__option-best">Best value</div></div>{/if}
+		<div class="deliverypasspopup__option-term">{if $title}{$title}{/if}</div>
 		<div class="deliverypasspopup__option-cost"><span class="deliverypasspopup__option-cost-large">{if $totalPrice}${$totalPrice}{/if}</span>+Tax</div>
 		<div class="deliverypasspopup__option-permonth">{if $pricePerMonth}{call common.formatDecimalPrice}{param price:$pricePerMonth /}{/call}/month{/if}</div>
 		<button class="cssbutton cssbutton-flat green transparent deliverypasspopup__submit" type="submit" 
