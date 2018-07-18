@@ -3955,9 +3955,9 @@ public class FDCustomerManager {
 			ErpAbstractOrderModel order = null;
 			boolean isModifyOrderModel = false;
 			if (cart instanceof FDModifyCartModel) {
+				isModifyOrderModel = true;
 				order = FDOrderTranslator.getErpCreateOrderModel(cart);
 			} else {
-				isModifyOrderModel = true;
 				order = FDOrderTranslator.getErpModifyOrderModel(cart);
 			}
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
