@@ -219,7 +219,7 @@ var dataLayer = window.dataLayer || [];
       ecommerce[qty > 0 ? 'add' : 'remove'] = addRemoveData;
 
       // add product list + position only if it was added from a transactional popup
-      if (qty > 0 && document.querySelector('.portrait-item[data-product-id="'+productData.id+'"]')) {
+      if (qty > 0 && document.querySelector('.portrait-item[data-product-id="'+productData.id+'"],.pdp-evenbetter-item[data-product-id="'+productData.id+'"]')) {
         addRemoveData.actionField = {
           list: fd.gtm.getListForProductId(productData.id)
         };
