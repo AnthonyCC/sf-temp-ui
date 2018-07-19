@@ -8541,14 +8541,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	/*	 APPDEV-6785 		AutoCreditApprovalCron*/
 	public void rejectCreditsOlderThanAMonth(List<String> listToRejCredits){
 		if (listToRejCredits != null && !listToRejCredits.isEmpty()) {
+			String sourse = EnumTransactionSource.SYSTEM.getName().toUpperCase();
+			boolean Approve = false;
+			boolean sendMail = false;
+			Double limit = null;
 			LOGGER.info("in rejectCreditsOlderThanAMonth(), listToReject size is: "+listToRejCredits.size());
 			for(Iterator it = listToRejCredits.iterator(); it.hasNext();) {
 				String complaintId = (String) it.next();
 				LOGGER.info("Going to update status to REJ on Complaint ID: "+it);
-				String sourse = EnumTransactionSource.SYSTEM.getName().toUpperCase();
-				boolean Approve = false;
-				boolean sendMail = false;
-				Double limit = null;
 				try {
 					approveComplaint(complaintId, Approve, sourse, sendMail, limit);
 				} catch (Exception e) {
