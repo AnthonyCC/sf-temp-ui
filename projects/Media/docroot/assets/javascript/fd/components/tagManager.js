@@ -812,7 +812,7 @@ var dataLayer = window.dataLayer || [];
     if (window.location.pathname.indexOf('/pdp.jsp') > -1 && productId) {
       location = 'pdp_' + productId;
     } else if ($('ul.breadcrumbs li').length) {
-      location = 'cat_' + safeName($('ul.breadcrumbs li').last().text());
+      location = 'cat_' + safeName($('ul.breadcrumbs li').toArray().map(function (li) { return li.textContent.toLowerCase(); }).join('_'));
     } else if (searchParams) {
       location = 'search_' + searchParams.toLowerCase().trim().replace(/\s+/g, '+');
     } else if (window.location.pathname.indexOf('/expresssearch.jsp') > -1 && el && $(el).closest('[data-searchresult]').length ) {
