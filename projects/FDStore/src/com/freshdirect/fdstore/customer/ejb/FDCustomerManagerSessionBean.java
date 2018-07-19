@@ -3163,7 +3163,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			// line with DELIVERYPASS promotion information, if it's not already
 			// available
 			if (order.isDlvPassApplied()
-					&& EnumDeliveryType.HOME.equals(order.getDeliveryInfo().getDeliveryType().HOME)) {
+					&& EnumDeliveryType.HOME.equals(order.getDeliveryInfo().getDeliveryType())) {
 				ErpChargeLineModel clm = order.getCharge(EnumChargeType.DELIVERY);
 				if (clm != null) {
 					if (clm.getDiscount() == null) {
@@ -3207,8 +3207,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					extendDeliveryPass(dlvpsb, dlvPass, -1, saleId, "Curtail DP by a week.",
 							EnumDlvPassExtendReason.DLV_PROMOTION_REMOVED.getName());
 				}
-			} else if ((EnumDlvPassStatus.ACTIVE.equals(status) || EnumDlvPassStatus.PENDING.equals(status) || EnumDlvPassStatus.EXPIRED_PENDING.equals(status))
-					&& !order.isDlvPassApplied() && fdOrder.getDeliveryPassId() != null) {
+			} else if (/*(EnumDlvPassStatus.ACTIVE.equals(status) || EnumDlvPassStatus.PENDING.equals(status) || EnumDlvPassStatus.EXPIRED_PENDING.equals(status)
+					|| EnumDlvPassStatus.CANCELLED.equals(status) || EnumDlvPassStatus.ORDER_CANCELLED.equals(status))
+					&&*/ !order.isDlvPassApplied() && fdOrder.getDeliveryPassId() != null) {
 				/*
 				 * Note: Expired pending state is valid only for BSGS pass. Then
 				 * it means dlvPass was applied during create order and now user
@@ -3222,8 +3223,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				if (dlvPass == null) {
 					throw new DeliveryPassException("Unable to locate the delivery pass that was used for this order.");
 				}
-
-				dlvpsb.revoke(dlvPass);
+				if(!EnumDlvPassStatus.CANCELLED.equals(status) && !EnumDlvPassStatus.ORDER_CANCELLED.equals(status)) {
+					dlvpsb.revoke(dlvPass);
+				}
 				sb.updateDlvPassIdToSale(saleId, null);
 				if (order.isDlvPromotionApplied() && dlvPass.getType().isUnlimited() && null != CmsManager.getInstance().getEStoreId() && !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
 					extendDeliveryPass(dlvpsb, dlvPass, 1, saleId, "Extend DP by a week.",
