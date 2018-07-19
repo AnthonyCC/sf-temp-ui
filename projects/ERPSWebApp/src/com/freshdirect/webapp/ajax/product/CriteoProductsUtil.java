@@ -53,7 +53,7 @@ public class CriteoProductsUtil
 				addHlBrandProducts(user, adPrducts, updatedPageBeacon, cretioProductsCacheList,false);
 			}
 			int  maxCount = FDStoreProperties.getFDHomeCriteoMaxDisplayProducts();
-			if( null != adPrducts && !adPrducts.isEmpty() && (adPrducts.size()<maxCount) ) {			//APPBUG-5520 
+		/*	if( null != adPrducts && !adPrducts.isEmpty() && (adPrducts.size()<maxCount) ) {			//APPBUG-5520 
 				int i= adPrducts.size();
 				int j=0;
 				while ( i < maxCount) {
@@ -61,7 +61,8 @@ public class CriteoProductsUtil
 					i++;	
 					j++;
 				}
-			}else if( null != adPrducts && !adPrducts.isEmpty() && (adPrducts.size() > maxCount) ){
+			}else */
+			if( null != adPrducts && !adPrducts.isEmpty() && (adPrducts.size() > maxCount) ){
 				adPrducts.subList(maxCount, adPrducts.size()).clear();
 			}
 			moduleData.setAdProducts(adPrducts);

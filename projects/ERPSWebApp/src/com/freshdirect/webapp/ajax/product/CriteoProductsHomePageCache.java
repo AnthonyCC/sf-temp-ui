@@ -83,7 +83,7 @@ public class CriteoProductsHomePageCache {
 			HLBrandProductAdResponse response = null;
 			List<String> keys = CriteoProductsUtil.getFDSearchPriorityKeyWords();
 			int counter=0;
-
+			Set<String> skuList = new HashSet<String>();
 			if (!keys.isEmpty() && keys.size() != 0) {
 				for (String key : keys) {
 					try {
@@ -132,7 +132,6 @@ public class CriteoProductsHomePageCache {
 											}
 										}*/
 							if (!avaiProductFDList.isEmpty()) {
-								Set<String> skuList = new HashSet<String>();
 								for (HLBrandProductAdInfo productData : avaiProductFDList) {
 									if (!skuList.contains(productData
 											.getProductSKU()))
@@ -159,7 +158,7 @@ public class CriteoProductsHomePageCache {
 		if (!keys.isEmpty() && keys.size() != 0 && counter != 0) {
 			boolean found = false;
 			while (counter >=  i++) {
-				for (String key : keys) {
+				for (String key : cacheCriteoMap.keySet()) {
 					if (null != cacheCriteoMap.get(key) && !cacheCriteoMap.get(key).isEmpty()
 							&& cacheCriteoMap.get(key).size() >= (j + 1) ) {
 						HLBrandProductAdInfo hlBrandProduct = cacheCriteoMap.get(key).get(j);
