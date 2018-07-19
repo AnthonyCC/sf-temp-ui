@@ -788,7 +788,9 @@ public class SapGatewayConverter {
 	}
 	public  static ErpPaymentMethodData buildPaymentMethodData(ErpPaymentMethodI payment) {
 		ErpPaymentMethodModel paymentMethod = (ErpPaymentMethodModel) payment;
-		ErpPaymentMethodData paymentData = new ErpPaymentMethodData();
+		ErpPaymentMethodData paymentData = null;
+		if(paymentMethod!=null){
+		paymentData = new ErpPaymentMethodData();
 		paymentData.setId(paymentMethod.getPK().getId());
 		paymentData.setCustomerId(paymentMethod.getCustomerId());
 		paymentData.setName(paymentMethod.getName());
@@ -833,6 +835,7 @@ public class SapGatewayConverter {
 			paymentData.setOriginalAmount(((ErpGiftCardModel) paymentMethod).getOriginalAmount());
 			paymentData.setPurchaseSaleId(((ErpGiftCardModel) paymentMethod).getPurchaseSaleId());
 			paymentData.setPurchaseDate(((ErpGiftCardModel) paymentMethod).getPurchaseDate().getTime());
+		}
 		}
 		return paymentData;
 	}
