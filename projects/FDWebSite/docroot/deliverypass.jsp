@@ -46,6 +46,9 @@
 	<tmpl:put name="soytemplates"><soy:import packageName="expressco"/></tmpl:put>
 	
 	<tmpl:put name="globalnav">
+	<%-- we need the ad_server.jsp include here because it's in the globalnav (which is not used on this page) --%>
+    <jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
+	
   	<%-- MASQUERADE HEADER STARTS HERE --%>
   	<% if (masqueradeContext != null) {
   		String makeGoodFromOrderId = masqueradeContext.getMakeGoodFromOrderId();
@@ -108,7 +111,6 @@
 	
 	<tmpl:put name="extraJs">
     	<fd:javascript src="/assets/javascript/timeslots.js" />
-    	<jwr:script src="/expressco.js" useRandomParam="false" />
 	</tmpl:put>
 	<tmpl:put name="leastPrioritizeJs">
 		<jwr:script src="/assets/javascript/fd/captcha/captchaWidget.js" useRandomParam="false" />

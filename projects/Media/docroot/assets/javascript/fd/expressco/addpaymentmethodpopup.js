@@ -60,7 +60,9 @@ var FreshDirect = FreshDirect || {};
     close: {
       value: function () {
         if (this.popup) { this.popup.hide(); }
-
+        if($('body').hasClass('was-hidden')){
+        	$('body').css('overflow', 'hidden').removeClass('was-hidden');
+        }
         return false;
       }
     },
@@ -109,6 +111,9 @@ var FreshDirect = FreshDirect || {};
         //sync ui state selected to data state
         if (data.hasOwnProperty('bil_state')) {
             $('#CC_bil_state').val(data.bil_state);	
+        }
+        if($('body').css('overflow') == 'hidden'){
+        	$('body').css('overflow', 'auto').addClass('was-hidden');
         }
       }
     },

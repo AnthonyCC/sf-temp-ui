@@ -125,6 +125,7 @@ public class DeliveryPassService {
 		deliveryPassConfiguration.put("products", products);
 		deliveryPassConfiguration.put("termsAndConditions", loadTermsAndConditions());
 		deliveryPassConfiguration.put("customerContact", populateCustomerServiceContact(user));
+		deliveryPassConfiguration.put("freeTrialEligible", user.isDPFreeTrialOptInEligible());
 		return data;
 	}
 

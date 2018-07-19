@@ -1,9 +1,10 @@
 <%@ page import='com.freshdirect.fdstore.*' %>
+<%@ taglib uri="freshdirect" prefix="fd" %>
 <%
 	Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
 %>
 
-<fd:CheckLoginStatus id="userDPP" guestAllowed="true" recognizedAllowed="true" />
+<fd:CheckLoginStatus guestAllowed="true" recognizedAllowed="true" />
 
 <div class="dpn">
 	<div class="dpn-success-container deliverypass-payment">
@@ -22,10 +23,16 @@
 	fd.expressco.cartcontent.listen();
 	fd.expressco.cartcontent.watchChanges();
 	fd.expressco.cartcontent.update();
+	
+	// allow to use other popups with modal dialog
+	$jq.ui.dialog.prototype._allowInteraction = function(e) {
+	    return true;
+	};
 	$jq(".deliverypass-payment").on('click', "[data-deliverypass-payment-close]", function(){
 		$jq(".overlay-dialog-new .ui-dialog-titlebar-close").click();
 	});
-	window.FreshDirect.properties.isPaymentMethodVerificationEnabled = <%=FDStoreProperties.isPaymentMethodVerificationEnabled()%>
+	window.FreshDirect.properties = window.FreshDirect.properties || {};
+	window.FreshDirect.properties.isPaymentMethodVerificationEnabled = <%=FDStoreProperties.isPaymentMethodVerificationEnabled()%>;
 	if(typeof FreshDirect.deliveryPassSelectedTitle !== 'undefined'){
 		$jq(".deliverypass-payment-header").html(FreshDirect.deliveryPassSelectedTitle);
 	}

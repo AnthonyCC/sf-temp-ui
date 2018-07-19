@@ -15,6 +15,7 @@
 		<span class="deliverypasspopup__header-text-circle deliverypasspopup-mobweb">&#9679;</span> Exclusive DeliveryPass Perks</div>
   </div>
   <div data-component='deliverypasspopup-page'>
+    {if $data.freeTrialEligible}<div class="deliverypasspopup__freetrial"><a href="/freetrial.jsp">New to DeliveryPass? Sign up for the Free Trial!</a></div>{/if}
     <form class="deliverypass_form" fdform="deliverypass" action="#" data-eventsource="{$data.eventSource ? $data.eventSource : 'BROWSE'}">
       <div class="deliverypasspopup_boxes">
       	<div class="deliverypasspopup_boxes-header"><span class="deliverypasspopup_boxes-header-name">Anytime</span> Seven Days a Week</div>
