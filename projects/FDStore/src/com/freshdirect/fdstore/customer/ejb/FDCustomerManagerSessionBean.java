@@ -8504,4 +8504,56 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			close(conn);
 		}
 	}
+	
+	private static final String GET_REJECTAL_COMPLAINTS ="select c.id as COMPLAINT_ID from cust.sale s, cust.complaint c , cust.customer cu where " + 
+			"      c.sale_id=s.id and cu.ID=s.CUSTOMER_ID and   c.status = 'PEN' and c.create_date < trunc(sysdate -30) and         (s.status = 'STF')  " + 
+			"               union all " + 
+			"select c.id as COMPLAINT_ID from cust.sale s, cust.complaint c , cust.customer cu where " + 
+			"      c.sale_id=s.id and cu.ID=s.CUSTOMER_ID and   c.status = 'PEN' and c.create_date < trunc(sysdate -30) and         ( cu.ACTIVE ='0' )" ; 
+	
+	/* APPDEV-6785 		AutoCreditApprovalCron */
+	public List<String> getComplaintsToRejectCredits() throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement ps= null;
+		ResultSet rs = null;
+		try {
+			conn = this.getConnection();
+			ps= conn.prepareStatement(GET_REJECTAL_COMPLAINTS);
+			
+			rs= ps.executeQuery();
+			List<String> lst = new ArrayList<String>();
+			while (rs.next()) {
+				lst.add(rs.getString("COMPLAINT_ID"));
+			}
+			return lst;
+			
+		}catch(SQLException e){
+			throw new FDResourceException(e);
+		}finally {
+			DaoUtil.close(rs);
+			DaoUtil.close(ps);
+			DaoUtil.close(conn);
+		}
+	}
+
+	/*	 APPDEV-6785 		AutoCreditApprovalCron*/
+	public void rejectCreditsOlderThanAMonth(List<String> listToRejCredits){
+		if (listToRejCredits != null && !listToRejCredits.isEmpty()) {
+			LOGGER.info("in rejectCreditsOlderThanAMonth(), listToReject size is: "+listToRejCredits.size());
+			for(Iterator it = listToRejCredits.iterator(); it.hasNext();) {
+				String complaintId = (String) it.next();
+				LOGGER.info("Going to update status to REJ on Complaint ID: "+it);
+				String sourse = EnumTransactionSource.SYSTEM.getName().toUpperCase();
+				boolean Approve = false;
+				boolean sendMail = false;
+				Double limit = null;
+				try {
+					approveComplaint(complaintId, Approve, sourse, sendMail, limit);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
 }

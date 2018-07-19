@@ -18,6 +18,7 @@ import javax.naming.NamingException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpComplaintException;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
@@ -36,6 +37,11 @@ public class AutoCreditApprovalCron {
 			ctx = getInitialContext();
 			FDCustomerManagerHome home = (FDCustomerManagerHome) ctx.lookup("freshdirect.fdstore.CustomerManager");
 			FDCustomerManagerSB sb = home.create();
+			/*	reject the credits older than A month with STF in Sale 	APPDEV-6785 */
+			LOGGER.info("Going to Reject Credits for morethan a month in Pending status");
+			List<String> lstToRejCredits  = sb.getComplaintsToRejectCredits();
+			if(!lstToRejCredits.isEmpty()) sb.rejectCreditsOlderThanAMonth(lstToRejCredits);
+			LOGGER.info("Rejecting process has been  Done now");
 			List ids = sb.getComplaintsForAutoApproval();
 			LOGGER.info("Going to AUTO approve " + ids.size() + " complaints");
 
@@ -43,11 +49,12 @@ public class AutoCreditApprovalCron {
 			strB.append("<table>");
 			boolean errorFlg=false;
 			StringWriter sw=null;
+			String initiator = EnumTransactionSource.SYSTEM.getName().toUpperCase();
 			for (Iterator i = ids.iterator(); i.hasNext();) {
 				String complaintId = (String) i.next();
 				LOGGER.info("Auto approve STARTED for complaint ID : " + complaintId);
 				try {
-					sb.approveComplaint(complaintId, true, "SYSTEM", true,ErpServicesProperties.getCreditAutoApproveAmount());
+					sb.approveComplaint(complaintId, true, initiator, true,ErpServicesProperties.getCreditAutoApproveAmount());
 					LOGGER.info("Auto approve FINISHED for comolaint ID : " + complaintId);
 				} catch (ErpComplaintException ex) {
 					errorFlg=true;

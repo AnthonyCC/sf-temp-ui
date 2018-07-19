@@ -946,5 +946,10 @@ public interface FDCustomerManagerSB  extends EJBObject{
 	public ShortSubstituteResponse getShortSubstituteOrders(List<String> orderList) throws FDResourceException, RemoteException;
 	
 	public void updateDpOptinDetails(boolean isAutoRenewDp, String custId, String dpType, FDActionInfo info, EnumEStoreId eStore) throws FDResourceException,RemoteException;
+
+	public List<String> getComplaintsToRejectCredits() throws RemoteException, FDResourceException;
+	
+	public void rejectCreditsOlderThanAMonth(List<String> listToRejCredits) throws RemoteException;
+
 }
 
