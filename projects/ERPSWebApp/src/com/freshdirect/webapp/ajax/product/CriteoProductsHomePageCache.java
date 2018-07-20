@@ -158,7 +158,7 @@ public class CriteoProductsHomePageCache {
 		if (!keys.isEmpty() && keys.size() != 0 && counter != 0) {
 			boolean found = false;
 			while (counter >=  i++) {
-				for (String key : cacheCriteoMap.keySet()) {
+				for (String key : keys) {
 					if (null != cacheCriteoMap.get(key) && !cacheCriteoMap.get(key).isEmpty()
 							&& cacheCriteoMap.get(key).size() >= (j + 1) ) {
 						HLBrandProductAdInfo hlBrandProduct = cacheCriteoMap.get(key).get(j);
