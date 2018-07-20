@@ -493,7 +493,7 @@
               }
             }
             ... more options here ...
-          };
+          });
           widget.listen(); // needed to call this manually to actually start listening
       </pre>
       <script>

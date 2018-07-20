@@ -1,0 +1,124 @@
+body, input {
+	font-family: monospace;
+}
+div {
+	margin: 0;
+	padding: 0;
+}
+.file-info {
+	font-size: 1.25em;
+	margin-bottom: 0.5em;
+}
+.file-cont {
+	padding-bottom: 0.5em;
+	margin-bottom: 0.5em;
+	border-bottom: 1px solid #ccc;
+}
+.file-cont:after {
+	display: block;
+	content: '';
+	clear: both;
+}
+.file-register, .file-dependency {
+	margin-left: 2em;
+	clear: both;
+}
+.file-register.last {
+	margin-bottom: 0.5em;
+}
+.file-dependency-dependency {
+	font-weight: bold;
+}
+.file-dependency-register {
+	font-style: italic;
+	display: inline-block;
+	margin-left: 1em;
+	float: right;
+}
+.file-dependency-register:before {
+	content: '(';
+}
+.file-dependency-register:after {
+	content: ')';
+}
+.file-info-label:before {
+	content: 'File : '
+}
+.file-register-label:before {
+	content: 'Registered : '
+}
+.file-dependency-label:before {
+	content: 'Dependency : '
+}
+.header {
+	border-bottom: 2px solid #333;
+	padding-bottom: 0.5em;
+	margin-bottom: 0.5em;
+}
+.header-page {
+	font-size: 2.5em;
+	font-weight: bold;
+}
+.header-filters-cont {
+	float: right;
+}
+.header:after {
+	display: block;
+	clear: both;
+	content: '';
+}
+.header-filters-cont {
+	border-left: 1px solid #333;
+	padding-left: 0.5em;
+	margin-left: 0.5em;
+	width: 500px;
+}
+.header-filters-cont .col-left,
+.header-filters-cont .col-right {
+	display: inline-block;
+}
+.header-filters-cont .col-left {
+	width: calc(100% - 85px);
+}
+.header-filters-cont .col-right {
+	width: 75px;
+}
+.header-filters-cont button {
+	width: 100%;
+}
+.header-filters-cont label {
+	width: 130px;
+	display: inline-block;
+}
+.header-filters-cont select {
+	width: calc(100% - 130px);
+	margin: 3px 0;
+	box-sizing: border-box;
+	border: 1px solid #000;
+	outline: 1px solid #ccc;
+}
+.header-filters-cont button {
+	box-sizing: border-box;
+	border: 1px solid #000;
+	background-color: #fff;
+	font-weight: bold;
+	outline: 1px solid #666;
+	margin: 3px 0;
+	text-transform: uppercase
+}
+.filter-dependencies-cont {
+	position: relative;
+}
+.filter-dependencies-cont:after {
+	position: absolute;
+	content: '- or -';
+	display: block;
+	top: 1.5em;
+	font-size: 0.9em;
+	left: 1.5em;
+}
+
+.inverted {
+	background-color: #fff;
+	filter: invert(100%);
+}
