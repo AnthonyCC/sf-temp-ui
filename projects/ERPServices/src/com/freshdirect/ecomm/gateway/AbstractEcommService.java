@@ -225,7 +225,7 @@ public abstract class AbstractEcommService {
 			LOGGER.info("api url:" + url);
 			throw new FDResourceException(e, "API Syntax failure");
 		}
-		long endTime = System.currentTimeMillis() - starttime;
+		/*long endTime = System.currentTimeMillis() - starttime;
 		if (FDEcommProperties.isFeatureEnabled(FDEcommProperties.FDSFGatewayStatsLogging)) {
 			StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
 			StackTraceElement stackElem = stackTraceElements[stackTraceElements.length
@@ -233,7 +233,7 @@ public abstract class AbstractEcommService {
 
 			LOGGER.info(String.format("WebserviceExternalCall classname=%s, method= %s elapsed time=%s ms",
 					stackElem.getClassName(), stackElem.getMethodName(), endTime));
-		}
+		}*/
 
 		return responseOfTypestring;
 	}
