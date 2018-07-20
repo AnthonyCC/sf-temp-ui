@@ -8,6 +8,7 @@ import javax.ejb.EJBObject;
 
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.standingorders.SOResult;
+import com.freshdirect.fdstore.standingorders.StandingOrdersJobConfig;
 import com.freshdirect.fdstore.standingorders.UnavDetailsReportingBean;
 
 public interface StandingOrdersServiceSB extends EJBObject {

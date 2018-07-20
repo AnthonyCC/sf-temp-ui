@@ -99,6 +99,7 @@ public class FDEcommProperties {
 	public static final String ProfileCreatorSB = "com.freshdirect.dataloader.payment.ProfileCreatorSB";
 	public static final String FDStandingOrderSB = "com.freshdirect.fdstore.standingorders.FDStandingOrdersSB"; 
 	public static final String StandingOrder3CronSB = "com.freshdirect.fdstore.standingorders.service.StandingOrder3CronSB";
+	public static final String StandingOrdersServiceSB = "com.freshdirect.fdstore.standingorders.service.StandingOrdersServiceSB";
 	public static final String FDCustomerManagerSB="com.freshdirect.customer.FDCustomerManagerSB";
 	public static final String FDCustomerIdentity = "com.freshdirect.customer.identity";
 	public static final String FDCustomerAddress = "com.freshdirect.customer.address";
@@ -189,6 +190,7 @@ public class FDEcommProperties {
         defaults.put(StandingOrder3CronSB, FALSE);
         defaults.put(FDCustomerManagerSB, FALSE);
         defaults.put(ErpInfoSB_WarmUp, FALSE);
+        defaults.put(StandingOrdersServiceSB, FALSE);
         
         
         refresh();

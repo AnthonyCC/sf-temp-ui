@@ -26,13 +26,16 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.ecomm.gateway.StandingOrdersService;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderInfo;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderInfoList;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.fdstore.standingorders.InventoryMapInfoBean;
 import com.freshdirect.fdstore.standingorders.SOResult;
+import com.freshdirect.fdstore.standingorders.StandingOrdersJobConfig;
 import com.freshdirect.fdstore.standingorders.SOResult.Result;
 import com.freshdirect.fdstore.standingorders.SOResult.ResultList;
 import com.freshdirect.fdstore.standingorders.SOResult.Status;
@@ -208,10 +211,21 @@ public class StandingOrdersServiceCmd {
 			
 			LOGGER.info( "Starting to place orders..." );
 			
-			SOResult.ResultList result = sb.placeStandingOrders(soList, jobConfig);
+			SOResult.ResultList result = null;//sb.placeStandingOrders(soList, jobConfig);
+			
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.StandingOrdersServiceSB)){
+				result = StandingOrdersService.getInstance().placeStandingOrders(soList, jobConfig);
+			} else{			
+				result = sb.placeStandingOrders(soList, jobConfig);
+			}
 			
 			if(isResultHasData(result)){
-			sb.persistUnavDetailsToDB(result);
+				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.StandingOrdersServiceSB)){
+					StandingOrdersService.getInstance().persistUnavDetailsToDB(result);
+				}
+				else{
+					sb.persistUnavDetailsToDB(result);
+				}
 			}
 			
 			if(result != null){
@@ -251,7 +265,11 @@ public class StandingOrdersServiceCmd {
 			UnavDetailsReportingBean unavDetailsReportingBean = new UnavDetailsReportingBean() ;
 			
 			if(hasData){	
+				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.StandingOrdersServiceSB)){
+					unavDetailsReportingBean = StandingOrdersService.getInstance().getDetailsForReportGeneration();
+				}else{
 					unavDetailsReportingBean = sb.getDetailsForReportGeneration();
+				}
 			}		
 			final String atpFailureReportMailTo = ErpServicesProperties.getStandingOrdersATPFailureReportRecipientAddress();
 				
