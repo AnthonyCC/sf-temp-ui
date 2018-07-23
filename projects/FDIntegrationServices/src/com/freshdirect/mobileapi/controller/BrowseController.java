@@ -1,5 +1,6 @@
 package com.freshdirect.mobileapi.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,7 +69,7 @@ public class BrowseController extends BaseController {
      * @see com.freshdirect.mobileapi.controller.BaseController#processRequest(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, org.springframework.web.servlet.ModelAndView, java.lang.String, com.freshdirect.mobileapi.model.SessionUser)
      */
     protected ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model, String action,
-            SessionUser user) throws FDException, ServiceException, JsonException {
+            SessionUser user) throws FDException, ServiceException, JsonException, UnsupportedEncodingException {
     	String postData = getPostData(request, response);
     	long startTime=System.currentTimeMillis();
     	LOG.debug("BrowseController PostData received: [" + postData + "]");

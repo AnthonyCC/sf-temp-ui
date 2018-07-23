@@ -1,5 +1,4 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.display.GetContentNodeWebIdTag"%>
-<%@ page import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil"%>
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import='java.util.*'  %>
 <%@ page import='java.net.URLEncoder'%>

@@ -1,4 +1,3 @@
-<%@page import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil"%>
 <%@page import="com.freshdirect.storeapi.content.PriceCalculator"%>
 <%@page import="java.util.Map"%>
 <%@page import="java.util.HashMap"%>
@@ -132,15 +131,9 @@ final int W_WINE_HOME_TOTAL = 765;
 						%>
 							<fd:WineTopRatedFeed id="prods" price="<%= price %>" maxItems="15" useAlternateImage="true" imageHeightId="imgHeight">
 								<div id="tab_price_<%=price.name().toLowerCase()%>" class="fd-carousel-tab">
-									
-									<script type="text/javascript">
-										var cmPageCarousel = cmPageCarousel || {};	
-										<%String handlerObj = "cmPageCarousel[\"" + carouselId + "\"]"; %>
-										<%=handlerObj%> = {"afterScroll":  <fd:CmElement wrapIntoFunction="true" carouselId='<%="wine-top-rated-"+price.name().toLowerCase()%>' elementCategory="carousel"/>} 
-									</script>
 
 									<display:Carousel id="carouselTag" carouselId="<%= carouselId %>" itemsToShow="<%= prods %>" maxItems="12" useAlternateImage="<%= useAlternateImage %>" 
-											width="<%=W_WINE_HOME_TOTAL-90%>" trackingCode="<%= trk %>" numItems="5" hideContainer="<%= tabId %>" parentId="topRatedContainer" offset="45" eventHandlersObj="<%=handlerObj%>"><%
+											width="<%=W_WINE_HOME_TOTAL-90%>" trackingCode="<%= trk %>" numItems="5" hideContainer="<%= tabId %>" parentId="topRatedContainer" offset="45"><%
 										ProductModel product = (ProductModel) currentItem;
 										PriceCalculator calculator = product.getPriceCalculator();
 										FDCustomerCoupon custCoupon = user.getCustomerCoupon((new ProductImpression(product)).getSku().getProductInfo(), EnumCouponContext.PRODUCT,product.getParentId(),product.getContentName());
@@ -207,12 +200,8 @@ final int W_WINE_HOME_TOTAL = 765;
 			<div class="wine-lightbrown wine-brown-border wine wine-popular" style="padding: 20px 0px 10px;">
 			<fd:ProductGroupRecommender itemCount="24" siteFeature="PROD_GRP_POPULAR" facility="usq_dept_pop" currentNode="<%= usqRegion %>" id="deptPopular">
 				<display:UniqueFilter in="<%= deptPopular.getProducts() %>" out="prods" groupId="usq_popular">
-					
-					<script type="text/javascript">
-						var wine_popular_events = {"afterScroll":  <fd:CmElement wrapIntoFunction="true" siteFeature="PROD_GRP_POPULAR" elementCategory="carousel"/>} 
-					</script>
 					<display:Carousel id="carouselTag" carouselId="usq-popular" itemsToShow="<%= prods %>" maxItems="20" useAlternateImage="<%= useAlternateImage %>" 
-							width="<%=W_WINE_HOME_TOTAL-90%>" trackingCode="<%= trk %>" numItems="5" eventHandlersObj="wine_popular_events">
+							width="<%=W_WINE_HOME_TOTAL-90%>" trackingCode="<%= trk %>" numItems="5">
 						<% ProductModel product = (ProductModel) currentItem; 
 						PriceCalculator calculator = product.getPriceCalculator();
 						FDCustomerCoupon custCoupon = user.getCustomerCoupon((new ProductImpression(product)).getSku().getProductInfo(), EnumCouponContext.PRODUCT,product.getParentId(),product.getContentName());

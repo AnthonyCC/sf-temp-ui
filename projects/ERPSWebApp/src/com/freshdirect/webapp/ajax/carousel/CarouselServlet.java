@@ -100,7 +100,7 @@ public class CarouselServlet extends BaseJsonServlet {
 			FDSessionUser sessionUser) {
 		String currentNodeKey = request.getParameter("currentNodeKey");
 		String siteFeature = request.getParameter("siteFeature");
-		String cmEventSource = request.getParameter("cmEventSource");
+		String eventSource = request.getParameter("eventSource");
         String type = request.getParameter("type");
         Boolean sendVariant = Boolean.parseBoolean(NVL.apply(request.getParameter("sendVariant"), "false"));
         Integer maxItems = Integer.parseInt(NVL.apply(request.getParameter("maxItems"), "0"));
@@ -150,8 +150,8 @@ public class CarouselServlet extends BaseJsonServlet {
 			dataMap = DataPotatoField.digProductListFromModels(sessionUser, products);
 		}
 
-		if (cmEventSource != null) {
-			((Map<String, Object>) dataMap).put("cmEventSource", cmEventSource);
+		if (eventSource != null) {
+			((Map<String, Object>) dataMap).put("eventSource", eventSource);
 		}
 
         ((Map<String, Object>) dataMap).put("isNewProductsCarouselLoaded", isNewProductsCarouselLoaded);

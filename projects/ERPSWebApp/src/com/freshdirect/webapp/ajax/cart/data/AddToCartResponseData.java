@@ -6,15 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.freshdirect.webapp.ajax.AbstractCoremetricsResponse;
-
 /**
  *	Simple java bean for add to cart response. 
  *	Class structure is representing the JSON structure. 	
  * 
  * @author treer
  */
-public class AddToCartResponseData extends AbstractCoremetricsResponse implements Serializable {
+public class AddToCartResponseData implements Serializable {
 
 	
 	private static final long	serialVersionUID	= 8413382103584983050L;

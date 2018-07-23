@@ -18,7 +18,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.customer.EnumWebServiceType;
 import com.freshdirect.customer.EnumFraudReason;
@@ -78,11 +77,8 @@ import com.freshdirect.giftcard.EnumGiftCardType;
 import com.freshdirect.giftcard.ErpRecipentModel;
 import com.freshdirect.giftcard.RecipientModel;
 import com.freshdirect.giftcard.ServiceUnavailableException;
-import com.freshdirect.payment.BINCache;
-import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.webapp.action.WebActionSupport;
 import com.freshdirect.webapp.features.service.FeaturesService;
-import com.freshdirect.webapp.taglib.coremetrics.CmShop9Tag;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
@@ -362,9 +358,6 @@ public class SubmitOrderAction extends WebActionSupport {
 			
 			// Set the order on the session			
 			session.setAttribute(SessionName.RECENT_ORDER_NUMBER, orderNumber);
-			
-			//prepare and store model for Coremetrics report
-			CmShop9Tag.buildPendingModels(session, cart);
 			
 			//Remove the Delivery Pass Session ID If any.
 			session.removeAttribute(DlvPassConstants.DLV_PASS_SESSION_ID);
@@ -749,7 +742,7 @@ public class SubmitOrderAction extends WebActionSupport {
 			
 			// SmartStore
 			//  record customer and variant for the particular order
-			FDCustomerManager.logCustomerVariants(user, orderNumber);
+//			FDCustomerManager.logCustomerVariants(user, orderNumber);
 			
 			/*APPDEV-1888 - record if the referral promo is not applied due to unique FN+LN+Zipcode rule.*/
 			if(user.isReferralPromotionFraud()) {
@@ -796,12 +789,14 @@ public class SubmitOrderAction extends WebActionSupport {
 			}
 			user.setRedeemedPromotion(null);
 			
+			if(!dlvPassCart){
 			//Siva: Modified to track user last order zipcode and not a pick up order.
 			if(cart != null && cart.getDeliveryAddress() != null && !(cart.getDeliveryAddress() instanceof ErpDepotAddressModel)) {
 				user.setZipCode(cart.getDeliveryAddress().getZipCode());
 				user.setSelectedServiceType(cart.getDeliveryAddress().getServiceType());
 				//Added the following line for zone pricing to keep user service type up-to-date.
 				user.setZPServiceType(cart.getDeliveryAddress().getServiceType());
+				}
 			}
 			
 			user.invalidateCache();

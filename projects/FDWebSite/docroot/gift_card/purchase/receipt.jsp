@@ -58,20 +58,9 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 <%
 FDSessionUser sessionuser = (FDSessionUser)session.getAttribute(SessionName.USER);
 EnumGiftCardType gcType = sessionuser.getGiftCardType();
-
-
-
 String orderNumber = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
 %>
 <fd:GetOrder id='cart' saleId='<%=orderNumber%>'>
-	<script type="text/javascript">
-		<fd:CmShop9 order="<%=cart%>"/>
-		<fd:CmOrder order="<%=cart%>"/>
-		<fd:CmRegistration force="true"/>
-		<fd:CmConversionEvent eventId="became_a_customer"/>
-	</script>
-
-
 <%
 	FDRecipientList recipients = cart.getGiftCardRecipients();
 

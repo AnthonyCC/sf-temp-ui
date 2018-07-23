@@ -1019,6 +1019,17 @@
         <div class="link"><a href="/test/carousel/index.jsp">/test/carousel/index.jsp</a></div>
         <div class="pageDesc">Help to test Carousel</div>
     </div>
+    
+    <div class="tag coupon">
+        <div class="pageName"><span>Coupon Info</span></div>
+        <div class="link"><a href="/test/ecoupon/index.jsp">/test/ecoupon/index.jsp</a></div>
+        <div class="pageDesc">Show coupon info and refresh cache</div>
+    </div>
+    <div class="tag coupon">
+        <div class="pageName"><span>Coupon Display Tests</span></div>
+        <div class="link"><a href="/test/ecoupon/display_tests.jsp">/test/ecoupon/display_tests.jsp?productId=<span class="reqVar">&lt;productId&gt;</span>&catId=<span class="reqVar">&lt;catId&gt;</span></a></div>
+        <div class="pageDesc">Test coupon display</div>
+    </div>
 
 	<hr />
 </div>

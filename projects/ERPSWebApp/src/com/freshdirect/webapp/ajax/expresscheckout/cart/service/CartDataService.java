@@ -37,9 +37,6 @@ import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ZonePriceInfoModel;
-import com.freshdirect.fdstore.coremetrics.CmContextUtility;
-import com.freshdirect.fdstore.coremetrics.extradata.CoremetricsExtraData;
-import com.freshdirect.fdstore.coremetrics.util.CoremetricsUtil;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -91,6 +88,7 @@ import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
+import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 import com.freshdirect.webapp.util.JspMethods;
 import com.freshdirect.webapp.util.ShoppingCartUtil;
 import com.freshdirect.webapp.util.StandingOrderHelper;
@@ -136,7 +134,7 @@ public class CartDataService {
         if (hasSession) {
         updateUserAndCart(request, user);
         }
-        FDCartModel cart = loadUserShoppingCart(user, userId);
+        FDCartModel cart = loadUserShoppingCart(request, user, userId);
         if (user.getIdentity() != null) {
             FDCustomerCreditUtil.applyCustomerCredit(cart, user.getIdentity());
         }
@@ -155,7 +153,7 @@ public class CartDataService {
     public Map<String, Object> loadCartDataSubTotalBox(HttpServletRequest request, FDUserI user) throws HttpErrorResponse, FDResourceException, JspException {
         String userId = loadUser(user);
         updateUserAndCart(request, user);
-        FDCartModel cart = loadUserShoppingCart(user, userId);
+        FDCartModel cart = loadUserShoppingCart(request, user, userId);
         if (user.getIdentity() != null) {
             FDCustomerCreditUtil.applyCustomerCredit(cart, user.getIdentity());
         }
@@ -184,7 +182,7 @@ public class CartDataService {
 
     public CartData updateCartData(HttpServletRequest request, FDUserI user) throws HttpErrorResponse, FDResourceException, JspException {
         String userId = loadUser(user);
-        FDCartModel cart = loadUserShoppingCart(user, userId);
+        FDCartModel cart = loadUserShoppingCart(request, user, userId);
         // cart.setTip(5.00);
         CartData cartData = new CartData();
         synchronized (cart) {
@@ -351,8 +349,10 @@ public class CartDataService {
         return userId;
     }
 
-    private FDCartModel loadUserShoppingCart(FDUserI user, String userId) throws HttpErrorResponse {
-        FDCartModel cart = StandingOrderHelper.isSO3StandingOrder(user) ? user.getSoTemplateCart() : user.getShoppingCart();
+    private FDCartModel loadUserShoppingCart(HttpServletRequest request, FDUserI user, String userId) throws HttpErrorResponse {
+        //FDCartModel cart = StandingOrderHelper.isSO3StandingOrder(user) ? user.getSoTemplateCart() : user.getShoppingCart();
+    	boolean dlvPassCart = null !=request.getParameter("dlvPassCart") && "true".equalsIgnoreCase(request.getParameter("dlvPassCart")) ? true: false;
+        FDCartModel cart = UserUtil.getCart(user, "", dlvPassCart);
 
         if (cart == null) {
             LOG.error("No cart found for user " + userId);
@@ -678,6 +678,9 @@ public class CartDataService {
             cartData.setDisplayCheckout(StandingOrderHelper.isSO3StandingOrder(user) ? false : true);
             cartData.setSoftLimit(StandingOrderHelper.formatDecimalPrice(ErpServicesProperties.getStandingOrderSoftLimit()));
             cartData.setHardLimit(StandingOrderHelper.formatDecimalPrice(ErpServicesProperties.getStandingOrderHardLimit()));
+            
+            boolean dlvPassCart = null !=request.getParameter("dlvPassCart") && "true".equalsIgnoreCase(request.getParameter("dlvPassCart")) ? true: false;
+            cartData.setDlvPassCart(dlvPassCart);
 
             cartData.setCouponMessage(populateCouponMessage(user, cartLines));
             if (StandingOrderHelper.isSO3StandingOrder(user)) {
@@ -979,13 +982,6 @@ public class CartDataService {
                         }
                     } else {
                         updateCartLinesByChangeType(user, cart, clines2report, serverName, cartLine, change, changeType, cartData, oldQuantity);
-                    }
-
-                    // [APPDEV-4558] check if CM reporting is enabled
-                    if (CmContextUtility.isCoremetricsAvailable(user)) {
-                        CoremetricsExtraData cmExtraData = new CoremetricsExtraData();
-                        cmExtraData.setCustomerType(CoremetricsUtil.defaultService().getCustomerTypeByOrderCount(user));
-                        CartOperations.populateCoremetricsShopTag(cartData, cartLine, cmExtraData);
                     }
                 }
         } catch (Exception e) {

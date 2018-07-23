@@ -145,7 +145,6 @@ if ( skuSize == 0 ) {
 
 <form id='product_form' method='post' name="productForm" action="<%= formAction %>">
 	<fd:AddToCartPending id="product_form"/>
-	<fd:CmFieldDecorator/>
 <%  if (request.getParameter("iatcNamespace") != null) { %>
 	<input type="hidden" name="iatcNamespace" value="<%= request.getParameter("iatcNamespace") %>">
 <%  } %>

@@ -2,7 +2,12 @@ package com.freshdirect.fdlogistics.model;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.fdlogistics.deserializer.EnumRegionServiceTypeDeserializer;
+import com.freshdirect.fdlogistics.deserializer.EnumReservationClassDeserializer;
+import com.freshdirect.fdlogistics.deserializer.EnumReservationTypeDeserializer;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.logistics.delivery.model.EnumRegionServiceType;
@@ -16,6 +21,7 @@ public class FDReservation extends ModelSupport {
 	private static final long	serialVersionUID	= -8318474657729420003L;
 	
 	private final Date expirationDateTime;
+	@JsonDeserialize(using = EnumReservationTypeDeserializer.class)
 	private final EnumReservationType type;
 	private FDTimeslot timeslot;
 	private final String customerId;
@@ -23,8 +29,10 @@ public class FDReservation extends ModelSupport {
 	private final String orderId;
 	private final boolean chefsTable;
 	private final int statusCode;
+	@JsonDeserialize(using = EnumReservationClassDeserializer.class)
 	private final EnumReservationClass rsvClass;
 	private boolean hasSteeringDiscount;
+	@JsonDeserialize(using = EnumRegionServiceTypeDeserializer.class)
 	private EnumRegionServiceType regionSvcType;
 	private FDDeliveryETAModel deliveryETA;
 	private String deliveryFeeTier;
@@ -57,17 +65,20 @@ public class FDReservation extends ModelSupport {
 	}
 	
 	public FDReservation(
-			PrimaryKey pk,
-			FDTimeslot timeslot,
-			Date expirationDateTime,
-			EnumReservationType type,
-			String customerId,
-			String addressId,
-			ErpAddressModel address,
-			boolean chefsTable,
-			String orderId,
-			int statusCode, EnumReservationClass rsvClass, boolean hasSteeringDiscount,
-			EnumRegionServiceType regionSvcType, String deliveryFeeTier) {
+			@JsonProperty("pk") PrimaryKey pk,
+			@JsonProperty("timeslot") FDTimeslot timeslot,
+			@JsonProperty("expirationDateTime") Date expirationDateTime,
+			@JsonProperty("type") EnumReservationType type,
+			@JsonProperty("customerId") String customerId,
+			@JsonProperty("addressId") String addressId,
+			@JsonProperty("address") ErpAddressModel address,
+			@JsonProperty("chefsTable") boolean chefsTable,
+			@JsonProperty("orderId") String orderId,
+			@JsonProperty("statusCode") int statusCode, 
+			@JsonProperty("rsvClass") EnumReservationClass rsvClass, 
+			@JsonProperty("hasSteeringDiscount") boolean hasSteeringDiscount,
+			@JsonProperty("regionSvcType") EnumRegionServiceType regionSvcType, 
+			@JsonProperty("deliveryFeeTier") String deliveryFeeTier)  {
 			this.setPK(pk);
 			this.timeslot = timeslot;
 			this.expirationDateTime = expirationDateTime;

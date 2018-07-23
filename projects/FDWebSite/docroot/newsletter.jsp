@@ -102,7 +102,6 @@ if(ContentFactory.getInstance().isEligibleForDDPP()){
 
 		
 		%>
-		<fd:CmPageView wrapIntoScriptTag="true" currentFolder="<%=ContentFactory.getInstance().getContentNode(catId)%>"/>
 		<tr><td colspan="4" align="center">
 		<%@ include file="/includes/i_dynamicRows_logic.jspf"%>
 		</td></tr>

@@ -71,10 +71,6 @@ HEAD items
 	--%><tmpl:put name="head_javascript">
 			<%@ include file="/common/template/welcome_opt/i_head_javascript.jspf" %>
 		</tmpl:put><%--
-	coremetrics
-	--%><tmpl:put name="head_coremetrics">
-			<fd:CmInit/>
-		</tmpl:put><%--
 
 HEAD
 
@@ -83,14 +79,11 @@ HEAD
 		<tmpl:get name="head_metatags" />
 		<tmpl:get name="head_css" />
 		<tmpl:get name="head_javascript" />
-		<tmpl:get name="head_coremetrics" />
-	</tmpl:put><%--
+\	</tmpl:put><%--
 	
 BODY ITEMS
 	IPToolbar
 	--%><tmpl:put name="body_start">
-			<%-- coremetrics body tags --%>
-			<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 			<%-- everything else before top nav --%>
 			<%@ include file="/common/template/welcome_opt/i_body_start.jspf" %>
 		</tmpl:put><%--

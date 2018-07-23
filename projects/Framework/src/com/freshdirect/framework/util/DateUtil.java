@@ -35,9 +35,7 @@ public class DateUtil {
 	private static final DateFormat MIN_HOUR_FORMATTER = new SimpleDateFormat("h:mm a");
 	private static final DateFormat DAY_INWEEK_FORMATTER = new SimpleDateFormat("E");
 	private static final DateFormat MIN_AMPM_FORMATTER = new SimpleDateFormat("hh_mm_a");
-	
-	private static final DateFormat CM_TIMESLOT_FORMATTER = new SimpleDateFormat("HHmm");
-	
+
 	private static final DateFormat MON_DATE_YEAR_FORMATTER = new SimpleDateFormat("MMddyyyy");
 	
 	private static final DateFormat dateFormatwithTime = new SimpleDateFormat("MM/dd/yyyy hh:mm aaa");
@@ -265,10 +263,6 @@ public class DateUtil {
 		} else {
 			return null;
 		}
-	}
-	
-	public static String formatCmTimeslot(Date dateValue){
-		return CM_TIMESLOT_FORMATTER.format(dateValue);
 	}
 	
 	public static String formatTime(Date dateValue) {

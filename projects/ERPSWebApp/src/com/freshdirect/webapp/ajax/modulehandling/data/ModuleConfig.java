@@ -6,7 +6,7 @@ public class ModuleConfig implements Serializable {
 
     private static final long serialVersionUID = 686703857540321909L;
 
-    private String cmEventSource;
+    private String eventSource;
     private String moduleId;
     private String sourceType;
 
@@ -28,25 +28,23 @@ public class ModuleConfig implements Serializable {
     private boolean useViewAllPopup;
     private String moduleVirtualCategory;
     private boolean showViewAllOverlayOnImages;
-    
+    private ModuleEditorialContainer editorialContainer;
     private boolean lazyloadImages;
 
     public boolean isLazyloadImages() {
-		return lazyloadImages;
-	}
-
-	public void setLazyloadImages(boolean lazyloadImages) {
-		this.lazyloadImages = lazyloadImages;
-	}
-
-	private ModuleEditorialContainer editorialContainer;
-
-    public String getCmEventSource() {
-        return cmEventSource;
+        return lazyloadImages;
     }
 
-    public void setCmEventSource(String cmEventSource) {
-        this.cmEventSource = cmEventSource;
+    public String getEventSource() {
+        return eventSource;
+    }
+	
+    public void setLazyloadImages(boolean lazyloadImages) {
+	this.lazyloadImages = lazyloadImages;
+    }
+
+    public void setEventSource(String eventSource) {
+        this.eventSource = eventSource;
     }
 
     public String getModuleId() {

@@ -81,7 +81,7 @@ var FreshDirect = FreshDirect || {};
       var target = $jq.QueryString["successPage"] + window.top.location.hash;
       if (target === 'undefined' || target === '') { target = window.top.location.pathname+window.top.location.search; }
       target = encodeURI(target);
-      
+
       if (isMouseEvent && fd.properties && fd.properties.isLightSignupEnabled) {
         e.preventDefault();
         if (fd.properties.isSocialLoginEnabled) {

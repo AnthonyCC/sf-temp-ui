@@ -13,7 +13,6 @@ var FreshDirect = FreshDirect || {};
 			CARTDATA_TOTAL = 'subTotal',
 			CARTDATA_SAVE_AMOUNT = 'saveAmount',
 			CARTDATA_MODIFY = 'modifyOrder',
-			CARTDATA_COREMETRICS = 'coremetricsScript',
 			CARTDATA_SECTIONS = 'cartSections',
 			CARTDATA_CARTLINES = 'itemCount',
       HEADER_COUNTER = 'requestCounter',
@@ -148,19 +147,6 @@ var FreshDirect = FreshDirect || {};
     }
   };
 
-  /* this shouldn't exist */
-  var coremetricsEval = function(cartData){
-    if(cartData === false ) return false;
-    try {
-	    if(cartData[CARTDATA_COREMETRICS]) {
-	    	eval(cartData[CARTDATA_COREMETRICS]);
-	    }
-    } catch (e) {
-		// Ignore any errors coming from coremetrics:
-    	// if coremetrics fails we don't want the whole js code to die ...
-    	// console.log( "coremetrics script has failed! " + e );
-	}
-  }
 
   var updateHtml = function(cartData) {
     if(cartData === false ) {
@@ -279,9 +265,6 @@ var FreshDirect = FreshDirect || {};
     var ajaxData = createAjaxRequest(data);
     var ajax = Bacon.fromPromise($.ajax(ajaxData)); 
     focusedElementId = document.activeElement && document.activeElement.id;
-
-    /* if there is a value, then eval the coremetrics scripts */
-    ajax.onValue(coremetricsEval);
 
     /* dispatch google tag manager related data */
     ajax.onValue(gtmDispatch);

@@ -27,7 +27,6 @@
 <%@ page import="com.freshdirect.framework.util.log.LoggerFactory"%>
 <%@ page import="com.freshdirect.fdstore.util.FilteringNavigator"%>
 <%@ page import="com.freshdirect.fdstore.content.util.QueryParameterCollection"%>
-<%@ page import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil"%>
 <%@ page import="com.freshdirect.webapp.util.FDURLUtil"%>
 <%@ page import="com.freshdirect.smartstore.fdstore.FDStoreRecommender"%>
 <%@ page import="com.freshdirect.smartstore.SessionInput"%>
@@ -110,9 +109,6 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 
 	<tmpl:put name="content-header">
 		<form class="span-17 last"><span id="searchinput-wrapper" class="middle"><input type="text" name="searchParams" id="searchinput" class="top" data-component="autocomplete" autocomplete="off" value="<%= nav.getSearchTerm() %>"/></span><input type="submit" value="search" id="searchbutton" class="button middle brown_bg white bold"/></form>
-		<fd:CmPageView wrapIntoScriptTag="true" searchTerm="<%=search.getSearchTerm()%>" searchResultsSize="<%=search.getProducts().size()%>" suggestedTerm="<%=search.getSuggestedTerm()%>" recipeSearchResultsSize="<%=search.getRecipes().size()%>"/>
-		<fd:CmElement wrapIntoScriptTag="true" elementCategory="search_filter" searchNavigator="<%= nav %>" />
-		<fd:CmElement wrapIntoScriptTag="true" elementCategory="search_sort" searchNavigator="<%= nav %>" />
 	</tmpl:put>
 
 
@@ -220,14 +216,11 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	<% if (rec != null) { %>
 				<div class="search-recommender">
 			<h3><%= rec.getVariant().getServiceConfig().getPresentationTitle() %></h3>
-			<script type="text/javascript">
-				var search_recommender_events = {"afterScroll":  <fd:CmElement wrapIntoFunction="true" siteFeature="<%= rec.getVariant().getSiteFeature().getName() %>" elementCategory="carousel"/>} 
-			</script>
-			<display:Carousel id="cat1_carousel" carouselId="cat1_carousel" width="816" numItems="4" showCategories="false" itemsToShow="<%= rec.getProducts() %>" trackingCode="<%= trk %>" maxItems="32" eventHandlersObj="search_recommender_events">
+			<display:Carousel id="cat1_carousel" carouselId="cat1_carousel" width="816" numItems="4" showCategories="false" itemsToShow="<%= rec.getProducts() %>" trackingCode="<%= trk %>" maxItems="32" >
 				<span class="smartstore-carousel-item">
 					<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
 					<% ProductImpression pi = confStrat.configure((ProductModel)currentItem, confContext); %>
-					<a href="<%=FDURLUtil.getProductURI(pi.getProductModel(), trk)%>" hidden style="display: none;" class="product-name-link"></a> <%-- For Coremetrics impression tracking --%>
+					<a href="<%=FDURLUtil.getProductURI(pi.getProductModel(), trk)%>" hidden style="display: none;" class="product-name-link"></a> 
 					<% pageContext.setAttribute("PRODUCT_BOX_VARIANT", rec.getVariant().getId()); %>
 					<div class="grid-item-container"><%@ include file="/includes/product/i_product_box.jspf" %></div>
 					</display:GetContentNodeWebId>

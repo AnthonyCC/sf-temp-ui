@@ -1,13 +1,10 @@
 package com.freshdirect.webapp.ajax.expresscheckout.data;
 
-import java.util.List;
-
 public class DrawerData {
 
 	private String id;
 	private String title;
 	private boolean enabled;
-	private List<String> onOpenCoremetrics;
 
 	/**
 	 * @return the id
@@ -46,12 +43,4 @@ public class DrawerData {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
-
-    public List<String> getOnOpenCoremetrics() {
-		return onOpenCoremetrics;
-	}
-
-	public void setOnOpenCoremetrics(List<String> onOpenCoremetrics) {
-		this.onOpenCoremetrics = onOpenCoremetrics;
-	}
 }

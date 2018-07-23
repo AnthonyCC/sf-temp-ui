@@ -35,12 +35,10 @@
   
 </head>
 
-<!--[if lt IE 9]><body class="ie8" data-cmeventsource="<tmpl:get name='cmeventsource'/>"><![endif]-->
-<!--[if gt IE 8]><body data-cmeventsource="<tmpl:get name='cmeventsource'/>"><![endif]-->
-<!--[if !IE]><!--><body data-cmeventsource="<tmpl:get name='cmeventsource'/>"><!--<![endif]-->
+<!--[if lt IE 9]><body class="ie8" data-eventsource="<tmpl:get name='eventsource'/>"><![endif]-->
+<!--[if gt IE 8]><body data-eventsource="<tmpl:get name='eventsource'/>"><![endif]-->
+<!--[if !IE]><!--><body data-eventsource="<tmpl:get name='eventsource'/>"><!--<![endif]-->
   
-<%@ include file="/shared/template/includes/i_body_start.jspf" %>
-    
 <%@ include file="/common/template/includes/globalnav.jspf" %> 
 
 <%-- TODO --%>

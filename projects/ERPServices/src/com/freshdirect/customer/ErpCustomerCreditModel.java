@@ -11,6 +11,7 @@ package com.freshdirect.customer;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.framework.core.PrimaryKey;
 
@@ -34,8 +35,10 @@ public class ErpCustomerCreditModel extends ErpCreditModel {
 	public ErpCustomerCreditModel() {
 		super();
 	}
-	
-	public ErpCustomerCreditModel(PrimaryKey complaintPk, String department, double amount, ErpAffiliate affiliate) {
+
+	public ErpCustomerCreditModel(@JsonProperty("complaintPk") PrimaryKey complaintPk,
+			@JsonProperty("department") String department, @JsonProperty("amount") double amount,
+			@JsonProperty("affiliate") ErpAffiliate affiliate) {
 		super(department, amount, affiliate);
 		this.complaintPk = complaintPk;
 		this.remainingAmount = amount;

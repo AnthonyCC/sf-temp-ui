@@ -16,6 +16,7 @@ public class HLBrandProductAdRequest implements Serializable {
     private String lat;
     private String pdUserId;
     private String productId;
+    private String selectedServiceType;
     
     
 
@@ -81,6 +82,14 @@ public class HLBrandProductAdRequest implements Serializable {
 
 	public void setProductId(String productId) {
 		this.productId = productId;
+	}
+
+	public String getSelectedServiceType() {
+		return selectedServiceType;
+	}
+
+	public void setSelectedServiceType(String selectedServiceType) {
+		this.selectedServiceType = selectedServiceType;
 	}
 
 	

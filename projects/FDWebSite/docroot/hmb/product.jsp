@@ -54,7 +54,7 @@
 		       <label class="agree"><input type="checkbox" name="agree" data-component="agree-terms" />I have read and agree to the terms</label>
 		       </c:if>
 		    </div>
-		    <div class="addtocart-right center-content<%= (mobWeb) ? " pdp-atc" : "" %><%= (user.isEligibleForStandingOrders()) ? " soShow" : "" %>" data-component="product" data-cmeventsource="pdp_main">
+		    <div class="addtocart-right center-content<%= (mobWeb) ? " pdp-atc" : "" %><%= (user.isEligibleForStandingOrders()) ? " soShow" : "" %>" data-component="product" data-eventsource="pdp_main">
 		      <soy:render template="pdp.productData" data="${productPotato}" />
 		      <% if (CartName.MODIFY_CART.equals(cartMode)) { %>
 				<%
@@ -72,7 +72,7 @@
 			<% } %>
 		    </div>
 		  </div>
-		  <div class="thxgiving-recommendations transactional<%= (mobWeb) ? " pdp-optProducts" : "" %>" data-cmeventsource="tgrec">
+		  <div class="thxgiving-recommendations transactional<%= (mobWeb) ? " pdp-optProducts" : "" %>" data-eventsource="tgrec">
 		      <soy:render template="pdp.bundleProductRecommendation" data="${productPotato.holidayMealBundleContainer}"/>
 		  </div>
 		</div>

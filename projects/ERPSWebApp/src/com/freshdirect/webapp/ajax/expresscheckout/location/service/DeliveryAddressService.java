@@ -203,15 +203,15 @@ public class DeliveryAddressService {
         return result;
     }
 
-    public List<LocationData> loadAddress(final FDCartI cart, final FDUserI user, final HttpSession session, Collection<ErpAddressModel> shippingAddresses, ErpCustomerInfoModel customerInfo) throws FDResourceException, JspException, RedirectToPage {
+    public List<LocationData> loadAddress(final FDCartI cart, final FDUserI user, final HttpSession session, Collection<ErpAddressModel> shippingAddresses) throws FDResourceException, JspException, RedirectToPage {
         if (cart instanceof FDOrderI) {
             return loadSuccessLocations(cart, user);
         } else {
-            return loadDeliveryAddress(cart, user, session, shippingAddresses, customerInfo);
+            return loadDeliveryAddress(cart, user, session, shippingAddresses);
         }
     }
 
-    public List<LocationData> loadDeliveryAddress(final FDCartI cart, final FDUserI user, final HttpSession session, Collection<ErpAddressModel> shippingAddresses, ErpCustomerInfoModel customerInfo) throws FDResourceException, JspException, RedirectToPage {
+    public List<LocationData> loadDeliveryAddress(final FDCartI cart, final FDUserI user, final HttpSession session, Collection<ErpAddressModel> shippingAddresses) throws FDResourceException, JspException, RedirectToPage {
         List<LocationData> addresses = new ArrayList<LocationData>();
         List<ValidationError> addressSelectionErrors = new ArrayList<ValidationError>();
         String selectedDeliveryAddressId = null;
@@ -313,7 +313,7 @@ public class DeliveryAddressService {
             	}
 
             if (user.isPickupUser()) {
-                final ErpCustomerInfoModel customerInfoModel = null == customerInfo ? FDCustomerFactory.getErpCustomerInfo(user.getIdentity()): customerInfo;
+                final ErpCustomerInfoModel customerInfoModel = FDCustomerFactory.getErpCustomerInfo(user.getIdentity());
                 for (final FDDeliveryDepotModel pickupDeliveryDepotModel : loadFilteredPickupDepotModel()) {
                     for (Object deliveryLocationModel : pickupDeliveryDepotModel.getLocations()) {
                         if (deliveryLocationModel instanceof FDDeliveryDepotLocationModel) {

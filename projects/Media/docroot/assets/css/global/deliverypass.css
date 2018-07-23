@@ -43,7 +43,9 @@
 .dpn-success-container{
 	max-width: 660px;
 }
-
+.deliverypass-payment{
+	max-width: 375px;
+}
 .dpn-header{
 	background: #458b4c;
 	background-image: linear-gradient(to left, #4fa157, #458d4e);
@@ -174,7 +176,8 @@ button.dpn-footer-login-button{
 	text-align: center;
 }
 
-.dpn-success-header{
+.dpn-success-header,
+.deliverypass-payment-header{
 	background: #458b4c;
 	background-image: linear-gradient(to left, #4fa157, #458d4e);
     color: #FFFFFF;
@@ -183,10 +186,143 @@ button.dpn-footer-login-button{
     padding: 40px 100px;
     text-align: center;
 }
-
-.dpn-success-header p{
+.deliverypass-payment-header{
+	padding: 52px 50px;
+    font-size: 30px;
+}
+.dpn-success-header p,
+.deliverypass-payment-header p{
 	margin: 0;
 }
+.deliverypass-payment #ec-drawer{
+	
+}
+.deliverypass-payment [data-component="drawer"][data-drawer-columns="1"] li{
+	padding: 0px 24px;
+}
+.deliverypass-payment .drawer__content{
+	width: auto;
+}
+.deliverypass-payment .cartsection__title,
+.deliverypass-payment [fdform-container="promotion"],
+.deliverypass-payment .promotion-text span,
+.deliverypass-payment .cartsection__cartline .cartline-imageholder,
+.deliverypass-payment .cartline-titleholder .cartline-descriptor,
+.deliverypass-payment .cartsection__cartline .cartline-delete,
+.deliverypass-payment .cartline-quantity-bigger.cartline-quantity,
+.deliverypass-payment .cartsection__cartline .cartline-unitprice,
+.deliverypass-payment .cartsection__cartline .cartline-legend,
+.deliverypass-payment #subtotalbox1 [data-boxid="subtotal"]{
+	display: none;
+}
+.deliverypass-payment #expresscheckout.deliverypasscheckout #cartcontent .promotions{
+	background: none;
+	padding: 20px;
+	border: 0;
+}
+.deliverypass-payment #cartcontent .promotions .promotion-item{
+	width: auto;
+}
+.deliverypass-payment .promotion-text{
+	font-size: 14px;
+	font-weight: bold;
+	margin: 0;
+}
+.deliverypass-payment #cartcontent .promotion-input{
+	font-size: 14px;
+	padding: 5px 4px;
+}
+.deliverypass-payment .promotion-item .promotion-input ~ button{
+	text-transform: capitalize;
+	font-size: 14px;
+}
+.deliverypass-payment .cartcontent{
+	padding: 0 0 0 20px;
+}
+.deliverypass-payment #cartcontent .cartsection__cartline{
+	padding: 0 0 10px;
+}
+
+.deliverypass-payment #cartcontent .cartsection__cartline .cartline-title{
+	width: 265px;
+	padding: 0;
+}
+.deliverypass-payment .cartsection__cartline .cartline-price{
+	width: 70px;
+}
+.deliverypass-payment .cartsection__cartline .cartline-pricewrapper{
+	margin: 0;
+}
+.deliverypass-payment .cartsection__totalwrapper{
+	border:0;
+	padding: 0;
+}
+.deliverypass-payment .subtotal__row{
+	font-size: 14px;
+	padding: 0 0 10px;
+}
+.deliverypass-payment #cartcontent .cartsection__totalwrapper .subtotal__rowcell-left{
+	width: 265px;
+	margin: 0;
+	font-weight: normal;
+	color: #444444;
+}
+.deliverypass-payment #cartcontent #subtotalbox1 .subtotal__rowcell-mid,
+.deliverypass-payment #cartcontent .subtotal__row .subtotal__rowcell-right{
+	width: 70px;
+	margin: 0;
+	font-weight: normal;
+	text-align: right;
+}
+.deliverypass-payment .total{
+	background: none;
+	border: 0;
+	margin: 0;
+	padding: 6px 0 0 20px;
+}
+.deliverypass-payment .total #subtotalbox2{
+	padding: 0;
+	float: none;
+}
+.deliverypass-payment .total #subtotalbox2 .subtotal__row{
+	padding: 0;
+	text-align: left;
+}
+.deliverypass-payment .total #subtotalbox2 .subtotal__rowcell-left.st_label_ssOrderTotal{
+	width: 230px;
+	line-height: normal;
+	font-size: 16px;
+	margin: 0;
+}
+.deliverypass-payment .total #subtotalbox2 .subtotal__rowcell-mid,
+.deliverypass-payment #subtotalbox2 .row-size-big .subtotal__rowcell-mid.st_val{
+	text-align: right;
+	font-size: 16px;
+	width: 105px;
+}
+.deliverypass-payment .total #subtotalbox2 .strl_text{
+	color: #444444;
+	font-weight: bold;
+}
+.deliverypass-payment #cartcontent .cart-button{
+	padding: 45px 20px 20px 0;
+}
+.deliverypass-payment [fdform="checkout"] button{
+	width: 315px;
+	height: 36px;
+	margin: auto;
+	text-align: center;
+	font-size: 14px;
+	font-family: Verdana;
+	font-weight: bold;
+}
+.deliverypass-payment .deliverypass-payment-cancel{
+	font-size: 14px;
+	color: #458d4e;
+	text-align: center;
+	padding: 0 0 40px;
+}
+
 .dpn-success-check{
 	max-height: 140px;
 }
@@ -649,4 +785,100 @@ button.dpn-footer-login-button{
 }
 .dp-payment-method-cc{
 
+}
+.dp-plans-container{
+	max-width: 622px;
+}
+.dp-plans-header{
+	padding: 40px 80px 20px;
+}
+.dp-plans-header-fd{
+	margin: 0 0 0 23px;
+}
+.dp-plans-header-fd img{
+	width: 127px;
+}
+.dp-plans-header-dp{
+	font-size: 48px;
+	margin: 0 0 0 23px;
+}
+.dp-plans-header-dp sup{
+	font-size: 18px;
+}
+.dp-plans-header-truck{
+	
+}
+.dp-plans-header-truck img{
+	padding: 0px 0 0 20px;
+	height: 46px;
+}
+.dp-plans-header-text{
+	font-size: 18px;
+	text-align: center;
+	padding: 7px 0 0;
+}
+.dp-plans-header-text .dp-plans-header-text-circle{
+	color: #4fa157;
+	font-size: 15px;
+	vertical-align: top;
+}
+.dp-plans-item{
+	padding: 0 0 20px 30px;
+}
+.dp-plans-item-header{
+	font-size: 16px;
+}
+.dp-plans-item-header .dp-plans-item-header-name{
+	font-size: 20px;
+	font-weight: bold;
+}
+.dp-plans-item-cont{
+	float: left;
+    border: solid 2px #4fa157;
+    border-top: solid 4px #4fa157;
+    padding: 16px 24px;
+    width: 280px;
+    box-sizing: border-box;
+}
+.dp-plans-item .dp-plans-item-cont-first{
+	border-right: 0;
+}
+.dp-plans-item-cont-term{
+	font-size: 18px;
+}
+.dp-plans-item-cont-cost{
+	font-size: 14px;
+    float: left;
+    width: 125px;
+}
+.dp-plans-item-cont-cost-amount{
+	font-size: 36px;
+}
+.dp-plans-item-cont-permonth{
+	font-size: 16px;
+	float: left;
+    width: 125px;
+}
+.dp-plans-item-cont button{
+	margin: 10px 0 0 13px;
+	padding: 10px 13px;
+	font-size: 14px;
+	font-family: Verdana;
+}
+.dp-plans-bottom{
+	font-size: 14px;
+    text-align: center;
+    padding: 30px 38px 40px;
+}
+.dp-plans-bottom-text{
+	
+}
+.dp-plans-bottom-terms{
+	margin: 8px;
+}
+.dp-plans-bottom a{
+	
+}
+.dp-plans-bottom sup{
+	
 }

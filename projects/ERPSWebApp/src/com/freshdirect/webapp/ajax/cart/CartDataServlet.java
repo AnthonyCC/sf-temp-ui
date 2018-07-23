@@ -31,7 +31,6 @@ import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.analytics.service.GoogleAnalyticsDataService;
 import com.freshdirect.webapp.ajax.cart.data.CartData;
 import com.freshdirect.webapp.ajax.cart.data.CartRequestData;
-import com.freshdirect.webapp.taglib.coremetrics.CmShop5Tag;
 import com.freshdirect.webapp.util.JspMethods;
 
 public class CartDataServlet extends BaseJsonServlet {
@@ -149,11 +148,6 @@ public class CartDataServlet extends BaseJsonServlet {
                             cartData.setGoogleAnalyticsData(GoogleAnalyticsDataService.defaultService().populateCartLineChangeGAData(cartLine, "-" + Double.toString(oldQuantity)));
 	    				}
 	    			}
-	    			
-	    			// populate coremetrics data
-                    CmShop5Tag cmTag = new CmShop5Tag();
-                    cmTag.setSession(request.getSession());
-	    			CartOperations.populateCoremetricsShopTag( cartData, clines2report, cart, cmTag);
 	    			
 	        	} catch (Exception e) {
 	        		LOG.error("Error while modifying cart for user " + userId, e);

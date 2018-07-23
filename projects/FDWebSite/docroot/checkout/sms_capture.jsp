@@ -34,7 +34,6 @@
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="0" topmargin="0">
-<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 
 <fd:RegistrationController actionName='<%=request.getParameter("actionName")%>' result='result'>
 <%

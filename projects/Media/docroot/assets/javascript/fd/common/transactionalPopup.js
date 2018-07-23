@@ -74,7 +74,7 @@ var FreshDirect = FreshDirect || {};
             relatedHolder = $('#'+popupId+' .transactional-related-item'),
             mainHolder = $('#'+popupId+' .transactional-main-item'),
             learnMoreLink = $('#'+popupId+' .transactional-popup-learnmore'),
-            cmEvSource = "",
+            eventSource = "",
             maxImageSize = 0,
             pimg = $(target).find('.portrait-item-burst_wrapper')[0],
             $img = $(pimg).find('img.portrait-item-productimage'),
@@ -132,11 +132,11 @@ var FreshDirect = FreshDirect || {};
             $(el).attr('fdform', 'trnp_'+$(el).attr('fdform'));
           });
 
-          $('#'+popupId).attr('data-cmeventsource', null);
-          cmEvSource = $(target).closest('[data-cmeventsource]').data('cmeventsource');
+          $('#'+popupId).attr('data-eventsource', null);
+          eventSource = $(target).closest('[data-eventsource]').data('eventsource');
 
-          if(cmEvSource && cmEvSource.length > 0){
-            $('#'+popupId).attr('data-cmeventsource', cmEvSource);
+          if(eventSource && eventSource.length > 0){
+            $('#'+popupId).attr('data-eventsource', eventSource);
           }
 
           if (this.adjustWidth) {
@@ -185,7 +185,7 @@ var FreshDirect = FreshDirect || {};
           $('#'+popupId+' [data-component="product"]').trigger('transactionalPopup-open');
 
           // set learn more url
-          learnMoreLink.attr('href', mainHolder.find('[data-productdata-name="productPageUrl"]').first().val() + (config.virtualCategory ? '&cm_vc="' + config.virtualCategory + '"' : ''));
+          learnMoreLink.attr('href', mainHolder.find('[data-productdata-name="productPageUrl"]').first().val());
 
           if ($('#'+popupId+' [data-component="product"]').hasClass('discontinued')) {
             learnMoreLink.hide();

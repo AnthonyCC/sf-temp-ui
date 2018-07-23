@@ -42,18 +42,20 @@ public class FDEventUtil {
 		EventLogger.getInstance().logEvent(event);
 	}
 
+	//Removing the calls to old analytics, to improve the web performance.
 	public static void logRecommendationImpression(String variantId, ContentKey contentKey) {
-		FDRecommendationEvent event = FDEventFactory.getImpressionEvent(variantId, contentKey);
-		ImpressionEventAggregator.getInstance().note(event);
+		/*FDRecommendationEvent event = FDEventFactory.getImpressionEvent(variantId, contentKey);
+		ImpressionEventAggregator.getInstance().note(event);*/
 	}
 
 	public static void flushImpressions() {
 		ImpressionEventAggregator.getInstance().flush();
 	}
 
+	//Removing the calls to old analytics, to improve the web performance.
 	public static void logRecommendationClickThrough(String variantId, ContentKey contentKey) {
-		FDRecommendationEvent event = FDEventFactory.getClickThroughEvent(variantId, contentKey);
-		ClickThroughEventAggregator.getInstance().note(event);
+		/*FDRecommendationEvent event = FDEventFactory.getClickThroughEvent(variantId, contentKey);
+		ClickThroughEventAggregator.getInstance().note(event);*/
 	}
 
 	public static void flushClickThroughs() {

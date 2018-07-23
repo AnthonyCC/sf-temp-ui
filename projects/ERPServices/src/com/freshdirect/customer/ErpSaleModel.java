@@ -79,7 +79,9 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 	public void setDeliveryPassId(String deliveryPassId) {
 		this.deliveryPassId = deliveryPassId;
 	}
-
+	public ErpSaleModel(){
+		
+	}
 
 	/**
 	 *
@@ -642,6 +644,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		if (EnumComplaintStatus.REJECTED.equals(newComplaint.getStatus())) {
 			allowedStatus.add(EnumSaleStatus.ENROUTE);
 			allowedStatus.add(EnumSaleStatus.CAPTURE_PENDING);
+			allowedStatus.add(EnumSaleStatus.SETTLEMENT_FAILED);
 		}
 
 		assertStatus(allowedStatus.toArray(new EnumSaleStatus[allowedStatus.size()]));

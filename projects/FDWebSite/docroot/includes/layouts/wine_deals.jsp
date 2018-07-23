@@ -117,15 +117,10 @@ FreshDirect.Wine.addTabItem("deals", "<%= "tab_" + subcategory.getContentKey().g
 			</display:ItemGrabber>
 		<div id="tab_<%= cat.getContentKey().getId() %>" class="fd-carousel-tab">
 			<display:ItemGrabber id="prods" category="<%= cat %>" depth="0" filterUnavailable="true">
-				<script type="text/javascript">
-					var cmPageCarousel = cmPageCarousel || {};
-					<%String handlerObj = "cmPageCarousel[\"" + cat.getContentKey().getId() + "\"]"; %>
-					<%=handlerObj%> = {"afterScroll":  <fd:CmElement wrapIntoFunction="true" carouselId='<%="wine-"+cat.getContentKey().getId()%>' elementCategory="carousel"/>} 
-				</script>
 				<display:Carousel id="carouselTag" carouselId="<%= cat.getContentKey().getId() %>" itemsToShow="<%= prods %>"
 						width="<%=W_WINE_DEALS_TOTAL-90%>" trackingCode="<%= trk %>"
 						hideContainer="<%= tabId %>" numItems="4" bottomHeader="<%= cat.getAltText() %>"
-						bottomHeaderClass="title14 wine-sienna" appendWineParams="<%= true %>" parentId="dealsTop" offset="80" eventHandlersObj='<%=handlerObj%>'><% ProductModel product = (ProductModel) currentItem; PriceCalculator pc = product.getPriceCalculator(); %>
+						bottomHeaderClass="title14 wine-sienna" appendWineParams="<%= true %>" parentId="dealsTop" offset="80" ><% ProductModel product = (ProductModel) currentItem; PriceCalculator pc = product.getPriceCalculator(); %>
 					<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
 						<display:ProductImage priceCalculator="<%= pc %>" showRolloverImage="true" action="<%= actionUrl %>"
 								useAlternateImage="<%= useAlternateImage %>" className="productImage" height="<%= imgHeight %>" enableQuickBuy="true" webId="<%= webId %>" excludeCaseDeals="true"/>

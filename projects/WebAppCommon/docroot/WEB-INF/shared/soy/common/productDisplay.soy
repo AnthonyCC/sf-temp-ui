@@ -4,7 +4,7 @@
  * @param data
  */
 {template .productDisplay autoescape="false"}
-	<form fdform="customize" fdform-submit="FreshDirect.components.AddToCart.formAddToCart" data-component="product" data-cmeventsource="{$data.cmEventSource}" data-productid="{$data.productId}">
+	<form fdform="customize" fdform-submit="FreshDirect.components.AddToCart.formAddToCart" data-component="product" data-eventsource="{$data.eventSource}" data-productid="{$data.productId}">
 		{if $data.soData and $data.soData.settingsData and $data.soData.settingsData.soSettings.isEligibleForStandingOrders}
 				{if length($data.soData.settingsData.soData) > 0}
 					<div class="so-review-min-not-show-top">

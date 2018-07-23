@@ -1302,10 +1302,10 @@ li.cleanli .gen-arrow {
 	.mm-page .pagination{
 		text-align: center;
 	}
-	[data-cmeventsource="BROWSE"] .mm-page #content{
+	[data-eventsource="BROWSE"] .mm-page #content{
 		background: #F2F0EF;
 	}
-	[data-cmeventsource="BROWSE"] .mm-page #content .pager-holder{
+	[data-eventsource="BROWSE"] .mm-page #content .pager-holder{
 		clear: both;
 	}
 	.mm-page .browseContent .sectionContent ul.products,
@@ -1630,14 +1630,14 @@ li.cleanli .gen-arrow {
 		#cartCarousels .tabbed-carousel.fullsize,
 		.product-sample-carousel,
 		.mm-page .product-sample-carousel [data-component="carousel"] [data-component="carousel-mask"] ul li,
-		#cartCarousels .tabbed-carousel .tab-container[data-cmsitefeature="PRODUCT_SAMPLE"] [data-component="carousel"] [data-component="carousel-mask"] ul li
+		#cartCarousels .tabbed-carousel .tab-container[data-sitefeature="PRODUCT_SAMPLE"] [data-component="carousel"] [data-component="carousel-mask"] ul li
 		{
 			width: 100% !important;
 		}
 		.product-sample-carousel h2.product-sample-header {
 			padding-right: 50px;
 		}
-		.mm-page #cartCarousels [data-cmsitefeature="PRODUCT_SAMPLE"] [data-component="carousel"],
+		.mm-page #cartCarousels [data-sitefeature="PRODUCT_SAMPLE"] [data-component="carousel"],
 		.product-sample-carousel [data-component="carousel"] {
 			padding: 0 36px !important;
 		}
@@ -2004,8 +2004,8 @@ li.cleanli .gen-arrow {
 		[data-ec-page] .mm-page .cartheader__button:after {
 			top: 0.75em;
 		}
-		[data-ec-page] .mm-page #cartCarousels [data-cmsitefeature="PRODUCT_SAMPLE"] h2,
-		[data-ec-page] .mm-page #cartCarousels [data-cmsitefeature="PRODUCT_DONATION"] h2 {
+		[data-ec-page] .mm-page #cartCarousels [data-sitefeature="PRODUCT_SAMPLE"] h2,
+		[data-ec-page] .mm-page #cartCarousels [data-sitefeature="PRODUCT_DONATION"] h2 {
 			font-size: 12px;
 			white-space: normal;
 		}

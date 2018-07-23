@@ -116,11 +116,11 @@
 		<jwr:script src="/assets/javascript/fd/captcha/captchaWidget.js" useRandomParam="false" />
 		<script>
 			if (<%=showCaptchaInPayment%>) {
-		  		FreshDirect.components.captchaWidget.init('cc-payment-g-recaptcha', '<%=FDStoreProperties.getRecaptchaPublicKey(CaptchaType.PAYMENT)%>');
+		  		FreshDirect.components.captchaWidget.init('<%=FDStoreProperties.getRecaptchaPublicKey(CaptchaType.PAYMENT)%>');
 		  		FreshDirect.user = FreshDirect.user || {};
 		  		FreshDirect.user.showCaptchaInPayment = true;
 		  	} else {
-		  		FreshDirect.components.captchaWidget.setKey('cc-payment-g-recaptcha', '<%=FDStoreProperties.getRecaptchaPublicKey(CaptchaType.PAYMENT)%>');
+		  		FreshDirect.components.captchaWidget.setKey('<%=FDStoreProperties.getRecaptchaPublicKey(CaptchaType.PAYMENT)%>');
 		  	}
 			var checkout;
 			//While loading the screen get the Device ID from braintress
@@ -153,13 +153,8 @@
 				 	                      				"\"lastName\":\""+payload.details.lastName+"\" ,\"deviceId\":\""+deviceObj.correlation_id+"\"}}",
 				 	                      type: 'post',
 				 	                      success: function(id, result){
-											/* don't reload page, just update payments display */
-											$.get('/api/expresscheckout/payment?dlvPassCart=true').done( function (d) {
-												FreshDirect.common.dispatcher.signal('payment', d);
-												if($(".deliverypass-payment").length > 0){
-													dialogWindowRealignFunc();
-												}
-											});
+				 	                    	 //location.reload(true);
+				 	                    	 window.location.assign("/deliverypass.jsp");
 				 	                      }
 				 	    	        });
 				 	    		  },

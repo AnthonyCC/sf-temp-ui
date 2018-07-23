@@ -16,8 +16,6 @@
 <%
 FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 
-List categories = FDCustomerManager.loadProfileAttributeNameCategories();
-Map profileAttributeNames = FDCustomerManager.loadProfileAttributeNames();
 FDCustomerModel customer = user.getFDCustomer();
 ProfileModel profile = customer.getProfile();
 

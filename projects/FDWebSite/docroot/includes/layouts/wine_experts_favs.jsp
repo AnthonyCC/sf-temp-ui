@@ -125,10 +125,6 @@ FreshDirect.Wine.addTabItem("favs", "<%= "tab_" + subcategory.getContentKey().ge
 			</display:ItemGrabber>
 		<div id="tab_<%= cat.getContentKey().getId() %>" class="fd-carousel-tab">
 			<display:ItemGrabber id="prods" category="<%= cat %>" depth="0" filterUnavailable="true">
-				<script type="text/javascript">
-				var cmPageCarousel = cmPageCarousel || {};	
-				cmPageCarousel["<%=cat.getContentKey().getId()%>"] = {"afterScroll":  <fd:CmElement wrapIntoFunction="true" carouselId='<%="wine-"+cat.getContentKey().getId()%>' elementCategory="carousel"/>} 
-				</script>
 				<display:Carousel id="carouselTag" carouselId="<%= cat.getContentKey().getId() %>" itemsToShow="<%= prods %>"
             hideContainer="<%= tabId %>" width="<%=W_WINE_EXPERT_FAVS_TOTAL-90%>" trackingCode="<%= trk %>" numItems="4" appendWineParams="<%= true %>" parentId="jesseRecommends" offset="45" eventHandlersObj='cmPageCarousel["<%=cat.getContentKey().getId()%>"]'><%
 						ProductModel product = (ProductModel) currentItem; 

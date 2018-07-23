@@ -31,7 +31,6 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
-import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
@@ -147,13 +146,12 @@ public class CheckoutController extends BaseController {
     private final static String ACTION_ALCOHOL_AGE_VERIFY = "alcoholageverify";
     private final static String ACTION_GET_SELECTED_DELIVERY_ADDRESS = "getselecteddeliveryaddress";
     private final static String ACTION_GET_PAYMENTMETHOD_VERIFY_STATUS = "getpmverifystatus";
-    private static final String ACTION_ACCEPT_DP_TERMSANDCONDITIONS = "acceptDeliveryPassTermsAndConditions";
     private final static String ACTION_REMOVE_SPECIAL_RESTRICTED_ITEMS = "removesplrestricteditems";
     private final static String ACTION_GET_SPECIAL_RESTRICTED_DETAIL = "getsplrestricteditemdetail";
     private final static String ACTION_SUBMIT_ORDER_FDX ="submitOrderEx";
     private final static String ACTION_SET_ORDER_MOBILE_NUMBER_FDX ="setordermobilenumberfdx";
     private static final String ACTION_DELIVERY_ADDRESS_UNATTENDED = "isDeliveryAddressUnattended";
-    
+
     private AvalaraContext avalaraContext;
 
     /* (non-Javadoc)
@@ -162,13 +160,13 @@ public class CheckoutController extends BaseController {
     @Override
     protected ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model, String action,
             SessionUser user) throws FDException, ServiceException, JsonException, NoSessionException {
-    	
+
     	if(UserExists(user)){
 
 	        if (ACTION_INIT_CHECKOUT.equals(action) || ACTION_AUTH_CHECKOUT.equals(action)) {
 	            //Validate pre-req. If pass, go directly to get payment method
 	            Login requestMessage = null;
-	
+
 	            if (ACTION_AUTH_CHECKOUT.equals(action)) {
 	                requestMessage = parseRequestObject(request, response, Login.class);
 	            }
@@ -290,8 +288,6 @@ public class CheckoutController extends BaseController {
 	            model = getSelectedDeliveryAddress(model, user);
 	        }else if (ACTION_GET_PAYMENTMETHOD_VERIFY_STATUS.equals(action)) {
 	            model = getCVVStatus(model, user);
-	        }  else if (ACTION_ACCEPT_DP_TERMSANDCONDITIONS.equals(action)) {            
-	            model = this.acceptDeliveryPassTerms(model, user, request);
 	        }  else if (ACTION_REMOVE_SPECIAL_RESTRICTED_ITEMS.equals(action)) {
 	            model = removeSpecialRestrictedItemsFromCart(model, user, request);
 	        }  else if (ACTION_GET_SPECIAL_RESTRICTED_DETAIL.equals(action)) {
@@ -317,10 +313,10 @@ public class CheckoutController extends BaseController {
             responseMessage =  getErrorMessage(ERR_SESSION_EXPIRED, "Session does not exist in the server.");
             setResponseMessage(model, responseMessage, user);
     	}
-    	
+
         return model;
     }
-    
+
     public boolean UserExists(SessionUser user){
     	return user!=null ? true:false;
     }
@@ -357,7 +353,7 @@ public class CheckoutController extends BaseController {
      * @param user
      * @return
      * @throws JsonException
-     * @throws FDResourceException 
+     * @throws FDResourceException
      */
     private boolean validateCheckoutRequirements(ModelAndView model, Login loginRequest, SessionUser user, HttpServletRequest request)
             throws JsonException, FDResourceException {
@@ -397,7 +393,7 @@ public class CheckoutController extends BaseController {
                 }
             }
         }
-        
+
         setResponseMessage(model, responseMessage, user);
         return valid;
     }
@@ -462,7 +458,7 @@ public class CheckoutController extends BaseController {
 
         Checkout checkout = new Checkout(user);
         
-        if(user.getFDSessionUser()!=null && user.getFDSessionUser().isDlvPassPending()){
+        if(user.getFDSessionUser()!=null){
             user.getFDSessionUser().updateDlvPassInfo();
         }
         
@@ -524,10 +520,10 @@ public class CheckoutController extends BaseController {
 	        responseMessage = new DeliveryAddresses(checkout.getPreselectedDeliveryAddressId(), checkout.getSelectedDeliveryAddressId(), ShipToAddress
 	                .filter(deliveryAddresses, DeliveryAddressType.RESIDENTIAL), ShipToAddress.filter(deliveryAddresses,
 	                DeliveryAddressType.CORP), Depot.getPickupDepots());
-	        
+
 			if (user.isVoucherHolder()) {
 				List<com.freshdirect.mobileapi.controller.data.response.ShipToAddress> latestAddress = new ArrayList<com.freshdirect.mobileapi.controller.data.response.ShipToAddress>();
-	
+
 				for (com.freshdirect.mobileapi.controller.data.response.ShipToAddress shipToAddress : responseMessage
 						.getResidentialAddresses()) {
 					if (shipToAddress.getId().equals(
@@ -538,10 +534,10 @@ public class CheckoutController extends BaseController {
 				}
 				responseMessage.setResidentialAddresses(latestAddress);
 				responseMessage.getDepot().clear();
-				
+
 			}
         }
-        
+
         responseMessage.setResidentialDeliveryMinimum(user.getMinimumOrderAmount());
         responseMessage.setDepotDeliveryMinimum(user.getMinimumOrderAmount());
         responseMessage.setCorporateDeliveryMinimum(user.getMinCorpOrderAmount());
@@ -561,53 +557,13 @@ public class CheckoutController extends BaseController {
      * @throws FDException
      * @throws JsonException
      */
-    private ModelAndView acceptDeliveryPassTerms(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException, JsonException {
-    	
-    	try {
-			FDCustomerManager.storeDPTCAgreeDate(AccountActivityUtil.getActionInfo(request.getSession()), user.getFDSessionUser().getIdentity().getErpCustomerPK(), new Date());
-		} catch(FDResourceException exp) {
-			//exp.printStackTrace();
-			setResponseMessage(model, Message.createFailureMessage(MSG_ACCEPT_DP_TERMSANDCONDITIONS_FAILED), user);
-			return model;
-		}
-        
-        Message responseMessage = null;
-        if (user.getShoppingCart() != null && user.getShoppingCart().getDeliveryAddress() != null ) {
-        	
-        	DeliveryAddress deliveryAddress = DeliveryAddress.wrap(user.getShoppingCart().getDeliveryAddress());
-            TimeSlotCalculationResult timeSlotResult = deliveryAddress.getDeliveryTimeslot(user, false,isCheckoutAuthenticated(request));
-
-            com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots slotResponse = new com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots(
-                    timeSlotResult, user);
-            slotResponse.getCheckoutHeader().setHeader(user.getShoppingCart());
-            responseMessage = slotResponse;
-            responseMessage.setSuccessMessage("Order delivery Address have been set successfully.");
-            
-        } else {
-        	
-        	setResponseMessage(model, Message.createFailureMessage(MSG_ACCEPT_DP_TERMSANDCONDITIONS_NOADDRESS), user);
-        }
-        setResponseMessage(model, responseMessage, user);
-        
-        return model;
-    }
-    
-    /**
-     * @param model
-     * @param user
-     * @param reqestMessage
-     * @param request
-     * @return
-     * @throws FDException
-     * @throws JsonException
-     */
     private ModelAndView setDeliveryAddress(ModelAndView model, SessionUser user, DeliveryAddressSelection reqestMessage,
             HttpServletRequest request) throws FDException, JsonException {
-    	    	
+
     	Checkout checkout = new Checkout(user);
     	ResultBundle resultBundle = null;
     	Message responseMessage = null;
-    	
+
     	if(reqestMessage.getType() != null) {
 	    	 if (isExtraResponseRequested(request)) {
 	    	     resultBundle = checkout.setCheckoutDeliveryAddressEx(reqestMessage.getId(), DeliveryAddressType.valueOf(reqestMessage.getType()));
@@ -616,16 +572,16 @@ public class CheckoutController extends BaseController {
 	    	 }
 	        ActionResult result = resultBundle.getActionResult();
 	        propogateSetSessionValues(request.getSession(), resultBundle);
-	        
-	        
+
+
 	        if (result.isSuccess()) {
 	            DeliveryAddress deliveryAddress = DeliveryAddress.wrap(user.getShoppingCart().getDeliveryAddress());
 	            TimeSlotCalculationResult timeSlotResult = deliveryAddress.getDeliveryTimeslot(user, false, isCheckoutAuthenticated(request));
-	            
+
 	            com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots slotResponse = new com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots(
 	                    timeSlotResult, user);
 	            slotResponse.getCheckoutHeader().setHeader(user.getShoppingCart());
-	
+
 	            if (isExtraResponseRequested(request)) {
 	                user.setUserContext();
 	                List<FDCartLineI> removedInvalidLines = removeInvalidLines(user.getFDSessionUser(), request.getServerName());
@@ -658,10 +614,10 @@ public class CheckoutController extends BaseController {
    	    	responseMessage.setFailureMessage("Address Type is required");
     	}
         setResponseMessage(model, responseMessage, user);
-        
+
         return model;
     }
-    
+
     /**
      * @param model
      * @param user
@@ -673,23 +629,23 @@ public class CheckoutController extends BaseController {
      */
     private ModelAndView setDeliveryAddressEx(ModelAndView model, SessionUser user, DeliveryAddressSelection reqestMessage,
             HttpServletRequest request) throws FDException, JsonException {
-    	    	
+
     	Checkout checkout = new Checkout(user);
     	Message responseMessage = null;
-    	
+
     	if(reqestMessage.getType() != null) {
 	        ResultBundle resultBundle = checkout.setCheckoutDeliveryAddressEx(reqestMessage.getId(), DeliveryAddressType.valueOf(reqestMessage.getType()));
 	        ActionResult result = resultBundle.getActionResult();
-	        
+
 	        propogateSetSessionValues(request.getSession(), resultBundle);
-	        
+
 	        responseMessage = new DynamicAvailabilityError();
 	        if(result.isSuccess()&& user.getShoppingCart()!=null && user.getFDSessionUser().getShoppingCart().getItemCount()>0) {
-	        	
+
 	        	List<FDCartLineI> invalidLines=OrderLineUtil.getInvalidLines(user.getShoppingCart().getOrderLines(), user.getFDSessionUser().getUserContext());
-	        	
+
 	        	if(invalidLines.size()>0) {
-	        		
+
 	        		Cart cart = user.getShoppingCart();
 			        CartDetail cartDetail = cart.getCartDetail(user, EnumCouponContext.VIEWCART);
 			        com.freshdirect.mobileapi.controller.data.response.Cart _responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
@@ -700,49 +656,49 @@ public class CheckoutController extends BaseController {
 			        }*/
 			        setResponseMessage(model, _responseMessage, user);
 			        return model;
-	        		
+
 	        	} else {
 	        		responseMessage.setSuccessMessage("Address Set Successfully.");
 	        	}
 	        }
-	    
-	        
-	        if (result.isSuccess()) {    
+
+
+	        if (result.isSuccess()) {
 	        	// FDX-1873 - Show timeslots for anonymous address
 	        	if(user != null && user.getAddress() != null) {
 	        		user.getAddress().setCustomerAnonymousAddress(false);
 	        	}
-	        	
-	            responseMessage.setSuccessMessage("Address Set Successfully.");            
-	        }else {  
-	        	
+
+	            responseMessage.setSuccessMessage("Address Set Successfully.");
+	        }else {
+
 	        	responseMessage = getErrorMessage(result, request);
-	        	
+
 	        }
     	} else {
     		responseMessage = new Message();
    	    	responseMessage.setFailureMessage("Address Type is required");
     	}
         setResponseMessage(model, responseMessage, user);
-        
+
         return model;
     }
-    
+
     private ModelAndView setOrderMobileNumberEx(ModelAndView model, SessionUser user, HttpServletRequest request, String orderlMobileNumber) throws FDException, JsonException {
     	Checkout checkout = new Checkout(user);
         ResultBundle resultBundle = checkout.setCheckoutOrderMobileNumberEx(orderlMobileNumber);
         ActionResult result = resultBundle.getActionResult();
         propogateSetSessionValues(request.getSession(), resultBundle);
         Message responseMessage = new DynamicAvailabilityError();
-        if (result.isSuccess()) {       	
-            responseMessage.setSuccessMessage("Mobile Number Added at on Order level Successfully.");            
-        }else {  
+        if (result.isSuccess()) {
+            responseMessage.setSuccessMessage("Mobile Number Added at on Order level Successfully.");
+        }else {
         		responseMessage = getErrorMessage(result, request);
         }
         setResponseMessage(model, responseMessage, user);
         return model;
     }
-    
+
 
     /**
      * @param model
@@ -759,7 +715,7 @@ public class CheckoutController extends BaseController {
 
         Map<String,String> errors = new HashMap<String, String>();
         boolean checkResult = checkForDeviceId(user,requestMessage,errors); // Check Device ID ; Required only when PayPal wallet is used.
-        if(checkResult){ 
+        if(checkResult){
 	        callAvalaraForTax(user);
 	        FDCartModel cartModel = UserUtil.getCart(user.getFDSessionUser(), "", dlvPassCart);
 	        ResultBundle resultBundle = checkout.submitOrder(dlvPassCart);
@@ -767,7 +723,7 @@ public class CheckoutController extends BaseController {
 	        propogateSetSessionValues(request.getSession(), resultBundle);
 
 	        if (result.isSuccess()) {
-	
+
 	        	com.freshdirect.mobileapi.controller.data.response.Order orderReceipt = new com.freshdirect.mobileapi.controller.data.response.Order();
 	            String orderId=(String) request.getSession().getAttribute(SessionName.RECENT_ORDER_NUMBER);
 	           /* try {
@@ -777,22 +733,22 @@ public class CheckoutController extends BaseController {
 	            } catch (InvocationTargetException e) {
 	                throw new FDException(e);
 	            }*/
-	            
+
 	            Order order = user.getOrder(orderId);
 	            if(null !=order){
 		            orderReceipt = order.getOrderDetail(user, dlvPassCart);
 		            createAndSendUnbxdAnalyticsEvent(user.getFDSessionUser(), request, cartModel.getOrderLines());
 	            }
-	            
+
 	            orderReceipt.setOrderNumber(orderId);
 
 	            if (isExtraResponseRequested(request)) {
 	                ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), orderReceipt.getCartDetail());
 	            }
-	            
+
 	            responseMessage = orderReceipt;
 	            responseMessage.addDebugMessage("Order has been submitted successfully.");
-	            
+
 	        } else {
 	            responseMessage = getErrorMessage(result, request);
 	        }
@@ -801,13 +757,13 @@ public class CheckoutController extends BaseController {
         	responseMessage = new Message();
         	responseMessage.setErrors(errors);
         }
-        
+
         setResponseMessage(model, responseMessage, user);
 
         return model;
     }
-    
-    
+
+
     /**
      * @param model
      * @param user
@@ -827,7 +783,7 @@ public class CheckoutController extends BaseController {
 	        propogateSetSessionValues(request.getSession(), resultBundle);
 
 	        if (result.isSuccess()) {
-	
+
 	        	com.freshdirect.mobileapi.controller.data.response.Order orderReceipt = new com.freshdirect.mobileapi.controller.data.response.Order();
 	            String orderId=(String) request.getSession().getAttribute(SessionName.RECENT_ORDER_NUMBER);
 	           /* try {
@@ -837,26 +793,26 @@ public class CheckoutController extends BaseController {
 	            } catch (InvocationTargetException e) {
 	                throw new FDException(e);
 	            }*/
-	            
+
 	            Order order = user.getOrder(orderId);
 	            if(null !=order){
 		            orderReceipt = order.getOrderDetail(user, dlvPassCart);
 		            createAndSendUnbxdAnalyticsEvent(user.getFDSessionUser(), request, cartModel.getOrderLines());
 	            }
-	            
+
 	            orderReceipt.setOrderNumber(orderId);
-	            
+
                 if (isExtraResponseRequested(request)) {
                     ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), orderReceipt.getCartDetail());
                 }
-	            
+
 	            responseMessage = orderReceipt;
 	            responseMessage.addDebugMessage("Order has been submitted successfully.");
-	            
+
 	        } else {
 	            responseMessage = getErrorMessage(result, request);
 	        }
-	        responseMessage.addWarningMessages(result.getWarnings());            
+	        responseMessage.addWarningMessages(result.getWarnings());
         setResponseMessage(model, responseMessage, user);
 
         return model;
@@ -915,15 +871,15 @@ public class CheckoutController extends BaseController {
         }
         if(responseMessage==null){
 			responseMessage = getErrorMessage("RESP_MSG_NULL", "Response Message Null");
-			LOGGER.error("CHECKOUTCONTROLLER - Response Message Null for action reserveTimeslot and user " + (user != null && user.getFDSessionUser() != null 
-					? (user.getFDSessionUser().getIdentity() != null && user.getFDSessionUser().getFDCustomer() != null 
+			LOGGER.error("CHECKOUTCONTROLLER - Response Message Null for action reserveTimeslot and user " + (user != null && user.getFDSessionUser() != null
+					? (user.getFDSessionUser().getIdentity() != null && user.getFDSessionUser().getFDCustomer() != null
 					? user.getFDSessionUser().getFDCustomer().getErpCustomerPK() : user.getFDSessionUser().getPrimaryKey() ) : "NOUSER" ) );
 		}
         setResponseMessage(model, responseMessage, user);
 
         return model;
     }
-    
+
     private ModelAndView reserveTimeslotEx(ModelAndView model, SessionUser user, String slotId, HttpServletRequest request)
             throws FDException, JsonException {
     	DeliveryTimeslots slot = new com.freshdirect.mobileapi.model.DeliveryTimeslots(user);
@@ -933,7 +889,7 @@ public class CheckoutController extends BaseController {
 
         Message responseMessage = null;
         if (result.isSuccess()){
-        	
+
         	// For updating the cart with the updated delivery fee value according to the reserved time slot
         	if(user!=null && user.getFDSessionUser()!=null) {
         	user.getFDSessionUser().updateUserState();
@@ -945,7 +901,7 @@ public class CheckoutController extends BaseController {
         responseMessage.addWarningMessages(result.getWarnings());
         setResponseMessage(model, responseMessage, user);
     	return model;
-    	
+
     }
 
     /**
@@ -966,11 +922,11 @@ public class CheckoutController extends BaseController {
         setResponseMessage(model, responseMessage, user);
         return model;
     }
-    
+
     public ActionResult performAvailabilityCheck(SessionUser user, HttpSession session) throws FDException {
     	return performAvailabilityCheck(user,session,false);
     }
-    
+
     /**
      * @param user
      * @param session
@@ -997,7 +953,7 @@ public class CheckoutController extends BaseController {
         //TODO: Not only find out availability but also get error on which specific products weren't available
         //And what to do...choose another date? or remove item?
         Double subTotal = user.getShoppingCart().getSubTotal();
-        
+
         if (!isProductFullyAvailable) {
         	Cart cart = user.getShoppingCart();
         	FDReservation reservation = cart.getDeliveryReservation();
@@ -1005,7 +961,7 @@ public class CheckoutController extends BaseController {
         	clonedCart.setUnavailablePasses(cart.getUnavailablePasses());
         	clonedCart.setAvailability(cart.getAvailability());
         	subTotal = clonedCart.getSubTotalATPCheck();
-        	TimeslotLogic.applyOrderMinimum(user.getFDSessionUser(), reservation.getTimeslot(), subTotal);		
+        	TimeslotLogic.applyOrderMinimum(user.getFDSessionUser(), reservation.getTimeslot(), subTotal);
 
         	if(subTotal!=null && subTotal < reservation.getMinOrderAmt()){
         		result.addError(new ActionError(ERR_ATP_MIN_ORDER_FAILED, "Your order total has fallen below the "+ TimeslotLogic.formatMinAmount(reservation.getMinOrderAmt()) + " required for the selected delivery time. Unavailable items will remain in your cart."));
@@ -1024,11 +980,11 @@ public class CheckoutController extends BaseController {
     }
 
 	private void callAvalaraForTax(SessionUser user) {
-		if(FDStoreProperties.getAvalaraTaxEnabled()){		
+		if(FDStoreProperties.getAvalaraTaxEnabled()){
 		Cart cart = user.getShoppingCart();
 		avalaraContext = new AvalaraContext(user.getFDSessionUser().getShoppingCart());
 		avalaraContext.setCommit(false);
-		cart.getAvalaraTax(avalaraContext); 
+		cart.getAvalaraTax(avalaraContext);
 		if(avalaraContext.isAvalaraTaxed())
 		user.setIsAvalaraTaxed(true);
 		}
@@ -1063,7 +1019,7 @@ public class CheckoutController extends BaseController {
         setResponseMessage(model, responseMessage, user);
         return model;
     }
-    
+
     /**
      * @param model
      * @param user
@@ -1100,20 +1056,20 @@ public class CheckoutController extends BaseController {
     private void verifyPaymentMethodFailure(HttpServletRequest request, HttpServletResponse response
     											, SessionUser user, Message responseMessage) {
     	if(request.getSession().getAttribute(SessionParamName.SESSION_PARAM_PYMT_VERIFYFLD) !=null) {
-    		removeUserInSession(user, request, response);
+    		removeUserInSession(user, UserCleanupMode.SESSION_AND_COOKIE, request, response);
     		responseMessage.addWarningMessage(WARN_SESSION_REMOVED, "true");
         }
     }
-    
+
     private ModelAndView addPaymentMethodEx(ModelAndView model, SessionUser user, PaymentMethodRequest reqestMessage,
             HttpServletRequest request, HttpServletResponse response) throws FDException, JsonException {
         Checkout checkout = new Checkout(user);
         ResultBundle resultBundle = checkout.addPaymentMethodEx(reqestMessage, request.getSession().getAttribute(SessionName.PAYMENT_ATTEMPT));
         
         ActionResult result = resultBundle.getActionResult();
-        
+
         propogateSetSessionValues(request.getSession(), resultBundle);
-                
+
         Message responseMessage = null;
         if (result.isSuccess()) {
             responseMessage = Message.createSuccessMessage("Payment method added successfully.");
@@ -1124,17 +1080,17 @@ public class CheckoutController extends BaseController {
         }
         responseMessage.addWarningMessages(result.getWarnings());
         verifyPaymentMethodFailure(request, response, user, responseMessage);
-        setResponseMessage(model, responseMessage, user);        
+        setResponseMessage(model, responseMessage, user);
         return model;
     }
-    
+
     private ModelAndView addPaymentMethod(ModelAndView model, SessionUser user, PaymentMethodRequest reqestMessage,
             HttpServletRequest request, HttpServletResponse response) throws FDException, JsonException {
         Checkout checkout = new Checkout(user);
         ResultBundle resultBundle = checkout.addPaymentMethod(reqestMessage, request.getSession().getAttribute(SessionName.PAYMENT_ATTEMPT));
-        
+
         ActionResult result = resultBundle.getActionResult();
-        
+
         propogateSetSessionValues(request.getSession(), resultBundle);
         
         Message responseMessage = null;
@@ -1147,33 +1103,33 @@ public class CheckoutController extends BaseController {
         }
         responseMessage.addWarningMessages(result.getWarnings());
         verifyPaymentMethodFailure(request, response, user, responseMessage);
-        setResponseMessage(model, responseMessage, user);        
+        setResponseMessage(model, responseMessage, user);
         return model;
     }
-    
-    
+
+
     private ModelAndView savePaymentMethod(ModelAndView model, SessionUser user, PaymentMethodRequest reqestMessage,
             HttpServletRequest request, HttpServletResponse response) throws FDException, JsonException {
-        Checkout checkout = new Checkout(user);        
+        Checkout checkout = new Checkout(user);
         ResultBundle resultBundle = checkout.savePaymentMethod(reqestMessage);
-        
+
         ActionResult result = resultBundle.getActionResult();
-        Message responseMessage = null;        
-        String str = (String)resultBundle.getExtraData(CheckoutControllerTagWrapper.REQUESTED_PAYMENT_ID);               
-        propogateSetSessionValues(request.getSession(), resultBundle);          
-        if (result.isSuccess()) {            
+        Message responseMessage = null;
+        String str = (String)resultBundle.getExtraData(CheckoutControllerTagWrapper.REQUESTED_PAYMENT_ID);
+        propogateSetSessionValues(request.getSession(), resultBundle);
+        if (result.isSuccess()) {
             responseMessage = new PaymentResponse();
-            ((PaymentResponse) responseMessage).setPaymentId(str.toString()==null ? "":str.toString());             
-            ((PaymentResponse) responseMessage).setSuccessMessage("Payment method saved successfully."); 
-            
+            ((PaymentResponse) responseMessage).setPaymentId(str.toString()==null ? "":str.toString());
+            ((PaymentResponse) responseMessage).setSuccessMessage("Payment method saved successfully.");
+
         } else {
             responseMessage = getErrorMessage(result, request);
         }
         responseMessage.addWarningMessages(result.getWarnings());
         verifyPaymentMethodFailure(request, response, user, responseMessage);
-        
+
         setResponseMessage(model, responseMessage, user);
-        
+
         return model;
     }
 
@@ -1184,7 +1140,7 @@ public class CheckoutController extends BaseController {
         ActionResult result = resultBundle.getActionResult();
 
         propogateSetSessionValues(request.getSession(), resultBundle);
-                
+
         Message responseMessage = null;
         if (result.isSuccess()) {
             responseMessage = Message.createSuccessMessage("Payment method added successfully.");
@@ -1195,9 +1151,9 @@ public class CheckoutController extends BaseController {
         }
         responseMessage.addWarningMessages(result.getWarnings());
         verifyPaymentMethodFailure(request, response, user, responseMessage);
-        
+
         setResponseMessage(model, responseMessage, user);
-        
+
         return model;
     }
 
@@ -1208,8 +1164,8 @@ public class CheckoutController extends BaseController {
         ActionResult result = resultBundle.getActionResult();
 
         propogateSetSessionValues(request.getSession(), resultBundle);
-        
-        
+
+
         Message responseMessage = null;
         if (result.isSuccess()) {
             responseMessage = Message.createSuccessMessage("Payment method updated successfully.");
@@ -1218,14 +1174,14 @@ public class CheckoutController extends BaseController {
             responseMessage.setShowCaptcha(CaptchaUtil.isExcessiveAttempt(FDStoreProperties.getMaxInvalidPaymentAttempt(),
 					request.getSession(), SessionName.PAYMENT_ATTEMPT));
         }
-        responseMessage.addWarningMessages(result.getWarnings()); 
+        responseMessage.addWarningMessages(result.getWarnings());
         verifyPaymentMethodFailure(request, response, user, responseMessage);
-                
+
         setResponseMessage(model, responseMessage, user);
-        
+
         return model;
     }
-    
+
     private ModelAndView deletePaymentMethod(ModelAndView model, SessionUser user, PaymentMethodRequest reqestMessage,
             HttpServletRequest request, boolean dlvPassCart) throws FDException, JsonException {
         Checkout checkout = new Checkout(user);
@@ -1250,7 +1206,7 @@ public class CheckoutController extends BaseController {
         setResponseMessage(model, responseMessage, user);
         return model;
     }
-    
+
     private ModelAndView deletePaymentMethodEx(ModelAndView model, SessionUser user, PaymentMethodRequest reqestMessage,
             HttpServletRequest request, boolean dlvPassCart) throws FDException, JsonException {
         Checkout checkout = new Checkout(user);
@@ -1275,7 +1231,7 @@ public class CheckoutController extends BaseController {
         setResponseMessage(model, responseMessage, user);
         return model;
     }
-                
+
     private ModelAndView deleteDeliveryAddress(ModelAndView model, SessionUser user, DeliveryAddressRequest reqestMessage,
             HttpServletRequest request) throws FDException, JsonException {
         Checkout checkout = new Checkout(user);
@@ -1285,7 +1241,7 @@ public class CheckoutController extends BaseController {
 			throw new FDActionNotAllowedException(
 					"This account is not enabled to change delivery address.");
 		}
-        
+
         ResultBundle resultBundle = checkout.deleteDeliveryAddress(reqestMessage.getShipToAddressId());
         ActionResult result = resultBundle.getActionResult();
         propogateSetSessionValues(request.getSession(), resultBundle);
@@ -1298,7 +1254,7 @@ public class CheckoutController extends BaseController {
         setResponseMessage(model, responseMessage, user);
         return model;
     }
-    
+
     private ModelAndView deleteDeliveryAddressEx(ModelAndView model, SessionUser user, DeliveryAddressRequest reqestMessage,
             HttpServletRequest request) throws FDException, JsonException {
         Checkout checkout = new Checkout(user);
@@ -1308,7 +1264,7 @@ public class CheckoutController extends BaseController {
 			throw new FDActionNotAllowedException(
 					"This account is not enabled to change delivery address.");
 		}
-        
+
         ResultBundle resultBundle = checkout.deleteDeliveryAddressEx(reqestMessage.getShipToAddressId());
         ActionResult result = resultBundle.getActionResult();
         propogateSetSessionValues(request.getSession(), resultBundle);
@@ -1321,7 +1277,7 @@ public class CheckoutController extends BaseController {
         setResponseMessage(model, responseMessage, user);
         return model;
     }
-    
+
     private ModelAndView getCVVStatus(ModelAndView model, SessionUser user) throws FDException, JsonException {
 
     	Message responseMessage = new CVVResponse();
@@ -1329,7 +1285,7 @@ public class CheckoutController extends BaseController {
         setResponseMessage(model, responseMessage, user);
         return model;
     }
-    
+
     private ModelAndView getSelectedDeliveryAddress(ModelAndView model, SessionUser user) throws FDException, JsonException {
 
     	Message responseMessage = null;
@@ -1346,7 +1302,7 @@ public class CheckoutController extends BaseController {
                     : dlvAddress instanceof ErpAddressModel;
 
             if (pickupOrder) {
-                
+
                 responseMessage = getErrorMessage("invalidbilladdress", "Cannot add pickup address as a billing address.");
             } else {
             	responseMessage = new DeliveryAddresses();
@@ -1354,7 +1310,7 @@ public class CheckoutController extends BaseController {
             	com.freshdirect.mobileapi.controller.data.response.ShipToAddress shipToAddress = new com.freshdirect.mobileapi.controller.data.response.ShipToAddress(ShipToAddress
                         .wrap(dlvAddress));
             	selectedAddress.add(shipToAddress);
-            	
+
                 if (isHomeOrder ) {
                 	((DeliveryAddresses)responseMessage).setResidentialAddresses(selectedAddress);
                 } else if (isCorporateOrder) {
@@ -1384,7 +1340,7 @@ public class CheckoutController extends BaseController {
         List<PaymentMethod> electronicChecks = user.getElectronicChecks(paymentMethods);
         List<PaymentMethod> creditCards = user.getCreditCards(paymentMethods);
         List<PaymentMethod> ebtCards = user.getEBTCards(paymentMethods);
-        
+
         boolean isCheckEligible = user.isCheckEligible();
         boolean isEcheckRestricted = user.isEcheckRestricted();
         boolean isEbtAccepted = user.isEbtAccepted();
@@ -1393,18 +1349,18 @@ public class CheckoutController extends BaseController {
 
         PaymentMethods responseMessage = new PaymentMethods(isCheckEligible, isEcheckRestricted, isEbtAccepted, creditCards,electronicChecks,ebtCards,ewallet);
 
-        if ((responseMessage.getCreditCards() != null && responseMessage.getCreditCards().size() == 0) 
-        		&& (responseMessage.getElectronicChecks() != null && responseMessage.getElectronicChecks().size() == 0) 
+        if ((responseMessage.getCreditCards() != null && responseMessage.getCreditCards().size() == 0)
+        		&& (responseMessage.getElectronicChecks() != null && responseMessage.getElectronicChecks().size() == 0)
         		&& (responseMessage.getEwallet() != null && responseMessage.getEwallet().size() == 0)) {
-            responseMessage.addWarningMessage(ERR_NO_PAYMENT_METHOD, ERR_NO_PAYMENT_METHOD_MSG);         
+            responseMessage.addWarningMessage(ERR_NO_PAYMENT_METHOD, ERR_NO_PAYMENT_METHOD_MSG);
         }
         // Commented below as condition is invalid because credit card check also should be there. Added the Ewallet check in the above condition itself.
-        /*else if((responseMessage.getEwallet() != null && responseMessage.getEwallet().size() == 0) 
-        		&& (responseMessage.getElectronicChecks() != null && responseMessage.getElectronicChecks().size() == 0)) 
+        /*else if((responseMessage.getEwallet() != null && responseMessage.getEwallet().size() == 0)
+        		&& (responseMessage.getElectronicChecks() != null && responseMessage.getElectronicChecks().size() == 0))
         {
-        	
+
         	responseMessage.addWarningMessage(ERR_NO_PAYMENT_METHOD, ERR_NO_PAYMENT_METHOD_MSG);
-        	
+
         }*/
         else {
         	responseMessage.setSelectedId(new Checkout(user).getPreselectedPaymethodMethodId(cart));
@@ -1449,11 +1405,11 @@ public class CheckoutController extends BaseController {
 			throw new FDActionNotAllowedException(
 					"This account is not enabled to change delivery address.");
 		}
-        
+
         ActionResult result = null;
-        
+
         // === FKMW - validate form fields before submitting them to the app layer ===
-        
+
         final boolean isWebRequest = isExtraResponseRequested(request);
         if (isWebRequest) {
             result = DeliveryAddressValidatorUtil.validateDeliveryAddress(requestMessage);
@@ -1463,9 +1419,9 @@ public class CheckoutController extends BaseController {
                 responseMessage = getErrorMessage(result, request);
             }
         }
-        
+
         // === FKMW end ===
-        
+
         if (responseMessage == null) {
             ResultBundle resultBundle = checkout.addAndSetDeliveryAddress(requestMessage);
             result = resultBundle.getActionResult();
@@ -1499,11 +1455,11 @@ public class CheckoutController extends BaseController {
         if(responseMessage.getErrors().containsKey(MessageCodes.ERR_NO_DELIVERY_ADDRESS) && isWebRequest){
         	responseMessage.getErrors().put(MessageCodes.ERR_NO_DELIVERY_ADDRESS, MessageCodes.MSG_DONT_DELIVER_TO_ADDRESS_MOB_FDX);
         }
-        
+
         setResponseMessage(model, responseMessage, user);
         return model;
     }
-    
+
     /**
      * @param model
      * @param user
@@ -1514,7 +1470,7 @@ public class CheckoutController extends BaseController {
      */
     private ModelAndView removeSpecialRestrictedItemsFromCart(ModelAndView model, SessionUser user, HttpServletRequest request)
             throws FDException, JsonException {
-    	
+
         Message responseMessage = null;
         Checkout checkout = new Checkout(user);
         ResultBundle resultBundle = checkout.removeSpecialRestrictedItemsFromCart(qetRequestData(request));
@@ -1532,7 +1488,7 @@ public class CheckoutController extends BaseController {
 
         return model;
     }
-    
+
     /**
      * @param model
      * @param user
@@ -1548,11 +1504,11 @@ public class CheckoutController extends BaseController {
         setResponseMessage(model, responseMessage, user);
         return model;
     }
-    
-    
-    
+
+
+
     /**
-     * 
+     *
      * @param model
      * @param user
      * @param request
@@ -1581,15 +1537,15 @@ public class CheckoutController extends BaseController {
 
         ResultBundle dlvValidationResult = new ResultBundle();
         dlvValidationResult.setActionResult(new ActionResult());
-        
-//        if(user!=null && user.getUserContext() != null && user.getUserContext().getStoreContext() != null && 
+
+//        if(user!=null && user.getUserContext() != null && user.getUserContext().getStoreContext() != null &&
 //           user.getUserContext().getStoreContext().getEStoreId().equals(EnumEStoreId.FD) && user.isChefsTable()){
 //        	TimeslotService.defaultService().applyPreReservedDeliveryTimeslot(request.getSession());
 //        }
-        
+
         /*
          * code refactored as part of DP17-122 to allow DeliveryPass only orders
-         * 
+         *
          * */
         boolean isDlvPassCartOnlyNotAllowed= false;//Cart contains DeliveryPass and allowed , or no deliverypass in the cart
         boolean isDlvPassCartOnly = cart.containsDlvPassOnly();
@@ -1597,7 +1553,7 @@ public class CheckoutController extends BaseController {
        // 		if(!FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && isDlvPassCartOnly){
         			isDlvPassCartOnlyNotAllowed = true;
         			message.addErrorMessage("error_dlv_pass_only", SystemMessageList.MSG_CONTAINS_DLV_PASS_ONLY);
-        			//dlvValidationResult.getActionResult().addError(new ActionError("error_dlv_pass_only", SystemMessageList.MSG_CONTAINS_DLV_PASS_ONLY));        			
+        			//dlvValidationResult.getActionResult().addError(new ActionError("error_dlv_pass_only", SystemMessageList.MSG_CONTAINS_DLV_PASS_ONLY));
                     message.setStatus(Message.STATUS_FAILED);
                     setResponseMessage(model, message, user);
                     return model;
@@ -1610,7 +1566,7 @@ public class CheckoutController extends BaseController {
         if (cart != null && !isDlvPassCartOnlyNotAllowed
                 && cart.getPaymentMethod() != null) {
             // Reservation Validity
-            
+
             if (!isDlvPassCartOnly) {
             	if(cart.getDeliveryReservation() != null){
             		boolean reservationValid = checkout.checkReservationExpiry(user);
@@ -1647,7 +1603,7 @@ public class CheckoutController extends BaseController {
                     }
             	}
            }
-//              else {   
+//              else {
                 // Atp Check
                 if (isSuccess(message.getStatus())) {
                 	user.setFromLogin("Checkout");
@@ -1683,8 +1639,8 @@ public class CheckoutController extends BaseController {
                     	{
                     		message = checkout.fillAtpErrorDetail(message, request);
                     	}
-                    } 
-                    
+                    }
+
                     else {
                         // message = checkout.submitEx((SubmitOrderExResult)message, user, request);
                         //FDCartModel cartModel = cart;
@@ -1722,9 +1678,9 @@ public class CheckoutController extends BaseController {
 
                     }
                 }
-            
-            
-        
+
+
+
 
         } else {
             // cart not set up for checkout.
@@ -1762,11 +1718,11 @@ public class CheckoutController extends BaseController {
         }
         return invalidLines;
     }
-    
+
     private static boolean isSuccess(String messageStatus) {
     	return !Message.STATUS_FAILED.equals(messageStatus);
     }
-    
+
     private void createAndSendUnbxdAnalyticsEvent(FDUserI user, HttpServletRequest request, List<FDCartLineI> cartLines){
         if(FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, request.getCookies(), user)){
         		final boolean cosAction = CosFeatureUtil.isUnbxdCosAction(user, request.getCookies());

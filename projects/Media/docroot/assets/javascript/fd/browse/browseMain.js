@@ -74,7 +74,6 @@ var FreshDirect = FreshDirect || {};
         data = $.extend({},
           (pagerRelated || (pager && pager.activePage === 0)) ? pager : {},
           fd.browse.sorter && fd.browse.sorter.serialize(),
-          fd.components.coremetrics ? fd.components.coremetrics.serialize() : {},
           fd.browse.menu && fd.browse.menu.serialize(),
           fd.browse.searchParams && fd.browse.searchParams.serialize(),
           fd.browse.searchTabs && fd.browse.searchTabs.serialize(),

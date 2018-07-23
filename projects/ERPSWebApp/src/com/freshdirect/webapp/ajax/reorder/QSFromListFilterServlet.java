@@ -21,7 +21,6 @@ import com.freshdirect.cms.cache.CmsCaches;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.FilteringFlowResult;
-import com.freshdirect.fdstore.coremetrics.CmContextUtility;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
@@ -130,12 +129,6 @@ public class QSFromListFilterServlet extends QuickShopServlet {
 		
 		// sorting menu items where needed
 		QuickShopMenuOrderUtil.sortMenuItems(responseData.getMenu());
-		
-		// Generate coremetrics 'element' tags for the menu - selected filters
-		// [APPDEV-4558]
-		if (CmContextUtility.isCoremetricsAvailable(user)) {
-			generateCoremetricsElementTags( responseData, result.getMenu(), "quickshop | shopping_lists" );
-		}
 		
 		return responseData;
 	}

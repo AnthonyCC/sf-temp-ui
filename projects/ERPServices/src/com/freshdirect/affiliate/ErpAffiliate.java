@@ -3,11 +3,13 @@ package com.freshdirect.affiliate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.freshdirect.affiliate.dao.ErpAffiliateDAO;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.enums.EnumModel;
@@ -32,6 +34,17 @@ public class ErpAffiliate extends EnumModel {
 	private final Map merchants; //PaymentType (VISA, MC, ECHECK, AMEX and DISC)-> marchant
 	private final Set paymentechTxDivisions;
 
+	public ErpAffiliate(@JsonProperty("code") String code, @JsonProperty("name") String name,
+			@JsonProperty("description") String description, @JsonProperty("taxConditionType") String taxConditionType,
+			@JsonProperty("depositConditionType") String depositConditionType,
+			@JsonProperty("merchants") Map merchants) {
+		super(code, name, description);
+		this.depositConditionType = depositConditionType;
+		this.taxConditionType = taxConditionType;
+		this.merchants = Collections.unmodifiableMap(merchants);
+		this.paymentechTxDivisions = new HashSet();
+	}
+
 	public ErpAffiliate(String code, String name, String description, String taxConditionType, String depositConditionType, Map merchants, Set paymentechTxDivisions) {
 		super(code, name, description);
 		this.depositConditionType = depositConditionType;
@@ -39,7 +52,7 @@ public class ErpAffiliate extends EnumModel {
 		this.merchants = Collections.unmodifiableMap(merchants);
 		this.paymentechTxDivisions = Collections.unmodifiableSet(paymentechTxDivisions);
 	}
-
+	
 	public String getDepositConditionType() {
 		return depositConditionType;
 	}

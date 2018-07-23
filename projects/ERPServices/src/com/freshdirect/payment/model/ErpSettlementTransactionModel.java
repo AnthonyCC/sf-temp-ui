@@ -14,6 +14,7 @@ package com.freshdirect.payment.model;
  
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.freshdirect.framework.core.*;
 
 public class ErpSettlementTransactionModel extends ModelSupport {
@@ -29,7 +30,9 @@ public class ErpSettlementTransactionModel extends ModelSupport {
 	private String paypalReferenceId = null;
 	private String paypalReferenceIdType = null;
 	private String transactionEventCode = null;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private Date transactionInitiationDate = null;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private Date transactionCompletionDate = null;
 	private String transactionDebitOrCredit = null;
 	private long grossTransactionAmount = 0;

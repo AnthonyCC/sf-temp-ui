@@ -65,6 +65,8 @@
  * @param? tempConfig title of an item
  * @param? changed if true, then item is changed
  * @param? replaced if true, then item is replaced
+ * @param? abFeatures
+ * @param? mobWeb
  */
 {template .itemQS22 autoescape="false"}
 {if $item.available}
@@ -76,6 +78,8 @@
 			{param tempConfig:true /}
 			{param changed:true /}
 			{param replaced:$replaced /}
+			{param mobWeb:$mobWeb /}
+			{param abFeatures:$abFeatures /}
 		{/call}
 	{elseif $type=='ymal'}
 		{call .YMALItem}
@@ -203,12 +207,18 @@
  * @param? changed if true, then item is changed
  * @param? tempConfig if true, then item is a temporary customization
  * @param? replaced if true, then item is replaced
+ * @param? abFeatures
+ * @param? mobWeb
  */
 {template .availableItemQS22 autoescape="false"}
+	{let $productCardVersion: $abFeatures ? ($abFeatures.productCard ? $abFeatures.productCard : '[abFeatures.productCard not set]') : '[abFeatures not set]' /}
 	{let $itemTitle: ($title ? $title : ($item.itemTitle ? $item.itemTitle : '')) /}
 	{let $inCart: ($item.inCartAmount > 0) ? 'incart' :'' /}
 	{let $isEligibleForStandingOrders: ($item.soData and $item.soData.settingsData.soSettings and $item.soData.settingsData.soSettings.isEligibleForStandingOrders) ? true : false /}
-	<li class="itemlist-item {not $item.available ? 'unavailable' : ''}{if $changed}changed{/if}" data-component="product" {if $item.itemId}data-productid="{$item.productId}"{/if}>
+	<li class="itemlist-item {not $item.available ? 'unavailable' : ''}{if $changed}changed{/if}" data-component="product" {if $item.itemId}data-productid="{$item.productId}"{/if}
+	 data-productcardversion="{$productCardVersion}"
+	 data-ismobweb="{$mobWeb}"
+	>
 		<form class="itemlist-item-controls smaller" data-component="product-controls" action="#" fdform="qsatc_{$item.itemId}" fdform-submit="FreshDirect.modules.common.forms.submitFns.defaultButton">
 			<div class="itemlist-item-controls-subtotal">
 				{foreach $salesUnit in $item.salesUnit}{if $salesUnit.selected}
@@ -275,7 +285,7 @@
 		<div class="portrait-item-productimage_wrapper itemlist-item-productimage_wrapper">
 			{if not $item.discontinued}<a href="{$item.productPageUrl}">{/if}
 				<div class="portrait-item-burst_wrapper itemlist-item-burst_wrapper">
-					<img src="{$item.productImage}" alt="{$item.productAltText}" class="portrait-item-productimage itemlist-item-productimage">
+					<img class="portrait-item-productimage itemlist-item-productimage lazyload"  data-src="{($mobWeb or $productCardVersion != '2018') ? $item.productDetailImage : $item.productZoomImage}"  alt="{$item.productAltText}" />
 					{call common.bursts}{param badge:$item.badge /}{param deal:$item.deal /}{param usq:$item.usq /}{/call}
 				</div>
 			{if not $item.discontinued}</a>{/if}

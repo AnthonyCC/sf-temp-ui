@@ -276,12 +276,6 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
                         },    
                         params: {'timeslotId': timeslotId}
                     });
-                    
-                    this.slotObjs[slot].addCustomEvent({
-                        event: 'click', 
-                        func: function(argsObj) { logChange(argsObj.timeslotId); },    
-                        params: {'timeslotId': timeslotId}
-                    });
                 }
 			}
 			for (var day in this.dayObjs) {
@@ -2495,13 +2489,6 @@ var fdTSDisplayPreInitializeFuncs = window['fdTSDisplayPreInitializeFuncs'] || [
 			$('displayAdvanceOrderGrid').innerHTML = "Hide Delivery Timeslots";
 		}else{
 			$('displayAdvanceOrderGrid').innerHTML = "Show Delivery Timeslots";
-		}
-	}
-
-/* cm logger*/
-	function logChange(timeSlotId){	
-		if (timeslotChooserFunctions.hasOwnProperty(timeSlotId)) {
-			timeslotChooserFunctions[timeSlotId]();
 		}
 	}
 	

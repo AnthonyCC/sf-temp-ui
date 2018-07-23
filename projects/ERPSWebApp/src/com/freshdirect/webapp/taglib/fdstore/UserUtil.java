@@ -75,7 +75,6 @@ import com.freshdirect.mail.EmailUtil;
 import com.freshdirect.storeapi.application.CmsManager;
 import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag;
 import com.freshdirect.webapp.util.FDURLUtil;
 import com.freshdirect.webapp.util.LocatorUtil;
 import com.freshdirect.webapp.util.RequestUtil;
@@ -872,7 +871,6 @@ public class UserUtil {
 				}
 			}
 
-          CmRegistrationTag.setPendingLoginEvent(session);
           logExtraLoginDetailsLogin(request, userId, password, mergePage, successPage, externalLogin, "LOGINSUCCESS"); //THis is commented because it breaks using https://mobileapi.freshdirect.com/mobileapi/v/1/social/login/
 
         } catch (FDResourceException fdre) {

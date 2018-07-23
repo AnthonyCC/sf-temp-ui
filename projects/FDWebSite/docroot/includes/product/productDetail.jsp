@@ -48,7 +48,6 @@
 			FreshDirect.pdp.evenBetter=<fd:ToJSON object="${evenBetter}" noHeaders="true"/>;
 			FreshDirect.pdp.xsell=<fd:ToJSON object="${xsell}" noHeaders="true"/>;
 			FreshDirect.pdp.annotations=<fd:ToJSON object="${annotations}" noHeaders="true"/>;
-			FreshDirect.pdp.coremetrics=<fd:CmElement elementCategory="reviews" productId="<%=productNode.getContentKey().getId()%>" wrapIntoFunction="true" />;
 
 			/* are these used? if not, remove and use name-spaced versions */
 				productData=window.FreshDirect.pdp.data;
@@ -59,7 +58,6 @@
 		</script>
 <div itemscope itemtype="http://schema.org/Product" class="pdp">
 	<div class="prodDetail">
-		<fd:CmFieldDecorator/>
 		<%if (FDStoreProperties.isAdServerEnabled()) {%>
 			<div class="center oas-cnt" id='oas_ProductNote'><script type="text/javascript">OAS_AD('ProductNote');</script></div>
 		<%} else {%>
@@ -102,7 +100,7 @@
 
 			<div class="prodDetail-atc"><%-- coupon/group atc controls --%>
 				<c:if test="${productPotato.available}">
-					<form fdform="pdpatc" fdform-submit="FreshDirect.components.AddToCart.formAddToCart" class="pdp-productconfig" data-component="product" data-cmeventsource="pdp_main">
+					<form fdform="pdpatc" fdform-submit="FreshDirect.components.AddToCart.formAddToCart" class="pdp-productconfig" data-component="product" data-eventsource="pdp_main">
 						<soy:render template="pdp.productDataMin" data="${productPotato}" />
 						<soy:render template="pdp.configWrapper" data="${productPotato}" />
 
@@ -213,7 +211,7 @@
 							<soy:render template="pdp.badges" data="${productExtraPotato}" />
 							<soy:render template="pdp.heatRating" data="${productPotato}" />
 						</div>
-						<form fdform="pdpatc" fdform-submit="FreshDirect.components.AddToCart.formAddToCart" class="pdp-productconfig" data-component="product" data-cmeventsource="pdp_main">
+						<form fdform="pdpatc" fdform-submit="FreshDirect.components.AddToCart.formAddToCart" class="pdp-productconfig" data-component="product" data-eventsource="pdp_main">
 							<soy:render template="pdp.productDataMin" data="${productPotato}" />
 							<soy:render template="pdp.configWrapper" data="${productPotato}" />
 							<soy:render template="pdp.ecoupon" data="${productPotato}" />

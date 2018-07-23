@@ -3,7 +3,6 @@
 /**
  * @param addresses
  * @param? selected
- * @param? onOpenCoremetrics
  * @param? mobWeb
  */
 {template .addresspreview autoescape="false"}
@@ -14,21 +13,18 @@
         {call .address_office data="$address"}
         	{param is_preview: true /}
         	{param mobWeb: $mobWeb /}
-        	{param onOpenCoremetrics: $onOpenCoremetrics /}
         {/call}
       {/if}
       {if $address.service_type == 'home'}
         {call .address_home data="$address" }
         	{param is_preview: true /}
         	{param mobWeb: $mobWeb /}
-        	{param onOpenCoremetrics: $onOpenCoremetrics /}
         {/call}
       {/if}
       {if $address.service_type == 'pickup'}
         {call .address_pickup data="$address"}
         	{param is_preview: true /}
         	{param mobWeb: $mobWeb /}
-        	{param onOpenCoremetrics: $onOpenCoremetrics /}
         {/call}
       {/if}
     {/if}
@@ -39,21 +35,21 @@
     {if $address.service_type == 'pickup'}
       <div class='drawer__previewitem'>
         <div class="drawer__previewitem__button__section">
-          <button aria-haspopup="true" class="cssbutton orange" data-component="addaddressbutton" {if $onOpenCoremetrics}cm-click="{$onOpenCoremetrics}"{/if}>Add an <span class="offscreen">Delivery</span>Address</button>
+          <button aria-haspopup="true" class="cssbutton orange" data-component="addaddressbutton">Add an <span class="offscreen">Delivery</span>Address</button>
         </div>
       </div>
       {call .address_pickup_preview data="$address" /}
     {else}
       <div class='drawer__previewitem'>
         <div class="drawer__previewitem__button__section">
-          <button class="cssbutton orange" data-drawer-activate="address" {if $onOpenCoremetrics}cm-click="{$onOpenCoremetrics}"{/if}>Pick an Address</button>
+          <button class="cssbutton orange" data-drawer-activate="address">Pick an Address</button>
         </div>
       </div>
     {/if}
   {else}
     <div class='drawer__previewitem'>
       <div class="drawer__previewitem__button__section">
-        <button aria-haspopup="true" class="cssbutton orange" data-component="addaddressbutton" {if $onOpenCoremetrics}cm-click="{$onOpenCoremetrics}"{/if}>Add an Address</button>
+        <button aria-haspopup="true" class="cssbutton orange" data-component="addaddressbutton">Add an Address</button>
       </div>
     </div>
   {/if}
@@ -110,7 +106,6 @@
 * @param? bd_last_name
 * @param? bd_instructions
 * @param? mobWeb
-* @param? onOpenCoremetrics
 */
 {template .address_home_preivew autoescape="false"}
 <div class='drawer__previewitem'>
@@ -171,7 +166,7 @@
   </div><!--/ drawer__itemright -->
  
   <div class="drawer__item__action">
-    <button type="button" aria-haspopup="true" class="change cssbutton green transparent small" {if $onOpenCoremetrics}cm-click="{$onOpenCoremetrics}"{/if}>Edit<span class="offscreen">delivery address</span></button>
+    <button type="button" aria-haspopup="true" class="change cssbutton green transparent small">Edit<span class="offscreen">delivery address</span></button>
   </div>
 </div>
 {/template}
@@ -270,7 +265,6 @@
 * @param? street_address2
 * @param? zip
 * @param? mobWeb
-* @param? onOpenCoremetrics
 */
 {template .address_office_preview autoescape="false"}
 <div class='drawer__previewitem'>
@@ -317,7 +311,7 @@
   </div><!--/ drawer__itemright -->
   
   <div class="drawer__item__action">
-    <button type="button" aria-haspopup="true" class="change cssbutton green transparent small" {if $onOpenCoremetrics}cm-click="{$onOpenCoremetrics}"{/if}>Edit<span class="offscreen">delivery address</span></button>
+    <button type="button" aria-haspopup="true" class="change cssbutton green transparent small">Edit<span class="offscreen">delivery address</span></button>
   </div>
 </div><!--/ drawer__item -->
 {/template}

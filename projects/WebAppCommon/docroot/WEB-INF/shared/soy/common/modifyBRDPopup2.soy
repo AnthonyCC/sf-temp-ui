@@ -4,7 +4,7 @@
  * @ param cartData pending popup cart data - obsolete
  * @param orderInfos pending popup order data
  * @param pendingItems pending popup items to add
- * @param? eventSource coremetrics eventsource
+ * @param? eventSource eventsource
  * @param? mobWeb
  */
 {template .modifyBRDPopup2}
@@ -12,7 +12,7 @@
 	<div class="fixedPopupHelper"></div>
 	<div class="fixedPopupContent BRD-popup">
 		<h2 class="qs-popup-header"><span>Choose which order to modify...</span><button class="MBRD-close create-order-atc close-icon close">close</button></h2>
-		<div class="qs-popup-content" {if $eventSource}data-cmeventsource="{$eventSource}"{/if}>
+		<div class="qs-popup-content" {if $eventSource}data-eventsource="{$eventSource}"{/if}>
 			<div class="MBRD-order">
 				<div class="select-wrapper">
 					<select id="MBRDOrder" class="customsimpleselect">

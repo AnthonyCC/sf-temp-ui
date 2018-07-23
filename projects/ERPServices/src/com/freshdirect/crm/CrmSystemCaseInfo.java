@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.freshdirect.framework.core.PrimaryKey;
 
 public class CrmSystemCaseInfo implements Serializable {
@@ -48,9 +49,11 @@ public class CrmSystemCaseInfo implements Serializable {
 		this.state = state;
 	}
 	
-	
-	public CrmSystemCaseInfo(PrimaryKey customerPK, PrimaryKey salePK, CrmCaseSubject subject, String summary
-			, String note, List cartonNumbers, CrmAgentModel loginAgent, String crmCaseMedia){
+	public CrmSystemCaseInfo(PrimaryKey customerPK,
+			PrimaryKey salePK, CrmCaseSubject subject,
+			String summary,  String note,
+			List cartonNumbers,  CrmAgentModel loginAgent,
+			String crmCaseMedia) {
 		this.customerPK = customerPK;
 		this.salePK = salePK;
 		this.subject = subject;
@@ -63,6 +66,26 @@ public class CrmSystemCaseInfo implements Serializable {
 		//default values
 		this.origin = CrmCaseOrigin.getEnum(CrmCaseOrigin.CODE_SYS);
 		this.state = CrmCaseSubject.CODE_EARLY_DELIVERY_REQEUST.equals(subject.getCode()) ?CrmCaseState.getEnum(CrmCaseState.CODE_CLOSED):CrmCaseState.getEnum(CrmCaseState.CODE_OPEN);
+	}
+	
+	public CrmSystemCaseInfo(@JsonProperty("customerPK") PrimaryKey customerPK,
+			@JsonProperty("salePK") PrimaryKey salePK, @JsonProperty("subject") CrmCaseSubject subject,
+			@JsonProperty("summary") String summary, @JsonProperty("note") String note,
+			@JsonProperty("cartonNumbers") List cartonNumbers, @JsonProperty("loginAgent") CrmAgentModel loginAgent,
+			@JsonProperty("crmCaseMedia") String crmCaseMedia, 
+			@JsonProperty("origin") CrmCaseOrigin origin, 
+			@JsonProperty("state") CrmCaseState state) {
+		this.customerPK = customerPK;
+		this.salePK = salePK;
+		this.subject = subject;
+		this.summary = summary;
+		this.note = note;
+		this.cartonNumbers = cartonNumbers;
+		this.loginAgent = loginAgent;
+		this.crmCaseMedia = crmCaseMedia;
+		
+		this.origin = origin;
+		this.state = state;
 	}
 	
 	public PrimaryKey getCustomerPK(){

@@ -23,7 +23,6 @@ final int W_DNAV_NO_SPACE_TOTAL = 970;
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body bgcolor="#ffffff" link="#336600" vlink="#336600" alink="#ff9900" text="#333333">
-<%@ include file="/shared/template/includes/i_body_start.jspf" %>
   <%@ include file="/common/template/includes/globalnav.jspf" %> 
 	<center class="text10">
 		<table width="<%=W_DNAV_NO_SPACE_TOTAL%>" border="0" cellpadding="0" cellspacing="0">

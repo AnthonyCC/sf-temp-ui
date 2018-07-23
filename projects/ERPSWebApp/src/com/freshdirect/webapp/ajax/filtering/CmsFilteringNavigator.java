@@ -2,9 +2,11 @@ package com.freshdirect.webapp.ajax.filtering;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -152,8 +154,10 @@ public class CmsFilteringNavigator {
     private String productId;
     
     private boolean populateSectionsOnly;
+
+    private boolean doNotFillPage;
     
-    public static CmsFilteringNavigator createInstance(HttpServletRequest request, FDUserI fdUser) throws InvalidFilteringArgumentException, FDResourceException {
+    public static CmsFilteringNavigator createInstance(HttpServletRequest request, FDUserI fdUser) throws InvalidFilteringArgumentException, FDResourceException, UnsupportedEncodingException {
     	return createInstance(request, fdUser, true);
     }
     
@@ -165,18 +169,36 @@ public class CmsFilteringNavigator {
 	 * @return
 	 * @throws InvalidFilteringArgumentException
 	 * @throws FDResourceException
+	 * @throws UnsupportedEncodingException 
 	 */
-    public static CmsFilteringNavigator createInstance(HttpServletRequest request, FDUserI fdUser, boolean defaultGetAllData) throws InvalidFilteringArgumentException, FDResourceException {
-
+    public static CmsFilteringNavigator createInstance(HttpServletRequest request, FDUserI fdUser, boolean defaultGetAllData) throws InvalidFilteringArgumentException, FDResourceException, UnsupportedEncodingException {
+    	
         try {
             request.setCharacterEncoding(CharEncoding.UTF_8);
         } catch (UnsupportedEncodingException uee) {
             throw new FDResourceException(uee);
         }
         
+/*        if(request.getQueryString()!=null) {
+        	request.getQueryString().replaceAll("%20", " ");
+        	request.getQueryString().replaceAll("%", "%25");
+        	request.getQueryString().replaceAll(" ", "%20");
+        }*/
+        
+        System.out.println("CmsFilteringNavigator==="+request.getQueryString());
+        
         @SuppressWarnings("unchecked")
         Map<String, String[]> paramMap = request.getParameterMap();
         Set<String> paramNames = new TreeSet<String>(paramMap.keySet());
+        System.out.println(paramMap!=null);
+        System.out.println(paramMap!=null?paramMap.size():"paramMap is null");
+        System.out.println(paramNames!=null);
+        System.out.println(paramNames.size()==0);
+        System.out.println(request.getQueryString()!=null);
+        System.out.println(request.getQueryString().contains("%"));
+
+    	
+    	
         CmsFilteringNavigator cmsFilteringNavigator = null;
         if (paramMap.get("data") != null && !"".equals(paramMap.get("data"))) {
 
@@ -199,9 +221,12 @@ public class CmsFilteringNavigator {
 
                 String[] paramValues = paramMap.get(param);
                 for (String paramValue : paramValues) {
+                	System.out.println("param============="+param+"===========paramValue========"+paramValue);
 
                     if ("pageSize".equalsIgnoreCase(param)) {
                         cmsFilteringNavigator.setPageSize(Integer.parseInt(paramValue));
+                    } else if ("doNotFillPage".equalsIgnoreCase(param)) {
+                        cmsFilteringNavigator.setDoNotFillPage(Boolean.parseBoolean(paramValue.toLowerCase()));
                     } else if ("all".equalsIgnoreCase(param)) {
                         cmsFilteringNavigator.setAll(Boolean.parseBoolean(paramValue.toLowerCase()));
                     } else if ("activePage".equalsIgnoreCase(param)) {
@@ -273,7 +298,9 @@ public class CmsFilteringNavigator {
         	pageSpecificPageSize = FDStoreProperties.getBrowsePageSize();
         }
         
-        pageSpecificPageSize = increasePageSizeToFillLayoutFully(request, fdUser, pageSpecificPageSize);
+        if (!cmsFilteringNavigator.doNotFillPage) {
+            pageSpecificPageSize = increasePageSizeToFillLayoutFully(request, fdUser, pageSpecificPageSize);
+        }
         cmsFilteringNavigator.setPageSize(pageSpecificPageSize);
 
         if ((id == null || id.equals(""))
@@ -291,8 +318,16 @@ public class CmsFilteringNavigator {
     public static int increasePageSizeToFillLayoutFully(HttpServletRequest request, FDUserI user, int pageSpecificPageSize) {
         Map<String, String> activeFeatures = FeaturesService.defaultService().getActiveFeaturesMapped(request.getCookies(), user);
         String gridlayoutversion = activeFeatures.get("gridlayoutcolumn");
+        String productCardVersion = activeFeatures.get("productCard");
         if (gridlayoutversion != null) {
             int divider = Integer.parseInt(gridlayoutversion.substring(0, 1));
+            int modulo = pageSpecificPageSize % divider;
+            if (modulo != 0) {
+                pageSpecificPageSize = pageSpecificPageSize + (divider - modulo);
+            }
+        }
+        if (productCardVersion != null) {
+            int divider = 4;
             int modulo = pageSpecificPageSize % divider;
             if (modulo != 0) {
                 pageSpecificPageSize = pageSpecificPageSize + (divider - modulo);
@@ -667,4 +702,12 @@ public class CmsFilteringNavigator {
 	public void setMaxNoOfProducts(int maxNoOfProducts) {
 		this.maxNoOfProducts = maxNoOfProducts;
 	}
+
+    public boolean isDoNotFillPage() {
+        return doNotFillPage;
+    }
+
+    public void setDoNotFillPage(boolean doNotFillPage) {
+        this.doNotFillPage = doNotFillPage;
+    }
 }

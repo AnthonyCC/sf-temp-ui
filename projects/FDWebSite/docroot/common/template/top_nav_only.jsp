@@ -37,7 +37,6 @@
 <body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#ff9900" text="#333333"
       onload="<%= request.getAttribute("bodyOnLoad")%>" 
       onunload="<%= request.getAttribute("bodyOnUnload")%>" >
-<%@ include file="/shared/template/includes/i_body_start.jspf" %>      
 		<%
 		boolean modOrder = false;
 		boolean inViewCart = false;

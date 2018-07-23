@@ -14,6 +14,9 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+
+<fd:OptionalParameterValidator parameter="skuCode" parameterType="<%=String.class.getSimpleName()%>"/>
+
 <%
 FDCartLineI templateLine = null ;
 //m for meal ids

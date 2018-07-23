@@ -82,7 +82,6 @@ public class AccountController extends BaseController implements Comparator <Ord
     private static final String ACTION_GET_ORDER_HISTORY = "getorders";
     private static final String ACTION_GET_CREDITED_ORDER_HISTORY = "getcreditedorders";
     private static final String ACTION_GET_CREDIT_HISTORY = "getcredits";
-    private static final String ACTION_ACCEPT_DP_TERMSANDCONDITIONS = "acceptDeliveryPassTermsAndConditions";
     private static final String ACTION_ADD_PROFILE = "addProfile";
     private static final String ACTION_DP_FREE_TRIAL="dpFreeTrial";
 	private static final String ACTION_DP_GET_INFO="getDpInfo";
@@ -137,12 +136,7 @@ public class AccountController extends BaseController implements Comparator <Ord
 	            model = getCreditedOrderHistory(model, user, request, response, dlvPassCart);
 	        } else if (ACTION_GET_CREDIT_HISTORY.equals(action)) {
 	            model = getCreditHistory(model, user, request, response);
-	        } else if (ACTION_ACCEPT_DP_TERMSANDCONDITIONS.equals(action)) {
-	           // APPDEV-2567 Logging DP Terms acceptance - mobile API
-	            FDCustomerManager.storeDPTCAgreeDate(AccountActivityUtil.getActionInfo(request.getSession())
-	            										, user.getFDSessionUser().getIdentity().getErpCustomerPK(), new Date());
-	            setResponseMessage(model, Message.createSuccessMessage(MSG_ACCEPT_DP_TERMSANDCONDITIONS), user);
-	        }else if(ACTION_ADD_PROFILE.equals(action)){
+	        } else if(ACTION_ADD_PROFILE.equals(action)){
 	        	AddProfileRequest requestMessage = parseRequestObject(request, response, AddProfileRequest.class);
 				String notePrefix = "Add Profile Attribute: " + requestMessage.getName() + " = " + requestMessage.getValue() + ", Note: ";
 				FDActionInfo info =	AccountActivityUtil.getActionInfo(request.getSession(), notePrefix + requestMessage.getNotes());

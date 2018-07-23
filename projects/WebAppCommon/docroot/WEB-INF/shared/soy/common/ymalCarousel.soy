@@ -2,11 +2,11 @@
 
 /**
  * @param productList some path, list of items
- * @param? cmEventSource
+ * @param? eventSource
  */
 {template .ymalCarousel}
 {if $productList and length($productList) > 0}
-<div class="ymalCarousel" data-cmSiteFeature="YMAL" data-cmeventsource="{if $cmEventSource }{$cmEventSource}{else}YMAL{/if}">
+<div class="ymalCarousel" data-siteFeature="YMAL" data-eventsource="{if $eventSource }{$eventSource}{else}YMAL{/if}">
 	<h2><span>You May Also Like</span></h2>
 	{call common.simpleCarousel}
 		{param items: $productList /}
@@ -18,11 +18,11 @@
 
 /**
  * @param productList some path, list of items
- * @param? cmEventSource
+ * @param? eventSource
  */
 {template .yourTopItemsCarousel}
 {if $productList and length($productList) > 0}
-<div class="ymalCarousel" data-cmSiteFeature="YMAL" data-cmeventsource="{if $cmEventSource }{$cmEventSource}{else}YMAL{/if}">
+<div class="ymalCarousel" data-siteFeature="YMAL" data-eventsource="{if $eventSource }{$eventSource}{else}YMAL{/if}">
 	<h2><span>Your Top Items</span></h2>
 	{call common.simpleCarousel}
 		{param items: $productList /}

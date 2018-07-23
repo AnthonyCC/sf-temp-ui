@@ -18,7 +18,6 @@
  * @param backupPaymentRequiredForGiftCard
  * @param? walletErrorMsg  
  * @param? mpButtonImgURL
- * @param? onOpenCoremetrics
  * @param? ppEwalletPaired
  * @param? mobWeb
   */
@@ -42,7 +41,6 @@
     {foreach $payment in $payments}
       {if $payment.selected}
         {call .paymentmethodpreviewitem data="$payment"}
-        	{param onOpenCoremetrics: $onOpenCoremetrics /}
         {/call}
       {/if}
     {/foreach} 		
@@ -78,7 +76,7 @@
     {else}
     	<div class="drawer__previewitem">
     		<div class="drawer__previewitem__button__section">
-				<button aria-haspopup="true" class='cssbutton orange' data-component="addpaymentmethodbutton" {if $onOpenCoremetrics}cm-click="{$onOpenCoremetrics}"{/if}>Add a Method</button>
+				<button aria-haspopup="true" class='cssbutton orange' data-component="addpaymentmethodbutton">Add a Method</button>
 			</div>
     	</div>
 		{if (not $mobWeb) and ($mpEwalletStatus or $ppEwalletStatus)}
@@ -390,7 +388,6 @@
 * @param? abaRouteNumber
 * @param? eWalletID
 * @param? mpLogoURL
-* @param? onOpenCoremetrics
 * @param nameOnCard
 * @param? emailID
 */
@@ -421,7 +418,7 @@
 	  </div>
   </div>
   <div class="drawer__item__action">
-  	<button type="button" aria-haspopup="true" class="change cssbutton green transparent small" {if $onOpenCoremetrics}cm-click="{$onOpenCoremetrics}"{/if}>Edit<span class="offscreen">payment method</span></button>
+  	<button type="button" aria-haspopup="true" class="change cssbutton green transparent small">Edit<span class="offscreen">payment method</span></button>
   </div>
   <div class="clear"></div>
 </div>

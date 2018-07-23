@@ -1,4 +1,3 @@
-<%@page import="com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag"%>
 <%@ page import="java.net.*"%>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName" %>
@@ -28,8 +27,7 @@
 	boolean isCorporate = "CORPORATE".equalsIgnoreCase(serviceType);
 	
     String failurePage = "/registration/signup_lite.jsp?successPage="+ URLEncoder.encode(successPage)+"&ol=na&serviceType="+serviceType;
-    
-    CmRegistrationTag.setRegistrationLocation(session,"signup lite");
+
 %>	
 
 <fd:SiteAccessController action='signupLite' successPage='<%= successPage %>' moreInfoPage='' failureHomePage='<%= failurePage %>' result='result'>
@@ -104,8 +102,6 @@
     
 </head>
 <body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="0" topmargin="0" style="">
-<%@ include file="/shared/template/includes/i_body_start.jspf" %>
-
 
 	<center>
   <div style="text-align: left; width: 450px; margin-bottom: 12px;" class="text12">

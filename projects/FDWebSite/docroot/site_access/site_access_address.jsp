@@ -34,7 +34,6 @@
 	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body>
-	<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 	
 		<%
 			String fldAddress1 = NVL.apply(request.getParameter(EnumUserInfoName.DLV_ADDRESS_1.getCode()), "");

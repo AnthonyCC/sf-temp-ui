@@ -26,6 +26,9 @@ import com.google.common.base.Splitter;
 public class DraftApplicatorService {
 
     public static final char SEPARATOR = '|';
+
+    public static final String EMPTY_LIST_TOKEN = "[]";
+
     private static final Splitter SPLITTER = Splitter.on(SEPARATOR);
 
     @Autowired
@@ -43,6 +46,7 @@ public class DraftApplicatorService {
 
         for (DraftChange draftChange : draftChanges) {
             ContentKey contentKey = ContentKeyFactory.get(draftChange.getContentKey());
+            final String value = draftChange.getValue();
 
             Map<Attribute, Object> attributeMap = nodeMap.get(contentKey);
             if (attributeMap == null) {
@@ -51,17 +55,27 @@ public class DraftApplicatorService {
             }
 
             final Attribute attributeDefinition = getAttributeDefinition(contentKey.type, draftChange.getAttributeName());
-            if (attributeDefinition instanceof Relationship) {
-                Relationship relationship = (Relationship) attributeDefinition;
-                List<ContentKey> keys = getContentKeysFromRelationshipValue(draftChange.getValue());
+            if (value == null) {
+                attributeMap.put(attributeDefinition, null);
+            } else if (attributeDefinition instanceof Relationship) {
+                final Relationship relationship = (Relationship) attributeDefinition;
                 if (relationship.getCardinality() == RelationshipCardinality.ONE) {
-                    attributeMap.put(relationship, keys.isEmpty() ? null : keys.get(0));
+                    List<ContentKey> keys = getContentKeysFromRelationshipValue(value);
+                    if (!keys.isEmpty()) {
+                        attributeMap.put(relationship, keys.get(0));
+                    }
                 } else {
-                    attributeMap.put(relationship, keys);
+                    // LP-226 edge case
+                    if (EMPTY_LIST_TOKEN.equals(value)) {
+                        attributeMap.put(relationship, new ArrayList<ContentKey>());
+                    } else {
+                        List<ContentKey> keys = getContentKeysFromRelationshipValue(value);
+                        attributeMap.put(relationship, keys);
+                    }
                 }
             } else if (attributeDefinition instanceof Scalar) {
                 Scalar scalarAttribute = (Scalar) attributeDefinition;
-                attributeMap.put(scalarAttribute, ScalarValueConverter.deserializeToObject(scalarAttribute, draftChange.getValue()));
+                attributeMap.put(scalarAttribute, ScalarValueConverter.deserializeToObject(scalarAttribute, value));
             }
         }
         return nodeMap;
@@ -76,8 +90,12 @@ public class DraftApplicatorService {
     }
 
     public static List<ContentKey> getContentKeysFromRelationshipValue(String value) {
+        if (value == null) {
+            return null;
+        }
+
         List<ContentKey> result = new ArrayList<ContentKey>();
-        if (value != null) {
+        if (!EMPTY_LIST_TOKEN.equals(value)) {
             for (String key : SPLITTER.split(value)) {
                 result.add(ContentKeyFactory.get(key));
             }

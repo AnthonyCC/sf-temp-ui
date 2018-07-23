@@ -4,7 +4,6 @@ package com.freshdirect.webapp.util;
 import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
@@ -56,8 +55,6 @@ import com.freshdirect.fdstore.atp.FDAvailabilityInfo;
 import com.freshdirect.fdstore.atp.FDCompositeAvailabilityInfo;
 import com.freshdirect.fdstore.atp.FDMuniAvailabilityInfo;
 import com.freshdirect.fdstore.atp.FDStockAvailabilityInfo;
-import com.freshdirect.fdstore.coremetrics.mobileanalytics.CJVFContextHolder;
-import com.freshdirect.fdstore.coremetrics.mobileanalytics.CreateCMRequest;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -113,7 +110,6 @@ import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.storeapi.content.ProductReference;
 import com.freshdirect.webapp.ajax.expresscheckout.availability.service.AvailabilityService;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
-import com.freshdirect.webapp.taglib.fdstore.AddressUtil;
 import com.freshdirect.webapp.taglib.fdstore.DeliveryAddressValidator;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.PaymentMethodUtil;
@@ -681,32 +677,6 @@ public class StandingOrderUtil {
 			
 			int fdcOrderCount = (FDStoreProperties.isFdcFirstOrderEmailMsgEnabled()) ? customerUser.getOrderHistory().getValidOrderCount("1400") : -1;
 			String orderId = FDCustomerManager.placeOrder( orderActionInfo, cart, customerUser.getAllAppliedPromos(), false, cra, null , false, fdcOrderCount);
-			
-			long cmrequestStart = System.currentTimeMillis();
-			try {
-				
-				CJVFContextHolder cjvfContextHolder = new CJVFContextHolder(customerUser.getPrimaryKey(), 7);
-				if (FDStandingOrdersManager.getInstance().getCoremetricsUserinfo(customerUser)) {
-					cjvfContextHolder.thisIsRepeatedStandingOrder();
-				} else {
-					FDStandingOrdersManager.getInstance().insertIntoCoremetricsUserinfo(customerUser, 1);
-					cjvfContextHolder.thisIsFirstStandingOrder();
-				}
-				CreateCMRequest cCMR = new CreateCMRequest(customerUser.getPrimaryKey(), cjvfContextHolder);
-				FDOrderI order = FDCustomerManager.getOrder(orderId);
-				List httpResponseCodes =Arrays.asList(cCMR.sendShop9Tags(cart, order, customerUser));
-				int httpResponseCode = cCMR.sendOrderTag(order, customerUser);
-				
-				if (httpResponseCodes.contains(CreateCMRequest.GENERAL_ERROR) || httpResponseCode == CreateCMRequest.GENERAL_ERROR) {
-					errorOccured = true;
-				} else {
-					errorOccured = false;
-				}
-			} catch (FDResourceException e) {
-				LOGGER.error("Failed to send coremetrics information corresponding order ID="+orderId, e);
-			}
-			LOGGER.info("Time taken to send CM Request for order ID="+orderId+" (in sec) " + (System.currentTimeMillis() - cmrequestStart)/1000 );
-			
 			
 			try {
 				FDStandingOrdersManager.getInstance().assignStandingOrderToSale(orderId, so);

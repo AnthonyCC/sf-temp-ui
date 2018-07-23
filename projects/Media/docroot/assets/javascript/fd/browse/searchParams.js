@@ -6,7 +6,6 @@ var FreshDirect = FreshDirect || {};
 
   var $ = fd.libs.$;
   var WIDGET = fd.modules.common.widget;
-  var cm = fd.components.coremetrics;
 
   if(!window.srch){ return; }
 
@@ -34,9 +33,7 @@ var FreshDirect = FreshDirect || {};
       value:function(clickEvent){
         clickEvent.preventDefault();
         fd.browse.menu.resetFilters();
-        if (cm) {
-            cm.setEvent('pageview');
-          }
+
         $(this.placeholder).trigger('searchParams-change');
       }
     },
@@ -76,8 +73,6 @@ var FreshDirect = FreshDirect || {};
         // select new active tab
         var currentTabType = $(clickEvent.currentTarget).data("type");
         $(this.placeholder).find("[data-type='"+ currentTabType+"']").addClass("active");
-
-        cm && cm.setEvent('element');
 
         clickEvent.preventDefault();
         $(this.placeholder).trigger('searchParams-change');

@@ -151,7 +151,6 @@ if (skus.size() != 0 && ! productNode.isUnavailable() ) {
 	<form method='post' name="productForm" id="productForm" action="<%= formAction %>">
 	<fd:PendingOrderChecker/>
 	<fd:AddToCartPending id="productForm"/>
-	<fd:CmFieldDecorator/>
 
         <% if (cartMode.equals(CartName.MODIFY_CART)) { %>
             <input type="hidden" name="cartLine" value="<%= templateLine.getRandomId() %>">

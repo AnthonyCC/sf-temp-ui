@@ -6,7 +6,6 @@ var FreshDirect = FreshDirect || {};
 
   var $ = fd.libs.$;
   var WIDGET = fd.modules.common.widget;
-  var cm = fd.components.coremetrics;
 
   var menu = Object.create(WIDGET,{
     signal:{
@@ -65,9 +64,6 @@ var FreshDirect = FreshDirect || {};
         $('[data-component="menuitem"][data-urlparameter="all"] input').attr('checked', null);
         $('[data-component="menubox"][data-allselected]').attr('data-allselected', null);
 
-        if (cm) {
-          cm.setEvent('pageview');
-        }
         if (FreshDirect.browse.sorter) { FreshDirect.browse.sorter.reset(); }
       }
     },
@@ -102,22 +98,14 @@ var FreshDirect = FreshDirect || {};
           $(".selected", menubox).removeClass('selected');
         }
 
-        if (menubox.data('boxtype') === 'FILTER') {
-          if (cm) {
-            cm.setEvent('element');
-          }
-        }
-
         clicked.addClass('selected');
         if (menubox.data('filter') === 'id') {
           if (urlparameter === "all") {
             this.id = menubox.data('id');
           } else {  
             this.id = urlparameter;
-          } 
-          if (cm) {
-            cm.setEvent('pageview');
           }
+
           if (FreshDirect.browse.sorter) { FreshDirect.browse.sorter.reset(); }
         }
 
@@ -157,12 +145,6 @@ var FreshDirect = FreshDirect || {};
             this.setId(id);
           } 
           if (FreshDirect.browse.sorter) { FreshDirect.browse.sorter.reset(); }
-        }
-
-        if (menubox.data('boxtype') === 'FILTER') {
-          if (cm) {
-            cm.setEvent('element');
-          }
         }
 
         clickEvent.preventDefault();

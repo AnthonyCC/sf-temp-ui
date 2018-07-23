@@ -291,6 +291,7 @@ public class ListConverter {
 				productlistLineItem.setRecipeSourceId(customerProduct.getRecipeSourceId());
 				productlistLineItem.setSkuCode(customerProduct.getSkuCode());
 				productlistLineItem.setSojustAddedItemToCart(customerProduct.isSojustAddedItemToCart());
+				productlistLineItem.setListDetailId(customerProduct.getId());
 				fdCustomerListItemData.setProductListLineItem(productlistLineItem);
 				fdCustomerListItemData.setReturnType(FDCustomerProductListLineItem.class.getSimpleName());
 
@@ -337,7 +338,7 @@ public class ListConverter {
 
 			ErpOrderLineModelData orderLineData = fdProductSelectionData.getOrderLine();
 			FDProductSelection productselection = new FDProductSelection(buildFDSKU(orderLineData.getSku()),buildProductModel(orderLineData.getSku().getSkuCode()),
-					buildFDConfiguration(orderLineData.getConfiguration()),null, buildUserContext(orderLineData.getUserCtx()),
+					buildFDConfiguration(orderLineData.getConfiguration()),null, buildUserContext(orderLineData.getUserContext()),
 					fdProductSelectionData.getOrderLine().getPlantID());
 			productselection.setConfigurationDesc(orderLineData.getConfigurationDesc());
 			productselection.setCustomerListLineId(fdProductSelectionData.getCustomerListLineId());

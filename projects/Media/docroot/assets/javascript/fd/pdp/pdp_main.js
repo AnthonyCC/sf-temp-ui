@@ -6,7 +6,7 @@ var FreshDirect = FreshDirect || {};
  var $ = fd.libs.$;
   var keyCode = fd.utils.keyCode;
 
- fd.components.Subtotal.update($('[data-component="product"][data-cmeventsource="pdp_main"]'));
+ fd.components.Subtotal.update($('[data-component="product"][data-eventsource="pdp_main"]'));
 
  var productId=$('#BVRRContainer').data('productid');
   var setUpPdpAccordions, toggleAccordionARIA;
@@ -24,12 +24,6 @@ var FreshDirect = FreshDirect || {};
       url:url
     });
   };
-
- $('[data-component="customercm"]').on('click', function(e){
-    e.stopPropagation();
-
-   !!$(this).attr("checked") && FreshDirect.pdp.coremetrics && FreshDirect.pdp.coremetrics();
-  });
 
  setUpPdpAccordions = function(){
     $(".pdp-accordion-item").each(function(){

@@ -60,7 +60,6 @@ if(windowSize.equalsIgnoreCase("custom")){
 
 <body bgcolor="#ffffff" link="#336600" vlink="#336600" alink="#ff9900" text="#333333"  onLoad="window.focus()">
 
-<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 
 <center>
 <a name="top"></a>

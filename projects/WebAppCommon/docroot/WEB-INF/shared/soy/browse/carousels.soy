@@ -36,13 +36,13 @@
         </td>
       </tr>
       <tr class="ccontent">
-        <td class="c1" {if $carousel1}data-cmeventsource="{$carousel1.cmEventSource}"{/if}>
+        <td class="c1" {if $carousel1}data-eventsource="{$carousel1.eventSource}"{/if}>
           <div class="cholder">
           {if $carousel1}
             {call common.simpleCarousel}
         	    {param items: $carousel1.products /}
     	        {param itemType:'grid' /}
-	           	{param cmEventSource:$carousel1.cmEventSource /}
+	           	{param eventSource:$carousel1.eventSource /}
             {/call}
           {/if}
           </div>
@@ -53,7 +53,7 @@
             {call common.simpleCarousel}
         	    {param items: $carousel2.products /}
     	        {param itemType:'grid' /}
-	           	{param cmEventSource:$carousel2.cmEventSource /}
+	           	{param eventSource:$carousel2.eventSource /}
             {/call}
           {/if}
           </div>

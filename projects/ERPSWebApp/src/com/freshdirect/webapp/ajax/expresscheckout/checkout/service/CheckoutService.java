@@ -16,11 +16,6 @@ import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.coremetrics.CmContext;
-import com.freshdirect.fdstore.coremetrics.CmContextUtility;
-import com.freshdirect.fdstore.coremetrics.builder.PageViewTagModelBuilder;
-import com.freshdirect.fdstore.coremetrics.builder.PageViewTagModelBuilder.CustomCategory;
-import com.freshdirect.fdstore.coremetrics.tagmodel.PageViewTagModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
@@ -59,11 +54,10 @@ import com.freshdirect.webapp.crm.util.MakeGoodOrderUtility.PostAction;
 import com.freshdirect.webapp.crm.util.MakeGoodOrderUtility.SessionParamGetter;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.soy.SoyTemplateEngine;
-import com.freshdirect.webapp.taglib.coremetrics.CmConversionEventTag;
-import com.freshdirect.webapp.taglib.coremetrics.CmShop9Tag;
 import com.freshdirect.webapp.taglib.fdstore.CheckoutControllerTag;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventFactory;
 import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventI;
 import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventType;
@@ -78,9 +72,6 @@ public class CheckoutService {
 	private static final CheckoutService INSTANCE = new CheckoutService();
 
 	private static final Logger LOGGER = LoggerFactory.getInstance(CheckoutService.class);
-	
-//	private static final String CUSTOMER_NOTIFY_STATUS = "Pending";
-//	private static final String MASTERPASS_TRANSACTIONID="transactionId";
 	private static final String EWALLET_SESSION_ATTRIBUTE_NAME="EWALLET_CARD_TYPE";
 	private static final String MP_EWALLET_CARD="MP_CARD";
 	private static final String WALLET_SESSION_CARD_ID="WALLET_CARD_ID";
@@ -112,14 +103,6 @@ public class CheckoutService {
             AvailabilityService.defaultService().checkCartAtpAvailability(user);
             UnavailabilityData atpFailureData = UnavailabilityPopulator.createUnavailabilityData((FDSessionUser) user);
             
-            if (CmContextUtility.isCoremetricsAvailable(user)) {
-				PageViewTagModel pvTagModel = new PageViewTagModel();
-				pvTagModel.setCategoryId( CmContext.getContext().prefixedCategoryId( CustomCategory.CHECKOUT.toString()));
-				pvTagModel.setPageId("unavailability");
-				PageViewTagModelBuilder.decoratePageIdWithCatId(pvTagModel);
-				atpFailureData.addCoremetrics(pvTagModel.toStringList());
-            }
-			
             if (!atpFailureData.getNonReplaceableLines().isEmpty() || !atpFailureData.getReplaceableLines().isEmpty() || atpFailureData.getNotMetMinAmount() != null || !atpFailureData.getPasses().isEmpty()) {
                 unavailabilityData = atpFailureData;
             }
@@ -159,7 +142,9 @@ public class CheckoutService {
 		UnavailabilityData atpFailureData = null;
 		FormRestriction checkPlaceOrderResult = null;
 		ActionResult actionResult = new ActionResult();
-		FDCartModel cart = user.getShoppingCart();
+		boolean dlvPassCart = null !=FormDataService.defaultService().getBoolean(requestData, "dlvPassCart") ? FormDataService.defaultService().getBoolean(requestData, "dlvPassCart"): false;
+		FDCartModel cart = UserUtil.getCart(user, "", dlvPassCart);
+		//FDCartModel cart = user.getShoppingCart();
 //		AvalaraContext avalaraContext = new AvalaraContext(cart);
 		boolean isAtpCheckRequired = true;
 	//	if(FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && cart.containsDlvPassOnly()){
@@ -199,7 +184,7 @@ public class CheckoutService {
 			    	avalaraContext.setReturnTaxValue(cart.getAvalaraTaxValue(avalaraContext));
 					}*/
                     outcome = CheckoutControllerTag.performSubmitOrder(user, actionName, actionResult, session, request, response, CheckoutControllerTag.AUTHORIZATION_CUTOFF_PAGE,
-                            null, null, null, false);
+                            null, null, null, dlvPassCart);
                     // makegood phase
     				MasqueradeContext masqueradeContext = user.getMasqueradeContext();
     				String masqueradeMakeGoodOrderId = masqueradeContext==null ? null : masqueradeContext.getMakeGoodFromOrderId();
@@ -224,25 +209,18 @@ public class CheckoutService {
 					user.setShowPendingOrderOverlay(true);
 					//clear inform ordermodify flag
 					sessionUser.setShowingInformOrderModify(false);
-					// prepare and store model for Coremetrics report
-					//   EXCEPT for make-good sessions!
-					if ( masqueradeMakeGoodOrderId == null ) {
-						CmConversionEventTag.buildPendingOrderModifiedModels(session, cart);
-						CmShop9Tag.buildPendingModels(session, cart);
 
-						// [APPDEV-5353] [APPDEV-5396] UNBXD analytics
-				        if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, request.getCookies(), user)) {
-				            final Visitor visitor = Visitor.withUser(user);
-				            final LocationInfo loc = LocationInfo.withUrlAndReferer(RequestUtil.getFullRequestUrl(request), request.getHeader(HttpHeaders.REFERER));
-				            final boolean cosAction = CosFeatureUtil.isUnbxdCosAction(user, request.getCookies());
-				            
-				            for (FDCartLineI cartline : cart.getOrderLines()) {
-				                AnalyticsEventI event = AnalyticsEventFactory.createEvent(AnalyticsEventType.ORDER, visitor, loc, null, null, cartline, cosAction);
-				                EventLoggerService.getInstance().log(event);
-				            }
-				        }
+                    if (masqueradeMakeGoodOrderId == null && FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, request.getCookies(), user)) {
+                        final Visitor visitor = Visitor.withUser(user);
+                        final LocationInfo loc = LocationInfo.withUrlAndReferer(RequestUtil.getFullRequestUrl(request), request.getHeader(HttpHeaders.REFERER));
+                        final boolean cosAction = CosFeatureUtil.isUnbxdCosAction(user, request.getCookies());
 
-					}
+                        for (FDCartLineI cartline : cart.getOrderLines()) {
+                            AnalyticsEventI event = AnalyticsEventFactory.createEvent(AnalyticsEventType.ORDER, visitor, loc, null, null, cartline, cosAction);
+                            EventLoggerService.getInstance().log(event);
+                        }
+                    }
+
 					((FDSessionUser) user).saveCart(true);
 				}
 				if (Action.SUCCESS.equalsIgnoreCase(outcome)) {

@@ -11,7 +11,7 @@ public class CarouselData extends BasicData {
 	
 	private List<ProductData> products;
 	
-	private String cmEventSource;
+	private String eventSource;
 
 	public List<ProductData> getProducts() {
 		return products;
@@ -19,10 +19,10 @@ public class CarouselData extends BasicData {
 	public void setProducts(List<ProductData> products) {
 		this.products = products;
 	}
-	public String getCmEventSource() {
-		return cmEventSource;
+	public String getEventSource() {
+		return eventSource;
 	}
-	public void setCmEventSource(String cmEventSource) {
-		this.cmEventSource = cmEventSource;
+	public void setEventSource(String eventSource) {
+		this.eventSource = eventSource;
 	}
 }

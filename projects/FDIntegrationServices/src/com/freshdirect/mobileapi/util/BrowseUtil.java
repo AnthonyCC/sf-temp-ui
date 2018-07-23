@@ -3,6 +3,7 @@ package com.freshdirect.mobileapi.util;
 import static java.util.Collections.emptyList;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -134,7 +135,7 @@ public class BrowseUtil {
     private BrowseUtil() {
     }
 
-    public static BrowsePageResponse getBrowseResponse(SessionUser user, HttpServletRequest request) {
+    public static BrowsePageResponse getBrowseResponse(SessionUser user, HttpServletRequest request) throws UnsupportedEncodingException {
         final BrowsePageResponse result = new BrowsePageResponse();
 
         try {

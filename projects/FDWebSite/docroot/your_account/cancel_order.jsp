@@ -12,6 +12,7 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 
+<fd:RequiredParameterValidator parameters="orderId"/>
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 <%
 	final int W_YA_CANCEL_ORDER = 605; //expanded page dimensions

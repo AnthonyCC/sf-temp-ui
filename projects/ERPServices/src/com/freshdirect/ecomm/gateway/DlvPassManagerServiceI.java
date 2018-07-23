@@ -52,12 +52,16 @@ public interface DlvPassManagerServiceI {
 	
 	public List<DeliveryPassModel> getUsableAutoRenewPasses(String customerPK )throws RemoteException;
 
-	public  Object[] getAutoRenewalInfo()throws RemoteException;
+	public  Object[] getAutoRenewalInfo(EnumEStoreId eStore)throws RemoteException;
 
 	public int getDaysSinceDPExpiry(String customerID) throws RemoteException;
 
 	public int getDaysToDPExpiry(String customerID, String activeDPID)throws RemoteException;
 	
-	public List<List<String>> getPendingPasses()throws RemoteException;
+	public List<List<String>> getPendingPasses(EnumEStoreId eStore)throws RemoteException;
+	
+	public List<String> getAllCustIdsOfFreeTrialSubsOrder() throws RemoteException;
+	
+	public void updateDeliveryPassActivation(String saleId) throws RemoteException;
 
 }

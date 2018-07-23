@@ -81,7 +81,7 @@
 			{if $coupon}{call common.ecoupon}{param coupon:$coupon /}{param couponDisplay:$couponDisplay /}{param couponClipped:$couponClipped /}{param couponStatusText:$couponStatusText /}{/call}{/if}
 		</div>
 		<div{if $isEligibleForStandingOrders and length($soData.settingsData.soData) > 0} class="pdp-evenbetter-soPreShow"{/if}>
-			<form fdform="enevbetter_{$atcItemId}" fdform-submit="FreshDirect.components.AddToCart.formAddToCart" class="pdp-evenbetter-atc" data-cmeventsource="EB">
+			<form fdform="enevbetter_{$atcItemId}" fdform-submit="FreshDirect.components.AddToCart.formAddToCart" class="pdp-evenbetter-atc" data-eventsource="EB">
 				<input type="hidden" name="skuCode" value="{$skuCode}" data-component="productData" data-productdata-name="skuCode">
 				<input type="hidden" data-component="productData" data-productdata-name="atcItemId" name="atcItemId" value="{$atcItemId}">
 				<input type="hidden" data-component="productData" data-productdata-name="productId" name="productId" value="{$productId}">

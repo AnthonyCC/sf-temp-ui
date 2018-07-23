@@ -107,15 +107,21 @@ public class DraftContentProviderService extends ContextualContentProvider {
 
             for (Map<Attribute, Object> draftOverride : draftOverrides.values()) {
                 for (Map.Entry<Attribute, Object> entry : draftOverride.entrySet()) {
-                    Attribute attribute = entry.getKey();
+                    final Attribute attribute = entry.getKey();
+                    final Object value = entry.getValue();
+
+                    if (value == null) {
+                        continue;
+                    }
+
                     if (attribute instanceof Relationship) {
                         if (((Relationship) attribute).getCardinality() == RelationshipCardinality.ONE) {
-                            if (key.equals((ContentKey) entry.getValue())) {
+                            if (key.equals(value)) {
                                 // indirect child of a node that exists on current DRAFT branch, return with the result
                                 return true;
                             }
                         } else {
-                            if (((List<?>) entry.getValue()).contains(key)) {
+                            if (((List<?>) value).contains(key)) {
                                 // indirect child of a node that exists on current DRAFT branch, return with the result
                                 return true;
                             }
@@ -139,7 +145,14 @@ public class DraftContentProviderService extends ContextualContentProvider {
         Map<Attribute, Object> resultNode = new HashMap<Attribute, Object>(contentProviderService.getAllAttributesForContentKey(contentKey));
         Map<Attribute, Object> draftNode = getDraftNodes(draftContext).get(contentKey);
         if (draftNode != null) {
-            resultNode.putAll(draftNode);
+            for (Map.Entry<Attribute, Object> draftEntry : draftNode.entrySet()) {
+                final Attribute attributeDef = draftEntry.getKey();
+                if (draftEntry.getValue() == null) {
+                    resultNode.remove(attributeDef);
+                } else {
+                    resultNode.put(attributeDef, draftEntry.getValue());
+                }
+            }
         }
         return resultNode;
     }
@@ -353,17 +366,22 @@ public class DraftContentProviderService extends ContextualContentProvider {
             keySet.add(draftNodeEntry.getKey());
 
             for (Map.Entry<Attribute, Object> attributeEntry : draftNodeEntry.getValue().entrySet()) {
-                Attribute attribute = attributeEntry.getKey();
+                final Attribute attribute = attributeEntry.getKey();
+                final Object value = attributeEntry.getValue();
+
+                if (value == null) {
+                    continue;
+                }
 
                 if (attribute instanceof Relationship) {
                     Relationship relationship = (Relationship) attribute;
                     if (relationship.getCardinality() == RelationshipCardinality.ONE) {
-                        ContentKey childKey = (ContentKey) attributeEntry.getValue();
+                        ContentKey childKey = (ContentKey) value;
                         if (childKey != null && !contentProviderService.containsContentKey(childKey)) {
                             keySet.add(childKey);
                         }
                     } else {
-                        List<ContentKey> childKeys = (List<ContentKey>) attributeEntry.getValue();
+                        List<ContentKey> childKeys = (List<ContentKey>) value;
                         for (ContentKey childKey : childKeys) {
                             if (!contentProviderService.containsContentKey(childKey)) {
                                 keySet.add(childKey);

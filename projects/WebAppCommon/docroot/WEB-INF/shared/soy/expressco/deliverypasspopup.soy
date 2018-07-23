@@ -2,66 +2,94 @@
 
 /**
  * @param data popup data
+ * @param? notloggedin check if user logged in
  */
 {template .deliverypasspopup autoescape="false"}
 <div>
-  <div class='deliverypasspopup__header'></div>
+  <div class='deliverypasspopup__header'>
+  	<div class="deliverypasspopup__header-fd"><img src="/media/layout/nav/globalnav/fdx/locabar-tab-fd-green.svg" /></div>
+	<div class="deliverypasspopup__header-dp">DeliveryPass<sup>&reg;</sup><span class="deliverypasspopup__header-truck"><img src="/media/editorial/site_pages/deliverypass/images/truck.svg" alt="truck"></span></div>
+	<div class="deliverypasspopup__header-text">
+		<span class="deliverypasspopup__header-text-circle deliverypasspopup-mobweb">&#9679;</span> Unlimited Free Deliveries <br class="deliverypasspopup-mobweb" />
+		<span class="deliverypasspopup__header-text-circle">&#9679;</span> Timeslot Reservations <br class="deliverypasspopup-mobweb" />
+		<span class="deliverypasspopup__header-text-circle deliverypasspopup-mobweb">&#9679;</span> Exclusive DeliveryPass Perks</div>
+  </div>
   <div data-component='deliverypasspopup-page'>
-    <p class='deliverypasspopup__title'>Save with Unlimited <i>Free</i> Delivery!</p>
-    <form fdform="deliverypass" action="#" data-cmeventsource="{$data.cmEventSource ? $data.cmEventSource : 'BROWSE'}">
+    {if $data.freeTrialEligible}<div class="deliverypasspopup__freetrial"><a href="/freetrial.jsp">New to DeliveryPass? Sign up for the Free Trial!</a></div>{/if}
+    <form class="deliverypass_form" fdform="deliverypass" action="#" data-eventsource="{$data.eventSource ? $data.eventSource : 'BROWSE'}">
       <div class="deliverypasspopup_boxes">
-      {if $data.products}
-        {foreach $option in $data.products}
-          {call .deliveryoption data="$option" /}
-        {/foreach}
-      {/if}
+      	<div class="deliverypasspopup_boxes-header"><span class="deliverypasspopup_boxes-header-name">Anytime</span> Seven Days a Week</div>
+		{if $data.products}
+			<div class="deliverypasspopup__options">
+				{foreach $option in $data.products}
+				  {if not $option.midWeekSku}
+		            {call .deliveryoption data="$option"}
+		          	  {param notloggedin: $notloggedin /}
+		            {/call}
+		          {/if}
+		        {/foreach}
+		    </div>
+		{/if}
+		<div class="clear"></div>
+      </div>
+      <div class="deliverypasspopup_boxes">
+      	<div class="deliverypasspopup_boxes-header"><span class="deliverypasspopup_boxes-header-name">Midweek</span> Tuesday through Thursday</div>
+      	{if $data.products}
+      		<div class="deliverypasspopup__options">
+		        {foreach $option in $data.products}
+		          {if $option.midWeekSku}
+			          {call .deliveryoption data="$option"}
+				        {param notloggedin: $notloggedin /}
+				      {/call}
+			      {/if}
+		        {/foreach}
+			</div>
+		{/if}
+		<div class="clear"></div>
       </div>
       <div class='deliverypasspopup__footer'>
-        <button class='cssbutton green deliverypasspopup__submit' type='submit'>Submit</button>
-        <p class='deliverypasspopup__terms'>By purchasing a DeliveryPass&#8482;, you are agreeing<br/> to the terms
-         and conditions set forth <a data-component='deliverypasspopup-toggler' href='#'><span class="offscreen"> delivery pass terms and conditions click </span>here</a></p>
+      	<div class="deliverypasspopup__footer-text">By signing up for DeliveryPass<sup>&reg;</sup>, you are agreeing to the Terms & Conditions set forth here, and authorize us to charge your default payment method.</div>
+		<div class="deliverypasspopup__footer-terms"><a href="#" data-deliverypass-terms>Terms and Conditions</a></div>
+		<div class="deliverypasspopup__footer-text">Your DeliveryPass<sup>&reg;</sup> membership continues until canceled. You can cancel anytime by calling customer service at {$data.customerContact}.</div>
       </div>
     </form>
-  </div>
-  <div data-component='deliverypasspopup-page' class='deliverypasspopup__termspage'>
-    {if $data.termsAndConditions}
-      {call .termsAndConditions}
-        {param message: $data.termsAndConditions /}
-      {/call}
-    {/if}
   </div>
 </div>
 {/template}
 
+
 /**
  * @param id Unique id
  * @param title Option title
- * @param description Option descriptor
  * @param? totalPrice Option total
  * @param? pricePerMonth Option price per month
- * @param? selected Option is selected by default?
- * @param? saving Option saving message
  * @param? product Option meta-product
+ * @param? notloggedin check if user logged in
+ * @param? midWeekSku
  */
 {template .deliveryoption autoescape="false"}
-<label class="deliverypasspopup__option deliverypasspopup__label" data-component="deliverypasspopup-option" for="{$id}">
-  <input id="{$id}" type="radio" name="deliverypass-option" value="{$id}" class="deliverypasspopup__radio customradio" {if $selected}checked="checked"{/if} />
-    <p class="deliverypasspopup__option-title">{$title}
-      &nbsp;{if $totalPrice}<span class="deliverypasspopup__total">(${$totalPrice} total)</span>{/if}</p>
-    {if $pricePerMonth}
-    <div><b>{$pricePerMonth}</b> {if $saving}<span class="saving">{$saving}</span>{/if}</div>
-    {/if}
-    <p class="deliverypasspopup__option-desc">{$description}</p>
-    {if $product}
-    <div class="deliverypass_product" data-component="product" data-product-id="{$product.productId}">
-      {call common.productData data="$product" /}
-      {foreach $salesUnit in $product.salesUnit}{if $salesUnit.selected}
-        <input type="hidden" value="{$salesUnit.id}" data-productdata-name="salesUnit" data-component="productData">
-      {/if}{/foreach}
-      <input type="hidden" name="quantity" value="1" data-productdata-name="quantity" data-component="quantitybox.value" />
-    </div>
-    {/if}
-</label>
+	<div class="deliverypasspopup__option" data-component="deliverypasspopup-option" for="{$id}">
+		{if strContains($title, '1 Year')}<div class="deliverypasspopup__option-best-cont"><div class="deliverypasspopup__option-best">Best value</div></div>{/if}
+		<div class="deliverypasspopup__option-term">{if $title}{$title}{/if}</div>
+		<div class="deliverypasspopup__option-cost"><span class="deliverypasspopup__option-cost-large">{if $totalPrice}${$totalPrice}{/if}</span>+Tax</div>
+		<div class="deliverypasspopup__option-permonth">{if $pricePerMonth}{call common.formatDecimalPrice}{param price:$pricePerMonth /}{/call}/month{/if}</div>
+		<button class="cssbutton cssbutton-flat green transparent deliverypasspopup__submit" type="submit" 
+			{if $notloggedin}
+				fd-login-required fd-login-successpage-current
+			{else}
+				onclick="$jq('.deliverypass_form').attr('data-selected-product-id','{if $product}{$product.productId}{/if}').attr('data-selected-dp-title','{$title}{if $midWeekSku} Midweek{/if} Membership');"
+			{/if} 
+		>Sign Up</button>
+		{if $product}
+			<div class="deliverypass_product" data-component="product" data-product-id="{$product.productId}">
+				{call common.productData data="$product" /}
+				{foreach $salesUnit in $product.salesUnit}{if $salesUnit.selected}
+					<input type="hidden" value="{$salesUnit.id}" data-productdata-name="salesUnit" data-component="productData">
+				{/if}{/foreach}
+				<input type="hidden" name="quantity" value="1" data-productdata-name="quantity" data-component="quantitybox.value" />
+			</div>
+		{/if}
+	</div>
 {/template}
 
 /**
@@ -73,4 +101,15 @@
 <div class='deliverypasspopup__terms'>
   {$message}
 </div>
+{/template}
+
+/**
+ */
+{template .deliverypasspopupsuccess}
+	<div class="deliverypasspopup_success">
+		<div class="deliverypasspopup_success-cart"><img src="/media/layout/nav/globalnav/fdx/locabar-cart-green.svg"/></div>
+		<div class="deliverypasspopup_success-header">Added to Order</div>
+		<div class="deliverypasspopup_success-text">Place your order to begin your membership!</div>
+		<div class="deliverypasspopup_success-button"><button class="cssbutton cssbutton-flat green nontransparent close">Okay</button></div>
+	</div>
 {/template}

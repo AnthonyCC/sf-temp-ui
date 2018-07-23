@@ -225,9 +225,13 @@ public class CmsFilteringFlow {
 
                                 int curSectionSize = null !=section.getProducts()?section.getProducts().size():0;
 
-                                int itemsPerRow = (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn5_0, user)) ? 5 :
-                                    (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn4_0, user)) ? 4 : 5;
-
+                                int itemsPerRow = (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.productCard2018, user))
+                                    	? 4
+                                    	: (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn5_0, user)) 
+                            	    		? 5 
+                            	    		: (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn4_0, user)) 
+                            	    			? 4 
+                            	    			: 5;
                                 //calc how many HL will be inserted...
                                 double calcd = Math.min(
                                         Math.ceil( ((double)curSectionSize / itemsPerRow)),
@@ -368,7 +372,7 @@ public class CmsFilteringFlow {
 
 		browseData.getSortOptions().setCurrentOrderAsc(nav.isOrderAscending());
 
-        populateSearchCarouselProductLimit(nav.getActivePage(), browseDataContext);
+        populateSearchCarouselProductLimit(nav, browseDataContext, user);
         return new CmsFilteringFlowResult(browseData, null !=browseDataContext ? browseDataContext.getNavigationModel() :null);
     }
     /* call this BEFORE BrowseDataPagerHelper.createPagerContext(browseData, nav); */
@@ -377,8 +381,13 @@ public class CmsFilteringFlow {
         /* skip out if hlProds passed in are invalid or empty */
         if (hlProdList == null || hlProdList.size() == 0 || prodList == null || prodList.size() == 0) { return; }
 
-        int itemsPerRow = (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn5_0, user)) ? 5 :
-            (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn4_0, user)) ? 4 : 5;
+        int itemsPerRow = (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.productCard2018, user))
+        	? 4
+        	: (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn5_0, user)) 
+	    		? 5 
+	    		: (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn4_0, user)) 
+	    			? 4 
+	    			: 5;
         int hlIndex = itemsPerRow-1;
         ProductData pd = new ProductData();
         pd.setProductId("!_SPACER_!");
@@ -523,7 +532,9 @@ public class CmsFilteringFlow {
     	}
         return filter1.equals(filter2);
     }
-    private void populateSearchCarouselProductLimit(int activePage, BrowseDataContext browseDataContext) {
+    private void populateSearchCarouselProductLimit(CmsFilteringNavigator nav, BrowseDataContext browseDataContext, FDUserI user) {
+    	int activePage = nav.getActivePage();
+    	boolean isProductCard2018 = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.productCard2018, user);
         int searchCarouselProductLimit;
         int noOfAdProducts = (null != browseDataContext.getAdProducts() && null != browseDataContext.getAdProducts().getProducts()) ? browseDataContext.getAdProducts()
                 .getProducts().size() : 0;
@@ -531,6 +542,9 @@ public class CmsFilteringFlow {
             searchCarouselProductLimit = 0;
         } else {
             searchCarouselProductLimit = FDStoreProperties.getSearchCarouselProductLimit();
+            if (isProductCard2018) {
+            	searchCarouselProductLimit = (nav.getPageSize() - 4);
+            }
         }
         if (searchCarouselProductLimit > 0 && noOfAdProducts > 0 && searchCarouselProductLimit >= noOfAdProducts) {
             //searchCarouselProductLimit = searchCarouselProductLimit - noOfAdProducts;
@@ -545,7 +559,7 @@ public class CmsFilteringFlow {
         switch (nav.getPageType()) {
             case SEARCH:
                 String searchParams = nav.getSearchParams() == null ? "" : nav.getSearchParams();
-
+                System.out.println("searchParams==============================="+searchParams);
                 if (user.getMasqueradeContext() != null) {
                     List<String> listSearchParamsList = getSearchList(searchParams); // see if search term contains multiple terms
                     if (listSearchParamsList.size() > 1) {

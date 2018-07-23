@@ -3,7 +3,6 @@
 		import="com.freshdirect.webapp.util.ConfigurationStrategy"
 		import="com.freshdirect.webapp.util.prodconf.DefaultProductConfigurationStrategy"
 		import="com.freshdirect.webapp.util.FDURLUtil"
-		import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil" 
 		import="com.freshdirect.webapp.taglib.fdstore.FDShoppingCartControllerTag"
 		import="java.util.Collections"
 		import="java.util.List"
@@ -73,7 +72,7 @@
 			<% ProductModel pm = (ProductModel)currentItem; %>
 			<% ProductImpression pi = confStrat.configure(pm, confContext); %>
 			<% if(recommendations != null) { %>
-				<a href="<%= FDURLUtil.getProductURI(pm, trkCode)%>" hidden style="display: none;" class="product-name-link"></a> <%-- For Coremetrics impression tracking --%>
+				<a href="<%= FDURLUtil.getProductURI(pm, trkCode)%>" hidden style="display: none;" class="product-name-link"></a> 
 				<%jspContext.setAttribute("PRODUCT_BOX_VARIANT",recommendations.getVariant().getId());
 			} %>
 			<div class="grid-item-container featurebox">
@@ -121,7 +120,6 @@
 %>
 <form method="get" action="#" id="<%= formName %>" name="<%= formName %>" onsubmit="return false;">
 <fd:AddToCartPending id="<%= formName %>" action="addMultipleToCart" rebindSubmit="true"/>
-<fd:CmFieldDecorator/>
 <input type="hidden" name="itemCount" value="1">
 <fd:TxProductControl txNumber="0" namespace="<%= namespaceName %>" impression="<%= (TransactionalProductImpression) pi %>" setMinimumQt="true" />
 <div id="<%= subTotalId %>" class="subtotal">subtotal: <span id="<%= subTotalId %>_value" class="value"></span></div>

@@ -2,6 +2,7 @@ package com.freshdirect.ecomm.gateway;
 
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.ejb.FinderException;
@@ -20,8 +21,11 @@ import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpShippingInfo;
+import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
+import com.freshdirect.ecommerce.data.dlv.FDReservationData;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.atp.FDAvailabilityI;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.payment.EnumPaymentMethodType;
@@ -96,6 +100,18 @@ public interface OrderResourceApiClientI {
 			String originalReservationId, boolean sendEmail,
 			CustomerRatingI cra, CrmAgentRole crmAgentRole,
 			EnumDlvPassStatus status);
+
+
+	FDReservationData cancelOrder(FDActionInfo info, String saleId,
+			boolean sendEmail, int currentDPExtendDays,
+			boolean restoreReservation);
+
+
+	public Map<String, FDAvailabilityI> checkAvailability(FDIdentity identity,	ErpCreateOrderModel createOrder, long timeout, String isFromLogin);
+
+
+	public void resubmitOrder(String saleId, CustomerRatingI cra,EnumSaleType saleType, String deliveryRegionId)throws ErpTransactionException, RemoteException;
+
 	
 			
 }

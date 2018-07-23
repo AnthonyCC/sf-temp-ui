@@ -30,7 +30,6 @@ final int W_GMAP_NAV_TOTAL = 970;
 </head>
 <body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#ff9900" text="#333333"
       onload="initialize()">
-<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 		<%
 		boolean modOrder = false;
 		boolean inViewCart = false;

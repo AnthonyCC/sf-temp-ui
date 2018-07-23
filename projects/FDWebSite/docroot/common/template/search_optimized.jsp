@@ -31,7 +31,6 @@
 <!--[if gt IE 8]><!-->
 	<body class="searchpage <tmpl:get name="activeTab"/>-active <tmpl:get name="activeView"/>-view <tmpl:get name="noResult"/> <tmpl:get name="startPage"/>">
 <!--<![endif]-->
-<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 		<%@ include file="/common/template/includes/globalnav_optimized.jspf" %>
     <div id="content_top" class="content-header container"><div class="span-7 orange eagle middle content-header-height result-text">Search Results<span class="result-helper"></span></span></div><tmpl:get name="content-header"/></div>
     <div class="OAS-holder container" id='oas_CategoryNote' ad-fixed-size="true" ad-size-height="95" ad-size-width="774"><script>OAS_AD('CategoryNote');</script></div>

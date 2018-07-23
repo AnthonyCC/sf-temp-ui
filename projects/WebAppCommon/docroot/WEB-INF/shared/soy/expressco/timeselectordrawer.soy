@@ -51,7 +51,6 @@
  * @param? dayOfMonth
  * @param? dayOfWeek
  * @param? timePeriod
- * @param? onOpenCoremetrics
  * @param? showForceOrder
  * @param? forceOrderEnabled
  * @param? newSO3
@@ -84,7 +83,7 @@
 {else}
 	<div class='drawer__previewitem'>
 	  <div class="drawer__previewitem__button__section">
-	  	<button class="cssbutton orange" data-drawer-activate="timeslot" {if $onOpenCoremetrics}cm-click="{$onOpenCoremetrics}"{/if}>Select a <span class="offscreen">Delivery</span>Time</button>
+	  	<button class="cssbutton orange" data-drawer-activate="timeslot">Select a <span class="offscreen">Delivery</span>Time</button>
 	  </div>
 	  {if $showForceOrder}<label class='timeslot-force-order left'>Force Order: <input data-component="forceorder" type="checkbox" {if $forceOrderEnabled}checked{/if}></label>{/if}
 	</div>
@@ -105,7 +104,6 @@
  * @param? soCutOffFormattedDeliveryDate
  * @param? shortDayOfWeek
  * @param? soDeliveryDate
- * @param? onOpenCoremetrics
  */
 {template .timeslot autoescape="false"}
 	{if $soFreq and $dayOfWeek and isNonnull($soFreq)}
@@ -153,6 +151,6 @@
 		</div>
 	{/if}
 	<div class="drawer__item__action">
-	    <button type="button" aria-haspopup="true" class="change cssbutton green transparent small" {if $onOpenCoremetrics}cm-click="{$onOpenCoremetrics}"{/if}>Edit<span class="offscreen">time slots</span></button>
+	    <button type="button" aria-haspopup="true" class="change cssbutton green transparent small">Edit<span class="offscreen">time slots</span></button>
     </div>
 {/template}

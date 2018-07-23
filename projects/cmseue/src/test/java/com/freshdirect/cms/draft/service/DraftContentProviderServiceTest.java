@@ -544,4 +544,99 @@ public class DraftContentProviderServiceTest {
         Assert.assertNotNull(contexts);
         Assert.assertEquals(2, contexts.size());
     }
+
+    @SuppressWarnings("serial")
+    @Test
+    public void testDraftNullValueOnMatchingAttribute() {
+        final String categoryFullName = "Category with sortOptions value";
+        final Attribute testAttribute = ContentTypes.Category.sortOptions;
+        final ContentKey testContentKey = get(Category, "cat_1");
+
+        final Map<Attribute, Object> nodeOnMain = new HashMap<Attribute, Object>();
+        nodeOnMain.put(ContentTypes.Product.FULL_NAME, categoryFullName);
+        nodeOnMain.put(testAttribute, asList(ImmutableMap.<Attribute, Object>of(ContentTypes.SortOption.label, "hello")));
+
+        final DraftChange nullValueOnDraft = new DraftChange();
+        nullValueOnDraft.setContentKey(testContentKey.toString());
+        nullValueOnDraft.setAttributeName(ContentTypes.Category.sortOptions.getName());
+        nullValueOnDraft.setValue(null);
+
+        List<DraftChange> draftChanges = ImmutableList.of(nullValueOnDraft);
+
+        Mockito
+            .when(contentProviderService.getAllAttributesForContentKey(testContentKey))
+            .thenReturn(nodeOnMain);
+
+        Mockito
+            .when(draftContextHolder.getDraftContext())
+            .thenReturn(testDraftContext);
+        Mockito
+            .when(draftService.getDraftChanges(DRAFT_ID))
+            .thenReturn(draftChanges);
+
+        Mockito
+            .when(draftApplicatorService.convertDraftChanges(Mockito.eq(draftChanges)))
+            .thenReturn(
+                ImmutableMap.<ContentKey, Map<Attribute, Object>>of(
+                    testContentKey,
+                    new HashMap<Attribute, Object>() {
+                        {
+                            this.put(testAttribute, null);
+                        }
+                    }
+                )
+            );
+
+        Map<Attribute, Object> nodeOnDraft = underTest.getAllAttributesForContentKey(testContentKey);
+        Assert.assertNotNull(nodeOnDraft);
+        Assert.assertTrue("FULL_NAME attribute should be preserved", nodeOnDraft.containsKey(ContentTypes.Product.FULL_NAME));
+        Assert.assertFalse("sortOptions value should be hit out by null draft value", nodeOnDraft.containsKey(testAttribute));
+    }
+
+    @SuppressWarnings("serial")
+    @Test
+    public void testNonMatchingDraftNullValue() {
+        final String categoryFullName = "Category without sortOptions";
+        final Attribute testAttribute = ContentTypes.Category.sortOptions;
+        final ContentKey testContentKey = get(Category, "cat_2");
+
+        final Map<Attribute, Object> nodeOnMain = new HashMap<Attribute, Object>();
+        nodeOnMain.put(ContentTypes.Product.FULL_NAME, categoryFullName);
+
+        final DraftChange nullValueOnDraft = new DraftChange();
+        nullValueOnDraft.setContentKey(testContentKey.toString());
+        nullValueOnDraft.setAttributeName(testAttribute.getName());
+        nullValueOnDraft.setValue(null);
+
+        List<DraftChange> draftChanges = ImmutableList.of(nullValueOnDraft);
+
+        Mockito
+            .when(contentProviderService.getAllAttributesForContentKey(testContentKey))
+            .thenReturn(nodeOnMain);
+
+        Mockito
+            .when(draftContextHolder.getDraftContext())
+            .thenReturn(testDraftContext);
+        Mockito
+            .when(draftService.getDraftChanges(DRAFT_ID))
+            .thenReturn(draftChanges);
+
+        Mockito
+            .when(draftApplicatorService.convertDraftChanges(Mockito.eq(draftChanges)))
+            .thenReturn(
+                ImmutableMap.<ContentKey, Map<Attribute, Object>>of(
+                    testContentKey,
+                    new HashMap<Attribute, Object>() {
+                        {
+                            this.put(testAttribute, null);
+                        }
+                    }
+                )
+            );
+
+        Map<Attribute, Object> nodeOnDraft = underTest.getAllAttributesForContentKey(testContentKey);
+        Assert.assertNotNull(nodeOnDraft);
+        Assert.assertTrue("FULL_NAME attribute should be preserved", nodeOnDraft.containsKey(ContentTypes.Product.FULL_NAME));
+        Assert.assertFalse("null value should not present in merged payload", nodeOnDraft.containsKey(testAttribute));
+    }
 }

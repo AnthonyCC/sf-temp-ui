@@ -48,6 +48,8 @@ public class SearchResultsUtil {
 	
 	private static final String MOBILE_PLATFORM="mobile";
 	private static final String WEB_PLATFORM="web";
+	private static final String RESIDENTIAL_SERVICE_TYPE="RESIDENTIAL";
+	private static final String CORPORATE_SERVICE_TYPE="CORPORATE";
 	
 	public static SearchResults getPresidentsPicksProducts(CmsFilteringNavigator nav) {
 		
@@ -190,6 +192,12 @@ public static SearchResults getHLBrandProductAdProducts(SearchResults searchResu
 	public static void setPlatFormValues(FDUserI user, HLBrandProductAdRequest hLBrandProductAdRequest, boolean isMobile, String platform, String lat, String pdUserId) {
 	
 		if (user != null && user.getPrimaryKey() != null) {
+			if(user.getSelectedServiceType()!=null && CORPORATE_SERVICE_TYPE.equalsIgnoreCase(user.getSelectedServiceType().name())) {
+						hLBrandProductAdRequest.setSelectedServiceType(CORPORATE_SERVICE_TYPE);
+			}else {
+				hLBrandProductAdRequest.setSelectedServiceType(RESIDENTIAL_SERVICE_TYPE);
+			}
+		
 			hLBrandProductAdRequest.setUserId(user.getPrimaryKey());
 			if (platform != null) {
 				hLBrandProductAdRequest.setPlatformSource(platform);

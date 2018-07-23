@@ -439,30 +439,31 @@ span.cssbutton.notext[class*=" icon-"] {
 	padding-right: 0;
 }
 
-/*gray, full transparent*/
-.cssbutton.grey.full-transparent {
-  color: #494948;
-  background-color: transparent;
-  border: 1px solid #7a7e7e;
-  border-radius: 0;
-}
+/* gray, full transparent - OBSOLETE */
+  .cssbutton.grey.full-transparent {
+    color: #494948;
+    background-color: transparent;
+    border: 1px solid #7a7e7e;
+    border-radius: 0;
+  }
 
-.cssbutton.grey.full-transparent:hover {
-  color: white;
-  background-color: #30a24a;
-}
+  .cssbutton.grey.full-transparent:hover {
+    color: white;
+    background-color: #30a24a;
+  }
 
-.cssbutton.grey.full-transparent:active {
-  color: #494948;
-  background-color: #ffffff;
-  border-color: #7a7e7e;
-}
+  .cssbutton.grey.full-transparent:active {
+    color: #494948;
+    background-color: #ffffff;
+    border-color: #7a7e7e;
+  }
 
-.cssbutton.grey.full-transparent:focus {
-  color: #494948;
-  border-color: #7e7e7e;
-  box-shadow: 0 0 1px #bbb, 0 0 8px #bbb;
-}
+  .cssbutton.grey.full-transparent:focus {
+    color: #494948;
+    border-color: #7e7e7e;
+    box-shadow: 0 0 1px #bbb, 0 0 8px #bbb;
+  }
+/* gray, full transparent - OBSOLETE */
 
 a.cssbutton.flat {
   font-weight: normal;

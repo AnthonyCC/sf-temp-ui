@@ -42,7 +42,6 @@ function goToPage(pagePath) {
   <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body bgcolor="White" link="#336600" vlink="#336600" alink="#FF9900" text="#333333" onLoad="window.focus()" leftmargin=0 topmargin=0>
-<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 
 <a name="top"></a>
 

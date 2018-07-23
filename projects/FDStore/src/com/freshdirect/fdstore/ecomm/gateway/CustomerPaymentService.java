@@ -85,7 +85,7 @@ public class CustomerPaymentService extends AbstractEcommService implements Cust
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in CustomerPaymentService: ", e);
 			throw new RemoteException(e.getMessage());
 		}
 
@@ -130,7 +130,7 @@ public class CustomerPaymentService extends AbstractEcommService implements Cust
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in CustomerPaymentService: ", e);
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -167,7 +167,7 @@ public class CustomerPaymentService extends AbstractEcommService implements Cust
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in CustomerPaymentService: ", e);
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -208,7 +208,7 @@ public class CustomerPaymentService extends AbstractEcommService implements Cust
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in CustomerPaymentService: ", e);
 			throw new RemoteException(e.getMessage());
 		}
 	}

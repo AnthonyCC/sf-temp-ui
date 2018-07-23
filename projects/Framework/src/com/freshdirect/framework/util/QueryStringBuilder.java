@@ -1,20 +1,21 @@
 package com.freshdirect.framework.util;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.LinkedList;
 
 /**
  * Build a query string from parameters.
- * 
+ *
  *
  */
 public class QueryStringBuilder {
-	
-	private Map params = new TreeMap();
-	
+
+	private Map<String, List<Object>> params = new TreeMap<String, List<Object>>();
+
 	/**
 	 * Returns whether parameter exists.
 	 * @param key parameter name
@@ -23,28 +24,28 @@ public class QueryStringBuilder {
 	public boolean existsParam(String key) {
 		return params.containsKey(key);
 	}
-	
+
 	/**
 	 * Get parameter value.
-	 * 
+	 *
 	 * @param key parameter name
 	 * @return parameter value or null if it does not exist.
 	 */
 	public Object getParam(String key) {
-		List values = (List)params.get(key);
+		List<Object> values = params.get(key);
 		if (values == null) return null;
 		return values.get(0);
 	}
-	
+
 	/**
 	 * Get parameter values.
 	 * @param key parameter name
-	 * @return parameter values 
+	 * @return parameter values
 	 */
-	public List getParameterValues(String key) {
-		return (List)params.get(key);
+	public List<Object> getParameterValues(String key) {
+		return params.get(key);
 	}
-	
+
 	/**
 	 * Add a parameter.
 	 * @param key parameter name
@@ -52,15 +53,15 @@ public class QueryStringBuilder {
 	 * @return this
 	 */
 	public QueryStringBuilder addParam(String key, Object param) {
-		List values = (List)params.get(key);
+		List<Object> values = params.get(key);
 		if (values == null) {
-			values = new LinkedList();
+			values = new LinkedList<Object>();
 			params.put(key,values);
-		} 
+		}
 		values.add(param);
 		return this;
 	}
-	
+
 	/**
 	 * Add a parameter.
 	 * @param key parameter name
@@ -70,7 +71,7 @@ public class QueryStringBuilder {
 	public QueryStringBuilder addParam(String key, int iv) {
 		return addParam(key, new Integer(iv));
 	}
-	
+
 	/**
 	 * Add a parameter.
 	 * @param key parameter name
@@ -78,9 +79,9 @@ public class QueryStringBuilder {
 	 * @return this
 	 */
 	public QueryStringBuilder addParam(String key, boolean bv) {
-		return addParam(key,Boolean.valueOf(bv));
+		return addParam(key, Boolean.valueOf(bv));
 	}
-	
+
 	/**
 	 * Add a parameter.
 	 * @param key parameter name
@@ -90,7 +91,7 @@ public class QueryStringBuilder {
 	public QueryStringBuilder addParam(String key, char cv) {
 		return addParam(key, new Character(cv));
 	}
-	
+
 	/**
 	 * Add a parameter.
 	 * @param key parameter name
@@ -100,7 +101,7 @@ public class QueryStringBuilder {
 	public QueryStringBuilder addParam(String key, long lv) {
 		return addParam(key, new Long(lv));
 	}
-	
+
 	/**
 	 * Add a parameter.
 	 * @param key parameter name
@@ -110,7 +111,7 @@ public class QueryStringBuilder {
 	public QueryStringBuilder addParam(String key, float fv) {
 		return addParam(key, new Float(fv));
 	}
-	
+
 	/**
 	 * Add a parameter.
 	 * @param key parameter name
@@ -120,7 +121,7 @@ public class QueryStringBuilder {
 	public QueryStringBuilder addParam(String key, double dv) {
 		return addParam(key, new Double(dv));
 	}
-	
+
 	/**
 	 * Add a parameter.
 	 * @param key parameter name
@@ -130,7 +131,7 @@ public class QueryStringBuilder {
 	public QueryStringBuilder addParam(String key, short sv) {
 		return addParam(key, new Short(sv));
 	}
-	
+
 	/**
 	 * Remove a parameter.
 	 * @param key parameter name
@@ -138,7 +139,7 @@ public class QueryStringBuilder {
 	public void removeParam(String key) {
 		params.remove(key);
 	}
-	
+
 	/**
 	 * Remove all parameters.
 	 *
@@ -146,22 +147,23 @@ public class QueryStringBuilder {
 	public void clear() {
 		params.clear();
 	}
-	
+
 	/**
 	 * Number of parameters.
 	 * @return number of parameters.
 	 */
 	public int size() { return params.size(); }
-	
+
 	/**
 	 * Serialize parameters.
-	 * 
+	 *
 	 * Serialize the query parameters, as defined in RFC 3986 (2396).
 	 * The order of the parameters is arbitrary.
-	 * 
+	 *
 	 * @return URI query string
 	 * @see StringUtil#escapeUri(String)
 	 */
+	@Override
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
 		for(Iterator i=params.entrySet().iterator(); i.hasNext(); ) {
@@ -179,7 +181,20 @@ public class QueryStringBuilder {
 		}
 		return buffer.toString();
 	}
-	
-	
+
+	public Map<String, String> toJSONObject() {
+	    Map<String, String> result = new HashMap<String, String>();
+
+	    for (final Map.Entry<String, List<Object>> entry : params.entrySet()) {
+	        final String key = entry.getKey();
+	        final List<Object> listValue = entry.getValue();
+
+	        if (listValue != null && !listValue.isEmpty()) {
+	            result.put(key, String.valueOf(listValue.get(0)));
+	        }
+	    }
+
+	    return result;
+	}
 
 }

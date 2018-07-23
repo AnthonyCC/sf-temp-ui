@@ -43,7 +43,6 @@
 	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body>
-	<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 	
 		<%-- put error msgs in to a string first, so it's easier to read --%>
 		<%

@@ -220,7 +220,6 @@ String source = ccListIdStr != null && ccListIdStr.length() > 0
 <form action="<%= formAction %>" method="post" name="qs_cart" id="qs_cart">
 <table id="vieworder_table" width="100%" cellpadding="0" cellspacing="0" border="0">
 <fd:AddToCartPending id="qs_cart" action="addMultipleToCart"/>
-<fd:CmFieldDecorator/>
 	<% if (!isStandingOrderPage) { %>
 	<tr>
 	    <td colspan="7" align="right"><input type="image" name="addMultipleToCart" src="/media_stat/images/template/quickshop/qs_add_selected_to_cart.gif" width="145" height="17" border="0" vspace="8" alt="ADD SELECTED TO CART"></td>

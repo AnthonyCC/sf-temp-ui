@@ -49,7 +49,6 @@ final int W_DNAV_TOTAL = 970;
 	<link rel="stylesheet" type="text/css" href="/assets/css/common/styles.css"/>
 </head>
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333">
-<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <%@ include file="/common/template/includes/globalnav.jspf" %> 
 <CENTER class="text10">
 <TABLE WIDTH="<%=W_DNAV_TOTAL%>" BORDER="0" CELLPADDING="0" CELLSPACING="0">

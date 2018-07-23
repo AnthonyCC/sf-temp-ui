@@ -159,7 +159,6 @@
 				<% } %>
 			</table>
 		</fd:SearchFaq>
-		<fd:CmPageView wrapIntoScriptTag="true" searchTerm='<%=(String)(pageContext.getAttribute("keywords"))%>' searchResultsSize='<%=(Integer)(pageContext.getAttribute("searchResultsSize"))%>'/>
 	</tmpl:put>
 	
 	</tmpl:insert>

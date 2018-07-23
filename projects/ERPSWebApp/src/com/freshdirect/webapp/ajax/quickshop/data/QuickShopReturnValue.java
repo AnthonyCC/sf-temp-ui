@@ -10,14 +10,13 @@ import java.util.TreeMap;
 import com.freshdirect.storeapi.content.EnumQuickShopFilteringValue;
 import com.freshdirect.storeapi.content.FilteringMenuItem;
 import com.freshdirect.storeapi.content.FilteringValue;
-import com.freshdirect.webapp.ajax.AbstractCoremetricsResponse;
 
 /**
  * Grouping return values for quickshop (JSON ready)
  * Deprecated with Quickshop 2.2 version. Replaced with {@link com.freshdirect.webapp.ajax.reorder.data.QuickShopReturnValue}
  */
 @Deprecated
-public class QuickShopReturnValue extends AbstractCoremetricsResponse implements Serializable {
+public class QuickShopReturnValue implements Serializable {
 
 	private static final long serialVersionUID = -1974804524813407050L;
 	

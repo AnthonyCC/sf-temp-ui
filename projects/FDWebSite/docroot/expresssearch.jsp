@@ -57,6 +57,7 @@
       FreshDirect.multisearch = FreshDirect.multisearch || {};
 
       FreshDirect.multisearch.limit = +'<%= FDStoreProperties.getMultiSearchLimit() %>';
+      FreshDirect.multisearch.productPerCarousel = +'<%= FDStoreProperties.getMultiSearchProductPerCarousel() %>';
       FreshDirect.multisearch.defaultList = '<%= FDStoreProperties.getMultiSearchDefaultList() %>';
       FreshDirect.multisearch.list = '<%= user.getMultiSearchList() %>';
       if (FreshDirect.multisearch.list === 'null') {

@@ -37,8 +37,7 @@ if(productNode!=null){
 	request.setAttribute("sitePage", productNode.getPath());
 	request.setAttribute("listPos", "SystemMessage,LittleRandy");
 	isWine = EnumTemplateType.WINE.equals( productNode.getTemplateType() );
-	
-	//special layout product ATC is not done with AJAX, so it needs to be reported to Coremetrics on this page
+
 	pageContext.setAttribute("isSpecialLayout", productNode.getSpecialLayout()!=null);
 	
 }
@@ -52,7 +51,7 @@ if(productNode!=null){
     <fd:SEOMetaTag title="FreshDirect - NOW IN CART"/>
   </tmpl:put>
 
-  <tmpl:put name='cmeventsource' direct='true'>cart_confirm_pdp</tmpl:put>
+  <tmpl:put name='eventsource' direct='true'>cart_confirm_pdp</tmpl:put>
 
   <tmpl:put name='soypackage' direct='true'>
     <soy:import packageName="pdp" />
@@ -82,7 +81,6 @@ if(productNode!=null){
   	</tmpl:put>
     
 	<tmpl:put name='content' direct='true'>
-		<c:if test="${isSpecialLayout}"><fd:GetCart id='cart'><fd:CmShop5 wrapIntoScriptTag="true" cart="<%=cart%>"/></fd:GetCart></c:if>
 		<jsp:include page="/includes/product/cartConfirm.jsp" >
 			<jsp:param name="catId" value="${ param.catId }"/>
 			<jsp:param name="cartlineId" value="${ param.cartlineId }"/>
@@ -97,7 +95,6 @@ if(productNode!=null){
 	
 	      window.FreshDirect.browse.data = <fd:ToJSON object="${browsePotato}" noHeaders="true"/>
 	      window.FreshDirect.globalnav.data = <fd:ToJSON object="${globalnav}" noHeaders="true"/>
-	      window.FreshDirect.coremetricsData = window.FreshDirect.browse.data.coremetrics;
 	      window.FreshDirect.activeDraft = "${activeDraft}"
 	      window.FreshDirect.activeDraftDirectLink = "${activeDraftDirectLink}"
 	    </script>

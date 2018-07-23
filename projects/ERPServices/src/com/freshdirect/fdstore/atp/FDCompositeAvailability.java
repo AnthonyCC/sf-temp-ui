@@ -111,4 +111,8 @@ public class FDCompositeAvailability implements FDAvailabilityI {
 
 	}
 
+	public Map<String, FDAvailabilityI> getAvailabilities() {
+		return availabilities;
+	}
+
 }

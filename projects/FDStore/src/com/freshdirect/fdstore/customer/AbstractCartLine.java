@@ -94,11 +94,13 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 	        this.variantId = orderLine.getVariantId();
 	    }
 
-	public int getRandomId() {
+	@Override
+    public int getRandomId() {
 		return this.randomId;
 	}
 	
-	public String getCartlineId(){
+	@Override
+    public String getCartlineId(){
 		return this.orderLine.getCartlineId();
 	}
 
@@ -106,26 +108,31 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 	// PRICING
 	//
 
-	public Discount getDiscount() {
+	@Override
+    public Discount getDiscount() {
 		return this.orderLine.getDiscount();
 	}
 
-	public void setDiscount(Discount discount) {
+	@Override
+    public void setDiscount(Discount discount) {
 		this.orderLine.setDiscount(discount);
 		this.fireConfigurationChange();
 	}
 
 	
-	public ErpCouponDiscountLineModel getCouponDiscount() {
+	@Override
+    public ErpCouponDiscountLineModel getCouponDiscount() {
 		return this.orderLine.getCouponDiscount();
 	}
 
-	public void setCouponDiscount(ErpCouponDiscountLineModel discount) {
+	@Override
+    public void setCouponDiscount(ErpCouponDiscountLineModel discount) {
 		this.orderLine.setCouponDiscount(discount);
 		this.fireConfigurationChange();
 	}
 	
-	public void clearCouponDiscount(){
+	@Override
+    public void clearCouponDiscount(){
 		this.setCouponDiscount(null);
 		this.setCouponStatus(null);
 		this.setCouponApplied(false);
@@ -134,11 +141,13 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 	// INVOICE, RETURN
 	//
 
-	public boolean hasInvoiceLine() {
+	@Override
+    public boolean hasInvoiceLine() {
 		return this.getInvoiceLine() != null;
 	}
 
-	public FDInvoiceLineModel getInvoiceLine() {
+	@Override
+    public FDInvoiceLineModel getInvoiceLine() {
 		return this.lastInvoiceLine;
 	}
 
@@ -150,15 +159,18 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 		return this.lastInvoiceLine;
 	}
 
-	public ErpReturnLineI getReturnLine() {
+	@Override
+    public ErpReturnLineI getReturnLine() {
 		return this.returnLine;
 	}
 
-	public boolean hasReturnLine() {
+	@Override
+    public boolean hasReturnLine() {
 		return this.getReturnLine() != null;
 	}
 
-	public boolean hasRestockingFee() {
+	@Override
+    public boolean hasRestockingFee() {
 		return this.returnLine == null ? false : this.returnLine.isRestockingOnly();
 	}
 
@@ -166,46 +178,55 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 	// CONVENIENCE
 	//
 
-	public ErpAffiliate getAffiliate() {
+	@Override
+    public ErpAffiliate getAffiliate() {
 		return this.orderLine.getAffiliate();
 	}
 
-	public boolean isSample() {
+	@Override
+    public boolean isSample() {
 		return this.getDiscount() != null && EnumDiscountType.SAMPLE.equals(this.getDiscount().getDiscountType());
 	}
 
-	public boolean hasTax() {
+	@Override
+    public boolean hasTax() {
 		double value = this.hasInvoiceLine() ? this.getInvoiceLine().getTaxValue() : this.getTaxValue();
 		return value > 0;
 	}
 
-	public boolean hasDepositValue() {
+	@Override
+    public boolean hasDepositValue() {
 		double value = this.hasInvoiceLine() ? this.getInvoiceLine().getDepositValue() : this.getDepositValue();
 		return value > 0;
 	}
 
-	public String getMaterialNumber() {
+	@Override
+    public String getMaterialNumber() {
 		return this.orderLine.getMaterialNumber();
 	}
 	
-	public String getMaterialGroup(){
+	@Override
+    public String getMaterialGroup(){
 		return this.orderLine.getMaterialGroup();
 	}
 
-	public Set<EnumDlvRestrictionReason> getApplicableRestrictions() {
+	@Override
+    public Set<EnumDlvRestrictionReason> getApplicableRestrictions() {
 		FDProduct fdp = this.lookupFDProduct();
 		FDProductInfo fdpi = this.lookupFDProductInfo();
 		return AvailabilityFactory.getApplicableRestrictions(fdp,fdpi);
 	}
 
-	public String getOrderLineId() {
+	@Override
+    public String getOrderLineId() {
 		if(this.orderLine.getPK() == null)
 			return this.orderLine.getOrderLineId() == null? "": this.orderLine.getOrderLineId();
 		else
 			return this.orderLine.getPK().getId();
 	}
 
-	public String getOrderLineNumber() {
+	@Override
+    public String getOrderLineNumber() {
 		return this.orderLine.getOrderLineNumber();
 	}
 		
@@ -213,7 +234,8 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 	// FORMATTING, DISPLAY
 	// 
 
-	public String getDeliveredQuantity() {
+	@Override
+    public String getDeliveredQuantity() {
 		if (!this.hasInvoiceLine()) {
 			return "";
 		}
@@ -224,7 +246,8 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 		}
 	}
 
-	public String getSubstitutedQuantity() {
+	@Override
+    public String getSubstitutedQuantity() {
 		FDInvoiceLineI invLine = this.getInvoiceLine();
 		if (null!=invLine && null!= invLine.getSubstitutedSkuCode() && !"".equalsIgnoreCase(invLine.getSubstitutedSkuCode().trim())) {
 			return QUANTITY_FORMATTER.format(this.getFirstInvoiceLine().getQuantity());
@@ -256,7 +279,8 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 	}
 	
 	
-	public String getReturnedQuantity() {
+	@Override
+    public String getReturnedQuantity() {
 		if (!this.hasReturnLine()) {
 			return "";
 		}
@@ -267,7 +291,8 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 		}
 	}
 
-	public String getDisplayQuantity() {
+	@Override
+    public String getDisplayQuantity() {
 		StringBuffer qty = new StringBuffer();
 
 		if (this.isSoldBySalesUnits()) {
@@ -304,7 +329,8 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 		return qty.toString();
 	}
 
-	public String getReturnDisplayQuantity() {
+	@Override
+    public String getReturnDisplayQuantity() {
 
 		StringBuffer qty = new StringBuffer();
 
@@ -338,21 +364,25 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 		return qty.toString();
 	}
 
-	public boolean hasAdvanceOrderFlag() {
+	@Override
+    public boolean hasAdvanceOrderFlag() {
 		FDProduct fdp = this.lookupFDProduct();
 		return fdp.getAttributeBoolean(EnumAttributeName.ADVANCE_ORDER_FLAG.getName(),false);
 	}
 	
 
-	public String getVariantId() {
+	@Override
+    public String getVariantId() {
 		return this.variantId;
 	}
 
-	public void setOrderLineId(String orderLineId){
+	@Override
+    public void setOrderLineId(String orderLineId){
 		this.orderLine.setOrderLineId(orderLineId);
 	}
 	
-	public boolean isDiscountApplied() {
+	@Override
+    public boolean isDiscountApplied() {
 		return ((this.getDiscount() != null && (EnumDiscountType.DOLLAR_OFF.equals(this.getDiscount().getDiscountType()) 
 				|| EnumDiscountType.PERCENT_OFF.equals(this.getDiscount().getDiscountType())))|| 
 				(this.getCouponDiscount()!=null && EnumDiscountType.DOLLAR_OFF.equals(this.getCouponDiscount().getDiscountType())));
@@ -390,14 +420,16 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 	/**
 	 * @return the couponStatus
 	 */
-	public EnumCouponStatus getCouponStatus() {
+	@Override
+    public EnumCouponStatus getCouponStatus() {
 		return couponStatus;
 	}
 
 	/**
 	 * @param couponStatus the couponStatus to set
 	 */
-	public void setCouponStatus(EnumCouponStatus couponStatus) {
+	@Override
+    public void setCouponStatus(EnumCouponStatus couponStatus) {
 		this.couponStatus = couponStatus;
 	}
 	
@@ -410,31 +442,6 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 	public void setCouponApplied(boolean applied) {
 		this.couponApplied =applied;
 		
-	}
-
-	public String getCoremetricsPageId() {
-		return this.orderLine.getCoremetricsPageId();
-	}
-
-	public void setCoremetricsPageId(String coremetricsPageId) {
-		this.orderLine.setCoremetricsPageId(coremetricsPageId);
-	}
-
-	public String getCoremetricsPageContentHierarchy() {
-		return this.orderLine.getCoremetricsPageContentHierarchy();
-	}
-
-	public void setCoremetricsPageContentHierarchy(
-			String coremetricsPageContentHierarchy) {
-		this.orderLine.setCoremetricsPageContentHierarchy(coremetricsPageContentHierarchy);
-	}
-
-	public String getCoremetricsVirtualCategory() {
-		return this.orderLine.getCoremetricsVirtualCategory();
-	}
-
-	public void setCoremetricsVirtualCategory(String coremetricsVirtualCategory) {
-		this.orderLine.setCoremetricsVirtualCategory(coremetricsVirtualCategory);
 	}
 
 	@Override

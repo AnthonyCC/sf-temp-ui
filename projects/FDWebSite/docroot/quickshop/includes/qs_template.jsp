@@ -38,7 +38,6 @@
 
     </head>
     <body data-feature-quickshop="${isQS20 ? "2_0" : "2_2"}"  >
-    <%@ include file="/shared/template/includes/i_body_start.jspf" %>
     <%@ include file="/common/template/includes/globalnav.jspf" %>
 
 

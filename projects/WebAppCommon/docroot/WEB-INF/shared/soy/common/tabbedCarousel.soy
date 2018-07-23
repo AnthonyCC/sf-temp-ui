@@ -4,7 +4,7 @@
  * @param? hasYourFavoritesRecommendation
  * @param? productList
  * @param? selected
- * @param? cmEventSource
+ * @param? eventSource
  * @param? showCustRated
  * @param? isNewProductsCarouselLoaded
  */
@@ -19,7 +19,7 @@
     {case 'newproducts'}NEW_PRODUCTS
   {/switch}
 {/let}
-<div id="tabbedCarousel" class="tabbed-carousel" data-component="tabbedRecommender" data-cmeventsource="{if $cmEventSource }{$cmEventSource}{else}qs_tabbedRecommender{/if}" data-apiendpoint="/api/qs/ymal">
+<div id="tabbedCarousel" class="tabbed-carousel" data-component="tabbedRecommender" data-eventsource="{if $eventSource }{$eventSource}{else}qs_tabbedRecommender{/if}" data-apiendpoint="/api/qs/ymal">
   <ul class="tabs clearfix" role="tablist">
     {if $isNewProductsCarouselLoaded}
     	<li role="tab" tabindex="0" data-component="tabitem" {if $selected and $selected=='newproducts'}class="selected" aria-selected="true"{/if} data-tabname="newproducts" data-sitefeature="NEW_PRODUCTS">new products</li>
@@ -34,7 +34,7 @@
       <li role="tab" tabindex="0" data-component="tabitem" {if $selected and $selected=='custrating'}class="selected" aria-selected="true"{/if} data-tabname="custrating" data-sitefeature="CUSTRATED_QS">customer rated</li>
     {/if}
   </ul>
-  <div role="tabpanel" class="tab-container light-carousel" data-component="tabpanel" data-cmSiteFeature="{$siteFeature}">
+  <div role="tabpanel" class="tab-container light-carousel" data-component="tabpanel" data-siteFeature="{$siteFeature}">
     {if $productList }
       {call common.simpleCarousel}
         {param items:$productList /}
@@ -60,12 +60,12 @@
   </ul>
   {foreach $tab in $recommendationTabs}
     {if $tab.selected}
-      <div role="tabpanel" class="tab-container light-carousel" data-component="tabpanel" data-cmSiteFeature="{$tab.siteFeature}" data-cmeventsource="{if $tab.carouselData and $tab.carouselData.cmEventSource}{$tab.carouselData.cmEventSource}{else}tabbedRecommender{/if}">
+      <div role="tabpanel" class="tab-container light-carousel" data-component="tabpanel" data-siteFeature="{$tab.siteFeature}" data-eventsource="{if $tab.carouselData and $tab.carouselData.eventSource}{$tab.carouselData.eventSource}{else}tabbedRecommender{/if}">
         {if $tab.carouselData and $tab.carouselData.products}
           {call common.simpleCarousel}
             {param items:$tab.carouselData.products /}
             {param itemType:$tab.itemType /}
-            {param cmEventSource:$tab.carouselData.cmEventSource /}
+            {param eventSource:$tab.carouselData.eventSource /}
             {param title:$tab.description /}
           {/call}
         {/if}

@@ -69,7 +69,7 @@ public class CustomerNotificationService extends AbstractEcommService implements
 			}
 			return response.getData();
 		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in CustomerNotificationService: ", e);
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -123,7 +123,7 @@ public class CustomerNotificationService extends AbstractEcommService implements
 			}
 			return response.getData();
 		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in CustomerNotificationService: ", e);
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -159,7 +159,7 @@ public class CustomerNotificationService extends AbstractEcommService implements
 			}
 			return response.getData();
 		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in CustomerNotificationService: ", e);
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -184,9 +184,10 @@ public class CustomerNotificationService extends AbstractEcommService implements
 			}
 			return response.getData();
 		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in CustomerNotificationService: ", e);
 			throw new RemoteException(e.getMessage());
 		} catch (FDResourceException e) {
+			LOGGER.error("Error in CustomerNotificationService: ", e);
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -211,8 +212,10 @@ public class CustomerNotificationService extends AbstractEcommService implements
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDResourceException e) {
+			LOGGER.error("Error in CustomerNotificationService: ", e);
 			throw new RemoteException(e.getMessage());
 		} catch (JsonProcessingException e) {
+			LOGGER.error("Error in CustomerNotificationService: ", e);
 			throw new RemoteException(e.getMessage());
 		}
 	}

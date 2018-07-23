@@ -29,7 +29,7 @@ public class ErpCustomerModel extends ModelSupport implements ErpCustomerI {
 	 */
 	private LocalObjectList<ErpAddressModel> shipToAddress = new LocalObjectList<ErpAddressModel>();
 
-	private LocalObjectList paymentMethodList = new LocalObjectList();
+	private LocalObjectList<ErpPaymentMethodI> paymentMethods = new LocalObjectList<ErpPaymentMethodI>();
 
 	private LocalObjectList<ErpCustomerCreditModel> customerCredits = new LocalObjectList<ErpCustomerCreditModel>();
 
@@ -174,19 +174,19 @@ public class ErpCustomerModel extends ModelSupport implements ErpCustomerI {
 	}
 
 	public List<ErpPaymentMethodI> getPaymentMethods() {
-	    return (List<ErpPaymentMethodI>)this.paymentMethodList.clone();
+	    return (List<ErpPaymentMethodI>)this.paymentMethods.clone();
 	}
 
 	public void addPaymentMethod(ErpPaymentMethodI element){
-		((List<ErpPaymentMethodI>)this.paymentMethodList).add(element);
+		((List<ErpPaymentMethodI>)this.paymentMethods).add(element);
 	}
 
 	public void updatePaymentMethod(ErpPaymentMethodI element) {
-		this.paymentMethodList.update((ErpPaymentMethodModel)element);
+		this.paymentMethods.update((ErpPaymentMethodModel)element);
 	}
 
 	public boolean removePaymentMethod(PrimaryKey pk) {
-	    return null != this.paymentMethodList.removeByPK(pk);
+	    return null != this.paymentMethods.removeByPK(pk);
 	}
 
 	public boolean isOnAlert() {

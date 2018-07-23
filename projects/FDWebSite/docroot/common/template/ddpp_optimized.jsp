@@ -27,7 +27,6 @@
 	<!--[if gt IE 8]><!-->
 	<body class="searchpage <tmpl:get name="activeTab"/>-active <tmpl:get name="activeView"/>-view <tmpl:get name="noResult"/> <tmpl:get name="startPage"/>">
 	<!--<![endif]-->
-		<tmpl:get name="cmPageViewTag"/>
 		
 		<%@ include file="/common/template/includes/globalnav_optimized.jspf" %>
 		      

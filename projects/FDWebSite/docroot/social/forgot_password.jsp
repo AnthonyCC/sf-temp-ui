@@ -23,7 +23,6 @@
     <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
     <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
     <%@ include file="/shared/template/includes/i_head_end.jspf" %>
-    <%@ include file="/shared/template/includes/i_body_start.jspf" %>	
 
 <fd:css href="/assets/css/social_login.css" />
 

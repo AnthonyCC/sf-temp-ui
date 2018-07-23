@@ -129,9 +129,6 @@ public class QSFromListFilterServlet extends QuickShopServlet {
 		// sorting menu items where needed
 		QuickShopMenuOrderUtil.sortMenuItems(responseData.getMenu());
 		
-		// Generate coremetrics 'element' tags for the menu - selected filters
-		generateCoremetricsElementTags( responseData, result.getMenu(), "quickshop | shopping_lists" );
-		
 		return responseData;
 	}
 	

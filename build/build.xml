@@ -323,8 +323,6 @@
 		<!-- Added: Schematic rsung -->
 		<checkoutLabeled dir="projects/StandingOrdersService"/>
 		<!-- Standing Orders background service -->
-		<checkoutLabeled dir="projects/CoremetricsService"/>
-		<!-- Coremetrics background service -->
 
 		<checkoutLabeled dir="applications"/>
 		<!--	<checkoutLabeled dir="release"/> -->
@@ -379,7 +377,6 @@
 		<checkoutLatest dir="projects/FDIntegrationServices"/>
 		<!-- Added: Schematic rsung -->
 		<checkoutLatest dir="projects/StandingOrdersService"/>
-		<checkoutLatest dir="projects/CoremetricsService"/>
 
 		<checkoutLatest dir="applications"/>
 		<!--	<checkoutLatest dir="release"/> -->
@@ -464,7 +461,6 @@
 		<mkdir dir="${work.dir}/StoreAPI"/>
 		<mkdir dir="${work.dir}/cms-gwt"/>
 		<mkdir dir="${work.dir}/StandingOrdersService"/>
-		<mkdir dir="${work.dir}/CoremetricsService"/>
 
 	</target>	
 	<target name= "copy_shared_dirs"
@@ -564,7 +560,7 @@
 		</copy>
 	</target>
 
-	<target name="build" depends="framework,cmseue,erpservices,storeApi,FDLogisticsIntegration,delivery,fdstore,dataloader,erpswebapp,tools,StandingOrdersService,CoremetricsService,fdstorefront-domain" description="Build everything">
+	<target name="build" depends="framework,cmseue,erpservices,storeApi,FDLogisticsIntegration,delivery,fdstore,dataloader,erpswebapp,tools,StandingOrdersService,fdstorefront-domain" description="Build everything">
 	</target>
 
 	<target name="test" depends="tests_compile" description="Run unit tests">
@@ -587,7 +583,6 @@
 					<fileset dir="${work.dir}" includes="ERPSWebApp.jar" />
 					<fileset dir="${work.dir}" includes="FDLogisticsIntegration.jar" />
 					<fileset dir="${work.dir}" includes="StandingOrdersService.jar" />
-					<fileset dir="${work.dir}" includes="CoremetricsService.jar" />
 				</copy>
 
 				<junit fork="yes">
@@ -624,7 +619,6 @@
 						<pathelement location="${work.dir}/ERPSWebApp-emma.jar"/>
 						<pathelement location="${work.dir}/FDLogisticsIntegration-emma.jar"/>
 						<pathelement location="${work.dir}/StandingOrdersService-emma.jar"/>
-						<pathelement location="${work.dir}/CoremetricsService-emma.jar"/>
 					</classpath>
 					<!-- emma -->
 					<jvmarg value="-Demma.coverage.out.file=${work.dir}/logs/coverage.emma" />
@@ -666,7 +660,6 @@
 						<pathelement location="${work.dir}/ERPSWebApp.jar"/>
 						<pathelement location="${work.dir}/FDLogisticsIntegration.jar"/>
 						<pathelement location="${work.dir}/StandingOrdersService.jar"/>
-						<pathelement location="${work.dir}/CoremetricsService.jar"/>
 					</classpath>
 				</junit>
 
@@ -1978,7 +1971,6 @@
 			<pathelement location="${work.dir}/ERPSWebApp.jar"/>
 			<pathelement location="${work.dir}/FDLogisticsIntegration.jar"/>
 			<pathelement location="${work.dir}/StandingOrdersService.jar"/>
-			<pathelement location="${work.dir}/CoremetricsService.jar"/>
 			<pathelement location="${thirdparty.home}/struts.jar"/>
 			<pathelement location="${thirdparty.home}/oscache-2.4.1.jar"/>
 			<pathelement location="${thirdparty.home}/castor-0.9.5.3-xml.jar"/>
@@ -2270,23 +2262,6 @@
 			classpathref="StandingOrdersService.classpath"/>
 	</target>
 
-	<target name="CoremetricsService" description="Build Coremetrics Service">
-		<path id="CoremetricsService.classpath">
-			<pathelement location="${work.dir}/Framework.jar"/>
-			<pathelement location="${work.dir}/ERPServicesEJB-WL.jar"/>
-			<pathelement location="${work.dir}/DeliveryEJB-WL.jar"/>
-			<pathelement location="${work.dir}/FDLogisticsIntegration.jar"/>
-			<pathelement location="${work.dir}/cmseue.jar"/>
-			<pathelement location="${work.dir}/StoreAPI.jar"/>
-			<pathelement location="${work.dir}/FDStore.jar"/>
-			<pathelement location="${work.dir}/ERPSWebApp.jar"/>
-		</path>
-
-		<makeEjbProject
-			project="CoremetricsService"
-			classpathref="CoremetricsService.classpath"/>
-	</target>
-
 	<target name="tools" description="Build Tools" depends="framework,cmseue,fdstore,erpservices">
 		<path id="tools.classpath">
 			<pathelement location="${work.dir}/Framework.jar"/>
@@ -2340,7 +2315,6 @@
 						<pathelement path="${work.dir}/DataLoaderEJB-WL.jar"/>
 						<pathelement path="${work.dir}/ERPSWebApp.jar"/>
 						<pathelement path="${work.dir}/StandingOrdersService.jar"/>
-						<pathelement path="${work.dir}/CoremetricsService.jar"/>
 					</classpath>
 				</javac>
 				<record name="${work.dir}/logs/log.txt" action="stop"/>
@@ -2371,7 +2345,6 @@
 				<include name="FDStoreEJB-WL.jar"/>
 				<include name="DataLoaderEJB-WL.jar"/>
 				<include name="StandingOrdersService.jar"/>
-				<include name="CoremetricsService.jar"/>
 			</ejbs>
 			<libraries>
 				<include name="Framework.jar" />
@@ -2496,7 +2469,6 @@
 				<include name="DataLoaderEJB-WL.jar" />
 				<include name="FDLogisticsIntegration.jar" />
 				<include name="StandingOrdersService.jar" />
-				<include name="CoremetricsService.jar" />
 			</libraries>
 			<lib>
 				<include name="oscache-2.4.1.jar"/>
@@ -2723,7 +2695,6 @@
 				<include name="DeliveryEJB-WL.jar"/>
 				<include name="FDStoreEJB-WL.jar"/>
 				<include name="DataLoaderEJB-WL.jar"/>
-				<include name="CoremetricsService.jar"/>
 				<include name="FDWebSite.war"/>
 				<include name="FDIntegrationServices.war"/>
 			</ejbs>
@@ -2961,7 +2932,6 @@
 			<zipfileset src="${work.dir}/FDStoreEJB-WL.jar" excludes="META-INF/*"/>
 			<zipfileset src="${work.dir}/FDLogisticsIntegration.jar" excludes="META-INF/*"/>
 			<zipfileset src="${work.dir}/StandingOrdersService.jar" excludes="META-INF/*"/>
-			<zipfileset src="${work.dir}/CoremetricsService.jar" excludes="META-INF/*"/>
 
 			<!-- Tools -->
 			<zipfileset src="${work.dir}/Tools.jar" excludes="META-INF/*"/>
@@ -3015,7 +2985,6 @@
 			<zipfileset src="${work.dir}/FDStoreEJB-WL.jar" excludes="META-INF/*" />
 			<zipfileset src="${work.dir}/FDLogisticsIntegration.jar" excludes="META-INF/*" />
 			<zipfileset src="${work.dir}/StandingOrdersService.jar" excludes="META-INF/*" />
-			<zipfileset src="${work.dir}/CoremetricsService.jar" excludes="META-INF/*" />
 			<zipfileset src="${work.dir}/Tools.jar" excludes="META-INF/*" />
 
 		</jar>

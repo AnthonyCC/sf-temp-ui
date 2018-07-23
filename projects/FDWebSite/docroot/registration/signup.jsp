@@ -1,4 +1,3 @@
-<%@page import="com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag"%>
 <%@ page import='com.freshdirect.framework.webapp.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.fdstore.*' %>
@@ -34,7 +33,6 @@ final int W_SIGNUP_TOTAL = 970;
 	}
 	/* note here that statusChangePage is obsolete -batchley 2011.01.27_09.28.58.PM */
 	
-	CmRegistrationTag.setRegistrationLocation(session,"signup");
 %>
 <fd:RegistrationController actionName='register' successPage='<%= regContSuccessPage %>' result='result' fraudPage='<%= regContFraudPage %>' statusChangePage='registration_status_change.jsp' registrationType="<%=regType%>">
 <tmpl:insert template='/common/template/no_nav.jsp'>

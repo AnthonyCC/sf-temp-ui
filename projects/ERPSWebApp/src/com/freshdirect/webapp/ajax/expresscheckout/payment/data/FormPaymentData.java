@@ -16,7 +16,6 @@ public class FormPaymentData {
 	private boolean mpEwalletStatus;
 	private String walletErrorMsg;
 	private String mpButtonImgURL;
-    private List<String> onOpenCoremetrics;
     private boolean ppEwalletStatus;
     private boolean ppEwalletPaired;
 
@@ -79,14 +78,6 @@ public class FormPaymentData {
 	public void setMpButtonImgURL(String mpButtonImgURL) {
 		this.mpButtonImgURL = mpButtonImgURL;
 	}
-
-    public List<String> getOnOpenCoremetrics() {
-        return onOpenCoremetrics;
-    }
-
-    public void setOnOpenCoremetrics(List<String> onOpenCoremetrics) {
-        this.onOpenCoremetrics = onOpenCoremetrics;
-    }
 
 	/**
 	 * @return the ppEwalletStatus
