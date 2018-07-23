@@ -5277,5 +5277,6 @@
 		<name>AdQueryString</name>
 		<tagclass>com.freshdirect.webapp.taglib.AdQueryStringTag</tagclass>
 		<info>This tag provides query string for 3rd party Ad service providers</info>
+		<body-content>EMPTY</body-content>
 	</tag>
 </taglib>
