@@ -103,9 +103,6 @@ public class QSFromStarterListFilterServlet extends QuickShopServlet {
 														null);
 			
 			QuickShopMenuOrderUtil.sortMenuItems(responseData.getMenu());
-			
-			// Generate coremetrics 'element' tags for the menu - selected filters
-			generateCoremetricsElementTags( responseData, result.getMenu(), "quickshop | fd_lists" );
 
 		} catch (FDResourceException e) {
 			returnHttpError( 500, "Error while collecting starter lists", e );

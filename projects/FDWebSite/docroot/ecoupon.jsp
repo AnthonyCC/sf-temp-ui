@@ -22,7 +22,6 @@
 <%@ page import="com.freshdirect.framework.util.log.LoggerFactory"%>
 <%@ page import="com.freshdirect.fdstore.util.FilteringNavigator"%>
 <%@ page import="com.freshdirect.fdstore.content.util.QueryParameterCollection"%>
-<%@ page import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil"%>
 <%@ page import="com.freshdirect.webapp.util.FDURLUtil"%>
 <%@ page import="com.freshdirect.FDCouponProperties"%>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil"%>
@@ -274,15 +273,10 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 			request.setAttribute("carNumItems", carNumItems);
   		%>
   		<center>
-		<script type="text/javascript">
-			var cmPageCarousel = cmPageCarousel || {};
-			<% String handlerObj = "cmPageCarousel[\"" + carId + "\"]"; %>
-			<%=handlerObj%> = {"afterScroll": <fd:CmElement wrapIntoFunction="true" carouselId='<%=carPrefix%>' elementCategory="carousel"/> };
-		</script>
 		<div class="search-recommender fdCouponCar">
 			<div class="fdCouponCar-title"><img src="/media/images/ecoupon/best_offers.gif" alt="Best Offers" /></div>
 			<display:Carousel id="fdCouponCarousel" carouselId="<%=carId%>" width="<%=carWidth%>" numItems="<%=carNumItems%>" showCategories="false" itemsToShow="<%= carPms %>" 
-					trackingCode="<%=carTrackCode%>" maxItems="<%=carMaxItems%>" parentId="<%= carParentId %>" eventHandlersObj='<%=handlerObj%>'>
+					trackingCode="<%=carTrackCode%>" maxItems="<%=carMaxItems%>" parentId="<%= carParentId %>">
 				<span class="smartstore-carousel-item">
 					<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
 						<% 

@@ -34,6 +34,10 @@ public class OptionalParameterValidatorTag extends SimpleTagSupport {
                     Double.parseDouble(requestParamValue);
                 } else if (parameterType.equals(Long.class.getSimpleName())) {
                     Long.parseLong(requestParamValue);
+                } else if (parameterType.equals(String.class.getSimpleName())) {
+                    if (requestParamValue.contains("'A=0")) {
+                        validationError = true;
+                    }
                 }
             } catch (NumberFormatException e) {
                 validationError = true;

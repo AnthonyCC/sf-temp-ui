@@ -323,7 +323,6 @@
 		<% if (isTransactionalRow) { %>
 			<form id="<%= TX_FORM_NAME %>" class="wgForm" name="<%= TX_FORM_NAME %>" method="post" action="<%= base_url %>">
 			<fd:AddToCartPending id="<%= TX_FORM_NAME %>"/>
-			<fd:CmFieldDecorator/>
 			<input name="catId" type="hidden" value="<%=catId%>" />
 		<% } %>
 			<table border="0" width="100%">

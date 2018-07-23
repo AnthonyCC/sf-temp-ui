@@ -59,7 +59,7 @@ public class RecommenderServlet extends BaseJsonServlet {
             List<ProductModel> newProducts = CarouselService.defaultService().collectNewProducts(FDStoreProperties.isReorderPageNewProductsCarouselRandomizeProductOrderEnabled());
             recommendationTab.setCarouselData(
                     CarouselService.defaultService().createCarouselDataWithMinProductLimit(null, CarouselService.NEW_PRODUCTS_CAROUSEL_NAME, newProducts, user, null, null));
-            recommendationTab.getCarouselData().setCmEventSource(EnumEventSource.REORDER.getName());
+            recommendationTab.getCarouselData().setEventSource(EnumEventSource.REORDER.getName());
         }
         return recommendationTab;
     }
@@ -70,19 +70,19 @@ public class RecommenderServlet extends BaseJsonServlet {
             result = createRecommendationResult(Collections.<String, Object> emptyMap());
         } else {
             result = createRecommenderResult(recommendationTab.getSiteFeature(), recommendationTab.getItemType(), recommendationTab.getDescription(),
-                    recommendationTab.getCarouselData().getProducts(), recommendationTab.getCarouselData().getCmEventSource());
+                    recommendationTab.getCarouselData().getProducts(), recommendationTab.getCarouselData().getEventSource());
         }
         return result;
     }
 
     public static Map<String, Object> createRecommenderResult(String siteFeature, String itemType, String title, Collection<? extends BasicProductData> items,
-            String cmEventSource) {
+            String eventSource) {
         Map<String, Object> recommenderResult = new HashMap<String, Object>();
         recommenderResult.put("siteFeature", siteFeature);
         recommenderResult.put("itemType", itemType);
         recommenderResult.put("title", title);
         recommenderResult.put("items", items);
-        recommenderResult.put("cmEventSource", cmEventSource);
+        recommenderResult.put("eventSource", eventSource);
         return createRecommendationResult(recommenderResult);
     }
 

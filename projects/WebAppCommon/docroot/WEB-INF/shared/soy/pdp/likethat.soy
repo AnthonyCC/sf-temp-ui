@@ -6,7 +6,7 @@
  */
 {template .likethat}
     {if $productList and length($productList) > 1}
-	<div class="pdp-likethat" data-cmeventsource="LTYLT">
+	<div class="pdp-likethat" data-eventsource="LTYLT">
 		<div {if $mobWeb}tabindex="0"{/if} class="header {if $mobWeb}gen-accord-toggler{/if}">Like That? You'll Love This.</div>
 		<div class="first{if $mobWeb} gen-accord-content{/if}" {if $mobWeb}style="display: none;"{/if}> 
     	{call common.simpleCarousel}

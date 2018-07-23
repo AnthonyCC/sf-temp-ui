@@ -416,6 +416,7 @@
 #expresscheckout.deliverypasscheckout .tip, 
 #expresscheckout.deliverypasscheckout #cartCarousels,
 #expresscheckout.deliverypasscheckout #subtotalbox1 [data-boxid="deliveryfee"],
+#expresscheckout.deliverypasscheckout #subtotalbox1 [data-boxid="fuelsurcharge"],
 #expresscheckout.deliverypasscheckout .cartsection__tax[fdform-container="etip"]{
   display: none;
 }

@@ -35,12 +35,16 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.ecommerce.data.product.ProductRequestData;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
+import com.freshdirect.fdstore.ecomm.gateway.CustomerInfoService;
 import com.freshdirect.fdstore.request.FDProductRequest;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
@@ -195,16 +199,25 @@ public class ProductRequestServlet extends HttpServlet {
 		HashMap<String, HashMap<String, String>> finalMap = new HashMap<String, HashMap<String, String>>();
 		
 		try {			
-			Context ctx = null;
-			ctx = getInitialContext();
-			FDCustomerManagerHome home = (FDCustomerManagerHome) ctx.lookup("freshdirect.fdstore.CustomerManager");
-			FDCustomerManagerSB sb = home.create();
 
+
+			List<HashMap<String, String>> deptsList;
+			List<HashMap<String, String>> catsList;
+			List<HashMap<String, String>> mappingList;
 			//sb returns all, including obsolete, so clean it up
-			List<HashMap<String, String>> deptsList = cleanObsolete(sb.productRequestFetchAllDepts());
-			List<HashMap<String, String>> catsList = cleanObsolete(sb.productRequestFetchAllCats());
-			List<HashMap<String, String>> mappingList = cleanObsolete(sb.productRequestFetchAllMappings());
-
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
+				ProductRequestData productRequestData = CustomerInfoService.getInstance().productRequestFetchAll();
+				deptsList = cleanObsolete(productRequestData.getDepartments());
+				catsList = cleanObsolete(productRequestData.getCategories());
+				mappingList = cleanObsolete(productRequestData.getMapping());
+			} else {
+				Context ctx = getInitialContext();
+				FDCustomerManagerHome home = (FDCustomerManagerHome) ctx.lookup("freshdirect.fdstore.CustomerManager");
+				FDCustomerManagerSB sb = home.create();
+				deptsList = cleanObsolete(sb.productRequestFetchAllDepts());
+				catsList = cleanObsolete(sb.productRequestFetchAllCats());
+				mappingList = cleanObsolete(sb.productRequestFetchAllMappings());
+			}
 			//create a data structure we can use easily for lookups (i.e. ID={DATA})
 			HashMap<String, HashMap<String, String>> deptsMap = listToMap(deptsList, "ID");
 			HashMap<String, HashMap<String, String>> catsMap = listToMap(catsList, "ID");

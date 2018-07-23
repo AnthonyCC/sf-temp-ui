@@ -20,6 +20,7 @@ var FreshDirect = FreshDirect || {};
         if (developer) {
           document.body.setAttribute('developer', developer);
         }
+        document.body.setAttribute('data-iscorporateuser', (fd && fd.user && fd.user.isCorporateUser) ? fd.user.isCorporateUser : false);
       },
       initModule: function () {
         // initialize A/B testing feature framework

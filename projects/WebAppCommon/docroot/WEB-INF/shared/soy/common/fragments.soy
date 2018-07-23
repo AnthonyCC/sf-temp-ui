@@ -66,7 +66,8 @@
 */
 {template .productList autoescape="false"}
 	{let $version: $abFeatures ? ($abFeatures.gridlayoutcolumn ? $abFeatures.gridlayoutcolumn : 'default') : 'default' /}
-	{let $itemPerLineFinal: $itemPerLine ? $itemPerLine : (($version == '4_0') ? 4 : 5) /}
+	{let $productCardVersion: $abFeatures ? ($abFeatures.productCard ? $abFeatures.productCard : '2017') : '2017' /}
+	{let $itemPerLineFinal: $itemPerLine ? $itemPerLine : (($version == '4_0' or $productCardVersion == '2018') ? 4 : 5) /}
 	{let $itemPerLineFinal: $mobWeb ? 2 : $itemPerLineFinal /}
 	{call common.fixedProductList data="all"}
 		{param itemPerLine:$itemPerLineFinal /}
@@ -75,6 +76,7 @@
 		{param numProducts: $numProducts /}
 		{param ifSingleUL: $ifSingleUL /}
 		{param mobWeb:$mobWeb /}
+		{param abFeatures:$abFeatures /}
 	{/call}
 {/template}
 
@@ -85,6 +87,7 @@
 * @param? itemPerLine
 * @param? showConfig
 * @param? isHookLogic
+* @param? abFeatures
 * @param? mobWeb
 */
 {template .fixedProductList autoescape="false"}
@@ -110,6 +113,7 @@
 		          		{param extraClass:(($col != ($ipl-1) and $fProducts + $col + $line * $ipl != $nProducts - 1) ? $xtraClass : $xtraClass+' lastInLine') /}
 		          		{param showConfig: $showConfig /}
 		          		{param mobWeb:$mobWeb /}
+						{param abFeatures:$abFeatures /}
 		        	{/call}
 	        	{/if}
       		{/if}

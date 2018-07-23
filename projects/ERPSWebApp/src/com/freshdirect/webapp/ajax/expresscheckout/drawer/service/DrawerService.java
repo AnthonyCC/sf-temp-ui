@@ -7,12 +7,11 @@ import java.util.Map;
 
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartModel;
-import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.deliverypass.DeliveryPassSubscriptionUtil;
 import com.freshdirect.fdstore.services.tax.AvalaraContext;
-import com.freshdirect.webapp.ajax.expresscheckout.coremetrics.service.CoremetricsService;
 import com.freshdirect.webapp.ajax.expresscheckout.data.DrawerData;
+import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 
 public class DrawerService {
 
@@ -33,20 +32,19 @@ public class DrawerService {
 		return INSTANCE;
 	}
 
-	public Map<String, List<DrawerData>> loadDrawer(FDUserI user) {
+	public Map<String, List<DrawerData>> loadDrawer(FDUserI user,boolean dlvPassCart ) {
 		Map<String, List<DrawerData>> drawer = new HashMap<String, List<DrawerData>>();
-		drawer.put(DRAWERS_KEY, loadDrawers(user));
+		drawer.put(DRAWERS_KEY, loadDrawers(user,dlvPassCart));
 		return drawer;
 	}
 
-	private List<DrawerData> loadDrawers(FDUserI user) {
+	private List<DrawerData> loadDrawers(FDUserI user,boolean dlvPassCart) {
 		List<DrawerData> drawers = new ArrayList<DrawerData>();
 		
-		//if(FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && user.getShoppingCart().containsDlvPassOnly()){
-		if(user.getShoppingCart().isDlvPassStandAloneCheckoutAllowed() && user.getShoppingCart().containsDlvPassOnly()){
+		FDCartModel cart=UserUtil.getCart(user, "", dlvPassCart);
+		if((FDStoreProperties.isDlvPassStandAloneCheckoutEnabled() && cart.containsDlvPassOnly())){
 			drawers.add(loadPaymentDrawer());
-			// Changes as part of APPBUG-5583 - Set dummy address in the cart when the user does not have any for DeliveryPass only purchase flow
-			FDCartModel cart = user.getShoppingCart();
+			// Changes as part of APPBUG-5583 - Set dummy address in the cart when the user does not have any for DeliveryPass only purchase flow       	
 			if(null == cart.getDeliveryAddress()){
 				cart.setDeliveryAddress(DeliveryPassSubscriptionUtil.setDeliveryPassDeliveryAddress(user.getSelectedServiceType()));
 			}
@@ -65,28 +63,27 @@ public class DrawerService {
 
 	private DrawerData loadDeliveryAddressDrawer(FDUserI user) {
 	    boolean isAddressDrawerEnabled = !(user.getMasqueradeContext() != null && user.getMasqueradeContext().isAddOnOrderEnabled());
-        return createDrawer(DELIVERY_ADDRESS_DRAWER_ID, DELIVERY_ADDRESS_DRAWER_TITLE, isAddressDrawerEnabled, CoremetricsService.defaultService().getCoremetricsData("address"));
+        return createDrawer(DELIVERY_ADDRESS_DRAWER_ID, DELIVERY_ADDRESS_DRAWER_TITLE, isAddressDrawerEnabled);
 	}
 
 	private DrawerData loadTimeslotDrawer(FDUserI user) {
 	    boolean isTimeslotDrawerEnabled = !(user.getMasqueradeContext() != null && user.getMasqueradeContext().isAddOnOrderEnabled());
-        return createDrawer(DELIVERY_TIMESLOT_DRAWER_ID, DELIVERY_TIMESLOT_DRAWER_TITLE, isTimeslotDrawerEnabled, CoremetricsService.defaultService().getCoremetricsData("timeslot"));
+        return createDrawer(DELIVERY_TIMESLOT_DRAWER_ID, DELIVERY_TIMESLOT_DRAWER_TITLE, isTimeslotDrawerEnabled);
 	}
 
 	private DrawerData loadPaymentDrawer() {
-        return createDrawer(PAYMENT_DRAWER_ID, PAYMENT_DRAWER_TITLE, CoremetricsService.defaultService().getCoremetricsData("payment"));
+        return createDrawer(PAYMENT_DRAWER_ID, PAYMENT_DRAWER_TITLE);
 	}
 
-    private DrawerData createDrawer(final String id, final String title, final List<String> onOpenCoremetrics) {
-        return createDrawer(id, title, true, onOpenCoremetrics);
+    private DrawerData createDrawer(final String id, final String title) {
+        return createDrawer(id, title, true);
     }
 	
-	private DrawerData createDrawer(final String id, final String title, final boolean enabled, final List<String> onOpenCoremetrics) {
+    private DrawerData createDrawer(final String id, final String title, final boolean enabled) {
 		DrawerData timeslotDrawer = new DrawerData();
 		timeslotDrawer.setId(id);
 		timeslotDrawer.setTitle(title);
 		timeslotDrawer.setEnabled(enabled);
-		timeslotDrawer.setOnOpenCoremetrics(onOpenCoremetrics);
 		return timeslotDrawer;
 	}
 }

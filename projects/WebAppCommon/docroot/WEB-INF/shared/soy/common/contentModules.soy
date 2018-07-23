@@ -3,6 +3,8 @@
 /**
  * @param config
  * @param data
+ * @param? abFeatures
+ * @param? mobWeb
  */
 {template .contentModules}
 {if $config and $data}
@@ -11,6 +13,8 @@
   		{call common.contentModuleSelector}
   			{param moduleConfig: $module /}
   			{param data: $data[$module.moduleId] /}
+				{param mobWeb:$mobWeb /}
+				{param abFeatures:$abFeatures /}
   		{/call}
   	{/foreach}
   </div>
@@ -20,10 +24,14 @@
 /**
  * @param moduleConfig
  * @param data
+ * @param? abFeatures
+ * @param? mobWeb
  */
 {template .contentModuleSelector}
   {delcall common.moduleSelector variant="$moduleConfig.sourceType"}
     {param moduleData: $moduleConfig /}
     {param data: $data /}
+		{param mobWeb:$mobWeb /}
+		{param abFeatures:$abFeatures /}
   {/delcall}
 {/template}

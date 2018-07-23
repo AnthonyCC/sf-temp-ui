@@ -1,4 +1,3 @@
-<%@page import="com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag"%>
 <%@ page import="java.net.*,java.util.HashMap"%>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName" %>
@@ -30,7 +29,6 @@
 	
     String failurePage = "/social/signup_lite.jsp?successPage="+ URLEncoder.encode(successPage)+"&ol=na&serviceType="+serviceType;
     
-    CmRegistrationTag.setRegistrationLocation(session,"signup lite");
 %>	
 
 <fd:SiteAccessController action='signupLite' successPage='<%= successPage %>' moreInfoPage='' failureHomePage='<%= failurePage %>' result='result'>	
@@ -58,8 +56,6 @@
 	<fd:css href="/assets/css/social_connected.css" />	
 		
 	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
-
-	<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 
 
 <!-- enable/disable the submit button based on valid entries -->

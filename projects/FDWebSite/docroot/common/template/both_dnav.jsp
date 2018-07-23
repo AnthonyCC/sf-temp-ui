@@ -47,7 +47,6 @@ final int W_BOTH_DNAV_RIGHT = 191;
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333" 
      onload="<%= request.getAttribute("bodyOnLoad")%>" 
      onunload="<%= request.getAttribute("bodyOnUnload")%>" >
-<%@ include file="/shared/template/includes/i_body_start.jspf" %>      
 <%
 	//
 	// annotation mode, add overlib stuff

@@ -1,4 +1,3 @@
-<%@page import="com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag"%>
 <%@ page import="java.net.*"%>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName" %>
@@ -32,9 +31,6 @@
     <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="0" topmargin="0">
-<%@ include file="/shared/template/includes/i_body_start.jspf" %>
-
-<%CmRegistrationTag.setRegistrationLocation(session,"referee"); %>
 
 	
 	<%

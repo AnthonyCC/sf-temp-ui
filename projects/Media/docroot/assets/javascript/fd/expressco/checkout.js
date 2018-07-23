@@ -8,6 +8,10 @@ var FreshDirect = FreshDirect || {};
       FORMS = fd.modules.common.forms,
       $ = fd.libs.$;
   var FORMS = fd.modules.common.forms;
+  var dlvPassCart = false;
+  if($('#deliverypasscontent').length > 0 && !!$('#deliverypasscontent').attr('data-dlvpasscart') == true){
+	  dlvPassCart = true;
+  }
 
   // checkout flow drawer enabler/disabler
   var coFlowChecker = Object.create(fd.common.signalTarget, {
@@ -124,6 +128,7 @@ var FreshDirect = FreshDirect || {};
         }
      
       formData.action = 'placeOrder';
+      formData.dlvPassCart = dlvPassCart;
       DISPATCHER.signal("server", {
         url: "/api/expresscheckout",
         method: "POST",
@@ -175,10 +180,15 @@ var FreshDirect = FreshDirect || {};
 	  		if (d)
 	  			FreshDirect.common.dispatcher.signal('atpFailure', d);
 	  	});
+	  
+	  initSoyDrawers();
+  }
+  var initSoyDrawers = function () {
 	  var drawerDeferred = jQuery.Deferred();
 	  var contextDeferred = jQuery.Deferred();
+	  
 	  // Load Drawer, Form metadata, and session context info for checkout
-	  $.when($.get('/api/expresscheckout?action=getDrawer'), $.get('/api/expresscheckout?action=getFormMetaData'))
+	  $.when($.get('/api/expresscheckout?action=getDrawer&dlvPassCart=' + dlvPassCart), $.get('/api/expresscheckout?action=getFormMetaData'))
 	  	.done( function (v1, v2) {
 	  		window.FreshDirect = window.FreshDirect || {};
 	  		window.FreshDirect.expressco.data = window.FreshDirect.expressco.data || {};
@@ -192,9 +202,12 @@ var FreshDirect = FreshDirect || {};
 
 	  $.when(drawerDeferred, contextDeferred).then(function () {
 		  // Load payment
-		  $.get('/api/expresscheckout/payment')
+		  $.get('/api/expresscheckout/payment?dlvPassCart=' + dlvPassCart)
 			.done( function (d) {
 				FreshDirect.common.dispatcher.signal('payment', d);
+				if($(".deliverypass-payment").length > 0){
+					dialogWindowRealignFunc();
+				}
 			});
 		  // Load address
 		  $.get('/api/expresscheckout/deliveryaddress')
@@ -215,6 +228,7 @@ var FreshDirect = FreshDirect || {};
   fd.utils.registerModule('expressco', 'checkout', {
     coFlowChecker: coFlowChecker,
     initSoyComponents: initSoyComponents,
+    initSoyDrawers: initSoyDrawers,
     timeslotDrawerDependencyLoaded: timeslotDrawerDependencyLoaded
   }, fd, 'checkout', '2_0');
   $(document).on('click','.skipnav',function(){

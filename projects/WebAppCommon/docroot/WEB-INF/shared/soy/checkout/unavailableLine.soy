@@ -59,7 +59,7 @@
                 <input style="display:none" type="radio" name="line{$cartLine.randomId}" id="{$cartLine.randomId}" value="remove" data-component="atpremove" checked>
         {/if}
         {if $hasRecommendations}
-          <div class="replacements" data-cmeventsource="ATP">
+          <div class="replacements" data-eventsource="ATP">
             {call common.simpleCarousel}
               {param items:$recommendedProducts /}
               {param itemType:'grid' /}

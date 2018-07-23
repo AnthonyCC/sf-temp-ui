@@ -43,6 +43,7 @@ public class DeliveryPassType extends EnumModel {
 	private List<Integer> eligibleDlvDays;
 	private List<EnumDeliveryType> deliveryTypes;
 	private List<EnumEStoreId> eStoreIds;
+	private String shortName;
 	
 	
 	public int getDuration() {
@@ -69,7 +70,8 @@ public class DeliveryPassType extends EnumModel {
 			@JsonProperty("autoRenewalSKU") String autoRenewalSKU,
 			@JsonProperty("eligibleDlvDays") List<Integer> eligibleDlvDays,
 			@JsonProperty("deliveryTypes") List<EnumDeliveryType> deliveryTypes,
-			@JsonProperty("eStoreIds") List<EnumEStoreId> eStoreIds) {
+			@JsonProperty("eStoreIds") List<EnumEStoreId> eStoreIds,
+			@JsonProperty("shortName") String shortName) {
 		super(code, name, null);
 		this.noOfDeliveries = noOfDlvs;
 		this.duration = duration;
@@ -82,6 +84,7 @@ public class DeliveryPassType extends EnumModel {
 		this.setEligibleDlvDays(eligibleDlvDays);
 		this.deliveryTypes = deliveryTypes;
 		this.eStoreIds = eStoreIds;
+		this.shortName = shortName;
 	}
 
 	public static DeliveryPassType getEnum(String code) {
@@ -189,6 +192,14 @@ public class DeliveryPassType extends EnumModel {
 
 	public void seteStoreIds(List<EnumEStoreId> eStoreIds) {
 		this.eStoreIds = eStoreIds;
+	}
+
+	public String getShortName() {
+		return shortName;
+	}
+
+	public void setShortName(String shortName) {
+		this.shortName = shortName;
 	}
 	
 }

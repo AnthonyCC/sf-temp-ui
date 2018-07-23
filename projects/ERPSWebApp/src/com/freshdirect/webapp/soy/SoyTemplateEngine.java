@@ -396,6 +396,9 @@ public class SoyTemplateEngine {
         ObjectMapper m = new ObjectMapper();
         m.setDateFormat(dateFormat);
         Map<String,Object> map = m.convertValue( bean, Map.class );
+        if(map.containsKey("sections")) {
+        System.out.println("map==================="+map);
+        }
         return map;
     }
 

@@ -20,7 +20,6 @@ import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.delivery.ReservationException;
-import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.fdlogistics.model.FDDeliveryDepotModel;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDDeliveryManager;
@@ -49,11 +48,9 @@ import com.freshdirect.webapp.ajax.checkout.data.UnavailabilityData;
 import com.freshdirect.webapp.ajax.data.PageAction;
 import com.freshdirect.webapp.ajax.expresscheckout.availability.service.AvailabilityService;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData;
-import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartSubTotalFieldData;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.service.CartDataService;
 import com.freshdirect.webapp.ajax.expresscheckout.checkout.service.CheckoutService;
 import com.freshdirect.webapp.ajax.expresscheckout.content.service.ContentFactoryService;
-import com.freshdirect.webapp.ajax.expresscheckout.coremetrics.service.CoremetricsService;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormRestriction;
 import com.freshdirect.webapp.ajax.expresscheckout.data.SinglePageCheckoutData;
 import com.freshdirect.webapp.ajax.expresscheckout.data.SinglePageCheckoutSuccessData;
@@ -81,6 +78,7 @@ import com.freshdirect.webapp.soy.SoyTemplateEngine;
 import com.freshdirect.webapp.taglib.fdstore.CheckOrderStatusTag;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 import com.freshdirect.webapp.util.StandingOrderHelper;
 
 public class SinglePageCheckoutFacade {
@@ -133,15 +131,16 @@ public class SinglePageCheckoutFacade {
 
     public SinglePageCheckoutData load(final FDUserI user, HttpServletRequest request)
             throws FDResourceException, IOException, TemplateException, JspException, RedirectToPage {
-    	ErpCustomerModel customerModel = FDCustomerManager.getCustomer(user.getIdentity());
-        FDCartI cart = populateCartDataFromParentOrder(user);
+    	ErpCustomerModel customerModel = FDCustomerManager.getCustomerPaymentAndCredit(user.getIdentity());
+    	boolean dlvPassCart = null !=request.getParameter("dlvPassCart") && "true".equalsIgnoreCase(request.getParameter("dlvPassCart")) ? true: false;
+        FDCartI cart = populateCartDataFromParentOrder(user, dlvPassCart);
         SinglePageCheckoutData result = new SinglePageCheckoutData();
         if (StandingOrderHelper.isSO3StandingOrder(user)) {
             result.setStandingOrderResponseData(StandingOrderHelper.populateResponseData(user.getCurrentStandingOrder(), false));
         }
         handleModifyCartPreSelections(user, request);
         result.setHeaderData(SinglePageCheckoutHeaderService.defaultService().populateHeader(user));
-        result.setDrawer(DrawerService.defaultService().loadDrawer(user));
+        result.setDrawer(DrawerService.defaultService().loadDrawer(user, dlvPassCart));
         FormPaymentData paymentData = loadUserPaymentMethods(user, request, customerModel.getPaymentMethods(), customerModel.getCustomerCredits());
         // remove the xxxx in account number
     	if (paymentData.getPayments() != null) {
@@ -153,7 +152,7 @@ public class SinglePageCheckoutFacade {
     	}
         result.setPayment(paymentData);
         result.setFormMetaData(FormMetaDataService.defaultService().populateFormMetaData(user));
-        result.setAddress(loadAddress(user, request.getSession(), cart, customerModel.getShipToAddresses(),customerModel.getCustomerInfo()));
+        result.setAddress(loadAddress(user, request.getSession(), cart, FDCustomerManager.getShipToAddresses(user.getIdentity())));
         if (FDStoreProperties.getAtpAvailabiltyMockEnabled()) {
             UnavailabilityData atpFailureData = UnavailabilityPopulator.createUnavailabilityData((FDSessionUser) user);
             if (!atpFailureData.getNonReplaceableLines().isEmpty() || !atpFailureData.getReplaceableLines().isEmpty() || atpFailureData.getNotMetMinAmount() != null
@@ -193,7 +192,7 @@ public class SinglePageCheckoutFacade {
             LOGGER.debug("Skipped restriction check for fraud address");
         }
 
-        FDCartI cart = StandingOrderHelper.isSO3StandingOrder(user) ? user.getSoTemplateCart() : populateCartDataFromParentOrder(user);
+        FDCartI cart = StandingOrderHelper.isSO3StandingOrder(user) ? user.getSoTemplateCart() : populateCartDataFromParentOrder(user, false);
 
         HttpSession session = request.getSession();
         switch (pageAction) {
@@ -214,7 +213,7 @@ public class SinglePageCheckoutFacade {
                 break;
             case SELECT_DELIVERY_ADDRESS_METHOD:
                 if (validationResult != null && validationResult.getErrors().isEmpty()) {
-                	ErpCustomerModel customerModel = FDCustomerManager.getCustomer(user.getIdentity());
+                	ErpCustomerModel customerModel = FDCustomerManager.getCustomerPaymentAndCredit(user.getIdentity());
                     result.put(ADDRESS_JSON_KEY, loadAddress(user, session, cart));
                     result.put(TIMESLOT_JSON_KEY, timeslotService.loadCartTimeslot(user, cart));
                     Boolean cartPaymentSelectionDisabled = (Boolean) session.getAttribute(SessionName.CART_PAYMENT_SELECTION_DISABLED);
@@ -337,15 +336,15 @@ public class SinglePageCheckoutFacade {
 	public FormLocationData loadAddress(final FDUserI user, final HttpSession session)
 			throws FDResourceException, JspException, RedirectToPage {
 		
-		return loadAddress(user, session, populateCartDataFromParentOrder(user), null, null);
+		return loadAddress(user, session, populateCartDataFromParentOrder(user, false), null);
 	}
 
     public FormLocationData loadAddress(final FDUserI user, final HttpSession session, final FDCartI cart) throws FDResourceException, JspException, RedirectToPage {  	
-    	return loadAddress(user,session,cart,null, null);
+    	return loadAddress(user,session,cart,null);
     }
     
-    public FormLocationData loadAddress(final FDUserI user, final HttpSession session, final FDCartI cart, Collection<ErpAddressModel> shippingAddresses, ErpCustomerInfoModel customerInfo) throws FDResourceException, JspException, RedirectToPage {
-        List<LocationData> deliveryAddresses = deliveryAddressService.loadAddress(cart, user, session, shippingAddresses, customerInfo);
+    public FormLocationData loadAddress(final FDUserI user, final HttpSession session, final FDCartI cart, Collection<ErpAddressModel> shippingAddresses) throws FDResourceException, JspException, RedirectToPage {
+        List<LocationData> deliveryAddresses = deliveryAddressService.loadAddress(cart, user, session, shippingAddresses);
         FormLocationData formLocation = new FormLocationData();
         formLocation.setAddresses(deliveryAddresses);
         formLocation.setSelected(getSelectedAddressId(deliveryAddresses));
@@ -365,7 +364,6 @@ public class SinglePageCheckoutFacade {
         		StandingOrderHelper.evaluteSoAddressId(session, user, currentSO.getAddressId());
         	}
         }
-        formLocation.setOnOpenCoremetrics(CoremetricsService.defaultService().getCoremetricsData("address"));
         return formLocation;
     }
 
@@ -399,7 +397,7 @@ public class SinglePageCheckoutFacade {
         
         FDOrderI order = isSO3Activate?new FDStandingOrderAdapter(user.getSoTemplateCart(),user.getCurrentStandingOrder()):loadOrder(orderId, user);
        
-        result.setDrawer(DrawerService.defaultService().loadDrawer(user));
+        result.setDrawer(DrawerService.defaultService().loadDrawer(user, false));
         result.setAddress(loadCartAddress(order, user));
         result.setPayment(loadCartPayment(order, user));
         result.setTimeslot(timeslotService.loadCartTimeslot(user, order));
@@ -407,12 +405,16 @@ public class SinglePageCheckoutFacade {
         result.setTextMessageAlertData(loadTextMessageAlertData(user));
         result.setSemPixelData(SemPixelService.defaultService().populateSemPixelMediaInfo(user, session, order));
        
-        result.setGoGreenShow("I".equalsIgnoreCase(GoGreenService.defaultService().loadGoGreenOption(user))?true:false);
+        if (user.getIdentity() != null) {
+            result.setGoGreenShow("I".equalsIgnoreCase(GoGreenService.defaultService().loadGoGreenOption(user)) ? true : false);
+        } else {
+            result.setGoGreenShow(false);
+        }
 
         return result;
     }
 
-    private FDCartI populateCartDataFromParentOrder(final FDUserI user) throws FDResourceException {
+    private FDCartI populateCartDataFromParentOrder(final FDUserI user, boolean dlvPassCart) throws FDResourceException {
         FDCartI cart = null;
         if (StandingOrderHelper.isSO3StandingOrder(user)) {
             cart = user.getSoTemplateCart();
@@ -426,7 +428,8 @@ public class SinglePageCheckoutFacade {
             user.getShoppingCart().setDeliveryAddress(deliveryAddress);
             // user.getShoppingCart().setDeliveryReservation(cart.getDeliveryReservation());
         } else {
-            cart = user.getShoppingCart();
+            //cart = user.getShoppingCart();
+        	cart = UserUtil.getCart(user, "", dlvPassCart);
         }
         return cart;
     }
@@ -507,6 +510,7 @@ public class SinglePageCheckoutFacade {
     private void processGiftCards(FDUserI user, FormPaymentData formPaymentData, List customerCredits) {
         if (user.getGiftCardList() != null) {
             user.getShoppingCart().setSelectedGiftCards(user.getGiftCardList().getSelectedGiftcards());
+            user.getDlvPassCart().setSelectedGiftCards(user.getGiftCardList().getSelectedGiftcards());
         }
         try {
             // [APPDEV-2149] SO template only checkout => no order, no dlv
@@ -764,8 +768,6 @@ public class SinglePageCheckoutFacade {
              * formPaymentData.setMpCardPaired("Yes"); } } }
              */
         }
-
-        formPaymentData.setOnOpenCoremetrics(CoremetricsService.defaultService().getCoremetricsData("payment"));
 
         return formPaymentData;
     }

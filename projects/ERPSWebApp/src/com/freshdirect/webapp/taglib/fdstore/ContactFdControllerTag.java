@@ -36,13 +36,13 @@ import com.freshdirect.mail.EmailUtil;
 import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.storeapi.content.ContentNodeModel;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
-import com.freshdirect.webapp.taglib.coremetrics.CmConversionEventTag;
 
 public class ContactFdControllerTag extends AbstractControllerTag implements SessionName  {
 
 	private final static Category LOGGER = LoggerFactory.getInstance(ContactFdControllerTag.class);
 
-	protected boolean performAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
+	@Override
+    protected boolean performAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
 		try {
 			HttpSession session = pageContext.getSession();
 			FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
@@ -55,7 +55,6 @@ public class ContactFdControllerTag extends AbstractControllerTag implements Ses
 				
 				if (actionResult.isSuccess()) {
 					this.performContactFd(form, user);
-					CmConversionEventTag.setPendingHelpEmailSubject(session, form.subject);
 				}
 	
 			}else{
@@ -127,7 +126,8 @@ public class ContactFdControllerTag extends AbstractControllerTag implements Ses
 	}
 	
 	
-	protected boolean performGetAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
+	@Override
+    protected boolean performGetAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
 		pageContext.setAttribute("savedFaqs", getTopFaqs(actionResult));
 		return true;
 	}
@@ -234,7 +234,8 @@ public class ContactFdControllerTag extends AbstractControllerTag implements Ses
 			this.unknownCustomer = unknownCustomer;
 		}
 
-		public void populateForm(HttpServletRequest request) {
+		@Override
+        public void populateForm(HttpServletRequest request) {
 			try {
 				subjectIndex = Integer.parseInt(request.getParameter("subject"));
 			} catch (NumberFormatException Ex) {
@@ -301,7 +302,8 @@ public class ContactFdControllerTag extends AbstractControllerTag implements Ses
 			return NVL.apply(request.getParameter(fieldName), "").trim();
 		}
 
-		public void validateForm(ActionResult result) {
+		@Override
+        public void validateForm(ActionResult result) {
 			result.addError(subjectIndex < 0, "subject", SystemMessageList.MSG_REQUIRED);
 			result.addError(subject == null || "".equals(subject), "subject", SystemMessageList.MSG_REQUIRED);
 			result.addError(message.length() < 1, "message", SystemMessageList.MSG_REQUIRED);

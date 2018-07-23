@@ -33,7 +33,7 @@ Includes everything required.
 	 */
 	if (cart.getRecentOrderLines().size() > 0 && "1".equalsIgnoreCase(request.getParameter("confirm"))) {
 %><%@ include file="/includes/smartstore/i_recent_orderlines.jspf" %>
-<fd:CmShop5 wrapIntoScriptTag="true" cart="<%=cart%>"/>
+
 <br/>
 <%
 	}

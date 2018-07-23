@@ -38,12 +38,6 @@ import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
-import com.freshdirect.fdstore.coremetrics.CmContextUtility;
-import com.freshdirect.fdstore.coremetrics.builder.AbstractShopTagModelBuilder;
-import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
-import com.freshdirect.fdstore.coremetrics.extradata.CoremetricsExtraData;
-import com.freshdirect.fdstore.coremetrics.tagmodel.ShopTagModel;
-import com.freshdirect.fdstore.coremetrics.util.CoremetricsUtil;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -69,7 +63,6 @@ import com.freshdirect.storeapi.content.CategoryModel;
 import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.storeapi.content.DepartmentModel;
 import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.webapp.ajax.ICoremetricsResponse;
 import com.freshdirect.webapp.ajax.analytics.service.GoogleAnalyticsDataService;
 import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartCouponResponse;
@@ -78,12 +71,9 @@ import com.freshdirect.webapp.ajax.cart.data.AddToCartRequestData;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartResponseData;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartResponseDataItem;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartResponseDataItem.Status;
-import com.freshdirect.webapp.ajax.cart.data.CartData;
 import com.freshdirect.webapp.ajax.reorder.QuickShopHelper;
 import com.freshdirect.webapp.cos.util.CosFeatureUtil;
 import com.freshdirect.webapp.features.service.FeaturesService;
-import com.freshdirect.webapp.taglib.coremetrics.AbstractCmShopTag;
-import com.freshdirect.webapp.taglib.coremetrics.CmShop5Tag;
 import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.display.FDCouponTag;
@@ -199,11 +189,6 @@ public class CartOperations {
                     cartLine.setAddedFrom(EnumATCContext.NEWPRODUCTS);
                 }
 
-                if (!isExternalRequest) {
-                    cartLine.setCoremetricsPageContentHierarchy(reqData.getCoremetricsPageContentHierarchy());
-                    cartLine.setCoremetricsPageId(reqData.getCoremetricsPageId());
-                    cartLine.setCoremetricsVirtualCategory(reqData.getCoremetricsVirtualCategory());
-                }
                 cartLine.setEStoreId(user.getUserContext().getStoreContext().getEStoreId());
                 // cartLine.setPlantId(user.getUserContext().getFulfillmentContext().getPlantId());
 
@@ -211,12 +196,6 @@ public class CartOperations {
                     cartLinesToAdd.add(cartLine);
                 }
 
-                // [APPDEV-4558]
-                if (!isExternalRequest && CmContextUtility.isCoremetricsAvailable(user)) {
-                    CoremetricsExtraData cmExtraData = new CoremetricsExtraData();
-                    cmExtraData.setCustomerType(CoremetricsUtil.defaultService().getCustomerTypeByOrderCount(user));
-                    populateCoremetricsShopTag(responseData, cartLine, cmExtraData);
-                }
                 // [APPDEV-5353] UNBXD Analytics Events
                 if (isUNBXDAnalyticsAvailable && !user.isRobot()) {
                     final AnalyticsEventI event = AnalyticsEventFactory.createEvent(AnalyticsEventType.ATC, visitor, loc, null, null, cartLine, cosAction);
@@ -242,7 +221,7 @@ public class CartOperations {
             logAddToCart(user, cartLinesToAdd, evtSrc, serverName);
 
             // Save
-            saveUserAndCart(user, cart);
+            saveUserAndCart(user, cart, reqData.isDlvPassCart());
 
             // ecoupons status - after add to cart
             populateECouponsStatus(responseData, user, cart, cartLinesToAdd, session);
@@ -251,46 +230,6 @@ public class CartOperations {
 
         return true;
 
-    }
-
-    public static void populateCoremetricsShopTag(ICoremetricsResponse responseData, FDCartLineI cartLine, CoremetricsExtraData coremetricsExtraData) {
-        // COREMETRICS SHOP5
-        try {
-
-            cartLine.refreshConfiguration();
-
-            ShopTagModel cmTag = AbstractShopTagModelBuilder.createTagModel(cartLine, cartLine.getProductRef(), false, coremetricsExtraData);
-            responseData.addCoremetrics(cmTag.toStringList());
-
-            List<String> cmFinalTag = new ArrayList<String>(1);
-            cmFinalTag.add(AbstractCmShopTag.DISPLAY_SHOPS);
-            responseData.addCoremetrics(cmFinalTag);
-
-        } catch (SkipTagException ignore) {
-            LOG.warn("Failed to generate coremetrics data", ignore);
-        } catch (FDResourceException ignore) {
-            LOG.warn("Failed to generate coremetrics data", ignore);
-        } catch (FDInvalidConfigurationException ignore) {
-            LOG.warn("Failed to generate coremetrics data", ignore);
-        }
-    }
-
-    public static void populateCoremetricsShopTag(CartData responseData, List<FDCartLineI> cartLines, FDCartModel cart, CmShop5Tag cmTag) {
-        // COREMETRICS SHOP5
-        String cmScript = null;
-        try {
-            cmTag.setWrapIntoScriptTag(false);
-            cmTag.setOutStringVar("cmStr");
-            cmTag.setCart(cart);
-            cmTag.setExplicitList(cartLines);
-            cmScript = cmTag.getTagJs();
-        } catch (SkipTagException ignore) {
-            // ignore exception, cmScript is already null
-        }
-        if (cmScript != null && cmScript.trim().isEmpty()) {
-            cmScript = null;
-        }
-        responseData.setCoremetricsScript(cmScript);
     }
 
     private static void populateECouponsStatus(AddToCartResponseData responseData, FDUserI user, FDCartModel cart, List<FDCartLineI> cartLinesToAdd, HttpSession session) {
@@ -448,7 +387,7 @@ public class CartOperations {
                     // add a new orderline for rest of the difference, if any
                     if (deltaQty > 0) {
                         FDCartLineI newLine = null;
-                        if (isProductGroupable(fdProduct, salesUnit)) {
+                        if (isProductGroupable(product, salesUnit)) {
                             newLine = findGroupingOrderline(cart.getOrderLines(), cartLine.getProductName(), cartLine.getConfiguration().getOptions(), cartLine.getSalesUnit());
                         }
                         if (newLine == null) {
@@ -580,6 +519,9 @@ public class CartOperations {
     }
 
     public static void saveUserAndCart(FDUserI user, FDCartModel cart) {
+    	saveUserAndCart(user,cart,false);
+    }
+    public static void saveUserAndCart(FDUserI user, FDCartModel cart, boolean isDlvPassCart) {
 
         synchronized (cart) {
             try {
@@ -597,7 +539,7 @@ public class CartOperations {
                 QuickShopHelper.emptyQuickShopCaches(user.getIdentity().getErpCustomerPK());
             }
 
-            if (!(cart instanceof FDModifyCartModel)) {
+            if (!(cart instanceof FDModifyCartModel) && !isDlvPassCart) {
                 try {
                     if (user instanceof FDUser) {
                         FDCustomerManager.storeUser((FDUser) user);
@@ -897,7 +839,7 @@ public class CartOperations {
 
         FDCartLineI theCartLine = null;
 
-        if (isProductGroupable(product, salesUnit)) {
+        if (isProductGroupable(prodNode, salesUnit)) {
             theCartLine = findGroupingOrderline(cartLinesToAdd, prodNode.getContentName(), item.getConfiguration(), salesUnit.getName());
             if (theCartLine == null) {
                 theCartLine = findGroupingOrderline(cart.getOrderLines(), prodNode.getContentName(), item.getConfiguration(), salesUnit.getName());
@@ -1252,8 +1194,8 @@ public class CartOperations {
         return groupOrderline;
     }
 
-    public static boolean isProductGroupable(FDProduct product, FDSalesUnit salesUnit) {
-        return salesUnit != null && "EA".equalsIgnoreCase(salesUnit.getName()) && (product != null && (product.isPricedByEa() || product.isPricedByLb()));
+    public static boolean isProductGroupable(ProductModel product, FDSalesUnit salesUnit) {
+        return product != null && salesUnit != null && !product.isSoldBySalesUnits() && !"LB".equalsIgnoreCase(salesUnit.getName());
     }
 
     public static List<FDCartLineI> removeUnavailableCartLines(final FDCartModel cart, final FDUserI fdUser) {

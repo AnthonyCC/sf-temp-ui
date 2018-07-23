@@ -498,7 +498,6 @@
 				<% if (isTransactionalRow) { %>
 					<form id='<%= "DYNROW_form" + TX_FORM_NAME+"_"+catId %>' class="DYNROW_form <%= TX_FORM_NAME+"_"+catId %>" name="<%= TX_FORM_NAME %>" method="post" action="<%= base_url %>">
 						<fd:AddToCartPending id='<%= "DYNROW_form" + TX_FORM_NAME+"_"+catId %>'/>
-						<fd:CmFieldDecorator/>
 						<input name="catId" type="hidden" value="<%= (showInContextOf == null)?catId:showInContextOf %>" />
 				<% } %>
 				

@@ -9,4 +9,4 @@ FDSessionUser modifyOrderUser = (FDSessionUser) session.getAttribute(SessionName
 if (modifyOrderUser != null && FDUserUtil.getModifyingOrder(modifyOrderUser) != null) { %>
 	<jwr:style src="/modifyorder.css" media="all" />
 <% } %>
-<fd:CmInit/>
+

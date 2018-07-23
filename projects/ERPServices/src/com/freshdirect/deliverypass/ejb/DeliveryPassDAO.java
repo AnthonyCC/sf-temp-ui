@@ -123,7 +123,7 @@ public class DeliveryPassDAO {
 	
 	private final static String GET_DELIVERY_PASS_BY_CUST_AND_ESTORE=" SELECT ID, CUSTOMER_ID, TYPE, DESCRIPTION, PURCHASE_DATE, AMOUNT, PURCHASE_ORDER_ID, TOTAL_NUM_DLVS, REM_NUM_DLVS, ORG_EXP_DATE, EXP_DATE, USAGE_CNT, NUM_OF_CREDITS, STATUS, ACTIVATION_DATE from CUST.DELIVERY_PASS dp, cust.DLV_PASS_TYPE DPT "+
 				"where CUSTOMER_ID =? AND DPT.SKU_CODE=DP.TYPE and (DPT.E_STORES is null or DPT.E_STORES LIKE '%?%') ORDER BY PURCHASE_DATE DESC";
-
+	
 	public static List<DeliveryPassModel> getDeliveryPasses(Connection conn, String customerPk, EnumEStoreId eStoreId) throws SQLException {
 		List<DeliveryPassModel> deliveryPasses = null;
 		PreparedStatement ps = null;

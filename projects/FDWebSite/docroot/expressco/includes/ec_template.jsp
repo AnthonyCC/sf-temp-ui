@@ -34,6 +34,5 @@
     <tmpl:get name="jsmodules" />
     <!-- leastPrioritizeJs, they are most likely not needed on page load and/or async-->
     <tmpl:get name="leastPrioritizeJs"/>
-    <%@ include file="/shared/template/includes/i_body_end.jspf" %>
   </body>
 </html>

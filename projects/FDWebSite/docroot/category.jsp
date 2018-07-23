@@ -242,11 +242,8 @@ final int W_CATEGORY_NO_LEFT_NAV = 765;
 		</tmpl:put>
 
 		<tmpl:put name='content' direct='true'>
-			<fd:CmPageView wrapIntoScriptTag="true" currentFolder="<%=currentFolder%>"/>
 			<%
-			if(layoutType == EnumLayoutType.GROCERY_PRODUCT.getId()){
-				%><fd:CmProductView quickbuy="false" wrapIntoScriptTag="true" productModel="<%=prodModel%>"/> <%
-			}
+			
 		// TODO duplicated -- boolean virtualGrocerySpecified = request.getParameter("groceryVirtual")!=null;
 		//if (layoutType==EnumLayoutType.FEATURED_ALL.getId()) layoutType=19;
 		boolean noCache =  (EnumLayoutType.GROCERY_PRODUCT.getId()==layoutType

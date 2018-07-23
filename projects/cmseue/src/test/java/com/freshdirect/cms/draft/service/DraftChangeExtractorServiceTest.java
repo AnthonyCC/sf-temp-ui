@@ -171,7 +171,7 @@ public class DraftChangeExtractorServiceTest {
         changedAttributes.put(ContentTypes.Product.EXCLUDED_EBT_PAYMENT, null);
         changedAttributes.put(ContentTypes.Product.PROD_DESCR, null);
         changedAttributes.put(ContentTypes.Product.skus, null);
-        changedAttributes.put(ContentTypes.Product.brands, Collections.emptyList());
+        changedAttributes.put(ContentTypes.Product.brands, null);
 
         Map<ContentKey, Map<Attribute, Object>> originalNodes = new HashMap<ContentKey, Map<Attribute, Object>>();
         originalNodes.put(productKey, originalAttributes);
@@ -199,5 +199,30 @@ public class DraftChangeExtractorServiceTest {
             Assert.assertEquals(productKey.toString(), draftChange.getContentKey());
             Assert.assertEquals(null, draftChange.getValue());
         }
+    }
+
+    @Test
+    public void testExtractMultiRelationshipValueWithEmptyValue() {
+        ContentKey productKey = ContentKeyFactory.get(ContentType.Product, "testProduct");
+        Map<Attribute, Object> originalAttributes = new HashMap<Attribute, Object>();
+        originalAttributes.put(ContentTypes.Product.skus, Arrays.asList(ContentKeyFactory.get(ContentType.Sku, "sku1"), ContentKeyFactory.get(ContentType.Sku, "sku2")));
+
+        Map<ContentKey, Map<Attribute, Object>> originalNodes = new HashMap<ContentKey, Map<Attribute, Object>>();
+        originalNodes.put(productKey, originalAttributes);
+
+        Map<Attribute, Object> changedAttributes = new HashMap<Attribute, Object>();
+        changedAttributes.put(ContentTypes.Product.skus, Collections.emptyList());
+
+        Map<ContentKey, Map<Attribute, Object>> changedNodes = new HashMap<ContentKey, Map<Attribute, Object>>();
+        changedNodes.put(productKey, changedAttributes);
+
+        Mockito.when(contentTypeInfoService.findAttributeByName(ContentType.Product, "skus"))
+            .thenReturn(Optional.fromNullable(ContentTypes.Product.skus));
+
+        List<DraftChange> draftChanges = underTest.extractChangesFromRequest(changedNodes, originalNodes, new DraftContext(1L, "test-draft"), "testUser");
+
+        Assert.assertEquals(1, draftChanges.size());
+        Assert.assertEquals(productKey.toString(), draftChanges.get(0).getContentKey());
+        Assert.assertEquals(DraftApplicatorService.EMPTY_LIST_TOKEN, draftChanges.get(0).getValue());
     }
 }

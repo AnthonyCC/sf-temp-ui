@@ -2,6 +2,7 @@ package com.freshdirect.fdstore.customer;
 
 import java.util.Date;
 
+import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.customer.EnumComplaintLineMethod;
 import com.freshdirect.customer.EnumComplaintStatus;
 import com.freshdirect.customer.ErpCustomerCreditModel;
@@ -10,7 +11,9 @@ import com.freshdirect.customer.EnumSaleType;
 
 /**@author ekracoff*/
 public class FDCustomerCreditModel implements java.io.Serializable {
-	private ErpCustomerCreditModel customerCreditModel =  new ErpCustomerCreditModel();
+
+	private static final long serialVersionUID = -2366198348326703440L;
+	private ErpCustomerCreditModel customerCreditModel;
 	private String saleId;
 	private String action;
 	private EnumComplaintStatus status;
@@ -20,6 +23,13 @@ public class FDCustomerCreditModel implements java.io.Serializable {
 	private EnumSaleType orderType;
 	private String refSaleId;
 	
+	public FDCustomerCreditModel() {
+		customerCreditModel =  new ErpCustomerCreditModel();
+	}
+
+	public FDCustomerCreditModel(ErpAffiliate affiliate) {
+		customerCreditModel = new ErpCustomerCreditModel(null, "", 0.0, affiliate);
+	}
 	public double getAmount(){
 		return customerCreditModel.getAmount();
 	}

@@ -3,6 +3,7 @@ package com.freshdirect.mobileapi.controller;
 import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -74,7 +75,7 @@ public class SearchController extends BaseController {
      * and will overwrite any value from query string.
      */
     protected ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model, String action, SessionUser user)
-            throws FDException, ServiceException, NoSessionException, JsonException {
+            throws FDException, ServiceException, NoSessionException, JsonException, UnsupportedEncodingException {
         if (user == null) {
             user = fakeUser(request.getSession());
         }
@@ -90,7 +91,7 @@ public class SearchController extends BaseController {
     }
 
     private ModelAndView search(HttpServletRequest request, HttpServletResponse response, ModelAndView model, SessionUser user)
-            throws FDException, ServiceException, NoSessionException, JsonException {
+            throws FDException, ServiceException, NoSessionException, JsonException, UnsupportedEncodingException {
 
         if (isExtraResponseRequested(request)) {
             BrowsePageResponse data = BrowseUtil.getBrowseResponse(user, request);
@@ -275,7 +276,7 @@ public class SearchController extends BaseController {
     }
 
     private ModelAndView searchEX(HttpServletRequest request, HttpServletResponse response, ModelAndView model, SessionUser user)
-            throws FDException, ServiceException, NoSessionException, JsonException {
+            throws FDException, ServiceException, NoSessionException, JsonException, UnsupportedEncodingException {
         // Default values retrieved from GET request
         String searchTerm = request.getParameter("searchTerm");
         String upc = request.getParameter("upc");

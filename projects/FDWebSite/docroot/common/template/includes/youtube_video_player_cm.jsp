@@ -22,11 +22,8 @@ if(videoHeight == null) videoHeight="90%";
     <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
     <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 	<%if(isPopup !=null) { %>
-		<fd:CmInit/>
 		<!-- Load the swfobject library-->
 		<fd:javascript src="/assets/javascript/swfobject.js" />
-		<!-- Load the tracking js -->
-		<fd:javascript src="/assets/javascript/youtube-tracking-cm.js"/>
 	<%} %>
 	
 	<fd:YoutubeVideoTag attrName='<%= videoId %>' title='<%=title%>'/>
@@ -44,12 +41,6 @@ if(videoHeight == null) videoHeight="90%";
 	%>
 
 	<script type="text/javascript"> 
-	
-	  if(!window.logEvent){
-		  var logEvent = function(player, video, state){
-			  <fd:CmElement elementCategory="video" />
-		  };
-	  }
 	
 	  if(VIDEOS==null){
 	  	var VIDEOS = {};

@@ -6,7 +6,6 @@ var FreshDirect = FreshDirect || {};
   
   var $ = fd.libs.$;
   var WIDGET = fd.modules.common.widget;
-  var cm = fd.components.coremetrics;
 
   var filtertags = Object.create(WIDGET,{
     signal:{
@@ -37,9 +36,6 @@ var FreshDirect = FreshDirect || {};
         }
 
         clicked.remove();
-        if (cm) {
-          cm.setEvent('noevent', true);
-        }
 
         parent.trigger('filtertags-change');
       }

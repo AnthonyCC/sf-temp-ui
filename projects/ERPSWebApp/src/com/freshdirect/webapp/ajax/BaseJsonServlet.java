@@ -3,6 +3,7 @@ package com.freshdirect.webapp.ajax;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -54,7 +55,7 @@ public abstract class BaseJsonServlet extends HttpServlet {
 		}
 	}	
 
-	protected void doGet( HttpServletRequest request, HttpServletResponse response, FDUserI user ) throws HttpErrorResponse {
+	protected void doGet( HttpServletRequest request, HttpServletResponse response, FDUserI user ) throws HttpErrorResponse, UnsupportedEncodingException {
 		returnHttpError( 405 );	// 405 Method Not Allowed
 	}
 	
@@ -118,7 +119,7 @@ public abstract class BaseJsonServlet extends HttpServlet {
 		}
 	}
 
-	protected void doPost( HttpServletRequest request, HttpServletResponse response, FDUserI user ) throws HttpErrorResponse {
+	protected void doPost( HttpServletRequest request, HttpServletResponse response, FDUserI user ) throws HttpErrorResponse, UnsupportedEncodingException {
 		returnHttpError( 405 );	// 405 Method Not Allowed
 	}
 	

@@ -153,8 +153,6 @@ String productFullName = productNode.getFullName().replaceAll("<[^>]*>", "");
 		<meta property="og:image" content="https://www.freshdirect.com/media_stat/images/logos/FD-logo-300.jpg"/>
 </tmpl:put>
 <tmpl:put name='content' direct='true'>
-	<fd:CmPageView wrapIntoScriptTag="true" productModel="<%=productNode%>"/>
-	<fd:CmProductView quickbuy="false" wrapIntoScriptTag="true" productModel="<%=productNode%>"/>
 	<%
 		SkuModel _dfltSku =null;
 		FDProduct _fdprod =null;

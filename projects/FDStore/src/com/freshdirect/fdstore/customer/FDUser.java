@@ -700,6 +700,7 @@ public class FDUser extends ModelSupport implements FDUserI {
         this.getShoppingCart().setDlvPassExtn(null);
         this.getShoppingCart().setDlvPromotionApplied(false);
         this.getShoppingCart().setDeliveryPassCount();
+		this.getDlvPassCart().setDeliveryPassCount();
         if (this.getShoppingCart().isDlvPassApplicableByCartLines() || (this.isDlvPassActive()) || (this.applyFreeTrailOptinBasedDP()) ||checkExpDlvPassForOrderMod() ) {
         	this.getShoppingCart().setDlvPassApplied(true);
         }else {
@@ -3336,11 +3337,6 @@ public class FDUser extends ModelSupport implements FDUserI {
     }
 
     @Override
-    public void setExternalCampaign(ExternalCampaign externalCampaign) {
-        this.externalCampaign = externalCampaign;
-    }
-
-    @Override
     public ExternalCampaign getExternalCampaign() {
         return externalCampaign;
     }
@@ -3461,13 +3457,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     public boolean isPaymentechEnabled() {
         if (FDStoreProperties.isPaymentechGatewayEnabled())
             return true;
-        try {
-            if (getIdentity() != null && !StringUtil.isEmpty(getIdentity().getErpCustomerPK())) {
-                return FDCustomerManager.isFeatureEnabled(getIdentity().getErpCustomerPK(), EnumSiteFeature.PAYMENTECH_GATEWAY);
-            }
-        } catch (FDResourceException e) {
-            e.printStackTrace();
-        }
+       
         return false;
     }
 

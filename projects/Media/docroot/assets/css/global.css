@@ -1935,13 +1935,6 @@ div.control, div.slotRow, div.time {
 		margin: 0;
 		padding: 0;
 	}
-	
-/* for coremetrics */
-.coremetrics-iframe {
-	position: absolute;
-	top: -9999em;
-	left: -9999em;
-}
 
 /* jQuery UI css overrides */
 	.ui-dialog .ui-widget-header,  .ui-dialog .ui-widget-header .ui-state-hover {

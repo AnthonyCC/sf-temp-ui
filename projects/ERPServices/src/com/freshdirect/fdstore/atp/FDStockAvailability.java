@@ -211,4 +211,25 @@ public class FDStockAvailability implements Serializable, FDAvailabilityI {
 		return avQty;
 
 	}
+	// below methods are for SF 2.0 jason parsers
+	public ErpInventoryModel getInventory() {
+		return inventory;
+	}
+
+	public ErpInventoryModel getInventoryExport() {
+		return inventoryExport;
+	}
+
+	public double getReqQty() {
+		return reqQty;
+	}
+
+	public double getMinQty() {
+		return minQty;
+	}
+
+	public double getQtyInc() {
+		return qtyInc;
+	}
+	
 }

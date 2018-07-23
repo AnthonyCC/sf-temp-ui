@@ -216,7 +216,6 @@ var FreshDirect = FreshDirect || {};
     var timeslot = timeslotSelector.timeSlots.timeSlots.filter(function (timeslot) {
       return timeslot.id === e.currentTarget.firstChild.firstChild.value;
     });
-    fd.components.coremetrics.sendTimeslotSelectingInfo(timeslot[0]);
     fd.common.dispatcher.signal('selectedTimeslotId', e.currentTarget.firstChild.firstChild.value);
   });
 

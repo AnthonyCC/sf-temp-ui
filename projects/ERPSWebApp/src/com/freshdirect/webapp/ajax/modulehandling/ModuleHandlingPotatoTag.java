@@ -8,11 +8,11 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.coremetrics.util.CoremetricsUtil;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.filtering.InvalidFilteringArgumentException;
 import com.freshdirect.webapp.ajax.modulehandling.data.ModuleContainerData;
+import com.freshdirect.webapp.ajax.modulehandling.service.ModuleContainerIdentificationService;
 import com.freshdirect.webapp.ajax.modulehandling.service.ModuleHandlingService;
 import com.freshdirect.webapp.soy.SoyTemplateEngine;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -50,7 +50,7 @@ public class ModuleHandlingPotatoTag extends SimpleTagSupport {
 
         if (moduleContainerId == null || moduleContainerId == "") {
             LOGGER.info("ModuleContainerId was empty, loading default moduleContainer based on user");
-            moduleContainerId = CoremetricsUtil.defaultService().getCustomerTypeByOrderCount(user);
+            moduleContainerId = ModuleContainerIdentificationService.defaultService().getContainerIdByCustomerOrderCount(user);
         }
 
         LOGGER.info("Loading module container: " + moduleContainerId + " for user: " + user.getUserId() + " with cookie: " + user.getCookie());

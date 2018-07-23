@@ -14,7 +14,6 @@
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body>
-<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 
 	<%-- content lands here --%>
 	<tmpl:get name='content'/>

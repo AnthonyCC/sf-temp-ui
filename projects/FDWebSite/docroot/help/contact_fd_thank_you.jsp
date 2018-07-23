@@ -81,6 +81,5 @@ if ("true".equalsIgnoreCase(overlay)) {
 			</td>		
 		</tr>
 	</table><br><br>
-	<fd:CmConversionEvent eventId="email" wrapIntoScriptTag="true"/>
 </tmpl:put>
 </tmpl:insert>

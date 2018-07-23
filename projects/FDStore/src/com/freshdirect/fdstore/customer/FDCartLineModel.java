@@ -106,7 +106,8 @@ public class FDCartLineModel extends AbstractCartLine {
 		this.orderLine.setCartlineId(cartLineId);
 	}
 	
-	public ErpOrderLineModel buildErpOrderLines(int baseLineNumber) throws FDResourceException, FDInvalidConfigurationException {
+	@Override
+    public ErpOrderLineModel buildErpOrderLines(int baseLineNumber) throws FDResourceException, FDInvalidConfigurationException {
 		this.refreshConfiguration();
 		ErpOrderLineModel ol = (ErpOrderLineModel) this.orderLine.deepCopy();
 		
@@ -160,11 +161,13 @@ public class FDCartLineModel extends AbstractCartLine {
 		return ol;
 	}
 
-	public int getErpOrderLineSize() {
+	@Override
+    public int getErpOrderLineSize() {
 		return 1;
 	}
 
-	public FDCartLineI createCopy() {
+	@Override
+    public FDCartLineI createCopy() {
 		FDCartLineModel newLine = new FDCartLineModel(this.getSku(), this
 				.getProductRef().lookupProductModel(), this.getConfiguration(), this.getVariantId(), this.getUserContext());
 		newLine.setRecipeSourceId(this.getRecipeSourceId());
@@ -189,9 +192,6 @@ public class FDCartLineModel extends AbstractCartLine {
 			into.setCartonNumber(getCartonNumber());
 			into.setConfiguration(getConfiguration());
 			into.setConfigurationDesc(getConfigurationDesc());
-			into.setCoremetricsPageContentHierarchy(getCoremetricsPageContentHierarchy());
-			into.setCoremetricsPageId(getCoremetricsPageId());
-			into.setCoremetricsVirtualCategory(getCoremetricsVirtualCategory());
 //			into.setCouponApplied()
 			into.setCouponDiscount(getCouponDiscount());
 			into.setCouponStatus(getCouponStatus());
@@ -246,7 +246,8 @@ public class FDCartLineModel extends AbstractCartLine {
 	 *  
 	 *  @param source the part of the site this event was generated from.
 	 */
-	public void setSource(EnumEventSource source) {
+	@Override
+    public void setSource(EnumEventSource source) {
 		this.source = source;
 	}
 	
@@ -255,73 +256,89 @@ public class FDCartLineModel extends AbstractCartLine {
 	 *  
 	 *  @return the part of the site this event was generated from.
 	 */
-	public EnumEventSource getSource() {
+	@Override
+    public EnumEventSource getSource() {
 		return source;
 	}
 
-	public void setErpOrderLineSource(EnumEventSource source){
+	@Override
+    public void setErpOrderLineSource(EnumEventSource source){
 	this.orderLine.setSource(source);
 	}
 	
-	public EnumEventSource getErpOrderLineSource(){
+	@Override
+    public EnumEventSource getErpOrderLineSource(){
 		return this.orderLine.getSource();
 	}
 	
-	public void setSavingsId(String savingsId){
+	@Override
+    public void setSavingsId(String savingsId){
 		this.orderLine.setSavingsId(savingsId);
 	}
 	
-	public String getSavingsId(){
+	@Override
+    public String getSavingsId(){
 		return this.orderLine.getSavingsId();
 	}
 	
-	public void removeLineItemDiscount(){
+	@Override
+    public void removeLineItemDiscount(){
 		this.setDiscountAmount(0.0);
 		this.setDiscount(null);
 	}
 
-	public boolean hasDiscount(String promoCode) {
+	@Override
+    public boolean hasDiscount(String promoCode) {
 		if(this.getDiscount() != null && this.getDiscount().getPromotionCode().equals(promoCode)) {
 			return true;	
 		}
 		return false;
 	}
 
-	public String getCartonNumber() {
+	@Override
+    public String getCartonNumber() {
 		// TODO Auto-generated method stub
 		return cartonNumber;
 	}
 
-	public void setCartonNumber(String no) {
+	@Override
+    public void setCartonNumber(String no) {
 		// TODO Auto-generated method stub
 		this.cartonNumber=no;
 	}
 
-	public FDGroup getOriginalGroup() {
+	@Override
+    public FDGroup getOriginalGroup() {
 		return this.orderLine.getFDGroup();
 	}
 
-	public boolean isAddedFromSearch() {
+	@Override
+    public boolean isAddedFromSearch() {
 		return orderLine.isAddedFromSearch();
 	}
 
-	public void setAddedFromSearch(boolean addedFromSearch) {
+	@Override
+    public void setAddedFromSearch(boolean addedFromSearch) {
 		orderLine.setAddedFromSearch(addedFromSearch);
 	}
 
-	public EnumTaxationType getTaxationType() {
+	@Override
+    public EnumTaxationType getTaxationType() {
 		return orderLine.getTaxationType();
 	}
 
-	public void setTaxationType(EnumTaxationType taxationType) {
+	@Override
+    public void setTaxationType(EnumTaxationType taxationType) {
 		orderLine.setTaxationType(taxationType);
 	}
 	
-	public void setAddedFrom(EnumATCContext atcContext) {
+	@Override
+    public void setAddedFrom(EnumATCContext atcContext) {
 		orderLine.setAddedFrom(atcContext);
 	}
 	
-	public EnumATCContext getAddedFrom(){
+	@Override
+    public EnumATCContext getAddedFrom(){
 		return orderLine.getAddedFrom();
 	}
 

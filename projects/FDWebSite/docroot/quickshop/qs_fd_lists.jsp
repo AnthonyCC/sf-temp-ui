@@ -40,7 +40,7 @@
     </tmpl:put>
 
     <tmpl:put name='ymal'>
-        <div id="qs-ymal" data-cmeventsource="qs_ymal"></div>
+        <div id="qs-ymal" data-eventsource="qs_ymal"></div>
     </tmpl:put>
 
     <tmpl:put name='listactions'>
@@ -58,5 +58,5 @@
         <div id="listheader" class="qs-list-header"></div>
     </tmpl:put>
 
-    <tmpl:put name='content' direct='true'><div id="productlist" class="" data-cmeventsource="qs_fdLists"></div><div id="productlistHeader" class=""></div></tmpl:put>
+    <tmpl:put name='content' direct='true'><div id="productlist" class="" data-eventsource="qs_fdLists"></div><div id="productlistHeader" class=""></div></tmpl:put>
 </tmpl:insert>

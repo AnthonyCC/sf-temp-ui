@@ -13,7 +13,9 @@ public class DeliveryPassProductData {
 	private String description;
 	private boolean selected;
 	private ProductData product;
-
+	private boolean isMidWeekSku;
+	private Integer duration; //no:of days for unlimited pass to expire.
+	
 	public String getId() {
 		return id;
 	}
@@ -76,6 +78,22 @@ public class DeliveryPassProductData {
 
 	public void setProduct(ProductData product) {
 		this.product = product;
+	}
+
+	public boolean isMidWeekSku() {
+		return isMidWeekSku;
+	}
+
+	public void setMidWeekSku(boolean isMidWeekSku) {
+		this.isMidWeekSku = isMidWeekSku;
+	}
+
+	public Integer getDuration() {
+		return duration;
+	}
+
+	public void setDuration(Integer duration) {
+		this.duration = duration;
 	}
 
 }

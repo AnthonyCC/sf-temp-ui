@@ -20,19 +20,19 @@ var FreshDirect = FreshDirect || {};
       value:function(value){
         var siteFeature = value.siteFeature || value.recommenderResult.siteFeature || '',
             isTabbedSitefeature = $('[data-component="tabbedRecommender"] [data-sitefeature="'+siteFeature+'"]').length > 0;
-        var cmEventSource = value.cmEventSource || value.recommenderResult.cmEventSource || '';
+        var eventSource = value.eventSource || value.recommenderResult.eventSource || '';
 
         if(isTabbedSitefeature) { 
           /* update tab when prop changes. data values must be updated, they're used in selectTab() */   
           var $selectedTab = $('[data-component="tabbedRecommender"] [data-component="tabitem"].selected'),
-              $tabPanel = $('.tab-container.light-carousel[data-cmeventsource]');
+              $tabPanel = $('.tab-container.light-carousel[data-eventsource]');
 
           $selectedTab.attr('data-tabname', value.tabTitle || $selectedTab.attr('data-tabname'));  
           $selectedTab.data('tabname', $selectedTab.attr('data-tabname'));   
           $selectedTab.attr('data-sitefeature', siteFeature || $selectedTab.attr('data-sitefeature'));   
           $selectedTab.data('sitefeature', $selectedTab.attr('data-sitefeature'));
-          $tabPanel.attr('data-cmeventsource', cmEventSource || $tabPanel.attr('data-cmeventsource'));
-          $tabPanel.data('cmeventsource', $selectedTab.attr('data-cmeventsource'));
+          $tabPanel.attr('data-eventsource', eventSource || $tabPanel.attr('data-eventsource'));
+          $tabPanel.data('eventsource', $selectedTab.attr('data-eventsource'));
           $selectedTab.html(value.tabTitle);
         }
         $('[data-component="tabbedRecommender"] [data-component="tabpanel"]').css('min-height',0).html(this.template(value));
@@ -59,7 +59,7 @@ var FreshDirect = FreshDirect || {};
         if (siteFeature.trim()!=='') {
           recommender = clickedTab.parents('[data-component="tabbedRecommender"]').first();
           tabPanel = recommender.find('[data-component="tabpanel"]');
-          tabPanel.attr('data-cmSiteFeature', siteFeature);
+          tabPanel.attr('data-siteFeature', siteFeature);
           tabPanel.css('min-height', tabPanel.height());
           tabPanel.html('');
           url = recommender.data('apiendpoint') || APIURL;

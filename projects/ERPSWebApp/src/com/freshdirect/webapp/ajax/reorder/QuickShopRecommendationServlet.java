@@ -30,7 +30,6 @@ public class QuickShopRecommendationServlet extends RecommenderServlet {
 		return FDUserI.GUEST;
 	}
 	
-
 	@Override
 	protected boolean synchronizeOnUser() {
 		return false;

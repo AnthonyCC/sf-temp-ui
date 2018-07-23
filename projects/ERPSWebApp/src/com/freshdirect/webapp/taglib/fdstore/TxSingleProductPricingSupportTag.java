@@ -252,7 +252,7 @@ public class TxSingleProductPricingSupportTag extends BodyTagSupport {
 					for (int i = 0; i < grpPrices.length; i++) {
 						matPriceList.add(grpPrices[i]);
 					}
-					matPrices = (MaterialPrice[]) matPriceList.toArray(new MaterialPrice[0]);
+					matPrices = matPriceList.toArray(new MaterialPrice[0]);
 				}
 			}
 
@@ -356,7 +356,6 @@ public class TxSingleProductPricingSupportTag extends BodyTagSupport {
 		buf.append("  			" + namespace + ".updateStatus(respJSON.statusHtml);\n");
 		buf.append("  			" + namespace + ".updateCouponStatus(respJSON.couponStatusHtml);\n");
 		buf.append("  			updateYourCartPanel();\n");
-		buf.append("  			fdCoremetrics.trackAddToCartEvent();\n");
 		buf.append("  		},\n");
 		buf.append("  		failure: function(o) {\n");
 		buf.append("  			" + namespace + ".updateStatus('Connection error');\n");

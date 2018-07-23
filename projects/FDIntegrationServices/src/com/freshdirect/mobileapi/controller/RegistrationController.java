@@ -556,7 +556,6 @@ public class RegistrationController extends BaseController implements SystemMess
 		}*/
 		responseMessage.setBrowseEnabled(MobileApiProperties.isBrowseEnabled());
 		
-		//Added during Mobile Coremetrics Implementation
 		responseMessage.setSelectedServiceType(user.getSelectedServiceType() != null ? user.getSelectedServiceType().toString() : "");
 		responseMessage.setCohort(user.getCohort());
 		responseMessage.setTotalOrderCount(user.getTotalOrderCount());

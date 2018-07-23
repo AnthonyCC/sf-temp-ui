@@ -30,7 +30,6 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mail.EmailUtil;
 import com.freshdirect.webapp.ajax.location.LocationHandlerService;
-import com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag;
 import com.freshdirect.webapp.taglib.fdstore.AddressUtil;
 import com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -171,7 +170,6 @@ public class LocationHandlerTag extends SimpleTagSupport {
                 handleNewServiceResult(FDDeliveryManager.getInstance().getDeliveryServicesByAddress(address), user);
                 user.setAddress(address);
                 handleNewAddressSet(user);
-                CmRegistrationTag.setPendingAddressChangeEvent(ctx.getSession()); // send CM tag after reload
             } catch (FDInvalidAddressException e) {
                 result.addError(true, EnumUserInfoName.DLV_CANT_GEOCODE.getCode(),
                         MessageFormat.format(SystemMessageList.MSG_CANT_GEOCODE_ZIP_CHECK, new Object[] { UserUtil.getCustomerServiceContact(request) }));

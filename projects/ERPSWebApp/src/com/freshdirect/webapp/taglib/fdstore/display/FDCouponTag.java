@@ -11,7 +11,6 @@ import javax.servlet.jsp.PageContext;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ecoupon.EnumCouponDisplayStatus;
 import com.freshdirect.fdstore.ecoupon.EnumCouponOfferType;
@@ -20,10 +19,6 @@ import com.freshdirect.fdstore.ecoupon.FDCouponProductInfo;
 import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.webapp.taglib.coremetrics.CmContextException;
-import com.freshdirect.webapp.taglib.coremetrics.CmElementTag;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class FDCouponTag extends BodyTagSupport {
@@ -386,7 +381,6 @@ public class FDCouponTag extends BodyTagSupport {
     			}
     		buf.append("\">");
     					
-		    	/* fd coupon clip check box, requires pageCOntext for coremetrics tag */
 		    	if (showClipBox) {
 		    		buf.append(getClipBoxHtml(pageContext));
 		    	}
@@ -480,8 +474,6 @@ public class FDCouponTag extends BodyTagSupport {
 	public String getClipBoxHtml(PageContext pageContext) {
 		
     	StringBuilder buf = new StringBuilder();
-    	boolean isCmRequired=false;
-		String cmJs = null;
     	buf.append("<span");
     		buf.append(" name=\""+this.getName()+"_cbCont"+"\"");
     		buf.append(" class=\"fdCoupon_cbCont");
@@ -501,16 +493,7 @@ public class FDCouponTag extends BodyTagSupport {
 			    		buf.append(" disabled=\"disabled\"");
 			    	} else {
 			    		if (this.getCoupon() != null) {
-			    			buf.append(" onclick=\"");	
-		    				if (pageContext != null) {
-		    					cmJs = getCmJsContent(pageContext);
-		    				} else {
-		    					LOGGER.debug("PageContext not found, skipping CoreMetrics Tag.");
-		    				}
-		    				if(null !=cmJs && !"".equals(cmJs.trim())){				    			
-				    			isCmRequired=true;
-		    					buf.append("ecouponClipEvent_").append(skuCode).append("(),");
-			    			}
+                buf.append(" onclick=\"");
 			    			buf.append("fdCouponClip("+this.getCoupon().getCouponId()+")\"");
 			    		}
 			    	}
@@ -518,50 +501,9 @@ public class FDCouponTag extends BodyTagSupport {
 		    	buf.append(" />");
 
 	    buf.append("</span>");
-    	if(isCmRequired){
-    		buf.append("<script type=\"text/javascript\">");
-    		buf.append("var ecouponClipEvent_"+skuCode).append("="+cmJs);
-    		buf.append("</script>");
-    	}
     	return buf.toString();
     }
 
-	private String getCmJsContent(PageContext pageContext) {
-		String cmJs =null;
-		if(null!= skuCode && !"".equals(skuCode)){
-			if(null ==catId || "".equals(catId)){
-				ProductModel pm =null;
-				try {
-					pm = ContentFactory.getInstance().getProduct(skuCode);
-					catId=pm.getParentId();
-				} catch (FDSkuNotFoundException e) {
-				}
-				
-			}
-			CmElementTag cmElementTag = new CmElementTag();
-			cmElementTag.setJspContext(pageContext);
-			try{
-				cmElementTag.checkContext();
-				cmElementTag.setWrapIntoFunction(true);
-			}catch(CmContextException ce){
-				cmElementTag.setWrapIntoScriptTag(true);
-			}
-//			cmElementTag.setWrapIntoFunction(true);
-			cmElementTag.setElementId("clipped");
-			cmElementTag.setElementCategory("ecoupon");
-			cmElementTag.setSiteFeature(catId);
-			cmElementTag.setSkuCode(skuCode);	
-			cmElementTag.setCouponOfferType(null !=this.getCoupon().getOfferType()?this.getCoupon().getOfferType().getDescription():"");
-			
-			try {
-				cmJs = cmElementTag.getTagOutput();
-			} catch (Exception e) {
-				LOGGER.warn("Exception while coupon tagging: "+e.getMessage());
-			}
-		}
-		return cmJs;
-	}
-    
     public String getImageHtml() {
     	StringBuilder buf = new StringBuilder();
     	

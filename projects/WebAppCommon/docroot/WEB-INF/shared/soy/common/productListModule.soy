@@ -3,6 +3,8 @@
 /**
  * @param moduleData
  * @param data
+ * @param? abFeatures
+ * @param? mobWeb
  */
 {template .productListModule}
 {if ($data.products and length($data.products) > 0) or ($data.sectionDataContainer) or ($data.adProducts and length($data.adProducts)>0)}
@@ -20,19 +22,23 @@
   			{foreach $item in $data.products}
   				{call common.transactionalGridItem}
   					{param extraClass:'carouselTransactionalItem' /}
-            		{param cmEventSource: $moduleData.cmEventSource /}
-            		{param moduleData: $moduleData /}
+            {param eventSource: $moduleData.eventSource /}
+            {param moduleData: $moduleData /}
   					{param item: $item /}
   					{param itemIndex: index($item) /}
+						{param mobWeb:$mobWeb /}
+						{param abFeatures:$abFeatures /}
   				{/call}
   			{/foreach}
   			{foreach $item in $data.adProducts}
   				{call common.transactionalGridItem}
   					{param extraClass:'carouselTransactionalItem noFeaturedHeaderBanner' /}
-            		{param cmEventSource: $moduleData.cmEventSource /}
-            		{param moduleData: $moduleData /}
+						{param eventSource: $moduleData.eventSource /}
+						{param moduleData: $moduleData /}
   					{param item: $item /}
   					{param itemIndex: index($item) /}
+						{param mobWeb:$mobWeb /}
+						{param abFeatures:$abFeatures /}
   				{/call}
   			{/foreach}
   		</ul>
@@ -48,6 +54,8 @@
             {param usePopularCategoriesLayout:$data.sectionDataContainer.usePopularCategoriesLayout /}
             {param filterLabels:$data.sectionDataContainer.filterLabels.filterLabels /}
             {param itemPerLine:4 /}
+						{param mobWeb:$mobWeb /}
+						{param abFeatures:$abFeatures /}
           {/call}
         {/foreach}
       </div>

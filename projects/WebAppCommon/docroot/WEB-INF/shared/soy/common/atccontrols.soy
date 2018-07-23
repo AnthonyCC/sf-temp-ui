@@ -9,7 +9,7 @@
  * @param? freeSamplePromoProduct free sample product
  * @param? uid unique id
  * @param? cssbuttons
- * @param? cmEventSource
+ * @param? eventSource
  */
 {template .atcControls autoescape="false"}
 {if $salesUnit and length($salesUnit)}
@@ -23,7 +23,7 @@
         {if not $removeSalesUnit}
             <input type="hidden" name="salesUnit" value="{$salesUnit[0].id}" data-component="productData" data-productdata-name="salesUnit">
         {/if}
-        {if $freeSamplePromoProduct and ($cmEventSource and (strContains($cmEventSource,'ps_caraousal') or strContains($cmEventSource,'ps_carousel')))}
+        {if $freeSamplePromoProduct and ($eventSource and (strContains($eventSource,'ps_caraousal') or strContains($eventSource,'ps_carousel')))}
             <input type="hidden" value="1" data-productdata-name="quantity" data-component="productData">
             <div class="product-sample-qty-one">Quantity: 1</div> 
         {else}

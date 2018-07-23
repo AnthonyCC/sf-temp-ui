@@ -588,9 +588,6 @@ function parseTipTotal(data) {
 						$ph.attr('gogreen-status', !!ajaxData.goGreen);
 					}
 					cartcontent.render(ajaxData);
-					if(ajaxData.coremetrics) {
-						fd.common.dispatcher.signal('coremetrics', ajaxData.coremetrics);
-					}
 
 					fd.common.dispatcher.signal('cartHeader', ajaxData);
 					fd.common.dispatcher.signal('checkoutCartHeader', ajaxData);
@@ -874,6 +871,9 @@ function parseTipTotal(data) {
 		},
 		callback: {
 			value: function(value, signal){
+				if($(".deliverypass-payment").length > 0){
+					dialogWindowRealignFunc();
+				}
 				if (signal === 'subTotalBox')
 					value = {subTotalBox:value};
 				
@@ -898,7 +898,10 @@ function parseTipTotal(data) {
 				cartcontent.update();
 				/* close delivery pass popup */
 				if(fd.expressco.deliverypasspopup){
-					fd.expressco.deliverypasspopup.close();
+					$("#deliverypasspopup .ec-popup-content").html(expressco.deliverypasspopupsuccess());
+					if($("#deliverypasscontent").length > 0){
+						doOverlayDialogNew("/includes/deliverypasspayment.jsp");
+					}
 				}
 			}
 		}

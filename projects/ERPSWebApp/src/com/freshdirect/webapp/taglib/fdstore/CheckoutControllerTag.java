@@ -13,8 +13,6 @@ import org.apache.log4j.Category;
 import com.freshdirect.common.context.MasqueradeContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.EnumChargeType;
-import com.freshdirect.customer.EnumTransactionSource;
-import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.delivery.ReservationException;
@@ -54,8 +52,6 @@ import com.freshdirect.webapp.crm.util.MakeGoodOrderUtility;
 import com.freshdirect.webapp.crm.util.MakeGoodOrderUtility.PostAction;
 import com.freshdirect.webapp.crm.util.MakeGoodOrderUtility.SessionParamGetter;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
-import com.freshdirect.webapp.taglib.coremetrics.CmConversionEventTag;
-import com.freshdirect.webapp.taglib.coremetrics.CmShop9Tag;
 import com.freshdirect.webapp.util.StandingOrderHelper;
 import com.freshdirect.webapp.util.StandingOrderUtil;
 
@@ -270,14 +266,6 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				currentUser.setShowPendingOrderOverlay(true);
 				//clear inform ordermodify flag
 				currentUser.setShowingInformOrderModify(false);
-				
-				//prepare and store model for Coremetrics report
-				//   EXCEPT for make-good sessions!
-				if ( masqueradeMakeGoodOrderId == null ) {
-					CmConversionEventTag.buildPendingOrderModifiedModels(session, cart);
-					CmShop9Tag.buildPendingModels(session, cart);
-				}
-
 				
 				saveCart = true;
 				if ( outcome.equals( Action.NONE ) ) {

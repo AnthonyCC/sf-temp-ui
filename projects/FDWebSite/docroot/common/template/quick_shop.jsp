@@ -48,7 +48,6 @@ request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE);%>
     onload="<%= request.getAttribute("bodyOnLoad")%>"
     onunload="<%= request.getAttribute("bodyOnUnload")%>"
     class="quickshop">
-<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <%@ include file="/common/template/includes/globalnav.jspf" %>
 
 <CENTER CLASS="text10">

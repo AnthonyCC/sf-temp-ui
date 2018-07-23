@@ -1,5 +1,6 @@
 package com.freshdirect.webapp.ajax.analytics.data;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class GAProductData {
 
@@ -14,6 +15,8 @@ public class GAProductData {
     private String sku;
     private double quantity;
     private String configuredPrice;
+    @JsonProperty("lineItemTotal")
+    private String actualPrice;
 
     public String getName() {
         return name;
@@ -103,4 +106,11 @@ public class GAProductData {
         this.configuredPrice = configuredPrice;
     }
 
+    public String getActualPrice() {
+        return actualPrice;
+    }
+
+    public void setActualPrice(String actualPrice) {
+        this.actualPrice = actualPrice;
+    }
 }

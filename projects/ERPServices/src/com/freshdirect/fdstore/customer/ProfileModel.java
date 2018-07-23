@@ -1,16 +1,21 @@
 package com.freshdirect.fdstore.customer;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.framework.core.ModelSupport;
 
 public class ProfileModel extends ModelSupport {
 
+    private static final long serialVersionUID = -5809514395552810293L;
+    private static final String MARKETING_ATTRIBUTE_PREFIX = "MKT_";
+
 	private final Map<String,String> attributes = new HashMap<String,String>();
 
 	public String getAttribute(String key) {
-		return (String) attributes.get(key);
+		return attributes.get(key);
 	}
 
 	public void setAttribute(String key, String value) {
@@ -118,4 +123,14 @@ public class ProfileModel extends ModelSupport {
 		return "1".equalsIgnoreCase(getAttribute("VoucherHolderOutOfDeliveryZone"));
 	}
 	
+    public List<String> getMarketingAttributeKeys() {
+        List<String> marketingAttributeKeys = new ArrayList<String>();
+        for (String key : attributes.keySet()) {
+            if (key.startsWith(MARKETING_ATTRIBUTE_PREFIX)) {
+                marketingAttributeKeys.add(key);
+            }
+        }
+        return marketingAttributeKeys;
+    }
+
 }

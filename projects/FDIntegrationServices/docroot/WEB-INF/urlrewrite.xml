@@ -1240,7 +1240,11 @@
 		<from>^/v/([0-9]+)/disconnectWallet/(.*)</from>
 		<to last="true">/ewalletstdcheckout.do?action=disconnectWallet&amp;ver=$1</to>
 	</rule>			
-		
+    <rule>
+        <from>^/v/([0-9]+)/adqueryparams</from>
+        <to last="true">/ad.do?action=queryparams&amp;ver=$1</to>
+    </rule>         
+
 		
 	<!-- Test -->
 	<rule>

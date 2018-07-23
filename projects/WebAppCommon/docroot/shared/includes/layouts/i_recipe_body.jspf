@@ -374,7 +374,6 @@ if (!result.getErrors().isEmpty()) {
 %>
 <form action="<%= formAction %>" method="post" name="qs_cart" id="recipe_form">
 <fd:AddToCartPending id="recipe_form" action="addMultipleToCart"/>
-<fd:CmFieldDecorator/>
 <table width="<%=W_RECIPE_BODY_TOTAL - 50 %>" cellpadding="0" cellspacing="0" border="0">
 <input type="hidden" name="actionString" value="addMultipleToCart">
 <%

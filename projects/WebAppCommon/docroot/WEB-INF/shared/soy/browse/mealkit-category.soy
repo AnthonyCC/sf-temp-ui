@@ -43,6 +43,9 @@
           {param  utSalesUnit:$product.utSalesUnit /}
           {param  available:$product.available /}
           {param  timeToComplete:$product.timeToComplete /}
+          {param  skuCode:$product.skuCode /}
+          {param  variantId:$product.variantId /}
+          {param  newProduct:$product.newProduct /}
         {/call}
       {/if}
     {/foreach}
@@ -61,6 +64,9 @@
           {param  utSalesUnit:$product.utSalesUnit /}
           {param  available:$product.available /}
           {param  timeToComplete:$product.timeToComplete /}
+          {param  skuCode:$product.skuCode /}
+          {param  variantId:$product.variantId /}
+          {param  newProduct:$product.newProduct /}
         {/call}
       {/if}
     {/foreach}
@@ -82,9 +88,12 @@
  * @param? utSalesUnit
  * @param? available
  * @param? timeToComplete
+ * @param? variantId
+ * @param? skuCode
+ * @param? newProduct
  */
 {template .specialMealkitProduct autoescape="false"}
-<div class="mealkit-products-list-item">
+<div class="mealkit-products-list-item" data-component="product" data-product-id="{$productId}" data-price="{$price}" data-in-stock="{$available}" data-new-product="{$newProduct}">
 	<div class="mealkit-products-list-content {$available ? '' : 'unavailable'}">
 		<div class="mealkit-products-list-upper">
 		  <div class="mealkit-products-list-item-imagewrapper">
@@ -100,6 +109,14 @@
 		  	<p>{if $productQualityNote and $available}{$productQualityNote}{/if}</p>
 		  </div>
 		 </div>
+     <div class="mealkit-product-data">
+       {call common.productData}
+         {param productId:$productId /}
+         {param catId:$catId /}
+         {param variantId:$variantId /}
+         {param skuCode:$skuCode /}
+       {/call}
+     </div>
 		  {if $available}
 		<div class="product-list-item-bottom">
 	      <div class="mealkit-products-list-item-infos">

@@ -1264,34 +1264,7 @@ function doOverlayWindow(olURL, titleVar) {
 			}
 			return rv;
 		}
-	
-	
-	var fdCoremetrics = (function(){
-		
-		var iFrame = null;
-		
-		var createIFrame = function(){
-			iFrame = document.createElement("iframe");
-			iFrame.className = "coremetrics-iframe";
-			document.body.appendChild(iFrame);
-		}; 
 
-		var initIFrame = function(){
-			if(iFrame === null){
-				createIFrame();
-			};  
-		}; 
-		
-		var trackAddToCartEvent = function(){
-			initIFrame();
-			iFrame.src = "/coremetrics/shop5.jsp";
-		}; 
-
-		return {
-			trackAddToCartEvent: trackAddToCartEvent
-		}
-
-	})();
 	
 	/* setup dialog
 	 * returns reference to dialog

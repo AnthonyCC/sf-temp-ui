@@ -26,7 +26,6 @@ import com.freshdirect.mail.EmailUtil;
 import com.freshdirect.webapp.ajax.modulehandling.service.ModuleHandlingService;
 import com.freshdirect.webapp.checkout.DeliveryAddressManipulator;
 import com.freshdirect.webapp.checkout.RedirectToPage;
-import com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag;
 import com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
@@ -158,7 +157,6 @@ public class LocationHandlerService {
             LOGGER.debug(e); // do not do redirect, determine success based on result instead
         }
         handleNewAddressSet(user);
-        CmRegistrationTag.setPendingAddressChangeEvent(request.getSession());
     }
 
 }

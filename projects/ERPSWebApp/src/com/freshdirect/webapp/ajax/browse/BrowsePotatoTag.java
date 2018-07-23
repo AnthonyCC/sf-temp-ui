@@ -46,7 +46,12 @@ public class BrowsePotatoTag extends SimpleTagSupport{
 
 		PageContext ctx = (PageContext) getJspContext();
 		HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
-
+		System.out.println(" request.getRequestURI() =================="+request.getRequestURI());
+		System.out.println(" request.getRequestURL() =================="+request.getRequestURL());
+		System.out.println(" request.getQueryString() =================="+request.getQueryString());
+		System.out.println(" request.getParameterNames() =================="+request.getParameterNames());
+		System.out.println(" request.getParameterMap() =================="+request.getParameterMap());
+		System.out.println(" request.getParameterMap().size() =================="+(request.getParameterMap()!=null? request.getParameterMap().size() : "request.getParameterMap().size() 0"));
 		try {
 			FDSessionUser user = (FDSessionUser) ((PageContext) getJspContext()).getSession().getAttribute(SessionName.USER);
 			CmsFilteringNavigator nav = null;

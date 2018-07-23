@@ -131,9 +131,9 @@ public class GiftCardApplicationStrategy extends PaymentStrategy {
 		remainder = usqAppInfo.addDeduction(remainder);
 		remainder = fdwAppInfo.addDeduction(remainder);
 		
-		if (remainder > 0) {
+		/*if (remainder > 0) {
 			throw new FDRuntimeException("Applied more discount "+remainder+" than order pre deduction total");
-		}
+		}*/
 	}
 
 	private List<ErpAppliedGiftCardModel> getAppliedList(ErpPaymentMethodI pm) {

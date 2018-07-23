@@ -3,7 +3,6 @@
 		import="com.freshdirect.webapp.util.ConfigurationStrategy"
 		import="com.freshdirect.webapp.util.prodconf.DefaultProductConfigurationStrategy"
 		import="com.freshdirect.webapp.util.FDURLUtil"
-		import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil" 
 		import="com.freshdirect.webapp.taglib.fdstore.FDShoppingCartControllerTag"
 		import="java.util.Collections"
 		import="com.freshdirect.webapp.util.TransactionalProductImpression"

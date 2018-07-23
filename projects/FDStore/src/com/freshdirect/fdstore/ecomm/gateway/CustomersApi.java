@@ -2,7 +2,9 @@ package com.freshdirect.fdstore.ecomm.gateway;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.log4j.Category;
 
@@ -12,23 +14,34 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.customer.EnumPaymentMethodDefaultType;
+import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPromotionHistory;
+import com.freshdirect.customer.ErpSaleModel;
+import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.ecomm.gateway.AbstractEcommService;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.ecommerce.data.customer.DefaultPaymentMethodData;
+import com.freshdirect.ecommerce.data.customer.ErpSaleData;
 import com.freshdirect.ecommerce.data.customer.ProfileData;
 import com.freshdirect.ecommerce.data.ecoupon.CrmAgentModelData;
 import com.freshdirect.ecommerce.data.list.FDActionInfoData;
 import com.freshdirect.ecommerce.data.list.RenameCustomerListData;
+import com.freshdirect.ecommerce.data.order.OrderSearchCriteriaRequest;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDEcommServiceException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
+import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.ProfileModel;
+import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.ecomm.converter.ListConverter;
+import com.freshdirect.fdstore.sms.shortsubstitute.ShortSubstituteResponse;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.payment.service.ModelConverter;
 
 public class CustomersApi extends AbstractEcommService implements CustomersApiClientI {
 
@@ -328,5 +341,114 @@ private CrmAgentModelData getCrmAgentModel(CrmAgentModel agentModel) {
 		agent.setCurFacilityContext(agentModel.getCurFacilityContext());
 		
 		return agent;
+	}
+
+
+
+
+@Override
+public FDOrderI getLastNonCOSOrder(String customerID,	EnumSaleType saleType, EnumSaleStatus saleStatus, EnumEStoreId storeId)
+		throws ErpSaleNotFoundException, RemoteException {
+	try{
+		Request<OrderSearchCriteriaRequest> request = new Request<OrderSearchCriteriaRequest>();
+		OrderSearchCriteriaRequest criteria = new OrderSearchCriteriaRequest();
+		criteria.setCustomerId(customerID);
+		criteria.setSaleType(saleType.getSaleType());
+		criteria.setSaleStatus(saleStatus.getStatusCode());
+		criteria.setStoreId(storeId.getContentId());
+		request.setData(criteria);
+		String inputJson = buildRequest(request);
+		String response = postData(inputJson, getFdCommerceEndPoint(EndPoints.GET_ORDERS_BY_SALESTATUS_STORE_API.getValue()), String.class);
+		Response<ErpSaleData> info = getMapper().readValue(response, new TypeReference<Response<ErpSaleData>>() { });
+		ErpSaleModel saleModel =ModelConverter.buildErpSaleData(info.getData());
+		
+		return new FDOrderAdapter(saleModel);	
+	}catch(Exception e){
+		LOGGER.info(e);
+		LOGGER.info("Exception converting {} to ListOfObjects ");
+		throw new RemoteException(e.getMessage(), e);
+		
+	}
+	}
+
+@Override
+public FDOrderI getLastNonCOSOrder(String customerID, EnumSaleType saleType,
+		EnumEStoreId eStore) throws FDResourceException,
+		ErpSaleNotFoundException, RemoteException {
+
+	try{
+		Request<OrderSearchCriteriaRequest> request = new Request<OrderSearchCriteriaRequest>();
+		OrderSearchCriteriaRequest criteria = new OrderSearchCriteriaRequest();
+		criteria.setCustomerId(customerID);
+		criteria.setSaleType(saleType.getSaleType());
+		criteria.setStoreId(eStore.getContentId());
+		request.setData(criteria);
+		String inputJson = buildRequest(request);
+		String response = postData(inputJson, getFdCommerceEndPoint(EndPoints.GET_ORDERS_BY_SALETYPE_STORE_API.getValue()), String.class);
+		Response<ErpSaleData> info = getMapper().readValue(response, new TypeReference<Response<ErpSaleData>>() { });
+		ErpSaleModel saleModel =ModelConverter.buildErpSaleData(info.getData());
+		return  new FDOrderAdapter(saleModel);	
+	}catch(Exception e){
+		LOGGER.info(e);
+		LOGGER.info("Exception converting {} to ListOfObjects ");
+		throw new RemoteException(e.getMessage(), e);
+		
+	}
+	}
+
+@Override
+public ShortSubstituteResponse getShortSubstituteOrders(List<String> orderList)
+		throws FDResourceException, RemoteException {
+
+	try{
+		Request<List<String>> request = new Request<List<String>>();
+
+		request.setData(orderList);
+		String inputJson = buildRequest(request);
+		String response = postData(inputJson, getFdCommerceEndPoint(EndPoints.GET_SS_ORDERS.getValue()), String.class);
+		Response<ShortSubstituteResponse> info = getMapper().readValue(response, new TypeReference<Response<ShortSubstituteResponse>>() { });
+		return parseResponse(info);	
+	}catch(Exception e){
+		LOGGER.info(e);
+		LOGGER.info("Exception converting {} to ListOfObjects ");
+		throw new RemoteException(e.getMessage(), e);
+		
+	}
+	}
+
+@Override
+public boolean isReadyForPick(String saleId) throws FDResourceException,
+		RemoteException {
+
+	try{
+		String data= httpGetData(getFdCommerceEndPoint(EndPoints.GET_ORDER_IS_READY_TO_PICK.getValue()), String.class, new Object[]{saleId});
+
+		Response<Boolean> info = getMapper().readValue(data, new TypeReference<Response<Boolean>>() { });
+		return parseResponse(info);	
+	}catch(Exception e){
+		LOGGER.info(e);
+		LOGGER.info("Exception converting {} to ListOfObjects ");
+		throw new RemoteException(e.getMessage(), e);
+		
+	}
+	}
+
+@Override
+public void releaseModificationLock(String saleId) throws FDResourceException,
+		RemoteException {
+
+	try{
+		String data= httpGetData(getFdCommerceEndPoint(EndPoints.GET_ORDER_IS_READY_TO_PICK.getValue()), String.class, new Object[]{saleId});
+
+		Response<Boolean> info = getMapper().readValue(data, new TypeReference<Response<Boolean>>() { });
+		if(!info.getResponseCode().equals("OK")){
+			throw new FDResourceException(info.getMessage());
+		}
+	}catch(Exception e){
+		LOGGER.info(e);
+		LOGGER.info("Exception converting {} to ListOfObjects ");
+		throw new RemoteException(e.getMessage(), e);
+		
+	}
 	}
 }

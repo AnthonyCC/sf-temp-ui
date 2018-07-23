@@ -85,7 +85,7 @@
 </c:choose>
 
 <tmpl:insert template='<%=template%>'>
-	<tmpl:put name='cmeventsource' direct='true'>BROWSE</tmpl:put>
+	<tmpl:put name='eventsource' direct='true'>BROWSE</tmpl:put>
 
 	<tmpl:put name='soypackage' direct='true'>
 		<soy:import packageName="browse" />
@@ -230,52 +230,49 @@
 		</div>
 	</tmpl:put>
 
-  <tmpl:put name='content' direct='true'>
-    <div id="searchPanel" role="tabpanel" tabindex="0">
-	    <div class="oas-cnt" ad-fixed-size="true" ad-size-height="95" ad-size-width="774" id="oas_PPSearchContent">
-			<script type="text/javascript">
-				OAS_AD('PPSearchContent');
-			</script>
-		</div>
+	<tmpl:put name='content' direct='true'>
+    	<div id="searchPanel" role="tabpanel" tabindex="0">
+		    <div class="oas-cnt" ad-fixed-size="true" ad-size-height="95" ad-size-width="774" id="oas_PPSearchContent">
+				<script type="text/javascript">
+					OAS_AD('PPSearchContent');
+				</script>
+			</div>
 		
-    	<div class="itemcount-cont">
-			<section class="itemcount">
-				<soy:render template="srch.searchSuggestions"
-					data="${browsePotato.searchParams}" />
-			</section>
-			<script>
-				$jq(document).on('ready', function() {
-					if ((document.referrer).indexOf('expresssearch.jsp') !== -1) {
-						$jq('.itemcount-cont').append('<button class="right cssbutton green transparent icon-arrow-left2-before back">Back to Express Search</button><br style="clear:both;" />');
-						$jq('.srch .itemcount').addClass('wBackButton');
-					}
-				});
-			</script>
-		</div>
+	    	<div class="itemcount-cont">
+				<section class="itemcount">
+					<soy:render template="srch.searchSuggestions"
+						data="${browsePotato.searchParams}" />
+				</section>
+				<script>
+					$jq(document).on('ready', function() {
+						if ((document.referrer).indexOf('expresssearch.jsp') !== -1) {
+							$jq('.itemcount-cont').append('<button class="right cssbutton green transparent icon-arrow-left2-before back">Back to Express Search</button><br style="clear:both;" />');
+							$jq('.srch .itemcount').addClass('wBackButton');
+						}
+					});
+				</script>
+			</div>
     	
 
-			<soy:render template="browse.topMedia"
-				data="${browsePotato.descriptiveContent}" />
+			<soy:render template="browse.topMedia" data="${browsePotato.descriptiveContent}" />
 			<%-- remove top pagination
-	    <div class="pager-holder top">
-	      <c:if test="${not empty browsePotato.pager}">
-	        <soy:render template="browse.pager" data="${browsePotato.pager}" />
-	      </c:if>
-	    </div>
-	     --%>
+			    <div class="pager-holder top">
+			      <c:if test="${not empty browsePotato.pager}">
+			        <soy:render template="browse.pager" data="${browsePotato.pager}" />
+			      </c:if>
+			    </div>
+	     	--%>
 
 			<c:choose>
 				<c:when test="${browsePotato.searchParams.pageType != ''}">
 					<div id="sorter">
-						<soy:render template="browse.sortBar"
-							data="${browsePotato.sortOptions}" />
+						<soy:render template="browse.sortBar" data="${browsePotato.sortOptions}" />
 					</div>
 				</c:when>
 			</c:choose>
 
 			<div class="browse-filtertags">
-				<soy:render template="browse.filterTags"
-					data="${browsePotato.filterLabels}" />
+				<soy:render template="browse.filterTags" data="${browsePotato.filterLabels}" />
 			</div>
 
 			<div class="isHookLogic-false">
@@ -326,20 +323,20 @@
 					<soy:render template="browse.pager" data="${browsePotato.pager}" />
 				</c:if>
 			</div>
-
-			<script>
-	      window.FreshDirect = window.FreshDirect || {};
-	      window.FreshDirect.browse = window.FreshDirect.browse || {};
-	      window.FreshDirect.globalnav = window.FreshDirect.globalnav || {};
-
-	      window.FreshDirect.browse.data = <fd:ToJSON object="${browsePotato}" noHeaders="true"/>
-	      window.FreshDirect.globalnav.data = <fd:ToJSON object="${globalnav}" noHeaders="true"/>
-	      window.FreshDirect.coremetricsData = window.FreshDirect.browse.data.coremetrics;
-	      window.FreshDirect.browse.data.searchParams = window.FreshDirect.browse.data.searchParams || {};
-
-	      /* APPDEV-5920 Staff picks sort bar implementation */
-		  window.FreshDirect.browse.data.pageType = window.FreshDirect.browse.data.pageType || <c:choose><c:when test="${browsePotato.searchParams.pageType == 'STAFF_PICKS'}">'STAFF_PICKS'</c:when><c:otherwise> {} </c:otherwise> </c:choose>;
-	      window.FreshDirect.browse.data.sortOptions = window.FreshDirect.browse.data.sortOptions || {};
+		</div>
+		
+		<script>
+			window.FreshDirect = window.FreshDirect || {};
+			window.FreshDirect.browse = window.FreshDirect.browse || {};
+			window.FreshDirect.globalnav = window.FreshDirect.globalnav || {};
+	
+			window.FreshDirect.browse.data = <fd:ToJSON object="${browsePotato}" noHeaders="true"/>
+			window.FreshDirect.globalnav.data = <fd:ToJSON object="${globalnav}" noHeaders="true"/>
+			window.FreshDirect.browse.data.searchParams = window.FreshDirect.browse.data.searchParams || {};
+	
+			/* APPDEV-5920 Staff picks sort bar implementation */
+			window.FreshDirect.browse.data.pageType = window.FreshDirect.browse.data.pageType || <c:choose><c:when test="${browsePotato.searchParams.pageType == 'STAFF_PICKS'}">'STAFF_PICKS'</c:when><c:otherwise> {} </c:otherwise> </c:choose>;
+			window.FreshDirect.browse.data.sortOptions = window.FreshDirect.browse.data.sortOptions || {};
 	    </script>
 	</tmpl:put>
 
@@ -355,13 +352,6 @@
 						data="${browsePotato.carousels}" />
 				</div>
 			</c:when>
-			<c:otherwise>
-				<fd:CmPageView wrapIntoScriptTag="true"
-					searchTerm="${browsePotato.searchParams.searchParams}"
-					searchResultsSize="${browsePotato.searchParams.tabs[0].hits}"
-					suggestedTerm="${browsePotato.searchParams.searchTerm}"
-					recipeSearchResultsSize="${browsePotato.searchParams.tabs[1].hits}" />
-			</c:otherwise>
 		</c:choose>
 
 		<div class="ddpp-bottom">

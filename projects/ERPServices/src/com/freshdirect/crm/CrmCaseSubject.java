@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.freshdirect.crm.ejb.CrmCaseSubjectDAO;
 import com.freshdirect.enums.EnumModel;
 
@@ -82,7 +84,10 @@ public class CrmCaseSubject extends EnumModel implements TerminableI {
 	private final String priorityCode;
 	private final boolean isCartonsRequired;
 
-	public CrmCaseSubject(String queueCode, String code, String name, String descr, boolean obsolete, String priorityCode, boolean isCartonsRequired) {
+	public CrmCaseSubject(@JsonProperty("queueCode") String queueCode, @JsonProperty("code") String code,
+			@JsonProperty("name") String name, @JsonProperty("description") String descr,
+			@JsonProperty("obsolete") boolean obsolete, @JsonProperty("priorityCode") String priorityCode,
+			@JsonProperty("isCartonsRequired") boolean isCartonsRequired) {
 		super(code, name, descr);
 		this.obsolete = obsolete;
 		this.queueCode = queueCode;
@@ -98,7 +103,7 @@ public class CrmCaseSubject extends EnumModel implements TerminableI {
 		return this.queueCode;
 	}
 	
-	
+	@JsonIgnore
 	public CrmCaseQueue getQueue() {
 		return CrmCaseQueue.getEnum(this.queueCode);
 	}

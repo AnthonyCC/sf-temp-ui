@@ -36,26 +36,6 @@
 		</div>
 
 		<script type="text/javascript">
-				var coremetricsGetHelpEmailFunctionMap = [
-				<logic:iterate id="subject" indexId="idx" collection="<%= ContactFdControllerTag.selections %>" type="com.freshdirect.webapp.taglib.fdstore.ContactFdControllerTag.Selection">
-					<%if (idx!=0){%>,<%}%><fd:CmConversionEvent wrapIntoFunction="true" eventId="email" firstPhase="true" subject="<%=StringUtil.escapeJavaScript(subject.getDescription())%>"/>
-				</logic:iterate>
-			];
-			<%--
-				This seems sort of useless, it only logs a single subject change?
-				Changed to work the same with new js (called once on page load (no log),
-				then on every subject change (log only the first change))
-				still... seems... weird.
-				-BA 20140401
-			--%>
-			var coremetricsGetHelpEmailStartLogged = 0; //init
-			function coremetricsGetHelpEmailStart(index) {
-				if (coremetricsGetHelpEmailStartLogged == 1) {
-					coremetricsGetHelpEmailFunctionMap[index]();
-				}
-				coremetricsGetHelpEmailStartLogged++;
-			}
-			
 			$jq('#prodReqContent').ready(function() { $jq('#prodReqContent').hide(); });
 			$jq(document).ready(function() {
 				$jq('#contact_subject').change(function() {
@@ -69,9 +49,6 @@
                         $jq('#prodReqNonContent').show();
                         $jq('#test1').attr('disabled', null).removeClass('disabled');
                     }
-					if (coremetricsGetHelpEmailFunctionMap[selectedOpt.val()]) {
-						coremetricsGetHelpEmailStart(selectedOpt.val());
-					}
 				});
 				$jq('#contact_subject').change();
 			});
@@ -88,10 +65,6 @@
 				</select>
 				<fd:ErrorHandler result='<%=result%>' name='subject' id='errorMsg'>
 					<%--if error occured with subject selection, tracking is needed, because subject will be changed automatically--%>
-					<script type="text/javascript">
-						var subjectSelect = document.getElementById('contact_subject');	
-						coremetricsGetHelpEmailStart(subjectSelect.options[subjectSelect.selectedIndex].value)
-					</script>
 					<div id="subject_error" class="bold error">
 						<%=errorMsg%>
 					</div>

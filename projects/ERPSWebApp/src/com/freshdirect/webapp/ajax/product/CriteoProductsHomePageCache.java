@@ -1,7 +1,9 @@
 package com.freshdirect.webapp.ajax.product;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.Category;
@@ -81,7 +83,7 @@ public class CriteoProductsHomePageCache {
 			HLBrandProductAdResponse response = null;
 			List<String> keys = CriteoProductsUtil.getFDSearchPriorityKeyWords();
 			int counter=0;
-
+			Set<String> skuList = new HashSet<String>();
 			if (!keys.isEmpty() && keys.size() != 0) {
 				for (String key : keys) {
 					try {
@@ -119,20 +121,33 @@ public class CriteoProductsHomePageCache {
 							avaiProductFDList.get(0).setPageBeacon(response.getPageBeacon() + updatedPageBeacon.toString());
 						}
 						
-						if(!avaiProductFDList.isEmpty() && avaiProductFDList.size() < 5){
-							int i= avaiProductFDList.size();
-							int j=0;
-							while ( i < 5) {
-								avaiProductFDList.add(avaiProductFDList.get(j));
-								i++;	
-								j++;
+				
+					/*	if(!avaiProductFDList.isEmpty() && avaiProductFDList.size() < 5){
+											int i= avaiProductFDList.size();
+											int j=0;
+											while ( i < 5) {
+												avaiProductFDList.add(avaiProductFDList.get(j));
+												i++;	
+												j++;
+											}
+										}*/
+							if (!avaiProductFDList.isEmpty()) {
+								for (HLBrandProductAdInfo productData : avaiProductFDList) {
+									if (!skuList.contains(productData
+											.getProductSKU()))
+										skuList.add(productData.getProductSKU());
+									else {
+										avaiProductFDList.remove(productData);
+									}
+								}
 							}
-						}
 						cacheCriteoMap.put(key, avaiProductFDList);
 						//pageBeaconMap.put(key, response.getPageBeacon());
 						counter = counter + avaiProductFDList.size();
 					}
 					} catch (FDResourceException e) {
+						LOGGER.debug("Exception occured while making call to Criteo search-Api: " + e);
+					}catch (Exception e) {
 						LOGGER.debug("Exception occured while making call to Criteo search-Api: " + e);
 					}
 				}

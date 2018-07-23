@@ -47,7 +47,7 @@
     <div id="mealkit-product-right">
 		<c:if test="${productPotato.available}">
 			<div class="mealkit-product-addtocart" data-addtocart-functionality>
-				<div class="center-content<%= (user.isEligibleForStandingOrders()) ? " " : "" %>" data-component="product" data-cmeventsource="pdp_main">
+				<div class="center-content<%= (user.isEligibleForStandingOrders()) ? " " : "" %>" data-component="product" data-eventsource="pdp_main">
 					<soy:render template="pdp.productData" data="${productPotato}" />
 					<% if (CartName.MODIFY_CART.equals(cartMode)) { %>
 						<%
@@ -72,7 +72,7 @@
 		</c:if>
     </div>
 
-	 <div class="mealkit-recommendations transactional" data-cmeventsource="tgrec">
+	 <div class="mealkit-recommendations transactional" data-eventsource="tgrec">
       	<soy:render template="pdp.mealkitProductRecommendation" data="${productPotato}"/>
   	  </div>
 </div>

@@ -9,9 +9,6 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.FilteringFlowResult;
-import com.freshdirect.fdstore.coremetrics.CmContext;
-import com.freshdirect.fdstore.coremetrics.CmContextUtility;
-import com.freshdirect.fdstore.coremetrics.tagmodel.PageViewTagModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.FilteringNavigator;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -81,27 +78,8 @@ public class QuickShopFilterServlet extends QuickShopServlet {
 		QuickShopMenuOrderUtil.sortMenuItems(responseData.getMenu());
 		QuickShopPastOrdersCustomMenu transformMenuIntoPastOrdersCustom = QuickShopFilterService.defaultService().transformMenuIntoPastOrdersCustom(responseData.getMenu(), requestData.getYourLastOrderId());
 		responseData.setOrders(transformMenuIntoPastOrdersCustom);
-		// [APPDEV-4558]
-		if (CmContextUtility.isCoremetricsAvailable(user)) {
-			addCoremetricsTags(nav, result, responseData);
-		}
+
 		return responseData;
-	}
-
-	private void addCoremetricsTags(FilteringNavigator nav, FilteringFlowResult<QuickShopLineItemWrapper> result, QuickShopReturnValue responseData) {
-		// Generate coremetrics 'element' tags for the menu - selected filters
-		generateCoremetricsElementTags(responseData, result.getMenu(), "quickshop | past_orders");
-
-		// Generate coremetrics 'pageview' tag - only when searching
-		String searchTerm = nav.getSearchTerm();
-		if (searchTerm != null && searchTerm.trim().length() > 0) {
-			PageViewTagModel pvTagModel = new PageViewTagModel();
-			pvTagModel.setCategoryId( CmContext.getContext().prefixedCategoryId( "quickshop | search"));
-			pvTagModel.setPageId("past_orders");
-			pvTagModel.setSearchTerm(searchTerm);
-			pvTagModel.setSearchResults(Integer.toString(result.getItems().size()));
-			responseData.addCoremetrics(pvTagModel.toStringList());
-		}
 	}
 
 }

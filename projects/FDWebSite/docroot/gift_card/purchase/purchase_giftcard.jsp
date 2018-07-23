@@ -157,7 +157,6 @@ FDSessionUser user = (FDSessionUser) session.getAttribute( SessionName.USER );
 request.setAttribute("giftcard", "true");
 UserUtil.initializeGiftCart(user);
 %>
-<fd:CmShop5 wrapIntoScriptTag="true" cart="<%=user.getGiftCart()%>"/>
 
 <fd:CheckoutController actionName="<%= actionName %>" result="result" successPage="/gift_card/purchase/receipt.jsp" ccdProblemPage="/gift_card/purchase/includes/gc_add_creditcard.jsp?ccerror=true">
         <fd:ErrorHandler result='<%=result%>' name='gc_order_amount_fraud' id='errorMsg'>

@@ -14,7 +14,9 @@
   box-sizing: border-box;
   width: 25%;
 }
-
+[data-feature-productcard="2018"] .content-module.product-carousel [data-component="carousel"] ul[data-component="carousel-list"] li {
+  border-left: 1px solid transparent; /* fix transpop shift */
+}
 .content-module.product-carousel [data-component="carousel"] [data-component="carousel-mask"] {
   margin-bottom: 20px;
 }

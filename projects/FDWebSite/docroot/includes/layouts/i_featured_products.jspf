@@ -1,4 +1,3 @@
-<%@page import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil"%>
 <%@page import="com.freshdirect.webapp.util.ProductImpression"%>
 <%@page import="com.freshdirect.storeapi.content.ContentNodeModel"%>
 <%@page import="com.freshdirect.fdstore.DealsHelper"%>
@@ -62,11 +61,8 @@ final int W_FEATURED_PRODUCTS_BND = 683;
 	</td></tr>
 
 	<tr><td align="center" colspan="5" id="bnd-td">
-		<script type="text/javascript">
-			var bnd_events = {"afterScroll":  <fd:CmElement wrapIntoFunction="true" siteFeature="BRAND_NAME_DEALS" elementCategory="carousel"/>} 
-		</script>
 		<display:Carousel id="bnd" carouselId="bnd" width="<%=W_FEATURED_PRODUCTS_BND%>" numItems="6" showCategories="false" itemsToShow="<%= brandDealRecommendations.getAllProducts() %>" 
-				trackingCode="brand-name-deals" maxItems="30" parentId="bnd-td" eventHandlersObj="bnd_events">
+				trackingCode="brand-name-deals" maxItems="30" parentId="bnd-td">
 			<span class="smartstore-carousel-item">
 				<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
 					<% 

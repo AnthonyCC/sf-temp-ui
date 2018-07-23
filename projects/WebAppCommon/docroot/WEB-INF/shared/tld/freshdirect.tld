@@ -1943,38 +1943,6 @@
 		</attribute>
 	</tag>
 	<tag>
-		<name>CustomerInfo</name>
-		<tagclass>com.freshdirect.webapp.taglib.fdstore.CustomerInfoTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.fdstore.CustomerInfoTagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>actionName</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>successPage</name>
-			<required>false</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>resultName</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>erpCustomer</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>fdCustomer</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	<tag>
 		<name>GetCustomerObjs</name>
 		<tagclass>com.freshdirect.webapp.taglib.callcenter.GetCustomerObjectsTag</tagclass>
 		<teiclass>com.freshdirect.webapp.taglib.callcenter.GetCustomerObjectsTagEI</teiclass>
@@ -2506,28 +2474,6 @@
 		</attribute>
 	</tag>
 
-	<tag>
-		<name>RequestAProductTag</name>
-		<tagclass>com.freshdirect.webapp.taglib.fdstore.RequestAProductTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.fdstore.RequestAProductTag$TagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>actionName</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>successPage</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>result</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-	</tag>
 
 	<tag>
 		<name>GetServiceEmail</name>
@@ -3190,34 +3136,7 @@
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 	</tag>
-	<tag>
-		<name>RetentionSurvey</name>
-		<tagclass>com.freshdirect.webapp.taglib.fdstore.RetentionSurveyControllerTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.fdstore.RetentionSurveyControllerTag$TagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>actionName</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>successPage</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>result</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>surveyResult</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-
+	
 
 	<tag>
 		<name>FDCustomerCreatedList</name>
@@ -3932,33 +3851,6 @@
 		</attribute>
 	</tag>
 	<tag>
-		<name>RequestAWineTag</name>
-		<tagclass>com.freshdirect.webapp.taglib.fdstore.RequestAWineTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.fdstore.RequestAWineTag$TagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>actionName</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>successPage</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>result</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>survey</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	<tag>
 		<name>GetDomainValues</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.GetDomainValuesTag</tagclass>
 		<teiclass>com.freshdirect.webapp.taglib.fdstore.GetDomainValuesTag$TagEI</teiclass>
@@ -4445,18 +4337,6 @@
 	</tag>
 	
 	<tag>
-		<name>ExternalCampaign</name>
-		<tagclass>com.freshdirect.webapp.taglib.fdstore.ExternalCampaignTag</tagclass>
- 		<teiclass>com.freshdirect.webapp.taglib.fdstore.ExternalCampaignTag$TagEI</teiclass>
-		<bodycontent>empty</bodycontent>
-		<attribute>
-			<name>successPage</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	
-	<tag>
 		<name>Tile</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.TileTag</tagclass>
 		<teiclass>com.freshdirect.webapp.taglib.fdstore.TileTag$TagEI</teiclass>
@@ -4891,87 +4771,6 @@
 		<bodycontent>empty</bodycontent>
 		<info></info>
 	</tag>
-	<tag>
-		<name>CmInit</name>
-		<tagclass>com.freshdirect.webapp.taglib.coremetrics.CmInitTag</tagclass>
-		<body-content>empty</body-content>
-		<attribute>
-			<name>returnAsJson</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		
-	</tag>
-	<tag>
-		<name>CmPageView</name>
-		<tagclass>com.freshdirect.webapp.taglib.coremetrics.CmPageViewTag</tagclass>
-		<body-content>empty</body-content>
-		<attribute>
-			<name>wrapIntoScriptTag</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>wrapIntoFunction</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>outStringVar</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>searchResultsSize</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>searchTerm</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>suggestedTerm</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>recipeSearchResultsSize</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>currentFolder</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>productModel</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>forceTagEffect</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>recipeSource</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>returnAsJson</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>wineFilterValue</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>	
 	<!-- APPDEV-2386 start -->
 	<tag>
 		<name>MultiCategoryLayout</name>
@@ -4989,336 +4788,6 @@
 		</attribute>
 	</tag>	
 	<!-- APPDEV-2386 end -->
-	<tag>
-		<name>CmShop5</name>
-		<tagclass>com.freshdirect.webapp.taglib.coremetrics.CmShop5Tag</tagclass>
-		<body-content>empty</body-content>
-		<attribute>
-			<name>wrapIntoScriptTag</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>wrapIntoFunction</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>cart</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>outStringVar</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>returnAsJson</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>explicitList</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	<tag>
-		<name>CmShop9</name>
-		<tagclass>com.freshdirect.webapp.taglib.coremetrics.CmShop9Tag</tagclass>
-		<body-content>empty</body-content>
-		<attribute>
-			<name>wrapIntoScriptTag</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>wrapIntoFunction</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>order</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>cart</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>		
-		<attribute>
-			<name>outStringVar</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>returnAsJson</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	<tag>
-		<name>CmProductView</name>
-		<tagclass>com.freshdirect.webapp.taglib.coremetrics.CmProductViewTag</tagclass>
-		<body-content>empty</body-content>
-		<attribute>
-			<name>wrapIntoScriptTag</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>wrapIntoFunction</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>outStringVar</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>productModel</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>quickbuy</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>returnAsJson</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	<tag>
-		<name>CmOrder</name>
-		<tagclass>com.freshdirect.webapp.taglib.coremetrics.CmOrderTag</tagclass>
-		<body-content>empty</body-content>
-		<attribute>
-			<name>wrapIntoScriptTag</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>wrapIntoFunction</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>outStringVar</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>order</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>returnAsJson</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	<tag>
-		<name>CmRegistration</name>
-		<tagclass>com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag</tagclass>
-		<body-content>empty</body-content>
-		<attribute>
-			<name>wrapIntoScriptTag</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>wrapIntoFunction</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>outStringVar</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>force</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>returnAsJson</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>email</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>address</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	<tag>
-		<name>CmConversionEvent</name>
-		<tagclass>com.freshdirect.webapp.taglib.coremetrics.CmConversionEventTag</tagclass>
-		<bodycontent>empty</bodycontent>
-		<attribute>
-			<name>wrapIntoScriptTag</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>wrapIntoFunction</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>outStringVar</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>orderModified</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>eventId</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>categoryId</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>firstPhase</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>user</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>subject</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>order</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>returnAsJson</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	<tag>
-		<name>CmElement</name>
-		<tagclass>com.freshdirect.webapp.taglib.coremetrics.CmElementTag</tagclass>
-		<body-content>empty</body-content>
-		<attribute>
-			<name>wrapIntoScriptTag</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>wrapIntoFunction</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>outStringVar</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>elementId</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>elementCategory</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>carouselId</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>siteFeature</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>variant</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>timeslot</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>soType</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>tabRecommendation</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>searchNavigator</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>queryParamCollection</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>tabNumber</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>productId</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>returnAsJson</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>skuCode</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	<tag>
-		<name>CmFieldDecorator</name>
-		<tagclass>com.freshdirect.webapp.taglib.coremetrics.CmFieldDecoratorTag</tagclass>
-		<body-content>empty</body-content>
-	</tag>
 	<tag>
 		<name>YoutubeVideoTag</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.YoutubeVideoTag</tagclass>
@@ -5803,4 +5272,10 @@
        <name>FeaturedCategoryPreviewTag</name>
        <path>/WEB-INF/tags/cmspreview/featuredcategory.tag</path>
 	</tag-file>
+
+	<tag>
+		<name>AdQueryString</name>
+		<tagclass>com.freshdirect.webapp.taglib.AdQueryStringTag</tagclass>
+		<info>This tag provides query string for 3rd party Ad service providers</info>
+	</tag>
 </taglib>

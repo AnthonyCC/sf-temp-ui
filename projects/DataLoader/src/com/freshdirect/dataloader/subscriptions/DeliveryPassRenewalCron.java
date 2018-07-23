@@ -549,9 +549,7 @@ public class DeliveryPassRenewalCron {
 		{
 			
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.DlvPassManagerSB)){
-				pendingPasses = DlvPassManagerService.getInstance().getPendingPasses();		
-																										/* in Legacy we updated the DB Queries based on E_Store, ,
-				 																														* but in SF 2.0 it needs to be " Implimented " */
+				pendingPasses = DlvPassManagerService.getInstance().getPendingPasses(eStore);		
 			}else{
 				ctx = getInitialContext();
 				DlvPassManagerSB dlvPassManagerSB = null;

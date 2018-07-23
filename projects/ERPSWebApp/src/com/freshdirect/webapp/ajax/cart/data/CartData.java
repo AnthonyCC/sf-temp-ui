@@ -22,11 +22,6 @@ public class CartData implements Serializable {
 	private String errorMessage;
 	
 	/**
-	 * Coremetrics script - to run on the client side
-	 */
-	private String coremetricsScript;
-	
-	/**
 	 * Number of items 
 	 */
 	private double itemCount;
@@ -69,13 +64,6 @@ public class CartData implements Serializable {
 	}	
 	public void setErrorMessage( String errorMessage ) {
 		this.errorMessage = errorMessage;
-	}
-	
-	public String getCoremetricsScript() {
-		return coremetricsScript;
-	}	
-	public void setCoremetricsScript( String coremetricsScript ) {
-		this.coremetricsScript = coremetricsScript;
 	}
 	
 	public List<Section> getCartSections() {

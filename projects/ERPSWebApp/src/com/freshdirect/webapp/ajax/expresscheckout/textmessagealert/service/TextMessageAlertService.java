@@ -80,9 +80,15 @@ public class TextMessageAlertService {
 	}
 
 	public boolean showTextMessageAlertPopup(final FDUserI user) throws FDResourceException {
-		FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomer(user.getIdentity());
-		FDCustomerEStoreModel fdCustomerSmsPreferenceModel=fdCustomer.getCustomerSmsPreferenceModel();
-		return FDStoreProperties.getSMSOverlayFlag() && !isModeModifyOrder(user) && isAlertFlagNotSet(fdCustomerSmsPreferenceModel);
+        boolean showPopup = false;
+
+        if (user.getIdentity() != null) {
+            FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomer(user.getIdentity());
+            FDCustomerEStoreModel fdCustomerSmsPreferenceModel = fdCustomer.getCustomerSmsPreferenceModel();
+            showPopup = FDStoreProperties.getSMSOverlayFlag() && !isModeModifyOrder(user) && isAlertFlagNotSet(fdCustomerSmsPreferenceModel);
+        }
+
+        return showPopup;
 	}
 	
 	public String getTermsAndConditionsMedia() throws IOException, TemplateException{

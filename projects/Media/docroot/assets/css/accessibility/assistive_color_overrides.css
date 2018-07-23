@@ -24,27 +24,27 @@
 	box-shadow: 0 0 1px #bbbbbb, 0 0 8px #bbbbbb !important;
 }
 
-/* purple color buttons high color contrast, purple has offset color so new rule should be applied for this
+/* purple color buttons high color contrast, purple has offset color so new rule should be applied for this */
 
-.assistive-mode #quickshop .cssbutton.purple.nontransparent:not(.transparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder).not(.purple)
+.assistive-mode .cssbutton.purple.nontransparent:not(.transparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder)
 {
     background-color: #7C4884 !important;
     border: 1px solid #7C4884 !important;
 }
 
-.assistive-mode #quickshop .cssbutton.purple.nontransparent:hover:not(.transparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder)
+.assistive-mode .cssbutton.purple.nontransparent:hover:not(.transparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder)
 {
 	background-color: #98609F !important;
     border-color: #98609F !important;
 }
 
-.assistive-mode #quickshop .cssbutton.purple.nontransparent:active:not(.transparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder)
+.assistive-mode .cssbutton.purple.nontransparent:active:not(.transparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder)
 {
 	
 	background-color: #7C4884 !important;
 }
 
-.assistive-mode #quickshop .cssbutton.purple.nontransparent:focus:not(.transparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder)
+.assistive-mode .cssbutton.purple.nontransparent:focus:not(.transparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder)
 {
 	background-color: #98609F !important;
     border-color: rgba(0,0,0,0.4) !important;
@@ -52,9 +52,38 @@
 }
 
 .assistive-mode .globalnav_top #topnavitem_reorder a {
-    color: #7C4884;
+    color: #7C4884 !important;
 }
-*/
+
+.assistive-mode #quickshop > .tabs li{
+	
+	background-color: #7C4884 !important;
+}
+
+.assistive-mode .departments.rounded-box .checkboxlist input[type="radio"]:checked + label{
+	
+	background-color: #7C4884 !important;
+}
+
+.assistive-mode .standing-orders-3-so-settings-item-name{
+	
+	background-color: #7C4884 !important;
+}
+
+.assistive-mode #quickshop .header h1{
+	
+	color: #7C4884 !important;
+}
+
+.assistive-mode .qs-header .gridlistchange button[data-active]{
+	
+	background-color: #7C4884 !important;
+}
+
+.assistive-mode .standing-orders-3-so-settings-square-line-1,.assistive-mode .standing-orders-3-so-settings-square-line-2{
+	background-color: #7C4884 !important;
+}
+
 /*Green color buttons*/
 
 .assistive-mode .cssbutton.green:not(.transparent):not(.nontransparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder),
@@ -66,13 +95,29 @@
     border: 1px solid #096D19 !important;
 }
 
-.assistive-mode .hasFDX .top-nav
+.assistive-mode #popupcart .qtyinput .quantity_minus, 
+.assistive-mode #popupcart .qtyinput .quantity_plus
+{
+	
+	background-color: transparent !important;
+	border: none !important;
+    
+}
+
+.assistive-mode[data-iscorporateuser="false"] .hasFDX .top-nav
 {
 	
 	background-color: #096D19 !important;
 }
+
+.assistive-mode[data-iscorporateuser="true"] .hasFDX .top-nav
+{
+	
+	background-color: #627387 !important;
+}
+
 .assistive-mode .cssbutton.green:hover:not(.transparent):not(.nontransparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder), 
-.assistive-mode .hasFDX .top-item-link a:hover,
+.assistive-mode[data-iscorporateuser="false"] .hasFDX .top-item-link a:hover,
 .assistive-mode .qtyinput .quantity_minus:hover, 
 .assistive-mode .qtyinput .quantity_plus:hover
 {
@@ -80,16 +125,25 @@
     border-color: #098A1E !important;
 }
 
+.assistive-mode[data-iscorporateuser="true"] .hasFDX .top-item-link a:hover{
+	background-color: #4B5E68 !important;
+}
+
 .assistive-mode .cssbutton.green:active:not(.transparent):not(.nontransparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder), 
-.assistive-mode .hasFDX .top-item-link a:active,
+.assistive-mode[data-iscorporateuser="false"] .hasFDX .top-item-link a:active,
 .assistive-mode .qtyinput .quantity_minus:active, 
 .assistive-mode .qtyinput .quantity_plus:active
 {
 	background-color: #096D19 !important;
 }
 
+.assistive-mode[data-iscorporateuser="true"] .hasFDX .top-item-link a:active{
+	
+	background-color: #4B5E68 !important;
+}
+
 .assistive-mode .cssbutton.green:focus:not(.transparent):not(.nontransparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder), 
-.assistive-mode .hasFDX .top-item-link a:focus,
+.assistive-mode[data-iscorporateuser="false"] .hasFDX .top-item-link a:focus,
 .assistive-mode .qtyinput .quantity_minus:focus, 
 .assistive-mode .qtyinput .quantity_plus:focus
 {
@@ -98,16 +152,30 @@
     box-shadow: 0 0 1px #bbbbbb, 0 0 8px #bbbbbb !important;
 }
 
+.assistive-mode[data-iscorporateuser="true"] .hasFDX .top-item-link a:focus{
+	background-color: #4B5E68 !important;
+	
+}
+
+.assistive-mode table.tsHeaderE,.assistive-mode .tsHeaderE{
+	background-color: #096D19 !important;
+}
+
 .assistive-mode .hasFDX .gnav-footer
 {
 	background-color: #096D19 !important;
     border: 1px solid #096D19 !important;
 }
 
-.assistive-mode .touched[data-component="globalnav-item"],
-.assistive-mode [data-component="globalnav-item"]:hover{
+.assistive-mode[data-iscorporateuser="false"] .touched[data-component="globalnav-item"],
+.assistive-mode[data-iscorporateuser="false"] [data-component="globalnav-item"]:hover{
 	
 	background-color: #098A1E !important;
+}
+.assistive-mode[data-iscorporateuser="true"] .touched[data-component="globalnav-item"],
+.assistive-mode[data-iscorporateuser="true"] [data-component="globalnav-item"]:hover{
+	
+	background-color: #4B5E68 !important;
 }
 
 .assistive-mode .hasFDX .gnav-footer a.link:hover
@@ -129,9 +197,6 @@
 /*     box-shadow: 0 0 1px #bbbbbb, 0 0 8px #bbbbbb !important; */
 }
 
-.assistive-mode .modify-order-bar a.cssbutton.orange.cancel-changes-link {
-    border: 1px solid #fff !important;
-}
 .assistive-mode button#topInputFindButton_fdx{
 	background-color: #096D19 !important;
     border: 1px solid #096D19 !important;
@@ -150,4 +215,248 @@
     background-color: #098A1E !important;
     border-color: rgba(0,0,0,0.4) !important;
     box-shadow: 0 0 1px #bbbbbb, 0 0 8px #bbbbbb !important;
+}
+
+.assistive-mode #menupopup input[type="radio"]:checked + span,
+.assistive-mode section.main .leftnav .menuBox input[type="radio"]:checked + span {
+    background-color: #096D19 !important;
+}
+
+.assistive-mode[data-iscorporateuser="false"] .hasFDX [data-component="globalnav"] a[data-highlight="on"] {
+    background-color: #098A1E !important;
+}
+
+.assistive-mode[data-iscorporateuser="true"] .hasFDX [data-component="globalnav"] a[data-highlight="on"] {
+    background-color: #4B5E68 !important;
+}
+
+.assistive-mode[data-iscorporateuser="false"] .hasFDX [data-component="globalnav"] .bottom-nav [data-highlight="on"]{
+	  
+   background-color: #edf5ee!important;
+}
+
+.assistive-mode .selected_color {
+    background-color: #098A1E !important;
+}
+
+.assistive-mode .globalNavigation .green-skin{
+	background-color:#096D19 !important;
+}
+
+.assistive-mode .globalNavigation .item-skin-hovered,
+.assistive-mode .globalNavigation .item-skin-hover:hover{
+	background-color:#098A1E !important;
+
+}
+
+.assistive-mode input#signupbtn,
+.assistive-mode input#signinbtn,
+.assistive-mode #sulCont input[type="submit"]{
+	background-color: #096D19 !important;
+}
+
+.assistive-mode input#signupbtn:hover,
+.assistive-mode input#signinbtn:hover {
+    background-color: #098A1E !important;
+    border-color: #098A1E !important;
+}
+
+.assistive-mode .green_background{
+	background-color: #096D19 !important;
+}
+
+.assistive-mode .content-tittle-text-banner{
+	background-color:#AF3D08 !important;
+}
+
+.assistive-mode input#signupbtn:focus,
+.assistive-mode input#signinbtn:focus {
+    background-color: #098A1E !important;
+    border-color: rgba(0,0,0,0.4) !important;
+    box-shadow: 0 0 1px #bbbbbb, 0 0 8px #bbbbbb !important;
+}
+.assistive-mode #selectAddressList-menu .ui-state-focus, 
+.assistive-mode #selectAddressList-menu .locabar-check-text{
+	color: #408245 !important;
+}
+
+.assistive-mode .locabar-right-sections .locabar-section:hover,
+.assistive-mode .locabar-right-sections .locabar-section:hover > a,
+.assistive-mode .locabar-section:hover #locabar_user_trigger > a,
+.assistive-mode .locabar-section:hover #locabar_user_trigger > a:active,
+.assistive-mode .locabar-section:hover #locabar_user_trigger > a:focus,
+.assistive-mode .locabar-section:hover #locabar_user_trigger > a:visited, 
+/* .assistive-mode .locabar-right-sections .locabar-section:hover .locabar_triggers_menuitem a */
+{
+	color: #408245 !important;
+}
+
+.assistive-mode .content-module.editorial-module.product-carousel .editorial-content .learn-more button{
+	color: #b93d3f !important;
+}
+
+
+.assistive-mode #locabar_addresses .locabar_addresses-dlvadd-edit:hover,
+.assistive-mode #locabar_addresses .locabar_addresses-ts-info:hover,
+.assistive-mode #locabar_addresses .locabar_addresses-dlvadd-edit:focus,
+.assistive-mode #locabar_addresses .locabar_addresses-ts-info:focus{
+	 background-color: #098A1E !important;
+	 outline:none !important;
+}
+
+.assistive-mode #locabar_addresses .section-header{
+	background-color:#096D19 !important;
+}
+
+.assistive-mode .cssbutton.fdxgreen{
+	background-color:#096D19 !important;
+}
+
+.assistive-mode section.main .leftnav .menuBox input[type="radio"]:checked + span{
+	background-color:#096D19 !important;
+}
+
+/* modify order bar */
+.assistive-mode .modify-order-bar {
+	    background-color: #AF3D08 !important;	
+}
+
+
+.assistive-mode #locationbar-sticky-wrapper .disableCart .locabar-user-section[data-signedin="true"],
+.assistive-mode #locationbar-sticky-wrapper .locabar-user-section[data-signedin="true"]:hover,
+.assistive-mode #locationbar-sticky-wrapper .disableCart .locabar-popupcart-section,
+.assistive-mode #locationbar-sticky-wrapper .locabar-popupcart-section:hover,
+.assistive-mode #locationbar-sticky-wrapper .locabar-right-sections .locabar-section:hover{
+	background-color: #D04A0A !important;
+}
+
+.assistive-mode .Container_Top_YourAccount{
+	color: #AF3D08 !important;
+}
+
+.assistive-mode #locationbar-sticky-wrapper .locabar-user-section[data-signedin="true"]:focus,
+.assistive-mode #locationbar-sticky-wrapper .locabar-popupcart-section:focus,
+.assistive-mode #locationbar-sticky-wrapper .locabar-right-sections .locabar-section:focus{
+	background-color: #D04A0A !important;
+}
+
+.assistive-mode #atpfailure .lineHeaderRight{
+	   
+	    background-color: #096D19 !important;	
+}
+
+.assistive-mode #popupcart .footer .save-amount{
+	    color: #AF3D08 !important;
+}
+
+.assistive-mode #popupcart a.cart{
+	    color: #408244;
+}
+
+.assistive-mode #locationbar-sticky-wrapper .locabar-circle-cont{
+	color: #C35009 !important;
+    background-color: #ffffff !important;
+    border: 2px solid #C35009 !important;
+}
+
+.assistive-mode .content-module .module-header .module-text-banner{
+	background-color: #AF3D08 !important;
+}
+
+.assistive-mode .locabar-circle-cont{
+	   background-color: #096D19 !important;
+	   color: #fff;
+       border: 2px solid #fff;
+}
+
+.assistive-mode .orderTotal td{
+    background-color: #7C4884 !important;
+}
+
+.assistive-mode h3.menuName a{
+	color: #3C7C41 !important;
+	
+}
+
+.assistive-mode .bottom-nav{
+	background-color: #fff !important;
+}
+
+.assistive-mode .bottom-nav .bottom-nav-items .bottom-item a:link{
+	color: #333 !important;
+}
+
+.assistive-mode .locabar-tab-cos span,
+.assistive-mode .locabar-tab-cos-cont:hover .locabar-tab-cos span,
+.assistive-mode .locabar-tab-cos-cont:focus .locabar-tab-cos span{
+	    color:#7C4884;
+}
+
+.assistive-mode .subdepartments > li > span > a:link,
+.assistive-mode .subdepartments > li > span > a:visited,
+.assistive-mode .subdepartments > li > span > a:hover,
+.assistive-mode .subdepartments > li > span > a:active{
+	color: #333 !important;
+}
+
+.assistive-mode .bottom-nav .bottom-nav-items .bottom-item a:focus{
+	    background-color: #edf5ee !important;
+}
+
+.assistive-mode .bottom-nav .bottom-nav-items .bottom-item a:hover{
+	    background-color: #edf5ee !important;
+}
+
+.assistive-mode .bottom-nav .bottom-nav-items .bottom-item a:visited{
+	color:#333 !important;
+}
+
+.assistive-mode [data-component="carousel"] ul.pager li.current span {
+    background-color:#9C9C91 !important;
+}
+
+.assistive-mode .portrait-item-unit-price,
+.assistive-mode .portrait-item .portrait-item-price s{
+	color:#333 !important;
+}
+.assistive-mode .cssbutton.orange.transparent:not(.nontransparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder){
+	color: #C35009 !important;
+}
+.assistive-mode .cssbutton.green.transparent:not(.nontransparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder){
+    color: #408245 !important;
+}
+.assistive-mode .cssbutton.purple:not(.nontransparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder):not([data-active]),
+.assistive-mode .cssbutton.purple.transparent:not(.nontransparent):not(.disabled):not([disabled]):not(.full-transparent):not(.purpleborder):not([data-active]){
+        color: #9E5EA6 !important;
+}
+/* .assistive-mode .locabar-circle-cont{ */
+/* 	background-color:#096D19 !important; */
+/* } */
+.assistive-mode #locabar_addresses{
+	background-color:#fff !important;
+}
+.assistive-mode :not(.cssbutton).orange{
+	color: #AF3D08 !important;
+}
+.assistive-mode .ui-state-default{
+	color:#7C4884 !important;
+}
+.assistive-mode .orderbox .estimated{
+	color:#333;
+}
+.assistive-mode .footer__findout{
+	color:#333;
+}
+.assistive-mode h2.orderid a {
+    color: #4C7B4C;
+}
+ 
+.assistive-mode h2.orderid a:hover {
+    color: #3D7F48;
+}
+.assistive-mode h2.orderid a:focus {
+    color: #3D7F48;
+}
+.assistive-mode .qs-list-header p{
+	color:#333;
 }

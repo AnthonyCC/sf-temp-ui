@@ -10,7 +10,6 @@
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </HEAD>
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333" TOPMARGIN="0" LEFTMARGIN="0" MARGINWIDTH="0" MARGINHEIGHT="0">
-<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 
 <CENTER>
 <TABLE WIDTH="90%" CELLPADDING="0" CELLSPACING="0" BORDER="0">

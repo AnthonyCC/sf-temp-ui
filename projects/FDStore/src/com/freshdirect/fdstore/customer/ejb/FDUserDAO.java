@@ -1058,42 +1058,6 @@ public class FDUserDAO {
         }
     }
 
-    /* APPDEV-2475 DP T&C */
-    public static void storeDPTCViews(Connection conn, String customerId, int dpTcViewCount) {
-        PreparedStatement ps = null;
-        try {
-            ps = conn.prepareStatement("update CUST.CUSTOMERINFO set DP_TC_VIEWS=? where customer_id=?");
-            ps.setInt(1, dpTcViewCount);
-            ps.setString(2, customerId);
-            ps.execute();
-        } catch (Exception e) {
-            LOGGER.error("Error updating DPTCView count", e);
-        } finally {
-            try {
-                if (ps != null)
-                    ps.close();
-            } catch (Exception e1) {
-            }
-        }
-    }
-
-    public static void storeDPTCAgreeDate(Connection conn, String customerId, java.util.Date dpTcAgreeDate) {
-        PreparedStatement ps = null;
-        try {
-            ps = conn.prepareStatement("update CUST.CUSTOMERINFO set DP_TC_AGREE_DATE=? where customer_id=?");
-            ps.setTimestamp(1, new Timestamp(dpTcAgreeDate.getTime()));
-            ps.setString(2, customerId);
-            ps.execute();
-        } catch (Exception e) {
-            LOGGER.error("Error updating DP_TC_AGREE_DATE date", e);
-        } finally {
-            try {
-                if (ps != null)
-                    ps.close();
-            } catch (Exception e1) {
-            }
-        }
-    }
 
     public static FDUserI saveExternalCampaign(Connection conn, FDUserI user) {
         PreparedStatement ps = null;
@@ -1219,25 +1183,6 @@ public class FDUserDAO {
         }
 
         return ipLocatorEventDTO;
-    }
-
-    private final static String PROFILE_FEATURE_CHECK_QUERY = "select p.profile_value from cust.customer c, cust.fdcustomer fdc, cust.profile p "
-            + " where c.id=? and c.id=fdc.erp_customer_id and P.CUSTOMER_ID=fdc.id " + " and P.PROFILE_NAME=?";// 'siteFeature.Paymentech'
-
-    public static boolean isFeatureEnabled(Connection conn, String customerId, String feature) throws SQLException {
-        boolean isFeatureEnabled = false;
-        PreparedStatement ps = conn.prepareStatement(PROFILE_FEATURE_CHECK_QUERY);
-        ps.setString(1, customerId);
-        ps.setString(2, feature);
-        ResultSet rs = ps.executeQuery();
-
-        if (rs.next()) {
-            isFeatureEnabled = "true".equalsIgnoreCase(rs.getString(1)) ? true : false;
-        }
-        rs.close();
-        ps.close();
-
-        return isFeatureEnabled;
     }
 
     private static final String ORDERSIZE_ESTIMATION_QUERY = "select Ceil(Avg(tbl.NUM_REGULAR_CARTONS)) CCOUNT, "

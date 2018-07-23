@@ -14,7 +14,6 @@
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333"  MARGINHEIGHT="0" MARGINWIDTH="0" TOPMARGIN="0" LEFTMARGIN="0" onLoad="window.focus()">
-<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="550">
 <TR VALIGN="TOP">
 <TD COLSPAN="3" WIDTH="550"><A HREF="javascript:window.reallyClose();"><img src="/media_stat/images/template/pop_up_header_lg.gif" width="550" height="43" border="0" alt="FreshDirect"></A><BR>

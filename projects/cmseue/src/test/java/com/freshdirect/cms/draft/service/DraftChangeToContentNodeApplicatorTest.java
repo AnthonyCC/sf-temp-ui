@@ -47,7 +47,7 @@ public class DraftChangeToContentNodeApplicatorTest {
         draftChange.setCreatedAt(System.currentTimeMillis());
         draftChange.setUserName("testUser");
         draftChange.setValue("draft_overriden_full_name");
-        
+
         Mockito.when(contentTypeInfoService.findAttributeByName(productKey.type, ContentTypes.Product.FULL_NAME.getName()))
                 .thenReturn(Optional.fromNullable(ContentTypes.Product.FULL_NAME));
 
@@ -86,7 +86,7 @@ public class DraftChangeToContentNodeApplicatorTest {
     @Test
     public void testGetContentKeysFromSingleRelationshipValue() {
         ContentKey relationshipTarget = ContentKeyFactory.get(ContentType.Sku, "sku_target");
-        
+
         List<ContentKey> results = DraftApplicatorService.getContentKeysFromRelationshipValue(relationshipTarget.toString());
 
         Assert.assertFalse(results.isEmpty());
@@ -164,7 +164,7 @@ public class DraftChangeToContentNodeApplicatorTest {
         draftChange.setContentKey(productKey.toString());
         draftChange.setCreatedAt(System.currentTimeMillis());
         draftChange.setUserName("testUser");
-        draftChange.setValue(null);
+        draftChange.setValue(null); // null value marks deleted value
 
         Mockito.when(contentTypeInfoService.findAttributeByName(productKey.type, ContentTypes.Product.PREFERRED_SKU.getName()))
                 .thenReturn(Optional.fromNullable(ContentTypes.Product.PREFERRED_SKU));
@@ -177,7 +177,7 @@ public class DraftChangeToContentNodeApplicatorTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testApplyDraftChangeToNodeWhenDraftChangeValueIsNullAndAttributeIsRelationshipMany() {
+    public void testApplyDraftChangeToNodeWhenDraftChangeValueIsEmptyAndAttributeIsRelationshipMany() {
         ContentKey productKey = ContentKeyFactory.get(ContentType.Product, "test_product");
 
         Map<Attribute, Object> node = new HashMap<Attribute, Object>();
@@ -187,7 +187,7 @@ public class DraftChangeToContentNodeApplicatorTest {
         draftChange.setContentKey(productKey.toString());
         draftChange.setCreatedAt(System.currentTimeMillis());
         draftChange.setUserName("testUser");
-        draftChange.setValue(null);
+        draftChange.setValue(DraftApplicatorService.EMPTY_LIST_TOKEN);
 
         Mockito.when(contentTypeInfoService.findAttributeByName(productKey.type, ContentTypes.Product.PRIMARY_HOME.getName()))
                 .thenReturn(Optional.fromNullable(ContentTypes.Product.PRIMARY_HOME));

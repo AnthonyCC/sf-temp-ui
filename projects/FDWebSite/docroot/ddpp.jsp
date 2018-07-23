@@ -11,7 +11,6 @@
 %><%@ page import='com.freshdirect.framework.util.NVL'
 %><%@ page import='com.freshdirect.framework.util.log.LoggerFactory'
 %><%@ page import='com.freshdirect.framework.webapp.*'
-%><%@ page import='com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil'
 %><%@ page import='com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil'
 %><%@ page import='com.freshdirect.webapp.util.ConfigurationContext'
 %><%@ page import='com.freshdirect.webapp.util.ConfigurationStrategy'
@@ -469,7 +468,6 @@ if (categoryModel != null) {
 	<tmpl:put name="noResult"><%= search.getProducts().isEmpty() && search.getRecipes().isEmpty() ? "noresult" : "hasresults" %></tmpl:put>
 	<tmpl:put name="startPage">resultpage</tmpl:put>
 	<tmpl:put name="productsOnly">products-only</tmpl:put>
-	<tmpl:put name="cmPageViewTag"><fd:CmPageView wrapIntoScriptTag="true" currentFolder="<%=currentFolder%>"/></tmpl:put>
 	<tmpl:put name="oas-header-1">
 		<div class="PPHeader" id='oas_PPHeader' ad-fixed-size="true" ad-size-height="100" ad-size-width="970">
 			<script type="text/javascript">

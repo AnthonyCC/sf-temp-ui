@@ -145,7 +145,7 @@ var dataLayer = window.dataLayer || [];
     pageType: function (pageData) {
       dataLayer.push({
         page_name: document.title,
-        page_type: pageData.pageType,
+        page_type: fd.gtm.getPageType(pageData),
         page_language: pageData.pageLanguage
       });
     },
@@ -180,6 +180,7 @@ var dataLayer = window.dataLayer || [];
       var product = productTransform(productData, null, {product: productData});
 
       delete product.list;
+      delete product.position;
 
       dataLayer.push({
         ecommerce: {
@@ -196,32 +197,33 @@ var dataLayer = window.dataLayer || [];
     ATCData: function (ATCData) { // + cartLineChange
       var productData = ATCData.productData,
           qty = parseInt(productData.quantity, 10) || 0,
+          product = {
+            // id: productData.id, // #AN-162
+            id: productData.sku,
+            name: deBrand(productData.name, productData.brand),
+            price: productData.price,
+            brand: productData.brand,
+            category: productData.category,
+            variant: productData.variant,
+            dimension3: ""+productData.newProduct,
+            sku: productData.sku,
+            dimension6: ""+true,
+            quantity: qty > 0 ? qty : -qty
+          },
           addRemoveData = {
-              products: [{
-                // id: productData.id, // #AN-162
-                id: productData.sku,
-                name: deBrand(productData.name, productData.brand),
-                price: productData.price,
-                brand: productData.brand,
-                category: productData.category,
-                variant: productData.variant,
-                dimension3: ""+productData.newProduct,
-                sku: productData.sku,
-                dimension6: ""+true,
-                position: fd.gtm.getPositionForProductId(productData.id),
-                quantity: qty > 0 ? qty : -qty
-              }]
+              products: [product]
           },
           ecommerce = {},
           event = qty > 0 ? 'addToCart' : 'removeFromCart';
 
       ecommerce[qty > 0 ? 'add' : 'remove'] = addRemoveData;
 
-      // add product list if it was added from a transactional popup
-      if (qty > 0 && document.querySelector('.portrait-item[data-product-id="'+productData.id+'"]')) {
+      // add product list + position only if it was added from a transactional popup
+      if (qty > 0 && document.querySelector('.portrait-item[data-product-id="'+productData.id+'"],.pdp-evenbetter-item[data-product-id="'+productData.id+'"]')) {
         addRemoveData.actionField = {
           list: fd.gtm.getListForProductId(productData.id)
         };
+        product.position = fd.gtm.getPositionForProductId(productData.id);
       }
 
       // send extra ATC-succes event for backward compatibility
@@ -349,7 +351,8 @@ var dataLayer = window.dataLayer || [];
                   sku: productData.sku,
                   dimension6: ""+true,
                   quantity: parseInt(productData.quantity, 10) || 0, // quantity should be an integer
-                  configuredPrice: productData.configuredPrice
+                  configuredPrice: productData.configuredPrice,
+                  lineItemTotal: productData.lineItemTotal
                 };
               }),
               delivery_type: getDeliveryType(coData.deliveryType),
@@ -590,7 +593,7 @@ var dataLayer = window.dataLayer || [];
 
   // product tile serialization
   fd.gtm.getProductData = function (productEl, listData) {
-    var productE = $(productEl).closest('[data-component="product"]'),
+    var productE = $(productEl).closest('[data-component="product"],[data-compontent="evenBetterItem"]'),
         productId = productE.attr('data-product-id'),
         productData;
 
@@ -598,10 +601,10 @@ var dataLayer = window.dataLayer || [];
       productE = $('[data-product-id="'+productId+'"]').first();
     }
 
-    productData = fd.modules.common.productSerialize(productE)[0];
+    productData = fd.modules.common.productSerialize(productE)[0] || {};
 
     productData.brand = productE.find('.portrait-item-header-name').first().find('b').text();
-    productData.name = productData.brand ? productE.find('.product-name-no-brand').first().text() : productE.find('.portrait-item-header-name').first().text();
+    productData.name = productData.brand ? productE.find('.product-name-no-brand').first().text() : productE.find('.portrait-item-header-name').first().text() || productE.find('.mealkit-products-list-item-head').first().text();
     productData.price = productE.attr('data-price');
     productData.in_stock = productE.attr('data-in-stock');
     productData.new_product = productE.attr('data-new-product');
@@ -610,11 +613,7 @@ var dataLayer = window.dataLayer || [];
     productData.list = fd.gtm.getListForProduct(productE, listData);
 
     if (!productData.position) {
-      $('[data-component="product"]').each(function (i, el) {
-        if (!productData.position && $(el).attr('data-product-id') === productE.attr('data-product-id')) {
-          productData.position = i+1;
-        }
-      });
+      productData.position = fd.gtm.getPositionForProductId(productId);
     }
 
     if (productE.hasClass('transactional-related-body')) {
@@ -712,13 +711,59 @@ var dataLayer = window.dataLayer || [];
     return window.google_tag_manager && window.google_tag_manager[GTMID];
   };
 
+  // pageType + special cases
+  // if two lines matches the later one wins
+  fd.gtm.PAGETYPES_PATH = {
+    "^/$": "HOMEPAGE",
+    "^/favorite.jsp": "REORDER",
+    "^/social/.*uccess.jsp": "REGISTER",
+    "^/login/": "LOGIN",
+    "^/help/": "HELP",
+    "^/gift_card/": "GIFT_CARDS"
+  };
+
+  fd.gtm.PAGETYPES_SEARCH = {
+    "id=wgd_": "WGD"
+  };
+
+  fd.gtm.getPageType = function (pageData) {
+    pageData = pageData || (fd.gtm.data && fd.gtm.data.googleAnalyticsData && fd.gtm.data.googleAnalyticsData.pageType) || {};
+
+    var pageType = pageData.pageType || 'NOT_RECOGNIZED';
+
+    // try pathname based matching
+    if (pageType.toUpperCase() === 'NOT_RECOGNIZED') {
+      Object.keys(fd.gtm.PAGETYPES_PATH).forEach(function (k) {
+        if (window.location.pathname.match(k)) {
+          pageType = fd.gtm.PAGETYPES_PATH[k];
+        }
+      });
+    }
+
+    // try query string based matching
+    if (pageType.toUpperCase() === 'NOT_RECOGNIZED') {
+      Object.keys(fd.gtm.PAGETYPES_SEARCH).forEach(function (k) {
+        if (window.location.search.match(k)) {
+          pageType = fd.gtm.PAGETYPES_SEARCH[k];
+        }
+      });
+    }
+
+    return pageType;
+  };
+
   // get list for product or product container
   fd.gtm.getListChannel = function (el, config) {
     var channel,
         urlPageType = fd.utils.getParameterByName('pageType'),
-        pageType = fd.gtm.data && fd.gtm.data.googleAnalyticsData && fd.gtm.data.googleAnalyticsData.pageType && fd.gtm.data.googleAnalyticsData.pageType.pageType || 'unknown',
+        pageType = (fd.gtm.getPageType() || 'unknown').toLowerCase(),
         isHookLogic = (el && $(el).hasClass('isHookLogicProduct')) || (config && config.product && config.product.clickBeacon),
         productData = fd.modules.common.productSerialize(el)[0];
+
+    // reorder changes for #AN-196
+    if (pageType === 'shopping_lists' || pageType === 'top_items' || pageType === 'past_orders') {
+      pageType = 'reorder';
+    }
 
     if (el && $(el).closest('#atpfailure').length) {
       channel = 'rec_atp';
@@ -738,7 +783,12 @@ var dataLayer = window.dataLayer || [];
       channel = 'rec_' + mvc[mvc.length - 1];
     } else {
       channel = urlPageType.toLowerCase() || pageType.toLowerCase();
-      channel = 'category_list#ecoupon#newproducts'.indexOf(channel) > -1 ? 'browse' : channel;
+
+      // browse like pages
+      channel = 'product_list#category_list#ecoupon#newproducts'.indexOf(channel) > -1 ? 'browse' : channel;
+
+      // pres_picks / staff_picks
+      channel = 'pres_picks#staff_picks'.indexOf(channel) > -1 ? 'rec_' + channel : channel;
     }
 
     return channel ? 'channel_' + channel : '';
@@ -748,35 +798,24 @@ var dataLayer = window.dataLayer || [];
     var urlPageType = fd.utils.getParameterByName('pageType'),
         productId = fd.utils.getParameterByName('productId'),
         searchParams = fd.utils.getParameterByName('searchParams'),
-        pageType = fd.gtm.data && fd.gtm.data.googleAnalyticsData && fd.gtm.data.googleAnalyticsData.pageType && fd.gtm.data.googleAnalyticsData.pageType.pageType || 'unknown',
+        pageType = fd.gtm.getPageType() || 'unknown',
         location = urlPageType || pageType || '';
 
     if (window.location.pathname.indexOf('/pdp.jsp') > -1 && productId) {
       location = 'pdp_' + productId;
     } else if ($('ul.breadcrumbs li').length) {
-      location = 'cat_' + safeName($('ul.breadcrumbs li').last().text());
+      location = 'cat_' + safeName($('ul.breadcrumbs li').toArray().map(function (li) { return li.textContent.toLowerCase(); }).join('_'));
     } else if (searchParams) {
       location = 'search_' + searchParams.toLowerCase().trim().replace(/\s+/g, '+');
-    } else if ($('ul.qs-tabs li .selected').length) {
-      location = 'reorder_' + safeName($('ul.qs-tabs li .selected').text());
     } else if (window.location.pathname.indexOf('/expresssearch.jsp') > -1 && el && $(el).closest('[data-searchresult]').length ) {
       location = 'expresssearch_' + safeName($(el).closest('[data-searchresult]').attr('data-searchresult'));
     } else {
       location = pageType.toLowerCase();
     }
 
-    // reorder - strange behavior fallback
-    if (location === 'top_items') {
-      location = 'reorder_your_top_items';
-    } else if (location === 'past_orders') {
-      location = 'reorder_your_past_orders';
-    } else if (location === 'shopping_lists') {
-      location = 'reorder_your_shopping_lists';
-    }
-
     // product
     if (el) {
-      el = $(el).closest('[data-component="product"]');
+      el = $(el).closest('[data-component="product"],[data-component="evenBetterItem"]');
     }
 
     // module position
@@ -859,11 +898,32 @@ var dataLayer = window.dataLayer || [];
   };
 
   fd.gtm.getPositionForProductId = function (id) {
-    var el = document.querySelector('[data-product-id="'+id+'"]'),
-        position = 1;
+    var el = $('[data-product-id="'+id+'"]').not('#transactionalPopup [data-component="product"]').first(),
+        position = 0,
+        browseContent, productList, parent, transactionalParent;
 
-    if (el && el.parentElement) {
-      position = Array.prototype.slice.call(el.parentElement.children).indexOf(el) + 1;
+    if (el.length) {
+      browseContent = $(el).closest('.browseContent');
+      productList = $(el).closest('#productlist');
+      transactionalParent = $(el).closest('.transactional');
+
+      if (browseContent.length) {
+        // browse / PLP display
+        position = $('.browseContent [data-component="product"]').not('.relatedItem [data-component="product"]').index(el) + 1;
+      } else if (productList.length) {
+        // reorder like pages
+        position = $('#productlist [data-component="product"]').not('.relatedItem [data-component="product"]').index(el) + 1;
+      } else if (transactionalParent.length) {
+        position = transactionalParent.find('[data-component="product"]').not('.relatedItem [data-component="product"]').index(el) + 1;
+      } else {
+        // etc. (carousel i.e.)
+        parent = $(el).parent();
+        position = parent.find('[data-component="product"],[data-component="evenBetterItem"]').not('.relatedItem [data-component="product"]').index(el) + 1;
+      }
+    }
+
+    if (position < 1) {
+      position = 1;
     }
 
     return position;
@@ -1283,18 +1343,23 @@ var dataLayer = window.dataLayer || [];
   }
 
   // product click
-  $(document).on('click', '[data-component="product"] a[href]', function (e) {
-	if(!(e.ctrlKey || e.shiftKey || e.metaKey || e.target.target == "_blank" || e.target.target == "_top")){
-	    e.preventDefault();
-	    var target = $(e.target).closest('a').prop('href'),
-	        productData = fd.gtm.getProductData(e.target),
-	        goToProduct = function () {
-	          window.location.assign(target);
-	        };
-	
-	    // failsafe
-	    var goTimeout = setTimeout(goToProduct, 300);
-	}
+  $(document).on('click', '[data-component="product"] a[href],[data-component="evenBetterItem a[href]"]', function (e) {
+    var target = $(e.target).closest('a').prop('href'),
+        productData = fd.gtm.getProductData(e.target),
+        goToProduct = function () {
+          window.location.assign(target);
+        },
+        goTimeout = null,
+        needRedirect = false;
+
+    // redirect only for "normal" clicks
+    if(!(e.ctrlKey || e.shiftKey || e.metaKey || e.target.target === "_blank" || e.target.target === "_top")){
+      e.preventDefault();
+      needRedirect = true;
+
+      // failsafe
+      goTimeout = setTimeout(goToProduct, 300);
+    }
 
     fd.gtm.updateDataLayer({
       ecommerce: {
@@ -1319,48 +1384,49 @@ var dataLayer = window.dataLayer || [];
       }
     }, {
       event: 'productClick',
-      callback: function () {
-    	if(!(e.ctrlKey || e.shiftKey || e.metaKey || e.target.target == "_blank" || e.target.target == "_top")){
-	        if (goTimeout) {
-	          clearTimeout(goTimeout);
-	          goTimeout = null;
-	        }
-	        goToProduct();
-    	}
-      }
+      callback: needRedirect && (function () {
+        if (goTimeout) {
+          clearTimeout(goTimeout);
+          goTimeout = null;
+        }
+        goToProduct();
+      })
     });
 
   });
 
   // top nav click
   $(document).on('click', '[data-component="globalnav-menu"] a, .bottom-nav a', function (e) {
-	if(!(e.ctrlKey || e.shiftKey || e.metaKey || e.target.target == "_blank" || e.target.target == "_top")){
-		e.preventDefault();
-	    var target = $(e.target).closest('a').prop('href'),
-	        title = $(e.target).closest('a').text(),
-	        goToTarget = function () {
-	          window.location.assign(target);
-	        };
-	
-	    // failsafe
-	    var goTimeout = setTimeout(goToTarget, 300);
-	}
-	
+    var target = $(e.target).closest('a').prop('href'),
+        title = $(e.target).closest('a').text(),
+        goToTarget = function () {
+          window.location.assign(target);
+        },
+        goTimeout = null,
+        needRedirect = false;
+
+    // redirect only for "normal" clicks
+    if(!(e.ctrlKey || e.shiftKey || e.metaKey || e.target.target === "_blank" || e.target.target === "_top")){
+      e.preventDefault();
+      needRedirect = true;
+
+      // failsafe
+      goTimeout = setTimeout(goToTarget, 300);
+    }
+
     fd.gtm.updateDataLayer({
       topNavClick: {
         title: title
       }
     }, {
       event: 'top-menu-clicked',
-      callback: function () {
-    	if(!(e.ctrlKey || e.shiftKey || e.metaKey || e.target.target == "_blank" || e.target.target == "_top")){
-	        if (goTimeout) {
-	          clearTimeout(goTimeout);
-	          goTimeout = null;
-	        }
-	        goToTarget();
-    	}
-      }
+      callback: needRedirect && (function () {
+        if (goTimeout) {
+          clearTimeout(goTimeout);
+          goTimeout = null;
+        }
+        goToTarget();
+      })
     });
 
   });

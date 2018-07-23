@@ -1,15 +1,22 @@
 package com.freshdirect.ecomm.gateway;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.ejb.FinderException;
 
 import org.apache.log4j.Category;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.customer.CustomerRatingI;
@@ -24,6 +31,7 @@ import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpShippingInfo;
+import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.ecomm.converter.CustomerRatingConverter;
 import com.freshdirect.ecomm.converter.ErpFraudPreventionConverter;
@@ -31,15 +39,20 @@ import com.freshdirect.ecomm.converter.FDActionInfoConverter;
 import com.freshdirect.ecomm.converter.SapGatewayConverter;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
+import com.freshdirect.ecommerce.data.dlv.FDReservationData;
+import com.freshdirect.ecommerce.data.erp.inventory.FDAvailabilityData;
+import com.freshdirect.ecommerce.data.order.CancelOrderRequestData;
 import com.freshdirect.ecommerce.data.order.CreateOrderRequestData;
 import com.freshdirect.ecommerce.data.order.ModifyOrderRequestData;
 import com.freshdirect.ecommerce.data.order.OrderSearchCriteriaRequest;
-import com.freshdirect.ecommerce.data.temails.SendMailData;
+import com.freshdirect.fdstore.FDEcommServiceException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.atp.FDAvailabilityI;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.EnumPaymentMethodType;
+import com.freshdirect.payment.service.ModelConverter;
 
 public class OrderResourceApiClient extends AbstractEcommService implements
 		OrderResourceApiClientI {
@@ -65,7 +78,7 @@ private static OrderResourceApiClient INSTANCE;
 	private static final String CREATE_DON_ORDER_API = 	"orders/don/create";
 	private static final String CREATE_REG_ORDER_API = 	"orders/reg/create";
 	private static final String MODIFY_REG_ORDER_API = 	"orders/reg/modify";
-	
+	private static final String CANCEL_REG_ORDER_API = 	"orders/reg/cancel";
 	private static final String MODIFY_AUTORENEW_ORDER_API = 	"orders/sub/modify";
 	
 	public static OrderResourceApiClient getInstance() {
@@ -505,4 +518,113 @@ private static OrderResourceApiClient INSTANCE;
 	
 		
 	}
+
+	@Override
+	public FDReservationData cancelOrder(FDActionInfo info, String saleId,
+			boolean sendEmail, int currentDPExtendDays,
+			boolean restoreReservation) {
+
+		Request<CancelOrderRequestData> request = new Request<CancelOrderRequestData>();
+
+		try {
+
+			CancelOrderRequestData data = new CancelOrderRequestData(
+					FDActionInfoConverter.buildActionInfoData(info), saleId,
+					sendEmail, currentDPExtendDays, restoreReservation);
+			request.setData(data);
+
+			String inputJson = buildRequest(request);
+			String response = postData(inputJson, getFdCommerceEndPoint(CANCEL_REG_ORDER_API), String.class);
+			Response<FDReservationData> responseWrapper = getMapper().readValue(response, new TypeReference<Response<FDReservationData>>() { });
+			
+			return parseResponse(responseWrapper);
+			
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+
+	}
+
+	
+
+	private static final String ORDER_CHECK_AVAILABILITY = 	"orders/checkAvailability";
+	private static final String ORDER_RESUBMIT = 	"orders/resubmit";
+	
+	@Override
+	public Map<String, FDAvailabilityI> checkAvailability(FDIdentity identity,
+			ErpCreateOrderModel createOrder, long timeout, String isFromLogin) {
+
+		Request<ObjectNode> request = new Request<ObjectNode>();
+		ObjectNode rootNode = getMapper().createObjectNode();
+		rootNode.set("info", getMapper().convertValue(SapGatewayConverter.buildOrderData(createOrder), JsonNode.class));
+		rootNode.set("identity", getMapper().convertValue(identity, JsonNode.class));
+		rootNode.put("timeout", timeout);
+		rootNode.put("isFromLogin", isFromLogin);
+		request.setData(rootNode);
+		Response<Map<String, FDAvailabilityData>> info=null;
+		Map<String, FDAvailabilityI> data = null;
+		String inputJson;
+		try {
+			inputJson = buildRequest(request);
+			String response = postData(inputJson, getFdCommerceEndPoint(ORDER_CHECK_AVAILABILITY), String.class);
+			info = getMapper().readValue(response, new TypeReference<Response<Map<String, FDAvailabilityData>>>() { });
+			data = new HashMap();
+			for(String key:info.getData().keySet()){
+				data.put(key, ModelConverter.buildAvailableModelFromData(info.getData().get(key)));
+			}
+			
+		} catch (FDEcommServiceException e) {
+			e.printStackTrace();
+		}catch (FDResourceException e) {
+			e.printStackTrace();
+		}catch(JsonMappingException e){
+			e.printStackTrace();
+		}catch(JsonParseException e){
+			e.printStackTrace();
+		}catch (IOException e){
+			e.printStackTrace();
+
+		}
+		return data;
+	}
+
+	@Override
+	public void resubmitOrder(String saleId, CustomerRatingI cra,
+			EnumSaleType saleType, String deliveryRegionId)
+			throws ErpTransactionException,RemoteException {
+
+		Request<ObjectNode> request = new Request<ObjectNode>();
+		ObjectNode rootNode = getMapper().createObjectNode();
+		rootNode.set("customerRating", getMapper().convertValue(CustomerRatingConverter.buildCustomerRatingData(cra), JsonNode.class));
+		rootNode.put("saleType", saleType.getSaleType());
+		rootNode.put("saleId", saleId);
+		rootNode.put("regionId", deliveryRegionId);
+		request.setData(rootNode);
+		Response<String> info=null;
+		String inputJson;
+		try {
+			inputJson = buildRequest(request);
+			String response = postData(inputJson, getFdCommerceEndPoint(ORDER_RESUBMIT), String.class);
+			info = getMapper().readValue(response, new TypeReference<Response<String>>() { });
+			
+			if(!info.getResponseCode().equals("OK"))
+				throw new ErpTransactionException(info.getMessage());
+					
+		} catch (FDEcommServiceException e) {
+			e.printStackTrace();
+			throw new RemoteException(e.getMessage(), e);
+		}catch (FDResourceException e) {
+			e.printStackTrace();
+		}catch(JsonMappingException e){
+			e.printStackTrace();
+		}catch(JsonParseException e){
+			e.printStackTrace();
+		}catch (IOException e){
+			e.printStackTrace();
+
+		}
+	}
+	
 }

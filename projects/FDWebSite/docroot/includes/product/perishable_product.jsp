@@ -10,7 +10,6 @@
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.content.nutrition.*'%>
 <%@ page import='com.freshdirect.framework.webapp.*' %>
-<%@ page import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil"%>
 <%@ page import='java.net.URLEncoder' %>
 <%@ page import='java.util.*' %>
 <%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'%>

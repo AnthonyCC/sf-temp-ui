@@ -94,7 +94,8 @@ public interface FDCartLineI extends FDProductSelectionI {
 	
 	public Set<EnumDlvRestrictionReason> getApplicableRestrictions();
 	
-	public String getOrderLineId();
+	@Override
+    public String getOrderLineId();
 	public void setOrderLineId(String orderLineId);
 	public String getOrderLineNumber();
 	
@@ -165,7 +166,8 @@ public interface FDCartLineI extends FDProductSelectionI {
 	public double getActualPrice();
 	
 	//Returns the zone under which this product has been priced.
-	public UserContext getUserContext();
+	@Override
+    public UserContext getUserContext();
 	
 	public void setCartonNumber(String no);
 	public String getCartonNumber();
@@ -181,16 +183,10 @@ public interface FDCartLineI extends FDProductSelectionI {
 	public void setTaxationType(EnumTaxationType taxationType) ;	
 	@Deprecated	public void setCouponApplied(boolean applied);
 	@Deprecated	public boolean hasCouponApplied();
-	public String getCoremetricsPageId();
-	public void setCoremetricsPageId(String coremetricsPageId);
-	public String getCoremetricsPageContentHierarchy();
-	public void setCoremetricsPageContentHierarchy(String coremetricsPageContentHierarchy);
 	public void setAddedFrom(EnumATCContext atcContext) ;
 	public EnumATCContext getAddedFrom();
 	public String getAtcItemId();
 	public void setAtcItemId(String atcItemId);
-	public String getCoremetricsVirtualCategory();
-	public void setCoremetricsVirtualCategory(String coremetricsVirtualCategory);
 	public void setEStoreId(EnumEStoreId eStore);
 	public EnumEStoreId getEStoreId();
 	public void setPlantId(String plantId);

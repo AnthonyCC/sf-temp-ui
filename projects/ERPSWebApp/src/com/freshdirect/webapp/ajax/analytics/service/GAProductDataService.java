@@ -29,19 +29,19 @@ public class GAProductDataService {
 
         data.setId(product.getContentName());
         data.setName(product.getFullName());
-        data.setPrice(Double.toString(product.getPriceCalculator().getDefaultPriceValue()));
+        data.setPrice(ProductModel.CURRENCY_FORMAT.format(product.getPriceCalculator().getDefaultPriceValue()));
         data.setBrand(product.getPrimaryBrandName());
         data.setCategory(product.getCategory().getContentName());
         data.setVariant(cartLine.getVariantId());
         data.setNewProduct(Boolean.toString(product.isNew()));
         data.setSku(product.getDefaultSkuCode());
         data.setQuantity(roundQuantity(quantity));
-        String salesUnit = cartLine.getSalesUnit();
-        if (salesUnit == null || "ea".equalsIgnoreCase(salesUnit)) {
+        if (!cartLine.isEstimatedPrice()) {
             data.setConfiguredPrice(data.getPrice());
         } else {
-            data.setConfiguredPrice(Double.toString(cartLine.getConfiguredPrice()));
+            data.setConfiguredPrice(ProductModel.CURRENCY_FORMAT.format(cartLine.getConfiguredPrice()));
         }
+        data.setActualPrice(ProductModel.CURRENCY_FORMAT.format(cartLine.getActualPrice()));
         return data;
     }
 

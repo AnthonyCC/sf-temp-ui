@@ -186,7 +186,6 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
     </tr>
     </table>
     <%@ include file="/includes/i_cart_confirm_bottom.jspf"%>
-    <fd:CmShop5 wrapIntoScriptTag="true" cart="<%=cart%>"/>
 </tmpl:put>
 </tmpl:insert>
 </fd:FDShoppingCart>

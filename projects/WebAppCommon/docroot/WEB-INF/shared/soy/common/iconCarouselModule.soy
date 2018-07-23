@@ -3,6 +3,8 @@
 /**
  * @param moduleData
  * @param data
+ * @param? abFeatures
+ * @param? mobWeb
  */
 {template .iconCarouselModule}
 {if $data.icons and length($data.icons) > 0}
@@ -15,10 +17,12 @@
     {/call}
   	<div class="content {if  not $moduleData.contentTitle and not $moduleData.contentTitleTextBanner and $moduleData.hideViewAllButton} border-top {/if}">
   		{call common.simpleCarousel}
-  			{param isIconCarousel: true /}
-  			{param items: $data.icons /}
-        {param moduleData: $moduleData /}
-  			{param itemType:'grid' /}
+				{param isIconCarousel: true /}
+				{param items: $data.icons /}
+				{param moduleData: $moduleData /}
+				{param itemType:'grid' /}
+				{param mobWeb:$mobWeb /}
+				{param abFeatures:$abFeatures /}
   		{/call}
   	</div>
   </div>

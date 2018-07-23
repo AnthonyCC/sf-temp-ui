@@ -38,7 +38,6 @@
 <!--[if gt IE 8]><!-->
 	<body class="searchpage <tmpl:get name="activeTab"/>-active <tmpl:get name="activeView"/>-view <tmpl:get name="noResult"/> <tmpl:get name="startPage"/>">
 <!--<![endif]-->
-		<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 		<%@ include file="/common/template/includes/globalnav.jspf" %>
 	    <div id="content_top" class="content-header container" style="margin-top:10px">
 	    	<div class="orange eagle top content-header-height-coupons result-text">

@@ -311,6 +311,7 @@ public class FDStoreProperties {
 
     // multi-search
     private static final String MULTI_SEARCH_LIMIT = "fdstore.multisearch.limit";
+    private static final String MULTI_SEARCH_PRODUCT_PER_CAROUSEL = "fdstore.multisearch.productPerCarousel";
     private static final String MULTI_SEARCH_DEFAULT_LIST = "fdstore.multisearch.defaultlist";
 
     // COOL info
@@ -527,6 +528,8 @@ public class FDStoreProperties {
     private static final String PROP_ONE_MONTH_DELIVERY_PASS_SKU = "fdstore.onemonth.dp.sku";
     private static final String PROP_FDX_DELIVERY_PASS_SKU = "fdstore.fdx.dp.sku";
     private static final String PROP_FD_DELIVERY_PASS_SKU = "fdstore.fd.dp.sku";
+    private static final String PROP_MID_WEEK_SIX_MONTH_DELIVERY_PASS_SKU = "fdstore.midweek.sixmonth.dp.sku";
+
 
     // APPDEV-1850 build versioning of JavaScript/CSS files
     private static final String BUILDVER_ENABLE = "fdstore.buildver.enable";
@@ -607,20 +610,6 @@ public class FDStoreProperties {
     private final static String PROP_LIGHT_SIGNUP_ENABLED = "fdstore.signuplight.enabled";
     private final static String PROP_AJAX_SIGNUP_ENABLED = "fdstore.ajaxsignup.enabled";
     private final static String PROP_LIGHT_SIGNUP_ANTS_ENABLED = "fdstore.signuplight.ants.enabled";
-
-    // APPDEV-2394 Coremetrics Implementation
-    private final static String PROP_COREMETRICS_ENABLED = "fdstore.coremetrics.enabled";
-    private final static String PROP_COREMETRICS_CLIENT_ID = "fdstore.coremetrics.clientid";
-    private final static String PROP_COREMETRICS_DATA_COLLECTION_METHOD = "fdstore.coremetrics.datacollectionmethod";
-    private final static String PROP_COREMETRICS_DATA_COLLECTION_DOMAIN = "fdstore.coremetrics.datacollectiondomain";
-    private final static String PROP_COREMETRICS_COOKIE_DOMAIN = "fdstore.coremetrics.cookiedomain";
-    private final static String PROP_COREMETRICS_CATID_DIRS = "fdstore.coremetrics.catid.dirs";
-    private final static String PROP_COREMETRICS_CATID_BLOG = "fdstore.coremetrics.catid.blog";
-    private final static String PROP_COREMETRICS_CATID_OTHERPAGE = "fdstore.coremetrics.catid.otherpage";
-    private final static String PROP_COREMETRICS_FTP_URL = "fdstore.coremetrics.ftp.url";
-    private final static String PROP_COREMETRICS_FTP_PASSWORD = "fdstore.coremetrics.ftp.password";
-    private final static String PROP_COREMETRICS_FTP_SECURE = "fdstore.coremetrics.ftp.secure";
-    private final static String PROP_COREMETRICS_FTP_SFTP_PORT = "fdstore.coremetrics.ftp.sftpport";
 
     // APPDEV-2446 Bazaarvoice Implementation
     private final static String PROP_BAZAARVOICE_FTP_URL = "fdstore.bazaarvoice.ftp.url";
@@ -1340,6 +1329,7 @@ public class FDStoreProperties {
         defaults.put(SEARCH_GLOBALNAV_AUTOCOMPLETE_ENABLE, "false");
 
         defaults.put(MULTI_SEARCH_LIMIT, "25");
+        defaults.put(MULTI_SEARCH_PRODUCT_PER_CAROUSEL, "20");
         defaults.put(MULTI_SEARCH_DEFAULT_LIST, "eggs,milk,pizza,yogurt,butter,carrots,garlic,bread,onion,chicken");
 
         defaults.put(PROP_COOLINFO_REFRESH_PERIOD, "10");
@@ -1543,6 +1533,7 @@ public class FDStoreProperties {
         defaults.put(PROP_ONE_MONTH_DELIVERY_PASS_SKU, "mkt_dpss_onemonth");
         defaults.put(PROP_FDX_DELIVERY_PASS_SKU, "mkt_fk_dpss_onemonth");
         defaults.put(PROP_FD_DELIVERY_PASS_SKU, "");
+        defaults.put(PROP_MID_WEEK_SIX_MONTH_DELIVERY_PASS_SKU, "mkt_dpass_midweek");
 
         defaults.put(BUILDVER_ENABLE, "true");
 
@@ -1618,20 +1609,6 @@ public class FDStoreProperties {
         defaults.put(PROP_LIGHT_SIGNUP_ENABLED, "true");
         defaults.put(PROP_AJAX_SIGNUP_ENABLED, "true");
         defaults.put(PROP_LIGHT_SIGNUP_ANTS_ENABLED, "true");
-
-        // defaults for test environment
-        defaults.put(PROP_COREMETRICS_ENABLED, "true");
-        defaults.put(PROP_COREMETRICS_CLIENT_ID, "60391309");
-        defaults.put(PROP_COREMETRICS_DATA_COLLECTION_METHOD, "false");
-        defaults.put(PROP_COREMETRICS_DATA_COLLECTION_DOMAIN, "testdata.coremetrics.com");
-        defaults.put(PROP_COREMETRICS_COOKIE_DOMAIN, "freshdirect.com");
-        defaults.put(PROP_COREMETRICS_CATID_DIRS, "help,your_account,quickshop,checkout,gift_card,robin_hood,about,survey,login,site_access,registration,wine,4mm");
-        defaults.put(PROP_COREMETRICS_CATID_BLOG, "blog");
-        defaults.put(PROP_COREMETRICS_CATID_OTHERPAGE, "other_page");
-        defaults.put(PROP_COREMETRICS_FTP_URL, "ftp.coremetrics.com");
-        defaults.put(PROP_COREMETRICS_FTP_PASSWORD, "Delivers2u!");
-        defaults.put(PROP_COREMETRICS_FTP_SECURE, "false");
-        defaults.put(PROP_COREMETRICS_FTP_SFTP_PORT, "998");
 
         defaults.put(PROP_BAZAARVOICE_FTP_USERNAME, "freshdirect");
         defaults.put(PROP_BAZAARVOICE_FTP_URL, "ftp.bazaarvoice.com");
@@ -1722,6 +1699,8 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.browseaggregatedcategories1_0", "GLOBAL:ENABLED,false;");
         defaults.put("feature.rollout.debitCardSwitch", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.modOrderConfirmPageRedesign", "GLOBAL:ENABLED,false;");
+        
+        defaults.put("feature.rollout.productCard2018", "GLOBAL:ENABLED,false;");
 
         defaults.put(PROP_MEDIA_RENDER_UTILS_REALLY_CLOSE, "true");
         defaults.put(PROP_MEDIA_RENDER_UTILS_SOURCE_ENCODING, "ISO-8859-1");
@@ -1794,8 +1773,9 @@ public class FDStoreProperties {
         // Default reCaptcha Public & Private krys
         defaults.put(PROP_RECAPTCHA_PUBLIC_KEY, "6LdQn0YUAAAAALfZUrX-x4IeOmdUkkUrwMwZdhsd,6LcYYFAUAAAAAOWJFZgnZnVNNXr31rebRjsnoSA0,6LdeqGAUAAAAADpe35SKvHw9VMqGzI_E7Pg5UEQu");
         defaults.put(PROP_RECAPTCHA_PRIVATE_KEY, "6LdQn0YUAAAAAB3iHC6AzFH_Sd5k9z0uAwfvPUkZ,6LcYYFAUAAAAAGngTr3yIMpZbKPgBSlZhzf0uCwO,6LdeqGAUAAAAAM0srqZegq4Rr9-s-nnzCvQFckTO");
-        defaults.put(PROP_MAX_INVALID_LOGIN_ATTEMPT, "5");
-        defaults.put(PROP_MAX_INVALID_PAYMENT_ATTEMPT, "5");
+        defaults.put(PROP_MAX_INVALID_LOGIN_ATTEMPT, "1");
+		defaults.put(PROP_MAX_INVALID_SIGN_UP_ATTEMPT, "1");
+        defaults.put(PROP_MAX_INVALID_PAYMENT_ATTEMPT, "1");
         defaults.put(PROP_TIP_RANGE_CONFIG, "0,25,0.5;");
 
         defaults.put(SUB_DOMAIN, "");
@@ -3545,6 +3525,14 @@ public class FDStoreProperties {
         }
     }
 
+    public static int getMultiSearchProductPerCarousel() {
+        try {
+            return Integer.parseInt(get(MULTI_SEARCH_PRODUCT_PER_CAROUSEL));
+        } catch (Exception e) {
+            return 20;
+        }
+    }
+
     public static String getMultiSearchDefaultList() {
         return get(MULTI_SEARCH_DEFAULT_LIST);
     }
@@ -3903,54 +3891,6 @@ public class FDStoreProperties {
 
     public static boolean isLightSignupAntsEnabled() {
         return (Boolean.valueOf(get(PROP_LIGHT_SIGNUP_ANTS_ENABLED))).booleanValue();
-    }
-
-    public static boolean isCoremetricsEnabled() {
-        return (Boolean.valueOf(get(PROP_COREMETRICS_ENABLED))).booleanValue();
-    }
-
-    public static String getCoremetricsClientId() {
-        return get(PROP_COREMETRICS_CLIENT_ID);
-    }
-
-    public static String getCoremetricsDataCollectionMethod() {
-        return get(PROP_COREMETRICS_DATA_COLLECTION_METHOD);
-    }
-
-    public static String getCoremetricsDataCollectionDomain() {
-        return get(PROP_COREMETRICS_DATA_COLLECTION_DOMAIN);
-    }
-
-    public static String getCoremetricsCookieDomain() {
-        return get(PROP_COREMETRICS_COOKIE_DOMAIN);
-    }
-
-    public static String getCoremetricsCatIdDirs() {
-        return get(PROP_COREMETRICS_CATID_DIRS);
-    }
-
-    public static String getCoremetricsCatIdBlog() {
-        return get(PROP_COREMETRICS_CATID_BLOG);
-    }
-
-    public static String getCoremetricsCatIdOtherPage() {
-        return get(PROP_COREMETRICS_CATID_OTHERPAGE);
-    }
-
-    public static String getCoremetricsFtpUrl() {
-        return get(PROP_COREMETRICS_FTP_URL);
-    }
-
-    public static String getCoremetricsFtpPassword() {
-        return get(PROP_COREMETRICS_FTP_PASSWORD);
-    }
-
-    public static boolean isCoremetricsFtpSecure() {
-        return Boolean.valueOf(get(PROP_COREMETRICS_FTP_SECURE));
-    }
-
-    public static int getCoremetricsFtpSftpPort() {
-        return Integer.parseInt(get(PROP_COREMETRICS_FTP_SFTP_PORT));
     }
 
     @Deprecated
@@ -4437,22 +4377,21 @@ public class FDStoreProperties {
         try {
             return Integer.parseInt(get(PROP_MAX_INVALID_LOGIN_ATTEMPT));
         } catch (Exception e) {
-            return 5;
+            return 1;
         }
     }
     public static int getMaxInvalidSignUpAttempt() {
         try {
             return Integer.parseInt(get(PROP_MAX_INVALID_SIGN_UP_ATTEMPT));
         } catch (Exception e) {
-            return 5;
+            return 1;
         }
     }
     public static int getMaxInvalidPaymentAttempt() {
         try {
             return Integer.parseInt(get(PROP_MAX_INVALID_PAYMENT_ATTEMPT));
         } catch (Exception e) {
-            // disable if the property is not set or invalid
-            return 0;
+            return 1;
         }
     }
 
@@ -5299,4 +5238,8 @@ public class FDStoreProperties {
         return Integer.parseInt(get(PROP_REFRESH_LOOKBACK_SECS_PRODUCTINFO));
     }
 	
+
+	public static String getMidWeekSixMonthDeliveryPassSku() {
+		return get(PROP_MID_WEEK_SIX_MONTH_DELIVERY_PASS_SKU);
+	}
 }

@@ -17,6 +17,13 @@
 	response.flushBuffer();
 %>
 </c:when>
+<c:when test="${param.id == 'gro_gear_dlvpass'}">
+<% 
+	response.setStatus(301);
+	response.setHeader( "Location", response.encodeRedirectURL("/deliverypass.jsp"));
+	response.setHeader( "Connection", "close" );
+%>
+</c:when>
 <c:otherwise>
 	<fd:CheckLoginStatus id="user"/>
 	<fd:CheckDraftContextTag/>

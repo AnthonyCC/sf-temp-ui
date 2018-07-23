@@ -110,7 +110,6 @@ final Logger LOG = LoggerFactory.getInstance("department.jsp");
 	</tmpl:put>
 
 <tmpl:put name='content' direct='true'>
-	<fd:CmPageView wrapIntoScriptTag="true" currentFolder="<%=currentFolder%>"/>
 	<%
 		/*
 		int ttl=14400; 

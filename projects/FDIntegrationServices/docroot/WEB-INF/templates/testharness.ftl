@@ -1484,7 +1484,10 @@ function loadStuff() {
   	$("#url").val("/pickslist/getdetail/PickList_fdx");
   	$("#header").val('');
   	$("#payload").val("");
-
+  } else if (loaddata == "adQueryParams") {
+    $("#url").val("/adqueryparams");
+    $("#header").val('');
+    $("#payload").val("");
   }
   $("#result").JSONView({});  	
   $("#payload").focus();
@@ -1919,6 +1922,9 @@ function doStuff() {
 
   <option value=""> ========== NEW BROWSE ========== </option>
   <option value="NewBrowseCategory">NEW BROWSE - CATEGORY</option>
+
+  <option value=""> ========== Ad Services ========== </option>
+  <option value="adQueryParams">Ads - Return Query String</option>
 
   </select>
   

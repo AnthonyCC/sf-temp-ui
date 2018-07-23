@@ -129,9 +129,7 @@ while(iterator.hasNext()){
         while(iterator1.hasNext()){        
             com.freshdirect.customer.ErpActivityRecord rec=(com.freshdirect.customer.ErpActivityRecord)iterator1.next();        
             FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomerFromErpId(rec.getCustomerId());
-            if(FDCustomerManager.isCustomerActive(fdCustomer.getErpCustomerPK())){             
-                  continue;
-            }
+           
             finalDeactivation.add(rec);  
           
         }                

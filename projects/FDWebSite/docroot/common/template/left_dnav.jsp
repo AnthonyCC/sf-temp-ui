@@ -32,7 +32,6 @@ final int W_LEFT_DNAV_RIGHT = 820;
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <BODY bgcolor="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333">
-<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <%if (FDStoreProperties.isAnnotationMode()) {
 %>
 	<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>

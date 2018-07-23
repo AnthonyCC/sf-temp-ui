@@ -10,9 +10,6 @@
     <fd:SEOMetaTag title="Same-Day Food Delivery NYC | FoodKick: Forgot Password Confirmation"/>
    </tmpl:put>
 	<tmpl:put name='content'>
-		<script type="text/javascript">
-			cmCreatePageviewTag("FORGETPASSCONFIRM: forget_password_confirmation.jsp","FDX_FORGETPASSCONFIRM",null,null,"-_--_-FORGETPASSCONFIRM: forget_password_confirmation.jsp-_--_--_--_-FORGETPASSCONFIRM: forget_password_confirmation.jsp");
-		</script>
 		<section id="forgot_password_confirmation_section" class="forgot_password_section">
 			<%@ include file="/login/includes/forget_password_confirmation.jspf" %>
 		</section>

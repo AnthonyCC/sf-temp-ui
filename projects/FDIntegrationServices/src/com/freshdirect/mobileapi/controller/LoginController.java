@@ -41,7 +41,6 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.customer.PasswordNotExpiredException;
 import com.freshdirect.fdstore.customer.SilverPopupDetails;
-import com.freshdirect.fdstore.customer.accounts.external.ExternalAccountManager;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.TimeOfDay;
@@ -130,7 +129,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
 				// Check to see if user session exists
 				SessionUser sessionUser = getUserFromSession(request, response);
 				if(sessionUser.isLoggedIn()){
-					logout(user, request, response);
+					logout(user, UserCleanupMode.SESSION_ONLY, request, response);
 				}
 
 			} catch (NoSessionException e) {
@@ -142,7 +141,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
         } else if (ACTION_INITIATE_SESSION_USER.equals(action)) {
             responseMessage = initiateSessionUser(request, response);
 		} else if (ACTION_LOGOUT.equals(action)) {
-		    responseMessage = logout(user, request, response);
+		    responseMessage = logout(user, UserCleanupMode.SESSION_AND_COOKIE, request, response);
 		}else if (ACTION_SOURCE.equals(action)) {
 		    SessionMessage requestMessage = parseRequestObject(request, response, SessionMessage.class);
 			responseMessage = transactionSource(user, request, response,requestMessage);
@@ -220,8 +219,8 @@ public class LoginController extends BaseController  implements SystemMessageLis
 		}
 		if(responseMessage==null){
 			responseMessage = getErrorMessage("RESP_MSG_NULL", "Response Message Null");
-			LOGGER.error("LOGINCONTROLLER - Response Message Null for action - " + action + " and user " + (user != null && user.getFDSessionUser() != null 
-					? (user.getFDSessionUser().getIdentity() != null && user.getFDSessionUser().getFDCustomer() != null 
+			LOGGER.error("LOGINCONTROLLER - Response Message Null for action - " + action + " and user " + (user != null && user.getFDSessionUser() != null
+					? (user.getFDSessionUser().getIdentity() != null && user.getFDSessionUser().getFDCustomer() != null
 					? user.getFDSessionUser().getFDCustomer().getErpCustomerPK() : user.getFDSessionUser().getPrimaryKey() ) : "NOUSER" ) );
 		}
 		setResponseMessage(model, responseMessage, user);
@@ -308,11 +307,11 @@ public class LoginController extends BaseController  implements SystemMessageLis
 	 * @throws JsonMappingException
 	 * @throws JsonGenerationException
 	 */
-	private Message logout(SessionUser user, HttpServletRequest request, HttpServletResponse response)
+	private Message logout(SessionUser user, UserCleanupMode logoutMode, HttpServletRequest request, HttpServletResponse response)
 			throws JsonException {
 		Message responseMessage = null;
 		try{
-			removeUserInSession(user, request, response);
+			removeUserInSession(user, logoutMode, request, response);
 			responseMessage = Message
 				.createSuccessMessage("User logged out successfully.");
 		}catch(IllegalStateException e){

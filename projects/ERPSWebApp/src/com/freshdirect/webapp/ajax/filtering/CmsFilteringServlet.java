@@ -1,8 +1,7 @@
 package com.freshdirect.webapp.ajax.filtering;
 
-import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,13 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.fdstore.FDNotFoundException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.coremetrics.builder.PageViewTagInput;
-import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUser;
@@ -25,12 +20,7 @@ import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
-import com.freshdirect.webapp.ajax.CoremetricsPopulator;
 import com.freshdirect.webapp.ajax.DataPotatoField;
-import com.freshdirect.webapp.ajax.JsonHelper;
-import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
-import com.freshdirect.webapp.ajax.browse.data.BrowseData.SearchParams;
-import com.freshdirect.webapp.ajax.browse.data.BrowseData.SearchParams.Tab;
 import com.freshdirect.webapp.ajax.browse.data.CmsFilteringFlowResult;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.unbxd.BrowseEventTag;
@@ -47,9 +37,10 @@ public class CmsFilteringServlet extends BaseJsonServlet {
 
     /**
      * Processing json post data
+     * @throws UnsupportedEncodingException 
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse, UnsupportedEncodingException {
 
         try {
         	boolean isOAuth = isOAuthTokenInHeader(request);
@@ -85,10 +76,11 @@ public class CmsFilteringServlet extends BaseJsonServlet {
 
     /**
      * Processing query from direct http call
+     * @throws UnsupportedEncodingException 
      */
     @SuppressWarnings("unchecked")
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse, UnsupportedEncodingException {
 
         try {
         	boolean isOAuthRequest = isOAuthTokenInHeader(request);
@@ -99,63 +91,6 @@ public class CmsFilteringServlet extends BaseJsonServlet {
             ContentFactory.getInstance().setEligibleForDDPP(FDStoreProperties.isDDPPEnabled() || ((FDUser) user).isEligibleForDDPP());
             final CmsFilteringFlowResult flow = CmsFilteringFlow.getInstance().doFlow(navigator, user);
             final Map<String, ?> payload = DataPotatoField.digBrowse(flow);
-
-            if (request.getParameterMap().keySet().contains("data")) {
-                final Map<String, Object> clientInput;
-                try {
-
-                    //
-                    // CoreMetrics reporting section
-                    //
-
-                    clientInput = JsonHelper.parseRequestData(request, Map.class);
-
-                    final BrowseEvent cmEvent = clientInput.get("browseEvent") != null ? BrowseEvent.valueOf(((String) clientInput.get("browseEvent")).toUpperCase())
-                            : BrowseEvent.NOEVENT;
-
-                    // handle event
-                    switch (cmEvent) {
-                        case PAGEVIEW:
-                            SearchParams searchParams = flow.getBrowseDataPrototype().getSearchParams();
-                            if (searchParams.getPageType() == FilteringFlowType.SEARCH) {
-                                List<Tab> tabs = searchParams.getTabs();
-
-                                String searchTerm = searchParams.getSearchParams();
-                                String suggestedTerm = searchParams.getSearchTerm();
-                                Integer searchResultsSize = tabs.size() > 0 ? tabs.get(0).getHits() : 0;
-                                Integer recipeSearchResultsSize = tabs.size() > 1 ? tabs.get(1).getHits() : 0;
-
-                                new CoremetricsPopulator().appendPageViewTag((Map<String, Object>) payload,
-                                        PageViewTagInput.populateFromJSONInput(request.getRequestURI(), clientInput), searchTerm, suggestedTerm, searchResultsSize,
-                                        recipeSearchResultsSize, user);
-                            } else {
-                                new CoremetricsPopulator().appendPageViewTag((Map<String, Object>) payload,
-                                        PageViewTagInput.populateFromJSONInput(request.getRequestURI(), clientInput), user);
-                            }
-                            break;
-                        case ELEMENT:
-                            new CoremetricsPopulator().appendFilterElementTag((Map<String, Object>) payload, (Map<String, Object>) clientInput.get("requestFilterParams"), user);
-                            break;
-                        case SORT:
-                            new CoremetricsPopulator().appendSortElementTag((Map<String, Object>) payload, navigator.getSortBy(), user);
-                            break;
-                        case PAGE:
-                        case NOEVENT:
-                        default:
-                            // do nothing
-                            break;
-                    }
-
-                } catch (JsonParseException e) {
-                    returnHttpError(400, "Cannot read client input", e); // 400 Bad Request
-                } catch (JsonMappingException e) {
-                    returnHttpError(400, "Cannot read client input", e); // 400 Bad Request
-                } catch (IOException e) {
-                    returnHttpError(400, "Cannot read client input", e); // 400 Bad Request
-                } catch (SkipTagException e) {
-                    returnHttpError(400, "Cannot read client input", e); // 400 Bad Request
-                }
-            }
 
             // UNBXD analytics reporting
             if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, request.getCookies(), user)) {
@@ -201,6 +136,7 @@ public class CmsFilteringServlet extends BaseJsonServlet {
         return FDUserI.GUEST;
     }
     
+    @Override
     protected boolean isOAuthEnabled() {
     	return true;
     }

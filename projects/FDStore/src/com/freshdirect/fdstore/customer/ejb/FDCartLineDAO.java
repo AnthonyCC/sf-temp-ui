@@ -24,9 +24,6 @@ import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
-import com.freshdirect.fdstore.customer.FDModifyCartModel;
-import com.freshdirect.fdstore.customer.FDUser;
-import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.util.DaoUtil;
@@ -39,7 +36,7 @@ public class FDCartLineDAO {
 	}
 
 	private final static String QUERY_CARTLINES =
-		"SELECT ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, ADDED_FROM_SEARCH, DISCOUNT_APPLIED, SAVINGS_ID, CM_PAGE_ID, CM_PAGE_CONTENT_HIERARCHY, ADDED_FROM, CM_VIRTUAL_CATEGORY, EXTERNAL_AGENCY, EXTERNAL_SOURCE, EXTERNAL_GROUP, E_STORE, SOURCE"
+            "SELECT ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, ADDED_FROM_SEARCH, DISCOUNT_APPLIED, SAVINGS_ID, ADDED_FROM, EXTERNAL_AGENCY, EXTERNAL_SOURCE, EXTERNAL_GROUP, E_STORE, SOURCE"
 			+ " FROM CUST.FDCARTLINE WHERE FDUSER_ID = ? AND NVL(E_STORE,'FreshDirect')=? and MOD_ORDER_ID IS NULL";
 	
 	private final static String QUERY_CARTLINE_CLIENTCODES =
@@ -88,10 +85,7 @@ public class FDCartLineDAO {
 					line.setDiscountFlag(true);
 					line.setSavingsId(rs.getString("SAVINGS_ID"));
 				}
-				line.setCoremetricsPageId(rs.getString("CM_PAGE_ID"));
-				line.setCoremetricsPageContentHierarchy(rs.getString("CM_PAGE_CONTENT_HIERARCHY"));
 				line.setAddedFrom(EnumATCContext.getEnum(rs.getString("ADDED_FROM")));
-				line.setCoremetricsVirtualCategory(rs.getString("CM_VIRTUAL_CATEGORY"));
 				line.setExternalAgency(ExternalAgency.safeValueOf(rs.getString("EXTERNAL_AGENCY")));
 				line.setExternalSource(rs.getString("EXTERNAL_SOURCE"));
 				line.setExternalGroup(rs.getString("EXTERNAL_GROUP"));
@@ -143,7 +137,7 @@ public class FDCartLineDAO {
 			if (erpOrderlines.size() == 0)
 				return;
 			ps = conn.prepareStatement(
-					"INSERT INTO CUST.FDCARTLINE (ID, FDUSER_ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, DISCOUNT_APPLIED, SAVINGS_ID, ADDED_FROM_SEARCH, CM_PAGE_ID, CM_PAGE_CONTENT_HIERARCHY, ADDED_FROM, CM_VIRTUAL_CATEGORY, EXTERNAL_AGENCY, EXTERNAL_SOURCE, EXTERNAL_GROUP, E_STORE, SOURCE) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                    "INSERT INTO CUST.FDCARTLINE (ID, FDUSER_ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, DISCOUNT_APPLIED, SAVINGS_ID, ADDED_FROM_SEARCH, ADDED_FROM, EXTERNAL_AGENCY, EXTERNAL_SOURCE, EXTERNAL_GROUP, E_STORE, SOURCE) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 			for (ErpOrderLineModel line : erpOrderlines) {
 				ps.setString(1, line.getCartlineId());
 				ps.setString(2, fdUserPk.getId());
@@ -158,18 +152,15 @@ public class FDCartLineDAO {
 				ps.setString(11, line.isDiscountFlag() ? "X" : "");
 				ps.setString(12, line.getSavingsId());
 				ps.setString(13, line.isAddedFromSearch() ? "X" : "");
-				ps.setString(14, line.getCoremetricsPageId());
-				ps.setString(15, line.getCoremetricsPageContentHierarchy());
-				ps.setString(16, null != line.getAddedFrom() ? line.getAddedFrom().getName() : null);
-				ps.setString(17, line.getCoremetricsVirtualCategory());
-				ps.setString(18, StringUtil.crop(line.getExternalAgency(), 30));
-				ps.setString(19, StringUtil.crop(line.getExternalSource(), 30));
-				ps.setString(20, StringUtil.crop(line.getExternalGroup(), 256));
-				ps.setString(21,
+                ps.setString(14, null != line.getAddedFrom() ? line.getAddedFrom().getName() : null);
+                ps.setString(15, StringUtil.crop(line.getExternalAgency(), 30));
+                ps.setString(16, StringUtil.crop(line.getExternalSource(), 30));
+                ps.setString(17, StringUtil.crop(line.getExternalGroup(), 256));
+                ps.setString(18,
 						null != line.getEStoreId() ? line.getEStoreId().getContentId()
 								: (null != storeContext && null != storeContext.getEStoreId()
 										? storeContext.getEStoreId().getContentId() : EnumEStoreId.FD.getContentId()));
-				ps.setString(22, (line.getSource() != null ? line.getSource().toString() : null));
+                ps.setString(19, (line.getSource() != null ? line.getSource().toString() : null));
 
 				ps.addBatch();
 			}
@@ -213,7 +204,7 @@ public class FDCartLineDAO {
 	private static String convertHashMapToString(Map<String,String> map) {
 		StringBuffer ret = new StringBuffer();
 		for (Iterator<String> i = map.keySet().iterator(); i.hasNext();) {
-			String key = (String) i.next();
+			String key = i.next();
 			ret.append(key);
 			ret.append("=");
 			ret.append(map.get(key));
@@ -236,7 +227,7 @@ public class FDCartLineDAO {
 	}
 		
 	private final static String MODIFY_QUERY_CARTLINES =
-			"SELECT ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, ADDED_FROM_SEARCH, DISCOUNT_APPLIED, SAVINGS_ID, CM_PAGE_ID, CM_PAGE_CONTENT_HIERARCHY, ADDED_FROM, CM_VIRTUAL_CATEGORY, EXTERNAL_AGENCY, EXTERNAL_SOURCE, EXTERNAL_GROUP, E_STORE, SOURCE"
+            "SELECT ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, ADDED_FROM_SEARCH, DISCOUNT_APPLIED, SAVINGS_ID, ADDED_FROM, EXTERNAL_AGENCY, EXTERNAL_SOURCE, EXTERNAL_GROUP, E_STORE, SOURCE"
 				+ " FROM CUST.FDCARTLINE WHERE MOD_ORDER_ID=?";
 	
 	public static List<FDCartLineI> getModifiedCartlines(Connection conn, String orderId, UserContext userContext) throws SQLException {
@@ -266,10 +257,7 @@ public class FDCartLineDAO {
 					line.setDiscountFlag(true);
 					line.setSavingsId(rs.getString("SAVINGS_ID"));
 				}
-				line.setCoremetricsPageId(rs.getString("CM_PAGE_ID"));
-				line.setCoremetricsPageContentHierarchy(rs.getString("CM_PAGE_CONTENT_HIERARCHY"));
 				line.setAddedFrom(EnumATCContext.getEnum(rs.getString("ADDED_FROM")));
-				line.setCoremetricsVirtualCategory(rs.getString("CM_VIRTUAL_CATEGORY"));
 				line.setExternalAgency(ExternalAgency.safeValueOf(rs.getString("EXTERNAL_AGENCY")));
 				line.setExternalSource(rs.getString("EXTERNAL_SOURCE"));
 				line.setExternalGroup(rs.getString("EXTERNAL_GROUP"));
@@ -308,7 +296,7 @@ public class FDCartLineDAO {
 		
 		try {
 			ps = conn.prepareStatement(
-					"INSERT INTO CUST.FDCARTLINE (ID, FDUSER_ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, DISCOUNT_APPLIED, SAVINGS_ID, ADDED_FROM_SEARCH, CM_PAGE_ID, CM_PAGE_CONTENT_HIERARCHY, ADDED_FROM, CM_VIRTUAL_CATEGORY, EXTERNAL_AGENCY, EXTERNAL_SOURCE, EXTERNAL_GROUP, E_STORE, SOURCE, MOD_ORDER_ID) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                    "INSERT INTO CUST.FDCARTLINE (ID, FDUSER_ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, DISCOUNT_APPLIED, SAVINGS_ID, ADDED_FROM_SEARCH, ADDED_FROM, EXTERNAL_AGENCY, EXTERNAL_SOURCE, EXTERNAL_GROUP, E_STORE, SOURCE, MOD_ORDER_ID) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 			ps.setString(1, line.getCartlineId());
 			ps.setString(2, userpk.getId());
 			ps.setString(3, line.getSku().getSkuCode());
@@ -322,19 +310,16 @@ public class FDCartLineDAO {
 			ps.setString(11, line.isDiscountFlag() ? "X" : "");
 			ps.setString(12, line.getSavingsId());
 			ps.setString(13, line.isAddedFromSearch() ? "X" : "");
-			ps.setString(14, line.getCoremetricsPageId());
-			ps.setString(15, line.getCoremetricsPageContentHierarchy());
-			ps.setString(16, null != line.getAddedFrom() ? line.getAddedFrom().getName() : null);
-			ps.setString(17, line.getCoremetricsVirtualCategory());
-			ps.setString(18, StringUtil.crop(line.getExternalAgency(), 30));
-			ps.setString(19, StringUtil.crop(line.getExternalSource(), 30));
-			ps.setString(20, StringUtil.crop(line.getExternalGroup(), 256));
-			ps.setString(21,
+            ps.setString(14, null != line.getAddedFrom() ? line.getAddedFrom().getName() : null);
+            ps.setString(15, StringUtil.crop(line.getExternalAgency(), 30));
+            ps.setString(16, StringUtil.crop(line.getExternalSource(), 30));
+            ps.setString(17, StringUtil.crop(line.getExternalGroup(), 256));
+            ps.setString(18,
 					null != line.getEStoreId() ? line.getEStoreId().getContentId()
 							: (null != storeContext && null != storeContext.getEStoreId()
 									? storeContext.getEStoreId().getContentId() : EnumEStoreId.FD.getContentId()));
-			ps.setString(22, null /*(line.getSource()!=null? line.getSource().toString():null)*/);
-			ps.setString(23, orderId);
+            ps.setString(19, null /* (line.getSource()!=null? line.getSource().toString():null) */);
+            ps.setString(20, orderId);
 			ps.executeUpdate();
 		} finally {
 			DaoUtil.close(ps);

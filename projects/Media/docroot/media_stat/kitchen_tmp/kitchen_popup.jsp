@@ -11,7 +11,6 @@
     <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <BODY BGCOLOR="White" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333" CLASS="text10" leftmargin=0 topmargin=0>
-<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <CENTER>
 <table width="525" border="0" cellspacing="0" cellpadding="0">
 <tr><td colspan=2><img src="/media_stat/images/layout/clear.gif" width="1" height="15" alt="" border="0"></td></tr>

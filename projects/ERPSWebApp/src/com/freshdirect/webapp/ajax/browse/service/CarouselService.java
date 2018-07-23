@@ -59,19 +59,19 @@ public class CarouselService {
      * @param name
      * @param products
      * @param user
-     * @param cmEventSource
+     * @param eventSource
      * @param variantId
      * @param minProductLimit
      * @return
      */
-    public CarouselData createCarouselData(String id, String name, List<ProductModel> products, FDUserI user, String cmEventSource, String variantId, int minProductLimit) {
+    public CarouselData createCarouselData(String id, String name, List<ProductModel> products, FDUserI user, String eventSource, String variantId, int minProductLimit) {
         CarouselData carousel = null;
         List<ProductData> productDatas = createCarouselProductData(user, products, variantId);
         if (minProductLimit <= productDatas.size()) {
             carousel = new CarouselData();
             carousel.setId(id);
             carousel.setName(name);
-            carousel.setCmEventSource(cmEventSource);
+            carousel.setEventSource(eventSource);
             carousel.setProducts(productDatas);
         }
         return carousel;

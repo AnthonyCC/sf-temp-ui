@@ -36,7 +36,6 @@ final int W_CHECKOUT_NAV_TOTAL = 970;
 	<!--[if gt IE 8]><body class="ie9"><![endif]-->
 	<!--[if !IE]><!--><body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#FF9900" text="#333333" class="text10"><!--<![endif]-->
 	
-	<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 	
 			<center>
 		

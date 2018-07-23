@@ -58,7 +58,7 @@ var FreshDirect = FreshDirect || {};
         listId:false,
         pageType:false,
         ATCApply:false,
-        cmEventSource:''
+        eventSource:''
       },
       writable:true
     },
@@ -100,7 +100,7 @@ var FreshDirect = FreshDirect || {};
         value.originalLineId = this.dataConfig.lineId;
         value.listId = this.dataConfig.listId;
         value.ATCApply = this.dataConfig.ATCApply;
-        value.cmEventSource = this.dataConfig.cmEventSource;
+        value.eventSource = this.dataConfig.eventSource;
         value.cartData = this.dataConfig.cartData;
         value.pageType = this.dataConfig.pageType;
         value.variantId = this.dataConfig.variantId;
@@ -151,7 +151,7 @@ var FreshDirect = FreshDirect || {};
             listId:item.listId,
             cartData:cartData,
             pageType:item.pageType,
-            cmEventSource:config.cmEventSource || '',
+            eventSource:config.eventSource || '',
             variantId:item.variantId,
             ATCApply:config.hasApply && fd.quickshop && fd.quickshop.itemType === 'pastOrders'
         };
@@ -198,25 +198,25 @@ var FreshDirect = FreshDirect || {};
     	if(!FreshDirect.user.recognized && !FreshDirect.user.guest){
     		var item = fd.modules.common.productSerialize(element).pop();
             var cartData = fd.modules.common.getCartData(element);
-            var cmEventSourceElement = $(element).closest('[data-cmeventsource]');
+            var eventSourceElement = $(element).closest('[data-eventsource]');
             customizePopup.open({
             	element:element,
             	item:item,
             	cartData:cartData,
             	hasApply:$(element).data('hasapply') || false,
-            	cmEventSource:cmEventSourceElement.data('cmeventsource')
+            	eventSource:eventSourceElement.data('eventsource')
             });
     	}
     } else {
     	var item = fd.modules.common.productSerialize(element).pop();
         var cartData = fd.modules.common.getCartData(element);
-        var cmEventSourceElement = $(element).closest('[data-cmeventsource]');
+        var eventSourceElement = $(element).closest('[data-eventsource]');
         customizePopup.open({
           element:element,
           item:item,
           cartData:cartData,
           hasApply:$(element).data('hasapply') || false,
-          cmEventSource:cmEventSourceElement.data('cmeventsource')
+          eventSource:eventSourceElement.data('eventsource')
         });
     }
   });

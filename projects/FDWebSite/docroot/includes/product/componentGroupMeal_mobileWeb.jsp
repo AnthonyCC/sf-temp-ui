@@ -265,7 +265,6 @@ double defaultQuantity = templateLine.getQuantity();
 
 <form id="productForm" name="productForm" method="POST" action="<%=formAction%>">
 	<fd:AddToCartPending id="productForm"/>
-	<fd:CmFieldDecorator/>
 	<input type="hidden" name="productId<%=suffix%>" value='<%= templateLine.getProductName() %>'>
 	<input type="hidden" name="catId<%=suffix%>" value='<%= templateLine.getCategoryName() %>'>
 <% if (cartMode.equals(CartName.MODIFY_CART)) { %>
