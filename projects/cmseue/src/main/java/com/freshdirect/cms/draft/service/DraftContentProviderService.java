@@ -145,7 +145,14 @@ public class DraftContentProviderService extends ContextualContentProvider {
         Map<Attribute, Object> resultNode = new HashMap<Attribute, Object>(contentProviderService.getAllAttributesForContentKey(contentKey));
         Map<Attribute, Object> draftNode = getDraftNodes(draftContext).get(contentKey);
         if (draftNode != null) {
-            resultNode.putAll(draftNode);
+            for (Map.Entry<Attribute, Object> draftEntry : draftNode.entrySet()) {
+                final Attribute attributeDef = draftEntry.getKey();
+                if (draftEntry.getValue() == null) {
+                    resultNode.remove(attributeDef);
+                } else {
+                    resultNode.put(attributeDef, draftEntry.getValue());
+                }
+            }
         }
         return resultNode;
     }
