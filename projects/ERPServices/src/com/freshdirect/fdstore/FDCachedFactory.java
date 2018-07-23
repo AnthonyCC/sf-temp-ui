@@ -140,15 +140,17 @@ public class FDCachedFactory {
 						if (null != fdSku) {
 							FDProductInfo pi = (FDProductInfo) productInfoCache.get(fdSku.getSkuCode());
 							if (null != pi) {
-								if (null == this.cache.get(pi)) {
-									fdSku = new FDSku(pi.getSkuCode(), pi.getVersion());
+								FDSku latestVerFdSku = new FDSku(pi.getSkuCode(), pi.getVersion());
+								if (null == this.cache.get(pi) ||latestVerFdSku.equals(fdSku)) {
 									try {
-										this.cache.put(fdSku, FDFactory.getProduct(fdSku));
+										this.cache.put(latestVerFdSku, FDFactory.getProduct(latestVerFdSku));
 									} catch (FDSkuNotFoundException ex) {
 										// not found
 									}
-								} else {
-									this.cache.remove(fdSku);// remove the old
+								} 
+									
+								if(!latestVerFdSku.equals(fdSku)) {
+										this.cache.remove(fdSku);// remove the old
 																// versions of
 																// the product
 																// from cache
