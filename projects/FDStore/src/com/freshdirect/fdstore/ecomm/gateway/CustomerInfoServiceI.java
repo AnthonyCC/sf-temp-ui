@@ -121,4 +121,7 @@ public interface CustomerInfoServiceI {
 	public List<String> getUsedReservations(String customerId) throws FDResourceException, RemoteException;
 
 	public CrmClick2CallModel getClick2CallInfo() throws FDResourceException, RemoteException;
+	
+	public void setActive(FDActionInfo info, boolean active) throws RemoteException, FDResourceException;
+	
 }

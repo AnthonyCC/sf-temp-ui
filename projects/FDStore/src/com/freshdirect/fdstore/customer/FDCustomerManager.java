@@ -2122,11 +2122,15 @@ public class FDCustomerManager {
 
 
 	public static void setActive(FDActionInfo info, boolean active) throws FDResourceException {
-		lookupManagerHome();
+		
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			sb.setActive(info, active);
-
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
+				CustomerInfoService.getInstance().setActive(info, active);
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				sb.setActive(info, active);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");

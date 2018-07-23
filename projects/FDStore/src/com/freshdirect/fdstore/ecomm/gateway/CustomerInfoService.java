@@ -88,6 +88,7 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 	private static final String SET_ACKNOWLEDGE = "customerInfo/setAcknowledge";
 	private static final String GET_USED_RESERVATIONS = "customerInfo/getUsedReservations";
 	private static final String GET_CLICK_CALL_INFO = "customerInfo/getClick2CallInfo";
+	private static final String SET_ACTIVE = "customerInfo/setActive";
 	
 	private static CustomerInfoServiceI INSTANCE;
 
@@ -796,6 +797,32 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 		}
 		return response.getData();
 	}
+	
+	@Override
+	public void setActive(FDActionInfo info, boolean active) throws RemoteException, FDResourceException {
+		Response<Void> response = null;
+		try {
+			Request<ObjectNode> request = new Request<ObjectNode>();
+			ObjectNode rootNode = getMapper().createObjectNode();
+			rootNode.set("info", getMapper().convertValue(info, JsonNode.class));
+			rootNode.put("active", active);
+			request.setData(rootNode);
+			String inputJson = buildRequest(request);
+
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(SET_ACTIVE),
+					new TypeReference<Response<Void>>() {
+					});
+
+			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in CustomerInfoService.setActive: data=" + inputJson);
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDEcommServiceException e) {
+			LOGGER.error("Error in CustomerInfoService: ", e);
+			throw new RemoteException(e.getMessage());
+		}
+	}
+	
 	private RecognizedUserData fdUserToRecognizedUserData(FDUser user) {
 		RecognizedUserData data = new RecognizedUserData();
 		FDUserData fdUserData = new FDUserData();
@@ -858,5 +885,4 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 		return erpOrderlines;
 	}
 
-	
 }

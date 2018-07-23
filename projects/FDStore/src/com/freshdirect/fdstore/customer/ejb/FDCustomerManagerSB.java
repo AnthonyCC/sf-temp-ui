@@ -521,7 +521,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
     public List<FDCustomerOrderInfo> locateCustomers(FDCustomerSearchCriteria criteria) throws FDResourceException, RemoteException;
 
     public List<FDCustomerOrderInfo> locateOrders(FDOrderSearchCriteria criteria) throws FDResourceException, RemoteException;
-
+    @Deprecated
     public void setActive(FDActionInfo info, boolean active) throws RemoteException, FDResourceException;
     @Deprecated
     public void doEmail(XMLEmailI email) throws RemoteException, FDResourceException;
