@@ -83,7 +83,7 @@ public class CriteoProductsUtil
 		productData.setPageBeaconOfApi(hlBrandProductAdMetaInfo.getPageBeacon());
 		adPrducts.add(productData);
 		updatedPageBeacon.append(((A_SHOWN.equals(updatedPageBeacon.toString()))
-				? productData.getSkuCode() : "," + productData.getSkuCode()));
+				? productData.getSkuCode().toUpperCase() : "," + productData.getSkuCode().toUpperCase()));
 	}
 
 	private static void addHlBrandProducts(FDUserI user, List<ProductData> adPrducts, StringBuffer updatedPageBeacon,
@@ -212,7 +212,7 @@ public class CriteoProductsUtil
 			final String A_SHOWN = "&ashown=";
 			final StringBuffer updatedPageBeacon = new StringBuffer(A_SHOWN);
 			List<HLBrandProductAdInfo> criteoList=cretioProductsCacheMap.get(key)!=null?cretioProductsCacheMap.get(key).getSearchProductAd():null;
-			List<HLBrandProductAdInfo> avaibleProductList= new ArrayList<HLBrandProductAdInfo>();
+			List<HLBrandProductAdInfo> availableProductList= new ArrayList<HLBrandProductAdInfo>();
 			if (criteoList != null) {
 				for (HLBrandProductAdInfo hlBrandProductAdMetaInfo : criteoList) {
 					ProductModel productModel = null;
@@ -234,10 +234,10 @@ public class CriteoProductsUtil
 						try {
 							productData = ProductDetailPopulator.createProductData(user, productModel);
 							if (null != productData && null != productData.getSkuCode()) {
-								avaibleProductList.add(hlBrandProductAdMetaInfo);
-								counter=counter+avaibleProductList.size();
+								availableProductList.add(hlBrandProductAdMetaInfo);
+								counter=counter+availableProductList.size();
 								updatedPageBeacon.append(((A_SHOWN.equals(updatedPageBeacon.toString())) ? hlBrandProductAdMetaInfo
-												.getProductSKU() : ","+ hlBrandProductAdMetaInfo.getProductSKU()));
+												.getProductSKU().toUpperCase() : ","+ hlBrandProductAdMetaInfo.getProductSKU().toUpperCase()));
 							}
 						} catch (Exception e) {
 							LOG.debug("SKu not found for Hooklogic product: "
@@ -246,9 +246,9 @@ public class CriteoProductsUtil
 					}
 				}
 			}
-			if(!avaibleProductList.isEmpty())
-				avaibleProductList.get(0).setPageBeacon(cretioProductsCacheMap.get(key).getPageBeacon()+ updatedPageBeacon.toString());
-			criteoProdctMap.put(key, avaibleProductList);
+			if(!availableProductList.isEmpty())
+				availableProductList.get(0).setPageBeacon(cretioProductsCacheMap.get(key).getPageBeacon()+ updatedPageBeacon.toString());
+			criteoProdctMap.put(key, availableProductList);
 		}
 		arrangeCriteoProducts(keys, counter, arrangedProductList, criteoProdctMap);
 	return arrangedProductList;
