@@ -1408,7 +1408,7 @@
 						($box.other.deliveryPassPopupNeeded and $userRecognized and $userCorporate == false)
 					)
 				}
-					<div class='subtotal__rowcell-right'>
+					<div class='subtotal__rowcell-right{if $box.id == 'giftcardbalance'} gcremove{/if}'>
 						{if (($avalaraEnabledRevised and $box.id != 'subtotal') or not $avalaraEnabledRevised ) and ($box.other.mark)}	
 							<sup class="superscript">{$box.other.mark}</sup>
 						{/if}
