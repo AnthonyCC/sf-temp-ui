@@ -373,10 +373,10 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	@Override
     public boolean isUnavailable() {
 		List<SkuModel> skus = getPrimarySkus();
-		/*for ( SkuModel sku  : skus ) {
+		for ( SkuModel sku  : skus ) {
 			if (!sku.isUnavailable() && isCharacteristicsComponentsAvailable(null))
 				return false;
-		}*/
+		}
 
 		return true;
 	}
