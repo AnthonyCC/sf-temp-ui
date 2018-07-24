@@ -118,6 +118,7 @@ import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.ecomm.gateway.CustomerAddressService;
 import com.freshdirect.fdstore.ecomm.gateway.CustomerComplaintService;
+import com.freshdirect.fdstore.ecomm.gateway.CustomerDeliveryPassService;
 import com.freshdirect.fdstore.ecomm.gateway.CustomerGiftCardService;
 import com.freshdirect.fdstore.ecomm.gateway.CustomerIdentityService;
 import com.freshdirect.fdstore.ecomm.gateway.CustomerInfoService;
@@ -2867,10 +2868,15 @@ public class FDCustomerManager {
 	}
 	
 	public static List<DeliveryPassModel> getDeliveryPassesByStatus(FDIdentity identity, EnumDlvPassStatus status) throws FDResourceException {
-		lookupManagerHome();
+		
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.getDeliveryPassesByStatus(identity, status);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerDeliveryPass)) {
+				return DlvPassManagerService.getInstance().getDlvPassesByStatus(identity.getErpCustomerPK(), status);
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getDeliveryPassesByStatus(identity, status);
+			}
 
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -2935,11 +2941,19 @@ public class FDCustomerManager {
 
 	public static Map<String, Object> getDeliveryPassesInfo(FDUserI user) throws FDResourceException {
 		Map<String, Object> dlvPassesInfo = new HashMap<String, Object>();
-		lookupManagerHome();
+		
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
 			FDIdentity identity = user.getIdentity();
-			List<DeliveryPassModel> dlvPasses = sb.getDeliveryPasses(identity, user.getUserContext().getStoreContext().getEStoreId());
+			FDCustomerManagerSB sb = null;
+			List<DeliveryPassModel> dlvPasses = null;
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerDeliveryPass)) {
+				dlvPasses = DlvPassManagerService.getInstance().getDeliveryPasses(identity.getErpCustomerPK(), user.getUserContext().getStoreContext().getEStoreId());
+			}else {
+				lookupManagerHome();
+				sb = managerHome.create();
+				dlvPasses = sb.getDeliveryPasses(identity, user.getUserContext().getStoreContext().getEStoreId());
+			}
+			
 			if(dlvPasses == null || ((dlvPasses!=null) && dlvPasses.size() == 0)){
 				//Return Empty map.
 				return dlvPassesInfo;
@@ -3004,10 +3018,15 @@ public class FDCustomerManager {
 	}
 
 	public static FDUserDlvPassInfo getDeliveryPassInfo(FDUserI user) throws FDResourceException {
-		lookupManagerHome();
 		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.getDeliveryPassInfo(user, user.getUserContext().getStoreContext().getEStoreId());
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerDeliveryPass)) {
+				return CustomerDeliveryPassService.getInstance().getDeliveryPassInfo(user.getIdentity(), user.getUserContext().getStoreContext().getEStoreId());
+			} else {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getDeliveryPassInfo(user, user.getUserContext().getStoreContext().getEStoreId());
+			}
+			
 		} catch (CreateException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
@@ -3054,22 +3073,24 @@ public class FDCustomerManager {
 	}
 
 	public static EnumDPAutoRenewalType hasAutoRenewDP(String customerPK) throws FDResourceException {
-
-		lookupManagerHome();
 		try {
+			String value;
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerDeliveryPass)) {
+				value = CustomerDeliveryPassService.getInstance().hasAutoRenewDP(customerPK);
+			} else {
+				lookupManagerHome();
 				FDCustomerManagerSB sb = managerHome.create();
-				String value= sb.hasAutoRenewDP(customerPK);
-				if(value==null) {
-					return EnumDPAutoRenewalType.NONE;
-				}
-				else if(value.equalsIgnoreCase(EnumDPAutoRenewalType.YES.getValue())) {
-					return EnumDPAutoRenewalType.YES;
-				}
-				else if(value.equalsIgnoreCase(EnumDPAutoRenewalType.NO.getValue())) {
-					return EnumDPAutoRenewalType.NO;
-				}
-				return EnumDPAutoRenewalType.NONE;
+				value = sb.hasAutoRenewDP(customerPK);
+			}
 
+			if (value == null) {
+				return EnumDPAutoRenewalType.NONE;
+			} else if (value.equalsIgnoreCase(EnumDPAutoRenewalType.YES.getValue())) {
+				return EnumDPAutoRenewalType.YES;
+			} else if (value.equalsIgnoreCase(EnumDPAutoRenewalType.NO.getValue())) {
+				return EnumDPAutoRenewalType.NO;
+			}
+			return EnumDPAutoRenewalType.NONE;
 
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -3149,36 +3170,6 @@ public class FDCustomerManager {
 				return sb.getValidOrderCount(identity);
 	    	}
 
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-	}
-
-	/**
-	 * Logges customer ID and variant ID for a placed order.
-	 *
-	 * @param identity Customer identity
-	 * @param saleId Order ID
-	 * @throws FDResourceException
-	 */
-	public static void logCustomerVariants(FDUserI user, String saleId) throws FDResourceException {
-		lookupManagerHome();
-
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-
-			for ( EnumSiteFeature feature : EnumSiteFeature.getEnumList() ) {
-				if (feature.isSmartStore()) {
-					Variant variant = VariantSelectorFactory.getSelector(feature).select(user);
-					if (variant != null) {
-						sb.logCustomerVariant(saleId, user.getIdentity(), feature.getName(), variant.getId());
-					}
-				}
-			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");

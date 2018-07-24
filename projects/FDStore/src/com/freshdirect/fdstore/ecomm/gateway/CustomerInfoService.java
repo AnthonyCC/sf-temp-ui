@@ -108,7 +108,7 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 			String inputJson = buildRequest(request);
 
 			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(GET_CUSTOMER_ID),
-					new TypeReference<Response<ErpAddressModel>>() {
+					new TypeReference<Response<String>>() {
 					});
 
 			if (!response.getResponseCode().equals("OK")) {

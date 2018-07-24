@@ -110,6 +110,7 @@ public class FDEcommProperties {
 	public static final String FDCustomerReport = "com.freshdirect.customer.report";
 	public static final String FDCustomerNotification = "com.freshdirect.customer.notification";
 	public static final String FDCustomerInfo = "com.freshdirect.customer.info";
+	public static final String FDCustomerDeliveryPass = "com.freshdirect.customer.deliveryPass";
 	public static final String Registration = "com.freshdirect.customer.registration";
 	public static final String SaleCronSB = "payment.ejb.SaleCronSB";
 	public static final String ErpInfoSB_WarmUp="erp.ejb.ErpInfoSB_WarmUp";
@@ -226,7 +227,7 @@ public class FDEcommProperties {
 				e.printStackTrace();
 			}
             lastRefresh = t;
-            LOGGER.info("Loaded configuration from FDStorePropertiesDB Database: " + config);
+            //LOGGER.info("Loaded configuration from FDStorePropertiesDB Database: " + config);
             fireEvent();
         }
     }

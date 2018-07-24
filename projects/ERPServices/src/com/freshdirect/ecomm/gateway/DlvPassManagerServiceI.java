@@ -28,7 +28,7 @@ public interface DlvPassManagerServiceI {
 	
 	public void extendExpirationPeriod(DeliveryPassModel dlvPassModel, int noOfdays)  throws RemoteException;
 	
-	public List<DeliveryPassModel> getDeliveryPasses(String customerPk) throws RemoteException;
+	public List<DeliveryPassModel> getDeliveryPasses(String customerPk, EnumEStoreId estore) throws RemoteException;
 	
 	public List<DeliveryPassModel> getDlvPassesByStatus(String customerPk, EnumDlvPassStatus status) throws RemoteException;
 	

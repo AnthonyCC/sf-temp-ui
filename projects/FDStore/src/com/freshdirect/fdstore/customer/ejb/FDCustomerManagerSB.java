@@ -585,15 +585,15 @@ public interface FDCustomerManagerSB  extends EJBObject{
 	public List<ErpCustomerAlertModel> getAlerts(PrimaryKey pk)  throws RemoteException;
 	@Deprecated
 	public List<URLRewriteRule> loadRewriteRules() throws FDResourceException, RemoteException;
-
+	@Deprecated
 	public List<DeliveryPassModel> getDeliveryPasses(FDIdentity identity, EnumEStoreId estore) throws RemoteException;
 
 	public Map<String, DlvPassUsageInfo> getDlvPassesUsageInfo(FDIdentity identity) throws RemoteException;
-
+	@Deprecated
 	public List<DeliveryPassModel> getDeliveryPassesByStatus(FDIdentity identity, EnumDlvPassStatus status) throws RemoteException;
 
 	public ErpOrderHistory getOrdersByDlvPassId(FDIdentity identity, String dlvPassId) throws RemoteException;
-
+	@Deprecated
 	public FDUserDlvPassInfo getDeliveryPassInfo(FDUserI user, EnumEStoreId estore) throws FDResourceException, RemoteException;
 
 	public List<DlvPassUsageLine> getRecentOrdersByDlvPassId(FDIdentity identity, String dlvPassId, int noOfDaysOld) throws FDResourceException, RemoteException;
