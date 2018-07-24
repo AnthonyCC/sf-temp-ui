@@ -373,10 +373,10 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	@Override
     public boolean isUnavailable() {
 		List<SkuModel> skus = getPrimarySkus();
-		for ( SkuModel sku  : skus ) {
+		/*for ( SkuModel sku  : skus ) {
 			if (!sku.isUnavailable() && isCharacteristicsComponentsAvailable(null))
 				return false;
-		}
+		}*/
 
 		return true;
 	}
@@ -1693,7 +1693,11 @@ inner:
                         if (skuCode.startsWith(curPrefix)) {
                             productInfo = FDCachedFactory.getProductInfo(skuCode);
                             // LOG.debug(" Rating productInfo :"+productInfo);
-                            EnumOrderLineRating enumRating = productInfo.getRating(ProductInfoUtil.getPickingPlantId(productInfo));
+                            String pickingPlantId = ProductInfoUtil.getPickingPlantId(productInfo);
+                            if("1000".equalsIgnoreCase(pickingPlantId)){
+                            	pickingPlantId ="1400";
+                            }
+                            EnumOrderLineRating enumRating = productInfo.getRating(pickingPlantId);//ProductInfoUtil.getPickingPlantId(productInfo));
 
                             if (enumRating != null) {
                                 if (enumRating.isEligibleToDisplay()) {
