@@ -1515,7 +1515,7 @@ private static String convert(Date time) {
 			FDDeliveryZoneInfo zoneInfo = null;
 			String identity = so.getCustomerId();
 			try {
-				zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(newAddress, new Date(), null, EnumRegionServiceType.CORPORATE, identity);
+				zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(newAddress, new Date(), null, null, identity);
 				LOGGER.info("getZoneInfoFromLogistics(), customerID: "+identity+", ZONE_CODE is:: " + zoneInfo.getZoneCode()+" , for address: " + newAddress);
 			} catch (FDInvalidAddressException e) {
 				e.printStackTrace();
