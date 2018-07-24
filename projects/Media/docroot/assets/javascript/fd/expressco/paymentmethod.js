@@ -322,18 +322,26 @@ var FreshDirect = FreshDirect || {};
 					console.log('payment form: submit', 'payment does not qualify to save as default', $('.paymentmethod[checked]'));
 				}
 
-				//submit payment form
-				DISPATCHER.signal('server', {
-					url: '/api/expresscheckout/payment',
-					method: 'POST',
-					data: {
-						data: JSON.stringify({
-						fdform: 'payment',
-						formdata: paymentMethod.serialize()
-						})
-					}
-				});
-			}
+                var formData = paymentMethod.serialize();
+                var dlvPassCart = false;
+                if($('#deliverypasscontent').length > 0 && !!$('#deliverypasscontent').attr('data-dlvpasscart') == true){
+                    dlvPassCart = true;
+                }
+                formData.dlvPassCart = dlvPassCart;
+                
+                //submit payment form
+                DISPATCHER.signal('server', {
+                    url: '/api/expresscheckout/payment',
+                    method: 'POST',
+                    data: {
+                        data: JSON.stringify({
+                        fdform: 'payment',
+                        formdata: formData
+                        }),
+                        dlvPassCart: dlvPassCart
+                    }
+                });
+            }
 			return true;
 		}
 	});

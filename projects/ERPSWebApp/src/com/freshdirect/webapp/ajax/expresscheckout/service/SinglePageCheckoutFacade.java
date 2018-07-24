@@ -676,9 +676,10 @@ public class SinglePageCheckoutFacade {
             paymentService.setNoPaymentMethod(user, request);
         } else {
         	 List<PaymentData> userPaymentMethods = paymentService.loadUserPaymentMethods(user, request, paymentMethods);
-        	 
+        	 boolean dlvPassCart = null !=request.getParameter("dlvPassCart") && "true".equalsIgnoreCase(request.getParameter("dlvPassCart")) ? true: false;
+        	 FDCartModel cart=UserUtil.getCart(user, "", dlvPassCart);
         	//APPDEV-6765
-             FDCartModel mCart = user.getShoppingCart();
+             FDCartModel mCart = cart;
              if (mCart instanceof FDModifyCartModel && !StandingOrderHelper.isSO3StandingOrder(user)) {
                  FDModifyCartModel modifyCart = (FDModifyCartModel) mCart;
                  String orderId = modifyCart.getOriginalOrder().getErpSalesId();
