@@ -16,6 +16,7 @@ var FreshDirect = FreshDirect || {};
         body.metadata = body.metadata || fd.metaData;
         body.abFeatures = body.abFeatures || fd.features && fd.features.active;
         body.mobWeb = body.mobWeb || fd.mobWeb;
+        body.dlvPassCart = body.dlvPassCart || ($('#deliverypasscontent').length > 0 && !!$('#deliverypasscontent').attr('data-dlvpasscart') == true) || false;
       }
       bus.push({
         to: to,
@@ -62,7 +63,7 @@ var FreshDirect = FreshDirect || {};
 
     if (paramEl) {
       try {
-        params = JSON.parse(paramEl.textContent);
+        params = JSON.parse(JSON.stringify(paramEl.textContent));
       } catch (e) {}
     }
 

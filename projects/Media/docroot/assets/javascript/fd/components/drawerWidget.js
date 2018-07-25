@@ -48,7 +48,8 @@ var FreshDirect = FreshDirect || {};
         var $ph =  $(placeHolderSelector);
 
         data = data || {};
-        data.metadata = data.metadata || fd.metaData;
+				data.metadata = data.metadata || fd.metaData;
+				data.dlvPassCart = data.dlvPassCart || ($('#deliverypasscontent').length > 0 && !!$('#deliverypasscontent').attr('data-dlvpasscart') == true) || false;
 
         if($ph.length){
           $ph.html(templateFn(data));

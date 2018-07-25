@@ -204,6 +204,9 @@ var FreshDirect = FreshDirect || {};
 		  // Load payment
 		  $.get('/api/expresscheckout/payment?dlvPassCart=' + dlvPassCart)
 			.done( function (d) {
+				if (!d.hasOwnProperty('dlvPassCart')) {
+					d.dlvPassCart = dlvPassCart;
+				}
 				FreshDirect.common.dispatcher.signal('payment', d);
 				if($(".deliverypass-payment").length > 0){
 					dialogWindowRealignFunc();

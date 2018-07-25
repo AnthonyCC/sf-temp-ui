@@ -495,6 +495,7 @@
  * @param containsWineSection containsWineSection
  * @param? isEBTused
  * @param? mobWeb
+ * @param? dlvPassCart
  */
 {template .successlines autoescape="false"}
 	<div class='cartcontent successlines'>
@@ -521,6 +522,7 @@
 				{param displayCheckout: $displayCheckout /}
 				{param mobWeb : $mobWeb /}
 				{param renderSubTotal1: true /}
+				{param dlvPassCart: $dlvPassCart /}
 			{/call}
 		{/foreach}
 	</div>
@@ -745,6 +747,7 @@
 										{param totalWithoutTax: $totalWithoutTax /}
 										{param displayCheckout: $displayCheckout /}
 										{param etipTotal: $etipTotal /}
+										{param dlvPassCart: $dlvPassCart /}
 									{/call}
 								{/if}
 							</div>
