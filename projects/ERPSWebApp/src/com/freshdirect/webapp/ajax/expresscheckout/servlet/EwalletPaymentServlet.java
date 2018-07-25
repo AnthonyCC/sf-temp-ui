@@ -185,6 +185,10 @@ public class EwalletPaymentServlet extends BaseJsonServlet {
 			ewalletResponseData = processor.processRequest(ewalletRequestData);
 
 			if(ewalletRequestData.geteWalletAction() != null && ewalletRequestData.geteWalletAction().equals(EwalletConstants.EWALLET_MP_STANDARD_CHECKOUT_DATA)){
+				if (dlvPassCart) {
+					//remove redirect
+					ewalletResponseData.setRedirectUrl(null);
+				}
 				postStandardCheckoutData(ewalletResponseData, request, response, user);
 			}
 			
@@ -332,7 +336,9 @@ public class EwalletPaymentServlet extends BaseJsonServlet {
 						"" + ewalletResponseData.getPaymentMethod().getPK().getId());
 			user.getShoppingCart().setPaymentMethod(ewalletResponseData.getPaymentMethod());
 			request.getSession().setAttribute(EWALLET_SESSION_ATTRIBUTE_NAME, MP_EWALLET_CARD);
-			request.getRequestDispatcher(ewalletResponseData.getRedirectUrl()).forward(request, response);
+			if (ewalletResponseData.getRedirectUrl() != null) {
+				request.getRequestDispatcher(ewalletResponseData.getRedirectUrl()).forward(request, response);	
+			}
 		}
 	}
 	
