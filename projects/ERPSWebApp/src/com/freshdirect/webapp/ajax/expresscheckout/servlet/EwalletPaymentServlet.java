@@ -143,8 +143,9 @@ public class EwalletPaymentServlet extends BaseJsonServlet {
     				ewalletRequestData.seteWalletAction(EwalletConstants.EWALLET_MP_STANDARD_CHECKOUT_DATA);
     				// Check for Error response from EWallet Vendor
     				if( checkWalletErrorResponse(ewalletRequestData,response)){
-    					response.sendRedirect("/expressco/checkout.jsp");
-
+    					if (!dlvPassCart) {
+    						response.sendRedirect("/expressco/checkout.jsp");
+    					}
     				}
     				break;
     			}
