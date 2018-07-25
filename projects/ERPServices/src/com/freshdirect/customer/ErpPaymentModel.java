@@ -1,5 +1,6 @@
 package com.freshdirect.customer;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.payment.EnumBankAccountType;
@@ -9,8 +10,9 @@ import com.freshdirect.payment.EnumPaymentMethodType;
  * @stereotype fd-model
  */
 public class ErpPaymentModel extends ErpTransactionModel {
-	
-    private double amount;
+
+	private static final long serialVersionUID = -2250518369919820344L;
+	private double amount;
     private double tax;
 
 	private String ccNumLast4;
@@ -22,7 +24,7 @@ public class ErpPaymentModel extends ErpTransactionModel {
     private boolean isChargePayment;
     private ErpAffiliate affiliate;
     
-    public ErpPaymentModel(EnumTransactionType txType) {
+    public ErpPaymentModel(@JsonProperty("transactionType") EnumTransactionType txType) {
 		super(txType);
     }
 

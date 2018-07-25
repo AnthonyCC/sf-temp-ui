@@ -8,10 +8,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionModel;
+import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.MathUtil;
 import com.freshdirect.giftcard.ErpAppliedGiftCardModel;
 import com.freshdirect.giftcard.ErpGiftCardModel;
@@ -29,8 +31,10 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
      * @link aggregationByValue
      */
     private List<ErpOrderLineModel> orderLines;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date requestedDate;
     private Discount discount;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date pricingDate;
     private ErpPaymentMethodI paymentMethod;
 	private double subTotal;

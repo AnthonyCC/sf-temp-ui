@@ -111,6 +111,7 @@ public class FDEcommProperties {
 	public static final String FDCustomerNotification = "com.freshdirect.customer.notification";
 	public static final String FDCustomerInfo = "com.freshdirect.customer.info";
 	public static final String FDCustomerDeliveryPass = "com.freshdirect.customer.deliveryPass";
+	public static final String FDCustomerOrder = "com.freshdirect.customer.order";
 	public static final String Registration = "com.freshdirect.customer.registration";
 	public static final String SaleCronSB = "payment.ejb.SaleCronSB";
 	public static final String ErpInfoSB_WarmUp="erp.ejb.ErpInfoSB_WarmUp";
