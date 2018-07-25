@@ -480,16 +480,53 @@ public class SapGatewayConverter {
 		List<ErpGiftCardData> erpGiftCardDataList = new ArrayList<ErpGiftCardData>();
 		if(selectedGiftCards!=null){
 			for (ErpGiftCardModel erpGiftCardModel : selectedGiftCards) {
-				ErpGiftCardData erpGiftCardData = (ErpGiftCardData) buildPaymentMethodData(erpGiftCardModel);
-				erpGiftCardData.setBalance(erpGiftCardData.getBalance());
-				erpGiftCardData.setOriginalAmount(erpGiftCardData.getOriginalAmount());
-				erpGiftCardData.setPurchaseSaleId(erpGiftCardData.getPurchaseSaleId());
-				erpGiftCardData.setPurchaseDate(erpGiftCardData.getPurchaseDate());
+				ErpGiftCardData erpGiftCardData =  buildGiftcardData(erpGiftCardModel);
 				erpGiftCardDataList.add(erpGiftCardData);
 			}
 		}
 		return erpGiftCardDataList;
 	}
+
+	private static ErpGiftCardData buildGiftcardData(ErpGiftCardModel paymentMethod) {
+		
+		ErpGiftCardData paymentData = null;
+		if(paymentMethod!=null){
+		paymentData = new ErpGiftCardData();
+		paymentData.setId(paymentMethod.getPK().getId());
+		paymentData.setCustomerId(paymentMethod.getCustomerId());
+		paymentData.setName(paymentMethod.getName());
+		paymentData.setAccountNumber(paymentMethod.getAccountNumber());
+		paymentData.setAddress(buildContactAddressData(paymentMethod.getAddress()));
+		paymentData.setBillingRef(paymentMethod.getBillingRef());
+		if(paymentMethod.getPaymentMethodType() != null)
+		paymentData.setPaymentType(paymentMethod.getPaymentMethodType().getName());
+		paymentData.setReferencedOrder(paymentMethod.getReferencedOrder());
+		paymentData.setCvv(paymentMethod.getCVV());
+		paymentData.setProfileID(paymentMethod.getProfileID());
+		paymentData.setAccountNumLast4(paymentMethod.getAccountNumLast4());
+		paymentData.setBestNumberForBillingInquiries(paymentMethod.getBestNumberForBillingInquiries());
+		paymentData.seteWalletID(paymentMethod.geteWalletID());
+		paymentData.setVendorEWalletID(paymentMethod.getVendorEWalletID());
+		paymentData.seteWalletTrxnId(paymentMethod.geteWalletTrxnId());
+		paymentData.setEmailID(paymentMethod.getEmailID());
+		paymentData.setDeviceId(paymentMethod.getDeviceId());
+		paymentData.setDebitCard(paymentMethod.isDebitCard());
+		if(paymentMethod.getPaymentType() != null){
+			paymentData.setPaymentType(paymentMethod.getPaymentType().getName());
+		}
+		paymentData.setBalance(paymentMethod.getBalance());
+		paymentData.setOriginalAmount(paymentMethod.getOriginalAmount());
+		paymentData.setPurchaseSaleId( paymentMethod.getPurchaseSaleId());
+		paymentData.setPurchaseDate( paymentMethod.getPurchaseDate().getTime());
+		}
+		return paymentData;
+	
+		
+	}
+
+
+
+
 
 	private static List<ErpAppliedGiftCardData> buildAppliedGiftCardData(List<ErpAppliedGiftCardModel> appliedGiftcards) {
 		List<ErpAppliedGiftCardData> giftCardListData = new ArrayList<ErpAppliedGiftCardData>();
