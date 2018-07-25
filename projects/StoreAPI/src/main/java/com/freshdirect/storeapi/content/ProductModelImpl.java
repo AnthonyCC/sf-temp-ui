@@ -1976,7 +1976,11 @@ inner:
                 */
                 productInfo = FDCachedFactory.getProductInfo(skuCode);
                // String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
-                EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating(ProductInfoUtil.getPickingPlantId(productInfo));
+                String pickingPlantId = ProductInfoUtil.getPickingPlantId(productInfo);
+                if("1000".equalsIgnoreCase(pickingPlantId)){
+                	pickingPlantId ="1400";
+                }
+                EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating(pickingPlantId);
                 if (enumRating != null && enumRating.isEligibleToDisplay()) {
                 	if (enumRating.getId() == 0) { /* check against CMS */
                 		if (this.showDefaultSustainabilityRating()) {
