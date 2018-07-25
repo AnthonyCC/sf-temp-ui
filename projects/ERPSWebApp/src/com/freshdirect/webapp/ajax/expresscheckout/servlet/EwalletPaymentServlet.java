@@ -76,6 +76,7 @@ public class EwalletPaymentServlet extends BaseJsonServlet {
 			// Create EWallet Request Object
 			EwalletRequestData ewalletRequestData = new EwalletRequestData();
 			createEwalletRequestData(ewalletRequestData, request, response,user);
+			boolean dlvPassCart = null !=request.getParameter("dlvPassCart") && "true".equalsIgnoreCase(request.getParameter("dlvPassCart")) ? true: false;
 			
 			ewalletRequestData.setDebitCardSwitch(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user));
 			
@@ -204,7 +205,9 @@ public class EwalletPaymentServlet extends BaseJsonServlet {
 
 			}else{
 				if(ewalletRequestData.geteWalletAction() != null && ewalletRequestData.geteWalletAction().equals(EwalletConstants.EWALLET_MP_STANDARD_CHECKOUT_DATA)){
-					response.sendRedirect("/expressco/checkout.jsp");
+					if (!dlvPassCart) {
+						response.sendRedirect("/expressco/checkout.jsp");
+					}
 				}else{
 					request.getSession().removeAttribute(EwalletConstants.EWALLET_ERROR_CODE);
 				}
