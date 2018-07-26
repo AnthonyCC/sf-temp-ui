@@ -992,6 +992,10 @@
 		<to last="true">/browse.do?action=getCategories&amp;browseTerm=$2&amp;ver=$1</to>
 	</rule>
 	<rule>
+		<from>^/v/([0-9]+)/browse/getCategory/(.*)</from>
+		<to last="true">/browse.do?action=getCategoryOptimized&amp;browseTerm=$2&amp;ver=$1</to>
+	</rule>
+	<rule>
 		<from>^/v/([0-9]+)/browse/categoriessortdetail/(.*)</from>
 		<to last="true">/browse.do?action=getCategoriesSortDetail&amp;browseTerm=$2&amp;ver=$1</to>
 	</rule>
