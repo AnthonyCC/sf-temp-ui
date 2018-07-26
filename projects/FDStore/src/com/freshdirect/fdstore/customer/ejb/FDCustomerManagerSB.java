@@ -743,9 +743,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
           ) throws RemoteException, FDResourceException,
                    ErpFraudException,
                    ErpAuthorizationException ;
-    @Deprecated
-    public double getPerishableBufferAmount(ErpAbstractOrderModel order) throws RemoteException, FDResourceException;
-
+  
     public Map getGiftCardRecepientsForOrders(List saleIds) throws RemoteException, FDResourceException ;
 
     public ErpGCDlvInformationHolder GetGiftCardRecipentByCertNum(String certNum) throws RemoteException,FDResourceException ;

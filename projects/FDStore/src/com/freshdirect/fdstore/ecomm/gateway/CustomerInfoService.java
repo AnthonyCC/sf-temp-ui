@@ -78,7 +78,6 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 	private static final String LOAD_IP_LOCATOR_EVENt = "customerInfo/loadIpLocatorEvent";
 	private static final String GET_PROMO_HISTORY_INFO = "customerInfo/getPromoHistoryInfo";
 	private static final String LOAD_REWRITE_RULES = "customerInfo/loadRewriteRules";
-	private static final String GET_PERISHABLE_BUFFE_AMOUNT = "customerInfo/getPerishableBufferAmount";
 	private static final String GET_TOP_FAQS = "customerInfo/getTopFaqs";
 	private static final String IS_DISPLAY_NAME_USED = "customerInfo/isDisplayNameUsed";
 	private static final String GET_SILVER_POP_UP_DETAILS = "customerInfo/getSilverPopupDetails";
@@ -605,32 +604,6 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 			throw new FDResourceException(response.getMessage());
 		}
 		return response.getData();
-	}
-
-	@Override
-	public double getPerishableBufferAmount(ErpAbstractOrderModel order, boolean isModifyOrderModel) throws RemoteException, FDResourceException {
-		Response<Double> response = null;
-		try {
-			ObjectNode rootNode = getMapper().createObjectNode();
-			rootNode.set("order", getMapper().convertValue(order, JsonNode.class));
-			rootNode.put("isModifyOrderModel", isModifyOrderModel);
-			Request<ObjectNode> request = new Request<ObjectNode>();
-			request.setData(rootNode);
-			String inputJson = buildRequest(request);
-
-			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(GET_PERISHABLE_BUFFE_AMOUNT),
-					new TypeReference<Response<Double>>() {
-					});
-
-			if (!response.getResponseCode().equals("OK")) {
-				LOGGER.error("Error in CustomerInfoService.getPerishableBufferAmount: data=" + inputJson);
-				throw new FDResourceException(response.getMessage());
-			}
-			return response.getData();
-		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in CustomerInfoService.getPerishableBufferAmount: ", e);
-			throw new RemoteException(e.getMessage());
-		}
 	}
 
 	@Override

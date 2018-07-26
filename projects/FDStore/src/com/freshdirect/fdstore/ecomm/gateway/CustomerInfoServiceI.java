@@ -100,9 +100,6 @@ public interface CustomerInfoServiceI {
 
 	public List<URLRewriteRule> loadRewriteRules() throws FDResourceException, RemoteException;
 
-	public double getPerishableBufferAmount(ErpAbstractOrderModel order, boolean isModifyOrderModel)
-			throws RemoteException, FDResourceException;
-
 	public List<String> getTopFaqs() throws FDResourceException, RemoteException;
 
 	public boolean isDisplayNameUsed(String displayName, String custId)

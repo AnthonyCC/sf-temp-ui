@@ -6649,18 +6649,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	public double getPerishableBufferAmount(ErpAbstractOrderModel order) throws FDResourceException {
-		try {
-			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
-			return sb.getPerishableBufferAmount(order);
-
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce);
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		}
-	}
-
 	public ErpGCDlvInformationHolder GetGiftCardRecipentByCertNum(String certNum) throws FDResourceException {
 		try {
 

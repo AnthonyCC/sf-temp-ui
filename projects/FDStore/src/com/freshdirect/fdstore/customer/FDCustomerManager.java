@@ -3945,30 +3945,17 @@ public class FDCustomerManager {
 
 	public static double getPerishableBufferAmount(FDCartModel cart)
 			throws FDResourceException {
-		try {
-			
-			ErpAbstractOrderModel order = null;
-			boolean isModifyOrderModel = false;
-			if (cart instanceof FDModifyCartModel) {
-				isModifyOrderModel = true;
-				order = FDOrderTranslator.getErpCreateOrderModel(cart);
-			} else {
-				order = FDOrderTranslator.getErpModifyOrderModel(cart);
-			}
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
-				return CustomerInfoService.getInstance().getPerishableBufferAmount(order, isModifyOrderModel);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getPerishableBufferAmount(order);
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
+
+		ErpAbstractOrderModel order = null;
+		if (cart instanceof FDModifyCartModel) {
+			order = FDOrderTranslator.getErpCreateOrderModel(cart);
+		} else {
+			order = FDOrderTranslator.getErpModifyOrderModel(cart);
 		}
+		// Generate Applied gift cards info.
+		GiftCardApplicationStrategy strategy = new GiftCardApplicationStrategy(order, null);
+		strategy.generateAppliedGiftCardsInfo();
+		return strategy.getPerishableBufferAmount();
 	}
 
 	public static String placeDonationOrder(FDActionInfo info,
