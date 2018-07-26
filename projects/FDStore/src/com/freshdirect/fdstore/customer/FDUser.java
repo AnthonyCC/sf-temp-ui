@@ -2688,10 +2688,15 @@ public class FDUser extends ModelSupport implements FDUserI {
                         ZoneInfo.PricingIndicator.BASE, new ZoneInfo(pricingZoneId, FDStoreProperties.getDefaultFdxSalesOrgParent(),
                                 FDStoreProperties.getDefaultFdxDistributionChannelParent()));
             } else {
-                fulfillmentContext.setPlantId(FDStoreProperties.getDefaultFdPlantID());
+                /*fulfillmentContext.setPlantId(FDStoreProperties.getDefaultFdPlantID());
                 fulfillmentContext.setSalesOrg(FDStoreProperties.getDefaultFdSalesOrg());
                 fulfillmentContext.setDistChannel(FDStoreProperties.getDefaultFdDistributionChannel());
-                zoneInfo = new ZoneInfo(pricingZoneId, FDStoreProperties.getDefaultFdSalesOrg(), FDStoreProperties.getDefaultFdDistributionChannel());
+                zoneInfo = new ZoneInfo(pricingZoneId, FDStoreProperties.getDefaultFdSalesOrg(), FDStoreProperties.getDefaultFdDistributionChannel());*/
+            	fulfillmentContext.setPlantId("1400");
+                fulfillmentContext.setSalesOrg("1400");
+                fulfillmentContext.setDistChannel(FDStoreProperties.getDefaultFdDistributionChannel());
+                zoneInfo = new ZoneInfo(pricingZoneId, "1400", FDStoreProperties.getDefaultFdDistributionChannel(),
+                        ZoneInfo.PricingIndicator.SALE, new ZoneInfo(pricingZoneId, "0001",FDStoreProperties.getDefaultFdDistributionChannel()));
             }
 
         } else {
