@@ -2957,11 +2957,11 @@
 			<!-- FD classes -->
 			<zipfileset src="${work.dir}/Framework.jar" />
 			<zipfileset src="${work.dir}/ERPServicesEJB-WL.jar" excludes="META-INF/*, com/freshdirect/fdstore/FDCachedFactory*, com/freshdirect/fdstore/FDInventoryCache.class, com/freshdirect/fdstore/FDNutritionCache*" />
-			<zipfileset src="${work.dir}/DeliveryEJB-WL.jar" excludes="META-INF/*" />
+			<zipfileset src="${work.dir}/DeliveryEJB-WL.jar" excludes="META-INF/*, com/freshdirect/fdstore/FDDeliveryManager*" />
 			<zipfileset src="${work.dir}/cmseue.jar" excludes="META-INF/*" />
 			<zipfileset src="${work.dir}/StoreAPI.jar" excludes="META-INF/*" />
 			<zipfileset src="${work.dir}/DataLoaderEJB-WL.jar" excludes="META-INF/*" />
-			<zipfileset src="${work.dir}/FDStoreEJB-WL.jar" excludes="META-INF/*" />
+			<zipfileset src="${work.dir}/FDStoreEJB-WL.jar" excludes="META-INF/*, com/freshdirect/fdstore/customer/FDCustomerFactory*,  com/freshdirect/fdstore/customer/FDUserUtil*, com/freshdirect/fdstore/zone/FDZoneInfoManager*" />
 			<zipfileset src="${work.dir}/FDLogisticsIntegration.jar" excludes="META-INF/*" />
 			<zipfileset src="${work.dir}/StandingOrdersService.jar" excludes="META-INF/*" />
 			<zipfileset src="${work.dir}/Tools.jar" excludes="META-INF/*" />
