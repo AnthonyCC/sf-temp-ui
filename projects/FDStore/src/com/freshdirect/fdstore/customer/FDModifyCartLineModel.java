@@ -16,7 +16,7 @@ import com.freshdirect.fdstore.FDConfiguration;
  * @author     $Author:Viktor Szathmary$
  * @stereotype fd-model
  */
-class FDModifyCartLineModel extends FDCartLineModel implements FDModifyCartLineI {
+public class FDModifyCartLineModel extends FDCartLineModel implements FDModifyCartLineI {
 	private static final long serialVersionUID = 7177055603220148537L;
 
 	/**
