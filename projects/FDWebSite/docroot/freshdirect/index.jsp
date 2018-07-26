@@ -13,8 +13,8 @@
     </tmpl:put>
 
 	<tmpl:put name='error' direct='true'>
-		<fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span><br></fd:ErrorHandler>
-		<fd:ErrorHandler result='<%=result%>' name='depotAccessCode' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span><br></fd:ErrorHandler>
+		<fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'><span class="errortext"><%=errorMsg%></span><br></fd:ErrorHandler>
+		<fd:ErrorHandler result='<%=result%>' name='depotAccessCode' id='errorMsg'><span class="errortext"><%=errorMsg%></span><br></fd:ErrorHandler>
 	</tmpl:put>
 
 </tmpl:insert>

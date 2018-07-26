@@ -82,7 +82,7 @@ final int W_YA_DELIVERY_INFO_CHKSLOTS = 970;
 	<tr>
 	<td width="120" align="right" class="text12">
 		<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>">
-			<span class="text11rbold"></fd:ErrorHandler>
+			<span class="errortext"></fd:ErrorHandler>
 		&nbsp;Service Type&nbsp;&nbsp;
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>'></span></fd:ErrorHandler>
 	</td>
@@ -99,27 +99,27 @@ final int W_YA_DELIVERY_INFO_CHKSLOTS = 970;
 				<td><a href="javascript:popup('/cos_info.jsp','small')"><b><label for="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>_fld2">Business or School</label></b></a></td>
 			</tr>
 		</table></fieldset>
-		<fd:ErrorHandler result="<%=result%>" name="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>" id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+		<fd:ErrorHandler result="<%=result%>" name="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>" id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
 	</td>
 </tr>
 
 
 <tr valign="top"><td class="text12" align="right"><label for="<%=EnumUserInfoName.DLV_ADDRESS_1.getCode()%>_field">* Street Address&nbsp;&nbsp;</label></td>
 <td><input type="text" class="text11" maxlength="50" size="21" id="<%=EnumUserInfoName.DLV_ADDRESS_1.getCode()%>_field" name="<%=EnumUserInfoName.DLV_ADDRESS_1.getCode()%>" value="<%=fldAddress1%>">
-&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ADDRESS_1.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td></tr>
+&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ADDRESS_1.getCode()%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></td></tr>
 <tr>
 <td class="text12" align="right" ><label for="<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>_field">Apt./Ste.#</label></td>
-<td><input type="text" class="text11" maxlength="10" size="8" id="<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>_field" name="<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>" value="<%=fldApartment%>"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>" id='errorMsg'><br><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+<td><input type="text" class="text11" maxlength="10" size="8" id="<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>_field" name="<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>" value="<%=fldApartment%>"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>" id='errorMsg'><br><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
 </td>
 </tr>
 <tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"></td></tr>
 <tr valign="top"><td class="text12" align="right"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br><label for="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>_field">* Zip Code&nbsp;&nbsp;</label></td>
 <td><input type="text"  maxlength="5" class="text11" size="6" id="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>_field" name="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>" value="<%=fldZipCode%>">
-&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td></tr>
+&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></td></tr>
 <tr><td>&nbsp;</td><td><input type="image" src="/media_stat/images/buttons/check_my_address.gif" height="16" width="112" name="address_check" vspace="8" value="Check My Address" border="0">
-<br><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_NOT_IN_ZONE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
-<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_CANT_GEOCODE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
-<fd:ErrorHandler result='<%=result%>' name='technicalDifficulty' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td></tr>
+<br><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_NOT_IN_ZONE.getCode()%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
+<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_CANT_GEOCODE.getCode()%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
+<fd:ErrorHandler result='<%=result%>' name='technicalDifficulty' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></td></tr>
 </form>
 <%
 	for (Iterator i=result.getErrors().iterator();i.hasNext();) {

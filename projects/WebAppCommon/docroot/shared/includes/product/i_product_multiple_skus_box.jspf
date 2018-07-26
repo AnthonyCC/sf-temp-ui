@@ -215,7 +215,7 @@ final int W_PRODUCT_MULTIPLE_SKUS_SEC_DOMAIN = 15;
                      
                      <fd:ErrorHandler result='<%=result%>' name='skuCode' id='errorMsg'>
                          <tr valign="top">
-                             <td colspan="2" align="right"><span class="text11rbold"><%=errorMsg%></span></td>
+                             <td colspan="2" align="right"><span class="errortext"><%=errorMsg%></span></td>
                          </tr>
                      </fd:ErrorHandler>
 
@@ -326,7 +326,7 @@ final int W_PRODUCT_MULTIPLE_SKUS_SEC_DOMAIN = 15;
                                earliestDate = DateUtil.addDays( DateUtil.truncate( new Date() ), ErpServicesProperties.getHorizonDays() );
                            }
                            if (QuickDateFormat.SHORT_DATE_FORMATTER.format(testDate.getTime()).compareTo(QuickDateFormat.SHORT_DATE_FORMATTER.format(earliestDate)) < 0) {
-                               %><font class="text11rbold">*</font><%
+                               %><font class="errortext">*</font><%
                            } %>
                            
                            

@@ -12,6 +12,6 @@
         if ( earliestDate == null ) {
             earliestDate = DateUtil.addDays( DateUtil.truncate( new Date() ), ErpServicesProperties.getHorizonDays() );
         }
-        %><font class="text11rbold">Earliest Available <%=CCFormatter.formatAvailabilityDate(earliestDate)%></font><br/><% 
+        %><font class="errortext">Earliest Available <%=CCFormatter.formatAvailabilityDate(earliestDate)%></font><br/><% 
     }
 %>

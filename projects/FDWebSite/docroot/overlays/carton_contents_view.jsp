@@ -52,14 +52,14 @@
 
 <fd:FDShoppingCart id='cart' action='addMultipleToCart' result='result' multiSuccessPage='<%= successPage %>' successPage='<%= successPage %>'>
   <% if (result.getErrors().size() > 0) { %>
-      <FONT CLASS="text11rbold">Errors in adding to cart</FONT><br>
+      <FONT CLASS="errortext">Errors in adding to cart</FONT><br>
   <%    for(Iterator errIter = result.getErrors().iterator(); errIter.hasNext(); ) {
       	ActionError ae = (ActionError) errIter.next(); %>
-     <FONT CLASS="text11rbold"><%= ae.getDescription() %></FONT><br>
+     <FONT CLASS="errortext"><%= ae.getDescription() %></FONT><br>
    <% } %>
   <% } else {
        if("true".equals(updated)) { %>
-         <FONT CLASS="text11rbold">Cart updated</FONT><br>
+         <FONT CLASS="errortext">Cart updated</FONT><br>
         <script language="javascript">
          window.opener.location = window.opener.location;
         </script>

@@ -482,7 +482,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 			
 			<%} %>
 				
-				<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL_FORMAT.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></div>
+				<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL_FORMAT.getCode()%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></div>
 				
 				<div class="youraccount_left_1"><label for="repeat_email_field">* Repeat E-mail Address</label></div>
 			<% 
@@ -496,7 +496,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	
 			<%} %>
 						
-				<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='repeat_email' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></div>
+				<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='repeat_email' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></div>
 			
 				<div class="youraccount_left_2 youraccount_left_2_space">
 					Example: you@isp.com.
@@ -578,7 +578,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 		
 		<div class="youraccount_left_3">
 			<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>' id='errorMsg'>
-				<span class="text11rbold"><%=errorMsg%></span>
+				<span class="errortext"><%=errorMsg%></span>
 			</fd:ErrorHandler>
 		</div>
 		
@@ -586,7 +586,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 
 		<div class="youraccount_left_1"><label for="confirmPassword_field">* Repeat Password</label></div>
 		<div class="youraccount_left_2"><input id="confirmPassword_field" type="password" class="text9" size="28" name="confirmPassword"></div>
-		<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='repeat_password' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></div>
+		<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='repeat_password' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></div>
 		
 		<div class="youraccount_left_2 youraccount_left_2_space">
 			Must be at least six characters.
@@ -611,8 +611,8 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	
 			<div class="youraccount_left_1"><label for="displayName">Display Name</label></div>
 			<div class="youraccount_left_2"><input class="text9" size="28" maxlength="30" type="text" id="displayName" name="displayName" value="<%=displayName%>"></div>
-			<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DISPLAY_NAME.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></div>
-			<span id="profaneText" class="text11rbold" style="display:block;width:250px"></span>
+			<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DISPLAY_NAME.getCode()%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></div>
+			<span id="profaneText" class="errortext" style="display:block;width:250px"></span>
 			
 			<div class="youraccount_right">
 				<a class="cssbutton green small transparent border" href="/your_account/manage_account.jsp">Cancel</a>
@@ -643,31 +643,31 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	  
 		<div class="youraccount_left_1"><label for="first_name_field">* First Name</label></div>
 		<div class="youraccount_left_2"><input class="text9" size="28" maxlength="20" type="text" id="first_name_field" name="first_name" value="<%=firstName%>" required="true"></div>
-		<div class="youraccount_left_3"><span class="text9">(full name or first initial)</span> <fd:ErrorHandler result='<%=result%>' name='dlvfirstname' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></div>
+		<div class="youraccount_left_3"><span class="text9">(full name or first initial)</span> <fd:ErrorHandler result='<%=result%>' name='dlvfirstname' id='errorMsg'> <span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></div>
 		<div class="youraccount_left_1"><label for="last_name_field">* Last Name</label></div>
 		<div class="youraccount_left_2"><input class="text9" id="last_name_field" size="28" maxlength="20" type="text" name="last_name" value="<%=lastName%>" required="true"></div>
-		<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='dlvlastname' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></div>
+		<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='dlvlastname' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></div>
 	
 		<div class="youraccount_left_1"><%=!user.isCorporateUser() ? "* " : "" %><label for="uci_homePhone"> Home Phone #</label></div>
 		<div class="youraccount_left_2"><input type="text" size="28" maxlength="20" class="text9" name="homephone" id="uci_homePhone" title="Home Phone" value="<%=homePhone%>" required="true"><label for="uci_homePhone_ext"><span class="youraccount_phone_ext">Ext.<p class="offscreen">extension for home phone</p></span></label><input type="text" maxlength="6" width="45px" size="4" class="text9 ext56" id="uci_homePhone_ext" name="ext" value="<%=homePhoneExt%>"></div>
-		<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='dlvhomephone' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></div>
+		<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='dlvhomephone' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></div>
 	
 		<div class="youraccount_left_1"><%=user.isCorporateUser() ? "* " : "" %><label for="uci_busPhone">Work Phone #</label></div>
 		<div class="youraccount_left_2"><input type="text" size="28" maxlength="20" class="text9" name="busphone" id="uci_busPhone" title="Business Phone" value="<%=busPhone%>"><label for="uci_busPhone_ext"><span class="youraccount_phone_ext">Ext.<p class="offscreen">extension for work phone</p></span></label><input type="text" maxlength="6" size="4" class="text9 ext56" name="busphoneext" id="uci_busPhone_ext" value="<%=busPhoneExt%>"></div>
-		<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='busphone' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></div>
+		<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='busphone' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></div>
 	
 		<div class="youraccount_left_1"><label for="uci_cellPhone">Cell/Alt. #</label></div>
 	    <div class="youraccount_left_2"><input type="text" size="28" maxlength="20" class="text11" name="cellphone" id="uci_cellPhone" title="Cell Phone" value="<%=cellPhone%>"><label for="uci_cellPhone_ext"><span class="youraccount_phone_ext">Ext.<p class="offscreen">extension for cell phone</p></span></label><input type="text" maxlength="6" size="4" class="text9 ext56" name="cellphoneext" id="uci_cellPhone_ext" value="<%=cellPhoneExt%>"></div>
-		<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='dlvcellphone' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></div>
+		<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='dlvcellphone' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></div>
 	
 		<div class="youraccount_left_1"><label for="<%=EnumUserInfoName.ALT_EMAIL.getCode()%>_field">Other Email</label></div>
 	    <div class="youraccount_left_2"><input type="text" size="28" maxlength="45" class="text9" id="<%=EnumUserInfoName.ALT_EMAIL.getCode()%>_field" name="<%=EnumUserInfoName.ALT_EMAIL.getCode()%>" value="<%=otherEmail%>"></div>
-		<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.ALT_EMAIL.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></div>
+		<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.ALT_EMAIL.getCode()%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></div>
 	
 		<%  if (user.isDepotUser() || user.isCorporateUser()) { %>
 			<div class="youraccount_left_1"><label for="<%=EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode()%>_field">* Work Department</label></div>
 	    	<div class="youraccount_left_2"><input type="text" size="28" maxlength="45" class="text9" id="<%=EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode()%>_field" name="<%=EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode()%>" value="<%=workDept%>"></div>
-			<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></div>
+			<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode()%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></div>
 			<%  if(user.isDepotUser()){
 	            com.freshdirect.fdlogistics.model.FDDeliveryDepotModel depot = FDDeliveryManager.getInstance().getDepot(user.getDepotCode());
 	            if (depot.getRequireEmployeeId()) { %>
@@ -791,8 +791,8 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	<div class="youraccount_left_1 youraccount_full_width"><label for="mobile_number_field">* Mobile Number</label></div>
 	<div class="youraccount_left_2 youraccount_full_width"><input type="text" id="mobile_number_field" size="28" maxlength="20" class="text9" name="mobile_number" value="<%=mobile_number%>"></div>
 	<div class="youraccount_left_3">
-		<fd:ErrorHandler result='<%=result%>' name='mobile_number' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
-		<fd:ErrorHandler result='<%=result%>' name='text_option' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+		<fd:ErrorHandler result='<%=result%>' name='mobile_number' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
+		<fd:ErrorHandler result='<%=result%>' name='text_option' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
 	</div>
 
 <%if("FD".equals(eStoreId))

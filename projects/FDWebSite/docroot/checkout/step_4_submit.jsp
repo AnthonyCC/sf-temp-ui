@@ -255,17 +255,17 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
         %>
 	</fd:ErrorHandler>
 	<fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'>
-		<br><span class="text11rbold"><%= errorMsg %></span><br><br>
+		<br><span class="errortext"><%= errorMsg %></span><br><br>
     </fd:ErrorHandler>
 	<fd:ErrorHandler result='<%=result%>' name='invalid_reservation' id='errorMsg'>
-		<br><span class="text11rbold"><%= errorMsg %></span><br><br>
+		<br><span class="errortext"><%= errorMsg %></span><br><br>
 	</fd:ErrorHandler>
 	<fd:ErrorHandler result='<%=result%>' name='invalid_deliverypass' id='errorMsg'>
-    	<br><span class="text11rbold"><%= errorMsg %></span><br><br>
+    	<br><span class="errortext"><%= errorMsg %></span><br><br>
 	</fd:ErrorHandler>
     	<fd:ErrorHandler result='<%=result%>' name='redemption_exceeded' id='errorMsg'>
         <input type = "hidden" name="ignorePromoErrors" value="true"/>
-    	<br><span class="text11rbold"><%= errorMsg %></span><br><br>
+    	<br><span class="errortext"><%= errorMsg %></span><br><br>
 	</fd:ErrorHandler>
     
     
@@ -315,7 +315,7 @@ if (!abstractTimeslots && user.isPromoConflictResolutionApplied()) {
 <% } %>
 			<IMG src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>" height="1" BORDER="0" VSPACE="3"><br>
 			<IMG src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br>
-			<% if (!abstractTimeslots) { %><font class="title11"><b>Note:</b></font> <font class="text11orbold">Our goal is to fill your order with food of the highest quality. Occasionally, we'll get a shipment that doesn't meet our standards and we cannot accept it. Of course, if this happens, FreshDirect will not charge you for the missing item.</font><% } %>
+			<% if (!abstractTimeslots) { %><font class="title11"><b>Note:</b></font> <font class="success13text">Our goal is to fill your order with food of the highest quality. Occasionally, we'll get a shipment that doesn't meet our standards and we cannot accept it. Of course, if this happens, FreshDirect will not charge you for the missing item.</font><% } %>
 		</td>
 	</tr>
 	<tr>
@@ -357,7 +357,7 @@ if (!abstractTimeslots && user.isPromoConflictResolutionApplied()) {
 					<tr>
 						<td class="text10" style="width: 8em; text-align: right; padding-left: 2em; padding-right: 2em;"></td>
 						<td class="text10" style="width: 22px"></td>
-						<td class="text11orbold" colspan="3" style="padding-top: 1em;"><%= deptDesc %></td>
+						<td class="success13text" colspan="3" style="padding-top: 1em;"><%= deptDesc %></td>
 					</tr>
 <%
 				__lastDeptDesc = deptDesc;

@@ -240,7 +240,7 @@
 								<% if (result.hasError(EnumUserInfoName.EMAIL.getCode())) { %>
 									<div class="errMsg">
 										<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>' id='errorMsg'>
-											<span class="text11rbold"><%=errorMsg%></span>
+											<span class="errortext"><%=errorMsg%></span>
 										</fd:ErrorHandler>
 									</div>
 								<% } %>
@@ -295,7 +295,7 @@
 									</td>
 									</tr>
 				
-				                    <% if (result.hasError(EnumUserInfoName.PASSWORD.getCode())) { %><tr><td></td><td><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr><% } %>
+				                    <% if (result.hasError(EnumUserInfoName.PASSWORD.getCode())) { %><tr><td></td><td><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>' id='errorMsg'> <span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr><% } %>
 				                    <tr>
 				                        <td valign="bottom">&nbsp
 											

@@ -38,7 +38,7 @@ final int W_CHECKOUT_STEP_2_UNAVAIL_TOTAL = 970;
 <%-- Deliver Passes block --%>
 <c:if test="${!empty unavailabilityPotato.passes}">
 <table>
-		<tr valign="top"><td colspan="5" class="text11orbold">DeliveryPass</td></tr>
+		<tr valign="top"><td colspan="5" class="success13text">DeliveryPass</td></tr>
 		<tr><td class="text11"colspan="5">
 				We're sorry, the pass(es) below will be removed from your cart for the following reason(s).
 				<br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4">

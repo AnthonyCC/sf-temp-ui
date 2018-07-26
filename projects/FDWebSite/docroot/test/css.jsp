@@ -108,6 +108,7 @@
 		<tr><td>.title11 </td>		<td><font class="title11">This is some text to display</font> </td></tr>
 		<tr><td>.text11wbold </td>  <td bgcolor="999999"><font class="text11wbold">This is some text to display</font> </td></tr>
 		<tr><td>.text11rbold</td>	<td><font class="text11rbold">This is some text to display</font></td> </tr>
+		<tr><td>.errortext</td>     <td><font class="errortext">This is some text to display</font></td></tr>
 		<tr><td>.text11orbold</td>	<td><font class="text11orbold">This is some text to display</font></td> </tr>
 		<tr><td>.text11pkbold</td>	<td><font class="text11pkbold">This is some text to display</font> </td></tr>
 		<tr><td>.text11prpbold</td>	<td>	<font class="text11prpbold">This is some text to display</font> </td></tr>
