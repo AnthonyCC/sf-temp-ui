@@ -20,6 +20,7 @@
  * @param? mpButtonImgURL
  * @param? ppEwalletPaired
  * @param? mobWeb
+ * @param? dlvPassCart
   */
 {template .paymentmethodpreview autoescape="false"}
 {if $coveredByGiftCard}
@@ -53,6 +54,7 @@
 				{param mpButtonImgURL:$mpButtonImgURL /}
 				{param backupPaymentRequiredForGiftCard: false /}
 				{param coveredByGiftCard: false /}
+				{param dlvPassCart: $dlvPassCart /}
 			{/call}
 		{/if}
   {else}
@@ -71,6 +73,7 @@
 				{param mpButtonImgURL:$mpButtonImgURL /}
 				{param backupPaymentRequiredForGiftCard: false /}
 				{param coveredByGiftCard: false /}
+				{param dlvPassCart: $dlvPassCart /}
 			{/call}
 		{/if}
     {else}
@@ -88,6 +91,7 @@
 				{param mpButtonImgURL:$mpButtonImgURL /}
 				{param backupPaymentRequiredForGiftCard: false /}
 				{param coveredByGiftCard: false /}
+				{param dlvPassCart: $dlvPassCart /}
 			{/call}
 		{/if}
     {/if}
@@ -126,6 +130,7 @@
  * @param? mobWeb
  * @param? backupPaymentRequiredForGiftCard
  * @param? coveredByGiftCard
+ * @param? dlvPassCart
  */
 {template .externalpayments autoescape="false"}
 	<div class="external-payments">
@@ -141,6 +146,7 @@
 				{param mpEwalletStatus:$mpEwalletStatus /}
 				{param walletErrorMsg:$walletErrorMsg /}
 				{param mpButtonImgURL:$mpButtonImgURL /}
+				{param dlvPassCart: $dlvPassCart /}
 			{/call}
 			<div class="clear"></div>
 		{elseif $mobWeb}
@@ -199,13 +205,14 @@
  * @param mpEwalletStatus
  * @param? walletErrorMsg
  * @param? mpButtonImgURL
+ * @param? dlvPassCart
  *
  */
 {template .externalpaymentsmasterpass autoescape="false"}
 	{if $mpEwalletStatus}
 		/** Masterpass Standard Checkout  */ 
 		<div class="external-payments-cont external-payments-masterpass">
-			<form id="addpaymentmethod_masterpass" class="checkout-wallet-button" fdform="MP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
+			<form id="addpaymentmethod_masterpass" class="checkout-wallet-button" fdform="MP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment{if $dlvPassCart}?dlvPassCart=true{/if}" fdform-disable-resubmit="true">
 				<input type="hidden" name="action" value="MP_Standard_Checkout" />
 				<input type="hidden" name="ewalletType" value="MP" />
 	

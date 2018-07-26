@@ -355,7 +355,7 @@ function parseTipTotal(data) {
 					/* correct copy for when avalara is enabled in subtotal areas */
 					if( typeof(data.subTotalBox.estimatedTotalBox) == "object"  ){
 						if(data.avalaraEnabled == true){
-							data.subTotalBox.estimatedTotalBox[0]["text"] = "Order Subtotal with rodents";
+							/* WTF *//*data.subTotalBox.estimatedTotalBox[0]["text"] = "Order Subtotal with rodents";*/
 						}
 					}
 				}

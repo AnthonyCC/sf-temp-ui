@@ -31,10 +31,10 @@ boolean mobWeb_address_finder = FeatureRolloutArbiter.isFeatureRolledOut(EnumRol
 Collection shipToAddresses = new ArrayList();
 ErpAddressModel address = null;
 int page_type = TimeslotLogic.PAGE_NORMAL;
-if((!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER)) && user.getIdentity() != null)
+if( !timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER) && user.getIdentity() != null ) {
 	shipToAddresses = AddressFinder.getShipToAddresses(user);
-if (user.getIdentity() != null)
-	address = AddressFinder.getShipToAddress(user, pageAddrId, timeSlotCtx, request);
+}
+address = AddressFinder.getShipToAddress(user, pageAddrId, timeSlotCtx, request);
 %>
 
 <%

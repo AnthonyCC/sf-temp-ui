@@ -1,7 +1,11 @@
 package com.freshdirect.webapp.ajax.product;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
@@ -39,29 +43,19 @@ public class CriteoProductsUtil
 		HLBrandProductAdRequest hLBrandProductAdRequest = new HLBrandProductAdRequest();
 		List<ProductData> adPrducts = new ArrayList<ProductData>();
 		StringBuffer updatedPageBeacon = new StringBuffer(A_SHOWN);
-		int productsCount = 0;
 		try {
 			FDSessionUser sessionUser = (FDSessionUser) user;
 			SearchResultsUtil.setPlatFormValues(user, hLBrandProductAdRequest, sessionUser.isMobilePlatForm(),
 					sessionUser.getPlatForm(), sessionUser.getLat(), sessionUser.getPdUserId());
-			List<HLBrandProductAdInfo> cretioProductsCacheList=new ArrayList<HLBrandProductAdInfo> ();
+			List<HLBrandProductAdInfo> cretioProductsList=new ArrayList<HLBrandProductAdInfo> ();
+			Map<String, HLBrandProductAdResponse> cretioProductsCacheMap=new HashMap<String, HLBrandProductAdResponse> ();
 			//cache Criteo products
-			cretioProductsCacheList.addAll(CriteoProductsHomePageCache.getInstance().getProducts());
-		
-			productsCount = cretioProductsCacheList.size();
-			if (cretioProductsCacheList != null && !cretioProductsCacheList.isEmpty()){
-				addHlBrandProducts(user, adPrducts, updatedPageBeacon, cretioProductsCacheList,false);
+			cretioProductsCacheMap.putAll(CriteoProductsHomePageCache.getInstance().getProducts());
+			cretioProductsList= arrangeHomePageProducts(cretioProductsCacheMap,user,adPrducts);
+			if (cretioProductsList != null && !cretioProductsList.isEmpty()){
+				addHlBrandProducts(user, adPrducts, updatedPageBeacon, cretioProductsList,false);
 			}
 			int  maxCount = FDStoreProperties.getFDHomeCriteoMaxDisplayProducts();
-		/*	if( null != adPrducts && !adPrducts.isEmpty() && (adPrducts.size()<maxCount) ) {			//APPBUG-5520 
-				int i= adPrducts.size();
-				int j=0;
-				while ( i < maxCount) {
-					adPrducts.add(adPrducts.get(j));
-					i++;	
-					j++;
-				}
-			}else */
 			if( null != adPrducts && !adPrducts.isEmpty() && (adPrducts.size() > maxCount) ){
 				adPrducts.subList(maxCount, adPrducts.size()).clear();
 			}
@@ -87,19 +81,9 @@ public class CriteoProductsUtil
 		productData.setClickBeacon(hlBrandProductAdMetaInfo.getClickBeacon());
 		productData.setImageBeacon(hlBrandProductAdMetaInfo.getImpBeacon());
 		productData.setPageBeaconOfApi(hlBrandProductAdMetaInfo.getPageBeacon());
-		/*productData.setImageBeacon("//uat-beam.hlserve.com/beacon?fid=258&hl_qs=JPrhL9T5mOV3wMt8nUd3R1%2fnaUJD4%2b%2fQjx7QrFzy8Xgh1DPl" +
-		"Fiu6X3mUcwYc49GV9BIQ55Dq52qgUXByfVYHAkBakkF2RZ32A%2bCtBq87FY05gZbkiyAb7vbHZmOPKN7ZXhkH6KgZW%2fO33Fr7DUD2RROiEUpVZNzs" +
-		"jNijiqy1PKGEchrGwEJOazg1k9bLZX7nZyNn9ORUpN8lNfiUQ%2fxv%2bRF3RSxz%2fS8EHy8DeTbkUaOkn4MFxz%2fwjJ%2fnnYEz24hnAB%2bZEw2QZ9yKMDbCWEL" +
-		"bPfTpTnZgj0BOVNrQfPiesoffrTBTB%2btWafwZWB666oQYov%2bZSfRKuZht38TE3FCf3QxkkoYpEQE6bJ2PjGT75kHXG7whvjEzRnAiXAR03lfUzd%2b0KWP7NauuC1JTndp1q" +
-		"fjDMdryMd27TE2eQf%2bUKTr8l1WGZhdVh0NzimFoDBsF%2bVoDFtVv7UpxFKBECQuoVYuD6PhM7ms49%2bcU6i5FL9LF3%2fG6iMeWcpLJs%2blZYCwKgrhA91Yu0oMU4xun719u" +
-		"yHKo9StgQxtuj9mWgXCDq5V%2bLLl9ERS6HMF7zqSot8vCjfHLh6jP4XDf1LpuyPHz5iaPlVS2fcTLxZiKY5fWZmEg2p2mx1IOHMzoejQegL87gcnXDGSUbJ9FfKPcyMQ97%2bPK%2b1QBDd" +
-		"8MQzVsKAtK9%2fefxMY%2f0WiG7HoCtEEQMitz0Jp5k%2bvSfOQTcT9syxcGbv2y411F1DNafBBuNT9T1G7i1482jNmBLwIOwt9yKFV0ky9zBRHNcFD52TnvrB0HzbuOUtvdCom85K16159%2b2Qpm" +
-		"viQvhEWK%2fYlgD3TB%2beZcOJzq0%2blnxcMaq54lYGhRxdvWwkYYOR5tOrW9vF01auVQf9Pfmv%2b3Qx7rQV4OYHYqvbEoObrAcfCWZKPDhnldhcyxcQrKG19nSciYPzE0asVRwrwdiDTxCuuwSkFO8a" +
-		"h4HueKQ95EJfa0mUPIkwDevYttm1yZsPJlZ1XD8wz1vB1ATmMgwHcONkQ%2bTlVF2twkBnb5p7O%2fp61usnxyCdxwN2fPKNrH9NAenwMKrjvWngtb2YWDmZ%2bGp6N%2fZ9ShP6v&ev=1&action=imp&p" +
-		"ageguid=867097b1-2968-4fa2-b0cf-f4b76c797614&pid=d82fd515-8f6c-4646-8a4c-66a69c1fbd49&rn=228163497&hmguid=543386f2-8556-4787-becd-f149f84e4e04");*/
 		adPrducts.add(productData);
 		updatedPageBeacon.append(((A_SHOWN.equals(updatedPageBeacon.toString()))
-				? productData.getSkuCode() : "," + productData.getSkuCode()));
+				? productData.getSkuCode().toUpperCase() : "," + productData.getSkuCode().toUpperCase()));
 	}
 
 	private static void addHlBrandProducts(FDUserI user, List<ProductData> adPrducts, StringBuffer updatedPageBeacon,
@@ -215,4 +199,112 @@ public class CriteoProductsUtil
 	         }
 			return FDsearchKeys;
 		}
+		
+	static List<HLBrandProductAdInfo> arrangeHomePageProducts(
+			Map<String, HLBrandProductAdResponse> cretioProductsCacheMap,
+			FDUserI user, List<ProductData> addProducts) {
+		List<String> keys = CriteoProductsUtil.getFDSearchPriorityKeyWords();
+		int counter = 0;
+		List<HLBrandProductAdInfo> arrangedProductList= new ArrayList<HLBrandProductAdInfo>();
+		Map<String, List<HLBrandProductAdInfo>> criteoProdctMap = new HashMap<String, List<HLBrandProductAdInfo>>();
+		Set<String> skuList = new HashSet<String>();
+		for (String key : keys) {
+			final String A_SHOWN = "&ashown=";
+			final StringBuffer updatedPageBeacon = new StringBuffer(A_SHOWN);
+			List<HLBrandProductAdInfo> criteoList=cretioProductsCacheMap.get(key)!=null?cretioProductsCacheMap.get(key).getSearchProductAd():null;
+			List<HLBrandProductAdInfo> availableProductList= new ArrayList<HLBrandProductAdInfo>();
+			if (criteoList != null) {
+				for (HLBrandProductAdInfo hlBrandProductAdMetaInfo : criteoList) {
+					ProductModel productModel = null;
+					try {
+						if (!skuList.contains(hlBrandProductAdMetaInfo
+								.getProductSKU()))
+							skuList.add(hlBrandProductAdMetaInfo.getProductSKU());
+						else {
+							continue;
+						}
+
+						productModel = ContentFactory.getInstance().getProduct(hlBrandProductAdMetaInfo.getProductSKU());
+					} catch (Exception e) {
+						LOG.debug("SKu not found for Hooklogic product: "
+								+ hlBrandProductAdMetaInfo.getProductSKU());
+					}
+					if (null != productModel && !productModel.isUnavailable()) {
+						ProductData productData = null;
+						try {
+							productData = ProductDetailPopulator.createProductData(user, productModel);
+							if (null != productData && null != productData.getSkuCode()) {
+								availableProductList.add(hlBrandProductAdMetaInfo);
+								counter=counter+availableProductList.size();
+								updatedPageBeacon.append(((A_SHOWN.equals(updatedPageBeacon.toString())) ? hlBrandProductAdMetaInfo
+												.getProductSKU().toUpperCase() : ","+ hlBrandProductAdMetaInfo.getProductSKU().toUpperCase()));
+							}
+						} catch (Exception e) {
+							LOG.debug("SKu not found for Hooklogic product: "
+									+ hlBrandProductAdMetaInfo.getProductSKU());
+						}
+					}
+				}
+			}
+			if(!availableProductList.isEmpty())
+				availableProductList.get(0).setPageBeacon(cretioProductsCacheMap.get(key).getPageBeacon()+ updatedPageBeacon.toString());
+			criteoProdctMap.put(key, availableProductList);
+		}
+		arrangeCriteoProducts(keys, counter, arrangedProductList, criteoProdctMap);
+	return arrangedProductList;
+}
+
+	public static void arrangeCriteoProducts(List<String> keys, int counter,
+			List<HLBrandProductAdInfo> arrangedProductList,
+			Map<String, List<HLBrandProductAdInfo>> criteoProdctMap) {
+		int i=0;
+		int j=0;
+	if (!keys.isEmpty() && keys.size() != 0 && counter != 0) {
+		boolean found = false;
+		while (counter >= i++) {
+			for (String key : keys) {
+				if (null != criteoProdctMap.get(key) && !criteoProdctMap.get(key).isEmpty()
+						&& criteoProdctMap.get(key).size() >= (j + 1) ) {
+					HLBrandProductAdInfo criteoproduct=criteoProdctMap.get(key).get(j);
+					arrangedProductList.add(criteoproduct);
+					found = true;
+					i++;
+				}
+			}
+			if (!found) {
+				break;
+			}
+			j++;
+		}
+	}
+	}
+					
+					
+					
+					
+		/*  page beacon of Api call, we are setting to product level here 
+		 final String A_SHOWN="&ashown=";
+		 final StringBuffer updatedPageBeacon= new StringBuffer(A_SHOWN);
+		 //String pageBeaconString = null;
+		if (!avaiProductFDList.isEmpty()) {
+			for (HLBrandProductAdInfo pdata : avaiProductFDList) {
+				updatedPageBeacon.append(((A_SHOWN.equals(updatedPageBeacon.toString()))
+						? pdata.getProductSKU() : "," + pdata.getProductSKU()));
+			}
+			avaiProductFDList.get(0).setPageBeacon(response.getPageBeacon() + updatedPageBeacon.toString());
+		}
+		*/
+
+	/*	if(!avaiProductFDList.isEmpty() && avaiProductFDList.size() < 5){
+							int i= avaiProductFDList.size();
+							int j=0;
+							while ( i < 5) {
+								avaiProductFDList.add(avaiProductFDList.get(j));
+								i++;	
+								j++;
+							}
+						}*/
+			
+	
+		
 }
