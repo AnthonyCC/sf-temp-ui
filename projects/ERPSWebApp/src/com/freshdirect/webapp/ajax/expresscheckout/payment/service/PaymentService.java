@@ -54,6 +54,7 @@ import com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName;
 import com.freshdirect.webapp.taglib.fdstore.PaymentMethodName;
 import com.freshdirect.webapp.taglib.fdstore.PaymentMethodUtil;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 import com.freshdirect.webapp.util.StandingOrderHelper;
 
 public class PaymentService {
@@ -125,7 +126,7 @@ public class PaymentService {
             validationErrors.add(new ValidationError(error.getType(), error.getDescription()));
         }
         if (validationErrors.isEmpty()) {
-            PaymentMethodManipulator.applyCustomerCredits("selectPaymentMethod", (FDUserI) session.getAttribute(SessionName.USER), request.getSession(), false);
+            PaymentMethodManipulator.applyCustomerCredits("selectPaymentMethod", (FDUserI) session.getAttribute(SessionName.USER), request.getSession(), dlvPassCart);
             session.removeAttribute(SessionName.CART_PAYMENT_SELECTION_DISABLED);
         }
         return validationErrors;
@@ -251,14 +252,17 @@ public class PaymentService {
         String selectedPaymentId = null;
         Boolean cartPaymentSelectionDisabled = (Boolean) request.getSession().getAttribute(SessionName.CART_PAYMENT_SELECTION_DISABLED);
         List<ValidationError> selectionError = new ArrayList<ValidationError>();
+        boolean dlvPassCart = null !=request.getParameter("dlvPassCart") && "true".equalsIgnoreCase(request.getParameter("dlvPassCart")) ? true: false;
+		FDCartModel cart = UserUtil.getCart(user, "", dlvPassCart);
+
         if (cartPaymentSelectionDisabled == null || !cartPaymentSelectionDisabled) {
         	if(vaidateSO3Payment(user,paymentMethods)){
         		selectedPaymentId=user.getCurrentStandingOrder().getPaymentMethodId();
         	}
-        	else if((user.getShoppingCart() instanceof FDModifyCartModel) && paymentMethods.size() > 0 && null ==request.getAttribute("pageAction")){
+        	else if((cart instanceof FDModifyCartModel) && paymentMethods.size() > 0 && null ==request.getAttribute("pageAction")){
         		selectedPaymentId= paymentMethods.get(0).getPK().getId();
         	}
-        	else if (user.getShoppingCart().getPaymentMethod() == null || (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user)
+        	else if (cart.getPaymentMethod() == null || (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user)
         					&& null ==request.getAttribute("pageAction")) && null== request.getSession().getAttribute("selectedPaymentId")) {
         		 user.refreshFdCustomer();
         		 // FIN-78
@@ -277,7 +281,7 @@ public class PaymentService {
         		 }
         		 selectionError = selectPaymentMethod(selectedPaymentId, PageAction.SELECT_PAYMENT_METHOD.actionName, request);
             } else {
-                PrimaryKey paymentMethodPrimaryKey = user.getShoppingCart().getPaymentMethod().getPK();
+                PrimaryKey paymentMethodPrimaryKey = cart.getPaymentMethod().getPK();
                 if (paymentMethodPrimaryKey != null) {
                     selectedPaymentId = paymentMethodPrimaryKey.getId();
                     request.getSession().setAttribute("selectedPaymentId", selectedPaymentId);

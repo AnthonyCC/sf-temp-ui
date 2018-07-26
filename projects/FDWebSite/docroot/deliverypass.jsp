@@ -153,8 +153,13 @@
 				 	                      				"\"lastName\":\""+payload.details.lastName+"\" ,\"deviceId\":\""+deviceObj.correlation_id+"\"}}",
 				 	                      type: 'post',
 				 	                      success: function(id, result){
-				 	                    	 //location.reload(true);
-				 	                    	 window.location.assign("/deliverypass.jsp");
+											/* don't reload page, just update payments display */
+											$.get('/api/expresscheckout/payment?dlvPassCart=true').done( function (d) {
+												FreshDirect.common.dispatcher.signal('payment', d);
+												if($(".deliverypass-payment").length > 0){
+													dialogWindowRealignFunc();
+												}
+											});
 				 	                      }
 				 	    	        });
 				 	    		  },

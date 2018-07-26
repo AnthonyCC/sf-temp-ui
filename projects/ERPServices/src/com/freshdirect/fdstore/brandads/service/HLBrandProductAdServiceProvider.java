@@ -50,6 +50,8 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 	private static final String HOOKLOGIC_LAT="lat";
 	private static final String HOOKLOGIC_PDUSERID = "pduserid";
 	private static final String HOOKLOGIC_BEACON = "beacon";
+	private static final String HOOKLOGIC_FILTERS = "filters";
+	private static final String HOOKLOGIC_INVTYPE ="invtype";
 
 
 
@@ -82,6 +84,7 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 		urlParameters.put(HOOKLOGIC_HLPT, hlAdConfigProvider.getBrandProductAdProviderHlpt());
 		urlParameters.put(HOOKLOGIC_STRATEGY, hlAdConfigProvider.getBrandProductAdProviderStrategy());
 		urlParameters.put(HOOKLOGIC_BEACON, hlAdConfigProvider.getBrandProductsBeacon());
+		addServiceType(hLRequestData, urlParameters);
 
 		StringBuilder urlToCall = getBaseUrl(urlToCallStr, urlParameters);
 		String jsonResponse = sendGetRequest(urlToCall);
@@ -111,6 +114,7 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 		urlParameters.put(HOOKLOGIC_HLPT, hlAdConfigProvider.getBrandProductAdProviderCategoryHlpt());
 		urlParameters.put(HOOKLOGIC_CREATIVE, hlAdConfigProvider.getBrandProductAdProviderCreative());
 		urlParameters.put(HOOKLOGIC_BEACON, hlAdConfigProvider.getBrandProductsBeacon());
+		addServiceType(hLRequestData, urlParameters);
 		StringBuilder urlToCall = getBaseUrl(urlToCallStr, urlParameters);
 		String jsonResponse = sendGetRequest(urlToCall);
 		HLBrandProductAdResponse response = parseResponse(jsonResponse, HLBrandProductAdResponse.class);
@@ -161,7 +165,8 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 		urlParameters.put(HOOKLOGIC_PLATFORM, hLRequestData.getPlatformSource());
 		urlParameters.put(HOOKLOGIC_MINMES, hlAdConfigProvider.getBrandProductAdProviderMinmes());
 		urlParameters.put(HOOKLOGIC_MAXMES, hlAdConfigProvider.getBrandProductAdProviderMaxmes());
-		urlParameters.put(HOOKLOGIC_BEACON, hlAdConfigProvider.getBrandProductsBeacon());	//	APPDEV-7148
+		urlParameters.put(HOOKLOGIC_BEACON, hlAdConfigProvider.getBrandProductsBeacon());
+		addServiceType(hLRequestData, urlParameters);
 		
 		StringBuilder urlToCall = getBaseUrl(urlToCallStr, urlParameters);
 		String jsonResponse = sendGetRequest(urlToCall);
@@ -185,6 +190,7 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 		urlParameters.put(HOOKLOGIC_PGN, hlAdConfigProvider.getBrandProductAdProviderPgn());
 		urlParameters.put(HOOKLOGIC_MAXMES, hlAdConfigProvider.getPdpProductAdProviderMaxmes());
 		urlParameters.put(HOOKLOGIC_BEACON, hlAdConfigProvider.getBrandProductsBeacon());
+		addServiceType(hLBrandProductAdRequest, urlParameters);
 
 		StringBuilder urlToCall = getBaseUrl(urlToCallStr, urlParameters);
 		String jsonResponse = sendGetRequest(urlToCall);
@@ -375,7 +381,10 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES , false);
 		return mapper;
 	}
-
+	private void addServiceType(HLBrandProductAdRequest hLRequestData, TreeMap<String, String> urlParameters) {
+		urlParameters.put(HOOKLOGIC_FILTERS, "{" + "\"" + HOOKLOGIC_INVTYPE + "\"" + ":[" + "\""
+				+ hLRequestData.getSelectedServiceType() + "\"" + "],}");
+	}
 
 
 	

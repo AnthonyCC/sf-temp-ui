@@ -27,7 +27,7 @@
 	<form fdform method="post" name="contact_fd" id="contact_fd_contact" fdform-displayerrorafter>
 		<a href='index.jsp'><h2 class="help-heading bold uppercase">contact freshdirect</h2></a>
 		<p class="small-text">FreshDirect Customer Service is standing by to answer your questions, seven days a week.
-			<span class="bold">The best way to get help is through email. Our dedicated service team generally responds within 1 to 3 hours during our business day.</span>
+			<fd:IncludeMedia name="/media/editorial/site_pages/help_home_hours.html" />
 		</p>
 		
 		<div class="underline">
