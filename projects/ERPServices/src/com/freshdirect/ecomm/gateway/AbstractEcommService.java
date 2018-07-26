@@ -35,6 +35,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.freshdirect.customer.ErpPaymentMethodDeserializer;
 import com.freshdirect.customer.ErpPaymentMethodI;
+import com.freshdirect.customer.ErpTransactionModel;
+import com.freshdirect.customer.ErpTransactionModelDeserializer;
 import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDEcommServiceException;
@@ -52,12 +54,11 @@ public abstract class AbstractEcommService {
 	private static final ObjectMapper MAPPER;
 
 	static {
-		MAPPER = new ObjectMapper()
-				.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ"))
+		MAPPER = new ObjectMapper().setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ"))
 				.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false).registerModule(
-						new SimpleModule().addDeserializer(ErpPaymentMethodI.class, new ErpPaymentMethodDeserializer()));
-				MAPPER.getFactory()
-				.configure(Feature.ESCAPE_NON_ASCII, true);
+						new SimpleModule().addDeserializer(ErpPaymentMethodI.class, new ErpPaymentMethodDeserializer())
+								.addDeserializer(ErpTransactionModel.class, new ErpTransactionModelDeserializer()));
+		MAPPER.getFactory().configure(Feature.ESCAPE_NON_ASCII, true);
 				
 		List<HttpMessageConverter<?>> converters = new ArrayList<HttpMessageConverter<?>>();
 		converters.add(new ByteArrayHttpMessageConverter());

@@ -8050,19 +8050,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 		return result;
 	}
-
-	public List<ShippingDetail> getTruckDetails() throws FDResourceException {
-
-		return FDDeliveryManager.getInstance().getTruckDetails();
-
-	}
-
 	private Map<String, ErpShippingInfo> mapShippingTruckDetails(List<String> salesId) throws FDResourceException {
 		Map<String, ErpShippingInfo> erpShippingMap = new HashMap<String, ErpShippingInfo>();
 		Map<String, ShippingDetail> truckMap = new HashMap<String, ShippingDetail>();
 
 		if (salesId != null) {
-			List<ShippingDetail> shippingDetails = getTruckDetails();
+			List<ShippingDetail> shippingDetails = FDDeliveryManager.getInstance().getTruckDetails();
 
 			if (null != shippingDetails) {
 				for (ShippingDetail shippingDetail : shippingDetails) {

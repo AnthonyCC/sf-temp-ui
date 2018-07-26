@@ -367,11 +367,11 @@ public interface FDCustomerManagerSB  extends EJBObject{
     public List<DlvSaleInfo> getOrdersByTruck(String truckNumber, Date dlvDate) throws FDResourceException, RemoteException;
 
 	public FDOrderI getOrderForCRM(FDIdentity identity, String saleId) throws FDResourceException, RemoteException;
-
+	@Deprecated
 	public FDOrderI getOrder(FDIdentity identity, String saleId) throws FDResourceException, RemoteException;
 
     public FDOrderI getOrderForCRM(String saleId) throws FDResourceException, RemoteException;
-
+    @Deprecated
     public FDOrderI getOrder(String saleId) throws FDResourceException, RemoteException;
 
     public ErpSaleModel getErpSaleModel(String saleId) throws FDResourceException, RemoteException;
@@ -833,7 +833,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
 	public void logIpLocatorEvent(IpLocatorEventDTO ipLocatorEventDTO) throws FDResourceException, RemoteException;
 	@Deprecated
 	public IpLocatorEventDTO loadIpLocatorEvent (String fdUserId) throws FDResourceException, RemoteException;
-
+	@Deprecated
 	public CustomerAvgOrderSize getHistoricOrderSize(String customerId) throws FDResourceException, RemoteException;
 	@Deprecated
 	public FDUser getFDUserWithCart(FDIdentity identity, EnumEStoreId eStoreId) throws FDAuthenticationException, FDResourceException, RemoteException;
@@ -846,9 +846,9 @@ public interface FDCustomerManagerSB  extends EJBObject{
     public String getCustomersCounty(String customerId) throws FDResourceException, RemoteException;
 	@Deprecated
 	public List<String> getUsedReservations(String customerId) throws FDResourceException, RemoteException;
-
+	@Deprecated
 	public String getLastOrderID(FDIdentity identity, EnumEStoreId eStoreId)	throws FDResourceException, RemoteException;
-
+	@Deprecated
 	public void updateOrderInModifyState(ErpSaleModel sale)	throws FDResourceException, RemoteException;
 
 	public boolean isReadyForPick(String orderNum)	throws FDResourceException, RemoteException;
@@ -881,19 +881,17 @@ public interface FDCustomerManagerSB  extends EJBObject{
 	public int updateShippingInfoCartonDetails() throws FDResourceException ,RemoteException;
 
 	public int[] updateShippingInfoTruckDetails() throws FDResourceException,RemoteException;
-
-	public List<ShippingDetail> getTruckDetails() throws FDResourceException,RemoteException ;
-
+	@Deprecated
 	public List<FDCartLineI> getModifiedCartlines(String orderId, UserContext userContext) throws FDResourceException, RemoteException;
-
+	@Deprecated
 	public void saveModifiedCartline(PrimaryKey  userpk, StoreContext storeContext, FDCartLineI newLine, String orderId) throws FDResourceException, RemoteException;
-
+	@Deprecated
 	public void removeModifiedCartline(FDCartLineI cartLine) throws FDResourceException, RemoteException;
-
+	@Deprecated
 	public void updateModifiedCartlineQuantity(FDCartLineI cartLine) throws FDResourceException, RemoteException;
-
+	@Deprecated
 	public void clearModifyCartlines(String currentOrderId) throws FDResourceException, RemoteException;
-
+	@Deprecated
 	public List<UnsettledOrdersInfo> getUnsettledOrders(Date date) throws FDResourceException, RemoteException;
 
 	public ErpCustomerModel getCustomer(FDIdentity identity) throws FDResourceException, RemoteException;
