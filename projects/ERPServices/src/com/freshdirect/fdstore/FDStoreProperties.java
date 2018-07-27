@@ -1072,6 +1072,11 @@ public class FDStoreProperties {
 
 	private static final String PROP_LAZYLOADING_MODULES_ENABLED="fdstore.lazyloading.modules.enabled"; 
 	private static final String PROP_REFRESH_LOOKBACK_SECS_PRODUCTINFO = "fdstore.refresh.lookbackSecs.productInfo";
+	private static final String PROP_BACK_OFFICE_API_URL = "fdstore.backoffice.url";
+	private static final String PROP_BACK_OFFICE_CONNECTION_POOL = "fdstore.backoffice.conn.pool";
+    private static final String PROP_BACK_OFFICE_CONNECTION_TIMEOUT = "fdstore.backoffice.conn.timeout";
+    private static final String PROP_BACK_OFFICE_CONNECTION_REQUEST_TIMEOUT = "fdstore.backoffice.conn.request.timeout";
+    private static final String PROP_BACK_OFFICE_CONN_READ_TIMEOUT = "fdstore.backoffice.conn.read.timeout";
 
  	static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -2052,6 +2057,13 @@ public class FDStoreProperties {
         defaults.put(CARD_VERIFICATION_RATE_LIMIT,"10");
         
         defaults.put(PROP_LAZYLOADING_MODULES_ENABLED, "false");
+        
+        defaults.put(PROP_BACK_OFFICE_CONNECTION_TIMEOUT, 120);
+        defaults.put(PROP_BACK_OFFICE_CONNECTION_POOL, 5);
+        defaults.put(PROP_BACK_OFFICE_CONN_READ_TIMEOUT, 120);
+        defaults.put(PROP_BACK_OFFICE_CONNECTION_REQUEST_TIMEOUT, 60);
+        
+        
         
         try {
      		String hostName=java.net.InetAddress.getLocalHost().getCanonicalHostName();
@@ -5251,4 +5263,38 @@ public class FDStoreProperties {
 	public static String getMidWeekSixMonthDeliveryPassSku() {
 		return get(PROP_MID_WEEK_SIX_MONTH_DELIVERY_PASS_SKU);
 	}
+	
+	 public static String getBackOfficeApiUrl() {
+        return get(PROP_BACK_OFFICE_API_URL);
+    }
+	 
+	 public static int getBackOfficeConnectionPool() {
+	        try {
+	            return Integer.parseInt(get(PROP_BACK_OFFICE_CONNECTION_POOL));
+	        } catch (NumberFormatException e) {
+	            return 10;
+	        }
+	    }
+	 public static int getBackOfficeConnectionTimeout() {
+	        try {
+	            return Integer.parseInt(get(PROP_BACK_OFFICE_CONNECTION_TIMEOUT));
+	        } catch (NumberFormatException e) {
+	            return 60;
+	        }
+	    }
+	 public static int getBackOfficeConnectionRequestTimeout() {
+	        try {
+	            return Integer.parseInt(get(PROP_BACK_OFFICE_CONNECTION_REQUEST_TIMEOUT));
+	        } catch (NumberFormatException e) {
+	            return 60;
+	        }
+	    }
+	 
+	 public static int getBackOfficeConnectionReadTimeout() {
+	        try {
+	            return Integer.parseInt(get(PROP_BACK_OFFICE_CONN_READ_TIMEOUT));
+	        } catch (NumberFormatException e) {
+	            return 300;
+	        }
+	    }
 }
