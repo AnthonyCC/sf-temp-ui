@@ -55,7 +55,7 @@ import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 
 public class ExternalAccountController extends BaseController implements SystemMessageList{
 
-	private static Category LOGGER = LoggerFactory.getInstance(ExternalAccountController.class);
+    private static final Category LOGGER = LoggerFactory.getInstance(ExternalAccountController.class);
 
 	//Actions
 	private final static String ACTION_RECOGNIZE_ACCOUNT = "login";
@@ -366,6 +366,10 @@ public class ExternalAccountController extends BaseController implements SystemM
 				((SocialResponse) responseMessage).setResultMessage(MSG_SOCIAL_LINKED);
 				((SocialResponse) responseMessage).setResultAction("LINKED");
 			} else if (context.equalsIgnoreCase("UNLINK")) {
+                SocialProvider socialProvider = SocialGateway.getSocialProvider("ONE_ALL");
+                if (socialProvider != null) {
+                    socialProvider.deleteSocialIdentity(socialUser.get("identityToken"));
+                }
 				if(user!=null & user.getFDSessionUser()!=null && user.getFDSessionUser().getIdentity()!=null) {
 					ExternalAccountManager.unlinkExternalAccountWithUser(user.getFDSessionUser().getIdentity().getErpCustomerPK(), socialUser.get("provider"));
 				}
