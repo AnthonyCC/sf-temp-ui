@@ -3,6 +3,7 @@ package com.freshdirect.fdstore.ecomm.gateway;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Category;
 
@@ -11,6 +12,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.freshdirect.common.context.StoreContext;
 import com.freshdirect.common.context.UserContext;
+import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.ecomm.gateway.AbstractEcommService;
@@ -19,11 +21,13 @@ import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDEcommServiceException;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
+import com.freshdirect.fdstore.customer.FDCustomerOrderInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDOrderI;
+import com.freshdirect.fdstore.customer.FDOrderSearchCriteria;
+import com.freshdirect.fdstore.customer.PendingOrder;
 import com.freshdirect.fdstore.customer.UnsettledOrdersInfo;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -43,7 +47,13 @@ public class CustomerOrderService extends AbstractEcommService implements Custom
 	private static final String SAVE_MODIFIED_CART = "customerOrder/modifiedCartlines/save";
 	private static final String REMOVE_MODIFIED_CART = "customerOrder/modifiedCartlines/remove";
 	private static final String UPDATE_MODIFIED_CART = "customerOrder/modifiedCartlines/update";
-
+	private static final String LOCATE_ORDERS = "customerOrder/locateOrders";
+	private static final String GET_PENDING_DELIVERIES = "customerOrder/getPendingDeliveries";
+	private static final String UPDATE_SHIPPING_CARTON = "customerOrder/updateShippingInfoCartonDetails";
+	private static final String UPDATE_SHIPPING_TRUCK = "customerOrder/updateShippingInfoTruckDetails";
+	private static final String UPDATE_ORDER_IN_PROCESS = "customerOrder/updateOrderInProcess/";
+	private static final String GET_LAST_ORDER_ADDRESS = "customerOrder/getLastOrderAddress/";
+	
 	private static CustomerOrderServiceI INSTANCE;
 
 	public static CustomerOrderServiceI getInstance() {
@@ -237,6 +247,105 @@ public class CustomerOrderService extends AbstractEcommService implements Custom
 			throw new RemoteException(e.getMessage());
 		}
 
+	}
+
+	@Override
+	public List<FDCustomerOrderInfo> locateOrders(FDOrderSearchCriteria criteria)
+			throws FDResourceException, RemoteException {
+		Response<List<FDCustomerOrderInfo>> response = null;
+		try {
+			Request<FDOrderSearchCriteria> request = new Request<FDOrderSearchCriteria>();
+			request.setData(criteria);
+			String inputJson = buildRequest(request);
+
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(LOCATE_ORDERS),
+					new TypeReference<Response<List<FDCustomerOrderInfo>>>() {
+					});
+
+			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in CustomerOrderService.locateOrders, inputJson=" + inputJson);
+				throw new FDResourceException(response.getMessage());
+			}
+			return response.getData();
+		} catch (FDEcommServiceException e) {
+			LOGGER.error("Error in CustomerAddressService.locateOrders: ", e);
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	@Override
+	public Map<String, List<PendingOrder>> getPendingDeliveries() throws FDResourceException, RemoteException {
+		Response<Map<String, List<PendingOrder>>> response = this.httpGetDataTypeMap(
+				getFdCommerceEndPoint(GET_PENDING_DELIVERIES),
+				new TypeReference<Response<Map<String, List<PendingOrder>>>>() {
+				});
+		if (!response.getResponseCode().equals("OK")) {
+			LOGGER.error("Error in CustomerOrderService.getPendingDeliveries");
+			throw new FDResourceException(response.getMessage());
+		}
+		return response.getData();
+	}
+
+	@Override
+	public int updateShippingInfoCartonDetails() throws FDResourceException, RemoteException {
+		Response<Integer> response = this.httpGetDataTypeMap(getFdCommerceEndPoint(UPDATE_SHIPPING_CARTON),
+				new TypeReference<Response<Integer>>() {
+				});
+		if (!response.getResponseCode().equals("OK")) {
+			LOGGER.error("Error in CustomerOrderService.updateShippingInfoCartonDetails");
+			throw new FDResourceException(response.getMessage());
+		}
+		return response.getData();
+	}
+
+	@Override
+	public int[] updateShippingInfoTruckDetails() throws FDResourceException, RemoteException {
+		Response<int[]> response = this.httpGetDataTypeMap(getFdCommerceEndPoint(UPDATE_SHIPPING_TRUCK),
+				new TypeReference<Response<int[]>>() {
+				});
+		if (!response.getResponseCode().equals("OK")) {
+			LOGGER.error("Error in CustomerOrderService.updateShippingInfoTruckDetails");
+			throw new FDResourceException(response.getMessage());
+		}
+		return response.getData();
+	}
+
+	@Override
+	public void updateOrderInProcess(String orderNum) throws FDResourceException, RemoteException {
+		Response<Void> response = this.httpGetDataTypeMap(getFdCommerceEndPoint(UPDATE_ORDER_IN_PROCESS + orderNum),
+				new TypeReference<Response<Void>>() {
+				});
+		if (!response.getResponseCode().equals("OK")) {
+			LOGGER.error("Error in CustomerOrderService.updateShippingInfoTruckDetails");
+			throw new FDResourceException(response.getMessage());
+		}
+	}
+
+	@Override
+	public ErpAddressModel getLastOrderAddress(FDIdentity identity, EnumEStoreId eStore)
+			throws FDResourceException, RemoteException {
+		Response<ErpAddressModel> response = null;
+		try {
+			Request<ObjectNode> request = new Request<ObjectNode>();
+			ObjectNode rootNode = getMapper().createObjectNode();
+			rootNode.set("identity", getMapper().convertValue(identity, JsonNode.class));
+			rootNode.set("eStore", getMapper().convertValue(eStore, JsonNode.class));
+			request.setData(rootNode);
+			String inputJson = buildRequest(request);
+
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(GET_LAST_ORDER_ADDRESS),
+					new TypeReference<Response<ErpAddressModel>>() {
+					});
+
+			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in CustomerOrderService getLastOrderAddress data=" + inputJson);
+				throw new FDResourceException(response.getMessage());
+			}
+			return response.getData();
+		} catch (FDEcommServiceException e) {
+			LOGGER.error("Error in CustomerOrderService getLastOrderAddress: ", e);
+			throw new RemoteException(e.getMessage());
+		}
 	}
 
 }

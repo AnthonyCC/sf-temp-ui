@@ -7888,7 +7888,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			+ " SA.ACTION_TYPE IN ('CRO','MOD') AND SA.REQUESTED_DATE BETWEEN trunc(SYSDATE)-1 AND trunc(SYSDATE)  AND S.STATUS <>'CAN' AND S.TYPE = 'REG' AND S.E_STORE = 'FreshDirect' AND ROWNUM <= 999 "
 			+ "  and S.TRUCK_NUMBER IS NULL ";
 
-	public List<String> getShippingInfoSalesId() throws FDResourceException {
+	private List<String> getShippingInfoSalesId() throws FDResourceException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
@@ -7913,56 +7913,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			close(conn);
 		}
 		return shippinginfos;
-
-	}
-
-	private static final String SHIPPING_INFO_CARTON_DETAILS = " SELECT COUNT(*) as carton , CI.CARTON_TYPE, CI.SALE_ID FROM CUST.CARTON_INFO CI, CUST.SALE S "
-			+ " WHERE CI.SALE_ID = S.ID  AND S.ID IN (?replace?) GROUP BY CI.CARTON_TYPE, CI.SALE_ID ";
-
-	public Map<String, Map<String, Integer>> getShippingInfoCartonDetails(List<String> salesIds)
-			throws FDResourceException {
-
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rset = null;
-		Map<String, Map<String, Integer>> shippingCartonInfo = new HashMap<String, Map<String, Integer>>();
-		Map<String, Integer> cartonMap = null;
-		StringBuffer str = null;
-		String saleId = null;
-
-		try {
-			conn = getConnection();
-
-			str = new StringBuffer();
-
-			for (String sale : salesIds) {
-				str.append(sale);
-				str.append(",");
-			}
-
-			pstmt = conn.prepareStatement(SHIPPING_INFO_CARTON_DETAILS.replaceAll("\\?replace\\?",
-					str.substring(0, str.length() - 2).toString()));
-			rset = pstmt.executeQuery();
-
-			while (rset.next()) {
-				saleId = rset.getString("SALE_ID");
-				cartonMap = shippingCartonInfo.get(saleId);
-				if (cartonMap == null) {
-					cartonMap = new HashMap<String, Integer>();
-				}
-				cartonMap.put(rset.getString("CARTON_TYPE"), rset.getInt("carton"));
-				shippingCartonInfo.put(saleId, cartonMap);
-			}
-
-		} catch (SQLException sqle) {
-			LOGGER.error("SQL exception while retreiving shipping sale" + sqle);
-			throw new FDResourceException(sqle);
-		} finally {
-			close(rset);
-			close(pstmt);
-			close(conn);
-		}
-		return shippingCartonInfo;
 
 	}
 
