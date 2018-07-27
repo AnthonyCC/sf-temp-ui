@@ -1,34 +1,20 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
-//Java Helper Class for Janrain Engage
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.io.BufferedReader;
-import java.io.InputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Iterator;
+//Java Helper Class for Janrain Engage
+import java.util.Map;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.*;
-
-import org.xml.sax.SAXException;
 import org.apache.log4j.Category;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -61,7 +47,8 @@ public class SocialProviderJanRain implements SocialProvider {
   }
  
   
-  public HashMap<String,String> getSocialUserProfile(String connectionToken)
+  @Override
+public HashMap<String,String> getSocialUserProfile(String connectionToken)
 	{
 		
 	  if(connectionToken == null || connectionToken.length() ==0)
@@ -245,4 +232,10 @@ public class SocialProviderJanRain implements SocialProvider {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+    @Override
+    public boolean deleteSocialIdentity(String identityToken) {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }
