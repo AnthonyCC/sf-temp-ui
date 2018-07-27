@@ -242,7 +242,7 @@ request.setAttribute("listPos", "SystemMessage,CategoryNote");
 						<tr>
 							<td valign="top" class="text13 manage_account"> <% if(user.isChefsTable()) { %> <br><br> <% } %>
 								<font class="text13bold"><a href="<%=response.encodeURL("/your_account/order_history.jsp")%>">Your Orders</a></font><br><span class="manage_account_desc">Check your order status and update open orders.</span><br>
-								<a id="yourAccount_reorder" href="/quickshop/qs_past_orders.jsp"><div class="new_purple_button_style"><div id="reorder-icon-big"></div><b>Reorder</b> from Past Orders</div></a>
+								<a id="yourAccount_reorder" class="cssbutton flat purple transparent" href="/quickshop/qs_past_orders.jsp"><div id="reorder-icon-big"></div><b>Reorder</b> from Past Orders</a>
 								<br>
 					
 								<% if ( user.isEligibleForStandingOrders()) { %>

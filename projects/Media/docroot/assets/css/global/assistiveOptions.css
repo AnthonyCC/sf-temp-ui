@@ -1,0 +1,226 @@
+/* assistive options overlay styling */
+
+#assistiveOptionsOverlay .qs-popup-header{
+/*   width: 340px; */
+  height: 76px;
+  font-family: Verdana;
+  font-size: 24px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+/*   line-height: 0.75; */
+  letter-spacing: 0.5px;
+  color: #444444;
+}
+.learnmorelink{
+	padding-top:22px;
+}
+.assistivewrapper{ 
+	width: 400px;
+  height: 196px;
+  background-image: linear-gradient(to top, #fdfdfd, #f7f7f7);
+  }
+#assistiveOptionsOverlay .fixedPopupContent{
+  width: 400px;
+  height: 274px;
+  background-color: #ffffff;
+  box-shadow: 0 5px 30px 0 rgba(0, 0, 0, 0.2);
+}
+.assistiveHeader{
+  width: 185px;
+  height: 14px;
+  font-family: Verdana;
+  font-size: 18px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 0.78;
+  letter-spacing: 0.3px;
+  color: #222222;
+}
+.assistiveContent{
+ width: 340px;
+  height: 42px;
+  font-family: Verdana;
+  font-size: 14px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.5;
+  letter-spacing: normal;
+  color: #666666;
+}
+.accessibilityLink{
+.width: 340px;
+  height: 17px;
+  font-family: Verdana;
+  font-size: 14px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: #408244;
+}
+ .switch {
+    position: relative;
+    display: inline-block;
+    width: 49px;
+    height: 24px;
+    margin-top: 10px;
+  }
+
+  .switch input:focus {
+    border: 1px solid red;
+  }
+
+  .switch-label {
+    display: block;
+    font-family: verdana;
+    font-size: 18px;
+    color: #222222;
+  }
+
+  .switch-label span{
+    display: block;
+    font-size: 14px;
+    color: #666666;
+    width: 65%;
+  }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ffffff;
+    border: 2px solid #666666;
+    -webkit-transition: .25s;
+    transition: .25s;
+  }
+
+  .slider.round {
+    border-radius: 22px;
+  }
+
+  .slider.round:before {
+    border-radius: 50%;
+  }
+
+  /* Status */
+  .slider:after{
+    position: relative;
+    content: 'Off';
+    float: none;
+    display: inline-block;
+    color: #222222;
+    font-size: 14px;
+    top: 0px;
+    left: 55px;
+    width: 300px;
+    letter-spacing: .2px;
+  }
+
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 2px;
+    bottom: 2px;
+    background-color: #666666;
+    -webkit-transition: .25s;
+    transition: .25s;
+  }
+
+  /* If Checked */
+  input:checked + .slider {
+    background-color: #4fa157;
+    border-color: #4fa157;
+  }
+
+  input:checked + .slider:after {
+    content: 'On';
+  }
+
+  /* Hovered */
+  input:hover + .slider{
+    border: 2px solid #4fa157;
+  }
+
+  input:focus:hover + .slider{
+    border: 2px solid #666666;
+  }
+
+  input:checked:focus:hover + .slider{
+    border: 2px solid #4fa157;
+  }
+
+  /* Focused */
+  input:focus + .slider {
+    box-shadow: 0 0 0 2px #666666;
+  }
+
+  input:checked:focus + .slider {
+    box-shadow: 0 0 0 2px #4fa157;
+  }
+
+  /* Slider States */
+  input:focus + .slider:before,
+  input:hover + .slider:before {
+    background-color: #4fa157; 
+  }
+
+  input:hover + .slider:before {
+    -webkit-transform: translateX(4px);
+    -ms-transform: translateX(4px);
+    transform: translateX(4px);    
+  }
+
+  input:checked + .slider:before {
+    background-color: #ffffff;
+    -webkit-transform: translateX(25px);
+    -ms-transform: translateX(25px);
+    transform: translateX(25px);
+  }
+
+  input:checked:focus + .slider:before,
+  input:checked:hover + .slider:before {
+    background-color: #ffffff;
+  }
+
+  input:checked:hover + .slider:before {
+    -webkit-transform: translateX(21px);
+    -ms-transform: translateX(21px);
+    transform: translateX(21px);
+  }
+#assistiveOptionsOverlay .qs-popup-content {
+  background-image: linear-gradient(to top, #fdfdfd, #f7f7f7);
+  padding: 29px;
+  height: 184px;
+}
+#assistiveOptionsOverlay .qs-popup-header span{
+	padding-left:8px;
+}
+.spinner{
+	display: none;
+    position: absolute;
+    border: 3px solid #ccc;
+    border-top: 3px solid transparent;
+    border-radius: 340%;
+    box-sizing: border-box;
+    width: 17px;
+    height: 17px;
+    animation: spin 0.65s linear infinite;
+    margin: 0;
+    top: 107px;
+    left: 85px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #fafafa;
+}
+a.accessibilityLink{
+	outline:none;
+}

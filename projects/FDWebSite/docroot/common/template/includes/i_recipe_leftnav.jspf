@@ -49,7 +49,7 @@ final int W_RECIPE_LEFTNAV_TOTAL = 150;
 <logic:iterate id="recipeSubcategory" collection="<%= rcpCategory.getSubcategories() %>" type="com.freshdirect.storeapi.content.RecipeSubcategory">
      <tr><td width="10"></td><td width="<%=W_RECIPE_LEFTNAV_TOTAL-15%>">
        <div style="margin-left: 8px; text-indent: -8px; font-weight: bold; ">
-      <a href="<%=response.encodeURL("/recipe_subcat.jsp?catId="+rcpCategory+"&subCatId="+recipeSubcategory+"&trk=snav")%>"><%=recipeSubcategory.getName()%></a>
+      <a class="recipe_highcontrast" href="<%=response.encodeURL("/recipe_subcat.jsp?catId="+rcpCategory+"&subCatId="+recipeSubcategory+"&trk=snav")%>"><%=recipeSubcategory.getName()%></a>
       	<%
       		if(recipeSubcategory.getContentName().equals(request.getParameter("subCatId"))){
       	    	List<DomainValue> filterByKeys = recipeSubcategory.getFilterBy();
@@ -58,7 +58,7 @@ final int W_RECIPE_LEFTNAV_TOTAL = 150;
       			%>
       			<logic:iterate id="filter" collection="<%= filterByKeys %>" type="com.freshdirect.storeapi.content.DomainValue">
       			<div style="margin-left:8px; text-indent: -8px; font-weight: normal">
-	      				<a href="<%=response.encodeURL("/recipe_subcat.jsp?catId="+rcpCategory+"&subCatId="+recipeSubcategory+"&trk=snav&filter="+filter.getContentName())%>">
+	      				<a class="recipe_highcontrast" href="<%=response.encodeURL("/recipe_subcat.jsp?catId="+rcpCategory+"&subCatId="+recipeSubcategory+"&trk=snav&filter="+filter.getContentName())%>">
 	      					<%= filter.getLabel() %>
 	      				</a>
       			</div>
