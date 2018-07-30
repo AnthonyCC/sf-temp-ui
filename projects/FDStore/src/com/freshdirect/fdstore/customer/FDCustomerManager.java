@@ -3723,30 +3723,18 @@ public class FDCustomerManager {
 	}
 
 	public static double getOutStandingBalance(FDCartModel cart) throws FDResourceException {
-		try {
 
-			ErpAbstractOrderModel order = null;
-			boolean isModifyOrderModel = false;
-			if (cart instanceof FDModifyCartModel) {
-				order = FDOrderTranslator.getErpCreateOrderModel(cart);
-				isModifyOrderModel = true;
-			} else {
-				order = FDOrderTranslator.getErpModifyOrderModel(cart);
-			}
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerGiftCard)) {
-				return CustomerGiftCardService.getInstance().getOutstandingBalance(order, isModifyOrderModel);
-			} else {
-				lookupManagerHome();
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getOutStandingBalance(order);
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
+		ErpAbstractOrderModel order = null;
+		if (cart instanceof FDModifyCartModel) {
+			order = FDOrderTranslator.getErpCreateOrderModel(cart);
+		} else {
+			order = FDOrderTranslator.getErpModifyOrderModel(cart);
 		}
+		// Generate Applied gift cards info.
+		GiftCardApplicationStrategy strategy = new GiftCardApplicationStrategy(order, null);
+		strategy.generateAppliedGiftCardsInfo();
+		return strategy.getRemainingBalance();
+
 	}
 
 	public static EnumIPhoneCaptureType iPhoneCaptureEmail(String emailId, EnumTransactionSource source)

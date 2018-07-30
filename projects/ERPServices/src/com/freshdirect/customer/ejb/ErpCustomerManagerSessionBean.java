@@ -2952,14 +2952,6 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
-
-		public double getOutStandingBalance(ErpAbstractOrderModel order){
-			//Generate Applied gift cards info.
-			GiftCardApplicationStrategy strategy = new GiftCardApplicationStrategy(order, null);
-			strategy.generateAppliedGiftCardsInfo();
-			return strategy.getRemainingBalance();
-		}
-
 		public List<ErpSaleInfo> getNSMOrdersForGC()  {
 			Connection conn = null;
 			try {

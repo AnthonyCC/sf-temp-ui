@@ -6250,18 +6250,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		return true; // success
 	}
 
-	public double getOutStandingBalance(ErpAbstractOrderModel order) throws FDResourceException {
-		try {
-			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
-			return sb.getOutStandingBalance(order);
-
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce);
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		}
-	}
-
 	public void preAuthorizeSales(String salesId) throws FDResourceException {
 
 		try {
