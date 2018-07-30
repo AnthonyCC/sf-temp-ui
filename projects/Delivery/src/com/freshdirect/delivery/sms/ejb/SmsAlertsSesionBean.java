@@ -618,6 +618,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 				if(eStoreId.getContentId().equalsIgnoreCase(EnumEStoreId.FD.getContentId()))
 					{
 					smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, WRONG_RESPONSE_MESSAGE, eStoreId.getContentId());
+					smsResponseModel.setDate(new Date());
 					updateSmsAlertCaptured(con, smsResponseModel, WRONG_RESPONSE_ALERT_TYPE, customerId);
 					}
 					
