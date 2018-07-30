@@ -33,8 +33,8 @@ var FreshDirect = FreshDirect || {};
 	       value:function(clickEvent){
 	    	   $('.slider').addClass('test');
 	    	   setTimeout(function() {
-	    		   $('.slider').removeClass('test');
-	    		 }, 1200);
+	    		   $('.slider').removeClass('test').fadeIn();
+	    		 }, 1300);
 	    	   
 	    	   $(".spinner").show().delay(1000).fadeOut();
 	    	   var isChecked = $(clickEvent.currentTarget).prop('checked');
