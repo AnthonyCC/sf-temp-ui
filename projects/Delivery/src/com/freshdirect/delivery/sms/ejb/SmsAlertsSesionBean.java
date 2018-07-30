@@ -745,6 +745,9 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 		else if (text.contains("HELP")) {
 			confirmed = "HELP";
 		}
+		else if (text.contains("CANCEL")) {
+			confirmed = "CANCEL";
+		}
 		return confirmed;
 	}
 	
