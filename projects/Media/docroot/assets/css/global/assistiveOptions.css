@@ -224,3 +224,6 @@
 a.accessibilityLink{
 	outline:none;
 }
+span.slider.round.test:after{
+	display:none;
+}

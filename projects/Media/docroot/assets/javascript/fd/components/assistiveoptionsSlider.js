@@ -31,7 +31,11 @@ var FreshDirect = FreshDirect || {};
 	   },
 	   handleChange:{
 	       value:function(clickEvent){
-//	    	   $(".slider:after").addClass("");
+	    	   $('.slider').addClass('test');
+	    	   setTimeout(function() {
+	    		   $('.slider').removeClass('test');
+	    		 }, 1200);
+	    	   
 	    	   $(".spinner").show().delay(1000).fadeOut();
 	    	   var isChecked = $(clickEvent.currentTarget).prop('checked');
 	    	   if(isChecked) {
