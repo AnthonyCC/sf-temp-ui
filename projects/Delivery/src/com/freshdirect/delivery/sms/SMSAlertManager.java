@@ -237,8 +237,8 @@ public class SMSAlertManager {
 				} catch (Exception e) {
 					LOGGER.info("While sending SMS response to Backoffice got an exception for the MobileNumber:"+mobileNumber +e);
 				}
-			} else {
-				if (FDStoreProperties
+			} 
+			if (FDStoreProperties
 						.isSF2_0_AndServiceEnabled("sms.ejb.SmsAlertsSB")) {
 					FDECommerceService.getInstance().updateSmsReceived(
 							formattedMobileNumber, shortCode, carrierName,
@@ -248,7 +248,6 @@ public class SMSAlertManager {
 					smsAlertSB.updateSmsReceived(formattedMobileNumber,
 							shortCode, carrierName, date, message, eStoreId);
 				}
-			}
 		} catch (ParseException e) {
 			e.printStackTrace();
 		} catch (NamingException e) {
