@@ -80,6 +80,10 @@ request.setAttribute("noyui", true);
 		<fd:SEOMetaTag pageId="<%= seoMetaTag_pageId %>" includeSiteSearchLink="true" title="Welcome to FreshDirect"></fd:SEOMetaTag>
 	</tmpl:put>
 	<tmpl:put name="customCss">
+		<%-- mark HP webfont preload hints --%>
+		<link rel="preload" href="/assets/css/fonts/BrandonTextWeb-Medium.woff2" as="font">
+		<link rel="preload" href="/assets/css/fonts/BrandonTextWeb-Regular.woff2" as="font">
+		
 		<jwr:style src="/homepage.css" media="all" />
 	</tmpl:put>
 	<tmpl:put name="extraCss"><%-- MOBILE --%>

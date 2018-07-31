@@ -27,7 +27,6 @@ final String trk = "srch"; // tracking code
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="en-US"/>
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-    <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
     <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
     <%@ include file="/shared/template/includes/ccl.jspf" %>
 	<fd:javascript src="/assets/yui-2.9.0/selector/selector-min.js" />

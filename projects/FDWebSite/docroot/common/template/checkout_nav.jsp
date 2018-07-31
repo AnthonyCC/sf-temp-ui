@@ -22,7 +22,6 @@ final int W_CHECKOUT_NAV_TOTAL = 970;
 		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 		<jwr:script src="/assets/javascript/timeslots.js" useRandomParam="false" />
 		
-  	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 		<jwr:style src="/timeslots.css" media="all" />
 		<%@ include file="/shared/template/includes/ccl.jspf" %>

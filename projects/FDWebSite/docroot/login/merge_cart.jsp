@@ -4,8 +4,7 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
-<%@ include file="/common/template/includes/i_javascripts.jspf" %>  
-<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
+<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 <%@ include file="/common/template/includes/i_jsmodules.jspf" %>
 

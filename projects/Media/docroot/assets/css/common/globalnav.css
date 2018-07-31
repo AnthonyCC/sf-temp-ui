@@ -11,28 +11,6 @@
  *   link cyan: #53a7d8
  */
 
-@font-face {
-
- font-family: 'TradeGothic';
- src: url('/assets/css/fonts/TradeGotConEig.eot');
- src: url('/assets/css/fonts/TradeGotConEig.eot?#iefix') format('embedded-opentype'),
-      url('/assets/css/fonts/TradeGotConEig.woff') format('woff'),
-      url('/assets/css/fonts/TradeGotConEig.ttf') format('truetype'),
-      url('/assets/css/fonts/TradeGotConEig.svg#TradeGothic') format('svg');
- font-weight: normal;
- font-style: normal;
-}
-@font-face {
-
- font-family: 'TradeGothicBold';
- src: url('/assets/css/fonts/TradeGotBolConTwe.eot');
- src: url('/assets/css/fonts/TradeGotBolConTwe.eot?#iefix') format('embedded-opentype'),
-      url('/assets/css/fonts/TradeGotBolConTwe.woff') format('woff'),
-	  url('/assets/css/fonts/TradeGotBolConTwe.ttf') format('truetype'),
-      url('/assets/css/fonts/TradeGotBolConTwe.svg#TradeGothic') format('svg');
- font-weight: normal;
- font-style: normal;
-}
 
 /* for Safari font-rendering */
 body{
@@ -777,16 +755,6 @@ ul.subdepartments {
 /* ---------------------------------- */
 /* gift cards and checkout navigation */
 /* ---------------------------------- */
-@font-face {
-    font-family: 'EagleBook';  
-    src: url('/assets/css/fonts/eagle-book-webfont.eot');
-    src: url('/assets/css/fonts/eagle-book-webfont.eot?#iefix') format('embedded-opentype'),
-         url('/assets/css/fonts/eagle-book-webfont.woff') format('woff'),
-         url('/assets/css/fonts/eagle-book-webfont.ttf') format('truetype'),
-         url('/assets/css/fonts/eagle-book-webfont.svg#EagleRegular') format('svg');
-    font-weight: normal;
-    font-style: normal;
-}
 
 /* debug classes */
 .globalNavigation .debug-green{

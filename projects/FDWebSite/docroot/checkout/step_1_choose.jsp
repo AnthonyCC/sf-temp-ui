@@ -94,7 +94,6 @@ List<ErpAddressModel> dlvAddresses = FDCustomerFactory.getErpCustomer(user.getId
 <%@ include file="/includes/i_check_unattended_delivery.jspf" %>
 
 <%@ include file="/common/template/includes/i_javascripts.jspf" %>
-<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 </tmpl:put>
 <tmpl:put name='content' direct='true'>

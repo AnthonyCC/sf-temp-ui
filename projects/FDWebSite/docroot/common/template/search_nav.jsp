@@ -19,7 +19,6 @@ final int W_SEARCH_NAV_RIGHT = 820;
 	<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1' lang="en-US">
 
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	<jwr:style src="/ccl.css" media="all" />
 	<style type="text/css">

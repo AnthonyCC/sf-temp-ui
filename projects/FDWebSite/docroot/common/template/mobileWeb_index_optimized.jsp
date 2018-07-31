@@ -52,7 +52,7 @@
 	<style>
 		@charset "UTF-8"; 
 		<%--
-			All CSS should be inline, no bundle or external files in optimized version
+			All CSS should be inline, no bundle or external files 
 			Include them directly, otherwise it affects performance
 		--%>
 		<%@ include file="/assets/css/mobileweb_index_optimized/mobileweb_index_optimized.css" %>

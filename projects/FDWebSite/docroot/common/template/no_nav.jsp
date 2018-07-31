@@ -21,7 +21,6 @@ String pageURI = request.getRequestURI();
 <head>
     <tmpl:get name="seoMetaTag"/>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-  	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	<jwr:style src="/giftcards.css" media="all" />
 	<jwr:style src="/timeslots.css" media="all" />

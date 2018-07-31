@@ -1,14 +1,4 @@
 /* global, non-browser specific, css */
-@font-face {
-	font-family: 'BebasRegular';
-	src: url('/assets/css/fonts/BEBAS___-webfont.eot');
-	src: url('/assets/css/fonts/BEBAS___-webfont.eot?#iefix') format('eot'),
-		url('/assets/css/fonts/BEBAS___-webfont.woff') format('woff'),
-		url('/assets/css/fonts/BEBAS___-webfont.ttf') format('truetype'),
-		url('/assets/css/fonts/BEBAS___-webfont.svg#webfontOJIfwzl6') format('svg');
-	font-weight: normal;
-	font-style: normal;
-}
 
 
 html { height: 100%; }
