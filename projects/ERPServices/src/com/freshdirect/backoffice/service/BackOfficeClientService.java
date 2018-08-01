@@ -2,10 +2,10 @@ package com.freshdirect.backoffice.service;
 
 import org.apache.log4j.Logger;
 import com.freshdirect.ecomm.gateway.AbstractBackOfficeService;
-import com.freshdirect.ecommerce.data.delivery.sms.RecievedSmsData;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.sms.ResponseResult;
+import com.freshdirect.sms.SmsResponse;
 
 /**
  * 
@@ -26,18 +26,17 @@ public class BackOfficeClientService  extends AbstractBackOfficeService implemen
 	}
 
 	@Override
-	public boolean createCaseByRecievedSmsData(RecievedSmsData recievedSmsData)
+	public boolean sendSmsResponseForCaseCreate(SmsResponse smsResponse)
 			throws FDResourceException {
 		boolean isSuccess=false;
 		try {
-			LOGGER.info("Start:::::createCaseByRecievedSmsData");
-			String inputJson = buildRequest(recievedSmsData);
+			String inputJson = buildRequest(smsResponse);
 			ResponseResult response = this.postData(inputJson,
 					getBackOfficeEndPoint(SMS_RESPONSE_UPDATE),
 					ResponseResult.class);
 			if(response!=null && response.getStatus().equalsIgnoreCase("SUCCESS")) {
 				isSuccess=true;
-				LOGGER.info("End:::::createCaseByRecievedSmsData and SMS response has been sent successfully to Backoffice mobile nubmer:"+recievedSmsData.getMobileNumber());
+				LOGGER.info("End:::::SMS response has been sent successfully to Backoffice mobile nubmer:"+smsResponse.getMobileNumber());
 				
 			}
 		} catch (FDResourceException e) {

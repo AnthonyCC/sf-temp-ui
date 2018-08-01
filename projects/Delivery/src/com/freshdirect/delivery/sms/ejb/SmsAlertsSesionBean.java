@@ -614,18 +614,21 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 				updateSmsAlertCaptured(con, smsResponseModel, FDX_HELP_ALERT_TYPE, customerId);
 			}
 		} else {
-			if(eStoreId.getContentId().equalsIgnoreCase(EnumEStoreId.FD.getContentId()))
+			if(!confirmed.equalsIgnoreCase("CANCEL")){
+				if(eStoreId.getContentId().equalsIgnoreCase(EnumEStoreId.FD.getContentId()))
+					{
+					smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, WRONG_RESPONSE_MESSAGE, eStoreId.getContentId());
+					smsResponseModel.setDate(new Date());
+					updateSmsAlertCaptured(con, smsResponseModel, WRONG_RESPONSE_ALERT_TYPE, customerId);
+					}
+					
+				else
 				{
-				smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, WRONG_RESPONSE_MESSAGE, eStoreId.getContentId());
-				updateSmsAlertCaptured(con, smsResponseModel, WRONG_RESPONSE_ALERT_TYPE, customerId);
+				   smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, FDX_WRONG_RESPONSE_MESSAGE, eStoreId.getContentId());	
+					smsResponseModel.setDate(new Date());
+					updateSmsAlertCaptured(con, smsResponseModel, WRONG_RESPONSE_ALERT_TYPE_FDX, customerId);
+			      }
 				}
-				
-			else
-			{
-			   smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, FDX_WRONG_RESPONSE_MESSAGE, eStoreId.getContentId());	
-				smsResponseModel.setDate(new Date());
-				updateSmsAlertCaptured(con, smsResponseModel, WRONG_RESPONSE_ALERT_TYPE_FDX, customerId);
-		      }
         	}
 	} finally{
 		try {
@@ -737,11 +740,14 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 			confirmed = "YES";
 		} else if (text.contains("NO")) {
 			confirmed = "NO";
-		} else if (text.contains("STOP")||text.contains("END")||text.contains("QUIT")||text.contains("UNSUBSCRIBE")||text.contains("CANCEL")) {
+		} else if (text.contains("STOP")||text.contains("END")||text.contains("QUIT")||text.contains("UNSUBSCRIBE")) {
 			confirmed = "STOP";
 		}
 		else if (text.contains("HELP")) {
 			confirmed = "HELP";
+		}
+		else if (text.contains("CANCEL")) {
+			confirmed = "CANCEL";
 		}
 		return confirmed;
 	}

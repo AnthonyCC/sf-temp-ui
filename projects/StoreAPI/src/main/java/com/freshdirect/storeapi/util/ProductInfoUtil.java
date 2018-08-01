@@ -28,6 +28,9 @@ public class ProductInfoUtil {
                  pickingPlantId = userContext.getFulfillmentContext().getPlantId();
              }
         }
+        if("1000".equalsIgnoreCase(pickingPlantId)){//TODO: Needs to be cleaned up, as part of LIC sunset proj
+        	pickingPlantId ="1400";
+        }
         return pickingPlantId;
 	}
 

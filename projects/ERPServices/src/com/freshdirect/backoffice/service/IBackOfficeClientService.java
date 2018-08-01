@@ -1,7 +1,7 @@
 package com.freshdirect.backoffice.service;
 
-import com.freshdirect.ecommerce.data.delivery.sms.RecievedSmsData;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.sms.SmsResponse;
 
 /**
  * 
@@ -9,6 +9,6 @@ import com.freshdirect.fdstore.FDResourceException;
  *
  */
 public interface IBackOfficeClientService {
-	public boolean createCaseByRecievedSmsData(RecievedSmsData recievedSmsData) throws FDResourceException ;
+	public boolean sendSmsResponseForCaseCreate(SmsResponse smsResponse) throws FDResourceException ;
 
 }
