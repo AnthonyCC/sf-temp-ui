@@ -64,7 +64,8 @@ public class PaymentMethodControllerTag extends com.freshdirect.framework.webapp
         if ( "GET".equalsIgnoreCase(request.getMethod()) && 
         	(
         		request.getRequestURI().indexOf("/your_account/add_creditcard.jsp") != -1 || 
-        		request.getRequestURI().indexOf("/your_account/edit_creditcard.jsp") != -1
+        		request.getRequestURI().indexOf("/your_account/edit_creditcard.jsp") != -1 ||
+        		request.getRequestURI().indexOf("/gc_add_creditcard.jsp") != -1 
         	)
         ) {
         	FDSessionUser user = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
