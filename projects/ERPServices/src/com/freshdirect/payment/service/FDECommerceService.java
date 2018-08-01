@@ -1942,17 +1942,17 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			Request<List<ErpInventoryModel>> request = new Request<List<ErpInventoryModel>>();
 			request.setData(erpInventoryEntryModel);
 			String inputJson = buildRequest(request);
-			
+			LOGGER.info("sending request to SF2.0 updateInventories, request=" + inputJson);
 			Response<Void> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(ERP_INVENTORY_UPDATE),
 					new TypeReference<Response<Void>>() {
 					});
 			
 			if(!response.getResponseCode().equals("OK")){
-				LOGGER.error("Error occurs in erpInventoryEntryModel inputJson=" + inputJson);
+				LOGGER.error("Error occurs in updateInventories inputJson=" + inputJson);
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error occurs in erpInventoryEntryModel erpInventoryEntryModel=" + erpInventoryEntryModel, e);
+			LOGGER.error("Error occurs in updateInventories erpInventoryEntryModel=" + erpInventoryEntryModel, e);
 			throw new FDResourceException(e, "Unable to process the request.");
 		}
 		

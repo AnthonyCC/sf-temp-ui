@@ -15,6 +15,7 @@ import com.freshdirect.crm.CrmClick2CallModel;
 import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDuplicateDisplayNameException;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
@@ -42,6 +43,7 @@ import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ProfileModel;
 import com.freshdirect.fdstore.customer.SilverPopupDetails;
+import com.freshdirect.fdstore.customer.ejb.FDCustomerEStoreModel;
 import com.freshdirect.fdstore.ecomm.model.RecognizedUserData;
 import com.freshdirect.fdstore.iplocator.IpLocatorEventDTO;
 import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
@@ -88,6 +90,8 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 	private static final String GET_USED_RESERVATIONS = "customerInfo/getUsedReservations";
 	private static final String GET_CLICK_CALL_INFO = "customerInfo/getClick2CallInfo";
 	private static final String SET_ACTIVE = "customerInfo/setActive";
+	private static final String UPDATE_CUSTOMER_INFO = "customerInfo/update";
+	private static final String UPDATE_CUSTOMER_ESTORE = "customerInfo/estore/update";
 	
 	private static CustomerInfoServiceI INSTANCE;
 
@@ -796,6 +800,59 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 		}
 	}
 	
+	@Override
+	public boolean updateCustomerInfo(FDActionInfo info, ErpCustomerInfoModel customerInfo)
+			throws FDResourceException, RemoteException {
+		Response<Boolean> response = null;
+		try {
+			Request<ObjectNode> request = new Request<ObjectNode>();
+			ObjectNode rootNode = getMapper().createObjectNode();
+			rootNode.set("info", getMapper().convertValue(info, JsonNode.class));
+			rootNode.set("customerInfo", getMapper().convertValue(customerInfo, JsonNode.class));
+			request.setData(rootNode);
+			String inputJson = buildRequest(request);
+
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(UPDATE_CUSTOMER_INFO),
+					new TypeReference<Response<Boolean>>() {
+					});
+
+			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in CustomerInfoService.updateCustomerInfo: data=" + inputJson);
+				throw new FDResourceException(response.getMessage());
+			}
+			return response.getData();
+		} catch (FDEcommServiceException e) {
+			LOGGER.error("Error in CustomerInfoService.updateCustomerInfo: customerInfo=" + customerInfo, e);
+			throw new RemoteException(e.getMessage());
+		}
+	}
+	
+	@Override
+	public void updateFDCustomerEStoreInfo(FDCustomerEStoreModel fdCustomerEStoreModel, String custId)
+			throws FDResourceException, RemoteException {
+		Response<Void> response = null;
+		try {
+			Request<ObjectNode> request = new Request<ObjectNode>();
+			ObjectNode rootNode = getMapper().createObjectNode();
+			rootNode.set("fdCustomerEStoreModel", getMapper().convertValue(fdCustomerEStoreModel, JsonNode.class));
+			rootNode.put("custId", custId);
+			request.setData(rootNode);
+			String inputJson = buildRequest(request);
+
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(UPDATE_CUSTOMER_ESTORE),
+					new TypeReference<Response<Void>>() {
+					});
+
+			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in CustomerInfoService.updateFDCustomerEStoreInfo: data=" + inputJson);
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDEcommServiceException e) {
+			LOGGER.error("Error in CustomerInfoService.updateFDCustomerEStoreInfo: custId=" + custId + ", customerInfo=" + fdCustomerEStoreModel, e);
+			throw new RemoteException(e.getMessage());
+		}
+	}
+	
 	private RecognizedUserData fdUserToRecognizedUserData(FDUser user) {
 		RecognizedUserData data = new RecognizedUserData();
 		FDUserData fdUserData = new FDUserData();
@@ -857,5 +914,4 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 
 		return erpOrderlines;
 	}
-
 }

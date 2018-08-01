@@ -3790,7 +3790,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			+ "union all " + "select c.id as complaint_id " + "from cust.sale s, cust.complaint c "
 			+ "where s.status = 'STL' and c.sale_id=s.id and c.amount <= ? and c.status = 'PEN' ";
 
-	public List<String> getComplaintsForAutoApproval() throws FDResourceException, ErpComplaintException {
+	public List<String> getComplaintsForAutoApproval() throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = this.getConnection();
@@ -4112,35 +4112,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
-		}
-	}
-
-	/**
-	 *
-	 * @return Map of String (productId) -> Integer (score)
-	 * @throws FDResourceException
-	 */
-	public Map<String, Integer> getProductPopularity() throws FDResourceException {
-		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		try {
-			conn = getConnection();
-
-			ps = conn.prepareStatement(
-					"select substr(content_key, instr(content_key, ':')+1) as product_id, score from cust.popularity where content_key like 'Product:%'");
-			rs = ps.executeQuery();
-
-			Map<String, Integer> m = new HashMap<String, Integer>();
-			while (rs.next()) {
-				m.put(rs.getString("product_id"), new Integer(rs.getInt("score")));
-			}
-
-			return m;
-		} catch (SQLException e) {
-			throw new FDResourceException(e);
-		} finally {
-			DaoUtil.close(rs, ps, conn);
 		}
 	}
 
