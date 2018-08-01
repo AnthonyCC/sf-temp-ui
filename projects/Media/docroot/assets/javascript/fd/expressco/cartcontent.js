@@ -840,7 +840,8 @@ function parseTipTotal(data) {
 					checkoutCartHeaderData.userCorporate = subTotalBox.userCorporate;
 					checkoutCartHeaderData.userRecognized = subTotalBox.userRecognized;
 				}
-				
+				//DP17-259
+				checkoutCartHeaderData.saveAmount = null;
 				if (subTotalBox && subTotalBox.estimatedTotalBox && subTotalBox.estimatedTotalBox.length) {
 					subTotalBox.estimatedTotalBox.forEach( function(box) {
 						if (box.id === 'ssOrderTotal') {
