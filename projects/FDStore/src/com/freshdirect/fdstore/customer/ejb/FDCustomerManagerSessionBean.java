@@ -2333,6 +2333,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		String orderMobileNumber = null;
 		FDCustomerEStoreModel customerSmsPreferenceModel = null;
 		boolean isSent = false;
+		EnumEStoreId eStore = createOrder.geteStoreId();
 		try {
 			zoneId = createOrder.getDeliveryInfo().getDeliveryAddress().getAddressInfo().getZoneId();
 			FDCustomerModel FDCustomerModel = FDCustomerFactory.getFDCustomer(identity);
@@ -2455,7 +2456,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					// order contains delivery pass.
 					DeliveryPassModel newPass = DeliveryPassUtil.constructDeliveryPassFromOrder(customerPk, pk.getId(),
 							createOrder);
-					EnumEStoreId eStore = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
+//					EnumEStoreId eStore = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
 					dlvpsb.create(newPass, eStore, identity.getFDCustomerPK());
 				}
 			} else if (EnumDlvPassStatus.ACTIVE.equals(status) && createOrder.isDlvPromotionApplied()) {
@@ -2467,10 +2468,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					// order contains delivery pass.
 					DeliveryPassModel newPass = DeliveryPassUtil.constructDeliveryPassFromOrder(customerPk, pk.getId(),
 							createOrder);
-					EnumEStoreId eStore = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
+//					EnumEStoreId eStore = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
 					dlvpsb.create(newPass,eStore, identity.getFDCustomerPK());
 				}
-				EnumEStoreId eStore = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
+//				EnumEStoreId eStore = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
 				DeliveryPassModel dlvPass = getActiveDPForCustomer(customerPk, dlvpsb, eStore);
 				if (dlvPass.getType().isUnlimited()
 						&& EnumDeliveryType.HOME.equals(createOrder.getDeliveryInfo().getDeliveryType())
@@ -2496,7 +2497,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					DeliveryPassModel newPass = DeliveryPassUtil.constructDeliveryPassFromOrder(customerPk, pk.getId(),
 							createOrder);
 					DlvPassManagerSB dlvpsb = this.getDlvPassManagerHome().create();
-					EnumEStoreId eStore = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
+//					EnumEStoreId eStore = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
 					String dlvPassId = dlvpsb.create(newPass, eStore, identity.getFDCustomerPK());
 					newPass.setPK(new PrimaryKey(dlvPassId));
 
@@ -2521,7 +2522,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			int dpExtendDays = createOrder.getDlvPassExtendDays();
 			if (dpExtendDays > 0 && EnumDlvPassStatus.ACTIVE.equals(status) && null != CmsManager.getInstance().getEStoreId() && !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
 				DlvPassManagerSB dlvpsb = this.getDlvPassManagerHome().create();
-				EnumEStoreId eStore = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
+//				EnumEStoreId eStore = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
 				List<DeliveryPassModel> dlvPasses = dlvpsb.getDlvPassesByStatus(customerPk, EnumDlvPassStatus.ACTIVE,eStore);
 				if (dlvPasses == null || (dlvPasses != null && dlvPasses.size() == 0)) {
 					throw new FDResourceException("Unable to locate the Active DeliveryPass for this customer.");
