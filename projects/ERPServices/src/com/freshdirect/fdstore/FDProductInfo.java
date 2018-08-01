@@ -216,6 +216,9 @@ public class FDProductInfo extends FDSku {
 	 * @return true if product is discontinued
 	 */
 	public EnumAvailabilityStatus getAvailabilityStatus(String salesOrg, String distributionChannel) {
+		if("0001".equalsIgnoreCase(salesOrg)){//TODO: Needs to be cleaned up, as part of LIC sunset proj
+			salesOrg ="1400";
+        }
 		FDMaterialSalesArea sa = this.materialAvailability.get(new String(salesOrg + distributionChannel));
 		if (sa != null)
 			return EnumAvailabilityStatus.getEnumByStatusCode(sa.getUnavailabilityStatus());
@@ -228,6 +231,9 @@ public class FDProductInfo extends FDSku {
 	 * @return the availability date, as returned by SAP.
 	 */
 	public Date getAvailabilityDate(String salesOrg, String distributionChannel) {
+		if("0001".equalsIgnoreCase(salesOrg)){//TODO: Needs to be cleaned up, as part of LIC sunset proj
+			salesOrg ="1400";
+        }
 		FDMaterialSalesArea sa = this.materialAvailability.get(new String(salesOrg + distributionChannel));
 		if (sa != null)
 			return sa.getUnavailabilityDate();
@@ -235,6 +241,9 @@ public class FDProductInfo extends FDSku {
 	}
 
 	public boolean isAvailable(String salesOrg, String distributionChannel) {
+		if("0001".equalsIgnoreCase(salesOrg)){//TODO: Needs to be cleaned up, as part of LIC sunset proj
+			salesOrg ="1400";
+        }
 		FDMaterialSalesArea sa = this.materialAvailability.get(new String(salesOrg + distributionChannel));
 		if (sa != null) {
 
@@ -247,7 +256,9 @@ public class FDProductInfo extends FDSku {
 	}
 
 	public boolean isDiscontinued(String salesOrg, String distributionChannel) {
-
+		if("0001".equalsIgnoreCase(salesOrg)){//TODO: Needs to be cleaned up, as part of LIC sunset proj
+			salesOrg ="1400";
+        }
 		FDMaterialSalesArea sa = this.materialAvailability.get(new String(salesOrg + distributionChannel));
 		if (sa != null)
 			return EnumAvailabilityStatus.DISCONTINUED
@@ -269,6 +280,9 @@ public class FDProductInfo extends FDSku {
 	}
 
 	public boolean isOutOfSeason(String salesOrg, String distributionChannel) {
+		if("0001".equalsIgnoreCase(salesOrg)){//TODO: Needs to be cleaned up, as part of LIC sunset proj
+			salesOrg ="1400";
+        }
 		FDMaterialSalesArea sa = this.materialAvailability.get(new String(salesOrg + distributionChannel));
 		if (sa != null)
 			return EnumAvailabilityStatus.OUT_OF_SEASON
@@ -277,6 +291,9 @@ public class FDProductInfo extends FDSku {
 	}
 
 	public boolean isTempUnavailable(String salesOrg, String distributionChannel) {
+		if("0001".equalsIgnoreCase(salesOrg)){//TODO: Needs to be cleaned up, as part of LIC sunset proj
+			salesOrg ="1400";
+        }
 		FDMaterialSalesArea sa = this.materialAvailability.get(new String(salesOrg + distributionChannel));
 		if (sa != null)
 			return EnumAvailabilityStatus.TEMP_UNAV
@@ -522,6 +539,9 @@ public class FDProductInfo extends FDSku {
 		if (null != matSalesArea) {
 			pickingPlantId = matSalesArea.getPickingPlantId();
 		}
+		if("1000".equalsIgnoreCase(pickingPlantId)){//TODO: Needs to be cleaned up, as part of LIC sunset proj
+        	pickingPlantId ="1400";
+        }
 		return pickingPlantId;
 	}
 

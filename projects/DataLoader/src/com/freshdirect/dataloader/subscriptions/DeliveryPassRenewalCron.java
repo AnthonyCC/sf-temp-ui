@@ -268,8 +268,9 @@ public class DeliveryPassRenewalCron {
 					pymtMethod = getPaymentMethod(user.getFDCustomer().getDefaultPaymentMethodPK(), user.getPaymentMethods()) ;
 				}
 					/* for FoodKick customers if thereDefaultPayment is PayPal.,actionInfo we should NOT Allow to renew DP Order */
-				if(eStore.equals(EnumEStoreId.FDX) && null != pymtMethod && pymtMethod.getPaymentMethodType().PAYPAL.equals(EnumPaymentMethodType.PAYPAL)) {
-						pymtMethod = null;
+				if(eStore.equals(EnumEStoreId.FDX) && null != pymtMethod && pymtMethod.getPaymentMethodType().equals(EnumPaymentMethodType.PAYPAL)) {
+					LOGGER.warn("Default Payment method found is PAYPAL for FK Customer:"+erpCustomerID+", hence using the last order payment method for FK DP auto-renewal");
+					pymtMethod = getMatchedPaymentMethod(lastOrder.getPaymentMethod(),getPaymentMethods(user.getIdentity(),eStore));
 				}
 				
 			}else{
@@ -481,7 +482,7 @@ public class DeliveryPassRenewalCron {
 			return FDCustomerManager.getPaymentMethods(identity);
 		} catch (FDResourceException e) {
 			String customerID=identity.getErpCustomerPK();
-			LOGGER.warn("Unable to find payment method for autoRenewal order for customer :"+customerID+" on E-Store: "+eStore.getContentId());
+			LOGGER.warn("Exception while finding payment method for autoRenewal order for customer :"+customerID+" on E-Store: "+eStore.getContentId(),e);
 			if(EnumEStoreId.FDX.getContentId().equalsIgnoreCase(eStore.getContentId())){
 				createCase(customerID,CrmCaseSubject.CODE_AUTO_BILL_PAYMENT_MISSING_FK,DlvPassConstants.AUTORENEW_PYMT_METHOD_UNKNOWN);
 			}else{
