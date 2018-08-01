@@ -154,16 +154,19 @@ public class DeliveryPassDAO {
 		return deliveryPasses;
 	}
 
-	private final static String GET_DELIVERY_PASSES_BY_STATUS = "SELECT ID, CUSTOMER_ID, TYPE, DESCRIPTION, PURCHASE_DATE, AMOUNT, PURCHASE_ORDER_ID, TOTAL_NUM_DLVS, REM_NUM_DLVS, ORG_EXP_DATE, EXP_DATE, USAGE_CNT, NUM_OF_CREDITS, STATUS, ACTIVATION_DATE from CUST.DELIVERY_PASS where CUSTOMER_ID = ? and STATUS = ? ORDER BY PURCHASE_DATE DESC";
+	private final static String GET_DELIVERY_PASSES_BY_STATUS = "SELECT ID, CUSTOMER_ID, TYPE, DESCRIPTION, PURCHASE_DATE, AMOUNT, PURCHASE_ORDER_ID, TOTAL_NUM_DLVS, REM_NUM_DLVS, ORG_EXP_DATE, EXP_DATE, USAGE_CNT, NUM_OF_CREDITS, STATUS, ACTIVATION_DATE from CUST.DELIVERY_PASS DP,CUST.DLV_PASS_TYPE DPT where DP.CUSTOMER_ID = ? and DPT.SKU_CODE=DP.TYPE and (DPT.E_STORES is null or DPT.E_STORES LIKE '%?%')and DP.STATUS = ? ORDER BY DP.PURCHASE_DATE DESC";
 
 
 
-	public static List<DeliveryPassModel> getDlvPassesByStatus(Connection conn, String customerPk, EnumDlvPassStatus status) throws SQLException {
+	public static List<DeliveryPassModel> getDlvPassesByStatus(Connection conn, String customerPk, EnumDlvPassStatus status,EnumEStoreId eStoreId) throws SQLException {
 		List<DeliveryPassModel> deliveryPasses = new ArrayList<DeliveryPassModel>();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
+		String query = null;
 		try{
-			ps = conn.prepareStatement(GET_DELIVERY_PASSES_BY_STATUS);
+			query = GET_DELIVERY_PASSES_BY_STATUS.replace("%?%", "%"+(null != eStoreId ? eStoreId.getContentId() : EnumEStoreId.FD.getContentId())+"%");
+			
+			ps = conn.prepareStatement(query);
 			ps.setString(1, customerPk);
 			ps.setString(2, status.getName());
 			rs = ps.executeQuery();
@@ -386,20 +389,19 @@ public class DeliveryPassDAO {
 		boolean retValue = false;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		try{
+		try {
 			ps = conn.prepareStatement(HAS_PURCHASED_PASS_QUERY);
-			ps.setString(1,customerPK);
+			ps.setString(1, customerPK);
 			rs = ps.executeQuery();
 			if (rs.next()) {
 				retValue = true;
 			}
-		}catch(SQLException sexp){
+		} catch (SQLException sexp) {
 			throw sexp;
-		}
-		finally{
-			if(rs != null)
+		} finally {
+			if (rs != null)
 				rs.close();
-			if(ps != null)
+			if (ps != null)
 				ps.close();
 		}
 		return retValue;
@@ -442,6 +444,7 @@ public class DeliveryPassDAO {
 															 "                  and status IN ('ACT','RTU','PEN') and trunc(exp_date)>trunc(sysdate-1) "+
 															 "                 ) "+
 															 " and not exists ( select 1 from cust.case where customer_id=ci.customer_id and case_subject='DPQ-009' and case_state<>'CLSD')";
+	
 	
 	/* DlvPass Query to fetch records based on FDCUSTOMER_ESTORE table, only if this property is True [ isDlvPassFDXEnabled() ] */
 	private final static String GET_AUTORENEWAL_INFO_BY_ESTORE_QUERY = "select ci.customer_id,fdc.autorenew_dp_type from cust.customerinfo ci, cust.customer c, cust.fdcustomer fd, cust.fdcustomer_estore fdc  where "+
@@ -522,28 +525,31 @@ public class DeliveryPassDAO {
 	}
 
 
-	private final static String GET_DAYS_SINCE_DP_EXPIRED_QUERY ="select CEIL(sysdate-max(exp_date)) from cust.delivery_pass where customer_id=? and ((status ='ACT' and exp_date<sysdate) OR (status='CAN'))";
-	public static int getDaysSinceDPExpiry(Connection conn, String customerID) throws SQLException {
+	private final static String GET_DAYS_SINCE_DP_EXPIRED_QUERY = "select CEIL(sysdate-max(exp_date)) from cust.delivery_pass dp, cust.dlv_pass_type dpt where customer_id=? and DPT.SKU_CODE=DP.TYPE and (DPT.E_STORES is null or DPT.E_STORES LIKE '%?%') and((status ='ACT' and exp_date<sysdate) OR (status='CAN'))";
+
+	public static int getDaysSinceDPExpiry(Connection conn, String customerID, EnumEStoreId eStore)
+			throws SQLException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		int days=0;
-
-		try{
-			ps = conn.prepareStatement(GET_DAYS_SINCE_DP_EXPIRED_QUERY);
+		int days = 0;
+		String query = null;
+		try {
+			query = GET_DAYS_SINCE_DP_EXPIRED_QUERY.replace("%?%",
+					"%" + (null != eStore ? eStore.getContentId() : EnumEStoreId.FD.getContentId()) + "%");
+			ps = conn.prepareStatement(query);
 			ps.setString(1, customerID);
 			rs = ps.executeQuery();
 
-			if(rs.next()) {
-				days=rs.getInt(1);
+			if (rs.next()) {
+				days = rs.getInt(1);
 			}
 			return days;
-		}catch(SQLException sexp){
+		} catch (SQLException sexp) {
 			throw sexp;
-		}
-		finally{
-			if(rs != null)
+		} finally {
+			if (rs != null)
 				rs.close();
-			if(ps != null)
+			if (ps != null)
 				ps.close();
 		}
 

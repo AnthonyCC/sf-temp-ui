@@ -2842,7 +2842,7 @@ public class FDCustomerManager {
 		}
 	}
 	
-	public static List<DeliveryPassModel> getDeliveryPassesByStatus(FDIdentity identity, EnumDlvPassStatus status) throws FDResourceException {
+	public static List<DeliveryPassModel> getDeliveryPassesByStatus(FDIdentity identity, EnumDlvPassStatus status,EnumEStoreId eStoreId) throws FDResourceException {
 		
 		try {
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerDeliveryPass)) {
@@ -2850,7 +2850,7 @@ public class FDCustomerManager {
 			} else {
 				lookupManagerHome();
 				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getDeliveryPassesByStatus(identity, status);
+				return sb.getDeliveryPassesByStatus(identity, status,eStoreId);
 			}
 
 		} catch (CreateException ce) {

@@ -34,6 +34,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.affiliate.ErpAffiliate;
+import com.freshdirect.cms.core.domain.EStoreId;
 import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.ContactAddressModel;
@@ -931,7 +932,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			if (!EnumDlvPassStatus.NONE.equals(dlvPassStatus) && (null!=type && type.isUnlimited())
 					&& (EnumDlvPassStatus.CANCELLED.equals(dlvPassStatus)
 							|| EnumDlvPassStatus.EXPIRED.equals(dlvPassStatus))) {
-				dlvPassInfo.setDaysSinceDPExpiry(sb.getDaysSinceDPExpiry(customerPk));
+				dlvPassInfo.setDaysSinceDPExpiry(sb.getDaysSinceDPExpiry(customerPk,estore));
 			} else if (!EnumDlvPassStatus.NONE.equals(dlvPassStatus) && (null!=type && type.isUnlimited())) {
 				dlvPassInfo.setDaysToDPExpiry(sb.getDaysToDPExpiry(customerPk, model.getId()));
 			}
@@ -940,7 +941,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			String result = "";
 			// Get the Active delivery Pass for this account.
 			DlvPassManagerSB dlvpsb = this.getDlvPassManagerHome().create();
-			List<DeliveryPassModel> dlvPasses = dlvpsb.getDlvPassesByStatus(customerPk, EnumDlvPassStatus.ACTIVE);
+			List<DeliveryPassModel> dlvPasses = dlvpsb.getDlvPassesByStatus(customerPk, EnumDlvPassStatus.ACTIVE,estore);
 			if (dlvPasses == null || (dlvPasses != null && dlvPasses.size() == 0)) {
 				dlvPassInfo.setDPSavings(0.0);
 			} else {
@@ -2440,7 +2441,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			if (EnumDlvPassStatus.ACTIVE.equals(status) && createOrder.isDlvPassApplied()) {
 				// Get the Active delivery Pass for this account.
 				DlvPassManagerSB dlvpsb = this.getDlvPassManagerHome().create();
-				List<DeliveryPassModel> dlvPasses = dlvpsb.getDlvPassesByStatus(customerPk, EnumDlvPassStatus.ACTIVE);
+				List<DeliveryPassModel> dlvPasses = dlvpsb.getDlvPassesByStatus(customerPk, EnumDlvPassStatus.ACTIVE,createOrder.geteStoreId());
 				if (dlvPasses == null || (dlvPasses != null && dlvPasses.size() == 0)) {
 					throw new FDResourceException("Unable to locate the Active DeliveryPass for this customer.");
 				}
@@ -2469,7 +2470,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					EnumEStoreId eStore = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
 					dlvpsb.create(newPass,eStore, identity.getFDCustomerPK());
 				}
-				DeliveryPassModel dlvPass = getActiveDPForCustomer(customerPk, dlvpsb);
+				EnumEStoreId eStore = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
+				DeliveryPassModel dlvPass = getActiveDPForCustomer(customerPk, dlvpsb, eStore);
 				if (dlvPass.getType().isUnlimited()
 						&& EnumDeliveryType.HOME.equals(createOrder.getDeliveryInfo().getDeliveryType())
 						&& null != CmsManager.getInstance().getEStoreId() && !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
@@ -2519,7 +2521,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			int dpExtendDays = createOrder.getDlvPassExtendDays();
 			if (dpExtendDays > 0 && EnumDlvPassStatus.ACTIVE.equals(status) && null != CmsManager.getInstance().getEStoreId() && !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
 				DlvPassManagerSB dlvpsb = this.getDlvPassManagerHome().create();
-				List<DeliveryPassModel> dlvPasses = dlvpsb.getDlvPassesByStatus(customerPk, EnumDlvPassStatus.ACTIVE);
+				EnumEStoreId eStore = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
+				List<DeliveryPassModel> dlvPasses = dlvpsb.getDlvPassesByStatus(customerPk, EnumDlvPassStatus.ACTIVE,eStore);
 				if (dlvPasses == null || (dlvPasses != null && dlvPasses.size() == 0)) {
 					throw new FDResourceException("Unable to locate the Active DeliveryPass for this customer.");
 				}
@@ -2800,14 +2803,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		dlvpassSB.cancel(dlvPass, eStore, fdPk);
 	}
 
-	private void revokeDeliveryPassUsage(DlvPassManagerSB dlvPassSB, String appliedPass_ID)
+	private void revokeDeliveryPassUsage(DlvPassManagerSB dlvPassSB, String appliedPass_ID,EnumEStoreId estore)
 			throws DeliveryPassException, RemoteException {
 
 		DeliveryPassModel appliedPass = dlvPassSB.getDeliveryPassInfo(appliedPass_ID);
 		if (appliedPass.getType().isUnlimited()) {
 			dlvPassSB.revoke(appliedPass);
 		} else {
-			DeliveryPassModel activePass = getActivePass(dlvPassSB, appliedPass.getCustomerId());
+			DeliveryPassModel activePass = getActivePass(dlvPassSB, appliedPass.getCustomerId(),estore);
 			if (activePass != null) {
 				String activePass_ID = activePass.getPK().getId();
 				if (!activePass_ID.equals(appliedPass_ID)) {
@@ -2837,9 +2840,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		return false;
 	}
 
-	private DeliveryPassModel getActivePass(DlvPassManagerSB dlvpsb, String customerID) throws RemoteException {
+	private DeliveryPassModel getActivePass(DlvPassManagerSB dlvpsb, String customerID,EnumEStoreId estore) throws RemoteException {
 
-		List<DeliveryPassModel> dlvPasses = dlvpsb.getDlvPassesByStatus(customerID, EnumDlvPassStatus.ACTIVE);
+		List<DeliveryPassModel> dlvPasses = dlvpsb.getDlvPassesByStatus(customerID, EnumDlvPassStatus.ACTIVE, estore);
 		if (dlvPasses != null && dlvPasses.size() > 0)
 			return dlvPasses.get(0);
 		else
@@ -2897,12 +2900,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					 * Delivery pass is applied on the order and the applied
 					 * delivery pass is not the purchased pass
 					 */
-					revokeDeliveryPassUsage(dlvpsb, appliedPass_ID);
+					revokeDeliveryPassUsage(dlvpsb, appliedPass_ID,order.getEStoreId());
 				} else if (isDeliveryPromotionApplied(order)) {
 					cancelPassExtension(dlvpsb, null, order);
 				}
 			} else if (isValued(appliedPass_ID)) {
-				revokeDeliveryPassUsage(dlvpsb, appliedPass_ID);
+				revokeDeliveryPassUsage(dlvpsb, appliedPass_ID,order.getEStoreId());
 			} else if (isDeliveryPromotionApplied(order)) {
 				cancelPassExtension(dlvpsb, null, order);
 			}
@@ -2911,7 +2914,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			if (currentDPExtendDays > 0 && null != CmsManager.getInstance().getEStoreId() && !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
 				// If extend delivery promo already there reverse extension.
 				List<DeliveryPassModel> dlvPasses = dlvpsb.getDlvPassesByStatus(order.getCustomerId(),
-						EnumDlvPassStatus.ACTIVE);
+						EnumDlvPassStatus.ACTIVE,order.getEStoreId());
 				if (dlvPasses == null || (dlvPasses != null && dlvPasses.size() == 0)) {
 					throw new FDResourceException("Unable to locate the Active DeliveryPass for this customer.");
 				}
@@ -3012,7 +3015,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		if (dlvPass == null) {
 
 			List<DeliveryPassModel> dlvPasses = dlvPassSB.getDlvPassesByStatus(order.getCustomerId(),
-					EnumDlvPassStatus.ACTIVE);
+					EnumDlvPassStatus.ACTIVE,order.getEStoreId());
 			if (dlvPasses != null && dlvPasses.size() > 0) {
 				dlvPass = dlvPasses.get(0);
 				if (dlvPass.getType().isUnlimited() && null != CmsManager.getInstance().getEStoreId() && !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
@@ -3033,7 +3036,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		if (dlvPass == null) {
 
 			List<DeliveryPassModel> dlvPasses = dlvPassSB.getDlvPassesByStatus(order.getCustomerId(),
-					EnumDlvPassStatus.ACTIVE);
+					EnumDlvPassStatus.ACTIVE,order.getEStoreId());
 			if (dlvPasses != null && dlvPasses.size() > 0) {
 				dlvPass = dlvPasses.get(0);
 				if (dlvPass.getType().isUnlimited() && null != CmsManager.getInstance().getEStoreId() && !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
@@ -3191,7 +3194,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				// Get the Active delivery Pass for this account.
 				DlvPassManagerSB dlvpsb = this.getDlvPassManagerHome().create();
 				List<DeliveryPassModel> dlvPasses = dlvpsb.getDlvPassesByStatus(identity.getErpCustomerPK(),
-						EnumDlvPassStatus.ACTIVE);
+						EnumDlvPassStatus.ACTIVE,order.geteStoreId());
 				if (dlvPasses == null || dlvPasses.size() == 0) {
 					throw new FDResourceException("Unable to locate the Active DeliveryPass for this customer.");
 				}
@@ -3244,7 +3247,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 				// Get the Active delivery Pass for this account.
 				DlvPassManagerSB dlvpsb = this.getDlvPassManagerHome().create();
-				DeliveryPassModel dlvPass = getActiveDPForCustomer(identity.getErpCustomerPK(), dlvpsb);
+				DeliveryPassModel dlvPass = getActiveDPForCustomer(identity.getErpCustomerPK(), dlvpsb,order.geteStoreId());
 
 				// revert back the extension of the pass.(promo was applied
 				// originally)
@@ -3265,7 +3268,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					&& EnumDeliveryType.HOME.equals(order.getDeliveryInfo().getDeliveryType())) {
 				// Get the Active delivery Pass for this account.
 				DlvPassManagerSB dlvpsb = this.getDlvPassManagerHome().create();
-				DeliveryPassModel dlvPass = getActiveDPForCustomer(identity.getErpCustomerPK(), dlvpsb);
+				DeliveryPassModel dlvPass = getActiveDPForCustomer(identity.getErpCustomerPK(), dlvpsb,order.geteStoreId());
 				if (dlvPass.getType().isUnlimited() && null != CmsManager.getInstance().getEStoreId() && !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
 					extendDeliveryPass(dlvpsb, dlvPass, 1, saleId, "Extend DP by a week.",
 							EnumDlvPassExtendReason.DLV_PROMOTION_APPLIED.getName());
@@ -3283,7 +3286,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				// If extend delivery promo already there reverse extension.
 				DlvPassManagerSB dlvpsb = this.getDlvPassManagerHome().create();
 				List<DeliveryPassModel> dlvPasses = dlvpsb.getDlvPassesByStatus(identity.getErpCustomerPK(),
-						EnumDlvPassStatus.ACTIVE);
+						EnumDlvPassStatus.ACTIVE,order.geteStoreId());
 				if (dlvPasses == null || (dlvPasses != null && dlvPasses.size() == 0)) {
 					throw new FDResourceException("Unable to locate the Active DeliveryPass for this customer.");
 				}
@@ -3298,8 +3301,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			int dpExtendDays = order.getDlvPassExtendDays();
 			if (dpExtendDays > 0 && EnumDlvPassStatus.ACTIVE.equals(status) && null != CmsManager.getInstance().getEStoreId() && !CmsManager.getInstance().getEStoreId().equals(EnumEStoreId.FDX)) {
 				DlvPassManagerSB dlvpsb = this.getDlvPassManagerHome().create();
+				EnumEStoreId eStore = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
 				List<DeliveryPassModel> dlvPasses = dlvpsb.getDlvPassesByStatus(identity.getErpCustomerPK(),
-						EnumDlvPassStatus.ACTIVE);
+						EnumDlvPassStatus.ACTIVE,eStore);
 				if (dlvPasses == null || (dlvPasses != null && dlvPasses.size() == 0)) {
 					throw new FDResourceException("Unable to locate the Active DeliveryPass for this customer.");
 				}
@@ -5259,11 +5263,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 * @param customerId
 	 * @return java.util.List
 	 */
-	public List<DeliveryPassModel> getDeliveryPassesByStatus(FDIdentity identity, EnumDlvPassStatus status) {
+	public List<DeliveryPassModel> getDeliveryPassesByStatus(FDIdentity identity, EnumDlvPassStatus status,EnumEStoreId eStore) {
 		List<DeliveryPassModel> deliveryPasses = null;
 		try {
 			DlvPassManagerSB sb = this.getDlvPassManagerHome().create();
-			deliveryPasses = sb.getDlvPassesByStatus(identity.getErpCustomerPK(), status);
+			deliveryPasses = sb.getDlvPassesByStatus(identity.getErpCustomerPK(), status, eStore);
 		} catch (RemoteException ex) {
 			LOGGER.warn(ex);
 			throw new EJBException(ex);
@@ -5360,10 +5364,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	private DeliveryPassModel getActiveDPForCustomer(String customerPK, DlvPassManagerSB dlvPassSB)
+	private DeliveryPassModel getActiveDPForCustomer(String customerPK, DlvPassManagerSB dlvPassSB,EnumEStoreId estore)
 			throws FDResourceException, RemoteException {
 
-		List<DeliveryPassModel> dlvPasses = dlvPassSB.getDlvPassesByStatus(customerPK, EnumDlvPassStatus.ACTIVE);
+		List<DeliveryPassModel> dlvPasses = dlvPassSB.getDlvPassesByStatus(customerPK, EnumDlvPassStatus.ACTIVE, estore);
 		if (dlvPasses == null || dlvPasses.size() == 0) {
 			throw new FDResourceException("Unable to locate the Active DeliveryPass for this customer.");
 		}

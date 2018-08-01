@@ -4154,7 +4154,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 			    String dpId = ((FDModifyCartModel) this.getShoppingCart()).getOriginalOrder().getDeliveryPassId();
 			    if (dpId != null && !dpId.equals("")) {
-			        List passes = FDCustomerManager.getDeliveryPassesByStatus(this.getIdentity(), EnumDlvPassStatus.ACTIVE);
+			        List passes = FDCustomerManager.getDeliveryPassesByStatus(this.getIdentity(), EnumDlvPassStatus.ACTIVE,this.getUserContext().getStoreContext().getEStoreId());
 			        DeliveryPassModel dlvPass = null;
 			        Date today = new Date();
 			        for (int i = 0; i < passes.size(); i++) {
