@@ -2209,7 +2209,6 @@ public class FDCustomerManager {
 
 			}
 
-
 			// note: FDModifyCartLineI instances skipped
 			ErpCreateOrderModel createOrder = FDOrderTranslator.getErpCreateOrderModel(cart, skipModifyLines, sameDeliveryDate);
 			Map<String, FDAvailabilityI> fdInvMap = null;
@@ -2837,7 +2836,7 @@ public class FDCustomerManager {
 		
 		try {
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerDeliveryPass)) {
-				return DlvPassManagerService.getInstance().getDlvPassesByStatus(identity.getErpCustomerPK(), status);
+				return DlvPassManagerService.getInstance().getDlvPassesByStatus(identity.getErpCustomerPK(), status,eStoreId);
 			} else {
 				lookupManagerHome();
 				FDCustomerManagerSB sb = managerHome.create();
