@@ -346,6 +346,8 @@ public class OrderController extends BaseController {
 	            }else{
 	            	((ModifiedOrder) responseMessage).setShow(false);
 	            }
+            }else if(user.getFDSessionUser().getMasqueradeContext()==null && !FDStoreProperties.isInformOrderModifyEnabled()){
+            	((ModifiedOrder) responseMessage).setShow(false);
             }
 			
         } else {
