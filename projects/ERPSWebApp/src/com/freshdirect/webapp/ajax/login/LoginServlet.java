@@ -1,137 +1,99 @@
 package com.freshdirect.webapp.ajax.login;
 
-import java.io.IOException;
-import java.io.Writer;
-import java.net.URLDecoder;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.enums.CaptchaType;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.webapp.ajax.BaseJsonServlet;
+import com.freshdirect.webapp.ajax.expresscheckout.service.RedirectService;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 import com.freshdirect.webapp.util.CaptchaUtil;
+import com.freshdirect.webapp.util.FDURLUtil;
+import com.freshdirect.webapp.util.ValidationUtils;
 
-public class LoginServlet extends HttpServlet {
+public class LoginServlet extends BaseJsonServlet {
 
-	private static final String DATA = "data";
-	private static final String mergePage = "/login/merge_cart.jsp";
-	private static final long serialVersionUID = 133867689987220127L;
-	private static final Logger LOGGER = LoggerFactory.getInstance( LoginServlet.class );
-	
-	
-	@Override
-	/**
-	 * This is an API to do the log-in based on the existing login logic(@LoginControllerTag.java).
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		LoginResponse loginResponse = new LoginResponse();
-		LoginRequest loginRequest = parseRequestData(request, response, LoginRequest.class);
-		if (loginRequest != null) {
-			// validate captcha if it's enabled
-			boolean isCaptchaSuccess = CaptchaUtil.validateCaptcha(loginRequest.getCaptchaToken(), request.getRemoteAddr(), CaptchaType.SIGN_IN,request.getSession(), SessionName.LOGIN_ATTEMPT, FDStoreProperties.getMaxInvalidLoginAttempt());
-			if (!isCaptchaSuccess) {
-				loginResponse.addError("captcha", SystemMessageList.MSG_INVALID_CAPTCHA);
-				writeResponse(response, loginResponse);
-				return;
-			}
-			
-			ActionResult actionResult = new ActionResult();
-			String updatedSuccessPage = UserUtil.loginUser(request.getSession(), request, response, actionResult
-															, loginRequest.getUserId(), loginRequest.getPassword(), mergePage, loginRequest.getSuccessPage(), false);
-			FDSessionUser user = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
-			
-			loginResponse.setSuccessPage(updatedSuccessPage);
-			if(actionResult.getErrors() == null || actionResult.getErrors().isEmpty()) {
-				// check T&C only if login success
-				if (user !=null && !user.getTcAcknowledge()) {
-					 loginResponse.setMessage("TcAgreeFail");
-					 request.getSession().setAttribute("fdTcAgree", false);
-						
-				 }
-				loginResponse.setSuccess(true);
-				request.getSession().setAttribute(SessionName.LOGIN_ATTEMPT, Integer.valueOf(0));
-			} else {
-				Iterator<ActionError> actions = actionResult.getErrors()
-						.iterator();
-				while (actions.hasNext()) {
-					ActionError error = actions.next();
-					System.out.println(error.getDescription());
-					if (error.getDescription().equals(SystemMessageList.MSG_VOUCHER_REDEMPTION_FDX_NOT_ALLOWED)) {
-						loginResponse.setMessage("voucherredemption");
-						Map<String, String> errorMessages = new HashMap<String, String>();
-						errorMessages
-								.put("voucherredemption",
-										"<div class=\"header\">This email is not valid for FoodKick orders.</div>Please register a new account to place a FoodKick order.");
-						loginResponse.setErrorMessages(errorMessages);
-					}
-				}
-				
-				int fdLoginAttempt = CaptchaUtil.increaseAttempt(request, SessionName.LOGIN_ATTEMPT);
-				if(fdLoginAttempt >= FDStoreProperties.getMaxInvalidLoginAttempt()){
-					//Should be the redirecting key to login page.
-					loginResponse.setMessage("CaptchaRedirect");
-				}
-			}
+    private static final String MERGE_CART_PAGE_URI = "/login/merge_cart.jsp";
+    private static final long serialVersionUID = 133867689987220127L;
+    private static final Logger LOGGER = LoggerFactory.getInstance(LoginServlet.class);
+
+    /**
+     * This is an API to do the log-in based on the existing login logic(@LoginControllerTag.java).
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response, FDUserI user1) throws HttpErrorResponse {
+        HttpSession session = request.getSession();
+        LoginResponse loginResponse = new LoginResponse();
+        LoginRequest loginRequest = BaseJsonServlet.parseRequestData(request, LoginRequest.class);
+        String successPage = NVL.apply(loginRequest.getSuccessPage(), FDURLUtil.LANDING_PAGE);
+
+        ActionResult actionResult = new ActionResult();
+
+        // validate captcha if it's enabled
+        boolean isCaptchaSuccess = CaptchaUtil.validateCaptcha(loginRequest.getCaptchaToken(), request.getRemoteAddr(), CaptchaType.SIGN_IN, session, SessionName.LOGIN_ATTEMPT,
+                FDStoreProperties.getMaxInvalidLoginAttempt());
+        if (!isCaptchaSuccess) {
+            actionResult.addError(!isCaptchaSuccess, "captcha", SystemMessageList.MSG_INVALID_CAPTCHA);
         }
 
-        writeResponse(response, loginResponse);
-	}
-	
-	private void writeResponse(HttpServletResponse response, LoginResponse loginResponse) {
-		try {
-			Writer w = response.getWriter();
-			getMapper().writeValue(w, loginResponse);
-		} catch (JsonGenerationException e) {
-			LOGGER.warn("JsonGenerationException ", e);
-		} catch (JsonMappingException e) {
-			LOGGER.warn("JsonMappingException ", e);
-		} catch (IOException e) {
-			LOGGER.warn("IOException ", e);
-		}
-	}
-	
-	protected final static <T> T parseRequestData( HttpServletRequest request, HttpServletResponse response, Class<T> typeClass) throws IOException {
-		
-		String reqJson = request.getParameter( DATA );
-		if(reqJson == null){
-			reqJson = (String)request.getAttribute( DATA );
-			if(reqJson != null){
-				reqJson = URLDecoder.decode(reqJson, "UTF-8");				
-			}
-		}
+        ValidationUtils.validateEmailAddress(actionResult, "userId", loginRequest.getUserId());
 
-		T reqData = null;
-		try {
-			reqData = getMapper().readValue(reqJson, typeClass);
-		} catch (Exception e) {
-			LOGGER.warn("Exception while parsing the request: "+e);
-		}
-		
-		return reqData;
-	}
-	
-	protected static ObjectMapper getMapper() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES , false);
-        return mapper;
+        if (actionResult.isSuccess()) {
+            String updatedSuccessPage = UserUtil.loginUser(session, request, response, actionResult, loginRequest.getUserId(), loginRequest.getPassword(), MERGE_CART_PAGE_URI,
+                    successPage, false);
+            loginResponse.setSuccessPage(RedirectService.defaultService().replacedRedirectUrl(updatedSuccessPage));
+        }
+
+        if (actionResult.isSuccess()) {
+            // check T&C only if login success
+            FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+            if (user != null && !user.getTcAcknowledge()) {
+                loginResponse.setMessage("TcAgreeFail");
+                session.setAttribute("fdTcAgree", false);
+            }
+            loginResponse.setSuccess(true);
+            CaptchaUtil.resetAttempt(request, SessionName.LOGIN_ATTEMPT);
+        } else {
+            for (ActionError error : actionResult.getErrors()) {
+                LOGGER.debug(error.getDescription());
+                if (error.getDescription().equals(SystemMessageList.MSG_VOUCHER_REDEMPTION_FDX_NOT_ALLOWED)) {
+                    loginResponse.setMessage("voucherredemption");
+                    loginResponse.addError("voucherredemption",
+                            "<div class=\"header\">This email is not valid for FoodKick orders.</div>Please register a new account to place a FoodKick order.");
+                } else {
+                    loginResponse.addError(error.getType(), error.getDescription());
+                }
+            }
+
+            CaptchaUtil.increaseAttempt(request, SessionName.LOGIN_ATTEMPT);
+            if (CaptchaUtil.isExcessiveAttempt(FDStoreProperties.getMaxInvalidLoginAttempt(), session, SessionName.LOGIN_ATTEMPT)) {
+                // Should be the redirecting key to login page.
+                loginResponse.setMessage("CaptchaRedirect");
+            }
+        }
+
+        writeResponseData(response, loginResponse);
+    }
+
+    @Override
+    protected boolean synchronizeOnUser() {
+        return false;
+    }
+
+    @Override
+    protected int getRequiredUserLevel() {
+        return FDUserI.GUEST;
     }
 }

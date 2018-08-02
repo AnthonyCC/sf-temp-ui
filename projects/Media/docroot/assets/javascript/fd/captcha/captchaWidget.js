@@ -67,6 +67,7 @@ var FreshDirect = FreshDirect || {};
 	function isValid() {
 		return !isEnabled() || !!grecaptcha.getResponse();
 	}
+	
 	// if component is not registered, register
 	if (!fd.components.captchaWidget) {
 		var captchaWidget = {
