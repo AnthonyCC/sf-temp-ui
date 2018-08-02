@@ -1,3 +1,5 @@
+<%@page import="java.net.URL"%>
+<%@page import="java.net.MalformedURLException"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="java.util.Map"%>
@@ -5,9 +7,17 @@
 <%@page import="java.util.regex.Matcher"%>
 <%@page import="java.util.regex.Pattern"%>
 <%@page import="java.util.Iterator" %>
+<%@page import="org.apache.log4j.Logger"%>
+<%@page import="com.freshdirect.framework.util.log.LoggerFactory"%>
+<%@page import="java.io.StringWriter"%>
+<%@page import="java.io.IOException"%>
+<%@page import="com.freshdirect.framework.template.TemplateException"%>
+<%@page import="com.freshdirect.fdstore.FDStoreProperties"%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%!
+	Logger LOGGER = LoggerFactory.getInstance("dependencies.jsp");
+
 	/* find the registers. only finds register() calls */
 	public ArrayList<String> getRegisters(String filePath) {
 		String fileSrc = MediaUtils.renderHtmlToString(filePath, null);
@@ -39,7 +49,7 @@
 	public ArrayList<String> getDependencies(String filePath, Map<String, String> globalRegisters) {
 		ArrayList<String> fileDependencies = new ArrayList<String>();
 		//get src
-		String fileSrc = MediaUtils.renderHtmlToString(filePath, null);
+		String fileSrc = renderAssetToString(filePath);
 		
 		Iterator it = globalRegisters.entrySet().iterator();
 		while (it.hasNext()) {
@@ -53,6 +63,45 @@
 		
 		return fileDependencies;
 	}
+	
+	// based on IncludeMediaTag
+    public String renderAssetToString(String filePath) {
+        String srcString = "";
+        URL url = null;
+
+        // remove absolute path mark
+        if (filePath.startsWith("/")) {
+        	filePath = filePath.substring(1, filePath.length());
+        }
+        try {
+        	//adjust url for servers with different url structure
+			url = new URL(new URL(FDStoreProperties.getMediaPath().replace("docroot/media/content/", "docroot/")), filePath);
+
+        } catch (MalformedURLException e) {
+            LOGGER.error("MalformedURLException", e);
+        }
+
+        if (filePath != null && url != null) {
+            StringWriter writer = new StringWriter();
+            
+            try {
+            	MediaUtils.renderMedia(url, writer, null, false);
+            	srcString = writer.toString();
+            } catch (IOException e) {
+                LOGGER.error("IOException, check if file was removed from code", e);
+            } catch (TemplateException e) {
+                LOGGER.error("TemplateException, returning empty string", e);
+            } finally {
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                    LOGGER.error(e);
+                }
+            }
+        }
+
+        return srcString;
+    }
 %>
 <%
 String JS_BASE = "/assets/javascript";
@@ -78,8 +127,6 @@ inFiles.add(JS_BASE+"/fd/common/addtolist.js");
 inFiles.add(JS_BASE+"/fd/common/ajaxPopup.js");
 inFiles.add(JS_BASE+"/fd/common/aria.js");
 inFiles.add(JS_BASE+"/fd/common/atcInfo.js");
-inFiles.add(JS_BASE+"/fd/common/coremetrics.js");
-inFiles.add(JS_BASE+"/fd/common/coremetricsScrolling.js");
 inFiles.add(JS_BASE+"/fd/common/criteo.js");
 inFiles.add(JS_BASE+"/fd/common/customerRatingPopup.js");
 inFiles.add(JS_BASE+"/fd/common/deletefromlist.js");
