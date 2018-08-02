@@ -1875,7 +1875,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 	}
 
 	private ErpReturnOrderModel getReturnModel(FDOrderI order) {
-		List returnLines = new ArrayList();
+		List<ErpReturnLineModel> returnLines = new ArrayList<ErpReturnLineModel>();
 		List orderLines = order.getOrderLines();
 		boolean containsDeliveryPass = false;
 		for (Iterator iter = orderLines.iterator(); iter.hasNext();) {
@@ -1912,7 +1912,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 		ErpReturnOrderModel returnModel = new ErpReturnOrderModel();
-		returnModel.setInvoiceLines(returnLines);
+		returnModel.setReturnLines(returnLines);
 		returnModel.setCharges(charges);
 		returnModel.setDlvPassApplied(order.isDlvPassApplied());
 		returnModel.setDeliveryPassId(order.getDeliveryPassId());

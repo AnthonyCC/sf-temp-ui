@@ -42,6 +42,8 @@ public abstract class ErpAbstractInvoiceModel extends ErpTransactionModel {
 
 	public double getDepositValue() {
 		double deposit = 0.0;
+		if (invoiceLines == null)
+			return deposit;
 		for ( ErpInvoiceLineModel invoiceLine : invoiceLines ) {
 			deposit += invoiceLine.getDepositValue();
 		}
@@ -76,6 +78,8 @@ public abstract class ErpAbstractInvoiceModel extends ErpTransactionModel {
 	
 	public ErpInvoiceLineModel getInvoiceLine(String lineNumber){
 		ErpInvoiceLineModel foundInvoiceLine = null;
+		if (invoiceLines == null)
+			return null;
 		for ( ErpInvoiceLineModel invoiceLine : invoiceLines ) {
 			if(invoiceLine.getOrderLineNumber().equals(lineNumber)){
 				foundInvoiceLine = invoiceLine;

@@ -126,7 +126,7 @@ public class ReturnControllerTag extends AbstractControllerTag implements Sessio
 		public void populateForm(HttpServletRequest request) {
 			Enumeration paramNames = request.getParameterNames();
 			boolean restockingApplied = false;
-			List returnLines = new ArrayList();
+			List<ErpReturnLineModel> returnLines = new ArrayList<ErpReturnLineModel>();
 			while(paramNames.hasMoreElements()){
 				String paramName = (String)paramNames.nextElement();
 				String returnQuantity = null;
@@ -205,7 +205,7 @@ public class ReturnControllerTag extends AbstractControllerTag implements Sessio
 				}
 			}
 			
-			returnOrder.setInvoiceLines(returnLines);
+			returnOrder.setReturnLines(returnLines);
 			returnOrder.setCharges(charges);
 			//Set Delivery Pass Attributes.
 			returnOrder.setDlvPassApplied(order.isDlvPassApplied());
@@ -222,8 +222,8 @@ public class ReturnControllerTag extends AbstractControllerTag implements Sessio
 				result.addError(new ActionError("Wrong Status", "No invoice added yet cannot do return"));
 				return;
 			}
-			for (Iterator i = this.returnOrder.getInvoiceLines().iterator(); i.hasNext(); ) {
-				ErpReturnLineModel returnLine = (ErpReturnLineModel)i.next();
+			for (Iterator<ErpReturnLineModel> i = this.returnOrder.getReturnLines().iterator(); i.hasNext(); ) {
+				ErpReturnLineModel returnLine = i.next();
 
 				for(Iterator j = order.getOrderLines().iterator(); j.hasNext(); ){
 					FDCartLineI line = (FDCartLineI) j.next();
