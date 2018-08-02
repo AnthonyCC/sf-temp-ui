@@ -476,20 +476,23 @@ public class NavigationUtil {
 	
 	public static boolean isCategoryDisplayableCached(FDUserI user, CategoryModel cat){
 		String contentName = cat.getContentName();
-		String plantId = user.getUserContext().getFulfillmentContext().getPlantId();
-		if (CmsManager.getInstance().isReadOnlyContent()){
-            Boolean displayable = EhCacheUtilWrapper.getObjectFromCache(CmsCaches.BR_CATEGORY_SUB_TREE_HAS_PRODUCTS_CACHE.cacheName, contentName + "_" + plantId);
-			
-			if (displayable == null) {
-				displayable = cat.isDisplayable(); //do the recursive check
-                EhCacheUtilWrapper.putObjectToCache(CmsCaches.BR_CATEGORY_SUB_TREE_HAS_PRODUCTS_CACHE.cacheName, contentName + "_" + plantId, displayable);
+		if(null !=user && null !=user.getUserContext()){
+			String plantId = user.getUserContext().getFulfillmentContext().getPlantId();
+			if (CmsManager.getInstance().isReadOnlyContent()){
+	            Boolean displayable = EhCacheUtilWrapper.getObjectFromCache(CmsCaches.BR_CATEGORY_SUB_TREE_HAS_PRODUCTS_CACHE.cacheName, contentName + "_" + plantId);
+				
+				if (displayable == null) {
+					displayable = cat.isDisplayable(); //do the recursive check
+	                EhCacheUtilWrapper.putObjectToCache(CmsCaches.BR_CATEGORY_SUB_TREE_HAS_PRODUCTS_CACHE.cacheName, contentName + "_" + plantId, displayable);
+				}
+				
+				return displayable;
+			} else {
+				//CMS DB mode
+				return cat.isDisplayable();
 			}
-			
-			return displayable;
-		} else {
-			//CMS DB mode
-			return cat.isDisplayable();
 		}
+		return cat.isDisplayable();
 	}
 	
     public static SuperDepartmentModel getSuperDepartment(FDUserI user, String departmentId) throws FDResourceException {
