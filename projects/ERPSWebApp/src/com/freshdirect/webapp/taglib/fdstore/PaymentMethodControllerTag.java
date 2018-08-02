@@ -91,16 +91,13 @@ public class PaymentMethodControllerTag extends com.freshdirect.framework.webapp
 	            	}
 	            	
 	            	
-	            	if (paymentMethod != null &&
-	            		(
-	            			paymentMethod.getPaymentMethodType() == EnumPaymentMethodType.CREDITCARD ||
-	            			paymentMethod.getPaymentMethodType() == EnumPaymentMethodType.DEBITCARD
-	            		)
-	            	) {
+					if (paymentMethod != null
+							&& (paymentMethod.getPaymentMethodType() == EnumPaymentMethodType.CREDITCARD
+									|| paymentMethod.getPaymentMethodType() == EnumPaymentMethodType.DEBITCARD)) {
 						isAddOrEditCard = true;
 					}
-					/* limit to cc/debit */
-	            	if (isAddOrEditCard && hash == null || "".equals(hash) || sessionUser == null || !hash.equals(sessionUser.getAddCcUuid())) {
+				/*	 limit to cc/debit */
+	            	if (isAddOrEditCard && (hash == null || "".equals(hash) || sessionUser == null || !hash.equals(sessionUser.getAddCcUuid()) ) ) {
 	            		//"fail" silently
 	                    pageContext.setAttribute(this.result, actionResult);
 	            		return EVAL_BODY_BUFFERED;
