@@ -542,4 +542,6 @@ public interface IECommerceService {
 	public void generateSitemap() throws RemoteException;
 
 	public boolean isValidVaultToken(String token, String customerId) throws RemoteException;
+
+	public ErpMaterialModel findBySapID(String materialNo) throws RemoteException;
 }

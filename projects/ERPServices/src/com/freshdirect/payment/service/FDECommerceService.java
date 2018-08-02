@@ -393,6 +393,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String POST_FDX_ELIGIBLE_SENDORDERSTOSAP = "fdxorderpick/sendorderstosap";
 	
 	private static final String SAP_MATERIAL_INFO="saploader/materialinfo";
+	private static final String SAP_FIND_BY_SAP_ID="/findBySapId/";
 	private static final String SAP_SAVE_DATA="saploader/save";
 	private static final String SAP_UPDATE_DATA="saploader/update";
 	private static final String SAP_LOAD_DATA="saploader/loaddata";
@@ -4488,5 +4489,20 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
             }
             return models;
     }
+	@Override
+	public ErpMaterialModel findBySapID(String materialNo) throws RemoteException {
+		Response<ErpMaterialModel> response = new Response<ErpMaterialModel>();
+		String inputJson = null;
+		try{
+			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(SAP_FIND_BY_SAP_ID)+materialNo,new TypeReference<Response<ErpMaterialModel>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
 	
 }
