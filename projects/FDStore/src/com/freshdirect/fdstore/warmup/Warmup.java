@@ -29,7 +29,7 @@ public class Warmup {
      */
     public void warmup() {
         LOGGER.info("[WARMUP] Warmup started");
-        CacheWarmupUtil.warmupOAuthProvider();
+        //CacheWarmupUtil.warmupOAuthProvider();
 
         long time = System.currentTimeMillis();
         ContentFactory.getInstance().getStore();
@@ -72,10 +72,10 @@ public class Warmup {
                     CacheWarmupUtil.warmupWineIndex();
                     CacheWarmupUtil.warmupSmartStore();
                     CacheWarmupUtil.warmupSmartCategories();
-                    LOGGER.info("[WARMUP] Warmup done");
+                    LOGGER.info("[WARMUP] WARMUPEVENT-NORMAL-COMPLETED");
                     Warmup.WARMUP_STATE.set(WarmupState.FINISHED);
                 } catch (Exception e) {
-                    LOGGER.error("[WARMUP] Warmup failed", e);
+                    LOGGER.error("[WARMUP] WARMUPEVENT-NORMAL-FAILED", e);
                     Warmup.WARMUP_STATE.set(WarmupState.FAILED);
                 }
             }
@@ -123,10 +123,10 @@ public class Warmup {
                     CacheWarmupUtil.warmupSmartCategories();
                     LOGGER.info("[WARMUP] Smart categories warmed up");
                     
-                    LOGGER.info("[WARMUP] Warmup done in " + (System.currentTimeMillis() - time) + " ms");
+                    LOGGER.info("[WARMUP] WARMUPEVENT-REPEAT-COMPLETED " + (System.currentTimeMillis() - time) + " ms");
                     Warmup.WARMUP_STATE.set(WarmupState.FINISHED);
                 } catch (Exception e) {
-                    LOGGER.error("[WARMUP] Warmup failed", e);
+                    LOGGER.error("[WARMUP] WARMUPEVENT-REPEAT-FAILED ", e);
                     Warmup.WARMUP_STATE.set(WarmupState.FAILED);
                 }
             }
