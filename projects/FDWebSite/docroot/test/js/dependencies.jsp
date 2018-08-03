@@ -46,10 +46,10 @@
 	}
 
 	/* use register regKey:filepath map to work out dependencies */
-	public ArrayList<String> getDependencies(HttpServletRequest request, String filePath, Map<String, String> globalRegisters) {
+	public ArrayList<String> getDependencies(String filePath, Map<String, String> globalRegisters) {
 		ArrayList<String> fileDependencies = new ArrayList<String>();
 		//get src
-		String fileSrc = renderAssetToString(request, filePath);
+		String fileSrc = renderAssetToString(filePath);
 		
 		Iterator it = globalRegisters.entrySet().iterator();
 		while (it.hasNext()) {
@@ -65,7 +65,7 @@
 	}
 	
 	// based on IncludeMediaTag
-    public String renderAssetToString(HttpServletRequest request, String filePath) {
+    public String renderAssetToString(String filePath) {
         String srcString = "";
         URL url = null;
 
@@ -75,7 +75,7 @@
         }
         try {
         	//adjust url for servers with different url structure
-			url = new URL(new URL(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/"), filePath);
+			url = new URL(new URL(FDStoreProperties.getMediaPath().replace("docroot/media/content/", "docroot/media/static/docroot/")), filePath);
         } catch (MalformedURLException e) {
             LOGGER.error("MalformedURLException", e);
         }
@@ -317,7 +317,7 @@ for (String filePath : inFiles) {
 }
 //loop again to do dependencies now that we have all registers
 for (String filePath : inFiles) {
-	fileInfos.get(filePath).put("dependencies", getDependencies(request, filePath, globalRegisters));
+	fileInfos.get(filePath).put("dependencies", getDependencies(filePath, globalRegisters));
 }
 %>
 <!DOCTYPE html>
