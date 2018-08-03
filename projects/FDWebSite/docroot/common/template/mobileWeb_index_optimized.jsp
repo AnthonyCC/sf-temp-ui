@@ -319,22 +319,6 @@
 			
 			<fd:IncludeMedia name="/media/editorial/site_pages/javascript.html"/>
 		
-			<%
-				FDUserI dpTcCheckUser = (FDUserI)session.getAttribute(SessionName.USER);
-				FDSessionUser dpTcCheckSessionUser = (FDSessionUser)session.getAttribute(SessionName.USER);
-		
-				if (dpTcCheckUser != null &&
-						(dpTcCheckUser.getLevel() == FDSessionUser.SIGNED_IN && Boolean.FALSE.equals(dpTcCheckSessionUser.hasSeenDpNewTc()) && dpTcCheckUser.isDpNewTcBlocking())
-					) {
-					%>
-						<script type="text/javascript">
-				    		$jq(document).ready(function() {
-					    		pop('/overlays/delivery_pass_tc.jsp?showButtons=true&count=true');
-				    		});
-				    	</script>
-			    	<%
-				}
-			%>
 			
 			<% 
 			//System.out.println("DELIVERYADDRESS_COMPLETE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>:"+session.getAttribute("DELIVERYADDRESS_COMPLETE")); 

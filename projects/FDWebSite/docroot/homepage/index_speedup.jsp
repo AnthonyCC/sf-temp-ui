@@ -390,23 +390,6 @@
   	<jwr:script src="/fdmisc.js" useRandomParam="false" />
   	<jwr:script src="/commonjavascript.js" useRandomParam="false" />
 
-  	<%
-  		FDUserI dpTcCheckUser = (FDUserI)session.getAttribute(SessionName.USER);
-  		FDSessionUser dpTcCheckSessionUser = (FDSessionUser)session.getAttribute(SessionName.USER);
-
-  		if (dpTcCheckUser != null &&
-  				(dpTcCheckUser.getLevel() == FDSessionUser.SIGNED_IN && Boolean.FALSE.equals(dpTcCheckSessionUser.hasSeenDpNewTc()) && dpTcCheckUser.isDpNewTcBlocking())
-  			) {
-  			%>
-  				<script type="text/javascript">
-  		    		$jq(document).ready(function() {
-  			    		doOverlayWindow('/overlays/delivery_pass_tc.jsp?showButtons=true&count=true');
-  		    		});
-  		    	</script>
-  	    	<%
-  		}
-  	%>
-
 <!-- i_javascript_opt end-->
 
     <%@ include file="/common/template/includes/footer.jspf" %>
