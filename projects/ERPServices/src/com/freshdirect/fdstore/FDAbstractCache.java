@@ -8,12 +8,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.log4j.Category;
 
 import com.freshdirect.framework.core.ServiceLocator;
+import com.freshdirect.framework.core.ServiceLocatorI;
 import com.freshdirect.framework.util.JMXUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public abstract class FDAbstractCache<K,V> {
 	private static Category LOGGER = LoggerFactory.getInstance(FDAbstractCache.class);
-	protected ServiceLocator serviceLocator;
+	protected ServiceLocatorI serviceLocator;
 	
 	private final long refreshDelay;
 	private final Thread refresher;
