@@ -4,11 +4,7 @@ import java.lang.management.ManagementFactory;
 import java.util.UUID;
 
 import javax.annotation.PostConstruct;
-import javax.management.InstanceAlreadyExistsException;
-import javax.management.MBeanRegistrationException;
 import javax.management.MBeanServer;
-import javax.management.MalformedObjectNameException;
-import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
 
 import org.slf4j.Logger;
@@ -58,20 +54,15 @@ public class WarmupJmxRegistratorService {
     }
     
     public void registerWarmupMBeans() {
-    	LOGGER.info("Registering MBean...");
+    	LOGGER.info("Start Registering Generic MBean...");
         final MBeanServer server = ManagementFactory.getPlatformMBeanServer();
         try {
         	ObjectName  objectName = new ObjectName(WARMUP_JMX_PUBLISHER_BASE_OBJECTNAME);
             server.registerMBean(warmupJmx, objectName);
-            System.out.println("MBean registered: " + objectName);
-        } catch (MalformedObjectNameException mone) {
+            LOGGER.info("MBean registered: " + objectName);
+        } catch (Exception mone) {
+        	LOGGER.info("Genric MBean already registered or error registering Mbean.");
             mone.printStackTrace();
-        } catch (InstanceAlreadyExistsException iaee) {
-            iaee.printStackTrace();
-        } catch (MBeanRegistrationException mbre) {
-            mbre.printStackTrace();
-        } catch (NotCompliantMBeanException ncmbe) {
-            ncmbe.printStackTrace();
         }
     }
     
