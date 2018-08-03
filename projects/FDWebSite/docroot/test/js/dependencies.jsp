@@ -19,8 +19,8 @@
 	Logger LOGGER = LoggerFactory.getInstance("dependencies.jsp");
 
 	/* find the registers. only finds register() calls */
-	public ArrayList<String> getRegisters(String filePath) {
-		String fileSrc = MediaUtils.renderHtmlToString(filePath, null);
+	public ArrayList<String> getRegisters(HttpServletRequest request, String filePath) {
+		String fileSrc = renderAssetToString(request, filePath);
 		ArrayList<String> fileRegisters = new ArrayList<String>();
 		String quotedGroup = "\"([^\"]*)\"";
 		String group = "[\"]?([^,\\)]*)[\"]?";
@@ -46,10 +46,10 @@
 	}
 
 	/* use register regKey:filepath map to work out dependencies */
-	public ArrayList<String> getDependencies(String filePath, Map<String, String> globalRegisters) {
+	public ArrayList<String> getDependencies(HttpServletRequest request, String filePath, Map<String, String> globalRegisters) {
 		ArrayList<String> fileDependencies = new ArrayList<String>();
 		//get src
-		String fileSrc = renderAssetToString(filePath);
+		String fileSrc = renderAssetToString(request, filePath);
 		
 		Iterator it = globalRegisters.entrySet().iterator();
 		while (it.hasNext()) {
@@ -65,7 +65,7 @@
 	}
 	
 	// based on IncludeMediaTag
-    public String renderAssetToString(String filePath) {
+    public String renderAssetToString(HttpServletRequest request, String filePath) {
         String srcString = "";
         URL url = null;
 
@@ -75,7 +75,7 @@
         }
         try {
         	//adjust url for servers with different url structure
-			url = new URL(new URL(FDStoreProperties.getMediaPath().replace("docroot/media/content/", "docroot/media/static/docroot/")), filePath);
+			url = new URL(new URL(request.getScheme() + "://" + request.getServerName() + ((FDStoreProperties.isLocalDeployment()) ? ":" + request.getServerPort() : "") + "/"), filePath);
         } catch (MalformedURLException e) {
             LOGGER.error("MalformedURLException", e);
         }
@@ -158,7 +158,6 @@ inFiles.add(JS_BASE+"/fd/common/select.js");
 inFiles.add(JS_BASE+"/fd/common/server.js");
 inFiles.add(JS_BASE+"/fd/common/signalTarget.js");
 inFiles.add(JS_BASE+"/fd/common/standingorder.js");
-inFiles.add(JS_BASE+"/fd/common/svgHelpers.js");
 inFiles.add(JS_BASE+"/fd/common/swapimage.js");
 inFiles.add(JS_BASE+"/fd/common/tabbedRecommender.js");
 inFiles.add(JS_BASE+"/fd/common/tabpanel.js");
@@ -227,7 +226,6 @@ inFiles.add(JS_BASE+"/fd/expressco/viewcart.js");
 inFiles.add(JS_BASE+"/fd/FDjQuery.js");
 inFiles.add(JS_BASE+"/fd/mobileweb/mobileweb_common.js");
 inFiles.add(JS_BASE+"/fd/modifyOrder/modifyOrderMessage.js");
-inFiles.add(JS_BASE+"/fd/modules/header/locabar_recommenders.js");
 inFiles.add(JS_BASE+"/fd/modules/header/popupcart.js");
 inFiles.add(JS_BASE+"/fd/modules/search/seemore.js");
 inFiles.add(JS_BASE+"/fd/modules/search/statusupdate.js");
@@ -301,7 +299,7 @@ globalRegisters.put(".mmenu(", "jQuery.mmenu"); //mobweb jQuery menu plugin
 //create data holds and registers
 for (String filePath : inFiles) {
 	//get registers
-	ArrayList<String> fileRegisters = getRegisters(filePath);
+	ArrayList<String> fileRegisters = getRegisters(request, filePath);
 	//create data store
 	Map<String, ArrayList<String>> fileInfo = new HashMap<String, ArrayList<String>>();
 	fileInfo.put("dependencies", new ArrayList<String>()); //leave empty
@@ -317,7 +315,7 @@ for (String filePath : inFiles) {
 }
 //loop again to do dependencies now that we have all registers
 for (String filePath : inFiles) {
-	fileInfos.get(filePath).put("dependencies", getDependencies(filePath, globalRegisters));
+	fileInfos.get(filePath).put("dependencies", getDependencies(request, filePath, globalRegisters));
 }
 %>
 <!DOCTYPE html>
