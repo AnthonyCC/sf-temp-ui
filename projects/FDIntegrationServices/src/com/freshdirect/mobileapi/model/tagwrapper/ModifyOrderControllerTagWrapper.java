@@ -32,7 +32,6 @@ public class ModifyOrderControllerTagWrapper extends NonStandardControllerTagWra
         addRequestValue(REQ_PARAM_ACTION, ACTION_CANCEL_ORDER);
 
         ((ModifyOrderControllerTag) wrapTarget).setOrderId(orderId);
-        ((ModifyOrderControllerTag) wrapTarget).setMobileRequest(true);
         //addRequestValue(REQ_PARAM_ORDER_ID, orderId);
         setMethodMode(true);
         return new ResultBundle(executeTagLogic(), this);
@@ -64,8 +63,8 @@ public class ModifyOrderControllerTagWrapper extends NonStandardControllerTagWra
                 REQ_PARAM_ALLOW_COMPLAINT, REQ_PARAM_ALLOW_NEW_CHARGES, REQ_PARAM_HAS_PAYMENT_EXCEPTION, REQ_PARAM_ALLOW_RESUBMIT_ORDER, REQ_PARAM_MERGE_PENDING });//gets,sets
 
         addRequestValue(REQ_PARAM_ACTION, ACTION_MODIFY_ORDER);
-        ((ModifyOrderControllerTag) wrapTarget).setOrderId(orderId);
         ((ModifyOrderControllerTag) wrapTarget).setMobileRequest(true);
+        ((ModifyOrderControllerTag) wrapTarget).setOrderId(orderId);
         setMethodMode(true);
         return new ResultBundle(executeTagLogic(), this);
     }
@@ -80,7 +79,6 @@ public class ModifyOrderControllerTagWrapper extends NonStandardControllerTagWra
         //Need to set 'action' slightly differently since tag is doing it differently for get.
         ((ModifyOrderControllerTag) wrapTarget).setAction(ACTION_CANCEL_ORDER_MODIFY);
         ((ModifyOrderControllerTag) wrapTarget).setOrderId(orderId);
-        ((ModifyOrderControllerTag) wrapTarget).setMobileRequest(true);
         return new ResultBundle(executeTagLogic(), this);
     }
 

@@ -1,11 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001-2002 FreshDirect, Inc.
- *
- */
 package com.freshdirect.webapp.taglib.fdstore;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,7 +30,6 @@ import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.accounts.external.ExternalAccountManager;
-import com.freshdirect.fdstore.customer.ejb.FDCustomerEStoreModel;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.framework.util.NVL;
@@ -55,22 +46,17 @@ import com.freshdirect.webapp.checkout.DeliveryAddressManipulator;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
 import com.freshdirect.webapp.util.AccountUtil;
 
-/**
- *
- *
- * @version $Revision$
- * @author $Author$
- */
-public class RegistrationControllerTag extends AbstractControllerTag implements SessionName { // AddressName,
+public class RegistrationControllerTag extends AbstractControllerTag implements SessionName {
 
-    private static Category LOGGER = LoggerFactory.getInstance(RegistrationControllerTag.class);
+    private static final long serialVersionUID = 5392732906600873935L;
+
+    private static final Category LOGGER = LoggerFactory.getInstance(RegistrationControllerTag.class);
 
     private String fraudPage;
     private String statusChangePage;
     private boolean signupFromCheckout;
     private int registrationType;
     private String source;
-
     private ErpAddressModel lastSavedAddressModel;
 
     public void setFraudPage(String s) {
@@ -815,28 +801,34 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
     }
 
     protected void performDisconnectSocialAccount(HttpServletRequest request, ActionResult result) throws FDResourceException {
-
         HttpSession session = pageContext.getSession();
         FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
         String customerId = user.getUser().getIdentity().getErpCustomerPK();
 
         String socialEmail = request.getParameter("socialEmail");
         String userToken = request.getParameter("userToken");
+        String identityToken = request.getParameter("identityToken");
         String socialNetworkProvider = request.getParameter("socialNetworkProvider");
 
-        if ((socialEmail == null || "".equals(socialEmail)) || (userToken == null || "".equals(userToken))) {
+        result.addError(StringUtils.isEmpty(socialEmail), "disconnectSocialEmail", "Social email is empty");
+        result.addError(StringUtils.isEmpty(userToken), "disconnectUserToken", "User token is empty");
+        result.addError(StringUtils.isEmpty(identityToken), "disconnectIndentityToken", "Identity token is empty");
+        result.addError(StringUtils.isEmpty(socialNetworkProvider), "disconnectSocialNetworkProvider", "Social network provider is empty");
 
-            return;
+        if (result.isSuccess()) {
+            SocialProvider socialProvider = SocialGateway.getSocialProvider("ONE_ALL");
+            if (socialProvider != null) {
+                boolean isSuccess = socialProvider.deleteSocialIdentity(identityToken);
+                result.addError(!isSuccess, "unlinkIdentity", "Error in unlinking identity token:" + identityToken + " from user token:" + userToken);
+            }
+        }
 
-        } else {
-
+        if (result.isSuccess()) {
             try {
-                // FDSocialManager.unlinkSocialAccountWithUser( socialEmail, userToken);
-                // ExternalAccountManager.unlinkExternalAccountWithUser(socialEmail, userToken, socialNetworkProvider);
                 ExternalAccountManager.unlinkExternalAccountWithUser(customerId, socialNetworkProvider);
                 request.setAttribute("NewlyDisconnectedSocialNetworkProvider", socialNetworkProvider);
-            } catch (FDResourceException e1) {
-                LOGGER.error("Error in disconnecting social account:" + e1.getMessage());
+            } catch (FDResourceException e) {
+                LOGGER.error("Error in disconnecting social account:" + e.getMessage());
                 result.addError(new ActionError("Error in disconnecting social account:" + socialEmail));
             }
         }

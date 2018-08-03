@@ -4,8 +4,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.freshdirect.FDCouponProperties;
+import com.freshdirect.common.date.SimpleDateDeserializer;
 import com.freshdirect.fdstore.ecoupon.EnumCouponOfferType;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.util.DateUtil;
@@ -28,7 +29,7 @@ public class FDCouponInfo extends ModelSupport{
 	private String imagePath;
 	private String[] tags;
 	private String startDate;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	@JsonDeserialize(using = SimpleDateDeserializer.class)
 	private Date expirationDate;
 	private boolean isExpired;
 	private List<FDCouponUPCInfo> requiredUpcs;	

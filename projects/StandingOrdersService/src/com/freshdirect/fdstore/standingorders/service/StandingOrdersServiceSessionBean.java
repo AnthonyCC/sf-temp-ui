@@ -31,6 +31,7 @@ import com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderAltDeliveryDate;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.fdstore.standingorders.SOResult;
+import com.freshdirect.fdstore.standingorders.StandingOrdersJobConfig;
 import com.freshdirect.fdstore.standingorders.SOResult.Result;
 import com.freshdirect.fdstore.standingorders.SOResult.Status;
 import com.freshdirect.fdstore.standingorders.UnavDetailsReportingBean;

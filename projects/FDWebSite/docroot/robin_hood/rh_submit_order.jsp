@@ -233,7 +233,7 @@ boolean isCheckEligible = false;
 		<% errorMsg = SystemMessageList.MSG_RH_OPTIN_BELOW_REQUIRED;
 		   optinout = " ";
 		%>
-		<tr><td align="right"><font class="text11rbold" align="right"><%= errorMsg %></font></td></tr>
+		<tr><td align="right"><font class="errortext" align="right"><%= errorMsg %></font></td></tr>
 		</fd:ErrorHandler>
 		<tr>
 			<td align="right">

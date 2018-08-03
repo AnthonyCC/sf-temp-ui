@@ -165,7 +165,7 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
     SkuModel a_sku = prdNode.getSku(orderLine.getSkuCode());
 
     if(!displayLimitedAvailability && displayShortTermUnavailability && earliestAvailability != null) {%>
-        <tr><td colspan="2"><br><font class="text11rbold">Reminder: Earliest Delivery <%=earliestAvailability%><br></font></td></tr>
+        <tr><td colspan="2"><br><font class="errortext">Reminder: Earliest Delivery <%=earliestAvailability%><br></font></td></tr>
 <%  }
             itemShown++;
   }

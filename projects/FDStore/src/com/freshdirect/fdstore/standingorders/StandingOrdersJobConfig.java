@@ -1,4 +1,4 @@
-package com.freshdirect.fdstore.standingorders.service;
+package com.freshdirect.fdstore.standingorders;
 
 import java.io.Serializable;
 

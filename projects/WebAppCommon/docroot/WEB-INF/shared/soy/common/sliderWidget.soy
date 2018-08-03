@@ -1,0 +1,16 @@
+{namespace common}
+
+/**
+ * @param? sliderChecked
+ * @param? sliderDisabled
+ */
+{template .sliderWidget autoescape="false"}
+<div>
+	<label class="switch">
+		<input type="checkbox" class="offscreen" aria-label="This settings adjusts the contrast ratio of our brand colors" {if $sliderChecked}checked{/if} {if $sliderDisabled}disabled{/if}>
+       	<span class="slider round"></span>
+	</label> 
+</div>
+  <div class="spinner"></div>
+
+{/template}

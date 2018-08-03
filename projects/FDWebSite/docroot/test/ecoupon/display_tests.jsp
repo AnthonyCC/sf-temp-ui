@@ -135,7 +135,7 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
 
 
 		<% if(leadTime > 0 && FDStoreProperties.isLeadTimeOasAdTurnedOff()) { %>
-			<CENTER><span class="text11"><b>CURRENTLY AVAILABLE - </b></span><span class="text11rbold text11"><%=JspMethods.convertNumToWord(leadTime)%> DAY LEAD TIME</span>.<br /></CENTER>
+			<CENTER><span class="text11"><b>CURRENTLY AVAILABLE - </b></span><span class="errortext text11"><%=JspMethods.convertNumToWord(leadTime)%> DAY LEAD TIME</span>.<br /></CENTER>
 			<span class="text11">To assure the highest quality, our chefs prepare this item to order. <br> Please order at least two days in advance<br>(for example, order on Thursday for Saturday delivery).</span><p />
 		<% } %>
 

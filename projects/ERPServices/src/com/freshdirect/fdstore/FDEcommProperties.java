@@ -99,6 +99,7 @@ public class FDEcommProperties {
 	public static final String ProfileCreatorSB = "com.freshdirect.dataloader.payment.ProfileCreatorSB";
 	public static final String FDStandingOrderSB = "com.freshdirect.fdstore.standingorders.FDStandingOrdersSB"; 
 	public static final String StandingOrder3CronSB = "com.freshdirect.fdstore.standingorders.service.StandingOrder3CronSB";
+	public static final String StandingOrdersServiceSB = "com.freshdirect.fdstore.standingorders.service.StandingOrdersServiceSB";
 	public static final String FDCustomerManagerSB="com.freshdirect.customer.FDCustomerManagerSB";
 	public static final String FDCustomerIdentity = "com.freshdirect.customer.identity";
 	public static final String FDCustomerAddress = "com.freshdirect.customer.address";
@@ -109,6 +110,8 @@ public class FDEcommProperties {
 	public static final String FDCustomerReport = "com.freshdirect.customer.report";
 	public static final String FDCustomerNotification = "com.freshdirect.customer.notification";
 	public static final String FDCustomerInfo = "com.freshdirect.customer.info";
+	public static final String FDCustomerDeliveryPass = "com.freshdirect.customer.deliveryPass";
+	public static final String FDCustomerOrder = "com.freshdirect.customer.order";
 	public static final String Registration = "com.freshdirect.customer.registration";
 	public static final String SaleCronSB = "payment.ejb.SaleCronSB";
 	public static final String ErpInfoSB_WarmUp="erp.ejb.ErpInfoSB_WarmUp";
@@ -189,6 +192,7 @@ public class FDEcommProperties {
         defaults.put(StandingOrder3CronSB, FALSE);
         defaults.put(FDCustomerManagerSB, FALSE);
         defaults.put(ErpInfoSB_WarmUp, FALSE);
+        defaults.put(StandingOrdersServiceSB, FALSE);
         
         
         refresh();
@@ -224,7 +228,7 @@ public class FDEcommProperties {
 				e.printStackTrace();
 			}
             lastRefresh = t;
-            LOGGER.info("Loaded configuration from FDStorePropertiesDB Database: " + config);
+            //LOGGER.info("Loaded configuration from FDStorePropertiesDB Database: " + config);
             fireEvent();
         }
     }

@@ -277,7 +277,7 @@ boolean hasCase = false;
 				    <div class="cust_sub_nav" style="width: 120px;"><a href="/main/delivery_center_details.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text">Delivery Center</a></div>
 				<% } %>
 				<%	
-				if(isRegularOrder && ( EnumEStoreId.FDX == nav_order.getEStoreId() || request.getParameterMap().keySet().contains("devNoFdx") )  && !addOnOrder && FDCustomerManager.getAddonOrderCount(nav_orderId) && !makeGood && orderPermissions.isDispatched(nav_orderId, nav_order.getEStoreId().getContentId())) {%>
+				if(isRegularOrder && ( EnumEStoreId.FDX == nav_order.getEStoreId() || request.getParameterMap().keySet().contains("devNoFdx") )  && !addOnOrder&& !makeGood && orderPermissions.isDispatched(nav_orderId, nav_order.getEStoreId().getContentId())) {%>
 				    <div class="cust_sub_nav" style="width: 120px;">
 				    	<%if(hasCustomerCase && CrmSecurityManager.hasAccessToPage(agentRole1,"masquerade.jsp")){%>
 				    		<a href="/main/masquerade.jsp?destination=addon&parentOrderId=<%=nav_orderId%>&estore=<%=nav_order.getEStoreId() %>" target="_blank" class="cust_sub_nav_text">

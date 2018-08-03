@@ -48,10 +48,10 @@
 		<%
 			String errMsgs = "";
 			if ( result.hasError("technicalDifficulty") ) { 
-				errMsgs += "<span class=\"text11rbold\">" + result.getError("technicalDifficulty").getDescription() + "</span>";
+				errMsgs += "<span class=\"errortext\">" + result.getError("technicalDifficulty").getDescription() + "</span>";
 			}
 			if ( result.hasError("email") ) { 
-				errMsgs += "<span class=\"text11rbold\">" + result.getError("email").getDescription() + "</span>";
+				errMsgs += "<span class=\"errortext\">" + result.getError("email").getDescription() + "</span>";
 			}
 		%>
 		<%--

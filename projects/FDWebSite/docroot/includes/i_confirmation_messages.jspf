@@ -1,4 +1,4 @@
 <div style="margin: 20px; border: 1px solid #ff9900; border-radius: 6px; position: relative; text-align: left; overflow: hidden;">
 	<div style="position: absolute; min-width: 18px; min-height: 22px; height: 100%; background: #ff9900 url('/media_stat/images/template/system_msgs/<%= (request.getRequestURI().indexOf("reserve_timeslot") > -1) ? "check" : "exclaim" %>_FF9900.gif') no-repeat center;"></div>
-	<div style="display:inline-block; padding: 20px 30px;" class="text11orbold"><%=confirmationMsg %></div>
+	<div style="display:inline-block; padding: 20px 30px;" class="success13text"><%=confirmationMsg %></div>
 </div>

@@ -52,7 +52,7 @@ if ("true".equalsIgnoreCase(overlay)) {
 	<table role="presentation" border="0" cellspacing="0" cellpadding="2" style="width: <%= (mobWeb) ? "100%" : "675px" %>">
 	    <tr valign="TOP">
 			<td style="width: <%= (mobWeb) ? "100%" : "675px" %>" align="center" class="text13">
-			<div style="font-size: 28px; font-face:Arial,Verdana,Helvetica; color: #FF9933; margin-bottom: 6px;"><b>THANK YOU!</b></div>
+			<div class="highcontrast" style="font-size: 28px; font-face:Arial,Verdana,Helvetica; color: #FF9933; margin-bottom: 6px;"><b>THANK YOU!</b></div>
 			<span class="text15"><b>We've received your message.</b></span>
 			<br><font class="space8pix"><br></font>
 			  <fd:IncludeMedia name="/media/editorial/site_pages/help_home_hours.html" /><br/><br/>

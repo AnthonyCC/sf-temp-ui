@@ -163,17 +163,17 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 					
 					//but only if the order id being cancelled is the one being modified
 					if (this.orderId.equalsIgnoreCase(modOrderId)) {
-						this.cancelModifyOrder(request, results, isMobileRequest);
+						this.cancelModifyOrder(request, results);
 					}
 				}
 				
 				this.cancelOrder(request, results);
 				actionPerformed = true;
 			} else if ( MODIFY_ACTION.equalsIgnoreCase(this.action) ) {
-				this.modifyOrder(request, results, isMobileRequest);
+				this.modifyOrder(request, results);
 				actionPerformed = true;
 			} else if ( CANCEL_MODIFY_ACTION.equalsIgnoreCase(this.action) ) {
-				this.cancelModifyOrder(request, results, isMobileRequest);
+				this.cancelModifyOrder(request, results);
 				actionPerformed = true;
 			} else if ( NEW_AUTHORIZATION.equalsIgnoreCase(this.action) ) {
 				this.doNewAuthorization(request, results);
@@ -217,10 +217,10 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			if ( CANCEL_MODIFY_ACTION.equalsIgnoreCase(this.action) ) {
 				LOGGER.debug("GET + cancelModify");
 				// we got a GET, not a POST, but that's fine.. :)
-				this.cancelModifyOrder(request, results, isMobileRequest);
+				this.cancelModifyOrder(request, results);
 				actionPerformed = true;
 			} else if ( MODIFY_ACTION.equalsIgnoreCase(this.action) ) {
-				this.modifyOrder(request, results, isMobileRequest);
+				this.modifyOrder(request, results);
 				actionPerformed = true;
 				
 				// Remove the EWallet Payment MEthod ID from session
@@ -394,7 +394,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		
 	}
 
-	protected void modifyOrder(HttpServletRequest request, ActionResult results, boolean isMobilerequest) throws JspException {
+	protected void modifyOrder(HttpServletRequest request, ActionResult results) throws JspException {
 		HttpSession session = request.getSession();
 		
 		String mergePendingStr = request.getParameter("mergePending");
@@ -408,14 +408,12 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		// Modify order: load the shopping cart with the old items
 		//
 		try {
-			modifyOrder(request, currentUser, orderId, session, null, EnumCheckoutMode.NORMAL, mergePernding, results, isMobilerequest);
+			modifyOrder(request, currentUser, orderId, session, null, EnumCheckoutMode.NORMAL, mergePernding, results, isMobileRequest());
 
 			//set user as having seen the overlay and used it (in case of login step)
 			currentUser.setSuspendShowPendingOrderOverlay(true);
 			//set inform ordermodify flag
-			if(!isMobilerequest){
-				currentUser.setShowingInformOrderModify(true);
-			}
+			currentUser.setShowingInformOrderModify(true);
 		}catch (FDException ex) {
 			LOGGER.warn("Unable to create modify cart", ex);
 			throw new JspException(ex.getMessage());
@@ -423,7 +421,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 	}
 
 	
-	protected static void doCancelModifyOrder(HttpSession session, FDSessionUser currentUser, boolean isMobileRequest) throws FDAuthenticationException, FDResourceException {
+	protected static void doCancelModifyOrder(HttpSession session, FDSessionUser currentUser) throws FDAuthenticationException, FDResourceException {
 		
 		String currentOrderId = null;
 		try{
@@ -456,9 +454,8 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		//reset user to see pendingOrder overlay again since they didn't check out
 		currentUser.setSuspendShowPendingOrderOverlay(false);
 		//clear inform ordermodify flag
-		if(!isMobileRequest){
-			currentUser.setShowingInformOrderModify(false);
-		}
+		currentUser.setShowingInformOrderModify(false);
+		
 	}
 
 
@@ -466,12 +463,12 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			FDStandingOrder currentStandingOrder, EnumCheckoutMode checkOutMode, boolean mergePending, ActionResult results, boolean isMobileRequest)
 					throws FDResourceException, FDInvalidConfigurationException{
 
-		if (currentUser != null && currentUser.getShoppingCart() instanceof FDModifyCartModel ) {
+		if (currentUser != null && currentUser.getShoppingCart() instanceof FDModifyCartModel) {
 			// there's a modify order already going on ...
 			LOGGER.warn("An order is already opened for modification, cancel it first");
 			
 			try {
-				doCancelModifyOrder(session, currentUser, isMobileRequest);
+				doCancelModifyOrder(session, currentUser);
 			} catch (FDAuthenticationException e) {
 				// it is unlikely to happen but report it anyway
 				LOGGER.error(e);
@@ -481,6 +478,9 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			session.removeAttribute(SessionName.PAYMENT_BILLING_REFERENCE);
 		}
 
+		if (isMobileRequest && currentUser != null && currentUser.getIdentity() != null && currentUser.getIdentity().getErpCustomerPK() != null) {
+			FDCustomerManager.updateFDCustomerEStoreInfo(currentUser.getFDCustomer().getCustomerEStoreModel(), currentUser.getFDCustomer().getId());	
+    	}
 
 		FDOrderAdapter order = (FDOrderAdapter) FDCustomerManager.getOrder( currentUser.getIdentity(), orderId );
 		
@@ -613,7 +613,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 	}
 
 
-	protected void cancelModifyOrder(HttpServletRequest request, ActionResult results, boolean isMobileRequest) throws JspException {
+	protected void cancelModifyOrder(HttpServletRequest request, ActionResult results) throws JspException {
 		HttpSession session = request.getSession();
 
 		FDSessionUser currentUser = (FDSessionUser) session.getAttribute(SessionName.USER);
@@ -626,7 +626,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 
 
 		try {
-			doCancelModifyOrder(session, currentUser, isMobileRequest);
+			doCancelModifyOrder(session, currentUser);
 		} catch (FDResourceException ex) {
 			LOGGER.warn("Error accessing resources", ex);
 			throw new JspException(ex.getMessage());

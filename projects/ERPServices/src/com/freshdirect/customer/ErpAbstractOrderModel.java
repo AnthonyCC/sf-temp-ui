@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.freshdirect.common.date.SimpleDateDeserializer;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.fdstore.EnumEStoreId;
@@ -29,8 +31,10 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
      * @link aggregationByValue
      */
     private List<ErpOrderLineModel> orderLines;
+    @JsonDeserialize(using = SimpleDateDeserializer.class)
     private Date requestedDate;
     private Discount discount;
+    @JsonDeserialize(using = SimpleDateDeserializer.class)
     private Date pricingDate;
     private ErpPaymentMethodI paymentMethod;
 	private double subTotal;

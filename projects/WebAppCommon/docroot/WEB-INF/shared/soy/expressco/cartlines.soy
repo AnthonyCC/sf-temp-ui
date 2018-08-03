@@ -1094,7 +1094,7 @@
 			</div>
 			{if $userRecognized}
 				<div class='promotion-item' fdform-container="giftcard">
-					<form fdform="giftcard" action="#" fdform-endpoint-submit="/api/expresscheckout/giftcard{if $dlvPassCart}?dlvPassCart=true{/if}" fdform-success="FreshDirect.modules.common.forms.successFns.reset">
+					<form fdform="giftcard" action="#" fdform-endpoint-submit="/api/expresscheckout/giftcard" fdform-success="FreshDirect.modules.common.forms.successFns.reset">
 						<label for="apply-gift-card"><p class='promotion-text'><span class="NOMOBWEB">Have a new </span>Gift Card<span class="NOMOBWEB">?</span></p></label> 
 						<div> 
 							<input type="text" class="promotion-input" id="apply-gift-card" aria-describedby="giftcard_error" name="givexNum" placeholder="Enter here" />
@@ -1205,7 +1205,6 @@
 						{param totalWithoutTax: $totalWithoutTax /}
 						{param displayCheckout: $displayCheckout /}
 						{param etipTotal: $etipTotal /}
-						{param dlvPassCart: $dlvPassCart /}
 					{/call}
 				{elseif $subTotalBox and $subTotalBox.subTotalBox}
 						{call .subTotalBox}
@@ -1273,7 +1272,6 @@
 * @param? withContainer
 * @param? unescapeValue
 * @param? isHeader - if cart header vs cart detail
-* @param? dlvPassCart
 */
 {template .subTotalBox}
 	{let $subtotalUsed: 0 /}
@@ -1425,7 +1423,7 @@
 							</form>
 						{/if}
 						{if $box.id == 'giftcardbalance'}
-							<form fdform="giftcardbalanceremove" action="#" fdform-endpoint-submit="/api/expresscheckout/giftcard{if $dlvPassCart}?dlvPassCart=true{/if}">
+							<form fdform="giftcardbalanceremove" action="#" fdform-endpoint-submit="/api/expresscheckout/giftcard">
 								<input type="hidden" name="action" value="removeGiftCard"/>
 								<a href="#" fdform-button="submit" class="note">Remove</a>
 							</form>

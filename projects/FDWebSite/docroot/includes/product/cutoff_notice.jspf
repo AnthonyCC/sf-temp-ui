@@ -39,8 +39,8 @@ boolean mobWeb_cutoff_notice = FeatureRolloutArbiter.isFeatureRolledOut(EnumRoll
 				<td bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
 			</tr>
 			<tr>
-				<td align="center"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5"><br>
-				<span class="text11orbold">PLEASE ORDER BY <%=headerTime%> FOR DELIVERY TOMORROW</span><br>
+				<td align="center" class="success13text"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5"><br>
+				<span >PLEASE ORDER BY <%=headerTime%> FOR DELIVERY TOMORROW</span><br>
 				To assure the highest quality, our chefs prepare this item to order. You must <b>complete checkout by <%=bodyTime%></b> to order this item for delivery tomorrow.<br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="6"></td>
 			</tr>
 			<tr>

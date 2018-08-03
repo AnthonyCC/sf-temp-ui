@@ -3,6 +3,7 @@
 <%@page import="java.io.ByteArrayOutputStream"%>
 <%@page import="com.freshdirect.fdstore.customer.UnsettledOrdersInfo"%>
 <%@page import="java.util.*"%>
+<%@page import="java.text.SimpleDateFormat" %>
 <%@ taglib uri='freshdirect' prefix='fd'%>
 
 
@@ -223,6 +224,7 @@ form label {
 		result='result' successPage='<%request.getRequestURI()%>'>
 		<%
 			List<UnsettledOrdersInfo> orders =  (List<UnsettledOrdersInfo>)request.getAttribute("unsettledOrders");
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		%>
 		<div align="center">
 			<table align="center" border="1">
@@ -244,7 +246,7 @@ form label {
 						for(int i=0;i<orders.size();i++){
 				%>
 				<tr>
-					<td><%=orders.get(i).getDeliveryDate()%></td>
+					<td><%=dateFormat.format(orders.get(i).getDeliveryDate())%></td>
 					<td><%=orders.get(i).getSettled()%></td>
 					<td><%=orders.get(i).getChargeBack()%></td>
 					<td><%=orders.get(i).getSettlementFailed()%></td>

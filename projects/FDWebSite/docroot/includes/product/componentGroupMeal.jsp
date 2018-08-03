@@ -584,7 +584,7 @@ if (isAvailable ) {
 	<tr><td align="left"><fd:IncludeMedia name='<%= productNode.getProductTerms().getPath()%>' /></td></tr>
         <tr><td align="left">
     		<fd:ErrorHandler result='<%=result%>' name='agreeToTerms'>
-    		  <span class="text11rbold">To add meal to cart, please agree to these terms.</span><br>
+    		  <span class="errortext">To add meal to cart, please agree to these terms.</span><br>
     		</fd:ErrorHandler></td>
         </tr>
         <tr>

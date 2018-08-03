@@ -101,7 +101,7 @@ final int W_CHECKOUT_STEP_1_CHOOSE_DEPOT_TOTAL = 970;
 				<option value="<%=depot.getDepotCode()%>" <%= depot.getDepotCode().equals(request.getParameter("depotCode")) ? "SELECTED" : "" %>><%=depot.getName()%>
 			</logic:iterate>
 		</select>
-		<fd:ErrorHandler result='<%=result%>' name='depotCode' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+		<fd:ErrorHandler result='<%=result%>' name='depotCode' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
 		<img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0">
 </fd:GetDepots>	
 	</td>
@@ -111,7 +111,7 @@ final int W_CHECKOUT_STEP_1_CHOOSE_DEPOT_TOTAL = 970;
 <TR VALIGN="TOP">
 	<TD align="right">* Enter your access code:&nbsp;</TD>
 	<td>
-		<input class="text11" type="text" size="21" value="<%= request.getParameter("depotAccessCode")!=null?request.getParameter("depotAccessCode"):"" %>"  name="depotAccessCode" required="true" tabindex="1"> <fd:ErrorHandler result='<%=result%>' name='depotAccessCode' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler><br><br>
+		<input class="text11" type="text" size="21" value="<%= request.getParameter("depotAccessCode")!=null?request.getParameter("depotAccessCode"):"" %>"  name="depotAccessCode" required="true" tabindex="1"> <fd:ErrorHandler result='<%=result%>' name='depotAccessCode' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler><br><br>
 	</td>	
 </TR>
 <tr>

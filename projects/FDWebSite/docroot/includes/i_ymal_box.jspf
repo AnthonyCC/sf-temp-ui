@@ -130,7 +130,7 @@ final int W_YMAL_BOX_INNER = 540;
 %>
 	<div style="clear: both; font-size: 0px;"></div>
   <div id="ymal-table" style="border: 2px solid #996699; width: <%= W_YMAL_BOX_TOTAL %>px; margin-left: 0px; margin-top: 15px">
-		<div style="color: white; background: #996699; font-size: 12px; font-weight: bold; padding-top: 0; padding-bottom: 4px; margin-top: 0;">YOU MIGHT ALSO LIKE</div>
+		<div class="ymal_highcontrast" style="color: white; background: #996699; font-size: 12px; font-weight: bold; padding-top: 0; padding-bottom: 4px; margin-top: 0;">YOU MIGHT ALSO LIKE</div>
 		<div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
 <%
 
@@ -143,7 +143,7 @@ final int W_YMAL_BOX_INNER = 540;
 
 %>				<div align="center">
 <%		if (ym_hdr != null) { %>
-					<span style="font-size:11px; color: #996699; font-weight: bold;"><%= ym_hdr %></span>
+					<span class="highcontrast_ymal" style="font-size:11px; color: #996699; font-weight: bold;"><%= ym_hdr %></span>
 <%		} else { %>
 					<img width="149" height="9" border="0" alt="YOU MIGHT ALSO LIKE" src="/media_stat/images/template/confirmation/recommended_prods.gif"/>
 <%		} %>
@@ -329,7 +329,7 @@ final int W_YMAL_BOX_INNER = 540;
 %>				<hr class="ymalSeparator_category" noshade="noshade"/>
 <%		}
 %>				<div align="center" style="padding-top: 8px; padding-bottom: 8px;">
-					<div style="font-size:11px; color: #996699; font-weight: bold;">CONTINUE SHOPPING FOR</div>
+					<div class="highcontrast_ymal" style="font-size:11px; color: #996699; font-weight: bold;">CONTINUE SHOPPING FOR</div>
 					<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"><br>
 <%
 		for (Iterator<CategoryModel> it = r_cats.iterator(); it.hasNext();) {

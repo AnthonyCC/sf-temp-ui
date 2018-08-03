@@ -118,11 +118,11 @@ request.setAttribute("listPos", "CategoryNote");
 			</table>
 			<br>
 			<% if ( result.hasError("technicalDifficulty") ) { %>
-				<font class="text11rbold"><%=result.getError("technicalDifficulty").getDescription() %></font><br /><br />
+				<font class="errortext"><%=result.getError("technicalDifficulty").getDescription() %></font><br /><br />
 			<% } else if ( result.hasError(EnumUserInfoName.DLV_ZIPCODE.getCode()) ) { %>
-				<font class="text11rbold"><%=result.getError(EnumUserInfoName.DLV_ZIPCODE.getCode()).getDescription() %></font><br /><br />
+				<font class="errortext"><%=result.getError(EnumUserInfoName.DLV_ZIPCODE.getCode()).getDescription() %></font><br /><br />
 			<%}else if ( result.hasError(EnumUserInfoName.DLV_CORP_ZIPCODE.getCode()) ) { %>
-				<font class="text11rbold"><%=result.getError(EnumUserInfoName.DLV_CORP_ZIPCODE.getCode()).getDescription() %></font><br /><br />
+				<font class="errortext"><%=result.getError(EnumUserInfoName.DLV_CORP_ZIPCODE.getCode()).getDescription() %></font><br /><br />
 			<%}%>
 			<table border="0" cellspacing="0" cellpadding="0">
 				<tr>

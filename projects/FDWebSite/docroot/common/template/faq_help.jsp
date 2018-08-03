@@ -72,7 +72,7 @@ String faqSections = FDStoreProperties.getFaqSections();
 				  	if(nextToken.equals(faqPage)){
 								
 				%><b><%= contentNode.getCmsAttributeValue("name") %></b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
-				<%}else{%><A HREF="faq_home.jsp?page=<%= contentNode.getContentKey().getId() %>" TARGET="_top"><%= contentNode.getCmsAttributeValue("name") %></A><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
+				<%}else{%><A class="faq_home_highcontrast" HREF="faq_home.jsp?page=<%= contentNode.getContentKey().getId() %>" TARGET="_top"><%= contentNode.getCmsAttributeValue("name") %></A><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
 				<%}}%>	
 				<% }} %>
 				

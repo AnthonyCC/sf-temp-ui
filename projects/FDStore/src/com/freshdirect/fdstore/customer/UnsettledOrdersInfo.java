@@ -3,6 +3,9 @@ package com.freshdirect.fdstore.customer;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.freshdirect.common.date.SimpleDateDeserializer;
+
 public class UnsettledOrdersInfo implements Serializable{
 
 	/**
@@ -19,7 +22,8 @@ public class UnsettledOrdersInfo implements Serializable{
 	private String PendingRefusal;
 	private String GCPaymentPending;
 	private String GCRegistrationPending;
-	private Date DeliveryDate;
+	@JsonDeserialize(using = SimpleDateDeserializer.class)
+	private Date deliveryDate;
 	
 	public String getSettled() {
 		return Settled;
@@ -82,9 +86,9 @@ public class UnsettledOrdersInfo implements Serializable{
 		GCRegistrationPending = gCRegistrationPending;
 	}
 	public Date getDeliveryDate() {
-		return DeliveryDate;
+		return this.deliveryDate;
 	}
 	public void setDeliveryDate(Date deliveryDate) {
-		DeliveryDate = deliveryDate;
+		this.deliveryDate = deliveryDate;
 	}	
 }

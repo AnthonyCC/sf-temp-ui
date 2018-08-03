@@ -973,7 +973,7 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 		this.parseSlotTimeInfo = function(slotObj) {
 			if (slotObj == null || !slotObj.hasOwnProperty('id') || !this.slotObjs[slotObj.id] || !$(slotObj.id+'_timeInfo')) { return; }
 
-			var timeString = $(slotObj.id+'_timeInfo').getText();
+			var timeString = $(slotObj.id+'_timeInfo').textContent;
 			var timeStringParse = timeString.split('-');
 			slotObj.timeStart = null;
 			slotObj.timeEnd = null;
@@ -989,7 +989,7 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 		this.parseDayTimeInfo = function(dayObj) {
 			if (dayObj == null || !dayObj.hasOwnProperty('id') || !this.dayObjs[dayObj.id] || !$(dayObj.id+'_timeInfo')) { return; }
 
-			var timeString = $(dayObj.id+'_timeInfo').getText();
+			var timeString = $(dayObj.id+'_timeInfo').textContent;
 			dayObj.timeDay = null;
 			dayObj.timeMonth = null;
 			dayObj.timeYear = null;

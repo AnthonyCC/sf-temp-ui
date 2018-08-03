@@ -50,7 +50,7 @@ private static final int W_LEFT_NAV_RIGHT_PADDING = 5;
 		if (nl.isBold()) buf.append("<b>");
 		if (nl.showLink()) {
 			
-			buf.append("<a name=\"leftLink\" href=\"");
+			buf.append("<a class=\"food_safety_highcontrast\" name=\"leftLink\" href=\"");
 			
 			buf.append(nl.getURL());
 			buf.append("\"");

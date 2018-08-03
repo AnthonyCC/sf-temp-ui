@@ -41,5 +41,10 @@ public class ErpDiscountLineModel extends ModelSupport {
 	public String toString(){
 		return "[ErpDiscountLineModel discount type: "+discount.getDiscountType()+" discount code: "+discount.getPromotionCode()+" discount amount: "+discount.getAmount()+"]";
 	}
-	
+
+	@Override
+	public void setId(String id) {
+		if (id != null)
+			super.setId(id);
+	}
 }

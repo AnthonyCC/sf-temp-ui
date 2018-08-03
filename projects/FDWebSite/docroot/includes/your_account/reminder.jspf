@@ -47,7 +47,7 @@ String fontClass = yourAccount? "text12" : "text11";
       : <input id="userInfoAltEmail" type="text" size="25" name="<%=EnumUserInfoName.ALT_EMAIL.getCode()%>" value="<%=custInfo.getAlternateEmail()%>">
     <% } %>&nbsp;
     <fd:ErrorHandler result='<%= result %>' name='<%=EnumUserInfoName.ALT_EMAIL.getCode()%>' id='errorMsg'>
-      <span class="text11rbold"><%=errorMsg%></span>
+      <span class="errortext"><%=errorMsg%></span>
     </fd:ErrorHandler>
 		</td>
 	</tr>

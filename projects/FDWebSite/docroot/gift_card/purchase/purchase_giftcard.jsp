@@ -51,7 +51,7 @@ Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
 </tr>
 <tr>
     <td width="18" bgcolor="#CC3300"><img src="/media_stat/images/template/system_msgs/exclaim_CC3300.gif" width="18" height="22" border="0" alt="!"></td>
-    <td class="text11rbold" width="100%" bgcolor="#FFFFFF">
+    <td class="errortext" width="100%" bgcolor="#FFFFFF">
 			<img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"><br>
 				<%= SystemMessageList.MSG_GC_SIGNUP_SUCCESS %><br><br>
                 <%= SystemMessageList.MSG_GC_CC_INVALID %>
@@ -110,7 +110,7 @@ if(sessionuser.isAddressVerificationError()) {
 </tr>
 <tr>
     <td width="18" bgcolor="#CC3300"><img src="/media_stat/images/template/system_msgs/exclaim_CC3300.gif" width="18" height="22" border="0" alt="!"></td>
-    <td class="text11rbold" width="100%" bgcolor="#FFFFFF">
+    <td class="errortext" width="100%" bgcolor="#FFFFFF">
 			<img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"><br>
 				<%= SystemMessageList.MSG_GC_SIGNUP_SUCCESS %><br><br>
                 <%= sessionuser.getAddressVerficationMsg() %>
@@ -191,7 +191,7 @@ UserUtil.initializeGiftCart(user);
             <fd:ErrorHandler result='<%=result%>' name='payment_method_fraud' id='errorMsg'>
             <%@ include file="/includes/i_error_messages.jspf" %>
         </fd:ErrorHandler>
-		<fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+		<fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
 
 <%
 	if (user.getFailedAuthorizations() > 0) {
@@ -288,7 +288,7 @@ boolean isCheckEligible = false;
     	</tr>
     	<tr>
     	<td class="text12" width="80">
-    		<span <fd:ErrorHandler result="<%=result%>" name="serviceType">  class="text11rbold"</fd:ErrorHandler>>
+    		<span <fd:ErrorHandler result="<%=result%>" name="serviceType">  class="errortext"</fd:ErrorHandler>>
     			&nbsp;Purchase&nbsp;Type:
     		</span>
         	</td>

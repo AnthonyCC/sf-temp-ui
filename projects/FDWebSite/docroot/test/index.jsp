@@ -1031,6 +1031,13 @@
         <div class="pageDesc">Test coupon display</div>
     </div>
 
+	
+	<div class="tag javascript">
+		<div class="pageName"><span>JavaScript Dependencies</span></div>
+		<div class="link"><a href="/test/js/dependencies.jsp">/test/js/dependencies.jsp</a></div>
+		<div class="pageDesc">List Javascript Dependencies</div>
+	</div>
+
 	<hr />
 </div>
 
