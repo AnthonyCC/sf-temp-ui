@@ -691,6 +691,4 @@ public class DeliveryAddressService {
         addressModel.setApartment(location.getApartment());
         return addressModel;
     }
-
-
 }

@@ -49,7 +49,7 @@ var FreshDirect = FreshDirect || {};
       value: function (config) {
         var target = config.element,
             url = target && target.attr('href') || config.href,
-            type = target && target.attr('data-ajaxpopup-type') || '',
+            type = target && target.attr('data-ajaxpopup-type') || "",
             template = config.template ||
               (target && target.attr('data-ajaxpopup-template') &&
               fd.modules.common.utils.discover(target.attr('data-ajaxpopup-template'))),

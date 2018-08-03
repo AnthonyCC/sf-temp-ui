@@ -186,7 +186,6 @@ import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityContext;
 import com.freshdirect.fdstore.iplocator.IpLocatorEventDTO;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.mail.FDGiftCardEmailFactory;
-import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.ejb.FDPromotionNewDAO;
@@ -1005,7 +1004,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		return user;
 	}
 
-    public Map<String, AssignedCustomerParam> getAssignedCustomerParams(FDUserI user) throws FDResourceException {
+	public Map getAssignedCustomerParams(FDUser user) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
@@ -1025,14 +1024,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 * @return
 	 * @throws SQLException
 	 */
-    private Map<String, AssignedCustomerParam> getAssignedCustomerParams(FDUserI user, Connection conn) throws SQLException {
-        Map<String, AssignedCustomerParam> assignedParams = null;
+	private Map getAssignedCustomerParams(FDUser user, Connection conn) throws SQLException {
+		Map assignedParams = null;
 		FDIdentity identity = user.getIdentity();
 		if (identity != null) {
 			assignedParams = FDPromotionNewDAO.loadAssignedCustomerParams(conn, identity.getErpCustomerPK(),
 					user.getUserId());
 		} else {
-            assignedParams = new HashMap<String, AssignedCustomerParam>();
+			assignedParams = new HashMap();
 		}
 		return assignedParams;
 	}

@@ -522,7 +522,7 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 	}
 
 	@Override
-    public Map<String, AssignedCustomerParam> getAssignedCustomerParams(FDUserI user)
+	public Map<String, AssignedCustomerParam> getAssignedCustomerParams(FDUser user)
 			throws FDResourceException, RemoteException {
 		if (user == null || user.getIdentity() == null) {
 			return new HashMap<String, AssignedCustomerParam>();

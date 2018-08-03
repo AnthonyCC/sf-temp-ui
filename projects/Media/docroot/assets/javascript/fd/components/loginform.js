@@ -87,10 +87,11 @@ var FreshDirect = FreshDirect || {};
 		if(fd.properties.isSocialLoginEnabled){
 			/* This is an event */
 			var my_on_login_redirect = function(args) {
+				
 				return true;
 			}
-			
 			var onWidgetLoaded = function(e){
+			
 				$(e.widget).attr('tabIndex', 4);
 			}
 
@@ -145,8 +146,7 @@ var FreshDirect = FreshDirect || {};
 		var sucessTarget = $('#fd_login #success-target').val();
 		var loginData = {
 				userId : email,
-				password: password,
-				successPage: sucessTarget
+				password: password
 		};
 		if (fd.components.captchaWidget && fd.components.captchaWidget.isEnabled()) {
 			loginData.captchaToken = fd.components.captchaWidget.getResponse()
@@ -154,16 +154,17 @@ var FreshDirect = FreshDirect || {};
 		$.post('/api/login/', {
 			"data" : JSON.stringify(loginData) 
 		}).then(function(response) {
-			if (response.success) { 
+			var responseJson = JSON.parse(response);
+			if (responseJson.success) { 
 				if (fd.gtm && fd.gtm.data) {
 						fd.gtm.data.googleAnalyticsData.login.loginAttempt = 'success';
 						fd.gtm.updateDataLayer(fd.gtm.data.googleAnalyticsData);
 				}
-				window.location = response.successPage || sucessTarget || parent.document.location;
-			} else if (response.message === 'CaptchaRedirect' && (!fd.components.captchaWidget || !fd.components.captchaWidget.isEnabled())){
+				parent.document.location = responseJson.successPage || sucessTarget || parent.document.location;
+			} else if (responseJson.message === 'CaptchaRedirect' && (!fd.components.captchaWidget || !fd.components.captchaWidget.isEnabled())){
 				FreshDirect.modules.common.login.socialLogin(FreshDirect.modules.common.login.successTarget);
 			} else {
-				showError(response.errorMessages);
+				showError(responseJson.errorMessages);
 			}
 			
 			

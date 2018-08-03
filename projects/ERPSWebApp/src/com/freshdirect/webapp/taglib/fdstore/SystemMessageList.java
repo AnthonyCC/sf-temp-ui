@@ -210,7 +210,6 @@ public interface SystemMessageList {
 	public final static String MSG_OPTIN_REQ = "To subscribe, select at least one SMS alert. If you're opting out, please remove the mobile number.";
 	public final static String MSG_TIMEOUT_ERROR = "We apologise for the inconvenience, There was a problem with the gateway, Please try again later.";
 	
-    public final static String MSG_CAPTCHA = "Please select captcha";
 	public final static String MSG_INVALID_CAPTCHA = "Captcha is not valid. Please select captcha";
 	public static final String MSG_INVALID_NON_EBT_ADDRESS_FOR_EBT_PAYMENTH_METHOD = "This delivery address is not valid for an EBT payment method.";
 	public static final String MSG_GENERAL_UNDER_ORDER_MINIMUM_MESSAGE = "Your cart has not reached the order minimum of {0} (not including taxes and delivery fees). In order to check out, simply add more delicious items to your cart.";
@@ -242,9 +241,6 @@ public interface SystemMessageList {
 	public final static String MSG_PAYPAL_AUTH_FAIL_ERR_1="Paypal is unable to process your payment at this time.";
 	public final static String MSG_DEFAULT_PAYMENT_VERIVICATION_FAILURE="There is a problem with this payment method. Please update your payment information.";
 	
-    public final static String MSG_EMAIL_PREFERENCE_LEVEL_LENGTH = "Please enter an email preference level that is one character long.";
-    public final static String MSG_EMAIL_PREFERENCE_LEVEL_NUMBER = "Please enter an email preference level that contains only numeric characters.";
-
 /*	//APPDEV-5516 Cart Carousel - Grand Giving Donation Technology
 	public final static String MSG_CONTAINS_DONATION_PRODUCTS_ONLY = "We're sorry, you need to have one or more deliverable item(s) in the cart to make a charity donation.";*/
 }
