@@ -103,7 +103,7 @@
 					Update your payment information.<br />
 					<%@ include file="/includes/debitSwitchNotice.jsp" %>
 					<br />
-					<fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+					<fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
 				</td>
 			</tr>
 		</table>

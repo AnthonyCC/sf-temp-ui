@@ -101,7 +101,7 @@ boolean curNewCust = request.getParameter("curNewCust") != null && Boolean.parse
 	    <tr><td colspan="4"><span class="space2pix"><br></span></td></tr>
 	    <tr>
 	        <td class="text12"><fd:ErrorHandler result="<%=result%>" name="email"><span style="color:#CC0000; font-weight: bold;"></fd:ErrorHandler>Email Address<fd:ErrorHandler result="<%=result%>" name="email"></span></fd:ErrorHandler></td>
-	        <td colspan="3"><input type="text" size="35" class="text13" name="email" value="<%=request.getParameter("email")%>"><fd:ErrorHandler result="<%=result%>" name="email" id="errorMsg"> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+	        <td colspan="3"><input type="text" size="35" class="text13" name="email" value="<%=request.getParameter("email")%>"><fd:ErrorHandler result="<%=result%>" name="email" id="errorMsg"> <span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></td>
 	    </tr>
 	    <tr><td colspan="4"><span class="space4pix"><br></span></td></tr>
 	    <tr>

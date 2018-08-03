@@ -146,13 +146,13 @@ if (_donOrganization != null && request.getParameter("gcDonId") != null) {
 <table border="0" cellspacing="0" cellpadding="0" width="<%=W_ADD_GIFTCARD_FIELDS_TABLE%>" valign="middle" class="gcTable">
 	<fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'>
     <tr>
-        <td colspan="4"><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler> <fd:ErrorHandler result='<%=result%>' name='duplicate_user_address' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></td>
+        <td colspan="4"><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler> <fd:ErrorHandler result='<%=result%>' name='duplicate_user_address' id='errorMsg'><span class="errortext"><%=errorMsg%></span></td>
     </tr>
 	</fd:ErrorHandler>
     <tr>
         <td rowspan="10" width="5"><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1" border="0" /></td>
         <td align="right" class="text12" width="185">
-			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>">class="text11rbold"</fd:ErrorHandler>>
+			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>">class="errortext"</fd:ErrorHandler>>
 				<label for="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>">*&nbsp;Your&nbsp;Name</label> 
 			</span>
 		</td>
@@ -164,7 +164,7 @@ if (_donOrganization != null && request.getParameter("gcDonId") != null) {
     </tr>
     <tr>
         <td align="right" class="text12">
-			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_DONOR_ORGANIZATION_NAME.getCode()%>">class="text11rbold"</fd:ErrorHandler>>
+			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_DONOR_ORGANIZATION_NAME.getCode()%>">class="errortext"</fd:ErrorHandler>>
 				<label for="<%=EnumUserInfoName.GC_DONOR_ORGANIZATION_NAME.getCode()%>">&nbsp;Donor&nbsp;Organization</label>
 			</span>
 		</td>
@@ -174,7 +174,7 @@ if (_donOrganization != null && request.getParameter("gcDonId") != null) {
     </tr>
     <tr>
         <td align="right" class="text12">
-			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>">class="text11rbold"</fd:ErrorHandler>>
+			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>">class="errortext"</fd:ErrorHandler>>
 				<label for="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>">*&nbsp;Your&nbsp;Email</label>
 			</span>
 		</td>
@@ -184,7 +184,7 @@ if (_donOrganization != null && request.getParameter("gcDonId") != null) {
     </tr>
     <tr>
         <td align="right" class="text12">
-			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_RECIPIENT_NAME.getCode()%>">class="text11rbold"</fd:ErrorHandler>>
+			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_RECIPIENT_NAME.getCode()%>">class="errortext"</fd:ErrorHandler>>
 				<label for="<%= EnumUserInfoName.GC_RECIPIENT_NAME.getCode() %>">&nbsp;Organization&nbsp;Name</label>
 			</span>
         </td>
@@ -199,7 +199,7 @@ if (_donOrganization != null && request.getParameter("gcDonId") != null) {
     	
 	
 	<tr>
-		<td align="right" class="text12"><span <fd:ErrorHandler result="<%=result%>" name="fldAmount">class="text11rbold"</fd:ErrorHandler>><label for="fldAmount">*&nbsp;Amount&nbsp;$</label></td>
+		<td align="right" class="text12"><span <fd:ErrorHandler result="<%=result%>" name="fldAmount">class="errortext"</fd:ErrorHandler>><label for="fldAmount">*&nbsp;Amount&nbsp;$</label></td>
     	<td colspan="2">
 			<table>
 				<tr>

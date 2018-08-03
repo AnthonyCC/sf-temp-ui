@@ -60,7 +60,7 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
-
+				LOGGER.error("Error in CustomerAddressService.assumeDeliveryAddress: inputJson=" + inputJson);
 				throw new FDResourceException(response.getMessage());
 			}
 			return response.getData();
@@ -79,6 +79,7 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 				new TypeReference<Response<String>>() {
 				});
 		if (!response.getResponseCode().equals("OK")) {
+			LOGGER.error("Error in CustomerAddressService.getParentOrderAddressId: parentOrderAddressId=" + parentOrderAddressId);
 			throw new FDResourceException(response.getMessage());
 		}
 		return response.getData();
@@ -103,7 +104,7 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
-
+				LOGGER.error("Error in CustomerAddressService.getAddress: data=" + inputJson);
 				throw new FDResourceException(response.getMessage());
 			}
 			return response.getData();
@@ -129,7 +130,7 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
-
+				LOGGER.error("Error in CustomerAddressService.getShippingAddresses: data=" + inputJson);
 				throw new FDResourceException(response.getMessage());
 			}
 			return response.getData();
@@ -158,6 +159,7 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in CustomerAddressService.addShippingAddress: data=" + inputJson);
 				throw new FDResourceException(response.getMessage());
 			}
 			return response.getData();
@@ -186,6 +188,7 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in CustomerAddressService.updateShippingAddress: data=" + inputJson);
 				throw new FDResourceException(response.getMessage());
 			}
 			return response.getData();
@@ -212,10 +215,11 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in CustomerAddressService.removeShippingAddress: data=" + inputJson);
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in CustomerAddressService.removeShippingAddress: info=" + info + ", pk="+pk, e);
 			throw new RemoteException(e.getMessage());
 		}
 
@@ -230,6 +234,7 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 				});
 
 		if (!response.getResponseCode().equals("OK")) {
+			LOGGER.error("Error in CustomerAddressService.getDefaultShipToAddressPK: identity=" + identity);
 			throw new FDResourceException(response.getMessage());
 		}
 		return response.getData();
@@ -254,10 +259,11 @@ public class CustomerAddressService extends AbstractEcommService implements Cust
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in CustomerAddressService.setDefaultShippingAddressPK: inputJson=" + inputJson);
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in CustomerAddressService: ", e);
+			LOGGER.error("Error in CustomerAddressService: identity=" + identity + ", shipToAddressPK="+shipToAddressPK, e);
 			throw new RemoteException(e.getMessage());
 		}
 

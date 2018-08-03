@@ -227,6 +227,7 @@ public class FDInventoryJcoServer extends FdSapServer {
 				sb.updateInventories(stockEntries);
 			}
 		} catch (Exception ex) {
+			LOG.error("updateInventories stockEntries=" + stockEntries, ex);
 			throw new EJBException(ex.toString());
 		} finally {
 			if (ctx != null) {

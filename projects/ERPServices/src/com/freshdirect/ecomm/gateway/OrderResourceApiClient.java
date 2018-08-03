@@ -67,7 +67,6 @@ private static OrderResourceApiClient INSTANCE;
 	private static final String GET_ORDERS_BY_PYMTTYPES_API= "orders/noncos/last/byPaymentTypes";
 	private static final String CUTOFF_ORDER_API = 	"orders/cutoff/{id}";
 	private static final String GET_OUTSTANDING_BALANCE_API = 	"orders/getOutStandingBalance";
-	private static final String GET_PERISHABLE_BUFFER_API = 	"orders/getPerishableBufferAmount";
 	private static final String UPDATE_WAVE_INFO_API = 	"orders/{id}/waveInfo";
 	private static final String UPDATE_CARTON_INFO_API = 	"orders/{id}/cartonInfo";
 	private static final String GET_DELIVERYINFO_API = 	"orders/{id}/getDeliveryInfo";
@@ -297,13 +296,7 @@ private static OrderResourceApiClient INSTANCE;
 		return 0;
 	}
 
-	@Override
-	public double getPerishableBufferAmount(ErpAbstractOrderModel order)
-			throws RemoteException {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
+	
 	@Override
 	public String placeGiftCardOrder(FDActionInfo info,
 			ErpCreateOrderModel createOrder, Set<String> appliedPromos,

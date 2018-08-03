@@ -16,7 +16,6 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.ecomm.gateway.AbstractEcommService;
-import com.freshdirect.ecomm.gateway.OrderServiceApiClient;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.fdstore.EnumEStoreId;
@@ -31,16 +30,15 @@ import com.freshdirect.fdstore.customer.FDOrderSearchCriteria;
 import com.freshdirect.fdstore.customer.PendingOrder;
 import com.freshdirect.fdstore.customer.UnsettledOrdersInfo;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
-import com.freshdirect.fdstore.ecomm.model.ModifiedCartlineData;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.logistics.delivery.dto.CustomerAvgOrderSize;
 
 public class CustomerOrderService extends AbstractEcommService implements CustomerOrderServiceI {
 
-	private static final Category LOGGER = LoggerFactory.getInstance(CustomerOrderService.class);
+	private final static Category LOGGER = LoggerFactory.getInstance(CustomerOrderService.class);
 
-	private static final String IS_ORDER_EXIST = "customerOrder/isOrderExisted/";
+	private static final String GET_ORDER = "orders/";
 	private static final String GET_HISTORIC_ORDER_SIZE = "customerOrder/getHistoricOrderSize/";
 	private static final String UPDATE_ORDER_MODIFY_STATE = "customerOrder/updateOrderInModifyState";
 	private static final String CLEAR_MODIFY_CART = "customerOrder/clearModifyCartlines/";
@@ -55,7 +53,6 @@ public class CustomerOrderService extends AbstractEcommService implements Custom
 	private static final String UPDATE_SHIPPING_TRUCK = "customerOrder/updateShippingInfoTruckDetails";
 	private static final String UPDATE_ORDER_IN_PROCESS = "customerOrder/updateOrderInProcess/";
 	private static final String GET_LAST_ORDER_ADDRESS = "customerOrder/getLastOrderAddress/";
-	private static final String GET_CUSTOMER_ID = "customerOrder/getCustomerId/";
 	
 	private static CustomerOrderServiceI INSTANCE;
 
@@ -68,36 +65,26 @@ public class CustomerOrderService extends AbstractEcommService implements Custom
 
 	@Override
 	public FDOrderI getOrder(FDIdentity identity, String saleId) throws FDResourceException, RemoteException {
-		LOGGER.info("GetOrder Begin -- Identity : "+identity.getErpCustomerPK()+"--- SaleId : "+saleId);
 		FDOrderI order = getOrder(saleId);
 		if (!order.getCustomerId().equals(identity.getErpCustomerPK())) {
 			throw new FDResourceException("Sale doesn't belong to customer");
 		}
-		LOGGER.info("GetOrder End -- Order : "+order!=null?order.getSapOrderId():"No Order Found");
 
 		return order;
 	}
 
 	@Override
 	public FDOrderI getOrder(String saleId) throws FDResourceException, RemoteException {
-		ErpSaleModel saleModel = OrderServiceApiClient.getInstance().getOrder(saleId);
-		
-		return new FDOrderAdapter(saleModel, false);
-	}
-
-	@Override
-	public boolean isOrderExisted(String saleId) throws FDResourceException, RemoteException {
-		Response<Boolean> response = this.httpGetDataTypeMap(
-				getFdCommerceEndPoint(IS_ORDER_EXIST + saleId),
-				new TypeReference<Response<Boolean>>() {
+		Response<ErpSaleModel> response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_ORDER + saleId),
+				new TypeReference<Response<ErpSaleModel>>() {
 				});
 		if (!response.getResponseCode().equals("OK")) {
-			LOGGER.error("Error in CustomerOrderService.isOrderExisted: customerId=" + saleId);
+			LOGGER.error("Error in CustomerOrderService.getOrder: saleId=" + saleId);
 			throw new FDResourceException(response.getMessage());
 		}
-		return response.getData();
+		return new FDOrderAdapter(response.getData(), false);
 	}
-	
+
 	@Override
 	public CustomerAvgOrderSize getHistoricOrderSize(String customerId) throws FDResourceException, RemoteException {
 		Response<CustomerAvgOrderSize> response = this.httpGetDataTypeMap(
@@ -180,7 +167,8 @@ public class CustomerOrderService extends AbstractEcommService implements Custom
 	}
 
 	@Override
-	public void saveModifiedCartline(PrimaryKey userpk, StoreContext storeContext, FDCartLineI newLine, String orderId) throws FDResourceException, RemoteException {
+	public void saveModifiedCartline(PrimaryKey userpk, StoreContext storeContext, FDCartLineI newLine, String orderId,
+			boolean isModifiedCartLine) throws FDResourceException, RemoteException {
 		Response<Void> response = null;
 		try {
 			Request<ObjectNode> request = new Request<ObjectNode>();
@@ -190,10 +178,9 @@ public class CustomerOrderService extends AbstractEcommService implements Custom
 					(null != storeContext && null != storeContext.getEStoreId()
 							? storeContext.getEStoreId().getContentId()
 							: EnumEStoreId.FD.getContentId()));
-			ModifiedCartlineData modifiedCartlineData = new ModifiedCartlineData();
-			modifiedCartlineData.setDataFromCartline(newLine);
-			rootNode.set("newLine", getMapper().convertValue(modifiedCartlineData, JsonNode.class));
+			rootNode.set("newLine", getMapper().convertValue(newLine, JsonNode.class));
 			rootNode.put("orderId", orderId);
+			rootNode.put("isModifiedCartLine", isModifiedCartLine);
 			request.setData(rootNode);
 			String inputJson = buildRequest(request);
 
@@ -359,18 +346,6 @@ public class CustomerOrderService extends AbstractEcommService implements Custom
 			LOGGER.error("Error in CustomerOrderService getLastOrderAddress: ", e);
 			throw new RemoteException(e.getMessage());
 		}
-	}
-
-	@Override
-	public String getCustomerId(String orderId) throws FDResourceException {
-		Response<String> response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_CUSTOMER_ID + orderId),
-				new TypeReference<Response<String>>() {
-				});
-		if (!response.getResponseCode().equals("OK")) {
-			LOGGER.info("Error in CustomerOrderService.getCustomerId: orderId=" + orderId);
-			throw new FDResourceException(response.getMessage());
-		}
-		return response.getData();
 	}
 
 }

@@ -6,7 +6,8 @@
 
 package com.freshdirect.erp.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.freshdirect.common.date.SimpleDateDeserializer;
 import com.freshdirect.erp.*;
 
 /**
@@ -20,7 +21,7 @@ public class BatchHistoryModel implements java.io.Serializable {
     private EnumBatchStatus status = null;
     
     /** Holds value of property dateApproved. */
-    @JsonFormat(pattern="yyyy-MM-dd")
+    @JsonDeserialize(using = SimpleDateDeserializer.class)
     private java.sql.Timestamp statusDate = null;
     
     /** Holds value of property approvedBy. */

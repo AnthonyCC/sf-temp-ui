@@ -2,8 +2,9 @@ package com.freshdirect.giftcard;
 
 import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.freshdirect.common.customer.EnumCardType;
+import com.freshdirect.common.date.SimpleDateDeserializer;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
@@ -14,7 +15,7 @@ public class ErpGiftCardModel extends ErpPaymentMethodModel {
 	private double balance = 0.0; 
 	private double originalAmount;
 	private String purchaseSaleId;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	@JsonDeserialize(using = SimpleDateDeserializer.class)
 	private Date purchaseDate;
 	
 	public Date getPurchaseDate() {

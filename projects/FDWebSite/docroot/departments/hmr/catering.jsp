@@ -93,16 +93,16 @@ boolean submitted = "thankYou".equalsIgnoreCase(request.getParameter("info"));
 				<tr valign="top">
 					<td align="right" class="text12"><span class="space4pix"><br></span><font color="#CC0000">*</font>First Name&nbsp;</td>
 					<td></td>
-					<td><input type="text" name="firstName" class="text13" size="24" value="<%= (loggedIn && hasIdentity && !isPost) ? erpCust.getFirstName() : request.getParameter("firstName") %>"><fd:ErrorHandler result='<%=result%>' name="firstName" id="errorMsg"><br><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+					<td><input type="text" name="firstName" class="text13" size="24" value="<%= (loggedIn && hasIdentity && !isPost) ? erpCust.getFirstName() : request.getParameter("firstName") %>"><fd:ErrorHandler result='<%=result%>' name="firstName" id="errorMsg"><br><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></td>
 					<td colspan="2" align="right" class="text12"><span class="space4pix"><br></span><font color="#CC0000">*</font>Last Name&nbsp;</td>
 					<td></td>
-					<td><input type="text" name="lastName" class="text13" size="20" value="<%= (loggedIn && hasIdentity && !isPost) ? erpCust.getLastName() : request.getParameter("lastName") %>"><fd:ErrorHandler result='<%=result%>' name="lastName" id="errorMsg"><br><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+					<td><input type="text" name="lastName" class="text13" size="20" value="<%= (loggedIn && hasIdentity && !isPost) ? erpCust.getLastName() : request.getParameter("lastName") %>"><fd:ErrorHandler result='<%=result%>' name="lastName" id="errorMsg"><br><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></td>
 				</tr>
 				<tr><td colspan="7"><span class="space2pix"><br></span></td></tr>
 				<tr valign="top">
 					<td align="right" class="text12"><span class="space4pix"><br></span><font color="#CC0000">*</font>Contact #</td>
 					<td></td>
-					<td colspan="2"><input type="text" class="text13" name="phone" size="30" value="<%= (loggedIn && hasIdentity && !isPost) ? erpCust.getHomePhone().getPhone() : request.getParameter("phone") %>"><fd:ErrorHandler result='<%=result%>' name="phone" id="errorMsg"><br><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+					<td colspan="2"><input type="text" class="text13" name="phone" size="30" value="<%= (loggedIn && hasIdentity && !isPost) ? erpCust.getHomePhone().getPhone() : request.getParameter("phone") %>"><fd:ErrorHandler result='<%=result%>' name="phone" id="errorMsg"><br><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></td>
 					<td align="right" class="text12"><span class="space4pix"><br></span>Ext.</td>
 					<td></td>
 					<td><input type="text" name="phoneExt" class="text13" size="6" value="<%= request.getParameter("phoneExt") %>"></td>
@@ -117,7 +117,7 @@ boolean submitted = "thankYou".equalsIgnoreCase(request.getParameter("info"));
 				<tr valign="top">
 					<td align="right" class="text12"><span class="space4pix"><br></span><font color="#CC0000">*</font>Email Address</td>
 					<td></td>
-					<td colspan="5"><input type="text" class="text13" name="email" size="30" value="<%= (loggedIn && hasIdentity && !isPost) ? erpCust.getEmail() : request.getParameter("email") %>"><fd:ErrorHandler result='<%=result%>' name="email" id="errorMsg"><span class="text11rbold"> <%=errorMsg%></span></fd:ErrorHandler></td>
+					<td colspan="5"><input type="text" class="text13" name="email" size="30" value="<%= (loggedIn && hasIdentity && !isPost) ? erpCust.getEmail() : request.getParameter("email") %>"><fd:ErrorHandler result='<%=result%>' name="email" id="errorMsg"><span class="errortext"> <%=errorMsg%></span></fd:ErrorHandler></td>
 				</tr>
 				<tr><td colspan="7"><span class="space2pix"><br></span></td></tr>
 				<tr valign="top">

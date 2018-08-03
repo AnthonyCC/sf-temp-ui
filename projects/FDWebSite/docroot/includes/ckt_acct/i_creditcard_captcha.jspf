@@ -24,7 +24,7 @@ String publicKey= FDStoreProperties.getRecaptchaPublicKey(CaptchaType.PAYMENT);
 					},null);
 				});
 				</script>
-		<fd:ErrorHandler result='<%=result%>' name='captcha' id='errorMsg'><div class="text11rbold"><%=errorMsg%></div></fd:ErrorHandler>
+		<fd:ErrorHandler result='<%=result%>' name='captcha' id='errorMsg'><div class="errortext"><%=errorMsg%></div></fd:ErrorHandler>
 	</td>
 	
 </TR>

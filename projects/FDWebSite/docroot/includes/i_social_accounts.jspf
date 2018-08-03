@@ -11,26 +11,30 @@
 				 * reset form fields with hidden field value
 				 */
 				var userTokenFacebook = jQuery("#user_token_facebook").val();
+				var identityTokenFacebook = jQuery("#identity_token_facebook").val();
 				var socialEmailFacebook = jQuery("#socialEmail_facebook").val();
 				
 				jQuery("#actionName").val("disconnectSocialAccount");  
 				jQuery("#socialNetworkProvider").val("facebook");  
 				jQuery("#socialEmail").val(socialEmailFacebook);
-				jQuery("#userToken").val(userTokenFacebook);  				
+				jQuery("#userToken").val(userTokenFacebook);
+				jQuery("#identityToken").val(identityTokenFacebook);
 			});
 			
 			
-			jQuery("#disconnect_social_accounts_google").click(function(){							
+			jQuery("#disconnect_social_accounts_google").click(function(){
 				/*  
 				 * reset form fields with hidden field value
 				 */
-				var userTokenGoogle = jQuery("#user_token_google").val();   							
+				var userTokenGoogle = jQuery("#user_token_google").val();
+				var identityTokenGoogle = jQuery("#identity_token_google").val();
 				var socialEmailGoogle = jQuery("#socialEmail_google").val();
 				
 				jQuery("#actionName").val("disconnectSocialAccount"); 
 				jQuery("#socialNetworkProvider").val("google"); 
 				jQuery("#socialEmail").val(socialEmailGoogle);  
-				jQuery("#userToken").val(userTokenGoogle);  				
+				jQuery("#userToken").val(userTokenGoogle);
+				jQuery("#identityToken").val(identityTokenGoogle);
 			});			
 					
 		});
@@ -40,10 +44,11 @@
 	
 		<div class="youraccount_social">
 		<!-- hidden fields used to pass value to RegistrationControllerTag -->
-		<input type="hidden" id="actionName" name="actionName" value="">   
-		<input type="hidden" id="userToken" name="userToken" value="">   
-		<input type="hidden" id="socialEmail" name="socialEmail" value="">   
-		<input type="hidden" id="socialNetworkProvider" name="socialNetworkProvider" value="">   
+		<input type="hidden" id="actionName" name="actionName" value="">
+		<input type="hidden" id="userToken" name="userToken" value="">
+		<input type="hidden" id="identityToken" name="identityToken" value="">
+		<input type="hidden" id="socialEmail" name="socialEmail" value="">
+		<input type="hidden" id="socialNetworkProvider" name="socialNetworkProvider" value="">
 		
 		<!-- <img src="/media_stat/images/navigation/social_accounts/Social_Accounts.png" width="130" height="16" border="0" alt="SOCIAL ACCOUNTS"><br> -->
 		<h2 class="SocialAccount">Social Accounts</h2>
@@ -64,23 +69,27 @@
 			// variables for 'google' accounts
 			String user_token_google = "";
 			String socialEmail_google = "";
+			String identity_token_google = "";
 			
 			// variables for 'facebook' accounts
-			String user_token_facebook = "";	
+			String user_token_facebook = "";
 			String socialEmail_facebook = "";
+			String identity_token_facebook = "";
 			
-			if(socialLoginInfo != null && socialLoginInfo.size()>0){				
-				for(ErpCustomerSocialLoginModel socialLoginModel : socialLoginInfo ){					
-					String provider = socialLoginModel.getProvider();					
-					if(provider != null && provider.length()>0 && provider.equalsIgnoreCase("facebook")){							
+			if(socialLoginInfo != null && socialLoginInfo.size()>0){
+				for(ErpCustomerSocialLoginModel socialLoginModel : socialLoginInfo ){
+					String provider = socialLoginModel.getProvider();
+					if(provider != null && provider.length()>0 && provider.equalsIgnoreCase("facebook")){
 						connectedWithFacebook = true;
 						user_token_facebook = socialLoginModel.getUser_token();
 						socialEmail_facebook = socialLoginModel.getUser_id();
+						identity_token_facebook = socialLoginModel.getIdentity_token();
 						socialNetworkProvider = "facebook";						
-					} else if(provider != null && provider.length()>0 && provider.equalsIgnoreCase("google")){						
+					} else if(provider != null && provider.length()>0 && provider.equalsIgnoreCase("google")){
 						connectedWithGoogle = true;
 						user_token_google = socialLoginModel.getUser_token();	
 						socialEmail_google = socialLoginModel.getUser_id();
+						identity_token_google = socialLoginModel.getIdentity_token();
 						socialNetworkProvider = "google";
 					}					
 				}
@@ -135,10 +144,12 @@
 		
 		
 		<!-- hidden fields used to pass java variables to jQuery -->		
-		<input type="hidden" id="user_token_facebook" name="user_token_facebook" value="<%=user_token_facebook%>">   
-		<input type="hidden" id="socialEmail_facebook" name="socialEmail_facebook" value="<%=socialEmail_facebook%>">   		
-		<input type="hidden" id="user_token_google" name="user_token_google" value="<%=user_token_google%>">   
-		<input type="hidden" id="socialEmail_google" name="socialEmail_google" value="<%=socialEmail_google%>">
+        <input type="hidden" id="user_token_facebook" name="user_token_facebook" value="<%=user_token_facebook%>">
+        <input type="hidden" id="identity_token_facebook" name="identity_token_facebook" value="<%=identity_token_facebook%>">
+        <input type="hidden" id="socialEmail_facebook" name="socialEmail_facebook" value="<%=socialEmail_facebook%>">
+        <input type="hidden" id="user_token_google" name="user_token_google" value="<%=user_token_google%>">
+        <input type="hidden" id="identity_token_google" name="identity_token_google" value="<%=identity_token_google%>">
+        <input type="hidden" id="socialEmail_google" name="socialEmail_google" value="<%=socialEmail_google%>">
 		<div class="clear"></div>
 		</div>
 	</form>

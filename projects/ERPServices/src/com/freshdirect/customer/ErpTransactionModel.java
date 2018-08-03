@@ -64,6 +64,12 @@ public abstract class ErpTransactionModel extends ModelSupport implements ErpTra
 	public void setCustomerId(String customerId) {
 		this.customerId = customerId;
 	}
+	
+	@Override
+	public void setId(String id) {
+		if (id != null)
+			super.setId(id);
+	}
 
 }
 

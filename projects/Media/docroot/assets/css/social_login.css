@@ -94,12 +94,12 @@ input#signupbtn:hover,input#signinbtn:hover {
 
 #sulCont .error,
 #sulCont .error-message,
-#sulCont .errMsg .text11rbold{
+#sulCont .errMsg .errortext{
   text-align:left;
-  font-size: 12px;
+  font-size: 13px;
   font-family:"Verdana", Georgia, Serif;
   font-weight: normal;
-  color: #FF0000;  
+  color: #B93D3F;  
 }
 
 #sulCont .errMsg,

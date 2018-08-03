@@ -52,6 +52,9 @@ public class LazyTimedCache<K,V> extends TimedLruCache<K,V> {
 		return temp;
 	}
 
+	public List<K> getExpiredKeys(){
+		return this.expiredKeys;
+	}
 
 	public abstract static class RefreshThread<K,V> extends Thread {
 

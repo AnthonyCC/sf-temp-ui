@@ -127,7 +127,7 @@ double taxValue  = cart.getTaxValue();
 			%>
 			<tr>
 				<td colspan="3"></td>
-				<td colspan="8" class="text11orbold fd-red-text"><br>New Items in Cart</td>
+				<td colspan="8" class="success13text fd-red-text"><br>New Items in Cart</td>
 			</tr>
 			<%
 		} else if (!newItems && (lastDept==null || !lastDept.equalsIgnoreCase(cartLine.getDepartmentDesc()))) {
@@ -139,7 +139,7 @@ double taxValue  = cart.getTaxValue();
 						%>
 						<tr>
 							<td colspan="3"></td>
-							<td colspan="8" class="text11orbold"><br>Recipes</td>
+							<td colspan="8" class="success13text"><br>Recipes</td>
 						</tr>
 						<%
 					}
@@ -154,7 +154,7 @@ double taxValue  = cart.getTaxValue();
 					%>
 					<tr>
 						<td colspan="3"></td>
-						<td colspan="8" class="text11orbold"><br><%= lastDept %></td>
+						<td colspan="8" class="success13text"><br><%= lastDept %></td>
 					</tr>
 					<%
 					}

@@ -74,7 +74,7 @@ Your feedback will help us serve you better. Please let us know how you'd like t
 		    <OPTION value="prevorder">unhappy with previous order</OPTION>
 		    <OPTION value="custserv">unhappy with customer service</OPTION>
 		    <OPTION value="other">other</OPTION>
-		</SELECT>		<fd:ErrorHandler result="<%=result%>" name="reason" id="errorMsg"><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+		</SELECT>		<fd:ErrorHandler result="<%=result%>" name="reason" id="errorMsg"><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
 		<BR>
 		<BR>
 		<FONT CLASS="text11bold">Comments</FONT><BR>

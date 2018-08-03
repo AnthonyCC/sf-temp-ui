@@ -100,9 +100,6 @@ public interface CustomerInfoServiceI {
 
 	public List<URLRewriteRule> loadRewriteRules() throws FDResourceException, RemoteException;
 
-	public double getPerishableBufferAmount(ErpAbstractOrderModel order, boolean isModifyOrderModel)
-			throws RemoteException, FDResourceException;
-
 	public List<String> getTopFaqs() throws FDResourceException, RemoteException;
 
 	public boolean isDisplayNameUsed(String displayName, String custId)
@@ -121,4 +118,7 @@ public interface CustomerInfoServiceI {
 	public List<String> getUsedReservations(String customerId) throws FDResourceException, RemoteException;
 
 	public CrmClick2CallModel getClick2CallInfo() throws FDResourceException, RemoteException;
+	
+	public void setActive(FDActionInfo info, boolean active) throws RemoteException, FDResourceException;
+	
 }

@@ -114,7 +114,7 @@ if("slite".equals(request.getParameter("referrer_page"))) {
 	    </tr>
 	    <tr>
 	        <td class="text12"><fd:ErrorHandler result="<%=result%>" name="email"><span style="color:#CC0000; font-weight: bold;"></fd:ErrorHandler><label for="email">Email Address</label><fd:ErrorHandler result="<%=result%>" name="email"></span></fd:ErrorHandler></td>
-	        <td colspan="3"><input type="text" size="35" class="text13" name="email" value="<%=request.getParameter("email")%>"><fd:ErrorHandler result="<%=result%>" name="email" id="errorMsg"> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+	        <td colspan="3"><input type="text" size="35" class="text13" name="email" value="<%=request.getParameter("email")%>"><fd:ErrorHandler result="<%=result%>" name="email" id="errorMsg"> <span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></td>
 	    </tr>
 	        <tr>
 	            <td colspan="4" class="text12" align="center"><br><img src="/media_stat/images/layout/999966.gif" alt="" width="100%" height="1" vspace="10"><br>

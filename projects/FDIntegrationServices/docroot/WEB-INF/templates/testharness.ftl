@@ -1126,6 +1126,12 @@ function loadStuff() {
 	var postdata = '{"category": "cof", "page" : "1", "max" : "25"}';
   	$("#payload").val(postdata);
   	
+  }  else if (loaddata == "BrowseCategoryOptimized") {
+  	$("#url").val("/browse/getCategory/");
+  	$("#header").val('');
+	var postdata = '{"id": "cof"}';
+  	$("#payload").val(postdata);
+  	
   } else if (loaddata == "BrowseCategorySortDetail") {
   	$("#url").val("/browse/categoriessortdetail/");
   	$("#header").val('');
@@ -1725,6 +1731,7 @@ function doStuff() {
   <option value=""> ========== BROWSE ========== </option>
   <option value="BrowseDepartment">BROWSE - DEPARTMENT</option>
   <option value="BrowseCategory">BROWSE - CATEGORY</option>
+  <option value="BrowseCategoryOptimized">BROWSE - CATEGORY OPTIMIZED</option>
   <option value="BrowseCategorySortDetail">BROWSE - CATEGORY SORT DETAIL</option>
   <option value="BrowseGetSaleItems">BROWSE - GET SALE ITEMS</option>
   <option value="BrowseCategoryWeb">BROWSE - CATEGORY Web</option>

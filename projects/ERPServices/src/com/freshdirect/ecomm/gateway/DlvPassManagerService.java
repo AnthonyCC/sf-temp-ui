@@ -39,7 +39,7 @@ public class DlvPassManagerService extends AbstractEcommService implements DlvPa
 	private static final String REACTIVATE_DLV_PASS = "dlvpass/reactivate";
 	private static final String CREDITDELIVERY_DLV_PASS = "dlvpass/creditdelivery/";
 	private static final String EXTEND_EXPIRATION_PERIOD_DLV_PASS = "dlvpass/extendexpirationperiod/";
-	private static final String GET_DLV_PASS_BY_CUST_ID = "dlvpass/getbycustomerid/";
+	private static final String GET_DLV_PASS_BY_CUST_ID_AND_ESTORE = "dlvpass/getbycustomerid/";
 	private static final String GET_DLV_PASS_BY_CUST_ID_AND_STATUS = "dlvpass/getbycustidandstatus/";
 	private static final String GET_DLV_PASS_BY_ID = "dlvpass/getbyid/";
 	private static final String GET_DLV_PASS_BY_ORDER_ID = "dlvpass/getbyorderid/";
@@ -239,11 +239,12 @@ public class DlvPassManagerService extends AbstractEcommService implements DlvPa
 	}
 	
 	@Override
-	public List<DeliveryPassModel> getDeliveryPasses(String customerPk)throws RemoteException {
+	public List<DeliveryPassModel> getDeliveryPasses(String customerPk, EnumEStoreId estore)throws RemoteException {
 		Response<List<DeliveryPassData>> response = null;
 		try {
+			if (estore == null) estore = EnumEStoreId.FD;
 			response = httpGetDataTypeMap(
-					getFdCommerceEndPoint(GET_DLV_PASS_BY_CUST_ID+customerPk),new TypeReference<Response<List<DeliveryPassData>>>() {
+					getFdCommerceEndPoint(GET_DLV_PASS_BY_CUST_ID_AND_ESTORE+customerPk + "/" + estore.getContentId()),new TypeReference<Response<List<DeliveryPassData>>>() {
 					});
 			if (!response.getResponseCode().equals("OK"))
 				throw new FDResourceException(response.getMessage());

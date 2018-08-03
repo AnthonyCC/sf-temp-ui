@@ -6,15 +6,12 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
-//import weblogic.auddi.util.Logger;
-
 import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.accounts.external.ExternalAccountManager;
-import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -22,30 +19,24 @@ import com.freshdirect.mobileapi.controller.RegistrationController;
 import com.freshdirect.mobileapi.controller.data.UserSocialProfile;
 import com.freshdirect.mobileapi.controller.data.request.ExternalAccountLinkRequest;
 import com.freshdirect.mobileapi.controller.data.request.ExternalAccountLogin;
-import com.freshdirect.mobileapi.controller.data.response.SocialLoginResponse;
 import com.freshdirect.mobileapi.model.MessageCodes;
 import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
-import com.freshdirect.webapp.taglib.fdstore.SessionName;
-import com.freshdirect.webapp.taglib.fdstore.SiteAccessControllerTag;
-import com.freshdirect.webapp.taglib.fdstore.SocialGateway;
 import com.freshdirect.webapp.taglib.fdstore.ExternalAccountControllerTag;
+import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.freshdirect.webapp.taglib.fdstore.SocialGateway;
 import com.freshdirect.webapp.taglib.fdstore.SocialProvider;
-import com.freshdirect.webapp.taglib.fdstore.SocialProviderOneAll;
-
 
 public class ExternalAccountControllerTagWrapper extends NonStandardControllerTagWrapper implements RequestParamName, SessionParamName, MessageCodes{
 	
 	public static final String EXTERNAL_PROVIDERS = "EXTERNAL_PROVIDERS";
 	public static final String EXTERNAL_USERPROFILE = "EXTERNAL_USERPROFILE";
-	private String REDIRECT_URL_SIGN_UP_UNRECOGNIZED = "/social/signup_lite_social.jsp";
-	private String REDIRECT_URL_MERGE_PAGE ="/social/social_login_merge.jsp";
-	private String REDIRECT_URL_CUSTOM_MESSAGE_PAGE ="/social/social_custom_message.jsp";
-	private String REDIRECT_URL_SUCCESS ="/index.jsp";
-	
-	private static Category LOGGER = LoggerFactory
-			.getInstance(RegistrationController.class);
-	
+    private static final String REDIRECT_URL_SIGN_UP_UNRECOGNIZED = "/social/signup_lite_social.jsp";
+    private static final String REDIRECT_URL_MERGE_PAGE = "/social/social_login_merge.jsp";
+    private static final String REDIRECT_URL_CUSTOM_MESSAGE_PAGE = "/social/social_custom_message.jsp";
+    private static final String REDIRECT_URL_SUCCESS = "/index.jsp";
+
+    private static final Category LOGGER = LoggerFactory.getInstance(RegistrationController.class);
 	
 	public ExternalAccountControllerTagWrapper(SessionUser user){
 		super(new ExternalAccountControllerTag(), user);
@@ -277,9 +268,10 @@ public class ExternalAccountControllerTagWrapper extends NonStandardControllerTa
 			ExternalAccountLogin requestMessage) {
 		
 		addExpectedSessionValues(new String[]{}, new String[]{});
-		addExpectedRequestValues(new String[]{"email","userToken"}, new String[]{"email", "userToken"});		
+        addExpectedRequestValues(new String[] { "email", "userToken", "providerName" }, new String[] { "email", "userToken", "providerName" });
 		String email = requestMessage.getEmail();
-		String userToken = requestMessage.getUserToken();		
+        String userToken = requestMessage.getUserToken();
+        String providerName = requestMessage.getProvider();
 		ActionResult result = new ActionResult();
 				
 		if(email == null || email.length()== 0)
@@ -296,7 +288,11 @@ public class ExternalAccountControllerTagWrapper extends NonStandardControllerTa
 		}
 			
 		try {
-
+            SocialProvider socialProvider = SocialGateway.getSocialProvider("ONE_ALL");
+            if (socialProvider != null) {
+                HashMap<String, String> socialUser = socialProvider.getSocialUserProfileByUserToken(userToken, providerName);
+                socialProvider.deleteSocialIdentity(socialUser.get("identityToken"));
+            }
 			ExternalAccountManager.unlinkExternalAccountWithUser( email, userToken, "");
 			
 		} catch (FDResourceException e1) {

@@ -73,9 +73,9 @@ boolean emailSent = request.getParameter("email") != null && "sent".equalsIgnore
 		 	<b>Enter your e-mail:</b><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br>
 		     <input class="text11" type="text" size="30" name="email" value="<%= request.getParameter("email")!=null?request.getParameter("email"):"" %>">
 		     <br>
-		     <fd:ErrorHandler result='<%= result %>' name='technicalDifficulty' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
-		     <fd:ErrorHandler result='<%= result %>' name='email' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
-		     <fd:ErrorHandler result='<%= result %>' name='zipcode' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+		     <fd:ErrorHandler result='<%= result %>' name='technicalDifficulty' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
+		     <fd:ErrorHandler result='<%= result %>' name='email' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
+		     <fd:ErrorHandler result='<%= result %>' name='zipcode' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
 		     <img src="/media_stat/images/layout/clear.gif" alt="" width="8" height="1">
 		     <br>
 			 <table align="center">
@@ -100,9 +100,9 @@ boolean emailSent = request.getParameter("email") != null && "sent".equalsIgnore
 	     <td class="text12"><br><b>Enter your e-mail:</b><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br>
 	     <input class="text11" type="text" size="30" name="email" value="<%= request.getParameter("email")!=null?request.getParameter("email"):"" %>">
 	     <br>
-	     <fd:ErrorHandler result='<%= result %>' name='technicalDifficulty' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
-	     <fd:ErrorHandler result='<%= result %>' name='email' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
-		     <fd:ErrorHandler result='<%= result %>' name='zipcode' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+	     <fd:ErrorHandler result='<%= result %>' name='technicalDifficulty' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
+	     <fd:ErrorHandler result='<%= result %>' name='email' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
+		     <fd:ErrorHandler result='<%= result %>' name='zipcode' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
 	     <img src="/media_stat/images/layout/clear.gif" alt="" width="8" height="1">
 	     <br>
 	     <input type="image" src="/media_stat/images/template/site_access/send_email.gif" width="176" height="41" alt="Send your e-mail and visit our store" border="0" value="submit">

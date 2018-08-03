@@ -1,6 +1,7 @@
 package com.freshdirect.fdstore.ecomm.gateway;
 
 import java.rmi.RemoteException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -26,8 +27,6 @@ public interface CustomerOrderServiceI {
 
 	public FDOrderI getOrder(String saleId) throws FDResourceException, RemoteException;
 
-	public boolean isOrderExisted(String saleId) throws FDResourceException, RemoteException;
-
 	public CustomerAvgOrderSize getHistoricOrderSize(String customerId) throws FDResourceException, RemoteException;
 
 	public void updateOrderInModifyState(ErpSaleModel sale) throws FDResourceException, RemoteException;
@@ -39,8 +38,8 @@ public interface CustomerOrderServiceI {
 	public List<FDCartLineI> getModifiedCartlines(String orderId, UserContext userContext)
 			throws FDResourceException, RemoteException;
 
-	public void saveModifiedCartline(PrimaryKey userpk, StoreContext storeContext, FDCartLineI newLine, String orderId)
-			throws FDResourceException, RemoteException;
+	public void saveModifiedCartline(PrimaryKey userpk, StoreContext storeContext, FDCartLineI newLine, String orderId,
+			boolean isModifiedCartLine) throws FDResourceException, RemoteException;
 
 	public void removeModifiedCartline(FDCartLineI cartLine) throws FDResourceException, RemoteException;
 
@@ -54,11 +53,9 @@ public interface CustomerOrderServiceI {
 	public int updateShippingInfoCartonDetails() throws FDResourceException, RemoteException;
 
 	public int[] updateShippingInfoTruckDetails() throws FDResourceException, RemoteException;
-
+	
 	public void updateOrderInProcess(String orderNum) throws FDResourceException, RemoteException;
 
-	public ErpAddressModel getLastOrderAddress(FDIdentity identity, EnumEStoreId eStore)
-			throws FDResourceException, RemoteException;
+	public ErpAddressModel getLastOrderAddress(FDIdentity identity, EnumEStoreId eStore) throws FDResourceException, RemoteException;
 
-	public String getCustomerId(String orderId) throws FDResourceException;
 }

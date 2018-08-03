@@ -105,22 +105,22 @@ CCLPanel.TXT = {
         style: "text11" },
     "EnterName" : { 
         txt:   "Please enter a name:", 
-        style: "text11rbold" },
+        style: "errortext" },
     "EnterNewName" : { 
         txt:   "Enter a new list name:", 
         style: "text11"},
     "NeedsName" : { 
         txt:   "Name cannot be empty.", 
-        style: "text11rbold"},
+        style: "errortext"},
     "NewNeedsName" : { 
         txt:   "Your new list needs a name:", 
-        style: "text11rbold"},
+        style: "errortext"},
     "YouAlreadyHaveList" : { 
         txt:   "Oops! That name is taken.", 
-        style: "text11rbold" },
+        style: "errortext" },
     "NameTooLong" : {
         txt:   "Name is too long (max 35 characters)!",
-        style: "text11rbold" },
+        style: "errortext" },
     "YouDontHaveAList" : { 
         txt: "You do not have another list, please create one!",
         style: "text11gbold" },
@@ -129,16 +129,16 @@ CCLPanel.TXT = {
         style: "text11" },
     "UnexpectedError" : { 
         txt:   "Unexpected error. Please try again later.", 
-        style: "text11rbold" },
+        style: "errortext" },
     "SessionTimeout" : {
         txt:   "Your session has timed out.",
-        style: "text11rbold" },
+        style: "errortext" },
     "UnexpectedJSONResponse" : { 
         txt: "Unexpected server response. Please try again later.",
-        style: "text11rbold" },
+        style: "errortext" },
     "ServiceError" : { 
         txt: "Service unavailable. Please try again later.",
-        style: "text11rbold" },
+        style: "errortext" },
     "ChooseList" : { 
         txt:   "Please choose a list:", 
         style: "text11" },
@@ -1425,7 +1425,7 @@ CCLClass.prototype.delete_list = function(listName, context) {
         self.cfg.setProperty("width", "250px");
         self.createHeader(self.createTitleImg("list_delete_title.gif"));
 
-        self.makeBody(self.createText("Are you sure you want to delete "+escapeHTML(listName)+"?", "text11rbold"),
+        self.makeBody(self.createText("Are you sure you want to delete "+escapeHTML(listName)+"?", "errortext"),
                       self.createLink("deleteList"),
               self.createLink("cancel"));
 
@@ -1678,7 +1678,7 @@ CCLClass.prototype.delete_so = function(deleteSoInfo, scope) {
 				            var errorClose = ptr.createLink("errorClose");
 				            YAHOO.util.Dom.addClass(errorClose, "");
 				            ptr.makeBody(
-				                resp.responseText ? ptr.createText(resp.responseText, "text11rbold") : ptr.createText("ServiceError"),
+				                resp.responseText ? ptr.createText(resp.responseText, "errortext") : ptr.createText("ServiceError"),
 				                errorClose
 				            );
 				            ptr.currentState = "error";

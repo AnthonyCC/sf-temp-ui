@@ -1,5 +1,3 @@
-<%@page import="java.net.URL"%>
-<%@page import="java.net.MalformedURLException"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="java.util.Map"%>
@@ -7,20 +5,12 @@
 <%@page import="java.util.regex.Matcher"%>
 <%@page import="java.util.regex.Pattern"%>
 <%@page import="java.util.Iterator" %>
-<%@page import="org.apache.log4j.Logger"%>
-<%@page import="com.freshdirect.framework.util.log.LoggerFactory"%>
-<%@page import="java.io.StringWriter"%>
-<%@page import="java.io.IOException"%>
-<%@page import="com.freshdirect.framework.template.TemplateException"%>
-<%@page import="com.freshdirect.fdstore.FDStoreProperties"%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%!
-	Logger LOGGER = LoggerFactory.getInstance("dependencies.jsp");
-
 	/* find the registers. only finds register() calls */
-	public ArrayList<String> getRegisters(HttpServletRequest request, String filePath) {
-		String fileSrc = renderAssetToString(request, filePath);
+	public ArrayList<String> getRegisters(String filePath) {
+		String fileSrc = MediaUtils.renderHtmlToString(filePath, null);
 		ArrayList<String> fileRegisters = new ArrayList<String>();
 		String quotedGroup = "\"([^\"]*)\"";
 		String group = "[\"]?([^,\\)]*)[\"]?";
@@ -46,10 +36,10 @@
 	}
 
 	/* use register regKey:filepath map to work out dependencies */
-	public ArrayList<String> getDependencies(HttpServletRequest request, String filePath, Map<String, String> globalRegisters) {
+	public ArrayList<String> getDependencies(String filePath, Map<String, String> globalRegisters) {
 		ArrayList<String> fileDependencies = new ArrayList<String>();
 		//get src
-		String fileSrc = renderAssetToString(request, filePath);
+		String fileSrc = MediaUtils.renderHtmlToString(filePath, null);
 		
 		Iterator it = globalRegisters.entrySet().iterator();
 		while (it.hasNext()) {
@@ -63,44 +53,6 @@
 		
 		return fileDependencies;
 	}
-	
-	// based on IncludeMediaTag
-    public String renderAssetToString(HttpServletRequest request, String filePath) {
-        String srcString = "";
-        URL url = null;
-
-        // remove absolute path mark
-        if (filePath.startsWith("/")) {
-        	filePath = filePath.substring(1, filePath.length());
-        }
-        try {
-        	//adjust url for servers with different url structure
-			url = new URL(new URL(request.getScheme() + "://" + request.getServerName() + ((FDStoreProperties.isLocalDeployment()) ? ":" + request.getServerPort() : "") + "/"), filePath);
-        } catch (MalformedURLException e) {
-            LOGGER.error("MalformedURLException", e);
-        }
-
-        if (filePath != null && url != null) {
-            StringWriter writer = new StringWriter();
-            
-            try {
-            	MediaUtils.renderMedia(url, writer, null, false);
-            	srcString = writer.toString();
-            } catch (IOException e) {
-                LOGGER.error("IOException, check if file was removed from code", e);
-            } catch (TemplateException e) {
-                LOGGER.error("TemplateException, returning empty string", e);
-            } finally {
-                try {
-                    writer.close();
-                } catch (IOException e) {
-                    LOGGER.error(e);
-                }
-            }
-        }
-
-        return srcString;
-    }
 %>
 <%
 String JS_BASE = "/assets/javascript";
@@ -126,6 +78,8 @@ inFiles.add(JS_BASE+"/fd/common/addtolist.js");
 inFiles.add(JS_BASE+"/fd/common/ajaxPopup.js");
 inFiles.add(JS_BASE+"/fd/common/aria.js");
 inFiles.add(JS_BASE+"/fd/common/atcInfo.js");
+inFiles.add(JS_BASE+"/fd/common/coremetrics.js");
+inFiles.add(JS_BASE+"/fd/common/coremetricsScrolling.js");
 inFiles.add(JS_BASE+"/fd/common/criteo.js");
 inFiles.add(JS_BASE+"/fd/common/customerRatingPopup.js");
 inFiles.add(JS_BASE+"/fd/common/deletefromlist.js");
@@ -158,6 +112,7 @@ inFiles.add(JS_BASE+"/fd/common/select.js");
 inFiles.add(JS_BASE+"/fd/common/server.js");
 inFiles.add(JS_BASE+"/fd/common/signalTarget.js");
 inFiles.add(JS_BASE+"/fd/common/standingorder.js");
+inFiles.add(JS_BASE+"/fd/common/svgHelpers.js");
 inFiles.add(JS_BASE+"/fd/common/swapimage.js");
 inFiles.add(JS_BASE+"/fd/common/tabbedRecommender.js");
 inFiles.add(JS_BASE+"/fd/common/tabpanel.js");
@@ -226,6 +181,7 @@ inFiles.add(JS_BASE+"/fd/expressco/viewcart.js");
 inFiles.add(JS_BASE+"/fd/FDjQuery.js");
 inFiles.add(JS_BASE+"/fd/mobileweb/mobileweb_common.js");
 inFiles.add(JS_BASE+"/fd/modifyOrder/modifyOrderMessage.js");
+inFiles.add(JS_BASE+"/fd/modules/header/locabar_recommenders.js");
 inFiles.add(JS_BASE+"/fd/modules/header/popupcart.js");
 inFiles.add(JS_BASE+"/fd/modules/search/seemore.js");
 inFiles.add(JS_BASE+"/fd/modules/search/statusupdate.js");
@@ -299,7 +255,7 @@ globalRegisters.put(".mmenu(", "jQuery.mmenu"); //mobweb jQuery menu plugin
 //create data holds and registers
 for (String filePath : inFiles) {
 	//get registers
-	ArrayList<String> fileRegisters = getRegisters(request, filePath);
+	ArrayList<String> fileRegisters = getRegisters(filePath);
 	//create data store
 	Map<String, ArrayList<String>> fileInfo = new HashMap<String, ArrayList<String>>();
 	fileInfo.put("dependencies", new ArrayList<String>()); //leave empty
@@ -315,7 +271,7 @@ for (String filePath : inFiles) {
 }
 //loop again to do dependencies now that we have all registers
 for (String filePath : inFiles) {
-	fileInfos.get(filePath).put("dependencies", getDependencies(request, filePath, globalRegisters));
+	fileInfos.get(filePath).put("dependencies", getDependencies(filePath, globalRegisters));
 }
 %>
 <!DOCTYPE html>

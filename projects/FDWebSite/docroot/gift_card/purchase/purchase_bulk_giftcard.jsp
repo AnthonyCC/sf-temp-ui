@@ -100,7 +100,7 @@
                             		<fd:ErrorHandler result='<%=result%>' field='<%=checkPaymentForm%>' id='errorMsg'>
                             			<%@ include file="/includes/i_error_messages.jspf" %>	
 		                            </fd:ErrorHandler>                                
-								<fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+								<fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
 								</td>
 							</tr>
 						</table>

@@ -68,7 +68,7 @@ function linkTo(url){
             
         <tr valign="top">
 			<td>&nbsp;</td>
-			<td class="text12" colspan="4"><fd:ErrorHandler result='<%=result%>' name='SYSTEM_ERROR' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></b></td> 						
+			<td class="text12" colspan="4"><fd:ErrorHandler result='<%=result%>' name='SYSTEM_ERROR' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></b></td> 						
 		</tr>
    
             
@@ -85,14 +85,14 @@ function linkTo(url){
 			<td class="text12"><b>TO:</b></td>
 			<td class="text12" align="right"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br>* Friend's Name&nbsp;&nbsp;</td>
 			<td colspan="2">
-				<input type="text" name="friend_name" class="text11" size="28" maxlength="30" value="<%=taf.getFriendName()%>">&nbsp;<fd:ErrorHandler result='<%=result%>' name='friend_name' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+				<input type="text" name="friend_name" class="text11" size="28" maxlength="30" value="<%=taf.getFriendName()%>">&nbsp;<fd:ErrorHandler result='<%=result%>' name='friend_name' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
 			</td>
 		</tr>
 	
 		<tr valign="top">
 			<td>&nbsp;</td>
 			<td colspan="2" class="text12" align="right"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br>* Friend's E-mail Address&nbsp;&nbsp;</td>
-			<td colspan="2"><input type="text" name="friend_email" class="text11" size="28" value="<%=taf.getFriendEmail()%>">&nbsp;<fd:ErrorHandler result='<%=result%>' name='friend_email' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"><br>
+			<td colspan="2"><input type="text" name="friend_email" class="text11" size="28" value="<%=taf.getFriendEmail()%>">&nbsp;<fd:ErrorHandler result='<%=result%>' name='friend_email' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"><br>
 			<fd:IncludeMedia name="/media/editorial/tell_a_friend/submit_note.html" />
 			</td>
 		</tr>
@@ -104,7 +104,7 @@ function linkTo(url){
 	
 		<tr>
 			<td>&nbsp;</td>
-			<td colspan="3"><textarea name="email_text" rows="5" cols="80" style="width: 440px" class="text11"  onKeyDown="textCounter(this.form.email_text,999);" onKeyUp="textCounter(this.form.email_text,999);"   ><%=taf.getEmailText()%></textarea><fd:ErrorHandler result='<%=result%>' name='email_text' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler><br><br></td>
+			<td colspan="3"><textarea name="email_text" rows="5" cols="80" style="width: 440px" class="text11"  onKeyDown="textCounter(this.form.email_text,999);" onKeyUp="textCounter(this.form.email_text,999);"   ><%=taf.getEmailText()%></textarea><fd:ErrorHandler result='<%=result%>' name='email_text' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler><br><br></td>
 			<td>&nbsp;</td>
 		</tr>
 		

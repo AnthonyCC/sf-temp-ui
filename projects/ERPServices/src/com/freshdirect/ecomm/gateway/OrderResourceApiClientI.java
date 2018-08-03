@@ -51,8 +51,6 @@ public interface OrderResourceApiClientI {
 	
 	public double getOutStandingBalance(ErpAbstractOrderModel order) throws RemoteException;
 	
-	public double getPerishableBufferAmount(ErpAbstractOrderModel order) throws RemoteException;
-	
 	public void updateWaveInfo(String saleId, ErpShippingInfo shippingInfo) throws RemoteException, FinderException;
 	
 	public void updateCartonInfo(String saleId, List<ErpCartonInfo> cartonList) throws RemoteException, FinderException, FDResourceException;

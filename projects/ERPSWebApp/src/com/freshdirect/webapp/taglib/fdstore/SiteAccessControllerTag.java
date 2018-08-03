@@ -53,10 +53,8 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 	private String altDeliveryCorporatePage = "/site_access/site_access.jsp?ol=altCorp";
 	//private String failureCorporatePage = "/survey/cos_site_access_survey.jsp";
 	private String failureCorporatePage = "/site_access/site_access.jsp?ol=corpSurvey";
-	private String deliveryaddrpage = "/social/DeliveryAddress.jsp";
 	private String addressnotificationpage = "/social/AddressNotification.jsp";
 	private String socialLoginRecognized ="/social/social_login_recognized.jsp";
-	private String socialLoginAccountLinked ="/social/social_login_account_linked.jsp";
 	
 	private String failureCorporatePageCRM = null;
 	
@@ -486,74 +484,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
                         session.setAttribute(SessionName.SIGNUP_SUCCESS, false);
                     }
 
-				}
-				else if ("signupSocialDlvAddr".equalsIgnoreCase(action)) { 
-					HttpSession session = this.pageContext.getSession();
-					
-					String companyname = NVL.apply(request.getParameter(EnumUserInfoName.DLV_COMPANY_NAME.getCode()), "").trim();
-					System.out.println("companyname:"+companyname);
-					String firstname = NVL.apply(request.getParameter(EnumUserInfoName.DLV_FIRST_NAME.getCode()), "").trim();
-					System.out.println("firstname:"+firstname);
-					String lastname = NVL.apply(request.getParameter(EnumUserInfoName.DLV_LAST_NAME.getCode()), "").trim();
-					System.out.println("lastname:"+lastname);
-					String streetaddr = NVL.apply(request.getParameter(EnumUserInfoName.DLV_ADDRESS_1.getCode()), "").trim();
-					System.out.println("streetaddr:"+streetaddr);
-					String suite = NVL.apply(request.getParameter(EnumUserInfoName.DLV_APARTMENT.getCode()), "").trim();
-					System.out.println("suite:"+suite);
-					String zipcode = NVL.apply(request.getParameter(EnumUserInfoName.DLV_ZIPCODE.getCode()), "").trim();
-					System.out.println("zipcode:"+zipcode);
-					String city = NVL.apply(request.getParameter(EnumUserInfoName.DLV_CITY.getCode()), "").trim();
-					System.out.println("city:"+city);
-					String state = NVL.apply(request.getParameter(EnumUserInfoName.DLV_STATE.getCode()), "").trim();
-					System.out.println("state:"+state);
-					String busphone = NVL.apply(request.getParameter(EnumUserInfoName.DLV_WORK_PHONE.getCode()), "").trim();
-					System.out.println("busphone:"+busphone);
-					String mobilephno = NVL.apply(request.getParameter(EnumUserInfoName.DLV_HOME_PHONE.getCode()), "").trim();
-					System.out.println("mobilephno:"+mobilephno);
-					String email = NVL.apply(request.getParameter(EnumUserInfoName.EMAIL.getCode()), "").trim();
-					System.out.println("email:"+email);
-					
-					FDDeliveryServiceSelectionResult serviceResult = validateSocialDlvAddr(request, result);
-										
-					if(serviceResult!=null)
-						setRequestedServiceTypeDlvStatus(serviceResult.getServiceStatus(this.serviceType));
-					
-					if (result.isSuccess()) {
-						
-						String failedAddresspage = "/social/FailedAddrPage.jsp?successPage=index.jsp&referrer_page=slite&" +
-								"serviceType=" + this.serviceType +  
-								"&companyname="+ companyname +
-								"&firstname="+ firstname +
-								"&lastname="+ lastname +
-								"&streetaddr="+ streetaddr +
-								"&suite="+ suite +
-								"&zipcode="+ zipcode +
-								"&city="+ city +
-								"&state="+ state +
-								"&busphone="+ busphone +
-								"&mobilephno="+ mobilephno +
-								"&email="+ email;
-						
-																		
-						EnumDeliveryStatus dlvStatus = serviceResult.getServiceStatus(this.serviceType);
-
-						if (EnumDeliveryStatus.DELIVER.equals(dlvStatus)) {
-							this.createUser(this.serviceType, serviceResult.getAvailableServices());
-						} else { 
-							this.createUser(EnumServiceType.PICKUP, serviceResult.getAvailableServices());
-						}						
-													
-						if (EnumDeliveryStatus.DELIVER.equals(dlvStatus)) {
-							//All set. The zipcode is good. Proceed to direct registration. No more info needed.
-							doRegistrationSocial(result);
-						}
-						else{
-							// Show do not deliver page
-							request.getSession().setAttribute("SocialDlvAddrFail", "true");
-							doRedirect(failedAddresspage);
-						}
-					}
-				}		
+				}	
 			} catch (FDResourceException re) {
 				LOGGER.warn("FDResourceException occured", re);
 				result.addError(true, "technicalDifficulty", SystemMessageList.MSG_TECHNICAL_ERROR);
@@ -608,43 +539,6 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 			}
 		} catch (Exception ex) {
 			LOGGER.error("Error performing action signupLite", ex);
-			result.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_TECHNICAL_ERROR));
-		}
-	}
-	
-	private void doRegistrationSocial(ActionResult result) {
-		int regType = AccountUtil.HOME_USER;
-		if(EnumServiceType.CORPORATE.getName().equals(this.serviceType)) {
-			//This is a corp user
-			regType = AccountUtil.CORP_USER;
-		}
-		RegistrationAction ra = new RegistrationAction(regType);
-
-		HttpContext ctx =
-			new HttpContext(
-				this.pageContext.getSession(),
-				(HttpServletRequest) this.pageContext.getRequest(),
-				(HttpServletResponse) this.pageContext.getResponse());
-
-		ra.setHttpContext(ctx);
-		ra.setResult(result);
-		try {
-			String res = ra.executeEx();
-			if((Action.SUCCESS).equals(res)) {
-				this.setSuccessPage("/social/DeliveryAddress.jsp");										
-				HttpSession session = pageContext.getSession();
-				System.out.println("Before>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-				session.setAttribute("DELIVERYADDRESS_COMPLETE", "true");
-				System.out.println("After>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-				session.removeAttribute("SOCIALACCOUNTINFO");
-				session.removeAttribute("SOCIALCONTACTINFO");
-				FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
-				if (user != null) {
-					user.setJustSignedUp(true);
-				}
-			}
-		} catch (Exception ex) {
-			LOGGER.error("Error performing action socialsignup", ex);
 			result.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_TECHNICAL_ERROR));
 		}
 	}

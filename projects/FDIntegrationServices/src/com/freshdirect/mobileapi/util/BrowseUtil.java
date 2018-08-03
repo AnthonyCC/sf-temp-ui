@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 
+
 import com.freshdirect.WineUtil;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
@@ -73,6 +74,7 @@ import com.freshdirect.mobileapi.catalog.model.SortOptionInfo;
 import com.freshdirect.mobileapi.catalog.model.UnitPrice;
 import com.freshdirect.mobileapi.controller.data.BrowseResult;
 import com.freshdirect.mobileapi.controller.data.Lookup;
+import com.freshdirect.mobileapi.controller.data.SortOptionResult;
 import com.freshdirect.mobileapi.controller.data.request.BrowseQuery;
 import com.freshdirect.mobileapi.controller.data.response.BrowsePageResponse;
 import com.freshdirect.mobileapi.controller.data.response.FilterGroup;
@@ -418,6 +420,126 @@ public class BrowseUtil {
         }
 
         result.setFeaturedCard(featuredCardIdea);
+        result.setBottomLevel(nextLevelIsBottom);
+        return result;
+	}
+	
+	public static BrowseResult getCategoryOptimized(BrowseQuery requestMessage, SessionUser user, HttpServletRequest request) throws FDException{
+		String contentId = null;
+		String action=null;
+		contentId = requestMessage.getId();
+
+    	ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(contentId);
+    	List<CategorySectionModel> categorySections = emptyList();
+    	if (currentFolder instanceof DepartmentModel) {
+    		DepartmentModel department = (DepartmentModel) currentFolder;
+    		categorySections = new ArrayList<CategorySectionModel>(department.getCategorySections());
+    	}
+    	if(currentFolder instanceof CategoryModel) {
+
+    		String redirectURL = ((CategoryModel)currentFolder).getRedirectUrl();
+    		if(redirectURL != null && redirectURL.trim().length() > 0) {
+    			Map<String, String> redirectParams = getQueryMap(redirectURL);
+    			String redirectContentId = redirectParams.get("catId");
+    			if(redirectContentId != null && redirectContentId.trim().length() > 0) {
+    				contentId = redirectContentId;
+    				currentFolder = ContentFactory.getInstance().getContentNode(redirectContentId);
+    			}
+				//APPDEV-4237 No Carousel Products
+    			else
+    			{
+    				redirectContentId = redirectParams.get("deptId");
+    				if(redirectContentId != null && redirectContentId.trim().length() > 0) {
+        				contentId = redirectContentId;
+        				currentFolder = ContentFactory.getInstance().getContentNode(redirectContentId);
+        			}
+
+    			}
+    		}
+    		sendBrowseEventToAnalytics(request, user.getFDSessionUser(), currentFolder);
+    	}
+    	if(currentFolder instanceof CategoryModel && ((CategoryModel)currentFolder).isShowAllByDefault()) { // To Support new left nav flow[APPDEV-3251 : mobile API to utilize showAllByDefault]
+        	action = ACTION_GET_CATEGORYCONTENT_PRODUCTONLY;
+        }
+    	List contents = getContents(user, currentFolder);
+        List<Category> categories = new ArrayList<Category>();
+        Set<String> categoryIDs = new HashSet<String>();
+
+        boolean nextLevelIsBottom = true;
+
+        for (Object content : contents) {
+            if(content instanceof CategoryModel) {
+            	CategoryModel categoryModel = (CategoryModel)content;
+                if (StringUtils.equals(contentId, categoryModel.getContentName())) {
+                    // don't return recursive models
+                    break;
+                }
+            	String parentId = categoryModel.getParentNode().getContentKey().getId();
+
+				if((categoryModel.isActive()
+            					|| (categoryModel.getRedirectUrl() != null
+            								&& categoryModel.getRedirectUrl().trim().length() > 0))
+            				// && !categoryModel.isHideIphone()
+            				// && !categoryIDs.contains(categoryModel.getParentId())
+            				// && !isEmptyProductGrabberCategory(categoryModel)
+            				&& contentId.equals(parentId)
+            				) {	// Show only one level of category
+					// check if the next level in hierarchy has only products
+					// it's important for the UI
+					//See if we can change this ... why should we? this is in sync with website...
+					if (nextLevelIsBottom && !categoryModel.getSubcategories().isEmpty()) {
+						for (CategoryModel subcategory : categoryModel.getSubcategories()) {
+							if (!subcategory.getSubcategories().isEmpty()) {
+								// we have another level to go
+								nextLevelIsBottom = false;
+								break;
+							}
+						}
+					}
+
+            		Category category = Category.wrap(categoryModel);
+					addCategoryHeadline(categorySections, categoryModel, category);
+					boolean remove = removeCategoryToMatchStorefront(categorySections, categoryModel, category);
+					category.setNoOfProducts(0);
+					//Change this as well.
+						if(!categoryModel.getSubcategories().isEmpty())
+							category.setBottomLevel(false);
+						else
+							category.setBottomLevel(true);
+						if(!remove){
+							//categories.add(category);
+							//APPDEV 4231
+							if(hasProduct(categoryModel)){
+								categories.add(category);
+							}
+						}
+						categoryIDs.add(categoryModel.getContentKey().getId());
+				}
+           }
+        }
+        
+        categories = customizeCaegoryListForIpad(categories, categorySections);
+        
+        BrowseResult result = new BrowseResult();
+        
+        SortOptionInfo options = BrowseUtil.getSortOptionsForCategory(requestMessage, user, request);
+    	result.setSortOptionInfo(options);
+    	if(options!=null && options.getSortOptions()!=null && options.getSortOptions().size()>0){
+    		requestMessage.setSortBy(options.getSortOptions().get(0).getSortValue());
+    	}
+        List<String> products =  BrowseUtil.getAllProductsEX(requestMessage, user, request);
+        
+        if (categories.size() > 0 && !ACTION_GET_CATEGORYCONTENT_PRODUCTONLY.equals(action)) {
+            result.setCategories(categories);
+            result.setResultCount(result.getCategories() != null ? result.getCategories().size() : 0);
+            result.setTotalResultCount(categories.size());
+        } else {
+            result.setCategories(categories);
+            result.setProductids(products);
+            result.setResultCount(result.getProducts() != null ? result.getProducts().size() : 0);
+            result.setTotalResultCount(products.size());
+        }
+
         result.setBottomLevel(nextLevelIsBottom);
         return result;
 	}

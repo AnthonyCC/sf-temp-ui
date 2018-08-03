@@ -70,6 +70,7 @@ Table 	     { font-size: 9px;  font-family: Verdana, Arial, sans-serif; border-c
 .text11rbold	 { font-size: 10px; font-weight: bold; color: #CC0000; font-family: Verdana, Arial, sans-serif;}
 .text11orbold	 { font-size: 10px; font-weight: bold; color: #FF9933; font-family: Verdana, Arial, sans-serif;}
 .text11pbold	 { font-size: 10px; font-weight: bold; color: #CC6666; font-family: Verdana, Arial, sans-serif;}
+.errortext     { font-size: 13px; font-weight: normal; font-family: Verdana, Arial, sans-serif; color:#B93D3F;}
 
 .text12 		{ font-size: 11px; font-family: Verdana, Arial, sans-serif;}
 .text12bold 	{ font-size: 11px; font-weight: bold; font-family: Verdana, Arial, sans-serif;}

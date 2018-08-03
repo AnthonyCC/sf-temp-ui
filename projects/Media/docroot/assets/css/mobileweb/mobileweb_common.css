@@ -2680,13 +2680,13 @@ li.cleanli .gen-arrow {
 	.mm-page .youraccount .youraccount_user_name{
 		display: none;
 	}
-	.mm-page .manage_account #yourAccount_reorder .new_purple_button_style{
-		padding: 0;
-		margin: 0;
-		border: 0;
-		background: none;
-		color: #575860;
-	}
+/* 	.mm-page .manage_account #yourAccount_reorder .new_purple_button_style{ */
+/* 		padding: 0; */
+/* 		margin: 0; */
+/* 		border: 0; */
+/* 		background: none; */
+/* 		color: #575860; */
+/* 	} */
 	.mm-page .youraccount .youraccount_header{
 		padding: 25px 20px 0;
 		border: 0;

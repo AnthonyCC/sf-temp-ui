@@ -23,7 +23,6 @@ import java.util.Set;
 import org.apache.commons.lang.enums.Enum;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.log4j.Category;
-import org.apache.tools.ant.util.DateUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -688,15 +687,20 @@ public class FDPromotionJSONSerializer extends AbstractSerializer {
 		} else if (java.util.Date.class.isAssignableFrom(valueType)) {
 			// Date type
 			java.util.Date d = null;
-			try {
+			/*try {
 				d = DateUtils.parseIso8601DateTime(rhs.toString());
 			} catch (ParseException e) {
 			}
 			
 			if (d == null) {
 				d = new Date(Long.parseLong(rhs.toString()));
-			}
+			}*/
 			
+			try {
+				d = new Date(Long.parseLong(rhs.toString()));
+			} catch (NumberFormatException e) {
+				LOGGER.error("Failed to decode String:"+rhs.toString()+"to java.util.Date " + valueType, e);
+			}
 			if (d != null)
 				return d;
 		} else if (org.apache.commons.lang.enums.Enum.class.isAssignableFrom(valueType)) {

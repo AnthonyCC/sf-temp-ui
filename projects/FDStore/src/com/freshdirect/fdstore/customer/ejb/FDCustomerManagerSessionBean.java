@@ -6250,18 +6250,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		return true; // success
 	}
 
-	public double getOutStandingBalance(ErpAbstractOrderModel order) throws FDResourceException {
-		try {
-			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
-			return sb.getOutStandingBalance(order);
-
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce);
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		}
-	}
-
 	public void preAuthorizeSales(String salesId) throws FDResourceException {
 
 		try {
@@ -6646,18 +6634,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(se);
 		} catch (ErpAddressVerificationException e) {
 			throw new FDResourceException(e);
-		}
-	}
-
-	public double getPerishableBufferAmount(ErpAbstractOrderModel order) throws FDResourceException {
-		try {
-			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
-			return sb.getPerishableBufferAmount(order);
-
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce);
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
 		}
 	}
 
@@ -7900,7 +7876,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			+ " SA.ACTION_TYPE IN ('CRO','MOD') AND SA.REQUESTED_DATE BETWEEN trunc(SYSDATE)-1 AND trunc(SYSDATE)  AND S.STATUS <>'CAN' AND S.TYPE = 'REG' AND S.E_STORE = 'FreshDirect' AND ROWNUM <= 999 "
 			+ "  and S.TRUCK_NUMBER IS NULL ";
 
-	public List<String> getShippingInfoSalesId() throws FDResourceException {
+	private List<String> getShippingInfoSalesId() throws FDResourceException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
@@ -7925,56 +7901,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			close(conn);
 		}
 		return shippinginfos;
-
-	}
-
-	private static final String SHIPPING_INFO_CARTON_DETAILS = " SELECT COUNT(*) as carton , CI.CARTON_TYPE, CI.SALE_ID FROM CUST.CARTON_INFO CI, CUST.SALE S "
-			+ " WHERE CI.SALE_ID = S.ID  AND S.ID IN (?replace?) GROUP BY CI.CARTON_TYPE, CI.SALE_ID ";
-
-	public Map<String, Map<String, Integer>> getShippingInfoCartonDetails(List<String> salesIds)
-			throws FDResourceException {
-
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rset = null;
-		Map<String, Map<String, Integer>> shippingCartonInfo = new HashMap<String, Map<String, Integer>>();
-		Map<String, Integer> cartonMap = null;
-		StringBuffer str = null;
-		String saleId = null;
-
-		try {
-			conn = getConnection();
-
-			str = new StringBuffer();
-
-			for (String sale : salesIds) {
-				str.append(sale);
-				str.append(",");
-			}
-
-			pstmt = conn.prepareStatement(SHIPPING_INFO_CARTON_DETAILS.replaceAll("\\?replace\\?",
-					str.substring(0, str.length() - 2).toString()));
-			rset = pstmt.executeQuery();
-
-			while (rset.next()) {
-				saleId = rset.getString("SALE_ID");
-				cartonMap = shippingCartonInfo.get(saleId);
-				if (cartonMap == null) {
-					cartonMap = new HashMap<String, Integer>();
-				}
-				cartonMap.put(rset.getString("CARTON_TYPE"), rset.getInt("carton"));
-				shippingCartonInfo.put(saleId, cartonMap);
-			}
-
-		} catch (SQLException sqle) {
-			LOGGER.error("SQL exception while retreiving shipping sale" + sqle);
-			throw new FDResourceException(sqle);
-		} finally {
-			close(rset);
-			close(pstmt);
-			close(conn);
-		}
-		return shippingCartonInfo;
 
 	}
 
@@ -8062,19 +7988,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 		return result;
 	}
-
-	public List<ShippingDetail> getTruckDetails() throws FDResourceException {
-
-		return FDDeliveryManager.getInstance().getTruckDetails();
-
-	}
-
 	private Map<String, ErpShippingInfo> mapShippingTruckDetails(List<String> salesId) throws FDResourceException {
 		Map<String, ErpShippingInfo> erpShippingMap = new HashMap<String, ErpShippingInfo>();
 		Map<String, ShippingDetail> truckMap = new HashMap<String, ShippingDetail>();
 
 		if (salesId != null) {
-			List<ShippingDetail> shippingDetails = getTruckDetails();
+			List<ShippingDetail> shippingDetails = FDDeliveryManager.getInstance().getTruckDetails();
 
 			if (null != shippingDetails) {
 				for (ShippingDetail shippingDetail : shippingDetails) {
@@ -8506,4 +8425,56 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			close(conn);
 		}
 	}
+	
+	private static final String GET_REJECTAL_COMPLAINTS ="select c.id as COMPLAINT_ID from cust.sale s, cust.complaint c , cust.customer cu where " + 
+			"      c.sale_id=s.id and cu.ID=s.CUSTOMER_ID and   c.status = 'PEN' and c.create_date < trunc(sysdate -30) and         (s.status = 'STF')  " + 
+			"               union all " + 
+			"select c.id as COMPLAINT_ID from cust.sale s, cust.complaint c , cust.customer cu where " + 
+			"      c.sale_id=s.id and cu.ID=s.CUSTOMER_ID and   c.status = 'PEN' and c.create_date < trunc(sysdate -30) and         ( cu.ACTIVE ='0' )" ; 
+	
+	/* APPDEV-6785 		AutoCreditApprovalCron */
+	public List<String> getComplaintsToRejectCredits() throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement ps= null;
+		ResultSet rs = null;
+		try {
+			conn = this.getConnection();
+			ps= conn.prepareStatement(GET_REJECTAL_COMPLAINTS);
+			
+			rs= ps.executeQuery();
+			List<String> lst = new ArrayList<String>();
+			while (rs.next()) {
+				lst.add(rs.getString("COMPLAINT_ID"));
+			}
+			return lst;
+			
+		}catch(SQLException e){
+			throw new FDResourceException(e);
+		}finally {
+			DaoUtil.close(rs);
+			DaoUtil.close(ps);
+			DaoUtil.close(conn);
+		}
+	}
+
+	/*	 APPDEV-6785 		AutoCreditApprovalCron*/
+	public void rejectCreditsOlderThanAMonth(List<String> listToRejCredits){
+		if (listToRejCredits != null && !listToRejCredits.isEmpty()) {
+			String sourse = EnumTransactionSource.SYSTEM.getName().toUpperCase();
+			boolean Approve = false;
+			boolean sendMail = false;
+			Double limit = null;
+			LOGGER.info("in rejectCreditsOlderThanAMonth(), listToReject size is: "+listToRejCredits.size());
+			for(Iterator it = listToRejCredits.iterator(); it.hasNext();) {
+				String complaintId = (String) it.next();
+				LOGGER.info("Going to update status to REJ on Complaint ID: "+it);
+				try {
+					approveComplaint(complaintId, Approve, sourse, sendMail, limit);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
 }

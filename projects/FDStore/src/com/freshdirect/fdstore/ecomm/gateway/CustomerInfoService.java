@@ -78,7 +78,6 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 	private static final String LOAD_IP_LOCATOR_EVENt = "customerInfo/loadIpLocatorEvent";
 	private static final String GET_PROMO_HISTORY_INFO = "customerInfo/getPromoHistoryInfo";
 	private static final String LOAD_REWRITE_RULES = "customerInfo/loadRewriteRules";
-	private static final String GET_PERISHABLE_BUFFE_AMOUNT = "customerInfo/getPerishableBufferAmount";
 	private static final String GET_TOP_FAQS = "customerInfo/getTopFaqs";
 	private static final String IS_DISPLAY_NAME_USED = "customerInfo/isDisplayNameUsed";
 	private static final String GET_SILVER_POP_UP_DETAILS = "customerInfo/getSilverPopupDetails";
@@ -88,6 +87,7 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 	private static final String SET_ACKNOWLEDGE = "customerInfo/setAcknowledge";
 	private static final String GET_USED_RESERVATIONS = "customerInfo/getUsedReservations";
 	private static final String GET_CLICK_CALL_INFO = "customerInfo/getClick2CallInfo";
+	private static final String SET_ACTIVE = "customerInfo/setActive";
 	
 	private static CustomerInfoServiceI INSTANCE;
 
@@ -107,7 +107,7 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 			String inputJson = buildRequest(request);
 
 			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(GET_CUSTOMER_ID),
-					new TypeReference<Response<ErpAddressModel>>() {
+					new TypeReference<Response<String>>() {
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
@@ -607,32 +607,6 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 	}
 
 	@Override
-	public double getPerishableBufferAmount(ErpAbstractOrderModel order, boolean isModifyOrderModel) throws RemoteException, FDResourceException {
-		Response<Double> response = null;
-		try {
-			ObjectNode rootNode = getMapper().createObjectNode();
-			rootNode.set("order", getMapper().convertValue(order, JsonNode.class));
-			rootNode.put("isModifyOrderModel", isModifyOrderModel);
-			Request<ObjectNode> request = new Request<ObjectNode>();
-			request.setData(rootNode);
-			String inputJson = buildRequest(request);
-
-			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(GET_PERISHABLE_BUFFE_AMOUNT),
-					new TypeReference<Response<Double>>() {
-					});
-
-			if (!response.getResponseCode().equals("OK")) {
-				LOGGER.error("Error in CustomerInfoService.getPerishableBufferAmount: data=" + inputJson);
-				throw new FDResourceException(response.getMessage());
-			}
-			return response.getData();
-		} catch (FDEcommServiceException e) {
-			LOGGER.error("Error in CustomerInfoService.getPerishableBufferAmount: ", e);
-			throw new RemoteException(e.getMessage());
-		}
-	}
-
-	@Override
 	public List<String> getTopFaqs() throws FDResourceException, RemoteException {
 		Response<List<String>> response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_TOP_FAQS),
 				new TypeReference<Response<List<String>>>() {
@@ -796,6 +770,32 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 		}
 		return response.getData();
 	}
+	
+	@Override
+	public void setActive(FDActionInfo info, boolean active) throws RemoteException, FDResourceException {
+		Response<Void> response = null;
+		try {
+			Request<ObjectNode> request = new Request<ObjectNode>();
+			ObjectNode rootNode = getMapper().createObjectNode();
+			rootNode.set("info", getMapper().convertValue(info, JsonNode.class));
+			rootNode.put("active", active);
+			request.setData(rootNode);
+			String inputJson = buildRequest(request);
+
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(SET_ACTIVE),
+					new TypeReference<Response<Void>>() {
+					});
+
+			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in CustomerInfoService.setActive: data=" + inputJson);
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDEcommServiceException e) {
+			LOGGER.error("Error in CustomerInfoService: ", e);
+			throw new RemoteException(e.getMessage());
+		}
+	}
+	
 	private RecognizedUserData fdUserToRecognizedUserData(FDUser user) {
 		RecognizedUserData data = new RecognizedUserData();
 		FDUserData fdUserData = new FDUserData();
@@ -858,5 +858,4 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 		return erpOrderlines;
 	}
 
-	
 }

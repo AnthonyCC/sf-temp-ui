@@ -26,7 +26,6 @@ import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.enums.CaptchaType;
 import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
-import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -1492,19 +1491,9 @@ public class RegistrationAction extends WebActionSupport {
 			this.repeatPassword = NVL.apply(request.getParameter(EnumUserInfoName.REPEAT_PASSWORD.getCode()), "").trim();
 			/*this.passwordHint = NVL.apply(request.getParameter("password_hint"), "").trim();*/
 			
-			FDSessionUser user = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
-			
-			if(user.getUserContext()!=null 
-					&& user.getUserContext().getStoreContext()!=null 
-					&& user.getUserContext().getStoreContext().getEStoreId().equals(EnumEStoreId.FDX)) {
-				// For FDX Registration set FD Email Preference to false and FDX email Preference to true ("2")
-				this.receiveNews = false;
-				this.emailPreferenceLevel = "2";
-			} else {
-				this.receiveNews = true;
-				this.emailPreferenceLevel = "0";
-			}
-			this.plainTextEmail = false;
+            this.receiveNews = true;
+            this.emailPreferenceLevel = "2";
+            this.plainTextEmail = false;
 			
 			this.termsAccepted = request.getParameter("terms") != null;
 

@@ -80,7 +80,7 @@ A.list		    { line-height: 12px; }
 .groceryProductLinePrice 	{ font-size: 12px; font-weight: bold; color:#555; font-family: Arial, sans-serif;}
 .favoritePrice  			{ font-size: 11px; font-weight: bold; color:#333; line-height: 16px; font-family: Tahoma, Arial, sans-serif;}
 .productPageSinglePrice  	{ font-size: 17px; font-weight: bold; font-family: Verdana, Arial, sans-serif;}
-.productPageSinglePrice-free { font-size: 17px; font-weight: bold; font-family: Verdana, Arial, sans-serif; color: #CC0000;}
+.productPageSinglePrice-free { font-size: 17px; font-weight: bold; font-family: Verdana, Arial, sans-serif; color: #B93D3F;}
 .productPagePrimaryVarPrice { font-size: 13px; font-weight: bold; font-family: Verdana, Arial, sans-serif;}
 .productPageSecondaryVarPrice 	  { font-size: 12px; font-weight: bold; font-family: Verdana, Arial, sans-serif;}
 .productPageSinglePriceUnit  	  { font-size: 13px; font-weight: bold; font-family: Verdana, Arial, sans-serif;}
@@ -121,7 +121,7 @@ A.list		    { line-height: 12px; }
 .text10grbold    { font-size: 9px; color: #666; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 .text10w	     { font-size: 9px; color: #FFFFFF; font-family: Verdana, Arial, sans-serif; }
 .text10wbold     { font-size: 9px; color: #FFFFFF; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
-.text10rbold     { font-size: 9px; color: #CC0000; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
+.text10rbold     { font-size: 9px; color: #B93D3F; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 .text10blbold    { font-size: 9px; color: #6699CC; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 
 .title10 	     { font-size: 9px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
@@ -133,11 +133,28 @@ A.list		    { line-height: 12px; }
 .text11gbold	 { font-size: 10px; color: #336600; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 .text11nb        { font-size: 10px; font-weight: normal; color: #777777; font-family: Verdana, Arial, sans-serif; }
 .text11wbold     { font-size: 10px; color: #FFFFFF;  font-weight: bold;font-family: Verdana, Arial, sans-serif; }
-.text11rbold     { font-size: 10px; font-weight: bold; color: #CC0000; font-family: Verdana, Arial, sans-serif; }
-.text11orbold	 { font-size: 10px; font-weight: bold; color: #f93; font-family: Verdana, Arial, sans-serif; }
+/* .text11rbold     { font-size: 10px; font-weight: bold; color: #CC0000; font-family: Verdana, Arial, sans-serif; } */
+/* .text11orbold	 { font-size: 10px; font-weight: bold; color: #f93; font-family: Verdana, Arial, sans-serif; } */
 .text11pkbold	 { font-size: 10px; font-weight: bold; color: #CC6666; font-family: Verdana, Arial, sans-serif; }
 .text11prpbold	 { font-size: 10px; font-weight: bold; color: #969; font-family: Verdana, Arial, sans-serif; }
 
+/* high contrast color change for success msg text-accessibility  */
+.success13text   { font-size: 13px; font-weight: normal; font-family: Verdana, Arial, sans-serif;}
+
+/*High color contrast for error messages text-accessibility */
+.errortext     { font-size: 13px; font-weight: normal; font-family: Verdana, Arial, sans-serif; color:#B93D3F;}
+
+/*changing  error messages text globally to different font size */
+.accessibleFont a { font-size:13px;}
+.accessibleFont a:hover,.accessibleFont a:focus{ text-decoration:underline; outline:none;}
+
+/*warning text message */
+.warningtext {
+color:black;
+font-family:Verdana,Arial,sans-serif;
+font-size:10px;
+font-weight:bold;
+}
 .title11 		 { font-size: 10px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 
 .text12 		 { font-size: 11px; font-family: Verdana, Arial, sans-serif; }
@@ -145,8 +162,8 @@ A.list		    { line-height: 12px; }
 .text12 ol 		 { position: relative; left: 10px; }
 .text12px 		 { font-size: 12px; font-family: Verdana, Arial, sans-serif; }
 .text12bold 	 { font-size: 11px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
-.text12rnormal	 { font-size: 11px; font-weight: normal; color: #CC0000; font-family: Verdana, Arial, sans-serif; }
-.text12rbold	 { font-size: 11px; font-weight: bold; color: #CC0000; font-family: Verdana, Arial, sans-serif; }
+.text12rnormal	 { font-size: 11px; font-weight: normal; color: #B93D3F; font-family: Verdana, Arial, sans-serif; }
+.text12rbold	 { font-size: 11px; font-weight: bold; color: #B93D3F; font-family: Verdana, Arial, sans-serif; }
 .text12wbold     { font-size: 11px; color: #FFFFFF; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 .title12 		 { font-size: 11px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 .text13bold 	 { font-size: 13px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
@@ -3520,4 +3537,8 @@ div#quickshop,.container.browse section.main,section.container.srch section.main
 }
 .assistivetext{
 	font-size:14px;
+}
+.assistivetext a{
+	
+	outline:none !important;
 }

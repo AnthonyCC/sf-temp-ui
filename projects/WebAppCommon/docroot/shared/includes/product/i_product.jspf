@@ -371,7 +371,7 @@ if ( skuSize == 0 ) {
         			<br/><span class="text11bold">Please Choose</span>
         			<br/><span class="space2pix"><br/></span>
 					<fd:ErrorHandler result='<%=result%>' name='salesUnit' id='errorMsg'>
-						<span class="text11rbold"><%=errorMsg%></span><br/>
+						<span class="errortext"><%=errorMsg%></span><br/>
 						<% if ( errorMsg != "" ) { %><img src="/media_stat/images/layout/error.gif" alt="" border="0"><% } %>
 					</fd:ErrorHandler>
 
@@ -509,7 +509,7 @@ if ( skuSize == 0 ) {
             				} %>
             
 				            <fd:ErrorHandler result='<%=result%>' name='<%= variation.getName() %>' id='errorMsg'>
-				                <span class="text11rbold"><%=errorMsg%></span><br/>
+				                <span class="errortext"><%=errorMsg%></span><br/>
 				                <% if ( errorMsg != "" ) { %><img src="/media_stat/images/layout/error.gif" border="0" alt="error" />
 				                	<% errorMsgs++; %>
 				                	<% if (idx == variations.size()-1) { %>
@@ -700,7 +700,7 @@ if ( skuSize == 0 ) {
         <% if (isQuickBuy && productNode.hasTerms()) { %>
           <div>
             <fd:ErrorHandler result='<%=result%>' name='agreeToTerms' id='errorMsg'>
-                <span class="text11rbold"><%=errorMsg%></span><br/>
+                <span class="errortext"><%=errorMsg%></span><br/>
                 <% if ( errorMsg != "" ) { %><img src="/media_stat/images/layout/error.gif" border="0" alt="error" />
                   <% errorMsgs++; %>
                   <script><%-- fix height of qb panel when an error occurs --%>
@@ -731,7 +731,7 @@ if ( skuSize == 0 ) {
 				<% } %>
 
 			    <fd:ErrorHandler result='<%=result%>' name='quantity' id='errorMsg'>
-			        <span class="text11rbold"><%=errorMsg%></span><br/>
+			        <span class="errortext"><%=errorMsg%></span><br/>
 			    </fd:ErrorHandler>
 
     
@@ -744,7 +744,7 @@ if ( skuSize == 0 ) {
             				<td colspan="2" class="text11" style="<%= CSSTableStyle %>">
 	            				
 								<fd:ErrorHandler result='<%=result%>' name='salesUnit' id='errorMsg'>
-									<span class="text11rbold"><%=errorMsg%></span><br/>
+									<span class="errortext"><%=errorMsg%></span><br/>
 								</fd:ErrorHandler>
 								
 								<%

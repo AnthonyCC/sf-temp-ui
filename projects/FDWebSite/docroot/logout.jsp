@@ -69,7 +69,7 @@ response.sendRedirect("/index.jsp?serviceType=" + serviceType);
 	        <TR VALIGN="TOP">
 	            
 		    <% if (!"".equals(lockout)) {   %>
-		    <td class="text11rbold" width="100%" bgcolor="#FFFFFF">
+		    <td class="errortext" width="100%" bgcolor="#FFFFFF">
 			<div style="padding: 3px 1px 3px 1px"><%= lockout %></div>
 			
 		    

@@ -129,7 +129,7 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 				</tr>
 				<tr>
 					<td width="18" bgcolor="#FF9900"><img src="/media_stat/images/template/system_msgs/check_FF9900.gif" width="18" height="22" border="0" alt="check"></td>
-					<td class="text11orbold" width="100%" bgcolor="#ffffff">
+					<td class="success13text" width="100%" bgcolor="#ffffff">
 							<img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"><br>
 								<%=infoMsg%><br><img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"><br>
 					</td>

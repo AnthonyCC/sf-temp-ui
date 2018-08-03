@@ -25,6 +25,7 @@ import com.freshdirect.ecommerce.data.standingorders.ResultData;
 import com.freshdirect.ecommerce.data.standingorders.ResultListData;
 import com.freshdirect.ecommerce.data.standingorders.StandingOrderErrorData;
 import com.freshdirect.ecommerce.data.standingorders.StandingOrderModifyData;
+import com.freshdirect.ecommerce.data.standingorders.StandingOrdersJobConfigData;
 import com.freshdirect.ecommerce.data.standingorders.UnAvailabilityDetailsData;
 import com.freshdirect.ecommerce.data.standingorders.UnavailabilityDetailsWrapper;
 import com.freshdirect.ecommerce.data.survey.FDIdentityData;
@@ -50,6 +51,7 @@ import com.freshdirect.fdstore.standingorders.SOResult;
 import com.freshdirect.fdstore.standingorders.SOResult.Result;
 import com.freshdirect.fdstore.standingorders.SOResult.ResultList;
 import com.freshdirect.fdstore.standingorders.SOResult.Status;
+import com.freshdirect.fdstore.standingorders.StandingOrdersJobConfig;
 import com.freshdirect.fdstore.standingorders.UnAvailabilityDetails;
 import com.freshdirect.fdstore.standingorders.UnavailabilityReason;
 import com.freshdirect.payment.service.ModelConverter;
@@ -515,5 +517,16 @@ public class StandingOrderConverter {
 			
 		}
 		
+	}
+	
+	public static StandingOrdersJobConfigData buildStandingOrdersJobConfigData(StandingOrdersJobConfig jobConfig){
+		StandingOrdersJobConfigData jobConfigData = new StandingOrdersJobConfigData();
+		if(null !=jobConfig){
+			jobConfigData.setSendReportEmail(jobConfig.isSendReportEmail());
+			jobConfigData.setSendReminderNotificationEmail(jobConfig.isSendReminderNotificationEmail());
+			jobConfigData.setCreateIfSoiExistsForWeek(jobConfig.isCreateIfSoiExistsForWeek());
+			jobConfigData.setForceCapacity(jobConfig.isForceCapacity());
+		}		
+		return jobConfigData;		
 	}
 }
