@@ -188,7 +188,7 @@ public class ErpReturnOrderPersistentBean extends ErpTransactionPersistentBean {
 		ReturnLineList rlList = new ReturnLineList();
 		rlList.setParentPK(this.getPK());
 		rlList.load(conn);
-		this.model.setInvoiceLines(rlList.getModelList());
+		this.model.setReturnLines(rlList.getModelList());
 		
 		ChargeList cList = new ChargeList();
 		cList.setParentPK(this.getPK());
