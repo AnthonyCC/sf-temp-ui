@@ -2956,7 +2956,7 @@
 
 			<!-- FD classes -->
 			<zipfileset src="${work.dir}/Framework.jar" />
-			<zipfileset src="${work.dir}/ERPServicesEJB-WL.jar" excludes="META-INF/*, com/freshdirect/fdstore/FDCachedFactory*, com/freshdirect/fdstore/FDInventoryCache.class, com/freshdirect/fdstore/FDAttributeCache.class, com/freshdirect/fdstore/FDMaterialGroupCache.class, com/freshdirect/fdstore/FDAbstractCache.class, com/freshdirect/fdstore/FDNutritionPanelCache.class, com/freshdirect/fdstore/FDNutritionCache*" />
+			<zipfileset src="${work.dir}/ERPServicesEJB-WL.jar" excludes="META-INF/*, com/freshdirect/fdstore/FDCachedFactory*, com/freshdirect/fdstore/FDInventoryCache*, com/freshdirect/fdstore/FDAttributeCache.class, com/freshdirect/fdstore/FDMaterialGroupCache*, com/freshdirect/fdstore/FDAbstractCache*, com/freshdirect/fdstore/FDNutritionPanelCache*, com/freshdirect/fdstore/FDNutritionCache*" />
 			<zipfileset src="${work.dir}/DeliveryEJB-WL.jar" excludes="META-INF/*, com/freshdirect/fdstore/FDDeliveryManager*" />
 			<zipfileset src="${work.dir}/cmseue.jar" excludes="META-INF/*" />
 			<zipfileset src="${work.dir}/StoreAPI.jar" excludes="META-INF/*" />
