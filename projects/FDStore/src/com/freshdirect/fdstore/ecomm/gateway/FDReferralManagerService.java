@@ -28,6 +28,7 @@ import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDEcommServiceException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.referral.ReferralPromotionModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.service.ModelConverter;
 
@@ -79,13 +80,14 @@ public class FDReferralManagerService extends AbstractEcommService implements FD
 					new TypeReference<Response<ReferralHistoryData>>() {
 					});
 			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in FDReferralManagerService: inputJson=" + inputJson);
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDResourceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in FDReferralManagerService", e);
 			throw new RemoteException(e.getMessage());
 		}catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in FDReferralManagerService", e);
 			throw new RemoteException(e.getMessage());
 		}
 		return response.getData();
@@ -97,10 +99,11 @@ public class FDReferralManagerService extends AbstractEcommService implements FD
 		try {
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(LOAD_REFERRAL_PROGRAM),  new TypeReference<Response<List<ReferralProgramData>>>(){});
 			if(!response.getResponseCode().equals("OK")){
+				LOGGER.error("Error in FDReferralManagerService");
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDResourceException e){
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in FDReferralManagerService");
 			throw new RemoteException(e.getMessage());
 		}
 		return response.getData();
@@ -112,10 +115,11 @@ public class FDReferralManagerService extends AbstractEcommService implements FD
 		try {
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(LOAD_LATEST_ACTIVE_REFERRAL_PROGRAM),  new TypeReference<Response<ReferralProgramData>>(){});
 			if(!response.getResponseCode().equals("OK")){
+				LOGGER.error("Error in FDReferralManagerService");
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDResourceException e){
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in FDReferralManagerService: ", e);
 			throw new RemoteException(e.getMessage());
 		}
 		return response.getData();
@@ -126,10 +130,11 @@ public class FDReferralManagerService extends AbstractEcommService implements FD
 		try {
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_REFERRAL_CHANNEL_MODEL+refChaId),  new TypeReference<Response<ReferralChannelData>>(){});
 			if(!response.getResponseCode().equals("OK")){
+				LOGGER.error("Error in FDReferralManagerService: refChaId=" + refChaId);
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDResourceException e){
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in FDReferralManagerService: refChaId=" + refChaId, e);
 			throw new RemoteException(e.getMessage());
 		}
 		return response.getData();
@@ -140,10 +145,11 @@ public class FDReferralManagerService extends AbstractEcommService implements FD
 		try {
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_REFERRAL_CAMPAIGN_MODEL+refChaId),  new TypeReference<Response<ReferralCampaignData>>(){});
 			if(!response.getResponseCode().equals("OK")){
+				LOGGER.error("Error in FDReferralManagerService: refChaId=" + refChaId);
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDResourceException e){
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in FDReferralManagerService: refChaId=" + refChaId, e);
 			throw new RemoteException(e.getMessage());
 		}
 		return response.getData();
@@ -155,10 +161,11 @@ public class FDReferralManagerService extends AbstractEcommService implements FD
 		try {
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_REFERRAL_PARTNER_MODEL+refChaId),  new TypeReference<Response<ReferralPartnerData>>(){});
 			if(!response.getResponseCode().equals("OK")){
+				LOGGER.error("Error in FDReferralManagerService: refChaId=" + refChaId);
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDResourceException e){
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in FDReferralManagerService: refChaId=" + refChaId, e);
 			throw new RemoteException(e.getMessage());
 		}
 		return response.getData();
@@ -170,10 +177,11 @@ public class FDReferralManagerService extends AbstractEcommService implements FD
 		try {
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_STL_SALE+customerId),  new TypeReference<Response<String>>(){});
 			if(!response.getResponseCode().equals("OK")){
+				LOGGER.error("Error in FDReferralManagerService: customerId=" + customerId);
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDRuntimeException e){
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in FDReferralManagerService: customerId=" + customerId, e);
 			throw new RemoteException(e.getMessage());
 		}
 		return response.getData();
@@ -190,14 +198,17 @@ public class FDReferralManagerService extends AbstractEcommService implements FD
 			String inputJson = buildRequest(request);
 			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(SAVE_CUSTOMER_CREDIT), new TypeReference<Response<Object>>() {});
 			if (!response.getResponseCode().equals("OK")){
+				LOGGER.error("Error in FDReferralManagerService: inputJson=" + inputJson);
 				throw new FDResourceException(response.getMessage());
 			}
 		}
 		catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in FDReferralManagerService: referral_customer_id" + referral_customer_id + ", ref_fee=" + ref_fee
+					+ ", sale" + sale + ", complaintId" + complaintId + ", customer_id" + customer_id+ ", refPrgmId" + refPrgmId, e);
 			throw new RemoteException(e.getMessage());
 		}catch (FDResourceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in FDReferralManagerService: referral_customer_id" + referral_customer_id + ", ref_fee=" + ref_fee
+					+ ", sale" + sale + ", complaintId" + complaintId + ", customer_id" + customer_id+ ", refPrgmId" + refPrgmId, e);
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -207,10 +218,11 @@ public class FDReferralManagerService extends AbstractEcommService implements FD
 		try {
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(IS_CUSTOMER_REFERRED+customerId),  new TypeReference<Response<Boolean>>(){});
 			if(!response.getResponseCode().equals("OK")){
+				LOGGER.error("Error in FDReferralManagerService: customerId" + customerId);
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDRuntimeException e){
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in FDReferralManagerService: customerId" + customerId, e);
 			throw new RemoteException(e.getMessage());
 		}
 		return response.getData();
@@ -228,14 +240,18 @@ public class FDReferralManagerService extends AbstractEcommService implements FD
 			String inputJson = buildRequest(request);
 			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(STORE_FAILED_ATTEMPT), new TypeReference<Response<Object>>() {});
 			if (!response.getResponseCode().equals("OK")){
+				LOGGER.error("Error in FDReferralManagerService: firstName" + firstName + ", lastName=" + lastName
+						+ ", zipCode" + zipCode + ", referral" + referral + ", reason" + reason);
 				throw new FDResourceException(response.getMessage());
 			}
 		}
 		catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in FDReferralManagerService: firstName" + firstName + ", lastName=" + lastName
+					+ ", zipCode" + zipCode + ", referral" + referral + ", reason" + reason, e);
 			throw new RemoteException(e.getMessage());
-		}catch (FDResourceException e) {
-			LOGGER.error(e.getMessage());
+		} catch (FDResourceException e) {
+			LOGGER.error("Error in FDReferralManagerService: firstName" + firstName + ", lastName=" + lastName
+					+ ", zipCode" + zipCode + ", referral" + referral + ", reason" + reason, e);
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -249,14 +265,17 @@ public class FDReferralManagerService extends AbstractEcommService implements FD
 			String inputJson = buildRequest(request);
 			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(IS_UNIQUE_FNLNZIP), new TypeReference<Response<Boolean>>() {});
 			if (!response.getResponseCode().equals("OK")){
+				LOGGER.error("Error in FDReferralManagerService: firstName" + firstName + ", lastName=" + lastName
+						+ ", zipCode" + zipCode + ", customerId" + customerId);
 				throw new FDResourceException(response.getMessage());
 			}
-		}
-		catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
+		} catch (FDEcommServiceException e) {
+			LOGGER.error("Error in FDReferralManagerService: firstName" + firstName + ", lastName=" + lastName
+					+ ", zipCode" + zipCode + ", customerId" + customerId, e);
 			throw new RemoteException(e.getMessage());
-		}catch (FDResourceException e) {
-			LOGGER.error(e.getMessage());
+		} catch (FDResourceException e) {
+			LOGGER.error("Error in FDReferralManagerService: firstName" + firstName + ", lastName=" + lastName
+					+ ", zipCode" + zipCode + ", customerId" + customerId, e);
 			throw new RemoteException(e.getMessage());
 		}
 		return response.getData();
@@ -267,10 +286,11 @@ public class FDReferralManagerService extends AbstractEcommService implements FD
 		try {
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_REFERRAL_NAME +referralId),  new TypeReference<Response<String>>(){});
 			if(!response.getResponseCode().equals("OK")){
+				LOGGER.error("Error in FDReferralManagerService: referralId" + referralId);
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDRuntimeException e){
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in FDReferralManagerService: referralId" + referralId, e);
 			throw new RemoteException(e.getMessage());
 		}
 		return response.getData();
@@ -282,48 +302,51 @@ public class FDReferralManagerService extends AbstractEcommService implements FD
 		try {
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(IS_REFERRAL_COMPLETE + email),  new TypeReference<Response<Boolean>>(){});
 			if(!response.getResponseCode().equals("OK")){
+				LOGGER.error("Error in FDReferralManagerService: email" + email + ", storeid="+ storeid);
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDRuntimeException e){
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in FDReferralManagerService: email" + email + ", storeid="+ storeid, e);
 			throw new RemoteException(e.getMessage());
 		}
 		return response.getData();
 
 	}
 	@Override
-	public List<ReferralPromotionData> getSettledTransaction()throws FDResourceException, RemoteException {
-		Response< List<ReferralPromotionData>> response = new Response< List<ReferralPromotionData>>();
+	public List<ReferralPromotionModel> getSettledTransaction()throws FDResourceException, RemoteException {
+		Response< List<ReferralPromotionModel>> response = new Response< List<ReferralPromotionModel>>();
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_SETTLED_TRANSACTIONS),  new TypeReference<Response< List<ReferralPromotionData>>>(){});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_SETTLED_TRANSACTIONS),  new TypeReference<Response< List<ReferralPromotionModel>>>(){});
 			if(!response.getResponseCode().equals("OK")){
+				LOGGER.error("Error in FDReferralManagerService");
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDRuntimeException e){
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in FDReferralManagerService: ", e);
 			throw new RemoteException(e.getMessage());
 		}
 		return response.getData();
 
 	}
 	@Override
-	public Map<String, String> updateSetteledRewardTransaction(List<ReferralPromotionData> models) throws FDResourceException,
+	public Map<String, String> updateSetteledRewardTransaction(List<ReferralPromotionModel> models) throws FDResourceException,
 			RemoteException {
 		Response< Map<String, String>> response = new Response< Map<String, String>>();
 		try {
-			Request<List<ReferralPromotionData>> request = new Request<List<ReferralPromotionData>>();
+			Request<List<ReferralPromotionModel>> request = new Request<List<ReferralPromotionModel>>();
 			request.setData(models);
 			String inputJson = buildRequest(request);
 			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(UPDATE_SETTLED_REWARD), new TypeReference<Response< Map<String, String>>>() {});
 			if (!response.getResponseCode().equals("OK")){
+				LOGGER.error("Error in FDReferralManagerService: inputJson=" + inputJson);
 				throw new FDResourceException(response.getMessage());
 			}
 		}
 		catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in FDReferralManagerService: models=" + models, e);
 			throw new RemoteException(e.getMessage());
 		}catch (FDResourceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in FDReferralManagerService: models=" + models, e);
 			throw new RemoteException(e.getMessage());
 		}
 		return response.getData();
@@ -340,29 +363,31 @@ public class FDReferralManagerService extends AbstractEcommService implements FD
 			String inputJson = buildRequest(request);
 			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(CREATE_REFERRAL_INVITES), new TypeReference<Response<ReferralProgramInvitationData>>() {});
 			if (!response.getResponseCode().equals("OK")){
+				LOGGER.error("Error in FDReferralManagerService");
 				throw new FDResourceException(response.getMessage());
 			}
 		}
 		catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in FDReferralManagerService: ", e);
 			throw new RemoteException(e.getMessage());
 		}catch (FDResourceException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in FDReferralManagerService: ", e);
 			throw new RemoteException(e.getMessage());
 		}
 		return response.getData();
 	}
 	
 	@Override
-	public ReferralPromotionData getReferralPromotionDetailsByRefName(String referral) throws FDResourceException, RemoteException {
-		Response<ReferralPromotionData> response = new Response<ReferralPromotionData>();
+	public ReferralPromotionModel getReferralPromotionDetailsByRefName(String referral) throws FDResourceException, RemoteException {
+		Response<ReferralPromotionModel> response = new Response<ReferralPromotionModel>();
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_REFERRAL_PROMOTION_DETAILS_BY_NAME+referral),  new TypeReference<Response<ReferralPromotionData>>(){});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_REFERRAL_PROMOTION_DETAILS_BY_NAME+referral),  new TypeReference<Response<ReferralPromotionModel>>(){});
 			if(!response.getResponseCode().equals("OK")){
+				LOGGER.error("Error in FDReferralManagerService: referral=" + referral);
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDRuntimeException e){
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in FDReferralManagerService: referral=" + referral, e);
 			throw new RemoteException(e.getMessage());
 		}
 		return response.getData();
@@ -374,10 +399,11 @@ public class FDReferralManagerService extends AbstractEcommService implements FD
 		try {
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_MANAGE_INVITES+customerId),  new TypeReference<Response<List<ManageInvitesData>>>(){});
 			if(!response.getResponseCode().equals("OK")){
+				LOGGER.error("Error in FDReferralManagerService: customerId=" + customerId);
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDRuntimeException e){
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in FDReferralManagerService: customerId=" + customerId, e);
 			throw new RemoteException(e.getMessage());
 		}
 		return response.getData();
@@ -386,17 +412,18 @@ public class FDReferralManagerService extends AbstractEcommService implements FD
 	@Override
 	public List<ErpCustomerCreditModel> getUserCredits(String customerId)
 			throws FDResourceException, RemoteException {
-		Response<List<UserCreditData>> response = new Response<List<UserCreditData>>();
+		Response<List<ErpCustomerCreditModel>> response = new Response<List<ErpCustomerCreditModel>>();
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_USER_CREDITS+customerId),  new TypeReference<Response<List<UserCreditData>>>(){});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_USER_CREDITS+customerId),  new TypeReference<Response<List<ErpCustomerCreditModel>>>(){});
 			if(!response.getResponseCode().equals("OK")){
+				LOGGER.error("Error in FDReferralManagerService.getUserCredits: customerId=" + customerId);
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDRuntimeException e){
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in FDReferralManagerService: customerId=" + customerId, e);
 			throw new RemoteException(e.getMessage());
 		}
-		return ModelConverter.buildCustomerCreditModelList(response.getData());
+		return response.getData();
 
 	}
 	
@@ -406,10 +433,11 @@ public class FDReferralManagerService extends AbstractEcommService implements FD
 		try {
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_AVAILABLE_CREDIT+customerId),  new TypeReference<Response<Double>>(){});
 			if(!response.getResponseCode().equals("OK")){
+				LOGGER.error("Error in FDReferralManagerService.getAvailableCredit: customerId=" + customerId);
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDRuntimeException e){
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in FDReferralManagerService:customerId=" + customerId, e);
 			throw new RemoteException(e.getMessage());
 		}
 		return response.getData();
@@ -421,25 +449,27 @@ public class FDReferralManagerService extends AbstractEcommService implements FD
 		try {
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_REFERRAL_DISPLAY_FLAG+customerId),  new TypeReference<Response<Boolean>>(){});
 			if(!response.getResponseCode().equals("OK")){
+				LOGGER.error("Error in FDReferralManagerService.getReferralDisplayFlag: customerId=" + customerId);
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDRuntimeException e){
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in FDReferralManagerService: customerId=" + customerId, e);
 			throw new RemoteException(e.getMessage());
 		}
 		return response.getData();
 
 	}
 	@Override
-	public List<ReferralPromotionData> getSettledSales()throws FDResourceException, RemoteException {
-		Response<List<ReferralPromotionData>> response = new Response<List<ReferralPromotionData>>();
+	public List<ReferralPromotionModel> getSettledSales()throws FDResourceException, RemoteException {
+		Response<List<ReferralPromotionModel>> response = new Response<List<ReferralPromotionModel>>();
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_SETTLED_SALES),  new TypeReference<Response<List<ReferralPromotionData>>>(){});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_SETTLED_SALES),  new TypeReference<Response<List<ReferralPromotionModel>>>(){});
 			if(!response.getResponseCode().equals("OK")){
+				LOGGER.error("Error in FDReferralManagerService.getSettledSales");
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDRuntimeException e){
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in FDReferralManagerService: ", e);
 			throw new RemoteException(e.getMessage());
 		}
 		return response.getData();
@@ -451,10 +481,11 @@ public class FDReferralManagerService extends AbstractEcommService implements FD
 		try {
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_REFERRAL_LINK+customerId),  new TypeReference<Response<String>>(){});
 			if(!response.getResponseCode().equals("OK")){
+				LOGGER.error("Error in FDReferralManagerService.getReferralLink: customerId=" + customerId);
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDRuntimeException e){
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in FDReferralManagerService: customerId=" + customerId, e);
 			throw new RemoteException(e.getMessage());
 		}
 		return response.getData();

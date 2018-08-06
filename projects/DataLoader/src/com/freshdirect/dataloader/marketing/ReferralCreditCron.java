@@ -56,6 +56,9 @@ import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
 import com.freshdirect.fdstore.ecomm.converter.ReferralConverter;
 import com.freshdirect.fdstore.ecomm.gateway.CallCenterManagerService;
+import com.freshdirect.fdstore.ecomm.gateway.CustomerComplaintService;
+import com.freshdirect.fdstore.ecomm.gateway.CustomerInfoService;
+import com.freshdirect.fdstore.ecomm.gateway.CustomerOrderService;
 import com.freshdirect.fdstore.ecomm.gateway.FDReferralManagerService;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.mail.FDReferAFriendCreditEmail;
@@ -90,15 +93,6 @@ public class ReferralCreditCron {
 		return new InitialContext(h);
 	}
 
-	public List<ReferralPromotionModel> getSettledSales() {
-		try {
-			return FDReferralManager.getSettledSales();
-		} catch (FDResourceException e) {
-			LOGGER.error("Error while getting settled sales", e);
-		}
-		return null;
-	}
-
 	/**
 	 * @param args
 	 */
@@ -114,12 +108,9 @@ public class ReferralCreditCron {
 			CallCenterManagerSB csb = csManagerHome.create();
 			complaintReasons = csb.getComplaintReasons(false);
 		}
-		FDReferralManagerHome managerHome = (FDReferralManagerHome) ctx
-				.lookup(FDStoreProperties.getFDReferralManagerHome());
-		FDReferralManagerSB sb = managerHome.create();
-		FDCustomerManagerHome fdcmHome = (FDCustomerManagerHome) ctx
-				.lookup(FDStoreProperties.getFDCustomerManagerHome());
-		FDCustomerManagerSB fdsb = fdcmHome.create();
+		
+		FDReferralManagerSB sb = null;
+		FDCustomerManagerSB fdsb = null;
 		ActivityLogHome aHome = (ActivityLogHome) ctx
 				.lookup("freshdirect.customer.ActivityLog");
 		ActivityLogSB logSB = aHome.create();
@@ -135,13 +126,17 @@ public class ReferralCreditCron {
 			// ReferralCreditCron cron = new ReferralCreditCron();
 	
 			// List<ReferralPromotionModel> sales = sb.getSettledSales();
-			List<ReferralPromotionModel> sales= null;
-			 if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)){
-				 sales = ReferralConverter.buildReferralpromotionModelList(FDReferralManagerService.getInstance().getSettledTransaction());
-			  }
-			  else{
-				   sales = sb.getSettledTransaction();
-			  }
+			List<ReferralPromotionModel> sales = null;
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)) {
+				sales = FDReferralManagerService.getInstance().getSettledTransaction();
+			} else {
+				if (sb == null) {
+					FDReferralManagerHome managerHome = (FDReferralManagerHome) ctx
+							.lookup(FDStoreProperties.getFDReferralManagerHome());
+					sb = managerHome.create();
+				}
+				sales = sb.getSettledTransaction();
+			}
 			LOGGER.info(" Sales list of the Advocates :" + sales);
 	
 			Iterator<ReferralPromotionModel> salesIter = sales.iterator();
@@ -155,13 +150,17 @@ public class ReferralCreditCron {
 							.next();
 					String referral_customer_id = model.getRefCustomerId();
 					String referral_max_sale_id =   null;
-					 if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)){
-						 referral_max_sale_id =	 FDReferralManagerService.getInstance().getLatestSTLSale(referral_customer_id);
-					  }
-					  else{
-						   referral_max_sale_id = sb
-							.getLatestSTLSale(referral_customer_id);
-					  }
+					if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)) {
+						referral_max_sale_id = FDReferralManagerService.getInstance()
+								.getLatestSTLSale(referral_customer_id);
+					} else {
+						if (sb == null) {
+							FDReferralManagerHome managerHome = (FDReferralManagerHome) ctx
+									.lookup(FDStoreProperties.getFDReferralManagerHome());
+							sb = managerHome.create();
+						}
+						referral_max_sale_id = sb.getLatestSTLSale(referral_customer_id);
+					}
 					LOGGER.info(" Advocate Customer ID : " + referral_customer_id);
 				LOGGER.info(" Advocate Settled Sale ID : " + referral_max_sale_id);
 				// System.out.println("cust_sale_id:" + model.getSaleId());
@@ -170,8 +169,17 @@ public class ReferralCreditCron {
 					if (referral_max_sale_id != null
 							&& referral_max_sale_id.length() != 0) {
 						// Create FDORderI object
-						FDOrderI order = fdsb.getOrder(referral_max_sale_id);
-	
+						FDOrderI order;
+						if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerOrder)) {
+							order =  CustomerOrderService.getInstance().getOrder(referral_max_sale_id);
+						} else {
+							if (fdsb == null) {
+								FDCustomerManagerHome fdcmHome = (FDCustomerManagerHome) ctx
+										.lookup(FDStoreProperties.getFDCustomerManagerHome());
+								fdsb = fdcmHome.create();
+							}
+							order = fdsb.getOrder(referral_max_sale_id);
+						}
 						LOGGER.info("got FDOrder:" + order.toString());
 	
 						// Create complaint
@@ -211,10 +219,21 @@ public class ReferralCreditCron {
 	
 						// addcomplaint
 						boolean autoApproveAuthorized = true;
-						PrimaryKey cPk = fdsb.addComplaint(complaintModel,
-								referral_max_sale_id, referral_customer_id,
-								model.getFDCustomerId(), autoApproveAuthorized,
-								Double.parseDouble(model.getReferral_fee() + ""));
+						PrimaryKey cPk;
+						if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerComplaint)) {
+							cPk = new PrimaryKey(CustomerComplaintService.getInstance().addComplaint(complaintModel, referral_max_sale_id,
+									referral_customer_id, model.getFDCustomerId(), autoApproveAuthorized,
+									Double.parseDouble(model.getReferral_fee() + "")));
+						} else {
+							if (fdsb == null) {
+								FDCustomerManagerHome fdcmHome = (FDCustomerManagerHome) ctx
+										.lookup(FDStoreProperties.getFDCustomerManagerHome());
+								fdsb = fdcmHome.create();
+							}
+							cPk = fdsb.addComplaint(complaintModel, referral_max_sale_id,
+									referral_customer_id, model.getFDCustomerId(), autoApproveAuthorized,
+									Double.parseDouble(model.getReferral_fee() + ""));
+						}
 	
 						// save the credit in customer invites
 						// Commenting this since we don't need to keep track of the
@@ -307,12 +326,16 @@ public class ReferralCreditCron {
 			}
 			// Update the Reward Transaction status
 			try {
-				 if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)){
-					 FDReferralManagerService.getInstance().updateSetteledRewardTransaction(ReferralConverter.buildReferralPromotionDataList(models));
-				  }
-				  else{
-					  sb.updateSetteledRewardTransaction(models);
-				  }
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)) {
+					FDReferralManagerService.getInstance().updateSetteledRewardTransaction(models);
+				} else {
+					if (sb == null) {
+						FDReferralManagerHome managerHome = (FDReferralManagerHome) ctx
+								.lookup(FDStoreProperties.getFDReferralManagerHome());
+						sb = managerHome.create();
+					}
+					sb.updateSetteledRewardTransaction(models);
+				}
 			} catch (NumberFormatException e) {
 				StringWriter sw = new StringWriter();
 				e.printStackTrace(new PrintWriter(sw));
@@ -328,10 +351,9 @@ public class ReferralCreditCron {
 	        ErpCustomerHome ecHome = (ErpCustomerHome) ctx.lookup( FDStoreProperties.getErpCustomerHome() );
 	        ErpCustomerInfoHome ecInfoHome = (ErpCustomerInfoHome) ctx.lookup( FDStoreProperties.getErpCustomerInfoHome() );
 	        LOGGER.info("Starting up now");
-			ReferralCreditCron cron = new ReferralCreditCron();
 			List<ReferralPromotionModel> sales  = null;
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)){
-				 sales = ReferralConverter.buildReferralpromotionModelList(FDReferralManagerService.getInstance().getSettledSales());
+				 sales = FDReferralManagerService.getInstance().getSettledSales();
 			}
 			else{
 				sales = sb.getSettledSales();
@@ -353,7 +375,17 @@ public class ReferralCreditCron {
 					
 					if(referral_max_sale_id != null && referral_max_sale_id.length() != 0) {
 						//Create FDORderI object
-						FDOrderI order = fdsb.getOrder(referral_max_sale_id);
+						FDOrderI order;
+						if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerOrder)) {
+							order = CustomerOrderService.getInstance().getOrder(referral_max_sale_id);
+						} else {
+							if (fdsb == null) {
+								FDCustomerManagerHome fdcmHome = (FDCustomerManagerHome) ctx
+										.lookup(FDStoreProperties.getFDCustomerManagerHome());
+								fdsb = fdcmHome.create();
+							}
+							order = fdsb.getOrder(referral_max_sale_id);
+						}
 						
 						LOGGER.info("got FDOrder:" + order.toString());
 						
@@ -390,17 +422,36 @@ public class ReferralCreditCron {
 					    LOGGER.info("Almost done with complaint:"+ (complaintModel.describe()));
 					    
 					    //addcomplaint
-					    boolean autoApproveAuthorized = true;
-					    PrimaryKey cPk = fdsb.addComplaint(complaintModel, referral_max_sale_id,referral_customer_id,model.getFDCustomerId(),autoApproveAuthorized,Double.parseDouble(model.getReferral_fee()+""));
-					    
-					    //save the credit in customer invites
+						boolean autoApproveAuthorized = true;
+						PrimaryKey cPk;
+						if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerComplaint)) {
+							cPk = new PrimaryKey(CustomerComplaintService.getInstance().addComplaint(complaintModel,
+									referral_max_sale_id, referral_customer_id, model.getFDCustomerId(),
+									autoApproveAuthorized, Double.parseDouble(model.getReferral_fee() + "")));
+						} else {
+							if (fdsb == null) {
+								FDCustomerManagerHome fdcmHome = (FDCustomerManagerHome) ctx
+										.lookup(FDStoreProperties.getFDCustomerManagerHome());
+								fdsb = fdcmHome.create();
+							}
+							cPk = fdsb.addComplaint(complaintModel, referral_max_sale_id, referral_customer_id,
+									model.getFDCustomerId(), autoApproveAuthorized,
+									Double.parseDouble(model.getReferral_fee() + ""));
+						}
+						// save the credit in customer invites
 					    if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)){
 					    	FDReferralManagerService.getInstance().saveCustomerCredit(referral_customer_id, model.getCustomerId(), model.getReferral_fee(), model.getSaleId(), cPk.getId(), model.getReferral_prgm_id());
 							 
 					    }
-					    else{
-					    	sb.saveCustomerCredit(referral_customer_id, model.getCustomerId(), model.getReferral_fee(), model.getSaleId(), cPk.getId(), model.getReferral_prgm_id());
-					    }
+						else {
+							if (sb == null) {
+								FDReferralManagerHome managerHome = (FDReferralManagerHome) ctx
+										.lookup(FDStoreProperties.getFDReferralManagerHome());
+								sb = managerHome.create();
+							}
+							sb.saveCustomerCredit(referral_customer_id, model.getCustomerId(), model.getReferral_fee(),
+									model.getSaleId(), cPk.getId(), model.getReferral_prgm_id());
+						}
 					    //send email to referral
 					    String subject = model.getReferralCreditEmailSubject();
 					    String message = model.getReferralCreditEmailText();
@@ -413,8 +464,19 @@ public class ReferralCreditCron {
 
 					    message = message.replace("<first name>", refereeCm.getFirstName());
 					    message = message.replace("<last name>", refereeCm.getLastName());
-					    
-					    FDCustomerInfo fdCustInfo = fdsb.getCustomerInfo(new FDIdentity(referral_customer_id, model.getFDCustomerId()));
+						FDCustomerInfo fdCustInfo;
+						if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
+							fdCustInfo = CustomerInfoService.getInstance()
+									.getCustomerInfo(new FDIdentity(referral_customer_id, model.getFDCustomerId()));
+						} else {
+							if (fdsb == null) {
+								FDCustomerManagerHome fdcmHome = (FDCustomerManagerHome) ctx
+										.lookup(FDStoreProperties.getFDCustomerManagerHome());
+								fdsb = fdcmHome.create();
+							}
+							fdCustInfo = fdsb
+									.getCustomerInfo(new FDIdentity(referral_customer_id, model.getFDCustomerId()));
+						}
 					    String depotCode = fdCustInfo.getDepotCode();
 					    String fromEmail = FDStoreProperties.getCustomerServiceEmail();
 					    

@@ -152,58 +152,6 @@ public class ReferralConverter {
 		model.setStatus(manageInvites.getStatus());
 		return model;
 	}
-
-	public static List<ReferralPromotionModel> buildReferralpromotionModelList(List<ReferralPromotionData> data) {
-		List<ReferralPromotionModel> model = new ArrayList<ReferralPromotionModel>();
-		for (ReferralPromotionData referralPromotionData : data) {
-			model.add(buildReferralPromotionModel(referralPromotionData));
-		}
-		return model;
-	}
-
-	public static ReferralPromotionModel buildReferralPromotionModel(ReferralPromotionData referralPromotionData) {
-		if(referralPromotionData != null){
-			ReferralPromotionModel model = new ReferralPromotionModel();
-			model.setAdvocateEmail(referralPromotionData.getAdvocateEmail());
-			model.setAudience_desc(referralPromotionData.getAudience_desc());
-			model.setCustomerId(referralPromotionData.getCustomerId());
-			model.setDescription(referralPromotionData.getDescription());
-			model.setExpiration_date(referralPromotionData.getExpiration_date());
-			model.setFbFile(referralPromotionData.getFbFile());
-			model.setFbHeadline(referralPromotionData.getFbHeadline());
-			model.setFbText(referralPromotionData.getFbText());
-			model.setFDCustomerId(referralPromotionData.getFDCustomerId());
-			model.setFriendEmail(referralPromotionData.getFriendEmail());
-			model.setGet_text(referralPromotionData.getGet_text());
-			model.setGetHeader(referralPromotionData.getGetHeader());
-			model.setGive_text(referralPromotionData.getGive_text());
-			model.setGiveHeader(referralPromotionData.getGiveHeader());
-			if (referralPromotionData.getId() != null)
-				model.setId(referralPromotionData.getId());
-			model.setInviteEmailLegal(referralPromotionData.getInviteEmailLegal());
-			model.setInviteEmailOfferText(referralPromotionData.getInviteEmailOfferText());
-			model.setInviteEmailSubject(referralPromotionData.getInviteEmailSubject());
-			model.setInviteEmailText(referralPromotionData.getInviteEmailText());
-			model.setPrgm_users(referralPromotionData.getPrgm_users());
-			model.setPromotion_id(referralPromotionData.getPromotion_id());
-			model.setRefCustomerId(referralPromotionData.getRefCustomerId());
-			model.setReferral_fee(referralPromotionData.getReferral_fee());
-			model.setReferral_prgm_id(referralPromotionData.getReferral_prgm_id());
-			model.setReferralCreditEmailSubject(referralPromotionData.getReferralCreditEmailSubject());
-			model.setReferralCreditEmailText(referralPromotionData.getReferralCreditEmailText());
-			model.setReferralPageLegal(referralPromotionData.getReferralPageLegal());
-			model.setReferralPageText(referralPromotionData.getReferralPageText());
-			model.setSaleId(referralPromotionData.getSaleId());
-			model.setShareHeader(referralPromotionData.getShareHeader());
-			model.setShareText(referralPromotionData.getShareText());
-			model.setSiteAccessImageFile(referralPromotionData.getSiteAccessImageFile());
-			model.setTwitterText(referralPromotionData.getTwitterText());
-			model.setUserListFileHolder(referralPromotionData.getUserListFileHolder());
-			return model;
-		}
-		return null;
-		
-	}
 	public static List<ReferralPromotionData> buildReferralPromotionDataList(List<ReferralPromotionModel> settledSales) {
 		List<ReferralPromotionData> promotionData = new  ArrayList<ReferralPromotionData>();
 		for (ReferralPromotionModel referralPromotionModel : settledSales) {
