@@ -38,7 +38,7 @@ public class AutoCreditApprovalCron {
 		try {
 			List<String> ids;
 			FDCustomerManagerSB sb = null;
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerComplaint)) {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomer)) {
 				ids = CustomerComplaintService.getInstance().autoApproveCredit();
 			} else {
 				ctx = getInitialContext();
@@ -62,7 +62,7 @@ public class AutoCreditApprovalCron {
 				String complaintId = (String) i.next();
 				LOGGER.info("Auto approve STARTED for complaint ID : " + complaintId);
 				try {
-					if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerComplaint)) {
+					if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomer)) {
 						CustomerComplaintService.getInstance().approveComplaint(complaintId, true, initiator, true,
 								ErpServicesProperties.getCreditAutoApproveAmount());
 					} else {

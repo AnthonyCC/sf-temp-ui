@@ -5250,7 +5250,7 @@ public class FDCustomerManager {
 	public static void updateDpFreeTrialOptin(boolean dpFreeTrialOptin, String custId, FDActionInfo info)
 			throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerPayment)) {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomer)) {
 				CustomerDeliveryPassService.getInstance().setDpFreeTrialOptin(dpFreeTrialOptin, custId, info);
 			} else {
 				lookupManagerHome();
@@ -5272,7 +5272,7 @@ public class FDCustomerManager {
 	public static Date getDpFreeTrialOptinDate(String custId) throws FDResourceException {
 
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerPayment)) {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomer)) {
 				return CustomerDeliveryPassService.getInstance().getDpFreeTrialOptinDate(custId);
 			} else {
 				lookupManagerHome();
@@ -5377,7 +5377,7 @@ public class FDCustomerManager {
 			EnumEStoreId eStore) throws FDResourceException {
 
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerPayment)) {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomer)) {
 				CustomerDeliveryPassService.getInstance().updateDpOptinDetails(isAutoRenewDp, custId, dpType, info, eStore);
 			} else {
 				lookupManagerHome();
