@@ -775,7 +775,8 @@
 	</error-page>
 	<error-page>
 		<!-- Missing resource -->
-		<exception-type>com.freshdirect.fdstore.FDNotFoundException</exception-type>
+<!-- 		<exception-type>com.freshdirect.fdstore.FDNotFoundException</exception-type>
+ -->		<exception-type>javax.servlet.ServletException</exception-type>
 		<location>/notfound.jsp</location>
 	</error-page>
 	<error-page>

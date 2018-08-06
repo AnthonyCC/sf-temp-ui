@@ -65,7 +65,12 @@ var FreshDirect = FreshDirect || {};
 		return (captchaWidgetId !=null) && !hasError && window.grecaptcha;
 	}
 	function isValid() {
-		return !isEnabled() || !!grecaptcha.getResponse();
+		try {
+			return !isEnabled() || !!grecaptcha.getResponse();
+		} catch(e) {
+			hasError = true;
+			return true;
+		}
 	}
 	// if component is not registered, register
 	if (!fd.components.captchaWidget) {

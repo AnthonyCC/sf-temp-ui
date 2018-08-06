@@ -35,11 +35,10 @@ public class WebViewDeliveryPassTag extends AbstractGetterTag {
 		}
 		//Reload the DP status from Database to make the session and DB are in sync.
 		currentUser.updateDlvPassInfo();
-		
 		if(DeliveryPassUtil.isDlvPassExistsStatus(currentUser.getDeliveryPassStatus())) {
 			//Get the delivery pass info from the database.
 			List dlvPasses = FDCustomerManager.getDeliveryPassesByStatus(currentUser.getIdentity(),
-																currentUser.getDeliveryPassStatus(),currentUser.getUserContext().getStoreContext().getEStoreId());
+																currentUser.getDeliveryPassStatus());
 			if(dlvPasses == null || ((dlvPasses!=null) && dlvPasses.size() == 0)){
 				throw new FDResourceException("We are unable to load the DeliveryPass information due to " +
 				"technical difficulties. Please try again later.");
