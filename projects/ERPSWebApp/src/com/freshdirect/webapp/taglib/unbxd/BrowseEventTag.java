@@ -60,7 +60,7 @@ public class BrowseEventTag extends SimpleTagSupport {
                 final Visitor visitor = Visitor.withUser(user);
                 final LocationInfo loc = LocationInfo.withUrlAndReferer(RequestUtil.getFullRequestUrl(request), request.getHeader(HttpHeaders.REFERER));
 
-                AnalyticsEventI event = AnalyticsEventFactory.createEvent(AnalyticsEventType.BROWSE, visitor, loc, null, model, null, cosAction);
+                AnalyticsEventI event = AnalyticsEventFactory.createEvent(AnalyticsEventType.BROWSE, visitor, loc, null, model, null, cosAction,null);
 
                 LOGGER.debug("Sending browse event for content ID " + containerId);
 

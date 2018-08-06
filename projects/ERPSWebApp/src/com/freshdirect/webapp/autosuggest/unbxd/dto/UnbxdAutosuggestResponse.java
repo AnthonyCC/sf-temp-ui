@@ -1,16 +1,17 @@
 package com.freshdirect.webapp.autosuggest.unbxd.dto;
+import com.freshdirect.fdstore.customer.UnbxdAutosuggestResults;
 
 import java.util.List;
 
 public class UnbxdAutosuggestResponse {
 
-    private List<UnbxdAutosuggestResultProduct> products;
+    private List<UnbxdAutosuggestResults> products;
 
-    public List<UnbxdAutosuggestResultProduct> getProducts() {
+    public List<UnbxdAutosuggestResults> getProducts() {
         return products;
     }
 
-    public void setProducts(List<UnbxdAutosuggestResultProduct> products) {
+    public void setProducts(List<UnbxdAutosuggestResults> products) {
         this.products = products;
     }
 }

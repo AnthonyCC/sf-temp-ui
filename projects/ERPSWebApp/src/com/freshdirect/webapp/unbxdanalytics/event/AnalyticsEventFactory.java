@@ -8,6 +8,7 @@ import com.freshdirect.storeapi.content.ContentNodeModel;
 import com.freshdirect.storeapi.content.ProductContainer;
 import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.storeapi.fdstore.FDContentTypes;
+import com.freshdirect.webapp.unbxdanalytics.autosuggest.AutoSuggestData;
 import com.freshdirect.webapp.unbxdanalytics.visitor.Visitor;
 
 public final class AnalyticsEventFactory {
@@ -37,7 +38,7 @@ public final class AnalyticsEventFactory {
      * @see Visitor
      * @see LocationInfo
      */
-    public static AnalyticsEventI createEvent(AnalyticsEventType type, Visitor visitor, LocationInfo loc, String searchQuery, ContentNodeModel model, FDCartLineI cartline, boolean cosAction) {
+    public static AnalyticsEventI createEvent(AnalyticsEventType type, Visitor visitor, LocationInfo loc, String searchQuery, ContentNodeModel model, FDCartLineI cartline, boolean cosAction,AutoSuggestData autosuggest_data) {
         if (type == null && visitor == null || loc == null) {
             throw new IllegalArgumentException("Missing event type, visitor and/or location info");
         }
@@ -57,7 +58,7 @@ public final class AnalyticsEventFactory {
                 break;
             case SEARCH:
                 if (searchQuery != null) {
-                    event = new SearchEvent(visitor, loc, searchQuery, cosAction);
+                    event = new SearchEvent(visitor, loc, searchQuery, cosAction, autosuggest_data);
                 } else {
                     throw new IllegalArgumentException("Missing search term parameter");
                 }
@@ -95,7 +96,7 @@ public final class AnalyticsEventFactory {
             final LocationInfo loc = ((AbstractAnalyticsEvent)event).getLocationInfo();
             final boolean cosAction = event.isCosAction();
             
-            visitorEvent = AnalyticsEventFactory.createEvent(AnalyticsEventType.VISITOR, visitor, loc, null, null, null, cosAction);
+            visitorEvent = AnalyticsEventFactory.createEvent(AnalyticsEventType.VISITOR, visitor, loc, null, null, null, cosAction, null);
         }
         return visitorEvent;
     }

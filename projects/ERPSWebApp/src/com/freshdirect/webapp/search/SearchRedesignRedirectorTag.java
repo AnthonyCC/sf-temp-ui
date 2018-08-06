@@ -42,11 +42,13 @@ public class SearchRedesignRedirectorTag extends BodyTagSupport {
 			switch(pageType) {
 				case SEARCH:
 					String searchParams = request.getParameter("searchParams");
+					String isAutosuggest = request.getParameter("isAutosuggest");
+					
 					try {
 						searchParams = (searchParams == null ? "" : URLEncoder.encode(searchParams, "UTF-8"));
 					} catch (UnsupportedEncodingException e) {
 					}
-					redirectUrl = NEW_SEARCH_PAGE + "?searchParams=" + (searchParams == null ? "" : searchParams);
+					redirectUrl = NEW_SEARCH_PAGE + "?searchParams=" + (searchParams == null ? "" : searchParams)+"&isAutosuggest="+isAutosuggest;
 					break;
 				case NEWPRODUCTS:
 					redirectUrl = NEW_SEARCH_PAGE + "?pageType=" + FilteringFlowType.NEWPRODUCTS.toString().toLowerCase();

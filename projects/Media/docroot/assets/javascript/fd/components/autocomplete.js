@@ -13,6 +13,7 @@ var FreshDirect = FreshDirect || {};
             button = $(this).siblings('.searchbutton').first();
 
         $(this).val(ui.item.value);
+        $("#isAutosuggest").val("true");
 
         if (button.size()) {
           button.click();

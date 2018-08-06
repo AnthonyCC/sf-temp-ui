@@ -149,7 +149,7 @@ public class SearchService {
 
     
     public SearchResults searchProducts(String searchTerm, Cookie[] cookies, FDUserI user, String requestUrl, String referer) {
-    	return searchProducts(searchTerm, cookies, user, requestUrl, referer, true);
+    	return searchProducts(searchTerm, cookies, user, requestUrl, referer, true, false);
     }
     /**
      * Perform search operation
@@ -164,7 +164,7 @@ public class SearchService {
      * @param referer
      * @return
      */
-    public SearchResults searchProducts(String searchTerm, Cookie[] cookies, FDUserI user, String requestUrl, String referer, boolean searchRecipe) {
+    public SearchResults searchProducts(String searchTerm, Cookie[] cookies, FDUserI user, String requestUrl, String referer, boolean searchRecipe, boolean isAutosuggest) {
         SearchResults searchResults = new SearchResults(); 
 
         boolean isUnbxdSearchEnabled = FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, cookies, user) && !user.isRobot();
@@ -182,7 +182,7 @@ public class SearchService {
             
             if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, cookies, user)) {
                 // notify UNBXD analytics
-                SearchEventTag.doSendEvent(user, requestUrl, referer, searchTerm, cosAction);
+                SearchEventTag.doSendEvent(user, requestUrl, referer, searchTerm, cosAction, isAutosuggest);
             }
     
             if (isUnbxdSearchEnabled) {

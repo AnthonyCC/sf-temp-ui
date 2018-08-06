@@ -1730,7 +1730,7 @@ public class CheckoutController extends BaseController {
             final LocationInfo location = LocationInfo.withUrlAndReferer(RequestUtil.getFullRequestUrl(request), request.getHeader(HttpHeaders.REFERER));
             LOGGER.debug("UNBXD Service active, cartline size: " + cartLines.size());
             for(FDCartLineI cartLine : cartLines){
-                AnalyticsEventI orderEvent = AnalyticsEventFactory.createEvent(AnalyticsEventType.ORDER, visitor, location, null, null, cartLine, cosAction);
+                AnalyticsEventI orderEvent = AnalyticsEventFactory.createEvent(AnalyticsEventType.ORDER, visitor, location, null, null, cartLine, cosAction,null);
                 EventLoggerService.getInstance().log(orderEvent);
             }
         }

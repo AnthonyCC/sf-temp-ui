@@ -155,6 +155,8 @@ public class CmsFilteringNavigator {
 
     private boolean doNotFillPage;
     
+    private boolean isAutosuggest;
+    
     public static CmsFilteringNavigator createInstance(HttpServletRequest request, FDUserI fdUser) throws InvalidFilteringArgumentException, FDResourceException {
     	return createInstance(request, fdUser, true);
     }
@@ -234,6 +236,8 @@ public class CmsFilteringNavigator {
                     	cmsFilteringNavigator.setMenuBoxFilterRequested(Boolean.parseBoolean(paramValue.toLowerCase()));
                     } else if ("getDescriptiveContent".equalsIgnoreCase(param)) {
                     	cmsFilteringNavigator.setDescriptiveContentRequested(Boolean.parseBoolean(paramValue.toLowerCase()));
+                    } else if ("isAutosuggest".equalsIgnoreCase(param)) {
+                        cmsFilteringNavigator.setAutosuggest(Boolean.parseBoolean(paramValue.toLowerCase()));
                     } else if ("pageType".equalsIgnoreCase(param)) {
                         // Do nothing but exclude from 'filtering params'
                     } else { // No match for any other CmsFilteringNavigator property => must be a filtering domain
@@ -689,4 +693,10 @@ public class CmsFilteringNavigator {
     public void setDoNotFillPage(boolean doNotFillPage) {
         this.doNotFillPage = doNotFillPage;
     }
+	public boolean isAutosuggest() {
+		return isAutosuggest;
+	}
+	public void setAutosuggest(boolean isAutosuggest) {
+		this.isAutosuggest = isAutosuggest;
+	}
 }

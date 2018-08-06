@@ -333,6 +333,8 @@ public class FDUser extends ModelSupport implements FDUserI {
 
     private String multiSearchList;
     
+    private List<UnbxdAutosuggestResults> unbxdAustoSuggestions;
+    
 	public Date getTcAcknowledgeDate() {
         return tcAcknowledgeDate;
     }
@@ -776,7 +778,7 @@ public class FDUser extends ModelSupport implements FDUserI {
         this.vHPopupDisplay = false;
         this.isEcheckRestricted = null;
         this.hasAutoRenewDP = null;
-
+        this.unbxdAustoSuggestions=null;
     }
 
     /*
@@ -4193,4 +4195,13 @@ public class FDUser extends ModelSupport implements FDUserI {
 		
 		return isDlvPassContextMatched;
 	}
+
+	public List<UnbxdAutosuggestResults> getUnbxdAustoSuggestions() {
+		return unbxdAustoSuggestions;
+	}
+
+	public void setUnbxdAustoSuggestions(List<UnbxdAutosuggestResults> unbxdAustoSuggestions) {
+		this.unbxdAustoSuggestions = unbxdAustoSuggestions;
+	}
+
 }

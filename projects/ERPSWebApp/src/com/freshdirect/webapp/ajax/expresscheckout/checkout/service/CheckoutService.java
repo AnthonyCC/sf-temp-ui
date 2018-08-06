@@ -216,7 +216,7 @@ public class CheckoutService {
                         final boolean cosAction = CosFeatureUtil.isUnbxdCosAction(user, request.getCookies());
 
                         for (FDCartLineI cartline : cart.getOrderLines()) {
-                            AnalyticsEventI event = AnalyticsEventFactory.createEvent(AnalyticsEventType.ORDER, visitor, loc, null, null, cartline, cosAction);
+                            AnalyticsEventI event = AnalyticsEventFactory.createEvent(AnalyticsEventType.ORDER, visitor, loc, null, null, cartline, cosAction,null);
                             EventLoggerService.getInstance().log(event);
                         }
                     }

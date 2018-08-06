@@ -569,7 +569,7 @@ public class CmsFilteringFlow {
                     }
                 }
                 searchResults = SearchService.getInstance().searchProducts(searchParams, nav.getRequestCookies(), user,
-					nav.getRequestUrl(), nav.getReferer(), nav.isReceipeRequested());
+					nav.getRequestUrl(), nav.getReferer(), nav.isReceipeRequested(), nav.isAutosuggest());
 
                 if (nav.isAdProductRequested() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.hooklogic2016, user)) {               //if(FDStoreProperties.isHookLogicEnabled()){
                     SearchResultsUtil.getHLBrandProductAdProducts(searchResults, nav,  user, null, null, null);
