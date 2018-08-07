@@ -1826,7 +1826,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		try {
 			FDCustomerEB fdCustomerEB = this.getFdCustomerHome()
 					.findByPrimaryKey(new PrimaryKey(identity.getFDCustomerPK()));
-			fdCustomerEB.setDefaultDepotLocationPK(locationId);
+			
+			if (!StringUtils.equals(fdCustomerEB.getDefaultDepotLocationPK(), locationId)) {
+				fdCustomerEB.setDefaultDepotLocationPK(locationId);
+			}
+			
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		} catch (FinderException ce) {
