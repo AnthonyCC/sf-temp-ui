@@ -659,6 +659,7 @@ public class SubmitOrderAction extends WebActionSupport {
 	            
 	          //Added for DP17-102 BACKEND FREE TRIAL: Create customers free trial subscription order along with customers next order
 				try {
+					user.updateDlvPassInfo(); //Refresh DP Cache
                     if(user.applyFreeTrailOptinBasedDP() && EnumEStoreId.FD.equals(eStore)){
                         DeliveryPassFreeTrialUtil.placeDpSubscriptionOrder(user.getIdentity().getErpCustomerPK(), FDStoreProperties.getTwoMonthTrailDPSku(),eStore);
                     }
@@ -703,6 +704,7 @@ public class SubmitOrderAction extends WebActionSupport {
 				
 				//Added for DP17-102 BACKEND FREE TRIAL: Create customers free trial subscription order along with customers next order
 				try {
+					user.updateDlvPassInfo(); //Refresh DP Cache
                     if(user.applyFreeTrailOptinBasedDP() && EnumEStoreId.FD.equals(eStore)){
                     	DeliveryPassFreeTrialUtil.placeDpSubscriptionOrder(user.getIdentity().getErpCustomerPK(), FDStoreProperties.getTwoMonthTrailDPSku(),eStore);
                     }
