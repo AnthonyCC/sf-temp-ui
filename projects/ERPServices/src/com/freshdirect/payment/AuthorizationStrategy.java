@@ -126,9 +126,9 @@ public class AuthorizationStrategy extends PaymentStrategy {
 		remainder = usqAuthInfo.addDeduction(remainder);
 		remainder = fdwAuthInfo.addDeduction(remainder);
 		
-		if (remainder > 0) {
+		/*if (remainder > 0) {
 			throw new FDRuntimeException("Applied more discount than order pre deduction total");
-		}
+		}*/
 	}
 
 	private List<AuthorizationInfo> getOutstandingAuthorizations(ErpPaymentMethodI pm) {
