@@ -66,6 +66,16 @@
 		<filter-name>CORSFilter</filter-name>
 		<filter-class>com.freshdirect.webapp.filters.CORSFilter</filter-class>
 	</filter>
+	<filter>
+		<description>NotFoundErrorFilter</description>
+		<display-name>NotFoundErrorFilter</display-name>
+		<filter-name>NotFoundErrorFilter</filter-name>
+		<filter-class>com.freshdirect.webapp.filters.NotFoundErrorFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>NotFoundErrorFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>	
 	<filter-mapping>
 		<filter-name>FDWebSiteMonitor</filter-name>
 		<url-pattern>/*</url-pattern>
