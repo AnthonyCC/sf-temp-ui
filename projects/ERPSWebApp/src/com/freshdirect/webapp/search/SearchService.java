@@ -149,7 +149,7 @@ public class SearchService {
 
     
     public SearchResults searchProducts(String searchTerm, Cookie[] cookies, FDUserI user, String requestUrl, String referer) {
-    	return searchProducts(searchTerm, cookies, user, requestUrl, referer, true, false);
+    	return searchProducts(searchTerm, cookies, user, requestUrl, referer, true, true);
     }
     /**
      * Perform search operation
