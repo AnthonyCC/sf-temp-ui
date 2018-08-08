@@ -314,7 +314,7 @@ public class OrderController extends BaseController {
         }
         
         int viewCountLimit = 0;
-        int viewCount = 0;
+        int viewCount = 0; 
         if(user.getFDSessionUser().getMasqueradeContext()==null && FDStoreProperties.isInformOrderModifyEnabled()){
         	viewCountLimit = FDStoreProperties.getInformOrderModifyViewCountLimit();
         	viewCount = user.getFDSessionUser().getInformOrderModifyViewCount(user.getUserContext().getStoreContext().getEStoreId(), true);
