@@ -313,8 +313,12 @@ public class OrderController extends BaseController {
             ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), order.getCartDetail());
         }
         
-        int viewCountLimit = FDStoreProperties.getInformOrderModifyViewCountLimit();
-		int viewCount = user.getFDSessionUser().getInformOrderModifyViewCount(user.getUserContext().getStoreContext().getEStoreId(), true);
+        int viewCountLimit = 0;
+        int viewCount = 0;
+        if(user.getFDSessionUser().getMasqueradeContext()==null && FDStoreProperties.isInformOrderModifyEnabled()){
+        	viewCountLimit = FDStoreProperties.getInformOrderModifyViewCountLimit();
+        	viewCount = user.getFDSessionUser().getInformOrderModifyViewCount(user.getUserContext().getStoreContext().getEStoreId(), true);
+        }
 		
         ResultBundle resultBundle = Order.loadOrderToCartForUpdate(orderId, user);
         ActionResult result = resultBundle.getActionResult();
@@ -333,7 +337,7 @@ public class OrderController extends BaseController {
             ((ModifiedOrder) responseMessage).setReservationTimeRange(order.getReservationTimeRange());
             
             // changes to view order modify overlay
-            if(user.getFDSessionUser().getMasqueradeContext()==null){ 
+            if(user.getFDSessionUser().getMasqueradeContext()==null && FDStoreProperties.isInformOrderModifyEnabled()){ 
 	            if(viewCount <= viewCountLimit){
 					((ModifiedOrder) responseMessage).setMedia( loadMedia(FDStoreProperties.getInformOrderModifyMediaPath()) );
 					((ModifiedOrder) responseMessage).setShow(true);
@@ -342,6 +346,8 @@ public class OrderController extends BaseController {
 	            }else{
 	            	((ModifiedOrder) responseMessage).setShow(false);
 	            }
+            }else if(user.getFDSessionUser().getMasqueradeContext()==null && !FDStoreProperties.isInformOrderModifyEnabled()){
+            	((ModifiedOrder) responseMessage).setShow(false);
             }
 			
         } else {
