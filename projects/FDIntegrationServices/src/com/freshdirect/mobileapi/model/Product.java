@@ -23,6 +23,7 @@ import java.util.TreeSet;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
@@ -761,9 +762,16 @@ public class Product {
                     headerTime = headerTimeFormat.format(cutoffTime.getAsDate());
                     bodyTime = bodyTimeFormat.format(cutoffTime.getAsDate());
                 }
-                title.append("PLEASE ORDER BY ").append(headerTime).append(" FOR DELIVERY TOMORROW");
-                message.append("To assure the highest quality, our chefs prepare this item to order. You must complete checkout by ")
-                        .append(bodyTime).append(" to order this item for delivery tomorrow.");
+                if(getFilteredEarliestAvailabilityDate()!=null){
+                	String earliestDate=new SimpleDateFormat("EEE M/dd").format(getFilteredEarliestAvailabilityDate());
+                	title.append("PLEASE ORDER BY ").append(headerTime).append(" FOR DELIVERY ").append(earliestDate.toUpperCase());
+                	message.append("To assure the highest quality, our chefs prepare this item to order. You must complete checkout by ")
+                    .append(bodyTime).append(" to order this item for delivery ").append(earliestDate);
+                }else{
+                	title.append("PLEASE ORDER BY ").append(headerTime).append(" FOR DELIVERY TOMORROW");
+                	message.append("To assure the highest quality, our chefs prepare this item to order. You must complete checkout by ")
+                    .append(bodyTime).append(" to order this item for delivery tomorrow");
+                }
             }
         } catch (Exception e) {
             LOG.error("FDPlatterException : Exception while trying to get platter cutoff. no need to throw exception. log and go forward." , e);

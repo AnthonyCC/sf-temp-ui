@@ -749,10 +749,21 @@ public class ProductDetailPopulator {
 
                 headerTime = headerTimeFormat.format(cutoffTime.getAsDate());
                 // bodyTime = bodyTimeFormat.format(cutoffTime.getAsDate());
-
-                item.setMsgCutoffHeader("Order by " + headerTime + " for Delivery Tomorrow");
-                item.setMsgCutoffNotice("");
-                // item.setMsgCutoffHeader( "Please <b>complete checkout by " + bodyTime + "</b> to order for delivery tomorrow." );
+                if(null !=sku){
+//                	String earliestDate=new SimpleDateFormat("EEE M/dd").format(productModel.getEarliestAvailability());
+                	String earliestAvailabilityDate=sku.getEarliestAvailabilityMessage();
+                	if(null !=earliestAvailabilityDate){
+	                	item.setMsgCutoffHeader("Order by " + headerTime + " for Delivery " + earliestAvailabilityDate );
+	                	item.setMsgCutoffNotice("");
+                	}
+                	else{
+                		item.setMsgCutoffHeader("Order by " + headerTime + " for Delivery Tomorrow");
+                    	item.setMsgCutoffNotice("");
+                	}
+                }else{
+                	item.setMsgCutoffHeader("Order by " + headerTime + " for Delivery Tomorrow");
+                	item.setMsgCutoffNotice("");
+                }
 
             }
         } catch (Exception e) {
