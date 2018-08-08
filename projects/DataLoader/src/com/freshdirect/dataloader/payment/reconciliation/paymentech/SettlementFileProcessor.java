@@ -31,10 +31,10 @@ import com.freshdirect.dataloader.payment.reconciliation.paymentech.parsers.Paym
 import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.ecomm.gateway.PayPalReconciliationService;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.ejb.ReconciliationSB;
 import com.freshdirect.payment.gateway.ewallet.impl.PayPalReconciliationSB;
-import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.sap.ejb.SapException;
 
 public class SettlementFileProcessor {
@@ -184,7 +184,7 @@ public class SettlementFileProcessor {
 			if (DataLoaderProperties.isPayPalSettlementEnabled()) {
 				Map<String, Object> lockInfo = null;
 				if (isPPReconSB2Enabled) {
-					lockInfo = FDECommerceService.getInstance().acquirePPLock(null);
+					lockInfo = PayPalReconciliationService.getInstance().acquirePPLock(null);
 				} else {
 					ppReconSB = SettlementLoaderUtil.lookupPPReconciliationHome().create();
 					lockInfo = ppReconSB.acquirePPLock(null);
@@ -201,7 +201,7 @@ public class SettlementFileProcessor {
 			if (DataLoaderProperties.isPayPalSettlementEnabled()) {
 				if (isPPReconSB2Enabled) {
 					
-					FDECommerceService.getInstance().releasePPLock(ppSettlementIds);
+					PayPalReconciliationService.getInstance().releasePPLock(ppSettlementIds);
 				} else {
 					ppReconSB.releasePPLock(ppSettlementIds);
 				}

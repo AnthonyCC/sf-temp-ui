@@ -1,24 +1,20 @@
 package com.freshdirect.dataloader.payment.reconciliation.paypal;
 
 import java.rmi.RemoteException;
-import java.sql.PreparedStatement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.apache.commons.collections.map.MultiValueMap;
 import org.apache.log4j.Category;
 
-import com.freshdirect.dataloader.DataLoaderProperties;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementBuilderI;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementLoaderUtil;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementParserClient;
-import com.freshdirect.dataloader.payment.reconciliation.paymentech.PaymentechFINParserClient;import com.freshdirect.fdstore.FDEcommProperties;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.ecomm.gateway.PayPalReconciliationService;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.EnumPaymentMethodType;
@@ -29,7 +25,6 @@ import com.freshdirect.payment.model.EnumSummaryDetailType;
 import com.freshdirect.payment.model.ErpSettlementSummaryModel;
 import com.freshdirect.payment.model.ErpSettlementTransactionModel;
 import com.freshdirect.payment.model.ErpSummaryDetailModel;
-import com.freshdirect.payment.service.FDECommerceService;
 
 public class PayPalSettlementParserClient extends SettlementParserClient {
 	
@@ -288,7 +283,7 @@ public class PayPalSettlementParserClient extends SettlementParserClient {
 			try {
 				if(PayPalSFTPSettlementLoader.isNEwRecordRequired){
 					if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaypalReconciliationSB)) {
-						FDECommerceService.getInstance().insertNewSettlementRecord(SF.parse(PayPalSFTPSettlementLoader.timestamp));
+						PayPalReconciliationService.getInstance().insertNewSettlementRecord(SF.parse(PayPalSFTPSettlementLoader.timestamp));
 					} else {
 						PayPalReconciliationSB  ppReconSB = SettlementLoaderUtil.lookupPPReconciliationHome().create();
 						ppReconSB.insertNewSettlementRecord(SF.parse(PayPalSFTPSettlementLoader.timestamp),
@@ -296,7 +291,7 @@ public class PayPalSettlementParserClient extends SettlementParserClient {
 					}
 				}
 				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaypalReconciliationSB)) {
-					settlementIds = FDECommerceService.getInstance().addPPSettlementSummary(settlementSummarys);
+					settlementIds = PayPalReconciliationService.getInstance().addPPSettlementSummary(settlementSummarys);
 				} else {
 					settlementIds = this.ppReconSB.addPPSettlementSummary(settlementSummarys);
 				}
@@ -319,7 +314,7 @@ public class PayPalSettlementParserClient extends SettlementParserClient {
 					}
 					if (stlmtIds.size() > 0) {
 						if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaypalReconciliationSB)) {
-							FDECommerceService.getInstance().releasePPLock(stlmtIds);
+							PayPalReconciliationService.getInstance().releasePPLock(stlmtIds);
 						} else {
 							ppReconSB.releasePPLock(stlmtIds);
 						}
