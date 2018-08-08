@@ -33,11 +33,11 @@ public class NotFoundErrorFilter extends AbstractFilter {
 				cause2 = cause1.getCause();
 			}
 			if (cause != null && cause instanceof FDNotFoundException) {
-				response.sendRedirect("/notfound.jsp");
+				request.getRequestDispatcher("/notfound.jsp").forward(request, response);
 			} else if (cause1 != null && cause1 instanceof FDNotFoundException) {
-				response.sendRedirect("/notfound.jsp");
+				request.getRequestDispatcher("/notfound.jsp").forward(request, response);
 			} else if (cause2 != null && cause2 instanceof FDNotFoundException) {
-				response.sendRedirect("/notfound.jsp");
+				request.getRequestDispatcher("/notfound.jsp").forward(request, response);
 			} else {
 				throw se;
 			}
