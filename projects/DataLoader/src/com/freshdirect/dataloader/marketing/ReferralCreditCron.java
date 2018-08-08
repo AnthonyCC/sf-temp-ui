@@ -168,19 +168,21 @@ public class ReferralCreditCron {
 	
 					if (referral_max_sale_id != null
 							&& referral_max_sale_id.length() != 0) {
-						// Create FDORderI object
-						FDOrderI order;
+						// make sure order exists
 						if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerOrder)) {
-							order =  CustomerOrderService.getInstance().getOrder(referral_max_sale_id);
+							boolean isExisted = CustomerOrderService.getInstance().isOrderExisted(referral_max_sale_id);
+							 if (!isExisted) {
+								 throw new FDResourceException("order " + referral_customer_id+ " does not exist");
+							 }
 						} else {
 							if (fdsb == null) {
 								FDCustomerManagerHome fdcmHome = (FDCustomerManagerHome) ctx
 										.lookup(FDStoreProperties.getFDCustomerManagerHome());
 								fdsb = fdcmHome.create();
 							}
-							order = fdsb.getOrder(referral_max_sale_id);
+							fdsb.getOrder(referral_max_sale_id);
 						}
-						LOGGER.info("got FDOrder:" + order.toString());
+						LOGGER.info("got FDOrder:" + referral_max_sale_id);
 	
 						// Create complaint
 						ErpComplaintModel complaintModel = new ErpComplaintModel();
@@ -374,20 +376,22 @@ public class ReferralCreditCron {
 					System.out.println("cust_id:" + model.getCustomerId());
 					
 					if(referral_max_sale_id != null && referral_max_sale_id.length() != 0) {
-						//Create FDORderI object
-						FDOrderI order;
+						// make sure order exists
 						if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerOrder)) {
-							order = CustomerOrderService.getInstance().getOrder(referral_max_sale_id);
+							 boolean isExisted = CustomerOrderService.getInstance().isOrderExisted(referral_max_sale_id);
+							 if (!isExisted) {
+								 throw new FDResourceException("order " + referral_customer_id+ " does not exist");
+							 }
 						} else {
 							if (fdsb == null) {
 								FDCustomerManagerHome fdcmHome = (FDCustomerManagerHome) ctx
 										.lookup(FDStoreProperties.getFDCustomerManagerHome());
 								fdsb = fdcmHome.create();
 							}
-							order = fdsb.getOrder(referral_max_sale_id);
+							fdsb.getOrder(referral_max_sale_id);
 						}
 						
-						LOGGER.info("got FDOrder:" + order.toString());
+						LOGGER.info("got FDOrder:" + referral_max_sale_id);
 						
 						//Create complaint
 						ErpComplaintModel complaintModel = new ErpComplaintModel();

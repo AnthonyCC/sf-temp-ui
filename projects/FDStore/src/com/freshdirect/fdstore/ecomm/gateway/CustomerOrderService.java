@@ -37,9 +37,9 @@ import com.freshdirect.logistics.delivery.dto.CustomerAvgOrderSize;
 
 public class CustomerOrderService extends AbstractEcommService implements CustomerOrderServiceI {
 
-	private final static Category LOGGER = LoggerFactory.getInstance(CustomerOrderService.class);
+	private static final Category LOGGER = LoggerFactory.getInstance(CustomerOrderService.class);
 
-	private static final String GET_ORDER = "orders/";
+	private static final String IS_ORDER_EXIST = "customerOrder/isOrderExisted/";
 	private static final String GET_HISTORIC_ORDER_SIZE = "customerOrder/getHistoricOrderSize/";
 	private static final String UPDATE_ORDER_MODIFY_STATE = "customerOrder/updateOrderInModifyState";
 	private static final String CLEAR_MODIFY_CART = "customerOrder/clearModifyCartlines/";
@@ -81,6 +81,19 @@ public class CustomerOrderService extends AbstractEcommService implements Custom
 		return new FDOrderAdapter(saleModel, false);
 	}
 
+	@Override
+	public boolean isOrderExisted(String saleId) throws FDResourceException, RemoteException {
+		Response<Boolean> response = this.httpGetDataTypeMap(
+				getFdCommerceEndPoint(IS_ORDER_EXIST + saleId),
+				new TypeReference<Response<Boolean>>() {
+				});
+		if (!response.getResponseCode().equals("OK")) {
+			LOGGER.error("Error in CustomerOrderService.isOrderExisted: customerId=" + saleId);
+			throw new FDResourceException(response.getMessage());
+		}
+		return response.getData();
+	}
+	
 	@Override
 	public CustomerAvgOrderSize getHistoricOrderSize(String customerId) throws FDResourceException, RemoteException {
 		Response<CustomerAvgOrderSize> response = this.httpGetDataTypeMap(
