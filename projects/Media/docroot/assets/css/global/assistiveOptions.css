@@ -200,6 +200,7 @@
   background-image: linear-gradient(to top, #fdfdfd, #f7f7f7);
   padding: 29px;
   height: 184px;
+/*   overflow:hidden; */
 }
 #assistiveOptionsOverlay .qs-popup-header span{
 	padding-left:8px;
@@ -226,4 +227,7 @@ a.accessibilityLink{
 }
 #assistiveOptionsOverlay span.slider.round.test:after{
 	display:none;
+}
+#assistiveOptionsOverlay input:focus + .slider:before,#assistiveOptionsOverlay input:hover + .slider:before{
+	background-color: #4fa157;
 }
