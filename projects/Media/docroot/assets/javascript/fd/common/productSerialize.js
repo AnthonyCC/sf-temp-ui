@@ -91,11 +91,11 @@ var FreshDirect = FreshDirect || {};
       incart = product.find('.incart-info,[data-component="incartinfo"]').first();
       qtybox = product.find('[data-component="quantitybox"]').first();
 
-      if (incart.size() > 0) {
+      if (incart.length > 0) {
         cartdata.incart = +incart.attr('data-amount') || parseInt(incart.html(), 10) || 0;
       }
 
-      if (qtybox.size() > 0) {
+      if (qtybox.length > 0) {
         cartdata.min = +qtybox.attr('data-min') || 1;
         cartdata.max = +qtybox.attr('data-max') || 99;
         cartdata.step = +qtybox.attr('data-step') || 1;

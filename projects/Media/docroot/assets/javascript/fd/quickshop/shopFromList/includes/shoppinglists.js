@@ -39,7 +39,7 @@ var FreshDirect = FreshDirect || {};
         var el = (element) ? element : $(this.placeholder);
         
         var selected = $('input[type="radio"]:checked',el).first();
-        return { yourListId: (!!selected.size() && selected.val()) || null };
+        return { yourListId: (!!selected.length && selected.val()) || null };
       }
     },
     render:{

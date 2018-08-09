@@ -269,7 +269,7 @@
 	$(document).ready(function() {
 		
 		//code for SHIFT+TAB from dropdown ,enter zip code to delivery information(dropdown with worng zipcode)
-		$(".locabar_addresses-anon-nondeliverable .locabar_addresses-change-zip-cont .newziptext").keydown(function(e){
+		$(".locabar_addresses-anon-nondeliverable .locabar_addresses-change-zip-cont .newziptext").on('keydown', function(e){
 			var TABKEY = 9;
 			if (e.which == TABKEY) {
 				if (e.shiftKey) {
@@ -282,7 +282,7 @@
 			}
 		});
 		//code for SHIFT+TAB from enter zip code to available time slots(dropdown with correct zip code)
-		$(".locabar_addresses-anon-deliverable-change-zip-cont .locabar_addresses-change-zip-cont .newziptext").keydown(function(e){
+		$(".locabar_addresses-anon-deliverable-change-zip-cont .locabar_addresses-change-zip-cont .newziptext").on('keydown', function(e){
 			var TABKEY = 9;
 			if (e.which == TABKEY) {
 				if (e.shiftKey) {
@@ -295,7 +295,7 @@
 			}
 		});
 		//code to exit dropdown using ESC key ,for sing in button dropdown after sign in
-		$("#locabar_user_trigger .locabar_triggers_menu.posAbs a").keyup(function(e){
+		$("#locabar_user_trigger .locabar_triggers_menu.posAbs a").on('keyup', function(e){
 			if(e.keyCode == 27){
 				$jq("#locabar_user_trigger").removeClass("hover");
 				$jq("#locabar_user_trigger").focus();
@@ -303,7 +303,7 @@
 			}
 		});
 		//code to exit dropdown  using ESC key ,for delivery information dropwown before signin 
-		$("#locabar_addresses_trigger #locabar_addresses").keyup(function(e){
+		$("#locabar_addresses_trigger #locabar_addresses").on('keyup', function(e){
 			if(e.keyCode == 27){
 				$jq("#locabar_addresses_trigger").removeClass("hover");
 				$jq("#locabar_addresses_trigger").focus();
@@ -311,7 +311,7 @@
 			}
 		});
 		//code to exit dropdown using ESC key ,for delivery information dropdown after signin
-		$(".ui-selectmenu-menu ul li.ui-selectmenu-optgroup.ui-menu-divider").keyup(function(e){
+		$(".ui-selectmenu-menu ul li.ui-selectmenu-optgroup.ui-menu-divider").on('keyup', function(e){
 			if(e.keyCode == 27){
 				$jq("#locabar_addresses_trigger").removeClass("hover");
 				$jq("#locabar_addresses_trigger").focus();
@@ -330,7 +330,7 @@
 			}
 		});*/
 		
-		$(".newzipgo").keydown(function(e){
+		$(".newzipgo").on('keydown', function(e){
 			
 			var text_length=$(this).parent().find("input").val().length;	
 			$(this).parent().next().css("visibility","");

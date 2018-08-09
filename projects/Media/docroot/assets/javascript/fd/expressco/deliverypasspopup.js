@@ -132,7 +132,7 @@ var FreshDirect = FreshDirect || {};
     id: "deliverypass",
     submit: function (e) {
       var product = $('[data-product-id="' + $('[data-selected-product-id]').attr('data-selected-product-id') + '"]');
-      if (product.size()) {
+      if (product.length) {
     	if($('#deliverypasscontent').length > 0 && !!$('#deliverypasscontent').attr('data-dlvpasscart') == true){
     		fd.deliveryPassSelectedTitle = $('form.deliverypass_form').attr('data-selected-dp-title');
     		fd.components.AddToCart.addToCart(product, {"dlvPassCart":"true"});

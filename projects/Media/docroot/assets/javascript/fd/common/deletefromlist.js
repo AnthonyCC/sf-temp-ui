@@ -82,7 +82,7 @@ var FreshDirect = FreshDirect || {};
         
           $itemEl = $(this.popup.$trigger).closest('.itemlist-item');
 
-          if ($itemEl.size()) {
+          if ($itemEl.length) {
             $itemEl.remove();
           }
 

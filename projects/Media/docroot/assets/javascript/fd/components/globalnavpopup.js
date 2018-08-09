@@ -6,51 +6,59 @@ var FreshDirect = FreshDirect || {};
 
   // TODO
   // - iPad - add class on touch, prevent click
-
-  // copy menu popups to menu items
-  ["globalnav-item", "globalnav-submenu-item"].forEach(function (item) {
-    $('[data-component="globalnav-menu"] [data-component="'+item+'"]').each(function () {
-      var $menuitem = $(this),
-          $popupcontent = $menuitem.find('[data-component="globalnav-popup-body"]'),
-          $container = $('[data-component="globalnav-menu"]'),
-          left = $menuitem.offset().left - $container.offset().left,
-          id = $menuitem.data('id'),
-          arialabelvalue = 'globalnav-popup-body-' + id,
-          center, width;
-      
-      if( $('[data-component="globalnav-popup-body"][data-id="'+id+'"]').length ) {
-          $menuitem.find('.top-item-link a,.submenuitem-link a').attr({
-        	  
-              'aria-haspopup': true
-          });
-      }
-      
-      if (left > $container.width() / 2) {
-        $menuitem.addClass('alignPopupRight');
-      }
-
-      if ($popupcontent.size() === 0) {
-        $popupcontent = $('[data-component="globalnav-popups"] [data-id="'+id+'"]').first();
-        $popupcontent.attr({
-//        	'aria-label': arialabelvalue,
-//        	'aria-hidden': true
-        });
-        
-        if ($popupcontent.size() > 0) {
-          $popupcontent.insertAfter($menuitem.children('span').first());
-          if ($popupcontent.attr('data-popup-type') === 'superdepartment') {
-            center = left + $menuitem.outerWidth() / 2;
-            width = 160; // 2 * 80 for the gradients
-            $popupcontent.find('li.submenuitem').each(function () {
-              width += $(this).outerWidth();
-            });
-            $popupcontent.find('.subdepartments').css({
-              'padding-left': Math.max(0, Math.min(center - width / 2, 960 - width))
-            });
-          }
-        }
-      }
+  $(function() {
+    var $container = $('[data-component="globalnav-menu"]'), containerOffsetLeft, containerWidth;
+    window.requestAnimationFrame(function() {
+      containerOffsetLeft = $container.offset().left;
+      containerWidth = $container.width();
     });
+
+	  // copy menu popups to menu items
+	  ["globalnav-item", "globalnav-submenu-item"].forEach(function (item) {
+	    $('[data-component="globalnav-menu"] [data-component="'+item+'"]').each(function () {
+	      var $menuitem = $(this),
+	          $popupcontent = $menuitem.find('[data-component="globalnav-popup-body"]'),
+	          left,
+	          id = $menuitem.data('id'),
+            center, width;
+
+        window.requestAnimationFrame(function() {
+          left = $menuitem.offset().left - containerOffsetLeft;
+        });
+
+	      if( $('[data-component="globalnav-popup-body"][data-id="'+id+'"]').length ) {
+	          $menuitem.find('.top-item-link a,.submenuitem-link a').attr({
+	              'aria-haspopup': true
+	          });
+	      }
+	      
+	      if (left > containerWidth / 2) {
+          window.requestAnimationFrame(function() {
+            $menuitem.addClass('alignPopupRight');
+          });
+	      }
+	
+	      if ($popupcontent.length === 0) {
+	        $popupcontent = $('[data-component="globalnav-popups"] [data-id="'+id+'"]').first();
+	        
+	        if ($popupcontent.length > 0) {
+	          $popupcontent.insertAfter($menuitem.children('span').first());
+	          if ($popupcontent.attr('data-popup-type') === 'superdepartment') {
+              window.requestAnimationFrame(function() {
+                center = left + $menuitem.outerWidth() / 2;
+                width = 160; // 2 * 80 for the gradients
+                $popupcontent.find('li.submenuitem').each(function () {
+                  width += $(this).outerWidth();
+                });
+                $popupcontent.find('.subdepartments').css({
+                  'padding-left': Math.max(0, Math.min(center - width / 2, 960 - width))
+                });
+              });
+            }
+	        }
+	      }
+	    });
+	  });
   });
 
   // set popup height
@@ -75,10 +83,10 @@ var FreshDirect = FreshDirect || {};
     
     $popupcontent.attr('aria-hidden', false);
 
-    if ($popupcontent.size() === 0) {
+    if ($popupcontent.length === 0) {
       id = $menuitem.data('id');
       $popupcontent = $('[data-component="globalnav-popups"] [data-id="'+id+'"]').first();
-      if ($popupcontent.size() > 0) {
+      if ($popupcontent.length > 0) {
         $popupcontent.insertAfter($menuitem.children('span').first());
       }
     }
@@ -125,7 +133,7 @@ var FreshDirect = FreshDirect || {};
   $(document).on('touchstart, focusin', function (e) {
     var $gnavparent = $(e.target).parents('[data-component="globalnav-menu"]'); 
   
-    if ($gnavparent.size() === 0) {
+    if ($gnavparent.length === 0) {
       $('[data-component="globalnav-menu"]').find('.touched').removeClass('touched');
     }
   });

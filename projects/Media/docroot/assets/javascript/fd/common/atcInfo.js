@@ -34,7 +34,7 @@ var FreshDirect = FreshDirect || {};
           product = element.closest('[data-component="product"]');
           controls = product.find('[data-component="product-controls"]');
 
-          if (controls.size() !== 0) {
+          if (controls.length !== 0) {
             // reset qty
             oQ = product.find('[data-quantity-original]').attr('data-quantity-original');
             oSu = product.find('[data-salesunit-original]').attr('data-salesunit-original');
@@ -70,7 +70,7 @@ var FreshDirect = FreshDirect || {};
         var element = $('[id="'+item.itemId+'"], [id="'+item.atcItemId+'"], [id="trnp_'+item.itemId+'"], [id="trnp_'+item.atcItemId+'"]'),
             controls, product, oSu, cSu, oQ, cQ;
 
-        if(element.size()) {
+        if(element.length) {
           element.addClass('atc-info-message');
           product = element.closest('[data-component="product"]');
           product.find('[data-component="ATCButton"],[data-component="customizeButton"]').addClass('incart');
@@ -97,7 +97,7 @@ var FreshDirect = FreshDirect || {};
     	  }
 
           controls = element.closest('[data-component="product"]').find('[data-component="product-controls"]');
-          if (controls.size() !== 0) {
+          if (controls.length !== 0) {
             controls.addClass('atc-info-message');
 
             oQ = product.find('[data-quantity-original]').attr('data-quantity-original');

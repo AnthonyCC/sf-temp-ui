@@ -131,7 +131,7 @@ var FreshDirect = FreshDirect || {};
             if(v==='show') { 
               $el.first().addClass('loading');
               spinner = $el.find('.spinner-container');
-              if (spinner.size() > 0) {
+              if (spinner.length > 0) {
                 sp = new window.Spinner(config.spinner.config || DEFAULT_SPINNER_CONFIG).spin(spinner[0]);
               }
             }
@@ -142,7 +142,7 @@ var FreshDirect = FreshDirect || {};
             if(!show) {
               $el.first().removeClass('loading');
               spinner = $el.find('.spinner-container');
-              if (spinner.size() > 0) {
+              if (spinner.length > 0) {
                 spinner.html('');
               }
             }

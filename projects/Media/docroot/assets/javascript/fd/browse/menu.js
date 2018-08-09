@@ -44,11 +44,11 @@ var FreshDirect = FreshDirect || {};
           result.requestFilterParams = filters;
         }
 
-        if ($('[data-component="menuitem"][data-urlparameter="all"] input').prop('checked') || $('[data-component="menubox"][data-allselected]').size() > 0) {
+        if ($('[data-component="menuitem"][data-urlparameter="all"] input').prop('checked') || $('[data-component="menubox"][data-allselected]').length > 0) {
           result.all = true;
         }
 
-        if (!result.id && idboxes.size()) {
+        if (!result.id && idboxes.length) {
           result.id = idboxes.last().data('id');
         }
 

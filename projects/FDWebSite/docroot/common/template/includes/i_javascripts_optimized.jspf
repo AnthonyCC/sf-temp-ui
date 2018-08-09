@@ -12,14 +12,19 @@
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%@ taglib uri="fd-features" prefix="features" %>
 <%-- this file will be included in the <head> tag --%>
-
-
+<%
+	String reqUri_i_javascript_optimized = request.getRequestURI().toLowerCase();
+%>
 <%@ include file="/common/template/includes/extol_tags.jspf" %>
 
   <%-- Feature version switcher --%>
   <features:potato />
 	<%@ include file="/common/template/includes/i_jsFreshDirect.jspf" %>
-<jwr:script src="/fdlibs_opt.js" useRandomParam="false" />
+	<% if (reqUri_i_javascript_optimized.indexOf("/index.jsp") == 0) { %>
+		<jwr:script src="/fdlibs_opt2.js" useRandomParam="false" />
+	<% } else { %>
+		<jwr:script src="/fdlibs_opt.js" useRandomParam="false" />
+	<% } %>
   <% if (request.getAttribute("noyui") == null || !request.getAttribute("noyui").equals(true)) { %>
     <jwr:script src="/fdlibsyui.js"  useRandomParam="false" />
     <jwr:script src="/fdccl.js"  useRandomParam="false" />
@@ -44,24 +49,6 @@
 			}
 		}
 		initJQuery();
-	</script>
-
-	<script>
-	(function ($) {
-		$(function () {
-
-			$.smartbanner({daysHidden: 0, daysReminder: 0,author:'FreshDirect',button: 'VIEW'});
-			if(!$jq('#smartbanner.shown').is(':visible')) { $jq('#smartbanner').show(); }
-			 /* no longer needed
-			$.each($('a[href*="/default/empty.gif/"]'), function(i, e) {
-                  $(e).attr("aria-hidden", "true");
-                  $(e).attr("tabindex", "-1");
-                  $(e).attr("role", "presentation");
-                  //console.log('updateOAS', event,id,$(e).attr("tabindex"));
-			 });*/
-
-		});
-	})($jq);
 	</script>
 
 	<jwr:script src="/fdmisc.js" useRandomParam="false" />
