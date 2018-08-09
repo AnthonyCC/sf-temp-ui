@@ -105,7 +105,7 @@ public interface OrderResourceApiClientI {
 			boolean restoreReservation);
 
 
-	public Map<String, FDAvailabilityI> checkAvailability(FDIdentity identity,	ErpCreateOrderModel createOrder, long timeout, String isFromLogin);
+	public Map<String, FDAvailabilityI> checkAvailability(FDIdentity identity,	ErpCreateOrderModel createOrder, long timeout, String isFromLogin) throws FDResourceException;
 
 
 	public void resubmitOrder(String saleId, CustomerRatingI cra,EnumSaleType saleType, String deliveryRegionId)throws ErpTransactionException, RemoteException;
