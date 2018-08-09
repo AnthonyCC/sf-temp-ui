@@ -379,13 +379,13 @@ public class OrderResourceApiClient extends AbstractEcommService implements Orde
 			boolean sendEmail, CustomerRatingI cra, CrmAgentRole crmAgentRole, EnumDlvPassStatus status,
 			boolean isFriendReferred, int fdcOrderCount) throws RemoteException {
 
-		Request<com.freshdirect.ecomm.model.CreateOrderRequestData> request = new Request<com.freshdirect.ecomm.model.CreateOrderRequestData>();
+		Request<CreateOrderRequestData> request = new Request<CreateOrderRequestData>();
 
 		try {
 
-			com.freshdirect.ecomm.model.CreateOrderRequestData data = new com.freshdirect.ecomm.model.CreateOrderRequestData();
+			CreateOrderRequestData data = new CreateOrderRequestData();
 			data.setInfo(FDActionInfoConverter.buildActionInfoData(info));
-			data.setModel(createOrder);
+			data.setModel(SapGatewayConverter.buildOrderData(createOrder));
 			data.setAppliedPromos(appliedPromos);
 			data.setId(id);
 			data.setSendMail(sendEmail);
