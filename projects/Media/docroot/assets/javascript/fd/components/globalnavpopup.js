@@ -59,14 +59,15 @@ var FreshDirect = FreshDirect || {};
 	      }
 	    });
 	  });
-  });
 
-  // set popup height
-  $('.top-nav-items [data-component="globalnav-popup-body"]').each(function () {
-    var $el = $(this),
-        depHeight = +$el.find('.department').outerHeight();
+    // set popup height
+   /* $('.top-nav-items [data-component="globalnav-popup-body"]').each(function () {
+      var $el = $(this),
+          depHeight = +$el.find('.department').outerHeight();
 
-    $el.find('.heroimg_cont').height(depHeight);
+      $el.find('.heroimg_cont').height(depHeight);
+    });*/
+    
   });
 
   // for dynamic fallback

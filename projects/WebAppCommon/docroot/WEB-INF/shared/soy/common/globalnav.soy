@@ -114,10 +114,10 @@
 <!-- start dept {$department.id} -->
  <div class="deptcontainer">
    {if $department.heroImage}
-     <div class="heroimg_cont"><img class="heroimg lazyload" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{$department.heroImage}" alt="{if $department.name}{$department.name} department{/if}" /></div>
+     <div class="heroimg_cont"><img class="heroimg lazyload" data-src="{$department.heroImage}" alt="{if $department.name}{$department.name} department{/if}" /></div>
    {/if}
    {if $hasCategories or $hasPrefCategories}
-     <div class="department {if not $department.headerTextUsed}noheadertext{/if}">
+     <div class="department{if not $department.headerTextUsed} noheadertext{/if}{if $department.heroImage} has-heroimg{/if}">
        {if $hasCategories}
            {foreach $column in $department.dropDownCategories}
              <div class="dropdown-column">
