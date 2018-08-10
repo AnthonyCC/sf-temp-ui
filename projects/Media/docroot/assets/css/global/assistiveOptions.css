@@ -2,7 +2,7 @@
 
 #assistiveOptionsOverlay .qs-popup-header{
 /*   width: 340px; */
-  height: 76px;
+  padding:20px 30px;
   font-family: Verdana;
   font-size: 24px;
   font-weight: bold;
@@ -13,7 +13,7 @@
   color: #444444;
 }
 .learnmorelink{
-	padding-top:22px;
+	margin-top:17px;
 }
 .assistivewrapper{ 
 	width: 400px;
@@ -22,7 +22,7 @@
   }
 #assistiveOptionsOverlay .fixedPopupContent{
   width: 400px;
-  height: 274px;
+/*   height: 274px; */
   background-color: #ffffff;
   box-shadow: 0 5px 30px 0 rgba(0, 0, 0, 0.2);
 }
@@ -198,13 +198,13 @@
   }
 #assistiveOptionsOverlay .qs-popup-content {
   background-image: linear-gradient(to top, #fdfdfd, #f7f7f7);
-  padding: 29px;
-  height: 184px;
-/*   overflow:hidden; */
+  padding: 30px;
+/*   height: 184px; */
+/*  overflow:hidden; */
 }
-#assistiveOptionsOverlay .qs-popup-header span{
-	padding-left:8px;
-}
+/* #assistiveOptionsOverlay .qs-popup-header span{ */
+/* 	padding-left:8px; */
+/* } */
 #assistiveOptionsOverlay .spinner{
 	display: none;
     position: absolute;
@@ -216,8 +216,8 @@
     height: 17px;
     animation: spin 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
     margin: 0;
-    top: 107px;
-    left: 85px;
+    top: 108px;
+    left: 88px;
     margin-left: auto;
     margin-right: auto;
     background-color: #fafafa;
@@ -230,4 +230,10 @@ a.accessibilityLink{
 }
 #assistiveOptionsOverlay input:focus + .slider:before,#assistiveOptionsOverlay input:hover + .slider:before{
 	background-color: #4fa157;
+}
+#assistiveOptionsOverlay input:hover + .slider:before{
+	background-color: #4fa157;
+}
+#assistiveOptionsOverlay input:checked:hover + .slider:before {
+    background-color: #ffffff;
 }
