@@ -76,6 +76,7 @@ public class CustomerPaymentService extends AbstractEcommService implements Cust
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in CustomerPaymentService: inputJson=" + inputJson);
 				if ("ErpPaymentMethodException".equals(response.getMessage())) {
 					if (response.getError() != null && response.getError().get("ErpPaymentMethodException") != null) {
 						throw new ErpPaymentMethodException(
@@ -126,6 +127,7 @@ public class CustomerPaymentService extends AbstractEcommService implements Cust
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in CustomerPaymentService: inputJson=" + inputJson);
 				if ("ErpPaymentMethodException".equals(response.getMessage())) {
 					if (response.getError() != null && response.getError().get("ErpPaymentMethodException") != null) {
 						throw new ErpPaymentMethodException(
@@ -171,6 +173,7 @@ public class CustomerPaymentService extends AbstractEcommService implements Cust
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in CustomerPaymentService: inputJson=" + inputJson);
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDEcommServiceException e) {
@@ -187,6 +190,7 @@ public class CustomerPaymentService extends AbstractEcommService implements Cust
 				});
 
 		if (!response.getResponseCode().equals("OK")) {
+			LOGGER.error("Error in CustomerPaymentService: fdCustomerId=" + fdCustomerId);
 			throw new FDResourceException(response.getMessage());
 		}
 		return response.getData();
@@ -212,6 +216,7 @@ public class CustomerPaymentService extends AbstractEcommService implements Cust
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in CustomerPaymentService: inputJson=" + inputJson);
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDEcommServiceException e) {
@@ -228,6 +233,7 @@ public class CustomerPaymentService extends AbstractEcommService implements Cust
 				});
 
 		if (!response.getResponseCode().equals("OK")) {
+			LOGGER.error("Error in CustomerPaymentService: fdCustomerId=" + fdCustomerId);
 			throw new FDResourceException(response.getMessage());
 		}
 		return response.getData();
