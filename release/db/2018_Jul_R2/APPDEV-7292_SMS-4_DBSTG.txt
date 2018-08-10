@@ -1,0 +1,7 @@
+--[SMS-4]-Voiceshots: Ability to trigger an SMS alert and customer response for late delivery
+alter table CUST.VOICESHOT_CUSTOMERS add(SMS_PHONE VARCHAR2(20 BYTE));
+alter table CUST.VOICESHOT_CUSTOMERS add(SMS_RESPONSE VARCHAR2(100 BYTE));
+alter table CUST.VOICESHOT_SCHEDULED add(SECONDARY_TYPE VARCHAR2(20 BYTE));
+
+
+
