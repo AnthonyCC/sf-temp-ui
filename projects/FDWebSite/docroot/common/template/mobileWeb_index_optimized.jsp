@@ -233,6 +233,13 @@
 					FreshDirect.updateOAS = {};
 					FreshDirect.updateOAS.done = done;
 			}());
+    	$jq(function(){
+    		var assistiveMode = localStorage.getItem("assistive-enabled");
+    		if(assistiveMode === "true") {
+    			$jq(".assistiveWrapper .switch :checkbox").prop("checked", true);
+				$jq('body').addClass("assistive-mode");
+    		}
+    		});
 		</script>
 		<jwr:script src="/mobileweb_index_optimized_everythingelse.js" useRandomParam="false" />
     	<jsp:include page="/common/template/includes/ad_server.jsp" flush="false" />
