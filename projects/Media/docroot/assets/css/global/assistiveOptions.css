@@ -16,8 +16,6 @@
 	margin-top:17px;
 }
 .assistivewrapper{ 
-	width: 400px;
-  height: 196px;
   background-image: linear-gradient(to top, #fdfdfd, #f7f7f7);
   }
 #assistiveOptionsOverlay .fixedPopupContent{
@@ -27,8 +25,6 @@
   box-shadow: 0 5px 30px 0 rgba(0, 0, 0, 0.2);
 }
 .assistiveHeader{
-  width: 185px;
-  height: 14px;
   font-family: Verdana;
   font-size: 18px;
   font-weight: normal;
@@ -39,8 +35,6 @@
   color: #222222;
 }
 .assistiveContent{
- width: 340px;
-  height: 42px;
   font-family: Verdana;
   font-size: 14px;
   font-weight: normal;
@@ -51,8 +45,6 @@
   color: #666666;
 }
 .accessibilityLink{
-.width: 340px;
-  height: 17px;
   font-family: Verdana;
   font-size: 14px;
   font-weight: normal;
@@ -237,3 +229,15 @@ a.accessibilityLink{
 #assistiveOptionsOverlay input:checked:hover + .slider:before {
     background-color: #ffffff;
 }
+/* assistive options overlay for mobile web version */
+   [data-ismobweb="true"] #assistiveOptionsOverlay .fixedPopupContent {
+   max-width: 338px;
+    width: 100%;
+    max-height: 274px;
+   }
+     [data-ismobweb="true"] #assistiveOptionsOverlay .qs-popup-close-icon {
+    right: 0px;
+     }
+     [data-ismobweb="true"] #assistiveOptionsOverlay .learnmorelink {
+    margin-top: 15px;
+     }

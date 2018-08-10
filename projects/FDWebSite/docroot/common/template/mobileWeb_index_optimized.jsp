@@ -57,6 +57,7 @@
 		--%>
 		<%@ include file="/assets/css/mobileweb_index_optimized/mobileweb_index_optimized.css" %>
 	</style>
+    <jwr:style src="/accessibility.css" media="all" />
     
 	<%-- Keep the media include last, so it can always override any css auto-loaded --%>
 	<fd:IncludeMedia name="/media/editorial/site_pages/stylesheet.html" />
