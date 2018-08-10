@@ -11,6 +11,8 @@ package com.freshdirect.erp.model;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.freshdirect.common.date.SimpleDateDeserializer;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.sap.SapProperties;
 
@@ -26,6 +28,7 @@ public class ErpInventoryEntryModel extends ModelSupport implements Comparable {
 	private static final long serialVersionUID = 3557841522645345674L;
 
 	/** Inventory entry start date */
+	@JsonDeserialize(using = SimpleDateDeserializer.class)
 	private Date startDate;
 
 	/** Inventory level quantity in base UOM */

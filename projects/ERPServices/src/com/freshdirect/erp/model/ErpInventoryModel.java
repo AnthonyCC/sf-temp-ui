@@ -19,6 +19,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.freshdirect.common.date.SimpleDateDeserializer;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.ModelSupport;
@@ -38,7 +41,7 @@ public class ErpInventoryModel extends ModelSupport {
 
 	/** Date of last inventory update */
 	private Date lastUpdated;
-
+	@JsonDeserialize(using = SimpleDateDeserializer.class)
 	private Date inventoryStartDate;
 	EnumEStoreId enumStoreId = EnumEStoreId.FD;
 
@@ -64,7 +67,8 @@ public class ErpInventoryModel extends ModelSupport {
 	 * @param entries
 	 *            collection of ErpInventoryEntryModel objects
 	 */
-	public ErpInventoryModel(String sapId, Date lastUpdated, List<ErpInventoryEntryModel> entries) {
+	public ErpInventoryModel(@JsonProperty("sapId") String sapId, @JsonProperty("lastUpdated") Date lastUpdated,
+			@JsonProperty("entries") List<ErpInventoryEntryModel> entries) {
 		this.sapId = sapId;
 		this.lastUpdated = lastUpdated;
 		// this.entries = new ArrayList<ErpInventoryEntryModel>( entries );
