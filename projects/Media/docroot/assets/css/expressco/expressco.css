@@ -403,10 +403,14 @@
 	max-width: 500px;
     margin: auto;
 }
-#expresscheckout.deliverypasscheckout #checkout-cart-header .small-container{
+#expresscheckout.deliverypasscheckout #checkout-cart-header .small-container,
+#expresscheckout.deliverypasscheckout #checkout-cart-header .large-v2-container
+{
 	width: 40%;
 }
-#expresscheckout.deliverypasscheckout #checkout-cart-header .large-container{
+#expresscheckout.deliverypasscheckout #checkout-cart-header .large-container,
+#expresscheckout.deliverypasscheckout #checkout-cart-header .large-v3-container
+{
 	width: 60%;
 }
 #expresscheckout.deliverypasscheckout #cartcontent .promotions{
