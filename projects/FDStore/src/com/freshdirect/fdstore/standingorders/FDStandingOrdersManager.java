@@ -141,7 +141,7 @@ public class FDStandingOrdersManager {
 		lookupManagerHome();
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDStandingOrderSB)){
-				 return FDStandingOrdersService.getInstance().loadActiveStandingOrders(isNewSo);
+				 return FDStandingOrdersService.getInstance().loadActiveStandingOrdersForAWeek(isNewSo);
 			}
 			else{
 			FDStandingOrdersSB sb = soHome.create();
