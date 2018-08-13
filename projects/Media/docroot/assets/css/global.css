@@ -132,6 +132,7 @@ A.list		    { line-height: 12px; }
 .success13text   { font-size: 13px; font-weight: normal; font-family: Verdana, Arial, sans-serif;}
 
 /*High color contrast for error messages text-accessibility */
+.error_detail,
 .errortext     { font-size: 13px; font-weight: normal; font-family: Verdana, Arial, sans-serif; color:#B93D3F;}
 
 /*changing  error messages text globally to different font size */
