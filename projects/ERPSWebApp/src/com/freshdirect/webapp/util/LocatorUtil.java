@@ -40,7 +40,12 @@ public class LocatorUtil {
     			//used mocked ip address parameter (for testing) if exists
 		    	String ip = NVL.apply(request.getParameter(IP_LOCATOR_MOCKED_IP_ADDRESS), RequestUtil.getClientIp(request)); 
 		    			    	
-	    		IpLocatorData ipLocatorData = IpLocatorClient.getInstance().getData(ip);
+	    		IpLocatorData ipLocatorData = new IpLocatorData();			/* APPDEV-7024 */
+				try {
+					ipLocatorData = IpLocatorClient.getInstance().getData(ip);
+				} catch (Exception e) {
+					LOGGER.error("IP Locator failed: ", e);
+				}
 	    		
 	    		IpLocatorEventDTO ipLocatorEventDTO = new IpLocatorEventDTO();
 	    		ipLocatorEventDTO.setIp(ip);
@@ -53,7 +58,7 @@ public class LocatorUtil {
 	    		ipLocatorEventDTO.setIplocRolloutPercent(100);
 	    		
 	    		String akamaiEdgeHeader = request.getHeader("X-Akamai-Edgescape");
-	    		LOGGER.info("MELISSADATAIP:"+ ip + "=" + ipLocatorData.getZipCode() + " AkamaiEdgescapeHeader: "+akamaiEdgeHeader);
+	    		LOGGER.info("MELISSADATAIP:"+ ip + " = " + ipLocatorData.getZipCode() + " AkamaiEdgescapeHeader: "+akamaiEdgeHeader);
 	    		
 	    		if(FDStoreProperties.isLoggingAkamaiEdgescapgeHeaderInfoEnabled()){
 		    		logAkamaiEdgescapeHeaderInfo(akamaiEdgeHeader, ipLocatorData);
@@ -62,7 +67,7 @@ public class LocatorUtil {
                 user = createUser(session, response, ipLocatorData, ipLocatorEventDTO);
 
 	    	} catch (Exception e) {
-				LOGGER.error("IP Locator failed: ", e);
+				LOGGER.error("IP Locator failed in useIpLocator() : ", e);
 			} 	
         } else if (RobotRecognizer.isFriendlyRobot(request)) {
             user = RobotUtil.createRobotUser(session);
@@ -99,7 +104,7 @@ public class LocatorUtil {
     	FDSessionUser user = null;
     	
     	try {
-    	    EnumEStoreId eStoreId = StoreContextUtil.getStoreContext(session).getEStoreId();
+    		EnumEStoreId eStoreId = StoreContextUtil.getStoreContext(session).getEStoreId();
     		boolean useIpLocatorData = IpLocatorUtil.validate(ipLocatorData);
     		String zipCode = (EnumEStoreId.FD == eStoreId) ? FDStoreProperties.getDefaultPickupZoneId() : FDStoreProperties.getDefaultFdxZoneId();
     		if (useIpLocatorData){
