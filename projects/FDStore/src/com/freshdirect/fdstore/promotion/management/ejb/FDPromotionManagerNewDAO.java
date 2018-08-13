@@ -1965,7 +1965,7 @@ public class FDPromotionManagerNewDAO {
 					String[] windowTypes = windowArray != null ? (String[]) windowArray.getArray() : null;
 					timeSlotModel.setWindowTypes(windowTypes);
 					timeSlotModel.setForWindowTime(rs1.getString("RANGE_EXACT"));
-					timeSlotModel.setCutOffExpTime(rs.getInt("CUT_OFF_EXP_TIME"));
+					timeSlotModel.setCutOffExpTime(rs1.getInt("CUT_OFF_EXP_TIME"));
 					timeSlotList.add(timeSlotModel);
 				}
 				dlvZoneStrategyModel.setDlvTimeSlots(timeSlotList);

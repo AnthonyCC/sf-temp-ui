@@ -375,7 +375,8 @@ public class StandingOrderConverter {
 		data.setSaleId(result.getSaleId());
 		data.setSoId(result.getSoId());
 		data.setStatus(result.getStatus().toString());
-		data.setRequestedDate(result.getRequestedDate().getTime());
+		if(null !=result.getRequestedDate())
+			data.setRequestedDate(result.getRequestedDate().getTime());
 		data.setUnavailabilityDetails(buildUnavailabilityDetailsData(result.getUnavailabilityDetails()));
 		return data;
 		

@@ -30,17 +30,19 @@ var FreshDirect = FreshDirect || {};
 				zIndex: 2000,
 				placeholder: false,
 				overlay: true,
-				overlayExtraClass: 'centerpopupoverlay', /* use to fix ghost css */
+				overlayExtraClass: 'centerpopupoverlay close', /* use to fix ghost css */
 				align: false,
+				hideOnOverlayClick: true,
 				hidecallback: function (e) {
 					/* do nothing extra on overlay click */
 				}
 			}
 		},	
 		open: {
-			value: function () {
-				this.popup.show($(document.body));
-				this.popup.clicked = true;
+				value: function (event) {
+	                event.preventDefault();
+	                this.popup.show($(document.body));
+	                this.popup.clicked = true;				
 			}
 		},
 		close: {
