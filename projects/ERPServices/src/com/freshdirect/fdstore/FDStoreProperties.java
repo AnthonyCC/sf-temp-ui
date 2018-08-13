@@ -3877,12 +3877,14 @@ public class FDStoreProperties {
 
     public static Date getDlvPassNewTCDate() {
         Date date = null;
-
+        
+        SimpleDateFormat simpleFormatter = new SimpleDateFormat("yyyy-MM-dd");
+                
         try {
-            date = SF.parse(get(DLV_PASS_NEW_TC_DATE));
+            date = simpleFormatter.parse(get(DLV_PASS_NEW_TC_DATE));
         } catch (ParseException e) {
             try {
-                date = SF.parse("2012-05-09");
+                date = simpleFormatter.parse("2012-05-09");
                 LOGGER.warn("fdstore.dlvpass.newtc.date property in fdstore.properties is not in correct yyyy-MM-dd format, defaulting to 2199-01-01");
             } catch (ParseException f) {
                 throw new FDRuntimeException("Error parsing dlv tc date, default value");
