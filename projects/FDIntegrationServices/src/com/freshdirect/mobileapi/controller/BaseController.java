@@ -256,11 +256,7 @@ public abstract class BaseController extends AbstractController implements Messa
     }
 
     protected SessionUser getUserFromSession(HttpServletRequest request, HttpServletResponse response) throws NoSessionException {
-        if (null == request.getSession().getAttribute(SessionName.USER)) {
-            throw new NoSessionException("No session");
-        }
-
-        return SessionUser.wrap(request.getSession().getAttribute(SessionName.USER));
+    	return getUser(request, response);
     }
 
 
@@ -758,13 +754,15 @@ public abstract class BaseController extends AbstractController implements Messa
     private String getMobileNumber(SessionUser user) throws FDResourceException {
         String mobileNumber = null;
         FDSessionUser fduser = user.getFDSessionUser();
-        FDCustomerModel fdCustomerModel = FDCustomerFactory.getFDCustomer(fduser.getIdentity());
-        FDCustomerEStoreModel customerSmsPreferenceModel = fdCustomerModel.getCustomerSmsPreferenceModel();
+        if(fduser.getIdentity()!=null){
+        	FDCustomerModel fdCustomerModel = FDCustomerFactory.getFDCustomer(fduser.getIdentity());
+        	FDCustomerEStoreModel customerSmsPreferenceModel = fdCustomerModel.getCustomerSmsPreferenceModel();
 
-        if (EnumEStoreId.FDX.getContentId().equals(fduser.getUserContext().getStoreContext().getEStoreId().getContentId())) {
-            mobileNumber = customerSmsPreferenceModel.getFdxMobileNumber() != null ? customerSmsPreferenceModel.getFdxMobileNumber().getPhone() : "";
-        } else {
-            mobileNumber = customerSmsPreferenceModel.getMobileNumber() != null ? customerSmsPreferenceModel.getMobileNumber().getPhone() : "";
+        	if (EnumEStoreId.FDX.getContentId().equals(fduser.getUserContext().getStoreContext().getEStoreId().getContentId())) {
+        		mobileNumber = customerSmsPreferenceModel.getFdxMobileNumber() != null ? customerSmsPreferenceModel.getFdxMobileNumber().getPhone() : "";
+        	} else {
+        		mobileNumber = customerSmsPreferenceModel.getMobileNumber() != null ? customerSmsPreferenceModel.getMobileNumber().getPhone() : "";
+        	}
         }
         return mobileNumber;
     }
