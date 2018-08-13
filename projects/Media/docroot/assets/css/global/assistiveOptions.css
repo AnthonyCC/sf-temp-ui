@@ -110,8 +110,10 @@
     color: #222222;
     font-size: 14px;
     top: 0px;
-    left: 55px;
-    width: 300px;
+    left: 47px;
+/*     width: 300px; */
+    padding-left:10px;
+    padding-right:25px;
     letter-spacing: .2px;
   }
 
