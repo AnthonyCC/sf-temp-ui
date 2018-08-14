@@ -165,13 +165,19 @@ public abstract class BaseController extends AbstractController implements Messa
         MobileSessionData mobileSessionData = (MobileSessionData) request.getSession().getAttribute("MobileSessionData");
         if (mobileSessionData == null) {
             mobileSessionData = new MobileSessionData();
-            request.getSession().setAttribute("MobileSessionData", mobileSessionData);
+            try {
+            		request.getSession().setAttribute("MobileSessionData", mobileSessionData);
+            }catch(IllegalStateException e){
+			}
         }
         return mobileSessionData;
     }
 
     public void resetMobileSessionData(HttpServletRequest request) {
-        request.getSession().setAttribute("MobileSessionData", null);
+	    	try {
+	        request.getSession().setAttribute("MobileSessionData", null);
+	    	}catch(IllegalStateException e){
+		}
     }
 
     /**
@@ -557,10 +563,13 @@ public abstract class BaseController extends AbstractController implements Messa
     	HttpSession session = request.getSession();
 
     	// clear session
-    	Enumeration e = session.getAttributeNames();
-    	while (e.hasMoreElements()) {
-    		String name = (String) e.nextElement();
-    		session.removeAttribute(name);
+    	try {
+    		Enumeration e = session.getAttributeNames();
+    		while (e.hasMoreElements()) {
+    			String name = (String) e.nextElement();
+    			session.removeAttribute(name);
+    		}
+    	}catch(IllegalStateException e) {
     	}
     	// end session
     	session.invalidate();
@@ -781,7 +790,12 @@ public abstract class BaseController extends AbstractController implements Messa
     }
 
     protected SessionUser getUser(HttpServletRequest request, HttpServletResponse response) throws NoSessionException {
-        FDSessionUser fdSessionUser = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
+    		FDSessionUser fdSessionUser = null;
+    		try {
+    			fdSessionUser = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
+    		}catch(IllegalStateException e) {
+            	
+        }
         if (fdSessionUser == null) {
             try {
                 fdSessionUser = UserUtil.getSessionUserByCookie(request);
@@ -798,8 +812,12 @@ public abstract class BaseController extends AbstractController implements Messa
             	fdSessionUser.getUser().setApplication(src);
             }
             fdSessionUser.isLoggedIn(true);
-            request.getSession().setAttribute(SessionName.APPLICATION, src.getCode());
-            request.getSession().setAttribute(SessionName.USER, fdSessionUser);
+            try {
+            		request.getSession().setAttribute(SessionName.APPLICATION, src.getCode());
+            		request.getSession().setAttribute(SessionName.USER, fdSessionUser);
+            }catch(IllegalStateException e) {
+            	
+            }
         }
         if (validateUser() && fdSessionUser.getIdentity() == null) {
             throw new NoSessionException("No session");

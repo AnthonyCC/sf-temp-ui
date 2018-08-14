@@ -88,6 +88,11 @@ public class AccountController extends BaseController implements Comparator <Ord
 	private static final String ACTION_DP_GET_LIST="getDpList";
     private static final String ACTION_DP_AUTO_RENEW="dpAutoRenew";
     private final static String DLV_PASS_CART = "dlvPassCart";
+    
+    @Override
+    protected boolean validateUser() {
+		return false;
+	}
 
     @Override
     protected ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model, String action,

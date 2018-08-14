@@ -100,6 +100,11 @@ public class OrderController extends BaseController {
     private static final String ACTION_CHECK_MODIFY = "checkmodify";
     private final static String DLV_PASS_CART = "dlvPassCart";
     
+    @Override
+    protected boolean validateUser() {
+		return false;
+	}
+    
     /* (non-Javadoc)
      * @see com.freshdirect.mobileapi.controller.BaseController#processRequest(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, org.springframework.web.servlet.ModelAndView, java.lang.String, com.freshdirect.mobileapi.model.SessionUser)
      */

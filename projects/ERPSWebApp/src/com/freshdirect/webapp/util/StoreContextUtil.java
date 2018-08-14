@@ -21,10 +21,17 @@ public class StoreContextUtil implements Serializable {
 	public static StoreContext getStoreContext(HttpSession session){
 		StoreContext storeContext = null;
 		if(null !=session){
-			storeContext =(StoreContext)session.getAttribute(SessionName.STORE_CONTEXT);		
+			try {
+				storeContext =(StoreContext)session.getAttribute(SessionName.STORE_CONTEXT);	
+			}catch(IllegalStateException e) {
+				storeContext = null;
+			}
 			if(null == storeContext){
         		storeContext = StoreContext.createStoreContext(EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId())));
-        		session.setAttribute(SessionName.STORE_CONTEXT, storeContext);
+        		try {
+        			session.setAttribute(SessionName.STORE_CONTEXT, storeContext);
+        		}catch(IllegalStateException e) {
+    			}
 			}
         }else{
         	storeContext = StoreContext.createStoreContext(EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId())));

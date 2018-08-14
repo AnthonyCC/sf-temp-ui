@@ -104,7 +104,11 @@ public class UserUtil {
         }
 
         if (user != null) {
-        	session.setAttribute(SessionName.USER, user);
+        		try {
+        			session.setAttribute(SessionName.USER, user);
+        		}catch(IllegalStateException e) {
+        			
+        		}
             // prevent asking for e-mail address in case of returning customer
             user.setFutureZoneNotificationEmailSentForCurrentAddress(true);
             FDCustomerCouponUtil.initCustomerCoupons(session);
@@ -120,8 +124,11 @@ public class UserUtil {
         if (user == null) {
             user = LocatorUtil.useIpLocator(session, request, response);
         }
-
-        session.setAttribute(SessionName.USER, user);
+        try {
+        		session.setAttribute(SessionName.USER, user);
+        }catch(IllegalStateException e) {
+        	
+        }
 
         return user;
     }
@@ -168,7 +175,11 @@ public class UserUtil {
     public static void newSession(HttpSession session, HttpServletResponse response) {
         // clear session
         // [segabor]: instead of wiping out all session entries delete just the 'customer'
-        session.removeAttribute(SessionName.USER);
+    		try {
+    			session.removeAttribute(SessionName.USER);
+    		}catch(IllegalStateException e) {
+    			
+    		}
         // remove cookie
         CookieMonster.clearCookie(response);
     }
@@ -193,7 +204,11 @@ public class UserUtil {
     public static FDSessionUser createSessionUser(EnumServiceType serviceType, Set<EnumServiceType> availableServices, HttpSession session, HttpServletResponse response,
             AddressModel address) throws FDResourceException {
 
-        FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+        FDSessionUser user = null;
+        try {
+        		user = (FDSessionUser) session.getAttribute(SessionName.USER);
+        }catch(IllegalStateException e) {
+        }
 
         if ((user == null) || ((user.getZipCode() == null) && (user.getDepotCode() == null))) {
             //
@@ -220,7 +235,11 @@ public class UserUtil {
             }
 
             CookieMonster.storeCookie(user, response);
-            session.setAttribute(SessionName.USER, user);
+            try {
+            		session.setAttribute(SessionName.USER, user);
+            }catch(IllegalStateException e) {
+   
+            }
         } else {
             //
             // otherwise, just update the zipcode in their existing object if
@@ -235,7 +254,11 @@ public class UserUtil {
 
                 CookieMonster.storeCookie(user, response);
                 FDCustomerManager.storeUser(user.getUser());
-                session.setAttribute(SessionName.USER, user);
+                try {
+                		session.setAttribute(SessionName.USER, user);
+                }catch(IllegalStateException e) {
+                	
+                }
             }
         }
 
@@ -245,9 +268,13 @@ public class UserUtil {
         }
 
         // The previous recommendations of the current session need to be removed.
-        session.removeAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);
-        session.removeAttribute(SessionName.SAVINGS_FEATURE_LOOK_UP_TABLE);
-        session.removeAttribute(SessionName.PREV_SAVINGS_VARIANT);
+        try {
+	        session.removeAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);
+	        session.removeAttribute(SessionName.SAVINGS_FEATURE_LOOK_UP_TABLE);
+	        session.removeAttribute(SessionName.PREV_SAVINGS_VARIANT);
+        }catch(IllegalStateException e) {
+        	
+        }
         return user;
     }
 
@@ -263,8 +290,11 @@ public class UserUtil {
 		else
 			CookieMonster.storeCookie(sessionUser, response);
 		sessionUser.updateUserState();
-
-		session.setAttribute(SessionName.USER, sessionUser);
+		try{
+			session.setAttribute(SessionName.USER, sessionUser);
+		}catch(IllegalStateException e) {
+			
+		}
 
 		FDCustomerCouponUtil.initCustomerCoupons(session);
 	}
@@ -275,7 +305,11 @@ public class UserUtil {
 			sessionUser.isLoggedIn(true);
 			CookieMonster.storeCookie(sessionUser, response);
 			sessionUser.updateUserState();
-			session.setAttribute(SessionName.USER, sessionUser);
+			try {
+				session.setAttribute(SessionName.USER, sessionUser);
+			}catch(IllegalStateException e) {
+				
+			}
 			FDCustomerCouponUtil.initCustomerCoupons(session);
 		}
 
@@ -287,7 +321,12 @@ public class UserUtil {
 	}
 
 	public static String getCustomerServiceContact(HttpServletRequest request) {
-		FDUserI user = (FDUserI) request.getSession().getAttribute(SessionName.USER);
+		FDUserI user = null;
+		try {
+			user = (FDUserI) request.getSession().getAttribute(SessionName.USER);
+		}catch(IllegalStateException e) {
+			
+		}
 		return getCustomerServiceContact(user);
 	}
 
@@ -629,14 +668,16 @@ public class UserUtil {
             				&& currentUser.getAddress().getAddress1().trim().length() > 0 && currentUser.getAddress().isCustomerAnonymousAddress()) {
             	loginUser.setAddress(currentUser.getAddress());
             }*/
-
-            if(session.getAttribute("TICK_TIE_CUSTOMER") != null) {
-            	try{
-            		session.removeAttribute(SessionName.USER);
-            	}catch(IllegalStateException e){
-                }
-            	currentUser = null;
-            }
+            try {
+            		if(session.getAttribute("TICK_TIE_CUSTOMER") != null) {
+            			try{
+            				session.removeAttribute(SessionName.USER);
+            			}catch(IllegalStateException e){
+            			}
+            			currentUser = null;
+            		}
+            }catch(IllegalStateException e){
+			}
 
 //            LOGGER.info("loginUser is " + loginUser.getFirstName() + " Level = " + loginUser.getLevel());
             // LOGGER.info("currentUser is " + (currentUser==null?"null":currentUser.getFirstName()+currentUser.getLevel()));
@@ -719,7 +760,11 @@ public class UserUtil {
 			                        checkForMultipleSavings(cartCurrent, cartSaved, cartMerged);
 			    					// invalidate promotion and recalc
 			                        loginUser.updateUserState(false);
+			                        try {
 			                        session.setAttribute(SessionName.USER, currentUser);
+			                        }catch(IllegalStateException e) {
+			                        	
+			                        }
 
 		        				if(null == loginUser.getShoppingCart().getDeliveryPlantInfo()){
 		        					loginUser.getShoppingCart().setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(loginUser));
@@ -730,7 +775,11 @@ public class UserUtil {
 		        				FDCustomerCouponUtil.evaluateCartAndCoupons(session);
 
 		                        // get rid of the extra cart in the session
+		        					try {
 		                        session.removeAttribute(SessionName.CURRENT_CART);
+		        					}catch(IllegalStateException e) {
+			                        	
+			                    }
 
 		                        //LOGGER.debug("redirect after mergeCart ==> " + this.successPage);
 		                        //response.sendRedirect(response.encodeRedirectURL( this.successPage ));
@@ -739,15 +788,27 @@ public class UserUtil {
 		                    /* ---- logic from MergeCartControllerTag */
 
 		                    	//set in to session (from login user)
-			                    session.setAttribute(SessionName.CURRENT_CART, loginUser.getShoppingCart());
+		        					try {
+		        						session.setAttribute(SessionName.CURRENT_CART, loginUser.getShoppingCart());
+		        					}catch(IllegalStateException e) {
+			                        	
+				                }
 		                	} else { //using merge cart page
 		                    	//set in to session (from cur user)
+		                		try {
 		                		session.setAttribute(SessionName.CURRENT_CART, currentUser.getShoppingCart());
+		                		}catch(IllegalStateException e) {
+		                        	
+				            }
 		                	}
 		                    if (FDStoreProperties.isSocialLoginEnabled() ) {
 								String preSuccessPage = (String) session.getAttribute(SessionName.PREV_SUCCESS_PAGE);
 								if (preSuccessPage != null) {
+									try {
 									session.removeAttribute(SessionName.PREV_SUCCESS_PAGE);
+									}catch(IllegalStateException e) {
+			                        	
+					                }
 									successPage = preSuccessPage;
 								}
 		                    }
@@ -792,9 +853,12 @@ public class UserUtil {
 		            }
 		            UserUtil.createSessionUser(request, response, loginUser);
 		            //The previous recommendations of the current session need to be removed.
-		            session.removeAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);
-		            session.removeAttribute(SessionName.SAVINGS_FEATURE_LOOK_UP_TABLE);
-		            session.removeAttribute(SessionName.PREV_SAVINGS_VARIANT);
+		            try {
+		            		session.removeAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);
+		            		session.removeAttribute(SessionName.SAVINGS_FEATURE_LOOK_UP_TABLE);
+		            		session.removeAttribute(SessionName.PREV_SAVINGS_VARIANT);
+		            }catch(IllegalStateException e) {
+		            }
 
 		        }
             }else {
@@ -802,10 +866,18 @@ public class UserUtil {
                 // that means that they were previously recognized by their cookie before log in
                 // just set their login status and move on
                 currentUser.isLoggedIn(true);
-                session.setAttribute(SessionName.USER, currentUser);
+                try {
+                		session.setAttribute(SessionName.USER, currentUser);
+                }catch(IllegalStateException e) {
+                	
+                }
             }
 //          loginUser.setEbtAccepted(loginUser.isEbtAccepted()&&(loginUser.getOrderHistory().getUnSettledEBTOrderCount()<=0));
-          FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+            FDSessionUser user = null;
+            try {  
+            		user = (FDSessionUser) session.getAttribute(SessionName.USER);
+            }catch(IllegalStateException e) {
+            }
           if(user != null) {
               user.setEbtAccepted(user.isEbtAccepted()&&(user.getOrderHistory().getUnSettledEBTOrderCount()<1)&&!user.hasEBTAlert());
               FDCustomerCouponUtil.initCustomerCoupons(session,currentUserId);
@@ -833,27 +905,30 @@ public class UserUtil {
           }
 
           //tick and tie for refer a friend program
-          if(session.getAttribute("TICK_TIE_CUSTOMER") != null) {
-        	  String ticktie = (String) session.getAttribute("TICK_TIE_CUSTOMER");
-        	  String custID = ticktie.substring(0, ticktie.indexOf("|"));
-        	  String refName = ticktie.substring(ticktie.indexOf("|"));
-        	  if(custID.equals(identity.getErpCustomerPK())) {
-        		  //the session is for this user only
-        		  String referralCustomerId = FDCustomerManager.recordReferral(custID, (String) session.getAttribute("REFERRALNAME"), user.getUserId());
-        		  LOGGER.debug("Tick and tie:" + user.getUserId() + " with:" + referralCustomerId);
-        		  user.setReferralCustomerId(referralCustomerId);
-        		  user.setReferralPromoList();
-        		  session.setAttribute(SessionName.USER, user);
-        	  }
-        	  session.removeAttribute("TICK_TIE_CUSTOMER");
+          try {
+	          if(session.getAttribute("TICK_TIE_CUSTOMER") != null) {
+	        	  String ticktie = (String) session.getAttribute("TICK_TIE_CUSTOMER");
+	        	  String custID = ticktie.substring(0, ticktie.indexOf("|"));
+	        	  String refName = ticktie.substring(ticktie.indexOf("|"));
+	        	  if(custID.equals(identity.getErpCustomerPK())) {
+	        		  //the session is for this user only
+	        		  String referralCustomerId = FDCustomerManager.recordReferral(custID, (String) session.getAttribute("REFERRALNAME"), user.getUserId());
+	        		  LOGGER.debug("Tick and tie:" + user.getUserId() + " with:" + referralCustomerId);
+	        		  user.setReferralCustomerId(referralCustomerId);
+	        		  user.setReferralPromoList();
+	        		  session.setAttribute(SessionName.USER, user);
+	        	  }
+	        	  session.removeAttribute("TICK_TIE_CUSTOMER");
+	          }
+          }catch(IllegalStateException e) {
           }
 
           if(user != null) {
-        	user.setJustLoggedIn(true);
+        	  	user.setJustLoggedIn(true);
           }
           if(!FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user)){
         	  if(null!=user.getFDCustomer().getDefaultPaymentType() && !user.getFDCustomer().getDefaultPaymentType().getName().equals(EnumPaymentMethodDefaultType.UNDEFINED.getName())){
-        	 user.resetDefaultPaymentValueType();
+        		  user.resetDefaultPaymentValueType();
         	  }
           }else {
 				FDActionInfo info = AccountActivityUtil.getActionInfo(request.getSession());
