@@ -444,7 +444,7 @@ function parseTipTotal(data) {
 			value: function (data) {
 				var $placeholder = $jq('#checkoutbutton_bottom');
 
-				if ($placeholder.size() && expressco.checkoutBanner) {
+				if ($placeholder.length && expressco.checkoutBanner) {
 					$placeholder.html(expressco.checkoutBanner(data));
 					$(document).trigger('checkoutFlowImmediate-change');
 				}
@@ -556,7 +556,7 @@ function parseTipTotal(data) {
 				var updateStream = $(cartcontent.placeholder).asEventStream('cartcontent-update');
 				var changeStream = $(cartcontent.placeholder).asEventStream('quantity-change').filter(function() {
 					var $el = $('input[name="dontupdatecartlines"]:checked');
-					return $el.size() === 0;
+					return $el.length === 0;
 				});
 				var dataStream = deleteStream.merge(updateStream).merge(changeStream);
 				var bouncedDataStream = dataStream.debounce(500);
@@ -840,7 +840,8 @@ function parseTipTotal(data) {
 					checkoutCartHeaderData.userCorporate = subTotalBox.userCorporate;
 					checkoutCartHeaderData.userRecognized = subTotalBox.userRecognized;
 				}
-				
+				//DP17-259
+				checkoutCartHeaderData.saveAmount = null;
 				if (subTotalBox && subTotalBox.estimatedTotalBox && subTotalBox.estimatedTotalBox.length) {
 					subTotalBox.estimatedTotalBox.forEach( function(box) {
 						if (box.id === 'ssOrderTotal') {

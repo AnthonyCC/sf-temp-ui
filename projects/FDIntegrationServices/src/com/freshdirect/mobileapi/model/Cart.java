@@ -1299,7 +1299,7 @@ public class Cart {
         		final boolean cosAction = CosFeatureUtil.isUnbxdCosAction(user, request.getCookies());
             Visitor visitor = Visitor.withUser(user);
             LocationInfo location = LocationInfo.withUrlAndReferer(RequestUtil.getFullRequestUrl(request), request.getHeader(HttpHeaders.REFERER));
-            final AnalyticsEventI event = AnalyticsEventFactory.createEvent(AnalyticsEventType.ATC, visitor, location, null, null, cartLine, cosAction);
+            final AnalyticsEventI event = AnalyticsEventFactory.createEvent(AnalyticsEventType.ATC, visitor, location, null, null, cartLine, cosAction, null);
 
             EventLoggerService.getInstance().log(event);
         }

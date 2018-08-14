@@ -63,6 +63,7 @@ import com.freshdirect.fdstore.customer.FDRecipientList;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.SilverPopupDetails;
+import com.freshdirect.fdstore.customer.UnbxdAutosuggestResults;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
@@ -186,6 +187,8 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	private boolean showInformOrderModify = false;
 	
 	private Map<String, Set<Long>> recentCartlineIdsMap = new HashMap<String, Set<Long>>();
+	
+	private List<UnbxdAutosuggestResults> unbxdAustoSuggestions;
 	
 	/* map setter/getter */
 	public Map<String, Set<Long>> getRecentCartlineIdsMap() {
@@ -2575,5 +2578,11 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	}
 	public void setAddCcUuid(String addCcUuid) {
 		this.addCcUuid = addCcUuid;
+	}
+	public List<UnbxdAutosuggestResults> getUnbxdAustoSuggestions() {
+		return unbxdAustoSuggestions;
+	}
+	public void setUnbxdAustoSuggestions(List<UnbxdAutosuggestResults> unbxdAustoSuggestions) {
+		this.unbxdAustoSuggestions = unbxdAustoSuggestions;
 	}
 }

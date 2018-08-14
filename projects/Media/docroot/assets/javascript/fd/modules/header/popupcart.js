@@ -217,7 +217,8 @@ var FreshDirect = FreshDirect || {};
       stayOnClick: true,
       closeHandle: '#popupcart .close',
       disabled: isDisabled,
-      $clickTrigger: $clickTrigger
+      $clickTrigger: $clickTrigger,
+      appendTo: '#locabar_popupcart'
     }
   ), cartProperties);
 	  
@@ -320,6 +321,6 @@ var FreshDirect = FreshDirect || {};
 		  }
 		});
   });
-
+  
 }(FreshDirect));
 

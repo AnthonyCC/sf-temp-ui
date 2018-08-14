@@ -198,7 +198,7 @@ public class CartOperations {
 
                 // [APPDEV-5353] UNBXD Analytics Events
                 if (isUNBXDAnalyticsAvailable && !user.isRobot()) {
-                    final AnalyticsEventI event = AnalyticsEventFactory.createEvent(AnalyticsEventType.ATC, visitor, loc, null, null, cartLine, cosAction);
+                    final AnalyticsEventI event = AnalyticsEventFactory.createEvent(AnalyticsEventType.ATC, visitor, loc, null, null, cartLine, cosAction,null);
                     EventLoggerService.getInstance().log(event);
                 }
 

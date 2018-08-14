@@ -54,7 +54,10 @@ var FreshDirect = FreshDirect || {};
 
     $selects.each(function() {
       $(this).val($currentSelect.val());
+      $(this).closest('[data-component="cartline"]').addClass('modified').attr('data-changed', 'complaintreason');
     });
+
+    $('#cartcontent').trigger('cartcontent-update');
   });
 
   var warningMessage = Object.create(WIDGET, {

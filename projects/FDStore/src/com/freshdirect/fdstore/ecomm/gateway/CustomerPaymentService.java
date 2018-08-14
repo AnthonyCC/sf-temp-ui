@@ -8,7 +8,9 @@ import org.apache.log4j.Category;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.freshdirect.customer.EnumFraudReason;
 import com.freshdirect.customer.EnumPaymentMethodDefaultType;
+import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpPaymentMethodException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.ecomm.gateway.AbstractEcommService;
@@ -56,7 +58,7 @@ public class CustomerPaymentService extends AbstractEcommService implements Cust
 
 	@Override
 	public void addPaymentMethod(FDActionInfo info, ErpPaymentMethodI paymentMethod, boolean paymentechEnabled,
-			boolean isDebitCardSwitch) throws FDResourceException, RemoteException, ErpPaymentMethodException {
+			boolean isDebitCardSwitch) throws FDResourceException, RemoteException, ErpPaymentMethodException, ErpFraudException {
 		Response<Void> response = null;
 		try {
 			Request<ObjectNode> request = new Request<ObjectNode>();
@@ -74,6 +76,7 @@ public class CustomerPaymentService extends AbstractEcommService implements Cust
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in CustomerPaymentService: inputJson=" + inputJson);
 				if ("ErpPaymentMethodException".equals(response.getMessage())) {
 					if (response.getError() != null && response.getError().get("ErpPaymentMethodException") != null) {
 						throw new ErpPaymentMethodException(
@@ -81,6 +84,11 @@ public class CustomerPaymentService extends AbstractEcommService implements Cust
 					} else {
 						throw new ErpPaymentMethodException();
 					}
+				}
+				if ("ErpFraudException".equals(response.getMessage())) {
+					
+					throw new ErpFraudException(EnumFraudReason.DEACTIVATED_ACCOUNT);
+					
 				}
 				throw new FDResourceException(response.getMessage());
 			}
@@ -119,6 +127,7 @@ public class CustomerPaymentService extends AbstractEcommService implements Cust
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in CustomerPaymentService: inputJson=" + inputJson);
 				if ("ErpPaymentMethodException".equals(response.getMessage())) {
 					if (response.getError() != null && response.getError().get("ErpPaymentMethodException") != null) {
 						throw new ErpPaymentMethodException(
@@ -164,6 +173,7 @@ public class CustomerPaymentService extends AbstractEcommService implements Cust
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in CustomerPaymentService: inputJson=" + inputJson);
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDEcommServiceException e) {
@@ -180,6 +190,7 @@ public class CustomerPaymentService extends AbstractEcommService implements Cust
 				});
 
 		if (!response.getResponseCode().equals("OK")) {
+			LOGGER.error("Error in CustomerPaymentService: fdCustomerId=" + fdCustomerId);
 			throw new FDResourceException(response.getMessage());
 		}
 		return response.getData();
@@ -205,6 +216,7 @@ public class CustomerPaymentService extends AbstractEcommService implements Cust
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in CustomerPaymentService: inputJson=" + inputJson);
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDEcommServiceException e) {
@@ -221,6 +233,7 @@ public class CustomerPaymentService extends AbstractEcommService implements Cust
 				});
 
 		if (!response.getResponseCode().equals("OK")) {
+			LOGGER.error("Error in CustomerPaymentService: fdCustomerId=" + fdCustomerId);
 			throw new FDResourceException(response.getMessage());
 		}
 		return response.getData();

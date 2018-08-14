@@ -5,6 +5,8 @@
  */
 package com.freshdirect.customer;
 
+import java.util.List;
+
 /**
  * 
  * @author knadeem
@@ -17,6 +19,7 @@ public class ErpReturnOrderModel extends ErpAbstractInvoiceModel {
 	private boolean dlvPassApplied;
 	private String dlvPassId;
 	private boolean restockingApplied;
+	private List<ErpReturnLineModel> returnLines;
 	
 	public boolean isRestockingApplied() {
 		return restockingApplied;
@@ -53,4 +56,13 @@ public class ErpReturnOrderModel extends ErpAbstractInvoiceModel {
 	public void setContainsDeliveryPass(boolean containsDeliveryPass) {
 		this.containsDeliveryPass = containsDeliveryPass;
 	}
+
+	public List<ErpReturnLineModel> getReturnLines() {
+		return returnLines;
+	}
+
+	public void setReturnLines(List<ErpReturnLineModel> returnLines) {
+		this.returnLines = returnLines;
+	}
+	
 }

@@ -545,7 +545,6 @@
 	height: 23px;
 	width: 84px;
 	background-size: 73px;
-    background-position: center;
 }
 .locabar-tab-fdx-cont:hover, .locabar-tab-fdx-cont:focus {
 	background-color: #fff;
@@ -1987,11 +1986,20 @@ option.address-icon {
 		background-color: #fff;
 		background-size: 29px;
 	}
+	.locabar-tab-fd {
+		background-position: center 2px;
+	}
+	.locabar-tab-fdx {
+		background-position: center 2px;
+	}
+	.locabar-tab-cos {
+		background-position: -2px 1px;
+	}
 	.locabar-tab-cos span, .locabar-tab-cos-cont:hover .locabar-tab-cos span, .locabar-tab-cos-cont:focus .locabar-tab-cos span{
 		position: absolute;
 		right: 0;
 		font-family: TradeGothicBold;
-		font-size: 21px;
+		font-size: 22px;
 		text-transform: uppercase;
 		color: #7b8fa6;
 	}

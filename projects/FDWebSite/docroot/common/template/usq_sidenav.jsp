@@ -21,7 +21,6 @@ final int W_WINE_SIDENAV_RIGHT = 191;
 <head>
 	<tmpl:get name="seoMetaTag"/>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	<%@ include file="/shared/template/includes/ccl.jspf" %>
 	<tmpl:get name='facebookmeta'/>

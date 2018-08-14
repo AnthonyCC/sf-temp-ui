@@ -828,7 +828,9 @@ public class SapGatewayConverter {
 		ErpPaymentMethodData paymentData = null;
 		if(paymentMethod!=null){
 		paymentData = new ErpPaymentMethodData();
-		paymentData.setId(paymentMethod.getPK().getId());
+		if(paymentMethod.getPK()!=null){
+			paymentData.setId(paymentMethod.getPK().getId());
+		}
 		paymentData.setCustomerId(paymentMethod.getCustomerId());
 		paymentData.setName(paymentMethod.getName());
 		paymentData.setAccountNumber(paymentMethod.getAccountNumber());
@@ -871,7 +873,9 @@ public class SapGatewayConverter {
 			paymentData.setBalance(paymentMethod.getBalance());
 			paymentData.setOriginalAmount(((ErpGiftCardModel) paymentMethod).getOriginalAmount());
 			paymentData.setPurchaseSaleId(((ErpGiftCardModel) paymentMethod).getPurchaseSaleId());
-			paymentData.setPurchaseDate(((ErpGiftCardModel) paymentMethod).getPurchaseDate().getTime());
+			if(((ErpGiftCardModel) paymentMethod).getPurchaseDate()!=null){
+				paymentData.setPurchaseDate(((ErpGiftCardModel) paymentMethod).getPurchaseDate().getTime());
+			}
 		}
 		}
 		return paymentData;

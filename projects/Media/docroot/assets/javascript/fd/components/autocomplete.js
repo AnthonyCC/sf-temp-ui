@@ -13,8 +13,9 @@ var FreshDirect = FreshDirect || {};
             button = $(this).siblings('.searchbutton').first();
 
         $(this).val(ui.item.value);
+        $("#isAutosuggest").val("true");
 
-        if (button.size()) {
+        if (button.length) {
           button.click();
         } else if (form) {
           form.submit();
@@ -29,7 +30,7 @@ var FreshDirect = FreshDirect || {};
     $(queryPath).on('keydown', function (e) {
       var button = $(this).siblings('.searchbutton').first();
 
-      if (e.keyCode === 13 && button.size()) {
+      if (e.keyCode === 13 && button.length) {
         $(this).autocomplete && $(this).autocomplete('close');
         button.click();
         e.preventDefault();

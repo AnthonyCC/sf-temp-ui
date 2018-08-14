@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.freshdirect.crm.ejb.CrmComplaintDlvTypeDAO;
 import com.freshdirect.enums.EnumModel;
 
@@ -26,7 +28,8 @@ public class EnumComplaintDlvIssueType extends EnumModel {
 
 	private static final long serialVersionUID = 5817878443322520830L;
 
-	public static EnumComplaintDlvIssueType getEnum(String code) {
+	@JsonCreator
+	public static EnumComplaintDlvIssueType getEnum(@JsonProperty("code") String code) {
 		loadEnums();
 		return (EnumComplaintDlvIssueType) enums.get(code);
 	}

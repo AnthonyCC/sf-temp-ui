@@ -11,6 +11,8 @@
     String style_sheet_detect_uri = request.getRequestURI();
     boolean style_sheet_detect_isReorder = (style_sheet_detect_uri.indexOf("/quickshop/") != -1) ? true : false;
 %><% if (FDStoreProperties.isFlushOscache()) { %><oscache:flush /><% } %>
+
+ <jwr:style src="/grid.css" media="all" />
  <%-- global css files, header, footer, etc. --%>
  <jwr:style src="/global.css" media="all" />
 

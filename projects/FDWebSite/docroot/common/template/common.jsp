@@ -17,14 +17,12 @@
          <tmpl:get name="seoMetaTag"/>
 		<%@ include file="/common/template/includes/metatags.jspf" %>
 	<% /* @ include file="/common/template/includes/i_javascripts.jspf" */ %>
-    <% /* @ include file="/shared/template/includes/style_sheet_grid_compat.jspf" */ %>
     <% /* @ include file="/shared/template/includes/style_sheet_detect.jspf" */ %>
     <% /* @ include file="/shared/template/includes/ccl.jspf" */ %>
 
 	<!-- from  /common/template/includes/i_javascripts.jspf -->
 	<jwr:script src="/fdlibs.js" useRandomParam="false" />
 
-	<!-- from  /shared/template/includes/style_sheet_grid_compat.jspf -->
 	<%-- this file will be included in the <head> tag, when the new grid is used --%>
   	<jwr:style src="/grid.css"/>
 

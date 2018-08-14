@@ -61,19 +61,19 @@ public class ErpGenerateInvoiceCommand {
 
 	public ErpInvoiceModel generateNewInvoice(ErpAbstractOrderModel order, ErpInvoiceModel invoice, ErpReturnOrderModel returnOrder) {
 
-		HashMap lineMap = new HashMap();
-		for (Iterator i = returnOrder.getInvoiceLines().iterator(); i.hasNext();) {
-			ErpReturnLineModel returnLine = (ErpReturnLineModel)i.next();
+		HashMap<String, ErpReturnLineModel> lineMap = new HashMap<String, ErpReturnLineModel>();
+		for (Iterator<ErpReturnLineModel> i = returnOrder.getReturnLines().iterator(); i.hasNext();) {
+			ErpReturnLineModel returnLine = i.next();
 			lineMap.put(returnLine.getLineNumber(), returnLine);
 		}
 
-		List newInvoiceLines = new ArrayList();
+		List<ErpInvoiceLineModel> newInvoiceLines = new ArrayList<ErpInvoiceLineModel>();
 
-		for (Iterator i = invoice.getInvoiceLines().iterator(); i.hasNext();) {
+		for (Iterator<ErpInvoiceLineModel> i = invoice.getInvoiceLines().iterator(); i.hasNext();) {
 
 			ErpInvoiceLineModel invoiceLine = (ErpInvoiceLineModel) i.next();
 			ErpOrderLineModel orderLine = order.getOrderLine(invoiceLine.getOrderLineNumber());
-			ErpReturnLineModel returnLine = (ErpReturnLineModel) lineMap.get(invoiceLine.getOrderLineNumber());
+			ErpReturnLineModel returnLine = lineMap.get(invoiceLine.getOrderLineNumber());
 
 			ErpInvoiceLineModel newInvoiceLine =
 				returnLine == null
@@ -215,7 +215,7 @@ public class ErpGenerateInvoiceCommand {
 		return MathUtil.roundDecimal(retQuantity * depositsPerEach * deposit_price);
 	}
 
-	private ErpInvoiceModel makeNewInvoice(ErpAbstractOrderModel order, ErpInvoiceModel oldInvoice, List invoiceLines, List charges) {
+	private ErpInvoiceModel makeNewInvoice(ErpAbstractOrderModel order, ErpInvoiceModel oldInvoice, List<ErpInvoiceLineModel> invoiceLines, List charges) {
 		ErpInvoiceModel invoice = new ErpInvoiceModel(); 
 		invoice.setTransactionDate(new Date());
 		invoice.setTransactionSource(EnumTransactionSource.SYSTEM);

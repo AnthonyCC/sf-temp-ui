@@ -794,5 +794,9 @@ public interface FDUserI extends java.io.Serializable {
     public boolean isMidWeekDlvPassApplicable(Date dayOfWeek);
     
     public boolean hasMidWeekDlvPass();
+    
+    public List<UnbxdAutosuggestResults> getUnbxdAustoSuggestions();
+    
+    public void setUnbxdAustoSuggestions(List<UnbxdAutosuggestResults> unbxdAustoSuggestions);
 
 }

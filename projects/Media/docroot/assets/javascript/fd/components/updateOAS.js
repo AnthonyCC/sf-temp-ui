@@ -39,14 +39,14 @@ var FreshDirect = FreshDirect || {};
 					error: function () {},
 					done: function (pos) {
 						var hasEmptyImage = false;
-						$.each($('a[href*="/default/empty.gif/"]'), function(ii, ee) {
+						$.each($('a[href*="/default/empty.gif/"]').not('[tabindex=-1]'), function(ii, ee) {
 							hasEmptyImage = true;
 							$(ee).attr("tabindex", "-1");
 							$(ee).attr("role", "presentation");
 							$(ee).attr("aria-hidden", "true");
 
 							if (fd.utils.isDeveloper()) {
-								console.log('updateOAS: done', pos, $(ee));
+								console.log('updateOAS: done - hid empty.gif', pos, $(ee).closest("[id^='oas_']").attr('id'), $(ee));
 							}
 						});
 						// if oas doesn't return an empty image and we need to show the oas as popup
@@ -99,6 +99,8 @@ var FreshDirect = FreshDirect || {};
 
         if (data && data.oasSitePage) {
           sitePage = data.oasSitePage;
+        } else if ( window.OAS_sitepage  ) {
+            sitePage = window.OAS_sitepage;        	
         } else {
           sitePage = 'www.freshdirect.com/browse';
         }
@@ -136,7 +138,10 @@ var FreshDirect = FreshDirect || {};
     	} else if (curId.indexOf('oas_') === 0) {
     		prefix = 'oas_';
     	}
-    	listPos.push(curId.slice(prefix.length));
+    	var posId = curId.slice(prefix.length);
+    	if (posId.indexOf('DFP') === -1 || (posId.indexOf('DFP') === 0 && fd.properties.isDFPEnabled)) {
+        	listPos.push(posId);
+    	}
     });
   }
 

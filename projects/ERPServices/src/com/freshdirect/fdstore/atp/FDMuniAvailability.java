@@ -6,17 +6,17 @@ package com.freshdirect.fdstore.atp;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.freshdirect.common.pricing.MunicipalityInfo;
 import com.freshdirect.framework.util.DateRange;
 
 
 public class FDMuniAvailability implements FDAvailabilityI{
 	
-
-
+	private static final long serialVersionUID = 7928664639519928003L;
 	private final FDMuniAvailabilityInfo availabilityInfo;
 	
-	public FDMuniAvailability(MunicipalityInfo muni) {
+	public FDMuniAvailability(@JsonProperty("municipalityInfo") MunicipalityInfo muni) {
 		this.availabilityInfo = new FDMuniAvailabilityInfo(false, muni);
 	}
 	

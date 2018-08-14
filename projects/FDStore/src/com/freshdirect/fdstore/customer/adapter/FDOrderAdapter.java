@@ -406,13 +406,9 @@ public class FDOrderAdapter implements FDOrderI {
 
 	private ErpReturnLineModel getReturnLine(String orderLineNumber) {
 		if (hasReturn()) {
-			// FIXME types are mixed up a little here! ( ErpInvoiceLineModel <-> ErpReturnLineModel )
-			// getInvoiceLines() should return ErpInvoiceLineModels-s, 
-			// why are there ErpReturnLineModel-s in the list??
-			// code is not type-safe this way!
-			List returnLines = returnOrder.getInvoiceLines();
+			List<ErpReturnLineModel> returnLines = returnOrder.getReturnLines();
 			for (int i = 0, size = returnLines.size(); i < size; i++) {
-				ErpReturnLineModel returnLine = (ErpReturnLineModel) returnLines.get(i);
+				ErpReturnLineModel returnLine = returnLines.get(i);
 				if (orderLineNumber.equalsIgnoreCase(returnLine.getLineNumber())) {
 					return returnLine;
 				}

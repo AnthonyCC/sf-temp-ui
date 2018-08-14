@@ -30,7 +30,7 @@ public interface DlvPassManagerServiceI {
 	
 	public List<DeliveryPassModel> getDeliveryPasses(String customerPk, EnumEStoreId estore) throws RemoteException;
 	
-	public List<DeliveryPassModel> getDlvPassesByStatus(String customerPk, EnumDlvPassStatus status) throws RemoteException;
+	public List<DeliveryPassModel> getDlvPassesByStatus(String customerPk, EnumDlvPassStatus status, EnumEStoreId eStoreId) throws RemoteException;
 	
 	public DeliveryPassModel getDeliveryPassInfo(String deliveryPassId) throws RemoteException;
 	
@@ -54,7 +54,7 @@ public interface DlvPassManagerServiceI {
 
 	public  Object[] getAutoRenewalInfo(EnumEStoreId eStore)throws RemoteException;
 
-	public int getDaysSinceDPExpiry(String customerID) throws RemoteException;
+	public int getDaysSinceDPExpiry(String customerID,EnumEStoreId eStore) throws RemoteException;
 
 	public int getDaysToDPExpiry(String customerID, String activeDPID)throws RemoteException;
 	
@@ -63,5 +63,6 @@ public interface DlvPassManagerServiceI {
 	public List<String> getAllCustIdsOfFreeTrialSubsOrder() throws RemoteException;
 	
 	public void updateDeliveryPassActivation(String saleId) throws RemoteException;
+
 
 }

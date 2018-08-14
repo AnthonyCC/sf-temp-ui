@@ -34,7 +34,7 @@ window.reallyClose = function (ev) {
 window.close = window.reallyClose;
 
 try {
-  document.addEventListener("DOMContentLoaded", function () {
+  $jq(function () {
     if (window.top &&
         window.top.FreshDirect &&
         window.top.FreshDirect.components &&
@@ -1449,8 +1449,8 @@ function doOverlayWindow(olURL, titleVar) {
 	var dialogWindowResizeTimer;
 	var dialogDocReady = false;
 	if (window['$jq'] && $jq.ui) { //make sure jQuery is available, and ui (for dialog)
-		$jq(document).ready(function () { dialogDocReady = true });
-		$jq(window).resize(function() {
+		$jq(function () { dialogDocReady = true });
+		$jq(window).on('resize', function() {
 			clearTimeout(dialogWindowResizeTimer);
 			if (dialogDocReady) { dialogWindowResizeTimer = setTimeout(dialogWindowResizeFunc, 100); }
 		});

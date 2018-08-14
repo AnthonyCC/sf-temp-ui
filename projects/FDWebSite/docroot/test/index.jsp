@@ -1031,11 +1031,16 @@
         <div class="pageDesc">Test coupon display</div>
     </div>
 
-	
 	<div class="tag javascript">
 		<div class="pageName"><span>JavaScript Dependencies</span></div>
 		<div class="link"><a href="/test/js/dependencies.jsp">/test/js/dependencies.jsp</a></div>
 		<div class="pageDesc">List Javascript Dependencies</div>
+	</div>
+
+	<div class="tag css fonts">
+		<div class="pageName"><span>Custom Font Comparison</span></div>
+		<div class="link"><a href="/test/css/fonts.jsp">/test/css/fonts.jsp</a></div>
+		<div class="pageDesc">Display all webfonts and compare versions</div>
 	</div>
 
 	<hr />

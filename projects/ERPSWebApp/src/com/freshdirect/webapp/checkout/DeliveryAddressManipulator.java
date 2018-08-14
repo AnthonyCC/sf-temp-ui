@@ -994,8 +994,8 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			FDCustomerManager.setDefaultShipToAddressPK( user.getIdentity(), null );
 		} else {
 			if(!(user.isVoucherHolder() && user.getMasqueradeContext() == null)){
-				FDCustomerManager.setDefaultShipToAddressPK( user.getIdentity(), address.getPK().getId() );
 				FDCustomerManager.setDefaultDepotLocationPK( user.getIdentity(), null );
+				FDCustomerManager.setDefaultShipToAddressPK( user.getIdentity(), address.getPK().getId() );
 			}
 		}
 

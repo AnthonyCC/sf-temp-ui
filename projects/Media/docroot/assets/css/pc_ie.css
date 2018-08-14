@@ -99,19 +99,3 @@ a.tab {
 	text-decoration: none;
 }
 
-@font-face {
-	font-family: 'Eagle';
-	src: url('fonts/eagle-light-webfont.eot');
-	src: local('☺'), url('fonts/eagle-light-webfont.woff') format('woff'), url('fonts/eagle-light-webfont.ttf') format('truetype'), url('fonts/eagle-light-webfont.svg#webfont6RHzfdZb') format('svg');
-	font-weight: normal;
-	font-style: normal;
-}
-
-@font-face {
-	font-family: 'Eagle-Bold';
-	src: url('fonts/eagle-book-webfont.eot');
-	src: local('☺'), url('fonts/eagle-book-webfont.woff') format('woff'), url('fonts/eagle-book-webfont.ttf') format('truetype'), url('fonts/eagle-book-webfont.svg#webfontXlJgVHrD') format('svg');
-	font-weight: bold;
-	font-style: normal;
-}
-

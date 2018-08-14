@@ -16,8 +16,6 @@
 	margin-top:17px;
 }
 .assistivewrapper{ 
-	width: 400px;
-  height: 196px;
   background-image: linear-gradient(to top, #fdfdfd, #f7f7f7);
   }
 #assistiveOptionsOverlay .fixedPopupContent{
@@ -27,8 +25,6 @@
   box-shadow: 0 5px 30px 0 rgba(0, 0, 0, 0.2);
 }
 .assistiveHeader{
-  width: 185px;
-  height: 14px;
   font-family: Verdana;
   font-size: 18px;
   font-weight: normal;
@@ -39,8 +35,6 @@
   color: #222222;
 }
 .assistiveContent{
- width: 340px;
-  height: 42px;
   font-family: Verdana;
   font-size: 14px;
   font-weight: normal;
@@ -51,8 +45,6 @@
   color: #666666;
 }
 .accessibilityLink{
-.width: 340px;
-  height: 17px;
   font-family: Verdana;
   font-size: 14px;
   font-weight: normal;
@@ -88,7 +80,7 @@
     width: 65%;
   }
 
-  .slider {
+  #assistiveOptionsOverlay .slider {
     position: absolute;
     cursor: pointer;
     top: 0;
@@ -101,16 +93,16 @@
     transition: .25s;
   }
 
-  .slider.round {
+  #assistiveOptionsOverlay .slider.round {
     border-radius: 22px;
   }
 
-  .slider.round:before {
+  #assistiveOptionsOverlay .slider.round:before {
     border-radius: 50%;
   }
 
   /* Status */
-  .slider:after{
+  #assistiveOptionsOverlay .slider:after{
     position: relative;
     content: 'Off';
     float: none;
@@ -118,12 +110,14 @@
     color: #222222;
     font-size: 14px;
     top: 0px;
-    left: 55px;
-    width: 300px;
+    left: 47px;
+/*     width: 300px; */
+    padding-left:10px;
+    padding-right:25px;
     letter-spacing: .2px;
   }
 
-  .slider:before {
+  #assistiveOptionsOverlay .slider:before {
     position: absolute;
     content: "";
     height: 16px;
@@ -136,62 +130,62 @@
   }
 
   /* If Checked */
-  input:checked + .slider {
+  #assistiveOptionsOverlay input:checked + .slider {
     background-color: #4fa157;
     border-color: #4fa157;
   }
 
-  input:checked + .slider:after {
+  #assistiveOptionsOverlay input:checked + .slider:after {
     content: 'On';
   }
 
   /* Hovered */
-  input:hover + .slider{
+  #assistiveOptionsOverlay input:hover + .slider{
     border: 2px solid #4fa157;
   }
 
-  input:focus:hover + .slider{
+  #assistiveOptionsOverlay input:focus:hover + .slider{
     border: 2px solid #666666;
   }
 
-  input:checked:focus:hover + .slider{
+  #assistiveOptionsOverlay input:checked:focus:hover + .slider{
     border: 2px solid #4fa157;
   }
 
   /* Focused */
-  input:focus + .slider {
+  #assistiveOptionsOverlay input:focus + .slider {
     box-shadow: 0 0 0 2px #666666;
   }
 
-  input:checked:focus + .slider {
+  #assistiveOptionsOverlay input:checked:focus + .slider {
     box-shadow: 0 0 0 2px #4fa157;
   }
 
   /* Slider States */
-  input:focus + .slider:before,
+  #assistiveOptionsOverlay input:focus + .slider:before,
   input:hover + .slider:before {
     background-color: #4fa157; 
   }
 
-  input:hover + .slider:before {
+  #assistiveOptionsOverlay input:hover + .slider:before {
     -webkit-transform: translateX(4px);
     -ms-transform: translateX(4px);
     transform: translateX(4px);    
   }
 
-  input:checked + .slider:before {
+  #assistiveOptionsOverlay input:checked + .slider:before {
     background-color: #ffffff;
     -webkit-transform: translateX(25px);
     -ms-transform: translateX(25px);
     transform: translateX(25px);
   }
 
-  input:checked:focus + .slider:before,
+  #assistiveOptionsOverlay input:checked:focus + .slider:before,
   input:checked:hover + .slider:before {
     background-color: #ffffff;
   }
 
-  input:checked:hover + .slider:before {
+  #assistiveOptionsOverlay input:checked:hover + .slider:before {
     -webkit-transform: translateX(21px);
     -ms-transform: translateX(21px);
     transform: translateX(21px);
@@ -205,7 +199,7 @@
 /* #assistiveOptionsOverlay .qs-popup-header span{ */
 /* 	padding-left:8px; */
 /* } */
-.spinner{
+#assistiveOptionsOverlay .spinner{
 	display: none;
     position: absolute;
     border: 3px solid #ccc;
@@ -225,7 +219,7 @@
 a.accessibilityLink{
 	outline:none;
 }
-span.slider.round.test:after{
+#assistiveOptionsOverlay span.slider.round.test:after{
 	display:none;
 }
 #assistiveOptionsOverlay input:focus + .slider:before,#assistiveOptionsOverlay input:hover + .slider:before{
@@ -237,3 +231,15 @@ span.slider.round.test:after{
 #assistiveOptionsOverlay input:checked:hover + .slider:before {
     background-color: #ffffff;
 }
+/* assistive options overlay for mobile web version */
+   [data-ismobweb="true"] #assistiveOptionsOverlay .fixedPopupContent {
+   max-width: 338px;
+    width: 100%;
+    max-height: 274px;
+   }
+     [data-ismobweb="true"] #assistiveOptionsOverlay .qs-popup-close-icon {
+    right: 0px;
+     }
+     [data-ismobweb="true"] #assistiveOptionsOverlay .learnmorelink {
+    margin-top: 15px;
+     }

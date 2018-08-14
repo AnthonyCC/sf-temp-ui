@@ -278,9 +278,12 @@ public class FDProductPriceJcoServer extends FdSapServer {
 							for (final MaterialPriceParameter priceRecord : priceRecordEntry.getValue()) {
 								// 1. check if base (global) material exists
 								try {
-									ErpMaterialEB materialEB = materialHome.findBySapId(materialNo);
-
-									ErpMaterialModel erpMaterialModel = (ErpMaterialModel) materialEB.getModel();
+									if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SAPLoaderSB)) {
+										ErpMaterialModel erpMaterialModel = FDECommerceService.getInstance().findBySapID(materialNo);
+									} else {
+										ErpMaterialEB materialEB = materialHome.findBySapId(materialNo);
+										ErpMaterialModel erpMaterialModel = (ErpMaterialModel) materialEB.getModel();
+									}
 								} catch (FinderException fe) {
 									populateResponseRecord(result, priceRecord, materialPriceErrorTable,
 											"No base product found for the material");

@@ -60,7 +60,7 @@ var FreshDirect = FreshDirect || {};
   function scrollToTop() {
     var main = $('section.main').first(), crect;
 
-    if (main && main.size()) {
+    if (main && main.length) {
       crect = main[0].getBoundingClientRect();
 
       if (crect.top < 0) {
@@ -88,6 +88,12 @@ var FreshDirect = FreshDirect || {};
     	);
     }
     
+    /* id is necessary for pagination (in browse), if there's no left nav, it won't be defined */
+	if (!data.hasOwnProperty('id') || data.id === undefined) {
+    	data = $.extend(data,
+            {"id": FreshDirect.utils.getQueryParameterByName('id')}
+    	);
+	}
 
     // remove id if searchParams are provided
     if (data.searchParams && data.id) {

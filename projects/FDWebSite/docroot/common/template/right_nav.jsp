@@ -17,7 +17,6 @@ final int W_RIGHT_NAV_RIGHT = 191;
 <html lang="en-US" xml:lang="en-US">
 <head>
 	<tmpl:get name="seoMetaTag"/>
-  <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	<%@ include file="/shared/template/includes/ccl.jspf" %>

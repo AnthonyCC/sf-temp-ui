@@ -333,6 +333,8 @@ public class FDUser extends ModelSupport implements FDUserI {
 
     private String multiSearchList;
     
+    private List<UnbxdAutosuggestResults> unbxdAustoSuggestions;
+    
 	public Date getTcAcknowledgeDate() {
         return tcAcknowledgeDate;
     }
@@ -776,7 +778,7 @@ public class FDUser extends ModelSupport implements FDUserI {
         this.vHPopupDisplay = false;
         this.isEcheckRestricted = null;
         this.hasAutoRenewDP = null;
-
+        this.unbxdAustoSuggestions=null;
     }
 
     /*
@@ -4155,7 +4157,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 			    String dpId = ((FDModifyCartModel) this.getShoppingCart()).getOriginalOrder().getDeliveryPassId();
 			    if (dpId != null && !dpId.equals("")) {
-			        List passes = FDCustomerManager.getDeliveryPassesByStatus(this.getIdentity(), EnumDlvPassStatus.ACTIVE);
+			        List passes = FDCustomerManager.getDeliveryPassesByStatus(this.getIdentity(), EnumDlvPassStatus.ACTIVE,this.getUserContext().getStoreContext().getEStoreId());
 			        DeliveryPassModel dlvPass = null;
 			        Date today = new Date();
 			        for (int i = 0; i < passes.size(); i++) {
@@ -4194,4 +4196,13 @@ public class FDUser extends ModelSupport implements FDUserI {
 		
 		return isDlvPassContextMatched;
 	}
+
+	public List<UnbxdAutosuggestResults> getUnbxdAustoSuggestions() {
+		return unbxdAustoSuggestions;
+	}
+
+	public void setUnbxdAustoSuggestions(List<UnbxdAutosuggestResults> unbxdAustoSuggestions) {
+		this.unbxdAustoSuggestions = unbxdAustoSuggestions;
+	}
+
 }

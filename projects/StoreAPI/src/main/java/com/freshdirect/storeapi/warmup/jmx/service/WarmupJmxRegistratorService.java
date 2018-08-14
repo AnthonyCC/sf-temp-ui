@@ -1,5 +1,6 @@
 package com.freshdirect.storeapi.warmup.jmx.service;
 
+import java.lang.management.ManagementFactory;
 import java.util.UUID;
 
 import javax.annotation.PostConstruct;
@@ -11,10 +12,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.freshdirect.framework.util.JMXUtil;
+
 @Service
 public class WarmupJmxRegistratorService {
-
-    public static final String WARMUP_JMX_PUBLISHER_OBJECTNAME = "com.freshdirect.storeapi:Type=Warmup,Name=WarmupJmx-" + UUID.randomUUID() + ",Location=" + System.getProperty("weblogic.Name");
+	
+	 public static final String WARMUP_JMX_PUBLISHER_BASE_OBJECTNAME = "com.freshdirect.storeapi:Type=Warmup,Name=WarmupJmx-" + UUID.randomUUID(); 
+	 
+    public static final String WARMUP_JMX_PUBLISHER_OBJECTNAME = WARMUP_JMX_PUBLISHER_BASE_OBJECTNAME + ",Location=" + System.getProperty("weblogic.Name");
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WarmupJmxRegistratorService.class);
 
@@ -23,10 +28,14 @@ public class WarmupJmxRegistratorService {
 
     @PostConstruct
     public void registerServices() {
-        registerWarmupMBeans();
+    	if("2".equals(JMXUtil.getStorefrontVersion())) {
+    		registerWarmupMBeans();
+    	} else {
+    		registerWeblogicWarmupMBeans();    		
+    	}
     }
 
-    public void registerWarmupMBeans() {
+    public void registerWeblogicWarmupMBeans() {
         LOGGER.info("Registering WarmupJmxPublisher");
         try {
             MBeanServer connection = RuntimeMBeanConnector.connectToRuntimeMBeanServer();
@@ -43,4 +52,18 @@ public class WarmupJmxRegistratorService {
             LOGGER.error("WarmupJmxPublisher Error while registering JMXWarmupMBeans", e);
         }
     }
+    
+    public void registerWarmupMBeans() {
+    	LOGGER.info("Start Registering Generic MBean...");
+        final MBeanServer server = ManagementFactory.getPlatformMBeanServer();
+        try {
+        	ObjectName  objectName = new ObjectName(WARMUP_JMX_PUBLISHER_BASE_OBJECTNAME);
+            server.registerMBean(warmupJmx, objectName);
+            LOGGER.info("MBean registered: " + objectName);
+        } catch (Exception mone) {
+        	LOGGER.info("Genric MBean already registered or error registering Mbean.");
+            mone.printStackTrace();
+        }
+    }
+    
 }

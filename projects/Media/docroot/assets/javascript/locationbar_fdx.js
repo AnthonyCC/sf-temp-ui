@@ -4,7 +4,7 @@
 //var COLOR_NONSELECTED = '#4fa157', COLOR_SELECTED = '#458d4e';
 var COLOR_NONSELECTED = '#fff', COLOR_SELECTED = '#f6faf6';
 
-$jq(document).on('ready', function() {
+$jq(function() {
 	if ($jq('#popupcart').length) {
 		$jq('#popupcart').appendTo('#locabar_popupcart');
 		
@@ -22,37 +22,35 @@ $jq(document).on('ready', function() {
 		//align on page load
 		setupPopUpCartPostion();
 	}
-	
+
+	/* right align this one arrow */
+	if ($jq('#locabar_popupcart .ui-arrow.ui-top').length) {
+		$jq( '#locabar_popupcart .ui-arrow.ui-top' ).position({
+			my: 'right top',
+			at: 'right-20 top-16',
+			of: '#locabar_popupcart',
+			collision : 'none'
+		});
+	}
+
+	/* align to triggers */
+
+	if ($jq('#locabar_addresses').length) {
+		$jq( '#locabar_addresses' ).position({
+			my: 'center top',
+			at: 'center bottom+8',
+			of: '#locabar_addresses_trigger'
+		});
+	}
+
+	if ($jq('#locabar_user').length) {
+		$jq( '#locabar_user' ).position({
+			my: 'center top',
+			at: 'center bottom+8',
+			of: '#locabar_user_trigger'
+		});
+	}
 });
-
-
-/* right align this one arrow */
-if ($jq('#locabar_popupcart .ui-arrow.ui-top').length) {
-	$jq( '#locabar_popupcart .ui-arrow.ui-top' ).position({
-		my: 'right top',
-		at: 'right-20 top-16',
-		of: '#locabar_popupcart',
-		collision : 'none'
-	});
-}
-
-/* align to triggers */
-
-if ($jq('#locabar_addresses').length) {
-	$jq( '#locabar_addresses' ).position({
-		my: 'center top',
-		at: 'center bottom+8',
-		of: '#locabar_addresses_trigger'
-	});
-}
-
-if ($jq('#locabar_user').length) {
-	$jq( '#locabar_user' ).position({
-		my: 'center top',
-		at: 'center bottom+8',
-		of: '#locabar_user_trigger'
-	});
-}
 
 /* USER RECOMMENDERS TEST - also see locationbar_fdx.jsp
 if ($jq('#locabar_user').length && $jq('#locabar_user_reco_cont').length) {
@@ -63,7 +61,7 @@ if ($jq('#locabar_user').length && $jq('#locabar_user_reco_cont').length) {
 	});
 	$jq( '#locabar_user_reco_cont').height($jq('#locabar_user').height()+'px');
 
-	$jq(document).on('ready', function() {
+	$jq(function() {
 		//DEBUG display
 		if ($jq('.pdp-evenbetter').length) {
 			$jq('.pdp-evenbetter').clone().appendTo($jq( '#locabar_user_reco' ));
@@ -343,7 +341,7 @@ $jq('#sitemessage').on('alertClose', ['sitemessage'], function(event) {
 });
 
 
-$jq(document).ready(function() {
+$jq(function() {
 	function messagesOpened() {
 		$jq('#locabar-messages-open').parent('.locabar_triggers').addClass('alertOpen');
 		$jq('#locabar-messages-open').closest('.locabar-section').addClass('alertOpen');
@@ -490,7 +488,7 @@ $jq('.locabar_triggers, .locabar_triggers a').on('blur mouseleave', function(eve
 
 
 //press enter key to display message
-$jq('#locabar_messages_trigger').keydown(function(event){
+$jq('#locabar_messages_trigger').on('keydown', function(event){
 	var keycode = (event.keyCode ? event.keyCode : event.which);
 	if(keycode == '13'){
 		$jq('#messages').messages('openMessages');
@@ -509,7 +507,7 @@ $jq('#locabar_messages_trigger').keydown(function(event){
 
 
 //enter key to modify button order
-$jq('#locabar_modify_order_trigger').keydown(function(event){
+$jq('#locabar_modify_order_trigger').on('keydown',function(event){
 	var keycode = (event.keyCode ? event.keyCode : event.which);
 	if(keycode == '13'){
 		$jq("#locabar_modify_order_trigger #locabar_orders").css("opacity","1");
@@ -522,7 +520,7 @@ $jq('#locabar_modify_order_trigger').keydown(function(event){
 
 //enter key for orders
 
-$jq('#locabar_addresses_trigger').keydown(function(event){
+$jq('#locabar_addresses_trigger').on('keydown', function(event){
 	var keycode = (event.keyCode ? event.keyCode : event.which);
 	if(keycode == '13'){
 		$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("opacity","");
@@ -534,12 +532,12 @@ $jq('#locabar_addresses_trigger').keydown(function(event){
 	}
 });
 //reset the values of modify order section when we focus using mouse
-$jq(".locabar-modify-order-section").hover(function(){
+$jq(".locabar-modify-order-section").on('hover', function(){
 	$jq("#locabar_orders").css("opacity","");
 	$jq("#locabar_orders").css("visibility","");
 });
 
-$jq("#locabar_addresses_trigger").hover(function(){
+$jq("#locabar_addresses_trigger").on('hover', function(){
 		if (!$jq('#nodeliver-form:visible').length) {
 			$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("opacity","");
 			$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("visibility","");
@@ -551,7 +549,7 @@ $jq("#locabar_addresses_trigger").hover(function(){
 
 //check if the alert box is present or not during tab press...
 
-$jq(".locabar-modify-order-dropdown-container-modify").keydown(function(e){
+$jq(".locabar-modify-order-dropdown-container-modify").on('keydown', function(e){
 	var TABKEY = 9;
 	if (e.which == TABKEY) {
 		if (e.shiftKey) {
@@ -607,7 +605,7 @@ $jq("#locabar_messages_trigger,#locabar_user_trigger[data-signedin='false']").on
 
 
 
-$jq(".locabar-modify-order-dropdown-container-delails:eq(0) ").keydown(function(e){
+$jq(".locabar-modify-order-dropdown-container-delails:eq(0) ").on('keydown', function(e){
 	var TABKEY = 9;
 	if (e.which == TABKEY) {
 		if (e.shiftKey) {
@@ -623,7 +621,7 @@ $jq(".locabar-modify-order-dropdown-container-delails:eq(0) ").keydown(function(
 });
 //escape key
 
-$jq(".locabar-modify-order-dropdown-container-delails,.locabar-modify-order-dropdown-container-modify").keyup(function(event){
+$jq(".locabar-modify-order-dropdown-container-delails,.locabar-modify-order-dropdown-container-modify").on('keyup', function(event){
 	if(event.keyCode == 27){
 		$jq("#locabar_modify_order_trigger #locabar_orders").css("opacity","0");
 		$jq("#locabar_modify_order_trigger #locabar_orders").css("visibility","hidden");
@@ -633,7 +631,7 @@ $jq(".locabar-modify-order-dropdown-container-delails,.locabar-modify-order-drop
 });
 
 //green add delivery button
-$jq(".locabar_addresses-anon-deliverable-add-address-btn").keydown(function(e){
+$jq(".locabar_addresses-anon-deliverable-add-address-btn").on('keydown', function(e){
 	var TABKEY = 9;
 	if (e.which == TABKEY) {
 		if (e.shiftKey) {
@@ -654,7 +652,7 @@ $jq(".locabar_addresses-anon-deliverable-add-address-btn").keydown(function(e){
 
 
 //loginbutton
-$jq(".changeBGClr").keydown(function(e){
+$jq(".changeBGClr").on('keydown', function(e){
 	var TABKEY = 9;
 	if (e.which == TABKEY) {
 		if (e.shiftKey) {
@@ -670,7 +668,7 @@ $jq(".changeBGClr").keydown(function(e){
 //hide the about fresh popup shift+tab
 
 
-$jq(".locabar_addresses-change-zip-cont input").keydown(function(e){
+$jq(".locabar_addresses-change-zip-cont input").on('keydown', function(e){
 	var TABKEY = 9;
 	if (e.which == TABKEY) {
 		if (e.shiftKey) {
@@ -687,9 +685,9 @@ $jq(".locabar_addresses-change-zip-cont input").keydown(function(e){
 
 
 
-//mpdify order alert
+//modify order alert
 
-$jq('document').ready(function(){
+$jq(function(){
 	
 	//var IsModifyOrder=$jq("#modifyorderalert").length;
 	if($jq("#modifyorderalert").hasClass("open")){
@@ -704,7 +702,7 @@ $jq('document').ready(function(){
 		$jq('#locabar_messages_trigger').hide();
 	}
 	
-	$jq('.locabar-section #locabar_messages_trigger').blur();
+	$jq('.locabar-section #locabar_messages_trigger').trigger('blur');
 	//cart lin - background change
 
   	$jq(document).on('focusin',"#popupcart .cartline .qty",function(e){
@@ -729,15 +727,15 @@ $jq('document').ready(function(){
   		//$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("visibilty","hidden");
   	});
   	
-  	$jq(".locabar_addresses-anon-deliverable-item-icon-truck").keydown(function(e){
+  	$jq(".locabar_addresses-anon-deliverable-item-icon-truck").on('keydown', function(e){
   		var TABKEY = 9;
   		if (e.which == TABKEY) {
   			if (e.shiftKey) {
   				//$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("visibilty","hidden");  
   				//$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("opacity","0");
   				//$jq("#locabar_addresses_trigger").removeClass("hover");
-  				$jq(this).blur();
-  				//$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable input").blur();
+  				$jq(this).trigger('blur');
+  				//$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable input").trigger('blur');
   				$jq("#locabar_addresses_trigger").focus();
   				//$jq("#locabar_addresses").hide();
   				
@@ -747,13 +745,13 @@ $jq('document').ready(function(){
   			e.preventDefault();
   		}
   	});
-	$jq("#locabar_addresses_trigger #locabar_addresses input").keyup(function(e){
+	$jq("#locabar_addresses_trigger #locabar_addresses input").on('keyup', function(e){
 		if(e.keyCode == 27){
   				$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("visibilty","hidden");  
   				$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("opacity","0");
   				
-  				$jq(this).blur();
-  				//$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable input").blur();
+  				$jq(this).trigger('blur');
+  				//$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable input").trigger('blur');
   				$jq("#locabar_addresses_trigger").focus();
   				$jq("#locabar_addresses").hide();
   				
@@ -763,7 +761,7 @@ $jq('document').ready(function(){
   	});
   	
   	
-  	$jq(".locabar-addresses-section").hover(function(){
+  	$jq(".locabar-addresses-section").on('hover', function(){
   		if($jq("#location-alerts #sitemessage").css("display")=="block"){
   			$jq("#locabar_addresses").hide();
   		}
@@ -783,7 +781,7 @@ $jq('document').ready(function(){
 
 
 
-  	$jq(".locabar-addresses-section").keydown(function(event){
+  	$jq(".locabar-addresses-section").on('keydown', function(event){
   		var keycode = (event.keyCode ? event.keyCode : event.which);
   		if(keycode == '13'){
   			
@@ -802,7 +800,7 @@ $jq('document').ready(function(){
   	
   	
   	//enter press event for see details button
-  	$jq(".locabar-modify-order-dropdown-container-delails  a.locabar-modify-order-dropdown-container-modify").keydown(function(event){
+  	$jq(".locabar-modify-order-dropdown-container-delails  a.locabar-modify-order-dropdown-container-modify").on('keydown', function(event){
   		var keycode = (event.keyCode ? event.keyCode : event.which);
   		if(keycode == '13'){
   		//	$jq(this).click();
@@ -833,7 +831,7 @@ $jq("#locabar-messages-close").keypress(function(event){
 //escape to hide for 
 //change button
 //enter key for change zip code in delivery information
-$jq(".locabar_addresses-anon-deliverable-change-zip-toggle-btn").keydown(function(event){
+$jq(".locabar_addresses-anon-deliverable-change-zip-toggle-btn").on('keydown', function(event){
 	var keycode = (event.keyCode ? event.keyCode : event.which);
 	FreshDirect.locabar.lastFocusElemId = '';
 	if(keycode == '13'){
@@ -850,7 +848,7 @@ $jq(".locabar_addresses-anon-deliverable-change-zip-toggle-btn").keydown(functio
 });
 
 
-$jq("#newziptext").keydown(function(e){
+$jq("#newziptext").on('keydown', function(e){
 	var keycode = (e.keyCode ? e.keyCode : e.which);
 	$jq("#newziptext").next().next().css("visibility","hidden");
 	$jq("#newziptext").removeClass("input-error");
@@ -875,7 +873,7 @@ $jq("#newziptext").keydown(function(e){
 	
 });
 
-$jq(".newzipgo").keydown(function(e){
+$jq(".newzipgo").on('keydown', function(e){
 	
 	var text_length=$jq(this).parent().find("input").val().length;	
 	$jq(this).parent().next().css("visibility","");
@@ -886,8 +884,8 @@ $jq(".newzipgo").keydown(function(e){
 				
 				$jq(this).parent().find("input").addClass("input-error");
 				$jq(this).next().css("visibility","visible");
-				/*$jq('.locabar_addresses-anon-deliverable-item-icon-clock .avlTimeFocus').blur();
-				$jq(".locabar_addresses-anon-deliverable-item-icon-truck a").blur();
+				/*$jq('.locabar_addresses-anon-deliverable-item-icon-clock .avlTimeFocus').trigger('blur');
+				$jq(".locabar_addresses-anon-deliverable-item-icon-truck a").trigger('blur');
 				$jq(this).parent().find("input").focus();*/
 				$jq(this).focus();
 				console.log($jq(this));
@@ -907,7 +905,7 @@ $jq(".newzipgo").keydown(function(e){
 	}
 });
 
-$jq("#location-email").keydown(function(e){
+$jq("#location-email").on('keydown', function(e){
 	
 	var email_text=$jq(this).val();
 	console.log(email_text);
@@ -939,7 +937,7 @@ $jq("#location-email").keydown(function(e){
 
 });
 /*
-$jq("#location-submit.fdxgreen").keydown(function(e){
+$jq("#location-submit.fdxgreen").on('keydown', function(e){
 	
 	var email_text=$jq(this).parent().find('input').val();
 	var email_regex=/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

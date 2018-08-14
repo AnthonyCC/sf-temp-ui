@@ -43,13 +43,13 @@ var FreshDirect = FreshDirect || {};
       value: function () {
         var orderList = $('#orders input:checked');
 
-        if (orderList.size() >= ORDERLIMIT) {
+        if (orderList.length >= ORDERLIMIT) {
           $(".orders,.orderlist").addClass("maxorder");
         } else {
           $(".orders,.orderlist").removeClass("maxorder");
         }
 
-        return orderList.size();
+        return orderList.length;
       }
     },
 		handleClick:{

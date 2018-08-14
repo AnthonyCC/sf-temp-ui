@@ -16,6 +16,7 @@ import com.freshdirect.ecommerce.data.referral.ReferralProgramInvitationData;
 import com.freshdirect.ecommerce.data.referral.ReferralPromotionData;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.referral.ReferralPromotionModel;
 
 public interface FDReferralManagerServiceI {
 
@@ -38,7 +39,7 @@ public interface FDReferralManagerServiceI {
 	public abstract ReferralPartnerData getReferralPartnerModel(String refChaId)
 			throws FDResourceException, RemoteException;
 
-	public abstract ReferralPromotionData getReferralPromotionDetailsByRefName(String referral)
+	public abstract ReferralPromotionModel getReferralPromotionDetailsByRefName(String referral)
 			throws FDResourceException, RemoteException;
 
 	public abstract List<ManageInvitesData> getManageInvites(String customerId)
@@ -51,7 +52,7 @@ public interface FDReferralManagerServiceI {
 
 	public abstract Boolean getReferralDisplayFlag(String customerId) throws FDResourceException, RemoteException;
 
-	public abstract List<ReferralPromotionData> getSettledSales() throws FDResourceException, RemoteException;
+	public abstract List<ReferralPromotionModel> getSettledSales() throws FDResourceException, RemoteException;
 
 	public abstract String getReferralLink(String customerId) throws FDResourceException, RemoteException;
 
@@ -70,12 +71,12 @@ public interface FDReferralManagerServiceI {
 	public abstract boolean isReferreSignUpComplete(String email, EnumEStoreId storeid)
 			throws FDResourceException, RemoteException;
 
-	public abstract List<ReferralPromotionData> getSettledTransaction() throws FDResourceException, RemoteException;
+	public abstract List<ReferralPromotionModel> getSettledTransaction() throws FDResourceException, RemoteException;
 
 	public abstract void saveCustomerCredit(String referral_customer_id, String customer_id, int ref_fee, String sale,
 			String complaintId, String refPrgmId) throws FDResourceException, RemoteException;
 
-	public abstract Map<String, String> updateSetteledRewardTransaction(List<ReferralPromotionData> models)
+	public abstract Map<String, String> updateSetteledRewardTransaction(List<ReferralPromotionModel> models)
 			throws FDResourceException, RemoteException;
 
 }

@@ -26,9 +26,9 @@ import com.freshdirect.dataloader.DataLoaderProperties;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementBuilderI;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementLoaderUtil;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementParserClient;
-import com.freshdirect.fdlogistics.services.impl.FDCommerceService;
 import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.ecomm.gateway.PayPalReconciliationService;
 import com.freshdirect.fdstore.ewallet.ErpPPSettlementInfo;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.ErpGCSettlementInfo;
@@ -44,7 +44,6 @@ import com.freshdirect.payment.model.ErpSettlementSummaryModel;
 import com.freshdirect.payment.model.ErpSettlementTransactionModel;
 import com.freshdirect.payment.model.ErpSummaryDetailModel;
 import com.freshdirect.payment.reconciliation.detail.CCDetailOne;
-import com.freshdirect.payment.service.FDECommerceService;
 
 public class PaymentechFINParserClient extends SettlementParserClient {
 	
@@ -260,7 +259,7 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 						appendPPSettlements(ppSettlementInfos);
 					else
 						LOGGER.info("No PayPal records to be processed. Please check whether PayPalSettlementLoader is run");
-					FDECommerceService.getInstance().updatePayPalStatus(settlementIds);
+					PayPalReconciliationService.getInstance().updatePayPalStatus(settlementIds);
 				} else if(this.ppReconSB!=null) {
 					List ppSettlementInfos = processPPSettlements(settlementIds);
 					if (ppSettlementInfos != null)
@@ -316,7 +315,7 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 		List<ErpSettlementSummaryModel> ppStlmntTrxns;
 		List<ErpPPSettlementInfo> settlementInfos = new ArrayList<ErpPPSettlementInfo>();
 		if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaypalReconciliationSB)) {
-			ppStlmntTrxns = FDECommerceService.getInstance().getPPTrxns(ppStlmntIds);
+			ppStlmntTrxns = PayPalReconciliationService.getInstance().getPPTrxns(ppStlmntIds);
 		} else {
 			ppStlmntTrxns = this.ppReconSB.getPPTrxns(ppStlmntIds);
 		}
@@ -375,7 +374,7 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 				
 				if(isTrxnExecuted){
 					if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaypalReconciliationSB)) {
-						FDECommerceService.getInstance().updatePPSettlementTransStatus(trxn.getId());
+						PayPalReconciliationService.getInstance().updatePPSettlementTransStatus(trxn.getId());
 					} else {
 						this.ppReconSB.updatePPSettlementTransStatus(trxn.getId());
 					}

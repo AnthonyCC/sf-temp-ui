@@ -52,7 +52,6 @@ var FreshDirect = FreshDirect || {};
 
     h = h === 0 ? 24 : h;
     h = h > 12 ? h - 12 : h;
-	m = m < 10 ? '0'+m : m; //leading zeros
 
     return h + (m ? ':' + m : '') + ' ' + ampm;
   };
@@ -65,8 +64,8 @@ var FreshDirect = FreshDirect || {};
         tsData = {
           hasPreReserved: tsr.hasPreReserved==='true',
           reservationDate: getDay(rStart.getDay()) + ' ' + (rStart.getMonth() + 1) + '/' + rStart.getDate(),
-          reservationStart: toAmPm(rStart.getHours(), rStart.getMinutes()),
-          reservationEnd: toAmPm(rEnd.getHours(), rEnd.getMinutes()),
+          reservationStart: toAmPm(rStart.getHours()),
+          reservationEnd: toAmPm(rEnd.getHours()),
           expiration: getDay(eDate.getDay()) + ' ' + toAmPm(eDate.getHours(), eDate.getMinutes())
         };
 

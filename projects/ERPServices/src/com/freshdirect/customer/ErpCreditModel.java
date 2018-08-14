@@ -12,6 +12,8 @@ import com.freshdirect.framework.core.*;
  * @stereotype fd-model
  */
 abstract public class ErpCreditModel extends ModelSupport {
+
+	private static final long serialVersionUID = 378165538163817557L;
 	private double amount;
 	private String department;
 	private ErpAffiliate affiliate;

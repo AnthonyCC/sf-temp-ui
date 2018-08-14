@@ -333,6 +333,7 @@
 			window.FreshDirect.browse.data = <fd:ToJSON object="${browsePotato}" noHeaders="true"/>
 			window.FreshDirect.globalnav.data = <fd:ToJSON object="${globalnav}" noHeaders="true"/>
 			window.FreshDirect.browse.data.searchParams = window.FreshDirect.browse.data.searchParams || {};
+			window.FreshDirect.browse.data.isAutosuggest = window.FreshDirect.browse.data.isAutosuggest || false;
 	
 			/* APPDEV-5920 Staff picks sort bar implementation */
 			window.FreshDirect.browse.data.pageType = window.FreshDirect.browse.data.pageType || <c:choose><c:when test="${browsePotato.searchParams.pageType == 'STAFF_PICKS'}">'STAFF_PICKS'</c:when><c:otherwise> {} </c:otherwise> </c:choose>;

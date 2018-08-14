@@ -8,8 +8,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.customer.EnumFraudReason;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
+import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.ecomm.gateway.AbstractEcommService;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
@@ -46,7 +48,7 @@ public class RegistrationService extends AbstractEcommService implements Registr
 	public RegistrationResult register(FDActionInfo info, ErpCustomerModel erpCustomer, FDCustomerModel fdCustomer,
 			String cookie, boolean pickupOnly, boolean eligibleForPromotion, FDSurveyResponse survey,
 			EnumServiceType serviceType, boolean isGiftCardBuyer)
-			throws FDResourceException, ErpDuplicateUserIdException, RemoteException {
+			throws FDResourceException, ErpDuplicateUserIdException, ErpFraudException, RemoteException {
 		Response<RegistrationResult> response = null;
 		String inputJson = null;
 		try {
@@ -72,6 +74,11 @@ public class RegistrationService extends AbstractEcommService implements Registr
 			if (!response.getResponseCode().equals("OK")) {
 				if ("ErpDuplicateUserIdException".equals(response.getMessage())) {
 					throw new ErpDuplicateUserIdException();
+				}
+				if ("ErpFraudException".equals(response.getMessage())) {
+					throw new ErpFraudException(EnumFraudReason.getEnum(
+							response.getError() != null ? response.getError().get("ErpFraudException").toString()
+									: null));
 				}
 				throw new FDResourceException(response.getMessage());
 			}

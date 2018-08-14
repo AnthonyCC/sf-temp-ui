@@ -24,6 +24,7 @@ import com.freshdirect.framework.core.PrimaryKey;
  */
 public class ErpCustomerCreditModel extends ErpCreditModel {
 
+	private static final long serialVersionUID = -6588304371080075878L;
 	private PrimaryKey complaintPk;
 	private double remainingAmount = 0;
 	private Date createDate;
@@ -104,5 +105,13 @@ public class ErpCustomerCreditModel extends ErpCreditModel {
 	public void setCustomerId(String customerId) {
 		this.customerId = customerId;
 	}
-}
+	
+	@Override
+	public void setId( String id ) {
+		if (id != null) {
+			super.setId(id);
+		}
+			
+	}
 
+}

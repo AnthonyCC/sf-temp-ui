@@ -28,7 +28,7 @@ var FreshDirect = FreshDirect || {};
   function markProductChanged($quantitybox) {
     var $product = $quantitybox.$product || $quantitybox.parents('[data-component=product]').first();
 
-    if ($product && $product.size()) {
+    if ($product && $product.length) {
       $quantitybox.$product = $product;
       $product.addClass('changed');
     }

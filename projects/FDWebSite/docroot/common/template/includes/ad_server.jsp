@@ -87,13 +87,13 @@
     (navigator.userAgent.indexOf('Mozilla/4.0 WebTV') != -1))
   	OAS_version = 10;
 
-  if (OAS_version >= 11)
-    document.write('<scr' + 'ipt type="text/javascript" src="' + OAS_url + 'adstream_mjx.ads/' +
-  OAS_sitepage + '/1' + OAS_rns + '@' +
-  OAS_listpos + '?' + OAS_query + '"><\/script>');
+  if (OAS_version >= 11) {
+	$jq(document).ready(function() {
+		fd.common.dispatcher.signal('descriptiveContent', {});
+	});
+  }
   </script>
   <script type="text/javascript">
-  document.write('');
   function OAS_AD(pos) {
   	if (OAS_version >= 11)
   		OAS_RICH(pos);
@@ -249,7 +249,7 @@
   %>
   <script>
   function OAS_DONE(oas_id) {
-  	var e = document.getElementById('oas_'+oas_id);
+  	/*var e = document.getElementById('oas_'+oas_id);
   	if(window.jQuery && e) {
   		jQuery(document).ready(function() {
   			if (FreshDirect && FreshDirect.updateOAS && FreshDirect.updateOAS.done) {
@@ -258,7 +258,7 @@
   		});
   		jQuery(e).trigger('OAS_DONE',[oas_id]);
   		
-  	}
+  	}*/
   }
 
   </script>

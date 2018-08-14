@@ -30,7 +30,7 @@ var FreshDirect = FreshDirect || {};
     },
     activate: {
       value: function (id) {
-        if ($('[data-drawer-id="'+id+'"][data-drawer-locked]').size() === 0) {
+        if ($('[data-drawer-id="'+id+'"][data-drawer-locked]').length === 0) {
           if($('[data-drawer-columns="1"]').length > 0){
        		  $('[data-drawer-columns="1"]').css("max-width", "none");
        	  }
@@ -144,7 +144,7 @@ var FreshDirect = FreshDirect || {};
   $(document).on('click', function (e) {
     var $el = $(e.target);
 
-    if ($el.closest('[data-component="drawer"],.ec-popup,.qs-popup,.popupcontentoverlay,.centerpopup-helper,#select2-soFreq2-results,.ui-selectmenu-menu').size() === 0) {
+    if ($el.closest('[data-component="drawer"],.ec-popup,.qs-popup,.popupcontentoverlay,.centerpopup-helper,#select2-soFreq2-results,.ui-selectmenu-menu').length === 0) {
       drawer.reset();
     }
   });
@@ -156,7 +156,7 @@ var FreshDirect = FreshDirect || {};
         action = $ct.attr('data-action'),
         formid, endpoint, submitFn, $el, id;
 
-    if ($form.size()) {
+    if ($form.length) {
       formid = $form.attr('fdform');
       /* override endpoint with button attr */
       if ($ct.attr('fdform-endpoint-submit')) {
@@ -166,7 +166,7 @@ var FreshDirect = FreshDirect || {};
       }
       $el = $ct.parent().siblings('input');
 
-      if ($el.size() === 0) {
+      if ($el.length === 0) {
     	  $el = $ct.closest('.drawer__item').find('input[name="id"]');
       }
       id = $el.val();

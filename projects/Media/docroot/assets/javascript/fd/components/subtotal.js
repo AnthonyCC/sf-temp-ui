@@ -142,12 +142,12 @@ var FreshDirect = FreshDirect || {};
   function pccHandler (e) {
     var $product = $('[data-productdata-name="atcItemId"][value="'+e.productId+'"]').parents('[data-product-id], [data-productid]');
 
-    if ($product.size() < 1) {
+    if ($product.length < 1) {
       $product = $('[data-productid="'+e.productId+'"], [data-product-id="'+e.productId+'"]');
     }
 
 
-    if ($product.size() > 0) {
+    if ($product.length > 0) {
       Subtotal.update($product);
     }
   }

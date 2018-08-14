@@ -381,7 +381,7 @@ public class ModelConverter {
 				deliveryPassTypeData.isUnlimited(), deliveryPassTypeData.getProfileValue(),
 				deliveryPassTypeData.isAutoRenewDP(), deliveryPassTypeData.isFreeTrialDP(),
 				deliveryPassTypeData.isFreeTrialRestricted(), deliveryPassTypeData.getAutoRenewalSKU(),
-				deliveryPassTypeData.getEligibleDlvDays(), deliveryTypes, eStoreIds, null);
+				deliveryPassTypeData.getEligibleDlvDays(), deliveryTypes, eStoreIds, deliveryPassTypeData.getShortName());
 	}
 
 	public static List buildCrmCaseSubjectList(List data) {
@@ -2422,6 +2422,7 @@ public class ModelConverter {
 			data.setNoOfDeliveries(type.getNoOfDeliveries());
 			data.setProfileValue(type.getProfileValue());
 			data.setUnlimited(type.isUnlimited());
+			data.setEligibleDlvDays(type.getEligibleDlvDays());
 			if (type.getDeliveryTypes() != null) {
 				List<String> deliveryTypes = new ArrayList<String>();
 				for (EnumDeliveryType deliveryType : type.getDeliveryTypes()) {
@@ -2436,6 +2437,7 @@ public class ModelConverter {
 				}
 				data.setEStoreIds(eStoreIds);
 			}
+			data.setShortName(type.getShortName());
 			return data;
 		}
 		return null;

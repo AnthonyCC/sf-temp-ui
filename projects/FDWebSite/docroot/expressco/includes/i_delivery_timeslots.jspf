@@ -248,7 +248,7 @@ if(StandingOrderHelper.isSO3StandingOrder(user) && "Y".equals(user.getCurrentSta
 												&nbsp;
 												</td>
 												<td Valign="top" class="timeslots_legend_early_delivery">
-												<a href="#" onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_early_am_timeslot.html&windowSize=small&name=Early AM','large');return false;">Early AM - Unattended</td>
+												<a href="#" onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_early_am_timeslot.html&windowSize=small&name=Early AM','large');return false;">Early AM - Unattended</a></td>
 												<td>&nbsp;</td>
 										<% } %>
 									</tr>

@@ -32,7 +32,7 @@ var FreshDirect = FreshDirect || {};
       value: function () {
         var mainEl = $('.qs-content').first(), crect;
 
-        if (mainEl && mainEl.size()) {
+        if (mainEl && mainEl.length) {
           if (mainEl.hasClass('noscroll')) {
             mainEl.removeClass('noscroll');
           } else {

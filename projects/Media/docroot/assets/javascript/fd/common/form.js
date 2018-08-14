@@ -161,7 +161,7 @@ var FreshDirect = FreshDirect || {};
         $errorHolder = $('['+this.attrPrefix+'="'+form.id+'"] ['+this.attrPrefix+'-error-for="'+name+'"]').first(),
         pfx = this.attrPrefix,
         customHandler = form.errorHandlers && form.errorHandlers[name],
-        $parent = $errorHolder.size() ? $errorHolder : $el.parent();
+        $parent = $errorHolder.length ? $errorHolder : $el.parent();
 
     // if custom error handler found
     if (customHandler) {
@@ -171,7 +171,7 @@ var FreshDirect = FreshDirect || {};
       }
     }
 
-    if ($el.size() === 0) {
+    if ($el.length === 0) {
       $el = $('['+this.attrPrefix+'-error-container="'+form.id+'"],['+this.attrPrefix+'="'+form.id+'"] ['+this.attrPrefix+'-error-container]');
       $parent = $el;
     }
@@ -433,7 +433,7 @@ var FreshDirect = FreshDirect || {};
         // check for label
         if ($el) {
           label = $el.closest('label').first();
-          if (label.size() > 0) {
+          if (label.length > 0) {
             label.attr('for', id);
           } else {
             ph = $el.attr('placeholder');
@@ -562,7 +562,7 @@ var FreshDirect = FreshDirect || {};
   forms.successFns.reset = function (id) {
     var formEl = forms.getEl(id);
 
-    if (formEl.size()) {
+    if (formEl.length) {
       formEl[0].reset();
     }
   };
@@ -572,7 +572,7 @@ var FreshDirect = FreshDirect || {};
     $('[fdform-container="'+id+'"]').hide();
     $('[fdform-container-'+id+']').hide();
 
-    if (formEl.size()) {
+    if (formEl.length) {
       formEl[0].reset();
     }
   };
@@ -582,7 +582,7 @@ var FreshDirect = FreshDirect || {};
     $('[fdform-container="'+id+'"]').show();
     $('[fdform-container-'+id+']').show();
 
-    if (formEl.size()) {
+    if (formEl.length) {
       formEl[0].reset();
     }
   };
@@ -630,7 +630,7 @@ var FreshDirect = FreshDirect || {};
       this.clearFieldErrors($(el), {id: formid});
     }.bind(forms));
 
-    if ($checkedfields.size() === 0) {
+    if ($checkedfields.length === 0) {
       errors = addError(errors, $fields.first(), 'Please select one of the marked options!', "onerequired-"+group);
       $fields.attr('invalid', true);
     }
