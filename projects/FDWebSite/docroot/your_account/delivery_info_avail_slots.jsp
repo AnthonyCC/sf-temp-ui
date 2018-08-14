@@ -81,13 +81,14 @@ if (mobWeb) {
 		<fd:SEOMetaTag title="Available Delivery Slots" pageId="delivery_info_avail"></fd:SEOMetaTag>
 	</tmpl:put>
 	<tmpl:put name='content' direct='true'>
-		<div class="delivery_info_mobweb_nav" <%= mobWeb ? "" : "style='display: none;'" %>>
-			<%@ include file="/help/delivery_info_nav.jspf" %>
-		</div>
-
-		<%//Finds the address%>
-		<%@ include file="/shared/includes/delivery/i_address_finder.jspf"%>
-
+		<div id="content">
+			<div class="delivery_info_mobweb_nav" <%= mobWeb ? "" : "style='display: none;'" %>>
+				<%@ include file="/help/delivery_info_nav.jspf" %>
+			</div>
+	
+			<%//Finds the address%>
+			<%@ include file="/shared/includes/delivery/i_address_finder.jspf"%>
+	
 		<% if (FDStoreProperties.isDfpEnabled()){
 		%>
 			<div id="oas_DFPDeliveryTimeslotMessage" ad-size-width='875' ad-size-height='100'>
@@ -95,17 +96,17 @@ if (mobWeb) {
 			</div>
 		<%} %>
 
-		<%//Finds the address & render the timeslots %>
-    <% if (!mobWeb) { %>
+			<%//Finds the address & render the timeslots %>
+	    	<% if (!mobWeb) { %>
 			<%@ include file="/shared/includes/delivery/i_delivery_timeslots.jspf"%>
 			<script>window.FreshDirect = window.FreshDirect || {};
 					window.FreshDirect.gtm = window.FreshDirect.gtm || {};
 					window.FreshDirect.gtm.afterPageView = window.FreshDirect.gtm.afterPageView || [];
 					window.FreshDirect.gtm.afterPageView.push({ timeslotOpened:{ action: 'timeslot-pageview', pageName:'View Timeslots'} });</script>
-    <%} else {%>
-      <div class="timeslot-selector delivery-info-timeslot"></div>
-      <% }%>
-
+	    	<%} else {%>
+	      		<div class="timeslot-selector delivery-info-timeslot"></div>
+	      	<% }%>
+		</div>
 	</tmpl:put>
 	<tmpl:put name="extraCss">
 	  <jwr:style src="/timeslots.css" media="all" />

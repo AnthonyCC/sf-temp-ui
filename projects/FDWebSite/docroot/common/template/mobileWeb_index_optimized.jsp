@@ -52,11 +52,12 @@
 	<style>
 		@charset "UTF-8"; 
 		<%--
-			All CSS should be inline, no bundle or external files in optimized version
+			All CSS should be inline, no bundle or external files 
 			Include them directly, otherwise it affects performance
 		--%>
 		<%@ include file="/assets/css/mobileweb_index_optimized/mobileweb_index_optimized.css" %>
 	</style>
+    <jwr:style src="/accessibility.css" media="all" />
     
 	<%-- Keep the media include last, so it can always override any css auto-loaded --%>
 	<fd:IncludeMedia name="/media/editorial/site_pages/stylesheet.html" />
@@ -232,6 +233,13 @@
 					FreshDirect.updateOAS = {};
 					FreshDirect.updateOAS.done = done;
 			}());
+    	$jq(function(){
+    		var assistiveMode = localStorage.getItem("assistive-enabled");
+    		if(assistiveMode === "true") {
+    			$jq(".assistiveWrapper .switch :checkbox").prop("checked", true);
+				$jq('body').addClass("assistive-mode");
+    		}
+    		});
 		</script>
 		<jwr:script src="/mobileweb_index_optimized_everythingelse.js" useRandomParam="false" />
     	<jsp:include page="/common/template/includes/ad_server.jsp" flush="false" />
@@ -319,22 +327,6 @@
 			
 			<fd:IncludeMedia name="/media/editorial/site_pages/javascript.html"/>
 		
-			<%
-				FDUserI dpTcCheckUser = (FDUserI)session.getAttribute(SessionName.USER);
-				FDSessionUser dpTcCheckSessionUser = (FDSessionUser)session.getAttribute(SessionName.USER);
-		
-				if (dpTcCheckUser != null &&
-						(dpTcCheckUser.getLevel() == FDSessionUser.SIGNED_IN && Boolean.FALSE.equals(dpTcCheckSessionUser.hasSeenDpNewTc()) && dpTcCheckUser.isDpNewTcBlocking())
-					) {
-					%>
-						<script type="text/javascript">
-				    		$jq(document).ready(function() {
-					    		pop('/overlays/delivery_pass_tc.jsp?showButtons=true&count=true');
-				    		});
-				    	</script>
-			    	<%
-				}
-			%>
 			
 			<% 
 			//System.out.println("DELIVERYADDRESS_COMPLETE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>:"+session.getAttribute("DELIVERYADDRESS_COMPLETE")); 

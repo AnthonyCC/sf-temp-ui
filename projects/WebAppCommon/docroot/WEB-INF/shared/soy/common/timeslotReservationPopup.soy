@@ -1,0 +1,15 @@
+{namespace common}
+/**
+ * @param? data
+ */
+{template .timeslotReservationConfirmPopup autoescape="false"}
+<div class="ts-reserve-popup-body">
+{if $data.hasPreReserved}
+  <h3>Your delivery window, {$data.reservationDate} {$data.reservationStart} - {$data.reservationEnd}, has been reserved.</h3>
+  <p>Place your order by the time below, or your reservation will be released:<p>
+  <p>Order by: {$data.expiration}</p>
+{else}
+  <h3>Your delivery timeslot reservation has been cancelled.</h3>
+{/if}
+</div>
+{/template}

@@ -1,14 +1,4 @@
 /* global, non-browser specific, css */
-@font-face {
-	font-family: 'BebasRegular';
-	src: url('/assets/css/fonts/BEBAS___-webfont.eot');
-	src: url('/assets/css/fonts/BEBAS___-webfont.eot?#iefix') format('eot'),
-		url('/assets/css/fonts/BEBAS___-webfont.woff') format('woff'),
-		url('/assets/css/fonts/BEBAS___-webfont.ttf') format('truetype'),
-		url('/assets/css/fonts/BEBAS___-webfont.svg#webfontOJIfwzl6') format('svg');
-	font-weight: normal;
-	font-style: normal;
-}
 
 
 html { height: 100%; }
@@ -142,6 +132,7 @@ A.list		    { line-height: 12px; }
 .success13text   { font-size: 13px; font-weight: normal; font-family: Verdana, Arial, sans-serif;}
 
 /*High color contrast for error messages text-accessibility */
+.error_detail,
 .errortext     { font-size: 13px; font-weight: normal; font-family: Verdana, Arial, sans-serif; color:#B93D3F;}
 
 /*changing  error messages text globally to different font size */

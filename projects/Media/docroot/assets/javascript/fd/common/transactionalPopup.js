@@ -237,7 +237,7 @@ var FreshDirect = FreshDirect || {};
               }
 
               this.showRelated = setTimeout($.proxy(function () {
-                var wwidth = $(".container").size() ? $(".container").first()[0].getBoundingClientRect().right : $(window).width(),
+                var wwidth = $(".container").length ? $(".container").first()[0].getBoundingClientRect().right : $(window).width(),
                     ppos = $('#'+popupId).position().left;
 
                 this.showRelated = null;
@@ -336,7 +336,7 @@ var FreshDirect = FreshDirect || {};
         top: trPopupBox.top + scTop
       };
 
-      wwidth = $(".container").size() ? $(".container").first()[0].getBoundingClientRect().right : $(window).width();
+      wwidth = $(".container").length ? $(".container").first()[0].getBoundingClientRect().right : $(window).width();
 
       if (trPopupBox.left + popupBox.width > wwidth) {
         positions.left = trPopupBox.right - popupBox.width + scLeft;
@@ -363,7 +363,15 @@ var FreshDirect = FreshDirect || {};
 
   };
 
-  $(".product-name-no-brand").ellipsis({ lines: 4 });
+  $(function() {
+	  if ($.fn['ellipsis']) {
+      $('.product-name-no-brand').each(function(i,e) {
+        window.requestAnimationFrame(function() {
+          $(e).ellipsis({ lines: 4 });
+        });
+      });
+	  }
+  });
 
    $(document).on('mouseover','.transactional [data-transactional-trigger] *',function(event){
 
@@ -382,7 +390,7 @@ var FreshDirect = FreshDirect || {};
     if (element.data('virtualCategory')) {
       config.virtualCategory = element.data('virtualCategory');
     }
-    if ((!element.hasClass('unavailable') || element.hasClass('useReplacement')) && element.closest('.stepping[data-component="carousel"]').size() === 0) {
+    if ((!element.hasClass('unavailable') || element.hasClass('useReplacement')) && element.closest('.stepping[data-component="carousel"]').length === 0) {
       transactionalPopup.open(config);
     }
 

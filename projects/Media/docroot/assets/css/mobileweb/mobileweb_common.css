@@ -1302,10 +1302,10 @@ li.cleanli .gen-arrow {
 	.mm-page .pagination{
 		text-align: center;
 	}
-	[data-eventsource="BROWSE"] .mm-page #content{
+	.mm-page div#content.srch,.mm-page div#content.browse{
 		background: #F2F0EF;
 	}
-	[data-eventsource="BROWSE"] .mm-page #content .pager-holder{
+	 .mm-page div#content.browse .pager-holder{
 		clear: both;
 	}
 	.mm-page .browseContent .sectionContent ul.products,

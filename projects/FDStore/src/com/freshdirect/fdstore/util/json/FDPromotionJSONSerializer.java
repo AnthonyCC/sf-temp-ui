@@ -398,7 +398,9 @@ public class FDPromotionJSONSerializer extends AbstractSerializer {
 	 */
 	public void serializeArray(JSONArray arr, Iterable<?> arrval) {
 		for (Object val : arrval) {
-			arr.put(serializeRightHandSide(val));
+			if(null !=val){
+				arr.put(serializeRightHandSide(val));
+			}
 		}
 	}
 
@@ -579,9 +581,11 @@ public class FDPromotionJSONSerializer extends AbstractSerializer {
 								org.apache.commons.lang.enums.ValuedEnum.class.equals(classRt.getSuperclass()) || org.apache.commons.lang.enums.ValuedEnum.class.equals(classRt)){
 							try {
 								for (Object o : coll) {
-									Field decl = classRt.getField(o.toString());
-									Object fld = decl.get(valueType);
-									valami.add(fld);
+									if(null != o){
+										Field decl = classRt.getField(o.toString());
+										Object fld = decl.get(valueType);
+										valami.add(fld);
+									}
 								}
 							} catch (SecurityException e) {
 								LOGGER.error("SecurityException:", e);

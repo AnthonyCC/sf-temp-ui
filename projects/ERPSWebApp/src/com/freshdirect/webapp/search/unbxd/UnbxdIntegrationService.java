@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.commons.lang.CharEncoding;
 import org.apache.log4j.Logger;
 
+import com.freshdirect.fdstore.customer.UnbxdAutosuggestResults;
 import com.freshdirect.framework.marker.ThirdPartyIntegration;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.http.HttpService;
@@ -44,12 +45,13 @@ public class UnbxdIntegrationService implements ThirdPartyIntegration {
         return results;
     }
 
-    public List<String> suggestProducts(String term, UnbxdSearchProperties searchProperties) throws IOException {
-        List<String> autosuggests = new ArrayList<String>();
+    public List<UnbxdAutosuggestResults> suggestProducts(String term, UnbxdSearchProperties searchProperties) throws IOException {
+        List<UnbxdAutosuggestResults> autosuggests = new ArrayList<UnbxdAutosuggestResults>();
         UnbxdAutosuggestResponseRoot results = httpService.getData(UnbxdUrlFactory.getAutoSuggestUrl(searchProperties) + URLEncoder.encode(term, CharEncoding.UTF_8),
                 UnbxdAutosuggestResponseRoot.class);
         for (int i = 0; i < results.getResponse().getProducts().size() && i < MAX_AUTOSUGGEST_NUMBER; i++) {
-            autosuggests.add(results.getResponse().getProducts().get(i).getAutosuggest());
+        	results.getResponse().getProducts().get(i).setInternalQuery(term); /* we are storing internalQuery to re-use for payload on next Unbxd API */
+            autosuggests.add(results.getResponse().getProducts().get(i));
         }
         return autosuggests;
     }

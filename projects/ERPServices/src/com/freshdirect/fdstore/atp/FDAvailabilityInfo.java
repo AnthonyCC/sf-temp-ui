@@ -2,6 +2,8 @@ package com.freshdirect.fdstore.atp;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class FDAvailabilityInfo implements Serializable {
 	private static final long serialVersionUID = 181256114416105465L;
 
@@ -10,10 +12,12 @@ public class FDAvailabilityInfo implements Serializable {
 
 	protected final boolean available;
 
-	public FDAvailabilityInfo(boolean available) {
+	public FDAvailabilityInfo(@JsonProperty("available") boolean available) {
 		this.available = available;
 	}
-
+	public boolean getAvailable() {
+		return this.available;
+	}
 	public boolean isAvailable() {
 		return this.available;
 	}

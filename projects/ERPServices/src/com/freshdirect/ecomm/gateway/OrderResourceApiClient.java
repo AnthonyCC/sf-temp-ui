@@ -2,6 +2,7 @@ package com.freshdirect.ecomm.gateway;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,10 +13,14 @@ import javax.ejb.FinderException;
 
 import org.apache.log4j.Category;
 
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.crm.CrmAgentRole;
@@ -40,7 +45,6 @@ import com.freshdirect.ecomm.converter.SapGatewayConverter;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.ecommerce.data.dlv.FDReservationData;
-import com.freshdirect.ecommerce.data.erp.inventory.FDAvailabilityData;
 import com.freshdirect.ecommerce.data.order.CancelOrderRequestData;
 import com.freshdirect.ecommerce.data.order.CreateOrderRequestData;
 import com.freshdirect.ecommerce.data.order.ModifyOrderRequestData;
@@ -52,34 +56,38 @@ import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.EnumPaymentMethodType;
-import com.freshdirect.payment.service.ModelConverter;
 
-public class OrderResourceApiClient extends AbstractEcommService implements
-		OrderResourceApiClientI {
+public class OrderResourceApiClient extends AbstractEcommService implements OrderResourceApiClientI {
 
-private static OrderResourceApiClient INSTANCE;
-	
+	private static OrderResourceApiClient INSTANCE;
+
 	private final static Category LOGGER = LoggerFactory.getInstance(OrderServiceApiClient.class);
 
 	private static final String GET_ORDER_API = "orders/{id}";
 	private static final String GET_ORDERS_API = "orders/list";
 	private static final String GET_ORDERS_BY_PYMTTYPE_API = "orders/noncos/last/byPaymentType";
-	private static final String GET_ORDERS_BY_PYMTTYPES_API= "orders/noncos/last/byPaymentTypes";
-	private static final String CUTOFF_ORDER_API = 	"orders/cutoff/{id}";
-	private static final String GET_OUTSTANDING_BALANCE_API = 	"orders/getOutStandingBalance";
-	private static final String UPDATE_WAVE_INFO_API = 	"orders/{id}/waveInfo";
-	private static final String UPDATE_CARTON_INFO_API = 	"orders/{id}/cartonInfo";
-	private static final String GET_DELIVERYINFO_API = 	"orders/{id}/getDeliveryInfo";
-	private static final String RESUBMIT_GC_ORDERS_API = 	"orders/resubmitNsmGcOrders";
-	private static final String CREATE_GC_ORDER_API = 	"orders/gc/create";
-	private static final String CREATE_SUB_ORDER_API = 	"orders/sub/create";
-	
-	private static final String CREATE_DON_ORDER_API = 	"orders/don/create";
-	private static final String CREATE_REG_ORDER_API = 	"orders/reg/create";
-	private static final String MODIFY_REG_ORDER_API = 	"orders/reg/modify";
-	private static final String CANCEL_REG_ORDER_API = 	"orders/reg/cancel";
-	private static final String MODIFY_AUTORENEW_ORDER_API = 	"orders/sub/modify";
-	
+	private static final String GET_ORDERS_BY_PYMTTYPES_API = "orders/noncos/last/byPaymentTypes";
+	private static final String CUTOFF_ORDER_API = "orders/cutoff/{id}";
+	private static final String GET_OUTSTANDING_BALANCE_API = "orders/getOutStandingBalance";
+	private static final String UPDATE_WAVE_INFO_API = "orders/{id}/waveInfo";
+	private static final String UPDATE_CARTON_INFO_API = "orders/{id}/cartonInfo";
+	private static final String GET_DELIVERYINFO_API = "orders/{id}/getDeliveryInfo";
+	private static final String RESUBMIT_GC_ORDERS_API = "orders/resubmitNsmGcOrders";
+	private static final String CREATE_GC_ORDER_API = "orders/gc/create";
+	private static final String CREATE_SUB_ORDER_API = "orders/sub/create";
+
+	private static final String CREATE_DON_ORDER_API = "orders/don/create";
+	private static final String CREATE_REG_ORDER_API = "orders/reg/create";
+	private static final String MODIFY_REG_ORDER_API = "orders/reg/modify";
+	private static final String CANCEL_REG_ORDER_API = "orders/reg/cancel";
+	private static final String MODIFY_AUTORENEW_ORDER_API = "orders/sub/modify";
+
+	private static ObjectMapper TYPED_OBJECT_MAPPER = new ObjectMapper()
+			.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ"))
+			.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+			.setVisibility(PropertyAccessor.FIELD, Visibility.ANY)
+			.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_CONCRETE_AND_ARRAYS);
+
 	public static OrderResourceApiClient getInstance() {
 		if (INSTANCE == null)
 			INSTANCE = new OrderResourceApiClient();
@@ -88,64 +96,55 @@ private static OrderResourceApiClient INSTANCE;
 	}
 
 	@Override
-	public void chargeOrder(FDIdentity identity, String saleId,
-			ErpPaymentMethodI paymentMethod, boolean sendEmail,
+	public void chargeOrder(FDIdentity identity, String saleId, ErpPaymentMethodI paymentMethod, boolean sendEmail,
 			CustomerRatingI cra, CrmAgentModel agent, double additionalCharge) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public ErpSaleModel getOrder(String id) throws RemoteException {
-		
-			
-			
-			try{
-				String response =  httpGetData(getFdCommerceEndPoint(GET_ORDER_API), String.class, new Object[]{id});
-				Response<ErpSaleModel> info = getMapper().readValue(response, new TypeReference<Response<ErpSaleModel>>() { });
-				return parseResponse(info);	
-			}catch(Exception e){
-				LOGGER.info(e);
-				LOGGER.info("Exception converting {} to ListOfObjects "+ id);
-				throw new RemoteException(e.getMessage(), e);
-				
-			}
-		
-		
+
+		try {
+			String response = httpGetData(getFdCommerceEndPoint(GET_ORDER_API), String.class, new Object[] { id });
+			Response<ErpSaleModel> info = getMapper().readValue(response, new TypeReference<Response<ErpSaleModel>>() {
+			});
+			return parseResponse(info);
+		} catch (Exception e) {
+			LOGGER.info(e);
+			LOGGER.info("Exception converting {} to ListOfObjects " + id);
+			throw new RemoteException(e.getMessage(), e);
+
+		}
+
 	}
 
 	@Override
-	public List<ErpSaleModel> getOrders(List<String> ids)
-			throws RemoteException {
-		
-		
-		
-		try{
+	public List<ErpSaleModel> getOrders(List<String> ids) throws RemoteException {
+
+		try {
 			Request<List<String>> request = new Request<List<String>>();
 			request.setData(ids);
 			String inputJson = buildRequest(request);
-			String response =  postData(inputJson, getFdCommerceEndPoint(GET_ORDERS_API), String.class);
-			Response<List<ErpSaleModel>> info = getMapper().readValue(response, new TypeReference<Response<List<ErpSaleModel>>>() { });
-			return parseResponse(info);	
-		}catch(Exception e){
+			String response = postData(inputJson, getFdCommerceEndPoint(GET_ORDERS_API), String.class);
+			Response<List<ErpSaleModel>> info = getMapper().readValue(response,
+					new TypeReference<Response<List<ErpSaleModel>>>() {
+					});
+			return parseResponse(info);
+		} catch (Exception e) {
 			LOGGER.info(e);
-			LOGGER.info("Exception converting {} to ListOfObjects "+ ids);
+			LOGGER.info("Exception converting {} to ListOfObjects " + ids);
 			throw new RemoteException(e.getMessage(), e);
-			
+
 		}
-	
-	
-}
+
+	}
 
 	@Override
-	public ErpSaleModel getLastNonCOSOrder(String customerID,
-			EnumSaleType saleType, EnumSaleStatus saleStatus,
-			EnumPaymentMethodType paymentType) throws ErpSaleNotFoundException,
-			RemoteException {
-		
-		
-		
-		try{
+	public ErpSaleModel getLastNonCOSOrder(String customerID, EnumSaleType saleType, EnumSaleStatus saleStatus,
+			EnumPaymentMethodType paymentType) throws ErpSaleNotFoundException, RemoteException {
+
+		try {
 			Request<OrderSearchCriteriaRequest> request = new Request<OrderSearchCriteriaRequest>();
 			OrderSearchCriteriaRequest criteria = new OrderSearchCriteriaRequest();
 			criteria.setCustomerId(customerID);
@@ -157,189 +156,165 @@ private static OrderResourceApiClient INSTANCE;
 			request.setData(criteria);
 			String inputJson = buildRequest(request);
 			String response = postData(inputJson, getFdCommerceEndPoint(GET_ORDERS_BY_PYMTTYPE_API), String.class);
-			Response<ErpSaleModel> info = getMapper().readValue(response, new TypeReference<Response<ErpSaleModel>>() { });
-			return parseResponse(info);	
-		}catch(Exception e){
+			Response<ErpSaleModel> info = getMapper().readValue(response, new TypeReference<Response<ErpSaleModel>>() {
+			});
+			return parseResponse(info);
+		} catch (Exception e) {
 			LOGGER.info(e);
 			LOGGER.info("Exception converting {} to ListOfObjects ");
 			throw new RemoteException(e.getMessage(), e);
-			
+
 		}
-	
-	
-}
+
+	}
 
 	@Override
-	public ErpSaleModel getLastNonCOSOrder(String customerID,
-			EnumSaleType saleType, EnumSaleStatus saleStatus,
-			List<EnumPaymentMethodType> pymtMethodTypes)
-			throws ErpSaleNotFoundException, RemoteException {
+	public ErpSaleModel getLastNonCOSOrder(String customerID, EnumSaleType saleType, EnumSaleStatus saleStatus,
+			List<EnumPaymentMethodType> pymtMethodTypes) throws ErpSaleNotFoundException, RemoteException {
 
-		
-		
-		
-		try{
+		try {
 			Request<OrderSearchCriteriaRequest> request = new Request<OrderSearchCriteriaRequest>();
 			OrderSearchCriteriaRequest criteria = new OrderSearchCriteriaRequest();
 			criteria.setCustomerId(customerID);
 			criteria.setSaleType(saleType.getSaleType());
 			criteria.setSaleStatus(saleStatus.getStatusCode());
 			List<String> paymentTypes = new ArrayList<String>();
-			for(EnumPaymentMethodType type : pymtMethodTypes){
+			for (EnumPaymentMethodType type : pymtMethodTypes) {
 				paymentTypes.add(type.getCode());
 			}
 			criteria.setPaymentTypes(paymentTypes);
 			request.setData(criteria);
 			String inputJson = buildRequest(request);
 			String response = postData(inputJson, getFdCommerceEndPoint(GET_ORDERS_BY_PYMTTYPES_API), String.class);
-			Response<ErpSaleModel> info = getMapper().readValue(response, new TypeReference<Response<ErpSaleModel>>() { });
-			return parseResponse(info);	
-		}catch(Exception e){
+			Response<ErpSaleModel> info = getMapper().readValue(response, new TypeReference<Response<ErpSaleModel>>() {
+			});
+			return parseResponse(info);
+		} catch (Exception e) {
 			LOGGER.info(e);
 			LOGGER.info("Exception converting {} to ListOfObjects ");
 			throw new RemoteException(e.getMessage(), e);
-			
+
 		}
-	
-	
 
 	}
 
 	@Override
-	public void cutOffSale(String saleId) throws ErpSaleNotFoundException,
-			RemoteException, FDResourceException {
-		
+	public void cutOffSale(String saleId) throws ErpSaleNotFoundException, RemoteException, FDResourceException {
 
-		String inputJson=null;
+		String inputJson = null;
 		Response<String> response = null;
-		response = httpPostData(getFdCommerceEndPoint(CUTOFF_ORDER_API), inputJson, Response.class, new Object[]{saleId});
-		if(!response.getResponseCode().equals("OK"))
+		response = httpPostData(getFdCommerceEndPoint(CUTOFF_ORDER_API), inputJson, Response.class,
+				new Object[] { saleId });
+		if (!response.getResponseCode().equals("OK"))
 			throw new FDResourceException(response.getMessage());
-		
-	
+
 	}
 
-	
 	@Override
-	public void updateWaveInfo(String saleId, ErpShippingInfo shippingInfo)
-			throws RemoteException, FinderException {
-		
-		try{
-		Response<String> response = null;
-		Request<ErpShippingInfo> request = new Request<ErpShippingInfo>();
-		request.setData(new ErpShippingInfo(shippingInfo.getWaveNumber(), shippingInfo.getTruckNumber(), 
-				shippingInfo.getStopSequence(), shippingInfo.getRegularCartons(), 
-				shippingInfo.getFreezerCartons(), shippingInfo.getAlcoholCartons()));
-		String inputJson = buildRequest(request);
-		response = httpPostData(getFdCommerceEndPoint(UPDATE_WAVE_INFO_API), inputJson, Response.class, new Object[]{saleId});
-		if(!response.getResponseCode().equals("OK"))
-			throw new RemoteException(response.getMessage());
-		}catch(Exception e){
+	public void updateWaveInfo(String saleId, ErpShippingInfo shippingInfo) throws RemoteException, FinderException {
+
+		try {
+			Response<String> response = null;
+			Request<ErpShippingInfo> request = new Request<ErpShippingInfo>();
+			request.setData(new ErpShippingInfo(shippingInfo.getWaveNumber(), shippingInfo.getTruckNumber(),
+					shippingInfo.getStopSequence(), shippingInfo.getRegularCartons(), shippingInfo.getFreezerCartons(),
+					shippingInfo.getAlcoholCartons()));
+			String inputJson = buildRequest(request);
+			response = httpPostData(getFdCommerceEndPoint(UPDATE_WAVE_INFO_API), inputJson, Response.class,
+					new Object[] { saleId });
+			if (!response.getResponseCode().equals("OK"))
+				throw new RemoteException(response.getMessage());
+		} catch (Exception e) {
 			LOGGER.info(e);
 			LOGGER.info("Exception converting {} to ListOfObjects ");
 			throw new RemoteException(e.getMessage(), e);
-			
+
 		}
-	
+
 	}
 
 	@Override
 	public void updateCartonInfo(String saleId, List<ErpCartonInfo> cartonList)
 			throws RemoteException, FinderException, FDResourceException {
-		
 
-		try{
+		try {
 			Response<String> response = null;
 			Request<List<ErpCartonInfo>> request = new Request<List<ErpCartonInfo>>();
 			request.setData(cartonList);
 			String inputJson = buildRequest(request);
-			
-		response = httpPostData(inputJson, getFdCommerceEndPoint(UPDATE_CARTON_INFO_API), Response.class, new Object[]{saleId}); 
-		if(!response.getResponseCode().equals("OK"))
-			throw new FDResourceException(response.getMessage());
-		}catch(Exception e){
+
+			response = httpPostData(inputJson, getFdCommerceEndPoint(UPDATE_CARTON_INFO_API), Response.class,
+					new Object[] { saleId });
+			if (!response.getResponseCode().equals("OK"))
+				throw new FDResourceException(response.getMessage());
+		} catch (Exception e) {
 			LOGGER.info(e);
 			LOGGER.info("Exception converting {} to ListOfObjects ");
 			throw new RemoteException(e.getMessage(), e);
-			
-		}
-		
-	
-	}
 
-	@Override
-	public ErpDeliveryInfoModel getDeliveryInfo(String saleId)
-			throws ErpSaleNotFoundException, RemoteException {
-
-		
-		
-		
-		try{
-			String response =  httpGetData(getFdCommerceEndPoint(GET_DELIVERYINFO_API), String.class, new Object[]{saleId});
-			Response<ErpDeliveryInfoModel> info = getMapper().readValue(response, new TypeReference<Response<ErpDeliveryInfoModel>>() { });
-			return parseResponse(info);	
-		}catch(Exception e){
-			LOGGER.info(e);
-			LOGGER.info("Exception converting {} to ListOfObjects ");
-			throw new RemoteException(e.getMessage(), e);
-			
 		}
-	
-	
 
 	}
 
 	@Override
-	public double getOutStandingBalance(ErpAbstractOrderModel order)
-			throws RemoteException {
+	public ErpDeliveryInfoModel getDeliveryInfo(String saleId) throws ErpSaleNotFoundException, RemoteException {
+
+		try {
+			String response = httpGetData(getFdCommerceEndPoint(GET_DELIVERYINFO_API), String.class,
+					new Object[] { saleId });
+			Response<ErpDeliveryInfoModel> info = getMapper().readValue(response,
+					new TypeReference<Response<ErpDeliveryInfoModel>>() {
+					});
+			return parseResponse(info);
+		} catch (Exception e) {
+			LOGGER.info(e);
+			LOGGER.info("Exception converting {} to ListOfObjects ");
+			throw new RemoteException(e.getMessage(), e);
+
+		}
+
+	}
+
+	@Override
+	public double getOutStandingBalance(ErpAbstractOrderModel order) throws RemoteException {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	
 	@Override
-	public String placeGiftCardOrder(FDActionInfo info,
-			ErpCreateOrderModel createOrder, Set<String> appliedPromos,
-			String id, boolean sendEmail, CustomerRatingI cra,
-			CrmAgentRole crmAgentRole, EnumDlvPassStatus status,
+	public String placeGiftCardOrder(FDActionInfo info, ErpCreateOrderModel createOrder, Set<String> appliedPromos,
+			String id, boolean sendEmail, CustomerRatingI cra, CrmAgentRole crmAgentRole, EnumDlvPassStatus status,
 			boolean isBulkOrder) throws RemoteException {
 
 		Request<CreateOrderRequestData> request = new Request<CreateOrderRequestData>();
-		
-		try{
-			request.setData(
-					new CreateOrderRequestData(
-							FDActionInfoConverter.buildActionInfoData(info), 
-							SapGatewayConverter.buildOrderData(createOrder), 
-							appliedPromos, 
-							id, 
-							sendEmail, 
-							CustomerRatingConverter.buildCustomerRatingData(cra), 
-							ErpFraudPreventionConverter.buildCrmAgentRoleData(crmAgentRole), 
-							(status!=null)?status.getName():null, 
-							isBulkOrder));
+
+		try {
+			request.setData(new CreateOrderRequestData(FDActionInfoConverter.buildActionInfoData(info),
+					SapGatewayConverter.buildOrderData(createOrder), appliedPromos, id, sendEmail,
+					CustomerRatingConverter.buildCustomerRatingData(cra),
+					ErpFraudPreventionConverter.buildCrmAgentRoleData(crmAgentRole),
+					(status != null) ? status.getName() : null, isBulkOrder));
 			Response<String> response = null;
 			String inputJson = buildRequest(request);
-			response = httpPostData(getFdCommerceEndPoint(CREATE_GC_ORDER_API), inputJson, Response.class, new Object[]{});
+			response = httpPostData(getFdCommerceEndPoint(CREATE_GC_ORDER_API), inputJson, Response.class,
+					new Object[] {});
 			return parseResponse(response);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RemoteException(e.getMessage(), e);
 		}
-		
+
 	}
 
 	@Override
-	public String placeSubscriptionOrder(FDActionInfo info,
-			ErpCreateOrderModel createOrder, Set<String> appliedPromos,
-			String id, boolean sendEmail, CustomerRatingI cra,
-			CrmAgentRole crmAgentRole, EnumDlvPassStatus status,
+	public String placeSubscriptionOrder(FDActionInfo info, ErpCreateOrderModel createOrder, Set<String> appliedPromos,
+			String id, boolean sendEmail, CustomerRatingI cra, CrmAgentRole crmAgentRole, EnumDlvPassStatus status,
 			boolean isRealTimeAuthNeeded) throws RemoteException {
 
 		Request<CreateOrderRequestData> request = new Request<CreateOrderRequestData>();
-		
-		try{
-			
+
+		try {
+
 			CreateOrderRequestData data = new CreateOrderRequestData();
 			data.setInfo(FDActionInfoConverter.buildActionInfoData(info));
 			data.setModel(SapGatewayConverter.buildOrderData(createOrder));
@@ -348,34 +323,32 @@ private static OrderResourceApiClient INSTANCE;
 			data.setSendMail(sendEmail);
 			data.setCra(CustomerRatingConverter.buildCustomerRatingData(cra));
 			data.setAgentRole(ErpFraudPreventionConverter.buildCrmAgentRoleData(crmAgentRole));
-			data.setDeliveryPassStatus((status!=null)?status.getName():null);
+			data.setDeliveryPassStatus((status != null) ? status.getName() : null);
 			data.setRealTimeAuthNeeded(isRealTimeAuthNeeded);
-			
-			
+
 			request.setData(data);
-			
+
 			Response<String> response = null;
 			String inputJson = buildRequest(request);
-			response = httpPostData(getFdCommerceEndPoint(CREATE_SUB_ORDER_API), inputJson, Response.class, new Object[]{});
+			response = httpPostData(getFdCommerceEndPoint(CREATE_SUB_ORDER_API), inputJson, Response.class,
+					new Object[] {});
 			return parseResponse(response);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RemoteException(e.getMessage(), e);
 		}
-		
+
 	}
 
 	@Override
-	public String placeDonationOrder(FDActionInfo info,
-			ErpCreateOrderModel createOrder, Set<String> appliedPromos,
-			String id, boolean sendEmail, CustomerRatingI cra,
-			CrmAgentRole crmAgentRole, EnumDlvPassStatus status, boolean isOptIn) throws RemoteException {
-
+	public String placeDonationOrder(FDActionInfo info, ErpCreateOrderModel createOrder, Set<String> appliedPromos,
+			String id, boolean sendEmail, CustomerRatingI cra, CrmAgentRole crmAgentRole, EnumDlvPassStatus status,
+			boolean isOptIn) throws RemoteException {
 
 		Request<CreateOrderRequestData> request = new Request<CreateOrderRequestData>();
-		
-		try{
-			
+
+		try {
+
 			CreateOrderRequestData data = new CreateOrderRequestData();
 			data.setInfo(FDActionInfoConverter.buildActionInfoData(info));
 			data.setModel(SapGatewayConverter.buildOrderData(createOrder));
@@ -384,37 +357,32 @@ private static OrderResourceApiClient INSTANCE;
 			data.setSendMail(sendEmail);
 			data.setCra(CustomerRatingConverter.buildCustomerRatingData(cra));
 			data.setAgentRole(ErpFraudPreventionConverter.buildCrmAgentRoleData(crmAgentRole));
-			data.setDeliveryPassStatus((status!=null)?status.getName():null);
+			data.setDeliveryPassStatus((status != null) ? status.getName() : null);
 			data.setOptIn(isOptIn);
-			
-			
+
 			request.setData(data);
-			
+
 			Response<String> response = null;
 			String inputJson = buildRequest(request);
-			response = httpPostData(getFdCommerceEndPoint(CREATE_DON_ORDER_API), inputJson, Response.class, new Object[]{});
+			response = httpPostData(getFdCommerceEndPoint(CREATE_DON_ORDER_API), inputJson, Response.class,
+					new Object[] {});
 			return parseResponse(response);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RemoteException(e.getMessage(), e);
 		}
-		
-	
-		
+
 	}
 
 	@Override
-	public String placeOrder(FDActionInfo info,
-			ErpCreateOrderModel createOrder, Set<String> appliedPromos,
-			String id, boolean sendEmail, CustomerRatingI cra,
-			CrmAgentRole crmAgentRole, EnumDlvPassStatus status,
+	public String placeOrder(FDActionInfo info, ErpCreateOrderModel createOrder, Set<String> appliedPromos, String id,
+			boolean sendEmail, CustomerRatingI cra, CrmAgentRole crmAgentRole, EnumDlvPassStatus status,
 			boolean isFriendReferred, int fdcOrderCount) throws RemoteException {
 
-
 		Request<CreateOrderRequestData> request = new Request<CreateOrderRequestData>();
-		
-		try{
-			
+
+		try {
+
 			CreateOrderRequestData data = new CreateOrderRequestData();
 			data.setInfo(FDActionInfoConverter.buildActionInfoData(info));
 			data.setModel(SapGatewayConverter.buildOrderData(createOrder));
@@ -423,115 +391,99 @@ private static OrderResourceApiClient INSTANCE;
 			data.setSendMail(sendEmail);
 			data.setCra(CustomerRatingConverter.buildCustomerRatingData(cra));
 			data.setAgentRole(ErpFraudPreventionConverter.buildCrmAgentRoleData(crmAgentRole));
-			data.setDeliveryPassStatus((status!=null)?status.getName():null);
+			data.setDeliveryPassStatus((status != null) ? status.getName() : null);
 			data.setFriendReferred(isFriendReferred);
 			data.setFdcOrderCount(fdcOrderCount);
-			
-			
+
 			request.setData(data);
-			
+
 			Response<String> response = null;
 			String inputJson = buildRequest(request);
-			response = httpPostData(getFdCommerceEndPoint(CREATE_REG_ORDER_API), inputJson, Response.class, new Object[]{});
+			response = httpPostData(getFdCommerceEndPoint(CREATE_REG_ORDER_API), inputJson, Response.class,
+					new Object[] {});
 			return parseResponse(response);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RemoteException(e.getMessage(), e);
 		}
-		
-	
-		
+
 	}
 
 	@Override
-	public void modifyOrder(FDActionInfo info, String saleId,
-			ErpModifyOrderModel order, Set<String> appliedPromos,
-			String originalReservationId, boolean sendEmail,
-			CustomerRatingI cra, CrmAgentRole crmAgentRole,
-			EnumDlvPassStatus status, boolean hasCouponDiscounts,
-			int fdcOrderCount) {
-		
-
-
+	public void modifyOrder(FDActionInfo info, String saleId, ErpModifyOrderModel order, Set<String> appliedPromos,
+			String originalReservationId, boolean sendEmail, CustomerRatingI cra, CrmAgentRole crmAgentRole,
+			EnumDlvPassStatus status, boolean hasCouponDiscounts, int fdcOrderCount) {
 
 		Request<ModifyOrderRequestData> request = new Request<ModifyOrderRequestData>();
-		
-		try{
-			
-			ModifyOrderRequestData data = new ModifyOrderRequestData(FDActionInfoConverter.buildActionInfoData(info), saleId, SapGatewayConverter.buildOrderData(order), 
-					appliedPromos, originalReservationId, sendEmail, CustomerRatingConverter.buildCustomerRatingData(cra), ErpFraudPreventionConverter.buildCrmAgentRoleData(crmAgentRole), (status!=null)?status.getName():null);
+
+		try {
+
+			ModifyOrderRequestData data = new ModifyOrderRequestData(FDActionInfoConverter.buildActionInfoData(info),
+					saleId, SapGatewayConverter.buildOrderData(order), appliedPromos, originalReservationId, sendEmail,
+					CustomerRatingConverter.buildCustomerRatingData(cra),
+					ErpFraudPreventionConverter.buildCrmAgentRoleData(crmAgentRole),
+					(status != null) ? status.getName() : null);
 			data.setHasCouponDiscounts(hasCouponDiscounts);
 			data.setFdcOrderCount(fdcOrderCount);
 			request.setData(data);
-			
+
 			Response<String> response = null;
 			String inputJson = buildRequest(request);
-			response = httpPostData(getFdCommerceEndPoint(MODIFY_REG_ORDER_API), inputJson, Response.class, new Object[]{});
+			response = httpPostData(getFdCommerceEndPoint(MODIFY_REG_ORDER_API), inputJson, Response.class,
+					new Object[] {});
 			parseResponse(response);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-	
-		
-	
+
 	}
 
 	@Override
-	public void modifyAutoRenewOrder(FDActionInfo info, String saleId,
-			ErpModifyOrderModel order, Set<String> appliedPromos,
-			String originalReservationId, boolean sendEmail,
-			CustomerRatingI cra, CrmAgentRole crmAgentRole,
-			EnumDlvPassStatus status) {
-		
-
-		
-
-
+	public void modifyAutoRenewOrder(FDActionInfo info, String saleId, ErpModifyOrderModel order,
+			Set<String> appliedPromos, String originalReservationId, boolean sendEmail, CustomerRatingI cra,
+			CrmAgentRole crmAgentRole, EnumDlvPassStatus status) {
 
 		Request<ModifyOrderRequestData> request = new Request<ModifyOrderRequestData>();
-		
-		try{
-			
-			ModifyOrderRequestData data = new ModifyOrderRequestData(FDActionInfoConverter.buildActionInfoData(info), saleId, SapGatewayConverter.buildOrderData(order), 
-					appliedPromos, originalReservationId, sendEmail, CustomerRatingConverter.buildCustomerRatingData(cra), ErpFraudPreventionConverter.buildCrmAgentRoleData(crmAgentRole), (status!=null)?status.getName():null);
+
+		try {
+
+			ModifyOrderRequestData data = new ModifyOrderRequestData(FDActionInfoConverter.buildActionInfoData(info),
+					saleId, SapGatewayConverter.buildOrderData(order), appliedPromos, originalReservationId, sendEmail,
+					CustomerRatingConverter.buildCustomerRatingData(cra),
+					ErpFraudPreventionConverter.buildCrmAgentRoleData(crmAgentRole),
+					(status != null) ? status.getName() : null);
 			request.setData(data);
-			
+
 			Response<String> response = null;
 			String inputJson = buildRequest(request);
-			response = httpPostData(getFdCommerceEndPoint(MODIFY_AUTORENEW_ORDER_API), inputJson, Response.class, new Object[]{});
+			response = httpPostData(getFdCommerceEndPoint(MODIFY_AUTORENEW_ORDER_API), inputJson, Response.class,
+					new Object[] {});
 			parseResponse(response);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-	
-		
-	
-	
-		
+
 	}
 
 	@Override
-	public FDReservationData cancelOrder(FDActionInfo info, String saleId,
-			boolean sendEmail, int currentDPExtendDays,
+	public FDReservationData cancelOrder(FDActionInfo info, String saleId, boolean sendEmail, int currentDPExtendDays,
 			boolean restoreReservation) {
 
 		Request<CancelOrderRequestData> request = new Request<CancelOrderRequestData>();
 
 		try {
 
-			CancelOrderRequestData data = new CancelOrderRequestData(
-					FDActionInfoConverter.buildActionInfoData(info), saleId,
-					sendEmail, currentDPExtendDays, restoreReservation);
+			CancelOrderRequestData data = new CancelOrderRequestData(FDActionInfoConverter.buildActionInfoData(info),
+					saleId, sendEmail, currentDPExtendDays, restoreReservation);
 			request.setData(data);
 
 			String inputJson = buildRequest(request);
 			String response = postData(inputJson, getFdCommerceEndPoint(CANCEL_REG_ORDER_API), String.class);
-			Response<FDReservationData> responseWrapper = getMapper().readValue(response, new TypeReference<Response<FDReservationData>>() { });
-			
+			Response<FDReservationData> responseWrapper = getMapper().readValue(response,
+					new TypeReference<Response<FDReservationData>>() {
+					});
+
 			return parseResponse(responseWrapper);
-			
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -540,84 +492,94 @@ private static OrderResourceApiClient INSTANCE;
 
 	}
 
-	
+	private static final String ORDER_CHECK_AVAILABILITY = "orders/checkAvailability";
+	private static final String ORDER_RESUBMIT = "orders/resubmit";
 
-	private static final String ORDER_CHECK_AVAILABILITY = 	"orders/checkAvailability";
-	private static final String ORDER_RESUBMIT = 	"orders/resubmit";
-	
 	@Override
-	public Map<String, FDAvailabilityI> checkAvailability(FDIdentity identity,
-			ErpCreateOrderModel createOrder, long timeout, String isFromLogin) {
+	public Map<String, FDAvailabilityI> checkAvailability(FDIdentity identity, ErpCreateOrderModel createOrder,
+			long timeout, String isFromLogin) throws FDResourceException {
 
 		Request<ObjectNode> request = new Request<ObjectNode>();
 		ObjectNode rootNode = getMapper().createObjectNode();
-		rootNode.set("info", getMapper().convertValue(SapGatewayConverter.buildOrderData(createOrder), JsonNode.class));
+		rootNode.set("createOrder", getMapper().convertValue(createOrder, JsonNode.class));
 		rootNode.set("identity", getMapper().convertValue(identity, JsonNode.class));
 		rootNode.put("timeout", timeout);
 		rootNode.put("isFromLogin", isFromLogin);
 		request.setData(rootNode);
-		Response<Map<String, FDAvailabilityData>> info=null;
-		Map<String, FDAvailabilityI> data = null;
 		String inputJson;
 		try {
 			inputJson = buildRequest(request);
-			String response = postData(inputJson, getFdCommerceEndPoint(ORDER_CHECK_AVAILABILITY), String.class);
-			info = getMapper().readValue(response, new TypeReference<Response<Map<String, FDAvailabilityData>>>() { });
-			data = new HashMap();
-			for(String key:info.getData().keySet()){
-				data.put(key, ModelConverter.buildAvailableModelFromData(info.getData().get(key)));
+			Response<String> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(ORDER_CHECK_AVAILABILITY),
+					new TypeReference<Response<String>>() {
+					});
+			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error occurs in checkAvailability: inputJson=" + inputJson
+						+ ", response=" + response);
+				throw new FDResourceException(response.getMessage());
 			}
-			
-		} catch (FDEcommServiceException e) {
-			e.printStackTrace();
-		}catch (FDResourceException e) {
-			e.printStackTrace();
-		}catch(JsonMappingException e){
-			e.printStackTrace();
-		}catch(JsonParseException e){
-			e.printStackTrace();
-		}catch (IOException e){
-			e.printStackTrace();
+			try {
+				HashMap<String, FDAvailabilityI> map = TYPED_OBJECT_MAPPER.readValue(response.getData(),
+						new TypeReference<HashMap<String, FDAvailabilityI>>() {
+						});
+				
+				return map;
+			} catch (JsonMappingException e) {
+				LOGGER.error("Error occurs in checkAvailability: inputJson=" + inputJson
+						+ ", response=" + response, e);
+				throw new FDResourceException(e);
+			} catch (JsonParseException e) {
+				LOGGER.error("Error occurs in checkAvailability: inputJson=" + inputJson
+						+ ", response=" + response, e);
+				throw new FDResourceException(e);
+			} catch (IOException e) {
+				LOGGER.error("Error occurs in checkAvailability: inputJson=" + inputJson
+						+ ", response=" + response, e);
+				throw new FDResourceException(e);
 
+			}
+
+		} catch (FDEcommServiceException e) {
+			LOGGER.error("Error occurs in checkAvailability: identity=" + identity, e);
+			throw new FDResourceException(e);
 		}
-		return data;
 	}
 
 	@Override
-	public void resubmitOrder(String saleId, CustomerRatingI cra,
-			EnumSaleType saleType, String deliveryRegionId)
-			throws ErpTransactionException,RemoteException {
+	public void resubmitOrder(String saleId, CustomerRatingI cra, EnumSaleType saleType, String deliveryRegionId)
+			throws ErpTransactionException, RemoteException {
 
 		Request<ObjectNode> request = new Request<ObjectNode>();
 		ObjectNode rootNode = getMapper().createObjectNode();
-		rootNode.set("customerRating", getMapper().convertValue(CustomerRatingConverter.buildCustomerRatingData(cra), JsonNode.class));
+		rootNode.set("customerRating",
+				getMapper().convertValue(CustomerRatingConverter.buildCustomerRatingData(cra), JsonNode.class));
 		rootNode.put("saleType", saleType.getSaleType());
 		rootNode.put("saleId", saleId);
 		rootNode.put("regionId", deliveryRegionId);
 		request.setData(rootNode);
-		Response<String> info=null;
+		Response<String> info = null;
 		String inputJson;
 		try {
 			inputJson = buildRequest(request);
 			String response = postData(inputJson, getFdCommerceEndPoint(ORDER_RESUBMIT), String.class);
-			info = getMapper().readValue(response, new TypeReference<Response<String>>() { });
-			
-			if(!info.getResponseCode().equals("OK"))
+			info = getMapper().readValue(response, new TypeReference<Response<String>>() {
+			});
+
+			if (!info.getResponseCode().equals("OK"))
 				throw new ErpTransactionException(info.getMessage());
-					
+
 		} catch (FDEcommServiceException e) {
 			e.printStackTrace();
 			throw new RemoteException(e.getMessage(), e);
-		}catch (FDResourceException e) {
+		} catch (FDResourceException e) {
 			e.printStackTrace();
-		}catch(JsonMappingException e){
+		} catch (JsonMappingException e) {
 			e.printStackTrace();
-		}catch(JsonParseException e){
+		} catch (JsonParseException e) {
 			e.printStackTrace();
-		}catch (IOException e){
+		} catch (IOException e) {
 			e.printStackTrace();
 
 		}
 	}
-	
+
 }

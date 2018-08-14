@@ -626,7 +626,7 @@ SESSIONSTORAGE:
 	};
 
 	// When OAS pushes a system message:
-	$(document).bind('OAS_DONE',function(event,id){
+	$(document).on('OAS_DONE',function(event,id){
 		if (id == messageData.options.SystemMessage) {
 			$(document.getElementById("oas_"+messageData.options.SystemMessage)).messages('add', messageData.options.SystemMessage);
 		}
@@ -644,11 +644,11 @@ SESSIONSTORAGE:
 	});
 
 	$(document).messages('init');
-	$(document).on('ready', function() {
+	$(function() {
 		$('.message.invisible').messages('add');
 		$('.alerts.invisible').messages('add', $.unique($('.alerts.invisible[id]').map(function() { return this.id; }).get()), true);
 
-		$(".newziptext").keydown(function(e){
+		$(".newziptext").on('keydown', function(e){
 
 			var text_length=$(this).val().length;
 			var keycode = (e.keyCode ? e.keyCode : e.which);
@@ -675,7 +675,7 @@ SESSIONSTORAGE:
 			}
 		});
 /*
-		$(".newzipgo").keydown(function(e){
+		$(".newzipgo").on('keydown', function(e){
 
 			var text_length=$(this).parent().find("input").val().length;
 			console.log(text_length);
@@ -699,7 +699,7 @@ SESSIONSTORAGE:
 			}
 		});
 	*/	
-		$(".location-email-text").keydown(function(e){
+		$(".location-email-text").on('keydown', function(e){
 
 			var email_text=$(this).val();
 			$(this).parent().find(".error-msg").css("visibility","");
@@ -729,7 +729,7 @@ SESSIONSTORAGE:
 
 		});
 /*
-		$("#location-submit.fdxgreen").keydown(function(e){
+		$("#location-submit.fdxgreen").on('keydown', function(e){
 
 			var email_text=$(this).parent().find('input').val();
 			var email_regex=/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

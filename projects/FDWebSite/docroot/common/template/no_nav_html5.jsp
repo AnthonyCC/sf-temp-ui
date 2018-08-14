@@ -10,7 +10,6 @@
         <tmpl:get name="seoMetaTag"/>
 		<%@ include file="/common/template/includes/metatags.jspf" %>
 		<%@ include file="/common/template/includes/i_javascripts_browse.jspf" %>
-		<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 		<jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
 		<tmpl:get name="extraCss" />

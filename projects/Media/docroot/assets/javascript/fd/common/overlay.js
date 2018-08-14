@@ -170,7 +170,7 @@ var FreshDirect = FreshDirect || {};
           $tiel.attr('tabindex', lastEl);
         });
 
-        if ($el.find('.overlay-close-icon').size() > 0 ) {
+        if ($el.find('.overlay-close-icon').length > 0 ) {
           var close = $el.find('.overlay-close-icon').each(function (i, close) {
             var $close = $(close);
 

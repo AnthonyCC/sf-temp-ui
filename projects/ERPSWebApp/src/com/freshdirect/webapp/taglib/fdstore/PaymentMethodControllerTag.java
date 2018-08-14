@@ -64,7 +64,8 @@ public class PaymentMethodControllerTag extends com.freshdirect.framework.webapp
         if ( "GET".equalsIgnoreCase(request.getMethod()) && 
         	(
         		request.getRequestURI().indexOf("/your_account/add_creditcard.jsp") != -1 || 
-        		request.getRequestURI().indexOf("/your_account/edit_creditcard.jsp") != -1
+        		request.getRequestURI().indexOf("/your_account/edit_creditcard.jsp") != -1 ||
+        		request.getRequestURI().indexOf("/gc_add_creditcard.jsp") != -1 
         	)
         ) {
         	FDSessionUser user = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
@@ -90,16 +91,13 @@ public class PaymentMethodControllerTag extends com.freshdirect.framework.webapp
 	            	}
 	            	
 	            	
-	            	if (paymentMethod != null &&
-	            		(
-	            			paymentMethod.getPaymentMethodType() == EnumPaymentMethodType.CREDITCARD ||
-	            			paymentMethod.getPaymentMethodType() == EnumPaymentMethodType.DEBITCARD
-	            		)
-	            	) {
+					if (paymentMethod != null
+							&& (paymentMethod.getPaymentMethodType() == EnumPaymentMethodType.CREDITCARD
+									|| paymentMethod.getPaymentMethodType() == EnumPaymentMethodType.DEBITCARD)) {
 						isAddOrEditCard = true;
 					}
-					/* limit to cc/debit */
-	            	if (isAddOrEditCard && hash == null || "".equals(hash) || sessionUser == null || !hash.equals(sessionUser.getAddCcUuid())) {
+				/*	 limit to cc/debit */
+	            	if (isAddOrEditCard && (hash == null || "".equals(hash) || sessionUser == null || !hash.equals(sessionUser.getAddCcUuid()) ) ) {
 	            		//"fail" silently
 	                    pageContext.setAttribute(this.result, actionResult);
 	            		return EVAL_BODY_BUFFERED;

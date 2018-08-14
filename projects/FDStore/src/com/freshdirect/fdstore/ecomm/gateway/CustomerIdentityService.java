@@ -115,6 +115,12 @@ public class CustomerIdentityService extends AbstractEcommService implements Cus
 	}
 
 	@Override
+	public FDUser recognize(FDIdentity identity)
+			throws FDAuthenticationException, FDResourceException, RemoteException {
+		return recognize(identity, null, false, true);
+	}
+	
+	@Override
 	public FDUser recognize(FDIdentity identity, EnumEStoreId eStoreId, boolean lazy, boolean populateDeliveryPlantInfo)
 			throws FDAuthenticationException, FDResourceException, RemoteException {
 		Response<RecognizedUserData> response = null;
@@ -229,6 +235,4 @@ public class CustomerIdentityService extends AbstractEcommService implements Cus
 		user.setDlvPassInfo(recognizedUserData.getDlvPassInfo());
 		return user;
 	}
-
-	
 }

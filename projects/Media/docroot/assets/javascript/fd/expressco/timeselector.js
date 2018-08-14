@@ -107,7 +107,7 @@ var FreshDirect = FreshDirect || {};
 
         note = $(timeslot.contentHolder()).find('.timeslot-note');
 
-        if (note.size()) {
+        if (note.length) {
           $('.timeslot-note').remove();
           note.insertBefore($('#ec-drawer'));
         }

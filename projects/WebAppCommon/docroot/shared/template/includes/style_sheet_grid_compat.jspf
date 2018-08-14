@@ -1,8 +1,0 @@
-<%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
-<%-- this file will be included in the <head> tag, when the new grid is used --%>
-  <jwr:style src="/grid.css" media="all" />
-
-<!--[if lt IE 8]>
-  <fd:css href="/assets/css/common/ie.css" media="all" />
-<![endif]-->

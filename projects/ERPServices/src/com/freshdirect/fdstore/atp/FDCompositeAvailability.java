@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.freshdirect.erp.model.ErpInventoryEntryModel;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -30,12 +32,14 @@ public class FDCompositeAvailability implements FDAvailabilityI {
 	}
 
 	/**
-	 * @param inventories Map of component key -> FDAvailabilityI
+	 * @param inventories
+	 *            Map of component key -> FDAvailabilityI
 	 * @param needAllAvailable
-	 * 		if true, return availability if ALL components are available
-	 * 		if false, return available if ANY of the components are available
+	 *            if true, return availability if ALL components are available if
+	 *            false, return available if ANY of the components are available
 	 */
-	public FDCompositeAvailability(Map<String, FDAvailabilityI> availabilities, boolean needAllAvailable) {
+	public FDCompositeAvailability(@JsonProperty("availabilities") Map<String, FDAvailabilityI> availabilities,
+			@JsonProperty("needAllAvailable") boolean needAllAvailable) {
 		this.availabilities = availabilities;
 		this.needAllAvailable = needAllAvailable;
 	}

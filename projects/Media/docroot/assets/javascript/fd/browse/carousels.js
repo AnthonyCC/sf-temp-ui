@@ -23,7 +23,7 @@ var FreshDirect = FreshDirect || {};
         var crls = $('[data-component="carousel"]'),
             maxHeight = 0;
 
-        if (crls.size() > 1) {
+        if (crls.length > 1) {
           crls.each(function () {  
             maxHeight = Math.max(maxHeight, $(this).height()); 
           });

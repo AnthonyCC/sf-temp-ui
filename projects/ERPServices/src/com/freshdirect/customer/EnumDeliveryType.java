@@ -7,12 +7,14 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import org.apache.commons.lang.enums.Enum;
+
 /**
  *
  * @author  jmccarter
  * @version
  */
-public class EnumDeliveryType implements Serializable {
+public class EnumDeliveryType extends Enum implements Serializable {
 
 	private static final long	serialVersionUID	= -1948272245997890928L;
 
@@ -39,6 +41,7 @@ public class EnumDeliveryType implements Serializable {
 	private final String deliveryModel;
 
 	private EnumDeliveryType(String code, String name, String deliveryModel) {
+		super(code);
 		this.id = idCounter++;
 		this.code = code;
 		this.name = name;
@@ -52,9 +55,9 @@ public class EnumDeliveryType implements Serializable {
 		return this.code;
 	}
 
-	public String getName() {
+	/*public String getName() {
 		return this.name;
-	}
+	}*/
 
 	public String getDeliveryModel() {
 		return this.deliveryModel;
@@ -69,10 +72,10 @@ public class EnumDeliveryType implements Serializable {
 		return DELIVERY_TYPE_MAP.get(code);
 	}
 
-	public boolean equals(Object o) {
+	/*public boolean equals(Object o) {
 		if ( o != null && o instanceof EnumDeliveryType ) {
 			return this.id == ((EnumDeliveryType) o).id;
 		}
 		return false;
-	}
+	}*/
 }

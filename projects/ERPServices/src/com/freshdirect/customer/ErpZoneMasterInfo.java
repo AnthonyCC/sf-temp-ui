@@ -7,7 +7,8 @@ import com.freshdirect.framework.core.ModelSupport;
 
 public class ErpZoneMasterInfo extends ModelSupport implements Serializable {
 
-	
+	private static final long serialVersionUID = -2531473127276226012L;
+
 	private ErpZoneRegionInfo region;
 	
 	private String sapId;

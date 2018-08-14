@@ -24,7 +24,6 @@
 	<%-- 	<%@ include file="/common/template/includes/metatags.jspf" %> --%>
 	    <tmpl:get name="seoMetaTag"/>
         <%@ include file="/common/template/includes/i_javascripts.jspf" %>
-        <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf"%>
         <%@ include file="/shared/template/includes/style_sheet_detect.jspf"%>
         <tmpl:get name="extraJs"/>
         <%@ include file="/shared/template/includes/i_head_end.jspf" %>

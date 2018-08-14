@@ -103,7 +103,7 @@
   		{for $col in range(0, $ipl)}
       		{if $fProducts + $col + $line * $ipl < $nProducts}
 	        	{let $product: $productList[$fProducts + $col + $line * $ipl] /}
-	        	{let $xtraClass: 'browseTransactionalProduct fakeRows fakeRow_' + $line + (($isHookLogic == true)? ' isHookLogicProduct ' : ' regularProduct ') + ' prod'+$col + (($col==0)?' firstInLine':'')  /}
+	        	{let $xtraClass: 'browseTransactionalProduct fakeRows fakeRow_' + $line + (($isHookLogic == true)? ' regularProduct isHookLogicProduct ' : ' regularProduct ') + ' prod'+$col + (($col==0)?' firstInLine':'')  /}
 	        	{if $product.productId == '!_SPACER_!'}
 	        		/* SPACER */
 	        		<li class="portrait-item data-component="product" data-transactional-trigger="false"><!-- {$product.productId} --></li>

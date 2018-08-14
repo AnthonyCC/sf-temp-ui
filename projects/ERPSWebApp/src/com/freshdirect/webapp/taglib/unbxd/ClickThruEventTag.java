@@ -59,7 +59,7 @@ public class ClickThruEventTag extends SimpleTagSupport {
             final Visitor visitor = Visitor.withUser(user);
             final LocationInfo loc = LocationInfo.withUrlAndReferer(requestedUrl, referer);
 
-            AnalyticsEventI event = AnalyticsEventFactory.createEvent(AnalyticsEventType.CLICK_THRU, visitor, loc, null, model, null, cosAction);
+            AnalyticsEventI event = AnalyticsEventFactory.createEvent(AnalyticsEventType.CLICK_THRU, visitor, loc, null, model, null, cosAction,null);
 
             // log event
             EventLoggerService.getInstance().log(event);

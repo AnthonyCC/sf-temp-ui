@@ -37,7 +37,7 @@ public interface DlvPassManagerSB extends EJBObject {
 	@Deprecated
 	public List<DeliveryPassModel> getDeliveryPasses(String customerPk, EnumEStoreId estore) throws RemoteException;
 	@Deprecated
-	public List<DeliveryPassModel> getDlvPassesByStatus(String customerPk, EnumDlvPassStatus status) throws RemoteException;
+	public List<DeliveryPassModel> getDlvPassesByStatus(String customerPk, EnumDlvPassStatus status,EnumEStoreId eStore) throws RemoteException;
 	@Deprecated
 	public DeliveryPassModel getDeliveryPassInfo(String deliveryPassId) throws RemoteException;
 	@Deprecated
@@ -61,7 +61,7 @@ public interface DlvPassManagerSB extends EJBObject {
 	@Deprecated
 	public  Object[] getAutoRenewalInfo(EnumEStoreId eStore)throws RemoteException;
 	@Deprecated
-	public int getDaysSinceDPExpiry(String customerID) throws RemoteException;
+	public int getDaysSinceDPExpiry(String customerID,EnumEStoreId eStore) throws RemoteException;
 	@Deprecated
 	public int getDaysToDPExpiry(String customerID, String activeDPID)throws RemoteException;
 	@Deprecated

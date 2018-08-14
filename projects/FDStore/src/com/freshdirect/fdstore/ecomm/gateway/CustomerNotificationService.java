@@ -24,7 +24,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class CustomerNotificationService extends AbstractEcommService implements CustomerNotificationServiceI {
 
-	private final static Category LOGGER = LoggerFactory.getInstance(CustomerNotificationService.class);
+	private static final Category LOGGER = LoggerFactory.getInstance(CustomerNotificationService.class);
 
 	private static final String SEND_PASSWORD_EMAIL = "customerNotification/sendPasswordEmail";
 	private static final String GET_REMINDER_LIST = "customerNotification/getReminderListForToday";
@@ -37,6 +37,11 @@ public class CustomerNotificationService extends AbstractEcommService implements
 	
 	private static CustomerNotificationServiceI INSTANCE;
 
+	private static ObjectMapper TYPED_OBJECT_MAPPER = new ObjectMapper()
+			.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ"))
+			.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+			.setVisibility(PropertyAccessor.FIELD, Visibility.ANY)
+			.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
 	public static CustomerNotificationServiceI getInstance() {
 		if (INSTANCE == null)
 			INSTANCE = new CustomerNotificationService();
@@ -196,13 +201,7 @@ public class CustomerNotificationService extends AbstractEcommService implements
 	public void doEmail(XMLEmailI email) throws RemoteException, FDResourceException {
 		Response<Void> response = null;
 		try {
-			ObjectMapper mapper = new ObjectMapper()
-					.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ"))
-					.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-					.setVisibility(PropertyAccessor.FIELD, Visibility.ANY)
-					.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
-
-			String inputJson = mapper.writeValueAsString(email);
+			String inputJson = TYPED_OBJECT_MAPPER.writeValueAsString(email);
 
 			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(DO_EMAIL),
 					new TypeReference<Response<Void>>() {

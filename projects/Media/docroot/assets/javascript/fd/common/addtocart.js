@@ -215,7 +215,7 @@ var FreshDirect = FreshDirect || {};
   function formAddToCart(e) {
     var ATCButton = e.formEl.find('[data-component="ATCButton"]').first();
 
-    if (ATCButton.size()) {
+    if (ATCButton.length) {
       e.target = ATCButton;
       e.currentTarget = ATCButton;
     }
@@ -235,7 +235,7 @@ var FreshDirect = FreshDirect || {};
 	          return !$(el).hasClass('unavailable');
 	        }),
 	        sumsubtotal = 0;
-	   var $finalProductSize = $products.size();
+	   var $finalProductSize = $products.length;
 	    $products.each(function () {
 	      var subtotal = $(this).find('[data-component="product-controls"] [data-component="subtotal"] b, [data-component="product-controls"] [data-component="subtotal"] span').text();
 	      if (subtotal.substring(1)!="0.00" && subtotal.substring(1)!="") {

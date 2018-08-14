@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class ErpCartonDetails implements Serializable {
 
 	/**
@@ -194,6 +196,7 @@ public class ErpCartonDetails implements Serializable {
 			+ this.weightUnit;
 	}
 
+	@JsonIgnore
 	private ErpCartonInfo cartonInfo;
 	private String materialNumber;
 	private String orderLineNumber;

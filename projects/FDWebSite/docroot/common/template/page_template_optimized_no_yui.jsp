@@ -73,23 +73,6 @@
 		<jwr:script src="/fdccl.js"  useRandomParam="false" />
 	
 		<fd:IncludeMedia name="/media/editorial/site_pages/javascript.html"/>
-		
-		<%
-			FDUserI dpTcCheckUser = (FDUserI)session.getAttribute(SessionName.USER);
-			FDSessionUser dpTcCheckSessionUser = (FDSessionUser)session.getAttribute(SessionName.USER);
-	
-			if (dpTcCheckUser != null &&
-					(dpTcCheckUser.getLevel() == FDSessionUser.SIGNED_IN && Boolean.FALSE.equals(dpTcCheckSessionUser.hasSeenDpNewTc()) && dpTcCheckUser.isDpNewTcBlocking())
-				) {
-				%>
-					<script type="text/javascript">
-			    		$jq(document).ready(function() {
-				    		doOverlayWindow('/overlays/delivery_pass_tc.jsp?showButtons=true&count=true');
-			    		});
-			    	</script>
-		    	<%
-			}
-		%>
 	  
   <%-- END i_javascripts_optimized.jspf --%>
   

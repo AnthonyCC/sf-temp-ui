@@ -657,12 +657,12 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 	 * @return List - returns null if no delivery passes available for this
 	 *         customer.
 	 */
-	public List<DeliveryPassModel> getDlvPassesByStatus(String customerPk, EnumDlvPassStatus status) {
+	public List<DeliveryPassModel> getDlvPassesByStatus(String customerPk, EnumDlvPassStatus status,EnumEStoreId eStore) {
 		Connection conn = null;
 		List<DeliveryPassModel> deliveryPasses = null;
 		try {
 			conn = getConnection();
-			deliveryPasses = DeliveryPassDAO.getDlvPassesByStatus(conn,	customerPk, status);
+			deliveryPasses = DeliveryPassDAO.getDlvPassesByStatus(conn,	customerPk, status,eStore);
 		} catch (SQLException e) {
 			LOGGER.warn( "SQLException while retreiving the delivery passes based on status.", e );
 			throw new EJBException(e);
@@ -987,12 +987,12 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 		}
 
 
-	    public int getDaysSinceDPExpiry(String customerID) {
+	    public int getDaysSinceDPExpiry(String customerID,EnumEStoreId eStore) {
 
 			Connection conn = null;
 			try {
 				conn = getConnection();
-				return DeliveryPassDAO.getDaysSinceDPExpiry(conn,customerID);
+				return DeliveryPassDAO.getDaysSinceDPExpiry(conn,customerID,eStore);
 			} catch (Exception e) {
 				LOGGER.warn("Exception during getAutoRenewalInfo()",e);
 				throw new EJBException(e);

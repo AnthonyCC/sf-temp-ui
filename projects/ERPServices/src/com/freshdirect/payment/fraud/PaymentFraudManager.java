@@ -322,7 +322,7 @@ public class PaymentFraudManager {
 			
 			criteria.setCustomerID(paymentMethod.getCustomerId());
 			criteria.setStatus(EnumRestrictedPaymentMethodStatus.BAD);
-			List<RestrictedPaymentMethodModel> list = PaymentFraudManager.getRestrictedPaymentMethods(criteria);
+			List<RestrictedPaymentMethodModel> list = getRestrictedPaymentMethods(criteria);
 
 			// remove only if there is one
 			if (list != null && list.size() == 1) {

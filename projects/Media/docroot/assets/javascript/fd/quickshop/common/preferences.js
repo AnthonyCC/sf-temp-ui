@@ -34,7 +34,7 @@ var FreshDirect = FreshDirect || {};
 			value: function (data) {
 				DATALISTWIDGET.render.call(this, data);
 				
-				if ($(this.placeholder + ' ul li').size() === 0) {
+				if ($(this.placeholder + ' ul li').length === 0) {
 					$(this.placeholder).hide();
 				} else {
 					$(this.placeholder).show();

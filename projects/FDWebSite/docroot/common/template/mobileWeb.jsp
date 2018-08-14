@@ -66,7 +66,6 @@
     <jwr:script src="/locabarcomp.js" useRandomParam="false" />
 
     <jsp:include page="/common/template/includes/ad_server.jsp" flush="false" />
-	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 
   	<tmpl:get name='facebookmeta'/>

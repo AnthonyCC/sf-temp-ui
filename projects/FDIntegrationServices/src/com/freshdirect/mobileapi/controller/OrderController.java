@@ -314,7 +314,7 @@ public class OrderController extends BaseController {
         }
         
         int viewCountLimit = 0;
-        int viewCount = 0;
+        int viewCount = 0; 
         if(user.getFDSessionUser().getMasqueradeContext()==null && FDStoreProperties.isInformOrderModifyEnabled()){
         	viewCountLimit = FDStoreProperties.getInformOrderModifyViewCountLimit();
         	viewCount = user.getFDSessionUser().getInformOrderModifyViewCount(user.getUserContext().getStoreContext().getEStoreId(), true);
@@ -360,6 +360,9 @@ public class OrderController extends BaseController {
     private Message setOverlayFalse(SessionUser user, HttpServletRequest request) throws FDException, JsonException {
     	Message responseMessage = new Message();
     	user.getFDSessionUser().setInformOrderModifyViewCount(user.getUserContext().getStoreContext().getEStoreId(), FDStoreProperties.getInformOrderModifyViewCountLimit()+1);
+    	if (user.getFDSessionUser() != null && user.getFDSessionUser().getIdentity() != null && user.getFDSessionUser().getIdentity().getErpCustomerPK() != null) {
+			FDCustomerManager.updateFDCustomerEStoreInfo(user.getFDSessionUser().getFDCustomer().getCustomerEStoreModel(), user.getFDSessionUser().getFDCustomer().getId());	
+    	}
         responseMessage.setSuccessMessage("Modify Order Overlay had been disabled");            
         return responseMessage;
     }

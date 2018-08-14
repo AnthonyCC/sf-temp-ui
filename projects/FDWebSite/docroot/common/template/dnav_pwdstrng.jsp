@@ -18,7 +18,6 @@ final int W_DNAV_TOTAL = 970;
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<jwr:script src="/assets/javascript/timeslots.js" useRandomParam="false" />
 	<jwr:script src="/giftcards.js" useRandomParam="false" />
-  	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
   	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
   	<%@ include file="/includes/sms_alerts/examples_layout.jspf" %>
 	

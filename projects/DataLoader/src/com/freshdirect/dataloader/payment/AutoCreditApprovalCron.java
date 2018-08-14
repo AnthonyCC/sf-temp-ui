@@ -20,8 +20,11 @@ import org.apache.log4j.Category;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpComplaintException;
+import com.freshdirect.fdstore.FDEcommProperties;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
+import com.freshdirect.fdstore.ecomm.gateway.CustomerComplaintService;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
 
@@ -33,19 +36,24 @@ public class AutoCreditApprovalCron {
 		LOGGER.info("Automatic Credit Approval Started");
 		Context ctx = null;
 		try {
-			
-			ctx = getInitialContext();
-			FDCustomerManagerHome home = (FDCustomerManagerHome) ctx.lookup("freshdirect.fdstore.CustomerManager");
-			FDCustomerManagerSB sb = home.create();
-			/*	reject the credits older than A month with STF in Sale 	APPDEV-6785 */
-			LOGGER.info("Going to Reject Credits for morethan a month in Pending status");
-			List<String> lstToRejCredits  = sb.getComplaintsToRejectCredits();
-			if(!lstToRejCredits.isEmpty()) sb.rejectCreditsOlderThanAMonth(lstToRejCredits);
-			LOGGER.info("Rejecting process has been  Done now");
-			List ids = sb.getComplaintsForAutoApproval();
-			LOGGER.info("Going to AUTO approve " + ids.size() + " complaints");
-
-			StringBuffer strB=new StringBuffer();
+			List<String> ids;
+			FDCustomerManagerSB sb = null;
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomer)) {
+				ids = CustomerComplaintService.getInstance().autoApproveCredit();
+			} else {
+				ctx = getInitialContext();
+				FDCustomerManagerHome home = (FDCustomerManagerHome) ctx.lookup("freshdirect.fdstore.CustomerManager");
+				sb = home.create();
+				/* reject the credits older than A month with STF in Sale APPDEV-6785 */
+				LOGGER.info("Going to Reject Credits for morethan a month in Pending status");
+				List<String> lstToRejCredits = sb.getComplaintsToRejectCredits();
+				if (!lstToRejCredits.isEmpty())
+					sb.rejectCreditsOlderThanAMonth(lstToRejCredits);
+				LOGGER.info("Rejecting process has been  Done now");
+				ids = sb.getComplaintsForAutoApproval();
+				LOGGER.info("Going to AUTO approve " + ids.size() + " complaints");
+			}
+			StringBuffer strB = new StringBuffer();
 			strB.append("<table>");
 			boolean errorFlg=false;
 			StringWriter sw=null;
@@ -54,7 +62,17 @@ public class AutoCreditApprovalCron {
 				String complaintId = (String) i.next();
 				LOGGER.info("Auto approve STARTED for complaint ID : " + complaintId);
 				try {
-					sb.approveComplaint(complaintId, true, initiator, true,ErpServicesProperties.getCreditAutoApproveAmount());
+					if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomer)) {
+						CustomerComplaintService.getInstance().approveComplaint(complaintId, true, initiator, true,
+								ErpServicesProperties.getCreditAutoApproveAmount());
+					} else {
+						if (sb == null) {
+							FDCustomerManagerHome home = (FDCustomerManagerHome) ctx.lookup("freshdirect.fdstore.CustomerManager");
+							sb = home.create();
+						}
+						sb.approveComplaint(complaintId, true, initiator, true,
+								ErpServicesProperties.getCreditAutoApproveAmount());
+					}
 					LOGGER.info("Auto approve FINISHED for comolaint ID : " + complaintId);
 				} catch (ErpComplaintException ex) {
 					errorFlg=true;

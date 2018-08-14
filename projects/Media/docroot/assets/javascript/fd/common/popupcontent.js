@@ -73,8 +73,9 @@ var FreshDirect = FreshDirect || {};
 
       }
 
-      // move $el to the end of body
-      this.$el.appendTo(document.body);
+      // move $el to the end of body by default
+      var safeAppendTo = $(this.config.appendTo).length ? this.config.appendTo : document.body;
+      this.$el.appendTo(safeAppendTo);
 
       if (this.config.zIndex) {
         this.$el.css('z-index', this.config.zIndex+2);
@@ -276,13 +277,13 @@ var FreshDirect = FreshDirect || {};
         }
     });
     
-//    if ($el.find('.qs-popup-close-icon').size() > 0 ) {
+//    if ($el.find('.qs-popup-close-icon').length > 0 ) {
 //        var close = $el.find('.qs-popup-close-icon')[0];
 //        $(close).attr('tabindex', lastEl+1);
 //      }
 
     // focus first element
-    if ($el.find('.portrait-item[data-component="product"]').attr('data-dontfocusform') !== 'true' && $el.find('form').size() > 0) {
+    if ($el.find('.portrait-item[data-component="product"]').attr('data-dontfocusform') !== 'true' && $el.find('form').length > 0) {
       $el = $el.find('form').first();
     }
 
@@ -468,7 +469,7 @@ var FreshDirect = FreshDirect || {};
         }
       } else if (align[6] === 'p') {
         var viewContainer = $('.content').first();
-        if (viewContainer.size() === 0) {
+        if (viewContainer.length === 0) {
           viewContainer = $(document.body);
         }
         if (position.left < $(window).scrollLeft()) {
@@ -524,7 +525,8 @@ var FreshDirect = FreshDirect || {};
     delay: 300,
     placeholder: true,
     overlay: true,
-    stayOnClick: true
+    stayOnClick: true,
+    appendTo: document.body
     // closehandle: '.close'
     // alignTo
     // aligntoselector

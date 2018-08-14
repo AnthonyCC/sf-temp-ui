@@ -211,8 +211,7 @@ public class FDReferralManager {
 			throws FDResourceException {
 		try {
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)) {
-				return ReferralConverter.buildReferralPromotionModel(
-						FDReferralManagerService.getInstance().getReferralPromotionDetailsByRefName(referral));
+				return FDReferralManagerService.getInstance().getReferralPromotionDetailsByRefName(referral);
 			} else {
 				lookupManagerHome();
 				FDReferralManagerSB sb = managerHome.create();
@@ -293,25 +292,6 @@ public class FDReferralManager {
 				lookupManagerHome();
 				FDReferralManagerSB sb = managerHome.create();
 				return sb.getReferralDisplayFlag(customerId);
-			}
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-	}
-
-	public static List<ReferralPromotionModel> getSettledSales() throws FDResourceException {
-		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)) {
-				return ReferralConverter
-						.buildReferralpromotionModelList(FDReferralManagerService.getInstance().getSettledSales());
-			} else {
-				lookupManagerHome();
-				FDReferralManagerSB sb = managerHome.create();
-				return sb.getSettledSales();
 			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();

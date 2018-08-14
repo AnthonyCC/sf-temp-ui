@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.erp.model.ErpInventoryEntryModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
@@ -65,8 +66,10 @@ public class FDStockAvailability implements Serializable, FDAvailabilityI {
 
 	}
 
-	public FDStockAvailability(ErpInventoryModel inventory, ErpInventoryModel inventoryFromExport, double reqQty,
-			double minQty, double qtyInc) {
+	public FDStockAvailability(@JsonProperty("inventory") ErpInventoryModel inventory,
+			@JsonProperty("inventoryExport") ErpInventoryModel inventoryFromExport,
+			@JsonProperty("reqQty") double reqQty, @JsonProperty("minQty") double minQty,
+			@JsonProperty("qtyInc") double qtyInc) {
 		if (inventory == null) {
 			throw new IllegalArgumentException("Inventory cannot be null");
 		}

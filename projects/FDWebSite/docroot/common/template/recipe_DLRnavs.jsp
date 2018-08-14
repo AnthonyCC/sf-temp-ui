@@ -29,7 +29,6 @@ final int W_RECIPE_DLR_NAVS_RIGHT = 191;
      <tmpl:get name="seoMetaTag"/>
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-  <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
   <%@ include file="/shared/template/includes/ccl.jspf" %>
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>

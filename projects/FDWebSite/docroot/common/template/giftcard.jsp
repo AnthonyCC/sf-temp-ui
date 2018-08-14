@@ -33,9 +33,7 @@ final int W_GIFTCARD_TOTAL = 970;
 
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<jwr:script src="/giftcards.js" useRandomParam="false" />
-    <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<jwr:style src="/giftcards.css" media="all" />
 
 	<%-- NOT THIS INCLUDE @ include file="/shared/template/includes/ccl.jspf" --%>

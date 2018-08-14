@@ -162,8 +162,8 @@ var FreshDirect = FreshDirect || {};
 				}
 				parent.document.location = responseJson.successPage || sucessTarget || parent.document.location;
 			} else if (responseJson.message === 'CaptchaRedirect' && (!fd.components.captchaWidget || !fd.components.captchaWidget.isEnabled())){
-				FreshDirect.modules.common.login.socialLogin();
-			}else {
+				FreshDirect.modules.common.login.socialLogin(FreshDirect.modules.common.login.successTarget);
+			} else {
 				showError(responseJson.errorMessages);
 			}
 			

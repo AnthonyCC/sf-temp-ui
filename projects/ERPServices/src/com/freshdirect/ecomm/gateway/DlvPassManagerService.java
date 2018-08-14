@@ -257,11 +257,11 @@ public class DlvPassManagerService extends AbstractEcommService implements DlvPa
 	
 	
 	@Override
-	public List<DeliveryPassModel> getDlvPassesByStatus(String customerPk, EnumDlvPassStatus status)throws RemoteException {
+	public List<DeliveryPassModel> getDlvPassesByStatus(String customerPk, EnumDlvPassStatus status,EnumEStoreId eStoreId)throws RemoteException {
 		Response<List<DeliveryPassData>> response = null;
 		try {
 			response = httpGetDataTypeMap(
-					getFdCommerceEndPoint(GET_DLV_PASS_BY_CUST_ID_AND_STATUS+customerPk+"/"+status.getName()),new TypeReference<Response<List<DeliveryPassData>>>() {
+					getFdCommerceEndPoint(GET_DLV_PASS_BY_CUST_ID_AND_STATUS+customerPk+"/"+status.getName()+"/"+eStoreId.getContentId()),new TypeReference<Response<List<DeliveryPassData>>>() {
 					});
 			if (!response.getResponseCode().equals("OK"))
 				throw new FDResourceException(response.getMessage());
@@ -478,11 +478,11 @@ public class DlvPassManagerService extends AbstractEcommService implements DlvPa
 	}
 	
 	@Override
-	public int getDaysSinceDPExpiry(String customerID)throws RemoteException {
+	public int getDaysSinceDPExpiry(String customerID,EnumEStoreId eStore)throws RemoteException {
 		Response<Integer> response = null;
 		try {
 			response = httpGetDataTypeMap(
-					getFdCommerceEndPoint(GET_DAYS_SINCE_DLV_PASS_EXPIRY+customerID),new TypeReference<Response<Integer>>() {
+					getFdCommerceEndPoint(GET_DAYS_SINCE_DLV_PASS_EXPIRY+customerID+"/"+eStore.getContentId()),new TypeReference<Response<Integer>>() {
 					});
 			if (!response.getResponseCode().equals("OK"))
 				throw new FDResourceException(response.getMessage());

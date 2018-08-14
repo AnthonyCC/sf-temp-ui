@@ -16,7 +16,6 @@
 <head>
     <tmpl:get name="seoMetaTag"/>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
- 	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	<%@ include file="/shared/template/includes/ccl.jspf" %>
 <%		

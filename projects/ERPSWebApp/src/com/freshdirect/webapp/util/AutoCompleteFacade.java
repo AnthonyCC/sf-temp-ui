@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.Cookie;
@@ -13,6 +14,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.UnbxdAutosuggestResults;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.storeapi.StoreServiceLocator;
@@ -39,7 +41,8 @@ public class AutoCompleteFacade implements Serializable {
 
     public List<String> getTerms(String prefix, HttpServletRequest request) {
         LOGGER.info("autocomplete for " + prefix);
-        List<String> results;
+        List<String> results= new ArrayList();
+        List<UnbxdAutosuggestResults> resultsRaw = null;
         FDUserI user = (FDUserI) request.getSession().getAttribute(SessionName.USER);
         Cookie[] cookies = request.getCookies();
 
@@ -49,7 +52,15 @@ public class AutoCompleteFacade implements Serializable {
                 boolean corporateSearch = CosFeatureUtil.isUnbxdCosAction(user, cookies);
                 searchProperties.setCorporateSearch(corporateSearch);
 
-                results = UnbxdIntegrationService.getDefaultService().suggestProducts(prefix, searchProperties);
+                resultsRaw = UnbxdIntegrationService.getDefaultService().suggestProducts(prefix, searchProperties);
+				if (!resultsRaw.isEmpty()) {
+					if(user!= null) {
+						user.setUnbxdAustoSuggestions(resultsRaw);
+					}
+					for (UnbxdAutosuggestResults it : resultsRaw) {
+						results.add(it.getAutosuggest());
+					}
+				}
             } catch (IOException e) {
                 if (FDStoreProperties.getUnbxdFallbackOnError()) {
                     LOGGER.error("Error while calling UNBXD autocomplete, fallback to internal autocomplete");

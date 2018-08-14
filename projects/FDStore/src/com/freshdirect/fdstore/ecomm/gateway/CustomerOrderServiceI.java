@@ -27,6 +27,8 @@ public interface CustomerOrderServiceI {
 
 	public FDOrderI getOrder(String saleId) throws FDResourceException, RemoteException;
 
+	public boolean isOrderExisted(String saleId) throws FDResourceException, RemoteException;
+	
 	public CustomerAvgOrderSize getHistoricOrderSize(String customerId) throws FDResourceException, RemoteException;
 
 	public void updateOrderInModifyState(ErpSaleModel sale) throws FDResourceException, RemoteException;
