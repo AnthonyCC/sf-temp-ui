@@ -159,7 +159,7 @@ public class CmsFilteringNavigator {
     
     private boolean isAutosuggest;
     
-    public static CmsFilteringNavigator createInstance(HttpServletRequest request, FDUserI fdUser) throws InvalidFilteringArgumentException, FDResourceException {
+    public static CmsFilteringNavigator createInstance(HttpServletRequest request, FDUserI fdUser) throws InvalidFilteringArgumentException, FDResourceException, UnsupportedEncodingException {
     	return createInstance(request, fdUser, true);
     }
     
