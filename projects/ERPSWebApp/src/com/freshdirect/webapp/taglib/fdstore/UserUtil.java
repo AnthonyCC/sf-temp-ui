@@ -107,6 +107,7 @@ public class UserUtil {
         		try {
         			session.setAttribute(SessionName.USER, user);
         		}catch(IllegalStateException e) {
+        			LOGGER.warn(e);
         			
         		}
             // prevent asking for e-mail address in case of returning customer
@@ -127,7 +128,7 @@ public class UserUtil {
         try {
         		session.setAttribute(SessionName.USER, user);
         }catch(IllegalStateException e) {
-        	
+        	LOGGER.warn(e);
         }
 
         return user;
@@ -178,7 +179,7 @@ public class UserUtil {
     		try {
     			session.removeAttribute(SessionName.USER);
     		}catch(IllegalStateException e) {
-    			
+    			LOGGER.warn(e);
     		}
         // remove cookie
         CookieMonster.clearCookie(response);
@@ -208,6 +209,7 @@ public class UserUtil {
         try {
         		user = (FDSessionUser) session.getAttribute(SessionName.USER);
         }catch(IllegalStateException e) {
+        	LOGGER.warn(e);
         }
 
         if ((user == null) || ((user.getZipCode() == null) && (user.getDepotCode() == null))) {
@@ -238,7 +240,7 @@ public class UserUtil {
             try {
             		session.setAttribute(SessionName.USER, user);
             }catch(IllegalStateException e) {
-   
+            	LOGGER.warn(e);
             }
         } else {
             //
@@ -257,7 +259,7 @@ public class UserUtil {
                 try {
                 		session.setAttribute(SessionName.USER, user);
                 }catch(IllegalStateException e) {
-                	
+                	LOGGER.warn(e);
                 }
             }
         }
@@ -273,7 +275,7 @@ public class UserUtil {
 	        session.removeAttribute(SessionName.SAVINGS_FEATURE_LOOK_UP_TABLE);
 	        session.removeAttribute(SessionName.PREV_SAVINGS_VARIANT);
         }catch(IllegalStateException e) {
-        	
+        	LOGGER.warn(e);
         }
         return user;
     }
@@ -293,7 +295,7 @@ public class UserUtil {
 		try{
 			session.setAttribute(SessionName.USER, sessionUser);
 		}catch(IllegalStateException e) {
-			
+			LOGGER.warn(e);
 		}
 
 		FDCustomerCouponUtil.initCustomerCoupons(session);
@@ -308,7 +310,7 @@ public class UserUtil {
 			try {
 				session.setAttribute(SessionName.USER, sessionUser);
 			}catch(IllegalStateException e) {
-				
+				LOGGER.warn(e);
 			}
 			FDCustomerCouponUtil.initCustomerCoupons(session);
 		}
@@ -325,7 +327,7 @@ public class UserUtil {
 		try {
 			user = (FDUserI) request.getSession().getAttribute(SessionName.USER);
 		}catch(IllegalStateException e) {
-			
+			LOGGER.warn(e);
 		}
 		return getCustomerServiceContact(user);
 	}
@@ -661,6 +663,7 @@ public class UserUtil {
             try{
             	currentUser = (FDSessionUser) session.getAttribute(SessionName.USER);
             }catch(IllegalStateException e){
+            	LOGGER.warn(e);
             }
 
            /* // FDX-1873 - Show timeslots for anonymous address
@@ -673,10 +676,12 @@ public class UserUtil {
             			try{
             				session.removeAttribute(SessionName.USER);
             			}catch(IllegalStateException e){
+            				LOGGER.warn(e);
             			}
             			currentUser = null;
             		}
             }catch(IllegalStateException e){
+            	LOGGER.warn(e);
 			}
 
 //            LOGGER.info("loginUser is " + loginUser.getFirstName() + " Level = " + loginUser.getLevel());
@@ -763,7 +768,7 @@ public class UserUtil {
 			                        try {
 			                        session.setAttribute(SessionName.USER, currentUser);
 			                        }catch(IllegalStateException e) {
-			                        	
+			                        	LOGGER.warn(e);
 			                        }
 
 		        				if(null == loginUser.getShoppingCart().getDeliveryPlantInfo()){
@@ -778,7 +783,7 @@ public class UserUtil {
 		        					try {
 		                        session.removeAttribute(SessionName.CURRENT_CART);
 		        					}catch(IllegalStateException e) {
-			                        	
+		        						LOGGER.warn(e);
 			                    }
 
 		                        //LOGGER.debug("redirect after mergeCart ==> " + this.successPage);
@@ -791,14 +796,14 @@ public class UserUtil {
 		        					try {
 		        						session.setAttribute(SessionName.CURRENT_CART, loginUser.getShoppingCart());
 		        					}catch(IllegalStateException e) {
-			                        	
+		        						LOGGER.warn(e);
 				                }
 		                	} else { //using merge cart page
 		                    	//set in to session (from cur user)
 		                		try {
 		                		session.setAttribute(SessionName.CURRENT_CART, currentUser.getShoppingCart());
 		                		}catch(IllegalStateException e) {
-		                        	
+		                			LOGGER.warn(e);
 				            }
 		                	}
 		                    if (FDStoreProperties.isSocialLoginEnabled() ) {
@@ -807,7 +812,7 @@ public class UserUtil {
 									try {
 									session.removeAttribute(SessionName.PREV_SUCCESS_PAGE);
 									}catch(IllegalStateException e) {
-			                        	
+										LOGGER.warn(e);
 					                }
 									successPage = preSuccessPage;
 								}
@@ -858,6 +863,7 @@ public class UserUtil {
 		            		session.removeAttribute(SessionName.SAVINGS_FEATURE_LOOK_UP_TABLE);
 		            		session.removeAttribute(SessionName.PREV_SAVINGS_VARIANT);
 		            }catch(IllegalStateException e) {
+		            	LOGGER.warn(e);
 		            }
 
 		        }
@@ -869,7 +875,7 @@ public class UserUtil {
                 try {
                 		session.setAttribute(SessionName.USER, currentUser);
                 }catch(IllegalStateException e) {
-                	
+                	LOGGER.warn(e);
                 }
             }
 //          loginUser.setEbtAccepted(loginUser.isEbtAccepted()&&(loginUser.getOrderHistory().getUnSettledEBTOrderCount()<=0));
@@ -877,6 +883,7 @@ public class UserUtil {
             try {  
             		user = (FDSessionUser) session.getAttribute(SessionName.USER);
             }catch(IllegalStateException e) {
+            	LOGGER.warn(e);
             }
           if(user != null) {
               user.setEbtAccepted(user.isEbtAccepted()&&(user.getOrderHistory().getUnSettledEBTOrderCount()<1)&&!user.hasEBTAlert());
@@ -921,6 +928,7 @@ public class UserUtil {
 	        	  session.removeAttribute("TICK_TIE_CUSTOMER");
 	          }
           }catch(IllegalStateException e) {
+        	  LOGGER.warn(e);
           }
 
           if(user != null) {

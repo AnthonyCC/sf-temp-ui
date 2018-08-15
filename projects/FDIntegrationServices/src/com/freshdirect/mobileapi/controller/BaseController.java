@@ -21,6 +21,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.log4j.Category;
+import org.apache.openjpa.lib.log.Log;
 import org.springframework.core.io.Resource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
@@ -168,6 +169,7 @@ public abstract class BaseController extends AbstractController implements Messa
             try {
             		request.getSession().setAttribute("MobileSessionData", mobileSessionData);
             }catch(IllegalStateException e){
+            	LOGGER.warn(e);
 			}
         }
         return mobileSessionData;
@@ -177,6 +179,7 @@ public abstract class BaseController extends AbstractController implements Messa
 	    	try {
 	        request.getSession().setAttribute("MobileSessionData", null);
 	    	}catch(IllegalStateException e){
+	    		LOGGER.warn(e);
 		}
     }
 
@@ -570,6 +573,7 @@ public abstract class BaseController extends AbstractController implements Messa
     			session.removeAttribute(name);
     		}
     	}catch(IllegalStateException e) {
+    		LOGGER.warn(e);
     	}
     	// end session
     	session.invalidate();
@@ -794,7 +798,7 @@ public abstract class BaseController extends AbstractController implements Messa
     		try {
     			fdSessionUser = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
     		}catch(IllegalStateException e) {
-            	
+    			LOGGER.warn(e);
         }
         if (fdSessionUser == null) {
             try {
@@ -816,6 +820,7 @@ public abstract class BaseController extends AbstractController implements Messa
             		request.getSession().setAttribute(SessionName.APPLICATION, src.getCode());
             		request.getSession().setAttribute(SessionName.USER, fdSessionUser);
             }catch(IllegalStateException e) {
+            	LOGGER.warn(e);
             	
             }
         }

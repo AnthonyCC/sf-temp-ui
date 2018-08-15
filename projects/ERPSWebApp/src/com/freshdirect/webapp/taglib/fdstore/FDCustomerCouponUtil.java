@@ -72,6 +72,7 @@ public class FDCustomerCouponUtil implements Serializable {
 		try {
 			user = (FDSessionUser) session.getAttribute(SessionName.USER);
 		}catch(IllegalStateException e) {
+			LOGGER.warn(e);
 		}
 		if(null !=user && user.isEligibleForCoupons()){
 			FDCustomerCouponWallet couponWallet =FDCustomerCouponUtil.getCustomerCoupons(session,oldUserId);
@@ -87,7 +88,7 @@ public class FDCustomerCouponUtil implements Serializable {
 		try {
 			user = (FDSessionUser) session.getAttribute(SessionName.USER);
 		}catch(IllegalStateException e) {
-			
+			LOGGER.warn(e);
 		}
 		if(null !=user && user.isEligibleForCoupons()){
 			try {
@@ -139,7 +140,7 @@ public class FDCustomerCouponUtil implements Serializable {
 		try{
 			user = (FDSessionUser) session.getAttribute(SessionName.USER);
 		}catch(IllegalStateException e) {
-			
+			LOGGER.warn(e);
 		}
 		try {
 			if(null !=user && user.isEligibleForCoupons()){
@@ -164,7 +165,7 @@ public class FDCustomerCouponUtil implements Serializable {
 		try{
 			user = (FDSessionUser) session.getAttribute(SessionName.USER);
 		}catch(IllegalStateException e) {
-			
+			LOGGER.warn(e);
 		}
 		boolean isCouponEvaluationNeeded = false;
 		try {

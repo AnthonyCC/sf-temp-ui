@@ -261,6 +261,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
         try {
         		app = (String) session.getAttribute(SessionName.APPLICATION);
         }catch(IllegalStateException e) {
+        	LOGGER.warn(e);
         }
         EnumTransactionSource src = EnumTransactionSource.WEBSITE;
 
