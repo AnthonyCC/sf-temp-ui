@@ -731,3 +731,6 @@
 .assistive-mode #tsContainer .tsHeaderE a:focus,.assistive-mode #tsContainer .tsHeaderE a:hover{
 	background-color: #098A1E !important;
 }
+.assistive-mode #sulCont .social-login-green-button{
+	background-color: #096D19 !important;
+}
