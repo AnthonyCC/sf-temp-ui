@@ -80,7 +80,7 @@ public class Variation {
             if (cvprice > 0.0) {
                 option.setCharacteristicValuePrice(currencyFormatter.format(cvp.getPrice()) + "/" + cvp.getPricingUnit());
             } else {
-                option.setCharacteristicValuePrice(" - no charge ");
+                option.setCharacteristicValuePrice("");
             }
 
         }
