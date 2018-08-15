@@ -2333,14 +2333,13 @@ public class ModelConverter {
 
 	public static Map<String, List<ErpComplaintReason>> buildErpComplaintReason(Map<String, List<ErpComplaintReasonData>> data) {
 		Map<String, List<ErpComplaintReason>> complaintReasonMap = new HashMap<String, List<ErpComplaintReason>>();
-		List<ErpComplaintReason> reasonList = new ArrayList<ErpComplaintReason>();
 		for (String key :  data.keySet()) {
 			List<ErpComplaintReasonData> complaintReasonDataList = data.get(key);
+			List<ErpComplaintReason> reasonList = new ArrayList<ErpComplaintReason>();
 			for (ErpComplaintReasonData erpComplaintReasonData : complaintReasonDataList) {
 				reasonList.add(buildErpComplaintReason(erpComplaintReasonData));
 			}
 			complaintReasonMap.put(key, reasonList);
-			
 		}
 		return complaintReasonMap;
 	}
