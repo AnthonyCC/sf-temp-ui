@@ -31,7 +31,7 @@ var FreshDirect = FreshDirect || {};
         		url: '/media/editorial/site_pages/health_warning_overlay_2016.html',
         		context: this
         	}).done(function(data) {
-        		popupContent = $('<div class="USQPopupContent"></div>').html(data).prepend('<a href="#" onclick="return false;" class="container-close USQ-close">Close</a>');
+        		popupContent = $('<div class="USQPopupContent"></div>').html(data).prepend('<a href="#" onclick="event.preventDefault();" class="container-close USQ-close">Close</a>');
         		if($('.mm-page').length){
         			popupContent.addClass("mobWeb-health-warning-overlay");
         		}

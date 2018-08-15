@@ -611,7 +611,7 @@ int prodIdx = 0;
 		<tr>
 			<td colspan="9">
                 <div class="qs-actions qs-recipe-actions">
-                    <a href="#" class="cssbutton purple nontransparent small icon-list-black-before" onClick="return false;" data-component="saveRecipeButton" data-recipeid="<%= recipe.getContentName() %>">save recipe as list</a>
+                    <a href="#" class="cssbutton purple nontransparent small icon-list-black-before" onclick="event.preventDefault();" data-component="saveRecipeButton" data-recipeid="<%= recipe.getContentName() %>">save recipe as list</a>
                     <button class="cssbutton orange small icon-cart-new-after" name="addMultipleToCart">add all items on page</button>
                 </div>
             </td>

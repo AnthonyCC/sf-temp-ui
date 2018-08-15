@@ -5,7 +5,7 @@
  */
 {template .recipes}
 {if $relatedRecipes and length($relatedRecipes) > 0}
-<li class="pdp-accordion-recipes pdp-accordion-item"><a href="#" onclick="return false;" class="pdp-item-description-toggle" id="pdp-recipes"><span class="pdp-accordion-item-carrot"></span>Recipes</a><div>
+<li class="pdp-accordion-recipes pdp-accordion-item"><a href="#" onclick="event.preventDefault();" class="pdp-item-description-toggle" id="pdp-recipes"><span class="pdp-accordion-item-carrot"></span>Recipes</a><div>
 {foreach $recipe in $relatedRecipes}
 <a class="pdp-accordion-recipes-item" href="/recipe.jsp?recipeId={$recipe.id}">{$recipe.name}</a>
 {/foreach}
