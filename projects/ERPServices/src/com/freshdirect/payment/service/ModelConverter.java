@@ -2834,37 +2834,12 @@ public class ModelConverter {
 		model.setId(entity.getCustomerId());
 		model.setTransactionDate(entity.getTransactionDate());
 		model.setTransactionSource(EnumTransactionSource.getTransactionSource(entity.getTransactionSource()));
-		model.setPricingDate(entity.getPricingDate());
-		model.setRequestedDate(entity.getRequestedDate());
-		model.setSubTotal(entity.getSubTotal());
-		model.setTax(entity.getTax());
-		model.setCustomerServiceMessage(entity.getCustomerServiceMessage());
-		model.setMarketingMessage(entity.getMarketingMessage());
-		model.setTransactionInitiator(entity.getTransactionInitiator());
-		model.setGlCode(entity.getGlCode());
-		model.setBufferAmt(entity.getBufferAmt());
-		String taxationType = entity.getTaxationType();
-		model.setTaxationType((null!=taxationType && !"".equals(taxationType))?EnumNotificationType.getNotificationType(taxationType):null);
-		
-		model.setOrderLines(SapGatewayConverter.buildOrderLine(entity.getOrderLines()));
 
-		// load customer info
-		model.setDeliveryInfo(SapGatewayConverter.buildDeliveryInfo(entity.getDeliveryInfo()));
-		// load payment info
-		model.setPaymentMethod(SapGatewayConverter.buildPaymentMethodModel(entity.getPaymentMethod()));
-		model.setAppliedCredits(SapGatewayConverter.buildAppliedCredits(entity.getAppliedCredits()));
-		model.setCharges(SapGatewayConverter.buildChargeLineModel(entity.getCharges()));
-
-		model.setDiscounts(SapGatewayConverter.buildDiscountDataList(entity.getDiscounts()));
 		
 //		model.setRecepientsList(SapGatewayConverter.buildRecepientsList(entity.getRecipientList()));
 //		model.setAppliedGiftcards(SapGatewayConverter.buildAppliedGiftCards(entity.get));
-		if(entity.getDiscount()!=null){
-		ErpDiscountLineModel discountLineModel = new ErpDiscountLineModel(SapGatewayConverter.buildDiscount(entity.getDiscount()));
+		
 //		discountLineModel.setId(entity.getDiscount().getId());
-		model.addDiscount(discountLineModel);
-		}
-		model.setRafTransModel(SapGatewayConverter.buildRefTransModel(entity.getRafTransModel()));
 		
 		return model;
 	}
