@@ -21,7 +21,6 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.log4j.Category;
-import org.apache.openjpa.lib.log.Log;
 import org.springframework.core.io.Resource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
