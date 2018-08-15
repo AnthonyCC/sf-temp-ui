@@ -18,12 +18,20 @@ public class SimpleDateDeserializer extends JsonDeserializer<Date> {
 
 	@Override
 	public Date deserialize(JsonParser jp, DeserializationContext context) throws IOException, JsonProcessingException {
-		JsonNode node = jp.getCodec().readTree(jp);
-		final String date = node.textValue();
+		final String date = getTextValue(jp);
 		try {
 			return simpleDateFormat.parse(date);
 		} catch (ParseException e) {
 			throw new JsonParseException("Unparseable date: " + date + ". Supported formats: yyyy-MM-dd", e);
+		}
+	}
+	
+	private String getTextValue(JsonParser jp) throws IOException {
+		try {
+			JsonNode node = jp.getCodec().readTree(jp);
+			return node.textValue();
+		} catch (Exception e) {
+			return jp.getText();
 		}
 	}
 
