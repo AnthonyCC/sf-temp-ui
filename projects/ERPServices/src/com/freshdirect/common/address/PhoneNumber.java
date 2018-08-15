@@ -62,7 +62,7 @@ public class PhoneNumber implements java.io.Serializable {
 		return sb.toString();
 	}
 
-	public static String retainDigits(String string) {
+	private static String retainDigits(String string) {
 		StringBuffer clean = new StringBuffer();
 		if (string == null)
 			return "";

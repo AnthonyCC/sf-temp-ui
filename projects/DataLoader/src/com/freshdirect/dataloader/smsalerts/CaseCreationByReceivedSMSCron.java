@@ -18,7 +18,6 @@ import org.apache.log4j.Logger;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.backoffice.service.BackOfficeClientService;
 import com.freshdirect.backoffice.service.IBackOfficeClientService;
-import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.delivery.DlvProperties;
 import com.freshdirect.delivery.sms.SMSAlertManager;
 import com.freshdirect.delivery.sms.ejb.SmsAlertsHome;
@@ -56,8 +55,7 @@ public class CaseCreationByReceivedSMSCron {
 						.getInstance();
 				boolean isCaseCreated = service
 						.createCaseByRecievedSmsData(SMSAlertManager
-								.populateRecievedSmsData(PhoneNumber
-										.retainDigits(model.getMobileNumber()),
+								.populateRecievedSmsData(retainDigits(model.getMobileNumber()),
 										model.getCarrierName(), model
 												.getMessage(), model
 												.getReceivedDate()));
@@ -114,7 +112,18 @@ public class CaseCreationByReceivedSMSCron {
 			}
 	
 	}
-
+	private static String retainDigits(String string) {
+		StringBuffer clean = new StringBuffer();
+		if (string == null)
+			return "";
+		for (int i = 0; i < string.length(); i++) {
+			if (Character.isDigit(string.charAt(i))) {
+				clean.append(string.charAt(i));
+			}
+		}
+		return clean.toString();
+	}
+	
 public static Context getInitialContext() throws NamingException {
 	Hashtable<String, String> h = new Hashtable<String, String>();
 	h.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
