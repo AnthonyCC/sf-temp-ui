@@ -247,13 +247,9 @@ var FreshDirect = FreshDirect || {};
 	fd.modules.common.forms.register({
 		id: "MP",
 		success: function (id, result) {
-			var callbackUrl = result.eWalletResponseData.callbackUrl;
-			if($('#deliverypasscontent').length > 0 && !!$('#deliverypasscontent').attr('data-dlvpasscart') == true){
-				callbackUrl=result.eWalletResponseData.callbackUrl + "&dlvPassCart=true";
-			}
 			MasterPass.client.checkout({
 				"requestToken":result.eWalletResponseData.token,
-				"callbackUrl":callbackUrl,
+				"callbackUrl":result.eWalletResponseData.callbackUrl,
 				"requestedDataTypes":[result.eWalletResponseData.reqDatatype],
 				"merchantCheckoutId":result.eWalletResponseData.eWalletIdentifier,
 				"allowedCardTypes":[result.eWalletResponseData.allowedPaymentMethodTypes],
