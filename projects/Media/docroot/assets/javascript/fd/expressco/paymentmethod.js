@@ -249,7 +249,7 @@ var FreshDirect = FreshDirect || {};
 		success: function (id, result) {
 			var callbackUrl = result.eWalletResponseData.callbackUrl;
 			if($('#deliverypasscontent').length > 0 && !!$('#deliverypasscontent').attr('data-dlvpasscart') == true){
-				callbackUrl="/deliverypass.jsp";
+				callbackUrl=result.eWalletResponseData.callbackUrl + "&dlvPassCart=true";
 			}
 			MasterPass.client.checkout({
 				"requestToken":result.eWalletResponseData.token,
