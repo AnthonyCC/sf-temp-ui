@@ -68,7 +68,12 @@ public class FDCustomerCouponUtil implements Serializable {
 	}
 
 	public static void initCustomerCoupons(HttpSession session,String oldUserId){
-		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+		FDSessionUser user = null;
+		try {
+			user = (FDSessionUser) session.getAttribute(SessionName.USER);
+		}catch(IllegalStateException e) {
+			LOGGER.warn(e);
+		}
 		if(null !=user && user.isEligibleForCoupons()){
 			FDCustomerCouponWallet couponWallet =FDCustomerCouponUtil.getCustomerCoupons(session,oldUserId);
 			user.setCouponWallet(couponWallet);
@@ -79,7 +84,12 @@ public class FDCustomerCouponUtil implements Serializable {
 
 	public static FDCustomerCouponWallet getCustomerCoupons(HttpSession session,String oldUserId){
 		FDCustomerCouponWallet couponWallet =new FDCustomerCouponWallet();
-		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+		FDSessionUser user = null;
+		try {
+			user = (FDSessionUser) session.getAttribute(SessionName.USER);
+		}catch(IllegalStateException e) {
+			LOGGER.warn(e);
+		}
 		if(null !=user && user.isEligibleForCoupons()){
 			try {
 				FDCouponCustomer request = createCouponCustomerRequest(user,oldUserId);
@@ -126,7 +136,12 @@ public class FDCustomerCouponUtil implements Serializable {
 
 	public static boolean clipCoupon(HttpSession session,String couponId){
 		boolean isSuccess = false;
-		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+		FDSessionUser user =  null;
+		try{
+			user = (FDSessionUser) session.getAttribute(SessionName.USER);
+		}catch(IllegalStateException e) {
+			LOGGER.warn(e);
+		}
 		try {
 			if(null !=user && user.isEligibleForCoupons()){
 				FDCouponCustomer request = createCouponCustomerRequest(user);
@@ -146,7 +161,12 @@ public class FDCustomerCouponUtil implements Serializable {
 	}
 
 	public static boolean evaluateCartAndCoupons(HttpSession session,boolean filterCoupons){
-		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+		FDSessionUser user =  null;
+		try{
+			user = (FDSessionUser) session.getAttribute(SessionName.USER);
+		}catch(IllegalStateException e) {
+			LOGGER.warn(e);
+		}
 		boolean isCouponEvaluationNeeded = false;
 		try {
 			if(null !=user && user.isEligibleForCoupons()){

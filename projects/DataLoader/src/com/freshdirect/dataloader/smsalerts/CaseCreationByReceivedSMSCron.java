@@ -18,8 +18,12 @@ import org.apache.log4j.Logger;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.backoffice.service.BackOfficeClientService;
 import com.freshdirect.backoffice.service.IBackOfficeClientService;
+import com.freshdirect.delivery.DlvProperties;
 import com.freshdirect.delivery.sms.SMSAlertManager;
+import com.freshdirect.delivery.sms.ejb.SmsAlertsHome;
+import com.freshdirect.delivery.sms.ejb.SmsAlertsSB;
 import com.freshdirect.ecommerce.data.delivery.sms.RecievedSmsData;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.payment.service.FDECommerceService;
@@ -30,12 +34,22 @@ public class CaseCreationByReceivedSMSCron {
 	private static List<RecievedSmsData> recievedSmsList=null;;
 	
 	public static void main(String[] args) throws Exception {
+		Context ctx = null;
 		try {
+			ctx = getInitialContext();
+			SmsAlertsHome smsAlertsHome = (SmsAlertsHome) ctx
+					.lookup(DlvProperties.getSmsAlertsHome());
+
+			if (FDStoreProperties
+					.isSF2_0_AndServiceEnabled("sms.ejb.SmsAlertsSB")) {
 				recievedSmsList = FDECommerceService.getInstance()
 						.getReceivedSmsData();
-			
+			} else {
+				SmsAlertsSB smsAlertSB = smsAlertsHome.create();
+				recievedSmsList = smsAlertSB.getReceivedSmsData();
+			}
 			for (RecievedSmsData model : recievedSmsList) {
-				LOGGER.info("Start:::::CaseCreationByReceivedSMSCron for  MobileNumber:"
+				LOGGER.info("Start:::::Received SMS data  is sending to Backoffice. MobileNumber:"
 						+ model.getMobileNumber());
 				IBackOfficeClientService service = BackOfficeClientService
 						.getInstance();
@@ -45,10 +59,15 @@ public class CaseCreationByReceivedSMSCron {
 										model.getCarrierName(), model
 												.getMessage(), model
 												.getReceivedDate()));
+				if (FDStoreProperties
+						.isSF2_0_AndServiceEnabled("sms.ejb.SmsAlertsSB")) {
 					FDECommerceService.getInstance().updateCaseCreationStatus(
-							model.getSmsId(), isCaseCreated);
-				
-				LOGGER.info("End::::: CaseCreationByReceivedSMSCron  process has been completed for MobileNumber:"+model.getMobileNumber()+"CaseCreation Response:"+isCaseCreated);
+							model.geteStoreId(), isCaseCreated);
+				} else {
+					SmsAlertsSB smsAlertSB = smsAlertsHome.create();
+					smsAlertSB.updateCaseCreationStatus(model.geteStoreId(),
+							isCaseCreated);
+				}
 			}
 		} catch (Exception e) {
 			StringWriter sw = new StringWriter();
@@ -58,7 +77,19 @@ public class CaseCreationByReceivedSMSCron {
 					.append(sw.toString()).toString());
 			LOGGER.error(sw.toString());
 			email(Calendar.getInstance().getTime(), sw.getBuffer().toString());
-		} 
+		} finally {
+			try {
+				if (ctx != null) {
+					ctx.close();
+					ctx = null;
+				}
+			} catch (NamingException ne) {
+				StringWriter sw = new StringWriter();
+				ne.printStackTrace(new PrintWriter(sw));
+				email(Calendar.getInstance().getTime(), sw.getBuffer()
+						.toString());
+			}
+		}
 	}
 	private static void email(Date processDate, String exceptionMsg) {
 		try {
