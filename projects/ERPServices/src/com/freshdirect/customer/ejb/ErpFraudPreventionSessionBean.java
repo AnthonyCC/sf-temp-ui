@@ -656,10 +656,11 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 	}
 	
 	public boolean isRegistrationForIPRestricted(String ip) {
+		String whitelistedIps = FDStoreProperties.getWhitelistedIPs();
 		
 		if(StringUtil.isEmpty(ip)) {
 			return false;
-		}else if (FDStoreProperties.getWhitelistedIPs().indexOf(ip)!=-1) {
+		}else if (whitelistedIps == null || whitelistedIps.indexOf(ip)!=-1) {
 			return false;
 		}
 		
