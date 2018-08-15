@@ -477,7 +477,7 @@ public class ModelConverter {
 	
 	public static  Request<RecievedSmsData> buildSmsDataRequest(String mobileNumber,
 			String shortCode, String carrierName, Date receivedDate,
-			String message, EnumEStoreId eStoreId) {
+			String message, EnumEStoreId eStoreId, boolean isCaseCreated ) {
 		Request<RecievedSmsData> recieveSmsData = new Request<RecievedSmsData>();
 		RecievedSmsData smsData = new RecievedSmsData();
 		smsData.setMobileNumber(mobileNumber);
@@ -486,6 +486,16 @@ public class ModelConverter {
 		smsData.setReceivedDate(receivedDate);
 		smsData.setMessage(message);
 		smsData.seteStoreId(eStoreId.getContentId());
+		smsData.setCaseCreationStatus(isCaseCreated);
+		recieveSmsData.setData(smsData);
+		return recieveSmsData;
+	}
+	
+	public static  Request<RecievedSmsData> buildSmsDataRequest(String smsId, boolean isCaseCreated) {
+		Request<RecievedSmsData> recieveSmsData = new Request<RecievedSmsData>();
+		RecievedSmsData smsData = new RecievedSmsData();
+		smsData.seteStoreId(smsId);
+		smsData.setCaseCreationStatus(isCaseCreated);
 		recieveSmsData.setData(smsData);
 		return recieveSmsData;
 	}

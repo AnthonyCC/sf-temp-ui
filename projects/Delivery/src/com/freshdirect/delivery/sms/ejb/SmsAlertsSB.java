@@ -7,6 +7,7 @@ import java.util.List;
 import javax.ejb.EJBObject;
 
 import com.freshdirect.delivery.sms.SmsAlertETAInfo;
+import com.freshdirect.ecommerce.data.delivery.sms.RecievedSmsData;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.sms.model.st.STSmsResponse;
@@ -28,7 +29,7 @@ public interface SmsAlertsSB extends EJBObject{
 	@Deprecated
 	public void expireOptin() throws RemoteException;
 	@Deprecated
-	public void updateSmsReceived(String mobileNumber, String shortCode, String carrierName, Date receivedDate, String message, EnumEStoreId eStoreId) throws RemoteException;
+	public void updateSmsReceived(String mobileNumber, String shortCode, String carrierName, Date receivedDate, String message, EnumEStoreId eStoreId, boolean isCaseCreated) throws RemoteException;
 	@Deprecated
 	public List<STSmsResponse> sendSmsToGateway(List<SmsAlertETAInfo> etaInfoList) throws RemoteException;
 	@Deprecated
@@ -37,5 +38,9 @@ public interface SmsAlertsSB extends EJBObject{
 	public boolean smsOrderConfirmation(String customerId, String mobileNumber, String orderId, String eStoreId) throws RemoteException;
 	@Deprecated
 	public boolean smsOrderModification(String customerId, String mobileNumber, String orderId, String eStoreId) throws RemoteException;
+	@Deprecated
+	public List<RecievedSmsData> getReceivedSmsData() throws RemoteException;
+	@Deprecated
+	public void updateCaseCreationStatus(String smsId, Boolean isCaseCreated) throws RemoteException;
 	
 }
