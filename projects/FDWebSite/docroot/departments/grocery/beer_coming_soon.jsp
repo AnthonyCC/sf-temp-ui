@@ -5,7 +5,7 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='bean' prefix='bean' %>
-<%@ taglib uri='oscache' prefix='oscache' %>
+
 <fd:CheckLoginStatus />
 <% 
 

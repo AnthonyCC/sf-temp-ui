@@ -25,7 +25,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri='oscache' prefix='oscache' %>
+
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
 
 <% //expanded page dimensions

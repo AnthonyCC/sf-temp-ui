@@ -14,7 +14,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri='oscache' prefix='oscache' %>
+
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ include file="/includes/i_dynamicRows_required.jspf" %>
 <html lang="en-US" xml:lang="en-US">

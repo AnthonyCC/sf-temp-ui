@@ -74,7 +74,6 @@ private static final int W_LEFT_NAV_RIGHT_PADDING = 5;
 	}
 
 %>
-<oscache:cache key='<%= "sideNav_"+request.getQueryString() %>' time='1'>
 <% try { %>
 
 <fd:SideNav catId='<%= request.getParameter("catId") %>' topCategory="topCategory" navList="leftNavItemsList" unavailableList="unavailableNavItems">
@@ -189,8 +188,7 @@ if (displayedRows > 0) {
 <% } catch (Exception ex) {
 		ex.printStackTrace();
 %>
-	<oscache:usecached />
+	
 <% } %>
-</oscache:cache>
 </body>
 <!-- END YOUR STORE table -->

@@ -16,7 +16,7 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri='oscache' prefix='oscache' %>
+
 
 <% //expanded page dimensions
 final int W_WINE_PRODUCT_TOTAL = 601;
@@ -78,13 +78,7 @@ final int W_WINE_PRODUCT_RIGHT = 314;
 			<br>
 		<%} %>
         <!-- Content start -->
-  		<% if ( FDStoreProperties.useOscache() ) { %> 
-	        <oscache:cache time="300">
 				<%@ include file="/shared/includes/product/i_product_descriptions.jspf" %>
-			</oscache:cache>
-  		<% } else { %>			        
-				<%@ include file="/shared/includes/product/i_product_descriptions.jspf" %>
-  		<% } %>
 <%
 	if (productNode.getWineType()!=null   || 
             productNode.getWineRegion()!=null || 

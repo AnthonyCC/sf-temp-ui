@@ -76,7 +76,6 @@ public class FDStoreProperties {
     private final static String PROP_FDORDER_HOME = "fdstore.fdorder.home";
     private final static String PROP_DLV_INSTRUCTION_SPECIAL_CHAR = "fdstore.address.validation";
     private final static String PROP_PREVIEW_MODE = "fdstore.preview";
-    private final static String PROP_FLUSH_OSCACHE = "fdstore.flushOscache";
     private final static String PROP_ANNOTATION_MODE = "fdstore.annotation";
     private final static String PROP_ANNOTATION_ERPSY = "fdstore.annotation.erpsy";
     private final static String PROP_MEDIA_PATH = "fdstore.media.path";
@@ -767,7 +766,7 @@ public class FDStoreProperties {
 
     // Max Invalid Login counts for Recaptcha
     private final static String PROP_MAX_INVALID_SIGN_UP_ATTEMPT = "fdstore.max.invalid.sign.up.count";
-    
+
     // Max Invalid Payment counts for Recaptcha
     private final static String PROP_MAX_INVALID_PAYMENT_ATTEMPT = "fdstore.max.invalid.payment.count";
 
@@ -1062,15 +1061,15 @@ public class FDStoreProperties {
     private static final String PROP_REORDER_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED = "fdstore.reorderpage.newproductscarousel.randomizeproductorder.enabled";
     private static final String PROP_CART_CONFIRM_PAGE_NEW_PRODUCTS_CAROUSEL_ENABLED = "fdstore.cartconfirmpage.newproductscarousel.enabled";
     private static final String PROP_CART_CONFIRM_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED = "fdstore.cartconfirmpage.newproductscarousel.randomizeproductorder.enabled";
-	
+
 	private static final String MASTERPASS_EXCEPTION_MESSAGE = "masterpass.exception.message";
-	private static final String PROP_AMOUNT_SAVED_DP_ACCOUNTS_PAGE_ENABLED="fdstore.amount.saved.dpaccountpage.enabled"; 
-	
+	private static final String PROP_AMOUNT_SAVED_DP_ACCOUNTS_PAGE_ENABLED="fdstore.amount.saved.dpaccountpage.enabled";
+
 	private static final String ACCOUNT_CREATION_LIMIT_PER_IP="fdstore.ip.account.limit";
 	private static final String WHITELISTED_IP_LIST="fdstore.allowed.ip.list";
 	private static final String CARD_VERIFICATION_RATE_LIMIT="fdstore.payment.verification.rate.limit";
 
-	private static final String PROP_LAZYLOADING_MODULES_ENABLED="fdstore.lazyloading.modules.enabled"; 
+	private static final String PROP_LAZYLOADING_MODULES_ENABLED="fdstore.lazyloading.modules.enabled";
 	private static final String PROP_REFRESH_LOOKBACK_SECS_PRODUCTINFO = "fdstore.refresh.lookbackSecs.productInfo";
 	private static final String PROP_BACK_OFFICE_API_URL = "fdstore.backoffice.url";
 	private static final String PROP_BACK_OFFICE_CONNECTION_POOL = "fdstore.backoffice.conn.pool";
@@ -1118,7 +1117,6 @@ public class FDStoreProperties {
         defaults.put(PROP_DLV_INSTRUCTION_SPECIAL_CHAR, "[~ | \\` | \" | \\! | \\@ | \\# | \\ $ | \\% | \\^ | \\& | \\* | \\( | \\) | \\- | _ | + | \\= | \\n | \\r]");
 
         defaults.put(PROP_PREVIEW_MODE, "false");
-        defaults.put(PROP_FLUSH_OSCACHE, "false");
         defaults.put(PROP_ANNOTATION_MODE, "false");
         defaults.put(PROP_ANNOTATION_ERPSY, "http://ems1.nyc1.freshdirect.com:8000/ERPSAdmin");
         defaults.put(PROP_CALLCENTER_PW, "");
@@ -2055,9 +2053,9 @@ public class FDStoreProperties {
         defaults.put(PROP_AMOUNT_SAVED_DP_ACCOUNTS_PAGE_ENABLED, "false");
         defaults.put(ACCOUNT_CREATION_LIMIT_PER_IP,"10");
         defaults.put(CARD_VERIFICATION_RATE_LIMIT,"10");
-        
+
         defaults.put(PROP_LAZYLOADING_MODULES_ENABLED, "false");
-        
+
         defaults.put(PROP_BACK_OFFICE_CONNECTION_TIMEOUT, 120);
         defaults.put(PROP_BACK_OFFICE_CONNECTION_POOL, 5);
         defaults.put(PROP_BACK_OFFICE_CONN_READ_TIMEOUT, 120);
@@ -2072,19 +2070,19 @@ public class FDStoreProperties {
      		} else {
      			nodeName="";
      		}
-     			
-     		
+
+
      	} catch(Exception e) {
      		LOGGER.info("Failed to set nodeName",e);
-     	}        
-		
+     	}
+
         refresh();
     }
 
 	private static String nodeName;
 
     private FDStoreProperties() {
-    	 
+
     }
 
     private static void refresh() {
@@ -2123,7 +2121,7 @@ public class FDStoreProperties {
 
     /**
      * A method to set a specific property. Use with care - it's here for testing purposes only.
-     * 
+     *
      * @param key
      *            the name of the property to set.
      * @param value
@@ -2172,9 +2170,9 @@ public class FDStoreProperties {
 
     /**
      * This property disables time window check on CRM issue credits page.
-     * 
+     *
      * For debug purposes.
-     * 
+     *
      * @return
      */
     public static boolean getDisableTimeWindowCheck() {
@@ -2295,10 +2293,6 @@ public class FDStoreProperties {
 
     public static boolean getPreviewMode() {
         return (Boolean.valueOf(get(PROP_PREVIEW_MODE))).booleanValue();
-    }
-
-    public static boolean isFlushOscache() {
-        return (Boolean.valueOf(get(PROP_FLUSH_OSCACHE))).booleanValue();
     }
 
     public static boolean isAnnotationMode() {
@@ -2722,7 +2716,7 @@ public class FDStoreProperties {
     public static String getDefaultRenewalDPforFDX() {
         return get(DLV_PASS_AUTORENEWAL_DEFAULT_FDX);
     }
-    
+
     @Deprecated
     public static boolean IsProduceRatingEnabled() {
         // return Boolean.valueOf(get(PRODUCE_RATING_ENABLED)).booleanValue();
@@ -2893,7 +2887,7 @@ public class FDStoreProperties {
 
     /**
      * Is Smart Search feature enabled?
-     * 
+     *
      * @deprecated Property is no longer used
      */
     @Deprecated
@@ -2998,7 +2992,7 @@ public class FDStoreProperties {
 
     /**
      * Used for testing, do not call from the App.
-     * 
+     *
      * @param lastRefresh
      */
     public static void setLastRefresh(long lastRefresh) {
@@ -3175,15 +3169,6 @@ public class FDStoreProperties {
         return get(WINDOW_STEERING_PROMOTION_PREFIX);
     }
 
-    /**
-     * OSCACHE should be disabled when we are in some development environment. ( = annotation or preview mode ) Jsp-s can refer to this when deciding to use oscache or not.
-     * 
-     * @return true if we are in production mode (use oscache), false if we are in development mode (disable oscache)
-     */
-    public static boolean useOscache() {
-        return !(isAnnotationMode() || getPreviewMode());
-    }
-
     public static boolean isStandingOrdersEnabled() {
         return Boolean.valueOf(get(SO_GLOBAL_ENABLER)).booleanValue();
     }
@@ -3276,7 +3261,7 @@ public class FDStoreProperties {
 
     /**
      * Returns API key to access Google Maps service No default value.
-     * 
+     *
      * @return
      */
     public static String getGoogleMapsAPIKey() {
@@ -3285,7 +3270,7 @@ public class FDStoreProperties {
 
     /**
      * APPDEV-1091
-     * 
+     *
      * @return URL to promotion publish servlet
      */
     public static String getPromoPublishURL() {
@@ -3344,7 +3329,7 @@ public class FDStoreProperties {
 
     /**
      * Global switch to turn on/off wine ratings display. Defaulted to on.
-     * 
+     *
      * @return
      */
     public static boolean isWineShowRatings() {
@@ -3644,11 +3629,11 @@ public class FDStoreProperties {
     public static String getOneMonthDPSku() {
         return get(PROP_ONE_MONTH_DELIVERY_PASS_SKU);
     }
-    
+
     public static String getFDXDPSku() {
         return get(PROP_FDX_DELIVERY_PASS_SKU);
     }
-    
+
     public static String getFDDPSku() {
         return get(PROP_FD_DELIVERY_PASS_SKU);
     }
@@ -3789,7 +3774,7 @@ public class FDStoreProperties {
 
     /**
      * Used at store-front GUI. Sum of prices in the cart must be higher than this value in order to be able to submit order.
-     * 
+     *
      * @return Soft limit. Default is $50.
      */
     /*
@@ -3798,7 +3783,7 @@ public class FDStoreProperties {
 
     /**
      * Used at processing Standing Orders. After removing discontinued products from the cart, sum must be higher than this value.
-     * 
+     *
      * @return Hard limit. Default is $50.
      */
     /*
@@ -4652,7 +4637,7 @@ public class FDStoreProperties {
 
     /**
      * If true, CSR agents are allowed to use new XC pages in masquerade mode. Defaulted to true
-     * 
+     *
      * @ticket APPDEV-4660
      * @return
      */
@@ -5073,7 +5058,7 @@ public class FDStoreProperties {
     /**
      * Website toggle to determine if we have turned on the feature for both website and mobile api <BR>
      * to pull nutrition information from the same soy template.
-     * 
+     *
      * @return defaults to off, overide by an entry enable.website.mobile.same.nutrition.soy in fdstore.properties
      */
     public static boolean getEnableWebsiteMobileSameNutritionSoy() {
@@ -5169,11 +5154,11 @@ public class FDStoreProperties {
     public static boolean isDlvPassStandAloneCheckoutEnabled() {
         return (Boolean.valueOf(get(PROP_FD_DP_STANDALONE_CHECKOUT_ENABLED))).booleanValue();
     }
-    
+
     public static boolean isDlvPassFDXEnabled() {
         return (Boolean.valueOf(get(PROP_FDX_DP_ENABLED))).booleanValue();
     }
-    
+
     public static int getFDXDPFirstOrderEligibilityDays() {
         return Integer.parseInt(get(PROP_FDX_DP_FIRST_ORDER_ELIGIBILITY_DAYS));
     }
@@ -5212,7 +5197,7 @@ public class FDStoreProperties {
     public static boolean isReorderPageNewProductsCarouselRandomizeProductOrderEnabled() {
         return (Boolean.valueOf(get(PROP_REORDER_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED))).booleanValue();
     }
-    
+
 	public static boolean isInformOrderModifyEnabled() {
 		return (Boolean.valueOf(get(PROP_INFORM_ORDERMODIFY_ENABLED))).booleanValue();
 	}
@@ -5234,7 +5219,7 @@ public class FDStoreProperties {
     public static boolean isCartConfirmPageNewProductsCarouselRandomizeProductOrderEnabled() {
         return (Boolean.valueOf(get(PROP_CART_CONFIRM_PAGE_NEW_PRODUCTS_CAROUSEL_RANDOMIZE_PRODUCT_ORDER_ENABLED))).booleanValue();
     }
-    
+
     public static boolean isAmountSavedDpAccPageEnabled() {
         return (Boolean.valueOf(get(PROP_AMOUNT_SAVED_DP_ACCOUNTS_PAGE_ENABLED))).booleanValue();
     }
@@ -5242,25 +5227,25 @@ public class FDStoreProperties {
 		 return Integer.parseInt(get(ACCOUNT_CREATION_LIMIT_PER_IP));
 
     }
-    
+
     public static final String getWhitelistedIPs() {
-    	
+
     	return FDEcommProperties.get(WHITELISTED_IP_LIST);
     }
-    
+
     public static int getCardVerificationRateLimit() {
 		 return Integer.parseInt(get(CARD_VERIFICATION_RATE_LIMIT));
 
    }
-    
+
 	public static boolean isLazyloadingModulesEnabled() {
 		return (Boolean.valueOf(get(PROP_LAZYLOADING_MODULES_ENABLED))).booleanValue();
 	}
-	
+
 	public static int getRefreshLookbackSecsProductInfo() {
         return Integer.parseInt(get(PROP_REFRESH_LOOKBACK_SECS_PRODUCTINFO));
     }
-	
+
 
 	public static String getMidWeekSixMonthDeliveryPassSku() {
 		return get(PROP_MID_WEEK_SIX_MONTH_DELIVERY_PASS_SKU);
