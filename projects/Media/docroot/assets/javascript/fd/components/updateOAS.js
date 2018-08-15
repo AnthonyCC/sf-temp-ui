@@ -30,56 +30,63 @@ var FreshDirect = FreshDirect || {};
     });
   }
 
+	function doneHandler($e, pos, showAsPopUp) {
+		$e.html('');
+		var hasEmptyImage = false;
+		$.each($('a[href*="/default/empty.gif/"]').not('[tabindex=-1]'), function(ii, ee) {
+			var $ee = $(ee);
+			hasEmptyImage = true;
+			$ee.attr("tabindex", "-1");
+			$ee.attr("role", "presentation");
+			$ee.attr("aria-hidden", "true");
+	
+			if (fd.utils.isDeveloper()) {
+				console.log('updateOAS: done - hid empty.gif', pos, $ee.closest("[id^='oas_']").attr('id'), $ee);
+			}
+		});
+		// if oas doesn't return an empty image and we need to show the oas as popup
+		if (showAsPopUp && !hasEmptyImage) {
+			inProgressRequests[inProgressRequests.indexOf(listPos.join(','))] = null;
+			setTimeout( function() {
+				var oasLink = $e.children().not('script').first();
+				if (oasLink.length) {
+					$e.attr('data-tooltip', true);
+					if (!oasLink.has('.tooptip-indicator').length) {
+						$e.append('<div class="tooptip-indicator"></div>')
+					}
+					$e.show();
+					if (fd.mobWeb) {
+						$e.css({
+							'margin-top': '-' + (11 + $e.height()) + 'px'
+							});
+						$('[data-tooltip] .tooptip-indicator').css({
+							'margin-left': (($e.parent().width() /2) - 11) + 'px'
+						});
+					} else {
+						$e.css({
+							'margin-top': '-' + (11 + $e.height()) + 'px',
+							'margin-left': (-1 * (($e.width() - $(e).parent().width()) /2)) + 'px'
+							});
+						$('[data-tooltip] .tooptip-indicator').css({
+							'margin-left': (( $e.width() /2) - 11) + 'px'
+						});
+					}
+					$e.fadeIn(1000);
+				}
+			}, 1000);
+		}
+	}
+  
   function done(listPos, showAsPopUp) {
 		listPos.forEach(function (pos) {
 			var selector = "#oas_"+pos+",#oas_b_"+pos;
 			$(selector).each(function(i,e){
-				$(e).html('');
-				postscribe($(e), '<script>OAS_RICH("'+pos+'");</script>', {
+				var $e = $(e);
+				postscribe($e, '<script>OAS_RICH("'+pos+'");</script>', {
 					error: function () {},
-					done: function (pos) {
-						var hasEmptyImage = false;
-						$.each($('a[href*="/default/empty.gif/"]').not('[tabindex=-1]'), function(ii, ee) {
-							hasEmptyImage = true;
-							$(ee).attr("tabindex", "-1");
-							$(ee).attr("role", "presentation");
-							$(ee).attr("aria-hidden", "true");
-
-							if (fd.utils.isDeveloper()) {
-								console.log('updateOAS: done - hid empty.gif', pos, $(ee).closest("[id^='oas_']").attr('id'), $(ee));
-							}
-						});
-						// if oas doesn't return an empty image and we need to show the oas as popup
-						if (showAsPopUp && !hasEmptyImage) {
-							inProgressRequests[inProgressRequests.indexOf(listPos.join(','))] = null;
-							setTimeout( function() {
-								var oasLink = $(e).children().not('script').first();
-								if (oasLink.length) {
-									$(e).attr('data-tooltip', true);
-									if (!oasLink.has('.tooptip-indicator').length) {
-										$(e).append('<div class="tooptip-indicator"></div>')
-									}
-									$(e).show();
-									if (fd.mobWeb) {
-										$(e).css({
-											'margin-top': '-' + (11 + $(e).height()) + 'px'
-											});
-										$('[data-tooltip] .tooptip-indicator').css({
-											'margin-left': (($(e).parent().width() /2) - 11) + 'px'
-										});
-									} else {
-										$(e).css({
-											'margin-top': '-' + (11 + $(e).height()) + 'px',
-											'margin-left': (-1 * (($(e).width() - $(e).parent().width()) /2)) + 'px'
-											});
-										$('[data-tooltip] .tooptip-indicator').css({
-											'margin-left': (( $(e).width() /2) - 11) + 'px'
-										});
-									}
-									$(e).fadeIn(1000);
-								}
-							}, 1000);
-						}
+					done: function () {
+						/* move this to async */
+						window.setTimeout(doneHandler.bind(null, $e, pos, showAsPopUp), 1);
 					}
 				});
 			});

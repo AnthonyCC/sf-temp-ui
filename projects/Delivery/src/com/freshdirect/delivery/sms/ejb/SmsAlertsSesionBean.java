@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -25,6 +27,7 @@ import com.freshdirect.delivery.DlvProperties;
 import com.freshdirect.delivery.sms.SmsAlertETAInfo;
 import com.freshdirect.delivery.sms.SmsCustInfo;
 import com.freshdirect.delivery.sms.SmsUtil;
+import com.freshdirect.ecommerce.data.delivery.sms.RecievedSmsData;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
@@ -79,6 +82,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 	private static final String FDX_ORDER_MODIFIED="Change is good! We modified your FoodKick order exactly how you want it.";
 	private static final String FDX_ORDER_COFIRMATION_ALERT_TYPE="FDX_ORDER_COFIRM";
 	private static final String FDX_ORDER_MODIFIED_ALERT_TYPE="FDX_ORDER_MODIFIED";
+	private static final String DATE_TIME_FORMAT = "yyyy-MM-dd hh:mm:ss"; 
 	int count=0;
 	
 	
@@ -439,7 +443,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 	 */
 	@Deprecated
 	public void updateSmsReceived(String mobileNumber, String shortCode,
-			String carrierName, Date receivedDate, String message, EnumEStoreId eStoreId) throws RemoteException  {
+			String carrierName, Date receivedDate, String message, EnumEStoreId eStoreId,boolean isCaseCreated) throws RemoteException  {
 		Connection con = null;
 		String confirmed=null;
 		try {
@@ -452,7 +456,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 			 	confirmed = isConfirmedFdx(message);
 			List<SmsCustInfo> customerInfoList = getCustomerInfoList(con, phone.getPhone(), eStoreId);
 			for (SmsCustInfo customerInfo : customerInfoList) {
-				updateSmsMessagesReceived(phone.getPhone(), shortCode, carrierName, receivedDate, message, customerInfo, con, confirmed, eStoreId);
+				updateSmsMessagesReceived(phone.getPhone(), shortCode, carrierName, receivedDate, message, customerInfo, con, confirmed, eStoreId, isCaseCreated);
 				if(!confirmed.equals("YES") && !confirmed.equals("STOP")){
 					break;
 				}
@@ -482,7 +486,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 	}
 	@Deprecated
 	private void updateSmsMessagesReceived(String mobileNumber, String shortCode,
-			String carrierName, Date receivedDate, String message, SmsCustInfo customerInfo, Connection con, String confirmed, EnumEStoreId eStoreId) 
+			String carrierName, Date receivedDate, String message, SmsCustInfo customerInfo, Connection con, String confirmed, EnumEStoreId eStoreId,boolean isCaseCreated) 
 					throws SQLException, SmsServiceException, FDResourceException {
 		
 		PreparedStatement ps=null, ps1 = null;
@@ -490,8 +494,8 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 		try{
 		String customerId = customerInfo.getCustomerId();
 		String fdCustomerId = customerInfo.getFdCustomerId();
-		String updateSmsReceived = "insert into MIS.SMS_RECEIVED (SMS_ID, CUSTOMER_ID, MOBILE_NUMBER, SHORT_CODE, CARRIER_NAME, RECEIVED_DATE, MESSAGE)"
-				+ " VALUES(?, ?, ?, ?, ?, ?, ?)";
+		String updateSmsReceived = "insert into MIS.SMS_RECEIVED (SMS_ID, CUSTOMER_ID, MOBILE_NUMBER, SHORT_CODE, CARRIER_NAME, RECEIVED_DATE, MESSAGE,CASE_CREATION_STATUS)"
+				+ " VALUES(?, ?, ?, ?, ?, ?, ?,?)";
 		ps = con.prepareStatement(updateSmsReceived);
 		ps.setInt(1, Integer.parseInt(SequenceGenerator.getNextIdFromSequence(con, "MIS.SMS_RECEIVED_SEQ")));
 		ps.setString(2, customerId);
@@ -500,6 +504,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 		ps.setString(5, carrierName);
 		ps.setTimestamp(6, new java.sql.Timestamp(receivedDate.getTime()));
 		ps.setString(7, message);
+		ps.setString(8, isCaseCreated?"Y":"N");
 
 		ps.executeUpdate();
 		
@@ -613,23 +618,27 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 				smsResponseModel.setDate(new Date());
 				updateSmsAlertCaptured(con, smsResponseModel, FDX_HELP_ALERT_TYPE, customerId);
 			}
-		} else {
-			if(!confirmed.equalsIgnoreCase("CANCEL")){
-				if(eStoreId.getContentId().equalsIgnoreCase(EnumEStoreId.FD.getContentId()))
-					{
-					smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, WRONG_RESPONSE_MESSAGE, eStoreId.getContentId());
-					smsResponseModel.setDate(new Date());
-					updateSmsAlertCaptured(con, smsResponseModel, WRONG_RESPONSE_ALERT_TYPE, customerId);
+			} else {
+				if (!confirmed.equalsIgnoreCase("CANCEL")) {
+					if (eStoreId.getContentId().equalsIgnoreCase(
+							EnumEStoreId.FD.getContentId())) {
+						smsResponseModel = FDSmsGateway
+								.sendSMS(mobileNumber, WRONG_RESPONSE_MESSAGE,
+										eStoreId.getContentId());
+						updateSmsAlertCaptured(con, smsResponseModel,
+								WRONG_RESPONSE_ALERT_TYPE, customerId);
 					}
-					
-				else
-				{
-				   smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, FDX_WRONG_RESPONSE_MESSAGE, eStoreId.getContentId());	
-					smsResponseModel.setDate(new Date());
-					updateSmsAlertCaptured(con, smsResponseModel, WRONG_RESPONSE_ALERT_TYPE_FDX, customerId);
-			      }
+
+					else {
+						smsResponseModel = FDSmsGateway.sendSMS(mobileNumber,
+								FDX_WRONG_RESPONSE_MESSAGE,
+								eStoreId.getContentId());
+						smsResponseModel.setDate(new Date());
+						updateSmsAlertCaptured(con, smsResponseModel,
+								WRONG_RESPONSE_ALERT_TYPE_FDX, customerId);
+					}
 				}
-        	}
+			}
 	} finally{
 		try {
 			if (ps1 != null){
@@ -745,9 +754,6 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 		}
 		else if (text.contains("HELP")) {
 			confirmed = "HELP";
-		}
-		else if (text.contains("CANCEL")) {
-			confirmed = "CANCEL";
 		}
 		return confirmed;
 	}
@@ -873,5 +879,88 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 		return count;
 	}
 	
+	@Deprecated
+	public List<RecievedSmsData> getReceivedSmsData() throws RemoteException {
+		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<RecievedSmsData> RecievedSmsList = null;
+		try {
+			RecievedSmsList = new ArrayList<RecievedSmsData>();
+			con = getConnection();
+			String getExpiredOptin = "select SMS_ID,CARRIER_NAME,MESSAGE,MOBILE_NUMBER,RECEIVED_DATE from MIS.SMS_RECEIVED s where S.MESSAGE='CANCEL' and S.CASE_CREATION_STATUS='N' and 1440*(SYSDATE-RECEIVED_DATE) < ? ";
+			ps = con.prepareStatement(getExpiredOptin);
+			ps.setInt(1, getTime());
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				RecievedSmsData recievedSmsData = new RecievedSmsData();
+				recievedSmsData.setSmsId(rs.getString("SMS_ID"));
+				recievedSmsData.setCarrierName(rs.getString("CARRIER_NAME"));
+				recievedSmsData.setMessage(rs.getString("MESSAGE"));
+				recievedSmsData.setMobileNumber(rs.getString("MOBILE_NUMBER"));
+				//recievedSmsData.setReceivedDate(rs.getTimestamp("RECEIVED_DATE")!=null?new SimpleDateFormat(DATE_TIME_FORMAT).format(rs.getTimestamp("RECEIVED_DATE")):null);
+				recievedSmsData.seteStoreId(EnumEStoreId.FD.name());
+				
+				RecievedSmsList.add(recievedSmsData);
+			}
+		} catch (Exception e) {
+			LOGGER.warn(e);
 
+			throw new EJBException(e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (ps != null) {
+					ps.close();
+				}
+				if (con != null) {
+					con.close();
+					con = null;
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("Exception while trying to cleanup", se);
+			}
+		}
+
+		return RecievedSmsList;
+	}
+	@Deprecated
+	public void updateCaseCreationStatus(String smsId, Boolean isCaseCreated) throws RemoteException{
+		PreparedStatement ps = null;
+		Connection con = null;
+		try {
+			con = getConnection();
+			ps = con.prepareStatement("UPDATE MIS.SMS_RECEIVED SET CASE_CREATION_STATUS=? WHERE SMS_ID=?");
+			ps.setString(1, isCaseCreated?"Y":"N");
+			ps.setString(2, smsId);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+		} finally {
+			try {
+				if (ps != null) {
+					ps.close();
+				}
+				if (con != null) {
+					con.close();
+					con = null;
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("Exception while trying to cleanup", se);
+			}
+		}	
+	}
+	private int getTime() {
+		int time = 30;
+		try {
+		 time = Integer.parseInt(DlvProperties.getSmsExpireInMins());
+		}  catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return time;
+	}
+	
+	
 }

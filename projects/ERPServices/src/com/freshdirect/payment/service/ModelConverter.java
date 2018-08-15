@@ -125,7 +125,6 @@ import com.freshdirect.ecommerce.data.erp.coo.CountryOfOriginData;
 import com.freshdirect.ecommerce.data.erp.ewallet.ErpCustEWalletData;
 import com.freshdirect.ecommerce.data.erp.inventory.ErpInventoryData;
 import com.freshdirect.ecommerce.data.erp.inventory.ErpInventoryEntryData;
-import com.freshdirect.ecommerce.data.erp.inventory.FDAvailabilityData;
 import com.freshdirect.ecommerce.data.erp.material.AttributeCollectionData;
 import com.freshdirect.ecommerce.data.erp.material.ErpCharacteristicData;
 import com.freshdirect.ecommerce.data.erp.material.ErpCharacteristicValueData;
@@ -478,7 +477,7 @@ public class ModelConverter {
 	
 	public static  Request<RecievedSmsData> buildSmsDataRequest(String mobileNumber,
 			String shortCode, String carrierName, Date receivedDate,
-			String message, EnumEStoreId eStoreId) {
+			String message, EnumEStoreId eStoreId, boolean isCaseCreated ) {
 		Request<RecievedSmsData> recieveSmsData = new Request<RecievedSmsData>();
 		RecievedSmsData smsData = new RecievedSmsData();
 		smsData.setMobileNumber(mobileNumber);
@@ -487,6 +486,16 @@ public class ModelConverter {
 		smsData.setReceivedDate(receivedDate);
 		smsData.setMessage(message);
 		smsData.seteStoreId(eStoreId.getContentId());
+		smsData.setCaseCreationStatus(isCaseCreated);
+		recieveSmsData.setData(smsData);
+		return recieveSmsData;
+	}
+	
+	public static  Request<RecievedSmsData> buildSmsDataRequest(String smsId, boolean isCaseCreated) {
+		Request<RecievedSmsData> recieveSmsData = new Request<RecievedSmsData>();
+		RecievedSmsData smsData = new RecievedSmsData();
+		smsData.seteStoreId(smsId);
+		smsData.setCaseCreationStatus(isCaseCreated);
 		recieveSmsData.setData(smsData);
 		return recieveSmsData;
 	}
@@ -2334,14 +2343,13 @@ public class ModelConverter {
 
 	public static Map<String, List<ErpComplaintReason>> buildErpComplaintReason(Map<String, List<ErpComplaintReasonData>> data) {
 		Map<String, List<ErpComplaintReason>> complaintReasonMap = new HashMap<String, List<ErpComplaintReason>>();
-		List<ErpComplaintReason> reasonList = new ArrayList<ErpComplaintReason>();
 		for (String key :  data.keySet()) {
 			List<ErpComplaintReasonData> complaintReasonDataList = data.get(key);
+			List<ErpComplaintReason> reasonList = new ArrayList<ErpComplaintReason>();
 			for (ErpComplaintReasonData erpComplaintReasonData : complaintReasonDataList) {
 				reasonList.add(buildErpComplaintReason(erpComplaintReasonData));
 			}
 			complaintReasonMap.put(key, reasonList);
-			
 		}
 		return complaintReasonMap;
 	}
@@ -2596,72 +2604,6 @@ public class ModelConverter {
 		return erpCustEwalletModel;
 	}
 
-	public static FDAvailabilityI buildAvailableModelFromData(
-			FDAvailabilityData fdAvailabilityData) {
-		
-		if(fdAvailabilityData.getAvailableType().equals("FDStockAvailability")){
-		return buildfDStockAvailability(fdAvailabilityData);
-		}else if(fdAvailabilityData.getAvailableType().equals("FDCompositeAvailability")){
-		return buildfDCompositeAvailability(fdAvailabilityData);
-		}else if(fdAvailabilityData.getAvailableType().equals("FDMuniAvailability")){
-			return buildFDMuniAvailability(fdAvailabilityData);
-		}else if(fdAvailabilityData.getAvailableType().equals("FDStatusAvailability")){
-			return buildFDStatusAvailability(fdAvailabilityData);
-		}else if(fdAvailabilityData.getAvailableType().equals("NullAvailability")){
-			return buildNullAvailability(fdAvailabilityData);
-		}
-		return null;
-
-	}
-	
-	public static FDAvailabilityI buildNullAvailability(FDAvailabilityData data) {
-		if(data==null)
-		return null;
-		FDAvailabilityI valuee = new FDStockAvailability(convertErpInventoryDataToModel(data.getInventory()),  data.getReqQty(),  data.getMinQty(),  data.getQtyInc());
-				
-		return valuee;
-	}
-
-	public static FDAvailabilityI buildFDStatusAvailability(FDAvailabilityData data) {
-		if(data==null)
-		return null;
-		FDAvailabilityI valuee = new FDStatusAvailability(EnumAvailabilityStatus.getEnumByStatusCode(data.getStatus()),buildAvailableModelFromData(data.getAvailability()));
-				
-		return valuee;
-	
-	}
-
-	public static FDAvailabilityI buildFDMuniAvailability(FDAvailabilityData data) {
-		if(data==null)
-		return null;
-		FDAvailabilityI valuee = new FDStockAvailability(convertErpInventoryDataToModel(data.getInventory()),  data.getReqQty(),  data.getMinQty(),  data.getQtyInc());
-				
-		return valuee;
-	
-	}
-
-	public static FDAvailabilityI buildfDCompositeAvailability(FDAvailabilityData data) {
-		if(data==null)
-		return null;
-		FDAvailabilityI valuee = null;
-		for(String key:data.getAvailabilities().keySet()){
-			Map<String,FDAvailabilityI> results = new HashMap();
-			results.put(key, buildAvailableModelFromData(data.getAvailabilities().get(key)));
-			 valuee = new FDCompositeAvailability(results);
-
-		}
-
-		return valuee;
-	}
-
-	public static FDAvailabilityI buildfDStockAvailability(FDAvailabilityData data) {
-		if(data==null)
-		return null;
-		FDAvailabilityI valuee = new FDStockAvailability(convertErpInventoryDataToModel(data.getInventory()),  data.getReqQty(),  data.getMinQty(),  data.getQtyInc());
-				
-		return valuee;
-	}
-
 	public static ErpSaleModel buildErpSaleData(ErpSaleData data) {
 		System.out.println("Creating abstractmodel $$$$");
 		
@@ -2902,37 +2844,12 @@ public class ModelConverter {
 		model.setId(entity.getCustomerId());
 		model.setTransactionDate(entity.getTransactionDate());
 		model.setTransactionSource(EnumTransactionSource.getTransactionSource(entity.getTransactionSource()));
-		model.setPricingDate(entity.getPricingDate());
-		model.setRequestedDate(entity.getRequestedDate());
-		model.setSubTotal(entity.getSubTotal());
-		model.setTax(entity.getTax());
-		model.setCustomerServiceMessage(entity.getCustomerServiceMessage());
-		model.setMarketingMessage(entity.getMarketingMessage());
-		model.setTransactionInitiator(entity.getTransactionInitiator());
-		model.setGlCode(entity.getGlCode());
-		model.setBufferAmt(entity.getBufferAmt());
-		String taxationType = entity.getTaxationType();
-		model.setTaxationType((null!=taxationType && !"".equals(taxationType))?EnumNotificationType.getNotificationType(taxationType):null);
-		
-		model.setOrderLines(SapGatewayConverter.buildOrderLine(entity.getOrderLines()));
 
-		// load customer info
-		model.setDeliveryInfo(SapGatewayConverter.buildDeliveryInfo(entity.getDeliveryInfo()));
-		// load payment info
-		model.setPaymentMethod(SapGatewayConverter.buildPaymentMethodModel(entity.getPaymentMethod()));
-		model.setAppliedCredits(SapGatewayConverter.buildAppliedCredits(entity.getAppliedCredits()));
-		model.setCharges(SapGatewayConverter.buildChargeLineModel(entity.getCharges()));
-
-		model.setDiscounts(SapGatewayConverter.buildDiscountDataList(entity.getDiscounts()));
 		
 //		model.setRecepientsList(SapGatewayConverter.buildRecepientsList(entity.getRecipientList()));
 //		model.setAppliedGiftcards(SapGatewayConverter.buildAppliedGiftCards(entity.get));
-		if(entity.getDiscount()!=null){
-		ErpDiscountLineModel discountLineModel = new ErpDiscountLineModel(SapGatewayConverter.buildDiscount(entity.getDiscount()));
+		
 //		discountLineModel.setId(entity.getDiscount().getId());
-		model.addDiscount(discountLineModel);
-		}
-		model.setRafTransModel(SapGatewayConverter.buildRefTransModel(entity.getRafTransModel()));
 		
 		return model;
 	}

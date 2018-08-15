@@ -20,13 +20,13 @@ import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.delivery.DlvProperties;
 import com.freshdirect.delivery.sms.ejb.SmsAlertsHome;
 import com.freshdirect.delivery.sms.ejb.SmsAlertsSB;
+import com.freshdirect.ecommerce.data.delivery.sms.RecievedSmsData;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.sms.ResponseResult;
-import com.freshdirect.sms.SmsResponse;
 
 /**
  * This class will handle all the communication with Single Touch API
@@ -45,6 +45,7 @@ public class SMSAlertManager {
 	private static final Category LOGGER = LoggerFactory.getInstance(SMSAlertManager.class);
 	
 	private static final String CANCEL="CANCEL";
+	private static final String DATE_TIME_FORMAT = "yyyy-MM-dd hh:mm:ss";
 	
 	
 	private SmsAlertsHome smsAlertsHome=null;
@@ -228,26 +229,38 @@ public class SMSAlertManager {
 			String formattedMobileNumber=formatMobileNumber(mobileNumber);
 			lookupSmsAlertsHome();
 			if (CANCEL.equalsIgnoreCase(message)) {
+				 boolean isCaseCreated=false;
 				try {
-					LOGGER.info("Start:::::SMS response is sending to Backoffice. MobileNumber:"+mobileNumber);
-					IBackOfficeClientService service = BackOfficeClientService
-							.getInstance();
-					service.sendSmsResponseForCaseCreate(populateSmsResponse(mobileNumber, carrierName, message,receivedDate));
-				
-				} catch (Exception e) {
-					LOGGER.info("While sending SMS response to Backoffice got an exception for the MobileNumber:"+mobileNumber +e);
-				}
-			} 
-			if (FDStoreProperties
+					LOGGER.info("Start:::::SMS response is sending to Backoffice. MobileNumber:"+mobileNumber);									
+					IBackOfficeClientService service = BackOfficeClientService.getInstance();
+					  isCaseCreated=service.createCaseByRecievedSmsData(populateRecievedSmsData(mobileNumber, carrierName, message,formateDate(receivedDate)));
+					}
+					catch (Exception e) {
+						LOGGER.info("While sending SMS response to Backoffice got an exception for the MobileNumber:"+mobileNumber +e);
+						}
+						if (FDStoreProperties
+								.isSF2_0_AndServiceEnabled("sms.ejb.SmsAlertsSB")) {
+							FDECommerceService.getInstance().updateSmsReceived(
+									formattedMobileNumber, shortCode, carrierName,
+									date, message, eStoreId,isCaseCreated);
+						} else {
+							SmsAlertsSB smsAlertSB = smsAlertsHome.create();
+							smsAlertSB.updateSmsReceived(formattedMobileNumber,
+									shortCode, carrierName, date, message, eStoreId,isCaseCreated);
+						}
+					
+			} else {
+				if (FDStoreProperties
 						.isSF2_0_AndServiceEnabled("sms.ejb.SmsAlertsSB")) {
 					FDECommerceService.getInstance().updateSmsReceived(
 							formattedMobileNumber, shortCode, carrierName,
-							date, message, eStoreId);
+							date, message, eStoreId,false);
 				} else {
 					SmsAlertsSB smsAlertSB = smsAlertsHome.create();
 					smsAlertSB.updateSmsReceived(formattedMobileNumber,
-							shortCode, carrierName, date, message, eStoreId);
+							shortCode, carrierName, date, message, eStoreId,false);
 				}
+			}
 		} catch (ParseException e) {
 			e.printStackTrace();
 		} catch (NamingException e) {
@@ -259,15 +272,20 @@ public class SMSAlertManager {
 		}
 	}
 
-	public SmsResponse populateSmsResponse(String mobileNumber,
-			String carrierName, String message, String receivedDate) {
-		SmsResponse smsResponse = new SmsResponse();
-		smsResponse.setMobileNumber(mobileNumber);
-		smsResponse.setMessage(message);
-		smsResponse.setCarrierName(carrierName);
-		smsResponse.setReceivedDate(receivedDate);
-		smsResponse.seteStoreId(EnumEStoreId.FD.getContentId());
-		return smsResponse;
+	public Date formateDate(String receivedDate) throws ParseException {
+		SimpleDateFormat formatter = new SimpleDateFormat(DATE_TIME_FORMAT);
+		return formatter.parse(receivedDate);
+	}
+
+	public static RecievedSmsData populateRecievedSmsData(String mobileNumber,
+			String carrierName, String message, Date receivedDate) {
+		RecievedSmsData recievedSmsData=new RecievedSmsData();
+		recievedSmsData.setMobileNumber(mobileNumber);
+		recievedSmsData.setMessage(message);
+		recievedSmsData.setCarrierName(carrierName);
+		recievedSmsData.setReceivedDate(receivedDate);
+		recievedSmsData.seteStoreId(EnumEStoreId.FD.getContentId());
+		return recievedSmsData;
 	}	
 	private String formatMobileNumber(String mobileNumber){
 		

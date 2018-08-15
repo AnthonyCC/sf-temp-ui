@@ -42,6 +42,7 @@ import com.freshdirect.ecommerce.data.delivery.AddressAndRestrictedAdressData;
 import com.freshdirect.ecommerce.data.delivery.AlcoholRestrictionData;
 import com.freshdirect.ecommerce.data.delivery.RestrictedAddressModelData;
 import com.freshdirect.ecommerce.data.delivery.RestrictionData;
+import com.freshdirect.ecommerce.data.delivery.sms.RecievedSmsData;
 import com.freshdirect.ecommerce.data.delivery.sms.SmsAlertETAInfoData;
 import com.freshdirect.ecommerce.data.dlv.AddressData;
 import com.freshdirect.ecommerce.data.sessionimpressionlog.SessionImpressionLogEntryData;
@@ -287,7 +288,7 @@ public interface IECommerceService {
 	
 	public void expireOptin() throws FDResourceException;
 	
-	public void updateSmsReceived(String mobileNumber, String shortCode, String carrierName, Date receivedDate, String message, EnumEStoreId eStoreId) throws FDResourceException;
+	public void updateSmsReceived(String mobileNumber, String shortCode, String carrierName, Date receivedDate, String message, EnumEStoreId eStoreId, boolean isCaseCreated) throws FDResourceException;
 	
 	public List<STSmsResponse> sendSmsToGateway(List<SmsAlertETAInfoData> etaInfoList) throws FDResourceException;
 	
@@ -296,6 +297,10 @@ public interface IECommerceService {
 	public boolean smsOrderConfirmation(String customerId, String mobileNumber, String orderId, String eStoreId) throws FDResourceException;
 	
 	public boolean smsOrderModification(String customerId, String mobileNumber, String orderId, String eStoreId) throws  FDResourceException;
+	
+	public List<RecievedSmsData>  getReceivedSmsData() throws FDResourceException;
+	
+	public void updateCaseCreationStatus(String smsId, Boolean isSucess) throws FDResourceException;
 
 
 	public Map<ZoneInfo, List<FDProductPromotionInfo>> getAllProductsByType(String ppType, Date lastPublished) throws FDResourceException;

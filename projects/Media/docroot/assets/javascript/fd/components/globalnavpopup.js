@@ -8,10 +8,8 @@ var FreshDirect = FreshDirect || {};
   // - iPad - add class on touch, prevent click
   $(function() {
     var $container = $('[data-component="globalnav-menu"]'), containerOffsetLeft, containerWidth;
-    window.requestAnimationFrame(function() {
-      containerOffsetLeft = $container.offset().left;
-      containerWidth = $container.width();
-    });
+    containerOffsetLeft = $container.offset().left;
+    containerWidth = $container.width();
 
 	  // copy menu popups to menu items
 	  ["globalnav-item", "globalnav-submenu-item"].forEach(function (item) {

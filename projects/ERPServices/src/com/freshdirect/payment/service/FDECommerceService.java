@@ -309,6 +309,8 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String SMS_ALERT_EXPIRE_OPTIN = "sms/optin/expire";
 	private static final String SMS_TO_GATEWAY = "sms/sendtogateway";
 	private static final String SMS_MESSAGE_UPDATE = "sms/update";
+	private static final String SMS_MESSAGE_GET = "sms/get";
+	private static final String SMS_MESSAGE_CASECREATION_UPATE= "sms/updatecasestatus";
 
 	private static final String LOG_EVENT_RECOMMENDATION = "eventlogger/recommendation/log";
 	private static final String LOG_BATCHEVENT_RECOMMENDATION = "eventlogger/recommendation/logbatch";
@@ -2028,12 +2030,12 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	}
 	@Override
 	public void updateSmsReceived(String mobileNumber, String shortCode,String carrierName, Date receivedDate, String message,
-			EnumEStoreId eStoreId) throws  FDResourceException {
+			EnumEStoreId eStoreId,boolean isCaseCreated) throws  FDResourceException {
 		try {
 			String inputJson;
 			Request<RecievedSmsData> recieveSmsData = ModelConverter.buildSmsDataRequest(
 					 PhoneNumber.normalize(mobileNumber), shortCode, carrierName, receivedDate,
-					message, eStoreId);
+					message, eStoreId,isCaseCreated);
 			inputJson = buildRequest(recieveSmsData);
 			postDataTypeMap(inputJson, getFdCommerceEndPoint(SMS_MESSAGE_UPDATE), new TypeReference<Response<Void>>() {});
 		} catch (FDResourceException e) {
@@ -2121,6 +2123,35 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		return response.getData();
 	}
 	
+	@Override
+	public List<RecievedSmsData>  getReceivedSmsData() throws FDResourceException{
+		Response<List<RecievedSmsData>> response =null;
+			try {
+			response = this.httpGetDataTypeMap((getFdCommerceEndPoint(SMS_MESSAGE_GET)), new TypeReference<Response<List<RecievedSmsData>>>() {});
+			if(!response.getResponseCode().equals("OK"))
+				throw new FDResourceException(response.getMessage());
+			} catch (FDResourceException e) {
+				LOGGER.error(e.getMessage());
+				throw new FDResourceException(e, "Unable to process the request.");
+			}
+			return response.getData();
+			
+	}
+	
+	
+	@Override
+	public void updateCaseCreationStatus(String smsId, Boolean isCaseCreated)throws FDResourceException {
+		try {
+			String inputJson;
+			Request<RecievedSmsData> recieveSmsData = ModelConverter.buildSmsDataRequest(smsId,isCaseCreated);
+			inputJson = buildRequest(recieveSmsData);
+			postDataTypeMap(inputJson, getFdCommerceEndPoint(SMS_MESSAGE_CASECREATION_UPATE), new TypeReference<Response<Void>>() {});
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+		} catch (FDEcommServiceException e) {
+			LOGGER.error(e.getMessage());
+		} 
+	}
 	
 	@Override
 	public Collection<GroupScalePricing> findGrpInfoMaster(FDGroup[] grpIds)
