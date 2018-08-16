@@ -88,9 +88,16 @@
   	OAS_version = 10;
 
   if (OAS_version >= 11) {
-	$jq(document).ready(function() {
-		fd.common.dispatcher.signal('descriptiveContent', {});
-	});
+	try {
+		$jq(function() {
+			fd.common.dispatcher.signal('descriptiveContent', {});
+		});
+	} catch(e) {
+		/* fallback for pages without jquery */
+		document.write('<scr' + 'ipt type="text/javascript" src="' + OAS_url + 'adstream_mjx.ads/' +
+				  OAS_sitepage + '/1' + OAS_rns + '@' +
+				  OAS_listpos + '?' + OAS_query + '"><\/script>');
+	}
   }
   </script>
   <script type="text/javascript">
