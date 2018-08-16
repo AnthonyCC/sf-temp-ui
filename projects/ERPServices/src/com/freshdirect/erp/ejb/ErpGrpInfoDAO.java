@@ -70,9 +70,10 @@ public class ErpGrpInfoDAO {
             " AND g.version=(SELECT MAX(version) version FROM ERPS.GRP_SCALE_MASTER WHERE sap_id=G.SAP_ID) "+
             " AND ACTIVE='X'      and gp.grp_id=g.id ";
 
-	private static final String GRP_PRICING_SELECT_MAT_SQL_NEW="SELECT DISTINCT SAP_ID , g.VERSION,NVL(GP.SALES_ORG,'0001') SALES_ORG, NVL(GP.DISTRIBUTION_CHANNEL,'01') DISTRIBUTION_CHANNEL FROM "+
-	       " (select grp_id,version from erps.material_grp mg where mat_id=?) A, ERPS.GRP_SCALE_MASTER G, erps.grp_pricing gp "+
-	       " WHERE A.grp_id=g.id and a.version=g.version and g.id=GP.GRP_ID and g.version=(select max(version) from ERPS.GRP_SCALE_MASTER WHERE sap_id=g.sap_id) and g.active='X' and g.version=gp.version ";
+	private static final String GRP_PRICING_SELECT_MAT_SQL_NEW= " SELECT DISTINCT  g.SAP_ID , g.VERSION,NVL(GP.SALES_ORG,'0001') SALES_ORG, NVL(GP.DISTRIBUTION_CHANNEL,'01') DISTRIBUTION_CHANNEL FROM "+	
+		    " (select  gcm.sap_id, max(gcm.version) v from erps.material_grp mg, ERPS.GRP_SCALE_MASTER gcm    WHERE    mg.mat_id= ? and gcm.id=MG.GRP_ID  group by gcm.sap_id) A,ERPS.GRP_SCALE_MASTER G, erps.grp_pricing gp "+
+		    " WHERE A.sap_id=G.sap_id and a.v=g.version and g.active='X' and g.id=GP.GRP_ID and g.version=gp.version and a.v=gp.version "+
+		    " and not exists (Select 1 from ERPS.GRP_SCALE_MASTER gcm where gcm.sap_id=A.sap_id and gcm.version>a.v)";
 	@Deprecated
 	public static Map<String,FDGroup> getGroupIdentityForMaterial(Connection conn,String matId) throws SQLException{
 		FDGroup group=null;
