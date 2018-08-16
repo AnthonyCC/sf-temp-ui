@@ -2571,6 +2571,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 					// throw exception after sending the authorization failed
 					// email.
+					LOGGER.warn("invalid Giftcard identified while placing order for User: "+customerPk);
 					throw new InvalidCardException("Certificate Invalid");
 				}
 				// Initiate pre authorization.

@@ -685,6 +685,8 @@ public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
 				//Validation is sucessful. Set the card status as active.
 				giftcard.setStatus(EnumGiftCardStatus.ACTIVE);
 			}catch(GivexException ge) {
+				LOGGER.warn("giftCardException occured while making call to givex, making GC as INACTIVE -> Certificate Num: "+giftcard.getCertificateNumber()+" ,for User: "+giftcard.getCustomerId() );
+				giftcard.setStatus(EnumGiftCardStatus.INACTIVE);
 				if(ge.getErrorCode() < 0) {
 					//Probably a system exception. Connectivity to Givex failed or transaction timed out. Log the error and proceed.
 					LOGGER.error("System error occurred while verifying status of Gift certificate. Certificate Number : "
@@ -697,14 +699,13 @@ public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
 						LOGGER.error("This Gift Certificate has an issue. "+ge.getMessage()+" Certificate Number : "
 																	+giftcard.getCertificateNumber());
 					}
-					giftcard.setStatus(EnumGiftCardStatus.INACTIVE);
 				}
 			}catch(IOException ie) {
 				//Log the error and proceed.
 				LOGGER.error("IO error occurred while verifying status of Gift certificate. Certificate Number : "
 														+giftcard.getCertificateNumber(), ie);
 			}
-			if(giftcard.isRedeemable() && reloadBalance) {
+			if(giftcard.isRedeemable() && reloadBalance && response!=null) {
 				//Set the actual balance from Givex
 				if(giftcard.getStatus().equals(EnumGiftCardStatus.ACTIVE)) {
 					giftcard.setBalance(response.getCertBalance());	
