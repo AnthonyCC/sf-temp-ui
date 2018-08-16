@@ -811,6 +811,7 @@ public class FDStoreProperties {
     private static final String PROP_HOLIDAY_MEAL_BUNDLE_CATEGORY_ID = "fdstore.hmb.category.id";
     // APPDEV - 4354 - ATP in overlay
     private static final String PROP_ATP_AVAILABILTY_MOCK_ENABLED = "fdstore.atp.availability.mock.enabled";
+    private static final String PROP_ATP_AVAILABILTY_LOG_ENABLED = "fdstore.atp.availability.log.enabled";
     private static final String PROP_EWALLET_ENCRYPTION_KEY = "fdstore.ewallet.encryption.key";
     private static final String PROP_EWALLET_ENCRYPTION_ALGORITHM = "fdstore.ewallet.encryption.algorithm";
 
@@ -1817,6 +1818,7 @@ public class FDStoreProperties {
         defaults.put(PROP_EXTERNAL_ACCOUNTMGR_HOME, "freshdirect.fdstore.ExternalAccountManager");
         defaults.put(PROP_MIDDLETIER_PROVIDER_URL, "http://devmidtier.freshdirect.com/dl");
         defaults.put(PROP_ATP_AVAILABILTY_MOCK_ENABLED, "false");
+        defaults.put(PROP_ATP_AVAILABILTY_LOG_ENABLED, "false");
         defaults.put(PROP_HOLIDAY_MEAL_BUNDLE_CATEGORY_ID, "meals_entrees_holiday_thanksgiving");
         defaults.put(PROP_EWALLET_MASTERPASS_LIGHT_BOX_URL, "https://sandbox.masterpass.com/lightbox/Switch/integration/MasterPass.client.js");
         defaults.put(PROP_EWALLET_MASTERPASS_ENV_PROP_NAME, "Sandbox-Profile.ini");
@@ -4483,6 +4485,10 @@ public class FDStoreProperties {
         return (Boolean.valueOf(get(PROP_ATP_AVAILABILTY_MOCK_ENABLED))).booleanValue();
     }
 
+    public static boolean isAtpAvailabiltyLogEnabled() {
+        return (Boolean.valueOf(get(PROP_ATP_AVAILABILTY_LOG_ENABLED))).booleanValue();
+    }
+    
     public static String getCSContactDaysFDX() {
         return get(CUST_SERV_HOURS_DAYS_FDX);
     }
@@ -5244,7 +5250,7 @@ public class FDStoreProperties {
 
 	public static int getRefreshLookbackSecsProductInfo() {
         return Integer.parseInt(get(PROP_REFRESH_LOOKBACK_SECS_PRODUCTINFO));
-    }
+}
 
 
 	public static String getMidWeekSixMonthDeliveryPassSku() {

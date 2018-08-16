@@ -13,7 +13,10 @@ import org.apache.log4j.Category;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.freshdirect.common.CustomMapper;
 import com.freshdirect.customer.DlvSaleInfo;
+import com.freshdirect.customer.ErpDeliveryInfoModel;
 import com.freshdirect.customer.ErpSaleInfo;
+import com.freshdirect.customer.ErpSaleModel;
+import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.deliverypass.DlvPassUsageInfo;
 import com.freshdirect.deliverypass.DlvPassUsageLine;
 import com.freshdirect.ecommerce.data.common.Response;
@@ -30,6 +33,9 @@ public class OrderServiceApiClient extends AbstractEcommService implements Order
 	
 	private final static Category LOGGER = LoggerFactory.getInstance(OrderServiceApiClient.class);
 
+	private static final String GET_ORDER_API = "orders/{id}";
+	private static final String GET_DELIVERYINFO_API = "orders/{id}/getDeliveryInfo";
+	
 	private static final String ORDER_HISTORY_API = "customers/{customerId}/orders";
 	private static final String LAST_ORDER_ID_API = "customers/{customerId}/orders/last";
 	private static final String LAST_ORDER_ID_ESTORE_API = "customers/{customerId}/estore/{eStore}/orders/last";
@@ -49,7 +55,43 @@ public class OrderServiceApiClient extends AbstractEcommService implements Order
 
 		return INSTANCE;
 	}
+	
+	@Override
+	public ErpSaleModel getOrder(String id) throws RemoteException {
+		
+		try {
+			String response = httpGetData(getFdCommerceEndPoint(GET_ORDER_API), String.class, new Object[] { id });
+			Response<ErpSaleModel> info = getMapper().readValue(response, new TypeReference<Response<ErpSaleModel>>() {
+			});
+			return parseResponse(info);
+		} catch (Exception e) {
+			LOGGER.info(e);
+			LOGGER.info("Exception converting {} to ListOfObjects " + id);
+			throw new RemoteException(e.getMessage(), e);
 
+		}
+
+	}
+
+	@Override
+	public ErpDeliveryInfoModel getDeliveryInfo(String saleId) throws ErpSaleNotFoundException, RemoteException {
+
+		try {
+			String response = httpGetData(getFdCommerceEndPoint(GET_DELIVERYINFO_API), String.class,
+					new Object[] { saleId });
+			Response<ErpDeliveryInfoModel> info = getMapper().readValue(response,
+					new TypeReference<Response<ErpDeliveryInfoModel>>() {
+					});
+			return parseResponse(info);
+		} catch (Exception e) {
+			LOGGER.info(e);
+			LOGGER.info("Exception converting {} to ListOfObjects ");
+			throw new RemoteException(e.getMessage(), e);
+
+		}
+
+	}
+	
 	@Override
 	public List<ErpSaleInfo> getOrderHistory(String customerId)throws FDResourceException, RemoteException {
 		try{

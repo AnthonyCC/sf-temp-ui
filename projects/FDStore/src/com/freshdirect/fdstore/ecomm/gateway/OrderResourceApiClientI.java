@@ -1,4 +1,4 @@
-package com.freshdirect.ecomm.gateway;
+package com.freshdirect.fdstore.ecomm.gateway;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -13,31 +13,35 @@ import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpAbstractOrderModel;
+import com.freshdirect.customer.ErpAddressVerificationException;
+import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpCartonInfo;
 import com.freshdirect.customer.ErpCreateOrderModel;
 import com.freshdirect.customer.ErpDeliveryInfoModel;
+import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpModifyOrderModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.delivery.ReservationException;
+import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.ecommerce.data.dlv.FDReservationData;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.atp.FDAvailabilityI;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
+import com.freshdirect.giftcard.InvalidCardException;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
 public interface OrderResourceApiClientI {
 
-	void chargeOrder(FDIdentity identity, String saleId,
+	public void chargeOrder(FDIdentity identity, String saleId,
 			ErpPaymentMethodI paymentMethod, boolean sendEmail,
 			CustomerRatingI cra, CrmAgentModel agent, double additionalCharge);
-
-
-	public ErpSaleModel getOrder(String id) throws RemoteException;
 	
 	public List<ErpSaleModel> getOrders(List<String> ids) throws RemoteException;
 	
@@ -54,38 +58,35 @@ public interface OrderResourceApiClientI {
 	public void updateWaveInfo(String saleId, ErpShippingInfo shippingInfo) throws RemoteException, FinderException;
 	
 	public void updateCartonInfo(String saleId, List<ErpCartonInfo> cartonList) throws RemoteException, FinderException, FDResourceException;
-	 
-	public ErpDeliveryInfoModel getDeliveryInfo(String saleId) throws ErpSaleNotFoundException, RemoteException;
 
-
-	String placeGiftCardOrder(FDActionInfo info,
+	public String placeGiftCardOrder(FDActionInfo info,
 			ErpCreateOrderModel createOrder, Set<String> appliedPromos,
 			String id, boolean sendEmail, CustomerRatingI cra,
 			CrmAgentRole crmAgentRole, EnumDlvPassStatus status,
 			boolean isBulkOrder) throws RemoteException;
 
 
-	String placeSubscriptionOrder(FDActionInfo info,
+	public String placeSubscriptionOrder(FDActionInfo info,
 			ErpCreateOrderModel createOrder, Set<String> appliedPromos,
 			String id, boolean sendEmail, CustomerRatingI cra,
 			CrmAgentRole crmAgentRole, EnumDlvPassStatus status,
 			boolean isRealTimeAuthNeeded) throws RemoteException;
 
 
-	String placeDonationOrder(FDActionInfo info,
+	public String placeDonationOrder(FDActionInfo info,
 			ErpCreateOrderModel createOrder, Set<String> appliedPromos,
 			String id, boolean sendEmail, CustomerRatingI cra,
 			CrmAgentRole crmAgentRole, EnumDlvPassStatus status, boolean isOptIn) throws RemoteException;
 
 
-	String placeOrder(FDActionInfo info, ErpCreateOrderModel createOrder,
+	public String placeOrder(FDActionInfo info, ErpCreateOrderModel createOrder,
 			Set<String> appliedPromos, String id, boolean sendEmail,
 			CustomerRatingI cra, CrmAgentRole crmAgentRole,
 			EnumDlvPassStatus status, boolean isFriendReferred,
 			int fdcOrderCount) throws RemoteException;
 
 
-	void modifyOrder(FDActionInfo info, String saleId,
+	public void modifyOrder(FDActionInfo info, String saleId,
 			ErpModifyOrderModel order, Set<String> appliedPromos,
 			String originalReservationId, boolean sendEmail,
 			CustomerRatingI cra, CrmAgentRole crmAgentRole,
@@ -93,14 +94,14 @@ public interface OrderResourceApiClientI {
 			int fdcOrderCount);
 
 
-	void modifyAutoRenewOrder(FDActionInfo info, String saleId,
+	public void modifyAutoRenewOrder(FDActionInfo info, String saleId,
 			ErpModifyOrderModel order, Set<String> appliedPromos,
 			String originalReservationId, boolean sendEmail,
 			CustomerRatingI cra, CrmAgentRole crmAgentRole,
 			EnumDlvPassStatus status);
 
 
-	FDReservationData cancelOrder(FDActionInfo info, String saleId,
+	public FDReservationData cancelOrder(FDActionInfo info, String saleId,
 			boolean sendEmail, int currentDPExtendDays,
 			boolean restoreReservation);
 

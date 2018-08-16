@@ -1,4 +1,4 @@
-package com.freshdirect.ecomm.gateway;
+package com.freshdirect.fdstore.ecomm.gateway;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -13,8 +13,6 @@ import javax.ejb.FinderException;
 
 import org.apache.log4j.Category;
 
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -28,20 +26,27 @@ import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpAbstractOrderModel;
+import com.freshdirect.customer.ErpAddressVerificationException;
+import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpCartonInfo;
 import com.freshdirect.customer.ErpCreateOrderModel;
 import com.freshdirect.customer.ErpDeliveryInfoModel;
+import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpModifyOrderModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.delivery.ReservationException;
+import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.ecomm.converter.CustomerRatingConverter;
 import com.freshdirect.ecomm.converter.ErpFraudPreventionConverter;
 import com.freshdirect.ecomm.converter.FDActionInfoConverter;
 import com.freshdirect.ecomm.converter.SapGatewayConverter;
+import com.freshdirect.ecomm.gateway.AbstractEcommService;
+import com.freshdirect.ecomm.gateway.OrderServiceApiClient;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.ecommerce.data.dlv.FDReservationData;
@@ -54,7 +59,9 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.atp.FDAvailabilityI;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.giftcard.InvalidCardException;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
 public class OrderResourceApiClient extends AbstractEcommService implements OrderResourceApiClientI {
@@ -63,7 +70,6 @@ public class OrderResourceApiClient extends AbstractEcommService implements Orde
 
 	private final static Category LOGGER = LoggerFactory.getInstance(OrderServiceApiClient.class);
 
-	private static final String GET_ORDER_API = "orders/{id}";
 	private static final String GET_ORDERS_API = "orders/list";
 	private static final String GET_ORDERS_BY_PYMTTYPE_API = "orders/noncos/last/byPaymentType";
 	private static final String GET_ORDERS_BY_PYMTTYPES_API = "orders/noncos/last/byPaymentTypes";
@@ -71,7 +77,7 @@ public class OrderResourceApiClient extends AbstractEcommService implements Orde
 	private static final String GET_OUTSTANDING_BALANCE_API = "orders/getOutStandingBalance";
 	private static final String UPDATE_WAVE_INFO_API = "orders/{id}/waveInfo";
 	private static final String UPDATE_CARTON_INFO_API = "orders/{id}/cartonInfo";
-	private static final String GET_DELIVERYINFO_API = "orders/{id}/getDeliveryInfo";
+	
 	private static final String RESUBMIT_GC_ORDERS_API = "orders/resubmitNsmGcOrders";
 	private static final String CREATE_GC_ORDER_API = "orders/gc/create";
 	private static final String CREATE_SUB_ORDER_API = "orders/sub/create";
@@ -85,7 +91,6 @@ public class OrderResourceApiClient extends AbstractEcommService implements Orde
 	private static ObjectMapper TYPED_OBJECT_MAPPER = new ObjectMapper()
 			.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ"))
 			.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-			.setVisibility(PropertyAccessor.FIELD, Visibility.ANY)
 			.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_CONCRETE_AND_ARRAYS);
 
 	public static OrderResourceApiClient getInstance() {
@@ -102,22 +107,7 @@ public class OrderResourceApiClient extends AbstractEcommService implements Orde
 
 	}
 
-	@Override
-	public ErpSaleModel getOrder(String id) throws RemoteException {
-
-		try {
-			String response = httpGetData(getFdCommerceEndPoint(GET_ORDER_API), String.class, new Object[] { id });
-			Response<ErpSaleModel> info = getMapper().readValue(response, new TypeReference<Response<ErpSaleModel>>() {
-			});
-			return parseResponse(info);
-		} catch (Exception e) {
-			LOGGER.info(e);
-			LOGGER.info("Exception converting {} to ListOfObjects " + id);
-			throw new RemoteException(e.getMessage(), e);
-
-		}
-
-	}
+	
 
 	@Override
 	public List<ErpSaleModel> getOrders(List<String> ids) throws RemoteException {
@@ -256,24 +246,7 @@ public class OrderResourceApiClient extends AbstractEcommService implements Orde
 
 	}
 
-	@Override
-	public ErpDeliveryInfoModel getDeliveryInfo(String saleId) throws ErpSaleNotFoundException, RemoteException {
-
-		try {
-			String response = httpGetData(getFdCommerceEndPoint(GET_DELIVERYINFO_API), String.class,
-					new Object[] { saleId });
-			Response<ErpDeliveryInfoModel> info = getMapper().readValue(response,
-					new TypeReference<Response<ErpDeliveryInfoModel>>() {
-					});
-			return parseResponse(info);
-		} catch (Exception e) {
-			LOGGER.info(e);
-			LOGGER.info("Exception converting {} to ListOfObjects ");
-			throw new RemoteException(e.getMessage(), e);
-
-		}
-
-	}
+	
 
 	@Override
 	public double getOutStandingBalance(ErpAbstractOrderModel order) throws RemoteException {
@@ -525,11 +498,11 @@ public class OrderResourceApiClient extends AbstractEcommService implements Orde
 				return map;
 			} catch (JsonMappingException e) {
 				LOGGER.error("Error occurs in checkAvailability: inputJson=" + inputJson
-						+ ", response=" + response, e);
+						+ ", responseData=" + response.getData(), e);
 				throw new FDResourceException(e);
 			} catch (JsonParseException e) {
 				LOGGER.error("Error occurs in checkAvailability: inputJson=" + inputJson
-						+ ", response=" + response, e);
+						+ ", responseData=" + response.getData(), e);
 				throw new FDResourceException(e);
 			} catch (IOException e) {
 				LOGGER.error("Error occurs in checkAvailability: inputJson=" + inputJson

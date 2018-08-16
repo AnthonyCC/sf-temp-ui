@@ -16,7 +16,7 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.ecomm.gateway.AbstractEcommService;
-import com.freshdirect.ecomm.gateway.OrderResourceApiClient;
+import com.freshdirect.ecomm.gateway.OrderServiceApiClient;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.fdstore.EnumEStoreId;
@@ -76,7 +76,7 @@ public class CustomerOrderService extends AbstractEcommService implements Custom
 
 	@Override
 	public FDOrderI getOrder(String saleId) throws FDResourceException, RemoteException {
-		ErpSaleModel saleModel = OrderResourceApiClient.getInstance().getOrder(saleId);
+		ErpSaleModel saleModel = OrderServiceApiClient.getInstance().getOrder(saleId);
 		
 		return new FDOrderAdapter(saleModel, false);
 	}

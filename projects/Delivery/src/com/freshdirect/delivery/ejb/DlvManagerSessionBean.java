@@ -49,8 +49,7 @@ import com.freshdirect.delivery.announcement.EnumPlacement;
 import com.freshdirect.delivery.announcement.EnumUserDeliveryStatus;
 import com.freshdirect.delivery.announcement.EnumUserLevel;
 import com.freshdirect.delivery.announcement.SiteAnnouncement;
-import com.freshdirect.ecomm.gateway.OrderResourceApiClient;
-import com.freshdirect.ecomm.gateway.OrderResourceApiClientI;
+import com.freshdirect.ecomm.gateway.OrderServiceApiClient;
 import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.services.IAirclicService;
@@ -651,8 +650,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			for (String orderId : list) {
 				ErpSaleModel order = null;
 				if(FDStoreProperties.isSF2_0_AndServiceEnabled("getOrder_Api")){
-		    		OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
-		    		order =  service.getOrder(orderId);
+		    		order =  OrderServiceApiClient.getInstance().getOrder(orderId);
 		    	}else{
 		    		order =  sb.getOrder(new PrimaryKey(orderId));	
 		    	}

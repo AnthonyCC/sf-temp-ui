@@ -92,8 +92,9 @@ import com.freshdirect.deliverypass.EnumDlvPassExtendReason;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerSB;
-import com.freshdirect.ecomm.gateway.OrderResourceApiClient;
-import com.freshdirect.ecomm.gateway.OrderResourceApiClientI;
+import com.freshdirect.ecomm.gateway.OrderServiceApiClient;
+import com.freshdirect.fdstore.ecomm.gateway.OrderResourceApiClient;
+import com.freshdirect.fdstore.ecomm.gateway.OrderResourceApiClientI;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
@@ -932,12 +933,12 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
         try {
             ErpCustomerManagerSB customerManagerSB = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
             ErpSaleModel _order = null;
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("getOrder_Api")){
-	    		OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
-	    		_order =  service.getOrder(saleId);
-	    	}else{
-	    		_order=customerManagerSB.getOrder(new PrimaryKey(saleId));
-	    	}
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("getOrder_Api")) {
+				OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
+				_order = OrderServiceApiClient.getInstance().getOrder(saleId);
+			} else {
+				_order = customerManagerSB.getOrder(new PrimaryKey(saleId));
+			}
             ErpAbstractOrderModel order =_order.getCurrentOrder();
             ErpDeliveryInfoModel dlvInfo=order.getDeliveryInfo();
             //@TODO Logistics ReIntegration Task - Need to determine if SAP is using the region send as part of Create/Change Sales Order. If not this logic will be removed. 
@@ -1834,8 +1835,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 					saleId = orderInfo.getSaleId();
 					ErpSaleModel saleModel = null;
 					if(FDStoreProperties.isSF2_0_AndServiceEnabled("getOrder_Api")){
-			    		OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
-			    		saleModel =  service.getOrder(saleId);
+			    		saleModel =  OrderServiceApiClient.getInstance().getOrder(saleId);
 			    	}else{
 			    		saleModel = sb.getOrder(new PrimaryKey(saleId));
 			    	}
@@ -3268,12 +3268,11 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				ErpCustomerManagerSB customerManagerSB = (ErpCustomerManagerSB) this.getErpCustomerManagerHome()
 						.create();
 				ErpSaleModel _order = null;
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled("getOrder_Api")){
-		    		OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
-		    		_order =  service.getOrder(saleId);
-		    	}else{
-		    		_order = customerManagerSB.getOrder(new PrimaryKey(saleId));
-		    	}
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled("getOrder_Api")) {
+					_order = OrderServiceApiClient.getInstance().getOrder(saleId);
+				} else {
+					_order = customerManagerSB.getOrder(new PrimaryKey(saleId));
+				}
 				if (_order == null)
 					return;
 				if (EnumSaleStatus.CANCELED.equals(_order.getStatus())) {
@@ -3371,12 +3370,11 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		try {
 			ErpCustomerManagerSB customerManagerSB = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
 			ErpSaleModel _order = null;
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("getOrder_Api")){
-	    		OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
-	    		_order =  service.getOrder(saleId);
-	    	}else{
-	    		_order = customerManagerSB.getOrder(new PrimaryKey(saleId));
-	    	}
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("getOrder_Api")) {
+				_order = OrderServiceApiClient.getInstance().getOrder(saleId);
+			} else {
+				_order = customerManagerSB.getOrder(new PrimaryKey(saleId));
+			}
 			if (_order == null)
 				return;
 			if (EnumSaleStatus.PAYMENT_PENDING.equals(_order.getStatus())) {

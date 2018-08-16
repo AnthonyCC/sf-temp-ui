@@ -233,9 +233,11 @@ public class FDFactory {
 
 		} catch (CreateException ce) {
 			factoryHome=null;
+			LOGGER.error("RemoteException", ce);
 			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
 			factoryHome=null;
+			LOGGER.error("RemoteException", re);
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
