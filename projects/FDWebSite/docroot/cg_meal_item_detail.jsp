@@ -43,7 +43,12 @@ int            maxWidth = 320;
 List           skus     = new ArrayList();
 
 if (mcatId != null && mproductId != null) {
-    product =  PopulatorUtil.getProductByName(mcatId,mproductId);
+try{
+   product =  PopulatorUtil.getProductByName(mcatId,mproductId);
+}
+catch (FDResourceException e){
+    throw new FDNotFoundException("Product is discontiued or exception happened during data collection.");
+}
 
 } else if (variantId != null && variantId.length() != 0) {
 	variant = (RecipeVariant) PopulatorUtil.getContentNode(variantId);
