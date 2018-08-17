@@ -84,6 +84,10 @@
 		<url-pattern>/social/success.jsp</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
+		<filter-name>UpdateFDSessionUserFilter</filter-name>
+		<url-pattern>/social/AccountCreateSuccess.jsp</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
 		<filter-name>OncePerRequestDateFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
@@ -353,15 +357,6 @@
     <servlet-mapping>
         <servlet-name>MultiSearchListServlet</servlet-name>
         <url-pattern>/api/multisearch</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>SignUpServlet</servlet-name>
-        <servlet-class>com.freshdirect.webapp.ajax.signup.SignUpServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>SignUpServlet</servlet-name>
-        <url-pattern>/api/signup/*</url-pattern>
     </servlet-mapping>
 
 	<servlet>

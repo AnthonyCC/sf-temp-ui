@@ -52,12 +52,12 @@ function close_window_new_account(){
 	 * go through with this only if it is called from within the new account iframe,
 	 * AFTER the account has been made or if this is the grey upper right x visually nearby
 	*/
-	
-
-	if (!$jq('#signup-success').hasClass('hidden') && $jq('#signup-success').data('signup-success')) {
-		$jq('.social-login-spinner').show();
-
-		window.location= FreshDirect.successPage || decodeURIComponent(FreshDirect.utils.getParameterByName('successPage')) || '/login/index.jsp';
+	if(
+	($jq("#social-login-green-button_begin-shopping").length > 0) ||
+	($jq("#iframepopup-body_id").contents().find("#social-login-green-button_begin-shopping").length > 0)
+	){
+		window.top.location=decodeURIComponent(FreshDirect.utils.getParameterByName('successPage')) || '/login/index.jsp';
+		window.top['FreshDirect'].components.ifrPopup.close();
 	}
 }
 

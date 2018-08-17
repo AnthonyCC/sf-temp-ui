@@ -64,28 +64,22 @@
 
 				<div class="form-side-social">
 					<div class="form-side-social-header">Sign in with email:</div>
-					
-					<div class="bottom-contents">
-						<div class="bottom-links">
-							New to FreshDirect? <a id="social_login_signup_link" href="/social/signup_lite.jsp" tabindex="6" data-hasevent="false">Create Account</a>
-						</div>
-					</div>
-					
+
 					<div id="form_feilds">
 						<form name="fd_login" id="fd_login" method="post">
 							<%
 								if (!result.isSuccess()) {
-									String errorMsg = "<div class='error-message'>Email and password do not match.</br>Please try again.</div>";
-									String isSocialLoginOnlyUser = (String) session.getAttribute("IS_SOCIAL_LOGIN_USER_VALIDATION");
-									String connectedProviders = (String) session.getAttribute("CONNECTED_SOCIAL_PROVIDERS");
-									if (isSocialLoginOnlyUser != null && isSocialLoginOnlyUser.length() > 0) {
-										session.setAttribute("IS_SOCIAL_LOGIN_USER_VALIDATION", null);
-										session.setAttribute("CONNECTED_SOCIAL_PROVIDERS", null);
-										errorMsg = "<div class='error-message'>User Name & Password do not match</br>Please try again or Sign in with "
-												+ connectedProviders + ".</div>";
+										String errorMsg = "<div class='error-message'>Email and password do not match.</br>Please try again.</div>";
+										String isSocialLoginOnlyUser = (String) session.getAttribute("IS_SOCIAL_LOGIN_USER_VALIDATION");
+										String connectedProviders = (String) session.getAttribute("CONNECTED_SOCIAL_PROVIDERS");
+										if (isSocialLoginOnlyUser != null && isSocialLoginOnlyUser.length() > 0) {
+											session.setAttribute("IS_SOCIAL_LOGIN_USER_VALIDATION", null);
+											session.setAttribute("CONNECTED_SOCIAL_PROVIDERS", null);
+											errorMsg = "<div class='error-message'>User Name & Password do not match</br>Please try again or Sign in with "
+													+ connectedProviders + ".</div>";
+										}
+										out.println(errorMsg);
 									}
-									out.println(errorMsg);
-								}
 							%>
 							<input type="hidden" id="success-target" value="<%=successPage%>" />
 							<div class='error-message hidden'>
@@ -137,9 +131,11 @@
 								<tr>
 									<td></td>
 									<td style="padding-top: 15px;">
+										
 											<input
 												type="submit" id="signinbtn" class="button_disabled"
 												maxlength="25" size="19" value="Sign in" tabindex="3" disabled/>
+										
 									</td>
 								</tr>
 								<tr>
@@ -177,7 +173,6 @@
 				<div id="social_login_demo" class="social-login-social" tabindex="5">
 					<input type="hidden" id="social-login-callback-uri" 
 					value="<%=FDStoreProperties.isLocalDeployment()?"//" + request.getServerName() + ":" + request.getServerPort() + "/social/social_login_success.jsp?successPage=" + FDURLUtil.safeURLEncode(request.getParameter("successPage")): "" %>" />
-					
 					<script type="text/javascript">
 				    	/* The library is loaded asynchronously */
 					    var oa = document.createElement('script');
@@ -193,35 +188,42 @@
 				%>
 				<!-- social login section ends here -->
 
-				
 
-				<script>
-					if ($jq('#social_login_signup_link[data-hasevent="false"]').length) {
-						$jq('#social_login_signup_link').on('click', function(event){									
-							event.preventDefault();
-							$jq(this).attr('data-hasevent', 'true');
-							var fd = window.FreshDirect;
-							fd.components.ajaxPopup.close();
-							 
-							//if we're on the signup page already, exit here
-							if (window.location.pathname === '/social/signup_lite.jsp') { return; }
-							
-							if (fd.mobWeb) { /* send user to page instead of popup */
-								  var API = $jq("#nav-menu").data("mmenu");
-									window.top.location = '/social/signup_lite.jsp?successPage=' + window.location.pathname + window.location.search + window.location.hash;
-									if (API) {
-										API.close();
-									}
-							  } else {
-								    fd.modules.common.login.socialSignup('<%=successPage%>');
-							  }
-						});
-					}
-				</script>
+
+				<div class="clear"></div>
+
+				<div class="bottom-contents">
+					<div class="bottom-links">
+						New to FreshDirect? <a id="social_login_signup_link" href="/social/signup_lite.jsp" tabindex="6" data-hasevent="false">Create Account</a>
+							<script>
+								if ($jq('#social_login_signup_link[data-hasevent="false"]').length) {
+									$jq('#social_login_signup_link').on('click', function(event){									
+										event.preventDefault();
+										$jq(this).attr('data-hasevent', 'true');
+										var fd = window.FreshDirect;
+										fd.components.ajaxPopup.close();
+										
+										//if we're on the signup page already, exit here
+										if (window.location.pathname === '/social/signup_lite.jsp') { return; }
+										
+										if (fd.mobWeb) { /* send user to page instead of popup */
+											  var API = $jq("#nav-menu").data("mmenu");
+												window.top.location = '/social/signup_lite.jsp?successPage=' + window.location.pathname + window.location.search + window.location.hash;
+												if (API) {
+													API.close();
+												}
+										  } else {
+											    if (fd.components && fd.components.ifrPopup) {
+											      fd.components.ifrPopup.open({ url: '/social/signup_lite.jsp?successPage='+encodeURIComponent('<%=successPage%>'), height: 590, width:560, opacity: .5});
+											    }
+										  }
+									});
+								}
+							</script>
+					</div>
+				</div>
 
 			</div>
 			<!-- container ends here -->
-</fd:LoginController>
 </center>
-
-
+</fd:LoginController>

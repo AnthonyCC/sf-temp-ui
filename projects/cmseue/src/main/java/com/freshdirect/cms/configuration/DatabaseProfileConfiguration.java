@@ -47,189 +47,183 @@ import com.zaxxer.hikari.HikariDataSource;
 @Profile("database")
 @EnableCaching
 @EnableAsync
-@EnableJpaRepositories({ "com.freshdirect.cms.persistence.repository", "com.freshdirect.cms.changecontrol.repository",
-		"com.freshdirect.cms.media.repository" })
+@EnableJpaRepositories({ "com.freshdirect.cms.persistence.repository", "com.freshdirect.cms.changecontrol.repository", "com.freshdirect.cms.media.repository" })
 @EnableTransactionManagement(proxyTargetClass = true)
-@ComponentScan(basePackages = { "com.freshdirect.cms" }, excludeFilters = {
-		@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = DraftPopulatorController.class),
-		@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = NotificationReceiverController.class),
-		@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = ChangePropagatorController.class) })
+@ComponentScan(basePackages = {"com.freshdirect.cms"},
+    excludeFilters = {
+    @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = DraftPopulatorController.class),
+    @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = NotificationReceiverController.class),
+    @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = ChangePropagatorController.class)
+})
 public class DatabaseProfileConfiguration {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseProfileConfiguration.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseProfileConfiguration.class);
 
-	@Resource
-	private Environment env;
+    @Resource
+    private Environment env;
 
-	@Bean
-	public CacheManager cacheManager() {
-		return new EhCacheCacheManager(ehCacheCacheManager().getObject());
-	}
+    @Bean
+    public CacheManager cacheManager() {
+        return new EhCacheCacheManager(ehCacheCacheManager().getObject());
+    }
 
-	@Bean
-	@Primary
-	public DataSource dataSource(@Value("${spring.datasource.driverClassName}") String driverClassName,
-			@Value("${spring.datasource.url}") String url, @Value("${spring.datasource.user}") String user,
-			@Value("${spring.datasource.password}") String password, @Value("${spring.datasource.pool}") String pool,
-			@Value("${spring.datasource.maxPoolSize:10}") int maxPoolSize) {
-		DataSource dataSource = null;
+    @Bean
+    @Primary
+    public DataSource dataSource(@Value("${spring.datasource.driverClassName}") String driverClassName, @Value("${spring.datasource.url}") String url,
+            @Value("${spring.datasource.user}") String user, @Value("${spring.datasource.password}") String password, @Value("${spring.datasource.pool}") String pool,
+            @Value("${spring.datasource.maxPoolSize:10}") int maxPoolSize) {
+        DataSource dataSource = null;
 
-		if (driverClassName != null && url != null && user != null && password != null) {
-			try {
-				dataSource = hikariDataSource(driverClassName, url, user, password, pool, maxPoolSize);
-			} catch (Exception exc) {
-				LOGGER.error("Failed to create hikari data source", exc);
-			}
-		}
+        if (driverClassName != null && url != null && user != null && password != null) {
+            try {
+                dataSource = hikariDataSource(driverClassName, url, user, password, pool, maxPoolSize);
+            } catch (Exception exc) {
+                LOGGER.error("Failed to create hikari data source", exc);
+            }
+        }
 
-		if (dataSource == null) {
-			JndiTemplate jndiTempate = jndiTempate(env.getProperty("jndi.provider.url", "t3://localhost:7001"));
-			try {
-				dataSource = jndiDataSource(jndiTempate, env.getProperty("jndi.datasource", "fddatasource"));
-			} catch (NamingException e) {
-				LOGGER.error("Failed to lookup datasource in JNDI", e);
-			}
-		}
+        if (dataSource == null) {
+            JndiTemplate jndiTempate = jndiTempate(env.getProperty("jndi.provider.url", "t3://localhost:7001"));
+            try {
+                dataSource = jndiDataSource(jndiTempate, env.getProperty("jndi.datasource", "fddatasource"));
+            } catch (NamingException e) {
+                LOGGER.error("Failed to lookup datasource in JNDI", e);
+            }
+        }
 
-		return dataSource;
-	}
+        return dataSource;
+    }
 
-	@Bean(name = "erpsDataSource")
-	public DataSource erpsDataSource(@Value("${spring.datasource.driverClassName}") String driverClassName,
-			@Value("${spring.datasource.url}") String url, @Value("${spring.erps.datasource.user}") String user,
-			@Value("${spring.erps.datasource.password}") String password,
-			@Value("${spring.datasource.pool}") String pool,
-			@Value("${spring.datasource.maxPoolSize:10}") int maxPoolSize) {
-		DataSource dataSource = null;
+    @Bean(name = "erpsDataSource")
+    public DataSource erpsDataSource(@Value("${spring.datasource.driverClassName}") String driverClassName, @Value("${spring.datasource.url}") String url,
+            @Value("${spring.erps.datasource.user}") String user, @Value("${spring.erps.datasource.password}") String password, @Value("${spring.datasource.pool}") String pool,
+            @Value("${spring.datasource.maxPoolSize:10}") int maxPoolSize) {
+        DataSource dataSource = null;
 
-		if (driverClassName != null && url != null && user != null && password != null) {
-			try {
-				dataSource = hikariDataSource(driverClassName, url, user, password, pool, maxPoolSize);
-			} catch (Exception exc) {
-				LOGGER.error("Failed to create hikari data source", exc);
-			}
-		}
+        if (driverClassName != null && url != null && user != null && password != null) {
+            try {
+                dataSource = hikariDataSource(driverClassName, url, user, password, pool, maxPoolSize);
+            } catch (Exception exc) {
+                LOGGER.error("Failed to create hikari data source", exc);
+            }
+        }
 
-		if (dataSource == null) {
-			JndiTemplate jndiTempate = jndiTempate(env.getProperty("jndi.provider.url", "t3://localhost:7001"));
-			try {
-				dataSource = jndiDataSource(jndiTempate, env.getProperty("jndi.datasource", "fddatasource"));
-			} catch (NamingException e) {
-				LOGGER.error("Failed to lookup datasource in JNDI", e);
-			}
-		}
+        if (dataSource == null) {
+            JndiTemplate jndiTempate = jndiTempate(env.getProperty("jndi.provider.url", "t3://localhost:7001"));
+            try {
+                dataSource = jndiDataSource(jndiTempate, env.getProperty("jndi.datasource", "fddatasource"));
+            } catch (NamingException e) {
+                LOGGER.error("Failed to lookup datasource in JNDI", e);
+            }
+        }
 
-		return dataSource;
-	}
+        return dataSource;
+    }
 
-	@Bean
-	public EhCacheManagerFactoryBean ehCacheCacheManager() {
-		EhCacheManagerFactoryBean cacheManagerFactoryBean = new EhCacheManagerFactoryBean();
-		cacheManagerFactoryBean.setConfigLocation(new ClassPathResource("ehcache.xml"));
-		cacheManagerFactoryBean.setShared(true);
-		return cacheManagerFactoryBean;
-	}
+    @Bean
+    public EhCacheManagerFactoryBean ehCacheCacheManager() {
+        EhCacheManagerFactoryBean cacheManagerFactoryBean = new EhCacheManagerFactoryBean();
+        cacheManagerFactoryBean.setConfigLocation(new ClassPathResource("ehcache.xml"));
+        cacheManagerFactoryBean.setShared(true);
+        return cacheManagerFactoryBean;
+    }
 
-	/**
-	 * Create entityManagerFactory.
-	 *
-	 * @return entityManagerFactory
-	 */
-	@Bean
-	public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource,
-			Properties jpaProperties) {
-		LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-		em.setDataSource(dataSource);
-		em.setPackagesToScan(
-				new String[] { "com.freshdirect.cms.persistence.entity", "com.freshdirect.cms.changecontrol.entity",
-						"com.freshdirect.cms.media.entity", "com.freshdirect.cms" });
-		em.setJpaProperties(jpaProperties);
-		JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-		em.setJpaVendorAdapter(vendorAdapter);
-		em.setPersistenceUnitName("persistenceUnit");
-		return em;
-	}
+    /**
+     * Create entityManagerFactory.
+     *
+     * @return entityManagerFactory
+     */
+    @Bean
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource, Properties jpaProperties) {
+        LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
+        em.setDataSource(dataSource);
+        em.setPackagesToScan(
+                new String[] { "com.freshdirect.cms.persistence.entity", "com.freshdirect.cms.changecontrol.entity", "com.freshdirect.cms.media.entity", "com.freshdirect.cms" });
+        em.setJpaProperties(jpaProperties);
+        JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+        em.setJpaVendorAdapter(vendorAdapter);
+        em.setPersistenceUnitName("persistenceUnit");
+        return em;
+    }
 
-	/**
-	 * Create hibernateProperties bean.
-	 *
-	 *
-	 * @param dialect
-	 *            String dialect
-	 * @param showSql
-	 *            String showSql
-	 * @param formatSql
-	 *            String formatSql
-	 * @param isSchemaCreated
-	 *            String isSchemaCreated
-	 * @param dbAction
-	 *            String dbAction
-	 * @param scriptAction
-	 *            String scriptAction
-	 * @param scriptCreateTarget
-	 *            String scriptCreateTarget
-	 * @param scriptDropTarget
-	 *            String scriptDropTarget
-	 * @param importFile
-	 *            String importFile
-	 *
-	 * @return properties of parameters
-	 */
-	@Bean(name = "jpaProperties")
-	public Properties hibernatePropertiesWithSchemaCreation(@Value("${hibernate.dialect}") String dialect,
-			@Value("${hibernate.show_sql:#{null}}") String showSql,
-			@Value("${hibernate.format_sql:#{null}}") String formatSql,
-			@Value("${hibernate.default_schema:#{null}}") String defaultSchema,
-			@Value("${javax.persistence.create-database-schemas:#{null}}") Boolean isSchemaCreated,
-			@Value("${javax.persistence.schema-generation.database.action:#{null}}") String dbAction,
-			@Value("${javax.persistence.schema-generation.scripts.action:#{null}}") String scriptAction,
-			@Value("${javax.persistence.schema-generation.scripts.create-target:#{null}}") String scriptCreateTarget,
-			@Value("${javax.persistence.schema-generation.scripts.drop-target:#{null}}") String scriptDropTarget,
-			@Value("${javax.persistence.sql-load-script-source:#{null}}") String importFile) {
-		Properties properties = new Properties();
+    /**
+     * Create hibernateProperties bean.
+     *
+     *
+     * @param dialect
+     *            String dialect
+     * @param showSql
+     *            String showSql
+     * @param formatSql
+     *            String formatSql
+     * @param isSchemaCreated
+     *            String isSchemaCreated
+     * @param dbAction
+     *            String dbAction
+     * @param scriptAction
+     *            String scriptAction
+     * @param scriptCreateTarget
+     *            String scriptCreateTarget
+     * @param scriptDropTarget
+     *            String scriptDropTarget
+     * @param importFile
+     *            String importFile
+     *
+     * @return properties of parameters
+     */
+    @Bean(name = "jpaProperties")
+    public Properties hibernatePropertiesWithSchemaCreation(@Value("${hibernate.dialect}") String dialect, @Value("${hibernate.show_sql:#{null}}") String showSql,
+            @Value("${hibernate.format_sql:#{null}}") String formatSql, @Value("${hibernate.default_schema:#{null}}") String defaultSchema,
+            @Value("${javax.persistence.create-database-schemas:#{null}}") Boolean isSchemaCreated,
+            @Value("${javax.persistence.schema-generation.database.action:#{null}}") String dbAction,
+            @Value("${javax.persistence.schema-generation.scripts.action:#{null}}") String scriptAction,
+            @Value("${javax.persistence.schema-generation.scripts.create-target:#{null}}") String scriptCreateTarget,
+            @Value("${javax.persistence.schema-generation.scripts.drop-target:#{null}}") String scriptDropTarget,
+            @Value("${javax.persistence.sql-load-script-source:#{null}}") String importFile) {
+        Properties properties = new Properties();
 
-		properties.put(org.hibernate.cfg.AvailableSettings.DIALECT, dialect);
+        properties.put(org.hibernate.cfg.AvailableSettings.DIALECT, dialect);
 
-		if (showSql != null) {
-			properties.put(org.hibernate.cfg.AvailableSettings.SHOW_SQL, showSql);
-		}
+        if (showSql != null) {
+            properties.put(org.hibernate.cfg.AvailableSettings.SHOW_SQL, showSql);
+        }
 
-		if (formatSql != null) {
-			properties.put(org.hibernate.cfg.AvailableSettings.FORMAT_SQL, formatSql);
-		}
+        if (formatSql != null) {
+            properties.put(org.hibernate.cfg.AvailableSettings.FORMAT_SQL, formatSql);
+        }
 
-		if (defaultSchema != null) {
-			properties.put(org.hibernate.cfg.Environment.DEFAULT_SCHEMA, defaultSchema);
-		}
+        if (defaultSchema != null) {
+            properties.put(org.hibernate.cfg.Environment.DEFAULT_SCHEMA, defaultSchema);
+        }
 
-		if (isSchemaCreated != null) {
-			properties.put(org.hibernate.jpa.AvailableSettings.SCHEMA_GEN_CREATE_SCHEMAS, isSchemaCreated);
-		}
+        if (isSchemaCreated != null) {
+            properties.put(org.hibernate.jpa.AvailableSettings.SCHEMA_GEN_CREATE_SCHEMAS, isSchemaCreated);
+        }
 
-		if (dbAction != null) {
-			properties.put(org.hibernate.jpa.AvailableSettings.SCHEMA_GEN_DATABASE_ACTION, dbAction);
-		}
+        if (dbAction != null) {
+            properties.put(org.hibernate.jpa.AvailableSettings.SCHEMA_GEN_DATABASE_ACTION, dbAction);
+        }
 
-		if (scriptAction != null) {
-			properties.put(org.hibernate.jpa.AvailableSettings.SCHEMA_GEN_SCRIPTS_ACTION, scriptAction);
-		}
+        if (scriptAction != null) {
+            properties.put(org.hibernate.jpa.AvailableSettings.SCHEMA_GEN_SCRIPTS_ACTION, scriptAction);
+        }
 
-		if (scriptCreateTarget != null) {
-			properties.put(org.hibernate.jpa.AvailableSettings.SCHEMA_GEN_SCRIPTS_CREATE_TARGET, scriptCreateTarget);
-		}
+        if (scriptCreateTarget != null) {
+            properties.put(org.hibernate.jpa.AvailableSettings.SCHEMA_GEN_SCRIPTS_CREATE_TARGET, scriptCreateTarget);
+        }
 
-		if (scriptDropTarget != null) {
-			properties.put(org.hibernate.jpa.AvailableSettings.SCHEMA_GEN_SCRIPTS_DROP_TARGET, scriptDropTarget);
-		}
+        if (scriptDropTarget != null) {
+            properties.put(org.hibernate.jpa.AvailableSettings.SCHEMA_GEN_SCRIPTS_DROP_TARGET, scriptDropTarget);
+        }
 
-		if (importFile != null) {
-			properties.put(org.hibernate.jpa.AvailableSettings.SCHEMA_GEN_LOAD_SCRIPT_SOURCE, importFile);
-		}
+        if (importFile != null) {
+            properties.put(org.hibernate.jpa.AvailableSettings.SCHEMA_GEN_LOAD_SCRIPT_SOURCE, importFile);
+        }
 
-		return properties;
-	}
+        return properties;
+    }
 
-	/**
+    /**
      * Create hikariDataSource bean.
      *
      * @param driverClassName
@@ -257,66 +251,64 @@ public class DatabaseProfileConfiguration {
         config.setPassword(password);
         config.setPoolName(pool);
         config.setMaximumPoolSize(maxPoolSize);
-        config.setMaximumPoolSize(maxPoolSize);
 
         return new HikariDataSource(config);
     }
 
-	private DataSource jndiDataSource(JndiTemplate template, @Value("${jndi.datasource:cmsdatasource}") String jndiName)
-			throws NamingException {
-		final JndiDataSourceLookup dsLookup = new JndiDataSourceLookup();
-		dsLookup.setResourceRef(true);
-		DataSource dataSource = dsLookup.getDataSource(jndiName);
-		return dataSource;
-	}
+    private DataSource jndiDataSource(JndiTemplate template, @Value("${jndi.datasource:cmsdatasource}") String jndiName) throws NamingException {
+        final JndiDataSourceLookup dsLookup = new JndiDataSourceLookup();
+        dsLookup.setResourceRef(true);
+        DataSource dataSource = dsLookup.getDataSource(jndiName);
+        return dataSource;
+    }
 
-	private JndiTemplate jndiTempate(@Value("${jndi.provider.url}") String providerUrl) {
-		JndiTemplate template = new JndiTemplate();
+    private JndiTemplate jndiTempate(@Value("${jndi.provider.url}") String providerUrl) {
+        JndiTemplate template = new JndiTemplate();
 
-		Properties environment = new Properties();
+        Properties environment = new Properties();
 
-		environment.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
-		environment.put(Context.PROVIDER_URL, providerUrl != null ? providerUrl : "t3://localhost:7001");
+        environment.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
+        environment.put(Context.PROVIDER_URL, providerUrl != null ? providerUrl : "t3://localhost:7001");
 
-		template.setEnvironment(environment);
+        template.setEnvironment(environment);
 
-		return template;
-	}
+        return template;
+    }
 
-	/**
-	 * Create transactionManager.
-	 *
-	 * @param entityManagerFactory
-	 *            EntityManagerFactory entityManagerFactory
-	 * @return transactionManager
-	 */
-	@Bean
-	public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
-		JpaTransactionManager transactionManager = new JpaTransactionManager();
-		transactionManager.setEntityManagerFactory(entityManagerFactory);
-		return transactionManager;
-	}
+    /**
+     * Create transactionManager.
+     *
+     * @param entityManagerFactory
+     *            EntityManagerFactory entityManagerFactory
+     * @return transactionManager
+     */
+    @Bean
+    public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
+        JpaTransactionManager transactionManager = new JpaTransactionManager();
+        transactionManager.setEntityManagerFactory(entityManagerFactory);
+        return transactionManager;
+    }
 
-	/**
-	 * Default properties for all kind of Spring profiles, except test
-	 *
-	 * @return
-	 */
-	@Bean
-	public static PropertySourcesPlaceholderConfigurer freshdirectDeveloperPropertyPlaceholderConfigurer() {
-		PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
-		configurer.setLocation(new ClassPathResource("fdcms-db.properties"));
-		configurer.setIgnoreUnresolvablePlaceholders(true);
-		return configurer;
-	}
+    /**
+     * Default properties for all kind of Spring profiles, except test
+     *
+     * @return
+     */
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer freshdirectDeveloperPropertyPlaceholderConfigurer() {
+        PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
+        configurer.setLocation(new ClassPathResource("fdcms-db.properties"));
+        configurer.setIgnoreUnresolvablePlaceholders(true);
+        return configurer;
+    }
 
-	@Bean
-	public JdbcTemplate getJdbcTemplate(DataSource dataSource) {
-		return new JdbcTemplate(dataSource);
-	}
+    @Bean
+    public JdbcTemplate getJdbcTemplate(DataSource dataSource) {
+        return new JdbcTemplate(dataSource);
+    }
 
-	@Bean
-	public ContentNodeChangeResultSetExtractor getContentNodeChangeResultExtractor() {
-		return new ContentNodeChangeResultSetExtractor();
-	}
+    @Bean
+    public ContentNodeChangeResultSetExtractor getContentNodeChangeResultExtractor() {
+        return new ContentNodeChangeResultSetExtractor();
+    }
 }

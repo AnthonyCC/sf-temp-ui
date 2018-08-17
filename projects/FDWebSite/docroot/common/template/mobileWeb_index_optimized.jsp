@@ -336,9 +336,9 @@
 			$jq(document).ready(function() {
 				if(FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { 
 					FreshDirect.components.ifrPopup.open({ 
-						url: '/social/delivery_address_create_success.jsp'}); 
+						url: '/social/DeliveryAddressCreateSuccess.jsp'}); 
 				} else {
-					pop('/social/delivery_address_create_success.jsp');
+					pop('/social/DeliveryAddressCreateSuccess.jsp');
 				}
 			});
 			</script>
@@ -355,9 +355,9 @@
 			$jq(document).ready(function() {
 				if(FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { 
 					FreshDirect.components.ifrPopup.open({ 
-						url: '/social/social_account_exist.jsp'}); 
+						url: '/social/SocialAccountExist.jsp'}); 
 				} else {
-					pop('/social/social_account_exist.jsp');
+					pop('/social/SocialAccountExist.jsp');
 				}
 			});
 			</script>

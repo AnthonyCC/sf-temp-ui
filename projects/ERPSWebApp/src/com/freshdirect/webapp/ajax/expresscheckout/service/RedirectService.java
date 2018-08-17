@@ -20,7 +20,7 @@ public class RedirectService {
     }
 
     public String replacedRedirectUrl(String redirectUrl) {
-        if (redirectUrl != null && redirectUrl.contains("/expressco/view_cart.jsp")) {
+        if (redirectUrl.contains("/expressco/view_cart.jsp")) {
             return "/expressco/checkout.jsp";
         }
         return redirectUrl;

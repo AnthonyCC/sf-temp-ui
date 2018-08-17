@@ -63,6 +63,7 @@ import com.freshdirect.cms.persistence.repository.BatchSavingRepository;
 import com.freshdirect.cms.persistence.repository.ContentNodeEntityRepository;
 import com.freshdirect.cms.persistence.repository.NavigationTreeRepository;
 import com.freshdirect.cms.persistence.repository.RelationshipEntityRepository;
+import com.freshdirect.cms.relationship.comparator.RelationshipEntityComparator;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
@@ -154,6 +155,34 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
         buildAttributesCache(allNodes); // putting the loaded data in the "attributeCache"
         
         LOGGER.info("Database warmup executed in " + (System.currentTimeMillis() - methodStart) + " ms");
+        return allNodes;
+    }
+
+    @Transactional(readOnly = true)
+    public Map<ContentKey, Map<Attribute, Object>> loadAllForPublish() {
+        long methodStart = System.currentTimeMillis();
+
+        // load all contentKeys to fill the allKeys map
+        allKeys.clear();
+        allKeys.addAll(contentNodeEntityToContentKeyConverter.convert(contentNodeEntityRepository.findAll()));
+
+        List<AttributeEntity> attributeEntities = attributeEntityRepository.findAll();
+        List<RelationshipEntity> relationshipEntities = relationshipEntityRepository.findAll();
+        Map<ContentKey, Map<Attribute, Object>> allNodes = new HashMap<ContentKey, Map<Attribute, Object>>();
+
+        orderRelationships(relationshipEntities);
+
+        processFetchedAttributes(allNodes, attributeEntities);
+        processFetchedRelationships(allNodes, relationshipEntities);
+
+        // fill up result map with empty content bodies where no attributes sets
+        Set<ContentKey> keysHavingEmptyBody = new HashSet<ContentKey>(allKeys);
+        keysHavingEmptyBody.removeAll(allNodes.keySet());
+        for (ContentKey key : keysHavingEmptyBody) {
+            allNodes.put(key, new HashMap<Attribute, Object>());
+        }
+
+        LOGGER.info("Publish contentnode loading is finished in:" + (System.currentTimeMillis() - methodStart) + " ms");
         return allNodes;
     }
 
@@ -315,6 +344,11 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
             saveAttributeInternal(contentKey, entry.getKey(), entry.getValue());
         }
         cacheEvictors.evictAttributeCacheWithContentKey(contentKey);
+    }
+
+    private void orderRelationships(List<RelationshipEntity> relationshipEntities) {
+        RelationshipEntityComparator relationshipEntityComparator = new RelationshipEntityComparator();
+        Collections.sort(relationshipEntities, relationshipEntityComparator);
     }
 
     private void updateContentKeys(Collection<ContentKey> contentKeys) {
@@ -585,6 +619,7 @@ public class DatabaseContentProvider implements ContentProvider, UpdatableConten
 
         // -- post update phase --
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
+            @Override
             public void afterCommit() {
                 updateContentKeysCache(newKeys);
                 evictParentKeysCache(payload.keySet(), originalChildKeys);

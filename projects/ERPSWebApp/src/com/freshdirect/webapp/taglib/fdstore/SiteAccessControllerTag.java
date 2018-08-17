@@ -40,7 +40,7 @@ import com.freshdirect.webapp.util.StoreContextUtil;
 
 public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.BodyTagSupport {
 
-    private static final Category LOGGER = LoggerFactory.getInstance(SiteAccessControllerTag.class);
+	private static Category LOGGER = LoggerFactory.getInstance(SiteAccessControllerTag.class);
 	
 	private String action = null;
 	private String successPage = null;
@@ -53,7 +53,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 	private String altDeliveryCorporatePage = "/site_access/site_access.jsp?ol=altCorp";
 	//private String failureCorporatePage = "/survey/cos_site_access_survey.jsp";
 	private String failureCorporatePage = "/site_access/site_access.jsp?ol=corpSurvey";
-    private String addressnotificationpage = "/social/address_notification.jsp";
+	private String addressnotificationpage = "/social/AddressNotification.jsp";
 	private String socialLoginRecognized ="/social/social_login_recognized.jsp";
 	
 	private String failureCorporatePageCRM = null;
