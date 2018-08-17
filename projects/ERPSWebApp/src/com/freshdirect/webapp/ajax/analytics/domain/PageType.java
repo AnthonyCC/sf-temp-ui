@@ -6,7 +6,7 @@ import java.util.List;
 public enum PageType {
     HOMEPAGE("/index.jsp", "/welcome.jsp"),
     LOGIN("/social/login.jsp", "/login/login.jsp","/login/retrieve_password.jsp","/social/forgot_password.jsp","/social/forgot_password_confirm.jsp","/social/forgot_password_pageversion.jsp","/social/success.jsp"),
-    REGISTER("/social/signup_lite.jsp","/social/accountcreatesuccess.jsp"),
+    REGISTER("/social/signup_lite.jsp"),
     CATEGORY_LIST("/browse.jsp?pageType=category_list"),
     PRODUCT_LIST("/browse.jsp?pageType=product_list"),
     SEARCH("/srch.jsp?pageType=search"),

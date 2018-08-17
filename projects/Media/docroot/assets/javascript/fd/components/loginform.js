@@ -87,11 +87,10 @@ var FreshDirect = FreshDirect || {};
 		if(fd.properties.isSocialLoginEnabled){
 			/* This is an event */
 			var my_on_login_redirect = function(args) {
-				
 				return true;
 			}
-			var onWidgetLoaded = function(e){
 			
+			var onWidgetLoaded = function(e){
 				$(e.widget).attr('tabIndex', 4);
 			}
 
@@ -146,7 +145,8 @@ var FreshDirect = FreshDirect || {};
 		var sucessTarget = $('#fd_login #success-target').val();
 		var loginData = {
 				userId : email,
-				password: password
+				password: password,
+				successPage: sucessTarget
 		};
 		if (fd.components.captchaWidget && fd.components.captchaWidget.isEnabled()) {
 			loginData.captchaToken = fd.components.captchaWidget.getResponse()
