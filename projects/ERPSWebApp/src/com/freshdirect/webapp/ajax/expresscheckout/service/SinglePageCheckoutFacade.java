@@ -508,7 +508,11 @@ public class SinglePageCheckoutFacade {
 
     /** based on step_3_choose.jsp */
     private void processGiftCards(FDUserI user, FormPaymentData formPaymentData, List customerCredits) {
-        if (user.getGiftCardList() != null) {
+       
+    	/* we should re-check the status of GiftCards at checkout page., so invalidating cache to make new calls to givex */
+    	user.invalidateGiftCards();	/* APPDEV-7116 */
+      
+    	if (user.getGiftCardList() != null) {
             user.getShoppingCart().setSelectedGiftCards(user.getGiftCardList().getSelectedGiftcards());
             user.getDlvPassCart().setSelectedGiftCards(user.getGiftCardList().getSelectedGiftcards());
         }
