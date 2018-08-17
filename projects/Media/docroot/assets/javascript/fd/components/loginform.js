@@ -5,27 +5,28 @@ var FreshDirect = FreshDirect || {};
 	"use strict";
 	var $ = fd.libs.$;
 	fd.components = fd.components || {};
-	
+	var captchaWidgetName = 'social-login-g-recaptcha';
+	var loginOverlaySelector = '#fd_login.fd-login-overlay ';
 	function init() {
 		// on keyup we will check every time the form is valid or not
-		$('#fd_login').bind(
+		$(loginOverlaySelector).bind(
 				'change keyup',
 				function() {
-					var isCaptchaValid = !fd.components.captchaWidget || fd.components.captchaWidget.isValid();
+					var isCaptchaValid = !fd.components.captchaWidget || fd.components.captchaWidget.isValid(captchaWidgetName);
 				  
 					if ($jq(this).validate().checkForm() && isCaptchaValid) { // form is valid
-						$jq('#signinbtn').removeClass('button_disabled')
+						$jq(loginOverlaySelector + '#signinbtn').removeClass('button_disabled')
 								.prop('disabled', false);
-						$jq('#signinbtn').attr("tabindex",3);
+						$jq(loginOverlaySelector + '#signinbtn').attr("tabindex",3);
 						
 
 					} else { // form is invalid
-						$jq('#signinbtn').addClass('button_disabled').prop(
+						$jq('#fd_login.fd-login-overlay #signinbtn').addClass('button_disabled').prop(
 								'disabled', true);
-						$jq('#signinbtn').attr("tabindex",-1);
+						$jq('#fd_login.fd-login-overlay #signinbtn').attr("tabindex",-1);
 					}
 				});
-		$('#fd_login #signinbtn').click(login);
+		$(loginOverlaySelector + '#signinbtn').click(login);
 		/* Setup form validation */
 		$jq.validator.addMethod("customemail", 
 					function validateEmail(email) {
@@ -33,7 +34,7 @@ var FreshDirect = FreshDirect || {};
 					return re.test(email);
 				} 
 			);
-		$jq('#fd_login').validate(
+		$jq(loginOverlaySelector).validate(
 				{
 					rules:{
 						email:{
@@ -130,26 +131,26 @@ var FreshDirect = FreshDirect || {};
 	}
 
 	function renderCaptchaWidget() {
-		fd.components.captchaWidget.render('login-g-recaptcha', function() {
-    		$jq('#fd_login').trigger('change');
+		fd.components.captchaWidget.render('social-login-g-recaptcha', function() {
+    		$jq('#fd_login.fd-login-overlay').trigger('change');
 		}, function () {
-			$jq('#login-g-recaptcha-container').hide();
+			$jq('#social-login-g-recaptcha-container').hide();
 		}, function () {
-			$jq('#fd_login').trigger('change');
+			$jq('#fd_login.fd-login-overlay').trigger('change');
 		});
 	}
 	function login(e) {
 		$('.social-login-spinner').show();
 		e.preventDefault();
-		var email = $('#fd_login #email').val();
-		var password = $('#fd_login #password').val();
-		var sucessTarget = $('#fd_login #success-target').val();
+		var email = $(loginOverlaySelector + '#email').val();
+		var password = $(loginOverlaySelector + '#password').val();
+		var sucessTarget = $(loginOverlaySelector + '#success-target').val();
 		var loginData = {
 				userId : email,
 				password: password
 		};
-		if (fd.components.captchaWidget && fd.components.captchaWidget.isEnabled()) {
-			loginData.captchaToken = fd.components.captchaWidget.getResponse()
+		if (fd.components.captchaWidget && fd.components.captchaWidget.isEnabled(captchaWidgetName)) {
+			loginData.captchaToken = fd.components.captchaWidget.getResponse(captchaWidgetName)
 		}
 		$.post('/api/login/', {
 			"data" : JSON.stringify(loginData) 
@@ -160,8 +161,10 @@ var FreshDirect = FreshDirect || {};
 						fd.gtm.data.googleAnalyticsData.login.loginAttempt = 'success';
 						fd.gtm.updateDataLayer(fd.gtm.data.googleAnalyticsData);
 				}
-				parent.document.location = responseJson.successPage || sucessTarget || parent.document.location;
-			} else if (responseJson.message === 'CaptchaRedirect' && (!fd.components.captchaWidget || !fd.components.captchaWidget.isEnabled())){
+				// edge case where the user was from the /login/login.jsp & had the social login overlay opened & logged in from the overlay
+				var redirectLocation = responseJson.successPage || sucessTarget || parent.document.location;
+				window.location = redirectLocation.indexOf('/login/login.jsp') !== -1? '/' : redirectLocation;
+			} else if (responseJson.message === 'CaptchaRedirect' && (!fd.components.captchaWidget || !fd.components.captchaWidget.isEnabled(captchaWidgetName))){
 				FreshDirect.modules.common.login.socialLogin(FreshDirect.modules.common.login.successTarget);
 			} else {
 				showError(responseJson.errorMessages);
@@ -188,10 +191,10 @@ var FreshDirect = FreshDirect || {};
 			errorMessage = 'Captcha is not valid.</br>Please try again.';
 		}
 		$('.social-login-spinner').hide();
-		$('#fd_login .error-message').html(errorMessage).show();
+		$(loginOverlaySelector + '.error-message').html(errorMessage).show();
 
-		if (fd.components.captchaWidget && fd.components.captchaWidget.isEnabled()) {
-			fd.components.captchaWidget.reset();
+		if (fd.components.captchaWidget && fd.components.captchaWidget.isEnabled(captchaWidgetName)) {
+			fd.components.captchaWidget.reset(captchaWidgetName);
 		}
 		if (fd.gtm && fd.gtm.data) {
             	fd.gtm.data.googleAnalyticsData.login.loginAttempt = 'fail';

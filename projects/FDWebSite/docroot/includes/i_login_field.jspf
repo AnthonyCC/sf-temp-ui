@@ -25,8 +25,8 @@
 		// disable the submit button on page load
 		$jq('#signinbtn').attr('disabled', true);
 		// on keyup we will check every time the form is valid or not
-		$jq('#fd_login').bind('change keyup', function() {
-			var isCaptchaValid = !FreshDirect || !FreshDirect.components || !FreshDirect.components.captchaWidget || FreshDirect.components.captchaWidget.isValid();
+		$jq('#fd_login.fd-login-page').bind('change keyup', function() {
+			var isCaptchaValid = !FreshDirect || !FreshDirect.components || !FreshDirect.components.captchaWidget || FreshDirect.components.captchaWidget.isValid('login-g-recaptcha');
 		    if($jq(this).validate().checkForm() && isCaptchaValid) { // form is valid
 		        $jq('#signinbtn').removeClass('button_disabled').attr('disabled', false);
 	
@@ -110,7 +110,7 @@
 	}//end if(session.getAttribute("MSG_FOR_LOGIN_PAGE") != null)
 	%>
 	<%if(FDStoreProperties.isSocialLoginEnabled()) { %>
-		<form name="fd_login" id="fd_login" method="post" >
+		<form name="fd_login" id="fd_login" class="fd-login-page" method="post" >
 			<%
 			if (!result.isSuccess()) {
 				//default error message
@@ -164,7 +164,7 @@
 					
 				</tr>
 				<script type="text/javascript">
-				FreshDirect.components.captchaWidget.init('<%=publicKey%>', function() {
+				FreshDirect.components.captchaWidget.init('login-g-recaptcha','<%=publicKey%>', function() {
 					FreshDirect.components.captchaWidget.render('login-g-recaptcha', function() {
 						$jq('#fd_login').trigger('change');
 					}, function() {
@@ -326,7 +326,7 @@
 		</div> <!-- social login section ends here -->
 	
 	<% } else{ %>
-			<form name="fd_login" method="post" action="<%= request.getRequestURI()+"?"+StringUtil.escapeXssUri(request.getQueryString()) %>">
+			<form name="fd_login" class="fd-login-page" method="post" action="<%= request.getRequestURI()+"?"+StringUtil.escapeXssUri(request.getQueryString()) %>">
 				<table role="presentation" border="0" cellpadding="0" cellspacing="0">
 				<tr>
 					<td colspan="2">

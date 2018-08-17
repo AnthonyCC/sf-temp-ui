@@ -18,7 +18,7 @@ String publicKey= FDStoreProperties.getRecaptchaPublicKey(CaptchaType.PAYMENT);
 		<input id="cc-payment-g-recaptcha-enabled" name="captchaEnabled" type="hidden" value="true" />
 		<div id="cc-payment-g-recaptcha" class="g-recaptcha"></div>
 		<script type="text/javascript">
-				FreshDirect.components.captchaWidget.init('<%=publicKey%>', function() {
+				FreshDirect.components.captchaWidget.init('cc-payment-g-recaptcha', '<%=publicKey%>', function() {
 					FreshDirect.components.captchaWidget.render('cc-payment-g-recaptcha', null, function() {
 						$jq('#cc-payment-g-recaptcha-container').hide();
 					},null);

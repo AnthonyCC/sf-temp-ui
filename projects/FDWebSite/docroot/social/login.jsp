@@ -66,7 +66,7 @@
 					<div class="form-side-social-header">Sign in with email:</div>
 
 					<div id="form_feilds">
-						<form name="fd_login" id="fd_login" method="post">
+						<form name="fd_login" id="fd_login" class="fd-login-overlay" method="post">
 							<%
 								if (!result.isSuccess()) {
 										String errorMsg = "<div class='error-message'>Email and password do not match.</br>Please try again.</div>";
@@ -115,15 +115,15 @@
 								
 							<% if (showCaptcha) { %>
 							<jwr:script src="/assets/javascript/fd/captcha/captchaWidget.js" useRandomParam="false" />
-								<tr id="login-g-recaptcha-container">
+								<tr id="social-login-g-recaptcha-container">
 									<td colspan="2">
-										<div id="login-g-recaptcha" class="g-recaptcha"></div>
+										<div id="social-login-g-recaptcha" class="g-recaptcha"></div>
 									</td>
 									
 								</tr>
 								<script type="text/javascript">
-								  FreshDirect.components.captchaWidget.init('<%=publicKey%>', function() {
-									  FreshDirect.components.loginForm.onCaptchaLoadCallback();  
+								  FreshDirect.components.captchaWidget.init('social-login-g-recaptcha', '<%=publicKey%>', function() {
+									  FreshDirect.components.loginForm.onCaptchaLoadCallback('<%=publicKey%>');  
 								  });
 								 
 								</script>
