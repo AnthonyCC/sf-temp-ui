@@ -41,6 +41,8 @@ public class ErpCustomerEmailModel extends ModelSupport {
 	 * @return
 	 */
 	public String getCustomMessageHTML() {
+		if (this.customMessage == null)
+			return null;
 		return this.customMessage.replaceAll("\\n", "<br>");
 	}
 
