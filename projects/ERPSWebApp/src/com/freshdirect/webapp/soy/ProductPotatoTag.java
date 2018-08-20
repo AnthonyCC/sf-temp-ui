@@ -127,6 +127,11 @@ public class ProductPotatoTag extends SimpleTagSupport {
             final Map<String, ?> dataMap = DataPotatoField.digProduct(user, product, variantId);
             ((PageContext) getJspContext()).setAttribute(name, dataMap);
 
+            if (null  == dataMap) {
+                LOGGER.error("Product data is null or error happened during data collection! Skipping tag.");
+                return;
+            }
+            
             if (extraName != null) {
                 LOGGER.debug("Creating extra potato: " + extraName);
                 final Map<String, ?> extraMap = DataPotatoField.digProductExtraData(user, product, ((PageContext) getJspContext()).getServletContext(), grpId, version);

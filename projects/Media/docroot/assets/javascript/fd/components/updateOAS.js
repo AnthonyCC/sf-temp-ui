@@ -31,7 +31,6 @@ var FreshDirect = FreshDirect || {};
   }
 
 	function doneHandler($e, pos, showAsPopUp) {
-		$e.html('');
 		var hasEmptyImage = false;
 		$.each($('a[href*="/default/empty.gif/"]').not('[tabindex=-1]'), function(ii, ee) {
 			var $ee = $(ee);
@@ -82,6 +81,7 @@ var FreshDirect = FreshDirect || {};
 			var selector = "#oas_"+pos+",#oas_b_"+pos;
 			$(selector).each(function(i,e){
 				var $e = $(e);
+				$e.html(''); //clear html before rendering
 				postscribe($e, '<script>OAS_RICH("'+pos+'");</script>', {
 					error: function () {},
 					done: function () {
