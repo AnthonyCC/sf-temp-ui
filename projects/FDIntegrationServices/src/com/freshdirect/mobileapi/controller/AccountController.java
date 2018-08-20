@@ -1,5 +1,6 @@
 package com.freshdirect.mobileapi.controller;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,9 +20,8 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.ErpCustomerCreditModel;
-import com.freshdirect.deliverypass.DeliveryPassModel;
-import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
+import com.freshdirect.webapp.ajax.expresscheckout.deliverypass.data.DeliveryPassData;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
@@ -33,11 +33,11 @@ import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.referral.FDReferralManager;
+import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.EnumResponseAdditional;
 import com.freshdirect.mobileapi.controller.data.Message;
-import com.freshdirect.mobileapi.controller.data.request.AddItemToCart;
 import com.freshdirect.mobileapi.controller.data.request.AddProfileRequest;
 import com.freshdirect.mobileapi.controller.data.request.AutoRenewDp;
 import com.freshdirect.mobileapi.controller.data.request.DlvPassRequest;
@@ -48,6 +48,7 @@ import com.freshdirect.mobileapi.controller.data.response.CreditHistory;
 import com.freshdirect.mobileapi.controller.data.response.DPInfo;
 import com.freshdirect.mobileapi.controller.data.response.DeliveryAddresses;
 import com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots;
+import com.freshdirect.mobileapi.controller.data.response.DpAllPlans;
 import com.freshdirect.mobileapi.controller.data.response.DpSkuListResponse;
 import com.freshdirect.mobileapi.controller.data.response.OrderHistory;
 import com.freshdirect.mobileapi.controller.data.response.OrderHistory.Order;
@@ -65,6 +66,9 @@ import com.freshdirect.mobileapi.util.ListPaginator;
 import com.freshdirect.mobileapi.util.NewBrowseUtil;
 import com.freshdirect.mobileapi.util.ProductPotatoUtil;
 import com.freshdirect.storeapi.application.CmsManager;
+import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
+
+import com.freshdirect.webapp.ajax.expresscheckout.deliverypass.service.DeliveryPassService;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.util.JspMethods;
@@ -88,6 +92,12 @@ public class AccountController extends BaseController implements Comparator <Ord
 	private static final String ACTION_DP_GET_LIST="getDpList";
     private static final String ACTION_DP_AUTO_RENEW="dpAutoRenew";
     private final static String DLV_PASS_CART = "dlvPassCart";
+    private final static String ACTION_GET_ALL_DLV_PASS_PLANS = "getAllDlvPassPlans";
+
+    @Override
+    protected boolean validateUser() {
+		return false;
+    }
 
     @Override
     protected ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model, String action,
@@ -176,6 +186,8 @@ public class AccountController extends BaseController implements Comparator <Ord
 			} else if(ACTION_DP_AUTO_RENEW.equals(action)){		
 				 AutoRenewDp reqestMessage = parseRequestObject(request, response, AutoRenewDp.class);
 				setAutoRenewal(request, response, model, user, reqestMessage);
+			}else if(ACTION_GET_ALL_DLV_PASS_PLANS.equals(action)){
+				 model = getdlvPassAllPlans(model, user, request, response);
 			}
         }else{
     		Message responseMessage = new Message();
@@ -342,6 +354,24 @@ public class AccountController extends BaseController implements Comparator <Ord
             setResponseMessage(model, responseMessage, user);
             return model;
     }
+    
+	private ModelAndView getdlvPassAllPlans(ModelAndView model, SessionUser user, HttpServletRequest request,
+			HttpServletResponse response) throws FDException, JsonException {
+		DpAllPlans responseMessage = new DpAllPlans();
+		try {
+			DeliveryPassData deliveryPassData = DeliveryPassService.defaultService()
+					.loadDeliveryPasses(user.getFDSessionUser().getUser());
+			responseMessage.setDeliveryPasses(deliveryPassData.getDeliveryPass());
+			setResponseMessage(model, responseMessage, user);
+		} catch (HttpErrorResponse e) {
+			LOGGER.debug("Http Error while fetching all the DlvPassPlans" + e.getMessage());
+		} catch (IOException e) {
+			LOGGER.debug("IOException while fetching all the DlvPassPlans" + e.getMessage());
+		} catch (TemplateException e) {
+			LOGGER.debug("TemplateException while fetching all the DlvPassPlans" + e.getMessage());
+		}
+		return model;
+	}
 
  private ModelAndView getCreditedOrderHistory(ModelAndView model, SessionUser user, HttpServletRequest request, HttpServletResponse response, boolean dlvPassCart) throws FDException, JsonException {
 
