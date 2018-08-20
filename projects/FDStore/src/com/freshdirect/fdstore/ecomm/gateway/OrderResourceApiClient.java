@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.customer.CustomerRatingI;
+import com.freshdirect.customer.EnumFraudReason;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpAbstractOrderModel;
@@ -30,7 +31,6 @@ import com.freshdirect.customer.ErpAddressVerificationException;
 import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpCartonInfo;
 import com.freshdirect.customer.ErpCreateOrderModel;
-import com.freshdirect.customer.ErpDeliveryInfoModel;
 import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpModifyOrderModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
@@ -350,34 +350,88 @@ public class OrderResourceApiClient extends AbstractEcommService implements Orde
 	@Override
 	public String placeOrder(FDActionInfo info, ErpCreateOrderModel createOrder, Set<String> appliedPromos, String id,
 			boolean sendEmail, CustomerRatingI cra, CrmAgentRole crmAgentRole, EnumDlvPassStatus status,
-			boolean isFriendReferred, int fdcOrderCount) throws RemoteException {
-
-		Request<CreateOrderRequestData> request = new Request<CreateOrderRequestData>();
-
+			boolean isFriendReferred, int fdcOrderCount) throws FDResourceException, ErpFraudException,
+			ErpAuthorizationException, ErpAddressVerificationException, ReservationException, DeliveryPassException,
+			FDPaymentInadequateException, ErpTransactionException, InvalidCardException, RemoteException {
+		String inputJson = null;
 		try {
 
-			CreateOrderRequestData data = new CreateOrderRequestData();
-			data.setInfo(FDActionInfoConverter.buildActionInfoData(info));
-			data.setModel(SapGatewayConverter.buildOrderData(createOrder));
-			data.setAppliedPromos(appliedPromos);
-			data.setId(id);
-			data.setSendMail(sendEmail);
-			data.setCra(CustomerRatingConverter.buildCustomerRatingData(cra));
-			data.setAgentRole(ErpFraudPreventionConverter.buildCrmAgentRoleData(crmAgentRole));
-			data.setDeliveryPassStatus((status != null) ? status.getName() : null);
-			data.setFriendReferred(isFriendReferred);
-			data.setFdcOrderCount(fdcOrderCount);
-
-			request.setData(data);
-
+			Request<ObjectNode> request = new Request<ObjectNode>();
+			ObjectNode rootNode = getMapper().createObjectNode();
+			rootNode.set("info", getMapper().convertValue(info, JsonNode.class));
+			rootNode.set("createOrder", getMapper().convertValue(createOrder, JsonNode.class));
+			rootNode.set("appliedPromos", getMapper().convertValue(appliedPromos, JsonNode.class));
+			rootNode.put("id", id);
+			rootNode.put("sendEmail", sendEmail);
+			rootNode.set("cra", getMapper().convertValue(cra, JsonNode.class));
+			rootNode.set("crmAgentRole", getMapper().convertValue(crmAgentRole, JsonNode.class));
+			rootNode.put("status", status.getName());
+			rootNode.put("isFriendReferred", isFriendReferred);
+			rootNode.put("fdcOrderCount", fdcOrderCount);
+			
+			request.setData(rootNode);
 			Response<String> response = null;
-			String inputJson = buildRequest(request);
-			response = httpPostData(getFdCommerceEndPoint(CREATE_REG_ORDER_API), inputJson, Response.class,
-					new Object[] {});
+			inputJson = buildRequest(request);
+			
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(CREATE_REG_ORDER_API),
+					new TypeReference<Response<String>>() {
+					});
+			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in placeOrder: inputJson=" + inputJson);
+				
+				if ("FDResourceException".equals(response.getMessage())) {
+					throw new FDResourceException(
+							response.getError() != null ? response.getError().get(response.getMessage()).toString()
+									: null);
+				}
+				if ("ErpFraudException".equals(response.getMessage())) {
+					throw new ErpFraudException(EnumFraudReason.getEnum(
+							response.getError() != null ? response.getError().get(response.getMessage()).toString()
+									: null));
+				}
+				if ("ErpAuthorizationException".equals(response.getMessage())) {
+					throw new ErpAuthorizationException(
+							response.getError() != null ? response.getError().get(response.getMessage()).toString()
+									: null);
+				}
+				if ("ErpAddressVerificationException".equals(response.getMessage())) {
+					throw new ErpAddressVerificationException(
+							response.getError() != null ? response.getError().get(response.getMessage()).toString()
+									: null);
+				}
+				if ("ReservationException".equals(response.getMessage())) {
+					throw new ReservationException(
+							response.getError() != null ? response.getError().get(response.getMessage()).toString()
+									: null);
+				}
+				if ("DeliveryPassException".equals(response.getMessage())) {
+					throw new DeliveryPassException(
+							response.getError() != null ? response.getError().get(response.getMessage()).toString()
+									: null);
+				}
+				if ("FDPaymentInadequateException".equals(response.getMessage())) {
+					throw new FDPaymentInadequateException(
+							response.getError() != null ? response.getError().get(response.getMessage()).toString()
+									: null);
+				}
+				if ("ErpTransactionException".equals(response.getMessage())) {
+					throw new ErpTransactionException(
+							response.getError() != null ? response.getError().get(response.getMessage()).toString()
+									: null);
+				}
+				if ("InvalidCardException".equals(response.getMessage())) {
+					throw new InvalidCardException(
+							response.getError() != null ? response.getError().get(response.getMessage()).toString()
+									: null);
+				}
+				
+				throw new FDResourceException(response.getMessage());
+			}
 			return parseResponse(response);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error("Error in placeOrder: inputJson=" + inputJson, e);
 			throw new RemoteException(e.getMessage(), e);
+			
 		}
 
 	}

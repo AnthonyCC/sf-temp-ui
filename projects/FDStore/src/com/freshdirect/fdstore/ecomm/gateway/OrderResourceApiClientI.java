@@ -78,13 +78,11 @@ public interface OrderResourceApiClientI {
 			String id, boolean sendEmail, CustomerRatingI cra,
 			CrmAgentRole crmAgentRole, EnumDlvPassStatus status, boolean isOptIn) throws RemoteException;
 
-
-	public String placeOrder(FDActionInfo info, ErpCreateOrderModel createOrder,
-			Set<String> appliedPromos, String id, boolean sendEmail,
-			CustomerRatingI cra, CrmAgentRole crmAgentRole,
-			EnumDlvPassStatus status, boolean isFriendReferred,
-			int fdcOrderCount) throws RemoteException;
-
+	public String placeOrder(FDActionInfo info, ErpCreateOrderModel createOrder, Set<String> appliedPromos, String id,
+			boolean sendEmail, CustomerRatingI cra, CrmAgentRole crmAgentRole, EnumDlvPassStatus status,
+			boolean isFriendReferred, int fdcOrderCount) throws FDResourceException, ErpFraudException,
+			ErpAuthorizationException, ErpAddressVerificationException, ReservationException, DeliveryPassException,
+			FDPaymentInadequateException, ErpTransactionException, InvalidCardException, RemoteException;
 
 	public void modifyOrder(FDActionInfo info, String saleId,
 			ErpModifyOrderModel order, Set<String> appliedPromos,
