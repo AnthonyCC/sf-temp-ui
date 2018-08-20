@@ -223,8 +223,6 @@ public class CmsFilteringNavigator {
 
                 String[] paramValues = paramMap.get(param);
                 for (String paramValue : paramValues) {
-                	System.out.println("param============="+param+"===========paramValue========"+paramValue);
-
                     if ("pageSize".equalsIgnoreCase(param)) {
                         cmsFilteringNavigator.setPageSize(Integer.parseInt(paramValue));
                     } else if ("doNotFillPage".equalsIgnoreCase(param)) {
