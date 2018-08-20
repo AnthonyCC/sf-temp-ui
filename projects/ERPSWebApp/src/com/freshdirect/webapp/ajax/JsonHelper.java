@@ -48,7 +48,6 @@ public class JsonHelper {
         new ObjectMapper().writeValue(writer, responseData);
         ServletOutputStream out = response.getOutputStream();
         String responseJson = writer.toString();
-        System.out.println("responseJson===================="+responseJson);
         out.print(responseJson);
         out.flush();
     }

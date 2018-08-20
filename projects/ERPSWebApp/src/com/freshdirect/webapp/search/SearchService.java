@@ -93,7 +93,6 @@ public class SearchService {
             result = new UnbxdSearchResult(null, Collections.<String> emptyList(), searchResult.getResponse().getProducts());
         }
         
-        System.out.println("result.products=========="+((result!=null && result.products!=null) ? result.products.size() : "zero products"));
 
         return result;
     }
