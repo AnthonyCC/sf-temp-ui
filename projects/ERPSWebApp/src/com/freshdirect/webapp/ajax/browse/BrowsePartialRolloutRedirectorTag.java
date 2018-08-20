@@ -41,8 +41,6 @@ public class BrowsePartialRolloutRedirectorTag extends SimpleTagSupport {
         final PageContext ctx = (PageContext) getJspContext();
         final HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
         final boolean disabledPartialRolloutRedirector = CmsFilteringNavigator.isDisabledPartialRolloutRedirector(request);
-        System.out.println("disabledPartialRolloutRedirector=========="+disabledPartialRolloutRedirector);
-        System.out.println("FDStoreProperties.isBrowseRolloutRedirectEnabled()=========="+FDStoreProperties.isBrowseRolloutRedirectEnabled());
         if (!disabledPartialRolloutRedirector && FDStoreProperties.isBrowseRolloutRedirectEnabled()) {
             
             // figure out the redirect url

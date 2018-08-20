@@ -181,23 +181,9 @@ public class CmsFilteringNavigator {
             throw new FDResourceException(uee);
         }
         
-/*        if(request.getQueryString()!=null) {
-        	request.getQueryString().replaceAll("%20", " ");
-        	request.getQueryString().replaceAll("%", "%25");
-        	request.getQueryString().replaceAll(" ", "%20");
-        }*/
-        
-        System.out.println("CmsFilteringNavigator==="+request.getQueryString());
-        
         @SuppressWarnings("unchecked")
         Map<String, String[]> paramMap = request.getParameterMap();
         Set<String> paramNames = new TreeSet<String>(paramMap.keySet());
-        System.out.println(paramMap!=null);
-        System.out.println(paramMap!=null?paramMap.size():"paramMap is null");
-        System.out.println(paramNames!=null);
-        System.out.println(paramNames.size()==0);
-        System.out.println(request.getQueryString()!=null);
-        System.out.println(request.getQueryString().contains("%"));
 
     	
     	
