@@ -1999,6 +1999,7 @@ option.address-icon {
 		position: absolute;
 		right: 0;
 		font-family: TradeGothicBold;
+		font-weight: normal;
 		font-size: 22px;
 		text-transform: uppercase;
 		color: #7b8fa6;
