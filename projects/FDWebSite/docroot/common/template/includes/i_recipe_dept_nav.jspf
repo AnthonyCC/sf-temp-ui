@@ -14,7 +14,7 @@ int idxValue= 0;
 			    <logic:iterate id="recipeCategory" indexId="idx" collection="<%= rcpDept.getDepartmentNav() %>" type="com.freshdirect.storeapi.content.RecipeCategory">
 		<%            Domain catClassification = recipeCategory.getClassification(); 
 				boolean hasSubcategories = recipeCategory.getSubcategories().size()>0;
-				if (!hasSubcategories) continue;
+				if (hasSubcategories) {
 				if (idxValue%4==0 && idxValue!=0) {  %>
 				  </td>
 				 <td><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1"></td>
@@ -29,6 +29,7 @@ int idxValue= 0;
 				 <%=catClassification.getLabel()%>
 			      <%}  %>
 				  <% idxValue++; %>
+				  }
 			  </logic:iterate>
 <%			if (idxValue%4==0 && idxValue!=0) {  %>
 			  </td>

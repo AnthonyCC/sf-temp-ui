@@ -63,7 +63,7 @@ title = "FreshDirect - " + title;
 					  <logic:iterate id="aFeatRecipe" collection="<%=featuredRecipes%>" type="com.freshdirect.storeapi.content.Recipe">
 					  <% if (!aFeatRecipe.isAvailable()) { %>
 					  	<%=aFeatRecipe.getName()%><br>
-					  <% continue; } else { %>
+					  <% } else if(!(!aFeatRecipe.isAvailable())) { %>
 						  <a href="javascript:backtoWin('<%=response.encodeURL("/recipe.jsp?recipeId="+aFeatRecipe)%>&trk=rpop');"><%=aFeatRecipe.getName()%></a><br>
 					<% } %>
 				   </logic:iterate>

@@ -93,12 +93,11 @@
 			
 				<logic:iterate id="contentNode" collection="<%= sortedColl %>" type="java.lang.Object" indexId="idx">
 					<%
-						if (contentNode instanceof CategoryModel) {
-							continue;
-						} else {
+						if (!(contentNode instanceof CategoryModel)) {
+
 							
 							ProductModel pm = (ProductModel) contentNode;
-							if (pm.isUnavailable()) { continue; }
+							if (!(pm.isUnavailable())) { 
 							String trkCode = "";
 							String actionURI = FDURLUtil.getProductURI( pm, trkCode );
 							Set hideBursts = new HashSet();
@@ -195,7 +194,7 @@
 								perRowIdx = 0;
 							}
 							perRowIdx++;
-						}
+						} }
 						totalProds = idx;
 					%>
 				</logic:iterate>

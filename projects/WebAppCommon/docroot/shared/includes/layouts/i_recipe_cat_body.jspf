@@ -80,10 +80,10 @@ RecipeSource featuredSource = ((RecipeCategory)recipeCategory).getFeaturedSource
 	  <img src="/media_stat/recipe/hdr_our_faves.gif" alt="Our Favorites" width="127" height="11"><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10" border="0"><br>
 	  <% if (featuredRecipes!=null && featuredRecipes.size() > 0) { %>
           	  <logic:iterate id="aFeatRecipe" collection="<%=featuredRecipes%>" type="com.freshdirect.storeapi.content.Recipe">
-<%		   if (!isPreviewMode && !aFeatRecipe.isAvailable()) continue;  %>
+<%		   if (!(!isPreviewMode && !aFeatRecipe.isAvailable())) { %>
 		<a href="<%=response.encodeURL("recipe.jsp?catId="+recipeCategory+"&recipeId="+aFeatRecipe+"&trk=cfeat")%>"><%=aFeatRecipe.getName()%></a><br>
 		  <span class="recipe_author"><%=aFeatRecipe.getDisplayableSource()%></span><br><br>
-                 </logic:iterate>
+                <%} %> </logic:iterate>
 	 		<% } %> 
 		</td>  
 	       <td width="<%=W_RECIPE_CAT_BODY_BOTTOM_RIGHT%>" style="padding-left: 10px;" align="center">
