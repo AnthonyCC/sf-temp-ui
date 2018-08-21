@@ -2,6 +2,7 @@ package com.freshdirect.fdstore.customer.adapter;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.fdstore.customer.ProfileModel;
 
@@ -14,9 +15,10 @@ public class CustomerRatingAdaptor implements CustomerRatingI, Serializable {
 	private final boolean unDeclared;
 	private final boolean cosCustomer;
 	
- 	public CustomerRatingAdaptor(ProfileModel profile, boolean cosCustomer,int validOrdCount) {
- 		if (profile==null) {
- 			throw new IllegalArgumentException("the profile parameter cannot be null.");
+	public CustomerRatingAdaptor(@JsonProperty("profile") ProfileModel profile,
+			@JsonProperty("cosCustomer") boolean cosCustomer, @JsonProperty("validOrdCount") int validOrdCount) {
+		if (profile == null) {
+			throw new IllegalArgumentException("the profile parameter cannot be null.");
  		}
  		this.profile = profile;
  		this.cosCustomer = cosCustomer;
