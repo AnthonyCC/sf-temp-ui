@@ -115,7 +115,7 @@
 			  if(!(idx.intValue()>=edlpProductsCount)) {
 			  if(!(contentNode instanceof CategoryModel)) {
 			   if(contentNode instanceof ProductModel){
-				  if((!(((ProductModel)contentNode).isUnavailable())){ 
+				  if(!(((ProductModel)contentNode).isUnavailable())){ 
 				  ProductModel edlpProduct = (ProductModel) contentNode;
 				  String prodNameAttribute = JspMethods.getProductNameToUse(edlpProduct);
 				  DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId_2,edlpProduct,prodNameAttribute,true);
