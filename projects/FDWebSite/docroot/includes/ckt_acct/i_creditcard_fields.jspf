@@ -465,7 +465,7 @@ if (isValidPaymentId) {
 	<TD WIDTH="200" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_COUNTRY.getCode()%>"><span class="errortext"></fd:ErrorHandler><label for="<%=AddressName.BIL_COUNTRY%>_field">*Country&nbsp;&nbsp;</label><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_COUNTRY.getCode()%>"></span></fd:ErrorHandler></TD>
 	<TD WIDTH="">
  	    		 
-					<select class="pulldown customsimpleselect" id="<%=AddressName.BIL_COUNTRY%>_field" name="<%=AddressName.BIL_COUNTRY%>" onchange="javascript:showState(this.value)">
+					<select class="pulldown customsimpleselect" id="<%=AddressName.BIL_COUNTRY%>_field" name="<%=AddressName.BIL_COUNTRY%>" required="true" onchange="javascript:showState(this.value)">
 						<option value="">Country</option>
 					<%	List<BillingCountryInfo> list=BillingCountryInfo.getEnumList();
 					         
