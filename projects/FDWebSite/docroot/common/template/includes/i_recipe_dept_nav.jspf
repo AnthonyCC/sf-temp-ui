@@ -28,8 +28,8 @@ int idxValue= 0;
 			      <%} else { %>
 				 <%=catClassification.getLabel()%>
 			      <%}  %>
-				  <% idxValue++; %>
-				  }
+				  <% idxValue++; } %>
+				  
 			  </logic:iterate>
 <%			if (idxValue%4==0 && idxValue!=0) {  %>
 			  </td>
