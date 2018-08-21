@@ -122,7 +122,7 @@ if (sortedColl==null) sortedColl = new ArrayList();
                 }
             } else if (contentNode.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)){
                 product = (ProductModel)contentNode;
-                if(product.isUnavailable()) continue;
+                if(!(product.isUnavailable())) {
 
                 owningFolder = (CategoryModel) product.getParentNode();
                 if (theOnlyProduct!=null) {
@@ -226,6 +226,7 @@ if (sortedColl==null) sortedColl = new ArrayList();
              </tr>
 <%
     }// end of Product instance check
+        }
 %>
  </logic:iterate>
 <%

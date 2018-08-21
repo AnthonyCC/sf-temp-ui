@@ -62,11 +62,11 @@
 <fd:ItemSorter nodes='<%=(List)dealCol%>' strategy='<%=layoutSettings.getSortStrategy()%>'/>
 
 <logic:iterate id="contentNode" collection="<%= dealCol %>" type="java.lang.Object">
-	<%if(contentNode instanceof CategoryModel) { continue; }
-	  else if(contentNode instanceof ProductModel){
-		  if(((ProductModel)contentNode).isUnavailable()){ continue;}
+	<%if(!(contentNode instanceof CategoryModel)) { 
+	   if(contentNode instanceof ProductModel){
+		  if(!(((ProductModel)contentNode).isUnavailable())){ 
 		  dealProdList.add(contentNode);
-		}%>
+		  }}}%>
 </logic:iterate>
 
 <% } %>
@@ -94,11 +94,11 @@
 <fd:ItemSorter nodes='<%=(List)edlpCol%>' strategy='<%=layoutSettings.getSortStrategy()%>'/>
 
 <logic:iterate id="contentNode" collection="<%= edlpCol %>" type="java.lang.Object">
-	<%if(contentNode instanceof CategoryModel) { continue; }
-	  else if(contentNode instanceof ProductModel){
-		  if(((ProductModel)contentNode).isUnavailable()){ continue;}
+	<%if(!(contentNode instanceof CategoryModel)) { 
+	   if(contentNode instanceof ProductModel){
+		  if(!(((ProductModel)contentNode).isUnavailable())){ 
 		  edlpProdList.add(contentNode);
-		}%>
+		  }}}%>
 </logic:iterate>
 <% } %>
 
@@ -110,9 +110,9 @@
 		<logic:iterate id="contentNode" collection="<%= dealProdList %>" type="java.lang.Object" indexId="idx">
 			<%//if(idx.intValue()==MAX_PROD2SHOW) break; %>
 			<% 
-			  if(contentNode instanceof CategoryModel) { continue; }
-			  else if(contentNode instanceof ProductModel){
-				  if(((ProductModel)contentNode).isUnavailable()){ continue;}
+			  if(!(contentNode instanceof CategoryModel)) { 
+			   if(contentNode instanceof ProductModel){
+				  if(!(((ProductModel)contentNode).isUnavailable())){ 
 				  prodList.add(contentNode);
 				  ProductModel dealProduct = (ProductModel) contentNode;
 				  String prodNameAttribute = JspMethods.getProductNameToUse(dealProduct);
@@ -129,8 +129,8 @@
 			 	<tr valign="top">
 			 		<logic:iterate id="tmpContentNode" collection="<%= prodList %>" type="java.lang.Object" indexId="idx1">
 			 			<% 
-						  if(tmpContentNode instanceof CategoryModel) { continue; }
-						  else if(tmpContentNode instanceof ProductModel){
+						  if(!(tmpContentNode instanceof CategoryModel)) { 
+						   if(tmpContentNode instanceof ProductModel){
 							  ProductModel pm = (ProductModel) tmpContentNode;
 								ProductImpression pi = new ProductImpression( pm );
 							  DisplayObject displayObjTmp = JspMethods.loadLayoutDisplayStrings(response,catId_1,pm,JspMethods.getProductNameToUse(pm),true);
@@ -149,7 +149,7 @@
 							<display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_layMultiCatDeptDeal"></display:FDCoupon>
 						 </td>
 						 <% if(idx1.intValue() > 0 && (idx1.intValue()%PRODUCTS_PER_LINE)==PRODUCTS_PER_LINE-1){ break; } %>
-						 <%} %>
+						 <%} } %>
 			 		</logic:iterate>
 			 	</tr>
 			 	<tr><td><img src="/media_stat/images/layout/clear.gif" alt="" width="25" height="25"></td></tr>
@@ -157,7 +157,7 @@
 			 	<table cellpadding="0" cellspacing="0" border="0"><tr>
 			 <% prodList = new ArrayList(); //create a new list for the next row of products
 			 	} 
-			 } %>
+			 } } }%>
 		</logic:iterate>
 		</tr>
 		</table>
@@ -173,9 +173,9 @@
 		<logic:iterate id="contentNode" collection="<%= edlpProdList %>" type="java.lang.Object" indexId="idx">
 			<%//if(idx.intValue()==MAX_PROD2SHOW) break; %>
 			<% 
-			  if(contentNode instanceof CategoryModel) { continue; }
-			  else if(contentNode instanceof ProductModel){
-				  if(((ProductModel)contentNode).isUnavailable()){ continue;}
+			  if(!(contentNode instanceof CategoryModel)) { 
+			   if(contentNode instanceof ProductModel){
+				  if(!(((ProductModel)contentNode).isUnavailable())){ 
 				  prodList.add(contentNode);
 				  ProductModel edlpProduct = (ProductModel) contentNode;
 					ProductImpression edlpPi = new ProductImpression( edlpProduct );
@@ -194,8 +194,8 @@
 				<logic:iterate id="tmpContentNode" collection="<%= prodList %>" type="java.lang.Object" indexId="idx1">
 					<%//if(idx.intValue()==MAX_PROD2SHOW) break; %>
 					<% 
-					  if(tmpContentNode instanceof CategoryModel) { continue; }
-					  else if(tmpContentNode instanceof ProductModel){
+					  if(!(tmpContentNode instanceof CategoryModel)) {
+					   if(tmpContentNode instanceof ProductModel){
 						  ProductModel pm = (ProductModel) tmpContentNode;
 						  DisplayObject displayObjTmp = JspMethods.loadLayoutDisplayStrings(response,catId_2,pm,JspMethods.getProductNameToUse(pm),true);
 						  int adjustedImgWidthTmp = displayObjTmp.getImageWidthAsInt()+6+10;
@@ -213,7 +213,7 @@
 						<display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_layMultiCatDeptEdlp"></display:FDCoupon>
 					 </td>
 					 <% if(idx1.intValue() > 0 && (idx1.intValue()%PRODUCTS_PER_LINE)==PRODUCTS_PER_LINE-1){ break; }%> 
-					 <% } %>
+					 <% } }%>
 				</logic:iterate>
 				</tr>
 			 	<tr><td><img src="/media_stat/images/layout/clear.gif" alt="" width="25" height="25"></td></tr>
@@ -221,7 +221,7 @@
 			 	<table cellpadding="0" cellspacing="0" border="0"><tr>
 			 <% prodList = new ArrayList(); //create a new list for the next row of products
 			 	} 
-			 } %>
+			 } } }%>
 		</logic:iterate>
 		</tr>
 		</table>

@@ -288,10 +288,10 @@ Learn more about <a href="javascript:popup('/departments/meat/info_buying_bulk_m
 Image bulkImage = null;
 Image optionImage = null;
 String prodDescPath = null;
-    if (!(contentNode instanceof ProductModel)) continue;
+    if ((contentNode instanceof ProductModel)) {
     ProductModel bulkProduct = (ProductModel) contentNode;
 
-    if (bulkProduct.isUnavailable()) continue;
+    if (!(bulkProduct.isUnavailable())) {
 // get the images and Content for this product
     prodSkus = bulkProduct.getSkus();
     if (prodSkus.size()>1) {
@@ -304,9 +304,7 @@ String prodDescPath = null;
     }
 
     skuSize = prodSkus.size();
-    if (skuSize==0) {
-        continue;
-    }
+    if (!(skuSize==0)) {
     skus.addAll(prodSkus); //load these skus into the list of skus needed by the pricing javascript include
     String price = "";
     SkuModel sku = null; 
@@ -341,7 +339,7 @@ String prodDescPath = null;
     FDProduct blkFDProd=null;
     for(Iterator<SkuModel> skuItr = prodSkus.iterator();skuItr.hasNext();){
         sku = skuItr.next();
-        if (sku.isUnavailable()) continue;
+        if (!(sku.isUnavailable())) {
         String skuPrice = "";
         String skuSalesUnit="";
         String gradePath="";
@@ -399,11 +397,12 @@ String prodDescPath = null;
                 <div style="margin-left: 24px; text-indent: -24px;"><input type="radio"  value="<%=sku.getSkuCode()%>" <%=selectedRB%> name="blkSkuCode" onClick="<%=onClickHandler%>">&nbsp;<font CLASS="text11bold"><%= skuPrice%></FONT></div> 
 <%
             }
-    }
+    } }
     prodsShown++;
 %>  </TD></TR>
     <TR VALIGN="TOP"><TD COLSPAN="3" WIDTH="<%=W_BULK_MEAT_PRODUCT_TOTAL%>"><BR></TD>
     </TR>
+    <%} } }%>
 </logic:iterate>
 <input type="hidden" name="itemCount" value="<%=prodsShown%>">
 </TABLE>

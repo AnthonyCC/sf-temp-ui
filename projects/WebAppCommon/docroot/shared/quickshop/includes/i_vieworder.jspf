@@ -479,11 +479,10 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
 %>
 		<fd:GetRecommendedAlternative id="alt" contentNode="<%=contModel%>">
 	        <%
-		    if (alt == null) continue;
-		    if (alt.isUnavailable()) {
+		    if (!(alt == null)) {
+		    if (!(alt.isUnavailable())) {
 		        %> <!-- RECOMMENDED PRODUCT <%= alt.getProduct().getFullName()%> IS NOT AVAILABLE! --> <%
-		        continue;
-		    }
+		      
 
 		    StringBuffer aqsLink = 
 		        new StringBuffer(service).append("?lineId=").append(orderLine.getCustomerListLineId()).append('&');
@@ -499,9 +498,9 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
 			aqsLink.append('&').append(entry.getKey()).append('=').append(StringUtil.escapeUri(entry.getValue().toString()));
 		   }
 		   found = true;
-		%>
+		 %>
 		<br><div class="text10" color="#666666" style="margin-top: 1ex; margin-bottom: 1ex;">Recommended alternative: <a href="<%= aqsLink %>"><b><%= alt.getProduct().getFullName()%></b></a></div>
-		</fd:GetRecommendedAlternative>
+		<%}} %></fd:GetRecommendedAlternative>
 <%
                 if (found) break; // bail out after the first alternative
             } // recommended alternatives

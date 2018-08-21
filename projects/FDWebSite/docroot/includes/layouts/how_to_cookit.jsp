@@ -111,7 +111,7 @@ if (sortedColl==null) sortedColl = Collections.<CategoryModel>emptyList();
 
         SkuModel sku = null;
         String prodPrice = null;
-        if (skuSize==0) continue;  // skip this item..it has no skus.  Hmmm?
+        if (!(skuSize==0)) {  // skip this item..it has no skus.  Hmmm?
         if (skuSize==1) {
             sku = skus.get(0);  // we only need one sku
         }
@@ -167,6 +167,7 @@ if (sortedColl==null) sortedColl = Collections.<CategoryModel>emptyList();
         if (favoritesShow==4) break;  // only show 4 favoites.
         }
         }
+        }
 %>
  </logic:iterate>
 <%
@@ -216,7 +217,7 @@ if (sortedColl==null) sortedColl = Collections.<CategoryModel>emptyList();
 <%
                // get the list of products that are eligible to be prepared for this group
                List<ProductModel> htciProdList = displayCategory.getHowToCookItProducts();
-               if (htciProdList==null || htciProdList.size() ==0) continue;
+               if (!(htciProdList==null || htciProdList.size() ==0)) {
                 col1.setLength(0);
                 productLinks.clear();
                 productPrices.clear();
@@ -281,4 +282,5 @@ if (sortedColl==null) sortedColl = Collections.<CategoryModel>emptyList();
 <TR VALIGN="TOP">
 	<TD align="center" width="<%=W_HOW_TO_COOK_IT_IMG%>"><%=col1.toString()%></td><%=outputProducts%></TR>
 </Table>
+<%} %>
 </logic:iterate>

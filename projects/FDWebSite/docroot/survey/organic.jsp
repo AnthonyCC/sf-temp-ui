@@ -161,7 +161,7 @@ if (submitted) {
 							<tr><td></td><td><input type="<%=input%>" name="<%=question.getName()%>" value="<%=answer.getDescription()%>" <%=prevAnswers.contains(answer.getDescription()) ? "CHECKED" : "" %>></td><td colspan="9" class="text12"><%=answer.getDescription()%> <%="other".equalsIgnoreCase(answer.getName()) ? " (please specify)" : "" %>
 							<% if (!"other".equalsIgnoreCase(answer.getName())) { %>
 								</td></tr>
-							<% } else { continue; } %>
+							<% } %>
 					<% } %>
 	        		</logic:iterate>
 					<% } %>

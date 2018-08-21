@@ -141,13 +141,11 @@ if (sortedColl==null) sortedColl = new ArrayList();
         ProductModel product;
 		if (contentNode instanceof ProductModel) {
 			 product = (ProductModel)contentNode;
-		} else {
-			continue;
-		}
-        if (product.isDiscontinued() || product.isUnavailable()) continue;
+		
+        if (!(product.isDiscontinued() || product.isUnavailable())) {
         prodParent = product.getParentNode(); 
         List skus = product.getSkus(); 
-        if (prodParent==null || !(prodParent instanceof CategoryModel)) continue;
+        if (!(prodParent==null || !(prodParent instanceof CategoryModel))) {
 
     for (ListIterator li=skus.listIterator(); li.hasNext(); ) {
         SkuModel sku = (SkuModel)li.next();
@@ -159,7 +157,7 @@ if (sortedColl==null) sortedColl = new ArrayList();
 
         SkuModel sku = null;
         String prodPrice = null;
-        if (skuSize==0) continue;  // skip this item..it has no skus.  Hmmm?
+        if (!(skuSize==0)) {  // skip this item..it has no skus.  Hmmm?
         if (skuSize==1) {
             sku = (SkuModel)skus.get(0);  // we only need one sku
         }
@@ -200,6 +198,11 @@ if (sortedColl==null) sortedColl = new ArrayList();
         regularProducts.append(prodPrice);
         regularProducts.append("</font>");
         regularProducts.append("<br><span class=\"space8pix\"><br></span>");
+        
+		} 
+		}
+		}
+		}
 %>
  </logic:iterate>
 <% if (regularProducts.length()>0) { %><%=regularProducts.toString()%><% } %>
