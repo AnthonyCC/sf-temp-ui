@@ -89,7 +89,6 @@ public class AccountController extends BaseController implements Comparator <Ord
     private static final String ACTION_ADD_PROFILE = "addProfile";
     private static final String ACTION_DP_FREE_TRIAL="dpFreeTrial";
 	private static final String ACTION_DP_GET_INFO="getDpInfo";
-	private static final String ACTION_DP_GET_LIST="getDpList";
     private static final String ACTION_DP_AUTO_RENEW="dpAutoRenew";
     private final static String DLV_PASS_CART = "dlvPassCart";
     private final static String ACTION_GET_ALL_DLV_PASS_PLANS = "getAllDlvPassPlans";
@@ -181,8 +180,6 @@ public class AccountController extends BaseController implements Comparator <Ord
 				}
 			} else if(ACTION_DP_GET_INFO.equals(action)){
 				 model = getDpInfo(model, user, request, response);
-			} else if(ACTION_DP_GET_LIST.equals(action)){
-				 model = getDpList(model, user, request, response);
 			} else if(ACTION_DP_AUTO_RENEW.equals(action)){		
 				 AutoRenewDp reqestMessage = parseRequestObject(request, response, AutoRenewDp.class);
 				setAutoRenewal(request, response, model, user, reqestMessage);
@@ -330,29 +327,6 @@ public class AccountController extends BaseController implements Comparator <Ord
             setResponseMessage(model, responseMessage, user);
     	}
         return model;
-    }
-    
-    private ModelAndView getDpList(ModelAndView model, SessionUser user, HttpServletRequest request, HttpServletResponse response) throws FDException, JsonException {
-    		DpSkuListResponse responseMessage = new DpSkuListResponse();
-    		if(isExtraResponseRequested(request)){
-    			List<String> productidlist = Arrays.asList((FDStoreProperties.getFDXDPSku()).split(","));
-				List<com.freshdirect.mobileapi.model.Product> dpproductList = new ArrayList<com.freshdirect.mobileapi.model.Product>();
-    			for (String productid : productidlist) {
-    				try {
-						dpproductList.add(com.freshdirect.mobileapi.model.Product.getProduct(productid, "xxx", null, user));
-					} catch (ServiceException e) {
-						LOGGER.debug("Error fetching data for product(" + productid + "): " + e.getMessage());
-					}
-				}
-    			responseMessage.setDpProductlist(NewBrowseUtil.setProductsFromModel(dpproductList));
-    		}else if(CmsManager.getInstance().getEStoreEnum()!=null && CmsManager.getInstance().getEStoreEnum().equals(EnumEStoreId.FDX)){
-    			responseMessage.setDpskulist(new ArrayList<String>(Arrays.asList((FDStoreProperties.getFDXDPSku()).split(","))));
-    		}else{
-    			responseMessage.setDpskulist(new ArrayList<String>(Arrays.asList((FDStoreProperties.getFDDPSku()).split(","))));
-    		}
-            responseMessage.setStatus(Message.STATUS_SUCCESS);
-            setResponseMessage(model, responseMessage, user);
-            return model;
     }
     
 	private ModelAndView getdlvPassAllPlans(ModelAndView model, SessionUser user, HttpServletRequest request,
