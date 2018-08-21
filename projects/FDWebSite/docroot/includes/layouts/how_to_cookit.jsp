@@ -96,10 +96,10 @@ if (sortedColl==null) sortedColl = Collections.<CategoryModel>emptyList();
     <logic:iterate id='contentRef' collection="<%=favorites%>" type="com.freshdirect.storeapi.content.ProductModel">
 <% 
         ProductModel product = ProductPricingFactory.getInstance().getPricingAdapter(contentRef);
-        if (product.isDiscontinued() || product.isUnavailable()) continue;
+        if (!(product.isDiscontinued() || product.isUnavailable())) {
         ContentNodeModel prodParent = product.getParentNode(); 
         List<SkuModel> skus = product.getSkus(); 
-        if (prodParent==null || !(prodParent instanceof CategoryModel)) continue;
+        if (!(prodParent==null || !(prodParent instanceof CategoryModel))) {
 
 	for (ListIterator<SkuModel> li=skus.listIterator(); li.hasNext(); ) {
 		SkuModel sku = li.next();
@@ -165,6 +165,8 @@ if (sortedColl==null) sortedColl = Collections.<CategoryModel>emptyList();
         favoriteProducts.append("\" WIDTH=\"8\" HEIGHT=\"1\"></TD>");
         favoritesShow++;
         if (favoritesShow==4) break;  // only show 4 favoites.
+        }
+        }
 %>
  </logic:iterate>
 <%
