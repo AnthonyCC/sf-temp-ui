@@ -901,7 +901,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 				recievedSmsData.setCarrierName(rs.getString("CARRIER_NAME"));
 				recievedSmsData.setMessage(rs.getString("MESSAGE"));
 				recievedSmsData.setMobileNumber(rs.getString("MOBILE_NUMBER"));
-				//recievedSmsData.setReceivedDate(rs.getTimestamp("RECEIVED_DATE")!=null?new SimpleDateFormat(DATE_TIME_FORMAT).format(rs.getTimestamp("RECEIVED_DATE")):null);
+				recievedSmsData.setReceivedDate(rs.getTimestamp("RECEIVED_DATE"));
 				recievedSmsData.seteStoreId(EnumEStoreId.FD.name());
 				
 				RecievedSmsList.add(recievedSmsData);
@@ -957,7 +957,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 	private int getTime() {
 		int time = 30;
 		try {
-		 time = Integer.parseInt(DlvProperties.getSmsExpireInMins());
+		 time = Integer.parseInt(DlvProperties.getReceivedSmsInMins());
 		}  catch (Exception e) {
 			e.printStackTrace();
 		}
