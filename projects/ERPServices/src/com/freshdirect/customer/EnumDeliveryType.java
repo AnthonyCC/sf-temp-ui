@@ -37,14 +37,14 @@ public class EnumDeliveryType extends Enum implements Serializable {
 
 	private final int id;
 	private final String code;
-	private final String name;
+	private final String displayName;
 	private final String deliveryModel;
 
 	private EnumDeliveryType(String code, String name, String deliveryModel) {
 		super(code);
 		this.id = idCounter++;
 		this.code = code;
-		this.name = name;
+		this.displayName = name;
 		this.deliveryModel = deliveryModel;
 
 		DELIVERY_TYPE_MAP.put(code, this);
@@ -55,9 +55,9 @@ public class EnumDeliveryType extends Enum implements Serializable {
 		return this.code;
 	}
 
-	/*public String getName() {
-		return this.name;
-	}*/
+	public String getDisplayName() {
+		return this.displayName;
+	}
 
 	public String getDeliveryModel() {
 		return this.deliveryModel;
