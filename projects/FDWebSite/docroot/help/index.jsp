@@ -205,12 +205,11 @@
 					<p>Check below to find the fastest answers to our top customer concerns.</p>
 					
 					<ul class="orangeDot bold">
-						<li><a href="/your_account/order_history.jsp">Check the status of your order</a></li>
 						<li><a href="/your_account/order_history.jsp">Change or cancel your order</a></li>
-						<li><a href="/search.jsp">Find a product</a></li>
 						<li><a href="/your_account/signin_information.jsp">Change your password</a></li>
-						<li><a href="/your_account/manage_account.jsp">Change delivery info</a></li>
-						<li><a href="/your_account/payment_information.jsp">Change credit card info</a></li>
+						<li><a href="/your_account/payment_information.jsp">Change payment info to my account</a></li>
+						<li><a href="/your_account/delivery_information.jsp">Update delivery addresses</a></li>
+						<li><a href="/your_account/signin_information.jsp">Update account, mobile and email information</a></li>
 					</ul>
 					
 					<%-- FAQs --%>
