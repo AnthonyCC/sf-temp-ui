@@ -66,7 +66,7 @@ TD.textureLabels{padding-left:25px; padding-top:4px; padding-right:4px}
             
                     <logic:iterate id="fish" collection="<%= seafoodCollection %>" type="com.freshdirect.storeapi.content.ContentNodeModel" indexId="idx">
                         <%      
-                                if(!fish.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)) continue;
+                                if(!(!fish.getContentType().equals(ContentNodeModel.TYPE_PRODUCT))) {
                                     
                         		ProductModel fishProduct = (ProductModel)fish;
                                 if(fishProduct.isUnavailable()){
@@ -131,6 +131,7 @@ TD.textureLabels{padding-left:25px; padding-top:4px; padding-right:4px}
                                             }
                                         }
                                     }
+                                }
                                 }
                         %>
                     </logic:iterate>

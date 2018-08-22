@@ -96,10 +96,10 @@ if (sortedColl==null) sortedColl = Collections.<CategoryModel>emptyList();
     <logic:iterate id='contentRef' collection="<%=favorites%>" type="com.freshdirect.storeapi.content.ProductModel">
 <% 
         ProductModel product = ProductPricingFactory.getInstance().getPricingAdapter(contentRef);
-        if (product.isDiscontinued() || product.isUnavailable()) continue;
+        if (!(product.isDiscontinued() || product.isUnavailable())) {
         ContentNodeModel prodParent = product.getParentNode(); 
         List<SkuModel> skus = product.getSkus(); 
-        if (prodParent==null || !(prodParent instanceof CategoryModel)) continue;
+        if (!(prodParent==null || !(prodParent instanceof CategoryModel))) {
 
 	for (ListIterator<SkuModel> li=skus.listIterator(); li.hasNext(); ) {
 		SkuModel sku = li.next();
@@ -111,7 +111,7 @@ if (sortedColl==null) sortedColl = Collections.<CategoryModel>emptyList();
 
         SkuModel sku = null;
         String prodPrice = null;
-        if (skuSize==0) continue;  // skip this item..it has no skus.  Hmmm?
+        if (!(skuSize==0)) {  // skip this item..it has no skus.  Hmmm?
         if (skuSize==1) {
             sku = skus.get(0);  // we only need one sku
         }
@@ -165,6 +165,9 @@ if (sortedColl==null) sortedColl = Collections.<CategoryModel>emptyList();
         favoriteProducts.append("\" WIDTH=\"8\" HEIGHT=\"1\"></TD>");
         favoritesShow++;
         if (favoritesShow==4) break;  // only show 4 favoites.
+        }
+        }
+        }
 %>
  </logic:iterate>
 <%
@@ -214,7 +217,7 @@ if (sortedColl==null) sortedColl = Collections.<CategoryModel>emptyList();
 <%
                // get the list of products that are eligible to be prepared for this group
                List<ProductModel> htciProdList = displayCategory.getHowToCookItProducts();
-               if (htciProdList==null || htciProdList.size() ==0) continue;
+               if (!(htciProdList==null || htciProdList.size() ==0)) {
                 col1.setLength(0);
                 productLinks.clear();
                 productPrices.clear();
@@ -277,4 +280,5 @@ if (sortedColl==null) sortedColl = Collections.<CategoryModel>emptyList();
 <TR VALIGN="TOP">
 	<TD align="center" width="<%=W_HOW_TO_COOK_IT_IMG%>"><%=col1.toString()%></td><%=outputProducts%></TR>
 </Table>
+<%} %>
 </logic:iterate>

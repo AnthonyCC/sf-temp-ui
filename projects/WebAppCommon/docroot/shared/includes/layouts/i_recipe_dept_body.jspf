@@ -53,7 +53,7 @@ if (editorialPath!=null && !"".equals(editorialPath.trim())) {  %>
         <td valign="top" colspan="2" rowspan="2" style="padding-top: 10px; padding-right: 10px;">
 			<logic:iterate id="recipeCategory" collection="<%= recipeDepartment.getCategories() %>" type="com.freshdirect.storeapi.content.RecipeCategory">
 			<% 
-				if (recipeCategory.isSecondaryCategory()) continue;  
+				if (!(recipeCategory.isSecondaryCategory())) {
 				Image catLabelImg = recipeCategory.getLabel();
 				String catLabelPath = null;
 				if (catLabelImg!=null) {
@@ -72,6 +72,7 @@ if (editorialPath!=null && !"".equals(editorialPath.trim())) {  %>
 				<a href="<%=response.encodeURL("recipe_subcat.jsp?catId="+recipeCategory+"&subCatId="+recipeSubcategory+"&trk=dpage")%>" class="recipe_subcategory"><%=recipeSubcategory.getName()%></a>
 				<% subcatItemCount++; %>
 			</logic:iterate><br><br>
+			<%} %>
 		  </logic:iterate>
 		  <br>
 		  <form fdform name="recipeSearch" method="get" action="/recipe_search.jsp?trk=rdsrch">

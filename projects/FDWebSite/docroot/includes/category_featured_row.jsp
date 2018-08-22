@@ -95,10 +95,10 @@
     <table cellpadding="0" cellspacing="0" border="0">
 	<tr valign="bottom">
 		<logic:iterate id="contentNode" collection="<%= dealCol %>" type="java.lang.Object" indexId="idx">
-			<%if(idx.intValue()>=dealProductsCount) continue; 
-			  if(contentNode instanceof CategoryModel) { continue; }
-			  else if(contentNode instanceof ProductModel){
-				  if(((ProductModel)contentNode).isUnavailable()){ continue;}
+			<%if(!(idx.intValue()>=dealProductsCount)) {
+			  if(!(contentNode instanceof CategoryModel)) { 
+			   if(contentNode instanceof ProductModel){
+				  if(!(((ProductModel)contentNode).isUnavailable())){ 
 				  ProductModel dealProduct = (ProductModel) contentNode;
 				  String prodNameAttribute = JspMethods.getProductNameToUse(dealProduct);
 				  DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId_1,dealProduct,prodNameAttribute,true);
@@ -108,14 +108,14 @@
 			 <td align="center" width="<%=adjustedImgWidth%>" style="padding-left:5px; padding-right:5px;">
 				<display:ProductImage product="<%= dealProduct %>" showRolloverImage="false" action="<%= actionUrl %>"/>
 			 </td>
-			 <% } %>
+			 <% } } } }%>
 		</logic:iterate>
 			<logic:iterate id="contentNode" collection="<%= edlpCol %>" type="java.lang.Object" indexId="idx">
 			<% 
-			  if(idx.intValue()>=edlpProductsCount) continue;
-			  if(contentNode instanceof CategoryModel) { continue; }
-			  else if(contentNode instanceof ProductModel){
-				  if(((ProductModel)contentNode).isUnavailable()){ continue;}
+			  if(!(idx.intValue()>=edlpProductsCount)) {
+			  if(!(contentNode instanceof CategoryModel)) {
+			   if(contentNode instanceof ProductModel){
+				  if(!(((ProductModel)contentNode).isUnavailable())){ 
 				  ProductModel edlpProduct = (ProductModel) contentNode;
 				  String prodNameAttribute = JspMethods.getProductNameToUse(edlpProduct);
 				  DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId_2,edlpProduct,prodNameAttribute,true);
@@ -125,16 +125,16 @@
 			 <td align="center" width="<%=adjustedImgWidth%>" style="padding-left:5px; padding-right:5px;">
 				<display:ProductImage product="<%= edlpProduct %>" showRolloverImage="false" action="<%= actionUrl %>"/>
 			 </td>
-			 <% } %>
+			 <% } } } }%>
 		</logic:iterate>
 		</tr>
 		<tr>
 			<logic:iterate id="contentNode" collection="<%=dealCol %>" type="java.lang.Object" indexId="idx">
 			<%
-				if(idx.intValue()>=dealProductsCount) continue; 
-				if(contentNode instanceof CategoryModel) { continue; }
-				else if(contentNode instanceof ProductModel){
-					if(((ProductModel)contentNode).isUnavailable()){ continue;}
+				if(!(idx.intValue()>=dealProductsCount)) {
+				if(!(contentNode instanceof CategoryModel)) { 
+				 if(contentNode instanceof ProductModel){
+					if(!(((ProductModel)contentNode).isUnavailable())){ 
 					ProductModel dealProduct = (ProductModel) contentNode;
 					String prodNameAttribute = JspMethods.getProductNameToUse(dealProduct);
 					DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId_1,dealProduct,prodNameAttribute,true);
@@ -146,14 +146,14 @@
 					<display:ProductName product="<%= dealProduct %>" action="<%= actionUrl %>"/>								
 					<display:ProductPrice impression="<%= new ProductImpression( dealProduct ) %>" showAboutPrice="false" showDescription="false"/>
 				</td>
-				<% } %>
+				<% } } } }%>
 			</logic:iterate>
 			<logic:iterate id="contentNode" collection="<%= edlpCol %>" type="java.lang.Object" indexId="idx">
 			<%
-				if(idx.intValue()>=edlpProductsCount) continue;
-				if(contentNode instanceof CategoryModel) { continue; }
-				else if(contentNode instanceof ProductModel){
-					if(((ProductModel)contentNode).isUnavailable()){ continue;}
+				if(!(idx.intValue()>=edlpProductsCount)) {
+				if(!(contentNode instanceof CategoryModel)) { 
+				 if(contentNode instanceof ProductModel){
+					if(!(((ProductModel)contentNode).isUnavailable())){ 
 					ProductModel edlpProduct = (ProductModel) contentNode;
 					String prodNameAttribute = JspMethods.getProductNameToUse(edlpProduct);
 					DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId_2,edlpProduct,prodNameAttribute,true);
@@ -165,7 +165,7 @@
 					<display:ProductName product="<%= edlpProduct %>" action="<%= actionUrl %>"/>								
 					<display:ProductPrice impression="<%= new ProductImpression( edlpProduct ) %>" showAboutPrice="false" showDescription="false"/>
 				</td>
-				<% } %>
+				<% } } } }%>
 		</logic:iterate>
 		</tr>
 		</table>

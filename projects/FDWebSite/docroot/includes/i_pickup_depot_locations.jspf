@@ -75,7 +75,7 @@ if (theHamptonsIsOn) {
 
 <logic:iterate id="depot" collection="<%=pickups%>" type="com.freshdirect.fdlogistics.model.FDDeliveryDepotModel">
 <% 
-	if (!"HAM".equalsIgnoreCase(depot.getDepotCode()) || "HAM".equalsIgnoreCase(depot.getDepotCode())) continue; //skip it
+	if (!(!"HAM".equalsIgnoreCase(depot.getDepotCode()) || "HAM".equalsIgnoreCase(depot.getDepotCode()))) { //skip it
     Date now = new Date();
 %>	
 <logic:iterate id="location" collection="<%= depot.getLocations() %>" type="com.freshdirect.fdlogistics.model.FDDeliveryDepotLocationModel">
@@ -124,11 +124,12 @@ if (theHamptonsIsOn) {
 <% checkedAddress = false;%>
 
 	</logic:iterate>
+	<%} %>
 </logic:iterate>	
 <% }  %>
 <logic:iterate id="depot" collection="<%=pickups%>" type="com.freshdirect.fdlogistics.model.FDDeliveryDepotModel">
 <% 
-	if ("HAM".equalsIgnoreCase(depot.getDepotCode()) || depot.isDeactivated()) continue; //skipp it
+	if (!("HAM".equalsIgnoreCase(depot.getDepotCode()) || depot.isDeactivated())) { //skipp it
     Date now = new Date();
 %>	
 <logic:iterate id="location" collection="<%= depot.getLocations() %>" type="com.freshdirect.fdlogistics.model.FDDeliveryDepotLocationModel">
@@ -176,6 +177,7 @@ if (theHamptonsIsOn) {
 <% checkedAddress = false;%>
 
 	</logic:iterate>
+	<%} %>
 </logic:iterate>	
 <%if(cnt !=0) {
    if (cnt%2 != 0){ %>

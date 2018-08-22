@@ -106,13 +106,14 @@ List severityAnswers = ((FDSurveyQuestion)questions.get(3)).getAnswers();
 				</tr>
 	            <tr><td colspan="2"><img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_SURVEY_POST_ORDER_1_TOTAL-80%>" height="1" vspace="2"></td></tr>
 	             <logic:iterate id="answer" collection="<%= question.getAnswers() %>" type="com.freshdirect.fdstore.survey.FDSurveyAnswer" indexId="i">
-	                 <% if ("q_problem_severity".equalsIgnoreCase(question.getName()) && i.intValue() == (question.getAnswers()).size()-1 ) { continue; } %>
+	                 <% if (!("q_problem_severity".equalsIgnoreCase(question.getName()) && i.intValue() == (question.getAnswers()).size()-1 )) { %>
 					 <tr>
 						<td rowspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="25" height="1"></td>
 						<td align="center"><input type="<%=input%>" name="<%=question.getName()%>" value="<%=answer.getDescription()%>" <% if ("q_problem_severity".equalsIgnoreCase(question.getName())) { %><%=prevAnswers.contains(answer.getName()) ? "CHECKED" : "" %><% } else { %><%=prevAnswers.contains(answer.getDescription()) ? "CHECKED" : "" %><% } %>></td>
 						<td width="<%=W_SURVEY_POST_ORDER_1_TOTAL-270%>" class="text13"><%=answer.getDescription()%></td>
 					</tr>
 					<tr><td colspan="2"><img src="/media_stat/images/layout/ffffff.gif" width="400" height="1" vspace="2"></td></tr>
+					<%} %>
 	             </logic:iterate>
 			<% } %>
         </logic:iterate>

@@ -205,8 +205,8 @@ Please note that this research will help us improve our service, however, we are
 						<td class="text12" colspan="6">Other, please specify <input type="text" name="<%=question.getName()%>" value="<%=request.getParameter(question.getName())%>"></td>
 					</tr>
 					<tr><td colspan="7"><img src="/media_stat/images/layout/ffffff.gif" width="420" height="1" vspace="2"><br><span class="space8pix"><br><br></span></td></tr>
-	            <%continue;
-	            } else { 
+	            <%
+	            } else if(!(question.getName().indexOf("other") > -1 && !"q_other".equalsIgnoreCase(question.getName()))){ 
 				
 				int numAnswers = (question.getAnswers()).size();
 				boolean columns = false;

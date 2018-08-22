@@ -373,9 +373,9 @@ if (isAvailable ) { %>
 		   FDSalesUnit[] salesUnits;    %>
 		  <logic:iterate id='optProd' collection="<%=stepCat.getProducts()%>" type="com.freshdirect.storeapi.content.ProductModel" indexId='optIdx'>
 	<%	
-			   if (optProd.isDiscontinued() || optProd.isUnavailable()) continue;
+			   if (!(optProd.isDiscontinued() || optProd.isUnavailable())) {
 			   SkuModel dfltSku = optProd.getDefaultSku();
-			   if (dfltSku==null) continue;
+			   if (!(dfltSku==null)) {
 			   skus.add(dfltSku);    %>
 		<fd:FDProductInfo id="productInfo" skuCode="<%=dfltSku.getSkuCode()%>">
 	<%
@@ -481,7 +481,7 @@ if (isAvailable ) { %>
 	<%	prodCount++;  %>
 
 	<%
-		} //end optional layout %>
+		} } }//end optional layout %>
 	 </logic:iterate>  
 <%      if (prodCount>1) { 
 	        if (EnumLayoutType.MULTI_ITEM_MEAL_OPTION_HORZ.getId() != layout) { %>

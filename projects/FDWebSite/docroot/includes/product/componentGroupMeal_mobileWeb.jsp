@@ -452,7 +452,7 @@ if (isAvailable ) {
 		  <logic:iterate id='optProd' collection="<%=optionalProducts%>" type="com.freshdirect.storeapi.content.ProductModel" indexId='optIdx'>
 	<%	
 		   SkuModel dfltSku = optProd.getDefaultSku();
-		   if (dfltSku==null) continue;
+		   if (!(dfltSku==null)) {
 		   skus.add(dfltSku);    %>
 		   <fd:FDProductInfo id="productInfo" skuCode="<%=dfltSku.getSkuCode()%>">
 	<%
@@ -573,7 +573,7 @@ if (isAvailable ) {
 	<%	    prodCount++;  %>
 
 	<%
-		  } //end optional layout %>
+		  } }//end optional layout %>
 	       </logic:iterate>  
 <%             if (prodCount>1) { 
 	          if (paintOptionalVertical) { %></table></td> <%   }   %>            
