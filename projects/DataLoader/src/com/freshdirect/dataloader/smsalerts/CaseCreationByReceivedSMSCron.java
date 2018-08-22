@@ -49,7 +49,7 @@ public class CaseCreationByReceivedSMSCron {
 				recievedSmsList = smsAlertSB.getReceivedSmsData();
 			}
 			for (RecievedSmsData model : recievedSmsList) {
-				LOGGER.info("Start:::::Received SMS data  is sending to Backoffice. MobileNumber:"
+				LOGGER.info("Start:::::CaseCreationByReceivedSMSCro for  MobileNumber:"
 						+ model.getMobileNumber());
 				IBackOfficeClientService service = BackOfficeClientService
 						.getInstance();
@@ -62,12 +62,13 @@ public class CaseCreationByReceivedSMSCron {
 				if (FDStoreProperties
 						.isSF2_0_AndServiceEnabled("sms.ejb.SmsAlertsSB")) {
 					FDECommerceService.getInstance().updateCaseCreationStatus(
-							model.geteStoreId(), isCaseCreated);
+							model.getSmsId(), isCaseCreated);
 				} else {
 					SmsAlertsSB smsAlertSB = smsAlertsHome.create();
-					smsAlertSB.updateCaseCreationStatus(model.geteStoreId(),
+					smsAlertSB.updateCaseCreationStatus(model.getSmsId(),
 							isCaseCreated);
 				}
+				LOGGER.info("End::::: CaseCreationByReceivedSMSCron  process has been completed for MobileNumber:"+model.getMobileNumber()+"CaseCreation Response:"+isCaseCreated);
 			}
 		} catch (Exception e) {
 			StringWriter sw = new StringWriter();
