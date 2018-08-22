@@ -94,11 +94,6 @@ public class AccountController extends BaseController implements Comparator <Ord
     private final static String ACTION_GET_ALL_DLV_PASS_PLANS = "getAllDlvPassPlans";
 
     @Override
-    protected boolean validateUser() {
-		return false;
-    }
-
-    @Override
     protected ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model, String action,
             SessionUser user) throws FDException, ServiceException, JsonException {
     	if(UserExists(user)){

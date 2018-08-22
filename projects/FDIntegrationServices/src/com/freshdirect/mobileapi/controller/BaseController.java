@@ -21,7 +21,6 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.log4j.Category;
-import org.apache.openjpa.lib.log.Log;
 import org.springframework.core.io.Resource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
@@ -166,21 +165,13 @@ public abstract class BaseController extends AbstractController implements Messa
         MobileSessionData mobileSessionData = (MobileSessionData) request.getSession().getAttribute("MobileSessionData");
         if (mobileSessionData == null) {
             mobileSessionData = new MobileSessionData();
-            try {
-            		request.getSession().setAttribute("MobileSessionData", mobileSessionData);
-            }catch(IllegalStateException e){
-            	LOGGER.warn(e);
-			}
+            request.getSession().setAttribute("MobileSessionData", mobileSessionData);
         }
         return mobileSessionData;
     }
 
     public void resetMobileSessionData(HttpServletRequest request) {
-	    	try {
-	        request.getSession().setAttribute("MobileSessionData", null);
-	    	}catch(IllegalStateException e){
-	    		LOGGER.warn(e);
-		}
+        request.getSession().setAttribute("MobileSessionData", null);
     }
 
     /**
@@ -265,7 +256,11 @@ public abstract class BaseController extends AbstractController implements Messa
     }
 
     protected SessionUser getUserFromSession(HttpServletRequest request, HttpServletResponse response) throws NoSessionException {
-    	return getUser(request, response);
+        if (null == request.getSession().getAttribute(SessionName.USER)) {
+            throw new NoSessionException("No session");
+        }
+
+        return SessionUser.wrap(request.getSession().getAttribute(SessionName.USER));
     }
 
 
@@ -566,14 +561,10 @@ public abstract class BaseController extends AbstractController implements Messa
     	HttpSession session = request.getSession();
 
     	// clear session
-    	try {
-    		Enumeration e = session.getAttributeNames();
-    		while (e.hasMoreElements()) {
-    			String name = (String) e.nextElement();
-    			session.removeAttribute(name);
-    		}
-    	}catch(IllegalStateException e) {
-    		LOGGER.warn(e);
+    	Enumeration e = session.getAttributeNames();
+    	while (e.hasMoreElements()) {
+    		String name = (String) e.nextElement();
+    		session.removeAttribute(name);
     	}
     	// end session
     	session.invalidate();
@@ -767,15 +758,13 @@ public abstract class BaseController extends AbstractController implements Messa
     private String getMobileNumber(SessionUser user) throws FDResourceException {
         String mobileNumber = null;
         FDSessionUser fduser = user.getFDSessionUser();
-        if(fduser.getIdentity()!=null){
-        	FDCustomerModel fdCustomerModel = FDCustomerFactory.getFDCustomer(fduser.getIdentity());
-        	FDCustomerEStoreModel customerSmsPreferenceModel = fdCustomerModel.getCustomerSmsPreferenceModel();
+        FDCustomerModel fdCustomerModel = FDCustomerFactory.getFDCustomer(fduser.getIdentity());
+        FDCustomerEStoreModel customerSmsPreferenceModel = fdCustomerModel.getCustomerSmsPreferenceModel();
 
-        	if (EnumEStoreId.FDX.getContentId().equals(fduser.getUserContext().getStoreContext().getEStoreId().getContentId())) {
-        		mobileNumber = customerSmsPreferenceModel.getFdxMobileNumber() != null ? customerSmsPreferenceModel.getFdxMobileNumber().getPhone() : "";
-        	} else {
-        		mobileNumber = customerSmsPreferenceModel.getMobileNumber() != null ? customerSmsPreferenceModel.getMobileNumber().getPhone() : "";
-        	}
+        if (EnumEStoreId.FDX.getContentId().equals(fduser.getUserContext().getStoreContext().getEStoreId().getContentId())) {
+            mobileNumber = customerSmsPreferenceModel.getFdxMobileNumber() != null ? customerSmsPreferenceModel.getFdxMobileNumber().getPhone() : "";
+        } else {
+            mobileNumber = customerSmsPreferenceModel.getMobileNumber() != null ? customerSmsPreferenceModel.getMobileNumber().getPhone() : "";
         }
         return mobileNumber;
     }
@@ -794,12 +783,7 @@ public abstract class BaseController extends AbstractController implements Messa
     }
 
     protected SessionUser getUser(HttpServletRequest request, HttpServletResponse response) throws NoSessionException {
-    		FDSessionUser fdSessionUser = null;
-    		try {
-    			fdSessionUser = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
-    		}catch(IllegalStateException e) {
-    			LOGGER.warn(e);
-        }
+        FDSessionUser fdSessionUser = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
         if (fdSessionUser == null) {
             try {
                 fdSessionUser = UserUtil.getSessionUserByCookie(request);
@@ -816,13 +800,8 @@ public abstract class BaseController extends AbstractController implements Messa
             	fdSessionUser.getUser().setApplication(src);
             }
             fdSessionUser.isLoggedIn(true);
-            try {
-            		request.getSession().setAttribute(SessionName.APPLICATION, src.getCode());
-            		request.getSession().setAttribute(SessionName.USER, fdSessionUser);
-            }catch(IllegalStateException e) {
-            	LOGGER.warn(e);
-            	
-            }
+            request.getSession().setAttribute(SessionName.APPLICATION, src.getCode());
+            request.getSession().setAttribute(SessionName.USER, fdSessionUser);
         }
         if (validateUser() && fdSessionUser.getIdentity() == null) {
             throw new NoSessionException("No session");
