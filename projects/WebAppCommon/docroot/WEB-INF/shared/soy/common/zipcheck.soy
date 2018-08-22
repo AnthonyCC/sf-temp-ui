@@ -89,6 +89,7 @@
 {/template}
 
 /**
+ * @param data
  */
 {template .zipcheckFound}
 <div class="zipcheck zipcheck-found">
@@ -96,6 +97,21 @@
    <button class='cssbutton cssbutton-flat green full' zip-check-shop>Shop this Zip Code</button>
    <button class='cssbutton cssbutton-flat green full transparent' onclick='fd.components.zipCheckPopup.close()'>Close</button>
 </div>
+<form fdform="zipcheck" class="hidden">
+	<div class='address-type'>
+      <label><input type="radio" class="customradio" name="addressType" value="HOME" fdform-v-onerequired="addressType" {if $data.addressType == 'HOME'}checked{/if}>Home</label>
+      <label><input type="radio" class="customradio" name="addressType" value="CORPORATE" fdform-v-onerequired="addressType" {if $data.addressType == 'CORPORATE'}checked{/if}>Business or School</label>
+    </div>
+    <label for="zipCode">ZIP Code</label>
+	<input id="zipCode" type="text" name="zipCode" placeholder="Enter ZIP Code" onClick="this.select();" {if $data.zipCode}value="{$data.zipCode}"{/if}>
+		<button type="button" clear-zip-code>
+			<span class="offscreen">Clear Zip Code</span>
+		</button>
+	<div fdform-error-for="zipCode"></div>
+	<div class='zipcode-submit'>
+      <button class='cssbutton cssbutton-flat green' type="submit" value="Submit">Submit</button>
+    </div>
+</form>
 <div class="spinner-overlay">
   <div class="spinner"></div>
 </div>

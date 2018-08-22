@@ -180,7 +180,7 @@ for (FDOrderInfoI orderInfo : orderHistoryInfo) {
 	} else if(orderInfo.getSaleType().equals(EnumSaleType.DONATION)) {
 		deliveryType = "Robin Hood Donation";
 	} else {
-		deliveryType = orderInfo.getDeliveryType().getName();
+		deliveryType = orderInfo.getDeliveryType().getDisplayName();
 	}
 %>
         <% if(!mobWeb){ %><td class="text10"><%= deliveryType %></td><% } %>
