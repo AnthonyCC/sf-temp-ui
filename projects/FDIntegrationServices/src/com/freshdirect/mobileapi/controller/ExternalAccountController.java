@@ -46,6 +46,7 @@ import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.tagwrapper.ExternalAccountControllerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.MergeCartControllerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.RegistrationControllerTagWrapper;
+import com.freshdirect.storeapi.application.CmsManager;
 import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -434,16 +435,16 @@ public class ExternalAccountController extends BaseController implements SystemM
 			LOGGER.info("Identity : erpId = " + identity.getErpCustomerPK()
 					+ " : fdId = " + identity.getFDCustomerPK());
 
-			FDUser loginUser = FDCustomerManager.recognize(identity);
-
-			LOGGER.info("FDUser : erpId = "
-					+ loginUser.getIdentity().getErpCustomerPK() + " : "
-					+ loginUser.getIdentity().getFDCustomerPK());
 
 			FDSessionUser currentUser = (FDSessionUser) session
 					.getAttribute(SessionName.USER);
 
+			FDUser loginUser = FDCustomerManager.recognize(identity, currentUser != null, CmsManager.getInstance().getEStoreEnum());
 
+			LOGGER.info("FDUser : erpId = "
+					+ loginUser.getIdentity().getErpCustomerPK() + " : "
+					+ loginUser.getIdentity().getFDCustomerPK());
+			
 
 			LOGGER.info("loginUser is " + loginUser.getFirstName()
 					+ " Level = " + loginUser.getLevel());
