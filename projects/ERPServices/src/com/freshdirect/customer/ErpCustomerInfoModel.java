@@ -14,7 +14,9 @@ import java.util.List;
 
 import com.freshdirect.framework.core.*;
 import com.freshdirect.sms.EnumSMSAlertStatus;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.freshdirect.common.address.*;
+import com.freshdirect.common.date.SimpleDateDeserializer;
 import com.freshdirect.fdstore.customer.FDIdentity;
 
 /**
@@ -46,8 +48,8 @@ public class ErpCustomerInfoModel extends ModelSupport {
 	private PhoneNumber fax;
 	private String workDepartment;
     private String employeeId;
-    
-    private Date lastReminderEmail;
+    @JsonDeserialize(using = SimpleDateDeserializer.class)
+    private Date lastReminderEmailSend;
     private int reminderDayOfWeek;
     private int reminderFrequency;
     private boolean reminderAltEmail;
@@ -56,7 +58,7 @@ public class ErpCustomerInfoModel extends ModelSupport {
     private Date rsvStartTime;
     private Date rsvEndTime;
     private String rsvAddressId;
-    private java.util.Date unsubscribeDate;
+    private Date unsubscribeDate;
     private String receive_emailLevel;
     private boolean noContactMail;
     private boolean noContactPhone;
@@ -78,6 +80,7 @@ public class ErpCustomerInfoModel extends ModelSupport {
 	private boolean goGreen;
 	/* APPDEV-2475 DP T&C */
 	private int dpTcViewCount;
+	@JsonDeserialize(using = SimpleDateDeserializer.class)
 	private Date dpTcAgreeDate;
 	
 	private String industry;
@@ -250,11 +253,11 @@ public class ErpCustomerInfoModel extends ModelSupport {
     public void setEmployeeId(String employeeId) { this.employeeId = employeeId; }
     
     public Date getLastReminderEmailSend(){
-    	return this.lastReminderEmail;
+    	return this.lastReminderEmailSend;
     }
     
     public void setLastReminderEmailSend(Date lastReminderEmailSend) {
-    	this.lastReminderEmail = lastReminderEmailSend;
+    	this.lastReminderEmailSend = lastReminderEmailSend;
     }
     
     public int getReminderDayOfWeek() {

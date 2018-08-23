@@ -764,8 +764,6 @@ public interface FDUserI extends java.io.Serializable {
 
     public boolean getDpFreeTrialOptin();
 
-    public void setDpFreeTrialOptin(boolean dpFreeTrialOptin);
-
     public String getDpFreeTrialOptinStDate() throws FDResourceException;
 
     public void updateDpFreeTrialOptin(boolean dpFreeTrialOptin);

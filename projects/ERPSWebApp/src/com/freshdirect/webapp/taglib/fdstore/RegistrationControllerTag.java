@@ -631,8 +631,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
         String firstName = request.getParameter("first_name");
 
         FDIdentity identity = getIdentity();
-        ErpCustomerInfoModel cim = null;
-        cim = FDCustomerFactory.getErpCustomerInfo(identity);
+        ErpCustomerInfoModel cim = FDCustomerFactory.getErpCustomerInfo(identity);
         cim.setFirstName(firstName);
         cim.setLastName(lastName);
 
