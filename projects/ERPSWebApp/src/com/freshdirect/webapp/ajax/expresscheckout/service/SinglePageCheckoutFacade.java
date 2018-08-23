@@ -22,6 +22,7 @@ import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.fdlogistics.model.FDDeliveryDepotModel;
 import com.freshdirect.fdstore.EnumCheckoutMode;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -754,8 +755,13 @@ public class SinglePageCheckoutFacade {
                 formPaymentData.setPpEwalletStatus(false); // PayPal wallet will be disable for Standing Orders
 
             } else {
-                formPaymentData.setMpEwalletStatus(getEwalletStatusWithMasquerade(user, EnumEwalletType.MP.getName()));
-                formPaymentData.setPpEwalletStatus(getEwalletStatusWithMasquerade(user, EnumEwalletType.PP.getName()));
+            	if (null !=user.getUserContext() && null!=user.getUserContext().getStoreContext() && user.getUserContext().getStoreContext().getEStoreId().equals(EnumEStoreId.FDX)){
+            		formPaymentData.setMpEwalletStatus(false); // Masterpass wallet will be disable for FDX customers
+                    formPaymentData.setPpEwalletStatus(false); // PayPal wallet will be disable for FDX customers
+            	} else {
+            		formPaymentData.setMpEwalletStatus(getEwalletStatusWithMasquerade(user, EnumEwalletType.MP.getName()));
+                    formPaymentData.setPpEwalletStatus(getEwalletStatusWithMasquerade(user, EnumEwalletType.PP.getName()));
+            	}
             }
             FDCardCount(userPaymentMethods);
             formPaymentData.setMpButtonImgURL(FDStoreProperties.getMasterpassBtnImgURL());
