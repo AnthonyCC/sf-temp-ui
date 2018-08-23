@@ -98,7 +98,7 @@ var FreshDirect = FreshDirect || {};
       value:true
     },
     signal:{
-      value:'descriptiveContent'
+      value:'oas_descriptiveContent'
     },
     callback:{
       value:function(data) {
