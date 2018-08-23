@@ -246,11 +246,6 @@ public class ModifiedCartlineData implements FDCartLineI{
 	}
 
 	@Override
-	public String getAffiliateCode() {
-		return null;
-	}
-
-	@Override
 	public SaleStatisticsI getStatistics() {
 		return null;
 	}
@@ -621,11 +616,7 @@ public class ModifiedCartlineData implements FDCartLineI{
 		return null;
 	}
 
-	@Override
-	public String getDeliveredQuantity(boolean isSoldByLb, boolean isPricedByLb) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 
 	@Override
 	public String getReturnedQuantity() {
