@@ -2894,6 +2894,7 @@
 			<zipfileset src="${thirdparty.home}/xstream.jar"  excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/xpp3_min.jar"  excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/aopalliance-1.0.jar"  excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/httpclient-4.5.jar"  excludes="META-INF/*"/>
 
 			<!-- FD classes -->
 			<zipfileset src="${work.dir}/Framework.jar"/>
