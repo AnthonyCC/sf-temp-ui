@@ -70,6 +70,8 @@ public class ModifiedCartlineData implements FDCartLineI{
 	private String externalGroup;
 
 	private EnumEStoreId eStore;
+
+	private String salesUnit;
 	@Override
 	public FDSku getSku() {
 		return sku;
@@ -132,7 +134,7 @@ public class ModifiedCartlineData implements FDCartLineI{
 
 	@Override
 	public void setSalesUnit(String salesUnit) {
-		
+		this.salesUnit = salesUnit;
 	}
 
 	@Override
@@ -477,7 +479,7 @@ public class ModifiedCartlineData implements FDCartLineI{
 
 	@Override
 	public String getSalesUnit() {
-		return null;
+		return this.salesUnit;
 	}
 
 	@Override
@@ -886,6 +888,7 @@ public class ModifiedCartlineData implements FDCartLineI{
 		setCartlineId(cartline.getCartlineId());
 		setSku(cartline.getSku());
 		setQuantity(cartline.getQuantity());
+		setSalesUnit(cartline.getSalesUnit());
 		setOptions(cartline.getOptions());
 		setRecipeSourceId(cartline.getRecipeSourceId());
 		setRequestNotification(cartline.isRequestNotification());
