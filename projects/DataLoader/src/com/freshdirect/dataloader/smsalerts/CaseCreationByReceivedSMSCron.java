@@ -49,7 +49,7 @@ public class CaseCreationByReceivedSMSCron {
 				recievedSmsList = smsAlertSB.getReceivedSmsData();
 			}
 			for (RecievedSmsData model : recievedSmsList) {
-				LOGGER.info("Start:::::CaseCreationByReceivedSMSCro for  MobileNumber:"
+				LOGGER.info("Start:::::CaseCreationByReceivedSMSCron for  MobileNumber:"
 						+ model.getMobileNumber());
 				IBackOfficeClientService service = BackOfficeClientService
 						.getInstance();

@@ -28,7 +28,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.freshdirect.customer.ErpPaymentMethodDeserializer;
 import com.freshdirect.customer.ErpPaymentMethodI;
-import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.fdstore.FDEcommServiceException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -59,7 +58,7 @@ public abstract class AbstractBackOfficeService {
 		restTemplate = new RestTemplate(converters);
 
 		PoolingHttpClientConnectionManager cManager = new PoolingHttpClientConnectionManager();
-		cManager.setMaxTotal(FDStoreProperties.getLogisticsConnectionPool());
+		cManager.setMaxTotal(FDStoreProperties.getBackOfficeConnectionPool());
 		RequestConfig requestConfig = RequestConfig.custom()
 				.setSocketTimeout(FDStoreProperties.getBackOfficeConnectionTimeout() * 1000)
 				.setConnectTimeout(FDStoreProperties.getBackOfficeConnectionTimeout() * 1000)
