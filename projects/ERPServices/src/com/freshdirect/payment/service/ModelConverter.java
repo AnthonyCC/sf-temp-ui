@@ -494,7 +494,7 @@ public class ModelConverter {
 	public static  Request<RecievedSmsData> buildSmsDataRequest(String smsId, boolean isCaseCreated) {
 		Request<RecievedSmsData> recieveSmsData = new Request<RecievedSmsData>();
 		RecievedSmsData smsData = new RecievedSmsData();
-		smsData.seteStoreId(smsId);
+		smsData.setSmsId(smsId);
 		smsData.setCaseCreationStatus(isCaseCreated);
 		recieveSmsData.setData(smsData);
 		return recieveSmsData;

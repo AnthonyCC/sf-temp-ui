@@ -35,13 +35,17 @@ $jq(function() {
 
 	/* align to triggers */
 
-	if ($jq('#locabar_addresses').length) {
-		$jq( '#locabar_addresses' ).position({
-			my: 'center top',
-			at: 'center bottom+8',
-			of: '#locabar_addresses_trigger'
-		});
+	function alignAddressMenu() {
+		if ($jq('#locabar_addresses').length) {
+			$jq( '#locabar_addresses' ).position({
+				my: 'center top',
+				at: 'center bottom+8',
+				of: '#locabar_addresses_trigger'
+			});
+		}
 	}
+	alignAddressMenu();
+	$jq('#sitemessage').on('alertClose', alignAddressMenu);
 
 	if ($jq('#locabar_user').length) {
 		$jq( '#locabar_user' ).position({

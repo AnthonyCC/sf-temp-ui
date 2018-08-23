@@ -90,7 +90,7 @@
   if (OAS_version >= 11) {
 	try {
 		$jq(function() {
-			fd.common.dispatcher.signal('descriptiveContent', {});
+			fd.common.dispatcher.signal('oas_descriptiveContent', {});
 		});
 	} catch(e) {
 		/* fallback for pages without jquery */
