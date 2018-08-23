@@ -15,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -243,6 +244,7 @@ public class ExternalAccountController extends BaseController implements SystemM
 					userLogin(userId, session, request, response);
 					responseMessage = setCurrentCartToTheUser(user, request, response);
 					((LoggedIn) responseMessage).setResultAction("SIGNEDIN");
+					((LoggedIn) responseMessage).setFdxDpEnabled(FDStoreProperties.isDlvPassFDXEnabled());
 					((LoggedIn) responseMessage).setPurchaseDlvPassEligible(user.getFDSessionUser().isEligibleForDeliveryPass());
 					checkTermsCond(getUserFromSession(request, response),responseMessage);
 					if (context.equalsIgnoreCase("CREATE")) {
@@ -279,6 +281,7 @@ public class ExternalAccountController extends BaseController implements SystemM
 						responseMessage = setCurrentCartToTheUser(user, request, response);
 						((LoggedIn) responseMessage)
 						.setResultMessage(MessageFormat.format(MSG_SOCIAL_EXISTING_LINK_SIGNIN, socialAccountProvider));
+						((LoggedIn) responseMessage).setFdxDpEnabled(FDStoreProperties.isDlvPassFDXEnabled());
 						((LoggedIn) responseMessage).setPurchaseDlvPassEligible(user.getFDSessionUser().isEligibleForDeliveryPass());
 						((LoggedIn) responseMessage).setResultAction("SIGNEDIN");
 						checkTermsCond(user,responseMessage);
@@ -307,6 +310,7 @@ public class ExternalAccountController extends BaseController implements SystemM
 						responseMessage = setCurrentCartToTheUser(user, request, response);
 						((LoggedIn) responseMessage)
 						.setResultMessage(MessageFormat.format(MSG_SOCIAL_EXISTING_LINK_SIGNIN, socialAccountProvider));
+						((LoggedIn) responseMessage).setFdxDpEnabled(FDStoreProperties.isDlvPassFDXEnabled());
 						((LoggedIn) responseMessage).setPurchaseDlvPassEligible(user.getFDSessionUser().isEligibleForDeliveryPass());
 						((LoggedIn) responseMessage).setResultAction("SIGNEDIN");
 						checkTermsCond(user,responseMessage);
@@ -340,6 +344,7 @@ public class ExternalAccountController extends BaseController implements SystemM
 								responseMessage = setCurrentCartToTheUser(user,
 										request, response);
 								((LoggedIn) responseMessage).setResultMessage(MSG_SOCIAL_ACCOUNT_CREATED);
+								((LoggedIn) responseMessage).setFdxDpEnabled(FDStoreProperties.isDlvPassFDXEnabled());
 								((LoggedIn) responseMessage).setPurchaseDlvPassEligible(user.getFDSessionUser().isEligibleForDeliveryPass());
 								((LoggedIn) responseMessage).setResultAction("SIGNEDIN");
 								checkTermsCond(user,responseMessage);
