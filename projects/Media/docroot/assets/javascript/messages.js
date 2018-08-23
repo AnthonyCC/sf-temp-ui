@@ -603,6 +603,8 @@ SESSIONSTORAGE:
 
 			});
 
+			setMessageStorage();
+
 			if (alertData.hasOwnProperty('addTo') && $(alertData.addTo).length !== -1) {
 				update = $(alertData.addTo).messages('updateAlerts', updateIdArr);
 			}

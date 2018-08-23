@@ -36,10 +36,8 @@ var FreshDirect = FreshDirect || {};
           elements = $list.children();
 
       if (!changePageItemSizeCache.hasOwnProperty(maskWidth)) {
-        window.requestAnimationFrame(function() {
           //decimals throw off calc
           changePageItemSizeCache[maskWidth] = elements.length ? Math.floor(elements[0].getBoundingClientRect().width) : 0;
-        });
       }
 
       var itemsize = changePageItemSizeCache[maskWidth],
