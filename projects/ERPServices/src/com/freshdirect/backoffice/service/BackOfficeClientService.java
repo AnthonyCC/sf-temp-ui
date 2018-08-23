@@ -30,13 +30,14 @@ public class BackOfficeClientService  extends AbstractBackOfficeService implemen
 			throws FDResourceException {
 		boolean isSuccess=false;
 		try {
+			LOGGER.info("Start:::::createCaseByRecievedSmsData");
 			String inputJson = buildRequest(recievedSmsData);
 			ResponseResult response = this.postData(inputJson,
 					getBackOfficeEndPoint(SMS_RESPONSE_UPDATE),
 					ResponseResult.class);
 			if(response!=null && response.getStatus().equalsIgnoreCase("SUCCESS")) {
 				isSuccess=true;
-				LOGGER.info("End:::::SMS response has been sent successfully to Backoffice mobile nubmer:"+recievedSmsData.getMobileNumber());
+				LOGGER.info("End:::::createCaseByRecievedSmsData and SMS response has been sent successfully to Backoffice mobile nubmer:"+recievedSmsData.getMobileNumber());
 				
 			}
 		} catch (FDResourceException e) {

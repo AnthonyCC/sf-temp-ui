@@ -957,7 +957,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 	private int getTime() {
 		int time = 30;
 		try {
-		 time = Integer.parseInt(DlvProperties.getSmsExpireInMins());
+		 time = Integer.parseInt(DlvProperties.getReceivedSmsInMins());
 		}  catch (Exception e) {
 			e.printStackTrace();
 		}
