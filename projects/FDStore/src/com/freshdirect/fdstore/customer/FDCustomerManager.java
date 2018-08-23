@@ -4729,9 +4729,6 @@ public class FDCustomerManager {
 	}
 
 	public static void updateOrderInProcess(String orderNum) throws FDResourceException {
-
-		
-
 		try {
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerOrder)) {
 				CustomerOrderService.getInstance().updateOrderInProcess(orderNum);
@@ -5047,8 +5044,7 @@ public class FDCustomerManager {
 		try {
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerOrder)) {
 				CustomerOrderService.getInstance().saveModifiedCartline(((FDUser) user).getPK(),
-						user.getUserContext().getStoreContext(), newLine, orderId,
-						newLine instanceof FDModifyCartLineModel);
+						user.getUserContext().getStoreContext(), newLine, orderId);
 			} else {
 				lookupManagerHome();
 				FDCustomerManagerSB sb = managerHome.create();
