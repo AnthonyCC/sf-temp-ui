@@ -1,23 +1,23 @@
-package com.freshdirect.webapp.warmup;
+package com.freshdirect.fdstore.warmup;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.CmsServiceLocator;
 import com.freshdirect.cms.cache.CacheWarmupAction;
 import com.freshdirect.cms.cache.CmsCaches;
 import com.freshdirect.fdstore.sitemap.SitemapDataFactory;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.wcms.CMSContentFactory;
 
 public class WarmupReloadableCacheAdapter {
 
     private static final WarmupReloadableCacheAdapter INSTANCE = new WarmupReloadableCacheAdapter();
-    @SuppressWarnings("unused")
-    private static final Logger LOGGER = LoggerFactory.getLogger(WarmupReloadableCacheAdapter.class);
+    
+    private static final Logger LOGGER = LoggerFactory.getInstance(WarmupReloadableCacheAdapter.class.getSimpleName());
     
     private final List<String> EHCACHE_REGISTRY = new ArrayList<String>();
 
