@@ -470,33 +470,33 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	<form fdform name="update_user_name" method="post"  fdform-displayerrorafter>
 		<div class="youraccount_email">
 			<input type="hidden" name="actionName" value="changeUserID">
-			<div class="youraccount_left_1"><label for="<%=EnumUserInfoName.EMAIL.getCode()%>_field">* E-mail Address</label></div>
+			<div class="youraccount_left_1"><label for="<%=EnumUserInfoName.EMAIL_FORMAT.getCode()%>">* E-mail Address</label></div>
 			<% 
 				if((user.isVoucherHolder() && user.getMasqueradeContext()== null)){	
 			%> 
-				<div class="youraccount_left_2"><input id="<%=EnumUserInfoName.EMAIL.getCode()%>_field" class="text9" size="28" type="text" maxlength="128" readonly="readonly" name="<%=EnumUserInfoName.EMAIL.getCode()%>" value="<%=email%>"></div>
+				<div class="youraccount_left_2"><input id="<%=EnumUserInfoName.EMAIL_FORMAT.getCode()%>" aria-describedby="<%=EnumUserInfoName.EMAIL_FORMAT.getCode()%>_error" class="text9" size="28" type="text" maxlength="128" readonly="readonly" name="<%=EnumUserInfoName.EMAIL.getCode()%>" value="<%=email%>"></div>
 				
 			<% } else { %>
 				
-				<div class="youraccount_left_2"><input id="<%=EnumUserInfoName.EMAIL.getCode()%>_field" class="text9" size="28" type="text" maxlength="128" name="<%=EnumUserInfoName.EMAIL.getCode()%>" value="<%=email%>"></div>
+				<div class="youraccount_left_2"><input id="<%=EnumUserInfoName.EMAIL_FORMAT.getCode()%>" aria-describedby="<%=EnumUserInfoName.EMAIL_FORMAT.getCode()%>_error" class="text9" size="28" type="text" maxlength="128" name="<%=EnumUserInfoName.EMAIL.getCode()%>" value="<%=email%>"></div>
 			
 			<%} %>
 				
-				<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL_FORMAT.getCode()%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></div>
+				<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL_FORMAT.getCode()%>' id='errorMsg'><span id="<%=EnumUserInfoName.EMAIL_FORMAT.getCode()%>_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler></div>
 				
-				<div class="youraccount_left_1"><label for="repeat_email_field">* Repeat E-mail Address</label></div>
+				<div class="youraccount_left_1"><label for="repeat_email">* Repeat E-mail Address</label></div>
 			<% 
 				if ((user.isVoucherHolder() && user.getMasqueradeContext() == null)){	
 			%> 
-				<div class="youraccount_left_2"><input id="repeat_email_field" type="text" class="text9" size="28" readonly="readonly" name="repeat_email"></div>
+				<div class="youraccount_left_2"><input id="repeat_email" aria-describedby="repeat_email_error" type="text" class="text9" size="28" readonly="readonly" name="repeat_email"></div>
 				
 			<% } else { %>
 				
-				<div class="youraccount_left_2"><input id="repeat_email_field" type="text" class="text9" size="28" name="repeat_email"></div>
+				<div class="youraccount_left_2"><input id="repeat_email" aria-describedby="repeat_email_error" type="text" class="text9" size="28" name="repeat_email"></div>
 	
 			<%} %>
 						
-				<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='repeat_email' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></div>
+				<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='repeat_email' id='errorMsg'><span id="repeat_email_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler></div>
 			
 				<div class="youraccount_left_2 youraccount_left_2_space">
 					Example: you@isp.com.
@@ -530,7 +530,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 <input type="hidden" name="actionName" value="changePassword">
 	<div class="youraccount_password">
 		<!--  Changed for Password Strength Display -->
-		<div class="youraccount_left_1"><label for="password1">* Password</label></div>
+		<div class="youraccount_left_1"><label for="<%=EnumUserInfoName.PASSWORD.getCode()%>">* Password</label></div>
 		
 		<!--  Added for Password Strength Display -->
 		<div class="container1">		
@@ -549,7 +549,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 				</div>
 			</div><!-- // .password-hinter -->
 			<div class="youraccount_left_2">
-				<input id="password1" name="password" size="28" class="password" data-indicator="pwindicator" type="password">
+				<input id="<%=EnumUserInfoName.PASSWORD.getCode()%>" name="password" size="28" class="password" aria-describedby="<%=EnumUserInfoName.PASSWORD.getCode()%>_error" data-indicator="pwindicator" type="password">
 			</div>
 			<div class="youraccount_left_3"><span class="case-sensitive">Passwords are case sensitive</span></div>
 			<!--  
@@ -578,15 +578,15 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 		
 		<div class="youraccount_left_3">
 			<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>' id='errorMsg'>
-				<span class="errortext"><%=errorMsg%></span>
+				<span id="<%=EnumUserInfoName.PASSWORD.getCode()%>_error" class="errortext"><%=errorMsg%></span>
 			</fd:ErrorHandler>
 		</div>
 		
 	<!--  Changed for Password Strength Display -->
 
-		<div class="youraccount_left_1"><label for="confirmPassword_field">* Repeat Password</label></div>
-		<div class="youraccount_left_2"><input id="confirmPassword_field" type="password" class="text9" size="28" name="confirmPassword"></div>
-		<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='repeat_password' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></div>
+		<div class="youraccount_left_1"><label for="repeat_password">* Repeat Password</label></div>
+		<div class="youraccount_left_2"><input id="repeat_password" aria-describedby="repeat_password_error" type="password" class="text9" size="28" name="confirmPassword"></div>
+		<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='repeat_password' id='errorMsg'><span id="repeat_password_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler></div>
 		
 		<div class="youraccount_left_2 youraccount_left_2_space">
 			Must be at least six characters.
@@ -609,9 +609,9 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 		<input type="hidden" name="actionName" value="changeDisplayName">
 		<div class="youraccount_name">
 	
-			<div class="youraccount_left_1"><label for="displayName">Display Name</label></div>
-			<div class="youraccount_left_2"><input class="text9" size="28" maxlength="30" type="text" id="displayName" name="displayName" value="<%=displayName%>"></div>
-			<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DISPLAY_NAME.getCode()%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></div>
+			<div class="youraccount_left_1"><label for="<%=EnumUserInfoName.DISPLAY_NAME.getCode()%>">Display Name</label></div>
+			<div class="youraccount_left_2"><input class="text9" size="28" maxlength="30" aria-describedby="<%=EnumUserInfoName.DISPLAY_NAME.getCode()%>_error"  type="text" id="<%=EnumUserInfoName.DISPLAY_NAME.getCode()%>" name="displayName" value="<%=displayName%>"></div>
+			<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DISPLAY_NAME.getCode()%>' id='errorMsg'><span id="<%=EnumUserInfoName.DISPLAY_NAME.getCode()%>_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler></div>
 			<span id="profaneText" class="errortext" style="display:block;width:250px"></span>
 			
 			<div class="youraccount_right">
@@ -629,10 +629,10 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	<div class="youraccount_contact">
 		<h2>Change Your Contact Information <i>* Required Information</i></h2>
 		
-		<div class="youraccount_left_1"><label for="title_field">Title</label></div>
+		<div class="youraccount_left_1"><label for="title">Title</label></div>
 	
 		<div class="youraccount_left_2">
-			<select class="text9 customsimpleselect" id="title_field" name="title"	value="">
+			<select class="text9 customsimpleselect" id="title" name="title" value="">
 		       <option <%="".equalsIgnoreCase(title)?"selected":""%> ></option>		
 		       <option <%="MR.".equalsIgnoreCase(title)?"selected":""%> >Mr.</option>
 		       <option <%="MRS.".equalsIgnoreCase(title)?"selected":""%>>Mrs.</option>
@@ -641,38 +641,38 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 			</select>
 		</div>
 	  
-		<div class="youraccount_left_1"><label for="first_name_field">* First Name</label></div>
-		<div class="youraccount_left_2"><input class="text9" size="28" maxlength="20" type="text" id="first_name_field" name="first_name" value="<%=firstName%>" required="true"></div>
-		<div class="youraccount_left_3"><span class="text9">(full name or first initial)</span> <fd:ErrorHandler result='<%=result%>' name='dlvfirstname' id='errorMsg'> <span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></div>
-		<div class="youraccount_left_1"><label for="last_name_field">* Last Name</label></div>
-		<div class="youraccount_left_2"><input class="text9" id="last_name_field" size="28" maxlength="20" type="text" name="last_name" value="<%=lastName%>" required="true"></div>
-		<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='dlvlastname' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></div>
+		<div class="youraccount_left_1"><label for="dlvfirstname">* First Name</label></div>
+		<div class="youraccount_left_2"><input class="text9" size="28" maxlength="20" type="text" id="dlvfirstname" aria-describedby="dlvfirstname_error" name="first_name" value="<%=firstName%>" required="true"></div>
+		<div class="youraccount_left_3"><span class="text9">(full name or first initial)</span> <fd:ErrorHandler result='<%=result%>' name='dlvfirstname' id='errorMsg'> <span id="dlvfirstname_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler></div>
+		<div class="youraccount_left_1"><label for="dlvlastname">* Last Name</label></div>
+		<div class="youraccount_left_2"><input class="text9" id="dlvlastname" aria-describedby="dlvlastname_error" size="28" maxlength="20" type="text" name="last_name" value="<%=lastName%>" required="true"></div>
+		<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='dlvlastname' id='errorMsg'><span id="dlvlastname_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler></div>
 	
-		<div class="youraccount_left_1"><%=!user.isCorporateUser() ? "* " : "" %><label for="uci_homePhone"> Home Phone #</label></div>
-		<div class="youraccount_left_2"><input type="text" size="28" maxlength="20" class="text9" name="homephone" id="uci_homePhone" title="Home Phone" value="<%=homePhone%>" required="true"><label for="uci_homePhone_ext"><span class="youraccount_phone_ext">Ext.<p class="offscreen">extension for home phone</p></span></label><input type="text" maxlength="6" width="45px" size="4" class="text9 ext56" id="uci_homePhone_ext" name="ext" value="<%=homePhoneExt%>"></div>
-		<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='dlvhomephone' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></div>
+		<div class="youraccount_left_1"><%=!user.isCorporateUser() ? "* " : "" %><label for="dlvhomephone"> Home Phone #</label></div>
+		<div class="youraccount_left_2"><input type="text" size="28" maxlength="20" class="text9" name="homephone" aria-describedby="dlvhomephone_error" id="dlvhomephone" title="Home Phone" value="<%=homePhone%>" required="true"><label for="uci_homePhone_ext"><span class="youraccount_phone_ext">Ext.<p class="offscreen">extension for home phone</p></span></label><input type="text" maxlength="6" width="45px" size="4" class="text9 ext56" id="uci_homePhone_ext" name="ext" value="<%=homePhoneExt%>"></div>
+		<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='dlvhomephone' id='errorMsg'><span id="dlvhomephone_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler></div>
 	
-		<div class="youraccount_left_1"><%=user.isCorporateUser() ? "* " : "" %><label for="uci_busPhone">Work Phone #</label></div>
-		<div class="youraccount_left_2"><input type="text" size="28" maxlength="20" class="text9" name="busphone" id="uci_busPhone" title="Business Phone" value="<%=busPhone%>"><label for="uci_busPhone_ext"><span class="youraccount_phone_ext">Ext.<p class="offscreen">extension for work phone</p></span></label><input type="text" maxlength="6" size="4" class="text9 ext56" name="busphoneext" id="uci_busPhone_ext" value="<%=busPhoneExt%>"></div>
-		<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='busphone' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></div>
+		<div class="youraccount_left_1"><%=user.isCorporateUser() ? "* " : "" %><label for="busphone">Work Phone #</label></div>
+		<div class="youraccount_left_2"><input type="text" size="28" maxlength="20" class="text9" name="busphone" aria-describedby="busphone_error" id="busphone" title="Business Phone" value="<%=busPhone%>"><label for="uci_busPhone_ext"><span class="youraccount_phone_ext">Ext.<p class="offscreen">extension for work phone</p></span></label><input type="text" maxlength="6" size="4" class="text9 ext56" name="busphoneext" id="uci_busPhone_ext" value="<%=busPhoneExt%>"></div>
+		<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='busphone' id='errorMsg'><span id="busphone_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler></div>
 	
-		<div class="youraccount_left_1"><label for="uci_cellPhone">Cell/Alt. #</label></div>
-	    <div class="youraccount_left_2"><input type="text" size="28" maxlength="20" class="text11" name="cellphone" id="uci_cellPhone" title="Cell Phone" value="<%=cellPhone%>"><label for="uci_cellPhone_ext"><span class="youraccount_phone_ext">Ext.<p class="offscreen">extension for cell phone</p></span></label><input type="text" maxlength="6" size="4" class="text9 ext56" name="cellphoneext" id="uci_cellPhone_ext" value="<%=cellPhoneExt%>"></div>
-		<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='dlvcellphone' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></div>
+		<div class="youraccount_left_1"><label for="dlvcellphone">Cell/Alt. #</label></div>
+	    <div class="youraccount_left_2"><input type="text" size="28" maxlength="20" class="text11" aria-describedby="dlvcellphone_error" name="cellphone" id="dlvcellphonee" title="Cell Phone" value="<%=cellPhone%>"><label for="uci_cellPhone_ext"><span class="youraccount_phone_ext">Ext.<p class="offscreen">extension for cell phone</p></span></label><input type="text" maxlength="6" size="4" class="text9 ext56" name="cellphoneext" id="uci_cellPhone_ext" value="<%=cellPhoneExt%>"></div>
+		<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='dlvcellphone' id='errorMsg'><span id="dlvcellphone_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler></div>
 	
-		<div class="youraccount_left_1"><label for="<%=EnumUserInfoName.ALT_EMAIL.getCode()%>_field">Other Email</label></div>
-	    <div class="youraccount_left_2"><input type="text" size="28" maxlength="45" class="text9" id="<%=EnumUserInfoName.ALT_EMAIL.getCode()%>_field" name="<%=EnumUserInfoName.ALT_EMAIL.getCode()%>" value="<%=otherEmail%>"></div>
-		<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.ALT_EMAIL.getCode()%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></div>
+		<div class="youraccount_left_1"><label for="<%=EnumUserInfoName.ALT_EMAIL.getCode()%>">Other Email</label></div>
+	    <div class="youraccount_left_2"><input type="text" size="28" maxlength="45" class="text9" id="<%=EnumUserInfoName.ALT_EMAIL.getCode()%>" aria-describedby="<%=EnumUserInfoName.ALT_EMAIL.getCode()%>_error" name="<%=EnumUserInfoName.ALT_EMAIL.getCode()%>" value="<%=otherEmail%>"></div>
+		<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.ALT_EMAIL.getCode()%>' id='errorMsg'><span id="<%=EnumUserInfoName.ALT_EMAIL.getCode()%>_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler></div>
 	
 		<%  if (user.isDepotUser() || user.isCorporateUser()) { %>
-			<div class="youraccount_left_1"><label for="<%=EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode()%>_field">* Work Department</label></div>
-	    	<div class="youraccount_left_2"><input type="text" size="28" maxlength="45" class="text9" id="<%=EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode()%>_field" name="<%=EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode()%>" value="<%=workDept%>"></div>
-			<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode()%>' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler></div>
+			<div class="youraccount_left_1"><label for="<%=EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode()%>">* Work Department</label></div>
+	    	<div class="youraccount_left_2"><input type="text" size="28" maxlength="45" class="text9" id="<%=EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode()%>" aria-describedby="<%=EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode()%>_error" name="<%=EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode()%>" value="<%=workDept%>"></div>
+			<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode()%>' id='errorMsg'><span id="<%=EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode()%>_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler></div>
 			<%  if(user.isDepotUser()){
 	            com.freshdirect.fdlogistics.model.FDDeliveryDepotModel depot = FDDeliveryManager.getInstance().getDepot(user.getDepotCode());
 	            if (depot.getRequireEmployeeId()) { %>
-					<div class="youraccount_left_1"><label for="employeeId_field">* Employee Id</label></div>
-	   				<div class="youraccount_left_2"><input type="text" id="employeeId_field" size="28" maxlength="45" class="text9" name="employeeId" value="<%=employeeId%>"></div>
+					<div class="youraccount_left_1"><label for="employeeId">* Employee Id</label></div>
+	   				<div class="youraccount_left_2"><input type="text" id="employeeId" size="28" maxlength="45" class="text9" name="employeeId" value="<%=employeeId%>"></div>
 	
 		<%          }
 		        }
@@ -742,15 +742,15 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 		<div class="youraccount_email_pref">
 			<h2>Email Preferences</h2>
 			<fieldset><legend class="offscreen">email preferences:</legend>
-			<div class="youraccount_left_1"><input class="radio" id="receive_mail_field" type="checkbox" name="receive_mail" value="yes" <%="yes".equalsIgnoreCase(sendNewsLetter) ? "checked":""%>></div>
+			<div class="youraccount_left_1"><input class="radio" id="receive_mail" type="checkbox" name="receive_mail" value="yes" <%="yes".equalsIgnoreCase(sendNewsLetter) ? "checked":""%>></div>
 			<div class="youraccount_left_2">
-				<label for="receive_mail_field"><b>Please send me food offers, news and updates from time to time.</b></label>
+				<label for="receive_mail"><b>Please send me food offers, news and updates from time to time.</b></label>
 				</br>You can unsubscribe anytime &mdash; and, of course, we'll never share your information with anyone else.
 			</div>
 			
-			<div class="youraccount_left_1"><input class="radio" type="checkbox" id="isSendPlainTextEmail_field" name="isSendPlainTextEmail" value="yes" <%=sendPlainTextEmail%>></div>
+			<div class="youraccount_left_1"><input class="radio" type="checkbox" id="isSendPlainTextEmail" name="isSendPlainTextEmail" value="yes" <%=sendPlainTextEmail%>></div>
 			<div class="youraccount_left_2">
-				<label for="isSendPlainTextEmail_field"><b>Send me plain text e-mail.</b></label>
+				<label for="isSendPlainTextEmail"><b>Send me plain text e-mail.</b></label>
 				</br>Select this option if your e-mail program is unable to receive HTML formatted e-mail.
 			</div></fieldset>
 			<div class="youraccount_right">
@@ -788,8 +788,8 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 		</br><fd:IncludeMedia name="/media/editorial/site_pages/sms/terms_short.html" />
 	</p>
 	
-	<div class="youraccount_left_1 youraccount_full_width"><label for="mobile_number_field">* Mobile Number</label></div>
-	<div class="youraccount_left_2 youraccount_full_width"><input type="text" id="mobile_number_field" size="28" maxlength="20" class="text9" name="mobile_number" value="<%=mobile_number%>"></div>
+	<div class="youraccount_left_1 youraccount_full_width"><label for="mobile_number">* Mobile Number</label></div>
+	<div class="youraccount_left_2 youraccount_full_width"><input type="text" id="mobile_number" size="28" maxlength="20" class="text9" name="mobile_number" value="<%=mobile_number%>"></div>
 	<div class="youraccount_left_3">
 		<fd:ErrorHandler result='<%=result%>' name='mobile_number' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
 		<fd:ErrorHandler result='<%=result%>' name='text_option' id='errorMsg'><span class="errortext"><%=errorMsg%></span></fd:ErrorHandler>
@@ -797,8 +797,8 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 
 <%if("FD".equals(eStoreId))
 	{%>	<fieldset style="clear:both;"><legend class="offscreen">mobile preferences:</legend>
-		<div class="youraccount_left_1"><input class="radio" type="checkbox" id="order_notices_field" name="order_notices" value="Y" <%=order_notices ? "checked":""%>></div>
-		<div class="youraccount_left_2"><label for="order_notices_field">FreshDirect Order Notices</label></div>
+		<div class="youraccount_left_1"><input class="radio" type="checkbox" id="order_notices" name="order_notices" value="Y" <%=order_notices ? "checked":""%>></div>
+		<div class="youraccount_left_2"><label for="order_notices">FreshDirect Order Notices</label></div>
 		<div class="accordion"><input type="checkbox" id="order_notices" />
 			<label for="order_notices" class="text12bold" style="margin-left: 0;"><div style="display:none;">Examples of messages (depending on your area)</div><div class="text12bold">Examples of messages (depending on your area)</div></label>
 			<div class="text12" id="article" align="left">
@@ -807,8 +807,8 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 			</div>
 		</div>
 
-		<div class="youraccount_left_1"><input class="radio" type="checkbox" id="order_exceptions_field" name="order_exceptions" value="Y" <%=order_exceptions ? "checked":""%>></div>
-		<div class="youraccount_left_2"><label for="order_exceptions_field">FreshDirect Order Alerts</label></div>
+		<div class="youraccount_left_1"><input class="radio" type="checkbox" id="order_exceptions" name="order_exceptions" value="Y" <%=order_exceptions ? "checked":""%>></div>
+		<div class="youraccount_left_2"><label for="order_exceptions">FreshDirect Order Alerts</label></div>
 		<div class="accordion"><input type="checkbox" id="order_exceptions"> 
 			<label for="order_exceptions" class="text12bold" style="margin-left: 0;"><div style="display:none;">Examples of messages (depending on your area)</div><div class="text12bold">Examples of messages (depending on your area)</div></label>
 			<div class="text12" id="article1" align="left">
@@ -818,8 +818,8 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 			</div>
 		</div>
 		
-		<div class="youraccount_left_1"><input class="radio" type="checkbox" id="offers_field" name="offers" value="Y" <%=offers ? "checked":""%>></div>
-		<div class="youraccount_left_2"><label for="offers_field">FreshDirect Perks</label></div>
+		<div class="youraccount_left_1"><input class="radio" type="checkbox" id="offers" name="offers" value="Y" <%=offers ? "checked":""%>></div>
+		<div class="youraccount_left_2"><label for="offers">FreshDirect Perks</label></div>
 		<div class="accordion"><input type="checkbox" id="offers"> 
 			<label for="offers" class="text12bold" style="margin-left: 0;"><div style="display:none;">Description</div><div class="text12bold">Description</div></label>
 			<div class="text12" id="article2" align="left">
@@ -830,8 +830,8 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 else{  %>
 	<!--start: Added by Sathishkumar Merugu for SMS FDX alert. -->
     <fieldset style="clear:both;"><legend class="offscreen">mobile preferences:</legend>
-	<div class="youraccount_left_1"><input class="radio" type="checkbox" id="order_notices_field" name="order_notices" value="Y" <%=order_notices ? "checked":""%>></div>
-	<div class="youraccount_left_2"><label for="order_notices_field">Delivery Updates</label></div>
+	<div class="youraccount_left_1"><input class="radio" type="checkbox" id="order_notices" name="order_notices" value="Y" <%=order_notices ? "checked":""%>></div>
+	<div class="youraccount_left_2"><label for="order_notices">Delivery Updates</label></div>
 	<div class="accordion"><input type="checkbox" id="order_notices" />
 		<label for="order_notices" class="text12bold" style="margin-left: 0;"><div style="display:none;">Examples of messages (depending on your area)</div><div class="text12bold">Examples of messages (depending on your area)</div></label>
 		<div class="text12" id="article" align="left">
@@ -841,8 +841,8 @@ else{  %>
 		</div>
 	</div>
 	
-	<div class="youraccount_left_1"><input class="radio" type="checkbox" id="order_exceptions_field" name="order_exceptions" value="Y" <%=order_exceptions ? "checked":""%>></div>
-	<div class="youraccount_left_2"><label for="order_exceptions_field">Order Status</label></div>
+	<div class="youraccount_left_1"><input class="radio" type="checkbox" id="order_exceptions" name="order_exceptions" value="Y" <%=order_exceptions ? "checked":""%>></div>
+	<div class="youraccount_left_2"><label for="order_exceptions">Order Status</label></div>
 	<div class="accordion"><input type="checkbox" id="order_exceptions"> 
 		<label for="order_exceptions" class="text12bold" style="margin-left: 0;"><div style="display:none;">Examples of messages (depending on your area)</div><div class="text12bold">Examples of messages (depending on your area)</div></label>
 		<div class="text12"   id="article1" align="left">
@@ -852,8 +852,8 @@ else{  %>
 		</div>
 	</div>
 	
-	<div class="youraccount_left_1"><input class="radio" type="checkbox" id="offers_field" name="offers" value="Y" <%=offers ? "checked":""%>></div>
-	<div class="youraccount_left_2"><label for="offers_field">Offers</label></div>
+	<div class="youraccount_left_1"><input class="radio" type="checkbox" id="offers" name="offers" value="Y" <%=offers ? "checked":""%>></div>
+	<div class="youraccount_left_2"><label for="offers">Offers</label></div>
 	<div class="accordion"><input type="checkbox" id="offers">
 		<label for="offers" class="text12bold" style="margin-left: 0;"><div style="display:none;">Description</div><div class="text12bold">Description</div></label>
 		<div class="text12" id="article2" align="left">
