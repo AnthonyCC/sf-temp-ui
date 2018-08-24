@@ -260,7 +260,7 @@ EnumServiceType serviceTypeGC = (EnumServiceType)NVL.apply(EnumServiceType.getEn
 	<OPTION <%= (strMonth+"").equals(tCcExpireMonth)?"selected":"" %>  VALUE="<%=strMonth%>"><%=strMonth%></OPTION>
 	<% } %>
 	</SELECT>&nbsp;&nbsp;</div>
-	<div class="aptfields"><SELECT class="text11 customsimpleselect" aria-describedby="<%=EnumUserInfoName.CARD_EXPIRATION.getCode()%>_error" name="<%=PaymentMethodName.CARD_EXP_YEAR%>" id="<%=Paymen tMethodName.CARD_EXP_YEAR%>" aria-label="expiration year on card" required="true">
+	<div class="aptfields"><SELECT class="text11 customsimpleselect" aria-describedby="<%=EnumUserInfoName.CARD_EXPIRATION.getCode()%>_error" name="<%=PaymentMethodName.CARD_EXP_YEAR%>" id="<%=PaymentMethodName.CARD_EXP_YEAR%>" aria-label="expiration year on card" required="true">
 	<OPTION value="">Choose a year</OPTION>
 	<% int startYear = Calendar.getInstance().get(Calendar.YEAR);
 	   int endYear = startYear+15;
