@@ -89,9 +89,15 @@
 
   if (OAS_version >= 11) {
 	try {
-		$jq(function() {
-			fd.common.dispatcher.signal('oas_descriptiveContent', {});
-		});
+		if ($jq && fd && fd.common && fd.commmon.dispatcher) {
+			$jq(function() {
+				fd.common.dispatcher.signal('oas_descriptiveContent', {});
+			});
+		} else {
+			document.write('<scr' + 'ipt type="text/javascript" src="' + OAS_url + 'adstream_mjx.ads/' +
+					  OAS_sitepage + '/1' + OAS_rns + '@' +
+					  OAS_listpos + '?' + OAS_query + '"><\/script>');
+		}
 	} catch(e) {
 		/* fallback for pages without jquery */
 		document.write('<scr' + 'ipt type="text/javascript" src="' + OAS_url + 'adstream_mjx.ads/' +
