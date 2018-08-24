@@ -1,6 +1,7 @@
 /*Created on Nov 20, 2003*/
 package com.freshdirect.fdstore.survey;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class FDSurveyAnswer implements java.io.Serializable {
 	private final String name;
@@ -14,11 +15,13 @@ public class FDSurveyAnswer implements java.io.Serializable {
 		group="";
 		
 	}
-	public FDSurveyAnswer(String name, String description, String group){
+
+	public FDSurveyAnswer(@JsonProperty("name") String name, @JsonProperty("description") String description,
+			@JsonProperty("group") String group) {
 		this.name = name;
 		this.description = description;
-		this.group=group;
-		
+		this.group = group;
+
 	}
 	public String getDescription() {
 		return description;

@@ -6,6 +6,9 @@ import java.util.Map;
 
 import org.apache.commons.lang.enums.Enum;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 
 
 public class EnumFormDisplayType  extends Enum {
@@ -28,7 +31,8 @@ public class EnumFormDisplayType  extends Enum {
 		return displayName;
 	}
 
-	public static EnumFormDisplayType getEnum(String name) {
+	@JsonCreator
+	public static EnumFormDisplayType getEnum(@JsonProperty("name") String name) {
 		return name==null||"".equals(name)?EnumFormDisplayType.SINGLE_ANS_PER_ROW:(EnumFormDisplayType) getEnum(EnumFormDisplayType.class, name);
 	}
 
