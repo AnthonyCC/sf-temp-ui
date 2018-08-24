@@ -8,8 +8,8 @@
 <%--     <title><tmpl:get name='title'/></title> --%>
     <tmpl:get name="seoMetaTag"/>
     <%@ include file="/common/template/includes/metatags.jspf" %>
+    <%@ include file="/common/template/includes/i_javascripts_browse.jspf"%>
     <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-     <fd:javascript src="/assets/javascript/common_javascript.js"/>
     <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#FF9900" text="#333333" onLoad="window.resizeTo(585,400); window.focus();" topmargin="10" marginheight="10">
@@ -43,5 +43,6 @@
 </tr>-->
 </table>
 </center>
+<%@ include file="/common/template/includes/i_jsmodules.jspf"%>
 </body>
 </html>
