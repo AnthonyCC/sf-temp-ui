@@ -12,7 +12,6 @@ import com.freshdirect.cms.cache.CmsCaches;
 import com.freshdirect.fdstore.sitemap.SitemapDataFactory;
 import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.wcms.CMSContentFactory;
-import com.freshdirect.webapp.taglib.fdstore.WineHomenavTag;
 
 public class WarmupReloadableCacheAdapter {
 
@@ -41,7 +40,6 @@ public class WarmupReloadableCacheAdapter {
         }
 
         ContentFactory.getInstance().evictNodesByCaches();
-        WineHomenavTag.evictWarmupRelatedCache();
         SitemapDataFactory.evictSitemapData();
         CMSContentFactory.evictPageCache();
     }
