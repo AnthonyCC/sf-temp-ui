@@ -9,7 +9,7 @@ public class WarmupInitiatorService {
     private static final String REPEAT_WARMUP_METHOD_NAME = "repeatWarmup";
     private static final String IS_WARMUP_FINISHED_NAME = "isWarmupFinished";
     private static final String DEFAULT_SERVICE_METHOD_NAME = "defaultService";
-    private static final String WARMUP_SERVICE_CLASS_NAME = "com.freshdirect.webapp.warmup.WarmupService";
+    private static final String WARMUP_SERVICE_CLASS_NAME = "com.freshdirect.fdstore.warmup.WarmupService";
     private static final WarmupInitiatorService INSTANCE = new WarmupInitiatorService();
 
     public static WarmupInitiatorService getInstance() {
