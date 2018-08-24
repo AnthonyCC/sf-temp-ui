@@ -262,11 +262,6 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String LOG_ECOUPON_ACTIVITY = "couponactivity/log";
 	private static final String LOG_EWALLET_ACTIVITY = "ewalletactivity/log";
 	
-	private static final String SURVEY ="survey";
-	private static final String STORE_SURVEY = "survey/store";
-	private static final String SURVEY_RESPONSE = "survey/surveyresponse";
-	private static final String GET_CUSTOMER_PROFILE = "survey/customerprofile";
-	
 	private static final String CMS_FEED_API = "cms/feed/";
 	private static final String SAP_GROUP_PRICE_LOADER_LOAD_API ="dataloader/sapGrp/groupScalePrice";
 	
@@ -1476,102 +1471,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			throw new RemoteException(e.getMessage());
 		}
 	}
-	
-	@Override
-	public FDSurveyData getSurvey(SurveyKeyData key) throws RemoteException {
-		Response<FDSurveyData> response = new Response<FDSurveyData>();
-		try {
-			Request<SurveyKeyData> request = new Request<SurveyKeyData>();
-			request.setData(key);
-			String inputJson = buildRequest(request);
-			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(SURVEY), new TypeReference<Response<FDSurveyData>>() {});
-			if (!response.getResponseCode().equals("OK")){
-				throw new FDResourceException(response.getMessage());
-			}
-		}
-		catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}catch (FDResourceException e) {
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}
-		return response.getData();
-	}
-	
-	@Override
-	public FDSurveyResponseData getCustomerProfile(FDIdentity identity,
-			EnumServiceType serviceType) throws RemoteException {
-		Response<FDSurveyResponseData> response= null;
-		try {
-			Request<SurveyData> request = buildSurveyData(identity, serviceType);
-			String inputJson = buildRequest(request);
-			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(GET_CUSTOMER_PROFILE), new TypeReference<Response<FDSurveyResponseData>>() {});
-			if(!response.getResponseCode().equals("OK")){
-				throw new FDResourceException(response.getMessage());
-			}
-			
-		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}catch (FDResourceException e){
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}
-		return response.getData();
-	}
-	private Request<SurveyData> buildSurveyData(FDIdentity identity,
-			EnumServiceType serviceType) {
-		Request<SurveyData> request = new Request<SurveyData>();
-		SurveyData surveyData = new SurveyData();
-		surveyData.setErpCustomerid(identity.getErpCustomerPK());
-		surveyData.setFdCustomerId(identity.getFDCustomerPK());
-		surveyData.setServiceType(serviceType.toString());
-		request.setData(surveyData);
-		return request;
-	}
-	@Override
-	public FDSurveyResponseData getSurveyResponse(FDIdentity identity, SurveyKeyData key) throws RemoteException {
-		Response<FDSurveyResponseData> response = null;
-		try {
-			Request<SurveyData> request = new Request<SurveyData>();
-			SurveyData surveyData = new SurveyData();
-			surveyData.setErpCustomerid(identity.getErpCustomerPK());
-			surveyData.setFdCustomerId(identity.getFDCustomerPK());
-			surveyData.setServiceType(key.getUserType().toString());
-			surveyData.setSurveyType(key.getSurveyType());
-			request.setData(surveyData);
-			String inputJson = buildRequest(request);
-			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(SURVEY_RESPONSE), new TypeReference<Response<FDSurveyResponseData>>() {});
-			
-			if(!response.getResponseCode().equals("OK")){
-				throw new FDResourceException(response.getMessage());
-			}
-			
-		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		} catch (FDResourceException e) {
-			LOGGER.error(e);
-			throw new RemoteException(e.getMessage());
-		}
-		return response.getData();
-	}
-	@Override
-	public void storeSurvey(FDSurveyResponseData survey) throws FDResourceException {
-		try {
-			Request<FDSurveyResponseData> request = new Request<FDSurveyResponseData>();
-			request.setData(survey);
-			String inputJson = buildRequest(request);
-			Response<FDSurveyResponseData> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(STORE_SURVEY), new TypeReference<Response<Void>>() {});
-			if(!response.getResponseCode().equals("OK")){
-				throw new FDResourceException(response.getMessage());
-			}
-		} catch (FDEcommServiceException e) {
-			LOGGER.error(e.getMessage());
-			throw new FDResourceException(e, "Unable to process the request.");
-		}
-	}
+
 	@Override
 	public void loadGroupPriceData(List<ErpGrpPriceModel> grpPricelist)
 			throws FDResourceException {

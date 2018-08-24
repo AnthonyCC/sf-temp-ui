@@ -125,6 +125,7 @@ import com.freshdirect.fdstore.ecomm.gateway.CustomerOrderService;
 import com.freshdirect.fdstore.ecomm.gateway.CustomerPaymentService;
 import com.freshdirect.fdstore.ecomm.gateway.CustomerPreferenceService;
 import com.freshdirect.fdstore.ecomm.gateway.CustomersApi;
+import com.freshdirect.fdstore.ecomm.gateway.FDSurveyService;
 import com.freshdirect.fdstore.ecomm.gateway.OrderResourceApiClient;
 import com.freshdirect.fdstore.ecomm.gateway.RegistrationService;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
@@ -2354,18 +2355,16 @@ public class FDCustomerManager {
 	}
 
 	public static void storeSurvey(FDSurveyResponse survey) throws FDResourceException {
-	    try {
-	    	if(FDStoreProperties.isSF2_0_AndServiceEnabled("survey.ejb.FDSurveySB")){
-        		IECommerceService service = FDECommerceService.getInstance();
-        		FDSurveyResponseData surveyDataRequest = buildStoreSurveyRequest(survey);
-        		 service.storeSurvey(surveyDataRequest);
-        	}
-			else{
+		try {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDSurveySB)) {
+				FDSurveyResponseData surveyDataRequest = buildStoreSurveyRequest(survey);
+				FDSurveyService.getInstance().storeSurvey(surveyDataRequest);
+			} else {
 				FDServiceLocator.getInstance().getSurveySessionBean().storeSurvey(survey);
 			}
-            } catch (RemoteException re) {
-                throw new FDResourceException(re, "Error talking to session bean");
-            }
+		} catch (RemoteException re) {
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
 	}
 
 	private static FDSurveyResponseData buildStoreSurveyRequest(
