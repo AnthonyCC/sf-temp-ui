@@ -33,6 +33,11 @@ String[] checkErrorType = {"technical_difficulty", EnumUserInfoName.DLV_NOT_IN_Z
     FDUserI _user = (FDUserI) session.getAttribute(SessionName.USER);
     FDIdentity _identity = null;
     if (_user != null){
+        
+        if (_user.isRobot()){
+            throw new FDNotFoundException("User is missing it's identity.");
+        }
+        
         _identity = _user.getIdentity();
     }else {
         throw new JspException("Missing Identity.");
