@@ -1823,8 +1823,8 @@ public class FDUser extends ModelSupport implements FDUserI {
             FDCustomerModel customer = this.getFDCustomer();
             if (customer != null && customer.getProfile() != null) {
                 ProfileModel p = customer.getProfile();
-                if (p.getDeliveryPass() != null)
-                    return p.getDeliveryPass();
+                if (p.getDeliveryPassProfileValue() != null)
+                    return p.getDeliveryPassProfileValue();
             }
         }
         return "";
