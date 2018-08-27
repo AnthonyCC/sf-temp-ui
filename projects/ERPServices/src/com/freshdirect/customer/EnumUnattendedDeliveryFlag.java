@@ -34,7 +34,7 @@ public class EnumUnattendedDeliveryFlag extends Enum {
 
 	@JsonCreator
 	public static EnumUnattendedDeliveryFlag getEnum(String name) {
-		return (EnumUnattendedDeliveryFlag) getEnum(EnumAlertType.class, name);
+		return (EnumUnattendedDeliveryFlag) getEnum(EnumUnattendedDeliveryFlag.class, name);
 	}
 
 	public static Map getEnumMap() {
