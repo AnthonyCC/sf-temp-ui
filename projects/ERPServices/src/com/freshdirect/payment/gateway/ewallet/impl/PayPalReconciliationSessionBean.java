@@ -32,6 +32,9 @@ import com.freshdirect.customer.ErpChargebackReversalModel;
 import com.freshdirect.customer.ErpSettlementInfo;
 import com.freshdirect.customer.ErpSettlementModel;
 import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.ecomm.gateway.ReconciliationService;
+import com.freshdirect.fdstore.FDEcommProperties;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ewallet.ErpPPSettlementInfo;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.core.SessionBeanSupport;
@@ -303,14 +306,22 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 				model.setProcessorTrxnId(trxn.getPaypalReferenceId());
 				model.setAffiliate(affiliate);
 				ErpSettlementInfo info = null;
-				if (null !=PayPalSettlementTransactionCodes.EnumPPSTLEventCode.getEnum(trxn.getTransactionEventCode()))
-					info = reconsSB.addSettlement(model, saleId, affiliate, false);
-				else if (null !=PayPalSettlementTransactionCodes.EnumPPREFEventCode.getEnum(trxn.getTransactionEventCode()))
-					info = reconsSB.addSettlement(model, saleId, affiliate, true);
-				else if (null !=PayPalSettlementTransactionCodes.EnumPPCBKEventCode.getEnum(trxn.getTransactionEventCode())) {
-					info = reconsSB.addChargeback(getChargebackModel(trxn, affiliate, trxn.getTransactionInitiationDate()));
+				if (null !=PayPalSettlementTransactionCodes.EnumPPSTLEventCode.getEnum(trxn.getTransactionEventCode())){
+					if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
+						info = ReconciliationService.getInstance().addSettlement(model, saleId, affiliate, false);
+					}else {info = reconsSB.addSettlement(model, saleId, affiliate, false);}
+				}else if (null !=PayPalSettlementTransactionCodes.EnumPPREFEventCode.getEnum(trxn.getTransactionEventCode())){
+					if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
+						info = ReconciliationService.getInstance().addSettlement(model, saleId, affiliate, true);
+					}else {info = reconsSB.addSettlement(model, saleId, affiliate, true);}
+				}else if (null !=PayPalSettlementTransactionCodes.EnumPPCBKEventCode.getEnum(trxn.getTransactionEventCode())) {
+					if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
+						info = ReconciliationService.getInstance().addChargeback(getChargebackModel(trxn, affiliate, trxn.getTransactionInitiationDate()));
+					}else {info = reconsSB.addChargeback(getChargebackModel(trxn, affiliate, trxn.getTransactionInitiationDate()));}
 				} else if (null !=PayPalSettlementTransactionCodes.EnumPPCBREventCode.getEnum(trxn.getTransactionEventCode())) {
-					info = reconsSB.addChargebackReversal(getChargebackReversalModel(trxn, affiliate, trxn.getTransactionInitiationDate()));
+					if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
+						info = ReconciliationService.getInstance().addChargebackReversal(getChargebackReversalModel(trxn, affiliate, trxn.getTransactionInitiationDate()));
+					}else {info = reconsSB.addChargebackReversal(getChargebackReversalModel(trxn, affiliate, trxn.getTransactionInitiationDate()));}
 				} else
 					LOGGER.info("Transction with event codes is not being update to FD DB" + trxn.getTransactionEventCode());
 				

@@ -14,7 +14,10 @@ import com.freshdirect.customer.ErpSettlementInfo;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementBuilderI;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementParserClient;
+import com.freshdirect.ecomm.gateway.ReconciliationService;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.ejb.ReconciliationSB;
@@ -67,10 +70,18 @@ public class PaymentechPDEParserClient extends SettlementParserClient {
 
 		ErpSettlementInfo info = null; 
 		if( cb instanceof ErpChargebackReversalModel ){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
+				info = 	ReconciliationService.getInstance().addChargebackReversal((ErpChargebackReversalModel) cb);
+					}else{
 			info = this.reconciliationSB.addChargebackReversal( (ErpChargebackReversalModel) cb );
+					}
 			this.builder.addChargebackReversal( info, cb.getAmount() );
 		}else{
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
+				info = 	ReconciliationService.getInstance().addChargeback(cb);
+					}else{
 			info = this.reconciliationSB.addChargeback(cb);
+					}
 			this.builder.addChargeback( info, cb.getAmount() );
 		}				
 	}
@@ -92,9 +103,12 @@ public class PaymentechPDEParserClient extends SettlementParserClient {
 			String description = (trans.getCategory() != null) ? trans.getCategory().getName() : "";
 			
 			ErpAffiliate aff = ErpAffiliate.getAffiliateByTxDivision(trans.getEntityNumber());
-		
-			ErpSettlementInfo info = reconciliationSB.processECPReturn(saleId, aff, accountNumber, amount, sequenceNumber, paymentResponse, description, usageCode);
-			
+			ErpSettlementInfo info;
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
+			info = 	ReconciliationService.getInstance().processECPReturn(saleId, aff, accountNumber, amount, sequenceNumber, paymentResponse, description, usageCode);
+			}else{
+			info = reconciliationSB.processECPReturn(saleId, aff, accountNumber, amount, sequenceNumber, paymentResponse, description, usageCode);
+			}
 			if (trans.getUsageCode() == FIRST_ECP_RETURN && 
 				(EnumPaymentResponse.INSUFFIENT_FUNDS_D.equals(paymentResponse) || 
 				EnumPaymentResponse.INSUFFIENT_FUNDS_R.equals(paymentResponse) || 

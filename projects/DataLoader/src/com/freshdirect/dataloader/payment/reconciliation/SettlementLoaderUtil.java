@@ -29,6 +29,9 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.dataloader.DataLoaderProperties;
+import com.freshdirect.ecomm.gateway.ReconciliationService;
+import com.freshdirect.fdstore.FDEcommProperties;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
 import com.freshdirect.mail.ErpMailSender;
@@ -182,7 +185,11 @@ public class SettlementLoaderUtil {
 	public static void callSettlementBapi(String fileName) throws SapException, RemoteException, CreateException {
 		
 		ReconciliationSB reconciliationSB = lookupReconciliationHome().create();
+		if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
+		ReconciliationService.getInstance().sendSettlementReconToSap(fileName, DataLoaderProperties.getSapUploadFolder());
+			}else{
 		reconciliationSB.sendSettlementReconToSap(fileName, DataLoaderProperties.getSapUploadFolder());
+			}
 	}
 
 	public static ReconciliationHome lookupReconciliationHome() throws EJBException {
