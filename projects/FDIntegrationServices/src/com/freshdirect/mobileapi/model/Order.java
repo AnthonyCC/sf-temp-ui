@@ -107,6 +107,7 @@ public class Order {
         com.freshdirect.mobileapi.controller.data.response.Order orderDetail = new com.freshdirect.mobileapi.controller.data.response.Order();
         orderDetail.setStatus(target.getOrderStatus().getDisplayName());
         orderDetail.setModifycount(target.modifyOrderCount());
+        orderDetail.setRecentIds(user.getFDSessionUser()!=null?user.getFDSessionUser().getRecentCartlineIdsSet(target.getErpSalesId()):null);
         FDReservation reservation = target.getDeliveryReservation();
         ErpAddressModel dlvAddress = target.getDeliveryAddress();
         ErpPaymentMethodI paymentMethod = target.getPaymentMethod();
