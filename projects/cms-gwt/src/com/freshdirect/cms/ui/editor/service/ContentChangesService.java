@@ -378,10 +378,11 @@ public class ContentChangesService {
             String label = labelProviderService.labelOfContentKey(contentKey);
             String previewLink = previewLinkService.getLink(contentKey);
 
-            gwtNodeChange = new GwtNodeChange(contentKey.type.name(), label, contentKey.toString(), changeEntity.getChangeType().description, previewLink);
+            final String changeType = changeEntity.getChangeType().description;
+            gwtNodeChange = new GwtNodeChange(contentKey.type.name(), label, contentKey.toString(), changeType, previewLink);
 
             for (ContentChangeDetailEntity detail : changeEntity.getDetails()) {
-                GwtChangeDetail gwtChangeDetail = toGwtChangeDetail(contentKey.getType(), detail);
+                GwtChangeDetail gwtChangeDetail = toGwtChangeDetail(changeType, contentKey.getType(), detail);
                 gwtNodeChange.addDetail(gwtChangeDetail);
             }
         }
@@ -389,18 +390,20 @@ public class ContentChangesService {
         return Optional.fromNullable(gwtNodeChange);
     }
 
-    private GwtNodeChange toGwtNodeChange(DraftChange draftChange) {
+    private GwtNodeChange toGwtNodeChange(DraftChange draftChange, Set<ContentAttributeKey> shadowedFields) {
         ContentKey key = ContentKeyFactory.get(draftChange.getContentKey());
         String label = labelProviderService.labelOfContentKey(key);
 
         GwtNodeChange gwtNodeChange = new GwtNodeChange(key.type.name(), label, key.getEncoded(), null, null);
 
-        gwtNodeChange.addDetail(new GwtChangeDetail(draftChange.getAttributeName(), null, draftChange.getValue()));
+        // FIXME: old and new values will change
+        // TODO: introduce merge value field in details
+        gwtNodeChange.addDetail(new GwtChangeDetail(null, draftChange.getAttributeName(), null, draftChange.getValue()));
 
         return gwtNodeChange;
     }
 
-    private GwtChangeDetail toGwtChangeDetail(ContentType type, ContentChangeDetailEntity detail) {
+    private GwtChangeDetail toGwtChangeDetail(String changeType, ContentType type, ContentChangeDetailEntity detail) {
         String oldValue = detail.getOldValue();
         String newValue = detail.getNewValue();
         Attribute attr = contentTypeInfoService.findAttributeByName(type, detail.getAttributeName()).orNull();
@@ -411,7 +414,7 @@ public class ContentChangesService {
                 newValue = enumToString(newValue, labels);
             }
         }
-        return new GwtChangeDetail(detail.getAttributeName(), oldValue, newValue);
+        return new GwtChangeDetail(changeType, detail.getAttributeName(), oldValue, newValue);
     }
 
     private static final String enumToString(String enumValue, Map<String, String> enumLabels) {

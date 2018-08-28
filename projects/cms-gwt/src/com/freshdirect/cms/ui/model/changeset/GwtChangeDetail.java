@@ -4,8 +4,9 @@ import java.io.Serializable;
 
 public class GwtChangeDetail implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-    
+    private static final long serialVersionUID = 1L;
+
+    private String changeType;
     private String attributeName;
     private String oldValue;
     private String newValue;
@@ -13,10 +14,19 @@ public class GwtChangeDetail implements Serializable {
     public GwtChangeDetail() {
     }
 
-    public GwtChangeDetail(String attributeName, String oldValue, String newValue) {
+    public GwtChangeDetail(String changeType, String attributeName, String oldValue, String newValue) {
+        this.changeType = changeType;
         this.attributeName = attributeName;
         this.oldValue = oldValue;
         this.newValue = newValue;
+    }
+
+    public String getChangeType() {
+        return changeType;
+    }
+
+    public void setChangeType(String changeType) {
+        this.changeType = changeType;
     }
 
     public String getAttributeName() {
