@@ -12,6 +12,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author ekracoff
  */
 public class FDSurveyQuestion implements java.io.Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3385806592052136798L;
 	private final String name;
 	private final String description;
 	private final String shortDescr;

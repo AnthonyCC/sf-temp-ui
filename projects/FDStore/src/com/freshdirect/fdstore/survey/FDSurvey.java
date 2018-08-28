@@ -13,6 +13,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class FDSurvey implements java.io.Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8686449652718713264L;
 	private final String name;
 	private final boolean isOrderSurvey; // property tells whether or not an order number is required
 	private final List<FDSurveyQuestion> questions = new ArrayList<FDSurveyQuestion>();

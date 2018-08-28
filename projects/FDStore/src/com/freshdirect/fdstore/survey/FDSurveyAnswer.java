@@ -4,6 +4,10 @@ package com.freshdirect.fdstore.survey;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class FDSurveyAnswer implements java.io.Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1024613242306132060L;
 	private final String name;
 	private final String description;
 	private final String group;
