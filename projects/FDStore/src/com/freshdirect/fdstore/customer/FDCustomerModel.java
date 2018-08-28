@@ -25,7 +25,8 @@ import com.freshdirect.framework.core.ModelSupport;
  */
 public class FDCustomerModel extends ModelSupport implements FDCustomerI {
 
-    private String erpCustomerPK;
+	private static final long serialVersionUID = -9211745214844891058L;
+	private String erpCustomerPK;
     private int loginCount;
     private Date lastLogin;
     private String defaultShipToAddressPK;
