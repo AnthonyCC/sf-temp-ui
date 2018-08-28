@@ -108,12 +108,15 @@ public class ChangeHistory extends LayoutContainer {
         // ============ OLD VALUE ============
         if (isMainBrach) {
             columns.add(colourColumn(RED, noSort(new ColumnConfig("old", "Old Value", 200))));
+            columns.add(colourColumn(GREEN, noSort(new ColumnConfig("new", "New Value", 200))));
+
+            columns.add(colourColumn(GREEN, noSort(new ColumnConfig("note", "Note", 200))));
+        } else {
+            columns.add(colourColumn(RED, noSort(new ColumnConfig("old", "Old Value", 200))));
+            columns.add(colourColumn(GREEN, noSort(new ColumnConfig("new", "New Value", 200))));
+
+            columns.add(colourColumn(GREEN, noSort(new ColumnConfig("mergeValue", "Merge Value", 200))));
         }
-
-        // ============ NEW VALUE ============
-        columns.add(colourColumn(GREEN, noSort(new ColumnConfig("new", "New Value", 200))));
-
-        columns.add(colourColumn(GREEN, noSort(new ColumnConfig("note", "Note", 200))));
 
         final PagingToolBar toolBar = new PagingToolBar(20);
         toolBar.bind(loader);

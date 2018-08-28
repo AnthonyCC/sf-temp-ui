@@ -395,14 +395,13 @@ public class ContentChangesService {
         ContentKey key = ContentKeyFactory.get(draftChange.getContentKey());
         String label = labelProviderService.labelOfContentKey(key);
 
-        GwtNodeChange gwtNodeChange = new GwtNodeChange(key.type.name(), label, key.getEncoded(), "draft", null);
-
         final boolean isFieldShadowed = shadowedFields.contains(new ContentAttributeKey(key,  draftChange.getAttributeName()));
         final String draftChangeType = isFieldShadowed ? "Override" : "Create";
 
+        GwtNodeChange gwtNodeChange = new GwtNodeChange(key.type.name(), label, key.getEncoded(), draftChangeType, null);
+
         // FIXME: old and new values will change
-        // TODO: introduce merge value field in details
-        gwtNodeChange.addDetail(new GwtChangeDetail(draftChangeType, draftChange.getAttributeName(), null, draftChange.getValue()));
+        gwtNodeChange.addDetail(new GwtChangeDetail(draftChangeType, draftChange.getAttributeName(), "regi", "uj", draftChange.getValue()));
 
         return gwtNodeChange;
     }

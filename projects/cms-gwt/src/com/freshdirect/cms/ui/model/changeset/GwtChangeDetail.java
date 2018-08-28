@@ -10,15 +10,21 @@ public class GwtChangeDetail implements Serializable {
     private String attributeName;
     private String oldValue;
     private String newValue;
+    private String mergeValue;
 
     public GwtChangeDetail() {
     }
 
-    public GwtChangeDetail(String changeType, String attributeName, String oldValue, String newValue) {
+    public GwtChangeDetail(String changeType, String attributeName, String oldValue, String newValue, String mergeValue) {
         this.changeType = changeType;
         this.attributeName = attributeName;
         this.oldValue = oldValue;
         this.newValue = newValue;
+        this.mergeValue = mergeValue;
+    }
+
+    public GwtChangeDetail(String changeType, String attributeName, String oldValue, String newValue) {
+        this(changeType, attributeName, oldValue, newValue, null);
     }
 
     public String getChangeType() {
@@ -53,4 +59,11 @@ public class GwtChangeDetail implements Serializable {
         this.oldValue = oldValue;
     }
 
+    public String getMergeValue() {
+        return mergeValue;
+    }
+
+    public void setMergeValue(String mergeValue) {
+        this.mergeValue = mergeValue;
+    }
 }
