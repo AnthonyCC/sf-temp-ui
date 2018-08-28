@@ -766,7 +766,7 @@ public class SinglePageCheckoutFacade {
             FDCardCount(userPaymentMethods);
             formPaymentData.setMpButtonImgURL(FDStoreProperties.getMasterpassBtnImgURL());
 
-            if (!getEwalletStatus(EnumEwalletType.PP.getName())) {
+            if (!getEwalletStatus(EnumEwalletType.PP.getName()) || null !=user.getUserContext() && null!=user.getUserContext().getStoreContext() && user.getUserContext().getStoreContext().getEStoreId().equals(EnumEStoreId.FDX)) {
                 userPaymentMethods = removePPWallet(userPaymentMethods);
                 formPaymentData.setPayments(userPaymentMethods);
             }
