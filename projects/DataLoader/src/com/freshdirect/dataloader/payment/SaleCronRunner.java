@@ -60,17 +60,21 @@ public class SaleCronRunner {
 		}
 
 		Context ctx = null;
+		SaleCronSB sb = null;
 		try {
-			ctx = getInitialContext();
+			
 			SaleCronHome home = (SaleCronHome) ctx.lookup("freshdirect.dataloader.SaleCron");
 			int affected ;
 			List<Date> dates;
-			SaleCronSB sb = home.create();
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SaleCronSB)) {
 				SaleCronService.getInstance().cancelAuthorizationFailed();
 				dates = SaleCronService.getInstance().queryCutoffReportDeliveryDates();
 				affected = SaleCronService.getInstance().cutoffSales();
 			} else {
+				if (sb == null) {
+					ctx = getInitialContext();
+					sb = home.create();
+				}
 				
 				sb.cancelAuthorizationFailed();
 				dates = sb.queryCutoffReportDeliveryDates();
@@ -93,6 +97,12 @@ public class SaleCronRunner {
 				SaleCronService.getInstance().preAuthorizeSales(authTimeout);
 				SaleCronService.getInstance().authorizeSales(authTimeout);
 			}else {
+				if (sb == null) {
+					if (ctx == null) {
+						ctx = getInitialContext();
+					}
+					sb = home.create();
+				}
 				sb.reverseAuthorizeSales(authTimeout);
 				sb.preAuthorizeSales(authTimeout);
 				sb.authorizeSales(authTimeout);
@@ -130,7 +140,6 @@ public class SaleCronRunner {
 	}
 	
 	private static void email(Date processDate, String exceptionMsg) {
-		// TODO Auto-generated method stub
 		try {
 			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
 			String subject="SaleCronRunner:	"+ (processDate != null ? dateFormatter.format(processDate) : " date error");
