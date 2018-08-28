@@ -81,6 +81,7 @@
 		<%-- Feature version switcher --%>
 		<features:potato />
 		<%-- LOAD JS --%>
+		<%@ include file="/common/template/includes/i_jsFreshDirect.jspf" %>
 		<jwr:script src="/mobileweb_index_optimized_jquerylibs.js" useRandomParam="false" />
 		<script type="text/javascript">
 			window.FreshDirect = window.FreshDirect || {};

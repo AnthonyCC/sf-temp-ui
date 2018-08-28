@@ -1077,6 +1077,9 @@ public class FDStoreProperties {
     private static final String PROP_BACK_OFFICE_CONNECTION_TIMEOUT = "fdstore.backoffice.conn.timeout";
     private static final String PROP_BACK_OFFICE_CONNECTION_REQUEST_TIMEOUT = "fdstore.backoffice.conn.request.timeout";
     private static final String PROP_BACK_OFFICE_CONN_READ_TIMEOUT = "fdstore.backoffice.conn.read.timeout";
+    
+    //APPDEV-7480
+    private static final String PROP_JAVASCRIPT_FIRST_ENABLED = "fdstore.javascript.first.enabled";
 
  	static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -2063,7 +2066,8 @@ public class FDStoreProperties {
         defaults.put(PROP_BACK_OFFICE_CONN_READ_TIMEOUT, 120);
         defaults.put(PROP_BACK_OFFICE_CONNECTION_REQUEST_TIMEOUT, 60);
         
-        
+        //APPDEV-7480
+        defaults.put(PROP_JAVASCRIPT_FIRST_ENABLED, "false");
         
         try {
      		String hostName=java.net.InetAddress.getLocalHost().getCanonicalHostName();
@@ -5290,4 +5294,9 @@ public class FDStoreProperties {
 	            return 300;
 	        }
 	    }
+
+	public static boolean isJavascriptFirstEnabled() {
+		return (Boolean.valueOf(get(PROP_JAVASCRIPT_FIRST_ENABLED))).booleanValue();
+	}
+
 }
