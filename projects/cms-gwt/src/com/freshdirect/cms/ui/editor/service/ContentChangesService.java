@@ -29,6 +29,7 @@ import com.freshdirect.cms.core.domain.Scalar;
 import com.freshdirect.cms.core.service.ContentTypeInfoService;
 import com.freshdirect.cms.draft.domain.DraftChange;
 import com.freshdirect.cms.draft.domain.DraftContext;
+import com.freshdirect.cms.ui.editor.domain.ContentAttributeKey;
 import com.freshdirect.cms.ui.editor.publish.domain.StorePublishMessageSeverity;
 import com.freshdirect.cms.ui.editor.publish.entity.StorePublish;
 import com.freshdirect.cms.ui.editor.publish.entity.StorePublishMessage;
@@ -72,7 +73,7 @@ public class ContentChangesService {
 
     @Autowired
     private FeedPublishMessageToGwtPublishMessageConverter feedPublishMessageToGwtConverter;
-    
+
     @Autowired
     private ContentTypeInfoService contentTypeInfoService;
 
@@ -350,7 +351,7 @@ public class ContentChangesService {
         return gwtChangeSet;
     }
 
-    public GwtChangeSet toGwtChangeSet(String id, Collection<DraftChange> draftChanges, DraftContext draftContext) {
+    public GwtChangeSet toGwtChangeSet(String id, Collection<DraftChange> draftChanges, Set<ContentAttributeKey> shadowedFields, DraftContext draftContext) {
         String username = null;
         long modifiedDate = 0l;
 
@@ -358,7 +359,7 @@ public class ContentChangesService {
         for (final DraftChange draftChange : draftChanges) {
             username = draftChange.getUserName();
             modifiedDate = draftChange.getCreatedAt();
-            nodeChanges.add(toGwtNodeChange(draftChange));
+            nodeChanges.add(toGwtNodeChange(draftChange, shadowedFields));
         }
 
         GwtChangeSet gwtChangeSet = new GwtChangeSet(id, username, new Date(modifiedDate), null);
@@ -394,16 +395,28 @@ public class ContentChangesService {
         ContentKey key = ContentKeyFactory.get(draftChange.getContentKey());
         String label = labelProviderService.labelOfContentKey(key);
 
-        GwtNodeChange gwtNodeChange = new GwtNodeChange(key.type.name(), label, key.getEncoded(), null, null);
+        GwtNodeChange gwtNodeChange = new GwtNodeChange(key.type.name(), label, key.getEncoded(), "draft", null);
+
+        final boolean isFieldShadowed = shadowedFields.contains(new ContentAttributeKey(key,  draftChange.getAttributeName()));
+        final String draftChangeType = isFieldShadowed ? "Override" : "Create";
 
         // FIXME: old and new values will change
         // TODO: introduce merge value field in details
-        gwtNodeChange.addDetail(new GwtChangeDetail(null, draftChange.getAttributeName(), null, draftChange.getValue()));
+        gwtNodeChange.addDetail(new GwtChangeDetail(draftChangeType, draftChange.getAttributeName(), null, draftChange.getValue()));
 
         return gwtNodeChange;
     }
 
-    private GwtChangeDetail toGwtChangeDetail(String changeType, ContentType type, ContentChangeDetailEntity detail) {
+    private GwtChangeDetail toGwtChangeDetail(String nodeChangeType, ContentType type, ContentChangeDetailEntity detail) {
+        String changeType = null;
+
+        // if the whole node was added, attributes also must
+        if ("ADD".equalsIgnoreCase(nodeChangeType)) {
+            changeType = "ADD";
+        } else {
+            changeType = detail.getChangeType() != null ? detail.getChangeType().name() : nodeChangeType;
+        }
+
         String oldValue = detail.getOldValue();
         String newValue = detail.getNewValue();
         Attribute attr = contentTypeInfoService.findAttributeByName(type, detail.getAttributeName()).orNull();

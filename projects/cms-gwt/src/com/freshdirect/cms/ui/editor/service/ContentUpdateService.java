@@ -6,9 +6,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,9 +27,11 @@ import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.cms.core.service.ContentTypeInfoService;
 import com.freshdirect.cms.core.service.ContextualContentProvider;
 import com.freshdirect.cms.draft.domain.DraftChange;
+import com.freshdirect.cms.draft.domain.DraftContext;
 import com.freshdirect.cms.draft.service.DraftContextHolder;
 import com.freshdirect.cms.draft.service.DraftService;
 import com.freshdirect.cms.ui.editor.UnmodifiableContent;
+import com.freshdirect.cms.ui.editor.domain.ContentAttributeKey;
 import com.freshdirect.cms.ui.editor.permission.ContentChangeSource;
 import com.freshdirect.cms.ui.editor.permission.service.PermissionService;
 import com.freshdirect.cms.ui.model.ContentNodeModel;
@@ -147,7 +151,9 @@ public class ContentUpdateService {
 
         List<DraftChange> latestChanges = draftService.getFilteredDraftChanges(updateContext.getDraftContext().getDraftId(), updateContext.getUpdatedAt(), updateContext.getAuthor(), updateContext.getChangedKeys());
 
-        GwtChangeSet singleChangeset = contentChangesService.toGwtChangeSet(id, latestChanges, updateContext.getDraftContext());
+        Set<ContentAttributeKey> shadowedFields = collectShadowedFields(latestChanges);
+
+        GwtChangeSet singleChangeset = contentChangesService.toGwtChangeSet(id, latestChanges, shadowedFields, updateContext.getDraftContext());
 
         return new GwtSaveResponse(id, singleChangeset);
     }
@@ -267,4 +273,45 @@ public class ContentUpdateService {
         return (a == null && b == null) || (a != null && a.equals(b));
     }
 
+    private Set<ContentAttributeKey> collectShadowedFields(Collection<DraftChange> draftChanges) {
+        if (draftChanges == null) {
+            return Collections.emptySet();
+        }
+
+        Set<ContentKey> keys = new HashSet<ContentKey>(draftChanges.size());
+        for (DraftChange change : draftChanges) {
+            keys.add(ContentKeyFactory.get(change.getContentKey()));
+        }
+
+        Map<ContentKey, Map<Attribute, Object>> valuesOnMain = fetchMainValues(keys);
+
+        Set<ContentAttributeKey> shadowedFields = new HashSet<ContentAttributeKey>(draftChanges.size());
+        for (Map.Entry<ContentKey, Map<Attribute, Object>> payload : valuesOnMain.entrySet()) {
+            for (Attribute attributeDef : payload.getValue().keySet()) {
+                shadowedFields.add(new ContentAttributeKey(payload.getKey(), attributeDef));
+            }
+        }
+
+        return shadowedFields;
+    }
+
+    private Map<ContentKey, Map<Attribute, Object>> fetchMainValues(Collection<ContentKey> contentKeys) {
+        final DraftContext currentContext = draftContextHolder.getDraftContext();
+
+        draftContextHolder.setDraftContext(DraftContext.MAIN);
+
+        Map<ContentKey, Map<Attribute, Object>> valuesOnMain = new HashMap<ContentKey, Map<Attribute, Object>>();
+        for (ContentKey key : contentKeys) {
+            Map<Attribute, Object> payload = contentProviderService.getAllAttributesForContentKey(key);
+            if (payload != null) {
+                valuesOnMain.put(key, payload);
+            } else {
+                valuesOnMain.put(key, Collections.<Attribute, Object> emptyMap());
+            }
+        }
+
+        draftContextHolder.setDraftContext(currentContext);
+
+        return valuesOnMain;
+    }
 }

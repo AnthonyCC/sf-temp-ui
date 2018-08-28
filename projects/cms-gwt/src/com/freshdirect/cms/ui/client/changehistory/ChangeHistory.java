@@ -93,9 +93,8 @@ public class ChangeHistory extends LayoutContainer {
         }
 
         // ============ CHANGETYPE ============
-        if (isMainBrach) {
-            columns.add(noSort(new ColumnConfig("changeType", "Type", 50)));
-        }
+        columns.add(noSort(new ColumnConfig("changeType", "Type", 50)));
+
         // ============ CONTENTNODE ============
         if (query == null || query.getContentKey() == null) {
             ColumnConfig cc = noSort(new ColumnConfig("key", "Content", 150));
@@ -179,5 +178,4 @@ public class ChangeHistory extends LayoutContainer {
         cc.setStyle("background-color:" + colour);
         return cc;
     }
-
 }
