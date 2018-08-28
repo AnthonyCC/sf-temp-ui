@@ -63,7 +63,6 @@ public class SaleCronRunner {
 		SaleCronSB sb = null;
 		try {
 			
-			SaleCronHome home = (SaleCronHome) ctx.lookup("freshdirect.dataloader.SaleCron");
 			int affected ;
 			List<Date> dates;
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SaleCronSB)) {
@@ -73,6 +72,7 @@ public class SaleCronRunner {
 			} else {
 				if (sb == null) {
 					ctx = getInitialContext();
+					SaleCronHome home = (SaleCronHome) ctx.lookup("freshdirect.dataloader.SaleCron");
 					sb = home.create();
 				}
 				
@@ -101,6 +101,7 @@ public class SaleCronRunner {
 					if (ctx == null) {
 						ctx = getInitialContext();
 					}
+					SaleCronHome home = (SaleCronHome) ctx.lookup("freshdirect.dataloader.SaleCron");
 					sb = home.create();
 				}
 				sb.reverseAuthorizeSales(authTimeout);
