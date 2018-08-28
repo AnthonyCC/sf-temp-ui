@@ -36,6 +36,8 @@ public interface CustomerInfoServiceI {
 
 	public FDCustomerInfo getCustomerInfo(FDIdentity identity) throws FDResourceException, RemoteException;
 
+	public ErpCustomerInfoModel getErpCustomerInfo(String erpCustomerId)  throws FDResourceException;
+	
 	public FDCustomerInfo getSOCustomerInfo(FDIdentity identity) throws FDResourceException, RemoteException;
 
 	public void updateUserId(FDActionInfo info, String userId)

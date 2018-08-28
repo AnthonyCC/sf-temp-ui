@@ -11,6 +11,8 @@ package com.freshdirect.fdstore.customer;
 import java.rmi.RemoteException;
 import java.util.Date;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.freshdirect.common.date.SimpleDateDeserializer;
 import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerEStoreModel;
 import com.freshdirect.framework.core.ModelSupport;
@@ -28,6 +30,7 @@ public class FDCustomerModel extends ModelSupport implements FDCustomerI {
 	private static final long serialVersionUID = -9211745214844891058L;
 	private String erpCustomerPK;
     private int loginCount;
+    @JsonDeserialize(using = SimpleDateDeserializer.class)
     private Date lastLogin;
     private String defaultShipToAddressPK;
     private String defaultPaymentMethodPK;
@@ -41,7 +44,6 @@ public class FDCustomerModel extends ModelSupport implements FDCustomerI {
     //private String rafClickId;
     //private String rafPromoCode;
     private EnumPaymentMethodDefaultType defaultPaymentType;
-	private boolean dpFreeTrialOptin;
 
 	/**
      * Default constructor.
@@ -264,10 +266,6 @@ public class FDCustomerModel extends ModelSupport implements FDCustomerI {
 
 	public void setDefaultPaymentType(EnumPaymentMethodDefaultType defaultPaymentType) {
 		this.defaultPaymentType = defaultPaymentType;
-	}
-
-	public void setDpFreeTrialOptin(boolean dpFreeTrialOptin) {
-		this.dpFreeTrialOptin = dpFreeTrialOptin;
 	}
 	
 	@Override
