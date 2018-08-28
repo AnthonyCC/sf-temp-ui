@@ -2,14 +2,18 @@ package com.freshdirect.cms.ui.editor.service;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +25,13 @@ import com.freshdirect.cms.changecontrol.entity.ContentChangeDetailEntity;
 import com.freshdirect.cms.changecontrol.entity.ContentChangeEntity;
 import com.freshdirect.cms.changecontrol.entity.ContentChangeSetEntity;
 import com.freshdirect.cms.changecontrol.service.ContentChangeControlService;
+import com.freshdirect.cms.core.converter.ScalarValueConverter;
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.cms.core.domain.ContentType;
+import com.freshdirect.cms.core.domain.Relationship;
+import com.freshdirect.cms.core.domain.RelationshipCardinality;
 import com.freshdirect.cms.core.domain.Scalar;
 import com.freshdirect.cms.core.service.ContentTypeInfoService;
 import com.freshdirect.cms.draft.domain.DraftChange;
@@ -393,17 +400,230 @@ public class ContentChangesService {
 
     private GwtNodeChange toGwtNodeChange(DraftChange draftChange, Map<ContentAttributeKey, Object> shadowedFields) {
         ContentKey key = ContentKeyFactory.get(draftChange.getContentKey());
-        String label = labelProviderService.labelOfContentKey(key);
 
-        final boolean isFieldShadowed = shadowedFields.keySet().contains(new ContentAttributeKey(key,  draftChange.getAttributeName()));
-        final String draftChangeType = isFieldShadowed ? "Override" : "Create";
+        final String attributeName = draftChange.getAttributeName();
+        final ContentAttributeKey attributeKey = new ContentAttributeKey(key, attributeName);
+        // final boolean isFieldShadowed = shadowedFields.keySet().contains(attributeKey);
 
-        GwtNodeChange gwtNodeChange = new GwtNodeChange(key.type.name(), label, key.getEncoded(), draftChangeType, null);
+        final Object valueOnMain = shadowedFields.get(attributeKey);
+        final String valueOnDraft = draftChange.getValue();
 
-        // FIXME: old and new values will change
-        gwtNodeChange.addDetail(new GwtChangeDetail(draftChangeType, draftChange.getAttributeName(), "regi", "uj", draftChange.getValue()));
+        final String[] values = describeValueChange(key, attributeName, shadowedFields.get(attributeKey), valueOnDraft);
+
+        GwtNodeChange gwtNodeChange = createGwtNodeChangePrototype(key, valueOnMain != null);
+        gwtNodeChange.addDetail(new GwtChangeDetail(gwtNodeChange.getChangeType(), attributeName, values[0], values[1], valueOnDraft));
 
         return gwtNodeChange;
+    }
+
+    private GwtNodeChange createGwtNodeChangePrototype(ContentKey key, boolean isFieldShadowed) {
+        String label = labelProviderService.labelOfContentKey(key);
+        final String draftChangeKind = isFieldShadowed ? "Override" : "Create";
+        return new GwtNodeChange(key.type.name(), label, key.getEncoded(), draftChangeKind, null);
+    }
+
+    private String[] describeValueChange(ContentKey key, String attributeName, Object valueOnMain, String valueOnDraft) {
+        String oldValue = null;
+        String newValue = valueOnDraft;
+
+        if (valueOnMain != null) {
+            final Attribute attributeDef = contentTypeInfoService.findAttributeByName(key.type, attributeName).get();
+
+            if (valueOnDraft == null) {
+                // null value on draft means original value is hit out
+                String[] result = describeNullDraftValueChange(attributeDef, valueOnMain);
+                oldValue = result[0];
+                newValue = result[1];
+            } else {
+                String[] result = describeValueOverride(attributeDef, valueOnMain, valueOnDraft);
+                oldValue = result[0];
+                newValue = result[1];
+            }
+        }
+
+        return new String[] {oldValue, newValue};
+    }
+
+    private String[] describeValueOverride(Attribute attributeDef, Object valueOnMain, String valueOnDraft) {
+        String oldValue = null;
+        String newValue = valueOnDraft;
+
+        if (attributeDef instanceof Scalar) {
+            oldValue = ScalarValueConverter.serializeToString((Scalar) attributeDef, valueOnMain);
+        } else if (attributeDef instanceof Relationship) {
+            Relationship relationshipDef = (Relationship) attributeDef;
+
+            if (relationshipDef.getCardinality() == RelationshipCardinality.ONE) {
+                oldValue = ((ContentKey) valueOnMain).getEncoded();
+            } else {
+                String[] changeValues = describeContentKeyListChange((Relationship) attributeDef, valueOnMain, newValue);
+                oldValue = changeValues[0];
+                newValue = changeValues[1];
+            }
+        }
+
+        return new String[] {oldValue, newValue};
+    }
+
+    private String[] describeNullDraftValueChange(Attribute attributeDef, Object valueOnMain) {
+        String oldValue = null;
+
+        if (attributeDef instanceof Scalar) {
+            oldValue = ScalarValueConverter.serializeToString((Scalar)attributeDef, valueOnMain);
+        } else if (attributeDef instanceof Relationship) {
+            Relationship relationshipDef = (Relationship) attributeDef;
+
+            if (relationshipDef.getCardinality() == RelationshipCardinality.ONE) {
+                oldValue = ((ContentKey) valueOnMain).getEncoded();
+            } else {
+                List<ContentKey> oldKeys = (List<ContentKey>) valueOnMain;
+
+                StringBuilder oldValueBuilder = new StringBuilder();
+                oldValueBuilder
+                    .append("Deleted: ")
+                    .append(StringUtils.join(", ", oldKeys));
+
+                oldValue = oldValueBuilder.toString();
+            }
+        }
+
+        return new String[] { oldValue, "(removed)" };
+    }
+
+    private String[] describeContentKeyListChange(Relationship relationshipDef, Object valueOnMain, String draftValue) {
+        String oldValue = null;
+        String newValue = null;
+
+        // do the magic !
+        List<String> oldKeys = new ArrayList<String>();
+        for (ContentKey contentKey : (List<ContentKey>) valueOnMain) {
+            oldKeys.add(contentKey.getEncoded());
+        }
+        List<String> newKeys = Arrays.asList(draftValue.split("\\|"));
+
+        Map<String, int[]> changeVector = computeListItemPositions(oldKeys, newKeys);
+        if (changeVector != null && !changeVector.isEmpty()) {
+
+            Set<String> keysAdded = new HashSet<String>();
+            Set<String> keysRemoved = new HashSet<String>();
+            Map<String, String> keysMoved = new HashMap<String, String>();
+
+            for (Map.Entry<String, int[]> entry : changeVector.entrySet()) {
+                final String aKey = entry.getKey();
+                int[] positions = entry.getValue();
+                if (positions[1] == -1) {
+                    keysRemoved.add(aKey);
+                } else if (positions[0] == -1) {
+                    keysAdded.add(aKey);
+                }
+            }
+
+            // check for permutations
+            if (keysRemoved.size() < oldKeys.size() || keysAdded.size() < newKeys.size()) {
+                List<String> filteredOldKeys = new ArrayList<String>();
+                List<String> filteredNewKeys = new ArrayList<String>();
+
+                for (String aKey : oldKeys) {
+                    if (!keysRemoved.contains(aKey)) {
+                        filteredOldKeys.add(aKey);
+                    }
+                }
+                for (String aKey : newKeys) {
+                    if (!keysAdded.contains(aKey)) {
+                        filteredNewKeys.add(aKey);
+                    }
+                }
+
+                // At this point we have two equally sized lists having the same elements
+                // element order may or may not be the same
+                if (filteredOldKeys.size() != filteredNewKeys.size()) {
+                    // This should not happen!
+                }
+
+                Map<String, int[]> changeVector2 = computeListItemPositions(filteredOldKeys, filteredNewKeys);
+                if (changeVector2 != null) {
+                    for (Map.Entry<String, int[]> entry : changeVector2.entrySet()) {
+                        String movedKey = entry.getKey();
+                        int[] positions = entry.getValue();
+                        if (positions[0] != positions[1]) {
+                            // TODO identify permutation
+                            // filteredOldKeys[k] == filteredNewKey[l] &&
+                            // filteredOldKeys[l] == filteredNewKeys[k]
+                            keysMoved.put(movedKey, String.format("%d => %d", oldKeys.indexOf(movedKey), newKeys.indexOf(movedKey)));
+                        }
+                    }
+                }
+            }
+
+            String[] result = describeKeyChanges(keysAdded, keysRemoved, keysMoved);
+            oldValue = result[0];
+            newValue = result[1];
+        } else {
+            oldValue = "#error";
+        }
+
+        return new String[] { oldValue, newValue };
+    }
+
+    private Map<String, int[]> computeListItemPositions(List<String> left, List<String> right) {
+        Set<String> keys = new HashSet<String>();
+        if (left != null) {
+            keys.addAll(left);
+        }
+        if (right != null) {
+            keys.addAll(right);
+        }
+
+        Map<String, int[]> changeVector = new HashMap<String, int[]>(keys.size());
+        for (String key: keys) {
+            int[] positions = new int[2];
+            positions[0] = left != null ? left.indexOf(key) : -1;
+            positions[1] = right != null ? right.indexOf(key) : -1;
+
+            changeVector.put(key, positions);
+        }
+
+        return changeVector;
+    }
+
+    private String[] describeKeyChanges(Collection<String> keysAdded, Collection<String> keysRemoved, Map<String, String> keysMoved) {
+        String oldValue = null;
+        String newValue = null;
+
+        StringBuilder oldValueBuilder = new StringBuilder();
+        StringBuilder newValueBuilder = new StringBuilder();
+
+        if (!keysRemoved.isEmpty()) {
+            oldValueBuilder
+                .append("Deleted: ")
+                .append(StringUtils.join(keysRemoved, ", "));
+        }
+        if (!keysAdded.isEmpty()) {
+            newValueBuilder
+                .append("Added: ")
+                .append(StringUtils.join(keysAdded, ", "));
+        }
+        if (!keysMoved.isEmpty()) {
+            if (newValueBuilder.length() > 0) {
+                newValueBuilder.append("\n");
+            }
+
+            newValueBuilder.append("Moved: ");
+            for (Map.Entry<String, String> entry : keysMoved.entrySet()) {
+                newValueBuilder
+                    .append(entry.getKey()).append(" ")
+                    .append(entry.getValue()).append("; ");
+            }
+        }
+
+        if (oldValueBuilder.length() > 0) {
+            oldValue = oldValueBuilder.toString();
+        }
+        if (newValueBuilder.length() > 0) {
+            newValue = newValueBuilder.toString();
+        }
+
+        return new String[] {oldValue, newValue};
     }
 
     private GwtChangeDetail toGwtChangeDetail(String nodeChangeType, ContentType type, ContentChangeDetailEntity detail) {
