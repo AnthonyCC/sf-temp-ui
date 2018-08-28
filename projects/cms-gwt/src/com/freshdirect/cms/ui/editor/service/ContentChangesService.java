@@ -351,7 +351,7 @@ public class ContentChangesService {
         return gwtChangeSet;
     }
 
-    public GwtChangeSet toGwtChangeSet(String id, Collection<DraftChange> draftChanges, Set<ContentAttributeKey> shadowedFields, DraftContext draftContext) {
+    public GwtChangeSet toGwtChangeSet(String id, Collection<DraftChange> draftChanges, Map<ContentAttributeKey, Object> shadowedFields, DraftContext draftContext) {
         String username = null;
         long modifiedDate = 0l;
 
@@ -391,11 +391,11 @@ public class ContentChangesService {
         return Optional.fromNullable(gwtNodeChange);
     }
 
-    private GwtNodeChange toGwtNodeChange(DraftChange draftChange, Set<ContentAttributeKey> shadowedFields) {
+    private GwtNodeChange toGwtNodeChange(DraftChange draftChange, Map<ContentAttributeKey, Object> shadowedFields) {
         ContentKey key = ContentKeyFactory.get(draftChange.getContentKey());
         String label = labelProviderService.labelOfContentKey(key);
 
-        final boolean isFieldShadowed = shadowedFields.contains(new ContentAttributeKey(key,  draftChange.getAttributeName()));
+        final boolean isFieldShadowed = shadowedFields.keySet().contains(new ContentAttributeKey(key,  draftChange.getAttributeName()));
         final String draftChangeType = isFieldShadowed ? "Override" : "Create";
 
         GwtNodeChange gwtNodeChange = new GwtNodeChange(key.type.name(), label, key.getEncoded(), draftChangeType, null);

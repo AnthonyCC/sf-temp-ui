@@ -151,7 +151,7 @@ public class ContentUpdateService {
 
         List<DraftChange> latestChanges = draftService.getFilteredDraftChanges(updateContext.getDraftContext().getDraftId(), updateContext.getUpdatedAt(), updateContext.getAuthor(), updateContext.getChangedKeys());
 
-        Set<ContentAttributeKey> shadowedFields = collectShadowedFields(latestChanges);
+        Map<ContentAttributeKey, Object> shadowedFields = collectShadowedFields(latestChanges);
 
         GwtChangeSet singleChangeset = contentChangesService.toGwtChangeSet(id, latestChanges, shadowedFields, updateContext.getDraftContext());
 
@@ -273,9 +273,9 @@ public class ContentUpdateService {
         return (a == null && b == null) || (a != null && a.equals(b));
     }
 
-    private Set<ContentAttributeKey> collectShadowedFields(Collection<DraftChange> draftChanges) {
+    private Map<ContentAttributeKey, Object> collectShadowedFields(Collection<DraftChange> draftChanges) {
         if (draftChanges == null) {
-            return Collections.emptySet();
+            return Collections.emptyMap();
         }
 
         Set<ContentKey> keys = new HashSet<ContentKey>(draftChanges.size());
@@ -285,10 +285,12 @@ public class ContentUpdateService {
 
         Map<ContentKey, Map<Attribute, Object>> valuesOnMain = fetchMainValues(keys);
 
-        Set<ContentAttributeKey> shadowedFields = new HashSet<ContentAttributeKey>(draftChanges.size());
+        Map<ContentAttributeKey, Object> shadowedFields = new HashMap<ContentAttributeKey, Object>(draftChanges.size());
         for (Map.Entry<ContentKey, Map<Attribute, Object>> payload : valuesOnMain.entrySet()) {
-            for (Attribute attributeDef : payload.getValue().keySet()) {
-                shadowedFields.add(new ContentAttributeKey(payload.getKey(), attributeDef));
+            for (Map.Entry<Attribute, Object> valueEntry : payload.getValue().entrySet() ) {
+                final Attribute attributeDef = valueEntry.getKey();
+                final Object value = valueEntry.getValue();
+                shadowedFields.put(new ContentAttributeKey(payload.getKey(), attributeDef), value);
             }
         }
 
