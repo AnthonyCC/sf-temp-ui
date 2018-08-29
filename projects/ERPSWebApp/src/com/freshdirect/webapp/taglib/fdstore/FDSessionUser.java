@@ -2492,6 +2492,12 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	}
 
 	@Override
+	public void setDpFreeTrialOptin(boolean dpFreeTrialOptin) {
+		this.user.setDpFreeTrialOptin(dpFreeTrialOptin);
+
+	}
+
+	@Override
 	public String getDpFreeTrialOptinStDate() throws FDResourceException {
 		return user.getDpFreeTrialOptinStDate();
 	}

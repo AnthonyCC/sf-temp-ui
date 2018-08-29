@@ -113,7 +113,8 @@ public class ChooseTimeslotAction extends WebActionSupport {
 					TimeslotLogic.calcTieredDeliveryFee(user, timeSlot);
 				}
 				
-				if (timeSlot.isPremiumSlot() && dpTcCheckUser.isDpNewTcBlocking(false) && FDCustomerFactory.getErpCustomerInfo(user.getUser().getIdentity()).getDpTcViewCount() <= FDStoreProperties.getDpTcViewLimit()) {
+				ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(user.getUser().getIdentity());
+				if (timeSlot.isPremiumSlot() && dpTcCheckUser.isDpNewTcBlocking(false) && cm.getDpTcViewCount() <= FDStoreProperties.getDpTcViewLimit()) {
 					//user bypassed dp terms block
 						actionResult.addError(new ActionError("bypassedDpTcBlock", "You must agree to the new DeliveryPass Terms & Conditions before selecting a Same Day time slot."));
 					} else {
