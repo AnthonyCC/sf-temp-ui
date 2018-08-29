@@ -506,6 +506,7 @@ public class ContentChangesService {
             Set<String> keysAdded = new HashSet<String>();
             Set<String> keysRemoved = new HashSet<String>();
             Map<String, String> keysMoved = new HashMap<String, String>();
+            Map<String, String> keysPermuted = new HashMap<String, String>();
 
             for (Map.Entry<String, int[]> entry : changeVector.entrySet()) {
                 final String aKey = entry.getKey();
@@ -541,16 +542,24 @@ public class ContentChangesService {
                         String movedKey = entry.getKey();
                         int[] positions = entry.getValue();
                         if (positions[0] != positions[1]) {
-                            // TODO identify permutation
-                            // filteredOldKeys[k] == filteredNewKey[l] &&
-                            // filteredOldKeys[l] == filteredNewKeys[k]
-                            keysMoved.put(movedKey, String.format("%d => %d", oldKeys.indexOf(movedKey), newKeys.indexOf(movedKey)));
+                            // detect two items are permuted
+                            if (filteredNewKeys.get(positions[0]).equals(filteredOldKeys.get(positions[1]))) {
+                                String thisKey = movedKey;
+                                String otherKey = filteredNewKeys.get(positions[0]);
+
+                                // don't put {A,B} pair if {B,A} is already in
+                                if (!keysPermuted.containsKey(otherKey)) {
+                                    keysPermuted.put(thisKey, otherKey);
+                                }
+                            } else {
+                                keysMoved.put(movedKey, String.format("%d => %d", oldKeys.indexOf(movedKey), newKeys.indexOf(movedKey)));
+                            }
                         }
                     }
                 }
             }
 
-            String[] result = describeKeyChanges(keysAdded, keysRemoved, keysMoved);
+            String[] result = describeKeyChanges(keysAdded, keysRemoved, keysPermuted, keysMoved);
             oldValue = result[0];
             newValue = result[1];
         } else {
@@ -581,7 +590,7 @@ public class ContentChangesService {
         return changeVector;
     }
 
-    private String[] describeKeyChanges(Collection<String> keysAdded, Collection<String> keysRemoved, Map<String, String> keysMoved) {
+    private String[] describeKeyChanges(Collection<String> keysAdded, Collection<String> keysRemoved, Map<String, String> keysPermuted, Map<String, String> keysMoved) {
         String oldValue = null;
         String newValue = null;
 
@@ -597,6 +606,18 @@ public class ContentChangesService {
             newValueBuilder
                 .append("Added: ")
                 .append(StringUtils.join(keysAdded, ", "));
+        }
+        if (!keysPermuted.isEmpty()) {
+            if (newValueBuilder.length() > 0) {
+                newValueBuilder.append("\n");
+            }
+
+            newValueBuilder.append("Exchanged: ");
+            for (Map.Entry<String, String> entry : keysPermuted.entrySet()) {
+                newValueBuilder
+                    .append(entry.getKey()).append("<->")
+                    .append(entry.getValue()).append("; ");
+            }
         }
         if (!keysMoved.isEmpty()) {
             if (newValueBuilder.length() > 0) {
