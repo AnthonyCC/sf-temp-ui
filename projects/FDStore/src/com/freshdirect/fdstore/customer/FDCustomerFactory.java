@@ -6,13 +6,16 @@ package com.freshdirect.fdstore.customer;
  * @version
  */
 import javax.naming.*;
+
+import org.apache.log4j.Category;
+
 import javax.ejb.*;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.List;
 
 import com.freshdirect.framework.core.PrimaryKey;
-
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.fdstore.customer.ejb.*;
 import com.freshdirect.fdstore.ecomm.gateway.CustomerIdentityService;
 import com.freshdirect.fdstore.ecomm.gateway.CustomerInfoService;
@@ -24,6 +27,8 @@ import com.freshdirect.customer.ejb.*;
 
 
 public class FDCustomerFactory {
+
+	private static Category LOGGER = LoggerFactory.getInstance(FDCustomerFactory.class);
 
 	private static FDCustomerHome fdCustomerHome = null;
 	private static ErpCustomerHome erpCustomerHome = null;
@@ -39,9 +44,12 @@ public class FDCustomerFactory {
 
 	public static FDCustomerModel getFDCustomer(String fdCustomerId) throws FDResourceException {
 		try {
+			
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerFactory)) {
+				LOGGER.info("FDEcom FDCustomerFactory start " + fdCustomerId );
 				return CustomerIdentityService.getInstance().getFDCustomer(fdCustomerId, null);
 			} else {
+				LOGGER.info("EJB FDCustomerFactory start " + fdCustomerId );
 				if (fdCustomerHome == null) {
 					lookupFDCustomerHome();
 				}
