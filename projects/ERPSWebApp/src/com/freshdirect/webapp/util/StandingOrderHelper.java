@@ -1042,7 +1042,28 @@ public class StandingOrderHelper {
 				so.clearLastError();
 			}
 		}
-
+		if (so.getNextDeliveryDate() != null && "Y".equalsIgnoreCase(so.getActivate()) ) {		/* COS17-68 */
+			Date dt = so.getNextDeliveryDate();
+			Calendar c = Calendar.getInstance();
+			c.add(Calendar.DAY_OF_YEAR, 1);
+			
+			boolean shouldUpdateDate = dt.before(c.getTime()); 
+			if(DateUtil.getDiffInDays(dt, c.getTime())>7) {
+					int count =0;
+					while(DateUtil.getDiffInDays(so.getNextDeliveryDate(), c.getTime())>7) {
+						so.calculateNextDeliveryDate(so.getNextDeliveryDate());
+						count++;
+						if(count >10) { /* falling in infinity loop while clicking setting's  on SO template. To Avoid this.. */
+							shouldUpdateDate = false;
+							break;
+						}
+					}
+			}
+			if (shouldUpdateDate ) {
+				so.calculateNextDeliveryDate(so.getNextDeliveryDate());
+				LOGGER.info("SO ID: "+so.getId()+" date is in Past[sysDate+1], updating Date on Template based on DOW to: "+so.getNextDeliveryDate());
+			}
+		}
 	}
 	
 	public static void populateSO3TimeslotDetails(FDUserI user, String deliveryTimeSlotId,
