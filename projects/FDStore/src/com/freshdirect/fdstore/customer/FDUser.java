@@ -4005,6 +4005,20 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 
 	@Override
+	public void setDpFreeTrialOptin(boolean dpFreeTrialOptin) {
+		if (null == this.cachedFDCustomer && this.identity!=null) {
+            try {
+                this.cachedFDCustomer = FDCustomerFactory.getFDCustomer(this.identity);
+            } catch (FDResourceException e) {
+                LOGGER.warn("Error in setDpFreeTrialOptin() " + e);
+            }
+        }
+        if (null != this.cachedFDCustomer) {
+            this.cachedFDCustomer.getCustomerEStoreModel().setDpFreeTrialOptin(dpFreeTrialOptin);
+        }
+    }
+
+	@Override
     public void updateDpFreeTrialOptin(boolean dpFreeTrialOptin) {
 		if (null != this.cachedFDCustomer) {
 			this.cachedFDCustomer.getCustomerEStoreModel().setDpFreeTrialOptin(dpFreeTrialOptin);

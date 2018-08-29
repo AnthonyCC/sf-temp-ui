@@ -13,6 +13,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.freshdirect.crm.CrmClick2CallModel;
 import com.freshdirect.crm.CrmSystemCaseInfo;
+import com.freshdirect.customer.ErpAbstractOrderModel;
+import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDuplicateDisplayNameException;
@@ -57,7 +59,6 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 
 	private static final String GET_CUSTOMER_ID = "customerInfo/getCustomerId";
 	private static final String GET_CUSTOMER_INFO = "customerInfo/getCustomerInfo";
-	private static final String GET_ERPCUSTOMER_INFO = "customerInfo/getErpCustomerInfo";
 	private static final String GET_SO_CUSTOMER_INFO = "customerInfo/getSOCustomerInfo";
 	private static final String UPDATE_USER_ID = "customerInfo/updateUserId";
 	private static final String STORE_USER = "customerInfo/storeUser";
@@ -147,19 +148,6 @@ public class CustomerInfoService extends AbstractEcommService implements Custome
 		}
 	}
 
-	@Override
-	public ErpCustomerInfoModel getErpCustomerInfo(String erpCustomerId) throws FDResourceException {
-		Response<ErpCustomerInfoModel> response = this.httpGetDataTypeMap(
-				getFdCommerceEndPoint(GET_ERPCUSTOMER_INFO + "/" + erpCustomerId),
-				new TypeReference<Response<ErpCustomerInfoModel>>() {
-				});
-		if (!response.getResponseCode().equals("OK")) {
-			LOGGER.error("Error in CustomerInfoService.ErpCustomerInfoModel: erpCustomerId=" + erpCustomerId);
-			throw new FDResourceException(response.getMessage());
-		}
-		return response.getData();
-	}
-	
 	@Override
 	public FDCustomerInfo getSOCustomerInfo(FDIdentity identity) throws FDResourceException, RemoteException {
 		Response<FDCustomerInfo> response = null;
