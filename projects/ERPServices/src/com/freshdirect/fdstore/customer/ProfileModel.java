@@ -133,7 +133,7 @@ public class ProfileModel extends ModelSupport {
         return marketingAttributeKeys;
     }
 
-    public String getDeliveryPassProfileValue() {
+    public String getDeliveryPassSegmentValue() {
     	return getAttribute("DeliveryPassSegment");
     }
 }
