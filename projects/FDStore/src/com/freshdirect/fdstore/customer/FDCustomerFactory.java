@@ -14,6 +14,9 @@ import java.util.List;
 import com.freshdirect.framework.core.PrimaryKey;
 
 import com.freshdirect.fdstore.customer.ejb.*;
+import com.freshdirect.fdstore.ecomm.gateway.CustomerIdentityService;
+import com.freshdirect.fdstore.ecomm.gateway.CustomerInfoService;
+import com.freshdirect.fdstore.ecomm.gateway.CustomerPaymentService;
 import com.freshdirect.fdstore.*;
 
 import com.freshdirect.customer.*;
@@ -35,28 +38,37 @@ public class FDCustomerFactory {
 	}
 
 	public static FDCustomerModel getFDCustomer(String fdCustomerId) throws FDResourceException {
-		if (fdCustomerHome==null) {
-			lookupFDCustomerHome();
-		}
 		try {
-			FDCustomerEB eb = fdCustomerHome.findByPrimaryKey( new PrimaryKey( fdCustomerId ) );
-			return (FDCustomerModel) eb.getModel();
-		} catch(FinderException fe) {
-			fdCustomerHome=null;
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerFactory)) {
+				return CustomerIdentityService.getInstance().getFDCustomer(fdCustomerId, null);
+			} else {
+				if (fdCustomerHome == null) {
+					lookupFDCustomerHome();
+				}
+				FDCustomerEB eb = fdCustomerHome.findByPrimaryKey(new PrimaryKey(fdCustomerId));
+				return (FDCustomerModel) eb.getModel();
+			}
+		} catch (FinderException fe) {
+			fdCustomerHome = null;
 			throw new FDResourceException(fe);
-		} catch(RemoteException re) {
-			fdCustomerHome=null;
+		} catch (RemoteException re) {
+			fdCustomerHome = null;
 			throw new FDResourceException(re);
 		}
 	}
-    
+
 	public static FDCustomerModel getFDCustomerFromErpId(String erpCustomerId) throws FDResourceException {
-		if (fdCustomerHome==null) {
-			lookupFDCustomerHome();
-		}
 		try {
-			FDCustomerEB eb = fdCustomerHome.findByErpCustomerId(erpCustomerId);
-			return (FDCustomerModel) eb.getModel();
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerFactory)) {
+				return CustomerIdentityService.getInstance().getFDCustomer(null, erpCustomerId);
+			} else {
+				if (fdCustomerHome==null) {
+					lookupFDCustomerHome();
+				}
+				FDCustomerEB eb = fdCustomerHome.findByErpCustomerId(erpCustomerId);
+				return (FDCustomerModel) eb.getModel();
+			}
+			
 		} catch(FinderException fe) {
 			fdCustomerHome=null;
 			throw new FDResourceException(fe);
@@ -66,18 +78,22 @@ public class FDCustomerFactory {
 		}
 	}
 
-	public static String getFDCustomerIdFromErpId( String erpCustomerId ) throws FDResourceException {
-		if (fdCustomerHome==null) {
-			lookupFDCustomerHome();
-		}
+	public static String getFDCustomerIdFromErpId(String erpCustomerId) throws FDResourceException {
 		try {
-			FDCustomerEB eb = fdCustomerHome.findByErpCustomerId(erpCustomerId);
-			return ( (FDCustomerModel) eb.getModel() ).getPK().getId();
-		} catch(FinderException fe) {
-			fdCustomerHome=null;
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerFactory)) {
+				return CustomerIdentityService.getInstance().getFDCustomer(null, erpCustomerId).getPK().getId();
+			} else {
+				if (fdCustomerHome == null) {
+					lookupFDCustomerHome();
+				}
+				FDCustomerEB eb = fdCustomerHome.findByErpCustomerId(erpCustomerId);
+				return ((FDCustomerModel) eb.getModel()).getPK().getId();
+			}
+		} catch (FinderException fe) {
+			fdCustomerHome = null;
 			throw new FDResourceException(fe);
-		} catch(RemoteException re) {
-			fdCustomerHome=null;
+		} catch (RemoteException re) {
+			fdCustomerHome = null;
 			throw new FDResourceException(re);
 		}
 	}
@@ -87,33 +103,20 @@ public class FDCustomerFactory {
 	}
 
 	public static ErpCustomerModel getErpCustomer(String erpCustomerId) throws FDResourceException {
-		if (erpCustomerHome==null) {
-			lookupErpCustomerHome();
-		}
 		try {
-			ErpCustomerEB eb = erpCustomerHome.findByPrimaryKey( new PrimaryKey( erpCustomerId ) );
-			return (ErpCustomerModel)eb.getModel();
-		} catch(FinderException fe) {
-			erpCustomerHome=null;
-			throw new FDResourceException(fe);
-		} catch(RemoteException re) {
-			erpCustomerHome=null;
-			throw new FDResourceException(re);
-		}
-	}
-
-    public static ErpCustomerModel getErpCustomerByUserId(String userId) throws FDResourceException {
-		if (erpCustomerHome==null) {
-			lookupErpCustomerHome();
-		}
-		try {
-			ErpCustomerEB eb = erpCustomerHome.findByUserId(userId);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerFactory)) {
+				return CustomerIdentityService.getInstance().getErpCustomer(erpCustomerId);
+			}
+			if (erpCustomerHome == null) {
+				lookupErpCustomerHome();
+			}
+			ErpCustomerEB eb = erpCustomerHome.findByPrimaryKey(new PrimaryKey(erpCustomerId));
 			return (ErpCustomerModel) eb.getModel();
-		} catch(FinderException fe) {
-			fdCustomerHome=null;
+		} catch (FinderException fe) {
+			erpCustomerHome = null;
 			throw new FDResourceException(fe);
-		} catch(RemoteException re) {
-			fdCustomerHome=null;
+		} catch (RemoteException re) {
+			erpCustomerHome = null;
 			throw new FDResourceException(re);
 		}
 	}
@@ -122,13 +125,16 @@ public class FDCustomerFactory {
 		return getErpCustomerInfo( null !=identity ? identity.getErpCustomerPK():null );
 	}
 
+	@Deprecated
 	public static ErpCustomerInfoModel getErpCustomerInfo(String erpCustomerId) throws FDResourceException {
 		if(null !=erpCustomerId){
-			if (erpCustomerInfoHome == null) {
-				lookupErpCustomerInfoHome();
-			}
-			
 			try {
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerFactory)) {
+					return CustomerInfoService.getInstance().getErpCustomerInfo(erpCustomerId);
+				}
+				if (erpCustomerInfoHome == null) {
+					lookupErpCustomerInfoHome();
+				}
 				ErpCustomerInfoModel customerInfo = (ErpCustomerInfoModel) erpCustomerInfoHome.findByErpCustomerId(erpCustomerId).getModel();
 				return customerInfo;
 			} catch(FinderException fe) {
@@ -143,11 +149,13 @@ public class FDCustomerFactory {
 	}
 	
 	public static List<ErpCustomerCreditModel> getCustomerCreditsByErpCustId (String erpCustomerId) throws FDResourceException{
-		if (erpCustomerManagerHome == null) {
-			lookupErpCustomerManagerHome();
-		}
-		
 		try {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerFactory)) {
+				return CustomerPaymentService.getInstance().getCustomerCreditsByErpCustId(erpCustomerId);
+			}
+			if (erpCustomerManagerHome == null) {
+				lookupErpCustomerManagerHome();
+			}
 			ErpCustomerManagerSB erpCustMgrSb =  (ErpCustomerManagerSB)erpCustomerManagerHome.create();
 			return erpCustMgrSb.getCustomerCreditsByErpCustId(erpCustomerId);
 		} catch(CreateException fe) {

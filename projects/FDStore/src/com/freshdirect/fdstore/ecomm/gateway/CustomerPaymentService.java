@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.freshdirect.customer.EnumFraudReason;
 import com.freshdirect.customer.EnumPaymentMethodDefaultType;
+import com.freshdirect.customer.ErpCustomerCreditModel;
 import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpPaymentMethodException;
 import com.freshdirect.customer.ErpPaymentMethodI;
@@ -27,6 +28,7 @@ public class CustomerPaymentService extends AbstractEcommService implements Cust
 	private final static Category LOGGER = LoggerFactory.getInstance(CustomerPaymentService.class);
 
 	private static final String GET_PAYMENT_METHODS = "customerPayment/paymentMethods";
+	private static final String GET_CREDITS_BY_ERP_CUST_ID = "customerPayment/creditsByErpCustId";
 	private static final String ADD_PAYMENT_METHOD = "customerPayment/paymentMethod/add";
 	private static final String UPDATE_PAYMENT_METHOD = "customerPayment/paymentMethod/update";
 	private static final String REMOVE_PAYMENT_METHOD = "customerPayment/paymentMethod/remove";
@@ -237,5 +239,24 @@ public class CustomerPaymentService extends AbstractEcommService implements Cust
 			throw new FDResourceException(response.getMessage());
 		}
 		return response.getData();
+	}
+
+	@Override
+	public List<ErpCustomerCreditModel> getCustomerCreditsByErpCustId(String erpCustomerId) throws RemoteException {
+		try {
+			Response<List<ErpCustomerCreditModel>> response = this.httpGetDataTypeMap(
+					getFdCommerceEndPoint(GET_CREDITS_BY_ERP_CUST_ID + "/" + erpCustomerId),
+					new TypeReference<Response<List<ErpCustomerCreditModel>>>() {
+					});
+
+			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in CustomerPaymentService: erpCustomerId=" + erpCustomerId);
+				throw new RemoteException(response.getMessage());
+			}
+			return response.getData();
+		} catch (Exception e) {
+			LOGGER.error("Error in CustomerPaymentService: erpCustomerId=" + erpCustomerId, e);
+			throw new RemoteException();
+		}
 	}
 }

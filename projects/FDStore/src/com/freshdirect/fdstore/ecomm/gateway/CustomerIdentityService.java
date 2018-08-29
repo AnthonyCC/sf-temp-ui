@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.ecomm.gateway.AbstractEcommService;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
@@ -17,6 +18,7 @@ import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDEcommServiceException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
+import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDRecipientList;
 import com.freshdirect.fdstore.customer.FDUser;
@@ -33,6 +35,8 @@ public class CustomerIdentityService extends AbstractEcommService implements Cus
 
 	private static final String RECOGNIZE = "customerIdentity/recognize";
 
+	private static final String GET_FDCUSTOMER = "customerIdentity/getFDCustomer";
+	private static final String GET_ERPCUSTOMER = "customerIdentity/getErpCustomer";
 	private static CustomerIdentityServiceI INSTANCE;
 
 	public static CustomerIdentityServiceI getInstance() {
@@ -155,6 +159,39 @@ public class CustomerIdentityService extends AbstractEcommService implements Cus
 		}
 	}
 
+	@Override
+	public FDCustomerModel getFDCustomer(String fdCustomerId, String erpCustomerId) throws FDResourceException {
+		Response<FDCustomerModel> response = null;
+		String query = "";
+		if (fdCustomerId != null) {
+			query = "?fdCustomerId=" + fdCustomerId;
+		} else if (erpCustomerId != null) {
+			query = "?erpCustomerId=" + erpCustomerId;
+		}
+		response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_FDCUSTOMER + query),
+				new TypeReference<Response<FDCustomerModel>>() {
+				});
+		if (!response.getResponseCode().equals("OK")) {
+			LOGGER.error("Error in CustomerIdentityService.getFDCustomer: fdCustomerId=" + fdCustomerId
+					+ ", erpCustomerId=" + erpCustomerId);
+			throw new FDResourceException(response.getMessage());
+		}
+		return response.getData();
+	}
+	
+	
+	@Override
+	public ErpCustomerModel getErpCustomer(String erpCustomerId) throws FDResourceException {
+		Response<ErpCustomerModel> response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_ERPCUSTOMER + "/" + erpCustomerId),
+				new TypeReference<Response<ErpCustomerModel>>() {
+				});
+		if (!response.getResponseCode().equals("OK")) {
+			LOGGER.error("Error in CustomerIdentityService.getErpCustomer: erpCustomerId=" + erpCustomerId);
+			throw new FDResourceException(response.getMessage());
+		}
+		return response.getData();
+	}
+	
 	private FDUser loadFromFDUserData(FDUserData data, boolean populateUserContext) {
 		FDUser user = null;
 		if (data != null) {

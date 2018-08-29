@@ -20,13 +20,14 @@ import com.freshdirect.framework.core.*;
  *
  * @version    $Revision$
  * @author     $Author$
+ * @deprecated
  */
 public interface FDCustomerHome extends EJBHome {
 
 	public FDCustomerEB create() throws CreateException, RemoteException;
 
 	public FDCustomerEB create(ModelI model) throws CreateException, RemoteException;
-
+	
 	public FDCustomerEB findByPrimaryKey(PrimaryKey pk) throws FinderException, RemoteException;
 
 	public FDCustomerEB findByErpCustomerId(String erpId) throws FinderException, RemoteException;
