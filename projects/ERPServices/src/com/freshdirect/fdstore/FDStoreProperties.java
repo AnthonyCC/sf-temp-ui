@@ -2034,9 +2034,9 @@ public class FDStoreProperties {
 
         defaults.put(PROP_IS_FDC_FIRST_ORDER_EMAIL_MSG_ENABLED, "false");
 
-        defaults.put(PROP_FD_DP_STANDALONE_CHECKOUT_ENABLED, "false");
+        defaults.put(PROP_FD_DP_STANDALONE_CHECKOUT_ENABLED, "true");
         defaults.put(PROP_FD_DP_MIDWEEK_ENABLED, "true");
-        defaults.put(PROP_FDX_DP_ENABLED, "false");
+        defaults.put(PROP_FDX_DP_ENABLED, "true");
         defaults.put(PROP_FDX_DP_FIRST_ORDER_ELIGIBILITY_DAYS, "30");
 
         defaults.put(PROP_NEW_PRODUCTS_PAGE_CAROUSEL_ENABLED, "false");
