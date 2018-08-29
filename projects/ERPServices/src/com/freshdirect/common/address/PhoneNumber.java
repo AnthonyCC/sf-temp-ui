@@ -1,6 +1,7 @@
 package com.freshdirect.common.address;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.freshdirect.framework.util.NVL;
 
@@ -50,6 +51,7 @@ public class PhoneNumber implements java.io.Serializable {
 		return (this.extension == null || "".equals(this.extension)) ? this.phone : (this.phone + " x" + this.extension);
 	}
 
+	@JsonIgnore
 	public boolean isValid() {
 		return this.phone.length() == 10;
 	}
