@@ -1047,21 +1047,19 @@ public class StandingOrderHelper {
 			Calendar c = Calendar.getInstance();
 			c.add(Calendar.DAY_OF_YEAR, 1);
 			
-			boolean shouldUpdateDate = dt.before(c.getTime()); 
 			if(DateUtil.getDiffInDays(dt, c.getTime())>7) {
 					int count =0;
 					while(DateUtil.getDiffInDays(so.getNextDeliveryDate(), c.getTime())>7) {
 						so.calculateNextDeliveryDate(so.getNextDeliveryDate());
 						count++;
-						if(count >10) { /* falling in infinity loop while clicking setting's  on SO template. To Avoid this.. */
-							shouldUpdateDate = false;
+						if(count >20) { /* falling in infinity loop while clicking setting's  on SO template. To Avoid this.. */
 							break;
 						}
 					}
 			}
-			if (shouldUpdateDate ) {
+			if (so.getNextDeliveryDate().before(c.getTime() )) {
 				so.calculateNextDeliveryDate(so.getNextDeliveryDate());
-				LOGGER.info("SO ID: "+so.getId()+" date is in Past[sysDate+1], updating Date on Template based on DOW to: "+so.getNextDeliveryDate());
+				LOGGER.info("SO ID: "+so.getId()+" date is in Past[ "+dt+" ] with frequency ["+ so.getFrequency()+"], updating NEXT_DATE on Template based on DOW to: "+so.getNextDeliveryDate());
 			}
 		}
 	}
