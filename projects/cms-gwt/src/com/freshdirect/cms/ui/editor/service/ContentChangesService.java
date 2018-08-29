@@ -358,7 +358,7 @@ public class ContentChangesService {
         return gwtChangeSet;
     }
 
-    public GwtChangeSet toGwtChangeSet(String id, Collection<DraftChange> draftChanges, Map<ContentAttributeKey, Object> shadowedFields, DraftContext draftContext) {
+    public GwtChangeSet toGwtChangeSet(String id, Collection<DraftChange> draftChanges, Map<ContentAttributeKey, Object> shadowedFields, Map<ContentKey, Map<Attribute, Object>> payloadBeforeUpdate, DraftContext draftContext) {
         String username = null;
         long modifiedDate = 0l;
 
@@ -366,7 +366,7 @@ public class ContentChangesService {
         for (final DraftChange draftChange : draftChanges) {
             username = draftChange.getUserName();
             modifiedDate = draftChange.getCreatedAt();
-            nodeChanges.add(toGwtNodeChange(draftChange, shadowedFields));
+            nodeChanges.add(toGwtNodeChange(draftChange, shadowedFields, payloadBeforeUpdate));
         }
 
         GwtChangeSet gwtChangeSet = new GwtChangeSet(id, username, new Date(modifiedDate), null);
@@ -398,19 +398,20 @@ public class ContentChangesService {
         return Optional.fromNullable(gwtNodeChange);
     }
 
-    private GwtNodeChange toGwtNodeChange(DraftChange draftChange, Map<ContentAttributeKey, Object> shadowedFields) {
+    private GwtNodeChange toGwtNodeChange(DraftChange draftChange, Map<ContentAttributeKey, Object> shadowedFields, Map<ContentKey, Map<Attribute, Object>> oldPayload) {
         ContentKey key = ContentKeyFactory.get(draftChange.getContentKey());
 
         final String attributeName = draftChange.getAttributeName();
         final ContentAttributeKey attributeKey = new ContentAttributeKey(key, attributeName);
-        // final boolean isFieldShadowed = shadowedFields.keySet().contains(attributeKey);
+        final Attribute attributeDef = contentTypeInfoService.findAttributeByName(key.type, attributeName).get();
 
-        final Object valueOnMain = shadowedFields.get(attributeKey);
+        final boolean isFieldShadowed = shadowedFields.keySet().contains(attributeKey);
+        final Object oldValue = oldPayload.get(key).get(attributeDef);
         final String valueOnDraft = draftChange.getValue();
 
-        final String[] values = describeValueChange(key, attributeName, shadowedFields.get(attributeKey), valueOnDraft);
+        final String[] values = describeValueChange(key, attributeDef, oldValue, valueOnDraft);
 
-        GwtNodeChange gwtNodeChange = createGwtNodeChangePrototype(key, valueOnMain != null);
+        GwtNodeChange gwtNodeChange = createGwtNodeChangePrototype(key, isFieldShadowed);
         gwtNodeChange.addDetail(new GwtChangeDetail(gwtNodeChange.getChangeType(), attributeName, values[0], values[1], valueOnDraft));
 
         return gwtNodeChange;
@@ -422,20 +423,18 @@ public class ContentChangesService {
         return new GwtNodeChange(key.type.name(), label, key.getEncoded(), draftChangeKind, null);
     }
 
-    private String[] describeValueChange(ContentKey key, String attributeName, Object valueOnMain, String valueOnDraft) {
+    private String[] describeValueChange(ContentKey key, Attribute attributeDef, Object valueBefore, String valueOnDraft) {
         String oldValue = null;
         String newValue = valueOnDraft;
 
-        if (valueOnMain != null) {
-            final Attribute attributeDef = contentTypeInfoService.findAttributeByName(key.type, attributeName).get();
-
+        if (valueBefore != null) {
             if (valueOnDraft == null) {
                 // null value on draft means original value is hit out
-                String[] result = describeNullDraftValueChange(attributeDef, valueOnMain);
+                String[] result = describeNullDraftValueChange(attributeDef, valueBefore);
                 oldValue = result[0];
                 newValue = result[1];
             } else {
-                String[] result = describeValueOverride(attributeDef, valueOnMain, valueOnDraft);
+                String[] result = describeValueOverride(attributeDef, valueBefore, valueOnDraft);
                 oldValue = result[0];
                 newValue = result[1];
             }
@@ -444,19 +443,19 @@ public class ContentChangesService {
         return new String[] {oldValue, newValue};
     }
 
-    private String[] describeValueOverride(Attribute attributeDef, Object valueOnMain, String valueOnDraft) {
+    private String[] describeValueOverride(Attribute attributeDef, Object valueBefore, String valueOnDraft) {
         String oldValue = null;
         String newValue = valueOnDraft;
 
         if (attributeDef instanceof Scalar) {
-            oldValue = ScalarValueConverter.serializeToString((Scalar) attributeDef, valueOnMain);
+            oldValue = ScalarValueConverter.serializeToString((Scalar) attributeDef, valueBefore);
         } else if (attributeDef instanceof Relationship) {
             Relationship relationshipDef = (Relationship) attributeDef;
 
             if (relationshipDef.getCardinality() == RelationshipCardinality.ONE) {
-                oldValue = ((ContentKey) valueOnMain).getEncoded();
+                oldValue = ((ContentKey) valueBefore).getEncoded();
             } else {
-                String[] changeValues = describeContentKeyListChange((Relationship) attributeDef, valueOnMain, newValue);
+                String[] changeValues = describeContentKeyListChange((Relationship) attributeDef, valueBefore, newValue);
                 oldValue = changeValues[0];
                 newValue = changeValues[1];
             }
@@ -465,18 +464,18 @@ public class ContentChangesService {
         return new String[] {oldValue, newValue};
     }
 
-    private String[] describeNullDraftValueChange(Attribute attributeDef, Object valueOnMain) {
+    private String[] describeNullDraftValueChange(Attribute attributeDef, Object valueBefore) {
         String oldValue = null;
 
         if (attributeDef instanceof Scalar) {
-            oldValue = ScalarValueConverter.serializeToString((Scalar)attributeDef, valueOnMain);
+            oldValue = ScalarValueConverter.serializeToString((Scalar)attributeDef, valueBefore);
         } else if (attributeDef instanceof Relationship) {
             Relationship relationshipDef = (Relationship) attributeDef;
 
             if (relationshipDef.getCardinality() == RelationshipCardinality.ONE) {
-                oldValue = ((ContentKey) valueOnMain).getEncoded();
+                oldValue = ((ContentKey) valueBefore).getEncoded();
             } else {
-                List<ContentKey> oldKeys = (List<ContentKey>) valueOnMain;
+                List<ContentKey> oldKeys = (List<ContentKey>) valueBefore;
 
                 StringBuilder oldValueBuilder = new StringBuilder();
                 oldValueBuilder
@@ -490,13 +489,13 @@ public class ContentChangesService {
         return new String[] { oldValue, "(removed)" };
     }
 
-    private String[] describeContentKeyListChange(Relationship relationshipDef, Object valueOnMain, String draftValue) {
+    private String[] describeContentKeyListChange(Relationship relationshipDef, Object valueBefore, String draftValue) {
         String oldValue = null;
         String newValue = null;
 
         // do the magic !
         List<String> oldKeys = new ArrayList<String>();
-        for (ContentKey contentKey : (List<ContentKey>) valueOnMain) {
+        for (ContentKey contentKey : (List<ContentKey>) valueBefore) {
             oldKeys.add(contentKey.getEncoded());
         }
         List<String> newKeys = Arrays.asList(draftValue.split("\\|"));
@@ -536,10 +535,6 @@ public class ContentChangesService {
 
                 // At this point we have two equally sized lists having the same elements
                 // element order may or may not be the same
-                if (filteredOldKeys.size() != filteredNewKeys.size()) {
-                    // This should not happen!
-                }
-
                 Map<String, int[]> changeVector2 = computeListItemPositions(filteredOldKeys, filteredNewKeys);
                 if (changeVector2 != null) {
                     for (Map.Entry<String, int[]> entry : changeVector2.entrySet()) {

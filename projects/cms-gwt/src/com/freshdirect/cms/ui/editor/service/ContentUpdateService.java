@@ -106,13 +106,22 @@ public class ContentUpdateService {
 
             if (permissionService.isSaveAllowed(author, payload, changeOrigin)) {
 
+                // retrieve actual payload before updating it
+                Map<ContentKey, Map<Attribute, Object>> payloadBeforeUpdate = new HashMap<ContentKey, Map<Attribute, Object>>();
+                for (ContentKey key: payload.keySet()) {
+                    Map<Attribute, Object> valuesBeforeUpdate = contentProviderService.getAttributeValues(key, new ArrayList<Attribute>(payload.get(key).keySet()));
+                    if (valuesBeforeUpdate != null) {
+                        payloadBeforeUpdate.put(key, valuesBeforeUpdate);
+                    }
+                }
+
                 Optional<ContentChangeSetEntity> updateResult = contentProviderService.updateContent(payload, context);
 
                 if (draftContextHolder.getDraftContext().isMainDraft()) {
                     indexingService.indexChanged(payload);
                     response = createSuccessfulUpdateResponse(updateResult);
                 } else {
-                    response = createSuccessfulDraftUpdateResponse(context);
+                    response = createSuccessfulDraftUpdateResponse(context, payloadBeforeUpdate);
                 }
 
             } else {
@@ -146,14 +155,14 @@ public class ContentUpdateService {
         return response;
     }
 
-    private GwtSaveResponse createSuccessfulDraftUpdateResponse(ContentUpdateContext updateContext) {
+    private GwtSaveResponse createSuccessfulDraftUpdateResponse(ContentUpdateContext updateContext, Map<ContentKey, Map<Attribute, Object>> payloadBeforeUpdate) {
         String id = "draft: " + updateContext.getDraftContext().getDraftId();
 
         List<DraftChange> latestChanges = draftService.getFilteredDraftChanges(updateContext.getDraftContext().getDraftId(), updateContext.getUpdatedAt(), updateContext.getAuthor(), updateContext.getChangedKeys());
 
         Map<ContentAttributeKey, Object> shadowedFields = collectShadowedFields(latestChanges);
 
-        GwtChangeSet singleChangeset = contentChangesService.toGwtChangeSet(id, latestChanges, shadowedFields, updateContext.getDraftContext());
+        GwtChangeSet singleChangeset = contentChangesService.toGwtChangeSet(id, latestChanges, shadowedFields, payloadBeforeUpdate, updateContext.getDraftContext());
 
         return new GwtSaveResponse(id, singleChangeset);
     }
