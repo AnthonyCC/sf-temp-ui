@@ -385,7 +385,7 @@
 				{if $discontinued}
 					{$productName}
 				{else}
-					<span class="portrait-item-header-name">{$productName}</span>
+					<span class="portrait-item-header-name{if $brandName and $brandName == $productName and $productNameNoBrand == ''} bold{/if}">{$productName}</span>
 				{/if}
 			{/if}
 		</div>

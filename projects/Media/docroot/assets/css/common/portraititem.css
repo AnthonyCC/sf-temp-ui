@@ -393,9 +393,10 @@
 .portrait-item.unavailable .portrait-item-header-configuration {
   color:#999;
 }
-
+/* unavailable product */
 .portrait-item.unavailable .accessibility_unavailable:after{
   content:"Unavailable";
+  position:relative;
   display:block;
   font-weight:bold;
   font-size:16px;

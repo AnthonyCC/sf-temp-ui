@@ -24,7 +24,7 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
-<%@ taglib uri='oscache' prefix='oscache' %>
+
 
 <%@page import="com.freshdirect.common.pricing.MaterialPrice"%>
 

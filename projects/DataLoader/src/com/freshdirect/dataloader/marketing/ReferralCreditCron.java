@@ -108,7 +108,6 @@ public class ReferralCreditCron {
 			CallCenterManagerSB csb = csManagerHome.create();
 			complaintReasons = csb.getComplaintReasons(false);
 		}
-		
 		FDReferralManagerSB sb = null;
 		FDCustomerManagerSB fdsb = null;
 		ActivityLogHome aHome = (ActivityLogHome) ctx
@@ -191,6 +190,9 @@ public class ReferralCreditCron {
 						List<ErpComplaintLineModel> lines = new ArrayList<ErpComplaintLineModel>();
 						ErpComplaintLineModel line = new ErpComplaintLineModel();
 						// Set up the Complaint Line Model with proper info
+						LOGGER.info("EnumComplaintLineType.REFERRAL id============ "+EnumComplaintLineType.REFERRAL.getId());
+						LOGGER.info("EnumComplaintLineType.REFERRAL statusCode============ "+EnumComplaintLineType.REFERRAL.getStatusCode());
+						LOGGER.info("EnumComplaintLineType.REFERRAL name============ "+EnumComplaintLineType.REFERRAL.getName());
 						line.setType(EnumComplaintLineType.REFERRAL);
 						line.setQuantity(0);
 						line.setAmount(model.getReferral_fee());
@@ -203,6 +205,7 @@ public class ReferralCreditCron {
 						line.setMethod(EnumComplaintLineMethod.STORE_CREDIT);
 	
 						lines.add(line);
+						LOGGER.info("line.getType()============ "+line.getType());
 						complaintModel.addComplaintLines(lines);
 						complaintModel.setType(EnumComplaintType
 								.getEnum(complaintModel.getComplaintMethod()));

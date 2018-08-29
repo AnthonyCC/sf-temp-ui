@@ -126,7 +126,7 @@ address = AddressFinder.getShipToAddress(user, pageAddrId, timeSlotCtx, request)
 									selectAddressList:key
 								},
 								success: function(data){
-									window.location.reload();
+									window.location.href=window.location.href;
 								}
 							});
 						});

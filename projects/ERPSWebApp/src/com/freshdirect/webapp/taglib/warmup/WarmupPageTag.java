@@ -6,9 +6,9 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
+import com.freshdirect.fdstore.warmup.WarmupPageData;
+import com.freshdirect.fdstore.warmup.WarmupService;
 import com.freshdirect.webapp.soy.SoyTemplateEngine;
-import com.freshdirect.webapp.warmup.WarmupService;
-import com.freshdirect.webapp.warmup.data.WarmupPageData;
 
 public class WarmupPageTag extends SimpleTagSupport {
 

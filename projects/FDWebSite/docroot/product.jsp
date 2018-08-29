@@ -21,7 +21,7 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri='oscache' prefix='oscache' %>
+
 <fd:CheckLoginStatus id="user" />
 <fd:CheckDraftContextTag/>
 <fd:PDPRedirector user="<%=user %>"/>

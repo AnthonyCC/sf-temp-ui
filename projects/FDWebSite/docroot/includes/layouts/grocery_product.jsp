@@ -22,7 +22,7 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
-<%@ taglib uri='oscache' prefix='oscache' %>
+
 
 <% //expanded page dimensions
 final int W_GROCERY_PRODUCT = 601;
@@ -699,13 +699,7 @@ if(((pageNumber -1) * itemsToDisplay) > skuCount) {
 						<table border="0" width="100%" cellspacing="0" cellpadding="0">
 							<tr>
 								<td align="left">
-					        		<% if ( FDStoreProperties.useOscache() ) { %>
-										<oscache:cache time="300">
 											<%@ include file="/shared/includes/product/i_also_sold_as.jspf" %>
-										</oscache:cache>
-					        		<% } else { %>
-											<%@ include file="/shared/includes/product/i_also_sold_as.jspf" %>
-					        		<% } %>
 									<% if(qualifies && !productNode.isUnavailable()) { %>
 										<table>
 											<tr>

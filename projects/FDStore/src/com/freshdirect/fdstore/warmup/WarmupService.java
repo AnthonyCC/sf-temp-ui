@@ -1,4 +1,4 @@
-package com.freshdirect.webapp.warmup;
+package com.freshdirect.fdstore.warmup;
 
 import java.io.IOException;
 
@@ -6,10 +6,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.CmsServiceLocator;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.warmup.Warmup;
-import com.freshdirect.fdstore.warmup.WarmupState;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.webapp.warmup.data.WarmupPageData;
 
 public class WarmupService {
 

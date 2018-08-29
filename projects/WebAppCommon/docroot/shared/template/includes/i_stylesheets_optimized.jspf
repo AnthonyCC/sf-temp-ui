@@ -1,11 +1,15 @@
-<%@ taglib uri='freshdirect' prefix='fd'
-%><%@ taglib uri='oscache' prefix='oscache'
+<%-- 
+
+	this file will be included in the <head> tag
+	this is an optimized include to reduce css to as few bundles as possible.
+	the final composite bundle included has logic determining it (determined by context)
+	
+ --%><%@ taglib uri='freshdirect' prefix='fd'
 %><%@ taglib uri="http://jawr.net/tags" prefix="jwr"
 %><%@ page import="com.freshdirect.fdstore.FDStoreProperties"
 %><%@ page import='com.freshdirect.storeapi.content.EnumLayoutType'
 %><%
-		if (FDStoreProperties.isFlushOscache()) { %><oscache:flush /><% }
-	
+	int layoutTypeCSS = (request.getAttribute("layoutType") == null) ? -1 : Integer.parseInt(request.getAttribute("layoutType").toString());
 %>
 <%-- mark global webfont preload hints --%>
 	<link rel="preload" href="/assets/css/fonts/BrandonTextWeb-Bold.woff2" as="font">

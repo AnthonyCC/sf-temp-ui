@@ -13,7 +13,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri='oscache' prefix='oscache' %>
+
 
 <% //expanded page dimensions
 final int W_TRANSAC_MULTI_CATEGORY_CAT = 601;

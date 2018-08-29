@@ -30,7 +30,7 @@ public final class LoadContentNodesTask extends PublishTask implements Callable<
     @Override
     public Map<ContentKey, Map<Attribute, Object>> call() throws Exception {
         publishMessageLogger.log(publishId, new StorePublishMessage(StorePublishMessageSeverity.INFO, "Loading CMS nodes", LoadContentNodesTask.class.getSimpleName()));
-        Map<ContentKey, Map<Attribute, Object>> allNodes = contentProvider.loadAll();
+        Map<ContentKey, Map<Attribute, Object>> allNodes = contentProvider.loadAllForPublish();
         Map<ContentKey, Map<Attribute, Object>> cloneNodes = new HashMap<ContentKey, Map<Attribute, Object>>();
         for (ContentKey key : allNodes.keySet()) {
             cloneNodes.put(key, new HashMap<Attribute, Object>(allNodes.get(key)));

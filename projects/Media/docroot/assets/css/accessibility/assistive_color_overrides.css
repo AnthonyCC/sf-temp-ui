@@ -467,6 +467,9 @@
 .assistive-mode :not(.cssbutton).orange{
 	color: #AF3D08 !important;
 }
+.assistive-mode .unrecognized.error-message span.orange{
+	color: #AF3D08 !important;
+}
 .assistive-mode:not([data-ismobweb="true"]) .ui-state-default{
 	color:#7C4884 !important;
 }
@@ -734,3 +737,215 @@
 .assistive-mode #sulCont .social-login-green-button{
 	background-color: #096D19 !important;
 }
+.assistive-mode .portrait-item .fdCoupon_detCont,
+.assistive-mode .portrait-item a.fdCoupon_det, 
+.assistive-mode .portrait-item a.fdCoupon_det:active, 
+.assistive-mode .portrait-item a.fdCoupon_det:link, 
+.assistive-mode .portrait-item a.fdCoupon_det:visited, 
+.assistive-mode .portrait-item a.fdCoupon_det:hover
+{
+	color:#333 !important;
+}
+.assistive-mode #topSearchField{
+	background-color: #fff;
+	border: 2px solid #999; 
+	height:30px !important;
+	color: #333 !important;
+}
+.assistive-mode #topSearchField:focus {
+    border: 2px solid transparent !important;
+    outline: #5fb069 solid 2px;
+}
+.assistive-mode .portrait-item.unavailable .portrait-item-header, 
+.assistive-mode .portrait-item.unavailable .portrait-item-header-name, 
+.assistive-mode .portrait-item.unavailable .portrait-item-header-configuration{
+    color: #757575 !important;
+}
+.assistive-mode .itemlist-item.unavailable .itemlist-item-header, 
+.assistive-mode .itemlist-item.unavailable .itemlist-item-header-name, 
+.assistive-mode .itemlist-item.unavailable .itemlist-item-header-configuration {
+    color: #757575 !important;
+}
+.assistive-mode .unavailable .portrait-item-burst_wrapper
+/* .assistive-mode .portrait-item.unavailable .accessibility_unavailable:after */
+{
+	opacity:0.7 !important;
+}
+
+.assistive-mode .pdp .availability-dialog .header{
+	color:#AF3D08 !important;
+}
+
+.assistive-mode .pdp .pdp-evenbetter .header{
+	color:#637387 !important;
+}
+.assistive-mode .rts-backtotop{
+	outline:none !important;
+}
+.assistive-mode .cssbutton.disabled, 
+.assistive-mode .cssbutton[disabled], 
+.assistive-mode .cssbutton.disabled:hover, 
+.assistive-mode .cssbutton[disabled]:hover, 
+.assistive-mode .cssbutton.disabled:active, 
+.assistive-mode .cssbutton[disabled]:active, 
+.assistive-mode .cssbutton.disabled:focus, 
+.assistive-mode .cssbutton[disabled]:focus{
+	color:#666 !important;
+	background: #e8e8ea !important;
+}
+.assistive-mode .pdp-evenbetter-atc button.pdp-evenbetter-addtolist.cssbutton{
+ color: #408244 !important;
+ border:1px solid #408244 !important;
+ width:99px;
+ }
+ .assistive-mode .pdp-evenbetter-atc button.pdp-evenbetter-addtolist.cssbutton:hover{
+ background-color:#fff !important;
+ }
+.assistive-mode .pdp .availability-dialog{
+	border: 2px solid #AF3D08 !important;
+}
+.assistive-mode .pdp-cc .cc-total strong,.assistive-mode .pdp-cc .cc-total{
+	color:#333 !important;
+}
+.assistive-mode .storefront-catering-header h2{
+	background-color:#637387 !important;
+}
+.assistive-mode .storefront-catering-header h2 .storefront-catering-step {
+    background-color: #4B5E68 !important;
+}
+.assistive-mode .subtotal__row .free-link,
+.assistive-mode div#st_label_fuelsurcharge a,
+.assistive-mode div#subtotalbox1 a,
+.assistive-mode div#subtotalbox2 a{
+	color: #5d5f36;
+	text-decoration:none;
+}
+
+.assistive-mode .subtotal__row .free-link:hover,
+.assistive-mode .subtotal__row .free-link:focus,
+.assistive-mode div#st_label_fuelsurcharge a:hover,
+.assistive-mode div#st_label_fuelsurcharge a:focus,
+.assistive-mode div#subtotalbox1 a:focus,
+.assistive-mode div#subtotalbox1 a:hover,
+.assistive-mode div#subtotalbox2 a:hover,
+.assistive-mode div#subtotalbox2 a:focus
+{
+	text-decoration:underline !important;
+}
+.assistive-mode .cStat_applied{
+	color:#333 !important;
+}
+.assistive-mode .cartcoupon-message, 
+.assistive-mode .cartline-discount .red,
+.assistive-mode .row-style-saving #st_label_youSaved .strl_text,
+.assistive-mode .row-style-saving,
+.assistive-mode #checkout-cart-header .save-amount{
+	color: #B93D3F !important;
+}
+.assistive-mode .triangle-red:before{
+	border-color: transparent transparent transparent #B93D3F;
+}
+.assistive-mode .cssBurst.fav,
+.assistive-mode .cssBurst.fav span{
+	background-color:#627387 !important;
+}
+.assistive-mode [fdform][fdform-locked] *:disabled
+{
+	background: #e8e8ea !important;
+    color: #666 !important;
+}
+.assistive-mode .tsEcoFriendlyTimeC {
+   color:#6C7240 !important;
+}
+.assistive-mode #sulCont input[disabled="disabled"],
+.assistive-mode #sulCont input[disabled]{
+	background: #e8e8ea !important;
+    color: #666 !important;
+}
+.assistive-mode p.restrictionpopup__section a,.assistive-mode p.restrictionpopup__section a:focus,.assistive-mode p.restrictionpopup__section a:hover{
+	color: #5d5f36 !important;
+}
+.assistive-mode div#oas_b_FirstECheckPromo a {
+    background-color: #096D19 !important;
+    border: 1px solid #096D19 !important;
+}
+.assistive-mode div#oas_b_FirstECheckPromo a:hover{
+	background-color: #098A1E !important;
+    border-color: #098A1E !important;
+}
+.assistive-mode div#oas_b_FirstECheckPromo a:focus {
+	background-color: #098A1E !important;
+    border-color: rgba(0,0,0,0.4) !important;
+    box-shadow: 0 0 1px #bbbbbb, 0 0 8px #bbbbbb !important;
+}
+.assistive-mode [data-tooltip] .tooptip-indicator{
+	    border-top: 11px solid #096D19 !important;
+}
+.assistive-mode .order_history_table a{
+	color: #5d5f36 !important;
+}
+.assistive-mode .order_history_table a:focus{
+	color: #5d5f36 !important;
+	text-decoration:underline !important;
+	outline:none !important;
+}
+.assistive-mode .order_history_table a:hover{
+	color: #5d5f36 !important;
+	text-decoration:underline !important;
+}
+.assistive-mode .orderSummary td{
+	background-color:#fcfcfc !important;
+}
+.assistive-mode .tsDiscountE,
+.assistive-mode .tsDiscountC{
+	color:#AF3D08 !important;
+}
+.assistive-mode .unrecognized.error-message span{
+	color:#AF3D08 !important;
+}
+.assistive-mode .title18or{
+	color:#D04A0A !important;
+}
+
+.assistive-mode button#prodReq_clear{
+	color: #408245 !important;
+    border: 1px solid #4fa157 !important;
+}
+.assistive-mode .atc-info .incart-info{
+	color: #333 !important;
+}
+ .assistive-mode .footer__findout a{
+   color: #5d5f36 !important;
+ }
+ .assistive-mode .so-timeslot-legend-first-next{
+  color: #5d5f36 !important;
+ }
+  .assistive-mode .so-timeslot-legend-first-next-ball{
+  background-color: #5d5f36 !important;
+ }
+ .assistive-mode #legendCheckout td{
+   color: #5d5f36 !important;
+ }
+ .assistive-mode .standing-orders-3 #cartcontent .so-cartline-delivery-date-info{
+ color: #7C4884 !important;
+ }
+ .assistive-mode .standing-orders-3 #cartcontent .so-cartline-delivery-date-begins{
+   background-color: #7C4884 !important;
+ }
+ .assistive-mode #newsoErroMessage{
+color: #B93D3F;
+ }
+ .assistive-mode .mod56 .contact-us a{
+ color: #5d5f36 !important;
+ }
+ .assistive-mode .mod56 .contact-us a:focus,
+ .assistive-mode .mod56 .contact-us a:hover{
+ text-decoration:none;
+ }
+ .assistive-mode .tsWrapper .text11gbold a {
+    color: #333 !important;
+}
+.assistive-mode .selectedAddressIsHome-false{
+	color:#666 !important;
+}
+  

@@ -212,15 +212,7 @@ public interface IECommerceService {
 	public void logCouponActivity(FDCouponActivityLogModel log)throws FDResourceException,RemoteException;
 	
 	public void logActivity(EwalletActivityLogModel logModel)throws RemoteException;
-
-	public FDSurveyData getSurvey(SurveyKeyData key) throws RemoteException;
 	
-	public FDSurveyResponseData getCustomerProfile(FDIdentity identity, EnumServiceType serviceType) throws RemoteException ;
-	
-	public FDSurveyResponseData getSurveyResponse(FDIdentity identity, SurveyKeyData key) throws RemoteException ;
-	
-	public void storeSurvey(FDSurveyResponseData survey) throws FDResourceException;
-
 	public void loadGroupPriceData(List<ErpGrpPriceModel> grpPriceZonelist)throws FDResourceException;
 
 //	public void updateCOOLInfo(List<ErpCOOLInfo> erpCOOLInfoList)throws RemoteException;

@@ -12,7 +12,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri='oscache' prefix='oscache' %>
+
 
 <% //expanded page dimensions
 final int W_DEPARTMENT_TOTAL = 765;
@@ -137,11 +137,7 @@ final Logger LOG = LoggerFactory.getInstance("department.jsp");
 		//additional keyPrefix change here for cohort control
 		keyPrefix += user.getCohortName();
 		*/
-	%>
-	<%-- oscache:cache key='<%= keyPrefix+request.getQueryString() %>' time='<%= useOsCache ? ttl : 0 %>' --%>
-	
-	<%
-	/*try {*/
+
 		if (isIncludeMediaLayout) {
 			%><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10" /> <%@ include file="/common/template/includes/catLayoutManager.jspf" %><br /><%  
 		} else {
@@ -261,16 +257,7 @@ final Logger LOG = LoggerFactory.getInstance("department.jsp");
 					}
 				}
 			}
-		} // !isIncludeMediaLayout
-		
-	/*} catch (Exception ex) {
-		LOG.error("error while generating department page body", ex);
-		*/
+		} // !isIncludeMediaLayout		
   		%>
-		<%-- oscache:usecached/ --%>
-  	<%-- } --%>
-	
-	<%-- /oscache:cache --%>
-		
 </tmpl:put>
 </tmpl:insert>

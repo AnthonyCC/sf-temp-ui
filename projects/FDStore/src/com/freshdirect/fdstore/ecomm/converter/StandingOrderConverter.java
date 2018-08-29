@@ -386,6 +386,8 @@ public class StandingOrderConverter {
 	private static List<UnavailabilityDetailsWrapper> buildUnavailabilityDetailsData(
 			Map<FDCartLineI, UnAvailabilityDetails> unavailabilityDetails) {
 		List<UnavailabilityDetailsWrapper> unavailabilityMap = new ArrayList<UnavailabilityDetailsWrapper>();
+		if(unavailabilityDetails==null)
+			return unavailabilityMap;
 		for (FDCartLineI cartLine : unavailabilityDetails.keySet()) {
 			UnavailabilityDetailsWrapper wrapper = new UnavailabilityDetailsWrapper();
 			FDCartLineData cartLineData  = new FDCartLineData();

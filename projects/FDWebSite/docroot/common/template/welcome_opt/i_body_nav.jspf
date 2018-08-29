@@ -12,7 +12,7 @@
 %>
 <%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature' %>
 <%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter' %>
-<%@ taglib uri='oscache' prefix='oscache' %>
+
 
 <% FDUserI user = (FDUserI)session.getAttribute(SessionName.USER); %>
 
@@ -40,8 +40,7 @@
 				}
 				return dept;
 		}
-	
-		%><oscache:cache key='<%= "globalNav_"+request.getQueryString() %>' time='0'><%
+	%><%
 			try {
 			
 			String deptId = request.getParameter("deptId");
@@ -129,7 +128,7 @@
 				<table><tr><td class="threePxTall"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" /></td></tr></table>
 			<% } catch (Exception ex) {
 					ex.printStackTrace();
-			%><oscache:usecached />
-			<% } %></oscache:cache>
+			%>
+			<% } %>
 	</div>
 <% } %>

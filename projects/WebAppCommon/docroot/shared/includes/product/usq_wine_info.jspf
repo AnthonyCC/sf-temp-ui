@@ -15,7 +15,6 @@
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
-<%@ taglib uri='oscache' prefix='oscache' %>
 
 <% //expanded page dimensions
 final int W_WINE_INFO_TOTAL = 601;
@@ -257,13 +256,7 @@ final int W_WINE_INFO_RIGHT = 437;
 	<% } %>
 	<div style="<%= hasLeftColumn ? "float: left; width: " + W_WINE_INFO_RIGHT +"px" : "" %>">
 			<%-- DESC --%>
-   		<% if ( FDStoreProperties.useOscache() ) { %> 
-	        <oscache:cache time="300">
 				<%@ include file="/shared/includes/product/i_product_descriptions.jspf" %>
-			</oscache:cache>
-   		<% } else { %>			        
-				<%@ include file="/shared/includes/product/i_product_descriptions.jspf" %>
-   		<% } %>
    	</div>
    	<% if (hasLeftColumn) { %><div style="clear: both; font-size: 0px;"></div><% } %>
 </div>

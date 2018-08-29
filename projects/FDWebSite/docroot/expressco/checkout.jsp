@@ -194,11 +194,11 @@ boolean showCaptchaInPayment = CaptchaUtil.isExcessiveAttempt(FDStoreProperties.
 	
 	<script>
 		if (<%=showCaptchaInPayment%>) {
-	  		FreshDirect.components.captchaWidget.init('<%=FDStoreProperties.getRecaptchaPublicKey(CaptchaType.PAYMENT)%>');
+	  		FreshDirect.components.captchaWidget.init('cc-payment-g-recaptcha', '<%=FDStoreProperties.getRecaptchaPublicKey(CaptchaType.PAYMENT)%>');
 	  		FreshDirect.user = FreshDirect.user || {};
 	  		FreshDirect.user.showCaptchaInPayment = true;
 	  	} else {
-	  		FreshDirect.components.captchaWidget.setKey('<%=FDStoreProperties.getRecaptchaPublicKey(CaptchaType.PAYMENT)%>');
+	  		FreshDirect.components.captchaWidget.setKey('cc-payment-g-recaptcha','<%=FDStoreProperties.getRecaptchaPublicKey(CaptchaType.PAYMENT)%>');
 	  	}
 		var checkout;
 		//While loading the screen get the Device ID from braintress

@@ -86,8 +86,6 @@ import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.ecomm.gateway.DlvPassManagerService;
 import com.freshdirect.ecomm.gateway.GiftCardManagerService;
-import com.freshdirect.ecomm.gateway.OrderResourceApiClient;
-import com.freshdirect.ecomm.gateway.OrderResourceApiClientI;
 import com.freshdirect.ecomm.gateway.OrderServiceApiClient;
 import com.freshdirect.ecomm.gateway.OrderServiceApiClientI;
 import com.freshdirect.ecommerce.data.dlv.FDReservationData;
@@ -127,6 +125,8 @@ import com.freshdirect.fdstore.ecomm.gateway.CustomerOrderService;
 import com.freshdirect.fdstore.ecomm.gateway.CustomerPaymentService;
 import com.freshdirect.fdstore.ecomm.gateway.CustomerPreferenceService;
 import com.freshdirect.fdstore.ecomm.gateway.CustomersApi;
+import com.freshdirect.fdstore.ecomm.gateway.FDSurveyService;
+import com.freshdirect.fdstore.ecomm.gateway.OrderResourceApiClient;
 import com.freshdirect.fdstore.ecomm.gateway.RegistrationService;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
@@ -1723,8 +1723,7 @@ public class FDCustomerManager {
 			
 			String orderId;
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled("placeOrder_Api")){
-	    		OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
-	    		orderId =  service.placeOrder(
+	    		orderId = OrderResourceApiClient.getInstance().placeOrder(
 						info,
 						createOrder,
 						appliedPromos,
@@ -1870,8 +1869,7 @@ public class FDCustomerManager {
 			if (EnumSaleType.REGULAR.equals(type)){
 				
 				if(FDStoreProperties.isSF2_0_AndServiceEnabled("modifyOrder_Api")){
-					OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
-		    		service.modifyOrder(
+					OrderResourceApiClient.getInstance().modifyOrder(
 							info,
 							saleId,
 							order,
@@ -1902,7 +1900,7 @@ public class FDCustomerManager {
 				}
 			}else if (EnumSaleType.SUBSCRIPTION.equals(type)){
 				if(FDStoreProperties.isSF2_0_AndServiceEnabled("modifyAutoRenewOrder_Api")){
-					OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
+					com.freshdirect.fdstore.ecomm.gateway.OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
 		    		service.modifyAutoRenewOrder(
 							info,
 							saleId,
@@ -2211,19 +2209,19 @@ public class FDCustomerManager {
 			ErpCreateOrderModel createOrder = FDOrderTranslator.getErpCreateOrderModel(cart, skipModifyLines, sameDeliveryDate);
 			Map<String, FDAvailabilityI> fdInvMap = null;
 			long timer = System.currentTimeMillis();
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("checkAvailability_Api")){
-	    		OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
-	    		fdInvMap= service.checkAvailability(identity, createOrder, timeout, isFromLogin);
-			}else{
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("checkAvailability_Api")) {
+				fdInvMap = OrderResourceApiClient.getInstance().checkAvailability(identity, createOrder, timeout, isFromLogin);
+			} else {
 				lookupManagerHome();
 				FDCustomerManagerSB sb = managerHome.create();
-			fdInvMap = sb.checkAvailability(identity, createOrder, timeout, isFromLogin);
-			timer = System.currentTimeMillis() - timer;
+				fdInvMap = sb.checkAvailability(identity, createOrder, timeout, isFromLogin);
+
 			}
+			timer = System.currentTimeMillis() - timer;
 			Map<String,FDAvailabilityI> invs = FDAvailabilityMapper.mapInventory(cart, createOrder, fdInvMap, skipModifyLines, sameDeliveryDate);
 			cart.setAvailability(new FDCompositeAvailability(invs));
 
-			if (LOGGER.isInfoEnabled()) {
+			if (FDStoreProperties.isAtpAvailabiltyLogEnabled()) {
 				int unavCount = 0;
 				for ( String key : invs.keySet() ) {
 					FDAvailabilityI inv = invs.get(key);
@@ -2357,18 +2355,16 @@ public class FDCustomerManager {
 	}
 
 	public static void storeSurvey(FDSurveyResponse survey) throws FDResourceException {
-	    try {
-	    	if(FDStoreProperties.isSF2_0_AndServiceEnabled("survey.ejb.FDSurveySB")){
-        		IECommerceService service = FDECommerceService.getInstance();
-        		FDSurveyResponseData surveyDataRequest = buildStoreSurveyRequest(survey);
-        		 service.storeSurvey(surveyDataRequest);
-        	}
-			else{
+		try {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDSurveySB)) {
+				FDSurveyResponseData surveyDataRequest = buildStoreSurveyRequest(survey);
+				FDSurveyService.getInstance().storeSurvey(surveyDataRequest);
+			} else {
 				FDServiceLocator.getInstance().getSurveySessionBean().storeSurvey(survey);
 			}
-            } catch (RemoteException re) {
-                throw new FDResourceException(re, "Error talking to session bean");
-            }
+		} catch (RemoteException re) {
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
 	}
 
 	private static FDSurveyResponseData buildStoreSurveyRequest(
@@ -3222,8 +3218,7 @@ public class FDCustomerManager {
 			createOrder.setTransactionInitiator(info.getAgent() == null ? null : info.getAgent().getUserId());
 
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled("placeSubscriptionOrder_Api")) {
-				OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
-				orderId = service.placeSubscriptionOrder(info, createOrder, appliedPromos,
+				orderId = OrderResourceApiClient.getInstance().placeSubscriptionOrder(info, createOrder, appliedPromos,
 						cart.getDeliveryReservation().getPK().getId(), sendEmail, cra,
 						info.getAgent() == null ? null : info.getAgent().getRole(), status, isRealTimeAuthNeeded);
 			} else {
@@ -3293,8 +3288,7 @@ public class FDCustomerManager {
 			FDCustomerManagerSB sb = managerHome.create();
 
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled("placeGiftCardOrder_Api")){
-	    		OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
-	    		orderId =  service.placeGiftCardOrder(info, createOrder,
+	    		orderId =  OrderResourceApiClient.getInstance().placeGiftCardOrder(info, createOrder,
 						appliedPromos, cart.getDeliveryReservation().getPK()
 						.getId(), sendEmail, cra,
 				info.getAgent() == null ? null : info.getAgent().getRole(),
@@ -3494,11 +3488,21 @@ public class FDCustomerManager {
 		return lastOrder;
 	}
 
-	public static FDOrderI getLastOrder(FDIdentity identity, EnumEStoreId eStoreId) throws FDResourceException {
+	public static FDOrderI getLastOrder(FDIdentity identity, EnumEStoreId eStoreId) {
 		FDOrderI lastOrder = null;
-		String lastOrderId = getLastOrderId(identity, eStoreId);
-		if (lastOrderId != null) {
-			lastOrder = getOrder(lastOrderId);
+		String lastOrderId;
+		try {
+			lastOrderId = getLastOrderId(identity, eStoreId);
+		} catch (Exception e) {
+			LOGGER.error("Error in getLastOrderId: identity=" + identity + ", eStoreId=" + eStoreId, e);
+			return null;
+		}
+		try {
+			if (lastOrderId != null) {
+				lastOrder = getOrder(lastOrderId);
+			}
+		} catch (Exception e) {
+			LOGGER.error("Error in getLastOrder: lastOrderId=" + lastOrderId, e);
 		}
 		return lastOrder;
 	}
@@ -3907,8 +3911,7 @@ public class FDCustomerManager {
 			createOrder.setCharges(new ArrayList<ErpChargeLineModel>());
 		
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled("placeDonationOrder_Api")){
-	    		OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
-	    		orderId =  service.placeDonationOrder(info, createOrder,
+	    		orderId =  OrderResourceApiClient.getInstance().placeDonationOrder(info, createOrder,
 						appliedPromos, cart.getDeliveryReservation().getPK()
 						.getId(), sendEmail, cra,
 				info.getAgent() == null ? null : info.getAgent().getRole(),
@@ -4725,9 +4728,6 @@ public class FDCustomerManager {
 	}
 
 	public static void updateOrderInProcess(String orderNum) throws FDResourceException {
-
-		
-
 		try {
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerOrder)) {
 				CustomerOrderService.getInstance().updateOrderInProcess(orderNum);
@@ -5043,8 +5043,7 @@ public class FDCustomerManager {
 		try {
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerOrder)) {
 				CustomerOrderService.getInstance().saveModifiedCartline(((FDUser) user).getPK(),
-						user.getUserContext().getStoreContext(), newLine, orderId,
-						newLine instanceof FDModifyCartLineModel);
+						user.getUserContext().getStoreContext(), newLine, orderId);
 			} else {
 				lookupManagerHome();
 				FDCustomerManagerSB sb = managerHome.create();

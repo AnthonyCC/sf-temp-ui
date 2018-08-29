@@ -13,7 +13,7 @@
   	<select name="{$name}" aria-describedby="error_{$name}" id="{$name}" class="customsimpleselect" data-component="productDataConfiguration" data-productdata-name="{$name}" {if isNonnull($optional) and not $optional}data-atl-required="true" data-atc-required="true"{/if}>
     	<option value="">{$label}</option>
 		{foreach $option in $values}
-			<option value="{$option.name}" {if $option.selected}selected{/if}>{$option.label}{if $option.cvp == '0'} - no charge{else} - {$option.cvp} {/if}</option>
+			<option value="{$option.name}" {if $option.selected}selected{/if}>{$option.label}{if $option.cvp == '0'}{else} - {$option.cvp} {/if}</option>
 		{/foreach}
 	</select>
 	</label>
@@ -23,7 +23,7 @@
 	<i>{if $underlabel}{$underlabel}{/if}</i>
 {else}
 	{if length($values) > 0}
-		<span class="empty-variation"><label>{$values[0].label}{if $values[0].cvp == '0'} - no charge{else} - {$values[0].cvp} {/if}<input type="hidden" name="{$name}" value="{$values[0].name}" data-component="productDataConfiguration" data-productdata-name="{$name}"></label><br></span>
+		<span class="empty-variation"><label>{$values[0].label}{if $values[0].cvp == '0'}{else} - {$values[0].cvp} {/if}<input type="hidden" name="{$name}" value="{$values[0].name}" data-component="productDataConfiguration" data-productdata-name="{$name}"></label><br></span>
 	{else}
 		/* invalid product setup, don't blow up the page. */
 		<span class="empty-variation"><label><input type="hidden" name="{$name}" value="" data-component="productDataConfiguration" data-productdata-name="{$name}"></label><br></span>

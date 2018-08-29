@@ -52,8 +52,8 @@ if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
 
 <table border="0" cellspacing="1" cellpadding="0" width="685" class="accessibilitySpacing">
 	<tr valign="middle">
-	<td width="200" align="right" class="text12"><label for="title_field" >Title</label></td>
-	<td width="" colspan="2">&nbsp;&nbsp;<select class="text11 customsimpleselect" id="title_field" name="title">
+	<td width="200" align="right" class="text12"><label for="title" >Title</label></td>
+	<td width="" colspan="2">&nbsp;&nbsp;<select class="text11 customsimpleselect" id="title" name="title">
 		<option <%=("".equalsIgnoreCase(fldTitle) ? "selected" : "")%>></option>
 		<option value="Mr" <%=("Mr".equalsIgnoreCase(fldTitle) ? "selected" : "")%>>Mr.</option>
 		<option value="Mrs" <%=("Mrs".equalsIgnoreCase(fldTitle) ? "selected" : "")%>>Mrs.</option>
@@ -66,30 +66,30 @@ if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
 	<tr valign="middle">
 	<td width="200" align="right" class="text12">
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>'><span class="errortext"></fd:ErrorHandler>
-		<label for="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>_gcField">*&nbsp;First Name</label>
+		<label for="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>">*&nbsp;First Name</label>
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>'></span></fd:ErrorHandler>
 	</td>
-	<td width="" colspan="2">&nbsp;&nbsp;<input maxlength="25" class="text11" SIZE="21" type="text" id="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>_gcField" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" required="true" value="<%=fldName%>"> <span class="text11">(full name or first initial)</span><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>' id='errorMsg'> <div class="errortext"><%=errorMsg%></div></fd:ErrorHandler>
+	<td width="" colspan="2">&nbsp;&nbsp;<input maxlength="25" class="text11" SIZE="21" aria-describedby="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>_error" type="text" id="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" required="true" value="<%=fldName%>"> <span class="text11">(full name or first initial)</span><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>' id='errorMsg'> <div id="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>_error" class="errortext"><%=errorMsg%></div></fd:ErrorHandler>
 	</td>
 	</tr>
 	<tr valign="middle">
 	<td width="200" align="right" class="text12">
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>'><span class="errortext"></fd:ErrorHandler>
-		<label for="<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>_gcField">*&nbsp;Last Name</label>
+		<label for="<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>">*&nbsp;Last Name</label>
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>'></span></fd:ErrorHandler>
 	</td>
-	<td width="" colspan="2">&nbsp;&nbsp;<input maxlength="25" class="text11" SIZE="21" type="text" id="<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>_gcField" name="<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>" required="true" value="<%=fldLastName%>">
-		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>' id='errorMsg'><div class="errortext"><%=errorMsg%></div></fd:ErrorHandler>
+	<td width="" colspan="2">&nbsp;&nbsp;<input maxlength="25" class="text11" SIZE="21" type="text" aria-descibedby="<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>_error" id="<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>" name="<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>" required="true" value="<%=fldLastName%>">
+		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>' id='errorMsg'><div id="<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>_error" class="errortext"><%=errorMsg%></div></fd:ErrorHandler>
 	</td>
 	</tr>
 	<tr valign="middle">
 	<td width="200" align="right" class="text12">
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_HOME_PHONE.getCode()%>'><span class="errortext"></fd:ErrorHandler>
-		<label for="<%= EnumUserInfoName.DLV_HOME_PHONE.getCode() %>_gcField">*&nbsp;Home Phone #</label>
+		<label for="<%= EnumUserInfoName.DLV_HOME_PHONE.getCode() %>">*&nbsp;Home Phone #</label>
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_HOME_PHONE.getCode()%>'></span></fd:ErrorHandler>
 	</td>
-	<td width="" colspan="2" class="text12">&nbsp;&nbsp;<div class="aptfields"><input type="text" maxlength="14" size="21" class="text11" id="<%= EnumUserInfoName.DLV_HOME_PHONE.getCode() %>_gcField" name="<%= EnumUserInfoName.DLV_HOME_PHONE.getCode() %>" required="true" value="<%=fldHomePhone%>"> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_HOME_PHONE.getCode() %>' id='errorMsg'><div class="errortext"><%=errorMsg%></div></fd:ErrorHandler>
-	</div><div class="aptfields"><label for="homephoneext_gcField">&nbsp;&nbsp;Ext.&nbsp;&nbsp;</label><input type="text" maxlength="6" size="4" class="text11" id="homephoneext_gcField" name="homephoneext" value="<%=request.getParameter("homephoneext")%>">
+	<td width="" colspan="2" class="text12">&nbsp;&nbsp;<div class="aptfields"><input type="text" maxlength="14" size="21" class="text11" aria-describedby="<%= EnumUserInfoName.DLV_HOME_PHONE.getCode() %>_error" id="<%= EnumUserInfoName.DLV_HOME_PHONE.getCode() %>" name="<%= EnumUserInfoName.DLV_HOME_PHONE.getCode() %>" required="true" value="<%=fldHomePhone%>"> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_HOME_PHONE.getCode() %>' id='errorMsg'><div id="<%= EnumUserInfoName.DLV_HOME_PHONE.getCode() %>_error" class="errortext"><%=errorMsg%></div></fd:ErrorHandler>
+	</div><div class="aptfields"><label for="homephoneext">&nbsp;&nbsp;Ext.&nbsp;&nbsp;</label><input type="text" maxlength="6" size="4" class="text11" id="homephoneext" name="homephoneext" value="<%=request.getParameter("homephoneext")%>">
 	</div></td>
 	</tr>
 	<tr valign="top">
@@ -99,23 +99,23 @@ if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
 	<tr valign="middle">
 	<td width="200" align="right" class="text12">
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_WORK_PHONE.getCode()%>'><span class="errortext"></fd:ErrorHandler>
-		<label for="<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>_gcField">Work Phone #</label>
+		<label for="<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>">Work Phone #</label>
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_WORK_PHONE.getCode()%>'></span></fd:ErrorHandler>
 	</td>
 	<td width="" colspan="2">
-		&nbsp;&nbsp;<div class="aptfields"><input type="text" maxlength="14" size="21" class="text11" id="<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>_gcField" name="<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>" required="true" value="<%=fldBusinessPhone%>"> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>' id='errorMsg'><div class="errortext"><%=errorMsg%></div></fd:ErrorHandler>
-		</div><div class="aptfields">&nbsp;&nbsp;<FONT class="text12"><label for="busphoneext_gcField">Ext.</label></FONT>&nbsp;&nbsp;<input type="text" maxlength="6" size="4" class="text11" id="busphoneext_gcField" name="busphoneext" value="<%=fldBusinessPhoneExt%>">
+		&nbsp;&nbsp;<div class="aptfields"><input type="text" maxlength="14" size="21" class="text11" aria-describedby="<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>_error" id="<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>" name="<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>" required="true" value="<%=fldBusinessPhone%>"> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>' id='errorMsg'><div id="<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>_error" class="errortext"><%=errorMsg%></div></fd:ErrorHandler>
+		</div><div class="aptfields">&nbsp;&nbsp;<FONT class="text12"><label for="busphoneext">Ext.</label></FONT>&nbsp;&nbsp;<input type="text" maxlength="6" size="4" class="text11" id="busphoneext" name="busphoneext" value="<%=fldBusinessPhoneExt%>">
 	</div></td>
 	</tr>
 	<tr valign="middle">
 	<td width="200" align="right" class="text12">
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ALT_PHONE.getCode()%>'><span class="errortext"></fd:ErrorHandler>
-		<label for="cellphone_gcField">&nbsp;Cell/Alt. #</label>
+		<label for="cellphone">&nbsp;Cell/Alt. #</label>
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ALT_PHONE.getCode()%>'></span></fd:ErrorHandler>
 	</td>
 	<td width="" colspan="2">
-		&nbsp;&nbsp;<div class="aptfields"><input type="text" maxlength="14" size="21" class="text11" id="cellphone_gcField" name="cellphone" required="true" value="<%=fldCellPhone%>"> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_ALT_PHONE.getCode() %>' id='errorMsg'><div class="errortext"><%=errorMsg%></div></fd:ErrorHandler>
-		</div><div class="aptfields">&nbsp;&nbsp;<FONT class="text12"><label for="cellphoneext_gcField">Ext.</label></FONT>&nbsp;&nbsp;<input type="text" maxlength="6" size="4" class="text11" id="cellphoneext_gcField" name="cellphoneext" value="<%=fldCellPhoneExt%>">
+		&nbsp;&nbsp;<div class="aptfields"><input type="text" maxlength="14" size="21" class="text11" aria-describedby="<%= EnumUserInfoName.DLV_ALT_PHONE.getCode() %>_error" id="cellphone" name="cellphone" required="true" value="<%=fldCellPhone%>"> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_ALT_PHONE.getCode() %>' id='errorMsg'><div id="<%= EnumUserInfoName.DLV_ALT_PHONE.getCode() %>_error" class="errortext"><%=errorMsg%></div></fd:ErrorHandler>
+		</div><div class="aptfields">&nbsp;&nbsp;<FONT class="text12"><label for="cellphoneext">Ext.</label></FONT>&nbsp;&nbsp;<input type="text" maxlength="6" size="4" class="text11" id="cellphoneext" name="cellphoneext" value="<%=fldCellPhoneExt%>">
 	</div></td>
 	</tr>
 <%
@@ -168,18 +168,18 @@ if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
 	<tr valign="top">
 	<td width="200" align="right" class="text12">
 	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>'><span class="errortext"></fd:ErrorHandler>
-		<FONT class="space2pix"><BR></FONT><label for="<%=EnumUserInfoName.EMAIL.getCode()%>_gcField">*&nbsp;E-mail Address</label>
+		<FONT class="space2pix"><BR></FONT><label for="<%=EnumUserInfoName.EMAIL.getCode()%>">*&nbsp;E-mail Address</label>
 	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>'></span></fd:ErrorHandler>
 	</td>
-	<td colspan="3">&nbsp;&nbsp;<input size="24" class="text9" maxlength="128" type="text" id="<%=EnumUserInfoName.EMAIL.getCode()%>_gcField" name="<%=EnumUserInfoName.EMAIL.getCode()%>" value="<%= fldEmail%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>' id='errorMsg'><div class="errortext"><%=errorMsg%></div></fd:ErrorHandler></td>
+	<td colspan="3">&nbsp;&nbsp;<input size="24" class="text9" maxlength="128" type="text" aria-describedby="<%=EnumUserInfoName.EMAIL.getCode()%>_error" id="<%=EnumUserInfoName.EMAIL.getCode()%>" name="<%=EnumUserInfoName.EMAIL.getCode()%>" value="<%= fldEmail%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>' id='errorMsg'><div id="<%=EnumUserInfoName.EMAIL.getCode()%>_error" class="errortext"><%=errorMsg%></div></fd:ErrorHandler></td>
 	</tr>
 	<tr valign="top">
 	<td width="200" align="right" class="text12">
 	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>'><span class="errortext"></fd:ErrorHandler>
-		<FONT CLASS="space2pix"><BR></FONT><label for="<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>_gcField">*&nbsp;Repeat E-mail</label>
+		<FONT CLASS="space2pix"><BR></FONT><label for="<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>">*&nbsp;Repeat E-mail</label>
 	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>'></span></fd:ErrorHandler>
 	</td>
-	<td colspan="3">&nbsp;&nbsp;<input size="24" class="text9" maxlength="128" type="text" id="<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>_gcField" name="<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>" value="<%= fldEmail %>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>' id='errorMsg'><div class="errortext"><%=errorMsg%></div></fd:ErrorHandler></td>
+	<td colspan="3">&nbsp;&nbsp;<input size="24" class="text9" maxlength="128" type="text" aria-describedby="<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>_error" id="<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>" name="<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>" value="<%= fldEmail %>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>' id='errorMsg'><div id="<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>_error" class="errortext"><%=errorMsg%></div></fd:ErrorHandler></td>
 	</tr>
 	<tr valign="top">
 	<td width="200"></td>
@@ -190,18 +190,18 @@ if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
 	<tr valign="middle">
 	<td width="200" align="right" class="text12">
 	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>'><span class="errortext"></fd:ErrorHandler>
-		<FONT class="space4pix"><BR></FONT><label for="<%=EnumUserInfoName.PASSWORD.getCode()%>_gcField">*&nbsp;Password</label>
+		<FONT class="space4pix"><BR></FONT><label for="<%=EnumUserInfoName.PASSWORD.getCode()%>">*&nbsp;Password</label>
 	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>'></span></fd:ErrorHandler>
 	</td>
-	<td colspan="3">&nbsp;&nbsp;<input class="text9" SIZE="24" type="password" id="<%=EnumUserInfoName.PASSWORD.getCode()%>_gcField" name="<%=EnumUserInfoName.PASSWORD.getCode()%>" required="true" value="<%= fldPassword %>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>' id='errorMsg'><div class="errortext"><%=errorMsg%></div></fd:ErrorHandler></td>
+	<td colspan="3">&nbsp;&nbsp;<input class="text9" SIZE="24" type="password" id="<%=EnumUserInfoName.PASSWORD.getCode()%>" aria-describedby="<%=EnumUserInfoName.PASSWORD.getCode()%>_error" name="<%=EnumUserInfoName.PASSWORD.getCode()%>" required="true" value="<%= fldPassword %>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>' id='errorMsg'><div id="<%=EnumUserInfoName.PASSWORD.getCode()%>_error" class="errortext"><%=errorMsg%></div></fd:ErrorHandler></td>
 	</tr>
 	<tr valign="top">
 	<td width="200" align="right" class="text12">
 	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_PASSWORD.getCode()%>'><span class="errortext"></fd:ErrorHandler>
-		<FONT class="space4pix"><BR></FONT><label for="<%= EnumUserInfoName.REPEAT_PASSWORD.getCode()%>_gcField">*&nbsp;Repeat Password</label>
+		<FONT class="space4pix"><BR></FONT><label for="<%= EnumUserInfoName.REPEAT_PASSWORD.getCode()%>">*&nbsp;Repeat Password</label>
 	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_PASSWORD.getCode()%>'></span></fd:ErrorHandler>
 	</td>
-	<td colspan="3">&nbsp;&nbsp;<input size="24" type="password" class="text9" id="<%= EnumUserInfoName.REPEAT_PASSWORD.getCode()%>_gcField" name="<%= EnumUserInfoName.REPEAT_PASSWORD.getCode()%>" required="true" value="<%= fldRepeatPassword %>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_PASSWORD.getCode()%>' id='errorMsg'><div class="errortext"><%=errorMsg%></div></fd:ErrorHandler></td>
+	<td colspan="3">&nbsp;&nbsp;<input size="24" type="password" class="text9" id="<%= EnumUserInfoName.REPEAT_PASSWORD.getCode()%>" aria-describedby="<%=EnumUserInfoName.REPEAT_PASSWORD.getCode()%>_error" name="<%= EnumUserInfoName.REPEAT_PASSWORD.getCode()%>" required="true" value="<%= fldRepeatPassword %>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_PASSWORD.getCode()%>' id='errorMsg'><div id="<%=EnumUserInfoName.REPEAT_PASSWORD.getCode()%>_error" class="errortext"><%=errorMsg%></div></fd:ErrorHandler></td>
 	</tr>
 	<tr valign="top">
 	<td width="200" align="right" class="text12"></td>
@@ -213,12 +213,12 @@ if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
 	<tr valign="top">
 	<td width="200" align="right" class="text12" rowspan="2">
 	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD_HINT.getCode()%>'><span class="errortext"></fd:ErrorHandler>
-		<label for="<%= EnumUserInfoName.PASSWORD_HINT.getCode() %>_gcField">*&nbsp;Town of Birth or<BR>Mother's Maiden<BR/>Name</label>
+		<label for="<%= EnumUserInfoName.PASSWORD_HINT.getCode() %>">*&nbsp;Town of Birth or<BR>Mother's Maiden<BR/>Name</label>
 	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD_HINT.getCode()%>'></span></fd:ErrorHandler>
 	</td>
 	<td colspan="3">
-		<FONT class="space2pix"><BR><BR><BR></FONT>&nbsp;&nbsp;<input size="24" type="text" maxlength="25" class="text9" id="<%= EnumUserInfoName.PASSWORD_HINT.getCode() %>_gcField" name="<%= EnumUserInfoName.PASSWORD_HINT.getCode() %>" required="true" value="<%= fldPasswordHint%>">
-		<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.PASSWORD_HINT.getCode() %>' id='errorMsg'><div class="errortext"><%=errorMsg%></div></fd:ErrorHandler>
+		<FONT class="space2pix"><BR><BR><BR></FONT>&nbsp;&nbsp;<input size="24" type="text" maxlength="25" class="text9" id="<%= EnumUserInfoName.PASSWORD_HINT.getCode() %>" aria-describedby="<%= EnumUserInfoName.PASSWORD_HINT.getCode() %>_error" name="<%= EnumUserInfoName.PASSWORD_HINT.getCode() %>" required="true" value="<%= fldPasswordHint%>">
+		<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.PASSWORD_HINT.getCode() %>' id='errorMsg'><div id="<%= EnumUserInfoName.PASSWORD_HINT.getCode() %>_error" class="errortext"><%=errorMsg%></div></fd:ErrorHandler>
 		</td>
 	</tr>
 	<tr valign="top">
@@ -276,15 +276,15 @@ if("GET".equalsIgnoreCase(request.getMethod()) || sessionuser.getLevel()==FDUser
 </textarea><br/><BR/>
 <table cellpadding="0" cellspacing="0" border="0">
 	<tr valign="top">
-	<td width="45" align="right"><span class="title18">*&nbsp;</span><input type="checkbox" value="yes" id="terms_gcField" name="terms" <%=fldTermsAndConditions%>>
+	<td width="45" align="right"><span class="title18">*&nbsp;</span><input type="checkbox" aria-describedby="<%=EnumUserInfoName.CUSTOMER_AGREEMENT.getCode()%>_error" value="yes" id="terms" name="terms" <%=fldTermsAndConditions%>>
 	</td>
 	<td>
-		<FONT class="space4pix"><BR></FONT><FONT class="text12bold"><label for="terms_gcField">I have read and agree to the Customer Agreement</label></FONT><BR>
+		<FONT class="space4pix"><BR></FONT><FONT class="text12bold"><label for="terms">I have read and agree to the Customer Agreement</label></FONT><BR>
 		<a href="javascript:popup('/registration/user_agreement.jsp','large')"><FONT class="text12">Click here for a printable version</FONT></a><BR><br>
 	</td>
 	</tr>
 	<tr valign="top">
-	<td colspan="2" width="450"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.CUSTOMER_AGREEMENT.getCode()%>' id='errorMsg'><div class="errortext"><%=errorMsg%></div></fd:ErrorHandler>
+	<td colspan="2" width="450"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.CUSTOMER_AGREEMENT.getCode()%>' id='errorMsg'><div id="<%=EnumUserInfoName.CUSTOMER_AGREEMENT.getCode()%>_error" class="errortext"><%=errorMsg%></div></fd:ErrorHandler>
 	</td>
 	</tr>
 </table>

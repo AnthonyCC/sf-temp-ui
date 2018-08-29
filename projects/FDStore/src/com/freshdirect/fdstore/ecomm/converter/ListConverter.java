@@ -228,7 +228,11 @@ public class ListConverter {
 	public static List<FDCustomerListInfo> buildFDCustomerListInfo(List<FDCustomerListInfoData> data) {
 		List<FDCustomerListInfo> fdCustomerListInfoList = new ArrayList<FDCustomerListInfo>();
 		for (FDCustomerListInfoData fdCustomerListInfoData : data) {
-			FDCustomerListInfo customerListinfo = (FDCustomerListInfo) buildFDCustomerList(fdCustomerListInfoData.getFdcustomerListData());
+			FDCustomerListData fDCustomerListData = fdCustomerListInfoData.getFdcustomerListData();
+			FDCustomerListInfo customerListinfo = (FDCustomerListInfo) buildFDCustomerList(fDCustomerListData);
+			if(fDCustomerListData.getModificationDate()!=null&&customerListinfo!=null){
+				customerListinfo.setModificationDate(fDCustomerListData.getModificationDate());
+			}
 			customerListinfo.setCount(fdCustomerListInfoData.getCount());
 			fdCustomerListInfoList.add(customerListinfo);
 		}

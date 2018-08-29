@@ -12,7 +12,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri='oscache' prefix='oscache' %>
+
 
 <% //expanded page dimensions
 final int W_TRANSAC_GROUPED_ITEMS_CAT = 601;
@@ -353,7 +353,7 @@ if (prodsAvailable>0) {
 } else {// end of If !oneNotAvailable
 %>
     <table align="center" width="<%=maxWidth%>" cellpadding="0" cellspacing="0" border="0">
-    <tr><td><br><font class="text12" color="#999999">
+    <tr><td><br><font class="text12" color="#333">
         <b>We're sorry! This item is temporarily unavailable.</b><br>
         <br>
         We're proud to offer New York's widest selections of fresh foods. Unfortunately, this product is temporarily unavailable.

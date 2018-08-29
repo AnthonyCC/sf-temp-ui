@@ -280,7 +280,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	}
 	@Override
 	public boolean isBackInStock() {
-		return ContentFactory.getInstance().getBackInStockProducts().containsKey(this);
+		return ContentFactory.getInstance().getBackInStockProducts().containsKey(getContentKey());
 	}
 
 	@Override

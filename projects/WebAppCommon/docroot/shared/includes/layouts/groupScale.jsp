@@ -25,7 +25,6 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
-<%@ taglib uri='oscache' prefix='oscache' %>
 <% //expanded page dimensions
 final int W_GROUPSCALE_TOTAL = 601;
 %>
@@ -550,13 +549,7 @@ final int W_GROUPSCALE_TOTAL = 601;
 								<td align="left">
 									<%String appl = (String)session.getAttribute(SessionName.APPLICATION);
 									if(!"CALLCENTER".equals(appl)){ %>
-									<% if ( FDStoreProperties.useOscache() ) { %>
-										<oscache:cache time="300">
 											<%@ include file="/shared/includes/product/i_also_sold_as.jspf" %>
-										</oscache:cache>
-									<% } else { %>
-											<%@ include file="/shared/includes/product/i_also_sold_as.jspf" %>
-									<% } %>
 									<% } %>
 									<% if(qualifies && !productNode.isUnavailable()) { %>
 										<table>

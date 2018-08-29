@@ -7,7 +7,7 @@
 <%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature' %>
 <%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter' %>
 <%@ page import='java.net.*'%>
-<%@ taglib uri='oscache' prefix='oscache' %>
+
 <%@ taglib uri="fd-data-potatoes" prefix="potato" %>
 
 <potato:navigationhighlight/>
@@ -47,7 +47,6 @@ final int W_GLOBAL_NAV_TOTAL = 970;
 <center>
 <%@ include file="/common/template/includes/globalnav_top.jspf" %>
 
-<oscache:cache key='<%= "globalNav_"+request.getQueryString() %>' time='0'>
 <% try { 
 	Map<String, String> params = new HashMap<String, String>();
 	params.put("curNav", navigation);
@@ -61,8 +60,8 @@ final int W_GLOBAL_NAV_TOTAL = 970;
 </td></tr><tr><td class="threePxTall"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" /></td></tr></table>
 <% } catch (Exception ex) {
 		ex.printStackTrace();
-%><oscache:usecached />
-<% } %></oscache:cache>
+%>
+<% } %>
 </center>
 <% }
 %>

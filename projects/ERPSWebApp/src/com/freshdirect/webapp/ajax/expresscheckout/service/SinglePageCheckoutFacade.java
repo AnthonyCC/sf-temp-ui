@@ -22,6 +22,7 @@ import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.fdlogistics.model.FDDeliveryDepotModel;
 import com.freshdirect.fdstore.EnumCheckoutMode;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -508,7 +509,11 @@ public class SinglePageCheckoutFacade {
 
     /** based on step_3_choose.jsp */
     private void processGiftCards(FDUserI user, FormPaymentData formPaymentData, List customerCredits) {
-        if (user.getGiftCardList() != null) {
+       
+    	/* we should re-check the status of GiftCards at checkout page., so invalidating cache to make new calls to givex */
+    	user.invalidateGiftCards();	/* APPDEV-7116 */
+      
+    	if (user.getGiftCardList() != null) {
             user.getShoppingCart().setSelectedGiftCards(user.getGiftCardList().getSelectedGiftcards());
             user.getDlvPassCart().setSelectedGiftCards(user.getGiftCardList().getSelectedGiftcards());
         }
@@ -750,13 +755,18 @@ public class SinglePageCheckoutFacade {
                 formPaymentData.setPpEwalletStatus(false); // PayPal wallet will be disable for Standing Orders
 
             } else {
-                formPaymentData.setMpEwalletStatus(getEwalletStatusWithMasquerade(user, EnumEwalletType.MP.getName()));
-                formPaymentData.setPpEwalletStatus(getEwalletStatusWithMasquerade(user, EnumEwalletType.PP.getName()));
+            	if (null !=user.getUserContext() && null!=user.getUserContext().getStoreContext() && user.getUserContext().getStoreContext().getEStoreId().equals(EnumEStoreId.FDX)){
+            		formPaymentData.setMpEwalletStatus(false); // Masterpass wallet will be disable for FDX customers
+                    formPaymentData.setPpEwalletStatus(false); // PayPal wallet will be disable for FDX customers
+            	} else {
+            		formPaymentData.setMpEwalletStatus(getEwalletStatusWithMasquerade(user, EnumEwalletType.MP.getName()));
+                    formPaymentData.setPpEwalletStatus(getEwalletStatusWithMasquerade(user, EnumEwalletType.PP.getName()));
+            	}
             }
             FDCardCount(userPaymentMethods);
             formPaymentData.setMpButtonImgURL(FDStoreProperties.getMasterpassBtnImgURL());
 
-            if (!getEwalletStatus(EnumEwalletType.PP.getName())) {
+            if (!getEwalletStatus(EnumEwalletType.PP.getName()) || null !=user.getUserContext() && null!=user.getUserContext().getStoreContext() && user.getUserContext().getStoreContext().getEStoreId().equals(EnumEStoreId.FDX)) {
                 userPaymentMethods = removePPWallet(userPaymentMethods);
                 formPaymentData.setPayments(userPaymentMethods);
             }

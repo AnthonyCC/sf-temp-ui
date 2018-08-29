@@ -24,7 +24,7 @@ import com.freshdirect.sap.SapProperties;
  * @author     $Author$
  * @stereotype fd-model
  */
-public class ErpInventoryEntryModel extends ModelSupport implements Comparable {
+public class ErpInventoryEntryModel extends ModelSupport implements Comparable<Object> {
 	private static final long serialVersionUID = 3557841522645345674L;
 
 	/** Inventory entry start date */
@@ -97,7 +97,13 @@ public class ErpInventoryEntryModel extends ModelSupport implements Comparable {
 	public String toString() {
 		return "ErpInventoryEntryModel[" + this.plantId + " " + this.startDate + " " + this.quantity + "]";
 	}
-
+	
+	@Override
+	public void setId( String id ) {
+		if (id != null)
+			super.setId(id);
+	}
+	
 	@Override
 	public int compareTo(Object o)
 	{

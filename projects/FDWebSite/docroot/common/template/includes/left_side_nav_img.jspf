@@ -85,7 +85,7 @@ public final static int W_LEFT_SIDE_NAV_IMG_TOTAL = 150;
 	}
 
 %>
-<oscache:cache key='<%= "sideNav_"+request.getQueryString() %>' time='300'>
+
 <% try { %>
 
 <fd:SideNav catId='<%= request.getParameter("catId") %>' topCategory="topCategory" sortByPriority="true"
@@ -132,8 +132,8 @@ if (displayedRows > 0) {
 <% } catch (Exception ex) {
 		ex.printStackTrace();
 %>
-	<oscache:usecached />
+	
 <% } %>
-</oscache:cache>
+
 
 <!-- END YOUR STORE table -->

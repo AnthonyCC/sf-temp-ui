@@ -1,4 +1,4 @@
-package com.freshdirect.webapp.warmup.data;
+package com.freshdirect.fdstore.warmup;
 
 
 public class WarmupPageData {

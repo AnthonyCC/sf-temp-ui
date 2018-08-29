@@ -10,7 +10,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri='oscache' prefix='oscache' %>
+
 
 <% //expanded page dimensions
 final int W_CAREERS_TOTAL = 970;

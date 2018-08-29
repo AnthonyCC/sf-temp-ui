@@ -918,7 +918,7 @@
 	<!--  DeliveryPass List -->
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/account/deliverypass/getdplist/</from>
-		<to last="true">/account.do?action=getDpList&amp;ver=$1</to>
+		<to last="true">/product.do?action=getDpList&amp;ver=$1</to>
 	</rule>
 
 	<!--  DeliveryPass Auto Renew -->
@@ -931,6 +931,12 @@
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/account/dpacceptterms/</from>
 		<to last="true">/account.do?action=acceptDeliveryPassTermsAndConditions&amp;ver=$1</to>
+	</rule>
+	
+	<!--  DeliveryPass All Plans -->
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/account/deliverypass/getdpallplans/</from>
+		<to last="true">/account.do?action=getAllDlvPassPlans&amp;ver=$1</to>
 	</rule>
 
 	<!-- Email capture -->

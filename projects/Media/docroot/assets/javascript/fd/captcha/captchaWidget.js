@@ -4,38 +4,46 @@ var FreshDirect = FreshDirect || {};
 	"use strict";
 	fd.components = fd.components || {};
 	var hasError = false;
-	var captchaWidgetId, captchaKey, captchaPublicKey;
+	var captchaWidgetId, captchaKey;
+	var defaultWidgetName = 'default';
+	var widgetSettings = {};
 	
-	function init(publicKey, callback) {
-		captchaPublicKey = captchaPublicKey || publicKey;
-	  // load recaptcha api if it hasn't been loaded yet
-	  if (!window.grecaptcha) {
-		  var script = document.createElement('script');
-		  script.src = 'https://www.google.com/recaptcha/api.js?onload=onCaptchaLoadCallback&render=explicit';
-		  script.async = true;
-		  script.defer = true;
-		  document.head.appendChild(script);
+	function init(widgetName, publicKey, callback) {
+		// associate name to key, in some (edge) cases we render multiple widgets with the same key but different names
+		getWidgetSettings(widgetName).key = publicKey;
+		// load recaptcha api if it hasn't been loaded yet
+		if (!window.grecaptcha) {
+			var script = document.createElement('script');
+		 	script.src = 'https://www.google.com/recaptcha/api.js?onload=onCaptchaLoadCallback&render=explicit';
+		 	script.async = true;
+		 	script.defer = true;
+		  	document.head.appendChild(script);
 		  
-		  window.onCaptchaLoadCallback = function () {
+		  	window.onCaptchaLoadCallback = function () {
+		  		if (callback && typeof callback === 'function') {
+		  			callback();
+		  		}
+		  	};
+		} else {
 			if (callback && typeof callback === 'function') {
 				callback();
 			}
-		  };
-	  } else {
-		if (callback && typeof callback === 'function') {
-			callback();
 		}
-	  }
 	}
 	
-	function setKey(key) {
-		captchaPublicKey = key;
+	function setKey(widgetName, key) {
+		getWidgetSettings(widgetName).key = key;
 	}
-	function render(container, callback, errorCallback, expiredCallback ) {
+	
+	function getKey(widgetName) {
+		return getWidgetSettings(widgetName).key;
+	}
+	function render(widgetName, callback, errorCallback, expiredCallback ) {
+		var captchaWidgetId;
 	    try {
 	    	hasError = false;
-	    	captchaWidgetId = grecaptcha.render(container, {
-	        	'sitekey' : captchaPublicKey,
+	    	captchaWidgetId = grecaptcha.render(widgetName, {
+	        	'sitekey' : getWidgetSettings(widgetName).key,
 	        	'error-callback': function() {
 	        		hasError = true;
 	        		errorCallback();
@@ -43,34 +51,41 @@ var FreshDirect = FreshDirect || {};
 	        	'expired-callback': expiredCallback,
 	        	'callback': callback
 	      });
+	    	getWidgetSettings(widgetName).id = captchaWidgetId;
 	    
 	    } catch(e){
 	    	errorCallback();
 	    }
 		return captchaWidgetId;
 	}
-	function reset() {
-		grecaptcha.reset(captchaWidgetId);
+	function reset(widgetName) {
+		grecaptcha.reset(getWidgetSettings(widgetName).id);
 
 	}
-	function getResponse(){
+	function getResponse(widgetName){
 		try {
-			return grecaptcha.getResponse(captchaWidgetId);
+			return grecaptcha.getResponse(getWidgetSettings(widgetName).id);
 		} catch(e) {
 			return null;
 		}
 	}
 	
-	function isEnabled() {
-		return (captchaWidgetId !=null) && !hasError && window.grecaptcha;
+	function isEnabled(widgetName) {
+		return (getWidgetSettings(widgetName).id !=null) && !hasError && window.grecaptcha;
 	}
-	function isValid() {
+	function isValid(widgetName) {
 		try {
-			return !isEnabled() || !!grecaptcha.getResponse();
+			return !isEnabled(widgetName) || !!grecaptcha.getResponse(getWidgetSettings(widgetName).id);
 		} catch {
 			hasError = true;
 			return true;
 		}
+	}
+	
+	function getWidgetSettings(widgetName) {
+		widgetName = widgetName || defaultWidgetName;
+		widgetSettings[widgetName] = widgetSettings[widgetName] || {};
+		return widgetSettings[widgetName];
 	}
 	// if component is not registered, register
 	if (!fd.components.captchaWidget) {
@@ -81,7 +96,8 @@ var FreshDirect = FreshDirect || {};
 			isEnabled: isEnabled,
 			isValid: isValid,
 			getResponse: getResponse,
-			setKey: setKey
+			setKey: setKey,
+			getKey: getKey
 		};
 		if (fd.modules && fd.modules.common && fd.modules.common.utils){
 			fd.modules.common.utils.register("components", "captchaWidget", captchaWidget,

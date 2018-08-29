@@ -1,4 +1,4 @@
-package com.freshdirect.ecomm.gateway;
+package com.freshdirect.fdstore.ecomm.gateway;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -13,8 +13,6 @@ import javax.ejb.FinderException;
 
 import org.apache.log4j.Category;
 
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -25,23 +23,30 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.customer.CustomerRatingI;
+import com.freshdirect.customer.EnumFraudReason;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpAbstractOrderModel;
+import com.freshdirect.customer.ErpAddressVerificationException;
+import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpCartonInfo;
 import com.freshdirect.customer.ErpCreateOrderModel;
-import com.freshdirect.customer.ErpDeliveryInfoModel;
+import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpModifyOrderModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.delivery.ReservationException;
+import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.ecomm.converter.CustomerRatingConverter;
 import com.freshdirect.ecomm.converter.ErpFraudPreventionConverter;
 import com.freshdirect.ecomm.converter.FDActionInfoConverter;
 import com.freshdirect.ecomm.converter.SapGatewayConverter;
+import com.freshdirect.ecomm.gateway.AbstractEcommService;
+import com.freshdirect.ecomm.gateway.OrderServiceApiClient;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.ecommerce.data.dlv.FDReservationData;
@@ -54,7 +59,9 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.atp.FDAvailabilityI;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.giftcard.InvalidCardException;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
 public class OrderResourceApiClient extends AbstractEcommService implements OrderResourceApiClientI {
@@ -63,7 +70,6 @@ public class OrderResourceApiClient extends AbstractEcommService implements Orde
 
 	private final static Category LOGGER = LoggerFactory.getInstance(OrderServiceApiClient.class);
 
-	private static final String GET_ORDER_API = "orders/{id}";
 	private static final String GET_ORDERS_API = "orders/list";
 	private static final String GET_ORDERS_BY_PYMTTYPE_API = "orders/noncos/last/byPaymentType";
 	private static final String GET_ORDERS_BY_PYMTTYPES_API = "orders/noncos/last/byPaymentTypes";
@@ -71,7 +77,7 @@ public class OrderResourceApiClient extends AbstractEcommService implements Orde
 	private static final String GET_OUTSTANDING_BALANCE_API = "orders/getOutStandingBalance";
 	private static final String UPDATE_WAVE_INFO_API = "orders/{id}/waveInfo";
 	private static final String UPDATE_CARTON_INFO_API = "orders/{id}/cartonInfo";
-	private static final String GET_DELIVERYINFO_API = "orders/{id}/getDeliveryInfo";
+	
 	private static final String RESUBMIT_GC_ORDERS_API = "orders/resubmitNsmGcOrders";
 	private static final String CREATE_GC_ORDER_API = "orders/gc/create";
 	private static final String CREATE_SUB_ORDER_API = "orders/sub/create";
@@ -85,7 +91,6 @@ public class OrderResourceApiClient extends AbstractEcommService implements Orde
 	private static ObjectMapper TYPED_OBJECT_MAPPER = new ObjectMapper()
 			.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ"))
 			.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-			.setVisibility(PropertyAccessor.FIELD, Visibility.ANY)
 			.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_CONCRETE_AND_ARRAYS);
 
 	public static OrderResourceApiClient getInstance() {
@@ -102,22 +107,7 @@ public class OrderResourceApiClient extends AbstractEcommService implements Orde
 
 	}
 
-	@Override
-	public ErpSaleModel getOrder(String id) throws RemoteException {
-
-		try {
-			String response = httpGetData(getFdCommerceEndPoint(GET_ORDER_API), String.class, new Object[] { id });
-			Response<ErpSaleModel> info = getMapper().readValue(response, new TypeReference<Response<ErpSaleModel>>() {
-			});
-			return parseResponse(info);
-		} catch (Exception e) {
-			LOGGER.info(e);
-			LOGGER.info("Exception converting {} to ListOfObjects " + id);
-			throw new RemoteException(e.getMessage(), e);
-
-		}
-
-	}
+	
 
 	@Override
 	public List<ErpSaleModel> getOrders(List<String> ids) throws RemoteException {
@@ -256,24 +246,7 @@ public class OrderResourceApiClient extends AbstractEcommService implements Orde
 
 	}
 
-	@Override
-	public ErpDeliveryInfoModel getDeliveryInfo(String saleId) throws ErpSaleNotFoundException, RemoteException {
-
-		try {
-			String response = httpGetData(getFdCommerceEndPoint(GET_DELIVERYINFO_API), String.class,
-					new Object[] { saleId });
-			Response<ErpDeliveryInfoModel> info = getMapper().readValue(response,
-					new TypeReference<Response<ErpDeliveryInfoModel>>() {
-					});
-			return parseResponse(info);
-		} catch (Exception e) {
-			LOGGER.info(e);
-			LOGGER.info("Exception converting {} to ListOfObjects ");
-			throw new RemoteException(e.getMessage(), e);
-
-		}
-
-	}
+	
 
 	@Override
 	public double getOutStandingBalance(ErpAbstractOrderModel order) throws RemoteException {
@@ -377,34 +350,88 @@ public class OrderResourceApiClient extends AbstractEcommService implements Orde
 	@Override
 	public String placeOrder(FDActionInfo info, ErpCreateOrderModel createOrder, Set<String> appliedPromos, String id,
 			boolean sendEmail, CustomerRatingI cra, CrmAgentRole crmAgentRole, EnumDlvPassStatus status,
-			boolean isFriendReferred, int fdcOrderCount) throws RemoteException {
-
-		Request<CreateOrderRequestData> request = new Request<CreateOrderRequestData>();
-
+			boolean isFriendReferred, int fdcOrderCount) throws FDResourceException, ErpFraudException,
+			ErpAuthorizationException, ErpAddressVerificationException, ReservationException, DeliveryPassException,
+			FDPaymentInadequateException, ErpTransactionException, InvalidCardException, RemoteException {
+		String inputJson = null;
 		try {
 
-			CreateOrderRequestData data = new CreateOrderRequestData();
-			data.setInfo(FDActionInfoConverter.buildActionInfoData(info));
-			data.setModel(SapGatewayConverter.buildOrderData(createOrder));
-			data.setAppliedPromos(appliedPromos);
-			data.setId(id);
-			data.setSendMail(sendEmail);
-			data.setCra(CustomerRatingConverter.buildCustomerRatingData(cra));
-			data.setAgentRole(ErpFraudPreventionConverter.buildCrmAgentRoleData(crmAgentRole));
-			data.setDeliveryPassStatus((status != null) ? status.getName() : null);
-			data.setFriendReferred(isFriendReferred);
-			data.setFdcOrderCount(fdcOrderCount);
-
-			request.setData(data);
-
+			Request<ObjectNode> request = new Request<ObjectNode>();
+			ObjectNode rootNode = getMapper().createObjectNode();
+			rootNode.set("info", getMapper().convertValue(info, JsonNode.class));
+			rootNode.set("createOrder", getMapper().convertValue(createOrder, JsonNode.class));
+			rootNode.set("appliedPromos", getMapper().convertValue(appliedPromos, JsonNode.class));
+			rootNode.put("id", id);
+			rootNode.put("sendEmail", sendEmail);
+			rootNode.set("cra", getMapper().convertValue(cra, JsonNode.class));
+			rootNode.set("crmAgentRole", getMapper().convertValue(crmAgentRole, JsonNode.class));
+			rootNode.put("status", status.getName());
+			rootNode.put("isFriendReferred", isFriendReferred);
+			rootNode.put("fdcOrderCount", fdcOrderCount);
+			
+			request.setData(rootNode);
 			Response<String> response = null;
-			String inputJson = buildRequest(request);
-			response = httpPostData(getFdCommerceEndPoint(CREATE_REG_ORDER_API), inputJson, Response.class,
-					new Object[] {});
+			inputJson = buildRequest(request);
+			
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(CREATE_REG_ORDER_API),
+					new TypeReference<Response<String>>() {
+					});
+			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in placeOrder: inputJson=" + inputJson);
+				
+				if ("FDResourceException".equals(response.getMessage())) {
+					throw new FDResourceException(
+							response.getError() != null ? response.getError().get(response.getMessage()).toString()
+									: null);
+				}
+				if ("ErpFraudException".equals(response.getMessage())) {
+					throw new ErpFraudException(EnumFraudReason.getEnum(
+							response.getError() != null ? response.getError().get(response.getMessage()).toString()
+									: null));
+				}
+				if ("ErpAuthorizationException".equals(response.getMessage())) {
+					throw new ErpAuthorizationException(
+							response.getError() != null ? response.getError().get(response.getMessage()).toString()
+									: null);
+				}
+				if ("ErpAddressVerificationException".equals(response.getMessage())) {
+					throw new ErpAddressVerificationException(
+							response.getError() != null ? response.getError().get(response.getMessage()).toString()
+									: null);
+				}
+				if ("ReservationException".equals(response.getMessage())) {
+					throw new ReservationException(
+							response.getError() != null ? response.getError().get(response.getMessage()).toString()
+									: null);
+				}
+				if ("DeliveryPassException".equals(response.getMessage())) {
+					throw new DeliveryPassException(
+							response.getError() != null ? response.getError().get(response.getMessage()).toString()
+									: null);
+				}
+				if ("FDPaymentInadequateException".equals(response.getMessage())) {
+					throw new FDPaymentInadequateException(
+							response.getError() != null ? response.getError().get(response.getMessage()).toString()
+									: null);
+				}
+				if ("ErpTransactionException".equals(response.getMessage())) {
+					throw new ErpTransactionException(
+							response.getError() != null ? response.getError().get(response.getMessage()).toString()
+									: null);
+				}
+				if ("InvalidCardException".equals(response.getMessage())) {
+					throw new InvalidCardException(
+							response.getError() != null ? response.getError().get(response.getMessage()).toString()
+									: null);
+				}
+				
+				throw new FDResourceException(response.getMessage());
+			}
 			return parseResponse(response);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error("Error in placeOrder: inputJson=" + inputJson, e);
 			throw new RemoteException(e.getMessage(), e);
+			
 		}
 
 	}
@@ -525,11 +552,11 @@ public class OrderResourceApiClient extends AbstractEcommService implements Orde
 				return map;
 			} catch (JsonMappingException e) {
 				LOGGER.error("Error occurs in checkAvailability: inputJson=" + inputJson
-						+ ", response=" + response, e);
+						+ ", responseData=" + response.getData(), e);
 				throw new FDResourceException(e);
 			} catch (JsonParseException e) {
 				LOGGER.error("Error occurs in checkAvailability: inputJson=" + inputJson
-						+ ", response=" + response, e);
+						+ ", responseData=" + response.getData(), e);
 				throw new FDResourceException(e);
 			} catch (IOException e) {
 				LOGGER.error("Error occurs in checkAvailability: inputJson=" + inputJson
