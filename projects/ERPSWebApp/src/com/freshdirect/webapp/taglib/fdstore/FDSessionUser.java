@@ -2579,4 +2579,8 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public void setUnbxdAustoSuggestions(List<UnbxdAutosuggestResults> unbxdAustoSuggestions) {
 		this.unbxdAustoSuggestions = unbxdAustoSuggestions;
 	}
+    @Override
+    public String getDlvPassSegmentValue() throws FDResourceException {
+        return this.user.getDlvPassSegmentValue();
+    }
 }

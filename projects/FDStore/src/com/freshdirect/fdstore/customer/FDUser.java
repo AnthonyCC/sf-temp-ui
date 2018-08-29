@@ -1823,8 +1823,8 @@ public class FDUser extends ModelSupport implements FDUserI {
             FDCustomerModel customer = this.getFDCustomer();
             if (customer != null && customer.getProfile() != null) {
                 ProfileModel p = customer.getProfile();
-                if (p.getDeliveryPassSegmentValue() != null)
-                    return p.getDeliveryPassSegmentValue();
+                if (p.getDeliveryPass() != null)
+                    return p.getDeliveryPass();
             }
         }
         return "";
@@ -4190,4 +4190,16 @@ public class FDUser extends ModelSupport implements FDUserI {
 		this.unbxdAustoSuggestions = unbxdAustoSuggestions;
 	}
 
+    @Override
+    public String getDlvPassSegmentValue() throws FDResourceException {
+        if (this.identity != null) {
+            FDCustomerModel customer = this.getFDCustomer();
+            if (customer != null && customer.getProfile() != null) {
+                ProfileModel p = customer.getProfile();
+                if (p.getDeliveryPassSegmentValue() != null)
+                    return p.getDeliveryPassSegmentValue();
+            }
+        }
+        return "";
+    }
 }

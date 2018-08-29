@@ -338,9 +338,8 @@ public class AdQueryStringFactory {
             if (user.isEligibleForDeliveryPass()) {
                 queryString.addParam("dpnever", user.isDlvPassNone() ? "T" : "F");
                 String profileVal = user.getDlvPassProfileValue();
-
                 queryString.addParam("dpas", profileVal);
-
+                queryString.addParam("dpasseg", user.getDlvPassSegmentValue()); /* APPDEV-7347 */
                 String dprem = null;
                 String dpused = null;
                 String dpar = "n";

@@ -797,4 +797,6 @@ public interface FDUserI extends java.io.Serializable {
     
     public void setUnbxdAustoSuggestions(List<UnbxdAutosuggestResults> unbxdAustoSuggestions);
 
+	public String getDlvPassSegmentValue() throws FDResourceException;
+
 }
