@@ -11,7 +11,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri='oscache' prefix='oscache' %>
+
 <fd:CheckLoginStatus />
 <%
 String catId = request.getParameter("catId"); 
@@ -75,7 +75,6 @@ String title = "FreshDirect - " + currentFolder.getFullName();
     </tmpl:put>
 <%--     <tmpl:put name='title' direct='true'><%= title %></tmpl:put> --%>
   <tmpl:put name='content' direct='true'>
-   <oscache:cache time="3600" key='<%="winebyregion/"+request.getQueryString() %>'>
   <script>
   <!--
       function doFilter(filterValue) {
@@ -154,6 +153,5 @@ String title = "FreshDirect - " + currentFolder.getFullName();
   }  
 %>
 </table>
-</oscache:cache>
  </tmpl:put>
 </tmpl:insert>

@@ -206,9 +206,9 @@ var FreshDirect = FreshDirect || {};
 		if ($jq('#' + containerName + '-container').length === 0) {
 			return;
 		} else if ($jq('#' + containerName).children().length){
-			fd.components.captchaWidget.reset();
+			fd.components.captchaWidget.reset(containerName);
 		} else {
-	 		fd.components.captchaWidget.init(null,  function() {
+	 		fd.components.captchaWidget.init(containerName, fd.components.captchaWidget.getKey('cc-payment-g-recaptcha'),  function() {
 				fd.components.captchaWidget.render(containerName, function() {
 					$jq('[fdform="' + formId + '"]').trigger('change');
 				}, function () {

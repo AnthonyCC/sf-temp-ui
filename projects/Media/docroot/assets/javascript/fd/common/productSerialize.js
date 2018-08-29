@@ -86,7 +86,10 @@ var FreshDirect = FreshDirect || {};
           max: 99,
           step: 1
         };
-
+    /* cart uses cartline */
+    if (product.length === 0) {
+    	product = $(element).closest('[data-component="cartline"]')
+    }
     if (product) {
       incart = product.find('.incart-info,[data-component="incartinfo"]').first();
       qtybox = product.find('[data-component="quantitybox"]').first();

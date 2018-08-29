@@ -12,7 +12,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri='oscache' prefix='oscache' %>
+
 <%!
 	final Logger LOG = LoggerFactory.getInstance("department_cohort_match.jsp");
 %>
@@ -106,9 +106,6 @@
 		}
 		*/
 	%>
-	<%-- oscache:cache key='<%= keyPrefix+request.getQueryString() %>' time='<%= useOsCache ? ttl : 0 %>' --%>
-	
-	<%-- try { --%>
 		<% if (departmentModel.getAltTemplatePath() != null && departmentModel.getAltTemplatePath().trim().length() > 0) { 
 			LOG.debug("including template path: "+departmentModel.getAltTemplatePath().trim());
 			%><fd:IncludeMedia name="<%= departmentModel.getAltTemplatePath().trim() %>" parameters="<%= params %>" /><%
@@ -118,10 +115,5 @@
 		%>
 	<% /*} catch (Exception ex) {
 		LOG.error("error while generating department page body", ex);*/  		%>
-		<%--oscache:usecached/ --%>
-<%--   	<% } %> --%>
-	
-	<%-- /oscache:cache --%>
-		
 </tmpl:put>
 </tmpl:insert>

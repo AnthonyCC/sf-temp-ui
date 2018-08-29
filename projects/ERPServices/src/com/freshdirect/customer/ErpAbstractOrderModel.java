@@ -234,9 +234,13 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
 
 	public void setAppliedCredits(List<ErpAppliedCreditModel> appliedCredits){ this.appliedCredits = appliedCredits; }
 
-    public ErpDeliveryInfoModel getDeliveryInfo() { return deliveryInfo; }
+	public ErpDeliveryInfoModel getDeliveryInfo() {
+		return deliveryInfo;
+	}
 
-    public void setDeliveryInfo(ErpDeliveryInfoModel deliveryInfo) { this.deliveryInfo = deliveryInfo; }
+	public void setDeliveryInfo(ErpDeliveryInfoModel deliveryInfo) {
+		this.deliveryInfo = deliveryInfo;
+	}
 
 	public void setSubTotal(double subTotal) { this.subTotal = subTotal; }
 

@@ -6,10 +6,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.warmup.WarmupService;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.filters.WarmupMonitorFilter;
-import com.freshdirect.webapp.warmup.WarmupService;
 
 public class WarmupServlet extends BaseJsonServlet {
 

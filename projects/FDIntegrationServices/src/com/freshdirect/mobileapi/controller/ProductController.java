@@ -3,6 +3,7 @@ package com.freshdirect.mobileapi.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.ServletContext;
@@ -18,6 +19,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.common.pricing.PricingException;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -32,6 +34,7 @@ import com.freshdirect.mobileapi.controller.data.ProductMoreInfo;
 import com.freshdirect.mobileapi.controller.data.SearchResult;
 import com.freshdirect.mobileapi.controller.data.request.MultipleRequest;
 import com.freshdirect.mobileapi.controller.data.request.SearchQuery;
+import com.freshdirect.mobileapi.controller.data.response.DpSkuListResponse;
 import com.freshdirect.mobileapi.controller.data.response.Price;
 import com.freshdirect.mobileapi.controller.data.response.WhatsGoodCategories;
 import com.freshdirect.mobileapi.exception.JsonException;
@@ -50,8 +53,10 @@ import com.freshdirect.mobileapi.service.ProductServiceImpl;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.ListPaginator;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
+import com.freshdirect.mobileapi.util.NewBrowseUtil;
 import com.freshdirect.mobileapi.util.ProductPotatoUtil;
 import com.freshdirect.mobileapi.util.SortType;
+import com.freshdirect.storeapi.application.CmsManager;
 import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
@@ -97,6 +102,8 @@ public class ProductController extends BaseController {
     public static final String GET_REALTED_PRODUCTS_ACTION = "getrelatedproducts";
 
     public static final String GET_RECOMMENDED_PRODUCTS_ACTION = "recommended";
+    
+	private static final String ACTION_DP_GET_LIST="getDpList";
 
     @Override
     protected boolean validateUser() {
@@ -127,6 +134,8 @@ public class ProductController extends BaseController {
                 model = getRelatedProducts(model, request, response, user);
             } else if(GET_RECOMMENDED_PRODUCTS_ACTION.equals(action)){
             	model = getRecommendedProducts(model, request, response, user);
+            } else if(ACTION_DP_GET_LIST.equals(action)){
+				 model = getDpList(model, user, request, response);
             } else if(MULTIPLE_PRODUCT_DETAIL.equals(action)){
             	MultipleRequest reqestMessage = parseRequestObject(request, response, MultipleRequest.class);
             	if (isExtraResponseRequested(request)) {
@@ -730,6 +739,29 @@ public class ProductController extends BaseController {
         whatsGoodCategories.setCategories(categories);
 
         setResponseMessage(model, whatsGoodCategories, user);
+        return model;
+    }
+    
+    private ModelAndView getDpList(ModelAndView model, SessionUser user, HttpServletRequest request, HttpServletResponse response) throws FDException, JsonException {
+		DpSkuListResponse responseMessage = new DpSkuListResponse();
+		if(isExtraResponseRequested(request)){
+			List<String> productidlist = Arrays.asList((FDStoreProperties.getFDXDPSku()).split(","));
+			List<com.freshdirect.mobileapi.model.Product> dpproductList = new ArrayList<com.freshdirect.mobileapi.model.Product>();
+			for (String productid : productidlist) {
+				try {
+					dpproductList.add(com.freshdirect.mobileapi.model.Product.getProduct(productid, "xxx", null, user));
+				} catch (ServiceException e) {
+					LOGGER.debug("Error fetching data for product(" + productid + "): " + e.getMessage());
+				}
+			}
+			responseMessage.setDpProductlist(NewBrowseUtil.setProductsFromModel(dpproductList));
+		}else if(CmsManager.getInstance().getEStoreEnum()!=null && CmsManager.getInstance().getEStoreEnum().equals(EnumEStoreId.FDX)){
+			responseMessage.setDpskulist(new ArrayList<String>(Arrays.asList((FDStoreProperties.getFDXDPSku()).split(","))));
+		}else{
+			responseMessage.setDpskulist(new ArrayList<String>(Arrays.asList((FDStoreProperties.getFDDPSku()).split(","))));
+		}
+        responseMessage.setStatus(Message.STATUS_SUCCESS);
+        setResponseMessage(model, responseMessage, user);
         return model;
     }
 

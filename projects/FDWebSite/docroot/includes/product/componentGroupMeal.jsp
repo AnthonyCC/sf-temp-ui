@@ -20,7 +20,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri='oscache' prefix='oscache' %>
+
 
 <% //expanded page dimensions
 final int W_COMPONENT_GROUP_MEAL_TOTAL = 601;
@@ -770,7 +770,7 @@ if (isAvailable ) {
 <table width="<%= (mobWeb) ? "100%" : W_COMPONENT_GROUP_MEAL_TOTAL %>" cellpadding="0" cellspacing="0" border="0" align="center">
     <tr>
       <td width="100%">
-	<div align="center"><font class="text12" color="#999999">
+	<div align="center"><font class="text12" color="#333">
 		<b>We're sorry! This item is temporarily unavailable.</b>
 	</font></div>
 	</td></tr></table>

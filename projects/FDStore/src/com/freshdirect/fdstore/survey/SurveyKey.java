@@ -5,6 +5,7 @@ package com.freshdirect.fdstore.survey;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.freshdirect.common.customer.EnumServiceType;
 
 public class SurveyKey implements Serializable {
@@ -17,7 +18,7 @@ public class SurveyKey implements Serializable {
     EnumSurveyType surveyType;
     EnumServiceType userType;
 
-    public SurveyKey(EnumSurveyType surveyType, EnumServiceType userType) {
+    public SurveyKey(@JsonProperty("surveyType") EnumSurveyType surveyType, @JsonProperty("userType") EnumServiceType userType) {
         super();
         this.surveyType = surveyType;
         this.userType = userType;

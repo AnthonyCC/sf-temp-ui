@@ -79,9 +79,7 @@ final int W_RECIPE_DLR_NAVS_RIGHT = 191;
 	<TD WIDTH="<%=W_RECIPE_DLR_NAVS_LEFT%>" BGCOLOR="#E0E3D0">
 		<!-- Recipe Start Left Nav -->
 		<tmpl:get name='leftnav'/>
-		<oscache:cache key='<%= "sideNav_"+request.getQueryString() %>' time='300'>
                 <%@include file="/common/template/includes/i_recipe_leftnav.jspf"%>
-		</oscache:cache>
 
 		<!-- END RECIPE SIDE NAV -->
 		<img src="/media_stat/images/layout/clear.gif" alt="" height="1" width="<%=W_RECIPE_DLR_NAVS_LEFT%>">

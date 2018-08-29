@@ -241,7 +241,7 @@ if (brandLogo !=null) {
 <%
 if (firstProduct==null) { 
 %>
-    <tr><td align="left" colspan="3"><p align="left"><font class="text12" color="#999999">
+    <tr><td align="left" colspan="3"><p align="left"><font class="text12" color="#333">
         <b>We're sorry! This item is temporarily unavailable.</b><br>
         <br>
         We're proud to offer New York's widest selections of fresh foods. Unfortunately, this product is temporarily unavailable.

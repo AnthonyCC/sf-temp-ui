@@ -633,7 +633,12 @@ function loadStuff() {
   	$("#header").val('');
   	$("#payload").val("");
 
-  } else if(loaddata == "SetMobilePreferences") {  	
+  } else if (loaddata == "GetAllDlvPassPlans") {
+  	$("#url").val("/saptest12@freshdirect.com/account/deliverypass/getdpallplans/");
+  	$("#header").val('');
+  	$("#payload").val("");
+
+ } else if(loaddata == "SetMobilePreferences") {  	
   	$("#url").val("/saptest12@freshdirect.com/account/setmobilepreferences/");
   	$("#header").val('');
   	$("#payload").val('{"mobile_number" : "2035594465", "order_notices" : "Y","order_exceptions" : "Y", "offers" : "Y"}');
@@ -1867,6 +1872,7 @@ function doStuff() {
   <option value="DpInfo">ACCOUNT - Get DeliveryPass Info</option>
   <option value="DpList">ACCOUNT - Get DeliveryPass List</option>
   <option value="DpAutoRenew">ACCOUNT - Set DeliveryPass Auto Renew</option>
+  <option value="GetAllDlvPassPlans">ACCOUNT - Get All DeliveryPass Plans</option>
 
   <option value=""> ========== MISC ========== </option>
   <option value="EmailCapture">Email Capture</option>

@@ -10,7 +10,6 @@ package com.freshdirect.erp.model;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -214,6 +213,12 @@ public class ErpInventoryModel extends ModelSupport {
 
 	}
 
+	@Override
+	public void setId(String id) {
+		if (id != null)
+			super.setId(id);
+	}
+	
 //do we need this?????
 //	public double getAvailabileQtyForDate(java.util.Date targetDate, ErpInventoryModel invModel) {
 //		/*

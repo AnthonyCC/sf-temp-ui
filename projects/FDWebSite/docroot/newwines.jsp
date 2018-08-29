@@ -11,7 +11,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri='oscache' prefix='oscache' %>
+
 
 <% //expanded page dimensions
 final int W_NEWWINES_TOTAL = 601;
@@ -164,7 +164,6 @@ String title = "FreshDirect - " + currentFolder.getFullName();
     </tmpl:put>
 <%--    <tmpl:put name='title' direct='true'><%= title %></tmpl:put> --%>
   <tmpl:put name='content' direct='true'>
-   <oscache:cache time="3600" key='<%= "newwines/" + days %>'>
 <%
 try {
 	NewProductsNavigator nav = new NewProductsNavigator(request);
@@ -245,8 +244,6 @@ if (itemsToDisplay == 12) {
 <% } catch (Exception ex) {
 		ex.printStackTrace();
 %>
-<oscache:usecached />
 <% } %>
-</oscache:cache>
  </tmpl:put>
 </tmpl:insert>

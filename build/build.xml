@@ -1972,7 +1972,6 @@
 			<pathelement location="${work.dir}/FDLogisticsIntegration.jar"/>
 			<pathelement location="${work.dir}/StandingOrdersService.jar"/>
 			<pathelement location="${thirdparty.home}/struts.jar"/>
-			<pathelement location="${thirdparty.home}/oscache-2.4.1.jar"/>
 			<pathelement location="${thirdparty.home}/castor-0.9.5.3-xml.jar"/>
 			<pathelement location="${thirdparty.home}/lucene-core-${lucene.version}.jar"/>
 			<pathelement location="${thirdparty.home}/lucene-queries-${lucene.version}.jar"/>
@@ -2000,7 +1999,6 @@
 			<pathelement location="${work.dir}/FDLogisticsIntegration.jar"/>
 			<pathelement location="${work.dir}/StandingOrdersService.jar"/>
 			<pathelement location="${thirdparty.home}/struts.jar"/>
-			<pathelement location="${thirdparty.home}/oscache-2.4.1.jar"/>
 			<pathelement location="${thirdparty.home}/jackson-core-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/jackson-databind-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/jackson-annotations-2.2.0.jar"/>
@@ -2471,7 +2469,6 @@
 				<include name="StandingOrdersService.jar" />
 			</libraries>
 			<lib>
-				<include name="oscache-2.4.1.jar"/>
 				<include name="struts.jar"/>
 				<include name="lucene-core-${lucene.version}.jar"/>
 				<include name="lucene-queries-${lucene.version}.jar"/>
@@ -2543,7 +2540,6 @@
 				<include name="httpcore-4.4.1.jar"/>
 				<include name="httpmime-4.5.jar"/>
 				<include name="aws-java-sdk-1.7.12.jar"/>
-				<include name="oscache-2.4.1.jar"/>
 				<include name="struts.jar"/>
 				<include name="poi-3.5-FINAL-20090928.jar"/>
 				<include name="lucene-core-${lucene.version}.jar"/>
@@ -2593,7 +2589,6 @@
 			<lib>
 				<include name="lcc.jar"/>
 				<include name="sapjco3.jar"/>
-				<include name="oscache-2.4.1.jar"/>
 				<include name="struts.jar"/>
 
 
@@ -2711,7 +2706,6 @@
 				<include name="FDStore.jar"/>
 			</libraries>
 			<lib>
-				<include name="oscache-2.4.1.jar"/>
 				<include name="struts.jar"/>
 				<include name="lcc.jar"/>
 				<include name="sapjco3.jar"/>
@@ -2984,7 +2978,7 @@
 			<zipfileset src="${work.dir}/cmseue.jar" excludes="META-INF/*" />
 			<zipfileset src="${work.dir}/StoreAPI.jar" excludes="META-INF/*" />
 			<zipfileset src="${work.dir}/DataLoaderEJB-WL.jar" excludes="META-INF/*" />
-			<zipfileset src="${work.dir}/FDStoreEJB-WL.jar" excludes="META-INF/*, com/freshdirect/fdstore/customer/FDCustomerFactory*,  com/freshdirect/fdstore/customer/FDUserUtil*, com/freshdirect/fdstore/zone/FDZoneInfoManager*" />
+			<zipfileset src="${work.dir}/FDStoreEJB-WL.jar" excludes="META-INF/*, com/freshdirect/fdstore/customer/FDCustomerFactory*,  com/freshdirect/fdstore/customer/FDUserUtil*, com/freshdirect/fdstore/zone/FDZoneInfoManager*, com/freshdirect/fdstore/customer/FDCustomerManager*, com/freshdirect/fdstore/promotion/PromotionFactory*, com/freshdirect/smartstore/fdstore/VariantSelection*" />
 			<zipfileset src="${work.dir}/FDLogisticsIntegration.jar" excludes="META-INF/*" />
 			<zipfileset src="${work.dir}/StandingOrdersService.jar" excludes="META-INF/*" />
 			<zipfileset src="${work.dir}/Tools.jar" excludes="META-INF/*" />

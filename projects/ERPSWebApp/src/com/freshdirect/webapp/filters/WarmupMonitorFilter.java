@@ -9,9 +9,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.freshdirect.fdstore.warmup.WarmupService;
 import com.freshdirect.webapp.ajax.JsonHelper;
 import com.freshdirect.webapp.ajax.data.RedirectData;
-import com.freshdirect.webapp.warmup.WarmupService;
 
 public class WarmupMonitorFilter extends AbstractFilter {
 

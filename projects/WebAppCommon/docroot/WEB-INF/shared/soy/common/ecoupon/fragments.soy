@@ -23,7 +23,7 @@
  */
 {template .detailsHtml autoescape="false"}
 <span name="{$couponName}_detCont" class="fdCoupon_detCont">
-(<a href="#" name="{$couponName}_det" class="fdCoupon_det" onclick="return false;">details</a>)
+(<a href="#" name="{$couponName}_det" class="fdCoupon_det" onclick="event.preventDefault();">details</a>)
 </span>
 {/template}
 

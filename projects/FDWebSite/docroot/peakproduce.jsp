@@ -7,7 +7,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri='oscache' prefix='oscache' %>
+
 <fd:CheckLoginStatus />
 <%
 Set brands = null ; // set in the grocery_category_layout page. will be referenced by  i_bottom_template

@@ -17,6 +17,7 @@ import com.freshdirect.customer.ErpAddressVerificationException;
 import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpCartonInfo;
 import com.freshdirect.customer.ErpCreateOrderModel;
+import com.freshdirect.customer.ErpDeliveryInfoModel;
 import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpModifyOrderModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
@@ -28,14 +29,12 @@ import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.ecommerce.data.dlv.FDReservationData;
-import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.atp.FDAvailabilityI;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.giftcard.InvalidCardException;
-import com.freshdirect.giftcard.ServiceUnavailableException;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
 public interface OrderResourceApiClientI {
@@ -64,14 +63,14 @@ public interface OrderResourceApiClientI {
 			ErpCreateOrderModel createOrder, Set<String> appliedPromos,
 			String id, boolean sendEmail, CustomerRatingI cra,
 			CrmAgentRole crmAgentRole, EnumDlvPassStatus status,
-			boolean isBulkOrder) throws RemoteException, ServiceUnavailableException, FDResourceException, ErpFraudException, ErpAuthorizationException, ErpAddressVerificationException;
+			boolean isBulkOrder) throws RemoteException;
 
 
 	public String placeSubscriptionOrder(FDActionInfo info,
 			ErpCreateOrderModel createOrder, Set<String> appliedPromos,
 			String id, boolean sendEmail, CustomerRatingI cra,
 			CrmAgentRole crmAgentRole, EnumDlvPassStatus status,
-			boolean isRealTimeAuthNeeded) throws RemoteException, FDResourceException, ErpFraudException, DeliveryPassException, FDPaymentInadequateException, InvalidCardException, ErpTransactionException;
+			boolean isRealTimeAuthNeeded) throws RemoteException;
 
 
 	public String placeDonationOrder(FDActionInfo info,
@@ -85,11 +84,12 @@ public interface OrderResourceApiClientI {
 			ErpAuthorizationException, ErpAddressVerificationException, ReservationException, DeliveryPassException,
 			FDPaymentInadequateException, ErpTransactionException, InvalidCardException, RemoteException;
 
-	public void modifyOrder(FDActionInfo info, String saleId, ErpModifyOrderModel order, Set<String> appliedPromos,
-			String originalReservationId, boolean sendEmail, CustomerRatingI cra, CrmAgentRole crmAgentRole,
-			EnumDlvPassStatus status, boolean hasCouponDiscounts, int fdcOrderCount) throws FDResourceException,
-			ErpFraudException, ErpAuthorizationException, ErpTransactionException, DeliveryPassException,
-			FDPaymentInadequateException, ErpAddressVerificationException, InvalidCardException, RemoteException;
+	public void modifyOrder(FDActionInfo info, String saleId,
+			ErpModifyOrderModel order, Set<String> appliedPromos,
+			String originalReservationId, boolean sendEmail,
+			CustomerRatingI cra, CrmAgentRole crmAgentRole,
+			EnumDlvPassStatus status, boolean hasCouponDiscounts,
+			int fdcOrderCount);
 
 
 	public void modifyAutoRenewOrder(FDActionInfo info, String saleId,
@@ -99,8 +99,10 @@ public interface OrderResourceApiClientI {
 			EnumDlvPassStatus status);
 
 
-	public FDReservation cancelOrder(FDActionInfo info, String saleId, boolean sendEmail, int currentDPExtendDays, boolean restoreReservation) throws FDResourceException, ErpTransactionException, DeliveryPassException, RemoteException;
-	 
+	public FDReservationData cancelOrder(FDActionInfo info, String saleId,
+			boolean sendEmail, int currentDPExtendDays,
+			boolean restoreReservation);
+
 
 	public Map<String, FDAvailabilityI> checkAvailability(FDIdentity identity,	ErpCreateOrderModel createOrder, long timeout, String isFromLogin) throws FDResourceException;
 

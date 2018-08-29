@@ -26,7 +26,7 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd'%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
-<%@ taglib uri='oscache' prefix='oscache' %>
+
 
 
 <fd:CheckLoginStatus guestAllowed='true' id="displayTestsUser" />

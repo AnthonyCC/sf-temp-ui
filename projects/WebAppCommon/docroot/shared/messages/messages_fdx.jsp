@@ -12,6 +12,6 @@
 <div id="messages" class="visHidden">
 	<ul class="content"></ul>
 	<hr class="shadow">
-	<a href="#" class="handler close-handler" onclick="return false;" id="locabar-messages-close"><span class="offscreen">close</span></a>
+	<a href="#" class="handler close-handler" onclick="event.preventDefault();" id="locabar-messages-close"><span class="offscreen">close</span></a>
 	<br class="NOMOBWEB" />
 </div>

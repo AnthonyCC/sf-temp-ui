@@ -569,9 +569,6 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 		Set common = null;
 		boolean first = true;
 		for ( SkuModel sku : skus ) {
-			if (sku.isUnavailable()) {
-				continue;
-			}
 
 			try {
 				List values = sku.getProduct().getNutritionInfoList(type);

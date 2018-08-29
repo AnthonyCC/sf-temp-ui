@@ -13,7 +13,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri='oscache' prefix='oscache' %>
+
 <fd:CheckLoginStatus guestAllowed="true" />
 <%
 RecipeDepartment recipeDepartment = (RecipeDepartment) PopulatorUtil.getContentNode(request.getParameter("deptId"));
@@ -50,16 +50,12 @@ if (redirectURL!=null) {
 	</tmpl:put>
 <%--     <tmpl:put name='title' direct='true'><%= title %></tmpl:put> --%>
     <tmpl:put name='content' direct='true'>
-<oscache:cache key='<%= "deptLayout_"+request.getQueryString() %>' time='14400'>
 <% try { %>
 <%@ include file="/shared/includes/layouts/i_recipe_dept_body.jspf"%>
 <% } catch (Exception ex) {
 		ex.printStackTrace();
 %>
-<oscache:usecached />
 <% } %>
-</oscache:cache>
-
     </tmpl:put>
 
 </tmpl:insert>

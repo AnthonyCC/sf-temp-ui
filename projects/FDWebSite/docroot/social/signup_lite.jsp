@@ -113,7 +113,7 @@
 				// on keyup we will check every time the form is valid or not
 				$jq('#litesignup').bind('change keyup', function() {
 					
-					var isCaptchaValid = !fd.components.captchaWidget || fd.components.captchaWidget.isValid();
+					var isCaptchaValid = !fd.components.captchaWidget || fd.components.captchaWidget.isValid('sign-up-g-recaptcha');
 					  
 				    if($jq(this).validate().checkForm() && isCaptchaValid) { // form is valid
 		        		$jq('#signupbtn').removeClass('button_disabled').attr('disabled', false);
@@ -353,7 +353,7 @@
 											
 										</tr>
 										<script type="text/javascript">
-										  FreshDirect.components.captchaWidget.init('<%=publicKey%>', function() {
+										  FreshDirect.components.captchaWidget.init('sign-up-g-recaptcha', '<%=publicKey%>', function() {
 											  fd.components.captchaWidget.render('sign-up-g-recaptcha', function() {
 										    		$jq('#litesignup').trigger('change');
 												}, function () {

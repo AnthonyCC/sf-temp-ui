@@ -33,6 +33,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.freshdirect.common.address.PhoneNumber;
+import com.freshdirect.common.address.PhoneNumberDeserializer;
 import com.freshdirect.customer.ErpPaymentMethodDeserializer;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpTransactionModel;
@@ -57,6 +59,7 @@ public abstract class AbstractEcommService {
 		MAPPER = new ObjectMapper().setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ"))
 				.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false).registerModule(
 						new SimpleModule().addDeserializer(ErpPaymentMethodI.class, new ErpPaymentMethodDeserializer())
+								.addDeserializer(PhoneNumber.class, new PhoneNumberDeserializer())
 								.addDeserializer(ErpTransactionModel.class, new ErpTransactionModelDeserializer()));
 		MAPPER.getFactory().configure(Feature.ESCAPE_NON_ASCII, true);
 				

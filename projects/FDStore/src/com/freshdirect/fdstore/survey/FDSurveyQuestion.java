@@ -6,6 +6,8 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * @author ekracoff
  */
@@ -28,10 +30,13 @@ public class FDSurveyQuestion implements java.io.Serializable {
 	private EnumFormDisplayType formDisplayType;
 	private EnumViewDisplayType viewDisplayType;
 	
-	public FDSurveyQuestion(String name, String description, boolean required, boolean multiselect, boolean openEnded, boolean rating, boolean subQuestion){
+	public FDSurveyQuestion(@JsonProperty("name") String name, @JsonProperty("description") String description,
+			@JsonProperty("required") boolean required, @JsonProperty("multiselect") boolean multiselect,
+			@JsonProperty("openEnded") boolean openEnded, @JsonProperty("rating") boolean rating,
+			@JsonProperty("subQuestion") boolean subQuestion) {
 		this.name = name;
 		this.description = description;
-		this.shortDescr=description;
+		this.shortDescr = description;
 		this.multiselect = multiselect;
 		this.required = required;
 		this.openEnded = openEnded;

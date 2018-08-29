@@ -1,7 +1,6 @@
 <%--
     this file will be included in the <head> tag
 --%><%@ taglib uri='freshdirect' prefix='fd'
-%><%@ taglib uri='oscache' prefix='oscache'
 %><%@ taglib uri="http://jawr.net/tags" prefix="jwr"
 %><%@ page import="com.freshdirect.fdstore.FDStoreProperties"
 %><%@ page import='com.freshdirect.storeapi.content.EnumLayoutType'
@@ -10,7 +9,7 @@
 
     String style_sheet_detect_uri = request.getRequestURI();
     boolean style_sheet_detect_isReorder = (style_sheet_detect_uri.indexOf("/quickshop/") != -1) ? true : false;
-%><% if (FDStoreProperties.isFlushOscache()) { %><oscache:flush /><% } %>
+%>
 
  <jwr:style src="/grid.css" media="all" />
  <%-- global css files, header, footer, etc. --%>

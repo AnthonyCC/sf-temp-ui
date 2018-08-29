@@ -16,7 +16,7 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.ecomm.gateway.AbstractEcommService;
-import com.freshdirect.ecomm.gateway.OrderResourceApiClient;
+import com.freshdirect.ecomm.gateway.OrderServiceApiClient;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.fdstore.EnumEStoreId;
@@ -31,6 +31,7 @@ import com.freshdirect.fdstore.customer.FDOrderSearchCriteria;
 import com.freshdirect.fdstore.customer.PendingOrder;
 import com.freshdirect.fdstore.customer.UnsettledOrdersInfo;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
+import com.freshdirect.fdstore.ecomm.model.ModifiedCartlineData;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.logistics.delivery.dto.CustomerAvgOrderSize;
@@ -76,7 +77,7 @@ public class CustomerOrderService extends AbstractEcommService implements Custom
 
 	@Override
 	public FDOrderI getOrder(String saleId) throws FDResourceException, RemoteException {
-		ErpSaleModel saleModel = OrderResourceApiClient.getInstance().getOrder(saleId);
+		ErpSaleModel saleModel = OrderServiceApiClient.getInstance().getOrder(saleId);
 		
 		return new FDOrderAdapter(saleModel, false);
 	}
@@ -176,8 +177,7 @@ public class CustomerOrderService extends AbstractEcommService implements Custom
 	}
 
 	@Override
-	public void saveModifiedCartline(PrimaryKey userpk, StoreContext storeContext, FDCartLineI newLine, String orderId,
-			boolean isModifiedCartLine) throws FDResourceException, RemoteException {
+	public void saveModifiedCartline(PrimaryKey userpk, StoreContext storeContext, FDCartLineI newLine, String orderId) throws FDResourceException, RemoteException {
 		Response<Void> response = null;
 		try {
 			Request<ObjectNode> request = new Request<ObjectNode>();
@@ -187,9 +187,10 @@ public class CustomerOrderService extends AbstractEcommService implements Custom
 					(null != storeContext && null != storeContext.getEStoreId()
 							? storeContext.getEStoreId().getContentId()
 							: EnumEStoreId.FD.getContentId()));
-			rootNode.set("newLine", getMapper().convertValue(newLine, JsonNode.class));
+			ModifiedCartlineData modifiedCartlineData = new ModifiedCartlineData();
+			modifiedCartlineData.setDataFromCartline(newLine);
+			rootNode.set("newLine", getMapper().convertValue(modifiedCartlineData, JsonNode.class));
 			rootNode.put("orderId", orderId);
-			rootNode.put("isModifiedCartLine", isModifiedCartLine);
 			request.setData(rootNode);
 			String inputJson = buildRequest(request);
 

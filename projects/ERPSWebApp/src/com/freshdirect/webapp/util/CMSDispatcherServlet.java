@@ -8,7 +8,6 @@ import org.springframework.web.servlet.DispatcherServlet;
 
 import com.freshdirect.fdstore.warmup.WarmupInitiator;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.webapp.warmup.WarmupService;
 
 
 public class CMSDispatcherServlet extends DispatcherServlet {

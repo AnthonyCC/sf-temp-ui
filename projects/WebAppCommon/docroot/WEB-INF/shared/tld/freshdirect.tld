@@ -3474,17 +3474,6 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
-	<tag>
-		<name>WineHomenav</name>
-		<tagclass>com.freshdirect.webapp.taglib.fdstore.WineHomenavTag</tagclass>
-		<bodycontent>empty</bodycontent>
-		<info></info>
-		<attribute>
-			<name>refreshPeriod</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
 	<!-- SmartStore tags -->
 	<tag>
 		<name>GenericRecommendations</name>

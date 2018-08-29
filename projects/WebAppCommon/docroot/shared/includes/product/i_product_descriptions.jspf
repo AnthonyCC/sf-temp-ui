@@ -414,10 +414,5 @@
 		}
 	} catch (Exception ex) {
 			ex.printStackTrace();
-	%>
-		<% if ( FDStoreProperties.useOscache() ) { %>
-			<oscache:usecached />
-		<% } %>
-	<%
 	}
 %>

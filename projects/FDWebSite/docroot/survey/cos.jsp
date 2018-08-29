@@ -8,7 +8,7 @@
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ page import='com.freshdirect.fdstore.survey.*' %>
 <%@ taglib uri='logic' prefix='logic' %>
-<%@ taglib uri='oscache' prefix='oscache' %>
+
 
 <% //expanded page dimensions
 final int W_SURVEY_COS_TOTAL = 970;

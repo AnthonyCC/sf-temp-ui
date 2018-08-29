@@ -16,7 +16,7 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri='oscache' prefix='oscache' %>
+
 <%@ include file="/shared/includes/product/i_product_methods.jspf" %>
 <%
 //*** get needed vars from request attributes, they must exist or else we throw jsp error ***/

@@ -45,7 +45,7 @@ public class FDSurveyService extends AbstractEcommService implements FDSurveySer
 					getFdCommerceEndPoint(STORE_SURVEY), new TypeReference<Response<Void>>() {
 					});
 			if (!response.getResponseCode().equals("OK")) {
-				LOGGER.error("Error in FDSurveyService: inputJson=" + inputJson+ ", response=" + response);
+				LOGGER.error("Error in FDSurveyService: inputJson=" + inputJson);
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDEcommServiceException e) {
@@ -65,7 +65,7 @@ public class FDSurveyService extends AbstractEcommService implements FDSurveySer
 					new TypeReference<Response<FDSurveyResponseData>>() {
 					});
 			if (!response.getResponseCode().equals("OK")) {
-				LOGGER.error("Error in FDSurveyService: inputJson=" + inputJson+ ", response=" + response);
+				LOGGER.error("Error in FDSurveyService: inputJson=" + inputJson);
 				throw new FDResourceException(response.getMessage());
 			}
 
@@ -89,7 +89,7 @@ public class FDSurveyService extends AbstractEcommService implements FDSurveySer
 			String inputJson = buildRequest(request);
 			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(SURVEY), new TypeReference<Response<FDSurvey>>() {});
 			if (!response.getResponseCode().equals("OK")){
-				LOGGER.error("Error in FDSurveyService: inputJson=" + inputJson + ", response=" + response);
+				LOGGER.error("Error in FDSurveyService: inputJson=" + inputJson);
 				throw new FDResourceException(response.getMessage());
 			}
 		}

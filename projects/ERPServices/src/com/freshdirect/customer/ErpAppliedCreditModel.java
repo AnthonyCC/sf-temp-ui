@@ -2,6 +2,7 @@
 
 package com.freshdirect.customer;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.framework.core.*;
 
@@ -21,7 +22,7 @@ public class ErpAppliedCreditModel extends ErpCreditModel {
     }
     
     //Introduced For Storefront 2.0 Implementation
-    public ErpAppliedCreditModel (ErpAffiliate affiliate) {
+    public ErpAppliedCreditModel (@JsonProperty("affiliate") ErpAffiliate affiliate) {
     	super(affiliate);
     }
     

@@ -15,8 +15,6 @@ import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
-import com.freshdirect.ecomm.gateway.OrderResourceApiClient;
-import com.freshdirect.ecomm.gateway.OrderResourceApiClientI;
 import com.freshdirect.ecomm.gateway.OrderServiceApiClient;
 import com.freshdirect.ecomm.gateway.OrderServiceApiClientI;
 import com.freshdirect.fdstore.FDResourceException;
@@ -89,8 +87,7 @@ public class DlvPaymentManager {
 	public synchronized ErpDeliveryInfoModel getDeliveryInfo(String orderNumber) throws FDResourceException, ErpSaleNotFoundException {
 		try{
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled("getDeliveryInfo_Api")){
-	    		OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
-	    		return service.getDeliveryInfo(orderNumber);
+	    		return OrderServiceApiClient.getInstance().getDeliveryInfo(orderNumber);
 	    	}else{
 				ErpCustomerManagerSB sb = this.getErpCustomerManagerSB();
 				return sb.getDeliveryInfo(orderNumber);

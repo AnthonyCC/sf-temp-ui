@@ -1,7 +1,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri='oscache' prefix='oscache' %>
+
 
 <%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.framework.util.*' %>
@@ -71,15 +71,12 @@ String title = "FreshDirect - " + recipeSubCat.getName();
     </tmpl:put>
 <%--    <tmpl:put name='title' direct='true'><%= title %></tmpl:put> --%>
    <tmpl:put name='content' direct='true'>
-<oscache:cache key='<%= "recipe_cat_"+request.getQueryString() %>' time="300">
 <% try {  %>   
   <%@ include file="/shared/includes/layouts/i_recipe_subcat_body.jspf"%>
 <% } catch (Exception ex) {
 		ex.printStackTrace();
 %>
-	<oscache:usecached />
+	
 <% } %>
-</oscache:cache>
-
 </tmpl:put>
 </tmpl:insert>

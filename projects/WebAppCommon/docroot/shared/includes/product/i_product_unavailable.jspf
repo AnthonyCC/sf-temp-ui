@@ -24,7 +24,7 @@
 
 <br/>
 
-<div align="right"><font class="text12" color="#999999">
+<div align="right"><font class="text12" color="#333">
     <%
 	    if ( productNode.isTempUnavailable() ) {
 	        %>

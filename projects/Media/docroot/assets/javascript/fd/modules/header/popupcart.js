@@ -43,12 +43,12 @@ var FreshDirect = FreshDirect || {};
     salesunit:'<option value="{{id}}" {{#selected}}selected="selected"{{/selected}}>{{name}}</option>',
     section:'<tr class="section"><th colspan="4"><div class="title">{{title}}</div></th></tr>{{#cartLines}}{{>cartline}}{{/cartLines}}',
     remove:'<div class="remove"><button class="remove">remove</button></div>',
-    cartline:'<tr class="cartline" name="{{id}}" data-freeproduct="{{freeSamplePromoProduct}}"><td class="remove">{{>remove}}</td><td class="quantity"><div class="quantity">{{#qu}}{{>quantity}}{{/qu}}{{^qu}}<select>{{#su}}{{>salesunit}}{{/su}}</select>{{/qu}}</div></td><td><div class="item">{{{descr}}}{{#confDescr}} ({{confDescr}}){{/confDescr}}{{#newItem}}<small class="new">(new)</small>{{/newItem}}</div></td><td><div class="price">{{#freeSamplePromoProduct}}FREE{{/freeSamplePromoProduct}}{{^freeSamplePromoProduct}}{{price}}{{/freeSamplePromoProduct}}</div></td>'
+    cartline:'<tr class="cartline" name="{{id}}" data-component="cartline" data-freeproduct="{{freeSamplePromoProduct}}"><td class="remove">{{>remove}}</td><td class="quantity"><div class="quantity">{{#qu}}{{>quantity}}{{/qu}}{{^qu}}<select>{{#su}}{{>salesunit}}{{/su}}</select>{{/qu}}</div></td><td><div class="item">{{{descr}}}{{#confDescr}} ({{confDescr}}){{/confDescr}}{{#newItem}}<small class="new">(new)</small>{{/newItem}}</div></td><td><div class="price">{{#freeSamplePromoProduct}}FREE{{/freeSamplePromoProduct}}{{^freeSamplePromoProduct}}{{price}}{{/freeSamplePromoProduct}}</div></td>'
   };
   
   /* fdx has a dif col order */
   var partialsFdx=$.extend({}, partials, {
-		  cartline:'<tr class="cartline" name="{{id}}" data-freeproduct="{{freeSamplePromoProduct}}"><td><div class="item">{{{descr}}}{{#confDescr}} ({{confDescr}}){{/confDescr}}{{#newItem}}<small class="new">(new)</small>{{/newItem}}</div></td><td class="quantity"><div class="quantity">{{#qu}}{{>quantity}}{{/qu}}{{^qu}}<select>{{#su}}{{>salesunit}}{{/su}}</select>{{/qu}}</div></td><td class="price-td"><div class="price">{{#freeSamplePromoProduct}}FREE{{/freeSamplePromoProduct}}{{^freeSamplePromoProduct}}{{price}}{{/freeSamplePromoProduct}}</div></td><td class="remove">{{>remove}}</td>'
+		  cartline:'<tr class="cartline" name="{{id}}" data-component="cartline" data-freeproduct="{{freeSamplePromoProduct}}"><td><div class="item">{{{descr}}}{{#confDescr}} ({{confDescr}}){{/confDescr}}{{#newItem}}<small class="new">(new)</small>{{/newItem}}</div></td><td class="quantity"><div class="quantity">{{#qu}}{{>quantity}}{{/qu}}{{^qu}}<select>{{#su}}{{>salesunit}}{{/su}}</select>{{/qu}}</div></td><td class="price-td"><div class="price">{{#freeSamplePromoProduct}}FREE{{/freeSamplePromoProduct}}{{^freeSamplePromoProduct}}{{price}}{{/freeSamplePromoProduct}}</div></td><td class="remove">{{>remove}}</td>'
   });
 
 

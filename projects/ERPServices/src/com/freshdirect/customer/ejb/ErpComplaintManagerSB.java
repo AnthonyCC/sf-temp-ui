@@ -24,14 +24,27 @@ import com.freshdirect.customer.ErpComplaintReason;
  * @author $Author$
  */
 public interface ErpComplaintManagerSB extends EJBObject {
-
+	/**
+	 *@deprecated This method is moved to Storefront2.0 project.
+	 * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+	 */
 	 public Map<String, List<ErpComplaintReason>> getReasons(boolean excludeCartonReq) throws RemoteException;
-	 
+	 /**
+	 *@deprecated This method is moved to backoffice project.
+	 * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+	 */
+	 @Deprecated
 	 public Map<String,String> getComplaintCodes() throws RemoteException;
-
+	 //not used 
+	 @Deprecated
 	 public Collection<String> getPendingComplaintSaleIds() throws RemoteException;
-
+	 //not used 
+	 @Deprecated
 	 public void rejectMakegoodComplaint(String makegood_sale_id) throws RemoteException;
-	 
+	 /**
+	 *@deprecated This method is moved to backoffice project.
+	 * SVN location :: https://appdevsvn.nj01/appdev/backoffice/trunk
+     */
+	 @Deprecated
 	 public ErpComplaintReason getReasonByCompCode(String cCode) throws RemoteException;
 }

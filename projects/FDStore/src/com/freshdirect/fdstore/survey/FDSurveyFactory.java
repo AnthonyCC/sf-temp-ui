@@ -14,11 +14,13 @@ import com.freshdirect.ecommerce.data.survey.FDSurveyData;
 import com.freshdirect.ecommerce.data.survey.FDSurveyQuestionData;
 import com.freshdirect.ecommerce.data.survey.FDSurveyResponseData;
 import com.freshdirect.ecommerce.data.survey.SurveyKeyData;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
+import com.freshdirect.fdstore.ecomm.gateway.FDSurveyService;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.LazyTimedCache;
 import com.freshdirect.framework.util.StringUtil;
@@ -84,7 +86,7 @@ public class FDSurveyFactory {
         return getSurvey(key);
     }
 
-    public synchronized FDSurvey getSurvey(SurveyKey key) throws FDResourceException {
+    public FDSurvey getSurvey(SurveyKey key) throws FDResourceException {
         // just for testing ...
         FDSurvey survey = builtinSurveys.getOverrideSurvey(key);
         if (survey != null) {
@@ -92,13 +94,20 @@ public class FDSurveyFactory {
         }
         survey = surveyDefCache.get(key);
         if (survey == null) {
-            survey = getSurveyFromDatabase(key);
-            if (survey == null) {
-                survey = builtinSurveys.getDefaultSurvey(key);
-            }
-            if (survey != null) {
-                surveyDefCache.put(key, survey);
-            }
+        	synchronized(surveyDefCache) {
+        		//check from cache again
+        		survey = surveyDefCache.get(key);
+        		if (survey != null) {
+        			return survey;
+        		}
+        		survey = getSurveyFromDatabase(key);
+	            if (survey == null) {
+	                survey = builtinSurveys.getDefaultSurvey(key);
+	            }
+	            if (survey != null) {
+	                surveyDefCache.put(key, survey);
+	            }
+        	}
             return survey;
         }
         return survey;
@@ -148,12 +157,8 @@ public class FDSurveyFactory {
      */
     FDSurvey getSurveyFromDatabase(SurveyKey key) throws FDResourceException {
         try {
-        	if(FDStoreProperties.isSF2_0_AndServiceEnabled("survey.ejb.FDSurveySB")){
-        		IECommerceService service = FDECommerceService.getInstance();
-        		SurveyKeyData surveyKeyData = buildSurveyKeyData(key);
-        		FDSurveyData surveyData = service.getSurvey(surveyKeyData);
-        		FDSurvey fdSurvey = buildFdSurvey(surveyData);
-        		return fdSurvey;
+        	if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDSurveySB)){
+        		return FDSurveyService.getInstance().getSurvey(key);
         	}
         	else{
         		return FDServiceLocator.getInstance().getSurveySessionBean().getSurvey(key);
@@ -162,49 +167,6 @@ public class FDSurveyFactory {
             throw new FDResourceException(re, "Error talking to session bean");
         }
     }
-
-	private static SurveyKeyData buildSurveyKeyData(SurveyKey key) {
-		SurveyKeyData surveyKeyData = new SurveyKeyData();
-		surveyKeyData.setSurveyType(key.getSurveyType().getLabel());
-		surveyKeyData.setUserType(key.getUserType().toString());
-		return surveyKeyData;
-	}
-	private FDSurvey buildFdSurvey(FDSurveyData surveyData) {
-		if (surveyData == null) {
-			return null;
-		}
-		SurveyKey surveykey = new SurveyKey(EnumSurveyType.getEnum(surveyData.getKey().surveyType), EnumServiceType.getEnum(surveyData.getKey().getUserType()));
-		FDSurvey fdSurvey = new FDSurvey(surveykey, surveyData.isOrderSurvey(), surveyData.getAcceptableCoverage());
-		buildSurveyQuestionData(surveyData, fdSurvey);
-		return fdSurvey;
-	}
-	private void buildSurveyQuestionData(FDSurveyData surveyData,
-			FDSurvey fdSurvey) {
-		List<FDSurveyQuestionData> questions = surveyData.getQuestions();
-		List<FDSurveyQuestion> surveyQuestionList = new ArrayList<FDSurveyQuestion>();
-		for (FDSurveyQuestionData fdSurveyQuestionData : questions) {
-			FDSurveyQuestion surveyQuestion = new FDSurveyQuestion(fdSurveyQuestionData.getName(), fdSurveyQuestionData.getDescription(), fdSurveyQuestionData.getShortDescr(),
-					fdSurveyQuestionData.isRequired(), fdSurveyQuestionData.isMultiselect(), fdSurveyQuestionData.isOpenEnded(), fdSurveyQuestionData.isRating(),
-					fdSurveyQuestionData.isPulldown(), fdSurveyQuestionData.isSubQuestion(),EnumFormDisplayType.getEnum(fdSurveyQuestionData.getFormDisplayType()), EnumViewDisplayType.getEnum(fdSurveyQuestionData.getViewDisplayType()));
-			buildSurveyAnswers(fdSurveyQuestionData, surveyQuestion);
-			surveyQuestionList.add(surveyQuestion);
-			
-		}
-		for (FDSurveyQuestion fdSurveyQuestion : surveyQuestionList) {
-				fdSurvey.addQuestion(fdSurveyQuestion);
-		}
-	}
-	private void buildSurveyAnswers(FDSurveyQuestionData fdSurveyQuestionData,
-			FDSurveyQuestion surveyQuestion) {
-		List<FDSurveyAnswer> surveyAnswerList = new ArrayList<FDSurveyAnswer>();
-		List<FDSurveyAnswerData> answerdataList = fdSurveyQuestionData.getAnswers();
-		for (FDSurveyAnswerData fdSurveyAnswerData : answerdataList) {
-			FDSurveyAnswer surveyAnswer = new FDSurveyAnswer(fdSurveyAnswerData.getName(), fdSurveyAnswerData.getDescription(), fdSurveyAnswerData.getGroup());
-			surveyAnswerList.add(surveyAnswer);
-		}
-		surveyQuestion.setAnswers(surveyAnswerList);
-	}
-
 
     /**
      * User can't be null !
@@ -230,9 +192,8 @@ public class FDSurveyFactory {
 
     public static FDSurveyResponse getCustomerProfileSurveyInfo(FDIdentity identity, EnumServiceType serviceType) throws FDResourceException {
         try {
-        	if(FDStoreProperties.isSF2_0_AndServiceEnabled("survey.ejb.FDSurveySB")){
-        		IECommerceService service = FDECommerceService.getInstance();
-        		FDSurveyResponseData surveyResponseData = service.getCustomerProfile(identity, serviceType);
+        	if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDSurveySB)){
+        		FDSurveyResponseData surveyResponseData = FDSurveyService.getInstance().getCustomerProfile(identity, serviceType);
         		FDSurveyResponse fdSurveyResponse = buildFdSurveyResponse(surveyResponseData);
         		return fdSurveyResponse;
         	}
@@ -261,22 +222,5 @@ public class FDSurveyFactory {
     	}
     	return null;
 	}
-
-    public static FDSurveyResponse getSurveyResponse(FDIdentity identity, SurveyKey survey) throws FDResourceException {
-        try {
-        	if(FDStoreProperties.isSF2_0_AndServiceEnabled("survey.ejb.FDSurveySB")){
-        		IECommerceService service = FDECommerceService.getInstance();
-        		SurveyKeyData surveyKeyData = buildSurveyKeyData(survey);
-        		FDSurveyResponseData surveyResponseData =  service.getSurveyResponse(identity, surveyKeyData);
-        		FDSurveyResponse fdSurveyResponse = buildFdSurveyResponse(surveyResponseData);
-        		return fdSurveyResponse;
-        	}
-        	else{
-        		return FDServiceLocator.getInstance().getSurveySessionBean().getSurveyResponse(identity, survey);
-        	}
-        } catch (RemoteException re) {
-            throw new FDResourceException(re, "Error talking to session bean");
-        }
-    }
 
 }

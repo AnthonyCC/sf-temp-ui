@@ -10,7 +10,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri='oscache' prefix='oscache' %>
+
 
 <%!
 	public String getPageNumbers( HttpServletRequest requestObj, HttpServletResponse responseObj, int pageNumber, int itemsPerPage, ContentNodeModel currFolder, int itemsCount ) {
