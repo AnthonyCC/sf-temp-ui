@@ -446,8 +446,13 @@ public class ContentChangesService {
 
                         StringBuilder oldValueBuilder = new StringBuilder();
                         oldValueBuilder
-                            .append("Deleted: ")
-                            .append(StringUtils.join(", ", oldKeys));
+                            .append("Deleted: ");
+
+                        if (oldKeys.isEmpty()) {
+                            oldValueBuilder.append("(empty list)");
+                        } else {
+                            oldValueBuilder.append(StringUtils.join(", ", oldKeys));
+                        }
 
                         describedValues = new String[] { oldValueBuilder.toString(), DRAFT_NULL_VALUE_DESCRIPTION };
                     }
@@ -459,8 +464,12 @@ public class ContentChangesService {
 
                 StringBuilder newValueBuilder = new StringBuilder();
                 newValueBuilder
-                    .append("Added: ")
-                    .append(StringUtils.join(", ", newKeys));
+                    .append("Added: ");
+                if (newKeys.isEmpty()) {
+                    newValueBuilder.append("(empty list)");
+                } else {
+                    newValueBuilder.append(StringUtils.join(", ", newKeys));
+                }
 
                 return new String[] { null, newValueBuilder.toString() };
 
