@@ -61,6 +61,8 @@ public class ContentChangesService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ContentChangesService.class);
 
+    private static final String DRAFT_NULL_VALUE_DESCRIPTION = "(removed)";
+
     public static final ChangeSetQuery EMPTY_CHANGESET_QUERY = new ChangeSetQuery();
 
     @Autowired
@@ -366,7 +368,17 @@ public class ContentChangesService {
         for (final DraftChange draftChange : draftChanges) {
             username = draftChange.getUserName();
             modifiedDate = draftChange.getCreatedAt();
-            nodeChanges.add(toGwtNodeChange(draftChange, shadowedFields, payloadBeforeUpdate));
+
+            final ContentKey key = ContentKeyFactory.get(draftChange.getContentKey());
+            final String attributeName = draftChange.getAttributeName();
+            final ContentAttributeKey attributeKey = new ContentAttributeKey(key, attributeName);
+            final Attribute attributeDef = contentTypeInfoService.findAttributeByName(key.type, attributeName).get();
+
+            final boolean isFieldShadowed = shadowedFields.keySet().contains(attributeKey);
+            final Object oldValue = payloadBeforeUpdate.get(key).get(attributeDef);
+            final String draftValue = draftChange.getValue();
+
+            nodeChanges.add(toGwtNodeChange(key, attributeDef, isFieldShadowed, oldValue, draftValue));
         }
 
         GwtChangeSet gwtChangeSet = new GwtChangeSet(id, username, new Date(modifiedDate), null);
@@ -398,21 +410,11 @@ public class ContentChangesService {
         return Optional.fromNullable(gwtNodeChange);
     }
 
-    private GwtNodeChange toGwtNodeChange(DraftChange draftChange, Map<ContentAttributeKey, Object> shadowedFields, Map<ContentKey, Map<Attribute, Object>> oldPayload) {
-        ContentKey key = ContentKeyFactory.get(draftChange.getContentKey());
-
-        final String attributeName = draftChange.getAttributeName();
-        final ContentAttributeKey attributeKey = new ContentAttributeKey(key, attributeName);
-        final Attribute attributeDef = contentTypeInfoService.findAttributeByName(key.type, attributeName).get();
-
-        final boolean isFieldShadowed = shadowedFields.keySet().contains(attributeKey);
-        final Object oldValue = oldPayload.get(key).get(attributeDef);
-        final String valueOnDraft = draftChange.getValue();
-
-        final String[] values = describeValueChange(key, attributeDef, oldValue, valueOnDraft);
+    private GwtNodeChange toGwtNodeChange(ContentKey key, Attribute attributeDef, boolean isFieldShadowed, Object valueBefore, String valueOnDraft) {
+        final String[] describedValues = describeValueChange(key, attributeDef, valueBefore, valueOnDraft);
 
         GwtNodeChange gwtNodeChange = createGwtNodeChangePrototype(key, isFieldShadowed);
-        gwtNodeChange.addDetail(new GwtChangeDetail(gwtNodeChange.getChangeType(), attributeName, values[0], values[1], valueOnDraft));
+        gwtNodeChange.addDetail(new GwtChangeDetail(gwtNodeChange.getChangeType(), attributeDef.getName(), describedValues[0], describedValues[1], valueOnDraft));
 
         return gwtNodeChange;
     }
@@ -424,83 +426,63 @@ public class ContentChangesService {
     }
 
     private String[] describeValueChange(ContentKey key, Attribute attributeDef, Object valueBefore, String valueOnDraft) {
-        String oldValue = null;
-        String newValue = valueOnDraft;
+        String[] describedValues = null;
 
         if (valueBefore != null) {
-            if (valueOnDraft == null) {
-                // null value on draft means original value is hit out
-                String[] result = describeNullDraftValueChange(attributeDef, valueBefore);
-                oldValue = result[0];
-                newValue = result[1];
+
+            if (attributeDef instanceof Scalar) {
+                describedValues = new String[] { ScalarValueConverter.serializeToString((Scalar) attributeDef, valueBefore),
+                        valueOnDraft != null ? valueOnDraft : DRAFT_NULL_VALUE_DESCRIPTION };
+            } else if (attributeDef instanceof Relationship) {
+                Relationship relationshipDef = (Relationship) attributeDef;
+
+                if (relationshipDef.getCardinality() == RelationshipCardinality.ONE) {
+                    describedValues = new String[] { ((ContentKey) valueBefore).getEncoded(), valueOnDraft != null ? valueOnDraft : DRAFT_NULL_VALUE_DESCRIPTION };
+                } else {
+                    if (valueOnDraft != null) {
+                        describedValues = describeContentKeyListChange(valueBefore, valueOnDraft);
+                    } else {
+                        List<ContentKey> oldKeys = (List<ContentKey>) valueBefore;
+
+                        StringBuilder oldValueBuilder = new StringBuilder();
+                        oldValueBuilder
+                            .append("Deleted: ")
+                            .append(StringUtils.join(", ", oldKeys));
+
+                        describedValues = new String[] { oldValueBuilder.toString(), DRAFT_NULL_VALUE_DESCRIPTION };
+                    }
+                }
+            }
+        } else {
+            if (attributeDef instanceof Relationship && RelationshipCardinality.MANY == ((Relationship) attributeDef).getCardinality()) {
+                List<String> newKeys = decodedListOfContentKeysFromDraftValue(valueOnDraft);
+
+                StringBuilder newValueBuilder = new StringBuilder();
+                newValueBuilder
+                    .append("Added: ")
+                    .append(StringUtils.join(", ", newKeys));
+
+                return new String[] { null, newValueBuilder.toString() };
+
             } else {
-                String[] result = describeValueOverride(attributeDef, valueBefore, valueOnDraft);
-                oldValue = result[0];
-                newValue = result[1];
+                describedValues = new String[] {null, valueOnDraft};
             }
         }
 
-        return new String[] {oldValue, newValue};
+        return describedValues;
     }
 
-    private String[] describeValueOverride(Attribute attributeDef, Object valueBefore, String valueOnDraft) {
-        String oldValue = null;
-        String newValue = valueOnDraft;
-
-        if (attributeDef instanceof Scalar) {
-            oldValue = ScalarValueConverter.serializeToString((Scalar) attributeDef, valueBefore);
-        } else if (attributeDef instanceof Relationship) {
-            Relationship relationshipDef = (Relationship) attributeDef;
-
-            if (relationshipDef.getCardinality() == RelationshipCardinality.ONE) {
-                oldValue = ((ContentKey) valueBefore).getEncoded();
-            } else {
-                String[] changeValues = describeContentKeyListChange((Relationship) attributeDef, valueBefore, newValue);
-                oldValue = changeValues[0];
-                newValue = changeValues[1];
-            }
-        }
-
-        return new String[] {oldValue, newValue};
-    }
-
-    private String[] describeNullDraftValueChange(Attribute attributeDef, Object valueBefore) {
-        String oldValue = null;
-
-        if (attributeDef instanceof Scalar) {
-            oldValue = ScalarValueConverter.serializeToString((Scalar)attributeDef, valueBefore);
-        } else if (attributeDef instanceof Relationship) {
-            Relationship relationshipDef = (Relationship) attributeDef;
-
-            if (relationshipDef.getCardinality() == RelationshipCardinality.ONE) {
-                oldValue = ((ContentKey) valueBefore).getEncoded();
-            } else {
-                List<ContentKey> oldKeys = (List<ContentKey>) valueBefore;
-
-                StringBuilder oldValueBuilder = new StringBuilder();
-                oldValueBuilder
-                    .append("Deleted: ")
-                    .append(StringUtils.join(", ", oldKeys));
-
-                oldValue = oldValueBuilder.toString();
-            }
-        }
-
-        return new String[] { oldValue, "(removed)" };
-    }
-
-    private String[] describeContentKeyListChange(Relationship relationshipDef, Object valueBefore, String draftValue) {
-        String oldValue = null;
-        String newValue = null;
+    private String[] describeContentKeyListChange(Object valueBefore, String draftValue) {
+        String[] describedValues = null;
 
         // do the magic !
         List<String> oldKeys = new ArrayList<String>();
         for (ContentKey contentKey : (List<ContentKey>) valueBefore) {
             oldKeys.add(contentKey.getEncoded());
         }
-        List<String> newKeys = Arrays.asList(draftValue.split("\\|"));
+        List<String> newKeys = decodedListOfContentKeysFromDraftValue(draftValue);
 
-        Map<String, int[]> changeVector = computeListItemPositions(oldKeys, newKeys);
+        Map<String, int[]> changeVector = computeItemPositions(oldKeys, newKeys);
         if (changeVector != null && !changeVector.isEmpty()) {
 
             Set<String> keysAdded = new HashSet<String>();
@@ -536,7 +518,7 @@ public class ContentChangesService {
 
                 // At this point we have two equally sized lists having the same elements
                 // element order may or may not be the same
-                Map<String, int[]> changeVector2 = computeListItemPositions(filteredOldKeys, filteredNewKeys);
+                Map<String, int[]> changeVector2 = computeItemPositions(filteredOldKeys, filteredNewKeys);
                 if (changeVector2 != null) {
                     for (Map.Entry<String, int[]> entry : changeVector2.entrySet()) {
                         String movedKey = entry.getKey();
@@ -559,17 +541,22 @@ public class ContentChangesService {
                 }
             }
 
-            String[] result = describeKeyChanges(keysAdded, keysRemoved, keysPermuted, keysMoved);
-            oldValue = result[0];
-            newValue = result[1];
+            describedValues = describeKeyChanges(keysAdded, keysRemoved, keysPermuted, keysMoved);
         } else {
-            oldValue = "#error";
+            describedValues = new String[] {"#error", null};
         }
 
-        return new String[] { oldValue, newValue };
+        return describedValues;
     }
 
-    private Map<String, int[]> computeListItemPositions(List<String> left, List<String> right) {
+    private List<String> decodedListOfContentKeysFromDraftValue(String draftValue) {
+        if ("[]".equals(draftValue)) {
+            return Collections.emptyList();
+        }
+        return Arrays.asList(draftValue.split("\\|"));
+    }
+
+    private Map<String, int[]> computeItemPositions(List<String> left, List<String> right) {
         Set<String> keys = new HashSet<String>();
         if (left != null) {
             keys.addAll(left);
@@ -591,9 +578,6 @@ public class ContentChangesService {
     }
 
     private String[] describeKeyChanges(Collection<String> keysAdded, Collection<String> keysRemoved, Map<String, String> keysPermuted, Map<String, String> keysMoved) {
-        String oldValue = null;
-        String newValue = null;
-
         StringBuilder oldValueBuilder = new StringBuilder();
         StringBuilder newValueBuilder = new StringBuilder();
 
@@ -632,14 +616,16 @@ public class ContentChangesService {
             }
         }
 
+        String[] describedValues = new String[2];
+
         if (oldValueBuilder.length() > 0) {
-            oldValue = oldValueBuilder.toString();
+            describedValues[0] = oldValueBuilder.toString();
         }
         if (newValueBuilder.length() > 0) {
-            newValue = newValueBuilder.toString();
+            describedValues[1] = newValueBuilder.toString();
         }
 
-        return new String[] {oldValue, newValue};
+        return describedValues;
     }
 
     private GwtChangeDetail toGwtChangeDetail(String nodeChangeType, ContentType type, ContentChangeDetailEntity detail) {
