@@ -32,7 +32,6 @@ import com.freshdirect.fdstore.CallCenterServices;
 import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ecomm.gateway.SaleCronService;
-import com.freshdirect.fdstore.ecomm.gateway.SaleCronServiceI;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
