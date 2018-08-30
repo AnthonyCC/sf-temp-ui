@@ -56,14 +56,15 @@ public class ReconciliationService extends AbstractEcommService implements Recon
 	private static final String ADDSETTLEMENT = "reconsiliation/addSettlement";
 	private static final String CHARGEBACK = "reconsiliation/chargeBack";
 	private static final String CHARGEBACK_REVERSAL ="reconsiliation/chargeBackReversal";
-	private static final String SETTLEMENT_SUMMARY ="reconsiliation/settlementSummary";
+	private static final String SETTLEMENT_SUMMARY ="reconsiliation/addSettlementSummary";
 	private static final String ADD_ADJUSTMENTS = "reconsiliation/addAdjustments";
 	private static final String IS_CHAGE_SETTLEMENT =  "reconsiliation/isChargeSettlement";
 	private static final String PROCESS_ECPRETURNS = "reconsiliation/processECPReturn";
 	private static final String PROCESS_SETTLEMENTS = "reconsiliation/processSettlement";
 	private static final String LOAD_BAD_TRANSACTION =  "reconsiliation/loadBadTransaction";
 	private static final String LOAD_READY_SETTLEMENT = "reconsiliation/loadReadyToSettleECPSales";
-	private static final String LOAD_READY_SETTLEMENT_BY_SALESIDS = "reconsiliation/loadReadyToSettleBySales/";
+	private static final String LOAD_READY_SETTLEMENT_BY_SALESIDS = "reconsiliation/loadReadyToSettleByECPSaleIds";
+	private static final String SETTLEMENT_FAILED_AFTER_SETTLED = "reconsiliation/isSettlementFailedAfterSettled/";
 	private static final String PROCESS_GC_SETTLEMENT = "reconsiliation/processGcSettlement/";
 	private static final String PROCESS_SETTLEMENT_PENDING_ORDER = "reconsiliation/proSettlePenOrder/";
 	private static final String SEND_SETTLEMENT_RECON_SAP = "reconsiliation/sendSettleToReconSap/";
@@ -409,7 +410,7 @@ public class ReconciliationService extends AbstractEcommService implements Recon
 	@Override
 	public List loadReadyToSettleECPSales(List<String> saleIds)
 			throws RemoteException {
-		Response<List> response = null;
+		Response<List<CCDetailOne>> response = null;
 		try {
 			Request<ObjectNode> request = new Request<ObjectNode>();
 			ObjectNode rootNode = getMapper().createObjectNode();
@@ -419,7 +420,7 @@ public class ReconciliationService extends AbstractEcommService implements Recon
 			String inputJson = buildRequest(request);
 
 			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(LOAD_READY_SETTLEMENT_BY_SALESIDS),
-					new TypeReference<Response<List>>() {
+					new TypeReference<Response<List<CCDetailOne>>>() {
 					});
 
 			if (!response.getResponseCode().equals("OK")) {
@@ -446,7 +447,7 @@ public class ReconciliationService extends AbstractEcommService implements Recon
 
 			request.setData(rootNode);
 			String inputJson = buildRequest(request);
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(LOAD_READY_SETTLEMENT_BY_SALESIDS+saleId),	new TypeReference<Response<Boolean>>() {});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(SETTLEMENT_FAILED_AFTER_SETTLED+saleId),	new TypeReference<Response<Boolean>>() {});
 
 			if (!response.getResponseCode().equals("OK")) {
 				LOGGER.error("Error in isSettlementFailedAfterSettled: data=" + inputJson);
@@ -496,7 +497,7 @@ public class ReconciliationService extends AbstractEcommService implements Recon
 
 			request.setData(rootNode);
 			String inputJson = buildRequest(request);
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(PROCESS_SETTLEMENT_PENDING_ORDER),	new TypeReference<Response<List<ErpGCSettlementInfo>>>() {});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(PROCESS_SETTLEMENT_PENDING_ORDER+"/adssa"),	new TypeReference<Response<List<ErpGCSettlementInfo>>>() {});
 
 			if (!response.getResponseCode().equals("OK")) {
 				LOGGER.error("Error in processSettlementPendingOrders: data=" + inputJson);
