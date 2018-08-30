@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.framework.core.ModelSupport;
@@ -50,6 +51,7 @@ public class FDCustomerEStoreModel extends ModelSupport{
     private String hasAutoRenewDP;
     private String autoRenewDpType;
 
+    @JsonProperty("informOrderModifyViewCount")
     private Map<EnumEStoreId, Integer> informOrderModifyViewCount = new HashMap<EnumEStoreId, Integer>();
 	 
     public String getRafClickId() {
