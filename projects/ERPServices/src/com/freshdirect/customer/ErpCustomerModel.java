@@ -27,7 +27,7 @@ public class ErpCustomerModel extends ModelSupport implements ErpCustomerI {
 	 * @associates <{ErpAddressModel}>
 	 * @label ship to
 	 */
-	private LocalObjectList<ErpAddressModel> shipToAddress = new LocalObjectList<ErpAddressModel>();
+	private LocalObjectList<ErpAddressModel> shipToAddresses = new LocalObjectList<ErpAddressModel>();
 
 	private LocalObjectList<ErpPaymentMethodI> paymentMethods = new LocalObjectList<ErpPaymentMethodI>();
 
@@ -86,7 +86,7 @@ public class ErpCustomerModel extends ModelSupport implements ErpCustomerI {
 	 */
 	public List<ErpAddressModel> getShipToAddresses() {
 		// shallow copy
-		return (List<ErpAddressModel>)this.shipToAddress.clone();
+		return (List<ErpAddressModel>)this.shipToAddresses.clone();
 	}
 
 	/**
@@ -95,7 +95,7 @@ public class ErpCustomerModel extends ModelSupport implements ErpCustomerI {
 	 * @param element ShipToAddress model object
 	 */
 	public void addShipToAddress(ErpAddressModel element) {
-		this.shipToAddress.add(element);
+		this.shipToAddresses.add(element);
 	}
 
 	/**
@@ -106,7 +106,7 @@ public class ErpCustomerModel extends ModelSupport implements ErpCustomerI {
 	 * @throws CollectionException if the PK was not found.
 	 */
 	public void updateShipToAddress(ErpAddressModel element) {
-		this.shipToAddress.update(element);
+		this.shipToAddresses.update(element);
 	}
 
 	/**
@@ -117,7 +117,7 @@ public class ErpCustomerModel extends ModelSupport implements ErpCustomerI {
 	 * @return false if not found
 	 */
 	public boolean removeShipToAddress(PrimaryKey pk) {
-		return null != this.shipToAddress.removeByPK(pk);
+		return null != this.shipToAddresses.removeByPK(pk);
 	}
 
 	public List<ErpCustomerCreditModel> getCustomerCredits() {

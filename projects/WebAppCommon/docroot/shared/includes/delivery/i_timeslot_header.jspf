@@ -64,9 +64,9 @@ if(timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)|| timeSlotCtx.equals(Ti
     window.FreshDirect = window.FreshDirect || {};
     window.FreshDirect.timeslotReservation = {
       hasPreReserved: '<%= hasPreReserved %>',
-      reservationStart: '<%= rsv.getStartTime().getTime() %>',
-      reservationEnd: '<%= rsv.getEndTime().getTime() %>',
-      expiration: '<%= rsv.getExpirationDateTime().getTime() %>'
+      reservationStart: '<%= (rsv != null) ? rsv.getStartTime().getTime() : "" %>',
+      reservationEnd: '<%= (rsv != null) ? rsv.getEndTime().getTime() : "" %>',
+      expiration: '<%= (rsv != null) ? rsv.getExpirationDateTime().getTime() : "" %>'
     };
     </script>
 		<%@ include file="/shared/includes/i_confirmation_messages.jspf"%>

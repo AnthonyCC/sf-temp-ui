@@ -311,13 +311,11 @@ public class ProductExtraDataPopulator {
         final String recipeCategoryId = productNode.getParentId();
         List<RecipeData> recipeDatas = new ArrayList<RecipeData>();
         for (Recipe recipe : productNode.getRelatedRecipes()) {
-            if (recipe.isAvailable()) {
-                final String recipeId = recipe.getContentName();
-                final String recipeName = recipe.getName();
+            final String recipeId = recipe.getContentName();
+            final String recipeName = recipe.getName();
 
-                RecipeData recipeData = new RecipeData(recipeId, recipeCategoryId, recipeName);
-                recipeDatas.add(recipeData);
-            }
+            RecipeData recipeData = new RecipeData(recipeId, recipeCategoryId, recipeName);
+            recipeDatas.add(recipeData);
         }
         if (recipeDatas.size() > 0) {
             data.setRelatedRecipes(recipeDatas);
