@@ -94,7 +94,7 @@ SESSIONSTORAGE:
 		options: {
 			SystemMessage: 'SystemMessage',
 			messagesOrder: [],
-			$messages: $('#messages'),
+			$messages: null,
 			handlerSelector: '.handler',
 			messagesOpenClass: 'open',
 			messagesOpenVisHiddenClass: 'visHidden',
@@ -243,12 +243,16 @@ SESSIONSTORAGE:
 			}
 		},
 		init: function( _options ) {
+			if (messageData.options.$messages === null) {
+				messageData.options.$messages = $('#messages');
+			}
 			setOptions(_options);
 
 			getMessageStorage();
 			cleanMessageStorage();
 		},
 		setOptions: function(_options) {
+			setOptions(_options);
 		},
 		destroy: function() {
 			return this.each(function(){});
@@ -270,9 +274,9 @@ SESSIONSTORAGE:
 		openMessages: function() {
 			messageData.messagesIsClosed = false;
 			messageStorage.messages.isClosed = false;
-			$(messageData.options.$messages.selector).addClass(messageData.options.messagesOpenClass);
-			$(messageData.options.$messages.selector).removeClass(messageData.options.messagesOpenVisHiddenClass);
-			$(messageData.options.$messages.selector).trigger({
+			$(messageData.options.$messages).addClass(messageData.options.messagesOpenClass);
+			$(messageData.options.$messages).removeClass(messageData.options.messagesOpenVisHiddenClass);
+			$(messageData.options.$messages).trigger({
 				type: 'messagesOpen'
 			});
 		},
@@ -328,9 +332,9 @@ SESSIONSTORAGE:
 		closeMessages: function() {
 			messageData.messagesIsClosed = true;
 			messageStorage.messages.isClosed = true;
-			$(messageData.options.$messages.selector).removeClass(messageData.options.messagesOpenClass);
-			$(messageData.options.$messages.selector).addClass(messageData.options.messagesOpenVisHiddenClass);
-			$(messageData.options.$messages.selector).trigger({
+			$(messageData.options.$messages).removeClass(messageData.options.messagesOpenClass);
+			$(messageData.options.$messages).addClass(messageData.options.messagesOpenVisHiddenClass);
+			$(messageData.options.$messages).trigger({
 				type: 'messagesClose'
 			});
 
@@ -412,13 +416,13 @@ SESSIONSTORAGE:
 
 
 			if (addHandler) {
-				$(messageData.options.$messages.selector).addClass('hashandler');
+				$(messageData.options.$messages).addClass('hashandler');
 			} else {
-				$(messageData.options.$messages.selector).removeClass('hashandler');
+				$(messageData.options.$messages).removeClass('hashandler');
 				messageData.options.$messages.messages('closeMessages');
 			}
 
-			$(messageData.options.$messages.selector+' ul').html(html);
+			$(messageData.options.$messages).find('ul').html(html);
 			
 			return messageData.options.$messages;
 		},
@@ -627,26 +631,20 @@ SESSIONSTORAGE:
 		}
 	};
 
-	// When OAS pushes a system message:
-	$(document).on('OAS_DONE',function(event,id){
-		if (id == messageData.options.SystemMessage) {
-			$(document.getElementById("oas_"+messageData.options.SystemMessage)).messages('add', messageData.options.SystemMessage);
-		}
-	});
-
 	$(document).on('click','#messages .handler',function(e){
 		var $messages = $(document.getElementById('messages'));
 		if ($messages.hasClass('open')) {
 			$messages.messages('closeMessages');
-
-
 		} else {
 			$messages.messages('openMessages');
 		}
 	});
 
-	$(document).messages('init');
 	$(function() {
+		$(document).messages('init');
+		if ($('#oas_SystemMessage').length) {
+			$('#oas_SystemMessage').messages('add', 'SystemMessage');
+		}
 		$('.message.invisible').messages('add');
 		$('.alerts.invisible').messages('add', $.unique($('.alerts.invisible[id]').map(function() { return this.id; }).get()), true);
 

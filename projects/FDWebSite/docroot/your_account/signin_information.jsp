@@ -799,8 +799,8 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	{%>	<fieldset style="clear:both;"><legend class="offscreen">mobile preferences:</legend>
 		<div class="youraccount_left_1"><input class="radio" type="checkbox" id="order_notices" name="order_notices" value="Y" <%=order_notices ? "checked":""%>></div>
 		<div class="youraccount_left_2"><label for="order_notices">FreshDirect Order Notices</label></div>
-		<div class="accordion"><input type="checkbox" id="order_notices" />
-			<label for="order_notices" class="text12bold" style="margin-left: 0;"><div style="display:none;">Examples of messages (depending on your area)</div><div class="text12bold">Examples of messages (depending on your area)</div></label>
+		<div class="accordion"><input type="checkbox" id="order_notices_accordion" />
+			<label for="order_notices_accordion" class="text12bold" style="margin-left: 0;"><div style="display:none;">Examples of messages (depending on your area)</div><div class="text12bold">Examples of messages (depending on your area)</div></label>
 			<div class="text12" id="article" align="left">
 				<p><strong>Estimated Time of Delivery: </strong> We'll narrow down your two-hour window to just one hour on the day of delivery.</p>
 				<p><strong>You're Next! </strong>Receive an alert when you are the next customer on our driver's route. Your food is on the way!</p>
@@ -809,8 +809,8 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 
 		<div class="youraccount_left_1"><input class="radio" type="checkbox" id="order_exceptions" name="order_exceptions" value="Y" <%=order_exceptions ? "checked":""%>></div>
 		<div class="youraccount_left_2"><label for="order_exceptions">FreshDirect Order Alerts</label></div>
-		<div class="accordion"><input type="checkbox" id="order_exceptions"> 
-			<label for="order_exceptions" class="text12bold" style="margin-left: 0;"><div style="display:none;">Examples of messages (depending on your area)</div><div class="text12bold">Examples of messages (depending on your area)</div></label>
+		<div class="accordion"><input type="checkbox" id="order_exceptions_accordion"> 
+			<label for="order_exceptions_accordion" class="text12bold" style="margin-left: 0;"><div style="display:none;">Examples of messages (depending on your area)</div><div class="text12bold">Examples of messages (depending on your area)</div></label>
 			<div class="text12" id="article1" align="left">
 				<p><strong>Cancellation</strong> Get an alert when your order has to be cancelled because of unforeseen circumstances.</p>
 				<p><strong>Delivery Attempt: </strong> Uh oh, did we just miss you? We'll text you after an unsuccessful delivery attempt to your place.</p>
@@ -820,8 +820,8 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 		
 		<div class="youraccount_left_1"><input class="radio" type="checkbox" id="offers" name="offers" value="Y" <%=offers ? "checked":""%>></div>
 		<div class="youraccount_left_2"><label for="offers">FreshDirect Perks</label></div>
-		<div class="accordion"><input type="checkbox" id="offers"> 
-			<label for="offers" class="text12bold" style="margin-left: 0;"><div style="display:none;">Description</div><div class="text12bold">Description</div></label>
+		<div class="accordion"><input type="checkbox" id="offers_accordion"> 
+			<label for="offers_accordion" class="text12bold" style="margin-left: 0;"><div style="display:none;">Description</div><div class="text12bold">Description</div></label>
 			<div class="text12" id="article2" align="left">
 				Get the inside scoop on exciting new features, exclusive promotions, and more!
 			</div>
@@ -832,8 +832,8 @@ else{  %>
     <fieldset style="clear:both;"><legend class="offscreen">mobile preferences:</legend>
 	<div class="youraccount_left_1"><input class="radio" type="checkbox" id="order_notices" name="order_notices" value="Y" <%=order_notices ? "checked":""%>></div>
 	<div class="youraccount_left_2"><label for="order_notices">Delivery Updates</label></div>
-	<div class="accordion"><input type="checkbox" id="order_notices" />
-		<label for="order_notices" class="text12bold" style="margin-left: 0;"><div style="display:none;">Examples of messages (depending on your area)</div><div class="text12bold">Examples of messages (depending on your area)</div></label>
+	<div class="accordion"><input type="checkbox" id="order_notices_accordion" />
+		<label for="order_notices_accordion" class="text12bold" style="margin-left: 0;"><div style="display:none;">Examples of messages (depending on your area)</div><div class="text12bold">Examples of messages (depending on your area)</div></label>
 		<div class="text12" id="article" align="left">
 			<p><strong>Out for Delivery:</strong></p>
 			<p><strong>You are Next: </strong> deferred until delivery personnel are equipped with handhelds.</p>
@@ -843,8 +843,8 @@ else{  %>
 	
 	<div class="youraccount_left_1"><input class="radio" type="checkbox" id="order_exceptions" name="order_exceptions" value="Y" <%=order_exceptions ? "checked":""%>></div>
 	<div class="youraccount_left_2"><label for="order_exceptions">Order Status</label></div>
-	<div class="accordion"><input type="checkbox" id="order_exceptions"> 
-		<label for="order_exceptions" class="text12bold" style="margin-left: 0;"><div style="display:none;">Examples of messages (depending on your area)</div><div class="text12bold">Examples of messages (depending on your area)</div></label>
+	<div class="accordion"><input type="checkbox" id="order_exceptions_accordion"> 
+		<label for="order_exceptions_accordion" class="text12bold" style="margin-left: 0;"><div style="display:none;">Examples of messages (depending on your area)</div><div class="text12bold">Examples of messages (depending on your area)</div></label>
 		<div class="text12"   id="article1" align="left">
 			<p><strong>Cancellation</strong> Get an alert when your order has to be cancelled because of unforeseen circumstances.</p>
 			<p><strong>Delivery Attempt:</strong> Uh oh, did we just miss you? We'll text you after an unsuccessful delivery attempt to your place.</p>
@@ -854,8 +854,8 @@ else{  %>
 	
 	<div class="youraccount_left_1"><input class="radio" type="checkbox" id="offers" name="offers" value="Y" <%=offers ? "checked":""%>></div>
 	<div class="youraccount_left_2"><label for="offers">Offers</label></div>
-	<div class="accordion"><input type="checkbox" id="offers">
-		<label for="offers" class="text12bold" style="margin-left: 0;"><div style="display:none;">Description</div><div class="text12bold">Description</div></label>
+	<div class="accordion"><input type="checkbox" id="offers_accordion">
+		<label for="offers_accordion" class="text12bold" style="margin-left: 0;"><div style="display:none;">Description</div><div class="text12bold">Description</div></label>
 		<div class="text12" id="article2" align="left">
 			Get the inside scoop on exciting new features, exclusive promotions, and more!
 		</div>
