@@ -657,7 +657,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 		<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='busphone' id='errorMsg'><span id="busphone_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler></div>
 	
 		<div class="youraccount_left_1"><label for="dlvcellphone">Cell/Alt. #</label></div>
-	    <div class="youraccount_left_2"><input type="text" size="28" maxlength="20" class="text11" aria-describedby="dlvcellphone_error" name="cellphone" id="dlvcellphonee" title="Cell Phone" value="<%=cellPhone%>"><label for="uci_cellPhone_ext"><span class="youraccount_phone_ext">Ext.<p class="offscreen">extension for cell phone</p></span></label><input type="text" maxlength="6" size="4" class="text9 ext56" name="cellphoneext" id="uci_cellPhone_ext" value="<%=cellPhoneExt%>"></div>
+	    <div class="youraccount_left_2"><input type="text" size="28" maxlength="20" class="text11" aria-describedby="dlvcellphone_error" name="cellphone" id="dlvcellphone" title="Cell Phone" value="<%=cellPhone%>"><label for="uci_cellPhone_ext"><span class="youraccount_phone_ext">Ext.<p class="offscreen">extension for cell phone</p></span></label><input type="text" maxlength="6" size="4" class="text9 ext56" name="cellphoneext" id="uci_cellPhone_ext" value="<%=cellPhoneExt%>"></div>
 		<div class="youraccount_left_3"><fd:ErrorHandler result='<%=result%>' name='dlvcellphone' id='errorMsg'><span id="dlvcellphone_error" class="errortext"><%=errorMsg%></span></fd:ErrorHandler></div>
 	
 		<div class="youraccount_left_1"><label for="<%=EnumUserInfoName.ALT_EMAIL.getCode()%>">Other Email</label></div>
