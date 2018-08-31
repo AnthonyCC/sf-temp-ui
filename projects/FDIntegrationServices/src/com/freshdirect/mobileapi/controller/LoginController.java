@@ -23,6 +23,8 @@ import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpInvalidPasswordException;
+import com.freshdirect.deliverypass.EnumDlvPassStatus;
+import com.freshdirect.ecommerce.data.dlvpass.DlvPassStatusMapData;
 import com.freshdirect.enums.CaptchaType;
 import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
@@ -603,6 +605,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
         if(responseMessage.isPurchaseDlvPassEligible()){
         	responseMessage.setDpskulist(new ArrayList<String>(Arrays.asList((FDStoreProperties.getFDXDPSku()).split(","))));
         }
+        responseMessage.setDpActive(user.getFDSessionUser().getDeliveryPassStatus().equals(EnumDlvPassStatus.ACTIVE) ? true : false);
         return responseMessage;
     }
 

@@ -55,6 +55,7 @@ public class LoggedIn extends Message {
     private boolean purchaseDlvPassEligible;
     private boolean fdxdpenabled;
     private List<String> dpskulist;
+    private boolean dpActive;
     
     private Map<String, Boolean> displayedCaptchaList;
 
@@ -337,5 +338,13 @@ public class LoggedIn extends Message {
 		this.displayedCaptchaList.put(type.toString(), display);
 		
 		
+	}
+
+	public boolean isDpActive() {
+		return dpActive;
+	}
+
+	public void setDpActive(boolean isDpActive) {
+		this.dpActive = isDpActive;
 	}
 }

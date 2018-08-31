@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
+import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.enums.CaptchaType;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDActionNotAllowedException;
@@ -566,6 +567,7 @@ public class RegistrationController extends BaseController implements SystemMess
         if(responseMessage.isPurchaseDlvPassEligible()){
         	responseMessage.setDpskulist(new ArrayList<String>(Arrays.asList((FDStoreProperties.getFDXDPSku()).split(","))));
         }
+        responseMessage.setDpActive(user.getFDSessionUser().getDeliveryPassStatus().equals(EnumDlvPassStatus.ACTIVE) ? true : false);
 		
 		return responseMessage;
 	}
