@@ -817,6 +817,7 @@ public class Cart {
                 productLineItem.setHasTax(cartLine.hasTax());
                 productLineItem.setCartLineId(Integer.toString(cartLine.getRandomId()));
                 productLineItem.setGroupScaleSavings(cartLine.getGroupScaleSavings());
+                productLineItem.setDlvPassProduct(cartLine.lookupFDProduct().isDeliveryPass()?true:false);
 
                 //Slightly altering condition logic.  do only once and add to cart level later.
                 if ((platterCutoffTime == null) && productLineItem.hasPlatterRestriction()) {

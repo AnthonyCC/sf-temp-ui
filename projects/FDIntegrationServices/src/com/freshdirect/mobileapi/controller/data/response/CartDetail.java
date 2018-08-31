@@ -728,6 +728,8 @@ public class CartDetail {
     	
     	private String substituteProductImageURL;
     	
+    	private boolean dlvPassProduct;
+    	
         public String getDiscountMsg() {
 			return discountMsg;
 		}
@@ -848,6 +850,14 @@ public class CartDetail {
 		public void setSubstituteProductImageURL(
 				String substituteProductImageURL) {
 			this.substituteProductImageURL = substituteProductImageURL;
+		}
+
+		public boolean isDlvPassProduct() {
+			return dlvPassProduct;
+		}
+
+		public void setDlvPassProduct(boolean dlvPassProduct) {
+			this.dlvPassProduct = dlvPassProduct;
 		}
 
 		
