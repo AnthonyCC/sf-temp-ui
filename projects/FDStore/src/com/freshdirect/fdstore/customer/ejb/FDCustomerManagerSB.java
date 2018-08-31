@@ -89,6 +89,7 @@ import com.freshdirect.fdstore.customer.SilverPopupDetails;
 import com.freshdirect.fdstore.customer.UnsettledOrdersInfo;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.iplocator.IpLocatorEventDTO;
+import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
 import com.freshdirect.fdstore.request.FDProductRequest;
 import com.freshdirect.fdstore.sms.shortsubstitute.ShortSubstituteResponse;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
@@ -129,7 +130,8 @@ public interface FDCustomerManagerSB  extends EJBObject{
      * @throws ErpDuplicateUserIdException if user enters an email address already in the system
      * @deprecated
      */
-	public RegistrationResult register(
+	@Deprecated
+    public RegistrationResult register(
 		FDActionInfo info,
 		ErpCustomerModel erpCustomer,
 		FDCustomerModel fdCustomer,
@@ -221,6 +223,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      * @throws FDResourceException if an error occured using remote resources
      * @deprecated
      */
+    @Deprecated
     public void addPaymentMethod(FDActionInfo info, ErpPaymentMethodI paymentMethod, boolean paymentechEnabled) throws FDResourceException, RemoteException, ErpPaymentMethodException,ErpFraudException;
     
     @Deprecated
@@ -244,6 +247,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      * @throws FDResourceException if an error occured using remote resources
      * @deprecated
      */
+    @Deprecated
     public void updatePaymentMethod(FDActionInfo info, ErpPaymentMethodI paymentMethod) throws FDResourceException, RemoteException,  ErpPaymentMethodException;
 
 
@@ -256,6 +260,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      * throws FDResourceException if an error occured using remote resources
      * @deprecated
      */
+    @Deprecated
     public void removePaymentMethod(FDActionInfo info, ErpPaymentMethodI paymentMethod) throws FDResourceException, RemoteException;
 
     @Deprecated
@@ -286,6 +291,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      * @throws FDResourceException if an error occured using remote resources
      * @deprecated
      */
+    @Deprecated
     public Collection<ErpAddressModel> getShipToAddresses(FDIdentity identity) throws FDResourceException, RemoteException;
 
 
@@ -298,6 +304,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      * @throws FDResourceException if an error occured using remote resources
      * @deprecated
      */
+    @Deprecated
     public boolean addShipToAddress(FDActionInfo info, boolean checkUniqueness, ErpAddressModel address) throws FDResourceException, ErpDuplicateAddressException, RemoteException;
 
     /**
@@ -309,6 +316,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      * @throws FDResourceException if an error occured usong remote resources
      * @deprecated
      */
+    @Deprecated
     public boolean updateShipToAddress(FDActionInfo info, boolean checkUniqueness, ErpAddressModel address) throws FDResourceException, ErpDuplicateAddressException, RemoteException;
 
     /**
@@ -320,6 +328,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      * @throws FDResourceException if an error occured using remote resources
      * @deprecated
      */
+    @Deprecated
     public void removeShipToAddress(FDActionInfo info, PrimaryKey pk) throws FDResourceException, RemoteException;
 
     /***
@@ -329,6 +338,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      *@param PK Primary Key of the Ship To Address
      *@deprecated
      **/
+    @Deprecated
     public void setDefaultShipToAddressPK(FDIdentity identity, String shipToAddressPK) throws FDResourceException,RemoteException;
 
     /***
@@ -337,6 +347,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      *@Param identity the customer's Identity
      *@deprecated
      **/
+    @Deprecated
     public String getDefaultShipToAddressPK(FDIdentity identity) throws FDResourceException,RemoteException;
 
 
@@ -348,6 +359,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      * @throws FDResourceException if an error occured using remote resources
      * @deprecated
      */
+    @Deprecated
     public void storeUser(FDUser user) throws FDResourceException, RemoteException;
 
     // [APPREQ-369] store Cohort ID that belongs to user
@@ -500,6 +512,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      * @throws ErpComplaintException if order was not in proper state to accept complaints
      * @deprecated
      */
+    @Deprecated
     public PrimaryKey addComplaint(ErpComplaintModel complaint, String saleId,String erpCustomerId,String fdCustomerId, boolean autoApproveAuthorized, Double limit  ) throws FDResourceException, ErpComplaintException, RemoteException;
     @Deprecated
     public void approveComplaint(String complaintId, boolean isApproved, String csrId, boolean sendMail,Double limit) throws FDResourceException, ErpComplaintException, RemoteException;
@@ -703,6 +716,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
      * @throws FDResourceException if an error occured using remote resources
      * @deprecated
      */
+    @Deprecated
     public Collection<ErpGiftCardModel> getGiftCards(FDIdentity identity) throws FDResourceException, RemoteException;
 
     public List<ErpGiftCardModel> verifyStatusAndBalance(List<ErpGiftCardModel> giftcards, boolean reloadBalance ) throws FDResourceException, RemoteException;
@@ -838,7 +852,7 @@ public interface FDCustomerManagerSB  extends EJBObject{
 
 	public List<FDCartonInfo> getCartonDetailsForSale(FDOrderI order) throws FDResourceException, RemoteException;
 	@Deprecated
-	public Map getAssignedCustomerParams(FDUser user) throws FDResourceException, RemoteException;
+    public Map<String, AssignedCustomerParam> getAssignedCustomerParams(FDUserI user) throws FDResourceException, RemoteException;
 	@Deprecated
 	public void logIpLocatorEvent(IpLocatorEventDTO ipLocatorEventDTO) throws FDResourceException, RemoteException;
 	@Deprecated

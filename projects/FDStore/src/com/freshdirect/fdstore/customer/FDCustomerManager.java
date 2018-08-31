@@ -1060,7 +1060,8 @@ public class FDCustomerManager {
 	 * @deprecated
 	 */
 
-	public static String getDefaultDepotLocationPK(FDIdentity identity) throws FDResourceException {
+	@Deprecated
+    public static String getDefaultDepotLocationPK(FDIdentity identity) throws FDResourceException {
 		lookupManagerHome();
 
 		try {
@@ -1085,7 +1086,8 @@ public class FDCustomerManager {
 	 * @deprecated
 	 */
 
-	public static void setDefaultDepotLocationPK(FDIdentity identity, String locationId) throws FDResourceException {
+	@Deprecated
+    public static void setDefaultDepotLocationPK(FDIdentity identity, String locationId) throws FDResourceException {
 		lookupManagerHome();
 
 		try {
@@ -4548,7 +4550,7 @@ public class FDCustomerManager {
 
 	}
 
-	public static Map<String,AssignedCustomerParam> getAssignedCustomerParams(FDUser user) throws FDResourceException {
+    public static Map<String, AssignedCustomerParam> getAssignedCustomerParams(FDUserI user) throws FDResourceException {
 		try {
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerInfo)) {
 				return CustomerInfoService.getInstance().getAssignedCustomerParams(user);
