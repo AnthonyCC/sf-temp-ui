@@ -164,6 +164,10 @@ var FreshDirect = FreshDirect || {};
               visibility: 'hidden'
             }).removeClass('hidden');
             $('#'+popupId+' '+this.relatedBodySelector).html(related.html());
+
+            //lazy load
+            $('#'+popupId+' '+this.relatedBodySelector).find('.lazyload:not(.lazy-loaded)').trigger('lazyLoad');
+            
             //pass on classes from container
             relatedHolder.addClass(related.attr('class'));
             related.remove();

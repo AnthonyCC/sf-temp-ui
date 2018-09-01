@@ -24,7 +24,14 @@ public class BrowseData implements Serializable {
 		private boolean usePopularCategoriesLayout;
 		private FilterLabelDataCointainer filterLabels = new FilterLabelDataCointainer();
 		private int limit;
+		private boolean ifSingleUL;
 
+		public boolean isIfSingleUL() {
+			return ifSingleUL;
+		}
+		public void setIfSingleUL(boolean ifSingleUL) {
+			this.ifSingleUL = ifSingleUL;
+		}
 		public List<SectionData> getSections() {
 			return sections;
 		}

@@ -162,7 +162,7 @@ var FreshDirect = FreshDirect || {};
         }
 
         //re-size overlay based on contents loaded
-        $($ifr[0].contentWindow).load(function() {
+        $($ifr[0].contentWindow).on('load', function() {
         	var $ifr = $('#ifrPopup iframe'), $body = $($ifr[0].contentWindow.document.body), height, width;
 
             try {

@@ -46,7 +46,7 @@
 
 #messages .handler {
 	display:none;
-	background:url(/media_stat/images/locationbar/drawer_background_f1.png) 0 0 no-repeat;
+	/*background:url(/media_stat/images/locationbar/drawer_background_f1.png) 0 0 no-repeat;*/
 	width:150px;
 	height:25px;
 	position:absolute;

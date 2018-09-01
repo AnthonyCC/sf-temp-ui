@@ -85,10 +85,6 @@
 	display: table;
 	width: 800px;
 }
-[data-feature-productcard="2018"] .browseContent .sectionContent ul.products {
-	margin: 20px 0 20px;
-	width: 100%;
-}
 
 .browseContent .sectionContent .isHookLogic-true ul.products{
 	width:180px;
@@ -119,16 +115,10 @@
 .browseContent .sectionContent ul.products li.portrait-item {
 	border-left: 1px solid #ddd;
 }
-[data-feature-productcard="2018"] .browseContent .sectionContent ul.products li.portrait-item {
-	border-left: none;
-}
 
 .browseContent .sectionContent ul.products li.portrait-item.firstInLine {
 	/*border-left: none;*/
 	border-left: 1px solid transparent; /* removing this will make the popupcontent off by 1px */
-}
-[data-feature-productcard="2018"] .browseContent .sectionContent ul.products li.portrait-item.firstInLine {
-	border-left: none;
 }
 
 .ie8 .browseContent .sectionContent ul.products li.portrait-item {
@@ -140,30 +130,13 @@
 	width: 174px;
 	margin-bottom: 30px;
 }
-[data-feature-productcard="2018"] .browseContent .sectionContent ul.products[data-ipl="4"] li.portrait-item {
-	/* padding-left: 3px; */
-	margin-bottom: 5px;
-	max-width: none;
-	width: 190px;
-	padding: 0;
-	position: relative;
-	border-left: 1px solid transparent;
-}
-[data-feature-productcard="2018"] .browseContent .sectionContent ul.products[data-ipl="4"] li.portrait-item + li.portrait-item {
-  /* margin-left: 3px; */
-  margin-right: 3px;
-  border-left: 1px solid #ddd;
-  /* border-bottom: 1px solid #ddd; */
-  /* margin-bottom: 3px; */
-  /* padding-bottom: 5px; */
-}
 
 .browseContent .sectionContent ul.products li.portrait-item:nth-child(5n) {
   border-right: none;
 }
 
 .browseContent .sectionContent ul.products[data-ipl="4"] li.portrait-item:nth-child(5n) {
-	/*border-right: 1px solid #ddd;*/
+	/* border-right: 1px solid #ddd; */
 }
 
 .browseContent .sectionContent ul.products[data-ipl="4"] li.portrait-item:nth-child(4n) {
@@ -513,11 +486,6 @@ ul.products .description-skin{
 .container.browse .noCarousel1 [data-component="carousel"] ul li.portrait-item {
   width: 139px;
   margin: 0 3px 0 4px;
-}
-[data-feature-productcard="2018"] .container.srch [data-component="carousel"] ul li.portrait-item,
-[data-feature-productcard="2018"] .container.browse .noCarousel2 [data-component="carousel"] ul li.portrait-item,
-[data-feature-productcard="2018"] .container.browse .noCarousel1 [data-component="carousel"] ul li.portrait-item {
-  width: 157px;
 }
 
 .container.srch .new.products.recommender [data-component="carousel"] ul li.portrait-item{
