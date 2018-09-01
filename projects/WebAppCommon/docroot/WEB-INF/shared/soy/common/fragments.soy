@@ -89,6 +89,7 @@
 * @param? isHookLogic
 * @param? abFeatures
 * @param? mobWeb
+* @param? ifSingleUL
 */
 {template .fixedProductList autoescape="false"}
 
@@ -99,11 +100,14 @@
 	{let $l: $nProducts - $fProducts /}
 	{let $lines: ceiling($l / $ipl) /}
 	{for $line in range(0, $lines)}
-		<ul class="products transactional{if $line == $lines - 1} lastLine{/if}" data-ipl="{$ipl}">
+		{if (not $ifSingleUL) or ($ifSingleUL and $line == 0)}
+			<ul class="products transactional{if (not $ifSingleUL) and $line == $lines - 1} lastLine{/if}" data-ipl="{$ipl}">
+		{/if}
+
   		{for $col in range(0, $ipl)}
       		{if $fProducts + $col + $line * $ipl < $nProducts}
 	        	{let $product: $productList[$fProducts + $col + $line * $ipl] /}
-	        	{let $xtraClass: 'browseTransactionalProduct fakeRows fakeRow_' + $line + (($isHookLogic == true)? ' regularProduct isHookLogicProduct ' : ' regularProduct ') + ' prod'+$col + (($col==0)?' firstInLine':'')  /}
+	        	{let $xtraClass: 'browseTransactionalProduct fakeRows fakeRow_' + $line + (($isHookLogic == true)? ' regularProduct isHookLogicProduct ' : ' regularProduct ') + ' prod'+$col + (((not $ifSingleUL) and $col==0)?' firstInLine':'')  /}
 	        	{if $product.productId == '!_SPACER_!'}
 	        		/* SPACER */
 	        		<li class="portrait-item data-component="product" data-transactional-trigger="false"><!-- {$product.productId} --></li>
@@ -118,7 +122,10 @@
 	        	{/if}
       		{/if}
     	{/for}
-    	</ul>
+    	
+		{if (not $ifSingleUL) or ($ifSingleUL and $line == $lines - 1)}
+			</ul>
+		{/if}
 	{/for}
 {/template}
 
