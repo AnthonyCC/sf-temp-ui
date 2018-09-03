@@ -166,7 +166,7 @@ var FreshDirect = FreshDirect || {};
 
 		var signupData = {
 			email: email,
-			password, password,
+			password: password,
 			zipCode: zipCode,
 			serviceType: serviceType,
 			companyName: companyName,
