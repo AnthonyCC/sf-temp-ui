@@ -47,7 +47,7 @@ try{
    product =  PopulatorUtil.getProductByName(mcatId,mproductId);
 }
 catch (FDResourceException e){
-    throw new FDNotFoundException("Product is discontiued or exception happened during data collection.");
+    throw new FDNotFoundException("Product is discontinued or exception happened during data collection: "+ e);
 }
 
 } else if (variantId != null && variantId.length() != 0) {
