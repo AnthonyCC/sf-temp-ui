@@ -111,6 +111,7 @@ import com.freshdirect.customer.ejb.ErpFraudPreventionSB;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.delivery.ReservationException;
+import com.freshdirect.delivery.ejb.DlvManagerSB;
 import com.freshdirect.delivery.sms.SMSAlertManager;
 import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.deliverypass.DeliveryPassModel;
@@ -686,7 +687,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	}
 
-	private static void setAddressbyZipCode(String zipCode, FDUser user) {
+	private void setAddressbyZipCode(String zipCode, FDUser user) throws FDResourceException {
 		if (user.getAddress() != null) {
 			/*
 			 * StateCounty stateCounty=
@@ -697,23 +698,46 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			 * user.getAddress().setCity(WordUtils.capitalizeFully(stateCounty.
 			 * getCity()));
 			 */
-			ZipCodeAttributes zipAttributes = FDDeliveryManager.getInstance().getZipCodeAttribute(zipCode);
-			if (zipAttributes != null) {
-				user.getAddress().setState(WordUtils.capitalizeFully(zipAttributes.getState()));
-				user.getAddress().setCity(WordUtils.capitalizeFully(zipAttributes.getCity()));
-				user.setEbtAccepted(zipAttributes.isZipCodeEBTAccepeted()); // vamsi
-																			// change
+			
+			try {
+				DlvManagerSB dlvManagerSB = this.getDlvManagerHome().create();
+				ZipCodeAttributes zipAttributes = dlvManagerSB.lookupZipCodeAttributes(zipCode);
+				if (zipAttributes != null) {
+					user.getAddress().setState(WordUtils.capitalizeFully(zipAttributes.getState()));
+					user.getAddress().setCity(WordUtils.capitalizeFully(zipAttributes.getCity()));
+					user.setEbtAccepted(zipAttributes.isZipCodeEBTAccepeted()); // vamsi
+																				// change
+				}
+			} catch (RemoteException e) {
+				e.printStackTrace();
+				throw new FDResourceException(e);
+			} catch (CreateException e) {
+				e.printStackTrace();
+				throw new FDResourceException(e);
+
 			}
+			
+			
 		}
 	}
 
-	private static String getStateByZipCode(String zipCode) {
+	private String getStateByZipCode(String zipCode) throws FDResourceException {
 		String state = null;
-		StateCounty stateCounty = FDDeliveryManager.getInstance().getStateCountyByZipcode(zipCode);
-		if (stateCounty != null) {
-			state = WordUtils.capitalizeFully(stateCounty.getState());
+		DlvManagerSB dlvManagerSB;
+		try {
+			dlvManagerSB = this.getDlvManagerHome().create();
+			StateCounty stateCounty =dlvManagerSB.lookupStateCountyByZip(zipCode);
+			if (stateCounty != null) {
+				state = WordUtils.capitalizeFully(stateCounty.getState());
+			}
+			return state;
+		} catch (RemoteException e) {
+			throw new FDResourceException(e);
+		} catch (CreateException e) {
+			throw new FDResourceException(e);
+
 		}
-		return state;
+
 	}
 
 	public FDUser getFDUserWithCart(FDIdentity identity, EnumEStoreId eStoreId)
@@ -2541,7 +2565,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			}
 			// End apply delivery pass extension promotion.
 			LOGGER.info("Before commiting the reservation " + reservationId);
-			FDDeliveryManager.getInstance().commitReservation(reservationId, identity.getErpCustomerPK(),
+			commitReservation(reservationId, identity.getErpCustomerPK(),
 					getOrderContext(EnumOrderAction.CREATE, EnumOrderType.REGULAR, pk.getId()),
 					createOrder.getDeliveryInfo().getDeliveryAddress(), info.isPR1(), event);
 
@@ -2734,6 +2758,23 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 			throw new FDResourceException(re);
 		}
+	}
+
+	private void commitReservation(String reservationId, String erpCustomerPK,
+			OrderContext orderContext, ErpAddressModel deliveryAddress,
+			boolean pr1, TimeslotEvent event) throws FDResourceException, ReservationException {
+		DlvManagerSB dlvManagerSB;
+		try {
+			dlvManagerSB = this.getDlvManagerHome().create();
+			dlvManagerSB.commitReservation(reservationId, erpCustomerPK, orderContext, deliveryAddress, pr1, event);
+
+		} catch (RemoteException e) {
+			throw new FDResourceException(e);
+		} catch (CreateException e) {
+			throw new FDResourceException(e);
+		}
+		
+		
 	}
 
 	private OrderContext getOrderContext(EnumOrderAction action, EnumOrderType type, String id) {
@@ -3334,7 +3375,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				LOGGER.info("releaseReservation by ID: " + oldReservationId);
 				// now commit the new Reservation
 
-				FDDeliveryManager.getInstance().commitReservation(newReservationId, identity.getErpCustomerPK(),
+				commitReservation(newReservationId, identity.getErpCustomerPK(),
 						getOrderContext(EnumOrderAction.MODIFY, EnumOrderType.REGULAR, saleId),
 						order.getDeliveryInfo().getDeliveryAddress(), info.isPR1(), event);
 
@@ -3521,10 +3562,27 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 																				// causes
 																				// transaction
 																				// rollback
-			FDDeliveryManager.getInstance().recommitReservation(oldReservationId, identity.getErpCustomerPK(),
+			recommitReservation(oldReservationId, identity.getErpCustomerPK(),
 					getOrderContext(EnumOrderAction.MODIFY, EnumOrderType.REGULAR, saleId),
 					order.getDeliveryInfo().getDeliveryAddress(), info.isPR1());
 		}
+	}
+
+	private void recommitReservation(String oldReservationId,
+			String erpCustomerPK, OrderContext orderContext,
+			ErpAddressModel deliveryAddress, boolean pr1) throws FDResourceException, ReservationException {
+		DlvManagerSB dlvManagerSB;
+		try {
+			dlvManagerSB = this.getDlvManagerHome().create();
+			dlvManagerSB.recommitReservation(oldReservationId, erpCustomerPK, orderContext, deliveryAddress, pr1);
+
+		} catch (RemoteException e) {
+			throw new FDResourceException(e);
+		} catch (CreateException e) {
+			throw new FDResourceException(e);
+		}
+		
+		
 	}
 
 	public void modifyAutoRenewOrder(FDActionInfo info, String saleId, ErpModifyOrderModel order,
@@ -4724,16 +4782,26 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		 * Math.min(timeslot.getCutoffDateTime().getTime() -
 		 * System.currentTimeMillis(), DateUtil.HOUR); }
 		 */
-		FDReservation rsv = FDDeliveryManager.getInstance().reserveTimeslot(timeslotId, identity.getErpCustomerPK(),
-				rsvType, TimeslotLogic.encodeCustomer(address, user), chefsTable, null, isForced, event, false, null);
-
-		LOGGER.info("makeReservation: " + ((rsv != null) ? rsv.getId() : null));
-
 		
-		this.logActivity(getReservationActivityLog(rsv.getTimeslot(), aInfo,
-				EnumAccountActivityType.MAKE_PRE_RESERVATION, rsvType));
+		DlvManagerSB dlvManagerSB;
+		try {
+			dlvManagerSB = this.getDlvManagerHome().create();
+			FDReservation rsv =	dlvManagerSB.reserveTimeslot(timeslotId, identity.getErpCustomerPK(),
+					rsvType, TimeslotLogic.encodeCustomer(address, user), chefsTable, null, isForced, event, false, null);
+			LOGGER.info("makeReservation: " + ((rsv != null) ? rsv.getId() : null));
 
-		return rsv;
+			this.logActivity(getReservationActivityLog(rsv.getTimeslot(), aInfo,
+					EnumAccountActivityType.MAKE_PRE_RESERVATION, rsvType));
+
+			return rsv;
+			
+			
+		} catch (RemoteException e) {
+			throw new FDResourceException(e);
+		} catch (CreateException e) {
+			throw new FDResourceException(e);
+		}
+
 
 	}
 
@@ -6294,7 +6362,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 			LOGGER.info("valid iphone capture email: " + emailId);
 			// If unknown email, save it in dlv.zonenotification table
-			FDDeliveryManager.getInstance().saveFutureZoneNotification(emailId, source.getCode(),
+			saveFutureZoneNotification(emailId, source.getCode(),
 					(source != null && EnumTransactionSource.ANDROID_WEBSITE.equals(source) ? EnumServiceType.ANDROID
 							: EnumServiceType.IPHONE));
 
@@ -6306,6 +6374,22 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(fe);
 		}
 		return EnumIPhoneCaptureType.UNREGISTERED; // success
+	}
+
+	private void saveFutureZoneNotification(String emailId, String code,
+			EnumServiceType enumServiceType) throws FDResourceException {
+		DlvManagerSB dlvManagerSB;
+		try {
+			dlvManagerSB = this.getDlvManagerHome().create();
+			dlvManagerSB.saveFutureZoneNotification(emailId, code, enumServiceType.getName());
+
+		} catch (RemoteException e) {
+			throw new FDResourceException(e);
+		} catch (CreateException e) {
+			throw new FDResourceException(e);
+		}
+		
+		
 	}
 
 	public void doEmail(FTLEmailI email) throws FDResourceException {
@@ -7816,7 +7900,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 			LOGGER.info("valid iphone capture email: " + email);
 			// If unknown email, save it in dlv.zonenotification table
-			FDDeliveryManager.getInstance().saveFutureZoneNotification(email, zoneId,
+			saveFutureZoneNotification(email, zoneId,
 					EnumServiceType.getEnum(serviceType));
 
 		} catch (Exception e) {
