@@ -307,21 +307,13 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 				model.setAffiliate(affiliate);
 				ErpSettlementInfo info = null;
 				if (null !=PayPalSettlementTransactionCodes.EnumPPSTLEventCode.getEnum(trxn.getTransactionEventCode())){
-					if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
-						info = ReconciliationService.getInstance().addSettlement(model, saleId, affiliate, false);
-					}else {info = reconsSB.addSettlement(model, saleId, affiliate, false);}
+					info = reconsSB.addSettlement(model, saleId, affiliate, false);
 				}else if (null !=PayPalSettlementTransactionCodes.EnumPPREFEventCode.getEnum(trxn.getTransactionEventCode())){
-					if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
-						info = ReconciliationService.getInstance().addSettlement(model, saleId, affiliate, true);
-					}else {info = reconsSB.addSettlement(model, saleId, affiliate, true);}
+					info = reconsSB.addSettlement(model, saleId, affiliate, true);
 				}else if (null !=PayPalSettlementTransactionCodes.EnumPPCBKEventCode.getEnum(trxn.getTransactionEventCode())) {
-					if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
-						info = ReconciliationService.getInstance().addChargeback(getChargebackModel(trxn, affiliate, trxn.getTransactionInitiationDate()));
-					}else {info = reconsSB.addChargeback(getChargebackModel(trxn, affiliate, trxn.getTransactionInitiationDate()));}
+					info = reconsSB.addChargeback(getChargebackModel(trxn, affiliate, trxn.getTransactionInitiationDate()));
 				} else if (null !=PayPalSettlementTransactionCodes.EnumPPCBREventCode.getEnum(trxn.getTransactionEventCode())) {
-					if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ReconciliationSB)){
-						info = ReconciliationService.getInstance().addChargebackReversal(getChargebackReversalModel(trxn, affiliate, trxn.getTransactionInitiationDate()));
-					}else {info = reconsSB.addChargebackReversal(getChargebackReversalModel(trxn, affiliate, trxn.getTransactionInitiationDate()));}
+					info = reconsSB.addChargebackReversal(getChargebackReversalModel(trxn, affiliate, trxn.getTransactionInitiationDate()));
 				} else
 					LOGGER.info("Transction with event codes is not being update to FD DB" + trxn.getTransactionEventCode());
 				
