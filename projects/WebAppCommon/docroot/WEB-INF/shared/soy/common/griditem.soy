@@ -361,7 +361,7 @@
 			{if ($itemIndex and $itemIndex > 4) or ($moduleData and $moduleData.lazyloadImages)}
 				<img class="portrait-item-productimage lazyload" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{($mobWeb or $productCardVersion != '2018') ? $productImage : $productZoomImage}" alt="" {if not $discontinued}data-product-url="{$productPageUrl}"{/if}>
 			{else}
-				<img src="{($mobWeb or $productCardVersion != '2018') ? $productImage : $productZoomImage}" alt="" class="portrait-item-productimage" {if not $discontinued}data-product-url="{$productPageUrl}"{/if}>
+				<img {if $productCardVersion == '2018'}data-{/if}src="{($mobWeb or $productCardVersion != '2018') ? $productImage : $productZoomImage}" alt="" class="portrait-item-productimage{if $productCardVersion == '2018'} lazyload{/if}" {if not $discontinued}data-product-url="{$productPageUrl}"{/if}>
 			{/if}
 			{if not $moduleData or not $moduleData.hideProductBadge}
 				{call common.bursts}{param badge:$badge /}{param deal:$deal /}{param usq:$usq /}{/call}

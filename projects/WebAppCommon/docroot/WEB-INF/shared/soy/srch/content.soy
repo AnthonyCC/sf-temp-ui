@@ -8,6 +8,7 @@
  * @param? limit
  * @param? abFeatures
  * @param? mobWeb
+ * @param? ifSingleUL
  */
 {template .topContent autoescape="false"}
 {let $l: $limit or $limit == 0 ? $limit : 25 /}
@@ -20,7 +21,7 @@
 		{param filterLabels:$filterLabels /}
 		{param numProducts:$l /}
 		{param abFeatures:$abFeatures /}
-		{param ifSingleUL:false /}
+		{param ifSingleUL: ($ifSingleUL) ? $ifSingleUL : false /}
 		{param mobWeb:$mobWeb /}
 	{/call}
 {/template}
