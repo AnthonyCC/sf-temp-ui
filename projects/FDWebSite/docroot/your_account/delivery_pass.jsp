@@ -69,6 +69,12 @@ function deliveryPassAutoRenew(item){
 	} else {
 		dataString = "action=FLIP_AUTORENEW_OFF";
 	}
+	$jq('.slider').addClass('test');
+	   setTimeout(function() {
+		   $jq('.slider').removeClass('test').fadeIn();
+		 }, 800);
+	$jq(item).closest('.dp-auto-renew').find('.spinner').show().delay(500).fadeOut();
+
 	$jq(".dp-autorenew-error").addClass("dp-display-autorenew-loading").removeClass("dp-display-autorenew-error");
 	$jq.ajax({
         url: '/api/expresscheckout/deliverypass',
@@ -175,8 +181,8 @@ function deliveryPassAutoRenew(item){
 						<div class="dp-auto-renew">
 							<div class="dp-auto-renew-text">Auto-Renewal</div>
 							<label class="switch">
-								<input type="checkbox" onchange="deliveryPassAutoRenew(this)" <%= EnumDPAutoRenewalType.YES.equals(user.hasAutoRenewDP()) ? "checked":""  %>>
-								<span class="slider"></span>
+								<input type="checkbox" class="offscreen" onchange="deliveryPassAutoRenew(this)" <%= EnumDPAutoRenewalType.YES.equals(user.hasAutoRenewDP()) ? "checked":""  %>>
+								<span class="slider round"></span>
 							</label>
 							<div class="dp-autorenew-error"><div class="spinner"></div><div class="dp-autorenew-error-text error"> Something went wrong. Please try again.</div></div>
 						</div>
