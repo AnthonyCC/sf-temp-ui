@@ -26,6 +26,7 @@ import com.freshdirect.fdstore.customer.ejb.FDUserDAO;
 import com.freshdirect.fdstore.ecomm.model.RecognizedUserData;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.content.ContentFactory;
 
 public class CustomerIdentityService extends AbstractEcommService implements CustomerIdentityServiceI {
 
@@ -162,11 +163,13 @@ public class CustomerIdentityService extends AbstractEcommService implements Cus
 	@Override
 	public FDCustomerModel getFDCustomer(String fdCustomerId, String erpCustomerId) throws FDResourceException {
 		Response<FDCustomerModel> response = null;
-		String query = "";
+		
+		String eStoreId = ContentFactory.getInstance().getStoreKey().getId();
+		String query = "?eStoreId=" + eStoreId;
 		if (fdCustomerId != null) {
-			query = "?fdCustomerId=" + fdCustomerId;
+			query += "&fdCustomerId=" + fdCustomerId;
 		} else if (erpCustomerId != null) {
-			query = "?erpCustomerId=" + erpCustomerId;
+			query += "&erpCustomerId=" + erpCustomerId;
 		}
 		response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_FDCUSTOMER + query),
 				new TypeReference<Response<FDCustomerModel>>() {

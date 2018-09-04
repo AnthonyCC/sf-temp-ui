@@ -76,7 +76,7 @@ public abstract class AbstractEcommService {
 				.setSocketTimeout(FDStoreProperties.getLogisticsConnectionTimeout() * 1000)
 				.setConnectTimeout(FDStoreProperties.getLogisticsConnectionTimeout() * 1000)
 				.setConnectionRequestTimeout(FDStoreProperties.getLogisticsConnectionRequestTimeout() * 1000).build();
-		CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(requestConfig)
+		CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(requestConfig).evictExpiredConnections()
 				.setConnectionManager(cManager).build();
 		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
 
