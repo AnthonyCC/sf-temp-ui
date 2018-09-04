@@ -361,7 +361,7 @@ if(user.isDepotUser()){
 		<td colspan="2"><font class="space4pix"><br /></font></td>
 	</tr>
 	<tr valign="top">
-		<td width="45" align="right">*&nbsp;<input id="terms" aria-describedby="useragreement_signup_error" type="checkbox" value="yes" name="terms" <%=fldTermsAndConditions%> />&nbsp;&nbsp;</td>
+		<td width="45" align="right">*&nbsp;<input id="terms" aria-describedby="useragreement_signup_error" required="true" type="checkbox" value="yes" name="terms" <%=fldTermsAndConditions%> />&nbsp;&nbsp;</td>
 		<td>
 			<font class="text12bold"><label for="terms">I have read and agree to the Customer Agreement</label></font><br />
 			<a href="javascript:popup('/registration/user_agreement.jsp','large')"><font class="text12">Click here for a printable version</font></a>
