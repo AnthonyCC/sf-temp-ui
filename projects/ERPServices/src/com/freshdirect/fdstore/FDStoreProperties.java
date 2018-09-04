@@ -1702,10 +1702,10 @@ public class FDStoreProperties {
 
         /* APPDEV-5916 */
         defaults.put("feature.rollout.carttabcars", "GLOBAL:ENABLED,true;");
-        defaults.put("feature.rollout.standingorder3_0", "GLOBAL:ENABLED,false;");
+        defaults.put("feature.rollout.standingorder3_0", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.browseaggregatedcategories1_0", "GLOBAL:ENABLED,false;");
         defaults.put("feature.rollout.debitCardSwitch", "GLOBAL:ENABLED,true;");
-        defaults.put("feature.rollout.modOrderConfirmPageRedesign", "GLOBAL:ENABLED,false;");
+        defaults.put("feature.rollout.modOrderConfirmPageRedesign", "GLOBAL:ENABLED,true;");
         
         defaults.put("feature.rollout.productCard2018", "GLOBAL:ENABLED,false;");
 
@@ -1808,8 +1808,8 @@ public class FDStoreProperties {
         defaults.put(PROP_PRODUCT_SAMPLES_MAX_BUY_PRODUCTS_LIMIT, "2");
         defaults.put(PROP_PRODUCT_SAMPLES_MAX_BUY_QUANTITY_LIMIT, "1");
 
-        defaults.put("feature.rollout.checkout1_0", "GLOBAL:ENABLED,true;");
-        defaults.put("feature.rollout.checkout2_0", "GLOBAL:ENABLED,false;");
+        defaults.put("feature.rollout.checkout1_0", "GLOBAL:ENABLED,false;");
+        defaults.put("feature.rollout.checkout2_0", "GLOBAL:ENABLED,true;");
 
         defaults.put(PROP_LOGISTICS_COMPANY_CODE, EnumCompanyCode.fd.name());
         defaults.put(PROP_LOGISTICS_CONNECTION_TIMEOUT, 120);
@@ -1817,7 +1817,7 @@ public class FDStoreProperties {
         defaults.put(PROP_LOGISTICS_CONN_READ_TIMEOUT, 120);
         defaults.put(PROP_LOGISTICS_CONNECTION_REQUEST_TIMEOUT, 60);
         defaults.put(CTCAPACITY_ELIGIBLE_PROFILES, "MktgSegment");
-        defaults.put(PROP_CORE_NON_CORE_GLOBAL_NAV_SWITCH_ENABLED, "false");
+        defaults.put(PROP_CORE_NON_CORE_GLOBAL_NAV_SWITCH_ENABLED, "true");
         defaults.put(PROP_EXTERNAL_ACCOUNTMGR_HOME, "freshdirect.fdstore.ExternalAccountManager");
         defaults.put(PROP_MIDDLETIER_PROVIDER_URL, "http://devmidtier.freshdirect.com/dl");
         defaults.put(PROP_ATP_AVAILABILTY_MOCK_ENABLED, "false");
@@ -2003,7 +2003,7 @@ public class FDStoreProperties {
 
         defaults.put(PROP_ENABLE_FDX_DISTINCT_AVAILABILITY, "true");
 
-        defaults.put("feature.rollout.cosRedesign2017", "GLOBAL:ENABLED,false;");
+        defaults.put("feature.rollout.cosRedesign2017", "GLOBAL:ENABLED,true;");
         defaults.put(PROP_ENABLE_REPEAT_WARMUP, "true"); // controls manual warmup: LIVE PUBLISH
 
         // Auth Code : 2 minutes
