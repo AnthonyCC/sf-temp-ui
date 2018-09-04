@@ -49,11 +49,11 @@ public class SignUpServlet extends BaseJsonServlet {
         HttpSession session = request.getSession();
         SignUpRequest signUpRequest = BaseJsonServlet.parseRequestData(request, SignUpRequest.class);
         boolean skipPopup = false;
-        String successPage = NVL.apply(signUpRequest.getSuccessPage(), FDURLUtil.LANDING_PAGE);
         EnumServiceType serviceType = NVL.apply(EnumServiceType.getEnum(signUpRequest.getServiceType()), EnumServiceType.PICKUP);
+        String successPage = FDURLUtil.extendsUrlWithServiceType(NVL.apply(signUpRequest.getSuccessPage(), FDURLUtil.LANDING_PAGE), serviceType);
 
         try {
-            SignUpResponse signUpResponse = new SignUpResponse();
+            SignUpResponse signUpResponse = new SignUpResponse();   
             SignUpService registrationService = selectSignUpService(serviceType);
 
             ActionResult result = registrationService.validate(signUpRequest);
