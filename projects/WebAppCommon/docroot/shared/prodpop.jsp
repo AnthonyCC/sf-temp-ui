@@ -7,10 +7,20 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+
+<%
+String title = "FreshDirect";
+
+if (request.getParameter("deptId") != null && !request.getParameter("deptId").equals("")){ %>
 <fd:Department id='department' departmentId='<%= request.getParameter("deptId") %>'/>
 <%
     ContentNodeModel currentFolder = department;
-    String title = "FreshDirect - " + currentFolder.getFullName();
+    title = "FreshDirect - " + currentFolder.getFullName();
+}
+else
+{
+    throw new FDNotFoundException("DepartmentId was null or empty");
+}
 %>
 
 <tmpl:insert template='/shared/template/pop_sm.jsp'>
