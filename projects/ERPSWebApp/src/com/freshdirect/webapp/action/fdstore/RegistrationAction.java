@@ -1527,7 +1527,7 @@ public class RegistrationAction extends WebActionSupport {
 			
 			//actionResult.addError("".equals(passwordHint), EnumUserInfoName.PASSWORD_HINT.getCode(), SystemMessageList.MSG_REQUIRED);
 
-			// actionResult.addError(!termsAccepted, "terms", SystemMessageList.MSG_AGREEMENT_CHECK);
+			    actionResult.addError(!termsAccepted, "terms", SystemMessageList.MSG_AGREEMENT_CHECK);
 		}
 
 		public void validateEx(ActionResult actionResult) {
