@@ -64,8 +64,8 @@ var FreshDirect = FreshDirect || {};
         tsData = {
           hasPreReserved: tsr.hasPreReserved==='true',
           reservationDate: getDay(rStart.getDay()) + ' ' + (rStart.getMonth() + 1) + '/' + rStart.getDate(),
-          reservationStart: toAmPm(rStart.getHours()),
-          reservationEnd: toAmPm(rEnd.getHours()),
+          reservationStart: toAmPm(rStart.getHours(), rStart.getMinutes()),
+          reservationEnd: toAmPm(rEnd.getHours(), rEnd.getMinutes()),
           expiration: getDay(eDate.getDay()) + ' ' + toAmPm(eDate.getHours(), eDate.getMinutes())
         };
 
