@@ -30,38 +30,38 @@
     String pageId = request.getParameter("pageType") != null
 					? (String) request.getParameter("pageType")
 					: "search";
-			// [APPDEV-3953] Special rule for DDPP Preview Mode
-			// Redirect to site access for getting zip code first
-			if (null != request.getParameter("ppPreviewId")) {
-				/* from category.jsp, for being forwarded here */
+	// [APPDEV-3953] Special rule for DDPP Preview Mode
+	// Redirect to site access for getting zip code first
+	if (null != request.getParameter("ppPreviewId")) {
+		/* from category.jsp, for being forwarded here */
 
-				//disable linking
-				// disableLinks = true;
-				if (request.getParameter("redirected") == null) {
-					StringBuffer redirBuf = new StringBuffer();
-					//redirBuf.append("/site_access/site_access_lite.jsp?successPage="+request.getRequestURI());
+		//disable linking
+		// disableLinks = true;
+		if (request.getParameter("redirected") == null) {
+			StringBuffer redirBuf = new StringBuffer();
+			//redirBuf.append("/site_access/site_access_lite.jsp?successPage="+request.getRequestURI());
 
-					redirBuf.append("/about/index.jsp?siteAccessPage=aboutus&successPage=" + request.getRequestURI());
+			redirBuf.append("/about/index.jsp?siteAccessPage=aboutus&successPage=" + request.getRequestURI());
 
-					String requestQryString = request.getQueryString();
+			String requestQryString = request.getQueryString();
 
-					if ((requestQryString != null) && (requestQryString.trim().length() > 0)) {
-						redirBuf.append(URLEncoder.encode("?" + requestQryString));
-					}
-					redirBuf.append("&redirected=true");
-					response.sendRedirect(redirBuf.toString());
-					return;
-				}
+			if ((requestQryString != null) && (requestQryString.trim().length() > 0)) {
+				redirBuf.append(URLEncoder.encode("?" + requestQryString));
 			}
+			redirBuf.append("&redirected=true");
+			response.sendRedirect(redirBuf.toString());
+			return;
+		}
+	}
 
-			String template = "/common/template/browse_template.jsp";
+	String template = "/common/template/browse_template.jsp";
 
-			boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user)
-					&& JspMethods.isMobile(request.getHeader("User-Agent"));
-			if (mobWeb) {
-				template = "/common/template/mobileWeb.jsp"; //mobWeb template
-				request.setAttribute("sitePage", "www.freshdirect.com/mobileweb/browse.jsp"); //change for OAS
-			}
+	boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user)
+			&& JspMethods.isMobile(request.getHeader("User-Agent"));
+	if (mobWeb) {
+		template = "/common/template/mobileWeb.jsp"; //mobWeb template
+		request.setAttribute("sitePage", "www.freshdirect.com/mobileweb/browse.jsp"); //change for OAS
+	}
 %>
 <fd:BrowsePartialRolloutRedirector user="<%=user%>" id="${param.id}" />
 
@@ -274,7 +274,7 @@
 				<soy:render template="browse.filterTags" data="${browsePotato.filterLabels}" />
 			</div>
 
-			<div class="isHookLogic-false">
+			<div class="isHookLogic-false browse-sections-top-cont">
 				<c:choose>
 					<c:when test="${browsePotato.searchParams.pageType == 'SEARCH'}">
 						<div class="browse-sections-top transactional">

@@ -6,6 +6,8 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
+import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.storeapi.content.ContentNodeModel;
 import com.freshdirect.storeapi.content.FilteringProductItem;
 import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
@@ -42,6 +44,8 @@ public class BrowseDataContext extends BrowseData {
             sections.add(context.extractDataFromContext(nav));
 		}
 		this.getSections().setSections(sections);
+		this.getSections().setIfSingleUL((FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.productCard2018, user)));
+		
 		return this;
 	}
 
