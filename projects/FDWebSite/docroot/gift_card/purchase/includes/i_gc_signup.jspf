@@ -276,7 +276,7 @@ if("GET".equalsIgnoreCase(request.getMethod()) || sessionuser.getLevel()==FDUser
 </textarea><br/><BR/>
 <table cellpadding="0" cellspacing="0" border="0">
 	<tr valign="top">
-	<td width="45" align="right"><span class="title18">*&nbsp;</span><input type="checkbox" aria-describedby="<%=EnumUserInfoName.CUSTOMER_AGREEMENT.getCode()%>_error" value="yes" id="terms" name="terms" <%=fldTermsAndConditions%>>
+	<td width="45" align="right"><span class="title18">*&nbsp;</span><input type="checkbox" required="true" aria-describedby="<%=EnumUserInfoName.CUSTOMER_AGREEMENT.getCode()%>_error" value="yes" id="terms" name="terms" <%=fldTermsAndConditions%>>
 	</td>
 	<td>
 		<FONT class="space4pix"><BR></FONT><FONT class="text12bold"><label for="terms">I have read and agree to the Customer Agreement</label></FONT><BR>
