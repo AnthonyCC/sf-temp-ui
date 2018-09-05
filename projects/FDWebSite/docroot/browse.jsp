@@ -102,7 +102,13 @@ if (mobWeb) {
     </div>
 
     <div class="browse-carousels-top">
-      <soy:render template="browse.topCarousels" data="${browsePotato.carousels}" />
+    	<%
+    		String topCarouselsTemplate = "browse.topCarousels";
+    		if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.productCard2018, user)) {
+    			topCarouselsTemplate = "browse.topCarousels_prodcard2018";
+    		}
+    	%>
+      <soy:render template="<%= topCarouselsTemplate %>" data="${browsePotato.carousels}" />
     </div>
 
 	<%-- remove top pagination
