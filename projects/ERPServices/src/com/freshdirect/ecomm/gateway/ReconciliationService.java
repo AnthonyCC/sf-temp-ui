@@ -66,7 +66,7 @@ public class ReconciliationService extends AbstractEcommService implements Recon
 	private static final String LOAD_READY_SETTLEMENT_BY_SALESIDS = "reconsiliation/loadReadyToSettleByECPSaleIds";
 	private static final String SETTLEMENT_FAILED_AFTER_SETTLED = "reconsiliation/isSettlementFailedAfterSettled/";
 	private static final String PROCESS_GC_SETTLEMENT = "reconsiliation/processGcSettlement/";
-	private static final String PROCESS_SETTLEMENT_PENDING_ORDER = "reconsiliation/proSettlePenOrder/";
+	private static final String PROCESS_SETTLEMENT_PENDING_ORDER = "reconsiliation/proSettlePenOrder";
 	private static final String SEND_SETTLEMENT_RECON_SAP = "reconsiliation/sendSettleToReconSap/";
 	
 	
@@ -473,7 +473,6 @@ public class ReconciliationService extends AbstractEcommService implements Recon
 			request.setData(rootNode);
 			String inputJson = buildRequest(request);
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(PROCESS_GC_SETTLEMENT+saleId),	new TypeReference<Response<List<ErpGCSettlementInfo>>>() {});
-
 			if (!response.getResponseCode().equals("OK")) {
 				LOGGER.error("Error in processGCSettlement: data=" + inputJson);
 				throw new FDResourceException(response.getMessage());
@@ -497,7 +496,7 @@ public class ReconciliationService extends AbstractEcommService implements Recon
 
 			request.setData(rootNode);
 			String inputJson = buildRequest(request);
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(PROCESS_SETTLEMENT_PENDING_ORDER+"/adssa"),	new TypeReference<Response<List<ErpGCSettlementInfo>>>() {});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(PROCESS_SETTLEMENT_PENDING_ORDER),	new TypeReference<Response<List<ErpGCSettlementInfo>>>() {});
 
 			if (!response.getResponseCode().equals("OK")) {
 				LOGGER.error("Error in processSettlementPendingOrders: data=" + inputJson);
