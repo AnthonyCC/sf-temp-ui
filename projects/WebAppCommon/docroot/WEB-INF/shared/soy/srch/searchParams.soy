@@ -44,7 +44,7 @@
 				{/if}
 			{/foreach}
 			{if $suggestions and length($suggestions) > 0}
-				, showing products for "<span class="search-term">{$suggestions[0]}</span>".
+       <span>showing products for "<span class="search-term">{$suggestions[0]}</span>" instead.</span>
 			{/if}
 		</span>
 	{/if}
@@ -74,7 +74,7 @@
 
 
 /**
-* @param? itemType
+*
 * @param? hits
 * @param? searchTerm
 * @param? searchParams
@@ -82,7 +82,7 @@
 {template .searchDescription autoescape="false"}
 
 {if $searchParams and $searchTerm}
-  <div class="search-noresults">No {$itemType} found for "<span class="search-term">{$searchParams}</span>"</div>
+  <div class="search-noresults">Sorry, we couldn't find anything for "<span class="search-term">{$searchParams},</span>"</div>
 {/if}
 
 {if $searchParams and not $searchTerm}
@@ -179,6 +179,6 @@
  */
 {template .noResultsNoSuggestions}
 	{if isNonnull($searchParams)}
-		<div class="search-noresults-no-suggestions">No results found for "<span class="search-term">{$searchParams}</span>". Please check the spelling of the words you entered or try a more general term.</div>
+		<div class="search-noresults-no-suggestions">Hmm... Looks like we don't have that. Please check your spelling or try a different search term.</div>
 	{/if}
 {/template}
