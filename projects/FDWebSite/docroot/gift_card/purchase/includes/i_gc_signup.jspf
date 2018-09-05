@@ -20,7 +20,19 @@ String[] checkGiftCardBuyerForm = {
 		EnumUserInfoName.EMAIL.getCode(), 
 		EnumUserInfoName.REPEAT_EMAIL.getCode(), EnumUserInfoName.PASSWORD.getCode(), 
 		EnumUserInfoName.REPEAT_PASSWORD.getCode(), EnumUserInfoName.PASSWORD_HINT.getCode(),
-		EnumUserInfoName.CUSTOMER_AGREEMENT.getCode()};
+		EnumUserInfoName.CUSTOMER_AGREEMENT.getCode(),
+		EnumUserInfoName.CARD_HOLDER.getCode(),
+		EnumUserInfoName.CARD_BRAND.getCode(),
+		EnumUserInfoName.CARD_NUMBER.getCode(),
+		EnumUserInfoName.CARD_EXPIRATION.getCode(),
+		EnumUserInfoName.CARD_CSV.getCode(),
+		EnumUserInfoName.BIL_ADDRESS_1.getCode(),
+		EnumUserInfoName.BIL_ADDRESS_2.getCode(),
+		EnumUserInfoName.BIL_APARTMENT.getCode(),
+		EnumUserInfoName.BIL_CITY.getCode(),
+		EnumUserInfoName.BIL_STATE.getCode(),
+		EnumUserInfoName.BIL_ZIPCODE.getCode(),
+		EnumUserInfoName.BIL_COUNTRY.getCode()};
 %>
 <%						
 String fldTitle 			= request.getParameter("title");

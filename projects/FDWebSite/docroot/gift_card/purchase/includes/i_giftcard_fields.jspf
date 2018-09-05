@@ -22,7 +22,8 @@ String[] checkGiftCardForm = {
 	EnumUserInfoName.GC_BUYER_EMAIL.getCode(), 
 	EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode(),
 	EnumUserInfoName.DLV_METHOD.getCode(),
-	"fldAmount"
+	EnumUserInfoName.GC_FLDAMOUNT.getCode(),
+	EnumUserInfoName.GC_FLDALTAMOUNT.getCode()
 };
 
 String[] checkErrorType = {"technical_difficulty", EnumUserInfoName.DLV_NOT_IN_ZONE.getCode(), EnumUserInfoName.DLV_CANT_GEOCODE.getCode()};
@@ -221,12 +222,12 @@ if (request.getParameter("fldMessage") !=null) {
 	</td>
 	</tr>
 	<tr>
-		<td align="right" class="text12"><span <fd:ErrorHandler result="<%=result%>" name="fldAmount">class="errortext"</fd:ErrorHandler>><label for="fldAmount">*&nbsp;Amount&nbsp;$</label></td>
+		<td align="right" class="text12"><span <fd:ErrorHandler result="<%=result%>" name="<%= EnumUserInfoName.GC_FLDAMOUNT.getCode() %>">class="errortext"</fd:ErrorHandler>><label for="<%= EnumUserInfoName.GC_FLDAMOUNT.getCode() %>">*&nbsp;Amount&nbsp;$</label></span></td>
     	<td colspan="2">
 			<table role="presentation">
 				<tr>
 					<td width="65">
-						<select   class="customsimpleselect text9" name="fldAmount" id="fldAmount" onChange="($('fldAmount').value!='OTHER')?$('fldAltAmount').value=$('fldAmount').value:$('fldAltAmount').value='<%=fldAltAmount%>';$('fldAltAmount').disabled=($('fldAmount').value=='OTHER')?false:true;">
+						<select   class="customsimpleselect text9" name="<%= EnumUserInfoName.GC_FLDAMOUNT.getCode() %>" id="<%= EnumUserInfoName.GC_FLDAMOUNT.getCode() %>" onChange="($('fldAmount').value!='OTHER')?$('fldAltAmount').value=$('fldAmount').value:$('fldAltAmount').value='<%=fldAltAmount%>';$('fldAltAmount').disabled=($('fldAmount').value=='OTHER')?false:true;">
 						   <option value="" <%="".equalsIgnoreCase(fldAmount)?"selected":""%>> </option>
 						   <option value="OTHER" <%=!"".equalsIgnoreCase(fldAmount)?"selected":""%>>OTHER</option>
 						   <option value="20.00" <%="20.00".equalsIgnoreCase(fldAmount)?"selected":""%>>20.00</option>
@@ -237,10 +238,10 @@ if (request.getParameter("fldMessage") !=null) {
 						</select>
 					</td>
 					<td>
-						<input type="text" style="margin-left:10px;"  maxlength="10" size="8" class="text9" name="fldAltAmount" id="fldAltAmount" value="<%=fldAltAmount%>" <%=!"".equalsIgnoreCase(fldAmount)?"":"disabled"%> onkeydown="$('fldAmount').value='OTHER';" />
+						<input type="text" style="margin-left:10px;"  maxlength="10" size="8" class="text9" name="<%= EnumUserInfoName.GC_FLDALTAMOUNT.getCode() %>" id="<%= EnumUserInfoName.GC_FLDALTAMOUNT.getCode() %>" value="<%=fldAltAmount%>" <%=!"".equalsIgnoreCase(fldAmount)?"":"disabled"%> onkeydown="$('fldAmount').value='OTHER';" />
 					</td>
 					<td>
-						<span style="white-space: nowrap;"><label for="fldAltAmount">Enter amount<br>(min. $20.00)</label></span>
+						<span style="white-space: nowrap;"><label for="<%= EnumUserInfoName.GC_FLDALTAMOUNT.getCode() %>">Enter amount<br>(min. $20.00)</label></span>
 					</td>
 				</tr>
 			</table>
