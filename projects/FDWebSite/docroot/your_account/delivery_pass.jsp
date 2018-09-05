@@ -180,7 +180,7 @@ function deliveryPassAutoRenew(item){
 						<%= null != user ? DeliveryPassUtil.getAutoRenewalDate(user):null%></span><span class="dp-expire-text-bold"><%= null != user ? DeliveryPassUtil.getExpDate(user):null%></span></div>
 						<div class="dp-auto-renew">
 							<div class="dp-auto-renew-text">Auto-Renewal</div>
-							<label class="switch">
+							<label class="switch"><span class="offscreen">your card will be automatically renewed on  <%= DeliveryPassUtil.getAutoRenewalDate(user) %> auto renewal</span>
 								<input type="checkbox" class="offscreen" onchange="deliveryPassAutoRenew(this)" <%= EnumDPAutoRenewalType.YES.equals(user.hasAutoRenewDP()) ? "checked":""  %>>
 								<span class="slider round"></span>
 							</label>
