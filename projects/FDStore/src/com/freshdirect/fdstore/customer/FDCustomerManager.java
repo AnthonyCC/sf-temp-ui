@@ -1845,7 +1845,7 @@ public class FDCustomerManager {
 		FDPaymentInadequateException
 		{
 
-		lookupManagerHome();
+		
 		try {
 			String saleId = cart.getOriginalOrder().getErpSalesId();
 			if (!orderBelongsToUser(info.getIdentity(), saleId)) {
@@ -1866,7 +1866,7 @@ public class FDCustomerManager {
 				hasCouponDiscounts = true;
 			}
 
-			FDCustomerManagerSB sb = managerHome.create();
+			FDCustomerManagerSB sb = null;
 //			EnumSaleType type = cart.getOriginalOrder().getOrderType();
 			if (EnumSaleType.REGULAR.equals(type)){
 				
@@ -1886,6 +1886,11 @@ public class FDCustomerManager {
 						);
 					
 				}else{
+					if (sb == null) {
+						lookupManagerHome();
+						sb = managerHome.create();
+					}
+					
 					sb.modifyOrder(
 						info,
 						saleId,
@@ -1916,6 +1921,10 @@ public class FDCustomerManager {
 						);
 					
 				}else{
+					if (sb == null) {
+						lookupManagerHome();
+						sb = managerHome.create();
+					}
 				sb.modifyAutoRenewOrder(
 					info,
 					saleId,
@@ -1927,8 +1936,9 @@ public class FDCustomerManager {
 					info.getAgent() == null ? null : info.getAgent().getRole(),
 					status
 				);
-				}
 				sb.authorizeSale(info.getIdentity().getErpCustomerPK().toString(), saleId, type, cra);
+				}
+				
 			}
 
 			//invalidate quickshop past orders cache
