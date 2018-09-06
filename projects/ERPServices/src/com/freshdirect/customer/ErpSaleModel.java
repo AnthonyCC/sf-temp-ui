@@ -1502,7 +1502,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		return Collections.<String>unmodifiableSet(usedPromotionCodes);
 	}
 	public boolean hasUsedPromotionCodes() {
-		if((usedPromotionCodes!=null))
+		if((usedPromotionCodes!=null) && !usedPromotionCodes.isEmpty())
 			return true;
 		return false;
 	}
