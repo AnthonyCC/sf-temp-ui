@@ -244,7 +244,7 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 
 	public FDIdentity getCustomerIdentity(String customerId) throws FDResourceException {
 
-		FDIdentity customerIdentity = new FDIdentity(customerId, FDCustomerFactory.getFDCustomerIdFromErpId(customerId, true));
+		FDIdentity customerIdentity = new FDIdentity(customerId, FDCustomerFactory.getFDCustomerIdFromErpId(customerId));
 		return customerIdentity;
 	}
 	

@@ -32,19 +32,14 @@ public class FDCustomerFactory {
 	
     private FDCustomerFactory () {
     }
-    public static FDCustomerModel getFDCustomer(FDIdentity identity) throws FDResourceException {
-		return getFDCustomer( identity.getFDCustomerPK(), false);
-	}
-	public static FDCustomerModel getFDCustomer(FDIdentity identity, boolean isEJB) throws FDResourceException {
-		return getFDCustomer( identity.getFDCustomerPK(), isEJB);
+
+	public static FDCustomerModel getFDCustomer(FDIdentity identity) throws FDResourceException {
+		return getFDCustomer( identity.getFDCustomerPK() );
 	}
 
 	public static FDCustomerModel getFDCustomer(String fdCustomerId) throws FDResourceException {
-		return getFDCustomer(fdCustomerId, false);
-	}
-	public static FDCustomerModel getFDCustomer(String fdCustomerId, boolean isEJB) throws FDResourceException {
 		try {
-			if (!isEJB && FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerFactory)) {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerFactory)) {
 				return CustomerIdentityService.getInstance().getFDCustomer(fdCustomerId, null);
 			} else {
 				if (fdCustomerHome == null) {
@@ -63,12 +58,8 @@ public class FDCustomerFactory {
 	}
 
 	public static FDCustomerModel getFDCustomerFromErpId(String erpCustomerId) throws FDResourceException {
-		return getFDCustomerFromErpId(erpCustomerId, false);
-	}
-	
-	public static FDCustomerModel getFDCustomerFromErpId(String erpCustomerId, boolean isEJB) throws FDResourceException {
 		try {
-			if (!isEJB && FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerFactory)) {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerFactory)) {
 				return CustomerIdentityService.getInstance().getFDCustomer(null, erpCustomerId);
 			} else {
 				if (fdCustomerHome==null) {
@@ -86,12 +77,10 @@ public class FDCustomerFactory {
 			throw new FDResourceException(re);
 		}
 	}
+
 	public static String getFDCustomerIdFromErpId(String erpCustomerId) throws FDResourceException {
-		return getFDCustomerIdFromErpId(erpCustomerId, false);
-	}
-	public static String getFDCustomerIdFromErpId(String erpCustomerId, boolean isEJB) throws FDResourceException {
 		try {
-			if (!isEJB && FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerFactory)) {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerFactory)) {
 				return CustomerIdentityService.getInstance().getFDCustomer(null, erpCustomerId).getPK().getId();
 			} else {
 				if (fdCustomerHome == null) {
@@ -110,18 +99,12 @@ public class FDCustomerFactory {
 	}
 
 	public static ErpCustomerModel getErpCustomer(FDIdentity identity) throws FDResourceException {
-		return getErpCustomer(identity, false);
-	}
-	public static ErpCustomerModel getErpCustomer(FDIdentity identity, boolean isEJB) throws FDResourceException {
-		return getErpCustomer( identity.getErpCustomerPK(), isEJB);
+		return getErpCustomer( identity.getErpCustomerPK() );
 	}
 
 	public static ErpCustomerModel getErpCustomer(String erpCustomerId) throws FDResourceException {
-		return getErpCustomer(erpCustomerId, false);
-	}
-	public static ErpCustomerModel getErpCustomer(String erpCustomerId, boolean isEJB) throws FDResourceException {
 		try {
-			if (!isEJB && FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerFactory)) {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerFactory)) {
 				return CustomerIdentityService.getInstance().getErpCustomer(erpCustomerId);
 			}
 			if (erpCustomerHome == null) {
@@ -137,20 +120,16 @@ public class FDCustomerFactory {
 			throw new FDResourceException(re);
 		}
 	}
+
 	public static ErpCustomerInfoModel getErpCustomerInfo(FDIdentity identity) throws FDResourceException {
-		return getErpCustomerInfo(identity, false);
+		return getErpCustomerInfo( null !=identity ? identity.getErpCustomerPK():null );
 	}
-	public static ErpCustomerInfoModel getErpCustomerInfo(FDIdentity identity, boolean isEJB) throws FDResourceException {
-		return getErpCustomerInfo( null !=identity ? identity.getErpCustomerPK():null , isEJB);
-	}
-	public static ErpCustomerInfoModel getErpCustomerInfo(String erpCustomerId)  throws FDResourceException {
-		return getErpCustomerInfo(erpCustomerId, false);
-	}
+
 	@Deprecated
-	public static ErpCustomerInfoModel getErpCustomerInfo(String erpCustomerId, boolean isEJB) throws FDResourceException {
+	public static ErpCustomerInfoModel getErpCustomerInfo(String erpCustomerId) throws FDResourceException {
 		if(null !=erpCustomerId){
 			try {
-				if (!isEJB && FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerFactory)) {
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDCustomerFactory)) {
 					return CustomerInfoService.getInstance().getErpCustomerInfo(erpCustomerId);
 				}
 				if (erpCustomerInfoHome == null) {

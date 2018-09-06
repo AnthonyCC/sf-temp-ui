@@ -277,6 +277,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	private final static Logger LOGGER = LoggerFactory.getInstance(FDCustomerManagerSessionBean.class);
 
+	private static Map<String, ErpSaleModel> orderCache = new HashMap<String, ErpSaleModel>();
 	public RegistrationResult register(FDActionInfo info, ErpCustomerModel erpCustomer, FDCustomerModel fdCustomer,
 			String cookie, boolean pickupOnly, boolean eligibleForPromotion, FDSurveyResponse survey,
 			EnumServiceType serviceType) throws FDResourceException, ErpDuplicateUserIdException,ErpFraudException {
@@ -1513,9 +1514,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 			FDCustomerModel fdCustomer = null;
 			if (identity.getFDCustomerPK() != null) {
-				fdCustomer = FDCustomerFactory.getFDCustomer(identity.getFDCustomerPK(), true);
+				fdCustomer = FDCustomerFactory.getFDCustomer(identity.getFDCustomerPK());
 			} else {
-				fdCustomer = FDCustomerFactory.getFDCustomerFromErpId(erpCustomerPK, true);
+				fdCustomer = FDCustomerFactory.getFDCustomerFromErpId(erpCustomerPK);
 			}
 
 			boolean isChefsTable = fdCustomer.getProfile().isChefsTable();
@@ -2365,7 +2366,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		EnumEStoreId eStore = createOrder.geteStoreId();
 		try {
 			zoneId = createOrder.getDeliveryInfo().getDeliveryAddress().getAddressInfo().getZoneId();
-			FDCustomerModel FDCustomerModel = FDCustomerFactory.getFDCustomer(identity, true);
+			FDCustomerModel FDCustomerModel = FDCustomerFactory.getFDCustomer(identity);
 			customerSmsPreferenceModel = FDCustomerModel.getCustomerSmsPreferenceModel();
 
 			if (EnumEStoreId.FDX.name().equalsIgnoreCase(createOrder.geteStoreId().name())
@@ -2913,7 +2914,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			String reservationId = sb.cancelOrder(saleId, info.getSource(), initiator);
 			FDOrderI order = getOrder(saleId);
 
-			FDCustomerModel FDCustomerModel = FDCustomerFactory.getFDCustomer(info.getIdentity(), true);
+			FDCustomerModel FDCustomerModel = FDCustomerFactory.getFDCustomer(info.getIdentity());
 			customerSmsPreferenceModel = FDCustomerModel.getCustomerSmsPreferenceModel();
 
 			if (EnumEStoreId.FDX.name().equalsIgnoreCase(order.getEStoreId().name())
@@ -2939,7 +2940,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				 * purchased pass.
 				 */
 				DeliveryPassModel purchasedPass = deliveryPasses.get(0);
-				String fdCustomerIdFromErpId = FDCustomerFactory.getFDCustomerIdFromErpId(order.getCustomerId(), true);
+				String fdCustomerIdFromErpId = FDCustomerFactory.getFDCustomerIdFromErpId(order.getCustomerId());
 				cancelDeliveryPass(dlvpsb, purchasedPass, EnumDlvPassStatus.ORDER_CANCELLED, order.getEStoreId(), fdCustomerIdFromErpId);
 				if (isValued(appliedPass_ID)
 						&& !isPurchasedDPAppliedOnOrder(purchasedPass.getPK().getId(), appliedPass_ID)) {
@@ -3130,7 +3131,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 			zoneId = order.getDeliveryInfo().getDeliveryAddress().getAddressInfo().getZoneId();
 
-			FDCustomerModel FDCustomerModel = FDCustomerFactory.getFDCustomer(info.getIdentity(), true);
+			FDCustomerModel FDCustomerModel = FDCustomerFactory.getFDCustomer(info.getIdentity());
 			customerSmsPreferenceModel = FDCustomerModel.getCustomerSmsPreferenceModel();
 
 			if (EnumEStoreId.FDX.name().equalsIgnoreCase(order.geteStoreId().name())
@@ -6745,7 +6746,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					LOGGER.info("Customer ID:" + customerId + "-Sap Customer ID:" + sapCustomerId + "-");
 					if (null != sapCustomerId && sapCustomerId.trim().length() > 0) {
 						FDOrderI order = this.getOrder(saleId);
-						FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomerFromErpId(customerId, true);
+						FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomerFromErpId(customerId);
 						int orderCount = sb.getValidOrderCount(new PrimaryKey(customerId));
 						String sapOrderNumber = order.getSapOrderId();
 						// int orderCount =
@@ -6987,7 +6988,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			FDPaymentInadequateException, SQLException {
 		try {
 			EnumDlvPassStatus status = getDlvPassInfo(identity, order.geteStoreId()).getStatus();
-			FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomerFromErpId(identity.getErpCustomerPK(), true);
+			FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomerFromErpId(identity.getErpCustomerPK());
 			int orderCount = getValidOrderCount(identity);
 			orderCount--;
 			ErpAddressModel address = order.getDeliveryInfo().getDeliveryAddress();
