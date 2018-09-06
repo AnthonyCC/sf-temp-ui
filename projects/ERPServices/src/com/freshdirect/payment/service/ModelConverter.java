@@ -1,5 +1,6 @@
 package com.freshdirect.payment.service;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -1383,7 +1384,7 @@ public class ModelConverter {
 			emailData.setEmailType("XMLEmailI");
 		} else if(email instanceof FTLEmailI){
 			FTLEmailI ftlEmailI = (FTLEmailI) email;
-			HashMap<String, Object> map = new HashMap<String, Object>();
+			HashMap<String, Serializable> map = new HashMap<String, Serializable>();
 			for (String key : ftlEmailI.getParameters().keySet()) {
 				map.put(key, ftlEmailI.getParameters().get(key));
 			}
