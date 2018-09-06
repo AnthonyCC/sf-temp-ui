@@ -197,7 +197,7 @@ public class PayPalServiceSessionBean extends SessionBeanSupport{
 				ewalletRequestData.setPaymentechEnabled(false);
 				FDCustomerManager.addPaymentMethod(ewalletRequestData.getFdActionInfo(), paymentMethod,ewalletRequestData.isPaymentechEnabled(), ewalletRequestData.isDebitCardSwitch());
 		
-				List<ErpPaymentMethodI> paymentMethods = FDCustomerFactory.getErpCustomer(ewalletRequestData.getCustomerId()).getPaymentMethods();
+				List<ErpPaymentMethodI> paymentMethods = FDCustomerFactory.getErpCustomer(ewalletRequestData.getCustomerId(), true).getPaymentMethods();
 				
 				
 				if(paymentMethods != null && !paymentMethods.isEmpty()){
@@ -237,7 +237,7 @@ public class PayPalServiceSessionBean extends SessionBeanSupport{
 	private ErpPaymentMethodI searchPPWalletCards(EwalletRequestData ewalletRequestData, ErpPaymentMethodI mapPaymentMethod){
 		ErpPaymentMethodI paymentMethodModel = null;
 		try {
-			List<ErpPaymentMethodI> paymentMethods = FDCustomerFactory.getErpCustomer(ewalletRequestData.getFdActionInfo().getIdentity()).getPaymentMethods();
+			List<ErpPaymentMethodI> paymentMethods = FDCustomerFactory.getErpCustomer(ewalletRequestData.getFdActionInfo().getIdentity(), true).getPaymentMethods();
 			for(ErpPaymentMethodI paymentMethod:paymentMethods){
 				 if(paymentMethod.geteWalletID() != null && paymentMethod.geteWalletID().equals(""+EnumEwalletType.PP.getValue())){
 					paymentMethodModel = paymentMethod;
@@ -349,7 +349,7 @@ public class PayPalServiceSessionBean extends SessionBeanSupport{
 			throws RemoteException {
 		try {
 			deleteVaultToken(ewalletRequestData.getCustomerId(), ""+EnumEwalletType.PP.getValue());
-			List<ErpPaymentMethodI> paymentMethods = FDCustomerFactory.getErpCustomer(ewalletRequestData.getFdActionInfo().getIdentity()).getPaymentMethods();
+			List<ErpPaymentMethodI> paymentMethods = FDCustomerFactory.getErpCustomer(ewalletRequestData.getFdActionInfo().getIdentity(), true).getPaymentMethods();
 			if (!paymentMethods.isEmpty()) {
 				try {
 					for (ErpPaymentMethodI payment : paymentMethods) {

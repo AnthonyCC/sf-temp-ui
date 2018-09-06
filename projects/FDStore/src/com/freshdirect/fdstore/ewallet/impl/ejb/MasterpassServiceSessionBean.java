@@ -295,7 +295,7 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 					if(searchedPM == null){
 					// Add the card detail to Database if not found 
 						FDCustomerManager.addPaymentMethod(ewalletRequestData.getFdActionInfo(), paymentMethod, ewalletRequestData.isPaymentechEnabled(), ewalletRequestData.isDebitCardSwitch());
-						List<ErpPaymentMethodI> paymentMethods = FDCustomerFactory.getErpCustomer(ewalletRequestData.getCustomerId()).getPaymentMethods();
+						List<ErpPaymentMethodI> paymentMethods = FDCustomerFactory.getErpCustomer(ewalletRequestData.getCustomerId(), true).getPaymentMethods();
 		                if (!paymentMethods.isEmpty() && paymentMethods.size() > 1) {
 		                	sortPaymentMethodsByIdReserved(paymentMethods);
 		                }
@@ -531,7 +531,7 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 					// Add the card detail to Database
 					FDCustomerManager.addPaymentMethod(ewalletRequestData.getFdActionInfo(), paymentMethod, ewalletRequestData.isPaymentechEnabled(), ewalletRequestData.isDebitCardSwitch());
 						
-	                List<ErpPaymentMethodI> paymentMethods = FDCustomerFactory.getErpCustomer(ewalletRequestData.getCustomerId()).getPaymentMethods();
+	                List<ErpPaymentMethodI> paymentMethods = FDCustomerFactory.getErpCustomer(ewalletRequestData.getCustomerId(), true).getPaymentMethods();
 					if (!paymentMethods.isEmpty()) {
 						if (!ewalletRequestData.isDebitCardSwitch()) {
 								
@@ -773,7 +773,7 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 								ErpPaymentMethodI paymentMethod = parsePaymentMethodForm(paymentDataMap,ewalletRequestData.getCustomerId());
 								// Add the card detail to Database
 								FDCustomerManager.addPaymentMethod(ewalletRequestData.getFdActionInfo(), paymentMethod, ewalletRequestData.isPaymentechEnabled(), ewalletRequestData.isDebitCardSwitch());
-				                List<ErpPaymentMethodI> paymentMethods = FDCustomerFactory.getErpCustomer(ewalletRequestData.getFdActionInfo().getIdentity()).getPaymentMethods();
+				                List<ErpPaymentMethodI> paymentMethods = FDCustomerFactory.getErpCustomer(ewalletRequestData.getFdActionInfo().getIdentity(), true).getPaymentMethods();
 				                if (!paymentMethods.isEmpty()){
 				                	if (ewalletRequestData.isDebitCardSwitch()) {
 				                		ErpPaymentMethodI defaultPaymentMethod = PaymentMethodUtil.getSystemDefaultPaymentMethod(ewalletRequestData.getFdActionInfo(), paymentMethods, true);
@@ -912,7 +912,7 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 								ErpPaymentMethodI paymentMethod = parsePaymentMethodForm(paymentDataMap,ewalletRequestData.getCustomerId());
 								// Add the card detail to Database
 								FDCustomerManager.addPaymentMethod(ewalletRequestData.getFdActionInfo(), paymentMethod, ewalletRequestData.isPaymentechEnabled(), ewalletRequestData.isDebitCardSwitch());
-				                List<ErpPaymentMethodI> paymentMethods = FDCustomerFactory.getErpCustomer(ewalletRequestData.getFdActionInfo().getIdentity()).getPaymentMethods();
+				                List<ErpPaymentMethodI> paymentMethods = FDCustomerFactory.getErpCustomer(ewalletRequestData.getFdActionInfo().getIdentity(), true).getPaymentMethods();
 				                if (!paymentMethods.isEmpty()) {
 				                	if (ewalletRequestData.isDebitCardSwitch()) {
 				                		ErpPaymentMethodI defaultPaymentMethod = PaymentMethodUtil.getSystemDefaultPaymentMethod(ewalletRequestData.getFdActionInfo(), paymentMethods, true);
@@ -965,7 +965,7 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 	private ErpPaymentMethodI searchMPWalletCards(EwalletRequestData ewalletRequestData, ErpPaymentMethodI mapPaymentMethod){
 		ErpPaymentMethodI paymentMethodModel = null;
 		try {
-			List<ErpPaymentMethodI> paymentMethods = FDCustomerFactory.getErpCustomer(ewalletRequestData.getFdActionInfo().getIdentity()).getPaymentMethods();
+			List<ErpPaymentMethodI> paymentMethods = FDCustomerFactory.getErpCustomer(ewalletRequestData.getFdActionInfo().getIdentity(), true).getPaymentMethods();
 			for(ErpPaymentMethodI paymentMethod:paymentMethods){
 				 if(paymentMethod.geteWalletID() != null && paymentMethod.geteWalletID().equals("1")){
 					 if(compareCard(paymentMethod,mapPaymentMethod)){
@@ -1013,7 +1013,7 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 	 */
 	private void removeMPWalletCards(EwalletRequestData ewalletRequestData){
 		try {
-			List<ErpPaymentMethodI> paymentMethods = FDCustomerFactory.getErpCustomer(ewalletRequestData.getFdActionInfo().getIdentity()).getPaymentMethods();
+			List<ErpPaymentMethodI> paymentMethods = FDCustomerFactory.getErpCustomer(ewalletRequestData.getFdActionInfo().getIdentity(), true).getPaymentMethods();
 			for(ErpPaymentMethodI paymentMethod:paymentMethods){
 				 if(paymentMethod.geteWalletID() != null && paymentMethod.geteWalletID().equals("1")){
 			        FDCustomerManager.removePaymentMethod(ewalletRequestData.getFdActionInfo(), paymentMethod,ewalletRequestData.isDebitCardSwitch());
@@ -2204,7 +2204,7 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 			
 			List<ErpPaymentMethodI> paymentMethods = FDCustomerFactory
 					.getErpCustomer(
-							ewalletRequestData.getFdActionInfo().getIdentity())
+							ewalletRequestData.getFdActionInfo().getIdentity(), true)
 					.getPaymentMethods();
 			if (!paymentMethods.isEmpty()) {
 

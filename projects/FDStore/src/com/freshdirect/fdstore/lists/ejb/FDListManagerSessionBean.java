@@ -310,7 +310,7 @@ public class FDListManagerSessionBean extends FDSessionBeanSupport {
 				if (user.isAnonymous()) {
 					throw new FDResourceException("User does not exists with identity "+identity);
 				}*/
-				ErpCustomerInfoModel customerInfo =FDCustomerFactory.getErpCustomerInfo(identity);
+				ErpCustomerInfoModel customerInfo =FDCustomerFactory.getErpCustomerInfo(identity, true);
 				if (null == customerInfo) {
 					throw new FDResourceException("User does not exists with identity "+identity);
 				}
@@ -338,7 +338,7 @@ public class FDListManagerSessionBean extends FDSessionBeanSupport {
 			List<FDCustomerListInfo> lists = dao.getCustomerCreatedListInfos(conn, identity); 
 			if (lists.isEmpty()) { 
 //				FDUserI user = FDCustomerManager.recognize(identity);
-				ErpCustomerInfoModel customerInfo =FDCustomerFactory.getErpCustomerInfo(identity);
+				ErpCustomerInfoModel customerInfo =FDCustomerFactory.getErpCustomerInfo(identity, true);
 				String firstName = null !=customerInfo && null !=customerInfo.getFirstName()? customerInfo.getFirstName():"";
 				String defaultName = firstName+ DEFAULT_CCL_NAME_SUFFIX;
 				dao.createCustomerCreatedList(conn, identity, defaultName, storeContext);

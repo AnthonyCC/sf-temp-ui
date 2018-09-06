@@ -543,7 +543,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		model.setStatus(EnumDlvPassStatus.PASS_RETURNED);
 		
 		FDOrderI order = FDCustomerManager.getOrder(saleId);
-		String fdCustomerIdFromErpId = FDCustomerFactory.getFDCustomerIdFromErpId(order.getCustomerId());
+		String fdCustomerIdFromErpId = FDCustomerFactory.getFDCustomerIdFromErpId(order.getCustomerId(), true);
 		dlvPassManagerSB.cancel(model, order.getEStoreId(), fdCustomerIdFromErpId);
 		// Create a activity log to track the delivery credits.
 		ErpActivityRecord activityRecord = createActivity(EnumAccountActivityType.CANCEL_DLV_PASS, "SYSTEM",
