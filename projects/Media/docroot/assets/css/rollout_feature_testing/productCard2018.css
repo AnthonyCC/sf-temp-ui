@@ -590,7 +590,7 @@
 }
 
 [data-feature-productcard="2018"] .container.browse .carousels.FULL_WIDTH li.portrait-item {
-	width: calc( (100% / var(--prodcard2018_perrow)) ) !important;
+	width: calc( (100% / var(--prodcard2018_perrow)) - 7px ) !important;
 }
 
 [data-feature-productcard="2018"] .container.browse .carousels.TWO_TWO div > div.carousel,
