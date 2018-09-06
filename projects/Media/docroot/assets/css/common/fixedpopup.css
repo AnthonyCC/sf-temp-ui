@@ -35,7 +35,6 @@
 	display:inline-flex;
 	flex-direction:column;
 	-webkit-overflow-scrolling: touch;
-  overflow-y: auto;
 }
 
 .fixedpopup .qs-popup-header {
