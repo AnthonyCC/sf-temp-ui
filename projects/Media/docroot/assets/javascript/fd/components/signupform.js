@@ -52,7 +52,7 @@ var FreshDirect = FreshDirect || {};
 
 
 		$('#sul_type_fields input[type="radio"]').click(function(event){
-			 let $cosFields = $('#sul_cos_fields');
+			 var $cosFields = $('#sul_cos_fields');
 			 if ($(this).val() === 'CORPORATE' && $(this).prop('checked')) {
 				 $cosFields.show();
 				 $cosFields.attr('aria-hidden', false);
