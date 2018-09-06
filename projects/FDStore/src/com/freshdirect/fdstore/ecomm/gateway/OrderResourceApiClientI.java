@@ -84,12 +84,11 @@ public interface OrderResourceApiClientI {
 			ErpAuthorizationException, ErpAddressVerificationException, ReservationException, DeliveryPassException,
 			FDPaymentInadequateException, ErpTransactionException, InvalidCardException, RemoteException;
 
-	public void modifyOrder(FDActionInfo info, String saleId,
-			ErpModifyOrderModel order, Set<String> appliedPromos,
-			String originalReservationId, boolean sendEmail,
-			CustomerRatingI cra, CrmAgentRole crmAgentRole,
-			EnumDlvPassStatus status, boolean hasCouponDiscounts,
-			int fdcOrderCount);
+	public void modifyOrder(FDActionInfo info, String saleId, ErpModifyOrderModel order, Set<String> appliedPromos,
+			String originalReservationId, boolean sendEmail, CustomerRatingI cra, CrmAgentRole crmAgentRole,
+			EnumDlvPassStatus status, boolean hasCouponDiscounts, int fdcOrderCount) throws FDResourceException,
+			ErpFraudException, ErpAuthorizationException, ErpTransactionException, DeliveryPassException,
+			FDPaymentInadequateException, ErpAddressVerificationException, InvalidCardException, RemoteException;
 
 
 	public void modifyAutoRenewOrder(FDActionInfo info, String saleId,

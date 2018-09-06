@@ -370,64 +370,17 @@ public class OrderResourceApiClient extends AbstractEcommService implements Orde
 			rootNode.put("fdcOrderCount", fdcOrderCount);
 			
 			request.setData(rootNode);
-			Response<String> response = null;
 			inputJson = buildRequest(request);
 			
-			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(CREATE_REG_ORDER_API),
+			Response<String> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(CREATE_REG_ORDER_API),
 					new TypeReference<Response<String>>() {
 					});
 			if (!response.getResponseCode().equals("OK")) {
 				LOGGER.error("Error in placeOrder: inputJson=" + inputJson);
 				
-				if ("FDResourceException".equals(response.getMessage())) {
-					throw new FDResourceException(
-							response.getError() != null ? response.getError().get(response.getMessage()).toString()
-									: null);
-				}
-				if ("ErpFraudException".equals(response.getMessage())) {
-					throw new ErpFraudException(EnumFraudReason.getEnum(
-							response.getError() != null ? response.getError().get(response.getMessage()).toString()
-									: null));
-				}
-				if ("ErpAuthorizationException".equals(response.getMessage())) {
-					throw new ErpAuthorizationException(
-							response.getError() != null ? response.getError().get(response.getMessage()).toString()
-									: null);
-				}
-				if ("ErpAddressVerificationException".equals(response.getMessage())) {
-					throw new ErpAddressVerificationException(
-							response.getError() != null ? response.getError().get(response.getMessage()).toString()
-									: null);
-				}
-				if ("ReservationException".equals(response.getMessage())) {
-					throw new ReservationException(
-							response.getError() != null ? response.getError().get(response.getMessage()).toString()
-									: null);
-				}
-				if ("DeliveryPassException".equals(response.getMessage())) {
-					throw new DeliveryPassException(
-							response.getError() != null ? response.getError().get(response.getMessage()).toString()
-									: null);
-				}
-				if ("FDPaymentInadequateException".equals(response.getMessage())) {
-					throw new FDPaymentInadequateException(
-							response.getError() != null ? response.getError().get(response.getMessage()).toString()
-									: null);
-				}
-				if ("ErpTransactionException".equals(response.getMessage())) {
-					throw new ErpTransactionException(
-							response.getError() != null ? response.getError().get(response.getMessage()).toString()
-									: null);
-				}
-				if ("InvalidCardException".equals(response.getMessage())) {
-					throw new InvalidCardException(
-							response.getError() != null ? response.getError().get(response.getMessage()).toString()
-									: null);
-				}
-				
-				throw new FDResourceException(response.getMessage());
+				handleErrorOrderResponse(response);
 			}
-			return parseResponse(response);
+			return response.getData();
 		} catch (Exception e) {
 			LOGGER.error("Error in placeOrder: inputJson=" + inputJson, e);
 			throw new RemoteException(e.getMessage(), e);
@@ -439,30 +392,93 @@ public class OrderResourceApiClient extends AbstractEcommService implements Orde
 	@Override
 	public void modifyOrder(FDActionInfo info, String saleId, ErpModifyOrderModel order, Set<String> appliedPromos,
 			String originalReservationId, boolean sendEmail, CustomerRatingI cra, CrmAgentRole crmAgentRole,
-			EnumDlvPassStatus status, boolean hasCouponDiscounts, int fdcOrderCount) {
-
-		Request<ModifyOrderRequestData> request = new Request<ModifyOrderRequestData>();
-
+			EnumDlvPassStatus status, boolean hasCouponDiscounts, int fdcOrderCount) throws FDResourceException,
+			ErpFraudException, ErpAuthorizationException, ErpTransactionException, DeliveryPassException,
+			FDPaymentInadequateException, ErpAddressVerificationException, InvalidCardException, RemoteException {
+		String inputJson = null;
 		try {
+			Request<ObjectNode> request = new Request<ObjectNode>();
+			ObjectNode rootNode = getMapper().createObjectNode();
+			rootNode.set("info", getMapper().convertValue(info, JsonNode.class));
+			rootNode.put("saleId", saleId);
+			rootNode.set("order", getMapper().convertValue(order, JsonNode.class));
+			rootNode.set("appliedPromos", getMapper().convertValue(appliedPromos, JsonNode.class));
+			rootNode.put("originalReservationId", originalReservationId);
+			rootNode.put("sendEmail", sendEmail);
+			rootNode.set("cra", getMapper().convertValue(cra, JsonNode.class));
+			rootNode.set("crmAgentRole", getMapper().convertValue(crmAgentRole, JsonNode.class));
+			rootNode.put("status", status.getName());
+			rootNode.put("hasCouponDiscounts", hasCouponDiscounts);
+			rootNode.put("fdcOrderCount", fdcOrderCount);
 
-			ModifyOrderRequestData data = new ModifyOrderRequestData(FDActionInfoConverter.buildActionInfoData(info),
-					saleId, SapGatewayConverter.buildOrderData(order), appliedPromos, originalReservationId, sendEmail,
-					CustomerRatingConverter.buildCustomerRatingData(cra),
-					ErpFraudPreventionConverter.buildCrmAgentRoleData(crmAgentRole),
-					(status != null) ? status.getName() : null);
-			data.setHasCouponDiscounts(hasCouponDiscounts);
-			data.setFdcOrderCount(fdcOrderCount);
-			request.setData(data);
+			request.setData(rootNode);
+			inputJson = buildRequest(request);
 
-			Response<String> response = null;
-			String inputJson = buildRequest(request);
-			response = httpPostData(getFdCommerceEndPoint(MODIFY_REG_ORDER_API), inputJson, Response.class,
-					new Object[] {});
-			parseResponse(response);
+			Response<String> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(MODIFY_REG_ORDER_API),
+					new TypeReference<Response<String>>() {
+					});
+			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in modifyOrder: inputJson=" + inputJson);
+
+				handleErrorOrderResponse(response);
+			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error("Error in modifyOrder: inputJson=" + inputJson, e);
+			throw new RemoteException(e.getMessage(), e);
 		}
 
+	}
+
+	private void handleErrorOrderResponse(Response<String> response) throws FDResourceException, ErpFraudException,
+			ErpAuthorizationException, ErpAddressVerificationException, ReservationException, DeliveryPassException,
+			FDPaymentInadequateException, ErpTransactionException, InvalidCardException {
+		if ("FDResourceException".equals(response.getMessage())) {
+			throw new FDResourceException(
+					response.getError() != null ? response.getError().get(response.getMessage()).toString()
+							: null);
+		}
+		if ("ErpFraudException".equals(response.getMessage())) {
+			throw new ErpFraudException(EnumFraudReason.getEnum(
+					response.getError() != null ? response.getError().get(response.getMessage()).toString()
+							: null));
+		}
+		if ("ErpAuthorizationException".equals(response.getMessage())) {
+			throw new ErpAuthorizationException(
+					response.getError() != null ? response.getError().get(response.getMessage()).toString()
+							: null);
+		}
+		if ("ErpAddressVerificationException".equals(response.getMessage())) {
+			throw new ErpAddressVerificationException(
+					response.getError() != null ? response.getError().get(response.getMessage()).toString()
+							: null);
+		}
+		if ("ReservationException".equals(response.getMessage())) {
+			throw new ReservationException(
+					response.getError() != null ? response.getError().get(response.getMessage()).toString()
+							: null);
+		}
+		if ("DeliveryPassException".equals(response.getMessage())) {
+			throw new DeliveryPassException(
+					response.getError() != null ? response.getError().get(response.getMessage()).toString()
+							: null);
+		}
+		if ("FDPaymentInadequateException".equals(response.getMessage())) {
+			throw new FDPaymentInadequateException(
+					response.getError() != null ? response.getError().get(response.getMessage()).toString()
+							: null);
+		}
+		if ("ErpTransactionException".equals(response.getMessage())) {
+			throw new ErpTransactionException(
+					response.getError() != null ? response.getError().get(response.getMessage()).toString()
+							: null);
+		}
+		if ("InvalidCardException".equals(response.getMessage())) {
+			throw new InvalidCardException(
+					response.getError() != null ? response.getError().get(response.getMessage()).toString()
+							: null);
+		}
+
+		throw new FDResourceException(response.getMessage());
 	}
 
 	@Override
