@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
 import java.util.Set;
@@ -1081,6 +1082,7 @@ public class FDStoreProperties {
     //APPDEV-7480
     private static final String PROP_JAVASCRIPT_FIRST_ENABLED = "fdstore.javascript.first.enabled";
 
+    private static Map<Long, Integer> METHODS_IN_EJB_SCOPE = new HashMap<Long,Integer>();
  	static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_INIT_CTX_FACTORY, "weblogic.jndi.WLInitialContextFactory");
@@ -4876,7 +4878,9 @@ public class FDStoreProperties {
     }
 
     public static boolean isSF2_0_AndServiceEnabled(String beanName) {
-		return ((Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue() && FDEcommProperties.isServiceEnabled(beanName));
+        return ((Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue() && 
+        		FDEcommProperties.isServiceEnabled(beanName)) &&
+        		!isInEjbScope();
     }
 
     public static boolean isMealBundleCartonLinkEnabled() {
@@ -5297,6 +5301,32 @@ public class FDStoreProperties {
 
 	public static boolean isJavascriptFirstEnabled() {
 		return (Boolean.valueOf(get(PROP_JAVASCRIPT_FIRST_ENABLED))).booleanValue();
+	}
+
+	public static boolean isInEjbScope() {
+		long tid = Thread.currentThread().getId();
+		return METHODS_IN_EJB_SCOPE.get(tid) != null && METHODS_IN_EJB_SCOPE.get(tid) > 0;
+	}
+	
+	public static void setInEjbScrope(boolean isInEjbScope) {
+		long tid = Thread.currentThread().getId();
+		if (isInEjbScope) {
+			if (METHODS_IN_EJB_SCOPE.containsKey(tid)) {
+				METHODS_IN_EJB_SCOPE.put(tid, METHODS_IN_EJB_SCOPE.get(tid) + 1);
+			} else {
+				METHODS_IN_EJB_SCOPE.put(tid, 1);
+			}
+		} else {
+			Integer n = METHODS_IN_EJB_SCOPE.get(tid);
+			if (n != null) {
+				n = n - 1;
+				if (n == 0) {
+					METHODS_IN_EJB_SCOPE.remove(tid);
+				} else {
+					METHODS_IN_EJB_SCOPE.put(tid, n);
+				}
+			}
+		}
 	}
 
 }
