@@ -2685,6 +2685,8 @@
 				<include name="FDStore.jar"/>
 			</libraries>
 			<lib>
+				<!-- keep oscache for mobile API -->
+				<include name="oscache-2.4.1.jar"/>
 				<include name="struts.jar"/>
 				<include name="lcc.jar"/>
 				<include name="sapjco3.jar"/>
