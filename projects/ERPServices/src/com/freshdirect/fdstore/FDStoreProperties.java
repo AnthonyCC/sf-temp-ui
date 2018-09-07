@@ -16,6 +16,7 @@ import java.util.Properties;
 import java.util.Random;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -1082,7 +1083,7 @@ public class FDStoreProperties {
     //APPDEV-7480
     private static final String PROP_JAVASCRIPT_FIRST_ENABLED = "fdstore.javascript.first.enabled";
 
-    private static Map<Long, Integer> METHODS_IN_EJB_SCOPE = new HashMap<Long,Integer>();
+    private static Map<Long, Integer> METHODS_IN_EJB_SCOPE = new ConcurrentHashMap<Long,Integer>();
  	static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_INIT_CTX_FACTORY, "weblogic.jndi.WLInitialContextFactory");

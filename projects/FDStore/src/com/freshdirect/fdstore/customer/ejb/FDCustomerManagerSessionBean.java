@@ -277,7 +277,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	private final static Logger LOGGER = LoggerFactory.getInstance(FDCustomerManagerSessionBean.class);
 
-	private static Map<String, ErpSaleModel> orderCache = new HashMap<String, ErpSaleModel>();
 	public RegistrationResult register(FDActionInfo info, ErpCustomerModel erpCustomer, FDCustomerModel fdCustomer,
 			String cookie, boolean pickupOnly, boolean eligibleForPromotion, FDSurveyResponse survey,
 			EnumServiceType serviceType) throws FDResourceException, ErpDuplicateUserIdException,ErpFraudException {
