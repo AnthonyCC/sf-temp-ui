@@ -317,6 +317,16 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     public void valueUnbound(HttpSessionBindingEvent event) {
         LOGGER.debug("FDUser unbound from session " + event.getSession().getId() + " user cookie " + this.getCookie() + " username " + this.getUserId());
         if (!this.isRobot()) {
+        	
+        	Date loginTime = null;
+        	try {
+        		if (event.getSession() != null) {
+        			loginTime = new Date(event.getSession().getCreationTime());
+        		}
+        	} catch (Exception e) {
+        		LOGGER.error("FDUserGetCreationTimeIssue:" + this.getCookie() + ":" + this.getUserId(), e);
+        	}
+        	
             this.saveCart(true);
             this.saveImpressions();
             this.releaseModificationLock();
@@ -332,14 +342,11 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 				e1.printStackTrace();
 			}
             
-            if (FDStoreProperties.isSessionLoggingEnabled()) {
+            if (FDStoreProperties.isSessionLoggingEnabled() && loginTime != null) {
                 try {
                     if (user != null && user.getIdentity() != null && user.getIdentity().getErpCustomerPK() != null) {
-                        Date loginTime = null;
-                        if (event.getSession() != null)
-                            loginTime = new Date(event.getSession().getCreationTime());
-
-                        if (user.getSessionEvent() != null) {
+                       
+                    	if (user.getSessionEvent() != null) {
                             SessionEvent sessionEvent = user.getSessionEvent();
                             sessionEvent.setCustomerId(user.getIdentity().getErpCustomerPK());
                             sessionEvent.setLoginTime(loginTime);
