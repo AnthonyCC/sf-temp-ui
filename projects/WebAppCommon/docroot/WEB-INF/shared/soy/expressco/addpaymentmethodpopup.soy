@@ -135,7 +135,7 @@
 	    	<input name="bil_city"  id="CC_bil_city" placeholder="City" value="{if $data.bil_city}{$data.bil_city}{/if}" required/>
 	   	</label>
 	    <label for="CC_bil_state" class="small-fieldset">State
-	      <select name="bil_state" id="CC_bil_state" class="customsimpleselect" required fdform-fieldname="State">
+	      <select name="bil_state" class="customsimpleselect" required>
 	        <option value="">--</option>
 	          {if $data.metadata and $data.metadata.state}
 	            {foreach $state in $data.metadata.state}
@@ -262,7 +262,7 @@
       		<input name="bil_city" id="EC_bil_city" placeholder="City" value="{if $data.bil_city}{$data.bil_city}{/if}" required/>
       	</label>
       	<label for="EC_bil_state" class="small-fieldset">
-	    	<select name="bil_state" id="EC_bil_state" class="customsimpleselect" required fdform-fieldname="State">
+	    	<select name="bil_state" id="EC_bil_state" class="customsimpleselect" required>
 	        	<option value="">--</option>
 		        	{if $data.metadata and $data.metadata.state}
 		         		{foreach $state in $data.metadata.state}
@@ -359,7 +359,7 @@
     	<input name="bil_city" id="ET_bil_city" placeholder="City" value="{if $data.bil_city}{$data.bil_city}{/if}" required/>
    	</label>
    	<label for="ET_bil_state" class="small-fieldset">State
-    <select name="bil_state" id="ET_bil_state" class="customsimpleselect" required fdform-fieldname="State">
+    <select name="bil_state" id="ET_bil_state" class="customsimpleselect" required>
       <option value="">--</option>
       {if $data.metadata and $data.metadata.state}
        {foreach $state in $data.metadata.state}
@@ -369,7 +369,7 @@
       {/if}
     </select>
     </label>
-	<label for="ET_bil_zipcode" class="small-fieldset">ZIP Code
+	<label for="ET_bil_state" class="small-fieldset">ZIP Code
     	<input name="bil_zipcode" id="ET_bil_zipcode" placeholder="ZIP Code" fdform-v-zipcode value="{if $data.bil_zipcode}{$data.bil_zipcode}{/if}" required/>
     </label>
     <span fdform-error-for="bil_city" class="small-fieldset"></span>
