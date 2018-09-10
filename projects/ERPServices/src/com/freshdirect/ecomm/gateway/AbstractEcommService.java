@@ -72,7 +72,7 @@ public abstract class AbstractEcommService {
 
 		PoolingHttpClientConnectionManager cManager = new PoolingHttpClientConnectionManager();
 		
-		// we only have one route so far, maxTotal = maxPerRotue
+		// EcommService have no specific route, maxTotal = maxPerRotue. 
 		cManager.setMaxTotal(FDStoreProperties.getLogisticsConnectionPool());
 		cManager.setDefaultMaxPerRoute(FDStoreProperties.getLogisticsConnectionPool());
 		
