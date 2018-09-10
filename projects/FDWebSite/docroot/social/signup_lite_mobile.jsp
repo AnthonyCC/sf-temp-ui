@@ -14,8 +14,6 @@ FDUserI login_user = (FDUserI)session.getAttribute(SessionName.USER);
 boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, login_user) && JspMethods.isMobile(request.getHeader("User-Agent"));
 boolean isOAuthPage = false;
 String template = "/common/template/no_nav.jsp"; //default
-String pageType = "signup";
-
 if (mobWeb) {
 	W_LOGIN_TOTAL = 320;
 	template = "/common/template/mobileWeb.jsp"; //mobWeb template
@@ -40,7 +38,6 @@ String templateId = request.getParameter("template");
 			isPopup = true;
 		}else if ( sPage.indexOf("gift_card") > 0 && FDStoreProperties.isGiftCardEnabled() ) {
 			template = "/common/template/giftcard.jsp";
-			pageType = "gc_signup";
 		}else if ( sPage.indexOf("robin_hood") > 0 && FDStoreProperties.isRobinHoodEnabled() ) {
 			template = "/common/template/robinhood.jsp";
 		}else if (sPage.startsWith("/oauth/") || (templateId != null && templateId.equals("oauth"))) {
@@ -54,25 +51,8 @@ String templateId = request.getParameter("template");
         <fd:SEOMetaTag title="FreshDirect - Log In"/>
     </tmpl:put>
 <%-- <tmpl:put name='title' direct='true'>FreshDirect - Log In</tmpl:put> --%>
-<tmpl:put name='pageType' direct='true'><%= pageType %></tmpl:put>
 <tmpl:put name='content' direct='true'>
-	<style>
-		.W_LOGIN_TOTAL { width: <%=(mobWeb || isOAuthPage)? "100%" : W_LOGIN_TOTAL+"px" %>; }
-	</style>
-	<table role="presentation" border="0" cellspacing="0" cellpadding="0" class="W_LOGIN_TOTAL" align="center">
-		<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="20" alt=""></td></tr>
-		
-		<tr>
-			<td colspan="2" class="W_LOGIN_TOTAL">
-				<!-- <img src="/media_stat/images/navigation/current_cust_log_in_now.gif" width="222" height="13" border="0" alt="CREATE ACCOUNT"> -->
-				<span class="Container_Top_CurrentCustLogin">CREATE ACCOUNT NOW</span>
-			</td>
-		</tr>
-		<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt=""></td></tr>
-		<tr><td colspan="2" bgcolor="#999966" class="onePxTall"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt=""></td></tr>
-	</table>
-  <%@ include file="/includes/i_signup_field.jspf" %>
-
+	
 	<%if(fdTcAgree!=null&&!fdTcAgree.booleanValue()){%>
 		<script type="text/javascript">
 		var nextpage = '<%=nextSuccesspage %>';
@@ -80,6 +60,24 @@ String templateId = request.getParameter("template");
 		</script>
 	<%}%>
 	
+	<table role="presentation" border="0" cellspacing="0" cellpadding="0" width="<%=(mobWeb || isOAuthPage)?"100%":W_LOGIN_TOTAL%>" align="center">
+		<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="20" alt=""></td></tr>
+		
+		<tr>
+			<td colspan="2" width="<%=W_LOGIN_TOTAL%>">
+				<!-- <img src="/media_stat/images/navigation/current_cust_log_in_now.gif" width="222" height="13" border="0" alt="CREATE ACCOUNT"> -->
+				<span class="Container_Top_CurrentCustLogin">CREATE ACCOUNT NOW</span>
+			</td>
+		</tr>
+		<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt=""></td></tr>
+		<tr><td colspan="2" bgcolor="#999966" class="onePxTall"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt=""></td></tr>
+		<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="14" alt=""></td></tr>
+		<tr>
+			<td colspan="2">
+				<%@ include file="/includes/i_signup_field.jspf" %>
+			</td>
+		</tr>
+	</table>
 </tmpl:put>
 </tmpl:insert>
 

@@ -136,6 +136,10 @@ public class CartDetail {
     public void setIsEstimatedPrice(boolean isEstimatedPrice) {
         this.isEstimatedPrice = isEstimatedPrice;
     }
+    
+    private double dlvPassCharge;
+   
+    private String dlvPassId;
 
     /**
      * @author Rob
@@ -728,6 +732,8 @@ public class CartDetail {
     	
     	private String substituteProductImageURL;
     	
+    	private boolean dlvPassProduct;
+    	
         public String getDiscountMsg() {
 			return discountMsg;
 		}
@@ -848,6 +854,14 @@ public class CartDetail {
 		public void setSubstituteProductImageURL(
 				String substituteProductImageURL) {
 			this.substituteProductImageURL = substituteProductImageURL;
+		}
+
+		public boolean isDlvPassProduct() {
+			return dlvPassProduct;
+		}
+
+		public void setDlvPassProduct(boolean dlvPassProduct) {
+			this.dlvPassProduct = dlvPassProduct;
 		}
 
 		
@@ -974,6 +988,22 @@ public class CartDetail {
 
 	public void setDlvPassTimeslotNotMatched(boolean dlvPassTimeslotNotMatched) {
 		this.dlvPassTimeslotNotMatched = dlvPassTimeslotNotMatched;
+	}
+
+	public double getDlvPassCharge() {
+		return dlvPassCharge;
+	}
+
+	public void setDlvPassCharge(double dlvPassCharge) {
+		this.dlvPassCharge = dlvPassCharge;
+	}
+
+	public String getDlvPassId() {
+		return dlvPassId;
+	}
+
+	public void setDlvPassId(String dlvPassId) {
+		this.dlvPassId = dlvPassId;
 	}
 
 }

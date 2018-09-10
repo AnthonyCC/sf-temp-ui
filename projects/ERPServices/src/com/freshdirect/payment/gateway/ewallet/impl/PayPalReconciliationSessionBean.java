@@ -32,6 +32,9 @@ import com.freshdirect.customer.ErpChargebackReversalModel;
 import com.freshdirect.customer.ErpSettlementInfo;
 import com.freshdirect.customer.ErpSettlementModel;
 import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.ecomm.gateway.ReconciliationService;
+import com.freshdirect.fdstore.FDEcommProperties;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ewallet.ErpPPSettlementInfo;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.core.SessionBeanSupport;
@@ -303,11 +306,11 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 				model.setProcessorTrxnId(trxn.getPaypalReferenceId());
 				model.setAffiliate(affiliate);
 				ErpSettlementInfo info = null;
-				if (null !=PayPalSettlementTransactionCodes.EnumPPSTLEventCode.getEnum(trxn.getTransactionEventCode()))
+				if (null !=PayPalSettlementTransactionCodes.EnumPPSTLEventCode.getEnum(trxn.getTransactionEventCode())){
 					info = reconsSB.addSettlement(model, saleId, affiliate, false);
-				else if (null !=PayPalSettlementTransactionCodes.EnumPPREFEventCode.getEnum(trxn.getTransactionEventCode()))
+				}else if (null !=PayPalSettlementTransactionCodes.EnumPPREFEventCode.getEnum(trxn.getTransactionEventCode())){
 					info = reconsSB.addSettlement(model, saleId, affiliate, true);
-				else if (null !=PayPalSettlementTransactionCodes.EnumPPCBKEventCode.getEnum(trxn.getTransactionEventCode())) {
+				}else if (null !=PayPalSettlementTransactionCodes.EnumPPCBKEventCode.getEnum(trxn.getTransactionEventCode())) {
 					info = reconsSB.addChargeback(getChargebackModel(trxn, affiliate, trxn.getTransactionInitiationDate()));
 				} else if (null !=PayPalSettlementTransactionCodes.EnumPPCBREventCode.getEnum(trxn.getTransactionEventCode())) {
 					info = reconsSB.addChargebackReversal(getChargebackReversalModel(trxn, affiliate, trxn.getTransactionInitiationDate()));

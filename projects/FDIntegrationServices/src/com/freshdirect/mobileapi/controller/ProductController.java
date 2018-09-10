@@ -4,7 +4,9 @@ package com.freshdirect.mobileapi.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +21,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.common.pricing.PricingException;
+import com.freshdirect.deliverypass.DeliveryPassType;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDRuntimeException;
@@ -744,22 +747,40 @@ public class ProductController extends BaseController {
     
     private ModelAndView getDpList(ModelAndView model, SessionUser user, HttpServletRequest request, HttpServletResponse response) throws FDException, JsonException {
 		DpSkuListResponse responseMessage = new DpSkuListResponse();
-		if(isExtraResponseRequested(request)){
-			List<String> productidlist = Arrays.asList((FDStoreProperties.getFDXDPSku()).split(","));
-			List<com.freshdirect.mobileapi.model.Product> dpproductList = new ArrayList<com.freshdirect.mobileapi.model.Product>();
-			for (String productid : productidlist) {
-				try {
-					dpproductList.add(com.freshdirect.mobileapi.model.Product.getProduct(productid, "xxx", null, user));
-				} catch (ServiceException e) {
-					LOGGER.debug("Error fetching data for product(" + productid + "): " + e.getMessage());
-				}
-			}
-			responseMessage.setDpProductlist(NewBrowseUtil.setProductsFromModel(dpproductList));
-		}else if(CmsManager.getInstance().getEStoreEnum()!=null && CmsManager.getInstance().getEStoreEnum().equals(EnumEStoreId.FDX)){
-			responseMessage.setDpskulist(new ArrayList<String>(Arrays.asList((FDStoreProperties.getFDXDPSku()).split(","))));
+		
+		List<String> productidlist;
+		if(CmsManager.getInstance().getEStoreEnum()!=null && CmsManager.getInstance().getEStoreEnum().equals(EnumEStoreId.FDX)){
+			productidlist = Arrays.asList((FDStoreProperties.getFDXDPSku()).split(","));
 		}else{
-			responseMessage.setDpskulist(new ArrayList<String>(Arrays.asList((FDStoreProperties.getFDDPSku()).split(","))));
+			productidlist = Arrays.asList((FDStoreProperties.getFDDPSku()).split(","));
 		}
+		
+		Map<String, String> productidShortnameMap = new HashMap<String, String>();
+		List<com.freshdirect.mobileapi.model.Product> productList = new ArrayList<com.freshdirect.mobileapi.model.Product>();
+		
+		for (String productid : productidlist) {
+			try {
+				String shortName = StringUtils.EMPTY;
+				com.freshdirect.mobileapi.model.Product product = com.freshdirect.mobileapi.model.Product.getProduct(productid, "xxx", null, user);
+				DeliveryPassType deliveryPassType = DeliveryPassType.getEnum(product.getDefaultSku().getSkuCode());
+				if(null !=deliveryPassType){
+					shortName = deliveryPassType.getShortName();
+				}
+				productidShortnameMap.put(productid, shortName);
+				productList.add(product);
+			} catch (ServiceException e) {
+				LOGGER.debug("Error fetching data for product(" + productid + "): " + e.getMessage());
+			}
+		}
+		
+		if(isExtraResponseRequested(request)){
+			responseMessage.setDpProductlist(NewBrowseUtil.setProductsFromModel(productList));
+			responseMessage.setProductidShortnameMap(productidShortnameMap);
+		}else{
+			responseMessage.setDpskulist(productidlist);
+			responseMessage.setProductidShortnameMap(productidShortnameMap);
+		}
+		
         responseMessage.setStatus(Message.STATUS_SUCCESS);
         setResponseMessage(model, responseMessage, user);
         return model;

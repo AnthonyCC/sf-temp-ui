@@ -14,6 +14,7 @@ import com.freshdirect.mobileapi.controller.data.Message;
 public class DPInfo extends Message {
 
 	private String name;
+	private String shortName;
 	private String deliveryPassStatus;
 	private String description;
 	private String purchaseDate;
@@ -162,5 +163,11 @@ public class DPInfo extends Message {
 	}
 	public void setIsMidweekPass(Boolean isMidweekPass) {
 		this.isMidweekPass = isMidweekPass;
+	}
+	public String getShortName() {
+		return shortName;
+	}
+	public void setShortName(String shortName) {
+		this.shortName = shortName;
 	}
 }

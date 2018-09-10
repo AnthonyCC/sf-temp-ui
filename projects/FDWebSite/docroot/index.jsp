@@ -93,7 +93,8 @@ request.setAttribute("noyui", true);
 	</tmpl:put>
 	<tmpl:put name="extraJsFooter"><%-- MOBILE, end of body --%>
 	</tmpl:put>
-
+	
+	<tmpl:put name='containerExtraClass' direct='true'>homepage</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 	<%!
 

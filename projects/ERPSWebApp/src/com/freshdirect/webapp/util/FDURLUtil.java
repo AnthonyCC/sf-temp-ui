@@ -59,7 +59,6 @@ public class FDURLUtil {
 	public static final String STANDING_ORDER_MAIN_PAGE_NEW	= "/quickshop/qs_standing_orders.jsp";
 
     public static final String LANDING_PAGE = "/index.jsp";
-    public static final String LANDING_PAGE_WITH_SERVICE_TYPE = LANDING_PAGE + "?serviceType=";
 
 	public static String safeURLEncode(String str) {
 		try {
@@ -82,11 +81,15 @@ public class FDURLUtil {
     }
 
     public static String getLandingPageUrl(EnumServiceType serviceType) {
-        return getLandingPageUrl(serviceType.getName());
+        return extendsUrlWithServiceType(LANDING_PAGE, serviceType);
     }
 
-    public static String getLandingPageUrl(String serviceType) {
-        return LANDING_PAGE_WITH_SERVICE_TYPE + serviceType;
+    public static String extendsUrlWithServiceType(String url, EnumServiceType serviceType) {
+        StringBuilder serviceTypeUrl = new StringBuilder(url);
+        serviceTypeUrl.append(url.contains("?") ? "&" : "?");
+        serviceTypeUrl.append("serviceType=");
+        serviceTypeUrl.append(serviceType.getName());
+        return serviceTypeUrl.toString();
     }
 
 	/**

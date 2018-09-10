@@ -1,6 +1,7 @@
 package com.freshdirect.payment.ejb;
 
 import java.rmi.RemoteException;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -68,6 +69,13 @@ import com.freshdirect.referral.extole.RafUtil;
 import com.freshdirect.sap.command.SapSendSettlement;
 import com.freshdirect.sap.ejb.SapException;
 
+
+/**
+ *@deprecated Please use the ReconciliationController and ReconciliationServiceI in Storefront2.0 project.
+ * SVN location :: https://appdevsvn.nj01/appdev/ecommerce
+ *
+ *
+ */
 public class ReconciliationSessionBean extends SessionBeanSupport {
 	
 	private static final Category LOGGER = LoggerFactory.getInstance(ReconciliationSessionBean.class);

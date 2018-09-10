@@ -192,8 +192,6 @@ var FreshDirect = FreshDirect || {};
 				} else {
 					$('#signup-success').attr('data-signup-success', true).removeClass('hidden');
 					$('#signup-content').hide();
-					$('#signup-success').closest('.fixedPopupContent').addClass('success');
-					
 				}
 			} else if (response.message === 'CaptchaRedirect'){
 				var isCaptchaInited = $('[data-captcha]').attr('data-captcha-init') === 'true';

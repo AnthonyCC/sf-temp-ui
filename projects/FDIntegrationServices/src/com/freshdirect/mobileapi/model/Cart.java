@@ -817,6 +817,15 @@ public class Cart {
                 productLineItem.setHasTax(cartLine.hasTax());
                 productLineItem.setCartLineId(Integer.toString(cartLine.getRandomId()));
                 productLineItem.setGroupScaleSavings(cartLine.getGroupScaleSavings());
+                productLineItem.setDlvPassProduct(cartLine.lookupFDProduct().isDeliveryPass()?true:false);
+                if(cartLine.lookupFDProduct().isDeliveryPass()){
+                	if (cartLine != null && cartLine.getInvoiceLine() != null) {
+                			cartDetail.setDlvPassCharge(cartLine.getInvoiceLine().getPrice());
+                        } else {
+                        	cartDetail.setDlvPassCharge(cartLine.getPrice());
+                        }
+                	cartDetail.setDlvPassId(productLineItem.getCartLineId());
+                }
 
                 //Slightly altering condition logic.  do only once and add to cart level later.
                 if ((platterCutoffTime == null) && productLineItem.hasPlatterRestriction()) {

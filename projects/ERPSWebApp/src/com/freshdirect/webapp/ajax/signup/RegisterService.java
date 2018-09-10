@@ -46,7 +46,5 @@ public class RegisterService {
         user.getUser().setDlvPassInfo(dlvpassInfo);
         user.getUser().setAssignedCustomerParams(FDCustomerManager.getAssignedCustomerParams(user));
         user.setTcAcknowledge(tcAgree);
-        user.setJustSignedUp(true);
     }
-
 }

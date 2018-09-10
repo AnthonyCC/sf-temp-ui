@@ -54,6 +54,7 @@ import com.freshdirect.ecommerce.data.order.CancelOrderRequestData;
 import com.freshdirect.ecommerce.data.order.CreateOrderRequestData;
 import com.freshdirect.ecommerce.data.order.ModifyOrderRequestData;
 import com.freshdirect.ecommerce.data.order.OrderSearchCriteriaRequest;
+import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.FDEcommServiceException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.atp.FDAvailabilityI;
@@ -93,7 +94,7 @@ public class OrderResourceApiClient extends AbstractEcommService implements Orde
 			.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 			.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_CONCRETE_AND_ARRAYS);
 
-	public static OrderResourceApiClient getInstance() {
+	public static OrderResourceApiClientI getInstance() {
 		if (INSTANCE == null)
 			INSTANCE = new OrderResourceApiClient();
 
@@ -370,64 +371,17 @@ public class OrderResourceApiClient extends AbstractEcommService implements Orde
 			rootNode.put("fdcOrderCount", fdcOrderCount);
 			
 			request.setData(rootNode);
-			Response<String> response = null;
 			inputJson = buildRequest(request);
 			
-			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(CREATE_REG_ORDER_API),
+			Response<String> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(CREATE_REG_ORDER_API),
 					new TypeReference<Response<String>>() {
 					});
 			if (!response.getResponseCode().equals("OK")) {
-				LOGGER.error("Error in placeOrder: inputJson=" + inputJson);
+				LOGGER.error("Error in placeOrder: inputJson=" + inputJson + ",response=" + response);
 				
-				if ("FDResourceException".equals(response.getMessage())) {
-					throw new FDResourceException(
-							response.getError() != null ? response.getError().get(response.getMessage()).toString()
-									: null);
-				}
-				if ("ErpFraudException".equals(response.getMessage())) {
-					throw new ErpFraudException(EnumFraudReason.getEnum(
-							response.getError() != null ? response.getError().get(response.getMessage()).toString()
-									: null));
-				}
-				if ("ErpAuthorizationException".equals(response.getMessage())) {
-					throw new ErpAuthorizationException(
-							response.getError() != null ? response.getError().get(response.getMessage()).toString()
-									: null);
-				}
-				if ("ErpAddressVerificationException".equals(response.getMessage())) {
-					throw new ErpAddressVerificationException(
-							response.getError() != null ? response.getError().get(response.getMessage()).toString()
-									: null);
-				}
-				if ("ReservationException".equals(response.getMessage())) {
-					throw new ReservationException(
-							response.getError() != null ? response.getError().get(response.getMessage()).toString()
-									: null);
-				}
-				if ("DeliveryPassException".equals(response.getMessage())) {
-					throw new DeliveryPassException(
-							response.getError() != null ? response.getError().get(response.getMessage()).toString()
-									: null);
-				}
-				if ("FDPaymentInadequateException".equals(response.getMessage())) {
-					throw new FDPaymentInadequateException(
-							response.getError() != null ? response.getError().get(response.getMessage()).toString()
-									: null);
-				}
-				if ("ErpTransactionException".equals(response.getMessage())) {
-					throw new ErpTransactionException(
-							response.getError() != null ? response.getError().get(response.getMessage()).toString()
-									: null);
-				}
-				if ("InvalidCardException".equals(response.getMessage())) {
-					throw new InvalidCardException(
-							response.getError() != null ? response.getError().get(response.getMessage()).toString()
-									: null);
-				}
-				
-				throw new FDResourceException(response.getMessage());
+				handleErrorOrderResponse(response);
 			}
-			return parseResponse(response);
+			return response.getData();
 		} catch (Exception e) {
 			LOGGER.error("Error in placeOrder: inputJson=" + inputJson, e);
 			throw new RemoteException(e.getMessage(), e);
@@ -439,30 +393,93 @@ public class OrderResourceApiClient extends AbstractEcommService implements Orde
 	@Override
 	public void modifyOrder(FDActionInfo info, String saleId, ErpModifyOrderModel order, Set<String> appliedPromos,
 			String originalReservationId, boolean sendEmail, CustomerRatingI cra, CrmAgentRole crmAgentRole,
-			EnumDlvPassStatus status, boolean hasCouponDiscounts, int fdcOrderCount) {
-
-		Request<ModifyOrderRequestData> request = new Request<ModifyOrderRequestData>();
-
+			EnumDlvPassStatus status, boolean hasCouponDiscounts, int fdcOrderCount) throws FDResourceException,
+			ErpFraudException, ErpAuthorizationException, ErpTransactionException, DeliveryPassException,
+			FDPaymentInadequateException, ErpAddressVerificationException, InvalidCardException, RemoteException {
+		String inputJson = null;
 		try {
+			Request<ObjectNode> request = new Request<ObjectNode>();
+			ObjectNode rootNode = getMapper().createObjectNode();
+			rootNode.set("info", getMapper().convertValue(info, JsonNode.class));
+			rootNode.put("saleId", saleId);
+			rootNode.set("order", getMapper().convertValue(order, JsonNode.class));
+			rootNode.set("appliedPromos", getMapper().convertValue(appliedPromos, JsonNode.class));
+			rootNode.put("originalReservationId", originalReservationId);
+			rootNode.put("sendEmail", sendEmail);
+			rootNode.set("cra", getMapper().convertValue(cra, JsonNode.class));
+			rootNode.set("crmAgentRole", getMapper().convertValue(crmAgentRole, JsonNode.class));
+			rootNode.put("status", status.getName());
+			rootNode.put("hasCouponDiscounts", hasCouponDiscounts);
+			rootNode.put("fdcOrderCount", fdcOrderCount);
 
-			ModifyOrderRequestData data = new ModifyOrderRequestData(FDActionInfoConverter.buildActionInfoData(info),
-					saleId, SapGatewayConverter.buildOrderData(order), appliedPromos, originalReservationId, sendEmail,
-					CustomerRatingConverter.buildCustomerRatingData(cra),
-					ErpFraudPreventionConverter.buildCrmAgentRoleData(crmAgentRole),
-					(status != null) ? status.getName() : null);
-			data.setHasCouponDiscounts(hasCouponDiscounts);
-			data.setFdcOrderCount(fdcOrderCount);
-			request.setData(data);
+			request.setData(rootNode);
+			inputJson = buildRequest(request);
 
-			Response<String> response = null;
-			String inputJson = buildRequest(request);
-			response = httpPostData(getFdCommerceEndPoint(MODIFY_REG_ORDER_API), inputJson, Response.class,
-					new Object[] {});
-			parseResponse(response);
+			Response<String> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(MODIFY_REG_ORDER_API),
+					new TypeReference<Response<String>>() {
+					});
+			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in modifyOrder: inputJson=" + inputJson + ",response=" + response);
+
+				handleErrorOrderResponse(response);
+			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error("Error in modifyOrder: inputJson=" + inputJson, e);
+			throw new RemoteException(e.getMessage(), e);
 		}
 
+	}
+
+	private void handleErrorOrderResponse(Response<String> response) throws FDResourceException, ErpFraudException,
+			ErpAuthorizationException, ErpAddressVerificationException, ReservationException, DeliveryPassException,
+			FDPaymentInadequateException, ErpTransactionException, InvalidCardException {
+		if ("FDResourceException".equals(response.getMessage())) {
+			throw new FDResourceException(
+					response.getError() != null ? response.getError().get(response.getMessage()).toString()
+							: null);
+		}
+		if ("ErpFraudException".equals(response.getMessage())) {
+			throw new ErpFraudException(EnumFraudReason.getEnum(
+					response.getError() != null ? response.getError().get(response.getMessage()).toString()
+							: null));
+		}
+		if ("ErpAuthorizationException".equals(response.getMessage())) {
+			throw new ErpAuthorizationException(
+					response.getError() != null ? response.getError().get(response.getMessage()).toString()
+							: null);
+		}
+		if ("ErpAddressVerificationException".equals(response.getMessage())) {
+			throw new ErpAddressVerificationException(
+					response.getError() != null ? response.getError().get(response.getMessage()).toString()
+							: null);
+		}
+		if ("ReservationException".equals(response.getMessage())) {
+			throw new ReservationException(
+					response.getError() != null ? response.getError().get(response.getMessage()).toString()
+							: null);
+		}
+		if ("DeliveryPassException".equals(response.getMessage())) {
+			throw new DeliveryPassException(
+					response.getError() != null ? response.getError().get(response.getMessage()).toString()
+							: null);
+		}
+		if ("FDPaymentInadequateException".equals(response.getMessage())) {
+			throw new FDPaymentInadequateException(
+					response.getError() != null ? response.getError().get(response.getMessage()).toString()
+							: null);
+		}
+		if ("ErpTransactionException".equals(response.getMessage())) {
+			throw new ErpTransactionException(
+					response.getError() != null ? response.getError().get(response.getMessage()).toString()
+							: null);
+		}
+		if ("InvalidCardException".equals(response.getMessage())) {
+			throw new InvalidCardException(
+					response.getError() != null ? response.getError().get(response.getMessage()).toString()
+							: null);
+		}
+
+		throw new FDResourceException(response.getMessage());
 	}
 
 	@Override
@@ -493,29 +510,50 @@ public class OrderResourceApiClient extends AbstractEcommService implements Orde
 	}
 
 	@Override
-	public FDReservationData cancelOrder(FDActionInfo info, String saleId, boolean sendEmail, int currentDPExtendDays,
-			boolean restoreReservation) {
-
-		Request<CancelOrderRequestData> request = new Request<CancelOrderRequestData>();
-
+	public FDReservation cancelOrder(FDActionInfo info, String saleId, boolean sendEmail, int currentDPExtendDays,
+			boolean restoreReservation)
+			throws FDResourceException, ErpTransactionException, DeliveryPassException, RemoteException {
+		String inputJson = null;
 		try {
+			Request<ObjectNode> request = new Request<ObjectNode>();
+			ObjectNode rootNode = getMapper().createObjectNode();
+			rootNode.set("info", getMapper().convertValue(info, JsonNode.class));
+			rootNode.put("saleId", saleId);
+			rootNode.put("sendEmail", sendEmail);
+			rootNode.put("currentDPExtendDays", currentDPExtendDays);
+			rootNode.put("restoreReservation", restoreReservation);
 
-			CancelOrderRequestData data = new CancelOrderRequestData(FDActionInfoConverter.buildActionInfoData(info),
-					saleId, sendEmail, currentDPExtendDays, restoreReservation);
-			request.setData(data);
+			request.setData(rootNode);
+			inputJson = buildRequest(request);
 
-			String inputJson = buildRequest(request);
-			String response = postData(inputJson, getFdCommerceEndPoint(CANCEL_REG_ORDER_API), String.class);
-			Response<FDReservationData> responseWrapper = getMapper().readValue(response,
-					new TypeReference<Response<FDReservationData>>() {
+			Response<FDReservation> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(CANCEL_REG_ORDER_API),
+					new TypeReference<Response<FDReservation>>() {
 					});
+			if (!response.getResponseCode().equals("OK")) {
+				LOGGER.error("Error in cancelOrder: inputJson=" + inputJson + ",response=" + response);
 
-			return parseResponse(responseWrapper);
+				if ("FDResourceException".equals(response.getMessage())) {
+					throw new FDResourceException(
+							response.getError() != null ? response.getError().get(response.getMessage()).toString()
+									: null);
+				}
+				if ("ErpTransactionException".equals(response.getMessage())) {
+					throw new ErpTransactionException(
+							response.getError() != null ? response.getError().get(response.getMessage()).toString()
+									: null);
+				}
+				if ("DeliveryPassException".equals(response.getMessage())) {
+					throw new DeliveryPassException(
+							response.getError() != null ? response.getError().get(response.getMessage()).toString()
+									: null);
+				}
+			}
+			return response.getData();
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error("Error in cancelOrder: inputJson=" + inputJson, e);
+			throw new RemoteException(e.getMessage(), e);
 		}
-		return null;
 
 	}
 

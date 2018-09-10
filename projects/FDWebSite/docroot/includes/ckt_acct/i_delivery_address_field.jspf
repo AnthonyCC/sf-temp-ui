@@ -35,7 +35,7 @@ String[] checkErrorType = {"technical_difficulty", EnumUserInfoName.DLV_NOT_IN_Z
     if (_user != null){
         
         if (_user.isRobot()){
-            throw new FDNotFoundException("User is missing it's identity.");
+            throw new FDNotFoundException("User is missing its identity.");
         }
         
         _identity = _user.getIdentity();

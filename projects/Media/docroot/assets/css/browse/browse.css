@@ -478,7 +478,7 @@ ul.products .description-skin{
 
 .container.browse .carousels table.noCarousel1 td.c2 > div,
 .container.browse .carousels table.noCarousel2 td.c1 > div {
-  width: 775px
+  width: 775px;
 }
 
 .container.srch [data-component="carousel"] ul li.portrait-item,

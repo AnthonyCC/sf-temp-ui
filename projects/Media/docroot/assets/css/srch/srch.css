@@ -5,7 +5,7 @@
 
 .srch-header h1 {
   float: left;
-} 
+}
 
 .srch-header .oas-cnt {
   float: right;
@@ -187,7 +187,7 @@
 }
 
 .srch .ddpp-oas{
-  float:left; 
+  float:left;
   display:none;
 }
 
@@ -357,6 +357,9 @@
 .srch .search-suggestion-cont, .srch .search-suggestion-dym {
   font-size: 16px;
 	color: #666666;
+}
+.srch .search-noresults {
+  padding-right: 0.3em;
 }
 .srch .search-suggestion-dym {
   margin-bottom: 10px;

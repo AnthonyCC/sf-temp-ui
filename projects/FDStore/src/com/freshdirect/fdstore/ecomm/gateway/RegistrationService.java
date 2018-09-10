@@ -31,9 +31,9 @@ public class RegistrationService extends AbstractEcommService implements Registr
 
 	private final static Category LOGGER = LoggerFactory.getInstance(RegistrationService.class);
 
-	private static final String REGISTER = "/registration/register";
+	private static final String REGISTER = "registration/register";
 
-	private static final String CREATENEWUSER = "/registration/createNewUser";
+	private static final String CREATENEWUSER = "registration/createNewUser";
 	
 	private static RegistrationService INSTANCE;
 

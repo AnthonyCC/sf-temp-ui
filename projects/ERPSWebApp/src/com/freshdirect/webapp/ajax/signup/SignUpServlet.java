@@ -1,5 +1,7 @@
 package com.freshdirect.webapp.ajax.signup;
 
+import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -24,13 +26,10 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.framework.webapp.ActionWarning;
-import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.expresscheckout.service.RedirectService;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
-import com.freshdirect.webapp.taglib.fdstore.CookieMonster;
 import com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName;
-import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
@@ -50,11 +49,11 @@ public class SignUpServlet extends BaseJsonServlet {
         HttpSession session = request.getSession();
         SignUpRequest signUpRequest = BaseJsonServlet.parseRequestData(request, SignUpRequest.class);
         boolean skipPopup = false;
-        EnumServiceType serviceType = NVL.apply(EnumServiceType.getEnum(signUpRequest.getServiceType()), EnumServiceType.HOME);
+        EnumServiceType serviceType = NVL.apply(EnumServiceType.getEnum(signUpRequest.getServiceType()), EnumServiceType.PICKUP);
         String successPage = FDURLUtil.extendsUrlWithServiceType(NVL.apply(signUpRequest.getSuccessPage(), FDURLUtil.LANDING_PAGE), serviceType);
 
         try {
-            SignUpResponse signUpResponse = new SignUpResponse();
+            SignUpResponse signUpResponse = new SignUpResponse();   
             SignUpService registrationService = selectSignUpService(serviceType);
 
             ActionResult result = registrationService.validate(signUpRequest);
@@ -64,20 +63,23 @@ public class SignUpServlet extends BaseJsonServlet {
             result.addError(!isCaptchaSuccess, "captcha", SystemMessageList.MSG_INVALID_CAPTCHA);
 
             if (result.isSuccess()) {
-                String zipCode = signUpRequest.getZipCode();
-                FDDeliveryServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(zipCode);
-                AddressModel address = new AddressModel();
-                address.setZipCode(zipCode);
-                serviceType = checkServiceStatus(serviceType, result, serviceResult);
-                FDSessionUser signedInUser = UserUtil.createNewSessionUser(serviceType, serviceResult.getAvailableServices(), session, response, address, user);
+                FDDeliveryServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(signUpRequest.getZipCode());
+                Set<EnumServiceType> availableServices = serviceResult.getAvailableServices();
+                if (!availableServices.contains(serviceType)) {
+                    result.addWarning(new ActionWarning("serviceType", "Selected service type is not available for current area, go with pickup type"));
+                    serviceType = EnumServiceType.PICKUP;
+                    signUpRequest.setServiceType(serviceType.getName());
+                    registrationService = selectSignUpService(serviceType);
+                }
+
                 try {
+                    AddressModel address = new AddressModel();
+                    address.setZipCode(signUpRequest.getZipCode());
+                    FDSessionUser signedInUser = UserUtil.createSessionUser(serviceType, availableServices, session, response, address);
                     FDActionInfo actionInfo = AccountActivityUtil.getActionInfo(session);
                     FDCustomerModel fdCustomer = registrationService.createFdCustomer(signedInUser, signUpRequest);
                     ErpCustomerModel erpCustomer = registrationService.createErpCustomer(signedInUser, signUpRequest);
                     RegisterService.getInstance().register(signedInUser, actionInfo, erpCustomer, fdCustomer, serviceType, signUpRequest.isTcAgree());
-                    CookieMonster.storeCookie(signedInUser, response);
-                    session.setAttribute(SessionName.USER, signedInUser);
-                    FDCustomerCouponUtil.initCustomerCoupons(session);
                 } catch (ErpDuplicateUserIdException de) {
                     LOGGER.warn("User registration failed due to duplicate id", de);
                     result.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(), SystemMessageList.MSG_UNIQUE_USERNAME));
@@ -108,6 +110,7 @@ public class SignUpServlet extends BaseJsonServlet {
 
             session.setAttribute(SessionName.SIGNUP_SUCCESS, result.isSuccess());
 
+
             signUpResponse.setSuccess(result.isSuccess());
             signUpResponse.setEmail(signUpRequest.getEmail());
             signUpResponse.setServiceType(serviceType.getName());
@@ -123,15 +126,6 @@ public class SignUpServlet extends BaseJsonServlet {
             session.setAttribute(SessionName.SIGNUP_SUCCESS, false);
             BaseJsonServlet.returnHttpError(500, "Failed to register customer with email: " + signUpRequest.getEmail(), e);
         }
-    }
-
-    private EnumServiceType checkServiceStatus(EnumServiceType serviceType, ActionResult result, FDDeliveryServiceSelectionResult serviceResult) {
-        EnumDeliveryStatus status = serviceResult.getServiceStatus(serviceType);
-        if (!EnumDeliveryStatus.DELIVER.equals(status) && !EnumDeliveryStatus.PARTIALLY_DELIVER.equals(status) && !EnumDeliveryStatus.COS_ENABLED.equals(status)) {
-            result.addWarning(new ActionWarning("serviceType", "Selected service type is not available for current area, go with pickup type"));
-            serviceType = EnumServiceType.PICKUP;
-        }
-        return serviceType;
     }
 
     private SignUpService selectSignUpService(EnumServiceType serviceType) {

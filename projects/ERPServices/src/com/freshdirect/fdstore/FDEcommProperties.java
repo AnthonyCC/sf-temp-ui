@@ -127,6 +127,7 @@ public class FDEcommProperties {
 	public final static String PROP_JCO_CLIENT_LISTENER_PRODUCT_PROMOTION_ENABLED = "jco.client.listeners.productPromotion.enabled";
 	public final static String PROP_JCO_CLIENT_LISTENER_INVENTORY_INFO_ENABLED = "jco.client.listeners.inventoryInfo.Enabled";
 	public final static String PROP_JCO_CLIENT_LISTENER_RESTRICTED_AVAILABILITY_INFO_ENABLED = "jco.client.listeners.restrictedAvailabilityInfo.Enabled";
+	public static final String ReconciliationSB="com.freshdirect.payment.ReconciliationSB";
 
    
     static {

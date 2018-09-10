@@ -88,11 +88,10 @@ var FreshDirect = FreshDirect || {};
 		if(fd.properties.isSocialLoginEnabled){
 			/* This is an event */
 			var my_on_login_redirect = function(args) {
-				
 				return true;
 			}
-			var onWidgetLoaded = function(e){
 			
+			var onWidgetLoaded = function(e){
 				$(e.widget).attr('tabIndex', 4);
 			}
 
@@ -169,8 +168,6 @@ var FreshDirect = FreshDirect || {};
 			} else {
 				showError(responseJson.errorMessages);
 			}
-			
-			
 		}, function(error) {
 			showError();
 		});

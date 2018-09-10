@@ -1,6 +1,5 @@
 package com.freshdirect.ecomm.gateway;
 
-import java.io.InputStream;
 import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.List;
@@ -54,9 +53,7 @@ public interface ReconciliationServiceI {
 
 	public List processSettlementPendingOrders()throws RemoteException;
 
-	public void sendFile(InputStream is, String fileName) throws  RemoteException;
-
-	void sendSettlementReconToSap(InputStream is, String fileName,String sapUploadFolder) throws SapException, RemoteException;
+	public void sendSettlementReconToSap(String fileName, String sapUploadFolder)throws SapException, RemoteException;
 
 
 }

@@ -14,6 +14,7 @@ import com.freshdirect.common.pricing.util.GroupScaleUtil;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.GroupScalePricing;
+import com.freshdirect.framework.util.FormatterUtil;
 import com.freshdirect.framework.webapp.BodyTagSupportEx;
 import com.freshdirect.storeapi.content.PriceCalculator;
 import com.freshdirect.storeapi.content.ProductModel;
@@ -45,7 +46,7 @@ public class ProductSavingTag extends BodyTagSupportEx {
 			if (matPrice.getScaleUnit().equals("LB"))
 				grpQty = grpQty + (matPrice.getScaleUnit().toLowerCase()) + "s";
 
-			grpTotalPrice = FORMAT_CURRENCY.format(displayPrice);
+			grpTotalPrice = FormatterUtil.formatCurrency(displayPrice);
 			if (isSaleUnitDiff)
 				grpTotalPrice = grpTotalPrice + "/" + (matPrice.getPricingUnit().toLowerCase());
 

@@ -19,7 +19,7 @@ String[] checkPaymentMethodForm = {PaymentMethodName.ACCOUNT_HOLDER, PaymentMeth
 														PaymentMethodName.BANK_ACCOUNT_TYPE, EnumUserInfoName.BIL_ADDRESS_1.getCode(), 
 														EnumUserInfoName.BIL_CITY.getCode(), EnumUserInfoName.BIL_STATE.getCode(), 
 														EnumUserInfoName.BIL_APARTMENT.getCode(), EnumUserInfoName.BIL_ZIPCODE.getCode(), 
-														PaymentMethodName.TERMS};
+														PaymentMethodName.TERMS,PaymentMethodName.BANK_NAME};
 String[] checkErrorType = {"technical_difficulty", "payment_method_fraud"};
 %>
 

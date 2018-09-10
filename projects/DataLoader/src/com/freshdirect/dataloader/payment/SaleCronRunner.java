@@ -32,7 +32,6 @@ import com.freshdirect.fdstore.CallCenterServices;
 import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ecomm.gateway.SaleCronService;
-import com.freshdirect.fdstore.ecomm.gateway.SaleCronServiceI;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
@@ -60,17 +59,21 @@ public class SaleCronRunner {
 		}
 
 		Context ctx = null;
+		SaleCronSB sb = null;
 		try {
-			ctx = getInitialContext();
-			SaleCronHome home = (SaleCronHome) ctx.lookup("freshdirect.dataloader.SaleCron");
+			
 			int affected ;
 			List<Date> dates;
-			SaleCronSB sb = home.create();
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SaleCronSB)) {
 				SaleCronService.getInstance().cancelAuthorizationFailed();
 				dates = SaleCronService.getInstance().queryCutoffReportDeliveryDates();
 				affected = SaleCronService.getInstance().cutoffSales();
 			} else {
+				if (sb == null) {
+					ctx = getInitialContext();
+					SaleCronHome home = (SaleCronHome) ctx.lookup("freshdirect.dataloader.SaleCron");
+					sb = home.create();
+				}
 				
 				sb.cancelAuthorizationFailed();
 				dates = sb.queryCutoffReportDeliveryDates();
@@ -93,6 +96,13 @@ public class SaleCronRunner {
 				SaleCronService.getInstance().preAuthorizeSales(authTimeout);
 				SaleCronService.getInstance().authorizeSales(authTimeout);
 			}else {
+				if (sb == null) {
+					if (ctx == null) {
+						ctx = getInitialContext();
+					}
+					SaleCronHome home = (SaleCronHome) ctx.lookup("freshdirect.dataloader.SaleCron");
+					sb = home.create();
+				}
 				sb.reverseAuthorizeSales(authTimeout);
 				sb.preAuthorizeSales(authTimeout);
 				sb.authorizeSales(authTimeout);
@@ -130,7 +140,6 @@ public class SaleCronRunner {
 	}
 	
 	private static void email(Date processDate, String exceptionMsg) {
-		// TODO Auto-generated method stub
 		try {
 			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
 			String subject="SaleCronRunner:	"+ (processDate != null ? dateFormatter.format(processDate) : " date error");

@@ -1268,19 +1268,23 @@ public class FDUserDAO {
 
     private static final String UNLOCKORDER_MODIFYSTATE = "update cust.sale set IN_MODIFY = NULL where id = ?";
 
-    public static void releaseModificationLock(Connection conn, String orderId) throws SQLException {
+	public static void releaseModificationLock(Connection conn, String orderId) throws SQLException {
 
-        PreparedStatement ps = conn.prepareStatement(UNLOCKORDER_MODIFYSTATE);
-        ps.setString(1, orderId);
-        int rowcount = ps.executeUpdate();
-        if (rowcount != 0) {
-            LOGGER.info("UNLOCK THE ORDER FROM MODIFICATION SUCCESSFUL... " + orderId);
-        } else {
-            LOGGER.info("releaseModificationLock failed: " + orderId);
-        }
-        ps.close();
+		PreparedStatement ps = null;
+		try {
+			ps = conn.prepareStatement(UNLOCKORDER_MODIFYSTATE);
+			ps.setString(1, orderId);
+			int rowcount = ps.executeUpdate();
+			if (rowcount != 0) {
+				LOGGER.info("UNLOCK THE ORDER FROM MODIFICATION SUCCESSFUL... " + orderId);
+			} else {
+				LOGGER.info("releaseModificationLock failed: " + orderId);
+			}
+		} finally {
+			DaoUtil.close(ps);
+		}
 
-    }
+	}
 
     public static boolean storeFDTCAgreeDate(Connection conn, String erpCustomerPK, Date fdTcAgreeDate) {
 

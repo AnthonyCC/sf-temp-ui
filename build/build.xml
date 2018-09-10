@@ -2706,6 +2706,8 @@
 				<include name="FDStore.jar"/>
 			</libraries>
 			<lib>
+				<!-- keep oscache for mobile API -->
+				<include name="oscache-2.4.1.jar"/>
 				<include name="struts.jar"/>
 				<include name="lcc.jar"/>
 				<include name="sapjco3.jar"/>
@@ -2973,7 +2975,7 @@
 
 			<!-- FD classes -->
 			<zipfileset src="${work.dir}/Framework.jar" />
-			<zipfileset src="${work.dir}/ERPServicesEJB-WL.jar" excludes="META-INF/*, com/freshdirect/fdstore/FDCachedFactory*, com/freshdirect/fdstore/FDInventoryCache*, com/freshdirect/fdstore/FDAttributeCache.class, com/freshdirect/fdstore/FDMaterialGroupCache*, com/freshdirect/fdstore/FDAbstractCache*, com/freshdirect/fdstore/FDNutritionPanelCache*, com/freshdirect/fdstore/FDNutritionCache*" />
+			<zipfileset src="${work.dir}/ERPServicesEJB-WL.jar" excludes="META-INF/*, com/freshdirect/fdstore/FDCachedFactory*, com/freshdirect/fdstore/FDInventoryCache*, com/freshdirect/fdstore/FDAttributeCache.class, com/freshdirect/fdstore/FDMaterialGroupCache*, com/freshdirect/fdstore/FDAbstractCache*, com/freshdirect/fdstore/FDNutritionPanelCache*, com/freshdirect/fdstore/FDNutritionCache*, com/freshdirect/enums/EnumManager*" />
 			<zipfileset src="${work.dir}/DeliveryEJB-WL.jar" excludes="META-INF/*, com/freshdirect/fdstore/FDDeliveryManager*" />
 			<zipfileset src="${work.dir}/cmseue.jar" excludes="META-INF/*" />
 			<zipfileset src="${work.dir}/StoreAPI.jar" excludes="META-INF/*" />

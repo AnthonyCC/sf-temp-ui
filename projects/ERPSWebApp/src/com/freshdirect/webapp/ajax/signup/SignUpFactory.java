@@ -6,7 +6,6 @@ import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.framework.util.MD5Hasher;
 
@@ -20,6 +19,11 @@ public class SignUpFactory {
 
     private SignUpFactory() {
     }
+
+    // TODO clickid?
+    // TODO couponcode?
+    // TODO survey?
+    // TODO GTM
 
     public FDCustomerModel getFDCustomer(String depotCode, String clickId, String promoCode) {
         FDCustomerModel fdCustomer = new FDCustomerModel();
@@ -60,11 +64,11 @@ public class SignUpFactory {
 
     public ErpAddressModel createDefaultErpAddressModel(EnumServiceType serviceType, String firstName, String lastName) {
         ErpAddressModel erpAddress = new ErpAddressModel();
-        erpAddress.setAddress1(FDStoreProperties.getFdDefaultBillingStreet());
-        erpAddress.setCity(FDStoreProperties.getFdDefaultBillingTown());
-        erpAddress.setState(FDStoreProperties.getFdDefaultBillingState());
-        erpAddress.setCountry(FDStoreProperties.getFdDefaultBillingCountry());
-        erpAddress.setZipCode(FDStoreProperties.getFdDefaultBillingPostalcode());
+        erpAddress.setAddress1("23-30 borden ave");
+        erpAddress.setCity("Long Island City");
+        erpAddress.setState("NY");
+        erpAddress.setCountry("US");
+        erpAddress.setZipCode("11101");
         erpAddress.setServiceType(serviceType);
         erpAddress.setFirstName(firstName);
         erpAddress.setLastName(lastName);

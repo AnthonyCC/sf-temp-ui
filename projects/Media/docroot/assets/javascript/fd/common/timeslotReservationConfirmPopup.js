@@ -52,6 +52,7 @@ var FreshDirect = FreshDirect || {};
 
     h = h === 0 ? 24 : h;
     h = h > 12 ? h - 12 : h;
+	m = m < 10 ? '0'+m : m; //leading zeros
 
     return h + (m ? ':' + m : '') + ' ' + ampm;
   };
