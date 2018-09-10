@@ -17,7 +17,6 @@ import com.freshdirect.customer.ErpAddressVerificationException;
 import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpCartonInfo;
 import com.freshdirect.customer.ErpCreateOrderModel;
-import com.freshdirect.customer.ErpDeliveryInfoModel;
 import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpModifyOrderModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
@@ -29,6 +28,7 @@ import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.ecommerce.data.dlv.FDReservationData;
+import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.atp.FDAvailabilityI;
 import com.freshdirect.fdstore.customer.FDActionInfo;
@@ -98,10 +98,8 @@ public interface OrderResourceApiClientI {
 			EnumDlvPassStatus status);
 
 
-	public FDReservationData cancelOrder(FDActionInfo info, String saleId,
-			boolean sendEmail, int currentDPExtendDays,
-			boolean restoreReservation);
-
+	public FDReservation cancelOrder(FDActionInfo info, String saleId, boolean sendEmail, int currentDPExtendDays, boolean restoreReservation) throws FDResourceException, ErpTransactionException, DeliveryPassException, RemoteException;
+	 
 
 	public Map<String, FDAvailabilityI> checkAvailability(FDIdentity identity,	ErpCreateOrderModel createOrder, long timeout, String isFromLogin) throws FDResourceException;
 

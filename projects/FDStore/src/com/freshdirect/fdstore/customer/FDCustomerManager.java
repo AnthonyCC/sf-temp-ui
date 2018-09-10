@@ -1776,32 +1776,29 @@ public class FDCustomerManager {
 			throw new FDResourceException(ie, "Error creating session bean InvalidCardException");
 		}
 	}
-
-
-	public static FDReservation cancelOrder(FDActionInfo info, String saleId, boolean sendEmail, int currentDPExtendDays, boolean restoreReservation)
-		throws FDResourceException, ErpTransactionException, DeliveryPassException {
-		if (managerHome == null) {
-			lookupManagerHome();
-		}
-
+	
+	public static FDReservation cancelOrder(FDActionInfo info, String saleId, boolean sendEmail,
+			int currentDPExtendDays, boolean restoreReservation)
+			throws FDResourceException, ErpTransactionException, DeliveryPassException {
 		try {
 			if (orderBelongsToUser(info.getIdentity(), saleId)) {
-				FDCustomerManagerSB sb = managerHome.create();
+
 				FDReservation reservation = null;
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled("cancelOrder_Api")){
-					OrderResourceApiClient service = OrderResourceApiClient.getInstance();
-					DlvManagerDecoder.setMapper(OrderResourceApiClient.getMapper());
-					FDReservationData reservationData = service.cancelOrder(info, saleId, sendEmail, currentDPExtendDays, restoreReservation);
-					if(reservationData!=null){
-						reservation =  DlvManagerDecoder.converter(reservationData);
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled("cancelOrder_Api")) {
+					reservation = OrderResourceApiClient.getInstance().cancelOrder(info, saleId, sendEmail,
+							currentDPExtendDays, restoreReservation);
+
+				} else {
+					if (managerHome == null) {
+						lookupManagerHome();
 					}
-					
-				}else{
+					FDCustomerManagerSB sb = managerHome.create();
 					reservation = sb.cancelOrder(info, saleId, sendEmail, currentDPExtendDays, restoreReservation);
 				}
 
-				//invalidate quickshop past orders cache
-                CmsServiceLocator.ehCacheUtil().removeFromCache(CmsCaches.QS_PAST_ORDERS_CACHE.cacheName, info.getIdentity().getErpCustomerPK());
+				// invalidate quickshop past orders cache
+				CmsServiceLocator.ehCacheUtil().removeFromCache(CmsCaches.QS_PAST_ORDERS_CACHE.cacheName,
+						info.getIdentity().getErpCustomerPK());
 
 				return reservation;
 			}
