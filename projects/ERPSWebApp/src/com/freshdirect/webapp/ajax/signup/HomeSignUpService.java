@@ -41,8 +41,8 @@ public class HomeSignUpService implements SignUpService {
 
     @Override
     public ErpCustomerModel createErpCustomer(FDUserI user, SignUpRequest request) {
-        String lastName = null;
         String firstName = request.getEmail().substring(0, request.getEmail().indexOf("@"));
+        String lastName = firstName;
         EnumServiceType serviceType = EnumServiceType.getEnum(request.getServiceType());
 
         ErpAddressModel erpAddressModel = SignUpFactory.getInstance().createDefaultErpAddressModel(serviceType, firstName, lastName);
