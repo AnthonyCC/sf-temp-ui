@@ -697,7 +697,7 @@
 			{if $info.recipe}
 				Recipe: <span class="cartsection__title-noweight">{$title}</span>
 			{else}
-				{$title}
+				<span class="cartsection__title-title">{$title}</span>
 			{/if}
 			{if $info.recipe and $cartlineType == 'YOUR_CART'}
 				<span data-component="removeRecipeButton">
