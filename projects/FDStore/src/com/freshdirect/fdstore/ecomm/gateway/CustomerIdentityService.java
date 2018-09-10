@@ -30,7 +30,7 @@ import com.freshdirect.storeapi.content.ContentFactory;
 
 public class CustomerIdentityService extends AbstractEcommService implements CustomerIdentityServiceI {
 
-	private final static Category LOGGER = LoggerFactory.getInstance(RegistrationService.class);
+	private final static Category LOGGER = LoggerFactory.getInstance(CustomerIdentityService.class);
 
 	private static final String LOGIN = "customerIdentity/login";
 
